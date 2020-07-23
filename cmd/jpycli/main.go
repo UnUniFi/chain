@@ -38,7 +38,6 @@ func main() {
 	// config is not sealed as the cli supports two coin types for legacy reasons.
 	config := sdk.GetConfig()
 	app.SetBech32AddressPrefixes(config)
-	app.SetBip44CoinType(config)
 
 	// TODO: setup keybase, viper object, etc. to be passed into
 	// the below functions and eliminate global vars, like we do

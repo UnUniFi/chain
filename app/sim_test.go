@@ -27,14 +27,14 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 
-	"github.com/kava-labs/kava/x/auction"
-	"github.com/kava-labs/kava/x/bep3"
-	"github.com/kava-labs/kava/x/cdp"
-	"github.com/kava-labs/kava/x/committee"
-	"github.com/kava-labs/kava/x/incentive"
-	"github.com/kava-labs/kava/x/kavadist"
-	"github.com/kava-labs/kava/x/pricefeed"
-	validatorvesting "github.com/kava-labs/kava/x/validator-vesting"
+	"github.com/lcnem/xjpy/x/auction"
+	"github.com/lcnem/xjpy/x/bep3"
+	"github.com/lcnem/xjpy/x/cdp"
+	"github.com/lcnem/xjpy/x/committee"
+	"github.com/lcnem/xjpy/x/incentive"
+	"github.com/lcnem/xjpy/x/kavadist"
+	"github.com/lcnem/xjpy/x/pricefeed"
+	validatorvesting "github.com/lcnem/xjpy/x/validator-vesting"
 )
 
 type StoreKeysPrefixes struct {

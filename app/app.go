@@ -33,26 +33,25 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 
-	"github.com/kava-labs/kava/x/auction"
-	"github.com/kava-labs/kava/x/bep3"
-	"github.com/kava-labs/kava/x/cdp"
-	"github.com/kava-labs/kava/x/committee"
-	"github.com/kava-labs/kava/x/incentive"
-	"github.com/kava-labs/kava/x/kavadist"
-	"github.com/kava-labs/kava/x/pricefeed"
-	validatorvesting "github.com/kava-labs/kava/x/validator-vesting"
+	"github.com/lcnem/xjpy/x/auction"
+	"github.com/lcnem/xjpy/x/bep3"
+	"github.com/lcnem/xjpy/x/cdp"
+	"github.com/lcnem/xjpy/x/committee"
+	"github.com/lcnem/xjpy/x/incentive"
+	"github.com/lcnem/xjpy/x/kavadist"
+	"github.com/lcnem/xjpy/x/pricefeed"
+	validatorvesting "github.com/lcnem/xjpy/x/validator-vesting"
 )
 
 const (
-	appName          = "kava"
-	Bech32MainPrefix = "kava"
-	Bip44CoinType    = 459 // see https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+	appName          = "xjpy"
+	Bech32MainPrefix = "jpy"
 )
 
 var (
 	// default home directories for expected binaries
-	DefaultCLIHome  = os.ExpandEnv("$HOME/.kvcli")
-	DefaultNodeHome = os.ExpandEnv("$HOME/.kvd")
+	DefaultCLIHome  = os.ExpandEnv("$HOME/.jpycli")
+	DefaultNodeHome = os.ExpandEnv("$HOME/.jpyd")
 
 	// ModuleBasics manages simple versions of full app modules. It's used for things such as codec registration and genesis file verification.
 	ModuleBasics = module.NewBasicManager(
@@ -473,11 +472,6 @@ func SetBech32AddressPrefixes(config *sdk.Config) {
 	config.SetBech32PrefixForAccount(Bech32MainPrefix, Bech32MainPrefix+sdk.PrefixPublic)
 	config.SetBech32PrefixForValidator(Bech32MainPrefix+sdk.PrefixValidator+sdk.PrefixOperator, Bech32MainPrefix+sdk.PrefixValidator+sdk.PrefixOperator+sdk.PrefixPublic)
 	config.SetBech32PrefixForConsensusNode(Bech32MainPrefix+sdk.PrefixValidator+sdk.PrefixConsensus, Bech32MainPrefix+sdk.PrefixValidator+sdk.PrefixConsensus+sdk.PrefixPublic)
-}
-
-// SetBip44CoinType sets the global coin type to be used in hierarchical deterministic wallets.
-func SetBip44CoinType(config *sdk.Config) {
-	config.SetCoinType(Bip44CoinType)
 }
 
 // application updates every end block

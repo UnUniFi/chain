@@ -41,7 +41,6 @@ func main() {
 
 	config := sdk.GetConfig()
 	app.SetBech32AddressPrefixes(config)
-	app.SetBip44CoinType(config)
 	config.Seal()
 
 	ctx := server.NewDefaultContext()
