@@ -45,8 +45,8 @@ func main() {
 	// with the cdc
 
 	rootCmd := &cobra.Command{
-		Use:   "kvcli",
-		Short: "Command line interface for interacting with kvd",
+		Use:   "jpycli",
+		Short: "Command line interface for interacting with jpyd",
 	}
 
 	// Add --chain-id to persistent flags and mark it required
@@ -70,8 +70,8 @@ func main() {
 		flags.NewCompletionCmd(rootCmd, true),
 	)
 
-	// Add flags and prefix all env exposed with KA
-	executor := cli.PrepareMainCmd(rootCmd, "KA", app.DefaultCLIHome)
+	// Add flags and prefix all env exposed with JPY
+	executor := cli.PrepareMainCmd(rootCmd, "JPY", app.DefaultCLIHome)
 
 	err := executor.Execute()
 	if err != nil {

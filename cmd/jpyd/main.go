@@ -26,9 +26,9 @@ import (
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 
-	"github.com/kava-labs/kava/app"
+	"github.com/lcnem/xjpy/app"
 	kava3 "github.com/kava-labs/kava/contrib/kava-3"
-	"github.com/kava-labs/kava/migrate"
+	"github.com/lcnem/xjpy/migrate"
 )
 
 // kvd custom flags
@@ -47,8 +47,8 @@ func main() {
 	ctx := server.NewDefaultContext()
 	cobra.EnableCommandSorting = false
 	rootCmd := &cobra.Command{
-		Use:               "kvd",
-		Short:             "Kava Daemon (server)",
+		Use:               "jpyd",
+		Short:             "XJPY Daemon (server)",
 		PersistentPreRunE: persistentPreRunEFn(ctx),
 	}
 
@@ -74,7 +74,7 @@ func main() {
 	server.AddCommands(ctx, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
 
 	// prepare and add flags
-	executor := cli.PrepareBaseCmd(rootCmd, "KA", app.DefaultNodeHome)
+	executor := cli.PrepareBaseCmd(rootCmd, "JPY", app.DefaultNodeHome)
 	rootCmd.PersistentFlags().UintVar(&invCheckPeriod, flagInvCheckPeriod,
 		0, "Assert registered invariants every N blocks")
 	err := executor.Execute()
