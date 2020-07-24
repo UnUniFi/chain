@@ -9,7 +9,7 @@ import (
 	supplyExported "github.com/cosmos/cosmos-sdk/x/supply/exported"
 
 	"github.com/lcnem/jpyx/x/incentive/types"
-	validatorvesting "github.com/lcnem/xjpy/x/validator-vesting"
+	validatorvesting "github.com/lcnem/jpyx/x/validator-vesting"
 )
 
 // PayoutClaim sends the timelocked claim coins to the input address

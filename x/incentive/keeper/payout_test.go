@@ -14,7 +14,7 @@ import (
 	"github.com/lcnem/jpyx/x/cdp"
 	"github.com/lcnem/jpyx/x/incentive/types"
 	kavadist "github.com/lcnem/jpyx/x/stakedist"
-	validatorvesting "github.com/lcnem/xjpy/x/validator-vesting"
+	validatorvesting "github.com/lcnem/jpyx/x/validator-vesting"
 )
 
 func (suite *KeeperTestSuite) setupChain() {

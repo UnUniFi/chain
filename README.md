@@ -1,8 +1,8 @@
-# XJPY
+# JPYX
 
 ## License
 
-Forked from [Kava](github.com/lcnem/jpyx).
+Forked from [Kava](github.com/Kava-Labs/kava).
 Thanks Kava Team.
 
 Copyright © LCNEM, Inc. All rights reserved.
