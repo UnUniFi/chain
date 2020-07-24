@@ -12,6 +12,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/client/lcd"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -37,6 +38,7 @@ func main() {
 	// config is not sealed as the cli supports two coin types for legacy reasons.
 	config := sdk.GetConfig()
 	app.SetBech32AddressPrefixes(config)
+	config.Seal()
 
 	// TODO: setup keybase, viper object, etc. to be passed into
 	// the below functions and eliminate global vars, like we do
@@ -62,6 +64,7 @@ func main() {
 		flags.LineBreak,
 		lcd.ServeCommand(cdc, registerRoutes),
 		flags.LineBreak,
+		keys.Commands(),
 		flags.LineBreak,
 		version.Cmd,
 		flags.NewCompletionCmd(rootCmd, true),
