@@ -12,7 +12,7 @@ import (
 	"github.com/lcnem/jpyx/x/validator-vesting/types"
 )
 
-// GetQueryCmd returns the cli query commands for the kavadist module
+// GetQueryCmd returns the cli query commands for the stakedist module
 func GetQueryCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 	valVestingQueryCmd := &cobra.Command{
 		Use:   types.QueryPath,

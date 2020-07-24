@@ -52,7 +52,7 @@ func (suite *KeeperTestSuite) getModuleAccount(name string) supplyexported.Modul
 }
 
 func (suite *KeeperTestSuite) TestGetSetDeleteRewardPeriod() {
-	rp := types.NewRewardPeriod("bnb", suite.ctx.BlockTime(), suite.ctx.BlockTime().Add(time.Hour*168), c("ukava", 100000000), suite.ctx.BlockTime().Add(time.Hour*168*2), time.Hour*8766)
+	rp := types.NewRewardPeriod("bnb", suite.ctx.BlockTime(), suite.ctx.BlockTime().Add(time.Hour*168), c("stake", 100000000), suite.ctx.BlockTime().Add(time.Hour*168*2), time.Hour*8766)
 	_, found := suite.keeper.GetRewardPeriod(suite.ctx, "bnb")
 	suite.False(found)
 	suite.NotPanics(func() {
@@ -97,7 +97,7 @@ func (suite *KeeperTestSuite) TestGetSetClaimPeriodID() {
 }
 
 func (suite *KeeperTestSuite) TestGetSetDeleteClaim() {
-	c := types.NewClaim(suite.addrs[0], c("ukava", 1000000), "bnb", 1)
+	c := types.NewClaim(suite.addrs[0], c("stake", 1000000), "bnb", 1)
 	_, found := suite.keeper.GetClaim(suite.ctx, suite.addrs[0], "bnb", 1)
 	suite.False(found)
 	suite.NotPanics(func() {
@@ -147,8 +147,8 @@ func (suite *KeeperTestSuite) TestIterateMethods() {
 }
 
 func (suite *KeeperTestSuite) addObjectsToStore() {
-	rp1 := types.NewRewardPeriod("bnb", suite.ctx.BlockTime(), suite.ctx.BlockTime().Add(time.Hour*168), c("ukava", 100000000), suite.ctx.BlockTime().Add(time.Hour*168*2), time.Hour*8766)
-	rp2 := types.NewRewardPeriod("xrp", suite.ctx.BlockTime(), suite.ctx.BlockTime().Add(time.Hour*168), c("ukava", 100000000), suite.ctx.BlockTime().Add(time.Hour*168*2), time.Hour*8766)
+	rp1 := types.NewRewardPeriod("bnb", suite.ctx.BlockTime(), suite.ctx.BlockTime().Add(time.Hour*168), c("stake", 100000000), suite.ctx.BlockTime().Add(time.Hour*168*2), time.Hour*8766)
+	rp2 := types.NewRewardPeriod("xrp", suite.ctx.BlockTime(), suite.ctx.BlockTime().Add(time.Hour*168), c("stake", 100000000), suite.ctx.BlockTime().Add(time.Hour*168*2), time.Hour*8766)
 	suite.keeper.SetRewardPeriod(suite.ctx, rp1)
 	suite.keeper.SetRewardPeriod(suite.ctx, rp2)
 
@@ -160,13 +160,13 @@ func (suite *KeeperTestSuite) addObjectsToStore() {
 	suite.keeper.SetNextClaimPeriodID(suite.ctx, "bnb", 1)
 	suite.keeper.SetNextClaimPeriodID(suite.ctx, "xrp", 1)
 
-	c1 := types.NewClaim(suite.addrs[0], c("ukava", 1000000), "bnb", 1)
-	c2 := types.NewClaim(suite.addrs[0], c("ukava", 1000000), "xrp", 1)
+	c1 := types.NewClaim(suite.addrs[0], c("stake", 1000000), "bnb", 1)
+	c2 := types.NewClaim(suite.addrs[0], c("stake", 1000000), "xrp", 1)
 	suite.keeper.SetClaim(suite.ctx, c1)
 	suite.keeper.SetClaim(suite.ctx, c2)
 
 	params := types.NewParams(
-		true, types.Rewards{types.NewReward(true, "bnb", c("ukava", 1000000000), time.Hour*7*24, time.Hour*24*365, time.Hour*7*24)},
+		true, types.Rewards{types.NewReward(true, "bnb", c("stake", 1000000000), time.Hour*7*24, time.Hour*24*365, time.Hour*7*24)},
 	)
 	suite.keeper.SetParams(suite.ctx, params)
 

@@ -1,4 +1,4 @@
-package kavadist
+package stakedist
 
 import (
 	"fmt"
@@ -22,9 +22,9 @@ func InitGenesis(ctx sdk.Context, k Keeper, supplyKeeper types.SupplyKeeper, gs 
 	}
 
 	// check if the module account exists
-	moduleAcc := supplyKeeper.GetModuleAccount(ctx, KavaDistMacc)
+	moduleAcc := supplyKeeper.GetModuleAccount(ctx, StakeDistMacc)
 	if moduleAcc == nil {
-		panic(fmt.Sprintf("%s module account has not been set", KavaDistMacc))
+		panic(fmt.Sprintf("%s module account has not been set", StakeDistMacc))
 	}
 
 }

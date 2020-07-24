@@ -15,7 +15,7 @@ import (
 )
 
 func (suite *KeeperTestSuite) TestExpireRewardPeriod() {
-	rp := types.NewRewardPeriod("bnb", suite.ctx.BlockTime(), suite.ctx.BlockTime().Add(time.Hour*168), c("ukava", 100000000), suite.ctx.BlockTime().Add(time.Hour*168*2), time.Hour*8766)
+	rp := types.NewRewardPeriod("bnb", suite.ctx.BlockTime(), suite.ctx.BlockTime().Add(time.Hour*168), c("stake", 100000000), suite.ctx.BlockTime().Add(time.Hour*168*2), time.Hour*8766)
 	suite.keeper.SetRewardPeriod(suite.ctx, rp)
 	suite.keeper.SetNextClaimPeriodID(suite.ctx, "bnb", 1)
 	suite.NotPanics(func() {
@@ -26,25 +26,25 @@ func (suite *KeeperTestSuite) TestExpireRewardPeriod() {
 }
 
 func (suite *KeeperTestSuite) TestAddToClaim() {
-	rp := types.NewRewardPeriod("bnb", suite.ctx.BlockTime(), suite.ctx.BlockTime().Add(time.Hour*168), c("ukava", 100000000), suite.ctx.BlockTime().Add(time.Hour*168*2), time.Hour*8766)
+	rp := types.NewRewardPeriod("bnb", suite.ctx.BlockTime(), suite.ctx.BlockTime().Add(time.Hour*168), c("stake", 100000000), suite.ctx.BlockTime().Add(time.Hour*168*2), time.Hour*8766)
 	suite.keeper.SetRewardPeriod(suite.ctx, rp)
 	suite.keeper.SetNextClaimPeriodID(suite.ctx, "bnb", 1)
 	suite.keeper.HandleRewardPeriodExpiry(suite.ctx, rp)
-	c1 := types.NewClaim(suite.addrs[0], c("ukava", 1000000), "bnb", 1)
+	c1 := types.NewClaim(suite.addrs[0], c("stake", 1000000), "bnb", 1)
 	suite.keeper.SetClaim(suite.ctx, c1)
 	suite.NotPanics(func() {
-		suite.keeper.AddToClaim(suite.ctx, suite.addrs[0], "bnb", 1, c("ukava", 1000000))
+		suite.keeper.AddToClaim(suite.ctx, suite.addrs[0], "bnb", 1, c("stake", 1000000))
 	})
 	testC, _ := suite.keeper.GetClaim(suite.ctx, suite.addrs[0], "bnb", 1)
-	suite.Equal(c("ukava", 2000000), testC.Reward)
+	suite.Equal(c("stake", 2000000), testC.Reward)
 
 	suite.NotPanics(func() {
-		suite.keeper.AddToClaim(suite.ctx, suite.addrs[0], "xpr", 1, c("ukava", 1000000))
+		suite.keeper.AddToClaim(suite.ctx, suite.addrs[0], "xpr", 1, c("stake", 1000000))
 	})
 }
 
 func (suite *KeeperTestSuite) TestCreateRewardPeriod() {
-	reward := types.NewReward(true, "bnb", c("ukava", 1000000000), time.Hour*7*24, time.Hour*24*365, time.Hour*7*24)
+	reward := types.NewReward(true, "bnb", c("stake", 1000000000), time.Hour*7*24, time.Hour*24*365, time.Hour*7*24)
 	suite.NotPanics(func() {
 		suite.keeper.CreateNewRewardPeriod(suite.ctx, reward)
 	})
@@ -53,9 +53,9 @@ func (suite *KeeperTestSuite) TestCreateRewardPeriod() {
 }
 
 func (suite *KeeperTestSuite) TestCreateAndDeleteRewardsPeriods() {
-	reward1 := types.NewReward(true, "bnb", c("ukava", 1000000000), time.Hour*7*24, time.Hour*24*365, time.Hour*7*24)
-	reward2 := types.NewReward(false, "xrp", c("ukava", 1000000000), time.Hour*7*24, time.Hour*24*365, time.Hour*7*24)
-	reward3 := types.NewReward(false, "btc", c("ukava", 1000000000), time.Hour*7*24, time.Hour*24*365, time.Hour*7*24)
+	reward1 := types.NewReward(true, "bnb", c("stake", 1000000000), time.Hour*7*24, time.Hour*24*365, time.Hour*7*24)
+	reward2 := types.NewReward(false, "xrp", c("stake", 1000000000), time.Hour*7*24, time.Hour*24*365, time.Hour*7*24)
+	reward3 := types.NewReward(false, "btc", c("stake", 1000000000), time.Hour*7*24, time.Hour*24*365, time.Hour*7*24)
 	// add a reward period to the store for a non-active reward
 	suite.NotPanics(func() {
 		suite.keeper.CreateNewRewardPeriod(suite.ctx, reward3)
@@ -100,7 +100,7 @@ func (suite *KeeperTestSuite) TestCreateAndDeleteRewardsPeriods() {
 }
 
 func (suite *KeeperTestSuite) TestApplyRewardsToCdps() {
-	suite.setupCdpChain() // creates a test app with 3 BNB cdps and usdx incentives for bnb - each reward period is one week
+	suite.setupCdpChain() // creates a test app with 3 BNB cdps and jpyx incentives for bnb - each reward period is one week
 
 	// move the context forward by 100 periods
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Second * 100))
@@ -153,8 +153,8 @@ func (suite *KeeperTestSuite) TestApplyRewardsToCdps() {
 func (suite *KeeperTestSuite) setupCdpChain() {
 	// creates a new test app with bnb as the only asset the pricefeed and cdp modules
 	// funds three addresses and creates 3 cdps, funded with 100 BNB, 1000 BNB, and 10000 BNB
-	// each CDP draws 10, 100, and 1000 USDX respectively
-	// adds usdx incentives for bnb - 1000 KAVA per week with a 1 year time lock
+	// each CDP draws 10, 100, and 1000 JPYX respectively
+	// adds jpyx incentives for bnb - 1000 KAVA per week with a 1 year time lock
 
 	tApp := app.NewTestApp()
 	ctx := tApp.NewContext(true, abci.Header{Height: 1, Time: tmtime.Now()})
@@ -162,12 +162,12 @@ func (suite *KeeperTestSuite) setupCdpChain() {
 	pricefeedGS := pricefeed.GenesisState{
 		Params: pricefeed.Params{
 			Markets: []pricefeed.Market{
-				{MarketID: "bnb:usd", BaseAsset: "bnb", QuoteAsset: "usd", Oracles: []sdk.AccAddress{}, Active: true},
+				{MarketID: "bnb:jpy", BaseAsset: "bnb", QuoteAsset: "jpy", Oracles: []sdk.AccAddress{}, Active: true},
 			},
 		},
 		PostedPrices: []pricefeed.PostedPrice{
 			{
-				MarketID:      "bnb:usd",
+				MarketID:      "bnb:jpy",
 				OracleAddress: sdk.AccAddress{},
 				Price:         d("12.29"),
 				Expiry:        time.Now().Add(100000 * time.Hour),
@@ -177,7 +177,7 @@ func (suite *KeeperTestSuite) setupCdpChain() {
 	// need incentive params for one collateral
 	cdpGS := cdp.GenesisState{
 		Params: cdp.Params{
-			GlobalDebtLimit:              sdk.NewInt64Coin("usdx", 1000000000000),
+			GlobalDebtLimit:              sdk.NewInt64Coin("jpyx", 1000000000000),
 			SurplusAuctionThreshold:      cdp.DefaultSurplusThreshold,
 			SurplusAuctionLot:            cdp.DefaultSurplusLot,
 			DebtAuctionThreshold:         cdp.DefaultDebtThreshold,
@@ -187,19 +187,19 @@ func (suite *KeeperTestSuite) setupCdpChain() {
 				{
 					Denom:               "bnb",
 					LiquidationRatio:    sdk.MustNewDecFromStr("2.0"),
-					DebtLimit:           sdk.NewInt64Coin("usdx", 1000000000000),
+					DebtLimit:           sdk.NewInt64Coin("jpyx", 1000000000000),
 					StabilityFee:        sdk.MustNewDecFromStr("1.000000001547125958"), // %5 apr
 					LiquidationPenalty:  d("0.05"),
 					AuctionSize:         i(10000000000),
 					Prefix:              0x20,
-					SpotMarketID:        "bnb:usd",
-					LiquidationMarketID: "bnb:usd",
+					SpotMarketID:        "bnb:jpy",
+					LiquidationMarketID: "bnb:jpy",
 					ConversionFactor:    i(8),
 				},
 			},
 			DebtParam: cdp.DebtParam{
-				Denom:            "usdx",
-				ReferenceAsset:   "usd",
+				Denom:            "jpyx",
+				ReferenceAsset:   "jpy",
 				ConversionFactor: i(6),
 				DebtFloor:        i(10000000),
 				SavingsRate:      d("0.95"),
@@ -213,10 +213,10 @@ func (suite *KeeperTestSuite) setupCdpChain() {
 	}
 	incentiveGS := types.NewGenesisState(
 		types.NewParams(
-			true, types.Rewards{types.NewReward(true, "bnb", c("ukava", 1000000000), time.Hour*7*24, time.Hour*24*365, time.Hour*7*24)},
+			true, types.Rewards{types.NewReward(true, "bnb", c("stake", 1000000000), time.Hour*7*24, time.Hour*24*365, time.Hour*7*24)},
 		),
 		types.DefaultPreviousBlockTime,
-		types.RewardPeriods{types.NewRewardPeriod("bnb", ctx.BlockTime(), ctx.BlockTime().Add(time.Hour*7*24), c("ukava", 1000), ctx.BlockTime().Add(time.Hour*7*24*2), time.Hour*365*24)},
+		types.RewardPeriods{types.NewRewardPeriod("bnb", ctx.BlockTime(), ctx.BlockTime().Add(time.Hour*7*24), c("stake", 1000), ctx.BlockTime().Add(time.Hour*7*24*2), time.Hour*365*24)},
 		types.ClaimPeriods{},
 		types.Claims{},
 		types.GenesisClaimPeriodIDs{})
@@ -242,13 +242,13 @@ func (suite *KeeperTestSuite) setupCdpChain() {
 	suite.ctx = ctx
 	// create 3 cdps
 	cdpKeeper := tApp.GetCDPKeeper()
-	err := cdpKeeper.AddCdp(suite.ctx, addrs[0], c("bnb", 10000000000), c("usdx", 10000000))
+	err := cdpKeeper.AddCdp(suite.ctx, addrs[0], c("bnb", 10000000000), c("jpyx", 10000000))
 	suite.Require().NoError(err)
-	err = cdpKeeper.AddCdp(suite.ctx, addrs[1], c("bnb", 100000000000), c("usdx", 100000000))
+	err = cdpKeeper.AddCdp(suite.ctx, addrs[1], c("bnb", 100000000000), c("jpyx", 100000000))
 	suite.Require().NoError(err)
-	err = cdpKeeper.AddCdp(suite.ctx, addrs[2], c("bnb", 1000000000000), c("usdx", 1000000000))
+	err = cdpKeeper.AddCdp(suite.ctx, addrs[2], c("bnb", 1000000000000), c("jpyx", 1000000000))
 	suite.Require().NoError(err)
-	// total usd is 1110
+	// total jpy is 1110
 
 	// set the previous block time
 	suite.keeper.SetPreviousBlockTime(suite.ctx, suite.ctx.BlockTime())

@@ -16,7 +16,7 @@ import (
 var (
 	// BaseAssets is a list of collateral asset denoms
 	BaseAssets = [3]string{"bnb", "xrp", "btc"}
-	QuoteAsset = "usd"
+	QuoteAsset = "jpy"
 )
 
 // RandomizedGenState generates a random GenesisState for pricefeed
@@ -61,11 +61,11 @@ func loadPricefeedGenState(simState *module.SimulationState) pricefeed.GenesisSt
 // getInitialPrice gets the starting price for each of the base assets
 func getInitialPrice(marketID string) (price sdk.Dec) {
 	switch marketID {
-	case "btc:usd":
+	case "btc:jpy":
 		return sdk.MustNewDecFromStr("7000")
-	case "bnb:usd":
+	case "bnb:jpy":
 		return sdk.MustNewDecFromStr("14")
-	case "xrp:usd":
+	case "xrp:jpy":
 		return sdk.MustNewDecFromStr("0.2")
 	default:
 		return sdk.MustNewDecFromStr("20") // Catch future additional assets

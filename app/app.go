@@ -39,7 +39,7 @@ import (
 	"github.com/lcnem/jpyx/x/committee"
 	"github.com/lcnem/jpyx/x/incentive"
 	"github.com/lcnem/jpyx/x/pricefeed"
-	kavadist "github.com/lcnem/jpyx/x/stakedist"
+	stakedist "github.com/lcnem/jpyx/x/stakedist"
 	validatorvesting "github.com/lcnem/jpyx/x/validator-vesting"
 )
 
@@ -77,7 +77,7 @@ var (
 		pricefeed.AppModuleBasic{},
 		committee.AppModuleBasic{},
 		bep3.AppModuleBasic{},
-		kavadist.AppModuleBasic{},
+		stakedist.AppModuleBasic{},
 		incentive.AppModuleBasic{},
 	)
 
@@ -95,7 +95,7 @@ var (
 		cdp.LiquidatorMacc:          {supply.Minter, supply.Burner},
 		cdp.SavingsRateMacc:         {supply.Minter},
 		bep3.ModuleName:             nil,
-		kavadist.ModuleName:         {supply.Minter},
+		stakedist.ModuleName:        {supply.Minter},
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -137,7 +137,7 @@ type App struct {
 	pricefeedKeeper pricefeed.Keeper
 	committeeKeeper committee.Keeper
 	bep3Keeper      bep3.Keeper
-	kavadistKeeper  kavadist.Keeper
+	stakedistKeeper stakedist.Keeper
 	incentiveKeeper incentive.Keeper
 
 	// the module manager
@@ -163,7 +163,7 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 		supply.StoreKey, mint.StoreKey, distr.StoreKey, slashing.StoreKey,
 		gov.StoreKey, params.StoreKey, upgrade.StoreKey, evidence.StoreKey,
 		validatorvesting.StoreKey, auction.StoreKey, cdp.StoreKey, pricefeed.StoreKey,
-		bep3.StoreKey, kavadist.StoreKey, incentive.StoreKey, committee.StoreKey,
+		bep3.StoreKey, stakedist.StoreKey, incentive.StoreKey, committee.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(params.TStoreKey)
 
@@ -190,7 +190,7 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 	cdpSubspace := app.paramsKeeper.Subspace(cdp.DefaultParamspace)
 	pricefeedSubspace := app.paramsKeeper.Subspace(pricefeed.DefaultParamspace)
 	bep3Subspace := app.paramsKeeper.Subspace(bep3.DefaultParamspace)
-	kavadistSubspace := app.paramsKeeper.Subspace(kavadist.DefaultParamspace)
+	stakedistSubspace := app.paramsKeeper.Subspace(stakedist.DefaultParamspace)
 	incentiveSubspace := app.paramsKeeper.Subspace(incentive.DefaultParamspace)
 
 	// add keepers
@@ -335,10 +335,10 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 		bep3Subspace,
 		app.ModuleAccountAddrs(),
 	)
-	app.kavadistKeeper = kavadist.NewKeeper(
+	app.stakedistKeeper = stakedist.NewKeeper(
 		app.cdc,
-		keys[kavadist.StoreKey],
-		kavadistSubspace,
+		keys[stakedist.StoreKey],
+		stakedistSubspace,
 		app.supplyKeeper,
 	)
 	app.incentiveKeeper = incentive.NewKeeper(
@@ -375,7 +375,7 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 		cdp.NewAppModule(app.cdpKeeper, app.accountKeeper, app.pricefeedKeeper, app.supplyKeeper),
 		pricefeed.NewAppModule(app.pricefeedKeeper, app.accountKeeper),
 		bep3.NewAppModule(app.bep3Keeper, app.accountKeeper, app.supplyKeeper),
-		kavadist.NewAppModule(app.kavadistKeeper, app.supplyKeeper),
+		stakedist.NewAppModule(app.stakedistKeeper, app.supplyKeeper),
 		incentive.NewAppModule(app.incentiveKeeper, app.accountKeeper, app.supplyKeeper),
 		committee.NewAppModule(app.committeeKeeper, app.accountKeeper),
 	)
@@ -387,7 +387,7 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 	// So it should be run before cdp.BeginBlocker which cancels out debt with stable and starts more auctions.
 	app.mm.SetOrderBeginBlockers(
 		upgrade.ModuleName, mint.ModuleName, distr.ModuleName, slashing.ModuleName,
-		validatorvesting.ModuleName, kavadist.ModuleName, auction.ModuleName, cdp.ModuleName,
+		validatorvesting.ModuleName, stakedist.ModuleName, auction.ModuleName, cdp.ModuleName,
 		bep3.ModuleName, incentive.ModuleName, committee.ModuleName,
 	)
 
@@ -399,7 +399,7 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 		staking.ModuleName, bank.ModuleName, slashing.ModuleName,
 		gov.ModuleName, mint.ModuleName, evidence.ModuleName,
 		pricefeed.ModuleName, cdp.ModuleName, auction.ModuleName,
-		bep3.ModuleName, kavadist.ModuleName, incentive.ModuleName, committee.ModuleName,
+		bep3.ModuleName, stakedist.ModuleName, incentive.ModuleName, committee.ModuleName,
 		supply.ModuleName,  // calculates the total supply from account - should run after modules that modify accounts in genesis
 		crisis.ModuleName,  // runs the invariants at genesis - should run after other modules
 		genutil.ModuleName, // genutils must occur after staking so that pools are properly initialized with tokens from genesis accounts.
@@ -426,7 +426,7 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 		cdp.NewAppModule(app.cdpKeeper, app.accountKeeper, app.pricefeedKeeper, app.supplyKeeper),
 		auction.NewAppModule(app.auctionKeeper, app.accountKeeper, app.supplyKeeper),
 		bep3.NewAppModule(app.bep3Keeper, app.accountKeeper, app.supplyKeeper),
-		kavadist.NewAppModule(app.kavadistKeeper, app.supplyKeeper),
+		stakedist.NewAppModule(app.stakedistKeeper, app.supplyKeeper),
 		incentive.NewAppModule(app.incentiveKeeper, app.accountKeeper, app.supplyKeeper),
 		committee.NewAppModule(app.committeeKeeper, app.accountKeeper),
 	)

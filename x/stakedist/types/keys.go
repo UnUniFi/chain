@@ -2,7 +2,7 @@ package types
 
 const (
 	// ModuleName name that will be used throughout the module
-	ModuleName = "kavadist"
+	ModuleName = "stakedist"
 
 	// StoreKey Top level store key where all module items will be stored
 	StoreKey = ModuleName
@@ -16,8 +16,8 @@ const (
 	// DefaultParamspace default name for parameter store
 	DefaultParamspace = ModuleName
 
-	// KavaDistMacc module account for kavadist
-	KavaDistMacc = ModuleName
+	// StakeDistMacc module account for stakedist
+	StakeDistMacc = ModuleName
 )
 
 var (

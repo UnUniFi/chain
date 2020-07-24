@@ -54,14 +54,14 @@ func (suite *FeeTestSuite) createCdps() {
 
 	// now create two cdps with the addresses we just created
 	// use the created account to create a cdp that SHOULD have fees updated
-	// to get a ratio between 100 - 110% of liquidation ratio we can use 200xrp ($50) and 24 usdx (208% collateralization with liquidation ratio of 200%)
+	// to get a ratio between 100 - 110% of liquidation ratio we can use 200xrp ($50) and 24 jpyx (208% collateralization with liquidation ratio of 200%)
 	// create CDP for the first address
-	err := suite.keeper.AddCdp(suite.ctx, addrs[0], c("xrp", 200000000), c("usdx", 24000000))
+	err := suite.keeper.AddCdp(suite.ctx, addrs[0], c("xrp", 200000000), c("jpyx", 24000000))
 	suite.NoError(err) // check that no error was thrown
 
 	// use the other account to create a cdp that SHOULD NOT have fees updated - 500% collateralization
 	// create CDP for the second address
-	err = suite.keeper.AddCdp(suite.ctx, addrs[1], c("xrp", 200000000), c("usdx", 10000000))
+	err = suite.keeper.AddCdp(suite.ctx, addrs[1], c("xrp", 200000000), c("jpyx", 10000000))
 	suite.NoError(err) // check that no error was thrown
 
 }
@@ -85,7 +85,7 @@ func (suite *FeeTestSuite) TestUpdateFees() {
 	// check fees are not zero
 	// check that the fees have been updated
 	suite.False(cdp1.AccumulatedFees.IsZero())
-	// now check that we have the correct amount of fees overall (22 USDX for this scenario)
+	// now check that we have the correct amount of fees overall (22 JPYX for this scenario)
 	suite.Equal(sdk.NewInt(22), cdp1.AccumulatedFees.Amount)
 	suite.Equal(suite.ctx.BlockTime(), cdp1.FeesUpdated)
 	// cdp we expect fees to not accumulate for because of rounding to zero

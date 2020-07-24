@@ -33,36 +33,36 @@ func (suite *PermissionTestSuite) TestSubParamChangePermission_Allows() {
 		{
 			Denom:               "bnb",
 			LiquidationRatio:    d("2.0"),
-			DebtLimit:           c("usdx", 1000000000000),
+			DebtLimit:           c("jpyx", 1000000000000),
 			StabilityFee:        d("1.000000001547125958"),
 			LiquidationPenalty:  d("0.05"),
 			AuctionSize:         i(100),
 			Prefix:              0x20,
 			ConversionFactor:    i(6),
-			SpotMarketID:        "bnb:usd",
-			LiquidationMarketID: "bnb:usd",
+			SpotMarketID:        "bnb:jpy",
+			LiquidationMarketID: "bnb:jpy",
 		},
 		{
 			Denom:               "btc",
 			LiquidationRatio:    d("1.5"),
-			DebtLimit:           c("usdx", 1000000000),
+			DebtLimit:           c("jpyx", 1000000000),
 			StabilityFee:        d("1.000000001547125958"),
 			LiquidationPenalty:  d("0.10"),
 			AuctionSize:         i(1000),
 			Prefix:              0x30,
 			ConversionFactor:    i(8),
-			SpotMarketID:        "btc:usd",
-			LiquidationMarketID: "btc:usd",
+			SpotMarketID:        "btc:jpy",
+			LiquidationMarketID: "btc:jpy",
 		},
 	}
 	testCPUpdatedDebtLimit := make(cdptypes.CollateralParams, len(testCPs))
 	copy(testCPUpdatedDebtLimit, testCPs)
-	testCPUpdatedDebtLimit[0].DebtLimit = c("usdx", 5000000)
+	testCPUpdatedDebtLimit[0].DebtLimit = c("jpyx", 5000000)
 
 	// cdp DebtParam
 	testDP := cdptypes.DebtParam{
-		Denom:            "usdx",
-		ReferenceAsset:   "usd",
+		Denom:            "jpyx",
+		ReferenceAsset:   "jpy",
 		ConversionFactor: i(6),
 		DebtFloor:        i(10000000),
 		SavingsRate:      d("0.95"),
@@ -102,16 +102,16 @@ func (suite *PermissionTestSuite) TestSubParamChangePermission_Allows() {
 	// pricefeed Markets
 	testMs := pricefeedtypes.Markets{
 		{
-			MarketID:   "bnb:usd",
+			MarketID:   "bnb:jpy",
 			BaseAsset:  "bnb",
-			QuoteAsset: "usd",
+			QuoteAsset: "jpy",
 			Oracles:    []sdk.AccAddress{},
 			Active:     true,
 		},
 		{
-			MarketID:   "btc:usd",
+			MarketID:   "btc:jpy",
 			BaseAsset:  "btc",
-			QuoteAsset: "usd",
+			QuoteAsset: "jpy",
 			Oracles:    []sdk.AccAddress{},
 			Active:     true,
 		},
@@ -166,10 +166,10 @@ func (suite *PermissionTestSuite) TestSubParamChangePermission_Allows() {
 				},
 				AllowedMarkets: types.AllowedMarkets{
 					{
-						MarketID: "bnb:usd",
+						MarketID: "bnb:jpy",
 					},
 					{
-						MarketID: "btc:usd",
+						MarketID: "btc:jpy",
 						Active:   true,
 					},
 				},

@@ -4,7 +4,7 @@ order: 5
 
 # Parameters
 
-The kavadist module has the following parameters:
+The stakedist module has the following parameters:
 
 | Key        | Type           | Example       | Description                                      |
 |------------|----------------|---------------|--------------------------------------------------|

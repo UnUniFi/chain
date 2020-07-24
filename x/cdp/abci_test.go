@@ -103,7 +103,7 @@ func (suite *ModuleTestSuite) createCdps() {
 				tracker.debt += int64(debt)
 			}
 		}
-		suite.Nil(suite.keeper.AddCdp(suite.ctx, addrs[j], c(collateral, int64(amount)), c("usdx", int64(debt))))
+		suite.Nil(suite.keeper.AddCdp(suite.ctx, addrs[j], c(collateral, int64(amount)), c("jpyx", int64(debt))))
 		c, f := suite.keeper.GetCDP(suite.ctx, collateral, uint64(j+1))
 		suite.True(f)
 		cdps[j] = c
@@ -129,7 +129,7 @@ func (suite *ModuleTestSuite) TestBeginBlock() {
 	sk := suite.app.GetSupplyKeeper()
 	acc := sk.GetModuleAccount(suite.ctx, cdp.ModuleName)
 	originalXrpCollateral := acc.GetCoins().AmountOf("xrp")
-	suite.setPrice(d("0.2"), "xrp:usd")
+	suite.setPrice(d("0.2"), "xrp:jpy")
 	cdp.BeginBlocker(suite.ctx, abci.RequestBeginBlock{Header: suite.ctx.BlockHeader()}, suite.keeper)
 	acc = sk.GetModuleAccount(suite.ctx, cdp.ModuleName)
 	finalXrpCollateral := acc.GetCoins().AmountOf("xrp")
@@ -139,7 +139,7 @@ func (suite *ModuleTestSuite) TestBeginBlock() {
 
 	acc = sk.GetModuleAccount(suite.ctx, cdp.ModuleName)
 	originalBtcCollateral := acc.GetCoins().AmountOf("btc")
-	suite.setPrice(d("6000"), "btc:usd")
+	suite.setPrice(d("6000"), "btc:jpy")
 	cdp.BeginBlocker(suite.ctx, abci.RequestBeginBlock{Header: suite.ctx.BlockHeader()}, suite.keeper)
 	acc = sk.GetModuleAccount(suite.ctx, cdp.ModuleName)
 	finalBtcCollateral := acc.GetCoins().AmountOf("btc")
@@ -153,9 +153,9 @@ func (suite *ModuleTestSuite) TestBeginBlock() {
 }
 
 func (suite *ModuleTestSuite) TestSeizeSingleCdpWithFees() {
-	err := suite.keeper.AddCdp(suite.ctx, suite.addrs[0], c("xrp", 10000000000), c("usdx", 1000000000))
+	err := suite.keeper.AddCdp(suite.ctx, suite.addrs[0], c("xrp", 10000000000), c("jpyx", 1000000000))
 	suite.NoError(err)
-	suite.Equal(i(1000000000), suite.keeper.GetTotalPrincipal(suite.ctx, "xrp", "usdx"))
+	suite.Equal(i(1000000000), suite.keeper.GetTotalPrincipal(suite.ctx, "xrp", "jpyx"))
 	sk := suite.app.GetSupplyKeeper()
 	cdpMacc := sk.GetModuleAccount(suite.ctx, cdp.ModuleName)
 	suite.Equal(i(1000000000), cdpMacc.GetCoins().AmountOf("debt"))

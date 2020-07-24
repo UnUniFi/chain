@@ -15,7 +15,7 @@ import (
 	appparams "github.com/lcnem/jpyx/app/params"
 	"github.com/lcnem/jpyx/x/incentive/keeper"
 	"github.com/lcnem/jpyx/x/incentive/types"
-	kavadist "github.com/lcnem/jpyx/x/stakedist"
+	stakedist "github.com/lcnem/jpyx/x/stakedist"
 )
 
 // Simulation operation weights constants
@@ -71,8 +71,8 @@ func SimulateMsgClaimReward(ak auth.AccountKeeper, sk types.SupplyKeeper, k keep
 			openClaims[i], openClaims[j] = openClaims[j], openClaims[i]
 		})
 
-		kavadistMacc := sk.GetModuleAccount(ctx, kavadist.KavaDistMacc)
-		kavadistBalance := kavadistMacc.SpendableCoins(ctx.BlockTime())
+		stakedistMacc := sk.GetModuleAccount(ctx, stakedist.StakeDistMacc)
+		stakedistBalance := stakedistMacc.SpendableCoins(ctx.BlockTime())
 
 		// Find address that has a claim of the same reward denom, then confirm it's distributable
 		claimer, claim, found := findValidAccountClaimPair(accs, openClaims, func(acc simulation.Account, claim types.Claim) bool {
@@ -85,8 +85,8 @@ func SimulateMsgClaimReward(ak auth.AccountKeeper, sk types.SupplyKeeper, k keep
 							rewards = rewards.Add(individualClaim.Reward)
 						}
 						if rewards.AmountOf(claim.Reward.Denom).IsPositive() { // Can't distribute 0 coins
-							// Validate that kavadist module has enough coins to distribute rewards
-							if kavadistBalance.AmountOf(claim.Reward.Denom).GTE(rewards.AmountOf(claim.Reward.Denom)) {
+							// Validate that stakedist module has enough coins to distribute rewards
+							if stakedistBalance.AmountOf(claim.Reward.Denom).GTE(rewards.AmountOf(claim.Reward.Denom)) {
 								return true
 							}
 						}

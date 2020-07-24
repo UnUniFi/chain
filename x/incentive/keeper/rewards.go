@@ -49,7 +49,7 @@ func (k Keeper) CreateAndDeleteRewardPeriods(ctx sdk.Context) {
 }
 
 // ApplyRewardsToCdps iterates over the reward periods and creates a claim for each
-// cdp owner that created usdx with the collateral specified in the reward period.
+// cdp owner that created jpyx with the collateral specified in the reward period.
 func (k Keeper) ApplyRewardsToCdps(ctx sdk.Context) {
 	previousBlockTime, found := k.GetPreviousBlockTime(ctx)
 	if !found {
@@ -60,7 +60,7 @@ func (k Keeper) ApplyRewardsToCdps(ctx sdk.Context) {
 
 	k.IterateRewardPeriods(ctx, func(rp types.RewardPeriod) bool {
 		expired := false
-		// the total amount of usdx created with the collateral type being incentivized
+		// the total amount of jpyx created with the collateral type being incentivized
 		totalPrincipal := k.cdpKeeper.GetTotalPrincipal(ctx, rp.Denom, types.PrincipalDenom)
 		// the number of seconds since last payout
 		timeElapsed := sdk.NewInt(ctx.BlockTime().Unix() - previousBlockTime.Unix())

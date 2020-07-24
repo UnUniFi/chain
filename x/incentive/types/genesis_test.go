@@ -67,7 +67,7 @@ func TestGenesisStateValidate(t *testing.T) {
 
 	rewards := Rewards{
 		NewReward(
-			true, "bnb", sdk.NewCoin("ukava", sdk.NewInt(10000000000)),
+			true, "bnb", sdk.NewCoin("stake", sdk.NewInt(10000000000)),
 			time.Hour*24*7, time.Hour*8766, time.Hour*24*14,
 		),
 	}

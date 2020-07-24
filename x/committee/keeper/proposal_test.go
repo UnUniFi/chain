@@ -41,12 +41,12 @@ func newPricefeedGenState(assets []string, prices []sdk.Dec) app.GenesisState {
 		pfGenesis.Params.Markets = append(
 			pfGenesis.Params.Markets,
 			pricefeed.Market{
-				MarketID: assets[i] + ":usd", BaseAsset: assets[i], QuoteAsset: "usd", Oracles: []sdk.AccAddress{}, Active: true,
+				MarketID: assets[i] + ":jpy", BaseAsset: assets[i], QuoteAsset: "jpy", Oracles: []sdk.AccAddress{}, Active: true,
 			})
 		pfGenesis.PostedPrices = append(
 			pfGenesis.PostedPrices,
 			pricefeed.PostedPrice{
-				MarketID:      assets[i] + ":usd",
+				MarketID:      assets[i] + ":jpy",
 				OracleAddress: sdk.AccAddress{},
 				Price:         prices[i],
 				Expiry:        time.Date(1998, 1, 1, 0, 0, 0, 0, time.UTC),
@@ -88,14 +88,14 @@ func (suite *KeeperTestSuite) TestSubmitProposal() {
 	testCP := cdptypes.CollateralParams{{
 		Denom:               "bnb",
 		LiquidationRatio:    d("1.5"),
-		DebtLimit:           c("usdx", 1000000000000),
+		DebtLimit:           c("jpyx", 1000000000000),
 		StabilityFee:        d("1.000000001547125958"), // %5 apr
 		LiquidationPenalty:  d("0.05"),
 		AuctionSize:         i(100),
 		Prefix:              0x20,
 		ConversionFactor:    i(6),
-		LiquidationMarketID: "bnb:usd",
-		SpotMarketID:        "bnb:usd",
+		LiquidationMarketID: "bnb:jpy",
+		SpotMarketID:        "bnb:jpy",
 	}}
 	testCDPParams := cdptypes.DefaultParams()
 	testCDPParams.CollateralParams = testCP
@@ -103,11 +103,11 @@ func (suite *KeeperTestSuite) TestSubmitProposal() {
 
 	newValidCP := make(cdptypes.CollateralParams, len(testCP))
 	copy(newValidCP, testCP)
-	newValidCP[0].DebtLimit = c("usdx", 500000000000)
+	newValidCP[0].DebtLimit = c("jpyx", 500000000000)
 
 	newInvalidCP := make(cdptypes.CollateralParams, len(testCP))
 	copy(newInvalidCP, testCP)
-	newInvalidCP[0].SpotMarketID = "btc:usd"
+	newInvalidCP[0].SpotMarketID = "btc:jpy"
 
 	testcases := []struct {
 		name        string
@@ -423,7 +423,7 @@ func (suite *KeeperTestSuite) TestValidatePubProposal() {
 				[]params.ParamChange{{
 					Subspace: cdptypes.ModuleName,
 					Key:      string(cdptypes.KeyGlobalDebtLimit),
-					Value:    string(types.ModuleCdc.MustMarshalJSON(c("usdx", 100000000000))),
+					Value:    string(types.ModuleCdc.MustMarshalJSON(c("jpyx", 100000000000))),
 				}},
 			),
 			expectErr: false,
@@ -477,7 +477,7 @@ func (suite *KeeperTestSuite) TestValidatePubProposal() {
 				[]params.ParamChange{{
 					Subspace: cdptypes.ModuleName,
 					Key:      string(cdptypes.KeyGlobalDebtLimit),
-					Value:    `{"denom": "usdx",`,
+					Value:    `{"denom": "jpyx",`,
 				}},
 			),
 			expectErr: true,

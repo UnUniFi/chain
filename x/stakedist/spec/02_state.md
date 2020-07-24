@@ -9,7 +9,7 @@ order: 2
 `Parameters` define the rate at which inflationary coins are minted and for how long inflationary periods last.
 
 ```go
-// Params governance parameters for kavadist module
+// Params governance parameters for stakedist module
 type Params struct {
 	Active  bool    `json:"active" yaml:"active"`
 	Periods Periods `json:"periods" yaml:"periods"`
@@ -23,7 +23,7 @@ type Period struct {
 }
 ```
 
-`GenesisState` defines the state that must be persisted when the blockchain stops/restarts in order for normal function of the kavadist module to resume.
+`GenesisState` defines the state that must be persisted when the blockchain stops/restarts in order for normal function of the stakedist module to resume.
 
 ```go
 // GenesisState is the state that must be provided at genesis.

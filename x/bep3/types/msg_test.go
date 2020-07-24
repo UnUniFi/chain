@@ -21,8 +21,8 @@ var (
 		sdk.AccAddress(crypto.AddressHash([]byte("BinanceTest2"))),
 	}
 	kavaAddrs = []sdk.AccAddress{
-		sdk.AccAddress(crypto.AddressHash([]byte("KavaTest1"))),
-		sdk.AccAddress(crypto.AddressHash([]byte("KavaTest2"))),
+		sdk.AccAddress(crypto.AddressHash([]byte("StakeTest1"))),
+		sdk.AccAddress(crypto.AddressHash([]byte("StakeTest2"))),
 	}
 	randomNumberBytes = []byte{15}
 	timestampInt64    = int64(100)

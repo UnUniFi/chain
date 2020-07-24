@@ -31,7 +31,7 @@ func (suite *SavingsTestSuite) SetupTest() {
 	authGS := app.NewAuthGenState(
 		addrs,
 		[]sdk.Coins{
-			cs(c("usdx", 100000)), cs(c("usdx", 50000)), cs(c("usdx", 50000)),
+			cs(c("jpyx", 100000)), cs(c("jpyx", 50000)), cs(c("jpyx", 50000)),
 		},
 	)
 	tApp.InitializeFromGenesisStates(
@@ -41,7 +41,7 @@ func (suite *SavingsTestSuite) SetupTest() {
 	)
 	sk := tApp.GetSupplyKeeper()
 	macc := sk.GetModuleAccount(ctx, types.SavingsRateMacc)
-	err := sk.MintCoins(ctx, macc.GetName(), cs(c("usdx", 10000)))
+	err := sk.MintCoins(ctx, macc.GetName(), cs(c("jpyx", 10000)))
 	suite.NoError(err)
 	keeper := tApp.GetCDPKeeper()
 	suite.app = tApp
@@ -51,18 +51,18 @@ func (suite *SavingsTestSuite) SetupTest() {
 }
 
 func (suite *SavingsTestSuite) TestApplySavingsRate() {
-	err := suite.keeper.DistributeSavingsRate(suite.ctx, "usdx")
+	err := suite.keeper.DistributeSavingsRate(suite.ctx, "jpyx")
 	suite.NoError(err)
 	ak := suite.app.GetAccountKeeper()
 	acc0 := ak.GetAccount(suite.ctx, suite.addrs[0])
-	suite.Equal(cs(c("usdx", 105000)), acc0.GetCoins())
+	suite.Equal(cs(c("jpyx", 105000)), acc0.GetCoins())
 	acc1 := ak.GetAccount(suite.ctx, suite.addrs[1])
-	suite.Equal(cs(c("usdx", 52500)), acc1.GetCoins())
+	suite.Equal(cs(c("jpyx", 52500)), acc1.GetCoins())
 	acc2 := ak.GetAccount(suite.ctx, suite.addrs[2])
-	suite.Equal(cs(c("usdx", 52500)), acc2.GetCoins())
+	suite.Equal(cs(c("jpyx", 52500)), acc2.GetCoins())
 	sk := suite.app.GetSupplyKeeper()
 	macc := sk.GetModuleAccount(suite.ctx, types.SavingsRateMacc)
-	suite.True(macc.GetCoins().AmountOf("usdx").IsZero())
+	suite.True(macc.GetCoins().AmountOf("jpyx").IsZero())
 }
 
 func (suite *SavingsTestSuite) TestGetSetPreviousDistributionTime() {

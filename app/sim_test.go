@@ -33,7 +33,7 @@ import (
 	"github.com/lcnem/jpyx/x/committee"
 	"github.com/lcnem/jpyx/x/incentive"
 	"github.com/lcnem/jpyx/x/pricefeed"
-	kavadist "github.com/lcnem/jpyx/x/stakedist"
+	stakedist "github.com/lcnem/jpyx/x/stakedist"
 	validatorvesting "github.com/lcnem/jpyx/x/validator-vesting"
 )
 
@@ -176,7 +176,7 @@ func TestAppImportExport(t *testing.T) {
 		{app.keys[bep3.StoreKey], newApp.keys[bep3.StoreKey], [][]byte{}},
 		{app.keys[cdp.StoreKey], newApp.keys[cdp.StoreKey], [][]byte{}},
 		{app.keys[incentive.StoreKey], newApp.keys[incentive.StoreKey], [][]byte{}},
-		{app.keys[kavadist.StoreKey], newApp.keys[kavadist.StoreKey], [][]byte{}},
+		{app.keys[stakedist.StoreKey], newApp.keys[stakedist.StoreKey], [][]byte{}},
 		{app.keys[pricefeed.StoreKey], newApp.keys[pricefeed.StoreKey], [][]byte{}},
 		{app.keys[validatorvesting.StoreKey], newApp.keys[validatorvesting.StoreKey], [][]byte{}},
 		{app.keys[committee.StoreKey], newApp.keys[committee.StoreKey], [][]byte{}},

@@ -16,5 +16,5 @@ type MsgClaimReward struct {
 
 ## State Modifications
 
-* Accumulated rewards for active claims are transferred from the `kavadist` module account to the users account as vesting coins
+* Accumulated rewards for active claims are transferred from the `stakedist` module account to the users account as vesting coins
 * The corresponding claim object(s) are deleted from the store

@@ -46,7 +46,7 @@ func (suite *HandlerTestSuite) TestMsgCreateCdp() {
 	msg := cdp.NewMsgCreateCDP(
 		addrs[0],
 		c("xrp", 200000000),
-		c("usdx", 10000000),
+		c("jpyx", 10000000),
 	)
 	res, err := suite.handler(suite.ctx, msg)
 	suite.Require().NoError(err)

@@ -10,7 +10,7 @@ import (
 	tmtime "github.com/tendermint/tendermint/types/time"
 
 	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
-	kavadistTypes "github.com/lcnem/jpyx/x/stakedist/types"
+	stakedistTypes "github.com/lcnem/jpyx/x/stakedist/types"
 )
 
 // Parameter keys and default values
@@ -21,8 +21,8 @@ var (
 	DefaultRewards           = Rewards{}
 	DefaultPreviousBlockTime = tmtime.Canonical(time.Unix(0, 0))
 	GovDenom                 = cdptypes.DefaultGovDenom
-	PrincipalDenom           = "usdx"
-	IncentiveMacc            = kavadistTypes.ModuleName
+	PrincipalDenom           = "jpyx"
+	IncentiveMacc            = stakedistTypes.ModuleName
 )
 
 // Params governance parameters for the incentive module
@@ -39,7 +39,7 @@ func NewParams(active bool, rewards Rewards) Params {
 	}
 }
 
-// DefaultParams returns default params for kavadist module
+// DefaultParams returns default params for stakedist module
 func DefaultParams() Params {
 	return NewParams(DefaultActive, DefaultRewards)
 }

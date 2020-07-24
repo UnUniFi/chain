@@ -16,7 +16,7 @@ import (
 
 var (
 	CollateralDenoms    = []string{}
-	RewardDenom         = "ukava"
+	RewardDenom         = "stake"
 	MaxTotalAssetReward = sdk.NewInt(1000000000)
 )
 

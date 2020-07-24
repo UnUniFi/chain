@@ -1,9 +1,9 @@
 version: '3'
 
 services:
-  kvdnode0:
-    container_name: kvdnode0
-    image: "kava/kavanode"
+  jpydnode0:
+    container_name: jpydnode0
+    image: "lcnem/jpyxnode"
     ports:
       - "26656-26657:26656-26657"
     environment:
@@ -15,9 +15,9 @@ services:
       localnet:
         ipv4_address: 192.168.10.2
 
-  kvdnode1:
-    container_name: kvdnode1
-    image: "kava/kavanode"
+  jpydnode1:
+    container_name: jpydnode1
+    image: "lcnem/jpyxnode"
     ports:
       - "26659-26660:26656-26657"
     environment:
@@ -29,9 +29,9 @@ services:
       localnet:
         ipv4_address: 192.168.10.3
 
-  kvdnode2:
-    container_name: kvdnode2
-    image: "kava/kavanode"
+  jpydnode2:
+    container_name: jpydnode2
+    image: "lcnem/jpyxnode"
     environment:
       - ID=2
       - LOG=${LOG:-kvd.log}
@@ -43,9 +43,9 @@ services:
       localnet:
         ipv4_address: 192.168.10.4
 
-  kvdnode3:
-    container_name: kvdnode3
-    image: "kava/kavanode"
+  jpydnode3:
+    container_name: jpydnode3
+    image: "lcnem/jpyxnode"
     environment:
       - ID=3
       - LOG=${LOG:-kvd.log}

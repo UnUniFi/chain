@@ -43,7 +43,7 @@ func (suite *TypesTestSuite) TestCommittee_HasPermissionsFor() {
 						Subspace: "cdp",
 						Key:      "DebtThreshold",
 
-						Value: `{"denom": "usdx", "amount": "1000000"}`,
+						Value: `{"denom": "jpyx", "amount": "1000000"}`,
 					},
 				},
 			),
@@ -134,7 +134,7 @@ func (suite *TypesTestSuite) TestCommittee_HasPermissionsFor() {
 						Subspace: "cdp",
 						Key:      "DebtThreshold",
 
-						Value: `{"denom": "usdx", "amount": "1000000"}`,
+						Value: `{"denom": "jpyx", "amount": "1000000"}`,
 					},
 					{
 						Subspace: "cdp",

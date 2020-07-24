@@ -11,7 +11,7 @@ import (
 
 const (
 	TestInitiatorModuleName = "liquidator"
-	TestLotDenom            = "usdx"
+	TestLotDenom            = "jpyx"
 	TestLotAmount           = 100
 	TestBidDenom            = "kava"
 	TestBidAmount           = 20

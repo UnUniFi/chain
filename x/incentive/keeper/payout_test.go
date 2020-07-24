@@ -13,7 +13,7 @@ import (
 	"github.com/lcnem/jpyx/app"
 	"github.com/lcnem/jpyx/x/cdp"
 	"github.com/lcnem/jpyx/x/incentive/types"
-	kavadist "github.com/lcnem/jpyx/x/stakedist"
+	stakedist "github.com/lcnem/jpyx/x/stakedist"
 	validatorvesting "github.com/lcnem/jpyx/x/validator-vesting"
 )
 
@@ -25,17 +25,17 @@ func (suite *KeeperTestSuite) setupChain() {
 	authGS := app.NewAuthGenState(
 		addrs,
 		[]sdk.Coins{
-			cs(c("ukava", 400)),
-			cs(c("ukava", 400)),
-			cs(c("ukava", 400)),
-			cs(c("ukava", 400)),
+			cs(c("stake", 400)),
+			cs(c("stake", 400)),
+			cs(c("stake", 400)),
+			cs(c("stake", 400)),
 		})
 	tApp.InitializeFromGenesisStates(
 		authGS,
 	)
 	supplyKeeper := tApp.GetSupplyKeeper()
-	macc := supplyKeeper.GetModuleAccount(ctx, kavadist.ModuleName)
-	err := supplyKeeper.MintCoins(ctx, macc.GetName(), cs(c("ukava", 500)))
+	macc := supplyKeeper.GetModuleAccount(ctx, stakedist.ModuleName)
+	err := supplyKeeper.MintCoins(ctx, macc.GetName(), cs(c("stake", 500)))
 	suite.Require().NoError(err)
 
 	// sets addrs[0] to be a periodic vesting account
@@ -43,12 +43,12 @@ func (suite *KeeperTestSuite) setupChain() {
 	acc := ak.GetAccount(ctx, addrs[0])
 	bacc := auth.NewBaseAccount(acc.GetAddress(), acc.GetCoins(), acc.GetPubKey(), acc.GetAccountNumber(), acc.GetSequence())
 	periods := vesting.Periods{
-		vesting.Period{Length: int64(1), Amount: cs(c("ukava", 100))},
-		vesting.Period{Length: int64(2), Amount: cs(c("ukava", 100))},
-		vesting.Period{Length: int64(8), Amount: cs(c("ukava", 100))},
-		vesting.Period{Length: int64(5), Amount: cs(c("ukava", 100))},
+		vesting.Period{Length: int64(1), Amount: cs(c("stake", 100))},
+		vesting.Period{Length: int64(2), Amount: cs(c("stake", 100))},
+		vesting.Period{Length: int64(8), Amount: cs(c("stake", 100))},
+		vesting.Period{Length: int64(5), Amount: cs(c("stake", 100))},
 	}
-	bva, err2 := vesting.NewBaseVestingAccount(bacc, cs(c("ukava", 400)), ctx.BlockTime().Unix()+16)
+	bva, err2 := vesting.NewBaseVestingAccount(bacc, cs(c("stake", 400)), ctx.BlockTime().Unix()+16)
 	suite.Require().NoError(err2)
 	pva := vesting.NewPeriodicVestingAccountRaw(bva, ctx.BlockTime().Unix(), periods)
 	ak.SetAccount(ctx, pva)
@@ -56,7 +56,7 @@ func (suite *KeeperTestSuite) setupChain() {
 	// sets addrs[2] to be a validator vesting account
 	acc = ak.GetAccount(ctx, addrs[2])
 	bacc = auth.NewBaseAccount(acc.GetAddress(), acc.GetCoins(), acc.GetPubKey(), acc.GetAccountNumber(), acc.GetSequence())
-	bva, err2 = vesting.NewBaseVestingAccount(bacc, cs(c("ukava", 400)), ctx.BlockTime().Unix()+16)
+	bva, err2 = vesting.NewBaseVestingAccount(bacc, cs(c("stake", 400)), ctx.BlockTime().Unix()+16)
 	suite.Require().NoError(err2)
 	vva := validatorvesting.NewValidatorVestingAccountRaw(bva, ctx.BlockTime().Unix(), periods, sdk.ConsAddress{}, nil, 90)
 	ak.SetAccount(ctx, vva)
@@ -74,10 +74,10 @@ func (suite *KeeperTestSuite) setupExpiredClaims() {
 	authGS := app.NewAuthGenState(
 		addrs,
 		[]sdk.Coins{
-			cs(c("ukava", 400)),
-			cs(c("ukava", 400)),
-			cs(c("ukava", 400)),
-			cs(c("ukava", 400)),
+			cs(c("stake", 400)),
+			cs(c("stake", 400)),
+			cs(c("stake", 400)),
+			cs(c("stake", 400)),
 		})
 	tApp.InitializeFromGenesisStates(
 		authGS,
@@ -90,8 +90,8 @@ func (suite *KeeperTestSuite) setupExpiredClaims() {
 	suite.keeper.SetClaimPeriod(ctx, cp1)
 	suite.keeper.SetClaimPeriod(ctx, cp2)
 	// creates one claim for the non-expired claim period and one claim for the expired claim period
-	c1 := types.NewClaim(addrs[0], c("ukava", 1000000), "bnb", 1)
-	c2 := types.NewClaim(addrs[0], c("ukava", 1000000), "xrp", 1)
+	c1 := types.NewClaim(addrs[0], c("stake", 1000000), "bnb", 1)
+	c2 := types.NewClaim(addrs[0], c("stake", 1000000), "xrp", 1)
 	suite.keeper.SetClaim(ctx, c1)
 	suite.keeper.SetClaim(ctx, c2)
 	suite.app = tApp
@@ -130,101 +130,101 @@ func (suite *KeeperTestSuite) TestSendCoinsToPeriodicVestingAccount() {
 		vestingAccountTest{
 			name:      "insert period into an existing vesting schedule",
 			blockTime: time.Unix(100, 0),
-			args:      args{coins: cs(c("ukava", 100)), length: 5},
+			args:      args{coins: cs(c("stake", 100)), length: 5},
 			errArgs:   errArgs{expectErr: false, errType: nil},
 			expectedPeriods: vesting.Periods{
-				vesting.Period{Length: int64(1), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(2), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(2), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(6), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(5), Amount: cs(c("ukava", 100))},
+				vesting.Period{Length: int64(1), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(2), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(2), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(6), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(5), Amount: cs(c("stake", 100))},
 			},
-			expectedOriginalVesting: cs(c("ukava", 500)),
-			expectedCoins:           cs(c("ukava", 500)),
+			expectedOriginalVesting: cs(c("stake", 500)),
+			expectedCoins:           cs(c("stake", 500)),
 			expectedStartTime:       int64(100),
 			expectedEndTime:         int64(116),
 		},
 		vestingAccountTest{
 			name:      "append period to the end of an existing vesting schedule",
 			blockTime: time.Unix(100, 0),
-			args:      args{coins: cs(c("ukava", 100)), length: 17},
+			args:      args{coins: cs(c("stake", 100)), length: 17},
 			errArgs:   errArgs{expectErr: false, errType: nil},
 			expectedPeriods: vesting.Periods{
-				vesting.Period{Length: int64(1), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(2), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(2), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(6), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(5), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(1), Amount: cs(c("ukava", 100))},
+				vesting.Period{Length: int64(1), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(2), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(2), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(6), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(5), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(1), Amount: cs(c("stake", 100))},
 			},
-			expectedOriginalVesting: cs(c("ukava", 600)),
-			expectedCoins:           cs(c("ukava", 600)),
+			expectedOriginalVesting: cs(c("stake", 600)),
+			expectedCoins:           cs(c("stake", 600)),
 			expectedStartTime:       int64(100),
 			expectedEndTime:         int64(117),
 		},
 		vestingAccountTest{
 			name:      "append period to the end of a completed vesting schedule",
 			blockTime: time.Unix(120, 0),
-			args:      args{coins: cs(c("ukava", 100)), length: 5},
+			args:      args{coins: cs(c("stake", 100)), length: 5},
 			errArgs:   errArgs{expectErr: false, errType: nil},
 			expectedPeriods: vesting.Periods{
-				vesting.Period{Length: int64(1), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(2), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(2), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(6), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(5), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(1), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(8), Amount: cs(c("ukava", 100))},
+				vesting.Period{Length: int64(1), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(2), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(2), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(6), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(5), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(1), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(8), Amount: cs(c("stake", 100))},
 			},
-			expectedOriginalVesting: cs(c("ukava", 700)),
-			expectedCoins:           cs(c("ukava", 700)),
+			expectedOriginalVesting: cs(c("stake", 700)),
+			expectedCoins:           cs(c("stake", 700)),
 			expectedStartTime:       int64(100),
 			expectedEndTime:         int64(125),
 		},
 		vestingAccountTest{
 			name:      "prepend period to to an upcoming vesting schedule",
 			blockTime: time.Unix(90, 0),
-			args:      args{coins: cs(c("ukava", 100)), length: 5},
+			args:      args{coins: cs(c("stake", 100)), length: 5},
 			errArgs:   errArgs{expectErr: false, errType: nil},
 			expectedPeriods: vesting.Periods{
-				vesting.Period{Length: int64(5), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(6), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(2), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(2), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(6), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(5), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(1), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(8), Amount: cs(c("ukava", 100))},
+				vesting.Period{Length: int64(5), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(6), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(2), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(2), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(6), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(5), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(1), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(8), Amount: cs(c("stake", 100))},
 			},
-			expectedOriginalVesting: cs(c("ukava", 800)),
-			expectedCoins:           cs(c("ukava", 800)),
+			expectedOriginalVesting: cs(c("stake", 800)),
+			expectedCoins:           cs(c("stake", 800)),
 			expectedStartTime:       int64(90),
 			expectedEndTime:         int64(125),
 		},
 		vestingAccountTest{
 			name:      "add period that coincides with an existing end time",
 			blockTime: time.Unix(90, 0),
-			args:      args{coins: cs(c("ukava", 100)), length: 11},
+			args:      args{coins: cs(c("stake", 100)), length: 11},
 			errArgs:   errArgs{expectErr: false, errType: nil},
 			expectedPeriods: vesting.Periods{
-				vesting.Period{Length: int64(5), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(6), Amount: cs(c("ukava", 200))},
-				vesting.Period{Length: int64(2), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(2), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(6), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(5), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(1), Amount: cs(c("ukava", 100))},
-				vesting.Period{Length: int64(8), Amount: cs(c("ukava", 100))},
+				vesting.Period{Length: int64(5), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(6), Amount: cs(c("stake", 200))},
+				vesting.Period{Length: int64(2), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(2), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(6), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(5), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(1), Amount: cs(c("stake", 100))},
+				vesting.Period{Length: int64(8), Amount: cs(c("stake", 100))},
 			},
-			expectedOriginalVesting: cs(c("ukava", 900)),
-			expectedCoins:           cs(c("ukava", 900)),
+			expectedOriginalVesting: cs(c("stake", 900)),
+			expectedCoins:           cs(c("stake", 900)),
 			expectedStartTime:       int64(90),
 			expectedEndTime:         int64(125),
 		},
 		vestingAccountTest{
 			name:                    "insufficient module account balance",
 			blockTime:               time.Unix(90, 0),
-			args:                    args{coins: cs(c("ukava", 1000)), length: 11},
+			args:                    args{coins: cs(c("stake", 1000)), length: 11},
 			errArgs:                 errArgs{expectErr: true, errType: types.ErrInsufficientModAccountBalance},
 			expectedPeriods:         vesting.Periods{},
 			expectedOriginalVesting: sdk.Coins{},
@@ -237,7 +237,7 @@ func (suite *KeeperTestSuite) TestSendCoinsToPeriodicVestingAccount() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			suite.ctx = suite.ctx.WithBlockTime(tc.blockTime)
-			err := suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, kavadist.ModuleName, suite.addrs[0], tc.args.coins, tc.args.length)
+			err := suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, stakedist.ModuleName, suite.addrs[0], tc.args.coins, tc.args.length)
 			if tc.errArgs.expectErr {
 				suite.Require().True(errors.Is(err, tc.errArgs.errType))
 			} else {
@@ -258,17 +258,17 @@ func (suite *KeeperTestSuite) TestSendCoinsToPeriodicVestingAccount() {
 func (suite *KeeperTestSuite) TestSendCoinsToBaseAccount() {
 	suite.setupChain()
 	// send coins to base account
-	err := suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, kavadist.ModuleName, suite.addrs[1], cs(c("ukava", 100)), 5)
+	err := suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, stakedist.ModuleName, suite.addrs[1], cs(c("stake", 100)), 5)
 	suite.Require().NoError(err)
 	acc := suite.getAccount(suite.addrs[1])
 	vacc, ok := acc.(*vesting.PeriodicVestingAccount)
 	suite.True(ok)
 	expectedPeriods := vesting.Periods{
-		vesting.Period{Length: int64(5), Amount: cs(c("ukava", 100))},
+		vesting.Period{Length: int64(5), Amount: cs(c("stake", 100))},
 	}
 	suite.Equal(expectedPeriods, vacc.VestingPeriods)
-	suite.Equal(cs(c("ukava", 100)), vacc.OriginalVesting)
-	suite.Equal(cs(c("ukava", 500)), vacc.Coins)
+	suite.Equal(cs(c("stake", 100)), vacc.OriginalVesting)
+	suite.Equal(cs(c("stake", 500)), vacc.Coins)
 	suite.Equal(int64(105), vacc.EndTime)
 	suite.Equal(int64(100), vacc.StartTime)
 
@@ -276,10 +276,10 @@ func (suite *KeeperTestSuite) TestSendCoinsToBaseAccount() {
 
 func (suite *KeeperTestSuite) TestSendCoinsToInvalidAccount() {
 	suite.setupChain()
-	err := suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, kavadist.ModuleName, suite.addrs[2], cs(c("ukava", 100)), 5)
+	err := suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, stakedist.ModuleName, suite.addrs[2], cs(c("stake", 100)), 5)
 	suite.Require().True(errors.Is(err, types.ErrInvalidAccountType))
 	macc := suite.getModuleAccount(cdp.ModuleName)
-	err = suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, kavadist.ModuleName, macc.GetAddress(), cs(c("ukava", 100)), 5)
+	err = suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, stakedist.ModuleName, macc.GetAddress(), cs(c("stake", 100)), 5)
 	suite.Require().True(errors.Is(err, types.ErrInvalidAccountType))
 }
 
@@ -290,11 +290,11 @@ func (suite *KeeperTestSuite) TestPayoutClaim() {
 	cp1 := types.NewClaimPeriod("bnb", 1, suite.ctx.BlockTime().Add(time.Hour*168), time.Hour*8766)
 	suite.keeper.SetClaimPeriod(suite.ctx, cp1)
 	// valid claim for addrs[0]
-	c1 := types.NewClaim(suite.addrs[0], c("ukava", 100), "bnb", 1)
+	c1 := types.NewClaim(suite.addrs[0], c("stake", 100), "bnb", 1)
 	// invalid claim for addrs[0]
-	c2 := types.NewClaim(suite.addrs[0], c("ukava", 100), "xrp", 1)
+	c2 := types.NewClaim(suite.addrs[0], c("stake", 100), "xrp", 1)
 	// valid claim for addrs[1]
-	c3 := types.NewClaim(suite.addrs[1], c("ukava", 100), "bnb", 1)
+	c3 := types.NewClaim(suite.addrs[1], c("stake", 100), "bnb", 1)
 	suite.keeper.SetClaim(suite.ctx, c1)
 	suite.keeper.SetClaim(suite.ctx, c2)
 	suite.keeper.SetClaim(suite.ctx, c3)
@@ -307,7 +307,7 @@ func (suite *KeeperTestSuite) TestPayoutClaim() {
 	vacc, ok := acc.(*vesting.PeriodicVestingAccount)
 	suite.True(ok)
 	// vesting balance is correct
-	suite.Equal(cs(c("ukava", 500)), vacc.OriginalVesting)
+	suite.Equal(cs(c("stake", 500)), vacc.OriginalVesting)
 
 	// existing claim with corresponding claim period successfully claimed by base account
 	err = suite.keeper.PayoutClaim(suite.ctx, suite.addrs[1], "bnb", 1)
@@ -317,7 +317,7 @@ func (suite *KeeperTestSuite) TestPayoutClaim() {
 	vacc, ok = acc.(*vesting.PeriodicVestingAccount)
 	suite.True(ok)
 	// vesting balance is correct
-	suite.Equal(cs(c("ukava", 100)), vacc.OriginalVesting)
+	suite.Equal(cs(c("stake", 100)), vacc.OriginalVesting)
 
 	// addrs[3] has no claims
 	err = suite.keeper.PayoutClaim(suite.ctx, suite.addrs[3], "bnb", 1)

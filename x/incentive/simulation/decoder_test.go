@@ -27,10 +27,10 @@ func TestDecodeDistributionStore(t *testing.T) {
 
 	// Set up RewardPeriod, ClaimPeriod, Claim, and previous block time
 	rewardPeriod := types.NewRewardPeriod("btc", time.Now().UTC(), time.Now().Add(time.Hour*1).UTC(),
-		sdk.NewCoin("ukava", sdk.NewInt(10000000000)), time.Now().Add(time.Hour*2).UTC(), time.Duration(time.Hour*2))
+		sdk.NewCoin("stake", sdk.NewInt(10000000000)), time.Now().Add(time.Hour*2).UTC(), time.Duration(time.Hour*2))
 	claimPeriod := types.NewClaimPeriod("btc", 1, time.Now().Add(time.Hour*24).UTC(), time.Duration(time.Hour*24))
 	addr, _ := sdk.AccAddressFromBech32("kava15qdefkmwswysgg4qxgqpqr35k3m49pkx2jdfnw")
-	claim := types.NewClaim(addr, sdk.NewCoin("ukava", sdk.NewInt(1000000)), "bnb", 1)
+	claim := types.NewClaim(addr, sdk.NewCoin("stake", sdk.NewInt(1000000)), "bnb", 1)
 	prevBlockTime := time.Now().Add(time.Hour * -1).UTC()
 
 	kvPairs := kv.Pairs{

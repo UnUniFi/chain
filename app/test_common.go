@@ -35,7 +35,7 @@ import (
 	"github.com/lcnem/jpyx/x/committee"
 	"github.com/lcnem/jpyx/x/incentive"
 	"github.com/lcnem/jpyx/x/pricefeed"
-	kavadist "github.com/lcnem/jpyx/x/stakedist"
+	stakedist "github.com/lcnem/jpyx/x/stakedist"
 	validatorvesting "github.com/lcnem/jpyx/x/validator-vesting"
 )
 
@@ -79,7 +79,7 @@ func (tApp TestApp) GetAuctionKeeper() auction.Keeper     { return tApp.auctionK
 func (tApp TestApp) GetCDPKeeper() cdp.Keeper             { return tApp.cdpKeeper }
 func (tApp TestApp) GetPriceFeedKeeper() pricefeed.Keeper { return tApp.pricefeedKeeper }
 func (tApp TestApp) GetBep3Keeper() bep3.Keeper           { return tApp.bep3Keeper }
-func (tApp TestApp) GetKavadistKeeper() kavadist.Keeper   { return tApp.kavadistKeeper }
+func (tApp TestApp) GetStakedistKeeper() stakedist.Keeper { return tApp.stakedistKeeper }
 func (tApp TestApp) GetIncentiveKeeper() incentive.Keeper { return tApp.incentiveKeeper }
 func (tApp TestApp) GetCommitteeKeeper() committee.Keeper { return tApp.committeeKeeper }
 

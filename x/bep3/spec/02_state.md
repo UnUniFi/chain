@@ -43,8 +43,8 @@ type GenesisState struct {
 ## Types
 
 AtomicSwap stores information about an individual atomic swap, including the sender, recipient, amount, random number hash (used to validate the secret and unlock funds), the status (open, completed, or expired). There are two types of atomic swaps:
-- Incoming: assets are being sent to Kava from another blockchain.
-- Outgoing: assets are being send to another blockchain from Kava.
+- Incoming: assets are being sent to Stake from another blockchain.
+- Outgoing: assets are being send to another blockchain from Stake.
 
 ```go
 // AtomicSwap contains the information for an atomic swap
@@ -85,8 +85,8 @@ const (
 AssetSupply stores information about an individual asset's BEP3 supply:
 - Incoming supply: total amount in incoming swaps (being sent to the chain).
 - Outgoing supply: total amount in outgoing swaps (being sent off the chain). It cannot be greater than the current supply.
-- Current supply: the amount that the deputy has released - it is the active supply on Kava. It is equal to the total amount successfully claimed from incoming swaps minus the total amount claimed from outgoing swaps.
-- Supply limit: the maximum amount currently allowed on Kava. The supply limit can be increased by Kava's stability committee, subject to an on-chain proposal vote.
+- Current supply: the amount that the deputy has released - it is the active supply on Stake. It is equal to the total amount successfully claimed from incoming swaps minus the total amount claimed from outgoing swaps.
+- Supply limit: the maximum amount currently allowed on Stake. The supply limit can be increased by Stake's stability committee, subject to an on-chain proposal vote.
 
 ```go
 // AssetSupply contains information about an asset's supply

@@ -13,27 +13,27 @@ import (
 	"github.com/lcnem/jpyx/x/stakedist/types"
 )
 
-// GetQueryCmd returns the cli query commands for the kavadist module
+// GetQueryCmd returns the cli query commands for the stakedist module
 func GetQueryCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
-	kavadistQueryCmd := &cobra.Command{
+	stakedistQueryCmd := &cobra.Command{
 		Use:   types.ModuleName,
-		Short: "Querying commands for the kavadist module",
+		Short: "Querying commands for the stakedist module",
 	}
 
-	kavadistQueryCmd.AddCommand(flags.GetCommands(
+	stakedistQueryCmd.AddCommand(flags.GetCommands(
 		queryParamsCmd(queryRoute, cdc),
 		queryBalanceCmd(queryRoute, cdc),
 	)...)
 
-	return kavadistQueryCmd
+	return stakedistQueryCmd
 
 }
 
 func queryParamsCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
 		Use:   "params",
-		Short: "get the kavadist module parameters",
-		Long:  "Get the current global kavadist module parameters.",
+		Short: "get the stakedist module parameters",
+		Long:  "Get the current global stakedist module parameters.",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
@@ -59,8 +59,8 @@ func queryParamsCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 func queryBalanceCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
 		Use:   "balance",
-		Short: "get the kavadist module balance",
-		Long:  "Get the current kavadist module account balance.",
+		Short: "get the stakedist module balance",
+		Long:  "Get the current stakedist module account balance.",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc)

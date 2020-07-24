@@ -22,28 +22,28 @@ func TestKeeper_SetGetMarket(t *testing.T) {
 
 	mp := types.Params{
 		Markets: types.Markets{
-			types.Market{MarketID: "tstusd", BaseAsset: "tst", QuoteAsset: "usd", Oracles: []sdk.AccAddress{}, Active: true},
+			types.Market{MarketID: "tstjpy", BaseAsset: "tst", QuoteAsset: "jpy", Oracles: []sdk.AccAddress{}, Active: true},
 		},
 	}
 	keeper.SetParams(ctx, mp)
 	markets := keeper.GetMarkets(ctx)
 	require.Equal(t, len(markets), 1)
-	require.Equal(t, markets[0].MarketID, "tstusd")
+	require.Equal(t, markets[0].MarketID, "tstjpy")
 
-	_, found := keeper.GetMarket(ctx, "tstusd")
+	_, found := keeper.GetMarket(ctx, "tstjpy")
 	require.Equal(t, found, true)
 
 	mp = types.Params{
 		Markets: types.Markets{
-			types.Market{MarketID: "tstusd", BaseAsset: "tst", QuoteAsset: "usd", Oracles: []sdk.AccAddress{}, Active: true},
-			types.Market{MarketID: "tst2usd", BaseAsset: "tst2", QuoteAsset: "usd", Oracles: []sdk.AccAddress{}, Active: true},
+			types.Market{MarketID: "tstjpy", BaseAsset: "tst", QuoteAsset: "jpy", Oracles: []sdk.AccAddress{}, Active: true},
+			types.Market{MarketID: "tst2jpy", BaseAsset: "tst2", QuoteAsset: "jpy", Oracles: []sdk.AccAddress{}, Active: true},
 		},
 	}
 	keeper.SetParams(ctx, mp)
 	markets = keeper.GetMarkets(ctx)
 	require.Equal(t, len(markets), 2)
-	require.Equal(t, markets[0].MarketID, "tstusd")
-	require.Equal(t, markets[1].MarketID, "tst2usd")
+	require.Equal(t, markets[0].MarketID, "tstjpy")
+	require.Equal(t, markets[1].MarketID, "tst2jpy")
 
 	_, found = keeper.GetMarket(ctx, "nan")
 	require.Equal(t, found, false)
@@ -58,40 +58,40 @@ func TestKeeper_GetSetPrice(t *testing.T) {
 
 	mp := types.Params{
 		Markets: types.Markets{
-			types.Market{MarketID: "tstusd", BaseAsset: "tst", QuoteAsset: "usd", Oracles: []sdk.AccAddress{}, Active: true},
+			types.Market{MarketID: "tstjpy", BaseAsset: "tst", QuoteAsset: "jpy", Oracles: []sdk.AccAddress{}, Active: true},
 		},
 	}
 	keeper.SetParams(ctx, mp)
 	// Set price by oracle 1
 	_, err := keeper.SetPrice(
-		ctx, addrs[0], "tstusd",
+		ctx, addrs[0], "tstjpy",
 		sdk.MustNewDecFromStr("0.33"),
 		time.Now().Add(1*time.Hour))
 	require.NoError(t, err)
 	// Get raw prices
-	rawPrices, err := keeper.GetRawPrices(ctx, "tstusd")
+	rawPrices, err := keeper.GetRawPrices(ctx, "tstjpy")
 	require.NoError(t, err)
 	require.Equal(t, len(rawPrices), 1)
 	require.Equal(t, rawPrices[0].Price.Equal(sdk.MustNewDecFromStr("0.33")), true)
 	// Set price by oracle 2
 	_, err = keeper.SetPrice(
-		ctx, addrs[1], "tstusd",
+		ctx, addrs[1], "tstjpy",
 		sdk.MustNewDecFromStr("0.35"),
 		time.Now().Add(time.Hour*1))
 	require.NoError(t, err)
 
-	rawPrices, err = keeper.GetRawPrices(ctx, "tstusd")
+	rawPrices, err = keeper.GetRawPrices(ctx, "tstjpy")
 	require.NoError(t, err)
 	require.Equal(t, len(rawPrices), 2)
 	require.Equal(t, rawPrices[1].Price.Equal(sdk.MustNewDecFromStr("0.35")), true)
 
 	// Update Price by Oracle 1
 	_, err = keeper.SetPrice(
-		ctx, addrs[0], "tstusd",
+		ctx, addrs[0], "tstjpy",
 		sdk.MustNewDecFromStr("0.37"),
 		time.Now().Add(time.Hour*1))
 	require.NoError(t, err)
-	rawPrices, err = keeper.GetRawPrices(ctx, "tstusd")
+	rawPrices, err = keeper.GetRawPrices(ctx, "tstjpy")
 	require.NoError(t, err)
 	require.Equal(t, rawPrices[0].Price.Equal(sdk.MustNewDecFromStr("0.37")), true)
 }
@@ -105,38 +105,38 @@ func TestKeeper_GetSetCurrentPrice(t *testing.T) {
 
 	mp := types.Params{
 		Markets: types.Markets{
-			types.Market{MarketID: "tstusd", BaseAsset: "tst", QuoteAsset: "usd", Oracles: []sdk.AccAddress{}, Active: true},
+			types.Market{MarketID: "tstjpy", BaseAsset: "tst", QuoteAsset: "jpy", Oracles: []sdk.AccAddress{}, Active: true},
 		},
 	}
 	keeper.SetParams(ctx, mp)
 	keeper.SetPrice(
-		ctx, addrs[0], "tstusd",
+		ctx, addrs[0], "tstjpy",
 		sdk.MustNewDecFromStr("0.33"),
 		time.Now().Add(time.Hour*1))
 	keeper.SetPrice(
-		ctx, addrs[1], "tstusd",
+		ctx, addrs[1], "tstjpy",
 		sdk.MustNewDecFromStr("0.35"),
 		time.Now().Add(time.Hour*1))
 	keeper.SetPrice(
-		ctx, addrs[2], "tstusd",
+		ctx, addrs[2], "tstjpy",
 		sdk.MustNewDecFromStr("0.34"),
 		time.Now().Add(time.Hour*1))
 	// Set current price
-	err := keeper.SetCurrentPrices(ctx, "tstusd")
+	err := keeper.SetCurrentPrices(ctx, "tstjpy")
 	require.NoError(t, err)
 	// Get Current price
-	price, err := keeper.GetCurrentPrice(ctx, "tstusd")
+	price, err := keeper.GetCurrentPrice(ctx, "tstjpy")
 	require.Nil(t, err)
 	require.Equal(t, price.Price.Equal(sdk.MustNewDecFromStr("0.34")), true)
 
 	// Even number of oracles
 	keeper.SetPrice(
-		ctx, addrs[3], "tstusd",
+		ctx, addrs[3], "tstjpy",
 		sdk.MustNewDecFromStr("0.36"),
 		time.Now().Add(time.Hour*1))
-	err = keeper.SetCurrentPrices(ctx, "tstusd")
+	err = keeper.SetCurrentPrices(ctx, "tstjpy")
 	require.NoError(t, err)
-	price, err = keeper.GetCurrentPrice(ctx, "tstusd")
+	price, err = keeper.GetCurrentPrice(ctx, "tstjpy")
 	require.Nil(t, err)
 	require.Equal(t, price.Price.Equal(sdk.MustNewDecFromStr("0.345")), true)
 }

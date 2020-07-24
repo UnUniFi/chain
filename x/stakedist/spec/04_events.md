@@ -10,5 +10,5 @@ The `x/stakedist` module emits the following events:
 
 | Type                 | Attribute Key       | Attribute Value |
 |----------------------|---------------------|-----------------|
-| kavadist             | kava_dist_inflation | `{amount}`      |
-| kavadist             | kava_dist_status    | "inactive"      |
+| stakedist             | kava_dist_inflation | `{amount}`      |
+| stakedist             | kava_dist_status    | "inactive"      |

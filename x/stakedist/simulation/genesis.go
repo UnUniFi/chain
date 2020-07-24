@@ -20,20 +20,20 @@ const (
 	BaseAprPadding = "0.000000003022265980"
 )
 
-// RandomizedGenState generates a random GenesisState for kavadist module
+// RandomizedGenState generates a random GenesisState for stakedist module
 func RandomizedGenState(simState *module.SimulationState) {
 	params := genRandomParams(simState)
 	if err := params.Validate(); err != nil {
 		panic(err)
 	}
 
-	kavadistGenesis := types.NewGenesisState(params, types.DefaultPreviousBlockTime)
-	if err := kavadistGenesis.Validate(); err != nil {
+	stakedistGenesis := types.NewGenesisState(params, types.DefaultPreviousBlockTime)
+	if err := stakedistGenesis.Validate(); err != nil {
 		panic(err)
 	}
 
-	fmt.Printf("Selected randomly generated %s parameters:\n%s\n", types.ModuleName, codec.MustMarshalJSONIndent(simState.Cdc, kavadistGenesis))
-	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(kavadistGenesis)
+	fmt.Printf("Selected randomly generated %s parameters:\n%s\n", types.ModuleName, codec.MustMarshalJSONIndent(simState.Cdc, stakedistGenesis))
+	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(stakedistGenesis)
 }
 
 func genRandomParams(simState *module.SimulationState) types.Params {

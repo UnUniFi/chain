@@ -1,1 +1,1 @@
-package kavadist
+package stakedist

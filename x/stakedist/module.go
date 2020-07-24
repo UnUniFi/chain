@@ -1,4 +1,4 @@
-package kavadist
+package stakedist
 
 import (
 	"encoding/json"
@@ -56,7 +56,7 @@ func (AppModuleBasic) ValidateGenesis(bz json.RawMessage) error {
 	return gs.Validate()
 }
 
-// RegisterRESTRoutes registers  REST routes for the kavadist module.
+// RegisterRESTRoutes registers  REST routes for the stakedist module.
 func (AppModuleBasic) RegisterRESTRoutes(ctx context.CLIContext, rtr *mux.Router) {
 	rest.RegisterRoutes(ctx, rtr)
 }
@@ -64,7 +64,7 @@ func (AppModuleBasic) RegisterRESTRoutes(ctx context.CLIContext, rtr *mux.Router
 // GetTxCmd returns the root tx command for the crisis module.
 func (AppModuleBasic) GetTxCmd(cdc *codec.Codec) *cobra.Command { return nil }
 
-// GetQueryCmd returns no root query command for the kavadist module.
+// GetQueryCmd returns no root query command for the stakedist module.
 func (AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 	return cli.GetQueryCmd(types.StoreKey, cdc)
 }

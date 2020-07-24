@@ -22,7 +22,7 @@ var (
 	GovDenom                 = cdptypes.DefaultGovDenom
 )
 
-// Params governance parameters for kavadist module
+// Params governance parameters for stakedist module
 type Params struct {
 	Active  bool    `json:"active" yaml:"active"`
 	Periods Periods `json:"periods" yaml:"periods"`
@@ -72,7 +72,7 @@ func NewParams(active bool, periods Periods) Params {
 	}
 }
 
-// DefaultParams returns default params for kavadist module
+// DefaultParams returns default params for stakedist module
 func DefaultParams() Params {
 	return NewParams(DefaultActive, DefaultPeriods)
 }

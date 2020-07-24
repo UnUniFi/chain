@@ -84,7 +84,7 @@ func sendMsgPostPrice() {
 	// from, assetcode, price, expiry
 	msg := pricefeed.NewMsgPostPrice(
 		addr,
-		"btc:usd",
+		"btc:jpy",
 		price,
 		expiry,
 	)
@@ -119,7 +119,7 @@ func sendBtcCdp() {
 	msg := cdp.NewMsgCreateCDP(
 		addr,
 		sdk.NewInt64Coin("btc", 200000000),
-		sdk.NewInt64Coin("usdx", 10000000),
+		sdk.NewInt64Coin("jpyx", 10000000),
 	)
 
 	// helper methods for transactions
@@ -152,7 +152,7 @@ func sendXrpCdp() {
 	msg := cdp.NewMsgCreateCDP(
 		addr,
 		sdk.NewInt64Coin("xrp", 200000000),
-		sdk.NewInt64Coin("usdx", 10000000),
+		sdk.NewInt64Coin("jpyx", 10000000),
 	)
 
 	// helper methods for transactions

@@ -44,7 +44,7 @@ func (suite *DepositTestSuite) SetupTest() {
 	suite.keeper = keeper
 	suite.ctx = ctx
 	suite.addrs = addrs
-	err := suite.keeper.AddCdp(suite.ctx, addrs[0], c("xrp", 400000000), c("usdx", 10000000))
+	err := suite.keeper.AddCdp(suite.ctx, addrs[0], c("xrp", 400000000), c("jpyx", 10000000))
 	suite.NoError(err)
 }
 
@@ -105,7 +105,7 @@ func (suite *DepositTestSuite) TestWithdrawCollateral() {
 	suite.Require().True(errors.Is(err, types.ErrCdpNotFound))
 
 	cd, _ := suite.keeper.GetCDP(suite.ctx, "xrp", uint64(1))
-	cd.AccumulatedFees = c("usdx", 1)
+	cd.AccumulatedFees = c("jpyx", 1)
 	err = suite.keeper.SetCDP(suite.ctx, cd)
 	suite.NoError(err)
 	err = suite.keeper.WithdrawCollateral(suite.ctx, suite.addrs[0], suite.addrs[0], c("xrp", 320000000))

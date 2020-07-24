@@ -72,7 +72,7 @@ func TestKvCLIKeysAddRecover(t *testing.T) {
 	f.Cleanup()
 }
 
-func TestKavaCLIKeysAddRecoverHDPath(t *testing.T) {
+func TestStakeCLIKeysAddRecoverHDPath(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
 

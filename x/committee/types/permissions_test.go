@@ -61,7 +61,7 @@ func (suite *PermissionsTestSuite) TestSimpleParamChangePermission_Allows() {
 						Subspace: "cdp",
 						Key:      "DebtThreshold",
 
-						Value: `{"denom": "usdx", "amount": "1000000"}`,
+						Value: `{"denom": "jpyx", "amount": "1000000"}`,
 					},
 				},
 			),
@@ -78,7 +78,7 @@ func (suite *PermissionsTestSuite) TestSimpleParamChangePermission_Allows() {
 						Subspace: "cdp",
 						Key:      "DebtThreshold",
 
-						Value: `{"denom": "usdx", "amount": "1000000"}`,
+						Value: `{"denom": "jpyx", "amount": "1000000"}`,
 					},
 					{
 						Subspace: "cdp",
@@ -107,7 +107,7 @@ func (suite *PermissionsTestSuite) TestSimpleParamChangePermission_Allows() {
 						Subspace: "cdp",
 						Key:      "GlobalDebtLimit",
 
-						Value: `{"denom": "usdx", "amount": "1000000000"}`,
+						Value: `{"denom": "jpyx", "amount": "1000000000"}`,
 					},
 				},
 			),
@@ -124,7 +124,7 @@ func (suite *PermissionsTestSuite) TestSimpleParamChangePermission_Allows() {
 						Subspace: "cdp",
 						Key:      "DebtThreshold",
 
-						Value: `[{"denom": "usdx", "amount": "1000000"}]`,
+						Value: `[{"denom": "jpyx", "amount": "1000000"}]`,
 					},
 				},
 			),
@@ -171,7 +171,7 @@ func (suite *PermissionsTestSuite) TestAllowedParams_Contains() {
 				Subspace: "cdp",
 				Key:      "DebtThreshold",
 
-				Value: `{"denom": "usdx", "amount": "1000000"}`,
+				Value: `{"denom": "jpyx", "amount": "1000000"}`,
 			},
 			expectContained: true,
 		},
@@ -182,7 +182,7 @@ func (suite *PermissionsTestSuite) TestAllowedParams_Contains() {
 				Subspace: "",
 				Key:      "DebtThreshold",
 
-				Value: `{"denom": "usdx", "amount": "1000000"}`,
+				Value: `{"denom": "jpyx", "amount": "1000000"}`,
 			},
 			expectContained: false,
 		},
@@ -193,7 +193,7 @@ func (suite *PermissionsTestSuite) TestAllowedParams_Contains() {
 				Subspace: "cdp",
 				Key:      "",
 
-				Value: `{"denom": "usdx", "amount": "1000000"}`,
+				Value: `{"denom": "jpyx", "amount": "1000000"}`,
 			},
 			expectContained: false,
 		},
@@ -204,7 +204,7 @@ func (suite *PermissionsTestSuite) TestAllowedParams_Contains() {
 				Subspace: "cdp",
 				Key:      "DebtThreshold",
 
-				Value: `{"denom": "usdx", "amount": "1000000"}`,
+				Value: `{"denom": "jpyx", "amount": "1000000"}`,
 			},
 			expectContained: false,
 		},
@@ -215,7 +215,7 @@ func (suite *PermissionsTestSuite) TestAllowedParams_Contains() {
 				Subspace: "cdp",
 				Key:      "DebtThreshold",
 
-				Value: `{"denom": "usdx", "amount": "1000000"}`,
+				Value: `{"denom": "jpyx", "amount": "1000000"}`,
 			},
 			expectContained: false,
 		},
@@ -266,7 +266,7 @@ func (suite *PermissionsTestSuite) TestTextPermission_Allows() {
 					{
 						Subspace: "cdp",
 						Key:      "DebtThreshold",
-						Value:    `{"denom": "usdx", "amount": "1000000"}`,
+						Value:    `{"denom": "jpyx", "amount": "1000000"}`,
 					},
 					{
 						Subspace: "cdp",
@@ -323,7 +323,7 @@ func (suite *PermissionsTestSuite) TestSoftwareUpgradePermission_Allows() {
 					{
 						Subspace: "cdp",
 						Key:      "DebtThreshold",
-						Value:    `{"denom": "usdx", "amount": "1000000"}`,
+						Value:    `{"denom": "jpyx", "amount": "1000000"}`,
 					},
 					{
 						Subspace: "cdp",

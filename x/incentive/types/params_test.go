@@ -39,7 +39,7 @@ func (suite *ParamTestSuite) SetupTest() {
 					types.Reward{
 						Active:           true,
 						Denom:            "bnb",
-						AvailableRewards: sdk.NewCoin("ukava", sdk.NewInt(10000000000)),
+						AvailableRewards: sdk.NewCoin("stake", sdk.NewInt(10000000000)),
 						Duration:         time.Hour * 24 * 7,
 						TimeLock:         time.Hour * 8766,
 						ClaimDuration:    time.Hour * 24 * 14,
@@ -59,7 +59,7 @@ func (suite *ParamTestSuite) SetupTest() {
 					types.Reward{
 						Active:           true,
 						Denom:            "bnb",
-						AvailableRewards: sdk.NewCoin("ukava", sdk.NewInt(10000000000)),
+						AvailableRewards: sdk.NewCoin("stake", sdk.NewInt(10000000000)),
 						Duration:         time.Hour * 24 * 7,
 						TimeLock:         time.Hour * 8766,
 						ClaimDuration:    time.Hour * 24 * 14,
@@ -79,7 +79,7 @@ func (suite *ParamTestSuite) SetupTest() {
 					types.Reward{
 						Active:           true,
 						Denom:            "bnb",
-						AvailableRewards: sdk.NewCoin("ukava", sdk.NewInt(10000000000)),
+						AvailableRewards: sdk.NewCoin("stake", sdk.NewInt(10000000000)),
 						Duration:         time.Hour * 24 * 7,
 						TimeLock:         time.Hour * 8766,
 						ClaimDuration:    time.Hour * 24 * 14,
@@ -87,7 +87,7 @@ func (suite *ParamTestSuite) SetupTest() {
 					types.Reward{
 						Active:           true,
 						Denom:            "bnb",
-						AvailableRewards: sdk.NewCoin("ukava", sdk.NewInt(10000000000)),
+						AvailableRewards: sdk.NewCoin("stake", sdk.NewInt(10000000000)),
 						Duration:         time.Hour * 24 * 7,
 						TimeLock:         time.Hour * 8766,
 						ClaimDuration:    time.Hour * 24 * 14,
@@ -107,7 +107,7 @@ func (suite *ParamTestSuite) SetupTest() {
 					types.Reward{
 						Active:           true,
 						Denom:            "bnb",
-						AvailableRewards: sdk.NewCoin("ukava", sdk.NewInt(10000000000)),
+						AvailableRewards: sdk.NewCoin("stake", sdk.NewInt(10000000000)),
 						Duration:         time.Hour * -24 * 7,
 						TimeLock:         time.Hour * 8766,
 						ClaimDuration:    time.Hour * 24 * 14,
@@ -127,7 +127,7 @@ func (suite *ParamTestSuite) SetupTest() {
 					types.Reward{
 						Active:           true,
 						Denom:            "bnb",
-						AvailableRewards: sdk.NewCoin("ukava", sdk.NewInt(10000000000)),
+						AvailableRewards: sdk.NewCoin("stake", sdk.NewInt(10000000000)),
 						Duration:         time.Hour * 24 * 7,
 						TimeLock:         time.Hour * -8766,
 						ClaimDuration:    time.Hour * 24 * 14,
@@ -147,7 +147,7 @@ func (suite *ParamTestSuite) SetupTest() {
 					types.Reward{
 						Active:           true,
 						Denom:            "bnb",
-						AvailableRewards: sdk.NewCoin("ukava", sdk.NewInt(10000000000)),
+						AvailableRewards: sdk.NewCoin("stake", sdk.NewInt(10000000000)),
 						Duration:         time.Hour * 24 * 7,
 						TimeLock:         time.Hour * 8766,
 						ClaimDuration:    time.Hour * 0,
@@ -167,7 +167,7 @@ func (suite *ParamTestSuite) SetupTest() {
 					types.Reward{
 						Active:           true,
 						Denom:            "bnb",
-						AvailableRewards: sdk.NewCoin("ukava", sdk.NewInt(0)),
+						AvailableRewards: sdk.NewCoin("stake", sdk.NewInt(0)),
 						Duration:         time.Hour * 24 * 7,
 						TimeLock:         time.Hour * 8766,
 						ClaimDuration:    time.Hour * 24 * 14,
@@ -187,7 +187,7 @@ func (suite *ParamTestSuite) SetupTest() {
 					types.Reward{
 						Active:           true,
 						Denom:            "",
-						AvailableRewards: sdk.NewCoin("ukava", sdk.NewInt(1)),
+						AvailableRewards: sdk.NewCoin("stake", sdk.NewInt(1)),
 						Duration:         time.Hour * 24 * 7,
 						TimeLock:         time.Hour * 8766,
 						ClaimDuration:    time.Hour * 24 * 14,

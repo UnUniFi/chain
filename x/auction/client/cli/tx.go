@@ -42,7 +42,7 @@ func GetCmdPlaceBid(cdc *codec.Codec) *cobra.Command {
 			fmt.Sprintf(`Place a bid on any type of auction, updating the latest bid amount to [amount]. Collateral auctions must be bid up to their maxbid before entering reverse phase.
 
 Example:
-$ %s tx %s bid 34 1000usdx --from myKeyName
+$ %s tx %s bid 34 1000jpyx --from myKeyName
 `, version.ClientName, types.ModuleName)),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {

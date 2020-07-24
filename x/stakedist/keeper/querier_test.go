@@ -23,7 +23,7 @@ func (suite *KeeperTestSuite) TestQuerierGetParams() {
 func (suite *KeeperTestSuite) TestQuerierGetBalance() {
 	sk := suite.supplyKeeper
 
-	sk.MintCoins(suite.ctx, types.KavaDistMacc, sdk.NewCoins(sdk.NewCoin("ukava", sdk.NewInt(100e6))))
+	sk.MintCoins(suite.ctx, types.StakeDistMacc, sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(100e6))))
 
 	querier := keeper.NewQuerier(suite.keeper)
 	bz, err := querier(suite.ctx, []string{types.QueryGetBalance}, abci.RequestQuery{})
@@ -32,5 +32,5 @@ func (suite *KeeperTestSuite) TestQuerierGetBalance() {
 
 	var coins sdk.Coins
 	types.ModuleCdc.UnmarshalJSON(bz, &coins)
-	suite.Require().Equal(sdk.NewInt(100e6), coins.AmountOf("ukava"))
+	suite.Require().Equal(sdk.NewInt(100e6), coins.AmountOf("stake"))
 }

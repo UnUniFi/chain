@@ -27,12 +27,12 @@ type MsgTestSuite struct {
 func (suite *MsgTestSuite) SetupTest() {
 	tests := []msgTest{
 		{
-			from:       sdk.AccAddress(crypto.AddressHash([]byte("KavaTest1"))),
+			from:       sdk.AccAddress(crypto.AddressHash([]byte("StakeTest1"))),
 			denom:      "bnb",
 			expectPass: true,
 		},
 		{
-			from:       sdk.AccAddress(crypto.AddressHash([]byte("KavaTest1"))),
+			from:       sdk.AccAddress(crypto.AddressHash([]byte("StakeTest1"))),
 			denom:      "",
 			expectPass: false,
 		},

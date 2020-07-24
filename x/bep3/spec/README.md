@@ -17,11 +17,11 @@ parent:
 
 ## Abstract
 
-`x/bep3` is a module that handles cross-chain atomic swaps between Kava and blockchains that implement the BEP3 protocol. Atomic swaps are created, then either claimed before their expiration block or refunded after they've expired.
+`x/bep3` is a module that handles cross-chain atomic swaps between Stake and blockchains that implement the BEP3 protocol. Atomic swaps are created, then either claimed before their expiration block or refunded after they've expired.
 
-Several user interfaces support Kava BEP3 swaps:
+Several user interfaces support Stake BEP3 swaps:
 - [Trust Wallet](https://trustwallet.com/)
 - [Cosmostation](https://wallet.cosmostation.io/?network=kava)
 - [Frontier Wallet](https://frontierwallet.com/)
 
-Swaps can also be created, claimed, and refunded using Kava's [Javascript SDK](https://github.com/Kava-Labs/javascript-sdk) or CLI.
+Swaps can also be created, claimed, and refunded using Stake's [Javascript SDK](https://github.com/Stake-Labs/javascript-sdk) or CLI.

@@ -13,7 +13,7 @@ import (
 
 	"github.com/lcnem/jpyx/app"
 	"github.com/lcnem/jpyx/x/incentive"
-	kavadist "github.com/lcnem/jpyx/x/stakedist"
+	stakedist "github.com/lcnem/jpyx/x/stakedist"
 )
 
 func cs(coins ...sdk.Coin) sdk.Coins        { return sdk.NewCoins(coins...) }
@@ -38,7 +38,7 @@ func (suite *HandlerTestSuite) SetupTest() {
 	_, addrs := app.GeneratePrivKeyAddressPairs(3)
 	coins := []sdk.Coins{}
 	for j := 0; j < 3; j++ {
-		coins = append(coins, cs(c("bnb", 10000000000), c("ukava", 10000000000)))
+		coins = append(coins, cs(c("bnb", 10000000000), c("stake", 10000000000)))
 	}
 	authGS := app.NewAuthGenState(addrs, coins)
 	tApp.InitializeFromGenesisStates(authGS)
@@ -52,14 +52,14 @@ func (suite *HandlerTestSuite) SetupTest() {
 
 func (suite *HandlerTestSuite) addClaim() {
 	supplyKeeper := suite.app.GetSupplyKeeper()
-	macc := supplyKeeper.GetModuleAccount(suite.ctx, kavadist.ModuleName)
-	err := supplyKeeper.MintCoins(suite.ctx, macc.GetName(), cs(c("ukava", 1000000)))
+	macc := supplyKeeper.GetModuleAccount(suite.ctx, stakedist.ModuleName)
+	err := supplyKeeper.MintCoins(suite.ctx, macc.GetName(), cs(c("stake", 1000000)))
 	suite.Require().NoError(err)
 	cp := incentive.NewClaimPeriod("bnb", 1, suite.ctx.BlockTime().Add(time.Hour*168), time.Hour*8766)
 	suite.NotPanics(func() {
 		suite.keeper.SetClaimPeriod(suite.ctx, cp)
 	})
-	c1 := incentive.NewClaim(suite.addrs[0], c("ukava", 1000000), "bnb", 1)
+	c1 := incentive.NewClaim(suite.addrs[0], c("stake", 1000000), "bnb", 1)
 	suite.NotPanics(func() {
 		suite.keeper.SetClaim(suite.ctx, c1)
 	})

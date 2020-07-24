@@ -45,7 +45,7 @@ func GetCmdCreateCdp(cdc *codec.Codec) *cobra.Command {
 			fmt.Sprintf(`Create a new cdp, depositing some collateral and drawing some debt.
 
 Example:
-$ %s tx %s create 10000000uatom 1000usdx --from myKeyName
+$ %s tx %s create 10000000uatom 1000jpyx --from myKeyName
 `, version.ClientName, types.ModuleName)),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -150,7 +150,7 @@ func GetCmdDraw(cdc *codec.Codec) *cobra.Command {
 			fmt.Sprintf(`Create debt in an existing cdp and send the newly minted asset to your account.
 
 Example:
-$ %s tx %s draw uatom 1000usdx --from myKeyName
+$ %s tx %s draw uatom 1000jpyx --from myKeyName
 `, version.ClientName, types.ModuleName)),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -181,7 +181,7 @@ func GetCmdRepay(cdc *codec.Codec) *cobra.Command {
 			fmt.Sprintf(`Cancel out debt in an existing cdp.
 
 Example:
-$ %s tx %s repay uatom 1000usdx --from myKeyName
+$ %s tx %s repay uatom 1000jpyx --from myKeyName
 `, version.ClientName, types.ModuleName)),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {

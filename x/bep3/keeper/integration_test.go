@@ -22,8 +22,8 @@ const (
 var (
 	StandardSupplyLimit = i(350000000000000)
 	DenomMap            = map[int]string{0: "btc", 1: "eth", 2: "bnb", 3: "xrp", 4: "dai"}
-	TestUser1           = sdk.AccAddress(crypto.AddressHash([]byte("KavaTestUser1")))
-	TestUser2           = sdk.AccAddress(crypto.AddressHash([]byte("KavaTestUser2")))
+	TestUser1           = sdk.AccAddress(crypto.AddressHash([]byte("StakeTestUser1")))
+	TestUser2           = sdk.AccAddress(crypto.AddressHash([]byte("StakeTestUser2")))
 )
 
 func i(in int64) sdk.Int                    { return sdk.NewInt(in) }

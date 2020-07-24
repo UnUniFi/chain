@@ -1,11 +1,11 @@
 <!--
 order: 0
-title: "Kavadist Overview"
+title: "Stakedist Overview"
 parent:
-  title: "kavadist"
+  title: "stakedist"
 -->
 
-# `kavadist`
+# `stakedist`
 
 <!-- TOC -->
 1. **[Concepts](01_concepts.md)**

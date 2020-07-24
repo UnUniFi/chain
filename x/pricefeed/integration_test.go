@@ -13,19 +13,19 @@ func NewPricefeedGenStateMulti() app.GenesisState {
 	pfGenesis := pricefeed.GenesisState{
 		Params: pricefeed.Params{
 			Markets: []pricefeed.Market{
-				{MarketID: "btc:usd", BaseAsset: "btc", QuoteAsset: "usd", Oracles: []sdk.AccAddress{}, Active: true},
-				{MarketID: "xrp:usd", BaseAsset: "xrp", QuoteAsset: "usd", Oracles: []sdk.AccAddress{}, Active: true},
+				{MarketID: "btc:jpy", BaseAsset: "btc", QuoteAsset: "jpy", Oracles: []sdk.AccAddress{}, Active: true},
+				{MarketID: "xrp:jpy", BaseAsset: "xrp", QuoteAsset: "jpy", Oracles: []sdk.AccAddress{}, Active: true},
 			},
 		},
 		PostedPrices: []pricefeed.PostedPrice{
 			{
-				MarketID:      "btc:usd",
+				MarketID:      "btc:jpy",
 				OracleAddress: sdk.AccAddress{},
 				Price:         sdk.MustNewDecFromStr("8000.00"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 			{
-				MarketID:      "xrp:usd",
+				MarketID:      "xrp:jpy",
 				OracleAddress: sdk.AccAddress{},
 				Price:         sdk.MustNewDecFromStr("0.25"),
 				Expiry:        time.Now().Add(1 * time.Hour),
@@ -39,19 +39,19 @@ func NewPricefeedGenStateWithOracles(addrs []sdk.AccAddress) app.GenesisState {
 	pfGenesis := pricefeed.GenesisState{
 		Params: pricefeed.Params{
 			Markets: []pricefeed.Market{
-				{MarketID: "btc:usd", BaseAsset: "btc", QuoteAsset: "usd", Oracles: addrs, Active: true},
-				{MarketID: "xrp:usd", BaseAsset: "xrp", QuoteAsset: "usd", Oracles: addrs, Active: true},
+				{MarketID: "btc:jpy", BaseAsset: "btc", QuoteAsset: "jpy", Oracles: addrs, Active: true},
+				{MarketID: "xrp:jpy", BaseAsset: "xrp", QuoteAsset: "jpy", Oracles: addrs, Active: true},
 			},
 		},
 		PostedPrices: []pricefeed.PostedPrice{
 			{
-				MarketID:      "btc:usd",
+				MarketID:      "btc:jpy",
 				OracleAddress: addrs[0],
 				Price:         sdk.MustNewDecFromStr("8000.00"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 			{
-				MarketID:      "xrp:usd",
+				MarketID:      "xrp:jpy",
 				OracleAddress: addrs[0],
 				Price:         sdk.MustNewDecFromStr("0.25"),
 				Expiry:        time.Now().Add(1 * time.Hour),

@@ -13,7 +13,7 @@ func (k Keeper) MintPeriodInflation(ctx sdk.Context) error {
 	if !params.Active {
 		ctx.EventManager().EmitEvent(
 			sdk.NewEvent(
-				types.EventTypeKavaDist,
+				types.EventTypeStakeDist,
 				sdk.NewAttribute(types.AttributeKeyStatus, types.AttributeValueInactive),
 			),
 		)
@@ -76,14 +76,14 @@ func (k Keeper) mintInflationaryCoins(ctx sdk.Context, inflationRate sdk.Dec, ti
 	if amountToMint.IsZero() {
 		return nil
 	}
-	err := k.supplyKeeper.MintCoins(ctx, types.KavaDistMacc, sdk.NewCoins(sdk.NewCoin(denom, amountToMint)))
+	err := k.supplyKeeper.MintCoins(ctx, types.StakeDistMacc, sdk.NewCoins(sdk.NewCoin(denom, amountToMint)))
 	if err != nil {
 		return err
 	}
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			types.EventTypeKavaDist,
+			types.EventTypeStakeDist,
 			sdk.NewAttribute(types.AttributeKeyInflation, sdk.NewCoin(denom, amountToMint).String()),
 		),
 	)

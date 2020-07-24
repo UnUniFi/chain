@@ -27,16 +27,16 @@ var (
 	DefaultCircuitBreaker    = false
 	DefaultCollateralParams  = CollateralParams{}
 	DefaultDebtParam         = DebtParam{
-		Denom:            "usdx",
-		ReferenceAsset:   "usd",
+		Denom:            "jpyx",
+		ReferenceAsset:   "jpy",
 		ConversionFactor: sdk.NewInt(6),
 		DebtFloor:        sdk.NewInt(10000000),
 		SavingsRate:      sdk.MustNewDecFromStr("0.95"),
 	}
 	DefaultCdpStartingID                = uint64(1)
 	DefaultDebtDenom                    = "debt"
-	DefaultGovDenom                     = "ukava"
-	DefaultStableDenom                  = "usdx"
+	DefaultGovDenom                     = "stake"
+	DefaultStableDenom                  = "jpyx"
 	DefaultSurplusThreshold             = sdk.NewInt(500000000000)
 	DefaultDebtThreshold                = sdk.NewInt(100000000000)
 	DefaultSurplusLot                   = sdk.NewInt(10000000000)
