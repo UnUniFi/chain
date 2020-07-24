@@ -1,0 +1,353 @@
+{
+  "genesis_time": "2020-07-24T13:24:23.655091657Z",
+  "chain_id": "jpyx-1",
+  "consensus_params": {
+    "block": {
+      "max_bytes": "22020096",
+      "max_gas": "-1",
+      "time_iota_ms": "1000"
+    },
+    "evidence": {
+      "max_age_num_blocks": "100000",
+      "max_age_duration": "172800000000000"
+    },
+    "validator": {
+      "pub_key_types": ["ed25519"]
+    }
+  },
+  "app_hash": "",
+  "app_state": {
+    "gov": {
+      "starting_proposal_id": "1",
+      "deposits": null,
+      "votes": null,
+      "proposals": null,
+      "deposit_params": {
+        "min_deposit": [
+          {
+            "denom": "stake",
+            "amount": "10000000"
+          }
+        ],
+        "max_deposit_period": "172800000000000"
+      },
+      "voting_params": {
+        "voting_period": "172800000000000"
+      },
+      "tally_params": {
+        "quorum": "0.334000000000000000",
+        "threshold": "0.500000000000000000",
+        "veto": "0.334000000000000000"
+      }
+    },
+    "evidence": {
+      "params": {
+        "max_evidence_age": "120000000000"
+      },
+      "evidence": []
+    },
+    "supply": {
+      "supply": []
+    },
+    "genutil": {
+      "gentxs": [
+        {
+          "type": "cosmos-sdk/StdTx",
+          "value": {
+            "msg": [
+              {
+                "type": "cosmos-sdk/MsgCreateValidator",
+                "value": {
+                  "description": {
+                    "moniker": "jpyx-b",
+                    "identity": "",
+                    "website": "",
+                    "security_contact": "",
+                    "details": ""
+                  },
+                  "commission": {
+                    "rate": "0.100000000000000000",
+                    "max_rate": "0.200000000000000000",
+                    "max_change_rate": "0.010000000000000000"
+                  },
+                  "min_self_delegation": "1",
+                  "delegator_address": "jpyx1gfln6xldk034l2zwrezuv26dkheq9ua4dckgwc",
+                  "validator_address": "jpyxvaloper1gfln6xldk034l2zwrezuv26dkheq9ua4hc3wg6",
+                  "pubkey": "jpyxvalconspub1zcjduepq96g5qglc5vkrae58jmnyg8sy5c03n6f3v5hf3upt5csdzpqwqezs7g3jea",
+                  "value": {
+                    "denom": "stake",
+                    "amount": "500000000"
+                  }
+                }
+              }
+            ],
+            "fee": {
+              "amount": [],
+              "gas": "200000"
+            },
+            "signatures": [
+              {
+                "pub_key": {
+                  "type": "tendermint/PubKeySecp256k1",
+                  "value": "AsS4kETLBdVjHoMVMWwxjOkhwJtj8T2j27b2cPpHISMS"
+                },
+                "signature": "EaCBR/WP7COjtNyV5CDsX52/Sm4pni+Wf+vjoTKU8QlR7XysItz01lIDpDM33ZWrCKNZvtfo0vVji+NLdEZUpQ=="
+              }
+            ],
+            "memo": "8b5e5b856f6b50f5a7563b6faed6f52b0facd62d@207.148.99.109:26656"
+          }
+        },
+        {
+          "type": "cosmos-sdk/StdTx",
+          "value": {
+            "msg": [
+              {
+                "type": "cosmos-sdk/MsgCreateValidator",
+                "value": {
+                  "description": {
+                    "moniker": "jpyx-a",
+                    "identity": "",
+                    "website": "",
+                    "security_contact": "",
+                    "details": ""
+                  },
+                  "commission": {
+                    "rate": "0.100000000000000000",
+                    "max_rate": "0.200000000000000000",
+                    "max_change_rate": "0.010000000000000000"
+                  },
+                  "min_self_delegation": "1",
+                  "delegator_address": "jpyx1ywlzznn4edvw4xag5c0s66xj53vfm4887pvvyq",
+                  "validator_address": "jpyxvaloper1ywlzznn4edvw4xag5c0s66xj53vfm488ypt2zz",
+                  "pubkey": "jpyxvalconspub1zcjduepq4936xehacy9haaw5k765rnc5ljzgxe3929xl4hmpqrdcawj3xxcq4jsjlt",
+                  "value": {
+                    "denom": "stake",
+                    "amount": "500000000"
+                  }
+                }
+              }
+            ],
+            "fee": {
+              "amount": [],
+              "gas": "200000"
+            },
+            "signatures": [
+              {
+                "pub_key": {
+                  "type": "tendermint/PubKeySecp256k1",
+                  "value": "AnqHB7bE7FBOgiairZfDeMMUSYUSNmPYokB0joVwcYx1"
+                },
+                "signature": "Gzp7R58jZjsvE3dLFfPPktkFk7EmsMKm0H8hF62XMZcbfuT1cpkB8kJF+V4y4N8DSRhjln3qElb5ebXrHDBEGQ=="
+              }
+            ],
+            "memo": "a250ddf28d88bd542285e00c240e53e4123db58e@45.77.128.154:26656"
+          }
+        }
+      ]
+    },
+    "slashing": {
+      "params": {
+        "signed_blocks_window": "100",
+        "min_signed_per_window": "0.500000000000000000",
+        "downtime_jail_duration": "600000000000",
+        "slash_fraction_double_sign": "0.050000000000000000",
+        "slash_fraction_downtime": "0.010000000000000000"
+      },
+      "signing_infos": {},
+      "missed_blocks": {}
+    },
+    "bank": {
+      "send_enabled": true
+    },
+    "distribution": {
+      "params": {
+        "community_tax": "0.020000000000000000",
+        "base_proposer_reward": "0.010000000000000000",
+        "bonus_proposer_reward": "0.040000000000000000",
+        "withdraw_addr_enabled": true
+      },
+      "fee_pool": {
+        "community_pool": []
+      },
+      "delegator_withdraw_infos": [],
+      "previous_proposer": "",
+      "outstanding_rewards": [],
+      "validator_accumulated_commissions": [],
+      "validator_historical_rewards": [],
+      "validator_current_rewards": [],
+      "delegator_starting_infos": [],
+      "validator_slash_events": []
+    },
+    "pricefeed": {
+      "params": {
+        "markets": []
+      },
+      "posted_prices": []
+    },
+    "params": null,
+    "upgrade": {},
+    "auction": {
+      "next_auction_id": "1",
+      "params": {
+        "max_auction_duration": "172800000000000",
+        "bid_duration": "3600000000000",
+        "increment_surplus": "0.050000000000000000",
+        "increment_debt": "0.050000000000000000",
+        "increment_collateral": "0.050000000000000000"
+      },
+      "auctions": []
+    },
+    "cdp": {
+      "params": {
+        "collateral_params": [],
+        "debt_param": {
+          "denom": "jpyx",
+          "reference_asset": "jpy",
+          "conversion_factor": "6",
+          "debt_floor": "10000000",
+          "savings_rate": "0.950000000000000000"
+        },
+        "global_debt_limit": {
+          "denom": "jpyx",
+          "amount": "0"
+        },
+        "surplus_auction_threshold": "500000000000",
+        "surplus_auction_lot": "10000000000",
+        "debt_auction_threshold": "100000000000",
+        "debt_auction_lot": "10000000000",
+        "savings_distribution_frequency": "43200000000000",
+        "circuit_breaker": false
+      },
+      "cdps": [],
+      "deposits": [],
+      "starting_cdp_id": "1",
+      "debt_denom": "debt",
+      "gov_denom": "stake",
+      "previous_distribution_time": "1970-01-01T00:00:00Z"
+    },
+    "validatorvesting": {
+      "previous_block_time": "1970-01-01T00:00:00Z"
+    },
+    "mint": {
+      "minter": {
+        "inflation": "0.130000000000000000",
+        "annual_provisions": "0.000000000000000000"
+      },
+      "params": {
+        "mint_denom": "stake",
+        "inflation_rate_change": "0.130000000000000000",
+        "inflation_max": "0.200000000000000000",
+        "inflation_min": "0.070000000000000000",
+        "goal_bonded": "0.670000000000000000",
+        "blocks_per_year": "6311520"
+      }
+    },
+    "stakedist": {
+      "params": {
+        "active": false,
+        "periods": []
+      },
+      "previous_block_time": "1970-01-01T00:00:00Z"
+    },
+    "committee": {
+      "next_proposal_id": "1",
+      "committees": [],
+      "proposals": [],
+      "votes": []
+    },
+    "staking": {
+      "params": {
+        "unbonding_time": "1814400000000000",
+        "max_validators": 100,
+        "max_entries": 7,
+        "historical_entries": 0,
+        "bond_denom": "stake"
+      },
+      "last_total_power": "0",
+      "last_validator_powers": null,
+      "validators": null,
+      "delegations": null,
+      "unbonding_delegations": null,
+      "redelegations": null,
+      "exported": false
+    },
+    "auth": {
+      "params": {
+        "max_memo_characters": "256",
+        "tx_sig_limit": "7",
+        "tx_size_cost_per_byte": "10",
+        "sig_verify_cost_ed25519": "590",
+        "sig_verify_cost_secp256k1": "1000"
+      },
+      "accounts": [
+        {
+          "type": "cosmos-sdk/Account",
+          "value": {
+            "address": "jpyx1ywlzznn4edvw4xag5c0s66xj53vfm4887pvvyq",
+            "coins": [
+              {
+                "denom": "stake",
+                "amount": "500000000"
+              }
+            ],
+            "public_key": "",
+            "account_number": 0,
+            "sequence": 0
+          }
+        },
+        {
+          "type": "cosmos-sdk/Account",
+          "value": {
+            "address": "jpyx1gfln6xldk034l2zwrezuv26dkheq9ua4dckgwc",
+            "coins": [
+              {
+                "denom": "stake",
+                "amount": "500000000"
+              }
+            ],
+            "public_key": "",
+            "account_number": 0,
+            "sequence": 0
+          }
+        }
+      ]
+    },
+    "crisis": {
+      "constant_fee": {
+        "denom": "stake",
+        "amount": "1000"
+      }
+    },
+    "bep3": {
+      "params": {
+        "bnb_deputy_address": "jpyx1s7gmzmjp5vlffawk9xch0cw9f4es06u9wn9hwq",
+        "bnb_deputy_fixed_fee": "1000",
+        "min_amount": "0",
+        "max_amount": "1000000000000",
+        "min_block_lock": "220",
+        "max_block_lock": "270",
+        "supported_assets": [
+          {
+            "denom": "bnb",
+            "coin_id": "714",
+            "limit": "350000000000000",
+            "active": true
+          }
+        ]
+      },
+      "atomic_swaps": [],
+      "assets_supplies": []
+    },
+    "incentive": {
+      "params": {
+        "active": false,
+        "rewards": []
+      },
+      "previous_block_time": "1970-01-01T00:00:00Z",
+      "reward_periods": [],
+      "claim_periods": [],
+      "claims": [],
+      "next_claim_period_ids": []
+    }
+  }
+}
