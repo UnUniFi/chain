@@ -57,8 +57,8 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 # process linker flags
 
 ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=kava \
-		  -X github.com/cosmos/cosmos-sdk/version.ServerName=kvd \
-		  -X github.com/cosmos/cosmos-sdk/version.ClientName=kvcli \
+		  -X github.com/cosmos/cosmos-sdk/version.ServerName=jpyd \
+		  -X github.com/cosmos/cosmos-sdk/version.ClientName=jpycli \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
 		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)"
@@ -76,19 +76,19 @@ all: install
 
 build: go.sum
 ifeq ($(OS), Windows_NT)
-	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/kvd.exe ./cmd/kvd
-	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/kvcli.exe ./cmd/kvcli
+	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/jpyd.exe ./cmd/jpyd
+	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/jpycli.exe ./cmd/jpycli
 else
-	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/kvd ./cmd/kvd
-	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/kvcli ./cmd/kvcli
+	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/jpyd ./cmd/jpyd
+	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/jpycli ./cmd/jpycli
 endif
 
 build-linux: go.sum
 	LEDGER_ENABLED=false GOOS=linux GOARCH=amd64 DETECTED_OS=linux $(MAKE) build
 
 install: go.sum
-	go install -mod=readonly $(BUILD_FLAGS) ./cmd/kvd
-	go install -mod=readonly $(BUILD_FLAGS) ./cmd/kvcli
+	go install -mod=readonly $(BUILD_FLAGS) ./cmd/jpyd
+	go install -mod=readonly $(BUILD_FLAGS) ./cmd/jpycli
 
 ########################################
 ### Tools & dependencies
@@ -107,13 +107,6 @@ clean:
 
 ########################################
 ### Linting
-
-# Check url links in the repo are not broken.
-# This tool checks local markdown links as well.
-# Set to exclude riot links as they trigger false positives
-link-check:
-	@go run github.com/raviqqe/liche -r . --exclude "^http://127.*|^https://riot.im/app*|^http://kava-testnet*|^https://testnet-dex*|^https://kava3.data.kava.io*|^https://ipfs.io*"
-
 
 lint:
 	golangci-lint run
@@ -138,7 +131,7 @@ build-docker-local-kava:
 
 # Run a 4-node testnet locally
 localnet-start: build-linux localnet-stop
-	@if ! [ -f build/node0/kvd/config/genesis.json ]; then docker run --rm -v $(CURDIR)/build:/kvd:Z kava/kavanode testnet --v 4 -o . --starting-ip-address 192.168.10.2 --keyring-backend=test ; fi
+	@if ! [ -f build/node0/jpyd/config/genesis.json ]; then docker run --rm -v $(CURDIR)/build:/jpyd:Z lcnem/jpyxnode testnet --v 4 -o . --starting-ip-address 192.168.10.2 --keyring-backend=test ; fi
 	docker-compose up -d
 
 localnet-stop:
@@ -178,7 +171,7 @@ test-rest:
 
 # Run cli integration tests
 # `-p 4` to use 4 cores, `-tags cli_test` to tell go not to ignore the cli package
-# These tests use the `kvd` or `kvcli` binaries in the build dir, or in `$BUILDDIR` if that env var is set.
+# These tests use the `jpyd` or `jpycli` binaries in the build dir, or in `$BUILDDIR` if that env var is set.
 test-cli: build
 	@go test ./cli_test -tags cli_test -v -p 4
 
