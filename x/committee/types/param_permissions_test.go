@@ -2,9 +2,9 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	bep3types "github.com/kava-labs/kava/x/bep3/types"
-	cdptypes "github.com/kava-labs/kava/x/cdp/types"
-	pricefeedtypes "github.com/kava-labs/kava/x/pricefeed/types"
+	bep3types "github.com/lcnem/jpyx/x/bep3/types"
+	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
+	pricefeedtypes "github.com/lcnem/jpyx/x/pricefeed/types"
 )
 
 // Avoid cluttering test cases with long function names

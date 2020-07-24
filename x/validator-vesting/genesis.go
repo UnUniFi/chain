@@ -3,7 +3,7 @@ package validatorvesting
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/kava-labs/kava/x/validator-vesting/types"
+	"github.com/lcnem/jpyx/x/validator-vesting/types"
 )
 
 // InitGenesis stores the account address of each ValidatorVestingAccount in the validator vesting keeper, for faster lookup.

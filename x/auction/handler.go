@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/kava-labs/kava/x/auction/types"
+	"github.com/lcnem/jpyx/x/auction/types"
 )
 
 // NewHandler returns a function to handle all "auction" type messages.

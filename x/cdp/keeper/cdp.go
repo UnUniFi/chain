@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/kava-labs/kava/x/cdp/types"
+	"github.com/lcnem/jpyx/x/cdp/types"
 )
 
 // BaseDigitFactor is 10**18, used during coin calculations

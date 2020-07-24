@@ -10,7 +10,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/kava-labs/kava/x/bep3/types"
+	"github.com/lcnem/jpyx/x/bep3/types"
 )
 
 var (

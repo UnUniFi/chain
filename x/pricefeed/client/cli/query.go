@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/kava-labs/kava/x/pricefeed/types"
+	"github.com/lcnem/jpyx/x/pricefeed/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

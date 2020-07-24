@@ -10,8 +10,8 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/committee/types"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/committee/types"
 )
 
 type TypesTestSuite struct {

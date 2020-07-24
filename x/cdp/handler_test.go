@@ -8,8 +8,8 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/cdp"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/cdp"
 
 	"github.com/stretchr/testify/suite"
 )

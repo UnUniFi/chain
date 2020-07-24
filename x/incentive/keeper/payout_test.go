@@ -10,11 +10,11 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/cdp"
-	"github.com/kava-labs/kava/x/incentive/types"
-	"github.com/kava-labs/kava/x/kavadist"
-	validatorvesting "github.com/kava-labs/kava/x/validator-vesting"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/cdp"
+	"github.com/lcnem/jpyx/x/incentive/types"
+	kavadist "github.com/lcnem/jpyx/x/stakedist"
+	validatorvesting "github.com/lcnem/xjpy/x/validator-vesting"
 )
 
 func (suite *KeeperTestSuite) setupChain() {

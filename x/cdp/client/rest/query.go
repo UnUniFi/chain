@@ -9,7 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/gorilla/mux"
 
-	"github.com/kava-labs/kava/x/cdp/types"
+	"github.com/lcnem/jpyx/x/cdp/types"
 )
 
 // define routes that get registered by the main application

@@ -13,7 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	supply "github.com/cosmos/cosmos-sdk/x/supply"
 
-	"github.com/kava-labs/kava/x/cdp/types"
+	"github.com/lcnem/jpyx/x/cdp/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

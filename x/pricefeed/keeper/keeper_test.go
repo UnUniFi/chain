@@ -10,8 +10,8 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/pricefeed/types"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/pricefeed/types"
 )
 
 // TestKeeper_SetGetMarket tests adding markets to the pricefeed, getting markets from the store

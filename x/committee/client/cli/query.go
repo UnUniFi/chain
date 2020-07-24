@@ -12,8 +12,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/version"
 
-	"github.com/kava-labs/kava/x/committee/client/common"
-	"github.com/kava-labs/kava/x/committee/types"
+	"github.com/lcnem/jpyx/x/committee/client/common"
+	"github.com/lcnem/jpyx/x/committee/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

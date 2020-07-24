@@ -7,10 +7,10 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	upgrade "github.com/cosmos/cosmos-sdk/x/upgrade"
 
-	bep3types "github.com/kava-labs/kava/x/bep3/types"
-	cdptypes "github.com/kava-labs/kava/x/cdp/types"
-	"github.com/kava-labs/kava/x/pricefeed"
-	pricefeedtypes "github.com/kava-labs/kava/x/pricefeed/types"
+	bep3types "github.com/lcnem/jpyx/x/bep3/types"
+	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
+	"github.com/lcnem/jpyx/x/pricefeed"
+	pricefeedtypes "github.com/lcnem/jpyx/x/pricefeed/types"
 )
 
 func init() {

@@ -6,7 +6,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/kava-labs/kava/x/committee/types"
+	"github.com/lcnem/jpyx/x/committee/types"
 )
 
 // RegisterInvariants registers all committee invariants

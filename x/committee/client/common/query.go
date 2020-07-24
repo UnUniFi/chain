@@ -11,7 +11,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 
-	"github.com/kava-labs/kava/x/committee/types"
+	"github.com/lcnem/jpyx/x/committee/types"
 )
 
 // Note: QueryProposer is copied in from the gov module

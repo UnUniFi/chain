@@ -9,7 +9,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	"github.com/kava-labs/kava/x/committee/types"
+	"github.com/lcnem/jpyx/x/committee/types"
 )
 
 type Keeper struct {

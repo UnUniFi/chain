@@ -20,7 +20,7 @@ import (
 
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"github.com/kava-labs/kava/x/bep3/types"
+	"github.com/lcnem/jpyx/x/bep3/types"
 )
 
 // GetTxCmd returns the transaction commands for this module

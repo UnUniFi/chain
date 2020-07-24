@@ -4,8 +4,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/kava-labs/kava/x/committee/keeper"
-	"github.com/kava-labs/kava/x/committee/types"
+	"github.com/lcnem/jpyx/x/committee/keeper"
+	"github.com/lcnem/jpyx/x/committee/types"
 )
 
 // NewHandler creates an sdk.Handler for committee messages

@@ -23,7 +23,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/vesting"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 
-	validatorvesting "github.com/kava-labs/kava/x/validator-vesting"
+	validatorvesting "github.com/lcnem/jpyx/x/validator-vesting"
 )
 
 const (

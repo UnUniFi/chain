@@ -8,7 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/vesting"
 
-	"github.com/kava-labs/kava/x/incentive/types"
+	"github.com/lcnem/jpyx/x/incentive/types"
 )
 
 type accountTest struct {

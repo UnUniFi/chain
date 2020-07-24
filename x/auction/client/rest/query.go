@@ -11,7 +11,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 
-	"github.com/kava-labs/kava/x/auction/types"
+	"github.com/lcnem/jpyx/x/auction/types"
 )
 
 const restAuctionID = "auction-id"

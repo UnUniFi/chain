@@ -16,10 +16,10 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/auction/keeper"
-	"github.com/kava-labs/kava/x/auction/types"
-	"github.com/kava-labs/kava/x/cdp"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/auction/keeper"
+	"github.com/lcnem/jpyx/x/auction/types"
+	"github.com/lcnem/jpyx/x/cdp"
 )
 
 const (

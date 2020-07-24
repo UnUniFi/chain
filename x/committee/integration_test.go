@@ -4,8 +4,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/committee/types"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/committee/types"
 )
 
 // Avoid cluttering test cases with long function names

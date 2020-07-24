@@ -13,10 +13,10 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/cdp"
-	cdptypes "github.com/kava-labs/kava/x/cdp/types"
-	"github.com/kava-labs/kava/x/committee"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/cdp"
+	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
+	"github.com/lcnem/jpyx/x/committee"
 )
 
 type ModuleTestSuite struct {

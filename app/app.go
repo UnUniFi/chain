@@ -33,18 +33,18 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 
-	"github.com/lcnem/xjpy/x/auction"
-	"github.com/lcnem/xjpy/x/bep3"
-	"github.com/lcnem/xjpy/x/cdp"
-	"github.com/lcnem/xjpy/x/committee"
-	"github.com/lcnem/xjpy/x/incentive"
-	"github.com/lcnem/xjpy/x/kavadist"
-	"github.com/lcnem/xjpy/x/pricefeed"
-	validatorvesting "github.com/lcnem/xjpy/x/validator-vesting"
+	"github.com/lcnem/jpyx/x/auction"
+	"github.com/lcnem/jpyx/x/bep3"
+	"github.com/lcnem/jpyx/x/cdp"
+	"github.com/lcnem/jpyx/x/committee"
+	"github.com/lcnem/jpyx/x/incentive"
+	"github.com/lcnem/jpyx/x/pricefeed"
+	kavadist "github.com/lcnem/jpyx/x/stakedist"
+	validatorvesting "github.com/lcnem/jpyx/x/validator-vesting"
 )
 
 const (
-	appName          = "xjpy"
+	appName          = "jpy"
 	Bech32MainPrefix = "jpy"
 )
 

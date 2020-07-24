@@ -15,7 +15,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 
-	"github.com/kava-labs/kava/x/cdp/types"
+	"github.com/lcnem/jpyx/x/cdp/types"
 )
 
 // GetTxCmd returns the transaction commands for this module

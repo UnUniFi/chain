@@ -10,8 +10,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 
-	"github.com/kava-labs/kava/x/committee/client/common"
-	"github.com/kava-labs/kava/x/committee/types"
+	"github.com/lcnem/jpyx/x/committee/client/common"
+	"github.com/lcnem/jpyx/x/committee/types"
 )
 
 func registerQueryRoutes(cliCtx context.CLIContext, r *mux.Router) {

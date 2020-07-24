@@ -5,7 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
 
-	"github.com/kava-labs/kava/app"
+	"github.com/lcnem/jpyx/app"
 )
 
 func c(denom string, amount int64) sdk.Coin { return sdk.NewInt64Coin(denom, amount) }

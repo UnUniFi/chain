@@ -12,7 +12,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/params/subspace"
 
-	"github.com/kava-labs/kava/x/pricefeed/types"
+	"github.com/lcnem/jpyx/x/pricefeed/types"
 )
 
 // Keeper struct for pricefeed module

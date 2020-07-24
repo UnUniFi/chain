@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/kava-labs/kava/x/auction/types"
+	"github.com/lcnem/jpyx/x/auction/types"
 )
 
 // InitGenesis initializes the store state from a genesis state.

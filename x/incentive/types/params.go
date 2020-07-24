@@ -9,8 +9,8 @@ import (
 
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	cdptypes "github.com/kava-labs/kava/x/cdp/types"
-	kavadistTypes "github.com/kava-labs/kava/x/kavadist/types"
+	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
+	kavadistTypes "github.com/lcnem/jpyx/x/stakedist/types"
 )
 
 // Parameter keys and default values

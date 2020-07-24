@@ -12,10 +12,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/vesting"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
-	appparams "github.com/kava-labs/kava/app/params"
-	"github.com/kava-labs/kava/x/incentive/keeper"
-	"github.com/kava-labs/kava/x/incentive/types"
-	"github.com/kava-labs/kava/x/kavadist"
+	appparams "github.com/lcnem/jpyx/app/params"
+	"github.com/lcnem/jpyx/x/incentive/keeper"
+	"github.com/lcnem/jpyx/x/incentive/types"
+	kavadist "github.com/lcnem/jpyx/x/stakedist"
 )
 
 // Simulation operation weights constants

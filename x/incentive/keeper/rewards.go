@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	cdptypes "github.com/kava-labs/kava/x/cdp/types"
-	"github.com/kava-labs/kava/x/incentive/types"
+	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
+	"github.com/lcnem/jpyx/x/incentive/types"
 )
 
 // HandleRewardPeriodExpiry deletes expired RewardPeriods from the store and creates a ClaimPeriod in the store for each expired RewardPeriod

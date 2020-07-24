@@ -16,11 +16,11 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/kava-labs/kava/x/incentive/client/cli"
-	"github.com/kava-labs/kava/x/incentive/client/rest"
-	"github.com/kava-labs/kava/x/incentive/keeper"
-	"github.com/kava-labs/kava/x/incentive/simulation"
-	"github.com/kava-labs/kava/x/incentive/types"
+	"github.com/lcnem/jpyx/x/incentive/client/cli"
+	"github.com/lcnem/jpyx/x/incentive/client/rest"
+	"github.com/lcnem/jpyx/x/incentive/keeper"
+	"github.com/lcnem/jpyx/x/incentive/simulation"
+	"github.com/lcnem/jpyx/x/incentive/types"
 )
 
 var (

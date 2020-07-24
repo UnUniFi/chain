@@ -11,12 +11,12 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/kava-labs/kava/app"
-	bep3types "github.com/kava-labs/kava/x/bep3/types"
-	cdptypes "github.com/kava-labs/kava/x/cdp/types"
-	"github.com/kava-labs/kava/x/committee"
-	"github.com/kava-labs/kava/x/committee/types"
-	"github.com/kava-labs/kava/x/pricefeed"
+	"github.com/lcnem/jpyx/app"
+	bep3types "github.com/lcnem/jpyx/x/bep3/types"
+	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
+	"github.com/lcnem/jpyx/x/committee"
+	"github.com/lcnem/jpyx/x/committee/types"
+	"github.com/lcnem/jpyx/x/pricefeed"
 )
 
 func newCDPGenesisState(params cdptypes.Params) app.GenesisState {

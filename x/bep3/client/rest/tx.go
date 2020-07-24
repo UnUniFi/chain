@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 
-	"github.com/kava-labs/kava/x/bep3/types"
+	"github.com/lcnem/jpyx/x/bep3/types"
 )
 
 func registerTxRoutes(cliCtx context.CLIContext, r *mux.Router) {

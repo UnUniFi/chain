@@ -16,9 +16,9 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/kava-labs/kava/x/committee/client/cli"
-	"github.com/kava-labs/kava/x/committee/client/rest"
-	"github.com/kava-labs/kava/x/committee/simulation"
+	"github.com/lcnem/jpyx/x/committee/client/cli"
+	"github.com/lcnem/jpyx/x/committee/client/rest"
+	"github.com/lcnem/jpyx/x/committee/simulation"
 )
 
 var (

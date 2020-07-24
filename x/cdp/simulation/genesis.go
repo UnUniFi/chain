@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/supply"
 	supplyexported "github.com/cosmos/cosmos-sdk/x/supply/exported"
 
-	"github.com/kava-labs/kava/x/cdp/types"
+	"github.com/lcnem/jpyx/x/cdp/types"
 )
 
 // RandomizedGenState generates a random GenesisState for cdp

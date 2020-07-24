@@ -6,7 +6,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
-	"github.com/kava-labs/kava/x/incentive/types"
+	"github.com/lcnem/jpyx/x/incentive/types"
 )
 
 const (

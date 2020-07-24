@@ -16,9 +16,9 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/kava-labs/kava/x/pricefeed/client/cli"
-	"github.com/kava-labs/kava/x/pricefeed/client/rest"
-	"github.com/kava-labs/kava/x/pricefeed/simulation"
+	"github.com/lcnem/jpyx/x/pricefeed/client/cli"
+	"github.com/lcnem/jpyx/x/pricefeed/client/rest"
+	"github.com/lcnem/jpyx/x/pricefeed/simulation"
 )
 
 var (

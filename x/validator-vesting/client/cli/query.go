@@ -9,7 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
 
-	"github.com/kava-labs/kava/x/validator-vesting/types"
+	"github.com/lcnem/jpyx/x/validator-vesting/types"
 )
 
 // GetQueryCmd returns the cli query commands for the kavadist module

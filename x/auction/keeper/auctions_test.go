@@ -13,9 +13,9 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/auction/types"
-	"github.com/kava-labs/kava/x/cdp"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/auction/types"
+	"github.com/lcnem/jpyx/x/cdp"
 )
 
 func TestSurplusAuctionBasic(t *testing.T) {

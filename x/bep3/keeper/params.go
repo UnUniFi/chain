@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/kava-labs/kava/x/bep3/types"
+	"github.com/lcnem/jpyx/x/bep3/types"
 )
 
 // GetParams returns the total set of bep3 parameters.

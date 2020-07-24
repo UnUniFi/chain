@@ -8,9 +8,9 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
-	appparams "github.com/kava-labs/kava/app/params"
-	"github.com/kava-labs/kava/x/committee/keeper"
-	"github.com/kava-labs/kava/x/committee/types"
+	appparams "github.com/lcnem/jpyx/app/params"
+	"github.com/lcnem/jpyx/x/committee/keeper"
+	"github.com/lcnem/jpyx/x/committee/types"
 )
 
 const OpWeightSubmitCommitteeChangeProposal = "op_weight_submit_committee_change_proposal"

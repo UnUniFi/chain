@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/kava-labs/kava/x/auction/types"
+	"github.com/lcnem/jpyx/x/auction/types"
 )
 
 // BeginBlocker closes all expired auctions at the end of each block. It panics if

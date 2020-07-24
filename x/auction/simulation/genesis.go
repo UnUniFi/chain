@@ -13,8 +13,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 
-	"github.com/kava-labs/kava/x/auction/types"
-	cdptypes "github.com/kava-labs/kava/x/cdp/types"
+	"github.com/lcnem/jpyx/x/auction/types"
+	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
 )
 
 const (

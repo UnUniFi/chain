@@ -11,7 +11,7 @@ import (
 
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/kava-labs/kava/x/auction/types"
+	"github.com/lcnem/jpyx/x/auction/types"
 )
 
 type Keeper struct {

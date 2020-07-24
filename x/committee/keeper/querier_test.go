@@ -14,9 +14,9 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/committee/keeper"
-	"github.com/kava-labs/kava/x/committee/types"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/committee/keeper"
+	"github.com/lcnem/jpyx/x/committee/types"
 )
 
 const (

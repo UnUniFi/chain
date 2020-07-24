@@ -12,8 +12,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/bep3"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/bep3"
 )
 
 type ABCITestSuite struct {

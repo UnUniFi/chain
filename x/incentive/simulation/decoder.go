@@ -10,7 +10,7 @@ import (
 
 	"github.com/tendermint/tendermint/libs/kv"
 
-	"github.com/kava-labs/kava/x/incentive/types"
+	"github.com/lcnem/jpyx/x/incentive/types"
 )
 
 // DecodeStore unmarshals the KVPair's Value to the module's corresponding type

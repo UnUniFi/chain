@@ -9,9 +9,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/committee"
-	"github.com/kava-labs/kava/x/committee/types"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/committee"
+	"github.com/lcnem/jpyx/x/committee/types"
 )
 
 type GenesisTestSuite struct {

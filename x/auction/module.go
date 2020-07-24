@@ -17,10 +17,10 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/kava-labs/kava/x/auction/client/cli"
-	"github.com/kava-labs/kava/x/auction/client/rest"
-	"github.com/kava-labs/kava/x/auction/simulation"
-	"github.com/kava-labs/kava/x/auction/types"
+	"github.com/lcnem/jpyx/x/auction/client/cli"
+	"github.com/lcnem/jpyx/x/auction/client/rest"
+	"github.com/lcnem/jpyx/x/auction/simulation"
+	"github.com/lcnem/jpyx/x/auction/types"
 )
 
 var (

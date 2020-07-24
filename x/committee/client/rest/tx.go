@@ -13,7 +13,7 @@ import (
 	govrest "github.com/cosmos/cosmos-sdk/x/gov/client/rest"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	"github.com/kava-labs/kava/x/committee/types"
+	"github.com/lcnem/jpyx/x/committee/types"
 )
 
 func registerTxRoutes(cliCtx context.CLIContext, r *mux.Router) {

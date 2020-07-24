@@ -21,4 +21,4 @@ parent:
 
 ### Dependencies
 
-This module depends on `x/cdp` for users to be able to create CDPs and on `x/kavadist`, which controls the module account from where rewards are spent. In the event that the module account is not funded, user's attempt to claim rewards will fail.
+This module depends on `x/cdp` for users to be able to create CDPs and on `x/stakedist`, which controls the module account from where rewards are spent. In the event that the module account is not funded, user's attempt to claim rewards will fail.

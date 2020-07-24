@@ -29,14 +29,14 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/supply"
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 
-	"github.com/lcnem/xjpy/x/auction"
-	"github.com/lcnem/xjpy/x/bep3"
-	"github.com/lcnem/xjpy/x/cdp"
-	"github.com/lcnem/xjpy/x/committee"
-	"github.com/lcnem/xjpy/x/incentive"
-	"github.com/lcnem/xjpy/x/kavadist"
-	"github.com/lcnem/xjpy/x/pricefeed"
-	validatorvesting "github.com/lcnem/xjpy/x/validator-vesting"
+	"github.com/lcnem/jpyx/x/auction"
+	"github.com/lcnem/jpyx/x/bep3"
+	"github.com/lcnem/jpyx/x/cdp"
+	"github.com/lcnem/jpyx/x/committee"
+	"github.com/lcnem/jpyx/x/incentive"
+	"github.com/lcnem/jpyx/x/pricefeed"
+	kavadist "github.com/lcnem/jpyx/x/stakedist"
+	validatorvesting "github.com/lcnem/jpyx/x/validator-vesting"
 )
 
 // TestApp is a simple wrapper around an App. It exposes internal keepers for use in integration tests.
@@ -56,7 +56,6 @@ type TestApp struct {
 func NewTestApp() TestApp {
 	config := sdk.GetConfig()
 	SetBech32AddressPrefixes(config)
-	SetBip44CoinType(config)
 
 	db := tmdb.NewMemDB()
 	app := NewApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, 0)

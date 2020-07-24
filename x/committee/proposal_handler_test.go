@@ -12,9 +12,9 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/committee"
-	"github.com/kava-labs/kava/x/committee/types"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/committee"
+	"github.com/lcnem/jpyx/x/committee/types"
 )
 
 var testTime time.Time = time.Date(1998, time.January, 1, 0, 0, 0, 0, time.UTC)

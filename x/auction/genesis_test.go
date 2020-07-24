@@ -11,8 +11,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/auction"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/auction"
 )
 
 var _, testAddrs = app.GeneratePrivKeyAddressPairs(2)

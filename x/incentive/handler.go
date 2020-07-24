@@ -4,8 +4,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/kava-labs/kava/x/incentive/keeper"
-	"github.com/kava-labs/kava/x/incentive/types"
+	"github.com/lcnem/jpyx/x/incentive/keeper"
+	"github.com/lcnem/jpyx/x/incentive/types"
 )
 
 // NewHandler creates an sdk.Handler for incentive module messages

@@ -9,8 +9,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
-	"github.com/kava-labs/kava/x/pricefeed/types"
-	pricefeed "github.com/kava-labs/kava/x/pricefeed/types"
+	"github.com/lcnem/jpyx/x/pricefeed/types"
+	pricefeed "github.com/lcnem/jpyx/x/pricefeed/types"
 )
 
 var (

@@ -2,7 +2,7 @@
 
 ## License
 
-Forked from [Kava](github.com/Kava-Labs/kava).
+Forked from [Kava](github.com/lcnem/jpyx).
 Thanks Kava Team.
 
 Copyright © LCNEM, Inc. All rights reserved.

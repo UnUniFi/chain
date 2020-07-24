@@ -9,7 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/params/subspace"
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/kava-labs/kava/x/bep3/types"
+	"github.com/lcnem/jpyx/x/bep3/types"
 )
 
 // Keeper of the bep3 store

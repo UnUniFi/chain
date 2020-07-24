@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/pricefeed"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/pricefeed"
 
 	"github.com/stretchr/testify/suite"
 )

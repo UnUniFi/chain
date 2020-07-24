@@ -5,7 +5,7 @@ import (
 	authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
 	supplyexported "github.com/cosmos/cosmos-sdk/x/supply/exported"
 
-	cdptypes "github.com/kava-labs/kava/x/cdp/types"
+	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
 )
 
 // SupplyKeeper defines the expected supply keeper for module accounts

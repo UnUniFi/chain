@@ -24,16 +24,15 @@ import (
 
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/cdp"
-	"github.com/kava-labs/kava/x/pricefeed"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/cdp"
+	"github.com/lcnem/jpyx/x/pricefeed"
 )
 
 func init() {
 	version.Name = "kava"
 	config := sdk.GetConfig()
 	app.SetBech32AddressPrefixes(config)
-	app.SetBip44CoinType(config)
 	config.Seal()
 	keybase = getKeybase()
 }

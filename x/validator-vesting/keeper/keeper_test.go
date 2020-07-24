@@ -13,7 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingexported "github.com/cosmos/cosmos-sdk/x/staking/exported"
 
-	"github.com/kava-labs/kava/x/validator-vesting/types"
+	"github.com/lcnem/jpyx/x/validator-vesting/types"
 )
 
 func TestGetSetValidatorVestingAccounts(t *testing.T) {

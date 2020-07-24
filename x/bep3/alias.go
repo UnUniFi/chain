@@ -1,9 +1,9 @@
 package bep3
 
 import (
-	"github.com/kava-labs/kava/x/bep3/client/rest"
-	"github.com/kava-labs/kava/x/bep3/keeper"
-	"github.com/kava-labs/kava/x/bep3/types"
+	"github.com/lcnem/jpyx/x/bep3/client/rest"
+	"github.com/lcnem/jpyx/x/bep3/keeper"
+	"github.com/lcnem/jpyx/x/bep3/types"
 )
 
 const (

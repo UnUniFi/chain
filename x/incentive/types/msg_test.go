@@ -9,7 +9,7 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
-	"github.com/kava-labs/kava/x/incentive/types"
+	"github.com/lcnem/jpyx/x/incentive/types"
 )
 
 type msgTest struct {

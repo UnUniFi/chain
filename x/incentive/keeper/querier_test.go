@@ -5,8 +5,8 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/kava-labs/kava/x/incentive/keeper"
-	"github.com/kava-labs/kava/x/incentive/types"
+	"github.com/lcnem/jpyx/x/incentive/keeper"
+	"github.com/lcnem/jpyx/x/incentive/types"
 )
 
 func (suite *KeeperTestSuite) TestQuerier() {

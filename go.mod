@@ -1,4 +1,4 @@
-module github.com/lcnem/xjpy
+module github.com/lcnem/jpyx
 
 go 1.14
 
