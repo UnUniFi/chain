@@ -8,7 +8,7 @@ Instructions on how to run the `dredd` tests
 
 `npm install dredd --global`
 
-(Running tests) Run `make test_dredd` from the `kava` directory.
+(Running tests) Run `make test_dredd` from the `jpy` directory.
 
 This builds the `test.go` file, creates the genesis state for the blockchain, starts the blockchain, starts the rest  server, sends the required transactions to the blockchain, runs all the `dredd` tests, shuts
 down the blockchain, cleans up, and propagates up an error code if the tests do not all pass.

@@ -48,7 +48,7 @@ func testnetCmd(
 
 	cmd := &cobra.Command{
 		Use:   "testnet",
-		Short: "Initialize files for a local kava testnet",
+		Short: "Initialize files for a local jpy testnet",
 		Long: `testnet will create "v" number of directories and populate each with
 necessary files (private validator, genesis, config, etc.).
 
@@ -78,7 +78,7 @@ Example:
 
 	cmd.Flags().Int(flagNumValidators, 4,
 		"Number of validators to initialize the testnet with")
-	cmd.Flags().StringP(flagOutputDir, "o", "./kavatestnet",
+	cmd.Flags().StringP(flagOutputDir, "o", "./jpytestnet",
 		"Directory to store initialization data for the testnet")
 	cmd.Flags().String(flagNodeDirPrefix, "node",
 		"Prefix the directory name for each node with (node results in node0, node1, ...)")
@@ -116,8 +116,8 @@ func InitTestnet(
 	nodeIDs := make([]string, numValidators)
 	valPubKeys := make([]crypto.PubKey, numValidators)
 
-	kavaConfig := srvconfig.DefaultConfig()
-	kavaConfig.MinGasPrices = minGasPrices
+	jpyConfig := srvconfig.DefaultConfig()
+	jpyConfig.MinGasPrices = minGasPrices
 
 	//nolint:prealloc
 	var (
@@ -230,7 +230,7 @@ func InitTestnet(
 		}
 
 		appConfigFilePath := filepath.Join(nodeDir, "config/app.toml")
-		srvconfig.WriteConfigFile(appConfigFilePath, kavaConfig)
+		srvconfig.WriteConfigFile(appConfigFilePath, jpyConfig)
 	}
 
 	if err := initGenFiles(cdc, mbm, chainID, genAccounts, genFiles, numValidators); err != nil {

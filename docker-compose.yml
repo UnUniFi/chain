@@ -1,8 +1,8 @@
 version: '3'
 
 services:
-  jpydnode0:
-    container_name: jpydnode0
+  jpyxdnode0:
+    container_name: jpyxdnode0
     image: "lcnem/jpyxnode"
     ports:
       - "26656-26657:26656-26657"
@@ -15,8 +15,8 @@ services:
       localnet:
         ipv4_address: 192.168.10.2
 
-  jpydnode1:
-    container_name: jpydnode1
+  jpyxdnode1:
+    container_name: jpyxdnode1
     image: "lcnem/jpyxnode"
     ports:
       - "26659-26660:26656-26657"
@@ -29,8 +29,8 @@ services:
       localnet:
         ipv4_address: 192.168.10.3
 
-  jpydnode2:
-    container_name: jpydnode2
+  jpyxdnode2:
+    container_name: jpyxdnode2
     image: "lcnem/jpyxnode"
     environment:
       - ID=2
@@ -43,8 +43,8 @@ services:
       localnet:
         ipv4_address: 192.168.10.4
 
-  jpydnode3:
-    container_name: jpydnode3
+  jpyxdnode3:
+    container_name: jpyxdnode3
     image: "lcnem/jpyxnode"
     environment:
       - ID=3

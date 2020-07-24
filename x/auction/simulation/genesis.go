@@ -127,7 +127,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 	simState.GenState[supply.ModuleName] = simState.Cdc.MustMarshalJSON(supplyGenesis)
 
 	// TODO liquidator mod account doesn't need to be initialized for this example
-	// - it just mints kava, doesn't need a starting balance
+	// - it just mints stake, doesn't need a starting balance
 	// - and supply.GetModuleAccount creates one if it doesn't exist
 
 	// Note: this line prints out the auction genesis state, not just the auction parameters. Some sdk modules print out just the parameters.

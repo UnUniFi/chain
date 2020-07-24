@@ -42,7 +42,7 @@ func main() {
 	ctx := server.NewDefaultContext()
 	cobra.EnableCommandSorting = false
 	rootCmd := &cobra.Command{
-		Use:               "jpyd",
+		Use:               "jpyxd",
 		Short:             "JPYX Daemon (server)",
 		PersistentPreRunE: server.PersistentPreRunEFn(ctx),
 	}

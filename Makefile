@@ -56,9 +56,9 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 
 # process linker flags
 
-ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=kava \
-		  -X github.com/cosmos/cosmos-sdk/version.ServerName=jpyd \
-		  -X github.com/cosmos/cosmos-sdk/version.ClientName=jpycli \
+ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=jpyx \
+		  -X github.com/cosmos/cosmos-sdk/version.ServerName=jpyxd \
+		  -X github.com/cosmos/cosmos-sdk/version.ClientName=jpyxcli \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
 		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)"
@@ -76,19 +76,19 @@ all: install
 
 build: go.sum
 ifeq ($(OS), Windows_NT)
-	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/jpyd.exe ./cmd/jpyd
-	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/jpycli.exe ./cmd/jpycli
+	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/jpyxd.exe ./cmd/jpyxd
+	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/jpyxcli.exe ./cmd/jpyxcli
 else
-	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/jpyd ./cmd/jpyd
-	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/jpycli ./cmd/jpycli
+	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/jpyxd ./cmd/jpyxd
+	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/jpyxcli ./cmd/jpyxcli
 endif
 
 build-linux: go.sum
 	LEDGER_ENABLED=false GOOS=linux GOARCH=amd64 DETECTED_OS=linux $(MAKE) build
 
 install: go.sum
-	go install -mod=readonly $(BUILD_FLAGS) ./cmd/jpyd
-	go install -mod=readonly $(BUILD_FLAGS) ./cmd/jpycli
+	go install -mod=readonly $(BUILD_FLAGS) ./cmd/jpyxd
+	go install -mod=readonly $(BUILD_FLAGS) ./cmd/jpyxcli
 
 ########################################
 ### Tools & dependencies
@@ -126,12 +126,12 @@ format:
 ###                                Localnet                                 ###
 ###############################################################################
 
-build-docker-local-kava:
+build-docker-local-jpyx:
 	@$(MAKE) -C networks/local
 
 # Run a 4-node testnet locally
 localnet-start: build-linux localnet-stop
-	@if ! [ -f build/node0/jpyd/config/genesis.json ]; then docker run --rm -v $(CURDIR)/build:/jpyd:Z lcnem/jpyxnode testnet --v 4 -o . --starting-ip-address 192.168.10.2 --keyring-backend=test ; fi
+	@if ! [ -f build/node0/jpyxd/config/genesis.json ]; then docker run --rm -v $(CURDIR)/build:/jpyxd:Z lcnem/jpyxnode testnet --v 4 -o . --starting-ip-address 192.168.10.2 --keyring-backend=test ; fi
 	docker-compose up -d
 
 localnet-stop:
@@ -171,7 +171,7 @@ test-rest:
 
 # Run cli integration tests
 # `-p 4` to use 4 cores, `-tags cli_test` to tell go not to ignore the cli package
-# These tests use the `jpyd` or `jpycli` binaries in the build dir, or in `$BUILDDIR` if that env var is set.
+# These tests use the `jpyxd` or `jpyxcli` binaries in the build dir, or in `$BUILDDIR` if that env var is set.
 test-cli: build
 	@go test ./cli_test -tags cli_test -v -p 4
 
@@ -179,15 +179,15 @@ test-cli: build
 # This submits an AWS Batch job to run a lot of sims, each within a docker image. Results are uploaded to S3
 start-remote-sims:
 	# build the image used for running sims in, and tag it
-	docker build -f simulations/Dockerfile -t kava/kava-sim:master .
+	docker build -f simulations/Dockerfile -t lcnem/jpyx-sim:master .
 	# push that image to the hub
-	docker push kava/kava-sim:master
+	docker push lcnem/jpyx-sim:master
 	# submit an array job on AWS Batch, using 1000 seeds, spot instances
 	aws batch submit-job \
 		-—job-name "master-$(VERSION)" \
 		-—job-queue “simulation-1-queue-spot" \
 		-—array-properties size=1000 \
-		-—job-definition kava-sim-master \
+		-—job-definition jpyx-sim-master \
 		-—container-override environment=[{SIM_NAME=master-$(VERSION)}]
 
 .PHONY: all build-linux install clean build test test-cli test-all test-rest test-basic start-remote-sims

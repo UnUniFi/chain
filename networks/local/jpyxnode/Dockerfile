@@ -13,8 +13,8 @@ RUN apt-get update && \
     apt-get -y upgrade && \
     apt-get -y install curl jq file
 
-VOLUME [ /kvd ]
-WORKDIR /kvd
+VOLUME [ /jpyxd ]
+WORKDIR /jpyxd
 EXPOSE 26656 26657
 ENTRYPOINT ["/usr/bin/wrapper.sh"]
 CMD ["start"]

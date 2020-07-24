@@ -1,4 +1,4 @@
 all:
-	docker build --tag kava/kavanode kavanode
+	docker build --tag lcnem/jpyxnode jpyxnode
 
 .PHONY: all

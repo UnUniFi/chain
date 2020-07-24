@@ -1,16 +1,16 @@
 #! /bin/bash
 
-# kill kava if it is already running
+# kill jpy if it is already running
 pkill kvd && pkill kvcli
 
 # TODO import from development environment in envkey
 password=""
 validatorMnemonic="equip town gesture square tomorrow volume nephew minute witness beef rich gadget actress egg sing secret pole winter alarm law today check violin uncover"
-#   address: kava1ffv7nhd3z6sych2qpqkk03ec6hzkmufy0r2s4c
-#   address: kavavaloper1ffv7nhd3z6sych2qpqkk03ec6hzkmufyz4scd0
+#   address: jpyx1ffv7nhd3z6sych2qpqkk03ec6hzkmufy0r2s4c
+#   address: jpyvaloper1ffv7nhd3z6sych2qpqkk03ec6hzkmufyz4scd0
 faucet="chief access utility giant burger winner jar false naive mobile often perfect advice village love enroll embark bacon under flock harbor render father since"
-# address: kava1ls82zzghsx0exkpr52m8vht5jqs3un0ceysshz
-# address: kavavaloper1ls82zzghsx0exkpr52m8vht5jqs3un0c5j2c04
+# address: jpyx1ls82zzghsx0exkpr52m8vht5jqs3un0ceysshz
+# address: jpyvaloper1ls82zzghsx0exkpr52m8vht5jqs3un0c5j2c04
 # variables for home directories for kvd and kvcli
 kvdHome=/tmp/kvdHome
 kvcliHome=/tmp/kvcliHome
@@ -62,8 +62,8 @@ kvd --home $kvdHome collect-gentxs
 # set blocktime to ~1s
 jq '.app_state.mint.params.blocks_per_year = "31540000"' $genesis > $genesis.tmp && mv $genesis.tmp $genesis
 # update pricefeed information
-jq '.app_state.pricefeed.params.markets += [{"active": true, "base_asset": "xrp", "market_id": "xrp:usd", "oracles": ["kava1ffv7nhd3z6sych2qpqkk03ec6hzkmufy0r2s4c"], "quote_asset": "usd"}, {"active": true, "base_asset": "btc", "market_id": "btc:usd", "oracles": ["kava1ffv7nhd3z6sych2qpqkk03ec6hzkmufy0r2s4c"], "quote_asset": "usd"}]' $genesis > $genesis.tmp && mv $genesis.tmp $genesis
-jq '.app_state.pricefeed.posted_prices += [{"expiry": "2050-01-01T00:00:00Z", "market_id": "btc:usd", "oracle_address": "kava1ffv7nhd3z6sych2qpqkk03ec6hzkmufy0r2s4c", "price": "8700.0"}, {"expiry": "2050-01-01T00:00:00Z", "market_id": "xrp:usd", "oracle_address": "kava1ffv7nhd3z6sych2qpqkk03ec6hzkmufy0r2s4c", "price": "0.25"}]' $genesis > $genesis.tmp && mv $genesis.tmp $genesis
+jq '.app_state.pricefeed.params.markets += [{"active": true, "base_asset": "xrp", "market_id": "xrp:usd", "oracles": ["jpyx1ffv7nhd3z6sych2qpqkk03ec6hzkmufy0r2s4c"], "quote_asset": "usd"}, {"active": true, "base_asset": "btc", "market_id": "btc:usd", "oracles": ["jpyx1ffv7nhd3z6sych2qpqkk03ec6hzkmufy0r2s4c"], "quote_asset": "usd"}]' $genesis > $genesis.tmp && mv $genesis.tmp $genesis
+jq '.app_state.pricefeed.posted_prices += [{"expiry": "2050-01-01T00:00:00Z", "market_id": "btc:usd", "oracle_address": "jpyx1ffv7nhd3z6sych2qpqkk03ec6hzkmufy0r2s4c", "price": "8700.0"}, {"expiry": "2050-01-01T00:00:00Z", "market_id": "xrp:usd", "oracle_address": "jpyx1ffv7nhd3z6sych2qpqkk03ec6hzkmufy0r2s4c", "price": "0.25"}]' $genesis > $genesis.tmp && mv $genesis.tmp $genesis
 # now update cdp params
 jq '.app_state.cdp.params = { "circuit_breaker": false, "collateral_params": [ { "auction_size": "10000000000", "conversion_factor": "8", "debt_limit": { "amount": "1000000000000", "denom": "usdx" }, "denom": "btc", "liquidation_penalty": "0.05", "liquidation_ratio": "1.5", "market_id": "btc:usd", "prefix": 0, "stability_fee": "1.0000000007829977" }, { "auction_size": "100000000", "conversion_factor": "6", "debt_limit": { "amount": "1000000000000", "denom": "usdx" }, "denom": "xrp", "liquidation_penalty": "0.1", "liquidation_ratio": "2.0", "market_id": "xrp:usd", "prefix": 1, "stability_fee": "1.0000000007829977"} ], "debt_auction_threshold": "10000000000", "debt_param": { "conversion_factor": "6", "debt_floor": "10000000",  "denom": "usdx", "reference_asset": "usd",  "savings_rate": "0.95" }, "global_debt_limit": { "amount": "2000000000000", "denom": "usdx" }, "surplus_auction_threshold": "10000000000", "savings_distribution_frequency": "43200000000000" }' $genesis > $genesis.tmp && mv $genesis.tmp $genesis
 # start the blockchain in the background, wait until it starts making blocks

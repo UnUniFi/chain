@@ -19,9 +19,9 @@ RUN go mod download
 # Add source files
 COPY . .
 
-# Install jpyd, jpycli
+# Install jpyxd, jpyxcli
 #ENV LEDGER_ENABLED False
 RUN make install
 
-# Run jpyd by default, omit entrypoint to ease using container with kvcli
-CMD ["jpyd"]
+# Run jpyxd by default, omit entrypoint to ease using container with kvcli
+CMD ["jpyxd"]

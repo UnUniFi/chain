@@ -30,7 +30,7 @@ import (
 )
 
 func init() {
-	version.Name = "kava"
+	version.Name = "jpyx"
 	config := sdk.GetConfig()
 	app.SetBech32AddressPrefixes(config)
 	config.Seal()
@@ -271,7 +271,7 @@ func sendCoins() {
 		panic(err)
 	}
 
-	addrTo, err := sdk.AccAddressFromBech32("kava1ls82zzghsx0exkpr52m8vht5jqs3un0ceysshz") // Note: must match the faucet address
+	addrTo, err := sdk.AccAddressFromBech32("jpyx1ls82zzghsx0exkpr52m8vht5jqs3un0ceysshz") // Note: must match the faucet address
 	if err != nil {
 		panic(err)
 	}
@@ -297,7 +297,7 @@ func sendCoins() {
 
 func getTestAddress() (address string) {
 	// the test address - Note: this must match with startchain.sh
-	address = "kava1ffv7nhd3z6sych2qpqkk03ec6hzkmufy0r2s4c"
+	address = "jpyx1ffv7nhd3z6sych2qpqkk03ec6hzkmufy0r2s4c"
 	return address
 }
 
@@ -326,7 +326,7 @@ func sendDelegation() {
 	keybase := getKeybase()
 
 	// get the validator address for delegation
-	valAddr, err := sdk.ValAddressFromBech32("kavavaloper1ffv7nhd3z6sych2qpqkk03ec6hzkmufyz4scd0") // **FAUCET**
+	valAddr, err := sdk.ValAddressFromBech32("jpyvaloper1ffv7nhd3z6sych2qpqkk03ec6hzkmufyz4scd0") // **FAUCET**
 	if err != nil {
 		panic(err)
 	}
@@ -359,7 +359,7 @@ func sendUndelegation() {
 	keybase := getKeybase()
 
 	// get the validator address for delegation
-	valAddr, err := sdk.ValAddressFromBech32("kavavaloper1ffv7nhd3z6sych2qpqkk03ec6hzkmufyz4scd0") // **FAUCET**
+	valAddr, err := sdk.ValAddressFromBech32("jpyvaloper1ffv7nhd3z6sych2qpqkk03ec6hzkmufyz4scd0") // **FAUCET**
 	if err != nil {
 		panic(err)
 	}

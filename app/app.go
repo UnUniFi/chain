@@ -44,14 +44,14 @@ import (
 )
 
 const (
-	appName          = "jpy"
-	Bech32MainPrefix = "jpy"
+	appName          = "jpyx"
+	Bech32MainPrefix = "jpyx"
 )
 
 var (
 	// default home directories for expected binaries
-	DefaultCLIHome  = os.ExpandEnv("$HOME/.jpycli")
-	DefaultNodeHome = os.ExpandEnv("$HOME/.jpyd")
+	DefaultCLIHome  = os.ExpandEnv("$HOME/.jpyxcli")
+	DefaultNodeHome = os.ExpandEnv("$HOME/.jpyxd")
 
 	// ModuleBasics manages simple versions of full app modules. It's used for things such as codec registration and genesis file verification.
 	ModuleBasics = module.NewBasicManager(

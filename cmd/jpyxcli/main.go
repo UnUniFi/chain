@@ -45,8 +45,8 @@ func main() {
 	// with the cdc
 
 	rootCmd := &cobra.Command{
-		Use:   "jpycli",
-		Short: "Command line interface for interacting with jpyd",
+		Use:   "jpyxcli",
+		Short: "Command line interface for interacting with jpyxd",
 	}
 
 	// Add --chain-id to persistent flags and mark it required
