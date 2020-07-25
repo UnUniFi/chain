@@ -31,7 +31,7 @@ jobs:
         fi
 
     - name: Build
-      run: go build -v .
+      run: make install
 
-    - name: Test
-      run: go test -v .
+    # - name: Test
+    #   run: go test -v .
