@@ -62,7 +62,7 @@
       "deposit_params": {
         "min_deposit": [
           {
-            "denom": "stake",
+            "denom": "ujpst",
             "amount": "10000000"
           }
         ],
@@ -120,7 +120,7 @@
     },
     "crisis": {
       "constant_fee": {
-        "denom": "stake",
+        "denom": "ujpst",
         "amount": "1000"
       }
     },
@@ -266,7 +266,7 @@
         "annual_provisions": "0.000000000000000000"
       },
       "params": {
-        "mint_denom": "stake",
+        "mint_denom": "ujpst",
         "inflation_rate_change": "0.130000000000000000",
         "inflation_max": "0.200000000000000000",
         "inflation_min": "0.070000000000000000",
@@ -310,7 +310,7 @@
       "deposits": [],
       "starting_cdp_id": "1",
       "debt_denom": "debt",
-      "gov_denom": "stake",
+      "gov_denom": "ujpst",
       "previous_distribution_time": "1970-01-01T00:00:00Z"
     },
     "auction": {
@@ -330,7 +330,7 @@
         "max_validators": 100,
         "max_entries": 7,
         "historical_entries": 0,
-        "bond_denom": "stake"
+        "bond_denom": "ujpst"
       },
       "last_total_power": "0",
       "last_validator_powers": null,
