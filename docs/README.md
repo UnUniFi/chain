@@ -28,7 +28,7 @@ make install
 ## Setup genesis.json
 
 ```shell
-jpyxd init [moniker] jpyx-1
+jpyxd init [moniker] --chain-id jpyx-1
 cd /usr/local/src/github.com/lcnem/jpyx
 cp launch/genesis.json ~/.jpyxd/config/genesis.json
 ```
