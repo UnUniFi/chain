@@ -1,5 +1,5 @@
 {
-  "genesis_time": "2020-07-24T13:24:23.655091657Z",
+  "genesis_time": "2020-07-25T02:40:29.04401376Z",
   "chain_id": "jpyx-1",
   "consensus_params": {
     "block": {
@@ -12,11 +12,48 @@
       "max_age_duration": "172800000000000"
     },
     "validator": {
-      "pub_key_types": ["ed25519"]
+      "pub_key_types": [
+        "ed25519"
+      ]
     }
   },
   "app_hash": "",
   "app_state": {
+    "pricefeed": {
+      "params": {
+        "markets": []
+      },
+      "posted_prices": []
+    },
+    "distribution": {
+      "params": {
+        "community_tax": "0.020000000000000000",
+        "base_proposer_reward": "0.010000000000000000",
+        "bonus_proposer_reward": "0.040000000000000000",
+        "withdraw_addr_enabled": true
+      },
+      "fee_pool": {
+        "community_pool": []
+      },
+      "delegator_withdraw_infos": [],
+      "previous_proposer": "",
+      "outstanding_rewards": [],
+      "validator_accumulated_commissions": [],
+      "validator_historical_rewards": [],
+      "validator_current_rewards": [],
+      "delegator_starting_infos": [],
+      "validator_slash_events": []
+    },
+    "upgrade": {},
+    "validatorvesting": {
+      "previous_block_time": "1970-01-01T00:00:00Z"
+    },
+    "evidence": {
+      "params": {
+        "max_evidence_age": "120000000000"
+      },
+      "evidence": []
+    },
     "gov": {
       "starting_proposal_id": "1",
       "deposits": null,
@@ -40,14 +77,66 @@
         "veto": "0.334000000000000000"
       }
     },
-    "evidence": {
+    "auth": {
       "params": {
-        "max_evidence_age": "120000000000"
+        "max_memo_characters": "256",
+        "tx_sig_limit": "7",
+        "tx_size_cost_per_byte": "10",
+        "sig_verify_cost_ed25519": "590",
+        "sig_verify_cost_secp256k1": "1000"
       },
-      "evidence": []
+      "accounts": [
+        {
+          "type": "cosmos-sdk/Account",
+          "value": {
+            "address": "jpyx1ywlzznn4edvw4xag5c0s66xj53vfm4887pvvyq",
+            "coins": [
+              {
+                "denom": "ujpst",
+                "amount": "500000000000"
+              }
+            ],
+            "public_key": "",
+            "account_number": 0,
+            "sequence": 0
+          }
+        },
+        {
+          "type": "cosmos-sdk/Account",
+          "value": {
+            "address": "jpyx1gfln6xldk034l2zwrezuv26dkheq9ua4dckgwc",
+            "coins": [
+              {
+                "denom": "ujpst",
+                "amount": "500000000000"
+              }
+            ],
+            "public_key": "",
+            "account_number": 0,
+            "sequence": 0
+          }
+        }
+      ]
     },
-    "supply": {
-      "supply": []
+    "crisis": {
+      "constant_fee": {
+        "denom": "stake",
+        "amount": "1000"
+      }
+    },
+    "committee": {
+      "next_proposal_id": "1",
+      "committees": [],
+      "proposals": [],
+      "votes": []
+    },
+    "params": null,
+    "stakedist": {
+      "params": {
+        "active": false,
+        "periods": []
+      },
+      "previous_block_time": "1970-01-01T00:00:00Z"
     },
     "genutil": {
       "gentxs": [
@@ -75,8 +164,8 @@
                   "validator_address": "jpyxvaloper1gfln6xldk034l2zwrezuv26dkheq9ua4hc3wg6",
                   "pubkey": "jpyxvalconspub1zcjduepq96g5qglc5vkrae58jmnyg8sy5c03n6f3v5hf3upt5csdzpqwqezs7g3jea",
                   "value": {
-                    "denom": "stake",
-                    "amount": "500000000"
+                    "denom": "ujpst",
+                    "amount": "500000000000"
                   }
                 }
               }
@@ -91,7 +180,7 @@
                   "type": "tendermint/PubKeySecp256k1",
                   "value": "AsS4kETLBdVjHoMVMWwxjOkhwJtj8T2j27b2cPpHISMS"
                 },
-                "signature": "EaCBR/WP7COjtNyV5CDsX52/Sm4pni+Wf+vjoTKU8QlR7XysItz01lIDpDM33ZWrCKNZvtfo0vVji+NLdEZUpQ=="
+                "signature": "AmGV4A++OE8/AWlVcB9wV6Yvepvi/Lm1W+HqjyMu5aVyawBpv9tR0rDdKuTYKxiOqzj0o1aKywy01F5asPzppQ=="
               }
             ],
             "memo": "8b5e5b856f6b50f5a7563b6faed6f52b0facd62d@207.148.99.109:26656"
@@ -121,8 +210,8 @@
                   "validator_address": "jpyxvaloper1ywlzznn4edvw4xag5c0s66xj53vfm488ypt2zz",
                   "pubkey": "jpyxvalconspub1zcjduepq4936xehacy9haaw5k765rnc5ljzgxe3929xl4hmpqrdcawj3xxcq4jsjlt",
                   "value": {
-                    "denom": "stake",
-                    "amount": "500000000"
+                    "denom": "ujpst",
+                    "amount": "500000000000"
                   }
                 }
               }
@@ -137,7 +226,7 @@
                   "type": "tendermint/PubKeySecp256k1",
                   "value": "AnqHB7bE7FBOgiairZfDeMMUSYUSNmPYokB0joVwcYx1"
                 },
-                "signature": "Gzp7R58jZjsvE3dLFfPPktkFk7EmsMKm0H8hF62XMZcbfuT1cpkB8kJF+V4y4N8DSRhjln3qElb5ebXrHDBEGQ=="
+                "signature": "BlZ/nWU+TQJCQYMvTFsLOJ6bynYY/Di1qRIx+N9AhPB/x9NuGuYuArx+DpBDob+gBA3BsmLJzvcDG6epJY76KA=="
               }
             ],
             "memo": "a250ddf28d88bd542285e00c240e53e4123db58e@45.77.128.154:26656"
@@ -145,57 +234,56 @@
         }
       ]
     },
-    "slashing": {
+    "bep3": {
       "params": {
-        "signed_blocks_window": "100",
-        "min_signed_per_window": "0.500000000000000000",
-        "downtime_jail_duration": "600000000000",
-        "slash_fraction_double_sign": "0.050000000000000000",
-        "slash_fraction_downtime": "0.010000000000000000"
+        "bnb_deputy_address": "jpyx1s7gmzmjp5vlffawk9xch0cw9f4es06u9wn9hwq",
+        "bnb_deputy_fixed_fee": "1000",
+        "min_amount": "0",
+        "max_amount": "1000000000000",
+        "min_block_lock": "220",
+        "max_block_lock": "270",
+        "supported_assets": [
+          {
+            "denom": "bnb",
+            "coin_id": "714",
+            "limit": "350000000000000",
+            "active": true
+          }
+        ]
       },
-      "signing_infos": {},
-      "missed_blocks": {}
+      "atomic_swaps": [],
+      "assets_supplies": []
     },
     "bank": {
       "send_enabled": true
     },
-    "distribution": {
-      "params": {
-        "community_tax": "0.020000000000000000",
-        "base_proposer_reward": "0.010000000000000000",
-        "bonus_proposer_reward": "0.040000000000000000",
-        "withdraw_addr_enabled": true
-      },
-      "fee_pool": {
-        "community_pool": []
-      },
-      "delegator_withdraw_infos": [],
-      "previous_proposer": "",
-      "outstanding_rewards": [],
-      "validator_accumulated_commissions": [],
-      "validator_historical_rewards": [],
-      "validator_current_rewards": [],
-      "delegator_starting_infos": [],
-      "validator_slash_events": []
+    "supply": {
+      "supply": []
     },
-    "pricefeed": {
-      "params": {
-        "markets": []
+    "mint": {
+      "minter": {
+        "inflation": "0.130000000000000000",
+        "annual_provisions": "0.000000000000000000"
       },
-      "posted_prices": []
+      "params": {
+        "mint_denom": "stake",
+        "inflation_rate_change": "0.130000000000000000",
+        "inflation_max": "0.200000000000000000",
+        "inflation_min": "0.070000000000000000",
+        "goal_bonded": "0.670000000000000000",
+        "blocks_per_year": "6311520"
+      }
     },
-    "params": null,
-    "upgrade": {},
-    "auction": {
-      "next_auction_id": "1",
+    "incentive": {
       "params": {
-        "max_auction_duration": "172800000000000",
-        "bid_duration": "3600000000000",
-        "increment_surplus": "0.050000000000000000",
-        "increment_debt": "0.050000000000000000",
-        "increment_collateral": "0.050000000000000000"
+        "active": false,
+        "rewards": []
       },
-      "auctions": []
+      "previous_block_time": "1970-01-01T00:00:00Z",
+      "reward_periods": [],
+      "claim_periods": [],
+      "claims": [],
+      "next_claim_period_ids": []
     },
     "cdp": {
       "params": {
@@ -225,35 +313,16 @@
       "gov_denom": "stake",
       "previous_distribution_time": "1970-01-01T00:00:00Z"
     },
-    "validatorvesting": {
-      "previous_block_time": "1970-01-01T00:00:00Z"
-    },
-    "mint": {
-      "minter": {
-        "inflation": "0.130000000000000000",
-        "annual_provisions": "0.000000000000000000"
-      },
+    "auction": {
+      "next_auction_id": "1",
       "params": {
-        "mint_denom": "stake",
-        "inflation_rate_change": "0.130000000000000000",
-        "inflation_max": "0.200000000000000000",
-        "inflation_min": "0.070000000000000000",
-        "goal_bonded": "0.670000000000000000",
-        "blocks_per_year": "6311520"
-      }
-    },
-    "stakedist": {
-      "params": {
-        "active": false,
-        "periods": []
+        "max_auction_duration": "172800000000000",
+        "bid_duration": "3600000000000",
+        "increment_surplus": "0.050000000000000000",
+        "increment_debt": "0.050000000000000000",
+        "increment_collateral": "0.050000000000000000"
       },
-      "previous_block_time": "1970-01-01T00:00:00Z"
-    },
-    "committee": {
-      "next_proposal_id": "1",
-      "committees": [],
-      "proposals": [],
-      "votes": []
+      "auctions": []
     },
     "staking": {
       "params": {
@@ -271,83 +340,16 @@
       "redelegations": null,
       "exported": false
     },
-    "auth": {
+    "slashing": {
       "params": {
-        "max_memo_characters": "256",
-        "tx_sig_limit": "7",
-        "tx_size_cost_per_byte": "10",
-        "sig_verify_cost_ed25519": "590",
-        "sig_verify_cost_secp256k1": "1000"
+        "signed_blocks_window": "100",
+        "min_signed_per_window": "0.500000000000000000",
+        "downtime_jail_duration": "600000000000",
+        "slash_fraction_double_sign": "0.050000000000000000",
+        "slash_fraction_downtime": "0.010000000000000000"
       },
-      "accounts": [
-        {
-          "type": "cosmos-sdk/Account",
-          "value": {
-            "address": "jpyx1ywlzznn4edvw4xag5c0s66xj53vfm4887pvvyq",
-            "coins": [
-              {
-                "denom": "stake",
-                "amount": "500000000"
-              }
-            ],
-            "public_key": "",
-            "account_number": 0,
-            "sequence": 0
-          }
-        },
-        {
-          "type": "cosmos-sdk/Account",
-          "value": {
-            "address": "jpyx1gfln6xldk034l2zwrezuv26dkheq9ua4dckgwc",
-            "coins": [
-              {
-                "denom": "stake",
-                "amount": "500000000"
-              }
-            ],
-            "public_key": "",
-            "account_number": 0,
-            "sequence": 0
-          }
-        }
-      ]
-    },
-    "crisis": {
-      "constant_fee": {
-        "denom": "stake",
-        "amount": "1000"
-      }
-    },
-    "bep3": {
-      "params": {
-        "bnb_deputy_address": "jpyx1s7gmzmjp5vlffawk9xch0cw9f4es06u9wn9hwq",
-        "bnb_deputy_fixed_fee": "1000",
-        "min_amount": "0",
-        "max_amount": "1000000000000",
-        "min_block_lock": "220",
-        "max_block_lock": "270",
-        "supported_assets": [
-          {
-            "denom": "bnb",
-            "coin_id": "714",
-            "limit": "350000000000000",
-            "active": true
-          }
-        ]
-      },
-      "atomic_swaps": [],
-      "assets_supplies": []
-    },
-    "incentive": {
-      "params": {
-        "active": false,
-        "rewards": []
-      },
-      "previous_block_time": "1970-01-01T00:00:00Z",
-      "reward_periods": [],
-      "claim_periods": [],
-      "claims": [],
-      "next_claim_period_ids": []
+      "signing_infos": {},
+      "missed_blocks": {}
     }
   }
 }
