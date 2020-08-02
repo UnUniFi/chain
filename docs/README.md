@@ -72,7 +72,7 @@ systemctl enable jpyxd
 vi /etc/systemd/system/jpyxrest.service
 ```
 
-```toml
+```txt
 [Unit]
 Description=JPYX Rest
 After=network-online.target
