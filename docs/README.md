@@ -46,7 +46,7 @@ jpyxcli config trust-node true
 vi /etc/systemd/system/jpyxd.service
 ```
 
-```toml
+```txt
 [Unit]
 Description=JPYX Node
 After=network-online.target
