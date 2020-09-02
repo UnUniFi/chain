@@ -82,7 +82,8 @@
             "market_id": "bnb:jpy",
             "oracles": [
               "jpyx1r0ruge4gm7gtvc3fj7dlrld475whypy4c8x5vn",
-              "jpyx1td0c9hj0wv49jy26h9rsd2653m9lkkd5xy92ye"
+              "jpyx1td0c9hj0wv49jy26h9rsd2653m9lkkd5xy92ye",
+              "jpyx1wudcqmdlc3y7zqgz5wcuegm0x0637znr74nxpg"
             ],
             "quote_asset": "jpy"
           },
@@ -92,7 +93,8 @@
             "market_id": "bnb:jpy:30",
             "oracles": [
               "jpyx1r0ruge4gm7gtvc3fj7dlrld475whypy4c8x5vn",
-              "jpyx1td0c9hj0wv49jy26h9rsd2653m9lkkd5xy92ye"
+              "jpyx1td0c9hj0wv49jy26h9rsd2653m9lkkd5xy92ye",
+              "jpyx1wudcqmdlc3y7zqgz5wcuegm0x0637znr74nxpg"
             ],
             "quote_asset": "jpy"
           }

@@ -1,0 +1,59 @@
+version: "3"
+
+services:
+  jpyxd:
+    container_name: jpyxd
+    image: jpyx
+    volumes:
+      - ~/.jpyxd:/root/.jpyxd
+      - ~/.jpyxcli:/root/.jpyxcli
+    command: jpyxd start --rpc.laddr=tcp://0.0.0.0:26657
+    networks:
+      default:
+        ipv4_address: 192.168.10.1
+    ports:
+       - 26656:26656
+       - 26657:26657
+  jpyxcli:
+    container_name: jpyxcli
+    image: jpyx
+    depends_on:
+      - jpyxd
+    volumes:
+      - ~/.jpyxd:/root/.jpyxd
+      - ~/.jpyxcli:/root/.jpyxcli
+    networks:
+      default:
+        ipv4_address: 192.168.10.2
+    ports:
+      - 1317:1317
+    command: jpyxcli rest-server --laddr=tcp://0.0.0.0:1317 --node tcp://192.168.10.1:26657 --trust-node=true
+  pricefeed:
+    container_name: pricefeed
+    image: pricefeed
+    depends_on:
+      - jpyxcli
+    env_file:
+      - .env
+    environment:
+      LCD_URL: http://192.168.10.2:1317
+    networks:
+      - default
+  nginx:
+    container_name: nginx
+    image: nginx:1.15
+    depends_on:
+      - jpyxcli
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 8080:8080
+    networks:
+      - default
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.10.0/16
