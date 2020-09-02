@@ -39,7 +39,7 @@ function gen_tx() {
 
 sudo rm -rf ~/.jpyxd ~/.jpyxcli
 
-# docker build -t jpyx ../
+docker build -t jpyx ../
 
 docker run -v ~/.jpyxd:/root/.jpyxd -v ~/.jpyxcli:/root/.jpyxcli -it jpyx jpyxd init jpyx --chain-id "$CHAIN_ID"
 docker run -v ~/.jpyxd:/root/.jpyxd -v ~/.jpyxcli:/root/.jpyxcli -it jpyx jpyxcli config chain-id jpyx-1
