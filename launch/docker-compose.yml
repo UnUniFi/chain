@@ -39,17 +39,6 @@ services:
       LCD_URL: http://192.168.10.2:1317
     networks:
       - default
-  nginx:
-    container_name: nginx
-    image: nginx:1.15
-    depends_on:
-      - jpyxcli
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    ports:
-      - 8080:8080
-    networks:
-      - default
 networks:
   default:
     driver: bridge
