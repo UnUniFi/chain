@@ -1,10 +1,8 @@
 #!/bin/bash
 
-CHAIN_ID='jpyx-1'
+CHAIN_ID="jpyx-1"
 KEY_PASSPHRASE=''
-MAIN_NAME='main'
-MAIN_MNEMONIC=""
-VALIDATOR_NAME='validator'
+VALIDATOR_NAME=""
 VALIDATOR_ADDRESS=""
 VALIDATOR_MNEMONIC=""
 
@@ -42,12 +40,17 @@ sudo rm -rf ~/.jpyxd ~/.jpyxcli
 docker build -t jpyx ../
 
 docker run -v ~/.jpyxd:/root/.jpyxd -v ~/.jpyxcli:/root/.jpyxcli -it jpyx jpyxd init jpyx --chain-id "$CHAIN_ID"
-docker run -v ~/.jpyxd:/root/.jpyxd -v ~/.jpyxcli:/root/.jpyxcli -it jpyx jpyxcli config chain-id jpyx-1
+docker run -v ~/.jpyxd:/root/.jpyxd -v ~/.jpyxcli:/root/.jpyxcli -it jpyx jpyxcli config chain-id "$CHAIN_ID"
 docker run -v ~/.jpyxd:/root/.jpyxd -v ~/.jpyxcli:/root/.jpyxcli -it jpyx jpyxcli config trust-node true
-add_key "$MAIN_NAME" "$MAIN_MNEMONIC" "$KEY_PASSPHRASE"
 add_key "$VALIDATOR_NAME" "$VALIDATOR_MNEMONIC" "$KEY_PASSPHRASE"
 
-sudo cp ./genesis.json ~/.jpyxd/config/genesis.json
+KEY_EXISTS=$(jq ".app_state.pricefeed.params.markets[0].oracles | contains([\"$VALIDATOR_ADDRESS\"])" ./genesis.json)
+if [ $KEY_EXISTS = "false" ]; then
+  jq ".app_state.pricefeed.params.markets[].oracles += [\"$VALIDATOR_ADDRESS\"]" ./genesis.json > ./genesis.json.tmp
+  sudo mv ./genesis.json.tmp ~/.jpyxd/config/genesis.json
+else
+  sudo cp ./genesis.json ~/.jpyxd/config/genesis.json
+fi
 
 docker run -v ~/.jpyxd:/root/.jpyxd -v ~/.jpyxcli:/root/.jpyxcli -it jpyx jpyxd add-genesis-account $VALIDATOR_ADDRESS "500000000000ujsmn,500000000000token"
 gen_tx "500000000000ujsmn" "$VALIDATOR_NAME" "/root/.jpyxd/config/gentx/gentx-validator.json"  "$KEY_PASSPHRASE"
