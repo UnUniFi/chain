@@ -206,3 +206,7 @@ docs-build:
 	@cd docs && \
 	npm install && \
 	npm run build
+
+###
+bundle:
+	docker build . -t lcnem/jpyx

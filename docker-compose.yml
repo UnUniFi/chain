@@ -3,7 +3,7 @@ version: "3"
 services:
   jpyxd:
     container_name: jpyxd
-    image: jpyx
+    image: lcnem/jpyx
     volumes:
       - ~/.jpyxd:/root/.jpyxd
       - ~/.jpyxcli:/root/.jpyxcli
@@ -16,7 +16,7 @@ services:
        - 26657:26657
   jpyxcli:
     container_name: jpyxcli
-    image: jpyx
+    image: lcnem/jpyx
     depends_on:
       - jpyxd
     volumes:
@@ -40,8 +40,8 @@ services:
     networks:
       - default
   pricefeed:
-    container_name: pricefeed
-    image: pricefeed
+    container_name: botany-pricefeed
+    image: lcnem/botany-pricefeed
     depends_on:
       - jpyxcli
     env_file:
