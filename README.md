@@ -17,14 +17,23 @@ sudo systemctl enable docker
 sudo systemctl restart docker
 ```
 
-### Main
+### Join mainnet
 
 ```bash
 git clone https://github.com/lcnem/jpyx.git
 cd jpyx
 cp .env.example .env
 vi .env
+docker run -v ~/.jpyxd:/root/.jpyxd -v ~/.jpyxcli:/root/.jpyxcli lcnem/jpyx [moniker] --chain-id jpyx-1
+cp launch/genesis.json ~/.jpyxd/config/genesis.json
 docker-compose up -d
+```
+
+Confirm:
+
+```bash
+shasum -a 256 launch/genesis.json
+794d8cdcc2495274e29d5305643ed01b9de1895a9c6732287e6638a5e918b449  launch/genesis.json
 ```
 
 ## Deprecated way of Installation
