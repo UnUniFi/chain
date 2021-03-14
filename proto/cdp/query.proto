@@ -1,5 +1,5 @@
 syntax = "proto3";
-package KimuraYu45z.test.cdp;
+package lcnem.jpyx.cdp;
 
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";

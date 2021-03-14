@@ -1,5 +1,5 @@
 syntax = "proto3";
-package KimuraYu45z.test.incentive;
+package lcnem.jpyx.incentive;
 
 // this line is used by starport scaffolding # genesis/proto/import
 

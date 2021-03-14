@@ -78,7 +78,7 @@ func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
 }
 
 var _Query_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "KimuraYu45z.test.auction.Query",
+	ServiceName: "lcnem.jpyx.auction.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams:     []grpc.StreamDesc{},

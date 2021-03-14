@@ -60,7 +60,7 @@ func (m *GenesisState) XXX_DiscardUnknown() {
 var xxx_messageInfo_GenesisState proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*GenesisState)(nil), "KimuraYu45z.test.auction.GenesisState")
+	proto.RegisterType((*GenesisState)(nil), "lcnem.jpyx.auction.GenesisState")
 }
 
 func init() { proto.RegisterFile("auction/genesis.proto", fileDescriptor_ec0c841528c842a6) }

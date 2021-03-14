@@ -1,5 +1,5 @@
 syntax = "proto3";
-package KimuraYu45z.test.cdp;
+package lcnem.jpyx.cdp;
 
 // this line is used by starport scaffolding # genesis/proto/import
 

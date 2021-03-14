@@ -1,5 +1,5 @@
 syntax = "proto3";
-package KimuraYu45z.test.jsmndist;
+package lcnem.jpyx.jsmndist;
 
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";

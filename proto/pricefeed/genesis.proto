@@ -1,5 +1,5 @@
 syntax = "proto3";
-package KimuraYu45z.test.pricefeed;
+package lcnem.jpyx.pricefeed;
 
 // this line is used by starport scaffolding # genesis/proto/import
 
