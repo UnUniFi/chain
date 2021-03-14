@@ -1,0 +1,32 @@
+syntax = "proto3";
+package lcnem.jpyx.auction;
+
+option go_package = "github.com/lcnem/jpyx/x/auction/types";
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+message Auction {
+  string creator = 1;
+  string id = 2;
+}
+
+message DebtAuction {
+  string creator = 1;
+}
+
+message CollateralAuction {
+  string creator = 1;
+  string id = 2;
+}
+
+message WeightedAddresses {
+}
+
+message MsgPlaceBid {
+}
+
+message Params {
+  option (gogoproto.goproto_stringer)       = false;
+  
+}

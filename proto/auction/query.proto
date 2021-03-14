@@ -4,12 +4,47 @@ package lcnem.jpyx.auction;
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 // this line is used by starport scaffolding # 1
+import "auction/auction.proto";
 
 option go_package = "github.com/lcnem/jpyx/x/auction/types";
 
 // Query defines the gRPC querier service.
 service Query {
     // this line is used by starport scaffolding # 2
+	rpc Auction(QueryGetAuctionRequest) returns (QueryGetAuctionResponse) {
+		option (google.api.http).get = "/lcnem/jpyx/auction/auctions/{id}";
+	}
+	rpc AuctionAll(QueryAllAuctionRequest) returns (QueryAllAuctionResponse) {
+		option (google.api.http).get = "/lcnem/jpyx/auction/auctions";
+	}
+	rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+		option (google.api.http).get = "/lcnem/jpyx/auction/params";
+	}
+
 }
 
 // this line is used by starport scaffolding # 3
+message QueryGetAuctionRequest {
+	string id = 1;
+}
+
+message QueryGetAuctionResponse {
+	Auction Auction = 1;
+}
+
+message QueryAllAuctionRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllAuctionResponse {
+	repeated Auction Auction = 1;
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryParamsRequest {
+	string id = 1;
+}
+
+message QueryParamsResponse {
+	Auction Auction = 1;
+}

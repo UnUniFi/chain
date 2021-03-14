@@ -1,6 +1,6 @@
 package types
 
-// this line is used by starport scaffolding # genesis/types/import
+import "fmt"
 
 // DefaultIndex is the default capability global index
 const DefaultIndex uint64 = 1
@@ -9,6 +9,7 @@ const DefaultIndex uint64 = 1
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		// this line is used by starport scaffolding # genesis/types/default
+		AuctionList: []*Auction{},
 	}
 }
 
@@ -16,6 +17,15 @@ func DefaultGenesis() *GenesisState {
 // failure.
 func (gs GenesisState) Validate() error {
 	// this line is used by starport scaffolding # genesis/types/validate
+	// Check for duplicated ID in auction
+	auctionIdMap := make(map[string]bool)
+
+	for _, elem := range gs.AuctionList {
+		if _, ok := auctionIdMap[elem.Id]; ok {
+			return fmt.Errorf("duplicated id for auction")
+		}
+		auctionIdMap[elem.Id] = true
+	}
 
 	return nil
 }

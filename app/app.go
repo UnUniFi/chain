@@ -75,7 +75,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"github.com/cosmos/cosmos-sdk/x/supply"
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
@@ -163,10 +162,10 @@ var (
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		auctiontypes.ModuleName:        nil,
-		cdptypes.ModuleName:            {supply.Minter, supply.Burner},
-		cdptypes.LiquidatorMacc:        {supply.Minter, supply.Burner},
-		cdptypes.SavingsRateMacc:       {supply.Minter},
-		jsmndisttypes.ModuleName:       {supply.Minter},
+		cdptypes.ModuleName:            {authtypes.Minter, authtypes.Burner},
+		cdptypes.LiquidatorMacc:        {authtypes.Minter, authtypes.Burner},
+		cdptypes.SavingsRateMacc:       {authtypes.Minter},
+		jsmndisttypes.ModuleName:       {authtypes.Minter},
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -356,37 +355,41 @@ func New(
 		appCodec,
 		keys[auctiontypes.StoreKey],
 		keys[auctiontypes.MemStoreKey],
-		app.supplyKeeper,
+		app.GetSubspace(auctiontypes.ModuleName),
+		app.BankKeeper,
 	)
 	cdpKeeper := *cdpkeeper.NewKeeper(
 		appCodec,
 		keys[cdptypes.StoreKey],
 		keys[cdptypes.MemStoreKey],
-		app.pricefeedKeeper,
+		app.GetSubspace(cdptypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
 		app.auctionKeeper,
-		app.supplyKeeper,
-		app.accountKeeper,
-		mAccPerms,
+		app.pricefeedKeeper,
 	)
 	app.incentiveKeeper = *incentivekeeper.NewKeeper(
 		appCodec,
 		keys[incentivetypes.StoreKey],
 		keys[incentivetypes.MemStoreKey],
-		app.supplyKeeper,
-		&cdpKeeper,
-		app.accountKeeper,
+		app.GetSubspace(incentivetypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
 		&stakingKeeper,
+		&cdpKeeper,
 	)
 	app.jsmndistKeeper = *jsmndistkeeper.NewKeeper(
 		appCodec,
 		keys[jsmndisttypes.StoreKey],
 		keys[jsmndisttypes.MemStoreKey],
-		app.supplyKeeper,
+		app.GetSubspace(jsmndisttypes.ModuleName),
+		app.BankKeeper,
 	)
 	app.pricefeedKeeper = *pricefeedkeeper.NewKeeper(
 		appCodec,
 		keys[pricefeedtypes.StoreKey],
 		keys[pricefeedtypes.MemStoreKey],
+		app.GetSubspace(pricefeedtypes.ModuleName),
 	)
 
 	// register the staking hooks
@@ -400,7 +403,7 @@ func New(
 		&stakingKeeper, govRouter,
 	)
 
-	app.cdpKeeper = *cdpkeeper.SetHooks(cdp.NewMultiCDPHooks(app.incentiveKeeper.Hooks()))
+	app.cdpKeeper = *cdpKeeper.SetHooks(cdptypes.NewMultiCDPHooks(app.incentiveKeeper.Hooks()))
 
 	/****  Module Options ****/
 
@@ -432,11 +435,11 @@ func New(
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
-		auction.NewAppModule(appCodec, app.auctionKeeper, app.accountKeeper, app.supplyKeeper),
-		cdp.NewAppModule(appCodec, app.cdpKeeper, app.accountKeeper, app.pricefeedKeeper, app.supplyKeeper),
-		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.accountKeeper),
-		jsmndist.NewAppModule(appCodec, app.jsmndistKeeper, app.supplyKeeper),
-		incentive.NewAppModule(appCodec, app.incentiveKeeper, app.accountKeeper, app.supplyKeeper, app.cdpKeeper),
+		auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
+		cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.pricefeedKeeper),
+		incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
+		jsmndist.NewAppModule(appCodec, app.jsmndistKeeper, app.BankKeeper),
+		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that

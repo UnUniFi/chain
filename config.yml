@@ -1,0 +1,8 @@
+accounts:
+  - name: alice
+    coins: ["1000jpyx", "100000000jsmn"]
+  - name: bob
+    coins: ["500jpyx"]
+validator:
+  name: alice
+  staked: "100000000jsmn"
