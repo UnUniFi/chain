@@ -26,36 +26,65 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 	}
 
 	incentiveTxCmd.AddCommand(flags.PostCommands(
-		getCmdClaim(cdc),
+		getCmdClaimCdp(cdc),
+		getCmdClaimHard(cdc),
 	)...)
 
 	return incentiveTxCmd
-
 }
 
-func getCmdClaim(cdc *codec.Codec) *cobra.Command {
+func getCmdClaimCdp(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
-		Use:   "claim [owner] [denom]",
-		Short: "claim rewards for owner and denom",
+		Use:   "claim-cdp [multiplier]",
+		Short: "claim CDP rewards using a given multiplier",
 		Long: strings.TrimSpace(
-			fmt.Sprintf(`Claim any outstanding rewards owned by owner for the input denom,
+			fmt.Sprintf(`Claim sender's outstanding CDP rewards using a given multiplier
 
 			Example:
-			$ %s tx %s claim kava15qdefkmwswysgg4qxgqpqr35k3m49pkx2jdfnw bnb
+			$ %s tx %s claim-cdp large
 		`, version.ClientName, types.ModuleName),
 		),
-		Args: cobra.ExactArgs(2),
+		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			owner, err := sdk.AccAddressFromBech32(args[0])
+
+			sender := cliCtx.GetFromAddress()
+			multiplier := args[0]
+
+			msg := types.NewMsgClaimJPYXMintingReward(sender, multiplier)
+			err := msg.ValidateBasic()
 			if err != nil {
 				return err
 			}
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+}
 
-			msg := types.NewMsgClaimReward(owner, args[1])
-			err = msg.ValidateBasic()
+func getCmdClaimHard(cdc *codec.Codec) *cobra.Command {
+	return &cobra.Command{
+		Use:   "claim-hard [multiplier]",
+		Short: "claim sender's Hard module rewards using a given multiplier",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Claim sender's outstanding Hard rewards for deposit/borrow/delegate using given multiplier
+
+			Example:
+			$ %s tx %s claim-hard large
+		`, version.ClientName, types.ModuleName),
+		),
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			inBuf := bufio.NewReader(cmd.InOrStdin())
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
+
+			sender := cliCtx.GetFromAddress()
+			multiplier := args[0]
+
+			msg := types.NewMsgClaimHardLiquidityProviderReward(sender, multiplier)
+			err := msg.ValidateBasic()
 			if err != nil {
 				return err
 			}

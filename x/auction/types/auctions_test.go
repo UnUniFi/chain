@@ -13,19 +13,19 @@ const (
 	TestInitiatorModuleName = "liquidator"
 	TestLotDenom            = "jpyx"
 	TestLotAmount           = 100
-	TestBidDenom            = "stake"
+	TestBidDenom            = "kava"
 	TestBidAmount           = 20
 	TestDebtDenom           = "debt"
 	TestDebtAmount1         = 20
 	TestDebtAmount2         = 15
 	TestExtraEndTime        = 10000
 	TestAuctionID           = 9999123
-	testAccAddress1         = "jpyx1qcfdf69js922qrdr4yaww3ax7gjml6pd39p8lj"
-	testAccAddress2         = "jpyx1pdfav2cjhry9k79nu6r8kgknnjtq6a7rcr0qlr"
+	testAccAddress1         = "kava1qcfdf69js922qrdr4yaww3ax7gjml6pd39p8lj"
+	testAccAddress2         = "kava1pdfav2cjhry9k79nu6r8kgknnjtq6a7rcr0qlr"
 )
 
 func init() {
-	sdk.GetConfig().SetBech32PrefixForAccount("jpyx", "jpyx"+sdk.PrefixPublic)
+	sdk.GetConfig().SetBech32PrefixForAccount("kava", "kava"+sdk.PrefixPublic)
 }
 
 func d(amount string) sdk.Dec               { return sdk.MustNewDecFromStr(amount) }
@@ -114,9 +114,9 @@ func TestBaseAuctionValidate(t *testing.T) {
 			BaseAuction{
 				ID:              1,
 				Initiator:       testAccAddress1,
-				Lot:             c("stake", 1),
+				Lot:             c("kava", 1),
 				Bidder:          addr1,
-				Bid:             c("stake", 1),
+				Bid:             c("kava", 1),
 				EndTime:         now,
 				MaxEndTime:      now,
 				HasReceivedBids: true,
@@ -145,7 +145,7 @@ func TestBaseAuctionValidate(t *testing.T) {
 			BaseAuction{
 				ID:        1,
 				Initiator: testAccAddress1,
-				Lot:       c("stake", 1),
+				Lot:       c("kava", 1),
 				Bidder:    sdk.AccAddress{},
 			},
 			false,
@@ -155,7 +155,7 @@ func TestBaseAuctionValidate(t *testing.T) {
 			BaseAuction{
 				ID:        1,
 				Initiator: testAccAddress1,
-				Lot:       c("stake", 1),
+				Lot:       c("kava", 1),
 				Bidder:    addr1[:10],
 			},
 			false,
@@ -165,7 +165,7 @@ func TestBaseAuctionValidate(t *testing.T) {
 			BaseAuction{
 				ID:        1,
 				Initiator: testAccAddress1,
-				Lot:       c("stake", 1),
+				Lot:       c("kava", 1),
 				Bidder:    addr1,
 				Bid:       sdk.Coin{Denom: "DENOM", Amount: sdk.NewInt(1)},
 			},
@@ -176,9 +176,9 @@ func TestBaseAuctionValidate(t *testing.T) {
 			BaseAuction{
 				ID:        1,
 				Initiator: testAccAddress1,
-				Lot:       c("stake", 1),
+				Lot:       c("kava", 1),
 				Bidder:    addr1,
-				Bid:       c("stake", 1),
+				Bid:       c("kava", 1),
 				EndTime:   time.Unix(0, 0),
 			},
 			false,
@@ -188,9 +188,9 @@ func TestBaseAuctionValidate(t *testing.T) {
 			BaseAuction{
 				ID:         1,
 				Initiator:  testAccAddress1,
-				Lot:        c("stake", 1),
+				Lot:        c("kava", 1),
 				Bidder:     addr1,
-				Bid:        c("stake", 1),
+				Bid:        c("kava", 1),
 				EndTime:    now.Add(time.Minute),
 				MaxEndTime: now,
 			},
@@ -227,14 +227,14 @@ func TestDebtAuctionValidate(t *testing.T) {
 				BaseAuction: BaseAuction{
 					ID:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("stake", 1),
+					Lot:             c("kava", 1),
 					Bidder:          addr1,
-					Bid:             c("stake", 1),
+					Bid:             c("kava", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
 				},
-				CorrespondingDebt: c("stake", 1),
+				CorrespondingDebt: c("kava", 1),
 			},
 			true,
 		},
@@ -244,9 +244,9 @@ func TestDebtAuctionValidate(t *testing.T) {
 				BaseAuction: BaseAuction{
 					ID:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("stake", 1),
+					Lot:             c("kava", 1),
 					Bidder:          addr1,
-					Bid:             c("stake", 1),
+					Bid:             c("kava", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
@@ -286,15 +286,15 @@ func TestCollateralAuctionValidate(t *testing.T) {
 				BaseAuction: BaseAuction{
 					ID:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("stake", 1),
+					Lot:             c("kava", 1),
 					Bidder:          addr1,
-					Bid:             c("stake", 1),
+					Bid:             c("kava", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
 				},
-				CorrespondingDebt: c("stake", 1),
-				MaxBid:            c("stake", 1),
+				CorrespondingDebt: c("kava", 1),
+				MaxBid:            c("kava", 1),
 				LotReturns: WeightedAddresses{
 					Addresses: []sdk.AccAddress{addr1},
 					Weights:   []sdk.Int{sdk.NewInt(1)},
@@ -308,9 +308,9 @@ func TestCollateralAuctionValidate(t *testing.T) {
 				BaseAuction: BaseAuction{
 					ID:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("stake", 1),
+					Lot:             c("kava", 1),
 					Bidder:          addr1,
-					Bid:             c("stake", 1),
+					Bid:             c("kava", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
@@ -325,14 +325,14 @@ func TestCollateralAuctionValidate(t *testing.T) {
 				BaseAuction: BaseAuction{
 					ID:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("stake", 1),
+					Lot:             c("kava", 1),
 					Bidder:          addr1,
-					Bid:             c("stake", 1),
+					Bid:             c("kava", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
 				},
-				CorrespondingDebt: c("stake", 1),
+				CorrespondingDebt: c("kava", 1),
 				MaxBid:            sdk.Coin{Denom: "DENOM", Amount: sdk.NewInt(1)},
 			},
 			false,
@@ -343,15 +343,15 @@ func TestCollateralAuctionValidate(t *testing.T) {
 				BaseAuction: BaseAuction{
 					ID:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("stake", 1),
+					Lot:             c("kava", 1),
 					Bidder:          addr1,
-					Bid:             c("stake", 1),
+					Bid:             c("kava", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
 				},
-				CorrespondingDebt: c("stake", 1),
-				MaxBid:            c("stake", 1),
+				CorrespondingDebt: c("kava", 1),
+				MaxBid:            c("kava", 1),
 				LotReturns: WeightedAddresses{
 					Addresses: []sdk.AccAddress{nil},
 					Weights:   []sdk.Int{sdk.NewInt(1)},

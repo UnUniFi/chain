@@ -13,36 +13,33 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 		switch msg := msg.(type) {
-		case types.MsgClaimReward:
-			return handleMsgClaimReward(ctx, k, msg)
+		case types.MsgClaimJPYXMintingReward:
+			return handleMsgClaimJPYXMintingReward(ctx, k, msg)
+		case types.MsgClaimHardLiquidityProviderReward:
+			return handleMsgClaimHardLiquidityProviderReward(ctx, k, msg)
 		default:
 			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized %s message type: %T", ModuleName, msg)
-
 		}
 	}
 }
 
-func handleMsgClaimReward(ctx sdk.Context, k keeper.Keeper, msg types.MsgClaimReward) (*sdk.Result, error) {
+func handleMsgClaimJPYXMintingReward(ctx sdk.Context, k keeper.Keeper, msg types.MsgClaimJPYXMintingReward) (*sdk.Result, error) {
 
-	claims, found := k.GetClaimsByAddressAndDenom(ctx, msg.Sender, msg.Denom)
-	if !found {
-		return nil, sdkerrors.Wrapf(types.ErrNoClaimsFound, "address: %s, denom: %s", msg.Sender, msg.Denom)
+	err := k.ClaimJPYXMintingReward(ctx, msg.Sender, types.MultiplierName(msg.MultiplierName))
+	if err != nil {
+		return nil, err
 	}
+	return &sdk.Result{
+		Events: ctx.EventManager().Events(),
+	}, nil
+}
 
-	for _, claim := range claims {
-		err := k.PayoutClaim(ctx, claim.Owner, claim.Denom, claim.ClaimPeriodID)
-		if err != nil {
-			return nil, err
-		}
+func handleMsgClaimHardLiquidityProviderReward(ctx sdk.Context, k keeper.Keeper, msg types.MsgClaimHardLiquidityProviderReward) (*sdk.Result, error) {
+
+	err := k.ClaimHardReward(ctx, msg.Sender, types.MultiplierName(msg.MultiplierName))
+	if err != nil {
+		return nil, err
 	}
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender.String()),
-		),
-	)
-
 	return &sdk.Result{
 		Events: ctx.EventManager().Events(),
 	}, nil

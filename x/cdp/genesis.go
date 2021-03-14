@@ -24,10 +24,6 @@ func InitGenesis(ctx sdk.Context, k Keeper, pk types.PricefeedKeeper, sk types.S
 	if liqModuleAcc == nil {
 		panic(fmt.Sprintf("%s module account has not been set", LiquidatorMacc))
 	}
-	savingsRateMacc := sk.GetModuleAccount(ctx, SavingsRateMacc)
-	if savingsRateMacc == nil {
-		panic(fmt.Sprintf("%s module account has not been set", SavingsRateMacc))
-	}
 
 	// validate denoms - check that any collaterals in the params are in the pricefeed,
 	// pricefeed MUST call InitGenesis before cdp
@@ -57,11 +53,16 @@ func InitGenesis(ctx sdk.Context, k Keeper, pk types.PricefeedKeeper, sk types.S
 
 	k.SetParams(ctx, gs.Params)
 
-	// set the per second fee rate for each collateral type
-	for _, cp := range gs.Params.CollateralParams {
-		k.SetTotalPrincipal(ctx, cp.Denom, gs.Params.DebtParam.Denom, sdk.ZeroInt())
+	for _, gat := range gs.PreviousAccumulationTimes {
+		k.SetInterestFactor(ctx, gat.CollateralType, gat.InterestFactor)
+		if gat.PreviousAccumulationTime.Unix() > 0 {
+			k.SetPreviousAccrualTime(ctx, gat.CollateralType, gat.PreviousAccumulationTime)
+		}
 	}
 
+	for _, gtp := range gs.TotalPrincipals {
+		k.SetTotalPrincipal(ctx, gtp.CollateralType, types.DefaultStableDenom, gtp.TotalPrincipal)
+	}
 	// add cdps
 	for _, cdp := range gs.CDPs {
 		if cdp.ID == gs.StartingCdpID {
@@ -72,22 +73,18 @@ func InitGenesis(ctx sdk.Context, k Keeper, pk types.PricefeedKeeper, sk types.S
 			panic(fmt.Sprintf("error setting cdp: %v", err))
 		}
 		k.IndexCdpByOwner(ctx, cdp)
-		ratio := k.CalculateCollateralToDebtRatio(ctx, cdp.Collateral, cdp.GetTotalPrincipal())
-		k.IndexCdpByCollateralRatio(ctx, cdp.Collateral.Denom, cdp.ID, ratio)
-		k.IncrementTotalPrincipal(ctx, cdp.Collateral.Denom, cdp.GetTotalPrincipal())
+		ratio := k.CalculateCollateralToDebtRatio(ctx, cdp.Collateral, cdp.Type, cdp.GetTotalPrincipal())
+		k.IndexCdpByCollateralRatio(ctx, cdp.Type, cdp.ID, ratio)
 	}
 
 	k.SetNextCdpID(ctx, gs.StartingCdpID)
 	k.SetDebtDenom(ctx, gs.DebtDenom)
 	k.SetGovDenom(ctx, gs.GovDenom)
-	// only set the previous block time if it's different than default
-	if !gs.PreviousDistributionTime.Equal(types.DefaultPreviousDistributionTime) {
-		k.SetPreviousSavingsDistribution(ctx, gs.PreviousDistributionTime)
-	}
 
 	for _, d := range gs.Deposits {
 		k.SetDeposit(ctx, d)
 	}
+
 }
 
 // ExportGenesis export genesis state for cdp module
@@ -97,7 +94,8 @@ func ExportGenesis(ctx sdk.Context, k Keeper) GenesisState {
 	cdps := CDPs{}
 	deposits := Deposits{}
 	k.IterateAllCdps(ctx, func(cdp CDP) (stop bool) {
-		cdps = append(cdps, cdp)
+		syncedCdp := k.SynchronizeInterest(ctx, cdp)
+		cdps = append(cdps, syncedCdp)
 		k.IterateDeposits(ctx, cdp.ID, func(deposit Deposit) (stop bool) {
 			deposits = append(deposits, deposit)
 			return false
@@ -109,10 +107,28 @@ func ExportGenesis(ctx sdk.Context, k Keeper) GenesisState {
 	debtDenom := k.GetDebtDenom(ctx)
 	govDenom := k.GetGovDenom(ctx)
 
-	previousDistributionTime, found := k.GetPreviousSavingsDistribution(ctx)
-	if !found {
-		previousDistributionTime = DefaultPreviousDistributionTime
+	var previousAccumTimes types.GenesisAccumulationTimes
+	var totalPrincipals types.GenesisTotalPrincipals
+
+	for _, cp := range params.CollateralParams {
+		interestFactor, found := k.GetInterestFactor(ctx, cp.Type)
+		if !found {
+			interestFactor = sdk.OneDec()
+		}
+		// Governance param changes happen in the end blocker. If a new collateral type is added and then the chain
+		// is exported before the BeginBlocker can run, previous accrual time won't be found. We can't set it to
+		// current block time because it is not available in the export ctx. We should panic instead of exporting
+		// bad state.
+		previousAccumTime, f := k.GetPreviousAccrualTime(ctx, cp.Type)
+		if !f {
+			panic(fmt.Sprintf("expected previous accrual time to be set in state for %s", cp.Type))
+		}
+		previousAccumTimes = append(previousAccumTimes, types.NewGenesisAccumulationTime(cp.Type, previousAccumTime, interestFactor))
+
+		tp := k.GetTotalPrincipal(ctx, cp.Type, types.DefaultStableDenom)
+		genTotalPrincipal := types.NewGenesisTotalPrincipal(cp.Type, tp)
+		totalPrincipals = append(totalPrincipals, genTotalPrincipal)
 	}
 
-	return NewGenesisState(params, cdps, deposits, cdpID, debtDenom, govDenom, previousDistributionTime)
+	return NewGenesisState(params, cdps, deposits, cdpID, debtDenom, govDenom, previousAccumTimes, totalPrincipals)
 }

@@ -2,18 +2,22 @@ package keeper_test
 
 import (
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/auth"
 	authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
+	"github.com/cosmos/cosmos-sdk/x/auth/vesting"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	supplyexported "github.com/cosmos/cosmos-sdk/x/supply/exported"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/lcnem/jpyx/app"
+	committeekeeper "github.com/lcnem/jpyx/x/committee/keeper"
+	hardkeeper "github.com/lcnem/jpyx/x/hard/keeper"
 	"github.com/lcnem/jpyx/x/incentive/keeper"
 	"github.com/lcnem/jpyx/x/incentive/types"
 )
@@ -22,18 +26,24 @@ import (
 type KeeperTestSuite struct {
 	suite.Suite
 
-	keeper keeper.Keeper
-	app    app.TestApp
-	ctx    sdk.Context
-	addrs  []sdk.AccAddress
+	keeper          keeper.Keeper
+	hardKeeper      hardkeeper.Keeper
+	stakingKeeper   stakingkeeper.Keeper
+	committeeKeeper committeekeeper.Keeper
+	app             app.TestApp
+	ctx             sdk.Context
+	addrs           []sdk.AccAddress
+	validatorAddrs  []sdk.ValAddress
 }
 
 // The default state used by each test
 func (suite *KeeperTestSuite) SetupTest() {
 	tApp := app.NewTestApp()
 	ctx := tApp.NewContext(true, abci.Header{Height: 1, Time: tmtime.Now()})
+
 	tApp.InitializeFromGenesisStates()
-	_, addrs := app.GeneratePrivKeyAddressPairs(1)
+
+	_, addrs := app.GeneratePrivKeyAddressPairs(5)
 	keeper := tApp.GetIncentiveKeeper()
 	suite.app = tApp
 	suite.ctx = ctx
@@ -51,126 +61,62 @@ func (suite *KeeperTestSuite) getModuleAccount(name string) supplyexported.Modul
 	return sk.GetModuleAccount(suite.ctx, name)
 }
 
-func (suite *KeeperTestSuite) TestGetSetDeleteRewardPeriod() {
-	rp := types.NewRewardPeriod("bnb", suite.ctx.BlockTime(), suite.ctx.BlockTime().Add(time.Hour*168), c("stake", 100000000), suite.ctx.BlockTime().Add(time.Hour*168*2), time.Hour*8766)
-	_, found := suite.keeper.GetRewardPeriod(suite.ctx, "bnb")
-	suite.False(found)
-	suite.NotPanics(func() {
-		suite.keeper.SetRewardPeriod(suite.ctx, rp)
+func (suite *KeeperTestSuite) TestGetSetDeleteJPYXMintingClaim() {
+	c := types.NewJPYXMintingClaim(suite.addrs[0], c("ujsmn", 1000000), types.RewardIndexes{types.NewRewardIndex("bnb-a", sdk.ZeroDec())})
+	_, found := suite.keeper.GetJPYXMintingClaim(suite.ctx, suite.addrs[0])
+	suite.Require().False(found)
+	suite.Require().NotPanics(func() {
+		suite.keeper.SetJPYXMintingClaim(suite.ctx, c)
 	})
-	testRP, found := suite.keeper.GetRewardPeriod(suite.ctx, "bnb")
-	suite.True(found)
-	suite.Equal(rp, testRP)
-	suite.NotPanics(func() {
-		suite.keeper.DeleteRewardPeriod(suite.ctx, "bnb")
+	testC, found := suite.keeper.GetJPYXMintingClaim(suite.ctx, suite.addrs[0])
+	suite.Require().True(found)
+	suite.Require().Equal(c, testC)
+	suite.Require().NotPanics(func() {
+		suite.keeper.DeleteJPYXMintingClaim(suite.ctx, suite.addrs[0])
 	})
-	_, found = suite.keeper.GetRewardPeriod(suite.ctx, "bnb")
-	suite.False(found)
+	_, found = suite.keeper.GetJPYXMintingClaim(suite.ctx, suite.addrs[0])
+	suite.Require().False(found)
 }
 
-func (suite *KeeperTestSuite) TestGetSetDeleteClaimPeriod() {
-	cp := types.NewClaimPeriod("bnb", 1, suite.ctx.BlockTime().Add(time.Hour*168), time.Hour*8766)
-	_, found := suite.keeper.GetClaimPeriod(suite.ctx, 1, "bnb")
-	suite.False(found)
-	suite.NotPanics(func() {
-		suite.keeper.SetClaimPeriod(suite.ctx, cp)
-	})
-	testCP, found := suite.keeper.GetClaimPeriod(suite.ctx, 1, "bnb")
-	suite.True(found)
-	suite.Equal(cp, testCP)
-	suite.NotPanics(func() {
-		suite.keeper.DeleteClaimPeriod(suite.ctx, 1, "bnb")
-	})
-	_, found = suite.keeper.GetClaimPeriod(suite.ctx, 1, "bnb")
-	suite.False(found)
-}
-
-func (suite *KeeperTestSuite) TestGetSetClaimPeriodID() {
-	suite.Panics(func() {
-		suite.keeper.GetNextClaimPeriodID(suite.ctx, "bnb")
-	})
-	suite.NotPanics(func() {
-		suite.keeper.SetNextClaimPeriodID(suite.ctx, "bnb", 1)
-	})
-	testID := suite.keeper.GetNextClaimPeriodID(suite.ctx, "bnb")
-	suite.Equal(uint64(1), testID)
-}
-
-func (suite *KeeperTestSuite) TestGetSetDeleteClaim() {
-	c := types.NewClaim(suite.addrs[0], c("stake", 1000000), "bnb", 1)
-	_, found := suite.keeper.GetClaim(suite.ctx, suite.addrs[0], "bnb", 1)
-	suite.False(found)
-	suite.NotPanics(func() {
-		suite.keeper.SetClaim(suite.ctx, c)
-	})
-	testC, found := suite.keeper.GetClaim(suite.ctx, suite.addrs[0], "bnb", 1)
-	suite.True(found)
-	suite.Equal(c, testC)
-	suite.NotPanics(func() {
-		suite.keeper.DeleteClaim(suite.ctx, suite.addrs[0], "bnb", 1)
-	})
-	_, found = suite.keeper.GetClaim(suite.ctx, suite.addrs[0], "bnb", 1)
-	suite.False(found)
-}
-
-func (suite *KeeperTestSuite) TestIterateMethods() {
-	suite.addObjectsToStore() // adds 2 objects of each type to the store
-
-	var rewardPeriods types.RewardPeriods
-	suite.keeper.IterateRewardPeriods(suite.ctx, func(rp types.RewardPeriod) (stop bool) {
-		rewardPeriods = append(rewardPeriods, rp)
-		return false
-	})
-	suite.Equal(2, len(rewardPeriods))
-
-	var claimPeriods types.ClaimPeriods
-	suite.keeper.IterateClaimPeriods(suite.ctx, func(cp types.ClaimPeriod) (stop bool) {
-		claimPeriods = append(claimPeriods, cp)
-		return false
-	})
-	suite.Equal(2, len(claimPeriods))
-
-	var claims types.Claims
-	suite.keeper.IterateClaims(suite.ctx, func(c types.Claim) (stop bool) {
+func (suite *KeeperTestSuite) TestIterateJPYXMintingClaims() {
+	for i := 0; i < len(suite.addrs); i++ {
+		c := types.NewJPYXMintingClaim(suite.addrs[i], c("ujsmn", 100000), types.RewardIndexes{types.NewRewardIndex("bnb-a", sdk.ZeroDec())})
+		suite.Require().NotPanics(func() {
+			suite.keeper.SetJPYXMintingClaim(suite.ctx, c)
+		})
+	}
+	claims := types.JPYXMintingClaims{}
+	suite.keeper.IterateJPYXMintingClaims(suite.ctx, func(c types.JPYXMintingClaim) bool {
 		claims = append(claims, c)
 		return false
 	})
-	suite.Equal(2, len(claims))
+	suite.Require().Equal(len(suite.addrs), len(claims))
 
-	var genIDs types.GenesisClaimPeriodIDs
-	suite.keeper.IterateClaimPeriodIDKeysAndValues(suite.ctx, func(denom string, id uint64) (stop bool) {
-		genID := types.GenesisClaimPeriodID{Denom: denom, ID: id}
-		genIDs = append(genIDs, genID)
-		return false
-	})
-	suite.Equal(2, len(genIDs))
+	claims = suite.keeper.GetAllJPYXMintingClaims(suite.ctx)
+	suite.Require().Equal(len(suite.addrs), len(claims))
 }
 
-func (suite *KeeperTestSuite) addObjectsToStore() {
-	rp1 := types.NewRewardPeriod("bnb", suite.ctx.BlockTime(), suite.ctx.BlockTime().Add(time.Hour*168), c("stake", 100000000), suite.ctx.BlockTime().Add(time.Hour*168*2), time.Hour*8766)
-	rp2 := types.NewRewardPeriod("xrp", suite.ctx.BlockTime(), suite.ctx.BlockTime().Add(time.Hour*168), c("stake", 100000000), suite.ctx.BlockTime().Add(time.Hour*168*2), time.Hour*8766)
-	suite.keeper.SetRewardPeriod(suite.ctx, rp1)
-	suite.keeper.SetRewardPeriod(suite.ctx, rp2)
-
-	cp1 := types.NewClaimPeriod("bnb", 1, suite.ctx.BlockTime().Add(time.Hour*168), time.Hour*8766)
-	cp2 := types.NewClaimPeriod("xrp", 1, suite.ctx.BlockTime().Add(time.Hour*168), time.Hour*8766)
-	suite.keeper.SetClaimPeriod(suite.ctx, cp1)
-	suite.keeper.SetClaimPeriod(suite.ctx, cp2)
-
-	suite.keeper.SetNextClaimPeriodID(suite.ctx, "bnb", 1)
-	suite.keeper.SetNextClaimPeriodID(suite.ctx, "xrp", 1)
-
-	c1 := types.NewClaim(suite.addrs[0], c("stake", 1000000), "bnb", 1)
-	c2 := types.NewClaim(suite.addrs[0], c("stake", 1000000), "xrp", 1)
-	suite.keeper.SetClaim(suite.ctx, c1)
-	suite.keeper.SetClaim(suite.ctx, c2)
-
-	params := types.NewParams(
-		true, types.Rewards{types.NewReward(true, "bnb", c("stake", 1000000000), time.Hour*7*24, time.Hour*24*365, time.Hour*7*24)},
-	)
-	suite.keeper.SetParams(suite.ctx, params)
-
+func createPeriodicVestingAccount(origVesting sdk.Coins, periods vesting.Periods, startTime, endTime int64) (*vesting.PeriodicVestingAccount, error) {
+	_, addr := app.GeneratePrivKeyAddressPairs(1)
+	bacc := auth.NewBaseAccountWithAddress(addr[0])
+	bacc.Coins = origVesting
+	bva, err := vesting.NewBaseVestingAccount(&bacc, origVesting, endTime)
+	if err != nil {
+		return &vesting.PeriodicVestingAccount{}, err
+	}
+	pva := vesting.NewPeriodicVestingAccountRaw(bva, startTime, periods)
+	err = pva.Validate()
+	if err != nil {
+		return &vesting.PeriodicVestingAccount{}, err
+	}
+	return pva, nil
 }
+
+// Avoid cluttering test cases with long function names
+func i(in int64) sdk.Int                    { return sdk.NewInt(in) }
+func d(str string) sdk.Dec                  { return sdk.MustNewDecFromStr(str) }
+func c(denom string, amount int64) sdk.Coin { return sdk.NewInt64Coin(denom, amount) }
+func cs(coins ...sdk.Coin) sdk.Coins        { return sdk.NewCoins(coins...) }
 
 func TestKeeperTestSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))

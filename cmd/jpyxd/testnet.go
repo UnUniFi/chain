@@ -48,14 +48,14 @@ func testnetCmd(
 
 	cmd := &cobra.Command{
 		Use:   "testnet",
-		Short: "Initialize files for a local jpy testnet",
+		Short: "Initialize files for a local jpyx testnet",
 		Long: `testnet will create "v" number of directories and populate each with
 necessary files (private validator, genesis, config, etc.).
 
 Note, strict routability for addresses is turned off in the config file.
 
 Example:
-	$ kvd testnet --v 4 --output-dir ./output --starting-ip-address 192.168.10.2
+	$ jpyxd testnet --v 4 --output-dir ./output --starting-ip-address 192.168.10.2
 	`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			config := ctx.Config
@@ -78,13 +78,13 @@ Example:
 
 	cmd.Flags().Int(flagNumValidators, 4,
 		"Number of validators to initialize the testnet with")
-	cmd.Flags().StringP(flagOutputDir, "o", "./jpytestnet",
+	cmd.Flags().StringP(flagOutputDir, "o", "./kavatestnet",
 		"Directory to store initialization data for the testnet")
 	cmd.Flags().String(flagNodeDirPrefix, "node",
 		"Prefix the directory name for each node with (node results in node0, node1, ...)")
-	cmd.Flags().String(flagNodeDaemonHome, "kvd",
+	cmd.Flags().String(flagNodeDaemonHome, "jpyxd",
 		"Home directory of the node's daemon configuration")
-	cmd.Flags().String(flagNodeCLIHome, "kvcli",
+	cmd.Flags().String(flagNodeCLIHome, "jpyxcli",
 		"Home directory of the node's cli configuration")
 	cmd.Flags().String(flagStartingIPAddress, "192.168.0.1",
 		"Starting IP address (192.168.0.1 results in persistent peers list ID0@192.168.0.1:46656, ID1@192.168.0.2:46656, ...)")
@@ -116,8 +116,8 @@ func InitTestnet(
 	nodeIDs := make([]string, numValidators)
 	valPubKeys := make([]crypto.PubKey, numValidators)
 
-	jpyConfig := srvconfig.DefaultConfig()
-	jpyConfig.MinGasPrices = minGasPrices
+	kavaConfig := srvconfig.DefaultConfig()
+	kavaConfig.MinGasPrices = minGasPrices
 
 	//nolint:prealloc
 	var (
@@ -230,7 +230,7 @@ func InitTestnet(
 		}
 
 		appConfigFilePath := filepath.Join(nodeDir, "config/app.toml")
-		srvconfig.WriteConfigFile(appConfigFilePath, jpyConfig)
+		srvconfig.WriteConfigFile(appConfigFilePath, kavaConfig)
 	}
 
 	if err := initGenFiles(cdc, mbm, chainID, genAccounts, genFiles, numValidators); err != nil {

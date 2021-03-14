@@ -11,12 +11,22 @@ import (
 
 // Market an asset in the pricefeed
 type Market struct {
-	// TODO: rename to ID
 	MarketID   string           `json:"market_id" yaml:"market_id"`
 	BaseAsset  string           `json:"base_asset" yaml:"base_asset"`
 	QuoteAsset string           `json:"quote_asset" yaml:"quote_asset"`
 	Oracles    []sdk.AccAddress `json:"oracles" yaml:"oracles"`
 	Active     bool             `json:"active" yaml:"active"`
+}
+
+// NewMarket returns a new Market
+func NewMarket(id, base, quote string, oracles []sdk.AccAddress, active bool) Market {
+	return Market{
+		MarketID:   id,
+		BaseAsset:  base,
+		QuoteAsset: quote,
+		Oracles:    oracles,
+		Active:     active,
+	}
 }
 
 // String implement fmt.Stringer
@@ -125,7 +135,7 @@ func (pp PostedPrice) Validate() error {
 	if pp.Price.IsNegative() {
 		return fmt.Errorf("posted price cannot be negative %s", pp.Price)
 	}
-	if pp.Expiry.IsZero() {
+	if pp.Expiry.Unix() <= 0 {
 		return errors.New("expiry time cannot be zero")
 	}
 	return nil

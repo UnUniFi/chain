@@ -22,7 +22,7 @@ func NewGenesisState(prevBlockTime time.Time) GenesisState {
 
 // DefaultGenesisState - Return a default genesis state
 func DefaultGenesisState() GenesisState {
-	return NewGenesisState(tmtime.Canonical(time.Unix(0, 0)))
+	return NewGenesisState(tmtime.Canonical(time.Unix(1, 0)))
 }
 
 // Equal checks whether two gov GenesisState structs are equivalent
@@ -39,7 +39,7 @@ func (data GenesisState) IsEmpty() bool {
 
 // ValidateGenesis returns nil because accounts are validated by auth
 func ValidateGenesis(data GenesisState) error {
-	if data.PreviousBlockTime.IsZero() {
+	if data.PreviousBlockTime.Unix() <= 0 {
 		return errors.New("previous block time cannot be zero")
 	}
 	return nil

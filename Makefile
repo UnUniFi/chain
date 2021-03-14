@@ -3,18 +3,6 @@
 VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
 COMMIT := $(shell git log -1 --format='%H')
 LEDGER_ENABLED ?= true
-ifeq ($(DETECTED_OS),)
-  ifeq ($(OS),Windows_NT)
-	  DETECTED_OS := windows
-  else
-	  UNAME_S = $(shell uname -s)
-    ifeq ($(UNAME_S),Darwin)
-	    DETECTED_OS := mac
-	  else
-	    DETECTED_OS := linux
-	  endif
-  endif
-endif
 export GO111MODULE = on
 
 # process build tags
@@ -56,7 +44,7 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 
 # process linker flags
 
-ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=jpyx \
+ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=kava \
 		  -X github.com/cosmos/cosmos-sdk/version.ServerName=jpyxd \
 		  -X github.com/cosmos/cosmos-sdk/version.ClientName=jpyxcli \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
@@ -76,15 +64,15 @@ all: install
 
 build: go.sum
 ifeq ($(OS), Windows_NT)
-	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/jpyxd.exe ./cmd/jpyxd
-	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/jpyxcli.exe ./cmd/jpyxcli
+	go build -mod=readonly $(BUILD_FLAGS) -o build/$(shell go env GOOS)/jpyxd.exe ./cmd/jpyxd
+	go build -mod=readonly $(BUILD_FLAGS) -o build/$(shell go env GOOS)/jpyxcli.exe ./cmd/jpyxcli
 else
-	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/jpyxd ./cmd/jpyxd
-	go build -mod=readonly $(BUILD_FLAGS) -o build/$(DETECTED_OS)/jpyxcli ./cmd/jpyxcli
+	go build -mod=readonly $(BUILD_FLAGS) -o build/$(shell go env GOOS)/jpyxd ./cmd/jpyxd
+	go build -mod=readonly $(BUILD_FLAGS) -o build/$(shell go env GOOS)/jpyxcli ./cmd/jpyxcli
 endif
 
 build-linux: go.sum
-	LEDGER_ENABLED=false GOOS=linux GOARCH=amd64 DETECTED_OS=linux $(MAKE) build
+	LEDGER_ENABLED=false GOOS=linux GOARCH=amd64 $(MAKE) build
 
 install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/jpyxd
@@ -108,6 +96,14 @@ clean:
 ########################################
 ### Linting
 
+# Check url links in the repo are not broken.
+# This tool checks local markdown links as well.
+# Set to exclude riot links as they trigger false positives
+link-check:
+	@go get -u github.com/raviqqe/liche@f57a5d1c5be4856454cb26de155a65a4fd856ee3
+	liche -r . --exclude "^http://127.*|^https://riot.im/app*|^http://kava-testnet*|^https://testnet-dex*|^https://kava3.data.kava.io*|^https://ipfs.io*|^https://apps.apple.com*|^https://kava.quicksync.io*"
+
+
 lint:
 	golangci-lint run
 	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" | xargs gofmt -d -s
@@ -126,12 +122,12 @@ format:
 ###                                Localnet                                 ###
 ###############################################################################
 
-build-docker-local-jpyx:
+build-docker-local-kava:
 	@$(MAKE) -C networks/local
 
 # Run a 4-node testnet locally
 localnet-start: build-linux localnet-stop
-	@if ! [ -f build/node0/jpyxd/config/genesis.json ]; then docker run --rm -v $(CURDIR)/build:/jpyxd:Z lcnem/jpyxnode testnet --v 4 -o . --starting-ip-address 192.168.10.2 --keyring-backend=test ; fi
+	@if ! [ -f build/node0/jpyxd/config/genesis.json ]; then docker run --rm -v $(CURDIR)/build:/jpyxd:Z kava/kavanode testnet --v 4 -o . --starting-ip-address 192.168.10.2 --keyring-backend=test ; fi
 	docker-compose up -d
 
 localnet-stop:
@@ -164,10 +160,10 @@ test-basic: test
 	@go test ./app -run TestAppStateDeterminism      -Enabled -Commit -NumBlocks=5 -BlockSize=200 -Seed 4 -v -timeout 2m
 
 test:
-	@go test ./...
+	@go test $$(go list ./... | grep -v 'migrate\|contrib')
 
 test-rest:
-	rest_test/./run_all_tests_from_make.sh
+	rest_test/run_all_tests_from_make.sh
 
 # Run cli integration tests
 # `-p 4` to use 4 cores, `-tags cli_test` to tell go not to ignore the cli package
@@ -179,15 +175,15 @@ test-cli: build
 # This submits an AWS Batch job to run a lot of sims, each within a docker image. Results are uploaded to S3
 start-remote-sims:
 	# build the image used for running sims in, and tag it
-	docker build -f simulations/Dockerfile -t lcnem/jpyx-sim:master .
+	docker build -f simulations/Dockerfile -t kava/kava-sim:master .
 	# push that image to the hub
-	docker push lcnem/jpyx-sim:master
+	docker push kava/kava-sim:master
 	# submit an array job on AWS Batch, using 1000 seeds, spot instances
 	aws batch submit-job \
 		-—job-name "master-$(VERSION)" \
 		-—job-queue “simulation-1-queue-spot" \
 		-—array-properties size=1000 \
-		-—job-definition jpyx-sim-master \
+		-—job-definition kava-sim-master \
 		-—container-override environment=[{SIM_NAME=master-$(VERSION)}]
 
 .PHONY: all build-linux install clean build test test-cli test-all test-rest test-basic start-remote-sims
@@ -206,7 +202,3 @@ docs-build:
 	@cd docs && \
 	npm install && \
 	npm run build
-
-###
-bundle:
-	docker build . -t lcnem/jpyx

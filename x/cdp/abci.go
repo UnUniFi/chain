@@ -14,12 +14,6 @@ import (
 func BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock, k Keeper) {
 	params := k.GetParams(ctx)
 
-	previousDistTime, found := k.GetPreviousSavingsDistribution(ctx)
-	if !found {
-		previousDistTime = ctx.BlockTime()
-		k.SetPreviousSavingsDistribution(ctx, previousDistTime)
-	}
-
 	for _, cp := range params.CollateralParams {
 		ok := k.UpdatePricefeedStatus(ctx, cp.SpotMarketID)
 		if !ok {
@@ -31,12 +25,17 @@ func BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock, k Keeper) {
 			continue
 		}
 
-		err := k.UpdateFeesForAllCdps(ctx, cp.Denom)
+		err := k.AccumulateInterest(ctx, cp.Type)
 		if err != nil {
 			panic(err)
 		}
 
-		err = k.LiquidateCdps(ctx, cp.LiquidationMarketID, cp.Denom, cp.LiquidationRatio)
+		err = k.SynchronizeInterestForRiskyCDPs(ctx, cp.CheckCollateralizationIndexCount, sdk.MaxSortableDec, cp.Type)
+		if err != nil {
+			panic(err)
+		}
+
+		err = k.LiquidateCdps(ctx, cp.LiquidationMarketID, cp.Type, cp.LiquidationRatio, cp.CheckCollateralizationIndexCount)
 		if err != nil && !errors.Is(err, pricefeedtypes.ErrNoValidPrice) {
 			panic(err)
 		}
@@ -46,16 +45,4 @@ func BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock, k Keeper) {
 	if err != nil {
 		panic(err)
 	}
-
-	distTimeElapsed := sdk.NewInt(ctx.BlockTime().Unix() - previousDistTime.Unix())
-	if !distTimeElapsed.GTE(sdk.NewInt(int64(params.SavingsDistributionFrequency.Seconds()))) {
-		return
-	}
-
-	err = k.DistributeSavingsRate(ctx, params.DebtParam.Denom)
-	if err != nil {
-		panic(err)
-	}
-
-	k.SetPreviousSavingsDistribution(ctx, ctx.BlockTime())
 }

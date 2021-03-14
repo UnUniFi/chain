@@ -23,5 +23,5 @@ COPY . .
 #ENV LEDGER_ENABLED False
 RUN make install
 
-# Run jpyxd by default, omit entrypoint to ease using container with kvcli
+# Run jpyxd by default, omit entrypoint to ease using container with jpyxcli
 CMD ["jpyxd"]

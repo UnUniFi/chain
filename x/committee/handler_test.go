@@ -61,7 +61,7 @@ func (suite *HandlerTestSuite) SetupTest() {
 		[]types.Proposal{},
 		[]types.Vote{},
 	)
-	suite.communityPoolAmt = cs(c("stake", 1000))
+	suite.communityPoolAmt = cs(c("ujsmn", 1000))
 	suite.app.InitializeFromGenesisStates(
 		NewCommitteeGenesisState(suite.app.Codec(), testGenesis),
 		NewDistributionGenesisWithPool(suite.communityPoolAmt),

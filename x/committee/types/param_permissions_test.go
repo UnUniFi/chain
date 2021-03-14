@@ -1,10 +1,13 @@
 package types
 
 import (
+	"time"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bep3types "github.com/lcnem/jpyx/x/bep3/types"
 	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
 	pricefeedtypes "github.com/lcnem/jpyx/x/pricefeed/types"
+	"github.com/tendermint/tendermint/crypto"
 )
 
 // Avoid cluttering test cases with long function names
@@ -15,42 +18,9 @@ func cs(coins ...sdk.Coin) sdk.Coins        { return sdk.NewCoins(coins...) }
 
 func (suite *PermissionsTestSuite) TestAllowedCollateralParams_Allows() {
 	testCPs := cdptypes.CollateralParams{
-		{
-			Denom:               "bnb",
-			LiquidationRatio:    d("2.0"),
-			DebtLimit:           c("jpyx", 1000000000000),
-			StabilityFee:        d("1.000000001547125958"),
-			LiquidationPenalty:  d("0.05"),
-			AuctionSize:         i(100),
-			Prefix:              0x20,
-			ConversionFactor:    i(6),
-			SpotMarketID:        "bnb:jpy",
-			LiquidationMarketID: "bnb:jpy",
-		},
-		{
-			Denom:               "btc",
-			LiquidationRatio:    d("1.5"),
-			DebtLimit:           c("jpyx", 1000000000),
-			StabilityFee:        d("1.000000001547125958"),
-			LiquidationPenalty:  d("0.10"),
-			AuctionSize:         i(1000),
-			Prefix:              0x30,
-			ConversionFactor:    i(8),
-			SpotMarketID:        "btc:jpy",
-			LiquidationMarketID: "btc:jpy",
-		},
-		{
-			Denom:               "atom",
-			LiquidationRatio:    d("2.0"),
-			DebtLimit:           c("jpyx", 1000000000),
-			StabilityFee:        d("1.000000001547125958"),
-			LiquidationPenalty:  d("0.07"),
-			AuctionSize:         i(100),
-			Prefix:              0x40,
-			ConversionFactor:    i(6),
-			SpotMarketID:        "atom:jpy",
-			LiquidationMarketID: "atom:jpy",
-		},
+		cdptypes.NewCollateralParam("bnb", "bnb-a", d("2.0"), c("jpyx", 1000000000000), d("1.000000001547125958"), i(100), d("0.05"), 0x20, "bnb:jpy", "bnb:jpy", d("0.01"), i(10), i(6)),
+		cdptypes.NewCollateralParam("btc", "btc-a", d("1.5"), c("jpyx", 1000000000), d("1.000000001547125958"), i(1000), d("0.1"), 0x30, "btc:jpy", "btc:jpy", d("0.01"), i(10), i(8)),
+		cdptypes.NewCollateralParam("atom", "atom-a", d("2.0"), c("jpyx", 1000000000), d("1.000000001547125958"), i(1000), d("0.07"), 0x40, "atom:jpy", "atom:jpy", d("0.01"), i(10), i(6)),
 	}
 	updatedTestCPs := make(cdptypes.CollateralParams, len(testCPs))
 	updatedTestCPs[0] = testCPs[1]
@@ -73,24 +43,27 @@ func (suite *PermissionsTestSuite) TestAllowedCollateralParams_Allows() {
 			name: "disallowed add",
 			allowed: AllowedCollateralParams{
 				{
-					Denom:       "bnb",
+					Type:        "bnb-a",
 					AuctionSize: true,
 				},
 				{
-					Denom:        "btc",
+					Type:         "btc-a",
 					StabilityFee: true,
 				},
 				{ // allow all fields
-					Denom:               "atom",
-					LiquidationRatio:    true,
-					DebtLimit:           true,
-					StabilityFee:        true,
-					AuctionSize:         true,
-					LiquidationPenalty:  true,
-					Prefix:              true,
-					SpotMarketID:        true,
-					LiquidationMarketID: true,
-					ConversionFactor:    true,
+					Type:                             "atom-a",
+					Denom:                            true,
+					LiquidationRatio:                 true,
+					DebtLimit:                        true,
+					StabilityFee:                     true,
+					AuctionSize:                      true,
+					LiquidationPenalty:               true,
+					Prefix:                           true,
+					SpotMarketID:                     true,
+					LiquidationMarketID:              true,
+					ConversionFactor:                 true,
+					KeeperRewardPercentage:           true,
+					CheckCollateralizationIndexCount: true,
 				},
 			},
 			current:       testCPs[:2],
@@ -101,21 +74,24 @@ func (suite *PermissionsTestSuite) TestAllowedCollateralParams_Allows() {
 			name: "disallowed remove",
 			allowed: AllowedCollateralParams{
 				{
-					Denom:       "bnb",
+					Type:        "bnb-a",
 					AuctionSize: true,
 				},
 				{
 					// allow all fields
-					Denom:               "btc",
-					LiquidationRatio:    true,
-					DebtLimit:           true,
-					StabilityFee:        true,
-					AuctionSize:         true,
-					LiquidationPenalty:  true,
-					Prefix:              true,
-					SpotMarketID:        true,
-					LiquidationMarketID: true,
-					ConversionFactor:    true,
+					Type:                             "btc-a",
+					Denom:                            true,
+					LiquidationRatio:                 true,
+					DebtLimit:                        true,
+					StabilityFee:                     true,
+					AuctionSize:                      true,
+					LiquidationPenalty:               true,
+					Prefix:                           true,
+					SpotMarketID:                     true,
+					LiquidationMarketID:              true,
+					ConversionFactor:                 true,
+					KeeperRewardPercentage:           true,
+					CheckCollateralizationIndexCount: true,
 				},
 			},
 			current:       testCPs[:2],
@@ -126,15 +102,15 @@ func (suite *PermissionsTestSuite) TestAllowedCollateralParams_Allows() {
 			name: "allowed change with different order",
 			allowed: AllowedCollateralParams{
 				{
-					Denom:              "bnb",
+					Type:               "bnb-a",
 					LiquidationPenalty: true,
 				},
 				{
-					Denom:     "btc",
+					Type:      "btc-a",
 					DebtLimit: true,
 				},
 				{
-					Denom:              "atom",
+					Type:               "atom-a",
 					DebtLimit:          true,
 					LiquidationPenalty: true,
 				},
@@ -155,24 +131,58 @@ func (suite *PermissionsTestSuite) TestAllowedCollateralParams_Allows() {
 }
 
 func (suite *PermissionsTestSuite) TestAllowedAssetParams_Allows() {
+	deputyAddress := sdk.AccAddress(crypto.AddressHash([]byte("KavaTestUser1")))
 	testAPs := bep3types.AssetParams{
-		{
-			Denom:  "bnb",
-			CoinID: 714,
-			Limit:  i(1000000000000),
-			Active: true,
-		},
-		{
+		bep3types.AssetParam{
 			Denom:  "btc",
 			CoinID: 0,
-			Limit:  i(1000000000000),
-			Active: true,
+			SupplyLimit: bep3types.SupplyLimit{
+				Limit:          sdk.NewInt(100),
+				TimeLimited:    true,
+				TimeBasedLimit: sdk.NewInt(50000000000),
+				TimePeriod:     time.Hour,
+			},
+			Active:        false,
+			DeputyAddress: deputyAddress,
+			FixedFee:      sdk.NewInt(1000),
+			MinSwapAmount: sdk.OneInt(),
+			MaxSwapAmount: sdk.NewInt(1000000000000),
+			MinBlockLock:  bep3types.DefaultMinBlockLock,
+			MaxBlockLock:  bep3types.DefaultMaxBlockLock,
 		},
-		{
+		bep3types.AssetParam{
+			Denom:  "bnb",
+			CoinID: 714,
+			SupplyLimit: bep3types.SupplyLimit{
+				Limit:          sdk.NewInt(350000000000000),
+				TimeLimited:    true,
+				TimeBasedLimit: sdk.NewInt(50000000000),
+				TimePeriod:     time.Hour,
+			},
+			Active:        true,
+			DeputyAddress: deputyAddress,
+			FixedFee:      sdk.NewInt(1000),
+			MinSwapAmount: sdk.OneInt(),
+			MaxSwapAmount: sdk.NewInt(1000000000000),
+			MinBlockLock:  bep3types.DefaultMinBlockLock,
+			MaxBlockLock:  bep3types.DefaultMaxBlockLock,
+		},
+		bep3types.AssetParam{
 			Denom:  "xrp",
-			CoinID: 144,
-			Limit:  i(1000000000000),
-			Active: true,
+			CoinID: 414,
+			SupplyLimit: bep3types.SupplyLimit{
+				Limit:          sdk.NewInt(350000000000000),
+				TimeLimited:    true,
+				TimeBasedLimit: sdk.NewInt(50000000000),
+				TimePeriod:     time.Hour,
+			},
+			Active:        true,
+			DeputyAddress: deputyAddress,
+			FixedFee:      sdk.NewInt(1000),
+			MinSwapAmount: sdk.OneInt(),
+			MaxSwapAmount: sdk.NewInt(1000000000000),
+			MinBlockLock:  bep3types.DefaultMinBlockLock,
+			MaxBlockLock:  bep3types.DefaultMaxBlockLock,
 		},
 	}
 	updatedTestAPs := make(bep3types.AssetParams, len(testAPs))
@@ -180,10 +190,12 @@ func (suite *PermissionsTestSuite) TestAllowedAssetParams_Allows() {
 	updatedTestAPs[1] = testAPs[0]
 	updatedTestAPs[2] = testAPs[2]
 
-	updatedTestAPs[0].Limit = i(1000) // btc
-	updatedTestAPs[1].Active = false  // bnb
-	updatedTestAPs[2].Limit = i(1000) // xrp
-	updatedTestAPs[2].Active = false  // xrp
+	updatedTestAPs[0].SupplyLimit.Limit = i(1000) // btc
+	updatedTestAPs[1].Active = false              // bnb
+	updatedTestAPs[2].SupplyLimit.Limit = i(1000) // xrp
+	updatedTestAPs[2].Active = false              // xrp
+	updatedTestAPs[2].MinBlockLock = uint64(210)  // xrp
+	updatedTestAPs[2].MaxSwapAmount = sdk.NewInt(10000000000000)
 
 	testcases := []struct {
 		name          string
@@ -204,10 +216,12 @@ func (suite *PermissionsTestSuite) TestAllowedAssetParams_Allows() {
 					Limit: true,
 				},
 				{ // allow all fields
-					Denom:  "xrp",
-					CoinID: true,
-					Limit:  true,
-					Active: true,
+					Denom:         "xrp",
+					CoinID:        true,
+					Limit:         true,
+					Active:        true,
+					MaxSwapAmount: true,
+					MinBlockLock:  true,
 				},
 			},
 			current:       testAPs[:2],
@@ -238,15 +252,18 @@ func (suite *PermissionsTestSuite) TestAllowedAssetParams_Allows() {
 				{
 					Denom:  "bnb",
 					Active: true,
+					Limit:  true,
 				},
 				{
 					Denom: "btc",
 					Limit: true,
 				},
 				{
-					Denom:  "xrp",
-					Limit:  true,
-					Active: true,
+					Denom:         "xrp",
+					Limit:         true,
+					Active:        true,
+					MaxSwapAmount: true,
+					MinBlockLock:  true,
 				},
 			},
 			current:       testAPs,
@@ -380,18 +397,21 @@ func (suite *PermissionsTestSuite) TestAllowedMarkets_Allows() {
 }
 
 func (suite *PermissionsTestSuite) TestAllowedCollateralParam_Allows() {
-	testCP := cdptypes.CollateralParam{
-		Denom:               "bnb",
-		LiquidationRatio:    d("1.5"),
-		DebtLimit:           c("jpyx", 1000000000000),
-		StabilityFee:        d("1.000000001547125958"), // %5 apr
-		LiquidationPenalty:  d("0.05"),
-		AuctionSize:         i(100),
-		Prefix:              0x20,
-		ConversionFactor:    i(6),
-		SpotMarketID:        "bnb:jpy",
-		LiquidationMarketID: "bnb:jpy",
-	}
+	testCP := cdptypes.NewCollateralParam(
+		"bnb",
+		"bnb-a",
+		d("1.5"),
+		c("jpyx", 1000000000000),
+		d("1.000000001547125958"), // %5 apr
+		i(10000000000000),
+		d("0.05"),
+		0x20,
+		"bnb:jpy",
+		"bnb:jpy",
+		d("0.01"),
+		i(10),
+		i(8),
+	)
 	newMarketIDCP := testCP
 	newMarketIDCP.SpotMarketID = "btc:jpy"
 
@@ -412,7 +432,7 @@ func (suite *PermissionsTestSuite) TestAllowedCollateralParam_Allows() {
 		{
 			name: "allowed change",
 			allowed: AllowedCollateralParam{
-				Denom:        "bnb",
+				Type:         "bnb-a",
 				DebtLimit:    true,
 				StabilityFee: true,
 				AuctionSize:  true,
@@ -424,7 +444,7 @@ func (suite *PermissionsTestSuite) TestAllowedCollateralParam_Allows() {
 		{
 			name: "un-allowed change",
 			allowed: AllowedCollateralParam{
-				Denom:        "bnb",
+				Type:         "bnb-a",
 				DebtLimit:    true,
 				StabilityFee: true,
 				AuctionSize:  true,
@@ -436,7 +456,7 @@ func (suite *PermissionsTestSuite) TestAllowedCollateralParam_Allows() {
 		{
 			name: "un-allowed mismatching denom",
 			allowed: AllowedCollateralParam{
-				Denom:     "btc",
+				Type:      "btc-a",
 				DebtLimit: true,
 			},
 			current:       testCP,
@@ -447,7 +467,7 @@ func (suite *PermissionsTestSuite) TestAllowedCollateralParam_Allows() {
 		{
 			name: "allowed no change",
 			allowed: AllowedCollateralParam{
-				Denom:     "bnb",
+				Type:      "bnb-a",
 				DebtLimit: true,
 			},
 			current:       testCP,
@@ -457,7 +477,7 @@ func (suite *PermissionsTestSuite) TestAllowedCollateralParam_Allows() {
 		{
 			name: "un-allowed change with allowed change",
 			allowed: AllowedCollateralParam{
-				Denom:     "btc",
+				Type:      "btc-a",
 				DebtLimit: true,
 			},
 			current:       testCP,
@@ -492,7 +512,6 @@ func (suite *PermissionsTestSuite) TestAllowedDebtParam_Allows() {
 		ReferenceAsset:   "jpy",
 		ConversionFactor: i(6),
 		DebtFloor:        i(10000000),
-		SavingsRate:      d("0.95"),
 	}
 	newDenomDP := testDP
 	newDenomDP.Denom = "jpyz"
@@ -514,8 +533,7 @@ func (suite *PermissionsTestSuite) TestAllowedDebtParam_Allows() {
 		{
 			name: "allowed change",
 			allowed: AllowedDebtParam{
-				DebtFloor:   true,
-				SavingsRate: true,
+				DebtFloor: true,
 			},
 			current:       testDP,
 			incoming:      newDebtFloorDP,
@@ -524,8 +542,7 @@ func (suite *PermissionsTestSuite) TestAllowedDebtParam_Allows() {
 		{
 			name: "un-allowed change",
 			allowed: AllowedDebtParam{
-				DebtFloor:   true,
-				SavingsRate: true,
+				DebtFloor: true,
 			},
 			current:       testDP,
 			incoming:      newDenomDP,
@@ -534,8 +551,7 @@ func (suite *PermissionsTestSuite) TestAllowedDebtParam_Allows() {
 		{
 			name: "allowed no change",
 			allowed: AllowedDebtParam{
-				DebtFloor:   true,
-				SavingsRate: true,
+				DebtFloor: true,
 			},
 			current:       testDP,
 			incoming:      testDP, // no change
@@ -544,8 +560,7 @@ func (suite *PermissionsTestSuite) TestAllowedDebtParam_Allows() {
 		{
 			name: "un-allowed change with allowed change",
 			allowed: AllowedDebtParam{
-				DebtFloor:   true,
-				SavingsRate: true,
+				DebtFloor: true,
 			},
 			current:       testDP,
 			incoming:      newDenomAndDebtFloorDP,
@@ -577,18 +592,29 @@ func (suite *PermissionsTestSuite) TestAllowedAssetParam_Allows() {
 	testAP := bep3types.AssetParam{
 		Denom:  "jpyx",
 		CoinID: 999,
-		Limit:  i(1000000000),
-		Active: true,
+		SupplyLimit: bep3types.SupplyLimit{
+			Limit:          sdk.NewInt(350000000000000),
+			TimeLimited:    true,
+			TimeBasedLimit: sdk.NewInt(50000000000),
+			TimePeriod:     time.Hour,
+		},
+		Active:        true,
+		DeputyAddress: sdk.AccAddress(crypto.AddressHash([]byte("KavaTestUser1"))),
+		FixedFee:      sdk.NewInt(1000),
+		MinSwapAmount: sdk.OneInt(),
+		MaxSwapAmount: sdk.NewInt(1000000000000),
+		MinBlockLock:  bep3types.DefaultMinBlockLock,
+		MaxBlockLock:  bep3types.DefaultMaxBlockLock,
 	}
 	newCoinidAP := testAP
 	newCoinidAP.CoinID = 0
 
 	newLimitAP := testAP
-	newLimitAP.Limit = i(1000)
+	newLimitAP.SupplyLimit.Limit = i(1000)
 
 	newCoinidAndLimitAP := testAP
 	newCoinidAndLimitAP.CoinID = 0
-	newCoinidAndLimitAP.Limit = i(1000)
+	newCoinidAndLimitAP.SupplyLimit.Limit = i(1000)
 
 	testcases := []struct {
 		name          string

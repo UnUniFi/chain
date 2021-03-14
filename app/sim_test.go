@@ -3,8 +3,11 @@ package app
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"math/rand"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 
@@ -13,10 +16,12 @@ import (
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/simapp"
 	"github.com/cosmos/cosmos-sdk/simapp/helpers"
 	"github.com/cosmos/cosmos-sdk/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/gov"
@@ -32,8 +37,8 @@ import (
 	"github.com/lcnem/jpyx/x/cdp"
 	"github.com/lcnem/jpyx/x/committee"
 	"github.com/lcnem/jpyx/x/incentive"
+	"github.com/lcnem/jpyx/x/jsmndist"
 	"github.com/lcnem/jpyx/x/pricefeed"
-	stakedist "github.com/lcnem/jpyx/x/stakedist"
 	validatorvesting "github.com/lcnem/jpyx/x/validator-vesting"
 )
 
@@ -80,12 +85,12 @@ func TestFullAppSimulation(t *testing.T) {
 		require.NoError(t, os.RemoveAll(dir))
 	}()
 
-	app := NewApp(logger, db, nil, true, map[int64]bool{}, simapp.FlagPeriodValue, fauxMerkleModeOpt)
+	app := NewApp(logger, db, nil, AppOptions{InvariantCheckPeriod: simapp.FlagPeriodValue}, fauxMerkleModeOpt)
 	require.Equal(t, appName, app.Name())
 
 	// run randomized simulation
 	_, simParams, simErr := simulation.SimulateFromSeed(
-		t, os.Stdout, app.BaseApp, simapp.AppStateFn(app.Codec(), app.SimulationManager()),
+		t, os.Stdout, app.BaseApp, AppStateFn(app.Codec(), app.SimulationManager()),
 		simapp.SimulationOperations(app, app.Codec(), config),
 		app.ModuleAccountAddrs(), config,
 	)
@@ -112,12 +117,12 @@ func TestAppImportExport(t *testing.T) {
 		require.NoError(t, os.RemoveAll(dir))
 	}()
 
-	app := NewApp(logger, db, nil, true, map[int64]bool{}, simapp.FlagPeriodValue, fauxMerkleModeOpt)
+	app := NewApp(logger, db, nil, AppOptions{InvariantCheckPeriod: simapp.FlagPeriodValue}, fauxMerkleModeOpt)
 	require.Equal(t, appName, app.Name())
 
 	// Run randomized simulation
 	_, simParams, simErr := simulation.SimulateFromSeed(
-		t, os.Stdout, app.BaseApp, simapp.AppStateFn(app.Codec(), app.SimulationManager()),
+		t, os.Stdout, app.BaseApp, AppStateFn(app.Codec(), app.SimulationManager()),
 		simapp.SimulationOperations(app, app.Codec(), config),
 		app.ModuleAccountAddrs(), config,
 	)
@@ -146,7 +151,7 @@ func TestAppImportExport(t *testing.T) {
 		require.NoError(t, os.RemoveAll(newDir))
 	}()
 
-	newApp := NewApp(log.NewNopLogger(), newDB, nil, true, map[int64]bool{}, simapp.FlagPeriodValue, fauxMerkleModeOpt)
+	newApp := NewApp(log.NewNopLogger(), newDB, nil, AppOptions{InvariantCheckPeriod: simapp.FlagPeriodValue}, fauxMerkleModeOpt)
 	require.Equal(t, appName, newApp.Name())
 
 	var genesisState GenesisState
@@ -176,7 +181,7 @@ func TestAppImportExport(t *testing.T) {
 		{app.keys[bep3.StoreKey], newApp.keys[bep3.StoreKey], [][]byte{}},
 		{app.keys[cdp.StoreKey], newApp.keys[cdp.StoreKey], [][]byte{}},
 		{app.keys[incentive.StoreKey], newApp.keys[incentive.StoreKey], [][]byte{}},
-		{app.keys[stakedist.StoreKey], newApp.keys[stakedist.StoreKey], [][]byte{}},
+		{app.keys[jsmndist.StoreKey], newApp.keys[jsmndist.StoreKey], [][]byte{}},
 		{app.keys[pricefeed.StoreKey], newApp.keys[pricefeed.StoreKey], [][]byte{}},
 		{app.keys[validatorvesting.StoreKey], newApp.keys[validatorvesting.StoreKey], [][]byte{}},
 		{app.keys[committee.StoreKey], newApp.keys[committee.StoreKey], [][]byte{}},
@@ -207,12 +212,12 @@ func TestAppSimulationAfterImport(t *testing.T) {
 		require.NoError(t, os.RemoveAll(dir))
 	}()
 
-	app := NewApp(logger, db, nil, true, map[int64]bool{}, simapp.FlagPeriodValue, fauxMerkleModeOpt)
+	app := NewApp(logger, db, nil, AppOptions{InvariantCheckPeriod: simapp.FlagPeriodValue}, fauxMerkleModeOpt)
 	require.Equal(t, appName, app.Name())
 
 	// Run randomized simulation
 	stopEarly, simParams, simErr := simulation.SimulateFromSeed(
-		t, os.Stdout, app.BaseApp, simapp.AppStateFn(app.Codec(), app.SimulationManager()),
+		t, os.Stdout, app.BaseApp, AppStateFn(app.Codec(), app.SimulationManager()),
 		simapp.SimulationOperations(app, app.Codec(), config),
 		app.ModuleAccountAddrs(), config,
 	)
@@ -246,7 +251,7 @@ func TestAppSimulationAfterImport(t *testing.T) {
 		require.NoError(t, os.RemoveAll(newDir))
 	}()
 
-	newApp := NewApp(log.NewNopLogger(), newDB, nil, true, map[int64]bool{}, simapp.FlagPeriodValue, fauxMerkleModeOpt)
+	newApp := NewApp(log.NewNopLogger(), newDB, nil, AppOptions{InvariantCheckPeriod: simapp.FlagPeriodValue}, fauxMerkleModeOpt)
 	require.Equal(t, appName, newApp.Name())
 
 	newApp.InitChain(abci.RequestInitChain{
@@ -254,7 +259,7 @@ func TestAppSimulationAfterImport(t *testing.T) {
 	})
 
 	_, _, err = simulation.SimulateFromSeed(
-		t, os.Stdout, newApp.BaseApp, simapp.AppStateFn(app.Codec(), app.SimulationManager()),
+		t, os.Stdout, newApp.BaseApp, AppStateFn(app.Codec(), app.SimulationManager()),
 		simapp.SimulationOperations(newApp, newApp.Codec(), config),
 		newApp.ModuleAccountAddrs(), config,
 	)
@@ -279,7 +284,7 @@ func TestAppStateDeterminism(t *testing.T) {
 	for j := 0; j < numTimesToRunPerSeed; j++ {
 		logger := log.NewNopLogger()
 		db := dbm.NewMemDB()
-		app := NewApp(logger, db, nil, true, map[int64]bool{}, simapp.FlagPeriodValue, interBlockCacheOpt())
+		app := NewApp(logger, db, nil, AppOptions{InvariantCheckPeriod: simapp.FlagPeriodValue}, interBlockCacheOpt())
 
 		fmt.Printf(
 			"running non-determinism simulation; seed %d: attempt: %d/%d\n",
@@ -287,7 +292,7 @@ func TestAppStateDeterminism(t *testing.T) {
 		)
 
 		_, _, err := simulation.SimulateFromSeed(
-			t, os.Stdout, app.BaseApp, simapp.AppStateFn(app.Codec(), app.SimulationManager()),
+			t, os.Stdout, app.BaseApp, AppStateFn(app.Codec(), app.SimulationManager()),
 			simapp.SimulationOperations(app, app.Codec(), config),
 			app.ModuleAccountAddrs(), config,
 		)
@@ -302,5 +307,57 @@ func TestAppStateDeterminism(t *testing.T) {
 				"non-determinism in seed %d: attempt: %d/%d\n", config.Seed, j+1, numTimesToRunPerSeed,
 			)
 		}
+	}
+}
+
+// AppStateFn returns the initial application state using a genesis or the simulation parameters.
+// It panics if the user provides files for both of them.
+// If a file is not given for the genesis or the sim params, it creates a randomized one.
+// Note: this was copied in from the sdk/simapp/state.go, and modified to not generate genesis times too far in the future.
+// Dates greater than the year 9000 interfere with new auctions who's EndTime is set to 90000.
+func AppStateFn(cdc *codec.Codec, simManager *module.SimulationManager) simulation.AppStateFn {
+	return func(r *rand.Rand, accs []simulation.Account, config simulation.Config,
+	) (appState json.RawMessage, simAccs []simulation.Account, chainID string, genesisTimestamp time.Time) {
+
+		if simapp.FlagGenesisTimeValue == 0 {
+			genesisTimestamp = time.Unix(r.Int63n(190288396800), 0) // 1st Jan year 8000
+		} else {
+			genesisTimestamp = time.Unix(simapp.FlagGenesisTimeValue, 0)
+		}
+
+		chainID = config.ChainID
+		switch {
+		case config.ParamsFile != "" && config.GenesisFile != "":
+			panic("cannot provide both a genesis file and a params file")
+
+		case config.GenesisFile != "":
+			// override the default chain-id from simapp to set it later to the config
+			genesisDoc, accounts := simapp.AppStateFromGenesisFileFn(r, cdc, config.GenesisFile)
+
+			if simapp.FlagGenesisTimeValue == 0 {
+				// use genesis timestamp if no custom timestamp is provided (i.e no random timestamp)
+				genesisTimestamp = genesisDoc.GenesisTime
+			}
+
+			appState = genesisDoc.AppState
+			chainID = genesisDoc.ChainID
+			simAccs = accounts
+
+		case config.ParamsFile != "":
+			appParams := make(simulation.AppParams)
+			bz, err := ioutil.ReadFile(config.ParamsFile)
+			if err != nil {
+				panic(err)
+			}
+
+			cdc.MustUnmarshalJSON(bz, &appParams)
+			appState, simAccs = simapp.AppStateRandomizedFn(simManager, r, cdc, accs, genesisTimestamp, appParams)
+
+		default:
+			appParams := make(simulation.AppParams)
+			appState, simAccs = simapp.AppStateRandomizedFn(simManager, r, cdc, accs, genesisTimestamp, appParams)
+		}
+
+		return appState, simAccs, chainID, genesisTimestamp
 	}
 }

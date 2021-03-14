@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 
 	"github.com/spf13/cobra"
@@ -15,7 +16,6 @@ import (
 	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
-	"github.com/cosmos/cosmos-sdk/client/debug"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/store"
@@ -27,8 +27,12 @@ import (
 	"github.com/lcnem/jpyx/app"
 )
 
-// kvd custom flags
-const flagInvCheckPeriod = "inv-check-period"
+// jpyxd custom flags
+const (
+	flagInvCheckPeriod       = "inv-check-period"
+	flagMempoolEnableAuth    = "mempool.enable-authentication"
+	flagMempoolAuthAddresses = "mempool.authorized-addresses"
+)
 
 var invCheckPeriod uint
 
@@ -62,16 +66,31 @@ func main() {
 		AddGenesisAccountCmd(ctx, cdc, app.DefaultNodeHome, app.DefaultCLIHome),
 		testnetCmd(ctx, cdc, app.ModuleBasics, auth.GenesisAccountIterator{}),
 		flags.NewCompletionCmd(rootCmd, true),
-		debug.Cmd(cdc),
 	)
 
 	server.AddCommands(ctx, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
 
 	// prepare and add flags
-	executor := cli.PrepareBaseCmd(rootCmd, "JPY", app.DefaultNodeHome)
+	executor := cli.PrepareBaseCmd(rootCmd, "JPYX", app.DefaultNodeHome)
 	rootCmd.PersistentFlags().UintVar(&invCheckPeriod, flagInvCheckPeriod,
 		0, "Assert registered invariants every N blocks")
-	err := executor.Execute()
+	startCmd, _, err := rootCmd.Find([]string{"start"})
+	if err != nil {
+		panic(fmt.Sprintf("could not find 'start' command on root command: %s", err))
+	}
+	startCmd.Flags().Bool(flagMempoolEnableAuth, false, "Configure the mempool to only accept transactions from authorized addresses")
+	err = viper.BindPFlag(flagMempoolEnableAuth, startCmd.Flags().Lookup(flagMempoolEnableAuth))
+	if err != nil {
+		panic(fmt.Sprintf("failed to bind flag: %s", err))
+	}
+	startCmd.Flags().StringSlice(flagMempoolAuthAddresses, []string{}, "Additional addresses to accept transactions from when the mempool is running in authorized mode (comma separated kava addresses)")
+	err = viper.BindPFlag(flagMempoolAuthAddresses, startCmd.Flags().Lookup(flagMempoolAuthAddresses))
+	if err != nil {
+		panic(fmt.Sprintf("failed to bind flag: %s", err))
+	}
+
+	// run main command
+	err = executor.Execute()
 	if err != nil {
 		panic(err)
 	}
@@ -89,9 +108,27 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer) abci.Application
 		skipUpgradeHeights[int64(h)] = true
 	}
 
+	pruningOpts, err := server.GetPruningOptionsFromFlags()
+	if err != nil {
+		panic(err)
+	}
+
+	mempoolEnableAuth := viper.GetBool(flagMempoolEnableAuth)
+	mempoolAuthAddresses, err := accAddressesFromBech32(viper.GetStringSlice(flagMempoolAuthAddresses)...)
+	if err != nil {
+		panic(fmt.Sprintf("could not get authorized address from config: %v", err))
+	}
+
 	return app.NewApp(
-		logger, db, traceStore, true, skipUpgradeHeights, invCheckPeriod,
-		baseapp.SetPruning(store.NewPruningOptionsFromString(viper.GetString("pruning"))),
+		logger, db, traceStore,
+		app.AppOptions{
+			SkipLoadLatest:       false,
+			SkipUpgradeHeights:   skipUpgradeHeights,
+			InvariantCheckPeriod: invCheckPeriod,
+			MempoolEnableAuth:    mempoolEnableAuth,
+			MempoolAuthAddresses: mempoolAuthAddresses,
+		},
+		baseapp.SetPruning(pruningOpts),
 		baseapp.SetMinGasPrices(viper.GetString(server.FlagMinGasPrices)),
 		baseapp.SetHaltHeight(viper.GetUint64(server.FlagHaltHeight)),
 		baseapp.SetHaltTime(viper.GetUint64(server.FlagHaltTime)),
@@ -104,13 +141,33 @@ func exportAppStateAndTMValidators(
 ) (json.RawMessage, []tmtypes.GenesisValidator, error) {
 
 	if height != -1 {
-		tempApp := app.NewApp(logger, db, traceStore, false, map[int64]bool{}, uint(1))
+		opts := app.AppOptions{
+			SkipLoadLatest:       true,
+			InvariantCheckPeriod: uint(1),
+		}
+		tempApp := app.NewApp(logger, db, traceStore, opts)
 		err := tempApp.LoadHeight(height)
 		if err != nil {
 			return nil, nil, err
 		}
 		return tempApp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
 	}
-	tempApp := app.NewApp(logger, db, traceStore, true, map[int64]bool{}, uint(1))
+	opts := app.AppOptions{
+		SkipLoadLatest:       false,
+		InvariantCheckPeriod: uint(1),
+	}
+	tempApp := app.NewApp(logger, db, traceStore, opts)
 	return tempApp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
+}
+
+func accAddressesFromBech32(addresses ...string) ([]sdk.AccAddress, error) {
+	var decodedAddresses []sdk.AccAddress
+	for _, s := range addresses {
+		a, err := sdk.AccAddressFromBech32(s)
+		if err != nil {
+			return nil, err
+		}
+		decodedAddresses = append(decodedAddresses, a)
+	}
+	return decodedAddresses, nil
 }

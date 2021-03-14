@@ -133,7 +133,7 @@ func QueryGetAssetSupplyCmd(queryRoute string, cdc *codec.Codec) *cobra.Command 
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
 
 			// Prepare query params
-			bz, err := cdc.MarshalJSON(types.NewQueryAssetSupply([]byte(args[0])))
+			bz, err := cdc.MarshalJSON(types.NewQueryAssetSupply(args[0]))
 			if err != nil {
 				return err
 			}
@@ -223,11 +223,11 @@ func QueryGetAtomicSwapsCmd(queryRoute string, cdc *codec.Codec) *cobra.Command 
 		Short: "query atomic swaps with optional filters",
 		Long: strings.TrimSpace(`Query for all paginated atomic swaps that match optional filters:
 Example:
-$ kvcli q bep3 swaps --involve=kava1l0xsq2z7gqd7yly0g40y5836g0appumark77ny
-$ kvcli q bep3 swaps --expiration=280
-$ kvcli q bep3 swaps --status=(Open|Completed|Expired)
-$ kvcli q bep3 swaps --direction=(Incoming|Outgoing)
-$ kvcli q bep3 swaps --page=2 --limit=100
+$ jpyxcli q bep3 swaps --involve=kava1l0xsq2z7gqd7yly0g40y5836g0appumark77ny
+$ jpyxcli q bep3 swaps --expiration=280
+$ jpyxcli q bep3 swaps --status=(Open|Completed|Expired)
+$ jpyxcli q bep3 swaps --direction=(Incoming|Outgoing)
+$ jpyxcli q bep3 swaps --page=2 --limit=100
 `,
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {

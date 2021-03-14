@@ -93,7 +93,7 @@ func (AppModuleBasic) ProposalContents(_ module.SimulationState) []sim.WeightedP
 	return nil
 }
 
-// WeightedOperations returns the all the bep3 module operations with their respective weights.
+// WeightedOperations returns the all the incentive module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []sim.WeightedOperation {
 	return simulation.WeightedOperations(simState.AppParams, simState.Cdc, am.accountKeeper, am.supplyKeeper, am.keeper)
 }
@@ -105,15 +105,17 @@ type AppModule struct {
 	keeper        Keeper
 	accountKeeper auth.AccountKeeper
 	supplyKeeper  SupplyKeeper
+	cdpKeeper     CdpKeeper
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(keeper Keeper, accountKeeper auth.AccountKeeper, supplyKeeper SupplyKeeper) AppModule {
+func NewAppModule(keeper Keeper, accountKeeper auth.AccountKeeper, supplyKeeper SupplyKeeper, cdpKeeper CdpKeeper) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{},
 		keeper:         keeper,
 		accountKeeper:  accountKeeper,
 		supplyKeeper:   supplyKeeper,
+		cdpKeeper:      cdpKeeper,
 	}
 }
 
@@ -149,7 +151,7 @@ func (am AppModule) NewQuerierHandler() sdk.Querier {
 func (am AppModule) InitGenesis(ctx sdk.Context, data json.RawMessage) []abci.ValidatorUpdate {
 	var gs types.GenesisState
 	types.ModuleCdc.MustUnmarshalJSON(data, &gs)
-	InitGenesis(ctx, am.keeper, am.supplyKeeper, gs)
+	InitGenesis(ctx, am.keeper, am.supplyKeeper, am.cdpKeeper, gs)
 	return []abci.ValidatorUpdate{}
 }
 

@@ -12,24 +12,42 @@ import (
 
 // CDP is the state of a single collateralized debt position.
 type CDP struct {
-	ID              uint64         `json:"id" yaml:"id"`                 // unique id for cdp
-	Owner           sdk.AccAddress `json:"owner" yaml:"owner"`           // Account that authorizes changes to the CDP
-	Collateral      sdk.Coin       `json:"collateral" yaml:"collateral"` // Amount of collateral stored in this CDP
-	Principal       sdk.Coin       `json:"principal" yaml:"principal"`
-	AccumulatedFees sdk.Coin       `json:"accumulated_fees" yaml:"accumulated_fees"`
-	FeesUpdated     time.Time      `json:"fees_updated" yaml:"fees_updated"` // Amount of stable coin drawn from this CDP
+	ID              uint64         `json:"id" yaml:"id"`                             // unique id for cdp
+	Owner           sdk.AccAddress `json:"owner" yaml:"owner"`                       // Account that authorizes changes to the CDP
+	Type            string         `json:"type" yaml:"type"`                         // string representing the unique collateral type of the CDP
+	Collateral      sdk.Coin       `json:"collateral" yaml:"collateral"`             // Amount of collateral stored in this CDP
+	Principal       sdk.Coin       `json:"principal" yaml:"principal"`               // Amount of debt drawn using the CDP
+	AccumulatedFees sdk.Coin       `json:"accumulated_fees" yaml:"accumulated_fees"` // Fees accumulated since the CDP was opened or debt was last repaid
+	FeesUpdated     time.Time      `json:"fees_updated" yaml:"fees_updated"`         // The time when fees were last updated
+	InterestFactor  sdk.Dec        `json:"interest_factor" yaml:"interest_factor"`   // the interest factor when fees were last calculated for this CDP
 }
 
 // NewCDP creates a new CDP object
-func NewCDP(id uint64, owner sdk.AccAddress, collateral sdk.Coin, principal sdk.Coin, time time.Time) CDP {
+func NewCDP(id uint64, owner sdk.AccAddress, collateral sdk.Coin, collateralType string, principal sdk.Coin, time time.Time, interestFactor sdk.Dec) CDP {
 	fees := sdk.NewCoin(principal.Denom, sdk.ZeroInt())
 	return CDP{
 		ID:              id,
 		Owner:           owner,
+		Type:            collateralType,
 		Collateral:      collateral,
 		Principal:       principal,
 		AccumulatedFees: fees,
 		FeesUpdated:     time,
+		InterestFactor:  interestFactor,
+	}
+}
+
+// NewCDPWithFees creates a new CDP object, for use during migration
+func NewCDPWithFees(id uint64, owner sdk.AccAddress, collateral sdk.Coin, collateralType string, principal, fees sdk.Coin, time time.Time, interestFactor sdk.Dec) CDP {
+	return CDP{
+		ID:              id,
+		Owner:           owner,
+		Type:            collateralType,
+		Collateral:      collateral,
+		Principal:       principal,
+		AccumulatedFees: fees,
+		FeesUpdated:     time,
+		InterestFactor:  interestFactor,
 	}
 }
 
@@ -42,14 +60,16 @@ func (cdp CDP) String() string {
 	Collateral: %s
 	Principal: %s
 	AccumulatedFees: %s
-	Fees Last Updated: %s`,
+	Fees Last Updated: %s
+	Interest Factor: %s`,
 		cdp.Owner,
 		cdp.ID,
-		cdp.Collateral.Denom,
+		cdp.Type,
 		cdp.Collateral,
 		cdp.Principal,
 		cdp.AccumulatedFees,
 		cdp.FeesUpdated,
+		cdp.InterestFactor,
 	))
 }
 
@@ -70,13 +90,16 @@ func (cdp CDP) Validate() error {
 	if !cdp.AccumulatedFees.IsValid() {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "accumulated fees %s", cdp.AccumulatedFees)
 	}
-	if cdp.FeesUpdated.IsZero() {
+	if cdp.FeesUpdated.Unix() <= 0 {
 		return errors.New("cdp updated fee time cannot be zero")
+	}
+	if strings.TrimSpace(cdp.Type) == "" {
+		return fmt.Errorf("cdp type cannot be empty")
 	}
 	return nil
 }
 
-// GetTotalPrinciple returns the total principle for the cdp
+// GetTotalPrincipal returns the total principle for the cdp
 func (cdp CDP) GetTotalPrincipal() sdk.Coin {
 	return cdp.Principal.Add(cdp.AccumulatedFees)
 }
@@ -116,10 +139,12 @@ func NewAugmentedCDP(cdp CDP, collateralValue sdk.Coin, collateralizationRatio s
 		CDP: CDP{
 			ID:              cdp.ID,
 			Owner:           cdp.Owner,
+			Type:            cdp.Type,
 			Collateral:      cdp.Collateral,
 			Principal:       cdp.Principal,
 			AccumulatedFees: cdp.AccumulatedFees,
 			FeesUpdated:     cdp.FeesUpdated,
+			InterestFactor:  cdp.InterestFactor,
 		},
 		CollateralValue:        collateralValue,
 		CollateralizationRatio: collateralizationRatio,
@@ -138,15 +163,17 @@ func (augCDP AugmentedCDP) String() string {
 	Principal: %s
 	Fees: %s
 	Fees Last Updated: %s
+	Interest Factor: %s
 	Collateralization ratio: %s`,
 		augCDP.Owner,
 		augCDP.ID,
-		augCDP.Collateral.Denom,
+		augCDP.Type,
 		augCDP.Collateral,
 		augCDP.CollateralValue,
 		augCDP.Principal,
 		augCDP.AccumulatedFees,
 		augCDP.FeesUpdated,
+		augCDP.InterestFactor,
 		augCDP.CollateralizationRatio,
 	))
 }

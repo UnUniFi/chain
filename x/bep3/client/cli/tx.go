@@ -55,7 +55,7 @@ func GetCmdCreateAtomicSwap(cdc *codec.Codec) *cobra.Command {
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
 
-			from := cliCtx.GetFromAddress() // same as Stake executor's deputy address
+			from := cliCtx.GetFromAddress() // same as Kava executor's deputy address
 			to, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err

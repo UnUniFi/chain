@@ -75,7 +75,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 		types.NewDebtAuction(
 			cdptypes.LiquidatorMacc, // using cdp account rather than generic test one to avoid having to set permissions on the supply keeper
 			sdk.NewInt64Coin("jpyx", 100),
-			sdk.NewInt64Coin("stake", 1000000000000),
+			sdk.NewInt64Coin("ujsmn", 1000000000000),
 			simState.GenTimestamp.Add(time.Hour*5),
 			sdk.NewInt64Coin("debt", 100), // same as jpyx
 		),
@@ -127,7 +127,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 	simState.GenState[supply.ModuleName] = simState.Cdc.MustMarshalJSON(supplyGenesis)
 
 	// TODO liquidator mod account doesn't need to be initialized for this example
-	// - it just mints stake, doesn't need a starting balance
+	// - it just mints kava, doesn't need a starting balance
 	// - and supply.GetModuleAccount creates one if it doesn't exist
 
 	// Note: this line prints out the auction genesis state, not just the auction parameters. Some sdk modules print out just the parameters.

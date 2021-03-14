@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -16,12 +17,10 @@ func NewQuerier(k Keeper) sdk.Querier {
 		switch path[0] {
 		case types.QueryGetParams:
 			return queryGetParams(ctx, req, k)
-		case types.QueryGetClaims:
-			return queryGetClaims(ctx, req, k)
-		case types.QueryGetRewardPeriods:
-			return queryGetRewardPeriods(ctx, req, k)
-		case types.QueryGetClaimPeriods:
-			return queryGetClaimPeriods(ctx, req, k)
+		case types.QueryGetHardRewards:
+			return queryGetHardRewards(ctx, req, k)
+		case types.QueryGetJPYXMintingRewards:
+			return queryGetJPYXMintingRewards(ctx, req, k)
 		default:
 			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unknown %s query endpoint", types.ModuleName)
 		}
@@ -41,41 +40,82 @@ func queryGetParams(ctx sdk.Context, req abci.RequestQuery, k Keeper) ([]byte, e
 	return bz, nil
 }
 
-// query reward periods in the store
-func queryGetRewardPeriods(ctx sdk.Context, req abci.RequestQuery, k Keeper) ([]byte, error) {
-	// Get params
-	rewardPeriods := k.GetAllRewardPeriods(ctx)
-
-	// Encode results
-	bz, err := codec.MarshalJSONIndent(k.cdc, rewardPeriods)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
-	}
-	return bz, nil
-}
-
-// query claim periods in the store
-func queryGetClaimPeriods(ctx sdk.Context, req abci.RequestQuery, k Keeper) ([]byte, error) {
-	// Get params
-	claimPeriods := k.GetAllClaimPeriods(ctx)
-
-	// Encode results
-	bz, err := codec.MarshalJSONIndent(k.cdc, claimPeriods)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
-	}
-	return bz, nil
-}
-
-func queryGetClaims(ctx sdk.Context, req abci.RequestQuery, k Keeper) ([]byte, error) {
-	var requestParams types.QueryClaimsParams
-	err := k.cdc.UnmarshalJSON(req.Data, &requestParams)
+func queryGetHardRewards(ctx sdk.Context, req abci.RequestQuery, k Keeper) ([]byte, error) {
+	var params types.QueryHardRewardsParams
+	err := types.ModuleCdc.UnmarshalJSON(req.Data, &params)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
-	claims, _ := k.GetClaimsByAddressAndDenom(ctx, requestParams.Owner, requestParams.Denom)
+	owner := len(params.Owner) > 0
 
-	bz, err := codec.MarshalJSONIndent(k.cdc, claims)
+	var hardClaims types.HardLiquidityProviderClaims
+	switch {
+	case owner:
+		hardClaim, foundHardClaim := k.GetHardLiquidityProviderClaim(ctx, params.Owner)
+		if foundHardClaim {
+			hardClaims = append(hardClaims, hardClaim)
+		}
+	default:
+		hardClaims = k.GetAllHardLiquidityProviderClaims(ctx)
+	}
+
+	var paginatedHardClaims types.HardLiquidityProviderClaims
+	startH, endH := client.Paginate(len(hardClaims), params.Page, params.Limit, 100)
+	if startH < 0 || endH < 0 {
+		paginatedHardClaims = types.HardLiquidityProviderClaims{}
+	} else {
+		paginatedHardClaims = hardClaims[startH:endH]
+	}
+
+	var augmentedHardClaims types.HardLiquidityProviderClaims
+	for _, claim := range paginatedHardClaims {
+		augmentedClaim := k.SimulateHardSynchronization(ctx, claim)
+		augmentedHardClaims = append(augmentedHardClaims, augmentedClaim)
+	}
+
+	// Marshal Hard claims
+	bz, err := codec.MarshalJSONIndent(k.cdc, augmentedHardClaims)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
+	}
+	return bz, nil
+}
+
+func queryGetJPYXMintingRewards(ctx sdk.Context, req abci.RequestQuery, k Keeper) ([]byte, error) {
+	var params types.QueryJPYXMintingRewardsParams
+	err := types.ModuleCdc.UnmarshalJSON(req.Data, &params)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
+	}
+	owner := len(params.Owner) > 0
+
+	var jpyxMintingClaims types.JPYXMintingClaims
+	switch {
+	case owner:
+		jpyxMintingClaim, foundJpyxMintingClaim := k.GetJPYXMintingClaim(ctx, params.Owner)
+		if foundJpyxMintingClaim {
+			jpyxMintingClaims = append(jpyxMintingClaims, jpyxMintingClaim)
+		}
+	default:
+		jpyxMintingClaims = k.GetAllJPYXMintingClaims(ctx)
+	}
+
+	var paginatedJpyxMintingClaims types.JPYXMintingClaims
+	startU, endU := client.Paginate(len(jpyxMintingClaims), params.Page, params.Limit, 100)
+	if startU < 0 || endU < 0 {
+		paginatedJpyxMintingClaims = types.JPYXMintingClaims{}
+	} else {
+		paginatedJpyxMintingClaims = jpyxMintingClaims[startU:endU]
+	}
+
+	var augmentedJpyxMintingClaims types.JPYXMintingClaims
+	for _, claim := range paginatedJpyxMintingClaims {
+		augmentedClaim := k.SimulateJPYXMintingSynchronization(ctx, claim)
+		augmentedJpyxMintingClaims = append(augmentedJpyxMintingClaims, augmentedClaim)
+	}
+
+	// Marshal JPYX minting claims
+	bz, err := codec.MarshalJSONIndent(k.cdc, augmentedJpyxMintingClaims)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}

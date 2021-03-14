@@ -11,7 +11,7 @@ For example, the following reward:
 	Reward{
 		Active: true,
 		Denom: "bnb",
-		AvailableRewards: sdk.NewCoin("stake", 1000000000),
+		AvailableRewards: sdk.NewCoin("ujsmn", 1000000000),
 		Duration: time.Hour*7*24,
 		TimeLock: time.Hour*24*365,
 		ClaimDuration: time.Hour*7*24,

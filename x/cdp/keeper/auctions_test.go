@@ -30,7 +30,7 @@ func (suite *AuctionTestSuite) SetupTest() {
 	config := sdk.GetConfig()
 	app.SetBech32AddressPrefixes(config)
 	tApp := app.NewTestApp()
-	taddr := sdk.AccAddress(crypto.AddressHash([]byte("StakeTestUser1")))
+	taddr := sdk.AccAddress(crypto.AddressHash([]byte("KavaTestUser1")))
 	authGS := app.NewAuthGenState([]sdk.AccAddress{taddr}, []sdk.Coins{cs(c("jpyx", 21000000000))})
 	ctx := tApp.NewContext(true, abci.Header{Height: 1, Time: tmtime.Now()})
 	tApp.InitializeFromGenesisStates(
@@ -62,7 +62,7 @@ func (suite *AuctionTestSuite) TestCollateralAuction() {
 	err := sk.MintCoins(suite.ctx, types.LiquidatorMacc, cs(c("debt", 21000000000), c("bnb", 190000000000)))
 	suite.Require().NoError(err)
 	testDeposit := types.NewDeposit(1, suite.addrs[0], c("bnb", 190000000000))
-	err = suite.keeper.AuctionCollateral(suite.ctx, types.Deposits{testDeposit}, i(21000000000), "jpyx")
+	err = suite.keeper.AuctionCollateral(suite.ctx, types.Deposits{testDeposit}, "bnb-a", i(21000000000), "jpyx")
 	suite.Require().NoError(err)
 }
 

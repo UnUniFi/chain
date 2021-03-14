@@ -7,66 +7,89 @@ import (
 // Querier routes for the cdp module
 const (
 	QueryGetCdp                     = "cdp"
-	QueryGetCdpDeposits             = "deposits"
 	QueryGetCdps                    = "cdps"
-	QueryGetCdpsByCollateralization = "ratio"
+	QueryGetCdpDeposits             = "deposits"
+	QueryGetCdpsByCollateralization = "ratio"          // legacy query, maintained for REST API
+	QueryGetCdpsByCollateralType    = "collateralType" // legacy query, maintained for REST API
 	QueryGetParams                  = "params"
 	QueryGetAccounts                = "accounts"
 	RestOwner                       = "owner"
-	RestCollateralDenom             = "collateral-denom"
+	RestCollateralType              = "collateral-type"
 	RestRatio                       = "ratio"
 )
 
-// QueryCdpsParams params for query /cdp/cdps
-type QueryCdpsParams struct {
-	CollateralDenom string // get CDPs with this collateral denom
-}
-
-// NewQueryCdpsParams returns QueryCdpsParams
-func NewQueryCdpsParams(denom string) QueryCdpsParams {
-	return QueryCdpsParams{
-		CollateralDenom: denom,
-	}
-}
-
 // QueryCdpParams params for query /cdp/cdp
 type QueryCdpParams struct {
-	CollateralDenom string         // get CDPs with this collateral denom
-	Owner           sdk.AccAddress // get CDPs belonging to this owner
+	CollateralType string         // get CDPs with this collateral type
+	Owner          sdk.AccAddress // get CDPs belonging to this owner
 }
 
 // NewQueryCdpParams returns QueryCdpParams
-func NewQueryCdpParams(owner sdk.AccAddress, denom string) QueryCdpParams {
+func NewQueryCdpParams(owner sdk.AccAddress, collateralType string) QueryCdpParams {
 	return QueryCdpParams{
-		Owner:           owner,
-		CollateralDenom: denom,
+		Owner:          owner,
+		CollateralType: collateralType,
+	}
+}
+
+// QueryCdpsParams is the params for a filtered CDP query
+type QueryCdpsParams struct {
+	Page           int            `json:"page" yaml:"page"`
+	Limit          int            `json:"limit" yaml:"limit"`
+	CollateralType string         `json:"collateral_type" yaml:"collateral_type"`
+	Owner          sdk.AccAddress `json:"owner" yaml:"owner"`
+	ID             uint64         `json:"id" yaml:"id"`
+	Ratio          sdk.Dec        `json:"ratio" yaml:"ratio"`
+}
+
+// NewQueryCdpsParams creates a new QueryCdpsParams
+func NewQueryCdpsParams(page, limit int, collateralType string, owner sdk.AccAddress, id uint64, ratio sdk.Dec) QueryCdpsParams {
+	return QueryCdpsParams{
+		Page:           page,
+		Limit:          limit,
+		CollateralType: collateralType,
+		Owner:          owner,
+		ID:             id,
+		Ratio:          ratio,
 	}
 }
 
 // QueryCdpDeposits params for query /cdp/deposits
 type QueryCdpDeposits struct {
-	CollateralDenom string         // get CDPs with this collateral denom
-	Owner           sdk.AccAddress // get CDPs belonging to this owner
+	CollateralType string         // get CDPs with this collateral type
+	Owner          sdk.AccAddress // get CDPs belonging to this owner
 }
 
 // NewQueryCdpDeposits returns QueryCdpDeposits
-func NewQueryCdpDeposits(owner sdk.AccAddress, denom string) QueryCdpDeposits {
+func NewQueryCdpDeposits(owner sdk.AccAddress, collateralType string) QueryCdpDeposits {
 	return QueryCdpDeposits{
-		Owner:           owner,
-		CollateralDenom: denom,
+		Owner:          owner,
+		CollateralType: collateralType,
+	}
+}
+
+// QueryCdpsByCollateralTypeParams params for query /cdp/cdps/{denom}
+type QueryCdpsByCollateralTypeParams struct {
+	CollateralType string // get CDPs with this collateral type
+}
+
+// NewQueryCdpsByCollateralTypeParams returns QueryCdpsByCollateralTypeParams
+func NewQueryCdpsByCollateralTypeParams(collateralType string) QueryCdpsByCollateralTypeParams {
+	return QueryCdpsByCollateralTypeParams{
+		CollateralType: collateralType,
 	}
 }
 
 // QueryCdpsByRatioParams params for query /cdp/cdps/ratio
 type QueryCdpsByRatioParams struct {
-	CollateralDenom string  // get CDPs with this collateral denom
-	Ratio           sdk.Dec // get CDPs below this collateral:debt ratio
+	CollateralType string
+	Ratio          sdk.Dec // get CDPs below this collateral:debt ratio
 }
 
 // NewQueryCdpsByRatioParams returns QueryCdpsByRatioParams
-func NewQueryCdpsByRatioParams(denom string, ratio sdk.Dec) QueryCdpsByRatioParams {
+func NewQueryCdpsByRatioParams(collateralType string, ratio sdk.Dec) QueryCdpsByRatioParams {
 	return QueryCdpsByRatioParams{
-		CollateralDenom: denom,
-		Ratio:           ratio,
+		CollateralType: collateralType,
+		Ratio:          ratio,
 	}
 }

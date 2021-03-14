@@ -13,9 +13,9 @@ import (
 )
 
 type msgTest struct {
-	from       sdk.AccAddress
-	denom      string
-	expectPass bool
+	from           sdk.AccAddress
+	multiplierName string
+	expectPass     bool
 }
 
 type MsgTestSuite struct {
@@ -27,19 +27,29 @@ type MsgTestSuite struct {
 func (suite *MsgTestSuite) SetupTest() {
 	tests := []msgTest{
 		{
-			from:       sdk.AccAddress(crypto.AddressHash([]byte("StakeTest1"))),
-			denom:      "bnb",
-			expectPass: true,
+			from:           sdk.AccAddress(crypto.AddressHash([]byte("KavaTest1"))),
+			multiplierName: "large",
+			expectPass:     true,
 		},
 		{
-			from:       sdk.AccAddress(crypto.AddressHash([]byte("StakeTest1"))),
-			denom:      "",
-			expectPass: false,
+			from:           sdk.AccAddress(crypto.AddressHash([]byte("KavaTest1"))),
+			multiplierName: "medium",
+			expectPass:     true,
 		},
 		{
-			from:       sdk.AccAddress{},
-			denom:      "bnb",
-			expectPass: false,
+			from:           sdk.AccAddress(crypto.AddressHash([]byte("KavaTest1"))),
+			multiplierName: "small",
+			expectPass:     true,
+		},
+		{
+			from:           sdk.AccAddress{},
+			multiplierName: "medium",
+			expectPass:     false,
+		},
+		{
+			from:           sdk.AccAddress(crypto.AddressHash([]byte("KavaTest1"))),
+			multiplierName: "huge",
+			expectPass:     false,
 		},
 	}
 	suite.tests = tests
@@ -47,7 +57,7 @@ func (suite *MsgTestSuite) SetupTest() {
 
 func (suite *MsgTestSuite) TestMsgValidation() {
 	for _, t := range suite.tests {
-		msg := types.NewMsgClaimReward(t.from, t.denom)
+		msg := types.NewMsgClaimJPYXMintingReward(t.from, t.multiplierName)
 		err := msg.ValidateBasic()
 		if t.expectPass {
 			suite.Require().NoError(err)

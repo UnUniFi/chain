@@ -22,13 +22,14 @@ type GenesisTestSuite struct {
 
 func (suite *GenesisTestSuite) TestInvalidGenState() {
 	type args struct {
-		params       cdp.Params
-		cdps         cdp.CDPs
-		deposits     cdp.Deposits
-		startingID   uint64
-		debtDenom    string
-		govDenom     string
-		prevDistTime time.Time
+		params             cdp.Params
+		cdps               cdp.CDPs
+		deposits           cdp.Deposits
+		startingID         uint64
+		debtDenom          string
+		govDenom           string
+		genAccumTimes      cdp.GenesisAccumulationTimes
+		genTotalPrincipals cdp.GenesisTotalPrincipals
 	}
 	type errArgs struct {
 		expectPass bool
@@ -47,12 +48,13 @@ func (suite *GenesisTestSuite) TestInvalidGenState() {
 		{
 			name: "empty debt denom",
 			args: args{
-				params:       cdp.DefaultParams(),
-				cdps:         cdp.CDPs{},
-				deposits:     cdp.Deposits{},
-				debtDenom:    "",
-				govDenom:     cdp.DefaultGovDenom,
-				prevDistTime: cdp.DefaultPreviousDistributionTime,
+				params:             cdp.DefaultParams(),
+				cdps:               cdp.CDPs{},
+				deposits:           cdp.Deposits{},
+				debtDenom:          "",
+				govDenom:           cdp.DefaultGovDenom,
+				genAccumTimes:      cdp.DefaultGenesisState().PreviousAccumulationTimes,
+				genTotalPrincipals: cdp.DefaultGenesisState().TotalPrincipals,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -62,12 +64,13 @@ func (suite *GenesisTestSuite) TestInvalidGenState() {
 		{
 			name: "empty gov denom",
 			args: args{
-				params:       cdp.DefaultParams(),
-				cdps:         cdp.CDPs{},
-				deposits:     cdp.Deposits{},
-				debtDenom:    cdp.DefaultDebtDenom,
-				govDenom:     "",
-				prevDistTime: cdp.DefaultPreviousDistributionTime,
+				params:             cdp.DefaultParams(),
+				cdps:               cdp.CDPs{},
+				deposits:           cdp.Deposits{},
+				debtDenom:          cdp.DefaultDebtDenom,
+				govDenom:           "",
+				genAccumTimes:      cdp.DefaultGenesisState().PreviousAccumulationTimes,
+				genTotalPrincipals: cdp.DefaultGenesisState().TotalPrincipals,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -75,24 +78,42 @@ func (suite *GenesisTestSuite) TestInvalidGenState() {
 			},
 		},
 		{
-			name: "empty distribution time",
+			name: "interest factor below one",
 			args: args{
-				params:       cdp.DefaultParams(),
-				cdps:         cdp.CDPs{},
-				deposits:     cdp.Deposits{},
-				debtDenom:    cdp.DefaultDebtDenom,
-				govDenom:     cdp.DefaultGovDenom,
-				prevDistTime: time.Time{},
+				params:             cdp.DefaultParams(),
+				cdps:               cdp.CDPs{},
+				deposits:           cdp.Deposits{},
+				debtDenom:          cdp.DefaultDebtDenom,
+				govDenom:           cdp.DefaultGovDenom,
+				genAccumTimes:      cdp.GenesisAccumulationTimes{cdp.NewGenesisAccumulationTime("bnb-a", time.Time{}, sdk.OneDec().Sub(sdk.SmallestDec()))},
+				genTotalPrincipals: cdp.DefaultGenesisState().TotalPrincipals,
 			},
 			errArgs: errArgs{
 				expectPass: false,
-				contains:   "previous distribution time not set",
+				contains:   "interest factor should be ≥ 1.0",
+			},
+		},
+		{
+			name: "negative total principal",
+			args: args{
+				params:             cdp.DefaultParams(),
+				cdps:               cdp.CDPs{},
+				deposits:           cdp.Deposits{},
+				debtDenom:          cdp.DefaultDebtDenom,
+				govDenom:           cdp.DefaultGovDenom,
+				genAccumTimes:      cdp.DefaultGenesisState().PreviousAccumulationTimes,
+				genTotalPrincipals: cdp.GenesisTotalPrincipals{cdp.NewGenesisTotalPrincipal("bnb-a", sdk.NewInt(-1))},
+			},
+			errArgs: errArgs{
+				expectPass: false,
+				contains:   "total principal should be positive",
 			},
 		},
 	}
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
-			gs := cdp.NewGenesisState(tc.args.params, tc.args.cdps, tc.args.deposits, tc.args.startingID, tc.args.debtDenom, tc.args.govDenom, tc.args.prevDistTime)
+			gs := cdp.NewGenesisState(tc.args.params, tc.args.cdps, tc.args.deposits, tc.args.startingID,
+				tc.args.debtDenom, tc.args.govDenom, tc.args.genAccumTimes, tc.args.genTotalPrincipals)
 			err := gs.Validate()
 			if tc.errArgs.expectPass {
 				suite.Require().NoError(err)
@@ -126,7 +147,6 @@ func (suite *GenesisTestSuite) TestValidGenState() {
 			appGS,
 		)
 	})
-
 }
 
 func TestGenesisTestSuite(t *testing.T) {

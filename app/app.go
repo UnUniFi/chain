@@ -33,13 +33,16 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 
+	"github.com/lcnem/jpyx/app/ante"
 	"github.com/lcnem/jpyx/x/auction"
 	"github.com/lcnem/jpyx/x/bep3"
 	"github.com/lcnem/jpyx/x/cdp"
 	"github.com/lcnem/jpyx/x/committee"
+	"github.com/lcnem/jpyx/x/hard"
 	"github.com/lcnem/jpyx/x/incentive"
+	"github.com/lcnem/jpyx/x/issuance"
+	"github.com/lcnem/jpyx/x/jsmndist"
 	"github.com/lcnem/jpyx/x/pricefeed"
-	stakedist "github.com/lcnem/jpyx/x/stakedist"
 	validatorvesting "github.com/lcnem/jpyx/x/validator-vesting"
 )
 
@@ -77,8 +80,10 @@ var (
 		pricefeed.AppModuleBasic{},
 		committee.AppModuleBasic{},
 		bep3.AppModuleBasic{},
-		stakedist.AppModuleBasic{},
+		jsmndist.AppModuleBasic{},
 		incentive.AppModuleBasic{},
+		issuance.AppModuleBasic{},
+		hard.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -93,9 +98,10 @@ var (
 		auction.ModuleName:          nil,
 		cdp.ModuleName:              {supply.Minter, supply.Burner},
 		cdp.LiquidatorMacc:          {supply.Minter, supply.Burner},
-		cdp.SavingsRateMacc:         {supply.Minter},
-		bep3.ModuleName:             nil,
-		stakedist.ModuleName:        {supply.Minter},
+		bep3.ModuleName:             {supply.Minter, supply.Burner},
+		jsmndist.ModuleName:         {supply.Minter},
+		issuance.ModuleAccountName:  {supply.Minter, supply.Burner},
+		hard.ModuleAccountName:      {supply.Minter},
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -106,6 +112,16 @@ var (
 
 // Verify app interface at compile time
 var _ simapp.App = (*App)(nil)
+
+// AppOptions bundles several configuration params for an App.
+// The zero value can be used as a sensible default.
+type AppOptions struct {
+	SkipLoadLatest       bool
+	SkipUpgradeHeights   map[int64]bool
+	InvariantCheckPeriod uint
+	MempoolEnableAuth    bool
+	MempoolAuthAddresses []sdk.AccAddress
+}
 
 // App represents an extended ABCI application
 type App struct {
@@ -137,8 +153,10 @@ type App struct {
 	pricefeedKeeper pricefeed.Keeper
 	committeeKeeper committee.Keeper
 	bep3Keeper      bep3.Keeper
-	stakedistKeeper stakedist.Keeper
+	jsmndistKeeper  jsmndist.Keeper
 	incentiveKeeper incentive.Keeper
+	issuanceKeeper  issuance.Keeper
+	hardKeeper      hard.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -148,9 +166,7 @@ type App struct {
 }
 
 // NewApp returns a reference to an initialized App.
-func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
-	skipUpgradeHeights map[int64]bool, invCheckPeriod uint,
-	baseAppOptions ...func(*bam.BaseApp)) *App {
+func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts AppOptions, baseAppOptions ...func(*bam.BaseApp)) *App {
 
 	cdc := MakeCodec()
 
@@ -163,14 +179,15 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 		supply.StoreKey, mint.StoreKey, distr.StoreKey, slashing.StoreKey,
 		gov.StoreKey, params.StoreKey, upgrade.StoreKey, evidence.StoreKey,
 		validatorvesting.StoreKey, auction.StoreKey, cdp.StoreKey, pricefeed.StoreKey,
-		bep3.StoreKey, stakedist.StoreKey, incentive.StoreKey, committee.StoreKey,
+		bep3.StoreKey, jsmndist.StoreKey, incentive.StoreKey, issuance.StoreKey, committee.StoreKey,
+		hard.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(params.TStoreKey)
 
 	var app = &App{
 		BaseApp:        bApp,
 		cdc:            cdc,
-		invCheckPeriod: invCheckPeriod,
+		invCheckPeriod: appOpts.InvariantCheckPeriod,
 		keys:           keys,
 		tkeys:          tkeys,
 	}
@@ -190,8 +207,10 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 	cdpSubspace := app.paramsKeeper.Subspace(cdp.DefaultParamspace)
 	pricefeedSubspace := app.paramsKeeper.Subspace(pricefeed.DefaultParamspace)
 	bep3Subspace := app.paramsKeeper.Subspace(bep3.DefaultParamspace)
-	stakedistSubspace := app.paramsKeeper.Subspace(stakedist.DefaultParamspace)
+	jsmndistSubspace := app.paramsKeeper.Subspace(jsmndist.DefaultParamspace)
 	incentiveSubspace := app.paramsKeeper.Subspace(incentive.DefaultParamspace)
+	issuanceSubspace := app.paramsKeeper.Subspace(issuance.DefaultParamspace)
+	hardSubspace := app.paramsKeeper.Subspace(hard.DefaultParamspace)
 
 	// add keepers
 	app.accountKeeper = auth.NewAccountKeeper(
@@ -243,12 +262,12 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 	)
 	app.crisisKeeper = crisis.NewKeeper(
 		crisisSubspace,
-		invCheckPeriod,
+		app.invCheckPeriod,
 		app.supplyKeeper,
 		auth.FeeCollectorName,
 	)
 	app.upgradeKeeper = upgrade.NewKeeper(
-		skipUpgradeHeights,
+		appOpts.SkipUpgradeHeights,
 		keys[upgrade.StoreKey],
 		app.cdc,
 	)
@@ -317,7 +336,7 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 		app.supplyKeeper,
 		auctionSubspace,
 	)
-	app.cdpKeeper = cdp.NewKeeper(
+	cdpKeeper := cdp.NewKeeper(
 		app.cdc,
 		keys[cdp.StoreKey],
 		cdpSubspace,
@@ -335,10 +354,20 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 		bep3Subspace,
 		app.ModuleAccountAddrs(),
 	)
-	app.stakedistKeeper = stakedist.NewKeeper(
+	hardKeeper := hard.NewKeeper(
 		app.cdc,
-		keys[stakedist.StoreKey],
-		stakedistSubspace,
+		keys[hard.StoreKey],
+		hardSubspace,
+		app.accountKeeper,
+		app.supplyKeeper,
+		&stakingKeeper,
+		app.pricefeedKeeper,
+		app.auctionKeeper,
+	)
+	app.jsmndistKeeper = jsmndist.NewKeeper(
+		app.cdc,
+		keys[jsmndist.StoreKey],
+		jsmndistSubspace,
 		app.supplyKeeper,
 	)
 	app.incentiveKeeper = incentive.NewKeeper(
@@ -346,14 +375,27 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 		keys[incentive.StoreKey],
 		incentiveSubspace,
 		app.supplyKeeper,
-		app.cdpKeeper,
+		&cdpKeeper,
+		&hardKeeper,
 		app.accountKeeper,
+		&stakingKeeper,
+	)
+	app.issuanceKeeper = issuance.NewKeeper(
+		app.cdc,
+		keys[issuance.StoreKey],
+		issuanceSubspace,
+		app.accountKeeper,
+		app.supplyKeeper,
 	)
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
 	app.stakingKeeper = *stakingKeeper.SetHooks(
-		staking.NewMultiStakingHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks()))
+		staking.NewMultiStakingHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks(), app.incentiveKeeper.Hooks()))
+
+	app.cdpKeeper = *cdpKeeper.SetHooks(cdp.NewMultiCDPHooks(app.incentiveKeeper.Hooks()))
+
+	app.hardKeeper = *hardKeeper.SetHooks(hard.NewMultiHARDHooks(app.incentiveKeeper.Hooks()))
 
 	// create the module manager (Note: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.)
@@ -375,9 +417,11 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 		cdp.NewAppModule(app.cdpKeeper, app.accountKeeper, app.pricefeedKeeper, app.supplyKeeper),
 		pricefeed.NewAppModule(app.pricefeedKeeper, app.accountKeeper),
 		bep3.NewAppModule(app.bep3Keeper, app.accountKeeper, app.supplyKeeper),
-		stakedist.NewAppModule(app.stakedistKeeper, app.supplyKeeper),
-		incentive.NewAppModule(app.incentiveKeeper, app.accountKeeper, app.supplyKeeper),
+		jsmndist.NewAppModule(app.jsmndistKeeper, app.supplyKeeper),
+		incentive.NewAppModule(app.incentiveKeeper, app.accountKeeper, app.supplyKeeper, app.cdpKeeper),
 		committee.NewAppModule(app.committeeKeeper, app.accountKeeper),
+		issuance.NewAppModule(app.issuanceKeeper, app.accountKeeper, app.supplyKeeper),
+		hard.NewAppModule(app.hardKeeper, app.supplyKeeper, app.pricefeedKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -387,8 +431,8 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 	// So it should be run before cdp.BeginBlocker which cancels out debt with stable and starts more auctions.
 	app.mm.SetOrderBeginBlockers(
 		upgrade.ModuleName, mint.ModuleName, distr.ModuleName, slashing.ModuleName,
-		validatorvesting.ModuleName, stakedist.ModuleName, auction.ModuleName, cdp.ModuleName,
-		bep3.ModuleName, incentive.ModuleName, committee.ModuleName,
+		validatorvesting.ModuleName, jsmndist.ModuleName, auction.ModuleName, committee.ModuleName, cdp.ModuleName,
+		bep3.ModuleName, hard.ModuleName, issuance.ModuleName, incentive.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(crisis.ModuleName, gov.ModuleName, staking.ModuleName, pricefeed.ModuleName)
@@ -398,8 +442,8 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 		validatorvesting.ModuleName, distr.ModuleName,
 		staking.ModuleName, bank.ModuleName, slashing.ModuleName,
 		gov.ModuleName, mint.ModuleName, evidence.ModuleName,
-		pricefeed.ModuleName, cdp.ModuleName, auction.ModuleName,
-		bep3.ModuleName, stakedist.ModuleName, incentive.ModuleName, committee.ModuleName,
+		pricefeed.ModuleName, cdp.ModuleName, hard.ModuleName, auction.ModuleName,
+		bep3.ModuleName, jsmndist.ModuleName, incentive.ModuleName, committee.ModuleName, issuance.ModuleName,
 		supply.ModuleName,  // calculates the total supply from account - should run after modules that modify accounts in genesis
 		crisis.ModuleName,  // runs the invariants at genesis - should run after other modules
 		genutil.ModuleName, // genutils must occur after staking so that pools are properly initialized with tokens from genesis accounts.
@@ -426,9 +470,11 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 		cdp.NewAppModule(app.cdpKeeper, app.accountKeeper, app.pricefeedKeeper, app.supplyKeeper),
 		auction.NewAppModule(app.auctionKeeper, app.accountKeeper, app.supplyKeeper),
 		bep3.NewAppModule(app.bep3Keeper, app.accountKeeper, app.supplyKeeper),
-		stakedist.NewAppModule(app.stakedistKeeper, app.supplyKeeper),
-		incentive.NewAppModule(app.incentiveKeeper, app.accountKeeper, app.supplyKeeper),
+		jsmndist.NewAppModule(app.jsmndistKeeper, app.supplyKeeper),
+		incentive.NewAppModule(app.incentiveKeeper, app.accountKeeper, app.supplyKeeper, app.cdpKeeper),
 		committee.NewAppModule(app.committeeKeeper, app.accountKeeper),
+		issuance.NewAppModule(app.issuanceKeeper, app.accountKeeper, app.supplyKeeper),
+		hard.NewAppModule(app.hardKeeper, app.supplyKeeper, app.pricefeedKeeper),
 	)
 
 	app.sm.RegisterStoreDecoders()
@@ -440,11 +486,18 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 	// initialize the app
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
-	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer))
+	var antehandler sdk.AnteHandler
+	if appOpts.MempoolEnableAuth {
+		var getAuthorizedAddresses ante.AddressFetcher = func(sdk.Context) []sdk.AccAddress { return appOpts.MempoolAuthAddresses }
+		antehandler = ante.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer, app.bep3Keeper.GetAuthorizedAddresses, app.pricefeedKeeper.GetAuthorizedAddresses, getAuthorizedAddresses)
+	} else {
+		antehandler = ante.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer)
+	}
+	app.SetAnteHandler(antehandler)
 	app.SetEndBlocker(app.EndBlocker)
 
 	// load store
-	if loadLatest {
+	if !appOpts.SkipLoadLatest {
 		err := app.LoadLatestVersion(app.keys[bam.MainStoreKey])
 		if err != nil {
 			tmos.Exit(err.Error())

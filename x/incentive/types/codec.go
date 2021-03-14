@@ -14,9 +14,11 @@ func init() {
 
 // RegisterCodec registers the necessary types for incentive module
 func RegisterCodec(cdc *codec.Codec) {
-	cdc.RegisterConcrete(MsgClaimReward{}, "incentive/MsgClaimReward", nil)
-	cdc.RegisterConcrete(GenesisClaimPeriodID{}, "incentive/GenesisClaimPeriodID", nil)
-	cdc.RegisterConcrete(RewardPeriod{}, "incentive/RewardPeriod", nil)
-	cdc.RegisterConcrete(ClaimPeriod{}, "incentive/ClaimPeriod", nil)
-	cdc.RegisterConcrete(Claim{}, "incentive/Claim", nil)
+	cdc.RegisterInterface((*Claim)(nil), nil)
+	cdc.RegisterConcrete(JPYXMintingClaim{}, "incentive/JPYXMintingClaim", nil)
+	cdc.RegisterConcrete(HardLiquidityProviderClaim{}, "incentive/HardLiquidityProviderClaim", nil)
+
+	// Register msgs
+	cdc.RegisterConcrete(MsgClaimJPYXMintingReward{}, "incentive/MsgClaimJPYXMintingReward", nil)
+	cdc.RegisterConcrete(MsgClaimHardLiquidityProviderReward{}, "incentive/MsgClaimHardLiquidityProviderReward", nil)
 }

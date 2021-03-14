@@ -16,21 +16,24 @@ var (
 	_ sdk.Msg = &MsgWithdraw{}
 	_ sdk.Msg = &MsgDrawDebt{}
 	_ sdk.Msg = &MsgRepayDebt{}
+	_ sdk.Msg = &MsgLiquidate{}
 )
 
 // MsgCreateCDP creates a cdp
 type MsgCreateCDP struct {
-	Sender     sdk.AccAddress `json:"sender" yaml:"sender"`
-	Collateral sdk.Coin       `json:"collateral" yaml:"collateral"`
-	Principal  sdk.Coin       `json:"principal" yaml:"principal"`
+	Sender         sdk.AccAddress `json:"sender" yaml:"sender"`
+	Collateral     sdk.Coin       `json:"collateral" yaml:"collateral"`
+	Principal      sdk.Coin       `json:"principal" yaml:"principal"`
+	CollateralType string         `json:"collateral_type" yaml:"collateral_type"`
 }
 
 // NewMsgCreateCDP returns a new MsgPlaceBid.
-func NewMsgCreateCDP(sender sdk.AccAddress, collateral sdk.Coin, principal sdk.Coin) MsgCreateCDP {
+func NewMsgCreateCDP(sender sdk.AccAddress, collateral sdk.Coin, principal sdk.Coin, collateralType string) MsgCreateCDP {
 	return MsgCreateCDP{
-		Sender:     sender,
-		Collateral: collateral,
-		Principal:  principal,
+		Sender:         sender,
+		Collateral:     collateral,
+		Principal:      principal,
+		CollateralType: collateralType,
 	}
 }
 
@@ -50,6 +53,9 @@ func (msg MsgCreateCDP) ValidateBasic() error {
 	}
 	if msg.Principal.IsZero() || !msg.Principal.IsValid() {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "principal amount %s", msg.Principal)
+	}
+	if strings.TrimSpace(msg.CollateralType) == "" {
+		return fmt.Errorf("collateral type cannot be empty")
 	}
 	return nil
 }
@@ -71,22 +77,25 @@ func (msg MsgCreateCDP) String() string {
   Sender:         %s
 	Collateral: %s
 	Principal: %s
-`, msg.Sender, msg.Collateral, msg.Principal)
+	Collateral Type: %s
+`, msg.Sender, msg.Collateral, msg.Principal, msg.CollateralType)
 }
 
 // MsgDeposit deposit collateral to an existing cdp.
 type MsgDeposit struct {
-	Depositor  sdk.AccAddress `json:"depositor" yaml:"depositor"`
-	Owner      sdk.AccAddress `json:"owner" yaml:"owner"`
-	Collateral sdk.Coin       `json:"collateral" yaml:"collateral"`
+	Depositor      sdk.AccAddress `json:"depositor" yaml:"depositor"`
+	Owner          sdk.AccAddress `json:"owner" yaml:"owner"`
+	Collateral     sdk.Coin       `json:"collateral" yaml:"collateral"`
+	CollateralType string         `json:"collateral_type" yaml:"collateral_type"`
 }
 
 // NewMsgDeposit returns a new MsgDeposit
-func NewMsgDeposit(owner sdk.AccAddress, depositor sdk.AccAddress, collateral sdk.Coin) MsgDeposit {
+func NewMsgDeposit(owner sdk.AccAddress, depositor sdk.AccAddress, collateral sdk.Coin, collateralType string) MsgDeposit {
 	return MsgDeposit{
-		Owner:      owner,
-		Depositor:  depositor,
-		Collateral: collateral,
+		Owner:          owner,
+		Depositor:      depositor,
+		Collateral:     collateral,
+		CollateralType: collateralType,
 	}
 }
 
@@ -106,6 +115,9 @@ func (msg MsgDeposit) ValidateBasic() error {
 	}
 	if !msg.Collateral.IsValid() || msg.Collateral.IsZero() {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "collateral amount %s", msg.Collateral)
+	}
+	if strings.TrimSpace(msg.CollateralType) == "" {
+		return fmt.Errorf("collateral type cannot be empty")
 	}
 	return nil
 }
@@ -127,22 +139,25 @@ func (msg MsgDeposit) String() string {
 	Sender:         %s
 	Owner: %s
 	Collateral: %s
-`, msg.Owner, msg.Owner, msg.Collateral)
+	CollateralType: %s
+`, msg.Owner, msg.Owner, msg.Collateral, msg.CollateralType)
 }
 
 // MsgWithdraw withdraw collateral from an existing cdp.
 type MsgWithdraw struct {
-	Depositor  sdk.AccAddress `json:"depositor" yaml:"depositor"`
-	Owner      sdk.AccAddress `json:"owner" yaml:"owner"`
-	Collateral sdk.Coin       `json:"collateral" yaml:"collateral"`
+	Depositor      sdk.AccAddress `json:"depositor" yaml:"depositor"`
+	Owner          sdk.AccAddress `json:"owner" yaml:"owner"`
+	Collateral     sdk.Coin       `json:"collateral" yaml:"collateral"`
+	CollateralType string         `json:"collateral_type" yaml:"collateral_type"`
 }
 
 // NewMsgWithdraw returns a new MsgDeposit
-func NewMsgWithdraw(owner sdk.AccAddress, depositor sdk.AccAddress, collateral sdk.Coin) MsgWithdraw {
+func NewMsgWithdraw(owner sdk.AccAddress, depositor sdk.AccAddress, collateral sdk.Coin, collateralType string) MsgWithdraw {
 	return MsgWithdraw{
-		Owner:      owner,
-		Depositor:  depositor,
-		Collateral: collateral,
+		Owner:          owner,
+		Depositor:      depositor,
+		Collateral:     collateral,
+		CollateralType: collateralType,
 	}
 }
 
@@ -162,6 +177,9 @@ func (msg MsgWithdraw) ValidateBasic() error {
 	}
 	if !msg.Collateral.IsValid() || msg.Collateral.IsZero() {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "collateral amount %s", msg.Collateral)
+	}
+	if strings.TrimSpace(msg.CollateralType) == "" {
+		return fmt.Errorf("collateral type cannot be empty")
 	}
 	return nil
 }
@@ -188,17 +206,17 @@ func (msg MsgWithdraw) String() string {
 
 // MsgDrawDebt draw debt off of collateral in cdp
 type MsgDrawDebt struct {
-	Sender    sdk.AccAddress `json:"sender" yaml:"sender"`
-	CdpDenom  string         `json:"cdp_denom" yaml:"cdp_denom"`
-	Principal sdk.Coin       `json:"principal" yaml:"principal"`
+	Sender         sdk.AccAddress `json:"sender" yaml:"sender"`
+	CollateralType string         `json:"collateral_type" yaml:"collateral_type"`
+	Principal      sdk.Coin       `json:"principal" yaml:"principal"`
 }
 
 // NewMsgDrawDebt returns a new MsgDrawDebt
-func NewMsgDrawDebt(sender sdk.AccAddress, denom string, principal sdk.Coin) MsgDrawDebt {
+func NewMsgDrawDebt(sender sdk.AccAddress, collateralType string, principal sdk.Coin) MsgDrawDebt {
 	return MsgDrawDebt{
-		Sender:    sender,
-		CdpDenom:  denom,
-		Principal: principal,
+		Sender:         sender,
+		CollateralType: collateralType,
+		Principal:      principal,
 	}
 }
 
@@ -213,8 +231,8 @@ func (msg MsgDrawDebt) ValidateBasic() error {
 	if msg.Sender.Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
-	if strings.TrimSpace(msg.CdpDenom) == "" {
-		return errors.New("cdp denom cannot be blank")
+	if strings.TrimSpace(msg.CollateralType) == "" {
+		return errors.New("cdp collateral type cannot be blank")
 	}
 	if msg.Principal.IsZero() || !msg.Principal.IsValid() {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "principal amount %s", msg.Principal)
@@ -237,24 +255,24 @@ func (msg MsgDrawDebt) GetSigners() []sdk.AccAddress {
 func (msg MsgDrawDebt) String() string {
 	return fmt.Sprintf(`Draw debt from CDP Message:
 	Sender:         %s
-	CDP Denom: %s
+	Collateral Type: %s
 	Principal: %s
-`, msg.Sender, msg.CdpDenom, msg.Principal)
+`, msg.Sender, msg.CollateralType, msg.Principal)
 }
 
 // MsgRepayDebt repay debt drawn off the collateral in a CDP
 type MsgRepayDebt struct {
-	Sender   sdk.AccAddress `json:"sender" yaml:"sender"`
-	CdpDenom string         `json:"cdp_denom" yaml:"cdp_denom"`
-	Payment  sdk.Coin       `json:"payment" yaml:"payment"`
+	Sender         sdk.AccAddress `json:"sender" yaml:"sender"`
+	CollateralType string         `json:"collateral_type" yaml:"collateral_type"`
+	Payment        sdk.Coin       `json:"payment" yaml:"payment"`
 }
 
 // NewMsgRepayDebt returns a new MsgRepayDebt
-func NewMsgRepayDebt(sender sdk.AccAddress, denom string, payment sdk.Coin) MsgRepayDebt {
+func NewMsgRepayDebt(sender sdk.AccAddress, collateralType string, payment sdk.Coin) MsgRepayDebt {
 	return MsgRepayDebt{
-		Sender:   sender,
-		CdpDenom: denom,
-		Payment:  payment,
+		Sender:         sender,
+		CollateralType: collateralType,
+		Payment:        payment,
 	}
 }
 
@@ -269,8 +287,8 @@ func (msg MsgRepayDebt) ValidateBasic() error {
 	if msg.Sender.Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
-	if strings.TrimSpace(msg.CdpDenom) == "" {
-		return errors.New("cdp denom cannot be blank")
+	if strings.TrimSpace(msg.CollateralType) == "" {
+		return errors.New("cdp collateral type cannot be blank")
 	}
 	if msg.Payment.IsZero() || !msg.Payment.IsValid() {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "payment amount %s", msg.Payment)
@@ -293,7 +311,63 @@ func (msg MsgRepayDebt) GetSigners() []sdk.AccAddress {
 func (msg MsgRepayDebt) String() string {
 	return fmt.Sprintf(`Draw debt from CDP Message:
 	Sender:         %s
-	CDP Denom: %s
+	Collateral Type: %s
 	Payment: %s
-`, msg.Sender, msg.CdpDenom, msg.Payment)
+`, msg.Sender, msg.CollateralType, msg.Payment)
+}
+
+// MsgLiquidate attempts to liquidate a borrower's cdp
+type MsgLiquidate struct {
+	Keeper         sdk.AccAddress `json:"keeper" yaml:"keeper"`
+	Borrower       sdk.AccAddress `json:"borrower" yaml:"borrower"`
+	CollateralType string         `json:"collateral_type" yaml:"collateral_type"`
+}
+
+// NewMsgLiquidate returns a new MsgLiquidate
+func NewMsgLiquidate(keeper, borrower sdk.AccAddress, ctype string) MsgLiquidate {
+	return MsgLiquidate{
+		Keeper:         keeper,
+		Borrower:       borrower,
+		CollateralType: ctype,
+	}
+}
+
+// Route return the message type used for routing the message.
+func (msg MsgLiquidate) Route() string { return RouterKey }
+
+// Type returns a human-readable string for the message, intended for utilization within tags.
+func (msg MsgLiquidate) Type() string { return "liquidate" }
+
+// ValidateBasic does a simple validation check that doesn't require access to any other information.
+func (msg MsgLiquidate) ValidateBasic() error {
+	if msg.Keeper.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "keeper address cannot be empty")
+	}
+	if msg.Borrower.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "borrower address cannot be empty")
+	}
+	if strings.TrimSpace(msg.CollateralType) == "" {
+		return sdkerrors.Wrap(ErrInvalidCollateral, "collateral type cannot be empty")
+	}
+	return nil
+}
+
+// GetSignBytes gets the canonical byte representation of the Msg.
+func (msg MsgLiquidate) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners returns the addresses of signers that must sign.
+func (msg MsgLiquidate) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msg.Keeper}
+}
+
+// String implements the Stringer interface
+func (msg MsgLiquidate) String() string {
+	return fmt.Sprintf(`Liquidate Message:
+	Keeper:           %s
+	Borrower:         %s
+	Collateral Type %s
+`, msg.Keeper, msg.Borrower, msg.CollateralType)
 }

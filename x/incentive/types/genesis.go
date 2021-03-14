@@ -2,81 +2,44 @@ package types
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"time"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
-
-// GenesisClaimPeriodID stores the next claim id and its corresponding denom
-type GenesisClaimPeriodID struct {
-	Denom string `json:"denom" yaml:"denom"`
-	ID    uint64 `json:"id" yaml:"id"`
-}
-
-// Validate performs a basic check of a GenesisClaimPeriodID fields.
-func (gcp GenesisClaimPeriodID) Validate() error {
-	if gcp.ID == 0 {
-		return errors.New("genesis claim period id cannot be 0")
-	}
-	return sdk.ValidateDenom(gcp.Denom)
-}
-
-// GenesisClaimPeriodIDs array of GenesisClaimPeriodID
-type GenesisClaimPeriodIDs []GenesisClaimPeriodID
-
-// Validate checks if all the GenesisClaimPeriodIDs are valid and there are no duplicated
-// entries.
-func (gcps GenesisClaimPeriodIDs) Validate() error {
-	seenIDS := make(map[string]bool)
-	var key string
-	for _, gcp := range gcps {
-		key = gcp.Denom + string(gcp.ID)
-		if seenIDS[key] {
-			return fmt.Errorf("duplicated genesis claim period with id %d and denom %s", gcp.ID, gcp.Denom)
-		}
-
-		if err := gcp.Validate(); err != nil {
-			return err
-		}
-		seenIDS[key] = true
-	}
-
-	return nil
-}
 
 // GenesisState is the state that must be provided at genesis.
 type GenesisState struct {
-	Params             Params                `json:"params" yaml:"params"`
-	PreviousBlockTime  time.Time             `json:"previous_block_time" yaml:"previous_block_time"`
-	RewardPeriods      RewardPeriods         `json:"reward_periods" yaml:"reward_periods"`
-	ClaimPeriods       ClaimPeriods          `json:"claim_periods" yaml:"claim_periods"`
-	Claims             Claims                `json:"claims" yaml:"claims"`
-	NextClaimPeriodIDs GenesisClaimPeriodIDs `json:"next_claim_period_ids" yaml:"next_claim_period_ids"`
+	Params                         Params                      `json:"params" yaml:"params"`
+	JPYXAccumulationTimes          GenesisAccumulationTimes    `json:"jpyx_accumulation_times" yaml:"jpyx_accumulation_times"`
+	HardSupplyAccumulationTimes    GenesisAccumulationTimes    `json:"hard_supply_accumulation_times" yaml:"hard_supply_accumulation_times"`
+	HardBorrowAccumulationTimes    GenesisAccumulationTimes    `json:"hard_borrow_accumulation_times" yaml:"hard_borrow_accumulation_times"`
+	HardDelegatorAccumulationTimes GenesisAccumulationTimes    `json:"hard_delegator_accumulation_times" yaml:"hard_delegator_accumulation_times"`
+	JPYXMintingClaims              JPYXMintingClaims           `json:"jpyx_minting_claims" yaml:"jpyx_minting_claims"`
+	HardLiquidityProviderClaims    HardLiquidityProviderClaims `json:"hard_liquidity_provider_claims" yaml:"hard_liquidity_provider_claims"`
 }
 
 // NewGenesisState returns a new genesis state
-func NewGenesisState(params Params, previousBlockTime time.Time, rp RewardPeriods, cp ClaimPeriods, c Claims, ids GenesisClaimPeriodIDs) GenesisState {
+func NewGenesisState(params Params, jpyxAccumTimes, hardSupplyAccumTimes, hardBorrowAccumTimes, hardDelegatorAccumTimes GenesisAccumulationTimes, c JPYXMintingClaims, hc HardLiquidityProviderClaims) GenesisState {
 	return GenesisState{
-		Params:             params,
-		PreviousBlockTime:  previousBlockTime,
-		RewardPeriods:      rp,
-		ClaimPeriods:       cp,
-		Claims:             c,
-		NextClaimPeriodIDs: ids,
+		Params:                         params,
+		JPYXAccumulationTimes:          jpyxAccumTimes,
+		HardSupplyAccumulationTimes:    hardSupplyAccumTimes,
+		HardBorrowAccumulationTimes:    hardBorrowAccumTimes,
+		HardDelegatorAccumulationTimes: hardDelegatorAccumTimes,
+		JPYXMintingClaims:              c,
+		HardLiquidityProviderClaims:    hc,
 	}
 }
 
 // DefaultGenesisState returns a default genesis state
 func DefaultGenesisState() GenesisState {
 	return GenesisState{
-		Params:             DefaultParams(),
-		PreviousBlockTime:  DefaultPreviousBlockTime,
-		RewardPeriods:      RewardPeriods{},
-		ClaimPeriods:       ClaimPeriods{},
-		Claims:             Claims{},
-		NextClaimPeriodIDs: GenesisClaimPeriodIDs{},
+		Params:                         DefaultParams(),
+		JPYXAccumulationTimes:          GenesisAccumulationTimes{},
+		HardSupplyAccumulationTimes:    GenesisAccumulationTimes{},
+		HardBorrowAccumulationTimes:    GenesisAccumulationTimes{},
+		HardDelegatorAccumulationTimes: GenesisAccumulationTimes{},
+		JPYXMintingClaims:              DefaultJPYXClaims,
+		HardLiquidityProviderClaims:    DefaultHardClaims,
 	}
 }
 
@@ -86,19 +49,23 @@ func (gs GenesisState) Validate() error {
 	if err := gs.Params.Validate(); err != nil {
 		return err
 	}
-	if gs.PreviousBlockTime.IsZero() {
-		return errors.New("previous block time cannot be 0")
-	}
-	if err := gs.RewardPeriods.Validate(); err != nil {
+	if err := gs.JPYXAccumulationTimes.Validate(); err != nil {
 		return err
 	}
-	if err := gs.ClaimPeriods.Validate(); err != nil {
+	if err := gs.HardSupplyAccumulationTimes.Validate(); err != nil {
 		return err
 	}
-	if err := gs.Claims.Validate(); err != nil {
+	if err := gs.HardBorrowAccumulationTimes.Validate(); err != nil {
 		return err
 	}
-	return gs.NextClaimPeriodIDs.Validate()
+	if err := gs.HardDelegatorAccumulationTimes.Validate(); err != nil {
+		return err
+	}
+
+	if err := gs.HardLiquidityProviderClaims.Validate(); err != nil {
+		return err
+	}
+	return gs.JPYXMintingClaims.Validate()
 }
 
 // Equal checks whether two gov GenesisState structs are equivalent
@@ -111,4 +78,39 @@ func (gs GenesisState) Equal(gs2 GenesisState) bool {
 // IsEmpty returns true if a GenesisState is empty
 func (gs GenesisState) IsEmpty() bool {
 	return gs.Equal(GenesisState{})
+}
+
+// GenesisAccumulationTime stores the previous reward distribution time and its corresponding collateral type
+type GenesisAccumulationTime struct {
+	CollateralType           string    `json:"collateral_type" yaml:"collateral_type"`
+	PreviousAccumulationTime time.Time `json:"previous_accumulation_time" yaml:"previous_accumulation_time"`
+}
+
+// NewGenesisAccumulationTime returns a new GenesisAccumulationTime
+func NewGenesisAccumulationTime(ctype string, prevTime time.Time) GenesisAccumulationTime {
+	return GenesisAccumulationTime{
+		CollateralType:           ctype,
+		PreviousAccumulationTime: prevTime,
+	}
+}
+
+// GenesisAccumulationTimes slice of GenesisAccumulationTime
+type GenesisAccumulationTimes []GenesisAccumulationTime
+
+// Validate performs validation of GenesisAccumulationTimes
+func (gats GenesisAccumulationTimes) Validate() error {
+	for _, gat := range gats {
+		if err := gat.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Validate performs validation of GenesisAccumulationTime
+func (gat GenesisAccumulationTime) Validate() error {
+	if len(gat.CollateralType) == 0 {
+		return fmt.Errorf("genesis accumulation time's collateral type must be defined")
+	}
+	return nil
 }

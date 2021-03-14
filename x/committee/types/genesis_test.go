@@ -15,11 +15,11 @@ import (
 func TestGenesisState_Validate(t *testing.T) {
 	testTime := time.Date(1998, time.January, 1, 0, 0, 0, 0, time.UTC)
 	addresses := []sdk.AccAddress{
-		sdk.AccAddress(crypto.AddressHash([]byte("StakeTest1"))),
-		sdk.AccAddress(crypto.AddressHash([]byte("StakeTest2"))),
-		sdk.AccAddress(crypto.AddressHash([]byte("StakeTest3"))),
-		sdk.AccAddress(crypto.AddressHash([]byte("StakeTest4"))),
-		sdk.AccAddress(crypto.AddressHash([]byte("StakeTest5"))),
+		sdk.AccAddress(crypto.AddressHash([]byte("KavaTest1"))),
+		sdk.AccAddress(crypto.AddressHash([]byte("KavaTest2"))),
+		sdk.AccAddress(crypto.AddressHash([]byte("KavaTest3"))),
+		sdk.AccAddress(crypto.AddressHash([]byte("KavaTest4"))),
+		sdk.AccAddress(crypto.AddressHash([]byte("KavaTest5"))),
 	}
 	testGenesis := GenesisState{
 		NextProposalID: 2,

@@ -90,7 +90,7 @@ func (a BaseAuction) Validate() error {
 	if !a.Bid.IsValid() {
 		return fmt.Errorf("invalid bid: %s", a.Bid)
 	}
-	if a.EndTime.IsZero() || a.MaxEndTime.IsZero() {
+	if a.EndTime.Unix() <= 0 || a.MaxEndTime.Unix() <= 0 {
 		return errors.New("end time cannot be zero")
 	}
 	if a.EndTime.After(a.MaxEndTime) {
@@ -244,6 +244,11 @@ func (a CollateralAuction) GetPhase() string {
 	return ForwardAuctionPhase
 }
 
+// GetLotReturns returns a collateral auction's lot owners
+func (a CollateralAuction) GetLotReturns() WeightedAddresses {
+	return a.LotReturns
+}
+
 // Validate validates the CollateralAuction fields values.
 func (a CollateralAuction) Validate() error {
 	if !a.CorrespondingDebt.IsValid() {
@@ -267,10 +272,11 @@ func (a CollateralAuction) String() string {
   End Time:   						%s
 	Max End Time:      			%s
 	Max Bid									%s
-	LotReturns						%s`,
+	LotReturns						%s
+	Corresponding Debt %s`,
 		a.GetID(), a.Initiator, a.Lot,
 		a.Bidder, a.Bid, a.GetEndTime().String(),
-		a.MaxEndTime.String(), a.MaxBid, a.LotReturns,
+		a.MaxEndTime.String(), a.MaxBid, a.LotReturns, a.CorrespondingDebt,
 	)
 }
 

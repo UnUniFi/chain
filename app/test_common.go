@@ -3,6 +3,7 @@ package app
 import (
 	"math/rand"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 
@@ -10,7 +11,6 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 	"github.com/tendermint/tendermint/libs/log"
 
@@ -33,9 +33,11 @@ import (
 	"github.com/lcnem/jpyx/x/bep3"
 	"github.com/lcnem/jpyx/x/cdp"
 	"github.com/lcnem/jpyx/x/committee"
+	"github.com/lcnem/jpyx/x/hard"
 	"github.com/lcnem/jpyx/x/incentive"
+	"github.com/lcnem/jpyx/x/issuance"
+	"github.com/lcnem/jpyx/x/jsmndist"
 	"github.com/lcnem/jpyx/x/pricefeed"
-	stakedist "github.com/lcnem/jpyx/x/stakedist"
 	validatorvesting "github.com/lcnem/jpyx/x/validator-vesting"
 )
 
@@ -58,7 +60,7 @@ func NewTestApp() TestApp {
 	SetBech32AddressPrefixes(config)
 
 	db := tmdb.NewMemDB()
-	app := NewApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, 0)
+	app := NewApp(log.NewNopLogger(), db, nil, AppOptions{})
 	return TestApp{App: *app}
 }
 
@@ -79,11 +81,13 @@ func (tApp TestApp) GetAuctionKeeper() auction.Keeper     { return tApp.auctionK
 func (tApp TestApp) GetCDPKeeper() cdp.Keeper             { return tApp.cdpKeeper }
 func (tApp TestApp) GetPriceFeedKeeper() pricefeed.Keeper { return tApp.pricefeedKeeper }
 func (tApp TestApp) GetBep3Keeper() bep3.Keeper           { return tApp.bep3Keeper }
-func (tApp TestApp) GetStakedistKeeper() stakedist.Keeper { return tApp.stakedistKeeper }
+func (tApp TestApp) GetJsmndistKeeper() jsmndist.Keeper   { return tApp.jsmndistKeeper }
 func (tApp TestApp) GetIncentiveKeeper() incentive.Keeper { return tApp.incentiveKeeper }
+func (tApp TestApp) GetHardKeeper() hard.Keeper           { return tApp.hardKeeper }
 func (tApp TestApp) GetCommitteeKeeper() committee.Keeper { return tApp.committeeKeeper }
+func (tApp TestApp) GetIssuanceKeeper() issuance.Keeper   { return tApp.issuanceKeeper }
 
-// This calls InitChain on the app using the default genesis state, overwitten with any passed in genesis states
+// InitializeFromGenesisStates calls InitChain on the app using the default genesis state, overwitten with any passed in genesis states
 func (tApp TestApp) InitializeFromGenesisStates(genesisStates ...GenesisState) TestApp {
 	// Create a default genesis state and overwrite with provided values
 	genesisState := NewDefaultGenesisState()
@@ -109,6 +113,61 @@ func (tApp TestApp) InitializeFromGenesisStates(genesisStates ...GenesisState) T
 	return tApp
 }
 
+// InitializeFromGenesisStatesWithTime calls InitChain on the app using the default genesis state, overwitten with any passed in genesis states and genesis Time
+func (tApp TestApp) InitializeFromGenesisStatesWithTime(genTime time.Time, genesisStates ...GenesisState) TestApp {
+	// Create a default genesis state and overwrite with provided values
+	genesisState := NewDefaultGenesisState()
+	for _, state := range genesisStates {
+		for k, v := range state {
+			genesisState[k] = v
+		}
+	}
+
+	// Initialize the chain
+	stateBytes, err := codec.MarshalJSONIndent(tApp.cdc, genesisState)
+	if err != nil {
+		panic(err)
+	}
+	tApp.InitChain(
+		abci.RequestInitChain{
+			Time:          genTime,
+			Validators:    []abci.ValidatorUpdate{},
+			AppStateBytes: stateBytes,
+		},
+	)
+	tApp.Commit()
+	tApp.BeginBlock(abci.RequestBeginBlock{Header: abci.Header{Height: tApp.LastBlockHeight() + 1, Time: genTime}})
+	return tApp
+}
+
+// InitializeFromGenesisStatesWithTimeAndChainID calls InitChain on the app using the default genesis state, overwitten with any passed in genesis states and genesis Time
+func (tApp TestApp) InitializeFromGenesisStatesWithTimeAndChainID(genTime time.Time, chainID string, genesisStates ...GenesisState) TestApp {
+	// Create a default genesis state and overwrite with provided values
+	genesisState := NewDefaultGenesisState()
+	for _, state := range genesisStates {
+		for k, v := range state {
+			genesisState[k] = v
+		}
+	}
+
+	// Initialize the chain
+	stateBytes, err := codec.MarshalJSONIndent(tApp.cdc, genesisState)
+	if err != nil {
+		panic(err)
+	}
+	tApp.InitChain(
+		abci.RequestInitChain{
+			Time:          genTime,
+			Validators:    []abci.ValidatorUpdate{},
+			AppStateBytes: stateBytes,
+			ChainId:       chainID,
+		},
+	)
+	tApp.Commit()
+	tApp.BeginBlock(abci.RequestBeginBlock{Header: abci.Header{Height: tApp.LastBlockHeight() + 1, Time: genTime}})
+	return tApp
+}
+
 func (tApp TestApp) CheckBalance(t *testing.T, ctx sdk.Context, owner sdk.AccAddress, expectedCoins sdk.Coins) {
 	acc := tApp.GetAccountKeeper().GetAccount(ctx, owner)
 	require.NotNilf(t, acc, "account with address '%s' doesn't exist", owner)
@@ -127,8 +186,7 @@ func NewAuthGenState(addresses []sdk.AccAddress, coins []sdk.Coins) GenesisState
 	return GenesisState{auth.ModuleName: auth.ModuleCdc.MustMarshalJSON(authGenesis)}
 }
 
-// GeneratePrivKeyAddressPairsFromRand generates (deterministically) a total of n private keys and addresses.
-// TODO only generate secp256 keys?
+// GeneratePrivKeyAddressPairsFromRand generates (deterministically) a total of n secp256k1 private keys and addresses.
 func GeneratePrivKeyAddressPairs(n int) (keys []crypto.PrivKey, addrs []sdk.AccAddress) {
 	r := rand.New(rand.NewSource(12345)) // make the generation deterministic
 	keys = make([]crypto.PrivKey, n)
@@ -139,11 +197,7 @@ func GeneratePrivKeyAddressPairs(n int) (keys []crypto.PrivKey, addrs []sdk.AccA
 		if err != nil {
 			panic("Could not read randomness")
 		}
-		if r.Int63()%2 == 0 {
-			keys[i] = secp256k1.GenPrivKeySecp256k1(secret)
-		} else {
-			keys[i] = ed25519.GenPrivKeyFromSecret(secret)
-		}
+		keys[i] = secp256k1.GenPrivKeySecp256k1(secret)
 		addrs[i] = sdk.AccAddress(keys[i].PubKey().Address())
 	}
 	return

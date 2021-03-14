@@ -3,6 +3,8 @@ package rest
 import (
 	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -16,10 +18,11 @@ import (
 func registerQueryRoutes(cliCtx context.CLIContext, r *mux.Router) {
 	r.HandleFunc("/cdp/accounts", getAccountsHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/cdp/parameters", getParamsHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc(fmt.Sprintf("/cdp/cdps/cdp/{%s}/{%s}", types.RestOwner, types.RestCollateralDenom), queryCdpHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc(fmt.Sprintf("/cdp/cdps/denom/{%s}", types.RestCollateralDenom), queryCdpsHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc(fmt.Sprintf("/cdp/cdps/ratio/{%s}/{%s}", types.RestCollateralDenom, types.RestRatio), queryCdpsByRatioHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc(fmt.Sprintf("/cdp/cdps/cdp/deposits/{%s}/{%s}", types.RestOwner, types.RestCollateralDenom), queryCdpDepositsHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc(fmt.Sprintf("/cdp/cdps/cdp/{%s}/{%s}", types.RestOwner, types.RestCollateralType), queryCdpHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc(fmt.Sprintf("/cdp/cdps"), queryCdpsHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc(fmt.Sprintf("/cdp/cdps/collateralType/{%s}", types.RestCollateralType), queryCdpsByCollateralTypeHandlerFn(cliCtx)).Methods("GET")     // legacy
+	r.HandleFunc(fmt.Sprintf("/cdp/cdps/ratio/{%s}/{%s}", types.RestCollateralType, types.RestRatio), queryCdpsByRatioHandlerFn(cliCtx)).Methods("GET") // legacy
+	r.HandleFunc(fmt.Sprintf("/cdp/cdps/cdp/deposits/{%s}/{%s}", types.RestOwner, types.RestCollateralType), queryCdpDepositsHandlerFn(cliCtx)).Methods("GET")
 }
 
 func queryCdpHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
@@ -31,7 +34,7 @@ func queryCdpHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 
 		vars := mux.Vars(r)
 		ownerBech32 := vars[types.RestOwner]
-		collateralDenom := vars[types.RestCollateralDenom]
+		collateralType := vars[types.RestCollateralType]
 
 		owner, err := sdk.AccAddressFromBech32(ownerBech32)
 		if err != nil {
@@ -39,7 +42,7 @@ func queryCdpHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		params := types.NewQueryCdpParams(owner, collateralDenom)
+		params := types.NewQueryCdpParams(owner, collateralType)
 
 		bz, err := cliCtx.Codec.MarshalJSON(params)
 		if err != nil {
@@ -58,7 +61,7 @@ func queryCdpHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	}
 }
 
-func queryCdpsHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+func queryCdpsByCollateralTypeHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {
@@ -66,9 +69,9 @@ func queryCdpsHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 		}
 
 		vars := mux.Vars(r)
-		collateralDenom := vars[types.RestCollateralDenom]
+		collateralType := vars[types.RestCollateralType]
 
-		params := types.NewQueryCdpsParams(collateralDenom)
+		params := types.NewQueryCdpsByCollateralTypeParams(collateralType)
 
 		bz, err := cliCtx.Codec.MarshalJSON(params)
 		if err != nil {
@@ -76,7 +79,7 @@ func queryCdpsHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		res, height, err := cliCtx.QueryWithData(fmt.Sprintf("custom/cdp/%s", types.QueryGetCdps), bz)
+		res, height, err := cliCtx.QueryWithData(fmt.Sprintf("custom/cdp/%s", types.QueryGetCdpsByCollateralType), bz)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusNotFound, err.Error())
 			return
@@ -95,7 +98,7 @@ func queryCdpsByRatioHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 		}
 
 		vars := mux.Vars(r)
-		collateralDenom := vars[types.RestCollateralDenom]
+		collateralType := vars[types.RestCollateralType]
 		ratioStr := vars[types.RestRatio]
 
 		ratioDec, sdkError := sdk.NewDecFromStr(ratioStr)
@@ -104,7 +107,7 @@ func queryCdpsByRatioHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		params := types.NewQueryCdpsByRatioParams(collateralDenom, ratioDec)
+		params := types.NewQueryCdpsByRatioParams(collateralType, ratioDec)
 		bz, err := cliCtx.Codec.MarshalJSON(params)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("failed to marshal query params: %s", err))
@@ -131,7 +134,7 @@ func queryCdpDepositsHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 
 		vars := mux.Vars(r)
 		ownerBech32 := vars[types.RestOwner]
-		collateralDenom := vars[types.RestCollateralDenom]
+		collateralType := vars[types.RestCollateralType]
 
 		owner, err := sdk.AccAddressFromBech32(ownerBech32)
 		if err != nil {
@@ -139,7 +142,7 @@ func queryCdpDepositsHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		params := types.NewQueryCdpDeposits(owner, collateralDenom)
+		params := types.NewQueryCdpDeposits(owner, collateralType)
 
 		bz, err := cliCtx.Codec.MarshalJSON(params)
 		if err != nil {
@@ -184,6 +187,76 @@ func getAccountsHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 		}
 
 		res, height, err := cliCtx.QueryWithData(fmt.Sprintf("custom/cdp/%s", types.QueryGetAccounts), nil)
+		cliCtx = cliCtx.WithHeight(height)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		rest.PostProcessResponse(w, cliCtx, res)
+	}
+}
+
+func queryCdpsHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		_, page, limit, err := rest.ParseHTTPArgsWithLimit(r, 0)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		// Parse the query height
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		var cdpCollateralType string
+		var cdpOwner sdk.AccAddress
+		var cdpID uint64
+		var cdpRatio sdk.Dec
+
+		if x := r.URL.Query().Get(RestCollateralType); len(x) != 0 {
+			cdpCollateralType = strings.TrimSpace(x)
+		}
+
+		if x := r.URL.Query().Get(RestOwner); len(x) != 0 {
+			cdpOwnerStr := strings.ToLower(strings.TrimSpace(x))
+			cdpOwner, err = sdk.AccAddressFromBech32(cdpOwnerStr)
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("cannot parse address from cdp owner %s", cdpOwnerStr))
+				return
+			}
+		}
+
+		if x := r.URL.Query().Get(RestID); len(x) != 0 {
+			cdpID, err = strconv.ParseUint(strings.TrimSpace(x), 10, 64)
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+				return
+			}
+		}
+
+		if x := r.URL.Query().Get(RestRatio); len(x) != 0 {
+			cdpRatio, err = sdk.NewDecFromStr(strings.TrimSpace(x))
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+				return
+			}
+		} else {
+			// Set to sdk.Dec(0) so that if not specified in params it doesn't panic when unmarshaled
+			cdpRatio = sdk.ZeroDec()
+		}
+
+		params := types.NewQueryCdpsParams(page, limit, cdpCollateralType, cdpOwner, cdpID, cdpRatio)
+		bz, err := cliCtx.Codec.MarshalJSON(params)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		route := fmt.Sprintf("custom/%s/%s", types.ModuleName, types.QueryGetCdps)
+		res, height, err := cliCtx.QueryWithData(route, bz)
 		cliCtx = cliCtx.WithHeight(height)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
