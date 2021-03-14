@@ -45,12 +45,9 @@ func queryRewardsCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 
 			Example:
 			$ %s query %s rewards
-			$ %s query %s rewards --owner kava15qdefkmwswysgg4qxgqpqr35k3m49pkx2jdfnw
-			$ %s query %s rewards --type hard
+			$ %s query %s rewards --owner jpyx15qdefkmwswysgg4qxgqpqr35k3m49pkx2jdfnw
 			$ %s query %s rewards --type jpyx-minting
-			$ %s query %s rewards --type hard --owner kava15qdefkmwswysgg4qxgqpqr35k3m49pkx2jdfnw
 			`,
-				version.ClientName, types.ModuleName, version.ClientName, types.ModuleName,
 				version.ClientName, types.ModuleName, version.ClientName, types.ModuleName,
 				version.ClientName, types.ModuleName)),
 		Args: cobra.NoArgs,
@@ -69,13 +66,6 @@ func queryRewardsCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 			}
 
 			switch strings.ToLower(strType) {
-			case "hard":
-				params := types.NewQueryHardRewardsParams(page, limit, owner)
-				claims, err := executeHardRewardsQuery(queryRoute, cdc, cliCtx, params)
-				if err != nil {
-					return err
-				}
-				return cliCtx.PrintOutput(claims)
 			case "jpyx-minting":
 				params := types.NewQueryJPYXMintingRewardsParams(page, limit, owner)
 				claims, err := executeJPYXMintingRewardsQuery(queryRoute, cdc, cliCtx, params)
@@ -84,15 +74,6 @@ func queryRewardsCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 				}
 				return cliCtx.PrintOutput(claims)
 			default:
-				paramsHard := types.NewQueryHardRewardsParams(page, limit, owner)
-				hardClaims, err := executeHardRewardsQuery(queryRoute, cdc, cliCtx, paramsHard)
-				if err != nil {
-					return err
-				}
-				if len(hardClaims) > 0 {
-					cliCtx.PrintOutput(hardClaims)
-				}
-
 				paramsJPYXMinting := types.NewQueryJPYXMintingRewardsParams(page, limit, owner)
 				jpyxMintingClaims, err := executeJPYXMintingRewardsQuery(queryRoute, cdc, cliCtx, paramsJPYXMinting)
 				if err != nil {
@@ -137,29 +118,6 @@ func queryParamsCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 			return cliCtx.PrintOutput(params)
 		},
 	}
-}
-
-func executeHardRewardsQuery(queryRoute string, cdc *codec.Codec, cliCtx context.CLIContext,
-	params types.QueryHardRewardsParams) (types.HardLiquidityProviderClaims, error) {
-	bz, err := cdc.MarshalJSON(params)
-	if err != nil {
-		return types.HardLiquidityProviderClaims{}, err
-	}
-
-	route := fmt.Sprintf("custom/%s/%s", queryRoute, types.QueryGetHardRewards)
-	res, height, err := cliCtx.QueryWithData(route, bz)
-	if err != nil {
-		return types.HardLiquidityProviderClaims{}, err
-	}
-
-	cliCtx = cliCtx.WithHeight(height)
-
-	var claims types.HardLiquidityProviderClaims
-	if err := cdc.UnmarshalJSON(res, &claims); err != nil {
-		return types.HardLiquidityProviderClaims{}, fmt.Errorf("failed to unmarshal claims: %w", err)
-	}
-
-	return claims, nil
 }
 
 func executeJPYXMintingRewardsQuery(queryRoute string, cdc *codec.Codec, cliCtx context.CLIContext,

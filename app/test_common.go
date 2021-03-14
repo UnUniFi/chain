@@ -30,12 +30,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 
 	"github.com/lcnem/jpyx/x/auction"
-	"github.com/lcnem/jpyx/x/bep3"
 	"github.com/lcnem/jpyx/x/cdp"
-	"github.com/lcnem/jpyx/x/committee"
-	"github.com/lcnem/jpyx/x/hard"
 	"github.com/lcnem/jpyx/x/incentive"
-	"github.com/lcnem/jpyx/x/issuance"
 	"github.com/lcnem/jpyx/x/jsmndist"
 	"github.com/lcnem/jpyx/x/pricefeed"
 	validatorvesting "github.com/lcnem/jpyx/x/validator-vesting"
@@ -80,12 +76,8 @@ func (tApp TestApp) GetVVKeeper() validatorvesting.Keeper { return tApp.vvKeeper
 func (tApp TestApp) GetAuctionKeeper() auction.Keeper     { return tApp.auctionKeeper }
 func (tApp TestApp) GetCDPKeeper() cdp.Keeper             { return tApp.cdpKeeper }
 func (tApp TestApp) GetPriceFeedKeeper() pricefeed.Keeper { return tApp.pricefeedKeeper }
-func (tApp TestApp) GetBep3Keeper() bep3.Keeper           { return tApp.bep3Keeper }
 func (tApp TestApp) GetJsmndistKeeper() jsmndist.Keeper   { return tApp.jsmndistKeeper }
 func (tApp TestApp) GetIncentiveKeeper() incentive.Keeper { return tApp.incentiveKeeper }
-func (tApp TestApp) GetHardKeeper() hard.Keeper           { return tApp.hardKeeper }
-func (tApp TestApp) GetCommitteeKeeper() committee.Keeper { return tApp.committeeKeeper }
-func (tApp TestApp) GetIssuanceKeeper() issuance.Keeper   { return tApp.issuanceKeeper }
 
 // InitializeFromGenesisStates calls InitChain on the app using the default genesis state, overwitten with any passed in genesis states
 func (tApp TestApp) InitializeFromGenesisStates(genesisStates ...GenesisState) TestApp {

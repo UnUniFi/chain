@@ -31,39 +31,6 @@ func (k Keeper) GetJPYXMintingRewardPeriod(ctx sdk.Context, collateralType strin
 	return types.RewardPeriod{}, false
 }
 
-// GetHardSupplyRewardPeriods returns the reward period with the specified collateral type if it's found in the params
-func (k Keeper) GetHardSupplyRewardPeriods(ctx sdk.Context, denom string) (types.MultiRewardPeriod, bool) {
-	params := k.GetParams(ctx)
-	for _, rp := range params.HardSupplyRewardPeriods {
-		if rp.CollateralType == denom {
-			return rp, true
-		}
-	}
-	return types.MultiRewardPeriod{}, false
-}
-
-// GetHardBorrowRewardPeriods returns the reward period with the specified collateral type if it's found in the params
-func (k Keeper) GetHardBorrowRewardPeriods(ctx sdk.Context, denom string) (types.MultiRewardPeriod, bool) {
-	params := k.GetParams(ctx)
-	for _, rp := range params.HardBorrowRewardPeriods {
-		if rp.CollateralType == denom {
-			return rp, true
-		}
-	}
-	return types.MultiRewardPeriod{}, false
-}
-
-// GetHardDelegatorRewardPeriod returns the reward period with the specified collateral type if it's found in the params
-func (k Keeper) GetHardDelegatorRewardPeriod(ctx sdk.Context, denom string) (types.RewardPeriod, bool) {
-	params := k.GetParams(ctx)
-	for _, rp := range params.HardDelegatorRewardPeriods {
-		if rp.CollateralType == denom {
-			return rp, true
-		}
-	}
-	return types.RewardPeriod{}, false
-}
-
 // GetMultiplier returns the multiplier with the specified name if it's found in the params
 func (k Keeper) GetMultiplier(ctx sdk.Context, name types.MultiplierName) (types.Multiplier, bool) {
 	params := k.GetParams(ctx)

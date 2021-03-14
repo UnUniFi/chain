@@ -8,38 +8,26 @@ import (
 
 // GenesisState is the state that must be provided at genesis.
 type GenesisState struct {
-	Params                         Params                      `json:"params" yaml:"params"`
-	JPYXAccumulationTimes          GenesisAccumulationTimes    `json:"jpyx_accumulation_times" yaml:"jpyx_accumulation_times"`
-	HardSupplyAccumulationTimes    GenesisAccumulationTimes    `json:"hard_supply_accumulation_times" yaml:"hard_supply_accumulation_times"`
-	HardBorrowAccumulationTimes    GenesisAccumulationTimes    `json:"hard_borrow_accumulation_times" yaml:"hard_borrow_accumulation_times"`
-	HardDelegatorAccumulationTimes GenesisAccumulationTimes    `json:"hard_delegator_accumulation_times" yaml:"hard_delegator_accumulation_times"`
-	JPYXMintingClaims              JPYXMintingClaims           `json:"jpyx_minting_claims" yaml:"jpyx_minting_claims"`
-	HardLiquidityProviderClaims    HardLiquidityProviderClaims `json:"hard_liquidity_provider_claims" yaml:"hard_liquidity_provider_claims"`
+	Params                Params                   `json:"params" yaml:"params"`
+	JPYXAccumulationTimes GenesisAccumulationTimes `json:"jpyx_accumulation_times" yaml:"jpyx_accumulation_times"`
+	JPYXMintingClaims     JPYXMintingClaims        `json:"jpyx_minting_claims" yaml:"jpyx_minting_claims"`
 }
 
 // NewGenesisState returns a new genesis state
-func NewGenesisState(params Params, jpyxAccumTimes, hardSupplyAccumTimes, hardBorrowAccumTimes, hardDelegatorAccumTimes GenesisAccumulationTimes, c JPYXMintingClaims, hc HardLiquidityProviderClaims) GenesisState {
+func NewGenesisState(params Params, jpyxAccumTimes GenesisAccumulationTimes, c JPYXMintingClaims) GenesisState {
 	return GenesisState{
-		Params:                         params,
-		JPYXAccumulationTimes:          jpyxAccumTimes,
-		HardSupplyAccumulationTimes:    hardSupplyAccumTimes,
-		HardBorrowAccumulationTimes:    hardBorrowAccumTimes,
-		HardDelegatorAccumulationTimes: hardDelegatorAccumTimes,
-		JPYXMintingClaims:              c,
-		HardLiquidityProviderClaims:    hc,
+		Params:                params,
+		JPYXAccumulationTimes: jpyxAccumTimes,
+		JPYXMintingClaims:     c,
 	}
 }
 
 // DefaultGenesisState returns a default genesis state
 func DefaultGenesisState() GenesisState {
 	return GenesisState{
-		Params:                         DefaultParams(),
-		JPYXAccumulationTimes:          GenesisAccumulationTimes{},
-		HardSupplyAccumulationTimes:    GenesisAccumulationTimes{},
-		HardBorrowAccumulationTimes:    GenesisAccumulationTimes{},
-		HardDelegatorAccumulationTimes: GenesisAccumulationTimes{},
-		JPYXMintingClaims:              DefaultJPYXClaims,
-		HardLiquidityProviderClaims:    DefaultHardClaims,
+		Params:                DefaultParams(),
+		JPYXAccumulationTimes: GenesisAccumulationTimes{},
+		JPYXMintingClaims:     DefaultJPYXClaims,
 	}
 }
 
@@ -52,19 +40,7 @@ func (gs GenesisState) Validate() error {
 	if err := gs.JPYXAccumulationTimes.Validate(); err != nil {
 		return err
 	}
-	if err := gs.HardSupplyAccumulationTimes.Validate(); err != nil {
-		return err
-	}
-	if err := gs.HardBorrowAccumulationTimes.Validate(); err != nil {
-		return err
-	}
-	if err := gs.HardDelegatorAccumulationTimes.Validate(); err != nil {
-		return err
-	}
 
-	if err := gs.HardLiquidityProviderClaims.Validate(); err != nil {
-		return err
-	}
 	return gs.JPYXMintingClaims.Validate()
 }
 

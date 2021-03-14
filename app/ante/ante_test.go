@@ -15,7 +15,6 @@ import (
 	tmdb "github.com/tendermint/tm-db"
 
 	"github.com/lcnem/jpyx/app"
-	"github.com/lcnem/jpyx/x/bep3"
 	"github.com/lcnem/jpyx/x/pricefeed"
 )
 
@@ -48,7 +47,6 @@ func TestAppAnteHandler(t *testing.T) {
 			sdk.NewCoins(sdk.NewInt64Coin("ujsmn", 1_000_000_000)),
 			testAddresses,
 		),
-		newBep3GenStateMulti(deputy),
 		newPricefeedGenStateMulti(oracles),
 	)
 
@@ -138,65 +136,4 @@ func newPricefeedGenStateMulti(oracles []sdk.AccAddress) app.GenesisState {
 		},
 	}
 	return app.GenesisState{pricefeed.ModuleName: pricefeed.ModuleCdc.MustMarshalJSON(pfGenesis)}
-}
-
-func newBep3GenStateMulti(deputyAddress sdk.AccAddress) app.GenesisState {
-	bep3Genesis := bep3.GenesisState{
-		Params: bep3.Params{
-			AssetParams: bep3.AssetParams{
-				bep3.AssetParam{
-					Denom:  "bnb",
-					CoinID: 714,
-					SupplyLimit: bep3.SupplyLimit{
-						Limit:          sdk.NewInt(350000000000000),
-						TimeLimited:    false,
-						TimeBasedLimit: sdk.ZeroInt(),
-						TimePeriod:     time.Hour,
-					},
-					Active:        true,
-					DeputyAddress: deputyAddress,
-					FixedFee:      sdk.NewInt(1000),
-					MinSwapAmount: sdk.OneInt(),
-					MaxSwapAmount: sdk.NewInt(1000000000000),
-					MinBlockLock:  bep3.DefaultMinBlockLock,
-					MaxBlockLock:  bep3.DefaultMaxBlockLock,
-				},
-				bep3.AssetParam{
-					Denom:  "inc",
-					CoinID: 9999,
-					SupplyLimit: bep3.SupplyLimit{
-						Limit:          sdk.NewInt(100000000000000),
-						TimeLimited:    true,
-						TimeBasedLimit: sdk.NewInt(50000000000),
-						TimePeriod:     time.Hour,
-					},
-					Active:        false,
-					DeputyAddress: deputyAddress,
-					FixedFee:      sdk.NewInt(1000),
-					MinSwapAmount: sdk.OneInt(),
-					MaxSwapAmount: sdk.NewInt(100000000000),
-					MinBlockLock:  bep3.DefaultMinBlockLock,
-					MaxBlockLock:  bep3.DefaultMaxBlockLock,
-				},
-			},
-		},
-		Supplies: bep3.AssetSupplies{
-			bep3.NewAssetSupply(
-				sdk.NewCoin("bnb", sdk.ZeroInt()),
-				sdk.NewCoin("bnb", sdk.ZeroInt()),
-				sdk.NewCoin("bnb", sdk.ZeroInt()),
-				sdk.NewCoin("bnb", sdk.ZeroInt()),
-				time.Duration(0),
-			),
-			bep3.NewAssetSupply(
-				sdk.NewCoin("inc", sdk.ZeroInt()),
-				sdk.NewCoin("inc", sdk.ZeroInt()),
-				sdk.NewCoin("inc", sdk.ZeroInt()),
-				sdk.NewCoin("inc", sdk.ZeroInt()),
-				time.Duration(0),
-			),
-		},
-		PreviousBlockTime: bep3.DefaultPreviousBlockTime,
-	}
-	return app.GenesisState{bep3.ModuleName: bep3.ModuleCdc.MustMarshalJSON(bep3Genesis)}
 }

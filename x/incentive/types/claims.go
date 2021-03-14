@@ -10,9 +10,8 @@ import (
 )
 
 const (
-	JPYXMintingClaimType           = "jpyx_minting"
-	HardLiquidityProviderClaimType = "hard_liquidity_provider"
-	BondDenom                      = "ujsmn"
+	JPYXMintingClaimType = "jpyx_minting"
+	BondDenom            = "ujsmn"
 )
 
 // Claim is an interface for handling common claim actions
@@ -153,108 +152,6 @@ type JPYXMintingClaims []JPYXMintingClaim
 // Validate checks if all the claims are valid and there are no duplicated
 // entries.
 func (cs JPYXMintingClaims) Validate() error {
-	for _, c := range cs {
-		if err := c.Validate(); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-// HardLiquidityProviderClaim stores the hard liquidity provider rewards that can be claimed by owner
-type HardLiquidityProviderClaim struct {
-	BaseMultiClaim         `json:"base_claim" yaml:"base_claim"`
-	SupplyRewardIndexes    MultiRewardIndexes `json:"supply_reward_indexes" yaml:"supply_reward_indexes"`
-	BorrowRewardIndexes    MultiRewardIndexes `json:"borrow_reward_indexes" yaml:"borrow_reward_indexes"`
-	DelegatorRewardIndexes RewardIndexes      `json:"delegator_reward_indexes" yaml:"delegator_reward_indexes"`
-}
-
-// NewHardLiquidityProviderClaim returns a new HardLiquidityProviderClaim
-func NewHardLiquidityProviderClaim(owner sdk.AccAddress, rewards sdk.Coins, supplyRewardIndexes,
-	borrowRewardIndexes MultiRewardIndexes, delegatorRewardIndexes RewardIndexes) HardLiquidityProviderClaim {
-	return HardLiquidityProviderClaim{
-		BaseMultiClaim: BaseMultiClaim{
-			Owner:  owner,
-			Reward: rewards,
-		},
-		SupplyRewardIndexes:    supplyRewardIndexes,
-		BorrowRewardIndexes:    borrowRewardIndexes,
-		DelegatorRewardIndexes: delegatorRewardIndexes,
-	}
-}
-
-// GetType returns the claim's type
-func (c HardLiquidityProviderClaim) GetType() string { return HardLiquidityProviderClaimType }
-
-// GetReward returns the claim's reward coin
-func (c HardLiquidityProviderClaim) GetReward() sdk.Coins { return c.Reward }
-
-// GetOwner returns the claim's owner
-func (c HardLiquidityProviderClaim) GetOwner() sdk.AccAddress { return c.Owner }
-
-// Validate performs a basic check of a HardLiquidityProviderClaim fields
-func (c HardLiquidityProviderClaim) Validate() error {
-	if err := c.SupplyRewardIndexes.Validate(); err != nil {
-		return err
-	}
-
-	if err := c.BorrowRewardIndexes.Validate(); err != nil {
-		return err
-	}
-
-	if err := c.DelegatorRewardIndexes.Validate(); err != nil {
-		return err
-	}
-
-	return c.BaseMultiClaim.Validate()
-}
-
-// String implements fmt.Stringer
-func (c HardLiquidityProviderClaim) String() string {
-	return fmt.Sprintf(`%s
-	Supply Reward Indexes: %s,
-	Borrow Reward Indexes: %s,
-	Delegator Reward Indexes: %s,
-	`, c.BaseMultiClaim, c.SupplyRewardIndexes, c.BorrowRewardIndexes, c.DelegatorRewardIndexes)
-}
-
-// HasSupplyRewardIndex check if a claim has a supply reward index for the input collateral type
-func (c HardLiquidityProviderClaim) HasSupplyRewardIndex(denom string) (int64, bool) {
-	for index, ri := range c.SupplyRewardIndexes {
-		if ri.CollateralType == denom {
-			return int64(index), true
-		}
-	}
-	return 0, false
-}
-
-// HasBorrowRewardIndex check if a claim has a borrow reward index for the input collateral type
-func (c HardLiquidityProviderClaim) HasBorrowRewardIndex(denom string) (int64, bool) {
-	for index, ri := range c.BorrowRewardIndexes {
-		if ri.CollateralType == denom {
-			return int64(index), true
-		}
-	}
-	return 0, false
-}
-
-// HasDelegatorRewardIndex check if a claim has a delegator reward index for the input collateral type
-func (c HardLiquidityProviderClaim) HasDelegatorRewardIndex(collateralType string) (int64, bool) {
-	for index, ri := range c.DelegatorRewardIndexes {
-		if ri.CollateralType == collateralType {
-			return int64(index), true
-		}
-	}
-	return 0, false
-}
-
-// HardLiquidityProviderClaims slice of HardLiquidityProviderClaim
-type HardLiquidityProviderClaims []HardLiquidityProviderClaim
-
-// Validate checks if all the claims are valid and there are no duplicated
-// entries.
-func (cs HardLiquidityProviderClaims) Validate() error {
 	for _, c := range cs {
 		if err := c.Validate(); err != nil {
 			return err

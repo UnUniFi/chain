@@ -5,7 +5,6 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
-	hardtypes "github.com/lcnem/jpyx/x/hard/types"
 )
 
 // Hooks wrapper struct for hooks
@@ -14,7 +13,6 @@ type Hooks struct {
 }
 
 var _ cdptypes.CDPHooks = Hooks{}
-var _ hardtypes.HARDHooks = Hooks{}
 var _ stakingtypes.StakingHooks = Hooks{}
 
 // Hooks create new incentive hooks
@@ -34,48 +32,14 @@ func (h Hooks) BeforeCDPModified(ctx sdk.Context, cdp cdptypes.CDP) {
 	h.k.SynchronizeJPYXMintingReward(ctx, cdp)
 }
 
-// ------------------- Hard Module Hooks -------------------
-
-// AfterDepositCreated function that runs after a deposit is created
-func (h Hooks) AfterDepositCreated(ctx sdk.Context, deposit hardtypes.Deposit) {
-	h.k.InitializeHardSupplyReward(ctx, deposit)
-}
-
-// BeforeDepositModified function that runs before a deposit is modified
-func (h Hooks) BeforeDepositModified(ctx sdk.Context, deposit hardtypes.Deposit) {
-	h.k.SynchronizeHardSupplyReward(ctx, deposit)
-}
-
-// AfterDepositModified function that runs after a deposit is modified
-func (h Hooks) AfterDepositModified(ctx sdk.Context, deposit hardtypes.Deposit) {
-	h.k.UpdateHardSupplyIndexDenoms(ctx, deposit)
-}
-
-// AfterBorrowCreated function that runs after a borrow is created
-func (h Hooks) AfterBorrowCreated(ctx sdk.Context, borrow hardtypes.Borrow) {
-	h.k.InitializeHardBorrowReward(ctx, borrow)
-}
-
-// BeforeBorrowModified function that runs before a borrow is modified
-func (h Hooks) BeforeBorrowModified(ctx sdk.Context, borrow hardtypes.Borrow) {
-	h.k.SynchronizeHardBorrowReward(ctx, borrow)
-}
-
-// AfterBorrowModified function that runs after a borrow is modified
-func (h Hooks) AfterBorrowModified(ctx sdk.Context, borrow hardtypes.Borrow) {
-	h.k.UpdateHardBorrowIndexDenoms(ctx, borrow)
-}
-
 // ------------------- Staking Module Hooks -------------------
 
 // BeforeDelegationCreated runs before a delegation is created
 func (h Hooks) BeforeDelegationCreated(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
-	h.k.InitializeHardDelegatorReward(ctx, delAddr)
 }
 
 // BeforeDelegationSharesModified runs before an existing delegation is modified
 func (h Hooks) BeforeDelegationSharesModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) {
-	h.k.SynchronizeHardDelegatorRewards(ctx, delAddr)
 }
 
 // NOTE: following hooks are just implemented to ensure StakingHooks interface compliance

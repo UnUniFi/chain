@@ -117,20 +117,6 @@ func executeJPYXMintingRewardsQuery(w http.ResponseWriter, cliCtx context.CLICon
 
 func executeBothRewardQueries(w http.ResponseWriter, cliCtx context.CLIContext,
 	hardParams types.QueryHardRewardsParams, jpyxMintingParams types.QueryJPYXMintingRewardsParams) {
-	hardBz, err := cliCtx.Codec.MarshalJSON(hardParams)
-	if err != nil {
-		rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("failed to marshal query params: %s", err))
-		return
-	}
-
-	hardRes, height, err := cliCtx.QueryWithData(fmt.Sprintf("custom/incentive/%s", types.QueryGetHardRewards), hardBz)
-	if err != nil {
-		rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-	var hardClaims types.HardLiquidityProviderClaims
-	cliCtx.Codec.MustUnmarshalJSON(hardRes, &hardClaims)
-
 	jpyxMintingBz, err := cliCtx.Codec.MarshalJSON(jpyxMintingParams)
 	if err != nil {
 		rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("failed to marshal query params: %s", err))
@@ -148,12 +134,10 @@ func executeBothRewardQueries(w http.ResponseWriter, cliCtx context.CLIContext,
 	cliCtx = cliCtx.WithHeight(height)
 
 	type rewardResult struct {
-		HardClaims        types.HardLiquidityProviderClaims `json:"hard_claims" yaml:"hard_claims"`
-		JpyxMintingClaims types.JPYXMintingClaims           `json:"jpyx_minting_claims" yaml:"jpyx_minting_claims"`
+		JpyxMintingClaims types.JPYXMintingClaims `json:"jpyx_minting_claims" yaml:"jpyx_minting_claims"`
 	}
 
 	res := rewardResult{
-		HardClaims:        hardClaims,
 		JpyxMintingClaims: jpyxMintingClaims,
 	}
 

@@ -25,9 +25,6 @@ const (
 // Parameter keys and default values
 var (
 	KeyJPYXMintingRewardPeriods     = []byte("JPYXMintingRewardPeriods")
-	KeyHardSupplyRewardPeriods      = []byte("HardSupplyRewardPeriods")
-	KeyHardBorrowRewardPeriods      = []byte("HardBorrowRewardPeriods")
-	KeyHardDelegatorRewardPeriods   = []byte("HardDelegatorRewardPeriods")
 	KeyClaimEnd                     = []byte("ClaimEnd")
 	KeyMultipliers                  = []byte("ClaimMultipliers")
 	DefaultActive                   = false
@@ -35,7 +32,6 @@ var (
 	DefaultMultiRewardPeriods       = MultiRewardPeriods{}
 	DefaultMultipliers              = Multipliers{}
 	DefaultJPYXClaims               = JPYXMintingClaims{}
-	DefaultHardClaims               = HardLiquidityProviderClaims{}
 	DefaultGenesisAccumulationTimes = GenesisAccumulationTimes{}
 	DefaultClaimEnd                 = tmtime.Canonical(time.Unix(1, 0))
 	GovDenom                        = cdptypes.DefaultGovDenom
@@ -45,24 +41,18 @@ var (
 
 // Params governance parameters for the incentive module
 type Params struct {
-	JPYXMintingRewardPeriods   RewardPeriods      `json:"jpyx_minting_reward_periods" yaml:"jpyx_minting_reward_periods"`
-	HardSupplyRewardPeriods    MultiRewardPeriods `json:"hard_supply_reward_periods" yaml:"hard_supply_reward_periods"`
-	HardBorrowRewardPeriods    MultiRewardPeriods `json:"hard_borrow_reward_periods" yaml:"hard_borrow_reward_periods"`
-	HardDelegatorRewardPeriods RewardPeriods      `json:"hard_delegator_reward_periods" yaml:"hard_delegator_reward_periods"`
-	ClaimMultipliers           Multipliers        `json:"claim_multipliers" yaml:"claim_multipliers"`
-	ClaimEnd                   time.Time          `json:"claim_end" yaml:"claim_end"`
+	JPYXMintingRewardPeriods RewardPeriods `json:"jpyx_minting_reward_periods" yaml:"jpyx_minting_reward_periods"`
+	ClaimMultipliers         Multipliers   `json:"claim_multipliers" yaml:"claim_multipliers"`
+	ClaimEnd                 time.Time     `json:"claim_end" yaml:"claim_end"`
 }
 
 // NewParams returns a new params object
 func NewParams(jpyxMinting RewardPeriods, hardSupply, hardBorrow MultiRewardPeriods,
 	hardDelegator RewardPeriods, multipliers Multipliers, claimEnd time.Time) Params {
 	return Params{
-		JPYXMintingRewardPeriods:   jpyxMinting,
-		HardSupplyRewardPeriods:    hardSupply,
-		HardBorrowRewardPeriods:    hardBorrow,
-		HardDelegatorRewardPeriods: hardDelegator,
-		ClaimMultipliers:           multipliers,
-		ClaimEnd:                   claimEnd,
+		JPYXMintingRewardPeriods: jpyxMinting,
+		ClaimMultipliers:         multipliers,
+		ClaimEnd:                 claimEnd,
 	}
 }
 
@@ -76,13 +66,9 @@ func DefaultParams() Params {
 func (p Params) String() string {
 	return fmt.Sprintf(`Params:
 	JPYX Minting Reward Periods: %s
-	Hard Supply Reward Periods: %s
-	Hard Borrow Reward Periods: %s
-	Hard Delegator Reward Periods: %s
 	Claim Multipliers :%s
 	Claim End Time: %s
-	`, p.JPYXMintingRewardPeriods, p.HardSupplyRewardPeriods, p.HardBorrowRewardPeriods,
-		p.HardDelegatorRewardPeriods, p.ClaimMultipliers, p.ClaimEnd)
+	`, p.JPYXMintingRewardPeriods, p.ClaimMultipliers, p.ClaimEnd)
 }
 
 // ParamKeyTable Key declaration for parameters
@@ -94,9 +80,6 @@ func ParamKeyTable() params.KeyTable {
 func (p *Params) ParamSetPairs() params.ParamSetPairs {
 	return params.ParamSetPairs{
 		params.NewParamSetPair(KeyJPYXMintingRewardPeriods, &p.JPYXMintingRewardPeriods, validateRewardPeriodsParam),
-		params.NewParamSetPair(KeyHardSupplyRewardPeriods, &p.HardSupplyRewardPeriods, validateMultiRewardPeriodsParam),
-		params.NewParamSetPair(KeyHardBorrowRewardPeriods, &p.HardBorrowRewardPeriods, validateMultiRewardPeriodsParam),
-		params.NewParamSetPair(KeyHardDelegatorRewardPeriods, &p.HardDelegatorRewardPeriods, validateRewardPeriodsParam),
 		params.NewParamSetPair(KeyClaimEnd, &p.ClaimEnd, validateClaimEndParam),
 		params.NewParamSetPair(KeyMultipliers, &p.ClaimMultipliers, validateMultipliersParam),
 	}
@@ -113,15 +96,7 @@ func (p Params) Validate() error {
 		return err
 	}
 
-	if err := validateMultiRewardPeriodsParam(p.HardSupplyRewardPeriods); err != nil {
-		return err
-	}
-
-	if err := validateMultiRewardPeriodsParam(p.HardBorrowRewardPeriods); err != nil {
-		return err
-	}
-
-	return validateRewardPeriodsParam(p.HardDelegatorRewardPeriods)
+	return nil
 }
 
 func validateRewardPeriodsParam(i interface{}) error {

@@ -7,7 +7,6 @@ import (
 	supplyexported "github.com/cosmos/cosmos-sdk/x/supply/exported"
 
 	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
-	hardtypes "github.com/lcnem/jpyx/x/hard/types"
 )
 
 // SupplyKeeper defines the expected supply keeper for module accounts
@@ -31,16 +30,6 @@ type CdpKeeper interface {
 	GetCollateral(ctx sdk.Context, collateralType string) (cdptypes.CollateralParam, bool)
 }
 
-// HardKeeper defines the expected hard keeper for interacting with Hard protocol
-type HardKeeper interface {
-	GetDeposit(ctx sdk.Context, depositor sdk.AccAddress) (hardtypes.Deposit, bool)
-	GetBorrow(ctx sdk.Context, borrower sdk.AccAddress) (hardtypes.Borrow, bool)
-	GetSupplyInterestFactor(ctx sdk.Context, denom string) (sdk.Dec, bool)
-	GetBorrowInterestFactor(ctx sdk.Context, denom string) (sdk.Dec, bool)
-	GetBorrowedCoins(ctx sdk.Context) (coins sdk.Coins, found bool)
-	GetSuppliedCoins(ctx sdk.Context) (coins sdk.Coins, found bool)
-}
-
 // AccountKeeper defines the expected keeper interface for interacting with account
 type AccountKeeper interface {
 	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authexported.Account
@@ -51,14 +40,4 @@ type AccountKeeper interface {
 type CDPHooks interface {
 	AfterCDPCreated(ctx sdk.Context, cdp cdptypes.CDP)
 	BeforeCDPModified(ctx sdk.Context, cdp cdptypes.CDP)
-}
-
-// HARDHooks event hooks for other keepers to run code in response to HARD modifications
-type HARDHooks interface {
-	AfterDepositCreated(ctx sdk.Context, deposit hardtypes.Deposit)
-	BeforeDepositModified(ctx sdk.Context, deposit hardtypes.Deposit)
-	AfterDepositModified(ctx sdk.Context, deposit hardtypes.Deposit)
-	AfterBorrowCreated(ctx sdk.Context, borrow hardtypes.Borrow)
-	BeforeBorrowModified(ctx sdk.Context, borrow hardtypes.Borrow)
-	AfterBorrowModified(ctx sdk.Context, deposit hardtypes.Deposit)
 }

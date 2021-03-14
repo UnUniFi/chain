@@ -35,12 +35,8 @@ import (
 
 	"github.com/lcnem/jpyx/app/ante"
 	"github.com/lcnem/jpyx/x/auction"
-	"github.com/lcnem/jpyx/x/bep3"
 	"github.com/lcnem/jpyx/x/cdp"
-	"github.com/lcnem/jpyx/x/committee"
-	"github.com/lcnem/jpyx/x/hard"
 	"github.com/lcnem/jpyx/x/incentive"
-	"github.com/lcnem/jpyx/x/issuance"
 	"github.com/lcnem/jpyx/x/jsmndist"
 	"github.com/lcnem/jpyx/x/pricefeed"
 	validatorvesting "github.com/lcnem/jpyx/x/validator-vesting"
@@ -66,7 +62,7 @@ var (
 		mint.AppModuleBasic{},
 		distr.AppModuleBasic{},
 		gov.NewAppModuleBasic(
-			paramsclient.ProposalHandler, distr.ProposalHandler, committee.ProposalHandler,
+			paramsclient.ProposalHandler, distr.ProposalHandler,
 			upgradeclient.ProposalHandler,
 		),
 		params.AppModuleBasic{},
@@ -78,12 +74,8 @@ var (
 		auction.AppModuleBasic{},
 		cdp.AppModuleBasic{},
 		pricefeed.AppModuleBasic{},
-		committee.AppModuleBasic{},
-		bep3.AppModuleBasic{},
 		jsmndist.AppModuleBasic{},
 		incentive.AppModuleBasic{},
-		issuance.AppModuleBasic{},
-		hard.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -98,10 +90,7 @@ var (
 		auction.ModuleName:          nil,
 		cdp.ModuleName:              {supply.Minter, supply.Burner},
 		cdp.LiquidatorMacc:          {supply.Minter, supply.Burner},
-		bep3.ModuleName:             {supply.Minter, supply.Burner},
 		jsmndist.ModuleName:         {supply.Minter},
-		issuance.ModuleAccountName:  {supply.Minter, supply.Burner},
-		hard.ModuleAccountName:      {supply.Minter},
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -151,12 +140,8 @@ type App struct {
 	auctionKeeper   auction.Keeper
 	cdpKeeper       cdp.Keeper
 	pricefeedKeeper pricefeed.Keeper
-	committeeKeeper committee.Keeper
-	bep3Keeper      bep3.Keeper
 	jsmndistKeeper  jsmndist.Keeper
 	incentiveKeeper incentive.Keeper
-	issuanceKeeper  issuance.Keeper
-	hardKeeper      hard.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -179,8 +164,7 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts AppOptio
 		supply.StoreKey, mint.StoreKey, distr.StoreKey, slashing.StoreKey,
 		gov.StoreKey, params.StoreKey, upgrade.StoreKey, evidence.StoreKey,
 		validatorvesting.StoreKey, auction.StoreKey, cdp.StoreKey, pricefeed.StoreKey,
-		bep3.StoreKey, jsmndist.StoreKey, incentive.StoreKey, issuance.StoreKey, committee.StoreKey,
-		hard.StoreKey,
+		jsmndist.StoreKey, incentive.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(params.TStoreKey)
 
@@ -206,11 +190,8 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts AppOptio
 	auctionSubspace := app.paramsKeeper.Subspace(auction.DefaultParamspace)
 	cdpSubspace := app.paramsKeeper.Subspace(cdp.DefaultParamspace)
 	pricefeedSubspace := app.paramsKeeper.Subspace(pricefeed.DefaultParamspace)
-	bep3Subspace := app.paramsKeeper.Subspace(bep3.DefaultParamspace)
 	jsmndistSubspace := app.paramsKeeper.Subspace(jsmndist.DefaultParamspace)
 	incentiveSubspace := app.paramsKeeper.Subspace(incentive.DefaultParamspace)
-	issuanceSubspace := app.paramsKeeper.Subspace(issuance.DefaultParamspace)
-	hardSubspace := app.paramsKeeper.Subspace(hard.DefaultParamspace)
 
 	// add keepers
 	app.accountKeeper = auth.NewAccountKeeper(
@@ -284,30 +265,13 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts AppOptio
 	evidenceKeeper.SetRouter(evidenceRouter)
 	app.evidenceKeeper = *evidenceKeeper
 
-	// create committee keeper with router
-	committeeGovRouter := gov.NewRouter()
-	committeeGovRouter.
-		AddRoute(gov.RouterKey, gov.ProposalHandler).
-		AddRoute(params.RouterKey, params.NewParamChangeProposalHandler(app.paramsKeeper)).
-		AddRoute(distr.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.distrKeeper)).
-		AddRoute(upgrade.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.upgradeKeeper))
-	// Note: the committee proposal handler is not registered on the committee router. This means committees cannot create or update other committees.
-	// Adding the committee proposal handler to the router is possible but awkward as the handler depends on the keeper which depends on the handler.
-	app.committeeKeeper = committee.NewKeeper(
-		app.cdc,
-		keys[committee.StoreKey],
-		committeeGovRouter,
-		app.paramsKeeper,
-	)
-
 	// create gov keeper with router
 	govRouter := gov.NewRouter()
 	govRouter.
 		AddRoute(gov.RouterKey, gov.ProposalHandler).
 		AddRoute(params.RouterKey, params.NewParamChangeProposalHandler(app.paramsKeeper)).
 		AddRoute(distr.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.distrKeeper)).
-		AddRoute(upgrade.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.upgradeKeeper)).
-		AddRoute(committee.RouterKey, committee.NewProposalHandler(app.committeeKeeper))
+		AddRoute(upgrade.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.upgradeKeeper))
 	app.govKeeper = gov.NewKeeper(
 		app.cdc,
 		keys[gov.StoreKey],
@@ -346,24 +310,6 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts AppOptio
 		app.accountKeeper,
 		mAccPerms,
 	)
-	app.bep3Keeper = bep3.NewKeeper(
-		app.cdc,
-		keys[bep3.StoreKey],
-		app.supplyKeeper,
-		app.accountKeeper,
-		bep3Subspace,
-		app.ModuleAccountAddrs(),
-	)
-	hardKeeper := hard.NewKeeper(
-		app.cdc,
-		keys[hard.StoreKey],
-		hardSubspace,
-		app.accountKeeper,
-		app.supplyKeeper,
-		&stakingKeeper,
-		app.pricefeedKeeper,
-		app.auctionKeeper,
-	)
 	app.jsmndistKeeper = jsmndist.NewKeeper(
 		app.cdc,
 		keys[jsmndist.StoreKey],
@@ -376,16 +322,8 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts AppOptio
 		incentiveSubspace,
 		app.supplyKeeper,
 		&cdpKeeper,
-		&hardKeeper,
 		app.accountKeeper,
 		&stakingKeeper,
-	)
-	app.issuanceKeeper = issuance.NewKeeper(
-		app.cdc,
-		keys[issuance.StoreKey],
-		issuanceSubspace,
-		app.accountKeeper,
-		app.supplyKeeper,
 	)
 
 	// register the staking hooks
@@ -394,8 +332,6 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts AppOptio
 		staking.NewMultiStakingHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks(), app.incentiveKeeper.Hooks()))
 
 	app.cdpKeeper = *cdpKeeper.SetHooks(cdp.NewMultiCDPHooks(app.incentiveKeeper.Hooks()))
-
-	app.hardKeeper = *hardKeeper.SetHooks(hard.NewMultiHARDHooks(app.incentiveKeeper.Hooks()))
 
 	// create the module manager (Note: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.)
@@ -416,12 +352,8 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts AppOptio
 		auction.NewAppModule(app.auctionKeeper, app.accountKeeper, app.supplyKeeper),
 		cdp.NewAppModule(app.cdpKeeper, app.accountKeeper, app.pricefeedKeeper, app.supplyKeeper),
 		pricefeed.NewAppModule(app.pricefeedKeeper, app.accountKeeper),
-		bep3.NewAppModule(app.bep3Keeper, app.accountKeeper, app.supplyKeeper),
 		jsmndist.NewAppModule(app.jsmndistKeeper, app.supplyKeeper),
 		incentive.NewAppModule(app.incentiveKeeper, app.accountKeeper, app.supplyKeeper, app.cdpKeeper),
-		committee.NewAppModule(app.committeeKeeper, app.accountKeeper),
-		issuance.NewAppModule(app.issuanceKeeper, app.accountKeeper, app.supplyKeeper),
-		hard.NewAppModule(app.hardKeeper, app.supplyKeeper, app.pricefeedKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -431,8 +363,8 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts AppOptio
 	// So it should be run before cdp.BeginBlocker which cancels out debt with stable and starts more auctions.
 	app.mm.SetOrderBeginBlockers(
 		upgrade.ModuleName, mint.ModuleName, distr.ModuleName, slashing.ModuleName,
-		validatorvesting.ModuleName, jsmndist.ModuleName, auction.ModuleName, committee.ModuleName, cdp.ModuleName,
-		bep3.ModuleName, hard.ModuleName, issuance.ModuleName, incentive.ModuleName,
+		validatorvesting.ModuleName, jsmndist.ModuleName, auction.ModuleName, cdp.ModuleName,
+		incentive.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(crisis.ModuleName, gov.ModuleName, staking.ModuleName, pricefeed.ModuleName)
@@ -442,8 +374,8 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts AppOptio
 		validatorvesting.ModuleName, distr.ModuleName,
 		staking.ModuleName, bank.ModuleName, slashing.ModuleName,
 		gov.ModuleName, mint.ModuleName, evidence.ModuleName,
-		pricefeed.ModuleName, cdp.ModuleName, hard.ModuleName, auction.ModuleName,
-		bep3.ModuleName, jsmndist.ModuleName, incentive.ModuleName, committee.ModuleName, issuance.ModuleName,
+		pricefeed.ModuleName, cdp.ModuleName, auction.ModuleName,
+		jsmndist.ModuleName, incentive.ModuleName,
 		supply.ModuleName,  // calculates the total supply from account - should run after modules that modify accounts in genesis
 		crisis.ModuleName,  // runs the invariants at genesis - should run after other modules
 		genutil.ModuleName, // genutils must occur after staking so that pools are properly initialized with tokens from genesis accounts.
@@ -469,12 +401,8 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts AppOptio
 		pricefeed.NewAppModule(app.pricefeedKeeper, app.accountKeeper),
 		cdp.NewAppModule(app.cdpKeeper, app.accountKeeper, app.pricefeedKeeper, app.supplyKeeper),
 		auction.NewAppModule(app.auctionKeeper, app.accountKeeper, app.supplyKeeper),
-		bep3.NewAppModule(app.bep3Keeper, app.accountKeeper, app.supplyKeeper),
 		jsmndist.NewAppModule(app.jsmndistKeeper, app.supplyKeeper),
 		incentive.NewAppModule(app.incentiveKeeper, app.accountKeeper, app.supplyKeeper, app.cdpKeeper),
-		committee.NewAppModule(app.committeeKeeper, app.accountKeeper),
-		issuance.NewAppModule(app.issuanceKeeper, app.accountKeeper, app.supplyKeeper),
-		hard.NewAppModule(app.hardKeeper, app.supplyKeeper, app.pricefeedKeeper),
 	)
 
 	app.sm.RegisterStoreDecoders()
@@ -489,7 +417,7 @@ func NewApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts AppOptio
 	var antehandler sdk.AnteHandler
 	if appOpts.MempoolEnableAuth {
 		var getAuthorizedAddresses ante.AddressFetcher = func(sdk.Context) []sdk.AccAddress { return appOpts.MempoolAuthAddresses }
-		antehandler = ante.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer, app.bep3Keeper.GetAuthorizedAddresses, app.pricefeedKeeper.GetAuthorizedAddresses, getAuthorizedAddresses)
+		antehandler = ante.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer, app.pricefeedKeeper.GetAuthorizedAddresses, getAuthorizedAddresses)
 	} else {
 		antehandler = ante.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer)
 	}

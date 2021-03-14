@@ -8,39 +8,38 @@ import (
 )
 
 const (
-	BeginningOfMonth               = keeper.BeginningOfMonth
-	MidMonth                       = keeper.MidMonth
-	PaymentHour                    = keeper.PaymentHour
-	AttributeKeyClaimAmount        = types.AttributeKeyClaimAmount
-	AttributeKeyClaimPeriod        = types.AttributeKeyClaimPeriod
-	AttributeKeyClaimType          = types.AttributeKeyClaimType
-	AttributeKeyClaimedBy          = types.AttributeKeyClaimedBy
-	AttributeKeyRewardPeriod       = types.AttributeKeyRewardPeriod
-	AttributeValueCategory         = types.AttributeValueCategory
-	BondDenom                      = types.BondDenom
-	DefaultParamspace              = types.DefaultParamspace
-	EventTypeClaim                 = types.EventTypeClaim
-	EventTypeClaimPeriod           = types.EventTypeClaimPeriod
-	EventTypeClaimPeriodExpiry     = types.EventTypeClaimPeriodExpiry
-	EventTypeRewardPeriod          = types.EventTypeRewardPeriod
-	HardLiquidityProviderClaimType = types.HardLiquidityProviderClaimType
-	Large                          = types.Large
-	Medium                         = types.Medium
-	ModuleName                     = types.ModuleName
-	QuerierRoute                   = types.QuerierRoute
-	QueryGetClaimPeriods           = types.QueryGetClaimPeriods
-	QueryGetHardRewards            = types.QueryGetHardRewards
-	QueryGetParams                 = types.QueryGetParams
-	QueryGetRewardPeriods          = types.QueryGetRewardPeriods
-	QueryGetRewards                = types.QueryGetRewards
-	QueryGetJPYXMintingRewards     = types.QueryGetJPYXMintingRewards
-	RestClaimCollateralType        = types.RestClaimCollateralType
-	RestClaimOwner                 = types.RestClaimOwner
-	RestClaimType                  = types.RestClaimType
-	RouterKey                      = types.RouterKey
-	Small                          = types.Small
-	StoreKey                       = types.StoreKey
-	JPYXMintingClaimType           = types.JPYXMintingClaimType
+	BeginningOfMonth           = keeper.BeginningOfMonth
+	MidMonth                   = keeper.MidMonth
+	PaymentHour                = keeper.PaymentHour
+	AttributeKeyClaimAmount    = types.AttributeKeyClaimAmount
+	AttributeKeyClaimPeriod    = types.AttributeKeyClaimPeriod
+	AttributeKeyClaimType      = types.AttributeKeyClaimType
+	AttributeKeyClaimedBy      = types.AttributeKeyClaimedBy
+	AttributeKeyRewardPeriod   = types.AttributeKeyRewardPeriod
+	AttributeValueCategory     = types.AttributeValueCategory
+	BondDenom                  = types.BondDenom
+	DefaultParamspace          = types.DefaultParamspace
+	EventTypeClaim             = types.EventTypeClaim
+	EventTypeClaimPeriod       = types.EventTypeClaimPeriod
+	EventTypeClaimPeriodExpiry = types.EventTypeClaimPeriodExpiry
+	EventTypeRewardPeriod      = types.EventTypeRewardPeriod
+	Large                      = types.Large
+	Medium                     = types.Medium
+	ModuleName                 = types.ModuleName
+	QuerierRoute               = types.QuerierRoute
+	QueryGetClaimPeriods       = types.QueryGetClaimPeriods
+	QueryGetHardRewards        = types.QueryGetHardRewards
+	QueryGetParams             = types.QueryGetParams
+	QueryGetRewardPeriods      = types.QueryGetRewardPeriods
+	QueryGetRewards            = types.QueryGetRewards
+	QueryGetJPYXMintingRewards = types.QueryGetJPYXMintingRewards
+	RestClaimCollateralType    = types.RestClaimCollateralType
+	RestClaimOwner             = types.RestClaimOwner
+	RestClaimType              = types.RestClaimType
+	RouterKey                  = types.RouterKey
+	Small                      = types.Small
+	StoreKey                   = types.StoreKey
+	JPYXMintingClaimType       = types.JPYXMintingClaimType
 )
 
 var (
@@ -53,8 +52,6 @@ var (
 	GetTotalVestingPeriodLength            = types.GetTotalVestingPeriodLength
 	NewGenesisAccumulationTime             = types.NewGenesisAccumulationTime
 	NewGenesisState                        = types.NewGenesisState
-	NewHardLiquidityProviderClaim          = types.NewHardLiquidityProviderClaim
-	NewMsgClaimHardLiquidityProviderReward = types.NewMsgClaimHardLiquidityProviderReward
 	NewMsgClaimJPYXMintingReward           = types.NewMsgClaimJPYXMintingReward
 	NewMultiRewardIndex                    = types.NewMultiRewardIndex
 	NewMultiRewardPeriod                   = types.NewMultiRewardPeriod
@@ -74,7 +71,6 @@ var (
 	DefaultActive                                   = types.DefaultActive
 	DefaultClaimEnd                                 = types.DefaultClaimEnd
 	DefaultGenesisAccumulationTimes                 = types.DefaultGenesisAccumulationTimes
-	DefaultHardClaims                               = types.DefaultHardClaims
 	DefaultMultiRewardPeriods                       = types.DefaultMultiRewardPeriods
 	DefaultMultipliers                              = types.DefaultMultipliers
 	DefaultRewardPeriods                            = types.DefaultRewardPeriods
@@ -97,9 +93,6 @@ var (
 	HardSupplyRewardIndexesKeyPrefix                = types.HardSupplyRewardIndexesKeyPrefix
 	IncentiveMacc                                   = types.IncentiveMacc
 	KeyClaimEnd                                     = types.KeyClaimEnd
-	KeyHardBorrowRewardPeriods                      = types.KeyHardBorrowRewardPeriods
-	KeyHardDelegatorRewardPeriods                   = types.KeyHardDelegatorRewardPeriods
-	KeyHardSupplyRewardPeriods                      = types.KeyHardSupplyRewardPeriods
 	KeyMultipliers                                  = types.KeyMultipliers
 	KeyJPYXMintingRewardPeriods                     = types.KeyJPYXMintingRewardPeriods
 	ModuleCdc                                       = types.ModuleCdc
@@ -126,11 +119,6 @@ type (
 	GenesisAccumulationTime             = types.GenesisAccumulationTime
 	GenesisAccumulationTimes            = types.GenesisAccumulationTimes
 	GenesisState                        = types.GenesisState
-	HARDHooks                           = types.HARDHooks
-	HardKeeper                          = types.HardKeeper
-	HardLiquidityProviderClaim          = types.HardLiquidityProviderClaim
-	HardLiquidityProviderClaims         = types.HardLiquidityProviderClaims
-	MsgClaimHardLiquidityProviderReward = types.MsgClaimHardLiquidityProviderReward
 	MsgClaimJPYXMintingReward           = types.MsgClaimJPYXMintingReward
 	MultiRewardIndex                    = types.MultiRewardIndex
 	MultiRewardIndexes                  = types.MultiRewardIndexes

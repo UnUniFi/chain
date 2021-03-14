@@ -17,8 +17,6 @@ func NewQuerier(k Keeper) sdk.Querier {
 		switch path[0] {
 		case types.QueryGetParams:
 			return queryGetParams(ctx, req, k)
-		case types.QueryGetHardRewards:
-			return queryGetHardRewards(ctx, req, k)
 		case types.QueryGetJPYXMintingRewards:
 			return queryGetJPYXMintingRewards(ctx, req, k)
 		default:
@@ -34,47 +32,6 @@ func queryGetParams(ctx sdk.Context, req abci.RequestQuery, k Keeper) ([]byte, e
 
 	// Encode results
 	bz, err := codec.MarshalJSONIndent(k.cdc, params)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
-	}
-	return bz, nil
-}
-
-func queryGetHardRewards(ctx sdk.Context, req abci.RequestQuery, k Keeper) ([]byte, error) {
-	var params types.QueryHardRewardsParams
-	err := types.ModuleCdc.UnmarshalJSON(req.Data, &params)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
-	}
-	owner := len(params.Owner) > 0
-
-	var hardClaims types.HardLiquidityProviderClaims
-	switch {
-	case owner:
-		hardClaim, foundHardClaim := k.GetHardLiquidityProviderClaim(ctx, params.Owner)
-		if foundHardClaim {
-			hardClaims = append(hardClaims, hardClaim)
-		}
-	default:
-		hardClaims = k.GetAllHardLiquidityProviderClaims(ctx)
-	}
-
-	var paginatedHardClaims types.HardLiquidityProviderClaims
-	startH, endH := client.Paginate(len(hardClaims), params.Page, params.Limit, 100)
-	if startH < 0 || endH < 0 {
-		paginatedHardClaims = types.HardLiquidityProviderClaims{}
-	} else {
-		paginatedHardClaims = hardClaims[startH:endH]
-	}
-
-	var augmentedHardClaims types.HardLiquidityProviderClaims
-	for _, claim := range paginatedHardClaims {
-		augmentedClaim := k.SimulateHardSynchronization(ctx, claim)
-		augmentedHardClaims = append(augmentedHardClaims, augmentedClaim)
-	}
-
-	// Marshal Hard claims
-	bz, err := codec.MarshalJSONIndent(k.cdc, augmentedHardClaims)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}

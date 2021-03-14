@@ -33,9 +33,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/supply"
 
 	"github.com/lcnem/jpyx/x/auction"
-	"github.com/lcnem/jpyx/x/bep3"
 	"github.com/lcnem/jpyx/x/cdp"
-	"github.com/lcnem/jpyx/x/committee"
 	"github.com/lcnem/jpyx/x/incentive"
 	"github.com/lcnem/jpyx/x/jsmndist"
 	"github.com/lcnem/jpyx/x/pricefeed"
@@ -178,13 +176,11 @@ func TestAppImportExport(t *testing.T) {
 		{app.keys[params.StoreKey], newApp.keys[params.StoreKey], [][]byte{}},
 		{app.keys[gov.StoreKey], newApp.keys[gov.StoreKey], [][]byte{}},
 		{app.keys[auction.StoreKey], newApp.keys[auction.StoreKey], [][]byte{}},
-		{app.keys[bep3.StoreKey], newApp.keys[bep3.StoreKey], [][]byte{}},
 		{app.keys[cdp.StoreKey], newApp.keys[cdp.StoreKey], [][]byte{}},
 		{app.keys[incentive.StoreKey], newApp.keys[incentive.StoreKey], [][]byte{}},
 		{app.keys[jsmndist.StoreKey], newApp.keys[jsmndist.StoreKey], [][]byte{}},
 		{app.keys[pricefeed.StoreKey], newApp.keys[pricefeed.StoreKey], [][]byte{}},
 		{app.keys[validatorvesting.StoreKey], newApp.keys[validatorvesting.StoreKey], [][]byte{}},
-		{app.keys[committee.StoreKey], newApp.keys[committee.StoreKey], [][]byte{}},
 	}
 
 	for _, skp := range storeKeysPrefixes {

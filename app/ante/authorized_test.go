@@ -10,8 +10,6 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
-
-	"github.com/lcnem/jpyx/x/bep3"
 )
 
 var (
@@ -37,13 +35,7 @@ func TestAuthenticatedMempoolDecorator_AnteHandle_NotCheckTx(t *testing.T) {
 
 	decorator := NewAuthenticatedMempoolDecorator(fetcher)
 	tx := helpers.GenTx(
-		[]sdk.Msg{
-			bep3.NewMsgClaimAtomicSwap(
-				testAddresses[0],
-				[]byte{},
-				[]byte{},
-			),
-		},
+		[]sdk.Msg{},
 		sdk.NewCoins(), // no fee
 		helpers.DefaultGenTxGas,
 		"testing-chain-id",
@@ -72,11 +64,6 @@ func TestAuthenticatedMempoolDecorator_AnteHandle_Pass(t *testing.T) {
 				testAddresses[0],
 				testAddresses[1],
 				sdk.NewCoins(sdk.NewInt64Coin("ujsmn", 100_000_000)),
-			),
-			bep3.NewMsgClaimAtomicSwap(
-				testAddresses[2],
-				nil,
-				nil,
 			),
 		},
 		sdk.NewCoins(), // no fee
