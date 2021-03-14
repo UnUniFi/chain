@@ -1,51 +1,31 @@
 package keeper
 
 import (
-	"time"
+	"fmt"
+
+	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/params/subspace"
-
 	"github.com/lcnem/jpyx/x/jsmndist/types"
 )
 
-// Keeper keeper for the cdp module
-type Keeper struct {
-	key           sdk.StoreKey
-	cdc           *codec.Codec
-	paramSubspace subspace.Subspace
-	supplyKeeper  types.SupplyKeeper
-}
-
-// NewKeeper creates a new keeper
-func NewKeeper(cdc *codec.Codec, key sdk.StoreKey, paramstore subspace.Subspace, sk types.SupplyKeeper) Keeper {
-	if !paramstore.HasKeyTable() {
-		paramstore = paramstore.WithKeyTable(types.ParamKeyTable())
+type (
+	Keeper struct {
+		cdc      codec.Marshaler
+		storeKey sdk.StoreKey
+		memKey   sdk.StoreKey
 	}
+)
 
-	return Keeper{
-		key:           key,
-		cdc:           cdc,
-		paramSubspace: paramstore,
-		supplyKeeper:  sk,
+func NewKeeper(cdc codec.Marshaler, storeKey, memKey sdk.StoreKey) *Keeper {
+	return &Keeper{
+		cdc:      cdc,
+		storeKey: storeKey,
+		memKey:   memKey,
 	}
 }
 
-// GetPreviousBlockTime get the blocktime for the previous block
-func (k Keeper) GetPreviousBlockTime(ctx sdk.Context) (blockTime time.Time, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.key), types.PreviousBlockTimeKey)
-	b := store.Get([]byte{})
-	if b == nil {
-		return time.Time{}, false
-	}
-	k.cdc.MustUnmarshalBinaryLengthPrefixed(b, &blockTime)
-	return blockTime, true
-}
-
-// SetPreviousBlockTime set the time of the previous block
-func (k Keeper) SetPreviousBlockTime(ctx sdk.Context, blockTime time.Time) {
-	store := prefix.NewStore(ctx.KVStore(k.key), types.PreviousBlockTimeKey)
-	store.Set([]byte{}, k.cdc.MustMarshalBinaryLengthPrefixed(blockTime))
+func (k Keeper) Logger(ctx sdk.Context) log.Logger {
+	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }

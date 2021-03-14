@@ -3,24 +3,23 @@ package rest
 import (
 	"github.com/gorilla/mux"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/types/rest"
+	"github.com/cosmos/cosmos-sdk/client"
+	// this line is used by starport scaffolding # 1
 )
 
 const (
-	RestMarketID = "market_id"
+	MethodGet = "GET"
 )
 
-// PostPriceReq defines the properties of a PostPrice request's body.
-type PostPriceReq struct {
-	BaseReq  rest.BaseReq `json:"base_req"`
-	MarketID string       `json:"market_id"`
-	Price    string       `json:"price"`
-	Expiry   string       `json:"expiry"`
+// RegisterRoutes registers pricefeed-related REST handlers to a router
+func RegisterRoutes(clientCtx client.Context, r *mux.Router) {
+	// this line is used by starport scaffolding # 2
 }
 
-// RegisterRoutes - Central function to define routes that get registered by the main application
-func RegisterRoutes(cliCtx context.CLIContext, r *mux.Router) {
-	registerQueryRoutes(cliCtx, r)
-	registerTxRoutes(cliCtx, r)
+func registerQueryRoutes(clientCtx client.Context, r *mux.Router) {
+	// this line is used by starport scaffolding # 3
+}
+
+func registerTxHandlers(clientCtx client.Context, r *mux.Router) {
+	// this line is used by starport scaffolding # 4
 }

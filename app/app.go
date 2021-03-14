@@ -2,50 +2,26 @@ package app
 
 import (
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/spf13/cast"
-
-	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/libs/log"
-	tmos "github.com/tendermint/tendermint/libs/os"
-	dbm "github.com/tendermint/tm-db"
-
 	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/server/api"
 	"github.com/cosmos/cosmos-sdk/server/config"
-	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
-	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
-	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
-	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/vesting"
 	"github.com/cosmos/cosmos-sdk/x/bank"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/capability"
-	capabilitykeeper "github.com/cosmos/cosmos-sdk/x/capability/keeper"
-	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
-	crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
-	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
-	distr "github.com/cosmos/cosmos-sdk/x/distribution"
-	distrclient "github.com/cosmos/cosmos-sdk/x/distribution/client"
-	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	"github.com/cosmos/cosmos-sdk/x/evidence"
-	evidencekeeper "github.com/cosmos/cosmos-sdk/x/evidence/keeper"
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
@@ -75,19 +51,23 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/cosmos/cosmos-sdk/x/supply"
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	appparams "github.com/lcnem/jpyx/app/params"
+	"github.com/spf13/cast"
+	abci "github.com/tendermint/tendermint/abci/types"
+	tmjson "github.com/tendermint/tendermint/libs/json"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	"go.etcd.io/etcd/version"
+
+	// this line is used by starport scaffolding # stargate/app/moduleImport
 	"github.com/lcnem/jpyx/x/auction"
 	"github.com/lcnem/jpyx/x/cdp"
 	"github.com/lcnem/jpyx/x/incentive"
 	"github.com/lcnem/jpyx/x/jsmndist"
 	"github.com/lcnem/jpyx/x/pricefeed"
-	tmjson "github.com/tendermint/tendermint/libs/json"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
 const Name = "jpyx"
@@ -133,12 +113,12 @@ var (
 		evidence.AppModuleBasic{},
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
+		// this line is used by starport scaffolding # stargate/app/moduleBasic
 		auction.AppModuleBasic{},
 		cdp.AppModuleBasic{},
 		pricefeed.AppModuleBasic{},
 		jsmndist.AppModuleBasic{},
 		incentive.AppModuleBasic{},
-		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
 	// module account permissions
@@ -150,6 +130,11 @@ var (
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
+		auction.ModuleName:             nil,
+		cdp.ModuleName:                 {supply.Minter, supply.Burner},
+		cdp.LiquidatorMacc:             {supply.Minter, supply.Burner},
+		cdp.SavingsRateMacc:            {supply.Minter},
+		jsmndist.ModuleName:            {supply.Minter},
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -209,12 +194,12 @@ type App struct {
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 
+	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 	auctionKeeper   auction.Keeper
 	cdpKeeper       cdp.Keeper
 	pricefeedKeeper pricefeed.Keeper
 	jsmndistKeeper  jsmndist.Keeper
 	incentiveKeeper incentive.Keeper
-	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// the module manager
 	mm *module.Manager
@@ -243,9 +228,9 @@ func New(
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
+		// this line is used by starport scaffolding # stargate/app/storeKey
 		auction.StoreKey, cdp.StoreKey, pricefeed.StoreKey,
 		jsmndist.StoreKey, incentive.StoreKey,
-		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -334,6 +319,7 @@ func New(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
+	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 	app.auctionKeeper = auction.NewKeeper(
 		app.cdc,
 		keys[auction.StoreKey],
@@ -370,8 +356,6 @@ func New(
 		app.accountKeeper,
 		&stakingKeeper,
 	)
-
-	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
@@ -415,12 +399,12 @@ func New(
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
+		// this line is used by starport scaffolding # stargate/app/appModule
 		auction.NewAppModule(app.auctionKeeper, app.accountKeeper, app.supplyKeeper),
 		cdp.NewAppModule(app.cdpKeeper, app.accountKeeper, app.pricefeedKeeper, app.supplyKeeper),
 		pricefeed.NewAppModule(app.pricefeedKeeper, app.accountKeeper),
 		jsmndist.NewAppModule(app.jsmndistKeeper, app.supplyKeeper),
 		incentive.NewAppModule(app.incentiveKeeper, app.accountKeeper, app.supplyKeeper, app.cdpKeeper),
-		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -453,8 +437,12 @@ func New(
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		ibctransfertypes.ModuleName,
-		testtypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
+		auctiontypes.ModuleName,
+		cdptypes.ModuleName,
+		incentivetypes.ModuleName,
+		jsmndisttypes.ModuleName,
+		pricefeedtypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -647,12 +635,12 @@ func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyA
 	paramsKeeper.Subspace(crisistypes.ModuleName)
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
+	// this line is used by starport scaffolding # stargate/app/paramSubspace
 	paramsKeeper.Subspace(auction.ModuleName)
 	paramsKeeper.Subspace(cdp.ModuleName)
 	paramsKeeper.Subspace(pricefeed.ModuleName)
 	paramsKeeper.Subspace(jsmndist.ModuleName)
 	paramsKeeper.Subspace(incentive.ModuleName)
-	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
 }

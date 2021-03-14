@@ -1,0 +1,11 @@
+syntax = "proto3";
+package KimuraYu45z.test.pricefeed;
+
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/lcnem/jpyx/x/pricefeed/types";
+
+// GenesisState defines the pricefeed module's genesis state.
+message GenesisState {
+    // this line is used by starport scaffolding # genesis/proto/state
+}

@@ -2,57 +2,21 @@ package pricefeed
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/lcnem/jpyx/x/pricefeed/keeper"
+	"github.com/lcnem/jpyx/x/pricefeed/types"
 )
 
-// InitGenesis sets distribution information for genesis.
-func InitGenesis(ctx sdk.Context, keeper Keeper, gs GenesisState) {
-	// Set the markets and oracles from params
-	keeper.SetParams(ctx, gs.Params)
-
-	// Iterate through the posted prices and set them in the store if they are not expired
-	for _, pp := range gs.PostedPrices {
-		if pp.Expiry.After(ctx.BlockTime()) {
-			_, err := keeper.SetPrice(ctx, pp.OracleAddress, pp.MarketID, pp.Price, pp.Expiry)
-			if err != nil {
-				panic(err)
-			}
-		}
-	}
-	params := keeper.GetParams(ctx)
-
-	// Set the current price (if any) based on what's now in the store
-	for _, market := range params.Markets {
-		if !market.Active {
-			continue
-		}
-		rps, err := keeper.GetRawPrices(ctx, market.MarketID)
-		if err != nil {
-			panic(err)
-		}
-		if len(rps) == 0 {
-			continue
-		}
-		err = keeper.SetCurrentPrices(ctx, market.MarketID)
-		if err != nil {
-			panic(err)
-		}
-	}
+// InitGenesis initializes the capability module's state from a provided genesis
+// state.
+func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
+	// this line is used by starport scaffolding # genesis/module/init
 }
 
-// ExportGenesis returns a GenesisState for a given context and keeper.
-func ExportGenesis(ctx sdk.Context, keeper Keeper) GenesisState {
+// ExportGenesis returns the capability module's exported genesis.
+func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
+	genesis := types.DefaultGenesis()
 
-	// Get the params for markets and oracles
-	params := keeper.GetParams(ctx)
+	// this line is used by starport scaffolding # genesis/module/export
 
-	var postedPrices []PostedPrice
-	for _, market := range keeper.GetMarkets(ctx) {
-		pp, err := keeper.GetRawPrices(ctx, market.MarketID)
-		if err != nil {
-			panic(err)
-		}
-		postedPrices = append(postedPrices, pp...)
-	}
-
-	return NewGenesisState(params, postedPrices)
+	return genesis
 }

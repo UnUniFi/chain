@@ -1,40 +1,22 @@
 package jsmndist
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
+	"github.com/lcnem/jpyx/x/jsmndist/keeper"
 	"github.com/lcnem/jpyx/x/jsmndist/types"
 )
 
-// InitGenesis initializes the store state from a genesis state.
-func InitGenesis(ctx sdk.Context, k Keeper, supplyKeeper types.SupplyKeeper, gs GenesisState) {
-	if err := gs.Validate(); err != nil {
-		panic(fmt.Sprintf("failed to validate %s genesis state: %s", ModuleName, err))
-	}
-
-	k.SetParams(ctx, gs.Params)
-
-	// only set the previous block time if it's different than default
-	if !gs.PreviousBlockTime.Equal(DefaultPreviousBlockTime) {
-		k.SetPreviousBlockTime(ctx, gs.PreviousBlockTime)
-	}
-
-	// check if the module account exists
-	moduleAcc := supplyKeeper.GetModuleAccount(ctx, JsmndistMacc)
-	if moduleAcc == nil {
-		panic(fmt.Sprintf("%s module account has not been set", JsmndistMacc))
-	}
-
+// InitGenesis initializes the capability module's state from a provided genesis
+// state.
+func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
+	// this line is used by starport scaffolding # genesis/module/init
 }
 
-// ExportGenesis export genesis state for cdp module
-func ExportGenesis(ctx sdk.Context, k Keeper) GenesisState {
-	params := k.GetParams(ctx)
-	previousBlockTime, found := k.GetPreviousBlockTime(ctx)
-	if !found {
-		previousBlockTime = DefaultPreviousBlockTime
-	}
-	return NewGenesisState(params, previousBlockTime)
+// ExportGenesis returns the capability module's exported genesis.
+func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
+	genesis := types.DefaultGenesis()
+
+	// this line is used by starport scaffolding # genesis/module/export
+
+	return genesis
 }

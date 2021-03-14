@@ -2,15 +2,19 @@ package types
 
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
+	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
+	// this line is used by starport scaffolding # 1
 )
 
-var ModuleCdc = codec.New()
-
-func init() {
-	RegisterCodec(ModuleCdc)
+func RegisterCodec(cdc *codec.LegacyAmino) {
+	// this line is used by starport scaffolding # 2
 }
 
-// RegisterCodec registers concrete types on the Amino code
-func RegisterCodec(cdc *codec.Codec) {
-	cdc.RegisterConcrete(MsgPostPrice{}, "pricefeed/MsgPostPrice", nil)
+func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
+	// this line is used by starport scaffolding # 3
 }
+
+var (
+	amino     = codec.NewLegacyAmino()
+	ModuleCdc = codec.NewAminoCodec(amino)
+)

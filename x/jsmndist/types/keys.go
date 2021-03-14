@@ -1,26 +1,22 @@
 package types
 
 const (
-	// ModuleName name that will be used throughout the module
+	// ModuleName defines the module name
 	ModuleName = "jsmndist"
 
-	// StoreKey Top level store key where all module items will be stored
+	// StoreKey defines the primary module store key
 	StoreKey = ModuleName
 
-	// RouterKey Top level router key
+	// RouterKey is the message route for slashing
 	RouterKey = ModuleName
 
-	// QuerierRoute Top level query string
+	// QuerierRoute defines the module's query routing key
 	QuerierRoute = ModuleName
 
-	// DefaultParamspace default name for parameter store
-	DefaultParamspace = ModuleName
-
-	// JsmndistMacc module account for jsmndist
-	JsmndistMacc = ModuleName
+	// MemStoreKey defines the in-memory store key
+	MemStoreKey = "mem_capability"
 )
 
-var (
-	CurrentDistPeriodKey = []byte{0x00}
-	PreviousBlockTimeKey = []byte{0x01}
-)
+func KeyPrefix(p string) []byte {
+	return []byte(p)
+}

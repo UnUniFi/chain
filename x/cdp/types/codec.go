@@ -1,23 +1,20 @@
 package types
 
-import "github.com/cosmos/cosmos-sdk/codec"
+import (
+	"github.com/cosmos/cosmos-sdk/codec"
+	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
+	// this line is used by starport scaffolding # 1
+)
 
-// ModuleCdc generic sealed codec to be used throughout module
-var ModuleCdc *codec.Codec
-
-func init() {
-	cdc := codec.New()
-	RegisterCodec(cdc)
-	codec.RegisterCrypto(cdc)
-	ModuleCdc = cdc.Seal()
+func RegisterCodec(cdc *codec.LegacyAmino) {
+	// this line is used by starport scaffolding # 2
 }
 
-// RegisterCodec registers the necessary types for cdp module
-func RegisterCodec(cdc *codec.Codec) {
-	cdc.RegisterConcrete(MsgCreateCDP{}, "cdp/MsgCreateCDP", nil)
-	cdc.RegisterConcrete(MsgDeposit{}, "cdp/MsgDeposit", nil)
-	cdc.RegisterConcrete(MsgWithdraw{}, "cdp/MsgWithdraw", nil)
-	cdc.RegisterConcrete(MsgDrawDebt{}, "cdp/MsgDrawDebt", nil)
-	cdc.RegisterConcrete(MsgRepayDebt{}, "cdp/MsgRepayDebt", nil)
-	cdc.RegisterConcrete(MsgLiquidate{}, "cdp/MsgLiquidate", nil)
+func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
+	// this line is used by starport scaffolding # 3
 }
+
+var (
+	amino     = codec.NewLegacyAmino()
+	ModuleCdc = codec.NewAminoCodec(amino)
+)

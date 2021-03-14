@@ -3,28 +3,23 @@ package rest
 import (
 	"github.com/gorilla/mux"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/rest"
+	"github.com/cosmos/cosmos-sdk/client"
+	// this line is used by starport scaffolding # 1
 )
 
-// REST Variable names
-// nolint
 const (
-	RestType  = "type"
-	RestOwner = "owner"
-	RestDenom = "denom"
-	RestPhase = "phase"
+	MethodGet = "GET"
 )
 
-// RegisterRoutes - Central function to define routes that get registered by the main application
-func RegisterRoutes(cliCtx context.CLIContext, r *mux.Router) {
-	registerQueryRoutes(cliCtx, r)
-	registerTxRoutes(cliCtx, r)
+// RegisterRoutes registers auction-related REST handlers to a router
+func RegisterRoutes(clientCtx client.Context, r *mux.Router) {
+	// this line is used by starport scaffolding # 2
 }
 
-// placeBidReq defines the properties of a bid request's body
-type placeBidReq struct {
-	BaseReq rest.BaseReq `json:"base_req"`
-	Amount  sdk.Coin     `json:"amount"`
+func registerQueryRoutes(clientCtx client.Context, r *mux.Router) {
+	// this line is used by starport scaffolding # 3
+}
+
+func registerTxHandlers(clientCtx client.Context, r *mux.Router) {
+	// this line is used by starport scaffolding # 4
 }
