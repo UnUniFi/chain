@@ -7,12 +7,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/gorilla/mux"
-	"github.com/lcnem/jpyx/x/auction/types"
+	"github.com/lcnem/jpyx/x/cdp/types"
 )
 
-func listAuctionHandler(clientCtx client.Context) http.HandlerFunc {
+func listCdpHandler(clientCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		res, height, err := clientCtx.QueryWithData(fmt.Sprintf("custom/%s/list-auction", types.QuerierRoute), nil)
+		res, height, err := clientCtx.QueryWithData(fmt.Sprintf("custom/%s/list-cdp", types.QuerierRoute), nil)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusNotFound, err.Error())
 			return
@@ -23,11 +23,11 @@ func listAuctionHandler(clientCtx client.Context) http.HandlerFunc {
 	}
 }
 
-func getAuctionHandler(clientCtx client.Context) http.HandlerFunc {
+func getCdpHandler(clientCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := mux.Vars(r)["id"]
 
-		res, height, err := clientCtx.QueryWithData(fmt.Sprintf("custom/%s/get-auction/%s", types.QuerierRoute, id), nil)
+		res, height, err := clientCtx.QueryWithData(fmt.Sprintf("custom/%s/get-cdp/%s", types.QuerierRoute, id), nil)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusNotFound, err.Error())
 			return

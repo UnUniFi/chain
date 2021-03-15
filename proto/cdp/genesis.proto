@@ -2,10 +2,42 @@ syntax = "proto3";
 package lcnem.jpyx.cdp;
 
 // this line is used by starport scaffolding # genesis/proto/import
+import "cdp/cdp.proto";
 
 option go_package = "github.com/lcnem/jpyx/x/cdp/types";
 
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
 // GenesisState defines the cdp module's genesis state.
 message GenesisState {
-    // this line is used by starport scaffolding # genesis/proto/state
+  Params params = 1 [(gogoproto.moretags) = "yaml:\"params\""];
+  repeated CDP cdps = 2 [(gogoproto.moretags) = "yaml:\"cdps\""];
+  repeated Deposit deposits = 3 [(gogoproto.moretags) = "yaml:\"deposits\""];
+  uint64 starting_cdp_id = 4 [(gogoproto.moretags) = "yaml:\"starting_cdp_id\""];
+  string debt_denom = 5 [(gogoproto.moretags) = "yaml:\"debt_denom\""];
+  string gov_denom = 6 [(gogoproto.moretags) = "yaml:\"gov_denom\""];
+  repeated GenesisAccumulationTime previous_accumulation_times = 7 [(gogoproto.moretags) = "yaml:\"previous_accumulation_times\""];
+  repeated GenesisTotalPrincipal total_principals = 8 [(gogoproto.moretags) = "yaml:\"total_principals\""];
+  // this line is used by starport scaffolding # genesis/proto/state
+}
+
+message GenesisAccumulationTime {
+  string collateral_type = 1 [(gogoproto.moretags) = "yaml:\"collateral_type\""];
+  google.protobuf.Timestamp previous_accumulation_time = 2 [(gogoproto.moretags) = "yaml:\"previous_accumulation_time\""];
+  string interest_factor = 3 [
+    (gogoproto.moretags) = "yaml:\"interest_factor\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message GenesisTotalPrincipal {
+  string collateral_type = 1 [(gogoproto.moretags) = "yaml:\"collateral_type\""];
+  string total_principal = 2 [
+    (gogoproto.moretags) = "yaml:\"total_principal\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }

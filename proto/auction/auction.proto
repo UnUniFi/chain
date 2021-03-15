@@ -4,29 +4,52 @@ package lcnem.jpyx.auction;
 option go_package = "github.com/lcnem/jpyx/x/auction/types";
 
 import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
-message Auction {
-  string creator = 1;
-  string id = 2;
+message BaseAuction {
+  uint64 id = 1 [(gogoproto.moretags) = "yaml:\"id\""];
+  string initiator = 2 [(gogoproto.moretags) = "yaml:\"id\""];
+  cosmos.base.v1beta1.Coin lot = 3 [(gogoproto.moretags) = "yaml:\"lot\""];
+  string bidder = 4 [(gogoproto.moretags) = "yaml:\"bidder\""];
+  cosmos.base.v1beta1.Coin bid = 5 [(gogoproto.moretags) = "yaml:\"bid\""];
+  bool has_received_bids = 6 [(gogoproto.moretags) = "yaml:\"has_reeceived_bids\""];
+  google.protobuf.Timestamp end_time = 7 [(gogoproto.moretags) = "yaml:\"end_time\""];
+  google.protobuf.Timestamp max_end_time = 8 [(gogoproto.moretags) = "yaml:\"max_end_time\""];
+}
+
+message SurplusAuction {
+  BaseAuction base_auction = 1 [(gogoproto.moretags) = "yaml:\"base_auction\""];
 }
 
 message DebtAuction {
-  string creator = 1;
+  BaseAuction base_auction = 1 [(gogoproto.moretags) = "yaml:\"base_auction\""];
+  cosmos.base.v1beta1.Coin corresponding_debt = 2 [(gogoproto.moretags) = "yaml:\"corresponding_debt\""];
 }
 
 message CollateralAuction {
-  string creator = 1;
-  string id = 2;
+  BaseAuction base_auction = 1 [(gogoproto.moretags) = "yaml:\"base_auction\""];
+  cosmos.base.v1beta1.Coin corresponding_debt = 2 [(gogoproto.moretags) = "yaml:\"corresponding_debt\""];
+  cosmos.base.v1beta1.Coin max_bid = 3 [(gogoproto.moretags) = "yaml:\"max_bid\""];
+  WeightedAddresses lot_returns = 4 [(gogoproto.moretags) = "yaml:\"lot_returns\""];
 }
 
 message WeightedAddresses {
+  repeated string addresses = 1 [(gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"addresses\""];
+  repeated string weights = 2 [
+    (gogoproto.moretags) = "yaml:\"weights\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgPlaceBid {
+  uint64 auction_id = 1 [(gogoproto.moretags) = "yaml:\"auction_id\""];
+  string bidder = 2 [(gogoproto.moretags) = "yaml:\"bidder\""];
+  cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.moretags) = "yaml:\"amount\""];
 }
 
 message Params {
-  option (gogoproto.goproto_stringer)       = false;
+  option (gogoproto.goproto_stringer) = false;
   
 }

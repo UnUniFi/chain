@@ -6,8 +6,14 @@ import "auction/auction.proto";
 
 option go_package = "github.com/lcnem/jpyx/x/auction/types";
 
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
 // GenesisState defines the auction module's genesis state.
 message GenesisState {
-    // this line is used by starport scaffolding # genesis/proto/state
-		repeated Auction auctionList = 1; // this line is used by starport scaffolding # genesis/proto/stateField
+  uint64 next_auction_id = 1 [(gogoproto.moretags) = "yaml:\"next_auction_id\""];
+  Params params = 2 [(gogoproto.moretags) = "yaml:\"params\""];
+  repeated google.protobuf.Any auctions = 3 [(gogoproto.moretags) = "yaml:\"auctions\""];
+  // this line is used by starport scaffolding # genesis/proto/state
 }

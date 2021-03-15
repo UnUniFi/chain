@@ -2,10 +2,16 @@ syntax = "proto3";
 package lcnem.jpyx.jsmndist;
 
 // this line is used by starport scaffolding # genesis/proto/import
+import "jsmndist/jsmndist.proto";
 
 option go_package = "github.com/lcnem/jpyx/x/jsmndist/types";
 
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
 // GenesisState defines the jsmndist module's genesis state.
 message GenesisState {
-    // this line is used by starport scaffolding # genesis/proto/state
+  Params params = 1 [(gogoproto.moretags) = "yaml:\"params\""];
+  google.protobuf.Timestamp previous_block_time = 2 [(gogoproto.moretags) = "yaml:\"previous_block_time\""];
+  // this line is used by starport scaffolding # genesis/proto/state
 }

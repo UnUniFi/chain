@@ -1,0 +1,64 @@
+syntax = "proto3";
+package lcnem.jpyx.incentive;
+
+option go_package = "github.com/lcnem/jpyx/x/incentive/types";
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+message BaseClaim {
+    string owner = 1 [(gogoproto.moretags) = "yaml:\"owner\""];
+    cosmos.base.v1beta1.Coin reward = 2 [(gogoproto.moretags) = "yaml:\"reward\""];
+  }
+
+message BaseMultiClaim {
+  string owner = 1 [(gogoproto.moretags) = "yaml:\"owner\""];
+  repeated cosmos.base.v1beta1.Coin rewards = 2 [(gogoproto.moretags) = "yaml:\"rewards\""];
+}
+
+message JPYXMintingClaim {
+  BaseClaim base_claim = 1 [
+    (gogoproto.moretags) = "yaml:\"base_claim\"",
+    (gogoproto.embed) = true
+  ];
+  repeated RewardIndex reward_indexes= 2 [(gogoproto.moretags) = "yaml:\"reward_indexes\""];
+}
+
+message RewardIndex {
+  string collateral_type = 1 [(gogoproto.moretags) = "yaml:\"collateral_type\""];
+  string reward_factor = 2 [
+    (gogoproto.moretags) = "yaml:\"reward_factor\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+    
+message MsgClaimJPYXMintingReward {
+  string sender = 1 [(gogoproto.moretags) = "yaml:\"sender\""];
+  string multiplier_name = 2 [(gogoproto.moretags) = "yaml:\"multiplier_name\""];
+}
+
+message Params {
+  repeated RewardPeriod reward_periods = 1 [(gogoproto.moretags) = "yaml:\"reward_periods\""];
+  repeated Multiplier claim_multipliers = 2 [(gogoproto.moretags) = "yaml:\"claim_multipliers\""];
+  google.protobuf.Timestamp claim_end = 3 [(gogoproto.moretags) = "yaml:\"claim_end\""];
+}
+
+message RewardPeriod {
+  bool active = 1 [(gogoproto.moretags) = "yaml:\"active\""];
+  string collateral_type = 2 [(gogoproto.moretags) = "yaml:\"collateral_type\""];
+  google.protobuf.Timestamp start = 3 [(gogoproto.moretags) = "yaml:\"start\""];
+  google.protobuf.Timestamp end = 4 [(gogoproto.moretags) = "yaml:\"end\""];
+  cosmos.base.v1beta1.Coin rewards_per_second = 5 [(gogoproto.moretags) = "yaml:\"rewards_per_second\""];
+}
+
+message Multiplier {
+  string name = 1 [(gogoproto.moretags) = "yaml:\"name\""];
+  int64 months_lockup = 2 [(gogoproto.moretags) = "yaml:\"months_lockup\""];
+  string factor = 3 [
+    (gogoproto.moretags) = "yaml:\"factor\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}

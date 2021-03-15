@@ -48,7 +48,7 @@ func (k Keeper) Auction(c context.Context, req *types.QueryGetAuctionRequest) (*
 	ctx := sdk.UnwrapSDKContext(c)
 
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AuctionKey))
-	k.cdc.MustUnmarshalBinaryBare(store.Get(types.KeyPrefix(types.AuctionKey + req.Id)), &auction)
+	k.cdc.MustUnmarshalBinaryBare(store.Get(types.KeyPrefix(types.AuctionKey+req.Id)), &auction)
 
 	return &types.QueryGetAuctionResponse{Auction: &auction}, nil
 }

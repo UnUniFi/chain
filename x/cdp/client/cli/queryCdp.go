@@ -5,14 +5,14 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/lcnem/jpyx/x/auction/types"
+	"github.com/lcnem/jpyx/x/cdp/types"
 	"github.com/spf13/cobra"
 )
 
-func CmdListAuction() *cobra.Command {
+func CmdListCdp() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list-auction",
-		Short: "list all auction",
+		Use:   "list-cdp",
+		Short: "list all cdp",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -23,11 +23,11 @@ func CmdListAuction() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryAllAuctionRequest{
+			params := &types.QueryAllCdpRequest{
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.AuctionAll(context.Background(), params)
+			res, err := queryClient.CdpAll(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -41,21 +41,21 @@ func CmdListAuction() *cobra.Command {
 	return cmd
 }
 
-func CmdShowAuction() *cobra.Command {
+func CmdShowCdp() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-auction [id]",
-		Short: "shows a auction",
+		Use:   "show-cdp [id]",
+		Short: "shows a cdp",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryGetAuctionRequest{
+			params := &types.QueryGetCdpRequest{
 				Id: args[0],
 			}
 
-			res, err := queryClient.Auction(context.Background(), params)
+			res, err := queryClient.Cdp(context.Background(), params)
 			if err != nil {
 				return err
 			}

@@ -21,15 +21,15 @@ func RegisterRoutes(clientCtx client.Context, r *mux.Router) {
 
 func registerQueryRoutes(clientCtx client.Context, r *mux.Router) {
 	// this line is used by starport scaffolding # 3
-    r.HandleFunc("/auction/auctions/{id}", getAuctionHandler(clientCtx)).Methods("GET")
-    r.HandleFunc("/auction/auctions", listAuctionHandler(clientCtx)).Methods("GET")
+	r.HandleFunc("/auction/auctions/{id}", getAuctionHandler(clientCtx)).Methods("GET")
+	r.HandleFunc("/auction/auctions", listAuctionHandler(clientCtx)).Methods("GET")
 
 }
 
 func registerTxHandlers(clientCtx client.Context, r *mux.Router) {
 	// this line is used by starport scaffolding # 4
-    r.HandleFunc("/auction/auctions", createAuctionHandler(clientCtx)).Methods("POST")
-    r.HandleFunc("/auction/auctions/{id}", updateAuctionHandler(clientCtx)).Methods("POST")
-    r.HandleFunc("/auction/auctions/{id}", deleteAuctionHandler(clientCtx)).Methods("POST")
+	r.HandleFunc("/auction/auctions", createAuctionHandler(clientCtx)).Methods("POST")
+	r.HandleFunc("/auction/auctions/{id}", updateAuctionHandler(clientCtx)).Methods("POST")
+	r.HandleFunc("/auction/auctions/{id}", deleteAuctionHandler(clientCtx)).Methods("POST")
 
 }

@@ -26,6 +26,5 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdUpdateAuction())
 	cmd.AddCommand(CmdDeleteAuction())
 
-
 	return cmd
 }

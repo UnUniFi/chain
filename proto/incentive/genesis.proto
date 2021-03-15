@@ -2,10 +2,22 @@ syntax = "proto3";
 package lcnem.jpyx.incentive;
 
 // this line is used by starport scaffolding # genesis/proto/import
+import "incentive/incentive.proto";
 
 option go_package = "github.com/lcnem/jpyx/x/incentive/types";
 
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
 // GenesisState defines the incentive module's genesis state.
 message GenesisState {
-    // this line is used by starport scaffolding # genesis/proto/state
+  Params params = 1 [(gogoproto.moretags) = "yaml:\"params\""];
+  repeated GenesisAccumulationTime jpyx_accumulation_times = 2 [(gogoproto.moretags) = "yaml:\"jpyx_accumulation_times\""];
+  repeated JPYXMintingClaim jpyx_minting_claims = 3 [(gogoproto.moretags) = "yaml:\"jpyx_minting_claims\""];
+  // this line is used by starport scaffolding # genesis/proto/state
+}
+
+message GenesisAccumulationTime {
+  string collateral_type = 1 [(gogoproto.moretags) = "yaml:\"collateral_type\""];
+  google.protobuf.Timestamp previous_accumulation_time = 2 [(gogoproto.moretags) = "yaml:\"previous_accumulation_time\""];
 }
