@@ -1,5 +1,5 @@
 syntax = "proto3";
-package lcnem.jpyx.auction;
+package jpyx.auction;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
@@ -14,8 +14,16 @@ message BaseAuction {
   string bidder = 4 [(gogoproto.moretags) = "yaml:\"bidder\""];
   cosmos.base.v1beta1.Coin bid = 5 [(gogoproto.moretags) = "yaml:\"bid\""];
   bool has_received_bids = 6 [(gogoproto.moretags) = "yaml:\"has_reeceived_bids\""];
-  google.protobuf.Timestamp end_time = 7 [(gogoproto.moretags) = "yaml:\"end_time\""];
-  google.protobuf.Timestamp max_end_time = 8 [(gogoproto.moretags) = "yaml:\"max_end_time\""];
+  google.protobuf.Timestamp end_time = 7 [
+    (gogoproto.moretags) = "yaml:\"end_time\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  google.protobuf.Timestamp max_end_time = 8 [
+    (gogoproto.moretags) = "yaml:\"max_end_time\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
 }
 
 message SurplusAuction {
@@ -35,7 +43,7 @@ message CollateralAuction {
 }
 
 message WeightedAddresses {
-  repeated string addresses = 1 [(gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"addresses\""];
+  repeated string addresses = 1 [(gogoproto.moretags) = "yaml:\"addresses\""];
   repeated string weights = 2 [
     (gogoproto.moretags) = "yaml:\"weights\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",

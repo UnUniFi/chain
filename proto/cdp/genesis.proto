@@ -1,5 +1,5 @@
 syntax = "proto3";
-package lcnem.jpyx.cdp;
+package jpyx.cdp;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
@@ -24,7 +24,11 @@ message GenesisState {
 
 message GenesisAccumulationTime {
   string collateral_type = 1 [(gogoproto.moretags) = "yaml:\"collateral_type\""];
-  google.protobuf.Timestamp previous_accumulation_time = 2 [(gogoproto.moretags) = "yaml:\"previous_accumulation_time\""];
+  google.protobuf.Timestamp previous_accumulation_time = 2 [
+    (gogoproto.moretags) = "yaml:\"previous_accumulation_time\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
   string interest_factor = 3 [
     (gogoproto.moretags) = "yaml:\"interest_factor\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",

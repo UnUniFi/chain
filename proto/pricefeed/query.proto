@@ -1,32 +1,33 @@
 syntax = "proto3";
-package lcnem.jpyx.pricefeed;
+package jpyx.pricefeed;
 
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 // this line is used by starport scaffolding # 1
+import "pricefeed/pricefeed.proto";
 
 option go_package = "github.com/lcnem/jpyx/x/pricefeed/types";
 
 // Query defines the gRPC querier service.
 service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-		option (google.api.http).get = "/lcnem/jpyx/pricefeed/params";
+		option (google.api.http).get = "/jpyx/pricefeed/params";
 	}
   rpc Markets(QueryMarketsRequest) returns (QueryMarketsResponse) {
-		option (google.api.http).get = "/lcnem/jpyx/pricefeed/markets";
+		option (google.api.http).get = "/jpyx/pricefeed/markets";
 	}
   rpc Oracle(QueryOracleRequest) returns (QueryOracleResponse) {
-		option (google.api.http).get = "/lcnem/jpyx/pricefeed/oracles/{id}";
+		option (google.api.http).get = "/jpyx/pricefeed/oracles/{id}";
 	}
   rpc RawPrice(QueryRawPriceRequest) returns (QueryRawPriceResponse) {
-		option (google.api.http).get = "/lcnem/jpyx/pricefeed/raw_prices/{id}";
+		option (google.api.http).get = "/jpyx/pricefeed/raw_prices/{id}";
 	}
   // this line is used by starport scaffolding # 2
   rpc Price(QueryGetPriceRequest) returns (QueryGetPriceResponse) {
-		option (google.api.http).get = "/lcnem/jpyx/pricefeed/prices/{id}";
+		option (google.api.http).get = "/jpyx/pricefeed/prices/{id}";
 	}
 	rpc PriceAll(QueryAllPriceRequest) returns (QueryAllPriceResponse) {
-		option (google.api.http).get = "/lcnem/jpyx/pricefeed/prices";
+		option (google.api.http).get = "/jpyx/pricefeed/prices";
 	}
 }
 

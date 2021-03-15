@@ -1,5 +1,5 @@
 syntax = "proto3";
-package lcnem.jpyx.pricefeed;
+package jpyx.pricefeed;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
@@ -32,7 +32,11 @@ message PostedPrice {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  google.protobuf.Timestamp expiry = 4 [(gogoproto.moretags) = "yaml:\"expiry\""];
+  google.protobuf.Timestamp expiry = 4 [
+    (gogoproto.moretags) = "yaml:\"expiry\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
 }
 
 message MsgPostPrice {
@@ -43,7 +47,11 @@ message MsgPostPrice {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  google.protobuf.Timestamp expiry = 4 [(gogoproto.moretags) = "yaml:\"expiry\""];
+  google.protobuf.Timestamp expiry = 4 [
+    (gogoproto.moretags) = "yaml:\"expiry\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
 }
 
 message Params {

@@ -1,5 +1,5 @@
 syntax = "proto3";
-package lcnem.jpyx.incentive;
+package jpyx.incentive;
 
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
@@ -11,7 +11,7 @@ option go_package = "github.com/lcnem/jpyx/x/incentive/types";
 // Query defines the gRPC querier service.
 service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-		option (google.api.http).get = "/lcnem/jpyx/incentive/params";
+		option (google.api.http).get = "/jpyx/incentive/params";
 	}
   // this line is used by starport scaffolding # 2
 }

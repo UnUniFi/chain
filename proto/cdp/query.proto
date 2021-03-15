@@ -1,5 +1,5 @@
 syntax = "proto3";
-package lcnem.jpyx.cdp;
+package jpyx.cdp;
 
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
@@ -11,14 +11,14 @@ option go_package = "github.com/lcnem/jpyx/x/cdp/types";
 // Query defines the gRPC querier service.
 service Query {
 	rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-		option (google.api.http).get = "/lcnem/jpyx/cdp/params";
+		option (google.api.http).get = "/jpyx/cdp/params";
 	}
   // this line is used by starport scaffolding # 2
 	rpc Cdp(QueryGetCdpRequest) returns (QueryGetCdpResponse) {
-		option (google.api.http).get = "/lcnem/jpyx/cdp/cdps/{id}";
+		option (google.api.http).get = "/jpyx/cdp/cdps/{id}";
 	}
 	rpc CdpAll(QueryAllCdpRequest) returns (QueryAllCdpResponse) {
-		option (google.api.http).get = "/lcnem/jpyx/cdp/cdps";
+		option (google.api.http).get = "/jpyx/cdp/cdps";
 	}
 }
 

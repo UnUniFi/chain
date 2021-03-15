@@ -5,16 +5,23 @@ package types
 
 import (
 	fmt "fmt"
+	_ "github.com/cosmos/cosmos-sdk/types"
+	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
+	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
+	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
+	_ "google.golang.org/protobuf/types/known/timestamppb"
 	io "io"
 	math "math"
 	math_bits "math/bits"
+	time "time"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
+var _ = time.Kitchen
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -24,8 +31,14 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // GenesisState defines the cdp module's genesis state.
 type GenesisState struct {
-	// this line is used by starport scaffolding # genesis/proto/state
-	CdpList []*Cdp `protobuf:"bytes,1,rep,name=cdpList,proto3" json:"cdpList,omitempty"`
+	Params                    *Params                    `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty" yaml:"params"`
+	Cdps                      []*CDP                     `protobuf:"bytes,2,rep,name=cdps,proto3" json:"cdps,omitempty" yaml:"cdps"`
+	Deposits                  []*Deposit                 `protobuf:"bytes,3,rep,name=deposits,proto3" json:"deposits,omitempty" yaml:"deposits"`
+	StartingCdpId             uint64                     `protobuf:"varint,4,opt,name=starting_cdp_id,json=startingCdpId,proto3" json:"starting_cdp_id,omitempty" yaml:"starting_cdp_id"`
+	DebtDenom                 string                     `protobuf:"bytes,5,opt,name=debt_denom,json=debtDenom,proto3" json:"debt_denom,omitempty" yaml:"debt_denom"`
+	GovDenom                  string                     `protobuf:"bytes,6,opt,name=gov_denom,json=govDenom,proto3" json:"gov_denom,omitempty" yaml:"gov_denom"`
+	PreviousAccumulationTimes []*GenesisAccumulationTime `protobuf:"bytes,7,rep,name=previous_accumulation_times,json=previousAccumulationTimes,proto3" json:"previous_accumulation_times,omitempty" yaml:"previous_accumulation_times"`
+	TotalPrincipals           []*GenesisTotalPrincipal   `protobuf:"bytes,8,rep,name=total_principals,json=totalPrincipals,proto3" json:"total_principals,omitempty" yaml:"total_principals"`
 }
 
 func (m *GenesisState) Reset()         { *m = GenesisState{} }
@@ -61,32 +74,212 @@ func (m *GenesisState) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_GenesisState proto.InternalMessageInfo
 
-func (m *GenesisState) GetCdpList() []*Cdp {
+func (m *GenesisState) GetParams() *Params {
 	if m != nil {
-		return m.CdpList
+		return m.Params
 	}
 	return nil
 }
 
+func (m *GenesisState) GetCdps() []*CDP {
+	if m != nil {
+		return m.Cdps
+	}
+	return nil
+}
+
+func (m *GenesisState) GetDeposits() []*Deposit {
+	if m != nil {
+		return m.Deposits
+	}
+	return nil
+}
+
+func (m *GenesisState) GetStartingCdpId() uint64 {
+	if m != nil {
+		return m.StartingCdpId
+	}
+	return 0
+}
+
+func (m *GenesisState) GetDebtDenom() string {
+	if m != nil {
+		return m.DebtDenom
+	}
+	return ""
+}
+
+func (m *GenesisState) GetGovDenom() string {
+	if m != nil {
+		return m.GovDenom
+	}
+	return ""
+}
+
+func (m *GenesisState) GetPreviousAccumulationTimes() []*GenesisAccumulationTime {
+	if m != nil {
+		return m.PreviousAccumulationTimes
+	}
+	return nil
+}
+
+func (m *GenesisState) GetTotalPrincipals() []*GenesisTotalPrincipal {
+	if m != nil {
+		return m.TotalPrincipals
+	}
+	return nil
+}
+
+type GenesisAccumulationTime struct {
+	CollateralType           string                                 `protobuf:"bytes,1,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
+	PreviousAccumulationTime time.Time                              `protobuf:"bytes,2,opt,name=previous_accumulation_time,json=previousAccumulationTime,proto3,stdtime" json:"previous_accumulation_time" yaml:"previous_accumulation_time"`
+	InterestFactor           github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=interest_factor,json=interestFactor,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"interest_factor" yaml:"interest_factor"`
+}
+
+func (m *GenesisAccumulationTime) Reset()         { *m = GenesisAccumulationTime{} }
+func (m *GenesisAccumulationTime) String() string { return proto.CompactTextString(m) }
+func (*GenesisAccumulationTime) ProtoMessage()    {}
+func (*GenesisAccumulationTime) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6792b73c0d9625b5, []int{1}
+}
+func (m *GenesisAccumulationTime) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GenesisAccumulationTime) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GenesisAccumulationTime.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GenesisAccumulationTime) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GenesisAccumulationTime.Merge(m, src)
+}
+func (m *GenesisAccumulationTime) XXX_Size() int {
+	return m.Size()
+}
+func (m *GenesisAccumulationTime) XXX_DiscardUnknown() {
+	xxx_messageInfo_GenesisAccumulationTime.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GenesisAccumulationTime proto.InternalMessageInfo
+
+func (m *GenesisAccumulationTime) GetCollateralType() string {
+	if m != nil {
+		return m.CollateralType
+	}
+	return ""
+}
+
+func (m *GenesisAccumulationTime) GetPreviousAccumulationTime() time.Time {
+	if m != nil {
+		return m.PreviousAccumulationTime
+	}
+	return time.Time{}
+}
+
+type GenesisTotalPrincipal struct {
+	CollateralType string                                 `protobuf:"bytes,1,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
+	TotalPrincipal github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,2,opt,name=total_principal,json=totalPrincipal,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"total_principal" yaml:"total_principal"`
+}
+
+func (m *GenesisTotalPrincipal) Reset()         { *m = GenesisTotalPrincipal{} }
+func (m *GenesisTotalPrincipal) String() string { return proto.CompactTextString(m) }
+func (*GenesisTotalPrincipal) ProtoMessage()    {}
+func (*GenesisTotalPrincipal) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6792b73c0d9625b5, []int{2}
+}
+func (m *GenesisTotalPrincipal) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GenesisTotalPrincipal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GenesisTotalPrincipal.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GenesisTotalPrincipal) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GenesisTotalPrincipal.Merge(m, src)
+}
+func (m *GenesisTotalPrincipal) XXX_Size() int {
+	return m.Size()
+}
+func (m *GenesisTotalPrincipal) XXX_DiscardUnknown() {
+	xxx_messageInfo_GenesisTotalPrincipal.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GenesisTotalPrincipal proto.InternalMessageInfo
+
+func (m *GenesisTotalPrincipal) GetCollateralType() string {
+	if m != nil {
+		return m.CollateralType
+	}
+	return ""
+}
+
 func init() {
-	proto.RegisterType((*GenesisState)(nil), "lcnem.jpyx.cdp.GenesisState")
+	proto.RegisterType((*GenesisState)(nil), "jpyx.cdp.GenesisState")
+	proto.RegisterType((*GenesisAccumulationTime)(nil), "jpyx.cdp.GenesisAccumulationTime")
+	proto.RegisterType((*GenesisTotalPrincipal)(nil), "jpyx.cdp.GenesisTotalPrincipal")
 }
 
 func init() { proto.RegisterFile("cdp/genesis.proto", fileDescriptor_6792b73c0d9625b5) }
 
 var fileDescriptor_6792b73c0d9625b5 = []byte{
-	// 170 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x4c, 0x4e, 0x29, 0xd0,
-	0x4f, 0x4f, 0xcd, 0x4b, 0x2d, 0xce, 0x2c, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0xcb,
-	0x49, 0xce, 0x4b, 0xcd, 0xd5, 0xcb, 0x2a, 0xa8, 0xac, 0xd0, 0x4b, 0x4e, 0x29, 0x90, 0xe2, 0x05,
-	0x29, 0x49, 0x4e, 0x29, 0x80, 0x48, 0x2b, 0xd9, 0x72, 0xf1, 0xb8, 0x43, 0xd4, 0x07, 0x97, 0x24,
-	0x96, 0xa4, 0x0a, 0xe9, 0x72, 0xb1, 0x27, 0xa7, 0x14, 0xf8, 0x64, 0x16, 0x97, 0x48, 0x30, 0x2a,
-	0x30, 0x6b, 0x70, 0x1b, 0x09, 0xeb, 0xa1, 0x1a, 0xa0, 0xe7, 0x9c, 0x52, 0x10, 0x04, 0x53, 0xe3,
-	0x64, 0x7d, 0xe2, 0x91, 0x1c, 0xe3, 0x85, 0x47, 0x72, 0x8c, 0x0f, 0x1e, 0xc9, 0x31, 0x4e, 0x78,
-	0x2c, 0xc7, 0x70, 0xe1, 0xb1, 0x1c, 0xc3, 0x8d, 0xc7, 0x72, 0x0c, 0x51, 0x8a, 0xe9, 0x99, 0x25,
-	0x19, 0xa5, 0x49, 0x7a, 0xc9, 0xf9, 0xb9, 0xfa, 0x60, 0x13, 0xf4, 0x41, 0x26, 0xe8, 0x57, 0x80,
-	0xec, 0xd6, 0x2f, 0xa9, 0x2c, 0x48, 0x2d, 0x4e, 0x62, 0x03, 0x3b, 0xc1, 0x18, 0x10, 0x00, 0x00,
-	0xff, 0xff, 0xea, 0xd1, 0xb7, 0x07, 0xb6, 0x00, 0x00, 0x00,
+	// 667 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x54, 0xcd, 0x4e, 0xdb, 0x4a,
+	0x14, 0x8e, 0x21, 0x97, 0x9b, 0x0c, 0x37, 0x84, 0xf8, 0xc2, 0xc5, 0x37, 0x48, 0x71, 0x98, 0x05,
+	0xca, 0x06, 0x5b, 0xd0, 0xae, 0xca, 0xaa, 0x06, 0xb5, 0x65, 0x87, 0xdc, 0xac, 0xba, 0xb1, 0x26,
+	0xe3, 0xc1, 0x75, 0x6b, 0x7b, 0x06, 0xcf, 0x24, 0x22, 0x4f, 0x50, 0x75, 0xc7, 0x63, 0xb1, 0x2b,
+	0xcb, 0xaa, 0x95, 0xdc, 0x0a, 0xd4, 0x17, 0xf0, 0x13, 0x54, 0x9e, 0xb1, 0x09, 0xa4, 0x8d, 0xba,
+	0x68, 0x57, 0x9e, 0x39, 0xe7, 0xfb, 0xce, 0x37, 0xe7, 0xcf, 0xa0, 0x83, 0x7d, 0x66, 0x07, 0x24,
+	0x21, 0x3c, 0xe4, 0x16, 0x4b, 0xa9, 0xa0, 0x7a, 0xe3, 0x0d, 0x9b, 0x5e, 0x58, 0xd8, 0x67, 0xdd,
+	0x8d, 0x80, 0x06, 0x54, 0x1a, 0xed, 0xe2, 0xa4, 0xfc, 0x5d, 0x33, 0xa0, 0x34, 0x88, 0x88, 0x2d,
+	0x6f, 0xa3, 0xf1, 0x99, 0x2d, 0xc2, 0x98, 0x70, 0x81, 0x62, 0x56, 0x02, 0x7a, 0x98, 0xf2, 0x98,
+	0x72, 0x7b, 0x84, 0x38, 0xb1, 0x27, 0xfb, 0x23, 0x22, 0xd0, 0xbe, 0x8d, 0x69, 0x98, 0x94, 0xfe,
+	0x56, 0xa1, 0x89, 0xfd, 0x12, 0x0e, 0xbf, 0xd5, 0xc1, 0x3f, 0xcf, 0xd5, 0x0b, 0x5e, 0x0a, 0x24,
+	0x88, 0x7e, 0x08, 0x56, 0x18, 0x4a, 0x51, 0xcc, 0x0d, 0xad, 0xaf, 0x0d, 0x56, 0x0f, 0xd6, 0xad,
+	0xea, 0x45, 0xd6, 0xa9, 0xb4, 0x3b, 0x9d, 0x3c, 0x33, 0x5b, 0x53, 0x14, 0x47, 0x4f, 0xa0, 0x42,
+	0x42, 0xb7, 0xa4, 0xe8, 0x07, 0xa0, 0x8e, 0x7d, 0xc6, 0x8d, 0xa5, 0xfe, 0xf2, 0x60, 0xf5, 0xa0,
+	0x35, 0xa3, 0x1e, 0x1d, 0x9f, 0x3a, 0xed, 0x3c, 0x33, 0x57, 0x15, 0xaf, 0x00, 0x41, 0x57, 0x62,
+	0x75, 0x07, 0x34, 0x7c, 0xc2, 0x28, 0x0f, 0x05, 0x37, 0x96, 0x25, 0xaf, 0x33, 0xe3, 0x1d, 0x2b,
+	0x8f, 0xf3, 0x6f, 0x9e, 0x99, 0x6d, 0xc5, 0xad, 0xc0, 0xd0, 0xbd, 0xe3, 0xe9, 0x0e, 0x68, 0x73,
+	0x81, 0x52, 0x11, 0x26, 0x81, 0x87, 0x7d, 0xe6, 0x85, 0xbe, 0x51, 0xef, 0x6b, 0x83, 0xba, 0xd3,
+	0xcd, 0x33, 0xf3, 0x3f, 0xc5, 0x9b, 0x03, 0x40, 0xb7, 0x55, 0x59, 0x8e, 0x7c, 0x76, 0xe2, 0xeb,
+	0x8f, 0x01, 0xf0, 0xc9, 0x48, 0x78, 0x3e, 0x49, 0x68, 0x6c, 0xfc, 0xd5, 0xd7, 0x06, 0x4d, 0x67,
+	0x33, 0xcf, 0xcc, 0x4e, 0x25, 0x5b, 0xf9, 0xa0, 0xdb, 0x2c, 0x2e, 0xc7, 0xc5, 0x59, 0xdf, 0x07,
+	0xcd, 0x80, 0x4e, 0x4a, 0xd2, 0x8a, 0x24, 0x6d, 0xe4, 0x99, 0xb9, 0xae, 0x48, 0x77, 0x2e, 0xe8,
+	0x36, 0x02, 0x3a, 0x51, 0x94, 0xf7, 0x1a, 0xd8, 0x66, 0x29, 0x99, 0x84, 0x74, 0xcc, 0x3d, 0x84,
+	0xf1, 0x38, 0x1e, 0x47, 0x48, 0x84, 0x34, 0xf1, 0x64, 0x2f, 0x8d, 0xbf, 0x65, 0x11, 0x76, 0x66,
+	0x45, 0x28, 0xfb, 0xf3, 0xf4, 0x1e, 0x74, 0x18, 0xc6, 0xc4, 0xd9, 0xcd, 0x33, 0x13, 0x96, 0x8d,
+	0x58, 0x1c, 0x0f, 0xba, 0xff, 0x57, 0xde, 0xf9, 0x08, 0x5c, 0x0f, 0xc0, 0xba, 0xa0, 0x02, 0x45,
+	0x1e, 0x4b, 0xc3, 0x04, 0x87, 0x0c, 0x45, 0xdc, 0x68, 0x48, 0x7d, 0xf3, 0x07, 0xfd, 0x61, 0x01,
+	0x3c, 0xad, 0x70, 0xce, 0x76, 0x9e, 0x99, 0x5b, 0x4a, 0x7d, 0x3e, 0x04, 0x74, 0xdb, 0xe2, 0x01,
+	0x98, 0xc3, 0xcf, 0x4b, 0x60, 0x6b, 0x41, 0x1e, 0xfa, 0x11, 0x68, 0x63, 0x1a, 0x45, 0x48, 0x90,
+	0x14, 0x45, 0x9e, 0x98, 0x32, 0x22, 0x67, 0xaf, 0x79, 0xbf, 0x7b, 0x73, 0x00, 0xe8, 0xae, 0xcd,
+	0x2c, 0xc3, 0x29, 0x23, 0xfa, 0x3b, 0x0d, 0x74, 0x17, 0x57, 0xc1, 0x58, 0x92, 0xc3, 0xdc, 0xb5,
+	0xd4, 0xfa, 0x58, 0xd5, 0xfa, 0x58, 0xc3, 0x6a, 0x7d, 0x9c, 0xbd, 0xab, 0xcc, 0xac, 0xe5, 0x99,
+	0xb9, 0xf3, 0xab, 0x8a, 0xc2, 0xcb, 0x2f, 0xa6, 0xe6, 0x1a, 0x8b, 0x8a, 0xaa, 0x9f, 0x83, 0x76,
+	0x98, 0x08, 0x92, 0x12, 0x2e, 0xbc, 0x33, 0x84, 0x05, 0x4d, 0x8d, 0x65, 0x99, 0xce, 0x8b, 0x42,
+	0xe1, 0x53, 0x66, 0xee, 0x06, 0xa1, 0x78, 0x3d, 0x1e, 0x59, 0x98, 0xc6, 0x76, 0xb9, 0xad, 0xea,
+	0xb3, 0xc7, 0xfd, 0xb7, 0x76, 0x91, 0x1e, 0xb7, 0x4e, 0x12, 0x31, 0x4b, 0x7e, 0x2e, 0x1c, 0x74,
+	0xd7, 0x2a, 0xcb, 0x33, 0x65, 0xf8, 0xa0, 0x81, 0xcd, 0x9f, 0x76, 0xe9, 0xcf, 0xd4, 0xf6, 0x1c,
+	0xb4, 0xe7, 0x5a, 0x2c, 0xeb, 0xf9, 0x1b, 0x19, 0xcd, 0x85, 0x83, 0xee, 0xda, 0xc3, 0x81, 0x71,
+	0x0e, 0xaf, 0x6e, 0x7a, 0xda, 0xf5, 0x4d, 0x4f, 0xfb, 0x7a, 0xd3, 0xd3, 0x2e, 0x6f, 0x7b, 0xb5,
+	0xeb, 0xdb, 0x5e, 0xed, 0xe3, 0x6d, 0xaf, 0xf6, 0x6a, 0xe7, 0x9e, 0x56, 0x84, 0x13, 0x12, 0xdb,
+	0xc5, 0xa0, 0xda, 0x17, 0xc5, 0x4f, 0x4d, 0x49, 0x8d, 0x56, 0x64, 0x7b, 0x1f, 0x7d, 0x0f, 0x00,
+	0x00, 0xff, 0xff, 0x70, 0x16, 0x22, 0x96, 0x60, 0x05, 0x00, 0x00,
 }
 
 func (m *GenesisState) Marshal() (dAtA []byte, err error) {
@@ -109,10 +302,10 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.CdpList) > 0 {
-		for iNdEx := len(m.CdpList) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.TotalPrincipals) > 0 {
+		for iNdEx := len(m.TotalPrincipals) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.CdpList[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.TotalPrincipals[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -120,8 +313,169 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 				i = encodeVarintGenesis(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0xa
+			dAtA[i] = 0x42
 		}
+	}
+	if len(m.PreviousAccumulationTimes) > 0 {
+		for iNdEx := len(m.PreviousAccumulationTimes) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.PreviousAccumulationTimes[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGenesis(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x3a
+		}
+	}
+	if len(m.GovDenom) > 0 {
+		i -= len(m.GovDenom)
+		copy(dAtA[i:], m.GovDenom)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.GovDenom)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.DebtDenom) > 0 {
+		i -= len(m.DebtDenom)
+		copy(dAtA[i:], m.DebtDenom)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.DebtDenom)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.StartingCdpId != 0 {
+		i = encodeVarintGenesis(dAtA, i, uint64(m.StartingCdpId))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.Deposits) > 0 {
+		for iNdEx := len(m.Deposits) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Deposits[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGenesis(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.Cdps) > 0 {
+		for iNdEx := len(m.Cdps) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Cdps[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGenesis(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if m.Params != nil {
+		{
+			size, err := m.Params.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGenesis(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GenesisAccumulationTime) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GenesisAccumulationTime) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GenesisAccumulationTime) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.InterestFactor.Size()
+		i -= size
+		if _, err := m.InterestFactor.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintGenesis(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.PreviousAccumulationTime, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.PreviousAccumulationTime):])
+	if err2 != nil {
+		return 0, err2
+	}
+	i -= n2
+	i = encodeVarintGenesis(dAtA, i, uint64(n2))
+	i--
+	dAtA[i] = 0x12
+	if len(m.CollateralType) > 0 {
+		i -= len(m.CollateralType)
+		copy(dAtA[i:], m.CollateralType)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.CollateralType)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GenesisTotalPrincipal) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GenesisTotalPrincipal) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GenesisTotalPrincipal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.TotalPrincipal.Size()
+		i -= size
+		if _, err := m.TotalPrincipal.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintGenesis(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	if len(m.CollateralType) > 0 {
+		i -= len(m.CollateralType)
+		copy(dAtA[i:], m.CollateralType)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.CollateralType)))
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -143,12 +497,77 @@ func (m *GenesisState) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if len(m.CdpList) > 0 {
-		for _, e := range m.CdpList {
+	if m.Params != nil {
+		l = m.Params.Size()
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	if len(m.Cdps) > 0 {
+		for _, e := range m.Cdps {
 			l = e.Size()
 			n += 1 + l + sovGenesis(uint64(l))
 		}
 	}
+	if len(m.Deposits) > 0 {
+		for _, e := range m.Deposits {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	if m.StartingCdpId != 0 {
+		n += 1 + sovGenesis(uint64(m.StartingCdpId))
+	}
+	l = len(m.DebtDenom)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	l = len(m.GovDenom)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	if len(m.PreviousAccumulationTimes) > 0 {
+		for _, e := range m.PreviousAccumulationTimes {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	if len(m.TotalPrincipals) > 0 {
+		for _, e := range m.TotalPrincipals {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *GenesisAccumulationTime) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.CollateralType)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.PreviousAccumulationTime)
+	n += 1 + l + sovGenesis(uint64(l))
+	l = m.InterestFactor.Size()
+	n += 1 + l + sovGenesis(uint64(l))
+	return n
+}
+
+func (m *GenesisTotalPrincipal) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.CollateralType)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	l = m.TotalPrincipal.Size()
+	n += 1 + l + sovGenesis(uint64(l))
 	return n
 }
 
@@ -189,7 +608,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CdpList", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Params", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -216,8 +635,494 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.CdpList = append(m.CdpList, &Cdp{})
-			if err := m.CdpList[len(m.CdpList)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if m.Params == nil {
+				m.Params = &Params{}
+			}
+			if err := m.Params.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Cdps", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Cdps = append(m.Cdps, &CDP{})
+			if err := m.Cdps[len(m.Cdps)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Deposits", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Deposits = append(m.Deposits, &Deposit{})
+			if err := m.Deposits[len(m.Deposits)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StartingCdpId", wireType)
+			}
+			m.StartingCdpId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.StartingCdpId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DebtDenom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DebtDenom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GovDenom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GovDenom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PreviousAccumulationTimes", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PreviousAccumulationTimes = append(m.PreviousAccumulationTimes, &GenesisAccumulationTime{})
+			if err := m.PreviousAccumulationTimes[len(m.PreviousAccumulationTimes)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TotalPrincipals", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TotalPrincipals = append(m.TotalPrincipals, &GenesisTotalPrincipal{})
+			if err := m.TotalPrincipals[len(m.TotalPrincipals)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGenesis(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GenesisAccumulationTime) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGenesis
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GenesisAccumulationTime: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GenesisAccumulationTime: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CollateralType", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CollateralType = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PreviousAccumulationTime", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.PreviousAccumulationTime, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field InterestFactor", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.InterestFactor.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGenesis(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GenesisTotalPrincipal) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGenesis
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GenesisTotalPrincipal: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GenesisTotalPrincipal: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CollateralType", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CollateralType = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TotalPrincipal", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.TotalPrincipal.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

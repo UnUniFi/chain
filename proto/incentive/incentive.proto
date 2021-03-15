@@ -1,5 +1,5 @@
 syntax = "proto3";
-package lcnem.jpyx.incentive;
+package jpyx.incentive;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
@@ -42,14 +42,26 @@ message MsgClaimJPYXMintingReward {
 message Params {
   repeated RewardPeriod reward_periods = 1 [(gogoproto.moretags) = "yaml:\"reward_periods\""];
   repeated Multiplier claim_multipliers = 2 [(gogoproto.moretags) = "yaml:\"claim_multipliers\""];
-  google.protobuf.Timestamp claim_end = 3 [(gogoproto.moretags) = "yaml:\"claim_end\""];
+  google.protobuf.Timestamp claim_end = 3 [
+    (gogoproto.moretags) = "yaml:\"claim_end\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
 }
 
 message RewardPeriod {
   bool active = 1 [(gogoproto.moretags) = "yaml:\"active\""];
   string collateral_type = 2 [(gogoproto.moretags) = "yaml:\"collateral_type\""];
-  google.protobuf.Timestamp start = 3 [(gogoproto.moretags) = "yaml:\"start\""];
-  google.protobuf.Timestamp end = 4 [(gogoproto.moretags) = "yaml:\"end\""];
+  google.protobuf.Timestamp start = 3 [
+    (gogoproto.moretags) = "yaml:\"start\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  google.protobuf.Timestamp end = 4 [
+    (gogoproto.moretags) = "yaml:\"end\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
   cosmos.base.v1beta1.Coin rewards_per_second = 5 [(gogoproto.moretags) = "yaml:\"rewards_per_second\""];
 }
 

@@ -1,5 +1,5 @@
 syntax = "proto3";
-package lcnem.jpyx.cdp;
+package jpyx.cdp;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
@@ -14,7 +14,11 @@ message CDP {
   cosmos.base.v1beta1.Coin collateral = 4 [(gogoproto.moretags) = "yaml:\"collateral\""];
   cosmos.base.v1beta1.Coin principal = 5 [(gogoproto.moretags) = "yaml:\"principal\""];
   cosmos.base.v1beta1.Coin accumulated_fees = 6 [(gogoproto.moretags) = "yaml:\"accumulated_fees\""];
-  google.protobuf.Timestamp fees_updated = 7 [(gogoproto.moretags) = "yaml:\"fees_updated\""];
+  google.protobuf.Timestamp fees_updated = 7 [
+    (gogoproto.moretags) = "yaml:\"fees_updated\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
   string interest_factor = 8 [
     (gogoproto.moretags) = "yaml:\"interest_factor\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",

@@ -1,5 +1,5 @@
 syntax = "proto3";
-package lcnem.jpyx.jsmndist;
+package jpyx.jsmndist;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
@@ -13,8 +13,16 @@ message Params {
 }
 
 message Period {
-  google.protobuf.Timestamp start = 1 [(gogoproto.moretags) = "yaml:\"start\""];
-  google.protobuf.Timestamp end = 2 [(gogoproto.moretags) = "yaml:\"end\""];
+  google.protobuf.Timestamp start = 1 [
+    (gogoproto.moretags) = "yaml:\"start\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  google.protobuf.Timestamp end = 2 [
+    (gogoproto.moretags) = "yaml:\"end\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
   string inflation = 11 [
     (gogoproto.moretags) = "yaml:\"inflation\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
