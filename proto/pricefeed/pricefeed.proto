@@ -1,11 +1,11 @@
 syntax = "proto3";
 package lcnem.jpyx.pricefeed;
 
-option go_package = "github.com/lcnem/jpyx/x/pricefeed/types";
-
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/lcnem/jpyx/x/pricefeed/types";
 
 message Market {
   string market_id = 1 [(gogoproto.moretags) = "yaml:\"market_id\""];

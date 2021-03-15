@@ -1,11 +1,11 @@
 syntax = "proto3";
 package lcnem.jpyx.cdp;
 
-option go_package = "github.com/lcnem/jpyx/x/cdp/types";
-
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/lcnem/jpyx/x/cdp/types";
 
 message CDP {
   uint64 id = 1 [(gogoproto.moretags) = "yaml:\"id\""];

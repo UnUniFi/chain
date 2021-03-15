@@ -1,13 +1,12 @@
 syntax = "proto3";
 package lcnem.jpyx.incentive;
 
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 import "incentive/incentive.proto";
 
 option go_package = "github.com/lcnem/jpyx/x/incentive/types";
-
-import "gogoproto/gogo.proto";
-import "google/protobuf/timestamp.proto";
 
 // GenesisState defines the incentive module's genesis state.
 message GenesisState {

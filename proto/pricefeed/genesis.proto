@@ -1,12 +1,11 @@
 syntax = "proto3";
 package lcnem.jpyx.pricefeed;
 
+import "gogoproto/gogo.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 import "pricefeed/pricefeed.proto";
 
 option go_package = "github.com/lcnem/jpyx/x/pricefeed/types";
-
-import "gogoproto/gogo.proto";
 
 // GenesisState defines the pricefeed module's genesis state.
 message GenesisState {

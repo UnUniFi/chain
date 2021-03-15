@@ -10,17 +10,23 @@ option go_package = "github.com/lcnem/jpyx/x/auction/types";
 
 // Query defines the gRPC querier service.
 service Query {
-    // this line is used by starport scaffolding # 2
+	rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+		option (google.api.http).get = "/lcnem/jpyx/auction/params";
+	}
+  // this line is used by starport scaffolding # 2
 	rpc Auction(QueryGetAuctionRequest) returns (QueryGetAuctionResponse) {
 		option (google.api.http).get = "/lcnem/jpyx/auction/auctions/{id}";
 	}
 	rpc AuctionAll(QueryAllAuctionRequest) returns (QueryAllAuctionResponse) {
 		option (google.api.http).get = "/lcnem/jpyx/auction/auctions";
 	}
-	rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-		option (google.api.http).get = "/lcnem/jpyx/auction/params";
-	}
 
+}
+
+message QueryParamsRequest {}
+
+message QueryParamsResponse {
+	Params params = 1;
 }
 
 // this line is used by starport scaffolding # 3
@@ -29,7 +35,7 @@ message QueryGetAuctionRequest {
 }
 
 message QueryGetAuctionResponse {
-	Auction Auction = 1;
+	Auction auction = 1;
 }
 
 message QueryAllAuctionRequest {
@@ -37,14 +43,6 @@ message QueryAllAuctionRequest {
 }
 
 message QueryAllAuctionResponse {
-	repeated Auction Auction = 1;
+	repeated Auction auctions = 1;
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-message QueryParamsRequest {
-	string id = 1;
-}
-
-message QueryParamsResponse {
-	Auction Auction = 1;
 }

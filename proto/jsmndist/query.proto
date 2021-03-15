@@ -4,12 +4,25 @@ package lcnem.jpyx.jsmndist;
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 // this line is used by starport scaffolding # 1
+import "jsmndist/jsmndist.proto";
 
 option go_package = "github.com/lcnem/jpyx/x/jsmndist/types";
 
 // Query defines the gRPC querier service.
 service Query {
-    // this line is used by starport scaffolding # 2
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+		option (google.api.http).get = "/lcnem/jpyx/jsmndist/params";
+	}
+  rpc Rewards(QueryRewardsRequest) returns (QueryRewardsResponse) {
+		option (google.api.http).get = "/lcnem/jpyx/jsmndist/rewards";
+	}
+  // this line is used by starport scaffolding # 2
+}
+
+message QueryParamsRequest {}
+
+message QueryParamsResponse {
+  Params params = 1;
 }
 
 // this line is used by starport scaffolding # 3

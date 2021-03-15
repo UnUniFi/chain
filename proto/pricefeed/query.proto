@@ -9,7 +9,66 @@ option go_package = "github.com/lcnem/jpyx/x/pricefeed/types";
 
 // Query defines the gRPC querier service.
 service Query {
-    // this line is used by starport scaffolding # 2
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+		option (google.api.http).get = "/lcnem/jpyx/pricefeed/params";
+	}
+  rpc Markets(QueryMarketsRequest) returns (QueryMarketsResponse) {
+		option (google.api.http).get = "/lcnem/jpyx/pricefeed/markets";
+	}
+  rpc Oracle(QueryOracleRequest) returns (QueryOracleResponse) {
+		option (google.api.http).get = "/lcnem/jpyx/pricefeed/oracles/{id}";
+	}
+  rpc RawPrice(QueryRawPriceRequest) returns (QueryRawPriceResponse) {
+		option (google.api.http).get = "/lcnem/jpyx/pricefeed/raw_prices/{id}";
+	}
+  // this line is used by starport scaffolding # 2
+  rpc Price(QueryGetPriceRequest) returns (QueryGetPriceResponse) {
+		option (google.api.http).get = "/lcnem/jpyx/pricefeed/prices/{id}";
+	}
+	rpc PriceAll(QueryAllPriceRequest) returns (QueryAllPriceResponse) {
+		option (google.api.http).get = "/lcnem/jpyx/pricefeed/prices";
+	}
+}
+
+message QueryParamsRequest {}
+
+message QueryParamsResponse {
+	Params params = 1;
+}
+
+message QueryMarketsRequest {
+	string id = 1;
+}
+
+message QueryMarketsResponse {
+}
+
+message QueryOracleRequest {
+	string id = 1;
+}
+
+message QueryOracleResponse {
+}
+
+message QueryRawPriceRequest {
+	string id = 1;
+}
+
+message QueryRawPriceResponse {
 }
 
 // this line is used by starport scaffolding # 3
+message QueryGetPriceRequest {
+	string id = 1;
+}
+
+message QueryGetPriceResponse {
+}
+
+message QueryAllPriceRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllPriceResponse {
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
