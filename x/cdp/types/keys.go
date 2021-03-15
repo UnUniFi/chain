@@ -22,6 +22,7 @@ func KeyPrefix(p string) []byte {
 }
 
 const (
+	ParamsKey   = "Params-value-"
 	CdpKey      = "Cdp-value-"
 	CdpCountKey = "Cdp-count-"
 )

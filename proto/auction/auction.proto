@@ -58,6 +58,4 @@ message MsgPlaceBid {
 }
 
 message Params {
-  option (gogoproto.goproto_stringer) = false;
-  
 }

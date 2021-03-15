@@ -16,8 +16,8 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 
 		switch msg := msg.(type) {
 		// this line is used by starport scaffolding # 1
-		case *types.MsgCreateAuction:
-			return handleMsgCreateAuction(ctx, k, msg)
+		case *types.MsgPlaceBid:
+			return handleMsgPlaceBid(ctx, k, msg)
 
 		default:
 			errMsg := fmt.Sprintf("unrecognized %s message type: %T", types.ModuleName, msg)

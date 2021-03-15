@@ -22,6 +22,7 @@ func KeyPrefix(p string) []byte {
 }
 
 const (
+	ParamsKey       = "Params-value-"
 	AuctionKey      = "Auction-value-"
 	AuctionCountKey = "Auction-count-"
 )

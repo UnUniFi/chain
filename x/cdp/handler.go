@@ -16,13 +16,22 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 
 		switch msg := msg.(type) {
 		// this line is used by starport scaffolding # 1
-		case *types.MsgCreateCdp:
+		case *types.MsgCreateCDP:
 			return handleMsgCreateCdp(ctx, k, msg)
 
-		case *types.MsgUpdateCdp:
+		case *types.MsgDeposit:
 			return handleMsgUpdateCdp(ctx, k, msg)
 
-		case *types.MsgDeleteCdp:
+		case *types.MsgWithdraw:
+			return handleMsgDeleteCdp(ctx, k, msg)
+
+		case *types.MsgDrawDebt:
+			return handleMsgDeleteCdp(ctx, k, msg)
+
+		case *types.MsgRelayDebt:
+			return handleMsgDeleteCdp(ctx, k, msg)
+
+		case *types.MsgLiquidate:
 			return handleMsgDeleteCdp(ctx, k, msg)
 
 		default:
