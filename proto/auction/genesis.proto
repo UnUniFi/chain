@@ -5,6 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
 import "google/protobuf/timestamp.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 import "auction/auction.proto";
 
@@ -14,6 +15,9 @@ option go_package = "github.com/lcnem/jpyx/x/auction/types";
 message GenesisState {
   uint64 next_auction_id = 1 [(gogoproto.moretags) = "yaml:\"next_auction_id\""];
   Params params = 2 [(gogoproto.moretags) = "yaml:\"params\""];
-  repeated google.protobuf.Any auctions = 3 [(gogoproto.moretags) = "yaml:\"auctions\""];
+  repeated google.protobuf.Any auctions = 3 [
+    (gogoproto.moretags) = "yaml:\"auctions\"",
+    (cosmos_proto.accepts_interface) = "GenesisAuction"
+  ];
   // this line is used by starport scaffolding # genesis/proto/state
 }

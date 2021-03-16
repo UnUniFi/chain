@@ -33,7 +33,7 @@ message QueryParamsResponse {
 
 // this line is used by starport scaffolding # 3
 message QueryGetAuctionRequest {
-	string id = 1;
+	uint64 id = 1;
 }
 
 message QueryGetAuctionResponse {
@@ -44,6 +44,6 @@ message QueryAllAuctionRequest {
 }
 
 message QueryAllAuctionResponse {
-  repeated google.protobuf.Any auctions = 1 [(cosmos_proto.accepts_interface) = "Auction"];;
+  repeated google.protobuf.Any auctions = 1 [(cosmos_proto.accepts_interface) = "Auction"];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

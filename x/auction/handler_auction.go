@@ -7,7 +7,7 @@ import (
 )
 
 func handleMsgPlaceBid(ctx sdk.Context, k keeper.Keeper, msg *types.MsgPlaceBid) (*sdk.Result, error) {
-	k.CreateAuction(ctx, *msg)
+	k.PlaceBid(ctx, *msg)
 
 	return &sdk.Result{Events: ctx.EventManager().ABCIEvents()}, nil
 }

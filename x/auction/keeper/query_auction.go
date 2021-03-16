@@ -17,7 +17,7 @@ func listAuction(ctx sdk.Context, keeper Keeper, legacyQuerierCdc *codec.LegacyA
 	return bz, nil
 }
 
-func getAuction(ctx sdk.Context, id string, keeper Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
+func getAuction(ctx sdk.Context, id uint64, keeper Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	msg := keeper.GetAuction(ctx, id)
 
 	bz, err := codec.MarshalJSONIndent(legacyQuerierCdc, msg)

@@ -82,7 +82,10 @@ message MsgLiquidate {
 }
 
 message Params {
-  repeated CollateralParam collateral_params = 1 [(gogoproto.moretags) = "yaml:\"collateral_params\""];
+  repeated CollateralParam collateral_params = 1 [
+    (gogoproto.moretags) = "yaml:\"collateral_params\"",
+    (gogoproto.nullable) = false
+  ];
   DebtParam debt_param = 2 [(gogoproto.moretags) = "yaml:\"debt_param\""];
   cosmos.base.v1beta1.Coin global_debt_limit = 3 [(gogoproto.moretags) = "yaml:\"global_debt_limit\""];
   string surplus_auction_threshold = 4 [

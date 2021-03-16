@@ -3,6 +3,7 @@ package jpyx.auction;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/lcnem/jpyx/x/auction/types";
@@ -67,4 +68,27 @@ message MsgPlaceBid {
 }
 
 message Params {
+  google.protobuf.Duration max_auction_duration = 1 [
+    (gogoproto.moretags) = "yaml:\"max_auction_duration\"",
+    (gogoproto.stdduration) = true
+  ];
+  google.protobuf.Duration bid_duration = 2 [
+    (gogoproto.moretags) = "yaml:\"bid_duration\"",
+    (gogoproto.stdduration) = true
+  ];
+  string increment_surplus = 3 [
+    (gogoproto.moretags) = "yaml:\"increment_surplus\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string increment_debt = 4 [
+    (gogoproto.moretags) = "yaml:\"increment_debt\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string increment_collateral = 5 [
+    (gogoproto.moretags) = "yaml:\"increment_collateral\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }

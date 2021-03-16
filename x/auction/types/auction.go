@@ -7,6 +7,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	proto "github.com/gogo/protobuf/proto"
 )
 
 const (
@@ -24,18 +25,25 @@ var DistantFuture = time.Date(9000, 1, 1, 0, 0, 0, 0, time.UTC)
 
 // Auction is an interface for handling common actions on auctions.
 type Auction interface {
+	proto.Message
+
 	GetID() uint64
 	WithID(uint64) Auction
 
 	GetInitiator() string
-	GetLot() sdk.Coin
+	GetLot() *sdk.Coin
 	GetBidder() string
-	GetBid() sdk.Coin
+	GetBid() *sdk.Coin
 	GetEndTime() time.Time
 
 	GetType() string
 	GetPhase() string
+
+	String() string
 }
+
+// Auctions is a slice of auctions.
+type Auctions []Auction
 
 // GetID is a getter for auction ID.
 func (a BaseAuction) GetID() uint64 { return a.Id }
@@ -52,8 +60,9 @@ func (a BaseAuction) Validate() error {
 	if !a.Lot.IsValid() {
 		return fmt.Errorf("invalid lot: %s", a.Lot)
 	}
+	bidder, _ := sdk.AccAddressFromBech32(a.Bidder)
 	// NOTE: bidder can be empty for Surplus and Collateral auctions
-	if !a.Bidder.Empty() && len(a.Bidder) != sdk.AddrLen {
+	if !bidder.Empty() && len(bidder) != sdk.AddrLen {
 		return fmt.Errorf("the expected bidder address length is %d, actual length is %d", sdk.AddrLen, len(a.Bidder))
 	}
 	if !a.Bid.IsValid() {
@@ -70,13 +79,14 @@ func (a BaseAuction) Validate() error {
 
 // NewSurplusAuction returns a new surplus auction.
 func NewSurplusAuction(seller string, lot sdk.Coin, bidDenom string, endTime time.Time) SurplusAuction {
+	bid := sdk.NewInt64Coin(bidDenom, 0)
 	auction := SurplusAuction{
 		&BaseAuction{
 			// no ID
 			Initiator:       seller,
-			Lot:             lot,
-			Bidder:          nil,
-			Bid:             sdk.NewInt64Coin(bidDenom, 0),
+			Lot:             &lot,
+			Bidder:          "",
+			Bid:             &bid,
 			HasReceivedBids: false, // new auctions don't have any bids
 			EndTime:         endTime,
 			MaxEndTime:      endTime,
@@ -85,7 +95,7 @@ func NewSurplusAuction(seller string, lot sdk.Coin, bidDenom string, endTime tim
 }
 
 // WithID returns an auction with the ID set.
-func (a SurplusAuction) WithID(id uint64) Auction { a.Id = id; return a }
+func (a SurplusAuction) WithID(id uint64) Auction { a.Id = id; return &a }
 
 // GetType returns the auction type. Used to identify auctions in event attributes.
 func (a SurplusAuction) GetType() string { return SurplusAuctionType }
@@ -101,7 +111,7 @@ func (a SurplusAuction) GetModuleAccountCoins() sdk.Coins {
 func (a SurplusAuction) GetPhase() string { return ForwardAuctionPhase }
 
 // NewDebtAuction returns a new debt auction.
-func NewDebtAuction(buyerModAccName string, bid sdk.Coin, initialLot sdk.Coin, bidder string, endTime time.Time, debt sdk.Coin) DebtAuction {
+func NewDebtAuction(buyerModAccName string, bid sdk.Coin, initialLot sdk.Coin, bidder sdk.AccAddress, endTime time.Time, debt sdk.Coin) DebtAuction {
 	// Note: Bidder is set to the initiator's module account address instead of module name. (when the first bid is placed, it is paid out to the initiator)
 	// Setting to the module account address bypasses calling supply.SendCoinsFromModuleToModule, instead calls SendCoinsFromModuleToAccount.
 	// This isn't a problem currently, but if additional logic/validation was added for sending to coins to Module Accounts, it would be bypassed.
@@ -109,20 +119,20 @@ func NewDebtAuction(buyerModAccName string, bid sdk.Coin, initialLot sdk.Coin, b
 		BaseAuction: &BaseAuction{
 			// no ID
 			Initiator:       buyerModAccName,
-			Lot:             initialLot,
-			Bidder:          bidder, // send proceeds from the first bid to the buyer. NewModuleAddress(buyerModAccName)
-			Bid:             bid,    // amount that the buyer is buying - doesn't change over course of auction
-			HasReceivedBids: false,  // new auctions don't have any bids
+			Lot:             &initialLot,
+			Bidder:          bidder.String(), // send proceeds from the first bid to the buyer.
+			Bid:             &bid,            // amount that the buyer is buying - doesn't change over course of auction
+			HasReceivedBids: false,           // new auctions don't have any bids
 			EndTime:         endTime,
 			MaxEndTime:      endTime,
 		},
-		CorrespondingDebt: debt,
+		CorrespondingDebt: &debt,
 	}
 	return auction
 }
 
 // WithID returns an auction with the ID set.
-func (a DebtAuction) WithID(id uint64) Auction { a.Id = id; return a }
+func (a DebtAuction) WithID(id uint64) Auction { a.Id = id; return &a }
 
 // GetType returns the auction type. Used to identify auctions in event attributes.
 func (a DebtAuction) GetType() string { return DebtAuctionType }
@@ -155,7 +165,7 @@ func NewCollateralAuction(seller string, lot sdk.Coin, endTime time.Time, maxBid
 			// no ID
 			Initiator:       seller,
 			Lot:             &lot,
-			Bidder:          nil,
+			Bidder:          "",
 			Bid:             &bid,
 			HasReceivedBids: false, // new auctions don't have any bids
 			EndTime:         endTime,
@@ -169,7 +179,7 @@ func NewCollateralAuction(seller string, lot sdk.Coin, endTime time.Time, maxBid
 }
 
 // WithID returns an auction with the ID set.
-func (a CollateralAuction) WithID(id uint64) Auction { a.Id = id; return a }
+func (a CollateralAuction) WithID(id uint64) Auction { a.Id = id; return &a }
 
 // GetType returns the auction type. Used to identify auctions in event attributes.
 func (a CollateralAuction) GetType() string { return CollateralAuctionType }
@@ -210,7 +220,7 @@ func (a CollateralAuction) Validate() error {
 }
 
 // NewWeightedAddresses returns a new list addresses with weights.
-func NewWeightedAddresses(addrs []sdk.AccAddress, weights []sdk.Int) (WeightedAddresses, error) {
+func NewWeightedAddresses(addrs []string, weights []sdk.Int) (WeightedAddresses, error) {
 	wa := WeightedAddresses{
 		Addresses: addrs,
 		Weights:   weights,
@@ -233,11 +243,12 @@ func (wa WeightedAddresses) Validate() error {
 
 	totalWeight := sdk.ZeroInt()
 	for i := range wa.Addresses {
-		if wa.Addresses[i].Empty() {
+		addr, _ := sdk.AccAddressFromBech32(wa.Addresses[i])
+		if addr.Empty() {
 			return fmt.Errorf("address %d cannot be empty", i)
 		}
-		if len(wa.Addresses[i]) != sdk.AddrLen {
-			return fmt.Errorf("address %d has an invalid length: expected %d, got %d", i, sdk.AddrLen, len(wa.Addresses[i]))
+		if len(addr) != sdk.AddrLen {
+			return fmt.Errorf("address %d has an invalid length: expected %d, got %d", i, sdk.AddrLen, len(addr))
 		}
 		if wa.Weights[i].IsNegative() {
 			return fmt.Errorf("weight %d contains a negative amount: %s", i, wa.Weights[i])

@@ -101,6 +101,11 @@
 - [google/protobuf/any.proto](#google/protobuf/any.proto)
     - [Any](#google.protobuf.Any)
   
+- [cosmos_proto/cosmos.proto](#cosmos_proto/cosmos.proto)
+    - [File-level Extensions](#cosmos_proto/cosmos.proto-extensions)
+    - [File-level Extensions](#cosmos_proto/cosmos.proto-extensions)
+    - [File-level Extensions](#cosmos_proto/cosmos.proto-extensions)
+  
 - [auction/genesis.proto](#auction/genesis.proto)
     - [GenesisState](#jpyx.auction.GenesisState)
   
@@ -115,11 +120,6 @@
 - [cosmos/base/query/v1beta1/pagination.proto](#cosmos/base/query/v1beta1/pagination.proto)
     - [PageRequest](#cosmos.base.query.v1beta1.PageRequest)
     - [PageResponse](#cosmos.base.query.v1beta1.PageResponse)
-  
-- [cosmos_proto/cosmos.proto](#cosmos_proto/cosmos.proto)
-    - [File-level Extensions](#cosmos_proto/cosmos.proto-extensions)
-    - [File-level Extensions](#cosmos_proto/cosmos.proto-extensions)
-    - [File-level Extensions](#cosmos_proto/cosmos.proto-extensions)
   
 - [auction/query.proto](#auction/query.proto)
     - [QueryAllAuctionRequest](#jpyx.auction.QueryAllAuctionRequest)
@@ -495,6 +495,15 @@ IntProto defines a Protobuf wrapper around an Int object.
 
 
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `max_auction_duration` | [google.protobuf.Duration](#google.protobuf.Duration) |  |  |
+| `bid_duration` | [google.protobuf.Duration](#google.protobuf.Duration) |  |  |
+| `increment_surplus` | [string](#string) |  |  |
+| `increment_debt` | [string](#string) |  |  |
+| `increment_collateral` | [string](#string) |  |  |
+
+
 
 
 
@@ -650,6 +659,32 @@ Schemes other than `http`, `https` (or the empty scheme) might be used with impl
  <!-- end messages -->
 
  <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="cosmos_proto/cosmos.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmos_proto/cosmos.proto
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+
+<a name="cosmos_proto/cosmos.proto-extensions"></a>
+
+### File-level Extensions
+| Extension | Type | Base | Number | Description |
+| --------- | ---- | ---- | ------ | ----------- |
+| `accepts_interface` | string | .google.protobuf.FieldOptions | 93001 |  |
+| `implements_interface` | string | .google.protobuf.MessageOptions | 93002 |  |
+| `interface_type` | string | .google.protobuf.MessageOptions | 93001 |  |
 
  <!-- end HasExtensions -->
 
@@ -1072,32 +1107,6 @@ corresponding request message has used PageRequest.
 
 
 
-<a name="cosmos_proto/cosmos.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## cosmos_proto/cosmos.proto
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
-
-<a name="cosmos_proto/cosmos.proto-extensions"></a>
-
-### File-level Extensions
-| Extension | Type | Base | Number | Description |
-| --------- | ---- | ---- | ------ | ----------- |
-| `accepts_interface` | string | .google.protobuf.FieldOptions | 93001 |  |
-| `implements_interface` | string | .google.protobuf.MessageOptions | 93002 |  |
-| `interface_type` | string | .google.protobuf.MessageOptions | 93001 |  |
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
 <a name="auction/query.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -1144,7 +1153,7 @@ this line is used by starport scaffolding # 3
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  |  |
+| `id` | [uint64](#uint64) |  |  |
 
 
 
