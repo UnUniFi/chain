@@ -13,21 +13,21 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
 		option (google.api.http).get = "/jpyx/pricefeed/params";
 	}
-  rpc Markets(QueryMarketsRequest) returns (QueryMarketsResponse) {
+  // this line is used by starport scaffolding # 2
+  rpc MarketAll(QueryAllMarketRequest) returns (QueryAllMarketResponse) {
 		option (google.api.http).get = "/jpyx/pricefeed/markets";
 	}
-  rpc Oracle(QueryOracleRequest) returns (QueryOracleResponse) {
+  rpc Oracle(QueryGetOracleRequest) returns (QueryGetOracleResponse) {
 		option (google.api.http).get = "/jpyx/pricefeed/oracles/{id}";
 	}
-  rpc RawPrice(QueryRawPriceRequest) returns (QueryRawPriceResponse) {
-		option (google.api.http).get = "/jpyx/pricefeed/raw_prices/{id}";
-	}
-  // this line is used by starport scaffolding # 2
   rpc Price(QueryGetPriceRequest) returns (QueryGetPriceResponse) {
 		option (google.api.http).get = "/jpyx/pricefeed/prices/{id}";
 	}
 	rpc PriceAll(QueryAllPriceRequest) returns (QueryAllPriceResponse) {
 		option (google.api.http).get = "/jpyx/pricefeed/prices";
+	}
+  rpc RawPrice(QueryGetRawPriceRequest) returns (QueryGetRawPriceResponse) {
+		option (google.api.http).get = "/jpyx/pricefeed/raw_prices/{id}";
 	}
 }
 
@@ -37,28 +37,22 @@ message QueryParamsResponse {
 	Params params = 1;
 }
 
-message QueryMarketsRequest {
-	string id = 1;
-}
-
-message QueryMarketsResponse {
-}
-
-message QueryOracleRequest {
-	string id = 1;
-}
-
-message QueryOracleResponse {
-}
-
-message QueryRawPriceRequest {
-	string id = 1;
-}
-
-message QueryRawPriceResponse {
-}
-
 // this line is used by starport scaffolding # 3
+message QueryAllMarketRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllMarketResponse {
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetOracleRequest {
+	string id = 1;
+}
+
+message QueryGetOracleResponse {
+}
+
 message QueryGetPriceRequest {
 	string id = 1;
 }
@@ -72,4 +66,11 @@ message QueryAllPriceRequest {
 
 message QueryAllPriceResponse {
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetRawPriceRequest {
+	string id = 1;
+}
+
+message QueryGetRawPriceResponse {
 }

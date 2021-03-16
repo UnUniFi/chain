@@ -1,12 +1,23 @@
 package keeper
 
-import "github.com/lcnem/jpyx/x/cdp/types"
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/lcnem/jpyx/x/cdp/types"
+)
 
-// SetHooks sets the cdp keeper hooks
-func (k *Keeper) SetHooks(hooks types.CDPHooks) *Keeper {
+// Implements StakingHooks interface
+var _ types.CDPHooks = Keeper{}
+
+// AfterCDPCreated - call hook if registered
+func (k Keeper) AfterCDPCreated(ctx sdk.Context, cdp types.CDP) {
 	if k.hooks != nil {
-		panic("cannot set validator hooks twice")
+		k.hooks.AfterCDPCreated(ctx, cdp)
 	}
-	k.hooks = hooks
-	return k
+}
+
+// BeforeCDPModified - call hook if registered
+func (k Keeper) BeforeCDPModified(ctx sdk.Context, cdp types.CDP) {
+	if k.hooks != nil {
+		k.hooks.BeforeCDPModified(ctx, cdp)
+	}
 }

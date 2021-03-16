@@ -41,5 +41,3 @@ func (msg *MsgPlaceBid) ValidateBasic() error {
 	}
 	return nil
 }
-
-var _ sdk.Msg = &MsgUpdateAuction{}

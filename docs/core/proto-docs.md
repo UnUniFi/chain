@@ -116,6 +116,11 @@
     - [PageRequest](#cosmos.base.query.v1beta1.PageRequest)
     - [PageResponse](#cosmos.base.query.v1beta1.PageResponse)
   
+- [cosmos_proto/cosmos.proto](#cosmos_proto/cosmos.proto)
+    - [File-level Extensions](#cosmos_proto/cosmos.proto-extensions)
+    - [File-level Extensions](#cosmos_proto/cosmos.proto-extensions)
+    - [File-level Extensions](#cosmos_proto/cosmos.proto-extensions)
+  
 - [auction/query.proto](#auction/query.proto)
     - [QueryAllAuctionRequest](#jpyx.auction.QueryAllAuctionRequest)
     - [QueryAllAuctionResponse](#jpyx.auction.QueryAllAuctionResponse)
@@ -183,10 +188,10 @@
     - [GenesisState](#jpyx.jsmndist.GenesisState)
   
 - [jsmndist/query.proto](#jsmndist/query.proto)
+    - [QueryAllRewardRequest](#jpyx.jsmndist.QueryAllRewardRequest)
+    - [QueryAllRewardResponse](#jpyx.jsmndist.QueryAllRewardResponse)
     - [QueryParamsRequest](#jpyx.jsmndist.QueryParamsRequest)
     - [QueryParamsResponse](#jpyx.jsmndist.QueryParamsResponse)
-    - [QueryRewardsRequest](#jpyx.jsmndist.QueryRewardsRequest)
-    - [QueryRewardsResponse](#jpyx.jsmndist.QueryRewardsResponse)
   
     - [Query](#jpyx.jsmndist.Query)
   
@@ -201,18 +206,18 @@
     - [GenesisState](#jpyx.pricefeed.GenesisState)
   
 - [pricefeed/query.proto](#pricefeed/query.proto)
+    - [QueryAllMarketRequest](#jpyx.pricefeed.QueryAllMarketRequest)
+    - [QueryAllMarketResponse](#jpyx.pricefeed.QueryAllMarketResponse)
     - [QueryAllPriceRequest](#jpyx.pricefeed.QueryAllPriceRequest)
     - [QueryAllPriceResponse](#jpyx.pricefeed.QueryAllPriceResponse)
+    - [QueryGetOracleRequest](#jpyx.pricefeed.QueryGetOracleRequest)
+    - [QueryGetOracleResponse](#jpyx.pricefeed.QueryGetOracleResponse)
     - [QueryGetPriceRequest](#jpyx.pricefeed.QueryGetPriceRequest)
     - [QueryGetPriceResponse](#jpyx.pricefeed.QueryGetPriceResponse)
-    - [QueryMarketsRequest](#jpyx.pricefeed.QueryMarketsRequest)
-    - [QueryMarketsResponse](#jpyx.pricefeed.QueryMarketsResponse)
-    - [QueryOracleRequest](#jpyx.pricefeed.QueryOracleRequest)
-    - [QueryOracleResponse](#jpyx.pricefeed.QueryOracleResponse)
+    - [QueryGetRawPriceRequest](#jpyx.pricefeed.QueryGetRawPriceRequest)
+    - [QueryGetRawPriceResponse](#jpyx.pricefeed.QueryGetRawPriceResponse)
     - [QueryParamsRequest](#jpyx.pricefeed.QueryParamsRequest)
     - [QueryParamsResponse](#jpyx.pricefeed.QueryParamsResponse)
-    - [QueryRawPriceRequest](#jpyx.pricefeed.QueryRawPriceRequest)
-    - [QueryRawPriceResponse](#jpyx.pricefeed.QueryRawPriceResponse)
   
     - [Query](#jpyx.pricefeed.Query)
   
@@ -1067,6 +1072,32 @@ corresponding request message has used PageRequest.
 
 
 
+<a name="cosmos_proto/cosmos.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmos_proto/cosmos.proto
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+
+<a name="cosmos_proto/cosmos.proto-extensions"></a>
+
+### File-level Extensions
+| Extension | Type | Base | Number | Description |
+| --------- | ---- | ---- | ------ | ----------- |
+| `accepts_interface` | string | .google.protobuf.FieldOptions | 93001 |  |
+| `implements_interface` | string | .google.protobuf.MessageOptions | 93002 |  |
+| `interface_type` | string | .google.protobuf.MessageOptions | 93001 |  |
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="auction/query.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -1097,7 +1128,7 @@ corresponding request message has used PageRequest.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  |  |
+| `auctions` | [google.protobuf.Any](#google.protobuf.Any) | repeated |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
 
 
@@ -1113,7 +1144,7 @@ this line is used by starport scaffolding # 3
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `id` | [uint64](#uint64) |  |  |
+| `id` | [string](#string) |  |  |
 
 
 
@@ -1237,7 +1268,7 @@ Query defines the gRPC querier service.
 | `stability_fee` | [string](#string) |  |  |
 | `auction_size` | [string](#string) |  |  |
 | `liquidation_penalty` | [string](#string) |  |  |
-| `prefix` | [bytes](#bytes) |  |  |
+| `prefix` | [uint32](#uint32) |  |  |
 | `spot_market_id` | [string](#string) |  |  |
 | `liquidation_market_id` | [string](#string) |  |  |
 | `keeper_reward_percentage` | [string](#string) |  |  |
@@ -1942,6 +1973,36 @@ GenesisState defines the jsmndist module's genesis state.
 
 
 
+<a name="jpyx.jsmndist.QueryAllRewardRequest"></a>
+
+### QueryAllRewardRequest
+this line is used by starport scaffolding # 3
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="jpyx.jsmndist.QueryAllRewardResponse"></a>
+
+### QueryAllRewardResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
 <a name="jpyx.jsmndist.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
@@ -1955,31 +2016,6 @@ GenesisState defines the jsmndist module's genesis state.
 <a name="jpyx.jsmndist.QueryParamsResponse"></a>
 
 ### QueryParamsResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#jpyx.jsmndist.Params) |  |  |
-
-
-
-
-
-
-<a name="jpyx.jsmndist.QueryRewardsRequest"></a>
-
-### QueryRewardsRequest
-
-
-
-
-
-
-
-<a name="jpyx.jsmndist.QueryRewardsResponse"></a>
-
-### QueryRewardsResponse
 
 
 
@@ -2006,7 +2042,7 @@ Query defines the gRPC querier service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Params` | [QueryParamsRequest](#jpyx.jsmndist.QueryParamsRequest) | [QueryParamsResponse](#jpyx.jsmndist.QueryParamsResponse) |  | GET|/jpyx/jsmndist/params|
-| `Rewards` | [QueryRewardsRequest](#jpyx.jsmndist.QueryRewardsRequest) | [QueryRewardsResponse](#jpyx.jsmndist.QueryRewardsResponse) | this line is used by starport scaffolding # 2 | GET|/jpyx/jsmndist/rewards|
+| `RewardAll` | [QueryAllRewardRequest](#jpyx.jsmndist.QueryAllRewardRequest) | [QueryAllRewardResponse](#jpyx.jsmndist.QueryAllRewardResponse) | this line is used by starport scaffolding # 2 | GET|/jpyx/jsmndist/rewards|
 
  <!-- end services -->
 
@@ -2153,6 +2189,36 @@ GenesisState defines the pricefeed module's genesis state.
 
 
 
+<a name="jpyx.pricefeed.QueryAllMarketRequest"></a>
+
+### QueryAllMarketRequest
+this line is used by starport scaffolding # 3
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="jpyx.pricefeed.QueryAllMarketResponse"></a>
+
+### QueryAllMarketResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
 <a name="jpyx.pricefeed.QueryAllPriceRequest"></a>
 
 ### QueryAllPriceRequest
@@ -2183,10 +2249,35 @@ GenesisState defines the pricefeed module's genesis state.
 
 
 
+<a name="jpyx.pricefeed.QueryGetOracleRequest"></a>
+
+### QueryGetOracleRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="jpyx.pricefeed.QueryGetOracleResponse"></a>
+
+### QueryGetOracleResponse
+
+
+
+
+
+
+
 <a name="jpyx.pricefeed.QueryGetPriceRequest"></a>
 
 ### QueryGetPriceRequest
-this line is used by starport scaffolding # 3
+
 
 
 | Field | Type | Label | Description |
@@ -2208,34 +2299,9 @@ this line is used by starport scaffolding # 3
 
 
 
-<a name="jpyx.pricefeed.QueryMarketsRequest"></a>
+<a name="jpyx.pricefeed.QueryGetRawPriceRequest"></a>
 
-### QueryMarketsRequest
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="jpyx.pricefeed.QueryMarketsResponse"></a>
-
-### QueryMarketsResponse
-
-
-
-
-
-
-
-<a name="jpyx.pricefeed.QueryOracleRequest"></a>
-
-### QueryOracleRequest
+### QueryGetRawPriceRequest
 
 
 
@@ -2248,9 +2314,9 @@ this line is used by starport scaffolding # 3
 
 
 
-<a name="jpyx.pricefeed.QueryOracleResponse"></a>
+<a name="jpyx.pricefeed.QueryGetRawPriceResponse"></a>
 
-### QueryOracleResponse
+### QueryGetRawPriceResponse
 
 
 
@@ -2282,31 +2348,6 @@ this line is used by starport scaffolding # 3
 
 
 
-
-<a name="jpyx.pricefeed.QueryRawPriceRequest"></a>
-
-### QueryRawPriceRequest
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="jpyx.pricefeed.QueryRawPriceResponse"></a>
-
-### QueryRawPriceResponse
-
-
-
-
-
-
  <!-- end messages -->
 
  <!-- end enums -->
@@ -2322,11 +2363,11 @@ Query defines the gRPC querier service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Params` | [QueryParamsRequest](#jpyx.pricefeed.QueryParamsRequest) | [QueryParamsResponse](#jpyx.pricefeed.QueryParamsResponse) |  | GET|/jpyx/pricefeed/params|
-| `Markets` | [QueryMarketsRequest](#jpyx.pricefeed.QueryMarketsRequest) | [QueryMarketsResponse](#jpyx.pricefeed.QueryMarketsResponse) |  | GET|/jpyx/pricefeed/markets|
-| `Oracle` | [QueryOracleRequest](#jpyx.pricefeed.QueryOracleRequest) | [QueryOracleResponse](#jpyx.pricefeed.QueryOracleResponse) |  | GET|/jpyx/pricefeed/oracles/{id}|
-| `RawPrice` | [QueryRawPriceRequest](#jpyx.pricefeed.QueryRawPriceRequest) | [QueryRawPriceResponse](#jpyx.pricefeed.QueryRawPriceResponse) |  | GET|/jpyx/pricefeed/raw_prices/{id}|
-| `Price` | [QueryGetPriceRequest](#jpyx.pricefeed.QueryGetPriceRequest) | [QueryGetPriceResponse](#jpyx.pricefeed.QueryGetPriceResponse) | this line is used by starport scaffolding # 2 | GET|/jpyx/pricefeed/prices/{id}|
+| `MarketAll` | [QueryAllMarketRequest](#jpyx.pricefeed.QueryAllMarketRequest) | [QueryAllMarketResponse](#jpyx.pricefeed.QueryAllMarketResponse) | this line is used by starport scaffolding # 2 | GET|/jpyx/pricefeed/markets|
+| `Oracle` | [QueryGetOracleRequest](#jpyx.pricefeed.QueryGetOracleRequest) | [QueryGetOracleResponse](#jpyx.pricefeed.QueryGetOracleResponse) |  | GET|/jpyx/pricefeed/oracles/{id}|
+| `Price` | [QueryGetPriceRequest](#jpyx.pricefeed.QueryGetPriceRequest) | [QueryGetPriceResponse](#jpyx.pricefeed.QueryGetPriceResponse) |  | GET|/jpyx/pricefeed/prices/{id}|
 | `PriceAll` | [QueryAllPriceRequest](#jpyx.pricefeed.QueryAllPriceRequest) | [QueryAllPriceResponse](#jpyx.pricefeed.QueryAllPriceResponse) |  | GET|/jpyx/pricefeed/prices|
+| `RawPrice` | [QueryGetRawPriceRequest](#jpyx.pricefeed.QueryGetRawPriceRequest) | [QueryGetRawPriceResponse](#jpyx.pricefeed.QueryGetRawPriceResponse) |  | GET|/jpyx/pricefeed/raw_prices/{id}|
 
  <!-- end services -->
 

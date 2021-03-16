@@ -14,14 +14,14 @@ import (
 // Used to not have an error if strconv is unused
 var _ = strconv.Itoa(42)
 
-type createAuctionRequest struct {
+type placeBidRequest struct {
 	BaseReq rest.BaseReq `json:"base_req"`
 	Creator string       `json:"creator"`
 }
 
-func createAuctionHandler(clientCtx client.Context) http.HandlerFunc {
+func placeBidHandler(clientCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req createAuctionRequest
+		var req placeBidRequest
 		if !rest.ReadRESTReq(w, r, clientCtx.LegacyAmino, &req) {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, "failed to parse request")
 			return
@@ -38,7 +38,7 @@ func createAuctionHandler(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		msg := types.NewMsgCreateAuction(
+		msg := types.NewMsgPlaceBid(
 			req.Creator,
 		)
 

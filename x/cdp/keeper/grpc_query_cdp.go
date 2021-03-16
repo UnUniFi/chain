@@ -16,14 +16,14 @@ func (k Keeper) CdpAll(c context.Context, req *types.QueryAllCdpRequest) (*types
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var cdps []*types.Cdp
+	var cdps []*types.CDP
 	ctx := sdk.UnwrapSDKContext(c)
 
 	store := ctx.KVStore(k.storeKey)
 	cdpStore := prefix.NewStore(store, types.KeyPrefix(types.CdpKey))
 
 	pageRes, err := query.Paginate(cdpStore, req.Pagination, func(key []byte, value []byte) error {
-		var cdp types.Cdp
+		var cdp types.CDP
 		if err := k.cdc.UnmarshalBinaryBare(value, &cdp); err != nil {
 			return err
 		}
@@ -44,7 +44,7 @@ func (k Keeper) Cdp(c context.Context, req *types.QueryGetCdpRequest) (*types.Qu
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var cdp types.Cdp
+	var cdp types.CDP
 	ctx := sdk.UnwrapSDKContext(c)
 
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpKey))

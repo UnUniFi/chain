@@ -13,10 +13,10 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
 		option (google.api.http).get = "/jpyx/jsmndist/params";
 	}
-  rpc Rewards(QueryRewardsRequest) returns (QueryRewardsResponse) {
+  // this line is used by starport scaffolding # 2
+  rpc RewardAll(QueryAllRewardRequest) returns (QueryAllRewardResponse) {
 		option (google.api.http).get = "/jpyx/jsmndist/rewards";
 	}
-  // this line is used by starport scaffolding # 2
 }
 
 message QueryParamsRequest {}
@@ -25,10 +25,11 @@ message QueryParamsResponse {
   Params params = 1;
 }
 
-message QueryRewardsRequest {}
-
-message QueryRewardsResponse {
-  Params params = 1;
+// this line is used by starport scaffolding # 3
+message QueryAllRewardRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
-// this line is used by starport scaffolding # 3
+message QueryAllRewardResponse {
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}

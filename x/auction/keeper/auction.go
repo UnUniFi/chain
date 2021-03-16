@@ -1,10 +1,11 @@
 package keeper
 
 import (
+	"strconv"
+
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/lcnem/jpyx/x/auction/types"
-	"strconv"
 )
 
 // GetAuctionCount get the total number of auction

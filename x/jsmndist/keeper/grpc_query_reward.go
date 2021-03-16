@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) Rewards(c context.Context, req *types.QueryRewardsRequest) (*types.QueryRewardsResponse, error) {
+func (k Keeper) RewardAll(c context.Context, req *types.QueryAllRewardRequest) (*types.QueryAllRewardResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -21,5 +21,5 @@ func (k Keeper) Rewards(c context.Context, req *types.QueryRewardsRequest) (*typ
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.RewardsKey))
 	k.cdc.MustUnmarshalBinaryBare(store.Get(types.KeyPrefix(types.RewardsKey)), &rewards)
 
-	return &types.QueryRewardsResponse{Params: &params}, nil
+	return &types.QueryAllRewardResponse{Params: &params}, nil
 }

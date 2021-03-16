@@ -9,10 +9,10 @@ import (
 	"github.com/lcnem/jpyx/x/auction/types"
 )
 
-func CmdCreateAuction() *cobra.Command {
+func CmdPlaceBid() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-auction",
-		Short: "Creates a new auction",
+		Use:   "place-bid",
+		Short: "Places a bid",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 
@@ -21,7 +21,7 @@ func CmdCreateAuction() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgCreateAuction(clientCtx.GetFromAddress().String())
+			msg := types.NewMsgPlaceBid(clientCtx.GetFromAddress().String())
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

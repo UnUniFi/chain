@@ -2,10 +2,12 @@ package keeper
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/lcnem/jpyx/x/jsmndist/types"
@@ -34,4 +36,21 @@ func NewKeeper(cdc codec.Marshaler, storeKey, memKey sdk.StoreKey, paramSpace pa
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+}
+
+// GetPreviousBlockTime get the blocktime for the previous block
+func (k Keeper) GetPreviousBlockTime(ctx sdk.Context) (blockTime time.Time, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.key), types.PreviousBlockTimeKey)
+	b := store.Get([]byte{})
+	if b == nil {
+		return time.Time{}, false
+	}
+	k.cdc.MustUnmarshalBinaryLengthPrefixed(b, &blockTime)
+	return blockTime, true
+}
+
+// SetPreviousBlockTime set the time of the previous block
+func (k Keeper) SetPreviousBlockTime(ctx sdk.Context, blockTime time.Time) {
+	store := prefix.NewStore(ctx.KVStore(k.key), types.PreviousBlockTimeKey)
+	store.Set([]byte{}, k.cdc.MustMarshalBinaryLengthPrefixed(blockTime))
 }

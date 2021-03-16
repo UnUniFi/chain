@@ -27,16 +27,25 @@ message BaseAuction {
 }
 
 message SurplusAuction {
-  BaseAuction base_auction = 1 [(gogoproto.moretags) = "yaml:\"base_auction\""];
+  BaseAuction base_auction = 1 [
+    (gogoproto.moretags) = "yaml:\"base_auction\"",
+    (gogoproto.embed) = true
+  ];
 }
 
 message DebtAuction {
-  BaseAuction base_auction = 1 [(gogoproto.moretags) = "yaml:\"base_auction\""];
+  BaseAuction base_auction = 1 [
+    (gogoproto.moretags) = "yaml:\"base_auction\"",
+    (gogoproto.embed) = true
+  ];
   cosmos.base.v1beta1.Coin corresponding_debt = 2 [(gogoproto.moretags) = "yaml:\"corresponding_debt\""];
 }
 
 message CollateralAuction {
-  BaseAuction base_auction = 1 [(gogoproto.moretags) = "yaml:\"base_auction\""];
+  BaseAuction base_auction = 1 [
+    (gogoproto.moretags) = "yaml:\"base_auction\"",
+    (gogoproto.embed) = true
+  ];
   cosmos.base.v1beta1.Coin corresponding_debt = 2 [(gogoproto.moretags) = "yaml:\"corresponding_debt\""];
   cosmos.base.v1beta1.Coin max_bid = 3 [(gogoproto.moretags) = "yaml:\"max_bid\""];
   WeightedAddresses lot_returns = 4 [(gogoproto.moretags) = "yaml:\"lot_returns\""];

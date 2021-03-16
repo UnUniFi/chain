@@ -132,7 +132,7 @@ message CollateralParam {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  bytes prefix = 8 [(gogoproto.moretags) = "yaml:\"prefix\""];
+  uint32 prefix = 8 [(gogoproto.moretags) = "yaml:\"prefix\""];
   string spot_market_id = 9 [(gogoproto.moretags) = "yaml:\"spot_market_id\""];
   string liquidation_market_id = 10 [(gogoproto.moretags) = "yaml:\"liquidation_market_id\""];
   string keeper_reward_percentage = 11 [

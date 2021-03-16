@@ -22,5 +22,11 @@ func KeyPrefix(p string) []byte {
 }
 
 const (
-	ParamsKey = "Params-value-"
+	ParamsKey      = "Params-value-"
+	MarketKey      = "Market-value-"
+	MarketCountKey = "Market-count-"
+	OracleKey      = "Oracle-value-"
+	PriceKey       = "Price-value-"
+	PriceCountKey  = "Price-count-"
+	RawPriceKey    = "RawPrice-value-"
 )
