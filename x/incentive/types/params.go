@@ -86,7 +86,10 @@ func (p Params) Validate() error {
 func validateRewardPeriodsParam(i interface{}) error {
 	rewards, ok := i.(RewardPeriods)
 	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
+		rewards, ok = i.([]RewardPeriod)
+		if !ok {
+			return fmt.Errorf("invalid parameter type: %T", i)
+		}
 	}
 
 	return rewards.Validate()
@@ -95,7 +98,10 @@ func validateRewardPeriodsParam(i interface{}) error {
 func validateMultiRewardPeriodsParam(i interface{}) error {
 	rewards, ok := i.(MultiRewardPeriods)
 	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
+		rewards, ok = i.([]MultiRewardPeriod)
+		if !ok {
+			return fmt.Errorf("invalid parameter type: %T", i)
+		}
 	}
 
 	return rewards.Validate()
@@ -104,7 +110,10 @@ func validateMultiRewardPeriodsParam(i interface{}) error {
 func validateMultipliersParam(i interface{}) error {
 	multipliers, ok := i.(Multipliers)
 	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
+		multipliers, ok = i.([]Multiplier)
+		if !ok {
+			return fmt.Errorf("invalid parameter type: %T", i)
+		}
 	}
 	return multipliers.Validate()
 }

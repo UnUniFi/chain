@@ -235,7 +235,10 @@ func validateGlobalDebtLimitParam(i interface{}) error {
 func validateCollateralParams(i interface{}) error {
 	collateralParams, ok := i.(CollateralParams)
 	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
+		collateralParams, ok = i.([]CollateralParam)
+		if !ok {
+			return fmt.Errorf("invalid parameter type: %T", i)
+		}
 	}
 
 	prefixDupMap := make(map[int]bool)
