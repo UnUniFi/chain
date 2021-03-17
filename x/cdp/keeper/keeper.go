@@ -60,7 +60,7 @@ func (k *Keeper) SetHooks(hooks types.CDPHooks) *Keeper {
 
 // CdpDenomIndexIterator returns an sdk.Iterator for all cdps with matching collateral denom
 func (k Keeper) CdpDenomIndexIterator(ctx sdk.Context, collateralType string) sdk.Iterator {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.CdpKeyPrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpKey))
 	db, found := k.GetCollateralTypePrefix(ctx, collateralType)
 	if !found {
 		panic(fmt.Sprintf("denom %s prefix not found", collateralType))
@@ -71,7 +71,7 @@ func (k Keeper) CdpDenomIndexIterator(ctx sdk.Context, collateralType string) sd
 // CdpCollateralRatioIndexIterator returns an sdk.Iterator for all cdps that have collateral denom
 // matching denom and collateral:debt ratio LESS THAN targetRatio
 func (k Keeper) CdpCollateralRatioIndexIterator(ctx sdk.Context, collateralType string, targetRatio sdk.Dec) sdk.Iterator {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.CollateralRatioIndexPrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CollateralRatioIndex))
 	db, found := k.GetCollateralTypePrefix(ctx, collateralType)
 	if !found {
 		panic(fmt.Sprintf("denom %s prefix not found", collateralType))
@@ -81,7 +81,7 @@ func (k Keeper) CdpCollateralRatioIndexIterator(ctx sdk.Context, collateralType 
 
 // IterateAllCdps iterates over all cdps and performs a callback function
 func (k Keeper) IterateAllCdps(ctx sdk.Context, cb func(cdp types.CDP) (stop bool)) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.CdpKeyPrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpKey))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
@@ -144,7 +144,7 @@ func (k Keeper) GetSliceOfCDPsByRatioAndType(ctx sdk.Context, cutoffCount sdk.In
 
 // GetPreviousAccrualTime returns the last time an individual market accrued interest
 func (k Keeper) GetPreviousAccrualTime(ctx sdk.Context, ctype string) (previousAccrualTime time.Time, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PreviousAccrualTimePrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PreviousAccrualTime))
 	bz := store.Get([]byte(ctype))
 	if bz == nil {
 		return time.Time{}, false
@@ -156,14 +156,14 @@ func (k Keeper) GetPreviousAccrualTime(ctx sdk.Context, ctype string) (previousA
 
 // SetPreviousAccrualTime sets the most recent accrual time for a particular market
 func (k Keeper) SetPreviousAccrualTime(ctx sdk.Context, ctype string, previousAccrualTime time.Time) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PreviousAccrualTimePrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PreviousAccrualTime))
 	bz, _ := previousAccrualTime.MarshalBinary()
 	store.Set([]byte(ctype), bz)
 }
 
 // GetInterestFactor returns the current interest factor for an individual collateral type
 func (k Keeper) GetInterestFactor(ctx sdk.Context, ctype string) (interestFactor sdk.Dec, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestFactorPrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.InterestFactor))
 	bz := store.Get([]byte(ctype))
 	if bz == nil {
 		return sdk.ZeroDec(), false
@@ -175,7 +175,7 @@ func (k Keeper) GetInterestFactor(ctx sdk.Context, ctype string) (interestFactor
 
 // SetInterestFactor sets the current interest factor for an individual collateral type
 func (k Keeper) SetInterestFactor(ctx sdk.Context, ctype string, interestFactor sdk.Dec) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestFactorPrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.InterestFactor))
 	bz, _ := interestFactor.Marshal()
 	store.Set([]byte(ctype), bz)
 }
@@ -198,7 +198,7 @@ func (k Keeper) DecrementTotalPrincipal(ctx sdk.Context, collateralType string, 
 
 // GetTotalPrincipal returns the total amount of principal that has been drawn for a particular collateral
 func (k Keeper) GetTotalPrincipal(ctx sdk.Context, collateralType, principalDenom string) (total sdk.Int) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PrincipalKeyPrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PrincipalKey))
 	bz := store.Get([]byte(collateralType + principalDenom))
 	if bz == nil {
 		k.SetTotalPrincipal(ctx, collateralType, principalDenom, sdk.ZeroInt())
@@ -211,7 +211,7 @@ func (k Keeper) GetTotalPrincipal(ctx sdk.Context, collateralType, principalDeno
 
 // SetTotalPrincipal sets the total amount of principal that has been drawn for the input collateral
 func (k Keeper) SetTotalPrincipal(ctx sdk.Context, collateralType, principalDenom string, total sdk.Int) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PrincipalKeyPrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PrincipalKey))
 	_, found := k.GetCollateralTypePrefix(ctx, collateralType)
 	if !found {
 		panic(fmt.Sprintf("collateral not found: %s", collateralType))

@@ -44,13 +44,13 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 // SetNextAuctionID stores an ID to be used for the next created auction
 func (k Keeper) SetNextAuctionID(ctx sdk.Context, id uint64) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.NextAuctionIDKey, types.Uint64ToBytes(id))
+	store.Set(types.KeyPrefix(types.NextAuctionIDKey), types.Uint64ToBytes(id))
 }
 
 // GetNextAuctionID reads the next available global ID from store
 func (k Keeper) GetNextAuctionID(ctx sdk.Context) (uint64, error) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.NextAuctionIDKey)
+	bz := store.Get(types.KeyPrefix(types.NextAuctionIDKey))
 	if bz == nil {
 		return 0, types.ErrInvalidInitialAuctionID
 	}
@@ -92,7 +92,7 @@ func (k Keeper) SetAuction(ctx sdk.Context, auction types.Auction) {
 		k.removeFromByTimeIndex(ctx, existingAuction.GetEndTime(), existingAuction.GetID())
 	}
 
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AuctionKeyPrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AuctionKey))
 	auctionAny, _ := codectypes.NewAnyWithValue(auction)
 	bz, _ := auctionAny.Marshal()
 	store.Set(types.GetAuctionKey(auction.GetID()), bz)
@@ -104,7 +104,7 @@ func (k Keeper) SetAuction(ctx sdk.Context, auction types.Auction) {
 func (k Keeper) GetAuction(ctx sdk.Context, auctionID uint64) (types.Auction, bool) {
 	var auction types.Auction
 
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AuctionKeyPrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AuctionKey))
 	bz := store.Get(types.GetAuctionKey(auctionID))
 	if bz == nil {
 		return auction, false
@@ -122,26 +122,26 @@ func (k Keeper) DeleteAuction(ctx sdk.Context, auctionID uint64) {
 		k.removeFromByTimeIndex(ctx, auction.GetEndTime(), auctionID)
 	}
 
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AuctionKeyPrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AuctionKey))
 	store.Delete(types.GetAuctionKey(auctionID))
 }
 
 // InsertIntoByTimeIndex adds an auction ID and end time into the byTime index.
 func (k Keeper) InsertIntoByTimeIndex(ctx sdk.Context, endTime time.Time, auctionID uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AuctionByTimeKeyPrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AuctionByTimeKey))
 	store.Set(types.GetAuctionByTimeKey(endTime, auctionID), types.Uint64ToBytes(auctionID))
 }
 
 // removeFromByTimeIndex removes an auction ID and end time from the byTime index.
 func (k Keeper) removeFromByTimeIndex(ctx sdk.Context, endTime time.Time, auctionID uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AuctionByTimeKeyPrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AuctionByTimeKey))
 	store.Delete(types.GetAuctionByTimeKey(endTime, auctionID))
 }
 
 // IterateAuctionByTime provides an iterator over auctions ordered by auction.EndTime.
 // For each auction cb will be callled. If cb returns true the iterator will close and stop.
 func (k Keeper) IterateAuctionsByTime(ctx sdk.Context, inclusiveCutoffTime time.Time, cb func(auctionID uint64) (stop bool)) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AuctionByTimeKeyPrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AuctionByTimeKey))
 	iterator := store.Iterator(
 		nil, // start at the very start of the prefix store
 		sdk.PrefixEndBytes(sdk.FormatTimeBytes(inclusiveCutoffTime)), // include any keys with times equal to inclusiveCutoffTime
@@ -161,7 +161,7 @@ func (k Keeper) IterateAuctionsByTime(ctx sdk.Context, inclusiveCutoffTime time.
 // IterateAuctions provides an iterator over all stored auctions.
 // For each auction, cb will be called. If cb returns true, the iterator will close and stop.
 func (k Keeper) IterateAuctions(ctx sdk.Context, cb func(auction types.Auction) (stop bool)) {
-	iterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.AuctionKeyPrefix)
+	iterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AuctionKey))
 
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {

@@ -93,9 +93,9 @@ func ValidIndexInvariant(k Keeper) sdk.Invariant {
 		*/
 
 		// Check all auction IDs in the index are in the auction store
-		store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AuctionKeyPrefix)
+		store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.NextAuctionIDKey))
 
-		indexIterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.AuctionByTimeKeyPrefix)
+		indexIterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AuctionByTimeKey))
 		defer indexIterator.Close()
 
 		var indexLength int
@@ -114,7 +114,7 @@ func ValidIndexInvariant(k Keeper) sdk.Invariant {
 		}
 
 		// Check length of auction store matches the length of the index
-		storeIterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.AuctionKeyPrefix)
+		storeIterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.KeyPrefix(types.NextAuctionIDKey))
 		defer storeIterator.Close()
 		var storeLength int
 		for ; storeIterator.Valid(); storeIterator.Next() {

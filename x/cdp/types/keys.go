@@ -32,23 +32,19 @@ func KeyPrefix(p string) []byte {
 }
 
 const (
-	ParamsKey = "Params-value-"
-	// CdpKey                     = "Cdp-value-"
-	// CdpCountKey                = "Cdp-count-"
-)
-
-var (
-	CdpIDKeyPrefix             = []byte{0x01}
-	CdpKeyPrefix               = []byte{0x02}
-	CollateralRatioIndexPrefix = []byte{0x03}
-	CdpIDKey                   = []byte{0x04}
-	DebtDenomKey               = []byte{0x05}
-	GovDenomKey                = []byte{0x06}
-	DepositKeyPrefix           = []byte{0x07}
-	PrincipalKeyPrefix         = []byte{0x08}
-	PricefeedStatusKeyPrefix   = []byte{0x10}
-	PreviousAccrualTimePrefix  = []byte{0x12}
-	InterestFactorPrefix       = []byte{0x13}
+	ParamsKey            = "Params-value-"
+	CdpKey               = "Cdp-value-"
+	CdpCountKey          = "Cdp-count-"
+	CdpIDKeyP            = "CdpID-value-"
+	CollateralRatioIndex = "CollateralRatio-index-"
+	CdpIDKey             = "CdpID-"
+	DebtDenomKey         = "DebtDenom-value-"
+	GovDenomKey          = "GovDenom-value-"
+	DepositKey           = "Deposit-value-"
+	PrincipalKey         = "Principal-value-"
+	PricefeedStatusKey   = "PricefeedStatus-value-"
+	PreviousAccrualTime  = "PreviousAccrualTime-"
+	InterestFactor       = "InterestFactor-"
 )
 
 var sep = []byte(":")
@@ -65,8 +61,8 @@ func GetCdpIDFromBytes(bz []byte) (cdpID uint64) {
 	return binary.BigEndian.Uint64(bz)
 }
 
-// CdpKey key of a specific cdp in the store
-func CdpKey(denomByte byte, cdpID uint64) []byte {
+// CdpKeySuffix key of a specific cdp in the store
+func CdpKeySuffix(denomByte byte, cdpID uint64) []byte {
 	return createKey([]byte{denomByte}, sep, GetCdpIDBytes(cdpID))
 }
 
@@ -87,8 +83,8 @@ func SplitDenomIterKey(key []byte) byte {
 	return split[0][0]
 }
 
-// DepositKey key of a specific deposit in the store
-func DepositKey(cdpID uint64, depositor sdk.AccAddress) []byte {
+// DepositKeySuffix key of a specific deposit in the store
+func DepositKeySuffix(cdpID uint64, depositor sdk.AccAddress) []byte {
 	return createKey(GetCdpIDBytes(cdpID), sep, depositor)
 }
 

@@ -117,8 +117,8 @@ func (k Keeper) WithdrawCollateral(ctx sdk.Context, owner, depositor sdk.AccAddr
 
 // GetDeposit returns the deposit of a depositor on a particular cdp from the store
 func (k Keeper) GetDeposit(ctx sdk.Context, cdpID uint64, depositor sdk.AccAddress) (deposit types.Deposit, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DepositKeyPrefix)
-	bz := store.Get(types.DepositKey(cdpID, depositor))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DepositKey))
+	bz := store.Get(types.DepositKeySuffix(cdpID, depositor))
 	if bz == nil {
 		return deposit, false
 	}
@@ -129,21 +129,21 @@ func (k Keeper) GetDeposit(ctx sdk.Context, cdpID uint64, depositor sdk.AccAddre
 
 // SetDeposit sets the deposit in the store
 func (k Keeper) SetDeposit(ctx sdk.Context, deposit types.Deposit) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DepositKeyPrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DepositKey))
 	bz := k.cdc.MustMarshalBinaryLengthPrefixed(&deposit)
-	store.Set(types.DepositKey(deposit.CdpId, deposit.Depositor.AccAddress()), bz)
+	store.Set(types.DepositKeySuffix(deposit.CdpId, deposit.Depositor.AccAddress()), bz)
 
 }
 
 // DeleteDeposit deletes a deposit from the store
 func (k Keeper) DeleteDeposit(ctx sdk.Context, cdpID uint64, depositor sdk.AccAddress) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DepositKeyPrefix)
-	store.Delete(types.DepositKey(cdpID, depositor))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DepositKey))
+	store.Delete(types.DepositKeySuffix(cdpID, depositor))
 }
 
 // IterateDeposits iterates over the all the deposits of a cdp and performs a callback function
 func (k Keeper) IterateDeposits(ctx sdk.Context, cdpID uint64, cb func(deposit types.Deposit) (stop bool)) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DepositKeyPrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DepositKey))
 	iterator := sdk.KVStorePrefixIterator(store, types.GetCdpIDBytes(cdpID))
 
 	defer iterator.Close()
