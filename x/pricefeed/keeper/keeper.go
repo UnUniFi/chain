@@ -85,7 +85,7 @@ func (k Keeper) SetPrice(
 	)
 
 	bz, _ := json.Marshal(prices)
-	store.Set(types.RawPriceKey(marketID), bz)
+	store.Set(types.RawPriceKeySuffix(marketID), bz)
 	return prices[index], nil
 }
 
@@ -145,7 +145,7 @@ func (k Keeper) SetCurrentPrices(ctx sdk.Context, marketID string) error {
 
 func (k Keeper) setCurrentPrice(ctx sdk.Context, marketID string, currentPrice types.CurrentPrice) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.CurrentPriceKey(marketID), k.cdc.MustMarshalBinaryBare(&currentPrice))
+	store.Set(types.CurrentPriceKeySuffix(marketID), k.cdc.MustMarshalBinaryBare(&currentPrice))
 }
 
 // CalculateMedianPrice calculates the median prices for the input prices.
@@ -179,7 +179,7 @@ func (k Keeper) calculateMeanPrice(ctx sdk.Context, prices types.CurrentPrices) 
 // GetCurrentPrice fetches the current median price of all oracles for a specific market
 func (k Keeper) GetCurrentPrice(ctx sdk.Context, marketID string) (types.CurrentPrice, error) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.CurrentPriceKey(marketID))
+	bz := store.Get(types.CurrentPriceKeySuffix(marketID))
 
 	if bz == nil {
 		return types.CurrentPrice{}, types.ErrNoValidPrice
@@ -197,7 +197,7 @@ func (k Keeper) GetCurrentPrice(ctx sdk.Context, marketID string) (types.Current
 
 // IterateCurrentPrices iterates over all current price objects in the store and performs a callback function
 func (k Keeper) IterateCurrentPrices(ctx sdk.Context, cb func(cp types.CurrentPrice) (stop bool)) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.CurrentPricePrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CurrentPriceKey))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
@@ -222,7 +222,7 @@ func (k Keeper) GetCurrentPrices(ctx sdk.Context) types.CurrentPrices {
 // GetRawPrices fetches the set of all prices posted by oracles for an asset
 func (k Keeper) GetRawPrices(ctx sdk.Context, marketID string) (types.PostedPrices, error) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.RawPriceKey(marketID))
+	bz := store.Get(types.RawPriceKeySuffix(marketID))
 	if bz == nil {
 		return types.PostedPrices{}, nil
 	}

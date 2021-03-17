@@ -18,8 +18,8 @@ func (k Keeper) RewardAll(c context.Context, req *types.QueryAllRewardRequest) (
 	var rewards string
 	ctx := sdk.UnwrapSDKContext(c)
 
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.RewardsKey))
-	k.cdc.MustUnmarshalBinaryBare(store.Get(types.KeyPrefix(types.RewardsKey)), &rewards)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.RewardKey))
+	k.cdc.MustUnmarshalBinaryBare(store.Get(types.KeyPrefix(types.RewardKey)), &rewards)
 
 	return &types.QueryAllRewardResponse{Params: &params}, nil
 }
