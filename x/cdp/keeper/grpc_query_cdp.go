@@ -46,7 +46,8 @@ func (k Keeper) Cdp(c context.Context, req *types.QueryGetCdpRequest) (*types.Qu
 
 	var cdp types.CDP
 	ctx := sdk.UnwrapSDKContext(c)
-	ctx.BlockGasMeter() //TODO
+
+	k.GetCDP(ctx, req.CollateralType, req.Id)
 
 	return &types.QueryGetCdpResponse{Cdp: &cdp}, nil
 }

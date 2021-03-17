@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/lcnem/jpyx/x/pricefeed/types"
 	"google.golang.org/grpc/codes"
@@ -15,13 +14,12 @@ func (k Keeper) PriceAll(c context.Context, req *types.QueryAllPriceRequest) (*t
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var post types.Market
+	var prices types.CurrentPrices
 	ctx := sdk.UnwrapSDKContext(c)
 
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PostKey))
-	k.cdc.MustUnmarshalBinaryBare(store.Get(types.KeyPrefix(types.PostKey+req.Id)), &post)
+	prices = k.GetCurrentPrices(ctx)
 
-	return &types.QueryAllPriceResponse{Post: &post}, nil
+	return &types.QueryAllPriceResponse{Prices: prices}, nil
 }
 
 func (k Keeper) Price(c context.Context, req *types.QueryGetPriceRequest) (*types.QueryGetPriceResponse, error) {
@@ -29,11 +27,13 @@ func (k Keeper) Price(c context.Context, req *types.QueryGetPriceRequest) (*type
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var post types.Market
+	var price types.CurrentPrice
 	ctx := sdk.UnwrapSDKContext(c)
 
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PostKey))
-	k.cdc.MustUnmarshalBinaryBare(store.Get(types.KeyPrefix(types.PostKey+req.Id)), &post)
+	price, err := k.GetCurrentPrice(ctx, req.MarketId)
+	if err != nil {
+		return nil, status.Error(codes.NotFound, "not found")
+	}
 
-	return &types.QueryGetPriceResponse{Post: &post}, nil
+	return &types.QueryGetPriceResponse{Price: price}, nil
 }

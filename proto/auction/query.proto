@@ -37,6 +37,7 @@ message QueryGetAuctionRequest {
 }
 
 message QueryGetAuctionResponse {
+  google.protobuf.Any auction = 1 [(cosmos_proto.accepts_interface) = "Auction"];
 }
 
 message QueryAllAuctionRequest {

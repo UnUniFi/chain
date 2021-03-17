@@ -383,6 +383,7 @@ func New(
 		keys[jsmndisttypes.StoreKey],
 		keys[jsmndisttypes.MemStoreKey],
 		app.GetSubspace(jsmndisttypes.ModuleName),
+		app.AccountKeeper,
 		app.BankKeeper,
 	)
 	app.pricefeedKeeper = pricefeedkeeper.NewKeeper(

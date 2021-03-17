@@ -9,21 +9,27 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func CmdShowPrice() *cobra.Command {
+func CmdListRawPrice() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-price [id]",
-		Short: "shows a price",
+		Use:   "list-rawprice [market-id]",
+		Short: "list all rawprice",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			queryClient := types.NewQueryClient(clientCtx)
-
-			params := &types.QueryGetPriceRequest{
-				Id: args[0],
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
 			}
 
-			res, err := queryClient.Price(context.Background(), params)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QueryAllRawPriceRequest{
+				MarketId:   args[0],
+				Pagination: pageReq,
+			}
+
+			res, err := queryClient.RawPriceAll(context.Background(), params)
 			if err != nil {
 				return err
 			}

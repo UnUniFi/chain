@@ -1,6 +1,7 @@
 syntax = "proto3";
 package jpyx.pricefeed;
 
+import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 // this line is used by starport scaffolding # 1
@@ -17,17 +18,17 @@ service Query {
   rpc MarketAll(QueryAllMarketRequest) returns (QueryAllMarketResponse) {
 		option (google.api.http).get = "/jpyx/pricefeed/markets";
 	}
-  rpc Oracle(QueryGetOracleRequest) returns (QueryGetOracleResponse) {
-		option (google.api.http).get = "/jpyx/pricefeed/oracles/{id}";
+  rpc OracleAll(QueryAllOracleRequest) returns (QueryAllOracleResponse) {
+		option (google.api.http).get = "/jpyx/pricefeed/markets/{market_id}/oracles";
 	}
   rpc Price(QueryGetPriceRequest) returns (QueryGetPriceResponse) {
-		option (google.api.http).get = "/jpyx/pricefeed/prices/{id}";
+		option (google.api.http).get = "/jpyx/pricefeed/markets/{market_id}/price";
 	}
 	rpc PriceAll(QueryAllPriceRequest) returns (QueryAllPriceResponse) {
 		option (google.api.http).get = "/jpyx/pricefeed/prices";
 	}
-  rpc RawPrice(QueryGetRawPriceRequest) returns (QueryGetRawPriceResponse) {
-		option (google.api.http).get = "/jpyx/pricefeed/raw_prices/{id}";
+  rpc RawPriceAll(QueryAllRawPriceRequest) returns (QueryAllRawPriceResponse) {
+		option (google.api.http).get = "/jpyx/pricefeed/markets/{market_id}/raw_prices";
 	}
 }
 
@@ -43,21 +44,29 @@ message QueryAllMarketRequest {
 }
 
 message QueryAllMarketResponse {
+  repeated Market markets = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message QueryGetOracleRequest {
-	string id = 1;
+message QueryAllOracleRequest {
+	string market_id = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
-message QueryGetOracleResponse {
+message QueryAllOracleResponse {
+  repeated string oracles = 1 [
+    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryGetPriceRequest {
-	string id = 1;
+	string market_id = 1;
 }
 
 message QueryGetPriceResponse {
+  CurrentPrice price = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAllPriceRequest {
@@ -65,12 +74,16 @@ message QueryAllPriceRequest {
 }
 
 message QueryAllPriceResponse {
+  repeated CurrentPrice prices = 1 [(gogoproto.nullable) = false];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message QueryGetRawPriceRequest {
-	string id = 1;
+message QueryAllRawPriceRequest {
+	string market_id = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
-message QueryGetRawPriceResponse {
+message QueryAllRawPriceResponse {
+  repeated PostedPrice prices = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

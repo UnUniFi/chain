@@ -9,21 +9,27 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func CmdShowOracle() *cobra.Command {
+func CmdListOracle() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-oracle [id]",
-		Short: "shows a oracle",
+		Use:   "list-oracle [market-id]",
+		Short: "list all oracle",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			queryClient := types.NewQueryClient(clientCtx)
-
-			params := &types.QueryGetOracleRequest{
-				Id: args[0],
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
 			}
 
-			res, err := queryClient.Oracle(context.Background(), params)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QueryAllOracleRequest{
+				MarketId:   args[0],
+				Pagination: pageReq,
+			}
+
+			res, err := queryClient.OracleAll(context.Background(), params)
 			if err != nil {
 				return err
 			}

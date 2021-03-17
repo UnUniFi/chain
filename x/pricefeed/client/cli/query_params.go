@@ -5,29 +5,23 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/lcnem/jpyx/x/jsmndist/types"
+	"github.com/lcnem/jpyx/x/pricefeed/types"
 	"github.com/spf13/cobra"
 )
 
-func CmdListReward() *cobra.Command {
+func CmdQueryParams() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list-reward",
-		Short: "list all reward",
+		Use:   "params",
+		Short: "shows a params",
+		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			pageReq, err := client.ReadPageRequest(cmd.Flags())
-			if err != nil {
-				return err
-			}
-
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryAllRewardRequest{
-				Pagination: pageReq,
-			}
+			params := &types.QueryParamsRequest{}
 
-			res, err := queryClient.RewardAll(context.Background(), params)
+			res, err := queryClient.Params(context.Background(), params)
 			if err != nil {
 				return err
 			}

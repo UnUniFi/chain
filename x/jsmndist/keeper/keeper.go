@@ -15,22 +15,24 @@ import (
 
 type (
 	Keeper struct {
-		cdc        codec.Marshaler
-		storeKey   sdk.StoreKey
-		memKey     sdk.StoreKey
-		paramSpace paramtypes.Subspace
-		bankKeeper types.BankKeeper
+		cdc           codec.Marshaler
+		storeKey      sdk.StoreKey
+		memKey        sdk.StoreKey
+		paramSpace    paramtypes.Subspace
+		accountKeeper types.AccountKeeper
+		bankKeeper    types.BankKeeper
 	}
 )
 
-func NewKeeper(cdc codec.Marshaler, storeKey, memKey sdk.StoreKey, paramSpace paramtypes.Subspace, bankKeeper types.BankKeeper,
+func NewKeeper(cdc codec.Marshaler, storeKey, memKey sdk.StoreKey, paramSpace paramtypes.Subspace, accountKeeper types.AccountKeeper, bankKeeper types.BankKeeper,
 ) Keeper {
 	return Keeper{
-		cdc:        cdc,
-		storeKey:   storeKey,
-		memKey:     memKey,
-		paramSpace: paramSpace,
-		bankKeeper: bankKeeper,
+		cdc:           cdc,
+		storeKey:      storeKey,
+		memKey:        memKey,
+		paramSpace:    paramSpace,
+		accountKeeper: accountKeeper,
+		bankKeeper:    bankKeeper,
 	}
 }
 

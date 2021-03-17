@@ -3,23 +3,24 @@ package keeper
 import (
 	"context"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/lcnem/jpyx/x/pricefeed/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) RawPrice(c context.Context, req *types.QueryGetRawPriceRequest) (*types.QueryGetRawPriceResponse, error) {
+func (k Keeper) RawPriceAll(c context.Context, req *types.QueryAllRawPriceRequest) (*types.QueryAllRawPriceResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var post types.Market
+	var prices types.PostedPrices
 	ctx := sdk.UnwrapSDKContext(c)
 
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PostKey))
-	k.cdc.MustUnmarshalBinaryBare(store.Get(types.KeyPrefix(types.PostKey+req.Id)), &post)
+	prices, err := k.GetRawPrices(ctx, req.MarketId)
+	if err != nil {
+		return nil, status.Error(codes.NotFound, "not found")
+	}
 
-	return &types.QueryGetRawPriceResponse{Post: &post}, nil
+	return &types.QueryAllRawPriceResponse{Prices: prices}, nil
 }

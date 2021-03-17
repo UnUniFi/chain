@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -16,14 +17,14 @@ func (k Keeper) AuctionAll(c context.Context, req *types.QueryAllAuctionRequest)
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var auctions []*types.Auction
+	var auctions []*codectypes.Any
 	ctx := sdk.UnwrapSDKContext(c)
 
 	store := ctx.KVStore(k.storeKey)
 	auctionStore := prefix.NewStore(store, types.KeyPrefix(types.AuctionKey))
 
 	pageRes, err := query.Paginate(auctionStore, req.Pagination, func(key []byte, value []byte) error {
-		var auction types.Auction
+		var auction codectypes.Any
 		if err := k.cdc.UnmarshalBinaryBare(value, &auction); err != nil {
 			return err
 		}
@@ -36,7 +37,7 @@ func (k Keeper) AuctionAll(c context.Context, req *types.QueryAllAuctionRequest)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &types.QueryAllAuctionResponse{Auction: auctions, Pagination: pageRes}, nil
+	return &types.QueryAllAuctionResponse{Auctions: auctions, Pagination: pageRes}, nil
 }
 
 func (k Keeper) Auction(c context.Context, req *types.QueryGetAuctionRequest) (*types.QueryGetAuctionResponse, error) {
@@ -51,7 +52,7 @@ func (k Keeper) Auction(c context.Context, req *types.QueryGetAuctionRequest) (*
 	if err {
 		return nil, status.Error(codes.NotFound, "not found")
 	}
-	auction.GetBid() // TODO
+	auctionAny, _ := codectypes.NewAnyWithValue(auction)
 
-	return &types.QueryGetAuctionResponse{}, nil
+	return &types.QueryGetAuctionResponse{Auction: auctionAny}, nil
 }

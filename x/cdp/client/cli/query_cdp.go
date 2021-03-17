@@ -2,6 +2,8 @@ package cli
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -43,16 +45,22 @@ func CmdListCdp() *cobra.Command {
 
 func CmdShowCdp() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-cdp [id]",
+		Use:   "show-cdp [id] [collateral-type]",
 		Short: "shows a cdp",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
+			id, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return fmt.Errorf("cdp-id '%s' not a valid uint", args[0])
+			}
+
 			params := &types.QueryGetCdpRequest{
-				Id: args[0],
+				Id:             id,
+				CollateralType: args[2],
 			}
 
 			res, err := queryClient.Cdp(context.Background(), params)

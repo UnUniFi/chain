@@ -3,23 +3,25 @@ package keeper
 import (
 	"context"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	jpyx "github.com/lcnem/jpyx/types"
 	"github.com/lcnem/jpyx/x/pricefeed/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) Oracle(c context.Context, req *types.QueryGetOracleRequest) (*types.QueryGetOracleResponse, error) {
+func (k Keeper) OracleAll(c context.Context, req *types.QueryAllOracleRequest) (*types.QueryAllOracleResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var post types.Market
+	var oracles []sdk.AccAddress
 	ctx := sdk.UnwrapSDKContext(c)
 
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PostKey))
-	k.cdc.MustUnmarshalBinaryBare(store.Get(types.KeyPrefix(types.PostKey+req.Id)), &post)
+	oracles, err := k.GetOracles(ctx, req.MarketId)
+	if err != nil {
+		return nil, status.Error(codes.NotFound, "not found")
+	}
 
-	return &types.QueryGetOracleResponse{Post: &post}, nil
+	return &types.QueryAllOracleResponse{Oracles: jpyx.StringAccAddresses(oracles)}, nil
 }

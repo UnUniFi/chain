@@ -30,7 +30,8 @@ message QueryParamsResponse {
 
 // this line is used by starport scaffolding # 3
 message QueryGetCdpRequest {
-	string id = 1;
+	uint64 id = 1;
+  string collateral_type = 2;
 }
 
 message QueryGetCdpResponse {

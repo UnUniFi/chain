@@ -6,7 +6,9 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	query "github.com/cosmos/cosmos-sdk/types/query"
+	types "github.com/cosmos/cosmos-sdk/types"
+	_ "github.com/cosmos/cosmos-sdk/types/query"
+	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
@@ -109,23 +111,21 @@ func (m *QueryParamsResponse) GetParams() *Params {
 	return nil
 }
 
-// this line is used by starport scaffolding # 3
-type QueryAllRewardRequest struct {
-	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+type QueryGetBalancesRequest struct {
 }
 
-func (m *QueryAllRewardRequest) Reset()         { *m = QueryAllRewardRequest{} }
-func (m *QueryAllRewardRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryAllRewardRequest) ProtoMessage()    {}
-func (*QueryAllRewardRequest) Descriptor() ([]byte, []int) {
+func (m *QueryGetBalancesRequest) Reset()         { *m = QueryGetBalancesRequest{} }
+func (m *QueryGetBalancesRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetBalancesRequest) ProtoMessage()    {}
+func (*QueryGetBalancesRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_de14103caa8d3ebc, []int{2}
 }
-func (m *QueryAllRewardRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetBalancesRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryAllRewardRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetBalancesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryAllRewardRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetBalancesRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -135,41 +135,34 @@ func (m *QueryAllRewardRequest) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *QueryAllRewardRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAllRewardRequest.Merge(m, src)
+func (m *QueryGetBalancesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetBalancesRequest.Merge(m, src)
 }
-func (m *QueryAllRewardRequest) XXX_Size() int {
+func (m *QueryGetBalancesRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryAllRewardRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAllRewardRequest.DiscardUnknown(m)
+func (m *QueryGetBalancesRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetBalancesRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryAllRewardRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetBalancesRequest proto.InternalMessageInfo
 
-func (m *QueryAllRewardRequest) GetPagination() *query.PageRequest {
-	if m != nil {
-		return m.Pagination
-	}
-	return nil
+type QueryGetBalancesResponse struct {
+	Balances []types.Coin `protobuf:"bytes,1,rep,name=balances,proto3" json:"balances"`
 }
 
-type QueryAllRewardResponse struct {
-	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
-}
-
-func (m *QueryAllRewardResponse) Reset()         { *m = QueryAllRewardResponse{} }
-func (m *QueryAllRewardResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryAllRewardResponse) ProtoMessage()    {}
-func (*QueryAllRewardResponse) Descriptor() ([]byte, []int) {
+func (m *QueryGetBalancesResponse) Reset()         { *m = QueryGetBalancesResponse{} }
+func (m *QueryGetBalancesResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetBalancesResponse) ProtoMessage()    {}
+func (*QueryGetBalancesResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_de14103caa8d3ebc, []int{3}
 }
-func (m *QueryAllRewardResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetBalancesResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryAllRewardResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetBalancesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryAllRewardResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetBalancesResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -179,21 +172,21 @@ func (m *QueryAllRewardResponse) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
-func (m *QueryAllRewardResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAllRewardResponse.Merge(m, src)
+func (m *QueryGetBalancesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetBalancesResponse.Merge(m, src)
 }
-func (m *QueryAllRewardResponse) XXX_Size() int {
+func (m *QueryGetBalancesResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryAllRewardResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAllRewardResponse.DiscardUnknown(m)
+func (m *QueryGetBalancesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetBalancesResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryAllRewardResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetBalancesResponse proto.InternalMessageInfo
 
-func (m *QueryAllRewardResponse) GetPagination() *query.PageResponse {
+func (m *QueryGetBalancesResponse) GetBalances() []types.Coin {
 	if m != nil {
-		return m.Pagination
+		return m.Balances
 	}
 	return nil
 }
@@ -201,38 +194,39 @@ func (m *QueryAllRewardResponse) GetPagination() *query.PageResponse {
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "jpyx.jsmndist.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "jpyx.jsmndist.QueryParamsResponse")
-	proto.RegisterType((*QueryAllRewardRequest)(nil), "jpyx.jsmndist.QueryAllRewardRequest")
-	proto.RegisterType((*QueryAllRewardResponse)(nil), "jpyx.jsmndist.QueryAllRewardResponse")
+	proto.RegisterType((*QueryGetBalancesRequest)(nil), "jpyx.jsmndist.QueryGetBalancesRequest")
+	proto.RegisterType((*QueryGetBalancesResponse)(nil), "jpyx.jsmndist.QueryGetBalancesResponse")
 }
 
 func init() { proto.RegisterFile("jsmndist/query.proto", fileDescriptor_de14103caa8d3ebc) }
 
 var fileDescriptor_de14103caa8d3ebc = []byte{
-	// 378 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0xcf, 0x4e, 0x2a, 0x31,
-	0x18, 0xc5, 0x19, 0x92, 0x4b, 0x72, 0x6b, 0xdc, 0x54, 0xfe, 0x65, 0xa2, 0x13, 0x9d, 0x28, 0x1a,
-	0x13, 0xdb, 0x80, 0x2f, 0x20, 0xc6, 0xe8, 0x16, 0x59, 0xba, 0x31, 0x1d, 0x68, 0xc6, 0x21, 0x33,
-	0x6d, 0x99, 0x16, 0x85, 0xad, 0x4f, 0x60, 0xe2, 0x4b, 0xb9, 0x24, 0x71, 0xe3, 0xd2, 0x80, 0x2f,
-	0xe0, 0x1b, 0x18, 0xda, 0x82, 0x30, 0x1a, 0xd9, 0x4d, 0xda, 0xf3, 0x9d, 0xdf, 0x77, 0xce, 0x14,
-	0x14, 0x7b, 0x32, 0x61, 0xdd, 0x48, 0x2a, 0xdc, 0x1f, 0xd0, 0x74, 0x84, 0x44, 0xca, 0x15, 0x87,
-	0x9b, 0x3d, 0x31, 0x1a, 0xa2, 0xf9, 0x95, 0xbb, 0x1d, 0x72, 0x1e, 0xc6, 0x14, 0x13, 0x11, 0x61,
-	0xc2, 0x18, 0x57, 0x44, 0x45, 0x9c, 0x49, 0x23, 0x76, 0x8f, 0x3b, 0x5c, 0x26, 0x5c, 0xe2, 0x80,
-	0x48, 0x6a, 0x5c, 0xf0, 0x7d, 0x3d, 0xa0, 0x8a, 0xd4, 0xb1, 0x20, 0x61, 0xc4, 0xb4, 0xd8, 0x6a,
-	0x2b, 0x0b, 0xdc, 0xfc, 0xc3, 0x5c, 0xf8, 0x45, 0x00, 0xaf, 0x67, 0xa3, 0x2d, 0x92, 0x92, 0x44,
-	0xb6, 0x69, 0x7f, 0x40, 0xa5, 0xf2, 0x2f, 0xc0, 0xd6, 0xca, 0xa9, 0x14, 0x9c, 0x49, 0x0a, 0x4f,
-	0x40, 0x41, 0xe8, 0x93, 0xaa, 0xb3, 0xeb, 0x1c, 0x6d, 0x34, 0x4a, 0x68, 0x65, 0x5f, 0x64, 0xe5,
-	0x56, 0xe4, 0xdf, 0x82, 0x92, 0x76, 0x69, 0xc6, 0x71, 0x9b, 0x3e, 0x90, 0xb4, 0x6b, 0xed, 0xe1,
-	0x25, 0x00, 0xdf, 0x1b, 0x5a, 0xaf, 0x1a, 0x32, 0x71, 0xd0, 0x2c, 0x0e, 0x32, 0xa5, 0xd8, 0x38,
-	0xa8, 0x45, 0x42, 0x6a, 0x67, 0xdb, 0x4b, 0x93, 0x3e, 0x01, 0xe5, 0x2c, 0xc0, 0x6e, 0x7a, 0xb5,
-	0x42, 0xc8, 0x6b, 0xc2, 0xe1, 0x5a, 0x82, 0x19, 0x5e, 0x46, 0x34, 0x3e, 0x1d, 0xf0, 0x4f, 0x33,
-	0x20, 0x03, 0x05, 0x93, 0x0f, 0xee, 0x65, 0x62, 0xff, 0x2c, 0xd0, 0xf5, 0xff, 0x92, 0x18, 0x8c,
-	0xbf, 0xf3, 0xf8, 0xfa, 0xf1, 0x9c, 0xaf, 0xc0, 0x12, 0x9e, 0x69, 0x17, 0x3f, 0x06, 0x9b, 0xf6,
-	0xe0, 0x10, 0xfc, 0x37, 0xa1, 0x9a, 0x71, 0x0c, 0xf7, 0x7f, 0xf3, 0xcb, 0xf6, 0xea, 0x1e, 0xac,
-	0x51, 0x59, 0xb0, 0xa7, 0xc1, 0x55, 0x58, 0xce, 0x80, 0x53, 0x2d, 0x93, 0xe7, 0x67, 0x2f, 0x13,
-	0xcf, 0x19, 0x4f, 0x3c, 0xe7, 0x7d, 0xe2, 0x39, 0x4f, 0x53, 0x2f, 0x37, 0x9e, 0x7a, 0xb9, 0xb7,
-	0xa9, 0x97, 0xbb, 0xa9, 0x85, 0x91, 0xba, 0x1b, 0x04, 0xa8, 0xc3, 0x13, 0x1c, 0x77, 0x18, 0x4d,
-	0x8c, 0xc3, 0x92, 0x87, 0x1a, 0x09, 0x2a, 0x83, 0x82, 0x7e, 0x5c, 0xa7, 0x5f, 0x01, 0x00, 0x00,
-	0xff, 0xff, 0xf1, 0x7d, 0x84, 0x88, 0xe6, 0x02, 0x00, 0x00,
+	// 387 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0xcd, 0x4a, 0xfb, 0x40,
+	0x14, 0xc5, 0x93, 0xff, 0x47, 0x29, 0x53, 0xdc, 0x8c, 0x2d, 0x69, 0x83, 0xa6, 0x35, 0x8b, 0x5a,
+	0x04, 0x67, 0x68, 0x5d, 0xba, 0x91, 0x2a, 0xb8, 0xd5, 0x6e, 0x04, 0x77, 0x93, 0x38, 0xc4, 0x94,
+	0x66, 0x26, 0xed, 0x4c, 0xc5, 0x82, 0x2b, 0x9f, 0x40, 0xf0, 0xa5, 0xba, 0x2c, 0xb8, 0x71, 0x25,
+	0xd2, 0xfa, 0x0a, 0xee, 0x25, 0x99, 0x49, 0xe8, 0x87, 0xe8, 0x6e, 0xb8, 0xe7, 0x97, 0x73, 0xee,
+	0xb9, 0x04, 0x94, 0xfb, 0x22, 0x62, 0x37, 0xa1, 0x90, 0x78, 0x38, 0xa6, 0xa3, 0x09, 0x8a, 0x47,
+	0x5c, 0x72, 0xb8, 0xd5, 0x8f, 0x27, 0xf7, 0x28, 0x93, 0xec, 0x72, 0xc0, 0x03, 0x9e, 0x2a, 0x38,
+	0x79, 0x29, 0xc8, 0xde, 0x09, 0x38, 0x0f, 0x06, 0x14, 0x93, 0x38, 0xc4, 0x84, 0x31, 0x2e, 0x89,
+	0x0c, 0x39, 0x13, 0x5a, 0x3d, 0xf0, 0xb9, 0x88, 0xb8, 0xc0, 0x1e, 0x11, 0x54, 0x79, 0xe3, 0xbb,
+	0xb6, 0x47, 0x25, 0x69, 0xe3, 0x98, 0x04, 0x21, 0x4b, 0x61, 0xcd, 0x3a, 0xcb, 0x6c, 0x46, 0xf9,
+	0x3c, 0xcc, 0x74, 0x2b, 0x5f, 0x32, 0x7b, 0x28, 0xc1, 0x2d, 0x03, 0x78, 0x99, 0x58, 0x5f, 0x90,
+	0x11, 0x89, 0x44, 0x8f, 0x0e, 0xc7, 0x54, 0x48, 0xf7, 0x0c, 0x6c, 0xaf, 0x4c, 0x45, 0xcc, 0x99,
+	0xa0, 0xf0, 0x10, 0x14, 0xe2, 0x74, 0x52, 0x35, 0x1b, 0x66, 0xab, 0xd4, 0xa9, 0xa0, 0x95, 0x96,
+	0x48, 0xe3, 0x1a, 0x72, 0x6b, 0xc0, 0x4a, 0x5d, 0xce, 0xa9, 0xec, 0x92, 0x01, 0x61, 0x3e, 0xcd,
+	0x03, 0xae, 0x40, 0x75, 0x53, 0xd2, 0x29, 0xc7, 0xa0, 0xe8, 0xe9, 0x59, 0xd5, 0x6c, 0xfc, 0x6d,
+	0x95, 0x3a, 0x35, 0xa4, 0xea, 0xa1, 0xa4, 0x1e, 0xd2, 0xf5, 0xd0, 0x29, 0x0f, 0x59, 0xf7, 0xdf,
+	0xf4, 0xad, 0x6e, 0xf4, 0xf2, 0x0f, 0x3a, 0x9f, 0x26, 0xf8, 0x9f, 0x3a, 0x43, 0x06, 0x0a, 0x6a,
+	0x1f, 0xb8, 0xb7, 0xb6, 0xe6, 0x66, 0x61, 0xdb, 0xfd, 0x09, 0x51, 0x7b, 0xb9, 0xbb, 0x8f, 0x2f,
+	0x1f, 0xcf, 0x7f, 0x2c, 0x58, 0xc1, 0x09, 0x9b, 0x1f, 0x12, 0xab, 0xb6, 0xf0, 0x01, 0x14, 0xb3,
+	0x2a, 0xb0, 0xf9, 0x9d, 0xdd, 0xe6, 0x19, 0xec, 0xfd, 0x5f, 0x39, 0x9d, 0x5d, 0x4f, 0xb3, 0x6b,
+	0xd0, 0x5a, 0xcb, 0xce, 0x7a, 0x77, 0x4f, 0xa6, 0x73, 0xc7, 0x9c, 0xcd, 0x1d, 0xf3, 0x7d, 0xee,
+	0x98, 0x4f, 0x0b, 0xc7, 0x98, 0x2d, 0x1c, 0xe3, 0x75, 0xe1, 0x18, 0xd7, 0xcd, 0x20, 0x94, 0xb7,
+	0x63, 0x0f, 0xf9, 0x3c, 0xc2, 0x03, 0x9f, 0xd1, 0x48, 0x59, 0x2c, 0x99, 0xc8, 0x49, 0x4c, 0x85,
+	0x57, 0x48, 0x7f, 0x88, 0xa3, 0xaf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xd1, 0xf4, 0xe3, 0x4d, 0xd0,
+	0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -249,7 +243,7 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// this line is used by starport scaffolding # 2
-	RewardAll(ctx context.Context, in *QueryAllRewardRequest, opts ...grpc.CallOption) (*QueryAllRewardResponse, error)
+	Balances(ctx context.Context, in *QueryGetBalancesRequest, opts ...grpc.CallOption) (*QueryGetBalancesResponse, error)
 }
 
 type queryClient struct {
@@ -269,9 +263,9 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) RewardAll(ctx context.Context, in *QueryAllRewardRequest, opts ...grpc.CallOption) (*QueryAllRewardResponse, error) {
-	out := new(QueryAllRewardResponse)
-	err := c.cc.Invoke(ctx, "/jpyx.jsmndist.Query/RewardAll", in, out, opts...)
+func (c *queryClient) Balances(ctx context.Context, in *QueryGetBalancesRequest, opts ...grpc.CallOption) (*QueryGetBalancesResponse, error) {
+	out := new(QueryGetBalancesResponse)
+	err := c.cc.Invoke(ctx, "/jpyx.jsmndist.Query/Balances", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -282,7 +276,7 @@ func (c *queryClient) RewardAll(ctx context.Context, in *QueryAllRewardRequest, 
 type QueryServer interface {
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// this line is used by starport scaffolding # 2
-	RewardAll(context.Context, *QueryAllRewardRequest) (*QueryAllRewardResponse, error)
+	Balances(context.Context, *QueryGetBalancesRequest) (*QueryGetBalancesResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -292,8 +286,8 @@ type UnimplementedQueryServer struct {
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (*UnimplementedQueryServer) RewardAll(ctx context.Context, req *QueryAllRewardRequest) (*QueryAllRewardResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RewardAll not implemented")
+func (*UnimplementedQueryServer) Balances(ctx context.Context, req *QueryGetBalancesRequest) (*QueryGetBalancesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Balances not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -318,20 +312,20 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_RewardAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryAllRewardRequest)
+func _Query_Balances_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetBalancesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).RewardAll(ctx, in)
+		return srv.(QueryServer).Balances(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/jpyx.jsmndist.Query/RewardAll",
+		FullMethod: "/jpyx.jsmndist.Query/Balances",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).RewardAll(ctx, req.(*QueryAllRewardRequest))
+		return srv.(QueryServer).Balances(ctx, req.(*QueryGetBalancesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -345,8 +339,8 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "RewardAll",
-			Handler:    _Query_RewardAll_Handler,
+			MethodName: "Balances",
+			Handler:    _Query_Balances_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -411,7 +405,7 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryAllRewardRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryGetBalancesRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -421,32 +415,20 @@ func (m *QueryAllRewardRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryAllRewardRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryGetBalancesRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryAllRewardRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryGetBalancesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Pagination != nil {
-		{
-			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintQuery(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0xa
-	}
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryAllRewardResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryGetBalancesResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -456,27 +438,29 @@ func (m *QueryAllRewardResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryAllRewardResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryGetBalancesResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryAllRewardResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryGetBalancesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Pagination != nil {
-		{
-			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
+	if len(m.Balances) > 0 {
+		for iNdEx := len(m.Balances) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Balances[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
 			}
-			i -= size
-			i = encodeVarintQuery(dAtA, i, uint64(size))
+			i--
+			dAtA[i] = 0xa
 		}
-		i--
-		dAtA[i] = 0x12
 	}
 	return len(dAtA) - i, nil
 }
@@ -514,28 +498,26 @@ func (m *QueryParamsResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryAllRewardRequest) Size() (n int) {
+func (m *QueryGetBalancesRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Pagination != nil {
-		l = m.Pagination.Size()
-		n += 1 + l + sovQuery(uint64(l))
-	}
 	return n
 }
 
-func (m *QueryAllRewardResponse) Size() (n int) {
+func (m *QueryGetBalancesResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Pagination != nil {
-		l = m.Pagination.Size()
-		n += 1 + l + sovQuery(uint64(l))
+	if len(m.Balances) > 0 {
+		for _, e := range m.Balances {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
 	}
 	return n
 }
@@ -682,7 +664,7 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryAllRewardRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryGetBalancesRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -705,48 +687,12 @@ func (m *QueryAllRewardRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAllRewardRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryGetBalancesRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAllRewardRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryGetBalancesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Pagination == nil {
-				m.Pagination = &query.PageRequest{}
-			}
-			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
@@ -768,7 +714,7 @@ func (m *QueryAllRewardRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryAllRewardResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryGetBalancesResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -791,15 +737,15 @@ func (m *QueryAllRewardResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAllRewardResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryGetBalancesResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAllRewardResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryGetBalancesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
-		case 2:
+		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Balances", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -826,10 +772,8 @@ func (m *QueryAllRewardResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Pagination == nil {
-				m.Pagination = &query.PageResponse{}
-			}
-			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.Balances = append(m.Balances, types.Coin{})
+			if err := m.Balances[len(m.Balances)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
