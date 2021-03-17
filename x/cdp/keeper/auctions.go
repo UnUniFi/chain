@@ -123,7 +123,8 @@ func (k Keeper) NetSurplusAndDebt(ctx sdk.Context) error {
 
 	// burn stable coins equal to min(balance, netAmount)
 	dp := k.GetParams(ctx).DebtParam
-	balance := k.accountKeeper.GetModuleAccount(ctx, types.LiquidatorMacc).GetCoins().AmountOf(dp.Denom)
+	macc := k.accountKeeper.GetModuleAccount(ctx, types.LiquidatorMacc)
+	balance := k.bankKeeper.GetAllBalances(ctx, macc.GetAddress()).AmountOf(dp.Denom)
 	burnAmount := sdk.MinInt(balance, netAmount)
 	return k.bankKeeper.BurnCoins(ctx, types.LiquidatorMacc, sdk.NewCoins(sdk.NewCoin(dp.Denom, burnAmount)))
 }
@@ -132,13 +133,13 @@ func (k Keeper) NetSurplusAndDebt(ctx sdk.Context) error {
 func (k Keeper) GetTotalSurplus(ctx sdk.Context, accountName string) sdk.Int {
 	acc := k.accountKeeper.GetModuleAccount(ctx, accountName)
 	dp := k.GetParams(ctx).DebtParam
-	return acc.GetCoins().AmountOf(dp.Denom)
+	return k.bankKeeper.GetAllBalances(ctx, acc.GetAddress()).AmountOf(dp.Denom)
 }
 
 // GetTotalDebt returns the total amount of debt tokens held by the liquidator module account
 func (k Keeper) GetTotalDebt(ctx sdk.Context, accountName string) sdk.Int {
 	acc := k.accountKeeper.GetModuleAccount(ctx, accountName)
-	return acc.GetCoins().AmountOf(k.GetDebtDenom(ctx))
+	return k.bankKeeper.GetAllBalances(ctx, acc.GetAddress()).AmountOf(k.GetDebtDenom(ctx))
 }
 
 // RunSurplusAndDebtAuctions nets the surplus and debt balances and then creates surplus or debt auctions if the remaining balance is above the auction threshold parameter
@@ -160,7 +161,8 @@ func (k Keeper) RunSurplusAndDebtAuctions(ctx sdk.Context) error {
 		}
 	}
 
-	surplus := k.accountKeeper.GetModuleAccount(ctx, types.LiquidatorMacc).GetCoins().AmountOf(params.DebtParam.Denom)
+	macc := k.accountKeeper.GetModuleAccount(ctx, types.LiquidatorMacc)
+	surplus := k.bankKeeper.GetAllBalances(ctx, macc.GetAddress()).AmountOf(params.DebtParam.Denom)
 	if !surplus.GTE(params.SurplusAuctionThreshold) {
 		return nil
 	}

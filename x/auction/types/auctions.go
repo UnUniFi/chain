@@ -6,8 +6,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/cosmos/cosmos-sdk/codec/types"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	proto "github.com/gogo/protobuf/proto"
 )
 
 const (
@@ -25,6 +28,8 @@ var DistantFuture = time.Date(9000, 1, 1, 0, 0, 0, 0, time.UTC)
 
 // Auction is an interface for handling common actions on auctions.
 type Auction interface {
+	proto.Message
+
 	GetID() uint64
 	WithID(uint64) Auction
 
@@ -40,6 +45,36 @@ type Auction interface {
 
 // Auctions is a slice of auctions.
 type Auctions []Auction
+
+func PackAuctions(auctions Auctions) ([]*codectypes.Any, error) {
+	auctionAny := make([]*types.Any, len(auctions))
+	for i, auc := range auctions {
+		msg, ok := auc.(proto.Message)
+		if !ok {
+			return nil, fmt.Errorf("cannot proto marshal %T", auc)
+		}
+		any, err := types.NewAnyWithValue(msg)
+		if err != nil {
+			return nil, err
+		}
+		auctionAny[i] = any
+	}
+
+	return auctionAny, nil
+}
+
+func UnpackAuctions(auctionsAny []*types.Any) (Auctions, error) {
+	accounts := make(Auctions, len(auctionsAny))
+	for i, any := range auctionsAny {
+		acc, ok := any.GetCachedValue().(Auction)
+		if !ok {
+			return nil, fmt.Errorf("expected genesis account")
+		}
+		accounts[i] = acc
+	}
+
+	return accounts, nil
+}
 
 // GetID is a getter for auction ID.
 func (a BaseAuction) GetID() uint64 { return a.Id }
@@ -142,8 +177,8 @@ func NewDebtAuction(buyerModAccName string, bid sdk.Coin, initialLot sdk.Coin, e
 			Initiator:       buyerModAccName,
 			Lot:             initialLot,
 			Bidder:          authtypes.NewModuleAddress(buyerModAccName), // send proceeds from the first bid to the buyer.
-			Bid:             bid,                                      // amount that the buyer is buying - doesn't change over course of auction
-			HasReceivedBids: false,                                    // new auctions don't have any bids
+			Bid:             bid,                                         // amount that the buyer is buying - doesn't change over course of auction
+			HasReceivedBids: false,                                       // new auctions don't have any bids
 			EndTime:         endTime,
 			MaxEndTime:      endTime,
 		},

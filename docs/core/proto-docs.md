@@ -141,7 +141,7 @@
     - [MsgDeposit](#jpyx.cdp.MsgDeposit)
     - [MsgDrawDebt](#jpyx.cdp.MsgDrawDebt)
     - [MsgLiquidate](#jpyx.cdp.MsgLiquidate)
-    - [MsgRelayDebt](#jpyx.cdp.MsgRelayDebt)
+    - [MsgRepayDebt](#jpyx.cdp.MsgRepayDebt)
     - [MsgWithdraw](#jpyx.cdp.MsgWithdraw)
     - [Params](#jpyx.cdp.Params)
   
@@ -1394,9 +1394,9 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.cdp.MsgRelayDebt"></a>
+<a name="jpyx.cdp.MsgRepayDebt"></a>
 
-### MsgRelayDebt
+### MsgRepayDebt
 
 
 

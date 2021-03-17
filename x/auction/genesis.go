@@ -10,7 +10,7 @@ import (
 
 // InitGenesis initializes the capability module's state from a provided genesis
 // state.
-func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKeeper, genState types.GenesisState) {
+func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKeeper, bankKeeper types.BankKeeper,genState types.GenesisState) {
 	// this line is used by starport scaffolding # genesis/module/init
 	// Set all the auction
 	// for _, elem := range genState.AuctionList {
@@ -28,7 +28,11 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKe
 	k.SetParams(ctx, genState.Params)
 
 	totalAuctionCoins := sdk.NewCoins()
-	for _, a := range genState.Auctions {
+	auctions, err := types.UnpackGenesisAuctions(genState.Auctions)
+	if err != nil {
+		panic(err)
+	}
+	for _, a := range auctions {
 		k.SetAuction(ctx, a)
 		// find the total coins that should be present in the module account
 		totalAuctionCoins = totalAuctionCoins.Add(a.GetModuleAccountCoins()...)
@@ -41,9 +45,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKe
 	}
 	// check module coins match auction coins
 	// Note: Other sdk modules do not check this, instead just using the existing module account coins, or if zero, setting them.
-	// if !moduleAcc.GetCoins().IsEqual(totalAuctionCoins) {
-	// 	panic(fmt.Sprintf("total auction coins (%s) do not equal (%s) module account (%s) ", moduleAcc.GetCoins(), ModuleName, totalAuctionCoins))
-	// }
+	balances := bankKeeper.GetAllBalances(ctx, moduleAcc.GetAddress())
+	if !balances.IsEqual(totalAuctionCoins) {
+		panic(fmt.Sprintf("total auction coins (%s) do not equal (%s) module account (%s) ", balances, types.ModuleName, totalAuctionCoins))
+	}
 }
 
 // ExportGenesis returns the capability module's exported genesis.
@@ -75,6 +80,10 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 		genAuctions = append(genAuctions, ga)
 		return false
 	})
-	ret := types.NewGenesisState(nextAuctionID, params, genAuctions)
+	packed, err := types.PackGenesisAuctions(genAuctions)
+	if err != nil {
+		panic(err)
+	}
+	ret := types.NewGenesisState(nextAuctionID, params, packed)
 	return &ret
 }

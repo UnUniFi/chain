@@ -24,8 +24,8 @@ type (
 	}
 )
 
-func NewKeeper(cdc codec.Marshaler, storeKey, memKey sdk.StoreKey, paramSpace paramtypes.Subspace) *Keeper {
-	return &Keeper{
+func NewKeeper(cdc codec.Marshaler, storeKey, memKey sdk.StoreKey, paramSpace paramtypes.Subspace) Keeper {
+	return Keeper{
 		cdc:        cdc,
 		storeKey:   storeKey,
 		memKey:     memKey,
@@ -108,7 +108,7 @@ func (k Keeper) SetCurrentPrices(ctx sdk.Context, marketID string) error {
 	// filter out expired prices
 	for _, v := range prices {
 		if v.Expiry.After(ctx.BlockTime()) {
-			notExpiredPrices = append(notExpiredPrices, types.NewCurrentPrice(v.MarketID, v.Price))
+			notExpiredPrices = append(notExpiredPrices, types.NewCurrentPrice(v.MarketId, v.Price))
 		}
 	}
 
@@ -143,7 +143,7 @@ func (k Keeper) SetCurrentPrices(ctx sdk.Context, marketID string) error {
 
 func (k Keeper) setCurrentPrice(ctx sdk.Context, marketID string, currentPrice types.CurrentPrice) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.CurrentPriceKey(marketID), k.cdc.MustMarshalBinaryBare(currentPrice))
+	store.Set(types.CurrentPriceKey(marketID), k.cdc.MustMarshalBinaryBare(&currentPrice))
 }
 
 // CalculateMedianPrice calculates the median prices for the input prices.

@@ -41,6 +41,32 @@ type AccountKeeper interface {
 }
 
 type BankKeeper interface {
+	// View
+	ValidateBalance(ctx sdk.Context, addr sdk.AccAddress) error
+	HasBalance(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coin) bool
+
+	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	GetAccountsBalances(ctx sdk.Context) []banktypes.Balance
+	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
+	LockedCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+
+	IterateAccountBalances(ctx sdk.Context, addr sdk.AccAddress, cb func(coin sdk.Coin) (stop bool))
+	IterateAllBalances(ctx sdk.Context, cb func(address sdk.AccAddress, coin sdk.Coin) (stop bool))
+
+	// Send
+	InputOutputCoins(ctx sdk.Context, inputs []banktypes.Input, outputs []banktypes.Output) error
+	SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
+
+	GetParams(ctx sdk.Context) banktypes.Params
+	SetParams(ctx sdk.Context, params banktypes.Params)
+
+	SendEnabledCoin(ctx sdk.Context, coin sdk.Coin) bool
+	SendEnabledCoins(ctx sdk.Context, coins ...sdk.Coin) error
+
+	BlockedAddr(addr sdk.AccAddress) bool
+
+	//
 	InitGenesis(sdk.Context, *banktypes.GenesisState)
 	ExportGenesis(sdk.Context) *banktypes.GenesisState
 

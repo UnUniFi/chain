@@ -34,7 +34,8 @@ func ModuleAccountInvariants(k Keeper) sdk.Invariant {
 			return false
 		})
 
-		moduleAccCoins := k.accountKeeper.GetModuleAccount(ctx, types.ModuleName).GetCoins()
+		moduleAcc := k.accountKeeper.GetModuleAccount(ctx, types.ModuleName)
+		moduleAccCoins := k.bankKeeper.GetAllBalances(ctx, moduleAcc.GetAddress())
 		broken := !moduleAccCoins.IsEqual(totalAuctionCoins)
 
 		invariantMessage := sdk.FormatInvariant(
@@ -92,9 +93,9 @@ func ValidIndexInvariant(k Keeper) sdk.Invariant {
 		*/
 
 		// Check all auction IDs in the index are in the auction store
-		store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AuctionKey))
+		store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AuctionKeyPrefix)
 
-		indexIterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AuctionByTimeKey))
+		indexIterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.AuctionByTimeKeyPrefix)
 		defer indexIterator.Close()
 
 		var indexLength int
@@ -113,7 +114,7 @@ func ValidIndexInvariant(k Keeper) sdk.Invariant {
 		}
 
 		// Check length of auction store matches the length of the index
-		storeIterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AuctionKey))
+		storeIterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.AuctionKeyPrefix)
 		defer storeIterator.Close()
 		var storeLength int
 		for ; storeIterator.Valid(); storeIterator.Next() {

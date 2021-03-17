@@ -436,24 +436,24 @@ func (m *MsgDrawDebt) GetPrincipal() types.Coin {
 	return types.Coin{}
 }
 
-type MsgRelayDebt struct {
+type MsgRepayDebt struct {
 	Sender         github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"sender" yaml:"sender"`
 	CollateralType string                                        `protobuf:"bytes,2,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
 	Payment        types.Coin                                    `protobuf:"bytes,3,opt,name=payment,proto3" json:"payment" yaml:"payment"`
 }
 
-func (m *MsgRelayDebt) Reset()         { *m = MsgRelayDebt{} }
-func (m *MsgRelayDebt) String() string { return proto.CompactTextString(m) }
-func (*MsgRelayDebt) ProtoMessage()    {}
-func (*MsgRelayDebt) Descriptor() ([]byte, []int) {
+func (m *MsgRepayDebt) Reset()         { *m = MsgRepayDebt{} }
+func (m *MsgRepayDebt) String() string { return proto.CompactTextString(m) }
+func (*MsgRepayDebt) ProtoMessage()    {}
+func (*MsgRepayDebt) Descriptor() ([]byte, []int) {
 	return fileDescriptor_105e3b742c3b95d7, []int{7}
 }
-func (m *MsgRelayDebt) XXX_Unmarshal(b []byte) error {
+func (m *MsgRepayDebt) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgRelayDebt) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgRepayDebt) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgRelayDebt.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgRepayDebt.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -463,26 +463,26 @@ func (m *MsgRelayDebt) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
-func (m *MsgRelayDebt) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRelayDebt.Merge(m, src)
+func (m *MsgRepayDebt) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRepayDebt.Merge(m, src)
 }
-func (m *MsgRelayDebt) XXX_Size() int {
+func (m *MsgRepayDebt) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgRelayDebt) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRelayDebt.DiscardUnknown(m)
+func (m *MsgRepayDebt) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRepayDebt.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgRelayDebt proto.InternalMessageInfo
+var xxx_messageInfo_MsgRepayDebt proto.InternalMessageInfo
 
-func (m *MsgRelayDebt) GetCollateralType() string {
+func (m *MsgRepayDebt) GetCollateralType() string {
 	if m != nil {
 		return m.CollateralType
 	}
 	return ""
 }
 
-func (m *MsgRelayDebt) GetPayment() types.Coin {
+func (m *MsgRepayDebt) GetPayment() types.Coin {
 	if m != nil {
 		return m.Payment
 	}
@@ -760,7 +760,7 @@ func init() {
 	proto.RegisterType((*MsgDeposit)(nil), "jpyx.cdp.MsgDeposit")
 	proto.RegisterType((*MsgWithdraw)(nil), "jpyx.cdp.MsgWithdraw")
 	proto.RegisterType((*MsgDrawDebt)(nil), "jpyx.cdp.MsgDrawDebt")
-	proto.RegisterType((*MsgRelayDebt)(nil), "jpyx.cdp.MsgRelayDebt")
+	proto.RegisterType((*MsgRepayDebt)(nil), "jpyx.cdp.MsgRepayDebt")
 	proto.RegisterType((*MsgLiquidate)(nil), "jpyx.cdp.MsgLiquidate")
 	proto.RegisterType((*Params)(nil), "jpyx.cdp.Params")
 	proto.RegisterType((*CollateralParam)(nil), "jpyx.cdp.CollateralParam")
@@ -820,7 +820,7 @@ var fileDescriptor_105e3b742c3b95d7 = []byte{
 	0xd6, 0x1b, 0x66, 0xf0, 0x08, 0xd3, 0x17, 0x74, 0x84, 0x17, 0xc2, 0xf7, 0x9f, 0x29, 0x30, 0xbb,
 	0x17, 0xd6, 0x3f, 0x71, 0x58, 0xc3, 0x0e, 0xcc, 0xe3, 0xff, 0x09, 0x1f, 0x37, 0xe1, 0x8f, 0x24,
 	0xe1, 0x5b, 0x81, 0x79, 0xbc, 0x45, 0x6a, 0x6c, 0xec, 0xed, 0xe3, 0x94, 0xa0, 0x53, 0x49, 0x83,
-	0x1e, 0x43, 0xb7, 0x40, 0x5f, 0xcb, 0x3e, 0x8a, 0x89, 0x6b, 0xb6, 0xff, 0x3b, 0x44, 0x7c, 0x00,
+	0x1e, 0x43, 0xb7, 0x40, 0x5f, 0xcb, 0x3e, 0x8a, 0x89, 0x6f, 0xb6, 0xff, 0x3b, 0x44, 0x7c, 0x00,
 	0xa6, 0x7d, 0xb3, 0xcd, 0x6f, 0xce, 0xb3, 0x69, 0x58, 0x51, 0x34, 0x2c, 0x28, 0x1a, 0xe4, 0x3a,
 	0x84, 0x7b, 0x08, 0xe8, 0x3b, 0x49, 0xc1, 0xae, 0x73, 0xbf, 0xe5, 0xf0, 0xa9, 0x87, 0x53, 0x70,
 	0x44, 0x88, 0x7f, 0x61, 0x14, 0x48, 0x30, 0x84, 0x15, 0x2a, 0xb4, 0xc1, 0x4c, 0x8d, 0x06, 0x01,
@@ -869,7 +869,7 @@ var fileDescriptor_105e3b742c3b95d7 = []byte{
 	0xd9, 0xf3, 0x82, 0xf6, 0xdb, 0xf3, 0x82, 0xf6, 0xe4, 0x45, 0x61, 0xe2, 0xd9, 0x8b, 0xc2, 0xc4,
 	0x4f, 0x2f, 0x0a, 0x13, 0x9f, 0xbe, 0x1e, 0xf3, 0xe0, 0x5a, 0x1e, 0x69, 0x96, 0xf9, 0xc8, 0x55,
 	0x3e, 0x29, 0x5b, 0xb6, 0x2f, 0x1d, 0xd4, 0x32, 0xe2, 0x83, 0xe2, 0x5b, 0xff, 0x04, 0x00, 0x00,
-	0xff, 0xff, 0xf4, 0xd1, 0x39, 0x71, 0xa0, 0x16, 0x00, 0x00,
+	0xff, 0xff, 0x67, 0xe8, 0x72, 0xd3, 0xa0, 0x16, 0x00, 0x00,
 }
 
 func (m *CDP) Marshal() (dAtA []byte, err error) {
@@ -1296,7 +1296,7 @@ func (m *MsgDrawDebt) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgRelayDebt) Marshal() (dAtA []byte, err error) {
+func (m *MsgRepayDebt) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1306,12 +1306,12 @@ func (m *MsgRelayDebt) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgRelayDebt) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgRepayDebt) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgRelayDebt) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgRepayDebt) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1840,7 +1840,7 @@ func (m *MsgDrawDebt) Size() (n int) {
 	return n
 }
 
-func (m *MsgRelayDebt) Size() (n int) {
+func (m *MsgRepayDebt) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -3259,7 +3259,7 @@ func (m *MsgDrawDebt) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgRelayDebt) Unmarshal(dAtA []byte) error {
+func (m *MsgRepayDebt) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3282,10 +3282,10 @@ func (m *MsgRelayDebt) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRelayDebt: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgRepayDebt: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRelayDebt: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgRepayDebt: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

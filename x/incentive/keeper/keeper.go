@@ -21,7 +21,6 @@ type (
 		paramSpace    paramtypes.Subspace
 		accountKeeper types.AccountKeeper
 		bankKeeper    types.BankKeeper
-		stakingKeeper types.StakingKeeper
 		cdpKeeper     types.CdpKeeper
 	}
 )
@@ -29,16 +28,14 @@ type (
 func NewKeeper(cdc codec.Marshaler, storeKey, memKey sdk.StoreKey,
 	paramSpace paramtypes.Subspace, accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	stakingKeeper types.StakingKeeper,
-	cdpKeeper types.CdpKeeper) *Keeper {
-	return &Keeper{
+	cdpKeeper types.CdpKeeper) Keeper {
+	return Keeper{
 		cdc:           cdc,
 		storeKey:      storeKey,
 		memKey:        memKey,
 		paramSpace:    paramSpace,
 		accountKeeper: accountKeeper,
 		bankKeeper:    bankKeeper,
-		stakingKeeper: stakingKeeper,
 		cdpKeeper:     cdpKeeper,
 	}
 }
@@ -62,7 +59,7 @@ func (k Keeper) GetJPYXMintingClaim(ctx sdk.Context, addr sdk.AccAddress) (types
 // SetJPYXMintingClaim sets the claim in the store corresponding to the input address, collateral type, and id
 func (k Keeper) SetJPYXMintingClaim(ctx sdk.Context, c types.JPYXMintingClaim) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.JPYXMintingClaimKeyPrefix)
-	bz := k.cdc.MustMarshalBinaryBare(c)
+	bz := k.cdc.MustMarshalBinaryBare(&c)
 	store.Set(c.Owner, bz)
 
 }

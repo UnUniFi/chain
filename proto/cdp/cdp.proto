@@ -135,7 +135,7 @@ message MsgDrawDebt {
   ];
 }
 
-message MsgRelayDebt {
+message MsgRepayDebt {
   string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",

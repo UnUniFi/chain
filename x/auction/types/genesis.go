@@ -5,7 +5,9 @@ import (
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/codec/types"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	proto "github.com/gogo/protobuf/proto"
 )
 
 // DefaultIndex is the default capability global index
@@ -53,7 +55,11 @@ func (gs GenesisState) Validate() error {
 	}
 
 	ids := map[uint64]bool{}
-	for _, a := range gs.Auctions {
+	auctions, err := UnpackGenesisAuctions(gs.Auctions)
+	if err != nil {
+		return err
+	}
+	for _, a := range auctions {
 
 		if err := a.Validate(); err != nil {
 			return fmt.Errorf("found invalid auction: %w", err)
@@ -64,8 +70,8 @@ func (gs GenesisState) Validate() error {
 		}
 		ids[a.GetID()] = true
 
-		if a.GetID() >= gs.NextAuctionID {
-			return fmt.Errorf("found auction ID ≥ the nextAuctionID (%d ≥ %d)", a.GetID(), gs.NextAuctionID)
+		if a.GetID() >= gs.NextAuctionId {
+			return fmt.Errorf("found auction ID ≥ the nextAuctionID (%d ≥ %d)", a.GetID(), gs.NextAuctionId)
 		}
 	}
 	return nil
@@ -94,3 +100,33 @@ type GenesisAuction interface {
 
 // GenesisAuctions is a slice of genesis auctions.
 type GenesisAuctions []GenesisAuction
+
+func PackGenesisAuctions(auctions GenesisAuctions) ([]*codectypes.Any, error) {
+	auctionAny := make([]*types.Any, len(auctions))
+	for i, auc := range auctions {
+		msg, ok := auc.(proto.Message)
+		if !ok {
+			return nil, fmt.Errorf("cannot proto marshal %T", auc)
+		}
+		any, err := types.NewAnyWithValue(msg)
+		if err != nil {
+			return nil, err
+		}
+		auctionAny[i] = any
+	}
+
+	return auctionAny, nil
+}
+
+func UnpackGenesisAuctions(auctionsAny []*types.Any) (GenesisAuctions, error) {
+	accounts := make(GenesisAuctions, len(auctionsAny))
+	for i, any := range auctionsAny {
+		acc, ok := any.GetCachedValue().(GenesisAuction)
+		if !ok {
+			return nil, fmt.Errorf("expected genesis account")
+		}
+		accounts[i] = acc
+	}
+
+	return accounts, nil
+}

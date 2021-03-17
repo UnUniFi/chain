@@ -20,19 +20,19 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 			return handleMsgCreateCdp(ctx, k, msg)
 
 		case *types.MsgDeposit:
-			return handleMsgUpdateCdp(ctx, k, msg)
+			return handleMsgDeposit(ctx, k, msg)
 
 		case *types.MsgWithdraw:
-			return handleMsgDeleteCdp(ctx, k, msg)
+			return handleMsgWithdraw(ctx, k, msg)
 
 		case *types.MsgDrawDebt:
-			return handleMsgDeleteCdp(ctx, k, msg)
+			return handleMsgDrawDebt(ctx, k, msg)
 
-		case *types.MsgRelayDebt:
-			return handleMsgDeleteCdp(ctx, k, msg)
+		case *types.MsgRepayDebt:
+			return handleMsgRepayDebt(ctx, k, msg)
 
 		case *types.MsgLiquidate:
-			return handleMsgDeleteCdp(ctx, k, msg)
+			return handleMsgLiquidate(ctx, k, msg)
 
 		default:
 			errMsg := fmt.Sprintf("unrecognized %s message type: %T", types.ModuleName, msg)

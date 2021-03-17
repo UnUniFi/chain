@@ -2,6 +2,8 @@ package cli
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -51,8 +53,13 @@ func CmdShowAuction() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
+			id, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return fmt.Errorf("auction-id '%s' not a valid uint", args[0])
+			}
+
 			params := &types.QueryGetAuctionRequest{
-				Id: args[0],
+				Id: id,
 			}
 
 			res, err := queryClient.Auction(context.Background(), params)

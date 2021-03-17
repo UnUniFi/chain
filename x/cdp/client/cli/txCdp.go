@@ -6,12 +6,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/lcnem/jpyx/x/cdp/types"
 )
 
 func CmdCreateCdp() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-cdp",
+		Use:   "create-cdp [collateral] [debt] [collateral-type]",
 		Short: "Creates a new cdp",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -21,63 +22,21 @@ func CmdCreateCdp() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgCreateCdp(clientCtx.GetFromAddress().String())
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-
-	return cmd
-}
-
-func CmdUpdateCdp() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "update-cdp [id]",
-		Short: "Update a cdp",
-		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			id := args[0]
-
-			clientCtx, err := client.GetClientTxContext(cmd)
+			collateral, err := sdk.ParseCoinNormalized(args[0])
 			if err != nil {
 				return err
 			}
-
-			msg := types.NewMsgUpdateCdp(clientCtx.GetFromAddress().String(), id)
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-
-	return cmd
-}
-
-func CmdDeleteCdp() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "delete-cdp [id]",
-		Short: "Delete a cdp by id",
-		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			id := args[0]
-
-			clientCtx, err := client.GetClientTxContext(cmd)
+			debt, err := sdk.ParseCoinNormalized(args[1])
 			if err != nil {
 				return err
 			}
+			collateralType := args[2]
 
-			msg := types.NewMsgDeleteCdp(clientCtx.GetFromAddress().String(), id)
+			msg := types.NewMsgCreateCDP(clientCtx.GetFromAddress(), collateral, debt, collateralType)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
 

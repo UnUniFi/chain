@@ -1,43 +1,54 @@
 package types
 
 import (
+	"errors"
+	fmt "fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ sdk.Msg = &MsgPlaceBid{}
 
-func NewMsgPlaceBid(creator string) *MsgPlaceBid {
-	return &MsgPlaceBid{
-		Creator: creator,
+// NewMsgPlaceBid returns a new MsgPlaceBid.
+func NewMsgPlaceBid(auctionID uint64, bidder sdk.AccAddress, amt sdk.Coin) MsgPlaceBid {
+	return MsgPlaceBid{
+		AuctionId: auctionID,
+		Bidder:    bidder,
+		Amount:    amt,
 	}
 }
 
-func (msg *MsgPlaceBid) Route() string {
-	return RouterKey
-}
+// Route return the message type used for routing the message.
+func (msg MsgPlaceBid) Route() string { return RouterKey }
 
-func (msg *MsgPlaceBid) Type() string {
-	return "CreateAuction"
-}
+// Type returns a human-readable string for the message, intended for utilization within tags.
+func (msg MsgPlaceBid) Type() string { return "place_bid" }
 
-func (msg *MsgPlaceBid) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
+// ValidateBasic does a simple validation check that doesn't require access to state.
+func (msg MsgPlaceBid) ValidateBasic() error {
+	if msg.AuctionId == 0 {
+		return errors.New("auction id cannot be zero")
 	}
-	return []sdk.AccAddress{creator}
+	if msg.Bidder.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "bidder address cannot be empty")
+	}
+	if len(msg.Bidder) != sdk.AddrLen {
+		return fmt.Errorf("the expected bidder address length is %d, actual length is %d", sdk.AddrLen, len(msg.Bidder))
+	}
+	if !msg.Amount.IsValid() {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "bid amount %s", msg.Amount)
+	}
+	return nil
 }
 
-func (msg *MsgPlaceBid) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+// GetSignBytes gets the canonical byte representation of the Msg.
+func (msg MsgPlaceBid) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgPlaceBid) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-	}
-	return nil
+// GetSigners returns the addresses of signers that must sign.
+func (msg MsgPlaceBid) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msg.Bidder}
 }

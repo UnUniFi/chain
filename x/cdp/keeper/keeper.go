@@ -24,13 +24,14 @@ type (
 		auctionKeeper   types.AuctionKeeper
 		pricefeedKeeper types.PricefeedKeeper
 		hooks           types.CDPHooks
+		maccPerms       map[string][]string
 	}
 )
 
 func NewKeeper(cdc codec.Marshaler, storeKey, memKey sdk.StoreKey, paramSpace paramtypes.Subspace, accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	auctionKeeper types.AuctionKeeper, pricefeedKeeper types.PricefeedKeeper) *Keeper {
-	return &Keeper{
+	auctionKeeper types.AuctionKeeper, pricefeedKeeper types.PricefeedKeeper, maccPerms map[string][]string) Keeper {
+	return Keeper{
 		cdc:             cdc,
 		storeKey:        storeKey,
 		memKey:          memKey,
@@ -40,6 +41,7 @@ func NewKeeper(cdc codec.Marshaler, storeKey, memKey sdk.StoreKey, paramSpace pa
 		auctionKeeper:   auctionKeeper,
 		pricefeedKeeper: pricefeedKeeper,
 		hooks:           nil,
+		maccPerms:       maccPerms,
 	}
 }
 
@@ -161,7 +163,7 @@ func (k Keeper) SetPreviousAccrualTime(ctx sdk.Context, ctype string, previousAc
 
 // GetInterestFactor returns the current interest factor for an individual collateral type
 func (k Keeper) GetInterestFactor(ctx sdk.Context, ctype string) (sdk.Dec, bool) {
-	store := prefix.NewStore(ctx.KVStore(k.key), types.InterestFactorPrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.InterestFactorPrefix)
 	bz := store.Get([]byte(ctype))
 	if bz == nil {
 		return sdk.ZeroDec(), false
@@ -220,7 +222,8 @@ func (k Keeper) SetTotalPrincipal(ctx sdk.Context, collateralType, principalDeno
 func (k Keeper) getModuleAccountCoins(ctx sdk.Context, denom string) sdk.Coins {
 	totalModCoinBalance := sdk.NewCoins(sdk.NewCoin(denom, sdk.ZeroInt()))
 	for macc := range k.maccPerms {
-		modCoinBalance := k.bankKeeper.GetModuleAccount(ctx, macc).GetCoins().AmountOf(denom)
+		_macc := k.accountKeeper.GetModuleAccount(ctx, macc)
+		modCoinBalance := k.bankKeeper.GetAllBalances(ctx, _macc.GetAddress()).AmountOf(denom)
 		if modCoinBalance.IsPositive() {
 			totalModCoinBalance = totalModCoinBalance.Add(sdk.NewCoin(denom, modCoinBalance))
 		}

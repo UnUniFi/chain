@@ -164,7 +164,6 @@ var (
 		auctiontypes.ModuleName:        nil,
 		cdptypes.ModuleName:            {authtypes.Minter, authtypes.Burner},
 		cdptypes.LiquidatorMacc:        {authtypes.Minter, authtypes.Burner},
-		cdptypes.SavingsRateMacc:       {authtypes.Minter},
 		jsmndisttypes.ModuleName:       {authtypes.Minter},
 	}
 
@@ -351,7 +350,7 @@ func New(
 	app.EvidenceKeeper = *evidenceKeeper
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
-	app.auctionKeeper = *auctionkeeper.NewKeeper(
+	app.auctionKeeper = auctionkeeper.NewKeeper(
 		appCodec,
 		keys[auctiontypes.StoreKey],
 		keys[auctiontypes.MemStoreKey],
@@ -359,7 +358,7 @@ func New(
 		app.AccountKeeper,
 		app.BankKeeper,
 	)
-	cdpKeeper := *cdpkeeper.NewKeeper(
+	cdpKeeper := cdpkeeper.NewKeeper(
 		appCodec,
 		keys[cdptypes.StoreKey],
 		keys[cdptypes.MemStoreKey],
@@ -368,25 +367,25 @@ func New(
 		app.BankKeeper,
 		app.auctionKeeper,
 		app.pricefeedKeeper,
+		maccPerms,
 	)
-	app.incentiveKeeper = *incentivekeeper.NewKeeper(
+	app.incentiveKeeper = incentivekeeper.NewKeeper(
 		appCodec,
 		keys[incentivetypes.StoreKey],
 		keys[incentivetypes.MemStoreKey],
 		app.GetSubspace(incentivetypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper,
-		&stakingKeeper,
 		&cdpKeeper,
 	)
-	app.jsmndistKeeper = *jsmndistkeeper.NewKeeper(
+	app.jsmndistKeeper = jsmndistkeeper.NewKeeper(
 		appCodec,
 		keys[jsmndisttypes.StoreKey],
 		keys[jsmndisttypes.MemStoreKey],
 		app.GetSubspace(jsmndisttypes.ModuleName),
 		app.BankKeeper,
 	)
-	app.pricefeedKeeper = *pricefeedkeeper.NewKeeper(
+	app.pricefeedKeeper = pricefeedkeeper.NewKeeper(
 		appCodec,
 		keys[pricefeedtypes.StoreKey],
 		keys[pricefeedtypes.MemStoreKey],
@@ -439,7 +438,7 @@ func New(
 		auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
 		cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.pricefeedKeeper),
 		incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
-		jsmndist.NewAppModule(appCodec, app.jsmndistKeeper, app.BankKeeper),
+		jsmndist.NewAppModule(appCodec, app.jsmndistKeeper, app.AccountKeeper, app.BankKeeper),
 		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
 	)
 

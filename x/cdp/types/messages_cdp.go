@@ -1,118 +1,271 @@
 package types
 
 import (
+	"errors"
+	fmt "fmt"
+	"strings"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-var _ sdk.Msg = &MsgCreateCdp{}
+var (
+	_ sdk.Msg = &MsgCreateCDP{}
+	_ sdk.Msg = &MsgDeposit{}
+	_ sdk.Msg = &MsgWithdraw{}
+	_ sdk.Msg = &MsgDrawDebt{}
+	_ sdk.Msg = &MsgRepayDebt{}
+	_ sdk.Msg = &MsgLiquidate{}
+)
 
-func NewMsgCreateCdp(creator string) *MsgCreateCdp {
-	return &MsgCreateCdp{
-		Creator: creator,
+// NewMsgCreateCDP returns a new MsgPlaceBid.
+func NewMsgCreateCDP(sender sdk.AccAddress, collateral sdk.Coin, principal sdk.Coin, collateralType string) MsgCreateCDP {
+	return MsgCreateCDP{
+		Sender:         sender,
+		Collateral:     collateral,
+		Principal:      principal,
+		CollateralType: collateralType,
 	}
 }
 
-func (msg *MsgCreateCdp) Route() string {
-	return RouterKey
-}
+// Route return the message type used for routing the message.
+func (msg MsgCreateCDP) Route() string { return RouterKey }
 
-func (msg *MsgCreateCdp) Type() string {
-	return "CreateCdp"
-}
+// Type returns a human-readable string for the message, intended for utilization within tags.
+func (msg MsgCreateCDP) Type() string { return "create_cdp" }
 
-func (msg *MsgCreateCdp) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
+// ValidateBasic does a simple validation check that doesn't require access to any other information.
+func (msg MsgCreateCDP) ValidateBasic() error {
+	if msg.Sender.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgCreateCdp) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
-func (msg *MsgCreateCdp) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	if msg.Collateral.IsZero() || !msg.Collateral.IsValid() {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "collateral amount %s", msg.Collateral)
 	}
-	return nil
-}
-
-var _ sdk.Msg = &MsgUpdateCdp{}
-
-func NewMsgUpdateCdp(creator string, id string) *MsgUpdateCdp {
-	return &MsgUpdateCdp{
-		Id:      id,
-		Creator: creator,
+	if msg.Principal.IsZero() || !msg.Principal.IsValid() {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "principal amount %s", msg.Principal)
 	}
-}
-
-func (msg *MsgUpdateCdp) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgUpdateCdp) Type() string {
-	return "UpdateCdp"
-}
-
-func (msg *MsgUpdateCdp) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgUpdateCdp) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
-func (msg *MsgUpdateCdp) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	if strings.TrimSpace(msg.CollateralType) == "" {
+		return fmt.Errorf("collateral type cannot be empty")
 	}
 	return nil
 }
 
-var _ sdk.Msg = &MsgCreateCdp{}
-
-func NewMsgDeleteCdp(creator string, id string) *MsgDeleteCdp {
-	return &MsgDeleteCdp{
-		Id:      id,
-		Creator: creator,
-	}
-}
-func (msg *MsgDeleteCdp) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgDeleteCdp) Type() string {
-	return "DeleteCdp"
-}
-
-func (msg *MsgDeleteCdp) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgDeleteCdp) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+// GetSignBytes gets the canonical byte representation of the Msg.
+func (msg MsgCreateCDP) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgDeleteCdp) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+// GetSigners returns the addresses of signers that must sign.
+func (msg MsgCreateCDP) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msg.Sender}
+}
+
+// NewMsgDeposit returns a new MsgDeposit
+func NewMsgDeposit(owner sdk.AccAddress, depositor sdk.AccAddress, collateral sdk.Coin, collateralType string) MsgDeposit {
+	return MsgDeposit{
+		Owner:          owner,
+		Depositor:      depositor,
+		Collateral:     collateral,
+		CollateralType: collateralType,
+	}
+}
+
+// Route return the message type used for routing the message.
+func (msg MsgDeposit) Route() string { return RouterKey }
+
+// Type returns a human-readable string for the message, intended for utilization within tags.
+func (msg MsgDeposit) Type() string { return "deposit_cdp" }
+
+// ValidateBasic does a simple validation check that doesn't require access to any other information.
+func (msg MsgDeposit) ValidateBasic() error {
+	if msg.Owner.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "owner address cannot be empty")
+	}
+	if msg.Depositor.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
+	}
+	if !msg.Collateral.IsValid() || msg.Collateral.IsZero() {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "collateral amount %s", msg.Collateral)
+	}
+	if strings.TrimSpace(msg.CollateralType) == "" {
+		return fmt.Errorf("collateral type cannot be empty")
 	}
 	return nil
+}
+
+// GetSignBytes gets the canonical byte representation of the Msg.
+func (msg MsgDeposit) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners returns the addresses of signers that must sign.
+func (msg MsgDeposit) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msg.Depositor}
+}
+
+// NewMsgWithdraw returns a new MsgDeposit
+func NewMsgWithdraw(owner sdk.AccAddress, depositor sdk.AccAddress, collateral sdk.Coin, collateralType string) MsgWithdraw {
+	return MsgWithdraw{
+		Owner:          owner,
+		Depositor:      depositor,
+		Collateral:     collateral,
+		CollateralType: collateralType,
+	}
+}
+
+// Route return the message type used for routing the message.
+func (msg MsgWithdraw) Route() string { return RouterKey }
+
+// Type returns a human-readable string for the message, intended for utilization within tags.
+func (msg MsgWithdraw) Type() string { return "withdraw_cdp" }
+
+// ValidateBasic does a simple validation check that doesn't require access to any other information.
+func (msg MsgWithdraw) ValidateBasic() error {
+	if msg.Owner.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "owner address cannot be empty")
+	}
+	if msg.Depositor.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
+	}
+	if !msg.Collateral.IsValid() || msg.Collateral.IsZero() {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "collateral amount %s", msg.Collateral)
+	}
+	if strings.TrimSpace(msg.CollateralType) == "" {
+		return fmt.Errorf("collateral type cannot be empty")
+	}
+	return nil
+}
+
+// GetSignBytes gets the canonical byte representation of the Msg.
+func (msg MsgWithdraw) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners returns the addresses of signers that must sign.
+func (msg MsgWithdraw) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msg.Depositor}
+}
+
+// NewMsgDrawDebt returns a new MsgDrawDebt
+func NewMsgDrawDebt(sender sdk.AccAddress, collateralType string, principal sdk.Coin) MsgDrawDebt {
+	return MsgDrawDebt{
+		Sender:         sender,
+		CollateralType: collateralType,
+		Principal:      principal,
+	}
+}
+
+// Route return the message type used for routing the message.
+func (msg MsgDrawDebt) Route() string { return RouterKey }
+
+// Type returns a human-readable string for the message, intended for utilization within tags.
+func (msg MsgDrawDebt) Type() string { return "draw_cdp" }
+
+// ValidateBasic does a simple validation check that doesn't require access to any other information.
+func (msg MsgDrawDebt) ValidateBasic() error {
+	if msg.Sender.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
+	}
+	if strings.TrimSpace(msg.CollateralType) == "" {
+		return errors.New("cdp collateral type cannot be blank")
+	}
+	if msg.Principal.IsZero() || !msg.Principal.IsValid() {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "principal amount %s", msg.Principal)
+	}
+	return nil
+}
+
+// GetSignBytes gets the canonical byte representation of the Msg.
+func (msg MsgDrawDebt) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners returns the addresses of signers that must sign.
+func (msg MsgDrawDebt) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msg.Sender}
+}
+
+// NewMsgRepayDebt returns a new MsgRepayDebt
+func NewMsgRepayDebt(sender sdk.AccAddress, collateralType string, payment sdk.Coin) MsgRepayDebt {
+	return MsgRepayDebt{
+		Sender:         sender,
+		CollateralType: collateralType,
+		Payment:        payment,
+	}
+}
+
+// Route return the message type used for routing the message.
+func (msg MsgRepayDebt) Route() string { return RouterKey }
+
+// Type returns a human-readable string for the message, intended for utilization within tags.
+func (msg MsgRepayDebt) Type() string { return "repay_cdp" }
+
+// ValidateBasic does a simple validation check that doesn't require access to any other information.
+func (msg MsgRepayDebt) ValidateBasic() error {
+	if msg.Sender.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
+	}
+	if strings.TrimSpace(msg.CollateralType) == "" {
+		return errors.New("cdp collateral type cannot be blank")
+	}
+	if msg.Payment.IsZero() || !msg.Payment.IsValid() {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "payment amount %s", msg.Payment)
+	}
+	return nil
+}
+
+// GetSignBytes gets the canonical byte representation of the Msg.
+func (msg MsgRepayDebt) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners returns the addresses of signers that must sign.
+func (msg MsgRepayDebt) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msg.Sender}
+}
+
+// NewMsgLiquidate returns a new MsgLiquidate
+func NewMsgLiquidate(keeper, borrower sdk.AccAddress, ctype string) MsgLiquidate {
+	return MsgLiquidate{
+		Keeper:         keeper,
+		Borrower:       borrower,
+		CollateralType: ctype,
+	}
+}
+
+// Route return the message type used for routing the message.
+func (msg MsgLiquidate) Route() string { return RouterKey }
+
+// Type returns a human-readable string for the message, intended for utilization within tags.
+func (msg MsgLiquidate) Type() string { return "liquidate" }
+
+// ValidateBasic does a simple validation check that doesn't require access to any other information.
+func (msg MsgLiquidate) ValidateBasic() error {
+	if msg.Keeper.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "keeper address cannot be empty")
+	}
+	if msg.Borrower.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "borrower address cannot be empty")
+	}
+	if strings.TrimSpace(msg.CollateralType) == "" {
+		return sdkerrors.Wrap(ErrInvalidCollateral, "collateral type cannot be empty")
+	}
+	return nil
+}
+
+// GetSignBytes gets the canonical byte representation of the Msg.
+func (msg MsgLiquidate) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners returns the addresses of signers that must sign.
+func (msg MsgLiquidate) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msg.Keeper}
 }

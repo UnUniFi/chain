@@ -165,7 +165,7 @@ func (k Keeper) MintDebtCoins(ctx sdk.Context, moduleAccount string, denom strin
 // BurnDebtCoins burns debt coins from the cdp module account
 func (k Keeper) BurnDebtCoins(ctx sdk.Context, moduleAccount string, denom string, paymentCoins sdk.Coin) error {
 	macc := k.accountKeeper.GetModuleAccount(ctx, moduleAccount)
-	maxBurnableAmount := macc.GetCoins().AmountOf(denom)
+	maxBurnableAmount := k.bankKeeper.GetAllBalances(ctx, macc.GetAddress()).AmountOf(denom)
 	// check that the requested burn is not greater than the mod account balance
 	debtCoins := sdk.NewCoins(sdk.NewCoin(denom, sdk.MinInt(paymentCoins.Amount, maxBurnableAmount)))
 	return k.bankKeeper.BurnCoins(ctx, moduleAccount, debtCoins)
@@ -241,7 +241,7 @@ func (k Keeper) SetCDP(ctx sdk.Context, cdp types.CDP) error {
 	if !found {
 		return sdkerrors.Wrapf(types.ErrDenomPrefixNotFound, "%s", cdp.Collateral.Denom)
 	}
-	bz := k.cdc.MustMarshalBinaryLengthPrefixed(cdp)
+	bz := k.cdc.MustMarshalBinaryLengthPrefixed(&cdp)
 	store.Set(types.CdpKey(db, cdp.Id), bz)
 	return nil
 }
@@ -312,7 +312,7 @@ func (k Keeper) IndexCdpByOwner(ctx sdk.Context, cdp types.CDP) {
 		store.Set(cdp.Owner, idBytes)
 		return
 	}
-	cdpIDs = append(cdpIDs, cdp.ID)
+	cdpIDs = append(cdpIDs, cdp.Id)
 	sort.Slice(cdpIDs, func(i, j int) bool { return cdpIDs[i] < cdpIDs[j] })
 	store.Set(cdp.Owner, k.cdc.MustMarshalBinaryLengthPrefixed(cdpIDs))
 }
@@ -472,7 +472,7 @@ func (k Keeper) ValidateBalance(ctx sdk.Context, amount sdk.Coin, sender sdk.Acc
 	if acc == nil {
 		return sdkerrors.Wrapf(types.ErrAccountNotFound, "address: %s", sender)
 	}
-	spendableBalance := acc.SpendableCoins(ctx.BlockTime()).AmountOf(amount.Denom)
+	spendableBalance := k.bankKeeper.SpendableCoins(ctx, acc.GetAddress()).AmountOf(amount.Denom)
 	if spendableBalance.LT(amount.Amount) {
 		return sdkerrors.Wrapf(types.ErrInsufficientBalance, "%s < %s", sdk.NewCoin(amount.Denom, spendableBalance), amount)
 	}

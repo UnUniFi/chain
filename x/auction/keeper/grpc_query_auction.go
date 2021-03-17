@@ -44,11 +44,14 @@ func (k Keeper) Auction(c context.Context, req *types.QueryGetAuctionRequest) (*
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var auction types.Auction
 	ctx := sdk.UnwrapSDKContext(c)
 
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AuctionKey))
-	k.cdc.MustUnmarshalBinaryBare(store.Get(types.KeyPrefix(types.AuctionKey+req.Id)), &auction)
+	auction, err := k.GetAuction(ctx, req.Id)
 
-	return &types.QueryGetAuctionResponse{Auction: &auction}, nil
+	if err {
+		return nil, status.Error(codes.NotFound, "not found")
+	}
+	auction.GetBid() // TODO
+
+	return &types.QueryGetAuctionResponse{}, nil
 }

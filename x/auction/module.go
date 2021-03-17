@@ -18,9 +18,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/lcnem/jpyx/x/auction/client/cli"
-	"github.com/lcnem/jpyx/x/auction/client/rest"
 	"github.com/lcnem/jpyx/x/auction/keeper"
 	"github.com/lcnem/jpyx/x/auction/types"
+	"github.com/lcnem/jpyx/x/cdp/client/rest"
 )
 
 var (
@@ -150,7 +150,7 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONMarshaler, gs jso
 	// Initialize global index to index in genesis state
 	cdc.MustUnmarshalJSON(gs, &genState)
 
-	InitGenesis(ctx, am.keeper, am.accountKeeper, genState)
+	InitGenesis(ctx, am.keeper, am.accountKeeper, am.bankKeeper, genState)
 
 	return []abci.ValidatorUpdate{}
 }

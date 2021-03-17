@@ -46,9 +46,7 @@ func (k Keeper) Cdp(c context.Context, req *types.QueryGetCdpRequest) (*types.Qu
 
 	var cdp types.CDP
 	ctx := sdk.UnwrapSDKContext(c)
-
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpKey))
-	k.cdc.MustUnmarshalBinaryBare(store.Get(types.KeyPrefix(types.CdpKey+req.Id)), &cdp)
+	ctx.BlockGasMeter() //TODO
 
 	return &types.QueryGetCdpResponse{Cdp: &cdp}, nil
 }

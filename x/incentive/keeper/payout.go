@@ -74,7 +74,8 @@ func (k Keeper) ClaimJPYXMintingReward(ctx sdk.Context, addr sdk.AccAddress, mul
 // SendTimeLockedCoinsToAccount sends time-locked coins from the input module account to the recipient. If the recipients account is not a vesting account and the input length is greater than zero, the recipient account is converted to a periodic vesting account and the coins are added to the vesting balance as a vesting period with the input length.
 func (k Keeper) SendTimeLockedCoinsToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins, length int64) error {
 	macc := k.accountKeeper.GetModuleAccount(ctx, senderModule)
-	if !macc.GetCoins().IsAllGTE(amt) {
+
+	if !k.bankKeeper.GetAllBalances(ctx, macc.GetAddress()).IsAllGTE(amt) {
 		return sdkerrors.Wrapf(types.ErrInsufficientModAccountBalance, "%s", senderModule)
 	}
 
@@ -88,7 +89,7 @@ func (k Keeper) SendTimeLockedCoinsToAccount(ctx sdk.Context, senderModule strin
 	}
 
 	switch acc.(type) {
-	case *authtypes.ValidatorVestingAccount, authtypes.ModuleAccountI:
+	case authtypes.ModuleAccountI:
 		return sdkerrors.Wrapf(types.ErrInvalidAccountType, "%T", acc)
 	case *vestingtypes.PeriodicVestingAccount:
 		return k.SendTimeLockedCoinsToPeriodicVestingAccount(ctx, senderModule, recipientAddr, amt, length)
@@ -117,7 +118,7 @@ func (k Keeper) SendTimeLockedCoinsToBaseAccount(ctx sdk.Context, senderModule s
 	}
 	acc := k.accountKeeper.GetAccount(ctx, recipientAddr)
 	// transition the account to a periodic vesting account:
-	bacc := authtypes.NewBaseAccount(acc.GetAddress(), acc.GetCoins(), acc.GetPubKey(), acc.GetAccountNumber(), acc.GetSequence())
+	bacc := authtypes.NewBaseAccount(acc.GetAddress(), acc.GetPubKey(), acc.GetAccountNumber(), acc.GetSequence())
 	newPeriods := vestingtypes.Periods{types.NewPeriod(amt, length)}
 	bva := vestingtypes.NewBaseVestingAccount(bacc, amt, ctx.BlockTime().Unix()+length)
 
