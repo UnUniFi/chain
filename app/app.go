@@ -672,11 +672,11 @@ func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyA
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
-	paramsKeeper.Subspace(auctiontypes.ModuleName)
-	paramsKeeper.Subspace(cdptypes.ModuleName)
-	paramsKeeper.Subspace(incentivetypes.ModuleName)
-	paramsKeeper.Subspace(jsmndisttypes.ModuleName)
-	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
+	paramsKeeper.Subspace(auctiontypes.ModuleName).WithKeyTable(auctiontypes.ParamKeyTable())
+	paramsKeeper.Subspace(cdptypes.ModuleName).WithKeyTable(cdptypes.ParamKeyTable())
+	paramsKeeper.Subspace(incentivetypes.ModuleName).WithKeyTable(incentivetypes.ParamKeyTable())
+	paramsKeeper.Subspace(jsmndisttypes.ModuleName).WithKeyTable(jsmndisttypes.ParamKeyTable())
+	paramsKeeper.Subspace(pricefeedtypes.ModuleName).WithKeyTable(pricefeedtypes.ParamKeyTable())
 
 	return paramsKeeper
 }
