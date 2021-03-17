@@ -356,6 +356,7 @@ func New(
 		keys[auctiontypes.StoreKey],
 		keys[auctiontypes.MemStoreKey],
 		app.GetSubspace(auctiontypes.ModuleName),
+		app.AccountKeeper,
 		app.BankKeeper,
 	)
 	cdpKeeper := *cdpkeeper.NewKeeper(

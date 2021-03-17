@@ -11,7 +11,11 @@ message Market {
   string market_id = 1 [(gogoproto.moretags) = "yaml:\"market_id\""];
   string base_asset = 2 [(gogoproto.moretags) = "yaml:\"base_asset\""];
   string quote_asset = 3 [(gogoproto.moretags) = "yaml:\"quote_asset\""];
-  repeated string oracles = 4 [(gogoproto.moretags) = "yaml:\"oracles\""];
+  repeated string oracles = 4 [
+    (gogoproto.moretags) = "yaml:\"oracles\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.nullable) = false
+  ];
   bool active = 5 [(gogoproto.moretags) = "yaml:\"active\""];
 }
 
@@ -26,7 +30,11 @@ message CurrentPrice {
 
 message PostedPrice {
   string market_id = 1 [(gogoproto.moretags) = "yaml:\"market_id\""];
-  string oracle_address = 2 [(gogoproto.moretags) = "yaml:\"oracle_address\""];
+  string oracle_address = 2 [
+    (gogoproto.moretags) = "yaml:\"oracle_address\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.nullable) = false
+  ];
   string price = 3 [
     (gogoproto.moretags) = "yaml:\"price\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
@@ -40,7 +48,11 @@ message PostedPrice {
 }
 
 message MsgPostPrice {
-  string from = 1 [(gogoproto.moretags) = "yaml:\"from\""];
+  string from = 1 [
+    (gogoproto.moretags) = "yaml:\"from\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.nullable) = false
+  ];
   string market_id = 2 [(gogoproto.moretags) = "yaml:\"market_id\""];
   string price = 3 [
     (gogoproto.moretags) = "yaml:\"price\"",
@@ -55,5 +67,8 @@ message MsgPostPrice {
 }
 
 message Params {
-  repeated Market markets = 1 [(gogoproto.moretags) = "yaml:\"markets\""];
+  repeated Market markets = 1 [
+    (gogoproto.moretags) = "yaml:\"markets\"",
+    (gogoproto.nullable) = false
+  ];
 }

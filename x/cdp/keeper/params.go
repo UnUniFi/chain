@@ -52,7 +52,7 @@ func (k Keeper) GetCollateralTypePrefix(ctx sdk.Context, collateralType string) 
 	params := k.GetParams(ctx)
 	for _, cp := range params.CollateralParams {
 		if cp.Type == collateralType {
-			return cp.Prefix, true
+			return byte(cp.Prefix), true
 		}
 	}
 	return 0x00, false
@@ -62,7 +62,7 @@ func (k Keeper) GetCollateralTypePrefix(ctx sdk.Context, collateralType string) 
 func (k Keeper) getDenomFromByte(ctx sdk.Context, db byte) string {
 	params := k.GetParams(ctx)
 	for _, cp := range params.CollateralParams {
-		if cp.Prefix == db {
+		if byte(cp.Prefix) == db {
 			return cp.Denom
 		}
 	}
@@ -74,7 +74,7 @@ func (k Keeper) getSpotMarketID(ctx sdk.Context, collateralType string) string {
 	if !found {
 		panic(fmt.Sprintf("collateral not found: %s", collateralType))
 	}
-	return cp.SpotMarketID
+	return cp.SpotMarketId
 }
 
 func (k Keeper) getliquidationMarketID(ctx sdk.Context, collateralType string) string {
@@ -82,7 +82,7 @@ func (k Keeper) getliquidationMarketID(ctx sdk.Context, collateralType string) s
 	if !found {
 		panic(fmt.Sprintf("collateral not found: %s", collateralType))
 	}
-	return cp.LiquidationMarketID
+	return cp.LiquidationMarketId
 }
 
 func (k Keeper) getLiquidationRatio(ctx sdk.Context, collateralType string) sdk.Dec {

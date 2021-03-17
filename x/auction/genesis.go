@@ -25,7 +25,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKe
 
 	k.SetNextAuctionID(ctx, genState.NextAuctionId)
 
-	k.SetParams(ctx, *genState.Params)
+	k.SetParams(ctx, genState.Params)
 
 	totalAuctionCoins := sdk.NewCoins()
 	for _, a := range genState.Auctions {

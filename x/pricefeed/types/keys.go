@@ -22,11 +22,26 @@ func KeyPrefix(p string) []byte {
 }
 
 const (
-	ParamsKey      = "Params-value-"
-	MarketKey      = "Market-value-"
-	MarketCountKey = "Market-count-"
-	OracleKey      = "Oracle-value-"
-	PriceKey       = "Price-value-"
-	PriceCountKey  = "Price-count-"
-	RawPriceKey    = "RawPrice-value-"
+	ParamsKey = "Params-value-"
+	// MarketKey          = "Market-value-"
+	// MarketCountKey     = "Market-count-"
+	// OracleKey          = "Oracle-value-"
+	// PriceKey           = "Price-value-"
+	// PriceCountKey      = "Price-count-"
+	// RawPriceKey        = "RawPrice-value-"
 )
+
+var (
+	CurrentPricePrefix = []byte{0x00}
+	RawPriceFeedPrefix = []byte{0x01}
+)
+
+// CurrentPriceKey returns the prefix for the current price
+func CurrentPriceKey(marketID string) []byte {
+	return append(CurrentPricePrefix, []byte(marketID)...)
+}
+
+// RawPriceKey returns the prefix for the raw price
+func RawPriceKey(marketID string) []byte {
+	return append(RawPriceFeedPrefix, []byte(marketID)...)
+}

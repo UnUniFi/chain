@@ -2,6 +2,7 @@ package cdp
 
 import (
 	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/lcnem/jpyx/x/cdp/keeper"
@@ -15,7 +16,7 @@ func handleMsgCreateCdp(ctx sdk.Context, k keeper.Keeper, msg *types.MsgCreateCd
 }
 
 func handleMsgUpdateCdp(ctx sdk.Context, k keeper.Keeper, msg *types.MsgUpdateCdp) (*sdk.Result, error) {
-	var cdp = types.Cdp{
+	var cdp = types.CDP{
 		Creator: msg.Creator,
 		Id:      msg.Id,
 	}

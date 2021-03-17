@@ -47,9 +47,9 @@ func NewParams(
 	surplusLot, debtThreshold, debtLot sdk.Int, breaker bool,
 ) Params {
 	return Params{
-		GlobalDebtLimit:         &debtLimit,
-		CollateralParams:        &collateralParams,
-		DebtParam:               &debtParam,
+		GlobalDebtLimit:         debtLimit,
+		CollateralParams:        collateralParams,
+		DebtParam:               debtParam,
 		SurplusAuctionThreshold: surplusThreshold,
 		SurplusAuctionLot:       surplusLot,
 		DebtAuctionThreshold:    debtThreshold,
@@ -79,9 +79,9 @@ func NewCollateralParam(
 		StabilityFee:                     stabilityFee,
 		AuctionSize:                      auctionSize,
 		LiquidationPenalty:               liqPenalty,
-		Prefix:                           prefix,
-		SpotMarketID:                     spotMarketID,
-		LiquidationMarketID:              liquidationMarketID,
+		Prefix:                           uint32(prefix),
+		SpotMarketId:                     spotMarketID,
+		LiquidationMarketId:              liquidationMarketID,
 		KeeperRewardPercentage:           keeperReward,
 		CheckCollateralizationIndexCount: checkIndexCount,
 		ConversionFactor:                 conversionFactor,
@@ -264,7 +264,7 @@ func validateCollateralParams(i interface{}) error {
 
 		_, found := prefixDupMap[prefix]
 		if found {
-			return fmt.Errorf("duplicate prefix for collateral denom %s: %v", cp.Denom, []byte{cp.Prefix})
+			return fmt.Errorf("duplicate prefix for collateral denom %s: %v", cp.Denom, []byte{byte(cp.Prefix)})
 		}
 
 		prefixDupMap[prefix] = true

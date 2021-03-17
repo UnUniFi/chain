@@ -31,14 +31,14 @@ var _ = time.Kitchen
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type BaseAuction struct {
-	Id              uint64      `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty" yaml:"id"`
-	Initiator       string      `protobuf:"bytes,2,opt,name=initiator,proto3" json:"initiator,omitempty" yaml:"id"`
-	Lot             *types.Coin `protobuf:"bytes,3,opt,name=lot,proto3" json:"lot,omitempty" yaml:"lot"`
-	Bidder          string      `protobuf:"bytes,4,opt,name=bidder,proto3" json:"bidder,omitempty" yaml:"bidder"`
-	Bid             *types.Coin `protobuf:"bytes,5,opt,name=bid,proto3" json:"bid,omitempty" yaml:"bid"`
-	HasReceivedBids bool        `protobuf:"varint,6,opt,name=has_received_bids,json=hasReceivedBids,proto3" json:"has_received_bids,omitempty" yaml:"has_reeceived_bids"`
-	EndTime         time.Time   `protobuf:"bytes,7,opt,name=end_time,json=endTime,proto3,stdtime" json:"end_time" yaml:"end_time"`
-	MaxEndTime      time.Time   `protobuf:"bytes,8,opt,name=max_end_time,json=maxEndTime,proto3,stdtime" json:"max_end_time" yaml:"max_end_time"`
+	Id              uint64                                        `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty" yaml:"id"`
+	Initiator       string                                        `protobuf:"bytes,2,opt,name=initiator,proto3" json:"initiator,omitempty" yaml:"id"`
+	Lot             types.Coin                                    `protobuf:"bytes,3,opt,name=lot,proto3" json:"lot" yaml:"lot"`
+	Bidder          github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,4,opt,name=bidder,proto3,customtype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"bidder" yaml:"bidder"`
+	Bid             types.Coin                                    `protobuf:"bytes,5,opt,name=bid,proto3" json:"bid" yaml:"bid"`
+	HasReceivedBids bool                                          `protobuf:"varint,6,opt,name=has_received_bids,json=hasReceivedBids,proto3" json:"has_received_bids,omitempty" yaml:"has_reeceived_bids"`
+	EndTime         time.Time                                     `protobuf:"bytes,7,opt,name=end_time,json=endTime,proto3,stdtime" json:"end_time" yaml:"end_time"`
+	MaxEndTime      time.Time                                     `protobuf:"bytes,8,opt,name=max_end_time,json=maxEndTime,proto3,stdtime" json:"max_end_time" yaml:"max_end_time"`
 }
 
 func (m *BaseAuction) Reset()         { *m = BaseAuction{} }
@@ -88,25 +88,18 @@ func (m *BaseAuction) GetInitiator() string {
 	return ""
 }
 
-func (m *BaseAuction) GetLot() *types.Coin {
+func (m *BaseAuction) GetLot() types.Coin {
 	if m != nil {
 		return m.Lot
 	}
-	return nil
+	return types.Coin{}
 }
 
-func (m *BaseAuction) GetBidder() string {
-	if m != nil {
-		return m.Bidder
-	}
-	return ""
-}
-
-func (m *BaseAuction) GetBid() *types.Coin {
+func (m *BaseAuction) GetBid() types.Coin {
 	if m != nil {
 		return m.Bid
 	}
-	return nil
+	return types.Coin{}
 }
 
 func (m *BaseAuction) GetHasReceivedBids() bool {
@@ -131,7 +124,7 @@ func (m *BaseAuction) GetMaxEndTime() time.Time {
 }
 
 type SurplusAuction struct {
-	*BaseAuction `protobuf:"bytes,1,opt,name=base_auction,json=baseAuction,proto3,embedded=base_auction" json:"base_auction,omitempty" yaml:"base_auction"`
+	BaseAuction `protobuf:"bytes,1,opt,name=base_auction,json=baseAuction,proto3,embedded=base_auction" json:"base_auction" yaml:"base_auction"`
 }
 
 func (m *SurplusAuction) Reset()         { *m = SurplusAuction{} }
@@ -168,8 +161,8 @@ func (m *SurplusAuction) XXX_DiscardUnknown() {
 var xxx_messageInfo_SurplusAuction proto.InternalMessageInfo
 
 type DebtAuction struct {
-	*BaseAuction      `protobuf:"bytes,1,opt,name=base_auction,json=baseAuction,proto3,embedded=base_auction" json:"base_auction,omitempty" yaml:"base_auction"`
-	CorrespondingDebt *types.Coin `protobuf:"bytes,2,opt,name=corresponding_debt,json=correspondingDebt,proto3" json:"corresponding_debt,omitempty" yaml:"corresponding_debt"`
+	BaseAuction       `protobuf:"bytes,1,opt,name=base_auction,json=baseAuction,proto3,embedded=base_auction" json:"base_auction" yaml:"base_auction"`
+	CorrespondingDebt types.Coin `protobuf:"bytes,2,opt,name=corresponding_debt,json=correspondingDebt,proto3" json:"corresponding_debt" yaml:"corresponding_debt"`
 }
 
 func (m *DebtAuction) Reset()         { *m = DebtAuction{} }
@@ -205,18 +198,18 @@ func (m *DebtAuction) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_DebtAuction proto.InternalMessageInfo
 
-func (m *DebtAuction) GetCorrespondingDebt() *types.Coin {
+func (m *DebtAuction) GetCorrespondingDebt() types.Coin {
 	if m != nil {
 		return m.CorrespondingDebt
 	}
-	return nil
+	return types.Coin{}
 }
 
 type CollateralAuction struct {
-	*BaseAuction      `protobuf:"bytes,1,opt,name=base_auction,json=baseAuction,proto3,embedded=base_auction" json:"base_auction,omitempty" yaml:"base_auction"`
-	CorrespondingDebt *types.Coin        `protobuf:"bytes,2,opt,name=corresponding_debt,json=correspondingDebt,proto3" json:"corresponding_debt,omitempty" yaml:"corresponding_debt"`
-	MaxBid            *types.Coin        `protobuf:"bytes,3,opt,name=max_bid,json=maxBid,proto3" json:"max_bid,omitempty" yaml:"max_bid"`
-	LotReturns        *WeightedAddresses `protobuf:"bytes,4,opt,name=lot_returns,json=lotReturns,proto3" json:"lot_returns,omitempty" yaml:"lot_returns"`
+	BaseAuction       `protobuf:"bytes,1,opt,name=base_auction,json=baseAuction,proto3,embedded=base_auction" json:"base_auction" yaml:"base_auction"`
+	CorrespondingDebt types.Coin        `protobuf:"bytes,2,opt,name=corresponding_debt,json=correspondingDebt,proto3" json:"corresponding_debt" yaml:"corresponding_debt"`
+	MaxBid            types.Coin        `protobuf:"bytes,3,opt,name=max_bid,json=maxBid,proto3" json:"max_bid" yaml:"max_bid"`
+	LotReturns        WeightedAddresses `protobuf:"bytes,4,opt,name=lot_returns,json=lotReturns,proto3" json:"lot_returns" yaml:"lot_returns"`
 }
 
 func (m *CollateralAuction) Reset()         { *m = CollateralAuction{} }
@@ -252,30 +245,30 @@ func (m *CollateralAuction) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_CollateralAuction proto.InternalMessageInfo
 
-func (m *CollateralAuction) GetCorrespondingDebt() *types.Coin {
+func (m *CollateralAuction) GetCorrespondingDebt() types.Coin {
 	if m != nil {
 		return m.CorrespondingDebt
 	}
-	return nil
+	return types.Coin{}
 }
 
-func (m *CollateralAuction) GetMaxBid() *types.Coin {
+func (m *CollateralAuction) GetMaxBid() types.Coin {
 	if m != nil {
 		return m.MaxBid
 	}
-	return nil
+	return types.Coin{}
 }
 
-func (m *CollateralAuction) GetLotReturns() *WeightedAddresses {
+func (m *CollateralAuction) GetLotReturns() WeightedAddresses {
 	if m != nil {
 		return m.LotReturns
 	}
-	return nil
+	return WeightedAddresses{}
 }
 
 type WeightedAddresses struct {
-	Addresses []string                                 `protobuf:"bytes,1,rep,name=addresses,proto3" json:"addresses,omitempty" yaml:"addresses"`
-	Weights   []github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,2,rep,name=weights,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"weights" yaml:"weights"`
+	Addresses []github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,rep,name=addresses,proto3,customtype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"addresses" yaml:"addresses"`
+	Weights   []github_com_cosmos_cosmos_sdk_types.Int        `protobuf:"bytes,2,rep,name=weights,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"weights" yaml:"weights"`
 }
 
 func (m *WeightedAddresses) Reset()         { *m = WeightedAddresses{} }
@@ -311,17 +304,10 @@ func (m *WeightedAddresses) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_WeightedAddresses proto.InternalMessageInfo
 
-func (m *WeightedAddresses) GetAddresses() []string {
-	if m != nil {
-		return m.Addresses
-	}
-	return nil
-}
-
 type MsgPlaceBid struct {
-	AuctionId uint64      `protobuf:"varint,1,opt,name=auction_id,json=auctionId,proto3" json:"auction_id,omitempty" yaml:"auction_id"`
-	Bidder    string      `protobuf:"bytes,2,opt,name=bidder,proto3" json:"bidder,omitempty" yaml:"bidder"`
-	Amount    *types.Coin `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty" yaml:"amount"`
+	AuctionId uint64     `protobuf:"varint,1,opt,name=auction_id,json=auctionId,proto3" json:"auction_id,omitempty" yaml:"auction_id"`
+	Bidder    string     `protobuf:"bytes,2,opt,name=bidder,proto3" json:"bidder,omitempty" yaml:"bidder"`
+	Amount    types.Coin `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount" yaml:"amount"`
 }
 
 func (m *MsgPlaceBid) Reset()         { *m = MsgPlaceBid{} }
@@ -371,16 +357,16 @@ func (m *MsgPlaceBid) GetBidder() string {
 	return ""
 }
 
-func (m *MsgPlaceBid) GetAmount() *types.Coin {
+func (m *MsgPlaceBid) GetAmount() types.Coin {
 	if m != nil {
 		return m.Amount
 	}
-	return nil
+	return types.Coin{}
 }
 
 type Params struct {
-	MaxAuctionDuration  *time.Duration                         `protobuf:"bytes,1,opt,name=max_auction_duration,json=maxAuctionDuration,proto3,stdduration" json:"max_auction_duration,omitempty" yaml:"max_auction_duration"`
-	BidDuration         *time.Duration                         `protobuf:"bytes,2,opt,name=bid_duration,json=bidDuration,proto3,stdduration" json:"bid_duration,omitempty" yaml:"bid_duration"`
+	MaxAuctionDuration  time.Duration                          `protobuf:"bytes,1,opt,name=max_auction_duration,json=maxAuctionDuration,proto3,stdduration" json:"max_auction_duration" yaml:"max_auction_duration"`
+	BidDuration         time.Duration                          `protobuf:"bytes,2,opt,name=bid_duration,json=bidDuration,proto3,stdduration" json:"bid_duration" yaml:"bid_duration"`
 	IncrementSurplus    github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=increment_surplus,json=incrementSurplus,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"increment_surplus" yaml:"increment_surplus"`
 	IncrementDebt       github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=increment_debt,json=incrementDebt,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"increment_debt" yaml:"increment_debt"`
 	IncrementCollateral github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=increment_collateral,json=incrementCollateral,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"increment_collateral" yaml:"increment_collateral"`
@@ -419,18 +405,18 @@ func (m *Params) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Params proto.InternalMessageInfo
 
-func (m *Params) GetMaxAuctionDuration() *time.Duration {
+func (m *Params) GetMaxAuctionDuration() time.Duration {
 	if m != nil {
 		return m.MaxAuctionDuration
 	}
-	return nil
+	return 0
 }
 
-func (m *Params) GetBidDuration() *time.Duration {
+func (m *Params) GetBidDuration() time.Duration {
 	if m != nil {
 		return m.BidDuration
 	}
-	return nil
+	return 0
 }
 
 func init() {
@@ -446,65 +432,66 @@ func init() {
 func init() { proto.RegisterFile("auction/auction.proto", fileDescriptor_e3dc552ee3b806a8) }
 
 var fileDescriptor_e3dc552ee3b806a8 = []byte{
-	// 927 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x56, 0x4d, 0x6f, 0xdc, 0x44,
-	0x18, 0x8e, 0x37, 0x61, 0x93, 0x9d, 0x4d, 0xd2, 0xee, 0x34, 0x41, 0x6e, 0xa2, 0xae, 0x57, 0x83,
-	0x40, 0x8b, 0x10, 0xb6, 0x1a, 0x38, 0xc1, 0x01, 0xea, 0x06, 0x50, 0x90, 0x2a, 0x55, 0x06, 0x09,
-	0xa8, 0x84, 0x56, 0x63, 0xcf, 0xe0, 0x0c, 0xb5, 0x3d, 0x2b, 0xcf, 0x6c, 0xbb, 0xb9, 0xf1, 0x13,
-	0x7a, 0xe4, 0xce, 0x5f, 0xe0, 0x0f, 0x70, 0xeb, 0x31, 0xdc, 0x10, 0x07, 0x83, 0x92, 0x7f, 0xe0,
-	0x1b, 0x12, 0x07, 0x34, 0x9e, 0xf1, 0x47, 0xb7, 0x12, 0x21, 0x07, 0x2e, 0x3d, 0x79, 0xe7, 0x9d,
-	0xe7, 0x7d, 0x9e, 0x77, 0xe6, 0xfd, 0x98, 0x05, 0xfb, 0x78, 0x11, 0x49, 0xc6, 0x33, 0xcf, 0x7c,
-	0xdd, 0x79, 0xce, 0x25, 0x87, 0xdb, 0xdf, 0xcf, 0xcf, 0x96, 0xae, 0xb1, 0x1d, 0xec, 0xc5, 0x3c,
-	0xe6, 0xd5, 0x86, 0xa7, 0x7e, 0x69, 0xcc, 0x81, 0x13, 0x73, 0x1e, 0x27, 0xd4, 0xab, 0x56, 0xe1,
-	0xe2, 0x3b, 0x4f, 0xb2, 0x94, 0x0a, 0x89, 0xd3, 0xb9, 0x01, 0x8c, 0x57, 0x01, 0x64, 0x91, 0xe3,
-	0x56, 0xe4, 0x60, 0x1c, 0x71, 0x91, 0x72, 0xe1, 0x85, 0x58, 0x50, 0xef, 0xc9, 0xdd, 0x90, 0x4a,
-	0x7c, 0xd7, 0x8b, 0x38, 0x33, 0xfb, 0xe8, 0xef, 0x75, 0x30, 0xf4, 0xb1, 0xa0, 0xf7, 0x74, 0x18,
-	0xf0, 0x0e, 0xe8, 0x31, 0x62, 0x5b, 0x13, 0x6b, 0xba, 0xe1, 0xef, 0x94, 0x85, 0x33, 0x38, 0xc3,
-	0x69, 0xf2, 0x01, 0x62, 0x04, 0x05, 0x3d, 0x46, 0xe0, 0x3b, 0x60, 0xc0, 0x32, 0x26, 0x19, 0x96,
-	0x3c, 0xb7, 0x7b, 0x13, 0x6b, 0x3a, 0x58, 0x45, 0xb5, 0xfb, 0xf0, 0x43, 0xb0, 0x9e, 0x70, 0x69,
-	0xaf, 0x4f, 0xac, 0xe9, 0xf0, 0xe8, 0xb6, 0xab, 0x23, 0x71, 0x55, 0x24, 0xae, 0x89, 0xc4, 0xbd,
-	0xcf, 0x59, 0xe6, 0xef, 0x96, 0x85, 0x03, 0x34, 0x43, 0xc2, 0x25, 0x0a, 0x94, 0x17, 0x7c, 0x1b,
-	0xf4, 0x43, 0x46, 0x08, 0xcd, 0xed, 0x8d, 0x4a, 0x66, 0x54, 0x16, 0xce, 0x8e, 0x06, 0x69, 0x3b,
-	0x0a, 0x0c, 0x40, 0xe9, 0x84, 0x8c, 0xd8, 0xaf, 0x5d, 0x43, 0x27, 0x54, 0xa1, 0x2a, 0x2f, 0x78,
-	0x02, 0x46, 0xa7, 0x58, 0xcc, 0x72, 0x1a, 0x51, 0xf6, 0x84, 0x92, 0x59, 0xc8, 0x88, 0xb0, 0xfb,
-	0x13, 0x6b, 0xba, 0xe5, 0xdf, 0x29, 0x0b, 0xe7, 0xb6, 0xc6, 0x6b, 0x48, 0x17, 0x83, 0x82, 0x1b,
-	0xa7, 0x58, 0x04, 0xc6, 0xe4, 0x33, 0x22, 0x60, 0x00, 0xb6, 0x68, 0x46, 0x66, 0x2a, 0x45, 0xf6,
-	0x66, 0x15, 0xcc, 0x81, 0xab, 0xd3, 0xe3, 0xd6, 0xe9, 0x71, 0xbf, 0xac, 0xf3, 0xe7, 0x1f, 0x3e,
-	0x2f, 0x9c, 0xb5, 0xb2, 0x70, 0x6e, 0x68, 0x85, 0xda, 0x13, 0x3d, 0xfb, 0xc3, 0xb1, 0x82, 0x4d,
-	0x9a, 0x11, 0x05, 0x85, 0xdf, 0x82, 0xed, 0x14, 0x2f, 0x67, 0x0d, 0xef, 0xd6, 0x95, 0xbc, 0x8e,
-	0xe1, 0xbd, 0xa5, 0x79, 0xbb, 0xde, 0x9a, 0x1b, 0xa4, 0x78, 0xf9, 0x89, 0xa6, 0x47, 0x8f, 0xc1,
-	0xee, 0x17, 0x8b, 0x7c, 0x9e, 0x2c, 0x44, 0x5d, 0x00, 0xdf, 0x80, 0x6d, 0x75, 0x73, 0x33, 0x53,
-	0x97, 0x55, 0x29, 0xa8, 0x5b, 0xed, 0x16, 0xab, 0xdb, 0xa9, 0x18, 0xff, 0xf0, 0xbc, 0x70, 0xac,
-	0x56, 0xaf, 0xeb, 0x8c, 0x82, 0x61, 0xd8, 0x22, 0xd1, 0xaf, 0x16, 0x18, 0x1e, 0xd3, 0x50, 0xfe,
-	0xff, 0x52, 0x30, 0x06, 0x30, 0xe2, 0x79, 0x4e, 0xc5, 0x9c, 0x67, 0x84, 0x65, 0xf1, 0x8c, 0xd0,
-	0x50, 0x56, 0x05, 0xfb, 0xaf, 0x15, 0xd2, 0xc9, 0xf8, 0xcb, 0xee, 0x28, 0x18, 0xbd, 0x60, 0x54,
-	0x47, 0x41, 0x7f, 0xf5, 0xc0, 0xe8, 0x3e, 0x4f, 0x12, 0x2c, 0x69, 0x8e, 0x93, 0x57, 0xe8, 0x64,
-	0xf0, 0x53, 0xb0, 0xa9, 0x6a, 0x47, 0x75, 0xd6, 0x95, 0x1d, 0x0c, 0xcb, 0xc2, 0xd9, 0x6d, 0xeb,
-	0xad, 0xea, 0xae, 0x7e, 0x8a, 0x97, 0x3e, 0x23, 0xf0, 0x6b, 0x30, 0x4c, 0xb8, 0x9c, 0xe5, 0x54,
-	0x2e, 0xf2, 0x4c, 0x54, 0xdd, 0x3c, 0x3c, 0x72, 0x5e, 0xbc, 0x8a, 0xaf, 0x28, 0x8b, 0x4f, 0x25,
-	0x25, 0xf7, 0x08, 0xc9, 0xa9, 0x10, 0x54, 0xf8, 0xaf, 0x97, 0x85, 0x03, 0x9b, 0x99, 0x50, 0x7b,
-	0xa3, 0x00, 0x24, 0x5c, 0x06, 0x66, 0xf1, 0x93, 0x05, 0x46, 0x2f, 0x79, 0xc2, 0x23, 0x30, 0xc0,
-	0xf5, 0xc2, 0xb6, 0x26, 0xeb, 0xd3, 0x81, 0xbf, 0x57, 0x16, 0xce, 0x4d, 0x4d, 0xd6, 0x6c, 0xa1,
-	0xa0, 0x85, 0xc1, 0x47, 0x60, 0xf3, 0x69, 0x45, 0x24, 0xec, 0x5e, 0xe5, 0xf1, 0xb1, 0x6a, 0xa2,
-	0xdf, 0x0b, 0xe7, 0xad, 0x98, 0xc9, 0xd3, 0x45, 0xe8, 0x46, 0x3c, 0xf5, 0xcc, 0x24, 0xd5, 0x9f,
-	0x77, 0x05, 0x79, 0xec, 0xc9, 0xb3, 0x39, 0x15, 0xee, 0x49, 0x26, 0xdb, 0xe3, 0x1b, 0x1a, 0x14,
-	0xd4, 0x84, 0xe8, 0x67, 0x0b, 0x0c, 0x1f, 0x88, 0xf8, 0x61, 0x82, 0x23, 0xaa, 0xee, 0xe3, 0x7d,
-	0x00, 0xcc, 0xb1, 0x67, 0xcd, 0xa4, 0xdd, 0x2f, 0x0b, 0x67, 0x64, 0x02, 0x6c, 0xf6, 0x54, 0x84,
-	0x7a, 0x71, 0x42, 0x3a, 0xe3, 0xb0, 0x77, 0xd5, 0x38, 0x3c, 0x06, 0x7d, 0x9c, 0xf2, 0x45, 0xf6,
-	0x1f, 0x26, 0x6f, 0x87, 0x45, 0xbb, 0xa0, 0xc0, 0xf8, 0xa2, 0x5f, 0x36, 0x40, 0xff, 0x21, 0xce,
-	0x71, 0x2a, 0xe0, 0x1c, 0xec, 0xa9, 0xac, 0xd6, 0x91, 0xd5, 0x2f, 0x4c, 0x53, 0xd5, 0xab, 0xb3,
-	0xe8, 0xd8, 0x00, 0xfc, 0x37, 0xca, 0xc2, 0x39, 0x6c, 0xcb, 0x62, 0x95, 0x00, 0xfd, 0xa8, 0xc6,
-	0x11, 0x4c, 0xf1, 0xd2, 0x14, 0x77, 0xed, 0x58, 0xf5, 0x0f, 0x23, 0xad, 0x52, 0xef, 0x2a, 0xa5,
-	0xc3, 0x4e, 0xef, 0x74, 0x1c, 0xb5, 0xc2, 0x30, 0x64, 0xa4, 0xa1, 0x7e, 0x0a, 0x46, 0x2c, 0x8b,
-	0x72, 0x9a, 0xd2, 0x4c, 0xce, 0x84, 0x9e, 0x7d, 0xd5, 0x45, 0x0d, 0xfc, 0xcf, 0xaf, 0x91, 0xf4,
-	0x63, 0x1a, 0x95, 0x85, 0x63, 0x9b, 0x77, 0x6f, 0x95, 0x10, 0x05, 0x37, 0x1b, 0x9b, 0x99, 0xaf,
-	0x30, 0x03, 0xbb, 0x2d, 0xae, 0x6a, 0x5a, 0xfd, 0xb0, 0x7d, 0x76, 0x6d, 0xd5, 0xfd, 0x55, 0x55,
-	0xdd, 0xc3, 0x3b, 0x8d, 0xa1, 0xea, 0xdf, 0x1f, 0x2c, 0xb0, 0xd7, 0x42, 0xa2, 0x66, 0x46, 0x55,
-	0xef, 0xe4, 0xc0, 0x7f, 0x70, 0x6d, 0xd9, 0xc3, 0x55, 0xd9, 0x96, 0x13, 0x05, 0xb7, 0x1a, 0x73,
-	0x3b, 0x0d, 0xfd, 0x8f, 0x9e, 0x5f, 0x8c, 0xad, 0xf3, 0x8b, 0xb1, 0xf5, 0xe7, 0xc5, 0xd8, 0x7a,
-	0x76, 0x39, 0x5e, 0x3b, 0xbf, 0x1c, 0xaf, 0xfd, 0x76, 0x39, 0x5e, 0x7b, 0xf4, 0x66, 0x47, 0x35,
-	0x89, 0x32, 0x9a, 0x7a, 0x6a, 0x1e, 0x78, 0xcb, 0xfa, 0x2f, 0x92, 0x16, 0x0e, 0xfb, 0x55, 0xa6,
-	0xdf, 0xfb, 0x27, 0x00, 0x00, 0xff, 0xff, 0x05, 0x89, 0x19, 0xdc, 0x42, 0x09, 0x00, 0x00,
+	// 944 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x56, 0x4d, 0x6f, 0xdb, 0x36,
+	0x18, 0x8e, 0x92, 0xcc, 0x89, 0xe9, 0x24, 0xad, 0xd9, 0x64, 0x50, 0x1d, 0xd4, 0xf2, 0x08, 0x6c,
+	0xf3, 0x30, 0x54, 0x42, 0xbb, 0x9d, 0x76, 0xe9, 0xa2, 0x66, 0x1f, 0x29, 0x50, 0xa0, 0xd0, 0x06,
+	0x0c, 0x28, 0xd6, 0x09, 0x94, 0xc8, 0x29, 0x5c, 0x25, 0xd1, 0x10, 0xe9, 0xd6, 0xb9, 0xed, 0xba,
+	0x5b, 0x8f, 0xfb, 0x29, 0xdb, 0x3f, 0xe8, 0x6e, 0x39, 0x76, 0x3b, 0x68, 0x43, 0xf2, 0x0f, 0xfc,
+	0x0b, 0x06, 0x8a, 0x94, 0xe4, 0xba, 0xd8, 0xd2, 0xec, 0xb0, 0x43, 0x4f, 0x32, 0xc9, 0xe7, 0x7d,
+	0x9e, 0x97, 0x2f, 0x5f, 0x3e, 0x34, 0xd8, 0xc3, 0xd3, 0x58, 0x32, 0x9e, 0x7b, 0xe6, 0xeb, 0x4e,
+	0x0a, 0x2e, 0x39, 0xdc, 0xfa, 0x61, 0x72, 0x32, 0x73, 0xcd, 0xdc, 0x60, 0x37, 0xe1, 0x09, 0xaf,
+	0x16, 0x3c, 0xf5, 0x4b, 0x63, 0x06, 0x4e, 0xc2, 0x79, 0x92, 0x52, 0xaf, 0x1a, 0x45, 0xd3, 0xef,
+	0x3d, 0xc9, 0x32, 0x2a, 0x24, 0xce, 0x26, 0x06, 0x30, 0x5c, 0x06, 0x90, 0x69, 0x81, 0x5b, 0x91,
+	0xc1, 0x30, 0xe6, 0x22, 0xe3, 0xc2, 0x8b, 0xb0, 0xa0, 0xde, 0x93, 0x5b, 0x11, 0x95, 0xf8, 0x96,
+	0x17, 0x73, 0x66, 0xd6, 0xd1, 0xaf, 0xeb, 0xa0, 0xe7, 0x63, 0x41, 0x0f, 0x74, 0x1a, 0xf0, 0x06,
+	0x58, 0x65, 0xc4, 0xb6, 0x46, 0xd6, 0x78, 0xdd, 0xdf, 0x9e, 0x97, 0x4e, 0xf7, 0x04, 0x67, 0xe9,
+	0x27, 0x88, 0x11, 0x14, 0xac, 0x32, 0x02, 0x3f, 0x04, 0x5d, 0x96, 0x33, 0xc9, 0xb0, 0xe4, 0x85,
+	0xbd, 0x3a, 0xb2, 0xc6, 0xdd, 0x65, 0x54, 0xbb, 0x0e, 0xef, 0x80, 0xb5, 0x94, 0x4b, 0x7b, 0x6d,
+	0x64, 0x8d, 0x7b, 0xb7, 0xaf, 0xbb, 0x3a, 0x13, 0x57, 0x65, 0xe2, 0x9a, 0x4c, 0xdc, 0xbb, 0x9c,
+	0xe5, 0x3e, 0x7c, 0x5e, 0x3a, 0x2b, 0xf3, 0xd2, 0x01, 0x9a, 0x25, 0xe5, 0x12, 0x05, 0x2a, 0x12,
+	0x7e, 0x07, 0x3a, 0x11, 0x23, 0x84, 0x16, 0xf6, 0x7a, 0x25, 0xf5, 0xb9, 0x02, 0xfe, 0x51, 0x3a,
+	0x37, 0x13, 0x26, 0x8f, 0xa7, 0x91, 0x1b, 0xf3, 0xcc, 0x33, 0xfb, 0xd3, 0x9f, 0x9b, 0x82, 0x3c,
+	0xf6, 0xe4, 0xc9, 0x84, 0x0a, 0xf7, 0x20, 0x8e, 0x0f, 0x08, 0x29, 0xa8, 0x10, 0xf3, 0xd2, 0xd9,
+	0xd6, 0xcc, 0x9a, 0x0c, 0x05, 0x86, 0x55, 0x25, 0x18, 0x31, 0x62, 0xbf, 0x75, 0xc9, 0x04, 0x23,
+	0xb5, 0x4f, 0x15, 0x09, 0x8f, 0x40, 0xff, 0x18, 0x8b, 0xb0, 0xa0, 0x31, 0x65, 0x4f, 0x28, 0x09,
+	0x23, 0x46, 0x84, 0xdd, 0x19, 0x59, 0xe3, 0x4d, 0xff, 0xc6, 0xbc, 0x74, 0xae, 0x6b, 0xbc, 0x86,
+	0x2c, 0x62, 0x50, 0x70, 0xe5, 0x18, 0x8b, 0xc0, 0x4c, 0xf9, 0x8c, 0x08, 0x18, 0x80, 0x4d, 0x9a,
+	0x93, 0x50, 0x9d, 0xaf, 0xbd, 0x51, 0x25, 0x34, 0x70, 0xf5, 0xd9, 0xba, 0xf5, 0xd9, 0xba, 0x5f,
+	0xd7, 0x87, 0xef, 0xef, 0x9b, 0x8c, 0xae, 0x68, 0x85, 0x3a, 0x12, 0x3d, 0xfb, 0xd3, 0xb1, 0x82,
+	0x0d, 0x9a, 0x13, 0x05, 0x85, 0x8f, 0xc0, 0x56, 0x86, 0x67, 0x61, 0xc3, 0xbb, 0x79, 0x21, 0xaf,
+	0x63, 0x78, 0xaf, 0x69, 0xde, 0xc5, 0x68, 0xcd, 0x0d, 0x32, 0x3c, 0xfb, 0x4c, 0xd3, 0x23, 0x0e,
+	0x76, 0xbe, 0x9a, 0x16, 0x93, 0x74, 0x2a, 0xea, 0xee, 0x79, 0x04, 0xb6, 0x54, 0xf5, 0x42, 0xd3,
+	0xd4, 0x55, 0x1f, 0xa9, 0xca, 0x2e, 0x76, 0xba, 0xbb, 0xd0, 0x6e, 0x5a, 0xef, 0xb4, 0x74, 0xac,
+	0x56, 0x73, 0x91, 0x00, 0x05, 0xbd, 0xa8, 0x45, 0xa3, 0xdf, 0x2d, 0xd0, 0x3b, 0xa4, 0x91, 0xfc,
+	0x7f, 0xe4, 0xe0, 0x63, 0x00, 0x63, 0x5e, 0x14, 0x54, 0x4c, 0x78, 0x4e, 0x58, 0x9e, 0x84, 0x84,
+	0x46, 0xb2, 0xea, 0xfa, 0x7f, 0xed, 0x96, 0x77, 0x4c, 0x0d, 0xcd, 0xe9, 0xbf, 0x4a, 0x81, 0x82,
+	0xfe, 0x4b, 0x93, 0x6a, 0x4b, 0xe8, 0xa7, 0x35, 0xd0, 0xbf, 0xcb, 0xd3, 0x14, 0x4b, 0x5a, 0xe0,
+	0xf4, 0x0d, 0xdc, 0x21, 0xbc, 0x07, 0x36, 0x54, 0x3f, 0xa9, 0x1b, 0x77, 0xa1, 0x25, 0xbc, 0x6d,
+	0x14, 0x76, 0xda, 0x3e, 0xac, 0x6e, 0x5d, 0x27, 0xc3, 0x33, 0x9f, 0x11, 0xf8, 0x2d, 0xe8, 0xa5,
+	0x5c, 0x86, 0x05, 0x95, 0xd3, 0x22, 0x17, 0x95, 0x3d, 0xf4, 0x6e, 0x3b, 0x2f, 0x97, 0xe5, 0x1b,
+	0xca, 0x92, 0x63, 0x49, 0x89, 0xb1, 0x01, 0x2a, 0xfc, 0x81, 0x61, 0x85, 0x8d, 0xd1, 0xd4, 0x0c,
+	0x28, 0x00, 0x29, 0x97, 0x81, 0x19, 0xbc, 0xb0, 0x40, 0xff, 0x95, 0x68, 0x98, 0x80, 0x2e, 0xae,
+	0x07, 0xb6, 0x35, 0x5a, 0x1b, 0x77, 0xfd, 0xa3, 0xff, 0x6a, 0x48, 0x57, 0x75, 0x06, 0x0d, 0x1f,
+	0x0a, 0x5a, 0x6e, 0xf8, 0x10, 0x6c, 0x3c, 0xad, 0xd4, 0x85, 0xbd, 0x5a, 0xc9, 0x7c, 0x6a, 0x64,
+	0xde, 0x7b, 0x0d, 0x99, 0xa3, 0x5c, 0xb6, 0x75, 0x33, 0x34, 0x28, 0xa8, 0x09, 0xd1, 0x2f, 0x16,
+	0xe8, 0xdd, 0x17, 0xc9, 0x83, 0x14, 0xc7, 0x54, 0x15, 0xf2, 0x63, 0x00, 0x4c, 0xbd, 0xc2, 0xc6,
+	0xf7, 0xf7, 0xe6, 0xa5, 0xd3, 0x37, 0x09, 0x36, 0x6b, 0x2a, 0x43, 0x3d, 0x38, 0x22, 0xf0, 0x83,
+	0xc6, 0x98, 0xf5, 0x1b, 0xd0, 0xff, 0x67, 0x8f, 0xfd, 0x12, 0x74, 0x70, 0xc6, 0xa7, 0xf9, 0x6b,
+	0xbc, 0x03, 0x7b, 0xe6, 0x78, 0x0c, 0x93, 0x0e, 0x43, 0x81, 0x89, 0x47, 0xbf, 0xad, 0x83, 0xce,
+	0x03, 0x5c, 0xe0, 0x4c, 0x40, 0x09, 0x76, 0x55, 0x4b, 0xd4, 0xd9, 0xd5, 0x6f, 0x5e, 0x73, 0x3d,
+	0x96, 0x0d, 0xee, 0xd0, 0x00, 0xfc, 0xf7, 0x8d, 0xc4, 0x7e, 0xdb, 0x57, 0xcb, 0x24, 0xe8, 0x67,
+	0xe5, 0x73, 0x30, 0xc3, 0x33, 0x73, 0x4b, 0xea, 0xe0, 0xea, 0x32, 0x32, 0xd2, 0xaa, 0xad, 0x5e,
+	0xa4, 0xb6, 0xe4, 0xa6, 0x8b, 0xc1, 0x5a, 0xa5, 0x17, 0x31, 0xd2, 0xd0, 0x3f, 0x05, 0x7d, 0x96,
+	0xc7, 0x05, 0xcd, 0x68, 0x2e, 0x43, 0xa1, 0x8d, 0xb5, 0x2a, 0x5a, 0xd7, 0xbf, 0x77, 0x89, 0x06,
+	0x38, 0xa4, 0xf1, 0xbc, 0x74, 0x6c, 0xf3, 0x22, 0x2f, 0x13, 0xa2, 0xe0, 0x6a, 0x33, 0x67, 0xcc,
+	0x1b, 0xe6, 0x60, 0xa7, 0xc5, 0x55, 0x0e, 0xa0, 0x9f, 0xdb, 0x2f, 0x2e, 0xad, 0xba, 0xb7, 0xac,
+	0xaa, 0xcd, 0x60, 0xbb, 0x99, 0xa8, 0x8c, 0xe0, 0x47, 0x0b, 0xec, 0xb6, 0x90, 0xb8, 0x31, 0xbd,
+	0xea, 0x21, 0xee, 0xfa, 0xf7, 0x2f, 0x2d, 0xbb, 0xbf, 0x2c, 0xdb, 0x72, 0xa2, 0xe0, 0x5a, 0x33,
+	0xdd, 0xda, 0xab, 0x7f, 0xe7, 0xf9, 0xd9, 0xd0, 0x3a, 0x3d, 0x1b, 0x5a, 0x7f, 0x9d, 0x0d, 0xad,
+	0x67, 0xe7, 0xc3, 0x95, 0xd3, 0xf3, 0xe1, 0xca, 0x8b, 0xf3, 0xe1, 0xca, 0xc3, 0x77, 0x17, 0x54,
+	0xd3, 0x38, 0xa7, 0x99, 0xa7, 0x4c, 0xc5, 0x9b, 0xd5, 0x7f, 0xde, 0xb4, 0x70, 0xd4, 0xa9, 0x4e,
+	0xfb, 0xa3, 0xbf, 0x03, 0x00, 0x00, 0xff, 0xff, 0x68, 0x39, 0x3f, 0x14, 0xdc, 0x09, 0x00, 0x00,
 }
 
 func (m *BaseAuction) Marshal() (dAtA []byte, err error) {
@@ -553,37 +540,36 @@ func (m *BaseAuction) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x30
 	}
-	if m.Bid != nil {
-		{
-			size, err := m.Bid.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAuction(dAtA, i, uint64(size))
+	{
+		size, err := m.Bid.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x2a
+		i -= size
+		i = encodeVarintAuction(dAtA, i, uint64(size))
 	}
-	if len(m.Bidder) > 0 {
-		i -= len(m.Bidder)
-		copy(dAtA[i:], m.Bidder)
-		i = encodeVarintAuction(dAtA, i, uint64(len(m.Bidder)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if m.Lot != nil {
-		{
-			size, err := m.Lot.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAuction(dAtA, i, uint64(size))
+	i--
+	dAtA[i] = 0x2a
+	{
+		size := m.Bidder.Size()
+		i -= size
+		if _, err := m.Bidder.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x1a
+		i = encodeVarintAuction(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0x22
+	{
+		size, err := m.Lot.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintAuction(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
 	if len(m.Initiator) > 0 {
 		i -= len(m.Initiator)
 		copy(dAtA[i:], m.Initiator)
@@ -619,18 +605,16 @@ func (m *SurplusAuction) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.BaseAuction != nil {
-		{
-			size, err := m.BaseAuction.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAuction(dAtA, i, uint64(size))
+	{
+		size, err := m.BaseAuction.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0xa
+		i -= size
+		i = encodeVarintAuction(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -654,30 +638,26 @@ func (m *DebtAuction) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.CorrespondingDebt != nil {
-		{
-			size, err := m.CorrespondingDebt.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAuction(dAtA, i, uint64(size))
+	{
+		size, err := m.CorrespondingDebt.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x12
+		i -= size
+		i = encodeVarintAuction(dAtA, i, uint64(size))
 	}
-	if m.BaseAuction != nil {
-		{
-			size, err := m.BaseAuction.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAuction(dAtA, i, uint64(size))
+	i--
+	dAtA[i] = 0x12
+	{
+		size, err := m.BaseAuction.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0xa
+		i -= size
+		i = encodeVarintAuction(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -701,54 +681,46 @@ func (m *CollateralAuction) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.LotReturns != nil {
-		{
-			size, err := m.LotReturns.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAuction(dAtA, i, uint64(size))
+	{
+		size, err := m.LotReturns.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x22
+		i -= size
+		i = encodeVarintAuction(dAtA, i, uint64(size))
 	}
-	if m.MaxBid != nil {
-		{
-			size, err := m.MaxBid.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAuction(dAtA, i, uint64(size))
+	i--
+	dAtA[i] = 0x22
+	{
+		size, err := m.MaxBid.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x1a
+		i -= size
+		i = encodeVarintAuction(dAtA, i, uint64(size))
 	}
-	if m.CorrespondingDebt != nil {
-		{
-			size, err := m.CorrespondingDebt.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAuction(dAtA, i, uint64(size))
+	i--
+	dAtA[i] = 0x1a
+	{
+		size, err := m.CorrespondingDebt.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x12
+		i -= size
+		i = encodeVarintAuction(dAtA, i, uint64(size))
 	}
-	if m.BaseAuction != nil {
-		{
-			size, err := m.BaseAuction.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAuction(dAtA, i, uint64(size))
+	i--
+	dAtA[i] = 0x12
+	{
+		size, err := m.BaseAuction.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0xa
+		i -= size
+		i = encodeVarintAuction(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -788,9 +760,14 @@ func (m *WeightedAddresses) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	if len(m.Addresses) > 0 {
 		for iNdEx := len(m.Addresses) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.Addresses[iNdEx])
-			copy(dAtA[i:], m.Addresses[iNdEx])
-			i = encodeVarintAuction(dAtA, i, uint64(len(m.Addresses[iNdEx])))
+			{
+				size := m.Addresses[iNdEx].Size()
+				i -= size
+				if _, err := m.Addresses[iNdEx].MarshalTo(dAtA[i:]); err != nil {
+					return 0, err
+				}
+				i = encodeVarintAuction(dAtA, i, uint64(size))
+			}
 			i--
 			dAtA[i] = 0xa
 		}
@@ -818,18 +795,16 @@ func (m *MsgPlaceBid) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Amount != nil {
-		{
-			size, err := m.Amount.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAuction(dAtA, i, uint64(size))
+	{
+		size, err := m.Amount.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x1a
+		i -= size
+		i = encodeVarintAuction(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0x1a
 	if len(m.Bidder) > 0 {
 		i -= len(m.Bidder)
 		copy(dAtA[i:], m.Bidder)
@@ -895,26 +870,22 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	i--
 	dAtA[i] = 0x1a
-	if m.BidDuration != nil {
-		n13, err13 := github_com_gogo_protobuf_types.StdDurationMarshalTo(*m.BidDuration, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdDuration(*m.BidDuration):])
-		if err13 != nil {
-			return 0, err13
-		}
-		i -= n13
-		i = encodeVarintAuction(dAtA, i, uint64(n13))
-		i--
-		dAtA[i] = 0x12
+	n13, err13 := github_com_gogo_protobuf_types.StdDurationMarshalTo(m.BidDuration, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdDuration(m.BidDuration):])
+	if err13 != nil {
+		return 0, err13
 	}
-	if m.MaxAuctionDuration != nil {
-		n14, err14 := github_com_gogo_protobuf_types.StdDurationMarshalTo(*m.MaxAuctionDuration, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdDuration(*m.MaxAuctionDuration):])
-		if err14 != nil {
-			return 0, err14
-		}
-		i -= n14
-		i = encodeVarintAuction(dAtA, i, uint64(n14))
-		i--
-		dAtA[i] = 0xa
+	i -= n13
+	i = encodeVarintAuction(dAtA, i, uint64(n13))
+	i--
+	dAtA[i] = 0x12
+	n14, err14 := github_com_gogo_protobuf_types.StdDurationMarshalTo(m.MaxAuctionDuration, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdDuration(m.MaxAuctionDuration):])
+	if err14 != nil {
+		return 0, err14
 	}
+	i -= n14
+	i = encodeVarintAuction(dAtA, i, uint64(n14))
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -942,18 +913,12 @@ func (m *BaseAuction) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovAuction(uint64(l))
 	}
-	if m.Lot != nil {
-		l = m.Lot.Size()
-		n += 1 + l + sovAuction(uint64(l))
-	}
-	l = len(m.Bidder)
-	if l > 0 {
-		n += 1 + l + sovAuction(uint64(l))
-	}
-	if m.Bid != nil {
-		l = m.Bid.Size()
-		n += 1 + l + sovAuction(uint64(l))
-	}
+	l = m.Lot.Size()
+	n += 1 + l + sovAuction(uint64(l))
+	l = m.Bidder.Size()
+	n += 1 + l + sovAuction(uint64(l))
+	l = m.Bid.Size()
+	n += 1 + l + sovAuction(uint64(l))
 	if m.HasReceivedBids {
 		n += 2
 	}
@@ -970,10 +935,8 @@ func (m *SurplusAuction) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.BaseAuction != nil {
-		l = m.BaseAuction.Size()
-		n += 1 + l + sovAuction(uint64(l))
-	}
+	l = m.BaseAuction.Size()
+	n += 1 + l + sovAuction(uint64(l))
 	return n
 }
 
@@ -983,14 +946,10 @@ func (m *DebtAuction) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.BaseAuction != nil {
-		l = m.BaseAuction.Size()
-		n += 1 + l + sovAuction(uint64(l))
-	}
-	if m.CorrespondingDebt != nil {
-		l = m.CorrespondingDebt.Size()
-		n += 1 + l + sovAuction(uint64(l))
-	}
+	l = m.BaseAuction.Size()
+	n += 1 + l + sovAuction(uint64(l))
+	l = m.CorrespondingDebt.Size()
+	n += 1 + l + sovAuction(uint64(l))
 	return n
 }
 
@@ -1000,22 +959,14 @@ func (m *CollateralAuction) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.BaseAuction != nil {
-		l = m.BaseAuction.Size()
-		n += 1 + l + sovAuction(uint64(l))
-	}
-	if m.CorrespondingDebt != nil {
-		l = m.CorrespondingDebt.Size()
-		n += 1 + l + sovAuction(uint64(l))
-	}
-	if m.MaxBid != nil {
-		l = m.MaxBid.Size()
-		n += 1 + l + sovAuction(uint64(l))
-	}
-	if m.LotReturns != nil {
-		l = m.LotReturns.Size()
-		n += 1 + l + sovAuction(uint64(l))
-	}
+	l = m.BaseAuction.Size()
+	n += 1 + l + sovAuction(uint64(l))
+	l = m.CorrespondingDebt.Size()
+	n += 1 + l + sovAuction(uint64(l))
+	l = m.MaxBid.Size()
+	n += 1 + l + sovAuction(uint64(l))
+	l = m.LotReturns.Size()
+	n += 1 + l + sovAuction(uint64(l))
 	return n
 }
 
@@ -1026,8 +977,8 @@ func (m *WeightedAddresses) Size() (n int) {
 	var l int
 	_ = l
 	if len(m.Addresses) > 0 {
-		for _, s := range m.Addresses {
-			l = len(s)
+		for _, e := range m.Addresses {
+			l = e.Size()
 			n += 1 + l + sovAuction(uint64(l))
 		}
 	}
@@ -1053,10 +1004,8 @@ func (m *MsgPlaceBid) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovAuction(uint64(l))
 	}
-	if m.Amount != nil {
-		l = m.Amount.Size()
-		n += 1 + l + sovAuction(uint64(l))
-	}
+	l = m.Amount.Size()
+	n += 1 + l + sovAuction(uint64(l))
 	return n
 }
 
@@ -1066,14 +1015,10 @@ func (m *Params) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.MaxAuctionDuration != nil {
-		l = github_com_gogo_protobuf_types.SizeOfStdDuration(*m.MaxAuctionDuration)
-		n += 1 + l + sovAuction(uint64(l))
-	}
-	if m.BidDuration != nil {
-		l = github_com_gogo_protobuf_types.SizeOfStdDuration(*m.BidDuration)
-		n += 1 + l + sovAuction(uint64(l))
-	}
+	l = github_com_gogo_protobuf_types.SizeOfStdDuration(m.MaxAuctionDuration)
+	n += 1 + l + sovAuction(uint64(l))
+	l = github_com_gogo_protobuf_types.SizeOfStdDuration(m.BidDuration)
+	n += 1 + l + sovAuction(uint64(l))
 	l = m.IncrementSurplus.Size()
 	n += 1 + l + sovAuction(uint64(l))
 	l = m.IncrementDebt.Size()
@@ -1198,9 +1143,6 @@ func (m *BaseAuction) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Lot == nil {
-				m.Lot = &types.Coin{}
-			}
 			if err := m.Lot.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -1235,7 +1177,9 @@ func (m *BaseAuction) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Bidder = string(dAtA[iNdEx:postIndex])
+			if err := m.Bidder.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 5:
 			if wireType != 2 {
@@ -1265,9 +1209,6 @@ func (m *BaseAuction) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if m.Bid == nil {
-				m.Bid = &types.Coin{}
 			}
 			if err := m.Bid.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -1438,9 +1379,6 @@ func (m *SurplusAuction) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.BaseAuction == nil {
-				m.BaseAuction = &BaseAuction{}
-			}
 			if err := m.BaseAuction.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -1524,9 +1462,6 @@ func (m *DebtAuction) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.BaseAuction == nil {
-				m.BaseAuction = &BaseAuction{}
-			}
 			if err := m.BaseAuction.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -1559,9 +1494,6 @@ func (m *DebtAuction) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if m.CorrespondingDebt == nil {
-				m.CorrespondingDebt = &types.Coin{}
 			}
 			if err := m.CorrespondingDebt.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -1646,9 +1578,6 @@ func (m *CollateralAuction) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.BaseAuction == nil {
-				m.BaseAuction = &BaseAuction{}
-			}
 			if err := m.BaseAuction.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -1681,9 +1610,6 @@ func (m *CollateralAuction) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if m.CorrespondingDebt == nil {
-				m.CorrespondingDebt = &types.Coin{}
 			}
 			if err := m.CorrespondingDebt.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -1718,9 +1644,6 @@ func (m *CollateralAuction) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.MaxBid == nil {
-				m.MaxBid = &types.Coin{}
-			}
 			if err := m.MaxBid.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -1753,9 +1676,6 @@ func (m *CollateralAuction) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if m.LotReturns == nil {
-				m.LotReturns = &WeightedAddresses{}
 			}
 			if err := m.LotReturns.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -1841,7 +1761,11 @@ func (m *WeightedAddresses) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Addresses = append(m.Addresses, string(dAtA[iNdEx:postIndex]))
+			var v github_com_cosmos_cosmos_sdk_types.AccAddress
+			m.Addresses = append(m.Addresses, v)
+			if err := m.Addresses[len(m.Addresses)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -2009,9 +1933,6 @@ func (m *MsgPlaceBid) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Amount == nil {
-				m.Amount = &types.Coin{}
-			}
 			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -2095,10 +2016,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.MaxAuctionDuration == nil {
-				m.MaxAuctionDuration = new(time.Duration)
-			}
-			if err := github_com_gogo_protobuf_types.StdDurationUnmarshal(m.MaxAuctionDuration, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_gogo_protobuf_types.StdDurationUnmarshal(&m.MaxAuctionDuration, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -2131,10 +2049,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.BidDuration == nil {
-				m.BidDuration = new(time.Duration)
-			}
-			if err := github_com_gogo_protobuf_types.StdDurationUnmarshal(m.BidDuration, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_gogo_protobuf_types.StdDurationUnmarshal(&m.BidDuration, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

@@ -36,8 +36,8 @@ var _ paramstype.ParamSet = &Params{}
 // NewParams returns a new Params object.
 func NewParams(maxAuctionDuration, bidDuration time.Duration, incrementSurplus, incrementDebt, incrementCollateral sdk.Dec) Params {
 	return Params{
-		MaxAuctionDuration:  &maxAuctionDuration,
-		BidDuration:         &bidDuration,
+		MaxAuctionDuration:  maxAuctionDuration,
+		BidDuration:         bidDuration,
 		IncrementSurplus:    incrementSurplus,
 		IncrementDebt:       incrementDebt,
 		IncrementCollateral: incrementCollateral,
@@ -88,7 +88,7 @@ func (p Params) Validate() error {
 		return err
 	}
 
-	if *p.BidDuration > *p.MaxAuctionDuration {
+	if p.BidDuration > p.MaxAuctionDuration {
 		return errors.New("bid duration param cannot be larger than max auction duration")
 	}
 

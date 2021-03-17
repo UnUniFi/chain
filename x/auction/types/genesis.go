@@ -19,7 +19,7 @@ func DefaultGenesis() *GenesisState {
 	params := DefaultParams()
 	return &GenesisState{
 		NextAuctionId: DefaultNextAuctionID,
-		Params:        &params,
+		Params:        params,
 		Auctions:      []*types.Any{},
 		// this line is used by starport scaffolding # genesis/types/default
 		// AuctionList: []*Auction{},
@@ -30,7 +30,7 @@ func DefaultGenesis() *GenesisState {
 func NewGenesisState(nextID uint64, ap Params, ga []*types.Any) GenesisState {
 	return GenesisState{
 		NextAuctionId: nextID,
-		Params:        &ap,
+		Params:        ap,
 		Auctions:      ga,
 	}
 }

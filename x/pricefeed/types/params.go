@@ -15,7 +15,7 @@ var (
 // NewParams creates a new AssetParams object
 func NewParams(markets Markets) Params {
 	return Params{
-		Markets: &markets,
+		Markets: markets,
 	}
 }
 

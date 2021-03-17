@@ -15,6 +15,9 @@ const (
 
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_capability"
+
+	// JsmndistMacc module account for jsmndist
+	JsmndistMacc = ModuleName
 )
 
 func KeyPrefix(p string) []byte {
@@ -22,9 +25,12 @@ func KeyPrefix(p string) []byte {
 }
 
 const (
-	ParamsKey            = "Params-value-"
-	RewardKey            = "Reward-value-"
-	RewardCountKey       = "Reward-count-"
-	CurrentDistPeriodKey = "CurrentDistPeriod"
-	PreviousBlockTimeKey = "PreviousBlockTime"
+	ParamsKey = "Params-value-"
+	// RewardKey            = "Reward-value-"
+	// RewardCountKey       = "Reward-count-"
+)
+
+var (
+	CurrentDistPeriodKey = []byte{0x00}
+	PreviousBlockTimeKey = []byte{0x01}
 )

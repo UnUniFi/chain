@@ -30,14 +30,14 @@ var _ = time.Kitchen
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type CDP struct {
-	Id              uint64                                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty" yaml:"id"`
-	Owner           string                                 `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty" yaml:"owner"`
-	Type            string                                 `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty" yaml:"type"`
-	Collateral      *types.Coin                            `protobuf:"bytes,4,opt,name=collateral,proto3" json:"collateral,omitempty" yaml:"collateral"`
-	Principal       *types.Coin                            `protobuf:"bytes,5,opt,name=principal,proto3" json:"principal,omitempty" yaml:"principal"`
-	AccumulatedFees *types.Coin                            `protobuf:"bytes,6,opt,name=accumulated_fees,json=accumulatedFees,proto3" json:"accumulated_fees,omitempty" yaml:"accumulated_fees"`
-	FeesUpdated     time.Time                              `protobuf:"bytes,7,opt,name=fees_updated,json=feesUpdated,proto3,stdtime" json:"fees_updated" yaml:"fees_updated"`
-	InterestFactor  github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,8,opt,name=interest_factor,json=interestFactor,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"interest_factor" yaml:"interest_factor"`
+	Id              uint64                                        `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty" yaml:"id"`
+	Owner           github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=owner,proto3,customtype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"owner" yaml:"owner"`
+	Type            string                                        `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty" yaml:"type"`
+	Collateral      types.Coin                                    `protobuf:"bytes,4,opt,name=collateral,proto3" json:"collateral" yaml:"collateral"`
+	Principal       types.Coin                                    `protobuf:"bytes,5,opt,name=principal,proto3" json:"principal" yaml:"principal"`
+	AccumulatedFees types.Coin                                    `protobuf:"bytes,6,opt,name=accumulated_fees,json=accumulatedFees,proto3" json:"accumulated_fees" yaml:"accumulated_fees"`
+	FeesUpdated     time.Time                                     `protobuf:"bytes,7,opt,name=fees_updated,json=feesUpdated,proto3,stdtime" json:"fees_updated" yaml:"fees_updated"`
+	InterestFactor  github_com_cosmos_cosmos_sdk_types.Dec        `protobuf:"bytes,8,opt,name=interest_factor,json=interestFactor,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"interest_factor" yaml:"interest_factor"`
 }
 
 func (m *CDP) Reset()         { *m = CDP{} }
@@ -80,13 +80,6 @@ func (m *CDP) GetId() uint64 {
 	return 0
 }
 
-func (m *CDP) GetOwner() string {
-	if m != nil {
-		return m.Owner
-	}
-	return ""
-}
-
 func (m *CDP) GetType() string {
 	if m != nil {
 		return m.Type
@@ -94,25 +87,25 @@ func (m *CDP) GetType() string {
 	return ""
 }
 
-func (m *CDP) GetCollateral() *types.Coin {
+func (m *CDP) GetCollateral() types.Coin {
 	if m != nil {
 		return m.Collateral
 	}
-	return nil
+	return types.Coin{}
 }
 
-func (m *CDP) GetPrincipal() *types.Coin {
+func (m *CDP) GetPrincipal() types.Coin {
 	if m != nil {
 		return m.Principal
 	}
-	return nil
+	return types.Coin{}
 }
 
-func (m *CDP) GetAccumulatedFees() *types.Coin {
+func (m *CDP) GetAccumulatedFees() types.Coin {
 	if m != nil {
 		return m.AccumulatedFees
 	}
-	return nil
+	return types.Coin{}
 }
 
 func (m *CDP) GetFeesUpdated() time.Time {
@@ -123,9 +116,9 @@ func (m *CDP) GetFeesUpdated() time.Time {
 }
 
 type Deposit struct {
-	CdpId     uint64      `protobuf:"varint,1,opt,name=cdp_id,json=cdpId,proto3" json:"cdp_id,omitempty" yaml:"cdp_id"`
-	Depositor string      `protobuf:"bytes,2,opt,name=depositor,proto3" json:"depositor,omitempty" yaml:"depositor"`
-	Amount    *types.Coin `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty" yaml:"amount"`
+	CdpId     uint64                                        `protobuf:"varint,1,opt,name=cdp_id,json=cdpId,proto3" json:"cdp_id,omitempty" yaml:"cdp_id"`
+	Depositor github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=depositor,proto3,customtype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"depositor" yaml:"depositor"`
+	Amount    types.Coin                                    `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount" yaml:"amount"`
 }
 
 func (m *Deposit) Reset()         { *m = Deposit{} }
@@ -168,23 +161,16 @@ func (m *Deposit) GetCdpId() uint64 {
 	return 0
 }
 
-func (m *Deposit) GetDepositor() string {
-	if m != nil {
-		return m.Depositor
-	}
-	return ""
-}
-
-func (m *Deposit) GetAmount() *types.Coin {
+func (m *Deposit) GetAmount() types.Coin {
 	if m != nil {
 		return m.Amount
 	}
-	return nil
+	return types.Coin{}
 }
 
 type AugmentedCDP struct {
-	Cdp                    *CDP                                   `protobuf:"bytes,1,opt,name=cdp,proto3" json:"cdp,omitempty" yaml:"cdp"`
-	CollateralValue        *types.Coin                            `protobuf:"bytes,2,opt,name=collateral_value,json=collateralValue,proto3" json:"collateral_value,omitempty" yaml:"collateral_value"`
+	CDP                    `protobuf:"bytes,1,opt,name=cdp,proto3,embedded=cdp" json:"cdp" yaml:"cdp"`
+	CollateralValue        types.Coin                             `protobuf:"bytes,2,opt,name=collateral_value,json=collateralValue,proto3" json:"collateral_value" yaml:"collateral_value"`
 	CollateralizationRatio github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=collateralization_ratio,json=collateralizationRatio,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"collateralization_ratio" yaml:"collateralization_ratio"`
 }
 
@@ -221,25 +207,18 @@ func (m *AugmentedCDP) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_AugmentedCDP proto.InternalMessageInfo
 
-func (m *AugmentedCDP) GetCdp() *CDP {
-	if m != nil {
-		return m.Cdp
-	}
-	return nil
-}
-
-func (m *AugmentedCDP) GetCollateralValue() *types.Coin {
+func (m *AugmentedCDP) GetCollateralValue() types.Coin {
 	if m != nil {
 		return m.CollateralValue
 	}
-	return nil
+	return types.Coin{}
 }
 
 type MsgCreateCDP struct {
-	Sender         string      `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty" yaml:"sender"`
-	Collateral     *types.Coin `protobuf:"bytes,2,opt,name=collateral,proto3" json:"collateral,omitempty" yaml:"collateral"`
-	Principal      *types.Coin `protobuf:"bytes,3,opt,name=principal,proto3" json:"principal,omitempty" yaml:"principal"`
-	CollateralType string      `protobuf:"bytes,4,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
+	Sender         github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"sender" yaml:"sender"`
+	Collateral     types.Coin                                    `protobuf:"bytes,2,opt,name=collateral,proto3" json:"collateral" yaml:"collateral"`
+	Principal      types.Coin                                    `protobuf:"bytes,3,opt,name=principal,proto3" json:"principal" yaml:"principal"`
+	CollateralType string                                        `protobuf:"bytes,4,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
 }
 
 func (m *MsgCreateCDP) Reset()         { *m = MsgCreateCDP{} }
@@ -275,25 +254,18 @@ func (m *MsgCreateCDP) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgCreateCDP proto.InternalMessageInfo
 
-func (m *MsgCreateCDP) GetSender() string {
-	if m != nil {
-		return m.Sender
-	}
-	return ""
-}
-
-func (m *MsgCreateCDP) GetCollateral() *types.Coin {
+func (m *MsgCreateCDP) GetCollateral() types.Coin {
 	if m != nil {
 		return m.Collateral
 	}
-	return nil
+	return types.Coin{}
 }
 
-func (m *MsgCreateCDP) GetPrincipal() *types.Coin {
+func (m *MsgCreateCDP) GetPrincipal() types.Coin {
 	if m != nil {
 		return m.Principal
 	}
-	return nil
+	return types.Coin{}
 }
 
 func (m *MsgCreateCDP) GetCollateralType() string {
@@ -304,10 +276,10 @@ func (m *MsgCreateCDP) GetCollateralType() string {
 }
 
 type MsgDeposit struct {
-	Depositor      string      `protobuf:"bytes,1,opt,name=depositor,proto3" json:"depositor,omitempty" yaml:"depositor"`
-	Owner          string      `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty" yaml:"owner"`
-	Collateral     *types.Coin `protobuf:"bytes,3,opt,name=collateral,proto3" json:"collateral,omitempty" yaml:"collateral"`
-	CollateralType string      `protobuf:"bytes,4,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
+	Depositor      github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=depositor,proto3,customtype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"depositor" yaml:"depositor"`
+	Owner          github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=owner,proto3,customtype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"owner" yaml:"owner"`
+	Collateral     types.Coin                                    `protobuf:"bytes,3,opt,name=collateral,proto3" json:"collateral" yaml:"collateral"`
+	CollateralType string                                        `protobuf:"bytes,4,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
 }
 
 func (m *MsgDeposit) Reset()         { *m = MsgDeposit{} }
@@ -343,25 +315,11 @@ func (m *MsgDeposit) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDeposit proto.InternalMessageInfo
 
-func (m *MsgDeposit) GetDepositor() string {
-	if m != nil {
-		return m.Depositor
-	}
-	return ""
-}
-
-func (m *MsgDeposit) GetOwner() string {
-	if m != nil {
-		return m.Owner
-	}
-	return ""
-}
-
-func (m *MsgDeposit) GetCollateral() *types.Coin {
+func (m *MsgDeposit) GetCollateral() types.Coin {
 	if m != nil {
 		return m.Collateral
 	}
-	return nil
+	return types.Coin{}
 }
 
 func (m *MsgDeposit) GetCollateralType() string {
@@ -372,10 +330,10 @@ func (m *MsgDeposit) GetCollateralType() string {
 }
 
 type MsgWithdraw struct {
-	Depositor      string      `protobuf:"bytes,1,opt,name=depositor,proto3" json:"depositor,omitempty" yaml:"depositor"`
-	Owner          string      `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty" yaml:"owner"`
-	Collateral     *types.Coin `protobuf:"bytes,3,opt,name=collateral,proto3" json:"collateral,omitempty" yaml:"collateral"`
-	CollateralType string      `protobuf:"bytes,4,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
+	Depositor      github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=depositor,proto3,customtype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"depositor" yaml:"depositor"`
+	Owner          github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=owner,proto3,customtype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"owner" yaml:"owner"`
+	Collateral     types.Coin                                    `protobuf:"bytes,3,opt,name=collateral,proto3" json:"collateral" yaml:"collateral"`
+	CollateralType string                                        `protobuf:"bytes,4,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
 }
 
 func (m *MsgWithdraw) Reset()         { *m = MsgWithdraw{} }
@@ -411,25 +369,11 @@ func (m *MsgWithdraw) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgWithdraw proto.InternalMessageInfo
 
-func (m *MsgWithdraw) GetDepositor() string {
-	if m != nil {
-		return m.Depositor
-	}
-	return ""
-}
-
-func (m *MsgWithdraw) GetOwner() string {
-	if m != nil {
-		return m.Owner
-	}
-	return ""
-}
-
-func (m *MsgWithdraw) GetCollateral() *types.Coin {
+func (m *MsgWithdraw) GetCollateral() types.Coin {
 	if m != nil {
 		return m.Collateral
 	}
-	return nil
+	return types.Coin{}
 }
 
 func (m *MsgWithdraw) GetCollateralType() string {
@@ -440,9 +384,9 @@ func (m *MsgWithdraw) GetCollateralType() string {
 }
 
 type MsgDrawDebt struct {
-	Sender         string      `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty" yaml:"sender"`
-	CollateralType string      `protobuf:"bytes,2,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
-	Principal      *types.Coin `protobuf:"bytes,3,opt,name=principal,proto3" json:"principal,omitempty" yaml:"principal"`
+	Sender         github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"sender" yaml:"sender"`
+	CollateralType string                                        `protobuf:"bytes,2,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
+	Principal      types.Coin                                    `protobuf:"bytes,3,opt,name=principal,proto3" json:"principal" yaml:"principal"`
 }
 
 func (m *MsgDrawDebt) Reset()         { *m = MsgDrawDebt{} }
@@ -478,13 +422,6 @@ func (m *MsgDrawDebt) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDrawDebt proto.InternalMessageInfo
 
-func (m *MsgDrawDebt) GetSender() string {
-	if m != nil {
-		return m.Sender
-	}
-	return ""
-}
-
 func (m *MsgDrawDebt) GetCollateralType() string {
 	if m != nil {
 		return m.CollateralType
@@ -492,17 +429,17 @@ func (m *MsgDrawDebt) GetCollateralType() string {
 	return ""
 }
 
-func (m *MsgDrawDebt) GetPrincipal() *types.Coin {
+func (m *MsgDrawDebt) GetPrincipal() types.Coin {
 	if m != nil {
 		return m.Principal
 	}
-	return nil
+	return types.Coin{}
 }
 
 type MsgRelayDebt struct {
-	Sender         string      `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty" yaml:"sender"`
-	CollateralType string      `protobuf:"bytes,2,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
-	Payment        *types.Coin `protobuf:"bytes,3,opt,name=payment,proto3" json:"payment,omitempty" yaml:"payment"`
+	Sender         github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"sender" yaml:"sender"`
+	CollateralType string                                        `protobuf:"bytes,2,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
+	Payment        types.Coin                                    `protobuf:"bytes,3,opt,name=payment,proto3" json:"payment" yaml:"payment"`
 }
 
 func (m *MsgRelayDebt) Reset()         { *m = MsgRelayDebt{} }
@@ -538,13 +475,6 @@ func (m *MsgRelayDebt) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgRelayDebt proto.InternalMessageInfo
 
-func (m *MsgRelayDebt) GetSender() string {
-	if m != nil {
-		return m.Sender
-	}
-	return ""
-}
-
 func (m *MsgRelayDebt) GetCollateralType() string {
 	if m != nil {
 		return m.CollateralType
@@ -552,17 +482,17 @@ func (m *MsgRelayDebt) GetCollateralType() string {
 	return ""
 }
 
-func (m *MsgRelayDebt) GetPayment() *types.Coin {
+func (m *MsgRelayDebt) GetPayment() types.Coin {
 	if m != nil {
 		return m.Payment
 	}
-	return nil
+	return types.Coin{}
 }
 
 type MsgLiquidate struct {
-	Keeper         string `protobuf:"bytes,1,opt,name=keeper,proto3" json:"keeper,omitempty" yaml:"keeper"`
-	Borrower       string `protobuf:"bytes,2,opt,name=borrower,proto3" json:"borrower,omitempty" yaml:"borrower"`
-	CollateralType string `protobuf:"bytes,3,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
+	Keeper         github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=keeper,proto3,customtype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"keeper" yaml:"keeper"`
+	Borrower       github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=borrower,proto3,customtype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"borrower" yaml:"borrower"`
+	CollateralType string                                        `protobuf:"bytes,3,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
 }
 
 func (m *MsgLiquidate) Reset()         { *m = MsgLiquidate{} }
@@ -598,20 +528,6 @@ func (m *MsgLiquidate) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgLiquidate proto.InternalMessageInfo
 
-func (m *MsgLiquidate) GetKeeper() string {
-	if m != nil {
-		return m.Keeper
-	}
-	return ""
-}
-
-func (m *MsgLiquidate) GetBorrower() string {
-	if m != nil {
-		return m.Borrower
-	}
-	return ""
-}
-
 func (m *MsgLiquidate) GetCollateralType() string {
 	if m != nil {
 		return m.CollateralType
@@ -621,8 +537,8 @@ func (m *MsgLiquidate) GetCollateralType() string {
 
 type Params struct {
 	CollateralParams        []CollateralParam                      `protobuf:"bytes,1,rep,name=collateral_params,json=collateralParams,proto3" json:"collateral_params" yaml:"collateral_params"`
-	DebtParam               *DebtParam                             `protobuf:"bytes,2,opt,name=debt_param,json=debtParam,proto3" json:"debt_param,omitempty" yaml:"debt_param"`
-	GlobalDebtLimit         *types.Coin                            `protobuf:"bytes,3,opt,name=global_debt_limit,json=globalDebtLimit,proto3" json:"global_debt_limit,omitempty" yaml:"global_debt_limit"`
+	DebtParam               DebtParam                              `protobuf:"bytes,2,opt,name=debt_param,json=debtParam,proto3" json:"debt_param" yaml:"debt_param"`
+	GlobalDebtLimit         types.Coin                             `protobuf:"bytes,3,opt,name=global_debt_limit,json=globalDebtLimit,proto3" json:"global_debt_limit" yaml:"global_debt_limit"`
 	SurplusAuctionThreshold github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=surplus_auction_threshold,json=surplusAuctionThreshold,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"surplus_auction_threshold" yaml:"surplus_auction_threshold"`
 	SurplusAuctionLot       github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,5,opt,name=surplus_auction_lot,json=surplusAuctionLot,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"surplus_auction_lot" yaml:"surplus_auction_lot"`
 	DebtAuctionThreshold    github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,6,opt,name=debt_auction_threshold,json=debtAuctionThreshold,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"debt_auction_threshold" yaml:"debt_auction_threshold"`
@@ -670,18 +586,18 @@ func (m *Params) GetCollateralParams() []CollateralParam {
 	return nil
 }
 
-func (m *Params) GetDebtParam() *DebtParam {
+func (m *Params) GetDebtParam() DebtParam {
 	if m != nil {
 		return m.DebtParam
 	}
-	return nil
+	return DebtParam{}
 }
 
-func (m *Params) GetGlobalDebtLimit() *types.Coin {
+func (m *Params) GetGlobalDebtLimit() types.Coin {
 	if m != nil {
 		return m.GlobalDebtLimit
 	}
-	return nil
+	return types.Coin{}
 }
 
 func (m *Params) GetCircuitBreaker() bool {
@@ -695,7 +611,7 @@ type CollateralParam struct {
 	Denom                            string                                 `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty" yaml:"denom"`
 	Type                             string                                 `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty" yaml:"type"`
 	LiquidationRatio                 github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=liquidation_ratio,json=liquidationRatio,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"liquidation_ratio" yaml:"liquidation_ratio"`
-	DebtLimit                        *types.Coin                            `protobuf:"bytes,4,opt,name=debt_limit,json=debtLimit,proto3" json:"debt_limit,omitempty" yaml:"debt_limit"`
+	DebtLimit                        types.Coin                             `protobuf:"bytes,4,opt,name=debt_limit,json=debtLimit,proto3" json:"debt_limit" yaml:"debt_limit"`
 	StabilityFee                     github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=stability_fee,json=stabilityFee,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"stability_fee" yaml:"stability_fee"`
 	AuctionSize                      github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,6,opt,name=auction_size,json=auctionSize,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"auction_size" yaml:"auction_size"`
 	LiquidationPenalty               github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,7,opt,name=liquidation_penalty,json=liquidationPenalty,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"liquidation_penalty" yaml:"liquidation_penalty"`
@@ -754,11 +670,11 @@ func (m *CollateralParam) GetType() string {
 	return ""
 }
 
-func (m *CollateralParam) GetDebtLimit() *types.Coin {
+func (m *CollateralParam) GetDebtLimit() types.Coin {
 	if m != nil {
 		return m.DebtLimit
 	}
-	return nil
+	return types.Coin{}
 }
 
 func (m *CollateralParam) GetPrefix() uint32 {
@@ -854,104 +770,106 @@ func init() {
 func init() { proto.RegisterFile("cdp/cdp.proto", fileDescriptor_105e3b742c3b95d7) }
 
 var fileDescriptor_105e3b742c3b95d7 = []byte{
-	// 1541 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe4, 0x58, 0x5d, 0x6f, 0x1b, 0x45,
-	0x17, 0xce, 0xda, 0xa9, 0x13, 0x4f, 0x3e, 0x9c, 0x4c, 0xd2, 0xc4, 0xcd, 0xdb, 0x7a, 0xfd, 0x4e,
-	0xa5, 0x2a, 0xef, 0x2b, 0x61, 0xab, 0xe5, 0x0e, 0x2e, 0x50, 0xed, 0x10, 0x08, 0x4a, 0xd4, 0x30,
-	0x04, 0x90, 0x10, 0x62, 0x35, 0xde, 0x9d, 0x38, 0x4b, 0xd6, 0x3b, 0xdb, 0xdd, 0x71, 0x93, 0x54,
-	0x20, 0x71, 0xc3, 0x05, 0x42, 0x42, 0xfd, 0x07, 0xfc, 0x00, 0x04, 0xfc, 0x0c, 0x7a, 0xc1, 0x45,
-	0x6f, 0x90, 0x10, 0x17, 0x0b, 0x6a, 0xff, 0xc1, 0x22, 0xae, 0x41, 0xf3, 0x61, 0x7b, 0xfd, 0x41,
-	0x93, 0x15, 0x41, 0x5c, 0x70, 0x15, 0xef, 0x73, 0xce, 0x79, 0xe6, 0x9c, 0x33, 0xe7, 0xcc, 0x99,
-	0x09, 0x58, 0xb0, 0x9d, 0xa0, 0x6e, 0x3b, 0x41, 0x2d, 0x08, 0x19, 0x67, 0x70, 0xf6, 0xc3, 0xe0,
-	0xec, 0xb4, 0x66, 0x3b, 0xc1, 0xc6, 0x6a, 0x9b, 0xb5, 0x99, 0x04, 0xeb, 0xe2, 0x97, 0x92, 0x6f,
-	0x98, 0x6d, 0xc6, 0xda, 0x1e, 0xad, 0xcb, 0xaf, 0x56, 0xf7, 0xb0, 0xce, 0xdd, 0x0e, 0x8d, 0x38,
-	0xe9, 0x68, 0x82, 0x8d, 0x8a, 0xcd, 0xa2, 0x0e, 0x8b, 0xea, 0x2d, 0x12, 0xd1, 0xfa, 0x83, 0xdb,
-	0x2d, 0xca, 0xc9, 0xed, 0xba, 0xcd, 0x5c, 0x5f, 0xc9, 0xd1, 0xe3, 0x69, 0x90, 0x6f, 0x6e, 0xed,
-	0xc3, 0x1b, 0x20, 0xe7, 0x3a, 0x65, 0xa3, 0x6a, 0x6c, 0x4e, 0x37, 0x16, 0x92, 0xd8, 0x2c, 0x9e,
-	0x91, 0x8e, 0xf7, 0x12, 0x72, 0x1d, 0x84, 0x73, 0xae, 0x03, 0x6f, 0x81, 0x2b, 0xec, 0xc4, 0xa7,
-	0x61, 0x39, 0x57, 0x35, 0x36, 0x8b, 0x8d, 0xa5, 0x24, 0x36, 0xe7, 0x95, 0x86, 0x84, 0x11, 0x56,
-	0x62, 0x78, 0x13, 0x4c, 0xf3, 0xb3, 0x80, 0x96, 0xf3, 0x52, 0xad, 0x94, 0xc4, 0xe6, 0x9c, 0x52,
-	0x13, 0x28, 0xc2, 0x52, 0x08, 0xf7, 0x01, 0xb0, 0x99, 0xe7, 0x11, 0x4e, 0x43, 0xe2, 0x95, 0xa7,
-	0xab, 0xc6, 0xe6, 0xdc, 0x9d, 0x6b, 0x35, 0xe5, 0x68, 0x4d, 0x38, 0x5a, 0xd3, 0x8e, 0xd6, 0x9a,
-	0xcc, 0xf5, 0x1b, 0x57, 0x93, 0xd8, 0x5c, 0x56, 0x2c, 0x03, 0x33, 0x84, 0x53, 0x1c, 0x70, 0x0f,
-	0x14, 0x83, 0xd0, 0xf5, 0x6d, 0x37, 0x20, 0x5e, 0xf9, 0xca, 0x79, 0x84, 0xab, 0x49, 0x6c, 0x2e,
-	0x29, 0xc2, 0xbe, 0x15, 0xc2, 0x03, 0x06, 0x48, 0xc0, 0x12, 0xb1, 0xed, 0x6e, 0xa7, 0x2b, 0xf8,
-	0x1d, 0xeb, 0x90, 0xd2, 0xa8, 0x5c, 0x38, 0x8f, 0xf5, 0x3f, 0x49, 0x6c, 0xae, 0x2b, 0xd6, 0x51,
-	0x63, 0x84, 0x4b, 0x29, 0x68, 0x9b, 0xd2, 0x08, 0x7e, 0x00, 0xe6, 0x85, 0xc4, 0xea, 0x06, 0x8e,
-	0xc0, 0xca, 0x33, 0x92, 0x7e, 0xa3, 0xa6, 0xf6, 0xb3, 0xd6, 0xdb, 0xcf, 0xda, 0x41, 0x6f, 0x3f,
-	0x1b, 0xe6, 0xe3, 0xd8, 0x9c, 0x4a, 0x62, 0x73, 0x45, 0xad, 0x91, 0xb6, 0x46, 0x8f, 0x7e, 0x36,
-	0x0d, 0x3c, 0x27, 0xa0, 0xb7, 0x15, 0x02, 0xef, 0x83, 0x92, 0xeb, 0x73, 0x1a, 0xd2, 0x88, 0x5b,
-	0x87, 0xc4, 0xe6, 0x2c, 0x2c, 0xcf, 0xca, 0x3d, 0x79, 0x5d, 0xd0, 0xfc, 0x14, 0x9b, 0xb7, 0xda,
-	0x2e, 0x3f, 0xea, 0xb6, 0x6a, 0x36, 0xeb, 0xd4, 0x75, 0x8d, 0xa8, 0x3f, 0x2f, 0x44, 0xce, 0x71,
-	0x5d, 0xec, 0x53, 0x54, 0xdb, 0xa2, 0x76, 0x12, 0x9b, 0x6b, 0xba, 0x14, 0x86, 0xe9, 0x10, 0x5e,
-	0xec, 0x21, 0xdb, 0x0a, 0xf8, 0xda, 0x00, 0x33, 0x5b, 0x34, 0x60, 0x91, 0xcb, 0xe1, 0x26, 0x28,
-	0xd8, 0x4e, 0x60, 0xf5, 0x4b, 0x6a, 0x39, 0x89, 0xcd, 0x05, 0xbd, 0x87, 0x12, 0x47, 0xf8, 0x8a,
-	0xed, 0x04, 0x3b, 0x0e, 0xbc, 0x03, 0x8a, 0x8e, 0x32, 0x62, 0xbd, 0xea, 0x4a, 0xed, 0x4f, 0x5f,
-	0x84, 0xf0, 0x40, 0x0d, 0x6e, 0x81, 0x02, 0xe9, 0xb0, 0xae, 0xcf, 0x65, 0x9d, 0x3d, 0x77, 0x57,
-	0x52, 0x0b, 0x2b, 0x13, 0x84, 0xb5, 0x2d, 0xfa, 0x26, 0x07, 0xe6, 0xef, 0x76, 0xdb, 0x1d, 0xea,
-	0x73, 0xea, 0x88, 0x1e, 0xa8, 0x83, 0xbc, 0xed, 0x04, 0xd2, 0xe3, 0xb9, 0x3b, 0x0b, 0xb5, 0x5e,
-	0xeb, 0xd5, 0x9a, 0x5b, 0xfb, 0x8d, 0xc5, 0x24, 0x36, 0x41, 0x3f, 0x00, 0x84, 0x85, 0xa6, 0xa8,
-	0x93, 0x41, 0x11, 0x5a, 0x0f, 0x88, 0xd7, 0xa5, 0x32, 0x84, 0x8b, 0xd6, 0xc9, 0xa8, 0x31, 0xc2,
-	0xa5, 0x01, 0xf4, 0x8e, 0x40, 0xe0, 0x67, 0x06, 0x58, 0x1f, 0x60, 0xee, 0x43, 0xc2, 0x5d, 0xe6,
-	0x5b, 0xa1, 0xf8, 0xa3, 0x9b, 0x6c, 0x3f, 0xf3, 0x86, 0x56, 0x46, 0x57, 0x1f, 0xa2, 0x45, 0x78,
-	0x6d, 0x4c, 0x82, 0xa5, 0xe0, 0xcb, 0x1c, 0x98, 0xdf, 0x8b, 0xda, 0xcd, 0x90, 0x12, 0x4e, 0x45,
-	0xc2, 0xfe, 0x07, 0x0a, 0x11, 0xf5, 0x1d, 0x1a, 0xca, 0x9c, 0x15, 0xd3, 0xc9, 0x56, 0x38, 0xc2,
-	0x5a, 0x61, 0xa4, 0xe7, 0x73, 0x97, 0xdd, 0xf3, 0xf9, 0xbf, 0xdc, 0xf3, 0x4d, 0x90, 0xca, 0xbd,
-	0x25, 0x0f, 0xb1, 0x69, 0x19, 0xd4, 0xc6, 0xa0, 0x05, 0x46, 0x14, 0x10, 0x5e, 0x1c, 0x20, 0x07,
-	0x02, 0xf8, 0xdd, 0x00, 0x60, 0x2f, 0x6a, 0xf7, 0xba, 0x60, 0xa8, 0xb6, 0x8d, 0x8b, 0xd5, 0xf6,
-	0x45, 0x4f, 0xda, 0xe1, 0x84, 0xe6, 0x2f, 0x21, 0xa1, 0x97, 0x92, 0x81, 0x4f, 0x72, 0x60, 0x6e,
-	0x2f, 0x6a, 0xbf, 0xeb, 0xf2, 0x23, 0x27, 0x24, 0x27, 0xff, 0xc6, 0x14, 0x7c, 0x6f, 0xc8, 0x14,
-	0x6c, 0x85, 0xe4, 0x64, 0x8b, 0xb6, 0x78, 0x96, 0x2e, 0x99, 0xb0, 0x7e, 0x2e, 0xeb, 0xfa, 0x97,
-	0xdc, 0x18, 0xe8, 0x3b, 0x43, 0x76, 0x3d, 0xa6, 0x1e, 0x39, 0xfb, 0x47, 0xe2, 0x79, 0x0d, 0xcc,
-	0x04, 0xe4, 0x4c, 0x1c, 0xd3, 0xe7, 0x47, 0x03, 0x93, 0xd8, 0x5c, 0xd4, 0xd1, 0x28, 0x1b, 0x84,
-	0x7b, 0xd6, 0xe8, 0x5b, 0x15, 0xc9, 0xae, 0x7b, 0xbf, 0xeb, 0x8a, 0x29, 0x29, 0x22, 0x39, 0xa6,
-	0x34, 0x98, 0x14, 0x89, 0xc2, 0x11, 0xd6, 0x0a, 0xb0, 0x0e, 0x66, 0x5b, 0x2c, 0x0c, 0xd9, 0x49,
-	0xbf, 0x2c, 0x57, 0x92, 0xd8, 0x2c, 0x29, 0xe5, 0x9e, 0x04, 0xe1, 0xbe, 0xd2, 0xa4, 0xd0, 0xf3,
-	0x99, 0x4b, 0xe9, 0xd7, 0x02, 0x28, 0xec, 0x93, 0x90, 0x74, 0x22, 0x78, 0x04, 0x96, 0x53, 0xea,
-	0x81, 0x04, 0xcb, 0x46, 0x35, 0x2f, 0xf3, 0x31, 0x18, 0x55, 0x7d, 0x15, 0x69, 0xd6, 0xa8, 0xea,
-	0x4b, 0x43, 0x79, 0x6c, 0x41, 0xc5, 0x80, 0x70, 0x6a, 0x82, 0xe9, 0x95, 0x76, 0x00, 0x70, 0x68,
-	0x8b, 0x2b, 0x0d, 0x7d, 0x54, 0xaf, 0x0c, 0x96, 0x10, 0x35, 0xa0, 0xc8, 0x53, 0x0d, 0x35, 0x30,
-	0x90, 0x9d, 0xac, 0x35, 0xa0, 0x0d, 0x96, 0xdb, 0x1e, 0x6b, 0x11, 0xcf, 0x92, 0x0a, 0x9e, 0xdb,
-	0x71, 0x2f, 0xb0, 0x89, 0xd7, 0x07, 0x0e, 0x8f, 0x59, 0x23, 0x5c, 0x52, 0x98, 0x70, 0x63, 0x57,
-	0x20, 0xf0, 0x0b, 0x03, 0x5c, 0x8b, 0xba, 0x61, 0xe0, 0x75, 0x23, 0x8b, 0x74, 0x6d, 0x39, 0xc9,
-	0xf8, 0x51, 0x48, 0xa3, 0x23, 0xe6, 0x39, 0xba, 0x7f, 0x71, 0x86, 0x21, 0xb9, 0xe3, 0xf3, 0x24,
-	0x36, 0xab, 0xba, 0xa2, 0xff, 0x8c, 0x18, 0xe1, 0x75, 0x2d, 0xbb, 0xab, 0x44, 0x07, 0x3d, 0x09,
-	0xfc, 0x08, 0xac, 0x8c, 0x9a, 0x79, 0x8c, 0xcb, 0x7b, 0x69, 0xb1, 0xb1, 0x9b, 0xd9, 0x93, 0x8d,
-	0xc9, 0x9e, 0x78, 0x8c, 0x23, 0xbc, 0x3c, 0xec, 0xc3, 0x2e, 0xe3, 0xf0, 0x53, 0x03, 0xac, 0xc9,
-	0x7c, 0x8d, 0xe7, 0xa2, 0x20, 0x3d, 0xb8, 0x97, 0xd9, 0x83, 0x1b, 0xa9, 0x4d, 0x9e, 0x90, 0x88,
-	0x55, 0x21, 0x18, 0xcb, 0x42, 0x04, 0x96, 0x86, 0x0c, 0x44, 0x0a, 0x66, 0xa4, 0x03, 0x3b, 0x99,
-	0x1d, 0x58, 0x9f, 0xe0, 0x80, 0x8c, 0x7f, 0x31, 0xb5, 0xb4, 0x08, 0x5e, 0x74, 0x9d, 0x1b, 0xda,
-	0x5d, 0x97, 0x5b, 0xad, 0x90, 0x92, 0x63, 0xaa, 0xae, 0xbd, 0xb3, 0x43, 0x5d, 0x37, 0xac, 0x20,
-	0xba, 0x4e, 0x21, 0x0d, 0x0d, 0xfc, 0x56, 0x04, 0xa5, 0x91, 0x46, 0x12, 0x33, 0xc9, 0xa1, 0x3e,
-	0xeb, 0xe8, 0x93, 0x22, 0x35, 0x93, 0x24, 0x8c, 0xb0, 0x12, 0xf7, 0x1f, 0x40, 0xb9, 0xe7, 0x3d,
-	0x80, 0x4e, 0xc0, 0xb2, 0xa7, 0x0f, 0xa1, 0xd1, 0xdb, 0xdc, 0x1b, 0x99, 0x6f, 0x73, 0xba, 0x53,
-	0xc6, 0x08, 0x11, 0x5e, 0x4a, 0x61, 0xf2, 0x06, 0x07, 0xef, 0xe9, 0xd6, 0x56, 0x8d, 0x98, 0xe5,
-	0xe5, 0x95, 0xee, 0x40, 0xd9, 0xe0, 0xaa, 0xf7, 0x8e, 0xc1, 0x42, 0xc4, 0x49, 0xcb, 0xf5, 0x5c,
-	0x7e, 0x26, 0x9e, 0x3a, 0xba, 0xc8, 0xb7, 0x33, 0x47, 0xb1, 0xaa, 0x8b, 0x3c, 0x4d, 0x86, 0xf0,
-	0x7c, 0xff, 0x7b, 0x9b, 0x52, 0x78, 0x04, 0xe6, 0x7b, 0x9b, 0x1f, 0xb9, 0x0f, 0xa9, 0x2e, 0xe7,
-	0x57, 0x33, 0x57, 0x93, 0x7e, 0x41, 0xa5, 0xb9, 0x10, 0x9e, 0xd3, 0x9f, 0x6f, 0xb9, 0x0f, 0x29,
-	0xfc, 0x18, 0xac, 0xa4, 0xf3, 0x19, 0x50, 0x9f, 0x78, 0xfc, 0x4c, 0x97, 0xef, 0x6e, 0xe6, 0xe0,
-	0x36, 0xc6, 0xb7, 0x48, 0x53, 0x22, 0x0c, 0x53, 0xe8, 0xbe, 0x02, 0xc5, 0x5c, 0x0a, 0x42, 0x7a,
-	0xe8, 0x9e, 0xca, 0xe2, 0x5d, 0x48, 0xcf, 0x25, 0x85, 0x23, 0xac, 0x15, 0xe0, 0x2b, 0x60, 0x31,
-	0x0a, 0x18, 0xb7, 0x3a, 0x24, 0x3c, 0xa6, 0x5c, 0x3c, 0xb8, 0x8a, 0xd2, 0xc9, 0x6b, 0x49, 0x6c,
-	0x5e, 0xd5, 0x39, 0x1d, 0x92, 0x8b, 0xa4, 0x06, 0x8c, 0xef, 0xc9, 0xef, 0x1d, 0x07, 0x1e, 0x80,
-	0xab, 0x69, 0xbf, 0x06, 0x3c, 0x40, 0xf2, 0x54, 0x93, 0xd8, 0xbc, 0x3e, 0xee, 0x7e, 0x8a, 0x2e,
-	0x9d, 0xa9, 0x3e, 0xeb, 0xe7, 0x06, 0x28, 0xab, 0xc9, 0x69, 0x85, 0xf4, 0x84, 0x84, 0x8e, 0x15,
-	0xd0, 0xd0, 0xa6, 0x3e, 0x27, 0x6d, 0x5a, 0x9e, 0x93, 0xcc, 0x6f, 0x66, 0x4e, 0xa3, 0x99, 0x1e,
-	0xcd, 0xe3, 0xbc, 0x08, 0xaf, 0x29, 0x11, 0x96, 0x92, 0xfd, 0xbe, 0x00, 0x7e, 0x65, 0x80, 0x9b,
-	0xf6, 0x11, 0xb5, 0x8f, 0xad, 0xf1, 0x37, 0x8f, 0xeb, 0x3b, 0xf4, 0xd4, 0xb2, 0xe5, 0x6b, 0x72,
-	0x5e, 0x3a, 0xf6, 0x7e, 0xe6, 0x82, 0xfa, 0xbf, 0x3e, 0x58, 0xce, 0x5f, 0x02, 0xe1, 0xaa, 0xd4,
-	0x6a, 0x8e, 0x2a, 0xed, 0x08, 0x9d, 0xa6, 0x50, 0x11, 0xa7, 0x83, 0xcd, 0xfc, 0x07, 0x34, 0x8c,
-	0x84, 0xb1, 0x7e, 0xbc, 0x2f, 0x64, 0x3e, 0x1d, 0x94, 0x6b, 0xfd, 0xc1, 0x3f, 0x42, 0x28, 0x07,
-	0x7f, 0x0f, 0xd3, 0x0f, 0xf8, 0x1f, 0x72, 0xa0, 0xd8, 0x9f, 0xee, 0x17, 0x3e, 0xf1, 0x9a, 0xa0,
-	0x14, 0xd2, 0x43, 0x1a, 0x52, 0xdf, 0xa6, 0x16, 0x89, 0x22, 0xca, 0xc7, 0xef, 0x78, 0x23, 0x0a,
-	0x08, 0x2f, 0xf6, 0x91, 0xbb, 0x02, 0x98, 0x1c, 0x73, 0xfe, 0xef, 0x8f, 0x19, 0xb6, 0xf4, 0x89,
-	0x78, 0xe8, 0x31, 0x16, 0xea, 0xcb, 0x42, 0x33, 0xf3, 0x8a, 0xe9, 0x43, 0x52, 0x32, 0xe9, 0x43,
-	0x72, 0x5b, 0xfc, 0x6e, 0xbc, 0xfc, 0xf8, 0x69, 0xc5, 0x78, 0xf2, 0xb4, 0x62, 0xfc, 0xf2, 0xb4,
-	0x62, 0x3c, 0x7a, 0x56, 0x99, 0x7a, 0xf2, 0xac, 0x32, 0xf5, 0xe3, 0xb3, 0xca, 0xd4, 0x7b, 0xff,
-	0x4d, 0xad, 0xe0, 0xd9, 0x3e, 0xed, 0xd4, 0xc5, 0x35, 0xab, 0x7e, 0x5a, 0xb7, 0x9d, 0x40, 0x2d,
-	0xd0, 0x2a, 0xc8, 0x7f, 0x05, 0xbd, 0xf8, 0x47, 0x00, 0x00, 0x00, 0xff, 0xff, 0x61, 0x64, 0xc3,
-	0x3e, 0x19, 0x14, 0x00, 0x00,
+	// 1578 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x58, 0x4f, 0x6f, 0x1b, 0x45,
+	0x14, 0xcf, 0xda, 0x89, 0x13, 0x4f, 0xfe, 0x38, 0x99, 0xb4, 0x89, 0x13, 0x51, 0xaf, 0x99, 0x4a,
+	0x55, 0x40, 0xaa, 0xad, 0x96, 0x03, 0x12, 0x1c, 0x50, 0xec, 0x34, 0x6a, 0x20, 0x11, 0xe9, 0x34,
+	0x80, 0x04, 0xa8, 0xab, 0xf5, 0xee, 0xc4, 0x5e, 0xb2, 0xde, 0xd9, 0xee, 0x8e, 0x9b, 0xb8, 0x02,
+	0x89, 0x4b, 0x0f, 0x15, 0x12, 0xea, 0x95, 0xcf, 0xc0, 0x37, 0xe0, 0x13, 0xf4, 0xd8, 0x0b, 0x12,
+	0x42, 0xc8, 0xa0, 0x56, 0xe2, 0x06, 0x07, 0xdf, 0x10, 0x17, 0x34, 0x7f, 0xbc, 0x5e, 0xdb, 0xa1,
+	0xc9, 0x56, 0xf1, 0x01, 0x89, 0x53, 0xe2, 0xf7, 0xde, 0xfc, 0xde, 0x9b, 0xdf, 0xbc, 0xf7, 0xe6,
+	0xcd, 0x82, 0x79, 0xcb, 0xf6, 0xcb, 0x96, 0xed, 0x97, 0xfc, 0x80, 0x32, 0x0a, 0x67, 0xbe, 0xf0,
+	0xdb, 0x27, 0x25, 0xcb, 0xf6, 0xd7, 0x2f, 0xd5, 0x69, 0x9d, 0x0a, 0x61, 0x99, 0xff, 0x27, 0xf5,
+	0xeb, 0x7a, 0x9d, 0xd2, 0xba, 0x4b, 0xca, 0xe2, 0x57, 0xad, 0x75, 0x58, 0x66, 0x4e, 0x93, 0x84,
+	0xcc, 0x6c, 0x2a, 0x80, 0xf5, 0x82, 0x45, 0xc3, 0x26, 0x0d, 0xcb, 0x35, 0x33, 0x24, 0xe5, 0x07,
+	0x37, 0x6a, 0x84, 0x99, 0x37, 0xca, 0x16, 0x75, 0x3c, 0xa9, 0x47, 0x8f, 0xa7, 0x40, 0xba, 0xba,
+	0xb5, 0x0f, 0xaf, 0x80, 0x94, 0x63, 0xe7, 0xb5, 0xa2, 0xb6, 0x31, 0x59, 0x99, 0xef, 0x76, 0xf4,
+	0x6c, 0xdb, 0x6c, 0xba, 0xef, 0x20, 0xc7, 0x46, 0x38, 0xe5, 0xd8, 0xf0, 0x33, 0x30, 0x45, 0x8f,
+	0x3d, 0x12, 0xe4, 0x53, 0x45, 0x6d, 0x23, 0x5b, 0xb9, 0xf5, 0xb4, 0xa3, 0x4f, 0xfc, 0xdc, 0xd1,
+	0xaf, 0xd7, 0x1d, 0xd6, 0x68, 0xd5, 0x4a, 0x16, 0x6d, 0x96, 0x95, 0x23, 0xf9, 0xe7, 0x7a, 0x68,
+	0x1f, 0x95, 0x59, 0xdb, 0x27, 0x61, 0x69, 0xd3, 0xb2, 0x36, 0x6d, 0x3b, 0x20, 0x61, 0xd8, 0xed,
+	0xe8, 0x73, 0x12, 0x56, 0x60, 0x21, 0x2c, 0x31, 0xe1, 0x55, 0x30, 0xc9, 0x4d, 0xf3, 0x69, 0x81,
+	0x9d, 0xeb, 0x76, 0xf4, 0x59, 0x69, 0xc6, 0xa5, 0x08, 0x0b, 0x25, 0x3c, 0x00, 0xc0, 0xa2, 0xae,
+	0x6b, 0x32, 0x12, 0x98, 0x6e, 0x7e, 0xb2, 0xa8, 0x6d, 0xcc, 0xde, 0x5c, 0x2b, 0x49, 0x6f, 0x25,
+	0xbe, 0xbb, 0x92, 0xda, 0x5d, 0xa9, 0x4a, 0x1d, 0xaf, 0xb2, 0xc6, 0x23, 0xec, 0x76, 0xf4, 0x25,
+	0x89, 0xd4, 0x5f, 0x8a, 0x70, 0x0c, 0x07, 0xde, 0x01, 0x59, 0x3f, 0x70, 0x3c, 0xcb, 0xf1, 0x4d,
+	0x37, 0x3f, 0x75, 0x16, 0x68, 0x5e, 0x81, 0x2e, 0x4a, 0xd0, 0x68, 0x25, 0xc2, 0x7d, 0x14, 0x48,
+	0xc0, 0xa2, 0x69, 0x59, 0xad, 0x66, 0x8b, 0xfb, 0xb0, 0x8d, 0x43, 0x42, 0xc2, 0x7c, 0xe6, 0x2c,
+	0x64, 0x5d, 0x21, 0xaf, 0x4a, 0xe4, 0x61, 0x00, 0x84, 0x73, 0x31, 0xd1, 0x36, 0x21, 0x21, 0xbc,
+	0x07, 0xe6, 0xb8, 0xc6, 0x68, 0xf9, 0x36, 0x97, 0xe5, 0xa7, 0x85, 0x8b, 0xf5, 0x92, 0x4c, 0x88,
+	0x52, 0x2f, 0x21, 0x4a, 0x07, 0xbd, 0x84, 0x88, 0x7c, 0x2c, 0x4b, 0x1f, 0xf1, 0xd5, 0xe8, 0xc9,
+	0xaf, 0xba, 0x86, 0x67, 0xb9, 0xe8, 0x23, 0x29, 0x81, 0xf7, 0x41, 0xce, 0xf1, 0x18, 0x09, 0x48,
+	0xc8, 0x8c, 0x43, 0xd3, 0x62, 0x34, 0xc8, 0xcf, 0x88, 0xf3, 0xb9, 0xad, 0xce, 0xfe, 0xda, 0x39,
+	0xce, 0x7e, 0x8b, 0x58, 0xdd, 0x8e, 0xbe, 0xa2, 0x72, 0x69, 0x10, 0x0e, 0xe1, 0x85, 0x9e, 0x64,
+	0x5b, 0x0a, 0x7e, 0xd7, 0xc0, 0xf4, 0x16, 0xf1, 0x69, 0xe8, 0x30, 0xb8, 0x01, 0x32, 0x96, 0xed,
+	0x1b, 0x51, 0x4e, 0x2e, 0x75, 0x3b, 0xfa, 0xbc, 0x3a, 0x4b, 0x21, 0x47, 0x78, 0xca, 0xb2, 0xfd,
+	0x1d, 0x1b, 0xd6, 0x41, 0xd6, 0x96, 0x8b, 0x68, 0x2f, 0x3d, 0x77, 0x5e, 0x35, 0x3d, 0xd5, 0xc1,
+	0x46, 0x78, 0x08, 0xf7, 0xb1, 0xe1, 0x6d, 0x90, 0x31, 0x9b, 0xb4, 0xe5, 0x31, 0x91, 0xa8, 0x2f,
+	0x3d, 0xce, 0xcb, 0x8a, 0x6a, 0x15, 0xb1, 0x5c, 0x86, 0xb0, 0x5a, 0x8f, 0x7e, 0x48, 0x81, 0xb9,
+	0xcd, 0x56, 0xbd, 0x49, 0x3c, 0x46, 0x6c, 0x5e, 0x7d, 0x6f, 0x83, 0xb4, 0x65, 0xfb, 0x62, 0xab,
+	0xb3, 0x37, 0xe7, 0x4b, 0xbd, 0xa2, 0x2f, 0x55, 0xb7, 0xf6, 0x2b, 0x2b, 0x1c, 0xeb, 0x59, 0x47,
+	0xd7, 0xba, 0x1d, 0x1d, 0x44, 0x0c, 0x20, 0xcc, 0x57, 0xf0, 0x64, 0xeb, 0x67, 0xb3, 0xf1, 0xc0,
+	0x74, 0x5b, 0x44, 0x70, 0x90, 0x24, 0xd9, 0x86, 0x01, 0x10, 0xce, 0xf5, 0x45, 0x1f, 0x73, 0x09,
+	0x7c, 0xac, 0x81, 0xd5, 0xbe, 0xcc, 0x79, 0x68, 0x32, 0x87, 0x7a, 0x46, 0xc0, 0xff, 0xa8, 0xaa,
+	0xdd, 0x4f, 0x9c, 0x15, 0x85, 0x61, 0xef, 0x03, 0xb0, 0x08, 0xaf, 0x8c, 0x68, 0xb0, 0x50, 0xfc,
+	0x92, 0x02, 0x73, 0x7b, 0x61, 0xbd, 0x1a, 0x10, 0x93, 0x11, 0x4e, 0xde, 0x3d, 0x90, 0x09, 0x89,
+	0x67, 0x93, 0x40, 0xf0, 0x97, 0xad, 0x6c, 0xbf, 0xea, 0xe9, 0xab, 0xd3, 0x92, 0x60, 0x08, 0x2b,
+	0xd4, 0xa1, 0xce, 0x93, 0x1a, 0x47, 0xe7, 0x49, 0x5f, 0x48, 0xe7, 0xa9, 0x82, 0xd8, 0xc1, 0x19,
+	0xa2, 0xa5, 0x4e, 0x0a, 0x46, 0xd6, 0xfb, 0x45, 0x38, 0x64, 0x80, 0xf0, 0x42, 0x5f, 0x72, 0xc0,
+	0x05, 0x7f, 0xa4, 0x00, 0xd8, 0x0b, 0xeb, 0xbd, 0x3a, 0x1c, 0xa8, 0x2e, 0x6d, 0x8c, 0xd5, 0x35,
+	0xd6, 0x1b, 0x66, 0xf0, 0x08, 0xd3, 0x17, 0x74, 0x84, 0x17, 0xc2, 0xf7, 0x9f, 0x29, 0x30, 0xbb,
+	0x17, 0xd6, 0x3f, 0x71, 0x58, 0xc3, 0x0e, 0xcc, 0xe3, 0xff, 0x09, 0x1f, 0x37, 0xe1, 0x8f, 0x24,
+	0xe1, 0x5b, 0x81, 0x79, 0xbc, 0x45, 0x6a, 0x6c, 0xec, 0xed, 0xe3, 0x94, 0xa0, 0x53, 0x49, 0x83,
+	0x1e, 0x43, 0xb7, 0x40, 0x5f, 0xcb, 0x3e, 0x8a, 0x89, 0x6b, 0xb6, 0xff, 0x3b, 0x44, 0x7c, 0x00,
+	0xa6, 0x7d, 0xb3, 0xcd, 0x6f, 0xce, 0xb3, 0x69, 0x58, 0x51, 0x34, 0x2c, 0x28, 0x1a, 0xe4, 0x3a,
+	0x84, 0x7b, 0x08, 0xe8, 0x3b, 0x49, 0xc1, 0xae, 0x73, 0xbf, 0xe5, 0xf0, 0xa9, 0x87, 0x53, 0x70,
+	0x44, 0x88, 0x7f, 0x61, 0x14, 0x48, 0x30, 0x84, 0x15, 0x2a, 0xb4, 0xc1, 0x4c, 0x8d, 0x06, 0x01,
+	0x3d, 0x8e, 0xca, 0xee, 0xf6, 0xab, 0x7a, 0xc8, 0x49, 0x0f, 0x3d, 0x38, 0x84, 0x23, 0xe4, 0xd3,
+	0x88, 0x4e, 0x27, 0x2e, 0x93, 0xbf, 0x33, 0x20, 0xb3, 0x6f, 0x06, 0x66, 0x33, 0x84, 0x0d, 0xb0,
+	0x14, 0x33, 0xf7, 0x85, 0x30, 0xaf, 0x15, 0xd3, 0x82, 0xfd, 0xfe, 0xac, 0x12, 0x99, 0x88, 0x65,
+	0x95, 0xa2, 0x62, 0x3f, 0x3f, 0xe2, 0x50, 0x22, 0x20, 0x1c, 0x1b, 0x5d, 0x94, 0xa7, 0x3d, 0x00,
+	0x6c, 0x52, 0x63, 0xd2, 0x42, 0x5d, 0xb5, 0xcb, 0x7d, 0x17, 0x3c, 0x4d, 0x25, 0xf8, 0x50, 0xc3,
+	0xe8, 0x2f, 0x12, 0x2d, 0x4e, 0x59, 0xc1, 0x3a, 0x58, 0xaa, 0xbb, 0xb4, 0x66, 0xba, 0x86, 0x30,
+	0x70, 0x9d, 0xa6, 0x73, 0x8e, 0xb4, 0x19, 0x0a, 0x7c, 0x04, 0x01, 0xe1, 0x9c, 0x94, 0xf1, 0x70,
+	0x76, 0xb9, 0x04, 0x7e, 0xab, 0x81, 0xb5, 0xb0, 0x15, 0xf8, 0x6e, 0x2b, 0x34, 0xcc, 0x96, 0x25,
+	0xc6, 0x18, 0xd6, 0x08, 0x48, 0xd8, 0xa0, 0xae, 0xad, 0x7a, 0x14, 0x4e, 0x30, 0x21, 0xed, 0x78,
+	0xac, 0xdb, 0xd1, 0x8b, 0xaa, 0x8e, 0xfe, 0x0d, 0x18, 0xe1, 0x55, 0xa5, 0xdb, 0x94, 0xaa, 0x83,
+	0x9e, 0x06, 0x7e, 0x09, 0x96, 0x87, 0x97, 0xb9, 0x94, 0x89, 0x17, 0x4e, 0xb6, 0xb2, 0x9b, 0x38,
+	0x92, 0xf5, 0xd3, 0x23, 0x71, 0x29, 0x43, 0x78, 0x69, 0x30, 0x86, 0x5d, 0xca, 0xe0, 0x23, 0x0d,
+	0xac, 0x08, 0xbe, 0x46, 0xb9, 0xc8, 0x88, 0x08, 0x3e, 0x4c, 0x1c, 0xc1, 0x95, 0xd8, 0x41, 0x9f,
+	0x42, 0xc4, 0x25, 0xae, 0x18, 0x61, 0x21, 0x04, 0x8b, 0x03, 0x0b, 0x38, 0x05, 0xd3, 0x03, 0x57,
+	0xea, 0xf9, 0x03, 0x58, 0x3d, 0x25, 0x00, 0xb1, 0xff, 0x85, 0x98, 0x6b, 0xbe, 0x79, 0x5e, 0x7d,
+	0x4e, 0x60, 0xb5, 0x1c, 0x66, 0xd4, 0x02, 0x62, 0x1e, 0x11, 0xf9, 0x70, 0x9a, 0x19, 0xa8, 0xbe,
+	0x41, 0x03, 0x5e, 0x7d, 0x52, 0x52, 0x51, 0x82, 0xbf, 0xb2, 0x20, 0x37, 0x54, 0x50, 0xf0, 0x1a,
+	0x98, 0xb2, 0x89, 0x47, 0x9b, 0xaa, 0x37, 0x2d, 0xf6, 0xef, 0x5e, 0x21, 0x46, 0x58, 0xaa, 0xa3,
+	0xe7, 0x74, 0xea, 0x65, 0xcf, 0xe9, 0x63, 0xb0, 0xe4, 0xaa, 0xb6, 0x37, 0x3c, 0xca, 0xbf, 0x9f,
+	0x78, 0x94, 0x57, 0x95, 0x32, 0x02, 0x88, 0xf0, 0x62, 0x4c, 0x26, 0xc6, 0x77, 0x78, 0x57, 0x95,
+	0xb8, 0x2c, 0xc6, 0xa4, 0xef, 0xf8, 0x78, 0x15, 0x8a, 0x42, 0x97, 0xf5, 0x77, 0x04, 0xe6, 0x43,
+	0x66, 0xd6, 0x1c, 0xd7, 0x61, 0x6d, 0xfe, 0x60, 0x56, 0x89, 0xbe, 0x9d, 0x78, 0x27, 0x97, 0x54,
+	0xa2, 0xc7, 0xc1, 0x10, 0x9e, 0x8b, 0x7e, 0x6f, 0x13, 0x02, 0x1b, 0x60, 0xae, 0x97, 0x00, 0xa1,
+	0xf3, 0x90, 0xa8, 0x94, 0xbe, 0x95, 0x38, 0xa3, 0xd4, 0x3b, 0x3c, 0x8e, 0x85, 0xf0, 0xac, 0xfa,
+	0x79, 0xd7, 0x79, 0x48, 0xe0, 0x57, 0x60, 0x39, 0xce, 0xa9, 0x4f, 0x3c, 0xd3, 0x65, 0x6d, 0x95,
+	0xc2, 0xbb, 0x89, 0x37, 0xb7, 0x3e, 0x7a, 0x4c, 0x0a, 0x12, 0x61, 0x18, 0x93, 0xee, 0x4b, 0x21,
+	0x7c, 0x03, 0x64, 0xfc, 0x80, 0x1c, 0x3a, 0x27, 0x22, 0x81, 0xe7, 0xe3, 0x6f, 0x70, 0x29, 0x47,
+	0x58, 0x19, 0xc0, 0xf7, 0xc0, 0x42, 0xe8, 0x53, 0x66, 0x34, 0xcd, 0xe0, 0x88, 0x30, 0xfe, 0x6c,
+	0xcf, 0x8a, 0x20, 0xd7, 0xba, 0x1d, 0xfd, 0xb2, 0xe2, 0x74, 0x40, 0xcf, 0x49, 0xf5, 0x29, 0xdb,
+	0x13, 0xbf, 0x77, 0x6c, 0x78, 0x00, 0x2e, 0xc7, 0xe3, 0xea, 0xe3, 0x00, 0x81, 0x53, 0xec, 0x76,
+	0xf4, 0xd7, 0x46, 0xc3, 0x8f, 0xc1, 0xc5, 0x99, 0x8a, 0x50, 0xbf, 0xd1, 0x40, 0x5e, 0x5e, 0xbd,
+	0x46, 0x40, 0x8e, 0xcd, 0xc0, 0x36, 0x7c, 0x12, 0x58, 0xc4, 0x63, 0x66, 0x9d, 0xe4, 0x67, 0x05,
+	0xf2, 0x9d, 0xc4, 0x34, 0xea, 0xf1, 0xbb, 0x7d, 0x14, 0x17, 0xe1, 0x15, 0xa9, 0xc2, 0x42, 0xb3,
+	0x1f, 0x29, 0xe0, 0xf7, 0x1a, 0xb8, 0x6a, 0x35, 0x88, 0x75, 0x64, 0x8c, 0x3e, 0x7a, 0x1d, 0xcf,
+	0x26, 0x27, 0x86, 0x25, 0x3e, 0x2f, 0xcc, 0x89, 0xc0, 0x3e, 0x4f, 0x9c, 0x50, 0x6f, 0xaa, 0xe6,
+	0x72, 0xb6, 0x0b, 0x84, 0x8b, 0xc2, 0xaa, 0x3a, 0x6c, 0xb4, 0xc3, 0x6d, 0xaa, 0xdc, 0x84, 0x77,
+	0x08, 0x8b, 0x7a, 0x0f, 0x48, 0x10, 0xf2, 0xc5, 0xea, 0x13, 0xd0, 0x7c, 0xe2, 0x0e, 0x21, 0x43,
+	0x8b, 0x86, 0x80, 0x21, 0x40, 0x31, 0x04, 0xf4, 0x64, 0xea, 0x33, 0xd0, 0x8f, 0x29, 0x90, 0x8d,
+	0x6e, 0xfa, 0x73, 0x77, 0xbd, 0x2a, 0xc8, 0x05, 0xe4, 0x90, 0x04, 0xc4, 0xb3, 0x88, 0x61, 0x86,
+	0x21, 0x61, 0xa3, 0xd3, 0xe5, 0x90, 0x01, 0xc2, 0x0b, 0x91, 0x64, 0x93, 0x0b, 0x4e, 0xdf, 0x73,
+	0x7a, 0xfc, 0x7b, 0x86, 0x35, 0xd5, 0x15, 0x0f, 0x5d, 0x4a, 0x03, 0x35, 0x30, 0x54, 0x13, 0x7b,
+	0x8c, 0x37, 0x49, 0x81, 0xa4, 0x9a, 0xe4, 0x36, 0xff, 0xbf, 0xf2, 0xee, 0xd3, 0xe7, 0x05, 0xed,
+	0xd9, 0xf3, 0x82, 0xf6, 0xdb, 0xf3, 0x82, 0xf6, 0xe4, 0x45, 0x61, 0xe2, 0xd9, 0x8b, 0xc2, 0xc4,
+	0x4f, 0x2f, 0x0a, 0x13, 0x9f, 0xbe, 0x1e, 0xf3, 0xe0, 0x5a, 0x1e, 0x69, 0x96, 0xf9, 0xc8, 0x55,
+	0x3e, 0x29, 0x5b, 0xb6, 0x2f, 0x1d, 0xd4, 0x32, 0xe2, 0x83, 0xe2, 0x5b, 0xff, 0x04, 0x00, 0x00,
+	0xff, 0xff, 0xf4, 0xd1, 0x39, 0x71, 0xa0, 0x16, 0x00, 0x00,
 }
 
 func (m *CDP) Marshal() (dAtA []byte, err error) {
@@ -992,42 +910,36 @@ func (m *CDP) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i = encodeVarintCdp(dAtA, i, uint64(n1))
 	i--
 	dAtA[i] = 0x3a
-	if m.AccumulatedFees != nil {
-		{
-			size, err := m.AccumulatedFees.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintCdp(dAtA, i, uint64(size))
+	{
+		size, err := m.AccumulatedFees.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x32
+		i -= size
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
-	if m.Principal != nil {
-		{
-			size, err := m.Principal.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintCdp(dAtA, i, uint64(size))
+	i--
+	dAtA[i] = 0x32
+	{
+		size, err := m.Principal.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x2a
+		i -= size
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
-	if m.Collateral != nil {
-		{
-			size, err := m.Collateral.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintCdp(dAtA, i, uint64(size))
+	i--
+	dAtA[i] = 0x2a
+	{
+		size, err := m.Collateral.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x22
+		i -= size
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0x22
 	if len(m.Type) > 0 {
 		i -= len(m.Type)
 		copy(dAtA[i:], m.Type)
@@ -1035,13 +947,16 @@ func (m *CDP) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x1a
 	}
-	if len(m.Owner) > 0 {
-		i -= len(m.Owner)
-		copy(dAtA[i:], m.Owner)
-		i = encodeVarintCdp(dAtA, i, uint64(len(m.Owner)))
-		i--
-		dAtA[i] = 0x12
+	{
+		size := m.Owner.Size()
+		i -= size
+		if _, err := m.Owner.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0x12
 	if m.Id != 0 {
 		i = encodeVarintCdp(dAtA, i, uint64(m.Id))
 		i--
@@ -1070,25 +985,26 @@ func (m *Deposit) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Amount != nil {
-		{
-			size, err := m.Amount.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintCdp(dAtA, i, uint64(size))
+	{
+		size, err := m.Amount.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x1a
+		i -= size
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
-	if len(m.Depositor) > 0 {
-		i -= len(m.Depositor)
-		copy(dAtA[i:], m.Depositor)
-		i = encodeVarintCdp(dAtA, i, uint64(len(m.Depositor)))
-		i--
-		dAtA[i] = 0x12
+	i--
+	dAtA[i] = 0x1a
+	{
+		size := m.Depositor.Size()
+		i -= size
+		if _, err := m.Depositor.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0x12
 	if m.CdpId != 0 {
 		i = encodeVarintCdp(dAtA, i, uint64(m.CdpId))
 		i--
@@ -1127,30 +1043,26 @@ func (m *AugmentedCDP) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	i--
 	dAtA[i] = 0x1a
-	if m.CollateralValue != nil {
-		{
-			size, err := m.CollateralValue.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintCdp(dAtA, i, uint64(size))
+	{
+		size, err := m.CollateralValue.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x12
+		i -= size
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
-	if m.Cdp != nil {
-		{
-			size, err := m.Cdp.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintCdp(dAtA, i, uint64(size))
+	i--
+	dAtA[i] = 0x12
+	{
+		size, err := m.CDP.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0xa
+		i -= size
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -1181,37 +1093,36 @@ func (m *MsgCreateCDP) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x22
 	}
-	if m.Principal != nil {
-		{
-			size, err := m.Principal.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintCdp(dAtA, i, uint64(size))
+	{
+		size, err := m.Principal.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x1a
+		i -= size
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
-	if m.Collateral != nil {
-		{
-			size, err := m.Collateral.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintCdp(dAtA, i, uint64(size))
+	i--
+	dAtA[i] = 0x1a
+	{
+		size, err := m.Collateral.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x12
+		i -= size
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
-	if len(m.Sender) > 0 {
-		i -= len(m.Sender)
-		copy(dAtA[i:], m.Sender)
-		i = encodeVarintCdp(dAtA, i, uint64(len(m.Sender)))
-		i--
-		dAtA[i] = 0xa
+	i--
+	dAtA[i] = 0x12
+	{
+		size := m.Sender.Size()
+		i -= size
+		if _, err := m.Sender.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -1242,32 +1153,36 @@ func (m *MsgDeposit) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x22
 	}
-	if m.Collateral != nil {
-		{
-			size, err := m.Collateral.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintCdp(dAtA, i, uint64(size))
+	{
+		size, err := m.Collateral.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x1a
+		i -= size
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
-	if len(m.Owner) > 0 {
-		i -= len(m.Owner)
-		copy(dAtA[i:], m.Owner)
-		i = encodeVarintCdp(dAtA, i, uint64(len(m.Owner)))
-		i--
-		dAtA[i] = 0x12
+	i--
+	dAtA[i] = 0x1a
+	{
+		size := m.Owner.Size()
+		i -= size
+		if _, err := m.Owner.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
-	if len(m.Depositor) > 0 {
-		i -= len(m.Depositor)
-		copy(dAtA[i:], m.Depositor)
-		i = encodeVarintCdp(dAtA, i, uint64(len(m.Depositor)))
-		i--
-		dAtA[i] = 0xa
+	i--
+	dAtA[i] = 0x12
+	{
+		size := m.Depositor.Size()
+		i -= size
+		if _, err := m.Depositor.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -1298,32 +1213,36 @@ func (m *MsgWithdraw) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x22
 	}
-	if m.Collateral != nil {
-		{
-			size, err := m.Collateral.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintCdp(dAtA, i, uint64(size))
+	{
+		size, err := m.Collateral.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x1a
+		i -= size
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
-	if len(m.Owner) > 0 {
-		i -= len(m.Owner)
-		copy(dAtA[i:], m.Owner)
-		i = encodeVarintCdp(dAtA, i, uint64(len(m.Owner)))
-		i--
-		dAtA[i] = 0x12
+	i--
+	dAtA[i] = 0x1a
+	{
+		size := m.Owner.Size()
+		i -= size
+		if _, err := m.Owner.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
-	if len(m.Depositor) > 0 {
-		i -= len(m.Depositor)
-		copy(dAtA[i:], m.Depositor)
-		i = encodeVarintCdp(dAtA, i, uint64(len(m.Depositor)))
-		i--
-		dAtA[i] = 0xa
+	i--
+	dAtA[i] = 0x12
+	{
+		size := m.Depositor.Size()
+		i -= size
+		if _, err := m.Depositor.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -1347,18 +1266,16 @@ func (m *MsgDrawDebt) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Principal != nil {
-		{
-			size, err := m.Principal.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintCdp(dAtA, i, uint64(size))
+	{
+		size, err := m.Principal.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x1a
+		i -= size
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0x1a
 	if len(m.CollateralType) > 0 {
 		i -= len(m.CollateralType)
 		copy(dAtA[i:], m.CollateralType)
@@ -1366,13 +1283,16 @@ func (m *MsgDrawDebt) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Sender) > 0 {
-		i -= len(m.Sender)
-		copy(dAtA[i:], m.Sender)
-		i = encodeVarintCdp(dAtA, i, uint64(len(m.Sender)))
-		i--
-		dAtA[i] = 0xa
+	{
+		size := m.Sender.Size()
+		i -= size
+		if _, err := m.Sender.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -1396,18 +1316,16 @@ func (m *MsgRelayDebt) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Payment != nil {
-		{
-			size, err := m.Payment.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintCdp(dAtA, i, uint64(size))
+	{
+		size, err := m.Payment.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x1a
+		i -= size
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0x1a
 	if len(m.CollateralType) > 0 {
 		i -= len(m.CollateralType)
 		copy(dAtA[i:], m.CollateralType)
@@ -1415,13 +1333,16 @@ func (m *MsgRelayDebt) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Sender) > 0 {
-		i -= len(m.Sender)
-		copy(dAtA[i:], m.Sender)
-		i = encodeVarintCdp(dAtA, i, uint64(len(m.Sender)))
-		i--
-		dAtA[i] = 0xa
+	{
+		size := m.Sender.Size()
+		i -= size
+		if _, err := m.Sender.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -1452,20 +1373,26 @@ func (m *MsgLiquidate) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x1a
 	}
-	if len(m.Borrower) > 0 {
-		i -= len(m.Borrower)
-		copy(dAtA[i:], m.Borrower)
-		i = encodeVarintCdp(dAtA, i, uint64(len(m.Borrower)))
-		i--
-		dAtA[i] = 0x12
+	{
+		size := m.Borrower.Size()
+		i -= size
+		if _, err := m.Borrower.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
-	if len(m.Keeper) > 0 {
-		i -= len(m.Keeper)
-		copy(dAtA[i:], m.Keeper)
-		i = encodeVarintCdp(dAtA, i, uint64(len(m.Keeper)))
-		i--
-		dAtA[i] = 0xa
+	i--
+	dAtA[i] = 0x12
+	{
+		size := m.Keeper.Size()
+		i -= size
+		if _, err := m.Keeper.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -1539,30 +1466,26 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	i--
 	dAtA[i] = 0x22
-	if m.GlobalDebtLimit != nil {
-		{
-			size, err := m.GlobalDebtLimit.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintCdp(dAtA, i, uint64(size))
+	{
+		size, err := m.GlobalDebtLimit.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x1a
+		i -= size
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
-	if m.DebtParam != nil {
-		{
-			size, err := m.DebtParam.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintCdp(dAtA, i, uint64(size))
+	i--
+	dAtA[i] = 0x1a
+	{
+		size, err := m.DebtParam.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x12
+		i -= size
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0x12
 	if len(m.CollateralParams) > 0 {
 		for iNdEx := len(m.CollateralParams) - 1; iNdEx >= 0; iNdEx-- {
 			{
@@ -1679,18 +1602,16 @@ func (m *CollateralParam) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	i--
 	dAtA[i] = 0x2a
-	if m.DebtLimit != nil {
-		{
-			size, err := m.DebtLimit.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintCdp(dAtA, i, uint64(size))
+	{
+		size, err := m.DebtLimit.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x22
+		i -= size
+		i = encodeVarintCdp(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0x22
 	{
 		size := m.LiquidationRatio.Size()
 		i -= size
@@ -1795,26 +1716,18 @@ func (m *CDP) Size() (n int) {
 	if m.Id != 0 {
 		n += 1 + sovCdp(uint64(m.Id))
 	}
-	l = len(m.Owner)
-	if l > 0 {
-		n += 1 + l + sovCdp(uint64(l))
-	}
+	l = m.Owner.Size()
+	n += 1 + l + sovCdp(uint64(l))
 	l = len(m.Type)
 	if l > 0 {
 		n += 1 + l + sovCdp(uint64(l))
 	}
-	if m.Collateral != nil {
-		l = m.Collateral.Size()
-		n += 1 + l + sovCdp(uint64(l))
-	}
-	if m.Principal != nil {
-		l = m.Principal.Size()
-		n += 1 + l + sovCdp(uint64(l))
-	}
-	if m.AccumulatedFees != nil {
-		l = m.AccumulatedFees.Size()
-		n += 1 + l + sovCdp(uint64(l))
-	}
+	l = m.Collateral.Size()
+	n += 1 + l + sovCdp(uint64(l))
+	l = m.Principal.Size()
+	n += 1 + l + sovCdp(uint64(l))
+	l = m.AccumulatedFees.Size()
+	n += 1 + l + sovCdp(uint64(l))
 	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.FeesUpdated)
 	n += 1 + l + sovCdp(uint64(l))
 	l = m.InterestFactor.Size()
@@ -1831,14 +1744,10 @@ func (m *Deposit) Size() (n int) {
 	if m.CdpId != 0 {
 		n += 1 + sovCdp(uint64(m.CdpId))
 	}
-	l = len(m.Depositor)
-	if l > 0 {
-		n += 1 + l + sovCdp(uint64(l))
-	}
-	if m.Amount != nil {
-		l = m.Amount.Size()
-		n += 1 + l + sovCdp(uint64(l))
-	}
+	l = m.Depositor.Size()
+	n += 1 + l + sovCdp(uint64(l))
+	l = m.Amount.Size()
+	n += 1 + l + sovCdp(uint64(l))
 	return n
 }
 
@@ -1848,14 +1757,10 @@ func (m *AugmentedCDP) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.Cdp != nil {
-		l = m.Cdp.Size()
-		n += 1 + l + sovCdp(uint64(l))
-	}
-	if m.CollateralValue != nil {
-		l = m.CollateralValue.Size()
-		n += 1 + l + sovCdp(uint64(l))
-	}
+	l = m.CDP.Size()
+	n += 1 + l + sovCdp(uint64(l))
+	l = m.CollateralValue.Size()
+	n += 1 + l + sovCdp(uint64(l))
 	l = m.CollateralizationRatio.Size()
 	n += 1 + l + sovCdp(uint64(l))
 	return n
@@ -1867,18 +1772,12 @@ func (m *MsgCreateCDP) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Sender)
-	if l > 0 {
-		n += 1 + l + sovCdp(uint64(l))
-	}
-	if m.Collateral != nil {
-		l = m.Collateral.Size()
-		n += 1 + l + sovCdp(uint64(l))
-	}
-	if m.Principal != nil {
-		l = m.Principal.Size()
-		n += 1 + l + sovCdp(uint64(l))
-	}
+	l = m.Sender.Size()
+	n += 1 + l + sovCdp(uint64(l))
+	l = m.Collateral.Size()
+	n += 1 + l + sovCdp(uint64(l))
+	l = m.Principal.Size()
+	n += 1 + l + sovCdp(uint64(l))
 	l = len(m.CollateralType)
 	if l > 0 {
 		n += 1 + l + sovCdp(uint64(l))
@@ -1892,18 +1791,12 @@ func (m *MsgDeposit) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Depositor)
-	if l > 0 {
-		n += 1 + l + sovCdp(uint64(l))
-	}
-	l = len(m.Owner)
-	if l > 0 {
-		n += 1 + l + sovCdp(uint64(l))
-	}
-	if m.Collateral != nil {
-		l = m.Collateral.Size()
-		n += 1 + l + sovCdp(uint64(l))
-	}
+	l = m.Depositor.Size()
+	n += 1 + l + sovCdp(uint64(l))
+	l = m.Owner.Size()
+	n += 1 + l + sovCdp(uint64(l))
+	l = m.Collateral.Size()
+	n += 1 + l + sovCdp(uint64(l))
 	l = len(m.CollateralType)
 	if l > 0 {
 		n += 1 + l + sovCdp(uint64(l))
@@ -1917,18 +1810,12 @@ func (m *MsgWithdraw) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Depositor)
-	if l > 0 {
-		n += 1 + l + sovCdp(uint64(l))
-	}
-	l = len(m.Owner)
-	if l > 0 {
-		n += 1 + l + sovCdp(uint64(l))
-	}
-	if m.Collateral != nil {
-		l = m.Collateral.Size()
-		n += 1 + l + sovCdp(uint64(l))
-	}
+	l = m.Depositor.Size()
+	n += 1 + l + sovCdp(uint64(l))
+	l = m.Owner.Size()
+	n += 1 + l + sovCdp(uint64(l))
+	l = m.Collateral.Size()
+	n += 1 + l + sovCdp(uint64(l))
 	l = len(m.CollateralType)
 	if l > 0 {
 		n += 1 + l + sovCdp(uint64(l))
@@ -1942,18 +1829,14 @@ func (m *MsgDrawDebt) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Sender)
-	if l > 0 {
-		n += 1 + l + sovCdp(uint64(l))
-	}
+	l = m.Sender.Size()
+	n += 1 + l + sovCdp(uint64(l))
 	l = len(m.CollateralType)
 	if l > 0 {
 		n += 1 + l + sovCdp(uint64(l))
 	}
-	if m.Principal != nil {
-		l = m.Principal.Size()
-		n += 1 + l + sovCdp(uint64(l))
-	}
+	l = m.Principal.Size()
+	n += 1 + l + sovCdp(uint64(l))
 	return n
 }
 
@@ -1963,18 +1846,14 @@ func (m *MsgRelayDebt) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Sender)
-	if l > 0 {
-		n += 1 + l + sovCdp(uint64(l))
-	}
+	l = m.Sender.Size()
+	n += 1 + l + sovCdp(uint64(l))
 	l = len(m.CollateralType)
 	if l > 0 {
 		n += 1 + l + sovCdp(uint64(l))
 	}
-	if m.Payment != nil {
-		l = m.Payment.Size()
-		n += 1 + l + sovCdp(uint64(l))
-	}
+	l = m.Payment.Size()
+	n += 1 + l + sovCdp(uint64(l))
 	return n
 }
 
@@ -1984,14 +1863,10 @@ func (m *MsgLiquidate) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Keeper)
-	if l > 0 {
-		n += 1 + l + sovCdp(uint64(l))
-	}
-	l = len(m.Borrower)
-	if l > 0 {
-		n += 1 + l + sovCdp(uint64(l))
-	}
+	l = m.Keeper.Size()
+	n += 1 + l + sovCdp(uint64(l))
+	l = m.Borrower.Size()
+	n += 1 + l + sovCdp(uint64(l))
 	l = len(m.CollateralType)
 	if l > 0 {
 		n += 1 + l + sovCdp(uint64(l))
@@ -2011,14 +1886,10 @@ func (m *Params) Size() (n int) {
 			n += 1 + l + sovCdp(uint64(l))
 		}
 	}
-	if m.DebtParam != nil {
-		l = m.DebtParam.Size()
-		n += 1 + l + sovCdp(uint64(l))
-	}
-	if m.GlobalDebtLimit != nil {
-		l = m.GlobalDebtLimit.Size()
-		n += 1 + l + sovCdp(uint64(l))
-	}
+	l = m.DebtParam.Size()
+	n += 1 + l + sovCdp(uint64(l))
+	l = m.GlobalDebtLimit.Size()
+	n += 1 + l + sovCdp(uint64(l))
 	l = m.SurplusAuctionThreshold.Size()
 	n += 1 + l + sovCdp(uint64(l))
 	l = m.SurplusAuctionLot.Size()
@@ -2049,10 +1920,8 @@ func (m *CollateralParam) Size() (n int) {
 	}
 	l = m.LiquidationRatio.Size()
 	n += 1 + l + sovCdp(uint64(l))
-	if m.DebtLimit != nil {
-		l = m.DebtLimit.Size()
-		n += 1 + l + sovCdp(uint64(l))
-	}
+	l = m.DebtLimit.Size()
+	n += 1 + l + sovCdp(uint64(l))
 	l = m.StabilityFee.Size()
 	n += 1 + l + sovCdp(uint64(l))
 	l = m.AuctionSize.Size()
@@ -2184,7 +2053,9 @@ func (m *CDP) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Owner = string(dAtA[iNdEx:postIndex])
+			if err := m.Owner.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
@@ -2247,9 +2118,6 @@ func (m *CDP) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Collateral == nil {
-				m.Collateral = &types.Coin{}
-			}
 			if err := m.Collateral.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -2283,9 +2151,6 @@ func (m *CDP) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Principal == nil {
-				m.Principal = &types.Coin{}
-			}
 			if err := m.Principal.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -2318,9 +2183,6 @@ func (m *CDP) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if m.AccumulatedFees == nil {
-				m.AccumulatedFees = &types.Coin{}
 			}
 			if err := m.AccumulatedFees.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -2492,7 +2354,9 @@ func (m *Deposit) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Depositor = string(dAtA[iNdEx:postIndex])
+			if err := m.Depositor.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
@@ -2522,9 +2386,6 @@ func (m *Deposit) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if m.Amount == nil {
-				m.Amount = &types.Coin{}
 			}
 			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -2582,7 +2443,7 @@ func (m *AugmentedCDP) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Cdp", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field CDP", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -2609,10 +2470,7 @@ func (m *AugmentedCDP) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Cdp == nil {
-				m.Cdp = &CDP{}
-			}
-			if err := m.Cdp.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.CDP.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -2644,9 +2502,6 @@ func (m *AugmentedCDP) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if m.CollateralValue == nil {
-				m.CollateralValue = &types.Coin{}
 			}
 			if err := m.CollateralValue.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -2766,7 +2621,9 @@ func (m *MsgCreateCDP) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Sender = string(dAtA[iNdEx:postIndex])
+			if err := m.Sender.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -2796,9 +2653,6 @@ func (m *MsgCreateCDP) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if m.Collateral == nil {
-				m.Collateral = &types.Coin{}
 			}
 			if err := m.Collateral.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -2832,9 +2686,6 @@ func (m *MsgCreateCDP) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if m.Principal == nil {
-				m.Principal = &types.Coin{}
 			}
 			if err := m.Principal.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -2952,7 +2803,9 @@ func (m *MsgDeposit) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Depositor = string(dAtA[iNdEx:postIndex])
+			if err := m.Depositor.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -2984,7 +2837,9 @@ func (m *MsgDeposit) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Owner = string(dAtA[iNdEx:postIndex])
+			if err := m.Owner.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
@@ -3014,9 +2869,6 @@ func (m *MsgDeposit) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if m.Collateral == nil {
-				m.Collateral = &types.Coin{}
 			}
 			if err := m.Collateral.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -3134,7 +2986,9 @@ func (m *MsgWithdraw) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Depositor = string(dAtA[iNdEx:postIndex])
+			if err := m.Depositor.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -3166,7 +3020,9 @@ func (m *MsgWithdraw) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Owner = string(dAtA[iNdEx:postIndex])
+			if err := m.Owner.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
@@ -3196,9 +3052,6 @@ func (m *MsgWithdraw) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if m.Collateral == nil {
-				m.Collateral = &types.Coin{}
 			}
 			if err := m.Collateral.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -3316,7 +3169,9 @@ func (m *MsgDrawDebt) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Sender = string(dAtA[iNdEx:postIndex])
+			if err := m.Sender.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -3378,9 +3233,6 @@ func (m *MsgDrawDebt) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if m.Principal == nil {
-				m.Principal = &types.Coin{}
 			}
 			if err := m.Principal.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -3466,7 +3318,9 @@ func (m *MsgRelayDebt) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Sender = string(dAtA[iNdEx:postIndex])
+			if err := m.Sender.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -3528,9 +3382,6 @@ func (m *MsgRelayDebt) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if m.Payment == nil {
-				m.Payment = &types.Coin{}
 			}
 			if err := m.Payment.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -3616,7 +3467,9 @@ func (m *MsgLiquidate) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Keeper = string(dAtA[iNdEx:postIndex])
+			if err := m.Keeper.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -3648,7 +3501,9 @@ func (m *MsgLiquidate) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Borrower = string(dAtA[iNdEx:postIndex])
+			if err := m.Borrower.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
@@ -3795,9 +3650,6 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.DebtParam == nil {
-				m.DebtParam = &DebtParam{}
-			}
 			if err := m.DebtParam.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -3830,9 +3682,6 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if m.GlobalDebtLimit == nil {
-				m.GlobalDebtLimit = &types.Coin{}
 			}
 			if err := m.GlobalDebtLimit.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -4170,9 +4019,6 @@ func (m *CollateralParam) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if m.DebtLimit == nil {
-				m.DebtLimit = &types.Coin{}
 			}
 			if err := m.DebtLimit.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err

@@ -8,13 +8,27 @@ import "cosmos/base/v1beta1/coin.proto";
 option go_package = "github.com/lcnem/jpyx/x/incentive/types";
 
 message BaseClaim {
-    string owner = 1 [(gogoproto.moretags) = "yaml:\"owner\""];
-    cosmos.base.v1beta1.Coin reward = 2 [(gogoproto.moretags) = "yaml:\"reward\""];
+    string owner = 1 [
+      (gogoproto.moretags) = "yaml:\"owner\"",
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+      (gogoproto.nullable) = false
+    ];
+    cosmos.base.v1beta1.Coin reward = 2 [
+      (gogoproto.moretags) = "yaml:\"reward\"",
+      (gogoproto.nullable) = false
+    ];
   }
 
 message BaseMultiClaim {
-  string owner = 1 [(gogoproto.moretags) = "yaml:\"owner\""];
-  repeated cosmos.base.v1beta1.Coin rewards = 2 [(gogoproto.moretags) = "yaml:\"rewards\""];
+  string owner = 1 [
+    (gogoproto.moretags) = "yaml:\"owner\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.nullable) = false
+  ];
+  repeated cosmos.base.v1beta1.Coin reward = 2 [
+    (gogoproto.moretags) = "yaml:\"rewards\"",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message JPYXMintingClaim {
@@ -22,7 +36,10 @@ message JPYXMintingClaim {
     (gogoproto.moretags) = "yaml:\"base_claim\"",
     (gogoproto.embed) = true
   ];
-  repeated RewardIndex reward_indexes= 2 [(gogoproto.moretags) = "yaml:\"reward_indexes\""];
+  repeated RewardIndex reward_indexes= 2 [
+    (gogoproto.moretags) = "yaml:\"reward_indexes\"",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message RewardIndex {
@@ -35,13 +52,23 @@ message RewardIndex {
 }
     
 message MsgClaimJPYXMintingReward {
-  string sender = 1 [(gogoproto.moretags) = "yaml:\"sender\""];
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.nullable) = false
+  ];
   string multiplier_name = 2 [(gogoproto.moretags) = "yaml:\"multiplier_name\""];
 }
 
 message Params {
-  repeated RewardPeriod reward_periods = 1 [(gogoproto.moretags) = "yaml:\"reward_periods\""];
-  repeated Multiplier claim_multipliers = 2 [(gogoproto.moretags) = "yaml:\"claim_multipliers\""];
+  repeated RewardPeriod jpyx_minting_reward_periods = 1 [
+    (gogoproto.moretags) = "yaml:\"reward_periods\"",
+    (gogoproto.nullable) = false
+  ];
+  repeated Multiplier claim_multipliers = 2 [
+    (gogoproto.moretags) = "yaml:\"claim_multipliers\"",
+    (gogoproto.nullable) = false
+  ];
   google.protobuf.Timestamp claim_end = 3 [
     (gogoproto.moretags) = "yaml:\"claim_end\"",
     (gogoproto.nullable) = false,
@@ -62,7 +89,10 @@ message RewardPeriod {
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
-  cosmos.base.v1beta1.Coin rewards_per_second = 5 [(gogoproto.moretags) = "yaml:\"rewards_per_second\""];
+  cosmos.base.v1beta1.Coin rewards_per_second = 5 [
+    (gogoproto.moretags) = "yaml:\"rewards_per_second\"",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message Multiplier {

@@ -1677,7 +1677,7 @@ Query defines the gRPC querier service.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `owner` | [string](#string) |  |  |
-| `rewards` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+| `reward` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
 
 
 
@@ -1741,7 +1741,7 @@ Query defines the gRPC querier service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `reward_periods` | [RewardPeriod](#jpyx.incentive.RewardPeriod) | repeated |  |
+| `jpyx_minting_reward_periods` | [RewardPeriod](#jpyx.incentive.RewardPeriod) | repeated |  |
 | `claim_multipliers` | [Multiplier](#jpyx.incentive.Multiplier) | repeated |  |
 | `claim_end` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 

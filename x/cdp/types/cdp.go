@@ -28,7 +28,7 @@ func NewCDP(id uint64, owner sdk.AccAddress, collateral sdk.Coin, collateralType
 // NewCDPWithFees creates a new CDP object, for use during migration
 func NewCDPWithFees(id uint64, owner sdk.AccAddress, collateral sdk.Coin, collateralType string, principal, fees sdk.Coin, time time.Time, interestFactor sdk.Dec) CDP {
 	return CDP{
-		ID:              id,
+		Id:              id,
 		Owner:           owner,
 		Type:            collateralType,
 		Collateral:      collateral,
@@ -41,7 +41,7 @@ func NewCDPWithFees(id uint64, owner sdk.AccAddress, collateral sdk.Coin, collat
 
 // Validate performs a basic validation of the CDP fields.
 func (cdp CDP) Validate() error {
-	if cdp.ID == 0 {
+	if cdp.Id == 0 {
 		return errors.New("cdp id cannot be 0")
 	}
 	if cdp.Owner.Empty() {
@@ -96,7 +96,7 @@ func (cdps CDPs) Validate() error {
 func NewAugmentedCDP(cdp CDP, collateralValue sdk.Coin, collateralizationRatio sdk.Dec) AugmentedCDP {
 	augmentedCDP := AugmentedCDP{
 		CDP: CDP{
-			ID:              cdp.ID,
+			Id:              cdp.Id,
 			Owner:           cdp.Owner,
 			Type:            cdp.Type,
 			Collateral:      cdp.Collateral,

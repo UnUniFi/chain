@@ -9,7 +9,13 @@ option go_package = "github.com/lcnem/jpyx/x/pricefeed/types";
 
 // GenesisState defines the pricefeed module's genesis state.
 message GenesisState {
-  Params params = 1 [(gogoproto.moretags) = "yaml:\"params\""];
-  repeated PostedPrice posted_prices = 2 [(gogoproto.moretags) = "yaml:\"posted_prices\""];
+  Params params = 1 [
+    (gogoproto.moretags) = "yaml:\"params\"",
+    (gogoproto.nullable) = false
+  ];
+  repeated PostedPrice posted_prices = 2 [
+    (gogoproto.moretags) = "yaml:\"posted_prices\"",
+    (gogoproto.nullable) = false
+  ];
   // this line is used by starport scaffolding # genesis/proto/state
 }

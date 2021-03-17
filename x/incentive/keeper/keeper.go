@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -50,7 +49,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 
 // GetJPYXMintingClaim returns the claim in the store corresponding the the input address collateral type and id and a boolean for if the claim was found
 func (k Keeper) GetJPYXMintingClaim(ctx sdk.Context, addr sdk.AccAddress) (types.JPYXMintingClaim, bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.JPYXMintingClaimKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.JPYXMintingClaimKeyPrefix)
 	bz := store.Get(addr)
 	if bz == nil {
 		return types.JPYXMintingClaim{}, false
@@ -62,21 +61,21 @@ func (k Keeper) GetJPYXMintingClaim(ctx sdk.Context, addr sdk.AccAddress) (types
 
 // SetJPYXMintingClaim sets the claim in the store corresponding to the input address, collateral type, and id
 func (k Keeper) SetJPYXMintingClaim(ctx sdk.Context, c types.JPYXMintingClaim) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.JPYXMintingClaimKey))
-	bz := k.cdc.MustMarshalBinaryBare(&c)
-	store.Set([]byte(c.Owner), bz)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.JPYXMintingClaimKeyPrefix)
+	bz := k.cdc.MustMarshalBinaryBare(c)
+	store.Set(c.Owner, bz)
 
 }
 
 // DeleteJPYXMintingClaim deletes the claim in the store corresponding to the input address, collateral type, and id
 func (k Keeper) DeleteJPYXMintingClaim(ctx sdk.Context, owner sdk.AccAddress) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.JPYXMintingClaimKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.JPYXMintingClaimKeyPrefix)
 	store.Delete(owner)
 }
 
 // IterateJPYXMintingClaims iterates over all claim  objects in the store and preforms a callback function
 func (k Keeper) IterateJPYXMintingClaims(ctx sdk.Context, cb func(c types.JPYXMintingClaim) (stop bool)) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.JPYXMintingClaimKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.JPYXMintingClaimKeyPrefix)
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
@@ -89,8 +88,8 @@ func (k Keeper) IterateJPYXMintingClaims(ctx sdk.Context, cb func(c types.JPYXMi
 }
 
 // GetAllJPYXMintingClaims returns all Claim objects in the store
-func (k Keeper) GetAllJPYXMintingClaims(ctx sdk.Context) []types.JPYXMintingClaim {
-	cs := []types.JPYXMintingClaim{}
+func (k Keeper) GetAllJPYXMintingClaims(ctx sdk.Context) types.JPYXMintingClaims {
+	cs := types.JPYXMintingClaims{}
 	k.IterateJPYXMintingClaims(ctx, func(c types.JPYXMintingClaim) (stop bool) {
 		cs = append(cs, c)
 		return false
@@ -100,32 +99,31 @@ func (k Keeper) GetAllJPYXMintingClaims(ctx sdk.Context) []types.JPYXMintingClai
 
 // GetPreviousJPYXMintingAccrualTime returns the last time a collateral type accrued JPYX minting rewards
 func (k Keeper) GetPreviousJPYXMintingAccrualTime(ctx sdk.Context, ctype string) (blockTime time.Time, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PreviousJPYXMintingRewardAccrualTimeKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PreviousJPYXMintingRewardAccrualTimeKeyPrefix)
 	bz := store.Get([]byte(ctype))
 	if bz == nil {
 		return time.Time{}, false
 	}
-	json.Unmarshal(bz, &blockTime)
+	k.cdc.MustUnmarshalBinaryBare(bz, &blockTime)
 	return blockTime, true
 }
 
 // SetPreviousJPYXMintingAccrualTime sets the last time a collateral type accrued JPYX minting rewards
 func (k Keeper) SetPreviousJPYXMintingAccrualTime(ctx sdk.Context, ctype string, blockTime time.Time) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PreviousJPYXMintingRewardAccrualTimeKey))
-	bz, _ := json.Marshal(blockTime)
-	store.Set([]byte(ctype), bz)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PreviousJPYXMintingRewardAccrualTimeKeyPrefix)
+	store.Set([]byte(ctype), k.cdc.MustMarshalBinaryBare(blockTime))
 }
 
 // IterateJPYXMintingAccrualTimes iterates over all previous JPYX minting accrual times and preforms a callback function
 func (k Keeper) IterateJPYXMintingAccrualTimes(ctx sdk.Context, cb func(string, time.Time) (stop bool)) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PreviousJPYXMintingRewardAccrualTimeKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PreviousJPYXMintingRewardAccrualTimeKeyPrefix)
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		var accrualTime time.Time
 		var collateralType string
-		json.Unmarshal(iterator.Value(), &collateralType)
-		json.Unmarshal(iterator.Value(), &accrualTime)
+		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &collateralType)
+		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &accrualTime)
 		if cb(collateralType, accrualTime) {
 			break
 		}
@@ -134,18 +132,17 @@ func (k Keeper) IterateJPYXMintingAccrualTimes(ctx sdk.Context, cb func(string, 
 
 // GetJPYXMintingRewardFactor returns the current reward factor for an individual collateral type
 func (k Keeper) GetJPYXMintingRewardFactor(ctx sdk.Context, ctype string) (factor sdk.Dec, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.JPYXMintingRewardFactorKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.JPYXMintingRewardFactorKeyPrefix)
 	bz := store.Get([]byte(ctype))
 	if bz == nil {
 		return sdk.ZeroDec(), false
 	}
-	json.Unmarshal(bz, &factor)
+	k.cdc.MustUnmarshalBinaryBare(bz, &factor)
 	return factor, true
 }
 
 // SetJPYXMintingRewardFactor sets the current reward factor for an individual collateral type
 func (k Keeper) SetJPYXMintingRewardFactor(ctx sdk.Context, ctype string, factor sdk.Dec) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.JPYXMintingRewardFactorKey))
-	bz, _ := json.Marshal(factor)
-	store.Set([]byte(ctype), bz)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.JPYXMintingRewardFactorKeyPrefix)
+	store.Set([]byte(ctype), k.cdc.MustMarshalBinaryBare(factor))
 }

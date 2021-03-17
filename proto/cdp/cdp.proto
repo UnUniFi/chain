@@ -9,11 +9,24 @@ option go_package = "github.com/lcnem/jpyx/x/cdp/types";
 
 message CDP {
   uint64 id = 1 [(gogoproto.moretags) = "yaml:\"id\""];
-  string owner = 2 [(gogoproto.moretags) = "yaml:\"owner\""];
+  string owner = 2 [
+    (gogoproto.moretags) = "yaml:\"owner\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.nullable) = false
+  ];
   string type = 3 [(gogoproto.moretags) = "yaml:\"type\""];
-  cosmos.base.v1beta1.Coin collateral = 4 [(gogoproto.moretags) = "yaml:\"collateral\""];
-  cosmos.base.v1beta1.Coin principal = 5 [(gogoproto.moretags) = "yaml:\"principal\""];
-  cosmos.base.v1beta1.Coin accumulated_fees = 6 [(gogoproto.moretags) = "yaml:\"accumulated_fees\""];
+  cosmos.base.v1beta1.Coin collateral = 4 [
+    (gogoproto.moretags) = "yaml:\"collateral\"",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin principal = 5 [
+    (gogoproto.moretags) = "yaml:\"principal\"",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin accumulated_fees = 6 [
+    (gogoproto.moretags) = "yaml:\"accumulated_fees\"",
+    (gogoproto.nullable) = false
+  ];
   google.protobuf.Timestamp fees_updated = 7 [
     (gogoproto.moretags) = "yaml:\"fees_updated\"",
     (gogoproto.nullable) = false,
@@ -28,13 +41,27 @@ message CDP {
 
 message Deposit {
   uint64 cdp_id = 1 [(gogoproto.moretags) = "yaml:\"cdp_id\""];
-  string depositor = 2 [(gogoproto.moretags) = "yaml:\"depositor\""];
-  cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.moretags) = "yaml:\"amount\""];
+  string depositor = 2 [
+    (gogoproto.moretags) = "yaml:\"depositor\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin amount = 3 [
+    (gogoproto.moretags) = "yaml:\"amount\"",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message AugmentedCDP {
-  CDP cdp = 1 [(gogoproto.moretags) = "yaml:\"cdp\""];
-  cosmos.base.v1beta1.Coin collateral_value = 2 [(gogoproto.moretags) = "yaml:\"collateral_value\""];
+  CDP cdp = 1 [
+    (gogoproto.moretags) = "yaml:\"cdp\"",
+    (gogoproto.embed) = true,
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin collateral_value = 2 [
+    (gogoproto.moretags) = "yaml:\"collateral_value\"",
+    (gogoproto.nullable) = false
+  ];
   string collateralization_ratio = 3 [
     (gogoproto.moretags) = "yaml:\"collateralization_ratio\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
@@ -43,41 +70,95 @@ message AugmentedCDP {
 }
 
 message MsgCreateCDP {
-  string sender = 1 [(gogoproto.moretags) = "yaml:\"sender\""];
-  cosmos.base.v1beta1.Coin collateral = 2 [(gogoproto.moretags) = "yaml:\"collateral\""];
-  cosmos.base.v1beta1.Coin principal = 3 [(gogoproto.moretags) = "yaml:\"principal\""];
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin collateral = 2 [
+    (gogoproto.moretags) = "yaml:\"collateral\"",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin principal = 3 [
+    (gogoproto.moretags) = "yaml:\"principal\"",
+    (gogoproto.nullable) = false
+  ];
   string collateral_type = 4 [(gogoproto.moretags) = "yaml:\"collateral_type\""];
 }
 
 message MsgDeposit {
-  string depositor = 1 [(gogoproto.moretags) = "yaml:\"depositor\""];
-  string owner = 2 [(gogoproto.moretags) = "yaml:\"owner\""];
-  cosmos.base.v1beta1.Coin collateral = 3 [(gogoproto.moretags) = "yaml:\"collateral\""];
+  string depositor = 1 [
+    (gogoproto.moretags) = "yaml:\"depositor\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string owner = 2 [
+    (gogoproto.moretags) = "yaml:\"owner\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin collateral = 3 [
+    (gogoproto.moretags) = "yaml:\"collateral\"",
+    (gogoproto.nullable) = false
+  ];
   string collateral_type = 4 [(gogoproto.moretags) = "yaml:\"collateral_type\""];
 }
 
 message MsgWithdraw {
-  string depositor = 1 [(gogoproto.moretags) = "yaml:\"depositor\""];
-  string owner = 2 [(gogoproto.moretags) = "yaml:\"owner\""];
-  cosmos.base.v1beta1.Coin collateral = 3 [(gogoproto.moretags) = "yaml:\"collateral\""];
+  string depositor = 1 [
+    (gogoproto.moretags) = "yaml:\"depositor\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string owner = 2 [
+    (gogoproto.moretags) = "yaml:\"owner\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin collateral = 3 [
+    (gogoproto.moretags) = "yaml:\"collateral\"",
+    (gogoproto.nullable) = false
+  ];
   string collateral_type = 4 [(gogoproto.moretags) = "yaml:\"collateral_type\""];
 }
 
 message MsgDrawDebt {
-  string sender = 1 [(gogoproto.moretags) = "yaml:\"sender\""];
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.nullable) = false
+  ];
   string collateral_type = 2 [(gogoproto.moretags) = "yaml:\"collateral_type\""];
-  cosmos.base.v1beta1.Coin principal = 3 [(gogoproto.moretags) = "yaml:\"principal\""];
+  cosmos.base.v1beta1.Coin principal = 3 [
+    (gogoproto.moretags) = "yaml:\"principal\"",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgRelayDebt {
-  string sender = 1 [(gogoproto.moretags) = "yaml:\"sender\""];
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.nullable) = false
+  ];
   string collateral_type = 2 [(gogoproto.moretags) = "yaml:\"collateral_type\""];
-  cosmos.base.v1beta1.Coin payment = 3 [(gogoproto.moretags) = "yaml:\"payment\""];
+  cosmos.base.v1beta1.Coin payment = 3 [
+    (gogoproto.moretags) = "yaml:\"payment\"",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgLiquidate {
-  string keeper = 1 [(gogoproto.moretags) = "yaml:\"keeper\""];
-  string borrower = 2 [(gogoproto.moretags) = "yaml:\"borrower\""];
+  string keeper = 1 [
+    (gogoproto.moretags) = "yaml:\"keeper\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string borrower = 2 [
+    (gogoproto.moretags) = "yaml:\"borrower\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.nullable) = false
+  ];
   string collateral_type = 3 [(gogoproto.moretags) = "yaml:\"collateral_type\""];
 }
 
@@ -86,8 +167,14 @@ message Params {
     (gogoproto.moretags) = "yaml:\"collateral_params\"",
     (gogoproto.nullable) = false
   ];
-  DebtParam debt_param = 2 [(gogoproto.moretags) = "yaml:\"debt_param\""];
-  cosmos.base.v1beta1.Coin global_debt_limit = 3 [(gogoproto.moretags) = "yaml:\"global_debt_limit\""];
+  DebtParam debt_param = 2 [
+    (gogoproto.moretags) = "yaml:\"debt_param\"",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin global_debt_limit = 3 [
+    (gogoproto.moretags) = "yaml:\"global_debt_limit\"",
+    (gogoproto.nullable) = false
+  ];
   string surplus_auction_threshold = 4 [
     (gogoproto.moretags) = "yaml:\"surplus_auction_threshold\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
@@ -119,7 +206,10 @@ message CollateralParam {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  cosmos.base.v1beta1.Coin debt_limit = 4 [(gogoproto.moretags) = "yaml:\"debt_limit\""];
+  cosmos.base.v1beta1.Coin debt_limit = 4 [
+    (gogoproto.moretags) = "yaml:\"debt_limit\"",
+    (gogoproto.nullable) = false
+  ];
   string stability_fee = 5 [
     (gogoproto.moretags) = "yaml:\"stability_fee\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",

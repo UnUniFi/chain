@@ -29,11 +29,16 @@ func KeyPrefix(p string) []byte {
 }
 
 const (
-	ParamsKey        = "Params-value-"
-	AuctionKey       = "Auction-value-"
-	AuctionCountKey  = "Auction-count-"
-	AuctionByTimeKey = "AuctionByTime"
-	NextAuctionIDKey = "NextAuctionID"
+	ParamsKey = "Params-value-"
+	// AuctionKey       = "Auction-value-"
+	// AuctionCountKey  = "Auction-count-"
+)
+
+var (
+	AuctionKeyPrefix       = []byte{0x00} // prefix for keys that store auctions
+	AuctionByTimeKeyPrefix = []byte{0x01} // prefix for keys that are part of the auctionsByTime index
+
+	NextAuctionIDKey = []byte{0x02} // key for the next auction id
 )
 
 // GetAuctionKey returns the bytes of an auction key

@@ -115,14 +115,14 @@ type PostedPrices []PostedPrice
 func (pps PostedPrices) Validate() error {
 	seenPrices := make(map[string]bool)
 	for _, pp := range pps {
-		if pp.OracleAddress != nil && seenPrices[pp.MarketID+pp.OracleAddress.String()] {
-			return fmt.Errorf("duplicated posted price for marked id %s and oracle address %s", pp.MarketID, pp.OracleAddress)
+		if pp.OracleAddress != nil && seenPrices[pp.MarketId+pp.OracleAddress.String()] {
+			return fmt.Errorf("duplicated posted price for marked id %s and oracle address %s", pp.MarketId, pp.OracleAddress)
 		}
 
 		if err := pp.Validate(); err != nil {
 			return err
 		}
-		seenPrices[pp.MarketID+pp.OracleAddress.String()] = true
+		seenPrices[pp.MarketId+pp.OracleAddress.String()] = true
 	}
 
 	return nil

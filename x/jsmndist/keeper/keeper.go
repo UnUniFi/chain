@@ -40,7 +40,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 
 // GetPreviousBlockTime get the blocktime for the previous block
 func (k Keeper) GetPreviousBlockTime(ctx sdk.Context) (blockTime time.Time, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.key), types.PreviousBlockTimeKey)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PreviousBlockTimeKey)
 	b := store.Get([]byte{})
 	if b == nil {
 		return time.Time{}, false
@@ -51,6 +51,6 @@ func (k Keeper) GetPreviousBlockTime(ctx sdk.Context) (blockTime time.Time, foun
 
 // SetPreviousBlockTime set the time of the previous block
 func (k Keeper) SetPreviousBlockTime(ctx sdk.Context, blockTime time.Time) {
-	store := prefix.NewStore(ctx.KVStore(k.key), types.PreviousBlockTimeKey)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PreviousBlockTimeKey)
 	store.Set([]byte{}, k.cdc.MustMarshalBinaryLengthPrefixed(blockTime))
 }

@@ -20,7 +20,7 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 // GetJPYXMintingRewardPeriod returns the reward period with the specified collateral type if it's found in the params
 func (k Keeper) GetJPYXMintingRewardPeriod(ctx sdk.Context, collateralType string) (types.RewardPeriod, bool) {
 	params := k.GetParams(ctx)
-	for _, rp := range params.JPYXMintingRewardPeriods {
+	for _, rp := range params.JpyxMintingRewardPeriods {
 		if rp.CollateralType == collateralType {
 			return rp, true
 		}
@@ -33,7 +33,7 @@ func (k Keeper) GetMultiplier(ctx sdk.Context, name string) (types.Multiplier, b
 	params := k.GetParams(ctx)
 	for _, m := range params.ClaimMultipliers {
 		if m.Name == name {
-			return *m, true
+			return m, true
 		}
 	}
 	return types.Multiplier{}, false

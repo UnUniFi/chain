@@ -43,7 +43,7 @@ var (
 func NewParams(jpyxMinting RewardPeriods, hardSupply, hardBorrow MultiRewardPeriods,
 	hardDelegator RewardPeriods, multipliers Multipliers, claimEnd time.Time) Params {
 	return Params{
-		JPYXMintingRewardPeriods: jpyxMinting,
+		JpyxMintingRewardPeriods: jpyxMinting,
 		ClaimMultipliers:         multipliers,
 		ClaimEnd:                 claimEnd,
 	}
@@ -63,7 +63,7 @@ func ParamKeyTable() paramstype.KeyTable {
 // ParamSetPairs implements the ParamSet interface and returns all the key/value pairs
 func (p *Params) ParamSetPairs() paramstype.ParamSetPairs {
 	return paramstype.ParamSetPairs{
-		paramstype.NewParamSetPair(KeyJPYXMintingRewardPeriods, &p.JPYXMintingRewardPeriods, validateRewardPeriodsParam),
+		paramstype.NewParamSetPair(KeyJPYXMintingRewardPeriods, &p.JpyxMintingRewardPeriods, validateRewardPeriodsParam),
 		paramstype.NewParamSetPair(KeyClaimEnd, &p.ClaimEnd, validateClaimEndParam),
 		paramstype.NewParamSetPair(KeyMultipliers, &p.ClaimMultipliers, validateMultipliersParam),
 	}
@@ -76,7 +76,7 @@ func (p Params) Validate() error {
 		return err
 	}
 
-	if err := validateRewardPeriodsParam(p.JPYXMintingRewardPeriods); err != nil {
+	if err := validateRewardPeriodsParam(p.JpyxMintingRewardPeriods); err != nil {
 		return err
 	}
 
@@ -175,7 +175,7 @@ func (rps RewardPeriods) Validate() error {
 // NewMultiplier returns a new Multiplier
 func NewMultiplier(name MultiplierName, lockup int64, factor sdk.Dec) Multiplier {
 	return Multiplier{
-		Name:         name,
+		Name:         string(name),
 		MonthsLockup: lockup,
 		Factor:       factor,
 	}
@@ -183,7 +183,7 @@ func NewMultiplier(name MultiplierName, lockup int64, factor sdk.Dec) Multiplier
 
 // Validate multiplier param
 func (m Multiplier) Validate() error {
-	if err := m.Name.IsValid(); err != nil {
+	if err := MultiplierName(m.Name).IsValid(); err != nil {
 		return err
 	}
 	if m.MonthsLockup < 0 {
