@@ -31,6 +31,10 @@ type (
 func NewKeeper(cdc codec.Marshaler, storeKey, memKey sdk.StoreKey, paramSpace paramtypes.Subspace, accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	auctionKeeper types.AuctionKeeper, pricefeedKeeper types.PricefeedKeeper, maccPerms map[string][]string) Keeper {
+	if !paramSpace.HasKeyTable() {
+		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
+	}
+
 	return Keeper{
 		cdc:             cdc,
 		storeKey:        storeKey,

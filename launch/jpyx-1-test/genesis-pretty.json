@@ -68,6 +68,10 @@
           "address": "jpyx127jezdk0uvuupmfmqwwu0x5496d4kvkrgzqykr",
           "coins": [
             {
+              "denom": "ubtc",
+              "amount": "1000000"
+            },
+            {
               "denom": "ujsmn",
               "amount": "500000000000"
             }
@@ -76,6 +80,10 @@
         {
           "address": "jpyx10lcj22kzftvnduchatmnsnhfljeky5ghd398wt",
           "coins": [
+            {
+              "denom": "ubtc",
+              "amount": "1000000"
+            },
             {
               "denom": "ujsmn",
               "amount": "500000000000"
@@ -92,7 +100,24 @@
     },
     "cdp": {
       "params": {
-        "collateral_params": [],
+        "collateral_params": [
+          {
+            "auction_size": "50000000000",
+            "conversion_factor": "8",
+            "debt_limit": {
+              "amount": "20000000000000",
+              "denom": "jpyx"
+            },
+            "denom": "ubtc",
+            "liquidation_market_id": "ubtc:jpy:30",
+            "liquidation_penalty": "0.075000000000000000",
+            "liquidation_ratio": "1.500000000000000000",
+            "prefix": 1,
+            "spot_market_id": "ubtc:jpy",
+            "stability_fee": "1.000000001547125958",
+            "type": "ubtc-a"
+          }
+        ],
         "debt_param": {
           "denom": "jpyx",
           "reference_asset": "jpy",
@@ -357,7 +382,18 @@
     "params": null,
     "pricefeed": {
       "params": {
-        "markets": []
+        "markets": [
+          {
+            "market_id": "ubtc:jpy",
+            "base_asset": "ubtc",
+            "quote_asset": "jpy",
+            "oracles": [
+              "jpyx10lcj22kzftvnduchatmnsnhfljeky5ghd398wt",
+              "jpyx127jezdk0uvuupmfmqwwu0x5496d4kvkrgzqykr"
+            ],
+            "active": true
+          }
+        ]
       },
       "posted_prices": []
     },
