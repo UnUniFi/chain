@@ -128,7 +128,7 @@
         },
         "global_debt_limit": {
           "denom": "jpyx",
-          "amount": "0"
+          "amount": "20000000000000"
         },
         "surplus_auction_threshold": "500000000000",
         "surplus_auction_lot": "10000000000",
