@@ -115,7 +115,9 @@
             "prefix": 1,
             "spot_market_id": "ubtc:jpy",
             "stability_fee": "1.000000001547125958",
-            "type": "ubtc-a"
+            "type": "ubtc-a",
+            "check_collateralization_index_count": "1000",
+            "keeper_reward_percentage": "0.000001"
           }
         ],
         "debt_param": {
