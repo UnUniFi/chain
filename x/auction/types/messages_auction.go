@@ -14,7 +14,7 @@ var _ sdk.Msg = &MsgPlaceBid{}
 func NewMsgPlaceBid(auctionID uint64, bidder sdk.AccAddress, amt sdk.Coin) MsgPlaceBid {
 	return MsgPlaceBid{
 		AuctionId: auctionID,
-		Bidder:    bidder,
+		Bidder:    bidder.Bytes(),
 		Amount:    amt,
 	}
 }
@@ -30,7 +30,7 @@ func (msg MsgPlaceBid) ValidateBasic() error {
 	if msg.AuctionId == 0 {
 		return errors.New("auction id cannot be zero")
 	}
-	if msg.Bidder.Empty() {
+	if msg.Bidder.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "bidder address cannot be empty")
 	}
 	if len(msg.Bidder) != sdk.AddrLen {
@@ -50,5 +50,5 @@ func (msg MsgPlaceBid) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgPlaceBid) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Bidder}
+	return []sdk.AccAddress{msg.Bidder.AccAddress()}
 }

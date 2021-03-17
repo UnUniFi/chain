@@ -11,6 +11,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	proto "github.com/gogo/protobuf/proto"
+	jpyx "github.com/lcnem/jpyx/types"
 )
 
 const (
@@ -80,7 +81,7 @@ func UnpackAuctions(auctionsAny []*types.Any) (Auctions, error) {
 func (a BaseAuction) GetID() uint64 { return a.Id }
 
 // GetBidder is a getter for auction Bidder.
-func (a BaseAuction) GetBidder() sdk.AccAddress { return a.Bidder }
+func (a BaseAuction) GetBidder() sdk.AccAddress { return a.Bidder.AccAddress() }
 
 // GetType returns the auction type. Used to identify auctions in event attributes.
 func (a BaseAuction) GetType() string { return "base" }
@@ -95,8 +96,8 @@ func (a BaseAuction) Validate() error {
 		return fmt.Errorf("invalid lot: %s", a.Lot)
 	}
 	// NOTE: bidder can be empty for Surplus and Collateral auctions
-	if !a.Bidder.Empty() && len(a.Bidder) != sdk.AddrLen {
-		return fmt.Errorf("the expected bidder address length is %d, actual length is %d", sdk.AddrLen, len(a.Bidder))
+	if !a.Bidder.AccAddress().Empty() && len(a.Bidder.AccAddress()) != sdk.AddrLen {
+		return fmt.Errorf("the expected bidder address length is %d, actual length is %d", sdk.AddrLen, len(a.Bidder.AccAddress()))
 	}
 	if !a.Bid.IsValid() {
 		return fmt.Errorf("invalid bid: %s", a.Bid)
@@ -176,9 +177,9 @@ func NewDebtAuction(buyerModAccName string, bid sdk.Coin, initialLot sdk.Coin, e
 			// no ID
 			Initiator:       buyerModAccName,
 			Lot:             initialLot,
-			Bidder:          authtypes.NewModuleAddress(buyerModAccName), // send proceeds from the first bid to the buyer.
-			Bid:             bid,                                         // amount that the buyer is buying - doesn't change over course of auction
-			HasReceivedBids: false,                                       // new auctions don't have any bids
+			Bidder:          authtypes.NewModuleAddress(buyerModAccName).Bytes(), // send proceeds from the first bid to the buyer.
+			Bid:             bid,                                                                // amount that the buyer is buying - doesn't change over course of auction
+			HasReceivedBids: false,                                                              // new auctions don't have any bids
 			EndTime:         endTime,
 			MaxEndTime:      endTime,
 		},
@@ -255,8 +256,9 @@ func NewCollateralAuction(seller string, lot sdk.Coin, endTime time.Time, maxBid
 
 // NewWeightedAddresses returns a new list addresses with weights.
 func NewWeightedAddresses(addrs []sdk.AccAddress, weights []sdk.Int) (WeightedAddresses, error) {
+
 	wa := WeightedAddresses{
-		Addresses: addrs,
+		Addresses: jpyx.StringAccAddresses(addrs),
 		Weights:   weights,
 	}
 	if err := wa.Validate(); err != nil {
@@ -277,7 +279,7 @@ func (wa WeightedAddresses) Validate() error {
 
 	totalWeight := sdk.ZeroInt()
 	for i := range wa.Addresses {
-		if wa.Addresses[i].Empty() {
+		if wa.Addresses[i].AccAddress().Empty() {
 			return fmt.Errorf("address %d cannot be empty", i)
 		}
 		if len(wa.Addresses[i]) != sdk.AddrLen {

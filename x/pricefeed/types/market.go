@@ -7,6 +7,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	jpyx "github.com/lcnem/jpyx/types"
 )
 
 // NewMarket returns a new Market
@@ -15,7 +16,7 @@ func NewMarket(id, base, quote string, oracles []sdk.AccAddress, active bool) Ma
 		MarketId:   id,
 		BaseAsset:  base,
 		QuoteAsset: quote,
-		Oracles:    oracles,
+		Oracles:    jpyx.StringAccAddresses(oracles),
 		Active:     active,
 	}
 }
@@ -33,13 +34,13 @@ func (m Market) Validate() error {
 	}
 	seenOracles := make(map[string]bool)
 	for i, oracle := range m.Oracles {
-		if oracle.Empty() {
+		if oracle.AccAddress().Empty() {
 			return fmt.Errorf("oracle %d is empty", i)
 		}
-		if seenOracles[oracle.String()] {
+		if seenOracles[oracle.AccAddress().String()] {
 			return fmt.Errorf("duplicated oracle %s", oracle)
 		}
-		seenOracles[oracle.String()] = true
+		seenOracles[oracle.AccAddress().String()] = true
 	}
 	return nil
 }
@@ -84,7 +85,7 @@ type CurrentPrices []CurrentPrice
 func NewPostedPrice(marketID string, oracle sdk.AccAddress, price sdk.Dec, expiry time.Time) PostedPrice {
 	return PostedPrice{
 		MarketId:      marketID,
-		OracleAddress: oracle,
+		OracleAddress: oracle.Bytes(),
 		Price:         price,
 		Expiry:        expiry,
 	}
@@ -95,7 +96,7 @@ func (pp PostedPrice) Validate() error {
 	if strings.TrimSpace(pp.MarketId) == "" {
 		return errors.New("market id cannot be blank")
 	}
-	if pp.OracleAddress.Empty() {
+	if pp.OracleAddress.AccAddress().Empty() {
 		return errors.New("oracle address cannot be empty")
 	}
 	if pp.Price.IsNegative() {
@@ -115,14 +116,14 @@ type PostedPrices []PostedPrice
 func (pps PostedPrices) Validate() error {
 	seenPrices := make(map[string]bool)
 	for _, pp := range pps {
-		if pp.OracleAddress != nil && seenPrices[pp.MarketId+pp.OracleAddress.String()] {
+		if pp.OracleAddress != nil && seenPrices[pp.MarketId+pp.OracleAddress.AccAddress().String()] {
 			return fmt.Errorf("duplicated posted price for marked id %s and oracle address %s", pp.MarketId, pp.OracleAddress)
 		}
 
 		if err := pp.Validate(); err != nil {
 			return err
 		}
-		seenPrices[pp.MarketId+pp.OracleAddress.String()] = true
+		seenPrices[pp.MarketId+pp.OracleAddress.AccAddress().String()] = true
 	}
 
 	return nil

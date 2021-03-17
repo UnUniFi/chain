@@ -17,7 +17,7 @@ message BaseAuction {
   ];
   string bidder = 4 [
     (gogoproto.moretags) = "yaml:\"bidder\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   cosmos.base.v1beta1.Coin bid = 5 [
@@ -80,7 +80,7 @@ message CollateralAuction {
 message WeightedAddresses {
   repeated string addresses = 1 [
     (gogoproto.moretags) = "yaml:\"addresses\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   repeated string weights = 2 [
@@ -94,7 +94,7 @@ message MsgPlaceBid {
   uint64 auction_id = 1 [(gogoproto.moretags) = "yaml:\"auction_id\""];
   string bidder = 2 [
     (gogoproto.moretags) = "yaml:\"bidder\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   cosmos.base.v1beta1.Coin amount = 3 [

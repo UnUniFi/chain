@@ -101,14 +101,16 @@ func (k Keeper) GetPreviousJPYXMintingAccrualTime(ctx sdk.Context, ctype string)
 	if bz == nil {
 		return time.Time{}, false
 	}
-	k.cdc.MustUnmarshalBinaryBare(bz, &blockTime)
+	blockTime.UnmarshalBinary(bz)
+
 	return blockTime, true
 }
 
 // SetPreviousJPYXMintingAccrualTime sets the last time a collateral type accrued JPYX minting rewards
 func (k Keeper) SetPreviousJPYXMintingAccrualTime(ctx sdk.Context, ctype string, blockTime time.Time) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PreviousJPYXMintingRewardAccrualTimeKeyPrefix)
-	store.Set([]byte(ctype), k.cdc.MustMarshalBinaryBare(blockTime))
+	bz, _ := blockTime.MarshalBinary()
+	store.Set([]byte(ctype), bz)
 }
 
 // IterateJPYXMintingAccrualTimes iterates over all previous JPYX minting accrual times and preforms a callback function
@@ -119,8 +121,8 @@ func (k Keeper) IterateJPYXMintingAccrualTimes(ctx sdk.Context, cb func(string, 
 	for ; iterator.Valid(); iterator.Next() {
 		var accrualTime time.Time
 		var collateralType string
-		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &collateralType)
-		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &accrualTime)
+		collateralType = string(iterator.Value())
+		accrualTime.UnmarshalBinary(iterator.Value())
 		if cb(collateralType, accrualTime) {
 			break
 		}
@@ -134,12 +136,14 @@ func (k Keeper) GetJPYXMintingRewardFactor(ctx sdk.Context, ctype string) (facto
 	if bz == nil {
 		return sdk.ZeroDec(), false
 	}
-	k.cdc.MustUnmarshalBinaryBare(bz, &factor)
+	factor.Unmarshal(bz)
+
 	return factor, true
 }
 
 // SetJPYXMintingRewardFactor sets the current reward factor for an individual collateral type
 func (k Keeper) SetJPYXMintingRewardFactor(ctx sdk.Context, ctype string, factor sdk.Dec) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.JPYXMintingRewardFactorKeyPrefix)
-	store.Set([]byte(ctype), k.cdc.MustMarshalBinaryBare(factor))
+	bz, _ := factor.Marshal()
+	store.Set([]byte(ctype), bz)
 }

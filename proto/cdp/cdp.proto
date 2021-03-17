@@ -11,7 +11,7 @@ message CDP {
   uint64 id = 1 [(gogoproto.moretags) = "yaml:\"id\""];
   string owner = 2 [
     (gogoproto.moretags) = "yaml:\"owner\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   string type = 3 [(gogoproto.moretags) = "yaml:\"type\""];
@@ -43,7 +43,7 @@ message Deposit {
   uint64 cdp_id = 1 [(gogoproto.moretags) = "yaml:\"cdp_id\""];
   string depositor = 2 [
     (gogoproto.moretags) = "yaml:\"depositor\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   cosmos.base.v1beta1.Coin amount = 3 [
@@ -72,7 +72,7 @@ message AugmentedCDP {
 message MsgCreateCDP {
   string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   cosmos.base.v1beta1.Coin collateral = 2 [
@@ -89,12 +89,12 @@ message MsgCreateCDP {
 message MsgDeposit {
   string depositor = 1 [
     (gogoproto.moretags) = "yaml:\"depositor\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   string owner = 2 [
     (gogoproto.moretags) = "yaml:\"owner\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   cosmos.base.v1beta1.Coin collateral = 3 [
@@ -107,12 +107,12 @@ message MsgDeposit {
 message MsgWithdraw {
   string depositor = 1 [
     (gogoproto.moretags) = "yaml:\"depositor\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   string owner = 2 [
     (gogoproto.moretags) = "yaml:\"owner\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   cosmos.base.v1beta1.Coin collateral = 3 [
@@ -125,7 +125,7 @@ message MsgWithdraw {
 message MsgDrawDebt {
   string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   string collateral_type = 2 [(gogoproto.moretags) = "yaml:\"collateral_type\""];
@@ -138,7 +138,7 @@ message MsgDrawDebt {
 message MsgRepayDebt {
   string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   string collateral_type = 2 [(gogoproto.moretags) = "yaml:\"collateral_type\""];
@@ -151,12 +151,12 @@ message MsgRepayDebt {
 message MsgLiquidate {
   string keeper = 1 [
     (gogoproto.moretags) = "yaml:\"keeper\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   string borrower = 2 [
     (gogoproto.moretags) = "yaml:\"borrower\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   string collateral_type = 3 [(gogoproto.moretags) = "yaml:\"collateral_type\""];

@@ -146,7 +146,7 @@ func (rp RewardPeriod) Validate() error {
 		return fmt.Errorf("invalid reward amount: %s", rp.RewardsPerSecond)
 	}
 	if strings.TrimSpace(rp.CollateralType) == "" {
-		return fmt.Errorf("reward period collateral type cannot be blank: %s", rp)
+		return fmt.Errorf("reward period collateral type cannot be blank: %s", rp.String())
 	}
 	return nil
 }
@@ -213,7 +213,7 @@ func (ms Multipliers) Validate() error {
 func (ms Multipliers) String() string {
 	out := "Claim Multipliers\n"
 	for _, s := range ms {
-		out += fmt.Sprintf("%s\n", s)
+		out += fmt.Sprintf("%s\n", s.String())
 	}
 	return out
 }

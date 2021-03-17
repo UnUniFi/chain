@@ -31,11 +31,11 @@ func HandleMsgPostPrice(
 	k keeper.Keeper,
 	msg *types.MsgPostPrice) (*sdk.Result, error) {
 
-	_, err := k.GetOracle(ctx, msg.MarketId, msg.From)
+	_, err := k.GetOracle(ctx, msg.MarketId, msg.From.AccAddress())
 	if err != nil {
 		return nil, err
 	}
-	_, err = k.SetPrice(ctx, msg.From, msg.MarketId, msg.Price, msg.Expiry)
+	_, err = k.SetPrice(ctx, msg.From.AccAddress(), msg.MarketId, msg.Price, msg.Expiry)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func HandleMsgPostPrice(
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.From.String()),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.From.AccAddress().String()),
 		),
 	)
 

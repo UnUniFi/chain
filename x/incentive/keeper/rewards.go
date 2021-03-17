@@ -62,9 +62,9 @@ func (k Keeper) InitializeJPYXMintingClaim(ctx sdk.Context, cdp cdptypes.CDP) {
 	if !found {
 		rewardFactor = sdk.ZeroDec()
 	}
-	claim, found := k.GetJPYXMintingClaim(ctx, cdp.Owner)
+	claim, found := k.GetJPYXMintingClaim(ctx, cdp.Owner.AccAddress())
 	if !found { // this is the owner's first jpyx minting reward claim
-		claim = types.NewJPYXMintingClaim(cdp.Owner, sdk.NewCoin(types.JPYXMintingRewardDenom, sdk.ZeroInt()), types.RewardIndexes{types.NewRewardIndex(cdp.Type, rewardFactor)})
+		claim = types.NewJPYXMintingClaim(cdp.Owner.AccAddress(), sdk.NewCoin(types.JPYXMintingRewardDenom, sdk.ZeroInt()), types.RewardIndexes{types.NewRewardIndex(cdp.Type, rewardFactor)})
 		k.SetJPYXMintingClaim(ctx, claim)
 		return
 	}
@@ -91,9 +91,9 @@ func (k Keeper) SynchronizeJPYXMintingReward(ctx sdk.Context, cdp cdptypes.CDP) 
 	if !found {
 		globalRewardFactor = sdk.ZeroDec()
 	}
-	claim, found := k.GetJPYXMintingClaim(ctx, cdp.Owner)
+	claim, found := k.GetJPYXMintingClaim(ctx, cdp.Owner.AccAddress())
 	if !found {
-		claim = types.NewJPYXMintingClaim(cdp.Owner, sdk.NewCoin(types.JPYXMintingRewardDenom, sdk.ZeroInt()), types.RewardIndexes{types.NewRewardIndex(cdp.Type, globalRewardFactor)})
+		claim = types.NewJPYXMintingClaim(cdp.Owner.AccAddress(), sdk.NewCoin(types.JPYXMintingRewardDenom, sdk.ZeroInt()), types.RewardIndexes{types.NewRewardIndex(cdp.Type, globalRewardFactor)})
 		k.SetJPYXMintingClaim(ctx, claim)
 		return
 	}
@@ -133,7 +133,7 @@ func (k Keeper) ZeroJPYXMintingClaim(ctx sdk.Context, claim types.JPYXMintingCla
 // Returns the updated claim object
 func (k Keeper) SynchronizeJPYXMintingClaim(ctx sdk.Context, claim types.JPYXMintingClaim) (types.JPYXMintingClaim, error) {
 	for _, ri := range claim.RewardIndexes {
-		cdp, found := k.cdpKeeper.GetCdpByOwnerAndCollateralType(ctx, claim.Owner, ri.CollateralType)
+		cdp, found := k.cdpKeeper.GetCdpByOwnerAndCollateralType(ctx, claim.Owner.AccAddress(), ri.CollateralType)
 		if !found {
 			// if the cdp for this collateral type has been closed, no updates are needed
 			continue
@@ -146,7 +146,7 @@ func (k Keeper) SynchronizeJPYXMintingClaim(ctx sdk.Context, claim types.JPYXMin
 // this function assumes a claim already exists, so don't call it if that's not the case
 func (k Keeper) synchronizeRewardAndReturnClaim(ctx sdk.Context, cdp cdptypes.CDP) types.JPYXMintingClaim {
 	k.SynchronizeJPYXMintingReward(ctx, cdp)
-	claim, _ := k.GetJPYXMintingClaim(ctx, cdp.Owner)
+	claim, _ := k.GetJPYXMintingClaim(ctx, cdp.Owner.AccAddress())
 	return claim
 }
 

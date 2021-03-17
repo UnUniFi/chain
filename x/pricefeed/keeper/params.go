@@ -4,6 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
+	jpyx "github.com/lcnem/jpyx/types"
 	"github.com/lcnem/jpyx/x/pricefeed/types"
 )
 
@@ -25,7 +26,7 @@ func (k Keeper) GetMarkets(ctx sdk.Context) []types.Market {
 func (k Keeper) GetOracles(ctx sdk.Context, marketID string) ([]sdk.AccAddress, error) {
 	for _, m := range k.GetMarkets(ctx) {
 		if marketID == m.MarketId {
-			return m.Oracles, nil
+			return jpyx.AccAddresses(m.Oracles), nil
 		}
 	}
 	return []sdk.AccAddress{}, sdkerrors.Wrap(types.ErrInvalidMarket, marketID)
@@ -65,10 +66,10 @@ func (k Keeper) GetAuthorizedAddresses(ctx sdk.Context) []sdk.AccAddress {
 	for _, m := range k.GetMarkets(ctx) {
 		for _, o := range m.Oracles {
 			// de-dup list of oracles
-			if _, found := uniqueOracles[o.String()]; !found {
-				oracles = append(oracles, o)
+			if _, found := uniqueOracles[o.AccAddress().String()]; !found {
+				oracles = append(oracles, o.AccAddress())
 			}
-			uniqueOracles[o.String()] = true
+			uniqueOracles[o.AccAddress().String()] = true
 		}
 	}
 	return oracles

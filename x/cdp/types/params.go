@@ -95,7 +95,7 @@ type CollateralParams []CollateralParam
 func (cps CollateralParams) String() string {
 	out := "Collateral Params\n"
 	for _, cp := range cps {
-		out += fmt.Sprintf("%s\n", cp)
+		out += fmt.Sprintf("%s\n", cp.String())
 	}
 	return out
 }
@@ -246,15 +246,15 @@ func validateCollateralParams(i interface{}) error {
 		}
 
 		if strings.TrimSpace(cp.SpotMarketId) == "" {
-			return fmt.Errorf("spot market id cannot be blank %s", cp)
+			return fmt.Errorf("spot market id cannot be blank %s", cp.String())
 		}
 
 		if strings.TrimSpace(cp.Type) == "" {
-			return fmt.Errorf("collateral type cannot be blank %s", cp)
+			return fmt.Errorf("collateral type cannot be blank %s", cp.String())
 		}
 
 		if strings.TrimSpace(cp.LiquidationMarketId) == "" {
-			return fmt.Errorf("liquidation market id cannot be blank %s", cp)
+			return fmt.Errorf("liquidation market id cannot be blank %s", cp.String())
 		}
 
 		prefix := int(cp.Prefix)

@@ -10,7 +10,7 @@ import (
 
 // NewDeposit creates a new Deposit object
 func NewDeposit(cdpID uint64, depositor sdk.AccAddress, amount sdk.Coin) Deposit {
-	return Deposit{cdpID, depositor, amount}
+	return Deposit{cdpID, depositor.Bytes(), amount}
 }
 
 // Validate performs a basic validation of the deposit fields.
@@ -18,7 +18,7 @@ func (d Deposit) Validate() error {
 	if d.CdpId == 0 {
 		return errors.New("deposit's cdp id cannot be 0")
 	}
-	if d.Depositor.Empty() {
+	if d.Depositor.AccAddress().Empty() {
 		return errors.New("depositor cannot be empty")
 	}
 	if !d.Amount.IsValid() {
@@ -54,7 +54,7 @@ func (ds Deposits) Validate() error {
 
 // Equals returns whether two deposits are equal.
 func (d Deposit) Equals(comp Deposit) bool {
-	return d.Depositor.Equals(comp.Depositor) && d.CdpId == comp.CdpId && d.Amount.IsEqual(comp.Amount)
+	return d.Depositor.AccAddress().Equals(comp.Depositor.AccAddress()) && d.CdpId == comp.CdpId && d.Amount.IsEqual(comp.Amount)
 }
 
 // Empty returns whether a deposit is empty.

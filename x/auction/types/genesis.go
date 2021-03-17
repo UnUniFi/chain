@@ -75,8 +75,6 @@ func (gs GenesisState) Validate() error {
 		}
 	}
 	return nil
-
-	return nil
 }
 
 // Equal checks whether two GenesisState structs are equivalent.

@@ -27,7 +27,7 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 
 func handleMsgClaimJPYXMintingReward(ctx sdk.Context, k keeper.Keeper, msg *types.MsgClaimJPYXMintingReward) (*sdk.Result, error) {
 
-	err := k.ClaimJPYXMintingReward(ctx, msg.Sender, msg.MultiplierName)
+	err := k.ClaimJPYXMintingReward(ctx, msg.Sender.AccAddress(), msg.MultiplierName)
 	if err != nil {
 		return nil, err
 	}

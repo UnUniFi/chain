@@ -29,7 +29,7 @@ func (c BaseClaim) GetType() string { return "base" }
 
 // Validate performs a basic check of a BaseClaim fields
 func (c BaseClaim) Validate() error {
-	if c.Owner.Empty() {
+	if c.Owner.AccAddress().Empty() {
 		return errors.New("claim owner cannot be empty")
 	}
 	if !c.Reward.IsValid() {
@@ -43,7 +43,7 @@ func (c BaseMultiClaim) GetType() string { return "base" }
 
 // Validate performs a basic check of a BaseClaim fields
 func (c BaseMultiClaim) Validate() error {
-	if c.Owner.Empty() {
+	if c.Owner.AccAddress().Empty() {
 		return errors.New("claim owner cannot be empty")
 	}
 	if !sdk.Coins(c.Reward).IsValid() {
@@ -58,7 +58,7 @@ func (c BaseMultiClaim) Validate() error {
 func NewJPYXMintingClaim(owner sdk.AccAddress, reward sdk.Coin, rewardIndexes RewardIndexes) JPYXMintingClaim {
 	return JPYXMintingClaim{
 		BaseClaim: &BaseClaim{
-			Owner:  owner,
+			Owner:  owner.Bytes(),
 			Reward: reward,
 		},
 		RewardIndexes: rewardIndexes,
@@ -73,7 +73,7 @@ func (c JPYXMintingClaim) GetReward() sdk.Coin { return c.Reward }
 
 // GetOwner returns the claim's owner
 func (c JPYXMintingClaim) GetOwner() sdk.AccAddress {
-	return c.Owner
+	return c.Owner.AccAddress()
 }
 
 // Validate performs a basic check of a Claim fields

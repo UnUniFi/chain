@@ -15,7 +15,7 @@ func NewCDP(id uint64, owner sdk.AccAddress, collateral sdk.Coin, collateralType
 	fees := sdk.NewCoin(principal.Denom, sdk.ZeroInt())
 	return CDP{
 		Id:              id,
-		Owner:           owner,
+		Owner:           owner.Bytes(),
 		Type:            collateralType,
 		Collateral:      collateral,
 		Principal:       principal,
@@ -29,7 +29,7 @@ func NewCDP(id uint64, owner sdk.AccAddress, collateral sdk.Coin, collateralType
 func NewCDPWithFees(id uint64, owner sdk.AccAddress, collateral sdk.Coin, collateralType string, principal, fees sdk.Coin, time time.Time, interestFactor sdk.Dec) CDP {
 	return CDP{
 		Id:              id,
-		Owner:           owner,
+		Owner:           owner.Bytes(),
 		Type:            collateralType,
 		Collateral:      collateral,
 		Principal:       principal,
@@ -44,7 +44,7 @@ func (cdp CDP) Validate() error {
 	if cdp.Id == 0 {
 		return errors.New("cdp id cannot be 0")
 	}
-	if cdp.Owner.Empty() {
+	if cdp.Owner.AccAddress().Empty() {
 		return errors.New("cdp owner cannot be empty")
 	}
 	if !cdp.Collateral.IsValid() {

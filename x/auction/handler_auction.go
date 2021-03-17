@@ -8,7 +8,7 @@ import (
 
 func handleMsgPlaceBid(ctx sdk.Context, k keeper.Keeper, msg types.MsgPlaceBid) (*sdk.Result, error) {
 
-	err := k.PlaceBid(ctx, msg.AuctionId, msg.Bidder, msg.Amount)
+	err := k.PlaceBid(ctx, msg.AuctionId, msg.Bidder.AccAddress(), msg.Amount)
 	if err != nil {
 		return nil, err
 	}
@@ -17,7 +17,7 @@ func handleMsgPlaceBid(ctx sdk.Context, k keeper.Keeper, msg types.MsgPlaceBid) 
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.Bidder.String()),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Bidder.AccAddress().String()),
 		),
 	)
 

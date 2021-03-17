@@ -45,12 +45,14 @@ func (k Keeper) GetPreviousBlockTime(ctx sdk.Context) (blockTime time.Time, foun
 	if b == nil {
 		return time.Time{}, false
 	}
-	k.cdc.MustUnmarshalBinaryLengthPrefixed(b, &blockTime)
+	blockTime.UnmarshalBinary(b)
+
 	return blockTime, true
 }
 
 // SetPreviousBlockTime set the time of the previous block
 func (k Keeper) SetPreviousBlockTime(ctx sdk.Context, blockTime time.Time) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PreviousBlockTimeKey)
-	store.Set([]byte{}, k.cdc.MustMarshalBinaryLengthPrefixed(blockTime))
+	b, _ := blockTime.MarshalBinary()
+	store.Set([]byte{}, b)
 }

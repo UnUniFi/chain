@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"encoding/json"
 	"fmt"
 	"sort"
 	"time"
@@ -57,7 +58,7 @@ func (k Keeper) SetPrice(
 	var index int
 	found := false
 	for i := range prices {
-		if prices[i].OracleAddress.Equals(oracle) {
+		if prices[i].OracleAddress.AccAddress().Equals(oracle) {
 			index = i
 			found = true
 			break
@@ -83,7 +84,8 @@ func (k Keeper) SetPrice(
 		),
 	)
 
-	store.Set(types.RawPriceKey(marketID), k.cdc.MustMarshalBinaryBare(prices))
+	bz, _ := json.Marshal(prices)
+	store.Set(types.RawPriceKey(marketID), bz)
 	return prices[index], nil
 }
 
@@ -225,7 +227,7 @@ func (k Keeper) GetRawPrices(ctx sdk.Context, marketID string) (types.PostedPric
 		return types.PostedPrices{}, nil
 	}
 	var prices types.PostedPrices
-	err := k.cdc.UnmarshalBinaryBare(bz, &prices)
+	err := json.Unmarshal(bz, &prices)
 	if err != nil {
 		return types.PostedPrices{}, err
 	}

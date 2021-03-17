@@ -59,7 +59,7 @@ func (k Keeper) SeizeCollateral(ctx sdk.Context, cdp types.CDP) error {
 		if err != nil {
 			return err
 		}
-		k.DeleteDeposit(ctx, dep.CdpId, dep.Depositor)
+		k.DeleteDeposit(ctx, dep.CdpId, dep.Depositor.AccAddress())
 
 		ctx.EventManager().EmitEvent(
 			sdk.NewEvent(

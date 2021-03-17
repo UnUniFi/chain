@@ -13,7 +13,7 @@ var _ sdk.Msg = &MsgClaimJPYXMintingReward{}
 // NewMsgClaimJPYXMintingReward returns a new MsgClaimJPYXMintingReward.
 func NewMsgClaimJPYXMintingReward(sender sdk.AccAddress, multiplierName string) MsgClaimJPYXMintingReward {
 	return MsgClaimJPYXMintingReward{
-		Sender:         sender,
+		Sender:         sender.Bytes(),
 		MultiplierName: multiplierName,
 	}
 }
@@ -26,7 +26,7 @@ func (msg MsgClaimJPYXMintingReward) Type() string { return "claim_jpyx_minting_
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
 func (msg MsgClaimJPYXMintingReward) ValidateBasic() error {
-	if msg.Sender.Empty() {
+	if msg.Sender.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
 	return MultiplierName(strings.ToLower(msg.MultiplierName)).IsValid()
@@ -40,5 +40,5 @@ func (msg MsgClaimJPYXMintingReward) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgClaimJPYXMintingReward) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Sender}
+	return []sdk.AccAddress{msg.Sender.AccAddress()}
 }

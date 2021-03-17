@@ -18,7 +18,7 @@ func (k Keeper) AuctionCollateral(ctx sdk.Context, deposits types.Deposits, coll
 	totalCollateral := deposits.SumCollateral()
 	for _, deposit := range deposits {
 		debtCoveredByDeposit := (sdk.NewDecFromInt(deposit.Amount.Amount).Quo(sdk.NewDecFromInt(totalCollateral))).Mul(sdk.NewDecFromInt(debt)).RoundInt()
-		err := k.CreateAuctionsFromDeposit(ctx, deposit.Amount, collateralType, deposit.Depositor, debtCoveredByDeposit, auctionSize, bidDenom)
+		err := k.CreateAuctionsFromDeposit(ctx, deposit.Amount, collateralType, deposit.Depositor.AccAddress(), debtCoveredByDeposit, auctionSize, bidDenom)
 		if err != nil {
 			return err
 		}

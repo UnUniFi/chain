@@ -21,7 +21,7 @@ var (
 // NewMsgCreateCDP returns a new MsgPlaceBid.
 func NewMsgCreateCDP(sender sdk.AccAddress, collateral sdk.Coin, principal sdk.Coin, collateralType string) MsgCreateCDP {
 	return MsgCreateCDP{
-		Sender:         sender,
+		Sender:         sender.Bytes(),
 		Collateral:     collateral,
 		Principal:      principal,
 		CollateralType: collateralType,
@@ -36,7 +36,7 @@ func (msg MsgCreateCDP) Type() string { return "create_cdp" }
 
 // ValidateBasic does a simple validation check that doesn't require access to any other information.
 func (msg MsgCreateCDP) ValidateBasic() error {
-	if msg.Sender.Empty() {
+	if msg.Sender.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
 	if msg.Collateral.IsZero() || !msg.Collateral.IsValid() {
@@ -59,14 +59,14 @@ func (msg MsgCreateCDP) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgCreateCDP) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Sender}
+	return []sdk.AccAddress{msg.Sender.AccAddress()}
 }
 
 // NewMsgDeposit returns a new MsgDeposit
 func NewMsgDeposit(owner sdk.AccAddress, depositor sdk.AccAddress, collateral sdk.Coin, collateralType string) MsgDeposit {
 	return MsgDeposit{
-		Owner:          owner,
-		Depositor:      depositor,
+		Owner:          owner.Bytes(),
+		Depositor:      depositor.Bytes(),
 		Collateral:     collateral,
 		CollateralType: collateralType,
 	}
@@ -80,10 +80,10 @@ func (msg MsgDeposit) Type() string { return "deposit_cdp" }
 
 // ValidateBasic does a simple validation check that doesn't require access to any other information.
 func (msg MsgDeposit) ValidateBasic() error {
-	if msg.Owner.Empty() {
+	if msg.Owner.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "owner address cannot be empty")
 	}
-	if msg.Depositor.Empty() {
+	if msg.Depositor.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
 	if !msg.Collateral.IsValid() || msg.Collateral.IsZero() {
@@ -103,14 +103,14 @@ func (msg MsgDeposit) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgDeposit) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Depositor}
+	return []sdk.AccAddress{msg.Depositor.AccAddress()}
 }
 
 // NewMsgWithdraw returns a new MsgDeposit
 func NewMsgWithdraw(owner sdk.AccAddress, depositor sdk.AccAddress, collateral sdk.Coin, collateralType string) MsgWithdraw {
 	return MsgWithdraw{
-		Owner:          owner,
-		Depositor:      depositor,
+		Owner:          owner.Bytes(),
+		Depositor:      depositor.Bytes(),
 		Collateral:     collateral,
 		CollateralType: collateralType,
 	}
@@ -124,10 +124,10 @@ func (msg MsgWithdraw) Type() string { return "withdraw_cdp" }
 
 // ValidateBasic does a simple validation check that doesn't require access to any other information.
 func (msg MsgWithdraw) ValidateBasic() error {
-	if msg.Owner.Empty() {
+	if msg.Owner.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "owner address cannot be empty")
 	}
-	if msg.Depositor.Empty() {
+	if msg.Depositor.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
 	if !msg.Collateral.IsValid() || msg.Collateral.IsZero() {
@@ -147,13 +147,13 @@ func (msg MsgWithdraw) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgWithdraw) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Depositor}
+	return []sdk.AccAddress{msg.Depositor.AccAddress()}
 }
 
 // NewMsgDrawDebt returns a new MsgDrawDebt
 func NewMsgDrawDebt(sender sdk.AccAddress, collateralType string, principal sdk.Coin) MsgDrawDebt {
 	return MsgDrawDebt{
-		Sender:         sender,
+		Sender:         sender.Bytes(),
 		CollateralType: collateralType,
 		Principal:      principal,
 	}
@@ -167,7 +167,7 @@ func (msg MsgDrawDebt) Type() string { return "draw_cdp" }
 
 // ValidateBasic does a simple validation check that doesn't require access to any other information.
 func (msg MsgDrawDebt) ValidateBasic() error {
-	if msg.Sender.Empty() {
+	if msg.Sender.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
 	if strings.TrimSpace(msg.CollateralType) == "" {
@@ -187,13 +187,13 @@ func (msg MsgDrawDebt) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgDrawDebt) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Sender}
+	return []sdk.AccAddress{msg.Sender.AccAddress()}
 }
 
 // NewMsgRepayDebt returns a new MsgRepayDebt
 func NewMsgRepayDebt(sender sdk.AccAddress, collateralType string, payment sdk.Coin) MsgRepayDebt {
 	return MsgRepayDebt{
-		Sender:         sender,
+		Sender:         sender.Bytes(),
 		CollateralType: collateralType,
 		Payment:        payment,
 	}
@@ -207,7 +207,7 @@ func (msg MsgRepayDebt) Type() string { return "repay_cdp" }
 
 // ValidateBasic does a simple validation check that doesn't require access to any other information.
 func (msg MsgRepayDebt) ValidateBasic() error {
-	if msg.Sender.Empty() {
+	if msg.Sender.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
 	if strings.TrimSpace(msg.CollateralType) == "" {
@@ -227,14 +227,14 @@ func (msg MsgRepayDebt) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgRepayDebt) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Sender}
+	return []sdk.AccAddress{msg.Sender.AccAddress()}
 }
 
 // NewMsgLiquidate returns a new MsgLiquidate
 func NewMsgLiquidate(keeper, borrower sdk.AccAddress, ctype string) MsgLiquidate {
 	return MsgLiquidate{
-		Keeper:         keeper,
-		Borrower:       borrower,
+		Keeper:         keeper.Bytes(),
+		Borrower:       borrower.Bytes(),
 		CollateralType: ctype,
 	}
 }
@@ -247,10 +247,10 @@ func (msg MsgLiquidate) Type() string { return "liquidate" }
 
 // ValidateBasic does a simple validation check that doesn't require access to any other information.
 func (msg MsgLiquidate) ValidateBasic() error {
-	if msg.Keeper.Empty() {
+	if msg.Keeper.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "keeper address cannot be empty")
 	}
-	if msg.Borrower.Empty() {
+	if msg.Borrower.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "borrower address cannot be empty")
 	}
 	if strings.TrimSpace(msg.CollateralType) == "" {
@@ -267,5 +267,5 @@ func (msg MsgLiquidate) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgLiquidate) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Keeper}
+	return []sdk.AccAddress{msg.Keeper.AccAddress()}
 }

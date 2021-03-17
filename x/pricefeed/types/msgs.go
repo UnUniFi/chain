@@ -28,7 +28,7 @@ func NewMsgPostPrice(
 	price sdk.Dec,
 	expiry time.Time) MsgPostPrice {
 	return MsgPostPrice{
-		From:     from,
+		From:     from.Bytes(),
 		MarketId: assetCode,
 		Price:    price,
 		Expiry:   expiry,
@@ -49,12 +49,12 @@ func (msg MsgPostPrice) GetSignBytes() []byte {
 
 // GetSigners Implements Msg.
 func (msg MsgPostPrice) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.From}
+	return []sdk.AccAddress{msg.From.AccAddress()}
 }
 
 // ValidateBasic does a simple validation check that doesn't require access to any other information.
 func (msg MsgPostPrice) ValidateBasic() error {
-	if msg.From.Empty() {
+	if msg.From.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
 	if strings.TrimSpace(msg.MarketId) == "" {

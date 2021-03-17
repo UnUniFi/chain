@@ -7,6 +7,7 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
@@ -92,7 +93,8 @@ func (k Keeper) SetAuction(ctx sdk.Context, auction types.Auction) {
 	}
 
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AuctionKeyPrefix)
-	bz := k.cdc.MustMarshalBinaryLengthPrefixed(auction)
+	auctionAny, _ := codectypes.NewAnyWithValue(auction)
+	bz, _ := auctionAny.Marshal()
 	store.Set(types.GetAuctionKey(auction.GetID()), bz)
 
 	k.InsertIntoByTimeIndex(ctx, auction.GetEndTime(), auction.GetID())
@@ -108,8 +110,9 @@ func (k Keeper) GetAuction(ctx sdk.Context, auctionID uint64) (types.Auction, bo
 		return auction, false
 	}
 
-	k.cdc.MustUnmarshalBinaryLengthPrefixed(bz, &auction)
-	return auction, true
+	var auctionAny *codectypes.Any
+	auctionAny.Unmarshal(bz)
+	return auctionAny.GetCachedValue().(types.Auction), true
 }
 
 // DeleteAuction removes an auction from the store, and any indexes.
@@ -162,10 +165,10 @@ func (k Keeper) IterateAuctions(ctx sdk.Context, cb func(auction types.Auction) 
 
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
-		var auction types.Auction
-		k.cdc.MustUnmarshalBinaryLengthPrefixed(iterator.Value(), &auction)
+		var auctionAny codectypes.Any
+		auctionAny.Unmarshal(iterator.Value())
 
-		if cb(auction) {
+		if cb(auctionAny.GetCachedValue().(types.Auction)) {
 			break
 		}
 	}
