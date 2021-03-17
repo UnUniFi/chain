@@ -90,7 +90,10 @@ func validateActiveParam(i interface{}) error {
 func validatePeriodsParams(i interface{}) error {
 	periods, ok := i.(Periods)
 	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
+		periods, ok = i.([]Period)
+		if !ok {
+			return fmt.Errorf("invalid parameter type: %T", i)
+		}
 	}
 
 	prevEnd := tmtime.Canonical(time.Unix(0, 0))
