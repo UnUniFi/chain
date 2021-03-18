@@ -18,6 +18,8 @@ sudo systemctl restart docker
 ```
 
 ```bash
+sysctl net.ipv6.conf.default.forwarding=1
+sysctl net.ipv6.conf.all.forwarding=1
 vi /etc/docker/daemon.json
 ```
 
@@ -26,6 +28,10 @@ vi /etc/docker/daemon.json
   "ipv6": true,
   "fixed-cidr-v6": "2001:db8:1::/64"
 }
+```
+
+```bash
+reboot
 ```
 
 ### Join network
