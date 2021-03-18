@@ -1,9 +1,13 @@
-version: "3"
+version: "2.1"
 
 services:
   jpyxd:
     container_name: jpyxd
     image: lcnem/jpyx:next
+    ports:
+      - 1317:1317
+      - 26656:26656
+      - 26657:26657
     volumes:
       - ~/.jpyx:/root/.jpyx
     command: jpyxd start \
@@ -14,15 +18,14 @@ services:
     networks:
       default:
         ipv4_address: 192.168.10.1
-    ports:
-      - 1317:1317
-      - 26656:26656
-      - 26657:26657
+        ipv6_address: 2001:3984:3989::10
     restart: always
 networks:
   default:
     driver: bridge
+    enable_ipv6: true
     ipam:
       driver: default
       config:
         - subnet: 192.168.10.0/16
+        - subnet: 2001:3984:3989::/64

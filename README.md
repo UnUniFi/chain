@@ -8,13 +8,24 @@ This is an example for Ubuntu.
 
 ```bash
 sudo apt install docker.io -y
-sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.28.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
 sudo gpasswd -a $(whoami) docker
 sudo chgrp docker /var/run/docker.sock
 sudo systemctl enable docker
 sudo systemctl restart docker
+```
+
+```bash
+vi /etc/docker/daemon.json
+```
+
+```json
+{
+  "ipv6": true,
+  "fixed-cidr-v6": "2001:db8:1::/64"
+}
 ```
 
 ### Join network
