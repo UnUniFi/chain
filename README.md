@@ -22,7 +22,7 @@ sudo systemctl restart docker
 ```bash
 git clone https://github.com/lcnem/jpyx.git
 cd jpyx
-docker run -v ~/.jpyx:/root/.jpyx lcnem/jpyx:next [moniker] --chain-id jpyx-1
+docker run -v ~/.jpyx:/root/.jpyx lcnem/jpyx:next [moniker] --chain-id [chain-id]
 cp launch/[chain-id]/genesis.json ~/.jpyx/config/genesis.json
 docker-compose up -d
 ```
