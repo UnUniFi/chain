@@ -358,6 +358,12 @@ func New(
 		app.AccountKeeper,
 		app.BankKeeper,
 	)
+	app.pricefeedKeeper = pricefeedkeeper.NewKeeper(
+		appCodec,
+		keys[pricefeedtypes.StoreKey],
+		keys[pricefeedtypes.MemStoreKey],
+		app.GetSubspace(pricefeedtypes.ModuleName),
+	)
 	cdpKeeper := cdpkeeper.NewKeeper(
 		appCodec,
 		keys[cdptypes.StoreKey],
@@ -385,12 +391,6 @@ func New(
 		app.GetSubspace(jsmndisttypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper,
-	)
-	app.pricefeedKeeper = pricefeedkeeper.NewKeeper(
-		appCodec,
-		keys[pricefeedtypes.StoreKey],
-		keys[pricefeedtypes.MemStoreKey],
-		app.GetSubspace(pricefeedtypes.ModuleName),
 	)
 
 	// register the staking hooks
