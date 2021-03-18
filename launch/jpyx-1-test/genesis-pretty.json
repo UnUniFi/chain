@@ -204,7 +204,7 @@
                 }
               }
             ],
-            "memo": "6fc4109698025d8ee20c09a78fd6b7fb858c26e2@2001:19f0:7001:5dc6:5400:03ff:fe40:c5e3:26656",
+            "memo": "6fc4109698025d8ee20c09a78fd6b7fb858c26e2@a.test.jpyx.lcnem.net:26656",
             "timeout_height": "0",
             "extension_options": [],
             "non_critical_extension_options": []
@@ -232,7 +232,7 @@
             }
           },
           "signatures": [
-            "WgakqT7jLiAkze+psSxldy9GVPn5GhJHc76YdNrCP7R1WbPVjMtPFBs38qBBs3mR1me8qFrcflZLL2iPeNYLcQ=="
+            "nTZJ5V5ftJHEQwu/DGzveVmfuWHleYqM4KOP4w+LW0B6wQTVuqzM68efW/eIO4M87hMHGij0tX8nQB8x+QSW7A=="
           ]
         },
         {
@@ -265,7 +265,7 @@
                 }
               }
             ],
-            "memo": "7fc846bfde6ccd378dd736ac9976f63ed2afdd52@2001:19f0:7002:235:5400:03ff:fe40:c5eb:26656",
+            "memo": "7fc846bfde6ccd378dd736ac9976f63ed2afdd52@b.test.jpyx.lcnem.net:26656",
             "timeout_height": "0",
             "extension_options": [],
             "non_critical_extension_options": []
@@ -293,7 +293,7 @@
             }
           },
           "signatures": [
-            "e1Ka48N1PQ51+qi/OPh466jlyvLQ9fft4FgoJdvmW8Jlx9iWVULP8P/TUobtvYkMKrXUhjRC8cBKH1eiMK3Jpw=="
+            "Ds2875iUScGDspbvNnxm8wZLHig8MCFo/+6xzRoLSP0ql4B+LJ/Bm3RzyY4BWVuOQksSN7r+IeGRkQvo+aBB6Q=="
           ]
         }
       ]
