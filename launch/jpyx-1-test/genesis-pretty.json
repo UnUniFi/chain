@@ -394,6 +394,16 @@
               "jpyx127jezdk0uvuupmfmqwwu0x5496d4kvkrgzqykr"
             ],
             "active": true
+          },
+          {
+            "market_id": "ubtc:jpy:30",
+            "base_asset": "ubtc",
+            "quote_asset": "jpy",
+            "oracles": [
+              "jpyx10lcj22kzftvnduchatmnsnhfljeky5ghd398wt",
+              "jpyx127jezdk0uvuupmfmqwwu0x5496d4kvkrgzqykr"
+            ],
+            "active": true
           }
         ]
       },
