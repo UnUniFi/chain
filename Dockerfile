@@ -1,7 +1,7 @@
 # Simple usage with a mounted data directory:
 # > docker build -t jpyx .
-# > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.jpyx:/jpyx/.jpyx jpyx jpyxd init
-# > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.jpyx:/jpyx/.jpyx jpyx jpyxd start
+# > docker run -it -p 26656:26656 -p 26657:26657 -v ~/.jpyx:/root/.jpyx jpyx jpyxd init
+# > docker run -it -p 26656:26656 -p 26657:26657 -v ~/.jpyx:/root/.jpyx jpyx jpyxd start
 FROM golang:1.16-alpine AS build-env
 
 # Set up dependencies
@@ -22,17 +22,10 @@ RUN apk add --no-cache $PACKAGES && \
 # Final image
 FROM alpine:edge
 
-ENV JPYX /jpyx
-
 # Install ca-certificates
 RUN apk add --update ca-certificates
 
-RUN addgroup jpyx && \
-  adduser -S -G jpyx jpyx -h "$JPYX"
-
-USER jpyx
-
-WORKDIR $JPYX
+WORKDIR /root
 
 # Copy over binaries from the build-env
 COPY --from=build-env /go/bin/jpyxd /usr/bin/jpyxd

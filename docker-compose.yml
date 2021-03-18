@@ -5,7 +5,7 @@ services:
     container_name: jpyxd
     image: lcnem/jpyx:next
     volumes:
-      - ~/.jpyx:/jpyx/.jpyx
+      - ~/.jpyx:/root/.jpyx
     command: jpyxd start \
       --rpc.laddr=tcp://0.0.0.0:26657 \
       --api.enable=true \
