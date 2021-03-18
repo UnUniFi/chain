@@ -1,4 +1,4 @@
-version: "2.1"
+version: "2.4"
 
 services:
   jpyxd:
@@ -16,9 +16,10 @@ services:
       --api.enable=true \
       --api.address=tcp://0.0.0.0:1317 \
       --api.enabled-unsafe-cors=true
+    network_mode: bridge
     networks:
       default:
-        ipv4_address: 192.168.10.1
+        ipv4_address: 172.16.238.10
         ipv6_address: 2001:3984:3989::10
     restart: always
 networks:
@@ -28,5 +29,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 192.168.10.0/16
+        - subnet: 172.16.238.0/24
+          gateway: 172.16.238.1
         - subnet: 2001:3984:3989::/64
+          gateway: 2001:3984:3989::1
