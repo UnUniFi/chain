@@ -475,10 +475,10 @@ func New(
 		ibctransfertypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 		auctiontypes.ModuleName,
+		pricefeedtypes.ModuleName,
 		cdptypes.ModuleName,
 		incentivetypes.ModuleName,
 		jsmndisttypes.ModuleName,
-		pricefeedtypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
