@@ -21,10 +21,33 @@ func AccAddresses(addrs []StringAccAddress) []sdk.AccAddress {
 	return *(*[]sdk.AccAddress)(unsafe.Pointer(&addrs))
 }
 
-func (aa StringAccAddress) Marshal() ([]byte, error) {
+func (aa StringAccAddress) MarshalJSON() ([]byte, error) {
 	str := aa.AccAddress().String()
 
 	return json.Marshal(str)
+}
+
+func (aa *StringAccAddress) UnmarshalJSON(data []byte) error {
+	if len(data) == 0 {
+		aa = nil
+		return nil
+	}
+
+	var str string
+	err := json.Unmarshal(data, &str)
+	if err != nil {
+		return err
+	}
+	_aa, err := sdk.AccAddressFromBech32(str)
+	*aa = StringAccAddress(_aa)
+
+	return nil
+}
+
+func (aa StringAccAddress) Marshal() ([]byte, error) {
+	str := aa.AccAddress().String()
+
+	return []byte(str), nil
 }
 
 // MarshalTo implements the gogo proto custom type interface.
@@ -45,12 +68,7 @@ func (aa *StringAccAddress) Unmarshal(data []byte) error {
 		return nil
 	}
 
-	var str string
-	err := json.Unmarshal(data, &str)
-	if err != nil {
-		return err
-	}
-	_aa, err := sdk.AccAddressFromBech32(str)
+	_aa, err := sdk.AccAddressFromBech32(string(data))
 	if err != nil {
 		return err
 	}
