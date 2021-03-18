@@ -191,7 +191,7 @@ func (k Keeper) GetCdpID(ctx sdk.Context, owner sdk.AccAddress, collateralType s
 
 // GetCdpIdsByOwner returns all the ids of cdps corresponding to a particular owner
 func (k Keeper) GetCdpIdsByOwner(ctx sdk.Context, owner sdk.AccAddress) (cdpIDs []uint64, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpIDKeyP))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpIDKey))
 	bz := store.Get(owner)
 	if bz == nil {
 		return []uint64{}, false
@@ -287,14 +287,14 @@ func (k Keeper) GetAllCdpsByCollateralTypeAndRatio(ctx sdk.Context, collateralTy
 
 // SetNextCdpID sets the highest cdp id in the store
 func (k Keeper) SetNextCdpID(ctx sdk.Context, id uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpIDKey))
-	store.Set([]byte{}, types.GetCdpIDBytes(id))
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.KeyPrefix(types.NextCdpID), types.GetCdpIDBytes(id))
 }
 
 // GetNextCdpID returns the highest cdp id from the store
 func (k Keeper) GetNextCdpID(ctx sdk.Context) (id uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpIDKey))
-	bz := store.Get([]byte{})
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.KeyPrefix(types.NextCdpID))
 	if bz == nil {
 		panic("starting cdp id not set in genesis")
 	}
@@ -304,7 +304,7 @@ func (k Keeper) GetNextCdpID(ctx sdk.Context) (id uint64) {
 
 // IndexCdpByOwner sets the cdp id in the store, indexed by the owner
 func (k Keeper) IndexCdpByOwner(ctx sdk.Context, cdp types.CDP) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpIDKeyP))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpIDKey))
 	cdpIDs, found := k.GetCdpIdsByOwner(ctx, cdp.Owner.AccAddress())
 
 	if !found {
@@ -320,7 +320,7 @@ func (k Keeper) IndexCdpByOwner(ctx sdk.Context, cdp types.CDP) {
 
 // RemoveCdpOwnerIndex deletes the cdp id from the store's index of cdps by owner
 func (k Keeper) RemoveCdpOwnerIndex(ctx sdk.Context, cdp types.CDP) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpIDKeyP))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpIDKey))
 	cdpIDs, found := k.GetCdpIdsByOwner(ctx, cdp.Owner.AccAddress())
 	if !found {
 		return
@@ -361,15 +361,15 @@ func (k Keeper) RemoveCdpCollateralRatioIndex(ctx sdk.Context, collateralType st
 
 // GetDebtDenom returns the denom of debt in the system
 func (k Keeper) GetDebtDenom(ctx sdk.Context) string {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DebtDenomKey))
-	bz := store.Get([]byte{})
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.KeyPrefix(types.DebtDenom))
 	return string(bz)
 }
 
 // GetGovDenom returns the denom of the governance token
 func (k Keeper) GetGovDenom(ctx sdk.Context) string {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.GovDenomKey))
-	bz := store.Get([]byte{})
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.KeyPrefix(types.GovDenom))
 	return string(bz)
 }
 
@@ -378,8 +378,8 @@ func (k Keeper) SetDebtDenom(ctx sdk.Context, denom string) {
 	if denom == "" {
 		panic("debt denom not set in genesis")
 	}
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DebtDenomKey))
-	store.Set([]byte{}, []byte(denom))
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.KeyPrefix(types.DebtDenom), []byte(denom))
 }
 
 // SetGovDenom set the denom of the governance token in the system
@@ -387,8 +387,8 @@ func (k Keeper) SetGovDenom(ctx sdk.Context, denom string) {
 	if denom == "" {
 		panic("gov denom not set in genesis")
 	}
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.GovDenomKey))
-	store.Set([]byte{}, []byte(denom))
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.KeyPrefix(types.GovDenom), []byte(denom))
 }
 
 // ValidateCollateral validates that a collateral is valid for use in cdps

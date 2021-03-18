@@ -7,7 +7,6 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/lcnem/jpyx/x/jsmndist/types"
@@ -46,8 +45,8 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 
 // GetPreviousBlockTime get the blocktime for the previous block
 func (k Keeper) GetPreviousBlockTime(ctx sdk.Context) (blockTime time.Time, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PreviousBlockTimeKey))
-	b := store.Get([]byte{})
+	store := ctx.KVStore(k.storeKey)
+	b := store.Get(types.KeyPrefix(types.PreviousBlockTime))
 	if b == nil {
 		return time.Time{}, false
 	}
@@ -58,7 +57,7 @@ func (k Keeper) GetPreviousBlockTime(ctx sdk.Context) (blockTime time.Time, foun
 
 // SetPreviousBlockTime set the time of the previous block
 func (k Keeper) SetPreviousBlockTime(ctx sdk.Context, blockTime time.Time) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PreviousBlockTimeKey))
+	store := ctx.KVStore(k.storeKey)
 	b, _ := blockTime.MarshalBinary()
-	store.Set([]byte{}, b)
+	store.Set(types.KeyPrefix(types.PreviousBlockTime), b)
 }
