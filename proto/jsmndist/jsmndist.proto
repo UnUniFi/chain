@@ -1,0 +1,34 @@
+syntax = "proto3";
+package jpyx.jsmndist;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/lcnem/jpyx/x/jsmndist/types";
+
+message Params {
+  bool active = 1 [(gogoproto.moretags) = "yaml:\"active\""];
+  repeated Period periods = 2 [
+    (gogoproto.moretags) = "yaml:\"periods\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message Period {
+  google.protobuf.Timestamp start = 1 [
+    (gogoproto.moretags) = "yaml:\"start\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  google.protobuf.Timestamp end = 2 [
+    (gogoproto.moretags) = "yaml:\"end\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  string inflation = 11 [
+    (gogoproto.moretags) = "yaml:\"inflation\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}

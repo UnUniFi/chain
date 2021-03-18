@@ -1,0 +1,74 @@
+syntax = "proto3";
+package jpyx.pricefeed;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/lcnem/jpyx/x/pricefeed/types";
+
+message Market {
+  string market_id = 1 [(gogoproto.moretags) = "yaml:\"market_id\""];
+  string base_asset = 2 [(gogoproto.moretags) = "yaml:\"base_asset\""];
+  string quote_asset = 3 [(gogoproto.moretags) = "yaml:\"quote_asset\""];
+  repeated string oracles = 4 [
+    (gogoproto.moretags) = "yaml:\"oracles\"",
+    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  bool active = 5 [(gogoproto.moretags) = "yaml:\"active\""];
+}
+
+message CurrentPrice {
+  string market_id = 1 [(gogoproto.moretags) = "yaml:\"market_id\""];
+  string price = 2 [
+    (gogoproto.moretags) = "yaml:\"price\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message PostedPrice {
+  string market_id = 1 [(gogoproto.moretags) = "yaml:\"market_id\""];
+  string oracle_address = 2 [
+    (gogoproto.moretags) = "yaml:\"oracle_address\"",
+    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string price = 3 [
+    (gogoproto.moretags) = "yaml:\"price\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Timestamp expiry = 4 [
+    (gogoproto.moretags) = "yaml:\"expiry\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+}
+
+message MsgPostPrice {
+  string from = 1 [
+    (gogoproto.moretags) = "yaml:\"from\"",
+    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string market_id = 2 [(gogoproto.moretags) = "yaml:\"market_id\""];
+  string price = 3 [
+    (gogoproto.moretags) = "yaml:\"price\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Timestamp expiry = 4 [
+    (gogoproto.moretags) = "yaml:\"expiry\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+}
+
+message Params {
+  repeated Market markets = 1 [
+    (gogoproto.moretags) = "yaml:\"markets\"",
+    (gogoproto.nullable) = false
+  ];
+}

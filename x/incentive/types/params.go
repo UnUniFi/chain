@@ -1,175 +1,240 @@
 package types
 
 import (
+	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/params"
+	paramstype "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	tmtime "github.com/tendermint/tendermint/types/time"
 
 	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
-	stakedistTypes "github.com/lcnem/jpyx/x/stakedist/types"
+	jsmndistTypes "github.com/lcnem/jpyx/x/jsmndist/types"
+)
+
+// Valid reward multipliers
+const (
+	Small  MultiplierName = "small"
+	Medium MultiplierName = "medium"
+	Large  MultiplierName = "large"
 )
 
 // Parameter keys and default values
 var (
-	KeyActive                = []byte("Active")
-	KeyRewards               = []byte("Rewards")
-	DefaultActive            = false
-	DefaultRewards           = Rewards{}
-	DefaultPreviousBlockTime = tmtime.Canonical(time.Unix(0, 0))
-	GovDenom                 = cdptypes.DefaultGovDenom
-	PrincipalDenom           = "jpyx"
-	IncentiveMacc            = stakedistTypes.ModuleName
+	KeyJPYXMintingRewardPeriods     = []byte("JPYXMintingRewardPeriods")
+	KeyClaimEnd                     = []byte("ClaimEnd")
+	KeyMultipliers                  = []byte("ClaimMultipliers")
+	DefaultActive                   = false
+	DefaultRewardPeriods            = RewardPeriods{}
+	DefaultMultiRewardPeriods       = MultiRewardPeriods{}
+	DefaultMultipliers              = Multipliers{}
+	DefaultJPYXClaims               = JPYXMintingClaims{}
+	DefaultGenesisAccumulationTimes = GenesisAccumulationTimes{}
+	DefaultClaimEnd                 = tmtime.Canonical(time.Unix(1, 0))
+	GovDenom                        = cdptypes.DefaultGovDenom
+	PrincipalDenom                  = "jpyx"
+	IncentiveMacc                   = jsmndistTypes.ModuleName
 )
 
-// Params governance parameters for the incentive module
-type Params struct {
-	Active  bool    `json:"active" yaml:"active"` // top level governance switch to disable all rewards
-	Rewards Rewards `json:"rewards" yaml:"rewards"`
-}
-
 // NewParams returns a new params object
-func NewParams(active bool, rewards Rewards) Params {
+func NewParams(jpyxMinting RewardPeriods, hardSupply, hardBorrow MultiRewardPeriods,
+	hardDelegator RewardPeriods, multipliers Multipliers, claimEnd time.Time) Params {
 	return Params{
-		Active:  active,
-		Rewards: rewards,
+		JpyxMintingRewardPeriods: jpyxMinting,
+		ClaimMultipliers:         multipliers,
+		ClaimEnd:                 claimEnd,
 	}
 }
 
-// DefaultParams returns default params for stakedist module
+// DefaultParams returns default params for incentive module
 func DefaultParams() Params {
-	return NewParams(DefaultActive, DefaultRewards)
-}
-
-// String implements fmt.Stringer
-func (p Params) String() string {
-	return fmt.Sprintf(`Params:
-	Active: %t
-	Rewards: %s`, p.Active, p.Rewards)
+	return NewParams(DefaultRewardPeriods, DefaultMultiRewardPeriods,
+		DefaultMultiRewardPeriods, DefaultRewardPeriods, DefaultMultipliers, DefaultClaimEnd)
 }
 
 // ParamKeyTable Key declaration for parameters
-func ParamKeyTable() params.KeyTable {
-	return params.NewKeyTable().RegisterParamSet(&Params{})
+func ParamKeyTable() paramstype.KeyTable {
+	return paramstype.NewKeyTable().RegisterParamSet(&Params{})
 }
 
 // ParamSetPairs implements the ParamSet interface and returns all the key/value pairs
-func (p *Params) ParamSetPairs() params.ParamSetPairs {
-	return params.ParamSetPairs{
-		params.NewParamSetPair(KeyActive, &p.Active, validateActiveParam),
-		params.NewParamSetPair(KeyRewards, &p.Rewards, validateRewardsParam),
+func (p *Params) ParamSetPairs() paramstype.ParamSetPairs {
+	return paramstype.ParamSetPairs{
+		paramstype.NewParamSetPair(KeyJPYXMintingRewardPeriods, &p.JpyxMintingRewardPeriods, validateRewardPeriodsParam),
+		paramstype.NewParamSetPair(KeyClaimEnd, &p.ClaimEnd, validateClaimEndParam),
+		paramstype.NewParamSetPair(KeyMultipliers, &p.ClaimMultipliers, validateMultipliersParam),
 	}
 }
 
 // Validate checks that the parameters have valid values.
 func (p Params) Validate() error {
-	if err := validateActiveParam(p.Active); err != nil {
+
+	if err := validateMultipliersParam(p.ClaimMultipliers); err != nil {
 		return err
 	}
 
-	return validateRewardsParam(p.Rewards)
-}
-
-func validateActiveParam(i interface{}) error {
-	_, ok := i.(bool)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
+	if err := validateRewardPeriodsParam(p.JpyxMintingRewardPeriods); err != nil {
+		return err
 	}
+
 	return nil
 }
 
-func validateRewardsParam(i interface{}) error {
-	rewards, ok := i.(Rewards)
+func validateRewardPeriodsParam(i interface{}) error {
+	rewards, ok := i.(RewardPeriods)
 	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
+		rewards, ok = i.([]RewardPeriod)
+		if !ok {
+			return fmt.Errorf("invalid parameter type: %T", i)
+		}
 	}
 
 	return rewards.Validate()
 }
 
-// Reward stores the specified state for a single reward period.
-type Reward struct {
-	Active           bool          `json:"active" yaml:"active"`                       // governance switch to disable a period
-	Denom            string        `json:"denom" yaml:"denom"`                         // the collateral denom rewards apply to, must be found in the cdp collaterals
-	AvailableRewards sdk.Coin      `json:"available_rewards" yaml:"available_rewards"` // the total amount of coins distributed per period
-	Duration         time.Duration `json:"duration" yaml:"duration"`                   // the duration of the period
-	TimeLock         time.Duration `json:"time_lock" yaml:"time_lock"`                 // how long rewards for this period are timelocked
-	ClaimDuration    time.Duration `json:"claim_duration" yaml:"claim_duration"`       // how long users have after the period ends to claim their rewards
+func validateMultiRewardPeriodsParam(i interface{}) error {
+	rewards, ok := i.(MultiRewardPeriods)
+	if !ok {
+		rewards, ok = i.([]MultiRewardPeriod)
+		if !ok {
+			return fmt.Errorf("invalid parameter type: %T", i)
+		}
+	}
+
+	return rewards.Validate()
 }
 
-// NewReward returns a new Reward
-func NewReward(active bool, denom string, reward sdk.Coin, duration time.Duration, timelock time.Duration, claimDuration time.Duration) Reward {
-	return Reward{
+func validateMultipliersParam(i interface{}) error {
+	multipliers, ok := i.(Multipliers)
+	if !ok {
+		multipliers, ok = i.([]Multiplier)
+		if !ok {
+			return fmt.Errorf("invalid parameter type: %T", i)
+		}
+	}
+	return multipliers.Validate()
+}
+
+func validateClaimEndParam(i interface{}) error {
+	endTime, ok := i.(time.Time)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+	if endTime.Unix() <= 0 {
+		return fmt.Errorf("end time should not be zero")
+	}
+	return nil
+}
+
+// NewRewardPeriod returns a new RewardPeriod
+func NewRewardPeriod(active bool, collateralType string, start time.Time, end time.Time, reward sdk.Coin) RewardPeriod {
+	return RewardPeriod{
 		Active:           active,
-		Denom:            denom,
-		AvailableRewards: reward,
-		Duration:         duration,
-		TimeLock:         timelock,
-		ClaimDuration:    claimDuration,
+		CollateralType:   collateralType,
+		Start:            start,
+		End:              end,
+		RewardsPerSecond: reward,
 	}
 }
 
-// String implements fmt.Stringer
-func (r Reward) String() string {
-	return fmt.Sprintf(`Reward:
-	Active: %t,
-	Denom: %s,
-	Available Rewards: %s,
-	Duration: %s,
-	Time Lock: %s,
-	Claim Duration: %s`,
-		r.Active, r.Denom, r.AvailableRewards, r.Duration, r.TimeLock, r.ClaimDuration)
+// Validate performs a basic check of a RewardPeriod fields.
+func (rp RewardPeriod) Validate() error {
+	if rp.Start.Unix() <= 0 {
+		return errors.New("reward period start time cannot be 0")
+	}
+	if rp.End.Unix() <= 0 {
+		return errors.New("reward period end time cannot be 0")
+	}
+	if rp.Start.After(rp.End) {
+		return fmt.Errorf("end period time %s cannot be before start time %s", rp.End, rp.Start)
+	}
+	if !rp.RewardsPerSecond.IsValid() {
+		return fmt.Errorf("invalid reward amount: %s", rp.RewardsPerSecond)
+	}
+	if strings.TrimSpace(rp.CollateralType) == "" {
+		return fmt.Errorf("reward period collateral type cannot be blank: %s", rp.String())
+	}
+	return nil
 }
 
-// Validate performs a basic check of a reward fields.
-func (r Reward) Validate() error {
-	if !r.AvailableRewards.IsValid() {
-		return fmt.Errorf("invalid reward coins %s for %s", r.AvailableRewards, r.Denom)
-	}
-	if !r.AvailableRewards.IsPositive() {
-		return fmt.Errorf("reward amount must be positive, is %s for %s", r.AvailableRewards, r.Denom)
-	}
-	if r.Duration <= 0 {
-		return fmt.Errorf("reward duration must be positive, is %s for %s", r.Duration, r.Denom)
-	}
-	if r.TimeLock < 0 {
-		return fmt.Errorf("reward timelock must be non-negative, is %s for %s", r.TimeLock, r.Denom)
-	}
-	if r.ClaimDuration <= 0 {
-		return fmt.Errorf("claim duration must be positive, is %s for %s", r.ClaimDuration, r.Denom)
-	}
-	return sdk.ValidateDenom(r.Denom)
-}
+// RewardPeriods array of RewardPeriod
+type RewardPeriods []RewardPeriod
 
-// Rewards array of Reward
-type Rewards []Reward
-
-// Validate checks if all the rewards are valid and there are no duplicated
+// Validate checks if all the RewardPeriods are valid and there are no duplicated
 // entries.
-func (rs Rewards) Validate() error {
-	rewardDenoms := make(map[string]bool)
-	for _, r := range rs {
-		if rewardDenoms[r.Denom] {
-			return fmt.Errorf("cannot have duplicate reward denoms: %s", r.Denom)
+func (rps RewardPeriods) Validate() error {
+	seenPeriods := make(map[string]bool)
+	for _, rp := range rps {
+		if seenPeriods[rp.CollateralType] {
+			return fmt.Errorf("duplicated reward period with collateral type %s", rp.CollateralType)
 		}
 
-		if err := r.Validate(); err != nil {
+		if err := rp.Validate(); err != nil {
 			return err
 		}
+		seenPeriods[rp.CollateralType] = true
+	}
 
-		rewardDenoms[r.Denom] = true
+	return nil
+}
+
+// NewMultiplier returns a new Multiplier
+func NewMultiplier(name MultiplierName, lockup int64, factor sdk.Dec) Multiplier {
+	return Multiplier{
+		Name:         string(name),
+		MonthsLockup: lockup,
+		Factor:       factor,
+	}
+}
+
+// Validate multiplier param
+func (m Multiplier) Validate() error {
+	if err := MultiplierName(m.Name).IsValid(); err != nil {
+		return err
+	}
+	if m.MonthsLockup < 0 {
+		return fmt.Errorf("expected non-negative lockup, got %d", m.MonthsLockup)
+	}
+	if m.Factor.IsNegative() {
+		return fmt.Errorf("expected non-negative factor, got %s", m.Factor.String())
+	}
+
+	return nil
+}
+
+// Multipliers slice of Multiplier
+type Multipliers []Multiplier
+
+// Validate validates each multiplier
+func (ms Multipliers) Validate() error {
+	for _, m := range ms {
+		if err := m.Validate(); err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
 // String implements fmt.Stringer
-func (rs Rewards) String() string {
-	out := "Rewards\n"
-	for _, r := range rs {
-		out += fmt.Sprintf("%s\n", r)
+func (ms Multipliers) String() string {
+	out := "Claim Multipliers\n"
+	for _, s := range ms {
+		out += fmt.Sprintf("%s\n", s.String())
 	}
 	return out
+}
+
+// MultiplierName name for valid multiplier
+type MultiplierName string
+
+// IsValid checks if the input is one of the expected strings
+func (mn MultiplierName) IsValid() error {
+	switch mn {
+	case Small, Medium, Large:
+		return nil
+	}
+	return fmt.Errorf("invalid multiplier name: %s", mn)
 }

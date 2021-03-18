@@ -4,16 +4,15 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/lcnem/jpyx/x/incentive/keeper"
 	"github.com/lcnem/jpyx/x/incentive/types"
 )
 
 // InitGenesis initializes the store state from a genesis state.
-func InitGenesis(ctx sdk.Context, k keeper.Keeper, supplyKeeper types.SupplyKeeper, gs types.GenesisState) {
+func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKeeper, cdpKeeper types.CdpKeeper, gs types.GenesisState) {
 
 	// check if the module account exists
-	moduleAcc := supplyKeeper.GetModuleAccount(ctx, types.IncentiveMacc)
+	moduleAcc := accountKeeper.GetModuleAccount(ctx, types.IncentiveMacc)
 	if moduleAcc == nil {
 		panic(fmt.Sprintf("%s module account has not been set", types.IncentiveMacc))
 	}
@@ -22,53 +21,58 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, supplyKeeper types.SupplyKeep
 		panic(fmt.Sprintf("failed to validate %s genesis state: %s", types.ModuleName, err))
 	}
 
+	for _, rp := range gs.Params.JpyxMintingRewardPeriods {
+		_, found := cdpKeeper.GetCollateral(ctx, rp.CollateralType)
+		if !found {
+			panic(fmt.Sprintf("jpyx minting collateral type %s not found in cdp collateral types", rp.CollateralType))
+		}
+		k.SetJPYXMintingRewardFactor(ctx, rp.CollateralType, sdk.ZeroDec())
+	}
+
 	k.SetParams(ctx, gs.Params)
 
-	for _, r := range gs.Params.Rewards {
-		k.SetNextClaimPeriodID(ctx, r.Denom, 1)
+	for _, gat := range gs.JpyxAccumulationTimes {
+		k.SetPreviousJPYXMintingAccrualTime(ctx, gat.CollateralType, gat.PreviousAccumulationTime)
 	}
 
-	// only set the previous block time if it's different than default
-	if !gs.PreviousBlockTime.Equal(types.DefaultPreviousBlockTime) {
-		k.SetPreviousBlockTime(ctx, gs.PreviousBlockTime)
+	for i, claim := range gs.JpyxMintingClaims {
+		for j, ri := range claim.RewardIndexes {
+			if ri.RewardFactor != sdk.ZeroDec() {
+				gs.JpyxMintingClaims[i].RewardIndexes[j].RewardFactor = sdk.ZeroDec()
+			}
+		}
+		k.SetJPYXMintingClaim(ctx, claim)
 	}
-
-	// set store objects
-	for _, rp := range gs.RewardPeriods {
-		k.SetRewardPeriod(ctx, rp)
-	}
-
-	for _, cp := range gs.ClaimPeriods {
-		k.SetClaimPeriod(ctx, cp)
-	}
-
-	for _, c := range gs.Claims {
-		k.SetClaim(ctx, c)
-	}
-
-	for _, id := range gs.NextClaimPeriodIDs {
-		k.SetNextClaimPeriodID(ctx, id.Denom, id.ID)
-	}
-
 }
 
 // ExportGenesis export genesis state for incentive module
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
-	// get all objects out of the store
 	params := k.GetParams(ctx)
-	previousBlockTime, found := k.GetPreviousBlockTime(ctx)
 
-	// since it is not set in genesis, if somehow the chain got started and was exported
-	// immediately after InitGenesis, there would be no previousBlockTime value.
-	if !found {
-		previousBlockTime = types.DefaultPreviousBlockTime
+	jpyxClaims := k.GetAllJPYXMintingClaims(ctx)
+
+	synchronizedJpyxClaims := types.JPYXMintingClaims{}
+
+	for _, jpyxClaim := range jpyxClaims {
+		claim, err := k.SynchronizeJPYXMintingClaim(ctx, jpyxClaim)
+		if err != nil {
+			panic(err)
+		}
+		for i := range claim.RewardIndexes {
+			claim.RewardIndexes[i].RewardFactor = sdk.ZeroDec()
+		}
+		synchronizedJpyxClaims = append(synchronizedJpyxClaims, claim)
 	}
 
-	// Get all objects from the store
-	rewardPeriods := k.GetAllRewardPeriods(ctx)
-	claimPeriods := k.GetAllClaimPeriods(ctx)
-	claims := k.GetAllClaims(ctx)
-	claimPeriodIDs := k.GetAllClaimPeriodIDPairs(ctx)
+	var jpyxMintingGats types.GenesisAccumulationTimes
+	for _, rp := range params.JpyxMintingRewardPeriods {
+		pat, found := k.GetPreviousJPYXMintingAccrualTime(ctx, rp.CollateralType)
+		if !found {
+			panic(fmt.Sprintf("expected previous jpyx minting reward accrual time to be set in state for %s", rp.CollateralType))
+		}
+		gat := types.NewGenesisAccumulationTime(rp.CollateralType, pat)
+		jpyxMintingGats = append(jpyxMintingGats, gat)
+	}
 
-	return types.NewGenesisState(params, previousBlockTime, rewardPeriods, claimPeriods, claims, claimPeriodIDs)
+	return types.NewGenesisState(params, jpyxMintingGats, synchronizedJpyxClaims)
 }

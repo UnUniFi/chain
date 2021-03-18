@@ -7,32 +7,23 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	jpyx "github.com/lcnem/jpyx/types"
 )
 
-// Market an asset in the pricefeed
-type Market struct {
-	// TODO: rename to ID
-	MarketID   string           `json:"market_id" yaml:"market_id"`
-	BaseAsset  string           `json:"base_asset" yaml:"base_asset"`
-	QuoteAsset string           `json:"quote_asset" yaml:"quote_asset"`
-	Oracles    []sdk.AccAddress `json:"oracles" yaml:"oracles"`
-	Active     bool             `json:"active" yaml:"active"`
-}
-
-// String implement fmt.Stringer
-func (m Market) String() string {
-	return fmt.Sprintf(`Asset:
-	Market ID: %s
-	Base Asset: %s
-	Quote Asset: %s
-	Oracles: %s
-	Active: %t`,
-		m.MarketID, m.BaseAsset, m.QuoteAsset, m.Oracles, m.Active)
+// NewMarket returns a new Market
+func NewMarket(id, base, quote string, oracles []sdk.AccAddress, active bool) Market {
+	return Market{
+		MarketId:   id,
+		BaseAsset:  base,
+		QuoteAsset: quote,
+		Oracles:    jpyx.StringAccAddresses(oracles),
+		Active:     active,
+	}
 }
 
 // Validate performs a basic validation of the market params
 func (m Market) Validate() error {
-	if strings.TrimSpace(m.MarketID) == "" {
+	if strings.TrimSpace(m.MarketId) == "" {
 		return errors.New("market id cannot be blank")
 	}
 	if err := sdk.ValidateDenom(m.BaseAsset); err != nil {
@@ -43,13 +34,13 @@ func (m Market) Validate() error {
 	}
 	seenOracles := make(map[string]bool)
 	for i, oracle := range m.Oracles {
-		if oracle.Empty() {
+		if oracle.AccAddress().Empty() {
 			return fmt.Errorf("oracle %d is empty", i)
 		}
-		if seenOracles[oracle.String()] {
+		if seenOracles[oracle.AccAddress().String()] {
 			return fmt.Errorf("duplicated oracle %s", oracle)
 		}
-		seenOracles[oracle.String()] = true
+		seenOracles[oracle.AccAddress().String()] = true
 	}
 	return nil
 }
@@ -62,13 +53,13 @@ type Markets []Market
 func (ms Markets) Validate() error {
 	seenMarkets := make(map[string]bool)
 	for _, m := range ms {
-		if seenMarkets[m.MarketID] {
-			return fmt.Errorf("duplicated market %s", m.MarketID)
+		if seenMarkets[m.MarketId] {
+			return fmt.Errorf("duplicated market %s", m.MarketId)
 		}
 		if err := m.Validate(); err != nil {
 			return err
 		}
-		seenMarkets[m.MarketID] = true
+		seenMarkets[m.MarketId] = true
 	}
 	return nil
 }
@@ -82,33 +73,19 @@ func (ms Markets) String() string {
 	return strings.TrimSpace(out)
 }
 
-// CurrentPrice struct that contains the metadata of a current price for a particular market in the pricefeed module.
-type CurrentPrice struct {
-	MarketID string  `json:"market_id" yaml:"market_id"`
-	Price    sdk.Dec `json:"price" yaml:"price"`
-}
-
 // NewCurrentPrice returns an instance of CurrentPrice
 func NewCurrentPrice(marketID string, price sdk.Dec) CurrentPrice {
-	return CurrentPrice{MarketID: marketID, Price: price}
+	return CurrentPrice{MarketId: marketID, Price: price}
 }
 
 // CurrentPrices type for an array of CurrentPrice
 type CurrentPrices []CurrentPrice
 
-// PostedPrice price for market posted by a specific oracle
-type PostedPrice struct {
-	MarketID      string         `json:"market_id" yaml:"market_id"`
-	OracleAddress sdk.AccAddress `json:"oracle_address" yaml:"oracle_address"`
-	Price         sdk.Dec        `json:"price" yaml:"price"`
-	Expiry        time.Time      `json:"expiry" yaml:"expiry"`
-}
-
 // NewPostedPrice returns a new PostedPrice
 func NewPostedPrice(marketID string, oracle sdk.AccAddress, price sdk.Dec, expiry time.Time) PostedPrice {
 	return PostedPrice{
-		MarketID:      marketID,
-		OracleAddress: oracle,
+		MarketId:      marketID,
+		OracleAddress: oracle.Bytes(),
 		Price:         price,
 		Expiry:        expiry,
 	}
@@ -116,16 +93,16 @@ func NewPostedPrice(marketID string, oracle sdk.AccAddress, price sdk.Dec, expir
 
 // Validate performs a basic check of a PostedPrice params.
 func (pp PostedPrice) Validate() error {
-	if strings.TrimSpace(pp.MarketID) == "" {
+	if strings.TrimSpace(pp.MarketId) == "" {
 		return errors.New("market id cannot be blank")
 	}
-	if pp.OracleAddress.Empty() {
+	if pp.OracleAddress.AccAddress().Empty() {
 		return errors.New("oracle address cannot be empty")
 	}
 	if pp.Price.IsNegative() {
 		return fmt.Errorf("posted price cannot be negative %s", pp.Price)
 	}
-	if pp.Expiry.IsZero() {
+	if pp.Expiry.Unix() <= 0 {
 		return errors.New("expiry time cannot be zero")
 	}
 	return nil
@@ -139,31 +116,17 @@ type PostedPrices []PostedPrice
 func (pps PostedPrices) Validate() error {
 	seenPrices := make(map[string]bool)
 	for _, pp := range pps {
-		if pp.OracleAddress != nil && seenPrices[pp.MarketID+pp.OracleAddress.String()] {
-			return fmt.Errorf("duplicated posted price for marked id %s and oracle address %s", pp.MarketID, pp.OracleAddress)
+		if pp.OracleAddress != nil && seenPrices[pp.MarketId+pp.OracleAddress.AccAddress().String()] {
+			return fmt.Errorf("duplicated posted price for marked id %s and oracle address %s", pp.MarketId, pp.OracleAddress)
 		}
 
 		if err := pp.Validate(); err != nil {
 			return err
 		}
-		seenPrices[pp.MarketID+pp.OracleAddress.String()] = true
+		seenPrices[pp.MarketId+pp.OracleAddress.AccAddress().String()] = true
 	}
 
 	return nil
-}
-
-// implement fmt.Stringer
-func (cp CurrentPrice) String() string {
-	return strings.TrimSpace(fmt.Sprintf(`Market ID: %s
-Price: %s`, cp.MarketID, cp.Price))
-}
-
-// implement fmt.Stringer
-func (pp PostedPrice) String() string {
-	return strings.TrimSpace(fmt.Sprintf(`Market ID: %s
-Oracle Address: %s
-Price: %s
-Expiry: %s`, pp.MarketID, pp.OracleAddress, pp.Price, pp.Expiry))
 }
 
 // String implements fmt.Stringer

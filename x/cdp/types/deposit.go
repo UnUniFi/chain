@@ -8,32 +8,17 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-// Deposit defines an amount of coins deposited by an account to a cdp
-type Deposit struct {
-	CdpID     uint64         `json:"cdp_id" yaml:"cdp_id"`       //  cdpID of the cdp
-	Depositor sdk.AccAddress `json:"depositor" yaml:"depositor"` //  Address of the depositor
-	Amount    sdk.Coin       `json:"amount" yaml:"amount"`       //  Deposit amount
-}
-
 // NewDeposit creates a new Deposit object
 func NewDeposit(cdpID uint64, depositor sdk.AccAddress, amount sdk.Coin) Deposit {
-	return Deposit{cdpID, depositor, amount}
-}
-
-// String implements fmt.Stringer
-func (d Deposit) String() string {
-	return fmt.Sprintf(`Deposit for CDP %d:
-	  Depositor: %s
-		Amount: %s`,
-		d.CdpID, d.Depositor, d.Amount)
+	return Deposit{cdpID, depositor.Bytes(), amount}
 }
 
 // Validate performs a basic validation of the deposit fields.
 func (d Deposit) Validate() error {
-	if d.CdpID == 0 {
+	if d.CdpId == 0 {
 		return errors.New("deposit's cdp id cannot be 0")
 	}
-	if d.Depositor.Empty() {
+	if d.Depositor.AccAddress().Empty() {
 		return errors.New("depositor cannot be empty")
 	}
 	if !d.Amount.IsValid() {
@@ -50,7 +35,7 @@ func (ds Deposits) String() string {
 	if len(ds) == 0 {
 		return "[]"
 	}
-	out := fmt.Sprintf("Deposits for CDP %d:", ds[0].CdpID)
+	out := fmt.Sprintf("Deposits for CDP %d:", ds[0].CdpId)
 	for _, dep := range ds {
 		out += fmt.Sprintf("\n  %s: %s", dep.Depositor, dep.Amount)
 	}
@@ -69,7 +54,7 @@ func (ds Deposits) Validate() error {
 
 // Equals returns whether two deposits are equal.
 func (d Deposit) Equals(comp Deposit) bool {
-	return d.Depositor.Equals(comp.Depositor) && d.CdpID == comp.CdpID && d.Amount.IsEqual(comp.Amount)
+	return d.Depositor.AccAddress().Equals(comp.Depositor.AccAddress()) && d.CdpId == comp.CdpId && d.Amount.IsEqual(comp.Amount)
 }
 
 // Empty returns whether a deposit is empty.

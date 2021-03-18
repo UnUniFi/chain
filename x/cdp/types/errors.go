@@ -1,10 +1,12 @@
 package types
 
+// DONTCOVER
+
 import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-// DONTCOVER
+// x/cdp module sentinel errors
 
 var (
 	// ErrCdpAlreadyExists error for duplicate cdps
@@ -43,4 +45,12 @@ var (
 	ErrDenomPrefixNotFound = sdkerrors.Register(ModuleName, 18, "denom prefix not found")
 	// ErrPricefeedDown error for when a price for the input denom is not found
 	ErrPricefeedDown = sdkerrors.Register(ModuleName, 19, "no price found for collateral")
+	// ErrInvalidCollateral error for when the input collateral denom does not match the expected collateral denom
+	ErrInvalidCollateral = sdkerrors.Register(ModuleName, 20, "invalid collateral for input collateral type")
+	// ErrAccountNotFound error for when no account is found for an input address
+	ErrAccountNotFound = sdkerrors.Register(ModuleName, 21, "account not found")
+	// ErrInsufficientBalance error for when an account does not have enough funds
+	ErrInsufficientBalance = sdkerrors.Register(ModuleName, 22, "insufficient balance")
+	// ErrNotLiquidatable error for when an cdp is not liquidatable
+	ErrNotLiquidatable = sdkerrors.Register(ModuleName, 23, "cdp collateral ratio not below liquidation ratio")
 )

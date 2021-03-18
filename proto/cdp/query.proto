@@ -1,0 +1,48 @@
+syntax = "proto3";
+package jpyx.cdp;
+
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+// this line is used by starport scaffolding # 1
+import "cdp/cdp.proto";
+
+option go_package = "github.com/lcnem/jpyx/x/cdp/types";
+
+// Query defines the gRPC querier service.
+service Query {
+	rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+		option (google.api.http).get = "/jpyx/cdp/params";
+	}
+  // this line is used by starport scaffolding # 2
+	rpc Cdp(QueryGetCdpRequest) returns (QueryGetCdpResponse) {
+		option (google.api.http).get = "/jpyx/cdp/cdps/{id}";
+	}
+	rpc CdpAll(QueryAllCdpRequest) returns (QueryAllCdpResponse) {
+		option (google.api.http).get = "/jpyx/cdp/cdps";
+	}
+}
+
+message QueryParamsRequest {}
+
+message QueryParamsResponse {
+  Params params = 1;
+}
+
+// this line is used by starport scaffolding # 3
+message QueryGetCdpRequest {
+	uint64 id = 1;
+  string collateral_type = 2;
+}
+
+message QueryGetCdpResponse {
+	CDP Cdp = 1;
+}
+
+message QueryAllCdpRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllCdpResponse {
+	repeated CDP Cdp = 1;
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}

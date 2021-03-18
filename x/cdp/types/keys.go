@@ -8,59 +8,46 @@ import (
 )
 
 const (
-	// ModuleName The name that will be used throughout the module
+	// ModuleName defines the module name
 	ModuleName = "cdp"
 
-	// StoreKey Top level store key where all module items will be stored
+	// StoreKey defines the primary module store key
 	StoreKey = ModuleName
 
-	// RouterKey Top level router key
+	// RouterKey is the message route for slashing
 	RouterKey = ModuleName
 
-	// QuerierRoute Top level query string
+	// QuerierRoute defines the module's query routing key
 	QuerierRoute = ModuleName
 
-	// DefaultParamspace default name for parameter store
-	DefaultParamspace = ModuleName
+	// MemStoreKey defines the in-memory store key
+	MemStoreKey = "mem_capability"
 
 	// LiquidatorMacc module account for liquidator
 	LiquidatorMacc = "liquidator"
+)
 
-	// SavingsRateMacc module account for savings rate
-	SavingsRateMacc = "savings"
+func KeyPrefix(p string) []byte {
+	return []byte(p)
+}
+
+const (
+	ParamsKey            = "Params-value-"
+	CdpKey               = "Cdp-value-"
+	CdpCountKey          = "Cdp-count-"
+	CdpIDKey             = "CdpID-value-"
+	CollateralRatioIndex = "CollateralRatio-index-"
+	NextCdpID            = "NextCdpID"
+	DebtDenom            = "DebtDenom"
+	GovDenom             = "GovDenom"
+	DepositKey           = "Deposit-value-"
+	PrincipalKey         = "Principal-value-"
+	PricefeedStatusKey   = "PricefeedStatus-value-"
+	PreviousAccrualTime  = "PreviousAccrualTime-"
+	InterestFactor       = "InterestFactor-"
 )
 
 var sep = []byte(":")
-
-// Keys for cdp store
-// Items are stored with the following key: values
-// - 0x00<cdpOwner_Bytes>: []cdpID
-//    - One cdp owner can control one cdp per collateral type
-// - 0x01<collateralDenomPrefix>:<cdpID_Bytes>: CDP
-//    - cdps are prefix by denom prefix so we can iterate over cdps of one type
-//    - uses : as separator
-// - 0x02<collateralDenomPrefix>:<collateralDebtRatio_Bytes>:<cdpID_Bytes>: cdpID
-// - Ox03: nextCdpID
-// - 0x04: debtDenom
-// - 0x05<depositState>:<cdpID>:<depositorAddr_bytes>: Deposit
-// - 0x06<denom>:totalPrincipal
-// - 0x07<denom>:feeRate
-// - 0x08:previousDistributionTime
-// - 0x09<marketID>:downTime
-
-// KVStore key prefixes
-var (
-	CdpIDKeyPrefix              = []byte{0x00}
-	CdpKeyPrefix                = []byte{0x01}
-	CollateralRatioIndexPrefix  = []byte{0x02}
-	CdpIDKey                    = []byte{0x03}
-	DebtDenomKey                = []byte{0x04}
-	GovDenomKey                 = []byte{0x05}
-	DepositKeyPrefix            = []byte{0x06}
-	PrincipalKeyPrefix          = []byte{0x07}
-	PreviousDistributionTimeKey = []byte{0x08}
-	PricefeedStatusKeyPrefix    = []byte{0x09}
-)
 
 // GetCdpIDBytes returns the byte representation of the cdpID
 func GetCdpIDBytes(cdpID uint64) (cdpIDBz []byte) {
@@ -74,8 +61,8 @@ func GetCdpIDFromBytes(bz []byte) (cdpID uint64) {
 	return binary.BigEndian.Uint64(bz)
 }
 
-// CdpKey key of a specific cdp in the store
-func CdpKey(denomByte byte, cdpID uint64) []byte {
+// CdpKeySuffix key of a specific cdp in the store
+func CdpKeySuffix(denomByte byte, cdpID uint64) []byte {
 	return createKey([]byte{denomByte}, sep, GetCdpIDBytes(cdpID))
 }
 
@@ -96,8 +83,8 @@ func SplitDenomIterKey(key []byte) byte {
 	return split[0][0]
 }
 
-// DepositKey key of a specific deposit in the store
-func DepositKey(cdpID uint64, depositor sdk.AccAddress) []byte {
+// DepositKeySuffix key of a specific deposit in the store
+func DepositKeySuffix(cdpID uint64, depositor sdk.AccAddress) []byte {
 	return createKey(GetCdpIDBytes(cdpID), sep, depositor)
 }
 

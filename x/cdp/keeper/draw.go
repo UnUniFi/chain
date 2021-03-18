@@ -10,33 +10,35 @@ import (
 )
 
 // AddPrincipal adds debt to a cdp if the additional debt does not put the cdp below the liquidation ratio
-func (k Keeper) AddPrincipal(ctx sdk.Context, owner sdk.AccAddress, denom string, principal sdk.Coin) error {
+func (k Keeper) AddPrincipal(ctx sdk.Context, owner sdk.AccAddress, collateralType string, principal sdk.Coin) error {
 	// validation
-	cdp, found := k.GetCdpByOwnerAndDenom(ctx, owner, denom)
+	cdp, found := k.GetCdpByOwnerAndCollateralType(ctx, owner, collateralType)
 	if !found {
-		return sdkerrors.Wrapf(types.ErrCdpNotFound, "owner %s, denom %s", owner, denom)
+		return sdkerrors.Wrapf(types.ErrCdpNotFound, "owner %s, denom %s", owner, collateralType)
 	}
 	err := k.ValidatePrincipalDraw(ctx, principal, cdp.Principal.Denom)
 	if err != nil {
 		return err
 	}
 
-	err = k.ValidateDebtLimit(ctx, cdp.Collateral.Denom, principal)
+	err = k.ValidateDebtLimit(ctx, cdp.Type, principal)
 	if err != nil {
 		return err
 	}
+	k.hooks.BeforeCDPModified(ctx, cdp)
+	cdp = k.SynchronizeInterest(ctx, cdp)
 
-	err = k.ValidateCollateralizationRatio(ctx, cdp.Collateral, cdp.Principal.Add(principal), cdp.AccumulatedFees)
+	err = k.ValidateCollateralizationRatio(ctx, cdp.Collateral, cdp.Type, cdp.Principal.Add(principal), cdp.AccumulatedFees)
 	if err != nil {
 		return err
 	}
 
 	// mint the principal and send it to the cdp owner
-	err = k.supplyKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(principal))
+	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(principal))
 	if err != nil {
 		panic(err)
 	}
-	err = k.supplyKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, owner, sdk.NewCoins(principal))
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, owner, sdk.NewCoins(principal))
 	if err != nil {
 		panic(err)
 	}
@@ -52,38 +54,41 @@ func (k Keeper) AddPrincipal(ctx sdk.Context, owner sdk.AccAddress, denom string
 		sdk.NewEvent(
 			types.EventTypeCdpDraw,
 			sdk.NewAttribute(sdk.AttributeKeyAmount, principal.String()),
-			sdk.NewAttribute(types.AttributeKeyCdpID, fmt.Sprintf("%d", cdp.ID)),
+			sdk.NewAttribute(types.AttributeKeyCdpID, fmt.Sprintf("%d", cdp.Id)),
 		),
 	)
-
-	// remove old collateral:debt index
-	oldCollateralToDebtRatio := k.CalculateCollateralToDebtRatio(ctx, cdp.Collateral, cdp.GetTotalPrincipal())
-	k.RemoveCdpCollateralRatioIndex(ctx, denom, cdp.ID, oldCollateralToDebtRatio)
 
 	// update cdp state
 	cdp.Principal = cdp.Principal.Add(principal)
 
 	// increment total principal for the input collateral type
-	k.IncrementTotalPrincipal(ctx, cdp.Collateral.Denom, principal)
+	k.IncrementTotalPrincipal(ctx, cdp.Type, principal)
 
 	// set cdp state and indexes in the store
-	collateralToDebtRatio := k.CalculateCollateralToDebtRatio(ctx, cdp.Collateral, cdp.GetTotalPrincipal())
-	return k.SetCdpAndCollateralRatioIndex(ctx, cdp, collateralToDebtRatio)
+	collateralToDebtRatio := k.CalculateCollateralToDebtRatio(ctx, cdp.Collateral, cdp.Type, cdp.GetTotalPrincipal())
+	return k.UpdateCdpAndCollateralRatioIndex(ctx, cdp, collateralToDebtRatio)
 }
 
 // RepayPrincipal removes debt from the cdp
 // If all debt is repaid, the collateral is returned to depositors and the cdp is removed from the store
-func (k Keeper) RepayPrincipal(ctx sdk.Context, owner sdk.AccAddress, denom string, payment sdk.Coin) error {
+func (k Keeper) RepayPrincipal(ctx sdk.Context, owner sdk.AccAddress, collateralType string, payment sdk.Coin) error {
 	// validation
-	cdp, found := k.GetCdpByOwnerAndDenom(ctx, owner, denom)
+	cdp, found := k.GetCdpByOwnerAndCollateralType(ctx, owner, collateralType)
 	if !found {
-		return sdkerrors.Wrapf(types.ErrCdpNotFound, "owner %s, denom %s", owner, denom)
+		return sdkerrors.Wrapf(types.ErrCdpNotFound, "owner %s, denom %s", owner, collateralType)
 	}
 
 	err := k.ValidatePaymentCoins(ctx, cdp, payment)
 	if err != nil {
 		return err
 	}
+
+	err = k.ValidateBalance(ctx, payment, owner)
+	if err != nil {
+		return err
+	}
+	k.hooks.BeforeCDPModified(ctx, cdp)
+	cdp = k.SynchronizeInterest(ctx, cdp)
 
 	// Note: assumes cdp.Principal and cdp.AccumulatedFees don't change during calculations
 	totalPrincipal := cdp.GetTotalPrincipal()
@@ -96,13 +101,13 @@ func (k Keeper) RepayPrincipal(ctx sdk.Context, owner sdk.AccAddress, denom stri
 		return err
 	}
 	// send the payment from the sender to the cpd module
-	err = k.supplyKeeper.SendCoinsFromAccountToModule(ctx, owner, types.ModuleName, sdk.NewCoins(feePayment.Add(principalPayment)))
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, owner, types.ModuleName, sdk.NewCoins(feePayment.Add(principalPayment)))
 	if err != nil {
 		return err
 	}
 
 	// burn the payment coins
-	err = k.supplyKeeper.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(feePayment.Add(principalPayment)))
+	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(feePayment.Add(principalPayment)))
 	if err != nil {
 		panic(err)
 	}
@@ -129,13 +134,11 @@ func (k Keeper) RepayPrincipal(ctx sdk.Context, owner sdk.AccAddress, denom stri
 		sdk.NewEvent(
 			types.EventTypeCdpRepay,
 			sdk.NewAttribute(sdk.AttributeKeyAmount, feePayment.Add(principalPayment).String()),
-			sdk.NewAttribute(types.AttributeKeyCdpID, fmt.Sprintf("%d", cdp.ID)),
+			sdk.NewAttribute(types.AttributeKeyCdpID, fmt.Sprintf("%d", cdp.Id)),
 		),
 	)
 
 	// remove the old collateral:debt ratio index
-	oldCollateralToDebtRatio := k.CalculateCollateralToDebtRatio(ctx, cdp.Collateral, totalPrincipal)
-	k.RemoveCdpCollateralRatioIndex(ctx, denom, cdp.ID, oldCollateralToDebtRatio)
 
 	// update cdp state
 	if !principalPayment.IsZero() {
@@ -144,38 +147,38 @@ func (k Keeper) RepayPrincipal(ctx sdk.Context, owner sdk.AccAddress, denom stri
 	cdp.AccumulatedFees = cdp.AccumulatedFees.Sub(feePayment)
 
 	// decrement the total principal for the input collateral type
-	k.DecrementTotalPrincipal(ctx, denom, feePayment.Add(principalPayment))
+	k.DecrementTotalPrincipal(ctx, cdp.Type, feePayment.Add(principalPayment))
 
 	// if the debt is fully paid, return collateral to depositors,
 	// and remove the cdp and indexes from the store
 	if cdp.Principal.IsZero() && cdp.AccumulatedFees.IsZero() {
 		k.ReturnCollateral(ctx, cdp)
-		if err := k.DeleteCDP(ctx, cdp); err != nil {
+		k.RemoveCdpOwnerIndex(ctx, cdp)
+		err := k.DeleteCdpAndCollateralRatioIndex(ctx, cdp)
+		if err != nil {
 			return err
 		}
-
-		k.RemoveCdpOwnerIndex(ctx, cdp)
 
 		// emit cdp close event
 		ctx.EventManager().EmitEvent(
 			sdk.NewEvent(
 				types.EventTypeCdpClose,
-				sdk.NewAttribute(types.AttributeKeyCdpID, fmt.Sprintf("%d", cdp.ID)),
+				sdk.NewAttribute(types.AttributeKeyCdpID, fmt.Sprintf("%d", cdp.Id)),
 			),
 		)
 		return nil
 	}
 
 	// set cdp state and update indexes
-	collateralToDebtRatio := k.CalculateCollateralToDebtRatio(ctx, cdp.Collateral, cdp.GetTotalPrincipal())
-	return k.SetCdpAndCollateralRatioIndex(ctx, cdp, collateralToDebtRatio)
+	collateralToDebtRatio := k.CalculateCollateralToDebtRatio(ctx, cdp.Collateral, cdp.Type, cdp.GetTotalPrincipal())
+	return k.UpdateCdpAndCollateralRatioIndex(ctx, cdp, collateralToDebtRatio)
 }
 
 // ValidatePaymentCoins validates that the input coins are valid for repaying debt
 func (k Keeper) ValidatePaymentCoins(ctx sdk.Context, cdp types.CDP, payment sdk.Coin) error {
 	debt := cdp.GetTotalPrincipal()
 	if payment.Denom != debt.Denom {
-		return sdkerrors.Wrapf(types.ErrInvalidPayment, "cdp %d: expected %s, got %s", cdp.ID, debt.Denom, payment.Denom)
+		return sdkerrors.Wrapf(types.ErrInvalidPayment, "cdp %d: expected %s, got %s", cdp.Id, debt.Denom, payment.Denom)
 	}
 	_, found := k.GetDebtParam(ctx, payment.Denom)
 	if !found {
@@ -186,13 +189,13 @@ func (k Keeper) ValidatePaymentCoins(ctx sdk.Context, cdp types.CDP, payment sdk
 
 // ReturnCollateral returns collateral to depositors on a cdp and removes deposits from the store
 func (k Keeper) ReturnCollateral(ctx sdk.Context, cdp types.CDP) {
-	deposits := k.GetDeposits(ctx, cdp.ID)
+	deposits := k.GetDeposits(ctx, cdp.Id)
 	for _, deposit := range deposits {
-		err := k.supplyKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, deposit.Depositor, sdk.NewCoins(deposit.Amount))
+		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, deposit.Depositor.AccAddress(), sdk.NewCoins(deposit.Amount))
 		if err != nil {
 			panic(err)
 		}
-		k.DeleteDeposit(ctx, cdp.ID, deposit.Depositor)
+		k.DeleteDeposit(ctx, cdp.Id, deposit.Depositor.AccAddress())
 	}
 }
 

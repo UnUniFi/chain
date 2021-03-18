@@ -4,31 +4,29 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
+	jpyx "github.com/lcnem/jpyx/types"
 	"github.com/lcnem/jpyx/x/pricefeed/types"
 )
 
-// GetParams returns the params from the store
-func (k Keeper) GetParams(ctx sdk.Context) types.Params {
-	var p types.Params
-	k.paramSubspace.GetParamSet(ctx, &p)
-	return p
+func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
+	k.paramSpace.GetParamSet(ctx, &params)
+	return params
 }
 
-// SetParams sets params on the store
 func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
-	k.paramSubspace.SetParamSet(ctx, &params)
+	k.paramSpace.SetParamSet(ctx, &params)
 }
 
 // GetMarkets returns the markets from params
-func (k Keeper) GetMarkets(ctx sdk.Context) types.Markets {
+func (k Keeper) GetMarkets(ctx sdk.Context) []types.Market {
 	return k.GetParams(ctx).Markets
 }
 
 // GetOracles returns the oracles in the pricefeed store
 func (k Keeper) GetOracles(ctx sdk.Context, marketID string) ([]sdk.AccAddress, error) {
 	for _, m := range k.GetMarkets(ctx) {
-		if marketID == m.MarketID {
-			return m.Oracles, nil
+		if marketID == m.MarketId {
+			return jpyx.AccAddresses(m.Oracles), nil
 		}
 	}
 	return []sdk.AccAddress{}, sdkerrors.Wrap(types.ErrInvalidMarket, marketID)
@@ -53,10 +51,26 @@ func (k Keeper) GetMarket(ctx sdk.Context, marketID string) (types.Market, bool)
 	markets := k.GetMarkets(ctx)
 
 	for i := range markets {
-		if markets[i].MarketID == marketID {
+		if markets[i].MarketId == marketID {
 			return markets[i], true
 		}
 	}
 	return types.Market{}, false
+}
 
+// GetAuthorizedAddresses returns a list of addresses that have special authorization within this module, eg the oracles of all markets.
+func (k Keeper) GetAuthorizedAddresses(ctx sdk.Context) []sdk.AccAddress {
+	oracles := []sdk.AccAddress{}
+	uniqueOracles := map[string]bool{}
+
+	for _, m := range k.GetMarkets(ctx) {
+		for _, o := range m.Oracles {
+			// de-dup list of oracles
+			if _, found := uniqueOracles[o.AccAddress().String()]; !found {
+				oracles = append(oracles, o.AccAddress())
+			}
+			uniqueOracles[o.AccAddress().String()] = true
+		}
+	}
+	return oracles
 }

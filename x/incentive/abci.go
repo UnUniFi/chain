@@ -8,7 +8,11 @@ import (
 
 // BeginBlocker runs at the start of every block
 func BeginBlocker(ctx sdk.Context, k keeper.Keeper) {
-	k.DeleteExpiredClaimsAndClaimPeriods(ctx)
-	k.ApplyRewardsToCdps(ctx)
-	k.CreateAndDeleteRewardPeriods(ctx)
+	params := k.GetParams(ctx)
+	for _, rp := range params.JpyxMintingRewardPeriods {
+		err := k.AccumulateJPYXMintingRewards(ctx, rp)
+		if err != nil {
+			panic(err)
+		}
+	}
 }

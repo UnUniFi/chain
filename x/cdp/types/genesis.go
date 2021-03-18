@@ -2,67 +2,64 @@ package types
 
 import (
 	"bytes"
-	"fmt"
+	fmt "fmt"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// GenesisState is the state that must be provided at genesis.
-type GenesisState struct {
-	Params                   Params    `json:"params" yaml:"params"`
-	CDPs                     CDPs      `json:"cdps" yaml:"cdps"`
-	Deposits                 Deposits  `json:"deposits" yaml:"deposits"`
-	StartingCdpID            uint64    `json:"starting_cdp_id" yaml:"starting_cdp_id"`
-	DebtDenom                string    `json:"debt_denom" yaml:"debt_denom"`
-	GovDenom                 string    `json:"gov_denom" yaml:"gov_denom"`
-	PreviousDistributionTime time.Time `json:"previous_distribution_time" yaml:"previous_distribution_time"`
-}
+// DefaultIndex is the default capability global index
+const DefaultIndex uint64 = 1
 
-// NewGenesisState returns a new genesis state
-func NewGenesisState(params Params, cdps CDPs, deposits Deposits, startingCdpID uint64, debtDenom, govDenom string, previousDistTime time.Time) GenesisState {
-	return GenesisState{
-		Params:                   params,
-		CDPs:                     cdps,
-		Deposits:                 deposits,
-		StartingCdpID:            startingCdpID,
-		DebtDenom:                debtDenom,
-		GovDenom:                 govDenom,
-		PreviousDistributionTime: previousDistTime,
-	}
-}
-
-// DefaultGenesisState returns a default genesis state
-func DefaultGenesisState() GenesisState {
-	return NewGenesisState(
+// DefaultGenesis returns the default Capability genesis state
+func DefaultGenesis() *GenesisState {
+	return &GenesisState{
 		DefaultParams(),
 		CDPs{},
 		Deposits{},
 		DefaultCdpStartingID,
 		DefaultDebtDenom,
 		DefaultGovDenom,
-		DefaultPreviousDistributionTime,
-	)
+		GenesisAccumulationTimes{},
+		GenesisTotalPrincipals{},
+		// this line is used by starport scaffolding # genesis/types/default
+	}
 }
 
-// Validate performs basic validation of genesis data returning an
-// error for any failed validation criteria.
+// Validate performs basic genesis state validation returning an error upon any
+// failure.
 func (gs GenesisState) Validate() error {
+	// this line is used by starport scaffolding # genesis/types/validate
+	// Check for duplicated ID in cdp
+	// cdpIdMap := make(map[string]bool)
+
+	// for _, elem := range gs.CdpList {
+	// 	if _, ok := cdpIdMap[elem.Id]; ok {
+	// 		return fmt.Errorf("duplicated id for cdp")
+	// 	}
+	// 	cdpIdMap[elem.Id] = true
+	// }
+
+	// return nil
 
 	if err := gs.Params.Validate(); err != nil {
 		return err
 	}
 
-	if err := gs.CDPs.Validate(); err != nil {
+	if err := CDPs(gs.Cdps).Validate(); err != nil {
 		return err
 	}
 
-	if err := gs.Deposits.Validate(); err != nil {
+	if err := Deposits(gs.Deposits).Validate(); err != nil {
 		return err
 	}
 
-	if gs.PreviousDistributionTime.IsZero() {
-		return fmt.Errorf("previous distribution time not set")
+	if err := GenesisAccumulationTimes(gs.PreviousAccumulationTimes).Validate(); err != nil {
+		return err
+	}
+
+	if err := GenesisTotalPrincipals(gs.TotalPrincipals).Validate(); err != nil {
+		return err
 	}
 
 	if err := sdk.ValidateDenom(gs.DebtDenom); err != nil {
@@ -76,14 +73,101 @@ func (gs GenesisState) Validate() error {
 	return nil
 }
 
+func NewGenesisState(params Params, cdps CDPs, deposits Deposits, startingCdpID uint64,
+	debtDenom, govDenom string, prevAccumTimes GenesisAccumulationTimes,
+	totalPrincipals GenesisTotalPrincipals) GenesisState {
+	return GenesisState{
+		Params:                    params,
+		Cdps:                      cdps,
+		Deposits:                  deposits,
+		StartingCdpId:             startingCdpID,
+		DebtDenom:                 debtDenom,
+		GovDenom:                  govDenom,
+		PreviousAccumulationTimes: prevAccumTimes,
+		TotalPrincipals:           totalPrincipals,
+	}
+}
+
+func validateSavingsRateDistributed(i interface{}) error {
+	savingsRateDist, ok := i.(sdk.Int)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if savingsRateDist.IsNegative() {
+		return fmt.Errorf("savings rate distributed should not be negative: %s", savingsRateDist)
+	}
+
+	return nil
+}
+
 // Equal checks whether two gov GenesisState structs are equivalent
 func (gs GenesisState) Equal(gs2 GenesisState) bool {
-	b1 := ModuleCdc.MustMarshalBinaryBare(gs)
-	b2 := ModuleCdc.MustMarshalBinaryBare(gs2)
+	b1 := ModuleCdc.MustMarshalBinaryBare(&gs)
+	b2 := ModuleCdc.MustMarshalBinaryBare(&gs2)
 	return bytes.Equal(b1, b2)
 }
 
 // IsEmpty returns true if a GenesisState is empty
 func (gs GenesisState) IsEmpty() bool {
 	return gs.Equal(GenesisState{})
+}
+
+// NewGenesisTotalPrincipal returns a new GenesisTotalPrincipal
+func NewGenesisTotalPrincipal(ctype string, principal sdk.Int) GenesisTotalPrincipal {
+	return GenesisTotalPrincipal{
+		CollateralType: ctype,
+		TotalPrincipal: principal,
+	}
+}
+
+// GenesisTotalPrincipals slice of GenesisTotalPrincipal
+type GenesisTotalPrincipals []GenesisTotalPrincipal
+
+// Validate performs validation of GenesisTotalPrincipal
+func (gtp GenesisTotalPrincipal) Validate() error {
+	if gtp.TotalPrincipal.IsNegative() {
+		return fmt.Errorf("total principal should be positive, is %s for %s", gtp.TotalPrincipal, gtp.CollateralType)
+	}
+	return nil
+}
+
+// Validate performs validation of GenesisTotalPrincipals
+func (gtps GenesisTotalPrincipals) Validate() error {
+	for _, gtp := range gtps {
+		if err := gtp.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// NewGenesisAccumulationTime returns a new GenesisAccumulationTime
+func NewGenesisAccumulationTime(ctype string, prevTime time.Time, factor sdk.Dec) GenesisAccumulationTime {
+	return GenesisAccumulationTime{
+		CollateralType:           ctype,
+		PreviousAccumulationTime: prevTime,
+		InterestFactor:           factor,
+	}
+}
+
+// GenesisAccumulationTimes slice of GenesisAccumulationTime
+type GenesisAccumulationTimes []GenesisAccumulationTime
+
+// Validate performs validation of GenesisAccumulationTimes
+func (gats GenesisAccumulationTimes) Validate() error {
+	for _, gat := range gats {
+		if err := gat.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Validate performs validation of GenesisAccumulationTime
+func (gat GenesisAccumulationTime) Validate() error {
+	if gat.InterestFactor.LT(sdk.OneDec()) {
+		return fmt.Errorf("interest factor should be ≥ 1.0, is %s for %s", gat.InterestFactor, gat.CollateralType)
+	}
+	return nil
 }

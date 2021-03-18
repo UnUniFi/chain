@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -35,7 +34,8 @@ func ModuleAccountInvariants(k Keeper) sdk.Invariant {
 			return false
 		})
 
-		moduleAccCoins := k.supplyKeeper.GetModuleAccount(ctx, types.ModuleName).GetCoins()
+		moduleAcc := k.accountKeeper.GetModuleAccount(ctx, types.ModuleName)
+		moduleAccCoins := k.bankKeeper.GetAllBalances(ctx, moduleAcc.GetAddress())
 		broken := !moduleAccCoins.IsEqual(totalAuctionCoins)
 
 		invariantMessage := sdk.FormatInvariant(
@@ -59,15 +59,6 @@ func ValidAuctionInvariant(k Keeper) sdk.Invariant {
 			a, ok := auction.(types.GenesisAuction)
 			if !ok {
 				panic("stored auction type does not fulfill GenesisAuction interface")
-			}
-
-			currentTime := ctx.BlockTime()
-			if !currentTime.Equal(time.Time{}) { // this avoids a simulator bug where app.InitGenesis is called with blockTime=0 instead of the correct time
-				if a.GetEndTime().Before(currentTime) {
-					validationErr = fmt.Errorf("endTime before current block time (%s)", currentTime)
-					invalidAuction = a
-					return true
-				}
 			}
 
 			if err := a.Validate(); err != nil {
@@ -102,9 +93,9 @@ func ValidIndexInvariant(k Keeper) sdk.Invariant {
 		*/
 
 		// Check all auction IDs in the index are in the auction store
-		store := prefix.NewStore(ctx.KVStore(k.storeKey), types.AuctionKeyPrefix)
+		store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.NextAuctionIDKey))
 
-		indexIterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.AuctionByTimeKeyPrefix)
+		indexIterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AuctionByTimeKey))
 		defer indexIterator.Close()
 
 		var indexLength int
@@ -123,7 +114,7 @@ func ValidIndexInvariant(k Keeper) sdk.Invariant {
 		}
 
 		// Check length of auction store matches the length of the index
-		storeIterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.AuctionKeyPrefix)
+		storeIterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.KeyPrefix(types.NextAuctionIDKey))
 		defer storeIterator.Close()
 		var storeLength int
 		for ; storeIterator.Valid(); storeIterator.Next() {

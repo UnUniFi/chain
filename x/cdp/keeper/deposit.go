@@ -11,89 +11,87 @@ import (
 )
 
 // DepositCollateral adds collateral to a cdp
-func (k Keeper) DepositCollateral(ctx sdk.Context, owner, depositor sdk.AccAddress, collateral sdk.Coin) error {
+func (k Keeper) DepositCollateral(ctx sdk.Context, owner, depositor sdk.AccAddress, collateral sdk.Coin, collateralType string) error {
 	// check that collateral exists and has a functioning pricefeed
-	err := k.ValidateCollateral(ctx, collateral)
+	err := k.ValidateCollateral(ctx, collateral, collateralType)
 	if err != nil {
 		return err
 	}
-	cdp, found := k.GetCdpByOwnerAndDenom(ctx, owner, collateral.Denom)
+	cdp, found := k.GetCdpByOwnerAndCollateralType(ctx, owner, collateralType)
 	if !found {
-		return sdkerrors.Wrapf(types.ErrCdpNotFound, "owner %s, collateral %s", owner, collateral.Denom)
+		return sdkerrors.Wrapf(types.ErrCdpNotFound, "owner %s, collateral %s", owner, collateralType)
 	}
+	err = k.ValidateBalance(ctx, collateral, depositor)
+	if err != nil {
+		return err
+	}
+	k.hooks.BeforeCDPModified(ctx, cdp)
+	cdp = k.SynchronizeInterest(ctx, cdp)
 
-	deposit, found := k.GetDeposit(ctx, cdp.ID, depositor)
+	deposit, found := k.GetDeposit(ctx, cdp.Id, depositor)
 	if found {
 		deposit.Amount = deposit.Amount.Add(collateral)
 	} else {
-		deposit = types.NewDeposit(cdp.ID, depositor, collateral)
+		deposit = types.NewDeposit(cdp.Id, depositor, collateral)
 	}
-	err = k.supplyKeeper.SendCoinsFromAccountToModule(ctx, depositor, types.ModuleName, sdk.NewCoins(collateral))
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, depositor, types.ModuleName, sdk.NewCoins(collateral))
 	if err != nil {
 		return err
 	}
+
+	k.SetDeposit(ctx, deposit)
+
+	cdp.Collateral = cdp.Collateral.Add(collateral)
+	collateralToDebtRatio := k.CalculateCollateralToDebtRatio(ctx, cdp.Collateral, cdp.Type, cdp.GetTotalPrincipal())
+
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			types.EventTypeCdpDeposit,
 			sdk.NewAttribute(sdk.AttributeKeyAmount, collateral.String()),
-			sdk.NewAttribute(types.AttributeKeyCdpID, fmt.Sprintf("%d", cdp.ID)),
+			sdk.NewAttribute(types.AttributeKeyCdpID, fmt.Sprintf("%d", cdp.Id)),
 		),
 	)
 
-	k.SetDeposit(ctx, deposit)
-
-	oldCollateralToDebtRatio := k.CalculateCollateralToDebtRatio(ctx, cdp.Collateral, cdp.GetTotalPrincipal())
-	k.RemoveCdpCollateralRatioIndex(ctx, cdp.Collateral.Denom, cdp.ID, oldCollateralToDebtRatio)
-
-	cdp.Collateral = cdp.Collateral.Add(collateral)
-	collateralToDebtRatio := k.CalculateCollateralToDebtRatio(ctx, cdp.Collateral, cdp.GetTotalPrincipal())
-	return k.SetCdpAndCollateralRatioIndex(ctx, cdp, collateralToDebtRatio)
+	return k.UpdateCdpAndCollateralRatioIndex(ctx, cdp, collateralToDebtRatio)
 }
 
 // WithdrawCollateral removes collateral from a cdp if it does not put the cdp below the liquidation ratio
-func (k Keeper) WithdrawCollateral(ctx sdk.Context, owner, depositor sdk.AccAddress, collateral sdk.Coin) error {
-	err := k.ValidateCollateral(ctx, collateral)
+func (k Keeper) WithdrawCollateral(ctx sdk.Context, owner, depositor sdk.AccAddress, collateral sdk.Coin, collateralType string) error {
+	err := k.ValidateCollateral(ctx, collateral, collateralType)
 	if err != nil {
 		return err
 	}
-	cdp, found := k.GetCdpByOwnerAndDenom(ctx, owner, collateral.Denom)
+	cdp, found := k.GetCdpByOwnerAndCollateralType(ctx, owner, collateralType)
 	if !found {
 		return sdkerrors.Wrapf(types.ErrCdpNotFound, "owner %s, collateral %s", owner, collateral.Denom)
 	}
-	deposit, found := k.GetDeposit(ctx, cdp.ID, depositor)
+	deposit, found := k.GetDeposit(ctx, cdp.Id, depositor)
 	if !found {
-		return sdkerrors.Wrapf(types.ErrDepositNotFound, "depositor %s, collateral %s", depositor, collateral.Denom)
+		return sdkerrors.Wrapf(types.ErrDepositNotFound, "depositor %s, collateral %s %s", depositor, collateral.Denom, collateralType)
 	}
 	if collateral.Amount.GT(deposit.Amount.Amount) {
 		return sdkerrors.Wrapf(types.ErrInvalidWithdrawAmount, "collateral %s, deposit %s", collateral, deposit.Amount)
 	}
+	k.hooks.BeforeCDPModified(ctx, cdp)
+	cdp = k.SynchronizeInterest(ctx, cdp)
 
-	collateralizationRatio, err := k.CalculateCollateralizationRatio(ctx, cdp.Collateral.Sub(collateral), cdp.Principal, cdp.AccumulatedFees, spot)
+	collateralizationRatio, err := k.CalculateCollateralizationRatio(ctx, cdp.Collateral.Sub(collateral), cdp.Type, cdp.Principal, cdp.AccumulatedFees, spot)
 	if err != nil {
 		return err
 	}
-	liquidationRatio := k.getLiquidationRatio(ctx, collateral.Denom)
+	liquidationRatio := k.getLiquidationRatio(ctx, cdp.Type)
 	if collateralizationRatio.LT(liquidationRatio) {
 		return sdkerrors.Wrapf(types.ErrInvalidCollateralRatio, "collateral %s, collateral ratio %s, liquidation ration %s", collateral.Denom, collateralizationRatio, liquidationRatio)
 	}
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			types.EventTypeCdpWithdrawal,
-			sdk.NewAttribute(sdk.AttributeKeyAmount, collateral.String()),
-			sdk.NewAttribute(types.AttributeKeyCdpID, fmt.Sprintf("%d", cdp.ID)),
-		),
-	)
 
-	err = k.supplyKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, depositor, sdk.NewCoins(collateral))
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, depositor, sdk.NewCoins(collateral))
 	if err != nil {
 		panic(err)
 	}
-	oldCollateralToDebtRatio := k.CalculateCollateralToDebtRatio(ctx, cdp.Collateral, cdp.GetTotalPrincipal())
-	k.RemoveCdpCollateralRatioIndex(ctx, cdp.Collateral.Denom, cdp.ID, oldCollateralToDebtRatio)
 
 	cdp.Collateral = cdp.Collateral.Sub(collateral)
-	collateralToDebtRatio := k.CalculateCollateralToDebtRatio(ctx, cdp.Collateral, cdp.GetTotalPrincipal())
-	err = k.SetCdpAndCollateralRatioIndex(ctx, cdp, collateralToDebtRatio)
+	collateralToDebtRatio := k.CalculateCollateralToDebtRatio(ctx, cdp.Collateral, cdp.Type, cdp.GetTotalPrincipal())
+	err = k.UpdateCdpAndCollateralRatioIndex(ctx, cdp, collateralToDebtRatio)
 	if err != nil {
 		return err
 	}
@@ -101,17 +99,26 @@ func (k Keeper) WithdrawCollateral(ctx sdk.Context, owner, depositor sdk.AccAddr
 	deposit.Amount = deposit.Amount.Sub(collateral)
 	// delete deposits if amount is 0
 	if deposit.Amount.IsZero() {
-		k.DeleteDeposit(ctx, deposit.CdpID, deposit.Depositor)
+		k.DeleteDeposit(ctx, deposit.CdpId, deposit.Depositor.AccAddress())
 	} else {
 		k.SetDeposit(ctx, deposit)
 	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeCdpWithdrawal,
+			sdk.NewAttribute(sdk.AttributeKeyAmount, collateral.String()),
+			sdk.NewAttribute(types.AttributeKeyCdpID, fmt.Sprintf("%d", cdp.Id)),
+		),
+	)
+
 	return nil
 }
 
 // GetDeposit returns the deposit of a depositor on a particular cdp from the store
 func (k Keeper) GetDeposit(ctx sdk.Context, cdpID uint64, depositor sdk.AccAddress) (deposit types.Deposit, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.key), types.DepositKeyPrefix)
-	bz := store.Get(types.DepositKey(cdpID, depositor))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DepositKey))
+	bz := store.Get(types.DepositKeySuffix(cdpID, depositor))
 	if bz == nil {
 		return deposit, false
 	}
@@ -122,21 +129,21 @@ func (k Keeper) GetDeposit(ctx sdk.Context, cdpID uint64, depositor sdk.AccAddre
 
 // SetDeposit sets the deposit in the store
 func (k Keeper) SetDeposit(ctx sdk.Context, deposit types.Deposit) {
-	store := prefix.NewStore(ctx.KVStore(k.key), types.DepositKeyPrefix)
-	bz := k.cdc.MustMarshalBinaryLengthPrefixed(deposit)
-	store.Set(types.DepositKey(deposit.CdpID, deposit.Depositor), bz)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DepositKey))
+	bz := k.cdc.MustMarshalBinaryLengthPrefixed(&deposit)
+	store.Set(types.DepositKeySuffix(deposit.CdpId, deposit.Depositor.AccAddress()), bz)
 
 }
 
 // DeleteDeposit deletes a deposit from the store
 func (k Keeper) DeleteDeposit(ctx sdk.Context, cdpID uint64, depositor sdk.AccAddress) {
-	store := prefix.NewStore(ctx.KVStore(k.key), types.DepositKeyPrefix)
-	store.Delete(types.DepositKey(cdpID, depositor))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DepositKey))
+	store.Delete(types.DepositKeySuffix(cdpID, depositor))
 }
 
 // IterateDeposits iterates over the all the deposits of a cdp and performs a callback function
 func (k Keeper) IterateDeposits(ctx sdk.Context, cdpID uint64, cb func(deposit types.Deposit) (stop bool)) {
-	store := prefix.NewStore(ctx.KVStore(k.key), types.DepositKeyPrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DepositKey))
 	iterator := sdk.KVStorePrefixIterator(store, types.GetCdpIDBytes(cdpID))
 
 	defer iterator.Close()

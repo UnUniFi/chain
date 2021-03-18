@@ -6,8 +6,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/cosmos/cosmos-sdk/codec/types"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/supply"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	proto "github.com/gogo/protobuf/proto"
+	jpyx "github.com/lcnem/jpyx/types"
 )
 
 const (
@@ -25,6 +29,8 @@ var DistantFuture = time.Date(9000, 1, 1, 0, 0, 0, 0, time.UTC)
 
 // Auction is an interface for handling common actions on auctions.
 type Auction interface {
+	proto.Message
+
 	GetID() uint64
 	WithID(uint64) Auction
 
@@ -41,35 +47,41 @@ type Auction interface {
 // Auctions is a slice of auctions.
 type Auctions []Auction
 
-// BaseAuction is a common type shared by all Auctions.
-type BaseAuction struct {
-	ID              uint64         `json:"id" yaml:"id"`
-	Initiator       string         `json:"initiator" yaml:"initiator"`                 // Module name that starts the auction. Pays out Lot.
-	Lot             sdk.Coin       `json:"lot" yaml:"lot"`                             // Coins that will paid out by Initiator to the winning bidder.
-	Bidder          sdk.AccAddress `json:"bidder" yaml:"bidder"`                       // Latest bidder. Receiver of Lot.
-	Bid             sdk.Coin       `json:"bid" yaml:"bid"`                             // Coins paid into the auction the bidder.
-	HasReceivedBids bool           `json:"has_received_bids" yaml:"has_received_bids"` // Whether the auction has received any bids or not.
-	EndTime         time.Time      `json:"end_time" yaml:"end_time"`                   // Current auction closing time. Triggers at the end of the block with time ≥ EndTime.
-	MaxEndTime      time.Time      `json:"max_end_time" yaml:"max_end_time"`           // Maximum closing time. Auctions can close before this but never after.
+func PackAuctions(auctions Auctions) ([]*codectypes.Any, error) {
+	auctionAny := make([]*types.Any, len(auctions))
+	for i, auc := range auctions {
+		msg, ok := auc.(proto.Message)
+		if !ok {
+			return nil, fmt.Errorf("cannot proto marshal %T", auc)
+		}
+		any, err := types.NewAnyWithValue(msg)
+		if err != nil {
+			return nil, err
+		}
+		auctionAny[i] = any
+	}
+
+	return auctionAny, nil
+}
+
+func UnpackAuctions(auctionsAny []*types.Any) (Auctions, error) {
+	accounts := make(Auctions, len(auctionsAny))
+	for i, any := range auctionsAny {
+		acc, ok := any.GetCachedValue().(Auction)
+		if !ok {
+			return nil, fmt.Errorf("expected genesis account")
+		}
+		accounts[i] = acc
+	}
+
+	return accounts, nil
 }
 
 // GetID is a getter for auction ID.
-func (a BaseAuction) GetID() uint64 { return a.ID }
-
-// GetInitiator is a getter for auction Initiator.
-func (a BaseAuction) GetInitiator() string { return a.Initiator }
-
-// GetLot is a getter for auction Lot.
-func (a BaseAuction) GetLot() sdk.Coin { return a.Lot }
+func (a BaseAuction) GetID() uint64 { return a.Id }
 
 // GetBidder is a getter for auction Bidder.
-func (a BaseAuction) GetBidder() sdk.AccAddress { return a.Bidder }
-
-// GetBid is a getter for auction Bid.
-func (a BaseAuction) GetBid() sdk.Coin { return a.Bid }
-
-// GetEndTime is a getter for auction end time.
-func (a BaseAuction) GetEndTime() time.Time { return a.EndTime }
+func (a BaseAuction) GetBidder() sdk.AccAddress { return a.Bidder.AccAddress() }
 
 // GetType returns the auction type. Used to identify auctions in event attributes.
 func (a BaseAuction) GetType() string { return "base" }
@@ -84,13 +96,13 @@ func (a BaseAuction) Validate() error {
 		return fmt.Errorf("invalid lot: %s", a.Lot)
 	}
 	// NOTE: bidder can be empty for Surplus and Collateral auctions
-	if !a.Bidder.Empty() && len(a.Bidder) != sdk.AddrLen {
-		return fmt.Errorf("the expected bidder address length is %d, actual length is %d", sdk.AddrLen, len(a.Bidder))
+	if !a.Bidder.AccAddress().Empty() && len(a.Bidder.AccAddress()) != sdk.AddrLen {
+		return fmt.Errorf("the expected bidder address length is %d, actual length is %d", sdk.AddrLen, len(a.Bidder.AccAddress()))
 	}
 	if !a.Bid.IsValid() {
 		return fmt.Errorf("invalid bid: %s", a.Bid)
 	}
-	if a.EndTime.IsZero() || a.MaxEndTime.IsZero() {
+	if a.EndTime.Unix() <= 0 || a.MaxEndTime.Unix() <= 0 {
 		return errors.New("end time cannot be zero")
 	}
 	if a.EndTime.After(a.MaxEndTime) {
@@ -99,28 +111,8 @@ func (a BaseAuction) Validate() error {
 	return nil
 }
 
-func (a BaseAuction) String() string {
-	return fmt.Sprintf(`Auction %d:
-  Initiator:              %s
-  Lot:               			%s
-  Bidder:            		  %s
-  Bid:        						%s
-  End Time:   						%s
-  Max End Time:      			%s`,
-		a.GetID(), a.Initiator, a.Lot,
-		a.Bidder, a.Bid, a.GetEndTime().String(),
-		a.MaxEndTime.String(),
-	)
-}
-
-// SurplusAuction is a forward auction that burns what it receives from bids.
-// It is normally used to sell off excess pegged asset acquired by the CDP system.
-type SurplusAuction struct {
-	BaseAuction `json:"base_auction" yaml:"base_auction"`
-}
-
 // WithID returns an auction with the ID set.
-func (a SurplusAuction) WithID(id uint64) Auction { a.ID = id; return a }
+func (a SurplusAuction) WithID(id uint64) Auction { a.Id = id; return &a }
 
 // GetType returns the auction type. Used to identify auctions in event attributes.
 func (a SurplusAuction) GetType() string { return SurplusAuctionType }
@@ -150,16 +142,8 @@ func NewSurplusAuction(seller string, lot sdk.Coin, bidDenom string, endTime tim
 	return auction
 }
 
-// DebtAuction is a reverse auction that mints what it pays out.
-// It is normally used to acquire pegged asset to cover the CDP system's debts that were not covered by selling collateral.
-type DebtAuction struct {
-	BaseAuction `json:"base_auction" yaml:"base_auction"`
-
-	CorrespondingDebt sdk.Coin `json:"corresponding_debt" yaml:"corresponding_debt"`
-}
-
 // WithID returns an auction with the ID set.
-func (a DebtAuction) WithID(id uint64) Auction { a.ID = id; return a }
+func (a DebtAuction) WithID(id uint64) Auction { a.Id = id; return &a }
 
 // GetType returns the auction type. Used to identify auctions in event attributes.
 func (a DebtAuction) GetType() string { return DebtAuctionType }
@@ -193,9 +177,9 @@ func NewDebtAuction(buyerModAccName string, bid sdk.Coin, initialLot sdk.Coin, e
 			// no ID
 			Initiator:       buyerModAccName,
 			Lot:             initialLot,
-			Bidder:          supply.NewModuleAddress(buyerModAccName), // send proceeds from the first bid to the buyer.
-			Bid:             bid,                                      // amount that the buyer is buying - doesn't change over course of auction
-			HasReceivedBids: false,                                    // new auctions don't have any bids
+			Bidder:          authtypes.NewModuleAddress(buyerModAccName).Bytes(), // send proceeds from the first bid to the buyer.
+			Bid:             bid,                                                                // amount that the buyer is buying - doesn't change over course of auction
+			HasReceivedBids: false,                                                              // new auctions don't have any bids
 			EndTime:         endTime,
 			MaxEndTime:      endTime,
 		},
@@ -209,16 +193,9 @@ func NewDebtAuction(buyerModAccName string, bid sdk.Coin, initialLot sdk.Coin, e
 // Then it switches to a reverse auction phase, where the initial amount up for auction is bid down.
 // Unsold Lot is sent to LotReturns, being divided among the addresses by weight.
 // Collateral auctions are normally used to sell off collateral seized from CDPs.
-type CollateralAuction struct {
-	BaseAuction `json:"base_auction" yaml:"base_auction"`
-
-	CorrespondingDebt sdk.Coin          `json:"corresponding_debt" yaml:"corresponding_debt"`
-	MaxBid            sdk.Coin          `json:"max_bid" yaml:"max_bid"`
-	LotReturns        WeightedAddresses `json:"lot_returns" yaml:"lot_returns"`
-}
 
 // WithID returns an auction with the ID set.
-func (a CollateralAuction) WithID(id uint64) Auction { a.ID = id; return a }
+func (a CollateralAuction) WithID(id uint64) Auction { a.Id = id; return &a }
 
 // GetType returns the auction type. Used to identify auctions in event attributes.
 func (a CollateralAuction) GetType() string { return CollateralAuctionType }
@@ -258,22 +235,6 @@ func (a CollateralAuction) Validate() error {
 	return a.BaseAuction.Validate()
 }
 
-func (a CollateralAuction) String() string {
-	return fmt.Sprintf(`Auction %d:
-  Initiator:              %s
-  Lot:               			%s
-  Bidder:            		  %s
-  Bid:        						%s
-  End Time:   						%s
-	Max End Time:      			%s
-	Max Bid									%s
-	LotReturns						%s`,
-		a.GetID(), a.Initiator, a.Lot,
-		a.Bidder, a.Bid, a.GetEndTime().String(),
-		a.MaxEndTime.String(), a.MaxBid, a.LotReturns,
-	)
-}
-
 // NewCollateralAuction returns a new collateral auction.
 func NewCollateralAuction(seller string, lot sdk.Coin, endTime time.Time, maxBid sdk.Coin, lotReturns WeightedAddresses, debt sdk.Coin) CollateralAuction {
 	auction := CollateralAuction{
@@ -293,16 +254,11 @@ func NewCollateralAuction(seller string, lot sdk.Coin, endTime time.Time, maxBid
 	return auction
 }
 
-// WeightedAddresses is a type for storing some addresses and associated weights.
-type WeightedAddresses struct {
-	Addresses []sdk.AccAddress `json:"addresses" yaml:"addresses"`
-	Weights   []sdk.Int        `json:"weights" yaml:"weights"`
-}
-
 // NewWeightedAddresses returns a new list addresses with weights.
 func NewWeightedAddresses(addrs []sdk.AccAddress, weights []sdk.Int) (WeightedAddresses, error) {
+
 	wa := WeightedAddresses{
-		Addresses: addrs,
+		Addresses: jpyx.StringAccAddresses(addrs),
 		Weights:   weights,
 	}
 	if err := wa.Validate(); err != nil {
@@ -323,7 +279,7 @@ func (wa WeightedAddresses) Validate() error {
 
 	totalWeight := sdk.ZeroInt()
 	for i := range wa.Addresses {
-		if wa.Addresses[i].Empty() {
+		if wa.Addresses[i].AccAddress().Empty() {
 			return fmt.Errorf("address %d cannot be empty", i)
 		}
 		if len(wa.Addresses[i]) != sdk.AddrLen {

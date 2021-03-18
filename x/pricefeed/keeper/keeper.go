@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"encoding/json"
 	"fmt"
 	"sort"
 	"time"
@@ -8,39 +9,35 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/params/subspace"
-
+	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/lcnem/jpyx/x/pricefeed/types"
 )
 
-// Keeper struct for pricefeed module
-type Keeper struct {
-	// key used to access the stores from Context
-	key sdk.StoreKey
-	// Codec for binary encoding/decoding
-	cdc *codec.Codec
-	// The reference to the Paramstore to get and set pricefeed specific params
-	paramSubspace subspace.Subspace
-}
+type (
+	Keeper struct {
+		cdc        codec.Marshaler
+		storeKey   sdk.StoreKey
+		memKey     sdk.StoreKey
+		paramSpace paramtypes.Subspace
+	}
+)
 
-// NewKeeper returns a new keeper for the pricefeed module.
-func NewKeeper(
-	cdc *codec.Codec, key sdk.StoreKey, paramstore subspace.Subspace,
-) Keeper {
-	if !paramstore.HasKeyTable() {
-		paramstore = paramstore.WithKeyTable(types.ParamKeyTable())
+func NewKeeper(cdc codec.Marshaler, storeKey, memKey sdk.StoreKey, paramSpace paramtypes.Subspace) Keeper {
+	if !paramSpace.HasKeyTable() {
+		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
 
 	return Keeper{
-		cdc:           cdc,
-		key:           key,
-		paramSubspace: paramstore,
+		cdc:        cdc,
+		storeKey:   storeKey,
+		memKey:     memKey,
+		paramSpace: paramSpace,
 	}
 }
 
-// Logger returns a module-specific logger.
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
@@ -57,7 +54,7 @@ func (k Keeper) SetPrice(
 		return types.PostedPrice{}, types.ErrExpired
 	}
 
-	store := ctx.KVStore(k.key)
+	store := ctx.KVStore(k.storeKey)
 	prices, err := k.GetRawPrices(ctx, marketID)
 	if err != nil {
 		return types.PostedPrice{}, err
@@ -65,7 +62,7 @@ func (k Keeper) SetPrice(
 	var index int
 	found := false
 	for i := range prices {
-		if prices[i].OracleAddress.Equals(oracle) {
+		if prices[i].OracleAddress.AccAddress().Equals(oracle) {
 			index = i
 			found = true
 			break
@@ -91,7 +88,8 @@ func (k Keeper) SetPrice(
 		),
 	)
 
-	store.Set(types.RawPriceKey(marketID), k.cdc.MustMarshalBinaryBare(prices))
+	bz, _ := json.Marshal(prices)
+	store.Set(types.RawPriceKeySuffix(marketID), bz)
 	return prices[index], nil
 }
 
@@ -116,7 +114,7 @@ func (k Keeper) SetCurrentPrices(ctx sdk.Context, marketID string) error {
 	// filter out expired prices
 	for _, v := range prices {
 		if v.Expiry.After(ctx.BlockTime()) {
-			notExpiredPrices = append(notExpiredPrices, types.NewCurrentPrice(v.MarketID, v.Price))
+			notExpiredPrices = append(notExpiredPrices, types.NewCurrentPrice(v.MarketId, v.Price))
 		}
 	}
 
@@ -150,8 +148,8 @@ func (k Keeper) SetCurrentPrices(ctx sdk.Context, marketID string) error {
 }
 
 func (k Keeper) setCurrentPrice(ctx sdk.Context, marketID string, currentPrice types.CurrentPrice) {
-	store := ctx.KVStore(k.key)
-	store.Set(types.CurrentPriceKey(marketID), k.cdc.MustMarshalBinaryBare(currentPrice))
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.CurrentPriceKeySuffix(marketID), k.cdc.MustMarshalBinaryBare(&currentPrice))
 }
 
 // CalculateMedianPrice calculates the median prices for the input prices.
@@ -184,8 +182,8 @@ func (k Keeper) calculateMeanPrice(ctx sdk.Context, prices types.CurrentPrices) 
 
 // GetCurrentPrice fetches the current median price of all oracles for a specific market
 func (k Keeper) GetCurrentPrice(ctx sdk.Context, marketID string) (types.CurrentPrice, error) {
-	store := ctx.KVStore(k.key)
-	bz := store.Get(types.CurrentPriceKey(marketID))
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.CurrentPriceKeySuffix(marketID))
 
 	if bz == nil {
 		return types.CurrentPrice{}, types.ErrNoValidPrice
@@ -201,15 +199,39 @@ func (k Keeper) GetCurrentPrice(ctx sdk.Context, marketID string) (types.Current
 	return price, nil
 }
 
+// IterateCurrentPrices iterates over all current price objects in the store and performs a callback function
+func (k Keeper) IterateCurrentPrices(ctx sdk.Context, cb func(cp types.CurrentPrice) (stop bool)) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CurrentPriceKey))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	defer iterator.Close()
+	for ; iterator.Valid(); iterator.Next() {
+		var cp types.CurrentPrice
+		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &cp)
+		if cb(cp) {
+			break
+		}
+	}
+}
+
+// GetCurrentPrices returns all current price objects from the store
+func (k Keeper) GetCurrentPrices(ctx sdk.Context) types.CurrentPrices {
+	cps := types.CurrentPrices{}
+	k.IterateCurrentPrices(ctx, func(cp types.CurrentPrice) (stop bool) {
+		cps = append(cps, cp)
+		return false
+	})
+	return cps
+}
+
 // GetRawPrices fetches the set of all prices posted by oracles for an asset
 func (k Keeper) GetRawPrices(ctx sdk.Context, marketID string) (types.PostedPrices, error) {
-	store := ctx.KVStore(k.key)
-	bz := store.Get(types.RawPriceKey(marketID))
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.RawPriceKeySuffix(marketID))
 	if bz == nil {
 		return types.PostedPrices{}, nil
 	}
 	var prices types.PostedPrices
-	err := k.cdc.UnmarshalBinaryBare(bz, &prices)
+	err := json.Unmarshal(bz, &prices)
 	if err != nil {
 		return types.PostedPrices{}, err
 	}

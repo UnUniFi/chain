@@ -21,15 +21,6 @@ const (
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgPostPrice{}
 
-// MsgPostPrice struct representing a posted price message.
-// Used by oracles to input prices to the pricefeed
-type MsgPostPrice struct {
-	From     sdk.AccAddress `json:"from" yaml:"from"`           // client that sent in this address
-	MarketID string         `json:"market_id" yaml:"market_id"` // asset code used by exchanges/api
-	Price    sdk.Dec        `json:"price" yaml:"price"`         // price in decimal (max precision 18)
-	Expiry   time.Time      `json:"expiry" yaml:"expiry"`       // expiry time
-}
-
 // NewMsgPostPrice creates a new post price msg
 func NewMsgPostPrice(
 	from sdk.AccAddress,
@@ -37,8 +28,8 @@ func NewMsgPostPrice(
 	price sdk.Dec,
 	expiry time.Time) MsgPostPrice {
 	return MsgPostPrice{
-		From:     from,
-		MarketID: assetCode,
+		From:     from.Bytes(),
+		MarketId: assetCode,
 		Price:    price,
 		Expiry:   expiry,
 	}
@@ -52,27 +43,27 @@ func (msg MsgPostPrice) Type() string { return TypeMsgPostPrice }
 
 // GetSignBytes Implements Msg.
 func (msg MsgPostPrice) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
+	bz := ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners Implements Msg.
 func (msg MsgPostPrice) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.From}
+	return []sdk.AccAddress{msg.From.AccAddress()}
 }
 
 // ValidateBasic does a simple validation check that doesn't require access to any other information.
 func (msg MsgPostPrice) ValidateBasic() error {
-	if msg.From.Empty() {
+	if msg.From.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
-	if strings.TrimSpace(msg.MarketID) == "" {
+	if strings.TrimSpace(msg.MarketId) == "" {
 		return errors.New("market id cannot be blank")
 	}
 	if msg.Price.IsNegative() {
 		return fmt.Errorf("price cannot be negative: %s", msg.Price.String())
 	}
-	if msg.Expiry.IsZero() {
+	if msg.Expiry.Unix() <= 0 {
 		return errors.New("must set an expiration time")
 	}
 	return nil

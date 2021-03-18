@@ -7,8 +7,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/params"
-	"github.com/cosmos/cosmos-sdk/x/params/subspace"
+	paramstype "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 var emptyDec = sdk.Dec{}
@@ -32,16 +31,7 @@ var (
 	KeyIncrementCollateral = []byte("IncrementCollateral")
 )
 
-var _ subspace.ParamSet = &Params{}
-
-// Params is the governance parameters for the auction module.
-type Params struct {
-	MaxAuctionDuration  time.Duration `json:"max_auction_duration" yaml:"max_auction_duration"` // max length of auction
-	BidDuration         time.Duration `json:"bid_duration" yaml:"bid_duration"`                 // additional time added to the auction end time after each bid, capped by the expiry.
-	IncrementSurplus    sdk.Dec       `json:"increment_surplus" yaml:"increment_surplus"`       // percentage change (of auc.Bid) required for a new bid on a surplus auction
-	IncrementDebt       sdk.Dec       `json:"increment_debt" yaml:"increment_debt"`             // percentage change (of auc.Lot) required for a new bid on a debt auction
-	IncrementCollateral sdk.Dec       `json:"increment_collateral" yaml:"increment_collateral"` // percentage change (of auc.Bid or auc.Lot) required for a new bid on a collateral auction
-}
+var _ paramstype.ParamSet = &Params{}
 
 // NewParams returns a new Params object.
 func NewParams(maxAuctionDuration, bidDuration time.Duration, incrementSurplus, incrementDebt, incrementCollateral sdk.Dec) Params {
@@ -66,18 +56,18 @@ func DefaultParams() Params {
 }
 
 // ParamKeyTable Key declaration for parameters
-func ParamKeyTable() subspace.KeyTable {
-	return subspace.NewKeyTable().RegisterParamSet(&Params{})
+func ParamKeyTable() paramstype.KeyTable {
+	return paramstype.NewKeyTable().RegisterParamSet(&Params{})
 }
 
 // ParamSetPairs implements the ParamSet interface and returns all the key/value pairs.
-func (p *Params) ParamSetPairs() subspace.ParamSetPairs {
-	return subspace.ParamSetPairs{
-		params.NewParamSetPair(KeyBidDuration, &p.BidDuration, validateBidDurationParam),
-		params.NewParamSetPair(KeyMaxAuctionDuration, &p.MaxAuctionDuration, validateMaxAuctionDurationParam),
-		params.NewParamSetPair(KeyIncrementSurplus, &p.IncrementSurplus, validateIncrementSurplusParam),
-		params.NewParamSetPair(KeyIncrementDebt, &p.IncrementDebt, validateIncrementDebtParam),
-		params.NewParamSetPair(KeyIncrementCollateral, &p.IncrementCollateral, validateIncrementCollateralParam),
+func (p *Params) ParamSetPairs() paramstype.ParamSetPairs {
+	return paramstype.ParamSetPairs{
+		paramstype.NewParamSetPair(KeyBidDuration, &p.BidDuration, validateBidDurationParam),
+		paramstype.NewParamSetPair(KeyMaxAuctionDuration, &p.MaxAuctionDuration, validateMaxAuctionDurationParam),
+		paramstype.NewParamSetPair(KeyIncrementSurplus, &p.IncrementSurplus, validateIncrementSurplusParam),
+		paramstype.NewParamSetPair(KeyIncrementDebt, &p.IncrementDebt, validateIncrementDebtParam),
+		paramstype.NewParamSetPair(KeyIncrementCollateral, &p.IncrementCollateral, validateIncrementCollateralParam),
 	}
 }
 
@@ -86,17 +76,6 @@ func (p Params) Equal(p2 Params) bool {
 	bz1 := ModuleCdc.MustMarshalBinaryLengthPrefixed(&p)
 	bz2 := ModuleCdc.MustMarshalBinaryLengthPrefixed(&p2)
 	return bytes.Equal(bz1, bz2)
-}
-
-// String implements stringer interface
-func (p Params) String() string {
-	return fmt.Sprintf(`Auction Params:
-	Max Auction Duration: %s
-	Bid Duration: %s
-	Increment Surplus: %s
-	Increment Debt: %s
-	Increment Collateral: %s`,
-		p.MaxAuctionDuration, p.BidDuration, p.IncrementSurplus, p.IncrementDebt, p.IncrementCollateral)
 }
 
 // Validate checks that the parameters have valid values.

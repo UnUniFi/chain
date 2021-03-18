@@ -1,11 +1,12 @@
 package types
 
+// DONTCOVER
+
 import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-// DONTCOVER
-
+// x/pricefeed module sentinel errors
 var (
 	// ErrEmptyInput error for empty input
 	ErrEmptyInput = sdkerrors.Register(ModuleName, 2, "input must not be empty")
