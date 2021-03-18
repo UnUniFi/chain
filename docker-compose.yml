@@ -16,7 +16,6 @@ services:
       --api.enable=true \
       --api.address=tcp://0.0.0.0:1317 \
       --api.enabled-unsafe-cors=true
-    network_mode: bridge
     networks:
       default:
         ipv4_address: 172.16.238.10
