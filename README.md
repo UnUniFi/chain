@@ -17,23 +17,6 @@ sudo systemctl enable docker
 sudo systemctl restart docker
 ```
 
-```bash
-sysctl net.ipv6.conf.default.forwarding=1
-sysctl net.ipv6.conf.all.forwarding=1
-vi /etc/docker/daemon.json
-```
-
-```json
-{
-  "ipv6": true,
-  "fixed-cidr-v6": "2001:db8:1::/64"
-}
-```
-
-```bash
-reboot
-```
-
 ### Join network
 
 ```bash
@@ -54,8 +37,8 @@ This is an example for Ubuntu.
 sudo apt update
 sudo apt install build-essential
 cd ~
-wget https://dl.google.com/go/go1.15.6.linux-amd64.tar.gz
-sudo tar -C /usr/local -xzf go1.15.6.linux-amd64.tar.gz
+wget https://dl.google.com/go/go1.16.2.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.16.2.linux-amd64.tar.gz
 echo export PATH='$PATH:/usr/local/go/bin:$HOME/go/bin' >> ~/.bashrc
 source ~/.bashrc
 ```
