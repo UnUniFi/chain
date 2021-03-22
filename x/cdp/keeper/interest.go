@@ -107,13 +107,13 @@ func CalculateInterestFactor(perSecondInterestRate sdk.Dec, secondsElapsed sdk.I
 
 // SynchronizeInterest updates the input cdp object to reflect the current accumulated interest, updates the cdp state in the store,
 // and returns the updated cdp object
-func (k Keeper) SynchronizeInterest(ctx sdk.Context, cdp types.CDP) types.CDP {
+func (k Keeper) SynchronizeInterest(ctx sdk.Context, cdp types.Cdp) types.Cdp {
 	globalInterestFactor, found := k.GetInterestFactor(ctx, cdp.Type)
 	if !found {
 		k.SetInterestFactor(ctx, cdp.Type, sdk.OneDec())
 		cdp.InterestFactor = sdk.OneDec()
 		cdp.FeesUpdated = ctx.BlockTime()
-		k.SetCDP(ctx, cdp)
+		k.SetCdp(ctx, cdp)
 		return cdp
 	}
 
@@ -130,7 +130,7 @@ func (k Keeper) SynchronizeInterest(ctx sdk.Context, cdp types.CDP) types.CDP {
 		}
 		// if apy is zero, we need to update FeesUpdated
 		cdp.FeesUpdated = prevAccrualTime
-		k.SetCDP(ctx, cdp)
+		k.SetCdp(ctx, cdp)
 	}
 
 	cdp.AccumulatedFees = cdp.AccumulatedFees.Add(accumulatedInterest)
@@ -142,7 +142,7 @@ func (k Keeper) SynchronizeInterest(ctx sdk.Context, cdp types.CDP) types.CDP {
 }
 
 // CalculateNewInterest returns the amount of interest that has accrued to the cdp since its interest was last synchronized
-func (k Keeper) CalculateNewInterest(ctx sdk.Context, cdp types.CDP) sdk.Coin {
+func (k Keeper) CalculateNewInterest(ctx sdk.Context, cdp types.Cdp) sdk.Coin {
 	globalInterestFactor, found := k.GetInterestFactor(ctx, cdp.Type)
 	if !found {
 		return sdk.NewCoin(cdp.AccumulatedFees.Denom, sdk.ZeroInt())
@@ -155,9 +155,9 @@ func (k Keeper) CalculateNewInterest(ctx sdk.Context, cdp types.CDP) sdk.Coin {
 	return sdk.NewCoin(cdp.AccumulatedFees.Denom, accumulatedInterest)
 }
 
-// SynchronizeInterestForRiskyCDPs synchronizes the interest for the slice of cdps with the lowest collateral:debt ratio
-func (k Keeper) SynchronizeInterestForRiskyCDPs(ctx sdk.Context, slice sdk.Int, targetRatio sdk.Dec, collateralType string) error {
-	cdps := k.GetSliceOfCDPsByRatioAndType(ctx, slice, targetRatio, collateralType)
+// SynchronizeInterestForRiskyCdps synchronizes the interest for the slice of cdps with the lowest collateral:debt ratio
+func (k Keeper) SynchronizeInterestForRiskyCdps(ctx sdk.Context, slice sdk.Int, targetRatio sdk.Dec, collateralType string) error {
+	cdps := k.GetSliceOfCdpsByRatioAndType(ctx, slice, targetRatio, collateralType)
 	for _, cdp := range cdps {
 		k.SynchronizeInterest(ctx, cdp)
 	}

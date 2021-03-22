@@ -17,7 +17,7 @@ func (k Keeper) AttemptKeeperLiquidation(ctx sdk.Context, keeper, owner sdk.AccA
 	if !found {
 		return sdkerrors.Wrapf(types.ErrCdpNotFound, "owner %s, denom %s", owner, collateralType)
 	}
-	k.hooks.BeforeCDPModified(ctx, cdp)
+	k.hooks.BeforeCdpModified(ctx, cdp)
 	cdp = k.SynchronizeInterest(ctx, cdp)
 
 	err := k.ValidateLiquidation(ctx, cdp.Collateral, cdp.Type, cdp.Principal, cdp.AccumulatedFees)
@@ -38,7 +38,7 @@ func (k Keeper) AttemptKeeperLiquidation(ctx sdk.Context, keeper, owner sdk.AccA
 // 3. Debt coins are sent from the cdp module to the liquidator module account
 // 4. The total amount of principal outstanding for that collateral type is decremented
 // (this is the equivalent of saying that fees are no longer accumulated by a cdp once it gets liquidated)
-func (k Keeper) SeizeCollateral(ctx sdk.Context, cdp types.CDP) error {
+func (k Keeper) SeizeCollateral(ctx sdk.Context, cdp types.Cdp) error {
 	// Calculate the previous collateral ratio
 	oldCollateralToDebtRatio := k.CalculateCollateralToDebtRatio(ctx, cdp.Collateral, cdp.Type, cdp.GetTotalPrincipal())
 
@@ -80,13 +80,13 @@ func (k Keeper) SeizeCollateral(ctx sdk.Context, cdp types.CDP) error {
 	coinsToDecrement := cdp.GetTotalPrincipal()
 	k.DecrementTotalPrincipal(ctx, cdp.Type, coinsToDecrement)
 
-	// Delete CDP from state
+	// Delete Cdp from state
 	k.RemoveCdpOwnerIndex(ctx, cdp)
 	k.RemoveCdpCollateralRatioIndex(ctx, cdp.Type, cdp.Id, oldCollateralToDebtRatio)
-	return k.DeleteCDP(ctx, cdp)
+	return k.DeleteCdp(ctx, cdp)
 }
 
-// LiquidateCdps seizes collateral from all CDPs below the input liquidation ratio
+// LiquidateCdps seizes collateral from all Cdps below the input liquidation ratio
 func (k Keeper) LiquidateCdps(ctx sdk.Context, marketID string, collateralType string, liquidationRatio sdk.Dec, count sdk.Int) error {
 	price, err := k.pricefeedKeeper.GetCurrentPrice(ctx, marketID)
 	if err != nil {
@@ -100,9 +100,9 @@ func (k Keeper) LiquidateCdps(ctx sdk.Context, marketID string, collateralType s
 	// liquidation ratio = 1.5
 	// normalizedRatio = (1/(0.5/1.5)) = 3
 	normalizedRatio := sdk.OneDec().Quo(priceDivLiqRatio)
-	cdpsToLiquidate := k.GetSliceOfCDPsByRatioAndType(ctx, count, normalizedRatio, collateralType)
+	cdpsToLiquidate := k.GetSliceOfCdpsByRatioAndType(ctx, count, normalizedRatio, collateralType)
 	for _, c := range cdpsToLiquidate {
-		k.hooks.BeforeCDPModified(ctx, c)
+		k.hooks.BeforeCdpModified(ctx, c)
 		err := k.SeizeCollateral(ctx, c)
 		if err != nil {
 			return err
@@ -135,10 +135,10 @@ func (k Keeper) getModAccountDebt(ctx sdk.Context, accountName string) sdk.Int {
 	return k.bankKeeper.GetAllBalances(ctx, macc.GetAddress()).AmountOf(k.GetDebtDenom(ctx))
 }
 
-func (k Keeper) payoutKeeperLiquidationReward(ctx sdk.Context, keeper sdk.AccAddress, cdp types.CDP) (types.CDP, error) {
+func (k Keeper) payoutKeeperLiquidationReward(ctx sdk.Context, keeper sdk.AccAddress, cdp types.Cdp) (types.Cdp, error) {
 	collateralParam, found := k.GetCollateral(ctx, cdp.Type)
 	if !found {
-		return types.CDP{}, sdkerrors.Wrapf(types.ErrInvalidCollateral, "%s", cdp.Type)
+		return types.Cdp{}, sdkerrors.Wrapf(types.ErrInvalidCollateral, "%s", cdp.Type)
 	}
 	reward := cdp.Collateral.Amount.ToDec().Mul(collateralParam.KeeperRewardPercentage).RoundInt()
 	rewardCoin := sdk.NewCoin(cdp.Collateral.Denom, reward)
@@ -157,14 +157,14 @@ func (k Keeper) payoutKeeperLiquidationReward(ctx sdk.Context, keeper sdk.AccAdd
 	}
 	err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, keeper, sdk.NewCoins(rewardCoin))
 	if err != nil {
-		return types.CDP{}, err
+		return types.Cdp{}, err
 	}
 
 	cdp.Collateral = cdp.Collateral.Sub(rewardCoin)
 	ratio := k.CalculateCollateralToDebtRatio(ctx, cdp.Collateral, cdp.Type, cdp.GetTotalPrincipal())
 	err = k.UpdateCdpAndCollateralRatioIndex(ctx, cdp, ratio)
 	if err != nil {
-		return types.CDP{}, err
+		return types.Cdp{}, err
 	}
 	return cdp, nil
 }

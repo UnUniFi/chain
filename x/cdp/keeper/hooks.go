@@ -6,18 +6,18 @@ import (
 )
 
 // Implements StakingHooks interface
-var _ types.CDPHooks = Keeper{}
+var _ types.CdpHooks = Keeper{}
 
-// AfterCDPCreated - call hook if registered
-func (k Keeper) AfterCDPCreated(ctx sdk.Context, cdp types.CDP) {
+// AfterCdpCreated - call hook if registered
+func (k Keeper) AfterCdpCreated(ctx sdk.Context, cdp types.Cdp) {
 	if k.hooks != nil {
-		k.hooks.AfterCDPCreated(ctx, cdp)
+		k.hooks.AfterCdpCreated(ctx, cdp)
 	}
 }
 
-// BeforeCDPModified - call hook if registered
-func (k Keeper) BeforeCDPModified(ctx sdk.Context, cdp types.CDP) {
+// BeforeCdpModified - call hook if registered
+func (k Keeper) BeforeCdpModified(ctx sdk.Context, cdp types.Cdp) {
 	if k.hooks != nil {
-		k.hooks.BeforeCDPModified(ctx, cdp)
+		k.hooks.BeforeCdpModified(ctx, cdp)
 	}
 }

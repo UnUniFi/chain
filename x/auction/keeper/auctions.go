@@ -353,7 +353,7 @@ func (k Keeper) PlaceReverseBidCollateral(ctx sdk.Context, auction types.Collate
 		}
 	}
 
-	// Decrease in lot is sent to weighted addresses (normally the CDP depositors)
+	// Decrease in lot is sent to weighted addresses (normally the Cdp depositors)
 	// Note: splitting an integer amount across weighted buckets results in small errors.
 	lotPayouts, err := splitCoinIntoWeightedBuckets(auction.Lot.Sub(lot), auction.LotReturns.Weights)
 	if err != nil {

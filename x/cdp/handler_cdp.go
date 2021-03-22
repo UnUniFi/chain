@@ -6,7 +6,7 @@ import (
 	"github.com/lcnem/jpyx/x/cdp/types"
 )
 
-func handleMsgCreateCdp(ctx sdk.Context, k keeper.Keeper, msg *types.MsgCreateCDP) (*sdk.Result, error) {
+func handleMsgCreateCdp(ctx sdk.Context, k keeper.Keeper, msg *types.MsgCreateCdp) (*sdk.Result, error) {
 	err := k.AddCdp(ctx, msg.Sender.AccAddress(), msg.Collateral, msg.Principal, msg.CollateralType)
 	if err != nil {
 		return nil, err

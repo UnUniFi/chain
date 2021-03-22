@@ -15,8 +15,8 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
-		case *types.MsgClaimJPYXMintingReward:
-			return handleMsgClaimJPYXMintingReward(ctx, k, msg)
+		case *types.MsgClaimJpyxMintingReward:
+			return handleMsgClaimJpyxMintingReward(ctx, k, msg)
 		// this line is used by starport scaffolding # 1
 		default:
 			errMsg := fmt.Sprintf("unrecognized %s message type: %T", types.ModuleName, msg)
@@ -25,9 +25,9 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 	}
 }
 
-func handleMsgClaimJPYXMintingReward(ctx sdk.Context, k keeper.Keeper, msg *types.MsgClaimJPYXMintingReward) (*sdk.Result, error) {
+func handleMsgClaimJpyxMintingReward(ctx sdk.Context, k keeper.Keeper, msg *types.MsgClaimJpyxMintingReward) (*sdk.Result, error) {
 
-	err := k.ClaimJPYXMintingReward(ctx, msg.Sender.AccAddress(), msg.MultiplierName)
+	err := k.ClaimJpyxMintingReward(ctx, msg.Sender.AccAddress(), msg.MultiplierName)
 	if err != nil {
 		return nil, err
 	}

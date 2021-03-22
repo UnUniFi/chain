@@ -13,11 +13,11 @@ const DefaultIndex uint64 = 1
 
 // DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
-	params:= DefaultParams()
+	params := DefaultParams()
 	return &GenesisState{
 		Params:                params,
 		JpyxAccumulationTimes: GenesisAccumulationTimes{},
-		JpyxMintingClaims:     DefaultJPYXClaims,
+		JpyxMintingClaims:     DefaultJpyxClaims,
 		// this line is used by starport scaffolding # genesis/types/default
 	}
 }
@@ -35,11 +35,11 @@ func (gs GenesisState) Validate() error {
 		return err
 	}
 
-	return JPYXMintingClaims(gs.JpyxMintingClaims).Validate()
+	return JpyxMintingClaims(gs.JpyxMintingClaims).Validate()
 }
 
 // NewGenesisState returns a new genesis state
-func NewGenesisState(params Params, jpyxAccumTimes GenesisAccumulationTimes, c JPYXMintingClaims) GenesisState {
+func NewGenesisState(params Params, jpyxAccumTimes GenesisAccumulationTimes, c JpyxMintingClaims) GenesisState {
 	return GenesisState{
 		Params:                params,
 		JpyxAccumulationTimes: jpyxAccumTimes,

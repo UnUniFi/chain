@@ -10,7 +10,7 @@ import (
 func BeginBlocker(ctx sdk.Context, k keeper.Keeper) {
 	params := k.GetParams(ctx)
 	for _, rp := range params.JpyxMintingRewardPeriods {
-		err := k.AccumulateJPYXMintingRewards(ctx, rp)
+		err := k.AccumulateJpyxMintingRewards(ctx, rp)
 		if err != nil {
 			panic(err)
 		}

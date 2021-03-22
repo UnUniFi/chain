@@ -16,7 +16,7 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 
 		switch msg := msg.(type) {
 		// this line is used by starport scaffolding # 1
-		case *types.MsgCreateCDP:
+		case *types.MsgCreateCdp:
 			return handleMsgCreateCdp(ctx, k, msg)
 
 		case *types.MsgDeposit:

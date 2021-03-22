@@ -32,7 +32,7 @@ func CmdCreateCdp() *cobra.Command {
 			}
 			collateralType := args[2]
 
-			msg := types.NewMsgCreateCDP(clientCtx.GetFromAddress(), collateral, debt, collateralType)
+			msg := types.NewMsgCreateCdp(clientCtx.GetFromAddress(), collateral, debt, collateralType)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

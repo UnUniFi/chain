@@ -10,11 +10,11 @@ import (
 	"github.com/lcnem/jpyx/x/incentive/types"
 )
 
-// AccumulateJPYXMintingRewards updates the rewards accumulated for the input reward period
-func (k Keeper) AccumulateJPYXMintingRewards(ctx sdk.Context, rewardPeriod types.RewardPeriod) error {
-	previousAccrualTime, found := k.GetPreviousJPYXMintingAccrualTime(ctx, rewardPeriod.CollateralType)
+// AccumulateJpyxMintingRewards updates the rewards accumulated for the input reward period
+func (k Keeper) AccumulateJpyxMintingRewards(ctx sdk.Context, rewardPeriod types.RewardPeriod) error {
+	previousAccrualTime, found := k.GetPreviousJpyxMintingAccrualTime(ctx, rewardPeriod.CollateralType)
 	if !found {
-		k.SetPreviousJPYXMintingAccrualTime(ctx, rewardPeriod.CollateralType, ctx.BlockTime())
+		k.SetPreviousJpyxMintingAccrualTime(ctx, rewardPeriod.CollateralType, ctx.BlockTime())
 		return nil
 	}
 	timeElapsed := CalculateTimeElapsed(rewardPeriod.Start, rewardPeriod.End, ctx.BlockTime(), previousAccrualTime)
@@ -22,50 +22,50 @@ func (k Keeper) AccumulateJPYXMintingRewards(ctx sdk.Context, rewardPeriod types
 		return nil
 	}
 	if rewardPeriod.RewardsPerSecond.Amount.IsZero() {
-		k.SetPreviousJPYXMintingAccrualTime(ctx, rewardPeriod.CollateralType, ctx.BlockTime())
+		k.SetPreviousJpyxMintingAccrualTime(ctx, rewardPeriod.CollateralType, ctx.BlockTime())
 		return nil
 	}
 	totalPrincipal := k.cdpKeeper.GetTotalPrincipal(ctx, rewardPeriod.CollateralType, types.PrincipalDenom).ToDec()
 	if totalPrincipal.IsZero() {
-		k.SetPreviousJPYXMintingAccrualTime(ctx, rewardPeriod.CollateralType, ctx.BlockTime())
+		k.SetPreviousJpyxMintingAccrualTime(ctx, rewardPeriod.CollateralType, ctx.BlockTime())
 		return nil
 	}
 	newRewards := timeElapsed.Mul(rewardPeriod.RewardsPerSecond.Amount)
 	cdpFactor, found := k.cdpKeeper.GetInterestFactor(ctx, rewardPeriod.CollateralType)
 	if !found {
-		k.SetPreviousJPYXMintingAccrualTime(ctx, rewardPeriod.CollateralType, ctx.BlockTime())
+		k.SetPreviousJpyxMintingAccrualTime(ctx, rewardPeriod.CollateralType, ctx.BlockTime())
 		return nil
 	}
 	rewardFactor := newRewards.ToDec().Mul(cdpFactor).Quo(totalPrincipal)
 
-	previousRewardFactor, found := k.GetJPYXMintingRewardFactor(ctx, rewardPeriod.CollateralType)
+	previousRewardFactor, found := k.GetJpyxMintingRewardFactor(ctx, rewardPeriod.CollateralType)
 	if !found {
 		previousRewardFactor = sdk.ZeroDec()
 	}
 	newRewardFactor := previousRewardFactor.Add(rewardFactor)
-	k.SetJPYXMintingRewardFactor(ctx, rewardPeriod.CollateralType, newRewardFactor)
-	k.SetPreviousJPYXMintingAccrualTime(ctx, rewardPeriod.CollateralType, ctx.BlockTime())
+	k.SetJpyxMintingRewardFactor(ctx, rewardPeriod.CollateralType, newRewardFactor)
+	k.SetPreviousJpyxMintingAccrualTime(ctx, rewardPeriod.CollateralType, ctx.BlockTime())
 	return nil
 }
 
-// InitializeJPYXMintingClaim creates or updates a claim such that no new rewards are accrued, but any existing rewards are not lost.
+// InitializeJpyxMintingClaim creates or updates a claim such that no new rewards are accrued, but any existing rewards are not lost.
 // this function should be called after a cdp is created. If a user previously had a cdp, then closed it, they shouldn't
 // accrue rewards during the period the cdp was closed. By setting the reward factor to the current global reward factor,
 // any unclaimed rewards are preserved, but no new rewards are added.
-func (k Keeper) InitializeJPYXMintingClaim(ctx sdk.Context, cdp cdptypes.CDP) {
-	_, found := k.GetJPYXMintingRewardPeriod(ctx, cdp.Type)
+func (k Keeper) InitializeJpyxMintingClaim(ctx sdk.Context, cdp cdptypes.Cdp) {
+	_, found := k.GetJpyxMintingRewardPeriod(ctx, cdp.Type)
 	if !found {
 		// this collateral type is not incentivized, do nothing
 		return
 	}
-	rewardFactor, found := k.GetJPYXMintingRewardFactor(ctx, cdp.Type)
+	rewardFactor, found := k.GetJpyxMintingRewardFactor(ctx, cdp.Type)
 	if !found {
 		rewardFactor = sdk.ZeroDec()
 	}
-	claim, found := k.GetJPYXMintingClaim(ctx, cdp.Owner.AccAddress())
+	claim, found := k.GetJpyxMintingClaim(ctx, cdp.Owner.AccAddress())
 	if !found { // this is the owner's first jpyx minting reward claim
-		claim = types.NewJPYXMintingClaim(cdp.Owner.AccAddress(), sdk.NewCoin(types.JPYXMintingRewardDenom, sdk.ZeroInt()), types.RewardIndexes{types.NewRewardIndex(cdp.Type, rewardFactor)})
-		k.SetJPYXMintingClaim(ctx, claim)
+		claim = types.NewJpyxMintingClaim(cdp.Owner.AccAddress(), sdk.NewCoin(types.JpyxMintingRewardDenom, sdk.ZeroInt()), types.RewardIndexes{types.NewRewardIndex(cdp.Type, rewardFactor)})
+		k.SetJpyxMintingClaim(ctx, claim)
 		return
 	}
 	// the owner has an existing jpyx minting reward claim
@@ -75,26 +75,26 @@ func (k Keeper) InitializeJPYXMintingClaim(ctx sdk.Context, cdp cdptypes.CDP) {
 	} else { // the owner has a previous jpyx minting reward for this collateral type
 		claim.RewardIndexes[index] = types.NewRewardIndex(cdp.Type, rewardFactor)
 	}
-	k.SetJPYXMintingClaim(ctx, claim)
+	k.SetJpyxMintingClaim(ctx, claim)
 }
 
-// SynchronizeJPYXMintingReward updates the claim object by adding any accumulated rewards and updating the reward index value.
+// SynchronizeJpyxMintingReward updates the claim object by adding any accumulated rewards and updating the reward index value.
 // this should be called before a cdp is modified, immediately after the 'SynchronizeInterest' method is called in the cdp module
-func (k Keeper) SynchronizeJPYXMintingReward(ctx sdk.Context, cdp cdptypes.CDP) {
-	_, found := k.GetJPYXMintingRewardPeriod(ctx, cdp.Type)
+func (k Keeper) SynchronizeJpyxMintingReward(ctx sdk.Context, cdp cdptypes.Cdp) {
+	_, found := k.GetJpyxMintingRewardPeriod(ctx, cdp.Type)
 	if !found {
 		// this collateral type is not incentivized, do nothing
 		return
 	}
 
-	globalRewardFactor, found := k.GetJPYXMintingRewardFactor(ctx, cdp.Type)
+	globalRewardFactor, found := k.GetJpyxMintingRewardFactor(ctx, cdp.Type)
 	if !found {
 		globalRewardFactor = sdk.ZeroDec()
 	}
-	claim, found := k.GetJPYXMintingClaim(ctx, cdp.Owner.AccAddress())
+	claim, found := k.GetJpyxMintingClaim(ctx, cdp.Owner.AccAddress())
 	if !found {
-		claim = types.NewJPYXMintingClaim(cdp.Owner.AccAddress(), sdk.NewCoin(types.JPYXMintingRewardDenom, sdk.ZeroInt()), types.RewardIndexes{types.NewRewardIndex(cdp.Type, globalRewardFactor)})
-		k.SetJPYXMintingClaim(ctx, claim)
+		claim = types.NewJpyxMintingClaim(cdp.Owner.AccAddress(), sdk.NewCoin(types.JpyxMintingRewardDenom, sdk.ZeroInt()), types.RewardIndexes{types.NewRewardIndex(cdp.Type, globalRewardFactor)})
+		k.SetJpyxMintingClaim(ctx, claim)
 		return
 	}
 
@@ -102,7 +102,7 @@ func (k Keeper) SynchronizeJPYXMintingReward(ctx sdk.Context, cdp cdptypes.CDP) 
 	index, hasRewardIndex := claim.HasRewardIndex(cdp.Type)
 	if !hasRewardIndex { // this is the owner's first jpyx minting reward for this collateral type
 		claim.RewardIndexes = append(claim.RewardIndexes, types.NewRewardIndex(cdp.Type, globalRewardFactor))
-		k.SetJPYXMintingClaim(ctx, claim)
+		k.SetJpyxMintingClaim(ctx, claim)
 		return
 	}
 	userRewardFactor := claim.RewardIndexes[index].RewardFactor
@@ -113,25 +113,25 @@ func (k Keeper) SynchronizeJPYXMintingReward(ctx sdk.Context, cdp cdptypes.CDP) 
 	claim.RewardIndexes[index].RewardFactor = globalRewardFactor
 	newRewardsAmount := rewardsAccumulatedFactor.Mul(cdp.GetTotalPrincipal().Amount.ToDec()).RoundInt()
 	if newRewardsAmount.IsZero() {
-		k.SetJPYXMintingClaim(ctx, claim)
+		k.SetJpyxMintingClaim(ctx, claim)
 		return
 	}
-	newRewardsCoin := sdk.NewCoin(types.JPYXMintingRewardDenom, newRewardsAmount)
+	newRewardsCoin := sdk.NewCoin(types.JpyxMintingRewardDenom, newRewardsAmount)
 	claim.Reward = claim.Reward.Add(newRewardsCoin)
-	k.SetJPYXMintingClaim(ctx, claim)
+	k.SetJpyxMintingClaim(ctx, claim)
 	return
 }
 
-// ZeroJPYXMintingClaim zeroes out the claim object's rewards and returns the updated claim object
-func (k Keeper) ZeroJPYXMintingClaim(ctx sdk.Context, claim types.JPYXMintingClaim) types.JPYXMintingClaim {
+// ZeroJpyxMintingClaim zeroes out the claim object's rewards and returns the updated claim object
+func (k Keeper) ZeroJpyxMintingClaim(ctx sdk.Context, claim types.JpyxMintingClaim) types.JpyxMintingClaim {
 	claim.Reward = sdk.NewCoin(claim.Reward.Denom, sdk.ZeroInt())
-	k.SetJPYXMintingClaim(ctx, claim)
+	k.SetJpyxMintingClaim(ctx, claim)
 	return claim
 }
 
-// SynchronizeJPYXMintingClaim updates the claim object by adding any rewards that have accumulated.
+// SynchronizeJpyxMintingClaim updates the claim object by adding any rewards that have accumulated.
 // Returns the updated claim object
-func (k Keeper) SynchronizeJPYXMintingClaim(ctx sdk.Context, claim types.JPYXMintingClaim) (types.JPYXMintingClaim, error) {
+func (k Keeper) SynchronizeJpyxMintingClaim(ctx sdk.Context, claim types.JpyxMintingClaim) (types.JpyxMintingClaim, error) {
 	for _, ri := range claim.RewardIndexes {
 		cdp, found := k.cdpKeeper.GetCdpByOwnerAndCollateralType(ctx, claim.Owner.AccAddress(), ri.CollateralType)
 		if !found {
@@ -144,9 +144,9 @@ func (k Keeper) SynchronizeJPYXMintingClaim(ctx sdk.Context, claim types.JPYXMin
 }
 
 // this function assumes a claim already exists, so don't call it if that's not the case
-func (k Keeper) synchronizeRewardAndReturnClaim(ctx sdk.Context, cdp cdptypes.CDP) types.JPYXMintingClaim {
-	k.SynchronizeJPYXMintingReward(ctx, cdp)
-	claim, _ := k.GetJPYXMintingClaim(ctx, cdp.Owner.AccAddress())
+func (k Keeper) synchronizeRewardAndReturnClaim(ctx sdk.Context, cdp cdptypes.Cdp) types.JpyxMintingClaim {
+	k.SynchronizeJpyxMintingReward(ctx, cdp)
+	claim, _ := k.GetJpyxMintingClaim(ctx, cdp.Owner.AccAddress())
 	return claim
 }
 
@@ -173,15 +173,15 @@ func CalculateTimeElapsed(start, end, blockTime time.Time, previousAccrualTime t
 	))))
 }
 
-// SimulateJPYXMintingSynchronization calculates a user's outstanding JPYX minting rewards by simulating reward synchronization
-func (k Keeper) SimulateJPYXMintingSynchronization(ctx sdk.Context, claim types.JPYXMintingClaim) types.JPYXMintingClaim {
+// SimulateJpyxMintingSynchronization calculates a user's outstanding Jpyx minting rewards by simulating reward synchronization
+func (k Keeper) SimulateJpyxMintingSynchronization(ctx sdk.Context, claim types.JpyxMintingClaim) types.JpyxMintingClaim {
 	for _, ri := range claim.RewardIndexes {
-		_, found := k.GetJPYXMintingRewardPeriod(ctx, ri.CollateralType)
+		_, found := k.GetJpyxMintingRewardPeriod(ctx, ri.CollateralType)
 		if !found {
 			continue
 		}
 
-		globalRewardFactor, found := k.GetJPYXMintingRewardFactor(ctx, ri.CollateralType)
+		globalRewardFactor, found := k.GetJpyxMintingRewardFactor(ctx, ri.CollateralType)
 		if !found {
 			globalRewardFactor = sdk.ZeroDec()
 		}
@@ -207,7 +207,7 @@ func (k Keeper) SimulateJPYXMintingSynchronization(ctx sdk.Context, claim types.
 		if newRewardsAmount.IsZero() {
 			continue
 		}
-		newRewardsCoin := sdk.NewCoin(types.JPYXMintingRewardDenom, newRewardsAmount)
+		newRewardsCoin := sdk.NewCoin(types.JpyxMintingRewardDenom, newRewardsAmount)
 		claim.Reward = claim.Reward.Add(newRewardsCoin)
 	}
 

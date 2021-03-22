@@ -10,10 +10,10 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-// NewCDP creates a new CDP object
-func NewCDP(id uint64, owner sdk.AccAddress, collateral sdk.Coin, collateralType string, principal sdk.Coin, time time.Time, interestFactor sdk.Dec) CDP {
+// NewCdp creates a new Cdp object
+func NewCdp(id uint64, owner sdk.AccAddress, collateral sdk.Coin, collateralType string, principal sdk.Coin, time time.Time, interestFactor sdk.Dec) Cdp {
 	fees := sdk.NewCoin(principal.Denom, sdk.ZeroInt())
-	return CDP{
+	return Cdp{
 		Id:              id,
 		Owner:           owner.Bytes(),
 		Type:            collateralType,
@@ -25,9 +25,9 @@ func NewCDP(id uint64, owner sdk.AccAddress, collateral sdk.Coin, collateralType
 	}
 }
 
-// NewCDPWithFees creates a new CDP object, for use during migration
-func NewCDPWithFees(id uint64, owner sdk.AccAddress, collateral sdk.Coin, collateralType string, principal, fees sdk.Coin, time time.Time, interestFactor sdk.Dec) CDP {
-	return CDP{
+// NewCdpWithFees creates a new Cdp object, for use during migration
+func NewCdpWithFees(id uint64, owner sdk.AccAddress, collateral sdk.Coin, collateralType string, principal, fees sdk.Coin, time time.Time, interestFactor sdk.Dec) Cdp {
+	return Cdp{
 		Id:              id,
 		Owner:           owner.Bytes(),
 		Type:            collateralType,
@@ -39,8 +39,8 @@ func NewCDPWithFees(id uint64, owner sdk.AccAddress, collateral sdk.Coin, collat
 	}
 }
 
-// Validate performs a basic validation of the CDP fields.
-func (cdp CDP) Validate() error {
+// Validate performs a basic validation of the Cdp fields.
+func (cdp Cdp) Validate() error {
 	if cdp.Id == 0 {
 		return errors.New("cdp id cannot be 0")
 	}
@@ -66,15 +66,15 @@ func (cdp CDP) Validate() error {
 }
 
 // GetTotalPrincipal returns the total principle for the cdp
-func (cdp CDP) GetTotalPrincipal() sdk.Coin {
+func (cdp Cdp) GetTotalPrincipal() sdk.Coin {
 	return cdp.Principal.Add(cdp.AccumulatedFees)
 }
 
-// CDPs a collection of CDP objects
-type CDPs []CDP
+// Cdps a collection of Cdp objects
+type Cdps []Cdp
 
 // String implements stringer
-func (cdps CDPs) String() string {
+func (cdps Cdps) String() string {
 	out := ""
 	for _, cdp := range cdps {
 		out += cdp.String() + "\n"
@@ -82,8 +82,8 @@ func (cdps CDPs) String() string {
 	return out
 }
 
-// Validate validates each CDP
-func (cdps CDPs) Validate() error {
+// Validate validates each Cdp
+func (cdps Cdps) Validate() error {
 	for _, cdp := range cdps {
 		if err := cdp.Validate(); err != nil {
 			return err
@@ -92,10 +92,10 @@ func (cdps CDPs) Validate() error {
 	return nil
 }
 
-// NewAugmentedCDP creates a new AugmentedCDP object
-func NewAugmentedCDP(cdp CDP, collateralValue sdk.Coin, collateralizationRatio sdk.Dec) AugmentedCDP {
-	augmentedCDP := AugmentedCDP{
-		CDP: CDP{
+// NewAugmentedCdp creates a new AugmentedCdp object
+func NewAugmentedCdp(cdp Cdp, collateralValue sdk.Coin, collateralizationRatio sdk.Dec) AugmentedCdp {
+	augmentedCdp := AugmentedCdp{
+		Cdp: Cdp{
 			Id:              cdp.Id,
 			Owner:           cdp.Owner,
 			Type:            cdp.Type,
@@ -108,14 +108,14 @@ func NewAugmentedCDP(cdp CDP, collateralValue sdk.Coin, collateralizationRatio s
 		CollateralValue:        collateralValue,
 		CollateralizationRatio: collateralizationRatio,
 	}
-	return augmentedCDP
+	return augmentedCdp
 }
 
-// AugmentedCDPs a collection of AugmentedCDP objects
-type AugmentedCDPs []AugmentedCDP
+// AugmentedCdps a collection of AugmentedCdp objects
+type AugmentedCdps []AugmentedCdp
 
 // String implements stringer
-func (augcdps AugmentedCDPs) String() string {
+func (augcdps AugmentedCdps) String() string {
 	out := ""
 	for _, augcdp := range augcdps {
 		out += augcdp.String() + "\n"

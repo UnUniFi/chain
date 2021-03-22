@@ -8,24 +8,24 @@ import (
 )
 
 // ensure Msg interface compliance at compile time
-var _ sdk.Msg = &MsgClaimJPYXMintingReward{}
+var _ sdk.Msg = &MsgClaimJpyxMintingReward{}
 
-// NewMsgClaimJPYXMintingReward returns a new MsgClaimJPYXMintingReward.
-func NewMsgClaimJPYXMintingReward(sender sdk.AccAddress, multiplierName string) MsgClaimJPYXMintingReward {
-	return MsgClaimJPYXMintingReward{
+// NewMsgClaimJpyxMintingReward returns a new MsgClaimJpyxMintingReward.
+func NewMsgClaimJpyxMintingReward(sender sdk.AccAddress, multiplierName string) MsgClaimJpyxMintingReward {
+	return MsgClaimJpyxMintingReward{
 		Sender:         sender.Bytes(),
 		MultiplierName: multiplierName,
 	}
 }
 
 // Route return the message type used for routing the message.
-func (msg MsgClaimJPYXMintingReward) Route() string { return RouterKey }
+func (msg MsgClaimJpyxMintingReward) Route() string { return RouterKey }
 
 // Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgClaimJPYXMintingReward) Type() string { return "claim_jpyx_minting_reward" }
+func (msg MsgClaimJpyxMintingReward) Type() string { return "claim_jpyx_minting_reward" }
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
-func (msg MsgClaimJPYXMintingReward) ValidateBasic() error {
+func (msg MsgClaimJpyxMintingReward) ValidateBasic() error {
 	if msg.Sender.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
@@ -33,12 +33,12 @@ func (msg MsgClaimJPYXMintingReward) ValidateBasic() error {
 }
 
 // GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgClaimJPYXMintingReward) GetSignBytes() []byte {
+func (msg MsgClaimJpyxMintingReward) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
-func (msg MsgClaimJPYXMintingReward) GetSigners() []sdk.AccAddress {
+func (msg MsgClaimJpyxMintingReward) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Sender.AccAddress()}
 }

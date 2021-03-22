@@ -18,7 +18,7 @@ message GenesisState {
     (gogoproto.moretags) = "yaml:\"jpyx_accumulation_times\"",
     (gogoproto.nullable) = false
   ];
-  repeated JPYXMintingClaim jpyx_minting_claims = 3 [
+  repeated JpyxMintingClaim jpyx_minting_claims = 3 [
     (gogoproto.moretags) = "yaml:\"jpyx_minting_claims\"",
     (gogoproto.nullable) = false
   ];

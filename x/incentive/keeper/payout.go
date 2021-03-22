@@ -20,9 +20,9 @@ const (
 	PaymentHour = 14
 )
 
-// ClaimJPYXMintingReward sends the reward amount to the input address and zero's out the claim in the store
-func (k Keeper) ClaimJPYXMintingReward(ctx sdk.Context, addr sdk.AccAddress, multiplierName string) error {
-	claim, found := k.GetJPYXMintingClaim(ctx, addr)
+// ClaimJpyxMintingReward sends the reward amount to the input address and zero's out the claim in the store
+func (k Keeper) ClaimJpyxMintingReward(ctx sdk.Context, addr sdk.AccAddress, multiplierName string) error {
+	claim, found := k.GetJpyxMintingClaim(ctx, addr)
 	if !found {
 		return sdkerrors.Wrapf(types.ErrClaimNotFound, "address: %s", addr)
 	}
@@ -38,7 +38,7 @@ func (k Keeper) ClaimJPYXMintingReward(ctx sdk.Context, addr sdk.AccAddress, mul
 		return sdkerrors.Wrapf(types.ErrClaimExpired, "block time %s > claim end time %s", ctx.BlockTime(), claimEnd)
 	}
 
-	claim, err := k.SynchronizeJPYXMintingClaim(ctx, claim)
+	claim, err := k.SynchronizeJpyxMintingClaim(ctx, claim)
 	if err != nil {
 		return err
 	}
@@ -58,7 +58,7 @@ func (k Keeper) ClaimJPYXMintingReward(ctx sdk.Context, addr sdk.AccAddress, mul
 		return err
 	}
 
-	k.ZeroJPYXMintingClaim(ctx, claim)
+	k.ZeroJpyxMintingClaim(ctx, claim)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(

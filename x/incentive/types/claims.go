@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	JPYXMintingClaimType = "jpyx_minting"
+	JpyxMintingClaimType = "jpyx_minting"
 	BondDenom            = "ujsmn"
 )
 
@@ -54,9 +54,9 @@ func (c BaseMultiClaim) Validate() error {
 
 // -------------- Custom Claim Types --------------
 
-// NewJPYXMintingClaim returns a new JPYXMintingClaim
-func NewJPYXMintingClaim(owner sdk.AccAddress, reward sdk.Coin, rewardIndexes RewardIndexes) JPYXMintingClaim {
-	return JPYXMintingClaim{
+// NewJpyxMintingClaim returns a new JpyxMintingClaim
+func NewJpyxMintingClaim(owner sdk.AccAddress, reward sdk.Coin, rewardIndexes RewardIndexes) JpyxMintingClaim {
+	return JpyxMintingClaim{
 		BaseClaim: &BaseClaim{
 			Owner:  owner.Bytes(),
 			Reward: reward,
@@ -66,18 +66,18 @@ func NewJPYXMintingClaim(owner sdk.AccAddress, reward sdk.Coin, rewardIndexes Re
 }
 
 // GetType returns the claim's type
-func (c JPYXMintingClaim) GetType() string { return JPYXMintingClaimType }
+func (c JpyxMintingClaim) GetType() string { return JpyxMintingClaimType }
 
 // GetReward returns the claim's reward coin
-func (c JPYXMintingClaim) GetReward() sdk.Coin { return c.Reward }
+func (c JpyxMintingClaim) GetReward() sdk.Coin { return c.Reward }
 
 // GetOwner returns the claim's owner
-func (c JPYXMintingClaim) GetOwner() sdk.AccAddress {
+func (c JpyxMintingClaim) GetOwner() sdk.AccAddress {
 	return c.Owner.AccAddress()
 }
 
 // Validate performs a basic check of a Claim fields
-func (c JPYXMintingClaim) Validate() error {
+func (c JpyxMintingClaim) Validate() error {
 	if err := RewardIndexes(c.RewardIndexes).Validate(); err != nil {
 		return err
 	}
@@ -86,7 +86,7 @@ func (c JPYXMintingClaim) Validate() error {
 }
 
 // HasRewardIndex check if a claim has a reward index for the input collateral type
-func (c JPYXMintingClaim) HasRewardIndex(collateralType string) (int64, bool) {
+func (c JpyxMintingClaim) HasRewardIndex(collateralType string) (int64, bool) {
 	for index, ri := range c.RewardIndexes {
 		if ri.CollateralType == collateralType {
 			return int64(index), true
@@ -95,12 +95,12 @@ func (c JPYXMintingClaim) HasRewardIndex(collateralType string) (int64, bool) {
 	return 0, false
 }
 
-// JPYXMintingClaims slice of JPYXMintingClaim
-type JPYXMintingClaims []JPYXMintingClaim
+// JpyxMintingClaims slice of JpyxMintingClaim
+type JpyxMintingClaims []JpyxMintingClaim
 
 // Validate checks if all the claims are valid and there are no duplicated
 // entries.
-func (cs JPYXMintingClaims) Validate() error {
+func (cs JpyxMintingClaims) Validate() error {
 	for _, c := range cs {
 		if err := c.Validate(); err != nil {
 			return err

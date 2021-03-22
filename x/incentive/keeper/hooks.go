@@ -12,7 +12,7 @@ type Hooks struct {
 	k Keeper
 }
 
-var _ cdptypes.CDPHooks = Hooks{}
+var _ cdptypes.CdpHooks = Hooks{}
 var _ stakingtypes.StakingHooks = Hooks{}
 
 // Hooks create new incentive hooks
@@ -20,16 +20,16 @@ func (k Keeper) Hooks() Hooks { return Hooks{k} }
 
 // ------------------- Cdp Module Hooks -------------------
 
-// AfterCDPCreated function that runs after a cdp is created
-func (h Hooks) AfterCDPCreated(ctx sdk.Context, cdp cdptypes.CDP) {
-	h.k.InitializeJPYXMintingClaim(ctx, cdp)
+// AfterCdpCreated function that runs after a cdp is created
+func (h Hooks) AfterCdpCreated(ctx sdk.Context, cdp cdptypes.Cdp) {
+	h.k.InitializeJpyxMintingClaim(ctx, cdp)
 }
 
-// BeforeCDPModified function that runs before a cdp is modified
+// BeforeCdpModified function that runs before a cdp is modified
 // note that this is called immediately after interest is synchronized, and so could potentially
-// be called AfterCDPInterestUpdated or something like that, if we we're to expand the scope of cdp hooks
-func (h Hooks) BeforeCDPModified(ctx sdk.Context, cdp cdptypes.CDP) {
-	h.k.SynchronizeJPYXMintingReward(ctx, cdp)
+// be called AfterCdpInterestUpdated or something like that, if we we're to expand the scope of cdp hooks
+func (h Hooks) BeforeCdpModified(ctx sdk.Context, cdp cdptypes.Cdp) {
+	h.k.SynchronizeJpyxMintingReward(ctx, cdp)
 }
 
 // ------------------- Staking Module Hooks -------------------

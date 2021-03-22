@@ -404,7 +404,7 @@ func New(
 		&stakingKeeper, govRouter,
 	)
 
-	app.cdpKeeper = *cdpKeeper.SetHooks(cdptypes.NewMultiCDPHooks(app.incentiveKeeper.Hooks()))
+	app.cdpKeeper = *cdpKeeper.SetHooks(cdptypes.NewMultiCdpHooks(app.incentiveKeeper.Hooks()))
 
 	/****  Module Options ****/
 

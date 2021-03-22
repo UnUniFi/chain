@@ -26,13 +26,13 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKe
 		if !found {
 			panic(fmt.Sprintf("jpyx minting collateral type %s not found in cdp collateral types", rp.CollateralType))
 		}
-		k.SetJPYXMintingRewardFactor(ctx, rp.CollateralType, sdk.ZeroDec())
+		k.SetJpyxMintingRewardFactor(ctx, rp.CollateralType, sdk.ZeroDec())
 	}
 
 	k.SetParams(ctx, gs.Params)
 
 	for _, gat := range gs.JpyxAccumulationTimes {
-		k.SetPreviousJPYXMintingAccrualTime(ctx, gat.CollateralType, gat.PreviousAccumulationTime)
+		k.SetPreviousJpyxMintingAccrualTime(ctx, gat.CollateralType, gat.PreviousAccumulationTime)
 	}
 
 	for i, claim := range gs.JpyxMintingClaims {
@@ -41,7 +41,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKe
 				gs.JpyxMintingClaims[i].RewardIndexes[j].RewardFactor = sdk.ZeroDec()
 			}
 		}
-		k.SetJPYXMintingClaim(ctx, claim)
+		k.SetJpyxMintingClaim(ctx, claim)
 	}
 }
 
@@ -49,12 +49,12 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKe
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 	params := k.GetParams(ctx)
 
-	jpyxClaims := k.GetAllJPYXMintingClaims(ctx)
+	jpyxClaims := k.GetAllJpyxMintingClaims(ctx)
 
-	synchronizedJpyxClaims := types.JPYXMintingClaims{}
+	synchronizedJpyxClaims := types.JpyxMintingClaims{}
 
 	for _, jpyxClaim := range jpyxClaims {
-		claim, err := k.SynchronizeJPYXMintingClaim(ctx, jpyxClaim)
+		claim, err := k.SynchronizeJpyxMintingClaim(ctx, jpyxClaim)
 		if err != nil {
 			panic(err)
 		}
@@ -66,7 +66,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 
 	var jpyxMintingGats types.GenesisAccumulationTimes
 	for _, rp := range params.JpyxMintingRewardPeriods {
-		pat, found := k.GetPreviousJPYXMintingAccrualTime(ctx, rp.CollateralType)
+		pat, found := k.GetPreviousJpyxMintingAccrualTime(ctx, rp.CollateralType)
 		if !found {
 			panic(fmt.Sprintf("expected previous jpyx minting reward accrual time to be set in state for %s", rp.CollateralType))
 		}

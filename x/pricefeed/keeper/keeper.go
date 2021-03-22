@@ -122,7 +122,7 @@ func (k Keeper) SetCurrentPrices(ctx sdk.Context, marketID string) error {
 		// NOTE: The current price stored will continue storing the most recent (expired)
 		// price if this is not set.
 		// This zero's out the current price stored value for that market and ensures
-		// that CDP methods that GetCurrentPrice will return error.
+		// that Cdp methods that GetCurrentPrice will return error.
 		k.setCurrentPrice(ctx, marketID, types.CurrentPrice{})
 		return types.ErrNoValidPrice
 	}

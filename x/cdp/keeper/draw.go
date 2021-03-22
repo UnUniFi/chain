@@ -25,7 +25,7 @@ func (k Keeper) AddPrincipal(ctx sdk.Context, owner sdk.AccAddress, collateralTy
 	if err != nil {
 		return err
 	}
-	k.hooks.BeforeCDPModified(ctx, cdp)
+	k.hooks.BeforeCdpModified(ctx, cdp)
 	cdp = k.SynchronizeInterest(ctx, cdp)
 
 	err = k.ValidateCollateralizationRatio(ctx, cdp.Collateral, cdp.Type, cdp.Principal.Add(principal), cdp.AccumulatedFees)
@@ -87,7 +87,7 @@ func (k Keeper) RepayPrincipal(ctx sdk.Context, owner sdk.AccAddress, collateral
 	if err != nil {
 		return err
 	}
-	k.hooks.BeforeCDPModified(ctx, cdp)
+	k.hooks.BeforeCdpModified(ctx, cdp)
 	cdp = k.SynchronizeInterest(ctx, cdp)
 
 	// Note: assumes cdp.Principal and cdp.AccumulatedFees don't change during calculations
@@ -175,7 +175,7 @@ func (k Keeper) RepayPrincipal(ctx sdk.Context, owner sdk.AccAddress, collateral
 }
 
 // ValidatePaymentCoins validates that the input coins are valid for repaying debt
-func (k Keeper) ValidatePaymentCoins(ctx sdk.Context, cdp types.CDP, payment sdk.Coin) error {
+func (k Keeper) ValidatePaymentCoins(ctx sdk.Context, cdp types.Cdp, payment sdk.Coin) error {
 	debt := cdp.GetTotalPrincipal()
 	if payment.Denom != debt.Denom {
 		return sdkerrors.Wrapf(types.ErrInvalidPayment, "cdp %d: expected %s, got %s", cdp.Id, debt.Denom, payment.Denom)
@@ -188,7 +188,7 @@ func (k Keeper) ValidatePaymentCoins(ctx sdk.Context, cdp types.CDP, payment sdk
 }
 
 // ReturnCollateral returns collateral to depositors on a cdp and removes deposits from the store
-func (k Keeper) ReturnCollateral(ctx sdk.Context, cdp types.CDP) {
+func (k Keeper) ReturnCollateral(ctx sdk.Context, cdp types.Cdp) {
 	deposits := k.GetDeposits(ctx, cdp.Id)
 	for _, deposit := range deposits {
 		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, deposit.Depositor.AccAddress(), sdk.NewCoins(deposit.Amount))
@@ -234,7 +234,7 @@ func (k Keeper) calculatePayment(ctx sdk.Context, owed, fees, payment sdk.Coin) 
 
 // validatePrincipalPayment checks that the payment is either full or does not put the cdp below the debt floor
 // CONTRACT: payment denom must be checked before calling this function.
-func (k Keeper) validatePrincipalPayment(ctx sdk.Context, cdp types.CDP, payment sdk.Coin) error {
+func (k Keeper) validatePrincipalPayment(ctx sdk.Context, cdp types.Cdp, payment sdk.Coin) error {
 	proposedBalance := cdp.Principal.Amount.Sub(payment.Amount)
 	dp, _ := k.GetDebtParam(ctx, payment.Denom)
 	if proposedBalance.GT(sdk.ZeroInt()) && proposedBalance.LT(dp.DebtFloor) {

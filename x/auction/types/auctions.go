@@ -178,8 +178,8 @@ func NewDebtAuction(buyerModAccName string, bid sdk.Coin, initialLot sdk.Coin, e
 			Initiator:       buyerModAccName,
 			Lot:             initialLot,
 			Bidder:          authtypes.NewModuleAddress(buyerModAccName).Bytes(), // send proceeds from the first bid to the buyer.
-			Bid:             bid,                                                                // amount that the buyer is buying - doesn't change over course of auction
-			HasReceivedBids: false,                                                              // new auctions don't have any bids
+			Bid:             bid,                                                 // amount that the buyer is buying - doesn't change over course of auction
+			HasReceivedBids: false,                                               // new auctions don't have any bids
 			EndTime:         endTime,
 			MaxEndTime:      endTime,
 		},
@@ -192,7 +192,7 @@ func NewDebtAuction(buyerModAccName string, bid sdk.Coin, initialLot sdk.Coin, e
 // Initially, in forward auction phase, bids can be placed up to a max bid.
 // Then it switches to a reverse auction phase, where the initial amount up for auction is bid down.
 // Unsold Lot is sent to LotReturns, being divided among the addresses by weight.
-// Collateral auctions are normally used to sell off collateral seized from CDPs.
+// Collateral auctions are normally used to sell off collateral seized from Cdps.
 
 // WithID returns an auction with the ID set.
 func (a CollateralAuction) WithID(id uint64) Auction { a.Id = id; return &a }

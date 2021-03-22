@@ -49,7 +49,7 @@ func (k Keeper) AddCdp(ctx sdk.Context, owner sdk.AccAddress, collateral sdk.Coi
 		k.SetInterestFactor(ctx, collateralType, interestFactor)
 
 	}
-	cdp := types.NewCDP(id, owner, collateral, collateralType, principal, ctx.BlockHeader().Time, interestFactor)
+	cdp := types.NewCdp(id, owner, collateral, collateralType, principal, ctx.BlockHeader().Time, interestFactor)
 	deposit := types.NewDeposit(cdp.Id, owner, collateral)
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, owner, types.ModuleName, sdk.NewCoins(collateral))
 	if err != nil {
@@ -85,7 +85,7 @@ func (k Keeper) AddCdp(ctx sdk.Context, owner sdk.AccAddress, collateral sdk.Coi
 	k.SetDeposit(ctx, deposit)
 	k.SetNextCdpID(ctx, id+1)
 
-	k.hooks.AfterCDPCreated(ctx, cdp)
+	k.hooks.AfterCdpCreated(ctx, cdp)
 
 	// emit events for cdp creation, deposit, and draw
 	ctx.EventManager().EmitEvent(
@@ -113,13 +113,13 @@ func (k Keeper) AddCdp(ctx sdk.Context, owner sdk.AccAddress, collateral sdk.Coi
 }
 
 // UpdateCdpAndCollateralRatioIndex updates the state of an existing cdp in the store by replacing the old index values and updating the store to the latest cdp object values
-func (k Keeper) UpdateCdpAndCollateralRatioIndex(ctx sdk.Context, cdp types.CDP, ratio sdk.Dec) error {
+func (k Keeper) UpdateCdpAndCollateralRatioIndex(ctx sdk.Context, cdp types.Cdp, ratio sdk.Dec) error {
 	err := k.removeOldCollateralRatioIndex(ctx, cdp.Type, cdp.Id)
 	if err != nil {
 		return err
 	}
 
-	err = k.SetCDP(ctx, cdp)
+	err = k.SetCdp(ctx, cdp)
 	if err != nil {
 		return err
 	}
@@ -128,18 +128,18 @@ func (k Keeper) UpdateCdpAndCollateralRatioIndex(ctx sdk.Context, cdp types.CDP,
 }
 
 // DeleteCdpAndCollateralRatioIndex deletes an existing cdp in the store by removing the old index value and deleting the cdp object from the store
-func (k Keeper) DeleteCdpAndCollateralRatioIndex(ctx sdk.Context, cdp types.CDP) error {
+func (k Keeper) DeleteCdpAndCollateralRatioIndex(ctx sdk.Context, cdp types.Cdp) error {
 	err := k.removeOldCollateralRatioIndex(ctx, cdp.Type, cdp.Id)
 	if err != nil {
 		return err
 	}
 
-	return k.DeleteCDP(ctx, cdp)
+	return k.DeleteCdp(ctx, cdp)
 }
 
 // SetCdpAndCollateralRatioIndex sets the cdp and collateral ratio index in the store
-func (k Keeper) SetCdpAndCollateralRatioIndex(ctx sdk.Context, cdp types.CDP, ratio sdk.Dec) error {
-	err := k.SetCDP(ctx, cdp)
+func (k Keeper) SetCdpAndCollateralRatioIndex(ctx sdk.Context, cdp types.Cdp, ratio sdk.Dec) error {
+	err := k.SetCdp(ctx, cdp)
 	if err != nil {
 		return err
 	}
@@ -148,12 +148,12 @@ func (k Keeper) SetCdpAndCollateralRatioIndex(ctx sdk.Context, cdp types.CDP, ra
 }
 
 func (k Keeper) removeOldCollateralRatioIndex(ctx sdk.Context, ctype string, id uint64) error {
-	storedCDP, found := k.GetCDP(ctx, ctype, id)
+	storedCdp, found := k.GetCdp(ctx, ctype, id)
 	if !found {
-		return sdkerrors.Wrapf(types.ErrCdpNotFound, "%d", storedCDP.Id)
+		return sdkerrors.Wrapf(types.ErrCdpNotFound, "%d", storedCdp.Id)
 	}
-	oldCollateralToDebtRatio := k.CalculateCollateralToDebtRatio(ctx, storedCDP.Collateral, storedCDP.Type, storedCDP.GetTotalPrincipal())
-	k.RemoveCdpCollateralRatioIndex(ctx, storedCDP.Type, storedCDP.Id, oldCollateralToDebtRatio)
+	oldCollateralToDebtRatio := k.CalculateCollateralToDebtRatio(ctx, storedCdp.Collateral, storedCdp.Type, storedCdp.GetTotalPrincipal())
+	k.RemoveCdpCollateralRatioIndex(ctx, storedCdp.Type, storedCdp.Id, oldCollateralToDebtRatio)
 	return nil
 }
 
@@ -180,7 +180,7 @@ func (k Keeper) GetCdpID(ctx sdk.Context, owner sdk.AccAddress, collateralType s
 		return 0, false
 	}
 	for _, id := range cdpIDs {
-		_, found = k.GetCDP(ctx, collateralType, id)
+		_, found = k.GetCdp(ctx, collateralType, id)
 		if found {
 			return id, true
 		}
@@ -201,41 +201,41 @@ func (k Keeper) GetCdpIdsByOwner(ctx sdk.Context, owner sdk.AccAddress) (cdpIDs 
 }
 
 // GetCdpByOwnerAndCollateralType queries cdps owned by owner and returns the cdp with matching denom
-func (k Keeper) GetCdpByOwnerAndCollateralType(ctx sdk.Context, owner sdk.AccAddress, collateralType string) (types.CDP, bool) {
+func (k Keeper) GetCdpByOwnerAndCollateralType(ctx sdk.Context, owner sdk.AccAddress, collateralType string) (types.Cdp, bool) {
 	cdpIDs, found := k.GetCdpIdsByOwner(ctx, owner)
 	if !found {
-		return types.CDP{}, false
+		return types.Cdp{}, false
 	}
 	for _, id := range cdpIDs {
-		cdp, found := k.GetCDP(ctx, collateralType, id)
+		cdp, found := k.GetCdp(ctx, collateralType, id)
 		if found {
 			return cdp, true
 		}
 	}
-	return types.CDP{}, false
+	return types.Cdp{}, false
 }
 
-// GetCDP returns the cdp associated with a particular collateral denom and id
-func (k Keeper) GetCDP(ctx sdk.Context, collateralType string, cdpID uint64) (types.CDP, bool) {
+// GetCdp returns the cdp associated with a particular collateral denom and id
+func (k Keeper) GetCdp(ctx sdk.Context, collateralType string, cdpID uint64) (types.Cdp, bool) {
 	// get store
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpKey))
 	db, found := k.GetCollateralTypePrefix(ctx, collateralType)
 	if !found {
-		return types.CDP{}, false
+		return types.Cdp{}, false
 	}
-	// get CDP
+	// get Cdp
 	bz := store.Get(types.CdpKeySuffix(db, cdpID))
 	// unmarshal
 	if bz == nil {
-		return types.CDP{}, false
+		return types.Cdp{}, false
 	}
-	var cdp types.CDP
+	var cdp types.Cdp
 	k.cdc.MustUnmarshalBinaryLengthPrefixed(bz, &cdp)
 	return cdp, true
 }
 
-// SetCDP sets a cdp in the store
-func (k Keeper) SetCDP(ctx sdk.Context, cdp types.CDP) error {
+// SetCdp sets a cdp in the store
+func (k Keeper) SetCdp(ctx sdk.Context, cdp types.Cdp) error {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpKey))
 	db, found := k.GetCollateralTypePrefix(ctx, cdp.Type)
 	if !found {
@@ -246,8 +246,8 @@ func (k Keeper) SetCDP(ctx sdk.Context, cdp types.CDP) error {
 	return nil
 }
 
-// DeleteCDP deletes a cdp from the store
-func (k Keeper) DeleteCDP(ctx sdk.Context, cdp types.CDP) error {
+// DeleteCdp deletes a cdp from the store
+func (k Keeper) DeleteCdp(ctx sdk.Context, cdp types.Cdp) error {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpKey))
 	db, found := k.GetCollateralTypePrefix(ctx, cdp.Type)
 	if !found {
@@ -259,8 +259,8 @@ func (k Keeper) DeleteCDP(ctx sdk.Context, cdp types.CDP) error {
 }
 
 // GetAllCdps returns all cdps from the store
-func (k Keeper) GetAllCdps(ctx sdk.Context) (cdps types.CDPs) {
-	k.IterateAllCdps(ctx, func(cdp types.CDP) bool {
+func (k Keeper) GetAllCdps(ctx sdk.Context) (cdps types.Cdps) {
+	k.IterateAllCdps(ctx, func(cdp types.Cdp) bool {
 		cdps = append(cdps, cdp)
 		return false
 	})
@@ -268,8 +268,8 @@ func (k Keeper) GetAllCdps(ctx sdk.Context) (cdps types.CDPs) {
 }
 
 // GetAllCdpsByCollateralType returns all cdps of a particular collateral type from the store
-func (k Keeper) GetAllCdpsByCollateralType(ctx sdk.Context, collateralType string) (cdps types.CDPs) {
-	k.IterateCdpsByCollateralType(ctx, collateralType, func(cdp types.CDP) bool {
+func (k Keeper) GetAllCdpsByCollateralType(ctx sdk.Context, collateralType string) (cdps types.Cdps) {
+	k.IterateCdpsByCollateralType(ctx, collateralType, func(cdp types.Cdp) bool {
 		cdps = append(cdps, cdp)
 		return false
 	})
@@ -277,8 +277,8 @@ func (k Keeper) GetAllCdpsByCollateralType(ctx sdk.Context, collateralType strin
 }
 
 // GetAllCdpsByCollateralTypeAndRatio returns all cdps of a particular collateral type and below a certain collateralization ratio
-func (k Keeper) GetAllCdpsByCollateralTypeAndRatio(ctx sdk.Context, collateralType string, targetRatio sdk.Dec) (cdps types.CDPs) {
-	k.IterateCdpsByCollateralRatio(ctx, collateralType, targetRatio, func(cdp types.CDP) bool {
+func (k Keeper) GetAllCdpsByCollateralTypeAndRatio(ctx sdk.Context, collateralType string, targetRatio sdk.Dec) (cdps types.Cdps) {
+	k.IterateCdpsByCollateralRatio(ctx, collateralType, targetRatio, func(cdp types.Cdp) bool {
 		cdps = append(cdps, cdp)
 		return false
 	})
@@ -303,7 +303,7 @@ func (k Keeper) GetNextCdpID(ctx sdk.Context) (id uint64) {
 }
 
 // IndexCdpByOwner sets the cdp id in the store, indexed by the owner
-func (k Keeper) IndexCdpByOwner(ctx sdk.Context, cdp types.CDP) {
+func (k Keeper) IndexCdpByOwner(ctx sdk.Context, cdp types.Cdp) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpIDKey))
 	cdpIDs, found := k.GetCdpIdsByOwner(ctx, cdp.Owner.AccAddress())
 
@@ -319,7 +319,7 @@ func (k Keeper) IndexCdpByOwner(ctx sdk.Context, cdp types.CDP) {
 }
 
 // RemoveCdpOwnerIndex deletes the cdp id from the store's index of cdps by owner
-func (k Keeper) RemoveCdpOwnerIndex(ctx sdk.Context, cdp types.CDP) {
+func (k Keeper) RemoveCdpOwnerIndex(ctx sdk.Context, cdp types.Cdp) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpIDKey))
 	cdpIDs, found := k.GetCdpIdsByOwner(ctx, cdp.Owner.AccAddress())
 	if !found {
@@ -492,8 +492,8 @@ func (k Keeper) CalculateCollateralToDebtRatio(ctx sdk.Context, collateral sdk.C
 	return collateralBaseUnits.Quo(debtTotal)
 }
 
-// LoadAugmentedCDP creates a new augmented CDP from an existing CDP
-func (k Keeper) LoadAugmentedCDP(ctx sdk.Context, cdp types.CDP) types.AugmentedCDP {
+// LoadAugmentedCdp creates a new augmented Cdp from an existing Cdp
+func (k Keeper) LoadAugmentedCdp(ctx sdk.Context, cdp types.Cdp) types.AugmentedCdp {
 	// sync the latest interest of the cdp
 	interestAccumulated := k.CalculateNewInterest(ctx, cdp)
 	cdp.AccumulatedFees = cdp.AccumulatedFees.Add(interestAccumulated)
@@ -509,15 +509,15 @@ func (k Keeper) LoadAugmentedCDP(ctx sdk.Context, cdp types.CDP) types.Augmented
 	// calculate collateralization ratio
 	collateralizationRatio, err := k.CalculateCollateralizationRatio(ctx, cdp.Collateral, cdp.Type, cdp.Principal, cdp.AccumulatedFees, liquidation)
 	if err != nil {
-		return types.AugmentedCDP{CDP: cdp}
+		return types.AugmentedCdp{Cdp: cdp}
 	}
 	// convert collateral value to debt coin
 	totalDebt := cdp.GetTotalPrincipal().Amount
 	collateralValueInDebtDenom := sdk.NewDecFromInt(totalDebt).Mul(collateralizationRatio)
 	collateralValueInDebt := sdk.NewCoin(cdp.Principal.Denom, collateralValueInDebtDenom.RoundInt())
 	// create new augmuented cdp
-	augmentedCDP := types.NewAugmentedCDP(cdp, collateralValueInDebt, collateralizationRatio)
-	return augmentedCDP
+	augmentedCdp := types.NewAugmentedCdp(cdp, collateralValueInDebt, collateralizationRatio)
+	return augmentedCdp
 }
 
 // CalculateCollateralizationRatio returns the collateralization ratio of the input collateral to the input debt plus fees

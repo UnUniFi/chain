@@ -69,7 +69,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, ak types.AccountKeeper, pk ty
 		if cdp.Id == gs.StartingCdpId {
 			panic(fmt.Sprintf("starting cdp id is assigned to an existing cdp: %s", cdp.String()))
 		}
-		err := k.SetCDP(ctx, cdp)
+		err := k.SetCdp(ctx, cdp)
 		if err != nil {
 			panic(fmt.Sprintf("error setting cdp: %v", err))
 		}
@@ -91,9 +91,9 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, ak types.AccountKeeper, pk ty
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 	params := k.GetParams(ctx)
 
-	cdps := types.CDPs{}
+	cdps := types.Cdps{}
 	deposits := types.Deposits{}
-	k.IterateAllCdps(ctx, func(cdp types.CDP) (stop bool) {
+	k.IterateAllCdps(ctx, func(cdp types.Cdp) (stop bool) {
 		syncedCdp := k.SynchronizeInterest(ctx, cdp)
 		cdps = append(cdps, syncedCdp)
 		k.IterateDeposits(ctx, cdp.Id, func(deposit types.Deposit) (stop bool) {

@@ -97,6 +97,6 @@ type BankKeeper interface {
 type CdpKeeper interface {
 	GetInterestFactor(ctx sdk.Context, collateralType string) (sdk.Dec, bool)
 	GetTotalPrincipal(ctx sdk.Context, collateralType string, principalDenom string) (total sdk.Int)
-	GetCdpByOwnerAndCollateralType(ctx sdk.Context, owner sdk.AccAddress, collateralType string) (cdptypes.CDP, bool)
+	GetCdpByOwnerAndCollateralType(ctx sdk.Context, owner sdk.AccAddress, collateralType string) (cdptypes.Cdp, bool)
 	GetCollateral(ctx sdk.Context, collateralType string) (cdptypes.CollateralParam, bool)
 }

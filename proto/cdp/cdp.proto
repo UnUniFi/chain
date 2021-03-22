@@ -7,7 +7,7 @@ import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/lcnem/jpyx/x/cdp/types";
 
-message CDP {
+message Cdp {
   uint64 id = 1 [(gogoproto.moretags) = "yaml:\"id\""];
   string owner = 2 [
     (gogoproto.moretags) = "yaml:\"owner\"",
@@ -52,8 +52,8 @@ message Deposit {
   ];
 }
 
-message AugmentedCDP {
-  CDP cdp = 1 [
+message AugmentedCdp {
+  Cdp cdp = 1 [
     (gogoproto.moretags) = "yaml:\"cdp\"",
     (gogoproto.embed) = true,
     (gogoproto.nullable) = false
@@ -69,7 +69,7 @@ message AugmentedCDP {
   ];
 }
 
-message MsgCreateCDP {
+message MsgCreateCdp {
   string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",

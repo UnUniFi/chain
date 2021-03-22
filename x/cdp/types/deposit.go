@@ -35,7 +35,7 @@ func (ds Deposits) String() string {
 	if len(ds) == 0 {
 		return "[]"
 	}
-	out := fmt.Sprintf("Deposits for CDP %d:", ds[0].CdpId)
+	out := fmt.Sprintf("Deposits for Cdp %d:", ds[0].CdpId)
 	for _, dep := range ds {
 		out += fmt.Sprintf("\n  %s: %s", dep.Depositor, dep.Amount)
 	}

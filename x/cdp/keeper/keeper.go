@@ -23,7 +23,7 @@ type (
 		bankKeeper      types.BankKeeper
 		auctionKeeper   types.AuctionKeeper
 		pricefeedKeeper types.PricefeedKeeper
-		hooks           types.CDPHooks
+		hooks           types.CdpHooks
 		maccPerms       map[string][]string
 	}
 )
@@ -54,7 +54,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 // SetHooks sets the cdp keeper hooks
-func (k *Keeper) SetHooks(hooks types.CDPHooks) *Keeper {
+func (k *Keeper) SetHooks(hooks types.CdpHooks) *Keeper {
 	if k.hooks != nil {
 		panic("cannot set validator hooks twice")
 	}
@@ -84,12 +84,12 @@ func (k Keeper) CdpCollateralRatioIndexIterator(ctx sdk.Context, collateralType 
 }
 
 // IterateAllCdps iterates over all cdps and performs a callback function
-func (k Keeper) IterateAllCdps(ctx sdk.Context, cb func(cdp types.CDP) (stop bool)) {
+func (k Keeper) IterateAllCdps(ctx sdk.Context, cb func(cdp types.Cdp) (stop bool)) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpKey))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
-		var cdp types.CDP
+		var cdp types.Cdp
 		k.cdc.MustUnmarshalBinaryLengthPrefixed(iterator.Value(), &cdp)
 
 		if cb(cdp) {
@@ -99,12 +99,12 @@ func (k Keeper) IterateAllCdps(ctx sdk.Context, cb func(cdp types.CDP) (stop boo
 }
 
 // IterateCdpsByCollateralType iterates over cdps with matching denom and performs a callback function
-func (k Keeper) IterateCdpsByCollateralType(ctx sdk.Context, collateralType string, cb func(cdp types.CDP) (stop bool)) {
+func (k Keeper) IterateCdpsByCollateralType(ctx sdk.Context, collateralType string, cb func(cdp types.Cdp) (stop bool)) {
 	iterator := k.CdpDenomIndexIterator(ctx, collateralType)
 
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
-		var cdp types.CDP
+		var cdp types.Cdp
 		k.cdc.MustUnmarshalBinaryLengthPrefixed(iterator.Value(), &cdp)
 		if cb(cdp) {
 			break
@@ -114,13 +114,13 @@ func (k Keeper) IterateCdpsByCollateralType(ctx sdk.Context, collateralType stri
 
 // IterateCdpsByCollateralRatio iterate over cdps with collateral denom equal to denom and
 // collateral:debt ratio LESS THAN targetRatio and performs a callback function.
-func (k Keeper) IterateCdpsByCollateralRatio(ctx sdk.Context, collateralType string, targetRatio sdk.Dec, cb func(cdp types.CDP) (stop bool)) {
+func (k Keeper) IterateCdpsByCollateralRatio(ctx sdk.Context, collateralType string, targetRatio sdk.Dec, cb func(cdp types.Cdp) (stop bool)) {
 	iterator := k.CdpCollateralRatioIndexIterator(ctx, collateralType, targetRatio)
 
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		_, id, _ := types.SplitCollateralRatioKey(iterator.Key())
-		cdp, found := k.GetCDP(ctx, collateralType, id)
+		cdp, found := k.GetCdp(ctx, collateralType, id)
 		if !found {
 			panic(fmt.Sprintf("cdp %d does not exist", id))
 		}
@@ -131,11 +131,11 @@ func (k Keeper) IterateCdpsByCollateralRatio(ctx sdk.Context, collateralType str
 	}
 }
 
-// GetSliceOfCDPsByRatioAndType returns a slice of cdps of size equal to the input cutoffCount
+// GetSliceOfCdpsByRatioAndType returns a slice of cdps of size equal to the input cutoffCount
 // sorted by target ratio in ascending order (ie, the lowest collateral:debt ratio cdps are returned first)
-func (k Keeper) GetSliceOfCDPsByRatioAndType(ctx sdk.Context, cutoffCount sdk.Int, targetRatio sdk.Dec, collateralType string) (cdps types.CDPs) {
+func (k Keeper) GetSliceOfCdpsByRatioAndType(ctx sdk.Context, cutoffCount sdk.Int, targetRatio sdk.Dec, collateralType string) (cdps types.Cdps) {
 	count := sdk.ZeroInt()
-	k.IterateCdpsByCollateralRatio(ctx, collateralType, targetRatio, func(cdp types.CDP) bool {
+	k.IterateCdpsByCollateralRatio(ctx, collateralType, targetRatio, func(cdp types.Cdp) bool {
 		cdps = append(cdps, cdp)
 		count = count.Add(sdk.OneInt())
 		if count.GTE(cutoffCount) {

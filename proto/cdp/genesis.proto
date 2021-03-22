@@ -15,7 +15,7 @@ message GenesisState {
     (gogoproto.moretags) = "yaml:\"params\"",
     (gogoproto.nullable) = false
   ];
-  repeated CDP cdps = 2 [
+  repeated Cdp cdps = 2 [
     (gogoproto.moretags) = "yaml:\"cdps\"",
     (gogoproto.nullable) = false
   ];

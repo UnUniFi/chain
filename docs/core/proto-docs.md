@@ -27,12 +27,12 @@
     - [Query](#jpyx.auction.Query)
   
 - [cdp/cdp.proto](#cdp/cdp.proto)
-    - [AugmentedCDP](#jpyx.cdp.AugmentedCDP)
-    - [CDP](#jpyx.cdp.CDP)
+    - [AugmentedCdp](#jpyx.cdp.AugmentedCdp)
+    - [Cdp](#jpyx.cdp.Cdp)
     - [CollateralParam](#jpyx.cdp.CollateralParam)
     - [DebtParam](#jpyx.cdp.DebtParam)
     - [Deposit](#jpyx.cdp.Deposit)
-    - [MsgCreateCDP](#jpyx.cdp.MsgCreateCDP)
+    - [MsgCreateCdp](#jpyx.cdp.MsgCreateCdp)
     - [MsgDeposit](#jpyx.cdp.MsgDeposit)
     - [MsgDrawDebt](#jpyx.cdp.MsgDrawDebt)
     - [MsgLiquidate](#jpyx.cdp.MsgLiquidate)
@@ -58,8 +58,8 @@
 - [incentive/incentive.proto](#incentive/incentive.proto)
     - [BaseClaim](#jpyx.incentive.BaseClaim)
     - [BaseMultiClaim](#jpyx.incentive.BaseMultiClaim)
-    - [JPYXMintingClaim](#jpyx.incentive.JPYXMintingClaim)
-    - [MsgClaimJPYXMintingReward](#jpyx.incentive.MsgClaimJPYXMintingReward)
+    - [JpyxMintingClaim](#jpyx.incentive.JpyxMintingClaim)
+    - [MsgClaimJpyxMintingReward](#jpyx.incentive.MsgClaimJpyxMintingReward)
     - [Multiplier](#jpyx.incentive.Multiplier)
     - [Params](#jpyx.incentive.Params)
     - [RewardIndex](#jpyx.incentive.RewardIndex)
@@ -413,15 +413,15 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.cdp.AugmentedCDP"></a>
+<a name="jpyx.cdp.AugmentedCdp"></a>
 
-### AugmentedCDP
+### AugmentedCdp
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `cdp` | [CDP](#jpyx.cdp.CDP) |  |  |
+| `cdp` | [Cdp](#jpyx.cdp.Cdp) |  |  |
 | `collateral_value` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `collateralization_ratio` | [string](#string) |  |  |
 
@@ -430,9 +430,9 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.cdp.CDP"></a>
+<a name="jpyx.cdp.Cdp"></a>
 
-### CDP
+### Cdp
 
 
 
@@ -514,9 +514,9 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.cdp.MsgCreateCDP"></a>
+<a name="jpyx.cdp.MsgCreateCdp"></a>
 
-### MsgCreateCDP
+### MsgCreateCdp
 
 
 
@@ -683,7 +683,7 @@ GenesisState defines the cdp module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#jpyx.cdp.Params) |  |  |
-| `cdps` | [CDP](#jpyx.cdp.CDP) | repeated |  |
+| `cdps` | [Cdp](#jpyx.cdp.Cdp) | repeated |  |
 | `deposits` | [Deposit](#jpyx.cdp.Deposit) | repeated |  |
 | `starting_cdp_id` | [uint64](#uint64) |  |  |
 | `debt_denom` | [string](#string) |  |  |
@@ -751,7 +751,7 @@ GenesisState defines the cdp module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `Cdp` | [CDP](#jpyx.cdp.CDP) | repeated |  |
+| `cdp` | [Cdp](#jpyx.cdp.Cdp) | repeated |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
 
 
@@ -783,7 +783,7 @@ this line is used by starport scaffolding # 3
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `Cdp` | [CDP](#jpyx.cdp.CDP) |  |  |
+| `cdp` | [Cdp](#jpyx.cdp.Cdp) |  |  |
 
 
 
@@ -875,9 +875,9 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.incentive.JPYXMintingClaim"></a>
+<a name="jpyx.incentive.JpyxMintingClaim"></a>
 
-### JPYXMintingClaim
+### JpyxMintingClaim
 
 
 
@@ -891,9 +891,9 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.incentive.MsgClaimJPYXMintingReward"></a>
+<a name="jpyx.incentive.MsgClaimJpyxMintingReward"></a>
 
-### MsgClaimJPYXMintingReward
+### MsgClaimJpyxMintingReward
 
 
 
@@ -1018,7 +1018,7 @@ GenesisState defines the incentive module's genesis state.
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#jpyx.incentive.Params) |  |  |
 | `jpyx_accumulation_times` | [GenesisAccumulationTime](#jpyx.incentive.GenesisAccumulationTime) | repeated |  |
-| `jpyx_minting_claims` | [JPYXMintingClaim](#jpyx.incentive.JPYXMintingClaim) | repeated | this line is used by starport scaffolding # genesis/proto/state |
+| `jpyx_minting_claims` | [JpyxMintingClaim](#jpyx.incentive.JpyxMintingClaim) | repeated | this line is used by starport scaffolding # genesis/proto/state |
 
 
 

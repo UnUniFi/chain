@@ -112,8 +112,8 @@ type PricefeedKeeper interface {
 	SetCurrentPrices(sdk.Context, string) error
 }
 
-// CDPHooks event hooks for other keepers to run code in response to CDP modifications
-type CDPHooks interface {
-	AfterCDPCreated(ctx sdk.Context, cdp CDP)
-	BeforeCDPModified(ctx sdk.Context, cdp CDP)
+// CdpHooks event hooks for other keepers to run code in response to Cdp modifications
+type CdpHooks interface {
+	AfterCdpCreated(ctx sdk.Context, cdp Cdp)
+	BeforeCdpModified(ctx sdk.Context, cdp Cdp)
 }

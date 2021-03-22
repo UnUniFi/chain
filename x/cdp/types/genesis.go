@@ -15,7 +15,7 @@ const DefaultIndex uint64 = 1
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		DefaultParams(),
-		CDPs{},
+		Cdps{},
 		Deposits{},
 		DefaultCdpStartingID,
 		DefaultDebtDenom,
@@ -46,7 +46,7 @@ func (gs GenesisState) Validate() error {
 		return err
 	}
 
-	if err := CDPs(gs.Cdps).Validate(); err != nil {
+	if err := Cdps(gs.Cdps).Validate(); err != nil {
 		return err
 	}
 
@@ -73,7 +73,7 @@ func (gs GenesisState) Validate() error {
 	return nil
 }
 
-func NewGenesisState(params Params, cdps CDPs, deposits Deposits, startingCdpID uint64,
+func NewGenesisState(params Params, cdps Cdps, deposits Deposits, startingCdpID uint64,
 	debtDenom, govDenom string, prevAccumTimes GenesisAccumulationTimes,
 	totalPrincipals GenesisTotalPrincipals) GenesisState {
 	return GenesisState{

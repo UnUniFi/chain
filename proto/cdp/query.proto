@@ -35,7 +35,7 @@ message QueryGetCdpRequest {
 }
 
 message QueryGetCdpResponse {
-	CDP Cdp = 1;
+	Cdp cdp = 1;
 }
 
 message QueryAllCdpRequest {
@@ -43,6 +43,6 @@ message QueryAllCdpRequest {
 }
 
 message QueryAllCdpResponse {
-	repeated CDP Cdp = 1;
+	repeated Cdp cdp = 1;
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

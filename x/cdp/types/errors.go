@@ -33,12 +33,12 @@ var (
 	ErrDepositNotAvailable = sdkerrors.Register(ModuleName, 12, "deposit in liquidation")
 	// ErrInvalidWithdrawAmount error for invalid withdrawal amount
 	ErrInvalidWithdrawAmount = sdkerrors.Register(ModuleName, 13, "withdrawal amount exceeds deposit")
-	//ErrCdpNotAvailable error for depositing to a CDP in liquidation
+	//ErrCdpNotAvailable error for depositing to a Cdp in liquidation
 	ErrCdpNotAvailable = sdkerrors.Register(ModuleName, 14, "cannot modify cdp in liquidation")
 	// ErrBelowDebtFloor error for creating a cdp with debt below the minimum
 	ErrBelowDebtFloor = sdkerrors.Register(ModuleName, 15, "proposed cdp debt is below minimum")
-	// ErrLoadingAugmentedCDP error loading augmented cdp
-	ErrLoadingAugmentedCDP = sdkerrors.Register(ModuleName, 16, "augmented cdp could not be loaded from cdp")
+	// ErrLoadingAugmentedCdp error loading augmented cdp
+	ErrLoadingAugmentedCdp = sdkerrors.Register(ModuleName, 16, "augmented cdp could not be loaded from cdp")
 	// ErrInvalidDebtRequest error for invalid principal input length
 	ErrInvalidDebtRequest = sdkerrors.Register(ModuleName, 17, "only one principal type per cdp")
 	// ErrDenomPrefixNotFound error for denom prefix not found

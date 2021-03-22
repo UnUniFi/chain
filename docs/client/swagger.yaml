@@ -1055,7 +1055,7 @@ paths:
           schema:
             type: object
             properties:
-              Cdp:
+              cdp:
                 type: array
                 items:
                   type: object
@@ -1225,7 +1225,7 @@ paths:
           schema:
             type: object
             properties:
-              Cdp:
+              cdp:
                 type: object
                 properties:
                   id:
@@ -2993,7 +2993,7 @@ definitions:
 
       NOTE: The amount field is an Int which implements the custom method
       signatures required by gogoproto.
-  jpyx.cdp.CDP:
+  jpyx.cdp.Cdp:
     type: object
     properties:
       id:
@@ -3179,7 +3179,7 @@ definitions:
   jpyx.cdp.QueryAllCdpResponse:
     type: object
     properties:
-      Cdp:
+      cdp:
         type: array
         items:
           type: object
@@ -3269,7 +3269,7 @@ definitions:
   jpyx.cdp.QueryGetCdpResponse:
     type: object
     properties:
-      Cdp:
+      cdp:
         type: object
         properties:
           id:

@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	_ sdk.Msg = &MsgCreateCDP{}
+	_ sdk.Msg = &MsgCreateCdp{}
 	_ sdk.Msg = &MsgDeposit{}
 	_ sdk.Msg = &MsgWithdraw{}
 	_ sdk.Msg = &MsgDrawDebt{}
@@ -18,9 +18,9 @@ var (
 	_ sdk.Msg = &MsgLiquidate{}
 )
 
-// NewMsgCreateCDP returns a new MsgPlaceBid.
-func NewMsgCreateCDP(sender sdk.AccAddress, collateral sdk.Coin, principal sdk.Coin, collateralType string) MsgCreateCDP {
-	return MsgCreateCDP{
+// NewMsgCreateCdp returns a new MsgPlaceBid.
+func NewMsgCreateCdp(sender sdk.AccAddress, collateral sdk.Coin, principal sdk.Coin, collateralType string) MsgCreateCdp {
+	return MsgCreateCdp{
 		Sender:         sender.Bytes(),
 		Collateral:     collateral,
 		Principal:      principal,
@@ -29,13 +29,13 @@ func NewMsgCreateCDP(sender sdk.AccAddress, collateral sdk.Coin, principal sdk.C
 }
 
 // Route return the message type used for routing the message.
-func (msg MsgCreateCDP) Route() string { return RouterKey }
+func (msg MsgCreateCdp) Route() string { return RouterKey }
 
 // Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgCreateCDP) Type() string { return "create_cdp" }
+func (msg MsgCreateCdp) Type() string { return "create_cdp" }
 
 // ValidateBasic does a simple validation check that doesn't require access to any other information.
-func (msg MsgCreateCDP) ValidateBasic() error {
+func (msg MsgCreateCdp) ValidateBasic() error {
 	if msg.Sender.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
@@ -52,13 +52,13 @@ func (msg MsgCreateCDP) ValidateBasic() error {
 }
 
 // GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgCreateCDP) GetSignBytes() []byte {
+func (msg MsgCreateCdp) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
-func (msg MsgCreateCDP) GetSigners() []sdk.AccAddress {
+func (msg MsgCreateCdp) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Sender.AccAddress()}
 }
 
