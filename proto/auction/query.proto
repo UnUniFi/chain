@@ -1,5 +1,5 @@
 syntax = "proto3";
-package jpyx.auction;
+package botany.auction;
 
 import "google/api/annotations.proto";
 import "google/protobuf/any.proto";
@@ -13,14 +13,14 @@ option go_package = "github.com/lcnem/jpyx/x/auction/types";
 // Query defines the gRPC querier service.
 service Query {
 	rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-		option (google.api.http).get = "/jpyx/auction/params";
+		option (google.api.http).get = "/botany/auction/params";
 	}
   // this line is used by starport scaffolding # 2
 	rpc Auction(QueryGetAuctionRequest) returns (QueryGetAuctionResponse) {
-		option (google.api.http).get = "/jpyx/auction/auctions/{id}";
+		option (google.api.http).get = "/botany/auction/auctions/{id}";
 	}
 	rpc AuctionAll(QueryAllAuctionRequest) returns (QueryAllAuctionResponse) {
-		option (google.api.http).get = "/jpyx/auction/auctions";
+		option (google.api.http).get = "/botany/auction/auctions";
 	}
 
 }

@@ -5,55 +5,55 @@
 ## Table of Contents
 
 - [auction/auction.proto](#auction/auction.proto)
-    - [BaseAuction](#jpyx.auction.BaseAuction)
-    - [CollateralAuction](#jpyx.auction.CollateralAuction)
-    - [DebtAuction](#jpyx.auction.DebtAuction)
-    - [MsgPlaceBid](#jpyx.auction.MsgPlaceBid)
-    - [Params](#jpyx.auction.Params)
-    - [SurplusAuction](#jpyx.auction.SurplusAuction)
-    - [WeightedAddresses](#jpyx.auction.WeightedAddresses)
+    - [BaseAuction](#botany.auction.BaseAuction)
+    - [CollateralAuction](#botany.auction.CollateralAuction)
+    - [DebtAuction](#botany.auction.DebtAuction)
+    - [MsgPlaceBid](#botany.auction.MsgPlaceBid)
+    - [Params](#botany.auction.Params)
+    - [SurplusAuction](#botany.auction.SurplusAuction)
+    - [WeightedAddresses](#botany.auction.WeightedAddresses)
   
 - [auction/genesis.proto](#auction/genesis.proto)
-    - [GenesisState](#jpyx.auction.GenesisState)
+    - [GenesisState](#botany.auction.GenesisState)
   
 - [auction/query.proto](#auction/query.proto)
-    - [QueryAllAuctionRequest](#jpyx.auction.QueryAllAuctionRequest)
-    - [QueryAllAuctionResponse](#jpyx.auction.QueryAllAuctionResponse)
-    - [QueryGetAuctionRequest](#jpyx.auction.QueryGetAuctionRequest)
-    - [QueryGetAuctionResponse](#jpyx.auction.QueryGetAuctionResponse)
-    - [QueryParamsRequest](#jpyx.auction.QueryParamsRequest)
-    - [QueryParamsResponse](#jpyx.auction.QueryParamsResponse)
+    - [QueryAllAuctionRequest](#botany.auction.QueryAllAuctionRequest)
+    - [QueryAllAuctionResponse](#botany.auction.QueryAllAuctionResponse)
+    - [QueryGetAuctionRequest](#botany.auction.QueryGetAuctionRequest)
+    - [QueryGetAuctionResponse](#botany.auction.QueryGetAuctionResponse)
+    - [QueryParamsRequest](#botany.auction.QueryParamsRequest)
+    - [QueryParamsResponse](#botany.auction.QueryParamsResponse)
   
-    - [Query](#jpyx.auction.Query)
+    - [Query](#botany.auction.Query)
   
 - [cdp/cdp.proto](#cdp/cdp.proto)
-    - [AugmentedCdp](#jpyx.cdp.AugmentedCdp)
-    - [Cdp](#jpyx.cdp.Cdp)
-    - [CollateralParam](#jpyx.cdp.CollateralParam)
-    - [DebtParam](#jpyx.cdp.DebtParam)
-    - [Deposit](#jpyx.cdp.Deposit)
-    - [MsgCreateCdp](#jpyx.cdp.MsgCreateCdp)
-    - [MsgDeposit](#jpyx.cdp.MsgDeposit)
-    - [MsgDrawDebt](#jpyx.cdp.MsgDrawDebt)
-    - [MsgLiquidate](#jpyx.cdp.MsgLiquidate)
-    - [MsgRepayDebt](#jpyx.cdp.MsgRepayDebt)
-    - [MsgWithdraw](#jpyx.cdp.MsgWithdraw)
-    - [Params](#jpyx.cdp.Params)
+    - [AugmentedCdp](#botany.cdp.AugmentedCdp)
+    - [Cdp](#botany.cdp.Cdp)
+    - [CollateralParam](#botany.cdp.CollateralParam)
+    - [DebtParam](#botany.cdp.DebtParam)
+    - [Deposit](#botany.cdp.Deposit)
+    - [MsgCreateCdp](#botany.cdp.MsgCreateCdp)
+    - [MsgDeposit](#botany.cdp.MsgDeposit)
+    - [MsgDrawDebt](#botany.cdp.MsgDrawDebt)
+    - [MsgLiquidate](#botany.cdp.MsgLiquidate)
+    - [MsgRepayDebt](#botany.cdp.MsgRepayDebt)
+    - [MsgWithdraw](#botany.cdp.MsgWithdraw)
+    - [Params](#botany.cdp.Params)
   
 - [cdp/genesis.proto](#cdp/genesis.proto)
-    - [GenesisAccumulationTime](#jpyx.cdp.GenesisAccumulationTime)
-    - [GenesisState](#jpyx.cdp.GenesisState)
-    - [GenesisTotalPrincipal](#jpyx.cdp.GenesisTotalPrincipal)
+    - [GenesisAccumulationTime](#botany.cdp.GenesisAccumulationTime)
+    - [GenesisState](#botany.cdp.GenesisState)
+    - [GenesisTotalPrincipal](#botany.cdp.GenesisTotalPrincipal)
   
 - [cdp/query.proto](#cdp/query.proto)
-    - [QueryAllCdpRequest](#jpyx.cdp.QueryAllCdpRequest)
-    - [QueryAllCdpResponse](#jpyx.cdp.QueryAllCdpResponse)
-    - [QueryGetCdpRequest](#jpyx.cdp.QueryGetCdpRequest)
-    - [QueryGetCdpResponse](#jpyx.cdp.QueryGetCdpResponse)
-    - [QueryParamsRequest](#jpyx.cdp.QueryParamsRequest)
-    - [QueryParamsResponse](#jpyx.cdp.QueryParamsResponse)
+    - [QueryAllCdpRequest](#botany.cdp.QueryAllCdpRequest)
+    - [QueryAllCdpResponse](#botany.cdp.QueryAllCdpResponse)
+    - [QueryGetCdpRequest](#botany.cdp.QueryGetCdpRequest)
+    - [QueryGetCdpResponse](#botany.cdp.QueryGetCdpResponse)
+    - [QueryParamsRequest](#botany.cdp.QueryParamsRequest)
+    - [QueryParamsResponse](#botany.cdp.QueryParamsResponse)
   
-    - [Query](#jpyx.cdp.Query)
+    - [Query](#botany.cdp.Query)
   
 - [incentive/incentive.proto](#incentive/incentive.proto)
     - [BaseClaim](#jpyx.incentive.BaseClaim)
@@ -91,30 +91,30 @@
     - [Query](#jpyx.jsmndist.Query)
   
 - [pricefeed/pricefeed.proto](#pricefeed/pricefeed.proto)
-    - [CurrentPrice](#jpyx.pricefeed.CurrentPrice)
-    - [Market](#jpyx.pricefeed.Market)
-    - [MsgPostPrice](#jpyx.pricefeed.MsgPostPrice)
-    - [Params](#jpyx.pricefeed.Params)
-    - [PostedPrice](#jpyx.pricefeed.PostedPrice)
+    - [CurrentPrice](#botany.pricefeed.CurrentPrice)
+    - [Market](#botany.pricefeed.Market)
+    - [MsgPostPrice](#botany.pricefeed.MsgPostPrice)
+    - [Params](#botany.pricefeed.Params)
+    - [PostedPrice](#botany.pricefeed.PostedPrice)
   
 - [pricefeed/genesis.proto](#pricefeed/genesis.proto)
-    - [GenesisState](#jpyx.pricefeed.GenesisState)
+    - [GenesisState](#botany.pricefeed.GenesisState)
   
 - [pricefeed/query.proto](#pricefeed/query.proto)
-    - [QueryAllMarketRequest](#jpyx.pricefeed.QueryAllMarketRequest)
-    - [QueryAllMarketResponse](#jpyx.pricefeed.QueryAllMarketResponse)
-    - [QueryAllOracleRequest](#jpyx.pricefeed.QueryAllOracleRequest)
-    - [QueryAllOracleResponse](#jpyx.pricefeed.QueryAllOracleResponse)
-    - [QueryAllPriceRequest](#jpyx.pricefeed.QueryAllPriceRequest)
-    - [QueryAllPriceResponse](#jpyx.pricefeed.QueryAllPriceResponse)
-    - [QueryAllRawPriceRequest](#jpyx.pricefeed.QueryAllRawPriceRequest)
-    - [QueryAllRawPriceResponse](#jpyx.pricefeed.QueryAllRawPriceResponse)
-    - [QueryGetPriceRequest](#jpyx.pricefeed.QueryGetPriceRequest)
-    - [QueryGetPriceResponse](#jpyx.pricefeed.QueryGetPriceResponse)
-    - [QueryParamsRequest](#jpyx.pricefeed.QueryParamsRequest)
-    - [QueryParamsResponse](#jpyx.pricefeed.QueryParamsResponse)
+    - [QueryAllMarketRequest](#botany.pricefeed.QueryAllMarketRequest)
+    - [QueryAllMarketResponse](#botany.pricefeed.QueryAllMarketResponse)
+    - [QueryAllOracleRequest](#botany.pricefeed.QueryAllOracleRequest)
+    - [QueryAllOracleResponse](#botany.pricefeed.QueryAllOracleResponse)
+    - [QueryAllPriceRequest](#botany.pricefeed.QueryAllPriceRequest)
+    - [QueryAllPriceResponse](#botany.pricefeed.QueryAllPriceResponse)
+    - [QueryAllRawPriceRequest](#botany.pricefeed.QueryAllRawPriceRequest)
+    - [QueryAllRawPriceResponse](#botany.pricefeed.QueryAllRawPriceResponse)
+    - [QueryGetPriceRequest](#botany.pricefeed.QueryGetPriceRequest)
+    - [QueryGetPriceResponse](#botany.pricefeed.QueryGetPriceResponse)
+    - [QueryParamsRequest](#botany.pricefeed.QueryParamsRequest)
+    - [QueryParamsResponse](#botany.pricefeed.QueryParamsResponse)
   
-    - [Query](#jpyx.pricefeed.Query)
+    - [Query](#botany.pricefeed.Query)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -127,7 +127,7 @@
 
 
 
-<a name="jpyx.auction.BaseAuction"></a>
+<a name="botany.auction.BaseAuction"></a>
 
 ### BaseAuction
 
@@ -149,7 +149,7 @@
 
 
 
-<a name="jpyx.auction.CollateralAuction"></a>
+<a name="botany.auction.CollateralAuction"></a>
 
 ### CollateralAuction
 
@@ -157,17 +157,17 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `base_auction` | [BaseAuction](#jpyx.auction.BaseAuction) |  |  |
+| `base_auction` | [BaseAuction](#botany.auction.BaseAuction) |  |  |
 | `corresponding_debt` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `max_bid` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-| `lot_returns` | [WeightedAddresses](#jpyx.auction.WeightedAddresses) |  |  |
+| `lot_returns` | [WeightedAddresses](#botany.auction.WeightedAddresses) |  |  |
 
 
 
 
 
 
-<a name="jpyx.auction.DebtAuction"></a>
+<a name="botany.auction.DebtAuction"></a>
 
 ### DebtAuction
 
@@ -175,7 +175,7 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `base_auction` | [BaseAuction](#jpyx.auction.BaseAuction) |  |  |
+| `base_auction` | [BaseAuction](#botany.auction.BaseAuction) |  |  |
 | `corresponding_debt` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
@@ -183,7 +183,7 @@
 
 
 
-<a name="jpyx.auction.MsgPlaceBid"></a>
+<a name="botany.auction.MsgPlaceBid"></a>
 
 ### MsgPlaceBid
 
@@ -200,7 +200,7 @@
 
 
 
-<a name="jpyx.auction.Params"></a>
+<a name="botany.auction.Params"></a>
 
 ### Params
 
@@ -219,7 +219,7 @@
 
 
 
-<a name="jpyx.auction.SurplusAuction"></a>
+<a name="botany.auction.SurplusAuction"></a>
 
 ### SurplusAuction
 
@@ -227,14 +227,14 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `base_auction` | [BaseAuction](#jpyx.auction.BaseAuction) |  |  |
+| `base_auction` | [BaseAuction](#botany.auction.BaseAuction) |  |  |
 
 
 
 
 
 
-<a name="jpyx.auction.WeightedAddresses"></a>
+<a name="botany.auction.WeightedAddresses"></a>
 
 ### WeightedAddresses
 
@@ -266,7 +266,7 @@
 
 
 
-<a name="jpyx.auction.GenesisState"></a>
+<a name="botany.auction.GenesisState"></a>
 
 ### GenesisState
 GenesisState defines the auction module's genesis state.
@@ -275,7 +275,7 @@ GenesisState defines the auction module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `next_auction_id` | [uint64](#uint64) |  |  |
-| `params` | [Params](#jpyx.auction.Params) |  |  |
+| `params` | [Params](#botany.auction.Params) |  |  |
 | `auctions` | [google.protobuf.Any](#google.protobuf.Any) | repeated | this line is used by starport scaffolding # genesis/proto/state |
 
 
@@ -299,7 +299,7 @@ GenesisState defines the auction module's genesis state.
 
 
 
-<a name="jpyx.auction.QueryAllAuctionRequest"></a>
+<a name="botany.auction.QueryAllAuctionRequest"></a>
 
 ### QueryAllAuctionRequest
 
@@ -314,7 +314,7 @@ GenesisState defines the auction module's genesis state.
 
 
 
-<a name="jpyx.auction.QueryAllAuctionResponse"></a>
+<a name="botany.auction.QueryAllAuctionResponse"></a>
 
 ### QueryAllAuctionResponse
 
@@ -330,7 +330,7 @@ GenesisState defines the auction module's genesis state.
 
 
 
-<a name="jpyx.auction.QueryGetAuctionRequest"></a>
+<a name="botany.auction.QueryGetAuctionRequest"></a>
 
 ### QueryGetAuctionRequest
 this line is used by starport scaffolding # 3
@@ -345,7 +345,7 @@ this line is used by starport scaffolding # 3
 
 
 
-<a name="jpyx.auction.QueryGetAuctionResponse"></a>
+<a name="botany.auction.QueryGetAuctionResponse"></a>
 
 ### QueryGetAuctionResponse
 
@@ -360,7 +360,7 @@ this line is used by starport scaffolding # 3
 
 
 
-<a name="jpyx.auction.QueryParamsRequest"></a>
+<a name="botany.auction.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
 
@@ -370,7 +370,7 @@ this line is used by starport scaffolding # 3
 
 
 
-<a name="jpyx.auction.QueryParamsResponse"></a>
+<a name="botany.auction.QueryParamsResponse"></a>
 
 ### QueryParamsResponse
 
@@ -378,7 +378,7 @@ this line is used by starport scaffolding # 3
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#jpyx.auction.Params) |  |  |
+| `params` | [Params](#botany.auction.Params) |  |  |
 
 
 
@@ -391,16 +391,16 @@ this line is used by starport scaffolding # 3
  <!-- end HasExtensions -->
 
 
-<a name="jpyx.auction.Query"></a>
+<a name="botany.auction.Query"></a>
 
 ### Query
 Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#jpyx.auction.QueryParamsRequest) | [QueryParamsResponse](#jpyx.auction.QueryParamsResponse) |  | GET|/jpyx/auction/params|
-| `Auction` | [QueryGetAuctionRequest](#jpyx.auction.QueryGetAuctionRequest) | [QueryGetAuctionResponse](#jpyx.auction.QueryGetAuctionResponse) | this line is used by starport scaffolding # 2 | GET|/jpyx/auction/auctions/{id}|
-| `AuctionAll` | [QueryAllAuctionRequest](#jpyx.auction.QueryAllAuctionRequest) | [QueryAllAuctionResponse](#jpyx.auction.QueryAllAuctionResponse) |  | GET|/jpyx/auction/auctions|
+| `Params` | [QueryParamsRequest](#botany.auction.QueryParamsRequest) | [QueryParamsResponse](#botany.auction.QueryParamsResponse) |  | GET|/botany/auction/params|
+| `Auction` | [QueryGetAuctionRequest](#botany.auction.QueryGetAuctionRequest) | [QueryGetAuctionResponse](#botany.auction.QueryGetAuctionResponse) | this line is used by starport scaffolding # 2 | GET|/botany/auction/auctions/{id}|
+| `AuctionAll` | [QueryAllAuctionRequest](#botany.auction.QueryAllAuctionRequest) | [QueryAllAuctionResponse](#botany.auction.QueryAllAuctionResponse) |  | GET|/botany/auction/auctions|
 
  <!-- end services -->
 
@@ -413,7 +413,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.cdp.AugmentedCdp"></a>
+<a name="botany.cdp.AugmentedCdp"></a>
 
 ### AugmentedCdp
 
@@ -421,7 +421,7 @@ Query defines the gRPC querier service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `cdp` | [Cdp](#jpyx.cdp.Cdp) |  |  |
+| `cdp` | [Cdp](#botany.cdp.Cdp) |  |  |
 | `collateral_value` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `collateralization_ratio` | [string](#string) |  |  |
 
@@ -430,7 +430,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.cdp.Cdp"></a>
+<a name="botany.cdp.Cdp"></a>
 
 ### Cdp
 
@@ -452,7 +452,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.cdp.CollateralParam"></a>
+<a name="botany.cdp.CollateralParam"></a>
 
 ### CollateralParam
 
@@ -479,7 +479,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.cdp.DebtParam"></a>
+<a name="botany.cdp.DebtParam"></a>
 
 ### DebtParam
 
@@ -497,7 +497,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.cdp.Deposit"></a>
+<a name="botany.cdp.Deposit"></a>
 
 ### Deposit
 
@@ -514,7 +514,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.cdp.MsgCreateCdp"></a>
+<a name="botany.cdp.MsgCreateCdp"></a>
 
 ### MsgCreateCdp
 
@@ -532,7 +532,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.cdp.MsgDeposit"></a>
+<a name="botany.cdp.MsgDeposit"></a>
 
 ### MsgDeposit
 
@@ -550,7 +550,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.cdp.MsgDrawDebt"></a>
+<a name="botany.cdp.MsgDrawDebt"></a>
 
 ### MsgDrawDebt
 
@@ -567,7 +567,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.cdp.MsgLiquidate"></a>
+<a name="botany.cdp.MsgLiquidate"></a>
 
 ### MsgLiquidate
 
@@ -584,7 +584,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.cdp.MsgRepayDebt"></a>
+<a name="botany.cdp.MsgRepayDebt"></a>
 
 ### MsgRepayDebt
 
@@ -601,7 +601,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.cdp.MsgWithdraw"></a>
+<a name="botany.cdp.MsgWithdraw"></a>
 
 ### MsgWithdraw
 
@@ -619,7 +619,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.cdp.Params"></a>
+<a name="botany.cdp.Params"></a>
 
 ### Params
 
@@ -627,8 +627,8 @@ Query defines the gRPC querier service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `collateral_params` | [CollateralParam](#jpyx.cdp.CollateralParam) | repeated |  |
-| `debt_param` | [DebtParam](#jpyx.cdp.DebtParam) |  |  |
+| `collateral_params` | [CollateralParam](#botany.cdp.CollateralParam) | repeated |  |
+| `debt_param` | [DebtParam](#botany.cdp.DebtParam) |  |  |
 | `global_debt_limit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `surplus_auction_threshold` | [string](#string) |  |  |
 | `surplus_auction_lot` | [string](#string) |  |  |
@@ -657,7 +657,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.cdp.GenesisAccumulationTime"></a>
+<a name="botany.cdp.GenesisAccumulationTime"></a>
 
 ### GenesisAccumulationTime
 
@@ -674,7 +674,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.cdp.GenesisState"></a>
+<a name="botany.cdp.GenesisState"></a>
 
 ### GenesisState
 GenesisState defines the cdp module's genesis state.
@@ -682,21 +682,21 @@ GenesisState defines the cdp module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#jpyx.cdp.Params) |  |  |
-| `cdps` | [Cdp](#jpyx.cdp.Cdp) | repeated |  |
-| `deposits` | [Deposit](#jpyx.cdp.Deposit) | repeated |  |
+| `params` | [Params](#botany.cdp.Params) |  |  |
+| `cdps` | [Cdp](#botany.cdp.Cdp) | repeated |  |
+| `deposits` | [Deposit](#botany.cdp.Deposit) | repeated |  |
 | `starting_cdp_id` | [uint64](#uint64) |  |  |
 | `debt_denom` | [string](#string) |  |  |
 | `gov_denom` | [string](#string) |  |  |
-| `previous_accumulation_times` | [GenesisAccumulationTime](#jpyx.cdp.GenesisAccumulationTime) | repeated |  |
-| `total_principals` | [GenesisTotalPrincipal](#jpyx.cdp.GenesisTotalPrincipal) | repeated | this line is used by starport scaffolding # genesis/proto/state |
+| `previous_accumulation_times` | [GenesisAccumulationTime](#botany.cdp.GenesisAccumulationTime) | repeated |  |
+| `total_principals` | [GenesisTotalPrincipal](#botany.cdp.GenesisTotalPrincipal) | repeated | this line is used by starport scaffolding # genesis/proto/state |
 
 
 
 
 
 
-<a name="jpyx.cdp.GenesisTotalPrincipal"></a>
+<a name="botany.cdp.GenesisTotalPrincipal"></a>
 
 ### GenesisTotalPrincipal
 
@@ -728,7 +728,7 @@ GenesisState defines the cdp module's genesis state.
 
 
 
-<a name="jpyx.cdp.QueryAllCdpRequest"></a>
+<a name="botany.cdp.QueryAllCdpRequest"></a>
 
 ### QueryAllCdpRequest
 
@@ -743,7 +743,7 @@ GenesisState defines the cdp module's genesis state.
 
 
 
-<a name="jpyx.cdp.QueryAllCdpResponse"></a>
+<a name="botany.cdp.QueryAllCdpResponse"></a>
 
 ### QueryAllCdpResponse
 
@@ -751,7 +751,7 @@ GenesisState defines the cdp module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `cdp` | [Cdp](#jpyx.cdp.Cdp) | repeated |  |
+| `cdp` | [Cdp](#botany.cdp.Cdp) | repeated |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
 
 
@@ -759,7 +759,7 @@ GenesisState defines the cdp module's genesis state.
 
 
 
-<a name="jpyx.cdp.QueryGetCdpRequest"></a>
+<a name="botany.cdp.QueryGetCdpRequest"></a>
 
 ### QueryGetCdpRequest
 this line is used by starport scaffolding # 3
@@ -775,7 +775,7 @@ this line is used by starport scaffolding # 3
 
 
 
-<a name="jpyx.cdp.QueryGetCdpResponse"></a>
+<a name="botany.cdp.QueryGetCdpResponse"></a>
 
 ### QueryGetCdpResponse
 
@@ -783,14 +783,14 @@ this line is used by starport scaffolding # 3
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `cdp` | [Cdp](#jpyx.cdp.Cdp) |  |  |
+| `cdp` | [Cdp](#botany.cdp.Cdp) |  |  |
 
 
 
 
 
 
-<a name="jpyx.cdp.QueryParamsRequest"></a>
+<a name="botany.cdp.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
 
@@ -800,7 +800,7 @@ this line is used by starport scaffolding # 3
 
 
 
-<a name="jpyx.cdp.QueryParamsResponse"></a>
+<a name="botany.cdp.QueryParamsResponse"></a>
 
 ### QueryParamsResponse
 
@@ -808,7 +808,7 @@ this line is used by starport scaffolding # 3
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#jpyx.cdp.Params) |  |  |
+| `params` | [Params](#botany.cdp.Params) |  |  |
 
 
 
@@ -821,16 +821,16 @@ this line is used by starport scaffolding # 3
  <!-- end HasExtensions -->
 
 
-<a name="jpyx.cdp.Query"></a>
+<a name="botany.cdp.Query"></a>
 
 ### Query
 Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#jpyx.cdp.QueryParamsRequest) | [QueryParamsResponse](#jpyx.cdp.QueryParamsResponse) |  | GET|/jpyx/cdp/params|
-| `Cdp` | [QueryGetCdpRequest](#jpyx.cdp.QueryGetCdpRequest) | [QueryGetCdpResponse](#jpyx.cdp.QueryGetCdpResponse) | this line is used by starport scaffolding # 2 | GET|/jpyx/cdp/cdps/{id}|
-| `CdpAll` | [QueryAllCdpRequest](#jpyx.cdp.QueryAllCdpRequest) | [QueryAllCdpResponse](#jpyx.cdp.QueryAllCdpResponse) |  | GET|/jpyx/cdp/cdps|
+| `Params` | [QueryParamsRequest](#botany.cdp.QueryParamsRequest) | [QueryParamsResponse](#botany.cdp.QueryParamsResponse) |  | GET|/botany/cdp/params|
+| `Cdp` | [QueryGetCdpRequest](#botany.cdp.QueryGetCdpRequest) | [QueryGetCdpResponse](#botany.cdp.QueryGetCdpResponse) | this line is used by starport scaffolding # 2 | GET|/botany/cdp/cdps/{id}|
+| `CdpAll` | [QueryAllCdpRequest](#botany.cdp.QueryAllCdpRequest) | [QueryAllCdpResponse](#botany.cdp.QueryAllCdpResponse) |  | GET|/botany/cdp/cdps|
 
  <!-- end services -->
 
@@ -1250,7 +1250,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.pricefeed.CurrentPrice"></a>
+<a name="botany.pricefeed.CurrentPrice"></a>
 
 ### CurrentPrice
 
@@ -1266,7 +1266,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.pricefeed.Market"></a>
+<a name="botany.pricefeed.Market"></a>
 
 ### Market
 
@@ -1285,7 +1285,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.pricefeed.MsgPostPrice"></a>
+<a name="botany.pricefeed.MsgPostPrice"></a>
 
 ### MsgPostPrice
 
@@ -1303,7 +1303,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.pricefeed.Params"></a>
+<a name="botany.pricefeed.Params"></a>
 
 ### Params
 
@@ -1311,14 +1311,14 @@ Query defines the gRPC querier service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `markets` | [Market](#jpyx.pricefeed.Market) | repeated |  |
+| `markets` | [Market](#botany.pricefeed.Market) | repeated |  |
 
 
 
 
 
 
-<a name="jpyx.pricefeed.PostedPrice"></a>
+<a name="botany.pricefeed.PostedPrice"></a>
 
 ### PostedPrice
 
@@ -1352,7 +1352,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.pricefeed.GenesisState"></a>
+<a name="botany.pricefeed.GenesisState"></a>
 
 ### GenesisState
 GenesisState defines the pricefeed module's genesis state.
@@ -1360,8 +1360,8 @@ GenesisState defines the pricefeed module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#jpyx.pricefeed.Params) |  |  |
-| `posted_prices` | [PostedPrice](#jpyx.pricefeed.PostedPrice) | repeated | this line is used by starport scaffolding # genesis/proto/state |
+| `params` | [Params](#botany.pricefeed.Params) |  |  |
+| `posted_prices` | [PostedPrice](#botany.pricefeed.PostedPrice) | repeated | this line is used by starport scaffolding # genesis/proto/state |
 
 
 
@@ -1384,7 +1384,7 @@ GenesisState defines the pricefeed module's genesis state.
 
 
 
-<a name="jpyx.pricefeed.QueryAllMarketRequest"></a>
+<a name="botany.pricefeed.QueryAllMarketRequest"></a>
 
 ### QueryAllMarketRequest
 this line is used by starport scaffolding # 3
@@ -1399,7 +1399,7 @@ this line is used by starport scaffolding # 3
 
 
 
-<a name="jpyx.pricefeed.QueryAllMarketResponse"></a>
+<a name="botany.pricefeed.QueryAllMarketResponse"></a>
 
 ### QueryAllMarketResponse
 
@@ -1407,7 +1407,7 @@ this line is used by starport scaffolding # 3
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `markets` | [Market](#jpyx.pricefeed.Market) | repeated |  |
+| `markets` | [Market](#botany.pricefeed.Market) | repeated |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
 
 
@@ -1415,7 +1415,7 @@ this line is used by starport scaffolding # 3
 
 
 
-<a name="jpyx.pricefeed.QueryAllOracleRequest"></a>
+<a name="botany.pricefeed.QueryAllOracleRequest"></a>
 
 ### QueryAllOracleRequest
 
@@ -1431,7 +1431,7 @@ this line is used by starport scaffolding # 3
 
 
 
-<a name="jpyx.pricefeed.QueryAllOracleResponse"></a>
+<a name="botany.pricefeed.QueryAllOracleResponse"></a>
 
 ### QueryAllOracleResponse
 
@@ -1447,7 +1447,7 @@ this line is used by starport scaffolding # 3
 
 
 
-<a name="jpyx.pricefeed.QueryAllPriceRequest"></a>
+<a name="botany.pricefeed.QueryAllPriceRequest"></a>
 
 ### QueryAllPriceRequest
 
@@ -1462,7 +1462,7 @@ this line is used by starport scaffolding # 3
 
 
 
-<a name="jpyx.pricefeed.QueryAllPriceResponse"></a>
+<a name="botany.pricefeed.QueryAllPriceResponse"></a>
 
 ### QueryAllPriceResponse
 
@@ -1470,7 +1470,7 @@ this line is used by starport scaffolding # 3
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `prices` | [CurrentPrice](#jpyx.pricefeed.CurrentPrice) | repeated |  |
+| `prices` | [CurrentPrice](#botany.pricefeed.CurrentPrice) | repeated |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
 
 
@@ -1478,7 +1478,7 @@ this line is used by starport scaffolding # 3
 
 
 
-<a name="jpyx.pricefeed.QueryAllRawPriceRequest"></a>
+<a name="botany.pricefeed.QueryAllRawPriceRequest"></a>
 
 ### QueryAllRawPriceRequest
 
@@ -1494,7 +1494,7 @@ this line is used by starport scaffolding # 3
 
 
 
-<a name="jpyx.pricefeed.QueryAllRawPriceResponse"></a>
+<a name="botany.pricefeed.QueryAllRawPriceResponse"></a>
 
 ### QueryAllRawPriceResponse
 
@@ -1502,7 +1502,7 @@ this line is used by starport scaffolding # 3
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `prices` | [PostedPrice](#jpyx.pricefeed.PostedPrice) | repeated |  |
+| `prices` | [PostedPrice](#botany.pricefeed.PostedPrice) | repeated |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
 
 
@@ -1510,7 +1510,7 @@ this line is used by starport scaffolding # 3
 
 
 
-<a name="jpyx.pricefeed.QueryGetPriceRequest"></a>
+<a name="botany.pricefeed.QueryGetPriceRequest"></a>
 
 ### QueryGetPriceRequest
 
@@ -1525,7 +1525,7 @@ this line is used by starport scaffolding # 3
 
 
 
-<a name="jpyx.pricefeed.QueryGetPriceResponse"></a>
+<a name="botany.pricefeed.QueryGetPriceResponse"></a>
 
 ### QueryGetPriceResponse
 
@@ -1533,14 +1533,14 @@ this line is used by starport scaffolding # 3
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `price` | [CurrentPrice](#jpyx.pricefeed.CurrentPrice) |  |  |
+| `price` | [CurrentPrice](#botany.pricefeed.CurrentPrice) |  |  |
 
 
 
 
 
 
-<a name="jpyx.pricefeed.QueryParamsRequest"></a>
+<a name="botany.pricefeed.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
 
@@ -1550,7 +1550,7 @@ this line is used by starport scaffolding # 3
 
 
 
-<a name="jpyx.pricefeed.QueryParamsResponse"></a>
+<a name="botany.pricefeed.QueryParamsResponse"></a>
 
 ### QueryParamsResponse
 
@@ -1558,7 +1558,7 @@ this line is used by starport scaffolding # 3
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#jpyx.pricefeed.Params) |  |  |
+| `params` | [Params](#botany.pricefeed.Params) |  |  |
 
 
 
@@ -1571,19 +1571,19 @@ this line is used by starport scaffolding # 3
  <!-- end HasExtensions -->
 
 
-<a name="jpyx.pricefeed.Query"></a>
+<a name="botany.pricefeed.Query"></a>
 
 ### Query
 Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#jpyx.pricefeed.QueryParamsRequest) | [QueryParamsResponse](#jpyx.pricefeed.QueryParamsResponse) |  | GET|/jpyx/pricefeed/params|
-| `MarketAll` | [QueryAllMarketRequest](#jpyx.pricefeed.QueryAllMarketRequest) | [QueryAllMarketResponse](#jpyx.pricefeed.QueryAllMarketResponse) | this line is used by starport scaffolding # 2 | GET|/jpyx/pricefeed/markets|
-| `OracleAll` | [QueryAllOracleRequest](#jpyx.pricefeed.QueryAllOracleRequest) | [QueryAllOracleResponse](#jpyx.pricefeed.QueryAllOracleResponse) |  | GET|/jpyx/pricefeed/markets/{market_id}/oracles|
-| `Price` | [QueryGetPriceRequest](#jpyx.pricefeed.QueryGetPriceRequest) | [QueryGetPriceResponse](#jpyx.pricefeed.QueryGetPriceResponse) |  | GET|/jpyx/pricefeed/markets/{market_id}/price|
-| `PriceAll` | [QueryAllPriceRequest](#jpyx.pricefeed.QueryAllPriceRequest) | [QueryAllPriceResponse](#jpyx.pricefeed.QueryAllPriceResponse) |  | GET|/jpyx/pricefeed/prices|
-| `RawPriceAll` | [QueryAllRawPriceRequest](#jpyx.pricefeed.QueryAllRawPriceRequest) | [QueryAllRawPriceResponse](#jpyx.pricefeed.QueryAllRawPriceResponse) |  | GET|/jpyx/pricefeed/markets/{market_id}/raw_prices|
+| `Params` | [QueryParamsRequest](#botany.pricefeed.QueryParamsRequest) | [QueryParamsResponse](#botany.pricefeed.QueryParamsResponse) |  | GET|/botany/pricefeed/params|
+| `MarketAll` | [QueryAllMarketRequest](#botany.pricefeed.QueryAllMarketRequest) | [QueryAllMarketResponse](#botany.pricefeed.QueryAllMarketResponse) | this line is used by starport scaffolding # 2 | GET|/botany/pricefeed/markets|
+| `OracleAll` | [QueryAllOracleRequest](#botany.pricefeed.QueryAllOracleRequest) | [QueryAllOracleResponse](#botany.pricefeed.QueryAllOracleResponse) |  | GET|/botany/pricefeed/markets/{market_id}/oracles|
+| `Price` | [QueryGetPriceRequest](#botany.pricefeed.QueryGetPriceRequest) | [QueryGetPriceResponse](#botany.pricefeed.QueryGetPriceResponse) |  | GET|/botany/pricefeed/markets/{market_id}/price|
+| `PriceAll` | [QueryAllPriceRequest](#botany.pricefeed.QueryAllPriceRequest) | [QueryAllPriceResponse](#botany.pricefeed.QueryAllPriceResponse) |  | GET|/botany/pricefeed/prices|
+| `RawPriceAll` | [QueryAllRawPriceRequest](#botany.pricefeed.QueryAllRawPriceRequest) | [QueryAllRawPriceResponse](#botany.pricefeed.QueryAllRawPriceResponse) |  | GET|/botany/pricefeed/markets/{market_id}/raw_prices|
 
  <!-- end services -->
 
