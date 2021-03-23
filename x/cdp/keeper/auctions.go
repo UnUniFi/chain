@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	// factor for setting the initial value of gov tokens to sell at debt auctions -- assuming stable token is ~1 jpy, this starts the auction with a price of $0.01 KAVA
+	// factor for setting the initial value of gov tokens to sell at debt auctions -- assuming stable token is ~1 eur, this starts the auction with a price of $0.01 KAVA
 	dump = 100
 )
 

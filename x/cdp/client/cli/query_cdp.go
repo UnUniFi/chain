@@ -2,8 +2,6 @@ package cli
 
 import (
 	"context"
-	"fmt"
-	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -45,7 +43,7 @@ func CmdListCdp() *cobra.Command {
 
 func CmdShowCdp() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-cdp [id] [collateral-type]",
+		Use:   "show-cdp [owner] [collateral-type]",
 		Short: "shows a cdp",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -53,17 +51,66 @@ func CmdShowCdp() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			id, err := strconv.ParseUint(args[0], 10, 64)
-			if err != nil {
-				return fmt.Errorf("cdp-id '%s' not a valid uint", args[0])
-			}
-
 			params := &types.QueryGetCdpRequest{
-				Id:             id,
-				CollateralType: args[2],
+				Owner:          args[0],
+				CollateralType: args[1],
 			}
 
 			res, err := queryClient.Cdp(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdListAccount() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "list-account",
+		Short: "list all account",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QueryAllAccountRequest{}
+
+			res, err := queryClient.AccountAll(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdListDeposit() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "list-deposit [owner] [collateral-type]",
+		Short: "list all deposit",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QueryAllDepositRequest{
+				Owner:          args[0],
+				CollateralType: args[1],
+			}
+
+			res, err := queryClient.DepositAll(context.Background(), params)
 			if err != nil {
 				return err
 			}

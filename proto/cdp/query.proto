@@ -1,7 +1,9 @@
 syntax = "proto3";
 package botany.cdp;
 
+import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+import "google/protobuf/any.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 // this line is used by starport scaffolding # 1
 import "cdp/cdp.proto";
@@ -15,10 +17,16 @@ service Query {
 	}
   // this line is used by starport scaffolding # 2
 	rpc Cdp(QueryGetCdpRequest) returns (QueryGetCdpResponse) {
-		option (google.api.http).get = "/botany/cdp/cdps/{id}";
+		option (google.api.http).get = "/botany/cdp/cdps/owners/{owner}/collateral-types/{collateral_type}/cdp";
 	}
 	rpc CdpAll(QueryAllCdpRequest) returns (QueryAllCdpResponse) {
 		option (google.api.http).get = "/botany/cdp/cdps";
+	}
+	rpc AccountAll(QueryAllAccountRequest) returns (QueryAllAccountResponse) {
+		option (google.api.http).get = "/botany/cdp/accounts";
+	}
+  rpc DepositAll(QueryAllDepositRequest) returns (QueryAllDepositResponse) {
+		option (google.api.http).get = "/botany/cdp/deposits/owners/{owner}/collateral-types/{collateral_type}";
 	}
 }
 
@@ -30,12 +38,12 @@ message QueryParamsResponse {
 
 // this line is used by starport scaffolding # 3
 message QueryGetCdpRequest {
-	uint64 id = 1;
+  string owner = 1;
   string collateral_type = 2;
 }
 
 message QueryGetCdpResponse {
-	Cdp cdp = 1;
+	AugmentedCdp cdp = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAllCdpRequest {
@@ -43,6 +51,21 @@ message QueryAllCdpRequest {
 }
 
 message QueryAllCdpResponse {
-	repeated Cdp cdp = 1;
+	repeated AugmentedCdp cdp = 1 [(gogoproto.nullable) = false];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryAllAccountRequest {}
+
+message QueryAllAccountResponse {
+  repeated google.protobuf.Any accounts = 1;
+}
+
+message QueryAllDepositRequest {
+  string owner = 1;
+  string collateral_type = 2;
+}
+
+message QueryAllDepositResponse {
+  repeated Deposit deposits = 1 [(gogoproto.nullable) = false];
 }

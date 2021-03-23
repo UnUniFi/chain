@@ -46,8 +46,12 @@
     - [GenesisTotalPrincipal](#botany.cdp.GenesisTotalPrincipal)
   
 - [cdp/query.proto](#cdp/query.proto)
+    - [QueryAllAccountRequest](#botany.cdp.QueryAllAccountRequest)
+    - [QueryAllAccountResponse](#botany.cdp.QueryAllAccountResponse)
     - [QueryAllCdpRequest](#botany.cdp.QueryAllCdpRequest)
     - [QueryAllCdpResponse](#botany.cdp.QueryAllCdpResponse)
+    - [QueryAllDepositRequest](#botany.cdp.QueryAllDepositRequest)
+    - [QueryAllDepositResponse](#botany.cdp.QueryAllDepositResponse)
     - [QueryGetCdpRequest](#botany.cdp.QueryGetCdpRequest)
     - [QueryGetCdpResponse](#botany.cdp.QueryGetCdpResponse)
     - [QueryParamsRequest](#botany.cdp.QueryParamsRequest)
@@ -728,6 +732,31 @@ GenesisState defines the cdp module's genesis state.
 
 
 
+<a name="botany.cdp.QueryAllAccountRequest"></a>
+
+### QueryAllAccountRequest
+
+
+
+
+
+
+
+<a name="botany.cdp.QueryAllAccountResponse"></a>
+
+### QueryAllAccountResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `accounts` | [google.protobuf.Any](#google.protobuf.Any) | repeated |  |
+
+
+
+
+
+
 <a name="botany.cdp.QueryAllCdpRequest"></a>
 
 ### QueryAllCdpRequest
@@ -751,8 +780,39 @@ GenesisState defines the cdp module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `cdp` | [Cdp](#botany.cdp.Cdp) | repeated |  |
+| `cdp` | [AugmentedCdp](#botany.cdp.AugmentedCdp) | repeated |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
+<a name="botany.cdp.QueryAllDepositRequest"></a>
+
+### QueryAllDepositRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `collateral_type` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="botany.cdp.QueryAllDepositResponse"></a>
+
+### QueryAllDepositResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `deposits` | [Deposit](#botany.cdp.Deposit) | repeated |  |
 
 
 
@@ -767,7 +827,7 @@ this line is used by starport scaffolding # 3
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `id` | [uint64](#uint64) |  |  |
+| `owner` | [string](#string) |  |  |
 | `collateral_type` | [string](#string) |  |  |
 
 
@@ -783,7 +843,7 @@ this line is used by starport scaffolding # 3
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `cdp` | [Cdp](#botany.cdp.Cdp) |  |  |
+| `cdp` | [AugmentedCdp](#botany.cdp.AugmentedCdp) |  |  |
 
 
 
@@ -829,8 +889,10 @@ Query defines the gRPC querier service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Params` | [QueryParamsRequest](#botany.cdp.QueryParamsRequest) | [QueryParamsResponse](#botany.cdp.QueryParamsResponse) |  | GET|/botany/cdp/params|
-| `Cdp` | [QueryGetCdpRequest](#botany.cdp.QueryGetCdpRequest) | [QueryGetCdpResponse](#botany.cdp.QueryGetCdpResponse) | this line is used by starport scaffolding # 2 | GET|/botany/cdp/cdps/{id}|
+| `Cdp` | [QueryGetCdpRequest](#botany.cdp.QueryGetCdpRequest) | [QueryGetCdpResponse](#botany.cdp.QueryGetCdpResponse) | this line is used by starport scaffolding # 2 | GET|/botany/cdp/cdps/owners/{owner}/collateral-types/{collateral_type}/cdp|
 | `CdpAll` | [QueryAllCdpRequest](#botany.cdp.QueryAllCdpRequest) | [QueryAllCdpResponse](#botany.cdp.QueryAllCdpResponse) |  | GET|/botany/cdp/cdps|
+| `AccountAll` | [QueryAllAccountRequest](#botany.cdp.QueryAllAccountRequest) | [QueryAllAccountResponse](#botany.cdp.QueryAllAccountResponse) |  | GET|/botany/cdp/accounts|
+| `DepositAll` | [QueryAllDepositRequest](#botany.cdp.QueryAllDepositRequest) | [QueryAllDepositResponse](#botany.cdp.QueryAllDepositResponse) |  | GET|/botany/cdp/deposits/owners/{owner}/collateral-types/{collateral_type}|
 
  <!-- end services -->
 
