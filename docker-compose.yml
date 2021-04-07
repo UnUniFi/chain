@@ -11,10 +11,6 @@ services:
     #   - 26657:26657
     volumes:
       - ~/.jpyx:/root/.jpyx
-    command: jpyxd start \
-      --rpc.laddr=tcp://0.0.0.0:26657 \
-      --api.enable=true \
-      --api.address=tcp://0.0.0.0:1317 \
-      --api.enabled-unsafe-cors=true
+    command: jpyxd start
     network_mode: host
     restart: always
