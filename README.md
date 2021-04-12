@@ -22,10 +22,11 @@ sudo systemctl restart docker
 ### Join network
 
 ```bash
-git clone https://github.com/lcnem/jpyx.git
-cd jpyx
 docker run -v ~/.jpyx:/root/.jpyx lcnem/jpyx jpyxd init [moniker] --chain-id [chain-id]
-cp launch/[chain-id]/genesis.json ~/.jpyx/config/genesis.json
+mkdir jpyx
+cd jpyx
+curl -L https://github.com/lcnem/jpyx/blob/main/launch/[chain-id]/genesis.json > ~/.jpyx/config/genesis.json
+curl -O https://github.com/lcnem/jpyx/blob/main/docker-compose.yml
 docker-compose up -d
 ```
 
