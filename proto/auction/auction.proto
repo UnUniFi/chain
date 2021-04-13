@@ -10,7 +10,7 @@ option go_package = "github.com/lcnem/jpyx/x/auction/types";
 
 message BaseAuction {
   uint64 id = 1 [(gogoproto.moretags) = "yaml:\"id\""];
-  string initiator = 2 [(gogoproto.moretags) = "yaml:\"id\""];
+  string initiator = 2 [(gogoproto.moretags) = "yaml:\"initiator\""];
   cosmos.base.v1beta1.Coin lot = 3 [
     (gogoproto.moretags) = "yaml:\"lot\"",
     (gogoproto.nullable) = false
