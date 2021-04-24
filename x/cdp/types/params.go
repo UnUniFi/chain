@@ -24,13 +24,13 @@ var (
 	DefaultCollateralParams = CollateralParams{}
 	DefaultDebtParam        = DebtParam{
 		Denom:            "jpyx",
-		ReferenceAsset:   "eur",
+		ReferenceAsset:   "jpy",
 		ConversionFactor: sdk.NewInt(6),
 		DebtFloor:        sdk.NewInt(10000000),
 	}
 	DefaultCdpStartingID    = uint64(1)
 	DefaultDebtDenom        = "debt"
-	DefaultGovDenom         = "uestm"
+	DefaultGovDenom         = "ujsmn"
 	DefaultStableDenom      = "jpyx"
 	DefaultSurplusThreshold = sdk.NewInt(500000000000)
 	DefaultDebtThreshold    = sdk.NewInt(100000000000)
