@@ -1,5 +1,5 @@
 {
-  "genesis_time": "2021-04-24T11:57:54.135080089Z",
+  "genesis_time": "2021-04-28T11:57:54.135080089Z",
   "chain_id": "jpyx-1",
   "initial_height": "1",
   "consensus_params": {
@@ -43,53 +43,151 @@
       },
       "accounts": [
         {
-          "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "jpyx1h0mmxshjp3rupvh7n9uve9qsxmrh49nujkh38e",
-          "pub_key": null,
-          "account_number": "0",
-          "sequence": "0"
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "jpyx1h0mmxshjp3rupvh7n9uve9qsxmrh49nujkh38e",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "ujsmn",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1619611074"
         },
         {
-          "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "jpyx1pq40xy87nstqpch35qxkexxyyuyjhguwz8ezgr",
-          "pub_key": null,
-          "account_number": "0",
-          "sequence": "0"
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "jpyx1pq40xy87nstqpch35qxkexxyyuyjhguwz8ezgr",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "ujsmn",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1619611074"
         },
         {
-          "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "jpyx1t8kqse82uch3jvf7t8jrhtsr84edvsty4pf6az",
-          "pub_key": null,
-          "account_number": "0",
-          "sequence": "0"
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "jpyx1t8kqse82uch3jvf7t8jrhtsr84edvsty4pf6az",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "ujsmn",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1619611074"
         },
         {
-          "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "jpyx1f5cfn2f0uappzxmgfk5uv4f09zg5tq5sgt90lg",
-          "pub_key": null,
-          "account_number": "0",
-          "sequence": "0"
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "jpyx1f5cfn2f0uappzxmgfk5uv4f09zg5tq5sgt90lg",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "ujsmn",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1619611074"
         },
         {
-          "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "jpyx15a6f7v8nzl68m82a452drlljvlgxj6ks3wca6x",
-          "pub_key": null,
-          "account_number": "0",
-          "sequence": "0"
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "jpyx15a6f7v8nzl68m82a452drlljvlgxj6ks3wca6x",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "ujsmn",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1619611074"
         },
         {
-          "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "jpyx1krpcna3xc9qnnlhy40v9v0a0nw7ucjjv6ue9pt",
-          "pub_key": null,
-          "account_number": "0",
-          "sequence": "0"
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "jpyx1krpcna3xc9qnnlhy40v9v0a0nw7ucjjv6ue9pt",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "ujsmn",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1619611074"
         },
         {
-          "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "jpyx10fugql7lh0nrhmflxf5h86s30p2v4cvk9jdj2a",
-          "pub_key": null,
-          "account_number": "0",
-          "sequence": "0"
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "jpyx10fugql7lh0nrhmflxf5h86s30p2v4cvk9jdj2a",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "ujsmn",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1619611074"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
@@ -99,11 +197,25 @@
           "sequence": "0"
         },
         {
-          "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "jpyx1x34fx4rhw8p7sjg3vvgnedtynr4zhs3dvrf53r",
-          "pub_key": null,
-          "account_number": "0",
-          "sequence": "0"
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "jpyx1x34fx4rhw8p7sjg3vvgnedtynr4zhs3dvrf53r",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "ujsmn",
+                "amount": "250000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1619611074"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
