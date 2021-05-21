@@ -1058,6 +1058,433 @@
           "signatures": [
             "HMeHG/QY49Fz4KrX86mPMdLFZ1banlrnsmt57lZyqQkwEFRlINPR0FFYQkCHvvk+HK+ynU2uRqeU0+iTsB//aQ=="
           ]
+        },
+        {
+          "body": {
+            "messages": [
+              {
+                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
+                "description": {
+                  "moniker": "tokyo-2",
+                  "identity": "tokyo-2",
+                  "website": "",
+                  "security_contact": "",
+                  "details": ""
+                },
+                "commission": {
+                  "rate": "0.100000000000000000",
+                  "max_rate": "0.200000000000000000",
+                  "max_change_rate": "0.010000000000000000"
+                },
+                "min_self_delegation": "1",
+                "delegator_address": "jpyx1t59h7w593qd5g72t2km6ztrfq2f25rv0we3ej9",
+                "validator_address": "jpyxvaloper1t59h7w593qd5g72t2km6ztrfq2f25rv05ekl58",
+                "pubkey": {
+                  "@type": "/cosmos.crypto.ed25519.PubKey",
+                  "key": "6qLsDtjAe9i1P0AiZ4wRgUoVjcwjrt+ghFn1z+771AA="
+                },
+                "value": {
+                  "denom": "ujsmn",
+                  "amount": "5000000000"
+                }
+              }
+            ],
+            "memo": "091362955d0079773990ac1a56ee3602b103134b@jpyx.mainnet.validator.tokyo-2.neukind.network:26656",
+            "timeout_height": "0",
+            "extension_options": [],
+            "non_critical_extension_options": []
+          },
+          "auth_info": {
+            "signer_infos": [
+              {
+                "public_key": {
+                  "@type": "/cosmos.crypto.secp256k1.PubKey",
+                  "key": "A3z4+T+9lSG9EejvdTawsq5AkhJ5wtDLYof8WVcf/nBm"
+                },
+                "mode_info": {
+                  "single": {
+                    "mode": "SIGN_MODE_DIRECT"
+                  }
+                },
+                "sequence": "0"
+              }
+            ],
+            "fee": {
+              "amount": [],
+              "gas_limit": "200000",
+              "payer": "",
+              "granter": ""
+            }
+          },
+          "signatures": [
+            "/zJ0TY+sI+VgWV5syIFWfn081N2KxDLeR5yi/8zgvjYY2tPHnAcMLvF4Innr+ise2LxrI3fVVrhuHI3WGvcLig=="
+          ]
+        },
+        {
+          "body": {
+            "messages": [
+              {
+                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
+                "description": {
+                  "moniker": "keyplayers01",
+                  "identity": "keyplayers01",
+                  "website": "",
+                  "security_contact": "",
+                  "details": ""
+                },
+                "commission": {
+                  "rate": "0.100000000000000000",
+                  "max_rate": "0.200000000000000000",
+                  "max_change_rate": "0.010000000000000000"
+                },
+                "min_self_delegation": "1",
+                "delegator_address": "jpyx186llvk0jsseagpafzffhc7kgcg03wajyk5qvkj",
+                "validator_address": "jpyxvaloper186llvk0jsseagpafzffhc7kgcg03wajyv582ss",
+                "pubkey": {
+                  "@type": "/cosmos.crypto.ed25519.PubKey",
+                  "key": "5g2B+n+n6lbDD6jfHWenZZ12lQPo9GQYy0VbcRdeJfw="
+                },
+                "value": {
+                  "denom": "ujsmn",
+                  "amount": "5000000000"
+                }
+              }
+            ],
+            "memo": "661fbed5faf614563264fcf91c7ce292fac54bb2@jpyx.mainnet.validator.keyplayers01.neukind.network:26656",
+            "timeout_height": "0",
+            "extension_options": [],
+            "non_critical_extension_options": []
+          },
+          "auth_info": {
+            "signer_infos": [
+              {
+                "public_key": {
+                  "@type": "/cosmos.crypto.secp256k1.PubKey",
+                  "key": "AvZPT0rSJbomwkKwxm86zEhlnx0Usmspwjx7fjBk77Yp"
+                },
+                "mode_info": {
+                  "single": {
+                    "mode": "SIGN_MODE_DIRECT"
+                  }
+                },
+                "sequence": "0"
+              }
+            ],
+            "fee": {
+              "amount": [],
+              "gas_limit": "200000",
+              "payer": "",
+              "granter": ""
+            }
+          },
+          "signatures": [
+            "O5xiyJzRgwHXYnx1SBp1osSzwPw2oQ1WAsmobA2Dqns0OI8F+INqKplid6EmeN+nQVAdszTAW3xAvn7ED0st6A=="
+          ]
+        },
+        {
+          "body": {
+            "messages": [
+              {
+                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
+                "description": {
+                  "moniker": "tokyo-1",
+                  "identity": "tokyo-1",
+                  "website": "",
+                  "security_contact": "",
+                  "details": ""
+                },
+                "commission": {
+                  "rate": "0.100000000000000000",
+                  "max_rate": "0.200000000000000000",
+                  "max_change_rate": "0.010000000000000000"
+                },
+                "min_self_delegation": "1",
+                "delegator_address": "jpyx1t9qm6pkv0qh4x6wtp26h6kc4x6chmdfu80j2sp",
+                "validator_address": "jpyxvaloper1t9qm6pkv0qh4x6wtp26h6kc4x6chmdfua04vkr",
+                "pubkey": {
+                  "@type": "/cosmos.crypto.ed25519.PubKey",
+                  "key": "8fcoDXtCy64LL1SrCsXRUnH6c69n9vuZ5/uqHZz8Jxc="
+                },
+                "value": {
+                  "denom": "ujsmn",
+                  "amount": "5000000000"
+                }
+              }
+            ],
+            "memo": "678bba63e5aa3a8d29ede81769f3568e721756fc@jpyx.mainnet.validator.tokyo-1.neukind.network:26656",
+            "timeout_height": "0",
+            "extension_options": [],
+            "non_critical_extension_options": []
+          },
+          "auth_info": {
+            "signer_infos": [
+              {
+                "public_key": {
+                  "@type": "/cosmos.crypto.secp256k1.PubKey",
+                  "key": "A5ngx9w/9HvdU07+3Jl2AviQTfbOiQgOZyZFxK6Lp5h4"
+                },
+                "mode_info": {
+                  "single": {
+                    "mode": "SIGN_MODE_DIRECT"
+                  }
+                },
+                "sequence": "0"
+              }
+            ],
+            "fee": {
+              "amount": [],
+              "gas_limit": "200000",
+              "payer": "",
+              "granter": ""
+            }
+          },
+          "signatures": [
+            "UKMwMbeevhNTHlNbCt+jpfWe2R2h6MkFq1Lt+SIwWQ0GDTKDMqQnzRESjeWs1cQH1694BhDQM1v1No6kVrq5zA=="
+          ]
+        },
+        {
+          "body": {
+            "messages": [
+              {
+                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
+                "description": {
+                  "moniker": "tokyo-0",
+                  "identity": "tokyo-0",
+                  "website": "",
+                  "security_contact": "",
+                  "details": ""
+                },
+                "commission": {
+                  "rate": "0.100000000000000000",
+                  "max_rate": "0.200000000000000000",
+                  "max_change_rate": "0.010000000000000000"
+                },
+                "min_self_delegation": "1",
+                "delegator_address": "jpyx1grsta7lsjqpkw28uvr9mgfkzj664rcasw735y7",
+                "validator_address": "jpyxvaloper1grsta7lsjqpkw28uvr9mgfkzj664rcas57kjzu",
+                "pubkey": {
+                  "@type": "/cosmos.crypto.ed25519.PubKey",
+                  "key": "fq+Unq9bpyBnOwANXdxrwRu6owwzctFRZlpK854UdQE="
+                },
+                "value": {
+                  "denom": "ujsmn",
+                  "amount": "5000000000"
+                }
+              }
+            ],
+            "memo": "809ca087ef81466d49900aad02ad265b65964605@jpyx.mainnet.validator.tokyo-0.neukind.network:26656",
+            "timeout_height": "0",
+            "extension_options": [],
+            "non_critical_extension_options": []
+          },
+          "auth_info": {
+            "signer_infos": [
+              {
+                "public_key": {
+                  "@type": "/cosmos.crypto.secp256k1.PubKey",
+                  "key": "A7qLbhvgD2WSTPfTdq1/tkJ2DWqKlbMXfmRYGgKBiUdq"
+                },
+                "mode_info": {
+                  "single": {
+                    "mode": "SIGN_MODE_DIRECT"
+                  }
+                },
+                "sequence": "0"
+              }
+            ],
+            "fee": {
+              "amount": [],
+              "gas_limit": "200000",
+              "payer": "",
+              "granter": ""
+            }
+          },
+          "signatures": [
+            "JmK3dqSr+E86zEDVAf5bxEw54YI6rv8yGnbSJfyJG/wSiMe8Xfqp0IUY6N5vb7bwvLCPxYw3ro4xOxI/WnA/lQ=="
+          ]
+        },
+        {
+          "body": {
+            "messages": [
+              {
+                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
+                "description": {
+                  "moniker": "tokyo-4",
+                  "identity": "tokyo-4",
+                  "website": "",
+                  "security_contact": "",
+                  "details": ""
+                },
+                "commission": {
+                  "rate": "0.100000000000000000",
+                  "max_rate": "0.200000000000000000",
+                  "max_change_rate": "0.010000000000000000"
+                },
+                "min_self_delegation": "1",
+                "delegator_address": "jpyx103pvnkh80v3sff54ec028s8mkxrmm0vq9vz876",
+                "validator_address": "jpyxvaloper103pvnkh80v3sff54ec028s8mkxrmm0vqlv9pcc",
+                "pubkey": {
+                  "@type": "/cosmos.crypto.ed25519.PubKey",
+                  "key": "58fgZJZ1R941qacpx7BMwcJnR+1Wdbx0fiMGuZZ7gsI="
+                },
+                "value": {
+                  "denom": "ujsmn",
+                  "amount": "5000000000"
+                }
+              }
+            ],
+            "memo": "b9af9c349e7410ecde657e64c6633e3e4cd6764e@jpyx.mainnet.validator.tokyo-4.neukind.network:26656",
+            "timeout_height": "0",
+            "extension_options": [],
+            "non_critical_extension_options": []
+          },
+          "auth_info": {
+            "signer_infos": [
+              {
+                "public_key": {
+                  "@type": "/cosmos.crypto.secp256k1.PubKey",
+                  "key": "A/5FTxxC91ah7E48eM4231401mQfFDfyl3GlPXZraA96"
+                },
+                "mode_info": {
+                  "single": {
+                    "mode": "SIGN_MODE_DIRECT"
+                  }
+                },
+                "sequence": "0"
+              }
+            ],
+            "fee": {
+              "amount": [],
+              "gas_limit": "200000",
+              "payer": "",
+              "granter": ""
+            }
+          },
+          "signatures": [
+            "qdPW8mmHR/RrujWL4/QYrLTnXcuE3YQzawZz40DEqSg5udvAAGz3Uvl2I4+gn7d3pTfAMxVtIxNkmrnWrAVyYw=="
+          ]
+        },
+        {
+          "body": {
+            "messages": [
+              {
+                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
+                "description": {
+                  "moniker": "keyplayers02",
+                  "identity": "keyplayers02",
+                  "website": "",
+                  "security_contact": "",
+                  "details": ""
+                },
+                "commission": {
+                  "rate": "0.100000000000000000",
+                  "max_rate": "0.200000000000000000",
+                  "max_change_rate": "0.010000000000000000"
+                },
+                "min_self_delegation": "1",
+                "delegator_address": "jpyx19k9sygvcxjqmsmv2f70wcwj47st2kfpux9xlpa",
+                "validator_address": "jpyxvaloper19k9sygvcxjqmsmv2f70wcwj47st2kfpuu9pe8l",
+                "pubkey": {
+                  "@type": "/cosmos.crypto.ed25519.PubKey",
+                  "key": "MfRpSU9bvOW/A+lwEl6i3y3S4M+iqUsqpAkWXxINNAE="
+                },
+                "value": {
+                  "denom": "ujsmn",
+                  "amount": "5000000000"
+                }
+              }
+            ],
+            "memo": "c29c9cfc1d3d588de78a350f73f31fd4c8dc4cdd@jpyx.mainnet.validator.keyplayers02.neukind.network:26656",
+            "timeout_height": "0",
+            "extension_options": [],
+            "non_critical_extension_options": []
+          },
+          "auth_info": {
+            "signer_infos": [
+              {
+                "public_key": {
+                  "@type": "/cosmos.crypto.secp256k1.PubKey",
+                  "key": "A2ZvybMdwxYUepugyV6I2SG6vmqHARbrIjfVdCtY2Gpd"
+                },
+                "mode_info": {
+                  "single": {
+                    "mode": "SIGN_MODE_DIRECT"
+                  }
+                },
+                "sequence": "0"
+              }
+            ],
+            "fee": {
+              "amount": [],
+              "gas_limit": "200000",
+              "payer": "",
+              "granter": ""
+            }
+          },
+          "signatures": [
+            "SiYVMwIoUzB6P76EWlPrEYQ2MgwLUlDeKtBAfkXIuSokuQewNXMX8wADL/WCH9Nco+I61b479zFIIbCkRRBDdw=="
+          ]
+        },
+        {
+          "body": {
+            "messages": [
+              {
+                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
+                "description": {
+                  "moniker": "tokyo-3",
+                  "identity": "tokyo-3",
+                  "website": "",
+                  "security_contact": "",
+                  "details": ""
+                },
+                "commission": {
+                  "rate": "0.100000000000000000",
+                  "max_rate": "0.200000000000000000",
+                  "max_change_rate": "0.010000000000000000"
+                },
+                "min_self_delegation": "1",
+                "delegator_address": "jpyx18zfaf2ytyzd75g43a2z20kg06pgxhxcpg2l7ll",
+                "validator_address": "jpyxvaloper18zfaf2ytyzd75g43a2z20kg06pgxhxcpj2ccea",
+                "pubkey": {
+                  "@type": "/cosmos.crypto.ed25519.PubKey",
+                  "key": "+x4j5CAr4Lh1nJJvOQblHyL8gBCUtZzkHYyo1u7c6LI="
+                },
+                "value": {
+                  "denom": "ujsmn",
+                  "amount": "5000000000"
+                }
+              }
+            ],
+            "memo": "d3cfbc7eb166b21f879bfbf20457ae4ee2620a24@jpyx.mainnet.validator.tokyo-3.neukind.network:26656",
+            "timeout_height": "0",
+            "extension_options": [],
+            "non_critical_extension_options": []
+          },
+          "auth_info": {
+            "signer_infos": [
+              {
+                "public_key": {
+                  "@type": "/cosmos.crypto.secp256k1.PubKey",
+                  "key": "ApobakzESevAn2nHKI8OIaV7a2XVVtFZX5GxKNYcQT8P"
+                },
+                "mode_info": {
+                  "single": {
+                    "mode": "SIGN_MODE_DIRECT"
+                  }
+                },
+                "sequence": "0"
+              }
+            ],
+            "fee": {
+              "amount": [],
+              "gas_limit": "200000",
+              "payer": "",
+              "granter": ""
+            }
+          },
+          "signatures": [
+            "q4fqK231y0AdcxD/wJy+nXFU+mU2N9mycMr0CHLmiAwi1F5FMYLdZi5OzSLCqrLP+UfJRDPFHy/cTubb5Afx6Q=="
+          ]
         }
       ]
     },
