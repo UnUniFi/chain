@@ -1,0 +1,61 @@
+{
+  "body": {
+    "messages": [
+      {
+        "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
+        "description": {
+          "moniker": "kurata0211",
+          "identity": "kurata0211",
+          "website": "",
+          "security_contact": "",
+          "details": ""
+        },
+        "commission": {
+          "rate": "0.100000000000000000",
+          "max_rate": "0.200000000000000000",
+          "max_change_rate": "0.010000000000000000"
+        },
+        "min_self_delegation": "1",
+        "delegator_address": "jpyx10fugql7lh0nrhmflxf5h86s30p2v4cvk9jdj2a",
+        "validator_address": "jpyxvaloper10fugql7lh0nrhmflxf5h86s30p2v4cvklj25vl",
+        "pubkey": {
+          "@type": "/cosmos.crypto.ed25519.PubKey",
+          "key": "glq2gUkGW/dZpYhGqnf66pDOvWL7uaeQ8xeuh2xD7d4="
+        },
+        "value": {
+          "denom": "ujsmn",
+          "amount": "5000000000"
+        }
+      }
+    ],
+    "memo": "e2f9b5e01e115dc74c285ee20dbba606a9263e96@jpyx.mainnet.validator.kurata0211.neukind.network:26656",
+    "timeout_height": "0",
+    "extension_options": [],
+    "non_critical_extension_options": []
+  },
+  "auth_info": {
+    "signer_infos": [
+      {
+        "public_key": {
+          "@type": "/cosmos.crypto.secp256k1.PubKey",
+          "key": "AlYkntdBpd0+R+q0ARMYycZBhT4esuD5+izbspNFiVxj"
+        },
+        "mode_info": {
+          "single": {
+            "mode": "SIGN_MODE_DIRECT"
+          }
+        },
+        "sequence": "0"
+      }
+    ],
+    "fee": {
+      "amount": [],
+      "gas_limit": "200000",
+      "payer": "",
+      "granter": ""
+    }
+  },
+  "signatures": [
+    "TnBTjREvvRrcN/HowzDeefi5zxhdecTmBQ3qrg+72EhPJ4580bmyFG3j4/ma+9WLs3xq3Hs5BBMRDygYqYoJRw=="
+  ]
+}
