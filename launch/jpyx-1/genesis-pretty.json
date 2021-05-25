@@ -638,433 +638,6 @@
               {
                 "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
                 "description": {
-                  "moniker": "lcnem-b",
-                  "identity": "",
-                  "website": "https://lcnem.com",
-                  "security_contact": "",
-                  "details": ""
-                },
-                "commission": {
-                  "rate": "0.100000000000000000",
-                  "max_rate": "0.200000000000000000",
-                  "max_change_rate": "0.010000000000000000"
-                },
-                "min_self_delegation": "1",
-                "delegator_address": "jpyx1pq40xy87nstqpch35qxkexxyyuyjhguwz8ezgr",
-                "validator_address": "jpyxvaloper1pq40xy87nstqpch35qxkexxyyuyjhguwc87ywp",
-                "pubkey": {
-                  "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "9F2VPyr+i1o/Z+4D8bfge594XnQOHCRc6JsQbJH+pRU="
-                },
-                "value": {
-                  "denom": "ujsmn",
-                  "amount": "5000000000"
-                }
-              }
-            ],
-            "memo": "1d0651e816b8619bd97d892327a0609f829460a7@b.jpyx.lcnem.net:26656",
-            "timeout_height": "0",
-            "extension_options": [],
-            "non_critical_extension_options": []
-          },
-          "auth_info": {
-            "signer_infos": [
-              {
-                "public_key": {
-                  "@type": "/cosmos.crypto.secp256k1.PubKey",
-                  "key": "A1MLb446z5ZVxWb/B3UsD5SvlTelufOhLGrJv6AwWsCW"
-                },
-                "mode_info": {
-                  "single": {
-                    "mode": "SIGN_MODE_DIRECT"
-                  }
-                },
-                "sequence": "0"
-              }
-            ],
-            "fee": {
-              "amount": [],
-              "gas_limit": "200000",
-              "payer": "",
-              "granter": ""
-            }
-          },
-          "signatures": [
-            "42XSUbzGV6GhkoLUv4EjXQNzm2OVksnsVdf159R4fBVfXEXrJeo/Bh+YU4+85QG57pgQkzgDTQwVGkRP5JVCVA=="
-          ]
-        },
-        {
-          "body": {
-            "messages": [
-              {
-                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
-                "description": {
-                  "moniker": "lcnem-a",
-                  "identity": "",
-                  "website": "https://lcnem.com",
-                  "security_contact": "",
-                  "details": ""
-                },
-                "commission": {
-                  "rate": "0.100000000000000000",
-                  "max_rate": "0.200000000000000000",
-                  "max_change_rate": "0.010000000000000000"
-                },
-                "min_self_delegation": "1",
-                "delegator_address": "jpyx1h0mmxshjp3rupvh7n9uve9qsxmrh49nujkh38e",
-                "validator_address": "jpyxvaloper1h0mmxshjp3rupvh7n9uve9qsxmrh49nugkshpm",
-                "pubkey": {
-                  "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "SDqeiLrrsXAkg1ia2/JUX4fEVn/9jkybjPvILec0atU="
-                },
-                "value": {
-                  "denom": "ujsmn",
-                  "amount": "5000000000"
-                }
-              }
-            ],
-            "memo": "8ee6060a7be74cddd3bd620a1206cf3b1a2da0cb@a.jpyx.lcnem.net:26656",
-            "timeout_height": "0",
-            "extension_options": [],
-            "non_critical_extension_options": []
-          },
-          "auth_info": {
-            "signer_infos": [
-              {
-                "public_key": {
-                  "@type": "/cosmos.crypto.secp256k1.PubKey",
-                  "key": "Agjkjcgq5qz95J87LdbV9PLKT3bIx8zxqqIWcM/0AEX9"
-                },
-                "mode_info": {
-                  "single": {
-                    "mode": "SIGN_MODE_DIRECT"
-                  }
-                },
-                "sequence": "0"
-              }
-            ],
-            "fee": {
-              "amount": [],
-              "gas_limit": "200000",
-              "payer": "",
-              "granter": ""
-            }
-          },
-          "signatures": [
-            "e0mazGwaVRfMWySVEMObOvNWT1BMog4j65l74QCozUJqcSSgZNyhDxEIChc36LtR7/Q419Ho9WCqnQSOlaGuYw=="
-          ]
-        },
-        {
-          "body": {
-            "messages": [
-              {
-                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
-                "description": {
-                  "moniker": "zofuku-tokyo",
-                  "identity": "zofuku_tokyo",
-                  "website": "https://zofuku.com",
-                  "security_contact": "",
-                  "details": ""
-                },
-                "commission": {
-                  "rate": "0.100000000000000000",
-                  "max_rate": "0.200000000000000000",
-                  "max_change_rate": "0.010000000000000000"
-                },
-                "min_self_delegation": "1",
-                "delegator_address": "jpyx15a6f7v8nzl68m82a452drlljvlgxj6ks3wca6x",
-                "validator_address": "jpyxvaloper15a6f7v8nzl68m82a452drlljvlgxj6kstwlmuy",
-                "pubkey": {
-                  "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "a/Xadz6NYrZrSvKPPiJfUO7To3+PA9/4s4nWGsoKKUE="
-                },
-                "value": {
-                  "denom": "ujsmn",
-                  "amount": "5000000000"
-                }
-              }
-            ],
-            "memo": "9bb3dd0db9f6c27294f0aa4ac65a6f3db81c33b6@jpyx.mainnet.validator.zofuku-tokyo.neukind.network:26656",
-            "timeout_height": "0",
-            "extension_options": [],
-            "non_critical_extension_options": []
-          },
-          "auth_info": {
-            "signer_infos": [
-              {
-                "public_key": {
-                  "@type": "/cosmos.crypto.secp256k1.PubKey",
-                  "key": "A65IB539+KGAqBantfvRpKt/bP/R/5a6EUjZ5gEdu9Rq"
-                },
-                "mode_info": {
-                  "single": {
-                    "mode": "SIGN_MODE_DIRECT"
-                  }
-                },
-                "sequence": "0"
-              }
-            ],
-            "fee": {
-              "amount": [],
-              "gas_limit": "200000",
-              "payer": "",
-              "granter": ""
-            }
-          },
-          "signatures": [
-            "y1JTtJlIMgp9PRgeF7FudMBWSdCd7rzN8+7eAVFUP9N8zB8I/isaMreGYq3JvxvQ3jBoOXxoiRm1NR0rld7qbw=="
-          ]
-        },
-        {
-          "body": {
-            "messages": [
-              {
-                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
-                "description": {
-                  "moniker": "genio",
-                  "identity": "genio",
-                  "website": "https://polkadot-coin.jp",
-                  "security_contact": "",
-                  "details": ""
-                },
-                "commission": {
-                  "rate": "0.100000000000000000",
-                  "max_rate": "0.200000000000000000",
-                  "max_change_rate": "0.010000000000000000"
-                },
-                "min_self_delegation": "1",
-                "delegator_address": "jpyx1t8kqse82uch3jvf7t8jrhtsr84edvsty4pf6az",
-                "validator_address": "jpyxvaloper1t8kqse82uch3jvf7t8jrhtsr84edvsty0pwumq",
-                "pubkey": {
-                  "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "w8F6lYnyCB7KuWCnR7Rd/2hIXe568sQ0H2sjPZaNOzU="
-                },
-                "value": {
-                  "denom": "ujsmn",
-                  "amount": "5000000000"
-                }
-              }
-            ],
-            "memo": "a4d9b5360a0a8e3887f9ea50807a56d96a6174e4@jpyx.mainnet.validator.genio.neukind.network:26656",
-            "timeout_height": "0",
-            "extension_options": [],
-            "non_critical_extension_options": []
-          },
-          "auth_info": {
-            "signer_infos": [
-              {
-                "public_key": {
-                  "@type": "/cosmos.crypto.secp256k1.PubKey",
-                  "key": "A+PSeRBHh1ABvo4lzr5fVcTpRuPPZ/P5h2xbNAeh36wC"
-                },
-                "mode_info": {
-                  "single": {
-                    "mode": "SIGN_MODE_DIRECT"
-                  }
-                },
-                "sequence": "0"
-              }
-            ],
-            "fee": {
-              "amount": [],
-              "gas_limit": "200000",
-              "payer": "",
-              "granter": ""
-            }
-          },
-          "signatures": [
-            "BGCBLA2tfbUCYLG05VCyDb1bf3vOoW0Z5Hh+WvIivnYkpZI15xLGspdN83w6jbTPtGYEdKP3teRefJVFUaTOHQ=="
-          ]
-        },
-        {
-          "body": {
-            "messages": [
-              {
-                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
-                "description": {
-                  "moniker": "kurata0211",
-                  "identity": "kurata0211",
-                  "website": "",
-                  "security_contact": "",
-                  "details": ""
-                },
-                "commission": {
-                  "rate": "0.100000000000000000",
-                  "max_rate": "0.200000000000000000",
-                  "max_change_rate": "0.010000000000000000"
-                },
-                "min_self_delegation": "1",
-                "delegator_address": "jpyx10fugql7lh0nrhmflxf5h86s30p2v4cvk9jdj2a",
-                "validator_address": "jpyxvaloper10fugql7lh0nrhmflxf5h86s30p2v4cvklj25vl",
-                "pubkey": {
-                  "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "glq2gUkGW/dZpYhGqnf66pDOvWL7uaeQ8xeuh2xD7d4="
-                },
-                "value": {
-                  "denom": "ujsmn",
-                  "amount": "5000000000"
-                }
-              }
-            ],
-            "memo": "e2f9b5e01e115dc74c285ee20dbba606a9263e96@jpyx.mainnet.validator.kurata0211.neukind.network:26656",
-            "timeout_height": "0",
-            "extension_options": [],
-            "non_critical_extension_options": []
-          },
-          "auth_info": {
-            "signer_infos": [
-              {
-                "public_key": {
-                  "@type": "/cosmos.crypto.secp256k1.PubKey",
-                  "key": "AlYkntdBpd0+R+q0ARMYycZBhT4esuD5+izbspNFiVxj"
-                },
-                "mode_info": {
-                  "single": {
-                    "mode": "SIGN_MODE_DIRECT"
-                  }
-                },
-                "sequence": "0"
-              }
-            ],
-            "fee": {
-              "amount": [],
-              "gas_limit": "200000",
-              "payer": "",
-              "granter": ""
-            }
-          },
-          "signatures": [
-            "TnBTjREvvRrcN/HowzDeefi5zxhdecTmBQ3qrg+72EhPJ4580bmyFG3j4/ma+9WLs3xq3Hs5BBMRDygYqYoJRw=="
-          ]
-        },
-        {
-          "body": {
-            "messages": [
-              {
-                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
-                "description": {
-                  "moniker": "zofuku-japan",
-                  "identity": "zofuku_japan",
-                  "website": "https://zofuku.com",
-                  "security_contact": "",
-                  "details": ""
-                },
-                "commission": {
-                  "rate": "0.100000000000000000",
-                  "max_rate": "0.200000000000000000",
-                  "max_change_rate": "0.010000000000000000"
-                },
-                "min_self_delegation": "1",
-                "delegator_address": "jpyx1f5cfn2f0uappzxmgfk5uv4f09zg5tq5sgt90lg",
-                "validator_address": "jpyxvaloper1f5cfn2f0uappzxmgfk5uv4f09zg5tq5sjtzfe2",
-                "pubkey": {
-                  "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "dQGc1uXScjTJOOVQazmrBUQIra6iOrrBDJDhrZx/apE="
-                },
-                "value": {
-                  "denom": "ujsmn",
-                  "amount": "5000000000"
-                }
-              }
-            ],
-            "memo": "e572c2ed09f5c996ba6aef1ca01308d465fe5d3b@jpyx.mainnet.validator.zofuku-japan.neukind.network:26656",
-            "timeout_height": "0",
-            "extension_options": [],
-            "non_critical_extension_options": []
-          },
-          "auth_info": {
-            "signer_infos": [
-              {
-                "public_key": {
-                  "@type": "/cosmos.crypto.secp256k1.PubKey",
-                  "key": "Ag9zG27l3XzPWQttqLoawIPtZ7qPO0TcQ6QLXB1A5c28"
-                },
-                "mode_info": {
-                  "single": {
-                    "mode": "SIGN_MODE_DIRECT"
-                  }
-                },
-                "sequence": "0"
-              }
-            ],
-            "fee": {
-              "amount": [],
-              "gas_limit": "200000",
-              "payer": "",
-              "granter": ""
-            }
-          },
-          "signatures": [
-            "A9BrDSQSjM8o/FePERojzp0rPsP7EVk+kerBs8ezDC4VLCHRgZXZm4OtdpIiqbb/ChiprSMQ80YS/wbNSTwWuA=="
-          ]
-        },
-        {
-          "body": {
-            "messages": [
-              {
-                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
-                "description": {
-                  "moniker": "chikako0903",
-                  "identity": "chikako0903",
-                  "website": "",
-                  "security_contact": "",
-                  "details": ""
-                },
-                "commission": {
-                  "rate": "0.100000000000000000",
-                  "max_rate": "0.200000000000000000",
-                  "max_change_rate": "0.010000000000000000"
-                },
-                "min_self_delegation": "1",
-                "delegator_address": "jpyx1krpcna3xc9qnnlhy40v9v0a0nw7ucjjv6ue9pt",
-                "validator_address": "jpyxvaloper1krpcna3xc9qnnlhy40v9v0a0nw7ucjjvqu7r8f",
-                "pubkey": {
-                  "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "wbScYAhDAXIkJnvRZd2VK7NXhaj/cxvYbrkeA7Rs8CQ="
-                },
-                "value": {
-                  "denom": "ujsmn",
-                  "amount": "5000000000"
-                }
-              }
-            ],
-            "memo": "eab5fcd221e9970735eaa3aae8397bf70bdd04b4@jpyx.mainnet.validator.chikako0930.neukind.network:26656",
-            "timeout_height": "0",
-            "extension_options": [],
-            "non_critical_extension_options": []
-          },
-          "auth_info": {
-            "signer_infos": [
-              {
-                "public_key": {
-                  "@type": "/cosmos.crypto.secp256k1.PubKey",
-                  "key": "Ao/a4P6wojrvKSMmQexSy5H61Y298dfwM2rhY2oo6Vse"
-                },
-                "mode_info": {
-                  "single": {
-                    "mode": "SIGN_MODE_DIRECT"
-                  }
-                },
-                "sequence": "0"
-              }
-            ],
-            "fee": {
-              "amount": [],
-              "gas_limit": "200000",
-              "payer": "",
-              "granter": ""
-            }
-          },
-          "signatures": [
-            "HMeHG/QY49Fz4KrX86mPMdLFZ1banlrnsmt57lZyqQkwEFRlINPR0FFYQkCHvvk+HK+ynU2uRqeU0+iTsB//aQ=="
-          ]
-        },
-        {
-          "body": {
-            "messages": [
-              {
-                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
-                "description": {
                   "moniker": "tokyo-2",
                   "identity": "tokyo-2",
                   "website": "",
@@ -1118,6 +691,67 @@
           },
           "signatures": [
             "/zJ0TY+sI+VgWV5syIFWfn081N2KxDLeR5yi/8zgvjYY2tPHnAcMLvF4Innr+ise2LxrI3fVVrhuHI3WGvcLig=="
+          ]
+        },
+        {
+          "body": {
+            "messages": [
+              {
+                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
+                "description": {
+                  "moniker": "lcnem-b",
+                  "identity": "",
+                  "website": "https://lcnem.com",
+                  "security_contact": "",
+                  "details": ""
+                },
+                "commission": {
+                  "rate": "0.100000000000000000",
+                  "max_rate": "0.200000000000000000",
+                  "max_change_rate": "0.010000000000000000"
+                },
+                "min_self_delegation": "1",
+                "delegator_address": "jpyx1pq40xy87nstqpch35qxkexxyyuyjhguwz8ezgr",
+                "validator_address": "jpyxvaloper1pq40xy87nstqpch35qxkexxyyuyjhguwc87ywp",
+                "pubkey": {
+                  "@type": "/cosmos.crypto.ed25519.PubKey",
+                  "key": "9F2VPyr+i1o/Z+4D8bfge594XnQOHCRc6JsQbJH+pRU="
+                },
+                "value": {
+                  "denom": "ujsmn",
+                  "amount": "5000000000"
+                }
+              }
+            ],
+            "memo": "1d0651e816b8619bd97d892327a0609f829460a7@b.jpyx.lcnem.net:26656",
+            "timeout_height": "0",
+            "extension_options": [],
+            "non_critical_extension_options": []
+          },
+          "auth_info": {
+            "signer_infos": [
+              {
+                "public_key": {
+                  "@type": "/cosmos.crypto.secp256k1.PubKey",
+                  "key": "A1MLb446z5ZVxWb/B3UsD5SvlTelufOhLGrJv6AwWsCW"
+                },
+                "mode_info": {
+                  "single": {
+                    "mode": "SIGN_MODE_DIRECT"
+                  }
+                },
+                "sequence": "0"
+              }
+            ],
+            "fee": {
+              "amount": [],
+              "gas_limit": "200000",
+              "payer": "",
+              "granter": ""
+            }
+          },
+          "signatures": [
+            "42XSUbzGV6GhkoLUv4EjXQNzm2OVksnsVdf159R4fBVfXEXrJeo/Bh+YU4+85QG57pgQkzgDTQwVGkRP5JVCVA=="
           ]
         },
         {
@@ -1309,6 +943,189 @@
               {
                 "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
                 "description": {
+                  "moniker": "lcnem-a",
+                  "identity": "",
+                  "website": "https://lcnem.com",
+                  "security_contact": "",
+                  "details": ""
+                },
+                "commission": {
+                  "rate": "0.100000000000000000",
+                  "max_rate": "0.200000000000000000",
+                  "max_change_rate": "0.010000000000000000"
+                },
+                "min_self_delegation": "1",
+                "delegator_address": "jpyx1h0mmxshjp3rupvh7n9uve9qsxmrh49nujkh38e",
+                "validator_address": "jpyxvaloper1h0mmxshjp3rupvh7n9uve9qsxmrh49nugkshpm",
+                "pubkey": {
+                  "@type": "/cosmos.crypto.ed25519.PubKey",
+                  "key": "SDqeiLrrsXAkg1ia2/JUX4fEVn/9jkybjPvILec0atU="
+                },
+                "value": {
+                  "denom": "ujsmn",
+                  "amount": "5000000000"
+                }
+              }
+            ],
+            "memo": "8ee6060a7be74cddd3bd620a1206cf3b1a2da0cb@a.jpyx.lcnem.net:26656",
+            "timeout_height": "0",
+            "extension_options": [],
+            "non_critical_extension_options": []
+          },
+          "auth_info": {
+            "signer_infos": [
+              {
+                "public_key": {
+                  "@type": "/cosmos.crypto.secp256k1.PubKey",
+                  "key": "Agjkjcgq5qz95J87LdbV9PLKT3bIx8zxqqIWcM/0AEX9"
+                },
+                "mode_info": {
+                  "single": {
+                    "mode": "SIGN_MODE_DIRECT"
+                  }
+                },
+                "sequence": "0"
+              }
+            ],
+            "fee": {
+              "amount": [],
+              "gas_limit": "200000",
+              "payer": "",
+              "granter": ""
+            }
+          },
+          "signatures": [
+            "e0mazGwaVRfMWySVEMObOvNWT1BMog4j65l74QCozUJqcSSgZNyhDxEIChc36LtR7/Q419Ho9WCqnQSOlaGuYw=="
+          ]
+        },
+        {
+          "body": {
+            "messages": [
+              {
+                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
+                "description": {
+                  "moniker": "zofuku-tokyo",
+                  "identity": "zofuku_tokyo",
+                  "website": "https://zofuku.com",
+                  "security_contact": "",
+                  "details": ""
+                },
+                "commission": {
+                  "rate": "0.100000000000000000",
+                  "max_rate": "0.200000000000000000",
+                  "max_change_rate": "0.010000000000000000"
+                },
+                "min_self_delegation": "1",
+                "delegator_address": "jpyx15a6f7v8nzl68m82a452drlljvlgxj6ks3wca6x",
+                "validator_address": "jpyxvaloper15a6f7v8nzl68m82a452drlljvlgxj6kstwlmuy",
+                "pubkey": {
+                  "@type": "/cosmos.crypto.ed25519.PubKey",
+                  "key": "a/Xadz6NYrZrSvKPPiJfUO7To3+PA9/4s4nWGsoKKUE="
+                },
+                "value": {
+                  "denom": "ujsmn",
+                  "amount": "5000000000"
+                }
+              }
+            ],
+            "memo": "9bb3dd0db9f6c27294f0aa4ac65a6f3db81c33b6@jpyx.mainnet.validator.zofuku-tokyo.neukind.network:26656",
+            "timeout_height": "0",
+            "extension_options": [],
+            "non_critical_extension_options": []
+          },
+          "auth_info": {
+            "signer_infos": [
+              {
+                "public_key": {
+                  "@type": "/cosmos.crypto.secp256k1.PubKey",
+                  "key": "A65IB539+KGAqBantfvRpKt/bP/R/5a6EUjZ5gEdu9Rq"
+                },
+                "mode_info": {
+                  "single": {
+                    "mode": "SIGN_MODE_DIRECT"
+                  }
+                },
+                "sequence": "0"
+              }
+            ],
+            "fee": {
+              "amount": [],
+              "gas_limit": "200000",
+              "payer": "",
+              "granter": ""
+            }
+          },
+          "signatures": [
+            "y1JTtJlIMgp9PRgeF7FudMBWSdCd7rzN8+7eAVFUP9N8zB8I/isaMreGYq3JvxvQ3jBoOXxoiRm1NR0rld7qbw=="
+          ]
+        },
+        {
+          "body": {
+            "messages": [
+              {
+                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
+                "description": {
+                  "moniker": "genio",
+                  "identity": "genio",
+                  "website": "https://polkadot-coin.jp",
+                  "security_contact": "",
+                  "details": ""
+                },
+                "commission": {
+                  "rate": "0.100000000000000000",
+                  "max_rate": "0.200000000000000000",
+                  "max_change_rate": "0.010000000000000000"
+                },
+                "min_self_delegation": "1",
+                "delegator_address": "jpyx1t8kqse82uch3jvf7t8jrhtsr84edvsty4pf6az",
+                "validator_address": "jpyxvaloper1t8kqse82uch3jvf7t8jrhtsr84edvsty0pwumq",
+                "pubkey": {
+                  "@type": "/cosmos.crypto.ed25519.PubKey",
+                  "key": "w8F6lYnyCB7KuWCnR7Rd/2hIXe568sQ0H2sjPZaNOzU="
+                },
+                "value": {
+                  "denom": "ujsmn",
+                  "amount": "5000000000"
+                }
+              }
+            ],
+            "memo": "a4d9b5360a0a8e3887f9ea50807a56d96a6174e4@jpyx.mainnet.validator.genio.neukind.network:26656",
+            "timeout_height": "0",
+            "extension_options": [],
+            "non_critical_extension_options": []
+          },
+          "auth_info": {
+            "signer_infos": [
+              {
+                "public_key": {
+                  "@type": "/cosmos.crypto.secp256k1.PubKey",
+                  "key": "A+PSeRBHh1ABvo4lzr5fVcTpRuPPZ/P5h2xbNAeh36wC"
+                },
+                "mode_info": {
+                  "single": {
+                    "mode": "SIGN_MODE_DIRECT"
+                  }
+                },
+                "sequence": "0"
+              }
+            ],
+            "fee": {
+              "amount": [],
+              "gas_limit": "200000",
+              "payer": "",
+              "granter": ""
+            }
+          },
+          "signatures": [
+            "BGCBLA2tfbUCYLG05VCyDb1bf3vOoW0Z5Hh+WvIivnYkpZI15xLGspdN83w6jbTPtGYEdKP3teRefJVFUaTOHQ=="
+          ]
+        },
+        {
+          "body": {
+            "messages": [
+              {
+                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
+                "description": {
                   "moniker": "tokyo-4",
                   "identity": "tokyo-4",
                   "website": "",
@@ -1484,6 +1301,189 @@
           },
           "signatures": [
             "q4fqK231y0AdcxD/wJy+nXFU+mU2N9mycMr0CHLmiAwi1F5FMYLdZi5OzSLCqrLP+UfJRDPFHy/cTubb5Afx6Q=="
+          ]
+        },
+        {
+          "body": {
+            "messages": [
+              {
+                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
+                "description": {
+                  "moniker": "kurata0211",
+                  "identity": "kurata0211",
+                  "website": "",
+                  "security_contact": "",
+                  "details": ""
+                },
+                "commission": {
+                  "rate": "0.100000000000000000",
+                  "max_rate": "0.200000000000000000",
+                  "max_change_rate": "0.010000000000000000"
+                },
+                "min_self_delegation": "1",
+                "delegator_address": "jpyx10fugql7lh0nrhmflxf5h86s30p2v4cvk9jdj2a",
+                "validator_address": "jpyxvaloper10fugql7lh0nrhmflxf5h86s30p2v4cvklj25vl",
+                "pubkey": {
+                  "@type": "/cosmos.crypto.ed25519.PubKey",
+                  "key": "glq2gUkGW/dZpYhGqnf66pDOvWL7uaeQ8xeuh2xD7d4="
+                },
+                "value": {
+                  "denom": "ujsmn",
+                  "amount": "5000000000"
+                }
+              }
+            ],
+            "memo": "e2f9b5e01e115dc74c285ee20dbba606a9263e96@jpyx.mainnet.validator.kurata0211.neukind.network:26656",
+            "timeout_height": "0",
+            "extension_options": [],
+            "non_critical_extension_options": []
+          },
+          "auth_info": {
+            "signer_infos": [
+              {
+                "public_key": {
+                  "@type": "/cosmos.crypto.secp256k1.PubKey",
+                  "key": "AlYkntdBpd0+R+q0ARMYycZBhT4esuD5+izbspNFiVxj"
+                },
+                "mode_info": {
+                  "single": {
+                    "mode": "SIGN_MODE_DIRECT"
+                  }
+                },
+                "sequence": "0"
+              }
+            ],
+            "fee": {
+              "amount": [],
+              "gas_limit": "200000",
+              "payer": "",
+              "granter": ""
+            }
+          },
+          "signatures": [
+            "TnBTjREvvRrcN/HowzDeefi5zxhdecTmBQ3qrg+72EhPJ4580bmyFG3j4/ma+9WLs3xq3Hs5BBMRDygYqYoJRw=="
+          ]
+        },
+        {
+          "body": {
+            "messages": [
+              {
+                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
+                "description": {
+                  "moniker": "zofuku-japan",
+                  "identity": "zofuku_japan",
+                  "website": "https://zofuku.com",
+                  "security_contact": "",
+                  "details": ""
+                },
+                "commission": {
+                  "rate": "0.100000000000000000",
+                  "max_rate": "0.200000000000000000",
+                  "max_change_rate": "0.010000000000000000"
+                },
+                "min_self_delegation": "1",
+                "delegator_address": "jpyx1f5cfn2f0uappzxmgfk5uv4f09zg5tq5sgt90lg",
+                "validator_address": "jpyxvaloper1f5cfn2f0uappzxmgfk5uv4f09zg5tq5sjtzfe2",
+                "pubkey": {
+                  "@type": "/cosmos.crypto.ed25519.PubKey",
+                  "key": "dQGc1uXScjTJOOVQazmrBUQIra6iOrrBDJDhrZx/apE="
+                },
+                "value": {
+                  "denom": "ujsmn",
+                  "amount": "5000000000"
+                }
+              }
+            ],
+            "memo": "e572c2ed09f5c996ba6aef1ca01308d465fe5d3b@jpyx.mainnet.validator.zofuku-japan.neukind.network:26656",
+            "timeout_height": "0",
+            "extension_options": [],
+            "non_critical_extension_options": []
+          },
+          "auth_info": {
+            "signer_infos": [
+              {
+                "public_key": {
+                  "@type": "/cosmos.crypto.secp256k1.PubKey",
+                  "key": "Ag9zG27l3XzPWQttqLoawIPtZ7qPO0TcQ6QLXB1A5c28"
+                },
+                "mode_info": {
+                  "single": {
+                    "mode": "SIGN_MODE_DIRECT"
+                  }
+                },
+                "sequence": "0"
+              }
+            ],
+            "fee": {
+              "amount": [],
+              "gas_limit": "200000",
+              "payer": "",
+              "granter": ""
+            }
+          },
+          "signatures": [
+            "A9BrDSQSjM8o/FePERojzp0rPsP7EVk+kerBs8ezDC4VLCHRgZXZm4OtdpIiqbb/ChiprSMQ80YS/wbNSTwWuA=="
+          ]
+        },
+        {
+          "body": {
+            "messages": [
+              {
+                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
+                "description": {
+                  "moniker": "chikako0903",
+                  "identity": "chikako0903",
+                  "website": "",
+                  "security_contact": "",
+                  "details": ""
+                },
+                "commission": {
+                  "rate": "0.100000000000000000",
+                  "max_rate": "0.200000000000000000",
+                  "max_change_rate": "0.010000000000000000"
+                },
+                "min_self_delegation": "1",
+                "delegator_address": "jpyx1krpcna3xc9qnnlhy40v9v0a0nw7ucjjv6ue9pt",
+                "validator_address": "jpyxvaloper1krpcna3xc9qnnlhy40v9v0a0nw7ucjjvqu7r8f",
+                "pubkey": {
+                  "@type": "/cosmos.crypto.ed25519.PubKey",
+                  "key": "wbScYAhDAXIkJnvRZd2VK7NXhaj/cxvYbrkeA7Rs8CQ="
+                },
+                "value": {
+                  "denom": "ujsmn",
+                  "amount": "5000000000"
+                }
+              }
+            ],
+            "memo": "eab5fcd221e9970735eaa3aae8397bf70bdd04b4@jpyx.mainnet.validator.chikako0930.neukind.network:26656",
+            "timeout_height": "0",
+            "extension_options": [],
+            "non_critical_extension_options": []
+          },
+          "auth_info": {
+            "signer_infos": [
+              {
+                "public_key": {
+                  "@type": "/cosmos.crypto.secp256k1.PubKey",
+                  "key": "Ao/a4P6wojrvKSMmQexSy5H61Y298dfwM2rhY2oo6Vse"
+                },
+                "mode_info": {
+                  "single": {
+                    "mode": "SIGN_MODE_DIRECT"
+                  }
+                },
+                "sequence": "0"
+              }
+            ],
+            "fee": {
+              "amount": [],
+              "gas_limit": "200000",
+              "payer": "",
+              "granter": ""
+            }
+          },
+          "signatures": [
+            "HMeHG/QY49Fz4KrX86mPMdLFZ1banlrnsmt57lZyqQkwEFRlINPR0FFYQkCHvvk+HK+ynU2uRqeU0+iTsB//aQ=="
           ]
         }
       ]
