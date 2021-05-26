@@ -1,0 +1,32 @@
+name: jpyx
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+        targetos: [windows, darwin, linux]
+    name: jpyx-${{ matrix.arch }}-${{ matrix.targetos }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v1
+        with:
+          go-version: 1.16
+        env:
+          GOOS: ${{ matrix.targetos }}
+          GOARCH: ${{ matrix.arch }}
+
+      - run: |
+          go mod download
+          cd cmd/jpyxd
+          go build .
+      - uses: actions/upload-artifact@v2
+        with:
+          name: jpyxd-${{ matrix.targetos }}-${{ matrix.arch }}
+          path: cmd/jpyxd/jpyxd
