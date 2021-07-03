@@ -25,7 +25,7 @@ sudo systemctl restart docker
 docker run -v ~/.jpyx:/root/.jpyx lcnem/jpyx jpyxd init [moniker] --chain-id [chain-id]
 mkdir jpyx
 cd jpyx
-curl -L https://raw.githubusercontent.com/lcnem/jpyx/main/launch/[chain-id]/genesis.json > ~/.jpyx/config/genesis.json
+curl -L https://raw.githubusercontent.com/lcnem/jpyx/main/launch/[chain-id]/genesis.json -o ~/.jpyx/config/genesis.json
 curl -O https://raw.githubusercontent.com/lcnem/jpyx/main/docker-compose.yml
 docker-compose up -d
 ```
