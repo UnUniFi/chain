@@ -40,8 +40,8 @@ This is an example for Ubuntu.
 sudo apt update
 sudo apt install build-essential
 cd ~
-wget https://dl.google.com/go/go1.16.2.linux-amd64.tar.gz
-sudo tar -C /usr/local -xzf go1.16.2.linux-amd64.tar.gz
+wget https://dl.google.com/go/go1.16.4.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.16.4.linux-amd64.tar.gz
 echo export PATH='$PATH:/usr/local/go/bin:$HOME/go/bin' >> ~/.bashrc
 source ~/.bashrc
 ```

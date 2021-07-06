@@ -1,4 +1,4 @@
-name: jpyx
+name: Binary
 
 on:
   release:
