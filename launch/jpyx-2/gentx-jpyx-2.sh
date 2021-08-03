@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# delete old gentx folder
+rm -rf ~/.jpyx/config/gentx
+
 # lcnem-a
 jpyxd gentx --amount 5000000000ujsmn --chain-id jpyx-2 --from lcnem-a ip a.jpyx.lcnem.net --moniker lcnem-a --identity lcnem-a --node-id "" --pubkey jpyxvalconspub1zcjduepqfqafaz96awchqfyrtzddhuj5t7rug4nllk8yexuvl0yzmee5dt2srkkesq
 
