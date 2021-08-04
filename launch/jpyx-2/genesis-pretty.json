@@ -704,7 +704,7 @@
             }
           },
           "signatures": [
-            "/zJ0TY+sI+VgWV5syIFWfn081N2KxDLeR5yi/8zgvjYY2tPHnAcMLvF4Innr+ise2LxrI3fVVrhuHI3WGvcLig=="
+            "VXpkRlU9BfrKco+lIGgIQMbcMUOi+4JNif8m6marRMcTXMhamQpIjt/IHHRhp6sacZ+glhQZoQQPxcAYjio2sw=="
           ]
         },
         {
@@ -714,8 +714,8 @@
                 "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
                 "description": {
                   "moniker": "lcnem-b",
-                  "identity": "",
-                  "website": "https://lcnem.com",
+                  "identity": "lcnem-b",
+                  "website": "",
                   "security_contact": "",
                   "details": ""
                 },
@@ -765,7 +765,7 @@
             }
           },
           "signatures": [
-            "42XSUbzGV6GhkoLUv4EjXQNzm2OVksnsVdf159R4fBVfXEXrJeo/Bh+YU4+85QG57pgQkzgDTQwVGkRP5JVCVA=="
+            "vZhrTHOYZUDtUe4f+nmXANsg7FqePqWr+s9F1dHSsF1+WF6vCWhNwV05g4553w7YmcQgzzByZOuvrTBqW+6XLw=="
           ]
         },
         {
@@ -826,7 +826,7 @@
             }
           },
           "signatures": [
-            "O5xiyJzRgwHXYnx1SBp1osSzwPw2oQ1WAsmobA2Dqns0OI8F+INqKplid6EmeN+nQVAdszTAW3xAvn7ED0st6A=="
+            "ywlvtoD7ExAhswhS7m/Sq0trKUlAf4/tNR9onPaaW1oaSEFXXLu6deBjxdLXjOw9XlgBgADcGyQrJQkoFkjfmg=="
           ]
         },
         {
@@ -887,7 +887,7 @@
             }
           },
           "signatures": [
-            "UKMwMbeevhNTHlNbCt+jpfWe2R2h6MkFq1Lt+SIwWQ0GDTKDMqQnzRESjeWs1cQH1694BhDQM1v1No6kVrq5zA=="
+            "qr/qUZPcoNdswrlMrBpIEVcjUEUzmA00zHeTdk+S+ppNaHZRHTG2e2N4mXuPbeIgDd//t50svc5dQrtHqHKcBA=="
           ]
         },
         {
@@ -948,7 +948,7 @@
             }
           },
           "signatures": [
-            "JmK3dqSr+E86zEDVAf5bxEw54YI6rv8yGnbSJfyJG/wSiMe8Xfqp0IUY6N5vb7bwvLCPxYw3ro4xOxI/WnA/lQ=="
+            "hobJ9xrApkfdo9DCbPUkdUAJ0gQhdGIXOzvmUXuMD2Yv9ojKXdgqXwA4V61cZZnhwjp31Q62hH4Ppn8pKSRggw=="
           ]
         },
         {
@@ -958,8 +958,8 @@
                 "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
                 "description": {
                   "moniker": "lcnem-a",
-                  "identity": "",
-                  "website": "https://lcnem.com",
+                  "identity": "lcnem-a",
+                  "website": "",
                   "security_contact": "",
                   "details": ""
                 },
@@ -1009,7 +1009,7 @@
             }
           },
           "signatures": [
-            "e0mazGwaVRfMWySVEMObOvNWT1BMog4j65l74QCozUJqcSSgZNyhDxEIChc36LtR7/Q419Ho9WCqnQSOlaGuYw=="
+            "P2eGQwlfkgVPRDFmtXXYQaDAWq3/R8sNvXKfhR58y3BE7t/l7eYZOuhpAKCOp7vYuN2Tr9PJkiTBE/VOmOfaBw=="
           ]
         },
         {
@@ -1020,7 +1020,7 @@
                 "description": {
                   "moniker": "zofuku-tokyo",
                   "identity": "zofuku_tokyo",
-                  "website": "https://zofuku.com",
+                  "website": "",
                   "security_contact": "",
                   "details": ""
                 },
@@ -1070,7 +1070,7 @@
             }
           },
           "signatures": [
-            "y1JTtJlIMgp9PRgeF7FudMBWSdCd7rzN8+7eAVFUP9N8zB8I/isaMreGYq3JvxvQ3jBoOXxoiRm1NR0rld7qbw=="
+            "KegT4Vs0LwpmPLDacFQccr1m9/t0mXwb4Wgjo8X5UJEOQJ6fTJ34szSuHpYVIdLOvpX2oLnXJKosOVUHoLdJxA=="
           ]
         },
         {
@@ -1081,7 +1081,7 @@
                 "description": {
                   "moniker": "genio",
                   "identity": "genio",
-                  "website": "https://polkadot-coin.jp",
+                  "website": "",
                   "security_contact": "",
                   "details": ""
                 },
@@ -1131,7 +1131,7 @@
             }
           },
           "signatures": [
-            "BGCBLA2tfbUCYLG05VCyDb1bf3vOoW0Z5Hh+WvIivnYkpZI15xLGspdN83w6jbTPtGYEdKP3teRefJVFUaTOHQ=="
+            "Y2IIcnusmJcSoHP1pRY4/nCq/PF6crWiT/LWxNs4nAYsoxcc4MIcGwI0ovL1xo3d/8wHVQ9sCU88pRAB5F0x/w=="
           ]
         },
         {
@@ -1192,7 +1192,7 @@
             }
           },
           "signatures": [
-            "qdPW8mmHR/RrujWL4/QYrLTnXcuE3YQzawZz40DEqSg5udvAAGz3Uvl2I4+gn7d3pTfAMxVtIxNkmrnWrAVyYw=="
+            "OmdJJulSdi8kmApFEUV0DePKWMPjBnAf+lm6roTVYOkAZV3lfJ3ebDx5Um1+yBw7XQ3au5t+STqWE0sqQUZAQQ=="
           ]
         },
         {
@@ -1253,7 +1253,68 @@
             }
           },
           "signatures": [
-            "SiYVMwIoUzB6P76EWlPrEYQ2MgwLUlDeKtBAfkXIuSokuQewNXMX8wADL/WCH9Nco+I61b479zFIIbCkRRBDdw=="
+            "xSLWrGpckznMhnElHbjIeFLJE/eLOIqjsPHW+BJVUywzMLvkOcr8hOiWAkVV7VBRRJ2a3/urgg6dCk5VswdGxg=="
+          ]
+        },
+        {
+          "body": {
+            "messages": [
+              {
+                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
+                "description": {
+                  "moniker": "toko1631",
+                  "identity": "toko1631",
+                  "website": "",
+                  "security_contact": "",
+                  "details": ""
+                },
+                "commission": {
+                  "rate": "0.100000000000000000",
+                  "max_rate": "0.200000000000000000",
+                  "max_change_rate": "0.010000000000000000"
+                },
+                "min_self_delegation": "1",
+                "delegator_address": "jpyx157rz5d9nrw7u7vxa730wnxlefpqhdc72aj5ttk",
+                "validator_address": "jpyxvaloper157rz5d9nrw7u7vxa730wnxlefpqhdc728jndd5",
+                "pubkey": {
+                  "@type": "/cosmos.crypto.ed25519.PubKey",
+                  "key": "Q/iKGOZZyUURvzAGlym5P1StydL3ZllJW/zoLQAqudU="
+                },
+                "value": {
+                  "denom": "ujsmn",
+                  "amount": "5000000000"
+                }
+              }
+            ],
+            "memo": "d2a672562c275e4651b76ca3359809942afe4886@jpyx.mainnet.validator.toko1631.neukind.network:26656",
+            "timeout_height": "0",
+            "extension_options": [],
+            "non_critical_extension_options": []
+          },
+          "auth_info": {
+            "signer_infos": [
+              {
+                "public_key": {
+                  "@type": "/cosmos.crypto.secp256k1.PubKey",
+                  "key": "ArmIl2KI+Ao2VA/EJMx0yi/U0q7/I8MXb1/lIBceOBTB"
+                },
+                "mode_info": {
+                  "single": {
+                    "mode": "SIGN_MODE_DIRECT"
+                  }
+                },
+                "sequence": "0"
+              }
+            ],
+            "fee": {
+              "amount": [],
+              "gas_limit": "200000",
+              "payer": "",
+              "granter": ""
+            }
+          },
+          "signatures": [
+            "QFXO1k7OZKc2vtYo6TkqzRbKpTZGD6tjwALXaRPzdE1wXMv+LUZcS+aek8eap20NS458wW6YGL+HpcGslgZAMg=="
           ]
         },
         {
@@ -1314,7 +1375,7 @@
             }
           },
           "signatures": [
-            "q4fqK231y0AdcxD/wJy+nXFU+mU2N9mycMr0CHLmiAwi1F5FMYLdZi5OzSLCqrLP+UfJRDPFHy/cTubb5Afx6Q=="
+            "FP+Z1PBi1ErHglGKWTekhkoI3LPg0HSVEnTJxH2basouE+MGnTKsnMAPiQP+2d9NmpIKXmL2oMFzqbipN/Ch0w=="
           ]
         },
         {
@@ -1375,7 +1436,7 @@
             }
           },
           "signatures": [
-            "TnBTjREvvRrcN/HowzDeefi5zxhdecTmBQ3qrg+72EhPJ4580bmyFG3j4/ma+9WLs3xq3Hs5BBMRDygYqYoJRw=="
+            "sFtTQcL60+jGCwYkGS2Vxronjp6vHOsFAsvG7GG5ESADgTp2RYjh7Y/Cb7TIkDzvIbLaxoe9cqj+9qHJuuftlQ=="
           ]
         },
         {
@@ -1386,7 +1447,7 @@
                 "description": {
                   "moniker": "zofuku-japan",
                   "identity": "zofuku_japan",
-                  "website": "https://zofuku.com",
+                  "website": "",
                   "security_contact": "",
                   "details": ""
                 },
@@ -1436,7 +1497,7 @@
             }
           },
           "signatures": [
-            "A9BrDSQSjM8o/FePERojzp0rPsP7EVk+kerBs8ezDC4VLCHRgZXZm4OtdpIiqbb/ChiprSMQ80YS/wbNSTwWuA=="
+            "rOFGFIBL36b20+2804BhkNMSDNt6pDhQSOYwKTc+keA7AKvCjBNu8hyDjZ2fWqtVoMdRqgyEeS3SRAFqYIGQaw=="
           ]
         },
         {
@@ -1497,7 +1558,7 @@
             }
           },
           "signatures": [
-            "HMeHG/QY49Fz4KrX86mPMdLFZ1banlrnsmt57lZyqQkwEFRlINPR0FFYQkCHvvk+HK+ynU2uRqeU0+iTsB//aQ=="
+            "WPOWRkLajUhi5d0CwyGjAFqlvcGw+voBT4oU5DUE4PoEnPuzCHdy0KlCyAbc8Sp78joEQ17qsZQVO3TUchDXUg=="
           ]
         }
       ]
