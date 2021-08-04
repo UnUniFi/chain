@@ -715,7 +715,7 @@
                 "description": {
                   "moniker": "lcnem-b",
                   "identity": "lcnem-b",
-                  "website": "",
+                  "website": "https://lcnem.com",
                   "security_contact": "",
                   "details": ""
                 },
@@ -765,7 +765,7 @@
             }
           },
           "signatures": [
-            "vZhrTHOYZUDtUe4f+nmXANsg7FqePqWr+s9F1dHSsF1+WF6vCWhNwV05g4553w7YmcQgzzByZOuvrTBqW+6XLw=="
+            "HwrOTF/wThlGSEofNoohPhKjdwvdQ9xlHwAFvasJVsgZB8k/eJSRp5rmPxdBoIhB11wpx/xES05jqSCrjxshEA=="
           ]
         },
         {
@@ -959,7 +959,7 @@
                 "description": {
                   "moniker": "lcnem-a",
                   "identity": "lcnem-a",
-                  "website": "",
+                  "website": "https://lcnem.com",
                   "security_contact": "",
                   "details": ""
                 },
@@ -1009,7 +1009,7 @@
             }
           },
           "signatures": [
-            "P2eGQwlfkgVPRDFmtXXYQaDAWq3/R8sNvXKfhR58y3BE7t/l7eYZOuhpAKCOp7vYuN2Tr9PJkiTBE/VOmOfaBw=="
+            "vxoMqbwmhwr9833anPmq4xkY8gViTMxIJ9/BO5obENdvZv4W0rZTw3TwsQWsIFEmrQVHFZt+ooy9281bgMelYg=="
           ]
         },
         {
@@ -1020,7 +1020,7 @@
                 "description": {
                   "moniker": "zofuku-tokyo",
                   "identity": "zofuku_tokyo",
-                  "website": "",
+                  "website": "https://zofuku.com",
                   "security_contact": "",
                   "details": ""
                 },
@@ -1070,7 +1070,7 @@
             }
           },
           "signatures": [
-            "KegT4Vs0LwpmPLDacFQccr1m9/t0mXwb4Wgjo8X5UJEOQJ6fTJ34szSuHpYVIdLOvpX2oLnXJKosOVUHoLdJxA=="
+            "RTTGdokfk0Cyj7s1fFO31iXSk8WLiKsqvRpn3jS+P3tGFzG4c/S2Wk7XlPxmo9fLWjSw4WxbEYMnLK/B92HONw=="
           ]
         },
         {
@@ -1081,7 +1081,7 @@
                 "description": {
                   "moniker": "genio",
                   "identity": "genio",
-                  "website": "",
+                  "website": "https://polkadot-coin.jp",
                   "security_contact": "",
                   "details": ""
                 },
@@ -1131,7 +1131,7 @@
             }
           },
           "signatures": [
-            "Y2IIcnusmJcSoHP1pRY4/nCq/PF6crWiT/LWxNs4nAYsoxcc4MIcGwI0ovL1xo3d/8wHVQ9sCU88pRAB5F0x/w=="
+            "WKIpxbosmK2+48hmg5sBATKWJszLN85ir+y78uaDsAZXtpyU6JTVhBwGLcBMcbGadHuLzyYV+QF17PgA2V/hxg=="
           ]
         },
         {
@@ -1447,7 +1447,7 @@
                 "description": {
                   "moniker": "zofuku-japan",
                   "identity": "zofuku_japan",
-                  "website": "",
+                  "website": "https://zofuku.com",
                   "security_contact": "",
                   "details": ""
                 },
@@ -1497,7 +1497,7 @@
             }
           },
           "signatures": [
-            "rOFGFIBL36b20+2804BhkNMSDNt6pDhQSOYwKTc+keA7AKvCjBNu8hyDjZ2fWqtVoMdRqgyEeS3SRAFqYIGQaw=="
+            "9bZImPfsq3saydVGzT2FyHdoAUkqNHrtM4kpFrg25X1pLlxLQFX24xZ/gQObfpeglCgUuPYGPP/DVvlt1N3D3Q=="
           ]
         },
         {
