@@ -1079,8 +1079,8 @@
               {
                 "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
                 "description": {
-                  "moniker": "genio",
-                  "identity": "genio",
+                  "moniker": "genio01",
+                  "identity": "genio01",
                   "website": "https://polkadot-coin.jp",
                   "security_contact": "",
                   "details": ""
@@ -1103,7 +1103,7 @@
                 }
               }
             ],
-            "memo": "a4d9b5360a0a8e3887f9ea50807a56d96a6174e4@jpyx.mainnet.validator.genio.neukind.network:26656",
+            "memo": "a4d9b5360a0a8e3887f9ea50807a56d96a6174e4@jpyx.mainnet.validator.genio01.neukind.network:26656",
             "timeout_height": "0",
             "extension_options": [],
             "non_critical_extension_options": []

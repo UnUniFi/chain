@@ -9,8 +9,8 @@ docker exec -it $(docker ps -qf "name=jpyx") gentx main 5000000000ujsmn --chain-
 # lcnem-b
 docker exec -it $(docker ps -qf "name=jpyx") gentx main 5000000000ujsmn --chain-id="jpyx-2" --from="lcnem-b" --ip="b.jpyx.lcnem.net" --moniker="lcnem-b" --identity="lcnem-b" --node-id="1d0651e816b8619bd97d892327a0609f829460a7" --pubkey="jpyxvalconspub1zcjduepq73we20e2l69450m8acplrdlq0w0hshn5pcwzgh8gnvgxey07552svk2lj2"
 
-# mano-san genio
-docker exec -it $(docker ps -qf "name=jpyx") gentx mano-san 5000000000ujsmn --chain-id="jpyx-2" --from="mano-san-1" --ip="jpyx.mainnet.validator.genio.neukind.network" --moniker="genio" --identity="genio" --node-id="a4d9b5360a0a8e3887f9ea50807a56d96a6174e4" --pubkey="jpyxvalconspub1zcjduepqc0qh49vf7gypaj4evzn50dzala5ysh0w0tevgdqldv3nm95d8v6sqvx8fg"
+# mano-san genio01
+docker exec -it $(docker ps -qf "name=jpyx") gentx mano-san 5000000000ujsmn --chain-id="jpyx-2" --from="mano-san-1" --ip="jpyx.mainnet.validator.genio01.neukind.network" --moniker="genio01" --identity="genio01" --node-id="a4d9b5360a0a8e3887f9ea50807a56d96a6174e4" --pubkey="jpyxvalconspub1zcjduepqc0qh49vf7gypaj4evzn50dzala5ysh0w0tevgdqldv3nm95d8v6sqvx8fg"
 
 # niikura-san-1 zofuku-japan
 docker exec -it $(docker ps -qf "name=jpyx") gentx niikura-kun-1 5000000000ujsmn --chain-id="jpyx-2" --from="niikura-san-1" --ip="jpyx.mainnet.validator.zofuku-japan.neukind.network" --moniker="zofuku-japan" --identity="zofuku_japan" --node-id="e572c2ed09f5c996ba6aef1ca01308d465fe5d3b" --pubkey="jpyxvalconspub1zcjduepqw5qee4h96ferfjfcu4gxkwdtq4zq3tdw5gat4sgvjrs6m8rld2gsm3a59h"
