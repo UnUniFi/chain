@@ -4,19 +4,19 @@
 rm -rf ~/.jpyx/config/gentx
 
 # lcnem-a
-docker exec -it $(docker ps -qf "name=jpyx") gentx main 5000000000ujsmn --chain-id="jpyx-3" --from="lcnem-a" --ip="a.jpyx.lcnem.net" --moniker="lcnem-a" --identity="lcnem-a" --node-id="8ee6060a7be74cddd3bd620a1206cf3b1a2da0cb" --pubkey="jpyxvalconspub1zcjduepqfqafaz96awchqfyrtzddhuj5t7rug4nllk8yexuvl0yzmee5dt2srkkesq"
+docker exec -it $(docker ps -qf "name=jpyx") gentx main 5000000000ujsmn --chain-id="jpyx-3" --from="lcnem-a" --ip="a.jpyx.lcnem.net" --moniker="lcnem-a" --identity="lcnem-a" --website="https://lcnem.com" --node-id="8ee6060a7be74cddd3bd620a1206cf3b1a2da0cb" --pubkey="jpyxvalconspub1zcjduepqfqafaz96awchqfyrtzddhuj5t7rug4nllk8yexuvl0yzmee5dt2srkkesq"
 
 # lcnem-b
-docker exec -it $(docker ps -qf "name=jpyx") gentx main 5000000000ujsmn --chain-id="jpyx-3" --from="lcnem-b" --ip="b.jpyx.lcnem.net" --moniker="lcnem-b" --identity="lcnem-b" --node-id="1d0651e816b8619bd97d892327a0609f829460a7" --pubkey="jpyxvalconspub1zcjduepq73we20e2l69450m8acplrdlq0w0hshn5pcwzgh8gnvgxey07552svk2lj2"
+docker exec -it $(docker ps -qf "name=jpyx") gentx main 5000000000ujsmn --chain-id="jpyx-3" --from="lcnem-b" --ip="b.jpyx.lcnem.net" --moniker="lcnem-b" --identity="lcnem-b" --website="https://lcnem.com" --node-id="1d0651e816b8619bd97d892327a0609f829460a7" --pubkey="jpyxvalconspub1zcjduepq73we20e2l69450m8acplrdlq0w0hshn5pcwzgh8gnvgxey07552svk2lj2"
 
 # mano-san genio01
-docker exec -it $(docker ps -qf "name=jpyx") gentx mano-san 5000000000ujsmn --chain-id="jpyx-3" --from="mano-san-1" --ip="jpyx.mainnet.validator.genio01.neukind.network" --moniker="genio01" --identity="genio01" --node-id="bd1d2730649fa68921a4be6c157318c41442cf42" --pubkey="jpyxvalconspub1zcjduepquuwkdx3uvcggdwjq30u3hztfcvcy6wgu2uvflkyepsvvmc58stzq3macd9"
+docker exec -it $(docker ps -qf "name=jpyx") gentx mano-san 5000000000ujsmn --chain-id="jpyx-3" --from="mano-san-1" --ip="jpyx.mainnet.validator.genio01.neukind.network" --moniker="genio01" --identity="genio01" --website="https://polkadot-coin.jp" --node-id="bd1d2730649fa68921a4be6c157318c41442cf42" --pubkey="jpyxvalconspub1zcjduepquuwkdx3uvcggdwjq30u3hztfcvcy6wgu2uvflkyepsvvmc58stzq3macd9"
 
 # niikura-san-1 zofuku-japan
-docker exec -it $(docker ps -qf "name=jpyx") gentx niikura-kun-1 5000000000ujsmn --chain-id="jpyx-3" --from="niikura-san-1" --ip="jpyx.mainnet.validator.zofuku-japan.neukind.network" --moniker="zofuku-japan" --identity="zofuku_japan" --node-id="e572c2ed09f5c996ba6aef1ca01308d465fe5d3b" --pubkey="jpyxvalconspub1zcjduepqw5qee4h96ferfjfcu4gxkwdtq4zq3tdw5gat4sgvjrs6m8rld2gsm3a59h"
+docker exec -it $(docker ps -qf "name=jpyx") gentx niikura-kun-1 5000000000ujsmn --chain-id="jpyx-3" --from="niikura-san-1" --ip="jpyx.mainnet.validator.zofuku-japan.neukind.network" --moniker="zofuku-japan" --identity="zofuku_japan" --website="https://zofuku.com" --node-id="e572c2ed09f5c996ba6aef1ca01308d465fe5d3b" --pubkey="jpyxvalconspub1zcjduepqw5qee4h96ferfjfcu4gxkwdtq4zq3tdw5gat4sgvjrs6m8rld2gsm3a59h"
 
 # niikura-san-2 zofuku-tokyo
-docker exec -it $(docker ps -qf "name=jpyx") gentx niikura-kun-2 5000000000ujsmn --chain-id="jpyx-3" --from="niikura-san-2" --ip="jpyx.mainnet.validator.zofuku-tokyo.neukind.network" --moniker="zofuku-tokyo" --identity="zofuku_tokyo" --node-id="9bb3dd0db9f6c27294f0aa4ac65a6f3db81c33b6" --pubkey="jpyxvalconspub1zcjduepqd06a5ae7343tv662728nugjl2rhd8gml3upal79n38tp4js299qswr6qhh"
+docker exec -it $(docker ps -qf "name=jpyx") gentx niikura-kun-2 5000000000ujsmn --chain-id="jpyx-3" --from="niikura-san-2" --ip="jpyx.mainnet.validator.zofuku-tokyo.neukind.network" --moniker="zofuku-tokyo" --identity="zofuku_tokyo" --website="https://zofuku.com" --node-id="9bb3dd0db9f6c27294f0aa4ac65a6f3db81c33b6" --pubkey="jpyxvalconspub1zcjduepqd06a5ae7343tv662728nugjl2rhd8gml3upal79n38tp4js299qswr6qhh"
 
 # chikako-kurita-1 chikako0903
 docker exec -it $(docker ps -qf "name=jpyx") gentx chikako-kurata-san 5000000000ujsmn --chain-id="jpyx-3" --from="chikako-kurita-1" --ip="jpyx.mainnet.validator.chikako0930.neukind.network" --moniker="chikako0903" --identity="chikako0903" --node-id="eab5fcd221e9970735eaa3aae8397bf70bdd04b4" --pubkey="jpyxvalconspub1zcjduepqcx6fccqggvqhyfpx00gkthv49we40pdglae3hkrwhy0q8drv7qjqtlhjfv"

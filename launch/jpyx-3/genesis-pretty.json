@@ -704,7 +704,7 @@
             }
           },
           "signatures": [
-            "VXpkRlU9BfrKco+lIGgIQMbcMUOi+4JNif8m6marRMcTXMhamQpIjt/IHHRhp6sacZ+glhQZoQQPxcAYjio2sw=="
+            "ugJe0mhFKpfPozV2vPYAR4saTal9c3iKTgnwB9hP1x0dc9DuBCnYsU8bKHwwW0zrTB5VgfSLRYaHr3bezDAl4g=="
           ]
         },
         {
@@ -765,7 +765,7 @@
             }
           },
           "signatures": [
-            "HwrOTF/wThlGSEofNoohPhKjdwvdQ9xlHwAFvasJVsgZB8k/eJSRp5rmPxdBoIhB11wpx/xES05jqSCrjxshEA=="
+            "ITorEESAWDVgrpGCaM1adOXFz2/l4hA7F+x5QePv5PBNGRDmNQBesg2OzVijyfaVDLJk+Am6HTBkQzk6qyH/yg=="
           ]
         },
         {
@@ -826,7 +826,7 @@
             }
           },
           "signatures": [
-            "ywlvtoD7ExAhswhS7m/Sq0trKUlAf4/tNR9onPaaW1oaSEFXXLu6deBjxdLXjOw9XlgBgADcGyQrJQkoFkjfmg=="
+            "LTLzNMdyGlDGJOkYlmRKv7ImzMP8WGYDlejHL19d/xtPWidtMiUy2uM2tCAm3GLe34nKsdnlJA+6w9oO/ZLHOQ=="
           ]
         },
         {
@@ -887,7 +887,7 @@
             }
           },
           "signatures": [
-            "qr/qUZPcoNdswrlMrBpIEVcjUEUzmA00zHeTdk+S+ppNaHZRHTG2e2N4mXuPbeIgDd//t50svc5dQrtHqHKcBA=="
+            "fO8go5hdUJUw7OH2YCQ1h/5HY+bXdT5+c7iL1opoYF8xVwRIEmDyNiN3QA+5IAnruyWahSlpv+wIahisFTCYDA=="
           ]
         },
         {
@@ -948,7 +948,7 @@
             }
           },
           "signatures": [
-            "hobJ9xrApkfdo9DCbPUkdUAJ0gQhdGIXOzvmUXuMD2Yv9ojKXdgqXwA4V61cZZnhwjp31Q62hH4Ppn8pKSRggw=="
+            "X21bl2tKxntspzVJc41zF4c3LqC4/QK4PWfiLGOYmUISLUM+PLzFKyy6oQgRrz04hWF9ssflA5YcPJHzDz0QGg=="
           ]
         },
         {
@@ -1009,7 +1009,7 @@
             }
           },
           "signatures": [
-            "vxoMqbwmhwr9833anPmq4xkY8gViTMxIJ9/BO5obENdvZv4W0rZTw3TwsQWsIFEmrQVHFZt+ooy9281bgMelYg=="
+            "hBjKbvhG5zffrhHxCMER4Dlfr9rtpRRwgveXc8bx+7VpqxcC83o37M72lIbtNx0Vw8jkQEOM1SCKIYVFvYvuNQ=="
           ]
         },
         {
@@ -1070,68 +1070,7 @@
             }
           },
           "signatures": [
-            "RTTGdokfk0Cyj7s1fFO31iXSk8WLiKsqvRpn3jS+P3tGFzG4c/S2Wk7XlPxmo9fLWjSw4WxbEYMnLK/B92HONw=="
-          ]
-        },
-        {
-          "body": {
-            "messages": [
-              {
-                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
-                "description": {
-                  "moniker": "genio01",
-                  "identity": "genio01",
-                  "website": "https://polkadot-coin.jp",
-                  "security_contact": "",
-                  "details": ""
-                },
-                "commission": {
-                  "rate": "0.100000000000000000",
-                  "max_rate": "0.200000000000000000",
-                  "max_change_rate": "0.010000000000000000"
-                },
-                "min_self_delegation": "1",
-                "delegator_address": "jpyx1t8kqse82uch3jvf7t8jrhtsr84edvsty4pf6az",
-                "validator_address": "jpyxvaloper1t8kqse82uch3jvf7t8jrhtsr84edvsty0pwumq",
-                "pubkey": {
-                  "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "w8F6lYnyCB7KuWCnR7Rd/2hIXe568sQ0H2sjPZaNOzU="
-                },
-                "value": {
-                  "denom": "ujsmn",
-                  "amount": "5000000000"
-                }
-              }
-            ],
-            "memo": "a4d9b5360a0a8e3887f9ea50807a56d96a6174e4@jpyx.mainnet.validator.genio01.neukind.network:26656",
-            "timeout_height": "0",
-            "extension_options": [],
-            "non_critical_extension_options": []
-          },
-          "auth_info": {
-            "signer_infos": [
-              {
-                "public_key": {
-                  "@type": "/cosmos.crypto.secp256k1.PubKey",
-                  "key": "A+PSeRBHh1ABvo4lzr5fVcTpRuPPZ/P5h2xbNAeh36wC"
-                },
-                "mode_info": {
-                  "single": {
-                    "mode": "SIGN_MODE_DIRECT"
-                  }
-                },
-                "sequence": "0"
-              }
-            ],
-            "fee": {
-              "amount": [],
-              "gas_limit": "200000",
-              "payer": "",
-              "granter": ""
-            }
-          },
-          "signatures": [
-            "FY+E6EC9hrboaESOzp8nPbKkVIxritA1Wd582Ax4Gi1cVNWbFi/0L+xkZTN1QUr7L+mTZ/xeerU1W/+SKov8Nw=="
+            "Xik7XdP85g8ovenx0NKoAHQTVt9pos9x9U6wgi8fztFyznhli9Juj153dLB5uoEQ/T3Jk9DeIisQbWxnaOnfHA=="
           ]
         },
         {
@@ -1192,7 +1131,68 @@
             }
           },
           "signatures": [
-            "OmdJJulSdi8kmApFEUV0DePKWMPjBnAf+lm6roTVYOkAZV3lfJ3ebDx5Um1+yBw7XQ3au5t+STqWE0sqQUZAQQ=="
+            "R0qURbipH5voYGZj1cVMFX5cqAZpQlusQLiTgTiaOaN0hYtFq9Z6l17toG530XBox3KOZLFTLXT4ivGV9eA9yA=="
+          ]
+        },
+        {
+          "body": {
+            "messages": [
+              {
+                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
+                "description": {
+                  "moniker": "genio01",
+                  "identity": "genio01",
+                  "website": "https://polkadot-coin.jp",
+                  "security_contact": "",
+                  "details": ""
+                },
+                "commission": {
+                  "rate": "0.100000000000000000",
+                  "max_rate": "0.200000000000000000",
+                  "max_change_rate": "0.010000000000000000"
+                },
+                "min_self_delegation": "1",
+                "delegator_address": "jpyx1t8kqse82uch3jvf7t8jrhtsr84edvsty4pf6az",
+                "validator_address": "jpyxvaloper1t8kqse82uch3jvf7t8jrhtsr84edvsty0pwumq",
+                "pubkey": {
+                  "@type": "/cosmos.crypto.ed25519.PubKey",
+                  "key": "5x1mmjxmEIa6QIv5G4lpwzBNORxXGJ/YmQwYzeKHgsQ="
+                },
+                "value": {
+                  "denom": "ujsmn",
+                  "amount": "5000000000"
+                }
+              }
+            ],
+            "memo": "bd1d2730649fa68921a4be6c157318c41442cf42@jpyx.mainnet.validator.genio01.neukind.network:26656",
+            "timeout_height": "0",
+            "extension_options": [],
+            "non_critical_extension_options": []
+          },
+          "auth_info": {
+            "signer_infos": [
+              {
+                "public_key": {
+                  "@type": "/cosmos.crypto.secp256k1.PubKey",
+                  "key": "A+PSeRBHh1ABvo4lzr5fVcTpRuPPZ/P5h2xbNAeh36wC"
+                },
+                "mode_info": {
+                  "single": {
+                    "mode": "SIGN_MODE_DIRECT"
+                  }
+                },
+                "sequence": "0"
+              }
+            ],
+            "fee": {
+              "amount": [],
+              "gas_limit": "200000",
+              "payer": "",
+              "granter": ""
+            }
+          },
+          "signatures": [
+            "hCGVQB02ihismjpizEyOS50vxRbWhRdTigRJ/b0YWOorCctr4M4pPZbt1igkv1R8OMlYv3tCeE7VdiG7HrddeQ=="
           ]
         },
         {
@@ -1253,7 +1253,7 @@
             }
           },
           "signatures": [
-            "xSLWrGpckznMhnElHbjIeFLJE/eLOIqjsPHW+BJVUywzMLvkOcr8hOiWAkVV7VBRRJ2a3/urgg6dCk5VswdGxg=="
+            "v7NgEdIcFlhQojaaJG9j1rgJeW7E3qf0WTjNEDj4shd2MbFQqi3rM1/o2sOVP0Jh1tZPx6lfWsKv/us/jqqe7Q=="
           ]
         },
         {
@@ -1314,7 +1314,7 @@
             }
           },
           "signatures": [
-            "QFXO1k7OZKc2vtYo6TkqzRbKpTZGD6tjwALXaRPzdE1wXMv+LUZcS+aek8eap20NS458wW6YGL+HpcGslgZAMg=="
+            "yN5OWMa4PWtTDwVfmyJqqVuSVoi+bCGdbrrHh0ctN5xeU31K6G03F3t2MkzUomoEnj+YUmmXfzlQGvms51oeeA=="
           ]
         },
         {
@@ -1375,7 +1375,7 @@
             }
           },
           "signatures": [
-            "FP+Z1PBi1ErHglGKWTekhkoI3LPg0HSVEnTJxH2basouE+MGnTKsnMAPiQP+2d9NmpIKXmL2oMFzqbipN/Ch0w=="
+            "OoB7s2yZx1v93XI+K7yWI9k66OI/BK1OmXHchmIQQCl1k/4GKGgsM9pBeH0FembpZ/THbqOKUjDhPRqmgb5G9A=="
           ]
         },
         {
@@ -1436,7 +1436,7 @@
             }
           },
           "signatures": [
-            "sFtTQcL60+jGCwYkGS2Vxronjp6vHOsFAsvG7GG5ESADgTp2RYjh7Y/Cb7TIkDzvIbLaxoe9cqj+9qHJuuftlQ=="
+            "M4+IB6T9j3roOmTaVnfmCd3fkyUpN9f+nKEsmX39UMQZ6R8RZTDsVMTiTixBnsBC6VmXcsYT55ytTW/sKgZSZg=="
           ]
         },
         {
@@ -1497,7 +1497,7 @@
             }
           },
           "signatures": [
-            "9bZImPfsq3saydVGzT2FyHdoAUkqNHrtM4kpFrg25X1pLlxLQFX24xZ/gQObfpeglCgUuPYGPP/DVvlt1N3D3Q=="
+            "20XB0U2WhHm9YAp24wkmH9g8wMrKPjVABPugEDAhs+FEMHi9nE8lFIiAQaNkwhZHQ4F5CdrWuOYskc6aaC+j5A=="
           ]
         },
         {
@@ -1558,7 +1558,7 @@
             }
           },
           "signatures": [
-            "WPOWRkLajUhi5d0CwyGjAFqlvcGw+voBT4oU5DUE4PoEnPuzCHdy0KlCyAbc8Sp78joEQ17qsZQVO3TUchDXUg=="
+            "o7IximWymvDwNOcQE2D7epxYUKmdQ1anSXA6g3vi+PcxoZtgfGnwZuWXdOA0yC5nUrcrV/QULJYWkkvf+Gq/gA=="
           ]
         }
       ]
