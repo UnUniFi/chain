@@ -5,10 +5,10 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/kava-labs/kava/x/auction"
-	"github.com/kava-labs/kava/x/cdp/keeper"
-	"github.com/kava-labs/kava/x/cdp/types"
-	"github.com/kava/app"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/auction"
+	"github.com/lcnem/jpyx/x/cdp/keeper"
+	"github.com/lcnem/jpyx/x/cdp/types"
 
 	"github.com/stretchr/testify/suite"
 
