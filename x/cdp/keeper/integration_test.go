@@ -4,6 +4,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/lcnem/jpyx/app"
 	jpyxtypes "github.com/lcnem/jpyx/types"
@@ -230,7 +231,6 @@ func NewCDPGenStateHighDebtLimit() app.GenesisState {
 	return app.GenesisState{cdptypes.ModuleName: cdptypes.ModuleCdc.MustMarshalJSON(&cdpGenesis)}
 }
 
-/*
 func cdps() (cdps cdptypes.Cdps) {
 	_, addrs := app.GeneratePrivKeyAddressPairs(3)
 	c1 := cdptypes.NewCdp(uint64(1), addrs[0], sdk.NewCoin("xrp", sdk.NewInt(10000000)), "xrp-a", sdk.NewCoin("usdx", sdk.NewInt(8000000)), tmtime.Canonical(time.Now()), sdk.NewDec(0))
@@ -240,4 +240,3 @@ func cdps() (cdps cdptypes.Cdps) {
 	cdps = append(cdps, c1, c2, c3, c4)
 	return
 }
-*/
