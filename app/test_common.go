@@ -65,7 +65,7 @@ func NewTestApp() TestApp {
 
 	db := tmdb.NewMemDB()
 
-	tApp := New(log.NewNopLogger(), db, nil, true, map[int64]bool{}, "" /* cast.ToString(appOpts.Get(flags.FlagHome)) */, 0, MakeEncodingConfig() /* a.encCfg */, nil /* appOpts */)
+	tApp := New(log.NewNopLogger(), db, nil, true, map[int64]bool{}, "" /* cast.ToString(appOpts.Get(flags.FlagHome)) */, 0, MakeEncodingConfig() /* a.encCfg */, nil /* Todo: Need to fix here appOpts */)
 	return TestApp{App: *tApp}
 }
 
