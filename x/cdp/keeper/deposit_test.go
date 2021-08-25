@@ -8,12 +8,12 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/cdp/keeper"
-	"github.com/kava-labs/kava/x/cdp/types"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/cdp/keeper"
+	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
 )
 
 type DepositTestSuite struct {
@@ -27,7 +27,7 @@ type DepositTestSuite struct {
 
 func (suite *DepositTestSuite) SetupTest() {
 	tApp := app.NewTestApp()
-	ctx := tApp.NewContext(true, abci.Header{Height: 1, Time: tmtime.Now()})
+	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
 	_, addrs := app.GeneratePrivKeyAddressPairs(10)
 	authGS := app.NewAuthGenState(
 		addrs[0:2],
@@ -51,7 +51,7 @@ func (suite *DepositTestSuite) SetupTest() {
 func (suite *DepositTestSuite) TestGetSetDeposit() {
 	d, found := suite.keeper.GetDeposit(suite.ctx, uint64(1), suite.addrs[0])
 	suite.True(found)
-	td := types.NewDeposit(uint64(1), suite.addrs[0], c("xrp", 400000000))
+	td := cdptypes.NewDeposit(uint64(1), suite.addrs[0], c("xrp", 400000000))
 	suite.True(d.Equals(td))
 	ds := suite.keeper.GetDeposits(suite.ctx, uint64(1))
 	suite.Equal(1, len(ds))
@@ -68,28 +68,29 @@ func (suite *DepositTestSuite) TestDepositCollateral() {
 	suite.NoError(err)
 	d, found := suite.keeper.GetDeposit(suite.ctx, uint64(1), suite.addrs[0])
 	suite.True(found)
-	td := types.NewDeposit(uint64(1), suite.addrs[0], c("xrp", 410000000))
+	td := cdptypes.NewDeposit(uint64(1), suite.addrs[0], c("xrp", 410000000))
 	suite.True(d.Equals(td))
 	ds := suite.keeper.GetDeposits(suite.ctx, uint64(1))
 	suite.Equal(1, len(ds))
 	suite.True(ds[0].Equals(td))
-	cd, _ := suite.keeper.GetCDP(suite.ctx, "xrp-a", uint64(1))
+	cd, _ := suite.keeper.GetCdp(suite.ctx, "xrp-a", uint64(1))
 	suite.Equal(c("xrp", 410000000), cd.Collateral)
 	ak := suite.app.GetAccountKeeper()
+	sk := suite.app.GetBankKeeper()
 	acc := ak.GetAccount(suite.ctx, suite.addrs[0])
-	suite.Equal(i(90000000), acc.GetCoins().AmountOf("xrp"))
+	suite.Equal(i(90000000), sk.GetBalance(suite.ctx, acc.GetAddress(), "xrp"))
 
 	err = suite.keeper.DepositCollateral(suite.ctx, suite.addrs[0], suite.addrs[0], c("btc", 1), "btc-a")
-	suite.Require().True(errors.Is(err, types.ErrCdpNotFound))
+	suite.Require().True(errors.Is(err, cdptypes.ErrCdpNotFound))
 
 	err = suite.keeper.DepositCollateral(suite.ctx, suite.addrs[1], suite.addrs[0], c("xrp", 1), "xrp-a")
-	suite.Require().True(errors.Is(err, types.ErrCdpNotFound))
+	suite.Require().True(errors.Is(err, cdptypes.ErrCdpNotFound))
 
 	err = suite.keeper.DepositCollateral(suite.ctx, suite.addrs[0], suite.addrs[1], c("xrp", 10000000), "xrp-a")
 	suite.NoError(err)
 	d, found = suite.keeper.GetDeposit(suite.ctx, uint64(1), suite.addrs[1])
 	suite.True(found)
-	td = types.NewDeposit(uint64(1), suite.addrs[1], c("xrp", 10000000))
+	td = cdptypes.NewDeposit(uint64(1), suite.addrs[1], c("xrp", 10000000))
 	suite.True(d.Equals(td))
 	ds = suite.keeper.GetDeposits(suite.ctx, uint64(1))
 	suite.Equal(2, len(ds))
@@ -98,30 +99,31 @@ func (suite *DepositTestSuite) TestDepositCollateral() {
 
 func (suite *DepositTestSuite) TestWithdrawCollateral() {
 	err := suite.keeper.WithdrawCollateral(suite.ctx, suite.addrs[0], suite.addrs[0], c("xrp", 400000000), "xrp-a")
-	suite.Require().True(errors.Is(err, types.ErrInvalidCollateralRatio))
+	suite.Require().True(errors.Is(err, cdptypes.ErrInvalidCollateralRatio))
 	err = suite.keeper.WithdrawCollateral(suite.ctx, suite.addrs[0], suite.addrs[0], c("xrp", 321000000), "xrp-a")
-	suite.Require().True(errors.Is(err, types.ErrInvalidCollateralRatio))
+	suite.Require().True(errors.Is(err, cdptypes.ErrInvalidCollateralRatio))
 	err = suite.keeper.WithdrawCollateral(suite.ctx, suite.addrs[1], suite.addrs[0], c("xrp", 10000000), "xrp-a")
-	suite.Require().True(errors.Is(err, types.ErrCdpNotFound))
+	suite.Require().True(errors.Is(err, cdptypes.ErrCdpNotFound))
 
-	cd, _ := suite.keeper.GetCDP(suite.ctx, "xrp-a", uint64(1))
+	cd, _ := suite.keeper.GetCdp(suite.ctx, "xrp-a", uint64(1))
 	cd.AccumulatedFees = c("usdx", 1)
-	err = suite.keeper.SetCDP(suite.ctx, cd)
+	err = suite.keeper.SetCdp(suite.ctx, cd)
 	suite.NoError(err)
 	err = suite.keeper.WithdrawCollateral(suite.ctx, suite.addrs[0], suite.addrs[0], c("xrp", 320000000), "xrp-a")
-	suite.Require().True(errors.Is(err, types.ErrInvalidCollateralRatio))
+	suite.Require().True(errors.Is(err, cdptypes.ErrInvalidCollateralRatio))
 
 	err = suite.keeper.WithdrawCollateral(suite.ctx, suite.addrs[0], suite.addrs[0], c("xrp", 10000000), "xrp-a")
 	suite.NoError(err)
 	dep, _ := suite.keeper.GetDeposit(suite.ctx, uint64(1), suite.addrs[0])
-	td := types.NewDeposit(uint64(1), suite.addrs[0], c("xrp", 390000000))
+	td := cdptypes.NewDeposit(uint64(1), suite.addrs[0], c("xrp", 390000000))
 	suite.True(dep.Equals(td))
 	ak := suite.app.GetAccountKeeper()
+	sk := suite.app.GetBankKeeper()
 	acc := ak.GetAccount(suite.ctx, suite.addrs[0])
-	suite.Equal(i(110000000), acc.GetCoins().AmountOf("xrp"))
+	suite.Equal(i(110000000), sk.GetBalance(suite.ctx, acc.GetAddress(), "xrp"))
 
 	err = suite.keeper.WithdrawCollateral(suite.ctx, suite.addrs[0], suite.addrs[1], c("xrp", 10000000), "xrp-a")
-	suite.Require().True(errors.Is(err, types.ErrDepositNotFound))
+	suite.Require().True(errors.Is(err, cdptypes.ErrDepositNotFound))
 }
 
 func TestDepositTestSuite(t *testing.T) {
