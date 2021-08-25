@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/lcnem/jpyx/app"
-	"github.com/lcnem/jpyx/x/auction"
+	auctiontypes "github.com/lcnem/jpyx/x/auction/types"
 	"github.com/lcnem/jpyx/x/cdp/keeper"
 	"github.com/lcnem/jpyx/x/cdp/types"
 
@@ -41,22 +41,22 @@ func (suite *AuctionTestSuite) SetupTest() {
 	suite.ctx = ctx
 	suite.keeper = keeper
 	suite.addrs = []sdk.AccAddress{taddr}
-	return
 }
 
 func (suite *AuctionTestSuite) TestNetDebtSurplus() {
-	sk := suite.app.GetSupplyKeeper()
+	ak := suite.app.GetAccountKeeper()
+	sk := suite.app.GetBankKeeper()
 	err := sk.MintCoins(suite.ctx, types.LiquidatorMacc, cs(c("debt", 100)))
 	suite.NoError(err)
 	err = sk.MintCoins(suite.ctx, types.LiquidatorMacc, cs(c("usdx", 10)))
 	suite.NoError(err)
 	suite.NotPanics(func() { suite.keeper.NetSurplusAndDebt(suite.ctx) })
-	acc := sk.GetModuleAccount(suite.ctx, types.LiquidatorMacc)
-	suite.Equal(cs(c("debt", 90)), acc.GetCoins())
+	acc := ak.GetModuleAccount(suite.ctx, types.LiquidatorMacc)
+	suite.Equal(cs(c("debt", 90)), sk.GetAllBalances(suite.ctx, acc.GetAddress()))
 }
 
 func (suite *AuctionTestSuite) TestCollateralAuction() {
-	sk := suite.app.GetSupplyKeeper()
+	sk := suite.app.GetBankKeeper()
 	err := sk.MintCoins(suite.ctx, types.LiquidatorMacc, cs(c("debt", 21000000000), c("bnb", 190000000000)))
 	suite.Require().NoError(err)
 	testDeposit := types.NewDeposit(1, suite.addrs[0], c("bnb", 190000000000))
@@ -65,33 +65,35 @@ func (suite *AuctionTestSuite) TestCollateralAuction() {
 }
 
 func (suite *AuctionTestSuite) TestSurplusAuction() {
-	sk := suite.app.GetSupplyKeeper()
+	ak := suite.app.GetAccountKeeper()
+	sk := suite.app.GetBankKeeper()
 	err := sk.MintCoins(suite.ctx, types.LiquidatorMacc, cs(c("usdx", 600000000000)))
 	suite.NoError(err)
 	err = sk.MintCoins(suite.ctx, types.LiquidatorMacc, cs(c("debt", 100000000000)))
 	suite.NoError(err)
 	suite.keeper.RunSurplusAndDebtAuctions(suite.ctx)
-	acc := sk.GetModuleAccount(suite.ctx, auction.ModuleName)
-	suite.Equal(cs(c("usdx", 10000000000)), acc.GetCoins())
-	acc = sk.GetModuleAccount(suite.ctx, types.LiquidatorMacc)
-	suite.Equal(cs(c("usdx", 490000000000)), acc.GetCoins())
+	acc := ak.GetModuleAccount(suite.ctx, auctiontypes.ModuleName)
+	suite.Equal(cs(c("usdx", 10000000000)), sk.GetAllBalances(suite.ctx, acc.GetAddress()))
+	acc = ak.GetModuleAccount(suite.ctx, types.LiquidatorMacc)
+	suite.Equal(cs(c("usdx", 490000000000)), sk.GetAllBalances(suite.ctx, acc.GetAddress()))
 }
 
 func (suite *AuctionTestSuite) TestDebtAuction() {
-	sk := suite.app.GetSupplyKeeper()
+	ak := suite.app.GetAccountKeeper()
+	sk := suite.app.GetBankKeeper()
 	err := sk.MintCoins(suite.ctx, types.LiquidatorMacc, cs(c("usdx", 100000000000)))
 	suite.NoError(err)
 	err = sk.MintCoins(suite.ctx, types.LiquidatorMacc, cs(c("debt", 200000000000)))
 	suite.NoError(err)
 	suite.keeper.RunSurplusAndDebtAuctions(suite.ctx)
-	acc := sk.GetModuleAccount(suite.ctx, auction.ModuleName)
-	suite.Equal(cs(c("debt", 10000000000)), acc.GetCoins())
-	acc = sk.GetModuleAccount(suite.ctx, types.LiquidatorMacc)
-	suite.Equal(cs(c("debt", 90000000000)), acc.GetCoins())
+	acc := ak.GetModuleAccount(suite.ctx, auctiontypes.ModuleName)
+	suite.Equal(cs(c("debt", 10000000000)), sk.GetAllBalances(suite.ctx, acc.GetAddress()))
+	acc = ak.GetModuleAccount(suite.ctx, types.LiquidatorMacc)
+	suite.Equal(cs(c("debt", 90000000000)), sk.GetAllBalances(suite.ctx, acc.GetAddress()))
 }
 
 func (suite *AuctionTestSuite) TestGetTotalSurplus() {
-	sk := suite.app.GetSupplyKeeper()
+	sk := suite.app.GetBankKeeper()
 
 	// liquidator account has zero coins
 	suite.Require().Equal(sdk.NewInt(0), suite.keeper.GetTotalSurplus(suite.ctx, types.LiquidatorMacc))
@@ -121,7 +123,7 @@ func (suite *AuctionTestSuite) TestGetTotalSurplus() {
 }
 
 func (suite *AuctionTestSuite) TestGetTotalDebt() {
-	sk := suite.app.GetSupplyKeeper()
+	sk := suite.app.GetBankKeeper()
 
 	// liquidator account has zero debt
 	suite.Require().Equal(sdk.NewInt(0), suite.keeper.GetTotalSurplus(suite.ctx, types.LiquidatorMacc))
