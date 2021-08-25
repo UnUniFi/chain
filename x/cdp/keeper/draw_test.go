@@ -9,12 +9,12 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/cdp/keeper"
-	"github.com/kava-labs/kava/x/cdp/types"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/cdp/keeper"
+	"github.com/lcnem/jpyx/x/cdp/types"
 )
 
 type DrawTestSuite struct {
@@ -28,7 +28,7 @@ type DrawTestSuite struct {
 
 func (suite *DrawTestSuite) SetupTest() {
 	tApp := app.NewTestApp()
-	ctx := tApp.NewContext(true, abci.Header{Height: 1, Time: tmtime.Now()})
+	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
 	_, addrs := app.GeneratePrivKeyAddressPairs(3)
 	authGS := app.NewAuthGenState(
 		addrs,
@@ -55,7 +55,7 @@ func (suite *DrawTestSuite) TestAddRepayPrincipal() {
 	err := suite.keeper.AddPrincipal(suite.ctx, suite.addrs[0], "xrp-a", c("usdx", 10000000))
 	suite.NoError(err)
 
-	t, found := suite.keeper.GetCDP(suite.ctx, "xrp-a", uint64(1))
+	t, found := suite.keeper.GetCdp(suite.ctx, "xrp-a", uint64(1))
 	suite.True(found)
 	suite.Equal(c("usdx", 20000000), t.Principal)
 	ctd := suite.keeper.CalculateCollateralToDebtRatio(suite.ctx, t.Collateral, "xrp-a", t.Principal.Add(t.AccumulatedFees))
@@ -66,9 +66,10 @@ func (suite *DrawTestSuite) TestAddRepayPrincipal() {
 	suite.Equal(ts[0], t)
 	tp := suite.keeper.GetTotalPrincipal(suite.ctx, "xrp-a", "usdx")
 	suite.Equal(i(20000000), tp)
-	sk := suite.app.GetSupplyKeeper()
-	acc := sk.GetModuleAccount(suite.ctx, types.ModuleName)
-	suite.Equal(cs(c("xrp", 400000000), c("debt", 20000000)), acc.GetCoins())
+	ak := suite.app.GetAccountKeeper()
+	sk := suite.app.GetBankKeeper()
+	acc := ak.GetModuleAccount(suite.ctx, types.ModuleName)
+	suite.Equal(cs(c("xrp", 400000000), c("debt", 20000000)), sk.GetAllBalances(suite.ctx, acc.GetAddress()))
 
 	err = suite.keeper.AddPrincipal(suite.ctx, suite.addrs[0], "xrp-a", c("susd", 10000000))
 	suite.Require().True(errors.Is(err, types.ErrInvalidDebtRequest))
@@ -83,7 +84,7 @@ func (suite *DrawTestSuite) TestAddRepayPrincipal() {
 	err = suite.keeper.RepayPrincipal(suite.ctx, suite.addrs[0], "xrp-a", c("usdx", 10000000))
 	suite.NoError(err)
 
-	t, found = suite.keeper.GetCDP(suite.ctx, "xrp-a", uint64(1))
+	t, found = suite.keeper.GetCdp(suite.ctx, "xrp-a", uint64(1))
 	suite.True(found)
 	suite.Equal(c("usdx", 10000000), t.Principal)
 
@@ -93,9 +94,10 @@ func (suite *DrawTestSuite) TestAddRepayPrincipal() {
 	suite.Equal(0, len(ts))
 	ts = suite.keeper.GetAllCdpsByCollateralTypeAndRatio(suite.ctx, "xrp-a", d("40.0").Add(sdk.SmallestDec()))
 	suite.Equal(ts[0], t)
-	sk = suite.app.GetSupplyKeeper()
-	acc = sk.GetModuleAccount(suite.ctx, types.ModuleName)
-	suite.Equal(cs(c("xrp", 400000000), c("debt", 10000000)), acc.GetCoins())
+	ak = suite.app.GetAccountKeeper()
+	sk = suite.app.GetBankKeeper()
+	acc = ak.GetModuleAccount(suite.ctx, types.ModuleName)
+	suite.Equal(cs(c("xrp", 400000000), c("debt", 10000000)), sk.GetAllBalances(suite.ctx, acc.GetAddress()))
 
 	err = suite.keeper.RepayPrincipal(suite.ctx, suite.addrs[0], "xrp-a", c("xusd", 10000000))
 	suite.Require().True(errors.Is(err, types.ErrInvalidPayment))
@@ -107,15 +109,16 @@ func (suite *DrawTestSuite) TestAddRepayPrincipal() {
 	err = suite.keeper.RepayPrincipal(suite.ctx, suite.addrs[0], "xrp-a", c("usdx", 10000000))
 	suite.NoError(err)
 
-	_, found = suite.keeper.GetCDP(suite.ctx, "xrp-a", uint64(1))
+	_, found = suite.keeper.GetCdp(suite.ctx, "xrp-a", uint64(1))
 	suite.False(found)
 	ts = suite.keeper.GetAllCdpsByCollateralTypeAndRatio(suite.ctx, "xrp-a", types.MaxSortableDec)
 	suite.Equal(0, len(ts))
 	ts = suite.keeper.GetAllCdpsByCollateralType(suite.ctx, "xrp-a")
 	suite.Equal(0, len(ts))
-	sk = suite.app.GetSupplyKeeper()
-	acc = sk.GetModuleAccount(suite.ctx, types.ModuleName)
-	suite.Equal(sdk.Coins(nil), acc.GetCoins())
+	ak = suite.app.GetAccountKeeper()
+	sk = suite.app.GetBankKeeper()
+	acc = ak.GetModuleAccount(suite.ctx, types.ModuleName)
+	suite.Equal(sdk.Coins(nil), sk.GetAllBalances(suite.ctx, acc.GetAddress()))
 
 }
 
@@ -123,9 +126,10 @@ func (suite *DrawTestSuite) TestRepayPrincipalOverpay() {
 	err := suite.keeper.RepayPrincipal(suite.ctx, suite.addrs[0], "xrp-a", c("usdx", 20000000))
 	suite.NoError(err)
 	ak := suite.app.GetAccountKeeper()
+	sk := suite.app.GetBankKeeper()
 	acc := ak.GetAccount(suite.ctx, suite.addrs[0])
-	suite.Equal(i(10000000000), (acc.GetCoins().AmountOf("usdx")))
-	_, found := suite.keeper.GetCDP(suite.ctx, "xrp-a", 1)
+	suite.Equal(i(10000000000), sk.GetBalance(suite.ctx, acc.GetAddress(), "usdx"))
+	_, found := suite.keeper.GetCdp(suite.ctx, "xrp-a", 1)
 	suite.False(found)
 }
 
@@ -137,15 +141,15 @@ func (suite *DrawTestSuite) TestAddRepayPrincipalFees() {
 	suite.NoError(err)
 	err = suite.keeper.AddPrincipal(suite.ctx, suite.addrs[2], "xrp-a", c("usdx", 10000000))
 	suite.NoError(err)
-	t, _ := suite.keeper.GetCDP(suite.ctx, "xrp-a", uint64(2))
+	t, _ := suite.keeper.GetCdp(suite.ctx, "xrp-a", uint64(2))
 	suite.Equal(c("usdx", 92827), t.AccumulatedFees)
 	err = suite.keeper.RepayPrincipal(suite.ctx, suite.addrs[2], "xrp-a", c("usdx", 100))
 	suite.NoError(err)
-	t, _ = suite.keeper.GetCDP(suite.ctx, "xrp-a", uint64(2))
+	t, _ = suite.keeper.GetCdp(suite.ctx, "xrp-a", uint64(2))
 	suite.Equal(c("usdx", 92727), t.AccumulatedFees)
 	err = suite.keeper.RepayPrincipal(suite.ctx, suite.addrs[2], "xrp-a", c("usdx", 100010092727))
 	suite.NoError(err)
-	_, f := suite.keeper.GetCDP(suite.ctx, "xrp-a", uint64(2))
+	_, f := suite.keeper.GetCdp(suite.ctx, "xrp-a", uint64(2))
 	suite.False(f)
 
 	err = suite.keeper.AddCdp(suite.ctx, suite.addrs[2], c("xrp", 1000000000000), c("usdx", 100000000), "xrp-a")
@@ -156,7 +160,7 @@ func (suite *DrawTestSuite) TestAddRepayPrincipalFees() {
 	suite.NoError(err)
 	err = suite.keeper.AddPrincipal(suite.ctx, suite.addrs[2], "xrp-a", c("usdx", 100000000))
 	suite.NoError(err)
-	t, _ = suite.keeper.GetCDP(suite.ctx, "xrp-a", uint64(3))
+	t, _ = suite.keeper.GetCdp(suite.ctx, "xrp-a", uint64(3))
 	suite.Equal(c("usdx", 5000000), t.AccumulatedFees)
 }
 
@@ -173,9 +177,8 @@ func (suite *DrawTestSuite) TestPricefeedFailure() {
 func (suite *DrawTestSuite) TestModuleAccountFailure() {
 	suite.Panics(func() {
 		ctx := suite.ctx.WithBlockHeader(suite.ctx.BlockHeader())
-		sk := suite.app.GetSupplyKeeper()
-		acc := sk.GetModuleAccount(ctx, types.ModuleName)
 		ak := suite.app.GetAccountKeeper()
+		acc := ak.GetModuleAccount(ctx, types.ModuleName)
 		ak.RemoveAccount(ctx, acc)
 		suite.keeper.RepayPrincipal(ctx, suite.addrs[0], "xrp-a", c("usdx", 10000000))
 	})
