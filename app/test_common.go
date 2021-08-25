@@ -30,7 +30,8 @@ import (
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	"github.com/cosmos/cosmos-sdk/x/supply"
+
+	// "github.com/cosmos/cosmos-sdk/x/supply"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	auctionkeeper "github.com/lcnem/jpyx/x/auction/keeper"
 	cdpkeeper "github.com/lcnem/jpyx/x/cdp/keeper"
@@ -63,22 +64,24 @@ func NewTestApp() TestApp {
 	config.Seal()
 
 	db := tmdb.NewMemDB()
-	app := New(log.NewNopLogger(), db, nil, true, map[int64]bool{}, nil /* cast.ToString(appOpts.Get(flags.FlagHome)) */, 0, nil /* a.encCfg */, nil /* appOpts */)
-	return TestApp{App: *app}
+
+	tApp := New(log.NewNopLogger(), db, nil, true, map[int64]bool{}, "" /* cast.ToString(appOpts.Get(flags.FlagHome)) */, 0, MakeEncodingConfig() /* a.encCfg */, nil /* appOpts */)
+	return TestApp{App: *tApp}
 }
 
 // nolint
 func (tApp TestApp) GetAccountKeeper() authkeeper.AccountKeeper { return tApp.AccountKeeper }
 func (tApp TestApp) GetBankKeeper() bankkeeper.Keeper           { return tApp.BankKeeper }
-func (tApp TestApp) GetSupplyKeeper() supply.Keeper             { return tApp.SupplyKeeper }
-func (tApp TestApp) GetStakingKeeper() stakingkeeper.Keeper     { return tApp.StakingKeeper }
-func (tApp TestApp) GetSlashingKeeper() slashingkeeper.Keeper   { return tApp.SlashingKeeper }
-func (tApp TestApp) GetMintKeeper() mintkeeper.Keeper           { return tApp.MintKeeper }
-func (tApp TestApp) GetDistrKeeper() distrkeeper.Keeper         { return tApp.DistrKeeper }
-func (tApp TestApp) GetGovKeeper() govkeeper.Keeper             { return tApp.GovKeeper }
-func (tApp TestApp) GetCrisisKeeper() crisiskeeper.Keeper       { return tApp.CrisisKeeper }
-func (tApp TestApp) GetUpgradeKeeper() upgradekeeper.Keeper     { return tApp.UpgradeKeeper }
-func (tApp TestApp) GetParamsKeeper() paramskeeper.Keeper       { return tApp.ParamsKeeper }
+
+// func (tApp TestApp) GetSupplyKeeper() supply.Keeper             { return tApp.SupplyKeeper }
+func (tApp TestApp) GetStakingKeeper() stakingkeeper.Keeper   { return tApp.StakingKeeper }
+func (tApp TestApp) GetSlashingKeeper() slashingkeeper.Keeper { return tApp.SlashingKeeper }
+func (tApp TestApp) GetMintKeeper() mintkeeper.Keeper         { return tApp.MintKeeper }
+func (tApp TestApp) GetDistrKeeper() distrkeeper.Keeper       { return tApp.DistrKeeper }
+func (tApp TestApp) GetGovKeeper() govkeeper.Keeper           { return tApp.GovKeeper }
+func (tApp TestApp) GetCrisisKeeper() crisiskeeper.Keeper     { return tApp.CrisisKeeper }
+func (tApp TestApp) GetUpgradeKeeper() upgradekeeper.Keeper   { return tApp.UpgradeKeeper }
+func (tApp TestApp) GetParamsKeeper() paramskeeper.Keeper     { return tApp.ParamsKeeper }
 
 // func (tApp TestApp) GetVVKeeper() validatorvesting.Keeper       { return tApp.vvKeeper }
 func (tApp TestApp) GetAuctionKeeper() auctionkeeper.Keeper     { return tApp.auctionKeeper }
