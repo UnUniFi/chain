@@ -20,7 +20,6 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
-	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
@@ -66,7 +65,7 @@ func NewTestApp() TestApp {
 
 	db := tmdb.NewMemDB()
 
-	tApp := New(log.NewNopLogger(), db, nil, true, map[int64]bool{}, "" /* cast.ToString(appOpts.Get(flags.FlagHome)) */, 0, MakeEncodingConfig() /* a.encCfg */, servertypes.AppOptions /* Todo: Need to fix here appOpts */)
+	tApp := New(log.NewNopLogger(), db, nil, true, map[int64]bool{}, "" /* cast.ToString(appOpts.Get(flags.FlagHome)) */, 0, MakeEncodingConfig() /* a.encCfg */, nil /* Todo: Need to fix here appOpts */)
 	return TestApp{App: *tApp}
 }
 
