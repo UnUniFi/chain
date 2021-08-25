@@ -12,8 +12,8 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/crypto"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 )
 
@@ -26,13 +26,14 @@ type AuctionTestSuite struct {
 	addrs  []sdk.AccAddress
 }
 
+func c(denom string, amount int64) sdk.Coin { return sdk.NewInt64Coin(denom, amount) }
+func cs(coins ...sdk.Coin) sdk.Coins        { return sdk.NewCoins(coins...) }
+
 func (suite *AuctionTestSuite) SetupTest() {
-	config := sdk.GetConfig()
-	app.SetBech32AddressPrefixes(config)
 	tApp := app.NewTestApp()
 	taddr := sdk.AccAddress(crypto.AddressHash([]byte("KavaTestUser1")))
 	authGS := app.NewAuthGenState([]sdk.AccAddress{taddr}, []sdk.Coins{cs(c("usdx", 21000000000))})
-	ctx := tApp.NewContext(true, abci.Header{Height: 1, Time: tmtime.Now()})
+	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
 	tApp.InitializeFromGenesisStates(
 		authGS,
 		NewPricefeedGenStateMulti(),
