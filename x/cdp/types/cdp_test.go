@@ -15,6 +15,7 @@ import (
 
 	jpyxtypes "github.com/lcnem/jpyx/types"
 	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
+	cdptypescdp "github.com/lcnem/jpyx/x/cdp/types/cdp"
 )
 
 type CdpValidationSuite struct {
@@ -43,7 +44,7 @@ func (suite *CdpValidationSuite) TestCdpValidation() {
 	}{
 		{
 			name: "valid cdp",
-			cdp:  cdptypes.NewCDP(1, suite.addrs[0], sdk.NewInt64Coin("bnb", 100000), "bnb-a", sdk.NewInt64Coin("usdx", 100000), tmtime.Now()),
+			cdp:  cdptypescdp.NewCDP(1, suite.addrs[0], sdk.NewInt64Coin("bnb", 100000), "bnb-a", sdk.NewInt64Coin("usdx", 100000), tmtime.Now()),
 			errArgs: errArgs{
 				expectPass: true,
 				contains:   "",
@@ -51,7 +52,7 @@ func (suite *CdpValidationSuite) TestCdpValidation() {
 		},
 		{
 			name: "invalid cdp id",
-			cdp:  cdptypes.NewCDP(0, suite.addrs[0], sdk.NewInt64Coin("bnb", 100000), "bnb-a", sdk.NewInt64Coin("usdx", 100000), tmtime.Now()),
+			cdp:  cdptypescdp.NewCDP(0, suite.addrs[0], sdk.NewInt64Coin("bnb", 100000), "bnb-a", sdk.NewInt64Coin("usdx", 100000), tmtime.Now()),
 			errArgs: errArgs{
 				expectPass: false,
 				contains:   "cdp id cannot be 0",
