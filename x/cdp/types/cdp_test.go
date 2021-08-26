@@ -13,7 +13,8 @@ import (
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"github.com/kava-labs/kava/x/cdp/types"
+	jpyxtypes "github.com/lcnem/jpyx/types"
+	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
 )
 
 type CdpValidationSuite struct {
@@ -37,12 +38,12 @@ func (suite *CdpValidationSuite) TestCdpValidation() {
 	}
 	testCases := []struct {
 		name    string
-		cdp     types.CDP
+		cdp     cdptypes.Cdp
 		errArgs errArgs
 	}{
 		{
 			name: "valid cdp",
-			cdp:  types.NewCDP(1, suite.addrs[0], sdk.NewInt64Coin("bnb", 100000), "bnb-a", sdk.NewInt64Coin("usdx", 100000), tmtime.Now()),
+			cdp:  cdptypes.NewCDP(1, suite.addrs[0], sdk.NewInt64Coin("bnb", 100000), "bnb-a", sdk.NewInt64Coin("usdx", 100000), tmtime.Now()),
 			errArgs: errArgs{
 				expectPass: true,
 				contains:   "",
@@ -50,7 +51,7 @@ func (suite *CdpValidationSuite) TestCdpValidation() {
 		},
 		{
 			name: "invalid cdp id",
-			cdp:  types.NewCDP(0, suite.addrs[0], sdk.NewInt64Coin("bnb", 100000), "bnb-a", sdk.NewInt64Coin("usdx", 100000), tmtime.Now()),
+			cdp:  cdptypes.NewCDP(0, suite.addrs[0], sdk.NewInt64Coin("bnb", 100000), "bnb-a", sdk.NewInt64Coin("usdx", 100000), tmtime.Now()),
 			errArgs: errArgs{
 				expectPass: false,
 				contains:   "cdp id cannot be 0",
@@ -58,7 +59,7 @@ func (suite *CdpValidationSuite) TestCdpValidation() {
 		},
 		{
 			name: "invalid collateral",
-			cdp:  types.CDP{1, suite.addrs[0], "bnb-a", sdk.Coin{"", sdk.NewInt(100)}, sdk.Coin{"usdx", sdk.NewInt(100)}, sdk.Coin{"usdx", sdk.NewInt(0)}, tmtime.Now()},
+			cdp:  cdptypes.Cdp{1, jpyxtypes.StringAccAddress(suite.addrs[0]), "bnb-a", sdk.Coin{"", sdk.NewInt(100)}, sdk.Coin{"usdx", sdk.NewInt(100)}, sdk.Coin{"usdx", sdk.NewInt(0)}, tmtime.Now(), sdk.Dec{}},
 			errArgs: errArgs{
 				expectPass: false,
 				contains:   "invalid coins: collateral",
@@ -66,7 +67,7 @@ func (suite *CdpValidationSuite) TestCdpValidation() {
 		},
 		{
 			name: "invalid prinicpal",
-			cdp:  types.CDP{1, suite.addrs[0], "xrp-a", sdk.Coin{"xrp", sdk.NewInt(100)}, sdk.Coin{"", sdk.NewInt(100)}, sdk.Coin{"usdx", sdk.NewInt(0)}, tmtime.Now()},
+			cdp:  cdptypes.Cdp{1, jpyxtypes.StringAccAddress(suite.addrs[0]), "xrp-a", sdk.Coin{"xrp", sdk.NewInt(100)}, sdk.Coin{"", sdk.NewInt(100)}, sdk.Coin{"usdx", sdk.NewInt(0)}, tmtime.Now(), sdk.Dec{}},
 			errArgs: errArgs{
 				expectPass: false,
 				contains:   "invalid coins: principal",
@@ -74,7 +75,7 @@ func (suite *CdpValidationSuite) TestCdpValidation() {
 		},
 		{
 			name: "invalid fees",
-			cdp:  types.CDP{1, suite.addrs[0], "xrp-a", sdk.Coin{"xrp", sdk.NewInt(100)}, sdk.Coin{"usdx", sdk.NewInt(100)}, sdk.Coin{"", sdk.NewInt(0)}, tmtime.Now()},
+			cdp:  cdptypes.Cdp{1, jpyxtypes.StringAccAddress(suite.addrs[0]), "xrp-a", sdk.Coin{"xrp", sdk.NewInt(100)}, sdk.Coin{"usdx", sdk.NewInt(100)}, sdk.Coin{"", sdk.NewInt(0)}, tmtime.Now(), sdk.Dec{}},
 			errArgs: errArgs{
 				expectPass: false,
 				contains:   "invalid coins: accumulated fees",
@@ -82,7 +83,7 @@ func (suite *CdpValidationSuite) TestCdpValidation() {
 		},
 		{
 			name: "invalid fees updated",
-			cdp:  types.CDP{1, suite.addrs[0], "xrp-a", sdk.Coin{"xrp", sdk.NewInt(100)}, sdk.Coin{"usdx", sdk.NewInt(100)}, sdk.Coin{"usdx", sdk.NewInt(0)}, time.Time{}},
+			cdp:  cdptypes.Cdp{1, jpyxtypes.StringAccAddress(suite.addrs[0]), "xrp-a", sdk.Coin{"xrp", sdk.NewInt(100)}, sdk.Coin{"usdx", sdk.NewInt(100)}, sdk.Coin{"usdx", sdk.NewInt(0)}, time.Time{}, sdk.Dec{}},
 			errArgs: errArgs{
 				expectPass: false,
 				contains:   "cdp updated fee time cannot be zero",
@@ -90,7 +91,7 @@ func (suite *CdpValidationSuite) TestCdpValidation() {
 		},
 		{
 			name: "invalid type",
-			cdp:  types.CDP{1, suite.addrs[0], "", sdk.Coin{"xrp", sdk.NewInt(100)}, sdk.Coin{"usdx", sdk.NewInt(100)}, sdk.Coin{"usdx", sdk.NewInt(0)}, tmtime.Now()},
+			cdp:  cdptypes.Cdp{1, jpyxtypes.StringAccAddress(suite.addrs[0]), "", sdk.Coin{"xrp", sdk.NewInt(100)}, sdk.Coin{"usdx", sdk.NewInt(100)}, sdk.Coin{"usdx", sdk.NewInt(0)}, tmtime.Now(), sdk.Dec{}},
 			errArgs: errArgs{
 				expectPass: false,
 				contains:   "cdp type cannot be empty",
@@ -118,12 +119,12 @@ func (suite *CdpValidationSuite) TestDepositValidation() {
 	}
 	testCases := []struct {
 		name    string
-		deposit types.Deposit
+		deposit cdptypes.Deposit
 		errArgs errArgs
 	}{
 		{
 			name:    "valid deposit",
-			deposit: types.NewDeposit(1, suite.addrs[0], sdk.NewInt64Coin("bnb", 1000000)),
+			deposit: cdptypes.NewDeposit(1, suite.addrs[0], sdk.NewInt64Coin("bnb", 1000000)),
 			errArgs: errArgs{
 				expectPass: true,
 				contains:   "",
@@ -131,7 +132,7 @@ func (suite *CdpValidationSuite) TestDepositValidation() {
 		},
 		{
 			name:    "invalid cdp id",
-			deposit: types.NewDeposit(0, suite.addrs[0], sdk.NewInt64Coin("bnb", 1000000)),
+			deposit: cdptypes.NewDeposit(0, suite.addrs[0], sdk.NewInt64Coin("bnb", 1000000)),
 			errArgs: errArgs{
 				expectPass: false,
 				contains:   "deposit's cdp id cannot be 0",
@@ -139,7 +140,7 @@ func (suite *CdpValidationSuite) TestDepositValidation() {
 		},
 		{
 			name:    "empty depositor",
-			deposit: types.NewDeposit(1, sdk.AccAddress{}, sdk.NewInt64Coin("bnb", 1000000)),
+			deposit: cdptypes.NewDeposit(1, sdk.AccAddress{}, sdk.NewInt64Coin("bnb", 1000000)),
 			errArgs: errArgs{
 				expectPass: false,
 				contains:   "depositor cannot be empty",
@@ -147,7 +148,7 @@ func (suite *CdpValidationSuite) TestDepositValidation() {
 		},
 		{
 			name:    "invalid deposit coins",
-			deposit: types.NewDeposit(1, suite.addrs[0], sdk.Coin{"Invalid Denom", sdk.NewInt(1000000)}),
+			deposit: cdptypes.NewDeposit(1, suite.addrs[0], sdk.Coin{"Invalid Denom", sdk.NewInt(1000000)}),
 			errArgs: errArgs{
 				expectPass: false,
 				contains:   "invalid coins: deposit",
@@ -171,7 +172,7 @@ func (suite *CdpValidationSuite) TestCdpGetTotalPrinciple() {
 	principal := sdk.Coin{"usdx", sdk.NewInt(100500)}
 	accumulatedFees := sdk.Coin{"usdx", sdk.NewInt(25000)}
 
-	cdp := types.CDP{Principal: principal, AccumulatedFees: accumulatedFees}
+	cdp := cdptypes.Cdp{Principal: principal, AccumulatedFees: accumulatedFees}
 
 	suite.Require().Equal(cdp.GetTotalPrincipal(), principal.Add(accumulatedFees))
 }
