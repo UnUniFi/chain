@@ -3,11 +3,11 @@ package keeper_test
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/suite"
-	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/cdp/keeper"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/cdp/keeper"
 )
 
 type KeeperTestSuite struct {
@@ -19,15 +19,12 @@ type KeeperTestSuite struct {
 }
 
 func (suite *KeeperTestSuite) SetupTest() {
-	config := sdk.GetConfig()
-	app.SetBech32AddressPrefixes(config)
 	suite.ResetChain()
-	return
 }
 
 func (suite *KeeperTestSuite) ResetChain() {
 	tApp := app.NewTestApp()
-	ctx := tApp.NewContext(true, abci.Header{Height: 1, Time: tmtime.Now()})
+	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
 	keeper := tApp.GetCDPKeeper()
 
 	suite.app = tApp
@@ -35,6 +32,7 @@ func (suite *KeeperTestSuite) ResetChain() {
 	suite.keeper = keeper
 }
 
+/*
 func (suite *KeeperTestSuite) TestGetSetSavingsRateDistributed() {
 	suite.ResetChain()
 
@@ -46,3 +44,4 @@ func (suite *KeeperTestSuite) TestGetSetSavingsRateDistributed() {
 	s := suite.keeper.GetSavingsRateDistributed(suite.ctx)
 	suite.Equal(savingsRateDist, s)
 }
+*/
