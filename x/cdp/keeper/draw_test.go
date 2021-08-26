@@ -137,7 +137,9 @@ func (suite *DrawTestSuite) TestAddRepayPrincipalFees() {
 	err := suite.keeper.AddCdp(suite.ctx, suite.addrs[2], c("xrp", 1000000000000), c("usdx", 100000000000), "xrp-a")
 	suite.NoError(err)
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Minute * 10))
-	err = suite.keeper.UpdateFeesForAllCdps(suite.ctx, "xrp-a")
+	err = suite.keeper.AccumulateInterest(suite.ctx, "xrp-a")
+	suite.NoError(err)
+	err = suite.keeper.SynchronizeInterestForRiskyCdps(suite.ctx, sdk.Int{}, sdk.MaxSortableDec, "xrp-a")
 	suite.NoError(err)
 	err = suite.keeper.AddPrincipal(suite.ctx, suite.addrs[2], "xrp-a", c("usdx", 10000000))
 	suite.NoError(err)
@@ -156,7 +158,9 @@ func (suite *DrawTestSuite) TestAddRepayPrincipalFees() {
 	suite.NoError(err)
 
 	suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Second * 31536000)) // move forward one year in time
-	err = suite.keeper.UpdateFeesForAllCdps(suite.ctx, "xrp-a")
+	err = suite.keeper.AccumulateInterest(suite.ctx, "xrp-a")
+	suite.NoError(err)
+	err = suite.keeper.SynchronizeInterestForRiskyCdps(suite.ctx, sdk.Int{}, sdk.MaxSortableDec, "xrp-a")
 	suite.NoError(err)
 	err = suite.keeper.AddPrincipal(suite.ctx, suite.addrs[2], "xrp-a", c("usdx", 100000000))
 	suite.NoError(err)
