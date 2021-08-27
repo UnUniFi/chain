@@ -1,6 +1,7 @@
 package cdp_test
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -114,20 +115,30 @@ func (suite *GenesisTestSuite) TestInvalidGenState() {
 		},
 	}
 	for _, tc := range testCases {
-		prevDistTimes := cdptypes.GenesisAccumulationTimes{}
-		totalPrincipals := cdptypes.GenesisTotalPrincipals{}
 		suite.Run(tc.name, func() {
-			prevDistTime := cdptypes.GenesisAccumulationTime{
-				CollateralType:           tc.args.cdps.String(),
-				PreviousAccumulationTime: tc.args.prevDistTime,
-				InterestFactor:           sdk.NewDec(tc.args.savingsRateDist.Int64()),
+			params := tc.args.params // suite.keeper.GetParams(suite.ctx)
+
+			var prevDistTimes cdptypes.GenesisAccumulationTimes
+			var totalPrincipals cdptypes.GenesisTotalPrincipals
+
+			for _, cp := range params.CollateralParams {
+				interestFactor, found := suite.keeper.GetInterestFactor(suite.ctx, cp.Type)
+				if !found {
+					interestFactor = sdk.OneDec()
+				}
+				// Governance param changes happen in the end blocker. If a new collateral type is added and then the chain
+				// is exported before the BeginBlocker can run, previous accrual time won't be found. We can't set it to
+				// current block time because it is not available in the export ctx. We should panic instead of exporting
+				// bad state.
+				previDisTime, f := suite.keeper.GetPreviousAccrualTime(suite.ctx, cp.Type)
+				if !f {
+					panic(fmt.Sprintf("expected previous accrual time to be set in state for %s", cp.Type))
+				}
+				prevDistTimes = append(prevDistTimes, cdptypes.NewGenesisAccumulationTime(cp.Type, previDisTime, interestFactor))
+				tp := suite.keeper.GetTotalPrincipal(suite.ctx, cp.Type, cdptypes.DefaultStableDenom)
+				genTotalPrincipal := cdptypes.NewGenesisTotalPrincipal(cp.Type, tp)
+				totalPrincipals = append(totalPrincipals, genTotalPrincipal)
 			}
-			prevDistTimes = append(prevDistTimes, prevDistTime)
-			totalPrincipal := cdptypes.GenesisTotalPrincipal{
-				CollateralType: tc.args.cdps.String(),
-				TotalPrincipal: sdk.NewInt(tc.args.savingsRateDist.Int64()),
-			}
-			totalPrincipals := append(totalPrincipals, totalPrincipal)
 			gs := cdptypes.NewGenesisState(tc.args.params, tc.args.cdps, tc.args.deposits, tc.args.startingID,
 				tc.args.debtDenom, tc.args.govDenom, prevDistTimes, totalPrincipals)
 			err := gs.Validate()
