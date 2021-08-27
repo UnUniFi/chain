@@ -7,24 +7,27 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
+	tmtime "github.com/tendermint/tendermint/types/time"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/cdp"
+	"github.com/lcnem/jpyx/app"
+	cdpkeeper "github.com/lcnem/jpyx/x/cdp/keeper"
+	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
 )
 
 type GenesisTestSuite struct {
 	suite.Suite
 
 	ctx    sdk.Context
-	keeper cdp.Keeper
+	keeper cdpkeeper.Keeper
 }
 
 func (suite *GenesisTestSuite) TestInvalidGenState() {
 	type args struct {
-		params          cdp.Params
-		cdps            cdp.CDPs
-		deposits        cdp.Deposits
+		params          cdptypes.Params
+		cdps            cdptypes.Cdps
+		deposits        cdptypes.Deposits
 		startingID      uint64
 		debtDenom       string
 		govDenom        string
@@ -48,13 +51,13 @@ func (suite *GenesisTestSuite) TestInvalidGenState() {
 		{
 			name: "empty debt denom",
 			args: args{
-				params:          cdp.DefaultParams(),
-				cdps:            cdp.CDPs{},
-				deposits:        cdp.Deposits{},
+				params:          cdptypes.DefaultParams(),
+				cdps:            cdptypes.Cdps{},
+				deposits:        cdptypes.Deposits{},
 				debtDenom:       "",
-				govDenom:        cdp.DefaultGovDenom,
-				prevDistTime:    cdp.DefaultPreviousDistributionTime,
-				savingsRateDist: cdp.DefaultSavingsRateDistributed,
+				govDenom:        cdptypes.DefaultGovDenom,
+				prevDistTime:    tmtime.Canonical(time.Unix(0, 0)), // cdptypes.DefaultPreviousDistributionTime,
+				savingsRateDist: sdk.NewInt(0),                     // cdptypes.DefaultSavingsRateDistributed,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -64,13 +67,13 @@ func (suite *GenesisTestSuite) TestInvalidGenState() {
 		{
 			name: "empty gov denom",
 			args: args{
-				params:          cdp.DefaultParams(),
-				cdps:            cdp.CDPs{},
-				deposits:        cdp.Deposits{},
-				debtDenom:       cdp.DefaultDebtDenom,
+				params:          cdptypes.DefaultParams(),
+				cdps:            cdptypes.Cdps{},
+				deposits:        cdptypes.Deposits{},
+				debtDenom:       cdptypes.DefaultDebtDenom,
 				govDenom:        "",
-				prevDistTime:    cdp.DefaultPreviousDistributionTime,
-				savingsRateDist: cdp.DefaultSavingsRateDistributed,
+				prevDistTime:    tmtime.Canonical(time.Unix(0, 0)), // cdptypes.DefaultPreviousDistributionTime,
+				savingsRateDist: sdk.NewInt(0),                     // cdptypes.DefaultSavingsRateDistributed,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -80,13 +83,13 @@ func (suite *GenesisTestSuite) TestInvalidGenState() {
 		{
 			name: "empty distribution time",
 			args: args{
-				params:          cdp.DefaultParams(),
-				cdps:            cdp.CDPs{},
-				deposits:        cdp.Deposits{},
-				debtDenom:       cdp.DefaultDebtDenom,
-				govDenom:        cdp.DefaultGovDenom,
+				params:          cdptypes.DefaultParams(),
+				cdps:            cdptypes.Cdps{},
+				deposits:        cdptypes.Deposits{},
+				debtDenom:       cdptypes.DefaultDebtDenom,
+				govDenom:        cdptypes.DefaultGovDenom,
 				prevDistTime:    time.Time{},
-				savingsRateDist: cdp.DefaultSavingsRateDistributed,
+				savingsRateDist: sdk.NewInt(0), // cdptypes.DefaultSavingsRateDistributed,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -96,12 +99,12 @@ func (suite *GenesisTestSuite) TestInvalidGenState() {
 		{
 			name: "negative savings rate distributed",
 			args: args{
-				params:          cdp.DefaultParams(),
-				cdps:            cdp.CDPs{},
-				deposits:        cdp.Deposits{},
-				debtDenom:       cdp.DefaultDebtDenom,
-				govDenom:        cdp.DefaultGovDenom,
-				prevDistTime:    cdp.DefaultPreviousDistributionTime,
+				params:          cdptypes.DefaultParams(),
+				cdps:            cdptypes.Cdps{},
+				deposits:        cdptypes.Deposits{},
+				debtDenom:       cdptypes.DefaultDebtDenom,
+				govDenom:        cdptypes.DefaultGovDenom,
+				prevDistTime:    tmtime.Canonical(time.Unix(0, 0)), // cdptypes.DefaultPreviousDistributionTime,
 				savingsRateDist: sdk.NewInt(-100),
 			},
 			errArgs: errArgs{
@@ -111,9 +114,22 @@ func (suite *GenesisTestSuite) TestInvalidGenState() {
 		},
 	}
 	for _, tc := range testCases {
+		prevDistTimes := cdptypes.GenesisAccumulationTimes{}
+		totalPrincipals := cdptypes.GenesisTotalPrincipals{}
 		suite.Run(tc.name, func() {
-			gs := cdp.NewGenesisState(tc.args.params, tc.args.cdps, tc.args.deposits, tc.args.startingID,
-				tc.args.debtDenom, tc.args.govDenom, tc.args.prevDistTime, tc.args.savingsRateDist)
+			prevDistTime := cdptypes.GenesisAccumulationTime{
+				CollateralType:           tc.args.cdps.String(),
+				PreviousAccumulationTime: tc.args.prevDistTime,
+				InterestFactor:           sdk.NewDec(tc.args.savingsRateDist.Int64()),
+			}
+			prevDistTimes = append(prevDistTimes, prevDistTime)
+			totalPrincipal := cdptypes.GenesisTotalPrincipal{
+				CollateralType: tc.args.cdps.String(),
+				TotalPrincipal: sdk.NewInt(tc.args.savingsRateDist.Int64()),
+			}
+			totalPrincipals := append(totalPrincipals, totalPrincipal)
+			gs := cdptypes.NewGenesisState(tc.args.params, tc.args.cdps, tc.args.deposits, tc.args.startingID,
+				tc.args.debtDenom, tc.args.govDenom, prevDistTimes, totalPrincipals)
 			err := gs.Validate()
 			if tc.errArgs.expectPass {
 				suite.Require().NoError(err)
@@ -137,11 +153,11 @@ func (suite *GenesisTestSuite) TestValidGenState() {
 	})
 
 	cdpGS := NewCDPGenStateMulti()
-	gs := cdp.GenesisState{}
-	cdp.ModuleCdc.UnmarshalJSON(cdpGS["cdp"], &gs)
-	gs.CDPs = cdps()
-	gs.StartingCdpID = uint64(5)
-	appGS := app.GenesisState{"cdp": cdp.ModuleCdc.MustMarshalJSON(gs)}
+	gs := cdptypes.GenesisState{}
+	cdptypes.ModuleCdc.UnmarshalJSON(cdpGS["cdp"], &gs)
+	gs.Cdps = cdps()
+	gs.StartingCdpId = uint64(5)
+	appGS := app.GenesisState{"cdp": cdptypes.ModuleCdc.MustMarshalJSON(&gs)}
 	suite.NotPanics(func() {
 		tApp.InitializeFromGenesisStates(
 			NewPricefeedGenStateMulti(),
