@@ -13,7 +13,7 @@ import (
 var addr = sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 
 func TestKeys(t *testing.T) {
-	key := CdpKey(0x01, 2)
+	key := CdpKeySuffix(0x01, 2)
 	db, id := SplitCdpKey(key)
 	require.Equal(t, int(id), 2)
 	require.Equal(t, byte(0x01), db)
@@ -22,7 +22,7 @@ func TestKeys(t *testing.T) {
 	db = SplitDenomIterKey(denomKey)
 	require.Equal(t, byte(0x01), db)
 
-	depositKey := DepositKey(2, addr)
+	depositKey := DepositKeySuffix(2, addr)
 	id, a := SplitDepositKey(depositKey)
 	require.Equal(t, 2, int(id))
 	require.Equal(t, a, addr)
