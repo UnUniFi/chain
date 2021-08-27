@@ -7,15 +7,14 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
-	supplyexported "github.com/cosmos/cosmos-sdk/x/supply/exported"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/incentive/keeper"
-	"github.com/kava-labs/kava/x/incentive/types"
+	"github.com/lcnem/jpyx/app"
+	"github.com/lcnem/jpyx/x/incentive/keeper"
+	"github.com/lcnem/jpyx/x/incentive/types"
 )
 
 // Test suite used for all keeper tests
@@ -31,7 +30,7 @@ type KeeperTestSuite struct {
 // The default state used by each test
 func (suite *KeeperTestSuite) SetupTest() {
 	tApp := app.NewTestApp()
-	ctx := tApp.NewContext(true, abci.Header{Height: 1, Time: tmtime.Now()})
+	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
 	tApp.InitializeFromGenesisStates()
 	_, addrs := app.GeneratePrivKeyAddressPairs(1)
 	keeper := tApp.GetIncentiveKeeper()
@@ -41,18 +40,20 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.addrs = addrs
 }
 
-func (suite *KeeperTestSuite) getAccount(addr sdk.AccAddress) authexported.Account {
+func (suite *KeeperTestSuite) getAccount(addr sdk.AccAddress) authtypes.AccountI {
 	ak := suite.app.GetAccountKeeper()
 	return ak.GetAccount(suite.ctx, addr)
 }
 
-func (suite *KeeperTestSuite) getModuleAccount(name string) supplyexported.ModuleAccountI {
-	sk := suite.app.GetSupplyKeeper()
-	return sk.GetModuleAccount(suite.ctx, name)
+func (suite *KeeperTestSuite) getModuleAccount(name string) authtypes.ModuleAccountI {
+	ak := suite.app.GetAccountKeeper()
+	return ak.GetModuleAccount(suite.ctx, name)
 }
 
+func c(denom string, amount int64) sdk.Coin { return sdk.NewInt64Coin(denom, amount) }
+
 func (suite *KeeperTestSuite) TestGetSetDeleteRewardPeriod() {
-	rp := types.NewRewardPeriod("bnb", suite.ctx.BlockTime(), suite.ctx.BlockTime().Add(time.Hour*168), c("ukava", 100000000), suite.ctx.BlockTime().Add(time.Hour*168*2), types.Multipliers{types.NewMultiplier(types.Small, 1, sdk.MustNewDecFromStr("0.33"))})
+	rp := types.NewRewardPeriod(true, "bnb", suite.ctx.BlockTime(), suite.ctx.BlockTime().Add(time.Hour*168), c("ukava", 100000000))
 	_, found := suite.keeper.GetRewardPeriod(suite.ctx, "bnb")
 	suite.False(found)
 	suite.NotPanics(func() {
@@ -99,19 +100,19 @@ func (suite *KeeperTestSuite) TestGetSetClaimPeriodID() {
 }
 
 func (suite *KeeperTestSuite) TestGetSetDeleteClaim() {
-	c := types.NewClaim(suite.addrs[0], c("ukava", 1000000), "bnb", 1)
-	_, found := suite.keeper.GetClaim(suite.ctx, suite.addrs[0], "bnb", 1)
+	c := types.NewJpyxMintingClaim(suite.addrs[0], c("ukava", 1000000), types.RewardIndexes{} /* "bnb", 1 */)
+	_, found := suite.keeper.GetJpyxMintingClaim(suite.ctx, suite.addrs[0])
 	suite.False(found)
 	suite.NotPanics(func() {
-		suite.keeper.SetClaim(suite.ctx, c)
+		suite.keeper.SetJpyxMintingClaim(suite.ctx, c)
 	})
-	testC, found := suite.keeper.GetClaim(suite.ctx, suite.addrs[0], "bnb", 1)
+	testC, found := suite.keeper.GetJpyxMintingClaim(suite.ctx, suite.addrs[0])
 	suite.True(found)
 	suite.Equal(c, testC)
 	suite.NotPanics(func() {
-		suite.keeper.DeleteClaim(suite.ctx, suite.addrs[0], "bnb", 1)
+		suite.keeper.DeleteJpyxMintingClaim(suite.ctx, suite.addrs[0])
 	})
-	_, found = suite.keeper.GetClaim(suite.ctx, suite.addrs[0], "bnb", 1)
+	_, found = suite.keeper.GetJpyxMintingClaim(suite.ctx, suite.addrs[0])
 	suite.False(found)
 }
 
@@ -133,7 +134,7 @@ func (suite *KeeperTestSuite) TestIterateMethods() {
 	suite.Equal(2, len(claimPeriods))
 
 	var claims types.Claims
-	suite.keeper.IterateClaims(suite.ctx, func(c types.Claim) (stop bool) {
+	suite.keeper.IterateJpyxMintingClaims(suite.ctx, func(c types.JpyxMintingClaim) (stop bool) {
 		claims = append(claims, c)
 		return false
 	})
@@ -164,8 +165,8 @@ func (suite *KeeperTestSuite) addObjectsToStore() {
 
 	c1 := types.NewClaim(suite.addrs[0], c("ukava", 1000000), "bnb", 1)
 	c2 := types.NewClaim(suite.addrs[0], c("ukava", 1000000), "xrp", 1)
-	suite.keeper.SetClaim(suite.ctx, c1)
-	suite.keeper.SetClaim(suite.ctx, c2)
+	suite.keeper.SetJpyxMintingClaim(suite.ctx, c1)
+	suite.keeper.SetJpyxMintingClaim(suite.ctx, c2)
 
 	params := types.NewParams(
 		true, types.Rewards{types.NewReward(true, "bnb", c("ukava", 1000000000), time.Hour*7*24, types.Multipliers{types.NewMultiplier(types.Small, 1, sdk.MustNewDecFromStr("0.33"))}, time.Hour*7*24)},
