@@ -7,9 +7,10 @@ import (
 
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/cdp"
-	"github.com/kava-labs/kava/x/pricefeed"
+	"github.com/lcnem/jpyx/app"
+	jpyxtypes "github.com/lcnem/jpyx/types"
+	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
+	pricefeedtypes "github.com/lcnem/jpyx/x/pricefeed/types"
 )
 
 // Avoid cluttering test cases with long function names
@@ -19,34 +20,34 @@ func c(denom string, amount int64) sdk.Coin { return sdk.NewInt64Coin(denom, amo
 func cs(coins ...sdk.Coin) sdk.Coins        { return sdk.NewCoins(coins...) }
 
 func NewPricefeedGenState(asset string, price sdk.Dec) app.GenesisState {
-	pfGenesis := pricefeed.GenesisState{
-		Params: pricefeed.Params{
-			Markets: []pricefeed.Market{
-				{MarketID: asset + ":usd", BaseAsset: asset, QuoteAsset: "usd", Oracles: []sdk.AccAddress{}, Active: true},
+	pfGenesis := pricefeedtypes.GenesisState{
+		Params: pricefeedtypes.Params{
+			Markets: []pricefeedtypes.Market{
+				{MarketId: asset + ":usd", BaseAsset: asset, QuoteAsset: "usd", Oracles: jpyxtypes.StringAccAddresses([]sdk.AccAddress{}), Active: true},
 			},
 		},
-		PostedPrices: []pricefeed.PostedPrice{
+		PostedPrices: []pricefeedtypes.PostedPrice{
 			{
-				MarketID:      asset + ":usd",
-				OracleAddress: sdk.AccAddress{},
+				MarketId:      asset + ":usd",
+				OracleAddress: jpyxtypes.StringAccAddress(sdk.AccAddress{}),
 				Price:         price,
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 		},
 	}
-	return app.GenesisState{pricefeed.ModuleName: pricefeed.ModuleCdc.MustMarshalJSON(pfGenesis)}
+	return app.GenesisState{pricefeedtypes.ModuleName: pricefeedtypes.ModuleCdc.MustMarshalJSON(&pfGenesis)}
 }
 
 func NewCDPGenState(asset string, liquidationRatio sdk.Dec) app.GenesisState {
-	cdpGenesis := cdp.GenesisState{
-		Params: cdp.Params{
-			GlobalDebtLimit:              sdk.NewInt64Coin("usdx", 1000000000000),
-			SurplusAuctionThreshold:      cdp.DefaultSurplusThreshold,
-			SurplusAuctionLot:            cdp.DefaultSurplusLot,
-			DebtAuctionThreshold:         cdp.DefaultDebtThreshold,
-			DebtAuctionLot:               cdp.DefaultDebtLot,
-			SavingsDistributionFrequency: cdp.DefaultSavingsDistributionFrequency,
-			CollateralParams: cdp.CollateralParams{
+	cdpGenesis := cdptypes.GenesisState{
+		Params: cdptypes.Params{
+			GlobalDebtLimit:         sdk.NewInt64Coin("usdx", 1000000000000),
+			SurplusAuctionThreshold: cdptypes.DefaultSurplusThreshold,
+			SurplusAuctionLot:       cdptypes.DefaultSurplusLot,
+			DebtAuctionThreshold:    cdptypes.DefaultDebtThreshold,
+			DebtAuctionLot:          cdptypes.DefaultDebtLot,
+			// SavingsDistributionFrequency: cdptypes.DefaultSavingsDistributionFrequency,
+			CollateralParams: cdptypes.CollateralParams{
 				{
 					Denom:               asset,
 					Type:                asset + "-a",
@@ -57,62 +58,62 @@ func NewCDPGenState(asset string, liquidationRatio sdk.Dec) app.GenesisState {
 					AuctionSize:         i(1000000000),
 					Prefix:              0x20,
 					ConversionFactor:    i(6),
-					SpotMarketID:        asset + ":usd",
-					LiquidationMarketID: asset + ":usd",
+					SpotMarketId:        asset + ":usd",
+					LiquidationMarketId: asset + ":usd",
 				},
 			},
-			DebtParam: cdp.DebtParam{
+			DebtParam: cdptypes.DebtParam{
 				Denom:            "usdx",
 				ReferenceAsset:   "usd",
 				ConversionFactor: i(6),
 				DebtFloor:        i(10000000),
-				SavingsRate:      d("0.95"),
+				// SavingsRate:      d("0.95"),
 			},
 		},
-		StartingCdpID:            cdp.DefaultCdpStartingID,
-		DebtDenom:                cdp.DefaultDebtDenom,
-		GovDenom:                 cdp.DefaultGovDenom,
-		CDPs:                     cdp.CDPs{},
-		PreviousDistributionTime: cdp.DefaultPreviousDistributionTime,
+		StartingCdpId: cdptypes.DefaultCdpStartingID,
+		DebtDenom:     cdptypes.DefaultDebtDenom,
+		GovDenom:      cdptypes.DefaultGovDenom,
+		Cdps:          cdptypes.Cdps{},
+		// PreviousDistributionTime: cdptypes.DefaultPreviousDistributionTime,
 	}
-	return app.GenesisState{cdp.ModuleName: cdp.ModuleCdc.MustMarshalJSON(cdpGenesis)}
+	return app.GenesisState{cdptypes.ModuleName: cdptypes.ModuleCdc.MustMarshalJSON(&cdpGenesis)}
 }
 
 func NewPricefeedGenStateMulti() app.GenesisState {
-	pfGenesis := pricefeed.GenesisState{
-		Params: pricefeed.Params{
-			Markets: []pricefeed.Market{
-				{MarketID: "btc:usd", BaseAsset: "btc", QuoteAsset: "usd", Oracles: []sdk.AccAddress{}, Active: true},
-				{MarketID: "xrp:usd", BaseAsset: "xrp", QuoteAsset: "usd", Oracles: []sdk.AccAddress{}, Active: true},
+	pfGenesis := pricefeedtypes.GenesisState{
+		Params: pricefeedtypes.Params{
+			Markets: []pricefeedtypes.Market{
+				{MarketId: "btc:usd", BaseAsset: "btc", QuoteAsset: "usd", Oracles: jpyxtypes.StringAccAddresses([]sdk.AccAddress{}), Active: true},
+				{MarketId: "xrp:usd", BaseAsset: "xrp", QuoteAsset: "usd", Oracles: jpyxtypes.StringAccAddresses([]sdk.AccAddress{}), Active: true},
 			},
 		},
-		PostedPrices: []pricefeed.PostedPrice{
+		PostedPrices: []pricefeedtypes.PostedPrice{
 			{
-				MarketID:      "btc:usd",
-				OracleAddress: sdk.AccAddress{},
+				MarketId:      "btc:usd",
+				OracleAddress: jpyxtypes.StringAccAddress(sdk.AccAddress{}),
 				Price:         sdk.MustNewDecFromStr("8000.00"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 			{
-				MarketID:      "xrp:usd",
-				OracleAddress: sdk.AccAddress{},
+				MarketId:      "xrp:usd",
+				OracleAddress: jpyxtypes.StringAccAddress(sdk.AccAddress{}),
 				Price:         sdk.MustNewDecFromStr("0.25"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 		},
 	}
-	return app.GenesisState{pricefeed.ModuleName: pricefeed.ModuleCdc.MustMarshalJSON(pfGenesis)}
+	return app.GenesisState{pricefeedtypes.ModuleName: pricefeedtypes.ModuleCdc.MustMarshalJSON(&pfGenesis)}
 }
 func NewCDPGenStateMulti() app.GenesisState {
-	cdpGenesis := cdp.GenesisState{
-		Params: cdp.Params{
-			GlobalDebtLimit:              sdk.NewInt64Coin("usdx", 1000000000000),
-			SurplusAuctionThreshold:      cdp.DefaultSurplusThreshold,
-			SurplusAuctionLot:            cdp.DefaultSurplusLot,
-			DebtAuctionThreshold:         cdp.DefaultDebtThreshold,
-			DebtAuctionLot:               cdp.DefaultDebtLot,
-			SavingsDistributionFrequency: cdp.DefaultSavingsDistributionFrequency,
-			CollateralParams: cdp.CollateralParams{
+	cdpGenesis := cdptypes.GenesisState{
+		Params: cdptypes.Params{
+			GlobalDebtLimit:         sdk.NewInt64Coin("usdx", 1000000000000),
+			SurplusAuctionThreshold: cdptypes.DefaultSurplusThreshold,
+			SurplusAuctionLot:       cdptypes.DefaultSurplusLot,
+			DebtAuctionThreshold:    cdptypes.DefaultDebtThreshold,
+			DebtAuctionLot:          cdptypes.DefaultDebtLot,
+			// SavingsDistributionFrequency: cdptypes.DefaultSavingsDistributionFrequency,
+			CollateralParams: cdptypes.CollateralParams{
 				{
 					Denom:               "xrp",
 					Type:                "xrp-a",
@@ -122,8 +123,8 @@ func NewCDPGenStateMulti() app.GenesisState {
 					LiquidationPenalty:  d("0.05"),
 					AuctionSize:         i(7000000000),
 					Prefix:              0x20,
-					SpotMarketID:        "xrp:usd",
-					LiquidationMarketID: "xrp:usd",
+					SpotMarketId:        "xrp:usd",
+					LiquidationMarketId: "xrp:usd",
 					ConversionFactor:    i(6),
 				},
 				{
@@ -135,34 +136,34 @@ func NewCDPGenStateMulti() app.GenesisState {
 					LiquidationPenalty:  d("0.025"),
 					AuctionSize:         i(10000000),
 					Prefix:              0x21,
-					SpotMarketID:        "btc:usd",
-					LiquidationMarketID: "btc:usd",
+					SpotMarketId:        "btc:usd",
+					LiquidationMarketId: "btc:usd",
 					ConversionFactor:    i(8),
 				},
 			},
-			DebtParam: cdp.DebtParam{
+			DebtParam: cdptypes.DebtParam{
 				Denom:            "usdx",
 				ReferenceAsset:   "usd",
 				ConversionFactor: i(6),
 				DebtFloor:        i(10000000),
-				SavingsRate:      d("0.95"),
+				// SavingsRate:      d("0.95"),
 			},
 		},
-		StartingCdpID:            cdp.DefaultCdpStartingID,
-		DebtDenom:                cdp.DefaultDebtDenom,
-		GovDenom:                 cdp.DefaultGovDenom,
-		CDPs:                     cdp.CDPs{},
-		PreviousDistributionTime: cdp.DefaultPreviousDistributionTime,
+		StartingCdpId: cdptypes.DefaultCdpStartingID,
+		DebtDenom:     cdptypes.DefaultDebtDenom,
+		GovDenom:      cdptypes.DefaultGovDenom,
+		Cdps:          cdptypes.Cdps{},
+		// PreviousDistributionTime: cdp.DefaultPreviousDistributionTime,
 	}
-	return app.GenesisState{cdp.ModuleName: cdp.ModuleCdc.MustMarshalJSON(cdpGenesis)}
+	return app.GenesisState{cdptypes.ModuleName: cdptypes.ModuleCdc.MustMarshalJSON(&cdpGenesis)}
 }
 
-func cdps() (cdps cdp.CDPs) {
+func cdps() (cdps cdptypes.Cdps) {
 	_, addrs := app.GeneratePrivKeyAddressPairs(3)
-	c1 := cdp.NewCDP(uint64(1), addrs[0], sdk.NewCoin("xrp", sdk.NewInt(100000000)), "xrp-a", sdk.NewCoin("usdx", sdk.NewInt(8000000)), tmtime.Canonical(time.Now()))
-	c2 := cdp.NewCDP(uint64(2), addrs[1], sdk.NewCoin("xrp", sdk.NewInt(100000000)), "xrp-a", sdk.NewCoin("usdx", sdk.NewInt(10000000)), tmtime.Canonical(time.Now()))
-	c3 := cdp.NewCDP(uint64(3), addrs[1], sdk.NewCoin("btc", sdk.NewInt(1000000000)), "btc-a", sdk.NewCoin("usdx", sdk.NewInt(10000000)), tmtime.Canonical(time.Now()))
-	c4 := cdp.NewCDP(uint64(4), addrs[2], sdk.NewCoin("xrp", sdk.NewInt(1000000000)), "xrp-a", sdk.NewCoin("usdx", sdk.NewInt(50000000)), tmtime.Canonical(time.Now()))
+	c1 := cdptypes.NewCdp(uint64(1), addrs[0], sdk.NewCoin("xrp", sdk.NewInt(100000000)), "xrp-a", sdk.NewCoin("usdx", sdk.NewInt(8000000)), tmtime.Canonical(time.Now()), sdk.NewDec(0))
+	c2 := cdptypes.NewCdp(uint64(2), addrs[1], sdk.NewCoin("xrp", sdk.NewInt(100000000)), "xrp-a", sdk.NewCoin("usdx", sdk.NewInt(10000000)), tmtime.Canonical(time.Now()), sdk.NewDec(0))
+	c3 := cdptypes.NewCdp(uint64(3), addrs[1], sdk.NewCoin("btc", sdk.NewInt(1000000000)), "btc-a", sdk.NewCoin("usdx", sdk.NewInt(10000000)), tmtime.Canonical(time.Now()), sdk.NewDec(0))
+	c4 := cdptypes.NewCdp(uint64(4), addrs[2], sdk.NewCoin("xrp", sdk.NewInt(1000000000)), "xrp-a", sdk.NewCoin("usdx", sdk.NewInt(50000000)), tmtime.Canonical(time.Now()), sdk.NewDec(0))
 	cdps = append(cdps, c1, c2, c3, c4)
 	return
 }
