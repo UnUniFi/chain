@@ -34,7 +34,7 @@ func TestMsgCreateCDP(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		msg := NewMsgCreateCDP(
+		msg := NewMsgCreateCdp(
 			tc.sender,
 			tc.collateral,
 			tc.principal,
