@@ -9,7 +9,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/kava-labs/kava/x/cdp/types"
+	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
 )
 
 type ParamsTestSuite struct {
@@ -22,8 +22,8 @@ func (suite *ParamsTestSuite) SetupTest() {
 func (suite *ParamsTestSuite) TestParamValidation() {
 	type args struct {
 		globalDebtLimit  sdk.Coin
-		collateralParams types.CollateralParams
-		debtParam        types.DebtParam
+		collateralParams cdptypes.CollateralParams
+		debtParam        cdptypes.DebtParam
 		surplusThreshold sdk.Int
 		surplusLot       sdk.Int
 		debtThreshold    sdk.Int
@@ -44,15 +44,15 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "default",
 			args: args{
-				globalDebtLimit:  types.DefaultGlobalDebt,
-				collateralParams: types.DefaultCollateralParams,
-				debtParam:        types.DefaultDebtParam,
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				globalDebtLimit:  cdptypes.DefaultGlobalDebt,
+				collateralParams: cdptypes.DefaultCollateralParams,
+				debtParam:        cdptypes.DefaultDebtParam,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: true,
@@ -63,7 +63,7 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			name: "valid single-collateral",
 			args: args{
 				globalDebtLimit: sdk.NewInt64Coin("usdx", 4000000000000),
-				collateralParams: types.CollateralParams{
+				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:               "bnb",
 						Type:                "bnb-a",
@@ -73,24 +73,24 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x20,
-						SpotMarketID:        "bnb:usd",
-						LiquidationMarketID: "bnb:usd",
+						SpotMarketId:        "bnb:usd",
+						LiquidationMarketId: "bnb:usd",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 				},
-				debtParam: types.DebtParam{
+				debtParam: cdptypes.DebtParam{
 					Denom:            "usdx",
 					ReferenceAsset:   "usd",
 					ConversionFactor: sdk.NewInt(6),
 					DebtFloor:        sdk.NewInt(10000000),
-					SavingsRate:      sdk.MustNewDecFromStr("0.95"),
+					// SavingsRate:      sdk.MustNewDecFromStr("0.95"),
 				},
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: true,
@@ -101,7 +101,7 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			name: "invalid single-collateral mismatched debt denoms",
 			args: args{
 				globalDebtLimit: sdk.NewInt64Coin("usdx", 4000000000000),
-				collateralParams: types.CollateralParams{
+				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:               "bnb",
 						Type:                "bnb-a",
@@ -111,24 +111,24 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x20,
-						SpotMarketID:        "bnb:usd",
-						LiquidationMarketID: "bnb:usd",
+						SpotMarketId:        "bnb:usd",
+						LiquidationMarketId: "bnb:usd",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 				},
-				debtParam: types.DebtParam{
+				debtParam: cdptypes.DebtParam{
 					Denom:            "susd",
 					ReferenceAsset:   "usd",
 					ConversionFactor: sdk.NewInt(6),
 					DebtFloor:        sdk.NewInt(10000000),
-					SavingsRate:      sdk.MustNewDecFromStr("0.95"),
+					// SavingsRate:      sdk.MustNewDecFromStr("0.95"),
 				},
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -139,7 +139,7 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			name: "invalid single-collateral over debt limit",
 			args: args{
 				globalDebtLimit: sdk.NewInt64Coin("usdx", 1000000000000),
-				collateralParams: types.CollateralParams{
+				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:               "bnb",
 						Type:                "bnb-a",
@@ -149,24 +149,24 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x20,
-						SpotMarketID:        "bnb:usd",
-						LiquidationMarketID: "bnb:usd",
+						SpotMarketId:        "bnb:usd",
+						LiquidationMarketId: "bnb:usd",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 				},
-				debtParam: types.DebtParam{
+				debtParam: cdptypes.DebtParam{
 					Denom:            "usdx",
 					ReferenceAsset:   "usd",
 					ConversionFactor: sdk.NewInt(6),
 					DebtFloor:        sdk.NewInt(10000000),
-					SavingsRate:      sdk.MustNewDecFromStr("0.95"),
+					// SavingsRate:      sdk.MustNewDecFromStr("0.95"),
 				},
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -177,7 +177,7 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			name: "valid multi-collateral",
 			args: args{
 				globalDebtLimit: sdk.NewInt64Coin("usdx", 4000000000000),
-				collateralParams: types.CollateralParams{
+				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:               "bnb",
 						Type:                "bnb-a",
@@ -187,8 +187,8 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x20,
-						SpotMarketID:        "bnb:usd",
-						LiquidationMarketID: "bnb:usd",
+						SpotMarketId:        "bnb:usd",
+						LiquidationMarketId: "bnb:usd",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 					{
@@ -200,24 +200,24 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x21,
-						SpotMarketID:        "xrp:usd",
-						LiquidationMarketID: "xrp:usd",
+						SpotMarketId:        "xrp:usd",
+						LiquidationMarketId: "xrp:usd",
 						ConversionFactor:    sdk.NewInt(6),
 					},
 				},
-				debtParam: types.DebtParam{
+				debtParam: cdptypes.DebtParam{
 					Denom:            "usdx",
 					ReferenceAsset:   "usd",
 					ConversionFactor: sdk.NewInt(6),
 					DebtFloor:        sdk.NewInt(10000000),
-					SavingsRate:      sdk.MustNewDecFromStr("0.95"),
+					// SavingsRate:      sdk.MustNewDecFromStr("0.95"),
 				},
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: true,
@@ -228,7 +228,7 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			name: "invalid multi-collateral over debt limit",
 			args: args{
 				globalDebtLimit: sdk.NewInt64Coin("usdx", 2000000000000),
-				collateralParams: types.CollateralParams{
+				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:               "bnb",
 						Type:                "bnb-a",
@@ -238,8 +238,8 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x20,
-						SpotMarketID:        "bnb:usd",
-						LiquidationMarketID: "bnb:usd",
+						SpotMarketId:        "bnb:usd",
+						LiquidationMarketId: "bnb:usd",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 					{
@@ -251,24 +251,24 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x21,
-						SpotMarketID:        "xrp:usd",
-						LiquidationMarketID: "xrp:usd",
+						SpotMarketId:        "xrp:usd",
+						LiquidationMarketId: "xrp:usd",
 						ConversionFactor:    sdk.NewInt(6),
 					},
 				},
-				debtParam: types.DebtParam{
+				debtParam: cdptypes.DebtParam{
 					Denom:            "usdx",
 					ReferenceAsset:   "usd",
 					ConversionFactor: sdk.NewInt(6),
 					DebtFloor:        sdk.NewInt(10000000),
-					SavingsRate:      sdk.MustNewDecFromStr("0.95"),
+					// SavingsRate:      sdk.MustNewDecFromStr("0.95"),
 				},
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -279,7 +279,7 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			name: "invalid multi-collateral multiple debt denoms",
 			args: args{
 				globalDebtLimit: sdk.NewInt64Coin("usdx", 4000000000000),
-				collateralParams: types.CollateralParams{
+				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:               "bnb",
 						Type:                "bnb-a",
@@ -289,8 +289,8 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x20,
-						SpotMarketID:        "bnb:usd",
-						LiquidationMarketID: "bnb:usd",
+						SpotMarketId:        "bnb:usd",
+						LiquidationMarketId: "bnb:usd",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 					{
@@ -302,24 +302,24 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x21,
-						SpotMarketID:        "xrp:usd",
-						LiquidationMarketID: "xrp:usd",
+						SpotMarketId:        "xrp:usd",
+						LiquidationMarketId: "xrp:usd",
 						ConversionFactor:    sdk.NewInt(6),
 					},
 				},
-				debtParam: types.DebtParam{
+				debtParam: cdptypes.DebtParam{
 					Denom:            "usdx",
 					ReferenceAsset:   "usd",
 					ConversionFactor: sdk.NewInt(6),
 					DebtFloor:        sdk.NewInt(10000000),
-					SavingsRate:      sdk.MustNewDecFromStr("0.95"),
+					// SavingsRate:      sdk.MustNewDecFromStr("0.95"),
 				},
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -330,7 +330,7 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			name: "invalid collateral params empty denom",
 			args: args{
 				globalDebtLimit: sdk.NewInt64Coin("usdx", 2000000000000),
-				collateralParams: types.CollateralParams{
+				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:               "",
 						LiquidationRatio:    sdk.MustNewDecFromStr("1.5"),
@@ -339,24 +339,24 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x20,
-						SpotMarketID:        "bnb:usd",
-						LiquidationMarketID: "bnb:usd",
+						SpotMarketId:        "bnb:usd",
+						LiquidationMarketId: "bnb:usd",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 				},
-				debtParam: types.DebtParam{
+				debtParam: cdptypes.DebtParam{
 					Denom:            "usdx",
 					ReferenceAsset:   "usd",
 					ConversionFactor: sdk.NewInt(6),
 					DebtFloor:        sdk.NewInt(10000000),
-					SavingsRate:      sdk.MustNewDecFromStr("0.95"),
+					// SavingsRate:      sdk.MustNewDecFromStr("0.95"),
 				},
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -367,7 +367,7 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			name: "invalid collateral params empty market id",
 			args: args{
 				globalDebtLimit: sdk.NewInt64Coin("usdx", 2000000000000),
-				collateralParams: types.CollateralParams{
+				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:               "bnb",
 						Type:                "bnb-a",
@@ -377,24 +377,24 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x20,
-						SpotMarketID:        "",
-						LiquidationMarketID: "",
+						SpotMarketId:        "",
+						LiquidationMarketId: "",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 				},
-				debtParam: types.DebtParam{
+				debtParam: cdptypes.DebtParam{
 					Denom:            "usdx",
 					ReferenceAsset:   "usd",
 					ConversionFactor: sdk.NewInt(6),
 					DebtFloor:        sdk.NewInt(10000000),
-					SavingsRate:      sdk.MustNewDecFromStr("0.95"),
+					// SavingsRate:      sdk.MustNewDecFromStr("0.95"),
 				},
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -405,7 +405,7 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			name: "invalid collateral params duplicate denom + type",
 			args: args{
 				globalDebtLimit: sdk.NewInt64Coin("usdx", 2000000000000),
-				collateralParams: types.CollateralParams{
+				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:               "bnb",
 						Type:                "bnb-a",
@@ -415,8 +415,8 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x20,
-						SpotMarketID:        "bnb:usd",
-						LiquidationMarketID: "bnb:usd",
+						SpotMarketId:        "bnb:usd",
+						LiquidationMarketId: "bnb:usd",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 					{
@@ -428,24 +428,24 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x21,
-						SpotMarketID:        "bnb:usd",
-						LiquidationMarketID: "bnb:usd",
+						SpotMarketId:        "bnb:usd",
+						LiquidationMarketId: "bnb:usd",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 				},
-				debtParam: types.DebtParam{
+				debtParam: cdptypes.DebtParam{
 					Denom:            "usdx",
 					ReferenceAsset:   "usd",
 					ConversionFactor: sdk.NewInt(6),
 					DebtFloor:        sdk.NewInt(10000000),
-					SavingsRate:      sdk.MustNewDecFromStr("0.95"),
+					// SavingsRate:      sdk.MustNewDecFromStr("0.95"),
 				},
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -456,7 +456,7 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			name: "valid collateral params duplicate denom + different type",
 			args: args{
 				globalDebtLimit: sdk.NewInt64Coin("usdx", 2000000000000),
-				collateralParams: types.CollateralParams{
+				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:               "bnb",
 						Type:                "bnb-a",
@@ -466,8 +466,8 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x20,
-						SpotMarketID:        "bnb:usd",
-						LiquidationMarketID: "bnb:usd",
+						SpotMarketId:        "bnb:usd",
+						LiquidationMarketId: "bnb:usd",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 					{
@@ -479,24 +479,24 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x21,
-						SpotMarketID:        "bnb:usd",
-						LiquidationMarketID: "bnb:usd",
+						SpotMarketId:        "bnb:usd",
+						LiquidationMarketId: "bnb:usd",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 				},
-				debtParam: types.DebtParam{
+				debtParam: cdptypes.DebtParam{
 					Denom:            "usdx",
 					ReferenceAsset:   "usd",
 					ConversionFactor: sdk.NewInt(6),
 					DebtFloor:        sdk.NewInt(10000000),
-					SavingsRate:      sdk.MustNewDecFromStr("0.95"),
+					// SavingsRate:      sdk.MustNewDecFromStr("0.95"),
 				},
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: true,
@@ -507,7 +507,7 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			name: "invalid collateral params duplicate prefix",
 			args: args{
 				globalDebtLimit: sdk.NewInt64Coin("usdx", 2000000000000),
-				collateralParams: types.CollateralParams{
+				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:               "bnb",
 						Type:                "bnb-a",
@@ -517,8 +517,8 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x20,
-						SpotMarketID:        "bnb:usd",
-						LiquidationMarketID: "bnb:usd",
+						SpotMarketId:        "bnb:usd",
+						LiquidationMarketId: "bnb:usd",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 					{
@@ -530,24 +530,24 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x20,
-						SpotMarketID:        "xrp:usd",
-						LiquidationMarketID: "xrp:usd",
+						SpotMarketId:        "xrp:usd",
+						LiquidationMarketId: "xrp:usd",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 				},
-				debtParam: types.DebtParam{
+				debtParam: cdptypes.DebtParam{
 					Denom:            "usdx",
 					ReferenceAsset:   "usd",
 					ConversionFactor: sdk.NewInt(6),
 					DebtFloor:        sdk.NewInt(10000000),
-					SavingsRate:      sdk.MustNewDecFromStr("0.95"),
+					// SavingsRate:      sdk.MustNewDecFromStr("0.95"),
 				},
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -558,7 +558,7 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			name: "invalid collateral params nil debt limit",
 			args: args{
 				globalDebtLimit: sdk.NewInt64Coin("usdx", 2000000000000),
-				collateralParams: types.CollateralParams{
+				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:               "bnb",
 						Type:                "bnb-a",
@@ -568,24 +568,24 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x20,
-						SpotMarketID:        "bnb:usd",
-						LiquidationMarketID: "bnb:usd",
+						SpotMarketId:        "bnb:usd",
+						LiquidationMarketId: "bnb:usd",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 				},
-				debtParam: types.DebtParam{
+				debtParam: cdptypes.DebtParam{
 					Denom:            "usdx",
 					ReferenceAsset:   "usd",
 					ConversionFactor: sdk.NewInt(6),
 					DebtFloor:        sdk.NewInt(10000000),
-					SavingsRate:      sdk.MustNewDecFromStr("0.95"),
+					// SavingsRate:      sdk.MustNewDecFromStr("0.95"),
 				},
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -596,7 +596,7 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			name: "invalid collateral params liquidation ratio out of range",
 			args: args{
 				globalDebtLimit: sdk.NewInt64Coin("usdx", 2000000000000),
-				collateralParams: types.CollateralParams{
+				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:               "bnb",
 						Type:                "bnb-a",
@@ -606,24 +606,24 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("1.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x20,
-						SpotMarketID:        "bnb:usd",
-						LiquidationMarketID: "bnb:usd",
+						SpotMarketId:        "bnb:usd",
+						LiquidationMarketId: "bnb:usd",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 				},
-				debtParam: types.DebtParam{
+				debtParam: cdptypes.DebtParam{
 					Denom:            "usdx",
 					ReferenceAsset:   "usd",
 					ConversionFactor: sdk.NewInt(6),
 					DebtFloor:        sdk.NewInt(10000000),
-					SavingsRate:      sdk.MustNewDecFromStr("0.95"),
+					// SavingsRate:      sdk.MustNewDecFromStr("0.95"),
 				},
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -634,7 +634,7 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			name: "invalid collateral params auction size zero",
 			args: args{
 				globalDebtLimit: sdk.NewInt64Coin("usdx", 2000000000000),
-				collateralParams: types.CollateralParams{
+				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:               "bnb",
 						Type:                "bnb-a",
@@ -644,24 +644,24 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.ZeroInt(),
 						Prefix:              0x20,
-						SpotMarketID:        "bnb:usd",
-						LiquidationMarketID: "bnb:usd",
+						SpotMarketId:        "bnb:usd",
+						LiquidationMarketId: "bnb:usd",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 				},
-				debtParam: types.DebtParam{
+				debtParam: cdptypes.DebtParam{
 					Denom:            "usdx",
 					ReferenceAsset:   "usd",
 					ConversionFactor: sdk.NewInt(6),
 					DebtFloor:        sdk.NewInt(10000000),
-					SavingsRate:      sdk.MustNewDecFromStr("0.95"),
+					// SavingsRate:      sdk.MustNewDecFromStr("0.95"),
 				},
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -672,7 +672,7 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			name: "invalid collateral params stability fee out of range",
 			args: args{
 				globalDebtLimit: sdk.NewInt64Coin("usdx", 2000000000000),
-				collateralParams: types.CollateralParams{
+				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:               "bnb",
 						Type:                "bnb-a",
@@ -682,24 +682,24 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x20,
-						SpotMarketID:        "bnb:usd",
-						LiquidationMarketID: "bnb:usd",
+						SpotMarketId:        "bnb:usd",
+						LiquidationMarketId: "bnb:usd",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 				},
-				debtParam: types.DebtParam{
+				debtParam: cdptypes.DebtParam{
 					Denom:            "usdx",
 					ReferenceAsset:   "usd",
 					ConversionFactor: sdk.NewInt(6),
 					DebtFloor:        sdk.NewInt(10000000),
-					SavingsRate:      sdk.MustNewDecFromStr("0.95"),
+					// SavingsRate:      sdk.MustNewDecFromStr("0.95"),
 				},
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -710,7 +710,7 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			name: "invalid debt param empty denom",
 			args: args{
 				globalDebtLimit: sdk.NewInt64Coin("usdx", 2000000000000),
-				collateralParams: types.CollateralParams{
+				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:               "bnb",
 						Type:                "bnb-a",
@@ -720,24 +720,24 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x20,
-						SpotMarketID:        "bnb:usd",
-						LiquidationMarketID: "bnb:usd",
+						SpotMarketId:        "bnb:usd",
+						LiquidationMarketId: "bnb:usd",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 				},
-				debtParam: types.DebtParam{
+				debtParam: cdptypes.DebtParam{
 					Denom:            "",
 					ReferenceAsset:   "usd",
 					ConversionFactor: sdk.NewInt(6),
 					DebtFloor:        sdk.NewInt(10000000),
-					SavingsRate:      sdk.MustNewDecFromStr("0.95"),
+					// SavingsRate:      sdk.MustNewDecFromStr("0.95"),
 				},
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -748,7 +748,7 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			name: "invalid debt param savings rate out of range",
 			args: args{
 				globalDebtLimit: sdk.NewInt64Coin("usdx", 2000000000000),
-				collateralParams: types.CollateralParams{
+				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:               "bnb",
 						Type:                "bnb-a",
@@ -758,24 +758,24 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						LiquidationPenalty:  sdk.MustNewDecFromStr("0.05"),
 						AuctionSize:         sdk.NewInt(50000000000),
 						Prefix:              0x20,
-						SpotMarketID:        "bnb:usd",
-						LiquidationMarketID: "bnb:usd",
+						SpotMarketId:        "bnb:usd",
+						LiquidationMarketId: "bnb:usd",
 						ConversionFactor:    sdk.NewInt(8),
 					},
 				},
-				debtParam: types.DebtParam{
+				debtParam: cdptypes.DebtParam{
 					Denom:            "usdx",
 					ReferenceAsset:   "usd",
 					ConversionFactor: sdk.NewInt(6),
 					DebtFloor:        sdk.NewInt(10000000),
-					SavingsRate:      sdk.MustNewDecFromStr("1.05"),
+					// SavingsRate:      sdk.MustNewDecFromStr("1.05"),
 				},
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -786,14 +786,14 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			name: "nil debt limit",
 			args: args{
 				globalDebtLimit:  sdk.Coin{},
-				collateralParams: types.DefaultCollateralParams,
-				debtParam:        types.DefaultDebtParam,
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				collateralParams: cdptypes.DefaultCollateralParams,
+				debtParam:        cdptypes.DefaultDebtParam,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -803,15 +803,15 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "zero savings distribution frequency",
 			args: args{
-				globalDebtLimit:  types.DefaultGlobalDebt,
-				collateralParams: types.DefaultCollateralParams,
-				debtParam:        types.DefaultDebtParam,
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
+				globalDebtLimit:  cdptypes.DefaultGlobalDebt,
+				collateralParams: cdptypes.DefaultCollateralParams,
+				debtParam:        cdptypes.DefaultDebtParam,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
 				distributionFreq: time.Second * 0,
-				breaker:          types.DefaultCircuitBreaker,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -821,15 +821,15 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "zero surplus auction threshold",
 			args: args{
-				globalDebtLimit:  types.DefaultGlobalDebt,
-				collateralParams: types.DefaultCollateralParams,
-				debtParam:        types.DefaultDebtParam,
+				globalDebtLimit:  cdptypes.DefaultGlobalDebt,
+				collateralParams: cdptypes.DefaultCollateralParams,
+				debtParam:        cdptypes.DefaultDebtParam,
 				surplusThreshold: sdk.ZeroInt(),
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -839,15 +839,15 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "zero debt auction threshold",
 			args: args{
-				globalDebtLimit:  types.DefaultGlobalDebt,
-				collateralParams: types.DefaultCollateralParams,
-				debtParam:        types.DefaultDebtParam,
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
+				globalDebtLimit:  cdptypes.DefaultGlobalDebt,
+				collateralParams: cdptypes.DefaultCollateralParams,
+				debtParam:        cdptypes.DefaultDebtParam,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
 				debtThreshold:    sdk.ZeroInt(),
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -857,15 +857,15 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "zero surplus auction lot",
 			args: args{
-				globalDebtLimit:  types.DefaultGlobalDebt,
-				collateralParams: types.DefaultCollateralParams,
-				debtParam:        types.DefaultDebtParam,
-				surplusThreshold: types.DefaultSurplusThreshold,
+				globalDebtLimit:  cdptypes.DefaultGlobalDebt,
+				collateralParams: cdptypes.DefaultCollateralParams,
+				debtParam:        cdptypes.DefaultDebtParam,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       sdk.ZeroInt(),
-				debtThreshold:    types.DefaultDebtThreshold,
-				debtLot:          types.DefaultDebtLot,
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -875,15 +875,15 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "zero debt auction lot",
 			args: args{
-				globalDebtLimit:  types.DefaultGlobalDebt,
-				collateralParams: types.DefaultCollateralParams,
-				debtParam:        types.DefaultDebtParam,
-				surplusThreshold: types.DefaultSurplusThreshold,
-				surplusLot:       types.DefaultSurplusLot,
-				debtThreshold:    types.DefaultDebtThreshold,
+				globalDebtLimit:  cdptypes.DefaultGlobalDebt,
+				collateralParams: cdptypes.DefaultCollateralParams,
+				debtParam:        cdptypes.DefaultDebtParam,
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
 				debtLot:          sdk.ZeroInt(),
-				distributionFreq: types.DefaultSavingsDistributionFrequency,
-				breaker:          types.DefaultCircuitBreaker,
+				distributionFreq: time.Hour * 12, // cdptypes.DefaultSavingsDistributionFrequency,
+				breaker:          cdptypes.DefaultCircuitBreaker,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -893,7 +893,7 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 	}
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
-			params := types.NewParams(tc.args.globalDebtLimit, tc.args.collateralParams, tc.args.debtParam, tc.args.surplusThreshold, tc.args.surplusLot, tc.args.debtThreshold, tc.args.debtLot, tc.args.distributionFreq, tc.args.breaker)
+			params := cdptypes.NewParams(tc.args.globalDebtLimit, tc.args.collateralParams, tc.args.debtParam, tc.args.surplusThreshold, tc.args.surplusLot, tc.args.debtThreshold, tc.args.debtLot /*, tc.args.distributionFreq*/, tc.args.breaker)
 			err := params.Validate()
 			if tc.errArgs.expectPass {
 				suite.Require().NoError(err)
