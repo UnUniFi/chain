@@ -8,23 +8,26 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/simulation"
+	simulation "github.com/cosmos/cosmos-sdk/types/simulation"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	tmabcitypes "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"github.com/kava-labs/kava/app"
-	"github.com/kava-labs/kava/x/auction"
-	"github.com/kava-labs/kava/x/cdp"
+	"github.com/lcnem/jpyx/app"
+	auctiontypes "github.com/lcnem/jpyx/x/auction/types"
+	cdp "github.com/lcnem/jpyx/x/cdp"
+	cdpkeeper "github.com/lcnem/jpyx/x/cdp/keeper"
+	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
 )
 
 type ModuleTestSuite struct {
 	suite.Suite
 
-	keeper       cdp.Keeper
+	keeper       cdpkeeper.Keeper
 	addrs        []sdk.AccAddress
 	app          app.TestApp
-	cdps         cdp.CDPs
+	cdps         cdptypes.Cdps
 	ctx          sdk.Context
 	liquidations liquidationTracker
 }
@@ -37,7 +40,7 @@ type liquidationTracker struct {
 
 func (suite *ModuleTestSuite) SetupTest() {
 	tApp := app.NewTestApp()
-	ctx := tApp.NewContext(true, abci.Header{Height: 1, Time: tmtime.Now()})
+	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
 	coins := []sdk.Coins{}
 	tracker := liquidationTracker{}
 
@@ -56,15 +59,15 @@ func (suite *ModuleTestSuite) SetupTest() {
 	suite.ctx = ctx
 	suite.app = tApp
 	suite.keeper = tApp.GetCDPKeeper()
-	suite.cdps = cdp.CDPs{}
+	suite.cdps = cdptypes.Cdps{}
 	suite.addrs = addrs
 	suite.liquidations = tracker
 }
 
 func (suite *ModuleTestSuite) createCdps() {
 	tApp := app.NewTestApp()
-	ctx := tApp.NewContext(true, abci.Header{Height: 1, Time: tmtime.Now()})
-	cdps := make(cdp.CDPs, 100)
+	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
+	cdps := make(cdptypes.Cdps, 100)
 	_, addrs := app.GeneratePrivKeyAddressPairs(100)
 	coins := []sdk.Coins{}
 	tracker := liquidationTracker{}
@@ -104,7 +107,7 @@ func (suite *ModuleTestSuite) createCdps() {
 			}
 		}
 		suite.Nil(suite.keeper.AddCdp(suite.ctx, addrs[j], c(collateral, int64(amount)), c("usdx", int64(debt)), collateral+"-a"))
-		c, f := suite.keeper.GetCDP(suite.ctx, collateral+"-a", uint64(j+1))
+		c, f := suite.keeper.GetCdp(suite.ctx, collateral+"-a", uint64(j+1))
 		suite.True(f)
 		cdps[j] = c
 	}
@@ -126,29 +129,30 @@ func (suite *ModuleTestSuite) setPrice(price sdk.Dec, market string) {
 }
 func (suite *ModuleTestSuite) TestBeginBlock() {
 	suite.createCdps()
-	sk := suite.app.GetSupplyKeeper()
-	acc := sk.GetModuleAccount(suite.ctx, cdp.ModuleName)
-	originalXrpCollateral := acc.GetCoins().AmountOf("xrp")
+	ak := suite.app.GetAccountKeeper()
+	sk := suite.app.GetBankKeeper()
+	acc := ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
+	originalXrpCollateral := sk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("xrp")
 	suite.setPrice(d("0.2"), "xrp:usd")
-	cdp.BeginBlocker(suite.ctx, abci.RequestBeginBlock{Header: suite.ctx.BlockHeader()}, suite.keeper)
-	acc = sk.GetModuleAccount(suite.ctx, cdp.ModuleName)
-	finalXrpCollateral := acc.GetCoins().AmountOf("xrp")
+	cdp.BeginBlocker(suite.ctx, tmabcitypes.RequestBeginBlock{Header: suite.ctx.BlockHeader()}, suite.keeper)
+	acc = ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
+	finalXrpCollateral := sk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("xrp")
 	seizedXrpCollateral := originalXrpCollateral.Sub(finalXrpCollateral)
 	xrpLiquidations := int(seizedXrpCollateral.Quo(i(10000000000)).Int64())
 	suite.Equal(len(suite.liquidations.xrp), xrpLiquidations)
 
-	acc = sk.GetModuleAccount(suite.ctx, cdp.ModuleName)
-	originalBtcCollateral := acc.GetCoins().AmountOf("btc")
+	acc = ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
+	originalBtcCollateral := sk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("btc")
 	suite.setPrice(d("6000"), "btc:usd")
-	cdp.BeginBlocker(suite.ctx, abci.RequestBeginBlock{Header: suite.ctx.BlockHeader()}, suite.keeper)
-	acc = sk.GetModuleAccount(suite.ctx, cdp.ModuleName)
-	finalBtcCollateral := acc.GetCoins().AmountOf("btc")
+	cdp.BeginBlocker(suite.ctx, tmabcitypes.RequestBeginBlock{Header: suite.ctx.BlockHeader()}, suite.keeper)
+	acc = ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
+	finalBtcCollateral := sk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("btc")
 	seizedBtcCollateral := originalBtcCollateral.Sub(finalBtcCollateral)
 	btcLiquidations := int(seizedBtcCollateral.Quo(i(100000000)).Int64())
 	suite.Equal(len(suite.liquidations.btc), btcLiquidations)
 
-	acc = sk.GetModuleAccount(suite.ctx, auction.ModuleName)
-	suite.Equal(suite.liquidations.debt, acc.GetCoins().AmountOf("debt").Int64())
+	acc = ak.GetModuleAccount(suite.ctx, auctiontypes.ModuleName)
+	suite.Equal(suite.liquidations.debt, sk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("debt").Int64())
 
 }
 
@@ -156,21 +160,22 @@ func (suite *ModuleTestSuite) TestSeizeSingleCdpWithFees() {
 	err := suite.keeper.AddCdp(suite.ctx, suite.addrs[0], c("xrp", 10000000000), c("usdx", 1000000000), "xrp-a")
 	suite.NoError(err)
 	suite.Equal(i(1000000000), suite.keeper.GetTotalPrincipal(suite.ctx, "xrp-a", "usdx"))
-	sk := suite.app.GetSupplyKeeper()
-	cdpMacc := sk.GetModuleAccount(suite.ctx, cdp.ModuleName)
-	suite.Equal(i(1000000000), cdpMacc.GetCoins().AmountOf("debt"))
+	ak := suite.app.GetAccountKeeper()
+	sk := suite.app.GetBankKeeper()
+	cdpMacc := ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
+	suite.Equal(i(1000000000), sk.GetAllBalances(suite.ctx, cdpMacc.GetAddress()).AmountOf("debt"))
 	for i := 0; i < 100; i++ {
 		suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Second * 6))
-		cdp.BeginBlocker(suite.ctx, abci.RequestBeginBlock{Header: suite.ctx.BlockHeader()}, suite.keeper)
+		cdp.BeginBlocker(suite.ctx, tmabcitypes.RequestBeginBlock{Header: suite.ctx.BlockHeader()}, suite.keeper)
 	}
 
-	cdpMacc = sk.GetModuleAccount(suite.ctx, cdp.ModuleName)
-	suite.Equal(i(1000000900), (cdpMacc.GetCoins().AmountOf("debt")))
-	cdp, _ := suite.keeper.GetCDP(suite.ctx, "xrp-a", 1)
+	cdpMacc = ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
+	suite.Equal(i(1000000900), (sk.GetAllBalances(suite.ctx, cdpMacc.GetAddress()).AmountOf("debt")))
+	cdp, _ := suite.keeper.GetCdp(suite.ctx, "xrp-a", 1)
 
 	err = suite.keeper.SeizeCollateral(suite.ctx, cdp)
 	suite.NoError(err)
-	_, found := suite.keeper.GetCDP(suite.ctx, "xrp-a", 1)
+	_, found := suite.keeper.GetCdp(suite.ctx, "xrp-a", 1)
 	suite.False(found)
 }
 
