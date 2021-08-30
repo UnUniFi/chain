@@ -6,40 +6,41 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
-	"github.com/cosmos/cosmos-sdk/x/auth/vesting"
+	// authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	supplyexported "github.com/cosmos/cosmos-sdk/x/supply/exported"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	// supplyexported "github.com/cosmos/cosmos-sdk/x/supply/exported"
+
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"github.com/kava-labs/kava/app"
-	committeekeeper "github.com/kava-labs/kava/x/committee/keeper"
-	hardkeeper "github.com/kava-labs/kava/x/hard/keeper"
-	"github.com/kava-labs/kava/x/incentive/keeper"
-	"github.com/kava-labs/kava/x/incentive/types"
+	"github.com/lcnem/jpyx/app"
+	// committeekeeper "github.com/lcnem/jpyx/x/committee/keeper"
+	// hardkeeper "github.com/lcnem/jpyx/x/hard/keeper"
+	"github.com/lcnem/jpyx/x/incentive/keeper"
+	"github.com/lcnem/jpyx/x/incentive/types"
 )
 
 // Test suite used for all keeper tests
 type KeeperTestSuite struct {
 	suite.Suite
 
-	keeper          keeper.Keeper
-	hardKeeper      hardkeeper.Keeper
-	stakingKeeper   stakingkeeper.Keeper
-	committeeKeeper committeekeeper.Keeper
-	app             app.TestApp
-	ctx             sdk.Context
-	addrs           []sdk.AccAddress
-	validatorAddrs  []sdk.ValAddress
+	keeper keeper.Keeper
+	// hardKeeper      hardkeeper.Keeper
+	stakingKeeper stakingkeeper.Keeper
+	// committeeKeeper committeekeeper.Keeper
+	app            app.TestApp
+	ctx            sdk.Context
+	addrs          []sdk.AccAddress
+	validatorAddrs []sdk.ValAddress
 }
 
 // The default state used by each test
 func (suite *KeeperTestSuite) SetupTest() {
 	tApp := app.NewTestApp()
-	ctx := tApp.NewContext(true, abci.Header{Height: 1, Time: tmtime.Now()})
+	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
 
 	tApp.InitializeFromGenesisStates()
 
@@ -51,63 +52,65 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.addrs = addrs
 }
 
-func (suite *KeeperTestSuite) getAccount(addr sdk.AccAddress) authexported.Account {
+func (suite *KeeperTestSuite) getAccount(addr sdk.AccAddress) authtypes.AccountI {
 	ak := suite.app.GetAccountKeeper()
 	return ak.GetAccount(suite.ctx, addr)
 }
 
-func (suite *KeeperTestSuite) getModuleAccount(name string) supplyexported.ModuleAccountI {
-	sk := suite.app.GetSupplyKeeper()
+func (suite *KeeperTestSuite) getModuleAccount(name string) authtypes.ModuleAccountI {
+	sk := suite.app.GetAccountKeeper()
 	return sk.GetModuleAccount(suite.ctx, name)
 }
 
-func (suite *KeeperTestSuite) TestGetSetDeleteUSDXMintingClaim() {
-	c := types.NewUSDXMintingClaim(suite.addrs[0], c("ukava", 1000000), types.RewardIndexes{types.NewRewardIndex("bnb-a", sdk.ZeroDec())})
-	_, found := suite.keeper.GetUSDXMintingClaim(suite.ctx, suite.addrs[0])
+func (suite *KeeperTestSuite) TestGetSetDeleteJpyxMintingClaim() {
+	c := types.NewJpyxMintingClaim(suite.addrs[0], c("ukava", 1000000), types.RewardIndexes{types.NewRewardIndex("bnb-a", sdk.ZeroDec())})
+	_, found := suite.keeper.GetJpyxMintingClaim(suite.ctx, suite.addrs[0])
 	suite.Require().False(found)
 	suite.Require().NotPanics(func() {
-		suite.keeper.SetUSDXMintingClaim(suite.ctx, c)
+		suite.keeper.SetJpyxMintingClaim(suite.ctx, c)
 	})
-	testC, found := suite.keeper.GetUSDXMintingClaim(suite.ctx, suite.addrs[0])
+	testC, found := suite.keeper.GetJpyxMintingClaim(suite.ctx, suite.addrs[0])
 	suite.Require().True(found)
 	suite.Require().Equal(c, testC)
 	suite.Require().NotPanics(func() {
-		suite.keeper.DeleteUSDXMintingClaim(suite.ctx, suite.addrs[0])
+		suite.keeper.DeleteJpyxMintingClaim(suite.ctx, suite.addrs[0])
 	})
-	_, found = suite.keeper.GetUSDXMintingClaim(suite.ctx, suite.addrs[0])
+	_, found = suite.keeper.GetJpyxMintingClaim(suite.ctx, suite.addrs[0])
 	suite.Require().False(found)
 }
 
 func (suite *KeeperTestSuite) TestIterateUSDXMintingClaims() {
 	for i := 0; i < len(suite.addrs); i++ {
-		c := types.NewUSDXMintingClaim(suite.addrs[i], c("ukava", 100000), types.RewardIndexes{types.NewRewardIndex("bnb-a", sdk.ZeroDec())})
+		c := types.NewJpyxMintingClaim(suite.addrs[i], c("ukava", 100000), types.RewardIndexes{types.NewRewardIndex("bnb-a", sdk.ZeroDec())})
 		suite.Require().NotPanics(func() {
-			suite.keeper.SetUSDXMintingClaim(suite.ctx, c)
+			suite.keeper.SetJpyxMintingClaim(suite.ctx, c)
 		})
 	}
-	claims := types.USDXMintingClaims{}
-	suite.keeper.IterateUSDXMintingClaims(suite.ctx, func(c types.USDXMintingClaim) bool {
+	claims := types.JpyxMintingClaims{}
+	suite.keeper.IterateJpyxMintingClaims(suite.ctx, func(c types.JpyxMintingClaim) bool {
 		claims = append(claims, c)
 		return false
 	})
 	suite.Require().Equal(len(suite.addrs), len(claims))
 
-	claims = suite.keeper.GetAllUSDXMintingClaims(suite.ctx)
+	claims = suite.keeper.GetAllJpyxMintingClaims(suite.ctx)
 	suite.Require().Equal(len(suite.addrs), len(claims))
 }
 
-func createPeriodicVestingAccount(origVesting sdk.Coins, periods vesting.Periods, startTime, endTime int64) (*vesting.PeriodicVestingAccount, error) {
+func (suite *KeeperTestSuite) createPeriodicVestingAccount(origVesting sdk.Coins, periods vestingtypes.Periods, startTime, endTime int64) (*vestingtypes.PeriodicVestingAccount, error) {
 	_, addr := app.GeneratePrivKeyAddressPairs(1)
-	bacc := auth.NewBaseAccountWithAddress(addr[0])
-	bacc.Coins = origVesting
-	bva, err := vesting.NewBaseVestingAccount(&bacc, origVesting, endTime)
+	bk := suite.app.GetBankKeeper()
+	bacc := authtypes.NewBaseAccountWithAddress(addr[0])
+	bk.AddCoins(suite.ctx, bacc.GetAddress(), origVesting)
+	bva := vestingtypes.NewBaseVestingAccount(bacc, origVesting, endTime)
+	err := bva.Validate()
 	if err != nil {
-		return &vesting.PeriodicVestingAccount{}, err
+		return &vestingtypes.PeriodicVestingAccount{}, err
 	}
-	pva := vesting.NewPeriodicVestingAccountRaw(bva, startTime, periods)
+	pva := vestingtypes.NewPeriodicVestingAccountRaw(bva, startTime, periods)
 	err = pva.Validate()
 	if err != nil {
-		return &vesting.PeriodicVestingAccount{}, err
+		return &vestingtypes.PeriodicVestingAccount{}, err
 	}
 	return pva, nil
 }
