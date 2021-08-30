@@ -71,8 +71,8 @@ func TestInitGenesis(t *testing.T) {
 		// TODO is there a nicer way of comparing state?
 		sort.Slice(gs.Auctions, func(i, j int) bool {
 			// Any型からAuction型へUnpackする
-			unpackAuction, _ := auctiontypes.UnpackAuctions(gs.Auctions)
-			return unpackAuction[i].GetID() > unpackAuction[j].GetID()
+			unpackAuctions, _ := auctiontypes.UnpackAuctions(gs.Auctions)
+			return unpackAuctions[i].GetID() > unpackAuctions[j].GetID()
 		})
 		i := 0
 		keeper.IterateAuctions(ctx, func(a auctiontypes.Auction) bool {
