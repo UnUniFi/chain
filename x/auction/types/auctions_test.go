@@ -7,25 +7,26 @@ import (
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	jpyxtypes "github.com/lcnem/jpyx/types"
 )
 
 const (
 	TestInitiatorModuleName = "liquidator"
-	TestLotDenom            = "usdx"
+	TestLotDenom            = "jpyx"
 	TestLotAmount           = 100
-	TestBidDenom            = "kava"
+	TestBidDenom            = "jsmn"
 	TestBidAmount           = 20
 	TestDebtDenom           = "debt"
 	TestDebtAmount1         = 20
 	TestDebtAmount2         = 15
 	TestExtraEndTime        = 10000
 	TestAuctionID           = 9999123
-	testAccAddress1         = "kava1qcfdf69js922qrdr4yaww3ax7gjml6pd39p8lj"
-	testAccAddress2         = "kava1pdfav2cjhry9k79nu6r8kgknnjtq6a7rcr0qlr"
+	testAccAddress1         = "jpyx1qcfdf69js922qrdr4yaww3ax7gjml6pd39p8lj"
+	testAccAddress2         = "jpyx1pdfav2cjhry9k79nu6r8kgknnjtq6a7rcr0qlr"
 )
 
 func init() {
-	sdk.GetConfig().SetBech32PrefixForAccount("kava", "kava"+sdk.PrefixPublic)
+	sdk.GetConfig().SetBech32PrefixForAccount("jsmn", "jpyx"+sdk.PrefixPublic)
 }
 
 func d(amount string) sdk.Dec               { return sdk.MustNewDecFromStr(amount) }
@@ -112,11 +113,11 @@ func TestBaseAuctionValidate(t *testing.T) {
 		{
 			"valid auction",
 			BaseAuction{
-				ID:              1,
+				Id:              1,
 				Initiator:       testAccAddress1,
-				Lot:             c("kava", 1),
-				Bidder:          addr1,
-				Bid:             c("kava", 1),
+				Lot:             c("jsmn", 1),
+				Bidder:          jpyxtypes.StringAccAddress(addr1),
+				Bid:             c("jsmn", 1),
 				EndTime:         now,
 				MaxEndTime:      now,
 				HasReceivedBids: true,
@@ -126,7 +127,7 @@ func TestBaseAuctionValidate(t *testing.T) {
 		{
 			"blank initiator",
 			BaseAuction{
-				ID:        1,
+				Id:        1,
 				Initiator: "",
 			},
 			false,
@@ -134,7 +135,7 @@ func TestBaseAuctionValidate(t *testing.T) {
 		{
 			"invalid lot",
 			BaseAuction{
-				ID:        1,
+				Id:        1,
 				Initiator: testAccAddress1,
 				Lot:       sdk.Coin{Denom: "DENOM", Amount: sdk.NewInt(1)},
 			},
@@ -143,30 +144,30 @@ func TestBaseAuctionValidate(t *testing.T) {
 		{
 			"empty bidder",
 			BaseAuction{
-				ID:        1,
+				Id:        1,
 				Initiator: testAccAddress1,
-				Lot:       c("kava", 1),
-				Bidder:    sdk.AccAddress{},
+				Lot:       c("jsmn", 1),
+				Bidder:    jpyxtypes.StringAccAddress{},
 			},
 			false,
 		},
 		{
 			"invalid bidder",
 			BaseAuction{
-				ID:        1,
+				Id:        1,
 				Initiator: testAccAddress1,
-				Lot:       c("kava", 1),
-				Bidder:    addr1[:10],
+				Lot:       c("jsmn", 1),
+				Bidder:    jpyxtypes.StringAccAddress(addr1[:10]),
 			},
 			false,
 		},
 		{
 			"invalid bid",
 			BaseAuction{
-				ID:        1,
+				Id:        1,
 				Initiator: testAccAddress1,
-				Lot:       c("kava", 1),
-				Bidder:    addr1,
+				Lot:       c("jsmn", 1),
+				Bidder:    jpyxtypes.StringAccAddress(addr1),
 				Bid:       sdk.Coin{Denom: "DENOM", Amount: sdk.NewInt(1)},
 			},
 			false,
@@ -174,11 +175,11 @@ func TestBaseAuctionValidate(t *testing.T) {
 		{
 			"invalid end time",
 			BaseAuction{
-				ID:        1,
+				Id:        1,
 				Initiator: testAccAddress1,
-				Lot:       c("kava", 1),
-				Bidder:    addr1,
-				Bid:       c("kava", 1),
+				Lot:       c("jsmn", 1),
+				Bidder:    jpyxtypes.StringAccAddress(addr1),
+				Bid:       c("jsmn", 1),
 				EndTime:   time.Unix(0, 0),
 			},
 			false,
@@ -186,11 +187,11 @@ func TestBaseAuctionValidate(t *testing.T) {
 		{
 			"max end time > endtime",
 			BaseAuction{
-				ID:         1,
+				Id:         1,
 				Initiator:  testAccAddress1,
-				Lot:        c("kava", 1),
-				Bidder:     addr1,
-				Bid:        c("kava", 1),
+				Lot:        c("jsmn", 1),
+				Bidder:     jpyxtypes.StringAccAddress(addr1),
+				Bid:        c("jsmn", 1),
 				EndTime:    now.Add(time.Minute),
 				MaxEndTime: now,
 			},
@@ -225,16 +226,16 @@ func TestDebtAuctionValidate(t *testing.T) {
 			"valid auction",
 			DebtAuction{
 				BaseAuction: BaseAuction{
-					ID:              1,
+					Id:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("kava", 1),
-					Bidder:          addr1,
-					Bid:             c("kava", 1),
+					Lot:             c("jsmn", 1),
+					Bidder:          jpyxtypes.StringAccAddress(addr1),
+					Bid:             c("jsmn", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
 				},
-				CorrespondingDebt: c("kava", 1),
+				CorrespondingDebt: c("jsmn", 1),
 			},
 			true,
 		},
@@ -242,11 +243,11 @@ func TestDebtAuctionValidate(t *testing.T) {
 			"invalid corresponding debt",
 			DebtAuction{
 				BaseAuction: BaseAuction{
-					ID:              1,
+					Id:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("kava", 1),
-					Bidder:          addr1,
-					Bid:             c("kava", 1),
+					Lot:             c("jsmn", 1),
+					Bidder:          jpyxtypes.StringAccAddress(addr1),
+					Bid:             c("jsmn", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
@@ -284,19 +285,19 @@ func TestCollateralAuctionValidate(t *testing.T) {
 			"valid auction",
 			CollateralAuction{
 				BaseAuction: BaseAuction{
-					ID:              1,
+					Id:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("kava", 1),
-					Bidder:          addr1,
-					Bid:             c("kava", 1),
+					Lot:             c("jsmn", 1),
+					Bidder:          jpyxtypes.StringAccAddress(addr1),
+					Bid:             c("jsmn", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
 				},
-				CorrespondingDebt: c("kava", 1),
-				MaxBid:            c("kava", 1),
+				CorrespondingDebt: c("jsmn", 1),
+				MaxBid:            c("jsmn", 1),
 				LotReturns: WeightedAddresses{
-					Addresses: []sdk.AccAddress{addr1},
+					Addresses: []jpyxtypes.StringAccAddress{jpyxtypes.StringAccAddress(addr1)},
 					Weights:   []sdk.Int{sdk.NewInt(1)},
 				},
 			},
@@ -306,11 +307,11 @@ func TestCollateralAuctionValidate(t *testing.T) {
 			"invalid corresponding debt",
 			CollateralAuction{
 				BaseAuction: BaseAuction{
-					ID:              1,
+					Id:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("kava", 1),
-					Bidder:          addr1,
-					Bid:             c("kava", 1),
+					Lot:             c("jsmn", 1),
+					Bidder:          jpyxtypes.StringAccAddress(addr1),
+					Bid:             c("jsmn", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
@@ -323,16 +324,16 @@ func TestCollateralAuctionValidate(t *testing.T) {
 			"invalid max bid",
 			CollateralAuction{
 				BaseAuction: BaseAuction{
-					ID:              1,
+					Id:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("kava", 1),
-					Bidder:          addr1,
-					Bid:             c("kava", 1),
+					Lot:             c("jsmn", 1),
+					Bidder:          jpyxtypes.StringAccAddress(addr1),
+					Bid:             c("jsmn", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
 				},
-				CorrespondingDebt: c("kava", 1),
+				CorrespondingDebt: c("jsmn", 1),
 				MaxBid:            sdk.Coin{Denom: "DENOM", Amount: sdk.NewInt(1)},
 			},
 			false,
@@ -341,19 +342,19 @@ func TestCollateralAuctionValidate(t *testing.T) {
 			"invalid lot returns",
 			CollateralAuction{
 				BaseAuction: BaseAuction{
-					ID:              1,
+					Id:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("kava", 1),
-					Bidder:          addr1,
-					Bid:             c("kava", 1),
+					Lot:             c("jsmn", 1),
+					Bidder:          jpyxtypes.StringAccAddress(addr1),
+					Bid:             c("jsmn", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
 				},
-				CorrespondingDebt: c("kava", 1),
-				MaxBid:            c("kava", 1),
+				CorrespondingDebt: c("jsmn", 1),
+				MaxBid:            c("jsmn", 1),
 				LotReturns: WeightedAddresses{
-					Addresses: []sdk.AccAddress{nil},
+					Addresses: []jpyxtypes.StringAccAddress{nil},
 					Weights:   []sdk.Int{sdk.NewInt(1)},
 				},
 			},
@@ -389,7 +390,7 @@ func TestBaseAuctionGetters(t *testing.T) {
 	auctionEndTime := auction.GetEndTime()
 	auctionString := auction.String()
 
-	require.Equal(t, auction.ID, auctionID)
+	require.Equal(t, auction.Id, auctionID)
 	require.Equal(t, auction.Bid, auctionBid)
 	require.Equal(t, auction.Lot, auctionLot)
 	require.Equal(t, auction.EndTime, auctionEndTime)
