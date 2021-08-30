@@ -17,7 +17,7 @@ import (
 	jsmndisttypes "github.com/lcnem/jpyx/x/jsmndist/types"
 )
 
-func (suite *KeeperTestSuite) TestPayoutUSDXMintingClaim() {
+func (suite *KeeperTestSuite) TestPayoutJpyxMintingClaim() {
 	type args struct {
 		ctype                    string
 		rewardsPerSecond         sdk.Coin
