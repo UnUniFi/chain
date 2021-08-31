@@ -9,7 +9,7 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
-	"github.com/kava-labs/kava/x/incentive/types"
+	incentivetypes "github.com/lcnem/jpyx/x/incentive/types"
 )
 
 type msgTest struct {
@@ -57,7 +57,7 @@ func (suite *MsgTestSuite) SetupTest() {
 
 func (suite *MsgTestSuite) TestMsgValidation() {
 	for _, t := range suite.tests {
-		msg := types.NewMsgClaimUSDXMintingReward(t.from, t.multiplierName)
+		msg := incentivetypes.NewMsgClaimJpyxMintingReward(t.from, t.multiplierName)
 		err := msg.ValidateBasic()
 		if t.expectPass {
 			suite.Require().NoError(err)
