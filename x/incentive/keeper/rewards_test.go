@@ -5,19 +5,16 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	proposal "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	abci "github.com/tendermint/tendermint/abci/types"
 
 	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
 	// "github.com/lcnem/jpyx/x/committee"
 	// "github.com/lcnem/jpyx/x/hard"
-	hardtypes "github.com/lcnem/jpyx/x/hard/types"
 	incentivetypes "github.com/lcnem/jpyx/x/incentive/types"
 )
 
-func (suite *KeeperTestSuite) TestAccumulateUSDXMintingRewards() {
+func (suite *KeeperTestSuite) TestAccumulateJpyxMintingRewards() {
 	type args struct {
 		ctype                 string
 		rewardsPerSecond      sdk.Coin
@@ -100,7 +97,7 @@ func (suite *KeeperTestSuite) TestAccumulateUSDXMintingRewards() {
 	}
 }
 
-func (suite *KeeperTestSuite) TestSynchronizeUSDXMintingReward() {
+func (suite *KeeperTestSuite) TestSynchronizeJpyxMintingReward() {
 	type args struct {
 		ctype                string
 		rewardsPerSecond     sdk.Coin
@@ -207,6 +204,7 @@ func (suite *KeeperTestSuite) TestSynchronizeUSDXMintingReward() {
 	}
 }
 
+/*
 func (suite *KeeperTestSuite) TestAccumulateHardBorrowRewards() {
 	type args struct {
 		borrow                sdk.Coin
@@ -369,7 +367,9 @@ func (suite *KeeperTestSuite) TestAccumulateHardBorrowRewards() {
 		})
 	}
 }
+*/
 
+/*
 func (suite *KeeperTestSuite) TestSynchronizeHardBorrowReward() {
 	type args struct {
 		incentiveBorrowRewardDenom   string
@@ -789,7 +789,9 @@ func (suite *KeeperTestSuite) TestSynchronizeHardBorrowReward() {
 		})
 	}
 }
+*/
 
+/*
 func (suite *KeeperTestSuite) TestAccumulateHardDelegatorRewards() {
 	type args struct {
 		delegation           sdk.Coin
@@ -884,7 +886,9 @@ func (suite *KeeperTestSuite) TestAccumulateHardDelegatorRewards() {
 		})
 	}
 }
+*/
 
+/*
 func (suite *KeeperTestSuite) TestInitializeHardSupplyRewards() {
 
 	type args struct {
@@ -1061,7 +1065,9 @@ func (suite *KeeperTestSuite) TestInitializeHardSupplyRewards() {
 		})
 	}
 }
+*/
 
+/*
 func (suite *KeeperTestSuite) TestAccumulateHardSupplyRewards() {
 	type args struct {
 		deposit               sdk.Coin
@@ -1174,7 +1180,7 @@ func (suite *KeeperTestSuite) TestAccumulateHardSupplyRewards() {
 			suite.ctx = suite.ctx.WithBlockTime(tc.args.initialTime)
 
 			// Mint coins to hard module account
-			supplyKeeper := suite.app.GetSupplyKeeper()
+			supplyKeeper := suite.app.GetBankKeeper()
 			hardMaccCoins := sdk.NewCoins(sdk.NewCoin("usdx", sdk.NewInt(200000000)))
 			supplyKeeper.MintCoins(suite.ctx, hardtypes.ModuleAccountName, hardMaccCoins)
 
@@ -1237,7 +1243,9 @@ func (suite *KeeperTestSuite) TestAccumulateHardSupplyRewards() {
 		})
 	}
 }
+*/
 
+/*
 func (suite *KeeperTestSuite) TestSynchronizeHardSupplyReward() {
 	type args struct {
 		incentiveSupplyRewardDenom   string
@@ -1448,7 +1456,7 @@ func (suite *KeeperTestSuite) TestSynchronizeHardSupplyReward() {
 			suite.ctx = suite.ctx.WithBlockTime(tc.args.initialTime)
 
 			// Mint coins to hard module account
-			supplyKeeper := suite.app.GetSupplyKeeper()
+			supplyKeeper := suite.app.GetBankKeeper()
 			hardMaccCoins := sdk.NewCoins(sdk.NewCoin("usdx", sdk.NewInt(200000000)))
 			supplyKeeper.MintCoins(suite.ctx, hardtypes.ModuleAccountName, hardMaccCoins)
 
@@ -1659,7 +1667,9 @@ func (suite *KeeperTestSuite) TestSynchronizeHardSupplyReward() {
 		})
 	}
 }
+*/
 
+/*
 func (suite *KeeperTestSuite) TestUpdateHardSupplyIndexDenoms() {
 	type args struct {
 		firstDeposit              sdk.Coins
@@ -1807,7 +1817,9 @@ func (suite *KeeperTestSuite) TestUpdateHardSupplyIndexDenoms() {
 		})
 	}
 }
+*/
 
+/*
 func (suite *KeeperTestSuite) TestInitializeHardBorrowRewards() {
 
 	type args struct {
@@ -1993,7 +2005,9 @@ func (suite *KeeperTestSuite) TestInitializeHardBorrowRewards() {
 		})
 	}
 }
+*/
 
+/*
 func (suite *KeeperTestSuite) TestUpdateHardBorrowIndexDenoms() {
 	type args struct {
 		initialDeposit            sdk.Coins
@@ -2157,7 +2171,9 @@ func (suite *KeeperTestSuite) TestUpdateHardBorrowIndexDenoms() {
 		})
 	}
 }
+*/
 
+/*
 func (suite *KeeperTestSuite) TestSynchronizeHardDelegatorReward() {
 	type args struct {
 		delegation           sdk.Coin
@@ -2272,7 +2288,9 @@ func (suite *KeeperTestSuite) TestSynchronizeHardDelegatorReward() {
 		})
 	}
 }
+*/
 
+/*
 func (suite *KeeperTestSuite) TestSimulateHardSupplyRewardSynchronization() {
 	type args struct {
 		deposit               sdk.Coin
@@ -2409,7 +2427,9 @@ func (suite *KeeperTestSuite) TestSimulateHardSupplyRewardSynchronization() {
 		})
 	}
 }
+*/
 
+/*
 func (suite *KeeperTestSuite) TestSimulateHardBorrowRewardSynchronization() {
 	type args struct {
 		borrow                sdk.Coin
@@ -2549,7 +2569,9 @@ func (suite *KeeperTestSuite) TestSimulateHardBorrowRewardSynchronization() {
 		})
 	}
 }
+*/
 
+/*
 func (suite *KeeperTestSuite) TestSimulateHardDelegatorRewardSynchronization() {
 	type args struct {
 		delegation            sdk.Coin
@@ -2666,8 +2688,9 @@ func (suite *KeeperTestSuite) TestSimulateHardDelegatorRewardSynchronization() {
 		})
 	}
 }
+*/
 
-func (suite *KeeperTestSuite) TestSimulateUSDXMintingRewardSynchronization() {
+func (suite *KeeperTestSuite) TestSimulateJpyxMintingRewardSynchronization() {
 	type args struct {
 		ctype                string
 		rewardsPerSecond     sdk.Coins
