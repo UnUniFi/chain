@@ -8,6 +8,7 @@ import (
 	"github.com/tendermint/tendermint/crypto"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	jpyxtypes "github.com/lcnem/jpyx/types"
 )
 
 func TestClaimsValidate(t *testing.T) {
@@ -15,21 +16,21 @@ func TestClaimsValidate(t *testing.T) {
 
 	testCases := []struct {
 		msg     string
-		claims  USDXMintingClaims
+		claims  JpyxMintingClaims
 		expPass bool
 	}{
 		{
 			"valid",
-			USDXMintingClaims{
-				NewUSDXMintingClaim(owner, sdk.NewCoin("bnb", sdk.OneInt()), RewardIndexes{NewRewardIndex("bnb-a", sdk.ZeroDec())}),
+			JpyxMintingClaims{
+				NewJpyxMintingClaim(owner, sdk.NewCoin("bnb", sdk.OneInt()), RewardIndexes{NewRewardIndex("bnb-a", sdk.ZeroDec())}),
 			},
 			true,
 		},
 		{
 			"invalid owner",
-			USDXMintingClaims{
-				USDXMintingClaim{
-					BaseClaim: BaseClaim{
+			JpyxMintingClaims{
+				JpyxMintingClaim{
+					BaseClaim: &BaseClaim{
 						Owner: nil,
 					},
 				},
@@ -38,10 +39,10 @@ func TestClaimsValidate(t *testing.T) {
 		},
 		{
 			"invalid reward",
-			USDXMintingClaims{
+			JpyxMintingClaims{
 				{
-					BaseClaim: BaseClaim{
-						Owner:  owner,
+					BaseClaim: &BaseClaim{
+						Owner:  jpyxtypes.StringAccAddress(owner),
 						Reward: sdk.Coin{Denom: "", Amount: sdk.ZeroInt()},
 					},
 				},
@@ -50,10 +51,10 @@ func TestClaimsValidate(t *testing.T) {
 		},
 		{
 			"invalid collateral type",
-			USDXMintingClaims{
+			JpyxMintingClaims{
 				{
-					BaseClaim: BaseClaim{
-						Owner:  owner,
+					BaseClaim: &BaseClaim{
+						Owner:  jpyxtypes.StringAccAddress(owner),
 						Reward: sdk.NewCoin("bnb", sdk.OneInt()),
 					},
 					RewardIndexes: []RewardIndex{{"", sdk.ZeroDec()}},
