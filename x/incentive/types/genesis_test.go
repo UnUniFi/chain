@@ -8,13 +8,15 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto"
+
+	jpyxtypes "github.com/lcnem/jpyx/types"
 )
 
 func TestGenesisStateValidate(t *testing.T) {
 	type args struct {
 		params      Params
 		genAccTimes GenesisAccumulationTimes
-		claims      USDXMintingClaims
+		claims      JpyxMintingClaims
 	}
 
 	type errArgs struct {
@@ -32,7 +34,7 @@ func TestGenesisStateValidate(t *testing.T) {
 			args: args{
 				params:      DefaultParams(),
 				genAccTimes: DefaultGenesisAccumulationTimes,
-				claims:      DefaultUSDXClaims,
+				claims:      DefaultJpyxClaims,
 			},
 			errArgs: errArgs{
 				expectPass: true,
@@ -63,12 +65,12 @@ func TestGenesisStateValidate(t *testing.T) {
 				genAccTimes: GenesisAccumulationTimes{GenesisAccumulationTime{
 					CollateralType:           "bnb-a",
 					PreviousAccumulationTime: time.Date(2020, 10, 15, 14, 0, 0, 0, time.UTC),
-					RewardFactor:             sdk.ZeroDec(),
+					//RewardFactor:             sdk.ZeroDec(),
 				}},
-				claims: USDXMintingClaims{
+				claims: JpyxMintingClaims{
 					{
-						BaseClaim: BaseClaim{
-							Owner:  sdk.AccAddress(crypto.AddressHash([]byte("KavaTestUser1"))),
+						BaseClaim: &BaseClaim{
+							Owner:  jpyxtypes.StringAccAddress(sdk.AccAddress(crypto.AddressHash([]byte("KavaTestUser1")))),
 							Reward: sdk.NewCoin("ukava", sdk.NewInt(100000000)),
 						},
 						RewardIndexes: []RewardIndex{
@@ -92,10 +94,10 @@ func TestGenesisStateValidate(t *testing.T) {
 				genAccTimes: GenesisAccumulationTimes{
 					{
 						CollateralType: "btcb-a",
-						RewardFactor:   sdk.MustNewDecFromStr("-0.1"),
+						//RewardFactor:   sdk.MustNewDecFromStr("-0.1"),
 					},
 				},
-				claims: DefaultUSDXClaims,
+				claims: DefaultJpyxClaims,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -107,10 +109,10 @@ func TestGenesisStateValidate(t *testing.T) {
 			args: args{
 				params:      DefaultParams(),
 				genAccTimes: DefaultGenesisAccumulationTimes,
-				claims: USDXMintingClaims{
+				claims: JpyxMintingClaims{
 					{
-						BaseClaim: BaseClaim{
-							Owner:  sdk.AccAddress{},
+						BaseClaim: &BaseClaim{
+							Owner:  jpyxtypes.StringAccAddress(sdk.AccAddress{}),
 							Reward: sdk.NewCoin("ukava", sdk.NewInt(100000000)),
 						},
 						RewardIndexes: []RewardIndex{
@@ -131,7 +133,7 @@ func TestGenesisStateValidate(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			gs := NewGenesisState(tc.args.params, tc.args.genAccTimes, tc.args.genAccTimes, tc.args.genAccTimes, tc.args.genAccTimes, tc.args.claims, DefaultHardClaims)
+			gs := NewGenesisState(tc.args.params, tc.args.genAccTimes, tc.args.claims)
 			err := gs.Validate()
 			if tc.errArgs.expectPass {
 				require.NoError(t, err, tc.name)
