@@ -9,7 +9,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/kava-labs/kava/x/incentive/types"
+	incentivetypes "github.com/lcnem/jpyx/x/incentive/types"
 )
 
 type ParamTestSuite struct {
@@ -20,11 +20,11 @@ func (suite *ParamTestSuite) SetupTest() {}
 
 func (suite *ParamTestSuite) TestParamValidation() {
 	type args struct {
-		usdxMintingRewardPeriods   types.RewardPeriods
-		hardSupplyRewardPeriods    types.MultiRewardPeriods
-		hardBorrowRewardPeriods    types.MultiRewardPeriods
-		hardDelegatorRewardPeriods types.RewardPeriods
-		multipliers                types.Multipliers
+		jpyxMintingRewardPeriods   incentivetypes.RewardPeriods
+		hardSupplyRewardPeriods    incentivetypes.MultiRewardPeriods
+		hardBorrowRewardPeriods    incentivetypes.MultiRewardPeriods
+		hardDelegatorRewardPeriods incentivetypes.RewardPeriods
+		multipliers                incentivetypes.Multipliers
 		end                        time.Time
 	}
 
@@ -42,12 +42,12 @@ func (suite *ParamTestSuite) TestParamValidation() {
 		{
 			"default",
 			args{
-				usdxMintingRewardPeriods:   types.DefaultRewardPeriods,
-				hardSupplyRewardPeriods:    types.DefaultMultiRewardPeriods,
-				hardBorrowRewardPeriods:    types.DefaultMultiRewardPeriods,
-				hardDelegatorRewardPeriods: types.DefaultRewardPeriods,
-				multipliers:                types.DefaultMultipliers,
-				end:                        types.DefaultClaimEnd,
+				jpyxMintingRewardPeriods:   incentivetypes.DefaultRewardPeriods,
+				hardSupplyRewardPeriods:    incentivetypes.DefaultMultiRewardPeriods,
+				hardBorrowRewardPeriods:    incentivetypes.DefaultMultiRewardPeriods,
+				hardDelegatorRewardPeriods: incentivetypes.DefaultRewardPeriods,
+				multipliers:                incentivetypes.DefaultMultipliers,
+				end:                        incentivetypes.DefaultClaimEnd,
 			},
 			errArgs{
 				expectPass: true,
@@ -57,20 +57,20 @@ func (suite *ParamTestSuite) TestParamValidation() {
 		{
 			"valid",
 			args{
-				usdxMintingRewardPeriods: types.RewardPeriods{types.NewRewardPeriod(
+				jpyxMintingRewardPeriods: incentivetypes.RewardPeriods{incentivetypes.NewRewardPeriod(
 					true, "bnb-a", time.Date(2020, 10, 15, 14, 0, 0, 0, time.UTC), time.Date(2024, 10, 15, 14, 0, 0, 0, time.UTC),
-					sdk.NewCoin(types.USDXMintingRewardDenom, sdk.NewInt(122354)))},
-				multipliers: types.Multipliers{
-					types.NewMultiplier(
-						types.Small, 1, sdk.MustNewDecFromStr("0.25"),
+					sdk.NewCoin(incentivetypes.JpyxMintingRewardDenom, sdk.NewInt(122354)))},
+				multipliers: incentivetypes.Multipliers{
+					incentivetypes.NewMultiplier(
+						incentivetypes.Small, 1, sdk.MustNewDecFromStr("0.25"),
 					),
-					types.NewMultiplier(
-						types.Large, 1, sdk.MustNewDecFromStr("1.0"),
+					incentivetypes.NewMultiplier(
+						incentivetypes.Large, 1, sdk.MustNewDecFromStr("1.0"),
 					),
 				},
-				hardSupplyRewardPeriods:    types.DefaultMultiRewardPeriods,
-				hardBorrowRewardPeriods:    types.DefaultMultiRewardPeriods,
-				hardDelegatorRewardPeriods: types.DefaultRewardPeriods,
+				hardSupplyRewardPeriods:    incentivetypes.DefaultMultiRewardPeriods,
+				hardBorrowRewardPeriods:    incentivetypes.DefaultMultiRewardPeriods,
+				hardDelegatorRewardPeriods: incentivetypes.DefaultRewardPeriods,
 				end:                        time.Date(2025, 10, 15, 14, 0, 0, 0, time.UTC),
 			},
 			errArgs{
@@ -82,7 +82,7 @@ func (suite *ParamTestSuite) TestParamValidation() {
 
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
-			params := types.NewParams(tc.args.usdxMintingRewardPeriods, tc.args.hardSupplyRewardPeriods,
+			params := incentivetypes.NewParams(tc.args.jpyxMintingRewardPeriods, tc.args.hardSupplyRewardPeriods,
 				tc.args.hardBorrowRewardPeriods, tc.args.hardDelegatorRewardPeriods, tc.args.multipliers, tc.args.end,
 			)
 			err := params.Validate()
