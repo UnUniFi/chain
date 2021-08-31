@@ -8,11 +8,11 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/kava-labs/kava/x/kavadist/types"
+	jsmndisttypes "github.com/lcnem/jpyx/x/jsmndist/types"
 )
 
 type paramTest struct {
-	params     types.Params
+	params     jsmndisttypes.Params
 	expectPass bool
 }
 
@@ -23,45 +23,45 @@ type ParamTestSuite struct {
 }
 
 func (suite *ParamTestSuite) SetupTest() {
-	p1 := types.Params{
+	p1 := jsmndisttypes.Params{
 		Active: true,
-		Periods: types.Periods{
-			types.Period{
+		Periods: jsmndisttypes.Periods{
+			jsmndisttypes.Period{
 				Start:     time.Date(2020, time.March, 1, 1, 0, 0, 0, time.UTC),
 				End:       time.Date(2021, time.March, 1, 1, 0, 0, 0, time.UTC),
 				Inflation: sdk.MustNewDecFromStr("1.000000003022265980"),
 			},
-			types.Period{
+			jsmndisttypes.Period{
 				Start:     time.Date(2021, time.March, 1, 1, 0, 0, 0, time.UTC),
 				End:       time.Date(2022, time.March, 1, 1, 0, 0, 0, time.UTC),
 				Inflation: sdk.MustNewDecFromStr("1.000000003022265980"),
 			},
 		},
 	}
-	p2 := types.Params{
+	p2 := jsmndisttypes.Params{
 		Active: true,
-		Periods: types.Periods{
-			types.Period{
+		Periods: jsmndisttypes.Periods{
+			jsmndisttypes.Period{
 				Start:     time.Date(2022, time.March, 1, 1, 0, 0, 0, time.UTC),
 				End:       time.Date(2021, time.March, 1, 1, 0, 0, 0, time.UTC),
 				Inflation: sdk.MustNewDecFromStr("1.000000003022265980"),
 			},
-			types.Period{
+			jsmndisttypes.Period{
 				Start:     time.Date(2023, time.March, 1, 1, 0, 0, 0, time.UTC),
 				End:       time.Date(2024, time.March, 1, 1, 0, 0, 0, time.UTC),
 				Inflation: sdk.MustNewDecFromStr("1.000000003022265980"),
 			},
 		},
 	}
-	p3 := types.Params{
+	p3 := jsmndisttypes.Params{
 		Active: true,
-		Periods: types.Periods{
-			types.Period{
+		Periods: jsmndisttypes.Periods{
+			jsmndisttypes.Period{
 				Start:     time.Date(2020, time.March, 1, 1, 0, 0, 0, time.UTC),
 				End:       time.Date(2021, time.March, 1, 1, 0, 0, 0, time.UTC),
 				Inflation: sdk.MustNewDecFromStr("1.000000003022265980"),
 			},
-			types.Period{
+			jsmndisttypes.Period{
 				Start:     time.Date(2020, time.March, 1, 1, 0, 0, 0, time.UTC),
 				End:       time.Date(2022, time.March, 1, 1, 0, 0, 0, time.UTC),
 				Inflation: sdk.MustNewDecFromStr("1.000000003022265980"),
