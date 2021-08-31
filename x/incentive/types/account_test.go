@@ -6,13 +6,13 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth/vesting"
+	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 
-	"github.com/kava-labs/kava/x/incentive/types"
+	incentivetypes "github.com/lcnem/jpyx/x/incentive/types"
 )
 
 type accountTest struct {
-	periods     vesting.Periods
+	periods     vestingtypes.Periods
 	expectedVal int64
 }
 
@@ -25,12 +25,12 @@ type AccountTestSuite struct {
 func (suite *AccountTestSuite) SetupTest() {
 	tests := []accountTest{
 		{
-			periods: vesting.Periods{
-				vesting.Period{
+			periods: vestingtypes.Periods{
+				vestingtypes.Period{
 					Length: int64(100),
 					Amount: sdk.Coins{},
 				},
-				vesting.Period{
+				vestingtypes.Period{
 					Length: int64(200),
 					Amount: sdk.Coins{},
 				},
@@ -43,7 +43,7 @@ func (suite *AccountTestSuite) SetupTest() {
 
 func (suite *AccountTestSuite) TestGetTotalPeriodLength() {
 	for _, t := range suite.tests {
-		length := types.GetTotalVestingPeriodLength(t.periods)
+		length := incentivetypes.GetTotalVestingPeriodLength(t.periods)
 		suite.Equal(t.expectedVal, length)
 	}
 }
