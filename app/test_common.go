@@ -1,6 +1,7 @@
 package app
 
 import (
+	"encoding/json"
 	"math/rand"
 	"testing"
 	"time"
@@ -11,15 +12,14 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
+	simapp "github.com/cosmos/cosmos-sdk/simapp"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
@@ -65,7 +65,7 @@ func NewTestApp() TestApp {
 
 	db := tmdb.NewMemDB()
 
-	tApp := New(log.NewNopLogger(), db, nil, true, map[int64]bool{}, "" /* cast.ToString(appOpts.Get(flags.FlagHome)) */, 0, MakeEncodingConfig() /* a.encCfg */, nil /* Todo: Need to fix here appOpts */)
+	tApp := New(log.NewNopLogger(), db, nil, true, map[int64]bool{}, "" /* cast.ToString(appOpts.Get(flags.FlagHome)) */, 0, MakeEncodingConfig() /* a.encCfg */, simapp.EmptyAppOptions{})
 	return TestApp{App: *tApp}
 }
 
@@ -107,7 +107,8 @@ func (tApp TestApp) InitializeFromGenesisStates(genesisStates ...GenesisState) T
 	}
 
 	// Initialize the chain
-	stateBytes, err := codec.MarshalJSONIndent(tApp.cdc, genesisState)
+	// stateBytes, err := codec.MarshalJSONIndent(tApp.cdc, genesisState)
+	stateBytes, err := json.MarshalIndent(genesisState, "", "  ")
 	if err != nil {
 		panic(err)
 	}
@@ -133,7 +134,8 @@ func (tApp TestApp) InitializeFromGenesisStatesWithTime(genTime time.Time, genes
 	}
 
 	// Initialize the chain
-	stateBytes, err := codec.MarshalJSONIndent(tApp.cdc, genesisState)
+	// stateBytes, err := codec.MarshalJSONIndent(tApp.cdc, genesisState)
+	stateBytes, err := json.MarshalIndent(genesisState, "", "  ")
 	if err != nil {
 		panic(err)
 	}
@@ -160,7 +162,8 @@ func (tApp TestApp) InitializeFromGenesisStatesWithTimeAndChainID(genTime time.T
 	}
 
 	// Initialize the chain
-	stateBytes, err := codec.MarshalJSONIndent(tApp.cdc, genesisState)
+	// stateBytes, err := codec.MarshalJSONIndent(tApp.cdc, genesisState)
+	stateBytes, err := json.MarshalIndent(genesisState, "", "  ")
 	if err != nil {
 		panic(err)
 	}
@@ -191,17 +194,16 @@ func NewAuthGenState(addresses []sdk.AccAddress, coins []sdk.Coins) GenesisState
 		accounts = append(accounts, authtypes.NewBaseAccountWithAddress(addresses[i]))
 	}
 	// Create the auth genesis state
-	authGenesis := authtypes.DefaultGenesisState() /* auth.NewGenesisState(auth.DefaultParams(), accounts)*/
+	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), accounts)
 	// Create the bank genesis state
 	bankGenesis := banktypes.DefaultGenesisState()
 	for i := range addresses {
-		bankGenesis.Balances = append(bankGenesis.Balances, banktypes.Balance{addresses[i].String(), coins[i]})
+		bankGenesis.Balances = append(bankGenesis.Balances, banktypes.Balance{Address: addresses[i].String(), Coins: coins[i]})
 	}
 	return GenesisState{authtypes.ModuleName: authtypes.ModuleCdc.MustMarshalJSON(authGenesis), banktypes.ModuleName: banktypes.ModuleCdc.MustMarshalJSON(bankGenesis)}
 }
 
-// GeneratePrivKeyAddressPairsFromRand generates (deterministically) a total of n private keys and addresses.
-// TODO only generate secp256 keys?
+// GeneratePrivKeyAddressPairsFromRand generates (deterministically) a total of n secp256k1 private keys and addresses.
 func GeneratePrivKeyAddressPairs(n int) (keys []crypto.PrivKey, addrs []sdk.AccAddress) {
 	r := rand.New(rand.NewSource(12345)) // make the generation deterministic
 	keys = make([]crypto.PrivKey, n)
@@ -212,11 +214,7 @@ func GeneratePrivKeyAddressPairs(n int) (keys []crypto.PrivKey, addrs []sdk.AccA
 		if err != nil {
 			panic("Could not read randomness")
 		}
-		if r.Int63()%2 == 0 {
-			keys[i] = secp256k1.GenPrivKeySecp256k1(secret)
-		} else {
-			keys[i] = ed25519.GenPrivKeyFromSecret(secret)
-		}
+		keys[i] = secp256k1.GenPrivKeySecp256k1(secret)
 		addrs[i] = sdk.AccAddress(keys[i].PubKey().Address())
 	}
 	return
