@@ -21,12 +21,12 @@ const (
 	TestDebtAmount2         = 15
 	TestExtraEndTime        = 10000
 	TestAuctionID           = 9999123
-	testAccAddress1         = "jpyx1qcfdf69js922qrdr4yaww3ax7gjml6pd39p8lj"
-	testAccAddress2         = "jpyx1pdfav2cjhry9k79nu6r8kgknnjtq6a7rcr0qlr"
+	testAccAddress1         = "jpyx1307tjx6dle4uha9ngk4w7986700j58kqwypzlx"
+	testAccAddress2         = "jpyx1n5vcu4lk0jr5fl4r6324pwp9e7ft937csc9kt4"
 )
 
 func init() {
-	sdk.GetConfig().SetBech32PrefixForAccount("jsmn", "jpyx"+sdk.PrefixPublic)
+	sdk.GetConfig().SetBech32PrefixForAccount("jpyx", "jpyx"+sdk.PrefixPublic)
 }
 
 func d(amount string) sdk.Dec               { return sdk.MustNewDecFromStr(amount) }
@@ -91,7 +91,7 @@ func TestNewWeightedAddresses(t *testing.T) {
 
 		if tc.expPass {
 			require.NoError(t, err)
-			require.Equal(t, tc.addresses, weightedAddresses.Addresses)
+			require.Equal(t, tc.addresses, jpyxtypes.AccAddresses(weightedAddresses.Addresses))
 			require.Equal(t, tc.weights, weightedAddresses.Weights)
 		} else {
 			require.Error(t, err)
