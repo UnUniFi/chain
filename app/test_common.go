@@ -16,6 +16,7 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
+	simapp "github.com/cosmos/cosmos-sdk/simapp"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
@@ -64,7 +65,7 @@ func NewTestApp() TestApp {
 
 	db := tmdb.NewMemDB()
 
-	tApp := New(log.NewNopLogger(), db, nil, true, map[int64]bool{}, "" /* cast.ToString(appOpts.Get(flags.FlagHome)) */, 0, MakeEncodingConfig() /* a.encCfg */, nil /* Todo: Need to fix here appOpts */)
+	tApp := New(log.NewNopLogger(), db, nil, true, map[int64]bool{}, "" /* cast.ToString(appOpts.Get(flags.FlagHome)) */, 0, MakeEncodingConfig() /* a.encCfg */, simapp.EmptyAppOptions{})
 	return TestApp{App: *tApp}
 }
 
