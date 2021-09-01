@@ -50,7 +50,7 @@ func (suite *ModuleTestSuite) SetupTest() {
 	_, addrs := app.GeneratePrivKeyAddressPairs(100)
 
 	authGS := app.NewAuthGenState(
-		addrs, coins)
+		tApp, addrs, coins)
 	tApp.InitializeFromGenesisStates(
 		authGS,
 		NewPricefeedGenStateMulti(),
@@ -77,7 +77,7 @@ func (suite *ModuleTestSuite) createCdps() {
 	}
 
 	authGS := app.NewAuthGenState(
-		addrs, coins)
+		tApp, addrs, coins)
 	tApp.InitializeFromGenesisStates(
 		authGS,
 		NewPricefeedGenStateMulti(),

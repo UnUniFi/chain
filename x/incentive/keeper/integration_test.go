@@ -181,7 +181,7 @@ func NewHardGenStateMulti() app.GenesisState {
 }
 */
 
-func NewAuthGenState(addresses []sdk.AccAddress, coins sdk.Coins) app.GenesisState {
+func NewAuthGenState(tApp app.TestApp, addresses []sdk.AccAddress, coins sdk.Coins) app.GenesisState {
 	coinsList := []sdk.Coins{}
 	for range addresses {
 		coinsList = append(coinsList, coins)
@@ -198,7 +198,7 @@ func NewAuthGenState(addresses []sdk.AccAddress, coins sdk.Coins) app.GenesisSta
 		)
 	}
 
-	return app.NewAuthGenState(addresses, coinsList)
+	return app.NewAuthGenState(tApp, addresses, coinsList)
 }
 
 func NewStakingGenesisState() app.GenesisState {
@@ -220,7 +220,7 @@ func (suite *KeeperTestSuite) SetupWithGenState() {
 	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
 
 	tApp.InitializeFromGenesisStates(
-		NewAuthGenState(allAddrs, cs(c("ukava", 5_000_000))),
+		NewAuthGenState(tApp, allAddrs, cs(c("ukava", 5_000_000))),
 		NewStakingGenesisState(),
 		NewPricefeedGenStateMulti(),
 		NewCDPGenStateMulti(),
