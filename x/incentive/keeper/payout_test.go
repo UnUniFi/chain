@@ -745,6 +745,7 @@ func (suite *KeeperTestSuite) SetupWithAccountState() {
 	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: time.Unix(100, 0)})
 	_, addrs := app.GeneratePrivKeyAddressPairs(4)
 	authGS := app.NewAuthGenState(
+		tApp, 
 		addrs,
 		[]sdk.Coins{
 			cs(c("ukava", 400)),

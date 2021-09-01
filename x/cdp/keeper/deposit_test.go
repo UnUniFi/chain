@@ -30,6 +30,7 @@ func (suite *DepositTestSuite) SetupTest() {
 	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
 	_, addrs := app.GeneratePrivKeyAddressPairs(10)
 	authGS := app.NewAuthGenState(
+		tApp,
 		addrs[0:2],
 		[]sdk.Coins{
 			cs(c("xrp", 500000000), c("btc", 500000000)),
