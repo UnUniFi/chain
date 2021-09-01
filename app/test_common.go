@@ -20,6 +20,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
+	codec "github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
@@ -61,7 +62,7 @@ func NewTestApp() TestApp {
 	config.SetBech32PrefixForAccount(AccountAddressPrefix, AccountPubKeyPrefix)
 	config.SetBech32PrefixForValidator(ValidatorAddressPrefix, ValidatorPubKeyPrefix)
 	config.SetBech32PrefixForConsensusNode(ConsNodeAddressPrefix, ConsNodePubKeyPrefix)
-	config.Seal()
+	// config.Seal()
 
 	db := tmdb.NewMemDB()
 
@@ -107,8 +108,8 @@ func (tApp TestApp) InitializeFromGenesisStates(genesisStates ...GenesisState) T
 	}
 
 	// Initialize the chain
-	// stateBytes, err := codec.MarshalJSONIndent(tApp.cdc, genesisState)
-	stateBytes, err := json.MarshalIndent(genesisState, "", "  ")
+	stateBytes, err := codec.MarshalJSONIndent(tApp.cdc, genesisState)
+	// stateBytes, err := json.MarshalIndent(genesisState, "", "  ")
 	if err != nil {
 		panic(err)
 	}
@@ -187,7 +188,7 @@ func (tApp TestApp) CheckBalance(t *testing.T, ctx sdk.Context, owner sdk.AccAdd
 }
 
 // Create a new auth genesis state from some addresses and coins. The state is returned marshalled into a map.
-func NewAuthGenState(addresses []sdk.AccAddress, coins []sdk.Coins) GenesisState {
+func NewAuthGenState(tApp TestApp, addresses []sdk.AccAddress, coins []sdk.Coins) GenesisState {
 	// Create GenAccounts
 	accounts := authtypes.GenesisAccounts{}
 	for i := range addresses {
@@ -200,7 +201,8 @@ func NewAuthGenState(addresses []sdk.AccAddress, coins []sdk.Coins) GenesisState
 	for i := range addresses {
 		bankGenesis.Balances = append(bankGenesis.Balances, banktypes.Balance{Address: addresses[i].String(), Coins: coins[i]})
 	}
-	return GenesisState{authtypes.ModuleName: authtypes.ModuleCdc.MustMarshalJSON(authGenesis), banktypes.ModuleName: banktypes.ModuleCdc.MustMarshalJSON(bankGenesis)}
+	// return GenesisState{authtypes.ModuleName: authtypes.ModuleCdc.MustMarshalJSON(authGenesis), banktypes.ModuleName: banktypes.ModuleCdc.MustMarshalJSON(bankGenesis)}
+	return GenesisState{authtypes.ModuleName: tApp.appCodec.MustMarshalJSON(authGenesis), banktypes.ModuleName: tApp.appCodec.MustMarshalJSON(bankGenesis)}
 }
 
 // GeneratePrivKeyAddressPairsFromRand generates (deterministically) a total of n secp256k1 private keys and addresses.

@@ -79,7 +79,7 @@ func createCdps(n int) (app.TestApp, sdk.Context, keeper.Keeper) {
 		coins = append(coins, cs(c("btc", 100000000)))
 	}
 	authGS := app.NewAuthGenState(
-		addrs, coins)
+		tApp, addrs, coins)
 	tApp.InitializeFromGenesisStates(
 		authGS,
 		NewPricefeedGenStateMulti(),
@@ -130,7 +130,7 @@ func BenchmarkCdpCreation(b *testing.B) {
 		coins = append(coins, cs(c("btc", 100000000)))
 	}
 	authGS := app.NewAuthGenState(
-		addrs, coins)
+		tApp, addrs, coins)
 	tApp.InitializeFromGenesisStates(
 		authGS,
 		NewPricefeedGenStateMulti(),

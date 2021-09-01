@@ -44,7 +44,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	_, addrs := app.GeneratePrivKeyAddressPairs(1)
 	coins := []sdk.Coins{sdk.NewCoins(sdk.NewCoin("ukava", sdk.NewInt(1000000000000)))}
 	authGS := app.NewAuthGenState(
-		addrs, coins)
+		tApp, addrs, coins)
 
 	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
 
