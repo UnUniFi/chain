@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "editorconfig.editorconfig",
+    "davidanson.vscode-markdownlint",
+    "docsmsft.docs-markdown",
+    "docsmsft.docs-yaml",
+    "ms-vsliveshare.vsliveshare",
+    "golang.go"
+  ]
+}
