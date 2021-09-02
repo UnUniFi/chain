@@ -29,7 +29,7 @@ func TestKeeper_BeginBlocker(t *testing.T) {
 	sk := tApp.GetBankKeeper()
 	ctx := tApp.NewContext(true, tmproto.Header{})
 
-	// sellerAcc := authtypes.NewEmptyModuleAccount(sellerModName)
+	sellerAcc := authtypes.NewEmptyModuleAccount(sellerModName)
 	// require.NoError(t, sellerAcc.SetCoins(cs(c("token1", 100), c("token2", 100), c("debt", 100))))
 	require.NoError(t, sk.SetBalances(ctx, sellerAddr, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
 	tApp.InitializeFromGenesisStates(
@@ -38,7 +38,7 @@ func TestKeeper_BeginBlocker(t *testing.T) {
 		// 	sellerAcc,
 		// }),
 		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
-		app.NewAuthGenStateModAcc(tApp, []sdk.AccAddress{sellerAddr}, []sdk.Coins{{}}, []string{sellerModName}),
+		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{sellerAcc}, []sdk.Coins{{}}),
 	)
 
 	keeper := tApp.GetAuctionKeeper()
