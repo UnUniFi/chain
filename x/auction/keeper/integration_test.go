@@ -18,7 +18,7 @@ func is(ns ...int64) (is []sdk.Int) {
 	return
 }
 
-func NewAuthGenStateFromAccs(accounts authtypes.GenesisAccounts) app.GenesisState {
+func NewAuthGenStateFromAccs(tApp app.TestApp, accounts authtypes.GenesisAccounts) app.GenesisState {
 	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), accounts)
-	return app.GenesisState{authtypes.ModuleName: authtypes.ModuleCdc.MustMarshalJSON(authGenesis)}
+	return app.GenesisState{authtypes.ModuleName: tApp.AppCodec().MustMarshalJSON(authGenesis)}
 }
