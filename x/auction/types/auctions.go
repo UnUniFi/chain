@@ -10,7 +10,7 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	proto "github.com/gogo/protobuf/proto"
+	"github.com/gogo/protobuf/proto"
 	jpyx "github.com/lcnem/jpyx/types"
 )
 
@@ -64,6 +64,26 @@ func PackAuctions(auctions Auctions) ([]*codectypes.Any, error) {
 	return auctionAny, nil
 }
 
+func UnpackAuction(auctionAny *types.Any) (Auction, error) {
+	switch auctionAny.TypeUrl {
+	case "/" + proto.MessageName(&SurplusAuction{}):
+		var auction SurplusAuction
+		auction.Unmarshal(auctionAny.Value)
+		return &auction, nil
+	case "/" + proto.MessageName(&DebtAuction{}):
+		var auction DebtAuction
+		auction.Unmarshal(auctionAny.Value)
+		return &auction, nil
+	case "/" + proto.MessageName(&CollateralAuction{}):
+		var auction CollateralAuction
+		auction.Unmarshal(auctionAny.Value)
+		return &auction, nil
+	default:
+		return nil, fmt.Errorf("this Any doesn't have Auction value")
+	}
+}
+
+// caution: only for test
 func UnpackAuctions(auctionsAny []*types.Any) (Auctions, error) {
 	accounts := make(Auctions, len(auctionsAny))
 	for i, any := range auctionsAny {

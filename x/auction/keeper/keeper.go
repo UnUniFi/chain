@@ -172,7 +172,9 @@ func (k Keeper) IterateAuctions(ctx sdk.Context, cb func(auction types.Auction) 
 		var auctionAny codectypes.Any
 		auctionAny.Unmarshal(iterator.Value())
 
-		if cb(auctionAny.GetCachedValue().(types.Auction)) {
+		auction, _ := types.UnpackAuction(&auctionAny)
+
+		if cb(auction) {
 			break
 		}
 	}
