@@ -34,7 +34,7 @@ func TestSurplusAuctionBasic(t *testing.T) {
 		// 	authtypes.NewBaseAccount(buyer, cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
 		// 	sellerAcc,
 		// }),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer, sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), sdk.Coins{}}),
+		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer, sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), {}}),
 	)
 
 	keeper := tApp.GetAuctionKeeper()
@@ -77,11 +77,11 @@ func TestDebtAuctionBasic(t *testing.T) {
 	// buyerAcc := authtypes.NewEmptyModuleAccount(buyerModName, authtypes.Minter) // reverse auctions mint payout
 	require.NoError(t, sk.SetBalances(ctx, buyerAddr, cs(c("debt", 100))))
 	tApp.InitializeFromGenesisStates(
-		// NewAuthGenStateFromAccs(authtypes.GenesisAccounts{
+		// zNewAuthGenStateFromAccs(authtypes.GenesisAccounts{
 		// 	authtypes.NewBaseAccount(seller, cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
 		// 	buyerAcc,
 		// }),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{seller, buyerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), sdk.Coins{}}),
+		app.NewAuthGenState(tApp, []sdk.AccAddress{seller, buyerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), {}}),
 	)
 	keeper := tApp.GetAuctionKeeper()
 
@@ -123,7 +123,7 @@ func TestDebtAuctionDebtRemaining(t *testing.T) {
 		// 	authtypes.NewBaseAccount(seller, cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
 		// 	buyerAcc,
 		// }),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{seller, buyerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), sdk.Coins{}}),
+		app.NewAuthGenState(tApp, []sdk.AccAddress{seller, buyerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), {}}),
 	)
 	keeper := tApp.GetAuctionKeeper()
 
@@ -172,10 +172,10 @@ func TestCollateralAuctionBasic(t *testing.T) {
 		// 	authtypes.NewBaseAccount(returnAddrs[2], cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
 		// 	sellerAcc,
 		// }),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer, sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), sdk.Coins{}}),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[0], sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), sdk.Coins{}}),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[1], sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), sdk.Coins{}}),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[2], sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), sdk.Coins{}}),
+		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer, sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), {}}),
+		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[0], sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), {}}),
+		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[1], sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), {}}),
+		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[2], sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), {}}),
 	)
 	keeper := tApp.GetAuctionKeeper()
 
@@ -237,10 +237,10 @@ func TestCollateralAuctionDebtRemaining(t *testing.T) {
 		// 	authtypes.NewBaseAccount(returnAddrs[2], cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
 		// 	sellerAcc,
 		// }),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer, sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), sdk.Coins{}}),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[0], sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), sdk.Coins{}}),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[1], sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), sdk.Coins{}}),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[2], sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), sdk.Coins{}}),
+		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer, sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), {}}),
+		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[0], sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), {}}),
+		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[1], sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), {}}),
+		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[2], sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), {}}),
 	)
 	keeper := tApp.GetAuctionKeeper()
 
@@ -392,7 +392,7 @@ func TestCloseAuction(t *testing.T) {
 		// 	authtypes.NewBaseAccount(buyer, cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
 		// 	sellerAcc,
 		// }),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer, sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), sdk.Coins{}}),
+		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer, sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), {}}),
 	)
 	keeper := tApp.GetAuctionKeeper()
 
@@ -426,7 +426,7 @@ func TestCloseExpiredAuctions(t *testing.T) {
 		// 	authtypes.NewBaseAccount(buyer, cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
 		// 	sellerAcc,
 		// }),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer, sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), sdk.Coins{}}),
+		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer, sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), {}}),
 	)
 	keeper := tApp.GetAuctionKeeper()
 
