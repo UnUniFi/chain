@@ -186,7 +186,8 @@ func (suite *DrawTestSuite) TestModuleAccountFailure() {
 		ctx := suite.ctx.WithBlockHeader(suite.ctx.BlockHeader())
 		ak := suite.app.GetAccountKeeper()
 		acc := ak.GetModuleAccount(ctx, types.ModuleName)
-		ak.RemoveAccount(ctx, acc)
+		bk := suite.app.GetBankKeeper()
+		bk.BurnCoins(ctx, types.ModuleName, bk.GetAllBalances(ctx, acc.GetAddress()))
 		suite.keeper.RepayPrincipal(ctx, suite.addrs[0], "xrp-a", c("usdx", 10000000))
 	})
 }
