@@ -161,7 +161,7 @@ func (suite *SeizeTestSuite) TestSeizeCollateralMultiDeposit() {
 	suite.NoError(err)
 	cdp, found = suite.keeper.GetCdp(suite.ctx, "xrp-a", uint64(2))
 	suite.True(found)
-	deposits := suite.keeper.GetDeposits(suite.ctx, cdptypes.DefaultCdpStartingID)
+	deposits := suite.keeper.GetDeposits(suite.ctx, cdp.Id)
 	suite.Equal(2, len(deposits))
 	p := cdp.Principal.Amount
 	cl := cdp.Collateral.Amount
