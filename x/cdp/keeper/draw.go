@@ -191,10 +191,6 @@ func (k Keeper) ValidatePaymentCoins(ctx sdk.Context, cdp types.Cdp, payment sdk
 func (k Keeper) ReturnCollateral(ctx sdk.Context, cdp types.Cdp) {
 	deposits := k.GetDeposits(ctx, cdp.Id)
 	for _, deposit := range deposits {
-		hoge, _ := k.bankKeeper.GetAllBalances(ctx, k.accountKeeper.GetModuleAddress(types.ModuleName)).MarshalJSON()
-		fmt.Println(string(hoge))
-		hoge, _ = k.bankKeeper.GetAllBalances(ctx, deposit.Depositor.AccAddress()).MarshalJSON()
-		fmt.Println(string(hoge))
 		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, deposit.Depositor.AccAddress(), sdk.NewCoins(deposit.Amount))
 		if err != nil {
 			panic(err)
