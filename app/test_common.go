@@ -20,7 +20,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	codec "github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
@@ -108,8 +107,8 @@ func (tApp TestApp) InitializeFromGenesisStates(genesisStates ...GenesisState) T
 	}
 
 	// Initialize the chain
-	stateBytes, err := codec.MarshalJSONIndent(tApp.cdc, genesisState)
-	// stateBytes, err := json.MarshalIndent(genesisState, "", "  ")
+	// stateBytes, err := codec.MarshalJSONIndent(tApp.cdc, genesisState)
+	stateBytes, err := json.MarshalIndent(genesisState, "", "  ")
 	if err != nil {
 		panic(err)
 	}
@@ -193,6 +192,24 @@ func NewAuthGenState(tApp TestApp, addresses []sdk.AccAddress, coins []sdk.Coins
 	accounts := authtypes.GenesisAccounts{}
 	for i := range addresses {
 		accounts = append(accounts, authtypes.NewBaseAccountWithAddress(addresses[i]))
+	}
+	// Create the auth genesis state
+	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), accounts)
+	// Create the bank genesis state
+	bankGenesis := banktypes.DefaultGenesisState()
+	for i := range addresses {
+		bankGenesis.Balances = append(bankGenesis.Balances, banktypes.Balance{Address: addresses[i].String(), Coins: coins[i]})
+	}
+	// return GenesisState{authtypes.ModuleName: authtypes.ModuleCdc.MustMarshalJSON(authGenesis), banktypes.ModuleName: banktypes.ModuleCdc.MustMarshalJSON(bankGenesis)}
+	return GenesisState{authtypes.ModuleName: tApp.appCodec.MustMarshalJSON(authGenesis), banktypes.ModuleName: tApp.appCodec.MustMarshalJSON(bankGenesis)}
+}
+
+// Create a new auth genesis state from some addresses and coins. The state is returned marshalled into a map.
+func NewAuthGenStateModAcc(tApp TestApp, addresses []sdk.AccAddress, coins []sdk.Coins, moduleName []string) GenesisState {
+	// Create GenAccounts
+	accounts := authtypes.GenesisAccounts{}
+	for i := range addresses {
+		accounts = append(accounts, authtypes.NewModuleAccount(authtypes.NewBaseAccountWithAddress(addresses[i]), moduleName[i], authtypes.Minter))
 	}
 	// Create the auth genesis state
 	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), accounts)

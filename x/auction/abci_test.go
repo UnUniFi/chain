@@ -37,7 +37,8 @@ func TestKeeper_BeginBlocker(t *testing.T) {
 		// 	auth.NewBaseAccount(buyer, cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
 		// 	sellerAcc,
 		// }),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer, sellerAddr}, []sdk.Coins{cs(c("token1", 100), c("token2", 100)), sdk.Coins{}}),
+		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
+		app.NewAuthGenStateModAcc(tApp, []sdk.AccAddress{sellerAddr}, []sdk.Coins{{}}, []string{sellerModName}),
 	)
 
 	keeper := tApp.GetAuctionKeeper()
