@@ -82,8 +82,8 @@ func createCdps(n int) (app.TestApp, sdk.Context, keeper.Keeper) {
 		tApp, addrs, coins)
 	tApp.InitializeFromGenesisStates(
 		authGS,
-		NewPricefeedGenStateMulti(),
-		NewCDPGenStateMulti(),
+		NewPricefeedGenStateMulti(tApp),
+		NewCDPGenStateMulti(tApp),
 	)
 	cdpKeeper := tApp.GetCDPKeeper()
 	for i := 0; i < n; i++ {
@@ -133,8 +133,8 @@ func BenchmarkCdpCreation(b *testing.B) {
 		tApp, addrs, coins)
 	tApp.InitializeFromGenesisStates(
 		authGS,
-		NewPricefeedGenStateMulti(),
-		NewCDPGenStateMulti(),
+		NewPricefeedGenStateMulti(tApp),
+		NewCDPGenStateMulti(tApp),
 	)
 	cdpKeeper := tApp.GetCDPKeeper()
 	b.ResetTimer()

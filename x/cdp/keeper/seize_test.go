@@ -53,8 +53,8 @@ func (suite *SeizeTestSuite) SetupTest() {
 		tApp, addrs, coins)
 	tApp.InitializeFromGenesisStates(
 		authGS,
-		NewPricefeedGenStateMulti(),
-		NewCDPGenStateMulti(),
+		NewPricefeedGenStateMulti(tApp),
+		NewCDPGenStateMulti(tApp),
 	)
 	suite.ctx = ctx
 	suite.app = tApp
@@ -80,8 +80,8 @@ func (suite *SeizeTestSuite) createCdps() {
 		tApp, addrs, coins)
 	tApp.InitializeFromGenesisStates(
 		authGS,
-		NewPricefeedGenStateMulti(),
-		NewCDPGenStateMulti(),
+		NewPricefeedGenStateMulti(tApp),
+		NewCDPGenStateMulti(tApp),
 	)
 
 	suite.ctx = ctx
@@ -193,7 +193,9 @@ func (suite *SeizeTestSuite) TestLiquidateCdps() {
 	suite.keeper.LiquidateCdps(suite.ctx, "xrp:jpy", "xrp-a", p.LiquidationRatio, p.CheckCollateralizationIndexCount)
 	acc = ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
 	finalXrpCollateral := sk.GetBalance(suite.ctx, acc.GetAddress(), "xrp").Amount
+	fmt.Println(finalXrpCollateral)
 	seizedXrpCollateral := originalXrpCollateral.Sub(finalXrpCollateral)
+	fmt.Println(seizedXrpCollateral)
 	xrpLiquidations := int(seizedXrpCollateral.Quo(i(10000000000)).Int64())
 	fmt.Println(xrpLiquidations)
 	suite.Equal(10 /*len(suite.liquidations.xrp)*/, xrpLiquidations)
