@@ -165,10 +165,10 @@ func (suite *GenesisTestSuite) TestValidGenState() {
 
 	cdpGS := NewCDPGenStateMulti(tApp)
 	gs := cdptypes.GenesisState{}
-	cdptypes.ModuleCdc.UnmarshalJSON(cdpGS["cdp"], &gs)
+	tApp.AppCodec().MustUnmarshalJSON(cdpGS["cdp"], &gs)
 	gs.Cdps = cdps()
 	gs.StartingCdpId = uint64(5)
-	appGS := app.GenesisState{"cdp": cdptypes.ModuleCdc.MustMarshalJSON(&gs)}
+	appGS := app.GenesisState{"cdp": tApp.AppCodec().MustMarshalJSON(&gs)}
 	suite.NotPanics(func() {
 		tApp.InitializeFromGenesisStates(
 			NewPricefeedGenStateMulti(tApp),
