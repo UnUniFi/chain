@@ -181,9 +181,9 @@ func (tApp TestApp) InitializeFromGenesisStatesWithTimeAndChainID(genTime time.T
 }
 
 func (tApp TestApp) CheckBalance(t *testing.T, ctx sdk.Context, owner sdk.AccAddress, expectedCoins sdk.Coins) {
-	acc := tApp.GetAccountKeeper().GetAccount(ctx, owner)
-	require.NotNilf(t, acc, "account with address '%s' doesn't exist", owner)
-	require.Equal(t, expectedCoins, tApp.GetBankKeeper().GetAllBalances(ctx, acc.GetAddress()))
+	// acc := tApp.GetAccountKeeper().GetAccount(ctx, owner)
+	// require.NotNilf(t, acc, "account with address '%s' doesn't exist", owner)
+	require.Equal(t, expectedCoins, tApp.GetBankKeeper().GetAllBalances(ctx, owner))
 }
 
 // Create a new auth genesis state from some addresses and coins. The state is returned marshalled into a map.
