@@ -139,7 +139,7 @@ func (suite *KeeperTestSuite) TestPayoutJpyxMintingClaim() {
 				if tc.args.isPeriodicVestingAccount {
 					vacc, ok := acc.(*vestingtypes.PeriodicVestingAccount)
 					suite.Require().True(ok)
-					suite.Require().Equal(tc.args.expectedPeriods, vacc.VestingPeriods)
+					suite.Require().Equal(tc.args.expectedPeriods, vestingtypes.Periods(vacc.VestingPeriods))
 				}
 
 				claim, found := suite.keeper.GetJpyxMintingClaim(suite.ctx, suite.addrs[0])
@@ -418,7 +418,7 @@ func (suite *KeeperTestSuite) TestPayoutHardLiquidityProviderClaim() {
 				if tc.args.isPeriodicVestingAccount {
 					vacc, ok := postClaimAcc.(*vestingtypes.PeriodicVestingAccount)
 					suite.Require().True(ok)
-					suite.Require().Equal(tc.args.expectedPeriods, vacc.VestingPeriods)
+					suite.Require().Equal(tc.args.expectedPeriods, vestingtypes.Periods(vacc.VestingPeriods))
 				}
 
 				/*
@@ -702,7 +702,7 @@ func (suite *KeeperTestSuite) TestSendCoinsToPeriodicVestingAccount() {
 				acc := suite.getAccount(pva.GetAddress())
 				vacc, ok := acc.(*vestingtypes.PeriodicVestingAccount)
 				suite.Require().True(ok)
-				suite.Require().Equal(tc.args.expectedPeriods, vacc.VestingPeriods)
+				suite.Require().Equal(tc.args.expectedPeriods, vestingtypes.Periods(vacc.VestingPeriods))
 				suite.Require().Equal(tc.args.expectedStartTime, vacc.StartTime)
 				suite.Require().Equal(tc.args.expectedEndTime, vacc.EndTime)
 			}
@@ -722,7 +722,7 @@ func (suite *KeeperTestSuite) TestSendCoinsToBaseAccount() {
 		vestingtypes.Period{Length: int64(5), Amount: cs(c("ujsmn", 100))},
 	}
 	bk := suite.app.GetBankKeeper()
-	suite.Equal(expectedPeriods, vacc.VestingPeriods)
+	suite.Equal(expectedPeriods, vestingtypes.Periods(vacc.VestingPeriods))
 	suite.Equal(cs(c("ujsmn", 100)), vacc.OriginalVesting)
 	suite.Equal(cs(c("ujsmn", 500)), bk.GetAllBalances(suite.ctx, vacc.GetAddress()))
 	suite.Equal(int64(105), vacc.EndTime)
