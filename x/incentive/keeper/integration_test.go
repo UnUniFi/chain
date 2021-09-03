@@ -18,7 +18,7 @@ import (
 func NewCDPGenStateMulti() app.GenesisState {
 	cdpGenesis := cdptypes.GenesisState{
 		Params: cdptypes.Params{
-			GlobalDebtLimit:         sdk.NewInt64Coin("usdx", 2000000000000),
+			GlobalDebtLimit:         sdk.NewInt64Coin("jpyx", 2000000000000),
 			SurplusAuctionThreshold: cdptypes.DefaultSurplusThreshold,
 			SurplusAuctionLot:       cdptypes.DefaultSurplusLot,
 			DebtAuctionThreshold:    cdptypes.DefaultDebtThreshold,
@@ -28,58 +28,58 @@ func NewCDPGenStateMulti() app.GenesisState {
 					Denom:               "xrp",
 					Type:                "xrp-a",
 					LiquidationRatio:    sdk.MustNewDecFromStr("2.0"),
-					DebtLimit:           sdk.NewInt64Coin("usdx", 500000000000),
+					DebtLimit:           sdk.NewInt64Coin("jpyx", 500000000000),
 					StabilityFee:        sdk.MustNewDecFromStr("1.000000001547125958"), // %5 apr
 					LiquidationPenalty:  d("0.05"),
 					AuctionSize:         i(7000000000),
 					Prefix:              0x20,
-					SpotMarketId:        "xrp:usd",
-					LiquidationMarketId: "xrp:usd",
+					SpotMarketId:        "xrp:jpy",
+					LiquidationMarketId: "xrp:jpy",
 					ConversionFactor:    i(6),
 				},
 				{
 					Denom:               "btc",
 					Type:                "btc-a",
 					LiquidationRatio:    sdk.MustNewDecFromStr("1.5"),
-					DebtLimit:           sdk.NewInt64Coin("usdx", 500000000000),
+					DebtLimit:           sdk.NewInt64Coin("jpyx", 500000000000),
 					StabilityFee:        sdk.MustNewDecFromStr("1.000000000782997609"), // %2.5 apr
 					LiquidationPenalty:  d("0.025"),
 					AuctionSize:         i(10000000),
 					Prefix:              0x21,
-					SpotMarketId:        "btc:usd",
-					LiquidationMarketId: "btc:usd",
+					SpotMarketId:        "btc:jpy",
+					LiquidationMarketId: "btc:jpy",
 					ConversionFactor:    i(8),
 				},
 				{
 					Denom:               "bnb",
 					Type:                "bnb-a",
 					LiquidationRatio:    sdk.MustNewDecFromStr("1.5"),
-					DebtLimit:           sdk.NewInt64Coin("usdx", 500000000000),
+					DebtLimit:           sdk.NewInt64Coin("jpyx", 500000000000),
 					StabilityFee:        sdk.MustNewDecFromStr("1.000000001547125958"), // %5 apr
 					LiquidationPenalty:  d("0.05"),
 					AuctionSize:         i(50000000000),
 					Prefix:              0x22,
-					SpotMarketId:        "bnb:usd",
-					LiquidationMarketId: "bnb:usd",
+					SpotMarketId:        "bnb:jpy",
+					LiquidationMarketId: "bnb:jpy",
 					ConversionFactor:    i(8),
 				},
 				{
-					Denom:               "busd",
-					Type:                "busd-a",
+					Denom:               "bjpy",
+					Type:                "bjpy-a",
 					LiquidationRatio:    d("1.01"),
-					DebtLimit:           sdk.NewInt64Coin("usdx", 500000000000),
+					DebtLimit:           sdk.NewInt64Coin("jpyx", 500000000000),
 					StabilityFee:        sdk.OneDec(), // %0 apr
 					LiquidationPenalty:  d("0.05"),
 					AuctionSize:         i(10000000000),
 					Prefix:              0x23,
-					SpotMarketId:        "busd:usd",
-					LiquidationMarketId: "busd:usd",
+					SpotMarketId:        "bjpy:jpy",
+					LiquidationMarketId: "bjpy:jpy",
 					ConversionFactor:    i(8),
 				},
 			},
 			DebtParam: cdptypes.DebtParam{
-				Denom:            "usdx",
-				ReferenceAsset:   "usd",
+				Denom:            "jpyx",
+				ReferenceAsset:   "jpy",
 				ConversionFactor: i(6),
 				DebtFloor:        i(10000000),
 			},
@@ -91,13 +91,13 @@ func NewCDPGenStateMulti() app.GenesisState {
 		PreviousAccumulationTimes: cdptypes.GenesisAccumulationTimes{
 			cdptypes.NewGenesisAccumulationTime("btc-a", time.Time{}, sdk.OneDec()),
 			cdptypes.NewGenesisAccumulationTime("xrp-a", time.Time{}, sdk.OneDec()),
-			cdptypes.NewGenesisAccumulationTime("busd-a", time.Time{}, sdk.OneDec()),
+			cdptypes.NewGenesisAccumulationTime("bjpy-a", time.Time{}, sdk.OneDec()),
 			cdptypes.NewGenesisAccumulationTime("bnb-a", time.Time{}, sdk.OneDec()),
 		},
 		TotalPrincipals: cdptypes.GenesisTotalPrincipals{
 			cdptypes.NewGenesisTotalPrincipal("btc-a", sdk.ZeroInt()),
 			cdptypes.NewGenesisTotalPrincipal("xrp-a", sdk.ZeroInt()),
-			cdptypes.NewGenesisTotalPrincipal("busd-a", sdk.ZeroInt()),
+			cdptypes.NewGenesisTotalPrincipal("bjpy-a", sdk.ZeroInt()),
 			cdptypes.NewGenesisTotalPrincipal("bnb-a", sdk.ZeroInt()),
 		},
 	}
@@ -108,47 +108,47 @@ func NewPricefeedGenStateMulti() app.GenesisState {
 	pfGenesis := pricefeedtypes.GenesisState{
 		Params: pricefeedtypes.Params{
 			Markets: []pricefeedtypes.Market{
-				{MarketId: "kava:usd", BaseAsset: "kava", QuoteAsset: "usd", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
-				{MarketId: "btc:usd", BaseAsset: "btc", QuoteAsset: "usd", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
-				{MarketId: "xrp:usd", BaseAsset: "xrp", QuoteAsset: "usd", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
-				{MarketId: "bnb:usd", BaseAsset: "bnb", QuoteAsset: "usd", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
-				{MarketId: "busd:usd", BaseAsset: "busd", QuoteAsset: "usd", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
-				{MarketId: "zzz:usd", BaseAsset: "zzz", QuoteAsset: "usd", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
+				{MarketId: "kava:jpy", BaseAsset: "kava", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
+				{MarketId: "btc:jpy", BaseAsset: "btc", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
+				{MarketId: "xrp:jpy", BaseAsset: "xrp", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
+				{MarketId: "bnb:jpy", BaseAsset: "bnb", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
+				{MarketId: "bjpy:jpy", BaseAsset: "bjpy", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
+				{MarketId: "zzz:jpy", BaseAsset: "zzz", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
 			},
 		},
 		PostedPrices: []pricefeedtypes.PostedPrice{
 			{
-				MarketId:      "kava:usd",
+				MarketId:      "kava:jpy",
 				OracleAddress: jpyxtypes.StringAccAddress{},
 				Price:         sdk.MustNewDecFromStr("2.00"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 			{
-				MarketId:      "btc:usd",
+				MarketId:      "btc:jpy",
 				OracleAddress: jpyxtypes.StringAccAddress{},
 				Price:         sdk.MustNewDecFromStr("8000.00"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 			{
-				MarketId:      "xrp:usd",
+				MarketId:      "xrp:jpy",
 				OracleAddress: jpyxtypes.StringAccAddress{},
 				Price:         sdk.MustNewDecFromStr("0.25"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 			{
-				MarketId:      "bnb:usd",
+				MarketId:      "bnb:jpy",
 				OracleAddress: jpyxtypes.StringAccAddress{},
 				Price:         sdk.MustNewDecFromStr("17.25"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 			{
-				MarketId:      "busd:usd",
+				MarketId:      "bjpy:jpy",
 				OracleAddress: jpyxtypes.StringAccAddress{},
 				Price:         sdk.OneDec(),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 			{
-				MarketId:      "zzz:usd",
+				MarketId:      "zzz:jpy",
 				OracleAddress: jpyxtypes.StringAccAddress{},
 				Price:         sdk.MustNewDecFromStr("2.00"),
 				Expiry:        time.Now().Add(1 * time.Hour),
@@ -165,12 +165,12 @@ func NewHardGenStateMulti() app.GenesisState {
 
 	hardGS := hard.NewGenesisState(hard.NewParams(
 		hard.MoneyMarkets{
-			hard.NewMoneyMarket("usdx", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "usdx:usd", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
-			hard.NewMoneyMarket("ukava", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "kava:usd", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
-			hard.NewMoneyMarket("bnb", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "bnb:usd", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
-			hard.NewMoneyMarket("btcb", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "btc:usd", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
-			hard.NewMoneyMarket("xrp", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "xrp:usd", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
-			hard.NewMoneyMarket("zzz", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "zzz:usd", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
+			hard.NewMoneyMarket("jpyx", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "jpyx:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
+			hard.NewMoneyMarket("ujsmn", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "kava:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
+			hard.NewMoneyMarket("bnb", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "bnb:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
+			hard.NewMoneyMarket("btcb", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "btc:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
+			hard.NewMoneyMarket("xrp", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "xrp:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
+			hard.NewMoneyMarket("zzz", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "zzz:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
 		},
 		sdk.NewDec(10),
 	), hard.DefaultAccumulationTimes, hard.DefaultDeposits, hard.DefaultBorrows,
@@ -191,7 +191,7 @@ func NewAuthGenState(tApp app.TestApp, addresses []sdk.AccAddress, coins sdk.Coi
 	if len(addresses) >= 4 {
 		coinsList[3] = sdk.NewCoins(
 			sdk.NewCoin("bnb", sdk.NewInt(1000000000000000)),
-			sdk.NewCoin("ukava", sdk.NewInt(1000000000000000)),
+			sdk.NewCoin("ujsmn", sdk.NewInt(1000000000000000)),
 			sdk.NewCoin("btcb", sdk.NewInt(1000000000000000)),
 			sdk.NewCoin("xrp", sdk.NewInt(1000000000000000)),
 			sdk.NewCoin("zzz", sdk.NewInt(1000000000000000)),
@@ -203,7 +203,7 @@ func NewAuthGenState(tApp app.TestApp, addresses []sdk.AccAddress, coins sdk.Coi
 
 func NewStakingGenesisState() app.GenesisState {
 	genState := stakingtypes.DefaultGenesisState()
-	genState.Params.BondDenom = "ukava"
+	genState.Params.BondDenom = "ujsmn"
 	return app.GenesisState{
 		stakingtypes.ModuleName: stakingtypes.ModuleCdc.MustMarshalJSON(genState),
 	}
@@ -220,7 +220,7 @@ func (suite *KeeperTestSuite) SetupWithGenState() {
 	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
 
 	tApp.InitializeFromGenesisStates(
-		NewAuthGenState(tApp, allAddrs, cs(c("ukava", 5_000_000))),
+		NewAuthGenState(tApp, allAddrs, cs(c("ujsmn", 5_000_000))),
 		NewStakingGenesisState(),
 		NewPricefeedGenStateMulti(),
 		NewCDPGenStateMulti(),
