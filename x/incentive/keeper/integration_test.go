@@ -15,7 +15,7 @@ import (
 	pricefeedtypes "github.com/lcnem/jpyx/x/pricefeed/types"
 )
 
-func NewCDPGenStateMulti() app.GenesisState {
+func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 	cdpGenesis := cdptypes.GenesisState{
 		Params: cdptypes.Params{
 			GlobalDebtLimit:         sdk.NewInt64Coin("jpyx", 2000000000000),
@@ -101,10 +101,10 @@ func NewCDPGenStateMulti() app.GenesisState {
 			cdptypes.NewGenesisTotalPrincipal("bnb-a", sdk.ZeroInt()),
 		},
 	}
-	return app.GenesisState{cdptypes.ModuleName: cdptypes.ModuleCdc.MustMarshalJSON(&cdpGenesis)}
+	return app.GenesisState{cdptypes.ModuleName: tApp.AppCodec().MustMarshalJSON(&cdpGenesis)}
 }
 
-func NewPricefeedGenStateMulti() app.GenesisState {
+func NewPricefeedGenStateMulti(tApp app.TestApp) app.GenesisState {
 	pfGenesis := pricefeedtypes.GenesisState{
 		Params: pricefeedtypes.Params{
 			Markets: []pricefeedtypes.Market{
@@ -155,7 +155,7 @@ func NewPricefeedGenStateMulti() app.GenesisState {
 			},
 		},
 	}
-	return app.GenesisState{pricefeedtypes.ModuleName: pricefeedtypes.ModuleCdc.MustMarshalJSON(&pfGenesis)}
+	return app.GenesisState{pricefeedtypes.ModuleName: tApp.AppCodec().MustMarshalJSON(&pfGenesis)}
 }
 
 /* Question: Not necessary for jpyx because hard module does not exist?
@@ -222,8 +222,8 @@ func (suite *KeeperTestSuite) SetupWithGenState() {
 	tApp.InitializeFromGenesisStates(
 		NewAuthGenState(tApp, allAddrs, cs(c("ujsmn", 5_000_000))),
 		NewStakingGenesisState(),
-		NewPricefeedGenStateMulti(),
-		NewCDPGenStateMulti(),
+		NewPricefeedGenStateMulti(tApp),
+		NewCDPGenStateMulti(tApp),
 		// NewHardGenStateMulti(),
 	)
 
