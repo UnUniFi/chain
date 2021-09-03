@@ -37,8 +37,8 @@ func (suite *DepositTestSuite) SetupTest() {
 			cs(c("xrp", 200000000))})
 	tApp.InitializeFromGenesisStates(
 		authGS,
-		NewPricefeedGenStateMulti(),
-		NewCDPGenStateMulti(),
+		NewPricefeedGenStateMulti(tApp),
+		NewCDPGenStateMulti(tApp),
 	)
 	keeper := tApp.GetCDPKeeper()
 	suite.app = tApp

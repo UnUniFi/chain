@@ -34,8 +34,8 @@ func (suite *AuctionTestSuite) SetupTest() {
 	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
 	tApp.InitializeFromGenesisStates(
 		authGS,
-		NewPricefeedGenStateMulti(),
-		NewCDPGenStateMulti(),
+		NewPricefeedGenStateMulti(tApp),
+		NewCDPGenStateMulti(tApp),
 	)
 	keeper := tApp.GetCDPKeeper()
 	suite.app = tApp

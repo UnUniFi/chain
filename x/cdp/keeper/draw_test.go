@@ -39,8 +39,8 @@ func (suite *DrawTestSuite) SetupTest() {
 			cs(c("xrp", 10000000000000), c("jpyx", 100000000000))})
 	tApp.InitializeFromGenesisStates(
 		authGS,
-		NewPricefeedGenStateMulti(),
-		NewCDPGenStateMulti(),
+		NewPricefeedGenStateMulti(tApp),
+		NewCDPGenStateMulti(tApp),
 	)
 	keeper := tApp.GetCDPKeeper()
 	suite.app = tApp
