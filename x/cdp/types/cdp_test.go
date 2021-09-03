@@ -62,7 +62,7 @@ func (suite *CdpValidationSuite) TestCdpValidation() {
 			cdp:  cdptypes.Cdp{1, jpyxtypes.StringAccAddress(suite.addrs[0]), "bnb-a", sdk.Coin{Denom: "", Amount: sdk.NewInt(100)}, sdk.Coin{Denom: "jpyx", Amount: sdk.NewInt(100)}, sdk.Coin{Denom: "jpyx", Amount: sdk.NewInt(0)}, tmtime.Now(), sdk.Dec{}},
 			errArgs: errArgs{
 				expectPass: false,
-				contains:   "invalid coins: collateral",
+				contains:   "collateral 100: invalid coins",
 			},
 		},
 		{
@@ -70,7 +70,7 @@ func (suite *CdpValidationSuite) TestCdpValidation() {
 			cdp:  cdptypes.Cdp{1, jpyxtypes.StringAccAddress(suite.addrs[0]), "xrp-a", sdk.Coin{Denom: "xrp", Amount: sdk.NewInt(100)}, sdk.Coin{Denom: "", Amount: sdk.NewInt(100)}, sdk.Coin{Denom: "jpyx", Amount: sdk.NewInt(0)}, tmtime.Now(), sdk.Dec{}},
 			errArgs: errArgs{
 				expectPass: false,
-				contains:   "invalid coins: principal",
+				contains:   "principal 100: invalid coins",
 			},
 		},
 		{
@@ -78,7 +78,7 @@ func (suite *CdpValidationSuite) TestCdpValidation() {
 			cdp:  cdptypes.Cdp{1, jpyxtypes.StringAccAddress(suite.addrs[0]), "xrp-a", sdk.Coin{Denom: "xrp", Amount: sdk.NewInt(100)}, sdk.Coin{Denom: "jpyx", Amount: sdk.NewInt(100)}, sdk.Coin{Denom: "", Amount: sdk.NewInt(0)}, tmtime.Now(), sdk.Dec{}},
 			errArgs: errArgs{
 				expectPass: false,
-				contains:   "invalid coins: accumulated fees",
+				contains:   "accumulated fees 0: invalid coins",
 			},
 		},
 		{
@@ -151,7 +151,7 @@ func (suite *CdpValidationSuite) TestDepositValidation() {
 			deposit: cdptypes.NewDeposit(1, suite.addrs[0], sdk.Coin{Denom: "Invalid Denom", Amount: sdk.NewInt(1000000)}),
 			errArgs: errArgs{
 				expectPass: false,
-				contains:   "invalid coins: deposit",
+				contains:   "deposit 1000000Invalid Denom: invalid coins",
 			},
 		},
 	}
