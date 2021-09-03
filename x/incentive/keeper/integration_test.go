@@ -201,11 +201,11 @@ func NewAuthGenState(tApp app.TestApp, addresses []sdk.AccAddress, coins sdk.Coi
 	return app.NewAuthGenState(tApp, addresses, coinsList)
 }
 
-func NewStakingGenesisState() app.GenesisState {
+func NewStakingGenesisState(tApp app.TestApp) app.GenesisState {
 	genState := stakingtypes.DefaultGenesisState()
 	genState.Params.BondDenom = "ujsmn"
 	return app.GenesisState{
-		stakingtypes.ModuleName: stakingtypes.ModuleCdc.MustMarshalJSON(genState),
+		stakingtypes.ModuleName: tApp.AppCodec().MustMarshalJSON(genState),
 	}
 }
 
@@ -221,7 +221,7 @@ func (suite *KeeperTestSuite) SetupWithGenState() {
 
 	tApp.InitializeFromGenesisStates(
 		NewAuthGenState(tApp, allAddrs, cs(c("ujsmn", 5_000_000))),
-		NewStakingGenesisState(),
+		NewStakingGenesisState(tApp),
 		NewPricefeedGenStateMulti(tApp),
 		NewCDPGenStateMulti(tApp),
 		// NewHardGenStateMulti(),
