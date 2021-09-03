@@ -252,7 +252,7 @@ func TestDebtAuctionValidate(t *testing.T) {
 					MaxEndTime:      now,
 					HasReceivedBids: true,
 				},
-				CorrespondingDebt: sdk.Coin{Denom: "DENOM", Amount: sdk.NewInt(1)},
+				CorrespondingDebt: sdk.Coin{Denom: "%DENOM", Amount: sdk.NewInt(1)},
 			},
 			false,
 		},
