@@ -76,7 +76,8 @@ func TestInitGenesis(t *testing.T) {
 		})
 		i := 0
 		keeper.IterateAuctions(ctx, func(a auctiontypes.Auction) bool {
-			require.Equal(t, gs.Auctions[i], a)
+			unpacked, _ := auctiontypes.UnpackAuction(gs.Auctions[i])
+			require.Equal(t, unpacked, a)
 			i++
 			return false
 		})
