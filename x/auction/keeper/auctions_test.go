@@ -367,7 +367,7 @@ func TestStartSurplusAuction(t *testing.T) {
 					EndTime:         auctiontypes.DistantFuture,
 					MaxEndTime:      auctiontypes.DistantFuture,
 				}}
-				require.Equal(t, expectedAuction, actualAuc, tc.name)
+				require.Equal(t, &expectedAuction, actualAuc, tc.name)
 			} else if !tc.expPanic && !tc.expectPass {
 				require.Error(t, err, tc.name)
 				// check coins not moved
