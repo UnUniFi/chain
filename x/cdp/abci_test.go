@@ -53,8 +53,8 @@ func (suite *ModuleTestSuite) SetupTest() {
 		tApp, addrs, coins)
 	tApp.InitializeFromGenesisStates(
 		authGS,
-		NewPricefeedGenStateMulti(),
-		NewCDPGenStateMulti(),
+		NewPricefeedGenStateMulti(tApp),
+		NewCDPGenStateMulti(tApp),
 	)
 	suite.ctx = ctx
 	suite.app = tApp
@@ -80,8 +80,8 @@ func (suite *ModuleTestSuite) createCdps() {
 		tApp, addrs, coins)
 	tApp.InitializeFromGenesisStates(
 		authGS,
-		NewPricefeedGenStateMulti(),
-		NewCDPGenStateMulti(),
+		NewPricefeedGenStateMulti(tApp),
+		NewCDPGenStateMulti(tApp),
 	)
 
 	suite.ctx = ctx
