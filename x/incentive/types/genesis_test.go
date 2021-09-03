@@ -87,23 +87,23 @@ func TestGenesisStateValidate(t *testing.T) {
 				contains:   "",
 			},
 		},
-		{
-			name: "invalid genesis accumulation time",
-			args: args{
-				params: DefaultParams(),
-				genAccTimes: GenesisAccumulationTimes{
-					{
-						CollateralType: "btcb-a",
-						//RewardFactor:   sdk.MustNewDecFromStr("-0.1"),
-					},
-				},
-				claims: DefaultJpyxClaims,
-			},
-			errArgs: errArgs{
-				expectPass: false,
-				contains:   "reward factor should be ≥ 0.0",
-			},
-		},
+		// {
+		// 	name: "invalid genesis accumulation time",
+		// 	args: args{
+		// 		params: DefaultParams(),
+		// 		genAccTimes: GenesisAccumulationTimes{
+		// 			{
+		// 				CollateralType: "btcb-a",
+		// 				RewardFactor:   sdk.MustNewDecFromStr("-0.1"),
+		// 			},
+		// 		},
+		// 		claims: DefaultJpyxClaims,
+		// 	},
+		// 	errArgs: errArgs{
+		// 		expectPass: false,
+		// 		contains:   "reward factor should be ≥ 0.0",
+		// 	},
+		// },
 		{
 			name: "invalid claim",
 			args: args{
