@@ -106,7 +106,7 @@ func (suite *ModuleTestSuite) createCdps() {
 				tracker.debt += int64(debt)
 			}
 		}
-		suite.Nil(suite.keeper.AddCdp(suite.ctx, addrs[j], c(collateral, int64(amount)), c("usdx", int64(debt)), collateral+"-a"))
+		suite.Nil(suite.keeper.AddCdp(suite.ctx, addrs[j], c(collateral, int64(amount)), c("jpyx", int64(debt)), collateral+"-a"))
 		c, f := suite.keeper.GetCdp(suite.ctx, collateral+"-a", uint64(j+1))
 		suite.True(f)
 		cdps[j] = c
@@ -133,7 +133,7 @@ func (suite *ModuleTestSuite) TestBeginBlock() {
 	sk := suite.app.GetBankKeeper()
 	acc := ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
 	originalXrpCollateral := sk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("xrp")
-	suite.setPrice(d("0.2"), "xrp:usd")
+	suite.setPrice(d("0.2"), "xrp:jpy")
 	cdp.BeginBlocker(suite.ctx, tmabcitypes.RequestBeginBlock{Header: suite.ctx.BlockHeader()}, suite.keeper)
 	acc = ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
 	finalXrpCollateral := sk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("xrp")
@@ -143,7 +143,7 @@ func (suite *ModuleTestSuite) TestBeginBlock() {
 
 	acc = ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
 	originalBtcCollateral := sk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("btc")
-	suite.setPrice(d("6000"), "btc:usd")
+	suite.setPrice(d("6000"), "btc:jpy")
 	cdp.BeginBlocker(suite.ctx, tmabcitypes.RequestBeginBlock{Header: suite.ctx.BlockHeader()}, suite.keeper)
 	acc = ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
 	finalBtcCollateral := sk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("btc")
@@ -157,9 +157,9 @@ func (suite *ModuleTestSuite) TestBeginBlock() {
 }
 
 func (suite *ModuleTestSuite) TestSeizeSingleCdpWithFees() {
-	err := suite.keeper.AddCdp(suite.ctx, suite.addrs[0], c("xrp", 10000000000), c("usdx", 1000000000), "xrp-a")
+	err := suite.keeper.AddCdp(suite.ctx, suite.addrs[0], c("xrp", 10000000000), c("jpyx", 1000000000), "xrp-a")
 	suite.NoError(err)
-	suite.Equal(i(1000000000), suite.keeper.GetTotalPrincipal(suite.ctx, "xrp-a", "usdx"))
+	suite.Equal(i(1000000000), suite.keeper.GetTotalPrincipal(suite.ctx, "xrp-a", "jpyx"))
 	ak := suite.app.GetAccountKeeper()
 	sk := suite.app.GetBankKeeper()
 	cdpMacc := ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
