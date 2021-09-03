@@ -205,7 +205,7 @@ func NewAuthGenState(tApp TestApp, addresses []sdk.AccAddress, coins []sdk.Coins
 }
 
 // Create a new auth genesis state from some addresses and coins. The state is returned marshalled into a map.
-func NewAuthGenStateModAcc(tApp TestApp, moduleAccounts []*authtypes.ModuleAccount, coins []sdk.Coins) GenesisState {
+func NewAuthGenStateModAcc(tApp TestApp, moduleAccounts []*authtypes.ModuleAccount) GenesisState {
 	// Create GenAccounts
 	accounts := authtypes.GenesisAccounts{}
 	for i := range accounts {
@@ -213,13 +213,8 @@ func NewAuthGenStateModAcc(tApp TestApp, moduleAccounts []*authtypes.ModuleAccou
 	}
 	// Create the auth genesis state
 	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), accounts)
-	// Create the bank genesis state
-	bankGenesis := banktypes.DefaultGenesisState()
-	for i := range accounts {
-		bankGenesis.Balances = append(bankGenesis.Balances, banktypes.Balance{Address: moduleAccounts[i].Address, Coins: coins[i]})
-	}
-	// return GenesisState{authtypes.ModuleName: authtypes.ModuleCdc.MustMarshalJSON(authGenesis), banktypes.ModuleName: banktypes.ModuleCdc.MustMarshalJSON(bankGenesis)}
-	return GenesisState{authtypes.ModuleName: tApp.appCodec.MustMarshalJSON(authGenesis), banktypes.ModuleName: tApp.appCodec.MustMarshalJSON(bankGenesis)}
+
+	return GenesisState{authtypes.ModuleName: tApp.appCodec.MustMarshalJSON(authGenesis)}
 }
 
 // GeneratePrivKeyAddressPairsFromRand generates (deterministically) a total of n secp256k1 private keys and addresses.

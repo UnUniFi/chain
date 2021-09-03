@@ -137,7 +137,7 @@ func TestBaseAuctionValidate(t *testing.T) {
 			BaseAuction{
 				Id:        1,
 				Initiator: testAccAddress1,
-				Lot:       sdk.Coin{Denom: "DENOM", Amount: sdk.NewInt(1)},
+				Lot:       sdk.Coin{Denom: "%DENOM", Amount: sdk.NewInt(1)},
 			},
 			false,
 		},
@@ -168,7 +168,7 @@ func TestBaseAuctionValidate(t *testing.T) {
 				Initiator: testAccAddress1,
 				Lot:       c("jsmn", 1),
 				Bidder:    jpyxtypes.StringAccAddress(addr1),
-				Bid:       sdk.Coin{Denom: "DENOM", Amount: sdk.NewInt(1)},
+				Bid:       sdk.Coin{Denom: "%DENOM", Amount: sdk.NewInt(1)},
 			},
 			false,
 		},
