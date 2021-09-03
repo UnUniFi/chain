@@ -178,9 +178,9 @@ func TestCollateralAuctionBasic(t *testing.T) {
 		// }),
 		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{sellerAcc}),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[0]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[1]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[2]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
+		// app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[0]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
+		// app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[1]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
+		// app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[2]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
 	)
 	keeper := tApp.GetAuctionKeeper()
 
@@ -244,9 +244,9 @@ func TestCollateralAuctionDebtRemaining(t *testing.T) {
 		// }),
 		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{sellerAcc}),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[0]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[1]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[2]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
+		// app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[0]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
+		// app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[1]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
+		// app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[2]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
 	)
 	keeper := tApp.GetAuctionKeeper()
 
