@@ -419,14 +419,15 @@ func TestCloseExpiredAuctions(t *testing.T) {
 	_, addrs := app.GeneratePrivKeyAddressPairs(1)
 	buyer := addrs[0]
 	sellerModName := "liquidator"
+	sellerAddr := authtypes.NewModuleAddress(sellerModName)
 
 	tApp := app.NewTestApp()
-	// bk := tApp.GetBankKeeper()
+	bk := tApp.GetBankKeeper()
 	ctx := tApp.NewContext(true, tmproto.Header{Height: tApp.LastBlockHeight()})
 
 	sellerAcc := authtypes.NewEmptyModuleAccount(sellerModName, authtypes.Burner) // forward auctions burn proceeds
 	// require.NoError(t, sellerAcc.SetCoins(cs(c("token1", 100), c("token2", 100))))
-	// require.NoError(t, bk.SetBalances(ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
+	require.NoError(t, bk.SetBalances(ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
 	tApp.InitializeFromGenesisStates(
 		// NewAuthGenStateFromAccs(authtypes.GenesisAccounts{
 		// 	authtypes.NewBaseAccount(buyer, cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
