@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/codec/types"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/gogo/protobuf/proto"
@@ -47,24 +46,8 @@ type Auction interface {
 // Auctions is a slice of auctions.
 type Auctions []Auction
 
-func PackAuctions(auctions Auctions) ([]*codectypes.Any, error) {
-	auctionAny := make([]*types.Any, len(auctions))
-	for i, auc := range auctions {
-		msg, ok := auc.(proto.Message)
-		if !ok {
-			return nil, fmt.Errorf("cannot proto marshal %T", auc)
-		}
-		any, err := types.NewAnyWithValue(msg)
-		if err != nil {
-			return nil, err
-		}
-		auctionAny[i] = any
-	}
-
-	return auctionAny, nil
-}
-
 func UnpackAuction(auctionAny *types.Any) (Auction, error) {
+	fmt.Println(auctionAny)
 	switch auctionAny.TypeUrl {
 	case "/" + proto.MessageName(&SurplusAuction{}):
 		var auction SurplusAuction
@@ -77,24 +60,11 @@ func UnpackAuction(auctionAny *types.Any) (Auction, error) {
 	case "/" + proto.MessageName(&CollateralAuction{}):
 		var auction CollateralAuction
 		auction.Unmarshal(auctionAny.Value)
+		fmt.Println(Auction(&auction))
 		return &auction, nil
 	default:
 		return nil, fmt.Errorf("this Any doesn't have Auction value")
 	}
-}
-
-// caution: only for test
-func UnpackAuctions(auctionsAny []*types.Any) (Auctions, error) {
-	accounts := make(Auctions, len(auctionsAny))
-	for i, any := range auctionsAny {
-		acc, ok := any.GetCachedValue().(Auction)
-		if !ok {
-			return nil, fmt.Errorf("expected genesis account")
-		}
-		accounts[i] = acc
-	}
-
-	return accounts, nil
 }
 
 // GetID is a getter for auction ID.

@@ -1,6 +1,7 @@
 package auction_test
 
 import (
+	"fmt"
 	"sort"
 	"testing"
 	"time"
@@ -28,13 +29,13 @@ var testAuction = auctiontypes.NewCollateralAuction(
 	auctiontypes.WeightedAddresses{Addresses: jpyxtypes.StringAccAddresses(testAddrs), Weights: []sdk.Int{sdk.OneInt(), sdk.OneInt()}},
 	c("debt", 1000),
 ).WithID(3).(auctiontypes.GenesisAuction)
-var testAuctions, _ = auctiontypes.PackGenesisAuctions(auctiontypes.GenesisAuctions{testAuction})
 
 func TestInitGenesis(t *testing.T) {
+	var testAuctions, _ = auctiontypes.PackGenesisAuctions(auctiontypes.GenesisAuctions{testAuction})
 	t.Run("valid", func(t *testing.T) {
 		// setup keepers
 		tApp := app.NewTestApp()
-		sk := tApp.GetBankKeeper()
+		bk := tApp.GetBankKeeper()
 		keeper := tApp.GetAuctionKeeper()
 		ctx := tApp.NewContext(true, tmproto.Header{})
 		// setup module account
@@ -43,9 +44,15 @@ func TestInitGenesis(t *testing.T) {
 		moduleAddr := authtypes.NewModuleAddress(auctiontypes.ModuleName)
 		moduleAcc := accountKeeper.GetModuleAccount(ctx, auctiontypes.ModuleName)
 		// require.NoError(t, moduleAcc.SetCoins(testAuction.GetModuleAccountCoins()))
-		require.NoError(t, sk.SetBalances(ctx, moduleAddr, testAuction.GetModuleAccountCoins()))
+		require.NoError(t, bk.SetBalances(ctx, moduleAddr, testAuction.GetModuleAccountCoins()))
 		// supplyKeeper.SetModuleAccount(ctx, moduleAcc)
 		accountKeeper.SetModuleAccount(ctx, moduleAcc)
+
+		fmt.Println(testAuctions[0])
+		auctiontypes.UnpackAuction(testAuctions[0])
+		fmt.Println("aaa")
+		fmt.Println(testAuction)
+		fmt.Println("bbb")
 
 		// create genesis
 		gs := auctiontypes.NewGenesisState(
@@ -58,7 +65,7 @@ func TestInitGenesis(t *testing.T) {
 		// run init
 		require.NotPanics(t, func() {
 			// auction.InitGenesis(ctx, keeper, supplyKeeper, gs)
-			auction.InitGenesis(ctx, keeper, accountKeeper, sk, gs)
+			auction.InitGenesis(ctx, keeper, accountKeeper, bk, gs)
 		})
 
 		// check state is as expected
@@ -71,11 +78,12 @@ func TestInitGenesis(t *testing.T) {
 		// TODO is there a nicer way of comparing state?
 		sort.Slice(gs.Auctions, func(i, j int) bool {
 			// Any型からAuction型へUnpackする
-			unpackAuctions, _ := auctiontypes.UnpackAuctions(gs.Auctions)
+			unpackAuctions, _ := auctiontypes.UnpackGenesisAuctions(gs.Auctions)
 			return unpackAuctions[i].GetID() > unpackAuctions[j].GetID()
 		})
 		i := 0
 		keeper.IterateAuctions(ctx, func(a auctiontypes.Auction) bool {
+			fmt.Println("ccc  ", i)
 			unpacked, _ := auctiontypes.UnpackAuction(gs.Auctions[i])
 			require.Equal(t, unpacked, a)
 			i++
@@ -128,6 +136,7 @@ func TestInitGenesis(t *testing.T) {
 }
 
 func TestExportGenesis(t *testing.T) {
+	var testAuctions, _ = auctiontypes.PackGenesisAuctions(auctiontypes.GenesisAuctions{testAuction})
 	t.Run("default", func(t *testing.T) {
 		// setup state
 		tApp := app.NewTestApp()

@@ -7,7 +7,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	proto "github.com/gogo/protobuf/proto"
 )
 
 // DefaultIndex is the default capability global index
@@ -102,11 +101,7 @@ type GenesisAuctions []GenesisAuction
 func PackGenesisAuctions(auctions GenesisAuctions) ([]*codectypes.Any, error) {
 	auctionAny := make([]*types.Any, len(auctions))
 	for i, auc := range auctions {
-		msg, ok := auc.(proto.Message)
-		if !ok {
-			return nil, fmt.Errorf("cannot proto marshal %T", auc)
-		}
-		any, err := types.NewAnyWithValue(msg)
+		any, err := types.NewAnyWithValue(auc)
 		if err != nil {
 			return nil, err
 		}
