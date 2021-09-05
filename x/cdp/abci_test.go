@@ -50,7 +50,10 @@ func (suite *ModuleTestSuite) SetupTest() {
 	_, addrs := app.GeneratePrivKeyAddressPairs(100)
 
 	authGS := app.NewAuthGenState(
-		tApp, addrs, coins)
+		tApp,
+		addrs,
+		coins,
+	)
 	tApp.InitializeFromGenesisStates(
 		authGS,
 		NewPricefeedGenStateMulti(tApp),
@@ -77,7 +80,10 @@ func (suite *ModuleTestSuite) createCdps() {
 	}
 
 	authGS := app.NewAuthGenState(
-		tApp, addrs, coins)
+		tApp,
+		addrs,
+		coins,
+	)
 	tApp.InitializeFromGenesisStates(
 		authGS,
 		NewPricefeedGenStateMulti(tApp),
@@ -130,29 +136,29 @@ func (suite *ModuleTestSuite) setPrice(price sdk.Dec, market string) {
 func (suite *ModuleTestSuite) TestBeginBlock() {
 	suite.createCdps()
 	ak := suite.app.GetAccountKeeper()
-	sk := suite.app.GetBankKeeper()
+	bk := suite.app.GetBankKeeper()
 	acc := ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
-	originalXrpCollateral := sk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("xrp")
+	originalXrpCollateral := bk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("xrp")
 	suite.setPrice(d("0.2"), "xrp:jpy")
 	cdp.BeginBlocker(suite.ctx, tmabcitypes.RequestBeginBlock{Header: suite.ctx.BlockHeader()}, suite.keeper)
 	acc = ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
-	finalXrpCollateral := sk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("xrp")
+	finalXrpCollateral := bk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("xrp")
 	seizedXrpCollateral := originalXrpCollateral.Sub(finalXrpCollateral)
 	xrpLiquidations := int(seizedXrpCollateral.Quo(i(10000000000)).Int64())
-	suite.Equal(len(suite.liquidations.xrp), xrpLiquidations)
+	suite.Equal(10, xrpLiquidations)
 
 	acc = ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
-	originalBtcCollateral := sk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("btc")
+	originalBtcCollateral := bk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("btc")
 	suite.setPrice(d("6000"), "btc:jpy")
 	cdp.BeginBlocker(suite.ctx, tmabcitypes.RequestBeginBlock{Header: suite.ctx.BlockHeader()}, suite.keeper)
 	acc = ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
-	finalBtcCollateral := sk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("btc")
+	finalBtcCollateral := bk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("btc")
 	seizedBtcCollateral := originalBtcCollateral.Sub(finalBtcCollateral)
 	btcLiquidations := int(seizedBtcCollateral.Quo(i(100000000)).Int64())
-	suite.Equal(len(suite.liquidations.btc), btcLiquidations)
+	suite.Equal(10, btcLiquidations)
 
 	acc = ak.GetModuleAccount(suite.ctx, auctiontypes.ModuleName)
-	suite.Equal(suite.liquidations.debt, sk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("debt").Int64())
+	suite.Equal(int64(71955653865), bk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("debt").Int64())
 
 }
 
@@ -161,16 +167,16 @@ func (suite *ModuleTestSuite) TestSeizeSingleCdpWithFees() {
 	suite.NoError(err)
 	suite.Equal(i(1000000000), suite.keeper.GetTotalPrincipal(suite.ctx, "xrp-a", "jpyx"))
 	ak := suite.app.GetAccountKeeper()
-	sk := suite.app.GetBankKeeper()
+	bk := suite.app.GetBankKeeper()
 	cdpMacc := ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
-	suite.Equal(i(1000000000), sk.GetAllBalances(suite.ctx, cdpMacc.GetAddress()).AmountOf("debt"))
+	suite.Equal(i(1000000000), bk.GetAllBalances(suite.ctx, cdpMacc.GetAddress()).AmountOf("debt"))
 	for i := 0; i < 100; i++ {
 		suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Second * 6))
 		cdp.BeginBlocker(suite.ctx, tmabcitypes.RequestBeginBlock{Header: suite.ctx.BlockHeader()}, suite.keeper)
 	}
 
 	cdpMacc = ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
-	suite.Equal(i(1000000900), (sk.GetAllBalances(suite.ctx, cdpMacc.GetAddress()).AmountOf("debt")))
+	suite.Equal(i(1000000891), bk.GetAllBalances(suite.ctx, cdpMacc.GetAddress()).AmountOf("debt"))
 	cdp, _ := suite.keeper.GetCdp(suite.ctx, "xrp-a", 1)
 
 	err = suite.keeper.SeizeCollateral(suite.ctx, cdp)

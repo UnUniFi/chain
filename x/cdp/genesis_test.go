@@ -1,14 +1,11 @@
 package cdp_test
 
 import (
-	"fmt"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/suite"
-
-	tmtime "github.com/tendermint/tendermint/types/time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -26,14 +23,14 @@ type GenesisTestSuite struct {
 
 func (suite *GenesisTestSuite) TestInvalidGenState() {
 	type args struct {
-		params          cdptypes.Params
-		cdps            cdptypes.Cdps
-		deposits        cdptypes.Deposits
-		startingID      uint64
-		debtDenom       string
-		govDenom        string
-		prevDistTime    time.Time
-		savingsRateDist sdk.Int
+		params             cdptypes.Params
+		cdps               cdptypes.Cdps
+		deposits           cdptypes.Deposits
+		startingID         uint64
+		debtDenom          string
+		govDenom           string
+		genAccumTimes      cdptypes.GenesisAccumulationTimes
+		genTotalPrincipals cdptypes.GenesisTotalPrincipals
 	}
 	type errArgs struct {
 		expectPass bool
@@ -52,13 +49,13 @@ func (suite *GenesisTestSuite) TestInvalidGenState() {
 		{
 			name: "empty debt denom",
 			args: args{
-				params:          cdptypes.DefaultParams(),
-				cdps:            cdptypes.Cdps{},
-				deposits:        cdptypes.Deposits{},
-				debtDenom:       "",
-				govDenom:        cdptypes.DefaultGovDenom,
-				prevDistTime:    tmtime.Canonical(time.Unix(0, 0)), // cdptypes.DefaultPreviousDistributionTime,
-				savingsRateDist: sdk.NewInt(0),                     // cdptypes.DefaultSavingsRateDistributed,
+				params:             cdptypes.DefaultParams(),
+				cdps:               cdptypes.Cdps{},
+				deposits:           cdptypes.Deposits{},
+				debtDenom:          "",
+				govDenom:           cdptypes.DefaultGovDenom,
+				genAccumTimes:      cdptypes.DefaultGenesis().PreviousAccumulationTimes,
+				genTotalPrincipals: cdptypes.DefaultGenesis().TotalPrincipals,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -68,13 +65,13 @@ func (suite *GenesisTestSuite) TestInvalidGenState() {
 		{
 			name: "empty gov denom",
 			args: args{
-				params:          cdptypes.DefaultParams(),
-				cdps:            cdptypes.Cdps{},
-				deposits:        cdptypes.Deposits{},
-				debtDenom:       cdptypes.DefaultDebtDenom,
-				govDenom:        "",
-				prevDistTime:    tmtime.Canonical(time.Unix(0, 0)), // cdptypes.DefaultPreviousDistributionTime,
-				savingsRateDist: sdk.NewInt(0),                     // cdptypes.DefaultSavingsRateDistributed,
+				params:             cdptypes.DefaultParams(),
+				cdps:               cdptypes.Cdps{},
+				deposits:           cdptypes.Deposits{},
+				debtDenom:          cdptypes.DefaultDebtDenom,
+				govDenom:           "",
+				genAccumTimes:      cdptypes.DefaultGenesis().PreviousAccumulationTimes,
+				genTotalPrincipals: cdptypes.DefaultGenesis().TotalPrincipals,
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -82,71 +79,47 @@ func (suite *GenesisTestSuite) TestInvalidGenState() {
 			},
 		},
 		{
-			name: "empty distribution time",
+			name: "interest factor below one",
 			args: args{
-				params:          cdptypes.DefaultParams(),
-				cdps:            cdptypes.Cdps{},
-				deposits:        cdptypes.Deposits{},
-				debtDenom:       cdptypes.DefaultDebtDenom,
-				govDenom:        cdptypes.DefaultGovDenom,
-				prevDistTime:    time.Time{},
-				savingsRateDist: sdk.NewInt(0), // cdptypes.DefaultSavingsRateDistributed,
+				params:             cdptypes.DefaultParams(),
+				cdps:               cdptypes.Cdps{},
+				deposits:           cdptypes.Deposits{},
+				debtDenom:          cdptypes.DefaultDebtDenom,
+				govDenom:           cdptypes.DefaultGovDenom,
+				genAccumTimes:      cdptypes.GenesisAccumulationTimes{cdptypes.NewGenesisAccumulationTime("bnb-a", time.Time{}, sdk.OneDec().Sub(sdk.SmallestDec()))},
+				genTotalPrincipals: cdptypes.DefaultGenesis().TotalPrincipals,
 			},
 			errArgs: errArgs{
 				expectPass: false,
-				contains:   "previous distribution time not set",
+				contains:   "interest factor should be ≥ 1.0",
 			},
 		},
 		{
-			name: "negative savings rate distributed",
+			name: "negative total principal",
 			args: args{
-				params:          cdptypes.DefaultParams(),
-				cdps:            cdptypes.Cdps{},
-				deposits:        cdptypes.Deposits{},
-				debtDenom:       cdptypes.DefaultDebtDenom,
-				govDenom:        cdptypes.DefaultGovDenom,
-				prevDistTime:    tmtime.Canonical(time.Unix(0, 0)), // cdptypes.DefaultPreviousDistributionTime,
-				savingsRateDist: sdk.NewInt(-100),
+				params:             cdptypes.DefaultParams(),
+				cdps:               cdptypes.Cdps{},
+				deposits:           cdptypes.Deposits{},
+				debtDenom:          cdptypes.DefaultDebtDenom,
+				govDenom:           cdptypes.DefaultGovDenom,
+				genAccumTimes:      cdptypes.DefaultGenesis().PreviousAccumulationTimes,
+				genTotalPrincipals: cdptypes.GenesisTotalPrincipals{cdptypes.NewGenesisTotalPrincipal("bnb-a", sdk.NewInt(-1))},
 			},
 			errArgs: errArgs{
 				expectPass: false,
-				contains:   "savings rate distributed should not be negative",
+				contains:   "total principal should be positive",
 			},
 		},
 	}
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
-			params := tc.args.params // suite.keeper.GetParams(suite.ctx)
-
-			var prevDistTimes cdptypes.GenesisAccumulationTimes
-			var totalPrincipals cdptypes.GenesisTotalPrincipals
-
-			for _, cp := range params.CollateralParams {
-				interestFactor, found := suite.keeper.GetInterestFactor(suite.ctx, cp.Type)
-				if !found {
-					interestFactor = sdk.OneDec()
-				}
-				// Governance param changes happen in the end blocker. If a new collateral type is added and then the chain
-				// is exported before the BeginBlocker can run, previous accrual time won't be found. We can't set it to
-				// current block time because it is not available in the export ctx. We should panic instead of exporting
-				// bad state.
-				previDisTime, f := suite.keeper.GetPreviousAccrualTime(suite.ctx, cp.Type)
-				if !f {
-					panic(fmt.Sprintf("expected previous accrual time to be set in state for %s", cp.Type))
-				}
-				prevDistTimes = append(prevDistTimes, cdptypes.NewGenesisAccumulationTime(cp.Type, previDisTime, interestFactor))
-				tp := suite.keeper.GetTotalPrincipal(suite.ctx, cp.Type, cdptypes.DefaultStableDenom)
-				genTotalPrincipal := cdptypes.NewGenesisTotalPrincipal(cp.Type, tp)
-				totalPrincipals = append(totalPrincipals, genTotalPrincipal)
-			}
 			gs := cdptypes.NewGenesisState(tc.args.params, tc.args.cdps, tc.args.deposits, tc.args.startingID,
-				tc.args.debtDenom, tc.args.govDenom, prevDistTimes, totalPrincipals)
+				tc.args.debtDenom, tc.args.govDenom, tc.args.genAccumTimes, tc.args.genTotalPrincipals)
 			err := gs.Validate()
 			if tc.errArgs.expectPass {
 				suite.Require().NoError(err)
 			} else {
 				suite.Require().Error(err)
-				suite.T().Log(err)
 				suite.Require().True(strings.Contains(err.Error(), tc.errArgs.contains))
 			}
 		})
@@ -175,7 +148,6 @@ func (suite *GenesisTestSuite) TestValidGenState() {
 			appGS,
 		)
 	})
-
 }
 
 func TestGenesisTestSuite(t *testing.T) {
