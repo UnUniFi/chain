@@ -355,7 +355,7 @@ func (k Keeper) PlaceReverseBidCollateral(ctx sdk.Context, auction types.Collate
 
 	// Decrease in lot is sent to weighted addresses (normally the Cdp depositors)
 	// Note: splitting an integer amount across weighted buckets results in small errors.
-	lotPayouts, err := splitCoinIntoWeightedBuckets(auction.Lot.Sub(lot), auction.LotReturns.Weights)
+	lotPayouts, err := splitCoinIntoWeightedBuckets(auction.Lot.Sub(lot), types.WeightedAddresses(auction.LotReturns).Weights())
 	if err != nil {
 		return auction, err
 	}
@@ -364,7 +364,7 @@ func (k Keeper) PlaceReverseBidCollateral(ctx sdk.Context, auction types.Collate
 		if !payout.IsPositive() {
 			continue
 		}
-		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, auction.LotReturns.Addresses[i].AccAddress(), sdk.NewCoins(payout))
+		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, auction.LotReturns[i].Address.AccAddress(), sdk.NewCoins(payout))
 		if err != nil {
 			return auction, err
 		}

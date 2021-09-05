@@ -219,6 +219,11 @@ func NewAuthGenStateModAcc(tApp TestApp, moduleAccounts []*authtypes.ModuleAccou
 
 // GeneratePrivKeyAddressPairsFromRand generates (deterministically) a total of n secp256k1 private keys and addresses.
 func GeneratePrivKeyAddressPairs(n int) (keys []crypto.PrivKey, addrs []sdk.AccAddress) {
+	config := sdk.GetConfig()
+	config.SetBech32PrefixForAccount(AccountAddressPrefix, AccountPubKeyPrefix)
+	config.SetBech32PrefixForValidator(ValidatorAddressPrefix, ValidatorPubKeyPrefix)
+	config.SetBech32PrefixForConsensusNode(ConsNodeAddressPrefix, ConsNodePubKeyPrefix)
+
 	r := rand.New(rand.NewSource(12345)) // make the generation deterministic
 	keys = make([]crypto.PrivKey, n)
 	addrs = make([]sdk.AccAddress, n)

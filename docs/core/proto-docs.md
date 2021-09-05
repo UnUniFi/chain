@@ -11,7 +11,7 @@
     - [MsgPlaceBid](#botany.auction.MsgPlaceBid)
     - [Params](#botany.auction.Params)
     - [SurplusAuction](#botany.auction.SurplusAuction)
-    - [WeightedAddresses](#botany.auction.WeightedAddresses)
+    - [WeightedAddress](#botany.auction.WeightedAddress)
   
 - [auction/genesis.proto](#auction/genesis.proto)
     - [GenesisState](#botany.auction.GenesisState)
@@ -164,7 +164,7 @@
 | `base_auction` | [BaseAuction](#botany.auction.BaseAuction) |  |  |
 | `corresponding_debt` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `max_bid` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-| `lot_returns` | [WeightedAddresses](#botany.auction.WeightedAddresses) |  |  |
+| `lot_returns` | [WeightedAddress](#botany.auction.WeightedAddress) | repeated |  |
 
 
 
@@ -238,16 +238,16 @@
 
 
 
-<a name="botany.auction.WeightedAddresses"></a>
+<a name="botany.auction.WeightedAddress"></a>
 
-### WeightedAddresses
+### WeightedAddress
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `addresses` | [string](#string) | repeated |  |
-| `weights` | [string](#string) | repeated |  |
+| `address` | [string](#string) |  |  |
+| `weight` | [string](#string) |  |  |
 
 
 

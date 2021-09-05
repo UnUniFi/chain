@@ -19,8 +19,7 @@ message GenesisState {
     (gogoproto.nullable) = false
   ];
   repeated google.protobuf.Any auctions = 3 [
-    (gogoproto.moretags) = "yaml:\"auctions\"",
-    (cosmos_proto.accepts_interface) = "GenesisAuction"
+    (gogoproto.moretags) = "yaml:\"auctions\""
   ];
   // this line is used by starport scaffolding # genesis/proto/state
 }

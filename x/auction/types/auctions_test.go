@@ -91,8 +91,8 @@ func TestNewWeightedAddresses(t *testing.T) {
 
 		if tc.expPass {
 			require.NoError(t, err)
-			require.Equal(t, tc.addresses, jpyxtypes.AccAddresses(weightedAddresses.Addresses))
-			require.Equal(t, tc.weights, weightedAddresses.Weights)
+			require.Equal(t, tc.addresses, weightedAddresses.Addresses())
+			require.Equal(t, tc.weights, weightedAddresses.Weights())
 		} else {
 			require.Error(t, err)
 		}
@@ -297,8 +297,10 @@ func TestCollateralAuctionValidate(t *testing.T) {
 				CorrespondingDebt: c("jsmn", 1),
 				MaxBid:            c("jsmn", 1),
 				LotReturns: WeightedAddresses{
-					Addresses: []jpyxtypes.StringAccAddress{jpyxtypes.StringAccAddress(addr1)},
-					Weights:   []sdk.Int{sdk.NewInt(1)},
+					{
+						Address: jpyxtypes.StringAccAddress(addr1),
+						Weight:  sdk.NewInt(1),
+					},
 				},
 			},
 			true,
@@ -354,8 +356,10 @@ func TestCollateralAuctionValidate(t *testing.T) {
 				CorrespondingDebt: c("jsmn", 1),
 				MaxBid:            c("jsmn", 1),
 				LotReturns: WeightedAddresses{
-					Addresses: []jpyxtypes.StringAccAddress{nil},
-					Weights:   []sdk.Int{sdk.NewInt(1)},
+					{
+						Address: nil,
+						Weight:  sdk.NewInt(1),
+					},
 				},
 			},
 			false,

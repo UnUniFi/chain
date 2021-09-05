@@ -71,20 +71,21 @@ message CollateralAuction {
     (gogoproto.moretags) = "yaml:\"max_bid\"",
     (gogoproto.nullable) = false
   ];
-  WeightedAddresses lot_returns = 4 [
+  repeated WeightedAddress lot_returns = 4 [
     (gogoproto.moretags) = "yaml:\"lot_returns\"",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "WeightedAddresses"
   ];
 }
 
-message WeightedAddresses {
-  repeated string addresses = 1 [
-    (gogoproto.moretags) = "yaml:\"addresses\"",
+message WeightedAddress {
+  string address = 1 [
+    (gogoproto.moretags) = "yaml:\"address\"",
     (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
-  repeated string weights = 2 [
-    (gogoproto.moretags) = "yaml:\"weights\"",
+  string weight = 2 [
+    (gogoproto.moretags) = "yaml:\"weight\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];

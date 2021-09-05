@@ -43,11 +43,14 @@ type Auction interface {
 	GetPhase() string
 }
 
+var _ Auction = (*SurplusAuction)(nil)
+var _ Auction = (*DebtAuction)(nil)
+var _ Auction = (*CollateralAuction)(nil)
+
 // Auctions is a slice of auctions.
 type Auctions []Auction
 
 func UnpackAuction(auctionAny *types.Any) (Auction, error) {
-	fmt.Println(auctionAny)
 	switch auctionAny.TypeUrl {
 	case "/" + proto.MessageName(&SurplusAuction{}):
 		var auction SurplusAuction
@@ -60,7 +63,6 @@ func UnpackAuction(auctionAny *types.Any) (Auction, error) {
 	case "/" + proto.MessageName(&CollateralAuction{}):
 		var auction CollateralAuction
 		auction.Unmarshal(auctionAny.Value)
-		fmt.Println(Auction(&auction))
 		return &auction, nil
 	default:
 		return nil, fmt.Errorf("this Any doesn't have Auction value")
@@ -219,7 +221,7 @@ func (a CollateralAuction) Validate() error {
 	if !a.MaxBid.IsValid() {
 		return fmt.Errorf("invalid max bid: %s", a.MaxBid)
 	}
-	if err := a.LotReturns.Validate(); err != nil {
+	if err := WeightedAddresses(a.LotReturns).Validate(); err != nil {
 		return fmt.Errorf("invalid lot returns: %w", err)
 	}
 	return a.BaseAuction.Validate()
@@ -244,41 +246,48 @@ func NewCollateralAuction(seller string, lot sdk.Coin, endTime time.Time, maxBid
 	return auction
 }
 
+type WeightedAddresses []WeightedAddress
+
 // NewWeightedAddresses returns a new list addresses with weights.
 func NewWeightedAddresses(addrs []sdk.AccAddress, weights []sdk.Int) (WeightedAddresses, error) {
-
-	wa := WeightedAddresses{
-		Addresses: jpyx.StringAccAddresses(addrs),
-		Weights:   weights,
+	if len(addrs) < 1 {
+		return nil, fmt.Errorf("must be at least 1 weighted address")
 	}
-	if err := wa.Validate(); err != nil {
+
+	if len(addrs) != len(weights) {
+		return nil, fmt.Errorf("number of addresses doesn't match number of weights, %d ≠ %d", len(addrs), len(weights))
+	}
+
+	var was WeightedAddresses
+
+	for i := range addrs {
+		wa := WeightedAddress{
+			Address: jpyx.StringAccAddress(addrs[i]),
+			Weight:  weights[i],
+		}
+
+		was = append(was, wa)
+	}
+	if err := was.Validate(); err != nil {
 		return WeightedAddresses{}, err
 	}
-	return wa, nil
+	return was, nil
 }
 
 // Validate checks for that the weights are not negative, not all zero, and the lengths match.
-func (wa WeightedAddresses) Validate() error {
-	if len(wa.Weights) < 1 {
-		return fmt.Errorf("must be at least 1 weighted address")
-	}
-
-	if len(wa.Addresses) != len(wa.Weights) {
-		return fmt.Errorf("number of addresses doesn't match number of weights, %d ≠ %d", len(wa.Addresses), len(wa.Weights))
-	}
-
+func (was WeightedAddresses) Validate() error {
 	totalWeight := sdk.ZeroInt()
-	for i := range wa.Addresses {
-		if wa.Addresses[i].AccAddress().Empty() {
+	for i := range was {
+		if was[i].Address.AccAddress().Empty() {
 			return fmt.Errorf("address %d cannot be empty", i)
 		}
-		if len(wa.Addresses[i]) != sdk.AddrLen {
-			return fmt.Errorf("address %d has an invalid length: expected %d, got %d", i, sdk.AddrLen, len(wa.Addresses[i]))
+		if len(was[i].Address) != sdk.AddrLen {
+			return fmt.Errorf("address %d has an invalid length: expected %d, got %d", i, sdk.AddrLen, len(was[i].Address))
 		}
-		if wa.Weights[i].IsNegative() {
-			return fmt.Errorf("weight %d contains a negative amount: %s", i, wa.Weights[i])
+		if was[i].Weight.IsNegative() {
+			return fmt.Errorf("weight %d contains a negative amount: %s", i, was[i].Weight)
 		}
-		totalWeight = totalWeight.Add(wa.Weights[i])
+		totalWeight = totalWeight.Add(was[i].Weight)
 	}
 
 	if !totalWeight.IsPositive() {
@@ -286,4 +295,24 @@ func (wa WeightedAddresses) Validate() error {
 	}
 
 	return nil
+}
+
+func (was WeightedAddresses) Addresses() []sdk.AccAddress {
+	var address []sdk.AccAddress
+
+	for i := range was {
+		address = append(address, was[i].Address.AccAddress())
+	}
+
+	return address
+}
+
+func (was WeightedAddresses) Weights() []sdk.Int {
+	var weights []sdk.Int
+
+	for i := range was {
+		weights = append(weights, was[i].Weight)
+	}
+
+	return weights
 }

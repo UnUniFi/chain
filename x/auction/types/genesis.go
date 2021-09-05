@@ -95,6 +95,10 @@ type GenesisAuction interface {
 	Validate() error
 }
 
+var _ GenesisAuction = (*SurplusAuction)(nil)
+var _ GenesisAuction = (*DebtAuction)(nil)
+var _ GenesisAuction = (*CollateralAuction)(nil)
+
 // GenesisAuctions is a slice of genesis auctions.
 type GenesisAuctions []GenesisAuction
 

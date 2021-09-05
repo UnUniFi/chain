@@ -1,7 +1,6 @@
 package auction_test
 
 import (
-	"fmt"
 	"sort"
 	"testing"
 	"time"
@@ -14,24 +13,24 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/lcnem/jpyx/app"
-	jpyxtypes "github.com/lcnem/jpyx/types"
 	"github.com/lcnem/jpyx/x/auction"
 	auctiontypes "github.com/lcnem/jpyx/x/auction/types"
 )
 
 var _, testAddrs = app.GeneratePrivKeyAddressPairs(2)
 var testTime = time.Date(1998, 1, 1, 0, 0, 0, 0, time.UTC)
+var weightedAddresses, _ = auctiontypes.NewWeightedAddresses(testAddrs, []sdk.Int{sdk.OneInt(), sdk.OneInt()})
 var testAuction = auctiontypes.NewCollateralAuction(
 	"seller",
 	c("lotdenom", 10),
 	testTime,
 	c("biddenom", 1000),
-	auctiontypes.WeightedAddresses{Addresses: jpyxtypes.StringAccAddresses(testAddrs), Weights: []sdk.Int{sdk.OneInt(), sdk.OneInt()}},
+	weightedAddresses,
 	c("debt", 1000),
-).WithID(3).(auctiontypes.GenesisAuction)
+).WithID(3).(*auctiontypes.CollateralAuction)
+var testAuctions, _ = auctiontypes.PackGenesisAuctions(auctiontypes.GenesisAuctions{testAuction})
 
 func TestInitGenesis(t *testing.T) {
-	var testAuctions, _ = auctiontypes.PackGenesisAuctions(auctiontypes.GenesisAuctions{testAuction})
 	t.Run("valid", func(t *testing.T) {
 		// setup keepers
 		tApp := app.NewTestApp()
@@ -48,12 +47,6 @@ func TestInitGenesis(t *testing.T) {
 		// supplyKeeper.SetModuleAccount(ctx, moduleAcc)
 		accountKeeper.SetModuleAccount(ctx, moduleAcc)
 
-		fmt.Println(testAuctions[0])
-		auctiontypes.UnpackAuction(testAuctions[0])
-		fmt.Println("aaa")
-		fmt.Println(testAuction)
-		fmt.Println("bbb")
-
 		// create genesis
 		gs := auctiontypes.NewGenesisState(
 			10,
@@ -61,6 +54,7 @@ func TestInitGenesis(t *testing.T) {
 			// auctiontypes.GenesisAuctions{testAuction},
 			testAuctions,
 		)
+		require.Equal(t, gs.Auctions[0], testAuctions[0])
 
 		// run init
 		require.NotPanics(t, func() {
@@ -83,7 +77,6 @@ func TestInitGenesis(t *testing.T) {
 		})
 		i := 0
 		keeper.IterateAuctions(ctx, func(a auctiontypes.Auction) bool {
-			fmt.Println("ccc  ", i)
 			unpacked, _ := auctiontypes.UnpackAuction(gs.Auctions[i])
 			require.Equal(t, unpacked, a)
 			i++
@@ -136,7 +129,6 @@ func TestInitGenesis(t *testing.T) {
 }
 
 func TestExportGenesis(t *testing.T) {
-	var testAuctions, _ = auctiontypes.PackGenesisAuctions(auctiontypes.GenesisAuctions{testAuction})
 	t.Run("default", func(t *testing.T) {
 		// setup state
 		tApp := app.NewTestApp()
