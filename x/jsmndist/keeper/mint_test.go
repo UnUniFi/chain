@@ -48,9 +48,10 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
 
-	// params := jsmndisttypes.NewParams(true, testPeriods)
+	params := jsmndisttypes.NewParams(true, testPeriods)
+	jsmnGs := jsmndisttypes.NewGenesisState(params, jsmndisttypes.DefaultPreviousBlockTime)
 	// gs := app.GenesisState{jsmndisttypes.ModuleName: jsmndisttypes.ModuleCdc.MustMarshalJSON(jsmndisttypes.NewGenesisState(params, jsmndisttypes.DefaultPreviousBlockTime))}
-	gs := app.GenesisState{jsmndisttypes.ModuleName: jsmndisttypes.ModuleCdc.MustMarshalJSON(jsmndisttypes.DefaultGenesis())}
+	gs := app.GenesisState{jsmndisttypes.ModuleName: jsmndisttypes.ModuleCdc.MustMarshalJSON(&jsmnGs)}
 	tApp.InitializeFromGenesisStates(
 		authGS,
 		gs,
@@ -65,7 +66,6 @@ func (suite *KeeperTestSuite) SetupTest() {
 	// suite.supplyKeeper = sk
 	suite.accountKeeper = tApp.AccountKeeper
 	suite.bankKeeper = sk
-
 }
 
 func (suite *KeeperTestSuite) TestMintExpiredPeriod() {

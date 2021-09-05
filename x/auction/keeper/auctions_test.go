@@ -10,7 +10,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/lcnem/jpyx/app"
 	auctiontypes "github.com/lcnem/jpyx/x/auction/types"
@@ -26,10 +25,8 @@ func TestSurplusAuctionBasic(t *testing.T) {
 
 	tApp := app.NewTestApp()
 	bk := tApp.GetBankKeeper()
-	ctx := tApp.NewContext(false, tmproto.Header{Time: tmtime.Now()})
 
 	sellerAcc := authtypes.NewEmptyModuleAccount(sellerModName, authtypes.Burner) // forward auctions burn proceeds
-	require.NoError(t, bk.SetBalances(ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
 	tApp.InitializeFromGenesisStates(
 		// NewAuthGenStateFromAccs(authtypes.GenesisAccounts{
 		// 	authtypes.NewBaseAccount(buyer, cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
@@ -38,6 +35,8 @@ func TestSurplusAuctionBasic(t *testing.T) {
 		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{sellerAcc}),
 	)
+	ctx := tApp.NewContext(false, tmproto.Header{})
+	require.NoError(t, bk.SetBalances(ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
 
 	keeper := tApp.GetAuctionKeeper()
 
@@ -74,10 +73,8 @@ func TestDebtAuctionBasic(t *testing.T) {
 
 	tApp := app.NewTestApp()
 	bk := tApp.GetBankKeeper()
-	ctx := tApp.NewContext(false, tmproto.Header{Time: tmtime.Now()})
 
 	buyerAcc := authtypes.NewEmptyModuleAccount(buyerModName, authtypes.Minter) // reverse auctions mint payout
-	require.NoError(t, bk.SetBalances(ctx, buyerAddr, cs(c("debt", 100))))
 	tApp.InitializeFromGenesisStates(
 		// zNewAuthGenStateFromAccs(authtypes.GenesisAccounts{
 		// 	authtypes.NewBaseAccount(seller, cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
@@ -86,6 +83,9 @@ func TestDebtAuctionBasic(t *testing.T) {
 		app.NewAuthGenState(tApp, []sdk.AccAddress{seller}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{buyerAcc}),
 	)
+	ctx := tApp.NewContext(false, tmproto.Header{})
+	require.NoError(t, bk.SetBalances(ctx, buyerAddr, cs(c("debt", 100))))
+
 	keeper := tApp.GetAuctionKeeper()
 
 	// Start auction
@@ -117,10 +117,8 @@ func TestDebtAuctionDebtRemaining(t *testing.T) {
 
 	tApp := app.NewTestApp()
 	bk := tApp.GetBankKeeper()
-	ctx := tApp.NewContext(false, tmproto.Header{Time: tmtime.Now()})
 
 	buyerAcc := authtypes.NewEmptyModuleAccount(buyerModName, authtypes.Minter) // reverse auctions mint payout
-	require.NoError(t, bk.SetBalances(ctx, buyerAddr, cs(c("debt", 100))))
 	tApp.InitializeFromGenesisStates(
 		// NewAuthGenStateFromAccs(authtypes.GenesisAccounts{
 		// 	authtypes.NewBaseAccount(seller, cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
@@ -130,6 +128,9 @@ func TestDebtAuctionDebtRemaining(t *testing.T) {
 		app.NewAuthGenState(tApp, []sdk.AccAddress{seller}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{buyerAcc}),
 	)
+	ctx := tApp.NewContext(false, tmproto.Header{})
+	require.NoError(t, bk.SetBalances(ctx, buyerAddr, cs(c("debt", 100))))
+
 	keeper := tApp.GetAuctionKeeper()
 
 	// Start auction
@@ -165,10 +166,8 @@ func TestCollateralAuctionBasic(t *testing.T) {
 
 	tApp := app.NewTestApp()
 	bk := tApp.GetBankKeeper()
-	ctx := tApp.NewContext(false, tmproto.Header{Time: tmtime.Now()})
 
 	sellerAcc := authtypes.NewEmptyModuleAccount(sellerModName)
-	require.NoError(t, bk.SetBalances(ctx, sellerAddr, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
 	tApp.InitializeFromGenesisStates(
 		// NewAuthGenStateFromAccs(authtypes.GenesisAccounts{
 		// 	authtypes.NewBaseAccount(buyer, cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
@@ -183,6 +182,9 @@ func TestCollateralAuctionBasic(t *testing.T) {
 		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[1]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
 		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[2]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
 	)
+	ctx := tApp.NewContext(false, tmproto.Header{})
+	require.NoError(t, bk.SetBalances(ctx, sellerAddr, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
+
 	keeper := tApp.GetAuctionKeeper()
 
 	// Start auction
@@ -232,9 +234,8 @@ func TestCollateralAuctionDebtRemaining(t *testing.T) {
 
 	tApp := app.NewTestApp()
 	bk := tApp.GetBankKeeper()
-	ctx := tApp.NewContext(false, tmproto.Header{Time: tmtime.Now()})
 	sellerAcc := authtypes.NewEmptyModuleAccount(sellerModName)
-	require.NoError(t, bk.SetBalances(ctx, sellerAddr, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
+	// require.NoError(t, sellerAcc.SetCoins(cs(c("token1", 100), c("token2", 100), c("debt", 100))))
 	tApp.InitializeFromGenesisStates(
 		// NewAuthGenStateFromAccs(authtypes.GenesisAccounts{
 		// 	authtypes.NewBaseAccount(buyer, cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
@@ -249,6 +250,9 @@ func TestCollateralAuctionDebtRemaining(t *testing.T) {
 		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[1]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
 		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[2]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
 	)
+	ctx := tApp.NewContext(false, tmproto.Header{})
+	require.NoError(t, bk.SetBalances(ctx, sellerAddr, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
+
 	keeper := tApp.GetAuctionKeeper()
 
 	// Start auction
@@ -325,14 +329,15 @@ func TestStartSurplusAuction(t *testing.T) {
 			initialLiquidatorCoins := cs(c("stable", 100))
 			tApp := app.NewTestApp()
 			sk := tApp.GetBankKeeper()
-			ctx := tApp.NewContext(true, tmproto.Header{Height: tApp.LastBlockHeight()}).WithBlockTime(tc.blockTime)
 
 			liqAddr := authtypes.NewModuleAddress(cdptypes.LiquidatorMacc)
 			liqAcc := authtypes.NewEmptyModuleAccount(cdptypes.LiquidatorMacc, authtypes.Burner)
-			require.NoError(t, sk.SetBalances(ctx, liqAddr, initialLiquidatorCoins))
 			tApp.InitializeFromGenesisStates(
 				NewAuthGenStateFromAccs(tApp, authtypes.GenesisAccounts{liqAcc}),
 			)
+			ctx := tApp.NewContext(false, tmproto.Header{}).WithBlockTime(tc.blockTime)
+			require.NoError(t, sk.SetBalances(ctx, liqAddr, initialLiquidatorCoins))
+
 			keeper := tApp.GetAuctionKeeper()
 
 			// run function under test
@@ -389,11 +394,9 @@ func TestCloseAuction(t *testing.T) {
 
 	tApp := app.NewTestApp()
 	bk := tApp.GetBankKeeper()
-	ctx := tApp.NewContext(false, tmproto.Header{Time: tmtime.Now()})
 
 	sellerAcc := authtypes.NewEmptyModuleAccount(sellerModName, authtypes.Burner) // forward auctions burn proceeds
 	// require.NoError(t, sellerAcc.SetCoins(cs(c("token1", 100), c("token2", 100))))
-	require.NoError(t, bk.SetBalances(ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
 	tApp.InitializeFromGenesisStates(
 		// NewAuthGenStateFromAccs(authtypes.GenesisAccounts{
 		// 	authtypes.NewBaseAccount(buyer, cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
@@ -402,6 +405,9 @@ func TestCloseAuction(t *testing.T) {
 		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{sellerAcc}),
 	)
+	ctx := tApp.NewContext(false, tmproto.Header{})
+	require.NoError(t, bk.SetBalances(ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
+
 	keeper := tApp.GetAuctionKeeper()
 
 	// Create an auction (lot: 20 token1, initialBid: 0 token2)
@@ -424,11 +430,9 @@ func TestCloseExpiredAuctions(t *testing.T) {
 
 	tApp := app.NewTestApp()
 	bk := tApp.GetBankKeeper()
-	ctx := tApp.NewContext(false, tmproto.Header{Time: tmtime.Now()})
 
 	sellerAcc := authtypes.NewEmptyModuleAccount(sellerModName, authtypes.Burner) // forward auctions burn proceeds
 	// require.NoError(t, sellerAcc.SetCoins(cs(c("token1", 100), c("token2", 100))))
-	require.NoError(t, bk.SetBalances(ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
 	tApp.InitializeFromGenesisStates(
 		// NewAuthGenStateFromAccs(authtypes.GenesisAccounts{
 		// 	authtypes.NewBaseAccount(buyer, cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
@@ -437,6 +441,9 @@ func TestCloseExpiredAuctions(t *testing.T) {
 		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{sellerAcc}),
 	)
+	ctx := tApp.NewContext(false, tmproto.Header{})
+	require.NoError(t, bk.SetBalances(ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
+
 	keeper := tApp.GetAuctionKeeper()
 
 	// Start auction 1
