@@ -10,6 +10,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/lcnem/jpyx/app"
 	auctiontypes "github.com/lcnem/jpyx/x/auction/types"
@@ -25,7 +26,7 @@ func TestSurplusAuctionBasic(t *testing.T) {
 
 	tApp := app.NewTestApp()
 	bk := tApp.GetBankKeeper()
-	ctx := tApp.NewContext(true, tmproto.Header{Height: tApp.LastBlockHeight()})
+	ctx := tApp.NewContext(false, tmproto.Header{Time: tmtime.Now()})
 
 	sellerAcc := authtypes.NewEmptyModuleAccount(sellerModName, authtypes.Burner) // forward auctions burn proceeds
 	require.NoError(t, bk.SetBalances(ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
@@ -73,7 +74,7 @@ func TestDebtAuctionBasic(t *testing.T) {
 
 	tApp := app.NewTestApp()
 	bk := tApp.GetBankKeeper()
-	ctx := tApp.NewContext(true, tmproto.Header{Height: tApp.LastBlockHeight()})
+	ctx := tApp.NewContext(false, tmproto.Header{Time: tmtime.Now()})
 
 	buyerAcc := authtypes.NewEmptyModuleAccount(buyerModName, authtypes.Minter) // reverse auctions mint payout
 	require.NoError(t, bk.SetBalances(ctx, buyerAddr, cs(c("debt", 100))))
@@ -116,7 +117,7 @@ func TestDebtAuctionDebtRemaining(t *testing.T) {
 
 	tApp := app.NewTestApp()
 	bk := tApp.GetBankKeeper()
-	ctx := tApp.NewContext(true, tmproto.Header{Height: tApp.LastBlockHeight()})
+	ctx := tApp.NewContext(false, tmproto.Header{Time: tmtime.Now()})
 
 	buyerAcc := authtypes.NewEmptyModuleAccount(buyerModName, authtypes.Minter) // reverse auctions mint payout
 	require.NoError(t, bk.SetBalances(ctx, buyerAddr, cs(c("debt", 100))))
@@ -164,7 +165,7 @@ func TestCollateralAuctionBasic(t *testing.T) {
 
 	tApp := app.NewTestApp()
 	bk := tApp.GetBankKeeper()
-	ctx := tApp.NewContext(true, tmproto.Header{Height: tApp.LastBlockHeight()})
+	ctx := tApp.NewContext(false, tmproto.Header{Time: tmtime.Now()})
 
 	sellerAcc := authtypes.NewEmptyModuleAccount(sellerModName)
 	require.NoError(t, bk.SetBalances(ctx, sellerAddr, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
@@ -231,7 +232,7 @@ func TestCollateralAuctionDebtRemaining(t *testing.T) {
 
 	tApp := app.NewTestApp()
 	bk := tApp.GetBankKeeper()
-	ctx := tApp.NewContext(true, tmproto.Header{Height: tApp.LastBlockHeight()})
+	ctx := tApp.NewContext(false, tmproto.Header{Time: tmtime.Now()})
 	sellerAcc := authtypes.NewEmptyModuleAccount(sellerModName)
 	require.NoError(t, bk.SetBalances(ctx, sellerAddr, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
 	tApp.InitializeFromGenesisStates(
@@ -388,7 +389,7 @@ func TestCloseAuction(t *testing.T) {
 
 	tApp := app.NewTestApp()
 	bk := tApp.GetBankKeeper()
-	ctx := tApp.NewContext(true, tmproto.Header{Height: tApp.LastBlockHeight()})
+	ctx := tApp.NewContext(false, tmproto.Header{Time: tmtime.Now()})
 
 	sellerAcc := authtypes.NewEmptyModuleAccount(sellerModName, authtypes.Burner) // forward auctions burn proceeds
 	// require.NoError(t, sellerAcc.SetCoins(cs(c("token1", 100), c("token2", 100))))
@@ -423,7 +424,7 @@ func TestCloseExpiredAuctions(t *testing.T) {
 
 	tApp := app.NewTestApp()
 	bk := tApp.GetBankKeeper()
-	ctx := tApp.NewContext(true, tmproto.Header{Height: tApp.LastBlockHeight()})
+	ctx := tApp.NewContext(false, tmproto.Header{Time: tmtime.Now()})
 
 	sellerAcc := authtypes.NewEmptyModuleAccount(sellerModName, authtypes.Burner) // forward auctions burn proceeds
 	// require.NoError(t, sellerAcc.SetCoins(cs(c("token1", 100), c("token2", 100))))
