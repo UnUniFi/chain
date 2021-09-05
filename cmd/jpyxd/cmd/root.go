@@ -193,7 +193,7 @@ func (a appCreator) newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, a
 		panic(err)
 	}
 
-	return app.New(
+	return app.NewApp(
 		logger, db, traceStore, true, skipUpgradeHeights,
 		cast.ToString(appOpts.Get(flags.FlagHome)),
 		cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)),
@@ -227,7 +227,7 @@ func (a appCreator) appExport(
 	}
 
 	if height != -1 {
-		anApp = app.New(
+		anApp = app.NewApp(
 			logger,
 			db,
 			traceStore,
@@ -244,7 +244,7 @@ func (a appCreator) appExport(
 			return servertypes.ExportedApp{}, err
 		}
 	} else {
-		anApp = app.New(
+		anApp = app.NewApp(
 			logger,
 			db,
 			traceStore,
