@@ -176,11 +176,18 @@ func TestCollateralAuctionBasic(t *testing.T) {
 		// 	authtypes.NewBaseAccount(returnAddrs[2], cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
 		// 	sellerAcc,
 		// }),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
+		app.NewAuthGenState(tApp, []sdk.AccAddress{
+			buyer,
+			returnAddrs[0],
+			returnAddrs[1],
+			returnAddrs[2],
+		}, []sdk.Coins{
+			cs(c("token1", 100), c("token2", 100)),
+			cs(c("token1", 100), c("token2", 100)),
+			cs(c("token1", 100), c("token2", 100)),
+			cs(c("token1", 100), c("token2", 100)),
+		}),
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{sellerAcc}),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[0]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[1]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[2]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
 	)
 	ctx := tApp.NewContext(false, tmproto.Header{})
 	require.NoError(t, bk.SetBalances(ctx, sellerAddr, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
@@ -244,11 +251,18 @@ func TestCollateralAuctionDebtRemaining(t *testing.T) {
 		// 	authtypes.NewBaseAccount(returnAddrs[2], cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
 		// 	sellerAcc,
 		// }),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
+		app.NewAuthGenState(tApp, []sdk.AccAddress{
+			buyer,
+			returnAddrs[0],
+			returnAddrs[1],
+			returnAddrs[2],
+		}, []sdk.Coins{
+			cs(c("token1", 100), c("token2", 100)),
+			cs(c("token1", 100), c("token2", 100)),
+			cs(c("token1", 100), c("token2", 100)),
+			cs(c("token1", 100), c("token2", 100)),
+		}),
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{sellerAcc}),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[0]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[1]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
-		app.NewAuthGenState(tApp, []sdk.AccAddress{returnAddrs[2]}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
 	)
 	ctx := tApp.NewContext(false, tmproto.Header{})
 	require.NoError(t, bk.SetBalances(ctx, sellerAddr, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
