@@ -19,5 +19,6 @@ message GenesisState {
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
+  string gov_denom = 3 [(gogoproto.moretags) = "yaml:\"gov_denom\""];
   // this line is used by starport scaffolding # genesis/proto/state
 }

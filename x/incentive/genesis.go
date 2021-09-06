@@ -24,7 +24,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKe
 	for _, rp := range gs.Params.CdpMintingRewardPeriods {
 		_, found := cdpKeeper.GetCollateral(ctx, rp.CollateralType)
 		if !found {
-			panic(fmt.Sprintf("jpyx minting collateral type %s not found in cdp collateral types", rp.CollateralType))
+			panic(fmt.Sprintf("cdp minting collateral type %s not found in cdp collateral types", rp.CollateralType))
 		}
 		k.SetCdpMintingRewardFactor(ctx, rp.CollateralType, sdk.ZeroDec())
 	}
@@ -43,17 +43,19 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKe
 		}
 		k.SetCdpMintingClaim(ctx, claim)
 	}
+
+	k.SetGenesisDenoms(ctx, gs.Denoms)
 }
 
 // ExportGenesis export genesis state for incentive module
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 	params := k.GetParams(ctx)
 
-	jpyxClaims := k.GetAllCdpMintingClaims(ctx)
+	cdpClaims := k.GetAllCdpMintingClaims(ctx)
 
 	synchronizedCdpClaims := types.CdpMintingClaims{}
 
-	for _, jpyxClaim := range jpyxClaims {
+	for _, jpyxClaim := range cdpClaims {
 		claim, err := k.SynchronizeCdpMintingClaim(ctx, jpyxClaim)
 		if err != nil {
 			panic(err)
@@ -64,15 +66,20 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 		synchronizedCdpClaims = append(synchronizedCdpClaims, claim)
 	}
 
-	var jpyxMintingGats types.GenesisAccumulationTimes
+	var cdpMintingGats types.GenesisAccumulationTimes
 	for _, rp := range params.CdpMintingRewardPeriods {
 		pat, found := k.GetPreviousCdpMintingAccrualTime(ctx, rp.CollateralType)
 		if !found {
 			panic(fmt.Sprintf("expected previous jpyx minting reward accrual time to be set in state for %s", rp.CollateralType))
 		}
 		gat := types.NewGenesisAccumulationTime(rp.CollateralType, pat)
-		jpyxMintingGats = append(jpyxMintingGats, gat)
+		cdpMintingGats = append(cdpMintingGats, gat)
 	}
 
-	return types.NewGenesisState(params, jpyxMintingGats, synchronizedCdpClaims)
+	denoms, found := k.GetGenesisDenoms(ctx)
+	if !found {
+		denoms = types.DefaultGenesisDenoms()
+	}
+
+	return types.NewGenesisState(params, cdpMintingGats, synchronizedCdpClaims, denoms)
 }

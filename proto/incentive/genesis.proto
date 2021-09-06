@@ -22,6 +22,7 @@ message GenesisState {
     (gogoproto.moretags) = "yaml:\"cdp_minting_claims\"",
     (gogoproto.nullable) = false
   ];
+  GenesisDenoms denoms = 4 [(gogoproto.moretags) = "yaml:\"denoms\""];
   // this line is used by starport scaffolding # genesis/proto/state
 }
 
@@ -32,4 +33,9 @@ message GenesisAccumulationTime {
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
+}
+
+message GenesisDenoms {
+  string principal_denom = 1 [(gogoproto.moretags) = "yaml:\"principal_denom\""];
+  string cdp_minting_reward_denom = 2 [(gogoproto.moretags) = "yaml:\"principal_denom\""];
 }

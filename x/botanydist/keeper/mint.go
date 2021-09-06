@@ -38,7 +38,8 @@ func (k Keeper) MintPeriodInflation(ctx sdk.Context) error {
 		case period.End.After(previousBlockTime) && period.End.Before(ctx.BlockTime()):
 			// calculate time elapsed relative to the periods end time
 			timeElapsed := sdk.NewInt(period.End.Unix() - previousBlockTime.Unix())
-			err = k.mintInflationaryCoins(ctx, period.Inflation, timeElapsed, types.GovDenom)
+			govDenom, _ := k.GetGovDenom(ctx)
+			err = k.mintInflationaryCoins(ctx, period.Inflation, timeElapsed, govDenom)
 			// update the value of previousBlockTime so that the next period starts from the end of the last
 			// period and not the original value of previousBlockTime
 			previousBlockTime = period.End
@@ -47,7 +48,8 @@ func (k Keeper) MintPeriodInflation(ctx sdk.Context) error {
 		case (period.Start.Before(previousBlockTime) || period.Start.Equal(previousBlockTime)) && period.End.After(ctx.BlockTime()):
 			// calculate time elapsed relative to the current block time
 			timeElapsed := sdk.NewInt(ctx.BlockTime().Unix() - previousBlockTime.Unix())
-			err = k.mintInflationaryCoins(ctx, period.Inflation, timeElapsed, types.GovDenom)
+			govDenom, _ := k.GetGovDenom(ctx)
+			err = k.mintInflationaryCoins(ctx, period.Inflation, timeElapsed, govDenom)
 
 		// Case 4 - period hasn't started
 		case period.Start.After(ctx.BlockTime()) || period.Start.Equal(ctx.BlockTime()):

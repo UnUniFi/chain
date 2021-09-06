@@ -167,6 +167,7 @@ func NewIncentiveGenState(previousAccumTime, endTime time.Time, rewardPeriods ..
 		),
 		incentivetypes.DefaultGenesisAccumulationTimes,
 		incentivetypes.DefaultCdpClaims,
+		incentivetypes.DefaultGenesisDenoms(),
 	)
 	return app.GenesisState{incentivetypes.ModuleName: incentivetypes.ModuleCdc.MustMarshalJSON(&genesis)}
 }

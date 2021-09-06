@@ -34,8 +34,8 @@ var (
 	DefaultCdpClaims                = CdpMintingClaims{}
 	DefaultGenesisAccumulationTimes = GenesisAccumulationTimes{}
 	DefaultClaimEnd                 = tmtime.Canonical(time.Unix(1, 0))
-	GovDenom                        = cdptypes.DefaultGovDenom
-	PrincipalDenom                  = "jpyx"
+	DefaultPrincipalDenom           = cdptypes.DefaultStableDenom
+	DefaultCDPMintingRewardDenom    = cdptypes.DefaultGovDenom
 	IncentiveMacc                   = botanydistTypes.ModuleName
 )
 

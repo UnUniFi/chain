@@ -18,6 +18,7 @@ func DefaultGenesis() *GenesisState {
 		Params:               params,
 		CdpAccumulationTimes: GenesisAccumulationTimes{},
 		CdpMintingClaims:     DefaultCdpClaims,
+		Denoms:               DefaultGenesisDenoms(),
 		// this line is used by starport scaffolding # genesis/types/default
 	}
 }
@@ -34,16 +35,20 @@ func (gs GenesisState) Validate() error {
 	if err := GenesisAccumulationTimes(gs.CdpAccumulationTimes).Validate(); err != nil {
 		return err
 	}
+	if err := gs.Denoms.Validate(); err != nil {
+		return err
+	}
 
 	return CdpMintingClaims(gs.CdpMintingClaims).Validate()
 }
 
 // NewGenesisState returns a new genesis state
-func NewGenesisState(params Params, jpyxAccumTimes GenesisAccumulationTimes, c CdpMintingClaims) GenesisState {
+func NewGenesisState(params Params, jpyxAccumTimes GenesisAccumulationTimes, c CdpMintingClaims, denoms *GenesisDenoms) GenesisState {
 	return GenesisState{
 		Params:               params,
 		CdpAccumulationTimes: jpyxAccumTimes,
 		CdpMintingClaims:     c,
+		Denoms:               denoms,
 	}
 }
 
@@ -85,5 +90,23 @@ func (gat GenesisAccumulationTime) Validate() error {
 	if len(gat.CollateralType) == 0 {
 		return fmt.Errorf("genesis accumulation time's collateral type must be defined")
 	}
+	return nil
+}
+
+func DefaultGenesisDenoms() *GenesisDenoms {
+	return &GenesisDenoms{
+		PrincipalDenom:        DefaultPrincipalDenom,
+		CdpMintingRewardDenom: DefaultCDPMintingRewardDenom,
+	}
+}
+
+func (denoms *GenesisDenoms) Validate() error {
+	if len(denoms.PrincipalDenom) == 0 {
+		return fmt.Errorf("GovDenom is nil or empty")
+	}
+	if len(denoms.CdpMintingRewardDenom) == 0 {
+		return fmt.Errorf("GovDenom is nil or empty")
+	}
+
 	return nil
 }

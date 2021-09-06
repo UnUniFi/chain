@@ -17,6 +17,7 @@ func TestGenesisStateValidate(t *testing.T) {
 		params      Params
 		genAccTimes GenesisAccumulationTimes
 		claims      CdpMintingClaims
+		denoms      *GenesisDenoms
 	}
 
 	type errArgs struct {
@@ -35,6 +36,7 @@ func TestGenesisStateValidate(t *testing.T) {
 				params:      DefaultParams(),
 				genAccTimes: DefaultGenesisAccumulationTimes,
 				claims:      DefaultCdpClaims,
+				denoms:      DefaultGenesisDenoms(),
 			},
 			errArgs: errArgs{
 				expectPass: true,
@@ -78,6 +80,7 @@ func TestGenesisStateValidate(t *testing.T) {
 						},
 					},
 				},
+				denoms: DefaultGenesisDenoms(),
 			},
 			errArgs: errArgs{
 				expectPass: true,
@@ -120,6 +123,7 @@ func TestGenesisStateValidate(t *testing.T) {
 						},
 					},
 				},
+				denoms: DefaultGenesisDenoms(),
 			},
 			errArgs: errArgs{
 				expectPass: false,
@@ -130,7 +134,7 @@ func TestGenesisStateValidate(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			gs := NewGenesisState(tc.args.params, tc.args.genAccTimes, tc.args.claims)
+			gs := NewGenesisState(tc.args.params, tc.args.genAccTimes, tc.args.claims, tc.args.denoms)
 			err := gs.Validate()
 			if tc.errArgs.expectPass {
 				require.NoError(t, err, tc.name)
