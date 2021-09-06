@@ -16,6 +16,7 @@ func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		Params:            DefaultParams(),
 		PreviousBlockTime: DefaultPreviousBlockTime,
+		GovDenom:          DefaultGovDenom,
 		// this line is used by starport scaffolding # genesis/types/default
 	}
 }
