@@ -11,8 +11,8 @@ import (
 
 	tmtime "github.com/tendermint/tendermint/types/time"
 
+	botanydistTypes "github.com/lcnem/jpyx/x/botanydist/types"
 	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
-	jsmndistTypes "github.com/lcnem/jpyx/x/jsmndist/types"
 )
 
 // Valid reward multipliers
@@ -24,28 +24,28 @@ const (
 
 // Parameter keys and default values
 var (
-	KeyJpyxMintingRewardPeriods     = []byte("JpyxMintingRewardPeriods")
+	KeyCdpMintingRewardPeriods      = []byte("CdpMintingRewardPeriods")
 	KeyClaimEnd                     = []byte("ClaimEnd")
 	KeyMultipliers                  = []byte("ClaimMultipliers")
 	DefaultActive                   = false
 	DefaultRewardPeriods            = RewardPeriods{}
 	DefaultMultiRewardPeriods       = MultiRewardPeriods{}
 	DefaultMultipliers              = Multipliers{}
-	DefaultJpyxClaims               = JpyxMintingClaims{}
+	DefaultCdpClaims                = CdpMintingClaims{}
 	DefaultGenesisAccumulationTimes = GenesisAccumulationTimes{}
 	DefaultClaimEnd                 = tmtime.Canonical(time.Unix(1, 0))
 	GovDenom                        = cdptypes.DefaultGovDenom
 	PrincipalDenom                  = "jpyx"
-	IncentiveMacc                   = jsmndistTypes.ModuleName
+	IncentiveMacc                   = botanydistTypes.ModuleName
 )
 
 // NewParams returns a new params object
 func NewParams(jpyxMinting RewardPeriods, hardSupply, hardBorrow MultiRewardPeriods,
 	hardDelegator RewardPeriods, multipliers Multipliers, claimEnd time.Time) Params {
 	return Params{
-		JpyxMintingRewardPeriods: jpyxMinting,
-		ClaimMultipliers:         multipliers,
-		ClaimEnd:                 claimEnd,
+		CdpMintingRewardPeriods: jpyxMinting,
+		ClaimMultipliers:        multipliers,
+		ClaimEnd:                claimEnd,
 	}
 }
 
@@ -63,7 +63,7 @@ func ParamKeyTable() paramstype.KeyTable {
 // ParamSetPairs implements the ParamSet interface and returns all the key/value pairs
 func (p *Params) ParamSetPairs() paramstype.ParamSetPairs {
 	return paramstype.ParamSetPairs{
-		paramstype.NewParamSetPair(KeyJpyxMintingRewardPeriods, &p.JpyxMintingRewardPeriods, validateRewardPeriodsParam),
+		paramstype.NewParamSetPair(KeyCdpMintingRewardPeriods, &p.CdpMintingRewardPeriods, validateRewardPeriodsParam),
 		paramstype.NewParamSetPair(KeyClaimEnd, &p.ClaimEnd, validateClaimEndParam),
 		paramstype.NewParamSetPair(KeyMultipliers, &p.ClaimMultipliers, validateMultipliersParam),
 	}
@@ -76,7 +76,7 @@ func (p Params) Validate() error {
 		return err
 	}
 
-	if err := validateRewardPeriodsParam(p.JpyxMintingRewardPeriods); err != nil {
+	if err := validateRewardPeriodsParam(p.CdpMintingRewardPeriods); err != nil {
 		return err
 	}
 

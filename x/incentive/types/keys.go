@@ -24,11 +24,11 @@ func KeyPrefix(p string) []byte {
 const (
 	ParamsKey = "Params-value-"
 
-	JpyxMintingRewardDenom = "ujsmn"
+	CdpMintingRewardDenom = "ujsmn"
 )
 
 var (
-	JpyxMintingClaimKeyPrefix                     = []byte{0x01} // prefix for keys that store Jpyx minting claims
-	JpyxMintingRewardFactorKeyPrefix              = []byte{0x02} // prefix for key that stores Jpyx minting reward factors
-	PreviousJpyxMintingRewardAccrualTimeKeyPrefix = []byte{0x03} // prefix for key that stores the blocktime
+	CdpMintingClaimKeyPrefix                     = []byte{0x01} // prefix for keys that store Cdp minting claims
+	CdpMintingRewardFactorKeyPrefix              = []byte{0x02} // prefix for key that stores Cdp minting reward factors
+	PreviousCdpMintingRewardAccrualTimeKeyPrefix = []byte{0x03} // prefix for key that stores the blocktime
 )

@@ -15,9 +15,9 @@ const DefaultIndex uint64 = 1
 func DefaultGenesis() *GenesisState {
 	params := DefaultParams()
 	return &GenesisState{
-		Params:                params,
-		JpyxAccumulationTimes: GenesisAccumulationTimes{},
-		JpyxMintingClaims:     DefaultJpyxClaims,
+		Params:               params,
+		CdpAccumulationTimes: GenesisAccumulationTimes{},
+		CdpMintingClaims:     DefaultCdpClaims,
 		// this line is used by starport scaffolding # genesis/types/default
 	}
 }
@@ -31,19 +31,19 @@ func (gs GenesisState) Validate() error {
 	if err := gs.Params.Validate(); err != nil {
 		return err
 	}
-	if err := GenesisAccumulationTimes(gs.JpyxAccumulationTimes).Validate(); err != nil {
+	if err := GenesisAccumulationTimes(gs.CdpAccumulationTimes).Validate(); err != nil {
 		return err
 	}
 
-	return JpyxMintingClaims(gs.JpyxMintingClaims).Validate()
+	return CdpMintingClaims(gs.CdpMintingClaims).Validate()
 }
 
 // NewGenesisState returns a new genesis state
-func NewGenesisState(params Params, jpyxAccumTimes GenesisAccumulationTimes, c JpyxMintingClaims) GenesisState {
+func NewGenesisState(params Params, jpyxAccumTimes GenesisAccumulationTimes, c CdpMintingClaims) GenesisState {
 	return GenesisState{
-		Params:                params,
-		JpyxAccumulationTimes: jpyxAccumTimes,
-		JpyxMintingClaims:     c,
+		Params:               params,
+		CdpAccumulationTimes: jpyxAccumTimes,
+		CdpMintingClaims:     c,
 	}
 }
 

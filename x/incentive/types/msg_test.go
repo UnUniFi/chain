@@ -57,7 +57,7 @@ func (suite *MsgTestSuite) SetupTest() {
 
 func (suite *MsgTestSuite) TestMsgValidation() {
 	for _, t := range suite.tests {
-		msg := incentivetypes.NewMsgClaimJpyxMintingReward(t.from, t.multiplierName)
+		msg := incentivetypes.NewMsgClaimCdpMintingReward(t.from, t.multiplierName)
 		err := msg.ValidateBasic()
 		if t.expectPass {
 			suite.Require().NoError(err)

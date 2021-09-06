@@ -17,10 +17,10 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	k.paramSpace.SetParamSet(ctx, &params)
 }
 
-// GetJpyxMintingRewardPeriod returns the reward period with the specified collateral type if it's found in the params
-func (k Keeper) GetJpyxMintingRewardPeriod(ctx sdk.Context, collateralType string) (types.RewardPeriod, bool) {
+// GetCdpMintingRewardPeriod returns the reward period with the specified collateral type if it's found in the params
+func (k Keeper) GetCdpMintingRewardPeriod(ctx sdk.Context, collateralType string) (types.RewardPeriod, bool) {
 	params := k.GetParams(ctx)
-	for _, rp := range params.JpyxMintingRewardPeriods {
+	for _, rp := range params.CdpMintingRewardPeriods {
 		if rp.CollateralType == collateralType {
 			return rp, true
 		}

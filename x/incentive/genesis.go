@@ -21,27 +21,27 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKe
 		panic(fmt.Sprintf("failed to validate %s genesis state: %s", types.ModuleName, err))
 	}
 
-	for _, rp := range gs.Params.JpyxMintingRewardPeriods {
+	for _, rp := range gs.Params.CdpMintingRewardPeriods {
 		_, found := cdpKeeper.GetCollateral(ctx, rp.CollateralType)
 		if !found {
 			panic(fmt.Sprintf("jpyx minting collateral type %s not found in cdp collateral types", rp.CollateralType))
 		}
-		k.SetJpyxMintingRewardFactor(ctx, rp.CollateralType, sdk.ZeroDec())
+		k.SetCdpMintingRewardFactor(ctx, rp.CollateralType, sdk.ZeroDec())
 	}
 
 	k.SetParams(ctx, gs.Params)
 
-	for _, gat := range gs.JpyxAccumulationTimes {
-		k.SetPreviousJpyxMintingAccrualTime(ctx, gat.CollateralType, gat.PreviousAccumulationTime)
+	for _, gat := range gs.CdpAccumulationTimes {
+		k.SetPreviousCdpMintingAccrualTime(ctx, gat.CollateralType, gat.PreviousAccumulationTime)
 	}
 
-	for i, claim := range gs.JpyxMintingClaims {
+	for i, claim := range gs.CdpMintingClaims {
 		for j, ri := range claim.RewardIndexes {
 			if ri.RewardFactor != sdk.ZeroDec() {
-				gs.JpyxMintingClaims[i].RewardIndexes[j].RewardFactor = sdk.ZeroDec()
+				gs.CdpMintingClaims[i].RewardIndexes[j].RewardFactor = sdk.ZeroDec()
 			}
 		}
-		k.SetJpyxMintingClaim(ctx, claim)
+		k.SetCdpMintingClaim(ctx, claim)
 	}
 }
 
@@ -49,24 +49,24 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKe
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 	params := k.GetParams(ctx)
 
-	jpyxClaims := k.GetAllJpyxMintingClaims(ctx)
+	jpyxClaims := k.GetAllCdpMintingClaims(ctx)
 
-	synchronizedJpyxClaims := types.JpyxMintingClaims{}
+	synchronizedCdpClaims := types.CdpMintingClaims{}
 
 	for _, jpyxClaim := range jpyxClaims {
-		claim, err := k.SynchronizeJpyxMintingClaim(ctx, jpyxClaim)
+		claim, err := k.SynchronizeCdpMintingClaim(ctx, jpyxClaim)
 		if err != nil {
 			panic(err)
 		}
 		for i := range claim.RewardIndexes {
 			claim.RewardIndexes[i].RewardFactor = sdk.ZeroDec()
 		}
-		synchronizedJpyxClaims = append(synchronizedJpyxClaims, claim)
+		synchronizedCdpClaims = append(synchronizedCdpClaims, claim)
 	}
 
 	var jpyxMintingGats types.GenesisAccumulationTimes
-	for _, rp := range params.JpyxMintingRewardPeriods {
-		pat, found := k.GetPreviousJpyxMintingAccrualTime(ctx, rp.CollateralType)
+	for _, rp := range params.CdpMintingRewardPeriods {
+		pat, found := k.GetPreviousCdpMintingAccrualTime(ctx, rp.CollateralType)
 		if !found {
 			panic(fmt.Sprintf("expected previous jpyx minting reward accrual time to be set in state for %s", rp.CollateralType))
 		}
@@ -74,5 +74,5 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 		jpyxMintingGats = append(jpyxMintingGats, gat)
 	}
 
-	return types.NewGenesisState(params, jpyxMintingGats, synchronizedJpyxClaims)
+	return types.NewGenesisState(params, jpyxMintingGats, synchronizedCdpClaims)
 }

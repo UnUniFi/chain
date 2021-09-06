@@ -2594,7 +2594,7 @@ paths:
                         }
       tags:
         - Query
-  /jpyx/incentive/params:
+  /botany/incentive/params:
     get:
       operationId: IncentiveParams
       responses:
@@ -2606,7 +2606,7 @@ paths:
               params:
                 type: object
                 properties:
-                  jpyx_minting_reward_periods:
+                  cdp_minting_reward_periods:
                     type: array
                     items:
                       type: object
@@ -2676,7 +2676,7 @@ paths:
                       format: byte
       tags:
         - Query
-  /jpyx/jsmndist/balances:
+  /botany/botanydist/balances:
     get:
       summary: 'this line is used by starport scaffolding # 2'
       operationId: Balances
@@ -2727,9 +2727,9 @@ paths:
                       format: byte
       tags:
         - Query
-  /jpyx/jsmndist/params:
+  /botany/botanydist/params:
     get:
-      operationId: JsmndistParams
+      operationId: BotanydistParams
       responses:
         '200':
           description: A successful response.
@@ -4905,7 +4905,7 @@ definitions:
 
       NOTE: The amount field is an Int which implements the custom method
       signatures required by gogoproto.
-  jpyx.incentive.Multiplier:
+  botany.incentive.Multiplier:
     type: object
     properties:
       name:
@@ -4915,10 +4915,10 @@ definitions:
         format: int64
       factor:
         type: string
-  jpyx.incentive.Params:
+  botany.incentive.Params:
     type: object
     properties:
-      jpyx_minting_reward_periods:
+      cdp_minting_reward_periods:
         type: array
         items:
           type: object
@@ -4963,13 +4963,13 @@ definitions:
       claim_end:
         type: string
         format: date-time
-  jpyx.incentive.QueryParamsResponse:
+  botany.incentive.QueryParamsResponse:
     type: object
     properties:
       params:
         type: object
         properties:
-          jpyx_minting_reward_periods:
+          cdp_minting_reward_periods:
             type: array
             items:
               type: object
@@ -5014,7 +5014,7 @@ definitions:
           claim_end:
             type: string
             format: date-time
-  jpyx.incentive.RewardPeriod:
+  botany.incentive.RewardPeriod:
     type: object
     properties:
       active:
@@ -5039,7 +5039,7 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-  jpyx.jsmndist.Params:
+  botany.botanydist.Params:
     type: object
     properties:
       active:
@@ -5057,7 +5057,7 @@ definitions:
               format: date-time
             inflation:
               type: string
-  jpyx.jsmndist.Period:
+  botany.botanydist.Period:
     type: object
     properties:
       start:
@@ -5068,7 +5068,7 @@ definitions:
         format: date-time
       inflation:
         type: string
-  jpyx.jsmndist.QueryGetBalancesResponse:
+  botany.botanydist.QueryGetBalancesResponse:
     type: object
     properties:
       balances:
@@ -5085,7 +5085,7 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
-  jpyx.jsmndist.QueryParamsResponse:
+  botany.botanydist.QueryParamsResponse:
     type: object
     properties:
       params:

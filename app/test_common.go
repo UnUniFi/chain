@@ -34,9 +34,9 @@ import (
 	// "github.com/cosmos/cosmos-sdk/x/supply"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	auctionkeeper "github.com/lcnem/jpyx/x/auction/keeper"
+	botanydistkeeper "github.com/lcnem/jpyx/x/botanydist/keeper"
 	cdpkeeper "github.com/lcnem/jpyx/x/cdp/keeper"
 	incentivekeeper "github.com/lcnem/jpyx/x/incentive/keeper"
-	jsmndistkeeper "github.com/lcnem/jpyx/x/jsmndist/keeper"
 	pricefeedkeeper "github.com/lcnem/jpyx/x/pricefeed/keeper"
 	// authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
 	// "github.com/cosmos/cosmos-sdk/x/supply"
@@ -89,8 +89,8 @@ func (tApp TestApp) GetCDPKeeper() cdpkeeper.Keeper             { return tApp.cd
 func (tApp TestApp) GetPriceFeedKeeper() pricefeedkeeper.Keeper { return tApp.pricefeedKeeper }
 
 // func (tApp TestApp) GetBep3Keeper() bep3.Keeper                 { return tApp.bep3Keeper }
-func (tApp TestApp) GetJsmndistKeeper() jsmndistkeeper.Keeper   { return tApp.jsmndistKeeper }
-func (tApp TestApp) GetIncentiveKeeper() incentivekeeper.Keeper { return tApp.incentiveKeeper }
+func (tApp TestApp) GetBotanydistKeeper() botanydistkeeper.Keeper { return tApp.botanydistKeeper }
+func (tApp TestApp) GetIncentiveKeeper() incentivekeeper.Keeper   { return tApp.incentiveKeeper }
 
 // func (tApp TestApp) GetHarvestKeeper() harvest.Keeper           { return tApp.harvestKeeper }
 // func (tApp TestApp) GetCommitteeKeeper() committee.Keeper       { return tApp.committeeKeeper }

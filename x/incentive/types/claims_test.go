@@ -16,20 +16,20 @@ func TestClaimsValidate(t *testing.T) {
 
 	testCases := []struct {
 		msg     string
-		claims  JpyxMintingClaims
+		claims  CdpMintingClaims
 		expPass bool
 	}{
 		{
 			"valid",
-			JpyxMintingClaims{
-				NewJpyxMintingClaim(owner, sdk.NewCoin("bnb", sdk.OneInt()), RewardIndexes{NewRewardIndex("bnb-a", sdk.ZeroDec())}),
+			CdpMintingClaims{
+				NewCdpMintingClaim(owner, sdk.NewCoin("bnb", sdk.OneInt()), RewardIndexes{NewRewardIndex("bnb-a", sdk.ZeroDec())}),
 			},
 			true,
 		},
 		{
 			"invalid owner",
-			JpyxMintingClaims{
-				JpyxMintingClaim{
+			CdpMintingClaims{
+				CdpMintingClaim{
 					BaseClaim: &BaseClaim{
 						Owner: nil,
 					},
@@ -39,7 +39,7 @@ func TestClaimsValidate(t *testing.T) {
 		},
 		{
 			"invalid reward",
-			JpyxMintingClaims{
+			CdpMintingClaims{
 				{
 					BaseClaim: &BaseClaim{
 						Owner:  jpyxtypes.StringAccAddress(owner),
@@ -51,7 +51,7 @@ func TestClaimsValidate(t *testing.T) {
 		},
 		{
 			"invalid collateral type",
-			JpyxMintingClaims{
+			CdpMintingClaims{
 				{
 					BaseClaim: &BaseClaim{
 						Owner:  jpyxtypes.StringAccAddress(owner),
