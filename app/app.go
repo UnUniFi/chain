@@ -80,6 +80,9 @@ import (
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	"github.com/gravity-devs/liquidity/x/liquidity"
+	liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
+	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
 	appparams "github.com/lcnem/jpyx/app/params"
 	tmjson "github.com/tendermint/tendermint/libs/json"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
@@ -145,6 +148,7 @@ var (
 		evidence.AppModuleBasic{},
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
+		liquidity.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 		auction.AppModuleBasic{},
 		cdp.AppModuleBasic{},
@@ -161,6 +165,7 @@ var (
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
+		liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		auctiontypes.ModuleName:        nil,
 		cdptypes.ModuleName:            {authtypes.Minter, authtypes.Burner},
@@ -221,6 +226,7 @@ type App struct {
 	IBCKeeper        *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
 	EvidenceKeeper   evidencekeeper.Keeper
 	TransferKeeper   ibctransferkeeper.Keeper
+	LiquidityKeeper  liquiditykeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -262,7 +268,7 @@ func NewApp(
 		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey,
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
-		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
+		evidencetypes.StoreKey, liquiditytypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 		auctiontypes.StoreKey, cdptypes.StoreKey, incentivetypes.StoreKey,
 		jsmndisttypes.StoreKey, pricefeedtypes.StoreKey,
@@ -417,6 +423,11 @@ func NewApp(
 	// we prefer to be more strict in what arguments the modules expect.
 	var skipGenesisInvariants = cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
 
+	app.LiquidityKeeper = liquiditykeeper.NewKeeper(
+		appCodec, keys[liquiditytypes.StoreKey], app.GetSubspace(liquiditytypes.ModuleName),
+		app.BankKeeper, app.AccountKeeper, app.DistrKeeper,
+	)
+
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 
@@ -439,6 +450,7 @@ func NewApp(
 		evidence.NewAppModule(app.EvidenceKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
+		liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
 		transferModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 		auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
@@ -453,13 +465,16 @@ func NewApp(
 	// CanWithdrawInvariant invariant.
 	// NOTE: staking module is required if HistoricalEntries param > 0
 	app.mm.SetOrderBeginBlockers(
-		upgradetypes.ModuleName, minttypes.ModuleName, distrtypes.ModuleName, slashingtypes.ModuleName,
-		evidencetypes.ModuleName, stakingtypes.ModuleName, ibchost.ModuleName,
+		upgradetypes.ModuleName, capabilitytypes.ModuleName, minttypes.ModuleName, distrtypes.ModuleName, slashingtypes.ModuleName,
+		evidencetypes.ModuleName, stakingtypes.ModuleName, liquiditytypes.ModuleName, ibchost.ModuleName,
 		jsmndisttypes.ModuleName, auctiontypes.ModuleName, cdptypes.ModuleName,
 		incentivetypes.ModuleName,
 	)
 
-	app.mm.SetOrderEndBlockers(crisistypes.ModuleName, govtypes.ModuleName, stakingtypes.ModuleName, pricefeedtypes.ModuleName)
+	app.mm.SetOrderEndBlockers(
+		crisistypes.ModuleName, govtypes.ModuleName, stakingtypes.ModuleName,
+		liquiditytypes.ModuleName, pricefeedtypes.ModuleName,
+	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
@@ -479,6 +494,7 @@ func NewApp(
 		ibchost.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
+		liquiditytypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 		auctiontypes.ModuleName,
@@ -507,6 +523,7 @@ func NewApp(
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
+		liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		transferModule,
 		// TODO
@@ -701,6 +718,7 @@ func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyA
 	paramsKeeper.Subspace(slashingtypes.ModuleName)
 	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govtypes.ParamKeyTable())
 	paramsKeeper.Subspace(crisistypes.ModuleName)
+	paramsKeeper.Subspace(liquiditytypes.ModuleName)
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
