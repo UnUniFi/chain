@@ -152,15 +152,16 @@ func (k Keeper) SetCdpMintingRewardFactor(ctx sdk.Context, ctype string, factor 
 	store.Set([]byte(ctype), bz)
 }
 
-func (k Keeper) GetGenesisDenoms(ctx sdk.Context) (denoms *types.GenesisDenoms, found bool) {
+func (k Keeper) GetGenesisDenoms(ctx sdk.Context) (*types.GenesisDenoms, bool) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.KeyPrefix(types.GenesisDenomsKey))
 	if bz == nil {
 		return types.DefaultGenesisDenoms(), false
 	}
+	var denoms types.GenesisDenoms
 	denoms.Unmarshal(bz)
 
-	return denoms, true
+	return &denoms, true
 }
 
 func (k Keeper) SetGenesisDenoms(ctx sdk.Context, denoms *types.GenesisDenoms) {
