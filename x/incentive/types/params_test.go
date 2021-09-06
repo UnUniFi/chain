@@ -82,9 +82,7 @@ func (suite *ParamTestSuite) TestParamValidation() {
 
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
-			params := incentivetypes.NewParams(tc.args.jpyxMintingRewardPeriods, tc.args.hardSupplyRewardPeriods,
-				tc.args.hardBorrowRewardPeriods, tc.args.hardDelegatorRewardPeriods, tc.args.multipliers, tc.args.end,
-			)
+			params := incentivetypes.NewParams(tc.args.jpyxMintingRewardPeriods, tc.args.multipliers, tc.args.end)
 			err := params.Validate()
 			if tc.errArgs.expectPass {
 				suite.Require().NoError(err)

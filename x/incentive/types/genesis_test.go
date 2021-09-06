@@ -54,9 +54,6 @@ func TestGenesisStateValidate(t *testing.T) {
 							sdk.NewCoin("ujsmn", sdk.NewInt(25000)),
 						),
 					},
-					DefaultMultiRewardPeriods,
-					DefaultMultiRewardPeriods,
-					DefaultRewardPeriods,
 					Multipliers{
 						NewMultiplier(Small, 1, sdk.MustNewDecFromStr("0.33")),
 					},

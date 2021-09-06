@@ -40,8 +40,7 @@ var (
 )
 
 // NewParams returns a new params object
-func NewParams(cdpMinting RewardPeriods, hardSupply, hardBorrow MultiRewardPeriods,
-	hardDelegator RewardPeriods, multipliers Multipliers, claimEnd time.Time) Params {
+func NewParams(cdpMinting RewardPeriods, multipliers Multipliers, claimEnd time.Time) Params {
 	return Params{
 		CdpMintingRewardPeriods: cdpMinting,
 		ClaimMultipliers:        multipliers,
@@ -51,8 +50,7 @@ func NewParams(cdpMinting RewardPeriods, hardSupply, hardBorrow MultiRewardPerio
 
 // DefaultParams returns default params for incentive module
 func DefaultParams() Params {
-	return NewParams(DefaultRewardPeriods, DefaultMultiRewardPeriods,
-		DefaultMultiRewardPeriods, DefaultRewardPeriods, DefaultMultipliers, DefaultClaimEnd)
+	return NewParams(DefaultRewardPeriods, DefaultMultipliers, DefaultClaimEnd)
 }
 
 // ParamKeyTable Key declaration for parameters
