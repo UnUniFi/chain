@@ -515,14 +515,14 @@
     },
     "incentive": {
       "params": {
-        "jpyx_minting_reward_periods": [],
+        "cdp_minting_reward_periods": [],
         "claim_multipliers": [],
         "claim_end": "1970-01-01T00:00:01Z"
       },
       "jpyx_accumulation_times": [],
-      "jpyx_minting_claims": []
+      "cdp_minting_claims": []
     },
-    "jsmndist": {
+    "botanydist": {
       "params": {
         "active": false,
         "periods": []

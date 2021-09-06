@@ -1,0 +1,40 @@
+package botanydist
+
+import (
+	"fmt"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/lcnem/jpyx/x/botanydist/keeper"
+	"github.com/lcnem/jpyx/x/botanydist/types"
+)
+
+// InitGenesis initializes the store state from a genesis state.
+func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKeeper, gs types.GenesisState) {
+	if err := gs.Validate(); err != nil {
+		panic(fmt.Sprintf("failed to validate %s genesis state: %s", types.ModuleName, err))
+	}
+
+	k.SetParams(ctx, gs.Params)
+
+	// only set the previous block time if it's different than default
+	if !gs.PreviousBlockTime.Equal(types.DefaultPreviousBlockTime) {
+		k.SetPreviousBlockTime(ctx, gs.PreviousBlockTime)
+	}
+
+	// check if the module account exists
+	moduleAcc := accountKeeper.GetModuleAccount(ctx, types.BotanydistMacc)
+	if moduleAcc == nil {
+		panic(fmt.Sprintf("%s module account has not been set", types.BotanydistMacc))
+	}
+
+}
+
+// ExportGenesis export genesis state for cdp module
+func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
+	params := k.GetParams(ctx)
+	previousBlockTime, found := k.GetPreviousBlockTime(ctx)
+	if !found {
+		previousBlockTime = types.DefaultPreviousBlockTime
+	}
+	return types.NewGenesisState(params, previousBlockTime)
+}

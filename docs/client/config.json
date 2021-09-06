@@ -31,10 +31,10 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/jsmndist/query.swagger.json",
+      "url": "./tmp-swagger-gen/botanydist/query.swagger.json",
       "operationIds": {
         "rename": {
-          "Params": "JsmndistParams"
+          "Params": "BotanydistParams"
         }
       }
     },

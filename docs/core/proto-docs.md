@@ -26,6 +26,21 @@
   
     - [Query](#botany.auction.Query)
   
+- [botanydist/botanydist.proto](#botanydist/botanydist.proto)
+    - [Params](#botany.botanydist.Params)
+    - [Period](#botany.botanydist.Period)
+  
+- [botanydist/genesis.proto](#botanydist/genesis.proto)
+    - [GenesisState](#botany.botanydist.GenesisState)
+  
+- [botanydist/query.proto](#botanydist/query.proto)
+    - [QueryGetBalancesRequest](#botany.botanydist.QueryGetBalancesRequest)
+    - [QueryGetBalancesResponse](#botany.botanydist.QueryGetBalancesResponse)
+    - [QueryParamsRequest](#botany.botanydist.QueryParamsRequest)
+    - [QueryParamsResponse](#botany.botanydist.QueryParamsResponse)
+  
+    - [Query](#botany.botanydist.Query)
+  
 - [cdp/cdp.proto](#cdp/cdp.proto)
     - [AugmentedCdp](#botany.cdp.AugmentedCdp)
     - [Cdp](#botany.cdp.Cdp)
@@ -60,39 +75,24 @@
     - [Query](#botany.cdp.Query)
   
 - [incentive/incentive.proto](#incentive/incentive.proto)
-    - [BaseClaim](#jpyx.incentive.BaseClaim)
-    - [BaseMultiClaim](#jpyx.incentive.BaseMultiClaim)
-    - [JpyxMintingClaim](#jpyx.incentive.JpyxMintingClaim)
-    - [MsgClaimJpyxMintingReward](#jpyx.incentive.MsgClaimJpyxMintingReward)
-    - [Multiplier](#jpyx.incentive.Multiplier)
-    - [Params](#jpyx.incentive.Params)
-    - [RewardIndex](#jpyx.incentive.RewardIndex)
-    - [RewardPeriod](#jpyx.incentive.RewardPeriod)
+    - [BaseClaim](#botany.incentive.BaseClaim)
+    - [BaseMultiClaim](#botany.incentive.BaseMultiClaim)
+    - [CdpMintingClaim](#botany.incentive.CdpMintingClaim)
+    - [MsgClaimCdpMintingReward](#botany.incentive.MsgClaimCdpMintingReward)
+    - [Multiplier](#botany.incentive.Multiplier)
+    - [Params](#botany.incentive.Params)
+    - [RewardIndex](#botany.incentive.RewardIndex)
+    - [RewardPeriod](#botany.incentive.RewardPeriod)
   
 - [incentive/genesis.proto](#incentive/genesis.proto)
-    - [GenesisAccumulationTime](#jpyx.incentive.GenesisAccumulationTime)
-    - [GenesisState](#jpyx.incentive.GenesisState)
+    - [GenesisAccumulationTime](#botany.incentive.GenesisAccumulationTime)
+    - [GenesisState](#botany.incentive.GenesisState)
   
 - [incentive/query.proto](#incentive/query.proto)
-    - [QueryParamsRequest](#jpyx.incentive.QueryParamsRequest)
-    - [QueryParamsResponse](#jpyx.incentive.QueryParamsResponse)
+    - [QueryParamsRequest](#botany.incentive.QueryParamsRequest)
+    - [QueryParamsResponse](#botany.incentive.QueryParamsResponse)
   
-    - [Query](#jpyx.incentive.Query)
-  
-- [jsmndist/jsmndist.proto](#jsmndist/jsmndist.proto)
-    - [Params](#jpyx.jsmndist.Params)
-    - [Period](#jpyx.jsmndist.Period)
-  
-- [jsmndist/genesis.proto](#jsmndist/genesis.proto)
-    - [GenesisState](#jpyx.jsmndist.GenesisState)
-  
-- [jsmndist/query.proto](#jsmndist/query.proto)
-    - [QueryGetBalancesRequest](#jpyx.jsmndist.QueryGetBalancesRequest)
-    - [QueryGetBalancesResponse](#jpyx.jsmndist.QueryGetBalancesResponse)
-    - [QueryParamsRequest](#jpyx.jsmndist.QueryParamsRequest)
-    - [QueryParamsResponse](#jpyx.jsmndist.QueryParamsResponse)
-  
-    - [Query](#jpyx.jsmndist.Query)
+    - [Query](#botany.incentive.Query)
   
 - [pricefeed/pricefeed.proto](#pricefeed/pricefeed.proto)
     - [CurrentPrice](#botany.pricefeed.CurrentPrice)
@@ -405,6 +405,164 @@ Query defines the gRPC querier service.
 | `Params` | [QueryParamsRequest](#botany.auction.QueryParamsRequest) | [QueryParamsResponse](#botany.auction.QueryParamsResponse) |  | GET|/botany/auction/params|
 | `Auction` | [QueryGetAuctionRequest](#botany.auction.QueryGetAuctionRequest) | [QueryGetAuctionResponse](#botany.auction.QueryGetAuctionResponse) | this line is used by starport scaffolding # 2 | GET|/botany/auction/auctions/{id}|
 | `AuctionAll` | [QueryAllAuctionRequest](#botany.auction.QueryAllAuctionRequest) | [QueryAllAuctionResponse](#botany.auction.QueryAllAuctionResponse) |  | GET|/botany/auction/auctions|
+
+ <!-- end services -->
+
+
+
+<a name="botanydist/botanydist.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## botanydist/botanydist.proto
+
+
+
+<a name="botany.botanydist.Params"></a>
+
+### Params
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `active` | [bool](#bool) |  |  |
+| `periods` | [Period](#botany.botanydist.Period) | repeated |  |
+
+
+
+
+
+
+<a name="botany.botanydist.Period"></a>
+
+### Period
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `start` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `end` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `inflation` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="botanydist/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## botanydist/genesis.proto
+
+
+
+<a name="botany.botanydist.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the botanydist module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#botany.botanydist.Params) |  |  |
+| `previous_block_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | this line is used by starport scaffolding # genesis/proto/state |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="botanydist/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## botanydist/query.proto
+
+
+
+<a name="botany.botanydist.QueryGetBalancesRequest"></a>
+
+### QueryGetBalancesRequest
+
+
+
+
+
+
+
+<a name="botany.botanydist.QueryGetBalancesResponse"></a>
+
+### QueryGetBalancesResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `balances` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="botany.botanydist.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+
+
+
+
+
+
+
+<a name="botany.botanydist.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#botany.botanydist.Params) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="botany.botanydist.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#botany.botanydist.QueryParamsRequest) | [QueryParamsResponse](#botany.botanydist.QueryParamsResponse) |  | GET|/botany/botanydist/params|
+| `Balances` | [QueryGetBalancesRequest](#botany.botanydist.QueryGetBalancesRequest) | [QueryGetBalancesResponse](#botany.botanydist.QueryGetBalancesResponse) | this line is used by starport scaffolding # 2 | GET|/botany/botanydist/balances|
 
  <!-- end services -->
 
@@ -905,7 +1063,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.incentive.BaseClaim"></a>
+<a name="botany.incentive.BaseClaim"></a>
 
 ### BaseClaim
 
@@ -921,7 +1079,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.incentive.BaseMultiClaim"></a>
+<a name="botany.incentive.BaseMultiClaim"></a>
 
 ### BaseMultiClaim
 
@@ -937,25 +1095,25 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.incentive.JpyxMintingClaim"></a>
+<a name="botany.incentive.CdpMintingClaim"></a>
 
-### JpyxMintingClaim
+### CdpMintingClaim
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `base_claim` | [BaseClaim](#jpyx.incentive.BaseClaim) |  |  |
-| `reward_indexes` | [RewardIndex](#jpyx.incentive.RewardIndex) | repeated |  |
+| `base_claim` | [BaseClaim](#botany.incentive.BaseClaim) |  |  |
+| `reward_indexes` | [RewardIndex](#botany.incentive.RewardIndex) | repeated |  |
 
 
 
 
 
 
-<a name="jpyx.incentive.MsgClaimJpyxMintingReward"></a>
+<a name="botany.incentive.MsgClaimCdpMintingReward"></a>
 
-### MsgClaimJpyxMintingReward
+### MsgClaimCdpMintingReward
 
 
 
@@ -969,7 +1127,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.incentive.Multiplier"></a>
+<a name="botany.incentive.Multiplier"></a>
 
 ### Multiplier
 
@@ -986,7 +1144,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.incentive.Params"></a>
+<a name="botany.incentive.Params"></a>
 
 ### Params
 
@@ -994,8 +1152,8 @@ Query defines the gRPC querier service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `jpyx_minting_reward_periods` | [RewardPeriod](#jpyx.incentive.RewardPeriod) | repeated |  |
-| `claim_multipliers` | [Multiplier](#jpyx.incentive.Multiplier) | repeated |  |
+| `cdp_minting_reward_periods` | [RewardPeriod](#botany.incentive.RewardPeriod) | repeated |  |
+| `claim_multipliers` | [Multiplier](#botany.incentive.Multiplier) | repeated |  |
 | `claim_end` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 
 
@@ -1003,7 +1161,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.incentive.RewardIndex"></a>
+<a name="botany.incentive.RewardIndex"></a>
 
 ### RewardIndex
 
@@ -1019,7 +1177,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.incentive.RewardPeriod"></a>
+<a name="botany.incentive.RewardPeriod"></a>
 
 ### RewardPeriod
 
@@ -1054,7 +1212,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.incentive.GenesisAccumulationTime"></a>
+<a name="botany.incentive.GenesisAccumulationTime"></a>
 
 ### GenesisAccumulationTime
 
@@ -1070,7 +1228,7 @@ Query defines the gRPC querier service.
 
 
 
-<a name="jpyx.incentive.GenesisState"></a>
+<a name="botany.incentive.GenesisState"></a>
 
 ### GenesisState
 GenesisState defines the incentive module's genesis state.
@@ -1078,9 +1236,9 @@ GenesisState defines the incentive module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#jpyx.incentive.Params) |  |  |
-| `jpyx_accumulation_times` | [GenesisAccumulationTime](#jpyx.incentive.GenesisAccumulationTime) | repeated |  |
-| `jpyx_minting_claims` | [JpyxMintingClaim](#jpyx.incentive.JpyxMintingClaim) | repeated | this line is used by starport scaffolding # genesis/proto/state |
+| `params` | [Params](#botany.incentive.Params) |  |  |
+| `cdp_accumulation_times` | [GenesisAccumulationTime](#botany.incentive.GenesisAccumulationTime) | repeated |  |
+| `cdp_minting_claims` | [CdpMintingClaim](#botany.incentive.CdpMintingClaim) | repeated | this line is used by starport scaffolding # genesis/proto/state |
 
 
 
@@ -1103,7 +1261,7 @@ GenesisState defines the incentive module's genesis state.
 
 
 
-<a name="jpyx.incentive.QueryParamsRequest"></a>
+<a name="botany.incentive.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
 
@@ -1113,7 +1271,7 @@ GenesisState defines the incentive module's genesis state.
 
 
 
-<a name="jpyx.incentive.QueryParamsResponse"></a>
+<a name="botany.incentive.QueryParamsResponse"></a>
 
 ### QueryParamsResponse
 
@@ -1121,7 +1279,7 @@ GenesisState defines the incentive module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#jpyx.incentive.Params) |  |  |
+| `params` | [Params](#botany.incentive.Params) |  |  |
 
 
 
@@ -1134,172 +1292,14 @@ GenesisState defines the incentive module's genesis state.
  <!-- end HasExtensions -->
 
 
-<a name="jpyx.incentive.Query"></a>
+<a name="botany.incentive.Query"></a>
 
 ### Query
 Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#jpyx.incentive.QueryParamsRequest) | [QueryParamsResponse](#jpyx.incentive.QueryParamsResponse) | this line is used by starport scaffolding # 2 | GET|/jpyx/incentive/params|
-
- <!-- end services -->
-
-
-
-<a name="jsmndist/jsmndist.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## jsmndist/jsmndist.proto
-
-
-
-<a name="jpyx.jsmndist.Params"></a>
-
-### Params
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `active` | [bool](#bool) |  |  |
-| `periods` | [Period](#jpyx.jsmndist.Period) | repeated |  |
-
-
-
-
-
-
-<a name="jpyx.jsmndist.Period"></a>
-
-### Period
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `start` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
-| `end` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
-| `inflation` | [string](#string) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="jsmndist/genesis.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## jsmndist/genesis.proto
-
-
-
-<a name="jpyx.jsmndist.GenesisState"></a>
-
-### GenesisState
-GenesisState defines the jsmndist module's genesis state.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#jpyx.jsmndist.Params) |  |  |
-| `previous_block_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | this line is used by starport scaffolding # genesis/proto/state |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="jsmndist/query.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## jsmndist/query.proto
-
-
-
-<a name="jpyx.jsmndist.QueryGetBalancesRequest"></a>
-
-### QueryGetBalancesRequest
-
-
-
-
-
-
-
-<a name="jpyx.jsmndist.QueryGetBalancesResponse"></a>
-
-### QueryGetBalancesResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `balances` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
-
-
-
-
-
-
-<a name="jpyx.jsmndist.QueryParamsRequest"></a>
-
-### QueryParamsRequest
-
-
-
-
-
-
-
-<a name="jpyx.jsmndist.QueryParamsResponse"></a>
-
-### QueryParamsResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#jpyx.jsmndist.Params) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="jpyx.jsmndist.Query"></a>
-
-### Query
-Query defines the gRPC querier service.
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#jpyx.jsmndist.QueryParamsRequest) | [QueryParamsResponse](#jpyx.jsmndist.QueryParamsResponse) |  | GET|/jpyx/jsmndist/params|
-| `Balances` | [QueryGetBalancesRequest](#jpyx.jsmndist.QueryGetBalancesRequest) | [QueryGetBalancesResponse](#jpyx.jsmndist.QueryGetBalancesResponse) | this line is used by starport scaffolding # 2 | GET|/jpyx/jsmndist/balances|
+| `Params` | [QueryParamsRequest](#botany.incentive.QueryParamsRequest) | [QueryParamsResponse](#botany.incentive.QueryParamsResponse) | this line is used by starport scaffolding # 2 | GET|/botany/incentive/params|
 
  <!-- end services -->
 

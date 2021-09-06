@@ -1,5 +1,5 @@
 syntax = "proto3";
-package jpyx.incentive;
+package botany.incentive;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
@@ -14,12 +14,12 @@ message GenesisState {
     (gogoproto.moretags) = "yaml:\"params\"",
     (gogoproto.nullable) = false
   ];
-  repeated GenesisAccumulationTime jpyx_accumulation_times = 2 [
-    (gogoproto.moretags) = "yaml:\"jpyx_accumulation_times\"",
+  repeated GenesisAccumulationTime cdp_accumulation_times = 2 [
+    (gogoproto.moretags) = "yaml:\"cdp_accumulation_times\"",
     (gogoproto.nullable) = false
   ];
-  repeated JpyxMintingClaim jpyx_minting_claims = 3 [
-    (gogoproto.moretags) = "yaml:\"jpyx_minting_claims\"",
+  repeated CdpMintingClaim cdp_minting_claims = 3 [
+    (gogoproto.moretags) = "yaml:\"cdp_minting_claims\"",
     (gogoproto.nullable) = false
   ];
   // this line is used by starport scaffolding # genesis/proto/state

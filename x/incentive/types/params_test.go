@@ -59,7 +59,7 @@ func (suite *ParamTestSuite) TestParamValidation() {
 			args{
 				jpyxMintingRewardPeriods: incentivetypes.RewardPeriods{incentivetypes.NewRewardPeriod(
 					true, "bnb-a", time.Date(2020, 10, 15, 14, 0, 0, 0, time.UTC), time.Date(2024, 10, 15, 14, 0, 0, 0, time.UTC),
-					sdk.NewCoin(incentivetypes.JpyxMintingRewardDenom, sdk.NewInt(122354)))},
+					sdk.NewCoin(incentivetypes.CdpMintingRewardDenom, sdk.NewInt(122354)))},
 				multipliers: incentivetypes.Multipliers{
 					incentivetypes.NewMultiplier(
 						incentivetypes.Small, 1, sdk.MustNewDecFromStr("0.25"),

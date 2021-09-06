@@ -62,38 +62,38 @@ func (suite *KeeperTestSuite) getModuleAccount(name string) authtypes.ModuleAcco
 	return sk.GetModuleAccount(suite.ctx, name)
 }
 
-func (suite *KeeperTestSuite) TestGetSetDeleteJpyxMintingClaim() {
-	c := types.NewJpyxMintingClaim(suite.addrs[0], c("ujsmn", 1000000), types.RewardIndexes{types.NewRewardIndex("bnb-a", sdk.ZeroDec())})
-	_, found := suite.keeper.GetJpyxMintingClaim(suite.ctx, suite.addrs[0])
+func (suite *KeeperTestSuite) TestGetSetDeleteCdpMintingClaim() {
+	c := types.NewCdpMintingClaim(suite.addrs[0], c("ujsmn", 1000000), types.RewardIndexes{types.NewRewardIndex("bnb-a", sdk.ZeroDec())})
+	_, found := suite.keeper.GetCdpMintingClaim(suite.ctx, suite.addrs[0])
 	suite.Require().False(found)
 	suite.Require().NotPanics(func() {
-		suite.keeper.SetJpyxMintingClaim(suite.ctx, c)
+		suite.keeper.SetCdpMintingClaim(suite.ctx, c)
 	})
-	testC, found := suite.keeper.GetJpyxMintingClaim(suite.ctx, suite.addrs[0])
+	testC, found := suite.keeper.GetCdpMintingClaim(suite.ctx, suite.addrs[0])
 	suite.Require().True(found)
 	suite.Require().Equal(c, testC)
 	suite.Require().NotPanics(func() {
-		suite.keeper.DeleteJpyxMintingClaim(suite.ctx, suite.addrs[0])
+		suite.keeper.DeleteCdpMintingClaim(suite.ctx, suite.addrs[0])
 	})
-	_, found = suite.keeper.GetJpyxMintingClaim(suite.ctx, suite.addrs[0])
+	_, found = suite.keeper.GetCdpMintingClaim(suite.ctx, suite.addrs[0])
 	suite.Require().False(found)
 }
 
 func (suite *KeeperTestSuite) TestIterateJPYXMintingClaims() {
 	for i := 0; i < len(suite.addrs); i++ {
-		c := types.NewJpyxMintingClaim(suite.addrs[i], c("ujsmn", 100000), types.RewardIndexes{types.NewRewardIndex("bnb-a", sdk.ZeroDec())})
+		c := types.NewCdpMintingClaim(suite.addrs[i], c("ujsmn", 100000), types.RewardIndexes{types.NewRewardIndex("bnb-a", sdk.ZeroDec())})
 		suite.Require().NotPanics(func() {
-			suite.keeper.SetJpyxMintingClaim(suite.ctx, c)
+			suite.keeper.SetCdpMintingClaim(suite.ctx, c)
 		})
 	}
-	claims := types.JpyxMintingClaims{}
-	suite.keeper.IterateJpyxMintingClaims(suite.ctx, func(c types.JpyxMintingClaim) bool {
+	claims := types.CdpMintingClaims{}
+	suite.keeper.IterateCdpMintingClaims(suite.ctx, func(c types.CdpMintingClaim) bool {
 		claims = append(claims, c)
 		return false
 	})
 	suite.Require().Equal(len(suite.addrs), len(claims))
 
-	claims = suite.keeper.GetAllJpyxMintingClaims(suite.ctx)
+	claims = suite.keeper.GetAllCdpMintingClaims(suite.ctx)
 	suite.Require().Equal(len(suite.addrs), len(claims))
 }
 

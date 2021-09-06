@@ -16,7 +16,7 @@ func TestGenesisStateValidate(t *testing.T) {
 	type args struct {
 		params      Params
 		genAccTimes GenesisAccumulationTimes
-		claims      JpyxMintingClaims
+		claims      CdpMintingClaims
 	}
 
 	type errArgs struct {
@@ -34,7 +34,7 @@ func TestGenesisStateValidate(t *testing.T) {
 			args: args{
 				params:      DefaultParams(),
 				genAccTimes: DefaultGenesisAccumulationTimes,
-				claims:      DefaultJpyxClaims,
+				claims:      DefaultCdpClaims,
 			},
 			errArgs: errArgs{
 				expectPass: true,
@@ -67,7 +67,7 @@ func TestGenesisStateValidate(t *testing.T) {
 					PreviousAccumulationTime: time.Date(2020, 10, 15, 14, 0, 0, 0, time.UTC),
 					//RewardFactor:             sdk.ZeroDec(),
 				}},
-				claims: JpyxMintingClaims{
+				claims: CdpMintingClaims{
 					{
 						BaseClaim: &BaseClaim{
 							Owner:  jpyxtypes.StringAccAddress(sdk.AccAddress(crypto.AddressHash([]byte("KavaTestUser1")))),
@@ -97,7 +97,7 @@ func TestGenesisStateValidate(t *testing.T) {
 		// 				RewardFactor:   sdk.MustNewDecFromStr("-0.1"),
 		// 			},
 		// 		},
-		// 		claims: DefaultJpyxClaims,
+		// 		claims: DefaultCdpClaims,
 		// 	},
 		// 	errArgs: errArgs{
 		// 		expectPass: false,
@@ -109,7 +109,7 @@ func TestGenesisStateValidate(t *testing.T) {
 			args: args{
 				params:      DefaultParams(),
 				genAccTimes: DefaultGenesisAccumulationTimes,
-				claims: JpyxMintingClaims{
+				claims: CdpMintingClaims{
 					{
 						BaseClaim: &BaseClaim{
 							Owner:  jpyxtypes.StringAccAddress(sdk.AccAddress{}),

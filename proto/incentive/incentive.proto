@@ -1,5 +1,5 @@
 syntax = "proto3";
-package jpyx.incentive;
+package botany.incentive;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
@@ -31,7 +31,7 @@ message BaseMultiClaim {
   ];
 }
 
-message JpyxMintingClaim {
+message CdpMintingClaim {
   BaseClaim base_claim = 1 [
     (gogoproto.moretags) = "yaml:\"base_claim\"",
     (gogoproto.embed) = true
@@ -51,7 +51,7 @@ message RewardIndex {
   ];
 }
     
-message MsgClaimJpyxMintingReward {
+message MsgClaimCdpMintingReward {
   string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
@@ -61,8 +61,8 @@ message MsgClaimJpyxMintingReward {
 }
 
 message Params {
-  repeated RewardPeriod jpyx_minting_reward_periods = 1 [
-    (gogoproto.moretags) = "yaml:\"reward_periods\"",
+  repeated RewardPeriod cdp_minting_reward_periods = 1 [
+    (gogoproto.moretags) = "yaml:\"cdp_minting_reward_periods\"",
     (gogoproto.nullable) = false
   ];
   repeated Multiplier claim_multipliers = 2 [

@@ -13,11 +13,11 @@ import (
 	"github.com/lcnem/jpyx/app"
 	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
 
+	botanydisttypes "github.com/lcnem/jpyx/x/botanydist/types"
 	"github.com/lcnem/jpyx/x/incentive/types"
-	jsmndisttypes "github.com/lcnem/jpyx/x/jsmndist/types"
 )
 
-func (suite *KeeperTestSuite) TestPayoutJpyxMintingClaim() {
+func (suite *KeeperTestSuite) TestPayoutCdpMintingClaim() {
 	type args struct {
 		ctype                    string
 		rewardsPerSecond         sdk.Coin
@@ -97,8 +97,8 @@ func (suite *KeeperTestSuite) TestPayoutJpyxMintingClaim() {
 				tc.args.initialTime.Add(time.Hour*24*365*5),
 			)
 			suite.keeper.SetParams(suite.ctx, params)
-			suite.keeper.SetPreviousJpyxMintingAccrualTime(suite.ctx, tc.args.ctype, tc.args.initialTime)
-			suite.keeper.SetJpyxMintingRewardFactor(suite.ctx, tc.args.ctype, sdk.ZeroDec())
+			suite.keeper.SetPreviousCdpMintingAccrualTime(suite.ctx, tc.args.ctype, tc.args.initialTime)
+			suite.keeper.SetCdpMintingRewardFactor(suite.ctx, tc.args.ctype, sdk.ZeroDec())
 
 			// setup account state
 			sk := suite.app.GetBankKeeper()
@@ -108,7 +108,7 @@ func (suite *KeeperTestSuite) TestPayoutJpyxMintingClaim() {
 			suite.Require().NoError(err)
 
 			// setup kavadist state
-			err = sk.MintCoins(suite.ctx, jsmndisttypes.ModuleName, cs(c("ujsmn", 1000000000000)))
+			err = sk.MintCoins(suite.ctx, botanydisttypes.ModuleName, cs(c("ujsmn", 1000000000000)))
 			suite.Require().NoError(err)
 
 			// setup cdp state
@@ -116,18 +116,18 @@ func (suite *KeeperTestSuite) TestPayoutJpyxMintingClaim() {
 			err = cdpKeeper.AddCdp(suite.ctx, suite.addrs[0], tc.args.initialCollateral, tc.args.initialPrincipal, tc.args.ctype)
 			suite.Require().NoError(err)
 
-			claim, found := suite.keeper.GetJpyxMintingClaim(suite.ctx, suite.addrs[0])
+			claim, found := suite.keeper.GetCdpMintingClaim(suite.ctx, suite.addrs[0])
 			suite.Require().True(found)
 			suite.Require().Equal(sdk.ZeroDec(), claim.RewardIndexes[0].RewardFactor)
 
 			updatedBlockTime := suite.ctx.BlockTime().Add(time.Duration(int(time.Second) * tc.args.timeElapsed))
 			suite.ctx = suite.ctx.WithBlockTime(updatedBlockTime)
-			rewardPeriod, found := suite.keeper.GetJpyxMintingRewardPeriod(suite.ctx, tc.args.ctype)
+			rewardPeriod, found := suite.keeper.GetCdpMintingRewardPeriod(suite.ctx, tc.args.ctype)
 			suite.Require().True(found)
-			err = suite.keeper.AccumulateJpyxMintingRewards(suite.ctx, rewardPeriod)
+			err = suite.keeper.AccumulateCdpMintingRewards(suite.ctx, rewardPeriod)
 			suite.Require().NoError(err)
 
-			err = suite.keeper.ClaimJpyxMintingReward(suite.ctx, suite.addrs[0], string(tc.args.multiplier))
+			err = suite.keeper.ClaimCdpMintingReward(suite.ctx, suite.addrs[0], string(tc.args.multiplier))
 
 			if tc.errArgs.expectPass {
 				suite.Require().NoError(err)
@@ -142,7 +142,7 @@ func (suite *KeeperTestSuite) TestPayoutJpyxMintingClaim() {
 					suite.Require().Equal(tc.args.expectedPeriods, vestingtypes.Periods(vacc.VestingPeriods))
 				}
 
-				claim, found := suite.keeper.GetJpyxMintingClaim(suite.ctx, suite.addrs[0])
+				claim, found := suite.keeper.GetCdpMintingClaim(suite.ctx, suite.addrs[0])
 				suite.Require().True(found)
 				suite.Require().Equal(c("ujsmn", 0), claim.Reward)
 			} else {
@@ -404,11 +404,11 @@ func (suite *KeeperTestSuite) TestSendCoinsToPeriodicVestingAccount() {
 			// mint module account coins if required
 			if tc.args.mintModAccountCoins {
 				sk := suite.app.GetBankKeeper()
-				err = sk.MintCoins(suite.ctx, jsmndisttypes.ModuleName, tc.args.period.Amount)
+				err = sk.MintCoins(suite.ctx, botanydisttypes.ModuleName, tc.args.period.Amount)
 				suite.Require().NoError(err)
 			}
 
-			err = suite.keeper.SendTimeLockedCoinsToPeriodicVestingAccount(suite.ctx, jsmndisttypes.ModuleName, pva.GetAddress(), tc.args.period.Amount, tc.args.period.Length)
+			err = suite.keeper.SendTimeLockedCoinsToPeriodicVestingAccount(suite.ctx, botanydisttypes.ModuleName, pva.GetAddress(), tc.args.period.Amount, tc.args.period.Length)
 			if tc.errArgs.expectErr {
 				suite.Require().Error(err)
 				suite.Require().True(strings.Contains(err.Error(), tc.errArgs.contains))
@@ -429,7 +429,7 @@ func (suite *KeeperTestSuite) TestSendCoinsToPeriodicVestingAccount() {
 func (suite *KeeperTestSuite) TestSendCoinsToBaseAccount() {
 	suite.SetupWithAccountState()
 	// send coins to base account
-	err := suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, jsmndisttypes.ModuleName, suite.addrs[1], cs(c("ujsmn", 100)), 5)
+	err := suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, botanydisttypes.ModuleName, suite.addrs[1], cs(c("ujsmn", 100)), 5)
 	suite.Require().NoError(err)
 	acc := suite.getAccount(suite.addrs[1])
 	vacc, ok := acc.(*vestingtypes.PeriodicVestingAccount)
@@ -448,10 +448,10 @@ func (suite *KeeperTestSuite) TestSendCoinsToBaseAccount() {
 
 func (suite *KeeperTestSuite) TestSendCoinsToInvalidAccount() {
 	suite.SetupWithAccountState()
-	err := suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, jsmndisttypes.ModuleName, suite.addrs[2], cs(c("ujsmn", 100)), 5)
+	err := suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, botanydisttypes.ModuleName, suite.addrs[2], cs(c("ujsmn", 100)), 5)
 	suite.Require().True(errors.Is(err, types.ErrInvalidAccountType))
 	macc := suite.getModuleAccount(cdptypes.ModuleName)
-	err = suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, jsmndisttypes.ModuleName, macc.GetAddress(), cs(c("ujsmn", 100)), 5)
+	err = suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, botanydisttypes.ModuleName, macc.GetAddress(), cs(c("ujsmn", 100)), 5)
 	suite.Require().True(errors.Is(err, types.ErrInvalidAccountType))
 }
 
@@ -474,7 +474,7 @@ func (suite *KeeperTestSuite) SetupWithAccountState() {
 	)
 	ak := tApp.GetAccountKeeper()
 	bk := tApp.GetBankKeeper()
-	macc := ak.GetModuleAccount(ctx, jsmndisttypes.ModuleName)
+	macc := ak.GetModuleAccount(ctx, botanydisttypes.ModuleName)
 	err := bk.MintCoins(ctx, macc.GetName(), cs(c("ujsmn", 600)))
 	suite.Require().NoError(err)
 

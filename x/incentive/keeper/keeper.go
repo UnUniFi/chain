@@ -48,39 +48,39 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-// GetJpyxMintingClaim returns the claim in the store corresponding the the input address collateral type and id and a boolean for if the claim was found
-func (k Keeper) GetJpyxMintingClaim(ctx sdk.Context, addr sdk.AccAddress) (types.JpyxMintingClaim, bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.JpyxMintingClaimKeyPrefix)
+// GetCdpMintingClaim returns the claim in the store corresponding the the input address collateral type and id and a boolean for if the claim was found
+func (k Keeper) GetCdpMintingClaim(ctx sdk.Context, addr sdk.AccAddress) (types.CdpMintingClaim, bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.CdpMintingClaimKeyPrefix)
 	bz := store.Get(addr)
 	if bz == nil {
-		return types.JpyxMintingClaim{}, false
+		return types.CdpMintingClaim{}, false
 	}
-	var c types.JpyxMintingClaim
+	var c types.CdpMintingClaim
 	k.cdc.MustUnmarshalBinaryBare(bz, &c)
 	return c, true
 }
 
-// SetJpyxMintingClaim sets the claim in the store corresponding to the input address, collateral type, and id
-func (k Keeper) SetJpyxMintingClaim(ctx sdk.Context, c types.JpyxMintingClaim) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.JpyxMintingClaimKeyPrefix)
+// SetCdpMintingClaim sets the claim in the store corresponding to the input address, collateral type, and id
+func (k Keeper) SetCdpMintingClaim(ctx sdk.Context, c types.CdpMintingClaim) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.CdpMintingClaimKeyPrefix)
 	bz := k.cdc.MustMarshalBinaryBare(&c)
 	store.Set(c.Owner, bz)
 
 }
 
-// DeleteJpyxMintingClaim deletes the claim in the store corresponding to the input address, collateral type, and id
-func (k Keeper) DeleteJpyxMintingClaim(ctx sdk.Context, owner sdk.AccAddress) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.JpyxMintingClaimKeyPrefix)
+// DeleteCdpMintingClaim deletes the claim in the store corresponding to the input address, collateral type, and id
+func (k Keeper) DeleteCdpMintingClaim(ctx sdk.Context, owner sdk.AccAddress) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.CdpMintingClaimKeyPrefix)
 	store.Delete(owner)
 }
 
-// IterateJpyxMintingClaims iterates over all claim  objects in the store and preforms a callback function
-func (k Keeper) IterateJpyxMintingClaims(ctx sdk.Context, cb func(c types.JpyxMintingClaim) (stop bool)) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.JpyxMintingClaimKeyPrefix)
+// IterateCdpMintingClaims iterates over all claim  objects in the store and preforms a callback function
+func (k Keeper) IterateCdpMintingClaims(ctx sdk.Context, cb func(c types.CdpMintingClaim) (stop bool)) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.CdpMintingClaimKeyPrefix)
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
-		var c types.JpyxMintingClaim
+		var c types.CdpMintingClaim
 		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &c)
 		if cb(c) {
 			break
@@ -88,19 +88,19 @@ func (k Keeper) IterateJpyxMintingClaims(ctx sdk.Context, cb func(c types.JpyxMi
 	}
 }
 
-// GetAllJpyxMintingClaims returns all Claim objects in the store
-func (k Keeper) GetAllJpyxMintingClaims(ctx sdk.Context) types.JpyxMintingClaims {
-	cs := types.JpyxMintingClaims{}
-	k.IterateJpyxMintingClaims(ctx, func(c types.JpyxMintingClaim) (stop bool) {
+// GetAllCdpMintingClaims returns all Claim objects in the store
+func (k Keeper) GetAllCdpMintingClaims(ctx sdk.Context) types.CdpMintingClaims {
+	cs := types.CdpMintingClaims{}
+	k.IterateCdpMintingClaims(ctx, func(c types.CdpMintingClaim) (stop bool) {
 		cs = append(cs, c)
 		return false
 	})
 	return cs
 }
 
-// GetPreviousJpyxMintingAccrualTime returns the last time a collateral type accrued Jpyx minting rewards
-func (k Keeper) GetPreviousJpyxMintingAccrualTime(ctx sdk.Context, ctype string) (blockTime time.Time, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PreviousJpyxMintingRewardAccrualTimeKeyPrefix)
+// GetPreviousCdpMintingAccrualTime returns the last time a collateral type accrued Cdp minting rewards
+func (k Keeper) GetPreviousCdpMintingAccrualTime(ctx sdk.Context, ctype string) (blockTime time.Time, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PreviousCdpMintingRewardAccrualTimeKeyPrefix)
 	bz := store.Get([]byte(ctype))
 	if bz == nil {
 		return time.Time{}, false
@@ -110,16 +110,16 @@ func (k Keeper) GetPreviousJpyxMintingAccrualTime(ctx sdk.Context, ctype string)
 	return blockTime, true
 }
 
-// SetPreviousJpyxMintingAccrualTime sets the last time a collateral type accrued Jpyx minting rewards
-func (k Keeper) SetPreviousJpyxMintingAccrualTime(ctx sdk.Context, ctype string, blockTime time.Time) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PreviousJpyxMintingRewardAccrualTimeKeyPrefix)
+// SetPreviousCdpMintingAccrualTime sets the last time a collateral type accrued Cdp minting rewards
+func (k Keeper) SetPreviousCdpMintingAccrualTime(ctx sdk.Context, ctype string, blockTime time.Time) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PreviousCdpMintingRewardAccrualTimeKeyPrefix)
 	bz, _ := blockTime.MarshalBinary()
 	store.Set([]byte(ctype), bz)
 }
 
-// IterateJpyxMintingAccrualTimes iterates over all previous Jpyx minting accrual times and preforms a callback function
-func (k Keeper) IterateJpyxMintingAccrualTimes(ctx sdk.Context, cb func(string, time.Time) (stop bool)) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PreviousJpyxMintingRewardAccrualTimeKeyPrefix)
+// IterateCdpMintingAccrualTimes iterates over all previous Cdp minting accrual times and preforms a callback function
+func (k Keeper) IterateCdpMintingAccrualTimes(ctx sdk.Context, cb func(string, time.Time) (stop bool)) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PreviousCdpMintingRewardAccrualTimeKeyPrefix)
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
@@ -133,9 +133,9 @@ func (k Keeper) IterateJpyxMintingAccrualTimes(ctx sdk.Context, cb func(string, 
 	}
 }
 
-// GetJpyxMintingRewardFactor returns the current reward factor for an individual collateral type
-func (k Keeper) GetJpyxMintingRewardFactor(ctx sdk.Context, ctype string) (factor sdk.Dec, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.JpyxMintingRewardFactorKeyPrefix)
+// GetCdpMintingRewardFactor returns the current reward factor for an individual collateral type
+func (k Keeper) GetCdpMintingRewardFactor(ctx sdk.Context, ctype string) (factor sdk.Dec, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.CdpMintingRewardFactorKeyPrefix)
 	bz := store.Get([]byte(ctype))
 	if bz == nil {
 		return sdk.ZeroDec(), false
@@ -145,9 +145,9 @@ func (k Keeper) GetJpyxMintingRewardFactor(ctx sdk.Context, ctype string) (facto
 	return factor, true
 }
 
-// SetJpyxMintingRewardFactor sets the current reward factor for an individual collateral type
-func (k Keeper) SetJpyxMintingRewardFactor(ctx sdk.Context, ctype string, factor sdk.Dec) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.JpyxMintingRewardFactorKeyPrefix)
+// SetCdpMintingRewardFactor sets the current reward factor for an individual collateral type
+func (k Keeper) SetCdpMintingRewardFactor(ctx sdk.Context, ctype string, factor sdk.Dec) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.CdpMintingRewardFactorKeyPrefix)
 	bz, _ := factor.Marshal()
 	store.Set([]byte(ctype), bz)
 }
