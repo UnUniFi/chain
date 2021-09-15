@@ -1625,7 +1625,7 @@
       "jpyx_accumulation_times": [],
       "cdp_minting_claims": []
     },
-    "botanydist": {
+    "jsmndist": {
       "params": {
         "active": false,
         "periods": []
