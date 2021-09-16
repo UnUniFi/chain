@@ -1,6 +1,6 @@
 {
   "genesis_time": "2021-04-12T05:11:20.803293303Z",
-  "chain_id": "jpyx-1-test",
+  "chain_id": "jpyx-2-test",
   "initial_height": "1",
   "consensus_params": {
     "block": {
@@ -133,6 +133,13 @@
       ],
       "supply": [],
       "denom_metadata": []
+    },
+    "botanydist": {
+      "params": {
+        "active": false,
+        "periods": []
+      },
+      "previous_block_time": "1970-01-01T00:00:01Z"
     },
     "capability": {
       "index": "1",
@@ -522,12 +529,33 @@
       "jpyx_accumulation_times": [],
       "cdp_minting_claims": []
     },
-    "jsmndist": {
+    "liquidity": {
       "params": {
-        "active": false,
-        "periods": []
+        "pool_types": [
+          {
+            "id": 1,
+            "name": "StandardLiquidityPool",
+            "min_reserve_coin_num": 2,
+            "max_reserve_coin_num": 2,
+            "description": "Standard liquidity pool with pool price function X/Y, ESPM constraint, and two kinds of reserve coins"
+          }
+        ],
+        "min_init_deposit_amount": "1000000",
+        "init_pool_coin_mint_amount": "1000000",
+        "max_reserve_coin_amount": "0",
+        "pool_creation_fee": [
+          {
+            "denom": "stake",
+            "amount": "40000000"
+          }
+        ],
+        "swap_fee_rate": "0.003000000000000000",
+        "withdraw_fee_rate": "0.000000000000000000",
+        "max_order_amount_ratio": "0.100000000000000000",
+        "unit_batch_height": 1,
+        "circuit_breaker_enabled": false
       },
-      "previous_block_time": "1970-01-01T00:00:01Z"
+      "pool_records": []
     },
     "mint": {
       "minter": {
