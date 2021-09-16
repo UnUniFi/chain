@@ -86,6 +86,7 @@
   
 - [incentive/genesis.proto](#incentive/genesis.proto)
     - [GenesisAccumulationTime](#botany.incentive.GenesisAccumulationTime)
+    - [GenesisDenoms](#botany.incentive.GenesisDenoms)
     - [GenesisState](#botany.incentive.GenesisState)
   
 - [incentive/query.proto](#incentive/query.proto)
@@ -475,7 +476,8 @@ GenesisState defines the botanydist module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#botany.botanydist.Params) |  |  |
-| `previous_block_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | this line is used by starport scaffolding # genesis/proto/state |
+| `previous_block_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `gov_denom` | [string](#string) |  | this line is used by starport scaffolding # genesis/proto/state |
 
 
 
@@ -1228,6 +1230,22 @@ Query defines the gRPC querier service.
 
 
 
+<a name="botany.incentive.GenesisDenoms"></a>
+
+### GenesisDenoms
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `principal_denom` | [string](#string) |  |  |
+| `cdp_minting_reward_denom` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="botany.incentive.GenesisState"></a>
 
 ### GenesisState
@@ -1238,7 +1256,8 @@ GenesisState defines the incentive module's genesis state.
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#botany.incentive.Params) |  |  |
 | `cdp_accumulation_times` | [GenesisAccumulationTime](#botany.incentive.GenesisAccumulationTime) | repeated |  |
-| `cdp_minting_claims` | [CdpMintingClaim](#botany.incentive.CdpMintingClaim) | repeated | this line is used by starport scaffolding # genesis/proto/state |
+| `cdp_minting_claims` | [CdpMintingClaim](#botany.incentive.CdpMintingClaim) | repeated |  |
+| `denoms` | [GenesisDenoms](#botany.incentive.GenesisDenoms) |  | this line is used by starport scaffolding # genesis/proto/state |
 
 
 

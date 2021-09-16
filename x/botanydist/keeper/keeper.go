@@ -46,7 +46,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 // GetPreviousBlockTime get the blocktime for the previous block
 func (k Keeper) GetPreviousBlockTime(ctx sdk.Context) (blockTime time.Time, found bool) {
 	store := ctx.KVStore(k.storeKey)
-	b := store.Get(types.KeyPrefix(types.PreviousBlockTime))
+	b := store.Get(types.KeyPrefix(types.PreviousBlockTimeKey))
 	if b == nil {
 		return time.Time{}, false
 	}
@@ -59,5 +59,19 @@ func (k Keeper) GetPreviousBlockTime(ctx sdk.Context) (blockTime time.Time, foun
 func (k Keeper) SetPreviousBlockTime(ctx sdk.Context, blockTime time.Time) {
 	store := ctx.KVStore(k.storeKey)
 	b, _ := blockTime.MarshalBinary()
-	store.Set(types.KeyPrefix(types.PreviousBlockTime), b)
+	store.Set(types.KeyPrefix(types.PreviousBlockTimeKey), b)
+}
+
+func (k Keeper) GetGovDenom(ctx sdk.Context) (govDenom string, found bool) {
+	store := ctx.KVStore(k.storeKey)
+	b := store.Get(types.KeyPrefix(types.GovDenomKey))
+	govDenom = string(b)
+
+	return govDenom, true
+}
+
+func (k Keeper) SetGovDenom(ctx sdk.Context, govDenom string) {
+	store := ctx.KVStore(k.storeKey)
+	b := []byte(govDenom)
+	store.Set(types.KeyPrefix(types.GovDenomKey), b)
 }

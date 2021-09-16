@@ -159,9 +159,6 @@ func NewIncentiveGenState(previousAccumTime, endTime time.Time, rewardPeriods ..
 	genesis := incentivetypes.NewGenesisState(
 		incentivetypes.NewParams(
 			rewardPeriods,
-			incentivetypes.MultiRewardPeriods{},
-			incentivetypes.MultiRewardPeriods{},
-			incentivetypes.RewardPeriods{},
 			incentivetypes.Multipliers{
 				incentivetypes.NewMultiplier(incentivetypes.Small, 1, d("0.25")),
 				incentivetypes.NewMultiplier(incentivetypes.Large, 12, d("1.0")),
@@ -170,6 +167,7 @@ func NewIncentiveGenState(previousAccumTime, endTime time.Time, rewardPeriods ..
 		),
 		incentivetypes.DefaultGenesisAccumulationTimes,
 		incentivetypes.DefaultCdpClaims,
+		incentivetypes.DefaultGenesisDenoms(),
 	)
 	return app.GenesisState{incentivetypes.ModuleName: incentivetypes.ModuleCdc.MustMarshalJSON(&genesis)}
 }

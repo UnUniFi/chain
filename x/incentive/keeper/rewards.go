@@ -25,7 +25,10 @@ func (k Keeper) AccumulateCdpMintingRewards(ctx sdk.Context, rewardPeriod types.
 		k.SetPreviousCdpMintingAccrualTime(ctx, rewardPeriod.CollateralType, ctx.BlockTime())
 		return nil
 	}
-	totalPrincipal := k.cdpKeeper.GetTotalPrincipal(ctx, rewardPeriod.CollateralType, types.PrincipalDenom).ToDec()
+
+	denoms, _ := k.GetGenesisDenoms(ctx)
+
+	totalPrincipal := k.cdpKeeper.GetTotalPrincipal(ctx, rewardPeriod.CollateralType, denoms.PrincipalDenom).ToDec()
 	if totalPrincipal.IsZero() {
 		k.SetPreviousCdpMintingAccrualTime(ctx, rewardPeriod.CollateralType, ctx.BlockTime())
 		return nil
@@ -63,8 +66,11 @@ func (k Keeper) InitializeCdpMintingClaim(ctx sdk.Context, cdp cdptypes.Cdp) {
 		rewardFactor = sdk.ZeroDec()
 	}
 	claim, found := k.GetCdpMintingClaim(ctx, cdp.Owner.AccAddress())
+
+	denoms, _ := k.GetGenesisDenoms(ctx)
+
 	if !found { // this is the owner's first jpyx minting reward claim
-		claim = types.NewCdpMintingClaim(cdp.Owner.AccAddress(), sdk.NewCoin(types.CdpMintingRewardDenom, sdk.ZeroInt()), types.RewardIndexes{types.NewRewardIndex(cdp.Type, rewardFactor)})
+		claim = types.NewCdpMintingClaim(cdp.Owner.AccAddress(), sdk.NewCoin(denoms.CdpMintingRewardDenom, sdk.ZeroInt()), types.RewardIndexes{types.NewRewardIndex(cdp.Type, rewardFactor)})
 		k.SetCdpMintingClaim(ctx, claim)
 		return
 	}
@@ -92,8 +98,11 @@ func (k Keeper) SynchronizeCdpMintingReward(ctx sdk.Context, cdp cdptypes.Cdp) {
 		globalRewardFactor = sdk.ZeroDec()
 	}
 	claim, found := k.GetCdpMintingClaim(ctx, cdp.Owner.AccAddress())
+
+	denoms, _ := k.GetGenesisDenoms(ctx)
+
 	if !found {
-		claim = types.NewCdpMintingClaim(cdp.Owner.AccAddress(), sdk.NewCoin(types.CdpMintingRewardDenom, sdk.ZeroInt()), types.RewardIndexes{types.NewRewardIndex(cdp.Type, globalRewardFactor)})
+		claim = types.NewCdpMintingClaim(cdp.Owner.AccAddress(), sdk.NewCoin(denoms.CdpMintingRewardDenom, sdk.ZeroInt()), types.RewardIndexes{types.NewRewardIndex(cdp.Type, globalRewardFactor)})
 		k.SetCdpMintingClaim(ctx, claim)
 		return
 	}
@@ -116,7 +125,7 @@ func (k Keeper) SynchronizeCdpMintingReward(ctx sdk.Context, cdp cdptypes.Cdp) {
 		k.SetCdpMintingClaim(ctx, claim)
 		return
 	}
-	newRewardsCoin := sdk.NewCoin(types.CdpMintingRewardDenom, newRewardsAmount)
+	newRewardsCoin := sdk.NewCoin(denoms.CdpMintingRewardDenom, newRewardsAmount)
 	claim.Reward = claim.Reward.Add(newRewardsCoin)
 	k.SetCdpMintingClaim(ctx, claim)
 	return
@@ -207,7 +216,10 @@ func (k Keeper) SimulateCdpMintingSynchronization(ctx sdk.Context, claim types.C
 		if newRewardsAmount.IsZero() {
 			continue
 		}
-		newRewardsCoin := sdk.NewCoin(types.CdpMintingRewardDenom, newRewardsAmount)
+
+		denoms, _ := k.GetGenesisDenoms(ctx)
+
+		newRewardsCoin := sdk.NewCoin(denoms.CdpMintingRewardDenom, newRewardsAmount)
 		claim.Reward = claim.Reward.Add(newRewardsCoin)
 	}
 
