@@ -1,6 +1,6 @@
 {
   "genesis_time": "2021-04-12T05:11:20.803293303Z",
-  "chain_id": "jpyx-2-test",
+  "chain_id": "jpyx-3-test",
   "initial_height": "1",
   "consensus_params": {
     "block": {
@@ -527,7 +527,7 @@
         "claim_multipliers": [],
         "claim_end": "1970-01-01T00:00:01Z"
       },
-      "jpyx_accumulation_times": [],
+      "cdp_accumulation_times": [],
       "cdp_minting_claims": [],
       "denoms": {
         "principal_denom": "jpyx",
