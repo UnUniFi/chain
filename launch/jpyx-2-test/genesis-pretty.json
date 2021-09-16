@@ -279,7 +279,7 @@
             }
           },
           "signatures": [
-            "CjjyF5QQsL4ECP6JH12kUe6THnhc2WRKUPlL5wbTVG5vYvsNEGSKTYenGb+RV8X1PU6ujGh3+vzzX1BdKm7EvQ=="
+            "Pw9VV7h8spswm173i8fvNynHx1lKn/0uc0QywevZ8fATWoZapHTxVC/DpePuGcpNleHkVC5oT7pPLBZP9VPsfA=="
           ]
         },
         {
@@ -340,7 +340,7 @@
             }
           },
           "signatures": [
-            "VVFx3fqp2BgxW+YCFL0qFwBtFKPcz6a3phULZq6xuKVyGm1UFjR6CnJ/34MQ7D3xGsPMQR/0wmD8Q6PrWKfUCQ=="
+            "7g8vFQfCHOQtxdjzsx7M1SvxK/3oMzd6BQBbe0PObIkOAt1NhjovBDzEOQ953eAyoFLasrRWDmC7WaQqS5hPpQ=="
           ]
         },
         {
@@ -401,7 +401,7 @@
             }
           },
           "signatures": [
-            "7vK3EpUDLjdCTSTqC/ov3KpEZ/QgpSZbjrpxp13tNTtnQuo1xJiOxZyE6f/rkfxEX+lwV3e+NIOtPrqGv3owcg=="
+            "RuAeEKBOlWC9cgvaLRVyw2bmAgYhL5GnRt5cgb4iqNZsp4ZJSyb9jU9rksxA6FD5zB0Mk6dOk4ieULy9emHJWg=="
           ]
         },
         {
@@ -462,7 +462,7 @@
             }
           },
           "signatures": [
-            "x/EJsVYVVlpXkGSKz/9YaOfHocCrON84SUsUnAcS9H0topK76Mbp9Fyvksfj4fMmv/68NFJ+ySHzhmniLj2BSA=="
+            "AROc16AcKoZW8tyQNuKJXosADWbbpkKOBD5UtT28lFRP9GxKn4Cfk3i9qca1Rd0Kk+WIMeEowcDdGQT1djsNhw=="
           ]
         }
       ]
@@ -526,7 +526,7 @@
         "claim_multipliers": [],
         "claim_end": "1970-01-01T00:00:01Z"
       },
-      "jpyx_accumulation_times": [],
+      "cdp_accumulation_times": [],
       "cdp_minting_claims": []
     },
     "liquidity": {
