@@ -21,7 +21,7 @@ func CmdCreateCdp() *cobra.Command {
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Create a new cdp, depositing some collateral and drawing some debt.
 Example:
-$ %s tx %s create 10000000ubtc 1000jpyx ubtc-a --from myKeyName
+$ %s tx %s create-cdp 10ubtc 10jpyx ubtc-a --from myKeyName --chain-id jpyx-3-test
 `, version.AppName, types.ModuleName)),
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
