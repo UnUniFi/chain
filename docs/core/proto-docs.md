@@ -1888,7 +1888,7 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `PostPriceResponse` | [MsgPostPriceResponse](#botany.pricefeed.MsgPostPriceResponse) | [MsgPostPriceResponse](#botany.pricefeed.MsgPostPriceResponse) |  | |
+| `PostPrice` | [MsgPostPrice](#botany.pricefeed.MsgPostPrice) | [MsgPostPriceResponse](#botany.pricefeed.MsgPostPriceResponse) |  | |
 
  <!-- end services -->
 
