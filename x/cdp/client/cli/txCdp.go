@@ -14,7 +14,7 @@ func CmdCreateCdp() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create-cdp [collateral] [debt] [collateral-type]",
 		Short: "Creates a new cdp",
-		Args:  cobra.ExactArgs(0),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 
 			clientCtx, err := client.GetClientTxContext(cmd)
