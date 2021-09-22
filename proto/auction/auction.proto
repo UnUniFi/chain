@@ -91,19 +91,6 @@ message WeightedAddress {
   ];
 }
 
-message MsgPlaceBid {
-  uint64 auction_id = 1 [(gogoproto.moretags) = "yaml:\"auction_id\""];
-  string bidder = 2 [
-    (gogoproto.moretags) = "yaml:\"bidder\"",
-    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
-  cosmos.base.v1beta1.Coin amount = 3 [
-    (gogoproto.moretags) = "yaml:\"amount\"",
-    (gogoproto.nullable) = false
-  ];
-}
-
 message Params {
   google.protobuf.Duration max_auction_duration = 1 [
     (gogoproto.moretags) = "yaml:\"max_auction_duration\"",
