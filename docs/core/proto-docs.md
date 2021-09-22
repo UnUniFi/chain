@@ -8,7 +8,6 @@
     - [BaseAuction](#botany.auction.BaseAuction)
     - [CollateralAuction](#botany.auction.CollateralAuction)
     - [DebtAuction](#botany.auction.DebtAuction)
-    - [MsgPlaceBid](#botany.auction.MsgPlaceBid)
     - [Params](#botany.auction.Params)
     - [SurplusAuction](#botany.auction.SurplusAuction)
     - [WeightedAddress](#botany.auction.WeightedAddress)
@@ -25,6 +24,12 @@
     - [QueryParamsResponse](#botany.auction.QueryParamsResponse)
   
     - [Query](#botany.auction.Query)
+  
+- [auction/tx.proto](#auction/tx.proto)
+    - [MsgPlaceBid](#botany.auction.MsgPlaceBid)
+    - [MsgPlaceBidResponse](#botany.auction.MsgPlaceBidResponse)
+  
+    - [Msg](#botany.auction.Msg)
   
 - [botanydist/botanydist.proto](#botanydist/botanydist.proto)
     - [Params](#botany.botanydist.Params)
@@ -47,12 +52,6 @@
     - [CollateralParam](#botany.cdp.CollateralParam)
     - [DebtParam](#botany.cdp.DebtParam)
     - [Deposit](#botany.cdp.Deposit)
-    - [MsgCreateCdp](#botany.cdp.MsgCreateCdp)
-    - [MsgDeposit](#botany.cdp.MsgDeposit)
-    - [MsgDrawDebt](#botany.cdp.MsgDrawDebt)
-    - [MsgLiquidate](#botany.cdp.MsgLiquidate)
-    - [MsgRepayDebt](#botany.cdp.MsgRepayDebt)
-    - [MsgWithdraw](#botany.cdp.MsgWithdraw)
     - [Params](#botany.cdp.Params)
   
 - [cdp/genesis.proto](#cdp/genesis.proto)
@@ -74,11 +73,26 @@
   
     - [Query](#botany.cdp.Query)
   
+- [cdp/tx.proto](#cdp/tx.proto)
+    - [MsgCreateCdp](#botany.cdp.MsgCreateCdp)
+    - [MsgCreateCdpResponse](#botany.cdp.MsgCreateCdpResponse)
+    - [MsgDeposit](#botany.cdp.MsgDeposit)
+    - [MsgDepositResponse](#botany.cdp.MsgDepositResponse)
+    - [MsgDrawDebt](#botany.cdp.MsgDrawDebt)
+    - [MsgDrawDebtResponse](#botany.cdp.MsgDrawDebtResponse)
+    - [MsgLiquidate](#botany.cdp.MsgLiquidate)
+    - [MsgLiquidateResponse](#botany.cdp.MsgLiquidateResponse)
+    - [MsgRepayDebt](#botany.cdp.MsgRepayDebt)
+    - [MsgRepayDebtResponse](#botany.cdp.MsgRepayDebtResponse)
+    - [MsgWithdraw](#botany.cdp.MsgWithdraw)
+    - [MsgWithdrawResponse](#botany.cdp.MsgWithdrawResponse)
+  
+    - [Msg](#botany.cdp.Msg)
+  
 - [incentive/incentive.proto](#incentive/incentive.proto)
     - [BaseClaim](#botany.incentive.BaseClaim)
     - [BaseMultiClaim](#botany.incentive.BaseMultiClaim)
     - [CdpMintingClaim](#botany.incentive.CdpMintingClaim)
-    - [MsgClaimCdpMintingReward](#botany.incentive.MsgClaimCdpMintingReward)
     - [Multiplier](#botany.incentive.Multiplier)
     - [Params](#botany.incentive.Params)
     - [RewardIndex](#botany.incentive.RewardIndex)
@@ -86,6 +100,7 @@
   
 - [incentive/genesis.proto](#incentive/genesis.proto)
     - [GenesisAccumulationTime](#botany.incentive.GenesisAccumulationTime)
+    - [GenesisDenoms](#botany.incentive.GenesisDenoms)
     - [GenesisState](#botany.incentive.GenesisState)
   
 - [incentive/query.proto](#incentive/query.proto)
@@ -94,10 +109,15 @@
   
     - [Query](#botany.incentive.Query)
   
+- [incentive/tx.proto](#incentive/tx.proto)
+    - [MsgClaimCdpMintingReward](#botany.incentive.MsgClaimCdpMintingReward)
+    - [MsgClaimCdpMintingRewardResponse](#botany.incentive.MsgClaimCdpMintingRewardResponse)
+  
+    - [Msg](#botany.incentive.Msg)
+  
 - [pricefeed/pricefeed.proto](#pricefeed/pricefeed.proto)
     - [CurrentPrice](#botany.pricefeed.CurrentPrice)
     - [Market](#botany.pricefeed.Market)
-    - [MsgPostPrice](#botany.pricefeed.MsgPostPrice)
     - [Params](#botany.pricefeed.Params)
     - [PostedPrice](#botany.pricefeed.PostedPrice)
   
@@ -119,6 +139,12 @@
     - [QueryParamsResponse](#botany.pricefeed.QueryParamsResponse)
   
     - [Query](#botany.pricefeed.Query)
+  
+- [pricefeed/tx.proto](#pricefeed/tx.proto)
+    - [MsgPostPrice](#botany.pricefeed.MsgPostPrice)
+    - [MsgPostPriceResponse](#botany.pricefeed.MsgPostPriceResponse)
+  
+    - [Msg](#botany.pricefeed.Msg)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -181,23 +207,6 @@
 | ----- | ---- | ----- | ----------- |
 | `base_auction` | [BaseAuction](#botany.auction.BaseAuction) |  |  |
 | `corresponding_debt` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-
-
-
-
-
-
-<a name="botany.auction.MsgPlaceBid"></a>
-
-### MsgPlaceBid
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `auction_id` | [uint64](#uint64) |  |  |
-| `bidder` | [string](#string) |  |  |
-| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -410,6 +419,59 @@ Query defines the gRPC querier service.
 
 
 
+<a name="auction/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## auction/tx.proto
+
+
+
+<a name="botany.auction.MsgPlaceBid"></a>
+
+### MsgPlaceBid
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `auction_id` | [uint64](#uint64) |  |  |
+| `bidder` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="botany.auction.MsgPlaceBidResponse"></a>
+
+### MsgPlaceBidResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="botany.auction.Msg"></a>
+
+### Msg
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `PlaceBid` | [MsgPlaceBid](#botany.auction.MsgPlaceBid) | [MsgPlaceBidResponse](#botany.auction.MsgPlaceBidResponse) |  | |
+
+ <!-- end services -->
+
+
+
 <a name="botanydist/botanydist.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -475,7 +537,8 @@ GenesisState defines the botanydist module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#botany.botanydist.Params) |  |  |
-| `previous_block_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | this line is used by starport scaffolding # genesis/proto/state |
+| `previous_block_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `gov_denom` | [string](#string) |  | this line is used by starport scaffolding # genesis/proto/state |
 
 
 
@@ -670,111 +733,6 @@ Query defines the gRPC querier service.
 | `cdp_id` | [uint64](#uint64) |  |  |
 | `depositor` | [string](#string) |  |  |
 | `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-
-
-
-
-
-
-<a name="botany.cdp.MsgCreateCdp"></a>
-
-### MsgCreateCdp
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  |  |
-| `collateral` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-| `principal` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-| `collateral_type` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="botany.cdp.MsgDeposit"></a>
-
-### MsgDeposit
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `depositor` | [string](#string) |  |  |
-| `owner` | [string](#string) |  |  |
-| `collateral` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-| `collateral_type` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="botany.cdp.MsgDrawDebt"></a>
-
-### MsgDrawDebt
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  |  |
-| `collateral_type` | [string](#string) |  |  |
-| `principal` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-
-
-
-
-
-
-<a name="botany.cdp.MsgLiquidate"></a>
-
-### MsgLiquidate
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `keeper` | [string](#string) |  |  |
-| `borrower` | [string](#string) |  |  |
-| `collateral_type` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="botany.cdp.MsgRepayDebt"></a>
-
-### MsgRepayDebt
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  |  |
-| `collateral_type` | [string](#string) |  |  |
-| `payment` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-
-
-
-
-
-
-<a name="botany.cdp.MsgWithdraw"></a>
-
-### MsgWithdraw
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `depositor` | [string](#string) |  |  |
-| `owner` | [string](#string) |  |  |
-| `collateral` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-| `collateral_type` | [string](#string) |  |  |
 
 
 
@@ -1056,6 +1014,202 @@ Query defines the gRPC querier service.
 
 
 
+<a name="cdp/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cdp/tx.proto
+
+
+
+<a name="botany.cdp.MsgCreateCdp"></a>
+
+### MsgCreateCdp
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `collateral` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `principal` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `collateral_type` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="botany.cdp.MsgCreateCdpResponse"></a>
+
+### MsgCreateCdpResponse
+
+
+
+
+
+
+
+<a name="botany.cdp.MsgDeposit"></a>
+
+### MsgDeposit
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `depositor` | [string](#string) |  |  |
+| `owner` | [string](#string) |  |  |
+| `collateral` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `collateral_type` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="botany.cdp.MsgDepositResponse"></a>
+
+### MsgDepositResponse
+
+
+
+
+
+
+
+<a name="botany.cdp.MsgDrawDebt"></a>
+
+### MsgDrawDebt
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `collateral_type` | [string](#string) |  |  |
+| `principal` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="botany.cdp.MsgDrawDebtResponse"></a>
+
+### MsgDrawDebtResponse
+
+
+
+
+
+
+
+<a name="botany.cdp.MsgLiquidate"></a>
+
+### MsgLiquidate
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `keeper` | [string](#string) |  |  |
+| `borrower` | [string](#string) |  |  |
+| `collateral_type` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="botany.cdp.MsgLiquidateResponse"></a>
+
+### MsgLiquidateResponse
+
+
+
+
+
+
+
+<a name="botany.cdp.MsgRepayDebt"></a>
+
+### MsgRepayDebt
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `collateral_type` | [string](#string) |  |  |
+| `payment` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="botany.cdp.MsgRepayDebtResponse"></a>
+
+### MsgRepayDebtResponse
+
+
+
+
+
+
+
+<a name="botany.cdp.MsgWithdraw"></a>
+
+### MsgWithdraw
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `depositor` | [string](#string) |  |  |
+| `owner` | [string](#string) |  |  |
+| `collateral` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `collateral_type` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="botany.cdp.MsgWithdrawResponse"></a>
+
+### MsgWithdrawResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="botany.cdp.Msg"></a>
+
+### Msg
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `CreateCdp` | [MsgCreateCdp](#botany.cdp.MsgCreateCdp) | [MsgCreateCdpResponse](#botany.cdp.MsgCreateCdpResponse) |  | |
+| `Deposit` | [MsgDeposit](#botany.cdp.MsgDeposit) | [MsgDepositResponse](#botany.cdp.MsgDepositResponse) |  | |
+| `Withdraw` | [MsgWithdraw](#botany.cdp.MsgWithdraw) | [MsgWithdrawResponse](#botany.cdp.MsgWithdrawResponse) |  | |
+| `DrawDebt` | [MsgDrawDebt](#botany.cdp.MsgDrawDebt) | [MsgDrawDebtResponse](#botany.cdp.MsgDrawDebtResponse) |  | |
+| `RepayDebt` | [MsgRepayDebt](#botany.cdp.MsgRepayDebt) | [MsgRepayDebtResponse](#botany.cdp.MsgRepayDebtResponse) |  | |
+| `Liquidate` | [MsgLiquidate](#botany.cdp.MsgLiquidate) | [MsgLiquidateResponse](#botany.cdp.MsgLiquidateResponse) |  | |
+
+ <!-- end services -->
+
+
+
 <a name="incentive/incentive.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -1105,22 +1259,6 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `base_claim` | [BaseClaim](#botany.incentive.BaseClaim) |  |  |
 | `reward_indexes` | [RewardIndex](#botany.incentive.RewardIndex) | repeated |  |
-
-
-
-
-
-
-<a name="botany.incentive.MsgClaimCdpMintingReward"></a>
-
-### MsgClaimCdpMintingReward
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  |  |
-| `multiplier_name` | [string](#string) |  |  |
 
 
 
@@ -1228,6 +1366,22 @@ Query defines the gRPC querier service.
 
 
 
+<a name="botany.incentive.GenesisDenoms"></a>
+
+### GenesisDenoms
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `principal_denom` | [string](#string) |  |  |
+| `cdp_minting_reward_denom` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="botany.incentive.GenesisState"></a>
 
 ### GenesisState
@@ -1238,7 +1392,8 @@ GenesisState defines the incentive module's genesis state.
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#botany.incentive.Params) |  |  |
 | `cdp_accumulation_times` | [GenesisAccumulationTime](#botany.incentive.GenesisAccumulationTime) | repeated |  |
-| `cdp_minting_claims` | [CdpMintingClaim](#botany.incentive.CdpMintingClaim) | repeated | this line is used by starport scaffolding # genesis/proto/state |
+| `cdp_minting_claims` | [CdpMintingClaim](#botany.incentive.CdpMintingClaim) | repeated |  |
+| `denoms` | [GenesisDenoms](#botany.incentive.GenesisDenoms) |  | this line is used by starport scaffolding # genesis/proto/state |
 
 
 
@@ -1305,6 +1460,58 @@ Query defines the gRPC querier service.
 
 
 
+<a name="incentive/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## incentive/tx.proto
+
+
+
+<a name="botany.incentive.MsgClaimCdpMintingReward"></a>
+
+### MsgClaimCdpMintingReward
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `multiplier_name` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="botany.incentive.MsgClaimCdpMintingRewardResponse"></a>
+
+### MsgClaimCdpMintingRewardResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="botany.incentive.Msg"></a>
+
+### Msg
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `ClaimCdpMintingReward` | [MsgClaimCdpMintingReward](#botany.incentive.MsgClaimCdpMintingReward) | [MsgClaimCdpMintingRewardResponse](#botany.incentive.MsgClaimCdpMintingRewardResponse) |  | |
+
+ <!-- end services -->
+
+
+
 <a name="pricefeed/pricefeed.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -1341,24 +1548,6 @@ Query defines the gRPC querier service.
 | `quote_asset` | [string](#string) |  |  |
 | `oracles` | [string](#string) | repeated |  |
 | `active` | [bool](#bool) |  |  |
-
-
-
-
-
-
-<a name="botany.pricefeed.MsgPostPrice"></a>
-
-### MsgPostPrice
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `from` | [string](#string) |  |  |
-| `market_id` | [string](#string) |  |  |
-| `price` | [string](#string) |  |  |
-| `expiry` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 
 
 
@@ -1646,6 +1835,60 @@ Query defines the gRPC querier service.
 | `Price` | [QueryGetPriceRequest](#botany.pricefeed.QueryGetPriceRequest) | [QueryGetPriceResponse](#botany.pricefeed.QueryGetPriceResponse) |  | GET|/botany/pricefeed/markets/{market_id}/price|
 | `PriceAll` | [QueryAllPriceRequest](#botany.pricefeed.QueryAllPriceRequest) | [QueryAllPriceResponse](#botany.pricefeed.QueryAllPriceResponse) |  | GET|/botany/pricefeed/prices|
 | `RawPriceAll` | [QueryAllRawPriceRequest](#botany.pricefeed.QueryAllRawPriceRequest) | [QueryAllRawPriceResponse](#botany.pricefeed.QueryAllRawPriceResponse) |  | GET|/botany/pricefeed/markets/{market_id}/raw_prices|
+
+ <!-- end services -->
+
+
+
+<a name="pricefeed/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## pricefeed/tx.proto
+
+
+
+<a name="botany.pricefeed.MsgPostPrice"></a>
+
+### MsgPostPrice
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  |  |
+| `market_id` | [string](#string) |  |  |
+| `price` | [string](#string) |  |  |
+| `expiry` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+
+
+
+
+
+
+<a name="botany.pricefeed.MsgPostPriceResponse"></a>
+
+### MsgPostPriceResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="botany.pricefeed.Msg"></a>
+
+### Msg
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `PostPriceResponse` | [MsgPostPriceResponse](#botany.pricefeed.MsgPostPriceResponse) | [MsgPostPriceResponse](#botany.pricefeed.MsgPostPriceResponse) |  | |
 
  <!-- end services -->
 

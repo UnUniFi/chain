@@ -27,6 +27,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKe
 		panic(fmt.Sprintf("%s module account has not been set", types.BotanydistMacc))
 	}
 
+	k.SetGovDenom(ctx, gs.GovDenom)
 }
 
 // ExportGenesis export genesis state for cdp module
@@ -36,5 +37,9 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 	if !found {
 		previousBlockTime = types.DefaultPreviousBlockTime
 	}
-	return types.NewGenesisState(params, previousBlockTime)
+	govDenom, found := k.GetGovDenom(ctx)
+	if !found {
+		govDenom = types.DefaultGovDenom
+	}
+	return types.NewGenesisState(params, previousBlockTime, govDenom)
 }

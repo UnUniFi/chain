@@ -34,16 +34,15 @@ var (
 	DefaultCdpClaims                = CdpMintingClaims{}
 	DefaultGenesisAccumulationTimes = GenesisAccumulationTimes{}
 	DefaultClaimEnd                 = tmtime.Canonical(time.Unix(1, 0))
-	GovDenom                        = cdptypes.DefaultGovDenom
-	PrincipalDenom                  = "jpyx"
+	DefaultPrincipalDenom           = cdptypes.DefaultStableDenom
+	DefaultCDPMintingRewardDenom    = cdptypes.DefaultGovDenom
 	IncentiveMacc                   = botanydistTypes.ModuleName
 )
 
 // NewParams returns a new params object
-func NewParams(jpyxMinting RewardPeriods, hardSupply, hardBorrow MultiRewardPeriods,
-	hardDelegator RewardPeriods, multipliers Multipliers, claimEnd time.Time) Params {
+func NewParams(cdpMinting RewardPeriods, multipliers Multipliers, claimEnd time.Time) Params {
 	return Params{
-		CdpMintingRewardPeriods: jpyxMinting,
+		CdpMintingRewardPeriods: cdpMinting,
 		ClaimMultipliers:        multipliers,
 		ClaimEnd:                claimEnd,
 	}
@@ -51,8 +50,7 @@ func NewParams(jpyxMinting RewardPeriods, hardSupply, hardBorrow MultiRewardPeri
 
 // DefaultParams returns default params for incentive module
 func DefaultParams() Params {
-	return NewParams(DefaultRewardPeriods, DefaultMultiRewardPeriods,
-		DefaultMultiRewardPeriods, DefaultRewardPeriods, DefaultMultipliers, DefaultClaimEnd)
+	return NewParams(DefaultRewardPeriods, DefaultMultipliers, DefaultClaimEnd)
 }
 
 // ParamKeyTable Key declaration for parameters

@@ -19,7 +19,7 @@ var (
 	DefaultActive            = false
 	DefaultPeriods           = Periods{}
 	DefaultPreviousBlockTime = tmtime.Canonical(time.Unix(1, 0))
-	GovDenom                 = cdptypes.DefaultGovDenom
+	DefaultGovDenom          = cdptypes.DefaultGovDenom
 )
 
 // NewPeriod returns a new instance of Period

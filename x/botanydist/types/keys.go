@@ -25,8 +25,9 @@ func KeyPrefix(p string) []byte {
 }
 
 const (
-	ParamsKey         = "Params-value-"
-	RewardKey         = "Reward-value-"
-	RewardCountKey    = "Reward-count-"
-	PreviousBlockTime = "PreviousBlockTime"
+	ParamsKey            = "Params-value-"
+	RewardKey            = "Reward-value-"
+	RewardCountKey       = "Reward-count-"
+	PreviousBlockTimeKey = "PreviousBlockTime"
+	GovDenomKey          = "GovDenom"
 )

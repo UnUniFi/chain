@@ -74,9 +74,6 @@ func (suite *KeeperTestSuite) TestAccumulateCdpMintingRewards() {
 			// setup incentive state
 			params := incentivetypes.NewParams(
 				incentivetypes.RewardPeriods{incentivetypes.NewRewardPeriod(true, tc.args.ctype, tc.args.initialTime, tc.args.initialTime.Add(time.Hour*24*365*4), tc.args.rewardsPerSecond)},
-				incentivetypes.MultiRewardPeriods{incentivetypes.NewMultiRewardPeriod(true, tc.args.ctype, tc.args.initialTime, tc.args.initialTime.Add(time.Hour*24*365*4), cs(tc.args.rewardsPerSecond))},
-				incentivetypes.MultiRewardPeriods{incentivetypes.NewMultiRewardPeriod(true, tc.args.ctype, tc.args.initialTime, tc.args.initialTime.Add(time.Hour*24*365*4), cs(tc.args.rewardsPerSecond))},
-				incentivetypes.RewardPeriods{incentivetypes.NewRewardPeriod(true, tc.args.ctype, tc.args.initialTime, tc.args.initialTime.Add(time.Hour*24*365*4), tc.args.rewardsPerSecond)},
 				incentivetypes.Multipliers{incentivetypes.NewMultiplier(incentivetypes.MultiplierName("small"), 1, d("0.25")), incentivetypes.NewMultiplier(incentivetypes.MultiplierName("large"), 12, d("1.0"))},
 				tc.args.initialTime.Add(time.Hour*24*365*5),
 			)
@@ -148,9 +145,6 @@ func (suite *KeeperTestSuite) TestSynchronizeCdpMintingReward() {
 
 			// setup incentive state
 			params := incentivetypes.NewParams(
-				incentivetypes.RewardPeriods{incentivetypes.NewRewardPeriod(true, tc.args.ctype, tc.args.initialTime, tc.args.initialTime.Add(time.Hour*24*365*4), tc.args.rewardsPerSecond)},
-				incentivetypes.MultiRewardPeriods{incentivetypes.NewMultiRewardPeriod(true, tc.args.ctype, tc.args.initialTime, tc.args.initialTime.Add(time.Hour*24*365*4), cs(tc.args.rewardsPerSecond))},
-				incentivetypes.MultiRewardPeriods{incentivetypes.NewMultiRewardPeriod(true, tc.args.ctype, tc.args.initialTime, tc.args.initialTime.Add(time.Hour*24*365*4), cs(tc.args.rewardsPerSecond))},
 				incentivetypes.RewardPeriods{incentivetypes.NewRewardPeriod(true, tc.args.ctype, tc.args.initialTime, tc.args.initialTime.Add(time.Hour*24*365*4), tc.args.rewardsPerSecond)},
 				incentivetypes.Multipliers{incentivetypes.NewMultiplier(incentivetypes.MultiplierName("small"), 1, d("0.25")), incentivetypes.NewMultiplier(incentivetypes.MultiplierName("large"), 12, d("1.0"))},
 				tc.args.initialTime.Add(time.Hour*24*365*5),
@@ -2741,9 +2735,6 @@ func (suite *KeeperTestSuite) TestSimulateCdpMintingRewardSynchronization() {
 
 			// setup incentive state
 			params := incentivetypes.NewParams(
-				incentivetypes.RewardPeriods{incentivetypes.NewRewardPeriod(true, tc.args.ctype, tc.args.initialTime, tc.args.initialTime.Add(time.Hour*24*365*4), tc.args.rewardsPerSecond[0])},
-				incentivetypes.MultiRewardPeriods{incentivetypes.NewMultiRewardPeriod(true, tc.args.ctype, tc.args.initialTime, tc.args.initialTime.Add(time.Hour*24*365*4), tc.args.rewardsPerSecond)},
-				incentivetypes.MultiRewardPeriods{incentivetypes.NewMultiRewardPeriod(true, tc.args.ctype, tc.args.initialTime, tc.args.initialTime.Add(time.Hour*24*365*4), tc.args.rewardsPerSecond)},
 				incentivetypes.RewardPeriods{incentivetypes.NewRewardPeriod(true, tc.args.ctype, tc.args.initialTime, tc.args.initialTime.Add(time.Hour*24*365*4), tc.args.rewardsPerSecond[0])},
 				incentivetypes.Multipliers{incentivetypes.NewMultiplier(incentivetypes.MultiplierName("small"), 1, d("0.25")), incentivetypes.NewMultiplier(incentivetypes.MultiplierName("large"), 12, d("1.0"))},
 				tc.args.initialTime.Add(time.Hour*24*365*5),

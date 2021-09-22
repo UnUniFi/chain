@@ -16,6 +16,7 @@ func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		Params:            DefaultParams(),
 		PreviousBlockTime: DefaultPreviousBlockTime,
+		GovDenom:          DefaultGovDenom,
 		// this line is used by starport scaffolding # genesis/types/default
 	}
 }
@@ -32,14 +33,18 @@ func (gs GenesisState) Validate() error {
 	if gs.PreviousBlockTime.Equal(time.Time{}) {
 		return fmt.Errorf("previous block time not set")
 	}
+	if len(gs.GovDenom) == 0 {
+		return fmt.Errorf("GovDenom is nil or empty")
+	}
 	return nil
 }
 
 // NewGenesisState returns a new genesis state
-func NewGenesisState(params Params, previousBlockTime time.Time) GenesisState {
+func NewGenesisState(params Params, previousBlockTime time.Time, govDenom string) GenesisState {
 	return GenesisState{
 		Params:            params,
 		PreviousBlockTime: previousBlockTime,
+		GovDenom:          govDenom,
 	}
 }
 

@@ -11,7 +11,6 @@ import (
 
 const (
 	CdpMintingClaimType = "cdp_minting"
-	BondDenom           = "ujsmn"
 )
 
 // Claim is an interface for handling common claim actions
