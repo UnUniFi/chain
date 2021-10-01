@@ -21,7 +21,7 @@ type KeeperTestSuite struct {
 	suite.Suite
 
 	keeper keeper.Keeper
-	addrs  []sdk.AccAddress
+	addrs  []types.StringAccAddress
 	ctx    sdk.Context
 }
 
@@ -34,21 +34,21 @@ func (suite *KeeperTestSuite) SetupTest() {
 	)
 	suite.keeper = tApp.GetPriceFeedKeeper()
 	suite.ctx = ctx
-	suite.addrs = addrs
+	suite.addrs = types.StringAccAddresses(addrs)
 }
 
 func (suite *KeeperTestSuite) TestGetSetOracles() {
 	params := suite.keeper.GetParams(suite.ctx)
-	suite.Equal([]sdk.AccAddress(nil), params.Markets[0].Oracles)
+	suite.Equal([]types.StringAccAddress(nil), params.Markets[0].Oracles)
 
-	params.Markets[0].Oracles = types.StringAccAddresses(suite.addrs)
+	params.Markets[0].Oracles = suite.addrs
 	suite.NotPanics(func() { suite.keeper.SetParams(suite.ctx, params) })
 	params = suite.keeper.GetParams(suite.ctx)
 	suite.Equal(suite.addrs, params.Markets[0].Oracles)
 
-	addr, err := suite.keeper.GetOracle(suite.ctx, params.Markets[0].MarketId, suite.addrs[0])
+	addr, err := suite.keeper.GetOracle(suite.ctx, params.Markets[0].MarketId, suite.addrs[0].AccAddress())
 	suite.NoError(err)
-	suite.Equal(suite.addrs[0], addr)
+	suite.Equal(suite.addrs[0].AccAddress(), addr)
 }
 
 func (suite *KeeperTestSuite) TestGetAuthorizedAddresses() {
