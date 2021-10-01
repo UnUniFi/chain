@@ -38,10 +38,7 @@ func (aa *StringAccAddress) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	_aa, err := sdk.AccAddressFromBech32(str)
-	if err != nil {
-		return err
-	}
+	_aa, _ := sdk.AccAddressFromBech32(str)
 	*aa = StringAccAddress(_aa)
 
 	return nil
