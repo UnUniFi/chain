@@ -16,7 +16,7 @@ import (
 func i(in int64) sdk.Int   { return sdk.NewInt(in) }
 func d(str string) sdk.Dec { return sdk.MustNewDecFromStr(str) }
 
-func NewCDPGenStateMulti() app.GenesisState {
+func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 	cdpGenesis := cdptypes.GenesisState{
 		Params: cdptypes.Params{
 			GlobalDebtLimit:         sdk.NewInt64Coin("jpyx", 2000000000000),
@@ -102,10 +102,10 @@ func NewCDPGenStateMulti() app.GenesisState {
 			cdptypes.NewGenesisTotalPrincipal("bnb-a", sdk.ZeroInt()),
 		},
 	}
-	return app.GenesisState{cdptypes.ModuleName: cdptypes.ModuleCdc.MustMarshalJSON(&cdpGenesis)}
+	return app.GenesisState{cdptypes.ModuleName: tApp.AppCodec().MustMarshalJSON(&cdpGenesis)}
 }
 
-func NewPricefeedGenStateMulti() app.GenesisState {
+func NewPricefeedGenStateMulti(tApp app.TestApp) app.GenesisState {
 	pfGenesis := pricefeedtypes.GenesisState{
 		Params: pricefeedtypes.Params{
 			Markets: []pricefeedtypes.Market{
@@ -142,10 +142,10 @@ func NewPricefeedGenStateMulti() app.GenesisState {
 			},
 		},
 	}
-	return app.GenesisState{pricefeedtypes.ModuleName: pricefeedtypes.ModuleCdc.MustMarshalJSON(&pfGenesis)}
+	return app.GenesisState{pricefeedtypes.ModuleName: tApp.AppCodec().MustMarshalJSON(&pfGenesis)}
 }
 
-func NewIncentiveGenState(previousAccumTime, endTime time.Time, rewardPeriods ...incentivetypes.RewardPeriod) app.GenesisState {
+func NewIncentiveGenState(tApp app.TestApp, previousAccumTime, endTime time.Time, rewardPeriods ...incentivetypes.RewardPeriod) app.GenesisState {
 	var accumulationTimes incentivetypes.GenesisAccumulationTimes
 	for _, rp := range rewardPeriods {
 		accumulationTimes = append(
@@ -169,10 +169,10 @@ func NewIncentiveGenState(previousAccumTime, endTime time.Time, rewardPeriods ..
 		incentivetypes.DefaultCdpClaims,
 		incentivetypes.DefaultGenesisDenoms(),
 	)
-	return app.GenesisState{incentivetypes.ModuleName: incentivetypes.ModuleCdc.MustMarshalJSON(&genesis)}
+	return app.GenesisState{incentivetypes.ModuleName: tApp.AppCodec().MustMarshalJSON(&genesis)}
 }
 
-func NewCDPGenStateHighInterest() app.GenesisState {
+func NewCDPGenStateHighInterest(tApp app.TestApp) app.GenesisState {
 	cdpGenesis := cdptypes.GenesisState{
 		Params: cdptypes.Params{
 			GlobalDebtLimit:         sdk.NewInt64Coin("jpyx", 2000000000000),
@@ -213,5 +213,5 @@ func NewCDPGenStateHighInterest() app.GenesisState {
 			cdptypes.NewGenesisTotalPrincipal("bnb-a", sdk.ZeroInt()),
 		},
 	}
-	return app.GenesisState{cdptypes.ModuleName: cdptypes.ModuleCdc.MustMarshalJSON(&cdpGenesis)}
+	return app.GenesisState{cdptypes.ModuleName: tApp.AppCodec().MustMarshalJSON(&cdpGenesis)}
 }
