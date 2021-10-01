@@ -30,6 +30,7 @@ func (suite *GenesisTestSuite) TestValidGenState() {
 	})
 	_, addrs := app.GeneratePrivKeyAddressPairs(10)
 
+	tApp = app.NewTestApp()
 	suite.NotPanics(func() {
 		tApp.InitializeFromGenesisStates(
 			NewPricefeedGenStateWithOracles(tApp, types.StringAccAddresses(addrs)),
