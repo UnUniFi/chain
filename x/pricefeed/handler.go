@@ -35,7 +35,7 @@ func HandleMsgPostPrice(
 	if err != nil {
 		return nil, err
 	}
-	_, err = k.SetPrice(ctx, msg.From.AccAddress(), msg.MarketId, msg.Price, msg.Expiry)
+	_, err = k.SetPrice(ctx, msg.From.AccAddress(), msg.MarketId, sdk.NewDecFromBigInt(msg.Price.BigInt()), msg.Expiry)
 	if err != nil {
 		return nil, err
 	}

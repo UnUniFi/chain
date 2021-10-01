@@ -8,6 +8,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/lcnem/jpyx/types"
 )
 
 const (
@@ -30,7 +31,7 @@ func NewMsgPostPrice(
 	return MsgPostPrice{
 		From:     from.Bytes(),
 		MarketId: assetCode,
-		Price:    price,
+		Price:    types.NewDecFromBigInt(price.BigInt()),
 		Expiry:   expiry,
 	}
 }
