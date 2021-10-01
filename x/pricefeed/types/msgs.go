@@ -31,7 +31,7 @@ func NewMsgPostPrice(
 	return MsgPostPrice{
 		From:     from.Bytes(),
 		MarketId: assetCode,
-		Price:    types.NewDecFromBigInt(price.BigInt()),
+		Price:    types.NewDecFromSDKDec(price),
 		Expiry:   expiry,
 	}
 }

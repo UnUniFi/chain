@@ -88,6 +88,17 @@ func NewDec(i int64) Dec {
 	return NewDecWithPrec(i, 0)
 }
 
+func NewDecFromSDKDec(d sdk.Dec) Dec {
+	return Dec{
+		i: d.BigInt(),
+	}
+}
+
+func (d Dec) ToSDKDec() sdk.Dec {
+	ret, _ := sdk.NewDecFromStr(d.String())
+	return ret
+}
+
 // create a new Dec from integer with decimal place at prec
 // CONTRACT: prec <= Precision
 func NewDecWithPrec(i, prec int64) Dec {
