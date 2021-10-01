@@ -45,7 +45,7 @@ func TestMarketValidate(t *testing.T) {
 			"invalid base asset",
 			Market{
 				MarketId:  "market",
-				BaseAsset: "XRP",
+				BaseAsset: "XRP%($",
 			},
 			false,
 		},
@@ -54,7 +54,7 @@ func TestMarketValidate(t *testing.T) {
 			Market{
 				MarketId:   "market",
 				BaseAsset:  "xrp",
-				QuoteAsset: "BNB",
+				QuoteAsset: "BNB%($",
 			},
 			false,
 		},
