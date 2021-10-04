@@ -26,7 +26,7 @@ var (
 		Denom:            "jpyx",
 		ReferenceAsset:   "jpy",
 		ConversionFactor: sdk.NewInt(6),
-		DebtFloor:        sdk.NewInt(10000000),
+		DebtFloor:        sdk.NewInt(1),
 	}
 	DefaultCdpStartingID    = uint64(1)
 	DefaultDebtDenom        = "debt"

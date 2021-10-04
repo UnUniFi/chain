@@ -172,7 +172,7 @@
           "denom": "jpyx",
           "reference_asset": "jpy",
           "conversion_factor": "6",
-          "debt_floor": "10000000"
+          "debt_floor": "1"
         },
         "global_debt_limit": {
           "denom": "jpyx",
