@@ -2,6 +2,7 @@ package cli
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -28,6 +29,10 @@ func CmdListCdp() *cobra.Command {
 			}
 
 			res, err := queryClient.CdpAll(context.Background(), params)
+
+			fmt.Printf("yakitori list res, %s\n", res)
+			fmt.Printf("yakitori list err, %s\n", err)
+
 			if err != nil {
 				return err
 			}
@@ -57,6 +62,10 @@ func CmdShowCdp() *cobra.Command {
 			}
 
 			res, err := queryClient.Cdp(context.Background(), params)
+
+			fmt.Printf("yakitori res, %s\n", res)
+			fmt.Printf("yakitori err, %s\n", err)
+
 			if err != nil {
 				return err
 			}

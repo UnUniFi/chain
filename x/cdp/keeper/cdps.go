@@ -203,15 +203,20 @@ func (k Keeper) GetCdpIdsByOwner(ctx sdk.Context, owner sdk.AccAddress) (cdpIDs 
 // GetCdpByOwnerAndCollateralType queries cdps owned by owner and returns the cdp with matching denom
 func (k Keeper) GetCdpByOwnerAndCollateralType(ctx sdk.Context, owner sdk.AccAddress, collateralType string) (types.Cdp, bool) {
 	cdpIDs, found := k.GetCdpIdsByOwner(ctx, owner)
+	fmt.Println(cdpIDs)
 	if !found {
+		fmt.Println("a")
 		return types.Cdp{}, false
 	}
 	for _, id := range cdpIDs {
+		fmt.Printf("collateralType %s\n", collateralType)
+		fmt.Printf("id %d\n", id)
 		cdp, found := k.GetCdp(ctx, collateralType, id)
 		if found {
 			return cdp, true
 		}
 	}
+	fmt.Println("b")
 	return types.Cdp{}, false
 }
 

@@ -106,6 +106,24 @@ func (suite *CdpTestSuite) TestAddCdp() {
 	suite.Require().True(errors.Is(err, cdptypes.ErrCdpAlreadyExists))
 }
 
+func (suite *CdpTestSuite) TestAddGetCdp() {
+	_, addrs := app.GeneratePrivKeyAddressPairs(2)
+	ak := suite.app.GetAccountKeeper()
+	sk := suite.app.GetBankKeeper()
+	acc := ak.NewAccountWithAddress(suite.ctx, addrs[0])
+	sk.GetAllBalances(suite.ctx, acc.GetAddress())
+	sk.AddCoins(suite.ctx, acc.GetAddress(), cs(c("xrp", 200000000), c("btc", 500000000)))
+	ak.SetAccount(suite.ctx, acc)
+	err := suite.keeper.AddCdp(suite.ctx, addrs[0], c("btc", 100000000), c("jpyx", 10000000), "btc-a")
+	suite.NoError(err)
+	id := suite.keeper.GetNextCdpID(suite.ctx)
+	suite.Equal(uint64(2), id)
+	_, found := suite.keeper.GetCdp(suite.ctx, "btc-a", 1)
+	suite.True(found)
+	_, found2 := suite.keeper.GetCdpByOwnerAndCollateralType(suite.ctx, addrs[0], "btc-a")
+	suite.True(found2)
+}
+
 func (suite *CdpTestSuite) TestGetSetCollateralTypeByte() {
 	_, found := suite.keeper.GetCollateralTypePrefix(suite.ctx, "lol-a")
 	suite.False(found)
