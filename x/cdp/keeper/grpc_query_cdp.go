@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -42,6 +43,7 @@ func (k Keeper) CdpAll(c context.Context, req *types.QueryAllCdpRequest) (*types
 }
 
 func (k Keeper) Cdp(c context.Context, req *types.QueryGetCdpRequest) (*types.QueryGetCdpResponse, error) {
+	fmt.Printf("yakitori res, %s\n", req)
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
