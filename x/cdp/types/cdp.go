@@ -12,7 +12,15 @@ import (
 
 // NewCdp creates a new Cdp object
 func NewCdp(id uint64, owner sdk.AccAddress, collateral sdk.Coin, collateralType string, principal sdk.Coin, time time.Time, interestFactor sdk.Dec) Cdp {
+	fmt.Printf("yakitori NewCdp id %d\n", id)
+	fmt.Printf("yakitori NewCdp owner %s\n", owner)
+	fmt.Printf("yakitori NewCdp collateral %s\n", collateral)
+	fmt.Printf("yakitori NewCdp collateralType %s\n", collateralType)
+	fmt.Printf("yakitori NewCdp principal %s\n", principal)
+	fmt.Printf("yakitori NewCdp time %s\n", time)
+	fmt.Printf("yakitori NewCdp interestFactor %s\n", interestFactor)
 	fees := sdk.NewCoin(principal.Denom, sdk.ZeroInt())
+	fmt.Printf("yakitori NewCdp fees %s\n", fees)
 	return Cdp{
 		Id:              id,
 		Owner:           owner.Bytes(),
