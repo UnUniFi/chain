@@ -129,8 +129,13 @@ func (k Keeper) GetDeposit(ctx sdk.Context, cdpID uint64, depositor sdk.AccAddre
 
 // SetDeposit sets the deposit in the store
 func (k Keeper) SetDeposit(ctx sdk.Context, deposit types.Deposit) {
+	fmt.Printf("yakitori SetDeposit deposit %+v\n", deposit)
+	fmt.Printf("yakitori SetDeposit types.KeyPrefix(types.DepositKey) %s\n", types.KeyPrefix(types.DepositKey))
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DepositKey))
 	bz := k.cdc.MustMarshalBinaryLengthPrefixed(&deposit)
+	fmt.Printf("yakitori SetDeposit deposit.CdpId %d\n", deposit.CdpId)
+	fmt.Printf("yakitori SetDeposit deposit.Depositor.AccAddress() %+v\n", deposit.Depositor.AccAddress())
+	fmt.Printf("yakitori SetDeposit bz %s\n", bz)
 	store.Set(types.DepositKeySuffix(deposit.CdpId, deposit.Depositor.AccAddress()), bz)
 
 }

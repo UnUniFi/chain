@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"fmt"
 	"math"
 	"time"
 
@@ -56,21 +57,37 @@ func (k Keeper) AccumulateCdpMintingRewards(ctx sdk.Context, rewardPeriod types.
 // accrue rewards during the period the cdp was closed. By setting the reward factor to the current global reward factor,
 // any unclaimed rewards are preserved, but no new rewards are added.
 func (k Keeper) InitializeCdpMintingClaim(ctx sdk.Context, cdp cdptypes.Cdp) {
+	fmt.Printf("yakitori InitializeCdpMintingClaim cdp %+v\n", cdp)
+	fmt.Printf("yakitori InitializeCdpMintingClaim cdp.Type %s\n", cdp.Type)
 	_, found := k.GetCdpMintingRewardPeriod(ctx, cdp.Type)
 	if !found {
 		// this collateral type is not incentivized, do nothing
+		fmt.Printf("yakitori InitializeCdpMintingClaim if GetCdpMintingRewardPeriod not found\n")
 		return
 	}
 	rewardFactor, found := k.GetCdpMintingRewardFactor(ctx, cdp.Type)
+	fmt.Printf("yakitori InitializeCdpMintingClaim rewardFactor %s\n", rewardFactor)
+	fmt.Printf("yakitori InitializeCdpMintingClaim found %t\n", found)
 	if !found {
+		fmt.Printf("yakitori InitializeCdpMintingClaim if GetCdpMintingRewardFactor not found\n")
 		rewardFactor = sdk.ZeroDec()
+		fmt.Printf("yakitori InitializeCdpMintingClaim if GetCdpMintingRewardFactor not found rewardFactor %s\n", rewardFactor)
 	}
+	fmt.Printf("yakitori InitializeCdpMintingClaim cdp.Owner.AccAddress() %s\n", cdp.Owner.AccAddress())
 	claim, found := k.GetCdpMintingClaim(ctx, cdp.Owner.AccAddress())
+	fmt.Printf("yakitori InitializeCdpMintingClaim claim %s\n", claim)
+	fmt.Printf("yakitori InitializeCdpMintingClaim found %t\n", found)
 
 	denoms, _ := k.GetGenesisDenoms(ctx)
+	fmt.Printf("yakitori InitializeCdpMintingClaim denoms %s\n", denoms)
 
 	if !found { // this is the owner's first jpyx minting reward claim
+		fmt.Printf("yakitori InitializeCdpMintingClaim if GetCdpMintingClaim not found\n")
+		fmt.Printf("yakitori InitializeCdpMintingClaim if GetCdpMintingClaim not found cdp.Owner.AccAddress() %s\n", cdp.Owner.AccAddress())
+		fmt.Printf("yakitori InitializeCdpMintingClaim if GetCdpMintingClaim not found sdk.NewCoin(denoms.CdpMintingRewardDenom, sdk.ZeroInt()) %s\n", sdk.NewCoin(denoms.CdpMintingRewardDenom, sdk.ZeroInt()))
+		fmt.Printf("yakitori InitializeCdpMintingClaim if GetCdpMintingClaim not found types.RewardIndexes{types.NewRewardIndex(cdp.Type, rewardFactor)} %s\n", types.RewardIndexes{types.NewRewardIndex(cdp.Type, rewardFactor)})
 		claim = types.NewCdpMintingClaim(cdp.Owner.AccAddress(), sdk.NewCoin(denoms.CdpMintingRewardDenom, sdk.ZeroInt()), types.RewardIndexes{types.NewRewardIndex(cdp.Type, rewardFactor)})
+		fmt.Printf("yakitori InitializeCdpMintingClaim if GetCdpMintingClaim not found claim %s\n", claim)
 		k.SetCdpMintingClaim(ctx, claim)
 		return
 	}
