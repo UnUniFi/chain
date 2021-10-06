@@ -191,7 +191,7 @@ func (k Keeper) GetCdpID(ctx sdk.Context, owner sdk.AccAddress, collateralType s
 
 // GetCdpIdsByOwner returns all the ids of cdps corresponding to a particular owner
 func (k Keeper) GetCdpIdsByOwner(ctx sdk.Context, owner sdk.AccAddress) (cdpIDs []uint64, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpIDKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpIDOwnerIndex))
 	bz := store.Get(owner)
 	if bz == nil {
 		return []uint64{}, false
@@ -304,7 +304,7 @@ func (k Keeper) GetNextCdpID(ctx sdk.Context) (id uint64) {
 
 // IndexCdpByOwner sets the cdp id in the store, indexed by the owner
 func (k Keeper) IndexCdpByOwner(ctx sdk.Context, cdp types.Cdp) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpIDKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpIDOwnerIndex))
 	cdpIDs, found := k.GetCdpIdsByOwner(ctx, cdp.Owner.AccAddress())
 
 	if !found {
@@ -320,7 +320,7 @@ func (k Keeper) IndexCdpByOwner(ctx sdk.Context, cdp types.Cdp) {
 
 // RemoveCdpOwnerIndex deletes the cdp id from the store's index of cdps by owner
 func (k Keeper) RemoveCdpOwnerIndex(ctx sdk.Context, cdp types.Cdp) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpIDKey))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpIDOwnerIndex))
 	cdpIDs, found := k.GetCdpIdsByOwner(ctx, cdp.Owner.AccAddress())
 	if !found {
 		return
@@ -341,7 +341,7 @@ func (k Keeper) RemoveCdpOwnerIndex(ctx sdk.Context, cdp types.Cdp) {
 
 // IndexCdpByCollateralRatio sets the cdp id in the store, indexed by the collateral type and collateral to debt ratio
 func (k Keeper) IndexCdpByCollateralRatio(ctx sdk.Context, collateralType string, id uint64, collateralRatio sdk.Dec) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CollateralRatioIndex))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpIDCollateralRatioIndex))
 	db, found := k.GetCollateralTypePrefix(ctx, collateralType)
 	if !found {
 		panic(fmt.Sprintf("denom %s prefix not found", collateralType))
@@ -351,7 +351,7 @@ func (k Keeper) IndexCdpByCollateralRatio(ctx sdk.Context, collateralType string
 
 // RemoveCdpCollateralRatioIndex deletes the cdp id from the store's index of cdps by collateral type and collateral to debt ratio
 func (k Keeper) RemoveCdpCollateralRatioIndex(ctx sdk.Context, collateralType string, id uint64, collateralRatio sdk.Dec) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CollateralRatioIndex))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpIDCollateralRatioIndex))
 	db, found := k.GetCollateralTypePrefix(ctx, collateralType)
 	if !found {
 		panic(fmt.Sprintf("denom %s prefix not found", collateralType))
