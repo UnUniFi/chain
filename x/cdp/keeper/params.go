@@ -49,15 +49,9 @@ func (k Keeper) GetDebtParam(ctx sdk.Context, denom string) (types.DebtParam, bo
 
 // GetCollateralTypePrefix returns the prefix of the matching denom
 func (k Keeper) GetCollateralTypePrefix(ctx sdk.Context, collateralType string) (byte, bool) {
-	fmt.Printf("yakitori GetCollateralTypePrefix collateralType %s\n", collateralType)
 	params := k.GetParams(ctx)
-	fmt.Printf("yakitori GetCollateralTypePrefix params %+v\n", params)
 	for _, cp := range params.CollateralParams {
-		fmt.Printf("yakitori GetCollateralTypePrefix for cp of params.CollateralParams %+v\n", cp)
 		if cp.Type == collateralType {
-			fmt.Printf("yakitori GetCollateralTypePrefix for cp.Type of params.CollateralParams %s\n", cp.Type)
-			fmt.Printf("yakitori GetCollateralTypePrefix for cp.Prefix of params.CollateralParams %d\n", cp.Prefix)
-			fmt.Printf("yakitori GetCollateralTypePrefix for byte(cp.Prefix) of params.CollateralParams %+v\n", byte(cp.Prefix))
 			return byte(cp.Prefix), true
 		}
 	}
