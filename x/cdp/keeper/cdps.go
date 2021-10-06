@@ -286,7 +286,7 @@ func (k Keeper) SetCdp(ctx sdk.Context, cdp types.Cdp) error {
 	bz := k.cdc.MustMarshalBinaryLengthPrefixed(&cdp)
 	fmt.Printf("yakitori SetCdp bz %s\n", bz)
 	fmt.Printf("yakitori SetCdp cdp.Id %d\n", cdp.Id)
-	fmt.Printf("yakitori SetCdp types.CdpKeySuffix(db, cdp.Id) %s\n", string(types.CdpKeySuffix(denomByte, cdp.Id)))
+	fmt.Printf("yakitori SetCdp types.CdpKeySuffix(db, cdp.Id) %+v\n", types.CdpKeySuffix(denomByte, cdp.Id))
 	store.Set(types.CdpKeySuffix(denomByte, cdp.Id), bz)
 	return nil
 }
