@@ -62,8 +62,12 @@ func (k Keeper) GetCdpMintingClaim(ctx sdk.Context, addr sdk.AccAddress) (types.
 
 // SetCdpMintingClaim sets the claim in the store corresponding to the input address, collateral type, and id
 func (k Keeper) SetCdpMintingClaim(ctx sdk.Context, c types.CdpMintingClaim) {
+	fmt.Printf("yakitori SetCdpMintingClaim c %s\n", c)
+	fmt.Printf("yakitori SetCdpMintingClaim types.KeyPrefix(types.CdpMintingClaimKey) %s\n", types.KeyPrefix(types.CdpMintingClaimKey))
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpMintingClaimKey))
 	bz := k.cdc.MustMarshalBinaryBare(&c)
+	fmt.Printf("yakitori SetCdpMintingClaim c.Owner %s\n", c.Owner)
+	fmt.Printf("yakitori SetCdpMintingClaim bz %s\n",bz)
 	store.Set(c.Owner, bz)
 
 }
