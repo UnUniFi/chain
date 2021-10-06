@@ -276,7 +276,9 @@ func (k Keeper) GetCdp(ctx sdk.Context, collateralType string, cdpID uint64) (ty
 func (k Keeper) SetCdp(ctx sdk.Context, cdp types.Cdp) error {
 	fmt.Printf("yakitori SetCdp cdp %+v\n", cdp)
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpKey))
-	db, found := k.GetCollateralTypePrefix(ctx, cdp.Type)
+	denomByte, found := k.GetCollateralTypePrefix(ctx, cdp.Type)
+	fmt.Printf("yakitori SetCdp denombyte %+v\n", denomByte)
+	fmt.Printf("yakitori SetCdp found %t\n", found)
 	if !found {
 		fmt.Printf("yakitori SetCdp if GetCollateralTypePrefix err\n")
 		return sdkerrors.Wrapf(types.ErrDenomPrefixNotFound, "%s", cdp.Collateral.Denom)
@@ -284,8 +286,8 @@ func (k Keeper) SetCdp(ctx sdk.Context, cdp types.Cdp) error {
 	bz := k.cdc.MustMarshalBinaryLengthPrefixed(&cdp)
 	fmt.Printf("yakitori SetCdp bz %s\n", bz)
 	fmt.Printf("yakitori SetCdp cdp.Id %d\n", cdp.Id)
-	fmt.Printf("yakitori SetCdp types.CdpKeySuffix(db, cdp.Id) %s\n", types.CdpKeySuffix(db, cdp.Id))
-	store.Set(types.CdpKeySuffix(db, cdp.Id), bz)
+	fmt.Printf("yakitori SetCdp types.CdpKeySuffix(db, cdp.Id) %s\n", types.CdpKeySuffix(denomByte, cdp.Id))
+	store.Set(types.CdpKeySuffix(denomByte, cdp.Id), bz)
 	return nil
 }
 
