@@ -15,8 +15,8 @@ import (
 // AddCdp adds a cdp for a specific owner and collateral type
 func (k Keeper) AddCdp(ctx sdk.Context, owner sdk.AccAddress, collateral sdk.Coin, principal sdk.Coin, collateralType string) error {
 	fmt.Printf("yakitori AddCdp owner %s\n", owner)
-	fmt.Printf("yakitori AddCdp collateral %s\n", collateral)
-	fmt.Printf("yakitori AddCdp principal %s\n", principal)
+	fmt.Printf("yakitori AddCdp collateral %+v\n", collateral)
+	fmt.Printf("yakitori AddCdp principal %+v\n", principal)
 	fmt.Printf("yakitori AddCdp owner %s\n", collateralType)
 	// validation
 	err := k.ValidateCollateral(ctx, collateral, collateralType)
