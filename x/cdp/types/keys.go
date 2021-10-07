@@ -33,19 +33,20 @@ func KeyPrefix(p string) []byte {
 }
 
 const (
-	ParamsKey            = "Params-value-"
-	CdpKey               = "Cdp-value-"
-	CdpCountKey          = "Cdp-count-"
-	CdpIDKey             = "CdpID-value-"
-	CollateralRatioIndex = "CollateralRatio-index-"
-	NextCdpID            = "NextCdpID"
-	DebtDenom            = "DebtDenom"
-	GovDenom             = "GovDenom"
-	DepositKey           = "Deposit-value-"
-	PrincipalKey         = "Principal-value-"
-	PricefeedStatusKey   = "PricefeedStatus-value-"
-	PreviousAccrualTime  = "PreviousAccrualTime-"
-	InterestFactor       = "InterestFactor-"
+	ParamsKey = "Params-value-"
+	CdpKey    = "Cdp-value-"
+	// CdpCountKey          = "Cdp-count-"
+	CdpIDKey                  = "CdpID-value-"
+	CdpIDOwnerIndex           = "CdpID-Owner-index-"
+	CdpIDCollateralRatioIndex = "CdpID-CollateralRatio-index-"
+	NextCdpID                 = "NextCdpID"
+	DebtDenom                 = "DebtDenom"
+	GovDenom                  = "GovDenom"
+	DepositKey                = "Deposit-value-"
+	PrincipalKey              = "Principal-value-"
+	PricefeedStatusKey        = "PricefeedStatus-value-"
+	PreviousAccrualTime       = "PreviousAccrualTime-"
+	InterestFactor            = "InterestFactor-"
 )
 
 var sep = []byte(":")
