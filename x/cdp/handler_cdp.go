@@ -1,18 +1,12 @@
 package cdp
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/lcnem/jpyx/x/cdp/keeper"
 	"github.com/lcnem/jpyx/x/cdp/types"
 )
 
 func handleMsgCreateCdp(ctx sdk.Context, k keeper.Keeper, msg *types.MsgCreateCdp) (*sdk.Result, error) {
-	fmt.Printf("yakitori handleMsgCreateCdp msg.Sender.AccAddress() %s\n", msg.Sender.AccAddress())
-	fmt.Printf("yakitori handleMsgCreateCdp msg.Collateral %s\n", msg.Collateral)
-	fmt.Printf("yakitori handleMsgCreateCdp msg.Principal %s\n", msg.Principal)
-	fmt.Printf("yakitori handleMsgCreateCdp msg.CollateralType %s\n", msg.CollateralType)
 	err := k.AddCdp(ctx, msg.Sender.AccAddress(), msg.Collateral, msg.Principal, msg.CollateralType)
 	if err != nil {
 		return nil, err
@@ -25,12 +19,7 @@ func handleMsgCreateCdp(ctx sdk.Context, k keeper.Keeper, msg *types.MsgCreateCd
 			sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender.AccAddress().String()),
 		),
 	)
-	fmt.Printf("yakitori handleMsgCreateCdp msg.Sender.AccAddress() %s\n", msg.Sender.AccAddress())
-	fmt.Printf("yakitori handleMsgCreateCdp msg.CollateralType %s\n", msg.CollateralType)
 	id, _ := k.GetCdpID(ctx, msg.Sender.AccAddress(), msg.CollateralType)
-	fmt.Printf("yakitori handleMsgCreateCdp id %d\n", id)
-
-	fmt.Printf("yakitori handleMsgCreateCdp types.GetCdpIDBytes(id) %s\n", types.GetCdpIDBytes(id))
 	return &sdk.Result{
 		Data:   types.GetCdpIDBytes(id),
 		Events: ctx.EventManager().ABCIEvents(),

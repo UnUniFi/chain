@@ -15,8 +15,8 @@ import (
 // AddCdp adds a cdp for a specific owner and collateral type
 func (k Keeper) AddCdp(ctx sdk.Context, owner sdk.AccAddress, collateral sdk.Coin, principal sdk.Coin, collateralType string) error {
 	fmt.Printf("yakitori AddCdp owner %s\n", owner)
-	fmt.Printf("yakitori AddCdp collateral %s\n", collateral)
-	fmt.Printf("yakitori AddCdp principal %s\n", principal)
+	fmt.Printf("yakitori AddCdp collateral %+v\n", collateral)
+	fmt.Printf("yakitori AddCdp principal %+v\n", principal)
 	fmt.Printf("yakitori AddCdp owner %s\n", collateralType)
 	// validation
 	err := k.ValidateCollateral(ctx, collateral, collateralType)
@@ -286,7 +286,7 @@ func (k Keeper) SetCdp(ctx sdk.Context, cdp types.Cdp) error {
 	bz := k.cdc.MustMarshalBinaryLengthPrefixed(&cdp)
 	fmt.Printf("yakitori SetCdp bz %s\n", bz)
 	fmt.Printf("yakitori SetCdp cdp.Id %d\n", cdp.Id)
-	fmt.Printf("yakitori SetCdp types.CdpKeySuffix(db, cdp.Id) %s\n", types.CdpKeySuffix(denomByte, cdp.Id))
+	fmt.Printf("yakitori SetCdp types.CdpKeySuffix(db, cdp.Id) %+v\n", types.CdpKeySuffix(denomByte, cdp.Id))
 	store.Set(types.CdpKeySuffix(denomByte, cdp.Id), bz)
 	return nil
 }
