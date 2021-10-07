@@ -27,7 +27,7 @@ func (k Keeper) CdpAll(c context.Context, req *types.QueryAllCdpRequest) (*types
 
 	pageRes, err := query.Paginate(cdpStore, req.Pagination, func(key []byte, value []byte) error {
 		var cdp types.Cdp
-		if err := k.cdc.UnmarshalBinaryBare(value, &cdp); err != nil {
+		if err := k.cdc.UnmarshalBinaryLengthPrefixed(value, &cdp); err != nil {
 			return err
 		}
 		augmentedCdp := k.LoadAugmentedCdp(ctx, cdp)
@@ -50,7 +50,17 @@ func (k Keeper) Cdp(c context.Context, req *types.QueryGetCdpRequest) (*types.Qu
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	cdp, found := k.GetCdpByOwnerAndCollateralType(ctx, sdk.AccAddress(req.Owner), req.CollateralType)
+	ownerAddress, err := sdk.AccAddressFromBech32(req.Owner)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid address: %s", req.Owner)
+	}
+
+	_, valid := k.GetCollateralTypePrefix(ctx, req.CollateralType)
+	if !valid {
+		return nil, status.Errorf(codes.NotFound, "invalid collateral type: %s", req.CollateralType)
+	}
+
+	cdp, found := k.GetCdpByOwnerAndCollateralType(ctx, ownerAddress, req.CollateralType)
 
 	if !found {
 		return nil, status.Error(codes.NotFound, "cdp not found")
