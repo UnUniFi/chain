@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # https://docs.buf.build/installation/
 # go get -u github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc
+# https://docs.buf.build/installation/
 
 set -eo pipefail
 
