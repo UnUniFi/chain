@@ -3,7 +3,6 @@ package types
 import (
 	"bytes"
 	"encoding/binary"
-	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -65,7 +64,6 @@ func GetCdpIDFromBytes(bz []byte) (cdpID uint64) {
 
 // CdpKeySuffix key of a specific cdp in the store
 func CdpKeySuffix(denomByte byte, cdpID uint64) []byte {
-	fmt.Printf("yakitori CdpKeySuffix GetCdpIDBytes(cdpID) %+v\n", GetCdpIDBytes(cdpID))
 	return createKey([]byte{denomByte}, sep, GetCdpIDBytes(cdpID))
 }
 

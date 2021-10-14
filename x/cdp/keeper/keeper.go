@@ -179,22 +179,15 @@ func (k Keeper) GetInterestFactor(ctx sdk.Context, ctype string) (interestFactor
 
 // SetInterestFactor sets the current interest factor for an individual collateral type
 func (k Keeper) SetInterestFactor(ctx sdk.Context, ctype string, interestFactor sdk.Dec) {
-	fmt.Printf("yakitori SetInterestFactor ctype %s\n", ctype)
-	fmt.Printf("yakitori SetInterestFactor interestFactor %s\n", interestFactor)
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.InterestFactor))
 	bz, _ := interestFactor.Marshal()
-	fmt.Printf("yakitori SetInterestFactor bz %s\n", bz)
 	store.Set([]byte(ctype), bz)
 }
 
 // IncrementTotalPrincipal increments the total amount of debt that has been drawn with that collateral type
 func (k Keeper) IncrementTotalPrincipal(ctx sdk.Context, collateralType string, principal sdk.Coin) {
-	fmt.Printf("yakitori IncrementTotalPrincipal collateralType %s\n", collateralType)
-	fmt.Printf("yakitori IncrementTotalPrincipal principal %s\n", principal)
 	total := k.GetTotalPrincipal(ctx, collateralType, principal.Denom)
-	fmt.Printf("yakitori IncrementTotalPrincipal total %s\n", total)
 	total = total.Add(principal.Amount)
-	fmt.Printf("yakitori IncrementTotalPrincipal total %s\n", total)
 	k.SetTotalPrincipal(ctx, collateralType, principal.Denom, total)
 }
 
