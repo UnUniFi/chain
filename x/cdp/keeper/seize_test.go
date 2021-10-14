@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	"errors"
-	"fmt"
 	"math/rand"
 	"testing"
 	"time"
@@ -186,18 +185,14 @@ func (suite *SeizeTestSuite) TestLiquidateCdps() {
 	sk := suite.app.GetBankKeeper()
 	acc := ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
 	originalXrpCollateral := sk.GetBalance(suite.ctx, acc.GetAddress(), "xrp").Amount
-	fmt.Println(originalXrpCollateral)
 	suite.setPrice(d("0.2"), "xrp:jpy")
 	p, found := suite.keeper.GetCollateral(suite.ctx, "xrp-a")
 	suite.True(found)
 	suite.keeper.LiquidateCdps(suite.ctx, "xrp:jpy", "xrp-a", p.LiquidationRatio, p.CheckCollateralizationIndexCount)
 	acc = ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
 	finalXrpCollateral := sk.GetBalance(suite.ctx, acc.GetAddress(), "xrp").Amount
-	fmt.Println(finalXrpCollateral)
 	seizedXrpCollateral := originalXrpCollateral.Sub(finalXrpCollateral)
-	fmt.Println(seizedXrpCollateral)
 	xrpLiquidations := int(seizedXrpCollateral.Quo(i(10000000000)).Int64())
-	fmt.Println(xrpLiquidations)
 	suite.Equal(10 /*len(suite.liquidations.xrp)*/, xrpLiquidations)
 }
 

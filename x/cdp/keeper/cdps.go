@@ -14,85 +14,61 @@ import (
 
 // AddCdp adds a cdp for a specific owner and collateral type
 func (k Keeper) AddCdp(ctx sdk.Context, owner sdk.AccAddress, collateral sdk.Coin, principal sdk.Coin, collateralType string) error {
-	fmt.Printf("yakitori AddCdp owner %s\n", owner)
-	fmt.Printf("yakitori AddCdp collateral %+v\n", collateral)
-	fmt.Printf("yakitori AddCdp principal %+v\n", principal)
-	fmt.Printf("yakitori AddCdp owner %s\n", collateralType)
 	// validation
 	err := k.ValidateCollateral(ctx, collateral, collateralType)
 	if err != nil {
-		fmt.Printf("yakitori AddCdp if ValidateCollateral err\n")
 		return err
 	}
 	err = k.ValidateBalance(ctx, collateral, owner)
 	if err != nil {
-		fmt.Printf("yakitori AddCdp if ValidateBalance err\n")
 		return err
 	}
 	_, found := k.GetCdpByOwnerAndCollateralType(ctx, owner, collateralType)
 	if found {
-		fmt.Printf("yakitori AddCdp if GetCdpByOwnerAndCollateralType found\n")
 		return sdkerrors.Wrapf(types.ErrCdpAlreadyExists, "owner %s, denom %s", owner, collateral.Denom)
 	}
 	err = k.ValidatePrincipalAdd(ctx, principal)
 	if err != nil {
-		fmt.Printf("yakitori AddCdp if ValidatePrincipalAdd err\n")
 		return err
 	}
 
 	err = k.ValidateDebtLimit(ctx, collateralType, principal)
 	if err != nil {
-		fmt.Printf("yakitori AddCdp if ValidateDebtLimit err\n")
 		return err
 	}
 	err = k.ValidateCollateralizationRatio(ctx, collateral, collateralType, principal, sdk.NewCoin(principal.Denom, sdk.ZeroInt()))
 	if err != nil {
-		fmt.Printf("yakitori AddCdp if ValidateCollateralizationRatio err\n")
 		return err
 	}
 
 	// send coins from the owners account to the cdp module
 	id := k.GetNextCdpID(ctx)
 	interestFactor, found := k.GetInterestFactor(ctx, collateralType)
-	fmt.Printf("yakitori AddCdp id := k.GetNextCdpID(ctx) %d\n", id)
-	fmt.Printf("yakitori AddCdp interestFactor %s\n", interestFactor)
-	fmt.Printf("yakitori AddCdp found %t\n", found)
 	if !found {
-		fmt.Printf("yakitori AddCdp if GetInterestFactor not found\n")
 		interestFactor = sdk.OneDec()
-		fmt.Printf("yakitori AddCdp if GetInterestFactor not found interestFactor %s\n", interestFactor)
 		k.SetInterestFactor(ctx, collateralType, interestFactor)
 
 	}
 	cdp := types.NewCdp(id, owner, collateral, collateralType, principal, ctx.BlockHeader().Time, interestFactor)
 	deposit := types.NewDeposit(cdp.Id, owner, collateral)
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, owner, types.ModuleName, sdk.NewCoins(collateral))
-	fmt.Printf("yakitori AddCdp cdp %+v\n", cdp)
-	fmt.Printf("yakitori AddCdp deposit %+v\n", deposit)
 	if err != nil {
-		fmt.Printf("yakitori AddCdp if SendCoinsFromAccountToModule error\n")
 		return err
 	}
 
 	// mint the principal and send to the owners account
-	fmt.Printf("yakitori AddCdp types.ModuleName %s\n", types.ModuleName)
 	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(principal))
 	if err != nil {
-		fmt.Printf("yakitori AddCdp if MintCoins err\n")
 		panic(err)
 	}
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, owner, sdk.NewCoins(principal))
 	if err != nil {
-		fmt.Printf("yakitori AddCdp if SnedCoinsFromModuleToAccount err\n")
 		panic(err)
 	}
 
 	// mint the corresponding amount of debt coins
-	fmt.Printf("yakitori AddCdp types.ModuleName %s\n", types.ModuleName)
-	fmt.Printf("yakitori AddCdp k.GetDebtDenom(ctx) %s\n", k.GetDebtDenom(ctx))
 	err = k.MintDebtCoins(ctx, types.ModuleName, k.GetDebtDenom(ctx), principal)
 	if err != nil {
-		fmt.Printf("yakitori AddCdp if MintDebtCoins err\n")
 		panic(err)
 	}
 
@@ -101,20 +77,14 @@ func (k Keeper) AddCdp(ctx sdk.Context, owner sdk.AccAddress, collateral sdk.Coi
 
 	// set the cdp, deposit, and indexes in the store
 	collateralToDebtRatio := k.CalculateCollateralToDebtRatio(ctx, collateral, cdp.Type, principal)
-	fmt.Printf("yakitori AddCdp collateralToDebtRatio %s\n", collateralToDebtRatio)
 	err = k.SetCdpAndCollateralRatioIndex(ctx, cdp, collateralToDebtRatio)
 	if err != nil {
-		fmt.Printf("yakitori AddCdp if SetCdpAndCollateralRatioIndex err\n")
 		return err
 	}
-	fmt.Printf("yakitori AddCdp cdp %+v\n", cdp)
-	fmt.Printf("yakitori AddCdp deposit %+v\n", deposit)
-	fmt.Printf("yakitori AddCdp id+1 %d\n", id+1)
 	k.IndexCdpByOwner(ctx, cdp)
 	k.SetDeposit(ctx, deposit)
 	k.SetNextCdpID(ctx, id+1)
 
-	fmt.Printf("yakitori AddCdp cdp %+v\n", cdp)
 	k.hooks.AfterCdpCreated(ctx, cdp)
 
 	// emit events for cdp creation, deposit, and draw
@@ -169,11 +139,8 @@ func (k Keeper) DeleteCdpAndCollateralRatioIndex(ctx sdk.Context, cdp types.Cdp)
 
 // SetCdpAndCollateralRatioIndex sets the cdp and collateral ratio index in the store
 func (k Keeper) SetCdpAndCollateralRatioIndex(ctx sdk.Context, cdp types.Cdp, ratio sdk.Dec) error {
-	fmt.Printf("yakitori SetCdpAndCollateralRatioIndex cdp %+v\n", cdp)
-	fmt.Printf("yakitori SetCdpAndCollateralRatioIndex ratio %+v\n", ratio)
 	err := k.SetCdp(ctx, cdp)
 	if err != nil {
-		fmt.Printf("yakitori SetCdpAndCollateralRatioIndex if SetCdp err\n")
 		return err
 	}
 	k.IndexCdpByCollateralRatio(ctx, cdp.Type, cdp.Id, ratio)
@@ -236,20 +203,15 @@ func (k Keeper) GetCdpIdsByOwner(ctx sdk.Context, owner sdk.AccAddress) (cdpIDs 
 // GetCdpByOwnerAndCollateralType queries cdps owned by owner and returns the cdp with matching denom
 func (k Keeper) GetCdpByOwnerAndCollateralType(ctx sdk.Context, owner sdk.AccAddress, collateralType string) (types.Cdp, bool) {
 	cdpIDs, found := k.GetCdpIdsByOwner(ctx, owner)
-	fmt.Println(cdpIDs)
 	if !found {
-		fmt.Println("a")
 		return types.Cdp{}, false
 	}
 	for _, id := range cdpIDs {
-		fmt.Printf("collateralType %s\n", collateralType)
-		fmt.Printf("id %d\n", id)
 		cdp, found := k.GetCdp(ctx, collateralType, id)
 		if found {
 			return cdp, true
 		}
 	}
-	fmt.Println("b")
 	return types.Cdp{}, false
 }
 
@@ -274,19 +236,12 @@ func (k Keeper) GetCdp(ctx sdk.Context, collateralType string, cdpID uint64) (ty
 
 // SetCdp sets a cdp in the store
 func (k Keeper) SetCdp(ctx sdk.Context, cdp types.Cdp) error {
-	fmt.Printf("yakitori SetCdp cdp %+v\n", cdp)
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpKey))
 	denomByte, found := k.GetCollateralTypePrefix(ctx, cdp.Type)
-	fmt.Printf("yakitori SetCdp denombyte %+v\n", denomByte)
-	fmt.Printf("yakitori SetCdp found %t\n", found)
 	if !found {
-		fmt.Printf("yakitori SetCdp if GetCollateralTypePrefix err\n")
 		return sdkerrors.Wrapf(types.ErrDenomPrefixNotFound, "%s", cdp.Collateral.Denom)
 	}
 	bz := k.cdc.MustMarshalBinaryLengthPrefixed(&cdp)
-	fmt.Printf("yakitori SetCdp bz %s\n", bz)
-	fmt.Printf("yakitori SetCdp cdp.Id %d\n", cdp.Id)
-	fmt.Printf("yakitori SetCdp types.CdpKeySuffix(db, cdp.Id) %+v\n", types.CdpKeySuffix(denomByte, cdp.Id))
 	store.Set(types.CdpKeySuffix(denomByte, cdp.Id), bz)
 	return nil
 }
@@ -332,10 +287,7 @@ func (k Keeper) GetAllCdpsByCollateralTypeAndRatio(ctx sdk.Context, collateralTy
 
 // SetNextCdpID sets the highest cdp id in the store
 func (k Keeper) SetNextCdpID(ctx sdk.Context, id uint64) {
-	fmt.Printf("yakitori SetNextCdpID %d\n", id)
 	store := ctx.KVStore(k.storeKey)
-	fmt.Printf("yakitori SetNextCdpID types.KeyPrefix(types.NextCdpID) %s\n", types.KeyPrefix(types.NextCdpID))
-	fmt.Printf("yakitori SetNextCdpID types.GetCdpIDBytes(id) %s\n", types.GetCdpIDBytes(id))
 	store.Set(types.KeyPrefix(types.NextCdpID), types.GetCdpIDBytes(id))
 }
 
@@ -352,31 +304,17 @@ func (k Keeper) GetNextCdpID(ctx sdk.Context) (id uint64) {
 
 // IndexCdpByOwner sets the cdp id in the store, indexed by the owner
 func (k Keeper) IndexCdpByOwner(ctx sdk.Context, cdp types.Cdp) {
-	fmt.Printf("yakitori IndexCdpByOwner cdp %+v\n", cdp)
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpIDOwnerIndex))
-	fmt.Printf("yakitori IndexCdpByOwner cdp.Owner.AccAddress() %s\n", cdp.Owner.AccAddress())
 	cdpIDs, found := k.GetCdpIdsByOwner(ctx, cdp.Owner.AccAddress())
-	fmt.Printf("yakitori IndexCdpByOwner cdpIDs %+v\n", cdpIDs)
-	fmt.Printf("yakitori IndexCdpByOwner found %+v\n", found)
 
 	if !found {
-		fmt.Printf("yakitori IndexCdpByOwner if GetCdpIdsByOwner not found\n")
-		fmt.Printf("yakitori IndexCdpByOwner if GetCdpIdsByOwner not found cdp.Id %d\n", cdp.Id)
 		idBytes, _ := json.Marshal([]uint64{cdp.Id})
-		fmt.Printf("yakitori IndexCdpByOwner if GetCdpIdsByOwner not found cdp.Owner %s\n", cdp.Owner)
-		fmt.Printf("yakitori IndexCdpByOwner if GetCdpIdsByOwner not found idBytes %s\n", idBytes)
 		store.Set(cdp.Owner, idBytes)
 		return
 	}
-	fmt.Printf("yakitori IndexCdpByOwner if GetCdpIdsByOwner found\n")
-	fmt.Printf("yakitori IndexCdpByOwner if GetCdpIdsByOwner found cdp.Id %d\n", cdp.Id)
 	cdpIDs = append(cdpIDs, cdp.Id)
-	fmt.Printf("yakitori IndexCdpByOwner if GetCdpIdsByOwner found cdpIDs %+v\n", cdpIDs)
 	sort.Slice(cdpIDs, func(i, j int) bool { return cdpIDs[i] < cdpIDs[j] })
-	fmt.Printf("yakitori IndexCdpByOwner if GetCdpIdsByOwner found cdpIds after sorted %+v\n", cdpIDs)
 	bz, _ := json.Marshal(cdpIDs)
-	fmt.Printf("yakitori IndexCdpByOwner if GetCdpIdsByOwner found bz %s\n", bz)
-	fmt.Printf("yakitori IndexCdpByOwner if GetCdpIdsByOwner found cdp.Owner %s\n", cdp.Owner)
 	store.Set(cdp.Owner, bz)
 }
 
