@@ -151,7 +151,7 @@
         "collateral_params": [
           {
             "auction_size": "50000000000",
-            "conversion_factor": "8",
+            "conversion_factor": "6",
             "debt_limit": {
               "amount": "20000000000000",
               "denom": "jpyx"
