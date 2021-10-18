@@ -45,15 +45,15 @@ func (suite *KeeperTestSuite) TestPayoutCdpMintingClaim() {
 			"valid 1 day",
 			args{
 				ctype:                    "bnb-a",
-				rewardsPerSecond:         c("ujsmn", 122354),
+				rewardsPerSecond:         c("ujcbn", 122354),
 				initialTime:              time.Date(2020, 12, 15, 14, 0, 0, 0, time.UTC),
 				initialCollateral:        c("bnb", 1000000000000),
 				initialPrincipal:         c("jpyx", 10000000000),
 				multipliers:              types.Multipliers{types.NewMultiplier(types.MultiplierName("small"), 1, d("0.25")), types.NewMultiplier(types.MultiplierName("large"), 12, d("1.0"))},
 				multiplier:               types.MultiplierName("large"),
 				timeElapsed:              86400,
-				expectedBalance:          cs(c("jpyx", 10000000000), c("ujsmn", 10576385600)),
-				expectedPeriods:          vestingtypes.Periods{vestingtypes.Period{Length: 32918400, Amount: cs(c("ujsmn", 10571385600))}},
+				expectedBalance:          cs(c("jpyx", 10000000000), c("ujcbn", 10576385600)),
+				expectedPeriods:          vestingtypes.Periods{vestingtypes.Period{Length: 32918400, Amount: cs(c("ujcbn", 10571385600))}},
 				isPeriodicVestingAccount: true,
 			},
 			errArgs{
@@ -65,7 +65,7 @@ func (suite *KeeperTestSuite) TestPayoutCdpMintingClaim() {
 			"invalid zero rewards",
 			args{
 				ctype:                    "bnb-a",
-				rewardsPerSecond:         c("ujsmn", 0),
+				rewardsPerSecond:         c("ujcbn", 0),
 				initialTime:              time.Date(2020, 12, 15, 14, 0, 0, 0, time.UTC),
 				initialCollateral:        c("bnb", 1000000000000),
 				initialPrincipal:         c("jpyx", 10000000000),
@@ -105,7 +105,7 @@ func (suite *KeeperTestSuite) TestPayoutCdpMintingClaim() {
 			suite.Require().NoError(err)
 
 			// setup kavadist state
-			err = sk.MintCoins(suite.ctx, botanydisttypes.ModuleName, cs(c("ujsmn", 1000000000000)))
+			err = sk.MintCoins(suite.ctx, botanydisttypes.ModuleName, cs(c("ujcbn", 1000000000000)))
 			suite.Require().NoError(err)
 
 			// setup cdp state
@@ -141,7 +141,7 @@ func (suite *KeeperTestSuite) TestPayoutCdpMintingClaim() {
 
 				claim, found := suite.keeper.GetCdpMintingClaim(suite.ctx, suite.addrs[0])
 				suite.Require().True(found)
-				suite.Require().Equal(c("ujsmn", 0), claim.Reward)
+				suite.Require().Equal(c("ujcbn", 0), claim.Reward)
 			} else {
 				suite.Require().Error(err)
 				suite.Require().True(strings.Contains(err.Error(), tc.errArgs.contains))
@@ -183,23 +183,23 @@ func (suite *KeeperTestSuite) TestSendCoinsToPeriodicVestingAccount() {
 			args: args{
 				accArgs: accountArgs{
 					periods: vestingtypes.Periods{
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))}},
-					origVestingCoins: cs(c("ujsmn", 20)),
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))}},
+					origVestingCoins: cs(c("ujcbn", 20)),
 					startTime:        100,
 					endTime:          120,
 				},
-				period:              vestingtypes.Period{Length: 2, Amount: cs(c("ujsmn", 6))},
+				period:              vestingtypes.Period{Length: 2, Amount: cs(c("ujcbn", 6))},
 				ctxTime:             time.Unix(101, 0),
 				mintModAccountCoins: true,
 				expectedPeriods: vestingtypes.Periods{
-					vestingtypes.Period{Length: 3, Amount: cs(c("ujsmn", 6))},
-					vestingtypes.Period{Length: 2, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))}},
+					vestingtypes.Period{Length: 3, Amount: cs(c("ujcbn", 6))},
+					vestingtypes.Period{Length: 2, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))}},
 				expectedStartTime: 100,
 				expectedEndTime:   120,
 			},
@@ -213,23 +213,23 @@ func (suite *KeeperTestSuite) TestSendCoinsToPeriodicVestingAccount() {
 			args: args{
 				accArgs: accountArgs{
 					periods: vestingtypes.Periods{
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))}},
-					origVestingCoins: cs(c("ujsmn", 20)),
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))}},
+					origVestingCoins: cs(c("ujcbn", 20)),
 					startTime:        100,
 					endTime:          120,
 				},
-				period:              vestingtypes.Period{Length: 7, Amount: cs(c("ujsmn", 6))},
+				period:              vestingtypes.Period{Length: 7, Amount: cs(c("ujcbn", 6))},
 				ctxTime:             time.Unix(80, 0),
 				mintModAccountCoins: true,
 				expectedPeriods: vestingtypes.Periods{
-					vestingtypes.Period{Length: 7, Amount: cs(c("ujsmn", 6))},
-					vestingtypes.Period{Length: 18, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))}},
+					vestingtypes.Period{Length: 7, Amount: cs(c("ujcbn", 6))},
+					vestingtypes.Period{Length: 18, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))}},
 				expectedStartTime: 80,
 				expectedEndTime:   120,
 			},
@@ -243,23 +243,23 @@ func (suite *KeeperTestSuite) TestSendCoinsToPeriodicVestingAccount() {
 			args: args{
 				accArgs: accountArgs{
 					periods: vestingtypes.Periods{
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))}},
-					origVestingCoins: cs(c("ujsmn", 20)),
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))}},
+					origVestingCoins: cs(c("ujcbn", 20)),
 					startTime:        100,
 					endTime:          120,
 				},
-				period:              vestingtypes.Period{Length: 7, Amount: cs(c("ujsmn", 6))},
+				period:              vestingtypes.Period{Length: 7, Amount: cs(c("ujcbn", 6))},
 				ctxTime:             time.Unix(101, 0),
 				mintModAccountCoins: true,
 				expectedPeriods: vestingtypes.Periods{
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 3, Amount: cs(c("ujsmn", 6))},
-					vestingtypes.Period{Length: 2, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))}},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 3, Amount: cs(c("ujcbn", 6))},
+					vestingtypes.Period{Length: 2, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))}},
 				expectedStartTime: 100,
 				expectedEndTime:   120,
 			},
@@ -273,23 +273,23 @@ func (suite *KeeperTestSuite) TestSendCoinsToPeriodicVestingAccount() {
 			args: args{
 				accArgs: accountArgs{
 					periods: vestingtypes.Periods{
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))}},
-					origVestingCoins: cs(c("ujsmn", 20)),
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))}},
+					origVestingCoins: cs(c("ujcbn", 20)),
 					startTime:        100,
 					endTime:          120,
 				},
-				period:              vestingtypes.Period{Length: 7, Amount: cs(c("ujsmn", 6))},
+				period:              vestingtypes.Period{Length: 7, Amount: cs(c("ujcbn", 6))},
 				ctxTime:             time.Unix(125, 0),
 				mintModAccountCoins: true,
 				expectedPeriods: vestingtypes.Periods{
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 12, Amount: cs(c("ujsmn", 6))}},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 12, Amount: cs(c("ujcbn", 6))}},
 				expectedStartTime: 100,
 				expectedEndTime:   132,
 			},
@@ -303,22 +303,22 @@ func (suite *KeeperTestSuite) TestSendCoinsToPeriodicVestingAccount() {
 			args: args{
 				accArgs: accountArgs{
 					periods: vestingtypes.Periods{
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))}},
-					origVestingCoins: cs(c("ujsmn", 20)),
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))}},
+					origVestingCoins: cs(c("ujcbn", 20)),
 					startTime:        100,
 					endTime:          120,
 				},
-				period:              vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 6))},
+				period:              vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 6))},
 				ctxTime:             time.Unix(110, 0),
 				mintModAccountCoins: true,
 				expectedPeriods: vestingtypes.Periods{
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 11))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))}},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 11))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))}},
 				expectedStartTime: 100,
 				expectedEndTime:   120,
 			},
@@ -332,23 +332,23 @@ func (suite *KeeperTestSuite) TestSendCoinsToPeriodicVestingAccount() {
 			args: args{
 				accArgs: accountArgs{
 					periods: vestingtypes.Periods{
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))}},
-					origVestingCoins: cs(c("ujsmn", 20)),
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))}},
+					origVestingCoins: cs(c("ujcbn", 20)),
 					startTime:        100,
 					endTime:          120,
 				},
-				period:              vestingtypes.Period{Length: 7, Amount: cs(c("ujsmn", 6))},
+				period:              vestingtypes.Period{Length: 7, Amount: cs(c("ujcbn", 6))},
 				ctxTime:             time.Unix(125, 0),
 				mintModAccountCoins: false,
 				expectedPeriods: vestingtypes.Periods{
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 12, Amount: cs(c("ujsmn", 6))}},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 12, Amount: cs(c("ujcbn", 6))}},
 				expectedStartTime: 100,
 				expectedEndTime:   132,
 			},
@@ -362,23 +362,23 @@ func (suite *KeeperTestSuite) TestSendCoinsToPeriodicVestingAccount() {
 			args: args{
 				accArgs: accountArgs{
 					periods: vestingtypes.Periods{
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-						vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))}},
-					origVestingCoins: cs(c("ujsmn", 20)),
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+						vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))}},
+					origVestingCoins: cs(c("ujcbn", 20)),
 					startTime:        100,
 					endTime:          120,
 				},
-				period:              vestingtypes.Period{Length: 50, Amount: cs(c("ujsmn", 6))},
+				period:              vestingtypes.Period{Length: 50, Amount: cs(c("ujcbn", 6))},
 				ctxTime:             time.Unix(110, 0),
 				mintModAccountCoins: true,
 				expectedPeriods: vestingtypes.Periods{
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 5, Amount: cs(c("ujsmn", 5))},
-					vestingtypes.Period{Length: 40, Amount: cs(c("ujsmn", 6))}},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 5, Amount: cs(c("ujcbn", 5))},
+					vestingtypes.Period{Length: 40, Amount: cs(c("ujcbn", 6))}},
 				expectedStartTime: 100,
 				expectedEndTime:   160,
 			},
@@ -426,18 +426,18 @@ func (suite *KeeperTestSuite) TestSendCoinsToPeriodicVestingAccount() {
 func (suite *KeeperTestSuite) TestSendCoinsToBaseAccount() {
 	suite.SetupWithAccountState()
 	// send coins to base account
-	err := suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, botanydisttypes.ModuleName, suite.addrs[1], cs(c("ujsmn", 100)), 5)
+	err := suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, botanydisttypes.ModuleName, suite.addrs[1], cs(c("ujcbn", 100)), 5)
 	suite.Require().NoError(err)
 	acc := suite.getAccount(suite.addrs[1])
 	vacc, ok := acc.(*vestingtypes.PeriodicVestingAccount)
 	suite.True(ok)
 	expectedPeriods := vestingtypes.Periods{
-		vestingtypes.Period{Length: int64(5), Amount: cs(c("ujsmn", 100))},
+		vestingtypes.Period{Length: int64(5), Amount: cs(c("ujcbn", 100))},
 	}
 	bk := suite.app.GetBankKeeper()
 	suite.Equal(expectedPeriods, vestingtypes.Periods(vacc.VestingPeriods))
-	suite.Equal(cs(c("ujsmn", 100)), vacc.OriginalVesting)
-	suite.Equal(cs(c("ujsmn", 500)), bk.GetAllBalances(suite.ctx, vacc.GetAddress()))
+	suite.Equal(cs(c("ujcbn", 100)), vacc.OriginalVesting)
+	suite.Equal(cs(c("ujcbn", 500)), bk.GetAllBalances(suite.ctx, vacc.GetAddress()))
 	suite.Equal(int64(105), vacc.EndTime)
 	suite.Equal(int64(100), vacc.StartTime)
 
@@ -445,10 +445,10 @@ func (suite *KeeperTestSuite) TestSendCoinsToBaseAccount() {
 
 func (suite *KeeperTestSuite) TestSendCoinsToInvalidAccount() {
 	suite.SetupWithAccountState()
-	err := suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, botanydisttypes.ModuleName, suite.addrs[2], cs(c("ujsmn", 100)), 5)
+	err := suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, botanydisttypes.ModuleName, suite.addrs[2], cs(c("ujcbn", 100)), 5)
 	suite.Require().True(errors.Is(err, types.ErrInvalidAccountType))
 	macc := suite.getModuleAccount(cdptypes.ModuleName)
-	err = suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, botanydisttypes.ModuleName, macc.GetAddress(), cs(c("ujsmn", 100)), 5)
+	err = suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, botanydisttypes.ModuleName, macc.GetAddress(), cs(c("ujcbn", 100)), 5)
 	suite.Require().True(errors.Is(err, types.ErrInvalidAccountType))
 }
 
@@ -461,10 +461,10 @@ func (suite *KeeperTestSuite) SetupWithAccountState() {
 		tApp,
 		addrs,
 		[]sdk.Coins{
-			cs(c("ujsmn", 400)),
-			cs(c("ujsmn", 400)),
-			cs(c("ujsmn", 400)),
-			cs(c("ujsmn", 400)),
+			cs(c("ujcbn", 400)),
+			cs(c("ujcbn", 400)),
+			cs(c("ujcbn", 400)),
+			cs(c("ujcbn", 400)),
 		})
 	tApp.InitializeFromGenesisStates(
 		authGS,
@@ -472,7 +472,7 @@ func (suite *KeeperTestSuite) SetupWithAccountState() {
 	ak := tApp.GetAccountKeeper()
 	bk := tApp.GetBankKeeper()
 	macc := ak.GetModuleAccount(ctx, botanydisttypes.ModuleName)
-	err := bk.MintCoins(ctx, macc.GetName(), cs(c("ujsmn", 600)))
+	err := bk.MintCoins(ctx, macc.GetName(), cs(c("ujcbn", 600)))
 	suite.Require().NoError(err)
 
 	// sets addrs[0] to be a periodic vesting account
@@ -480,12 +480,12 @@ func (suite *KeeperTestSuite) SetupWithAccountState() {
 	acc := ak.GetAccount(ctx, addrs[0])
 	bacc := authtypes.NewBaseAccount(acc.GetAddress(), acc.GetPubKey(), acc.GetAccountNumber(), acc.GetSequence())
 	periods := vestingtypes.Periods{
-		vestingtypes.Period{Length: int64(1), Amount: cs(c("ujsmn", 100))},
-		vestingtypes.Period{Length: int64(2), Amount: cs(c("ujsmn", 100))},
-		vestingtypes.Period{Length: int64(8), Amount: cs(c("ujsmn", 100))},
-		vestingtypes.Period{Length: int64(5), Amount: cs(c("ujsmn", 100))},
+		vestingtypes.Period{Length: int64(1), Amount: cs(c("ujcbn", 100))},
+		vestingtypes.Period{Length: int64(2), Amount: cs(c("ujcbn", 100))},
+		vestingtypes.Period{Length: int64(8), Amount: cs(c("ujcbn", 100))},
+		vestingtypes.Period{Length: int64(5), Amount: cs(c("ujcbn", 100))},
 	}
-	bva := vestingtypes.NewBaseVestingAccount(bacc, cs(c("ujsmn", 400)), ctx.BlockTime().Unix()+16)
+	bva := vestingtypes.NewBaseVestingAccount(bacc, cs(c("ujcbn", 400)), ctx.BlockTime().Unix()+16)
 	// suite.Require().NoError(err2)
 	pva := vestingtypes.NewPeriodicVestingAccountRaw(bva, ctx.BlockTime().Unix(), periods)
 	ak.SetAccount(ctx, pva)
@@ -493,7 +493,7 @@ func (suite *KeeperTestSuite) SetupWithAccountState() {
 	// sets addrs[2] to be a validator vesting account
 	acc = ak.GetAccount(ctx, addrs[2])
 	bacc = authtypes.NewBaseAccount(acc.GetAddress(), acc.GetPubKey(), acc.GetAccountNumber(), acc.GetSequence())
-	bva = vestingtypes.NewBaseVestingAccount(bacc, cs(c("ujsmn", 400)), ctx.BlockTime().Unix()+16)
+	bva = vestingtypes.NewBaseVestingAccount(bacc, cs(c("ujcbn", 400)), ctx.BlockTime().Unix()+16)
 	// suite.Require().NoError(err2)
 	// vva := validatorvesting.NewValidatorVestingAccountRaw(bva, ctx.BlockTime().Unix(), periods, sdk.ConsAddress{}, nil, 90)
 	// ak.SetAccount(ctx, vva)

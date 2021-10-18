@@ -42,16 +42,16 @@ func (suite *KeeperTestSuite) SetupTest() {
 	// app.SetBech32AddressPrefixes(config)
 	tApp := app.NewTestApp()
 	_, addrs := app.GeneratePrivKeyAddressPairs(1)
-	coins := []sdk.Coins{sdk.NewCoins(sdk.NewCoin("ujsmn", sdk.NewInt(1000000000000)))}
+	coins := []sdk.Coins{sdk.NewCoins(sdk.NewCoin("ujcbn", sdk.NewInt(1000000000000)))}
 	authGS := app.NewAuthGenState(
 		tApp, addrs, coins)
 
 	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
 
 	params := botanydisttypes.NewParams(true, testPeriods)
-	jsmnGs := botanydisttypes.NewGenesisState(params, botanydisttypes.DefaultPreviousBlockTime, botanydisttypes.DefaultGovDenom)
+	jcbnGs := botanydisttypes.NewGenesisState(params, botanydisttypes.DefaultPreviousBlockTime, botanydisttypes.DefaultGovDenom)
 	// gs := app.GenesisState{botanydisttypes.ModuleName: botanydisttypes.ModuleCdc.MustMarshalJSON(botanydisttypes.NewGenesisState(params, botanydisttypes.DefaultPreviousBlockTime))}
-	gs := app.GenesisState{botanydisttypes.ModuleName: botanydisttypes.ModuleCdc.MustMarshalJSON(&jsmnGs)}
+	gs := app.GenesisState{botanydisttypes.ModuleName: botanydisttypes.ModuleCdc.MustMarshalJSON(&jcbnGs)}
 	tApp.InitializeFromGenesisStates(
 		authGS,
 		gs,
