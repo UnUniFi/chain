@@ -86,7 +86,7 @@
               "amount": "1000000"
             },
             {
-              "denom": "ujsmn",
+              "denom": "ujcbn",
               "amount": "250000000000"
             }
           ]
@@ -99,7 +99,7 @@
               "amount": "1000000"
             },
             {
-              "denom": "ujsmn",
+              "denom": "ujcbn",
               "amount": "250000000000"
             }
           ]
@@ -112,7 +112,7 @@
               "amount": "1000000"
             },
             {
-              "denom": "ujsmn",
+              "denom": "ujcbn",
               "amount": "250000000000"
             }
           ]
@@ -125,7 +125,7 @@
               "amount": "1000000"
             },
             {
-              "denom": "ujsmn",
+              "denom": "ujcbn",
               "amount": "250000000000"
             }
           ]
@@ -140,7 +140,7 @@
         "periods": []
       },
       "previous_block_time": "1970-01-01T00:00:01Z",
-      "gov_denom": "ujsmn"
+      "gov_denom": "ujcbn"
     },
     "capability": {
       "index": "1",
@@ -188,13 +188,13 @@
       "deposits": [],
       "starting_cdp_id": "1",
       "debt_denom": "debt",
-      "gov_denom": "ujsmn",
+      "gov_denom": "ujcbn",
       "previous_accumulation_times": [],
       "total_principals": []
     },
     "crisis": {
       "constant_fee": {
-        "denom": "ujsmn",
+        "denom": "ujcbn",
         "amount": "1000"
       }
     },
@@ -247,7 +247,7 @@
                   "key": "oYCrJpP1vlhMCh3K24FfWA5KE+KXrjkEfZENJOfVi64="
                 },
                 "value": {
-                  "denom": "ujsmn",
+                  "denom": "ujcbn",
                   "amount": "250000000000"
                 }
               }
@@ -308,7 +308,7 @@
                   "key": "XIsBycjHML6Dey2iAH6z6jXNer5TM+iKiBhEu9OK+0I="
                 },
                 "value": {
-                  "denom": "ujsmn",
+                  "denom": "ujcbn",
                   "amount": "250000000000"
                 }
               }
@@ -369,7 +369,7 @@
                   "key": "L2fO/hx5conb0q5xpOP91GunisUjAZh+0DAISFjQa9A="
                 },
                 "value": {
-                  "denom": "ujsmn",
+                  "denom": "ujcbn",
                   "amount": "250000000000"
                 }
               }
@@ -430,7 +430,7 @@
                   "key": "E+YHPHgxEr/zy/52x1QyShFLn9LTyYrpmN3lum9Y8Ys="
                 },
                 "value": {
-                  "denom": "ujsmn",
+                  "denom": "ujcbn",
                   "amount": "250000000000"
                 }
               }
@@ -476,7 +476,7 @@
       "deposit_params": {
         "min_deposit": [
           {
-            "denom": "ujsmn",
+            "denom": "ujcbn",
             "amount": "10000000"
           }
         ],
@@ -531,7 +531,7 @@
       "cdp_minting_claims": [],
       "denoms": {
         "principal_denom": "jpyx",
-        "cdp_minting_reward_denom": "ujsmn"
+        "cdp_minting_reward_denom": "ujcbn"
       }
     },
     "liquidity": {
@@ -568,7 +568,7 @@
         "annual_provisions": "0.000000000000000000"
       },
       "params": {
-        "mint_denom": "ujsmn",
+        "mint_denom": "ujcbn",
         "inflation_rate_change": "0.130000000000000000",
         "inflation_max": "0.200000000000000000",
         "inflation_min": "0.070000000000000000",
@@ -625,7 +625,7 @@
         "max_validators": 100,
         "max_entries": 7,
         "historical_entries": 10000,
-        "bond_denom": "ujsmn"
+        "bond_denom": "ujcbn"
       },
       "last_total_power": "0",
       "last_validator_powers": [],
