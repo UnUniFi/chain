@@ -29,7 +29,7 @@ services:
     volumes:
       - ~/faucet/jpyxd:/usr/local/bin/jpyxd
       - ~/.jpyx:/root/.jpyx
-    command: faucet --cli-name jpyxd --denoms ujsmn --keyring-backend test --account-name faucet --port 7004 --credit-amount=10 --max-credit=9
+    command: faucet --cli-name jpyxd --denoms jpyx --keyring-backend test --account-name faucet --port 7004 --credit-amount=10 --max-credit=9
     # ports:
     #   - 7004:7004
     network_mode: host
