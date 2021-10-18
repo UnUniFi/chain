@@ -49,9 +49,9 @@ func (suite *KeeperTestSuite) SetupTest() {
 	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
 
 	params := botanydisttypes.NewParams(true, testPeriods)
-	jsmnGs := botanydisttypes.NewGenesisState(params, botanydisttypes.DefaultPreviousBlockTime, botanydisttypes.DefaultGovDenom)
+	jcbnGs := botanydisttypes.NewGenesisState(params, botanydisttypes.DefaultPreviousBlockTime, botanydisttypes.DefaultGovDenom)
 	// gs := app.GenesisState{botanydisttypes.ModuleName: botanydisttypes.ModuleCdc.MustMarshalJSON(botanydisttypes.NewGenesisState(params, botanydisttypes.DefaultPreviousBlockTime))}
-	gs := app.GenesisState{botanydisttypes.ModuleName: botanydisttypes.ModuleCdc.MustMarshalJSON(&jsmnGs)}
+	gs := app.GenesisState{botanydisttypes.ModuleName: botanydisttypes.ModuleCdc.MustMarshalJSON(&jcbnGs)}
 	tApp.InitializeFromGenesisStates(
 		authGS,
 		gs,
