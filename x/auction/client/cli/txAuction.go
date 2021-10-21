@@ -17,7 +17,7 @@ func CmdPlaceBid() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "place-bid [auction-id] [amount]",
 		Short: "Places a bid",
-		Args:  cobra.ExactArgs(0),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 
 			clientCtx, err := client.GetClientTxContext(cmd)
