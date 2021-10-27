@@ -12,7 +12,7 @@ import (
 func CmdClaimCdpMintingReward() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "claim-cdp-minting-reward [multiplierName]",
-		Short: "Places a bid",
+		Short: "Claims cdp minting reward",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 
