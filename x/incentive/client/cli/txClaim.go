@@ -1,23 +1,19 @@
 package cli
 
 import (
-	"fmt"
-	"strconv"
-
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/lcnem/jpyx/x/auction/types"
+	"github.com/lcnem/jpyx/x/incentive/types"
 )
 
-func CmdPlaceBid() *cobra.Command {
+func CmdClaimCdpMintingReward() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "place-bid [auction-id] [amount]",
-		Short: "Places a bid",
-		Args:  cobra.ExactArgs(2),
+		Use:   "claim-cdp-minting-reward [multiplierName]",
+		Short: "Claims cdp minting reward",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -25,17 +21,9 @@ func CmdPlaceBid() *cobra.Command {
 				return err
 			}
 
-			id, err := strconv.ParseUint(args[0], 10, 64)
-			if err != nil {
-				return fmt.Errorf("auction-id '%s' not a valid uint", args[0])
-			}
+			multiplierName := args[0]
 
-			amt, err := sdk.ParseCoinNormalized(args[1])
-			if err != nil {
-				return err
-			}
-
-			msg := types.NewMsgPlaceBid(id, clientCtx.GetFromAddress(), amt)
+			msg := types.NewMsgClaimCdpMintingReward(clientCtx.GetFromAddress(), multiplierName)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
