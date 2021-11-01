@@ -47,9 +47,9 @@ func (k Keeper) Auction(c context.Context, req *types.QueryGetAuctionRequest) (*
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	auction, err := k.GetAuction(ctx, req.Id)
+	auction, found := k.GetAuction(ctx, req.Id)
 
-	if err {
+	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}
 	auctionAny, _ := codectypes.NewAnyWithValue(auction)

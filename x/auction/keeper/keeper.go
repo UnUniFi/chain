@@ -111,8 +111,7 @@ func (k Keeper) GetAuction(ctx sdk.Context, auctionID uint64) (types.Auction, bo
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AuctionKey))
 	bz := store.Get(types.GetAuctionKey(auctionID))
 	if bz == nil {
-		// return auction, false
-		return auction, true
+		return auction, false
 	}
 
 	var auctionAny codectypes.Any
@@ -123,11 +122,9 @@ func (k Keeper) GetAuction(ctx sdk.Context, auctionID uint64) (types.Auction, bo
 	fmt.Printf("UnpackAuction err, %s\n", err)
 
 	if err != nil {
-		// return nil, false
-		return nil, true
+		return nil, false
 	}
-	// return auction, true
-	return auction, false
+	return auction, true
 }
 
 // DeleteAuction removes an auction from the store, and any indexes.
