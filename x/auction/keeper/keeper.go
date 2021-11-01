@@ -117,10 +117,6 @@ func (k Keeper) GetAuction(ctx sdk.Context, auctionID uint64) (types.Auction, bo
 	var auctionAny codectypes.Any
 	auctionAny.Unmarshal(bz)
 	auction, err := types.UnpackAuction(&auctionAny)
-
-	fmt.Printf("UnpackAuction res, %s\n", auction)
-	fmt.Printf("UnpackAuction err, %s\n", err)
-
 	if err != nil {
 		return nil, false
 	}
