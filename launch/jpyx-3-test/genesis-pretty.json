@@ -719,8 +719,8 @@
       "port_id": "transfer",
       "denom_traces": [],
       "params": {
-        "send_enabled": true,
-        "receive_enabled": true
+        "send_enabled": false,
+        "receive_enabled": false
       }
     },
     "upgrade": {},
