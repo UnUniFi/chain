@@ -1,6 +1,6 @@
 {
   "genesis_time": "2021-04-12T05:11:20.803293303Z",
-  "chain_id": "jpyx-3-test",
+  "chain_id": "jpyx-4-test",
   "initial_height": "1",
   "consensus_params": {
     "block": {
@@ -360,7 +360,7 @@
             }
           },
           "signatures": [
-            "nPXOvjdj07cGTKfVvmMd5ezxdCzsK9aBHS+YF1iQhzgDGqF2Uly1xzTaphkJljbvboigrcLLpjHeNGrN49Nl0g=="
+            "DJiPhHOXZwqSqxB2hgp7M9MDBkMi3gGwyz27oDgbcYkbrGLxXkly9Mf6bICl3T70DRTxeUwBMqWgg1gt8Tgd1g=="
           ]
         },
         {
@@ -421,7 +421,7 @@
             }
           },
           "signatures": [
-            "7wF/v4oPBQbhY4NA6I/+co03ySekmTKxTHmP5B7GAtYzppg/V3bGoBeBPsbj0BV9ti6/C0mSZbVt07j9scdbmA=="
+            "YfJ3COSs+IDUHl2q7pCk7qp/q96Dl1a8S9XyQM60sJEug9vC9UrBLGLJ3+KfxUCmp+7rpZ2vxT5UuqYGx2CKfg=="
           ]
         },
         {
@@ -482,7 +482,7 @@
             }
           },
           "signatures": [
-            "yt382P2t1IK3a3U7CsLcU54/KOH0xknOIp9GhMMEQy0OpUyyqDT5ybLdtQM3lperxTqCWytfbSUriA2pAn1roA=="
+            "rDqjy/XYMscN01Fpk2K4rnsbTdJHD4uFkvhO+tomzpNYnEZ9ktGy1xu77ktO4mdsS+ccFFfOW0XWtAatr8X/hw=="
           ]
         },
         {
@@ -543,7 +543,7 @@
             }
           },
           "signatures": [
-            "P3MgDP2pEZzgmJnLPrpgDQU5KolUPjANDo6cyU//r80bSnmK2XpakVUarGqX4868o1U5o/elX/zSmKjYjiIDfA=="
+            "Gi0DWvU3/MYzMteV3WUBuPphJjOb1+kKrULsGyZZV18F3Q76FrzAkxXXUK4L1LYWfiq3M9jg/uDDd8Ym85dMlg=="
           ]
         }
       ]
