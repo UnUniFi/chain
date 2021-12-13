@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/lcnem/jpyx/x/botanydist/types"
+	"github.com/UnUniFi/chain/x/botanydist/types"
 )
 
 func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {

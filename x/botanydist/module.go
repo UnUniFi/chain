@@ -14,15 +14,15 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
+	"github.com/UnUniFi/chain/x/botanydist/client/cli"
+	"github.com/UnUniFi/chain/x/botanydist/client/rest"
+	"github.com/UnUniFi/chain/x/botanydist/keeper"
+	"github.com/UnUniFi/chain/x/botanydist/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/lcnem/jpyx/x/botanydist/client/cli"
-	"github.com/lcnem/jpyx/x/botanydist/client/rest"
-	"github.com/lcnem/jpyx/x/botanydist/keeper"
-	"github.com/lcnem/jpyx/x/botanydist/types"
 )
 
 var (

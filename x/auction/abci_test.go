@@ -10,10 +10,10 @@ import (
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/lcnem/jpyx/app"
-	"github.com/lcnem/jpyx/x/auction"
-	auctiontypes "github.com/lcnem/jpyx/x/auction/types"
-	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
+	"github.com/UnUniFi/chain/app"
+	"github.com/UnUniFi/chain/x/auction"
+	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
+	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 )
 
 func TestKeeper_BeginBlocker(t *testing.T) {

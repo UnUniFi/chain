@@ -5,10 +5,10 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/lcnem/jpyx/app"
-	pricefeedkeeper "github.com/lcnem/jpyx/x/pricefeed/keeper"
+	"github.com/UnUniFi/chain/app"
+	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
 
-	"github.com/lcnem/jpyx/types"
+	"github.com/UnUniFi/chain/types"
 
 	"github.com/stretchr/testify/suite"
 )

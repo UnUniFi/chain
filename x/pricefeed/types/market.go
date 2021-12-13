@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
+	jpyx "github.com/UnUniFi/chain/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	jpyx "github.com/lcnem/jpyx/types"
 )
 
 // NewMarket returns a new Market

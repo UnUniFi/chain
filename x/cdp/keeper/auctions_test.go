@@ -5,11 +5,11 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/lcnem/jpyx/app"
-	auctiontypes "github.com/lcnem/jpyx/x/auction/types"
+	"github.com/UnUniFi/chain/app"
+	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
 
-	cdpkeeper "github.com/lcnem/jpyx/x/cdp/keeper"
-	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
+	cdpkeeper "github.com/UnUniFi/chain/x/cdp/keeper"
+	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 
 	"github.com/stretchr/testify/suite"
 

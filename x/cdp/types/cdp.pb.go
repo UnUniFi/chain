@@ -5,12 +5,12 @@ package types
 
 import (
 	fmt "fmt"
+	github_com_lcnem_jpyx_types "github.com/UnUniFi/chain/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
-	github_com_lcnem_jpyx_types "github.com/lcnem/jpyx/types"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
 	io "io"
 	math "math"
@@ -32,7 +32,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type Cdp struct {
 	Id              uint64                                       `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty" yaml:"id"`
-	Owner           github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,2,opt,name=owner,proto3,customtype=github.com/lcnem/jpyx/types.StringAccAddress" json:"owner" yaml:"owner"`
+	Owner           github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,2,opt,name=owner,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"owner" yaml:"owner"`
 	Type            string                                       `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty" yaml:"type"`
 	Collateral      types.Coin                                   `protobuf:"bytes,4,opt,name=collateral,proto3" json:"collateral" yaml:"collateral"`
 	Principal       types.Coin                                   `protobuf:"bytes,5,opt,name=principal,proto3" json:"principal" yaml:"principal"`
@@ -118,7 +118,7 @@ func (m *Cdp) GetFeesUpdated() time.Time {
 
 type Deposit struct {
 	CdpId     uint64                                       `protobuf:"varint,1,opt,name=cdp_id,json=cdpId,proto3" json:"cdp_id,omitempty" yaml:"cdp_id"`
-	Depositor github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,2,opt,name=depositor,proto3,customtype=github.com/lcnem/jpyx/types.StringAccAddress" json:"depositor" yaml:"depositor"`
+	Depositor github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,2,opt,name=depositor,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"depositor" yaml:"depositor"`
 	Amount    types.Coin                                   `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount" yaml:"amount"`
 }
 

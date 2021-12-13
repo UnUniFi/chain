@@ -8,7 +8,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	botanydisttypes "github.com/lcnem/jpyx/x/botanydist/types"
+	botanydisttypes "github.com/UnUniFi/chain/x/botanydist/types"
 )
 
 type paramTest struct {

@@ -22,11 +22,11 @@ sudo systemctl restart docker
 ### Join network
 
 ```bash
-docker run -v ~/.jpyx:/root/.jpyx lcnem/jpyx jpyxd init [moniker] --chain-id [chain-id]
+docker run -v ~/.jpyx:/root/.jpyx ghcr.io/ununifi/ununifid jpyxd init [moniker] --chain-id [chain-id]
 mkdir jpyx
 cd jpyx
-curl -L https://raw.githubusercontent.com/lcnem/jpyx/main/launch/[chain-id]/genesis.json -o ~/.jpyx/config/genesis.json
-curl -O https://raw.githubusercontent.com/lcnem/jpyx/main/docker-compose.yml
+curl -L https://raw.githubusercontent.com/UnUniFi/chain/main/launch/[chain-id]/genesis.json -o ~/.jpyx/config/genesis.json
+curl -O https://raw.githubusercontent.com/UnUniFi/chain/main/docker-compose.yml
 docker-compose up -d
 ```
 
@@ -49,7 +49,7 @@ source ~/.bashrc
 ### Clone
 
 ```bash
-git clone https://github.com/lcnem/jpyx.git
+git clone https://github.com/UnUniFi/chain.git
 cd jpyx
 make install
 ```

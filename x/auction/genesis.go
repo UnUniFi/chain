@@ -3,14 +3,14 @@ package auction
 import (
 	"fmt"
 
+	"github.com/UnUniFi/chain/x/auction/keeper"
+	"github.com/UnUniFi/chain/x/auction/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/lcnem/jpyx/x/auction/keeper"
-	"github.com/lcnem/jpyx/x/auction/types"
 )
 
 // InitGenesis initializes the capability module's state from a provided genesis
 // state.
-func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKeeper, bankKeeper types.BankKeeper,genState types.GenesisState) {
+func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKeeper, bankKeeper types.BankKeeper, genState types.GenesisState) {
 	// this line is used by starport scaffolding # genesis/module/init
 	// Set all the auction
 	// for _, elem := range genState.AuctionList {

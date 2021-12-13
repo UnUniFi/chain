@@ -3,11 +3,11 @@ package keeper
 import (
 	"context"
 
+	"github.com/UnUniFi/chain/x/auction/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/lcnem/jpyx/x/auction/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

@@ -3,7 +3,7 @@ package types
 import (
 	"testing"
 
-	"github.com/lcnem/jpyx/types"
+	"github.com/UnUniFi/chain/types"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"

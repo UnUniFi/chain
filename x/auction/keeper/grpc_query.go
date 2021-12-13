@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/lcnem/jpyx/x/auction/types"
+	"github.com/UnUniFi/chain/x/auction/types"
 )
 
 var _ types.QueryServer = Keeper{}

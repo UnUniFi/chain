@@ -11,9 +11,9 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"github.com/lcnem/jpyx/app"
-	"github.com/lcnem/jpyx/x/botanydist/keeper"
-	botanydisttypes "github.com/lcnem/jpyx/x/botanydist/types"
+	"github.com/UnUniFi/chain/app"
+	"github.com/UnUniFi/chain/x/botanydist/keeper"
+	botanydisttypes "github.com/UnUniFi/chain/x/botanydist/types"
 )
 
 type KeeperTestSuite struct {

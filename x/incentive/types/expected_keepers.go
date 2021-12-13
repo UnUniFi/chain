@@ -1,12 +1,12 @@
 package types
 
 import (
+	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/bank/exported"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
 )
 
 // AccountKeeper expected interface for the account keeper (noalias)

@@ -7,8 +7,8 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/lcnem/jpyx/x/cdp/keeper"
-	"github.com/lcnem/jpyx/x/pricefeed/types"
+	"github.com/UnUniFi/chain/x/cdp/keeper"
+	"github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
 // BeginBlocker compounds the debt in outstanding cdps and liquidates cdps that are below the required collateralization ratio

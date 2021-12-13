@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/UnUniFi/chain/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/lcnem/jpyx/types"
 )
 
 const (

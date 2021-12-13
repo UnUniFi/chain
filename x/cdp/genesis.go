@@ -3,9 +3,9 @@ package cdp
 import (
 	"fmt"
 
+	"github.com/UnUniFi/chain/x/cdp/keeper"
+	"github.com/UnUniFi/chain/x/cdp/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/lcnem/jpyx/x/cdp/keeper"
-	"github.com/lcnem/jpyx/x/cdp/types"
 )
 
 // InitGenesis initializes the capability module's state from a provided genesis

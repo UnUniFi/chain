@@ -17,9 +17,9 @@ source ~/.bashrc
 ## Install
 
 ```shell
-mkdir -p /usr/local/src/github.com/lcnem
-cd /usr/local/src/github.com/lcnem
-git clone https://github.com/lcnem/jpyx.git
+mkdir -p /usr/local/src/github.com/UnUnifi
+cd /usr/local/src/github.com/UnUnifi
+git clone https://github.com/UnUniFi/chain.git
 cd jpyx
 git checkout v0.1.0
 make install
@@ -29,7 +29,7 @@ make install
 
 ```shell
 jpyxd init [moniker] --chain-id jpyx-1
-cd /usr/local/src/github.com/lcnem/jpyx
+cd /usr/local/src/github.com/UnUniFi/chain
 cp launch/genesis.json ~/.jpyxd/config/genesis.json
 ```
 

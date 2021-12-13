@@ -9,7 +9,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/lcnem/jpyx/x/auction/types"
+	"github.com/UnUniFi/chain/x/auction/types"
 )
 
 // StartSurplusAuction starts a new surplus (forward) auction.

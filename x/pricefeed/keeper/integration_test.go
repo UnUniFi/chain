@@ -5,9 +5,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/lcnem/jpyx/app"
-	"github.com/lcnem/jpyx/types"
-	pricefeedtypes "github.com/lcnem/jpyx/x/pricefeed/types"
+	"github.com/UnUniFi/chain/app"
+	"github.com/UnUniFi/chain/types"
+	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
 func NewPricefeedGenStateMulti(tApp app.TestApp) app.GenesisState {

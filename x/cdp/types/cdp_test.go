@@ -13,8 +13,8 @@ import (
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	jpyxtypes "github.com/lcnem/jpyx/types"
-	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
+	jpyxtypes "github.com/UnUniFi/chain/types"
+	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 )
 
 type CdpValidationSuite struct {

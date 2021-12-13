@@ -5,12 +5,12 @@ package types
 
 import (
 	fmt "fmt"
+	github_com_lcnem_jpyx_types "github.com/UnUniFi/chain/types"
 	_ "github.com/cosmos/cosmos-sdk/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
-	github_com_lcnem_jpyx_types "github.com/lcnem/jpyx/types"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
 	io "io"
 	math "math"
@@ -34,7 +34,7 @@ type Market struct {
 	MarketId   string                                         `protobuf:"bytes,1,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty" yaml:"market_id"`
 	BaseAsset  string                                         `protobuf:"bytes,2,opt,name=base_asset,json=baseAsset,proto3" json:"base_asset,omitempty" yaml:"base_asset"`
 	QuoteAsset string                                         `protobuf:"bytes,3,opt,name=quote_asset,json=quoteAsset,proto3" json:"quote_asset,omitempty" yaml:"quote_asset"`
-	Oracles    []github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,4,rep,name=oracles,proto3,customtype=github.com/lcnem/jpyx/types.StringAccAddress" json:"oracles" yaml:"oracles"`
+	Oracles    []github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,4,rep,name=oracles,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"oracles" yaml:"oracles"`
 	Active     bool                                           `protobuf:"varint,5,opt,name=active,proto3" json:"active,omitempty" yaml:"active"`
 }
 
@@ -146,7 +146,7 @@ func (m *CurrentPrice) GetMarketId() string {
 
 type PostedPrice struct {
 	MarketId      string                                       `protobuf:"bytes,1,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty" yaml:"market_id"`
-	OracleAddress github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,2,opt,name=oracle_address,json=oracleAddress,proto3,customtype=github.com/lcnem/jpyx/types.StringAccAddress" json:"oracle_address" yaml:"oracle_address"`
+	OracleAddress github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,2,opt,name=oracle_address,json=oracleAddress,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"oracle_address" yaml:"oracle_address"`
 	Price         github_com_cosmos_cosmos_sdk_types.Dec       `protobuf:"bytes,3,opt,name=price,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"price" yaml:"price"`
 	Expiry        time.Time                                    `protobuf:"bytes,4,opt,name=expiry,proto3,stdtime" json:"expiry" yaml:"expiry"`
 }

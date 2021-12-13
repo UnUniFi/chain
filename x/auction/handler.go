@@ -3,10 +3,10 @@ package auction
 import (
 	"fmt"
 
+	"github.com/UnUniFi/chain/x/auction/keeper"
+	"github.com/UnUniFi/chain/x/auction/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/lcnem/jpyx/x/auction/keeper"
-	"github.com/lcnem/jpyx/x/auction/types"
 )
 
 // NewHandler ...

@@ -10,7 +10,7 @@ import (
 	// "github.com/cosmos/cosmos-sdk/client/flags"
 	// sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/lcnem/jpyx/x/incentive/types"
+	"github.com/UnUniFi/chain/x/incentive/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

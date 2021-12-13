@@ -12,9 +12,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/lcnem/jpyx/app"
-	"github.com/lcnem/jpyx/x/auction"
-	auctiontypes "github.com/lcnem/jpyx/x/auction/types"
+	"github.com/UnUniFi/chain/app"
+	"github.com/UnUniFi/chain/x/auction"
+	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
 )
 
 var _, testAddrs = app.GeneratePrivKeyAddressPairs(2)

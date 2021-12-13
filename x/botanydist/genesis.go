@@ -3,9 +3,9 @@ package botanydist
 import (
 	"fmt"
 
+	"github.com/UnUniFi/chain/x/botanydist/keeper"
+	"github.com/UnUniFi/chain/x/botanydist/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/lcnem/jpyx/x/botanydist/keeper"
-	"github.com/lcnem/jpyx/x/botanydist/types"
 )
 
 // InitGenesis initializes the store state from a genesis state.

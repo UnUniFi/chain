@@ -1,4 +1,4 @@
-module github.com/lcnem/jpyx
+module github.com/UnUniFi/chain
 
 go 1.17
 

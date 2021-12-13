@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto"
 
-	jpyxtypes "github.com/lcnem/jpyx/types"
+	jpyxtypes "github.com/UnUniFi/chain/types"
 )
 
 func TestGenesisStateValidate(t *testing.T) {

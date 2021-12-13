@@ -3,12 +3,12 @@ package types
 import (
 	"time"
 
+	pftypes "github.com/UnUniFi/chain/x/pricefeed/types"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/bank/exported"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	pftypes "github.com/lcnem/jpyx/x/pricefeed/types"
 )
 
 // AccountKeeper expected interface for the account keeper (noalias)

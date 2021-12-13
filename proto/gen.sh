@@ -42,6 +42,6 @@ buf protoc \
 go mod tidy
 
 # move proto files to the right places
-cp -r github.com/lcnem/jpyx/* ./
+cp -r github.com/UnUniFi/chain/* ./
 rm -rf github.com
 rm -rf google.golang.org

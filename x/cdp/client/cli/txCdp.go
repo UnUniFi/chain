@@ -6,12 +6,12 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/UnUniFi/chain/x/cdp/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
-	"github.com/lcnem/jpyx/x/cdp/types"
 )
 
 func CmdCreateCdp() *cobra.Command {

@@ -11,8 +11,8 @@ import (
 
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	botanydistTypes "github.com/lcnem/jpyx/x/botanydist/types"
-	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
+	botanydistTypes "github.com/UnUniFi/chain/x/botanydist/types"
+	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 )
 
 // Valid reward multipliers

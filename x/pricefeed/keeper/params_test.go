@@ -9,10 +9,10 @@ import (
 
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"github.com/lcnem/jpyx/app"
-	"github.com/lcnem/jpyx/types"
-	"github.com/lcnem/jpyx/x/pricefeed/keeper"
-	pricefeedtypes "github.com/lcnem/jpyx/x/pricefeed/types"
+	"github.com/UnUniFi/chain/app"
+	"github.com/UnUniFi/chain/types"
+	"github.com/UnUniFi/chain/x/pricefeed/keeper"
+	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )

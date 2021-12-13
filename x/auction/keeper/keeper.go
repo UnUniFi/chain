@@ -6,12 +6,12 @@ import (
 
 	"github.com/tendermint/tendermint/libs/log"
 
+	"github.com/UnUniFi/chain/x/auction/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/lcnem/jpyx/x/auction/types"
 )
 
 type (

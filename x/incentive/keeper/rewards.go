@@ -6,8 +6,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
-	"github.com/lcnem/jpyx/x/incentive/types"
+	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	"github.com/UnUniFi/chain/x/incentive/types"
 )
 
 // AccumulateCdpMintingRewards updates the rewards accumulated for the input reward period

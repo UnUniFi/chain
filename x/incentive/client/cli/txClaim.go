@@ -3,10 +3,10 @@ package cli
 import (
 	"github.com/spf13/cobra"
 
+	"github.com/UnUniFi/chain/x/incentive/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/lcnem/jpyx/x/incentive/types"
 )
 
 func CmdClaimCdpMintingReward() *cobra.Command {

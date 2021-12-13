@@ -9,7 +9,7 @@ import (
 
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
+	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 )
 
 // Parameter keys and default values

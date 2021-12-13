@@ -6,7 +6,7 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
-option go_package = "github.com/lcnem/jpyx/x/auction/types";
+option go_package = "github.com/UnUniFi/chain/x/auction/types";
 
 message BaseAuction {
   uint64 id = 1 [(gogoproto.moretags) = "yaml:\"id\""];
@@ -17,7 +17,7 @@ message BaseAuction {
   ];
   string bidder = 4 [
     (gogoproto.moretags) = "yaml:\"bidder\"",
-    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   cosmos.base.v1beta1.Coin bid = 5 [
@@ -81,7 +81,7 @@ message CollateralAuction {
 message WeightedAddress {
   string address = 1 [
     (gogoproto.moretags) = "yaml:\"address\"",
-    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   string weight = 2 [

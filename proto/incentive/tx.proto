@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
-option go_package = "github.com/lcnem/jpyx/x/incentive/types";
+option go_package = "github.com/UnUniFi/chain/x/incentive/types";
 
 service Msg {
   rpc ClaimCdpMintingReward(MsgClaimCdpMintingReward) returns (MsgClaimCdpMintingRewardResponse);
@@ -14,7 +14,7 @@ service Msg {
 message MsgClaimCdpMintingReward {
   string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   string multiplier_name = 2 [(gogoproto.moretags) = "yaml:\"multiplier_name\""];

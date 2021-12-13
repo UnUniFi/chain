@@ -5,13 +5,13 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
-option go_package = "github.com/lcnem/jpyx/x/cdp/types";
+option go_package = "github.com/UnUniFi/chain/x/cdp/types";
 
 message Cdp {
   uint64 id = 1 [(gogoproto.moretags) = "yaml:\"id\""];
   string owner = 2 [
     (gogoproto.moretags) = "yaml:\"owner\"",
-    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   string type = 3 [(gogoproto.moretags) = "yaml:\"type\""];
@@ -43,7 +43,7 @@ message Deposit {
   uint64 cdp_id = 1 [(gogoproto.moretags) = "yaml:\"cdp_id\""];
   string depositor = 2 [
     (gogoproto.moretags) = "yaml:\"depositor\"",
-    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   cosmos.base.v1beta1.Coin amount = 3 [

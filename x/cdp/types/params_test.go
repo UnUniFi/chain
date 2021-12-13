@@ -8,7 +8,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
+	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 )
 
 type ParamsTestSuite struct {

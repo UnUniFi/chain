@@ -3,10 +3,10 @@ package incentive
 import (
 	"fmt"
 
+	"github.com/UnUniFi/chain/x/incentive/keeper"
+	"github.com/UnUniFi/chain/x/incentive/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/lcnem/jpyx/x/incentive/keeper"
-	"github.com/lcnem/jpyx/x/incentive/types"
 )
 
 // NewHandler ...

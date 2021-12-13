@@ -3,9 +3,9 @@ package pricefeed
 import (
 	"errors"
 
+	"github.com/UnUniFi/chain/x/pricefeed/keeper"
+	"github.com/UnUniFi/chain/x/pricefeed/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/lcnem/jpyx/x/pricefeed/keeper"
-	"github.com/lcnem/jpyx/x/pricefeed/types"
 )
 
 // EndBlocker updates the current pricefeed
