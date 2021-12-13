@@ -3,9 +3,9 @@ package auction
 import (
 	"errors"
 
+	"github.com/UnUniFi/chain/x/auction/keeper"
+	"github.com/UnUniFi/chain/x/auction/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/lcnem/jpyx/x/auction/keeper"
-	"github.com/lcnem/jpyx/x/auction/types"
 )
 
 // BeginBlocker closes all expired auctions at the end of each block. It panics if

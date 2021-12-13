@@ -6,10 +6,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"github.com/lcnem/jpyx/app"
-	jpyxtypes "github.com/lcnem/jpyx/types"
-	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
-	pricefeedtypes "github.com/lcnem/jpyx/x/pricefeed/types"
+	"github.com/UnUniFi/chain/app"
+	jpyxtypes "github.com/UnUniFi/chain/types"
+	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
 // Avoid cluttering test cases with long function names

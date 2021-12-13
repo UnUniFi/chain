@@ -3,10 +3,10 @@ package botanydist
 import (
 	"fmt"
 
+	"github.com/UnUniFi/chain/x/botanydist/keeper"
+	"github.com/UnUniFi/chain/x/botanydist/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/lcnem/jpyx/x/botanydist/keeper"
-	"github.com/lcnem/jpyx/x/botanydist/types"
 )
 
 // NewHandler ...

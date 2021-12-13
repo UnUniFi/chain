@@ -8,7 +8,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 
-	"github.com/lcnem/jpyx/x/incentive/types"
+	"github.com/UnUniFi/chain/x/incentive/types"
 )
 
 const (

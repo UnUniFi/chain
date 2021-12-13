@@ -2,10 +2,10 @@ package keeper
 
 import (
 	// this line is used by starport scaffolding # 1
+	"github.com/UnUniFi/chain/x/botanydist/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/lcnem/jpyx/x/botanydist/types"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 )

@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/lcnem/jpyx/x/cdp/types"
+	"github.com/UnUniFi/chain/x/cdp/types"
 )
 
 var _ types.QueryServer = Keeper{}

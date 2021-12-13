@@ -14,10 +14,10 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"github.com/lcnem/jpyx/app"
-	auctiontypes "github.com/lcnem/jpyx/x/auction/types"
-	"github.com/lcnem/jpyx/x/cdp/keeper"
-	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
+	"github.com/UnUniFi/chain/app"
+	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
+	"github.com/UnUniFi/chain/x/cdp/keeper"
+	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 )
 
 type SeizeTestSuite struct {

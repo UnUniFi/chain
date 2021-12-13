@@ -3,9 +3,9 @@ package keeper
 import (
 	"context"
 
+	jpyx "github.com/UnUniFi/chain/types"
+	"github.com/UnUniFi/chain/x/pricefeed/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	jpyx "github.com/lcnem/jpyx/types"
-	"github.com/lcnem/jpyx/x/pricefeed/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

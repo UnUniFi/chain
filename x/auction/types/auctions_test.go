@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	jpyxtypes "github.com/UnUniFi/chain/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	jpyxtypes "github.com/lcnem/jpyx/types"
 )
 
 const (

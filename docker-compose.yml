@@ -3,7 +3,7 @@ version: "3"
 services:
   jpyxd:
     container_name: jpyxd
-    image: lcnem/jpyx
+    image: ghcr.io/ununifi/chain
     # ports:
     #   - 1317:1317
     #   - 9090:9090

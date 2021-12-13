@@ -5,12 +5,12 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
-option go_package = "github.com/lcnem/jpyx/x/incentive/types";
+option go_package = "github.com/UnUniFi/chain/x/incentive/types";
 
 message BaseClaim {
   string owner = 1 [
     (gogoproto.moretags) = "yaml:\"owner\"",
-    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   cosmos.base.v1beta1.Coin reward = 2 [
@@ -22,7 +22,7 @@ message BaseClaim {
 message BaseMultiClaim {
   string owner = 1 [
     (gogoproto.moretags) = "yaml:\"owner\"",
-    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   repeated cosmos.base.v1beta1.Coin reward = 2 [

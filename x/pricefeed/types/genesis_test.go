@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/lcnem/jpyx/types"
+	"github.com/UnUniFi/chain/types"
 	"github.com/stretchr/testify/require"
 
 	tmtypes "github.com/tendermint/tendermint/types"

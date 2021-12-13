@@ -9,7 +9,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	incentivetypes "github.com/lcnem/jpyx/x/incentive/types"
+	incentivetypes "github.com/UnUniFi/chain/x/incentive/types"
 )
 
 type ParamTestSuite struct {

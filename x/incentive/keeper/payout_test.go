@@ -10,11 +10,11 @@ import (
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/lcnem/jpyx/app"
-	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
+	"github.com/UnUniFi/chain/app"
+	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 
-	botanydisttypes "github.com/lcnem/jpyx/x/botanydist/types"
-	"github.com/lcnem/jpyx/x/incentive/types"
+	botanydisttypes "github.com/UnUniFi/chain/x/botanydist/types"
+	"github.com/UnUniFi/chain/x/incentive/types"
 )
 
 func (suite *KeeperTestSuite) TestPayoutCdpMintingClaim() {

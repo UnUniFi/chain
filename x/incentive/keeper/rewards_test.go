@@ -8,10 +8,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
-	// "github.com/lcnem/jpyx/x/committee"
-	// "github.com/lcnem/jpyx/x/hard"
-	incentivetypes "github.com/lcnem/jpyx/x/incentive/types"
+	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	// "github.com/UnUniFi/chain/x/committee"
+	// "github.com/UnUniFi/chain/x/hard"
+	incentivetypes "github.com/UnUniFi/chain/x/incentive/types"
 )
 
 func (suite *KeeperTestSuite) TestAccumulateCdpMintingRewards() {

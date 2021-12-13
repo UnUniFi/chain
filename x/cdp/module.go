@@ -12,15 +12,15 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
+	"github.com/UnUniFi/chain/x/cdp/client/cli"
+	"github.com/UnUniFi/chain/x/cdp/client/rest"
+	"github.com/UnUniFi/chain/x/cdp/keeper"
+	"github.com/UnUniFi/chain/x/cdp/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/lcnem/jpyx/x/cdp/client/cli"
-	"github.com/lcnem/jpyx/x/cdp/client/rest"
-	"github.com/lcnem/jpyx/x/cdp/keeper"
-	"github.com/lcnem/jpyx/x/cdp/types"
 )
 
 var (

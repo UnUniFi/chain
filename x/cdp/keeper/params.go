@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/lcnem/jpyx/x/cdp/types"
+	"github.com/UnUniFi/chain/x/cdp/types"
 )
 
 func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {

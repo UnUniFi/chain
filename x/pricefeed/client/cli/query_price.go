@@ -3,9 +3,9 @@ package cli
 import (
 	"context"
 
+	"github.com/UnUniFi/chain/x/pricefeed/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/lcnem/jpyx/x/pricefeed/types"
 	"github.com/spf13/cobra"
 )
 

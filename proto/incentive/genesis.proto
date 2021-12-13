@@ -6,7 +6,7 @@ import "google/protobuf/timestamp.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 import "incentive/incentive.proto";
 
-option go_package = "github.com/lcnem/jpyx/x/incentive/types";
+option go_package = "github.com/UnUniFi/chain/x/incentive/types";
 
 // GenesisState defines the incentive module's genesis state.
 message GenesisState {

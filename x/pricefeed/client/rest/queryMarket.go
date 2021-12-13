@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/UnUniFi/chain/x/pricefeed/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/rest"
-	"github.com/lcnem/jpyx/x/pricefeed/types"
 )
 
 func listMarketHandler(clientCtx client.Context) http.HandlerFunc {

@@ -6,11 +6,11 @@ package types
 import (
 	context "context"
 	fmt "fmt"
+	github_com_lcnem_jpyx_types "github.com/UnUniFi/chain/types"
 	query "github.com/cosmos/cosmos-sdk/types/query"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
-	github_com_lcnem_jpyx_types "github.com/lcnem/jpyx/types"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -261,7 +261,7 @@ func (m *QueryAllOracleRequest) GetPagination() *query.PageRequest {
 }
 
 type QueryAllOracleResponse struct {
-	Oracles    []github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,1,rep,name=oracles,proto3,customtype=github.com/lcnem/jpyx/types.StringAccAddress" json:"oracles"`
+	Oracles    []github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,1,rep,name=oracles,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"oracles"`
 	Pagination *query.PageResponse                            `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 

@@ -9,9 +9,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/lcnem/jpyx/app"
-	cdpkeeper "github.com/lcnem/jpyx/x/cdp/keeper"
-	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
+	"github.com/UnUniFi/chain/app"
+	cdpkeeper "github.com/UnUniFi/chain/x/cdp/keeper"
+	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 )
 
 type GenesisTestSuite struct {

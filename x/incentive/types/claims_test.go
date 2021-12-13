@@ -7,8 +7,8 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
+	jpyxtypes "github.com/UnUniFi/chain/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	jpyxtypes "github.com/lcnem/jpyx/types"
 )
 
 func TestClaimsValidate(t *testing.T) {

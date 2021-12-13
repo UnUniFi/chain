@@ -1,9 +1,9 @@
 package pricefeed
 
 import (
+	"github.com/UnUniFi/chain/x/pricefeed/keeper"
+	"github.com/UnUniFi/chain/x/pricefeed/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/lcnem/jpyx/x/pricefeed/keeper"
-	"github.com/lcnem/jpyx/x/pricefeed/types"
 )
 
 // InitGenesis initializes the capability module's state from a provided genesis

@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	cdptypes "github.com/lcnem/jpyx/x/cdp/types"
+	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 )
 
 // Hooks wrapper struct for hooks

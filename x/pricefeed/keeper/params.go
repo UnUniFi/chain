@@ -4,8 +4,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	jpyx "github.com/lcnem/jpyx/types"
-	"github.com/lcnem/jpyx/x/pricefeed/types"
+	jpyx "github.com/UnUniFi/chain/types"
+	"github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
 func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {

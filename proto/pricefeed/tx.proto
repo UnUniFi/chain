@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
-option go_package = "github.com/lcnem/jpyx/x/pricefeed/types";
+option go_package = "github.com/UnUniFi/chain/x/pricefeed/types";
 
 service Msg {
   rpc PostPrice(MsgPostPrice) returns (MsgPostPriceResponse);
@@ -14,13 +14,13 @@ service Msg {
 message MsgPostPrice {
   string from = 1 [
     (gogoproto.moretags) = "yaml:\"from\"",
-    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.StringAccAddress",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   string market_id = 2 [(gogoproto.moretags) = "yaml:\"market_id\""];
   string price = 3 [
     (gogoproto.moretags) = "yaml:\"price\"",
-    (gogoproto.customtype) = "github.com/lcnem/jpyx/types.Dec",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.Dec",
     (gogoproto.nullable) = false
   ];
   google.protobuf.Timestamp expiry = 4 [

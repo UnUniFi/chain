@@ -6,7 +6,7 @@ import "google/protobuf/timestamp.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 import "botanydist/botanydist.proto";
 
-option go_package = "github.com/lcnem/jpyx/x/botanydist/types";
+option go_package = "github.com/UnUniFi/chain/x/botanydist/types";
 
 // GenesisState defines the botanydist module's genesis state.
 message GenesisState {

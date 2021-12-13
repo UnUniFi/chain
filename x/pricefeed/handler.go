@@ -3,10 +3,10 @@ package pricefeed
 import (
 	"fmt"
 
+	"github.com/UnUniFi/chain/x/pricefeed/keeper"
+	"github.com/UnUniFi/chain/x/pricefeed/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/lcnem/jpyx/x/pricefeed/keeper"
-	"github.com/lcnem/jpyx/x/pricefeed/types"
 )
 
 // NewHandler ...

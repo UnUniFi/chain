@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/lcnem/jpyx/x/cdp/types"
+	"github.com/UnUniFi/chain/x/cdp/types"
 )
 
 // AddCdp adds a cdp for a specific owner and collateral type

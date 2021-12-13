@@ -8,7 +8,7 @@ import "cosmos_proto/cosmos.proto";
 // this line is used by starport scaffolding # 1
 import "auction/auction.proto";
 
-option go_package = "github.com/lcnem/jpyx/x/auction/types";
+option go_package = "github.com/UnUniFi/chain/x/auction/types";
 
 // Query defines the gRPC querier service.
 service Query {

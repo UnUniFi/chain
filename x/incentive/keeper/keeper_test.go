@@ -16,11 +16,11 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"github.com/lcnem/jpyx/app"
-	// committeekeeper "github.com/lcnem/jpyx/x/committee/keeper"
-	// hardkeeper "github.com/lcnem/jpyx/x/hard/keeper"
-	"github.com/lcnem/jpyx/x/incentive/keeper"
-	"github.com/lcnem/jpyx/x/incentive/types"
+	"github.com/UnUniFi/chain/app"
+	// committeekeeper "github.com/UnUniFi/chain/x/committee/keeper"
+	// hardkeeper "github.com/UnUniFi/chain/x/hard/keeper"
+	"github.com/UnUniFi/chain/x/incentive/keeper"
+	"github.com/UnUniFi/chain/x/incentive/types"
 )
 
 // Test suite used for all keeper tests

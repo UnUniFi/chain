@@ -3,9 +3,9 @@ package main
 import (
 	"os"
 
+	"github.com/UnUniFi/chain/app"
+	"github.com/UnUniFi/chain/cmd/jpyxd/cmd"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
-	"github.com/lcnem/jpyx/app"
-	"github.com/lcnem/jpyx/cmd/jpyxd/cmd"
 )
 
 func main() {

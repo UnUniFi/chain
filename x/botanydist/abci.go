@@ -1,8 +1,8 @@
 package botanydist
 
 import (
+	"github.com/UnUniFi/chain/x/botanydist/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/lcnem/jpyx/x/botanydist/keeper"
 )
 
 func BeginBlocker(ctx sdk.Context, k keeper.Keeper) {

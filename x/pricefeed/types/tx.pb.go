@@ -6,12 +6,12 @@ package types
 import (
 	context "context"
 	fmt "fmt"
+	github_com_lcnem_jpyx_types "github.com/UnUniFi/chain/types"
 	_ "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
 	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
-	github_com_lcnem_jpyx_types "github.com/lcnem/jpyx/types"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -35,9 +35,9 @@ var _ = time.Kitchen
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type MsgPostPrice struct {
-	From     github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,1,opt,name=from,proto3,customtype=github.com/lcnem/jpyx/types.StringAccAddress" json:"from" yaml:"from"`
+	From     github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,1,opt,name=from,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"from" yaml:"from"`
 	MarketId string                                       `protobuf:"bytes,2,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty" yaml:"market_id"`
-	Price    github_com_lcnem_jpyx_types.Dec              `protobuf:"bytes,3,opt,name=price,proto3,customtype=github.com/lcnem/jpyx/types.Dec" json:"price" yaml:"price"`
+	Price    github_com_lcnem_jpyx_types.Dec              `protobuf:"bytes,3,opt,name=price,proto3,customtype=github.com/UnUniFi/chain/types.Dec" json:"price" yaml:"price"`
 	Expiry   time.Time                                    `protobuf:"bytes,4,opt,name=expiry,proto3,stdtime" json:"expiry" yaml:"expiry"`
 }
 
