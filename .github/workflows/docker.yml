@@ -25,5 +25,5 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ghcr.io/ununifi/chain:latest
-            ghcr.io/ununifi/chain:${{ steps.variables.outputs.version }}
+            ghcr.io/ununifi/ununifid:latest
+            ghcr.io/ununifi/ununifid:${{ steps.variables.outputs.version }}

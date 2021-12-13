@@ -22,7 +22,7 @@ sudo systemctl restart docker
 ### Join network
 
 ```bash
-docker run -v ~/.jpyx:/root/.jpyx ghcr.io/ununifi/chain jpyxd init [moniker] --chain-id [chain-id]
+docker run -v ~/.jpyx:/root/.jpyx ghcr.io/ununifi/ununifid jpyxd init [moniker] --chain-id [chain-id]
 mkdir jpyx
 cd jpyx
 curl -L https://raw.githubusercontent.com/UnUniFi/chain/main/launch/[chain-id]/genesis.json -o ~/.jpyx/config/genesis.json
