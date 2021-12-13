@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: JPYX - Legacy REST and gRPC Gateway docs
-  description: 'A REST interface for state queries, legacy transactions'
+  description: A REST interface for state queries, legacy transactions
   version: 1.0.0
 paths:
   /botany/auction/auctions:
@@ -455,7 +455,7 @@ paths:
           type: boolean
       tags:
         - Query
-  '/botany/auction/auctions/{id}':
+  /botany/auction/auctions/{id}:
     get:
       summary: 'this line is used by starport scaffolding # 2'
       operationId: Auction
@@ -1782,7 +1782,7 @@ paths:
           type: boolean
       tags:
         - Query
-  '/botany/cdp/cdps/owners/{owner}/collateral-types/{collateral_type}/cdp':
+  /botany/cdp/cdps/owners/{owner}/collateral-types/{collateral_type}/cdp:
     get:
       summary: 'this line is used by starport scaffolding # 2'
       operationId: Cdp
@@ -2075,7 +2075,7 @@ paths:
           type: string
       tags:
         - Query
-  '/botany/cdp/deposits/owners/{owner}/collateral-types/{collateral_type}':
+  /botany/cdp/deposits/owners/{owner}/collateral-types/{collateral_type}:
     get:
       operationId: DepositAll
       responses:
@@ -2903,7 +2903,7 @@ paths:
           type: boolean
       tags:
         - Query
-  '/botany/pricefeed/markets/{market_id}/oracles':
+  /botany/pricefeed/markets/{market_id}/oracles:
     get:
       operationId: OracleAll
       responses:
@@ -3018,7 +3018,7 @@ paths:
           type: boolean
       tags:
         - Query
-  '/botany/pricefeed/markets/{market_id}/price':
+  /botany/pricefeed/markets/{market_id}/price:
     get:
       operationId: Price
       responses:
@@ -3063,7 +3063,7 @@ paths:
           type: string
       tags:
         - Query
-  '/botany/pricefeed/markets/{market_id}/raw_prices':
+  /botany/pricefeed/markets/{market_id}/raw_prices:
     get:
       operationId: RawPriceAll
       responses:
