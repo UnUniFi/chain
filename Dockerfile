@@ -2,7 +2,7 @@
 # > docker build -t jpyx .
 # > docker run -it -p 26656:26656 -p 26657:26657 -v ~/.jpyx:/root/.jpyx jpyx jpyxd init
 # > docker run -it -p 26656:26656 -p 26657:26657 -v ~/.jpyx:/root/.jpyx jpyx jpyxd start
-FROM golang:1.16-alpine AS build-env
+FROM golang:1.17-alpine AS build-env
 
 # Set up dependencies
 ENV PACKAGES curl make git libc-dev bash gcc linux-headers eudev-dev python3
