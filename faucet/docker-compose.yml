@@ -35,6 +35,7 @@ services:
     network_mode: host
     restart: always
   nginx:
+    container_name: faucet-nginx
     image: nginx
     volumes:
       - ~/faucet/nginx.conf:/etc/nginx/nginx.conf
