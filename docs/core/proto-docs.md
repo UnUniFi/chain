@@ -31,21 +31,6 @@
   
     - [Msg](#ununifi.auction.Msg)
   
-- [ununifidist/ununifidist.proto](#ununifidist/ununifidist.proto)
-    - [Params](#ununifi.ununifidist.Params)
-    - [Period](#ununifi.ununifidist.Period)
-  
-- [ununifidist/genesis.proto](#ununifidist/genesis.proto)
-    - [GenesisState](#ununifi.ununifidist.GenesisState)
-  
-- [ununifidist/query.proto](#ununifidist/query.proto)
-    - [QueryGetBalancesRequest](#ununifi.ununifidist.QueryGetBalancesRequest)
-    - [QueryGetBalancesResponse](#ununifi.ununifidist.QueryGetBalancesResponse)
-    - [QueryParamsRequest](#ununifi.ununifidist.QueryParamsRequest)
-    - [QueryParamsResponse](#ununifi.ununifidist.QueryParamsResponse)
-  
-    - [Query](#ununifi.ununifidist.Query)
-  
 - [cdp/cdp.proto](#cdp/cdp.proto)
     - [AugmentedCdp](#ununifi.cdp.AugmentedCdp)
     - [Cdp](#ununifi.cdp.Cdp)
@@ -145,6 +130,21 @@
     - [MsgPostPriceResponse](#ununifi.pricefeed.MsgPostPriceResponse)
   
     - [Msg](#ununifi.pricefeed.Msg)
+  
+- [ununifidist/ununifidist.proto](#ununifidist/ununifidist.proto)
+    - [Params](#ununifi.ununifidist.Params)
+    - [Period](#ununifi.ununifidist.Period)
+  
+- [ununifidist/genesis.proto](#ununifidist/genesis.proto)
+    - [GenesisState](#ununifi.ununifidist.GenesisState)
+  
+- [ununifidist/query.proto](#ununifidist/query.proto)
+    - [QueryGetBalancesRequest](#ununifi.ununifidist.QueryGetBalancesRequest)
+    - [QueryGetBalancesResponse](#ununifi.ununifidist.QueryGetBalancesResponse)
+    - [QueryParamsRequest](#ununifi.ununifidist.QueryParamsRequest)
+    - [QueryParamsResponse](#ununifi.ununifidist.QueryParamsResponse)
+  
+    - [Query](#ununifi.ununifidist.Query)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -467,165 +467,6 @@ Query defines the gRPC querier service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `PlaceBid` | [MsgPlaceBid](#ununifi.auction.MsgPlaceBid) | [MsgPlaceBidResponse](#ununifi.auction.MsgPlaceBidResponse) |  | |
-
- <!-- end services -->
-
-
-
-<a name="ununifidist/ununifidist.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ununifidist/ununifidist.proto
-
-
-
-<a name="ununifi.ununifidist.Params"></a>
-
-### Params
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `active` | [bool](#bool) |  |  |
-| `periods` | [Period](#ununifi.ununifidist.Period) | repeated |  |
-
-
-
-
-
-
-<a name="ununifi.ununifidist.Period"></a>
-
-### Period
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `start` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
-| `end` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
-| `inflation` | [string](#string) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ununifidist/genesis.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ununifidist/genesis.proto
-
-
-
-<a name="ununifi.ununifidist.GenesisState"></a>
-
-### GenesisState
-GenesisState defines the ununifidist module's genesis state.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#ununifi.ununifidist.Params) |  |  |
-| `previous_block_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
-| `gov_denom` | [string](#string) |  | this line is used by starport scaffolding # genesis/proto/state |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ununifidist/query.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ununifidist/query.proto
-
-
-
-<a name="ununifi.ununifidist.QueryGetBalancesRequest"></a>
-
-### QueryGetBalancesRequest
-
-
-
-
-
-
-
-<a name="ununifi.ununifidist.QueryGetBalancesResponse"></a>
-
-### QueryGetBalancesResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `balances` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
-
-
-
-
-
-
-<a name="ununifi.ununifidist.QueryParamsRequest"></a>
-
-### QueryParamsRequest
-
-
-
-
-
-
-
-<a name="ununifi.ununifidist.QueryParamsResponse"></a>
-
-### QueryParamsResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#ununifi.ununifidist.Params) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="ununifi.ununifidist.Query"></a>
-
-### Query
-Query defines the gRPC querier service.
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#ununifi.ununifidist.QueryParamsRequest) | [QueryParamsResponse](#ununifi.ununifidist.QueryParamsResponse) |  | GET|/ununifi/ununifidist/params|
-| `Balances` | [QueryGetBalancesRequest](#ununifi.ununifidist.QueryGetBalancesRequest) | [QueryGetBalancesResponse](#ununifi.ununifidist.QueryGetBalancesResponse) | this line is used by starport scaffolding # 2 | GET|/ununifi/ununifidist/balances|
 
  <!-- end services -->
 
@@ -1889,6 +1730,165 @@ Query defines the gRPC querier service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `PostPrice` | [MsgPostPrice](#ununifi.pricefeed.MsgPostPrice) | [MsgPostPriceResponse](#ununifi.pricefeed.MsgPostPriceResponse) |  | |
+
+ <!-- end services -->
+
+
+
+<a name="ununifidist/ununifidist.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ununifidist/ununifidist.proto
+
+
+
+<a name="ununifi.ununifidist.Params"></a>
+
+### Params
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `active` | [bool](#bool) |  |  |
+| `periods` | [Period](#ununifi.ununifidist.Period) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.ununifidist.Period"></a>
+
+### Period
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `start` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `end` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `inflation` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="ununifidist/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ununifidist/genesis.proto
+
+
+
+<a name="ununifi.ununifidist.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the ununifidist module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.ununifidist.Params) |  |  |
+| `previous_block_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `gov_denom` | [string](#string) |  | this line is used by starport scaffolding # genesis/proto/state |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="ununifidist/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ununifidist/query.proto
+
+
+
+<a name="ununifi.ununifidist.QueryGetBalancesRequest"></a>
+
+### QueryGetBalancesRequest
+
+
+
+
+
+
+
+<a name="ununifi.ununifidist.QueryGetBalancesResponse"></a>
+
+### QueryGetBalancesResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `balances` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.ununifidist.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+
+
+
+
+
+
+
+<a name="ununifi.ununifidist.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.ununifidist.Params) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.ununifidist.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#ununifi.ununifidist.QueryParamsRequest) | [QueryParamsResponse](#ununifi.ununifidist.QueryParamsResponse) |  | GET|/ununifi/ununifidist/params|
+| `Balances` | [QueryGetBalancesRequest](#ununifi.ununifidist.QueryGetBalancesRequest) | [QueryGetBalancesResponse](#ununifi.ununifidist.QueryGetBalancesResponse) | this line is used by starport scaffolding # 2 | GET|/ununifi/ununifidist/balances|
 
  <!-- end services -->
 

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # https://docs.buf.build/installation/
-# https://docs.buf.build/installation/
+# https://github.com/grpc-ecosystem/grpc-gateway#installation
+# Note: go version 16
+# go mod tidy
 # go install \
 #     github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
 #     github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
