@@ -7,7 +7,7 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
-	jpyxtypes "github.com/UnUniFi/chain/types"
+	ununifitypes "github.com/UnUniFi/chain/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -42,7 +42,7 @@ func TestClaimsValidate(t *testing.T) {
 			CdpMintingClaims{
 				{
 					BaseClaim: &BaseClaim{
-						Owner:  jpyxtypes.StringAccAddress(owner),
+						Owner:  ununifitypes.StringAccAddress(owner),
 						Reward: sdk.Coin{Denom: "", Amount: sdk.ZeroInt()},
 					},
 				},
@@ -54,7 +54,7 @@ func TestClaimsValidate(t *testing.T) {
 			CdpMintingClaims{
 				{
 					BaseClaim: &BaseClaim{
-						Owner:  jpyxtypes.StringAccAddress(owner),
+						Owner:  ununifitypes.StringAccAddress(owner),
 						Reward: sdk.NewCoin("bnb", sdk.OneInt()),
 					},
 					RewardIndexes: []RewardIndex{{"", sdk.ZeroDec()}},

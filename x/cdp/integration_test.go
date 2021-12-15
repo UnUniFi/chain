@@ -8,7 +8,7 @@ import (
 	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/UnUniFi/chain/app"
-	jpyxtypes "github.com/UnUniFi/chain/types"
+	ununifitypes "github.com/UnUniFi/chain/types"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
@@ -23,13 +23,13 @@ func NewPricefeedGenState(tApp app.TestApp, asset string, price sdk.Dec) app.Gen
 	pfGenesis := pricefeedtypes.GenesisState{
 		Params: pricefeedtypes.Params{
 			Markets: []pricefeedtypes.Market{
-				{MarketId: asset + ":jpy", BaseAsset: asset, QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
+				{MarketId: asset + ":jpy", BaseAsset: asset, QuoteAsset: "jpy", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
 			},
 		},
 		PostedPrices: []pricefeedtypes.PostedPrice{
 			{
 				MarketId:      asset + ":jpy",
-				OracleAddress: jpyxtypes.StringAccAddress(sdk.AccAddress{}),
+				OracleAddress: ununifitypes.StringAccAddress(sdk.AccAddress{}),
 				Price:         price,
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
@@ -88,20 +88,20 @@ func NewPricefeedGenStateMulti(tApp app.TestApp) app.GenesisState {
 	pfGenesis := pricefeedtypes.GenesisState{
 		Params: pricefeedtypes.Params{
 			Markets: []pricefeedtypes.Market{
-				{MarketId: "btc:jpy", BaseAsset: "btc", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
-				{MarketId: "xrp:jpy", BaseAsset: "xrp", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
+				{MarketId: "btc:jpy", BaseAsset: "btc", QuoteAsset: "jpy", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+				{MarketId: "xrp:jpy", BaseAsset: "xrp", QuoteAsset: "jpy", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
 			},
 		},
 		PostedPrices: []pricefeedtypes.PostedPrice{
 			{
 				MarketId:      "btc:jpy",
-				OracleAddress: jpyxtypes.StringAccAddress(sdk.AccAddress{}),
+				OracleAddress: ununifitypes.StringAccAddress(sdk.AccAddress{}),
 				Price:         sdk.MustNewDecFromStr("8000.00"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 			{
 				MarketId:      "xrp:jpy",
-				OracleAddress: jpyxtypes.StringAccAddress(sdk.AccAddress{}),
+				OracleAddress: ununifitypes.StringAccAddress(sdk.AccAddress{}),
 				Price:         sdk.MustNewDecFromStr("0.25"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},

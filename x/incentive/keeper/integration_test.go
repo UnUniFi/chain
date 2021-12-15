@@ -10,7 +10,7 @@ import (
 	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/UnUniFi/chain/app"
-	jpyxtypes "github.com/UnUniFi/chain/types"
+	ununifitypes "github.com/UnUniFi/chain/types"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
@@ -108,48 +108,48 @@ func NewPricefeedGenStateMulti(tApp app.TestApp) app.GenesisState {
 	pfGenesis := pricefeedtypes.GenesisState{
 		Params: pricefeedtypes.Params{
 			Markets: []pricefeedtypes.Market{
-				{MarketId: "kava:jpy", BaseAsset: "kava", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
-				{MarketId: "btc:jpy", BaseAsset: "btc", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
-				{MarketId: "xrp:jpy", BaseAsset: "xrp", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
-				{MarketId: "bnb:jpy", BaseAsset: "bnb", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
-				{MarketId: "bjpy:jpy", BaseAsset: "bjpy", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
-				{MarketId: "zzz:jpy", BaseAsset: "zzz", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
+				{MarketId: "kava:jpy", BaseAsset: "kava", QuoteAsset: "jpy", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+				{MarketId: "btc:jpy", BaseAsset: "btc", QuoteAsset: "jpy", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+				{MarketId: "xrp:jpy", BaseAsset: "xrp", QuoteAsset: "jpy", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+				{MarketId: "bnb:jpy", BaseAsset: "bnb", QuoteAsset: "jpy", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+				{MarketId: "bjpy:jpy", BaseAsset: "bjpy", QuoteAsset: "jpy", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+				{MarketId: "zzz:jpy", BaseAsset: "zzz", QuoteAsset: "jpy", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
 			},
 		},
 		PostedPrices: []pricefeedtypes.PostedPrice{
 			{
 				MarketId:      "kava:jpy",
-				OracleAddress: jpyxtypes.StringAccAddress{},
+				OracleAddress: ununifitypes.StringAccAddress{},
 				Price:         sdk.MustNewDecFromStr("2.00"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 			{
 				MarketId:      "btc:jpy",
-				OracleAddress: jpyxtypes.StringAccAddress{},
+				OracleAddress: ununifitypes.StringAccAddress{},
 				Price:         sdk.MustNewDecFromStr("8000.00"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 			{
 				MarketId:      "xrp:jpy",
-				OracleAddress: jpyxtypes.StringAccAddress{},
+				OracleAddress: ununifitypes.StringAccAddress{},
 				Price:         sdk.MustNewDecFromStr("0.25"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 			{
 				MarketId:      "bnb:jpy",
-				OracleAddress: jpyxtypes.StringAccAddress{},
+				OracleAddress: ununifitypes.StringAccAddress{},
 				Price:         sdk.MustNewDecFromStr("17.25"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 			{
 				MarketId:      "bjpy:jpy",
-				OracleAddress: jpyxtypes.StringAccAddress{},
+				OracleAddress: ununifitypes.StringAccAddress{},
 				Price:         sdk.OneDec(),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 			{
 				MarketId:      "zzz:jpy",
-				OracleAddress: jpyxtypes.StringAccAddress{},
+				OracleAddress: ununifitypes.StringAccAddress{},
 				Price:         sdk.MustNewDecFromStr("2.00"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},

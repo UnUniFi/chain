@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto"
 
-	jpyxtypes "github.com/UnUniFi/chain/types"
+	ununifitypes "github.com/UnUniFi/chain/types"
 )
 
 func TestGenesisStateValidate(t *testing.T) {
@@ -69,7 +69,7 @@ func TestGenesisStateValidate(t *testing.T) {
 				claims: CdpMintingClaims{
 					{
 						BaseClaim: &BaseClaim{
-							Owner:  jpyxtypes.StringAccAddress(sdk.AccAddress(crypto.AddressHash([]byte("KavaTestUser1")))),
+							Owner:  ununifitypes.StringAccAddress(sdk.AccAddress(crypto.AddressHash([]byte("KavaTestUser1")))),
 							Reward: sdk.NewCoin("ujcbn", sdk.NewInt(100000000)),
 						},
 						RewardIndexes: []RewardIndex{
@@ -112,7 +112,7 @@ func TestGenesisStateValidate(t *testing.T) {
 				claims: CdpMintingClaims{
 					{
 						BaseClaim: &BaseClaim{
-							Owner:  jpyxtypes.StringAccAddress(sdk.AccAddress{}),
+							Owner:  ununifitypes.StringAccAddress(sdk.AccAddress{}),
 							Reward: sdk.NewCoin("ujcbn", sdk.NewInt(100000000)),
 						},
 						RewardIndexes: []RewardIndex{
