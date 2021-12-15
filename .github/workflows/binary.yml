@@ -24,9 +24,9 @@ jobs:
 
       - run: |
           go mod download
-          cd cmd/jpyxd
+          cd cmd/ununifid
           go build .
       - uses: actions/upload-artifact@v2
         with:
-          name: jpyxd-${{ matrix.targetos }}-${{ matrix.arch }}
-          path: cmd/jpyxd/jpyxd
+          name: ununifid-${{ matrix.targetos }}-${{ matrix.arch }}
+          path: cmd/ununifid/ununifid

@@ -28,7 +28,7 @@ make install
 ## Setup genesis.json
 
 ```shell
-jpyxd init [moniker] --chain-id jpyx-1
+ununifid init [moniker] --chain-id jpyx-1
 cd /usr/local/src/github.com/UnUniFi/chain
 cp launch/genesis.json ~/.ununifid/config/genesis.json
 ```
@@ -43,7 +43,7 @@ jpyxcli config trust-node true
 ### Daemon service
 
 ```shell
-vi /etc/systemd/system/jpyxd.service
+vi /etc/systemd/system/ununifid.service
 ```
 
 ```txt
@@ -53,7 +53,7 @@ After=network-online.target
 
 [Service]
 User=root
-ExecStart=/root/go/bin/jpyxd start
+ExecStart=/root/go/bin/ununifid start
 Restart=always
 RestartSec=3
 LimitNOFILE=4096
@@ -63,7 +63,7 @@ WantedBy=multi-user.target
 ```
 
 ```shell
-systemctl enable jpyxd
+systemctl enable ununifid
 ```
 
 ### REST service

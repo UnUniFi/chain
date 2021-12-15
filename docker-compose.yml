@@ -1,8 +1,8 @@
 version: "3"
 
 services:
-  jpyxd:
-    container_name: jpyxd
+  ununifid:
+    container_name: ununifid
     image: ghcr.io/ununifi/ununifid
     # ports:
     #   - 1317:1317
@@ -11,6 +11,6 @@ services:
     #   - 26657:26657
     volumes:
       - ~/.ununifi:/root/.ununifi
-    command: jpyxd start
+    command: ununifid start
     network_mode: host
     restart: always

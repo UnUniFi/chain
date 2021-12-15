@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/UnUniFi/chain/app"
-	"github.com/UnUniFi/chain/cmd/jpyxd/cmd"
+	"github.com/UnUniFi/chain/cmd/ununifid/cmd"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 )
 

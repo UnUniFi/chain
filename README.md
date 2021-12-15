@@ -22,7 +22,7 @@ sudo systemctl restart docker
 ### Join network
 
 ```bash
-docker run -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid jpyxd init [moniker] --chain-id [chain-id]
+docker run -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid ununifid init [moniker] --chain-id [chain-id]
 mkdir jpyx
 cd jpyx
 curl -L https://raw.githubusercontent.com/UnUniFi/chain/main/launch/[chain-id]/genesis.json -o ~/.ununifi/config/genesis.json
@@ -57,14 +57,14 @@ make install
 ### Config daemon
 
 ```bash
-jpyxd init [moniker] --chain-id [chain-id]
+ununifid init [moniker] --chain-id [chain-id]
 cp launch/[chain-id]/genesis.json ~/.ununifi/config/genesis.json
 ```
 
 ### Register daemon service
 
 ```bash
-vi /etc/systemd/system/jpyxd.service
+vi /etc/systemd/system/ununifid.service
 ```
 
 ```txt
@@ -74,7 +74,7 @@ After=network-online.target
 
 [Service]
 User=root
-ExecStart=/root/go/bin/jpyxd start
+ExecStart=/root/go/bin/ununifid start
 Restart=always
 RestartSec=3
 LimitNOFILE=4096
@@ -84,7 +84,7 @@ WantedBy=multi-user.target
 ```
 
 ```bash
-systemctl enable jpyxd
+systemctl enable ununifid
 ```
 
 ## License
