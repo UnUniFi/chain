@@ -89,8 +89,8 @@ func (tApp TestApp) GetCDPKeeper() cdpkeeper.Keeper             { return tApp.cd
 func (tApp TestApp) GetPriceFeedKeeper() pricefeedkeeper.Keeper { return tApp.pricefeedKeeper }
 
 // func (tApp TestApp) GetBep3Keeper() bep3.Keeper                 { return tApp.bep3Keeper }
-func (tApp TestApp) GetBotanydistKeeper() ununifidistkeeper.Keeper { return tApp.ununifidistKeeper }
-func (tApp TestApp) GetIncentiveKeeper() incentivekeeper.Keeper    { return tApp.incentiveKeeper }
+func (tApp TestApp) GetUnunifidistKeeper() ununifidistkeeper.Keeper { return tApp.ununifidistKeeper }
+func (tApp TestApp) GetIncentiveKeeper() incentivekeeper.Keeper     { return tApp.incentiveKeeper }
 
 // func (tApp TestApp) GetHarvestKeeper() harvest.Keeper           { return tApp.harvestKeeper }
 // func (tApp TestApp) GetCommitteeKeeper() committee.Keeper       { return tApp.committeeKeeper }

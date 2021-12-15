@@ -22,9 +22,9 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKe
 	}
 
 	// check if the module account exists
-	moduleAcc := accountKeeper.GetModuleAccount(ctx, types.BotanydistMacc)
+	moduleAcc := accountKeeper.GetModuleAccount(ctx, types.UnunifidistMacc)
 	if moduleAcc == nil {
-		panic(fmt.Sprintf("%s module account has not been set", types.BotanydistMacc))
+		panic(fmt.Sprintf("%s module account has not been set", types.UnunifidistMacc))
 	}
 
 	k.SetGovDenom(ctx, gs.GovDenom)

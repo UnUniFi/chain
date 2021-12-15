@@ -58,7 +58,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	)
 	// keeper := tApp.GetKavadistKeeper()
 	// sk := tApp.GetSupplyKeeper()
-	keeper := tApp.GetBotanydistKeeper()
+	keeper := tApp.GetUnunifidistKeeper()
 	sk := tApp.GetBankKeeper()
 	suite.app = tApp
 	suite.ctx = ctx

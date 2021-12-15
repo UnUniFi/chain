@@ -17,7 +17,7 @@ func (k Keeper) Balances(c context.Context, req *types.QueryGetBalancesRequest) 
 	var balances sdk.Coins
 	ctx := sdk.UnwrapSDKContext(c)
 
-	acc := k.accountKeeper.GetModuleAccount(ctx, types.BotanydistMacc)
+	acc := k.accountKeeper.GetModuleAccount(ctx, types.UnunifidistMacc)
 	balances = k.bankKeeper.GetAllBalances(ctx, acc.GetAddress())
 
 	return &types.QueryGetBalancesResponse{Balances: balances}, nil

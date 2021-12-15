@@ -2729,7 +2729,7 @@ paths:
         - Query
   /ununifi/ununifidist/params:
     get:
-      operationId: BotanydistParams
+      operationId: UnunifidistParams
       responses:
         '200':
           description: A successful response.

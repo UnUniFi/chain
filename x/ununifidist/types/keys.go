@@ -16,8 +16,8 @@ const (
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_capability"
 
-	// BotanydistMacc module account for ununifidist
-	BotanydistMacc = ModuleName
+	// UnunifidistMacc module account for ununifidist
+	UnunifidistMacc = ModuleName
 )
 
 func KeyPrefix(p string) []byte {

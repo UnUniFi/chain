@@ -198,7 +198,7 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 					return 0, err
 				}
 				i -= size
-				i = encodeVarintBotanydist(dAtA, i, uint64(size))
+				i = encodeVarintUnunifidist(dAtA, i, uint64(size))
 			}
 			i--
 			dAtA[i] = 0x12
@@ -243,7 +243,7 @@ func (m *Period) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		if _, err := m.Inflation.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
-		i = encodeVarintBotanydist(dAtA, i, uint64(size))
+		i = encodeVarintUnunifidist(dAtA, i, uint64(size))
 	}
 	i--
 	dAtA[i] = 0x5a
@@ -252,7 +252,7 @@ func (m *Period) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		return 0, err1
 	}
 	i -= n1
-	i = encodeVarintBotanydist(dAtA, i, uint64(n1))
+	i = encodeVarintUnunifidist(dAtA, i, uint64(n1))
 	i--
 	dAtA[i] = 0x12
 	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.Start, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.Start):])
@@ -260,14 +260,14 @@ func (m *Period) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		return 0, err2
 	}
 	i -= n2
-	i = encodeVarintBotanydist(dAtA, i, uint64(n2))
+	i = encodeVarintUnunifidist(dAtA, i, uint64(n2))
 	i--
 	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
-func encodeVarintBotanydist(dAtA []byte, offset int, v uint64) int {
-	offset -= sovBotanydist(v)
+func encodeVarintUnunifidist(dAtA []byte, offset int, v uint64) int {
+	offset -= sovUnunifidist(v)
 	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
@@ -289,7 +289,7 @@ func (m *Params) Size() (n int) {
 	if len(m.Periods) > 0 {
 		for _, e := range m.Periods {
 			l = e.Size()
-			n += 1 + l + sovBotanydist(uint64(l))
+			n += 1 + l + sovUnunifidist(uint64(l))
 		}
 	}
 	return n
@@ -302,19 +302,19 @@ func (m *Period) Size() (n int) {
 	var l int
 	_ = l
 	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.Start)
-	n += 1 + l + sovBotanydist(uint64(l))
+	n += 1 + l + sovUnunifidist(uint64(l))
 	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.End)
-	n += 1 + l + sovBotanydist(uint64(l))
+	n += 1 + l + sovUnunifidist(uint64(l))
 	l = m.Inflation.Size()
-	n += 1 + l + sovBotanydist(uint64(l))
+	n += 1 + l + sovUnunifidist(uint64(l))
 	return n
 }
 
-func sovBotanydist(x uint64) (n int) {
+func sovUnunifidist(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-func sozBotanydist(x uint64) (n int) {
-	return sovBotanydist(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+func sozUnunifidist(x uint64) (n int) {
+	return sovUnunifidist(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
 func (m *Params) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -324,7 +324,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 		var wire uint64
 		for shift := uint(0); ; shift += 7 {
 			if shift >= 64 {
-				return ErrIntOverflowBotanydist
+				return ErrIntOverflowUnunifidist
 			}
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
@@ -352,7 +352,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			var v int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
-					return ErrIntOverflowBotanydist
+					return ErrIntOverflowUnunifidist
 				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
@@ -372,7 +372,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
-					return ErrIntOverflowBotanydist
+					return ErrIntOverflowUnunifidist
 				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
@@ -385,11 +385,11 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				}
 			}
 			if msglen < 0 {
-				return ErrInvalidLengthBotanydist
+				return ErrInvalidLengthUnunifidist
 			}
 			postIndex := iNdEx + msglen
 			if postIndex < 0 {
-				return ErrInvalidLengthBotanydist
+				return ErrInvalidLengthUnunifidist
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
@@ -401,12 +401,12 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
-			skippy, err := skipBotanydist(dAtA[iNdEx:])
+			skippy, err := skipUnunifidist(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
 			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthBotanydist
+				return ErrInvalidLengthUnunifidist
 			}
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
@@ -428,7 +428,7 @@ func (m *Period) Unmarshal(dAtA []byte) error {
 		var wire uint64
 		for shift := uint(0); ; shift += 7 {
 			if shift >= 64 {
-				return ErrIntOverflowBotanydist
+				return ErrIntOverflowUnunifidist
 			}
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
@@ -456,7 +456,7 @@ func (m *Period) Unmarshal(dAtA []byte) error {
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
-					return ErrIntOverflowBotanydist
+					return ErrIntOverflowUnunifidist
 				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
@@ -469,11 +469,11 @@ func (m *Period) Unmarshal(dAtA []byte) error {
 				}
 			}
 			if msglen < 0 {
-				return ErrInvalidLengthBotanydist
+				return ErrInvalidLengthUnunifidist
 			}
 			postIndex := iNdEx + msglen
 			if postIndex < 0 {
-				return ErrInvalidLengthBotanydist
+				return ErrInvalidLengthUnunifidist
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
@@ -489,7 +489,7 @@ func (m *Period) Unmarshal(dAtA []byte) error {
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
-					return ErrIntOverflowBotanydist
+					return ErrIntOverflowUnunifidist
 				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
@@ -502,11 +502,11 @@ func (m *Period) Unmarshal(dAtA []byte) error {
 				}
 			}
 			if msglen < 0 {
-				return ErrInvalidLengthBotanydist
+				return ErrInvalidLengthUnunifidist
 			}
 			postIndex := iNdEx + msglen
 			if postIndex < 0 {
-				return ErrInvalidLengthBotanydist
+				return ErrInvalidLengthUnunifidist
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
@@ -522,7 +522,7 @@ func (m *Period) Unmarshal(dAtA []byte) error {
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
-					return ErrIntOverflowBotanydist
+					return ErrIntOverflowUnunifidist
 				}
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
@@ -536,11 +536,11 @@ func (m *Period) Unmarshal(dAtA []byte) error {
 			}
 			intStringLen := int(stringLen)
 			if intStringLen < 0 {
-				return ErrInvalidLengthBotanydist
+				return ErrInvalidLengthUnunifidist
 			}
 			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
-				return ErrInvalidLengthBotanydist
+				return ErrInvalidLengthUnunifidist
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
@@ -551,12 +551,12 @@ func (m *Period) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
-			skippy, err := skipBotanydist(dAtA[iNdEx:])
+			skippy, err := skipUnunifidist(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
 			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthBotanydist
+				return ErrInvalidLengthUnunifidist
 			}
 			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
@@ -570,7 +570,7 @@ func (m *Period) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func skipBotanydist(dAtA []byte) (n int, err error) {
+func skipUnunifidist(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0
 	depth := 0
@@ -578,7 +578,7 @@ func skipBotanydist(dAtA []byte) (n int, err error) {
 		var wire uint64
 		for shift := uint(0); ; shift += 7 {
 			if shift >= 64 {
-				return 0, ErrIntOverflowBotanydist
+				return 0, ErrIntOverflowUnunifidist
 			}
 			if iNdEx >= l {
 				return 0, io.ErrUnexpectedEOF
@@ -595,7 +595,7 @@ func skipBotanydist(dAtA []byte) (n int, err error) {
 		case 0:
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
-					return 0, ErrIntOverflowBotanydist
+					return 0, ErrIntOverflowUnunifidist
 				}
 				if iNdEx >= l {
 					return 0, io.ErrUnexpectedEOF
@@ -611,7 +611,7 @@ func skipBotanydist(dAtA []byte) (n int, err error) {
 			var length int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
-					return 0, ErrIntOverflowBotanydist
+					return 0, ErrIntOverflowUnunifidist
 				}
 				if iNdEx >= l {
 					return 0, io.ErrUnexpectedEOF
@@ -624,14 +624,14 @@ func skipBotanydist(dAtA []byte) (n int, err error) {
 				}
 			}
 			if length < 0 {
-				return 0, ErrInvalidLengthBotanydist
+				return 0, ErrInvalidLengthUnunifidist
 			}
 			iNdEx += length
 		case 3:
 			depth++
 		case 4:
 			if depth == 0 {
-				return 0, ErrUnexpectedEndOfGroupBotanydist
+				return 0, ErrUnexpectedEndOfGroupUnunifidist
 			}
 			depth--
 		case 5:
@@ -640,7 +640,7 @@ func skipBotanydist(dAtA []byte) (n int, err error) {
 			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
 		}
 		if iNdEx < 0 {
-			return 0, ErrInvalidLengthBotanydist
+			return 0, ErrInvalidLengthUnunifidist
 		}
 		if depth == 0 {
 			return iNdEx, nil
@@ -650,7 +650,7 @@ func skipBotanydist(dAtA []byte) (n int, err error) {
 }
 
 var (
-	ErrInvalidLengthBotanydist        = fmt.Errorf("proto: negative length found during unmarshaling")
-	ErrIntOverflowBotanydist          = fmt.Errorf("proto: integer overflow")
-	ErrUnexpectedEndOfGroupBotanydist = fmt.Errorf("proto: unexpected end of group")
+	ErrInvalidLengthUnunifidist        = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowUnunifidist          = fmt.Errorf("proto: integer overflow")
+	ErrUnexpectedEndOfGroupUnunifidist = fmt.Errorf("proto: unexpected end of group")
 )
