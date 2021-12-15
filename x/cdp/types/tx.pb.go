@@ -6,7 +6,7 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	github_com_lcnem_jpyx_types "github.com/UnUniFi/chain/types"
+	github_com_ununifi_chain_types "github.com/UnUniFi/chain/types"
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
@@ -32,10 +32,10 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type MsgCreateCdp struct {
-	Sender         github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"sender" yaml:"sender"`
-	Collateral     types.Coin                                   `protobuf:"bytes,2,opt,name=collateral,proto3" json:"collateral" yaml:"collateral"`
-	Principal      types.Coin                                   `protobuf:"bytes,3,opt,name=principal,proto3" json:"principal" yaml:"principal"`
-	CollateralType string                                       `protobuf:"bytes,4,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
+	Sender         github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"sender" yaml:"sender"`
+	Collateral     types.Coin                                      `protobuf:"bytes,2,opt,name=collateral,proto3" json:"collateral" yaml:"collateral"`
+	Principal      types.Coin                                      `protobuf:"bytes,3,opt,name=principal,proto3" json:"principal" yaml:"principal"`
+	CollateralType string                                          `protobuf:"bytes,4,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
 }
 
 func (m *MsgCreateCdp) Reset()         { *m = MsgCreateCdp{} }
@@ -129,10 +129,10 @@ func (m *MsgCreateCdpResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgCreateCdpResponse proto.InternalMessageInfo
 
 type MsgDeposit struct {
-	Depositor      github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,1,opt,name=depositor,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"depositor" yaml:"depositor"`
-	Owner          github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,2,opt,name=owner,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"owner" yaml:"owner"`
-	Collateral     types.Coin                                   `protobuf:"bytes,3,opt,name=collateral,proto3" json:"collateral" yaml:"collateral"`
-	CollateralType string                                       `protobuf:"bytes,4,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
+	Depositor      github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=depositor,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"depositor" yaml:"depositor"`
+	Owner          github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,2,opt,name=owner,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"owner" yaml:"owner"`
+	Collateral     types.Coin                                      `protobuf:"bytes,3,opt,name=collateral,proto3" json:"collateral" yaml:"collateral"`
+	CollateralType string                                          `protobuf:"bytes,4,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
 }
 
 func (m *MsgDeposit) Reset()         { *m = MsgDeposit{} }
@@ -219,10 +219,10 @@ func (m *MsgDepositResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgDepositResponse proto.InternalMessageInfo
 
 type MsgWithdraw struct {
-	Depositor      github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,1,opt,name=depositor,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"depositor" yaml:"depositor"`
-	Owner          github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,2,opt,name=owner,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"owner" yaml:"owner"`
-	Collateral     types.Coin                                   `protobuf:"bytes,3,opt,name=collateral,proto3" json:"collateral" yaml:"collateral"`
-	CollateralType string                                       `protobuf:"bytes,4,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
+	Depositor      github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=depositor,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"depositor" yaml:"depositor"`
+	Owner          github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,2,opt,name=owner,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"owner" yaml:"owner"`
+	Collateral     types.Coin                                      `protobuf:"bytes,3,opt,name=collateral,proto3" json:"collateral" yaml:"collateral"`
+	CollateralType string                                          `protobuf:"bytes,4,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
 }
 
 func (m *MsgWithdraw) Reset()         { *m = MsgWithdraw{} }
@@ -309,9 +309,9 @@ func (m *MsgWithdrawResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgWithdrawResponse proto.InternalMessageInfo
 
 type MsgDrawDebt struct {
-	Sender         github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"sender" yaml:"sender"`
-	CollateralType string                                       `protobuf:"bytes,2,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
-	Principal      types.Coin                                   `protobuf:"bytes,3,opt,name=principal,proto3" json:"principal" yaml:"principal"`
+	Sender         github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"sender" yaml:"sender"`
+	CollateralType string                                          `protobuf:"bytes,2,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
+	Principal      types.Coin                                      `protobuf:"bytes,3,opt,name=principal,proto3" json:"principal" yaml:"principal"`
 }
 
 func (m *MsgDrawDebt) Reset()         { *m = MsgDrawDebt{} }
@@ -398,9 +398,9 @@ func (m *MsgDrawDebtResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgDrawDebtResponse proto.InternalMessageInfo
 
 type MsgRepayDebt struct {
-	Sender         github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"sender" yaml:"sender"`
-	CollateralType string                                       `protobuf:"bytes,2,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
-	Payment        types.Coin                                   `protobuf:"bytes,3,opt,name=payment,proto3" json:"payment" yaml:"payment"`
+	Sender         github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"sender" yaml:"sender"`
+	CollateralType string                                          `protobuf:"bytes,2,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
+	Payment        types.Coin                                      `protobuf:"bytes,3,opt,name=payment,proto3" json:"payment" yaml:"payment"`
 }
 
 func (m *MsgRepayDebt) Reset()         { *m = MsgRepayDebt{} }
@@ -487,9 +487,9 @@ func (m *MsgRepayDebtResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgRepayDebtResponse proto.InternalMessageInfo
 
 type MsgLiquidate struct {
-	Keeper         github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,1,opt,name=keeper,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"keeper" yaml:"keeper"`
-	Borrower       github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,2,opt,name=borrower,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"borrower" yaml:"borrower"`
-	CollateralType string                                       `protobuf:"bytes,3,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
+	Keeper         github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=keeper,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"keeper" yaml:"keeper"`
+	Borrower       github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,2,opt,name=borrower,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"borrower" yaml:"borrower"`
+	CollateralType string                                          `protobuf:"bytes,3,opt,name=collateral_type,json=collateralType,proto3" json:"collateral_type,omitempty" yaml:"collateral_type"`
 }
 
 func (m *MsgLiquidate) Reset()         { *m = MsgLiquidate{} }

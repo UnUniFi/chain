@@ -6,7 +6,7 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	github_com_lcnem_jpyx_types "github.com/UnUniFi/chain/types"
+	github_com_ununifi_chain_types "github.com/UnUniFi/chain/types"
 	query "github.com/cosmos/cosmos-sdk/types/query"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
@@ -261,8 +261,8 @@ func (m *QueryAllOracleRequest) GetPagination() *query.PageRequest {
 }
 
 type QueryAllOracleResponse struct {
-	Oracles    []github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,1,rep,name=oracles,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"oracles"`
-	Pagination *query.PageResponse                            `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	Oracles    []github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,1,rep,name=oracles,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"oracles"`
+	Pagination *query.PageResponse                               `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
 func (m *QueryAllOracleResponse) Reset()         { *m = QueryAllOracleResponse{} }
@@ -2112,7 +2112,7 @@ func (m *QueryAllOracleResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			var v github_com_lcnem_jpyx_types.StringAccAddress
+			var v github_com_ununifi_chain_types.StringAccAddress
 			m.Oracles = append(m.Oracles, v)
 			if err := m.Oracles[len(m.Oracles)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err

@@ -5,7 +5,7 @@ package types
 
 import (
 	fmt "fmt"
-	github_com_lcnem_jpyx_types "github.com/UnUniFi/chain/types"
+	github_com_ununifi_chain_types "github.com/UnUniFi/chain/types"
 	_ "github.com/cosmos/cosmos-sdk/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
@@ -31,11 +31,11 @@ var _ = time.Kitchen
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type Market struct {
-	MarketId   string                                         `protobuf:"bytes,1,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty" yaml:"market_id"`
-	BaseAsset  string                                         `protobuf:"bytes,2,opt,name=base_asset,json=baseAsset,proto3" json:"base_asset,omitempty" yaml:"base_asset"`
-	QuoteAsset string                                         `protobuf:"bytes,3,opt,name=quote_asset,json=quoteAsset,proto3" json:"quote_asset,omitempty" yaml:"quote_asset"`
-	Oracles    []github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,4,rep,name=oracles,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"oracles" yaml:"oracles"`
-	Active     bool                                           `protobuf:"varint,5,opt,name=active,proto3" json:"active,omitempty" yaml:"active"`
+	MarketId   string                                            `protobuf:"bytes,1,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty" yaml:"market_id"`
+	BaseAsset  string                                            `protobuf:"bytes,2,opt,name=base_asset,json=baseAsset,proto3" json:"base_asset,omitempty" yaml:"base_asset"`
+	QuoteAsset string                                            `protobuf:"bytes,3,opt,name=quote_asset,json=quoteAsset,proto3" json:"quote_asset,omitempty" yaml:"quote_asset"`
+	Oracles    []github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,4,rep,name=oracles,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"oracles" yaml:"oracles"`
+	Active     bool                                              `protobuf:"varint,5,opt,name=active,proto3" json:"active,omitempty" yaml:"active"`
 }
 
 func (m *Market) Reset()         { *m = Market{} }
@@ -145,10 +145,10 @@ func (m *CurrentPrice) GetMarketId() string {
 }
 
 type PostedPrice struct {
-	MarketId      string                                       `protobuf:"bytes,1,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty" yaml:"market_id"`
-	OracleAddress github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,2,opt,name=oracle_address,json=oracleAddress,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"oracle_address" yaml:"oracle_address"`
-	Price         github_com_cosmos_cosmos_sdk_types.Dec       `protobuf:"bytes,3,opt,name=price,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"price" yaml:"price"`
-	Expiry        time.Time                                    `protobuf:"bytes,4,opt,name=expiry,proto3,stdtime" json:"expiry" yaml:"expiry"`
+	MarketId      string                                          `protobuf:"bytes,1,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty" yaml:"market_id"`
+	OracleAddress github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,2,opt,name=oracle_address,json=oracleAddress,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"oracle_address" yaml:"oracle_address"`
+	Price         github_com_cosmos_cosmos_sdk_types.Dec          `protobuf:"bytes,3,opt,name=price,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"price" yaml:"price"`
+	Expiry        time.Time                                       `protobuf:"bytes,4,opt,name=expiry,proto3,stdtime" json:"expiry" yaml:"expiry"`
 }
 
 func (m *PostedPrice) Reset()         { *m = PostedPrice{} }
@@ -744,7 +744,7 @@ func (m *Market) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			var v github_com_lcnem_jpyx_types.StringAccAddress
+			var v github_com_ununifi_chain_types.StringAccAddress
 			m.Oracles = append(m.Oracles, v)
 			if err := m.Oracles[len(m.Oracles)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err

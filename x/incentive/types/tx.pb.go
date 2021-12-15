@@ -6,7 +6,7 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	github_com_lcnem_jpyx_types "github.com/UnUniFi/chain/types"
+	github_com_ununifi_chain_types "github.com/UnUniFi/chain/types"
 	_ "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
@@ -32,8 +32,8 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type MsgClaimCdpMintingReward struct {
-	Sender         github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"sender" yaml:"sender"`
-	MultiplierName string                                       `protobuf:"bytes,2,opt,name=multiplier_name,json=multiplierName,proto3" json:"multiplier_name,omitempty" yaml:"multiplier_name"`
+	Sender         github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"sender" yaml:"sender"`
+	MultiplierName string                                          `protobuf:"bytes,2,opt,name=multiplier_name,json=multiplierName,proto3" json:"multiplier_name,omitempty" yaml:"multiplier_name"`
 }
 
 func (m *MsgClaimCdpMintingReward) Reset()         { *m = MsgClaimCdpMintingReward{} }

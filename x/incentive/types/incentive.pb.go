@@ -5,7 +5,7 @@ package types
 
 import (
 	fmt "fmt"
-	github_com_lcnem_jpyx_types "github.com/UnUniFi/chain/types"
+	github_com_ununifi_chain_types "github.com/UnUniFi/chain/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
@@ -31,8 +31,8 @@ var _ = time.Kitchen
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type BaseClaim struct {
-	Owner  github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,1,opt,name=owner,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"owner" yaml:"owner"`
-	Reward types.Coin                                   `protobuf:"bytes,2,opt,name=reward,proto3" json:"reward" yaml:"reward"`
+	Owner  github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=owner,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"owner" yaml:"owner"`
+	Reward types.Coin                                      `protobuf:"bytes,2,opt,name=reward,proto3" json:"reward" yaml:"reward"`
 }
 
 func (m *BaseClaim) Reset()         { *m = BaseClaim{} }
@@ -76,8 +76,8 @@ func (m *BaseClaim) GetReward() types.Coin {
 }
 
 type BaseMultiClaim struct {
-	Owner  github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,1,opt,name=owner,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"owner" yaml:"owner"`
-	Reward []types.Coin                                 `protobuf:"bytes,2,rep,name=reward,proto3" json:"reward" yaml:"rewards"`
+	Owner  github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=owner,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"owner" yaml:"owner"`
+	Reward []types.Coin                                    `protobuf:"bytes,2,rep,name=reward,proto3" json:"reward" yaml:"rewards"`
 }
 
 func (m *BaseMultiClaim) Reset()         { *m = BaseMultiClaim{} }

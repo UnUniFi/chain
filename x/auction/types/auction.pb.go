@@ -5,7 +5,7 @@ package types
 
 import (
 	fmt "fmt"
-	github_com_lcnem_jpyx_types "github.com/UnUniFi/chain/types"
+	github_com_ununifi_chain_types "github.com/UnUniFi/chain/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
@@ -32,14 +32,14 @@ var _ = time.Kitchen
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type BaseAuction struct {
-	Id              uint64                                       `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty" yaml:"id"`
-	Initiator       string                                       `protobuf:"bytes,2,opt,name=initiator,proto3" json:"initiator,omitempty" yaml:"initiator"`
-	Lot             types.Coin                                   `protobuf:"bytes,3,opt,name=lot,proto3" json:"lot" yaml:"lot"`
-	Bidder          github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,4,opt,name=bidder,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"bidder" yaml:"bidder"`
-	Bid             types.Coin                                   `protobuf:"bytes,5,opt,name=bid,proto3" json:"bid" yaml:"bid"`
-	HasReceivedBids bool                                         `protobuf:"varint,6,opt,name=has_received_bids,json=hasReceivedBids,proto3" json:"has_received_bids,omitempty" yaml:"has_reeceived_bids"`
-	EndTime         time.Time                                    `protobuf:"bytes,7,opt,name=end_time,json=endTime,proto3,stdtime" json:"end_time" yaml:"end_time"`
-	MaxEndTime      time.Time                                    `protobuf:"bytes,8,opt,name=max_end_time,json=maxEndTime,proto3,stdtime" json:"max_end_time" yaml:"max_end_time"`
+	Id              uint64                                          `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty" yaml:"id"`
+	Initiator       string                                          `protobuf:"bytes,2,opt,name=initiator,proto3" json:"initiator,omitempty" yaml:"initiator"`
+	Lot             types.Coin                                      `protobuf:"bytes,3,opt,name=lot,proto3" json:"lot" yaml:"lot"`
+	Bidder          github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,4,opt,name=bidder,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"bidder" yaml:"bidder"`
+	Bid             types.Coin                                      `protobuf:"bytes,5,opt,name=bid,proto3" json:"bid" yaml:"bid"`
+	HasReceivedBids bool                                            `protobuf:"varint,6,opt,name=has_received_bids,json=hasReceivedBids,proto3" json:"has_received_bids,omitempty" yaml:"has_reeceived_bids"`
+	EndTime         time.Time                                       `protobuf:"bytes,7,opt,name=end_time,json=endTime,proto3,stdtime" json:"end_time" yaml:"end_time"`
+	MaxEndTime      time.Time                                       `protobuf:"bytes,8,opt,name=max_end_time,json=maxEndTime,proto3,stdtime" json:"max_end_time" yaml:"max_end_time"`
 }
 
 func (m *BaseAuction) Reset()         { *m = BaseAuction{} }
@@ -268,8 +268,8 @@ func (m *CollateralAuction) GetLotReturns() WeightedAddresses {
 }
 
 type WeightedAddress struct {
-	Address github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,1,opt,name=address,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"address" yaml:"address"`
-	Weight  github_com_cosmos_cosmos_sdk_types.Int       `protobuf:"bytes,2,opt,name=weight,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"weight" yaml:"weight"`
+	Address github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=address,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"address" yaml:"address"`
+	Weight  github_com_cosmos_cosmos_sdk_types.Int          `protobuf:"bytes,2,opt,name=weight,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"weight" yaml:"weight"`
 }
 
 func (m *WeightedAddress) Reset()         { *m = WeightedAddress{} }

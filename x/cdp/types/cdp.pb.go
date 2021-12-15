@@ -5,7 +5,7 @@ package types
 
 import (
 	fmt "fmt"
-	github_com_lcnem_jpyx_types "github.com/UnUniFi/chain/types"
+	github_com_ununifi_chain_types "github.com/UnUniFi/chain/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
@@ -31,14 +31,14 @@ var _ = time.Kitchen
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type Cdp struct {
-	Id              uint64                                       `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty" yaml:"id"`
-	Owner           github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,2,opt,name=owner,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"owner" yaml:"owner"`
-	Type            string                                       `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty" yaml:"type"`
-	Collateral      types.Coin                                   `protobuf:"bytes,4,opt,name=collateral,proto3" json:"collateral" yaml:"collateral"`
-	Principal       types.Coin                                   `protobuf:"bytes,5,opt,name=principal,proto3" json:"principal" yaml:"principal"`
-	AccumulatedFees types.Coin                                   `protobuf:"bytes,6,opt,name=accumulated_fees,json=accumulatedFees,proto3" json:"accumulated_fees" yaml:"accumulated_fees"`
-	FeesUpdated     time.Time                                    `protobuf:"bytes,7,opt,name=fees_updated,json=feesUpdated,proto3,stdtime" json:"fees_updated" yaml:"fees_updated"`
-	InterestFactor  github_com_cosmos_cosmos_sdk_types.Dec       `protobuf:"bytes,8,opt,name=interest_factor,json=interestFactor,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"interest_factor" yaml:"interest_factor"`
+	Id              uint64                                          `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty" yaml:"id"`
+	Owner           github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,2,opt,name=owner,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"owner" yaml:"owner"`
+	Type            string                                          `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty" yaml:"type"`
+	Collateral      types.Coin                                      `protobuf:"bytes,4,opt,name=collateral,proto3" json:"collateral" yaml:"collateral"`
+	Principal       types.Coin                                      `protobuf:"bytes,5,opt,name=principal,proto3" json:"principal" yaml:"principal"`
+	AccumulatedFees types.Coin                                      `protobuf:"bytes,6,opt,name=accumulated_fees,json=accumulatedFees,proto3" json:"accumulated_fees" yaml:"accumulated_fees"`
+	FeesUpdated     time.Time                                       `protobuf:"bytes,7,opt,name=fees_updated,json=feesUpdated,proto3,stdtime" json:"fees_updated" yaml:"fees_updated"`
+	InterestFactor  github_com_cosmos_cosmos_sdk_types.Dec          `protobuf:"bytes,8,opt,name=interest_factor,json=interestFactor,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"interest_factor" yaml:"interest_factor"`
 }
 
 func (m *Cdp) Reset()         { *m = Cdp{} }
@@ -117,9 +117,9 @@ func (m *Cdp) GetFeesUpdated() time.Time {
 }
 
 type Deposit struct {
-	CdpId     uint64                                       `protobuf:"varint,1,opt,name=cdp_id,json=cdpId,proto3" json:"cdp_id,omitempty" yaml:"cdp_id"`
-	Depositor github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,2,opt,name=depositor,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"depositor" yaml:"depositor"`
-	Amount    types.Coin                                   `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount" yaml:"amount"`
+	CdpId     uint64                                          `protobuf:"varint,1,opt,name=cdp_id,json=cdpId,proto3" json:"cdp_id,omitempty" yaml:"cdp_id"`
+	Depositor github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,2,opt,name=depositor,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"depositor" yaml:"depositor"`
+	Amount    types.Coin                                      `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount" yaml:"amount"`
 }
 
 func (m *Deposit) Reset()         { *m = Deposit{} }

@@ -6,7 +6,7 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	github_com_lcnem_jpyx_types "github.com/UnUniFi/chain/types"
+	github_com_ununifi_chain_types "github.com/UnUniFi/chain/types"
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
@@ -33,9 +33,9 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type MsgPlaceBid struct {
-	AuctionId uint64                                       `protobuf:"varint,1,opt,name=auction_id,json=auctionId,proto3" json:"auction_id,omitempty" yaml:"auction_id"`
-	Bidder    github_com_lcnem_jpyx_types.StringAccAddress `protobuf:"bytes,2,opt,name=bidder,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"bidder" yaml:"bidder"`
-	Amount    types.Coin                                   `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount" yaml:"amount"`
+	AuctionId uint64                                          `protobuf:"varint,1,opt,name=auction_id,json=auctionId,proto3" json:"auction_id,omitempty" yaml:"auction_id"`
+	Bidder    github_com_ununifi_chain_types.StringAccAddress `protobuf:"bytes,2,opt,name=bidder,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"bidder" yaml:"bidder"`
+	Amount    types.Coin                                      `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount" yaml:"amount"`
 }
 
 func (m *MsgPlaceBid) Reset()         { *m = MsgPlaceBid{} }
