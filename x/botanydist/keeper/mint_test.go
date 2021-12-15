@@ -42,7 +42,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	// app.SetBech32AddressPrefixes(config)
 	tApp := app.NewTestApp()
 	_, addrs := app.GeneratePrivKeyAddressPairs(1)
-	coins := []sdk.Coins{sdk.NewCoins(sdk.NewCoin("ujcbn", sdk.NewInt(1000000000000)))}
+	coins := []sdk.Coins{sdk.NewCoins(sdk.NewCoin("uguu", sdk.NewInt(1000000000000)))}
 	authGS := app.NewAuthGenState(
 		tApp, addrs, coins)
 

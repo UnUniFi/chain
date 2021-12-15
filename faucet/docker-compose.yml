@@ -12,8 +12,8 @@ services:
     #   - 7000:7000
     network_mode: host
     restart: always
-  faucet-ujcbn:
-    container_name: faucet-ujcbn
+  faucet-uguu:
+    container_name: faucet-uguu
     image: ghcr.io/tendermint/faucet
     volumes:
       - ~/faucet/ununifid:/usr/local/bin/ununifid

@@ -166,7 +166,7 @@ func NewHardGenStateMulti() app.GenesisState {
 	hardGS := hard.NewGenesisState(hard.NewParams(
 		hard.MoneyMarkets{
 			hard.NewMoneyMarket("jpu", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "jpu:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
-			hard.NewMoneyMarket("ujcbn", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "kava:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
+			hard.NewMoneyMarket("uguu", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "kava:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
 			hard.NewMoneyMarket("bnb", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "bnb:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
 			hard.NewMoneyMarket("btcb", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "btc:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
 			hard.NewMoneyMarket("xrp", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "xrp:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
@@ -191,7 +191,7 @@ func NewAuthGenState(tApp app.TestApp, addresses []sdk.AccAddress, coins sdk.Coi
 	if len(addresses) >= 4 {
 		coinsList[3] = sdk.NewCoins(
 			sdk.NewCoin("bnb", sdk.NewInt(1000000000000000)),
-			sdk.NewCoin("ujcbn", sdk.NewInt(1000000000000000)),
+			sdk.NewCoin("uguu", sdk.NewInt(1000000000000000)),
 			sdk.NewCoin("btcb", sdk.NewInt(1000000000000000)),
 			sdk.NewCoin("xrp", sdk.NewInt(1000000000000000)),
 			sdk.NewCoin("zzz", sdk.NewInt(1000000000000000)),
@@ -203,7 +203,7 @@ func NewAuthGenState(tApp app.TestApp, addresses []sdk.AccAddress, coins sdk.Coi
 
 func NewStakingGenesisState(tApp app.TestApp) app.GenesisState {
 	genState := stakingtypes.DefaultGenesisState()
-	genState.Params.BondDenom = "ujcbn"
+	genState.Params.BondDenom = "uguu"
 	return app.GenesisState{
 		stakingtypes.ModuleName: tApp.AppCodec().MustMarshalJSON(genState),
 	}
@@ -220,7 +220,7 @@ func (suite *KeeperTestSuite) SetupWithGenState() {
 	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
 
 	tApp.InitializeFromGenesisStates(
-		NewAuthGenState(tApp, allAddrs, cs(c("ujcbn", 5_000_000))),
+		NewAuthGenState(tApp, allAddrs, cs(c("uguu", 5_000_000))),
 		NewStakingGenesisState(tApp),
 		NewPricefeedGenStateMulti(tApp),
 		NewCDPGenStateMulti(tApp),
