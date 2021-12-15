@@ -5,6 +5,8 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/UnUniFi/chain/x/pricefeed/types"
+
+	ununifitypes "github.com/UnUniFi/chain/types"
 )
 
 func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {

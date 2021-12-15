@@ -7,6 +7,8 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	ununifitypes "github.com/UnUniFi/chain/types"
 )
 
 // NewMarket returns a new Market
