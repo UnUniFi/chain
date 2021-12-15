@@ -34,7 +34,7 @@
       "url": "./tmp-swagger-gen/ununifidist/query.swagger.json",
       "operationIds": {
         "rename": {
-          "Params": "BotanydistParams"
+          "Params": "UnunifidistParams"
         }
       }
     },
