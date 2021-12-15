@@ -30,7 +30,7 @@ make install
 ```shell
 jpyxd init [moniker] --chain-id jpyx-1
 cd /usr/local/src/github.com/UnUniFi/chain
-cp launch/genesis.json ~/.jpyxd/config/genesis.json
+cp launch/genesis.json ~/.ununifid/config/genesis.json
 ```
 
 ## Setup services

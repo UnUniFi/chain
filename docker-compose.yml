@@ -10,7 +10,7 @@ services:
     #   - 26656:26656
     #   - 26657:26657
     volumes:
-      - ~/.jpyx:/root/.jpyx
+      - ~/.ununifi:/root/.ununifi
     command: jpyxd start
     network_mode: host
     restart: always

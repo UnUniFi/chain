@@ -1,7 +1,7 @@
 # Simple usage with a mounted data directory:
 # > docker build -t jpyx .
-# > docker run -it -p 26656:26656 -p 26657:26657 -v ~/.jpyx:/root/.jpyx jpyx jpyxd init
-# > docker run -it -p 26656:26656 -p 26657:26657 -v ~/.jpyx:/root/.jpyx jpyx jpyxd start
+# > docker run -it -p 26656:26656 -p 26657:26657 -v ~/.ununifi:/root/.ununifi jpyx jpyxd init
+# > docker run -it -p 26656:26656 -p 26657:26657 -v ~/.ununifi:/root/.ununifi jpyx jpyxd start
 FROM golang:1.17-alpine AS build-env
 
 # Set up dependencies

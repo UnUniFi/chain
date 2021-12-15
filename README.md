@@ -22,10 +22,10 @@ sudo systemctl restart docker
 ### Join network
 
 ```bash
-docker run -v ~/.jpyx:/root/.jpyx ghcr.io/ununifi/ununifid jpyxd init [moniker] --chain-id [chain-id]
+docker run -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid jpyxd init [moniker] --chain-id [chain-id]
 mkdir jpyx
 cd jpyx
-curl -L https://raw.githubusercontent.com/UnUniFi/chain/main/launch/[chain-id]/genesis.json -o ~/.jpyx/config/genesis.json
+curl -L https://raw.githubusercontent.com/UnUniFi/chain/main/launch/[chain-id]/genesis.json -o ~/.ununifi/config/genesis.json
 curl -O https://raw.githubusercontent.com/UnUniFi/chain/main/docker-compose.yml
 docker-compose up -d
 ```
@@ -58,7 +58,7 @@ make install
 
 ```bash
 jpyxd init [moniker] --chain-id [chain-id]
-cp launch/[chain-id]/genesis.json ~/.jpyx/config/genesis.json
+cp launch/[chain-id]/genesis.json ~/.ununifi/config/genesis.json
 ```
 
 ### Register daemon service
