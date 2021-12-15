@@ -23,13 +23,13 @@ services:
     #   - 7002:7002
     network_mode: host
     restart: always
-  faucet-jpyx:
-    container_name: faucet-jpyx
+  faucet-ununifi:
+    container_name: faucet-jpu
     image: ghcr.io/tendermint/faucet
     volumes:
       - ~/faucet/ununifid:/usr/local/bin/ununifid
       - ~/.ununifi:/root/.ununifi
-    command: faucet --cli-name ununifid --denoms jpyx --keyring-backend test --account-name faucet --port 7004 --credit-amount=10 --max-credit=9
+    command: faucet --cli-name ununifid --denoms jpu --keyring-backend test --account-name faucet --port 7004 --credit-amount=10 --max-credit=9
     # ports:
     #   - 7004:7004
     network_mode: host

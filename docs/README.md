@@ -20,7 +20,7 @@ source ~/.bashrc
 mkdir -p /usr/local/src/github.com/UnUnifi
 cd /usr/local/src/github.com/UnUnifi
 git clone https://github.com/UnUniFi/chain.git
-cd jpyx
+cd UnUniFi
 git checkout v0.1.0
 make install
 ```
@@ -28,7 +28,7 @@ make install
 ## Setup genesis.json
 
 ```shell
-ununifid init [moniker] --chain-id jpyx-1
+ununifid init [moniker] --chain-id ununifi-1
 cd /usr/local/src/github.com/UnUniFi/chain
 cp launch/genesis.json ~/.ununifid/config/genesis.json
 ```
@@ -36,8 +36,8 @@ cp launch/genesis.json ~/.ununifid/config/genesis.json
 ## Setup services
 
 ```shell
-jpyxcli config chain-id jpyx-1
-jpyxcli config trust-node true
+ununificli config chain-id ununifi-1
+ununificli config trust-node true
 ```
 
 ### Daemon service
@@ -69,7 +69,7 @@ systemctl enable ununifid
 ### REST service
 
 ```shell
-vi /etc/systemd/system/jpyxrest.service
+vi /etc/systemd/system/ununifirest.service
 ```
 
 ```txt
@@ -79,7 +79,7 @@ After=network-online.target
 
 [Service]
 User=root
-ExecStart=/root/go/bin/jpyxcli rest-server
+ExecStart=/root/go/bin/ununificli rest-server
 Restart=always
 RestartSec=3
 LimitNOFILE=4096
@@ -89,5 +89,5 @@ WantedBy=multi-user.target
 ```
 
 ```shell
-systemctl enable jpyxrest
+systemctl enable ununifirest
 ```

@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	AccountAddressPrefix = "jpyx"
+	AccountAddressPrefix = "ununifi"
 )
 
 var (

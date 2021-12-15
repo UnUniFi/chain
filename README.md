@@ -23,8 +23,8 @@ sudo systemctl restart docker
 
 ```bash
 docker run -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid ununifid init [moniker] --chain-id [chain-id]
-mkdir jpyx
-cd jpyx
+mkdir ununifi
+cd ununifi
 curl -L https://raw.githubusercontent.com/UnUniFi/chain/main/launch/[chain-id]/genesis.json -o ~/.ununifi/config/genesis.json
 curl -O https://raw.githubusercontent.com/UnUniFi/chain/main/docker-compose.yml
 docker-compose up -d
@@ -50,7 +50,7 @@ source ~/.bashrc
 
 ```bash
 git clone https://github.com/UnUniFi/chain.git
-cd jpyx
+cd UnUniFi
 make install
 ```
 

@@ -18,7 +18,7 @@ SDK_PACK := $(shell go list -m github.com/cosmos/cosmos-sdk | sed  's/ /\@/g')
 TM_VERSION := $(shell go list -m github.com/tendermint/tendermint | sed 's:.* ::') # grab everything after the space in "github.com/tendermint/tendermint v0.34.7"
 DOCKER := $(shell which docker)
 BUILDDIR ?= $(CURDIR)/build
-TEST_DOCKER_REPO=jackzampolin/jpyxtest
+TEST_DOCKER_REPO=jackzampolin/ununifitest
 
 export GO111MODULE = on
 
@@ -61,7 +61,7 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 
 # process linker flags
 
-ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=jpyx \
+ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=ununifi \
 		  -X github.com/cosmos/cosmos-sdk/version.AppName=ununifid \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \

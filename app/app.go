@@ -105,7 +105,7 @@ import (
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
-const Name = "jpyx"
+const Name = "ununifi"
 
 // this line is used by starport scaffolding # stargate/wasm/app/enabledProposals
 

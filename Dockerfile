@@ -30,5 +30,5 @@ WORKDIR /root
 # Copy over binaries from the build-env
 COPY --from=build-env /go/bin/ununifid /usr/bin/ununifid
 
-# Run ununifid by default, omit entrypoint to ease using container with jpyxcli
+# Run ununifid by default, omit entrypoint to ease using container with ununificli
 CMD ["ununifid"]
