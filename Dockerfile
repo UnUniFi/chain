@@ -1,5 +1,5 @@
 # Simple usage with a mounted data directory:
-# > docker build -t jpyx .
+# > docker build -t ununifid .
 # > docker run -it -p 26656:26656 -p 26657:26657 -v ~/.ununifi:/root/.ununifi jpyx ununifid init
 # > docker run -it -p 26656:26656 -p 26657:26657 -v ~/.ununifi:/root/.ununifi jpyx ununifid start
 FROM golang:1.17-alpine AS build-env
