@@ -1,7 +1,7 @@
-package botanydist
+package ununifidist
 
 import (
-	"github.com/UnUniFi/chain/x/botanydist/keeper"
+	"github.com/UnUniFi/chain/x/ununifidist/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

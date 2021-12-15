@@ -8,11 +8,11 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	botanydisttypes "github.com/UnUniFi/chain/x/botanydist/types"
+	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
 )
 
 type paramTest struct {
-	params     botanydisttypes.Params
+	params     ununifidisttypes.Params
 	expectPass bool
 }
 
@@ -23,45 +23,45 @@ type ParamTestSuite struct {
 }
 
 func (suite *ParamTestSuite) SetupTest() {
-	p1 := botanydisttypes.Params{
+	p1 := ununifidisttypes.Params{
 		Active: true,
-		Periods: botanydisttypes.Periods{
-			botanydisttypes.Period{
+		Periods: ununifidisttypes.Periods{
+			ununifidisttypes.Period{
 				Start:     time.Date(2020, time.March, 1, 1, 0, 0, 0, time.UTC),
 				End:       time.Date(2021, time.March, 1, 1, 0, 0, 0, time.UTC),
 				Inflation: sdk.MustNewDecFromStr("1.000000003022265980"),
 			},
-			botanydisttypes.Period{
+			ununifidisttypes.Period{
 				Start:     time.Date(2021, time.March, 1, 1, 0, 0, 0, time.UTC),
 				End:       time.Date(2022, time.March, 1, 1, 0, 0, 0, time.UTC),
 				Inflation: sdk.MustNewDecFromStr("1.000000003022265980"),
 			},
 		},
 	}
-	p2 := botanydisttypes.Params{
+	p2 := ununifidisttypes.Params{
 		Active: true,
-		Periods: botanydisttypes.Periods{
-			botanydisttypes.Period{
+		Periods: ununifidisttypes.Periods{
+			ununifidisttypes.Period{
 				Start:     time.Date(2022, time.March, 1, 1, 0, 0, 0, time.UTC),
 				End:       time.Date(2021, time.March, 1, 1, 0, 0, 0, time.UTC),
 				Inflation: sdk.MustNewDecFromStr("1.000000003022265980"),
 			},
-			botanydisttypes.Period{
+			ununifidisttypes.Period{
 				Start:     time.Date(2023, time.March, 1, 1, 0, 0, 0, time.UTC),
 				End:       time.Date(2024, time.March, 1, 1, 0, 0, 0, time.UTC),
 				Inflation: sdk.MustNewDecFromStr("1.000000003022265980"),
 			},
 		},
 	}
-	p3 := botanydisttypes.Params{
+	p3 := ununifidisttypes.Params{
 		Active: true,
-		Periods: botanydisttypes.Periods{
-			botanydisttypes.Period{
+		Periods: ununifidisttypes.Periods{
+			ununifidisttypes.Period{
 				Start:     time.Date(2020, time.March, 1, 1, 0, 0, 0, time.UTC),
 				End:       time.Date(2021, time.March, 1, 1, 0, 0, 0, time.UTC),
 				Inflation: sdk.MustNewDecFromStr("1.000000003022265980"),
 			},
-			botanydisttypes.Period{
+			ununifidisttypes.Period{
 				Start:     time.Date(2020, time.March, 1, 1, 0, 0, 0, time.UTC),
 				End:       time.Date(2022, time.March, 1, 1, 0, 0, 0, time.UTC),
 				Inflation: sdk.MustNewDecFromStr("1.000000003022265980"),

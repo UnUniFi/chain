@@ -1,5 +1,5 @@
 syntax = "proto3";
-package botany.pricefeed;
+package ununifi.pricefeed;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
@@ -12,23 +12,23 @@ option go_package = "github.com/UnUniFi/chain/x/pricefeed/types";
 // Query defines the gRPC querier service.
 service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-		option (google.api.http).get = "/botany/pricefeed/params";
+		option (google.api.http).get = "/ununifi/pricefeed/params";
 	}
   // this line is used by starport scaffolding # 2
   rpc MarketAll(QueryAllMarketRequest) returns (QueryAllMarketResponse) {
-		option (google.api.http).get = "/botany/pricefeed/markets";
+		option (google.api.http).get = "/ununifi/pricefeed/markets";
 	}
   rpc OracleAll(QueryAllOracleRequest) returns (QueryAllOracleResponse) {
-		option (google.api.http).get = "/botany/pricefeed/markets/{market_id}/oracles";
+		option (google.api.http).get = "/ununifi/pricefeed/markets/{market_id}/oracles";
 	}
   rpc Price(QueryGetPriceRequest) returns (QueryGetPriceResponse) {
-		option (google.api.http).get = "/botany/pricefeed/markets/{market_id}/price";
+		option (google.api.http).get = "/ununifi/pricefeed/markets/{market_id}/price";
 	}
 	rpc PriceAll(QueryAllPriceRequest) returns (QueryAllPriceResponse) {
-		option (google.api.http).get = "/botany/pricefeed/prices";
+		option (google.api.http).get = "/ununifi/pricefeed/prices";
 	}
   rpc RawPriceAll(QueryAllRawPriceRequest) returns (QueryAllRawPriceResponse) {
-		option (google.api.http).get = "/botany/pricefeed/markets/{market_id}/raw_prices";
+		option (google.api.http).get = "/ununifi/pricefeed/markets/{market_id}/raw_prices";
 	}
 }
 

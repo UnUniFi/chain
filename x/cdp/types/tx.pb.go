@@ -569,18 +569,18 @@ func (m *MsgLiquidateResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgLiquidateResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgCreateCdp)(nil), "botany.cdp.MsgCreateCdp")
-	proto.RegisterType((*MsgCreateCdpResponse)(nil), "botany.cdp.MsgCreateCdpResponse")
-	proto.RegisterType((*MsgDeposit)(nil), "botany.cdp.MsgDeposit")
-	proto.RegisterType((*MsgDepositResponse)(nil), "botany.cdp.MsgDepositResponse")
-	proto.RegisterType((*MsgWithdraw)(nil), "botany.cdp.MsgWithdraw")
-	proto.RegisterType((*MsgWithdrawResponse)(nil), "botany.cdp.MsgWithdrawResponse")
-	proto.RegisterType((*MsgDrawDebt)(nil), "botany.cdp.MsgDrawDebt")
-	proto.RegisterType((*MsgDrawDebtResponse)(nil), "botany.cdp.MsgDrawDebtResponse")
-	proto.RegisterType((*MsgRepayDebt)(nil), "botany.cdp.MsgRepayDebt")
-	proto.RegisterType((*MsgRepayDebtResponse)(nil), "botany.cdp.MsgRepayDebtResponse")
-	proto.RegisterType((*MsgLiquidate)(nil), "botany.cdp.MsgLiquidate")
-	proto.RegisterType((*MsgLiquidateResponse)(nil), "botany.cdp.MsgLiquidateResponse")
+	proto.RegisterType((*MsgCreateCdp)(nil), "ununifi.cdp.MsgCreateCdp")
+	proto.RegisterType((*MsgCreateCdpResponse)(nil), "ununifi.cdp.MsgCreateCdpResponse")
+	proto.RegisterType((*MsgDeposit)(nil), "ununifi.cdp.MsgDeposit")
+	proto.RegisterType((*MsgDepositResponse)(nil), "ununifi.cdp.MsgDepositResponse")
+	proto.RegisterType((*MsgWithdraw)(nil), "ununifi.cdp.MsgWithdraw")
+	proto.RegisterType((*MsgWithdrawResponse)(nil), "ununifi.cdp.MsgWithdrawResponse")
+	proto.RegisterType((*MsgDrawDebt)(nil), "ununifi.cdp.MsgDrawDebt")
+	proto.RegisterType((*MsgDrawDebtResponse)(nil), "ununifi.cdp.MsgDrawDebtResponse")
+	proto.RegisterType((*MsgRepayDebt)(nil), "ununifi.cdp.MsgRepayDebt")
+	proto.RegisterType((*MsgRepayDebtResponse)(nil), "ununifi.cdp.MsgRepayDebtResponse")
+	proto.RegisterType((*MsgLiquidate)(nil), "ununifi.cdp.MsgLiquidate")
+	proto.RegisterType((*MsgLiquidateResponse)(nil), "ununifi.cdp.MsgLiquidateResponse")
 }
 
 func init() { proto.RegisterFile("cdp/tx.proto", fileDescriptor_07a616735245490e) }
@@ -664,7 +664,7 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 
 func (c *msgClient) CreateCdp(ctx context.Context, in *MsgCreateCdp, opts ...grpc.CallOption) (*MsgCreateCdpResponse, error) {
 	out := new(MsgCreateCdpResponse)
-	err := c.cc.Invoke(ctx, "/botany.cdp.Msg/CreateCdp", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.cdp.Msg/CreateCdp", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -673,7 +673,7 @@ func (c *msgClient) CreateCdp(ctx context.Context, in *MsgCreateCdp, opts ...grp
 
 func (c *msgClient) Deposit(ctx context.Context, in *MsgDeposit, opts ...grpc.CallOption) (*MsgDepositResponse, error) {
 	out := new(MsgDepositResponse)
-	err := c.cc.Invoke(ctx, "/botany.cdp.Msg/Deposit", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.cdp.Msg/Deposit", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -682,7 +682,7 @@ func (c *msgClient) Deposit(ctx context.Context, in *MsgDeposit, opts ...grpc.Ca
 
 func (c *msgClient) Withdraw(ctx context.Context, in *MsgWithdraw, opts ...grpc.CallOption) (*MsgWithdrawResponse, error) {
 	out := new(MsgWithdrawResponse)
-	err := c.cc.Invoke(ctx, "/botany.cdp.Msg/Withdraw", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.cdp.Msg/Withdraw", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -691,7 +691,7 @@ func (c *msgClient) Withdraw(ctx context.Context, in *MsgWithdraw, opts ...grpc.
 
 func (c *msgClient) DrawDebt(ctx context.Context, in *MsgDrawDebt, opts ...grpc.CallOption) (*MsgDrawDebtResponse, error) {
 	out := new(MsgDrawDebtResponse)
-	err := c.cc.Invoke(ctx, "/botany.cdp.Msg/DrawDebt", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.cdp.Msg/DrawDebt", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -700,7 +700,7 @@ func (c *msgClient) DrawDebt(ctx context.Context, in *MsgDrawDebt, opts ...grpc.
 
 func (c *msgClient) RepayDebt(ctx context.Context, in *MsgRepayDebt, opts ...grpc.CallOption) (*MsgRepayDebtResponse, error) {
 	out := new(MsgRepayDebtResponse)
-	err := c.cc.Invoke(ctx, "/botany.cdp.Msg/RepayDebt", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.cdp.Msg/RepayDebt", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -709,7 +709,7 @@ func (c *msgClient) RepayDebt(ctx context.Context, in *MsgRepayDebt, opts ...grp
 
 func (c *msgClient) Liquidate(ctx context.Context, in *MsgLiquidate, opts ...grpc.CallOption) (*MsgLiquidateResponse, error) {
 	out := new(MsgLiquidateResponse)
-	err := c.cc.Invoke(ctx, "/botany.cdp.Msg/Liquidate", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.cdp.Msg/Liquidate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -763,7 +763,7 @@ func _Msg_CreateCdp_Handler(srv interface{}, ctx context.Context, dec func(inter
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.cdp.Msg/CreateCdp",
+		FullMethod: "/ununifi.cdp.Msg/CreateCdp",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).CreateCdp(ctx, req.(*MsgCreateCdp))
@@ -781,7 +781,7 @@ func _Msg_Deposit_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.cdp.Msg/Deposit",
+		FullMethod: "/ununifi.cdp.Msg/Deposit",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).Deposit(ctx, req.(*MsgDeposit))
@@ -799,7 +799,7 @@ func _Msg_Withdraw_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.cdp.Msg/Withdraw",
+		FullMethod: "/ununifi.cdp.Msg/Withdraw",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).Withdraw(ctx, req.(*MsgWithdraw))
@@ -817,7 +817,7 @@ func _Msg_DrawDebt_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.cdp.Msg/DrawDebt",
+		FullMethod: "/ununifi.cdp.Msg/DrawDebt",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).DrawDebt(ctx, req.(*MsgDrawDebt))
@@ -835,7 +835,7 @@ func _Msg_RepayDebt_Handler(srv interface{}, ctx context.Context, dec func(inter
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.cdp.Msg/RepayDebt",
+		FullMethod: "/ununifi.cdp.Msg/RepayDebt",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).RepayDebt(ctx, req.(*MsgRepayDebt))
@@ -853,7 +853,7 @@ func _Msg_Liquidate_Handler(srv interface{}, ctx context.Context, dec func(inter
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.cdp.Msg/Liquidate",
+		FullMethod: "/ununifi.cdp.Msg/Liquidate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).Liquidate(ctx, req.(*MsgLiquidate))
@@ -862,7 +862,7 @@ func _Msg_Liquidate_Handler(srv interface{}, ctx context.Context, dec func(inter
 }
 
 var _Msg_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "botany.cdp.Msg",
+	ServiceName: "ununifi.cdp.Msg",
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

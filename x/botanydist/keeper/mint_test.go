@@ -12,24 +12,24 @@ import (
 	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/UnUniFi/chain/app"
-	"github.com/UnUniFi/chain/x/botanydist/keeper"
-	botanydisttypes "github.com/UnUniFi/chain/x/botanydist/types"
+	"github.com/UnUniFi/chain/x/ununifidist/keeper"
+	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
 )
 
 type KeeperTestSuite struct {
 	suite.Suite
 
 	keeper keeper.Keeper
-	// supplyKeeper botanydisttypes.SupplyKeeper
-	accountKeeper botanydisttypes.AccountKeeper
-	bankKeeper    botanydisttypes.BankKeeper
+	// supplyKeeper ununifidisttypes.SupplyKeeper
+	accountKeeper ununifidisttypes.AccountKeeper
+	bankKeeper    ununifidisttypes.BankKeeper
 	app           app.TestApp
 	ctx           sdk.Context
 }
 
 var (
-	testPeriods = botanydisttypes.Periods{
-		botanydisttypes.Period{
+	testPeriods = ununifidisttypes.Periods{
+		ununifidisttypes.Period{
 			Start:     time.Date(2020, time.March, 1, 1, 0, 0, 0, time.UTC),
 			End:       time.Date(2021, time.March, 1, 1, 0, 0, 0, time.UTC),
 			Inflation: sdk.MustNewDecFromStr("1.000000003022265980"),
@@ -48,10 +48,10 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
 
-	params := botanydisttypes.NewParams(true, testPeriods)
-	jcbnGs := botanydisttypes.NewGenesisState(params, botanydisttypes.DefaultPreviousBlockTime, botanydisttypes.DefaultGovDenom)
-	// gs := app.GenesisState{botanydisttypes.ModuleName: botanydisttypes.ModuleCdc.MustMarshalJSON(botanydisttypes.NewGenesisState(params, botanydisttypes.DefaultPreviousBlockTime))}
-	gs := app.GenesisState{botanydisttypes.ModuleName: botanydisttypes.ModuleCdc.MustMarshalJSON(&jcbnGs)}
+	params := ununifidisttypes.NewParams(true, testPeriods)
+	jcbnGs := ununifidisttypes.NewGenesisState(params, ununifidisttypes.DefaultPreviousBlockTime, ununifidisttypes.DefaultGovDenom)
+	// gs := app.GenesisState{ununifidisttypes.ModuleName: ununifidisttypes.ModuleCdc.MustMarshalJSON(ununifidisttypes.NewGenesisState(params, ununifidisttypes.DefaultPreviousBlockTime))}
+	gs := app.GenesisState{ununifidisttypes.ModuleName: ununifidisttypes.ModuleCdc.MustMarshalJSON(&jcbnGs)}
 	tApp.InitializeFromGenesisStates(
 		authGS,
 		gs,
@@ -70,33 +70,33 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 func (suite *KeeperTestSuite) TestMintExpiredPeriod() {
 	govDenom, _ := suite.keeper.GetGovDenom(suite.ctx)
-	// initialSupply := suite.supplyKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(botanydisttypes.GovDenom)
+	// initialSupply := suite.supplyKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
 	initialSupply := suite.bankKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(govDenom)
 	suite.NotPanics(func() { suite.keeper.SetPreviousBlockTime(suite.ctx, time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC)) })
 	ctx := suite.ctx.WithBlockTime(time.Date(2022, 1, 1, 0, 7, 0, 0, time.UTC))
 	err := suite.keeper.MintPeriodInflation(ctx)
 	suite.NoError(err)
-	// finalSupply := suite.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(botanydisttypes.GovDenom)
+	// finalSupply := suite.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
 	finalSupply := suite.bankKeeper.GetSupply(ctx).GetTotal().AmountOf(govDenom)
 	suite.Equal(initialSupply, finalSupply)
 }
 
 func (suite *KeeperTestSuite) TestMintPeriodNotStarted() {
 	govDenom, _ := suite.keeper.GetGovDenom(suite.ctx)
-	// initialSupply := suite.supplyKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(botanydisttypes.GovDenom)
+	// initialSupply := suite.supplyKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
 	initialSupply := suite.bankKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(govDenom)
 	suite.NotPanics(func() { suite.keeper.SetPreviousBlockTime(suite.ctx, time.Date(2019, 1, 1, 0, 0, 0, 0, time.UTC)) })
 	ctx := suite.ctx.WithBlockTime(time.Date(2019, 1, 1, 0, 7, 0, 0, time.UTC))
 	err := suite.keeper.MintPeriodInflation(ctx)
 	suite.NoError(err)
-	// finalSupply := suite.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(botanydisttypes.GovDenom)
+	// finalSupply := suite.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
 	finalSupply := suite.bankKeeper.GetSupply(ctx).GetTotal().AmountOf(govDenom)
 	suite.Equal(initialSupply, finalSupply)
 }
 
 func (suite *KeeperTestSuite) TestMintOngoingPeriod() {
 	govDenom, _ := suite.keeper.GetGovDenom(suite.ctx)
-	// initialSupply := suite.supplyKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(botanydisttypes.GovDenom)
+	// initialSupply := suite.supplyKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
 	initialSupply := suite.bankKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(govDenom)
 	suite.NotPanics(func() {
 		suite.keeper.SetPreviousBlockTime(suite.ctx, time.Date(2020, time.March, 1, 1, 0, 1, 0, time.UTC))
@@ -104,13 +104,13 @@ func (suite *KeeperTestSuite) TestMintOngoingPeriod() {
 	ctx := suite.ctx.WithBlockTime(time.Date(2021, 2, 28, 23, 59, 59, 0, time.UTC))
 	err := suite.keeper.MintPeriodInflation(ctx)
 	suite.NoError(err)
-	// finalSupply := suite.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(botanydisttypes.GovDenom)
+	// finalSupply := suite.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
 	finalSupply := suite.bankKeeper.GetSupply(ctx).GetTotal().AmountOf(govDenom)
 	suite.True(finalSupply.GT(initialSupply))
-	// mAcc := suite.supplyKeeper.GetModuleAccount(ctx, botanydisttypes.ModuleName)
-	// mAccSupply := mAcc.GetCoins().AmountOf(botanydisttypes.GovDenom)
+	// mAcc := suite.supplyKeeper.GetModuleAccount(ctx, ununifidisttypes.ModuleName)
+	// mAccSupply := mAcc.GetCoins().AmountOf(ununifidisttypes.GovDenom)
 	// suite.True(mAccSupply.Equal(finalSupply.Sub(initialSupply)))
-	mAddr := suite.accountKeeper.GetModuleAddress(botanydisttypes.ModuleName)
+	mAddr := suite.accountKeeper.GetModuleAddress(ununifidisttypes.ModuleName)
 	mAddrSupply := suite.bankKeeper.GetAllBalances(ctx, mAddr).AmountOf(govDenom)
 	suite.True(mAddrSupply.Equal(finalSupply.Sub(initialSupply)))
 	// expect that inflation is ~10%
@@ -121,12 +121,12 @@ func (suite *KeeperTestSuite) TestMintOngoingPeriod() {
 
 func (suite *KeeperTestSuite) TestMintPeriodTransition() {
 	govDenom, _ := suite.keeper.GetGovDenom(suite.ctx)
-	// initialSupply := suite.supplyKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(botanydisttypes.GovDenom)
+	// initialSupply := suite.supplyKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
 	initialSupply := suite.bankKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(govDenom)
 	params := suite.keeper.GetParams(suite.ctx)
-	periods := botanydisttypes.Periods{
+	periods := ununifidisttypes.Periods{
 		testPeriods[0],
-		botanydisttypes.Period{
+		ununifidisttypes.Period{
 			Start:     time.Date(2021, time.March, 1, 1, 0, 0, 0, time.UTC),
 			End:       time.Date(2022, time.March, 1, 1, 0, 0, 0, time.UTC),
 			Inflation: sdk.MustNewDecFromStr("1.000000003022265980"),
@@ -142,14 +142,14 @@ func (suite *KeeperTestSuite) TestMintPeriodTransition() {
 	ctx := suite.ctx.WithBlockTime(time.Date(2021, 3, 10, 0, 0, 0, 0, time.UTC))
 	err := suite.keeper.MintPeriodInflation(ctx)
 	suite.NoError(err)
-	// finalSupply := suite.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(botanydisttypes.GovDenom)
+	// finalSupply := suite.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
 	finalSupply := suite.bankKeeper.GetSupply(ctx).GetTotal().AmountOf(govDenom)
 	suite.True(finalSupply.GT(initialSupply))
 }
 
 func (suite *KeeperTestSuite) TestMintNotActive() {
 	govDenom, _ := suite.keeper.GetGovDenom(suite.ctx)
-	// initialSupply := suite.supplyKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(botanydisttypes.GovDenom)
+	// initialSupply := suite.supplyKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
 	initialSupply := suite.bankKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(govDenom)
 	params := suite.keeper.GetParams(suite.ctx)
 	params.Active = false
@@ -162,7 +162,7 @@ func (suite *KeeperTestSuite) TestMintNotActive() {
 	ctx := suite.ctx.WithBlockTime(time.Date(2021, 2, 28, 23, 59, 59, 0, time.UTC))
 	err := suite.keeper.MintPeriodInflation(ctx)
 	suite.NoError(err)
-	// finalSupply := suite.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(botanydisttypes.GovDenom)
+	// finalSupply := suite.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
 	finalSupply := suite.bankKeeper.GetSupply(ctx).GetTotal().AmountOf(govDenom)
 	suite.Equal(initialSupply, finalSupply)
 }

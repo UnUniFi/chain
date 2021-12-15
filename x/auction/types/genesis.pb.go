@@ -89,7 +89,7 @@ func (m *GenesisState) GetAuctions() []*types.Any {
 }
 
 func init() {
-	proto.RegisterType((*GenesisState)(nil), "botany.auction.GenesisState")
+	proto.RegisterType((*GenesisState)(nil), "ununifi.auction.GenesisState")
 }
 
 func init() { proto.RegisterFile("auction/genesis.proto", fileDescriptor_ec0c841528c842a6) }

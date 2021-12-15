@@ -3,7 +3,7 @@ package cli
 import (
 	"context"
 
-	"github.com/UnUniFi/chain/x/botanydist/types"
+	"github.com/UnUniFi/chain/x/ununifidist/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
@@ -12,7 +12,7 @@ import (
 func CmdListReward() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "balances",
-		Short: "show botanydist module account balances",
+		Short: "show ununifidist module account balances",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)

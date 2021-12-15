@@ -594,18 +594,18 @@ func (m *QueryAllRawPriceResponse) GetPagination() *query.PageResponse {
 }
 
 func init() {
-	proto.RegisterType((*QueryParamsRequest)(nil), "botany.pricefeed.QueryParamsRequest")
-	proto.RegisterType((*QueryParamsResponse)(nil), "botany.pricefeed.QueryParamsResponse")
-	proto.RegisterType((*QueryAllMarketRequest)(nil), "botany.pricefeed.QueryAllMarketRequest")
-	proto.RegisterType((*QueryAllMarketResponse)(nil), "botany.pricefeed.QueryAllMarketResponse")
-	proto.RegisterType((*QueryAllOracleRequest)(nil), "botany.pricefeed.QueryAllOracleRequest")
-	proto.RegisterType((*QueryAllOracleResponse)(nil), "botany.pricefeed.QueryAllOracleResponse")
-	proto.RegisterType((*QueryGetPriceRequest)(nil), "botany.pricefeed.QueryGetPriceRequest")
-	proto.RegisterType((*QueryGetPriceResponse)(nil), "botany.pricefeed.QueryGetPriceResponse")
-	proto.RegisterType((*QueryAllPriceRequest)(nil), "botany.pricefeed.QueryAllPriceRequest")
-	proto.RegisterType((*QueryAllPriceResponse)(nil), "botany.pricefeed.QueryAllPriceResponse")
-	proto.RegisterType((*QueryAllRawPriceRequest)(nil), "botany.pricefeed.QueryAllRawPriceRequest")
-	proto.RegisterType((*QueryAllRawPriceResponse)(nil), "botany.pricefeed.QueryAllRawPriceResponse")
+	proto.RegisterType((*QueryParamsRequest)(nil), "ununifi.pricefeed.QueryParamsRequest")
+	proto.RegisterType((*QueryParamsResponse)(nil), "ununifi.pricefeed.QueryParamsResponse")
+	proto.RegisterType((*QueryAllMarketRequest)(nil), "ununifi.pricefeed.QueryAllMarketRequest")
+	proto.RegisterType((*QueryAllMarketResponse)(nil), "ununifi.pricefeed.QueryAllMarketResponse")
+	proto.RegisterType((*QueryAllOracleRequest)(nil), "ununifi.pricefeed.QueryAllOracleRequest")
+	proto.RegisterType((*QueryAllOracleResponse)(nil), "ununifi.pricefeed.QueryAllOracleResponse")
+	proto.RegisterType((*QueryGetPriceRequest)(nil), "ununifi.pricefeed.QueryGetPriceRequest")
+	proto.RegisterType((*QueryGetPriceResponse)(nil), "ununifi.pricefeed.QueryGetPriceResponse")
+	proto.RegisterType((*QueryAllPriceRequest)(nil), "ununifi.pricefeed.QueryAllPriceRequest")
+	proto.RegisterType((*QueryAllPriceResponse)(nil), "ununifi.pricefeed.QueryAllPriceResponse")
+	proto.RegisterType((*QueryAllRawPriceRequest)(nil), "ununifi.pricefeed.QueryAllRawPriceRequest")
+	proto.RegisterType((*QueryAllRawPriceResponse)(nil), "ununifi.pricefeed.QueryAllRawPriceResponse")
 }
 
 func init() { proto.RegisterFile("pricefeed/query.proto", fileDescriptor_d96dcacfb6f84073) }
@@ -692,7 +692,7 @@ func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 
 func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
 	out := new(QueryParamsResponse)
-	err := c.cc.Invoke(ctx, "/botany.pricefeed.Query/Params", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.pricefeed.Query/Params", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -701,7 +701,7 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 
 func (c *queryClient) MarketAll(ctx context.Context, in *QueryAllMarketRequest, opts ...grpc.CallOption) (*QueryAllMarketResponse, error) {
 	out := new(QueryAllMarketResponse)
-	err := c.cc.Invoke(ctx, "/botany.pricefeed.Query/MarketAll", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.pricefeed.Query/MarketAll", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -710,7 +710,7 @@ func (c *queryClient) MarketAll(ctx context.Context, in *QueryAllMarketRequest, 
 
 func (c *queryClient) OracleAll(ctx context.Context, in *QueryAllOracleRequest, opts ...grpc.CallOption) (*QueryAllOracleResponse, error) {
 	out := new(QueryAllOracleResponse)
-	err := c.cc.Invoke(ctx, "/botany.pricefeed.Query/OracleAll", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.pricefeed.Query/OracleAll", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -719,7 +719,7 @@ func (c *queryClient) OracleAll(ctx context.Context, in *QueryAllOracleRequest, 
 
 func (c *queryClient) Price(ctx context.Context, in *QueryGetPriceRequest, opts ...grpc.CallOption) (*QueryGetPriceResponse, error) {
 	out := new(QueryGetPriceResponse)
-	err := c.cc.Invoke(ctx, "/botany.pricefeed.Query/Price", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.pricefeed.Query/Price", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -728,7 +728,7 @@ func (c *queryClient) Price(ctx context.Context, in *QueryGetPriceRequest, opts 
 
 func (c *queryClient) PriceAll(ctx context.Context, in *QueryAllPriceRequest, opts ...grpc.CallOption) (*QueryAllPriceResponse, error) {
 	out := new(QueryAllPriceResponse)
-	err := c.cc.Invoke(ctx, "/botany.pricefeed.Query/PriceAll", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.pricefeed.Query/PriceAll", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -737,7 +737,7 @@ func (c *queryClient) PriceAll(ctx context.Context, in *QueryAllPriceRequest, op
 
 func (c *queryClient) RawPriceAll(ctx context.Context, in *QueryAllRawPriceRequest, opts ...grpc.CallOption) (*QueryAllRawPriceResponse, error) {
 	out := new(QueryAllRawPriceResponse)
-	err := c.cc.Invoke(ctx, "/botany.pricefeed.Query/RawPriceAll", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.pricefeed.Query/RawPriceAll", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -792,7 +792,7 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.pricefeed.Query/Params",
+		FullMethod: "/ununifi.pricefeed.Query/Params",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).Params(ctx, req.(*QueryParamsRequest))
@@ -810,7 +810,7 @@ func _Query_MarketAll_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.pricefeed.Query/MarketAll",
+		FullMethod: "/ununifi.pricefeed.Query/MarketAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).MarketAll(ctx, req.(*QueryAllMarketRequest))
@@ -828,7 +828,7 @@ func _Query_OracleAll_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.pricefeed.Query/OracleAll",
+		FullMethod: "/ununifi.pricefeed.Query/OracleAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).OracleAll(ctx, req.(*QueryAllOracleRequest))
@@ -846,7 +846,7 @@ func _Query_Price_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.pricefeed.Query/Price",
+		FullMethod: "/ununifi.pricefeed.Query/Price",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).Price(ctx, req.(*QueryGetPriceRequest))
@@ -864,7 +864,7 @@ func _Query_PriceAll_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.pricefeed.Query/PriceAll",
+		FullMethod: "/ununifi.pricefeed.Query/PriceAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).PriceAll(ctx, req.(*QueryAllPriceRequest))
@@ -882,7 +882,7 @@ func _Query_RawPriceAll_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.pricefeed.Query/RawPriceAll",
+		FullMethod: "/ununifi.pricefeed.Query/RawPriceAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).RawPriceAll(ctx, req.(*QueryAllRawPriceRequest))
@@ -891,7 +891,7 @@ func _Query_RawPriceAll_Handler(srv interface{}, ctx context.Context, dec func(i
 }
 
 var _Query_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "botany.pricefeed.Query",
+	ServiceName: "ununifi.pricefeed.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

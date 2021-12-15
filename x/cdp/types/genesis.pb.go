@@ -229,9 +229,9 @@ func (m *GenesisTotalPrincipal) GetCollateralType() string {
 }
 
 func init() {
-	proto.RegisterType((*GenesisState)(nil), "botany.cdp.GenesisState")
-	proto.RegisterType((*GenesisAccumulationTime)(nil), "botany.cdp.GenesisAccumulationTime")
-	proto.RegisterType((*GenesisTotalPrincipal)(nil), "botany.cdp.GenesisTotalPrincipal")
+	proto.RegisterType((*GenesisState)(nil), "ununifi.cdp.GenesisState")
+	proto.RegisterType((*GenesisAccumulationTime)(nil), "ununifi.cdp.GenesisAccumulationTime")
+	proto.RegisterType((*GenesisTotalPrincipal)(nil), "ununifi.cdp.GenesisTotalPrincipal")
 }
 
 func init() { proto.RegisterFile("cdp/genesis.proto", fileDescriptor_6792b73c0d9625b5) }

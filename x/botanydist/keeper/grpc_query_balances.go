@@ -3,7 +3,7 @@ package keeper
 import (
 	"context"
 
-	"github.com/UnUniFi/chain/x/botanydist/types"
+	"github.com/UnUniFi/chain/x/ununifidist/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

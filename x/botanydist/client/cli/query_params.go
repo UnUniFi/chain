@@ -3,7 +3,7 @@ package cli
 import (
 	"context"
 
-	"github.com/UnUniFi/chain/x/botanydist/types"
+	"github.com/UnUniFi/chain/x/ununifidist/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"

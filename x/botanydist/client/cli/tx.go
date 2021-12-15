@@ -7,7 +7,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	// "github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/UnUniFi/chain/x/botanydist/types"
+	"github.com/UnUniFi/chain/x/ununifidist/types"
 )
 
 // GetTxCmd returns the transaction commands for this module

@@ -433,12 +433,12 @@ func (m *DebtParam) GetReferenceAsset() string {
 }
 
 func init() {
-	proto.RegisterType((*Cdp)(nil), "botany.cdp.Cdp")
-	proto.RegisterType((*Deposit)(nil), "botany.cdp.Deposit")
-	proto.RegisterType((*AugmentedCdp)(nil), "botany.cdp.AugmentedCdp")
-	proto.RegisterType((*Params)(nil), "botany.cdp.Params")
-	proto.RegisterType((*CollateralParam)(nil), "botany.cdp.CollateralParam")
-	proto.RegisterType((*DebtParam)(nil), "botany.cdp.DebtParam")
+	proto.RegisterType((*Cdp)(nil), "ununifi.cdp.Cdp")
+	proto.RegisterType((*Deposit)(nil), "ununifi.cdp.Deposit")
+	proto.RegisterType((*AugmentedCdp)(nil), "ununifi.cdp.AugmentedCdp")
+	proto.RegisterType((*Params)(nil), "ununifi.cdp.Params")
+	proto.RegisterType((*CollateralParam)(nil), "ununifi.cdp.CollateralParam")
+	proto.RegisterType((*DebtParam)(nil), "ununifi.cdp.DebtParam")
 }
 
 func init() { proto.RegisterFile("cdp/cdp.proto", fileDescriptor_105e3b742c3b95d7) }

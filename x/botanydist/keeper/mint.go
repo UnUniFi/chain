@@ -3,8 +3,8 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/x/botanydist/types"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	"github.com/UnUniFi/chain/x/ununifidist/types"
 )
 
 // MintPeriodInflation mints new tokens according to the inflation schedule specified in the parameters

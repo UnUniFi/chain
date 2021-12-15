@@ -13,8 +13,8 @@ import (
 	"github.com/UnUniFi/chain/app"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 
-	botanydisttypes "github.com/UnUniFi/chain/x/botanydist/types"
 	"github.com/UnUniFi/chain/x/incentive/types"
+	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
 )
 
 func (suite *KeeperTestSuite) TestPayoutCdpMintingClaim() {
@@ -105,7 +105,7 @@ func (suite *KeeperTestSuite) TestPayoutCdpMintingClaim() {
 			suite.Require().NoError(err)
 
 			// setup kavadist state
-			err = sk.MintCoins(suite.ctx, botanydisttypes.ModuleName, cs(c("uguu", 1000000000000)))
+			err = sk.MintCoins(suite.ctx, ununifidisttypes.ModuleName, cs(c("uguu", 1000000000000)))
 			suite.Require().NoError(err)
 
 			// setup cdp state
@@ -401,11 +401,11 @@ func (suite *KeeperTestSuite) TestSendCoinsToPeriodicVestingAccount() {
 			// mint module account coins if required
 			if tc.args.mintModAccountCoins {
 				sk := suite.app.GetBankKeeper()
-				err = sk.MintCoins(suite.ctx, botanydisttypes.ModuleName, tc.args.period.Amount)
+				err = sk.MintCoins(suite.ctx, ununifidisttypes.ModuleName, tc.args.period.Amount)
 				suite.Require().NoError(err)
 			}
 
-			err = suite.keeper.SendTimeLockedCoinsToPeriodicVestingAccount(suite.ctx, botanydisttypes.ModuleName, pva.GetAddress(), tc.args.period.Amount, tc.args.period.Length)
+			err = suite.keeper.SendTimeLockedCoinsToPeriodicVestingAccount(suite.ctx, ununifidisttypes.ModuleName, pva.GetAddress(), tc.args.period.Amount, tc.args.period.Length)
 			if tc.errArgs.expectErr {
 				suite.Require().Error(err)
 				suite.Require().True(strings.Contains(err.Error(), tc.errArgs.contains))
@@ -426,7 +426,7 @@ func (suite *KeeperTestSuite) TestSendCoinsToPeriodicVestingAccount() {
 func (suite *KeeperTestSuite) TestSendCoinsToBaseAccount() {
 	suite.SetupWithAccountState()
 	// send coins to base account
-	err := suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, botanydisttypes.ModuleName, suite.addrs[1], cs(c("uguu", 100)), 5)
+	err := suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, ununifidisttypes.ModuleName, suite.addrs[1], cs(c("uguu", 100)), 5)
 	suite.Require().NoError(err)
 	acc := suite.getAccount(suite.addrs[1])
 	vacc, ok := acc.(*vestingtypes.PeriodicVestingAccount)
@@ -445,10 +445,10 @@ func (suite *KeeperTestSuite) TestSendCoinsToBaseAccount() {
 
 func (suite *KeeperTestSuite) TestSendCoinsToInvalidAccount() {
 	suite.SetupWithAccountState()
-	err := suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, botanydisttypes.ModuleName, suite.addrs[2], cs(c("uguu", 100)), 5)
+	err := suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, ununifidisttypes.ModuleName, suite.addrs[2], cs(c("uguu", 100)), 5)
 	suite.Require().True(errors.Is(err, types.ErrInvalidAccountType))
 	macc := suite.getModuleAccount(cdptypes.ModuleName)
-	err = suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, botanydisttypes.ModuleName, macc.GetAddress(), cs(c("uguu", 100)), 5)
+	err = suite.keeper.SendTimeLockedCoinsToAccount(suite.ctx, ununifidisttypes.ModuleName, macc.GetAddress(), cs(c("uguu", 100)), 5)
 	suite.Require().True(errors.Is(err, types.ErrInvalidAccountType))
 }
 
@@ -471,7 +471,7 @@ func (suite *KeeperTestSuite) SetupWithAccountState() {
 	)
 	ak := tApp.GetAccountKeeper()
 	bk := tApp.GetBankKeeper()
-	macc := ak.GetModuleAccount(ctx, botanydisttypes.ModuleName)
+	macc := ak.GetModuleAccount(ctx, ununifidisttypes.ModuleName)
 	err := bk.MintCoins(ctx, macc.GetName(), cs(c("uguu", 600)))
 	suite.Require().NoError(err)
 

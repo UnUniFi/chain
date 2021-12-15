@@ -243,10 +243,10 @@ func (m *Params) GetMarkets() []Market {
 }
 
 func init() {
-	proto.RegisterType((*Market)(nil), "botany.pricefeed.Market")
-	proto.RegisterType((*CurrentPrice)(nil), "botany.pricefeed.CurrentPrice")
-	proto.RegisterType((*PostedPrice)(nil), "botany.pricefeed.PostedPrice")
-	proto.RegisterType((*Params)(nil), "botany.pricefeed.Params")
+	proto.RegisterType((*Market)(nil), "ununifi.pricefeed.Market")
+	proto.RegisterType((*CurrentPrice)(nil), "ununifi.pricefeed.CurrentPrice")
+	proto.RegisterType((*PostedPrice)(nil), "ununifi.pricefeed.PostedPrice")
+	proto.RegisterType((*Params)(nil), "ununifi.pricefeed.Params")
 }
 
 func init() { proto.RegisterFile("pricefeed/pricefeed.proto", fileDescriptor_c81c86fbf8838e8b) }

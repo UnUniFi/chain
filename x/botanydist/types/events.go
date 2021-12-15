@@ -1,9 +1,9 @@
 package types
 
-// Event types for botanydist module
+// Event types for ununifidist module
 const (
 	EventTypeBotanydist    = ModuleName
-	AttributeKeyInflation  = "botany_dist_inflation"
-	AttributeKeyStatus     = "botany_dist_status"
+	AttributeKeyInflation  = "ununifi_dist_inflation"
+	AttributeKeyStatus     = "ununifi_dist_status"
 	AttributeValueInactive = "inactive"
 )

@@ -113,8 +113,8 @@ func (m *MsgClaimCdpMintingRewardResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgClaimCdpMintingRewardResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgClaimCdpMintingReward)(nil), "botany.incentive.MsgClaimCdpMintingReward")
-	proto.RegisterType((*MsgClaimCdpMintingRewardResponse)(nil), "botany.incentive.MsgClaimCdpMintingRewardResponse")
+	proto.RegisterType((*MsgClaimCdpMintingReward)(nil), "ununifi.incentive.MsgClaimCdpMintingReward")
+	proto.RegisterType((*MsgClaimCdpMintingRewardResponse)(nil), "ununifi.incentive.MsgClaimCdpMintingRewardResponse")
 }
 
 func init() { proto.RegisterFile("incentive/tx.proto", fileDescriptor_910d537256618935) }
@@ -171,7 +171,7 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 
 func (c *msgClient) ClaimCdpMintingReward(ctx context.Context, in *MsgClaimCdpMintingReward, opts ...grpc.CallOption) (*MsgClaimCdpMintingRewardResponse, error) {
 	out := new(MsgClaimCdpMintingRewardResponse)
-	err := c.cc.Invoke(ctx, "/botany.incentive.Msg/ClaimCdpMintingReward", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.incentive.Msg/ClaimCdpMintingReward", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -205,7 +205,7 @@ func _Msg_ClaimCdpMintingReward_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.incentive.Msg/ClaimCdpMintingReward",
+		FullMethod: "/ununifi.incentive.Msg/ClaimCdpMintingReward",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).ClaimCdpMintingReward(ctx, req.(*MsgClaimCdpMintingReward))
@@ -214,7 +214,7 @@ func _Msg_ClaimCdpMintingReward_Handler(srv interface{}, ctx context.Context, de
 }
 
 var _Msg_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "botany.incentive.Msg",
+	ServiceName: "ununifi.incentive.Msg",
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

@@ -1,11 +1,11 @@
 syntax = "proto3";
-package botany.botanydist;
+package ununifi.ununifidist;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
-option go_package = "github.com/UnUniFi/chain/x/botanydist/types";
+option go_package = "github.com/UnUniFi/chain/x/ununifidist/types";
 
 message Params {
   bool active = 1 [(gogoproto.moretags) = "yaml:\"active\""];

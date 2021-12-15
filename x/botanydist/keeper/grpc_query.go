@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/UnUniFi/chain/x/botanydist/types"
+	"github.com/UnUniFi/chain/x/ununifidist/types"
 )
 
 var _ types.QueryServer = Keeper{}

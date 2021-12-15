@@ -1,4 +1,4 @@
-package botanydist
+package ununifidist
 
 import (
 	"encoding/json"
@@ -14,10 +14,10 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/UnUniFi/chain/x/botanydist/client/cli"
-	"github.com/UnUniFi/chain/x/botanydist/client/rest"
-	"github.com/UnUniFi/chain/x/botanydist/keeper"
-	"github.com/UnUniFi/chain/x/botanydist/types"
+	"github.com/UnUniFi/chain/x/ununifidist/client/cli"
+	"github.com/UnUniFi/chain/x/ununifidist/client/rest"
+	"github.com/UnUniFi/chain/x/ununifidist/keeper"
+	"github.com/UnUniFi/chain/x/ununifidist/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"

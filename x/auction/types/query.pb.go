@@ -297,12 +297,12 @@ func (m *QueryAllAuctionResponse) GetPagination() *query.PageResponse {
 }
 
 func init() {
-	proto.RegisterType((*QueryParamsRequest)(nil), "botany.auction.QueryParamsRequest")
-	proto.RegisterType((*QueryParamsResponse)(nil), "botany.auction.QueryParamsResponse")
-	proto.RegisterType((*QueryGetAuctionRequest)(nil), "botany.auction.QueryGetAuctionRequest")
-	proto.RegisterType((*QueryGetAuctionResponse)(nil), "botany.auction.QueryGetAuctionResponse")
-	proto.RegisterType((*QueryAllAuctionRequest)(nil), "botany.auction.QueryAllAuctionRequest")
-	proto.RegisterType((*QueryAllAuctionResponse)(nil), "botany.auction.QueryAllAuctionResponse")
+	proto.RegisterType((*QueryParamsRequest)(nil), "ununifi.auction.QueryParamsRequest")
+	proto.RegisterType((*QueryParamsResponse)(nil), "ununifi.auction.QueryParamsResponse")
+	proto.RegisterType((*QueryGetAuctionRequest)(nil), "ununifi.auction.QueryGetAuctionRequest")
+	proto.RegisterType((*QueryGetAuctionResponse)(nil), "ununifi.auction.QueryGetAuctionResponse")
+	proto.RegisterType((*QueryAllAuctionRequest)(nil), "ununifi.auction.QueryAllAuctionRequest")
+	proto.RegisterType((*QueryAllAuctionResponse)(nil), "ununifi.auction.QueryAllAuctionResponse")
 }
 
 func init() { proto.RegisterFile("auction/query.proto", fileDescriptor_40c2e1a3071ed575) }
@@ -371,7 +371,7 @@ func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 
 func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
 	out := new(QueryParamsResponse)
-	err := c.cc.Invoke(ctx, "/botany.auction.Query/Params", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.auction.Query/Params", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -380,7 +380,7 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 
 func (c *queryClient) Auction(ctx context.Context, in *QueryGetAuctionRequest, opts ...grpc.CallOption) (*QueryGetAuctionResponse, error) {
 	out := new(QueryGetAuctionResponse)
-	err := c.cc.Invoke(ctx, "/botany.auction.Query/Auction", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.auction.Query/Auction", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -389,7 +389,7 @@ func (c *queryClient) Auction(ctx context.Context, in *QueryGetAuctionRequest, o
 
 func (c *queryClient) AuctionAll(ctx context.Context, in *QueryAllAuctionRequest, opts ...grpc.CallOption) (*QueryAllAuctionResponse, error) {
 	out := new(QueryAllAuctionResponse)
-	err := c.cc.Invoke(ctx, "/botany.auction.Query/AuctionAll", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.auction.Query/AuctionAll", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -432,7 +432,7 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.auction.Query/Params",
+		FullMethod: "/ununifi.auction.Query/Params",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).Params(ctx, req.(*QueryParamsRequest))
@@ -450,7 +450,7 @@ func _Query_Auction_Handler(srv interface{}, ctx context.Context, dec func(inter
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.auction.Query/Auction",
+		FullMethod: "/ununifi.auction.Query/Auction",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).Auction(ctx, req.(*QueryGetAuctionRequest))
@@ -468,7 +468,7 @@ func _Query_AuctionAll_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.auction.Query/AuctionAll",
+		FullMethod: "/ununifi.auction.Query/AuctionAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).AuctionAll(ctx, req.(*QueryAllAuctionRequest))
@@ -477,7 +477,7 @@ func _Query_AuctionAll_Handler(srv interface{}, ctx context.Context, dec func(in
 }
 
 var _Query_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "botany.auction.Query",
+	ServiceName: "ununifi.auction.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

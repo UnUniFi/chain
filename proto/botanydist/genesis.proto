@@ -1,14 +1,14 @@
 syntax = "proto3";
-package botany.botanydist;
+package ununifi.ununifidist;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 // this line is used by starport scaffolding # genesis/proto/import
-import "botanydist/botanydist.proto";
+import "ununifidist/ununifidist.proto";
 
-option go_package = "github.com/UnUniFi/chain/x/botanydist/types";
+option go_package = "github.com/UnUniFi/chain/x/ununifidist/types";
 
-// GenesisState defines the botanydist module's genesis state.
+// GenesisState defines the ununifidist module's genesis state.
 message GenesisState {
   Params params = 1 [
     (gogoproto.moretags) = "yaml:\"params\"",

@@ -122,8 +122,8 @@ func (m *MsgPlaceBidResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgPlaceBidResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgPlaceBid)(nil), "botany.auction.MsgPlaceBid")
-	proto.RegisterType((*MsgPlaceBidResponse)(nil), "botany.auction.MsgPlaceBidResponse")
+	proto.RegisterType((*MsgPlaceBid)(nil), "ununifi.auction.MsgPlaceBid")
+	proto.RegisterType((*MsgPlaceBidResponse)(nil), "ununifi.auction.MsgPlaceBidResponse")
 }
 
 func init() { proto.RegisterFile("auction/tx.proto", fileDescriptor_085dc3627a5d85eb) }
@@ -181,7 +181,7 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 
 func (c *msgClient) PlaceBid(ctx context.Context, in *MsgPlaceBid, opts ...grpc.CallOption) (*MsgPlaceBidResponse, error) {
 	out := new(MsgPlaceBidResponse)
-	err := c.cc.Invoke(ctx, "/botany.auction.Msg/PlaceBid", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.auction.Msg/PlaceBid", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -215,7 +215,7 @@ func _Msg_PlaceBid_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.auction.Msg/PlaceBid",
+		FullMethod: "/ununifi.auction.Msg/PlaceBid",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).PlaceBid(ctx, req.(*MsgPlaceBid))
@@ -224,7 +224,7 @@ func _Msg_PlaceBid_Handler(srv interface{}, ctx context.Context, dec func(interf
 }
 
 var _Msg_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "botany.auction.Msg",
+	ServiceName: "ununifi.auction.Msg",
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

@@ -110,8 +110,8 @@ func (m *QueryParamsResponse) GetParams() *Params {
 }
 
 func init() {
-	proto.RegisterType((*QueryParamsRequest)(nil), "botany.incentive.QueryParamsRequest")
-	proto.RegisterType((*QueryParamsResponse)(nil), "botany.incentive.QueryParamsResponse")
+	proto.RegisterType((*QueryParamsRequest)(nil), "ununifi.incentive.QueryParamsRequest")
+	proto.RegisterType((*QueryParamsResponse)(nil), "ununifi.incentive.QueryParamsResponse")
 }
 
 func init() { proto.RegisterFile("incentive/query.proto", fileDescriptor_80763d3b6283e138) }
@@ -163,7 +163,7 @@ func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 
 func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
 	out := new(QueryParamsResponse)
-	err := c.cc.Invoke(ctx, "/botany.incentive.Query/Params", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.incentive.Query/Params", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -197,7 +197,7 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.incentive.Query/Params",
+		FullMethod: "/ununifi.incentive.Query/Params",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).Params(ctx, req.(*QueryParamsRequest))
@@ -206,7 +206,7 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 }
 
 var _Query_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "botany.incentive.Query",
+	ServiceName: "ununifi.incentive.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

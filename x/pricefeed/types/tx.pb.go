@@ -125,8 +125,8 @@ func (m *MsgPostPriceResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgPostPriceResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgPostPrice)(nil), "botany.pricefeed.MsgPostPrice")
-	proto.RegisterType((*MsgPostPriceResponse)(nil), "botany.pricefeed.MsgPostPriceResponse")
+	proto.RegisterType((*MsgPostPrice)(nil), "ununifi.pricefeed.MsgPostPrice")
+	proto.RegisterType((*MsgPostPriceResponse)(nil), "ununifi.pricefeed.MsgPostPriceResponse")
 }
 
 func init() { proto.RegisterFile("pricefeed/tx.proto", fileDescriptor_27d54c954ce5f810) }
@@ -186,7 +186,7 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 
 func (c *msgClient) PostPrice(ctx context.Context, in *MsgPostPrice, opts ...grpc.CallOption) (*MsgPostPriceResponse, error) {
 	out := new(MsgPostPriceResponse)
-	err := c.cc.Invoke(ctx, "/botany.pricefeed.Msg/PostPrice", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.pricefeed.Msg/PostPrice", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -220,7 +220,7 @@ func _Msg_PostPrice_Handler(srv interface{}, ctx context.Context, dec func(inter
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.pricefeed.Msg/PostPrice",
+		FullMethod: "/ununifi.pricefeed.Msg/PostPrice",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).PostPrice(ctx, req.(*MsgPostPrice))
@@ -229,7 +229,7 @@ func _Msg_PostPrice_Handler(srv interface{}, ctx context.Context, dec func(inter
 }
 
 var _Msg_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "botany.pricefeed.Msg",
+	ServiceName: "ununifi.pricefeed.Msg",
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

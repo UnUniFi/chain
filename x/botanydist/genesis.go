@@ -1,10 +1,10 @@
-package botanydist
+package ununifidist
 
 import (
 	"fmt"
 
-	"github.com/UnUniFi/chain/x/botanydist/keeper"
-	"github.com/UnUniFi/chain/x/botanydist/types"
+	"github.com/UnUniFi/chain/x/ununifidist/keeper"
+	"github.com/UnUniFi/chain/x/ununifidist/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 

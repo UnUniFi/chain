@@ -361,12 +361,12 @@ func (m *Params) GetBidDuration() time.Duration {
 }
 
 func init() {
-	proto.RegisterType((*BaseAuction)(nil), "botany.auction.BaseAuction")
-	proto.RegisterType((*SurplusAuction)(nil), "botany.auction.SurplusAuction")
-	proto.RegisterType((*DebtAuction)(nil), "botany.auction.DebtAuction")
-	proto.RegisterType((*CollateralAuction)(nil), "botany.auction.CollateralAuction")
-	proto.RegisterType((*WeightedAddress)(nil), "botany.auction.WeightedAddress")
-	proto.RegisterType((*Params)(nil), "botany.auction.Params")
+	proto.RegisterType((*BaseAuction)(nil), "ununifi.auction.BaseAuction")
+	proto.RegisterType((*SurplusAuction)(nil), "ununifi.auction.SurplusAuction")
+	proto.RegisterType((*DebtAuction)(nil), "ununifi.auction.DebtAuction")
+	proto.RegisterType((*CollateralAuction)(nil), "ununifi.auction.CollateralAuction")
+	proto.RegisterType((*WeightedAddress)(nil), "ununifi.auction.WeightedAddress")
+	proto.RegisterType((*Params)(nil), "ununifi.auction.Params")
 }
 
 func init() { proto.RegisterFile("auction/auction.proto", fileDescriptor_e3dc552ee3b806a8) }

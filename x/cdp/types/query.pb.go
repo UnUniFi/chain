@@ -481,16 +481,16 @@ func (m *QueryAllDepositResponse) GetDeposits() []Deposit {
 }
 
 func init() {
-	proto.RegisterType((*QueryParamsRequest)(nil), "botany.cdp.QueryParamsRequest")
-	proto.RegisterType((*QueryParamsResponse)(nil), "botany.cdp.QueryParamsResponse")
-	proto.RegisterType((*QueryGetCdpRequest)(nil), "botany.cdp.QueryGetCdpRequest")
-	proto.RegisterType((*QueryGetCdpResponse)(nil), "botany.cdp.QueryGetCdpResponse")
-	proto.RegisterType((*QueryAllCdpRequest)(nil), "botany.cdp.QueryAllCdpRequest")
-	proto.RegisterType((*QueryAllCdpResponse)(nil), "botany.cdp.QueryAllCdpResponse")
-	proto.RegisterType((*QueryAllAccountRequest)(nil), "botany.cdp.QueryAllAccountRequest")
-	proto.RegisterType((*QueryAllAccountResponse)(nil), "botany.cdp.QueryAllAccountResponse")
-	proto.RegisterType((*QueryAllDepositRequest)(nil), "botany.cdp.QueryAllDepositRequest")
-	proto.RegisterType((*QueryAllDepositResponse)(nil), "botany.cdp.QueryAllDepositResponse")
+	proto.RegisterType((*QueryParamsRequest)(nil), "ununifi.cdp.QueryParamsRequest")
+	proto.RegisterType((*QueryParamsResponse)(nil), "ununifi.cdp.QueryParamsResponse")
+	proto.RegisterType((*QueryGetCdpRequest)(nil), "ununifi.cdp.QueryGetCdpRequest")
+	proto.RegisterType((*QueryGetCdpResponse)(nil), "ununifi.cdp.QueryGetCdpResponse")
+	proto.RegisterType((*QueryAllCdpRequest)(nil), "ununifi.cdp.QueryAllCdpRequest")
+	proto.RegisterType((*QueryAllCdpResponse)(nil), "ununifi.cdp.QueryAllCdpResponse")
+	proto.RegisterType((*QueryAllAccountRequest)(nil), "ununifi.cdp.QueryAllAccountRequest")
+	proto.RegisterType((*QueryAllAccountResponse)(nil), "ununifi.cdp.QueryAllAccountResponse")
+	proto.RegisterType((*QueryAllDepositRequest)(nil), "ununifi.cdp.QueryAllDepositRequest")
+	proto.RegisterType((*QueryAllDepositResponse)(nil), "ununifi.cdp.QueryAllDepositResponse")
 }
 
 func init() { proto.RegisterFile("cdp/query.proto", fileDescriptor_d15b26084609686f) }
@@ -570,7 +570,7 @@ func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 
 func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
 	out := new(QueryParamsResponse)
-	err := c.cc.Invoke(ctx, "/botany.cdp.Query/Params", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.cdp.Query/Params", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -579,7 +579,7 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 
 func (c *queryClient) Cdp(ctx context.Context, in *QueryGetCdpRequest, opts ...grpc.CallOption) (*QueryGetCdpResponse, error) {
 	out := new(QueryGetCdpResponse)
-	err := c.cc.Invoke(ctx, "/botany.cdp.Query/Cdp", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.cdp.Query/Cdp", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -588,7 +588,7 @@ func (c *queryClient) Cdp(ctx context.Context, in *QueryGetCdpRequest, opts ...g
 
 func (c *queryClient) CdpAll(ctx context.Context, in *QueryAllCdpRequest, opts ...grpc.CallOption) (*QueryAllCdpResponse, error) {
 	out := new(QueryAllCdpResponse)
-	err := c.cc.Invoke(ctx, "/botany.cdp.Query/CdpAll", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.cdp.Query/CdpAll", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -597,7 +597,7 @@ func (c *queryClient) CdpAll(ctx context.Context, in *QueryAllCdpRequest, opts .
 
 func (c *queryClient) AccountAll(ctx context.Context, in *QueryAllAccountRequest, opts ...grpc.CallOption) (*QueryAllAccountResponse, error) {
 	out := new(QueryAllAccountResponse)
-	err := c.cc.Invoke(ctx, "/botany.cdp.Query/AccountAll", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.cdp.Query/AccountAll", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -606,7 +606,7 @@ func (c *queryClient) AccountAll(ctx context.Context, in *QueryAllAccountRequest
 
 func (c *queryClient) DepositAll(ctx context.Context, in *QueryAllDepositRequest, opts ...grpc.CallOption) (*QueryAllDepositResponse, error) {
 	out := new(QueryAllDepositResponse)
-	err := c.cc.Invoke(ctx, "/botany.cdp.Query/DepositAll", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ununifi.cdp.Query/DepositAll", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -657,7 +657,7 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.cdp.Query/Params",
+		FullMethod: "/ununifi.cdp.Query/Params",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).Params(ctx, req.(*QueryParamsRequest))
@@ -675,7 +675,7 @@ func _Query_Cdp_Handler(srv interface{}, ctx context.Context, dec func(interface
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.cdp.Query/Cdp",
+		FullMethod: "/ununifi.cdp.Query/Cdp",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).Cdp(ctx, req.(*QueryGetCdpRequest))
@@ -693,7 +693,7 @@ func _Query_CdpAll_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.cdp.Query/CdpAll",
+		FullMethod: "/ununifi.cdp.Query/CdpAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).CdpAll(ctx, req.(*QueryAllCdpRequest))
@@ -711,7 +711,7 @@ func _Query_AccountAll_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.cdp.Query/AccountAll",
+		FullMethod: "/ununifi.cdp.Query/AccountAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).AccountAll(ctx, req.(*QueryAllAccountRequest))
@@ -729,7 +729,7 @@ func _Query_DepositAll_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/botany.cdp.Query/DepositAll",
+		FullMethod: "/ununifi.cdp.Query/DepositAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).DepositAll(ctx, req.(*QueryAllDepositRequest))
@@ -738,7 +738,7 @@ func _Query_DepositAll_Handler(srv interface{}, ctx context.Context, dec func(in
 }
 
 var _Query_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "botany.cdp.Query",
+	ServiceName: "ununifi.cdp.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

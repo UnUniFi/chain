@@ -91,9 +91,6 @@ import (
 	"github.com/UnUniFi/chain/x/auction"
 	auctionkeeper "github.com/UnUniFi/chain/x/auction/keeper"
 	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
-	"github.com/UnUniFi/chain/x/botanydist"
-	botanydistkeeper "github.com/UnUniFi/chain/x/botanydist/keeper"
-	botanydisttypes "github.com/UnUniFi/chain/x/botanydist/types"
 	"github.com/UnUniFi/chain/x/cdp"
 	cdpkeeper "github.com/UnUniFi/chain/x/cdp/keeper"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
@@ -103,6 +100,9 @@ import (
 	"github.com/UnUniFi/chain/x/pricefeed"
 	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
+	"github.com/UnUniFi/chain/x/ununifidist"
+	ununifidistkeeper "github.com/UnUniFi/chain/x/ununifidist/keeper"
+	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
 )
 
 const Name = "ununifi"
@@ -153,7 +153,7 @@ var (
 		auction.AppModuleBasic{},
 		cdp.AppModuleBasic{},
 		pricefeed.AppModuleBasic{},
-		botanydist.AppModuleBasic{},
+		ununifidist.AppModuleBasic{},
 		incentive.AppModuleBasic{},
 	)
 
@@ -170,7 +170,7 @@ var (
 		auctiontypes.ModuleName:        nil,
 		cdptypes.ModuleName:            {authtypes.Minter, authtypes.Burner},
 		cdptypes.LiquidatorMacc:        {authtypes.Minter, authtypes.Burner},
-		botanydisttypes.ModuleName:     {authtypes.Minter},
+		ununifidisttypes.ModuleName:    {authtypes.Minter},
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -233,11 +233,11 @@ type App struct {
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
-	auctionKeeper    auctionkeeper.Keeper
-	cdpKeeper        cdpkeeper.Keeper
-	incentiveKeeper  incentivekeeper.Keeper
-	botanydistKeeper botanydistkeeper.Keeper
-	pricefeedKeeper  pricefeedkeeper.Keeper
+	auctionKeeper     auctionkeeper.Keeper
+	cdpKeeper         cdpkeeper.Keeper
+	incentiveKeeper   incentivekeeper.Keeper
+	ununifidistKeeper ununifidistkeeper.Keeper
+	pricefeedKeeper   pricefeedkeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -271,7 +271,7 @@ func NewApp(
 		evidencetypes.StoreKey, liquiditytypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 		auctiontypes.StoreKey, cdptypes.StoreKey, incentivetypes.StoreKey,
-		botanydisttypes.StoreKey, pricefeedtypes.StoreKey,
+		ununifidisttypes.StoreKey, pricefeedtypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -403,11 +403,11 @@ func NewApp(
 		app.BankKeeper,
 		&cdpKeeper,
 	)
-	app.botanydistKeeper = botanydistkeeper.NewKeeper(
+	app.ununifidistKeeper = ununifidistkeeper.NewKeeper(
 		appCodec,
-		keys[botanydisttypes.StoreKey],
-		keys[botanydisttypes.MemStoreKey],
-		app.GetSubspace(botanydisttypes.ModuleName),
+		keys[ununifidisttypes.StoreKey],
+		keys[ununifidisttypes.MemStoreKey],
+		app.GetSubspace(ununifidisttypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper,
 	)
@@ -453,7 +453,7 @@ func NewApp(
 		auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
 		cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.pricefeedKeeper),
 		incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
-		botanydist.NewAppModule(appCodec, app.botanydistKeeper, app.AccountKeeper, app.BankKeeper),
+		ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
 		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
 	)
 
@@ -464,7 +464,7 @@ func NewApp(
 	app.mm.SetOrderBeginBlockers(
 		upgradetypes.ModuleName, capabilitytypes.ModuleName, minttypes.ModuleName, distrtypes.ModuleName, slashingtypes.ModuleName,
 		evidencetypes.ModuleName, stakingtypes.ModuleName, liquiditytypes.ModuleName, ibchost.ModuleName,
-		botanydisttypes.ModuleName, auctiontypes.ModuleName, cdptypes.ModuleName,
+		ununifidisttypes.ModuleName, auctiontypes.ModuleName, cdptypes.ModuleName,
 		incentivetypes.ModuleName,
 	)
 
@@ -498,7 +498,7 @@ func NewApp(
 		pricefeedtypes.ModuleName,
 		cdptypes.ModuleName,
 		incentivetypes.ModuleName,
-		botanydisttypes.ModuleName,
+		ununifidisttypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -527,7 +527,7 @@ func NewApp(
 		// auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
 		// cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.pricefeedKeeper),
 		// incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
-		// botanydist.NewAppModule(appCodec, app.botanydistKeeper, app.AccountKeeper, app.BankKeeper),
+		// ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
 		// pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
 	)
 
@@ -722,7 +722,7 @@ func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyA
 	paramsKeeper.Subspace(auctiontypes.ModuleName)
 	paramsKeeper.Subspace(cdptypes.ModuleName)
 	paramsKeeper.Subspace(incentivetypes.ModuleName)
-	paramsKeeper.Subspace(botanydisttypes.ModuleName)
+	paramsKeeper.Subspace(ununifidisttypes.ModuleName)
 	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
 
 	return paramsKeeper

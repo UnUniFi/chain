@@ -77,7 +77,7 @@ func (m *GenesisState) GetPostedPrices() []PostedPrice {
 }
 
 func init() {
-	proto.RegisterType((*GenesisState)(nil), "botany.pricefeed.GenesisState")
+	proto.RegisterType((*GenesisState)(nil), "ununifi.pricefeed.GenesisState")
 }
 
 func init() { proto.RegisterFile("pricefeed/genesis.proto", fileDescriptor_e33b22b561d44d2b) }

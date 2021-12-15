@@ -201,9 +201,9 @@ func (m *GenesisDenoms) GetCdpMintingRewardDenom() string {
 }
 
 func init() {
-	proto.RegisterType((*GenesisState)(nil), "botany.incentive.GenesisState")
-	proto.RegisterType((*GenesisAccumulationTime)(nil), "botany.incentive.GenesisAccumulationTime")
-	proto.RegisterType((*GenesisDenoms)(nil), "botany.incentive.GenesisDenoms")
+	proto.RegisterType((*GenesisState)(nil), "ununifi.incentive.GenesisState")
+	proto.RegisterType((*GenesisAccumulationTime)(nil), "ununifi.incentive.GenesisAccumulationTime")
+	proto.RegisterType((*GenesisDenoms)(nil), "ununifi.incentive.GenesisDenoms")
 }
 
 func init() { proto.RegisterFile("incentive/genesis.proto", fileDescriptor_b5ea08f29a85d2f6) }

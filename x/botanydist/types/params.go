@@ -51,7 +51,7 @@ func NewParams(active bool, periods Periods) Params {
 	}
 }
 
-// DefaultParams returns default params for botanydist module
+// DefaultParams returns default params for ununifidist module
 func DefaultParams() Params {
 	return NewParams(DefaultActive, DefaultPeriods)
 }

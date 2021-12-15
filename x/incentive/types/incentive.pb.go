@@ -400,13 +400,13 @@ func (m *Multiplier) GetMonthsLockup() int64 {
 }
 
 func init() {
-	proto.RegisterType((*BaseClaim)(nil), "botany.incentive.BaseClaim")
-	proto.RegisterType((*BaseMultiClaim)(nil), "botany.incentive.BaseMultiClaim")
-	proto.RegisterType((*CdpMintingClaim)(nil), "botany.incentive.CdpMintingClaim")
-	proto.RegisterType((*RewardIndex)(nil), "botany.incentive.RewardIndex")
-	proto.RegisterType((*Params)(nil), "botany.incentive.Params")
-	proto.RegisterType((*RewardPeriod)(nil), "botany.incentive.RewardPeriod")
-	proto.RegisterType((*Multiplier)(nil), "botany.incentive.Multiplier")
+	proto.RegisterType((*BaseClaim)(nil), "ununifi.incentive.BaseClaim")
+	proto.RegisterType((*BaseMultiClaim)(nil), "ununifi.incentive.BaseMultiClaim")
+	proto.RegisterType((*CdpMintingClaim)(nil), "ununifi.incentive.CdpMintingClaim")
+	proto.RegisterType((*RewardIndex)(nil), "ununifi.incentive.RewardIndex")
+	proto.RegisterType((*Params)(nil), "ununifi.incentive.Params")
+	proto.RegisterType((*RewardPeriod)(nil), "ununifi.incentive.RewardPeriod")
+	proto.RegisterType((*Multiplier)(nil), "ununifi.incentive.Multiplier")
 }
 
 func init() { proto.RegisterFile("incentive/incentive.proto", fileDescriptor_4fbd49a6c550bd8c) }
