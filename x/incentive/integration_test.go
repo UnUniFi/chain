@@ -19,7 +19,7 @@ func d(str string) sdk.Dec { return sdk.MustNewDecFromStr(str) }
 func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 	cdpGenesis := cdptypes.GenesisState{
 		Params: cdptypes.Params{
-			GlobalDebtLimit:         sdk.NewInt64Coin("jpyx", 2000000000000),
+			GlobalDebtLimit:         sdk.NewInt64Coin("jpu", 2000000000000),
 			SurplusAuctionThreshold: cdptypes.DefaultSurplusThreshold,
 			SurplusAuctionLot:       cdptypes.DefaultSurplusLot,
 			DebtAuctionThreshold:    cdptypes.DefaultDebtThreshold,
@@ -29,7 +29,7 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 					Denom:               "xrp",
 					Type:                "xrp-a",
 					LiquidationRatio:    sdk.MustNewDecFromStr("2.0"),
-					DebtLimit:           sdk.NewInt64Coin("jpyx", 500000000000),
+					DebtLimit:           sdk.NewInt64Coin("jpu", 500000000000),
 					StabilityFee:        sdk.MustNewDecFromStr("1.000000001547125958"), // %5 apr
 					LiquidationPenalty:  d("0.05"),
 					AuctionSize:         i(7000000000),
@@ -42,7 +42,7 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 					Denom:               "btc",
 					Type:                "btc-a",
 					LiquidationRatio:    sdk.MustNewDecFromStr("1.5"),
-					DebtLimit:           sdk.NewInt64Coin("jpyx", 500000000000),
+					DebtLimit:           sdk.NewInt64Coin("jpu", 500000000000),
 					StabilityFee:        sdk.MustNewDecFromStr("1.000000000782997609"), // %2.5 apr
 					LiquidationPenalty:  d("0.025"),
 					AuctionSize:         i(10000000),
@@ -55,7 +55,7 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 					Denom:               "bnb",
 					Type:                "bnb-a",
 					LiquidationRatio:    sdk.MustNewDecFromStr("1.5"),
-					DebtLimit:           sdk.NewInt64Coin("jpyx", 500000000000),
+					DebtLimit:           sdk.NewInt64Coin("jpu", 500000000000),
 					StabilityFee:        sdk.MustNewDecFromStr("1.000000001547125958"), // %5 apr
 					LiquidationPenalty:  d("0.05"),
 					AuctionSize:         i(50000000000),
@@ -68,7 +68,7 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 					Denom:               "bjpy",
 					Type:                "bjpy-a",
 					LiquidationRatio:    d("1.01"),
-					DebtLimit:           sdk.NewInt64Coin("jpyx", 500000000000),
+					DebtLimit:           sdk.NewInt64Coin("jpu", 500000000000),
 					StabilityFee:        sdk.OneDec(), // %0 apr
 					LiquidationPenalty:  d("0.05"),
 					AuctionSize:         i(10000000000),
@@ -79,7 +79,7 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 				},
 			},
 			DebtParam: cdptypes.DebtParam{
-				Denom:            "jpyx",
+				Denom:            "jpu",
 				ReferenceAsset:   "jpy",
 				ConversionFactor: i(6),
 				DebtFloor:        i(10000000),
@@ -175,7 +175,7 @@ func NewIncentiveGenState(tApp app.TestApp, previousAccumTime, endTime time.Time
 func NewCDPGenStateHighInterest(tApp app.TestApp) app.GenesisState {
 	cdpGenesis := cdptypes.GenesisState{
 		Params: cdptypes.Params{
-			GlobalDebtLimit:         sdk.NewInt64Coin("jpyx", 2000000000000),
+			GlobalDebtLimit:         sdk.NewInt64Coin("jpu", 2000000000000),
 			SurplusAuctionThreshold: cdptypes.DefaultSurplusThreshold,
 			SurplusAuctionLot:       cdptypes.DefaultSurplusLot,
 			DebtAuctionThreshold:    cdptypes.DefaultDebtThreshold,
@@ -185,7 +185,7 @@ func NewCDPGenStateHighInterest(tApp app.TestApp) app.GenesisState {
 					Denom:               "bnb",
 					Type:                "bnb-a",
 					LiquidationRatio:    sdk.MustNewDecFromStr("1.5"),
-					DebtLimit:           sdk.NewInt64Coin("jpyx", 500000000000),
+					DebtLimit:           sdk.NewInt64Coin("jpu", 500000000000),
 					StabilityFee:        sdk.MustNewDecFromStr("1.000000051034942716"), // 500% APR
 					LiquidationPenalty:  d("0.05"),
 					AuctionSize:         i(50000000000),
@@ -196,7 +196,7 @@ func NewCDPGenStateHighInterest(tApp app.TestApp) app.GenesisState {
 				},
 			},
 			DebtParam: cdptypes.DebtParam{
-				Denom:            "jpyx",
+				Denom:            "jpu",
 				ReferenceAsset:   "jpy",
 				ConversionFactor: i(6),
 				DebtFloor:        i(10000000),

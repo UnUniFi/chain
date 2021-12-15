@@ -55,8 +55,8 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 
 	synchronizedCdpClaims := types.CdpMintingClaims{}
 
-	for _, jpyxClaim := range cdpClaims {
-		claim, err := k.SynchronizeCdpMintingClaim(ctx, jpyxClaim)
+	for _, jpuClaim := range cdpClaims {
+		claim, err := k.SynchronizeCdpMintingClaim(ctx, jpuClaim)
 		if err != nil {
 			panic(err)
 		}
@@ -70,7 +70,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 	for _, rp := range params.CdpMintingRewardPeriods {
 		pat, found := k.GetPreviousCdpMintingAccrualTime(ctx, rp.CollateralType)
 		if !found {
-			panic(fmt.Sprintf("expected previous jpyx minting reward accrual time to be set in state for %s", rp.CollateralType))
+			panic(fmt.Sprintf("expected previous jpu minting reward accrual time to be set in state for %s", rp.CollateralType))
 		}
 		gat := types.NewGenesisAccumulationTime(rp.CollateralType, pat)
 		cdpMintingGats = append(cdpMintingGats, gat)

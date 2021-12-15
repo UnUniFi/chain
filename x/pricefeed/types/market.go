@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	jpyx "github.com/UnUniFi/chain/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -16,7 +15,7 @@ func NewMarket(id, base, quote string, oracles []sdk.AccAddress, active bool) Ma
 		MarketId:   id,
 		BaseAsset:  base,
 		QuoteAsset: quote,
-		Oracles:    jpyx.StringAccAddresses(oracles),
+		Oracles:    ununifitypes.StringAccAddresses(oracles),
 		Active:     active,
 	}
 }

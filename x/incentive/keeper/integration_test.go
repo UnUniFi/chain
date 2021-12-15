@@ -18,7 +18,7 @@ import (
 func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 	cdpGenesis := cdptypes.GenesisState{
 		Params: cdptypes.Params{
-			GlobalDebtLimit:         sdk.NewInt64Coin("jpyx", 2000000000000),
+			GlobalDebtLimit:         sdk.NewInt64Coin("jpu", 2000000000000),
 			SurplusAuctionThreshold: cdptypes.DefaultSurplusThreshold,
 			SurplusAuctionLot:       cdptypes.DefaultSurplusLot,
 			DebtAuctionThreshold:    cdptypes.DefaultDebtThreshold,
@@ -28,7 +28,7 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 					Denom:               "xrp",
 					Type:                "xrp-a",
 					LiquidationRatio:    sdk.MustNewDecFromStr("2.0"),
-					DebtLimit:           sdk.NewInt64Coin("jpyx", 500000000000),
+					DebtLimit:           sdk.NewInt64Coin("jpu", 500000000000),
 					StabilityFee:        sdk.MustNewDecFromStr("1.000000001547125958"), // %5 apr
 					LiquidationPenalty:  d("0.05"),
 					AuctionSize:         i(7000000000),
@@ -41,7 +41,7 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 					Denom:               "btc",
 					Type:                "btc-a",
 					LiquidationRatio:    sdk.MustNewDecFromStr("1.5"),
-					DebtLimit:           sdk.NewInt64Coin("jpyx", 500000000000),
+					DebtLimit:           sdk.NewInt64Coin("jpu", 500000000000),
 					StabilityFee:        sdk.MustNewDecFromStr("1.000000000782997609"), // %2.5 apr
 					LiquidationPenalty:  d("0.025"),
 					AuctionSize:         i(10000000),
@@ -54,7 +54,7 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 					Denom:               "bnb",
 					Type:                "bnb-a",
 					LiquidationRatio:    sdk.MustNewDecFromStr("1.5"),
-					DebtLimit:           sdk.NewInt64Coin("jpyx", 500000000000),
+					DebtLimit:           sdk.NewInt64Coin("jpu", 500000000000),
 					StabilityFee:        sdk.MustNewDecFromStr("1.000000001547125958"), // %5 apr
 					LiquidationPenalty:  d("0.05"),
 					AuctionSize:         i(50000000000),
@@ -67,7 +67,7 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 					Denom:               "bjpy",
 					Type:                "bjpy-a",
 					LiquidationRatio:    d("1.01"),
-					DebtLimit:           sdk.NewInt64Coin("jpyx", 500000000000),
+					DebtLimit:           sdk.NewInt64Coin("jpu", 500000000000),
 					StabilityFee:        sdk.OneDec(), // %0 apr
 					LiquidationPenalty:  d("0.05"),
 					AuctionSize:         i(10000000000),
@@ -78,7 +78,7 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 				},
 			},
 			DebtParam: cdptypes.DebtParam{
-				Denom:            "jpyx",
+				Denom:            "jpu",
 				ReferenceAsset:   "jpy",
 				ConversionFactor: i(6),
 				DebtFloor:        i(10000000),
@@ -158,14 +158,14 @@ func NewPricefeedGenStateMulti(tApp app.TestApp) app.GenesisState {
 	return app.GenesisState{pricefeedtypes.ModuleName: tApp.AppCodec().MustMarshalJSON(&pfGenesis)}
 }
 
-/* Question: Not necessary for jpyx because hard module does not exist?
+/* Question: Not necessary for jpu because hard module does not exist?
 func NewHardGenStateMulti() app.GenesisState {
 	loanToValue, _ := sdk.NewDecFromStr("0.6")
 	borrowLimit := sdk.NewDec(1000000000000000)
 
 	hardGS := hard.NewGenesisState(hard.NewParams(
 		hard.MoneyMarkets{
-			hard.NewMoneyMarket("jpyx", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "jpyx:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
+			hard.NewMoneyMarket("jpu", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "jpu:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
 			hard.NewMoneyMarket("ujcbn", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "kava:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
 			hard.NewMoneyMarket("bnb", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "bnb:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
 			hard.NewMoneyMarket("btcb", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "btc:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
@@ -227,7 +227,7 @@ func (suite *KeeperTestSuite) SetupWithGenState() {
 		// NewHardGenStateMulti(),
 	)
 
-	/* Question: Not necessary for jpyx because committee module does not exist?
+	/* Question: Not necessary for jpu because committee module does not exist?
 	// Set up a god committee
 	committeeModKeeper := tApp.GetCommitteeKeeper()
 	godCommittee := committeetypes.Committee{

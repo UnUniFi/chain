@@ -105,7 +105,7 @@ func (suite *SeizeTestSuite) createCdps() {
 				tracker.debt += int64(debt)
 			}
 		}
-		err := suite.keeper.AddCdp(suite.ctx, addrs[j], c(collateral, int64(amount)), c("jpyx", int64(debt)), collateral+"-a")
+		err := suite.keeper.AddCdp(suite.ctx, addrs[j], c(collateral, int64(amount)), c("jpu", int64(debt)), collateral+"-a")
 		suite.NoError(err)
 		c, f := suite.keeper.GetCdp(suite.ctx, collateral+"-a", uint64(j+1))
 		suite.True(f)
@@ -135,10 +135,10 @@ func (suite *SeizeTestSuite) TestSeizeCollateral() {
 	suite.True(found)
 	p := cdp.Principal.Amount
 	cl := cdp.Collateral.Amount
-	tpb := suite.keeper.GetTotalPrincipal(suite.ctx, "xrp-a", "jpyx")
+	tpb := suite.keeper.GetTotalPrincipal(suite.ctx, "xrp-a", "jpu")
 	err := suite.keeper.SeizeCollateral(suite.ctx, cdp)
 	suite.NoError(err)
-	tpa := suite.keeper.GetTotalPrincipal(suite.ctx, "xrp-a", "jpyx")
+	tpa := suite.keeper.GetTotalPrincipal(suite.ctx, "xrp-a", "jpu")
 	suite.Equal(tpb.Sub(tpa), p)
 	auctionKeeper := suite.app.GetAuctionKeeper()
 	_, found = auctionKeeper.GetAuction(suite.ctx, auctiontypes.DefaultNextAuctionID)
@@ -147,7 +147,7 @@ func (suite *SeizeTestSuite) TestSeizeCollateral() {
 	auctionMacc := ak.GetModuleAccount(suite.ctx, auctiontypes.ModuleName)
 	suite.Equal(cs(c("debt", p.Int64()), c("xrp", cl.Int64())), sk.GetAllBalances(suite.ctx, auctionMacc.GetAddress()))
 	acc := ak.GetAccount(suite.ctx, suite.addrs[1])
-	suite.Equal(p.Int64(), sk.GetBalance(suite.ctx, acc.GetAddress(), "jpyx").Amount.Int64())
+	suite.Equal(p.Int64(), sk.GetBalance(suite.ctx, acc.GetAddress(), "jpu").Amount.Int64())
 	err = suite.keeper.WithdrawCollateral(suite.ctx, suite.addrs[1], suite.addrs[1], c("xrp", 10), "xrp-a")
 	suite.Require().True(errors.Is(err, cdptypes.ErrCdpNotFound))
 }
@@ -165,16 +165,16 @@ func (suite *SeizeTestSuite) TestSeizeCollateralMultiDeposit() {
 	suite.Equal(2, len(deposits))
 	p := cdp.Principal.Amount
 	cl := cdp.Collateral.Amount
-	tpb := suite.keeper.GetTotalPrincipal(suite.ctx, "xrp-a", "jpyx")
+	tpb := suite.keeper.GetTotalPrincipal(suite.ctx, "xrp-a", "jpu")
 	err = suite.keeper.SeizeCollateral(suite.ctx, cdp)
 	suite.NoError(err)
-	tpa := suite.keeper.GetTotalPrincipal(suite.ctx, "xrp-a", "jpyx")
+	tpa := suite.keeper.GetTotalPrincipal(suite.ctx, "xrp-a", "jpu")
 	suite.Equal(tpb.Sub(tpa), p)
 	ak := suite.app.GetAccountKeeper()
 	auctionMacc := ak.GetModuleAccount(suite.ctx, auctiontypes.ModuleName)
 	suite.Equal(cs(c("debt", p.Int64()), c("xrp", cl.Int64())), sk.GetAllBalances(suite.ctx, auctionMacc.GetAddress()))
 	acc := ak.GetAccount(suite.ctx, suite.addrs[1])
-	suite.Equal(p.Int64(), sk.GetBalance(suite.ctx, acc.GetAddress(), "jpyx").Amount.Int64())
+	suite.Equal(p.Int64(), sk.GetBalance(suite.ctx, acc.GetAddress(), "jpu").Amount.Int64())
 	err = suite.keeper.WithdrawCollateral(suite.ctx, suite.addrs[1], suite.addrs[1], c("xrp", 10), "xrp-a")
 	suite.Require().True(errors.Is(err, cdptypes.ErrCdpNotFound))
 }

@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	jpyx "github.com/UnUniFi/chain/types"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -262,7 +261,7 @@ func NewWeightedAddresses(addrs []sdk.AccAddress, weights []sdk.Int) (WeightedAd
 
 	for i := range addrs {
 		wa := WeightedAddress{
-			Address: jpyx.StringAccAddress(addrs[i]),
+			Address: ununifitypes.StringAccAddress(addrs[i]),
 			Weight:  weights[i],
 		}
 

@@ -4,7 +4,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	jpyx "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
@@ -26,7 +25,7 @@ func (k Keeper) GetMarkets(ctx sdk.Context) []types.Market {
 func (k Keeper) GetOracles(ctx sdk.Context, marketID string) ([]sdk.AccAddress, error) {
 	for _, m := range k.GetMarkets(ctx) {
 		if marketID == m.MarketId {
-			return jpyx.AccAddresses(m.Oracles), nil
+			return ununifitypes.AccAddresses(m.Oracles), nil
 		}
 	}
 	return []sdk.AccAddress{}, sdkerrors.Wrap(types.ErrInvalidMarket, marketID)

@@ -41,7 +41,7 @@ func NewPricefeedGenState(tApp app.TestApp, asset string, price sdk.Dec) app.Gen
 func NewCdpGenState(tApp app.TestApp, asset string, liquidationRatio sdk.Dec) app.GenesisState {
 	cdpGenesis := cdptypes.GenesisState{
 		Params: cdptypes.Params{
-			GlobalDebtLimit:         sdk.NewInt64Coin("jpyx", 1000000000000),
+			GlobalDebtLimit:         sdk.NewInt64Coin("jpu", 1000000000000),
 			SurplusAuctionThreshold: cdptypes.DefaultSurplusThreshold,
 			SurplusAuctionLot:       cdptypes.DefaultSurplusLot,
 			DebtAuctionThreshold:    cdptypes.DefaultDebtThreshold,
@@ -51,7 +51,7 @@ func NewCdpGenState(tApp app.TestApp, asset string, liquidationRatio sdk.Dec) ap
 					Denom:                            asset,
 					Type:                             asset + "-a",
 					LiquidationRatio:                 liquidationRatio,
-					DebtLimit:                        sdk.NewInt64Coin("jpyx", 1000000000000),
+					DebtLimit:                        sdk.NewInt64Coin("jpu", 1000000000000),
 					StabilityFee:                     sdk.MustNewDecFromStr("1.000000001547125958"), // %5 apr
 					LiquidationPenalty:               d("0.05"),
 					AuctionSize:                      i(1000000000),
@@ -64,7 +64,7 @@ func NewCdpGenState(tApp app.TestApp, asset string, liquidationRatio sdk.Dec) ap
 				},
 			},
 			DebtParam: cdptypes.DebtParam{
-				Denom:            "jpyx",
+				Denom:            "jpu",
 				ReferenceAsset:   "jpy",
 				ConversionFactor: i(6),
 				DebtFloor:        i(10000000),
@@ -113,7 +113,7 @@ func NewPricefeedGenStateMulti(tApp app.TestApp) app.GenesisState {
 func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 	cdpGenesis := cdptypes.GenesisState{
 		Params: cdptypes.Params{
-			GlobalDebtLimit:         sdk.NewInt64Coin("jpyx", 1000000000000),
+			GlobalDebtLimit:         sdk.NewInt64Coin("jpu", 1000000000000),
 			SurplusAuctionThreshold: cdptypes.DefaultSurplusThreshold,
 			SurplusAuctionLot:       cdptypes.DefaultSurplusLot,
 			DebtAuctionThreshold:    cdptypes.DefaultDebtThreshold,
@@ -123,7 +123,7 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 					Denom:                            "xrp",
 					Type:                             "xrp-a",
 					LiquidationRatio:                 sdk.MustNewDecFromStr("2.0"),
-					DebtLimit:                        sdk.NewInt64Coin("jpyx", 500000000000),
+					DebtLimit:                        sdk.NewInt64Coin("jpu", 500000000000),
 					StabilityFee:                     sdk.MustNewDecFromStr("1.000000001547125958"), // %5 apr
 					LiquidationPenalty:               d("0.05"),
 					AuctionSize:                      i(7000000000),
@@ -138,7 +138,7 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 					Denom:                            "btc",
 					Type:                             "btc-a",
 					LiquidationRatio:                 sdk.MustNewDecFromStr("1.5"),
-					DebtLimit:                        sdk.NewInt64Coin("jpyx", 500000000000),
+					DebtLimit:                        sdk.NewInt64Coin("jpu", 500000000000),
 					StabilityFee:                     sdk.MustNewDecFromStr("1.000000000782997609"), // %2.5 apr
 					LiquidationPenalty:               d("0.025"),
 					AuctionSize:                      i(10000000),
@@ -151,7 +151,7 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 				},
 			},
 			DebtParam: cdptypes.DebtParam{
-				Denom:            "jpyx",
+				Denom:            "jpu",
 				ReferenceAsset:   "jpy",
 				ConversionFactor: i(6),
 				DebtFloor:        i(10000000),
@@ -175,10 +175,10 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 
 func cdps() (cdps cdptypes.Cdps) {
 	_, addrs := app.GeneratePrivKeyAddressPairs(3)
-	c1 := cdptypes.NewCdp(uint64(1), addrs[0], sdk.NewCoin("xrp", sdk.NewInt(100000000)), "xrp-a", sdk.NewCoin("jpyx", sdk.NewInt(8000000)), tmtime.Canonical(time.Now()), sdk.OneDec())
-	c2 := cdptypes.NewCdp(uint64(2), addrs[1], sdk.NewCoin("xrp", sdk.NewInt(100000000)), "xrp-a", sdk.NewCoin("jpyx", sdk.NewInt(10000000)), tmtime.Canonical(time.Now()), sdk.OneDec())
-	c3 := cdptypes.NewCdp(uint64(3), addrs[1], sdk.NewCoin("btc", sdk.NewInt(1000000000)), "btc-a", sdk.NewCoin("jpyx", sdk.NewInt(10000000)), tmtime.Canonical(time.Now()), sdk.OneDec())
-	c4 := cdptypes.NewCdp(uint64(4), addrs[2], sdk.NewCoin("xrp", sdk.NewInt(1000000000)), "xrp-a", sdk.NewCoin("jpyx", sdk.NewInt(50000000)), tmtime.Canonical(time.Now()), sdk.OneDec())
+	c1 := cdptypes.NewCdp(uint64(1), addrs[0], sdk.NewCoin("xrp", sdk.NewInt(100000000)), "xrp-a", sdk.NewCoin("jpu", sdk.NewInt(8000000)), tmtime.Canonical(time.Now()), sdk.OneDec())
+	c2 := cdptypes.NewCdp(uint64(2), addrs[1], sdk.NewCoin("xrp", sdk.NewInt(100000000)), "xrp-a", sdk.NewCoin("jpu", sdk.NewInt(10000000)), tmtime.Canonical(time.Now()), sdk.OneDec())
+	c3 := cdptypes.NewCdp(uint64(3), addrs[1], sdk.NewCoin("btc", sdk.NewInt(1000000000)), "btc-a", sdk.NewCoin("jpu", sdk.NewInt(10000000)), tmtime.Canonical(time.Now()), sdk.OneDec())
+	c4 := cdptypes.NewCdp(uint64(4), addrs[2], sdk.NewCoin("xrp", sdk.NewInt(1000000000)), "xrp-a", sdk.NewCoin("jpu", sdk.NewInt(50000000)), tmtime.Canonical(time.Now()), sdk.OneDec())
 	cdps = append(cdps, c1, c2, c3, c4)
 	return
 }

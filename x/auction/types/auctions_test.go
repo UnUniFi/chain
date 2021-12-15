@@ -12,7 +12,7 @@ import (
 
 const (
 	TestInitiatorModuleName = "liquidator"
-	TestLotDenom            = "jpyx"
+	TestLotDenom            = "jpu"
 	TestLotAmount           = 100
 	TestBidDenom            = "jcbn"
 	TestBidAmount           = 20
@@ -26,7 +26,7 @@ const (
 )
 
 func init() {
-	sdk.GetConfig().SetBech32PrefixForAccount("jpyx", "jpyx"+sdk.PrefixPublic)
+	sdk.GetConfig().SetBech32PrefixForAccount("ununifi", "ununifi"+sdk.PrefixPublic)
 }
 
 func d(amount string) sdk.Dec               { return sdk.MustNewDecFromStr(amount) }
