@@ -18,7 +18,7 @@ services:
     volumes:
       - ~/faucet/ununifid:/usr/local/bin/ununifid
       - ~/.ununifi:/root/.ununifi
-    command: faucet --cli-name ununifid --denoms ujcbn --keyring-backend test --account-name faucet --port 7002 --credit-amount=2000000 --max-credit=1999999
+    command: faucet --cli-name ununifid --denoms uguu --keyring-backend test --account-name faucet --port 7002 --credit-amount=2000000 --max-credit=1999999
     # ports:
     #   - 7002:7002
     network_mode: host
