@@ -49,9 +49,9 @@ func (suite *KeeperTestSuite) SetupTest() {
 	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
 
 	params := ununifidisttypes.NewParams(true, testPeriods)
-	jcbnGs := ununifidisttypes.NewGenesisState(params, ununifidisttypes.DefaultPreviousBlockTime, ununifidisttypes.DefaultGovDenom)
+	guuGs := ununifidisttypes.NewGenesisState(params, ununifidisttypes.DefaultPreviousBlockTime, ununifidisttypes.DefaultGovDenom)
 	// gs := app.GenesisState{ununifidisttypes.ModuleName: ununifidisttypes.ModuleCdc.MustMarshalJSON(ununifidisttypes.NewGenesisState(params, ununifidisttypes.DefaultPreviousBlockTime))}
-	gs := app.GenesisState{ununifidisttypes.ModuleName: ununifidisttypes.ModuleCdc.MustMarshalJSON(&jcbnGs)}
+	gs := app.GenesisState{ununifidisttypes.ModuleName: ununifidisttypes.ModuleCdc.MustMarshalJSON(&guuGs)}
 	tApp.InitializeFromGenesisStates(
 		authGS,
 		gs,

@@ -14,7 +14,7 @@ const (
 	TestInitiatorModuleName = "liquidator"
 	TestLotDenom            = "jpu"
 	TestLotAmount           = 100
-	TestBidDenom            = "jcbn"
+	TestBidDenom            = "guu"
 	TestBidAmount           = 20
 	TestDebtDenom           = "debt"
 	TestDebtAmount1         = 20
@@ -115,9 +115,9 @@ func TestBaseAuctionValidate(t *testing.T) {
 			BaseAuction{
 				Id:              1,
 				Initiator:       testAccAddress1,
-				Lot:             c("jcbn", 1),
+				Lot:             c("guu", 1),
 				Bidder:          ununifitypes.StringAccAddress(addr1),
-				Bid:             c("jcbn", 1),
+				Bid:             c("guu", 1),
 				EndTime:         now,
 				MaxEndTime:      now,
 				HasReceivedBids: true,
@@ -146,7 +146,7 @@ func TestBaseAuctionValidate(t *testing.T) {
 			BaseAuction{
 				Id:        1,
 				Initiator: testAccAddress1,
-				Lot:       c("jcbn", 1),
+				Lot:       c("guu", 1),
 				Bidder:    ununifitypes.StringAccAddress{},
 			},
 			false,
@@ -156,7 +156,7 @@ func TestBaseAuctionValidate(t *testing.T) {
 			BaseAuction{
 				Id:        1,
 				Initiator: testAccAddress1,
-				Lot:       c("jcbn", 1),
+				Lot:       c("guu", 1),
 				Bidder:    ununifitypes.StringAccAddress(addr1[:10]),
 			},
 			false,
@@ -166,7 +166,7 @@ func TestBaseAuctionValidate(t *testing.T) {
 			BaseAuction{
 				Id:        1,
 				Initiator: testAccAddress1,
-				Lot:       c("jcbn", 1),
+				Lot:       c("guu", 1),
 				Bidder:    ununifitypes.StringAccAddress(addr1),
 				Bid:       sdk.Coin{Denom: "%DENOM", Amount: sdk.NewInt(1)},
 			},
@@ -177,9 +177,9 @@ func TestBaseAuctionValidate(t *testing.T) {
 			BaseAuction{
 				Id:        1,
 				Initiator: testAccAddress1,
-				Lot:       c("jcbn", 1),
+				Lot:       c("guu", 1),
 				Bidder:    ununifitypes.StringAccAddress(addr1),
-				Bid:       c("jcbn", 1),
+				Bid:       c("guu", 1),
 				EndTime:   time.Unix(0, 0),
 			},
 			false,
@@ -189,9 +189,9 @@ func TestBaseAuctionValidate(t *testing.T) {
 			BaseAuction{
 				Id:         1,
 				Initiator:  testAccAddress1,
-				Lot:        c("jcbn", 1),
+				Lot:        c("guu", 1),
 				Bidder:     ununifitypes.StringAccAddress(addr1),
-				Bid:        c("jcbn", 1),
+				Bid:        c("guu", 1),
 				EndTime:    now.Add(time.Minute),
 				MaxEndTime: now,
 			},
@@ -228,14 +228,14 @@ func TestDebtAuctionValidate(t *testing.T) {
 				BaseAuction: BaseAuction{
 					Id:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("jcbn", 1),
+					Lot:             c("guu", 1),
 					Bidder:          ununifitypes.StringAccAddress(addr1),
-					Bid:             c("jcbn", 1),
+					Bid:             c("guu", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
 				},
-				CorrespondingDebt: c("jcbn", 1),
+				CorrespondingDebt: c("guu", 1),
 			},
 			true,
 		},
@@ -245,9 +245,9 @@ func TestDebtAuctionValidate(t *testing.T) {
 				BaseAuction: BaseAuction{
 					Id:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("jcbn", 1),
+					Lot:             c("guu", 1),
 					Bidder:          ununifitypes.StringAccAddress(addr1),
-					Bid:             c("jcbn", 1),
+					Bid:             c("guu", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
@@ -287,15 +287,15 @@ func TestCollateralAuctionValidate(t *testing.T) {
 				BaseAuction: BaseAuction{
 					Id:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("jcbn", 1),
+					Lot:             c("guu", 1),
 					Bidder:          ununifitypes.StringAccAddress(addr1),
-					Bid:             c("jcbn", 1),
+					Bid:             c("guu", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
 				},
-				CorrespondingDebt: c("jcbn", 1),
-				MaxBid:            c("jcbn", 1),
+				CorrespondingDebt: c("guu", 1),
+				MaxBid:            c("guu", 1),
 				LotReturns: WeightedAddresses{
 					{
 						Address: ununifitypes.StringAccAddress(addr1),
@@ -311,9 +311,9 @@ func TestCollateralAuctionValidate(t *testing.T) {
 				BaseAuction: BaseAuction{
 					Id:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("jcbn", 1),
+					Lot:             c("guu", 1),
 					Bidder:          ununifitypes.StringAccAddress(addr1),
-					Bid:             c("jcbn", 1),
+					Bid:             c("guu", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
@@ -328,14 +328,14 @@ func TestCollateralAuctionValidate(t *testing.T) {
 				BaseAuction: BaseAuction{
 					Id:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("jcbn", 1),
+					Lot:             c("guu", 1),
 					Bidder:          ununifitypes.StringAccAddress(addr1),
-					Bid:             c("jcbn", 1),
+					Bid:             c("guu", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
 				},
-				CorrespondingDebt: c("jcbn", 1),
+				CorrespondingDebt: c("guu", 1),
 				MaxBid:            sdk.Coin{Denom: "%DENOM", Amount: sdk.NewInt(1)},
 			},
 			false,
@@ -346,15 +346,15 @@ func TestCollateralAuctionValidate(t *testing.T) {
 				BaseAuction: BaseAuction{
 					Id:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("jcbn", 1),
+					Lot:             c("guu", 1),
 					Bidder:          ununifitypes.StringAccAddress(addr1),
-					Bid:             c("jcbn", 1),
+					Bid:             c("guu", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
 				},
-				CorrespondingDebt: c("jcbn", 1),
-				MaxBid:            c("jcbn", 1),
+				CorrespondingDebt: c("guu", 1),
+				MaxBid:            c("guu", 1),
 				LotReturns: WeightedAddresses{
 					{
 						Address: nil,
