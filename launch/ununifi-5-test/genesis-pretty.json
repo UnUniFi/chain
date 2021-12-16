@@ -1,6 +1,6 @@
 {
-  "genesis_time": "2021-04-12T05:11:20.803293303Z",
-  "chain_id": "jpyx-4-test",
+  "genesis_time": "2021-12-16T03:49:36.061231486Z",
+  "chain_id": "ununifi-5-test",
   "initial_height": "1",
   "consensus_params": {
     "block": {
@@ -44,56 +44,35 @@
       "accounts": [
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "jpyx10lcj22kzftvnduchatmnsnhfljeky5ghd398wt",
+          "address": "ununifi1udqv0gf4k90sy95c49ecc7qc9cqgwt7dsfu3xu",
           "pub_key": null,
           "account_number": "0",
           "sequence": "0"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "jpyx127jezdk0uvuupmfmqwwu0x5496d4kvkrgzqykr",
+          "address": "ununifi1tuzxnku0zquxgh8akq7f9uywp9xgnl5gnass0k",
           "pub_key": null,
           "account_number": "0",
           "sequence": "0"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "jpyx17zy4kkqrv5f5f8pdr7r58066gtr04jts3738ws",
+          "address": "ununifi1vrjkze9f2prl3ne8zqz8mu79yqkmp9y32g8xhc",
           "pub_key": null,
           "account_number": "0",
           "sequence": "0"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "jpyx1ml9lnqk6t44cycxqp8la48mlaqg3lkafs4dpu6",
+          "address": "ununifi10t4gy4pkttfkwhrkqxd5wgv3y5z2ut4gk60q7d",
           "pub_key": null,
           "account_number": "0",
           "sequence": "0"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "jpyx1nxyujwckzwyg870gk9m9qzp9z2av00we6fks99",
-          "pub_key": null,
-          "account_number": "0",
-          "sequence": "0"
-        },
-        {
-          "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "jpyx1rz7mxrkj2dgakqf4tl5gmualgf2w9g52xnud8v",
-          "pub_key": null,
-          "account_number": "0",
-          "sequence": "0"
-        },
-        {
-          "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "jpyx1wzc9ae59cr6m0nq9ss7ktfpwlfxm5x98e9y4yg",
-          "pub_key": null,
-          "account_number": "0",
-          "sequence": "0"
-        },
-        {
-          "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "jpyx1ww9897shxx0hz92am7l22swextkymu52csacfa",
+          "address": "ununifi1t2t38la75gsndpellma7dxvh4mx27n9e6nstvd",
           "pub_key": null,
           "account_number": "0",
           "sequence": "0"
@@ -107,120 +86,73 @@
       },
       "balances": [
         {
-          "address": "jpyx127jezdk0uvuupmfmqwwu0x5496d4kvkrgzqykr",
+          "address": "ununifi1udqv0gf4k90sy95c49ecc7qc9cqgwt7dsfu3xu",
           "coins": [
             {
               "denom": "ubtc",
-              "amount": "1000000"
+              "amount": "25000000"
             },
             {
-              "denom": "ujcbn",
+              "denom": "uguu",
               "amount": "250000000000"
             }
           ]
         },
         {
-          "address": "jpyx10lcj22kzftvnduchatmnsnhfljeky5ghd398wt",
+          "address": "ununifi1tuzxnku0zquxgh8akq7f9uywp9xgnl5gnass0k",
           "coins": [
             {
               "denom": "ubtc",
-              "amount": "1000000"
+              "amount": "25000000"
             },
             {
-              "denom": "ujcbn",
+              "denom": "uguu",
               "amount": "250000000000"
             }
           ]
         },
         {
-          "address": "jpyx1ml9lnqk6t44cycxqp8la48mlaqg3lkafs4dpu6",
+          "address": "ununifi1vrjkze9f2prl3ne8zqz8mu79yqkmp9y32g8xhc",
           "coins": [
             {
               "denom": "ubtc",
-              "amount": "1000000"
+              "amount": "25000000"
             },
             {
-              "denom": "ujcbn",
+              "denom": "uguu",
               "amount": "250000000000"
             }
           ]
         },
         {
-          "address": "jpyx17zy4kkqrv5f5f8pdr7r58066gtr04jts3738ws",
+          "address": "ununifi10t4gy4pkttfkwhrkqxd5wgv3y5z2ut4gk60q7d",
           "coins": [
             {
               "denom": "ubtc",
-              "amount": "1000000"
+              "amount": "25000000"
             },
             {
-              "denom": "ujcbn",
+              "denom": "uguu",
               "amount": "250000000000"
             }
           ]
         },
         {
-          "address": "jpyx1nxyujwckzwyg870gk9m9qzp9z2av00we6fks99",
+          "address": "ununifi1t2t38la75gsndpellma7dxvh4mx27n9e6nstvd",
           "coins": [
             {
               "denom": "ubtc",
-              "amount": "1000000"
+              "amount": "100000000"
             },
             {
-              "denom": "ujcbn",
-              "amount": "250000000000"
-            }
-          ]
-        },
-        {
-          "address": "jpyx1rz7mxrkj2dgakqf4tl5gmualgf2w9g52xnud8v",
-          "coins": [
-            {
-              "denom": "ubtc",
-              "amount": "1000000"
-            },
-            {
-              "denom": "ujcbn",
-              "amount": "250000000000"
-            }
-          ]
-        },
-        {
-          "address": "jpyx1wzc9ae59cr6m0nq9ss7ktfpwlfxm5x98e9y4yg",
-          "coins": [
-            {
-              "denom": "ubtc",
-              "amount": "1000000"
-            },
-            {
-              "denom": "ujcbn",
-              "amount": "250000000000"
-            }
-          ]
-        },
-        {
-          "address": "jpyx1ww9897shxx0hz92am7l22swextkymu52csacfa",
-          "coins": [
-            {
-              "denom": "ubtc",
-              "amount": "1000000"
-            },
-            {
-              "denom": "ujcbn",
-              "amount": "250000000000"
+              "denom": "uguu",
+              "amount": "1000000000000"
             }
           ]
         }
       ],
       "supply": [],
       "denom_metadata": []
-    },
-    "botanydist": {
-      "params": {
-        "active": false,
-        "periods": []
-      },
-      "previous_block_time": "1970-01-01T00:00:01Z",
-      "gov_denom": "ujcbn"
     },
     "capability": {
       "index": "1",
@@ -234,7 +166,7 @@
             "conversion_factor": "6",
             "debt_limit": {
               "amount": "20000000000000",
-              "denom": "jpyx"
+              "denom": "jpu"
             },
             "denom": "ubtc",
             "liquidation_market_id": "ubtc:jpy:30",
@@ -249,13 +181,13 @@
           }
         ],
         "debt_param": {
-          "denom": "jpyx",
+          "denom": "jpu",
           "reference_asset": "jpy",
           "conversion_factor": "6",
           "debt_floor": "1"
         },
         "global_debt_limit": {
-          "denom": "jpyx",
+          "denom": "jpu",
           "amount": "20000000000000"
         },
         "surplus_auction_threshold": "500000000000",
@@ -268,13 +200,13 @@
       "deposits": [],
       "starting_cdp_id": "1",
       "debt_denom": "debt",
-      "gov_denom": "ujcbn",
+      "gov_denom": "uguu",
       "previous_accumulation_times": [],
       "total_principals": []
     },
     "crisis": {
       "constant_fee": {
-        "denom": "ujcbn",
+        "denom": "uguu",
         "amount": "1000"
       }
     },
@@ -308,9 +240,9 @@
               {
                 "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
                 "description": {
-                  "moniker": "lcnem-test-a",
-                  "identity": "",
-                  "website": "",
+                  "moniker": "cauchye-d-test",
+                  "identity": "cauchye-d-test",
+                  "website": "https://cauchye.com",
                   "security_contact": "",
                   "details": ""
                 },
@@ -320,19 +252,19 @@
                   "max_change_rate": "0.010000000000000000"
                 },
                 "min_self_delegation": "1",
-                "delegator_address": "jpyx10lcj22kzftvnduchatmnsnhfljeky5ghd398wt",
-                "validator_address": "jpyxvaloper10lcj22kzftvnduchatmnsnhfljeky5ghh3zpgf",
+                "delegator_address": "ununifi10t4gy4pkttfkwhrkqxd5wgv3y5z2ut4gk60q7d",
+                "validator_address": "ununifivaloper10t4gy4pkttfkwhrkqxd5wgv3y5z2ut4grx68gz",
                 "pubkey": {
                   "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "oYCrJpP1vlhMCh3K24FfWA5KE+KXrjkEfZENJOfVi64="
+                  "key": "9Af4Aa7bkzUOXfsuJ4aCUUDnRf/0hVqcY4SHBI3RLVA="
                 },
                 "value": {
-                  "denom": "ujcbn",
-                  "amount": "250000000000"
+                  "denom": "uguu",
+                  "amount": "200000000000"
                 }
               }
             ],
-            "memo": "6fc4109698025d8ee20c09a78fd6b7fb858c26e2@a.test.jpyx.lcnem.net:26656",
+            "memo": "192ddcaea7789f65aa9b1f840ea963d4d0a61d8f@d.test.ununifi.cauchye.net:26656",
             "timeout_height": "0",
             "extension_options": [],
             "non_critical_extension_options": []
@@ -342,7 +274,7 @@
               {
                 "public_key": {
                   "@type": "/cosmos.crypto.secp256k1.PubKey",
-                  "key": "AvSf2U/B23UZKvLTD0E4xqJ33Nn0Z552nXCkkwEfleiu"
+                  "key": "Am2sIibWmUETEj96bkhcLhXeb6HVQ757AhAt42FCLigl"
                 },
                 "mode_info": {
                   "single": {
@@ -360,7 +292,7 @@
             }
           },
           "signatures": [
-            "DJiPhHOXZwqSqxB2hgp7M9MDBkMi3gGwyz27oDgbcYkbrGLxXkly9Mf6bICl3T70DRTxeUwBMqWgg1gt8Tgd1g=="
+            "rKlp1cR9Ao5GlYrQqV9nBazGSq9ju1TcGeN1tFLZxgkcTDN1ygnMOU6iTAX6fEscyHT6dqEvSrF8CRhEAvem9w=="
           ]
         },
         {
@@ -369,9 +301,9 @@
               {
                 "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
                 "description": {
-                  "moniker": "lcnem-test-b",
-                  "identity": "",
-                  "website": "",
+                  "moniker": "cauchye-c-test",
+                  "identity": "cauchye-c-test",
+                  "website": "https://cauchye.com",
                   "security_contact": "",
                   "details": ""
                 },
@@ -381,19 +313,19 @@
                   "max_change_rate": "0.010000000000000000"
                 },
                 "min_self_delegation": "1",
-                "delegator_address": "jpyx127jezdk0uvuupmfmqwwu0x5496d4kvkrgzqykr",
-                "validator_address": "jpyxvaloper127jezdk0uvuupmfmqwwu0x5496d4kvkrjz8zsp",
+                "delegator_address": "ununifi1vrjkze9f2prl3ne8zqz8mu79yqkmp9y32g8xhc",
+                "validator_address": "ununifivaloper1vrjkze9f2prl3ne8zqz8mu79yqkmp9y3l5jpph",
                 "pubkey": {
                   "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "XIsBycjHML6Dey2iAH6z6jXNer5TM+iKiBhEu9OK+0I="
+                  "key": "LGbHbsNPbXlPF/GCbuj905LRlFAPjZslBCIlM2Ga43A="
                 },
                 "value": {
-                  "denom": "ujcbn",
-                  "amount": "250000000000"
+                  "denom": "uguu",
+                  "amount": "200000000000"
                 }
               }
             ],
-            "memo": "7fc846bfde6ccd378dd736ac9976f63ed2afdd52@b.test.jpyx.lcnem.net:26656",
+            "memo": "46a4580084634cf24cf7ecc589a9f1eb47291074@c.test.ununifi.cauchye.net:26656",
             "timeout_height": "0",
             "extension_options": [],
             "non_critical_extension_options": []
@@ -403,7 +335,7 @@
               {
                 "public_key": {
                   "@type": "/cosmos.crypto.secp256k1.PubKey",
-                  "key": "Ap0r/Ogj8yVCebZS9kLPQqLaZsd4BzXm1PoAt19j6pG1"
+                  "key": "AxC2eXVxsl/FbTsTfKBk/4lUu4AKZQUZMwJ/saHcAaBa"
                 },
                 "mode_info": {
                   "single": {
@@ -421,7 +353,7 @@
             }
           },
           "signatures": [
-            "YfJ3COSs+IDUHl2q7pCk7qp/q96Dl1a8S9XyQM60sJEug9vC9UrBLGLJ3+KfxUCmp+7rpZ2vxT5UuqYGx2CKfg=="
+            "qRzh1ejDUw2t7/iuZYDlYpBvhue1MbrJ+PQ3j+LgteZYopWdCs6kR2OVpA8BNPD97u0ZQIHpGX6ZnoKFEhtQWQ=="
           ]
         },
         {
@@ -430,9 +362,9 @@
               {
                 "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
                 "description": {
-                  "moniker": "lcnem-test-d",
-                  "identity": "",
-                  "website": "",
+                  "moniker": "cauchye-b-test",
+                  "identity": "cauchye-b-test",
+                  "website": "https://cauchye.com",
                   "security_contact": "",
                   "details": ""
                 },
@@ -442,19 +374,19 @@
                   "max_change_rate": "0.010000000000000000"
                 },
                 "min_self_delegation": "1",
-                "delegator_address": "jpyx1ml9lnqk6t44cycxqp8la48mlaqg3lkafs4dpu6",
-                "validator_address": "jpyxvaloper1ml9lnqk6t44cycxqp8la48mlaqg3lkaf24286c",
+                "delegator_address": "ununifi1tuzxnku0zquxgh8akq7f9uywp9xgnl5gnass0k",
+                "validator_address": "ununifivaloper1tuzxnku0zquxgh8akq7f9uywp9xgnl5gxp9hee",
                 "pubkey": {
                   "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "L2fO/hx5conb0q5xpOP91GunisUjAZh+0DAISFjQa9A="
+                  "key": "ce1pbIJ0oqhLfYNeb4yEfzDk8GV5lcE8L/bfSMhgXyQ="
                 },
                 "value": {
-                  "denom": "ujcbn",
-                  "amount": "250000000000"
+                  "denom": "uguu",
+                  "amount": "200000000000"
                 }
               }
             ],
-            "memo": "d823c464320c4cdd1f9ae1d8595e3451cd97d520@d.test.jpyx.lcnem.net:26656",
+            "memo": "b13e4681fd890b5ea7f3621cb4b6fe73ee0e5c34@b.test.ununifi.cauchye.net:26656",
             "timeout_height": "0",
             "extension_options": [],
             "non_critical_extension_options": []
@@ -464,7 +396,7 @@
               {
                 "public_key": {
                   "@type": "/cosmos.crypto.secp256k1.PubKey",
-                  "key": "A0HBN95gkH/HUPOdbTavbuqBNXbkv36GjiYxkjWeCQqo"
+                  "key": "A+A3R/eCPugLI2HO/pEpYI8qoR7Nlsq9KjM27blPeyjt"
                 },
                 "mode_info": {
                   "single": {
@@ -482,7 +414,7 @@
             }
           },
           "signatures": [
-            "rDqjy/XYMscN01Fpk2K4rnsbTdJHD4uFkvhO+tomzpNYnEZ9ktGy1xu77ktO4mdsS+ccFFfOW0XWtAatr8X/hw=="
+            "IMhm54k/ajDefMkFALfo7qU8mRlQD+9NzuWA1mT5Km1y4E5zRu8qgKU/Asu0OC3MElqaVRcqkzeqI6M8mtR66w=="
           ]
         },
         {
@@ -491,9 +423,9 @@
               {
                 "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
                 "description": {
-                  "moniker": "lcnem-test-c",
-                  "identity": "",
-                  "website": "",
+                  "moniker": "cauchye-a-test",
+                  "identity": "cauchye-a-test",
+                  "website": "https://cauchye.com",
                   "security_contact": "",
                   "details": ""
                 },
@@ -503,19 +435,19 @@
                   "max_change_rate": "0.010000000000000000"
                 },
                 "min_self_delegation": "1",
-                "delegator_address": "jpyx17zy4kkqrv5f5f8pdr7r58066gtr04jts3738ws",
-                "validator_address": "jpyxvaloper17zy4kkqrv5f5f8pdr7r58066gtr04jtst7kpgj",
+                "delegator_address": "ununifi1udqv0gf4k90sy95c49ecc7qc9cqgwt7dsfu3xu",
+                "validator_address": "ununifivaloper1udqv0gf4k90sy95c49ecc7qc9cqgwt7d94fksn",
                 "pubkey": {
                   "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "E+YHPHgxEr/zy/52x1QyShFLn9LTyYrpmN3lum9Y8Ys="
+                  "key": "eSw9xbyxWskGMonySIhRLsWp9/iTwcnme9tWVT5yAWc="
                 },
                 "value": {
-                  "denom": "ujcbn",
-                  "amount": "250000000000"
+                  "denom": "uguu",
+                  "amount": "200000000000"
                 }
               }
             ],
-            "memo": "e676f54115ea73f893a1cc5ba4c334f5524f57ca@c.test.jpyx.lcnem.net:26656",
+            "memo": "de321a535a5334268890940fa41429e3a0f9586a@a.test.ununifi.cauchye.net:26656",
             "timeout_height": "0",
             "extension_options": [],
             "non_critical_extension_options": []
@@ -525,7 +457,7 @@
               {
                 "public_key": {
                   "@type": "/cosmos.crypto.secp256k1.PubKey",
-                  "key": "Att2SHt6uB6Y3eKJHmDGa3ZVhHkL9IHoWeejCyfpA0s3"
+                  "key": "A+rtMo1ylHH1Q/rqRn02enVR6cK9k7GKkcFDwSh4Wap1"
                 },
                 "mode_info": {
                   "single": {
@@ -543,7 +475,7 @@
             }
           },
           "signatures": [
-            "Gi0DWvU3/MYzMteV3WUBuPphJjOb1+kKrULsGyZZV18F3Q76FrzAkxXXUK4L1LYWfiq3M9jg/uDDd8Ym85dMlg=="
+            "RU5GqumlNo2Yall2Uc35GHV29GsNKVsWVEw6a7JrCvFK2G76KJQx7GnmRwKo1m5YZGu526CO/0FVOd2Zq6r58A=="
           ]
         }
       ]
@@ -556,7 +488,7 @@
       "deposit_params": {
         "min_deposit": [
           {
-            "denom": "ujcbn",
+            "denom": "uguu",
             "amount": "10000000"
           }
         ],
@@ -610,8 +542,8 @@
       "cdp_accumulation_times": [],
       "cdp_minting_claims": [],
       "denoms": {
-        "principal_denom": "jpyx",
-        "cdp_minting_reward_denom": "ujcbn"
+        "principal_denom": "jpu",
+        "cdp_minting_reward_denom": "uguu"
       }
     },
     "liquidity": {
@@ -648,7 +580,7 @@
         "annual_provisions": "0.000000000000000000"
       },
       "params": {
-        "mint_denom": "ujcbn",
+        "mint_denom": "uguu",
         "inflation_rate_change": "0.130000000000000000",
         "inflation_max": "0.200000000000000000",
         "inflation_min": "0.070000000000000000",
@@ -665,10 +597,10 @@
             "base_asset": "ubtc",
             "quote_asset": "jpy",
             "oracles": [
-              "jpyx10lcj22kzftvnduchatmnsnhfljeky5ghd398wt",
-              "jpyx127jezdk0uvuupmfmqwwu0x5496d4kvkrgzqykr",
-              "jpyx17zy4kkqrv5f5f8pdr7r58066gtr04jts3738ws",
-              "jpyx1ml9lnqk6t44cycxqp8la48mlaqg3lkafs4dpu6"
+              "ununifi1udqv0gf4k90sy95c49ecc7qc9cqgwt7dsfu3xu",
+              "ununifi1tuzxnku0zquxgh8akq7f9uywp9xgnl5gnass0k",
+              "ununifi1vrjkze9f2prl3ne8zqz8mu79yqkmp9y32g8xhc",
+              "ununifi10t4gy4pkttfkwhrkqxd5wgv3y5z2ut4gk60q7d"
             ],
             "active": true
           },
@@ -677,10 +609,10 @@
             "base_asset": "ubtc",
             "quote_asset": "jpy",
             "oracles": [
-              "jpyx10lcj22kzftvnduchatmnsnhfljeky5ghd398wt",
-              "jpyx127jezdk0uvuupmfmqwwu0x5496d4kvkrgzqykr",
-              "jpyx17zy4kkqrv5f5f8pdr7r58066gtr04jts3738ws",
-              "jpyx1ml9lnqk6t44cycxqp8la48mlaqg3lkafs4dpu6"
+              "ununifi1udqv0gf4k90sy95c49ecc7qc9cqgwt7dsfu3xu",
+              "ununifi1tuzxnku0zquxgh8akq7f9uywp9xgnl5gnass0k",
+              "ununifi1vrjkze9f2prl3ne8zqz8mu79yqkmp9y32g8xhc",
+              "ununifi10t4gy4pkttfkwhrkqxd5wgv3y5z2ut4gk60q7d"
             ],
             "active": true
           }
@@ -705,7 +637,7 @@
         "max_validators": 100,
         "max_entries": 7,
         "historical_entries": 10000,
-        "bond_denom": "ujcbn"
+        "bond_denom": "uguu"
       },
       "last_total_power": "0",
       "last_validator_powers": [],
@@ -722,6 +654,14 @@
         "send_enabled": false,
         "receive_enabled": false
       }
+    },
+    "ununifidist": {
+      "params": {
+        "active": false,
+        "periods": []
+      },
+      "previous_block_time": "1970-01-01T00:00:01Z",
+      "gov_denom": "uguu"
     },
     "upgrade": {},
     "vesting": {}
