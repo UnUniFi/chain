@@ -5,31 +5,31 @@ services:
     container_name: faucet-ubtc
     image: ghcr.io/tendermint/faucet
     volumes:
-      - ~/faucet/jpyxd:/usr/local/bin/jpyxd
-      - ~/.jpyx:/root/.jpyx
-    command: faucet --cli-name jpyxd --denoms ubtc --keyring-backend test --account-name faucet --port 7000 --credit-amount=100 --max-credit=99
+      - ~/faucet/ununifid:/usr/local/bin/ununifid
+      - ~/.ununifi:/root/.ununifi
+    command: faucet --cli-name ununifid --denoms ubtc --keyring-backend test --account-name faucet --port 7000 --credit-amount=100 --max-credit=99
     # ports:
     #   - 7000:7000
     network_mode: host
     restart: always
-  faucet-ujcbn:
-    container_name: faucet-ujcbn
+  faucet-uguu:
+    container_name: faucet-uguu
     image: ghcr.io/tendermint/faucet
     volumes:
-      - ~/faucet/jpyxd:/usr/local/bin/jpyxd
-      - ~/.jpyx:/root/.jpyx
-    command: faucet --cli-name jpyxd --denoms ujcbn --keyring-backend test --account-name faucet --port 7002 --credit-amount=2000000 --max-credit=1999999
+      - ~/faucet/ununifid:/usr/local/bin/ununifid
+      - ~/.ununifi:/root/.ununifi
+    command: faucet --cli-name ununifid --denoms uguu --keyring-backend test --account-name faucet --port 7002 --credit-amount=2000000 --max-credit=1999999
     # ports:
     #   - 7002:7002
     network_mode: host
     restart: always
-  faucet-jpyx:
-    container_name: faucet-jpyx
+  faucet-ununifi:
+    container_name: faucet-jpu
     image: ghcr.io/tendermint/faucet
     volumes:
-      - ~/faucet/jpyxd:/usr/local/bin/jpyxd
-      - ~/.jpyx:/root/.jpyx
-    command: faucet --cli-name jpyxd --denoms jpyx --keyring-backend test --account-name faucet --port 7004 --credit-amount=10 --max-credit=9
+      - ~/faucet/ununifid:/usr/local/bin/ununifid
+      - ~/.ununifi:/root/.ununifi
+    command: faucet --cli-name ununifid --denoms jpu --keyring-backend test --account-name faucet --port 7004 --credit-amount=10 --max-credit=9
     # ports:
     #   - 7004:7004
     network_mode: host

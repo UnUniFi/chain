@@ -1,5 +1,5 @@
 syntax = "proto3";
-package botany.incentive;
+package ununifi.incentive;
 
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
@@ -11,7 +11,7 @@ option go_package = "github.com/UnUniFi/chain/x/incentive/types";
 // Query defines the gRPC querier service.
 service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-		option (google.api.http).get = "/botany/incentive/params";
+		option (google.api.http).get = "/ununifi/incentive/params";
 	}
   // this line is used by starport scaffolding # 2
 }

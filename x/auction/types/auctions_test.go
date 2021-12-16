@@ -6,27 +6,27 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	jpyxtypes "github.com/UnUniFi/chain/types"
+	ununifitypes "github.com/UnUniFi/chain/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 const (
 	TestInitiatorModuleName = "liquidator"
-	TestLotDenom            = "jpyx"
+	TestLotDenom            = "jpu"
 	TestLotAmount           = 100
-	TestBidDenom            = "jcbn"
+	TestBidDenom            = "guu"
 	TestBidAmount           = 20
 	TestDebtDenom           = "debt"
 	TestDebtAmount1         = 20
 	TestDebtAmount2         = 15
 	TestExtraEndTime        = 10000
 	TestAuctionID           = 9999123
-	testAccAddress1         = "jpyx1307tjx6dle4uha9ngk4w7986700j58kqwypzlx"
-	testAccAddress2         = "jpyx1n5vcu4lk0jr5fl4r6324pwp9e7ft937csc9kt4"
+	testAccAddress1         = "ununifi1hsh64ca3q68tnvqyt8mn5knfcm7jyesr5prcns"
+	testAccAddress2         = "ununifi1qq6xpcc4xhzxgkw4m9n8lew8sfmt3sn2r6usnl"
 )
 
 func init() {
-	sdk.GetConfig().SetBech32PrefixForAccount("jpyx", "jpyx"+sdk.PrefixPublic)
+	sdk.GetConfig().SetBech32PrefixForAccount("ununifi", "ununifi"+sdk.PrefixPublic)
 }
 
 func d(amount string) sdk.Dec               { return sdk.MustNewDecFromStr(amount) }
@@ -115,9 +115,9 @@ func TestBaseAuctionValidate(t *testing.T) {
 			BaseAuction{
 				Id:              1,
 				Initiator:       testAccAddress1,
-				Lot:             c("jcbn", 1),
-				Bidder:          jpyxtypes.StringAccAddress(addr1),
-				Bid:             c("jcbn", 1),
+				Lot:             c("guu", 1),
+				Bidder:          ununifitypes.StringAccAddress(addr1),
+				Bid:             c("guu", 1),
 				EndTime:         now,
 				MaxEndTime:      now,
 				HasReceivedBids: true,
@@ -146,8 +146,8 @@ func TestBaseAuctionValidate(t *testing.T) {
 			BaseAuction{
 				Id:        1,
 				Initiator: testAccAddress1,
-				Lot:       c("jcbn", 1),
-				Bidder:    jpyxtypes.StringAccAddress{},
+				Lot:       c("guu", 1),
+				Bidder:    ununifitypes.StringAccAddress{},
 			},
 			false,
 		},
@@ -156,8 +156,8 @@ func TestBaseAuctionValidate(t *testing.T) {
 			BaseAuction{
 				Id:        1,
 				Initiator: testAccAddress1,
-				Lot:       c("jcbn", 1),
-				Bidder:    jpyxtypes.StringAccAddress(addr1[:10]),
+				Lot:       c("guu", 1),
+				Bidder:    ununifitypes.StringAccAddress(addr1[:10]),
 			},
 			false,
 		},
@@ -166,8 +166,8 @@ func TestBaseAuctionValidate(t *testing.T) {
 			BaseAuction{
 				Id:        1,
 				Initiator: testAccAddress1,
-				Lot:       c("jcbn", 1),
-				Bidder:    jpyxtypes.StringAccAddress(addr1),
+				Lot:       c("guu", 1),
+				Bidder:    ununifitypes.StringAccAddress(addr1),
 				Bid:       sdk.Coin{Denom: "%DENOM", Amount: sdk.NewInt(1)},
 			},
 			false,
@@ -177,9 +177,9 @@ func TestBaseAuctionValidate(t *testing.T) {
 			BaseAuction{
 				Id:        1,
 				Initiator: testAccAddress1,
-				Lot:       c("jcbn", 1),
-				Bidder:    jpyxtypes.StringAccAddress(addr1),
-				Bid:       c("jcbn", 1),
+				Lot:       c("guu", 1),
+				Bidder:    ununifitypes.StringAccAddress(addr1),
+				Bid:       c("guu", 1),
 				EndTime:   time.Unix(0, 0),
 			},
 			false,
@@ -189,9 +189,9 @@ func TestBaseAuctionValidate(t *testing.T) {
 			BaseAuction{
 				Id:         1,
 				Initiator:  testAccAddress1,
-				Lot:        c("jcbn", 1),
-				Bidder:     jpyxtypes.StringAccAddress(addr1),
-				Bid:        c("jcbn", 1),
+				Lot:        c("guu", 1),
+				Bidder:     ununifitypes.StringAccAddress(addr1),
+				Bid:        c("guu", 1),
 				EndTime:    now.Add(time.Minute),
 				MaxEndTime: now,
 			},
@@ -228,14 +228,14 @@ func TestDebtAuctionValidate(t *testing.T) {
 				BaseAuction: BaseAuction{
 					Id:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("jcbn", 1),
-					Bidder:          jpyxtypes.StringAccAddress(addr1),
-					Bid:             c("jcbn", 1),
+					Lot:             c("guu", 1),
+					Bidder:          ununifitypes.StringAccAddress(addr1),
+					Bid:             c("guu", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
 				},
-				CorrespondingDebt: c("jcbn", 1),
+				CorrespondingDebt: c("guu", 1),
 			},
 			true,
 		},
@@ -245,9 +245,9 @@ func TestDebtAuctionValidate(t *testing.T) {
 				BaseAuction: BaseAuction{
 					Id:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("jcbn", 1),
-					Bidder:          jpyxtypes.StringAccAddress(addr1),
-					Bid:             c("jcbn", 1),
+					Lot:             c("guu", 1),
+					Bidder:          ununifitypes.StringAccAddress(addr1),
+					Bid:             c("guu", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
@@ -287,18 +287,18 @@ func TestCollateralAuctionValidate(t *testing.T) {
 				BaseAuction: BaseAuction{
 					Id:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("jcbn", 1),
-					Bidder:          jpyxtypes.StringAccAddress(addr1),
-					Bid:             c("jcbn", 1),
+					Lot:             c("guu", 1),
+					Bidder:          ununifitypes.StringAccAddress(addr1),
+					Bid:             c("guu", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
 				},
-				CorrespondingDebt: c("jcbn", 1),
-				MaxBid:            c("jcbn", 1),
+				CorrespondingDebt: c("guu", 1),
+				MaxBid:            c("guu", 1),
 				LotReturns: WeightedAddresses{
 					{
-						Address: jpyxtypes.StringAccAddress(addr1),
+						Address: ununifitypes.StringAccAddress(addr1),
 						Weight:  sdk.NewInt(1),
 					},
 				},
@@ -311,9 +311,9 @@ func TestCollateralAuctionValidate(t *testing.T) {
 				BaseAuction: BaseAuction{
 					Id:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("jcbn", 1),
-					Bidder:          jpyxtypes.StringAccAddress(addr1),
-					Bid:             c("jcbn", 1),
+					Lot:             c("guu", 1),
+					Bidder:          ununifitypes.StringAccAddress(addr1),
+					Bid:             c("guu", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
@@ -328,14 +328,14 @@ func TestCollateralAuctionValidate(t *testing.T) {
 				BaseAuction: BaseAuction{
 					Id:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("jcbn", 1),
-					Bidder:          jpyxtypes.StringAccAddress(addr1),
-					Bid:             c("jcbn", 1),
+					Lot:             c("guu", 1),
+					Bidder:          ununifitypes.StringAccAddress(addr1),
+					Bid:             c("guu", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
 				},
-				CorrespondingDebt: c("jcbn", 1),
+				CorrespondingDebt: c("guu", 1),
 				MaxBid:            sdk.Coin{Denom: "%DENOM", Amount: sdk.NewInt(1)},
 			},
 			false,
@@ -346,15 +346,15 @@ func TestCollateralAuctionValidate(t *testing.T) {
 				BaseAuction: BaseAuction{
 					Id:              1,
 					Initiator:       testAccAddress1,
-					Lot:             c("jcbn", 1),
-					Bidder:          jpyxtypes.StringAccAddress(addr1),
-					Bid:             c("jcbn", 1),
+					Lot:             c("guu", 1),
+					Bidder:          ununifitypes.StringAccAddress(addr1),
+					Bid:             c("guu", 1),
 					EndTime:         now,
 					MaxEndTime:      now,
 					HasReceivedBids: true,
 				},
-				CorrespondingDebt: c("jcbn", 1),
-				MaxBid:            c("jcbn", 1),
+				CorrespondingDebt: c("guu", 1),
+				MaxBid:            c("guu", 1),
 				LotReturns: WeightedAddresses{
 					{
 						Address: nil,

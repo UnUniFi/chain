@@ -29,4 +29,4 @@ COPY Makefile .
 
 COPY simulations simulations
 
-# jpyxd and kcli binaries are not necessary for running the simulations
+# ununifid and kcli binaries are not necessary for running the simulations

@@ -112,7 +112,7 @@ func (suite *ModuleTestSuite) createCdps() {
 				tracker.debt += int64(debt)
 			}
 		}
-		suite.Nil(suite.keeper.AddCdp(suite.ctx, addrs[j], c(collateral, int64(amount)), c("jpyx", int64(debt)), collateral+"-a"))
+		suite.Nil(suite.keeper.AddCdp(suite.ctx, addrs[j], c(collateral, int64(amount)), c("jpu", int64(debt)), collateral+"-a"))
 		c, f := suite.keeper.GetCdp(suite.ctx, collateral+"-a", uint64(j+1))
 		suite.True(f)
 		cdps[j] = c
@@ -163,9 +163,9 @@ func (suite *ModuleTestSuite) TestBeginBlock() {
 }
 
 func (suite *ModuleTestSuite) TestSeizeSingleCdpWithFees() {
-	err := suite.keeper.AddCdp(suite.ctx, suite.addrs[0], c("xrp", 10000000000), c("jpyx", 1000000000), "xrp-a")
+	err := suite.keeper.AddCdp(suite.ctx, suite.addrs[0], c("xrp", 10000000000), c("jpu", 1000000000), "xrp-a")
 	suite.NoError(err)
-	suite.Equal(i(1000000000), suite.keeper.GetTotalPrincipal(suite.ctx, "xrp-a", "jpyx"))
+	suite.Equal(i(1000000000), suite.keeper.GetTotalPrincipal(suite.ctx, "xrp-a", "jpu"))
 	ak := suite.app.GetAccountKeeper()
 	bk := suite.app.GetBankKeeper()
 	cdpMacc := ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)

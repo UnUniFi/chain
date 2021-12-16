@@ -21,7 +21,7 @@ func CmdCreateCdp() *cobra.Command {
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Create a new cdp, depositing some collateral and drawing some debt.
 Example:
-$ %s tx %s create-cdp 10ubtc 10jpyx ubtc-a --from myKeyName --chain-id jpyx-3-test
+$ %s tx %s create-cdp 10ubtc 10jpu ubtc-a --from myKeyName --chain-id ununifi-5-test
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -61,7 +61,7 @@ func CmdDeposit() *cobra.Command {
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Deposit.
 Example:
-$ %s tx %s deposit [owner-address] 10ubtc ubtc-a --from myKeyName --chain-id jpyx-3-test
+$ %s tx %s deposit [owner-address] 10ubtc ubtc-a --from myKeyName --chain-id ununifi-5-test
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -102,7 +102,7 @@ func CmdWithdraw() *cobra.Command {
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Withdraw.
 Example:
-$ %s tx %s withdraw [owner-address] 10ubtc ubtc-a --from myKeyName --chain-id jpyx-3-test
+$ %s tx %s withdraw [owner-address] 10ubtc ubtc-a --from myKeyName --chain-id ununifi-5-test
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -143,7 +143,7 @@ func CmdDrawDebt() *cobra.Command {
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Draw debt.
 Example:
-$ %s tx %s draw-debt ubtc-a [principal] --from myKeyName --chain-id jpyx-3-test
+$ %s tx %s draw-debt ubtc-a [principal] --from myKeyName --chain-id ununifi-5-test
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -180,7 +180,7 @@ func CmdRepayDebt() *cobra.Command {
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Repay debt.
 Example:
-$ %s tx %s repay-debt ubtc-a [payment] --from myKeyName --chain-id jpyx-3-test
+$ %s tx %s repay-debt ubtc-a [payment] --from myKeyName --chain-id ununifi-5-test
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -217,7 +217,7 @@ func CmdLiquidate() *cobra.Command {
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Liquidate.
 Example:
-$ %s tx %s liquidate [borrower] ubtc-a --from myKeyName --chain-id jpyx-3-test
+$ %s tx %s liquidate [borrower] ubtc-a --from myKeyName --chain-id ununifi-5-test
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {

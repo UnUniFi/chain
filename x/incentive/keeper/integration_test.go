@@ -10,7 +10,7 @@ import (
 	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/UnUniFi/chain/app"
-	jpyxtypes "github.com/UnUniFi/chain/types"
+	ununifitypes "github.com/UnUniFi/chain/types"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
@@ -18,7 +18,7 @@ import (
 func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 	cdpGenesis := cdptypes.GenesisState{
 		Params: cdptypes.Params{
-			GlobalDebtLimit:         sdk.NewInt64Coin("jpyx", 2000000000000),
+			GlobalDebtLimit:         sdk.NewInt64Coin("jpu", 2000000000000),
 			SurplusAuctionThreshold: cdptypes.DefaultSurplusThreshold,
 			SurplusAuctionLot:       cdptypes.DefaultSurplusLot,
 			DebtAuctionThreshold:    cdptypes.DefaultDebtThreshold,
@@ -28,7 +28,7 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 					Denom:               "xrp",
 					Type:                "xrp-a",
 					LiquidationRatio:    sdk.MustNewDecFromStr("2.0"),
-					DebtLimit:           sdk.NewInt64Coin("jpyx", 500000000000),
+					DebtLimit:           sdk.NewInt64Coin("jpu", 500000000000),
 					StabilityFee:        sdk.MustNewDecFromStr("1.000000001547125958"), // %5 apr
 					LiquidationPenalty:  d("0.05"),
 					AuctionSize:         i(7000000000),
@@ -41,7 +41,7 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 					Denom:               "btc",
 					Type:                "btc-a",
 					LiquidationRatio:    sdk.MustNewDecFromStr("1.5"),
-					DebtLimit:           sdk.NewInt64Coin("jpyx", 500000000000),
+					DebtLimit:           sdk.NewInt64Coin("jpu", 500000000000),
 					StabilityFee:        sdk.MustNewDecFromStr("1.000000000782997609"), // %2.5 apr
 					LiquidationPenalty:  d("0.025"),
 					AuctionSize:         i(10000000),
@@ -54,7 +54,7 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 					Denom:               "bnb",
 					Type:                "bnb-a",
 					LiquidationRatio:    sdk.MustNewDecFromStr("1.5"),
-					DebtLimit:           sdk.NewInt64Coin("jpyx", 500000000000),
+					DebtLimit:           sdk.NewInt64Coin("jpu", 500000000000),
 					StabilityFee:        sdk.MustNewDecFromStr("1.000000001547125958"), // %5 apr
 					LiquidationPenalty:  d("0.05"),
 					AuctionSize:         i(50000000000),
@@ -67,7 +67,7 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 					Denom:               "bjpy",
 					Type:                "bjpy-a",
 					LiquidationRatio:    d("1.01"),
-					DebtLimit:           sdk.NewInt64Coin("jpyx", 500000000000),
+					DebtLimit:           sdk.NewInt64Coin("jpu", 500000000000),
 					StabilityFee:        sdk.OneDec(), // %0 apr
 					LiquidationPenalty:  d("0.05"),
 					AuctionSize:         i(10000000000),
@@ -78,7 +78,7 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 				},
 			},
 			DebtParam: cdptypes.DebtParam{
-				Denom:            "jpyx",
+				Denom:            "jpu",
 				ReferenceAsset:   "jpy",
 				ConversionFactor: i(6),
 				DebtFloor:        i(10000000),
@@ -108,48 +108,48 @@ func NewPricefeedGenStateMulti(tApp app.TestApp) app.GenesisState {
 	pfGenesis := pricefeedtypes.GenesisState{
 		Params: pricefeedtypes.Params{
 			Markets: []pricefeedtypes.Market{
-				{MarketId: "kava:jpy", BaseAsset: "kava", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
-				{MarketId: "btc:jpy", BaseAsset: "btc", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
-				{MarketId: "xrp:jpy", BaseAsset: "xrp", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
-				{MarketId: "bnb:jpy", BaseAsset: "bnb", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
-				{MarketId: "bjpy:jpy", BaseAsset: "bjpy", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
-				{MarketId: "zzz:jpy", BaseAsset: "zzz", QuoteAsset: "jpy", Oracles: []jpyxtypes.StringAccAddress{}, Active: true},
+				{MarketId: "kava:jpy", BaseAsset: "kava", QuoteAsset: "jpy", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+				{MarketId: "btc:jpy", BaseAsset: "btc", QuoteAsset: "jpy", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+				{MarketId: "xrp:jpy", BaseAsset: "xrp", QuoteAsset: "jpy", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+				{MarketId: "bnb:jpy", BaseAsset: "bnb", QuoteAsset: "jpy", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+				{MarketId: "bjpy:jpy", BaseAsset: "bjpy", QuoteAsset: "jpy", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+				{MarketId: "zzz:jpy", BaseAsset: "zzz", QuoteAsset: "jpy", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
 			},
 		},
 		PostedPrices: []pricefeedtypes.PostedPrice{
 			{
 				MarketId:      "kava:jpy",
-				OracleAddress: jpyxtypes.StringAccAddress{},
+				OracleAddress: ununifitypes.StringAccAddress{},
 				Price:         sdk.MustNewDecFromStr("2.00"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 			{
 				MarketId:      "btc:jpy",
-				OracleAddress: jpyxtypes.StringAccAddress{},
+				OracleAddress: ununifitypes.StringAccAddress{},
 				Price:         sdk.MustNewDecFromStr("8000.00"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 			{
 				MarketId:      "xrp:jpy",
-				OracleAddress: jpyxtypes.StringAccAddress{},
+				OracleAddress: ununifitypes.StringAccAddress{},
 				Price:         sdk.MustNewDecFromStr("0.25"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 			{
 				MarketId:      "bnb:jpy",
-				OracleAddress: jpyxtypes.StringAccAddress{},
+				OracleAddress: ununifitypes.StringAccAddress{},
 				Price:         sdk.MustNewDecFromStr("17.25"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 			{
 				MarketId:      "bjpy:jpy",
-				OracleAddress: jpyxtypes.StringAccAddress{},
+				OracleAddress: ununifitypes.StringAccAddress{},
 				Price:         sdk.OneDec(),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
 			{
 				MarketId:      "zzz:jpy",
-				OracleAddress: jpyxtypes.StringAccAddress{},
+				OracleAddress: ununifitypes.StringAccAddress{},
 				Price:         sdk.MustNewDecFromStr("2.00"),
 				Expiry:        time.Now().Add(1 * time.Hour),
 			},
@@ -158,15 +158,15 @@ func NewPricefeedGenStateMulti(tApp app.TestApp) app.GenesisState {
 	return app.GenesisState{pricefeedtypes.ModuleName: tApp.AppCodec().MustMarshalJSON(&pfGenesis)}
 }
 
-/* Question: Not necessary for jpyx because hard module does not exist?
+/* Question: Not necessary for jpu because hard module does not exist?
 func NewHardGenStateMulti() app.GenesisState {
 	loanToValue, _ := sdk.NewDecFromStr("0.6")
 	borrowLimit := sdk.NewDec(1000000000000000)
 
 	hardGS := hard.NewGenesisState(hard.NewParams(
 		hard.MoneyMarkets{
-			hard.NewMoneyMarket("jpyx", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "jpyx:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
-			hard.NewMoneyMarket("ujcbn", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "kava:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
+			hard.NewMoneyMarket("jpu", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "jpu:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
+			hard.NewMoneyMarket("uguu", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "kava:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
 			hard.NewMoneyMarket("bnb", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "bnb:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
 			hard.NewMoneyMarket("btcb", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "btc:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
 			hard.NewMoneyMarket("xrp", hard.NewBorrowLimit(false, borrowLimit, loanToValue), "xrp:jpy", sdk.NewInt(1000000), hard.NewInterestRateModel(sdk.MustNewDecFromStr("0.05"), sdk.MustNewDecFromStr("2"), sdk.MustNewDecFromStr("0.8"), sdk.MustNewDecFromStr("10")), sdk.MustNewDecFromStr("0.05"), sdk.ZeroDec()),
@@ -191,7 +191,7 @@ func NewAuthGenState(tApp app.TestApp, addresses []sdk.AccAddress, coins sdk.Coi
 	if len(addresses) >= 4 {
 		coinsList[3] = sdk.NewCoins(
 			sdk.NewCoin("bnb", sdk.NewInt(1000000000000000)),
-			sdk.NewCoin("ujcbn", sdk.NewInt(1000000000000000)),
+			sdk.NewCoin("uguu", sdk.NewInt(1000000000000000)),
 			sdk.NewCoin("btcb", sdk.NewInt(1000000000000000)),
 			sdk.NewCoin("xrp", sdk.NewInt(1000000000000000)),
 			sdk.NewCoin("zzz", sdk.NewInt(1000000000000000)),
@@ -203,7 +203,7 @@ func NewAuthGenState(tApp app.TestApp, addresses []sdk.AccAddress, coins sdk.Coi
 
 func NewStakingGenesisState(tApp app.TestApp) app.GenesisState {
 	genState := stakingtypes.DefaultGenesisState()
-	genState.Params.BondDenom = "ujcbn"
+	genState.Params.BondDenom = "uguu"
 	return app.GenesisState{
 		stakingtypes.ModuleName: tApp.AppCodec().MustMarshalJSON(genState),
 	}
@@ -220,14 +220,14 @@ func (suite *KeeperTestSuite) SetupWithGenState() {
 	ctx := tApp.NewContext(true, tmproto.Header{Height: 1, Time: tmtime.Now()})
 
 	tApp.InitializeFromGenesisStates(
-		NewAuthGenState(tApp, allAddrs, cs(c("ujcbn", 5_000_000))),
+		NewAuthGenState(tApp, allAddrs, cs(c("uguu", 5_000_000))),
 		NewStakingGenesisState(tApp),
 		NewPricefeedGenStateMulti(tApp),
 		NewCDPGenStateMulti(tApp),
 		// NewHardGenStateMulti(),
 	)
 
-	/* Question: Not necessary for jpyx because committee module does not exist?
+	/* Question: Not necessary for jpu because committee module does not exist?
 	// Set up a god committee
 	committeeModKeeper := tApp.GetCommitteeKeeper()
 	godCommittee := committeetypes.Committee{

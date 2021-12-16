@@ -1,0 +1,24 @@
+syntax = "proto3";
+package ununifi.ununifidist;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+import "ununifidist/ununifidist.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/ununifidist/types";
+
+// GenesisState defines the ununifidist module's genesis state.
+message GenesisState {
+  Params params = 1 [
+    (gogoproto.moretags) = "yaml:\"params\"",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Timestamp previous_block_time = 2 [
+    (gogoproto.moretags) = "yaml:\"previous_block_time\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  string gov_denom = 3 [(gogoproto.moretags) = "yaml:\"gov_denom\""];
+  // this line is used by starport scaffolding # genesis/proto/state
+}

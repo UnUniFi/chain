@@ -1,5 +1,5 @@
 syntax = "proto3";
-package botany.pricefeed;
+package ununifi.pricefeed;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";

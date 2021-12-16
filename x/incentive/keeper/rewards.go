@@ -69,16 +69,16 @@ func (k Keeper) InitializeCdpMintingClaim(ctx sdk.Context, cdp cdptypes.Cdp) {
 
 	denoms, _ := k.GetGenesisDenoms(ctx)
 
-	if !found { // this is the owner's first jpyx minting reward claim
+	if !found { // this is the owner's first jpu minting reward claim
 		claim = types.NewCdpMintingClaim(cdp.Owner.AccAddress(), sdk.NewCoin(denoms.CdpMintingRewardDenom, sdk.ZeroInt()), types.RewardIndexes{types.NewRewardIndex(cdp.Type, rewardFactor)})
 		k.SetCdpMintingClaim(ctx, claim)
 		return
 	}
-	// the owner has an existing jpyx minting reward claim
+	// the owner has an existing jpu minting reward claim
 	index, hasRewardIndex := claim.HasRewardIndex(cdp.Type)
-	if !hasRewardIndex { // this is the owner's first jpyx minting reward for this collateral type
+	if !hasRewardIndex { // this is the owner's first jpu minting reward for this collateral type
 		claim.RewardIndexes = append(claim.RewardIndexes, types.NewRewardIndex(cdp.Type, rewardFactor))
-	} else { // the owner has a previous jpyx minting reward for this collateral type
+	} else { // the owner has a previous jpu minting reward for this collateral type
 		claim.RewardIndexes[index] = types.NewRewardIndex(cdp.Type, rewardFactor)
 	}
 	k.SetCdpMintingClaim(ctx, claim)
@@ -107,9 +107,9 @@ func (k Keeper) SynchronizeCdpMintingReward(ctx sdk.Context, cdp cdptypes.Cdp) {
 		return
 	}
 
-	// the owner has an existing jpyx minting reward claim
+	// the owner has an existing jpu minting reward claim
 	index, hasRewardIndex := claim.HasRewardIndex(cdp.Type)
-	if !hasRewardIndex { // this is the owner's first jpyx minting reward for this collateral type
+	if !hasRewardIndex { // this is the owner's first jpu minting reward for this collateral type
 		claim.RewardIndexes = append(claim.RewardIndexes, types.NewRewardIndex(cdp.Type, globalRewardFactor))
 		k.SetCdpMintingClaim(ctx, claim)
 		return
@@ -195,9 +195,9 @@ func (k Keeper) SimulateCdpMintingSynchronization(ctx sdk.Context, claim types.C
 			globalRewardFactor = sdk.ZeroDec()
 		}
 
-		// the owner has an existing jpyx minting reward claim
+		// the owner has an existing jpu minting reward claim
 		index, hasRewardIndex := claim.HasRewardIndex(ri.CollateralType)
-		if !hasRewardIndex { // this is the owner's first jpyx minting reward for this collateral type
+		if !hasRewardIndex { // this is the owner's first jpu minting reward for this collateral type
 			claim.RewardIndexes = append(claim.RewardIndexes, types.NewRewardIndex(ri.CollateralType, globalRewardFactor))
 		}
 		userRewardFactor := claim.RewardIndexes[index].RewardFactor

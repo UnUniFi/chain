@@ -1,8 +1,8 @@
 # Simple usage with a mounted data directory:
-# > docker build -t jpyx .
-# > docker run -it -p 26656:26656 -p 26657:26657 -v ~/.jpyx:/root/.jpyx jpyx jpyxd init
-# > docker run -it -p 26656:26656 -p 26657:26657 -v ~/.jpyx:/root/.jpyx jpyx jpyxd start
-FROM golang:1.17-alpine AS build-env
+# > docker build -t ununifid .
+# > docker run -it -p 26656:26656 -p 26657:26657 -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid ununifid init
+# > docker run -it -p 26656:26656 -p 26657:26657 -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid ununifid start
+FROM golang:1.16-alpine AS build-env
 
 # Set up dependencies
 ENV PACKAGES curl make git libc-dev bash gcc linux-headers eudev-dev python3
@@ -28,7 +28,7 @@ RUN apk add --update ca-certificates
 WORKDIR /root
 
 # Copy over binaries from the build-env
-COPY --from=build-env /go/bin/jpyxd /usr/bin/jpyxd
+COPY --from=build-env /go/bin/ununifid /usr/bin/ununifid
 
-# Run jpyxd by default, omit entrypoint to ease using container with jpyxcli
-CMD ["jpyxd"]
+# Run ununifid by default, omit entrypoint to ease using container with ununificli
+CMD ["ununifid"]

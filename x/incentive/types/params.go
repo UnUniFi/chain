@@ -11,8 +11,8 @@ import (
 
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	botanydistTypes "github.com/UnUniFi/chain/x/botanydist/types"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	ununifidistTypes "github.com/UnUniFi/chain/x/ununifidist/types"
 )
 
 // Valid reward multipliers
@@ -36,7 +36,7 @@ var (
 	DefaultClaimEnd                 = tmtime.Canonical(time.Unix(1, 0))
 	DefaultPrincipalDenom           = cdptypes.DefaultStableDenom
 	DefaultCDPMintingRewardDenom    = cdptypes.DefaultGovDenom
-	IncentiveMacc                   = botanydistTypes.ModuleName
+	IncentiveMacc                   = ununifidistTypes.ModuleName
 )
 
 // NewParams returns a new params object

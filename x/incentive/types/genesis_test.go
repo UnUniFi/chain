@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto"
 
-	jpyxtypes "github.com/UnUniFi/chain/types"
+	ununifitypes "github.com/UnUniFi/chain/types"
 )
 
 func TestGenesisStateValidate(t *testing.T) {
@@ -53,7 +53,7 @@ func TestGenesisStateValidate(t *testing.T) {
 							"bnb-a",
 							time.Date(2020, 10, 15, 14, 0, 0, 0, time.UTC),
 							time.Date(2024, 10, 15, 14, 0, 0, 0, time.UTC),
-							sdk.NewCoin("ujcbn", sdk.NewInt(25000)),
+							sdk.NewCoin("uguu", sdk.NewInt(25000)),
 						),
 					},
 					Multipliers{
@@ -69,8 +69,8 @@ func TestGenesisStateValidate(t *testing.T) {
 				claims: CdpMintingClaims{
 					{
 						BaseClaim: &BaseClaim{
-							Owner:  jpyxtypes.StringAccAddress(sdk.AccAddress(crypto.AddressHash([]byte("KavaTestUser1")))),
-							Reward: sdk.NewCoin("ujcbn", sdk.NewInt(100000000)),
+							Owner:  ununifitypes.StringAccAddress(sdk.AccAddress(crypto.AddressHash([]byte("KavaTestUser1")))),
+							Reward: sdk.NewCoin("uguu", sdk.NewInt(100000000)),
 						},
 						RewardIndexes: []RewardIndex{
 							{
@@ -112,8 +112,8 @@ func TestGenesisStateValidate(t *testing.T) {
 				claims: CdpMintingClaims{
 					{
 						BaseClaim: &BaseClaim{
-							Owner:  jpyxtypes.StringAccAddress(sdk.AccAddress{}),
-							Reward: sdk.NewCoin("ujcbn", sdk.NewInt(100000000)),
+							Owner:  ununifitypes.StringAccAddress(sdk.AccAddress{}),
+							Reward: sdk.NewCoin("uguu", sdk.NewInt(100000000)),
 						},
 						RewardIndexes: []RewardIndex{
 							{

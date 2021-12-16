@@ -63,7 +63,7 @@ func (suite *KeeperTestSuite) getModuleAccount(name string) authtypes.ModuleAcco
 }
 
 func (suite *KeeperTestSuite) TestGetSetDeleteCdpMintingClaim() {
-	c := types.NewCdpMintingClaim(suite.addrs[0], c("ujcbn", 1000000), types.RewardIndexes{types.NewRewardIndex("bnb-a", sdk.ZeroDec())})
+	c := types.NewCdpMintingClaim(suite.addrs[0], c("uguu", 1000000), types.RewardIndexes{types.NewRewardIndex("bnb-a", sdk.ZeroDec())})
 	_, found := suite.keeper.GetCdpMintingClaim(suite.ctx, suite.addrs[0])
 	suite.Require().False(found)
 	suite.Require().NotPanics(func() {
@@ -81,7 +81,7 @@ func (suite *KeeperTestSuite) TestGetSetDeleteCdpMintingClaim() {
 
 func (suite *KeeperTestSuite) TestIterateJPYXMintingClaims() {
 	for i := 0; i < len(suite.addrs); i++ {
-		c := types.NewCdpMintingClaim(suite.addrs[i], c("ujcbn", 100000), types.RewardIndexes{types.NewRewardIndex("bnb-a", sdk.ZeroDec())})
+		c := types.NewCdpMintingClaim(suite.addrs[i], c("uguu", 100000), types.RewardIndexes{types.NewRewardIndex("bnb-a", sdk.ZeroDec())})
 		suite.Require().NotPanics(func() {
 			suite.keeper.SetCdpMintingClaim(suite.ctx, c)
 		})

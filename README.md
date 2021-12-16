@@ -22,10 +22,10 @@ sudo systemctl restart docker
 ### Join network
 
 ```bash
-docker run -v ~/.jpyx:/root/.jpyx ghcr.io/ununifi/ununifid jpyxd init [moniker] --chain-id [chain-id]
-mkdir jpyx
-cd jpyx
-curl -L https://raw.githubusercontent.com/UnUniFi/chain/main/launch/[chain-id]/genesis.json -o ~/.jpyx/config/genesis.json
+docker run -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid ununifid init [moniker] --chain-id [chain-id]
+mkdir ununifi
+cd ununifi
+curl -L https://raw.githubusercontent.com/UnUniFi/chain/main/launch/[chain-id]/genesis.json -o ~/.ununifi/config/genesis.json
 curl -O https://raw.githubusercontent.com/UnUniFi/chain/main/docker-compose.yml
 docker-compose up -d
 ```
@@ -50,21 +50,21 @@ source ~/.bashrc
 
 ```bash
 git clone https://github.com/UnUniFi/chain.git
-cd jpyx
+cd UnUniFi
 make install
 ```
 
 ### Config daemon
 
 ```bash
-jpyxd init [moniker] --chain-id [chain-id]
-cp launch/[chain-id]/genesis.json ~/.jpyx/config/genesis.json
+ununifid init [moniker] --chain-id [chain-id]
+cp launch/[chain-id]/genesis.json ~/.ununifi/config/genesis.json
 ```
 
 ### Register daemon service
 
 ```bash
-vi /etc/systemd/system/jpyxd.service
+vi /etc/systemd/system/ununifid.service
 ```
 
 ```txt
@@ -74,7 +74,7 @@ After=network-online.target
 
 [Service]
 User=root
-ExecStart=/root/go/bin/jpyxd start
+ExecStart=/root/go/bin/ununifid start
 Restart=always
 RestartSec=3
 LimitNOFILE=4096
@@ -84,7 +84,7 @@ WantedBy=multi-user.target
 ```
 
 ```bash
-systemctl enable jpyxd
+systemctl enable ununifid
 ```
 
 ## License

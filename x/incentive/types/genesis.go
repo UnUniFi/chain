@@ -43,10 +43,10 @@ func (gs GenesisState) Validate() error {
 }
 
 // NewGenesisState returns a new genesis state
-func NewGenesisState(params Params, jpyxAccumTimes GenesisAccumulationTimes, c CdpMintingClaims, denoms *GenesisDenoms) GenesisState {
+func NewGenesisState(params Params, jpuAccumTimes GenesisAccumulationTimes, c CdpMintingClaims, denoms *GenesisDenoms) GenesisState {
 	return GenesisState{
 		Params:               params,
-		CdpAccumulationTimes: jpyxAccumTimes,
+		CdpAccumulationTimes: jpuAccumTimes,
 		CdpMintingClaims:     c,
 		Denoms:               denoms,
 	}

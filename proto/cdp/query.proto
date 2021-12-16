@@ -1,5 +1,5 @@
 syntax = "proto3";
-package botany.cdp;
+package ununifi.cdp;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
@@ -13,20 +13,20 @@ option go_package = "github.com/UnUniFi/chain/x/cdp/types";
 // Query defines the gRPC querier service.
 service Query {
 	rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-		option (google.api.http).get = "/botany/cdp/params";
+		option (google.api.http).get = "/ununifi/cdp/params";
 	}
   // this line is used by starport scaffolding # 2
 	rpc Cdp(QueryGetCdpRequest) returns (QueryGetCdpResponse) {
-		option (google.api.http).get = "/botany/cdp/cdps/owners/{owner}/collateral-types/{collateral_type}/cdp";
+		option (google.api.http).get = "/ununifi/cdp/cdps/owners/{owner}/collateral-types/{collateral_type}/cdp";
 	}
 	rpc CdpAll(QueryAllCdpRequest) returns (QueryAllCdpResponse) {
-		option (google.api.http).get = "/botany/cdp/cdps";
+		option (google.api.http).get = "/ununifi/cdp/cdps";
 	}
 	rpc AccountAll(QueryAllAccountRequest) returns (QueryAllAccountResponse) {
-		option (google.api.http).get = "/botany/cdp/accounts";
+		option (google.api.http).get = "/ununifi/cdp/accounts";
 	}
   rpc DepositAll(QueryAllDepositRequest) returns (QueryAllDepositResponse) {
-		option (google.api.http).get = "/botany/cdp/deposits/owners/{owner}/collateral-types/{collateral_type}";
+		option (google.api.http).get = "/ununifi/cdp/deposits/owners/{owner}/collateral-types/{collateral_type}";
 	}
 }
 
