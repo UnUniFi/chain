@@ -1,6 +1,6 @@
 {
-  "genesis_time": "2021-12-16T03:49:36.061231486Z",
-  "chain_id": "ununifi-5-test",
+  "genesis_time": "2021-12-21T03:00:00.000000000Z",
+  "chain_id": "ununifi-6-test",
   "initial_height": "1",
   "consensus_params": {
     "block": {
@@ -43,36 +43,407 @@
       },
       "accounts": [
         {
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "ununifi1gcn8y49vlkzxayttncw9zxywh9ghu06jcycegg",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "uguu",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1640055600"
+        },
+        {
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "ununifi1ngc9898qdeflerhp6k6nr0ydk9rm2ketapeqv6",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "uguu",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1640055600"
+        },
+        {
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "ununifi14vtlq3akmp84wmqayfaetnzfjdpm06s3mwmwtn",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "uguu",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1640055600"
+        },
+        {
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "ununifi1jhky9lnuztzuvcavl60lkslhuuq48gvvtwps57",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "uguu",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1640055600"
+        },
+        {
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "ununifi108vn5g8we8w4shuzy2uznld9r30ptg4vfvr7u0",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "uguu",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1640055600"
+        },
+        {
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "ununifi1dahxcc0ph2dhyyyzh66kqddp3m9n30h3yaczav",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "uguu",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1640055600"
+        },
+        {
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "ununifi1nr0knu6hymtsst823qf4m6f5z8ewjgs5nt7n9r",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "uguu",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1640055600"
+        },
+        {
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "ununifi1a567rg4dc0hg4ykqz84h695rp0z7nqdh0tpgm6",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "uguu",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1640055600"
+        },
+        {
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "ununifi1dumz24ehp8lpdenzj3z909wm3ejslmdg8htxpf",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "uguu",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1640055600"
+        },
+        {
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "ununifi1hktcz4tc9g8v29ej2a4u6xjgp2wzwfwq0z094a",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "uguu",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1640055600"
+        },
+        {
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "ununifi1za2t3fln4gqeypgstprxd58gpk6v7cpc9tt48s",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "uguu",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1640055600"
+        },
+        {
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "ununifi198qwll8ynsyg9j2frcjprjx0cm6h5c4y857f22",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "uguu",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1640055600"
+        },
+        {
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "ununifi15yh9dmdq2r8rz35l9zdnpwzuvdqvknr2d03z5x",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "uguu",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1640055600"
+        },
+        {
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "ununifi1t2qg9dhjf4ydes62qzz2zu70an54ww5qr7jwdz",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "uguu",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1640055600"
+        },
+        {
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "ununifi1sh0dkt8p8dn0r6y3y8semagvxt5xkddtt6xmvh",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "uguu",
+                "amount": "5000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1640055600"
+        },
+        {
+          "@type": "/cosmos.vesting.v1beta1.ContinuousVestingAccount",
+          "base_vesting_account": {
+            "base_account": {
+              "address": "ununifi1p9fm5rer25lzrl5k40zdhe72ewwvmhql99klll",
+              "pub_key": null,
+              "account_number": "0",
+              "sequence": "0"
+            },
+            "original_vesting": [
+              {
+                "denom": "uguu",
+                "amount": "200000000000"
+              }
+            ],
+            "delegated_free": [],
+            "delegated_vesting": [],
+            "end_time": "1651147074"
+          },
+          "start_time": "1640055600"
+        },
+        {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "ununifi1udqv0gf4k90sy95c49ecc7qc9cqgwt7dsfu3xu",
+          "address": "ununifi1dlgwtw7u80zvm8t0te46rrc2tmcqxfw7mc03r0",
           "pub_key": null,
           "account_number": "0",
           "sequence": "0"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "ununifi1tuzxnku0zquxgh8akq7f9uywp9xgnl5gnass0k",
+          "address": "ununifi1zvsuaa92tra27aq3dqqxfezv64vajlu03nscuf",
           "pub_key": null,
           "account_number": "0",
           "sequence": "0"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "ununifi1vrjkze9f2prl3ne8zqz8mu79yqkmp9y32g8xhc",
+          "address": "ununifi1qygjrj69j8vcescel7wftvntcpwsaxpvkzz5mx",
           "pub_key": null,
           "account_number": "0",
           "sequence": "0"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "ununifi10t4gy4pkttfkwhrkqxd5wgv3y5z2ut4gk60q7d",
+          "address": "ununifi1eklc0a4ltvfxh2dsh4e7mypnmdvrgsl7fpgedx",
           "pub_key": null,
           "account_number": "0",
           "sequence": "0"
         },
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "ununifi1t2t38la75gsndpellma7dxvh4mx27n9e6nstvd",
+          "address": "ununifi1x8d6g9kck623p6eyr2dcmw2wsjl997kvszz68w",
+          "pub_key": null,
+          "account_number": "0",
+          "sequence": "0"
+        },
+        {
+          "@type": "/cosmos.auth.v1beta1.BaseAccount",
+          "address": "ununifi1h2h9zytcqml35wqtaa5pue83rfrq9xq3yet5sm",
+          "pub_key": null,
+          "account_number": "0",
+          "sequence": "0"
+        },
+        {
+          "@type": "/cosmos.auth.v1beta1.BaseAccount",
+          "address": "ununifi1unssjdhfjvs4vccg5djnx0tcksu22v3mu6penr",
+          "pub_key": null,
+          "account_number": "0",
+          "sequence": "0"
+        },
+        {
+          "@type": "/cosmos.auth.v1beta1.BaseAccount",
+          "address": "ununifi1yrh0ut44cv4n9zd6r9y6asfcttwjuhys30lavz",
+          "pub_key": null,
+          "account_number": "0",
+          "sequence": "0"
+        },
+        {
+          "@type": "/cosmos.auth.v1beta1.BaseAccount",
+          "address": "ununifi1x8t7teyrgfs264c07p27n40emspcq2lvsxd0x5",
+          "pub_key": null,
+          "account_number": "0",
+          "sequence": "0"
+        },
+        {
+          "@type": "/cosmos.auth.v1beta1.BaseAccount",
+          "address": "ununifi16l9hprx5w2vz760zjg9xffa3c4a8s8547f9q4f",
           "pub_key": null,
           "account_number": "0",
           "sequence": "0"
@@ -86,59 +457,232 @@
       },
       "balances": [
         {
-          "address": "ununifi1udqv0gf4k90sy95c49ecc7qc9cqgwt7dsfu3xu",
+          "address": "ununifi1gcn8y49vlkzxayttncw9zxywh9ghu06jcycegg",
           "coins": [
             {
-              "denom": "ubtc",
-              "amount": "25000000"
-            },
-            {
               "denom": "uguu",
-              "amount": "250000000000"
+              "amount": "7943000000"
             }
           ]
         },
         {
-          "address": "ununifi1tuzxnku0zquxgh8akq7f9uywp9xgnl5gnass0k",
+          "address": "ununifi1ngc9898qdeflerhp6k6nr0ydk9rm2ketapeqv6",
           "coins": [
             {
-              "denom": "ubtc",
-              "amount": "25000000"
-            },
-            {
               "denom": "uguu",
-              "amount": "250000000000"
+              "amount": "7943000000"
             }
           ]
         },
         {
-          "address": "ununifi1vrjkze9f2prl3ne8zqz8mu79yqkmp9y32g8xhc",
+          "address": "ununifi14vtlq3akmp84wmqayfaetnzfjdpm06s3mwmwtn",
           "coins": [
             {
-              "denom": "ubtc",
-              "amount": "25000000"
-            },
-            {
               "denom": "uguu",
-              "amount": "250000000000"
+              "amount": "7943000000"
             }
           ]
         },
         {
-          "address": "ununifi10t4gy4pkttfkwhrkqxd5wgv3y5z2ut4gk60q7d",
+          "address": "ununifi1jhky9lnuztzuvcavl60lkslhuuq48gvvtwps57",
           "coins": [
             {
-              "denom": "ubtc",
-              "amount": "25000000"
-            },
-            {
               "denom": "uguu",
-              "amount": "250000000000"
+              "amount": "7943000000"
             }
           ]
         },
         {
-          "address": "ununifi1t2t38la75gsndpellma7dxvh4mx27n9e6nstvd",
+          "address": "ununifi108vn5g8we8w4shuzy2uznld9r30ptg4vfvr7u0",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "7943000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi1dahxcc0ph2dhyyyzh66kqddp3m9n30h3yaczav",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "7943000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi1nr0knu6hymtsst823qf4m6f5z8ewjgs5nt7n9r",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "7943000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi1a567rg4dc0hg4ykqz84h695rp0z7nqdh0tpgm6",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "7943000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi1dumz24ehp8lpdenzj3z909wm3ejslmdg8htxpf",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "7943000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi1hktcz4tc9g8v29ej2a4u6xjgp2wzwfwq0z094a",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "7943000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi1za2t3fln4gqeypgstprxd58gpk6v7cpc9tt48s",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "7943000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi198qwll8ynsyg9j2frcjprjx0cm6h5c4y857f22",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "7943000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi15yh9dmdq2r8rz35l9zdnpwzuvdqvknr2d03z5x",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "7943000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi1t2qg9dhjf4ydes62qzz2zu70an54ww5qr7jwdz",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "7943000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi1sh0dkt8p8dn0r6y3y8semagvxt5xkddtt6xmvh",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "6170000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi1p9fm5rer25lzrl5k40zdhe72ewwvmhql99klll",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "200000000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi1dlgwtw7u80zvm8t0te46rrc2tmcqxfw7mc03r0",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "182628000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi1zvsuaa92tra27aq3dqqxfezv64vajlu03nscuf",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "30000000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi1qygjrj69j8vcescel7wftvntcpwsaxpvkzz5mx",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "1000000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi1eklc0a4ltvfxh2dsh4e7mypnmdvrgsl7fpgedx",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "1000000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi1x8d6g9kck623p6eyr2dcmw2wsjl997kvszz68w",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "98000000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi1h2h9zytcqml35wqtaa5pue83rfrq9xq3yet5sm",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "170000000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi1unssjdhfjvs4vccg5djnx0tcksu22v3mu6penr",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "90000000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi1yrh0ut44cv4n9zd6r9y6asfcttwjuhys30lavz",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "10000000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi1x8t7teyrgfs264c07p27n40emspcq2lvsxd0x5",
+          "coins": [
+            {
+              "denom": "uguu",
+              "amount": "100000000000"
+            }
+          ]
+        },
+        {
+          "address": "ununifi16l9hprx5w2vz760zjg9xffa3c4a8s8547f9q4f",
           "coins": [
             {
               "denom": "ubtc",
@@ -233,252 +777,7 @@
       "evidence": []
     },
     "genutil": {
-      "gen_txs": [
-        {
-          "body": {
-            "messages": [
-              {
-                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
-                "description": {
-                  "moniker": "cauchye-d-test",
-                  "identity": "cauchye-d-test",
-                  "website": "https://cauchye.com",
-                  "security_contact": "",
-                  "details": ""
-                },
-                "commission": {
-                  "rate": "0.100000000000000000",
-                  "max_rate": "0.200000000000000000",
-                  "max_change_rate": "0.010000000000000000"
-                },
-                "min_self_delegation": "1",
-                "delegator_address": "ununifi10t4gy4pkttfkwhrkqxd5wgv3y5z2ut4gk60q7d",
-                "validator_address": "ununifivaloper10t4gy4pkttfkwhrkqxd5wgv3y5z2ut4grx68gz",
-                "pubkey": {
-                  "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "9Af4Aa7bkzUOXfsuJ4aCUUDnRf/0hVqcY4SHBI3RLVA="
-                },
-                "value": {
-                  "denom": "uguu",
-                  "amount": "200000000000"
-                }
-              }
-            ],
-            "memo": "192ddcaea7789f65aa9b1f840ea963d4d0a61d8f@d.test.ununifi.cauchye.net:26656",
-            "timeout_height": "0",
-            "extension_options": [],
-            "non_critical_extension_options": []
-          },
-          "auth_info": {
-            "signer_infos": [
-              {
-                "public_key": {
-                  "@type": "/cosmos.crypto.secp256k1.PubKey",
-                  "key": "Am2sIibWmUETEj96bkhcLhXeb6HVQ757AhAt42FCLigl"
-                },
-                "mode_info": {
-                  "single": {
-                    "mode": "SIGN_MODE_DIRECT"
-                  }
-                },
-                "sequence": "0"
-              }
-            ],
-            "fee": {
-              "amount": [],
-              "gas_limit": "200000",
-              "payer": "",
-              "granter": ""
-            }
-          },
-          "signatures": [
-            "rKlp1cR9Ao5GlYrQqV9nBazGSq9ju1TcGeN1tFLZxgkcTDN1ygnMOU6iTAX6fEscyHT6dqEvSrF8CRhEAvem9w=="
-          ]
-        },
-        {
-          "body": {
-            "messages": [
-              {
-                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
-                "description": {
-                  "moniker": "cauchye-c-test",
-                  "identity": "cauchye-c-test",
-                  "website": "https://cauchye.com",
-                  "security_contact": "",
-                  "details": ""
-                },
-                "commission": {
-                  "rate": "0.100000000000000000",
-                  "max_rate": "0.200000000000000000",
-                  "max_change_rate": "0.010000000000000000"
-                },
-                "min_self_delegation": "1",
-                "delegator_address": "ununifi1vrjkze9f2prl3ne8zqz8mu79yqkmp9y32g8xhc",
-                "validator_address": "ununifivaloper1vrjkze9f2prl3ne8zqz8mu79yqkmp9y3l5jpph",
-                "pubkey": {
-                  "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "LGbHbsNPbXlPF/GCbuj905LRlFAPjZslBCIlM2Ga43A="
-                },
-                "value": {
-                  "denom": "uguu",
-                  "amount": "200000000000"
-                }
-              }
-            ],
-            "memo": "46a4580084634cf24cf7ecc589a9f1eb47291074@c.test.ununifi.cauchye.net:26656",
-            "timeout_height": "0",
-            "extension_options": [],
-            "non_critical_extension_options": []
-          },
-          "auth_info": {
-            "signer_infos": [
-              {
-                "public_key": {
-                  "@type": "/cosmos.crypto.secp256k1.PubKey",
-                  "key": "AxC2eXVxsl/FbTsTfKBk/4lUu4AKZQUZMwJ/saHcAaBa"
-                },
-                "mode_info": {
-                  "single": {
-                    "mode": "SIGN_MODE_DIRECT"
-                  }
-                },
-                "sequence": "0"
-              }
-            ],
-            "fee": {
-              "amount": [],
-              "gas_limit": "200000",
-              "payer": "",
-              "granter": ""
-            }
-          },
-          "signatures": [
-            "qRzh1ejDUw2t7/iuZYDlYpBvhue1MbrJ+PQ3j+LgteZYopWdCs6kR2OVpA8BNPD97u0ZQIHpGX6ZnoKFEhtQWQ=="
-          ]
-        },
-        {
-          "body": {
-            "messages": [
-              {
-                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
-                "description": {
-                  "moniker": "cauchye-b-test",
-                  "identity": "cauchye-b-test",
-                  "website": "https://cauchye.com",
-                  "security_contact": "",
-                  "details": ""
-                },
-                "commission": {
-                  "rate": "0.100000000000000000",
-                  "max_rate": "0.200000000000000000",
-                  "max_change_rate": "0.010000000000000000"
-                },
-                "min_self_delegation": "1",
-                "delegator_address": "ununifi1tuzxnku0zquxgh8akq7f9uywp9xgnl5gnass0k",
-                "validator_address": "ununifivaloper1tuzxnku0zquxgh8akq7f9uywp9xgnl5gxp9hee",
-                "pubkey": {
-                  "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "ce1pbIJ0oqhLfYNeb4yEfzDk8GV5lcE8L/bfSMhgXyQ="
-                },
-                "value": {
-                  "denom": "uguu",
-                  "amount": "200000000000"
-                }
-              }
-            ],
-            "memo": "b13e4681fd890b5ea7f3621cb4b6fe73ee0e5c34@b.test.ununifi.cauchye.net:26656",
-            "timeout_height": "0",
-            "extension_options": [],
-            "non_critical_extension_options": []
-          },
-          "auth_info": {
-            "signer_infos": [
-              {
-                "public_key": {
-                  "@type": "/cosmos.crypto.secp256k1.PubKey",
-                  "key": "A+A3R/eCPugLI2HO/pEpYI8qoR7Nlsq9KjM27blPeyjt"
-                },
-                "mode_info": {
-                  "single": {
-                    "mode": "SIGN_MODE_DIRECT"
-                  }
-                },
-                "sequence": "0"
-              }
-            ],
-            "fee": {
-              "amount": [],
-              "gas_limit": "200000",
-              "payer": "",
-              "granter": ""
-            }
-          },
-          "signatures": [
-            "IMhm54k/ajDefMkFALfo7qU8mRlQD+9NzuWA1mT5Km1y4E5zRu8qgKU/Asu0OC3MElqaVRcqkzeqI6M8mtR66w=="
-          ]
-        },
-        {
-          "body": {
-            "messages": [
-              {
-                "@type": "/cosmos.staking.v1beta1.MsgCreateValidator",
-                "description": {
-                  "moniker": "cauchye-a-test",
-                  "identity": "cauchye-a-test",
-                  "website": "https://cauchye.com",
-                  "security_contact": "",
-                  "details": ""
-                },
-                "commission": {
-                  "rate": "0.100000000000000000",
-                  "max_rate": "0.200000000000000000",
-                  "max_change_rate": "0.010000000000000000"
-                },
-                "min_self_delegation": "1",
-                "delegator_address": "ununifi1udqv0gf4k90sy95c49ecc7qc9cqgwt7dsfu3xu",
-                "validator_address": "ununifivaloper1udqv0gf4k90sy95c49ecc7qc9cqgwt7d94fksn",
-                "pubkey": {
-                  "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "eSw9xbyxWskGMonySIhRLsWp9/iTwcnme9tWVT5yAWc="
-                },
-                "value": {
-                  "denom": "uguu",
-                  "amount": "200000000000"
-                }
-              }
-            ],
-            "memo": "de321a535a5334268890940fa41429e3a0f9586a@a.test.ununifi.cauchye.net:26656",
-            "timeout_height": "0",
-            "extension_options": [],
-            "non_critical_extension_options": []
-          },
-          "auth_info": {
-            "signer_infos": [
-              {
-                "public_key": {
-                  "@type": "/cosmos.crypto.secp256k1.PubKey",
-                  "key": "A+rtMo1ylHH1Q/rqRn02enVR6cK9k7GKkcFDwSh4Wap1"
-                },
-                "mode_info": {
-                  "single": {
-                    "mode": "SIGN_MODE_DIRECT"
-                  }
-                },
-                "sequence": "0"
-              }
-            ],
-            "fee": {
-              "amount": [],
-              "gas_limit": "200000",
-              "payer": "",
-              "granter": ""
-            }
-          },
-          "signatures": [
-            "RU5GqumlNo2Yall2Uc35GHV29GsNKVsWVEw6a7JrCvFK2G76KJQx7GnmRwKo1m5YZGu526CO/0FVOd2Zq6r58A=="
-          ]
-        }
-      ]
+      "gen_txs": []
     },
     "gov": {
       "starting_proposal_id": "1",
@@ -597,10 +896,8 @@
             "base_asset": "ubtc",
             "quote_asset": "jpy",
             "oracles": [
-              "ununifi1udqv0gf4k90sy95c49ecc7qc9cqgwt7dsfu3xu",
-              "ununifi1tuzxnku0zquxgh8akq7f9uywp9xgnl5gnass0k",
-              "ununifi1vrjkze9f2prl3ne8zqz8mu79yqkmp9y32g8xhc",
-              "ununifi10t4gy4pkttfkwhrkqxd5wgv3y5z2ut4gk60q7d"
+              "ununifi1qygjrj69j8vcescel7wftvntcpwsaxpvkzz5mx",
+              "ununifi1eklc0a4ltvfxh2dsh4e7mypnmdvrgsl7fpgedx"
             ],
             "active": true
           },
@@ -609,10 +906,8 @@
             "base_asset": "ubtc",
             "quote_asset": "jpy",
             "oracles": [
-              "ununifi1udqv0gf4k90sy95c49ecc7qc9cqgwt7dsfu3xu",
-              "ununifi1tuzxnku0zquxgh8akq7f9uywp9xgnl5gnass0k",
-              "ununifi1vrjkze9f2prl3ne8zqz8mu79yqkmp9y32g8xhc",
-              "ununifi10t4gy4pkttfkwhrkqxd5wgv3y5z2ut4gk60q7d"
+              "ununifi1qygjrj69j8vcescel7wftvntcpwsaxpvkzz5mx",
+              "ununifi1eklc0a4ltvfxh2dsh4e7mypnmdvrgsl7fpgedx"
             ],
             "active": true
           }
