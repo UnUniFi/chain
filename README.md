@@ -1,6 +1,6 @@
-# JPYX
+# UnUniFi
 
-The Docker image will be automatically built by Docker Hub when releases are created.
+The Docker image will be automatically built by GitHub Container Registry when releases are created.
 
 ## Install
 
@@ -69,7 +69,7 @@ vi /etc/systemd/system/ununifid.service
 
 ```txt
 [Unit]
-Description=JPYX Node
+Description=UnUniFi Node
 After=network-online.target
 
 [Service]
@@ -92,6 +92,6 @@ systemctl enable ununifid
 Forked from [Kava](github.com/Kava-Labs/kava).
 Thanks Kava Team.
 
-Copyright © LCNEM, Inc. All rights reserved.
+Copyright © CauchyE, Inc. All rights reserved.
 
 Licensed under the [Apache v2 License](LICENSE.md).
