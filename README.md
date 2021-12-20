@@ -92,6 +92,6 @@ systemctl enable ununifid
 Forked from [Kava](github.com/Kava-Labs/kava).
 Thanks Kava Team.
 
-Copyright © CauchyE, Inc. All rights reserved.
+Copyright © UnUniFi development team. All rights reserved.
 
 Licensed under the [Apache v2 License](LICENSE.md).
