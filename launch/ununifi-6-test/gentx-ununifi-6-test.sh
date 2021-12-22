@@ -14,10 +14,10 @@ curl -O https://raw.githubusercontent.com/UnUniFi/chain/main/docker-compose.yml
 docker pull ghcr.io/ununifi/ununifid:latest
 
 # gentxs
-docker run -it -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid ununifid gentx cauchye-a-test-temp 5000000000uguu --chain-id="ununifi-6-test" --from="cauchye-a-test-temp" --ip="a.test.ununifi.cauchye.net" --moniker="cauchye-a-test" --identity="cauchye-a-test" --website="https://cauchye.com" --node-id="de321a535a5334268890940fa41429e3a0f9586a" --pubkey="ununifivalconspub1zcjduepq0ykrm3duk9dvjp3j38ey3zz39mz6nalcj0qunenmmdt920njq9ns92gept"
+docker run -it -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid ununifid gentx cauchye-a-test-temp 5000000000uguu --chain-id="ununifi-6-test" --from="cauchye-a-test-temp" --ip="a.test.ununifi.cauchye.net" --moniker="cauchye-a-test" --identity="cauchye-a-test" --website="https://cauchye.com" --node-id="f0e7dc092e1565ec5aa60d1341c5b6820e5a6c14" --pubkey="ununifivalconspub1zcjduepq0cywhfd6a9k306u7e8p0ps35c97hgumxmh4573vec5f3hkzkdp8qxykjwg"
 sudo chown -c -R $USER:docker ~/.ununifi
 
-docker run -it -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid ununifid gentx cauchye-b-test-temp 5000000000uguu --chain-id="ununifi-6-test" --from="cauchye-b-test-temp" --ip="b.test.ununifi.cauchye.net" --moniker="cauchye-b-test" --identity="cauchye-b-test" --website="https://cauchye.com" --node-id="b13e4681fd890b5ea7f3621cb4b6fe73ee0e5c34" --pubkey="ununifivalconspub1zcjduepqw8kkjmyzwj32sjmasd0xlryy0ucwfur90x2uz0p07m053jrqtujqkeflw0"
+docker run -it -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid ununifid gentx cauchye-b-test-temp 5000000000uguu --chain-id="ununifi-6-test" --from="cauchye-b-test-temp" --ip="b.test.ununifi.cauchye.net" --moniker="cauchye-b-test" --identity="cauchye-b-test" --website="https://cauchye.com" --node-id="411160f7963c316a83da803daa09914986618531" --pubkey="ununifivalconspub1zcjduepq2zyearj8c695aqf9e0hzsdk38w787p7ljacnllgaxl2n8whvrnuq38ry6p"
 sudo chown -c -R $USER:docker ~/.ununifi
 
 docker run -it -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid ununifid gentx tokyo-0-test-temp 5000000000uguu --chain-id="ununifi-6-test" --from="tokyo-0-test-temp" --ip="ununifi.testnet.validator.tokyo-0.neukind.network" --moniker="tokyo-0-test" --identity="tokyo-0-test" --node-id="1357ac5cd92b215b05253b25d78cf485dd899d55" --pubkey="ununifivalconspub1zcjduepq89wlgjv3ndhe49w695tkkpuv6s9tacnztthdwlved8cwwp83te6qp22dpm"
