@@ -21,12 +21,35 @@ sudo systemctl restart docker
 
 ### Join network
 
+Get resources.
+
 ```bash
 docker run -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid ununifid init [moniker] --chain-id [chain-id]
-mkdir ununifi
-cd ununifi
+sudo chown -c -R $USER:docker ~/.ununifi
+mkdir ~/ununifi
+cd ~/ununifi
 curl -L https://raw.githubusercontent.com/UnUniFi/chain/main/launch/[chain-id]/genesis.json -o ~/.ununifi/config/genesis.json
 curl -O https://raw.githubusercontent.com/UnUniFi/chain/main/docker-compose.yml
+```
+
+Note
+
+- `moniker` is like a nickname of the node.
+- `chain-id` is the id of the blockchain network. (ex. In the current public testnet, the chain-id is `ununifi-6-test`.)
+
+Edit config files.
+
+- `~/.ununifi/config/app.toml`
+  - `minimum-gas-prices` ... [https://docs.cosmos.network/v0.42/modules/auth/01_concepts.html#gas-fees](https://docs.cosmos.network/v0.42/modules/auth/01_concepts.html#gas-fees)
+  - `pruning`
+  - Enable defines if the API server should be enabled. `enable = true`
+  - EnableUnsafeCORS defines if CORS should be enabled (unsafe - use it at your own risk). `enabled-unsafe-cors = true`
+- `.ununifi/config/config.toml` ex. in the case of chain-id="ununifi-6-test", the possible settings are as follows.
+  - `persistent-peers = "f0e7dc092e1565ec5aa60d1341c5b6820e5a6c14@a.test.ununifi.cauchye.net:26656,411160f7963c316a83da803daa09914986618531@b.test.ununifi.cauchye.net:26656,1357ac5cd92b215b05253b25d78cf485dd899d55@ununifi.testnet.validator.tokyo-0.neukind.network:26656,25006d6b85daeac2234bcb94dafaa73861b43ee3@ununifi.testnet.validator.tokyo-1.neukind.network:26656"`
+
+Start node.
+
+```bash
 docker-compose up -d
 ```
 
