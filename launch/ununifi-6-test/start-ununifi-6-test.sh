@@ -4,6 +4,7 @@ date
 
 cd ~/ununifi
 docker-compose down
+docker system prune -a -f
 
 docker pull ghcr.io/ununifi/ununifid:latest
 
