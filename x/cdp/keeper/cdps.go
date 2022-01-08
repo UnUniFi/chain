@@ -230,7 +230,7 @@ func (k Keeper) GetCdp(ctx sdk.Context, collateralType string, cdpID uint64) (ty
 		return types.Cdp{}, false
 	}
 	var cdp types.Cdp
-	k.cdc.MustUnmarshalBinaryLengthPrefixed(bz, &cdp)
+	k.cdc.MustUnmarshalLengthPrefixed(bz, &cdp)
 	return cdp, true
 }
 
@@ -241,7 +241,7 @@ func (k Keeper) SetCdp(ctx sdk.Context, cdp types.Cdp) error {
 	if !found {
 		return sdkerrors.Wrapf(types.ErrDenomPrefixNotFound, "%s", cdp.Collateral.Denom)
 	}
-	bz := k.cdc.MustMarshalBinaryLengthPrefixed(&cdp)
+	bz := k.cdc.MustMarshalLengthPrefixed(&cdp)
 	store.Set(types.CdpKeySuffix(denomByte, cdp.Id), bz)
 	return nil
 }
