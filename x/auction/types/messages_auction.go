@@ -33,8 +33,8 @@ func (msg MsgPlaceBid) ValidateBasic() error {
 	if msg.Bidder.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "bidder address cannot be empty")
 	}
-	if len(msg.Bidder) != sdk.AddrLen {
-		return fmt.Errorf("the expected bidder address length is %d, actual length is %d", sdk.AddrLen, len(msg.Bidder))
+	if err := msg.Bidder.VerifyAddressFormat(); err != nil {
+		return fmt.Errorf("the expected bidder address format is %d", msg.Bidder.AccAddress().String())
 	}
 	if !msg.Amount.IsValid() {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "bid amount %s", msg.Amount)
