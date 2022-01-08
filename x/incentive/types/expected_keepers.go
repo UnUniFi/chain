@@ -5,8 +5,8 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/cosmos/cosmos-sdk/x/bank/exported"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 )
 
 // AccountKeeper expected interface for the account keeper (noalias)
@@ -63,8 +63,6 @@ type BankKeeper interface {
 	GetParams(ctx sdk.Context) banktypes.Params
 	SetParams(ctx sdk.Context, params banktypes.Params)
 
-	SendEnabledCoin(ctx sdk.Context, coin sdk.Coin) bool
-	SendEnabledCoins(ctx sdk.Context, coins ...sdk.Coin) error
 
 	BlockedAddr(addr sdk.AccAddress) bool
 
@@ -72,10 +70,11 @@ type BankKeeper interface {
 	InitGenesis(sdk.Context, *banktypes.GenesisState)
 	ExportGenesis(sdk.Context) *banktypes.GenesisState
 
-	GetSupply(ctx sdk.Context) exported.SupplyI
-	SetSupply(ctx sdk.Context, supply exported.SupplyI)
+	GetSupply(ctx sdk.Context, denom string) sdk.Coin
+	GetPaginatedTotalSupply(ctx sdk.Context, pagination *query.PageRequest) (sdk.Coins, *query.PageResponse, error)
+	IterateTotalSupply(ctx sdk.Context, cb func(sdk.Coin) bool)
 
-	GetDenomMetaData(ctx sdk.Context, denom string) banktypes.Metadata
+	GetDenomMetaData(ctx sdk.Context, denom string) (banktypes.Metadata, bool)
 	SetDenomMetaData(ctx sdk.Context, denomMetaData banktypes.Metadata)
 	IterateAllDenomMetaData(ctx sdk.Context, cb func(banktypes.Metadata) bool)
 
@@ -89,8 +88,6 @@ type BankKeeper interface {
 
 	DelegateCoins(ctx sdk.Context, delegatorAddr, moduleAccAddr sdk.AccAddress, amt sdk.Coins) error
 	UndelegateCoins(ctx sdk.Context, moduleAccAddr, delegatorAddr sdk.AccAddress, amt sdk.Coins) error
-	MarshalSupply(supplyI exported.SupplyI) ([]byte, error)
-	UnmarshalSupply(bz []byte) (exported.SupplyI, error)
 }
 
 // CdpKeeper defines the expected interface for the pricefeed  (noalias)
