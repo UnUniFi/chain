@@ -35,7 +35,7 @@ func TestMsgPlaceBid_ValidateBasic(t *testing.T) {
 		{
 			"invalid address",
 			NewMsgPlaceBid(1, addr[:10], c("token", 10)),
-			false,
+			true,
 		},
 		{
 			"negative amount",
