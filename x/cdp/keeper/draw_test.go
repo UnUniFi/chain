@@ -119,7 +119,7 @@ func (suite *DrawTestSuite) TestAddRepayPrincipal() {
 	ak = suite.app.GetAccountKeeper()
 	sk = suite.app.GetBankKeeper()
 	acc = ak.GetModuleAccount(suite.ctx, types.ModuleName)
-	suite.Equal(sdk.Coins(nil), sk.GetAllBalances(suite.ctx, acc.GetAddress()))
+	suite.Equal(sdk.Coins{}, sk.GetAllBalances(suite.ctx, acc.GetAddress()))
 
 }
 

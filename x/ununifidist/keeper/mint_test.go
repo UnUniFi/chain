@@ -70,34 +70,32 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 func (suite *KeeperTestSuite) TestMintExpiredPeriod() {
 	govDenom, _ := suite.keeper.GetGovDenom(suite.ctx)
-	// initialSupply := suite.supplyKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
-	initialSupply := suite.bankKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(govDenom)
+	initialSupply := suite.bankKeeper.GetSupply(suite.ctx, govDenom).Amount
 	suite.NotPanics(func() { suite.keeper.SetPreviousBlockTime(suite.ctx, time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC)) })
 	ctx := suite.ctx.WithBlockTime(time.Date(2022, 1, 1, 0, 7, 0, 0, time.UTC))
 	err := suite.keeper.MintPeriodInflation(ctx)
 	suite.NoError(err)
-	// finalSupply := suite.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
-	finalSupply := suite.bankKeeper.GetSupply(ctx).GetTotal().AmountOf(govDenom)
+	finalSupply := suite.bankKeeper.GetSupply(ctx, govDenom).Amount
 	suite.Equal(initialSupply, finalSupply)
 }
 
 func (suite *KeeperTestSuite) TestMintPeriodNotStarted() {
 	govDenom, _ := suite.keeper.GetGovDenom(suite.ctx)
 	// initialSupply := suite.supplyKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
-	initialSupply := suite.bankKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(govDenom)
+	initialSupply := suite.bankKeeper.GetSupply(suite.ctx, govDenom).Amount
 	suite.NotPanics(func() { suite.keeper.SetPreviousBlockTime(suite.ctx, time.Date(2019, 1, 1, 0, 0, 0, 0, time.UTC)) })
 	ctx := suite.ctx.WithBlockTime(time.Date(2019, 1, 1, 0, 7, 0, 0, time.UTC))
 	err := suite.keeper.MintPeriodInflation(ctx)
 	suite.NoError(err)
 	// finalSupply := suite.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
-	finalSupply := suite.bankKeeper.GetSupply(ctx).GetTotal().AmountOf(govDenom)
+	finalSupply := suite.bankKeeper.GetSupply(ctx, govDenom).Amount
 	suite.Equal(initialSupply, finalSupply)
 }
 
 func (suite *KeeperTestSuite) TestMintOngoingPeriod() {
 	govDenom, _ := suite.keeper.GetGovDenom(suite.ctx)
 	// initialSupply := suite.supplyKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
-	initialSupply := suite.bankKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(govDenom)
+	initialSupply := suite.bankKeeper.GetSupply(suite.ctx, govDenom).Amount
 	suite.NotPanics(func() {
 		suite.keeper.SetPreviousBlockTime(suite.ctx, time.Date(2020, time.March, 1, 1, 0, 1, 0, time.UTC))
 	})
@@ -105,7 +103,7 @@ func (suite *KeeperTestSuite) TestMintOngoingPeriod() {
 	err := suite.keeper.MintPeriodInflation(ctx)
 	suite.NoError(err)
 	// finalSupply := suite.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
-	finalSupply := suite.bankKeeper.GetSupply(ctx).GetTotal().AmountOf(govDenom)
+	finalSupply := suite.bankKeeper.GetSupply(ctx, govDenom).Amount
 	suite.True(finalSupply.GT(initialSupply))
 	// mAcc := suite.supplyKeeper.GetModuleAccount(ctx, ununifidisttypes.ModuleName)
 	// mAccSupply := mAcc.GetCoins().AmountOf(ununifidisttypes.GovDenom)
@@ -122,7 +120,7 @@ func (suite *KeeperTestSuite) TestMintOngoingPeriod() {
 func (suite *KeeperTestSuite) TestMintPeriodTransition() {
 	govDenom, _ := suite.keeper.GetGovDenom(suite.ctx)
 	// initialSupply := suite.supplyKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
-	initialSupply := suite.bankKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(govDenom)
+	initialSupply := suite.bankKeeper.GetSupply(suite.ctx, govDenom).Amount
 	params := suite.keeper.GetParams(suite.ctx)
 	periods := ununifidisttypes.Periods{
 		testPeriods[0],
@@ -143,14 +141,14 @@ func (suite *KeeperTestSuite) TestMintPeriodTransition() {
 	err := suite.keeper.MintPeriodInflation(ctx)
 	suite.NoError(err)
 	// finalSupply := suite.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
-	finalSupply := suite.bankKeeper.GetSupply(ctx).GetTotal().AmountOf(govDenom)
+	finalSupply := suite.bankKeeper.GetSupply(ctx, govDenom).Amount
 	suite.True(finalSupply.GT(initialSupply))
 }
 
 func (suite *KeeperTestSuite) TestMintNotActive() {
 	govDenom, _ := suite.keeper.GetGovDenom(suite.ctx)
 	// initialSupply := suite.supplyKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
-	initialSupply := suite.bankKeeper.GetSupply(suite.ctx).GetTotal().AmountOf(govDenom)
+	initialSupply := suite.bankKeeper.GetSupply(suite.ctx, govDenom).Amount
 	params := suite.keeper.GetParams(suite.ctx)
 	params.Active = false
 	suite.NotPanics(func() {
@@ -163,7 +161,7 @@ func (suite *KeeperTestSuite) TestMintNotActive() {
 	err := suite.keeper.MintPeriodInflation(ctx)
 	suite.NoError(err)
 	// finalSupply := suite.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(ununifidisttypes.GovDenom)
-	finalSupply := suite.bankKeeper.GetSupply(ctx).GetTotal().AmountOf(govDenom)
+	finalSupply := suite.bankKeeper.GetSupply(ctx, govDenom).Amount
 	suite.Equal(initialSupply, finalSupply)
 }
 
