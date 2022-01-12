@@ -14,6 +14,7 @@ import (
 	"github.com/UnUniFi/chain/x/auction"
 	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	"github.com/cosmos/cosmos-sdk/simapp"
 )
 
 func TestKeeper_BeginBlocker(t *testing.T) {
@@ -23,22 +24,20 @@ func TestKeeper_BeginBlocker(t *testing.T) {
 	returnAddrs := addrs[1:]
 	returnWeights := []sdk.Int{sdk.NewInt(1)}
 	sellerModName := cdptypes.LiquidatorMacc
-	sellerAddr := authtypes.NewModuleAddress(sellerModName)
+	modBaseAcc := authtypes.NewBaseAccount(authtypes.NewModuleAddress(sellerModName), nil, 0, 0)
+	modAcc := authtypes.NewModuleAccount(modBaseAcc, sellerModName, []string{authtypes.Minter, authtypes.Burner}...)
 
 	tApp := app.NewTestApp()
-	bk := tApp.GetBankKeeper()
 	ctx := tApp.NewContext(true, tmproto.Header{})
 
-	sellerAcc := authtypes.NewEmptyModuleAccount(sellerModName)
-	// require.NoError(t, sellerAcc.SetCoins(cs(c("token1", 100), c("token2", 100), c("debt", 100))))
-	require.NoError(t, bk.SetBalances(ctx, sellerAddr, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
+	require.NoError(t, simapp.FundModuleAccount(tApp.BankKeeper ,ctx, modAcc.Name, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
 	tApp.InitializeFromGenesisStates(
 		// NewAuthGenStateFromAccs(authtypes.GenesisAccounts{
 		// 	auth.NewBaseAccount(buyer, cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
 		// 	sellerAcc,
 		// }),
 		app.NewAuthGenState(tApp, []sdk.AccAddress{buyer}, []sdk.Coins{cs(c("token1", 100), c("token2", 100))}),
-		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{sellerAcc}),
+		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{modAcc}),
 	)
 
 	keeper := tApp.GetAuctionKeeper()
