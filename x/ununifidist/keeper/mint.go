@@ -65,7 +65,7 @@ func (k Keeper) MintPeriodInflation(ctx sdk.Context) error {
 }
 
 func (k Keeper) mintInflationaryCoins(ctx sdk.Context, inflationRate sdk.Dec, timePeriods sdk.Int, denom string) error {
-	totalSupply := k.bankKeeper.GetSupply(ctx).GetTotal().AmountOf(denom)
+	totalSupply := k.bankKeeper.GetSupply(ctx, denom).Amount
 	// used to scale accumulator calculations by 10^18
 	scalar := sdk.NewInt(1000000000000000000)
 	// convert inflation rate to integer
