@@ -89,9 +89,9 @@ func (a BaseAuction) Validate() error {
 		return fmt.Errorf("invalid lot: %s", a.Lot)
 	}
 	// NOTE: bidder can be empty for Surplus and Collateral auctions
-	err := a.Bidder.VerifyAddressFormat(); 
+	err := a.Bidder.VerifyAddressFormat()
 	if a.Bidder.Size() != 0 && err != nil {
-		return fmt.Errorf("the expected bidder address format is %s", a.Bidder.AccAddress().String())
+		return fmt.Errorf("bidder address length is %d", a.Bidder.Len())
 	}
 	if !a.Bid.IsValid() {
 		return fmt.Errorf("invalid bid: %s", a.Bid)
@@ -284,7 +284,7 @@ func (was WeightedAddresses) Validate() error {
 			return fmt.Errorf("address %d cannot be empty", i)
 		}
 		if err := was[i].Address.VerifyAddressFormat(); err != nil {
-			return fmt.Errorf("address %d has an invalid format %s", i, was[i].Address.AccAddress().String())
+			return fmt.Errorf("address %d has an address length is %d", i, was[i].Address.Len())
 		}
 		if was[i].Weight.IsNegative() {
 			return fmt.Errorf("weight %d contains a negative amount: %s", i, was[i].Weight)
