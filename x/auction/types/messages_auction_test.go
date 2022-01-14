@@ -33,9 +33,14 @@ func TestMsgPlaceBid_ValidateBasic(t *testing.T) {
 			false,
 		},
 		{
-			"invalid address",
-			NewMsgPlaceBid(1, addr[:10], c("token", 10)),
-			true,
+			"zero address",
+			NewMsgPlaceBid(1, sdk.AccAddress(make([]byte, 0)), c("token", 10)),
+			false,
+		},
+		{
+			"toolong address",
+			NewMsgPlaceBid(1, sdk.AccAddress(make([]byte, 256)), c("token", 10)),
+			false,
 		},
 		{
 			"negative amount",
