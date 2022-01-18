@@ -1,6 +1,6 @@
 {
-  "genesis_time": "2021-12-22T00:45:40.423400095Z",
-  "chain_id": "ununifi-6-test",
+  "genesis_time": "2022-01-18T09:25:34.227429722Z",
+  "chain_id": "ununifi-7-private-test",
   "initial_height": "1",
   "consensus_params": {
     "block": {
@@ -42,6 +42,9 @@
         "sig_verify_cost_secp256k1": "1000"
       },
       "accounts": []
+    },
+    "authz": {
+      "authorization": []
     },
     "bank": {
       "params": {
@@ -130,6 +133,9 @@
     "evidence": {
       "evidence": []
     },
+    "feegrant": {
+      "allowances": []
+    },
     "genutil": {
       "gen_txs": []
     },
@@ -173,7 +179,10 @@
       "connection_genesis": {
         "connections": [],
         "client_connection_paths": [],
-        "next_connection_sequence": "0"
+        "next_connection_sequence": "0",
+        "params": {
+          "max_expected_time_per_block": "30000000000"
+        }
       },
       "channel_genesis": {
         "channels": [],
@@ -300,8 +309,8 @@
       "port_id": "transfer",
       "denom_traces": [],
       "params": {
-        "send_enabled": false,
-        "receive_enabled": false
+        "send_enabled": true,
+        "receive_enabled": true
       }
     },
     "ununifidist": {
