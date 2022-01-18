@@ -38,13 +38,16 @@ func (k Keeper) GetCollateralTypes(ctx sdk.Context) []string {
 	return denoms
 }
 
+// GetDebtParams returns the debt params
+func (k Keeper) GetDebtParams(ctx sdk.Context) types.DebtParams {
+	dps := types.DebtParams(k.GetParams(ctx).DebtParams)
+	return dps
+}
+
 // GetDebtParam returns the debt param with matching denom
 func (k Keeper) GetDebtParam(ctx sdk.Context, denom string) (types.DebtParam, bool) {
-	dp := k.GetParams(ctx).DebtParam
-	if dp.Denom == denom {
-		return dp, true
-	}
-	return types.DebtParam{}, false
+	dps := types.DebtParams(k.GetParams(ctx).DebtParams)
+	return dps.FindDenom(denom)
 }
 
 // GetCollateralTypePrefix returns the prefix of the matching denom

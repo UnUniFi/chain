@@ -19,14 +19,23 @@ var (
 	KeyDebtLot              = []byte("DebtLot")
 	KeySurplusThreshold     = []byte("SurplusThreshold")
 	KeySurplusLot           = []byte("SurplusLot")
-	DefaultGlobalDebt       = sdk.NewCoin(DefaultStableDenom, sdk.ZeroInt())
 	DefaultCircuitBreaker   = false
 	DefaultCollateralParams = CollateralParams{}
-	DefaultDebtParam        = DebtParam{
-		Denom:            "jpu",
-		ReferenceAsset:   "jpy",
-		ConversionFactor: sdk.NewInt(6),
-		DebtFloor:        sdk.NewInt(1),
+	DefaultDebtParams       = DebtParams{
+		DebtParam{
+			Denom:            "jpu",
+			ReferenceAsset:   "jpy",
+			ConversionFactor: sdk.NewInt(6),
+			DebtFloor:        sdk.NewInt(1),
+			GlobalDebtLimit:  sdk.NewCoin(DefaultStableDenom, sdk.ZeroInt()),
+		},
+		DebtParam{
+			Denom:            "euu",
+			ReferenceAsset:   "eur",
+			ConversionFactor: sdk.NewInt(6),
+			DebtFloor:        sdk.NewInt(1),
+			GlobalDebtLimit:  sdk.NewCoin("euu", sdk.ZeroInt()),
+		},
 	}
 	DefaultCdpStartingID    = uint64(1)
 	DefaultDebtDenom        = "debt"
@@ -43,13 +52,12 @@ var (
 
 // NewParams returns a new params object
 func NewParams(
-	debtLimit sdk.Coin, collateralParams CollateralParams, debtParam DebtParam, surplusThreshold,
+	collateralParams CollateralParams, debtParams DebtParams, surplusThreshold,
 	surplusLot, debtThreshold, debtLot sdk.Int, breaker bool,
 ) Params {
 	return Params{
-		GlobalDebtLimit:         debtLimit,
 		CollateralParams:        collateralParams,
-		DebtParam:               debtParam,
+		DebtParams:              debtParams,
 		SurplusAuctionThreshold: surplusThreshold,
 		SurplusAuctionLot:       surplusLot,
 		DebtAuctionThreshold:    debtThreshold,
@@ -61,7 +69,7 @@ func NewParams(
 // DefaultParams returns default params for cdp module
 func DefaultParams() Params {
 	return NewParams(
-		DefaultGlobalDebt, DefaultCollateralParams, DefaultDebtParam, DefaultSurplusThreshold,
+		DefaultCollateralParams, DefaultDebtParams, DefaultSurplusThreshold,
 		DefaultSurplusLot, DefaultDebtThreshold, DefaultDebtLot,
 		DefaultCircuitBreaker,
 	)
@@ -101,12 +109,13 @@ func (cps CollateralParams) String() string {
 }
 
 // NewDebtParam returns a new DebtParam
-func NewDebtParam(denom, refAsset string, conversionFactor, debtFloor sdk.Int) DebtParam {
+func NewDebtParam(denom, refAsset string, conversionFactor, debtFloor sdk.Int, globalDebtLimit sdk.Coin) DebtParam {
 	return DebtParam{
 		Denom:            denom,
 		ReferenceAsset:   refAsset,
 		ConversionFactor: conversionFactor,
 		DebtFloor:        debtFloor,
+		GlobalDebtLimit:  globalDebtLimit,
 	}
 }
 
@@ -122,6 +131,31 @@ func (dps DebtParams) String() string {
 	return out
 }
 
+func (dps DebtParams) find(f func(DebtParam, string) bool, search_denom string) (DebtParam, bool) {
+	for _, debtParam := range dps {
+		if (DebtParam{}) != debtParam {
+			if f(debtParam, search_denom) {
+				return debtParam, true
+			}
+		}
+	}
+	return DebtParam{}, false
+}
+
+func (dps DebtParams) FindDenom(search_denom string) (DebtParam, bool) {
+	findDenom := func(ele DebtParam, target string) bool {
+		return ele.Denom == target
+	}
+	return dps.find(findDenom, search_denom)
+}
+
+func (dps DebtParams) FindGlobalDebtLimitDenom(search_denom string) (DebtParam, bool) {
+	FindGlobalDebtLimitDenomDenom := func(ele DebtParam, target string) bool {
+		return ele.GlobalDebtLimit.Denom == target
+	}
+	return dps.find(FindGlobalDebtLimitDenomDenom, search_denom)
+}
+
 // ParamKeyTable Key declaration for parameters
 func ParamKeyTable() paramstype.KeyTable {
 	return paramstype.NewKeyTable().RegisterParamSet(&Params{})
@@ -132,9 +166,8 @@ func ParamKeyTable() paramstype.KeyTable {
 // nolint
 func (p *Params) ParamSetPairs() paramstype.ParamSetPairs {
 	return paramstype.ParamSetPairs{
-		paramstype.NewParamSetPair(KeyGlobalDebtLimit, &p.GlobalDebtLimit, validateGlobalDebtLimitParam),
 		paramstype.NewParamSetPair(KeyCollateralParams, &p.CollateralParams, validateCollateralParams),
-		paramstype.NewParamSetPair(KeyDebtParam, &p.DebtParam, validateDebtParam),
+		paramstype.NewParamSetPair(KeyDebtParam, &p.DebtParams, validateDebtParams),
 		paramstype.NewParamSetPair(KeyCircuitBreaker, &p.CircuitBreaker, validateCircuitBreakerParam),
 		paramstype.NewParamSetPair(KeySurplusThreshold, &p.SurplusAuctionThreshold, validateSurplusAuctionThresholdParam),
 		paramstype.NewParamSetPair(KeySurplusLot, &p.SurplusAuctionLot, validateSurplusAuctionLotParam),
@@ -145,15 +178,12 @@ func (p *Params) ParamSetPairs() paramstype.ParamSetPairs {
 
 // Validate checks that the parameters have valid values.
 func (p Params) Validate() error {
-	if err := validateGlobalDebtLimitParam(p.GlobalDebtLimit); err != nil {
-		return err
-	}
 
 	if err := validateCollateralParams(p.CollateralParams); err != nil {
 		return err
 	}
 
-	if err := validateDebtParam(p.DebtParam); err != nil {
+	if err := validateDebtParams(p.DebtParams); err != nil {
 		return err
 	}
 
@@ -181,39 +211,55 @@ func (p Params) Validate() error {
 		return nil
 	}
 
-	if (DebtParam{}) != p.DebtParam {
-		if p.DebtParam.Denom != p.GlobalDebtLimit.Denom {
-			return fmt.Errorf("debt denom %s does not match global debt denom %s",
-				p.DebtParam.Denom, p.GlobalDebtLimit.Denom)
+	for _, debtParam := range p.DebtParams {
+		if (DebtParam{}) != debtParam {
+			if debtParam.Denom != debtParam.GlobalDebtLimit.Denom {
+				return fmt.Errorf("debt denom %s does not match global debt denom %s",
+					debtParam.Denom, debtParam.GlobalDebtLimit.Denom)
+			}
 		}
 	}
 
 	// validate collateral params
-	collateralDupMap := make(map[string]int)
-	prefixDupMap := make(map[int]int)
-	collateralParamsDebtLimit := sdk.ZeroInt()
+	collateralTypeDupMap := make(map[string]bool)
+	collateralParamsDebtLimitMap := make(map[string]sdk.Int)
 
 	for _, cp := range p.CollateralParams {
+		// Collateral type eg busd-a should be unique, but denom can be same eg busd
+		_, typeExists := collateralTypeDupMap[cp.Type]
+		if typeExists {
+			return fmt.Errorf("duplicate collateral type %s", cp.Denom)
+		}
+		collateralTypeDupMap[cp.Type] = true
 
-		prefix := int(cp.Prefix)
-		prefixDupMap[prefix] = 1
-		collateralDupMap[cp.Denom] = 1
-
-		if cp.DebtLimit.Denom != p.GlobalDebtLimit.Denom {
-			return fmt.Errorf("collateral debt limit denom %s does not match global debt limit denom %s",
-				cp.DebtLimit.Denom, p.GlobalDebtLimit.Denom)
+		collateralParamsDebtLimit, denomLimitExists := collateralParamsDebtLimitMap[cp.DebtLimit.Denom]
+		if !denomLimitExists {
+			collateralParamsDebtLimit = sdk.ZeroInt()
 		}
 
-		collateralParamsDebtLimit = collateralParamsDebtLimit.Add(cp.DebtLimit.Amount)
+		debtParams := DebtParams(p.DebtParams)
+		debtParam, exists := debtParams.FindGlobalDebtLimitDenom(cp.DebtLimit.Denom)
 
-		if cp.DebtLimit.Amount.GT(p.GlobalDebtLimit.Amount) {
-			return fmt.Errorf("collateral debt limit %s exceeds global debt limit: %s", cp.DebtLimit, p.GlobalDebtLimit)
+		if !exists {
+			return fmt.Errorf("collateral debt limit denom %s does not match global debt limit denoms.", cp.DebtLimit.Denom)
+		}
+
+		collateralParamsDebtLimitMap[cp.DebtLimit.Denom] = collateralParamsDebtLimit.Add(cp.DebtLimit.Amount)
+
+		if cp.DebtLimit.Amount.GT(debtParam.GlobalDebtLimit.Amount) {
+			return fmt.Errorf("collateral debt limit %s exceeds global debt limit: %s", cp.DebtLimit, debtParam.GlobalDebtLimit.Amount)
 		}
 	}
 
-	if collateralParamsDebtLimit.GT(p.GlobalDebtLimit.Amount) {
-		return fmt.Errorf("sum of collateral debt limits %s exceeds global debt limit %s",
-			collateralParamsDebtLimit, p.GlobalDebtLimit)
+	for _, debtParam := range p.DebtParams {
+		collateralParamsDebtLimit, exists := collateralParamsDebtLimitMap[debtParam.GlobalDebtLimit.Denom]
+		if !exists {
+			continue
+		}
+		if collateralParamsDebtLimit.GT(debtParam.GlobalDebtLimit.Amount) {
+			return fmt.Errorf("sum of collateral debt limits %s exceeds global debt limit %s",
+				collateralParamsDebtLimit, debtParam.GlobalDebtLimit.Amount)
+		}
 	}
 
 	return nil
@@ -302,13 +348,22 @@ func validateCollateralParams(i interface{}) error {
 	return nil
 }
 
-func validateDebtParam(i interface{}) error {
-	debtParam, ok := i.(DebtParam)
+func validateDebtParams(i interface{}) error {
+	debtParams, ok := i.(DebtParams)
 	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
+		debtParams, ok = i.([]DebtParam)
+		if !ok {
+			return fmt.Errorf("invalid parameter type: %T", i)
+		}
 	}
-	if err := sdk.ValidateDenom(debtParam.Denom); err != nil {
-		return fmt.Errorf("debt denom invalid %s", debtParam.Denom)
+	for _, debtParam := range debtParams {
+		if err := sdk.ValidateDenom(debtParam.Denom); err != nil {
+			return fmt.Errorf("debt denom invalid %s", debtParam.Denom)
+		}
+
+		if err := validateGlobalDebtLimitParam(debtParam.GlobalDebtLimit); err != nil {
+			return err
+		}
 	}
 
 	return nil
