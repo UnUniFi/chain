@@ -108,30 +108,29 @@ func (k Keeper) CreateAuctionsFromDeposit(
 // NetSurplusAndDebt burns surplus and debt coins equal to the minimum of surplus and debt balances held by the liquidator module account
 // for example, if there is 1000 debt and 100 surplus, 100 surplus and 100 debt are burned, netting to 900 debt
 func (k Keeper) NetSurplusAndDebt(ctx sdk.Context) error {
-	deptDenom := k.GetDebtDenom(ctx)
-	debt := k.GetTotalDebt(ctx, types.LiquidatorMacc)
-	dp, exists := k.GetDebtParam(ctx, deptDenom)
-	if !exists {
-		return nil
-	}
-	totalSurplus := k.GetTotalSurplus(ctx, types.LiquidatorMacc, dp.Denom)
+	// deptDenom := k.GetDebtDenom(ctx)
+	dps := k.GetParams(ctx).DebtParams
+	for _, dp := range dps {
+		totalSurplus := k.GetTotalSurplus(ctx, types.LiquidatorMacc, dp.Denom)
+		debt := k.GetTotalDebt(ctx, types.LiquidatorMacc)
+		netAmount := sdk.MinInt(totalSurplus, debt)
+		if netAmount.IsZero() {
+			return nil
+		}
 
-	netAmount := sdk.MinInt(totalSurplus, debt)
-	if netAmount.IsZero() {
-		return nil
-	}
+		// burn debt coins equal to netAmount
+		err := k.bankKeeper.BurnCoins(ctx, types.LiquidatorMacc, sdk.NewCoins(sdk.NewCoin(k.GetDebtDenom(ctx), netAmount)))
+		if err != nil {
+			return err
+		}
 
-	// burn debt coins equal to netAmount
-	err := k.bankKeeper.BurnCoins(ctx, types.LiquidatorMacc, sdk.NewCoins(sdk.NewCoin(k.GetDebtDenom(ctx), netAmount)))
-	if err != nil {
-		return err
+		// burn stable coins equal to min(balance, netAmount)
+		macc := k.accountKeeper.GetModuleAccount(ctx, types.LiquidatorMacc)
+		balance := k.bankKeeper.GetAllBalances(ctx, macc.GetAddress()).AmountOf(dp.Denom)
+		burnAmount := sdk.MinInt(balance, netAmount)
+		k.bankKeeper.BurnCoins(ctx, types.LiquidatorMacc, sdk.NewCoins(sdk.NewCoin(dp.Denom, burnAmount)))
 	}
-
-	// burn stable coins equal to min(balance, netAmount)
-	macc := k.accountKeeper.GetModuleAccount(ctx, types.LiquidatorMacc)
-	balance := k.bankKeeper.GetAllBalances(ctx, macc.GetAddress()).AmountOf(dp.Denom)
-	burnAmount := sdk.MinInt(balance, netAmount)
-	return k.bankKeeper.BurnCoins(ctx, types.LiquidatorMacc, sdk.NewCoins(sdk.NewCoin(dp.Denom, burnAmount)))
+	return nil
 }
 
 // GetTotalSurplus returns the total amount of surplus tokens held by the liquidator module account
@@ -154,28 +153,28 @@ func (k Keeper) RunSurplusAndDebtAuctions(ctx sdk.Context) error {
 	remainingDebt := k.GetTotalDebt(ctx, types.LiquidatorMacc)
 	params := k.GetParams(ctx)
 	deptDenom := k.GetDebtDenom(ctx)
-	dp, exists := k.GetDebtParam(ctx, deptDenom)
-	if !exists {
-		return nil
-	}
-	if remainingDebt.GTE(params.DebtAuctionThreshold) {
-		debtLot := sdk.NewCoin(deptDenom, params.DebtAuctionLot)
-		bidCoin := sdk.NewCoin(dp.Denom, debtLot.Amount)
-		initialLot := sdk.NewCoin(k.GetGovDenom(ctx), debtLot.Amount.Mul(sdk.NewInt(dump)))
+	dps := k.GetParams(ctx).DebtParams
+	for _, dp := range dps {
+		if remainingDebt.GTE(params.DebtAuctionThreshold) {
+			debtLot := sdk.NewCoin(deptDenom, params.DebtAuctionLot)
+			bidCoin := sdk.NewCoin(dp.Denom, debtLot.Amount)
+			initialLot := sdk.NewCoin(k.GetGovDenom(ctx), debtLot.Amount.Mul(sdk.NewInt(dump)))
 
-		_, err := k.auctionKeeper.StartDebtAuction(ctx, types.LiquidatorMacc, bidCoin, initialLot, debtLot)
-		if err != nil {
-			return err
+			_, err := k.auctionKeeper.StartDebtAuction(ctx, types.LiquidatorMacc, bidCoin, initialLot, debtLot)
+			if err != nil {
+				return err
+			}
 		}
-	}
 
-	macc := k.accountKeeper.GetModuleAccount(ctx, types.LiquidatorMacc)
-	surplus := k.bankKeeper.GetAllBalances(ctx, macc.GetAddress()).AmountOf(dp.Denom)
-	if !surplus.GTE(params.SurplusAuctionThreshold) {
-		return nil
-	}
+		macc := k.accountKeeper.GetModuleAccount(ctx, types.LiquidatorMacc)
+		surplus := k.bankKeeper.GetAllBalances(ctx, macc.GetAddress()).AmountOf(dp.Denom)
+		if !surplus.GTE(params.SurplusAuctionThreshold) {
+			return nil
+		}
 
-	surplusLot := sdk.NewCoin(dp.Denom, sdk.MinInt(params.SurplusAuctionLot, surplus))
-	_, err := k.auctionKeeper.StartSurplusAuction(ctx, types.LiquidatorMacc, surplusLot, k.GetGovDenom(ctx))
-	return err
+		surplusLot := sdk.NewCoin(dp.Denom, sdk.MinInt(params.SurplusAuctionLot, surplus))
+		_, err := k.auctionKeeper.StartSurplusAuction(ctx, types.LiquidatorMacc, surplusLot, k.GetGovDenom(ctx))
+		return err
+	}
+	return nil
 }
