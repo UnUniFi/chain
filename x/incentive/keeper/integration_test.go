@@ -18,7 +18,6 @@ import (
 func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 	cdpGenesis := cdptypes.GenesisState{
 		Params: cdptypes.Params{
-			GlobalDebtLimit:         sdk.NewInt64Coin("jpu", 2000000000000),
 			SurplusAuctionThreshold: cdptypes.DefaultSurplusThreshold,
 			SurplusAuctionLot:       cdptypes.DefaultSurplusLot,
 			DebtAuctionThreshold:    cdptypes.DefaultDebtThreshold,
@@ -77,11 +76,14 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 					ConversionFactor:    i(8),
 				},
 			},
-			DebtParam: cdptypes.DebtParam{
-				Denom:            "jpu",
-				ReferenceAsset:   "jpy",
-				ConversionFactor: i(6),
-				DebtFloor:        i(10000000),
+			DebtParams: cdptypes.DebtParams{
+				{
+					Denom:            "jpu",
+					ReferenceAsset:   "jpy",
+					ConversionFactor: i(6),
+					DebtFloor:        i(10000000),
+					GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 2000000000000),
+				},
 			},
 		},
 		StartingCdpId: cdptypes.DefaultCdpStartingID,

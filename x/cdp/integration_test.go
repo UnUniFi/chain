@@ -41,7 +41,6 @@ func NewPricefeedGenState(tApp app.TestApp, asset string, price sdk.Dec) app.Gen
 func NewCdpGenState(tApp app.TestApp, asset string, liquidationRatio sdk.Dec) app.GenesisState {
 	cdpGenesis := cdptypes.GenesisState{
 		Params: cdptypes.Params{
-			GlobalDebtLimit:         sdk.NewInt64Coin("jpu", 1000000000000),
 			SurplusAuctionThreshold: cdptypes.DefaultSurplusThreshold,
 			SurplusAuctionLot:       cdptypes.DefaultSurplusLot,
 			DebtAuctionThreshold:    cdptypes.DefaultDebtThreshold,
@@ -63,11 +62,14 @@ func NewCdpGenState(tApp app.TestApp, asset string, liquidationRatio sdk.Dec) ap
 					CheckCollateralizationIndexCount: i(10),
 				},
 			},
-			DebtParam: cdptypes.DebtParam{
-				Denom:            "jpu",
-				ReferenceAsset:   "jpy",
-				ConversionFactor: i(6),
-				DebtFloor:        i(10000000),
+			DebtParams: cdptypes.DebtParams{
+				{
+					Denom:            "jpu",
+					ReferenceAsset:   "jpy",
+					ConversionFactor: i(6),
+					DebtFloor:        i(10000000),
+					GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 1000000000000),
+				},
 			},
 		},
 		StartingCdpId: cdptypes.DefaultCdpStartingID,
@@ -113,7 +115,6 @@ func NewPricefeedGenStateMulti(tApp app.TestApp) app.GenesisState {
 func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 	cdpGenesis := cdptypes.GenesisState{
 		Params: cdptypes.Params{
-			GlobalDebtLimit:         sdk.NewInt64Coin("jpu", 1000000000000),
 			SurplusAuctionThreshold: cdptypes.DefaultSurplusThreshold,
 			SurplusAuctionLot:       cdptypes.DefaultSurplusLot,
 			DebtAuctionThreshold:    cdptypes.DefaultDebtThreshold,
@@ -150,11 +151,14 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 					ConversionFactor:                 i(8),
 				},
 			},
-			DebtParam: cdptypes.DebtParam{
-				Denom:            "jpu",
-				ReferenceAsset:   "jpy",
-				ConversionFactor: i(6),
-				DebtFloor:        i(10000000),
+			DebtParams: cdptypes.DebtParams{
+				{
+					Denom:            "jpu",
+					ReferenceAsset:   "jpy",
+					ConversionFactor: i(6),
+					DebtFloor:        i(10000000),
+					GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 1000000000000),
+				},
 			},
 		},
 		StartingCdpId: cdptypes.DefaultCdpStartingID,

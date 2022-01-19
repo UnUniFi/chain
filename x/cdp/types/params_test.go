@@ -20,9 +20,8 @@ func (suite *ParamsTestSuite) SetupTest() {
 
 func (suite *ParamsTestSuite) TestParamValidation() {
 	type args struct {
-		globalDebtLimit  sdk.Coin
 		collateralParams cdptypes.CollateralParams
-		debtParam        cdptypes.DebtParam
+		debtParams       cdptypes.DebtParams
 		surplusThreshold sdk.Int
 		surplusLot       sdk.Int
 		debtThreshold    sdk.Int
@@ -42,9 +41,8 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "default",
 			args: args{
-				globalDebtLimit:  cdptypes.DefaultGlobalDebt,
 				collateralParams: cdptypes.DefaultCollateralParams,
-				debtParam:        cdptypes.DefaultDebtParam,
+				debtParams:       cdptypes.DefaultDebtParams,
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
 				debtThreshold:    cdptypes.DefaultDebtThreshold,
@@ -59,7 +57,6 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "valid single-collateral",
 			args: args{
-				globalDebtLimit: sdk.NewInt64Coin("jpu", 4000000000000),
 				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:                            "bnb",
@@ -77,11 +74,14 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						CheckCollateralizationIndexCount: sdk.NewInt(10),
 					},
 				},
-				debtParam: cdptypes.DebtParam{
-					Denom:            "jpu",
-					ReferenceAsset:   "jpy",
-					ConversionFactor: sdk.NewInt(6),
-					DebtFloor:        sdk.NewInt(10000000),
+				debtParams: cdptypes.DebtParams{
+					{
+						Denom:            "jpu",
+						ReferenceAsset:   "jpy",
+						ConversionFactor: sdk.NewInt(6),
+						DebtFloor:        sdk.NewInt(10000000),
+						GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 4000000000000),
+					},
 				},
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
@@ -97,7 +97,6 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "invalid single-collateral mismatched debt denoms",
 			args: args{
-				globalDebtLimit: sdk.NewInt64Coin("jpu", 4000000000000),
 				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:                            "bnb",
@@ -115,11 +114,14 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						CheckCollateralizationIndexCount: sdk.NewInt(10),
 					},
 				},
-				debtParam: cdptypes.DebtParam{
-					Denom:            "sjpy",
-					ReferenceAsset:   "jpy",
-					ConversionFactor: sdk.NewInt(6),
-					DebtFloor:        sdk.NewInt(10000000),
+				debtParams: cdptypes.DebtParams{
+					{
+						Denom:            "sjpy",
+						ReferenceAsset:   "jpy",
+						ConversionFactor: sdk.NewInt(6),
+						DebtFloor:        sdk.NewInt(10000000),
+						GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 4000000000000),
+					},
 				},
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
@@ -135,7 +137,6 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "invalid single-collateral over debt limit",
 			args: args{
-				globalDebtLimit: sdk.NewInt64Coin("jpu", 1000000000000),
 				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:                            "bnb",
@@ -153,11 +154,14 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						CheckCollateralizationIndexCount: sdk.NewInt(10),
 					},
 				},
-				debtParam: cdptypes.DebtParam{
-					Denom:            "jpu",
-					ReferenceAsset:   "jpy",
-					ConversionFactor: sdk.NewInt(6),
-					DebtFloor:        sdk.NewInt(10000000),
+				debtParams: cdptypes.DebtParams{
+					{
+						Denom:            "jpu",
+						ReferenceAsset:   "jpy",
+						ConversionFactor: sdk.NewInt(6),
+						DebtFloor:        sdk.NewInt(10000000),
+						GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 1000000000000),
+					},
 				},
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
@@ -173,7 +177,6 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "valid multi-collateral",
 			args: args{
-				globalDebtLimit: sdk.NewInt64Coin("jpu", 4000000000000),
 				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:                            "bnb",
@@ -206,11 +209,14 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						CheckCollateralizationIndexCount: sdk.NewInt(10),
 					},
 				},
-				debtParam: cdptypes.DebtParam{
-					Denom:            "jpu",
-					ReferenceAsset:   "jpy",
-					ConversionFactor: sdk.NewInt(6),
-					DebtFloor:        sdk.NewInt(10000000),
+				debtParams: cdptypes.DebtParams{
+					{
+						Denom:            "jpu",
+						ReferenceAsset:   "jpy",
+						ConversionFactor: sdk.NewInt(6),
+						DebtFloor:        sdk.NewInt(10000000),
+						GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 4000000000000),
+					},
 				},
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
@@ -226,7 +232,6 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "invalid multi-collateral over debt limit",
 			args: args{
-				globalDebtLimit: sdk.NewInt64Coin("jpu", 2000000000000),
 				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:                            "bnb",
@@ -259,11 +264,14 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						CheckCollateralizationIndexCount: sdk.NewInt(10),
 					},
 				},
-				debtParam: cdptypes.DebtParam{
-					Denom:            "jpu",
-					ReferenceAsset:   "jpy",
-					ConversionFactor: sdk.NewInt(6),
-					DebtFloor:        sdk.NewInt(10000000),
+				debtParams: cdptypes.DebtParams{
+					{
+						Denom:            "jpu",
+						ReferenceAsset:   "jpy",
+						ConversionFactor: sdk.NewInt(6),
+						DebtFloor:        sdk.NewInt(10000000),
+						GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 2000000000000),
+					},
 				},
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
@@ -279,7 +287,6 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "invalid multi-collateral multiple debt denoms",
 			args: args{
-				globalDebtLimit: sdk.NewInt64Coin("jpu", 4000000000000),
 				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:                            "bnb",
@@ -312,11 +319,14 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						CheckCollateralizationIndexCount: sdk.NewInt(10),
 					},
 				},
-				debtParam: cdptypes.DebtParam{
-					Denom:            "jpu",
-					ReferenceAsset:   "jpy",
-					ConversionFactor: sdk.NewInt(6),
-					DebtFloor:        sdk.NewInt(10000000),
+				debtParams: cdptypes.DebtParams{
+					{
+						Denom:            "jpu",
+						ReferenceAsset:   "jpy",
+						ConversionFactor: sdk.NewInt(6),
+						DebtFloor:        sdk.NewInt(10000000),
+						GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 4000000000000),
+					},
 				},
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
@@ -332,7 +342,6 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "invalid collateral params empty denom",
 			args: args{
-				globalDebtLimit: sdk.NewInt64Coin("jpu", 2000000000000),
 				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:                            "",
@@ -349,11 +358,14 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						CheckCollateralizationIndexCount: sdk.NewInt(10),
 					},
 				},
-				debtParam: cdptypes.DebtParam{
-					Denom:            "jpu",
-					ReferenceAsset:   "jpy",
-					ConversionFactor: sdk.NewInt(6),
-					DebtFloor:        sdk.NewInt(10000000),
+				debtParams: cdptypes.DebtParams{
+					{
+						Denom:            "jpu",
+						ReferenceAsset:   "jpy",
+						ConversionFactor: sdk.NewInt(6),
+						DebtFloor:        sdk.NewInt(10000000),
+						GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 2000000000000),
+					},
 				},
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
@@ -369,7 +381,6 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "invalid collateral params empty market id",
 			args: args{
-				globalDebtLimit: sdk.NewInt64Coin("jpu", 2000000000000),
 				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:                            "bnb",
@@ -387,11 +398,14 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						CheckCollateralizationIndexCount: sdk.NewInt(10),
 					},
 				},
-				debtParam: cdptypes.DebtParam{
-					Denom:            "jpu",
-					ReferenceAsset:   "jpy",
-					ConversionFactor: sdk.NewInt(6),
-					DebtFloor:        sdk.NewInt(10000000),
+				debtParams: cdptypes.DebtParams{
+					{
+						Denom:            "jpu",
+						ReferenceAsset:   "jpy",
+						ConversionFactor: sdk.NewInt(6),
+						DebtFloor:        sdk.NewInt(10000000),
+						GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 2000000000000),
+					},
 				},
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
@@ -407,7 +421,6 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "invalid collateral params duplicate denom + type",
 			args: args{
-				globalDebtLimit: sdk.NewInt64Coin("jpu", 2000000000000),
 				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:                            "bnb",
@@ -440,11 +453,14 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						CheckCollateralizationIndexCount: sdk.NewInt(10),
 					},
 				},
-				debtParam: cdptypes.DebtParam{
-					Denom:            "jpu",
-					ReferenceAsset:   "jpy",
-					ConversionFactor: sdk.NewInt(6),
-					DebtFloor:        sdk.NewInt(10000000),
+				debtParams: cdptypes.DebtParams{
+					{
+						Denom:            "jpu",
+						ReferenceAsset:   "jpy",
+						ConversionFactor: sdk.NewInt(6),
+						DebtFloor:        sdk.NewInt(10000000),
+						GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 2000000000000),
+					},
 				},
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
@@ -460,7 +476,6 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "valid collateral params duplicate denom + different type",
 			args: args{
-				globalDebtLimit: sdk.NewInt64Coin("jpu", 2000000000000),
 				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:                            "bnb",
@@ -493,11 +508,14 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						CheckCollateralizationIndexCount: sdk.NewInt(10),
 					},
 				},
-				debtParam: cdptypes.DebtParam{
-					Denom:            "jpu",
-					ReferenceAsset:   "jpy",
-					ConversionFactor: sdk.NewInt(6),
-					DebtFloor:        sdk.NewInt(10000000),
+				debtParams: cdptypes.DebtParams{
+					{
+						Denom:            "jpu",
+						ReferenceAsset:   "jpy",
+						ConversionFactor: sdk.NewInt(6),
+						DebtFloor:        sdk.NewInt(10000000),
+						GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 2000000000000),
+					},
 				},
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
@@ -513,7 +531,6 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "invalid collateral params duplicate prefix",
 			args: args{
-				globalDebtLimit: sdk.NewInt64Coin("jpu", 2000000000000),
 				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:                            "bnb",
@@ -546,11 +563,14 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						CheckCollateralizationIndexCount: sdk.NewInt(10),
 					},
 				},
-				debtParam: cdptypes.DebtParam{
-					Denom:            "jpu",
-					ReferenceAsset:   "jpy",
-					ConversionFactor: sdk.NewInt(6),
-					DebtFloor:        sdk.NewInt(10000000),
+				debtParams: cdptypes.DebtParams{
+					{
+						Denom:            "jpu",
+						ReferenceAsset:   "jpy",
+						ConversionFactor: sdk.NewInt(6),
+						DebtFloor:        sdk.NewInt(10000000),
+						GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 2000000000000),
+					},
 				},
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
@@ -566,7 +586,6 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "invalid collateral params nil debt limit",
 			args: args{
-				globalDebtLimit: sdk.NewInt64Coin("jpu", 2000000000000),
 				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:                            "bnb",
@@ -584,11 +603,14 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						CheckCollateralizationIndexCount: sdk.NewInt(10),
 					},
 				},
-				debtParam: cdptypes.DebtParam{
-					Denom:            "jpu",
-					ReferenceAsset:   "jpy",
-					ConversionFactor: sdk.NewInt(6),
-					DebtFloor:        sdk.NewInt(10000000),
+				debtParams: cdptypes.DebtParams{
+					{
+						Denom:            "jpu",
+						ReferenceAsset:   "jpy",
+						ConversionFactor: sdk.NewInt(6),
+						DebtFloor:        sdk.NewInt(10000000),
+						GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 2000000000000),
+					},
 				},
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
@@ -604,7 +626,6 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "invalid collateral params liquidation ratio out of range",
 			args: args{
-				globalDebtLimit: sdk.NewInt64Coin("jpu", 2000000000000),
 				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:                            "bnb",
@@ -622,11 +643,14 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						CheckCollateralizationIndexCount: sdk.NewInt(10),
 					},
 				},
-				debtParam: cdptypes.DebtParam{
-					Denom:            "jpu",
-					ReferenceAsset:   "jpy",
-					ConversionFactor: sdk.NewInt(6),
-					DebtFloor:        sdk.NewInt(10000000),
+				debtParams: cdptypes.DebtParams{
+					{
+						Denom:            "jpu",
+						ReferenceAsset:   "jpy",
+						ConversionFactor: sdk.NewInt(6),
+						DebtFloor:        sdk.NewInt(10000000),
+						GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 2000000000000),
+					},
 				},
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
@@ -642,7 +666,6 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "invalid collateral params auction size zero",
 			args: args{
-				globalDebtLimit: sdk.NewInt64Coin("jpu", 2000000000000),
 				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:                            "bnb",
@@ -660,11 +683,14 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						CheckCollateralizationIndexCount: sdk.NewInt(10),
 					},
 				},
-				debtParam: cdptypes.DebtParam{
-					Denom:            "jpu",
-					ReferenceAsset:   "jpy",
-					ConversionFactor: sdk.NewInt(6),
-					DebtFloor:        sdk.NewInt(10000000),
+				debtParams: cdptypes.DebtParams{
+					{
+						Denom:            "jpu",
+						ReferenceAsset:   "jpy",
+						ConversionFactor: sdk.NewInt(6),
+						DebtFloor:        sdk.NewInt(10000000),
+						GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 2000000000000),
+					},
 				},
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
@@ -680,7 +706,6 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "invalid collateral params stability fee out of range",
 			args: args{
-				globalDebtLimit: sdk.NewInt64Coin("jpu", 2000000000000),
 				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:                            "bnb",
@@ -698,11 +723,14 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						CheckCollateralizationIndexCount: sdk.NewInt(10),
 					},
 				},
-				debtParam: cdptypes.DebtParam{
-					Denom:            "jpu",
-					ReferenceAsset:   "jpy",
-					ConversionFactor: sdk.NewInt(6),
-					DebtFloor:        sdk.NewInt(10000000),
+				debtParams: cdptypes.DebtParams{
+					{
+						Denom:            "jpu",
+						ReferenceAsset:   "jpy",
+						ConversionFactor: sdk.NewInt(6),
+						DebtFloor:        sdk.NewInt(10000000),
+						GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 2000000000000),
+					},
 				},
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
@@ -718,7 +746,6 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "invalid debt param empty denom",
 			args: args{
-				globalDebtLimit: sdk.NewInt64Coin("jpu", 2000000000000),
 				collateralParams: cdptypes.CollateralParams{
 					{
 						Denom:                            "bnb",
@@ -736,11 +763,14 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 						CheckCollateralizationIndexCount: sdk.NewInt(10),
 					},
 				},
-				debtParam: cdptypes.DebtParam{
-					Denom:            "",
-					ReferenceAsset:   "jpy",
-					ConversionFactor: sdk.NewInt(6),
-					DebtFloor:        sdk.NewInt(10000000),
+				debtParams: cdptypes.DebtParams{
+					{
+						Denom:            "",
+						ReferenceAsset:   "jpy",
+						ConversionFactor: sdk.NewInt(6),
+						DebtFloor:        sdk.NewInt(10000000),
+						GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 2000000000000),
+					},
 				},
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
@@ -756,9 +786,16 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "nil debt limit",
 			args: args{
-				globalDebtLimit:  sdk.Coin{},
 				collateralParams: cdptypes.DefaultCollateralParams,
-				debtParam:        cdptypes.DefaultDebtParam,
+				debtParams: cdptypes.DebtParams{
+					{
+						Denom:            "jpu",
+						ReferenceAsset:   "jpy",
+						ConversionFactor: sdk.NewInt(6),
+						DebtFloor:        sdk.NewInt(10000000),
+						GlobalDebtLimit:  sdk.Coin{},
+					},
+				},
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
 				debtThreshold:    cdptypes.DefaultDebtThreshold,
@@ -773,9 +810,8 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "zero surplus auction threshold",
 			args: args{
-				globalDebtLimit:  cdptypes.DefaultGlobalDebt,
 				collateralParams: cdptypes.DefaultCollateralParams,
-				debtParam:        cdptypes.DefaultDebtParam,
+				debtParams:       cdptypes.DefaultDebtParams,
 				surplusThreshold: sdk.ZeroInt(),
 				surplusLot:       cdptypes.DefaultSurplusLot,
 				debtThreshold:    cdptypes.DefaultDebtThreshold,
@@ -790,9 +826,8 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "zero debt auction threshold",
 			args: args{
-				globalDebtLimit:  cdptypes.DefaultGlobalDebt,
 				collateralParams: cdptypes.DefaultCollateralParams,
-				debtParam:        cdptypes.DefaultDebtParam,
+				debtParams:       cdptypes.DefaultDebtParams,
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
 				debtThreshold:    sdk.ZeroInt(),
@@ -807,9 +842,8 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "zero surplus auction lot",
 			args: args{
-				globalDebtLimit:  cdptypes.DefaultGlobalDebt,
 				collateralParams: cdptypes.DefaultCollateralParams,
-				debtParam:        cdptypes.DefaultDebtParam,
+				debtParams:       cdptypes.DefaultDebtParams,
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       sdk.ZeroInt(),
 				debtThreshold:    cdptypes.DefaultDebtThreshold,
@@ -824,9 +858,8 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 		{
 			name: "zero debt auction lot",
 			args: args{
-				globalDebtLimit:  cdptypes.DefaultGlobalDebt,
 				collateralParams: cdptypes.DefaultCollateralParams,
-				debtParam:        cdptypes.DefaultDebtParam,
+				debtParams:       cdptypes.DefaultDebtParams,
 				surplusThreshold: cdptypes.DefaultSurplusThreshold,
 				surplusLot:       cdptypes.DefaultSurplusLot,
 				debtThreshold:    cdptypes.DefaultDebtThreshold,
@@ -841,7 +874,14 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 	}
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
-			params := cdptypes.NewParams(tc.args.globalDebtLimit, tc.args.collateralParams, tc.args.debtParam, tc.args.surplusThreshold, tc.args.surplusLot, tc.args.debtThreshold, tc.args.debtLot, tc.args.breaker)
+			params := cdptypes.NewParams(
+				tc.args.collateralParams,
+				tc.args.debtParams,
+				tc.args.surplusThreshold,
+				tc.args.surplusLot,
+				tc.args.debtThreshold,
+				tc.args.debtLot, tc.args.breaker,
+			)
 			err := params.Validate()
 			if tc.errArgs.expectPass {
 				suite.Require().NoError(err)
