@@ -108,7 +108,6 @@ func (k Keeper) CreateAuctionsFromDeposit(
 // NetSurplusAndDebt burns surplus and debt coins equal to the minimum of surplus and debt balances held by the liquidator module account
 // for example, if there is 1000 debt and 100 surplus, 100 surplus and 100 debt are burned, netting to 900 debt
 func (k Keeper) NetSurplusAndDebt(ctx sdk.Context) error {
-	// deptDenom := k.GetDebtDenom(ctx)
 	dps := k.GetParams(ctx).DebtParams
 	for _, dp := range dps {
 		totalSurplus := k.GetTotalSurplus(ctx, types.LiquidatorMacc, dp.Denom)
