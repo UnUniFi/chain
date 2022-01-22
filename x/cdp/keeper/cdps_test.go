@@ -221,7 +221,7 @@ func (suite *CdpTestSuite) TestIterateCdps() {
 		suite.keeper.IndexCdpByCollateralRatio(suite.ctx, c.Type, c.Id, cr)
 	}
 	t := suite.keeper.GetAllCdps(suite.ctx)
-	suite.Equal(4, len(t))
+	suite.Equal(8, len(t))
 }
 
 func (suite *CdpTestSuite) TestIterateCdpsByCollateralType() {
@@ -235,7 +235,11 @@ func (suite *CdpTestSuite) TestIterateCdpsByCollateralType() {
 	}
 	xrpCdps := suite.keeper.GetAllCdpsByCollateralType(suite.ctx, "xrp-a")
 	suite.Equal(3, len(xrpCdps))
+	xrpCdps = suite.keeper.GetAllCdpsByCollateralType(suite.ctx, "xrp-b")
+	suite.Equal(3, len(xrpCdps))
 	btcCdps := suite.keeper.GetAllCdpsByCollateralType(suite.ctx, "btc-a")
+	suite.Equal(1, len(btcCdps))
+	btcCdps = suite.keeper.GetAllCdpsByCollateralType(suite.ctx, "btc-b")
 	suite.Equal(1, len(btcCdps))
 	suite.keeper.DeleteCdp(suite.ctx, cdps[0])
 	suite.keeper.RemoveCdpOwnerIndex(suite.ctx, cdps[0])
