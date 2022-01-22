@@ -68,6 +68,7 @@ func (suite *AuctionTestSuite) TestCollateralAuction() {
 }
 
 func (suite *AuctionTestSuite) TestSurplusAuction() {
+	// todo:add euu
 	ak := suite.app.GetAccountKeeper()
 	sk := suite.app.GetBankKeeper()
 	err := sk.MintCoins(suite.ctx, cdptypes.LiquidatorMacc, cs(c("jpu", 600000000000)))
