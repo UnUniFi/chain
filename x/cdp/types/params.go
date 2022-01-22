@@ -261,8 +261,8 @@ func (p Params) Validate() error {
 			continue
 		}
 		if collateralParamsDebtLimit.GT(debtParam.GlobalDebtLimit.Amount) {
-			return fmt.Errorf("sum of collateral debt limits %s exceeds global debt limit %s",
-				collateralParamsDebtLimit, debtParam.GlobalDebtLimit.Amount)
+			return fmt.Errorf("sum of collateral debt limits %s exceeds global debt limit %s denom: %s",
+				collateralParamsDebtLimit, debtParam.GlobalDebtLimit.Amount, debtParam.GlobalDebtLimit.Denom)
 		}
 	}
 
