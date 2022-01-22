@@ -250,7 +250,8 @@ func (p Params) Validate() error {
 		collateralParamsDebtLimitMap[cp.DebtLimit.Denom] = collateralParamsDebtLimit.Add(cp.DebtLimit.Amount)
 
 		if cp.DebtLimit.Amount.GT(debtParam.GlobalDebtLimit.Amount) {
-			return fmt.Errorf("collateral debt limit %s exceeds global debt limit: %s", cp.DebtLimit, debtParam.GlobalDebtLimit.Amount)
+			return fmt.Errorf("collateral debt limit %s exceeds global debt limit: %s denom: %s",
+				cp.DebtLimit, debtParam.GlobalDebtLimit.Amount, debtParam.GlobalDebtLimit.Denom)
 		}
 	}
 
