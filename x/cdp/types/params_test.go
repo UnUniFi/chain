@@ -4,6 +4,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -895,4 +896,81 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 
 func TestParamsTestSuite(t *testing.T) {
 	suite.Run(t, new(ParamsTestSuite))
+}
+
+func findTestSetup() (cdptypes.DebtParams, cdptypes.DebtParam, cdptypes.DebtParam) {
+	type dps = cdptypes.DebtParams
+	type dp = cdptypes.DebtParam
+	jpu_debt := dp{
+		Denom:            "jpu",
+		ReferenceAsset:   "jpy",
+		ConversionFactor: sdk.NewInt(6),
+		DebtFloor:        sdk.NewInt(1),
+		GlobalDebtLimit:  sdk.NewCoin("jpux", sdk.NewInt(100)),
+	}
+	euu_debt := dp{
+		Denom:            "euu",
+		ReferenceAsset:   "eur",
+		ConversionFactor: sdk.NewInt(6),
+		DebtFloor:        sdk.NewInt(1),
+		GlobalDebtLimit:  sdk.NewCoin("euux", sdk.NewInt(500)),
+	}
+	dummy_dept := dp{
+		Denom:            "dum",
+		ReferenceAsset:   "du",
+		ConversionFactor: sdk.NewInt(6),
+		DebtFloor:        sdk.NewInt(1),
+		GlobalDebtLimit:  sdk.NewCoin("dum", sdk.NewInt(500)),
+	}
+	t1 := dps{jpu_debt, euu_debt, dummy_dept}
+	return t1, jpu_debt, euu_debt
+}
+func TestFindDenom(t *testing.T) {
+	type dp = cdptypes.DebtParam
+	t1, jpu_debt, euu_debt := findTestSetup()
+
+	result, exits := t1.FindDenom("jpu")
+	except := jpu_debt
+	assert.Equalf(t, true, exits, "not exists")
+	assert.NotEqualf(t, euu_debt, result, "except not equal, except: %v\n result: %v", except, result)
+	assert.Equalf(t, except, result, "not equal, except: %v\n result: %v", except, result)
+
+	result, exits = t1.FindDenom("euu")
+	except = euu_debt
+	assert.Equalf(t, true, exits, "not exists")
+	assert.NotEqualf(t, jpu_debt, result, "except not equal, except: %v\n result: %v", except, result)
+	assert.Equalf(t, except, result, "not equal, except: %v\n result: %v", except, result)
+
+	// not match test
+	result, exits = t1.FindDenom("xxx")
+	except = dp{}
+	assert.Equalf(t, false, exits, "not exists")
+	assert.NotEqualf(t, euu_debt, result, "except not equal, except: %v\n result: %v", except, result)
+	assert.NotEqualf(t, jpu_debt, result, "except not equal, except: %v\n result: %v", except, result)
+	assert.Equalf(t, except, result, "not equal, except: %v\n result: %v", except, result)
+}
+
+func TestFindGlobalDebtLimitDenom(t *testing.T) {
+	type dp = cdptypes.DebtParam
+	t1, jpu_debt, euu_debt := findTestSetup()
+
+	result, exits := t1.FindGlobalDebtLimitDenom("jpux")
+	except := jpu_debt
+	assert.Equalf(t, true, exits, "not exists")
+	assert.NotEqualf(t, euu_debt, result, "except not equal, except: %v\n result: %v", except, result)
+	assert.Equalf(t, except, result, "not equal, except: %v\n result: %v", except, result)
+
+	result, exits = t1.FindGlobalDebtLimitDenom("euux")
+	except = euu_debt
+	assert.Equalf(t, true, exits, "not exists")
+	assert.NotEqualf(t, jpu_debt, result, "except not equal, except: %v\n result: %v", except, result)
+	assert.Equalf(t, except, result, "not equal, except: %v\n result: %v", except, result)
+
+	// not match test
+	result, exits = t1.FindDenom("xxx")
+	except = dp{}
+	assert.Equalf(t, false, exits, "not exists")
+	assert.NotEqualf(t, euu_debt, result, "except not equal, except: %v\n result: %v", except, result)
+	assert.NotEqualf(t, jpu_debt, result, "except not equal, except: %v\n result: %v", except, result)
+	assert.Equalf(t, except, result, "not equal, except: %v\n result: %v", except, result)
 }
