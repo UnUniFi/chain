@@ -40,8 +40,7 @@ func (k Keeper) GetCollateralTypes(ctx sdk.Context) []string {
 
 // GetDebtParams returns the debt params
 func (k Keeper) GetDebtParams(ctx sdk.Context) types.DebtParams {
-	dps := types.DebtParams(k.GetParams(ctx).DebtParams)
-	return dps
+	return types.DebtParams(k.GetParams(ctx).DebtParams)
 }
 
 // GetDebtParam returns the debt param with matching denom
