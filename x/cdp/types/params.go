@@ -131,6 +131,7 @@ func (dps DebtParams) String() string {
 	return out
 }
 
+// find the element that returns TRUE in the injected function
 func (dps DebtParams) find(f func(DebtParam, string) bool, search_denom string) (DebtParam, bool) {
 	for _, debtParam := range dps {
 		if (DebtParam{}) != debtParam {
@@ -142,6 +143,7 @@ func (dps DebtParams) find(f func(DebtParam, string) bool, search_denom string) 
 	return DebtParam{}, false
 }
 
+// Returns an element with a denom that matches search_denom
 func (dps DebtParams) FindDenom(search_denom string) (DebtParam, bool) {
 	findDenom := func(ele DebtParam, target string) bool {
 		return ele.Denom == target
@@ -149,6 +151,7 @@ func (dps DebtParams) FindDenom(search_denom string) (DebtParam, bool) {
 	return dps.find(findDenom, search_denom)
 }
 
+// Returns an element with a GlobalDebtLimit.Denom that matches search_denom
 func (dps DebtParams) FindGlobalDebtLimitDenom(search_denom string) (DebtParam, bool) {
 	FindGlobalDebtLimitDenomDenom := func(ele DebtParam, target string) bool {
 		return ele.GlobalDebtLimit.Denom == target
