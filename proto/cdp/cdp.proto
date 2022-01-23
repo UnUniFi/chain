@@ -165,4 +165,5 @@ message DebtParam {
     (gogoproto.moretags) = "yaml:\"global_debt_limit\"",
     (gogoproto.nullable) = false
   ];
+  string debt_denom = 6 [(gogoproto.moretags) = "yaml:\"debt_denom\""];
 }
