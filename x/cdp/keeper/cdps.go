@@ -67,7 +67,8 @@ func (k Keeper) AddCdp(ctx sdk.Context, owner sdk.AccAddress, collateral sdk.Coi
 	}
 
 	// mint the corresponding amount of debt coins
-	err = k.MintDebtCoins(ctx, types.ModuleName, k.GetDebtDenom(ctx), principal)
+	debutDenomMap := k.GetDebtDenomMap(ctx)
+	err = k.MintDebtCoins(ctx, types.ModuleName, debutDenomMap[principal.Denom], principal)
 	if err != nil {
 		panic(err)
 	}
@@ -360,10 +361,10 @@ func (k Keeper) RemoveCdpCollateralRatioIndex(ctx sdk.Context, collateralType st
 }
 
 // GetDebtDenom returns the denom of debt in the system
-func (k Keeper) GetDebtDenom(ctx sdk.Context) string {
+func (k Keeper) GetDebtDenomMap(ctx sdk.Context) types.DebtDenomMap {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.KeyPrefix(types.DebtDenom))
-	return string(bz)
+	return types.NewDebtDenomMapFromByte(bz)
 }
 
 // GetGovDenom returns the denom of the governance token
@@ -373,13 +374,10 @@ func (k Keeper) GetGovDenom(ctx sdk.Context) string {
 	return string(bz)
 }
 
-// SetDebtDenom set the denom of debt in the system
-func (k Keeper) SetDebtDenom(ctx sdk.Context, denom string) {
-	if denom == "" {
-		panic("debt denom not set in genesis")
-	}
+// SetDebtDenoms set the denom of debt in the system
+func (k Keeper) SetDebtDenomMap(ctx sdk.Context, dept_denom_map types.DebtDenomMap) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.KeyPrefix(types.DebtDenom), []byte(denom))
+	store.Set(types.KeyPrefix(types.DebtDenom), dept_denom_map.Byte())
 }
 
 // SetGovDenom set the denom of the governance token in the system

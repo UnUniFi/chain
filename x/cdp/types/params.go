@@ -28,6 +28,7 @@ var (
 			ConversionFactor: sdk.NewInt(6),
 			DebtFloor:        sdk.NewInt(1),
 			GlobalDebtLimit:  sdk.NewCoin(DefaultStableDenom, sdk.ZeroInt()),
+			DebtDenom:        "debtjpu",
 		},
 		DebtParam{
 			Denom:            "euu",
@@ -35,6 +36,7 @@ var (
 			ConversionFactor: sdk.NewInt(6),
 			DebtFloor:        sdk.NewInt(1),
 			GlobalDebtLimit:  sdk.NewCoin("euu", sdk.ZeroInt()),
+			DebtDenom:        "debteuu",
 		},
 	}
 	DefaultCdpStartingID    = uint64(1)
@@ -362,11 +364,16 @@ func validateDebtParams(i interface{}) error {
 	}
 	for _, debtParam := range debtParams {
 		if err := sdk.ValidateDenom(debtParam.Denom); err != nil {
-			return fmt.Errorf("debt denom invalid %s", debtParam.Denom)
+			return fmt.Errorf("debtParam Denom invalid %s", debtParam.Denom)
 		}
 
 		if err := validateGlobalDebtLimitParam(debtParam.GlobalDebtLimit); err != nil {
 			return err
+		}
+
+		// todo add test
+		if err := sdk.ValidateDenom(debtParam.DebtDenom); err != nil {
+			return fmt.Errorf("debtParam DebtDenom invalid %s", debtParam.DebtDenom)
 		}
 	}
 
