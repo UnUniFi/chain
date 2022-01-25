@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  ununifid:
+    container_name: ununifid
+    image: ghcr.io/ununifi/ununifid
+    # ports:
+    #   - 1317:1317
+    #   - 9090:9090
+    #   - 26656:26656
+    #   - 26657:26657
+    volumes:
+      - ~/.ununifi:/root/.ununifi
+    command: ununifid start
+    network_mode: host
+    restart: always
