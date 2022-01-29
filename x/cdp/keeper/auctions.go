@@ -73,7 +73,7 @@ func (k Keeper) CreateAuctionsFromDeposit(
 		_, err := k.auctionKeeper.StartCollateralAuction(
 			ctx, types.LiquidatorMacc, sdk.NewCoin(collateral.Denom, auctionSize),
 			sdk.NewCoin(principalDenom, debtAmount.Add(penalty)), []sdk.AccAddress{returnAddr},
-			[]sdk.Int{auctionSize}, sdk.NewCoin(debtDenomMap[collateral.Denom], debtAmount),
+			[]sdk.Int{auctionSize}, sdk.NewCoin(debtDenomMap[principalDenom], debtAmount),
 		)
 
 		if err != nil {
@@ -99,7 +99,7 @@ func (k Keeper) CreateAuctionsFromDeposit(
 	_, err := k.auctionKeeper.StartCollateralAuction(
 		ctx, types.LiquidatorMacc, sdk.NewCoin(collateral.Denom, lastAuctionCollateral),
 		sdk.NewCoin(principalDenom, lastAuctionDebt.Add(penalty)), []sdk.AccAddress{returnAddr},
-		[]sdk.Int{lastAuctionCollateral}, sdk.NewCoin(debtDenomMap[collateral.Denom], lastAuctionDebt),
+		[]sdk.Int{lastAuctionCollateral}, sdk.NewCoin(debtDenomMap[principalDenom], lastAuctionDebt),
 	)
 
 	return err
