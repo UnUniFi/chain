@@ -134,15 +134,15 @@ func (k Keeper) NetSurplusAndDebt(ctx sdk.Context) error {
 
 // GetTotalSurplus returns the total amount of surplus tokens held by the liquidator module account
 func (k Keeper) GetTotalSurplus(ctx sdk.Context, accountName string, denom string) sdk.Int {
-	return k.GetTotalDenom(ctx, accountName, denom)
+	return k.getTotalDenom(ctx, accountName, denom)
 }
 
 // GetTotalDebt returns the total amount of debt tokens held by the liquidator module account
 func (k Keeper) GetTotalDebt(ctx sdk.Context, accountName string, deb_denom string) sdk.Int {
-	return k.GetTotalDenom(ctx, accountName, deb_denom)
+	return k.getTotalDenom(ctx, accountName, deb_denom)
 }
 
-func (k Keeper) GetTotalDenom(ctx sdk.Context, accountName string, denom string) sdk.Int {
+func (k Keeper) getTotalDenom(ctx sdk.Context, accountName string, denom string) sdk.Int {
 	acc := k.accountKeeper.GetModuleAccount(ctx, accountName)
 	return k.bankKeeper.GetAllBalances(ctx, acc.GetAddress()).AmountOf(denom)
 }
@@ -171,12 +171,14 @@ func (k Keeper) RunSurplusAndDebtAuctions(ctx sdk.Context) error {
 		macc := k.accountKeeper.GetModuleAccount(ctx, types.LiquidatorMacc)
 		surplus := k.bankKeeper.GetAllBalances(ctx, macc.GetAddress()).AmountOf(dp.Denom)
 		if !surplus.GTE(params.SurplusAuctionThreshold) {
-			return nil
+			continue
 		}
 
 		surplusLot := sdk.NewCoin(dp.Denom, sdk.MinInt(params.SurplusAuctionLot, surplus))
 		_, err := k.auctionKeeper.StartSurplusAuction(ctx, types.LiquidatorMacc, surplusLot, k.GetGovDenom(ctx))
-		return err
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
