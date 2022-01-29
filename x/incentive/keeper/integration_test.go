@@ -135,6 +135,7 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 					ConversionFactor: i(6),
 					DebtFloor:        i(10000000),
 					GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 2000000000000),
+					DebtDenom:        "debtjpu",
 				},
 				{
 					Denom:            "euu",
@@ -142,11 +143,11 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 					ConversionFactor: i(6),
 					DebtFloor:        i(10000000),
 					GlobalDebtLimit:  sdk.NewInt64Coin("euu", 2000000000000),
+					DebtDenom:        "debteuu",
 				},
 			},
 		},
 		StartingCdpId: cdptypes.DefaultCdpStartingID,
-		DebtDenom:     cdptypes.DefaultDebtDenom,
 		GovDenom:      cdptypes.DefaultGovDenom,
 		Cdps:          cdptypes.Cdps{},
 		PreviousAccumulationTimes: cdptypes.GenesisAccumulationTimes{
