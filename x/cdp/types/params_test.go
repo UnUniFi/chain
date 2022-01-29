@@ -1204,6 +1204,55 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			},
 		},
 		{
+			name: "invalid debt param empty dept denom",
+			args: args{
+				collateralParams: cdptypes.CollateralParams{
+					{
+						Denom:                            "bnb",
+						Type:                             "bnb-a",
+						LiquidationRatio:                 sdk.MustNewDecFromStr("1.5"),
+						DebtLimit:                        sdk.NewInt64Coin("jpu", 2000000000000),
+						StabilityFee:                     sdk.MustNewDecFromStr("1.000000001547125958"),
+						LiquidationPenalty:               sdk.MustNewDecFromStr("0.05"),
+						AuctionSize:                      sdk.NewInt(50000000000),
+						Prefix:                           0x20,
+						SpotMarketId:                     "bnb:jpy",
+						LiquidationMarketId:              "bnb:jpy",
+						KeeperRewardPercentage:           sdk.MustNewDecFromStr("0.01"),
+						ConversionFactor:                 sdk.NewInt(8),
+						CheckCollateralizationIndexCount: sdk.NewInt(10),
+					},
+				},
+				debtParams: cdptypes.DebtParams{
+					{
+						Denom:            "jpu",
+						ReferenceAsset:   "jpy",
+						ConversionFactor: sdk.NewInt(6),
+						DebtFloor:        sdk.NewInt(10000000),
+						GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 2000000000000),
+						DebtDenom:        "",
+					},
+					{
+						Denom:            "euu",
+						ReferenceAsset:   "eur",
+						ConversionFactor: sdk.NewInt(6),
+						DebtFloor:        sdk.NewInt(10000000),
+						GlobalDebtLimit:  sdk.NewInt64Coin("euu", 2000000000000),
+						DebtDenom:        "",
+					},
+				},
+				surplusThreshold: cdptypes.DefaultSurplusThreshold,
+				surplusLot:       cdptypes.DefaultSurplusLot,
+				debtThreshold:    cdptypes.DefaultDebtThreshold,
+				debtLot:          cdptypes.DefaultDebtLot,
+				breaker:          cdptypes.DefaultCircuitBreaker,
+			},
+			errArgs: errArgs{
+				expectPass: false,
+				contains:   "debtParam DebtDenom invalid",
+			},
+		},
+		{
 			name: "nil debt limit",
 			args: args{
 				collateralParams: cdptypes.DefaultCollateralParams,

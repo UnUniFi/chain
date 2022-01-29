@@ -370,7 +370,6 @@ func validateDebtParams(i interface{}) error {
 			return err
 		}
 
-		// todo add test
 		if err := sdk.ValidateDenom(debtParam.DebtDenom); err != nil {
 			return fmt.Errorf("debtParam DebtDenom invalid %s", debtParam.DebtDenom)
 		}
