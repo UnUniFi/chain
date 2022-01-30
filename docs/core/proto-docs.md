@@ -559,6 +559,11 @@ Query defines the gRPC querier service.
 | `debt_floor` | [string](#string) |  |  |
 | `global_debt_limit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `debt_denom` | [string](#string) |  |  |
+| `surplus_auction_threshold` | [string](#string) |  |  |
+| `surplus_auction_lot` | [string](#string) |  |  |
+| `debt_auction_threshold` | [string](#string) |  |  |
+| `debt_auction_lot` | [string](#string) |  |  |
+| `circuit_breaker` | [bool](#bool) |  |  |
 
 
 
@@ -592,11 +597,6 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `collateral_params` | [CollateralParam](#ununifi.cdp.CollateralParam) | repeated |  |
 | `debt_params` | [DebtParam](#ununifi.cdp.DebtParam) | repeated |  |
-| `surplus_auction_threshold` | [string](#string) |  |  |
-| `surplus_auction_lot` | [string](#string) |  |  |
-| `debt_auction_threshold` | [string](#string) |  |  |
-| `debt_auction_lot` | [string](#string) |  |  |
-| `circuit_breaker` | [bool](#bool) |  |  |
 
 
 
