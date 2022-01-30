@@ -41,10 +41,6 @@ func NewPricefeedGenState(tApp app.TestApp, asset string, price sdk.Dec) app.Gen
 func NewCdpGenState(tApp app.TestApp, asset string, liquidationRatio sdk.Dec) app.GenesisState {
 	cdpGenesis := cdptypes.GenesisState{
 		Params: cdptypes.Params{
-			SurplusAuctionThreshold: cdptypes.DefaultSurplusThreshold,
-			SurplusAuctionLot:       cdptypes.DefaultSurplusLot,
-			DebtAuctionThreshold:    cdptypes.DefaultDebtThreshold,
-			DebtAuctionLot:          cdptypes.DefaultDebtLot,
 			CollateralParams: cdptypes.CollateralParams{
 				{
 					Denom:                            asset,
@@ -64,12 +60,17 @@ func NewCdpGenState(tApp app.TestApp, asset string, liquidationRatio sdk.Dec) ap
 			},
 			DebtParams: cdptypes.DebtParams{
 				{
-					Denom:            "jpu",
-					ReferenceAsset:   "jpy",
-					ConversionFactor: i(6),
-					DebtFloor:        i(10000000),
-					GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 1000000000000),
-					DebtDenom:        "debtjpu",
+					Denom:                   "jpu",
+					ReferenceAsset:          "jpy",
+					ConversionFactor:        i(6),
+					DebtFloor:               i(10000000),
+					GlobalDebtLimit:         sdk.NewInt64Coin("jpu", 1000000000000),
+					DebtDenom:               "debtjpu",
+					SurplusAuctionThreshold: sdk.NewInt(500000000000),
+					SurplusAuctionLot:       sdk.NewInt(10000000000),
+					DebtAuctionThreshold:    sdk.NewInt(100000000000),
+					DebtAuctionLot:          sdk.NewInt(10000000000),
+					CircuitBreaker:          false,
 				},
 			},
 		},
@@ -115,10 +116,6 @@ func NewPricefeedGenStateMulti(tApp app.TestApp) app.GenesisState {
 func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 	cdpGenesis := cdptypes.GenesisState{
 		Params: cdptypes.Params{
-			SurplusAuctionThreshold: cdptypes.DefaultSurplusThreshold,
-			SurplusAuctionLot:       cdptypes.DefaultSurplusLot,
-			DebtAuctionThreshold:    cdptypes.DefaultDebtThreshold,
-			DebtAuctionLot:          cdptypes.DefaultDebtLot,
 			CollateralParams: cdptypes.CollateralParams{
 				{
 					Denom:                            "xrp",
@@ -153,12 +150,17 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 			},
 			DebtParams: cdptypes.DebtParams{
 				{
-					Denom:            "jpu",
-					ReferenceAsset:   "jpy",
-					ConversionFactor: i(6),
-					DebtFloor:        i(10000000),
-					GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 1000000000000),
-					DebtDenom:        "debtjpu",
+					Denom:                   "jpu",
+					ReferenceAsset:          "jpy",
+					ConversionFactor:        i(6),
+					DebtFloor:               i(10000000),
+					GlobalDebtLimit:         sdk.NewInt64Coin("jpu", 1000000000000),
+					DebtDenom:               "debtjpu",
+					SurplusAuctionThreshold: sdk.NewInt(500000000000),
+					SurplusAuctionLot:       sdk.NewInt(10000000000),
+					DebtAuctionThreshold:    sdk.NewInt(100000000000),
+					DebtAuctionLot:          sdk.NewInt(10000000000),
+					CircuitBreaker:          false,
 				},
 			},
 		},
