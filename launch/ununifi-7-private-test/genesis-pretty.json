@@ -690,10 +690,8 @@
             "base_asset": "ubtc",
             "quote_asset": "jpy",
             "oracles": [
-              "ununifi1wx6w6cl2p8wwq5lzm59gce02x8ljtrk0c4ekrv",
-              "ununifi1hg347kyfur5h7rxakmkvzu39cqqrjmc2668fzn",
-              "ununifi1sp77dx68r9q2ca0t83qqeaz2qwhdq9hhh83x6l",
-              "ununifi1yr0gpls60nsye96adup9kuh2yrxdln48ascdug"
+              "ununifi1qygjrj69j8vcescel7wftvntcpwsaxpvkzz5mx",
+              "ununifi1eklc0a4ltvfxh2dsh4e7mypnmdvrgsl7fpgedx"
             ],
             "active": true
           },
@@ -702,10 +700,8 @@
             "base_asset": "ubtc",
             "quote_asset": "jpy",
             "oracles": [
-              "ununifi1wx6w6cl2p8wwq5lzm59gce02x8ljtrk0c4ekrv",
-              "ununifi1hg347kyfur5h7rxakmkvzu39cqqrjmc2668fzn",
-              "ununifi1sp77dx68r9q2ca0t83qqeaz2qwhdq9hhh83x6l",
-              "ununifi1yr0gpls60nsye96adup9kuh2yrxdln48ascdug"
+              "ununifi1qygjrj69j8vcescel7wftvntcpwsaxpvkzz5mx",
+              "ununifi1eklc0a4ltvfxh2dsh4e7mypnmdvrgsl7fpgedx"
             ],
             "active": true
           }
