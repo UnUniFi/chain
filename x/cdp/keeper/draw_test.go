@@ -70,7 +70,7 @@ func (suite *DrawTestSuite) TestAddRepayPrincipal() {
 	ak := suite.app.GetAccountKeeper()
 	sk := suite.app.GetBankKeeper()
 	acc := ak.GetModuleAccount(suite.ctx, types.ModuleName)
-	suite.Equal(cs(c("xrp", 400000000), c("debt", 20000000)), sk.GetAllBalances(suite.ctx, acc.GetAddress()))
+	suite.Equal(cs(c("xrp", 400000000), c("debtjpu", 20000000)), sk.GetAllBalances(suite.ctx, acc.GetAddress()))
 
 	err = suite.keeper.AddPrincipal(suite.ctx, suite.addrs[0], "xrp-a", c("sjpy", 10000000))
 	suite.Require().True(errors.Is(err, types.ErrInvalidDebtRequest))
@@ -98,7 +98,7 @@ func (suite *DrawTestSuite) TestAddRepayPrincipal() {
 	ak = suite.app.GetAccountKeeper()
 	sk = suite.app.GetBankKeeper()
 	acc = ak.GetModuleAccount(suite.ctx, types.ModuleName)
-	suite.Equal(cs(c("xrp", 400000000), c("debt", 10000000)), sk.GetAllBalances(suite.ctx, acc.GetAddress()))
+	suite.Equal(cs(c("xrp", 400000000), c("debtjpu", 10000000)), sk.GetAllBalances(suite.ctx, acc.GetAddress()))
 
 	err = suite.keeper.RepayPrincipal(suite.ctx, suite.addrs[0], "xrp-a", c("xjpy", 10000000))
 	suite.Require().True(errors.Is(err, types.ErrInvalidPayment))

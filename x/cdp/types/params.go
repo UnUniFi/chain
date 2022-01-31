@@ -19,59 +19,57 @@ var (
 	KeyDebtLot              = []byte("DebtLot")
 	KeySurplusThreshold     = []byte("SurplusThreshold")
 	KeySurplusLot           = []byte("SurplusLot")
-	DefaultCircuitBreaker   = false
 	DefaultCollateralParams = CollateralParams{}
 	DefaultDebtParams       = DebtParams{
 		DebtParam{
-			Denom:            "jpu",
-			ReferenceAsset:   "jpy",
-			ConversionFactor: sdk.NewInt(6),
-			DebtFloor:        sdk.NewInt(1),
-			GlobalDebtLimit:  sdk.NewCoin(DefaultStableDenom, sdk.ZeroInt()),
+			Denom:                   "jpu",
+			ReferenceAsset:          "jpy",
+			ConversionFactor:        sdk.NewInt(6),
+			DebtFloor:               sdk.NewInt(1),
+			GlobalDebtLimit:         sdk.NewCoin(DefaultStableDenom, sdk.ZeroInt()),
+			DebtDenom:               "debtjpu",
+			SurplusAuctionThreshold: sdk.NewInt(500000000000),
+			SurplusAuctionLot:       sdk.NewInt(10000000000),
+			DebtAuctionThreshold:    sdk.NewInt(100000000000),
+			DebtAuctionLot:          sdk.NewInt(10000000000),
+			CircuitBreaker:          false,
 		},
 		DebtParam{
-			Denom:            "euu",
-			ReferenceAsset:   "eur",
-			ConversionFactor: sdk.NewInt(6),
-			DebtFloor:        sdk.NewInt(1),
-			GlobalDebtLimit:  sdk.NewCoin("euu", sdk.ZeroInt()),
+			Denom:                   "euu",
+			ReferenceAsset:          "eur",
+			ConversionFactor:        sdk.NewInt(6),
+			DebtFloor:               sdk.NewInt(1),
+			GlobalDebtLimit:         sdk.NewCoin("euu", sdk.ZeroInt()),
+			DebtDenom:               "debteuu",
+			SurplusAuctionThreshold: sdk.NewInt(500000000000),
+			SurplusAuctionLot:       sdk.NewInt(10000000000),
+			DebtAuctionThreshold:    sdk.NewInt(100000000000),
+			DebtAuctionLot:          sdk.NewInt(10000000000),
+			CircuitBreaker:          false,
 		},
 	}
-	DefaultCdpStartingID    = uint64(1)
-	DefaultDebtDenom        = "debt"
-	DefaultGovDenom         = "uguu"
-	DefaultStableDenom      = "jpu"
-	DefaultSurplusThreshold = sdk.NewInt(500000000000)
-	DefaultDebtThreshold    = sdk.NewInt(100000000000)
-	DefaultSurplusLot       = sdk.NewInt(10000000000)
-	DefaultDebtLot          = sdk.NewInt(10000000000)
-	minCollateralPrefix     = 0
-	maxCollateralPrefix     = 255
-	stabilityFeeMax         = sdk.MustNewDecFromStr("1.000000051034942716") // 500% APR
+	DefaultCdpStartingID = uint64(1)
+	DefaultGovDenom      = "uguu"
+	DefaultStableDenom   = "jpu"
+	minCollateralPrefix  = 0
+	maxCollateralPrefix  = 255
+	stabilityFeeMax      = sdk.MustNewDecFromStr("1.000000051034942716") // 500% APR
 )
 
 // NewParams returns a new params object
 func NewParams(
-	collateralParams CollateralParams, debtParams DebtParams, surplusThreshold,
-	surplusLot, debtThreshold, debtLot sdk.Int, breaker bool,
+	collateralParams CollateralParams, debtParams DebtParams,
 ) Params {
 	return Params{
-		CollateralParams:        collateralParams,
-		DebtParams:              debtParams,
-		SurplusAuctionThreshold: surplusThreshold,
-		SurplusAuctionLot:       surplusLot,
-		DebtAuctionThreshold:    debtThreshold,
-		DebtAuctionLot:          debtLot,
-		CircuitBreaker:          breaker,
+		CollateralParams: collateralParams,
+		DebtParams:       debtParams,
 	}
 }
 
 // DefaultParams returns default params for cdp module
 func DefaultParams() Params {
 	return NewParams(
-		DefaultCollateralParams, DefaultDebtParams, DefaultSurplusThreshold,
-		DefaultSurplusLot, DefaultDebtThreshold, DefaultDebtLot,
-		DefaultCircuitBreaker,
+		DefaultCollateralParams, DefaultDebtParams,
 	)
 }
 
@@ -126,7 +124,7 @@ type DebtParams []DebtParam
 func (dps DebtParams) String() string {
 	out := "Debt Params\n"
 	for _, dp := range dps {
-		out += fmt.Sprintf("%s\n", dp)
+		out += fmt.Sprintf("%v\n", dp)
 	}
 	return out
 }
@@ -171,11 +169,6 @@ func (p *Params) ParamSetPairs() paramstype.ParamSetPairs {
 	return paramstype.ParamSetPairs{
 		paramstype.NewParamSetPair(KeyCollateralParams, &p.CollateralParams, validateCollateralParams),
 		paramstype.NewParamSetPair(KeyDebtParam, &p.DebtParams, validateDebtParams),
-		paramstype.NewParamSetPair(KeyCircuitBreaker, &p.CircuitBreaker, validateCircuitBreakerParam),
-		paramstype.NewParamSetPair(KeySurplusThreshold, &p.SurplusAuctionThreshold, validateSurplusAuctionThresholdParam),
-		paramstype.NewParamSetPair(KeySurplusLot, &p.SurplusAuctionLot, validateSurplusAuctionLotParam),
-		paramstype.NewParamSetPair(KeyDebtThreshold, &p.DebtAuctionThreshold, validateDebtAuctionThresholdParam),
-		paramstype.NewParamSetPair(KeyDebtLot, &p.DebtAuctionLot, validateDebtAuctionLotParam),
 	}
 }
 
@@ -187,26 +180,6 @@ func (p Params) Validate() error {
 	}
 
 	if err := validateDebtParams(p.DebtParams); err != nil {
-		return err
-	}
-
-	if err := validateCircuitBreakerParam(p.CircuitBreaker); err != nil {
-		return err
-	}
-
-	if err := validateSurplusAuctionThresholdParam(p.SurplusAuctionThreshold); err != nil {
-		return err
-	}
-
-	if err := validateSurplusAuctionLotParam(p.SurplusAuctionLot); err != nil {
-		return err
-	}
-
-	if err := validateDebtAuctionThresholdParam(p.DebtAuctionThreshold); err != nil {
-		return err
-	}
-
-	if err := validateDebtAuctionLotParam(p.DebtAuctionLot); err != nil {
 		return err
 	}
 
@@ -362,10 +335,34 @@ func validateDebtParams(i interface{}) error {
 	}
 	for _, debtParam := range debtParams {
 		if err := sdk.ValidateDenom(debtParam.Denom); err != nil {
-			return fmt.Errorf("debt denom invalid %s", debtParam.Denom)
+			return fmt.Errorf("debtParam Denom invalid %s", debtParam.Denom)
 		}
 
 		if err := validateGlobalDebtLimitParam(debtParam.GlobalDebtLimit); err != nil {
+			return err
+		}
+
+		if err := sdk.ValidateDenom(debtParam.DebtDenom); err != nil {
+			return fmt.Errorf("debtParam DebtDenom invalid %s", debtParam.DebtDenom)
+		}
+
+		if err := validateCircuitBreakerParam(debtParam.CircuitBreaker); err != nil {
+			return err
+		}
+
+		if err := validateSurplusAuctionThresholdParam(debtParam.SurplusAuctionThreshold); err != nil {
+			return err
+		}
+
+		if err := validateSurplusAuctionLotParam(debtParam.SurplusAuctionLot); err != nil {
+			return err
+		}
+
+		if err := validateDebtAuctionThresholdParam(debtParam.DebtAuctionThreshold); err != nil {
+			return err
+		}
+
+		if err := validateDebtAuctionLotParam(debtParam.DebtAuctionLot); err != nil {
 			return err
 		}
 	}

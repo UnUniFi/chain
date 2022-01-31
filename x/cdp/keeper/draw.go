@@ -44,7 +44,8 @@ func (k Keeper) AddPrincipal(ctx sdk.Context, owner sdk.AccAddress, collateralTy
 	}
 
 	// mint the corresponding amount of debt coins in the cdp module account
-	err = k.MintDebtCoins(ctx, types.ModuleName, k.GetDebtDenom(ctx), principal)
+	debutDenomMap := k.GetDebtDenomMap(ctx)
+	err = k.MintDebtCoins(ctx, types.ModuleName, debutDenomMap[principal.Denom], principal)
 	if err != nil {
 		panic(err)
 	}
@@ -113,17 +114,17 @@ func (k Keeper) RepayPrincipal(ctx sdk.Context, owner sdk.AccAddress, collateral
 	}
 
 	// burn the corresponding amount of debt coins
-	cdpDebt := k.getModAccountDebt(ctx, types.ModuleName)
+	debutDenomMap := k.GetDebtDenomMap(ctx)
+	cdpDebt := k.getModAccountDebt(ctx, types.ModuleName, debutDenomMap[principalPayment.Denom])
 	paymentAmount := feePayment.Add(principalPayment).Amount
 
-	debtDenom := k.GetDebtDenom(ctx)
-	coinsToBurn := sdk.NewCoin(debtDenom, paymentAmount)
+	coinsToBurn := sdk.NewCoin(debutDenomMap[principalPayment.Denom], paymentAmount)
 
 	if paymentAmount.GT(cdpDebt) {
-		coinsToBurn = sdk.NewCoin(debtDenom, cdpDebt)
+		coinsToBurn = sdk.NewCoin(debutDenomMap[principalPayment.Denom], cdpDebt)
 	}
 
-	err = k.BurnDebtCoins(ctx, types.ModuleName, debtDenom, coinsToBurn)
+	err = k.BurnDebtCoins(ctx, types.ModuleName, debutDenomMap[principalPayment.Denom], coinsToBurn)
 
 	if err != nil {
 		panic(err)
