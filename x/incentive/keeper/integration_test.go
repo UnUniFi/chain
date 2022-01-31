@@ -18,7 +18,6 @@ import (
 func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 	cdpGenesis := cdptypes.GenesisState{
 		Params: cdptypes.Params{
-			GlobalDebtLimit:         sdk.NewInt64Coin("jpu", 2000000000000),
 			SurplusAuctionThreshold: cdptypes.DefaultSurplusThreshold,
 			SurplusAuctionLot:       cdptypes.DefaultSurplusLot,
 			DebtAuctionThreshold:    cdptypes.DefaultDebtThreshold,
@@ -76,12 +75,74 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 					LiquidationMarketId: "bjpy:jpy",
 					ConversionFactor:    i(8),
 				},
+				{
+					Denom:               "xrp",
+					Type:                "xrp-b",
+					LiquidationRatio:    sdk.MustNewDecFromStr("2.0"),
+					DebtLimit:           sdk.NewInt64Coin("euu", 500000000000),
+					StabilityFee:        sdk.MustNewDecFromStr("1.000000001547125958"), // %5 apr
+					LiquidationPenalty:  d("0.05"),
+					AuctionSize:         i(7000000000),
+					Prefix:              0x24,
+					SpotMarketId:        "xrp:eur",
+					LiquidationMarketId: "xrp:eur",
+					ConversionFactor:    i(6),
+				},
+				{
+					Denom:               "btc",
+					Type:                "btc-b",
+					LiquidationRatio:    sdk.MustNewDecFromStr("1.5"),
+					DebtLimit:           sdk.NewInt64Coin("euu", 500000000000),
+					StabilityFee:        sdk.MustNewDecFromStr("1.000000000782997609"), // %2.5 apr
+					LiquidationPenalty:  d("0.025"),
+					AuctionSize:         i(10000000),
+					Prefix:              0x25,
+					SpotMarketId:        "btc:eur",
+					LiquidationMarketId: "btc:eur",
+					ConversionFactor:    i(8),
+				},
+				{
+					Denom:               "bnb",
+					Type:                "bnb-b",
+					LiquidationRatio:    sdk.MustNewDecFromStr("1.5"),
+					DebtLimit:           sdk.NewInt64Coin("euu", 500000000000),
+					StabilityFee:        sdk.MustNewDecFromStr("1.000000001547125958"), // %5 apr
+					LiquidationPenalty:  d("0.05"),
+					AuctionSize:         i(50000000000),
+					Prefix:              0x26,
+					SpotMarketId:        "bnb:eur",
+					LiquidationMarketId: "bnb:eur",
+					ConversionFactor:    i(8),
+				},
+				{
+					Denom:               "bjpy",
+					Type:                "bjpy-b",
+					LiquidationRatio:    d("1.01"),
+					DebtLimit:           sdk.NewInt64Coin("euu", 500000000000),
+					StabilityFee:        sdk.OneDec(), // %0 apr
+					LiquidationPenalty:  d("0.05"),
+					AuctionSize:         i(10000000000),
+					Prefix:              0x27,
+					SpotMarketId:        "bjpy:eur",
+					LiquidationMarketId: "bjpy:eur",
+					ConversionFactor:    i(8),
+				},
 			},
-			DebtParam: cdptypes.DebtParam{
-				Denom:            "jpu",
-				ReferenceAsset:   "jpy",
-				ConversionFactor: i(6),
-				DebtFloor:        i(10000000),
+			DebtParams: cdptypes.DebtParams{
+				{
+					Denom:            "jpu",
+					ReferenceAsset:   "jpy",
+					ConversionFactor: i(6),
+					DebtFloor:        i(10000000),
+					GlobalDebtLimit:  sdk.NewInt64Coin("jpu", 2000000000000),
+				},
+				{
+					Denom:            "euu",
+					ReferenceAsset:   "eur",
+					ConversionFactor: i(6),
+					DebtFloor:        i(10000000),
+					GlobalDebtLimit:  sdk.NewInt64Coin("euu", 2000000000000),
+				},
 			},
 		},
 		StartingCdpId: cdptypes.DefaultCdpStartingID,
@@ -93,12 +154,22 @@ func NewCDPGenStateMulti(tApp app.TestApp) app.GenesisState {
 			cdptypes.NewGenesisAccumulationTime("xrp-a", time.Time{}, sdk.OneDec()),
 			cdptypes.NewGenesisAccumulationTime("bjpy-a", time.Time{}, sdk.OneDec()),
 			cdptypes.NewGenesisAccumulationTime("bnb-a", time.Time{}, sdk.OneDec()),
+
+			cdptypes.NewGenesisAccumulationTime("btc-b", time.Time{}, sdk.OneDec()),
+			cdptypes.NewGenesisAccumulationTime("xrp-b", time.Time{}, sdk.OneDec()),
+			cdptypes.NewGenesisAccumulationTime("bjpy-b", time.Time{}, sdk.OneDec()),
+			cdptypes.NewGenesisAccumulationTime("bnb-b", time.Time{}, sdk.OneDec()),
 		},
 		TotalPrincipals: cdptypes.GenesisTotalPrincipals{
 			cdptypes.NewGenesisTotalPrincipal("btc-a", sdk.ZeroInt()),
 			cdptypes.NewGenesisTotalPrincipal("xrp-a", sdk.ZeroInt()),
 			cdptypes.NewGenesisTotalPrincipal("bjpy-a", sdk.ZeroInt()),
 			cdptypes.NewGenesisTotalPrincipal("bnb-a", sdk.ZeroInt()),
+
+			cdptypes.NewGenesisTotalPrincipal("btc-b", sdk.ZeroInt()),
+			cdptypes.NewGenesisTotalPrincipal("xrp-b", sdk.ZeroInt()),
+			cdptypes.NewGenesisTotalPrincipal("bjpy-b", sdk.ZeroInt()),
+			cdptypes.NewGenesisTotalPrincipal("bnb-b", sdk.ZeroInt()),
 		},
 	}
 	return app.GenesisState{cdptypes.ModuleName: tApp.AppCodec().MustMarshalJSON(&cdpGenesis)}
@@ -114,6 +185,13 @@ func NewPricefeedGenStateMulti(tApp app.TestApp) app.GenesisState {
 				{MarketId: "bnb:jpy", BaseAsset: "bnb", QuoteAsset: "jpy", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
 				{MarketId: "bjpy:jpy", BaseAsset: "bjpy", QuoteAsset: "jpy", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
 				{MarketId: "zzz:jpy", BaseAsset: "zzz", QuoteAsset: "jpy", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+
+				{MarketId: "kava:eur", BaseAsset: "kava", QuoteAsset: "eur", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+				{MarketId: "btc:eur", BaseAsset: "btc", QuoteAsset: "eur", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+				{MarketId: "xrp:eur", BaseAsset: "xrp", QuoteAsset: "eur", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+				{MarketId: "bnb:eur", BaseAsset: "bnb", QuoteAsset: "eur", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+				{MarketId: "bjpy:eur", BaseAsset: "bjpy", QuoteAsset: "eur", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+				{MarketId: "zzz:eur", BaseAsset: "zzz", QuoteAsset: "eur", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
 			},
 		},
 		PostedPrices: []pricefeedtypes.PostedPrice{
@@ -149,6 +227,42 @@ func NewPricefeedGenStateMulti(tApp app.TestApp) app.GenesisState {
 			},
 			{
 				MarketId:      "zzz:jpy",
+				OracleAddress: ununifitypes.StringAccAddress{},
+				Price:         sdk.MustNewDecFromStr("2.00"),
+				Expiry:        time.Now().Add(1 * time.Hour),
+			},
+			{
+				MarketId:      "kava:eur",
+				OracleAddress: ununifitypes.StringAccAddress{},
+				Price:         sdk.MustNewDecFromStr("2.00"),
+				Expiry:        time.Now().Add(1 * time.Hour),
+			},
+			{
+				MarketId:      "btc:eur",
+				OracleAddress: ununifitypes.StringAccAddress{},
+				Price:         sdk.MustNewDecFromStr("8000.00"),
+				Expiry:        time.Now().Add(1 * time.Hour),
+			},
+			{
+				MarketId:      "xrp:eur",
+				OracleAddress: ununifitypes.StringAccAddress{},
+				Price:         sdk.MustNewDecFromStr("0.25"),
+				Expiry:        time.Now().Add(1 * time.Hour),
+			},
+			{
+				MarketId:      "bnb:eur",
+				OracleAddress: ununifitypes.StringAccAddress{},
+				Price:         sdk.MustNewDecFromStr("17.25"),
+				Expiry:        time.Now().Add(1 * time.Hour),
+			},
+			{
+				MarketId:      "bjpy:eur",
+				OracleAddress: ununifitypes.StringAccAddress{},
+				Price:         sdk.OneDec(),
+				Expiry:        time.Now().Add(1 * time.Hour),
+			},
+			{
+				MarketId:      "zzz:eur",
 				OracleAddress: ununifitypes.StringAccAddress{},
 				Price:         sdk.MustNewDecFromStr("2.00"),
 				Expiry:        time.Now().Add(1 * time.Hour),

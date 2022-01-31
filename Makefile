@@ -148,3 +148,14 @@ distclean: clean
 test: test-unit
 test-unit:
 	@VERSION=$(VERSION) go test  ./... 
+
+###############################################################################
+###                                Protobuf                                 ###
+###############################################################################
+
+proto-gen:
+	@echo "Generating Protobuf files"
+	# need buf and proto plugin
+	# cd docs/devtools/Makefile
+	# make buf-tools
+	./proto/gen.sh

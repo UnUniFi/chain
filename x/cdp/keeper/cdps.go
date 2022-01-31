@@ -446,9 +446,12 @@ func (k Keeper) ValidateDebtLimit(ctx sdk.Context, collateralType string, princi
 	if totalPrincipal.GT(collateralLimit) {
 		return sdkerrors.Wrapf(types.ErrExceedsDebtLimit, "debt increase %s > collateral debt limit %s", sdk.NewCoins(sdk.NewCoin(principal.Denom, totalPrincipal)), sdk.NewCoins(sdk.NewCoin(principal.Denom, collateralLimit)))
 	}
-	globalLimit := k.GetParams(ctx).GlobalDebtLimit.Amount
-	if totalPrincipal.GT(globalLimit) {
-		return sdkerrors.Wrapf(types.ErrExceedsDebtLimit, "debt increase %s > global debt limit  %s", sdk.NewCoin(principal.Denom, totalPrincipal), sdk.NewCoin(principal.Denom, globalLimit))
+	dp, exists := k.GetDebtParams(ctx).FindGlobalDebtLimitDenom(principal.Denom)
+	if !exists {
+		return sdkerrors.Wrapf(types.ErrDebtNotSupported, "not found  debt params global deb limit %s", principal.Denom)
+	}
+	if totalPrincipal.GT(dp.GlobalDebtLimit.Amount) {
+		return sdkerrors.Wrapf(types.ErrExceedsDebtLimit, "debt increase %s > global debt limit  %s", sdk.NewCoin(principal.Denom, totalPrincipal), sdk.NewCoin(principal.Denom, dp.GlobalDebtLimit.Amount))
 	}
 	return nil
 }

@@ -557,6 +557,7 @@ Query defines the gRPC querier service.
 | `reference_asset` | [string](#string) |  |  |
 | `conversion_factor` | [string](#string) |  |  |
 | `debt_floor` | [string](#string) |  |  |
+| `global_debt_limit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -589,8 +590,7 @@ Query defines the gRPC querier service.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `collateral_params` | [CollateralParam](#ununifi.cdp.CollateralParam) | repeated |  |
-| `debt_param` | [DebtParam](#ununifi.cdp.DebtParam) |  |  |
-| `global_debt_limit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `debt_params` | [DebtParam](#ununifi.cdp.DebtParam) | repeated |  |
 | `surplus_auction_threshold` | [string](#string) |  |  |
 | `surplus_auction_lot` | [string](#string) |  |  |
 | `debt_auction_threshold` | [string](#string) |  |  |
