@@ -17,6 +17,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/server"
+	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -61,8 +62,8 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 			if err := client.SetCmdClientContextHandler(initClientCtx, cmd); err != nil {
 				return err
 			}
-
-			return server.InterceptConfigsPreRunHandler(cmd, "", nil)
+			customTemplate, customConfig := initAppConfig()
+			return server.InterceptConfigsPreRunHandler(cmd, customTemplate, customConfig)
 		},
 	}
 
@@ -73,6 +74,23 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 	})
 
 	return rootCmd, encodingConfig
+}
+
+func initAppConfig() (string, interface{}) {
+
+	type CustomAppConfig struct {
+		serverconfig.Config
+	}
+
+	// Allow overrides to the SDK default server config
+	srvCfg := serverconfig.DefaultConfig()
+	srvCfg.API.Enable = true
+
+	appCfg := CustomAppConfig{Config: *srvCfg}
+
+	appTemplate := serverconfig.DefaultConfigTemplate
+
+	return appTemplate, appCfg
 }
 
 func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig) {
