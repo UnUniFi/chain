@@ -6,8 +6,10 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/CosmWasm/wasmd/x/wasm"
 	"github.com/UnUniFi/chain/app/params"
 	"github.com/cosmos/cosmos-sdk/snapshots"
+	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/UnUniFi/chain/app"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -32,7 +34,9 @@ import (
 	tmcli "github.com/tendermint/tendermint/libs/cli"
 	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"
+
 	// this line is used by starport scaffolding # stargate/root/import
+	Wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 )
 
 var ChainID string
@@ -197,13 +201,20 @@ func (a appCreator) newApp(
 		panic(err)
 	}
 
+	var wasmOpts []wasm.Option
+	if cast.ToBool(appOpts.Get("telemetry.enabled")) {
+		wasmOpts = append(wasmOpts, Wasmkeeper.WithVMCacheMetrics(prometheus.DefaultRegisterer))
+	}
+
 	return app.NewApp(
 		logger, db, traceStore, true, skipUpgradeHeights,
 		cast.ToString(appOpts.Get(flags.FlagHome)),
 		cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)),
 		a.encCfg,
 		// this line is used by starport scaffolding # stargate/root/appArgument
+		app.GetEnabledProposals(),
 		appOpts,
+		wasmOpts,
 		baseapp.SetPruning(pruningOpts),
 		baseapp.SetMinGasPrices(cast.ToString(appOpts.Get(server.FlagMinGasPrices))),
 		baseapp.SetMinRetainBlocks(cast.ToUint64(appOpts.Get(server.FlagMinRetainBlocks))),
@@ -240,7 +251,7 @@ func (a appCreator) appExport(
 	if height == -1 {
 		loadLatest = true
 	}
-
+	var emptyWasmOpts []wasm.Option
 	anApp = app.NewApp(
 		logger,
 		db,
@@ -250,7 +261,9 @@ func (a appCreator) appExport(
 		homePath,
 		cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)),
 		a.encCfg,
+		app.GetEnabledProposals(),
 		appOpts,
+		emptyWasmOpts,
 	)
 
 	if height != -1 {
