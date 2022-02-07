@@ -67,8 +67,8 @@ func (k Keeper) AddCdp(ctx sdk.Context, owner sdk.AccAddress, collateral sdk.Coi
 	}
 
 	// mint the corresponding amount of debt coins
-	debutDenomMap := k.GetDebtDenomMap(ctx)
-	err = k.MintDebtCoins(ctx, types.ModuleName, debutDenomMap[principal.Denom], principal)
+	debtDenomMap := k.GetDebtDenomMap(ctx)
+	err = k.MintDebtCoins(ctx, types.ModuleName, debtDenomMap[principal.Denom], principal)
 	if err != nil {
 		panic(err)
 	}

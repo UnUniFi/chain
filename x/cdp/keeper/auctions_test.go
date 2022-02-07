@@ -74,16 +74,16 @@ func (suite *AuctionTestSuite) TestSurplusAuction() {
 	sk := suite.app.GetBankKeeper()
 	var jpuNum int64 = 600_000_000_000
 	var euuNum int64 = 900_000_000_000
-	var deptJpuNum int64 = 100_000_000_000
-	var deptEuuNum int64 = 200_000_000_000
+	var debtJpuNum int64 = 100_000_000_000
+	var debtEuuNum int64 = 200_000_000_000
 	var err error
 	err = sk.MintCoins(suite.ctx, cdptypes.LiquidatorMacc, cs(c("jpu", jpuNum)))
 	suite.NoError(err)
-	err = sk.MintCoins(suite.ctx, cdptypes.LiquidatorMacc, cs(c("debtjpu", deptJpuNum)))
+	err = sk.MintCoins(suite.ctx, cdptypes.LiquidatorMacc, cs(c("debtjpu", debtJpuNum)))
 	suite.NoError(err)
 	err = sk.MintCoins(suite.ctx, cdptypes.LiquidatorMacc, cs(c("euu", euuNum)))
 	suite.NoError(err)
-	err = sk.MintCoins(suite.ctx, cdptypes.LiquidatorMacc, cs(c("debteuu", deptEuuNum)))
+	err = sk.MintCoins(suite.ctx, cdptypes.LiquidatorMacc, cs(c("debteuu", debtEuuNum)))
 	suite.NoError(err)
 	suite.keeper.RunSurplusAndDebtAuctions(suite.ctx)
 	acc := ak.GetModuleAccount(suite.ctx, auctiontypes.ModuleName)
@@ -97,15 +97,15 @@ func (suite *AuctionTestSuite) TestDebtAuction() {
 	sk := suite.app.GetBankKeeper()
 	var jpuNum int64 = 100_000_000_000
 	var euuNum int64 = 200_000_000_000
-	var deptJpuNum int64 = 200_000_000_000
-	var deptEuuNum int64 = 900_000_000_000
+	var debtJpuNum int64 = 200_000_000_000
+	var debtEuuNum int64 = 900_000_000_000
 	err := sk.MintCoins(suite.ctx, cdptypes.LiquidatorMacc, cs(c("jpu", jpuNum)))
 	suite.NoError(err)
-	err = sk.MintCoins(suite.ctx, cdptypes.LiquidatorMacc, cs(c("debtjpu", deptJpuNum)))
+	err = sk.MintCoins(suite.ctx, cdptypes.LiquidatorMacc, cs(c("debtjpu", debtJpuNum)))
 	suite.NoError(err)
 	err = sk.MintCoins(suite.ctx, cdptypes.LiquidatorMacc, cs(c("euu", euuNum)))
 	suite.NoError(err)
-	err = sk.MintCoins(suite.ctx, cdptypes.LiquidatorMacc, cs(c("debteuu", deptEuuNum)))
+	err = sk.MintCoins(suite.ctx, cdptypes.LiquidatorMacc, cs(c("debteuu", debtEuuNum)))
 	suite.NoError(err)
 	suite.keeper.RunSurplusAndDebtAuctions(suite.ctx)
 	acc := ak.GetModuleAccount(suite.ctx, auctiontypes.ModuleName)

@@ -109,16 +109,16 @@ func (k Keeper) CreateAuctionsFromDeposit(
 // for example, if there is 1000 debt and 100 surplus, 100 surplus and 100 debt are burned, netting to 900 debt
 func (k Keeper) NetSurplusAndDebt(ctx sdk.Context) error {
 	dps := k.GetParams(ctx).DebtParams
-	debutDenomMap := k.GetDebtDenomMap(ctx)
+	debtDenomMap := k.GetDebtDenomMap(ctx)
 	for _, dp := range dps {
 		totalSurplus := k.GetTotalSurplus(ctx, types.LiquidatorMacc, dp.Denom)
-		debt := k.GetTotalDebt(ctx, types.LiquidatorMacc, debutDenomMap[dp.Denom])
+		debt := k.GetTotalDebt(ctx, types.LiquidatorMacc, debtDenomMap[dp.Denom])
 		netAmount := sdk.MinInt(totalSurplus, debt)
 		if netAmount.IsZero() {
 			return nil
 		}
 		// burn debt coins equal to netAmount
-		err := k.bankKeeper.BurnCoins(ctx, types.LiquidatorMacc, sdk.NewCoins(sdk.NewCoin(debutDenomMap[dp.Denom], netAmount)))
+		err := k.bankKeeper.BurnCoins(ctx, types.LiquidatorMacc, sdk.NewCoins(sdk.NewCoin(debtDenomMap[dp.Denom], netAmount)))
 		if err != nil {
 			return err
 		}
@@ -152,12 +152,12 @@ func (k Keeper) RunSurplusAndDebtAuctions(ctx sdk.Context) error {
 	if err := k.NetSurplusAndDebt(ctx); err != nil {
 		return err
 	}
-	debutDenomMap := k.GetDebtDenomMap(ctx)
+	debtDenomMap := k.GetDebtDenomMap(ctx)
 	dps := k.GetParams(ctx).DebtParams
 	for _, dp := range dps {
-		remainingDebt := k.GetTotalDebt(ctx, types.LiquidatorMacc, debutDenomMap[dp.Denom])
+		remainingDebt := k.GetTotalDebt(ctx, types.LiquidatorMacc, debtDenomMap[dp.Denom])
 		if remainingDebt.GTE(dp.DebtAuctionThreshold) {
-			debtLot := sdk.NewCoin(debutDenomMap[dp.Denom], dp.DebtAuctionLot)
+			debtLot := sdk.NewCoin(debtDenomMap[dp.Denom], dp.DebtAuctionLot)
 			bidCoin := sdk.NewCoin(dp.Denom, debtLot.Amount)
 			initialLot := sdk.NewCoin(k.GetGovDenom(ctx), debtLot.Amount.Mul(sdk.NewInt(dump)))
 

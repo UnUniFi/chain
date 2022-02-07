@@ -45,10 +45,10 @@ func (k Keeper) SeizeCollateral(ctx sdk.Context, cdp types.Cdp) error {
 	// Move debt coins from cdp to liquidator account
 	deposits := k.GetDeposits(ctx, cdp.Id)
 	debt := cdp.GetTotalPrincipal().Amount
-	debutDenomMap := k.GetDebtDenomMap(ctx)
-	modAccountDebt := k.getModAccountDebt(ctx, types.ModuleName, debutDenomMap[cdp.Principal.Denom])
+	debtDenomMap := k.GetDebtDenomMap(ctx)
+	modAccountDebt := k.getModAccountDebt(ctx, types.ModuleName, debtDenomMap[cdp.Principal.Denom])
 	debt = sdk.MinInt(debt, modAccountDebt)
-	debtCoin := sdk.NewCoin(debutDenomMap[cdp.Principal.Denom], debt)
+	debtCoin := sdk.NewCoin(debtDenomMap[cdp.Principal.Denom], debt)
 	err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, types.LiquidatorMacc, sdk.NewCoins(debtCoin))
 	if err != nil {
 		return err

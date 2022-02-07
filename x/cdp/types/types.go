@@ -22,12 +22,12 @@ func NewDebtDenomMapFromByte(dps_bytes []byte) DebtDenomMap {
 	if len(dps_bytes) == 0 {
 		panic("is empty DebtParams")
 	}
-	var debutDenomMap DebtDenomMap
-	err := json.Unmarshal(dps_bytes, &debutDenomMap)
+	var debtDenomMap DebtDenomMap
+	err := json.Unmarshal(dps_bytes, &debtDenomMap)
 	if err != nil {
 		panic("is not DebtParams byte")
 	}
-	return debutDenomMap
+	return debtDenomMap
 }
 
 func (d DebtDenomMap) Byte() []byte {
