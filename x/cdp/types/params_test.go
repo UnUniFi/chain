@@ -1234,7 +1234,7 @@ func (suite *ParamsTestSuite) TestParamValidation() {
 			},
 		},
 		{
-			name: "invalid debt param empty dept denom",
+			name: "invalid debt param empty debt denom",
 			args: args{
 				collateralParams: cdptypes.CollateralParams{
 					{
@@ -1453,7 +1453,7 @@ func findTestSetup() (cdptypes.DebtParams, cdptypes.DebtParam, cdptypes.DebtPara
 		GlobalDebtLimit:  sdk.NewCoin("euux", sdk.NewInt(500)),
 		DebtDenom:        "debteuu",
 	}
-	dummy_dept := dp{
+	dummy_debt := dp{
 		Denom:            "dum",
 		ReferenceAsset:   "du",
 		ConversionFactor: sdk.NewInt(6),
@@ -1461,7 +1461,7 @@ func findTestSetup() (cdptypes.DebtParams, cdptypes.DebtParam, cdptypes.DebtPara
 		GlobalDebtLimit:  sdk.NewCoin("dum", sdk.NewInt(500)),
 		DebtDenom:        "debtdum",
 	}
-	t1 := dps{jpu_debt, euu_debt, dummy_dept}
+	t1 := dps{jpu_debt, euu_debt, dummy_debt}
 	return t1, jpu_debt, euu_debt
 }
 func TestFindDenom(t *testing.T) {

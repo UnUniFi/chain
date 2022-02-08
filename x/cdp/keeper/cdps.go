@@ -375,9 +375,9 @@ func (k Keeper) GetGovDenom(ctx sdk.Context) string {
 }
 
 // SetDebtDenoms set the denom of debt in the system
-func (k Keeper) SetDebtDenomMap(ctx sdk.Context, dept_denom_map types.DebtDenomMap) {
+func (k Keeper) SetDebtDenomMap(ctx sdk.Context, debt_denom_map types.DebtDenomMap) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.KeyPrefix(types.DebtDenom), dept_denom_map.Byte())
+	store.Set(types.KeyPrefix(types.DebtDenom), debt_denom_map.Byte())
 }
 
 // SetGovDenom set the denom of the governance token in the system
