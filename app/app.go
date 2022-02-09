@@ -28,6 +28,7 @@ import (
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/vesting"
+	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
 	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
 	authzmodule "github.com/cosmos/cosmos-sdk/x/authz/module"
@@ -74,17 +75,17 @@ import (
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	"github.com/cosmos/ibc-go/modules/apps/transfer"
-	ibctransferkeeper "github.com/cosmos/ibc-go/modules/apps/transfer/keeper"
-	ibctransfertypes "github.com/cosmos/ibc-go/modules/apps/transfer/types"
-	ibc "github.com/cosmos/ibc-go/modules/core"
-	ibcclient "github.com/cosmos/ibc-go/modules/core/02-client"
-	ibcclientclient "github.com/cosmos/ibc-go/modules/core/02-client/client"
-	ibcclienttypes "github.com/cosmos/ibc-go/modules/core/02-client/types"
-	ibcconnectiontypes "github.com/cosmos/ibc-go/modules/core/03-connection/types"
-	porttypes "github.com/cosmos/ibc-go/modules/core/05-port/types"
-	ibchost "github.com/cosmos/ibc-go/modules/core/24-host"
-	ibckeeper "github.com/cosmos/ibc-go/modules/core/keeper"
+	transfer "github.com/cosmos/ibc-go/v2/modules/apps/transfer"
+	ibctransferkeeper "github.com/cosmos/ibc-go/v2/modules/apps/transfer/keeper"
+	ibctransfertypes "github.com/cosmos/ibc-go/v2/modules/apps/transfer/types"
+	ibc "github.com/cosmos/ibc-go/v2/modules/core"
+	ibcclient "github.com/cosmos/ibc-go/v2/modules/core/02-client"
+	ibcclientclient "github.com/cosmos/ibc-go/v2/modules/core/02-client/client"
+	ibcclienttypes "github.com/cosmos/ibc-go/v2/modules/core/02-client/types"
+	ibcconnectiontypes "github.com/cosmos/ibc-go/v2/modules/core/03-connection/types"
+	porttypes "github.com/cosmos/ibc-go/v2/modules/core/05-port/types"
+	ibchost "github.com/cosmos/ibc-go/v2/modules/core/24-host"
+	ibckeeper "github.com/cosmos/ibc-go/v2/modules/core/keeper"
 	"github.com/gravity-devs/liquidity/x/liquidity"
 	liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
 	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
@@ -572,12 +573,24 @@ func NewApp(
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
 		stakingtypes.ModuleName,
+		authtypes.ModuleName,
+		banktypes.ModuleName,
+		govtypes.ModuleName,
+		crisistypes.ModuleName,
+		genutiltypes.ModuleName,
+		authz.ModuleName,
+		feegrant.ModuleName,
+		paramstypes.ModuleName,
+		vestingtypes.ModuleName,
+		// additional non simd modules
 		liquiditytypes.ModuleName,
-		ibchost.ModuleName,
 		ununifidisttypes.ModuleName,
 		auctiontypes.ModuleName,
 		cdptypes.ModuleName,
 		incentivetypes.ModuleName,
+		pricefeedtypes.ModuleName,
+		ibchost.ModuleName,
+		ibctransfertypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -585,9 +598,27 @@ func NewApp(
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
 		liquiditytypes.ModuleName,
-		pricefeedtypes.ModuleName,
-		feegrant.ModuleName,
+		capabilitytypes.ModuleName,
+		authtypes.ModuleName,
+		banktypes.ModuleName,
+		distrtypes.ModuleName,
+		slashingtypes.ModuleName,
+		minttypes.ModuleName,
+		genutiltypes.ModuleName,
+		evidencetypes.ModuleName,
 		authz.ModuleName,
+		feegrant.ModuleName,
+		paramstypes.ModuleName,
+		upgradetypes.ModuleName,
+		vestingtypes.ModuleName,
+		// additional non simd modules
+		ununifidisttypes.ModuleName,
+		auctiontypes.ModuleName,
+		cdptypes.ModuleName,
+		incentivetypes.ModuleName,
+		pricefeedtypes.ModuleName,
+		ibchost.ModuleName,
+		ibctransfertypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -605,19 +636,23 @@ func NewApp(
 		govtypes.ModuleName,
 		minttypes.ModuleName,
 		crisistypes.ModuleName,
-		ibchost.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		liquiditytypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		feegrant.ModuleName,
 		authz.ModuleName,
+		paramstypes.ModuleName,
+		upgradetypes.ModuleName,
+		vestingtypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 		auctiontypes.ModuleName,
 		pricefeedtypes.ModuleName,
 		cdptypes.ModuleName,
 		incentivetypes.ModuleName,
 		ununifidisttypes.ModuleName,
+		ibchost.ModuleName,
+		ibctransfertypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
