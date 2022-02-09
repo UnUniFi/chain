@@ -83,7 +83,7 @@ func (suite *CdpTestSuite) TestAddCdp() {
 	suite.Equal(i(10000000), tp)
 
 	macc := ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
-	suite.Equal(cs(c("debt", 10000000), c("xrp", 100000000)), sk.GetAllBalances(suite.ctx, macc.GetAddress()))
+	suite.Equal(cs(c("debtjpu", 10000000), c("xrp", 100000000)), sk.GetAllBalances(suite.ctx, macc.GetAddress()))
 	acc = ak.GetAccount(suite.ctx, addrs[0])
 	suite.Equal(cs(c("jpu", 10000000), c("xrp", 100000000), c("btc", 500000000)), sk.GetAllBalances(suite.ctx, acc.GetAddress()))
 
@@ -97,7 +97,7 @@ func (suite *CdpTestSuite) TestAddCdp() {
 	tp = suite.keeper.GetTotalPrincipal(suite.ctx, "btc-a", "jpu")
 	suite.Equal(i(100000000), tp)
 	macc = ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
-	suite.Equal(cs(c("debt", 110000000), c("xrp", 100000000), c("btc", 500000000)), sk.GetAllBalances(suite.ctx, macc.GetAddress()))
+	suite.Equal(cs(c("debtjpu", 110000000), c("xrp", 100000000), c("btc", 500000000)), sk.GetAllBalances(suite.ctx, macc.GetAddress()))
 	acc = ak.GetAccount(suite.ctx, addrs[0])
 	suite.Equal(cs(c("jpu", 110000000), c("xrp", 100000000)), sk.GetAllBalances(suite.ctx, acc.GetAddress()))
 
@@ -133,13 +133,16 @@ func (suite *CdpTestSuite) TestGetSetCollateralTypeByte() {
 	suite.Equal(byte(0x20), db)
 }
 
-func (suite *CdpTestSuite) TestGetDebtDenom() {
-	suite.Panics(func() { suite.keeper.SetDebtDenom(suite.ctx, "") })
-	t := suite.keeper.GetDebtDenom(suite.ctx)
-	suite.Equal("debt", t)
-	suite.keeper.SetDebtDenom(suite.ctx, "lol")
-	t = suite.keeper.GetDebtDenom(suite.ctx)
-	suite.Equal("lol", t)
+func (suite *CdpTestSuite) TestGetDebtDenomMap() {
+	denomMap := cdptypes.NewDebtDenomMap(cdptypes.DefaultDebtParams)
+	suite.keeper.SetDebtDenomMap(suite.ctx, denomMap)
+	t := suite.keeper.GetDebtDenomMap(suite.ctx)
+	suite.Equal(denomMap, t)
+
+	empty := cdptypes.DebtDenomMap{}
+	suite.keeper.SetDebtDenomMap(suite.ctx, empty)
+	t = suite.keeper.GetDebtDenomMap(suite.ctx)
+	suite.Equal(empty, t)
 }
 
 func (suite *CdpTestSuite) TestGetNextCdpID() {
@@ -221,7 +224,7 @@ func (suite *CdpTestSuite) TestIterateCdps() {
 		suite.keeper.IndexCdpByCollateralRatio(suite.ctx, c.Type, c.Id, cr)
 	}
 	t := suite.keeper.GetAllCdps(suite.ctx)
-	suite.Equal(4, len(t))
+	suite.Equal(8, len(t))
 }
 
 func (suite *CdpTestSuite) TestIterateCdpsByCollateralType() {
@@ -235,7 +238,11 @@ func (suite *CdpTestSuite) TestIterateCdpsByCollateralType() {
 	}
 	xrpCdps := suite.keeper.GetAllCdpsByCollateralType(suite.ctx, "xrp-a")
 	suite.Equal(3, len(xrpCdps))
+	xrpCdps = suite.keeper.GetAllCdpsByCollateralType(suite.ctx, "xrp-b")
+	suite.Equal(3, len(xrpCdps))
 	btcCdps := suite.keeper.GetAllCdpsByCollateralType(suite.ctx, "btc-a")
+	suite.Equal(1, len(btcCdps))
+	btcCdps = suite.keeper.GetAllCdpsByCollateralType(suite.ctx, "btc-b")
 	suite.Equal(1, len(btcCdps))
 	suite.keeper.DeleteCdp(suite.ctx, cdps[0])
 	suite.keeper.RemoveCdpOwnerIndex(suite.ctx, cdps[0])
@@ -316,21 +323,22 @@ func (suite *CdpTestSuite) TestCalculateCollateralizationRatio() {
 
 func (suite *CdpTestSuite) TestMintBurnDebtCoins() {
 	cd := cdps()[1]
-	err := suite.keeper.MintDebtCoins(suite.ctx, cdptypes.ModuleName, suite.keeper.GetDebtDenom(suite.ctx), cd.Principal)
+	denomMap := suite.keeper.GetDebtDenomMap(suite.ctx)
+	err := suite.keeper.MintDebtCoins(suite.ctx, cdptypes.ModuleName, denomMap[cd.Principal.Denom], cd.Principal)
 	suite.NoError(err)
 	suite.Require().Panics(func() {
-		_ = suite.keeper.MintDebtCoins(suite.ctx, "notamodule", suite.keeper.GetDebtDenom(suite.ctx), cd.Principal)
+		_ = suite.keeper.MintDebtCoins(suite.ctx, "notamodule", denomMap[cd.Principal.Denom], cd.Principal)
 	})
 
 	ak := suite.app.GetAccountKeeper()
 	sk := suite.app.GetBankKeeper()
 	acc := ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
-	suite.Equal(cs(c("debt", 10000000)), sk.GetAllBalances(suite.ctx, acc.GetAddress()))
+	suite.Equal(cs(c("debtjpu", 10000000)), sk.GetAllBalances(suite.ctx, acc.GetAddress()))
 
-	err = suite.keeper.BurnDebtCoins(suite.ctx, cdptypes.ModuleName, suite.keeper.GetDebtDenom(suite.ctx), cd.Principal)
+	err = suite.keeper.BurnDebtCoins(suite.ctx, cdptypes.ModuleName, denomMap[cd.Principal.Denom], cd.Principal)
 	suite.NoError(err)
 	suite.Require().Panics(func() {
-		_ = suite.keeper.BurnDebtCoins(suite.ctx, "notamodule", suite.keeper.GetDebtDenom(suite.ctx), cd.Principal)
+		_ = suite.keeper.BurnDebtCoins(suite.ctx, "notamodule", denomMap[cd.Principal.Denom], cd.Principal)
 	})
 	acc = ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
 	suite.Equal(sdk.Coins{}, sk.GetAllBalances(suite.ctx, acc.GetAddress()))

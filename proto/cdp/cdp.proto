@@ -74,35 +74,10 @@ message Params {
     (gogoproto.moretags) = "yaml:\"collateral_params\"",
     (gogoproto.nullable) = false
   ];
-  DebtParam debt_param = 2 [
+  repeated DebtParam debt_params = 2 [
     (gogoproto.moretags) = "yaml:\"debt_param\"",
     (gogoproto.nullable) = false
   ];
-  cosmos.base.v1beta1.Coin global_debt_limit = 3 [
-    (gogoproto.moretags) = "yaml:\"global_debt_limit\"",
-    (gogoproto.nullable) = false
-  ];
-  string surplus_auction_threshold = 4 [
-    (gogoproto.moretags) = "yaml:\"surplus_auction_threshold\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string surplus_auction_lot = 5 [
-    (gogoproto.moretags) = "yaml:\"surplus_auction_lot\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string debt_auction_threshold = 6 [
-    (gogoproto.moretags) = "yaml:\"debt_auction_threshold\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  string debt_auction_lot = 7 [
-    (gogoproto.moretags) = "yaml:\"debt_auction_lot\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  bool circuit_breaker = 8 [(gogoproto.moretags) = "yaml:\"circuit_breaker\""];
 }
 
 message CollateralParam {
@@ -165,4 +140,30 @@ message DebtParam {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
+  cosmos.base.v1beta1.Coin global_debt_limit = 5 [
+    (gogoproto.moretags) = "yaml:\"global_debt_limit\"",
+    (gogoproto.nullable) = false
+  ];
+  string debt_denom = 6 [(gogoproto.moretags) = "yaml:\"debt_denom\""];
+  string surplus_auction_threshold = 7 [
+    (gogoproto.moretags) = "yaml:\"surplus_auction_threshold\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string surplus_auction_lot = 8 [
+    (gogoproto.moretags) = "yaml:\"surplus_auction_lot\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string debt_auction_threshold = 9 [
+    (gogoproto.moretags) = "yaml:\"debt_auction_threshold\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string debt_auction_lot = 10 [
+    (gogoproto.moretags) = "yaml:\"debt_auction_lot\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  bool circuit_breaker = 11 [(gogoproto.moretags) = "yaml:\"circuit_breaker\""];
 }
