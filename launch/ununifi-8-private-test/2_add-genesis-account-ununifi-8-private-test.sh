@@ -11,8 +11,8 @@ docker run -it -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid:test ununif
 docker run -it -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid:test ununifid add-genesis-account cauchye-b-pricefeed-private-test-temp 5000000000uguu
 docker run -it -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid:test ununifid add-genesis-account cauchye-c-pricefeed-private-test-temp 5000000000uguu
 docker run -it -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid:test ununifid add-genesis-account cauchye-d-pricefeed-private-test-temp 5000000000uguu
-docker run -it -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid:test ununifid add-genesis-account cauchye-a-faucet-private-test-temp 500000000000uguu,5000000000ubtc
-docker run -it -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid:test ununifid add-genesis-account cauchye-b-faucet-private-test-temp 500000000000uguu,5000000000ubtc
+docker run -it -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid:test ununifid add-genesis-account cauchye-a-faucet-private-test-temp 500000000000uguu,5000000000ubtc,50000000000ueth
+docker run -it -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid:test ununifid add-genesis-account cauchye-b-faucet-private-test-temp 500000000000uguu,5000000000ubtc,50000000000ueth
 
 sudo chown -c -R $USER:docker ~/.ununifi
 
