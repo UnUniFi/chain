@@ -31,7 +31,7 @@ docker run -i -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid:test ununifi
 docker run -i -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid:test ununifid keys add cauchye-b-pricefeed-private-test-temp --recover < cauchye-b-pricefeed-private-test-temp.txt
 docker run -i -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid:test ununifid keys add cauchye-c-pricefeed-private-test-temp --recover < cauchye-c-pricefeed-private-test-temp.txt
 docker run -i -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid:test ununifid keys add cauchye-d-pricefeed-private-test-temp --recover < cauchye-d-pricefeed-private-test-temp.txt
-docker run -i -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid:test ununifid keys add cauchye-a-faucet-private-test-temp --recover < cauchye-a-faucet-private-test-temp.txt
+docker run -i -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid:test ununifid keys add faucet --recover < cauchye-a-faucet-private-test-temp.txt
 docker run -i -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid:test ununifid keys add cauchye-b-faucet-private-test-temp --recover < cauchye-b-faucet-private-test-temp.txt
 docker run -i -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid:test ununifid keys add cauchye-c-faucet-private-test-temp --recover < cauchye-c-faucet-private-test-temp.txt
 docker run -i -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid:test ununifid keys add cauchye-d-faucet-private-test-temp --recover < cauchye-d-faucet-private-test-temp.txt
