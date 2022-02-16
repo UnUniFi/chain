@@ -143,7 +143,7 @@
             "debt_floor": "1",
             "global_debt_limit": {
               "denom": "jpu",
-              "amount": "0"
+              "amount": "40000000000000"
             },
             "debt_denom": "debtjpu",
             "surplus_auction_threshold": "500000000000",
@@ -159,7 +159,7 @@
             "debt_floor": "1",
             "global_debt_limit": {
               "denom": "euu",
-              "amount": "0"
+              "amount": "40000000000000"
             },
             "debt_denom": "debteuu",
             "surplus_auction_threshold": "500000000000",
