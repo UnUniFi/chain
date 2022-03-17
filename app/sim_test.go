@@ -1,4 +1,4 @@
-package app_test
+package app
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 	"os"
 	"testing"
 
-	ununifiapp "github.com/UnUniFi/chain/app"
+	"github.com/CosmWasm/wasmd/x/wasm"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/simapp"
 	"github.com/cosmos/cosmos-sdk/simapp/helpers"
@@ -45,7 +45,20 @@ func TestFullAppSimulation(t *testing.T) {
 		require.NoError(t, os.RemoveAll(dir))
 	}()
 
-	app := ununifiapp.NewApp(logger, db, nil, true, map[int64]bool{}, ununifiapp.DefaultNodeHome, simapp.FlagPeriodValue, ununifiapp.MakeEncodingConfig(), simapp.EmptyAppOptions{}, interBlockCacheOpt())
+	app := NewApp(
+		logger,
+		db,
+		nil,
+		true,
+		map[int64]bool{},
+		DefaultNodeHome,
+		simapp.FlagPeriodValue,
+		MakeEncodingConfig(),
+		wasm.EnableAllProposals,
+		simapp.EmptyAppOptions{},
+		emptyWasmOpts,
+		interBlockCacheOpt(),
+	)
 	require.Equal(t, "ununifi", app.Name())
 
 	_, simParams, simErr := simulation.SimulateFromSeed(
@@ -98,7 +111,20 @@ func TestAppStateDeterminism(t *testing.T) {
 			}
 
 			db := dbm.NewMemDB()
-			app := ununifiapp.NewApp(logger, db, nil, true, map[int64]bool{}, ununifiapp.DefaultNodeHome, simapp.FlagPeriodValue, ununifiapp.MakeEncodingConfig(), simapp.EmptyAppOptions{}, interBlockCacheOpt())
+			app := NewApp(
+				logger,
+				db,
+				nil,
+				true,
+				map[int64]bool{},
+				DefaultNodeHome,
+				simapp.FlagPeriodValue,
+				MakeEncodingConfig(),
+				wasm.EnableAllProposals,
+				simapp.EmptyAppOptions{},
+				emptyWasmOpts,
+				interBlockCacheOpt(),
+			)
 
 			fmt.Printf(
 				"running non-determinism simulation; seed %d: %d/%d, attempt: %d/%d\n",
