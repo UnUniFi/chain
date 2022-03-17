@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/kv"
 )
 
-func NewDecodeStore(cdc codec.Marshaler) func(kvA, kvB kv.Pair) string {
+func NewDecodeStore(cdc codec.Codec) func(kvA, kvB kv.Pair) string {
 	return func(kvA, kvB kv.Pair) string {
 		switch {
 		case bytes.Equal([]byte(kvA.Key[:1]), []byte(types.PreviousBlockTimeKey)):
