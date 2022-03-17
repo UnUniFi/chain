@@ -19,7 +19,7 @@ func (k Keeper) Params(c context.Context, req *types.QueryParamsRequest) (*types
 	ctx := sdk.UnwrapSDKContext(c)
 
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ParamsKey))
-	k.cdc.MustUnmarshalBinaryBare(store.Get(types.KeyPrefix(types.ParamsKey)), &params)
+	k.cdc.MustUnmarshal(store.Get(types.KeyPrefix(types.ParamsKey)), &params)
 
 	return &types.QueryParamsResponse{Params: &params}, nil
 }

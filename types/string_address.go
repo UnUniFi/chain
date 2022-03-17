@@ -82,3 +82,15 @@ func (aa *StringAccAddress) Size() int {
 	bz, _ := aa.Marshal()
 	return len(bz)
 }
+
+func (aa *StringAccAddress) VerifyAddressFormat() error {
+	return sdk.VerifyAddressFormat(aa.AccAddress())
+}
+
+func (aa *StringAccAddress) Len() int {
+	address := aa.AccAddress()
+	if !address.Empty() {
+		return len(address.Bytes())
+	}
+	return 0
+}

@@ -67,7 +67,8 @@ func (k Keeper) AddCdp(ctx sdk.Context, owner sdk.AccAddress, collateral sdk.Coi
 	}
 
 	// mint the corresponding amount of debt coins
-	err = k.MintDebtCoins(ctx, types.ModuleName, k.GetDebtDenom(ctx), principal)
+	debtDenomMap := k.GetDebtDenomMap(ctx)
+	err = k.MintDebtCoins(ctx, types.ModuleName, debtDenomMap[principal.Denom], principal)
 	if err != nil {
 		panic(err)
 	}
@@ -230,7 +231,7 @@ func (k Keeper) GetCdp(ctx sdk.Context, collateralType string, cdpID uint64) (ty
 		return types.Cdp{}, false
 	}
 	var cdp types.Cdp
-	k.cdc.MustUnmarshalBinaryLengthPrefixed(bz, &cdp)
+	k.cdc.MustUnmarshalLengthPrefixed(bz, &cdp)
 	return cdp, true
 }
 
@@ -241,7 +242,7 @@ func (k Keeper) SetCdp(ctx sdk.Context, cdp types.Cdp) error {
 	if !found {
 		return sdkerrors.Wrapf(types.ErrDenomPrefixNotFound, "%s", cdp.Collateral.Denom)
 	}
-	bz := k.cdc.MustMarshalBinaryLengthPrefixed(&cdp)
+	bz := k.cdc.MustMarshalLengthPrefixed(&cdp)
 	store.Set(types.CdpKeySuffix(denomByte, cdp.Id), bz)
 	return nil
 }
@@ -360,10 +361,10 @@ func (k Keeper) RemoveCdpCollateralRatioIndex(ctx sdk.Context, collateralType st
 }
 
 // GetDebtDenom returns the denom of debt in the system
-func (k Keeper) GetDebtDenom(ctx sdk.Context) string {
+func (k Keeper) GetDebtDenomMap(ctx sdk.Context) types.DebtDenomMap {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.KeyPrefix(types.DebtDenom))
-	return string(bz)
+	return types.NewDebtDenomMapFromByte(bz)
 }
 
 // GetGovDenom returns the denom of the governance token
@@ -373,13 +374,10 @@ func (k Keeper) GetGovDenom(ctx sdk.Context) string {
 	return string(bz)
 }
 
-// SetDebtDenom set the denom of debt in the system
-func (k Keeper) SetDebtDenom(ctx sdk.Context, denom string) {
-	if denom == "" {
-		panic("debt denom not set in genesis")
-	}
+// SetDebtDenoms set the denom of debt in the system
+func (k Keeper) SetDebtDenomMap(ctx sdk.Context, debt_denom_map types.DebtDenomMap) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.KeyPrefix(types.DebtDenom), []byte(denom))
+	store.Set(types.KeyPrefix(types.DebtDenom), debt_denom_map.Byte())
 }
 
 // SetGovDenom set the denom of the governance token in the system
@@ -446,9 +444,12 @@ func (k Keeper) ValidateDebtLimit(ctx sdk.Context, collateralType string, princi
 	if totalPrincipal.GT(collateralLimit) {
 		return sdkerrors.Wrapf(types.ErrExceedsDebtLimit, "debt increase %s > collateral debt limit %s", sdk.NewCoins(sdk.NewCoin(principal.Denom, totalPrincipal)), sdk.NewCoins(sdk.NewCoin(principal.Denom, collateralLimit)))
 	}
-	globalLimit := k.GetParams(ctx).GlobalDebtLimit.Amount
-	if totalPrincipal.GT(globalLimit) {
-		return sdkerrors.Wrapf(types.ErrExceedsDebtLimit, "debt increase %s > global debt limit  %s", sdk.NewCoin(principal.Denom, totalPrincipal), sdk.NewCoin(principal.Denom, globalLimit))
+	dp, exists := k.GetDebtParams(ctx).FindGlobalDebtLimitDenom(principal.Denom)
+	if !exists {
+		return sdkerrors.Wrapf(types.ErrDebtNotSupported, "not found  debt params global deb limit %s", principal.Denom)
+	}
+	if totalPrincipal.GT(dp.GlobalDebtLimit.Amount) {
+		return sdkerrors.Wrapf(types.ErrExceedsDebtLimit, "debt increase %s > global debt limit  %s", sdk.NewCoin(principal.Denom, totalPrincipal), sdk.NewCoin(principal.Denom, dp.GlobalDebtLimit.Amount))
 	}
 	return nil
 }

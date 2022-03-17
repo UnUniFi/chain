@@ -18,14 +18,14 @@ import (
 
 type (
 	Keeper struct {
-		cdc        codec.Marshaler
+		cdc        codec.Codec
 		storeKey   sdk.StoreKey
 		memKey     sdk.StoreKey
 		paramSpace paramtypes.Subspace
 	}
 )
 
-func NewKeeper(cdc codec.Marshaler, storeKey, memKey sdk.StoreKey, paramSpace paramtypes.Subspace) Keeper {
+func NewKeeper(cdc codec.Codec, storeKey, memKey sdk.StoreKey, paramSpace paramtypes.Subspace) Keeper {
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
@@ -149,7 +149,7 @@ func (k Keeper) SetCurrentPrices(ctx sdk.Context, marketID string) error {
 
 func (k Keeper) setCurrentPrice(ctx sdk.Context, marketID string, currentPrice types.CurrentPrice) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.CurrentPriceKeySuffix(marketID), k.cdc.MustMarshalBinaryBare(&currentPrice))
+	store.Set(types.CurrentPriceKeySuffix(marketID), k.cdc.MustMarshal(&currentPrice))
 }
 
 // CalculateMedianPrice calculates the median prices for the input prices.
@@ -189,7 +189,7 @@ func (k Keeper) GetCurrentPrice(ctx sdk.Context, marketID string) (types.Current
 		return types.CurrentPrice{}, types.ErrNoValidPrice
 	}
 	var price types.CurrentPrice
-	err := k.cdc.UnmarshalBinaryBare(bz, &price)
+	err := k.cdc.Unmarshal(bz, &price)
 	if err != nil {
 		return types.CurrentPrice{}, err
 	}
@@ -206,7 +206,7 @@ func (k Keeper) IterateCurrentPrices(ctx sdk.Context, cb func(cp types.CurrentPr
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		var cp types.CurrentPrice
-		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &cp)
+		k.cdc.MustUnmarshal(iterator.Value(), &cp)
 		if cb(cp) {
 			break
 		}

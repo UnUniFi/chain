@@ -26,7 +26,7 @@ func (k Keeper) CdpAll(c context.Context, req *types.QueryAllCdpRequest) (*types
 
 	pageRes, err := query.Paginate(cdpStore, req.Pagination, func(key []byte, value []byte) error {
 		var cdp types.Cdp
-		if err := k.cdc.UnmarshalBinaryLengthPrefixed(value, &cdp); err != nil {
+		if err := k.cdc.UnmarshalLengthPrefixed(value, &cdp); err != nil {
 			return err
 		}
 		augmentedCdp := k.LoadAugmentedCdp(ctx, cdp)

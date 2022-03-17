@@ -158,7 +158,7 @@ func (suite *ModuleTestSuite) TestBeginBlock() {
 	suite.Equal(10, btcLiquidations)
 
 	acc = ak.GetModuleAccount(suite.ctx, auctiontypes.ModuleName)
-	suite.Equal(int64(71955653865), bk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("debt").Int64())
+	suite.Equal(int64(71955653865), bk.GetAllBalances(suite.ctx, acc.GetAddress()).AmountOf("debtjpu").Int64())
 
 }
 
@@ -169,14 +169,14 @@ func (suite *ModuleTestSuite) TestSeizeSingleCdpWithFees() {
 	ak := suite.app.GetAccountKeeper()
 	bk := suite.app.GetBankKeeper()
 	cdpMacc := ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
-	suite.Equal(i(1000000000), bk.GetAllBalances(suite.ctx, cdpMacc.GetAddress()).AmountOf("debt"))
+	suite.Equal(i(1000000000), bk.GetAllBalances(suite.ctx, cdpMacc.GetAddress()).AmountOf("debtjpu"))
 	for i := 0; i < 100; i++ {
 		suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(time.Second * 6))
 		cdp.BeginBlocker(suite.ctx, tmabcitypes.RequestBeginBlock{Header: suite.ctx.BlockHeader()}, suite.keeper)
 	}
 
 	cdpMacc = ak.GetModuleAccount(suite.ctx, cdptypes.ModuleName)
-	suite.Equal(i(1000000891), bk.GetAllBalances(suite.ctx, cdpMacc.GetAddress()).AmountOf("debt"))
+	suite.Equal(i(1000000891), bk.GetAllBalances(suite.ctx, cdpMacc.GetAddress()).AmountOf("debtjpu"))
 	cdp, _ := suite.keeper.GetCdp(suite.ctx, "xrp-a", 1)
 
 	err = suite.keeper.SeizeCollateral(suite.ctx, cdp)

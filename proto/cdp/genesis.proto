@@ -24,13 +24,12 @@ message GenesisState {
     (gogoproto.nullable) = false
   ];
   uint64 starting_cdp_id = 4 [(gogoproto.moretags) = "yaml:\"starting_cdp_id\""];
-  string debt_denom = 5 [(gogoproto.moretags) = "yaml:\"debt_denom\""];
-  string gov_denom = 6 [(gogoproto.moretags) = "yaml:\"gov_denom\""];
-  repeated GenesisAccumulationTime previous_accumulation_times = 7 [
+  string gov_denom = 5 [(gogoproto.moretags) = "yaml:\"gov_denom\""];
+  repeated GenesisAccumulationTime previous_accumulation_times = 6 [
     (gogoproto.moretags) = "yaml:\"previous_accumulation_times\"",
     (gogoproto.nullable) = false
   ];
-  repeated GenesisTotalPrincipal total_principals = 8 [
+  repeated GenesisTotalPrincipal total_principals = 7 [
     (gogoproto.moretags) = "yaml:\"total_principals\"",
     (gogoproto.nullable) = false
   ];

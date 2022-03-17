@@ -12,6 +12,7 @@ import (
 	"github.com/UnUniFi/chain/app"
 	"github.com/UnUniFi/chain/x/cdp/keeper"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	"github.com/cosmos/cosmos-sdk/simapp"
 )
 
 // saving the result to a module level variable ensures the compiler doesn't optimize the test away
@@ -52,7 +53,7 @@ func BenchmarkAccountIteration(b *testing.B) {
 				addr := sdk.AccAddress(arr)
 				acc := ak.NewAccountWithAddress(ctx, addr)
 				if bm.coins {
-					sk.AddCoins(ctx, acc.GetAddress(), coins)
+					simapp.FundAccount(tApp.BankKeeper, ctx, acc.GetAddress(), coins)
 				}
 				ak.SetAccount(ctx, acc)
 			}

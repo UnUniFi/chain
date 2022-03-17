@@ -122,7 +122,7 @@ func (k Keeper) GetDeposit(ctx sdk.Context, cdpID uint64, depositor sdk.AccAddre
 	if bz == nil {
 		return deposit, false
 	}
-	k.cdc.MustUnmarshalBinaryLengthPrefixed(bz, &deposit)
+	k.cdc.MustUnmarshalLengthPrefixed(bz, &deposit)
 	return deposit, true
 
 }
@@ -130,7 +130,7 @@ func (k Keeper) GetDeposit(ctx sdk.Context, cdpID uint64, depositor sdk.AccAddre
 // SetDeposit sets the deposit in the store
 func (k Keeper) SetDeposit(ctx sdk.Context, deposit types.Deposit) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DepositKey))
-	bz := k.cdc.MustMarshalBinaryLengthPrefixed(&deposit)
+	bz := k.cdc.MustMarshalLengthPrefixed(&deposit)
 	store.Set(types.DepositKeySuffix(deposit.CdpId, deposit.Depositor.AccAddress()), bz)
 
 }
@@ -149,7 +149,7 @@ func (k Keeper) IterateDeposits(ctx sdk.Context, cdpID uint64, cb func(deposit t
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		var deposit types.Deposit
-		k.cdc.MustUnmarshalBinaryLengthPrefixed(iterator.Value(), &deposit)
+		k.cdc.MustUnmarshalLengthPrefixed(iterator.Value(), &deposit)
 
 		if cb(deposit) {
 			break

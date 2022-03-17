@@ -79,7 +79,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, ak types.AccountKeeper, pk ty
 	}
 
 	k.SetNextCdpID(ctx, gs.StartingCdpId)
-	k.SetDebtDenom(ctx, gs.DebtDenom)
+	k.SetDebtDenomMap(ctx, types.NewDebtDenomMap(types.DefaultDebtParams))
 	k.SetGovDenom(ctx, gs.GovDenom)
 
 	for _, d := range gs.Deposits {
@@ -104,7 +104,6 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 	})
 
 	cdpID := k.GetNextCdpID(ctx)
-	debtDenom := k.GetDebtDenom(ctx)
 	govDenom := k.GetGovDenom(ctx)
 
 	var previousAccumTimes types.GenesisAccumulationTimes
@@ -130,5 +129,5 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 		totalPrincipals = append(totalPrincipals, genTotalPrincipal)
 	}
 
-	return types.NewGenesisState(params, cdps, deposits, cdpID, debtDenom, govDenom, previousAccumTimes, totalPrincipals)
+	return types.NewGenesisState(params, cdps, deposits, cdpID, govDenom, previousAccumTimes, totalPrincipals)
 }

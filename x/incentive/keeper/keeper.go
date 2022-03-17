@@ -15,7 +15,7 @@ import (
 
 type (
 	Keeper struct {
-		cdc           codec.Marshaler
+		cdc           codec.Codec
 		storeKey      sdk.StoreKey
 		memKey        sdk.StoreKey
 		paramSpace    paramtypes.Subspace
@@ -25,7 +25,7 @@ type (
 	}
 )
 
-func NewKeeper(cdc codec.Marshaler, storeKey, memKey sdk.StoreKey,
+func NewKeeper(cdc codec.Codec, storeKey, memKey sdk.StoreKey,
 	paramSpace paramtypes.Subspace, accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	cdpKeeper types.CdpKeeper) Keeper {
@@ -56,14 +56,14 @@ func (k Keeper) GetCdpMintingClaim(ctx sdk.Context, addr sdk.AccAddress) (types.
 		return types.CdpMintingClaim{}, false
 	}
 	var c types.CdpMintingClaim
-	k.cdc.MustUnmarshalBinaryBare(bz, &c)
+	k.cdc.MustUnmarshal(bz, &c)
 	return c, true
 }
 
 // SetCdpMintingClaim sets the claim in the store corresponding to the input address, collateral type, and id
 func (k Keeper) SetCdpMintingClaim(ctx sdk.Context, c types.CdpMintingClaim) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CdpMintingClaimKey))
-	bz := k.cdc.MustMarshalBinaryBare(&c)
+	bz := k.cdc.MustMarshal(&c)
 	store.Set(c.Owner, bz)
 
 }
@@ -81,7 +81,7 @@ func (k Keeper) IterateCdpMintingClaims(ctx sdk.Context, cb func(c types.CdpMint
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		var c types.CdpMintingClaim
-		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &c)
+		k.cdc.MustUnmarshal(iterator.Value(), &c)
 		if cb(c) {
 			break
 		}

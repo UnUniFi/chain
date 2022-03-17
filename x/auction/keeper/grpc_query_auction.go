@@ -25,7 +25,7 @@ func (k Keeper) AuctionAll(c context.Context, req *types.QueryAllAuctionRequest)
 
 	pageRes, err := query.Paginate(auctionStore, req.Pagination, func(key []byte, value []byte) error {
 		var auction codectypes.Any
-		if err := k.cdc.UnmarshalBinaryBare(value, &auction); err != nil {
+		if err := k.cdc.Unmarshal(value, &auction); err != nil {
 			return err
 		}
 
