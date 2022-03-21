@@ -13,7 +13,7 @@ import (
 func NewDecodeStore(cdc codec.Codec) func(kvA, kvB kv.Pair) string {
 	return func(kvA, kvB kv.Pair) string {
 		switch {
-		case bytes.Equal([]byte(kvA.Key[:1]), []byte(types.PreviousBlockTimeKey)):
+		case bytes.Equal([]byte(kvA.Key), []byte(types.PreviousBlockTimeKey)):
 			var timeA, timeB time.Time
 			timeA.UnmarshalBinary(kvA.Value)
 			timeB.UnmarshalBinary(kvB.Value)
