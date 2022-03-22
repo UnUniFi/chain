@@ -34,6 +34,28 @@ services:
     #   - 7004:7004
     network_mode: host
     restart: always
+  faucet-ueth:
+    container_name: faucet-ueth
+    image: ghcr.io/tendermint/faucet
+    volumes:
+      - ~/faucet/ununifid:/usr/local/bin/ununifid
+      - ~/.ununifi:/root/.ununifi
+    command: faucet --cli-name ununifid --denoms ueth --keyring-backend test --account-name faucet --port 7006 --credit-amount=1000 --max-credit=999
+    # ports:
+    #   - 7006:7006
+    network_mode: host
+    restart: always
+  faucet-euu:
+    container_name: faucet-euu
+    image: ghcr.io/tendermint/faucet
+    volumes:
+      - ~/faucet/ununifid:/usr/local/bin/ununifid
+      - ~/.ununifi:/root/.ununifi
+    command: faucet --cli-name ununifid --denoms euu --keyring-backend test --account-name faucet --port 7008 --credit-amount=10 --max-credit=9
+    # ports:
+    #   - 7008:7008
+    network_mode: host
+    restart: always
   nginx:
     container_name: faucet-nginx
     image: nginx
@@ -43,5 +65,7 @@ services:
     #   - 8000:8000
     #   - 8002:8002
     #   - 8004:8004
+    #   - 8006:8006
+    #   - 8008:8008
     network_mode: host
     restart: always
