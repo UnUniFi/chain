@@ -70,6 +70,14 @@ func UnpackAuction(auctionAny *types.Any) (Auction, error) {
 	}
 }
 
+func MustUnpackAuction(auctionAny *types.Any) Auction {
+	auction, err := UnpackAuction(auctionAny)
+	if err != nil {
+		panic("this Any doesn't have Auction value")
+	}
+	return auction
+}
+
 // GetID is a getter for auction ID.
 func (a BaseAuction) GetID() uint64 { return a.Id }
 
