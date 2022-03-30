@@ -8,10 +8,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/cosmos/cosmos-sdk/x/auth"
 	authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 	"github.com/cosmos/cosmos-sdk/x/supply"
+
+	// "github.com/cosmos/cosmos-sdk/x/supply" -> auth
 
 	"github.com/UnUniFi/chain/x/auction/types"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
@@ -71,16 +73,16 @@ func RandomizedGenState(simState *module.SimulationState) {
 	)
 
 	// Add auctions
-	auctions := types.GenesisAuctions{
-		types.NewDebtAuction(
-			cdptypes.LiquidatorMacc, // using cdp account rather than generic test one to avoid having to set permissions on the supply keeper
-			sdk.NewInt64Coin("usdx", 100),
-			sdk.NewInt64Coin("uguu", 1000000000000),
-			simState.GenTimestamp.Add(time.Hour*5),
-			sdk.NewInt64Coin("debt", 100), // same as usdx
-		),
-	}
-	var startingID = auctionGenesis.NextAuctionID
+	debtAuction := types.NewDebtAuction(
+		cdptypes.LiquidatorMacc, // using cdp account rather than generic test one to avoid having to set permissions on the supply keeper
+		sdk.NewInt64Coin("usdx", 100),
+		sdk.NewInt64Coin("uguu", 1000000000000),
+		simState.GenTimestamp.Add(time.Hour*5),
+		sdk.NewInt64Coin("debt", 100), // same as usdx
+	)
+	auctions := types.GenesisAuctions{&debtAuction}
+
+	var startingID = auctionGenesis.NextAuctionId
 	var ok bool
 	var totalAuctionCoins sdk.Coins
 	for i, a := range auctions {
@@ -90,16 +92,17 @@ func RandomizedGenState(simState *module.SimulationState) {
 		}
 		totalAuctionCoins = totalAuctionCoins.Add(a.GetModuleAccountCoins()...)
 	}
-	auctionGenesis.NextAuctionID = startingID + uint64(len(auctions))
-	auctionGenesis.Auctions = append(auctionGenesis.Auctions, auctions...)
+	auctionGenesis.NextAuctionId = startingID + uint64(len(auctions))
+	packAuction, _ := types.PackGenesisAuctions(auctions)
+	auctionGenesis.Auctions = append(auctionGenesis.Auctions, packAuction...)
 
 	// Also need to update the auction module account (to reflect the coins held in the auctions)
-	var authGenesis auth.GenesisState
-	simState.Cdc.MustUnmarshalJSON(simState.GenState[auth.ModuleName], &authGenesis)
+	var authGenesis authtypes.GenesisState
+	simState.Cdc.MustUnmarshalJSON(simState.GenState[authtypes.ModuleName], &authGenesis)
 
-	auctionModAcc, found := getAccount(authGenesis.Accounts, supply.NewModuleAddress(types.ModuleName))
+	auctionModAcc, found := getAccount(authGenesis.Accounts, authtypes.NewModuleAddress(types.ModuleName))
 	if !found {
-		auctionModAcc = supply.NewEmptyModuleAccount(types.ModuleName)
+		auctionModAcc = authtypes.NewEmptyModuleAccount(types.ModuleName)
 	}
 	if err := auctionModAcc.SetCoins(totalAuctionCoins); err != nil {
 		panic(err)
@@ -117,7 +120,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 	}
 	authGenesis.Accounts = replaceOrAppendAccount(authGenesis.Accounts, bidder)
 
-	simState.GenState[auth.ModuleName] = simState.Cdc.MustMarshalJSON(authGenesis)
+	simState.GenState[authtypes.ModuleName] = simState.Cdc.MustMarshalJSON(&authGenesis)
 
 	// Update the supply genesis state to reflect the new coins
 	// TODO find some way for this to happen automatically / move it elsewhere
@@ -132,7 +135,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 
 	// Note: this line prints out the auction genesis state, not just the auction parameters. Some sdk modules print out just the parameters.
 	fmt.Printf("Selected randomly generated %s parameters:\n%s\n", types.ModuleName, codec.MustMarshalJSONIndent(simState.Cdc, auctionGenesis))
-	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(auctionGenesis)
+	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&auctionGenesis)
 }
 
 // Return an account from a list of accounts that matches an address.
