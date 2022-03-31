@@ -10,6 +10,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	banksim "github.com/cosmos/cosmos-sdk/x/bank/simulation"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 
@@ -128,6 +130,31 @@ func RandomizedGenState(simState *module.SimulationState) {
 	simState.Cdc.MustUnmarshalJSON(simState.GenState[supply.ModuleName], &supplyGenesis)
 	supplyGenesis.Supply = supplyGenesis.Supply.Add(totalAuctionCoins...).Add(bidderCoins...)
 	simState.GenState[supply.ModuleName] = simState.Cdc.MustMarshalJSON(supplyGenesis)
+
+	var sendEnabledParams banktypes.SendEnabledParams
+	simState.AppParams.GetOrGenerate(
+		simState.Cdc, string(banktypes.KeySendEnabled), &sendEnabledParams, simState.Rand,
+		func(r *rand.Rand) { sendEnabledParams = banksim.RandomGenesisSendParams(r) },
+	)
+
+	var defaultSendEnabledParam bool
+	simState.AppParams.GetOrGenerate(
+		simState.Cdc, string(banktypes.KeyDefaultSendEnabled), &defaultSendEnabledParam, simState.Rand,
+		func(r *rand.Rand) { defaultSendEnabledParam = banksim.RandomGenesisDefaultSendParam(r) },
+	)
+
+	numAccs := int64(len(simState.Accounts))
+	totalSupply := sdk.NewInt(simState.InitialStake * (numAccs + simState.NumBonded))
+	supply := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, totalSupply))
+
+	bankGenesis := banktypes.GenesisState{
+		Params: banktypes.Params{
+			SendEnabled:        sendEnabledParams,
+			DefaultSendEnabled: defaultSendEnabledParam,
+		},
+		Balances: banksim.RandomGenesisBalances(simState),
+		Supply:   supply,
+	}
 
 	// TODO liquidator mod account doesn't need to be initialized for this example
 	// - it just mints uguu, doesn't need a starting balance
