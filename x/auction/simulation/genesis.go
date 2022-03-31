@@ -13,9 +13,6 @@ import (
 	banksim "github.com/cosmos/cosmos-sdk/x/bank/simulation"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/cosmos/cosmos-sdk/x/supply"
-
-	// "github.com/cosmos/cosmos-sdk/x/supply" -> auth
 
 	"github.com/UnUniFi/chain/x/auction/types"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
@@ -124,12 +121,8 @@ func RandomizedGenState(simState *module.SimulationState) {
 
 	simState.GenState[authtypes.ModuleName] = simState.Cdc.MustMarshalJSON(&authGenesis)
 
-	// Update the supply genesis state to reflect the new coins
+	// Update the bank genesis state to reflect the new coins
 	// TODO find some way for this to happen automatically / move it elsewhere
-	var supplyGenesis supply.GenesisState
-	simState.Cdc.MustUnmarshalJSON(simState.GenState[supply.ModuleName], &supplyGenesis)
-	supplyGenesis.Supply = supplyGenesis.Supply.Add(totalAuctionCoins...).Add(bidderCoins...)
-	simState.GenState[supply.ModuleName] = simState.Cdc.MustMarshalJSON(supplyGenesis)
 
 	var sendEnabledParams banktypes.SendEnabledParams
 	simState.AppParams.GetOrGenerate(
@@ -143,9 +136,8 @@ func RandomizedGenState(simState *module.SimulationState) {
 		func(r *rand.Rand) { defaultSendEnabledParam = banksim.RandomGenesisDefaultSendParam(r) },
 	)
 
-	numAccs := int64(len(simState.Accounts))
-	totalSupply := sdk.NewInt(simState.InitialStake * (numAccs + simState.NumBonded))
-	supply := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, totalSupply))
+	supply := sdk.NewCoins(totalAuctionCoins...)
+	supply.Add(bidderCoins...)
 
 	bankGenesis := banktypes.GenesisState{
 		Params: banktypes.Params{
@@ -156,6 +148,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 		Supply:   supply,
 	}
 
+	simState.GenState[banktypes.ModuleName] = simState.Cdc.MustMarshalJSON(&bankGenesis)
 	// TODO liquidator mod account doesn't need to be initialized for this example
 	// - it just mints uguu, doesn't need a starting balance
 	// - and supply.GetModuleAccount creates one if it doesn't exist
