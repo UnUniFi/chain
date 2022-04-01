@@ -8,11 +8,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/cosmos/cosmos-sdk/types/simulation"
 	banksim "github.com/cosmos/cosmos-sdk/x/bank/simulation"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/x/simulation"
 
 	"github.com/UnUniFi/chain/x/auction/types"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
@@ -95,31 +93,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 	packAuction, _ := types.PackGenesisAuctions(auctions)
 	auctionGenesis.Auctions = append(auctionGenesis.Auctions, packAuction...)
 
-	// Also need to update the auction module account (to reflect the coins held in the auctions)
-	var authGenesis authtypes.GenesisState
-	simState.Cdc.MustUnmarshalJSON(simState.GenState[authtypes.ModuleName], &authGenesis)
-
-	auctionModAcc, found := getAccount(authGenesis.Accounts, authtypes.NewModuleAddress(types.ModuleName))
-	if !found {
-		auctionModAcc = authtypes.NewEmptyModuleAccount(types.ModuleName)
-	}
-	if err := auctionModAcc.SetCoins(totalAuctionCoins); err != nil {
-		panic(err)
-	}
-	authGenesis.Accounts = replaceOrAppendAccount(authGenesis.Accounts, auctionModAcc)
-
-	// TODO adding bidder coins as well - this should be moved elsewhere
-	bidder, found := getAccount(authGenesis.Accounts, simState.Accounts[0].Address) // 0 is the bidder // FIXME
-	if !found {
-		panic("bidder not found")
-	}
 	bidderCoins := sdk.NewCoins(sdk.NewInt64Coin("usdx", 10000000000))
-	if err := bidder.SetCoins(bidder.GetCoins().Add(bidderCoins...)); err != nil {
-		panic(err)
-	}
-	authGenesis.Accounts = replaceOrAppendAccount(authGenesis.Accounts, bidder)
-
-	simState.GenState[authtypes.ModuleName] = simState.Cdc.MustMarshalJSON(&authGenesis)
 
 	// Update the bank genesis state to reflect the new coins
 	// TODO find some way for this to happen automatically / move it elsewhere
@@ -156,28 +130,6 @@ func RandomizedGenState(simState *module.SimulationState) {
 	// Note: this line prints out the auction genesis state, not just the auction parameters. Some sdk modules print out just the parameters.
 	fmt.Printf("Selected randomly generated %s parameters:\n%s\n", types.ModuleName, codec.MustMarshalJSONIndent(simState.Cdc, auctionGenesis))
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&auctionGenesis)
-}
-
-// Return an account from a list of accounts that matches an address.
-func getAccount(accounts []authexported.GenesisAccount, addr sdk.AccAddress) (authexported.GenesisAccount, bool) {
-	for _, a := range accounts {
-		if a.GetAddress().Equals(addr) {
-			return a, true
-		}
-	}
-	return nil, false
-}
-
-// In a list of accounts, replace the first account found with the same address. If not found, append the account.
-func replaceOrAppendAccount(accounts []authexported.GenesisAccount, acc authexported.GenesisAccount) []authexported.GenesisAccount {
-	newAccounts := accounts
-	for i, a := range accounts {
-		if a.GetAddress().Equals(acc.GetAddress()) {
-			newAccounts[i] = acc
-			return newAccounts
-		}
-	}
-	return append(newAccounts, acc)
 }
 
 func RandomPositiveDuration(r *rand.Rand, inclusiveMin, exclusiveMax time.Duration) (time.Duration, error) {
