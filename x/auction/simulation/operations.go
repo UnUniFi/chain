@@ -7,17 +7,19 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/simapp/helpers"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
-	"github.com/cosmos/cosmos-sdk/x/simulation"
-
 	appparams "github.com/UnUniFi/chain/app/params"
 	"github.com/UnUniFi/chain/x/auction/keeper"
 	"github.com/UnUniFi/chain/x/auction/types"
+	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/simapp/helpers"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
+	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
+	"github.com/cosmos/cosmos-sdk/x/auth"
+	authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/cosmos/cosmos-sdk/x/simulation"
 )
 
 var (
@@ -32,11 +34,11 @@ const (
 
 // WeightedOperations returns all the operations from the module with their respective weights
 func WeightedOperations(
-	appParams simulation.AppParams, cdc *codec.Codec, ak auth.AccountKeeper, k keeper.Keeper,
+	appParams simtypes.AppParams, simState module.SimulationState, ak banktypes.AccountKeeper, k keeper.Keeper, ack types.AccountKeeper,
+	bk bankkeeper.Keeper,
 ) simulation.WeightedOperations {
 	var weightMsgPlaceBid int
-
-	appParams.GetOrGenerate(cdc, OpWeightMsgPlaceBid, &weightMsgPlaceBid, nil,
+	appParams.GetOrGenerate(simState.Cdc, OpWeightMsgPlaceBid, &weightMsgPlaceBid, nil,
 		func(_ *rand.Rand) {
 			weightMsgPlaceBid = appparams.DefaultWeightMsgPlaceBid
 		},
@@ -48,6 +50,18 @@ func WeightedOperations(
 			SimulateMsgPlaceBid(ak, k),
 		),
 	}
+}
+
+func onceInit(ctx sdk.Context, bk bankkeeper.Keeper, bidderAddr sdk.AccAddress) {
+	// todo get upper
+	// simState.Accounts[0].Address
+	iniCoins := []sdk.Coin{
+		sdk.NewInt64Coin("usdx", 100),
+		sdk.NewInt64Coin("uguu", 1000000000000),
+		sdk.NewInt64Coin("debt", 100),
+	}
+	bk.MintCoins(ctx, types.ModuleName, sdk.Coins(iniCoins))
+	bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidderAddr, sdk.NewCoins(sdk.NewInt64Coin("usdx", 100)))
 }
 
 // SimulateMsgPlaceBid returns a function that runs a random state change on the module keeper.
