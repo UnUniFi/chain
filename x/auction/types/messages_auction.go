@@ -8,6 +8,11 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
+// auction message types
+const (
+	TypeMsgPlaceBid = "place_bid"
+)
+
 var _ sdk.Msg = &MsgPlaceBid{}
 
 // NewMsgPlaceBid returns a new MsgPlaceBid.
@@ -23,7 +28,7 @@ func NewMsgPlaceBid(auctionID uint64, bidder sdk.AccAddress, amt sdk.Coin) MsgPl
 func (msg MsgPlaceBid) Route() string { return RouterKey }
 
 // Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgPlaceBid) Type() string { return "place_bid" }
+func (msg MsgPlaceBid) Type() string { return TypeMsgPlaceBid }
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
 func (msg MsgPlaceBid) ValidateBasic() error {
