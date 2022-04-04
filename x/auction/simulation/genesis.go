@@ -1,11 +1,11 @@
 package simulation
 
 import (
+	"encoding/json"
 	"fmt"
 	"math/rand"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/types/simulation"
@@ -128,7 +128,11 @@ func RandomizedGenState(simState *module.SimulationState) {
 	// - and supply.GetModuleAccount creates one if it doesn't exist
 
 	// Note: this line prints out the auction genesis state, not just the auction parameters. Some sdk modules print out just the parameters.
-	fmt.Printf("Selected randomly generated %s parameters:\n%s\n", types.ModuleName, codec.MustMarshalJSONIndent(simState.Cdc, auctionGenesis))
+	bz, err := json.MarshalIndent(&auctionGenesis, "", " ")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Selected randomly generated %s parameters:\n%s\n", types.ModuleName, bz)
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&auctionGenesis)
 }
 

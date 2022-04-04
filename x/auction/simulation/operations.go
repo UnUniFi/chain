@@ -87,7 +87,7 @@ func SimulateMsgPlaceBid(ak authkeeper.AccountKeeper, bk bankkeeper.Keeper, keep
 		// search through auctions and accounts to find a pair where a bid can be placed (ie account has enough coins to place bid on auction)
 		blockTime := ctx.BlockHeader().Time
 		params := keeper.GetParams(ctx)
-		bidder, openAuction, found := findValidAccountAuctionPair(accs, openAuctions, func(acc simulation.Account, auc types.Auction) bool {
+		bidder, openAuction, found := findValidAccountAuctionPair(accs, openAuctions, func(acc simtypes.Account, auc types.Auction) bool {
 			account := ak.GetAccount(ctx, acc.Address)
 			accuontAmount := bk.SpendableCoins(ctx, account.GetAddress())
 			_, err := generateBidAmount(r, params, auc, accuontAmount, blockTime)
@@ -239,7 +239,7 @@ func generateBidAmount(
 }
 
 // findValidAccountAuctionPair finds an auction and account for which the callback func returns true
-func findValidAccountAuctionPair(accounts []simtypes.Account, auctions types.Auctions, cb func(simulation.Account, types.Auction) bool) (simulation.Account, types.Auction, bool) {
+func findValidAccountAuctionPair(accounts []simtypes.Account, auctions types.Auctions, cb func(simtypes.Account, types.Auction) bool) (simtypes.Account, types.Auction, bool) {
 	for _, auc := range auctions {
 		for _, acc := range accounts {
 			if isValid := cb(acc, auc); isValid {
