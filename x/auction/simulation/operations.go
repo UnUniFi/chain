@@ -12,13 +12,12 @@ import (
 	"github.com/UnUniFi/chain/x/auction/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/simapp/helpers"
+	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 )
 
@@ -34,7 +33,7 @@ const (
 
 // WeightedOperations returns all the operations from the module with their respective weights
 func WeightedOperations(
-	appParams simtypes.AppParams, simState module.SimulationState, ak banktypes.AccountKeeper, k keeper.Keeper, ack types.AccountKeeper,
+	appParams simtypes.AppParams, simState module.SimulationState, ak authkeeper.AccountKeeper, k keeper.Keeper, ack types.AccountKeeper,
 	bk bankkeeper.Keeper,
 ) simulation.WeightedOperations {
 	var weightMsgPlaceBid int
@@ -47,7 +46,7 @@ func WeightedOperations(
 	return simulation.WeightedOperations{
 		simulation.NewWeightedOperation(
 			weightMsgPlaceBid,
-			SimulateMsgPlaceBid(ak, k),
+			SimulateMsgPlaceBid(ak, bk, k),
 		),
 	}
 }
@@ -60,6 +59,7 @@ func onceInit(ctx sdk.Context, bk bankkeeper.Keeper, bidderAddr sdk.AccAddress) 
 		sdk.NewInt64Coin("uguu", 1000000000000),
 		sdk.NewInt64Coin("debt", 100),
 	}
+	// maybe change bank
 	bk.MintCoins(ctx, types.ModuleName, sdk.Coins(iniCoins))
 	bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidderAddr, sdk.NewCoins(sdk.NewInt64Coin("usdx", 100)))
 }
@@ -68,10 +68,10 @@ func onceInit(ctx sdk.Context, bk bankkeeper.Keeper, bidderAddr sdk.AccAddress) 
 // There's two error paths
 // - return a OpMessage, but nil error - this will log a message but keep running the simulation
 // - return an error - this will stop the simulation
-func SimulateMsgPlaceBid(ak auth.AccountKeeper, keeper keeper.Keeper) simulation.Operation {
+func SimulateMsgPlaceBid(ak authkeeper.AccountKeeper, bk bankkeeper.Keeper, keeper keeper.Keeper) simtypes.Operation {
 	return func(
-		r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simulation.Account, chainID string,
-	) (simulation.OperationMsg, []simulation.FutureOperation, error) {
+		r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
+	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		// get open auctions
 		openAuctions := types.Auctions{}
 		keeper.IterateAuctions(ctx, func(a types.Auction) bool {
@@ -89,7 +89,8 @@ func SimulateMsgPlaceBid(ak auth.AccountKeeper, keeper keeper.Keeper) simulation
 		params := keeper.GetParams(ctx)
 		bidder, openAuction, found := findValidAccountAuctionPair(accs, openAuctions, func(acc simulation.Account, auc types.Auction) bool {
 			account := ak.GetAccount(ctx, acc.Address)
-			_, err := generateBidAmount(r, params, auc, account, blockTime)
+			accuontAmount := bk.SpendableCoins(ctx, account.GetAddress())
+			_, err := generateBidAmount(r, params, auc, accuontAmount, blockTime)
 			if err == errorNotEnoughCoins || err == errorCantReceiveBids {
 				return false // keep searching
 			} else if err != nil {
@@ -98,25 +99,29 @@ func SimulateMsgPlaceBid(ak auth.AccountKeeper, keeper keeper.Keeper) simulation
 			return true // found valid pair
 		})
 		if !found {
-			return simulation.NewOperationMsgBasic(types.ModuleName, "no-operation (no valid auction and bidder)", "", false, nil), nil, nil
+			return simtypes.NewOperationMsgBasic(types.ModuleName, "no-operation (no valid auction and bidder)", "", false, nil), nil, nil
 		}
 
 		bidderAcc := ak.GetAccount(ctx, bidder.Address)
 		if bidderAcc == nil {
-			return simulation.NoOpMsg(types.ModuleName), nil, fmt.Errorf("couldn't find account %s", bidder.Address)
+			return simtypes.NoOpMsg(types.ModuleName, types.TypeMsgPlaceBid, "bidderAcc is nil"), nil, fmt.Errorf("couldn't find account %s", bidder.Address)
 		}
 
 		// pick a bid amount for the chosen auction and bidder
-		amount, err := generateBidAmount(r, params, openAuction, bidderAcc, blockTime)
+
+		bidderAmount := bk.SpendableCoins(ctx, bidderAcc.GetAddress())
+		amount, err := generateBidAmount(r, params, openAuction, bidderAmount, blockTime)
 		if err != nil { // shouldn't happen given the checks above
-			return simulation.NoOpMsg(types.ModuleName), nil, err
+			return simtypes.NoOpMsg(types.ModuleName, types.TypeMsgPlaceBid, err.Error()), nil, err
 		}
 
 		// create and deliver a tx
 		msg := types.NewMsgPlaceBid(openAuction.GetID(), bidder.Address, amount)
 
-		tx := helpers.GenTx(
-			[]sdk.Msg{msg},
+		txGen := simappparams.MakeTestEncodingConfig().TxConfig
+		tx, err := helpers.GenTx(
+			txGen,
+			[]sdk.Msg{&msg},
 			sdk.NewCoins(), // TODO pick a random amount fees
 			helpers.DefaultGenTxGas,
 			chainID,
@@ -124,24 +129,28 @@ func SimulateMsgPlaceBid(ak auth.AccountKeeper, keeper keeper.Keeper) simulation
 			[]uint64{bidderAcc.GetSequence()},
 			bidder.PrivKey,
 		)
+		if err != nil {
+			return simtypes.NoOpMsg(types.ModuleName, types.TypeMsgPlaceBid, err.Error()), nil, err
+		}
 
-		_, _, err = app.Deliver(tx)
+		_, _, err = app.Deliver(txGen.TxEncoder(), tx)
 		if err != nil {
 			// to aid debugging, add the stack trace to the comment field of the returned opMsg
-			return simulation.NewOperationMsg(msg, false, fmt.Sprintf("%+v", err)), nil, err
+			return simtypes.NewOperationMsg(&msg, false, fmt.Sprintf("%+v", err), nil), nil, err
 		}
-		return simulation.NewOperationMsg(msg, true, ""), nil, nil
+		return simtypes.NewOperationMsg(&msg, true, "", nil), nil, nil
 	}
 }
 
 func generateBidAmount(
 	r *rand.Rand, params types.Params, auc types.Auction,
-	bidder authexported.Account, blockTime time.Time) (sdk.Coin, error) {
-	bidderBalance := bidder.SpendableCoins(blockTime)
+	bidderBalance sdk.Coins, blockTime time.Time) (sdk.Coin, error) {
+	// bidderBalance
+	//  := bidder.SpendableCoins(blockTime) // return coins
 
 	switch a := auc.(type) {
 
-	case types.DebtAuction:
+	case *types.DebtAuction:
 		// Check bidder has enough (stable coin) to pay in
 		if bidderBalance.AmountOf(a.Bid.Denom).LT(a.Bid.Amount) { // stable coin
 			return sdk.Coin{}, errorNotEnoughCoins
@@ -163,7 +172,7 @@ func generateBidAmount(
 		}
 		return sdk.NewCoin(a.Lot.Denom, amt), nil // gov coin
 
-	case types.SurplusAuction:
+	case *types.SurplusAuction:
 		// Check the bidder has enough (gov coin) to pay in
 		minNewBidAmt := a.Bid.Amount.Add( // new bids must be some % greater than old bid, and at least 1 larger to avoid replacing an old bid at no cost
 			sdk.MaxInt(
@@ -181,7 +190,7 @@ func generateBidAmount(
 		}
 		return sdk.NewCoin(a.Bid.Denom, amt), nil // gov coin
 
-	case types.CollateralAuction:
+	case *types.CollateralAuction:
 		// Check the bidder has enough (stable coin) to pay in
 		minNewBidAmt := a.Bid.Amount.Add( // new bids must be some % greater than old bid, and at least 1 larger to avoid replacing an old bid at no cost
 			sdk.MaxInt(
@@ -230,7 +239,7 @@ func generateBidAmount(
 }
 
 // findValidAccountAuctionPair finds an auction and account for which the callback func returns true
-func findValidAccountAuctionPair(accounts []simulation.Account, auctions types.Auctions, cb func(simulation.Account, types.Auction) bool) (simulation.Account, types.Auction, bool) {
+func findValidAccountAuctionPair(accounts []simtypes.Account, auctions types.Auctions, cb func(simulation.Account, types.Auction) bool) (simulation.Account, types.Auction, bool) {
 	for _, auc := range auctions {
 		for _, acc := range accounts {
 			if isValid := cb(acc, auc); isValid {
@@ -238,7 +247,7 @@ func findValidAccountAuctionPair(accounts []simulation.Account, auctions types.A
 			}
 		}
 	}
-	return simulation.Account{}, nil, false
+	return simtypes.Account{}, nil, false
 }
 
 // RandIntInclusive randomly generates an sdk.Int in the range [inclusiveMin, inclusiveMax]. It works for negative and positive integers.
