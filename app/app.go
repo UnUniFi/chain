@@ -119,7 +119,7 @@ import (
 )
 
 const Name = "ununifi"
-const upgradeName = "Alpha"
+const upgradeName = "Q3update"
 
 // We pull these out so we can set them with LDFLAGS in the Makefile
 var (
@@ -160,7 +160,7 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 		distrclient.ProposalHandler,
 		upgradeclient.ProposalHandler,
 		upgradeclient.CancelProposalHandler,
-	 	ibcclientclient.UpdateClientProposalHandler,
+		ibcclientclient.UpdateClientProposalHandler,
 		ibcclientclient.UpgradeProposalHandler,
 		// this line is used by starport scaffolding # stargate/app/govProposalHandler
 	)
@@ -296,7 +296,7 @@ type App struct {
 	mm *module.Manager
 
 	// simulation manager
-	sm *module.SimulationManager
+	sm           *module.SimulationManager
 	configurator module.Configurator
 }
 
@@ -803,12 +803,7 @@ func NewApp(
 			app.IBCKeeper.ConnectionKeeper.SetParams(ctx, ibcconnectiontypes.DefaultParams())
 
 			fromVM := make(map[string]uint64)
-			for moduleName := range app.mm.Modules {
-				fromVM[moduleName] = 1
-			}
-			// override versions for _new_ modules as to not skip InitGenesis
-			fromVM[authz.ModuleName] = 0
-			fromVM[feegrant.ModuleName] = 0
+			fromVM[liquiditytypes.ModuleName] = 0
 
 			return app.mm.RunMigrations(ctx, app.configurator, fromVM)
 		},
@@ -821,7 +816,7 @@ func NewApp(
 
 	if upgradeInfo.Name == upgradeName && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
 		storeUpgrades := store.StoreUpgrades{
-			Added: []string{authz.ModuleName, feegrant.ModuleName},
+			Added: []string{liquiditytypes.ModuleName},
 		}
 
 		// configure store loader that checks if version == upgradeHeight and applies store upgrades
