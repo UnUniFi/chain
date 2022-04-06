@@ -803,6 +803,9 @@ func NewApp(
 			app.IBCKeeper.ConnectionKeeper.SetParams(ctx, ibcconnectiontypes.DefaultParams())
 
 			fromVM := make(map[string]uint64)
+			for moduleName := range app.mm.Modules {
+				fromVM[moduleName] = 1
+			}
 			fromVM[liquiditytypes.ModuleName] = 0
 
 			return app.mm.RunMigrations(ctx, app.configurator, fromVM)
