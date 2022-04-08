@@ -83,7 +83,6 @@ import (
 	ibcclient "github.com/cosmos/ibc-go/v2/modules/core/02-client"
 	ibcclientclient "github.com/cosmos/ibc-go/v2/modules/core/02-client/client"
 	ibcclienttypes "github.com/cosmos/ibc-go/v2/modules/core/02-client/types"
-	ibcconnectiontypes "github.com/cosmos/ibc-go/v2/modules/core/03-connection/types"
 	porttypes "github.com/cosmos/ibc-go/v2/modules/core/05-port/types"
 	ibchost "github.com/cosmos/ibc-go/v2/modules/core/24-host"
 	ibckeeper "github.com/cosmos/ibc-go/v2/modules/core/keeper"
@@ -115,7 +114,6 @@ import (
 	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
-	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 )
 
 const Name = "ununifi"
@@ -799,16 +797,11 @@ func NewApp(
 
 	app.UpgradeKeeper.SetUpgradeHandler(
 		upgradeName,
-		func(ctx sdk.Context, _ upgradetypes.Plan, _ module.VersionMap) (module.VersionMap, error) {
-			app.IBCKeeper.ConnectionKeeper.SetParams(ctx, ibcconnectiontypes.DefaultParams())
+		func(ctx sdk.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
+			app.LiquidityKeeper.SetParams(ctx, liquiditytypes.DefaultParams())
+			delete(vm, liquiditytypes.ModuleName)
 
-			fromVM := make(map[string]uint64)
-			for moduleName := range app.mm.Modules {
-				fromVM[moduleName] = 1
-			}
-			fromVM[liquiditytypes.ModuleName] = 0
-
-			return app.mm.RunMigrations(ctx, app.configurator, fromVM)
+			return app.mm.RunMigrations(ctx, app.configurator, vm)
 		},
 	)
 
