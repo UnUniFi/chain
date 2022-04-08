@@ -114,6 +114,7 @@ import (
 	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
+	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 )
 
 const Name = "ununifi"
