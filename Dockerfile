@@ -38,7 +38,7 @@ WORKDIR /root
 
 # Copy over binaries from the build-env
 COPY --from=build-env /go/bin/ununifid /usr/bin/ununifid
-COPY --from=build-env /go/pkg/mod/github.com/!cosm!wasm/wasmvm@v1.0.0-beta5/api/libwasmvm.so /usr/lib/libwasmvm.so
+COPY --from=build-env /go/pkg/mod/github.com/!cosm!wasm/wasmvm@v1.0.0-beta10/api/libwasmvm.so /usr/lib/libwasmvm.so
 COPY --from=build-env /lib/ld-musl-x86_64.so.1 /usr/lib/ld-musl-x86_64.so.1
 COPY --from=build-env /usr/lib/libgcc_s.so.1 /usr/lib/libgcc_s.so.1
 COPY --from=build-env /usr/glibc-compat/lib/ld-linux-x86-64.so.2 /usr/lib/ld-linux-x86-64.so.2
