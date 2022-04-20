@@ -799,8 +799,12 @@ func NewApp(
 	app.UpgradeKeeper.SetUpgradeHandler(
 		upgradeName,
 		func(ctx sdk.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
-			app.LiquidityKeeper.SetParams(ctx, liquiditytypes.DefaultParams())
-			delete(vm, liquiditytypes.ModuleName)
+
+			ctx.Logger().Info(fmt.Sprintf("update start:%s", upgradeName))
+			transPram := app.TransferKeeper.GetParams(ctx)
+			transPram.ReceiveEnabled = true
+			transPram.SendEnabled = true
+			app.TransferKeeper.SetParams(ctx, transPram)
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
 		},
