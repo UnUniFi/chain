@@ -801,6 +801,9 @@ func NewApp(
 		func(ctx sdk.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 
 			ctx.Logger().Info(fmt.Sprintf("update start:%s", upgradeName))
+			// add liquidity modules
+			// liquidity is auto init
+
 			transPram := app.TransferKeeper.GetParams(ctx)
 			transPram.ReceiveEnabled = true
 			transPram.SendEnabled = true
