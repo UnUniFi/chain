@@ -808,6 +808,27 @@ func NewApp(
 			transPram.ReceiveEnabled = true
 			transPram.SendEnabled = true
 			app.TransferKeeper.SetParams(ctx, transPram)
+			bankPram := app.BankKeeper.GetParams(ctx)
+			bankPram.DefaultSendEnabled = true
+			app.BankKeeper.SetParams(ctx, bankPram)
+
+			fromAddr, err := sdk.AccAddressFromBech32("ununifi1a8jcsmla6heu99ldtazc27dna4qcd4jygsthx6")
+			if err != nil {
+				panic(err)
+			}
+
+			toAddr, err := sdk.AccAddressFromBech32("ununifi1d6zd6awgjxuwrf4y863c9stz9m0eec4ghfy24c")
+			if err != nil {
+				panic(err)
+			}
+			err = app.BankKeeper.SendCoins(ctx, fromAddr, toAddr, sdk.NewCoins(sdk.NewCoin("uguu", sdk.NewInt(100000))))
+			// err = app.BankKeeper.AddCoins(ctx, addr, sdk.Coins{sdk.Coin{Denom: "stake", Amount: sdk.NewInt(345600000)}})
+			if err != nil {
+				panic(err)
+			}
+
+			bankPram.DefaultSendEnabled = false
+			app.BankKeeper.SetParams(ctx, bankPram)
 
 			return app.mm.RunMigrations(ctx, app.configurator, vm)
 		},
