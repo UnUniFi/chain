@@ -18,7 +18,6 @@ func DefaultGenesis() *GenesisState {
 		Cdps{},
 		Deposits{},
 		DefaultCdpStartingID,
-		DefaultDebtDenom,
 		DefaultGovDenom,
 		GenesisAccumulationTimes{},
 		GenesisTotalPrincipals{},
@@ -62,10 +61,6 @@ func (gs GenesisState) Validate() error {
 		return err
 	}
 
-	if err := sdk.ValidateDenom(gs.DebtDenom); err != nil {
-		return fmt.Errorf(fmt.Sprintf("debt denom invalid: %v", err))
-	}
-
 	if err := sdk.ValidateDenom(gs.GovDenom); err != nil {
 		return fmt.Errorf(fmt.Sprintf("gov denom invalid: %v", err))
 	}
@@ -74,14 +69,13 @@ func (gs GenesisState) Validate() error {
 }
 
 func NewGenesisState(params Params, cdps Cdps, deposits Deposits, startingCdpID uint64,
-	debtDenom, govDenom string, prevAccumTimes GenesisAccumulationTimes,
+	govDenom string, prevAccumTimes GenesisAccumulationTimes,
 	totalPrincipals GenesisTotalPrincipals) GenesisState {
 	return GenesisState{
 		Params:                    params,
 		Cdps:                      cdps,
 		Deposits:                  deposits,
 		StartingCdpId:             startingCdpID,
-		DebtDenom:                 debtDenom,
 		GovDenom:                  govDenom,
 		PreviousAccumulationTimes: prevAccumTimes,
 		TotalPrincipals:           totalPrincipals,
@@ -103,8 +97,8 @@ func validateSavingsRateDistributed(i interface{}) error {
 
 // Equal checks whether two gov GenesisState structs are equivalent
 func (gs GenesisState) Equal(gs2 GenesisState) bool {
-	b1 := ModuleCdc.MustMarshalBinaryBare(&gs)
-	b2 := ModuleCdc.MustMarshalBinaryBare(&gs2)
+	b1 := ModuleCdc.MustMarshal(&gs)
+	b2 := ModuleCdc.MustMarshal(&gs2)
 	return bytes.Equal(b1, b2)
 }
 

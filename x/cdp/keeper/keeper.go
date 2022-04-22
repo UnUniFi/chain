@@ -15,7 +15,7 @@ import (
 
 type (
 	Keeper struct {
-		cdc             codec.Marshaler
+		cdc             codec.Codec
 		storeKey        sdk.StoreKey
 		memKey          sdk.StoreKey
 		paramSpace      paramtypes.Subspace
@@ -28,7 +28,7 @@ type (
 	}
 )
 
-func NewKeeper(cdc codec.Marshaler, storeKey, memKey sdk.StoreKey, paramSpace paramtypes.Subspace, accountKeeper types.AccountKeeper,
+func NewKeeper(cdc codec.Codec, storeKey, memKey sdk.StoreKey, paramSpace paramtypes.Subspace, accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	auctionKeeper types.AuctionKeeper, pricefeedKeeper types.PricefeedKeeper, maccPerms map[string][]string) Keeper {
 	if !paramSpace.HasKeyTable() {
@@ -90,7 +90,7 @@ func (k Keeper) IterateAllCdps(ctx sdk.Context, cb func(cdp types.Cdp) (stop boo
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		var cdp types.Cdp
-		k.cdc.MustUnmarshalBinaryLengthPrefixed(iterator.Value(), &cdp)
+		k.cdc.MustUnmarshalLengthPrefixed(iterator.Value(), &cdp)
 
 		if cb(cdp) {
 			break
@@ -105,7 +105,7 @@ func (k Keeper) IterateCdpsByCollateralType(ctx sdk.Context, collateralType stri
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		var cdp types.Cdp
-		k.cdc.MustUnmarshalBinaryLengthPrefixed(iterator.Value(), &cdp)
+		k.cdc.MustUnmarshalLengthPrefixed(iterator.Value(), &cdp)
 		if cb(cdp) {
 			break
 		}

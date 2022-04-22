@@ -21,6 +21,7 @@ import (
 	// hardkeeper "github.com/UnUniFi/chain/x/hard/keeper"
 	"github.com/UnUniFi/chain/x/incentive/keeper"
 	"github.com/UnUniFi/chain/x/incentive/types"
+	"github.com/cosmos/cosmos-sdk/simapp"
 )
 
 // Test suite used for all keeper tests
@@ -99,9 +100,8 @@ func (suite *KeeperTestSuite) TestIterateJPYXMintingClaims() {
 
 func (suite *KeeperTestSuite) createPeriodicVestingAccount(origVesting sdk.Coins, periods vestingtypes.Periods, startTime, endTime int64) (*vestingtypes.PeriodicVestingAccount, error) {
 	_, addr := app.GeneratePrivKeyAddressPairs(1)
-	bk := suite.app.GetBankKeeper()
 	bacc := authtypes.NewBaseAccountWithAddress(addr[0])
-	bk.AddCoins(suite.ctx, bacc.GetAddress(), origVesting)
+	simapp.FundAccount(suite.app.BankKeeper, suite.ctx, bacc.GetAddress(), origVesting)
 	bva := vestingtypes.NewBaseVestingAccount(bacc, origVesting, endTime)
 	err := bva.Validate()
 	if err != nil {

@@ -45,9 +45,10 @@ func (k Keeper) SeizeCollateral(ctx sdk.Context, cdp types.Cdp) error {
 	// Move debt coins from cdp to liquidator account
 	deposits := k.GetDeposits(ctx, cdp.Id)
 	debt := cdp.GetTotalPrincipal().Amount
-	modAccountDebt := k.getModAccountDebt(ctx, types.ModuleName)
+	debtDenomMap := k.GetDebtDenomMap(ctx)
+	modAccountDebt := k.getModAccountDebt(ctx, types.ModuleName, debtDenomMap[cdp.Principal.Denom])
 	debt = sdk.MinInt(debt, modAccountDebt)
-	debtCoin := sdk.NewCoin(k.GetDebtDenom(ctx), debt)
+	debtCoin := sdk.NewCoin(debtDenomMap[cdp.Principal.Denom], debt)
 	err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, types.LiquidatorMacc, sdk.NewCoins(debtCoin))
 	if err != nil {
 		return err
@@ -130,9 +131,9 @@ func (k Keeper) ValidateLiquidation(ctx sdk.Context, collateral sdk.Coin, collat
 	return nil
 }
 
-func (k Keeper) getModAccountDebt(ctx sdk.Context, accountName string) sdk.Int {
+func (k Keeper) getModAccountDebt(ctx sdk.Context, accountName string, deb_denom string) sdk.Int {
 	macc := k.accountKeeper.GetModuleAccount(ctx, accountName)
-	return k.bankKeeper.GetAllBalances(ctx, macc.GetAddress()).AmountOf(k.GetDebtDenom(ctx))
+	return k.bankKeeper.GetAllBalances(ctx, macc.GetAddress()).AmountOf(deb_denom)
 }
 
 func (k Keeper) payoutKeeperLiquidationReward(ctx sdk.Context, keeper sdk.AccAddress, cdp types.Cdp) (types.Cdp, error) {

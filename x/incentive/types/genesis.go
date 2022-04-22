@@ -54,8 +54,8 @@ func NewGenesisState(params Params, jpuAccumTimes GenesisAccumulationTimes, c Cd
 
 // Equal checks whether two gov GenesisState structs are equivalent
 func (gs GenesisState) Equal(gs2 GenesisState) bool {
-	b1 := ModuleCdc.MustMarshalBinaryBare(&gs)
-	b2 := ModuleCdc.MustMarshalBinaryBare(&gs2)
+	b1 := ModuleCdc.MustMarshal(&gs)
+	b2 := ModuleCdc.MustMarshal(&gs2)
 	return bytes.Equal(b1, b2)
 }
 

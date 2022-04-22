@@ -34,18 +34,13 @@ func TestInitGenesis(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		// setup keepers
 		tApp := app.NewTestApp()
-		bk := tApp.GetBankKeeper()
-		keeper := tApp.GetAuctionKeeper()
-		ctx := tApp.NewContext(true, tmproto.Header{})
+		ctx := tApp.NewContext(true, tmproto.Header{Height: 1})
+
 		// setup module account
-		// supplyKeeper := tApp.GetSupplyKeeper()
-		accountKeeper := tApp.GetAccountKeeper()
-		moduleAddr := authtypes.NewModuleAddress(auctiontypes.ModuleName)
-		moduleAcc := accountKeeper.GetModuleAccount(ctx, auctiontypes.ModuleName)
-		// require.NoError(t, moduleAcc.SetCoins(testAuction.GetModuleAccountCoins()))
-		require.NoError(t, bk.SetBalances(ctx, moduleAddr, testAuction.GetModuleAccountCoins()))
-		// supplyKeeper.SetModuleAccount(ctx, moduleAcc)
-		accountKeeper.SetModuleAccount(ctx, moduleAcc)
+		modBaseAcc := authtypes.NewBaseAccount(authtypes.NewModuleAddress(auctiontypes.ModuleName), nil, 0, 0)
+		modAcc := authtypes.NewModuleAccount(modBaseAcc, auctiontypes.ModuleName, []string{authtypes.Minter, authtypes.Burner}...)
+		tApp.GetAccountKeeper().SetModuleAccount(ctx, modAcc)
+		tApp.GetBankKeeper().MintCoins(ctx, auctiontypes.ModuleName, testAuction.GetModuleAccountCoins())
 
 		// create genesis
 		gs := auctiontypes.NewGenesisState(
@@ -57,9 +52,10 @@ func TestInitGenesis(t *testing.T) {
 		require.Equal(t, gs.Auctions[0], testAuctions[0])
 
 		// run init
+		keeper := tApp.GetAuctionKeeper()
 		require.NotPanics(t, func() {
 			// auction.InitGenesis(ctx, keeper, supplyKeeper, gs)
-			auction.InitGenesis(ctx, keeper, accountKeeper, bk, gs)
+			auction.InitGenesis(ctx, keeper, tApp.GetAccountKeeper(), tApp.GetBankKeeper(), gs)
 		})
 
 		// check state is as expected

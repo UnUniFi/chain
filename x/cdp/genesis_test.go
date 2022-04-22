@@ -27,7 +27,6 @@ func (suite *GenesisTestSuite) TestInvalidGenState() {
 		cdps               cdptypes.Cdps
 		deposits           cdptypes.Deposits
 		startingID         uint64
-		debtDenom          string
 		govDenom           string
 		genAccumTimes      cdptypes.GenesisAccumulationTimes
 		genTotalPrincipals cdptypes.GenesisTotalPrincipals
@@ -47,28 +46,11 @@ func (suite *GenesisTestSuite) TestInvalidGenState() {
 		errArgs errArgs
 	}{
 		{
-			name: "empty debt denom",
-			args: args{
-				params:             cdptypes.DefaultParams(),
-				cdps:               cdptypes.Cdps{},
-				deposits:           cdptypes.Deposits{},
-				debtDenom:          "",
-				govDenom:           cdptypes.DefaultGovDenom,
-				genAccumTimes:      cdptypes.DefaultGenesis().PreviousAccumulationTimes,
-				genTotalPrincipals: cdptypes.DefaultGenesis().TotalPrincipals,
-			},
-			errArgs: errArgs{
-				expectPass: false,
-				contains:   "debt denom invalid",
-			},
-		},
-		{
 			name: "empty gov denom",
 			args: args{
 				params:             cdptypes.DefaultParams(),
 				cdps:               cdptypes.Cdps{},
 				deposits:           cdptypes.Deposits{},
-				debtDenom:          cdptypes.DefaultDebtDenom,
 				govDenom:           "",
 				genAccumTimes:      cdptypes.DefaultGenesis().PreviousAccumulationTimes,
 				genTotalPrincipals: cdptypes.DefaultGenesis().TotalPrincipals,
@@ -84,7 +66,6 @@ func (suite *GenesisTestSuite) TestInvalidGenState() {
 				params:             cdptypes.DefaultParams(),
 				cdps:               cdptypes.Cdps{},
 				deposits:           cdptypes.Deposits{},
-				debtDenom:          cdptypes.DefaultDebtDenom,
 				govDenom:           cdptypes.DefaultGovDenom,
 				genAccumTimes:      cdptypes.GenesisAccumulationTimes{cdptypes.NewGenesisAccumulationTime("bnb-a", time.Time{}, sdk.OneDec().Sub(sdk.SmallestDec()))},
 				genTotalPrincipals: cdptypes.DefaultGenesis().TotalPrincipals,
@@ -100,7 +81,6 @@ func (suite *GenesisTestSuite) TestInvalidGenState() {
 				params:             cdptypes.DefaultParams(),
 				cdps:               cdptypes.Cdps{},
 				deposits:           cdptypes.Deposits{},
-				debtDenom:          cdptypes.DefaultDebtDenom,
 				govDenom:           cdptypes.DefaultGovDenom,
 				genAccumTimes:      cdptypes.DefaultGenesis().PreviousAccumulationTimes,
 				genTotalPrincipals: cdptypes.GenesisTotalPrincipals{cdptypes.NewGenesisTotalPrincipal("bnb-a", sdk.NewInt(-1))},
@@ -114,7 +94,7 @@ func (suite *GenesisTestSuite) TestInvalidGenState() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			gs := cdptypes.NewGenesisState(tc.args.params, tc.args.cdps, tc.args.deposits, tc.args.startingID,
-				tc.args.debtDenom, tc.args.govDenom, tc.args.genAccumTimes, tc.args.genTotalPrincipals)
+				tc.args.govDenom, tc.args.genAccumTimes, tc.args.genTotalPrincipals)
 			err := gs.Validate()
 			if tc.errArgs.expectPass {
 				suite.Require().NoError(err)

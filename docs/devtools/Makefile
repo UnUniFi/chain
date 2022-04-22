@@ -47,7 +47,7 @@ UNAME_M ?= $(shell uname -m)
 TOOLS_DESTDIR  ?= $(GOPATH)/bin
 RUNSIM         = $(TOOLS_DESTDIR)/runsim
 
-BUF_VERSION ?= 0.7.0
+BUF_VERSION ?= 1.0.0-rc10
 PROTOC_VERSION ?= 3.11.2
 
 ifeq ($(UNAME_S),Linux)
@@ -82,9 +82,17 @@ protoc:
 	unzip -o ${PROTOC_ZIP} -d /usr/local 'include/*'; \
 	rm -f ${PROTOC_ZIP})
 
+buf-tools:buf buf-plugin
+
+buf-plugin: protoc-gen-doc protoc-gen-gocosmos
+
 protoc-gen-gocosmos:
 	@echo "Installing protoc-gen-gocosmos..."
 	@go install github.com/regen-network/cosmos-proto/protoc-gen-gocosmos
+
+protoc-gen-doc:
+	@echo "Installing protoc-gen-gen..."
+	@go get github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc
 
 buf: protoc-gen-buf-check-breaking protoc-gen-buf-check-lint
 	@echo "Installing buf..."

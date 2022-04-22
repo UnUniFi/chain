@@ -14,7 +14,7 @@ import (
 
 type (
 	Keeper struct {
-		cdc           codec.Marshaler
+		cdc           codec.Codec
 		storeKey      sdk.StoreKey
 		memKey        sdk.StoreKey
 		paramSpace    paramtypes.Subspace
@@ -23,7 +23,7 @@ type (
 	}
 )
 
-func NewKeeper(cdc codec.Marshaler, storeKey, memKey sdk.StoreKey, paramSpace paramtypes.Subspace, accountKeeper types.AccountKeeper, bankKeeper types.BankKeeper,
+func NewKeeper(cdc codec.Codec, storeKey, memKey sdk.StoreKey, paramSpace paramtypes.Subspace, accountKeeper types.AccountKeeper, bankKeeper types.BankKeeper,
 ) Keeper {
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())

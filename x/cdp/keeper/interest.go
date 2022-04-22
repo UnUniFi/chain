@@ -55,7 +55,8 @@ func (k Keeper) AccumulateInterest(ctx sdk.Context, ctype string) error {
 		// in the case accumulated interest rounds to zero, exit early without updating accrual time
 		return nil
 	}
-	err := k.MintDebtCoins(ctx, types.ModuleName, k.GetDebtDenom(ctx), sdk.NewCoin(types.DefaultStableDenom, interestAccumulated))
+	debtDenomMap := k.GetDebtDenomMap(ctx)
+	err := k.MintDebtCoins(ctx, types.ModuleName, debtDenomMap[types.DefaultStableDenom], sdk.NewCoin(types.DefaultStableDenom, interestAccumulated))
 	if err != nil {
 		return err
 	}

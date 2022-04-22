@@ -38,9 +38,13 @@ import (
 	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
 	ununifidistkeeper "github.com/UnUniFi/chain/x/ununifidist/keeper"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
+
 	// authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
 	// "github.com/cosmos/cosmos-sdk/x/supply"
+	"github.com/CosmWasm/wasmd/x/wasm"
 )
+
+var emptyWasmOpts []wasm.Option = nil
 
 // TestApp is a simple wrapper around an App. It exposes internal keepers for use in integration tests.
 // This file also contains test helpers. Ideally they would be in separate package.
@@ -64,8 +68,19 @@ func NewTestApp() TestApp {
 	// config.Seal()
 
 	db := tmdb.NewMemDB()
-
-	tApp := NewApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, "" /* cast.ToString(appOpts.Get(flags.FlagHome)) */, 0, MakeEncodingConfig() /* a.encCfg */, simapp.EmptyAppOptions{})
+	tApp := NewApp(
+		log.NewNopLogger(),
+		db,
+		nil,
+		true,
+		map[int64]bool{},
+		"", /* cast.ToString(appOpts.Get(flags.FlagHome)) */
+		0,
+		MakeEncodingConfig(), /* a.encCfg */
+		wasm.EnableAllProposals,
+		simapp.EmptyAppOptions{},
+		emptyWasmOpts,
+	)
 	return TestApp{App: *tApp}
 }
 
