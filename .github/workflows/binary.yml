@@ -1,17 +1,25 @@
 name: Binary
 
 on:
-  release:
-    types:
-      - created
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [amd64, arm64]
-        targetos: [windows, darwin, linux]
+        arch: [amd64]
+        targetos: [darwin, linux]
+        include:
+          - targetos: darwin
+            arch: arm64
+    #        include:
+    #          - targetos: windows
+    #            arch: amd64
     name: ununifi-${{ matrix.arch }}-${{ matrix.targetos }}
     steps:
       - uses: actions/checkout@v2
