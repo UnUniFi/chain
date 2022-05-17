@@ -74,17 +74,16 @@ import (
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	transfer "github.com/cosmos/ibc-go/v2/modules/apps/transfer"
-	ibctransferkeeper "github.com/cosmos/ibc-go/v2/modules/apps/transfer/keeper"
-	ibctransfertypes "github.com/cosmos/ibc-go/v2/modules/apps/transfer/types"
-	ibc "github.com/cosmos/ibc-go/v2/modules/core"
-	ibcclient "github.com/cosmos/ibc-go/v2/modules/core/02-client"
-	ibcclientclient "github.com/cosmos/ibc-go/v2/modules/core/02-client/client"
-	ibcclienttypes "github.com/cosmos/ibc-go/v2/modules/core/02-client/types"
-	ibcconnectiontypes "github.com/cosmos/ibc-go/v2/modules/core/03-connection/types"
-	porttypes "github.com/cosmos/ibc-go/v2/modules/core/05-port/types"
-	ibchost "github.com/cosmos/ibc-go/v2/modules/core/24-host"
-	ibckeeper "github.com/cosmos/ibc-go/v2/modules/core/keeper"
+	// "github.com/cosmos/ibc-go/v3/modules/apps/transfer"
+	// ibctransferkeeper "github.com/cosmos/ibc-go/v3/modules/apps/transfer/keeper"
+	// ibctransfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
+	// ibc "github.com/cosmos/ibc-go/v3/modules/core"
+	// ibcclient "github.com/cosmos/ibc-go/v3/modules/core/02-client"
+	// ibcclientclient "github.com/cosmos/ibc-go/v3/modules/core/02-client/client"
+	// ibcclienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	// porttypes "github.com/cosmos/ibc-go/v3/modules/core/05-port/types"
+	// ibchost "github.com/cosmos/ibc-go/v3/modules/core/24-host"
+	// ibckeeper "github.com/cosmos/ibc-go/v3/modules/core/keeper"
 
 	// "github.com/gravity-devs/liquidity/x/liquidity"
 	// liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
@@ -159,8 +158,8 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 		distrclient.ProposalHandler,
 		upgradeclient.ProposalHandler,
 		upgradeclient.CancelProposalHandler,
-		ibcclientclient.UpdateClientProposalHandler,
-		ibcclientclient.UpgradeProposalHandler,
+		// ibcclientclient.UpdateClientProposalHandler,
+		// ibcclientclient.UpgradeProposalHandler,
 		// this line is used by starport scaffolding # stargate/app/govProposalHandler
 	)
 	// govProposalHandlers = append(govProposalHandlers, wasmclient.ProposalHandlers...)
@@ -189,7 +188,7 @@ var (
 		slashing.AppModuleBasic{},
 		feegrantmodule.AppModuleBasic{},
 		authzmodule.AppModuleBasic{},
-		ibc.AppModuleBasic{},
+		// ibc.AppModuleBasic{},
 		upgrade.AppModuleBasic{},
 		evidence.AppModuleBasic{},
 		transfer.AppModuleBasic{},
@@ -213,7 +212,7 @@ var (
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
 		// liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
-		ibctransfertypes.ModuleName: {authtypes.Minter, authtypes.Burner},
+		// ibctransfertypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 		auctiontypes.ModuleName:     nil,
 		cdptypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
 		cdptypes.LiquidatorMacc:     {authtypes.Minter, authtypes.Burner},
@@ -271,16 +270,16 @@ type App struct {
 	CrisisKeeper     crisiskeeper.Keeper
 	UpgradeKeeper    upgradekeeper.Keeper
 	ParamsKeeper     paramskeeper.Keeper
-	IBCKeeper        *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
-	EvidenceKeeper   evidencekeeper.Keeper
-	TransferKeeper   ibctransferkeeper.Keeper
-	FeeGrantKeeper   feegrantkeeper.Keeper
-	AuthzKeeper      authzkeeper.Keeper
+	// IBCKeeper        *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
+	EvidenceKeeper evidencekeeper.Keeper
+	// TransferKeeper   ibctransferkeeper.Keeper
+	FeeGrantKeeper feegrantkeeper.Keeper
+	AuthzKeeper    authzkeeper.Keeper
 	// LiquidityKeeper  liquiditykeeper.Keeper
 	// WasmKeeper wasm.Keeper
 
 	// make scoped keepers public for test purposes
-	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
+	// ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 	// ScopedWasmKeeper     capabilitykeeper.ScopedKeeper
 
@@ -329,10 +328,12 @@ func NewApp(
 	keys := sdk.NewKVStoreKeys(
 		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey,
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
-		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
+		govtypes.StoreKey, paramstypes.StoreKey,
+		// ibchost.StoreKey,
+		upgradetypes.StoreKey,
 		evidencetypes.StoreKey,
 		// liquiditytypes.StoreKey,
-		ibctransfertypes.StoreKey,
+		// ibctransfertypes.StoreKey,
 		capabilitytypes.StoreKey, feegrant.StoreKey, authzkeeper.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 		auctiontypes.StoreKey, cdptypes.StoreKey, incentivetypes.StoreKey,
@@ -369,7 +370,7 @@ func NewApp(
 	app.CapabilityKeeper = capabilitykeeper.NewKeeper(appCodec, keys[capabilitytypes.StoreKey], memKeys[capabilitytypes.MemStoreKey])
 
 	// grant capabilities for the ibc and ibc-transfer modules
-	scopedIBCKeeper := app.CapabilityKeeper.ScopeToModule(ibchost.ModuleName)
+	// scopedIBCKeeper := app.CapabilityKeeper.ScopeToModule(ibchost.ModuleName)
 	scopedTransferKeeper := app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
 	// scopedWasmKeeper := app.CapabilityKeeper.ScopeToModule(wasm.ModuleName)
 	app.CapabilityKeeper.Seal()
@@ -479,21 +480,21 @@ func NewApp(
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
 
 	// Create Transfer Keepers
-	app.TransferKeeper = ibctransferkeeper.NewKeeper(
-		appCodec,
-		keys[ibctransfertypes.StoreKey],
-		app.GetSubspace(ibctransfertypes.ModuleName),
-		app.IBCKeeper.ChannelKeeper,
-		&app.IBCKeeper.PortKeeper,
-		app.AccountKeeper,
-		app.BankKeeper,
-		scopedTransferKeeper,
-	)
-	transferModule := transfer.NewAppModule(app.TransferKeeper)
+	// app.TransferKeeper = ibctransferkeeper.NewKeeper(
+	// 	appCodec,
+	// 	keys[ibctransfertypes.StoreKey],
+	// 	app.GetSubspace(ibctransfertypes.ModuleName),
+	// 	app.IBCKeeper.ChannelKeeper,
+	// 	&app.IBCKeeper.PortKeeper,
+	// 	app.AccountKeeper,
+	// 	app.BankKeeper,
+	// 	scopedTransferKeeper,
+	// )
+	// transferModule := transfer.NewAppModule(app.TransferKeeper)
 
 	// create static IBC router, add transfer route, then set and seal it
-	ibcRouter := porttypes.NewRouter()
-	ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferModule)
+	// ibcRouter := porttypes.NewRouter()
+	// ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferModule)
 
 	// Create evidence Keeper for to register the IBC light client misbehaviour evidence route
 	evidenceKeeper := evidencekeeper.NewKeeper(
@@ -583,7 +584,7 @@ func NewApp(
 	// 	govRouter.AddRoute(wasm.RouterKey, wasm.NewWasmProposalHandler(app.WasmKeeper, enabledProposals))
 	// }
 	// ibcRouter.AddRoute(wasm.ModuleName, wasm.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper))
-	app.IBCKeeper.SetRouter(ibcRouter)
+	// app.IBCKeeper.SetRouter(ibcRouter)
 
 	app.GovKeeper = govkeeper.NewKeeper(
 		appCodec,
@@ -628,7 +629,7 @@ func NewApp(
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
-		transferModule,
+		// transferModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 		auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
 		cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.pricefeedKeeper),
@@ -667,8 +668,8 @@ func NewApp(
 		incentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
 
-		ibchost.ModuleName,
-		ibctransfertypes.ModuleName,
+		// ibchost.ModuleName,
+		// ibctransfertypes.ModuleName,
 		// wasm.ModuleName,
 	)
 
@@ -697,8 +698,8 @@ func NewApp(
 		incentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
 
-		ibchost.ModuleName,
-		ibctransfertypes.ModuleName,
+		// ibchost.ModuleName,
+		// ibctransfertypes.ModuleName,
 		// wasm.ModuleName,
 	)
 
@@ -722,7 +723,7 @@ func NewApp(
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		// liquiditytypes.ModuleName,
-		ibctransfertypes.ModuleName,
+		// ibctransfertypes.ModuleName,
 		feegrant.ModuleName,
 		authz.ModuleName,
 		paramstypes.ModuleName,
@@ -735,8 +736,8 @@ func NewApp(
 		incentivetypes.ModuleName,
 		ununifidisttypes.ModuleName,
 
-		ibchost.ModuleName,
-		ibctransfertypes.ModuleName,
+		// ibchost.ModuleName,
+		// ibctransfertypes.ModuleName,
 		// wasm after ibc transfer
 		// wasm.ModuleName,
 	)
@@ -765,8 +766,8 @@ func NewApp(
 		evidence.NewAppModule(app.EvidenceKeeper),
 		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
 		// wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
-		ibc.NewAppModule(app.IBCKeeper),
-		transferModule,
+		// ibc.NewAppModule(app.IBCKeeper),
+		// transferModule,
 		// TODO
 		// auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
 		// cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.pricefeedKeeper),
@@ -823,8 +824,8 @@ func NewApp(
 		}
 	}
 
-	app.ScopedIBCKeeper = scopedIBCKeeper
-	app.ScopedTransferKeeper = scopedTransferKeeper
+	// app.ScopedIBCKeeper = scopedIBCKeeper
+	// app.ScopedTransferKeeper = scopedTransferKeeper
 	// app.ScopedWasmKeeper = scopedWasmKeeper
 	return app
 }
@@ -1003,8 +1004,8 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govtypes.ParamKeyTable())
 	paramsKeeper.Subspace(crisistypes.ModuleName)
 	// paramsKeeper.Subspace(liquiditytypes.ModuleName)
-	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
-	paramsKeeper.Subspace(ibchost.ModuleName)
+	// paramsKeeper.Subspace(ibctransfertypes.ModuleName)
+	// paramsKeeper.Subspace(ibchost.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 	paramsKeeper.Subspace(auctiontypes.ModuleName)
 	paramsKeeper.Subspace(cdptypes.ModuleName)
