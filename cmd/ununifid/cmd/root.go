@@ -9,7 +9,7 @@ import (
 	// "github.com/CosmWasm/wasmd/x/wasm"
 	"github.com/UnUniFi/chain/app/params"
 	"github.com/cosmos/cosmos-sdk/snapshots"
-	"github.com/prometheus/client_golang/prometheus"
+	tmcfg "github.com/tendermint/tendermint/config"
 
 	"github.com/UnUniFi/chain/app"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -65,8 +65,10 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 			if err := client.SetCmdClientContextHandler(initClientCtx, cmd); err != nil {
 				return err
 			}
-			customTemplate, customConfig := initAppConfig()
-			return server.InterceptConfigsPreRunHandler(cmd, customTemplate, customConfig)
+			customAppTemplate, customAppConfig := initAppConfig()
+			customTMConfig := initTendermintConfig()
+
+			return server.InterceptConfigsPreRunHandler(cmd, customAppTemplate, customAppConfig, customTMConfig)
 		},
 	}
 
@@ -77,6 +79,18 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 	})
 
 	return rootCmd, encodingConfig
+}
+
+// initTendermintConfig helps to override default Tendermint Config values.
+// return tmcfg.DefaultConfig if no custom configuration is required for the application.
+func initTendermintConfig() *tmcfg.Config {
+	cfg := tmcfg.DefaultConfig()
+
+	// these values put a higher strain on node memory
+	// cfg.P2P.MaxNumInboundPeers = 100
+	// cfg.P2P.MaxNumOutboundPeers = 40
+
+	return cfg
 }
 
 func initAppConfig() (string, interface{}) {

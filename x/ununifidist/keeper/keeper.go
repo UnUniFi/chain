@@ -8,6 +8,7 @@ import (
 
 	"github.com/UnUniFi/chain/x/ununifidist/types"
 	"github.com/cosmos/cosmos-sdk/codec"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
@@ -15,15 +16,15 @@ import (
 type (
 	Keeper struct {
 		cdc           codec.Codec
-		storeKey      sdk.StoreKey
-		memKey        sdk.StoreKey
+		storeKey      storetypes.StoreKey
+		memKey        storetypes.StoreKey
 		paramSpace    paramtypes.Subspace
 		accountKeeper types.AccountKeeper
 		bankKeeper    types.BankKeeper
 	}
 )
 
-func NewKeeper(cdc codec.Codec, storeKey, memKey sdk.StoreKey, paramSpace paramtypes.Subspace, accountKeeper types.AccountKeeper, bankKeeper types.BankKeeper,
+func NewKeeper(cdc codec.Codec, storeKey, memKey storetypes.StoreKey, paramSpace paramtypes.Subspace, accountKeeper types.AccountKeeper, bankKeeper types.BankKeeper,
 ) Keeper {
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
