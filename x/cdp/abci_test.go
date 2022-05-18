@@ -2,7 +2,6 @@ package cdp_test
 
 import (
 	"math/rand"
-	"testing"
 	"time"
 
 	"github.com/stretchr/testify/suite"
@@ -185,6 +184,6 @@ func (suite *ModuleTestSuite) TestSeizeSingleCdpWithFees() {
 	suite.False(found)
 }
 
-func TestModuleTestSuite(t *testing.T) {
-	suite.Run(t, new(ModuleTestSuite))
-}
+// func TestModuleTestSuite(t *testing.T) {
+// 	suite.Run(t, new(ModuleTestSuite))
+// }

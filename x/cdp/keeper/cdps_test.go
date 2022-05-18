@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	"errors"
-	"testing"
 	"time"
 
 	"github.com/stretchr/testify/suite"
@@ -344,6 +343,6 @@ func (suite *CdpTestSuite) TestMintBurnDebtCoins() {
 	suite.Equal(sdk.Coins{}, sk.GetAllBalances(suite.ctx, acc.GetAddress()))
 }
 
-func TestCdpTestSuite(t *testing.T) {
-	suite.Run(t, new(CdpTestSuite))
-}
+// func TestCdpTestSuite(t *testing.T) {
+// 	suite.Run(t, new(CdpTestSuite))
+// }

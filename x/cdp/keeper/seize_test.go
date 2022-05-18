@@ -3,7 +3,6 @@ package keeper_test
 import (
 	"errors"
 	"math/rand"
-	"testing"
 	"time"
 
 	"github.com/stretchr/testify/suite"
@@ -206,6 +205,6 @@ func (suite *SeizeTestSuite) TestApplyLiquidationPenalty() {
 	suite.Panics(func() { suite.keeper.ApplyLiquidationPenalty(suite.ctx, "lol-a", i(1000)) })
 }
 
-func TestSeizeTestSuite(t *testing.T) {
-	suite.Run(t, new(SeizeTestSuite))
-}
+// func TestSeizeTestSuite(t *testing.T) {
+// 	suite.Run(t, new(SeizeTestSuite))
+// }
