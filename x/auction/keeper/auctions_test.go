@@ -14,7 +14,7 @@ import (
 	"github.com/UnUniFi/chain/app"
 	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
-	"github.com/cosmos/cosmos-sdk/simapp"
+	"github.com/cosmos/cosmos-sdk/x/bank/testutil"
 )
 
 func TestSurplusAuctionBasic(t *testing.T) {
@@ -36,7 +36,7 @@ func TestSurplusAuctionBasic(t *testing.T) {
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{sellerAcc}),
 	)
 	ctx := tApp.NewContext(false, tmproto.Header{})
-	require.NoError(t, simapp.FundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
+	require.NoError(t, testutil.FundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
 
 	keeper := tApp.GetAuctionKeeper()
 
@@ -83,7 +83,7 @@ func TestDebtAuctionBasic(t *testing.T) {
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{buyerAcc}),
 	)
 	ctx := tApp.NewContext(false, tmproto.Header{})
-	require.NoError(t, simapp.FundAccount(tApp.BankKeeper, ctx, buyerAddr, cs(c("debt", 100))))
+	require.NoError(t, testutil.FundAccount(tApp.BankKeeper, ctx, buyerAddr, cs(c("debt", 100))))
 
 	keeper := tApp.GetAuctionKeeper()
 
@@ -127,7 +127,7 @@ func TestDebtAuctionDebtRemaining(t *testing.T) {
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{buyerAcc}),
 	)
 	ctx := tApp.NewContext(false, tmproto.Header{})
-	require.NoError(t, simapp.FundAccount(tApp.BankKeeper, ctx, buyerAddr, cs(c("debt", 100))))
+	require.NoError(t, testutil.FundAccount(tApp.BankKeeper, ctx, buyerAddr, cs(c("debt", 100))))
 
 	keeper := tApp.GetAuctionKeeper()
 
@@ -187,7 +187,7 @@ func TestCollateralAuctionBasic(t *testing.T) {
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{sellerAcc}),
 	)
 	ctx := tApp.NewContext(false, tmproto.Header{})
-	require.NoError(t, simapp.FundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
+	require.NoError(t, testutil.FundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
 
 	keeper := tApp.GetAuctionKeeper()
 
@@ -261,7 +261,7 @@ func TestCollateralAuctionDebtRemaining(t *testing.T) {
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{sellerAcc}),
 	)
 	ctx := tApp.NewContext(false, tmproto.Header{})
-	require.NoError(t, simapp.FundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
+	require.NoError(t, testutil.FundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
 
 	keeper := tApp.GetAuctionKeeper()
 
@@ -346,7 +346,7 @@ func TestStartSurplusAuction(t *testing.T) {
 				NewAuthGenStateFromAccs(tApp, authtypes.GenesisAccounts{liqAcc}),
 			)
 			ctx := tApp.NewContext(false, tmproto.Header{}).WithBlockTime(tc.blockTime)
-			require.NoError(t, simapp.FundAccount(tApp.BankKeeper, ctx, liqAddr, initialLiquidatorCoins))
+			require.NoError(t, testutil.FundAccount(tApp.BankKeeper, ctx, liqAddr, initialLiquidatorCoins))
 			keeper := tApp.GetAuctionKeeper()
 
 			// run function under test
@@ -414,7 +414,7 @@ func TestCloseAuction(t *testing.T) {
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{sellerAcc}),
 	)
 	ctx := tApp.NewContext(false, tmproto.Header{})
-	require.NoError(t, simapp.FundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
+	require.NoError(t, testutil.FundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
 
 	keeper := tApp.GetAuctionKeeper()
 
@@ -449,7 +449,7 @@ func TestCloseExpiredAuctions(t *testing.T) {
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{sellerAcc}),
 	)
 	ctx := tApp.NewContext(false, tmproto.Header{})
-	require.NoError(t, simapp.FundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
+	require.NoError(t, testutil.FundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
 
 	keeper := tApp.GetAuctionKeeper()
 

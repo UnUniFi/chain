@@ -7,6 +7,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/cosmos/cosmos-sdk/x/bank/testutil"
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
@@ -14,7 +15,6 @@ import (
 	"github.com/UnUniFi/chain/x/auction"
 	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
-	"github.com/cosmos/cosmos-sdk/simapp"
 )
 
 func TestKeeper_BeginBlocker(t *testing.T) {
@@ -30,7 +30,7 @@ func TestKeeper_BeginBlocker(t *testing.T) {
 	tApp := app.NewTestApp()
 	ctx := tApp.NewContext(true, tmproto.Header{})
 
-	require.NoError(t, simapp.FundModuleAccount(tApp.BankKeeper ,ctx, modAcc.Name, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
+	require.NoError(t, testutil.FundModuleAccount(tApp.BankKeeper, ctx, modAcc.Name, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
 	tApp.InitializeFromGenesisStates(
 		// NewAuthGenStateFromAccs(authtypes.GenesisAccounts{
 		// 	auth.NewBaseAccount(buyer, cs(c("token1", 100), c("token2", 100)), nil, 0, 0),
@@ -67,7 +67,7 @@ func TestKeeper_BeginBlocker(t *testing.T) {
 func c(denom string, amount int64) sdk.Coin { return sdk.NewInt64Coin(denom, amount) }
 func cs(coins ...sdk.Coin) sdk.Coins        { return sdk.NewCoins(coins...) }
 
-func NewAuthGenStateFromAccs(accounts authtypes.GenesisAccounts) app.GenesisState {
+func NewAuthGenStateFromAccs(tApp app.TestApp, accounts authtypes.GenesisAccounts) app.GenesisState {
 	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), accounts)
-	return app.GenesisState{authtypes.ModuleName: authtypes.ModuleCdc.MustMarshalJSON(authGenesis)}
+	return app.GenesisState{authtypes.ModuleName: tApp.AppCodec().MustMarshalJSON(authGenesis)}
 }
