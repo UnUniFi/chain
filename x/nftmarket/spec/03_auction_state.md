@@ -42,7 +42,7 @@ flowchart TD
 ```
 
 ### auction Token and NFT flow 
-#### case. selling,start acution and end auction
+#### case. start acution
 ```mermaid
 flowchart TD
 subgraph start sell nft
@@ -57,7 +57,7 @@ subgraph start auction
 end
 ```
 
-#### case. bidding
+#### case. bidding 
 ```mermaid
 flowchart TD
 subgraph bidding_buy_back
@@ -116,5 +116,47 @@ subgraph bidding_ignore_liquidation
 	force_liquidation_process --GUU--> UI_author
 	force_liquidation_process --UAT--> system
 	force_liquidation_process --NFT--> bidder
+end
+```
+
+### bidding cancel 
+Bid cancellations will have a delay before the tokens are returned  
+The time to return tokens for canceled bids can be determined at the time of the auction  
+```mermaid
+flowchart TD
+subgraph bidding_cancel_bid
+	cancel_bidder[[cancel_bidder]]
+	check_mint{mint stable coins?}
+	check_limit{over limit?}
+
+	check_mint--NO--> bidding_state
+	check_limit--No--> bidding_state
+	bidding_state--UAT--> delay_time_process
+	check_mint--Yes--> check_limit
+	check_limit--Yes--> cancel_process
+	cancel_bidder--UAT--> cancel_process 
+	liquidation_state --UAT--> delay_time_process
+	delay_time_process --UAT--> cancel_bidder
+	cancel_process --UAT--> liquidation_state
+	
+end
+```
+
+### end auction 
+```mermaid
+flowchart TD
+
+subgraph end auction
+	bidder3[[bidder]]
+	seller3[[seller]]
+	NFT_author[[NFT author]]
+	UI_author[[UI author]]
+	bidding_state3[bidding_state]
+	bidding_state3  --UAT--> successful_bid_state
+	bidding_state3  --NFT--> successful_bid_state
+	successful_bid_state  --UAT_and_Locked_UAT--> seller3
+  successful_bid_state  --UAT--> UI_author
+	successful_bid_state  --UAT--> NFT_author
+	successful_bid_state  --NFT--> bidder3
 end
 ```
