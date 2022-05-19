@@ -1,0 +1,120 @@
+# state
+
+The `x/nftmarket` module keeps state of n primary objects:
+
+
+## auction state
+1. unsold_state
+    NFT not listed for auction
+1. selling_state
+1. bidding_state
+1. liquidation_state
+1. successful_bid_state
+
+
+### auction flow 
+```mermaid
+flowchart TD
+    unsold_state -->|1.sell_msg| selling_state
+　  bidding_state   -->|time out|Extend_auction_period{Extend auction period?}
+　  bidding_state   -->|Exceeds available \n loan amount|liquidation{liquidation?}
+		bidding_state   --->|collateral falls below \n the loan value|?{?}
+　  Extend_auction_period-->|Yes_10.extend_msg|bidding_state
+　  selling_state   -->|6.bid_Msg| over_minimum_bid{over minimum bid?}
+　  over_minimum_bid   -->|Yes|	bidding_state
+　  over_minimum_bid   -->|No_reject_6.bit_msg|	selling_state
+　  bidding_state   -->|6.bit_Msg|	bidding_state
+　  bidding_state   -->|7.Mint_Msg|	bidding_state
+　  bidding_state   -->|8.Burn_Msg|	bidding_state
+　  bidding_state   -->|4.accept_Msg|　successful_bid_state
+　  bidding_state   -->|3.buy_back_Msg| unsold_state
+		bidding_state   -->|9.bid_cancellation_Msg| cancelling_check_bidder{other bidder?}
+		cancelling_check_bidder--->|No_faield_bid_cancellation_Msg| bidding_state
+		cancelling_check_bidder-->|Yes| cancelling_check_limit{over limitr?}
+		cancelling_check_limit-->|Yes| liquidation
+		cancelling_check_limit-->|No| bidding_state
+    selling_state   -->|2.cancel_sell_msg| unsold_state
+　  Extend_auction_period-->|No_or_NonAction|　successful_bid_state
+　  liquidation -->|Yes_5.end_auction_Msg|　successful_bid_state
+　  liquidation -->|No_8.BurnMsg|　bidding_state
+　  liquidation -->|NonAction|　penalty_process
+　  penalty_process -->|5.end_auction_Msg|　successful_bid_state
+```
+
+### auction Token and NFT flow 
+#### case. selling,start acution and end auction
+```mermaid
+flowchart TD
+subgraph start sell nft
+	seller1[[seller]]
+	selling_state[[selling_state]]
+	seller1--NFT--> selling_state
+end
+subgraph start auction
+	bidder1[[bidder]]
+	bidding_state1[[bidding_state]]
+	bidder1 --UAT--> bidding_state1
+end
+```
+
+#### case. bidding
+```mermaid
+flowchart TD
+subgraph bidding_buy_back
+	bidder_buy_back[[bidder]]
+	seller_buy_back[[seller]]
+	NFT_author_buy_back[[NFT author]]
+	UI_author_buy_back[[UI author]]
+
+	seller_buy_back --UAT_And_GUU--> buy_back_process
+	buy_back_process --UAT_And_GUU--> bidder_buy_back
+	buy_back_process --GUU--> NFT_author_buy_back
+	buy_back_process --GUU--> UI_author_buy_back
+	buy_back_process --NFT--> seller_buy_back
+end
+
+subgraph bidding_expand_period
+	top_bidder_expand_period[[top_bidder]]
+	second_bidder_expand_period[[second_bidder]]
+	seller_expand_period[[seller]]
+
+	seller_expand_period--GUU--> expand_period_process
+	expand_period_process--GUU--> top_bidder_expand_period
+	expand_period_process--GUU--> second_bidder_expand_period
+end
+```
+
+```mermaid
+flowchart TD
+subgraph bidding_mint_stable_token
+	seller[[seller]]
+
+	bidding_state --UAT--> cdp_process
+	cdp_process--stable_token--> seller
+end
+
+subgraph bidding_prevent_liquidation
+	seller2[[seller]]
+
+	seller2 --stable_token--> liquidation_process
+	liquidation_process--UAT--> change_state_to_bidding_state
+end
+```
+
+```mermaid
+flowchart TD
+subgraph bidding_accept_liquidation
+	seller3[[seller]]
+
+	seller3 --> accept_liquidation_process
+	accept_liquidation_process--Locked_UAT--> end_auction_process
+end
+
+subgraph bidding_ignore_liquidation
+	bidder_state--UAT--> force_liquidation_process 
+	force_liquidation_process --GUU--> NFT_author
+	force_liquidation_process --GUU--> UI_author
+	force_liquidation_process --UAT--> system
+	force_liquidation_process --NFT--> bidder
+end
+```
