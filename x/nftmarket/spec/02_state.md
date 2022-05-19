@@ -10,7 +10,7 @@ The `x/nftmarket` module keeps state of n primary objects:
 
 ## auction state
 nft state flow 
-```
+```mermaid
 flowchart TD
     unsold_state -->|1.sell_msg| selling_state
 　  bidding_state   -->|time out|Extend_auction_period{Extend auction period?}
