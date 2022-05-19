@@ -11,6 +11,20 @@ The `x/nftmarket` module keeps state of n primary objects:
 1. liquidation_state
 1. successful_bid_state
 
+### msg list 
+
+|ID |Name                         |
+|---|-----------------------------|
+|1  |sell Msg                     |
+|2  |cancel sell Msg              |
+|3  |buy back Msg                 |
+|4  |accept Msg                   |
+|5  |end auction Msg              |
+|6  |bid Msg                      |
+|7  |mint stable coin Msg         |
+|8  |burn stable coin Msg         |
+|9  |bid cancellation Msg         |
+|10 |extend Msg                   |
 
 ### auction flow 
 ```mermaid
