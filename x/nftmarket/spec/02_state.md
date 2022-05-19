@@ -9,7 +9,14 @@ The `x/nftmarket` module keeps state of n primary objects:
 
 
 ## auction state
-nft state flow 
+1. unsold_state
+1. selling_state
+1. bidding_state
+1. liquidation_state
+1. successful_bid_state
+
+
+auction flow 
 ```mermaid
 flowchart TD
     unsold_state -->|1.sell_msg| selling_state
@@ -26,7 +33,7 @@ flowchart TD
 　  bidding_state   -->|4.accept_Msg|　successful_bid_state
 　  bidding_state   -->|3.buy_back_Msg| unsold_state
 		bidding_state   -->|9.bid_cancellation_Msg| cancelling_check_bidder{other bidder?}
-		cancelling_check_bidder--->|No_faield_bid_cancellation_Msg| bidding_state{other bidder?}
+		cancelling_check_bidder--->|No_faield_bid_cancellation_Msg| bidding_state
 		cancelling_check_bidder-->|Yes| cancelling_check_limit{over limitr?}
 		cancelling_check_limit-->|Yes| liquidation
 		cancelling_check_limit-->|No| bidding_state
