@@ -53,7 +53,7 @@ end
 subgraph start auction
 	bidder1[[bidder]]
 	bidding_state1[[bidding_state]]
-	bidder1 --UAT--> bidding_state1
+	bidder1 --BT--> bidding_state1
 end
 ```
 
@@ -66,8 +66,8 @@ subgraph bidding_buy_back
 	NFT_author_buy_back[[NFT author]]
 	UI_author_buy_back[[UI author]]
 
-	seller_buy_back --UAT_And_GUU--> buy_back_process
-	buy_back_process --UAT_And_GUU--> bidder_buy_back
+	seller_buy_back --BT_And_GUU--> buy_back_process
+	buy_back_process --BT_And_GUU--> bidder_buy_back
 	buy_back_process --GUU--> NFT_author_buy_back
 	buy_back_process --GUU--> UI_author_buy_back
 	buy_back_process --NFT--> seller_buy_back
@@ -89,7 +89,7 @@ flowchart TD
 subgraph bidding_mint_stable_token
 	seller[[seller]]
 
-	bidding_state --UAT--> cdp_process
+	bidding_state --BT--> cdp_process
 	cdp_process--stable_token--> seller
 end
 
@@ -97,7 +97,7 @@ subgraph bidding_prevent_liquidation
 	seller2[[seller]]
 
 	seller2 --stable_token--> liquidation_process
-	liquidation_process--UAT--> change_state_to_bidding_state
+	liquidation_process--BT--> change_state_to_bidding_state
 end
 ```
 
@@ -107,14 +107,14 @@ subgraph bidding_accept_liquidation
 	seller3[[seller]]
 
 	seller3 --> accept_liquidation_process
-	accept_liquidation_process--Locked_UAT--> end_auction_process
+	accept_liquidation_process--Locked_BT--> end_auction_process
 end
 
 subgraph bidding_ignore_liquidation
-	bidder_state--UAT--> force_liquidation_process 
+	bidder_state--BT--> force_liquidation_process 
 	force_liquidation_process --GUU--> NFT_author
 	force_liquidation_process --GUU--> UI_author
-	force_liquidation_process --UAT--> system
+	force_liquidation_process --BT--> system
 	force_liquidation_process --NFT--> bidder
 end
 ```
@@ -131,13 +131,13 @@ subgraph bidding_cancel_bid
 
 	check_mint--NO--> bidding_state
 	check_limit--No--> bidding_state
-	bidding_state--UAT--> delay_time_process
+	bidding_state--BT--> delay_time_process
 	check_mint--Yes--> check_limit
 	check_limit--Yes--> cancel_process
-	cancel_bidder--UAT--> cancel_process 
-	liquidation_state --UAT--> delay_time_process
-	delay_time_process --UAT--> cancel_bidder
-	cancel_process --UAT--> liquidation_state
+	cancel_bidder--BT--> cancel_process 
+	liquidation_state --BT--> delay_time_process
+	delay_time_process --BT--> cancel_bidder
+	cancel_process --BT--> liquidation_state
 	
 end
 ```
@@ -152,11 +152,11 @@ subgraph end auction
 	NFT_author[[NFT author]]
 	UI_author[[UI author]]
 	bidding_state3[bidding_state]
-	bidding_state3  --UAT--> successful_bid_state
+	bidding_state3  --BT--> successful_bid_state
 	bidding_state3  --NFT--> successful_bid_state
-	successful_bid_state  --UAT_and_Locked_UAT--> seller3
-  successful_bid_state  --UAT--> UI_author
-	successful_bid_state  --UAT--> NFT_author
+	successful_bid_state  --BT_and_Locked_BT--> seller3
+  successful_bid_state  --BT--> UI_author
+	successful_bid_state  --BT--> NFT_author
 	successful_bid_state  --NFT--> bidder3
 end
 ```
