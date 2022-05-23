@@ -146,7 +146,7 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 				if ethErr := VerifyEthereumSignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx); ethErr == nil {
 					return next(ctx, tx, simulate)
 				} else {
-					fmt.Println("ethereum signature verification failed; %s", ethErr.Error())
+					fmt.Printf("ethereum signature verification failed; %s", ethErr.Error())
 				}
 
 				var errMsg string
