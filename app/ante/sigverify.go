@@ -17,6 +17,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/legacy/legacytx"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
+
+	"github.com/ethereum/go-ethereum/accounts"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 )
 
 var (
@@ -138,6 +142,13 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 		if !simulate {
 			err := authsigning.VerifySignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx)
 			if err != nil {
+				// try verifying signature with etherum
+				if ethErr := VerifyEthereumSignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx); ethErr == nil {
+					return next(ctx, tx, simulate)
+				} else {
+					fmt.Println("ethereum signature verification failed; %s", ethErr.Error())
+				}
+
 				var errMsg string
 				if OnlyLegacyAminoSigners(sig.Data) {
 					// If all signers are using SIGN_MODE_LEGACY_AMINO, we rely on VerifySignature to check account sequence number,
@@ -147,12 +158,48 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 					errMsg = fmt.Sprintf("signature verification failed; please verify account number (%d) and chain-id (%s)", accNum, chainID)
 				}
 				return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, errMsg)
-
 			}
 		}
 	}
 
 	return next(ctx, tx, simulate)
+}
+
+func VerifyEthereumSignature(pubKey cryptotypes.PubKey, signerData authsigning.SignerData, sigData signing.SignatureData, handler authsigning.SignModeHandler, tx sdk.Tx) error {
+	switch data := sigData.(type) {
+	case *signing.SingleSignatureData:
+		signBytes, err := handler.GetSignBytes(data.SignMode, signerData, tx)
+		if err != nil {
+			return err
+		}
+
+		signatureData := data.Signature
+		signatureData[crypto.RecoveryIDOffset] -= 27 // Transform yellow paper V from 27/28 to 0/1
+		recovered, err := crypto.SigToPub(accounts.TextHash(signBytes), signatureData)
+		if err != nil {
+			return err
+		}
+		recoveredAddr := crypto.PubkeyToAddress(*recovered)
+
+		sigTx, ok := tx.(authsigning.SigVerifiableTx)
+		if !ok {
+			return sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
+		}
+
+		signerAddrs := sigTx.GetSigners()
+		if len(signerAddrs) != 1 {
+			return fmt.Errorf("only 1 signer transaction supported: got %d", len(signerAddrs))
+		}
+
+		address := signerAddrs[0]
+
+		if recoveredAddr.String() != common.BytesToAddress(address).String() {
+			return fmt.Errorf("mismatching recovered address and sender: %s != %s", recoveredAddr.String(), common.BytesToAddress(address).String())
+		}
+		return nil
+	default:
+		return fmt.Errorf("unexpected SignatureData %T", sigData)
+	}
 }
 
 // DefaultSigVerificationGasConsumer is the default implementation of SignatureVerificationGasConsumer. It consumes gas
