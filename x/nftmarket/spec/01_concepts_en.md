@@ -6,116 +6,115 @@ Stable tokens can be minted with NFT as collateral
 ## basic
 
 ### selling 
-1. 所有しているNFTを出品することができる
-1. 出品するにはGUUをステーキングする必要がある
-1. 入札に使うトークンを選ぶことができる。
-1. 出品するNFTはロックされる
-1. 時間経過で出品が終了する
-1. 誰も入札がいない場合は、x回まで自動的で再出品される
-1. 認証済みのNFTを表示できる
-1. NFTを出品するのにはX秒のDelayが入る。
-1. N個目の出品から手数料が発生する
-1. 出品時に、最低入札額を決めることができる
-1. 出品者のSign以外の場合は、受け付けずログを残すこと
+1. You can list the NFTs you own on the market.
+1. You must stake a GUU in order to list your NFTs on the market.
+1. you can choose which token to use for bidding.
+1. the NFT to be listed on the market is locked
+1. the auction will end after a certain amount of time
+1. if no bids are received, the item will automatically be re-listed up to x times
+1. can display authenticated NFTs
+1. there will be a Delay of X seconds to be listed NFT to be listed.
+1. commission fee will be charged from the Nth listing
+1. can list a minimum bid at the time of listing
+1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
 ### selling cancel
-1. 誰にも入札されていない場合に、出品者は出品キャンセルすることができる
-1. 入札されている場合は、出品キャンセルすることはできない
-1. 出品キャンセルは出品後N秒経過後にしか行えない
-1. 出品キャンセルするとNFTはロック解除され出品者に返却される
-1. 出品者のSign以外の場合は、受け付けずログを残すこと
+1. if no one has bid on the item, the seller can cancel the listing
+1. if a bid has been submitted, it is not possible to cancel the listing
+1. an item can only be cancelled after N seconds have elapsed from the time it was placed on the market
+1. the NFT to be listed will be unlocked and returned to the seller when the listing is cancelled
+1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
 ### buy back
-1. 出品されているNFTを買い戻すことができる
-1. 買い戻す場合は、入札額 * (100 + n)%の金額を支払わなければならない
-1. 買い戻された最上位入札者は、手数料をもらうことができる
-1. 買い戻された2位以下入札者は、手数料をもらうことができない
-1. ロックされた入札トークンは全て払い戻される
-1. 出品者のSign以外の場合は、受け付けずログを残すこと
+1. you can buy back the NFTs you have listed
+1. in the case of a buy-back, the bid * (100 + n)% must be paid
+1. if the seller buys back the item, the highest bidder can get a commission
+1. if the seller buys back the item, the 2. the second and lower bidders are not entitled to a commission
+1. all locked bid tokens will be refunded
+1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
 ### expand auction period
-1. 出品者はXトークンを支払い、オークションの期間を延長することができる
-1. 出品者が支払った手数料は1位2位入札者に50％で等分され支払われる
-1. 出品者のSign以外の場合は、受け付けずログを残すこと
+1. the listee can pay X tokens to extend the duration of the auction
+1. the commission paid by the seller will be divided equally by 50% to the first and second place bidders
+1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
 ### bid
-1. 出品されているNFTを入札することができる
-1. 入札するトークンはBT基準を満たしていないといけない
-1. 最低入札額を上回っていないと入札できない
-1. 入札すると入札キャンセルまでトークンがロックされる
-1. 自分が最上位入札の場合にさらに高値を更新したい場合は、再度Bidする
-1. 高額の入札をしても2位の価格からの刻み入札になる（like ヤフオク
-1. 入札が成功し、出品残り時間N時間の場合、自動的にn'分出品時間が伸びる
-1. Anyトークンでの入札時に入札に使うトークンが全体のn比率を超えると、そのトークンでの入札はできなくなる
-1. 入札者とtxのSignが一致していること、それ以外の場合は、受け付けずログを残すこと
+1. you can bid on the NFTs on the market
+1. tokens to be bid on must meet BT criteria
+1. you cannot bid unless you exceed the minimum bid
+1. when you place a bid, the token is locked until you cancel your bid or the auction ends.
+1. if you are the highest bidder and you want to make a higher bid, bid again
+1. a high bid will result in a tick-bid from the second highest price(like ebay)
+1. if the bidder has N hours remaining in the auction when the bidding takes place, the auction time will automatically be extended by n' minutes.
+1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
 ### bid cancel
-1. 入札をキャンセルすることができる
-1. 自分自身しか入札していない場合は、キャンセルすることができない
-1. 最上位入札キャンセルは、(出品者がCDPした金額 - 2位の入札額)が引かれて入札金額が返却される
-1. 入札のキャンセルは入札後X日後にしか行えない
-1. 入札キャンセル成立後、X日後にトークンの払い出される
-1. 入札をキャンセルされた出品者は清算が起こる可能性がある
-1. 入札者かつtxと入札キャンセル者のSignが一致していること、それ以外の場合は、受け付けずログを残すこと
+1. you may cancel your bid
+1. if you are the only bidder yourself, you cannot cancel
+1. ※書きなおし予定.最上位入札キャンセルは、(出品者がCDPした金額 - 2位の入札額)が引かれて入札金額が返却される
+1. bids can only be cancelled X days after bidding
+1. tokens will be disbursed X days after the bid cancellation is approved
+1. a seller whose bid is cancelled may experience a liquidation
+1. the bidder and the bid canceller's Sign must match, otherwise the bid will not be accepted and a log will be kept.
 
 ### accept bid
-1. 出品者は入札を受け入れ、最上位入札者を落札者として確定することができる
-1. 出品者のSign以外の場合は、受け付けずログを残すこと
+1. sellers can accept bids and confirm the highest bidder as the successful bidder
+1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
 ### success bid
-1. オークションが成立すると、出品者にトークン、落札者にNFTが引き渡される
-1. オークションが成立すると、2位以下のロックされたトークンは開放される
-1. NFTの引き渡しは落札後X日経過後
-1. Tokenの引き渡しは落札後X日経過後
-1. 価格情報は記録し、queryで引き出せること
-1. 価格情報はNFT,出品者,落札者,落札日時,落札タイプ,入札件数,を累積で記録すること
+1. When an auction is successful, tokens are handed over to the seller and NFTs are handed over to the successful bidder.
+1. when the auction is successful, the locked tokens below the second place are released
+1. delivery of the NFT will be made X days after the successful bid
+1. the Token will be delivered X days after the successful bid.
+1. price information must be recorded and pulled up in query
+1. the price information shall be recorded as NFT, seller, successful bidder, successful bid price, successful bid date and time, successful bid type, and the number of bids cumulatively.
 
 ### bidding reward
-1. BTが直接借用資産型の場合に、入札すると(入札者がステーキングしているGUU x 2 or N)を限度額にbGUUを受け取ることができる
-1. 落札時や入札キャンセル時にbGUUを返却しないとNFTを受け取ることができない
-1. 入札キャンセル時にbGUUを返却しないとトークンを受け取ることができない
+1. if the BT is a Direct Borrowed Asset type, the bidder will receive bGUUs up to (GUUs staked by the bidder x 2 or N)
+1. you must return the bGUU when you win a bid or cancel a bid to receive the NFT
+1. you must return the bGUU at the time of bid cancellation to receive the token
 
 ### borrow
-1. 直接借用資産型オークションの場合、出品者は入札されたトークンの50％をprotocolから直接借りることができる
-1. 出品者は借りたトークンをprotocolへ戻すことができる
-1. 出品者のSign以外の場合は、受け付けずログを残すこと
+1. in the case of a direct borrow asset type auction, the seller can borrow 50% of the bid tokens directly from the PROTOCOL
+1. the seller can return the borrowed tokens to the protocol
+1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
 ### CDP
-1. 出品者は入札額の50%を限度額とし、それ以下の金額でステーブルトークンを発行できる
-1. 出品者は発行したステーブルトークンをprotocolへ戻すことができる
-1. 出品者のSign以外の場合は、受け付けずログを残すこと
+1. the seller may issue stable tokens for up to 50% of the bid amount, but not more than
+1. the seller can return the issued stave tokens to the protocol
+1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
 ### liquidation
-1. CDPで発行したステーブルトークンや借りたトークンはTemporaryTokenとする
-1. 入札キャンセルや入札トークン価値が下がり、TemporaryTokenが入札額の50%を上回った場合、清算するかTemporaryTokenを戻して50％以下にしなければ、NFTが入札者に強制的に支払われることになる
-1. 清算が発生している時に、N時間までにTemporaryTokenを戻すか、落札を決めないと罰則が発生する
-1. 罰則は、出品者に対して、トークンが支払われず、それ以外は落札と同じ流れとなる
-1. 出品者のSign以外の場合は、受け付けずログを残すこと
+1. stave tokens issued by CDP and borrowed tokens are considered TemporaryToken
+1. if TemporaryToken exceeds 50% of the bid amount due to bid cancellations or a drop in bid token value, it must be liquidated or TemporaryToken returned to less than 50%.Failing that, the NFT will be given to the bidder.
+1. the seller must return the TemporaryToken before the liquidation or decide to win the bid. Failure to do so will result in penalties.
+1. the penalty is that no tokens will be paid to the seller. Other than that, the process will be the same as a successful bid.
+1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
 ### BT(Bidding Token)
-1. BTはオークションに使用されるトークン基準
-1. BTは2種類あり、オークションタイプや出品者がstableトークンを発行することにより変更になる。
-1. 直接借用資産型オークションの場合、BTは、出品者が指定したトークンのみになる。
-1. 合成資産造成型オークションの場合、BTは、UnUniFiがサポートする任意のトークンを使用できる
+1. BT is the token standard used for auctions
+1. There are two types of BTs, and they change depending on the auction type and whether the seller issues stable tokens.
+1. for direct borrowing asset type auctions, BT is only for tokens specified by the seller
+1. for synthetic asset creation type auctions, BT can use any token supported by UnUniFi
 
 
 ## expanded
 
 ### incentive system
-1. 買い戻し発生時に、NFT作者、外部フロントエンドエンジニア、ecosystemプールにそれぞれN%のインセンティブが発生する
-1. 落札時に、NFT作者、外部フロントエンドエンジニア、ecosystemプールにそれぞれN%のインセンティブが発生する
+1. when a seller repurchases an NFT, the NFT author, the external front-end engineer, and the ecosystem pool will each receive an N% incentive
+1. upon winning the NFT bid, the NFT author, the external front-end engineer, and the ecosystem pool will each receive an N% incentive
 
 ### valut system
-1. 出品したNFTはValutに格納される
-1. 入札に使用したトークンはValutに格納される
-1. NFTを担保にCDPする場合は、vaultを経由して行う
-1. 落札時のNFT払い出しは、vaultを経由して行う
-1. 落札時のトークン払い出しは、vaultを経由して行う
-1. valutはセキュリティインシデントが起きた時にXによって閉めることができる
+1. the NFTs you submitted are stored in Valut
+1. tokens used for bidding are stored in Valut
+1. when CDPing NFT as collateral, do so via vault
+1. the way to pass the NFT to the successful bidder is via vault
+1. the way to give tokens to sellers after the auction is over is via vault
+1. valut can be closed by X in the event of a security incident
 
 ### saving system
-1. voteによって奪われたトークンを取り戻すことができる
-1. voteによって奪われたNFTを取り戻すことができる
-1. Xの権利でIBCチャンネルを閉じることができる
-1. Xの権利で特定の入札トークンの利用取り消すことができる
-1. Xの権利でオークション機能を停止することができる
+1. vote allows you to regain tokens stolen from an attacker
+1. vote allows you to regain NFTs stolen from an attacker
+1. x can close the IBC channel
+1. X may cancel the use of a particular bid token
+1. X can stop the auction function
