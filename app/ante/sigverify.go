@@ -1,6 +1,7 @@
 package ante
 
 import (
+	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 
@@ -37,6 +38,91 @@ func init() {
 	bz, _ := hex.DecodeString("035AD6810A47F073553FF30D2FCC7E0D3B1C0B74B61A1AAA2582344037151E143A")
 	copy(key, bz)
 	simSecp256k1Pubkey.Key = key
+}
+
+// SetPubKeyDecorator sets PubKeys in context for any signer which does not already have pubkey set
+// PubKeys must be set in context for all signers before any other sigverify decorators run
+// CONTRACT: Tx must implement SigVerifiableTx interface
+type SetPubKeyDecorator struct {
+	ak ante.AccountKeeper
+}
+
+func NewSetPubKeyDecorator(ak ante.AccountKeeper) SetPubKeyDecorator {
+	return SetPubKeyDecorator{
+		ak: ak,
+	}
+}
+
+func (spkd SetPubKeyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
+	sigTx, ok := tx.(authsigning.SigVerifiableTx)
+	if !ok {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid tx type")
+	}
+
+	pubkeys, err := sigTx.GetPubKeys()
+	if err != nil {
+		return ctx, err
+	}
+	signers := sigTx.GetSigners()
+
+	for i, pk := range pubkeys {
+		// PublicKey was omitted from slice since it has already been set in context
+		if pk == nil {
+			if !simulate {
+				continue
+			}
+			pk = simSecp256k1Pubkey
+		}
+		// Only make check if simulate=false
+		// if !simulate && !bytes.Equal(pk.Address(), signers[i]) {
+		// 	return ctx, sdkerrors.Wrapf(sdkerrors.ErrInvalidPubKey,
+		// 		"pubKey does not match signer address %s with signer index: %d", signers[i], i)
+		// }
+
+		acc, err := GetSignerAcc(ctx, spkd.ak, signers[i])
+		if err != nil {
+			return ctx, err
+		}
+		// account already has pubkey set,no need to reset
+		if acc.GetPubKey() != nil {
+			continue
+		}
+		err = acc.SetPubKey(pk)
+		if err != nil {
+			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidPubKey, err.Error())
+		}
+		spkd.ak.SetAccount(ctx, acc)
+	}
+
+	// Also emit the following events, so that txs can be indexed by these
+	// indices:
+	// - signature (via `tx.signature='<sig_as_base64>'`),
+	// - concat(address,"/",sequence) (via `tx.acc_seq='cosmos1abc...def/42'`).
+	sigs, err := sigTx.GetSignaturesV2()
+	if err != nil {
+		return ctx, err
+	}
+
+	var events sdk.Events
+	for i, sig := range sigs {
+		events = append(events, sdk.NewEvent(sdk.EventTypeTx,
+			sdk.NewAttribute(sdk.AttributeKeyAccountSequence, fmt.Sprintf("%s/%d", signers[i], sig.Sequence)),
+		))
+
+		sigBzs, err := signatureDataToBz(sig.Data)
+		if err != nil {
+			return ctx, err
+		}
+		for _, sigBz := range sigBzs {
+			events = append(events, sdk.NewEvent(sdk.EventTypeTx,
+				sdk.NewAttribute(sdk.AttributeKeySignature, base64.StdEncoding.EncodeToString(sigBz)),
+			))
+		}
+	}
+
+	ctx.EventManager().EmitEvents(events)
+
+	return next(ctx, tx, simulate)
 }
 
 // SignatureVerificationGasConsumer is the type of function that is used to both
@@ -173,7 +259,11 @@ func VerifyEthereumSignature(pubKey cryptotypes.PubKey, signerData authsigning.S
 			return err
 		}
 
+		fmt.Println("signBytes", string(signBytes))
 		signatureData := data.Signature
+		if len(signatureData) <= crypto.RecoveryIDOffset {
+			return fmt.Errorf("not a correct ethereum signature")
+		}
 		signatureData[crypto.RecoveryIDOffset] -= 27 // Transform yellow paper V from 27/28 to 0/1
 		recovered, err := crypto.SigToPub(accounts.TextHash(signBytes), signatureData)
 		if err != nil {
