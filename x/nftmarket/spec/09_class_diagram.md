@@ -2,18 +2,18 @@
 
 ```mermaid
  classDiagram
-      Sell <|-- collateral
-      Sell <|-- Bid
+      Listing <|-- collateral
+      Listing <|-- Bid
       Bid <|-- collateral
       collateral <|-- stateOperation
       Bid <|-- stateOperation
-      Sell <|-- stateOperation
-      class Sell{
+      Listing <|-- stateOperation
+      class Listing{
           +enum tokenType
           +enum auctionType
           +int minimumBid
           +any sellerInfo
-          sell()
+          list()
           sold()
           cancel()
           canCancel()
