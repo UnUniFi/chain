@@ -3,24 +3,24 @@
 ```mermaid
  classDiagram
       Sell <|-- collateral
-      Sell <|-- Bit
-      Bit <|-- collateral
+      Sell <|-- Bid
+      Bid <|-- collateral
       collateral <|-- stateOperation
-      Bit <|-- stateOperation
+      Bid <|-- stateOperation
       Sell <|-- stateOperation
       class Sell{
           +enum tokenType
           +enum auctionType
-          +int minimumBit
+          +int minimumBid
           +any sellerInfo
           sell()
           sold()
           cancel()
           canCancel()
-          buyBuck(Bit instance)
+          buyBuck(Bid instance)
       }
-      class Bit{
-          bit()
+      class Bid{
+          bid()
           cancel()
           getTopBidder()
           getBidderList()
