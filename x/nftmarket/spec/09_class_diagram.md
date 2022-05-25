@@ -1,26 +1,23 @@
-# dependent module
-
-vaults
-nft_auth
-
+# class diagram
 
 ```mermaid
  classDiagram
       Sell <|-- collateral
       Sell <|-- Bit
       Bit <|-- collateral
-      collateral <|-- state_operation
-      Bit <|-- state_operation
-      Sell <|-- state_operation
+      collateral <|-- stateOperation
+      Bit <|-- stateOperation
+      Sell <|-- stateOperation
       class Sell{
-          +int token_type
-          +int type
-          +int minimum_bit
-          selling()
+          +enum tokenType
+          +enum auctionType
+          +int minimumBit
+          +any sellerInfo
           sell()
+          sold()
           cancel()
           canCancel()
-          buy_buck(Bit instance)
+          buyBuck(Bit instance)
       }
       class Bit{
           bit()
@@ -32,7 +29,7 @@ nft_auth
           mint()
           burn()
       }
-      class state_operation {
+      class stateOperation {
           +state
           +time
           nextState(string msgName)
@@ -42,3 +39,7 @@ nft_auth
           + timeList
       }
 ```
+
+
+The collateralRateListByCollaterall is used for liquidation checks.  
+timeList is used for auction closeout checks.   
