@@ -5,6 +5,10 @@ Stable tokens can be minted with NFT as collateral
 
 ## basic
 
+## auction system
+1. sellers can list "bid hook"
+1. bid hook affects bid deposit amount, bid cancellation amount, collateral amount, and bidder determination logic  
+  see 10_Generalized_auction_deposit.md
 ### selling 
 1. You can list the NFTs you own on the market.
 1. You must stake a GUU in order to list your NFTs on the market.
@@ -42,7 +46,7 @@ Stable tokens can be minted with NFT as collateral
 1. you can bid on the NFTs on the market
 1. tokens to be bid on must meet BT criteria
 1. you cannot bid unless you exceed the minimum bid
-1. when you place a bid, the token is locked until you cancel your bid or the auction ends.
+1. bidding with "p" amount of tokens will deposit "d" amount(Calculation Formula: $d=\frac{1}{bid hook}\times p$)
 1. if you are the highest bidder and you want to make a higher bid, bid again
 1. a high bid will result in a tick-bid from the second highest price(like ebay)
 1. if the bidder has N hours remaining in the auction when the bidding takes place, the auction time will automatically be extended by n' minutes.
@@ -51,19 +55,28 @@ Stable tokens can be minted with NFT as collateral
 ### bid cancel
 1. you may cancel your bid
 1. if you are the only bidder yourself, you cannot cancel
-1. ※書きなおし予定.最上位入札キャンセルは、(出品者がCDPした金額 - 2位の入札額)が引かれて入札金額が返却される
+1. free bid cancellation if bid rank is below bid hook
+1. if the bid rank is bid hook or higher, the bid can be cancelled by paying the deposit amount
 1. bids can only be cancelled X days after bidding
 1. tokens will be disbursed X days after the bid cancellation is approved
 1. a seller whose bid is cancelled may experience a liquidation
 1. the bidder and the bid canceller's Sign must match, otherwise the bid will not be accepted and a log will be kept.
 
-### accept bid
-1. sellers can accept bids and confirm the highest bidder as the successful bidder
+### end auction
+1. sellers can end the auction
+1. deposits below the bid hook will be returned at the end of the auction
+1. at the end of the auction, the bidder with the bid hook position or higher will be considered as a wining bidder candidate
 1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
-### success bid
+### pay auction fee
+1. the wining bidder candidates must pay the bid amount minus the deposit amount by N time
+1. after N hours, the protocol checks whether the wining bidder candidates  have paid their bids, starting with the highest bidder
+1. the deposit amount ofthe wining bidder candidates who has not paid at the time of confirmation will be collected
+1. upon confirmation of payment by the wining bidder candidates, it shall be the successful bidder
+1. the deposit amount of the wining bidder candidates below the successful bidder will be returned
+1. the winning bid price will be the amount of the deposit collected + the amount of the bid
+1. if all wining bidder candidates do not pay, the amount of the collected deposit plus NFT to be listed will be given to the seller
 1. When an auction is successful, tokens are handed over to the seller and NFTs are handed over to the successful bidder.
-1. when the auction is successful, the locked tokens below the second place are released
 1. delivery of the NFT will be made X days after the successful bid
 1. the Token will be delivered X days after the successful bid.
 1. price information must be recorded and pulled up in query
@@ -80,7 +93,7 @@ Stable tokens can be minted with NFT as collateral
 1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
 ### CDP
-1. the seller may issue stable tokens for up to 50% of the bid amount, but not more than
+1. in the case of a synthetic asset creation type auctions, the seller may issue stable tokens for up to 50% of the bid amount, but not more than
 1. the seller can return the issued stave tokens to the protocol
 1. tx will not be accepted except for the Seller's Sign. And keep a log.
 

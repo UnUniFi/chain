@@ -9,6 +9,7 @@ The `x/nftmarket` module keeps state of n primary objects:
 1. selling_state
 1. bidding_state
 1. liquidation_state
+1. end_auction_state
 1. successful_bid_state
 
 ### msg list 
@@ -18,13 +19,14 @@ The `x/nftmarket` module keeps state of n primary objects:
 |1  |sell Msg                     |
 |2  |cancel sell Msg              |
 |3  |buy back Msg                 |
-|4  |accept Msg                   |
+|4  |end auction Msg              |
 |5  |end auction Msg              |
 |6  |bid Msg                      |
 |7  |mint stable coin Msg         |
 |8  |burn stable coin Msg         |
 |9  |bid cancellation Msg         |
 |10 |extend Msg                   |
+|11 |pay auction fee Msg          |
 
 ### auction flow 
 ```mermaid
@@ -40,7 +42,7 @@ flowchart TD
 　  bidding_state   -->|6.bit_Msg|	bidding_state
 　  bidding_state   -->|7.Mint_Msg|	bidding_state
 　  bidding_state   -->|8.Burn_Msg|	bidding_state
-　  bidding_state   -->|4.accept_Msg|　successful_bid_state
+　  bidding_state   -->|4.end_auction_Msg|　end_auction_state
 　  bidding_state   -->|3.buy_back_Msg| unsold_state
 		bidding_state   -->|9.bid_cancellation_Msg| cancelling_check_bidder{other bidder?}
 		cancelling_check_bidder--->|No_faield_bid_cancellation_Msg| bidding_state
@@ -48,11 +50,18 @@ flowchart TD
 		cancelling_check_limit-->|Yes| liquidation
 		cancelling_check_limit-->|No| bidding_state
     selling_state   -->|2.cancel_sell_msg| unsold_state
-　  Extend_auction_period-->|No_or_NonAction|　successful_bid_state
-　  liquidation -->|Yes_5.end_auction_Msg|　successful_bid_state
+　  Extend_auction_period-->|No_or_NonAction|　end_auction_state
+　  liquidation -->|Yes_5.end_auction_Msg|　end_auction_state
 　  liquidation -->|No_8.BurnMsg|　bidding_state
 　  liquidation -->|NonAction|　penalty_process
-　  penalty_process -->|5.end_auction_Msg|　successful_bid_state
+　  penalty_process -->|5.end_auction_Msg|　end_auction_state
+　  end_auction_state   -->　pay_check{pay fee?}
+　  pay_check   -->|yes|　successful_bid_state
+　  pay_check   -->|no|　Deposit_collection_process
+　  Deposit_collection_process   -->　check_wining_bidder_candidates{any_wining_bidder_candidates?}
+　  check_wining_bidder_candidates   -->|yes|　pay_check
+　  check_wining_bidder_candidates   -->|no|　pay_collected_deposit_process
+　  pay_collected_deposit_process   -->　unsold_state
 ```
 
 ### auction Token and NFT flow 
@@ -161,13 +170,26 @@ end
 flowchart TD
 
 subgraph end auction
+	seller2[[seller]]
+	successful_bid_state1[successful_bid_state1]
+	end_auction_state  --> check_pay{payed?}
+	check_pay  --yes--> successful_bid_state1
+	check_pay  --no--> collected_deposit
+	collected_deposit --> check_wining_bidder{any_wining_bidder?}
+	check_wining_bidder --yes--> check_pay
+	check_wining_bidder --no--> return_process
+	return_process --NFT_and_BT--> seller2
+	return_process --> unsold_state
+end
+
+subgraph successful bid
 	bidder3[[bidder]]
 	seller3[[seller]]
 	NFT_author[[NFT author]]
 	UI_author[[UI author]]
-	bidding_state3[bidding_state]
-	bidding_state3  --BT--> successful_bid_state
-	bidding_state3  --NFT--> successful_bid_state
+	end_auction_state3[end_auction_state]
+	end_auction_state3  --BT--> successful_bid_state
+	end_auction_state3  --NFT--> successful_bid_state
 	successful_bid_state  --BT_and_Locked_BT--> seller3
   successful_bid_state  --BT--> UI_author
 	successful_bid_state  --BT--> NFT_author
