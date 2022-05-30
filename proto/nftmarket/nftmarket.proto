@@ -8,7 +8,28 @@ import "cosmos/base/v1beta1/coin.proto";
 option go_package = "github.com/UnUniFi/chain/x/nftmarket/types";
 
 message NftListing {
+  repeated string bid_tokens = 1;
+  cosmos.base.v1beta1.Coin minimum_bid = 2 [ (gogoproto.nullable) = false ];
 }
 
 message Params {
+  string min_staking_for_listing = 1 [
+    (gogoproto.moretags) = "yaml:\"min_staking_for_listing\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  repeated string bid_tokens = 2;
+  uint64 auto_relisting_count_if_no_bid = 3;
+  uint64 nft_listing_delay_seconds = 4;
+  uint64 nft_listing_cancel_required_seconds = 5;
+  uint64 nft_listing_buy_back_extra_percentage = 6;
+  uint64 nft_auction_gap_time = 7;
+  uint64 bid_cancel_required_seconds = 8;
+  uint64 bid_token_disburse_seconds_after_cancel = 9;
+  uint64 nft_auction_full_payment_period = 10;
+  uint64 nft_auction_nft_delivery_period = 11;
+  uint64 nft_creator_share_percentage = 12;
+  string market_administrator = 13;
+  cosmos.base.v1beta1.Coin nft_listing_commission_fee = 14 [ (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin nft_listing_extend_fee = 15 [ (gogoproto.nullable) = false ];
 }
