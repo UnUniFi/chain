@@ -89,12 +89,12 @@ Stable tokens can be minted with NFT as collateral
 1. you must return the bGUU at the time of bid cancellation to receive the token
 
 ### borrow
-1. in the case of a direct borrow asset type auction, the seller can borrow 50% of the bid tokens directly from the PROTOCOL
+1. in the case of a direct borrow asset type auction, the seller can borrow the Total deposit amount above bid_hook rank from the PROTOCOL
 1. the seller can return the borrowed tokens to the protocol
 1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
 ### CDP
-1. in the case of a synthetic asset creation type auctions, the seller may issue stable tokens for up to 50% of the bid amount, but not more than
+1. in the case of a synthetic asset creation type auctions, the seller may issue stable tokens for up to the total deposit amount above bid_hook rank, but not more than
 1. the seller can return the issued stave tokens to the protocol
 1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
