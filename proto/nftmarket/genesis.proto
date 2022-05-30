@@ -1,0 +1,19 @@
+syntax = "proto3";
+package ununifi.nftmarket;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "nftmarket/nftmarket.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/nftmarket/types";
+
+// GenesisState defines the nftmarket module's genesis state.
+message GenesisState {
+  Params params = 1 [
+    (gogoproto.moretags) = "yaml:\"params\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// Built based on following spec
+// https://github.com/UnUniFi/chain/tree/design/spec/x/nftmarket/spec

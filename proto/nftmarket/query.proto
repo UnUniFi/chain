@@ -1,0 +1,20 @@
+syntax = "proto3";
+package ununifi.nftmarket;
+
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+// this line is used by starport scaffolding # 1
+import "nftmarket/nftmarket.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/nftmarket/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/ununifi/nftmarket/params";
+  }
+}
+
+message QueryParamsRequest {}
+
+message QueryParamsResponse { Params params = 1; }
