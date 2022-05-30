@@ -24,7 +24,7 @@ message BaseAuction {
     (gogoproto.moretags) = "yaml:\"bid\"",
     (gogoproto.nullable) = false
   ];
-  bool has_received_bids = 6 [(gogoproto.moretags) = "yaml:\"has_reeceived_bids\""];
+  bool has_received_bids = 6 [(gogoproto.moretags) = "yaml:\"has_received_bids\""];
   google.protobuf.Timestamp end_time = 7 [
     (gogoproto.moretags) = "yaml:\"end_time\"",
     (gogoproto.nullable) = false,
