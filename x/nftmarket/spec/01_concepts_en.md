@@ -11,7 +11,7 @@ Stable tokens can be minted with NFT as collateral
   see 10_Generalized_auction_deposit.md
 ### selling 
 1. You can list the NFTs you own on the market.
-1. xxxx
+1. The exhibitor can decide the bid hook from 1 to 100 at the time of listing. (default:x, default is global_option)
 1. You must stake a GUU in order to list your NFTs on the market.  (global_option)
 1. you can choose which token to use for bidding.  (global_option)
 1. the NFT to be listed on the market is locked
