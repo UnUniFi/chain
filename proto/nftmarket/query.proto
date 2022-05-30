@@ -3,7 +3,6 @@ package ununifi.nftmarket;
 
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-// this line is used by starport scaffolding # 1
 import "nftmarket/nftmarket.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/nftmarket/types";
@@ -13,8 +12,64 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/ununifi/nftmarket/params";
   }
+  rpc NftListing(QueryNftListingRequest) returns (QueryNftListingResponse) {
+    option (google.api.http).get = "/ununifi/nftmarket/nft_listing/{nft_id}";
+  }
+  rpc ListedNfts(QueryListedNftsRequest) returns (QueryListedNftsResponse) {
+    option (google.api.http).get = "/ununifi/nftmarket/listed_nfts";
+  }
+  rpc CDPsList(QueryCDPsListRequest) returns (QueryCDPsListResponse) {
+    option (google.api.http).get = "/ununifi/nftmarket/cdps_list";
+  }
+  rpc NftBids(QueryNftBidsRequest) returns (QueryNftBidsResponse) {
+    option (google.api.http).get = "/ununifi/nftmarket/nft_bids/{nft_id}";
+  }
+  rpc BidderBids(QueryBidderBidsRequest) returns (QueryBidderBidsResponse) {
+    option (google.api.http).get = "/ununifi/nftmarket/bidder_bids/{bidder}";
+  }
+  rpc Rewards(QueryRewardsRequest) returns (QueryRewardsResponse) {
+    option (google.api.http).get = "/ununifi/nftmarket/rewards/{address}";
+  }
 }
 
 message QueryParamsRequest {}
+message QueryParamsResponse { 
+  Params params = 1;
+}
 
-message QueryParamsResponse { Params params = 1; }
+message QueryNftListingRequest {}
+message QueryNftListingResponse {
+  // Details of the exhibited NFT
+  // Exhibition status
+  // Number of bids
+  // Maximum bid amount
+  // Collateral rate
+  // Stable token issuance balance
+  // Whether or not the collateral is broken
+  // Penalty start time
+  // Penalty generation flag
+  // Number of automatic bid extensions
+}
+
+message QueryListedNftsRequest {}
+message QueryListedNftsResponse {
+}
+
+message QueryCDPsListRequest {}
+message QueryCDPsListResponse {
+  // List of collateral rates for each NFT secured
+  // Issuing stable tokens Balance list
+}
+
+message QueryNftBidsRequest {}
+message QueryNftBidsResponse {
+}
+
+message QueryBidderBidsRequest {}
+message QueryBidderBidsResponse {}
+
+message QueryRewardsRequest {
+
+}
+message QueryRewardsResponse {
+}

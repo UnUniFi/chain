@@ -13,6 +13,8 @@ message GenesisState {
     (gogoproto.moretags) = "yaml:\"params\"",
     (gogoproto.nullable) = false
   ];
+  repeated NftListing listings = 2 [ (gogoproto.nullable) = false ];
+  repeated NftBid bids = 3 [ (gogoproto.nullable) = false ];
 }
 
 // Built based on following spec

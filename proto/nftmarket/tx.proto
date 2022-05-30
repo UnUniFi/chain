@@ -9,6 +9,18 @@ option go_package = "github.com/UnUniFi/chain/x/nftmarket/types";
 
 service Msg {
   rpc ListNft(MsgListNft) returns (MsgListNftResponse);
+  rpc CancelNftListing(MsgCancelNftListing) returns (MsgCancelNftListingResponse);
+  rpc NftBuyBack(MsgNftBuyBack) returns (MsgNftBuyBackResponse);
+  rpc ExpandListingPeriod(MsgExpandListingPeriod) returns (MsgExpandListingPeriodResponse);
+  rpc PlaceBid(MsgPlaceBid) returns (MsgPlaceBidResponse);
+  rpc CancelBid(MsgCancelBid) returns (MsgCancelBidResponse);
+  rpc EndNftListing(MsgEndNftListing) returns (MsgEndNftListingResponse);
+  rpc PayFullBid(MsgPayFullBid) returns (MsgPayFullBidResponse);
+  rpc Borrow(MsgBorrow) returns (MsgBorrowResponse);
+  rpc Repay(MsgRepay) returns (MsgRepayResponse);
+  rpc MintStableCoin(MsgMintStableCoin) returns (MsgMintStableCoinResponse);
+  rpc BurnStableCoin(MsgBurnStableCoin) returns (MsgBurnStableCoinResponse);
+  rpc Liquidate(MsgLiquidate) returns (MsgLiquidateResponse);
 }
 
 message MsgListNft {
@@ -18,5 +30,112 @@ message MsgListNft {
     (gogoproto.nullable) = false
   ];
 }
-
 message MsgListNftResponse {}
+
+message MsgCancelNftListing {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgCancelNftListingResponse {}
+
+message MsgNftBuyBack {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgNftBuyBackResponse {}
+
+message MsgExpandListingPeriod {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgExpandListingPeriodResponse {}
+
+message MsgPlaceBid {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgPlaceBidResponse {}
+
+message MsgCancelBid {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgCancelBidResponse {}
+
+message MsgEndNftListing {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgEndNftListingResponse {}
+
+message MsgPayFullBid {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgPayFullBidResponse {}
+
+message MsgBorrow {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgBorrowResponse {}
+
+message MsgRepay {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgRepayResponse {}
+
+message MsgMintStableCoin {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgMintStableCoinResponse {}
+
+message MsgBurnStableCoin {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgBurnStableCoinResponse {}
+
+message MsgLiquidate {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgLiquidateResponse {}
