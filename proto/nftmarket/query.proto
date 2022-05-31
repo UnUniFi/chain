@@ -1,8 +1,10 @@
 syntax = "proto3";
 package ununifi.nftmarket;
 
+import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "nftmarket/nftmarket.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/nftmarket/types";
@@ -13,16 +15,19 @@ service Query {
     option (google.api.http).get = "/ununifi/nftmarket/params";
   }
   rpc NftListing(QueryNftListingRequest) returns (QueryNftListingResponse) {
-    option (google.api.http).get = "/ununifi/nftmarket/nft_listing/{nft_id}";
+    option (google.api.http).get = "/ununifi/nftmarket/nft_listing/{class_id}/{nft_id}";
   }
   rpc ListedNfts(QueryListedNftsRequest) returns (QueryListedNftsResponse) {
     option (google.api.http).get = "/ununifi/nftmarket/listed_nfts";
+  }
+  rpc Loans(QueryLoansRequest) returns (QueryLoansResponse) {
+    option (google.api.http).get = "/ununifi/nftmarket/loans";
   }
   rpc CDPsList(QueryCDPsListRequest) returns (QueryCDPsListResponse) {
     option (google.api.http).get = "/ununifi/nftmarket/cdps_list";
   }
   rpc NftBids(QueryNftBidsRequest) returns (QueryNftBidsResponse) {
-    option (google.api.http).get = "/ununifi/nftmarket/nft_bids/{nft_id}";
+    option (google.api.http).get = "/ununifi/nftmarket/nft_bids/{class_id}/{nft_id}";
   }
   rpc BidderBids(QueryBidderBidsRequest) returns (QueryBidderBidsResponse) {
     option (google.api.http).get = "/ununifi/nftmarket/bidder_bids/{bidder}";
@@ -33,26 +38,26 @@ service Query {
 }
 
 message QueryParamsRequest {}
-message QueryParamsResponse { 
-  Params params = 1;
+message QueryParamsResponse {
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryNftListingRequest {}
+message QueryNftListingRequest {
+  uint64 class_id = 1;
+  uint64 nft_id = 2;
+}
 message QueryNftListingResponse {
-  // Details of the exhibited NFT
-  // Exhibition status
-  // Number of bids
-  // Maximum bid amount
-  // Collateral rate
-  // Stable token issuance balance
-  // Whether or not the collateral is broken
-  // Penalty start time
-  // Penalty generation flag
-  // Number of automatic bid extensions
+  NftListing listing = 1 [ (gogoproto.nullable) = false ];
 }
 
 message QueryListedNftsRequest {}
 message QueryListedNftsResponse {
+  repeated NftListing listing = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryLoansRequest {}
+message QueryLoansResponse {
+  repeated Loan loans = 1 [ (gogoproto.nullable) = false ];
 }
 
 message QueryCDPsListRequest {}
@@ -61,15 +66,28 @@ message QueryCDPsListResponse {
   // Issuing stable tokens Balance list
 }
 
-message QueryNftBidsRequest {}
+message QueryNftBidsRequest {
+  uint64 class_id = 1;
+  uint64 nft_id = 2;
+}
 message QueryNftBidsResponse {
+  repeated NftBid bids = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryBidderBidsRequest {}
-message QueryBidderBidsResponse {}
+message QueryBidderBidsRequest {
+  string bidder = 1 [
+    (gogoproto.moretags) = "yaml:\"bidder\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+message QueryBidderBidsResponse {
+  repeated NftBid bids = 1 [ (gogoproto.nullable) = false ];
+}
 
 message QueryRewardsRequest {
-
+  uint64 address = 1;
 }
 message QueryRewardsResponse {
+  repeated cosmos.base.v1beta1.Coin rewards = 1 [ (gogoproto.nullable) = false ];
 }

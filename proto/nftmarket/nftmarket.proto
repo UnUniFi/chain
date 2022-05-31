@@ -19,17 +19,31 @@ enum ListingState {
   SUCCESSFUL_BID = 4;
 }
 
+message NftIdentifier {
+  uint64 class_id = 1;
+  uint64 nft_id = 2;
+}
+
+message Loan {
+  NftIdentifier nft_id = 1 [ (gogoproto.nullable) = false ];
+  repeated cosmos.base.v1beta1.Coin loan = 2 [ (gogoproto.nullable) = false ];
+}
+
 message NftListing {
-  uint64 nft_id = 1;
+  NftIdentifier nft_id = 1 [ (gogoproto.nullable) = false ];
   ListingType listing_type = 2;
   ListingState state = 3;
-  repeated string bid_tokens = 4;
-  cosmos.base.v1beta1.Coin minimum_bid = 5 [ (gogoproto.nullable) = false ];
-  uint64 bid_hook = 6; // 1 - 100; if 0, uses default on params
+  string bid_token = 4;
+  string min_bid = 5 [
+    (gogoproto.moretags) = "yaml:\"min_bid\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  uint64 bid_hook = 6; // 1 - 100
 }
 
 message NftBid {
-  uint64 nft_id = 1;
+  NftIdentifier nft_id = 1 [ (gogoproto.nullable) = false ];
   string bidder = 2;
   cosmos.base.v1beta1.Coin amount = 3 [ (gogoproto.nullable) = false ];
 }
@@ -54,5 +68,6 @@ message Params {
   uint64 nft_creator_share_percentage = 13;
   string market_administrator = 14;
   cosmos.base.v1beta1.Coin nft_listing_commission_fee = 15 [ (gogoproto.nullable) = false ];
-  cosmos.base.v1beta1.Coin nft_listing_period_extend_fee_per_hour = 16 [ (gogoproto.nullable) = false ];
+  uint64 nft_listing_extend_seconds = 16;
+  cosmos.base.v1beta1.Coin nft_listing_period_extend_fee_per_hour = 17 [ (gogoproto.nullable) = false ];
 }
