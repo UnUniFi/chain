@@ -13,13 +13,10 @@ Stable tokens can be minted with NFT as collateral
 ### selling 
 1. 所有しているNFTを出品することができる
 1. 出品時にbid hookを1...100までの数値を決めることができる(default:10, default is global_option)
-1. 出品するにはGUUをステーキングする必要がある(global_option)
 1. 入札に使うトークンは出品者がBTに基づいて決定する(global_option)
 1. 出品するNFTはロックされる
 1. 誰も入札がいない場合は、x回まで自動的で再出品される(global_option)
 1. 認証済みのNFTを表示できる
-1. NFTを出品するのにはX秒のDelayが入る。(global_option)
-1. N個目の出品から手数料が発生する(global_option)
 1. 出品時に、最低入札額を決めることができる(min is global_option)
 1. 出品者のSign以外の場合は、受け付けずログを残すこと
 
