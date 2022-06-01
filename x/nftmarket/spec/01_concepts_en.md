@@ -9,13 +9,13 @@ Stable tokens can be minted with NFT as collateral
 1. sellers can list "bid hook"
 1. bid hook affects bid deposit amount, bid cancellation amount, collateral amount, and bidder determination logic  
   see 10_Generalized_auction_deposit.md
+
 ### selling 
 1. You can list the NFTs you own on the market.
-1. The exhibitor can decide the bid hook from 1 to 100 at the time of listing. (default:x, default is global_option)
+1. The lister can decide the bid hook from a number between 1 to 100 at the time of listing. (default:x, default is global_option)
 1. You must stake a GUU in order to list your NFTs on the market.  (global_option)
-1. you can choose which token to use for bidding.  (global_option)
+1. 1. the token used for bidding is determined by the lister based on BT.(global_option)
 1. the NFT to be listed on the market is locked
-1. the auction will end after a certain amount of time
 1. if no bids are received, the item will automatically be re-listed up to x times (global_option)
 1. can display authenticated NFTs
 1. there will be a Delay of X seconds to be listed NFT to be listed.(global_option)
@@ -31,7 +31,7 @@ Stable tokens can be minted with NFT as collateral
 1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
 ### buy back
-1. you can buy back the NFTs you have listed
+1. The lister can buy back the NFTs you have listed
 1. in the case of a buy-back, the bid * (100 + n)% must be paid (global_option)
 1. if the seller buys back the item, the highest bidder can get a commission
 1. if the seller buys back the item, the 2. the second and lower bidders are not entitled to a commission
@@ -39,8 +39,8 @@ Stable tokens can be minted with NFT as collateral
 1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
 ### expand auction period
-1. the listee can pay X tokens to extend the duration of the auction (global_option)
-1. the commission paid by the seller will be divided equally by 50% to the first and second place bidders
+1. the lister can pay BT tokens to extend the duration of the auction (global_option)
+1. Commission paid by the seller will be divided equally among the wining bidder candidates.
 1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
 ### bid
@@ -49,7 +49,6 @@ Stable tokens can be minted with NFT as collateral
 1. you cannot bid unless you exceed the minimum bid
 1. bidding with "p" amount of tokens will deposit "d" amount(Calculation Formula: $d=\frac{1}{bid hook}\times p$)
 1. if you are the highest bidder and you want to make a higher bid, bid again
-1. a high bid will result in a tick-bid from the second highest price(like ebay)
 1. if the bidder has N hours remaining in the auction when the bidding takes place, the auction time will automatically be extended by n' minutes.  (global_option)
 1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
@@ -57,7 +56,8 @@ Stable tokens can be minted with NFT as collateral
 1. you may cancel your bid
 1. if you are the only bidder yourself, you cannot cancel
 1. free bid cancellation if bid rank is below bid hook
-1. if the bid rank is bid hook or higher, the bid can be cancelled by paying the deposit amount
+1. if the bid rank is bid hook or higher, the bid can be cancelled by paying a cancellation fee.
+1. Cancellation Fee Formula: ```MAX{canceling_bidder's_deposit - (total_deposit - borrowed_lister_amount), 0}```
 1. bids can only be cancelled X days after bidding (global_option)
 1. tokens will be disbursed X days after the bid cancellation is approved (global_option)
 1. a seller whose bid is cancelled may experience a liquidation
@@ -65,6 +65,7 @@ Stable tokens can be minted with NFT as collateral
 
 ### end auction
 1. sellers can end the auction
+1. the auction will end after a certain amount of time
 1. deposits below the bid hook will be returned at the end of the auction
 1. at the end of the auction, the bidder with the bid hook position or higher will be considered as a wining bidder candidate
 1. tx will not be accepted except for the Seller's Sign. And keep a log.
@@ -75,34 +76,34 @@ Stable tokens can be minted with NFT as collateral
 1. the deposit amount ofthe wining bidder candidates who has not paid at the time of confirmation will be collected
 1. upon confirmation of payment by the wining bidder candidates, it shall be the successful bidder
 1. the deposit amount of the wining bidder candidates below the successful bidder will be returned
-1. the winning bid price will be the amount of the deposit collected + the amount of the bid
+1. the winning bid price will be the amount of the ```deposit collected + the amount``` of the bid
+1. the winning bid price paid to the lister will be the amount of the ```deposit_collected + (bidder price - bidder deposit)```
 1. if all wining bidder candidates do not pay, the amount of the collected deposit plus NFT to be listed will be given to the seller
 1. When an auction is successful, tokens are handed over to the seller and NFTs are handed over to the successful bidder.
 1. delivery of the NFT will be made X days after the successful bid (global_option)
 1. the Token will be delivered X days after the successful bid.  (global_option)
-1. price information must be recorded and pulled up in query
+1. When an auction is successful, the price information must be recorded and pulled up in query
 1. the price information shall be recorded as NFT, seller, successful bidder, successful bid price, successful bid date and time, successful bid type, and the number of bids cumulatively.
 
-### bidding reward
-1. if the BT is a Direct Borrowed Asset type, the bidder will receive bGUUs up to (GUUs staked by the bidder x 2 or N) (global_option)
-1. you must return the bGUU when you win a bid or cancel a bid to receive the NFT
-1. you must return the bGUU at the time of bid cancellation to receive the token
+### boost staking reward
+1. if the BT is a Direct Borrowed Asset type, When a bid is placed, the bidder's staking GUUs are increased up to the limit of (GUUs staked by bidder x 2 or N)(global_option)
+1. staking GUUs will increase for a period of time until the auction ends or you cancel your bid
 
 ### borrow
-1. in the case of a direct borrow asset type auction, the seller can borrow the Total deposit amount above bid_hook rank from the PROTOCOL
+1. in the case of a direct borrow asset type auction, the seller can borrow the Total deposit amount above bid hook rank from the PROTOCOL
 1. the seller can return the borrowed tokens to the protocol
 1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
 ### CDP
-1. in the case of a synthetic asset creation type auctions, the seller may issue stable tokens for up to the total deposit amount above bid_hook rank, but not more than
+1. in the case of a synthetic asset creation type auctions, the lister can issue stable tokens with the total deposit of bid hook rank or higher as collateral
 1. the seller can return the issued stave tokens to the protocol
 1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
 ### liquidation
-1. stave tokens issued by CDP and borrowed tokens are considered TemporaryToken
-1. if TemporaryToken exceeds 50% of the bid amount due to bid cancellations or a drop in bid token value, it must be liquidated or TemporaryToken returned to less than 50%.Failing that, the NFT will be given to the bidder.
-1. the seller must return the TemporaryToken before the liquidation or decide to win the bid. Failure to do so will result in penalties.  (global_option)
+1. if the amount of stabled tokens issued exceeds 50% of the bid amount due to a decline in the bid token value, you must liquidate or return the stabled tokens to less than 50% of the bid amount.
+1. the seller must return the stable token before the liquidation or decide to win the bid. Failure to do so will result in penalties.  (global_option)
 1. the penalty is that no tokens will be paid to the seller. Other than that, the process will be the same as a successful bid.
+1. the NFT and the collection deposit will be held by the module if all wining bidder candidates not pay at the time of penalty
 1. tx will not be accepted except for the Seller's Sign. And keep a log.
 
 ### BT(Bidding Token)
