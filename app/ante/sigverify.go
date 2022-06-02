@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	kmultisig "github.com/cosmos/cosmos-sdk/crypto/keys/multisig"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -13,11 +14,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/types/multisig"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	ante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 	"github.com/cosmos/cosmos-sdk/x/auth/legacy/legacytx"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/gogo/protobuf/proto"
 
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/common"
@@ -136,12 +139,14 @@ type SignatureVerificationGasConsumer = func(meter sdk.GasMeter, sig signing.Sig
 // CONTRACT: Pubkeys are set in context for all signers before this decorator runs
 // CONTRACT: Tx must implement SigVerifiableTx interface
 type SigVerificationDecorator struct {
+	cdc             codec.Codec
 	ak              ante.AccountKeeper
 	signModeHandler authsigning.SignModeHandler
 }
 
-func NewSigVerificationDecorator(ak ante.AccountKeeper, signModeHandler authsigning.SignModeHandler) SigVerificationDecorator {
+func NewSigVerificationDecorator(cdc codec.Codec, ak ante.AccountKeeper, signModeHandler authsigning.SignModeHandler) SigVerificationDecorator {
 	return SigVerificationDecorator{
+		cdc:             cdc,
 		ak:              ak,
 		signModeHandler: signModeHandler,
 	}
@@ -229,7 +234,7 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 			err := authsigning.VerifySignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx)
 			if err != nil {
 				// try verifying signature with etherum
-				if ethErr := VerifyEthereumSignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx); ethErr == nil {
+				if ethErr := VerifyEthereumSignature(svd.cdc, pubKey, signerData, sig.Data, svd.signModeHandler, tx); ethErr == nil {
 					return next(ctx, tx, simulate)
 				} else {
 					fmt.Printf("ethereum signature verification failed; %s", ethErr.Error())
@@ -251,7 +256,7 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 	return next(ctx, tx, simulate)
 }
 
-func VerifyEthereumSignature(pubKey cryptotypes.PubKey, signerData authsigning.SignerData, sigData signing.SignatureData, handler authsigning.SignModeHandler, tx sdk.Tx) error {
+func VerifyEthereumSignature(cdc codec.Codec, pubKey cryptotypes.PubKey, signerData authsigning.SignerData, sigData signing.SignatureData, handler authsigning.SignModeHandler, tx sdk.Tx) error {
 	switch data := sigData.(type) {
 	case *signing.SingleSignatureData:
 		signBytes, err := handler.GetSignBytes(data.SignMode, signerData, tx)
@@ -259,7 +264,36 @@ func VerifyEthereumSignature(pubKey cryptotypes.PubKey, signerData authsigning.S
 			return err
 		}
 
-		fmt.Println("signBytes", string(signBytes))
+		fmt.Println("data.SignMode", data.SignMode)
+		fmt.Println("defaultSignBytes", string(signBytes))
+		if data.SignMode == signing.SignMode_SIGN_MODE_DIRECT {
+			signDoc := sdktx.SignDoc{}
+			err = signDoc.Unmarshal(signBytes)
+			if err != nil {
+				return err
+			}
+
+			signDocMetamask := SignDocForMetamask{
+				Body:          &sdktx.TxBody{},
+				AuthInfo:      &sdktx.AuthInfo{},
+				ChainId:       signerData.ChainID,
+				AccountNumber: signerData.AccountNumber,
+			}
+
+			err = proto.Unmarshal(signDoc.BodyBytes, signDocMetamask.Body)
+			if err != nil {
+				return err
+			}
+
+			err = proto.Unmarshal(signDoc.AuthInfoBytes, signDocMetamask.AuthInfo)
+			if err != nil {
+				return err
+			}
+
+			signBytes = cdc.MustMarshalJSON(&signDocMetamask)
+			fmt.Println("finalSignBytes", string(signBytes))
+		}
+
 		signatureData := data.Signature
 		if len(signatureData) <= crypto.RecoveryIDOffset {
 			return fmt.Errorf("not a correct ethereum signature")
