@@ -13,7 +13,7 @@ stablecoins can be minted with NFT as collateral
 ### listing 
 1. 所有しているNFTを出品することができる
 1. 出品時にbid_active_rankを1...100までの数値を決めることができる(default:10, default is global_option)
-1. 入札に使うトークンは出品者がBTに基づいて決定する(global_option)
+1. 入札に使うトークンは出品者がBDに基づいて決定する(global_option)
 1. 出品するNFTはロックされる
 1. 誰も入札がいない場合は、x回まで自動的で再出品される(global_option)
 1. 認証済みのNFTを表示できる
@@ -34,13 +34,13 @@ stablecoins can be minted with NFT as collateral
 1. 出品者のSign以外の場合は、受け付けずログを残すこと
 
 ### expand auction period
-1. 出品者はBTトークンを支払い、オークションの期間を延長することができる(global_option)
+1. 出品者はBDトークンを支払い、オークションの期間を延長することができる(global_option)
 1. 出品延長手数料は、落札候補者へデポジット額割合に応じて分配される
 1. 出品者のSign以外の場合は、受け付けずログを残すこと
 
 ### bid
 1. 出品されているNFTを入札することができる
-1. 入札するトークンはBT基準を満たしていないといけない
+1. 入札するトークンはBD基準を満たしていないといけない
 1. 最低入札額を上回っていないと入札できない
 1. トークンp円分で入札するとd円分がデポジットされる(計算式 $d=\frac{1}{bid_active_rank}\times p$)
 1. 自分が最上位入札の場合にさらに高値を更新したい場合は、再度Bidする
@@ -89,7 +89,7 @@ stablecoins can be minted with NFT as collateral
 1. 価格情報はNFT,出品者,落札者,落札日時,落札タイプ,入札件数,落札金額を累積で記録すること
 
 ### boost staking reward
-1. BTが直接借用資産型の場合に、入札すると(入札者がステーキングしているGUU x 2 or N)を限度額にステーキングGUUが増える (global_option)
+1. BDが直接借用資産型の場合に、入札すると(入札者がステーキングしているGUU x 2 or N)を限度額にステーキングGUUが増える (global_option)
 1. ステーキングGUUが増える期間はオークションが終了するか、入札キャンセルを行うまで
 
 ### borrow
@@ -109,11 +109,11 @@ stablecoins can be minted with NFT as collateral
 1. 罰則時に落札候補者全員が支払わない場合にNFTと徴収デポジットはモジュールが持つ
 1. 出品者のSign以外の場合は、受け付けずログを残すこと
 
-### BT(Bidding Token)
-1. BTはオークションに使用されるトークン基準
-1. BTは2種類あり、オークションタイプや出品者がstableトークンを発行することにより変更になる。
-1. 直接借用資産型オークションの場合、BTは、出品者が指定した単一のトークンになる。 (global_option)
-1. 合成資産造成型オークションの場合、BTは、UnUniFiがサポートする任意のトークンを使用できる (global_option)
+### BD(Bid Denom)
+1. BDはオークションに使用されるトークン基準
+1. BDは2種類あり、オークションタイプや出品者がstableトークンを発行することにより変更になる。
+1. 直接借用資産型オークションの場合、BDは、出品者が指定した単一のトークンになる。 (global_option)
+1. 合成資産造成型オークションの場合、BDは、UnUniFiがサポートする任意のトークンを使用できる (global_option)
 
 
 ## expanded

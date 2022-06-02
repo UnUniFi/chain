@@ -13,7 +13,7 @@ stablecoins can be minted with NFT as collateral
 ### listing 
 1. You can list the NFTs you own on the marketplace.
 1. The lister can decide the bid_active_rank from a number between 1 to 100 at the time of listing. (default:x, default is global_option)
-1. the token used for bidding is determined by the lister based on BT.(global_option)
+1. the token used for bidding is determined by the lister based on BD.(global_option)
 1. the NFT to be listed on the marketplace is locked
 1. if no bids are received, the item will automatically be re-listed up to x times (global_option)
 1. Lister can display authenticated NFTs
@@ -34,13 +34,13 @@ stablecoins can be minted with NFT as collateral
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
 ### expand auction period
-1. the lister can pay BT tokens to extend the period of the auction (global_option)
+1. the lister can pay BD tokens to extend the period of the auction (global_option)
 1. Commission paid by the lister will be divided wining bidder candidate in proportion to their percentage of the deposit amount
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
 ### bid
 1. you can bid on the NFTs on the marketplace
-1. tokens to be bid on must meet BT criteria
+1. tokens to be bid on must meet BD criteria
 1. you cannot bid unless you exceed the minimum bid
 1. bidding with "p" amount of tokens will deposit "d" amount(Calculation Formula: $d=\frac{1}{bid_active_rank}\times p$)
 1. if you are the highest bidder and you want to make a higher bid, bid again
@@ -89,7 +89,7 @@ stablecoins can be minted with NFT as collateral
 1. the price information shall be recorded as NFT, lister, successful bidder, successful bid price, successful bid date and time, successful bid type, and the number of bids cumulatively.
 
 ### boost staking reward
-1. if the BT is a Direct Borrowed Asset type, When a bid is placed, the bidder's staking GUUs are increased up to the limit of (GUUs staked by bidder x 2 or N)(global_option)
+1. if the BD is a Direct Borrowed Asset type, When a bid is placed, the bidder's staking GUUs are increased up to the limit of (GUUs staked by bidder x 2 or N)(global_option)
 1. staking GUUs will increase for a period of time until the auction ends or you cancel your bid
 
 ### borrow
@@ -109,11 +109,11 @@ stablecoins can be minted with NFT as collateral
 1. the NFT and the collection deposit will be held by the module if all wining bidder candidates not pay at the time of penalty
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
-### BT(Bidding Token)
-1. BT is the token standard used for auctions
-1. There are two types of BTs, and they change depending on the auction type and whether the lister issues stablecoins.
-1. for direct borrowing asset type auctions, BT is only for tokens specified by the lister (global_option)
-1. for synthetic asset creation type auctions, BT can use any token supported by UnUniFi (global_option)
+### BD(Bidding Token)
+1. BD is the token standard used for auctions
+1. There are two types of BDs, and they change depending on the auction type and whether the lister issues stablecoins.
+1. for direct borrowing asset type auctions, BD is only for tokens specified by the lister (global_option)
+1. for synthetic asset creation type auctions, BD can use any token supported by UnUniFi (global_option)
 
 
 ## expanded
