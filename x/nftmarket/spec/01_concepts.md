@@ -1,5 +1,5 @@
 # Concepts
-Stable tokens can be minted with NFT as collateral
+stablecoins can be minted with NFT as collateral
 
 # requirement
 
@@ -10,7 +10,7 @@ Stable tokens can be minted with NFT as collateral
 1. bid hookは入札デポジット額、入札キャンセル額、担保額、落札者決定ロジックに影響する  
   see 10_Generalized_auction_deposit.md
 
-### selling 
+### listing 
 1. 所有しているNFTを出品することができる
 1. 出品時にbid hookを1...100までの数値を決めることができる(default:10, default is global_option)
 1. 入札に使うトークンは出品者がBTに基づいて決定する(global_option)
@@ -20,7 +20,7 @@ Stable tokens can be minted with NFT as collateral
 1. 出品時に、最低入札額を決めることができる(min is global_option)
 1. 出品者のSign以外の場合は、受け付けずログを残すこと
 
-### selling cancel
+### listing cancel
 1. 誰にも入札されていない場合に、出品者は出品キャンセルすることができる
 1. 入札されている場合は、出品キャンセルすることはできない
 1. 出品キャンセルは出品後N秒経過後にしか行えない(global_option)
@@ -55,7 +55,6 @@ Stable tokens can be minted with NFT as collateral
 1. キャンセルする入札者の入札順位がbid hook以下の場合は無料で入札キャンセルできる
 1. キャンセルする入札者の入札順位がbid hook以上の場合はキャンセル料計算に基づいたキャンセル料を支払うことで入札キャンセルできる
 1. キャンセル料計算式: ```MAX{キャンセルしたい入札者のデポジット額 - (総デポジット額 - 出品者が借りている額), 0}```
-1. 入札順位がbid hook以上の場合はデポジット額を支払うことで入札キャンセルできる
 1. 入札のキャンセルは入札後X日後にしか行えない(global_option)
 1. 入札キャンセル成立後、X日後にトークンの払い出される (global_option)
 1. 入札をキャンセルされた出品者は清算が起こる可能性がある
@@ -123,13 +122,13 @@ Stable tokens can be minted with NFT as collateral
 1. 買い戻し発生時に、NFT作者、外部フロントエンドエンジニア、ecosystemプールにそれぞれN%のインセンティブが発生する (global_option)
 1. 落札時に、NFT作者、外部フロントエンドエンジニア、ecosystemプールにそれぞれN%のインセンティブが発生する (global_option)
 
-### valut system
-1. 出品したNFTはValutに格納される
-1. 入札に使用したトークンはValutに格納される
+### vault system
+1. 出品したNFTはVaultに格納される
+1. 入札に使用したトークンはVaultに格納される
 1. NFTを担保にCDPする場合は、vaultを経由して行う
 1. 落札時のNFT払い出しは、vaultを経由して行う
 1. 落札時のトークン払い出しは、vaultを経由して行う
-1. valutはセキュリティインシデントが起きた時にXによって閉めることができる (global_option)
+1. vaultはセキュリティインシデントが起きた時にXによって閉めることができる (global_option)
 
 ### saving system
 1. voteによって奪われたトークンを取り戻すことができる

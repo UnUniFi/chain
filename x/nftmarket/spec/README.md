@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Stable tokens can be minted with NFT as collateral
+stablecoins can be minted with NFT as collateral
 
 ## This module is implemented step by step.
 1. NFTを出品できる

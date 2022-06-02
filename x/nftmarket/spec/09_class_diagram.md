@@ -12,7 +12,7 @@
           +enum tokenType
           +enum auctionType
           +int minimumBid
-          +any sellerInfo
+          +any listerInfo
           list()
           sold()
           cancel()

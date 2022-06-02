@@ -57,8 +57,8 @@
   - Goldfinger attack  
     NFT認証を壊す→tendermintに任せつつVPSとしてDDos攻撃に耐える設計にしておく  
   - ~~Hard Fork~~  
-  - market manipulation  
-    Mischievously selling items at auction→delay processを設ける  
+  - marketplace manipulation  
+    Mischievously listing items at auction→delay processを設ける  
     fake nftなどを大量出品して検索させなくする→GUUステーキングを強制させつつX品目から手数料が発生するようにする  
   - Sybil Attack  
     misleading bidding→delay processで対応  
