@@ -22,22 +22,17 @@ stablecoins can be minted with NFT as collateral
 
 ### listing cancel
 1. if no one has bid on the item, the lister can cancel the listing
-1. if a bid has been submitted, it is not possible to cancel the listing
+1. if a bid has been placed, the lister may cancel the listing by paying a cancellation fee
+1. cancellation fee is X% of the bid deposit(global_option)
+1. Commission paid by the lister will be divided wining bidder candidate in proportion to their percentage of the deposit amount
 1. The listing of items can only be cancelled after N seconds have elapsed from the time it was placed on the marketplace (global_option)
 1. the NFT to be listed will be unlocked and returned to the lister when the listing is cancelled
-1. tx will not be accepted except for the Lister's Sign. And keep a log.
-
-### buy back
-1. The lister can buy back the NFTs you have listed
-1. in the case of a buy-back, the bid price * (100 + n)% must be paid (global_option)
-1. if the lister buys back the item, the highest bidder can get a commission
-1. if the lister buys back the item, the second and lower bidders cannot get a commission
-1. all locked bid tokens will be refunded
+1. bid deposits will be refunded
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
 ### expand auction period
 1. the lister can pay BT tokens to extend the period of the auction (global_option)
-1. Commission paid by the lister will be divided equally among the wining bidder candidates.
+1. Commission paid by the lister will be divided wining bidder candidate in proportion to their percentage of the deposit amount
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
 ### bid
