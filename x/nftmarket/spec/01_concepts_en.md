@@ -55,6 +55,13 @@ stablecoins can be minted with NFT as collateral
 1. Liquidation may occur for sellers whose bids are cancelled.
 1. the bidder and the bid canceller's Sign must match, otherwise the bid will not be accepted and a log will be kept.
 
+### SellingDecision 
+1. the lister can decide the successful bidder when there are bids
+1. the winning bidder must pay the bid amount - deposit amount within N hours (global_option)
+1. if the successful bidder fails to pay on time, the amount of the successful bidder's deposit will be collected
+1. if the winning bidder does not pay by the due date, the auction period will be extended for X days and the auction will be restarted (global_option)
+1. tx will not be accepted except for the Lister's Sign. And keep a log.
+
 ### end auction
 1. listers can end the auction
 1. the auction will end after a certain amount of time
