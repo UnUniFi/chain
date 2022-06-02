@@ -18,11 +18,14 @@ stablecoins can be minted with NFT as collateral
 1. if no bids are received, the item will automatically be re-listed up to x times (global_option)
 1. Lister can display authenticated NFTs
 1. Lister can decide a minimum bid at the time of listing (global_option)
+1. Lister can decide a minimum buyout price at the time of listing (global_option)
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
 ### listing cancel
-1. if no one has bid on the item, the lister can cancel the listing
-1. if a bid has been placed, the lister may cancel the listing by paying a cancellation fee
+1. if any of the following conditions are met, the lister can cancel the listing
+    - Cases with no bids
+    - If the lister does not borrow tokens from the protocol and the bid is below the minimum buyout price
+1. Otherwise, the lister may cancel the listing by paying a cancellation fee
 1. cancellation fee is X% of the bid deposit(global_option)
 1. Commission paid by the lister will be divided wining bidder candidate in proportion to their percentage of the deposit amount
 1. The listing of items can only be cancelled after N seconds have elapsed from the time it was placed on the marketplace (global_option)
@@ -63,7 +66,10 @@ stablecoins can be minted with NFT as collateral
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
 ### end auction
-1. the auction will end after a certain amount of time
+1. the auction will end after a time period if the following conditions are met
+    - If the bid is above the minimum buyout price
+    - If the lister borrowed tokens from the protocol
+    - If the number of re-listing is 0
 1. deposits below the bid hook will be returned at the end of the auction
 1. at the end of the auction, the bidder with the bid hook position or higher will be considered as a wining bidder candidate
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
