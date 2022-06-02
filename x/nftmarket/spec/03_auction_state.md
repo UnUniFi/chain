@@ -8,6 +8,7 @@ The `x/nftmarket` module keeps state of n primary objects:
     NFT not listed for auction
 1. selling_state
 1. bidding_state
+1. SellingDecision_state
 1. liquidation_state
 1. end_auction_state
 1. successful_bid_state
@@ -19,7 +20,7 @@ The `x/nftmarket` module keeps state of n primary objects:
 |1  |sell Msg                     |
 |2  |cancel sell Msg              |
 |3  |buy back Msg                 |
-|4  |end auction Msg              |
+|4  |SellingDecision Msg          |
 |5  |end auction Msg              |
 |6  |bid Msg                      |
 |7  |mint stable coin Msg         |
@@ -42,7 +43,11 @@ flowchart TD
 　  bidding_state   -->|6.bit_Msg|	bidding_state
 　  bidding_state   -->|7.Mint_Msg|	bidding_state
 　  bidding_state   -->|8.Burn_Msg|	bidding_state
-　  bidding_state   -->|4.end_auction_Msg|　end_auction_state
+　  bidding_state   -->|4.SellingDecisions_Msg|　SellingDecisions_state
+		SellingDecisions_state --> check_pay_fee{pay_fee?}
+		check_pay_fee --yes--> successful_bid_state
+		check_pay_fee --no--> Deposit_collection_process_top_bidder
+		Deposit_collection_process_top_bidder --> bidding_state
 　  bidding_state   -->|3.buy_back_Msg| unsold_state
 		bidding_state   -->|9.bid_cancellation_Msg| cancelling_check_bidder{other bidder?}
 		cancelling_check_bidder--->|No_faield_bid_cancellation_Msg| bidding_state
@@ -168,6 +173,13 @@ end
 ### end auction 
 ```mermaid
 flowchart TD
+
+subgraph disigion
+	SellingDecision_state --> check_pay_only_top_bidder{payed?}
+	check_pay_only_top_bidder  --yes--> successful_bid_state1
+	check_pay_only_top_bidder  --no--> collected_deposit_only_top_bidder
+	collected_deposit_only_top_bidder --deposit_BT--> bidding_state
+end
 
 subgraph end auction
 	seller2[[seller]]
