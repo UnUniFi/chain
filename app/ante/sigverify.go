@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	kmultisig "github.com/cosmos/cosmos-sdk/crypto/keys/multisig"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -136,12 +137,14 @@ type SignatureVerificationGasConsumer = func(meter sdk.GasMeter, sig signing.Sig
 // CONTRACT: Pubkeys are set in context for all signers before this decorator runs
 // CONTRACT: Tx must implement SigVerifiableTx interface
 type SigVerificationDecorator struct {
+	cdc             codec.Codec
 	ak              ante.AccountKeeper
 	signModeHandler authsigning.SignModeHandler
 }
 
-func NewSigVerificationDecorator(ak ante.AccountKeeper, signModeHandler authsigning.SignModeHandler) SigVerificationDecorator {
+func NewSigVerificationDecorator(cdc codec.Codec, ak ante.AccountKeeper, signModeHandler authsigning.SignModeHandler) SigVerificationDecorator {
 	return SigVerificationDecorator{
+		cdc:             cdc,
 		ak:              ak,
 		signModeHandler: signModeHandler,
 	}
@@ -229,7 +232,7 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 			err := authsigning.VerifySignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx)
 			if err != nil {
 				// try verifying signature with etherum
-				if ethErr := VerifyEthereumSignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx); ethErr == nil {
+				if ethErr := VerifyEthereumSignature(svd.cdc, pubKey, signerData, sig.Data, svd.signModeHandler, tx); ethErr == nil {
 					return next(ctx, tx, simulate)
 				} else {
 					fmt.Printf("ethereum signature verification failed; %s", ethErr.Error())
@@ -251,10 +254,22 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 	return next(ctx, tx, simulate)
 }
 
-func VerifyEthereumSignature(pubKey cryptotypes.PubKey, signerData authsigning.SignerData, sigData signing.SignatureData, handler authsigning.SignModeHandler, tx sdk.Tx) error {
+func VerifyEthereumSignature(cdc codec.Codec, pubKey cryptotypes.PubKey, signerData authsigning.SignerData, sigData signing.SignatureData, handler authsigning.SignModeHandler, tx sdk.Tx) error {
 	switch data := sigData.(type) {
 	case *signing.SingleSignatureData:
 		signBytes, err := handler.GetSignBytes(data.SignMode, signerData, tx)
+
+		// w, ok := tx.(*wrapper)
+		// if ok {
+		// 	signDoc := SignDocForMetamask{
+		// 		Body:          w.getBody(),
+		// 		AuthInfo:      w.getAuthInfo(),
+		// 		ChainId:       signerData.ChainID,
+		// 		AccountNumber: signerData.AccountNumber,
+		// 	}
+		// 	sgBytes := cdc.MustMarshalJSON(&signDoc)
+		// 	fmt.Println("sgBytes", string(sgBytes))
+		// }
 		if err != nil {
 			return err
 		}
