@@ -63,7 +63,6 @@ stablecoins can be minted with NFT as collateral
 1. 出品者のSign以外の場合は、受け付けずログを残すこと
 
 ### end auction
-1. 出品者はオークションを終了することができる
 1. オークションは時間経過で終了する
 1. オークションが終了すると、bid hook位以下のデポジットは返還される
 1. オークションが終了すると、bid hook位以上は落札候補者として扱われる

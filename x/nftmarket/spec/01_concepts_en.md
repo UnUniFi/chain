@@ -63,7 +63,6 @@ stablecoins can be minted with NFT as collateral
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
 ### end auction
-1. listers can end the auction
 1. the auction will end after a certain amount of time
 1. deposits below the bid hook will be returned at the end of the auction
 1. at the end of the auction, the bidder with the bid hook position or higher will be considered as a wining bidder candidate
