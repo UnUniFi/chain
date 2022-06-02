@@ -27,7 +27,7 @@
         },
         "mode_info": {
           "single": {
-            "mode": "SIGN_MODE_LEGACY_AMINO_JSON"
+            "mode": "SIGN_MODE_DIRECT"
           }
         },
         "sequence": "0"

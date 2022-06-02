@@ -14,11 +14,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/types/multisig"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	ante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 	"github.com/cosmos/cosmos-sdk/x/auth/legacy/legacytx"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/gogo/protobuf/proto"
 
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/common"
@@ -258,23 +260,40 @@ func VerifyEthereumSignature(cdc codec.Codec, pubKey cryptotypes.PubKey, signerD
 	switch data := sigData.(type) {
 	case *signing.SingleSignatureData:
 		signBytes, err := handler.GetSignBytes(data.SignMode, signerData, tx)
-
-		// w, ok := tx.(*wrapper)
-		// if ok {
-		// 	signDoc := SignDocForMetamask{
-		// 		Body:          w.getBody(),
-		// 		AuthInfo:      w.getAuthInfo(),
-		// 		ChainId:       signerData.ChainID,
-		// 		AccountNumber: signerData.AccountNumber,
-		// 	}
-		// 	sgBytes := cdc.MustMarshalJSON(&signDoc)
-		// 	fmt.Println("sgBytes", string(sgBytes))
-		// }
 		if err != nil {
 			return err
 		}
 
-		fmt.Println("signBytes", string(signBytes))
+		fmt.Println("data.SignMode", data.SignMode)
+		fmt.Println("defaultSignBytes", string(signBytes))
+		if data.SignMode == signing.SignMode_SIGN_MODE_DIRECT {
+			signDoc := sdktx.SignDoc{}
+			err = signDoc.Unmarshal(signBytes)
+			if err != nil {
+				return err
+			}
+
+			signDocMetamask := SignDocForMetamask{
+				Body:          &sdktx.TxBody{},
+				AuthInfo:      &sdktx.AuthInfo{},
+				ChainId:       signerData.ChainID,
+				AccountNumber: signerData.AccountNumber,
+			}
+
+			err = proto.Unmarshal(signDoc.BodyBytes, signDocMetamask.Body)
+			if err != nil {
+				return err
+			}
+
+			err = proto.Unmarshal(signDoc.AuthInfoBytes, signDocMetamask.AuthInfo)
+			if err != nil {
+				return err
+			}
+
+			signBytes = cdc.MustMarshalJSON(&signDocMetamask)
+			fmt.Println("finalSignBytes", string(signBytes))
+		}
+
 		signatureData := data.Signature
 		if len(signatureData) <= crypto.RecoveryIDOffset {
 			return fmt.Errorf("not a correct ethereum signature")
