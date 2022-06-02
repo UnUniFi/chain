@@ -10,7 +10,7 @@
       Listing <|-- stateOperation
       class Listing{
           +enum tokenType
-          +enum auctionType
+          +enum listingType
           +int minimumBid
           +any listerInfo
           list()
@@ -40,6 +40,5 @@
       }
 ```
 
-
 The collateralRateListByCollaterall is used for liquidation checks.  
-timeList is used for auction closeout checks.   
+timeList is used for listing closeout checks.

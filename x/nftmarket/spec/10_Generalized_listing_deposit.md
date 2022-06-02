@@ -1,4 +1,4 @@
-# Generalized auction deposit mechanism for collateral
+# Generalized listing deposit mechanism for collateral
 
 The $i$th highest bid price is denoted as $p_i$.
 
