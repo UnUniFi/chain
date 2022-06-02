@@ -6,13 +6,13 @@ stablecoins can be minted with NFT as collateral
 ## basic
 
 ## auction system
-1. 出品者はbid hookを決めることができる
-1. bid hookは入札デポジット額、入札キャンセル額、担保額、落札者決定ロジックに影響する  
+1. 出品者はbid_active_rankを決めることができる
+1. bid_active_rankは入札デポジット額、入札キャンセル額、担保額、落札者決定ロジックに影響する  
   see 10_Generalized_auction_deposit.md
 
 ### listing 
 1. 所有しているNFTを出品することができる
-1. 出品時にbid hookを1...100までの数値を決めることができる(default:10, default is global_option)
+1. 出品時にbid_active_rankを1...100までの数値を決めることができる(default:10, default is global_option)
 1. 入札に使うトークンは出品者がBTに基づいて決定する(global_option)
 1. 出品するNFTはロックされる
 1. 誰も入札がいない場合は、x回まで自動的で再出品される(global_option)
@@ -42,7 +42,7 @@ stablecoins can be minted with NFT as collateral
 1. 出品されているNFTを入札することができる
 1. 入札するトークンはBT基準を満たしていないといけない
 1. 最低入札額を上回っていないと入札できない
-1. トークンp円分で入札するとd円分がデポジットされる(計算式 $d=\frac{1}{bid hook}\times p$)
+1. トークンp円分で入札するとd円分がデポジットされる(計算式 $d=\frac{1}{bid_active_rank}\times p$)
 1. 自分が最上位入札の場合にさらに高値を更新したい場合は、再度Bidする
 1. 入札が行われる時に、出品残り時間N時間の場合、自動的にn'分出品時間が伸びる(global_option)
 1. 入札者とtxのSignが一致していること、それ以外の場合は、受け付けずログを残すこと
@@ -50,8 +50,8 @@ stablecoins can be minted with NFT as collateral
 ### bid cancel
 1. 入札をキャンセルすることができる
 1. 自分自身しか入札していない場合は、キャンセルすることができない
-1. キャンセルする入札者の入札順位がbid hook以下の場合は無料で入札キャンセルできる
-1. キャンセルする入札者の入札順位がbid hook以上の場合はキャンセル料計算に基づいたキャンセル料を支払うことで入札キャンセルできる
+1. キャンセルする入札者の入札順位がbid_active_rank以下の場合は無料で入札キャンセルできる
+1. キャンセルする入札者の入札順位がbid_active_rank以上の場合はキャンセル料計算に基づいたキャンセル料を支払うことで入札キャンセルできる
 1. キャンセル料計算式: ```MAX{キャンセルしたい入札者のデポジット額 - (総デポジット額 - 出品者が借りている額), 0}```
 1. 入札のキャンセルは入札後X日後にしか行えない(global_option)
 1. 入札キャンセル成立後、X日後にトークンの払い出される (global_option)
@@ -70,8 +70,8 @@ stablecoins can be minted with NFT as collateral
     - 入札が最低落札価格以上の場合
     - 出品者がプロトコルからトークンを借りていた場合
     - 再出品回数が0の場合
-1. オークションが終了すると、bid hook位以下のデポジットは返還される
-1. オークションが終了すると、bid hook位以上は落札候補者として扱われる
+1. オークションが終了すると、bid_active_rank位以下のデポジットは返還される
+1. オークションが終了すると、bid_active_rank位以上は落札候補者として扱われる
 1. 出品者のSign以外の場合は、受け付けずログを残すこと
 
 ### pay auction fee
@@ -93,12 +93,12 @@ stablecoins can be minted with NFT as collateral
 1. ステーキングGUUが増える期間はオークションが終了するか、入札キャンセルを行うまで
 
 ### borrow
-1. 直接借用資産型オークションの場合、出品者は入札されたbid hook位以上の総デポジットを限度額とし、protocolから直接借りることができる
+1. 直接借用資産型オークションの場合、出品者は入札されたbid_active_rank位以上の総デポジットを限度額とし、protocolから直接借りることができる
 1. 出品者は借りたトークンをprotocolへ戻すことができる
 1. 出品者のSign以外の場合は、受け付けずログを残すこと
 
 ### CDP
-1. 合成資産造成型オークションの場合、出品者は入札されたbid hook位以上の総デポジットを担保とし、それでステーブルトークンを発行できる
+1. 合成資産造成型オークションの場合、出品者は入札されたbid_active_rank位以上の総デポジットを担保とし、それでステーブルトークンを発行できる
 1. 出品者は発行したステーブルトークンをprotocolへ戻すことができる
 1. 出品者のSign以外の場合は、受け付けずログを残すこと
 
