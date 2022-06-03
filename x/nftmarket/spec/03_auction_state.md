@@ -49,8 +49,6 @@ flowchart TD
 		check_pay_fee --no--> Deposit_collection_process_top_bidder
 		Deposit_collection_process_top_bidder --> bidding_state
 　  bidding_state   -->|3.buy_back_Msg| unsold_state
-		cancelling_check_limit-->|Yes| liquidation
-		cancelling_check_limit-->|No| bidding_state
     listing_state   -->|2.cancel_sell_msg| unsold_state
 　  Extend_auction_period-->|No_or_NonAction|　end_auction_state
 　  liquidation -->|Yes_5.end_auction_Msg|　end_auction_state
@@ -151,18 +149,17 @@ The time to return tokens for canceled bids can be determined at the time of the
 flowchart TD
 subgraph bidding_cancel_bid
 	cancel_bidder[[cancel_bidder]]
-	check_mint{mint stable coins?}
-	check_limit{over limit?}
+	check_mint{lister mint stable coins?}
+	check_limit{all bid deposit - cancel bid deposit < borrowed token amount?}
 
-	check_mint--NO--> bidding_state
+	check_mint.-NO.-> bidding_state
 	check_limit--No--> bidding_state
 	bidding_state--BD--> delay_time_process
 	check_mint--Yes--> check_limit
 	check_limit--Yes--> cancel_process
-	cancel_bidder--BD--> cancel_process 
-	liquidation_state --BD--> delay_time_process
-	delay_time_process --BD--> cancel_bidder
-	cancel_process --BD--> liquidation_state
+	cancel_process --BD--> bidding_state
+	delay_time_process .-BD.-> cancel_bidder
+	delay_time_process --decrease_BD_or_empty--> cancel_bidder
 	
 end
 ```
