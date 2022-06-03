@@ -49,9 +49,6 @@ flowchart TD
 		check_pay_fee --no--> Deposit_collection_process_top_bidder
 		Deposit_collection_process_top_bidder --> bidding_state
 　  bidding_state   -->|3.buy_back_Msg| unsold_state
-		bidding_state   -->|9.bid_cancellation_Msg| cancelling_check_bidder{other bidder?}
-		cancelling_check_bidder--->|No_faield_bid_cancellation_Msg| bidding_state
-		cancelling_check_bidder-->|Yes| cancelling_check_limit{over limitr?}
 		cancelling_check_limit-->|Yes| liquidation
 		cancelling_check_limit-->|No| bidding_state
     listing_state   -->|2.cancel_sell_msg| unsold_state
