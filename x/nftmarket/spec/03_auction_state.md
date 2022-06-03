@@ -94,10 +94,10 @@ subgraph bidding_buy_back
 	NFT_author_buy_back[[NFT author]]
 	UI_author_buy_back[[UI author]]
 
-	lister_buy_back --BD_And_GUU--> buy_back_process
-	buy_back_process --BD_And_GUU--> bidder_buy_back
-	buy_back_process --GUU--> NFT_author_buy_back
-	buy_back_process --GUU--> UI_author_buy_back
+	lister_buy_back --BD--> buy_back_process
+	buy_back_process --BD--> bidder_buy_back
+	buy_back_process --BD--> NFT_author_buy_back
+	buy_back_process --BD--> UI_author_buy_back
 	buy_back_process --NFT--> lister_buy_back
 end
 
@@ -106,9 +106,9 @@ subgraph bidding_expand_period
 	second_bidder_expand_period[[second_bidder]]
 	lister_expand_period[[lister]]
 
-	lister_expand_period--GUU--> expand_period_process
-	expand_period_process--GUU--> top_bidder_expand_period
-	expand_period_process--GUU--> second_bidder_expand_period
+	lister_expand_period--BD--> expand_period_process
+	expand_period_process--BD--> top_bidder_expand_period
+	expand_period_process--BD--> second_bidder_expand_period
 end
 ```
 
@@ -140,8 +140,8 @@ end
 
 subgraph bidding_ignore_liquidation
 	bidder_state--BD--> force_liquidation_process 
-	force_liquidation_process --GUU--> NFT_author
-	force_liquidation_process --GUU--> UI_author
+	force_liquidation_process --BD--> NFT_author
+	force_liquidation_process --BD--> UI_author
 	force_liquidation_process --BD--> system
 	force_liquidation_process --NFT--> bidder
 end
