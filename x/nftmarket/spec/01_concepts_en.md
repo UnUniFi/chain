@@ -42,6 +42,8 @@ stablecoins can be minted with NFT as collateral
 1. bidding with "p" amount of tokens will deposit "d" amount(Calculation Formula: $d=\frac{1}{bid_active_rank}\times p$)
 1. if you are the highest bidder and you want to make a higher bid, bid again
 1. if the bidder has N hours remaining in the auction when the bidding takes place, the auction time will automatically be extended by n' minutes.  (global_option)
+1. bids below the minimum bid price will not be accepted
+1. Bids below the minimum bid price are recorded in the auction and treated as normal bidding information
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
 ### bid cancel
