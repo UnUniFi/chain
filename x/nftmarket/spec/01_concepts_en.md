@@ -8,15 +8,13 @@ stablecoins can be minted with NFT as collateral
 
 ## listing system
 
-1. listers decide “bid hook”
-1. bid hook affects bid deposit amount, bid cancellation amount, collateral amount, and bidder determination logic  
+1. listers decide “bid_active_rank”
+1. bid_active_rank affects bid deposit amount, bid cancellation amount, collateral amount, and bidder determination logic  
    see 10_Generalized_listing_deposit.md
 
-### listing
-
 1. You can list the NFTs you own on the marketplace.
-1. The lister can decide the bid hook from a number between 1 to 100 at the time of listing. (default:x, default is global_option)
-1. the token used for bidding is determined by the lister based on BT.(global_option)
+1. The lister can decide the bid_active_rank from a number between 1 to 100 at the time of listing. (default:x, default is global_option)
+1. the token used for bidding is determined by the lister based on BD.(global_option)
 1. the NFT to be listed on the marketplace is locked
 1. if no bids are received, the item will automatically be re-listed up to x times (global_option)
 1. Lister can display authenticated NFTs
@@ -26,54 +24,57 @@ stablecoins can be minted with NFT as collateral
 ### listing cancel
 
 1. if no one has bid on the item, the lister can cancel the listing
-1. if a bid has been submitted, it is not possible to cancel the listing
+1. if a bid has been placed, the lister may cancel the listing by paying a cancellation fee
+1. cancellation fee is X% of the bid deposit(global_option)
+1. Commission paid by the lister will be divided wining bidder candidate in proportion to their percentage of the deposit amount
 1. The listing of items can only be cancelled after N seconds have elapsed from the time it was placed on the marketplace (global_option)
 1. the NFT to be listed will be unlocked and returned to the lister when the listing is cancelled
-1. tx will not be accepted except for the Lister's Sign. And keep a log.
-
-### buy back
-
-1. The lister can buy back the NFTs you have listed
-1. in the case of a buy-back, the bid price \* (100 + n)% must be paid (global_option)
-1. if the lister buys back the item, the highest bidder can get a commission
-1. if the lister buys back the item, the second and lower bidders cannot get a commission
-1. all locked bid tokens will be refunded
+1. bid deposits will be refunded
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
 ### expand listing period
 
-1. the lister can pay BT tokens to extend the period of the listing (global_option)
-1. Commission paid by the lister will be divided equally among the wining bidder candidates.
+1. the lister can pay BD tokens to extend the period of the listing (global_option)
+1. Commission paid by the lister will be divided wining bidder candidate in proportion to their percentage of the deposit amount
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
 ### bid
 
 1. you can bid on the NFTs on the marketplace
-1. tokens to be bid on must meet BT criteria
+1. tokens to be bid on must meet BD criteria
 1. you cannot bid unless you exceed the minimum bid
-1. bidding with "p" amount of tokens will deposit "d" amount(Calculation Formula: $d=\frac{1}{bid hook}\times p$)
+1. bidding with "p" amount of tokens will deposit "d" amount(Calculation Formula: $d=\frac{1}{bid_active_rank}\times p$)
 1. if you are the highest bidder and you want to make a higher bid, bid again
 1. if the bidder has N hours remaining in the listing when the bidding takes place, the listing time will automatically be extended by n' minutes. (global_option)
+1. bids below the minimum bid price will not be accepted
+1. Bids below the minimum bid price are recorded in the listing and treated as normal bidding information
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
 ### bid cancel
 
 1. you can cancel your bid
 1. if you are the only bidder yourself, you cannot cancel
-1. Bidder can cancel bids free of charge if the bidder's bid rank is below the bid hook.
-1. if the bid rank is bid hook or higher, the bid can be cancelled by paying a cancellation fee.
+1. Bidder can cancel bids free of charge if the bidder's bid rank is below the bid_active_rank.
+1. if the bid rank is bid_active_rank or higher, the bid can be cancelled by paying a cancellation fee.
 1. Cancellation Fee Formula: `MAX{canceling_bidder's_deposit - (total_deposit - borrowed_lister_amount), 0}`
 1. bids can only be cancelled X days after bidding (global_option)
 1. tokens will be reimbursed X days after the bid cancellation is approved (global_option)
 1. Liquidation may occur for sellers whose bids are cancelled.
 1. the bidder and the bid canceller's Sign must match, otherwise the bid will not be accepted and a log will be kept.
 
+### SellingDecision
+
+1. the lister can decide the successful bidder when there are bids
+1. the winning bidder must pay the bid amount - deposit amount within N hours (global_option)
+1. if the successful bidder fails to pay on time, the amount of the successful bidder's deposit will be collected
+1. if the winning bidder does not pay by the due date, the listing period will be extended for X days and the listing will be restarted (global_option)
+1. tx will not be accepted except for the Lister's Sign. And keep a log.
+
 ### end listing
 
-1. listers can end the listing
 1. the listing will end after a certain amount of time
-1. deposits below the bid hook will be returned at the end of the listing
-1. at the end of the listing, the bidder with the bid hook position or higher will be considered as a wining bidder candidate
+1. deposits below the bid_active_rank will be returned at the end of the listing
+1. at the end of the listing, the bidder with the bid_active_rank position or higher will be considered as a wining bidder candidate
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
 ### pay listing fee
@@ -93,18 +94,18 @@ stablecoins can be minted with NFT as collateral
 
 ### boost staking reward
 
-1. if the BT is a Direct Borrowed Asset type, When a bid is placed, the bidder's staking GUUs are increased up to the limit of (GUUs staked by bidder x 2 or N)(global_option)
+1. if the BD is a Direct Borrowed Asset type, When a bid is placed, the bidder's staking GUUs are increased up to the limit of (GUUs staked by bidder x 2 or N)(global_option)
 1. staking GUUs will increase for a period of time until the listing ends or you cancel your bid
 
 ### borrow
 
-1. in the case of a direct borrow asset type listing, the lister can borrow the Total deposit amount above bid hook rank from the protocol
+1. in the case of a direct borrow asset type listing, the lister can borrow the Total deposit amount above bid_active_rank rank from the protocol
 1. the lister can return the borrowed tokens to the protocol
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
 ### CDP
 
-1. in the case of a synthetic asset creation type listings, the lister can issue stablecoins with the total deposit of bid hook rank or higher as collateral
+1. in the case of a synthetic asset creation type listings, the lister can issue stablecoins with the total deposit of bid_active_rank rank or higher as collateral
 1. the lister can return the issued stave tokens to the protocol
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
@@ -116,7 +117,12 @@ stablecoins can be minted with NFT as collateral
 1. the NFT and the collection deposit will be held by the module if all wining bidder candidates not pay at the time of penalty
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
-### BT(Bidding Token)
+### BD(Bidding Token)
+
+1. BD is the token standard used for listings
+1. There are two types of BDs, and they change depending on the listing type and whether the lister issues stablecoins.
+1. for direct borrowing asset type listings, BD is only for tokens specified by the lister (global_option)
+1. for synthetic asset creation type listings, BD can use any token supported by UnUniFi (global_option)
 
 1. BT is the token standard used for listings
 1. There are two types of BTs, and they change depending on the listing type and whether the lister issues stablecoins.

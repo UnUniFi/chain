@@ -50,11 +50,6 @@ flowchart TD
 		check_pay_fee --no--> Deposit_collection_process_top_bidder
 		Deposit_collection_process_top_bidder --> bidding_state
 　  bidding_state   -->|3.buy_back_Msg| unsold_state
-		bidding_state   -->|9.bid_cancellation_Msg| cancelling_check_bidder{other bidder?}
-		cancelling_check_bidder--->|No_faield_bid_cancellation_Msg| bidding_state
-		cancelling_check_bidder-->|Yes| cancelling_check_limit{over limitr?}
-		cancelling_check_limit-->|Yes| liquidation
-		cancelling_check_limit-->|No| bidding_state
     listing_state   -->|2.cancel_sell_msg| unsold_state
 　  Extend_listing_period-->|No_or_NonAction|　end_listing_state
 　  liquidation -->|Yes_5.end_listing_Msg|　end_listing_state
@@ -84,7 +79,7 @@ end
 subgraph start listing
 	bidder1[[bidder]]
 	bidding_state1[[bidding_state]]
-	bidder1 --BT--> bidding_state1
+	bidder1 --BD--> bidding_state1
 end
 ```
 
@@ -98,10 +93,10 @@ subgraph bidding_buy_back
 	NFT_author_buy_back[[NFT author]]
 	UI_author_buy_back[[UI author]]
 
-	lister_buy_back --BT_And_GUU--> buy_back_process
-	buy_back_process --BT_And_GUU--> bidder_buy_back
-	buy_back_process --GUU--> NFT_author_buy_back
-	buy_back_process --GUU--> UI_author_buy_back
+	lister_buy_back --BD--> buy_back_process
+	buy_back_process --BD--> bidder_buy_back
+	buy_back_process --BD--> NFT_author_buy_back
+	buy_back_process --BD--> UI_author_buy_back
 	buy_back_process --NFT--> lister_buy_back
 end
 
@@ -110,9 +105,9 @@ subgraph bidding_expand_period
 	second_bidder_expand_period[[second_bidder]]
 	lister_expand_period[[lister]]
 
-	lister_expand_period--GUU--> expand_period_process
-	expand_period_process--GUU--> top_bidder_expand_period
-	expand_period_process--GUU--> second_bidder_expand_period
+	lister_expand_period--BD--> expand_period_process
+	expand_period_process--BD--> top_bidder_expand_period
+	expand_period_process--BD--> second_bidder_expand_period
 end
 ```
 
@@ -121,7 +116,7 @@ flowchart TD
 subgraph bidding_mint_stable_token
 	lister[[lister]]
 
-	bidding_state --BT--> cdp_process
+	bidding_state --BD--> cdp_process
 	cdp_process--stable_token--> lister
 end
 
@@ -129,7 +124,7 @@ subgraph bidding_prevent_liquidation
 	lister2[[lister]]
 
 	lister2 --stable_token--> liquidation_process
-	liquidation_process--BT--> change_state_to_bidding_state
+	liquidation_process--BD--> change_state_to_bidding_state
 end
 ```
 
@@ -139,14 +134,14 @@ subgraph bidding_accept_liquidation
 	lister3[[lister]]
 
 	lister3 --> accept_liquidation_process
-	accept_liquidation_process--Locked_BT--> end_listing_process
+	accept_liquidation_process--Locked_BD--> end_listing_process
 end
 
 subgraph bidding_ignore_liquidation
-	bidder_state--BT--> force_liquidation_process
-	force_liquidation_process --GUU--> NFT_author
-	force_liquidation_process --GUU--> UI_author
-	force_liquidation_process --BT--> system
+	bidder_state--BD--> force_liquidation_process
+	force_liquidation_process --BD--> NFT_author
+	force_liquidation_process --BD--> UI_author
+	force_liquidation_process --BD--> system
 	force_liquidation_process --NFT--> bidder
 end
 ```
@@ -160,18 +155,17 @@ The time to return tokens for canceled bids can be determined at the time of the
 flowchart TD
 subgraph bidding_cancel_bid
 	cancel_bidder[[cancel_bidder]]
-	check_mint{mint stable coins?}
-	check_limit{over limit?}
+	check_mint{lister mint stable coins?}
+	check_limit{all bid deposit - cancel bid deposit < borrowed token amount?}
 
-	check_mint--NO--> bidding_state
+	check_mint.-NO.-> bidding_state
 	check_limit--No--> bidding_state
-	bidding_state--BT--> delay_time_process
+	bidding_state--BD--> delay_time_process
 	check_mint--Yes--> check_limit
 	check_limit--Yes--> cancel_process
-	cancel_bidder--BT--> cancel_process
-	liquidation_state --BT--> delay_time_process
-	delay_time_process --BT--> cancel_bidder
-	cancel_process --BT--> liquidation_state
+	cancel_process --BD--> bidding_state
+	delay_time_process .-BD.-> cancel_bidder
+	delay_time_process --decrease_BD_or_empty--> cancel_bidder
 
 end
 ```
@@ -185,7 +179,7 @@ subgraph disigion
 	SellingDecision_state --> check_pay_only_top_bidder{payed?}
 	check_pay_only_top_bidder  --yes--> successful_bid_state1
 	check_pay_only_top_bidder  --no--> collected_deposit_only_top_bidder
-	collected_deposit_only_top_bidder --deposit_BT--> bidding_state
+	collected_deposit_only_top_bidder --deposit_BD--> bidding_state
 end
 
 subgraph end listing
@@ -197,7 +191,7 @@ subgraph end listing
 	collected_deposit --> check_wining_bidder{any_wining_bidder?}
 	check_wining_bidder --yes--> check_pay
 	check_wining_bidder --no--> return_process
-	return_process --NFT_and_BT--> lister2
+	return_process --NFT_and_BD--> lister2
 	return_process --> unsold_state
 end
 
@@ -207,11 +201,11 @@ subgraph successful bid
 	NFT_author[[NFT author]]
 	UI_author[[UI author]]
 	end_listing_state3[end_listing_state]
-	end_listing_state3  --BT--> successful_bid_state
+	end_listing_state3  --BD--> successful_bid_state
 	end_listing_state3  --NFT--> successful_bid_state
-	successful_bid_state  --BT_and_Locked_BT--> lister3
-  successful_bid_state  --BT--> UI_author
-	successful_bid_state  --BT--> NFT_author
+	successful_bid_state  --BD_and_Locked_BD--> lister3
+  successful_bid_state  --BD--> UI_author
+	successful_bid_state  --BD--> NFT_author
 	successful_bid_state  --NFT--> bidder3
 end
 ```
