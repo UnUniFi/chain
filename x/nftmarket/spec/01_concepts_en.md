@@ -44,6 +44,7 @@ stablecoins can be minted with NFT as collateral
 1. if the bidder has N hours remaining in the auction when the bidding takes place, the auction time will automatically be extended by n' minutes.  (global_option)
 1. bids below the minimum bid price will not be accepted
 1. Bids below the minimum bid price are recorded in the auction and treated as normal bidding information
+1. bidders can activate the automatic payment feature at the time of bidding
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
 ### bid cancel
@@ -72,6 +73,7 @@ stablecoins can be minted with NFT as collateral
 
 ### pay auction fee
 1. the wining bidder candidates must pay the bid amount minus the deposit amount by N time (global_option)
+1. if automatic payment is enabled, the candidate winning bidder's balance will be paid automatically
 1. after N hours, the protocol checks whether the wining bidder candidates  have paid their bids, starting with the highest bidder
 1. the deposit amount of the wining bidder candidates who has not paid at the time of confirmation will be collected
 1. upon confirmation of payment by the wining bidder candidates, it shall be the successful bidder
