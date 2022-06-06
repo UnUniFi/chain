@@ -1,6 +1,10 @@
 # Concepts
 
-Authenticate a specific NFT and guarantee that it is authentic
+The `x/nft-certification` module implements the logic and status for the certification of NFTs on UnUniFi for the fair NFT listing to the consumers.
+
+## Status   
+
+## Logic   
 
 # requirement
 
