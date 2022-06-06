@@ -31,15 +31,21 @@ message Loan {
 
 message NftListing {
   NftIdentifier nft_id = 1 [ (gogoproto.nullable) = false ];
-  ListingType listing_type = 2;
-  ListingState state = 3;
-  string bid_token = 4;
-  string min_bid = 5 [
+  string owner =  2;
+  ListingType listing_type = 3;
+  ListingState state = 4;
+  string bid_token = 5;
+  string min_bid = 6 [
     (gogoproto.moretags) = "yaml:\"min_bid\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  uint64 bid_hook = 6; // 1 - 100
+  uint64 bid_hook = 7; // 1 - 100
+  google.protobuf.Timestamp end_at = 8 [
+    (gogoproto.moretags) = "yaml:\"end_at\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
 }
 
 message NftBid {

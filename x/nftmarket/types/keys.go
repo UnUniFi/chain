@@ -27,6 +27,8 @@ const (
 	KeyPrefixNftListing = "nft_listing"
 	// nft listing by owner
 	KeyPrefixAddressNftListing = "address_nft_listing"
+	// nft listing by end time
+	KeyPrefixEndTimeNftListing = "end_time_nft_listing"
 	// nft bid by nft_id
 	KeyPrefixNftBid = "nft_bid"
 	// nft bid by owner
@@ -43,12 +45,16 @@ func NftBytes(classId, nftId uint64) []byte {
 	return append(sdk.Uint64ToBigEndian(classId), sdk.Uint64ToBigEndian(nftId)...)
 }
 
-func NftListingKey(classId, nftId uint64) []byte {
-	return append([]byte(KeyPrefixNftListing), NftBytes(classId, nftId)...)
+func NftListingKey(idBytes []byte) []byte {
+	return append([]byte(KeyPrefixNftListing), idBytes...)
 }
 
-func NftAddressNftListingKey(addr sdk.AccAddress, classId, nftId uint64) []byte {
-	return append(append([]byte(KeyPrefixAddressNftListing), address.MustLengthPrefix(addr)...), NftBytes(classId, nftId)...)
+func NftAddressNftListingPrefixKey(addr sdk.AccAddress) []byte {
+	return append([]byte(KeyPrefixAddressNftListing), address.MustLengthPrefix(addr)...)
+}
+
+func NftAddressNftListingKey(addr sdk.AccAddress, nftIdBytes []byte) []byte {
+	return append(append([]byte(KeyPrefixAddressNftListing), address.MustLengthPrefix(addr)...), nftIdBytes...)
 }
 
 func NftBidKey(classId, nftId uint64, bidder sdk.AccAddress) []byte {
