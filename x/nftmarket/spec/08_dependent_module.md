@@ -1,4 +1,4 @@
 # dependent module
 
-vaults
-nft_auth
+vaults   
+nft-regstration
