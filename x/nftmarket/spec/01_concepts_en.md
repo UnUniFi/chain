@@ -139,11 +139,6 @@ stablecoins can be minted with NFT as collateral
 1. for direct borrowing asset type listings, BD is only for tokens specified by the lister (global_option)
 1. for synthetic asset creation type listings, BD can use any token supported by UnUniFi (global_option)
 
-1. BT is the token standard used for listings
-1. There are two types of BTs, and they change depending on the listing type and whether the lister issues stablecoins.
-1. for direct borrowing asset type listings, BT is only for tokens specified by the lister (global_option)
-1. for synthetic asset creation type listings, BT can use any token supported by UnUniFi (global_option)
-
 ## expanded
 
 ### incentive system
