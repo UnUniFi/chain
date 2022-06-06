@@ -3,6 +3,7 @@
 The `x/nftmarket` module keeps state of n primary objects:
 
 ## basic lithing abstract flow
+
 ```mermaid
 flowchart TD
     listing --> bidding
@@ -10,7 +11,9 @@ flowchart TD
 		pay_fee --> swap_token_and_nft
 		swap_token_and_nft --> end_liting
 ```
+
 ## late shipping lithing abstract flow
+
 ```mermaid
 flowchart TD
     listing --> bidding
@@ -19,44 +22,47 @@ flowchart TD
 		lister_send_things_to_win_bidder --> win_bidder_receive_things
 		win_bidder_receive_things --> swap_token_and_nft
 		swap_token_and_nft --> end_listing
-		
+
 ```
 
 # basic listing
-## auction state
+
+## listing state
+
 1. unsold_state
-    NFT not listed for auction
+   NFT not listed for listing
 1. listing_state
 1. bidding_state
 1. SellingDecision_state
 1. liquidation_state
-1. end_auction_state
+1. end_listing_state
 1. successful_bid_state
 
-### msg list 
+### msg list
 
-|ID |Name                         |
-|---|-----------------------------|
-|1  |sell Msg                     |
-|2  |cancel sell Msg              |
-|3  |buy back Msg                 |
-|4  |SellingDecision Msg          |
-|5  |end auction Msg              |
-|6  |bid Msg                      |
-|7  |mint stable coin Msg         |
-|8  |burn stable coin Msg         |
-|9  |bid cancellation Msg         |
-|10 |extend Msg                   |
-|11 |pay auction fee Msg          |
+| ID  | Name                 |
+| --- | -------------------- |
+| 1   | sell Msg             |
+| 2   | cancel sell Msg      |
+| 3   | buy back Msg         |
+| 4   | SellingDecision Msg  |
+| 5   | end listing Msg      |
+| 6   | bid Msg              |
+| 7   | mint stable coin Msg |
+| 8   | burn stable coin Msg |
+| 9   | bid cancellation Msg |
+| 10  | extend Msg           |
+| 11  | pay listing fee Msg  |
 
-### auction flow 
+### listing flow
+
 ```mermaid
 flowchart TD
     unsold_state -->|1.sell_msg| listing_state
-　  bidding_state   -->|time out|Extend_auction_period{Extend auction period?}
+　  bidding_state   -->|time out|Extend_listing_period{Extend listing period?}
 　  bidding_state   -->|Exceeds available \n loan amount|liquidation{liquidation?}
 		bidding_state   --->|collateral falls below \n the loan value|?{?}
-　  Extend_auction_period-->|Yes_10.extend_msg|bidding_state
+　  Extend_listing_period-->|Yes_10.extend_msg|bidding_state
 　  listing_state   -->|6.bid_Msg| over_minimum_bid{over minimum bid?}
 　  over_minimum_bid   -->|Yes|	bidding_state
 　  over_minimum_bid   -->|No_reject_6.bit_msg|	listing_state
@@ -70,12 +76,12 @@ flowchart TD
 		Deposit_collection_process_top_bidder --> bidding_state
 　  bidding_state   -->|3.buy_back_Msg| unsold_state
     listing_state   -->|2.cancel_sell_msg| unsold_state
-　  Extend_auction_period-->|No_or_NonAction|　end_auction_state
-　  liquidation -->|Yes_5.end_auction_Msg|　end_auction_state
+　  Extend_listing_period-->|No_or_NonAction|　end_listing_state
+　  liquidation -->|Yes_5.end_listing_Msg|　end_listing_state
 　  liquidation -->|No_8.BurnMsg|　bidding_state
 　  liquidation -->|NonAction|　penalty_process
-　  penalty_process -->|5.end_auction_Msg|　end_auction_state
-　  end_auction_state   -->　pay_check{pay fee?}
+　  penalty_process -->|5.end_listing_Msg|　end_listing_state
+　  end_listing_state   -->　pay_check{pay fee?}
 　  pay_check   -->|yes|　successful_bid_state
 　  pay_check   -->|no|　Deposit_collection_process
 　  Deposit_collection_process   -->　check_wining_bidder_candidates{any_wining_bidder_candidates?}
@@ -84,8 +90,10 @@ flowchart TD
 　  pay_collected_deposit_process   -->　unsold_state
 ```
 
-### auction Token and NFT flow 
-#### case. start acution
+### listing Token and NFT flow
+
+#### case. start listing
+
 ```mermaid
 flowchart TD
 subgraph start sell nft
@@ -93,14 +101,15 @@ subgraph start sell nft
 	listing_state[[listing_state]]
 	lister1--NFT--> listing_state
 end
-subgraph start auction
+subgraph start listing
 	bidder1[[bidder]]
 	bidding_state1[[bidding_state]]
 	bidder1 --BD--> bidding_state1
 end
 ```
 
-#### case. bidding 
+#### case. bidding
+
 ```mermaid
 flowchart TD
 subgraph bidding_buy_back
@@ -150,11 +159,11 @@ subgraph bidding_accept_liquidation
 	lister3[[lister]]
 
 	lister3 --> accept_liquidation_process
-	accept_liquidation_process--Locked_BD--> end_auction_process
+	accept_liquidation_process--Locked_BD--> end_listing_process
 end
 
 subgraph bidding_ignore_liquidation
-	bidder_state--BD--> force_liquidation_process 
+	bidder_state--BD--> force_liquidation_process
 	force_liquidation_process --BD--> NFT_author
 	force_liquidation_process --BD--> UI_author
 	force_liquidation_process --BD--> system
@@ -162,9 +171,11 @@ subgraph bidding_ignore_liquidation
 end
 ```
 
-### bidding cancel 
+### bidding cancel
+
 Bid cancellations will have a delay before the tokens are returned  
-The time to return tokens for canceled bids can be determined at the time of the auction  
+The time to return tokens for canceled bids can be determined at the time of the listing
+
 ```mermaid
 flowchart TD
 subgraph bidding_cancel_bid
@@ -180,11 +191,12 @@ subgraph bidding_cancel_bid
 	cancel_process --BD--> bidding_state
 	delay_time_process .-BD.-> cancel_bidder
 	delay_time_process --decrease_BD_or_empty--> cancel_bidder
-	
+
 end
 ```
 
-### end auction 
+### end listing
+
 ```mermaid
 flowchart TD
 
@@ -195,10 +207,10 @@ subgraph disigion
 	collected_deposit_only_top_bidder --deposit_BD--> bidding_state
 end
 
-subgraph end auction
+subgraph end listing
 	lister2[[lister]]
 	successful_bid_state1[successful_bid_state1]
-	end_auction_state  --> check_pay{payed?}
+	end_listing_state  --> check_pay{payed?}
 	check_pay  --yes--> successful_bid_state1
 	check_pay  --no--> collected_deposit
 	collected_deposit --> check_wining_bidder{any_wining_bidder?}
@@ -213,9 +225,9 @@ subgraph successful bid
 	lister3[[lister]]
 	NFT_author[[NFT author]]
 	UI_author[[UI author]]
-	end_auction_state3[end_auction_state]
-	end_auction_state3  --BD--> successful_bid_state
-	end_auction_state3  --NFT--> successful_bid_state
+	end_listing_state3[end_listing_state]
+	end_listing_state3  --BD--> successful_bid_state
+	end_listing_state3  --NFT--> successful_bid_state
 	successful_bid_state  --BD_and_Locked_BD--> lister3
   successful_bid_state  --BD--> UI_author
 	successful_bid_state  --BD--> NFT_author
@@ -224,4 +236,5 @@ end
 ```
 
 # late shipping nft listing
-TODO: Describe the detailed flow  
+
+TODO: Describe the detailed flow
