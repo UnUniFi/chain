@@ -2,7 +2,27 @@
 
 The `x/nftmarket` module keeps state of n primary objects:
 
+## basic lithing abstract flow
+```mermaid
+flowchart TD
+    listing --> bidding
+		bidding --> pay_fee
+		pay_fee --> swap_token_and_nft
+		swap_token_and_nft --> end_liting
+```
+## late shipping lithing abstract flow
+```mermaid
+flowchart TD
+    listing --> bidding
+		bidding --> pay_fee
+		pay_fee --> lister_send_things_to_win_bidder
+		lister_send_things_to_win_bidder --> win_bidder_receive_things
+		win_bidder_receive_things --> swap_token_and_nft
+		swap_token_and_nft --> end_listing
+		
+```
 
+# basic listing
 ## auction state
 1. unsold_state
     NFT not listed for auction
@@ -202,3 +222,6 @@ subgraph successful bid
 	successful_bid_state  --NFT--> bidder3
 end
 ```
+
+# late shipping nft listing
+TODO: Describe the detailed flow  

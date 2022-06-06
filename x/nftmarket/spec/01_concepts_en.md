@@ -9,6 +9,12 @@ stablecoins can be minted with NFT as collateral
 1. listers decide “bid_active_rank”
 1. bid_active_rank affects bid deposit amount, bid cancellation amount, collateral amount, and bidder determination logic  
   see 10_Generalized_auction_deposit.md
+1. There are two types of listing
+    normal listing 
+    late shipping nft listing.
+1. normal listing is an listing where NFTs are passed and received over the protocol
+1. late shipping nft listing are listing with delivery outside of protocol
+
 
 ### listing 
 1. You can list the NFTs you own on the marketplace.
@@ -18,6 +24,7 @@ stablecoins can be minted with NFT as collateral
 1. if no bids are received, the item will automatically be re-listed up to x times (global_option)
 1. Lister can display authenticated NFTs
 1. Lister can decide a minimum bid at the time of listing (global_option)
+1. Lister can choose between normal listing and late shipping nft listing at the time of listing
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
 ### listing cancel
@@ -85,6 +92,12 @@ stablecoins can be minted with NFT as collateral
 1. the Token will be delivered X days after the successful bid.  (global_option)
 1. When an auction is successful, the price information must be recorded and pulled up in query
 1. the price information shall be recorded as NFT, lister, successful bidder, successful bid price, successful bid date and time, successful bid type, and the number of bids cumulatively.
+
+### late shipping nft
+1. late shipping nft listting are delivered by the lister outside of protocol after payment by the winning bidder
+1. the listing will end after the winning bidder receives the item from the lister
+1. Token will be paid to the lister after the listing ends.
+1. the Token will be delivered X days after the successful bid.  (global_option)
 
 ### boost staking reward
 1. if the BD is a Direct Borrowed Asset type, When a bid is placed, the bidder's staking GUUs are increased up to the limit of (GUUs staked by bidder x 2 or N)(global_option)

@@ -9,6 +9,9 @@ stablecoins can be minted with NFT as collateral
 1. 出品者はbid_active_rankを決めることができる
 1. bid_active_rankは入札デポジット額、入札キャンセル額、担保額、落札者決定ロジックに影響する  
   see 10_Generalized_auction_deposit.md
+1. オークションには、通常オークションとlate shipping nftオークションがある
+1. 通常オークションはプロトコル上でNFTの受け渡しが行われるオークション
+1. late shipping nftオークションはプロトコル以外で受け渡すものがあるオークション
 
 ### listing 
 1. 所有しているNFTを出品することができる
@@ -19,6 +22,7 @@ stablecoins can be minted with NFT as collateral
 1. 認証済みのNFTを表示できる
 1. 出品時に、最低入札額を決めることができる(min is global_option)
 1. 出品時に、最低落札額を決めることができる(min is global_option)
+1. 出品時に、通常オークションとlate shipping nftオークションのどちらかを選ぶことできる
 1. 出品者のSign以外の場合は、受け付けずログを残すこと
 
 ### listing cancel
@@ -86,6 +90,13 @@ stablecoins can be minted with NFT as collateral
 1. Tokenの引き渡しは落札後X日経過後 (global_option)
 1. オークションが成立した場合、　価格情報を記録しqueryで引き出せること
 1. 価格情報はNFT,出品者,落札者,落札日時,落札タイプ,入札件数,落札金額を累積で記録すること
+
+
+### late shipping nft
+1. late shipping nftオークションは落札者が支払い後、出品者がプロトコル以外の場所で受け渡しを行う
+1. 落札者が出品者から受け取り後オークションが終了となる
+1. オークション終了後に出品者にTokenが支払われる
+1. Tokenの引き渡しは落札後X日経過後 (global_option)
 
 ### boost staking reward
 1. BDが直接借用資産型の場合に、入札すると(入札者がステーキングしているGUU x 2 or N)を限度額にステーキングGUUが増える (global_option)
