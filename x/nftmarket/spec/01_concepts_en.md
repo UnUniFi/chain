@@ -11,6 +11,11 @@ stablecoins can be minted with NFT as collateral
 1. listers decide “bid_active_rank”
 1. bid_active_rank affects bid deposit amount, bid cancellation amount, collateral amount, and bidder determination logic  
    see 10_Generalized_listing_deposit.md
+1. There are two types of listing
+   normal listing
+   late shipping nft listing.
+1. normal listing is an listing where NFTs are passed and received over the protocol
+1. late shipping nft listing are listing with delivery outside of protocol
 
 1. You can list the NFTs you own on the marketplace.
 1. The lister can decide the bid_active_rank from a number between 1 to 100 at the time of listing. (default:x, default is global_option)
@@ -19,6 +24,7 @@ stablecoins can be minted with NFT as collateral
 1. if no bids are received, the item will automatically be re-listed up to x times (global_option)
 1. Lister can display authenticated NFTs
 1. Lister can decide a minimum bid at the time of listing (global_option)
+1. Lister can choose between normal listing and late shipping nft listing at the time of listing
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
 ### listing cancel
@@ -48,6 +54,7 @@ stablecoins can be minted with NFT as collateral
 1. if the bidder has N hours remaining in the listing when the bidding takes place, the listing time will automatically be extended by n' minutes. (global_option)
 1. bids below the minimum bid price will not be accepted
 1. Bids below the minimum bid price are recorded in the listing and treated as normal bidding information
+1. bidders can activate the automatic payment feature at the time of bidding
 1. tx will not be accepted except for the Lister's Sign. And keep a log.
 
 ### bid cancel
@@ -80,6 +87,7 @@ stablecoins can be minted with NFT as collateral
 ### pay listing fee
 
 1. the wining bidder candidates must pay the bid amount minus the deposit amount by N time (global_option)
+1. if automatic payment is enabled, the candidate winning bidder's balance will be paid automatically
 1. after N hours, the protocol checks whether the wining bidder candidates have paid their bids, starting with the highest bidder
 1. the deposit amount of the wining bidder candidates who has not paid at the time of confirmation will be collected
 1. upon confirmation of payment by the wining bidder candidates, it shall be the successful bidder
@@ -91,6 +99,13 @@ stablecoins can be minted with NFT as collateral
 1. the Token will be delivered X days after the successful bid. (global_option)
 1. When an listing is successful, the price information must be recorded and pulled up in query
 1. the price information shall be recorded as NFT, lister, successful bidder, successful bid price, successful bid date and time, successful bid type, and the number of bids cumulatively.
+
+### late shipping nft
+
+1. late shipping nft listting are delivered by the lister outside of protocol after payment by the winning bidder
+1. the listing will end after the winning bidder receives the item from the lister
+1. Token will be paid to the lister after the listing ends.
+1. the Token will be delivered X days after the successful bid. (global_option)
 
 ### boost staking reward
 

@@ -9,6 +9,9 @@ stablecoins can be minted with NFT as collateral
 1. 出品者はbid_active_rankを決めることができる
 1. bid_active_rankは入札デポジット額、入札キャンセル額、担保額、落札者決定ロジックに影響する  
   see 10_Generalized_auction_deposit.md
+1. オークションには、通常オークションとlate shipping nftオークションがある
+1. 通常オークションはプロトコル上でNFTの受け渡しが行われるオークション
+1. late shipping nftオークションはプロトコル以外で受け渡すものがあるオークション
 
 ### listing 
 1. 所有しているNFTを出品することができる
@@ -19,6 +22,7 @@ stablecoins can be minted with NFT as collateral
 1. 認証済みのNFTを表示できる
 1. 出品時に、最低入札額を決めることができる(min is global_option)
 1. 出品時に、最低落札額を決めることができる(min is global_option)
+1. 出品時に、通常オークションとlate shipping nftオークションのどちらかを選ぶことできる
 1. 出品者のSign以外の場合は、受け付けずログを残すこと
 
 ### listing cancel
@@ -45,6 +49,7 @@ stablecoins can be minted with NFT as collateral
 1. 入札が行われる時に、出品残り時間N時間の場合、自動的にn'分出品時間が伸びる(global_option)
 1. 最低落札価格を下回る入札は受け付けない
 1. 最低落札価格以下の入札は、オークションに記録され、通常の入札情報として扱われる
+1. 入札者は入札時に自動支払い機能を有効にすることができる
 1. 入札者とtxのSignが一致していること、それ以外の場合は、受け付けずログを残すこと
 
 ### bid cancel
@@ -73,6 +78,7 @@ stablecoins can be minted with NFT as collateral
 
 ### pay auction fee
 1. 落札候補者はN時間までにデポジット額を引いた入札額を支払う必要がある (global_option)
+1. 自動支払いが有効な場合は、残高があれば自動的に支払うことができる
 1. N時間経過後、protocolは最上位入札から順番に落札候補者が入札額を支払ったか確認する
 1. 確認時に支払っていない落札候補者のデポジット額は徴収される
 1. 落札候補者の支払いが確認できたら、それを落札者とする
@@ -84,6 +90,13 @@ stablecoins can be minted with NFT as collateral
 1. Tokenの引き渡しは落札後X日経過後 (global_option)
 1. オークションが成立した場合、　価格情報を記録しqueryで引き出せること
 1. 価格情報はNFT,出品者,落札者,落札日時,落札タイプ,入札件数,落札金額を累積で記録すること
+
+
+### late shipping nft
+1. late shipping nftオークションは落札者が支払い後、出品者がプロトコル以外の場所で受け渡しを行う
+1. 落札者が出品者から受け取り後オークションが終了となる
+1. オークション終了後に出品者にTokenが支払われる
+1. Tokenの引き渡しは落札後X日経過後 (global_option)
 
 ### boost staking reward
 1. BDが直接借用資産型の場合に、入札すると(入札者がステーキングしているGUU x 2 or N)を限度額にステーキングGUUが増える (global_option)
