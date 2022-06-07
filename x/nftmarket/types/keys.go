@@ -57,12 +57,16 @@ func NftAddressNftListingKey(addr sdk.AccAddress, nftIdBytes []byte) []byte {
 	return append(append([]byte(KeyPrefixAddressNftListing), address.MustLengthPrefix(addr)...), nftIdBytes...)
 }
 
-func NftBidKey(classId, nftId uint64, bidder sdk.AccAddress) []byte {
-	return append(append([]byte(KeyPrefixNftBid), NftBytes(classId, nftId)...), address.MustLengthPrefix(bidder)...)
+func NftBidKey(nftIdBytes []byte, bidder sdk.AccAddress) []byte {
+	return append(append([]byte(KeyPrefixNftBid), nftIdBytes...), address.MustLengthPrefix(bidder)...)
 }
 
-func AddressBidKey(classId, nftId uint64, bidder sdk.AccAddress) []byte {
-	return append(append([]byte(KeyPrefixAddressBid), address.MustLengthPrefix(bidder)...), NftBytes(classId, nftId)...)
+func AddressBidKeyPrefix(bidder sdk.AccAddress) []byte {
+	return append([]byte(KeyPrefixAddressBid), address.MustLengthPrefix(bidder)...)
+}
+
+func AddressBidKey(nftIdBytes []byte, bidder sdk.AccAddress) []byte {
+	return append(append([]byte(KeyPrefixAddressBid), address.MustLengthPrefix(bidder)...), nftIdBytes...)
 }
 
 func NftLoanKey(classId, nftId uint64) []byte {
