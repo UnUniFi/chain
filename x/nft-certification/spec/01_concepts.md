@@ -6,13 +6,17 @@ The `x/nft-certification` module implements the logic and status for the certifi
 **None**   
 The `none` status is put when the NFTs are minted on UnUniFi.
 
-**Casual**
+**Casual**   
 The `casual` status is put when the specific Msg is send.
 
 **Governance-certificated**   
 The `governance-certificated` status is put when the specific governance proposal is passed.
 
 ## Logic   
+Everyone can request `casual` status for their collective NFT with certain amount of fee.
+   
+To get further legitimate status which is `governance-certificated` requires to post the specific governance proposal. If the proposal passes, the collective NFT gets that status.
+
 
 
 # requirement
