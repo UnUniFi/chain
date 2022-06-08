@@ -5,6 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
 import "nftmarket/nftmarket.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/nftmarket/types";
@@ -77,8 +78,7 @@ message QueryNftBidsResponse {
 message QueryBidderBidsRequest {
   string bidder = 1 [
     (gogoproto.moretags) = "yaml:\"bidder\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (cosmos_proto.scalar) = "github.com/UnUniFi/chain/types.StringAccAddress"
   ];
 }
 message QueryBidderBidsResponse {
