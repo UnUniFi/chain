@@ -42,7 +42,7 @@ const (
 )
 
 func NftBytes(classId, nftId string) []byte {
-	return append(sdk.Uint64ToBigEndian(classId), sdk.Uint64ToBigEndian(nftId)...)
+	return append([]byte(classId), []byte(nftId)...)
 }
 
 func NftListingKey(idBytes []byte) []byte {
@@ -73,7 +73,7 @@ func NftLoanKey(classId, nftId string) []byte {
 	return append([]byte(KeyPrefixNftLoan), NftBytes(classId, nftId)...)
 }
 
-func AddressNftLoanKey(addr sdk.AccAddress, classId, nftId uint64) []byte {
+func AddressNftLoanKey(addr sdk.AccAddress, classId, nftId string) []byte {
 	return append(append([]byte(KeyPrefixAddressNftLoan), address.MustLengthPrefix(addr)...), NftBytes(classId, nftId)...)
 }
 
