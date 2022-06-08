@@ -43,8 +43,8 @@ message QueryParamsResponse {
 }
 
 message QueryNftListingRequest {
-  uint64 class_id = 1;
-  uint64 nft_id = 2;
+  string class_id = 1;
+  string nft_id = 2;
 }
 message QueryNftListingResponse {
   NftListing listing = 1 [ (gogoproto.nullable) = false ];
@@ -67,8 +67,8 @@ message QueryCDPsListResponse {
 }
 
 message QueryNftBidsRequest {
-  uint64 class_id = 1;
-  uint64 nft_id = 2;
+  string class_id = 1;
+  string nft_id = 2;
 }
 message QueryNftBidsResponse {
   repeated NftBid bids = 1 [ (gogoproto.nullable) = false ];

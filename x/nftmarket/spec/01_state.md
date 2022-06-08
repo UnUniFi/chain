@@ -22,8 +22,8 @@ enum ListingState {
 }
 
 message NftIdentifier {
-  uint64 class_id = 1;
-  uint64 nft_id = 2;
+  string class_id = 1;
+  string nft_id = 2;
 }
 
 message NftListing {

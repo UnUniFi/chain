@@ -20,8 +20,8 @@ enum ListingState {
 }
 
 message NftIdentifier {
-  uint64 class_id = 1;
-  uint64 nft_id = 2;
+  string class_id = 1;
+  string nft_id = 2;
 }
 
 message Loan {
@@ -76,4 +76,10 @@ message Params {
   cosmos.base.v1beta1.Coin nft_listing_commission_fee = 15 [ (gogoproto.nullable) = false ];
   uint64 nft_listing_extend_seconds = 16;
   cosmos.base.v1beta1.Coin nft_listing_period_extend_fee_per_hour = 17 [ (gogoproto.nullable) = false ];
+}
+
+message EventListNft {
+  string owner = 1;
+  string class_id = 2;
+  string nft_id = 3;
 }

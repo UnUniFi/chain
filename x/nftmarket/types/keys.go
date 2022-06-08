@@ -41,7 +41,7 @@ const (
 	KeyPrefixAddressRewards = "rewards"
 )
 
-func NftBytes(classId, nftId uint64) []byte {
+func NftBytes(classId, nftId string) []byte {
 	return append(sdk.Uint64ToBigEndian(classId), sdk.Uint64ToBigEndian(nftId)...)
 }
 
@@ -69,7 +69,7 @@ func AddressBidKey(nftIdBytes []byte, bidder sdk.AccAddress) []byte {
 	return append(append([]byte(KeyPrefixAddressBid), address.MustLengthPrefix(bidder)...), nftIdBytes...)
 }
 
-func NftLoanKey(classId, nftId uint64) []byte {
+func NftLoanKey(classId, nftId string) []byte {
 	return append([]byte(KeyPrefixNftLoan), NftBytes(classId, nftId)...)
 }
 

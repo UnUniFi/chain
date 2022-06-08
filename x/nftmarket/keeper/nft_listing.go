@@ -128,3 +128,68 @@ func (k Keeper) GetAllNftListings(ctx sdk.Context) []types.NftListing {
 
 	return allListings
 }
+
+func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
+	// check listing already exists
+	_, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
+	if err == nil {
+		return types.ErrNftListingAlreadyExists
+	}
+
+	// Check nft exists
+	_, found := k.nftKeeper.GetNFT(ctx, msg.NftId.ClassId, msg.NftId.NftId)
+	if !found {
+		return types.ErrNftDoesNotExists
+	}
+
+	// check ownership of nft
+	owner := k.nftKeeper.GetOwner(ctx, msg.NftId.ClassId, msg.NftId.NftId)
+	if owner.String() != msg.Sender.AccAddress().String() {
+		return types.ErrNotNftOwner
+	}
+
+	params := k.GetParamSet(ctx)
+	for !Contains(params.BidTokens, msg.BidToken) {
+		return types.ErrNotSupportedBidToken
+	}
+
+	// pay fees for nft listing
+	listingFee := params.NftListingCommissionFee
+	if listingFee.IsPositive() {
+		feeCoins := sdk.Coins{listingFee}
+		sender := sdk.AccAddress(msg.Sender)
+		err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, feeCoins)
+		if err != nil {
+			return err
+		}
+	}
+
+	// Send ownership to market module
+	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
+	err = k.nftKeeper.Transfer(ctx, msg.NftId.ClassId, msg.NftId.NftId, moduleAddr)
+	if err != nil {
+		return err
+	}
+
+	// create listing
+	listing := types.NftListing{
+		NftId:       msg.NftId,
+		Owner:       owner.String(),
+		ListingType: msg.ListingType,
+		State:       types.ListingState_SELLING,
+		BidToken:    msg.BidToken,
+		MinBid:      msg.MinBid,
+		BidHook:     msg.BidHook,
+		EndAt:       ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingPeriodInitial)),
+	}
+	k.SetNftListing(ctx, listing)
+
+	// Emit event for nft listing
+	ctx.EventManager().EmitTypedEvent(&types.EventListNft{
+		Owner:   msg.Sender.AccAddress().String(),
+		ClassId: msg.NftId.ClassId,
+		NftId:   msg.NftId.NftId,
+	})
+
+	return nil
+}

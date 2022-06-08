@@ -23,7 +23,11 @@ var _ types.MsgServer = msgServer{}
 
 func (k msgServer) ListNft(c context.Context, msg *types.MsgListNft) (*types.MsgListNftResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
+
+	err := k.keeper.ListNft(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
 	return &types.MsgListNftResponse{}, nil
 }
 

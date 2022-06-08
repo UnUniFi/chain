@@ -19,11 +19,12 @@ type Keeper struct {
 	paramSpace    paramtypes.Subspace
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
+	nftKeeper     types.NftKeeper
 }
 
 func NewKeeper(cdc codec.Codec, storeKey, memKey storetypes.StoreKey,
 	paramSpace paramtypes.Subspace, accountKeeper types.AccountKeeper,
-	bankKeeper types.BankKeeper) Keeper {
+	bankKeeper types.BankKeeper, nftKeeper types.NftKeeper) Keeper {
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
@@ -35,6 +36,7 @@ func NewKeeper(cdc codec.Codec, storeKey, memKey storetypes.StoreKey,
 		paramSpace:    paramSpace,
 		accountKeeper: accountKeeper,
 		bankKeeper:    bankKeeper,
+		nftKeeper:     nftKeeper,
 	}
 }
 
