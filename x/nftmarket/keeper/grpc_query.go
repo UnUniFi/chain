@@ -15,8 +15,9 @@ func (k Keeper) Params(c context.Context, req *types.QueryParamsRequest) (*types
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
-	return &types.QueryParamsResponse{}, nil
+	return &types.QueryParamsResponse{
+		Params: k.GetParamSet(ctx),
+	}, nil
 }
 
 func (k Keeper) NftListing(c context.Context, req *types.QueryNftListingRequest) (*types.QueryNftListingResponse, error) {
@@ -25,8 +26,14 @@ func (k Keeper) NftListing(c context.Context, req *types.QueryNftListingRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
-	return &types.QueryNftListingResponse{}, nil
+	listing, err := k.GetNftListingByIdBytes(ctx, types.NftBytes(req.ClassId, req.NftId))
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryNftListingResponse{
+		Listing: listing,
+	}, nil
 }
 
 func (k Keeper) ListedNfts(c context.Context, req *types.QueryListedNftsRequest) (*types.QueryListedNftsResponse, error) {
@@ -35,8 +42,10 @@ func (k Keeper) ListedNfts(c context.Context, req *types.QueryListedNftsRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
-	return &types.QueryListedNftsResponse{}, nil
+	listings := k.GetAllNftListings(ctx)
+	return &types.QueryListedNftsResponse{
+		Listings: listings,
+	}, nil
 }
 
 func (k Keeper) Loans(c context.Context, req *types.QueryLoansRequest) (*types.QueryLoansResponse, error) {
@@ -65,8 +74,10 @@ func (k Keeper) NftBids(c context.Context, req *types.QueryNftBidsRequest) (*typ
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
-	return &types.QueryNftBidsResponse{}, nil
+	bids := k.GetBidsByNft(ctx, types.NftBytes(req.ClassId, req.NftId))
+	return &types.QueryNftBidsResponse{
+		Bids: bids,
+	}, nil
 }
 
 func (k Keeper) BidderBids(c context.Context, req *types.QueryBidderBidsRequest) (*types.QueryBidderBidsResponse, error) {
@@ -75,8 +86,10 @@ func (k Keeper) BidderBids(c context.Context, req *types.QueryBidderBidsRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
-	return &types.QueryBidderBidsResponse{}, nil
+	bids := k.GetBidsByBidder(ctx, sdk.AccAddress(req.Bidder))
+	return &types.QueryBidderBidsResponse{
+		Bids: bids,
+	}, nil
 }
 
 func (k Keeper) Rewards(c context.Context, req *types.QueryRewardsRequest) (*types.QueryRewardsResponse, error) {

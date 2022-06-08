@@ -52,7 +52,7 @@ message QueryNftListingResponse {
 
 message QueryListedNftsRequest {}
 message QueryListedNftsResponse {
-  repeated NftListing listing = 1 [ (gogoproto.nullable) = false ];
+  repeated NftListing listings = 1 [ (gogoproto.nullable) = false ];
 }
 
 message QueryLoansRequest {}
