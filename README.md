@@ -69,10 +69,10 @@ echo export PATH=\$PATH:/usr/local/go/bin:\$HOME/go/bin >> ~/.bashrc
 source ~/.bashrc
 ```
 
-### Clone
+### Install ununifid
 
 ```bash
-git clone https://github.com/UnUniFi/chain.git
+git clone https://github.com/UnUniFi/chain.git UnUniFi
 cd UnUniFi
 make install
 ```
