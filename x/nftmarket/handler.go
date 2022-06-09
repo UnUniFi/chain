@@ -21,9 +21,6 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgCancelNftListing:
 			res, err := msgServer.CancelNftListing(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgNftBuyBack:
-			res, err := msgServer.NftBuyBack(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgExpandListingPeriod:
 			res, err := msgServer.ExpandListingPeriod(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
