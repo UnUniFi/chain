@@ -193,3 +193,116 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 
 	return nil
 }
+
+func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing) error {
+	// check listing already exists
+	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
+	if err == nil {
+		return types.ErrNftListingAlreadyExists
+	}
+
+	// Check nft exists
+	_, found := k.nftKeeper.GetNFT(ctx, msg.NftId.ClassId, msg.NftId.NftId)
+	if !found {
+		return types.ErrNftDoesNotExists
+	}
+
+	// check ownership of listing
+	if listing.Owner != msg.Sender.AccAddress().String() {
+		return types.ErrNotNftListingOwner
+	}
+
+	// check bids exists
+	bids := k.GetBidsByNft(ctx, msg.NftId.IdBytes())
+	if len(bids) > 0 {
+		return types.ErrNftBidAlreadyExists
+	}
+
+	// Send ownership to original owner
+	err = k.nftKeeper.Transfer(ctx, msg.NftId.ClassId, msg.NftId.NftId, msg.Sender.AccAddress())
+	if err != nil {
+		return err
+	}
+
+	// delete listing
+	k.DeleteNftListing(ctx, listing)
+
+	// Emit event for nft listing cancel
+	ctx.EventManager().EmitTypedEvent(&types.EventCancelListNfting{
+		Owner:   msg.Sender.AccAddress().String(),
+		ClassId: msg.NftId.ClassId,
+		NftId:   msg.NftId.NftId,
+	})
+
+	return nil
+}
+
+func (k Keeper) NftBuyBack(ctx sdk.Context, msg *types.MsgNftBuyBack) error {
+	// check listing already exists
+	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
+	if err == nil {
+		return types.ErrNftListingAlreadyExists
+	}
+
+	// Check nft exists
+	_, found := k.nftKeeper.GetNFT(ctx, msg.NftId.ClassId, msg.NftId.NftId)
+	if !found {
+		return types.ErrNftDoesNotExists
+	}
+
+	// check ownership of listing
+	if listing.Owner != msg.Sender.AccAddress().String() {
+		return types.ErrNotNftListingOwner
+	}
+
+	// check bids exists
+	bids := k.GetBidsByNft(ctx, msg.NftId.IdBytes())
+	if len(bids) > 0 {
+		return types.ErrNftBidDoesNotExists
+	}
+
+	// send extra buy back funds to winner bidders
+	params := k.GetParamSet(ctx)
+	for _, bid := range bids[len(bids)-int(listing.BidHook):] {
+		bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+		if err != nil {
+			return err
+		}
+		bidderCancelFee := bid.Amount.Amount.Int64() * int64(params.NftListingBuyBackExtraPercentage) / 100
+		err = k.bankKeeper.SendCoins(ctx, msg.Sender.AccAddress(), bidder, sdk.Coins{sdk.NewInt64Coin(listing.BidToken, bidderCancelFee)})
+		if err != nil {
+			return err
+		}
+	}
+
+	// delete all bids and return funds back
+	for _, bid := range bids {
+		bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+		if err != nil {
+			return err
+		}
+		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{bid.Amount})
+		if err != nil {
+			return err
+		}
+		k.DeleteBid(ctx, bid)
+	}
+
+	// Send nft ownership to original owner
+	err = k.nftKeeper.Transfer(ctx, msg.NftId.ClassId, msg.NftId.NftId, msg.Sender.AccAddress())
+	if err != nil {
+		return err
+	}
+
+	// delete listing
+	k.DeleteNftListing(ctx, listing)
+
+	// Emit event for nft listing cancel
+	ctx.EventManager().EmitTypedEvent(&types.EventNftBuyBack{
+		Owner:   msg.Sender.AccAddress().String(),
+		ClassId: msg.NftId.ClassId,
+		NftId:   msg.NftId.NftId,
+	})
+
+	return nil
+}

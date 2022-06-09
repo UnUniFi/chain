@@ -83,3 +83,15 @@ message EventListNft {
   string class_id = 2;
   string nft_id = 3;
 }
+
+message EventCancelListNfting {
+  string owner = 1;
+  string class_id = 2;
+  string nft_id = 3;
+}
+
+message EventNftBuyBack {
+  string owner = 1;
+  string class_id = 2;
+  string nft_id = 3;
+}
