@@ -11,7 +11,6 @@ option go_package = "github.com/UnUniFi/chain/x/nftmarket/types";
 service Msg {
   rpc ListNft(MsgListNft) returns (MsgListNftResponse);
   rpc CancelNftListing(MsgCancelNftListing) returns (MsgCancelNftListingResponse);
-  rpc NftBuyBack(MsgNftBuyBack) returns (MsgNftBuyBackResponse);
   rpc ExpandListingPeriod(MsgExpandListingPeriod) returns (MsgExpandListingPeriodResponse);
   rpc PlaceBid(MsgPlaceBid) returns (MsgPlaceBidResponse);
   rpc CancelBid(MsgCancelBid) returns (MsgCancelBidResponse);
@@ -51,16 +50,6 @@ message MsgCancelNftListing {
   NftIdentifier nft_id = 2 [ (gogoproto.nullable) = false ];
 }
 message MsgCancelNftListingResponse {}
-
-message MsgNftBuyBack {
-  string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
-  NftIdentifier nft_id = 2 [ (gogoproto.nullable) = false ];
-}
-message MsgNftBuyBackResponse {}
 
 message MsgExpandListingPeriod {
   string sender = 1 [

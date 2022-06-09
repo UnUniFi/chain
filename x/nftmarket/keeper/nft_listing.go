@@ -212,10 +212,38 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 		return types.ErrNotNftListingOwner
 	}
 
-	// check bids exists
+	// check nft is bidding status
+	if listing.State != types.ListingState_BIDDING && listing.State != types.ListingState_SELLING {
+		return types.ErrStatusCannotCancelListing
+	}
+
 	bids := k.GetBidsByNft(ctx, msg.NftId.IdBytes())
-	if len(bids) > 0 {
-		return types.ErrNftBidAlreadyExists
+
+	// send extra buy back funds to winner bidders
+	params := k.GetParamSet(ctx)
+	for _, bid := range bids[len(bids)-int(listing.BidHook):] {
+		bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+		if err != nil {
+			return err
+		}
+		cancelFee := bid.Amount.Amount.Mul(sdk.NewInt(int64(params.NftListingCancelFeePercentage) / 100))
+		err = k.bankKeeper.SendCoins(ctx, msg.Sender.AccAddress(), bidder, sdk.Coins{sdk.NewCoin(listing.BidToken, cancelFee)})
+		if err != nil {
+			return err
+		}
+	}
+
+	// delete all bids and return funds back
+	for _, bid := range bids {
+		bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+		if err != nil {
+			return err
+		}
+		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{bid.Amount})
+		if err != nil {
+			return err
+		}
+		k.DeleteBid(ctx, bid)
 	}
 
 	// Send ownership to original owner
@@ -237,7 +265,7 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 	return nil
 }
 
-func (k Keeper) NftBuyBack(ctx sdk.Context, msg *types.MsgNftBuyBack) error {
+func (k Keeper) ExpandListingPeriod(ctx sdk.Context, msg *types.MsgExpandListingPeriod) error {
 	// check listing already exists
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
 	if err == nil {
@@ -255,50 +283,26 @@ func (k Keeper) NftBuyBack(ctx sdk.Context, msg *types.MsgNftBuyBack) error {
 		return types.ErrNotNftListingOwner
 	}
 
-	// check bids exists
-	bids := k.GetBidsByNft(ctx, msg.NftId.IdBytes())
-	if len(bids) > 0 {
-		return types.ErrNftBidDoesNotExists
+	// check nft is bidding status
+	if listing.State != types.ListingState_BIDDING {
+		return types.ErrListingIsNotInBiddingStatus
 	}
 
-	// send extra buy back funds to winner bidders
+	// pay nft listing extend fee
 	params := k.GetParamSet(ctx)
-	for _, bid := range bids[len(bids)-int(listing.BidHook):] {
-		bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
-		if err != nil {
-			return err
-		}
-		bidderCancelFee := bid.Amount.Amount.Int64() * int64(params.NftListingBuyBackExtraPercentage) / 100
-		err = k.bankKeeper.SendCoins(ctx, msg.Sender.AccAddress(), bidder, sdk.Coins{sdk.NewInt64Coin(listing.BidToken, bidderCancelFee)})
-		if err != nil {
-			return err
-		}
-	}
-
-	// delete all bids and return funds back
-	for _, bid := range bids {
-		bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
-		if err != nil {
-			return err
-		}
-		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{bid.Amount})
-		if err != nil {
-			return err
-		}
-		k.DeleteBid(ctx, bid)
-	}
-
-	// Send nft ownership to original owner
-	err = k.nftKeeper.Transfer(ctx, msg.NftId.ClassId, msg.NftId.NftId, msg.Sender.AccAddress())
+	feeAmount := params.NftListingPeriodExtendFeePerHour.Amount.Mul(sdk.NewInt(int64(params.NftListingExtendSeconds / 3600)))
+	fee := sdk.NewCoin(params.NftListingPeriodExtendFeePerHour.Denom, feeAmount)
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, msg.Sender.AccAddress(), types.ModuleName, sdk.Coins{fee})
 	if err != nil {
 		return err
 	}
 
-	// delete listing
-	k.DeleteNftListing(ctx, listing)
+	// update listing end time
+	listing.EndAt = listing.EndAt.Add(time.Duration(params.NftListingExtendSeconds))
+	k.SetNftListing(ctx, listing)
 
 	// Emit event for nft listing cancel
-	ctx.EventManager().EmitTypedEvent(&types.EventNftBuyBack{
+	ctx.EventManager().EmitTypedEvent(&types.EventExpandListingPeriod{
 		Owner:   msg.Sender.AccAddress().String(),
 		ClassId: msg.NftId.ClassId,
 		NftId:   msg.NftId.NftId,
