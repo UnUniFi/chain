@@ -73,37 +73,6 @@ func (msg MsgCancelNftListing) GetSigners() []sdk.AccAddress {
 }
 
 // ensure Msg interface compliance at compile time
-var _ sdk.Msg = &MsgNftBuyBack{}
-
-func NewMsgNftBuyBack(sender sdk.AccAddress) MsgNftBuyBack {
-	return MsgNftBuyBack{
-		Sender: sender.Bytes(),
-	}
-}
-
-// Route return the message type used for routing the message.
-func (msg MsgNftBuyBack) Route() string { return RouterKey }
-
-// Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgNftBuyBack) Type() string { return "nft_buy_back" }
-
-// ValidateBasic does a simple validation check that doesn't require access to state.
-func (msg MsgNftBuyBack) ValidateBasic() error {
-	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgNftBuyBack) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
-}
-
-// GetSigners returns the addresses of signers that must sign.
-func (msg MsgNftBuyBack) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Sender.AccAddress()}
-}
-
-// ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgExpandListingPeriod{}
 
 func NewMsgExpandListingPeriod(sender sdk.AccAddress) MsgExpandListingPeriod {

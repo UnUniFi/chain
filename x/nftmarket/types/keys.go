@@ -42,7 +42,7 @@ const (
 )
 
 func NftBytes(classId, nftId string) []byte {
-	return append([]byte(classId), []byte(nftId)...)
+	return append(append([]byte(classId), byte(0xFF)), []byte(nftId)...)
 }
 
 func NftListingKey(idBytes []byte) []byte {

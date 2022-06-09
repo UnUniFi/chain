@@ -65,7 +65,7 @@ message Params {
   uint64 nft_listing_delay_seconds = 4;
   uint64 nft_listing_period_initial = 5;
   uint64 nft_listing_cancel_required_seconds = 6;
-  uint64 nft_listing_buy_back_extra_percentage = 7;
+  uint64 nft_listing_cancel_fee_percentage = 7;
   uint64 nft_listing_gap_time = 8;
   uint64 bid_cancel_required_seconds = 9;
   uint64 bid_token_disburse_seconds_after_cancel = 10;
@@ -79,6 +79,18 @@ message Params {
 }
 
 message EventListNft {
+  string owner = 1;
+  string class_id = 2;
+  string nft_id = 3;
+}
+
+message EventCancelListNfting {
+  string owner = 1;
+  string class_id = 2;
+  string nft_id = 3;
+}
+
+message EventExpandListingPeriod {
   string owner = 1;
   string class_id = 2;
   string nft_id = 3;

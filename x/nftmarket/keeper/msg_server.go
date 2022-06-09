@@ -33,19 +33,19 @@ func (k msgServer) ListNft(c context.Context, msg *types.MsgListNft) (*types.Msg
 
 func (k msgServer) CancelNftListing(c context.Context, msg *types.MsgCancelNftListing) (*types.MsgCancelNftListingResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
+	err := k.keeper.CancelNftListing(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
 	return &types.MsgCancelNftListingResponse{}, nil
-}
-
-func (k msgServer) NftBuyBack(c context.Context, msg *types.MsgNftBuyBack) (*types.MsgNftBuyBackResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
-	return &types.MsgNftBuyBackResponse{}, nil
 }
 
 func (k msgServer) ExpandListingPeriod(c context.Context, msg *types.MsgExpandListingPeriod) (*types.MsgExpandListingPeriodResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
+	err := k.keeper.ExpandListingPeriod(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
 	return &types.MsgExpandListingPeriodResponse{}, nil
 }
 

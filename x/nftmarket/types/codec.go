@@ -14,7 +14,6 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgListNft{},
 		&MsgCancelNftListing{},
-		&MsgNftBuyBack{},
 		&MsgExpandListingPeriod{},
 		&MsgPlaceBid{},
 		&MsgCancelBid{},
