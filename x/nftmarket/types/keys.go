@@ -10,7 +10,7 @@ const (
 	ModuleName = "nftmarket"
 
 	// StoreKey defines the primary module store key
-	StoreKey = ModuleName
+	StoreKey = "ununifinftmarket"
 
 	// RouterKey is the message route for nftmarket
 	RouterKey = ModuleName

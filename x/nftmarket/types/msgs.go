@@ -7,9 +7,15 @@ import (
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgListNft{}
 
-func NewMsgListNft(sender sdk.AccAddress) MsgListNft {
+// todo: Implementation fields
+// BidToken, MinBid, BidHook, ListingType
+func NewMsgListNft(sender sdk.AccAddress, nftId NftIdentifier) MsgListNft {
 	return MsgListNft{
-		Sender: sender.Bytes(),
+		Sender:   sender.Bytes(),
+		NftId:    nftId,
+		BidToken: "uguu",
+		MinBid:   sdk.NewInt(1),
+		BidHook:  1,
 	}
 }
 
