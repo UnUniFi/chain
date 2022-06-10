@@ -101,3 +101,10 @@ message EventEndListNfting {
   string class_id = 2;
   string nft_id = 3;
 }
+
+message EventPlaceBid {
+  string bidder = 1;
+  string class_id = 2;
+  string nft_id = 3;
+  string amount = 4;
+}

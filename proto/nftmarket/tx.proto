@@ -68,7 +68,7 @@ message MsgPlaceBid {
     (gogoproto.nullable) = false
   ];
   NftIdentifier nft_id = 2 [ (gogoproto.nullable) = false ];
-  repeated cosmos.base.v1beta1.Coin amount = 3 [ (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin amount = 3 [ (gogoproto.nullable) = false ];
 }
 message MsgPlaceBidResponse {}
 

@@ -17,4 +17,7 @@ var (
 	ErrListingIsNotInBiddingStatus = sdkerrors.Register(ModuleName, 10, "listing is not in bid status")
 	ErrStatusCannotCancelListing   = sdkerrors.Register(ModuleName, 11, "listing is in the status where it can not be cancelled")
 	ErrListingAlreadyEnded         = sdkerrors.Register(ModuleName, 12, "listing already ended")
+	ErrNftListingNotInBidState     = sdkerrors.Register(ModuleName, 13, "listing is not on bid state")
+	ErrInvalidBidDenom             = sdkerrors.Register(ModuleName, 14, "invalid bid denom")
+	ErrBidAlreadyExists            = sdkerrors.Register(ModuleName, 15, "bid already exists ")
 )
