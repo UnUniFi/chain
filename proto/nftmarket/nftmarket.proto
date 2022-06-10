@@ -95,3 +95,9 @@ message EventExpandListingPeriod {
   string class_id = 2;
   string nft_id = 3;
 }
+
+message EventEndListNfting {
+  string owner = 1;
+  string class_id = 2;
+  string nft_id = 3;
+}

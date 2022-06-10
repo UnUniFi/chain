@@ -63,7 +63,10 @@ func (k msgServer) CancelBid(c context.Context, msg *types.MsgCancelBid) (*types
 
 func (k msgServer) EndNftListing(c context.Context, msg *types.MsgEndNftListing) (*types.MsgEndNftListingResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
+	err := k.keeper.EndNftListing(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
 	return &types.MsgEndNftListingResponse{}, nil
 }
 

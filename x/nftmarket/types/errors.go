@@ -16,4 +16,5 @@ var (
 	ErrNftBidDoesNotExists         = sdkerrors.Register(ModuleName, 9, "bid does not exists on the nft")
 	ErrListingIsNotInBiddingStatus = sdkerrors.Register(ModuleName, 10, "listing is not in bid status")
 	ErrStatusCannotCancelListing   = sdkerrors.Register(ModuleName, 11, "listing is in the status where it can not be cancelled")
+	ErrListingAlreadyEnded         = sdkerrors.Register(ModuleName, 12, "listing already ended")
 )

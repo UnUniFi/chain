@@ -310,3 +310,39 @@ func (k Keeper) ExpandListingPeriod(ctx sdk.Context, msg *types.MsgExpandListing
 
 	return nil
 }
+
+func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) error {
+	// check listing already exists
+	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
+	if err == nil {
+		return types.ErrNftListingAlreadyExists
+	}
+
+	// Check nft exists
+	_, found := k.nftKeeper.GetNFT(ctx, msg.NftId.ClassId, msg.NftId.NftId)
+	if !found {
+		return types.ErrNftDoesNotExists
+	}
+
+	// check ownership of listing
+	if listing.Owner != msg.Sender.AccAddress().String() {
+		return types.ErrNotNftListingOwner
+	}
+
+	// check if listing is already ended
+	if listing.State == types.ListingState_END_LISTING {
+		return types.ErrListingAlreadyEnded
+	}
+
+	listing.State = types.ListingState_END_LISTING
+	k.SetNftListing(ctx, listing)
+
+	// Emit event for nft listing end
+	ctx.EventManager().EmitTypedEvent(&types.EventEndListNfting{
+		Owner:   msg.Sender.AccAddress().String(),
+		ClassId: msg.NftId.ClassId,
+		NftId:   msg.NftId.NftId,
+	})
+
+	return nil
+}
