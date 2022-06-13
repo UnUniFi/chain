@@ -40,3 +40,5 @@
 
 1. The accumulated rewards of any account for all denom can be queried
 1. The accumulated reward of any account for the specific denom can be queried
+1. The weghts for each subjects in the `registering_name` can be queried
+1. 
