@@ -23,7 +23,6 @@ import (
 	"github.com/gogo/protobuf/proto"
 
 	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
@@ -303,7 +302,10 @@ func VerifyEthereumSignature(cdc codec.Codec, pubKey cryptotypes.PubKey, signerD
 		if err != nil {
 			return err
 		}
-		recoveredAddr := crypto.PubkeyToAddress(*recovered)
+
+		recoveredPubKey := secp256k1.PubKey{Key: crypto.CompressPubkey(recovered)}
+		recoveredAddress := sdk.AccAddress(recoveredPubKey.Address())
+		recoveredEthereumAddr := crypto.PubkeyToAddress(*recovered)
 
 		sigTx, ok := tx.(authsigning.SigVerifiableTx)
 		if !ok {
@@ -317,8 +319,8 @@ func VerifyEthereumSignature(cdc codec.Codec, pubKey cryptotypes.PubKey, signerD
 
 		address := signerAddrs[0]
 
-		if recoveredAddr.String() != common.BytesToAddress(address).String() {
-			return fmt.Errorf("mismatching recovered address and sender: %s != %s", recoveredAddr.String(), common.BytesToAddress(address).String())
+		if recoveredAddress.String() != address.String() {
+			return fmt.Errorf("mismatching recovered address and sender.\n  recovered: %s\n  sender: %s\n  recovered ethereum address: %s", recoveredAddress.String(), address.String(), recoveredEthereumAddr.String())
 		}
 		return nil
 	default:
