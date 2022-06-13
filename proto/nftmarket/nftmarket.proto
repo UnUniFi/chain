@@ -26,7 +26,7 @@ message NftIdentifier {
 
 message Loan {
   NftIdentifier nft_id = 1 [ (gogoproto.nullable) = false ];
-  repeated cosmos.base.v1beta1.Coin loan = 2 [ (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin loan = 2 [ (gogoproto.nullable) = false ];
 }
 
 message NftListing {
@@ -117,6 +117,26 @@ message EventCancelBid {
 
 message EventPayFullBid {
   string bidder = 1;
+  string class_id = 2;
+  string nft_id = 3;
+}
+
+message EventBorrow {
+  string borrower = 1;
+  string class_id = 2;
+  string nft_id = 3;
+  string amount = 4;
+}
+
+message EventRepay {
+  string repayer = 1;
+  string class_id = 2;
+  string nft_id = 3;
+  string amount = 4;
+}
+
+message EventLiquidate {
+  string liquidator = 1;
   string class_id = 2;
   string nft_id = 3;
 }

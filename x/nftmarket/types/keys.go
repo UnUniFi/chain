@@ -69,12 +69,12 @@ func AddressBidKey(nftIdBytes []byte, bidder sdk.AccAddress) []byte {
 	return append(append([]byte(KeyPrefixAddressBid), address.MustLengthPrefix(bidder)...), nftIdBytes...)
 }
 
-func NftLoanKey(classId, nftId string) []byte {
-	return append([]byte(KeyPrefixNftLoan), NftBytes(classId, nftId)...)
+func NftLoanKey(nftIdBytes []byte) []byte {
+	return append([]byte(KeyPrefixNftLoan), nftIdBytes...)
 }
 
-func AddressNftLoanKey(addr sdk.AccAddress, classId, nftId string) []byte {
-	return append(append([]byte(KeyPrefixAddressNftLoan), address.MustLengthPrefix(addr)...), NftBytes(classId, nftId)...)
+func AddressNftLoanKey(addr sdk.AccAddress, nftIdBytes []byte) []byte {
+	return append(append([]byte(KeyPrefixAddressNftLoan), address.MustLengthPrefix(addr)...), nftIdBytes...)
 }
 
 func AddressRewardsKey(addr sdk.AccAddress) []byte {

@@ -78,19 +78,28 @@ func (k msgServer) EndNftListing(c context.Context, msg *types.MsgEndNftListing)
 
 func (k msgServer) PayFullBid(c context.Context, msg *types.MsgPayFullBid) (*types.MsgPayFullBidResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
+	err := k.keeper.PayFullBid(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
 	return &types.MsgPayFullBidResponse{}, nil
 }
 
 func (k msgServer) Borrow(c context.Context, msg *types.MsgBorrow) (*types.MsgBorrowResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
+	err := k.keeper.Borrow(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
 	return &types.MsgBorrowResponse{}, nil
 }
 
 func (k msgServer) Repay(c context.Context, msg *types.MsgRepay) (*types.MsgRepayResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
+	err := k.keeper.Repay(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
 	return &types.MsgRepayResponse{}, nil
 }
 
@@ -108,6 +117,9 @@ func (k msgServer) BurnStableCoin(c context.Context, msg *types.MsgBurnStableCoi
 
 func (k msgServer) Liquidate(c context.Context, msg *types.MsgLiquidate) (*types.MsgLiquidateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
+	err := k.keeper.Liquidate(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
 	return &types.MsgLiquidateResponse{}, nil
 }
