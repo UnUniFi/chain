@@ -108,3 +108,9 @@ message EventPlaceBid {
   string nft_id = 3;
   string amount = 4;
 }
+
+message EventCancelBid {
+  string bidder = 1;
+  string class_id = 2;
+  string nft_id = 3;
+}

@@ -60,7 +60,10 @@ func (k msgServer) PlaceBid(c context.Context, msg *types.MsgPlaceBid) (*types.M
 
 func (k msgServer) CancelBid(c context.Context, msg *types.MsgCancelBid) (*types.MsgCancelBidResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
+	err := k.keeper.CancelBid(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
 	return &types.MsgCancelBidResponse{}, nil
 }
 

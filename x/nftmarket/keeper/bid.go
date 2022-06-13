@@ -121,7 +121,7 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 		Amount: msg.Amount,
 	})
 
-	// Transfer amount of token to bid account
+	// Transfer amount of token from bid account
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, bidder, types.ModuleName, sdk.Coins{msg.Amount})
 	if err != nil {
 		return err
@@ -133,6 +133,44 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 		ClassId: msg.NftId.ClassId,
 		NftId:   msg.NftId.NftId,
 		Amount:  msg.Amount.String(),
+	})
+
+	return nil
+}
+
+func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
+	// Verify listing is in BIDDING state
+	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
+	if err != nil {
+		return err
+	}
+
+	_ = listing
+
+	// TODO: ensure bid is not winner one
+
+	bidder := msg.Sender.AccAddress()
+
+	// check if bid exists by same bidder on nft
+	bid, err := k.GetBid(ctx, msg.NftId.IdBytes(), bidder)
+	if err != nil {
+		return types.ErrBidDoesNotExists
+	}
+
+	// Delete bid
+	k.DeleteBid(ctx, bid)
+
+	// Transfer amount of token to bid account
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{msg.Amount})
+	if err != nil {
+		return err
+	}
+
+	// Emit event for cancelling bid
+	ctx.EventManager().EmitTypedEvent(&types.EventCancelBid{
+		Bidder:  msg.Sender.AccAddress().String(),
+		ClassId: msg.NftId.ClassId,
+		NftId:   msg.NftId.NftId,
 	})
 
 	return nil
