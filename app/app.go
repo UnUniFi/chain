@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	ante "github.com/UnUniFi/chain/app/ante"
 	appparams "github.com/UnUniFi/chain/app/params"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -22,7 +23,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	ante "github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
@@ -783,6 +783,7 @@ func NewApp(
 	app.MountTransientStores(tkeys)
 	app.MountMemoryStores(memKeys)
 	anteHandler, err := ante.NewAnteHandler(
+		appCodec,
 		ante.HandlerOptions{
 			AccountKeeper:   app.AccountKeeper,
 			BankKeeper:      app.BankKeeper,
