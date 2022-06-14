@@ -10,6 +10,7 @@ option go_package = "github.com/UnUniFi/chain/x/nftmarket/types";
 enum ListingType {
   DIRECT_ASSET_BORROW = 0;
   SYNTHETIC_ASSET_CREATION = 1;
+  LATE_SHIPPING = 2;
 }
 enum ListingState {
   SELLING = 0;
@@ -40,12 +41,13 @@ message NftListing {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  uint64 bid_hook = 7; // 1 - 100
+  uint64 bid_active_rank = 7;
   google.protobuf.Timestamp end_at = 8 [
     (gogoproto.moretags) = "yaml:\"end_at\"",
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
+  uint64 auto_relisted_count = 9;
 }
 
 message NftBid {
@@ -60,22 +62,23 @@ message Params {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  repeated string bid_tokens = 2;
-  uint64 auto_relisting_count_if_no_bid = 3;
-  uint64 nft_listing_delay_seconds = 4;
-  uint64 nft_listing_period_initial = 5;
-  uint64 nft_listing_cancel_required_seconds = 6;
-  uint64 nft_listing_cancel_fee_percentage = 7;
-  uint64 nft_listing_gap_time = 8;
-  uint64 bid_cancel_required_seconds = 9;
-  uint64 bid_token_disburse_seconds_after_cancel = 10;
-  uint64 nft_listing_full_payment_period = 11;
-  uint64 nft_listing_nft_delivery_period = 12;
-  uint64 nft_creator_share_percentage = 13;
-  string market_administrator = 14;
-  cosmos.base.v1beta1.Coin nft_listing_commission_fee = 15 [ (gogoproto.nullable) = false ];
-  uint64 nft_listing_extend_seconds = 16;
-  cosmos.base.v1beta1.Coin nft_listing_period_extend_fee_per_hour = 17 [ (gogoproto.nullable) = false ];
+  uint64 default_bid_active_rank = 2;
+  repeated string bid_tokens = 3;
+  uint64 auto_relisting_count_if_no_bid = 4;
+  uint64 nft_listing_delay_seconds = 5;
+  uint64 nft_listing_period_initial = 6;
+  uint64 nft_listing_cancel_required_seconds = 7;
+  uint64 nft_listing_cancel_fee_percentage = 8;
+  uint64 nft_listing_gap_time = 9;
+  uint64 bid_cancel_required_seconds = 10;
+  uint64 bid_token_disburse_seconds_after_cancel = 11;
+  uint64 nft_listing_full_payment_period = 12;
+  uint64 nft_listing_nft_delivery_period = 13;
+  uint64 nft_creator_share_percentage = 14;
+  string market_administrator = 15;
+  cosmos.base.v1beta1.Coin nft_listing_commission_fee = 16 [ (gogoproto.nullable) = false ];
+  uint64 nft_listing_extend_seconds = 17;
+  cosmos.base.v1beta1.Coin nft_listing_period_extend_fee_per_hour = 18 [ (gogoproto.nullable) = false ];
 }
 
 message EventListNft {

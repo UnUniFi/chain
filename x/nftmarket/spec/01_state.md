@@ -36,7 +36,7 @@ message NftListing {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  uint64 bid_hook = 6; // 1 - 100
+  uint64 bid_active_rank = 6;
 }
 ```
 

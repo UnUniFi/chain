@@ -23,7 +23,7 @@ message MsgListNft {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  uint64 bid_hook = 6; // 1 - 100; if 0, uses default on params
+  uint64 bid_active_rank = 6;
 }
 ```
 

@@ -172,15 +172,19 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 	}
 
 	// create listing
+	bidActiveRank := msg.BidActiveRank
+	if bidActiveRank == 0 {
+		bidActiveRank = params.DefaultBidActiveRank
+	}
 	listing := types.NftListing{
-		NftId:       msg.NftId,
-		Owner:       owner.String(),
-		ListingType: msg.ListingType,
-		State:       types.ListingState_SELLING,
-		BidToken:    msg.BidToken,
-		MinBid:      msg.MinBid,
-		BidHook:     msg.BidHook,
-		EndAt:       ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingPeriodInitial)),
+		NftId:         msg.NftId,
+		Owner:         owner.String(),
+		ListingType:   msg.ListingType,
+		State:         types.ListingState_SELLING,
+		BidToken:      msg.BidToken,
+		MinBid:        msg.MinBid,
+		BidActiveRank: bidActiveRank,
+		EndAt:         ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingPeriodInitial)),
 	}
 	k.SetNftListing(ctx, listing)
 
@@ -221,7 +225,7 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 
 	// send extra buy back funds to winner bidders
 	params := k.GetParamSet(ctx)
-	for _, bid := range bids[len(bids)-int(listing.BidHook):] {
+	for _, bid := range bids[len(bids)-int(listing.BidActiveRank):] {
 		bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
 		if err != nil {
 			return err
