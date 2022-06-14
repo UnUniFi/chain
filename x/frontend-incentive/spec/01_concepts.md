@@ -1,8 +1,10 @@
 # Concepts
 
-Any frontend creator of UnUniFi NFT market and NFTFi service are the subjects to recieve Frontend Incentive from the NFT trading fee in many denoms which are used in NFT market.
+**NOTE: This is early draft.**
 
-### Joining Frontend Incentive Reward
+Any frontend creator of UnUniFi NFT market and NFTFi service are the subjects to recieve Frontend Incentive reward from the NFT trading fee in many denoms which are used in NFT market.
+
+### Joining Frontend Incentive
 
 Any subjects can send a register message with the `frontend_name` and `subject_weight_map`.  
 

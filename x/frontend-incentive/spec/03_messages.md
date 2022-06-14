@@ -1,6 +1,6 @@
 # Messages
 
-**NOTE: This is very draft.**
+**NOTE: This is early draft.**
 
 ### Frontend Register
 In case that it's convenient to set map type in argument:

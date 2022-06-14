@@ -1,6 +1,6 @@
 # State
 
-
+**NOTE: This is early draft.**
 ### frontend_store
 The KVStore that contains all information for the entry of frontend-incentive protocol.   
 Specifically, the key is `frontend_name` and value is `subject_weight_map`.   
