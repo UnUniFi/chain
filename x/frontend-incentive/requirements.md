@@ -1,15 +1,13 @@
-## Basic requirement
+# Basic requirement
 
-### Incentive system
+## Incentive system
 
----
-
-- Frontend-incentive reward comes from some specific transaction fee (e.g. MsgPayAuctionFee's optional fee, not tx fee)
+- Frontend-incentive reward comes from the fee that is made in some specific transactions (e.g. MsgPayAuctionFee's optional fee, not tx fee)
 - Those rewards have some denoms which are used in nftmarket
 - Those rewards are accumulated at EndBlock
 - Those rewards are determined by the `reward_rate` of the global option of this module
-- Those rewards' calculation is the fee * `reward_rate`, the fee indicates some specific transaction fee (e.g. MsgPayAuctionFee's optional fee, not tx fee)
-- Subjects can decide the wights and each addresses of the distribution amount of the reward in trasaction memo field (e.g. one: 0.5, two: 0.5)
+- Those rewards' calculation is `the trading fee * reward_rate`, the fee indicates some specific transaction fee (e.g. MsgPayAuctionFee's optional fee, not tx fee)
+- Subjects can decide the wights and each addresses of the distribution amount of the reward in trasaction memo field (e.g. ununifi1a~: 0.50, ununifi1b~: 0.50)
 - 
 ## Register
 
@@ -26,21 +24,28 @@
 1. The consumed trading fee is calculated from the target message's argument
 1. The reward is stored as just data in the `frontend-incentive` module
 
-### Withdrawal
+## Withdrawal
 
 1. Subject account of frontend-incentive can withdraw those accumulated rewards
 1. Subject account can withdraw all accumulated rewards for all denom at once
 1. Subject account can withdraw accumulated reward of the specific denom
 
-### Distribution
+## Distribution
 
 1. The reward is distributed when eligible subject sends withdrawal message
 1. The reward comes from the module account that accumulates the consmed trading fee (currently it'll be valut module or distribution module)
 
 
-### Query
+## Query
 
-1. The accumulated rewards of any account for all denom can be queried
-1. The accumulated reward of any account for the specific denom can be queried
-1. The weghts for each subjects in the `name` can be queried
-1. 
+1. The accumulated rewards of any account for all denom can be queried by `address`
+1. The accumulated reward of any account for the specific denom can be queried by `address` and `denom`
+1. The weghts for each subjects in the `name` can be queried by `name`
+1.  
+
+## Params
+
+`reward_rate`   
+The factor to multipy the trading fee for the reward of this module.
+e.g. If `reward_rate` is 80%, the trading fee that is made in a target message is 100GUU, the actual reward for target `frontend_tag` is `100GUU * 0.80 = 80GUU`.
+
