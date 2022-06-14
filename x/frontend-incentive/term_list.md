@@ -1,5 +1,7 @@
 # Term list
 
+**NOTE: You can maybe remove this file once state page is finalized.**
+
 The definition of the specific terms which are related to this module.
 
 `frontend_store`   

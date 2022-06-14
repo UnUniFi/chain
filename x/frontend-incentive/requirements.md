@@ -1,5 +1,7 @@
 # Basic requirement
 
+**NOTE: You can remove this file once the other legitimate pages are finalized.** 
+
 ## Incentive system
 
 - Frontend-incentive reward comes from the fee that is made in some specific transactions (e.g. MsgPayAuctionFee's optional fee, not tx fee)

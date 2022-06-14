@@ -1,5 +1,7 @@
 # Check List
 
+**NOTE: You can remove this file once it's done.**
+
 The check list to achieve all requirements of this module.
 
 - [ ] At EndBlock, is it possible to get the specific type of message?
