@@ -139,6 +139,14 @@ stablecoins can be minted with NFT as collateral
 1. for direct borrowing asset type listings, BD is only for tokens specified by the lister (global_option)
 1. for synthetic asset creation type listings, BD can use any token supported by UnUniFi (global_option)
 
+### Trading Fee
+
+1. There's fee for the trading NFT except for trasaction fee
+1. Specifically, that's extraced when user actually pay auctin fee to buy NFT
+1. The fee rate is defined as global_option between 0-100%
+1. The protocol earned fee goes to the other module account (specific module has not decieded yet)
+1. The fee is contained in bidding price
+
 ## expanded
 
 ### incentive system
