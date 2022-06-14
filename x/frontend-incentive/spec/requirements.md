@@ -13,15 +13,15 @@
 - 
 ## Register
 
-1. Subjects first register the addresses, weights of the proportion of the rewards and `name` to be used to identify the subject to take rewards as `frontend_tag` (e.g. ununifi1a~, 0.5, ununifi1b~, 0.5 registering_name)
+1. Subjects first register the addresses, weights of the proportion of the rewards and `frontend_name` to be used to identify the subject to take rewards as `frontend_tag` (e.g. ununifi1a~, 0.5, ununifi1b~, 0.5 registering_name)
 1. Weights mush be tottaly added to 1.0
-1. The `name` must be unique for each
-1. The object related to one `name` is static
+1. The `frontend_name` must be unique for each
+1. The object related to one `frontend_name` is static
 1. Any address pairs or an address can resister `frontend_tag`
 
 ## Accumulate reward
 
-1. If the `name` is put into the specified field (currently considering memo field) for the target messages like MsgPayAuctionFee, the `reward_rate` of the consumed trading fee which is made in that transaction (not tx fee) is accumulated to the subjects
+1. If the `frontend_name` is put into the specified field (currently considering memo field) for the target messages like MsgPayAuctionFee, the `reward_rate` of the consumed trading fee which is made in that transaction (not tx fee) is accumulated to the subjects
 1. The reward accumulation is exucuted at EndBlock
 1. The consumed trading fee is calculated from the target message's argument
 1. The reward is stored as just data in the `frontend-incentive` module
@@ -42,7 +42,7 @@
 
 1. The accumulated rewards of any account for all denom can be queried by `address`
 1. The accumulated reward of any account for the specific denom can be queried by `address` and `denom`
-1. The weghts for each subjects in the `name` can be queried by `name`
+1. The weghts for each subjects in the `frontend_name` can be queried by `frontend_name`
 1.  
 
 ## Params
