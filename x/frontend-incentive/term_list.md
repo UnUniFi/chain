@@ -3,7 +3,7 @@
 The definition of the specific terms which are related to this module.
 
 `frontend_tag`   
-The data object name that contains all information for the entry of frontend-incentive protocol.   
+The data object that contains all information for the entry of frontend-incentive protocol.   
 Specifically, the elements are `name` and `subject_weight_map`.   
 e.g. 
 ```go
@@ -11,9 +11,10 @@ type FrontendTag {
     name string,   
     subject_weight_map map[address]int   
 }
+
 example := FrontendTag{"example", {"ununifi1~": 10000~}}
 ```
-Maybe user input is shaped as json file.
+Maybe user input is shaped as a json file.
 
 `name`   
 Name is the unique identifier of the `frontend_tag`. Hence, it can't be duplicated.    
