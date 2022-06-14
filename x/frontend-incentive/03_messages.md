@@ -6,7 +6,7 @@
 In case that it's convenient to set map type in argument:
 ```go
 type MsgFrontendRegister struct {
-  name string
+  frontend_name string
   map[string]string  
 }
 ```
@@ -14,7 +14,7 @@ type MsgFrontendRegister struct {
 In case it's not:
 ```go
 type MsgFrontendRegister struct {
-  name string
+  frontend_name string
   address []string
   weight []string
 }
