@@ -7,10 +7,13 @@
 - Frontend-incentive reward comes from the fee that is made in some specific transactions (e.g. MsgPayAuctionFee's optional fee, not tx fee)
 - Those rewards have some denoms which are used in nftmarket
 - Those rewards are accumulated at EndBlock
-- Those rewards are determined by the `reward_rate` of the global option of this module
+- Those rewards are determined by the `reward_rate` of the global option of this module and the protocol earned NFT trading fee amount
 - Those rewards' calculation is `the trading fee * reward_rate`, the fee indicates some specific transaction fee (e.g. MsgPayAuctionFee's optional fee, not tx fee)
-- Subjects can decide the wights and each addresses of the distribution amount of the reward in trasaction memo field (e.g. ununifi1a~: 0.50, ununifi1b~: 0.50)
-- 
+- Subjects register `frontend_name` and each addresses and its weights (`subject_weight_map`) to receive the reward by sending a message at first
+- Subjects have to put registerd `frontend_name` in a target message's memo field to accumulate the frontend_reward
+- Subjects can send a withdrawal message to actually receive the frontend_incentive reward
+- Subjects can see how much reward is accumulated for their address
+- The reward is distributed from the module account that accumulates the NFT trading fee
 
 ## Register
 
@@ -38,6 +41,11 @@
 1. The reward is distributed when eligible subject sends withdrawal message
 1. The reward comes from the module account that accumulates the consmed trading fee (currently it'll be valut module or distribution module)
 
+### The way to achieve distribution
+
+1. Actually sending corresponding coin for reward in a process using SendCoinFromModuleAccount 
+1. In a process, mint corresponding coin for reward for the subject address and just subtract corresponding coin from the subject module account
+
 ## Query
 
 1. The accumulated rewards of any account for all denom can be queried by `address`
@@ -55,3 +63,10 @@ e.g. If `reward_rate` is 80% and the trading fee that is made in a target messag
 1. Update the reward amount if there are target transactions in a block and that has `frontend_name` in memo field
 1. The reward is calculated `trading fee * reward_rate`, trading fee indicates the protocol earned fee by NFT trading
 1. At this moment, what it's needed to do is just update the stored data regarding reward amount for the denom of the subjects address by number
+
+## Target message type
+
+1. There's specific message type which is subject to `frontend-incentive`.
+1. The criteria to choose the message type to be suject is the cash flow to the lister
+1. Current idea is MsgPayListingFee message type is what that is.
+1. Possibly the message type to be subject for `frontend-incentive` will increase.
