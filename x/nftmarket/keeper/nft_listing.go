@@ -230,7 +230,7 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 
 	bids := k.GetBidsByNft(ctx, msg.NftId.IdBytes())
 
-	// send extra buy back funds to winner bidders
+	// distribute cancellation fee to winner bidders
 	for _, bid := range bids[len(bids)-int(listing.BidActiveRank):] {
 		bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
 		if err != nil {
@@ -301,10 +301,26 @@ func (k Keeper) ExpandListingPeriod(ctx sdk.Context, msg *types.MsgExpandListing
 	// pay nft listing extend fee
 	params := k.GetParamSet(ctx)
 	feeAmount := params.NftListingPeriodExtendFeePerHour.Amount.Mul(sdk.NewInt(int64(params.NftListingExtendSeconds / 3600)))
-	fee := sdk.NewCoin(params.NftListingPeriodExtendFeePerHour.Denom, feeAmount)
-	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, msg.Sender.AccAddress(), types.ModuleName, sdk.Coins{fee})
-	if err != nil {
-		return err
+
+	// distribute nft listing extend fee to winner bidders
+	bids := k.GetBidsByNft(ctx, msg.NftId.IdBytes())
+	totalBidAmount := sdk.ZeroInt()
+	for _, bid := range bids[len(bids)-int(listing.BidActiveRank):] {
+		totalBidAmount = totalBidAmount.Add(bid.Amount.Amount)
+	}
+	if totalBidAmount.IsPositive() {
+		for _, bid := range bids[len(bids)-int(listing.BidActiveRank):] {
+			bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+			if err != nil {
+				return err
+			}
+			bidderCommission := bid.Amount.Amount.Mul(feeAmount).Quo(totalBidAmount)
+			commmission := sdk.NewCoin(params.NftListingPeriodExtendFeePerHour.Denom, bidderCommission)
+			err = k.bankKeeper.SendCoins(ctx, msg.Sender.AccAddress(), bidder, sdk.Coins{commmission})
+			if err != nil {
+				return err
+			}
+		}
 	}
 
 	// update listing end time
