@@ -85,7 +85,7 @@ func (m *MsgListNft) GetListingType() ListingType {
 	if m != nil {
 		return m.ListingType
 	}
-	return ListingType_NORMAL_LISTING
+	return ListingType_DIRECT_ASSET_BORROW
 }
 
 func (m *MsgListNft) GetBidToken() string {

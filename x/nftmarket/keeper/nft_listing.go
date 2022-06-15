@@ -184,6 +184,7 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 		BidToken:      msg.BidToken,
 		MinBid:        msg.MinBid,
 		BidActiveRank: bidActiveRank,
+		StartedAt:     ctx.BlockTime(),
 		EndAt:         ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingPeriodInitial)),
 	}
 	k.SetNftListing(ctx, listing)
@@ -216,6 +217,12 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 		return types.ErrNotNftListingOwner
 	}
 
+	// The listing of items can only be cancelled after N seconds have elapsed from the time it was placed on the marketplace
+	params := k.GetParamSet(ctx)
+	if listing.StartedAt.Add(time.Duration(params.NftListingCancelRequiredSeconds) * time.Second).Before(ctx.BlockTime()) {
+		return types.ErrNotTimeForCancel
+	}
+
 	// check nft is bidding status
 	if listing.State != types.ListingState_BIDDING && listing.State != types.ListingState_SELLING {
 		return types.ErrStatusCannotCancelListing
@@ -224,7 +231,6 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 	bids := k.GetBidsByNft(ctx, msg.NftId.IdBytes())
 
 	// send extra buy back funds to winner bidders
-	params := k.GetParamSet(ctx)
 	for _, bid := range bids[len(bids)-int(listing.BidActiveRank):] {
 		bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
 		if err != nil {
