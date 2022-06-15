@@ -11,11 +11,11 @@ var _ sdk.Msg = &MsgListNft{}
 // BidToken, MinBid, BidHook, ListingType
 func NewMsgListNft(sender sdk.AccAddress, nftId NftIdentifier) MsgListNft {
 	return MsgListNft{
-		Sender:   sender.Bytes(),
-		NftId:    nftId,
-		BidToken: "uguu",
-		MinBid:   sdk.NewInt(1),
-		BidHook:  1,
+		Sender:        sender.Bytes(),
+		NftId:         nftId,
+		BidToken:      "uguu",
+		MinBid:        sdk.NewInt(1),
+		BidActiveRank: 1,
 	}
 }
 

@@ -105,9 +105,15 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 		return types.ErrInvalidBidDenom
 	}
 
-	// TODO: check bid amount
+	if listing.MinBid.GT(msg.Amount.Amount) {
+		return types.ErrInvalidBidAmount
+	}
 
 	bidder := msg.Sender.AccAddress()
+
+	// TODO: if you are the highest bidder and you want to make a higher bid, bid again
+	// TODO: if the bidder has N hours remaining in the listing when the bidding takes place, the listing time will automatically be extended by n' minutes. (global_option)
+	// TODO: bidders can activate the automatic payment feature at the time of bidding
 
 	// check if bid exists by same bidder on nft
 	if _, err := k.GetBid(ctx, msg.NftId.IdBytes(), bidder); err == nil {
@@ -121,12 +127,13 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 		Amount: msg.Amount,
 	})
 
-	// TODO: handle partial amount for bid
-	// params := k.GetParamSet(ctx)
-	// Transfer amount of token from bid account
-	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, bidder, types.ModuleName, sdk.Coins{msg.Amount})
-	if err != nil {
-		return err
+	// Transfer required amount of token from bid account to module
+	initialDeposit := msg.Amount.Amount.Quo(sdk.NewInt(int64(listing.BidActiveRank)))
+	if initialDeposit.IsPositive() {
+		err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, bidder, types.ModuleName, sdk.Coins{sdk.NewCoin(listing.BidToken, initialDeposit)})
+		if err != nil {
+			return err
+		}
 	}
 
 	// Emit event for placing bid
