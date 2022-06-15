@@ -11,6 +11,7 @@
 - Those rewards' calculation is `the trading fee * reward_rate`, the fee indicates some specific transaction fee (e.g. MsgPayAuctionFee's optional fee, not tx fee)
 - Subjects can decide the wights and each addresses of the distribution amount of the reward in trasaction memo field (e.g. ununifi1a~: 0.50, ununifi1b~: 0.50)
 - 
+
 ## Register
 
 1. Subjects first register the addresses, weights of the proportion of the rewards and `frontend_name` to be used to identify the subject to take rewards in `frontend_store` (e.g. ununifi1a~, 0.5, ununifi1b~, 0.5 registering_name)
@@ -49,3 +50,8 @@
 The factor to multipy the trading fee for the reward of this module.   
 e.g. If `reward_rate` is 80% and the trading fee that is made in a target message is 100GUU, the actual reward for target `frontend_name` subjects  is `100GUU * 0.80 = 80GUU`.
 
+## EndBlock
+
+1. Update the reward amount if there are target transactions in a block and that has `frontend_name` in memo field
+1. The reward is calculated `trading fee * reward_rate`, trading fee indicates the protocol earned fee by NFT trading
+1. At this moment, what it's needed to do is just update the stored data regarding reward amount for the denom of the subjects address by number
