@@ -1,6 +1,10 @@
 # Requirement
 
+**NOTES: This is just for development. Once the other legitimate pages are finalized, remove this.**
+
 ## Basic
+
+The requirements for collective NFT minting mainly.
 
 ### Mint
 
@@ -32,8 +36,11 @@ Write down those variable which we must define constantly to validate. (var name
 
 ## Non-transferable NFT
 
+The requirements for Non-transferable NFT minting.
+
 ### Mint
 
+1. 
 ### Burn
 
 ### Validation
