@@ -81,6 +81,7 @@ The requirements for Non-transferable NFT minting.
 ### Transfer
 
 1. Any owner of `NFT` can't transfer `NFT`.
+1. Transfer is already achieved by sdk's x/nft module.
 
 ### Update
 
