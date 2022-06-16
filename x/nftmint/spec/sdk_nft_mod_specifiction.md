@@ -1,8 +1,8 @@
-# SDk nft module specification
+# Brief SDk nft module specification
 
 Basically saying, the standard type definition and methods follows ERC721.   
 There are major two types defined in sdk's nft module.   
-Those are `Class` and `NFT`.   
+Those are `Class` and `NFT`. The NFT is identified by using `Class.Id` and `NFT.Id` combined.   
 The important NFT module keeper's methods are  `Mint`, `Burn`, `Update`, `Transfer`, `GetNFT`, `GetNFTsOfClass`, `GetOwner`, `GetBalance`, `GetTotalSupply` etc.   
 The details are below.
 
@@ -15,6 +15,7 @@ The fields are (in x/nft/nft.pb.go):
 ```go
 type Class struct {
 	// id defines the unique identifier of the NFT classification, similar to the contract address of ERC721
+  // [a-zA-Z][a-zA-Z0-9/:-]{2,100}
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// name defines the human-readable name of the NFT classification. Optional
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
@@ -40,6 +41,7 @@ type NFT struct {
 	// class_id associated with the NFT, similar to the contract address of ERC721
 	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	// id is a unique identifier of the NFT
+  // [a-zA-Z][a-zA-Z0-9/:-]{2,100}
 	Id string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
 	// uri for the NFT metadata stored off chain
 	Uri string `protobuf:"bytes,3,opt,name=uri,proto3" json:"uri,omitempty"`
@@ -69,3 +71,23 @@ type NFT struct {
 ### GetBalance
 
 ### GetTotalSupply
+
+## Message
+
+There's one message in sdk's nft module.   
+### MsgSend
+
+This message does the transfer of the NFT that identified in argument from sender.   
+```go
+// MsgSend represents a message to send a nft from one account to another account.
+type MsgSend struct {
+	// class_id defines the unique identifier of the nft classification, similar to the contract address of ERC721
+	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
+	// id defines the unique identification of nft
+	Id string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	// sender is the address of the owner of nft
+	Sender string `protobuf:"bytes,3,opt,name=sender,proto3" json:"sender,omitempty"`
+	// receiver is the receiver address of nft
+	Receiver string `protobuf:"bytes,4,opt,name=receiver,proto3" json:"receiver,omitempty"`
+}
+```
