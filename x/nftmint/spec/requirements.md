@@ -17,8 +17,16 @@ The requirements for collective NFT minting mainly.
 
 1. The NFTs can be burned.
 1. The owner of `NFT` can send a message to burn.
-1. The owner of `Class` can restrict ability to e burned `NFT`s under that `Class`
+1. The owner of `Class` can restrict ability of `NFT`s under that `Class` to be burned.
 1. The total supply of `NFT`s in `Class` deceases.
+
+### Update
+
+1. The creator of `Class` of `NFT` can restrict ability of `NFT`s under that `class` to be updated.
+1. The creator of `Class` can choose restrict levels that 1 is `OnlyCreator`, 2 is `OnlyOwner` and 3 is `Nobody`.
+1. In case of 1 level, the creator of `Class` of the `NFT` can update its all `NFT`s' data.
+1. In case of 2 level, the owner of `NFT` can update its `NFT` data.
+1. In case of 3 level, nobody can update `NFT`s' data under that `Class`.
 
 ### Transfer
 
@@ -30,6 +38,7 @@ The requirements for collective NFT minting mainly.
 1. There's no duplicating `NFT.Id` in a `Class`
 1. TokenURI must be legal by length (idea: len(tokenURI) > 0)
 1. The `Class.Id` and `NFT.Id` format must follows sdk's nft module definition
+
 ## Constant
 
 There're some flexible variables that sdk's nft module has like minimum and maximum `Class.Id` string length.   
@@ -66,6 +75,13 @@ The requirements for Non-transferable NFT minting.
 ### Transfer
 
 1. Any owner of `NFT` can't transfer `NFT`.
+
+### Update
+
+1. The creator of `Class` of `NFT` can restrict ability of `NFT`s under that `class` to be updated.
+1. The creator of `Class` can choose restrict levels that 1 is `OnlyCreator`and 2 is `Nobody`.
+1. In case of 1 level, the creator of `Class` of the `NFT` can update its all `NFT`s' data.
+1. In case of 2 level, nobody can update `NFT`s' data under that `Class`.
 
 ### Validation
 
