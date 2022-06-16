@@ -48,3 +48,8 @@ message NFT {
 * `uri` is a URI for the NFT metadata stored off chain. Should point to a JSON file that contains metadata about this NFT (Ref: [ERC721 standard and OpenSea extension](https://docs.opensea.io/docs/metadata-standards)); _required_
 * `uri_hash` is a hash of the document pointed by uri; _optional_
 * `data` is an app specific data of the NFT. CAN be used by composing modules to specify additional properties of the NFT; _optional_
+
+#### Non-tranferable NFT (ntNFT)
+
+The ntNFT means the NFT that doesn't have ability to be transfered.   
+The major use-case of ntNFT is POAP (Proof of Attendance Protocol) that is distributed as a proof of the attendance to some events or meeting etc.
