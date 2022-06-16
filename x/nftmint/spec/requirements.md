@@ -16,8 +16,11 @@ The requirements for collective NFT minting mainly.
 ### Burn
 
 1. The NFTs can be burned.
-1. The owner of `NFT` can send a message to burn.
 1. The owner of `Class` can restrict ability of `NFT`s under that `Class` to be burned.
+1. The restrict levels have 3 state that 1 is `Nobody`, 2 is `OnlyCreator` and 3 is `OnlyOwner`.
+1. In case of 1 level, nobody can burn the `NFT`s under the `Class` has this level.
+1. In case of 2 level, only creator of `Class` of `NFT` can burn its all belonging `NFT`s.
+1. In case of 3 level, only direct owner of `NFT` can burn it.
 1. The total supply of `NFT`s in `Class` deceases.
 
 ### Update
@@ -68,9 +71,12 @@ The requirements for Non-transferable NFT minting.
 
 ### Burn
 
-1. The creator of `Class` of `NFT` can restrict the abilitiy to burn `NFT`.
-1. If allowed, the owner of `NFT` can burn it.
-1. If burned, the total supply of `NFT`s of `Class` decreases.
+1. The NFTs can be burned.
+1. The owner of `Class` can restrict ability of `NFT`s under that `Class` to be burned.
+1. The restrict levels have 3 state that 1 is `Nobody`, 2 is `OnlyCreator`.
+1. In case of 1 level, nobody can burn the `NFT`s under the `Class` has this level.
+1. In case of 2 level, only creator of `Class` of `NFT` can burn its all belonging `NFT`s.
+1. The total supply of `NFT`s in `Class` deceases.
 
 ### Transfer
 
