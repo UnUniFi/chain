@@ -5,6 +5,12 @@
 The `nftmint` module provides the feature to mint NFTs on UnUniFi.
 Users can mint collective NFTs by sending specific messages.
 
+## Contents
+
+[Concepts](https://github.com/UnUniFi/chain/blob/design/spec/x/nftmint/spec/01_concepts.md)   
+[State](https://github.com/UnUniFi/chain/blob/design/spec/x/nftmint/spec/02_state.md)   
+[Messages](https://github.com/UnUniFi/chain/blob/design/spec/x/nftmint/spec/03_messages.md)   
+
 ### For developers in the core team
 
 [Requirements](https://github.com/UnUniFi/chain/blob/design/spec/x/nftmint/spec/requirements.md)    
