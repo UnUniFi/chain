@@ -19,7 +19,7 @@ The requirements for collective NFT minting mainly.
 1. The `Class.Id` and `NFT.Id` format must follows sdk's nft module definition
 ## Constant
 
-There're some flexible variable that sdk's nft module has like minimum and maximum `Class.Id` string length.   
+There're some flexible variables that sdk's nft module has like minimum and maximum `Class.Id` string length.   
 Write down those variable which we must define constantly to validate. (var name is not fixed, just momentary)   
 
 `MinClassIdLen`   
@@ -29,10 +29,10 @@ Write down those variable which we must define constantly to validate. (var name
 `MaxNFTIDLen`   
 `MaxNameLen`   
 `MaxDescriptionLen`   
-`MaxURILen`   
-`DoNotModify`   
-`IDPrefix`   
-`DenomPrefix`   
+`MaxURILen`    
+
+Or, some of those could be solved by fixing and generating automatically in a protocol.   
+The way to handle those elements have not determined yet.
 
 ## Non-transferable NFT
 
