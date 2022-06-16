@@ -59,6 +59,12 @@ message NftBid {
   NftIdentifier nft_id = 1 [ (gogoproto.nullable) = false ];
   string bidder = 2;
   cosmos.base.v1beta1.Coin amount = 3 [ (gogoproto.nullable) = false ];
+  bool automatic_payment = 4;
+  string paid_amount = 5 [
+    (gogoproto.moretags) = "yaml:\"paid_amount\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message Params {

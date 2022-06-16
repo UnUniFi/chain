@@ -69,6 +69,7 @@ message MsgPlaceBid {
   ];
   NftIdentifier nft_id = 2 [ (gogoproto.nullable) = false ];
   cosmos.base.v1beta1.Coin amount = 3 [ (gogoproto.nullable) = false ];
+  bool automatic_payment = 4;
 }
 message MsgPlaceBidResponse {}
 
