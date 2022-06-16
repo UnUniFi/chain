@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	custommiddleware "github.com/UnUniFi/chain/app/middleware"
 	appparams "github.com/UnUniFi/chain/app/params"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -863,11 +864,12 @@ func (app *App) setTxHandler(txConfig client.TxConfig, indexEventsStr []string) 
 	for _, e := range indexEventsStr {
 		indexEvents[e] = struct{}{}
 	}
-	txHandler, err := authmiddleware.NewDefaultTxHandler(authmiddleware.TxHandlerOptions{
+	txHandler, err := custommiddleware.NewDefaultTxHandler(custommiddleware.TxHandlerOptions{
 		Debug:            app.Trace(),
 		IndexEvents:      indexEvents,
 		LegacyRouter:     app.legacyRouter,
 		MsgServiceRouter: app.msgSvcRouter,
+		Codec:            app.appCodec,
 		AccountKeeper:    app.AccountKeeper,
 		BankKeeper:       app.BankKeeper,
 		FeegrantKeeper:   app.FeeGrantKeeper,
