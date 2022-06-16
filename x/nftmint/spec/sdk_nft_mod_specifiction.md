@@ -15,7 +15,7 @@ The fields are (in x/nft/nft.pb.go):
 ```go
 type Class struct {
 	// id defines the unique identifier of the NFT classification, similar to the contract address of ERC721
-  // [a-zA-Z][a-zA-Z0-9/:-]{2,100}
+    // [a-zA-Z][a-zA-Z0-9/:-]{2,100}
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// name defines the human-readable name of the NFT classification. Optional
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
@@ -41,7 +41,7 @@ type NFT struct {
 	// class_id associated with the NFT, similar to the contract address of ERC721
 	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	// id is a unique identifier of the NFT
-  // [a-zA-Z][a-zA-Z0-9/:-]{2,100}
+    // [a-zA-Z][a-zA-Z0-9/:-]{2,100}
 	Id string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
 	// uri for the NFT metadata stored off chain
 	Uri string `protobuf:"bytes,3,opt,name=uri,proto3" json:"uri,omitempty"`
