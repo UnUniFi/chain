@@ -56,28 +56,48 @@ type NFT struct {
 
 ### Mint
 
+Mint(nft NFT，receiver sdk.AccAddress)   // updates totalSupply
+
 ### Burn
+
+Burn(classId string, nftId string)    // updates totalSupply
 
 ### Update
 
+Update(nft NFT)
+
 ### Transfer
+
+Transfer(classId string, nftId string, receiver sdk.AccAddress)
 
 ### GetNFT
 
+GetNFT(classId string, nftId string) NFT
+
 ### GetNFTsOfClass
+
+GetNFTsOfClass(classId string) []NFT
 
 ### GetOwner
 
+GetOwner(classId string, nftId string) sdk.AccAddress
+
 ### GetBalance
 
+GetBalance(classId string, owner sdk.AccAddress) uint64
+
 ### GetTotalSupply
+
+GetTotalSupply(classId string) uint64
 
 ## Message
 
 There's one message in sdk's nft module.   
+
 ### MsgSend
 
 This message does the transfer of the NFT that identified in argument from sender.   
+
 ```go
 // MsgSend represents a message to send a nft from one account to another account.
 type MsgSend struct {
