@@ -21,3 +21,6 @@ There're check lists to be had to be inspected before actually implementing this
 
 [Term list](https://github.com/UnUniFi/chain/blob/design/spec/x/nftmint/spec/term_list.md)    
 Specific terms are defined here in this module.
+
+[Principle](https://github.com/UnUniFi/chain/blob/design/spec/x/nftmint/spec/principle.md)
+In this file, there'are a lot of things which we have to determine before implementing.
