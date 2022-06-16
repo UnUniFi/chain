@@ -114,6 +114,18 @@ type MsgSend struct {
 
 ## Notes
 
+#### Pros
+
+- community contributions, commit history and decision records
+- module functionality does not touch other core modules, allowing for an easy upgrade path for the HubHub to adopt
+
+#### Cons
+
+- efforts to upgrade to protobuf
+- grouping NFTs by denom/classification in a wallet/owners can be a privacy concern
+- limited on-chain metadata capabilities
+- id string generation logic is not deterministic/reproducible, can cause collisions
+
 ### Positive
 
 - NFT identifiers available on Cosmos Hub.
