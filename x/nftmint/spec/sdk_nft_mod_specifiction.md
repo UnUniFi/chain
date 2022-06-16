@@ -111,3 +111,21 @@ type MsgSend struct {
 	Receiver string `protobuf:"bytes,4,opt,name=receiver,proto3" json:"receiver,omitempty"`
 }
 ```
+
+## Notes
+
+### Positive
+
+- NFT identifiers available on Cosmos Hub.
+- Ability to build different NFT modules for the Cosmos Hub, e.g., ERC-721.
+- NFT module which supports interoperability with IBC and other cross-chain infrastructures like Gravity Bridge
+
+### Negative
+
+- New IBC app is required for x/nft
+- CW721 adapter is required
+
+### Neutral
+
+- Other functions need more modules. For example, a custody module is needed for NFT trading function, a -
+- collectible module is needed for defining NFT properties.
