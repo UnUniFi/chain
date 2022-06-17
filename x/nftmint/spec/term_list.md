@@ -52,10 +52,11 @@ message NFT {
 ### update_status_level
 
 This represents the permission level of `NFT` to be updated.   
-The owner of `Class` can choose permittion levels out of the choises that 1 is `OnlyClassOwner`, 2 is `OnlyNFTOwner` and 3 is `Nobody`.
-1. In case of 1 level, the owner of `Class` of the `NFT` can update its all `NFT`s' data.
+The owner of `Class` can choose permittion levels out of the choises that 0 is `Nobody`, 1 is `OnlyClassOwner`, 2 is `OnlyNFTOwner` and 3 is `ClassAndNFTOwner`.
+1. In case of 0 level, nobody can update `NFT`s' data under that `Class`.1. In case of 1 level, the owner of `Class` of the `NFT` can update its all `NFT`s' data.
 1. In case of 2 level, the owner of `NFT` can update its `NFT` data.
-1. In case of 3 level, nobody can update `NFT`s' data under that `Class`.
+1. In case of 3 level, the owner of `NFT` and `Class` of that `NFT` can update.
+
 
 #### Non-tranferable NFT (ntNFT)
 
