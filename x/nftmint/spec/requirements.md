@@ -9,6 +9,7 @@ The requirements for collective NFT minting mainly.
 ### Class
 
 1. Anyone can create `Class` to mint NFT.
+1. The owner of `Class` is recorded with `Class.Id`.
 1. The initial owner of `Class` is the creator of `Class`.
 1. The owner of `Class` can transfer the owner right to any recipient by sending a message.
 
@@ -49,7 +50,8 @@ The requirements for collective NFT minting mainly.
 
 ### Transfer
 
-1. The owner of `NFT` can transfer that `NFT` to any receipient.
+1. The owner of `NFT` can transfer that `NFT` to any recipient.
+1. (In the future,) the owner of `NFT` can transfer that `NFT` onto the other blockchain using IBC if only the `NFT` follows sdk's nft module standard.
 
 ### Validation
 
