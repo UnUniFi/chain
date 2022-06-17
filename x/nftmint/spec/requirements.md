@@ -9,25 +9,27 @@ The requirements for collective NFT minting mainly.
 ### Mint
 
 1. Anyone can create `Class` to mint NFT.
-1. The creator of `Class` is recorded with `Class.Id`.
-1. The creator of `Class` can restrict the right to mint NFT.
+1. The owner of `Class` is recorded with `Class.Id`.
+1. The initial owner of `Class` is the creator of `Class`.
+1. The owner of `Class` can restrict the right to mint NFT.
 1. The total supply of `NFT`s in `Class` increases.
+1. The original minter address should be recorded.
 
 ### Burn
 
 1. The NFTs can be burned.
 1. The owner of `Class` can restrict ability of `NFT`s under that `Class` to be burned.
-1. The restrict levels have 3 state that 1 is `Nobody`, 2 is `OnlyCreator` and 3 is `OnlyOwner`.
+1. The restrict levels have 3 state that 1 is `Nobody`, 2 is `OnlyClassOwner` and 3 is `OnlyNFTOwner`.
 1. In case of 1 level, nobody can burn the `NFT`s under the `Class` has this level.
-1. In case of 2 level, only creator of `Class` of `NFT` can burn its all belonging `NFT`s.
+1. In case of 2 level, only owner of `Class` of `NFT` can burn its all belonging `NFT`s.
 1. In case of 3 level, only direct owner of `NFT` can burn it.
 1. The total supply of `NFT`s in `Class` deceases.
 
 ### Update
 
-1. The creator of `Class` of `NFT` can restrict ability of `NFT`s under that `class` to be updated.
-1. The creator of `Class` can choose restrict levels that 1 is `OnlyCreator`, 2 is `OnlyOwner` and 3 is `Nobody`.
-1. In case of 1 level, the creator of `Class` of the `NFT` can update its all `NFT`s' data.
+1. The owner of `Class` of `NFT` can restrict ability of `NFT`s under that `class` to be updated.
+1. The owner of `Class` can choose restrict levels that 1 is `OnlyClassOwner`, 2 is `OnlyNFTOwner` and 3 is `Nobody`.
+1. In case of 1 level, the owner of `Class` of the `NFT` can update its all `NFT`s' data.
 1. In case of 2 level, the owner of `NFT` can update its `NFT` data.
 1. In case of 3 level, nobody can update `NFT`s' data under that `Class`.
 
@@ -41,6 +43,10 @@ The requirements for collective NFT minting mainly.
 1. There's no duplicating `NFT.Id` in a `Class`
 1. TokenURI must be legal by length (idea: len(tokenURI) > 0)
 1. The `Class.Id` and `NFT.Id` format must follows sdk's nft module definition
+
+### Query
+
+1. The owner of 
 
 ## Constant
 
@@ -66,16 +72,16 @@ The requirements for Non-transferable NFT minting.
 ### Mint
 
 1. Anyone can create `Class` to mint ntNFT.
-1. Creator of `Class` can restrict the right to mint ntNFT.
+1. owner of `Class` can restrict the right to mint ntNFT.
 1. The total supply of `NFT`s of `Class` increases.
 
 ### Burn
 
 1. The NFTs can be burned.
 1. The owner of `Class` can restrict ability of `NFT`s under that `Class` to be burned.
-1. The restrict levels have 3 state that 1 is `Nobody`, 2 is `OnlyCreator`.
+1. The restrict levels have 3 state that 1 is `Nobody`, 2 is `OnlyClassOwner`.
 1. In case of 1 level, nobody can burn the `NFT`s under the `Class` has this level.
-1. In case of 2 level, only creator of `Class` of `NFT` can burn its all belonging `NFT`s.
+1. In case of 2 level, only owner of `Class` of `NFT` can burn its all belonging `NFT`s.
 1. The total supply of `NFT`s in `Class` deceases.
 
 ### Transfer
@@ -85,9 +91,9 @@ The requirements for Non-transferable NFT minting.
 
 ### Update
 
-1. The creator of `Class` of `NFT` can restrict ability of `NFT`s under that `class` to be updated.
-1. The creator of `Class` can choose restrict levels that 1 is `OnlyCreator`and 2 is `Nobody`.
-1. In case of 1 level, the creator of `Class` of the `NFT` can update its all `NFT`s' data.
+1. The owner of `Class` of `NFT` can restrict ability of `NFT`s under that `class` to be updated.
+1. The owner of `Class` can choose restrict levels that 1 is `OnlyClassOwner`and 2 is `Nobody`.
+1. In case of 1 level, the owner of `Class` of the `NFT` can update its all `NFT`s' data.
 1. In case of 2 level, nobody can update `NFT`s' data under that `Class`.
 
 ### Validation
