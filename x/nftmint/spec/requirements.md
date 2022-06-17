@@ -88,7 +88,7 @@ Write down those variable which we must define constantly to validate. (var name
 `MaxURILen`    
 
 Or, some of those could be solved by fixing and generating automatically in a protocol.   
-The way to handle those elements have not determined yet.
+The way to handle those elements have not been determined yet.
 
 ## Non-transferable NFT (ntNFT)
 
