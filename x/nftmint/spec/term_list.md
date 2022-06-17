@@ -2,7 +2,7 @@
 
 **NOTES: This is just for development. Once the other legitimate pages are finalized, remove this.**
 
-`Class`    
+### Class    
 
 NFT **Class** is comparable to an ERC-721 smart contract (provides description of a smart contract), under which a collection of NFTs can be created and managed.
 
@@ -26,7 +26,7 @@ message Class {
 * `uri_hash` is a hash of the document pointed by uri; _optional_
 * `data` is app specific metadata of the class; _optional_
 
-`NFT`    
+### NFT  
 
 ```protobuf
 message NFT {
@@ -48,6 +48,14 @@ message NFT {
 * `uri` is a URI for the NFT metadata stored off chain. Should point to a JSON file that contains metadata about this NFT (Ref: [ERC721 standard and OpenSea extension](https://docs.opensea.io/docs/metadata-standards)); _required_
 * `uri_hash` is a hash of the document pointed by uri; _optional_
 * `data` is an app specific data of the NFT. CAN be used by composing modules to specify additional properties of the NFT; _optional_
+
+### update_status_level
+
+This represents the permission level of `NFT` to be updated.   
+The owner of `Class` can choose permittion levels out of the choises that 1 is `OnlyClassOwner`, 2 is `OnlyNFTOwner` and 3 is `Nobody`.
+1. In case of 1 level, the owner of `Class` of the `NFT` can update its all `NFT`s' data.
+1. In case of 2 level, the owner of `NFT` can update its `NFT` data.
+1. In case of 3 level, nobody can update `NFT`s' data under that `Class`.
 
 #### Non-tranferable NFT (ntNFT)
 
