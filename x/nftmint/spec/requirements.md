@@ -13,7 +13,7 @@ The requirements for collective NFT minting mainly.
 1. The initial owner of `Class` is the creator of `Class`.
 1. The owner of `Class` can restrict the right to mint NFT.
 1. The total supply of `NFT`s in `Class` increases.
-1. The original minter address should be recorded.
+1. The minter address of `NFT` should be recorded with `Class.Id` and `NFT.Id`.
 
 ### Burn
 
@@ -46,7 +46,12 @@ The requirements for collective NFT minting mainly.
 
 ### Query
 
-1. The owner of 
+The cosmos SDK's nft module has many queries.   
+Please refer them since I don't write duplicated queries here. ([Query service methods](https://github.com/cosmos/cosmos-sdk/blob/aba9bdc24cb6a7b9a85e6cad617f7b55d6dcdcec/docs/architecture/adr-043-nft-module.md?plain=1#L175))
+
+1. The owner of `Class` can be queried by `Class.Id`
+1. The minter of `NFT` can be queried by `Class.Id` and `NFT.Id`
+
 
 ## Constant
 
@@ -98,8 +103,14 @@ The requirements for Non-transferable NFT minting.
 
 ### Validation
 
-1. There's no duplicating `Class.Id` on the chain
-1. There's no duplicating `NFT.Id` in a `Class`
-1. TokenURI must be legal by length (idea: len(tokenURI) > 0)
-1. The `Class.Id` and `NFT.Id` format must follows sdk's nft module definition
-1. The `Class.Data` must be something like `"nfNFT"`. (not determined yet)
+1. There's no duplicating `Class.Id` on the chain.
+1. There's no duplicating `NFT.Id` in a `Class`.
+1. TokenURI must be legal by length (idea: len(tokenURI) > 0).
+1. The `Class.Id` and `NFT.Id` format must follows sdk's nft module definition.
+1. The `Class.Data` must be something like `"nfNFT"`. (not determined yet).
+
+### Query
+
+1. The owner of `Class` can be queried by `Class.Id`.
+1. The minter of `NFT` can be queried by `Class.Id` and `NFT.Id`.
+1. The total supply in a `Class` can be queried by `Class.Id`.
