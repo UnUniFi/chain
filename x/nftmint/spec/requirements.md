@@ -138,4 +138,4 @@ T
 1. The minter of `NFT` can be queried by `Class.Id` and `NFT.Id`.
 1. The `NFT` total supply in a `Class` can be queried by `Class.Id`.
 1. The whole `Class` and `NFT` data can be queried by their `Class.Id` and `Class.Id` and `NFT.Id`.
-
+1. The owner addresses of `NFT`s in a `Class` can all be queried by `Class.Id`.
