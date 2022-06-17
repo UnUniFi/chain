@@ -32,7 +32,7 @@ type Class struct {
 }
 ```
 
-## NFT
+### NFT
 
 The NFT struct represents NFT object itself.   
 The NFT type's fields are (in x/nft/nft.pb.go):
@@ -117,7 +117,7 @@ type MsgSend struct {
 #### Pros
 
 - community contributions, commit history and decision records
-- module functionality does not touch other core modules, allowing for an easy upgrade path for the HubHub to adopt
+- module functionality does not touch other core modules, allowing for an easy upgrade path for the Cosmos Hub to adopt
 
 #### Cons
 
