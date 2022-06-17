@@ -18,20 +18,21 @@ The requirements for collective NFT minting mainly.
 ### Burn
 
 1. The NFTs can be burned.
-1. The owner of `Class` can restrict ability of `NFT`s under that `Class` to be burned.
-1. The restrict levels have 3 state that 1 is `Nobody`, 2 is `OnlyClassOwner` and 3 is `OnlyNFTOwner`.
-1. In case of 1 level, nobody can burn the `NFT`s under the `Class` has this level.
-1. In case of 2 level, only owner of `Class` of `NFT` can burn its all belonging `NFT`s.
-1. In case of 3 level, only direct owner of `NFT` can burn it.
+1. The owner of `Class` can choose permittion levels out of the choises that 0 is `Nobody`, 1 is `OnlyClassOwner`, 2 is `OnlyNFTOwner` and 3 is `ClassAndNFTOwner`.
+1. In case of 0 level, nobody can burn `NFT`s' data under that `Class`.
+1. In case of 1 level, the owner of `Class` of the `NFT` can burn its all `NFT`s' data.
+1. In case of 2 level, the owner of `NFT` can burn its `NFT` data.
+1. In case of 3 level, both the owner of `NFT` and `Class` of that `NFT` can burn.
 1. The total supply of `NFT`s in `Class` deceases.
 
 ### Update
 
 1. The owner of `Class` of `NFT` can restrict ability of `NFT`s under that `class` to be updated.
 1. The owner of `Class` can choose permittion levels out of the choises that 0 is `Nobody`, 1 is `OnlyClassOwner`, 2 is `OnlyNFTOwner` and 3 is `ClassAndNFTOwner`.
-1. In case of 0 level, nobody can update `NFT`s' data under that `Class`.1. In case of 1 level, the owner of `Class` of the `NFT` can update its all `NFT`s' data.
+1. In case of 0 level, nobody can update `NFT`s' data under that `Class`.
+1. In case of 1 level, the owner of `Class` of the `NFT` can update its all `NFT`s' data.
 1. In case of 2 level, the owner of `NFT` can update its `NFT` data.
-1. In case of 3 level, the owner of `NFT` and `Class` of that `NFT` can update.
+1. In case of 3 level, both the owner of `NFT` and `Class` of that `NFT` can update.
 
 ### Transfer
 
@@ -90,10 +91,9 @@ T
 ### Burn
 
 1. The NFTs can be burned.
-1. The owner of `Class` can restrict ability of `NFT`s under that `Class` to be burned.
-1. The restrict levels have 3 state that 1 is `Nobody`, 2 is `OnlyClassOwner`.
-1. In case of 1 level, nobody can burn the `NFT`s under the `Class` has this level.
-1. In case of 2 level, only owner of `Class` of `NFT` can burn its all belonging `NFT`s.
+1. The owner of `Class` can choose restrict levels that 0 is `Nobody` and 1 is `OnlyClassOwner`.
+1. In case of 0 level, nobody can burn `NFT`s' data under that `Class`.
+1. In case of 1 level, the owner of `Class` of the `NFT` can burn its all `NFT`s' data.
 1. The total supply of `NFT`s in `Class` deceases.
 
 ### Transfer
