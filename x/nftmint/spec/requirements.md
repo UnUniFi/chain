@@ -6,11 +6,15 @@
 
 The requirements for collective NFT minting mainly.
 
-### Mint
+### Class
 
 1. Anyone can create `Class` to mint NFT.
-1. The owner of `Class` is recorded with `Class.Id`.
 1. The initial owner of `Class` is the creator of `Class`.
+1. The owner of `Class` can transfer the owner right to any recipient by sending a message.
+
+### Mint
+
+1. The owner of `Class` is recorded with `Class.Id`.
 1. The owner of `Class` can restrict the right to mint NFT.
 1. The total supply of `NFT`s in `Class` increases.
 1. The minter address of `NFT` should be recorded with `Class.Id` and `NFT.Id`.
@@ -26,6 +30,15 @@ The requirements for collective NFT minting mainly.
 1. The total supply of `NFT`s in `Class` deceases.
 
 ### Update
+
+#### Class
+
+1. The owner of `Class` of `NFT` can restrict ability of `Class` data to be updated.
+1. The owner of `Class` can choose permittion levels out of the choises that 0 is `Nobody`, 1 is `OnlyClassOwner`.
+1. In case of 0 level, nobody can update `NFT`s' data under that `Class`.
+1. In case of 1 level, the owner of `Class` of the `NFT` can update its all `NFT`s' data.
+
+#### NFT
 
 1. The owner of `Class` of `NFT` can restrict ability of `NFT`s under that `class` to be updated.
 1. The owner of `Class` can choose permittion levels out of the choises that 0 is `Nobody`, 1 is `OnlyClassOwner`, 2 is `OnlyNFTOwner` and 3 is `ClassAndNFTOwner`.
