@@ -1,4 +1,5 @@
 # Concepts
+
 stablecoins can be minted with NFT as collateral
 
 # requirement
@@ -6,6 +7,7 @@ stablecoins can be minted with NFT as collateral
 ## basic
 
 ## auction system
+
 1. 出品者はbid_active_rankを決めることができる
 1. bid_active_rankは入札デポジット額、入札キャンセル額、担保額、落札者決定ロジックに影響する  
   see 10_Generalized_auction_deposit.md
@@ -13,7 +15,8 @@ stablecoins can be minted with NFT as collateral
 1. 通常オークションはプロトコル上でNFTの受け渡しが行われるオークション
 1. late shipping nftオークションはプロトコル以外で受け渡すものがあるオークション
 
-### listing 
+### listing
+
 1. 所有しているNFTを出品することができる
 1. 出品時にbid_active_rankを1...100までの数値を決めることができる(default:10, default is global_option)
 1. 入札に使うトークンは出品者がBDに基づいて決定する(global_option)
@@ -26,6 +29,7 @@ stablecoins can be minted with NFT as collateral
 1. 出品者のSign以外の場合は、受け付けずログを残すこと
 
 ### listing cancel
+
 1. 誰にも入札されていない場合に、出品者は出品キャンセルすることができる
 1. 入札されている場合は、出品者は出品キャンセル手数料を支払うことで出品キャンセルすることができる
 1. 出品キャンセル手数料は入札デポジット額のX％(global_option)
@@ -36,16 +40,17 @@ stablecoins can be minted with NFT as collateral
 1. 出品者のSign以外の場合は、受け付けずログを残すこと
 
 ### expand auction period
+
 1. 出品者はBDトークンを支払い、オークションの期間を延長することができる(global_option)
 1. 出品延長手数料は、落札候補者へデポジット額割合に応じて分配される
 1. 出品者のSign以外の場合は、受け付けずログを残すこと
 
 ### bid
+
 1. 出品されているNFTを入札することができる
 1. 入札するトークンはBD基準を満たしていないといけない
 1. 最低入札額を上回っていないと入札できない
 1. トークンp円分で入札するとd円分がデポジットされる(計算式 $d=\frac{1}{bid_active_rank}\times p$)
-1. 自分が最上位入札の場合にさらに高値を更新したい場合は、再度Bidする
 1. 入札が行われる時に、出品残り時間N時間の場合、自動的にn'分出品時間が伸びる(global_option)
 1. 最低落札価格を下回る入札は受け付けない
 1. 最低落札価格以下の入札は、オークションに記録され、通常の入札情報として扱われる
@@ -53,6 +58,7 @@ stablecoins can be minted with NFT as collateral
 1. 入札者とtxのSignが一致していること、それ以外の場合は、受け付けずログを残すこと
 
 ### bid cancel
+
 1. 入札をキャンセルすることができる
 1. 自分自身しか入札していない場合は、キャンセルすることができない
 1. キャンセルする入札者の入札順位がbid_active_rank以下の場合は無料で入札キャンセルできる
@@ -63,7 +69,8 @@ stablecoins can be minted with NFT as collateral
 1. 入札をキャンセルされた出品者は清算が起こる可能性がある
 1. 入札者かつtxと入札キャンセル者のSignが一致していること、それ以外の場合は、受け付けずログを残すこと
 
-### SellingDecision 
+### SellingDecision
+
 1. 出品者は入札がある時に落札者を決定することができる
 1. 落札者はN時間以内に入札金額 - デポジット金額を支払う必要がある(global_option)
 1. 落札者が期限内に支払わない場合、デポジット金額が徴収される
@@ -71,12 +78,14 @@ stablecoins can be minted with NFT as collateral
 1. 出品者のSign以外の場合は、受け付けずログを残すこと
 
 ### end auction
+
 1. オークションは時間経過で終了する
 1. オークションが終了すると、bid_active_rank位以下のデポジットは返還される
 1. オークションが終了すると、bid_active_rank位以上は落札候補者として扱われる
 1. 出品者のSign以外の場合は、受け付けずログを残すこと
 
 ### pay auction fee
+
 1. 落札候補者はN時間までにデポジット額を引いた入札額を支払う必要がある (global_option)
 1. 自動支払いが有効な場合は、残高があれば自動的に支払うことができる
 1. N時間経過後、protocolは最上位入札から順番に落札候補者が入札額を支払ったか確認する
@@ -91,28 +100,32 @@ stablecoins can be minted with NFT as collateral
 1. オークションが成立した場合、　価格情報を記録しqueryで引き出せること
 1. 価格情報はNFT,出品者,落札者,落札日時,落札タイプ,入札件数,落札金額を累積で記録すること
 
-
 ### late shipping nft
+
 1. late shipping nftオークションは落札者が支払い後、出品者がプロトコル以外の場所で受け渡しを行う
 1. 落札者が出品者から受け取り後オークションが終了となる
 1. オークション終了後に出品者にTokenが支払われる
 1. Tokenの引き渡しは落札後X日経過後 (global_option)
 
 ### boost staking reward
+
 1. BDが直接借用資産型の場合に、入札すると(入札者がステーキングしているGUU x 2 or N)を限度額にステーキングGUUが増える (global_option)
 1. ステーキングGUUが増える期間はオークションが終了するか、入札キャンセルを行うまで
 
 ### borrow
+
 1. 直接借用資産型オークションの場合、出品者は入札されたbid_active_rank位以上の総デポジットを限度額とし、protocolから直接借りることができる
 1. 出品者は借りたトークンをprotocolへ戻すことができる
 1. 出品者のSign以外の場合は、受け付けずログを残すこと
 
 ### CDP
+
 1. 合成資産造成型オークションの場合、出品者は入札されたbid_active_rank位以上の総デポジットを担保とし、それでステーブルトークンを発行できる
 1. 出品者は発行したステーブルトークンをprotocolへ戻すことができる
 1. 出品者のSign以外の場合は、受け付けずログを残すこと
 
 ### liquidation
+
 1. 入札トークン価値が下がり、発行したステーブルトークンの総額が入札額の50%を上回った場合、清算するかステーブルトークンを戻して50％以下にしなければ、NFTが入札者に強制的に支払われることになる
 1. 清算が発生している時に、N時間までにステーブルトークンを戻すか、落札を決めないと罰則が発生する (global_option)
 1. 罰則は、出品者に対して、トークンが支払われず、それ以外は落札と同じ流れとなる
@@ -120,19 +133,21 @@ stablecoins can be minted with NFT as collateral
 1. 出品者のSign以外の場合は、受け付けずログを残すこと
 
 ### BD(Bid Denom)
+
 1. BDはオークションに使用されるトークン基準
 1. BDは2種類あり、オークションタイプや出品者がstableトークンを発行することにより変更になる。
 1. 直接借用資産型オークションの場合、BDは、出品者が指定した単一のトークンになる。 (global_option)
 1. 合成資産造成型オークションの場合、BDは、UnUniFiがサポートする任意のトークンを使用できる (global_option)
 
-
 ## expanded
 
 ### incentive system
+
 1. 買い戻し発生時に、NFT作者、外部フロントエンドエンジニア、ecosystemプールにそれぞれN%のインセンティブが発生する (global_option)
 1. 落札時に、NFT作者、外部フロントエンドエンジニア、ecosystemプールにそれぞれN%のインセンティブが発生する (global_option)
 
 ### vault system
+
 1. 出品したNFTはVaultに格納される
 1. 入札に使用したトークンはVaultに格納される
 1. NFTを担保にCDPする場合は、vaultを経由して行う
@@ -141,11 +156,11 @@ stablecoins can be minted with NFT as collateral
 1. vaultはセキュリティインシデントが起きた時にXによって閉めることができる (global_option)
 
 ### saving system
+
 1. voteによって奪われたトークンを取り戻すことができる
 1. voteによって奪われたNFTを取り戻すことができる
 1. Xの権利でIBCチャンネルを閉じることができる (global_option)
 1. Xの権利で特定の入札トークンの利用取り消すことができる (global_option)
 1. Xの権利でオークション機能を停止することができる (global_option)
 
-
-※global_option is defined by genesisjson 
+※global_option is defined by genesisjson

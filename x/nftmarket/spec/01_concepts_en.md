@@ -17,6 +17,8 @@ stablecoins can be minted with NFT as collateral
 1. normal listing is an listing where NFTs are passed and received over the protocol
 1. late shipping nft listing are listing with delivery outside of protocol
 
+### listing
+
 1. You can list the NFTs you own on the marketplace.
 1. The lister can decide the bid_active_rank from a number between 1 to 100 at the time of listing. (default:x, default is global_option)
 1. the token used for bidding is determined by the lister based on BD.(global_option)
@@ -50,7 +52,6 @@ stablecoins can be minted with NFT as collateral
 1. tokens to be bid on must meet BD criteria
 1. you cannot bid unless you exceed the minimum bid
 1. bidding with "p" amount of tokens will deposit "d" amount(Calculation Formula: $d=\frac{1}{bid_active_rank}\times p$)
-1. if you are the highest bidder and you want to make a higher bid, bid again
 1. if the bidder has N hours remaining in the listing when the bidding takes place, the listing time will automatically be extended by n' minutes. (global_option)
 1. bids below the minimum bid price will not be accepted
 1. Bids below the minimum bid price are recorded in the listing and treated as normal bidding information
