@@ -69,7 +69,7 @@ Please refer them since I don't write duplicated queries here. ([Query service m
 1. The minter address of `NFT` can be queried by `Class.Id` and `NFT.Id`.
 1. The `update_status_level` of `Class` can be queried by `Class.Id`.
 1. The `update_status_level` of `NFT` can be queried by `Class.Id` and `NFT.Id`.
-1. The data of `Class` and its belonging `NFT`s can be queried by `Class.Name`.
+1. The data of `Class` and its belonging `NFT`s can be queried by `Class.Name`. **NOTE: return object has not been decided yet.** Possible choises are just `Class.Id` or []`NFT`.
 
 
 ## Constant
