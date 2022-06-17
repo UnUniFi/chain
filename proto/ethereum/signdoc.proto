@@ -6,7 +6,7 @@ import "google/protobuf/timestamp.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos/tx/v1beta1/tx.proto";
 
-option go_package = "github.com/UnUniFi/chain/app/ante";
+option go_package = "github.com/UnUniFi/chain/app/middleware";
 
 message SignDocForMetamask {
   cosmos.tx.v1beta1.TxBody body = 1;

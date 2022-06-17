@@ -139,6 +139,7 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 		Amount:           msg.Amount,
 		AutomaticPayment: msg.AutomaticPayment,
 		PaidAmount:       paidAmount.Add(initialDeposit),
+		BidTime:          ctx.BlockTime(),
 	})
 
 	// extend bid if there's bid within gap time
@@ -160,23 +161,22 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 	return nil
 }
 
+func higherBids(bids []types.NftBid, amount sdk.Int) uint64 {
+	higherBids := uint64(0)
+	for _, bid := range bids {
+		if bid.Amount.Amount.GTE(amount) {
+			higherBids++
+		}
+	}
+	return higherBids
+}
+
 func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 	// Verify listing is in BIDDING state
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
 		return err
 	}
-
-	_ = listing
-
-	// TODO: if you are the only bidder yourself, you cannot cancel
-	// TODO: Bidder can cancel bids free of charge if the bidder's bid rank is below the bid_active_rank.
-	// TODO: if the bid rank is bid_active_rank or higher, the bid can be cancelled by paying a cancellation fee.
-	// TODO: Cancellation Fee Formula: MAX{canceling_bidder's_deposit - (total_deposit - borrowed_lister_amount), 0}
-	// TODO: bids can only be cancelled X days after bidding (global_option)
-	// TODO: tokens will be reimbursed X days after the bid cancellation is approved (global_option)
-	// TODO: Liquidation may occur for sellers whose bids are cancelled.
-	// TODO: the bidder and the bid canceller's Sign must match, otherwise the bid will not be accepted and a log will be kept.
 
 	bidder := msg.Sender.AccAddress()
 
@@ -186,18 +186,41 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 		return types.ErrBidDoesNotExists
 	}
 
+	// bids can only be cancelled X days after bidding
+	params := k.GetParamSet(ctx)
+	if bid.BidTime.Add(time.Duration(params.BidCancelRequiredSeconds) * time.Second).After(ctx.BlockTime()) {
+		return types.ErrBidCancelIsAllowedAfterSomeTime
+	}
+
+	bids := k.GetBidsByNft(ctx, msg.NftId.IdBytes())
+	if len(bids) == 1 {
+		return types.ErrCannotCancelListingSingleBid
+	}
+
+	cancelFee := sdk.ZeroInt()
+	if higherBids(bids, bid.Amount.Amount) <= listing.BidActiveRank {
+		// Cancellation Fee Formula: MAX{canceling_bidder's_deposit - (total_deposit - borrowed_lister_amount), 0}
+		listingDebt := k.GetDebtByNft(ctx, msg.NftId.IdBytes())
+		totalDeposit := sdk.ZeroInt()
+		for _, b := range bids {
+			totalDeposit = totalDeposit.Add(b.PaidAmount)
+		}
+		if bid.PaidAmount.Add(listingDebt.Loan.Amount).GT(totalDeposit) {
+			cancelFee = bid.PaidAmount.Add(listingDebt.Loan.Amount).Sub(totalDeposit)
+		}
+	}
+
 	// Delete bid
 	k.DeleteBid(ctx, bid)
 
-	// TODO: handle cancel fee
-	// params := k.GetParamSet(ctx)
-	// params.NftListingCancelFeePercentage
-
-	// Transfer amount of token to bid account
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{sdk.NewCoin(listing.BidToken, bid.PaidAmount)})
+	// TODO: tokens will be reimbursed X days after the bid cancellation is approved (global_option)
+	// transfer amount of token except fee to bid account
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{sdk.NewCoin(listing.BidToken, bid.PaidAmount.Sub(cancelFee))})
 	if err != nil {
 		return err
 	}
+
+	// TODO: Liquidation may occur for sellers whose bids are cancelled.
 
 	// Emit event for cancelling bid
 	ctx.EventManager().EmitTypedEvent(&types.EventCancelBid{

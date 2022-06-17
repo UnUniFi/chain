@@ -28,4 +28,6 @@ var (
 	ErrInvalidRepayDenom                 = sdkerrors.Register(ModuleName, 21, "invalid repay denom")
 	ErrNotTimeForCancel                  = sdkerrors.Register(ModuleName, 22, "not time for cancel yet")
 	ErrInvalidBidAmount                  = sdkerrors.Register(ModuleName, 23, "invalid bid amount")
+	ErrCannotCancelListingSingleBid      = sdkerrors.Register(ModuleName, 24, "cannot cancel single bid of the listing")
+	ErrBidCancelIsAllowedAfterSomeTime   = sdkerrors.Register(ModuleName, 25, "bid cancel is allowed after some time after bid")
 )

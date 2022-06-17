@@ -65,6 +65,11 @@ message NftBid {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
+  google.protobuf.Timestamp bid_time = 6 [
+    (gogoproto.moretags) = "yaml:\"bid_time\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
 }
 
 message Params {
