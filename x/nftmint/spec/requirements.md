@@ -104,9 +104,9 @@ T
 ### Update
 
 1. The owner of `Class` of `NFT` can restrict ability of `NFT`s under that `class` to be updated.
-1. The owner of `Class` can choose restrict levels that 1 is `OnlyClassOwner`and 2 is `Nobody`.
+1. The owner of `Class` can choose restrict levels that 0 is `Nobody` and 1 is `OnlyClassOwner`.
+1. In case of 0 level, nobody can update `NFT`s' data under that `Class`.
 1. In case of 1 level, the owner of `Class` of the `NFT` can update its all `NFT`s' data.
-1. In case of 2 level, nobody can update `NFT`s' data under that `Class`.
 
 ### Validation
 
@@ -120,4 +120,6 @@ T
 
 1. The owner of `Class` can be queried by `Class.Id`.
 1. The minter of `NFT` can be queried by `Class.Id` and `NFT.Id`.
-1. The total supply in a `Class` can be queried by `Class.Id`.
+1. The `NFT` total supply in a `Class` can be queried by `Class.Id`.
+1. The whole `Class` and `NFT` data can be queried by their `Class.Id` and `Class.Id` and `NFT.Id`.
+
