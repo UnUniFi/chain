@@ -1,5 +1,10 @@
 # Brief SDk nft module specification
 
+## Abstract
+
+The current cosmos sdk's x/nft module can be simply said that it's the data storage for the NFTs of cosmos SDK.   
+That module does the minimum data type definition to meets the requirement for the IBC (Inter-Blockchian Communication) and implementation of the methods to store them in the module.   
+
 Basically saying, the standard type definition and methods follows ERC721.   
 There are major two types defined in sdk's nft module.   
 Those are `Class` and `NFT`. The NFT is identified by using `Class.Id` and `NFT.Id` combined.   
