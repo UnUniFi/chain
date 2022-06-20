@@ -15,20 +15,18 @@ Options:
 1. User enter it first. When the operation starts, if that `Class.Id` is conflicted with the other `Class`'s Id in the chain, revert and stop operation.
 1. The protocol generate `Class.Id` somehow and check the duplication and return `Class.Id` to let message sender know what it is.
 
-
-
 ### Id, Name, Symbol and URI rule
 
 Please refer to the other pages under x/nftmint/spec to know what below words mean.
 
-- `Class.Id`
-- `NFT.Id`
-- `Class.Name`
-- `Class.Symbol`
-- `NFT.Name`
-- `Class.Uri`
-- `NFT.Uri`
-- `Class.Description`
+- `Class.Id` - the unique identifier of collective NFT
+- `NFT.Id` - the unique identifier in collective NFT
+- `Class.Name` - the collective name
+- `Class.Symbol` - the collective NFT's ticker
+- `NFT.Name` - the specific NFT name
+- `Class.Uri` - the meta content location of collective NFT
+- `NFT.Uri` - the metadata location of each NFT
+- `Class.Description` - the description of collective NFT
 
 ### Content of `NFT.Uri` (metadsata structure)
 

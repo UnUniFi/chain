@@ -86,13 +86,13 @@ Please refer them since I don't write duplicated queries here. ([Query service m
 1. The minter address of `NFT` can be queried by `Class.Id` and `NFT.Id`.
 1. The `update_status_level` of `Class` can be queried by `Class.Id`.
 1. The `update_status_level` of `NFT` can be queried by `Class.Id`.
-1. The data of `Class` and its belonging `NFT`s can be queried by `Class.Name`. **NOTE: return object has not been decided yet.** Possible choises are just `Class.Id` or []`NFT`.
+1. The list of `Class.Id` can be queried by `Class.Name`. **NOTE: return object has not been decided yet.** Possible choises are just `Class.Id`.
 
-1. ClassOwner(class_id)
-1. NFTMinter(class_id, nft_id)
-1. ClassUpdateStatusLevel(class_id)
-1. NFTUpdateStatusLevel(class_id)
-1. ClassByName(_under consideration_)
+1. ClassOwner(class_id) owner
+1. NFTMinter(class_id, nft_id) minter
+1. ClassUpdateStatusLevel(class_id) status
+1. NFTUpdateStatusLevel(class_id) status
+1. ClassByName(class_name) []class_id
 
 From cosmos SDk's x/nft module:
 
@@ -113,6 +113,7 @@ From cosmos SDk's x/nft module:
 - Update `NFT` data if it's allowed by the creator of that `Class` at the creation moment.
 - Update `Class` data if it's allowed by the creator of that `Class`.
 - If the module which performs the data transtion between cosmos SDK's x/nft module and wasmd module is implemented, the `NFT` can be extended by CosmWasm.
+- The `Class.Id` can be queried by `Class.Name` if the full name is matched.
 
 #### Impossible
 
