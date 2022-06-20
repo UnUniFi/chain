@@ -73,7 +73,9 @@
 - UpdateNFT(class_id, nft_id, ...)
 - BurnNFT(class_id, nft_id)
 
-(Send from cosmosd SDK's x/nft module)
+From cosmosd SDK's x/nft module:
+
+- Send(class_id, nft_id, sender, receiver)
 
 ### Query
 
@@ -91,6 +93,27 @@ Please refer them since I don't write duplicated queries here. ([Query service m
 1. ClassUpdateStatusLevel(class_id)
 1. NFTUpdateStatusLevel(class_id)
 1. ClassByName(_under consideration_)
+
+From cosmos SDk's x/nft module:
+
+- Balance(class_id, owner) amount
+- Owner(class_id, nft_id) owner
+- Supply(class_id) amount
+- NFTs(class_id, owner, pagination) nfts, pagination
+- NFT(class_id, nft_id) nft
+- Class(class_id) class
+- Classes(pagination) classes, pagination
+
+### What this feature mainly provide and doesn't
+
+#### Positive
+
+- Users can mint NFTs under specific Class like CryptoPunks
+
+#### Negative
+
+- Users cannot mint dynamic NFTs handled by special function in Contract in Ethereum
+- The reason why is the module interect level is very low in cosmos SDk, it doesn't provide the ability to add funtions to NFTs other than we provide like smartcontract on Ethereum
 
 ## Constant
 
