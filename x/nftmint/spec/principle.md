@@ -2,12 +2,12 @@
 
 Since sdk's nft module has very large blank space, a lot of principle rules have to be made before implementing the actual nft mint module outside of it.   
 
-#### Id string generation logic
+### Id string generation logic
 
 - `Class.Id`
 - `NFT.Id`
 
-#### Name and Symbol and URI rule
+### Name and Symbol and URI rule
 
 - `Class.Name`
 - `Class.Symbol`
@@ -15,3 +15,9 @@ Since sdk's nft module has very large blank space, a lot of principle rules have
 - `Class.Uri`
 - `NFT.Uri`
 - `Class.Description`
+
+### Content of `NFT.Uri`
+
+The standard of `NFT.Uri`(metadata structure) on UnUniFi.
+
+Possible reference: https://docs.opensea.io/docs/metadata-standards
