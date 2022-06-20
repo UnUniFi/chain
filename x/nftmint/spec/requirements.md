@@ -114,6 +114,7 @@ From cosmos SDk's x/nft module:
 
 - Users cannot mint dynamic NFTs handled by special function in Contract in Ethereum
 - The reason why is the module interect level is very low in cosmos SDk, it doesn't provide the ability to add funtions to NFTs other than we provide like smartcontract on Ethereum
+- e.g. 1. forbit to trasfer NFT. 2. dynamically change NFT data on the chain. 
 
 ## Constant
 
