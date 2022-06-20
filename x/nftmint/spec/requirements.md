@@ -4,7 +4,11 @@
 
 ## Basic
 
-The requirements for collective NFT minting mainly.
+**_The requirements for collective NFT minting mainly._**
+
+- Anyone can create Collective NFT by creating `Class` and its belonging `NFT`s while the owner of `Class` controls the minting right.
+- The NFT standard generally follows ERC721 by default.
+- The content of `NFT.Uri` (metadata strucure) follows UnUniFi standard.
 
 ### Class
 
