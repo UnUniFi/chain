@@ -7,12 +7,22 @@ Since SDK's nft module has very large blank space, a lot of principle rules have
 Please refer to the other pages under x/nftmint/spec to know what below words mean.
 
 - `Class.Id`
-- `NFT.Id`
 
-### Name and Symbol and URI rule
+As described in term_list, `Class.Id` is the unique identifier for each collective NFT. 
+So we have to decide how we make it keep unique.   
+Options:
+
+1. User enter it first. When the operation starts, if that `Class.Id` is conflicted with the other `Class`'s Id in the chain, revert and stop operation.
+1. The protocol generate `Class.Id` somehow and check the duplication and return `Class.Id` to let message sender know what it is.
+
+
+
+### Id, Name, Symbol and URI rule
 
 Please refer to the other pages under x/nftmint/spec to know what below words mean.
 
+- `Class.Id`
+- `NFT.Id`
 - `Class.Name`
 - `Class.Symbol`
 - `NFT.Name`
