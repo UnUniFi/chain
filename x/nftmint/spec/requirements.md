@@ -141,7 +141,7 @@ The requirements for Non-transferable NFT minting.
 
 ### Logic Concept
 
-T
+Current one idea is to create non-transferable NFT with the specific type of the data field and store those NFTs in our nftmint module’s KVStore not to be transfered by calling native nft module’s message.
 
 ### Mint
 
