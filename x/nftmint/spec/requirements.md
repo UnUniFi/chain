@@ -51,7 +51,7 @@ The requirements for collective NFT minting mainly.
 ### Transfer
 
 1. The owner of `NFT` can transfer that `NFT` to any recipient.
-1. (In the future,) the owner of `NFT` can transfer that `NFT` onto the other blockchain using IBC if only the `NFT` follows sdk's nft module standard.
+1. (In the future,) the owner of `NFT` may be able to transfer that `NFT` onto the other blockchain using IBC as long as the `NFT` follows sdk's nft module standard.
 
 ### Validation
 
@@ -70,7 +70,6 @@ Please refer them since I don't write duplicated queries here. ([Query service m
 1. The `update_status_level` of `Class` can be queried by `Class.Id`.
 1. The `update_status_level` of `NFT` can be queried by `Class.Id` and `NFT.Id`.
 1. The data of `Class` and its belonging `NFT`s can be queried by `Class.Name`. **NOTE: return object has not been decided yet.** Possible choises are just `Class.Id` or []`NFT`.
-
 
 ## Constant
 
