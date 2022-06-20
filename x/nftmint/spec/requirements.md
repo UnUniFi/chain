@@ -66,12 +66,12 @@
 
 ### Message
 
-- CreateClass
-- TransferClass
-- UpdateClass
-- MintNFT
-- UpdateNFT
-- BurnNFT
+- CreateClass(class_id, ..)
+- TransferClass(class_id, recipient)
+- UpdateClass(class_id, ...)
+- MintNFT(class_id, nft_id, ...)
+- UpdateNFT(class_id, nft_id, ...)
+- BurnNFT(class_id, nft_id)
 
 (Send from cosmosd SDK's x/nft module)
 
@@ -86,11 +86,11 @@ Please refer them since I don't write duplicated queries here. ([Query service m
 1. The `update_status_level` of `NFT` can be queried by `Class.Id`.
 1. The data of `Class` and its belonging `NFT`s can be queried by `Class.Name`. **NOTE: return object has not been decided yet.** Possible choises are just `Class.Id` or []`NFT`.
 
-1. ClassOwner
-1. NFTMinter
-1. ClassUpdateStatusLevel
-1. NFTUpdateStatusLevel
-1. ClassByName (under consideration)
+1. ClassOwner(class_id)
+1. NFTMinter(class_id, nft_id)
+1. ClassUpdateStatusLevel(class_id)
+1. NFTUpdateStatusLevel(class_id)
+1. ClassByName(_under consideration_)
 
 ## Constant
 
