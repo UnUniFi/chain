@@ -106,15 +106,19 @@ From cosmos SDk's x/nft module:
 
 ### What this feature mainly provide and doesn't
 
-#### Positive
+#### Possible
 
-- Users can mint NFTs under specific Class like CryptoPunks
+- Users can mint NFTs under specific Class while storing main data off-chain, like CryptoPunks.
+- Burn `NFT` if it's allowed by the owner of that `NFT`'s `Class`.
+- Update `NFT` data if it's allowed by the creator of that `Class` at the creation moment.
+- Update `Class` data if it's allowed by the creator of that `Class`.
+- If the module which performs the data transtion between cosmos SDK's x/nft module and wasmd module is implemented, the `NFT` can be extended by CosmWasm.
 
-#### Negative
+#### Impossible
 
-- Users cannot mint dynamic NFTs handled by special function in Contract in Ethereum
-- The reason why is the module interect level is very low in cosmos SDk, it doesn't provide the ability to add funtions to NFTs other than we provide like smartcontract on Ethereum
-- e.g. 1. forbit to trasfer NFT. 2. dynamically change NFT data on the chain. 
+- The NFT data field is limited. So the addition of data field by the creator is impossible.
+- The flexible `Class.Id` is impossible.
+- The addition of function to `NFT` behavior is impossible by the features on the chain.
 
 ## Constant
 
@@ -141,7 +145,9 @@ The requirements for Non-transferable NFT minting.
 
 ### Logic Concept
 
-Current one idea is to create non-transferable NFT with the specific type of the data field and store those NFTs in our nftmint module’s KVStore not to be transfered by calling native nft module’s message.
+Current one idea is to create non-transferable NFT with the specific type of the data field and store those NFTs in our nftmint module’s KVStore not to be transfered by calling native nft module’s message.   
+Since this type of NFT cannot be transferred, it doesn't need to store the data in cosmos SDK's x/nft module.
+Hence, it's ok to define new type in `NFT.Data` field to identify which type of NFT it is on UnUniFi's x/nftmint module.
 
 ### Mint
 
