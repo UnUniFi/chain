@@ -146,3 +146,9 @@ type MsgSend struct {
 
 - Other functions need more modules. For example, a custody module is needed for NFT trading function, a -
 - collectible module is needed for defining NFT properties.
+
+### What this module doesn't provide
+
+- The metadata structure standard
+- The strict rules of the variable which users enter like `Class.Name`, even `Class.Id`
+- The extra usage of NFT like non-transferable NFT or dynamic NFT
