@@ -4,10 +4,14 @@ Since SDK's nft module has very large blank space, a lot of principle rules have
 
 ### Id string generation logic
 
+Please refer to the other pages under x/nftmint/spec to know what below words mean.
+
 - `Class.Id`
 - `NFT.Id`
 
 ### Name and Symbol and URI rule
+
+Please refer to the other pages under x/nftmint/spec to know what below words mean.
 
 - `Class.Name`
 - `Class.Symbol`
