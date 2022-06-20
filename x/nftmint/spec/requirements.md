@@ -15,7 +15,7 @@
 1. Anyone can create `Class` to mint NFT.
 1. The owner of `Class` is recorded with `Class.Id`.
 1. The initial owner of `Class` is the creator of `Class`.
-1. The owner of `Class` can transfer the owner right to any recipient by sending a message.
+1. The owner of `Class` can transfer the ownership to any recipient by sending a message.
 
 ### Mint
 
@@ -63,6 +63,17 @@
 1. There's no duplicating `NFT.Id` in a `Class`.
 1. TokenURI must be legal by length (idea: len(tokenURI) > 0).
 1. The `Class.Id` and `NFT.Id` format must follows sdk's nft module definition.
+
+### Message
+
+- CreateClass
+- TransferClass
+- UpdateClass
+- MintNFT
+- UpdateNFT
+- BurnNFT
+
+(Send from cosmosd SDK's x/nft module)
 
 ### Query
 
