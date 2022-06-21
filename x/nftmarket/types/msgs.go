@@ -235,9 +235,11 @@ func (msg MsgPayFullBid) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgBorrow{}
 
-func NewMsgBorrow(sender sdk.AccAddress) MsgBorrow {
+func NewMsgBorrow(sender sdk.AccAddress, nftId NftIdentifier, amount sdk.Coin) MsgBorrow {
 	return MsgBorrow{
 		Sender: sender.Bytes(),
+		NftId:  nftId,
+		Amount: amount,
 	}
 }
 

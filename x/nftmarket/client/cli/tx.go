@@ -28,6 +28,7 @@ func GetTxCmd() *cobra.Command {
 		CmdCreateListing(),
 		CmdCreatePlaceBid(),
 		CmdEndlisting(),
+		CmdBorrow(),
 	)
 
 	return cmd
@@ -141,6 +142,47 @@ $ %s tx %s endlisting 1 1 --from myKeyName --chain-id ununifi-x
 			}
 
 			msg := types.NewMsgEndNftListing(clientCtx.GetFromAddress(), nftIde)
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdBorrow() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "borrow [class-id] [nft-id]",
+		Short: "borrow denom",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`borrow denom.
+Example:
+$ %s tx %s borrow 1 1 100uguu --from myKeyName --chain-id ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			classId := args[0]
+			nftId := args[1]
+			nftIde := types.NftIdentifier{
+				ClassId: classId,
+				NftId:   nftId,
+			}
+
+			borrowCoin, err := sdk.ParseCoinNormalized(args[2])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgBorrow(clientCtx.GetFromAddress(), nftIde, borrowCoin)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
