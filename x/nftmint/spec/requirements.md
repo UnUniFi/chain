@@ -2,82 +2,129 @@
 
 **NOTES: This is just for development. Once the other legitimate pages are finalized, remove this.**
 
-## Basic
+# Basic
 
-**_The requirements for collective NFT minting mainly._**
+**_The requirements for collective NFT mainly._**
 
-- Anyone can create Collective NFT by creating `Class` and its belonging `NFT`s while the owner of `Class` controls the minting right.
+- Anyone can create Collective NFT by creating `Class` and its belonging `NFT`s while the owner of `Class` controls the minting permission.
 - The NFT standard generally follows ERC721 by default.
-- The content of `NFT.Uri` (metadata strucure) follows UnUniFi standard.
+- The content of `NFT.Uri` (metadata strucure) follows the other major market place standards.
+- For the sale, listing and selling can be done in x/nftmarket mudule. (doesn't support simple NFT sale with fixed price at the moment.)
 
-### Class
+## Creating Class
 
 1. Anyone can create `Class` to mint NFT.
 1. The owner of `Class` is recorded with `Class.Id`.
 1. The initial owner of `Class` is the creator of `Class`.
 1. The owner of `Class` can transfer the ownership to any recipient by sending a message.
+1. The `BaseTokenUri` must be registered when to be created `Class`.
+1. The `TotalSupplyCap` must be registered when to be created `Class`.
+1. The `MintingPermission` must be determined when to be created `Class`.
 
-### Mint
+## Class and Relating Attributes
 
-1. The owner of `Class` is recorded with `Class.Id`.
-1. The owner of `Class` can restrict the right to mint NFT.
-1. The total supply of `NFT`s in `Class` increases.
-1. The minter address of `NFT` should be recorded with `Class.Id` and `NFT.Id`.
+#### Class.Id
 
-### Burn
+1. `Class.Id` is generated automatically in a protocol to be unique. (the way has not determined yet.)
 
-1. The NFTs can be burned.
-1. The owner of `Class` can choose permittion levels out of the choises that 0 is `Nobody`, 1 is `OnlyClassOwner`, 2 is `OnlyNFTOwner` and 3 is `ClassAndNFTOwner`.
-1. In case of 0 level, nobody can burn `NFT`s' data under that `Class`.
-1. In case of 1 level, the owner of `Class` of the `NFT` can burn its all `NFT`s' data.
-1. In case of 2 level, the owner of `NFT` can burn its `NFT` data.
-1. In case of 3 level, both the owner of `NFT` and `Class` of that `NFT` can burn.
+#### BaseTokenUri
+
+1. `BaseTokenUri` is recorded with `Class.Id` in this module.
+
+#### TokenSupplyCap
+
+1. `TokenSupplyCap` is recorded with `Class.Id` in this module.
+1. The `TotalSupply` can't be exceeded over `TokenSupplyCap`.
+
+#### MintingPermission
+
+1. The `MintingPermission` is recored with `Class.Id`.
+1. If the `MintingPermission` is `True`, only the owner of `Class` can mint `NFT`s under that `Class`.
+1. If the `MintingPermission` is `False`, anyone can mint `NFT` under that `Class`.
+
+## NFT and Relating Attributes
+
+#### NFT.Id
+
+1. `NFT.Id` is the number counted from 1 by one automatically.
+1. `NFT.Id` can use SDK's module storing token supply data.
+1. `NFT.Id` shouldn't exceed the `TokenSupplyCap`.
+
+#### NFT.Uri
+
+1. `NFT.Uri` represents the content identifier of the `NFT`. 
+1. `NFT.Uri` is generated automatically, following this rule: `NFT.Uri` = `BaseTokenUri` + `NFT.Id`.
+1. Each `NFT.Uri` can be updated at once by the owner of `Class` sending `MsgUpdateBaseTokenUri`.
+
+## Mint
+
+1. The owner of `Class` can choose the permission to mint NFT when to create `Class`.
+1. If minted, the total supply of `NFT`s in `Class` increases in SDk's x/nft module.
+1. The original minter address of `NFT` should be recorded with `Class.Id` and `NFT.Id`.
+
+## Burn
+
+1. The NFTs can be burned by the owner of `NFT`.
 1. The total supply of `NFT`s in `Class` deceases.
 
-### Update
+As we handle NFTs on NFTFi protocol on UnUniFi, the burn permission belongs only the owner of the `NFT`.
+
+## Update
+
+We handle updating methods by managing messages for high demand elements individually.   
+e.g. To update `Class.Name`, we create UpdateClassName-like message.
 
 #### Class
 
-1. The owner of `Class` of `NFT` can restrict ability of `Class` data to be updated.
-1. The owner of `Class` can choose permittion levels out of the choises that 0 is `Nobody`, 1 is `OnlyClassOwner`.
-1. In case of 0 level, nobody can update `NFT`s' data under that `Class`.
-1. In case of 1 level, the owner of `Class` of the `NFT` can update its all `NFT`s' data.
+1. The owner of `Class` can update data relating `Class` with each specific message.
+
+#### TokenSupplyCap
+
+1. `TokenSupplyCap` can be updated by the owner of that `Class`.
+
+#### BaseTokenUri
+
+1. `BaseTokenUri` can be updated by the owner of that `Class`.
+1. `MsgUpdateBaseTokenUri` performs the change of all belonging `NFT.Uri` at once.
 
 #### NFT
 
-1. The owner of `Class` of `NFT` can restrict ability of `NFT`s under that `class` to be updated.
-1. The owner of `Class` can choose permittion levels out of the choises that 0 is `Nobody`, 1 is `OnlyClassOwner`, 2 is `OnlyNFTOwner` and 3 is `ClassAndNFTOwner`.
-1. In case of 0 level, nobody can update `NFT`s' data under that `Class`.
-1. In case of 1 level, the owner of `Class` of the `NFT` can update its all `NFT`s' data.
-1. In case of 2 level, the owner of `NFT` can update its `NFT` data.
-1. In case of 3 level, both the owner of `NFT` and `Class` of that `NFT` can update.
+1. There's no things to be updated for `NFT`.
 
-### Transfer
+## Transfer
 
 1. The owner of `NFT` can transfer that `NFT` to any recipient.
 1. (In the future,) the owner of `NFT` may be able to transfer that `NFT` onto the other blockchain using IBC as long as the `NFT` follows sdk's nft module standard.
 
-### Validation
+## Validation
 
 1. There's no duplicating `Class.Id` on the chain.
 1. There's no duplicating `NFT.Id` in a `Class`.
 1. TokenURI must be legal by length (idea: len(tokenURI) > 0).
 1. The `Class.Id` and `NFT.Id` format must follows sdk's nft module definition.
+1. `TokenSupplyCap` must be within the limitation of `NFT.Id` restriction by SDK's x/nft module. (and overflow)
 
-### Message
+There're many other rules to be set. Please refer to these:   
+https://github.com/irisnet/irismod/blob/master/modules/nft/types/validation.go   
+https://github.com/cosmos/cosmos-sdk/blob/v0.46.0-rc1/x/nft/validation.go   
+
+## Message
+
+NOTE: There're many optional data fields. So need to decide whether we set them as the flags or as arguments.   
+There's more close info [here](https://github.com/UnUniFi/chain/blob/design/spec/x/nftmint/spec/03_messages.md).
 
 - CreateClass(class_id, ..)
-- TransferClass(class_id, recipient)
-- UpdateClass(class_id, ...)
+- SendClass(class_id, recipient)
+- UpdateBaseTokenUri(class_id, ...)
+- UpdateTokenSupplyCap(class_id, ...)
 - MintNFT(class_id, nft_id, ...)
-- UpdateNFT(class_id, nft_id, ...)
 - BurnNFT(class_id, nft_id)
 
 From cosmosd SDK's x/nft module:
 
 - Send(class_id, nft_id, sender, receiver)
 
-### Query
+## Query
 
 The cosmos SDK's nft module has many queries.   
 Please refer them since I don't write duplicated queries here. ([Query service methods](https://github.com/cosmos/cosmos-sdk/blob/aba9bdc24cb6a7b9a85e6cad617f7b55d6dcdcec/docs/architecture/adr-043-nft-module.md?plain=1#L175))
@@ -87,6 +134,8 @@ Please refer them since I don't write duplicated queries here. ([Query service m
 1. The `update_status_level` of `Class` can be queried by `Class.Id`.
 1. The `update_status_level` of `NFT` can be queried by `Class.Id`.
 1. The list of `Class.Id` can be queried by `Class.Name`. **NOTE: return object has not been decided yet.** Possible choises are just `Class.Id`.
+
+#### Query Services
 
 1. ClassOwner(class_id) owner
 1. NFTMinter(class_id, nft_id) minter
@@ -104,18 +153,18 @@ From cosmos SDk's x/nft module:
 - Class(class_id) class
 - Classes(pagination) classes, pagination
 
-### What this feature mainly provide and doesn't
+## What this feature mainly provide and doesn't
 
-#### Possible
+### Possible
 
 - Users can mint NFTs under specific Class while storing main data off-chain, like CryptoPunks.
-- Burn `NFT` if it's allowed by the owner of that `NFT`'s `Class`.
+- The owner of `NFT` can Burn its `NFT`.
 - Update `NFT` data if it's allowed by the creator of that `Class` at the creation moment.
 - Update `Class` data if it's allowed by the creator of that `Class`.
 - If the module which performs the data transtion between cosmos SDK's x/nft module and wasmd module is implemented, the `NFT` can be extended by CosmWasm.
 - The `Class.Id` can be queried by `Class.Name` if the full name is matched.
 
-#### Impossible
+### Impossible
 
 - The NFT data field is limited. So the addition of data field by the creator is impossible.
 - The flexible `Class.Id` is impossible.
@@ -140,23 +189,25 @@ Write down those variable which we must define constantly to validate. (var name
 Or, some of those could be solved by fixing and generating automatically in a protocol.   
 The way to handle those elements have not been determined yet.
 
-## Non-transferable NFT (ntNFT)
+# WIP: Non-transferable NFT (ntNFT)
+
+**Maybe this must be performed by Smartcontract in CosmWasm to be easy**
 
 The requirements for Non-transferable NFT minting.
 
-### Logic Concept
+## Logic Concept
 
 Current one idea is to create non-transferable NFT with the specific type of the data field and store those NFTs in our nftmint module’s KVStore not to be transfered by calling native nft module’s message.   
 Since this type of NFT cannot be transferred, it doesn't need to store the data in cosmos SDK's x/nft module.
 Hence, it's ok to define new type in `NFT.Data` field to identify which type of NFT it is on UnUniFi's x/nftmint module.
 
-### Mint
+## Mint
 
 1. Anyone can create `Class` to mint ntNFT.
 1. owner of `Class` can restrict the right to mint ntNFT.
 1. The total supply of `NFT`s of `Class` increases.
 
-### Burn
+## Burn
 
 1. The NFTs can be burned.
 1. The owner of `Class` can choose restrict levels that 0 is `Nobody` and 1 is `OnlyClassOwner`.
@@ -164,19 +215,19 @@ Hence, it's ok to define new type in `NFT.Data` field to identify which type of 
 1. In case of 1 level, the owner of `Class` of the `NFT` can burn its all `NFT`s' data.
 1. The total supply of `NFT`s in `Class` deceases.
 
-### Transfer
+## Transfer
 
 1. Any owner of `NFT` can't transfer `NFT`.
 1. Transfer is already achieved by sdk's x/nft module.
 
-### Update
+## Update
 
 1. The owner of `Class` of `NFT` can restrict ability of `NFT`s under that `class` to be updated.
 1. The owner of `Class` can choose restrict levels that 0 is `Nobody` and 1 is `OnlyClassOwner`.
 1. In case of 0 level, nobody can update `NFT`s' data under that `Class`.
 1. In case of 1 level, the owner of `Class` of the `NFT` can update its all `NFT`s' data.
 
-### Validation
+## Validation
 
 1. There's no duplicating `Class.Id` on the chain.
 1. There's no duplicating `NFT.Id` in a `Class`.
@@ -184,7 +235,7 @@ Hence, it's ok to define new type in `NFT.Data` field to identify which type of 
 1. The `Class.Id` and `NFT.Id` format must follows sdk's nft module definition.
 1. The `Class.Data` must be something like `"nfNFT"`. (not determined yet).
 
-### Query
+## Query
 
 1. The owner of `Class` can be queried by `Class.Id`.
 1. The minter of `NFT` can be queried by `Class.Id` and `NFT.Id`.
