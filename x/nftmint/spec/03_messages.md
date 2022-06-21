@@ -9,18 +9,19 @@ message MsgCreateClass {
   string name = 1;
   string base_token_uri = 2;
   string total_supply_cap = 3;
-  string sender = 4; // initial owner
-  string symbol = 5; // optional
-  string description = 6; // optional
-  string class_uri = 7; // optional
-  string class_uri_hash = 8; // optional
+  bool minting_permission = 4; 
+  string sender = 5; // initial owner
+  string symbol = 6; // flag optional
+  string description = 7; // flag optional
+  string class_uri = 8; // flag optional
+  string class_uri_hash = 9; // flag optional
 }
 ```
 
-### TransferClass
+### SendClass
 
 ```protobuf
-message MsgTransferClass {
+message MsgSendClass {
   string class_id = 1;
   string sender = 2;
   string recipient = 3;
@@ -33,6 +34,16 @@ message MsgTransferClass {
 message MsgUpdateBaseTokenUri {
   string class_id = 1; 
   string base_token_uri = 2;
+  string sender = 3;
+}
+```
+
+### UpdateTokenSupplyCap
+
+```protobuf
+message MsgUpdateBaseTokenUri {
+  string class_id = 1; 
+  string token_supply_cap = 2;
   string sender = 3;
 }
 ```
