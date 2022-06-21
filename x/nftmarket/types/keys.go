@@ -31,6 +31,8 @@ const (
 	KeyPrefixEndTimeNftListing = "end_time_nft_listing"
 	// nft bid by nft_id
 	KeyPrefixNftBid = "nft_bid"
+	// nft bid cancelled
+	KeyPrefixNftBidCancelled = "nft_bid_cancelled"
 	// nft bid by owner
 	KeyPrefixAddressBid = "address_bid"
 	// nft loan by nft_id

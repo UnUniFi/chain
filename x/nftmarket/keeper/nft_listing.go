@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"fmt"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -39,7 +40,7 @@ func (k Keeper) GetListingsByOwner(ctx sdk.Context, owner sdk.AccAddress) []type
 	return listings
 }
 
-func getTimeKey(timestamp time.Time) []byte {
+func getNftListingTimeKey(timestamp time.Time) []byte {
 	timeBz := sdk.FormatTimeBytes(timestamp)
 	timeBzL := len(timeBz)
 	prefixL := len(types.KeyPrefixEndTimeNftListing)
@@ -74,7 +75,7 @@ func (k Keeper) SetNftListing(ctx sdk.Context, listing types.NftListing) {
 	store.Set(types.NftAddressNftListingKey(owner, nftIdBytes), nftIdBytes)
 
 	if listing.IsActive() {
-		store.Set(append(getTimeKey(listing.EndAt), nftIdBytes...), nftIdBytes)
+		store.Set(append(getNftListingTimeKey(listing.EndAt), nftIdBytes...), nftIdBytes)
 	}
 }
 
@@ -90,13 +91,13 @@ func (k Keeper) DeleteNftListing(ctx sdk.Context, listing types.NftListing) {
 	store.Delete(types.NftAddressNftListingKey(owner, nftIdBytes))
 
 	if listing.IsActive() {
-		store.Delete(getTimeKey(listing.EndAt))
+		store.Delete(getNftListingTimeKey(listing.EndAt))
 	}
 }
 
 func (k Keeper) GetActiveNftListingsEndingAt(ctx sdk.Context, endTime time.Time) []types.NftListing {
 	store := ctx.KVStore(k.storeKey)
-	timeKey := getTimeKey(endTime)
+	timeKey := getNftListingTimeKey(endTime)
 	it := store.Iterator([]byte(types.KeyPrefixEndTimeNftListing), storetypes.InclusiveEndBytes(timeKey))
 	defer it.Close()
 
@@ -371,4 +372,56 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 	})
 
 	return nil
+}
+
+func (k Keeper) ProcessEndingNftListings(ctx sdk.Context) {
+	params := k.GetParamSet(ctx)
+	listings := k.GetActiveNftListingsEndingAt(ctx, ctx.BlockTime())
+	for _, listing := range listings {
+		bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
+		if listing.AutoRelistedCount < params.AutoRelistingCountIfNoBid {
+			if len(bids) == 0 {
+				listing.EndAt = listing.EndAt.Add(time.Duration(params.NftListingExtendSeconds) * time.Second)
+				listing.AutoRelistedCount++
+				k.SetNftListing(ctx, listing)
+			}
+		} else {
+			listingOwner, err := sdk.AccAddressFromBech32(listing.Owner)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			err = k.EndNftListing(ctx, &types.MsgEndNftListing{
+				Sender: listingOwner.Bytes(),
+				NftId:  listing.NftId,
+			})
+			if err != nil {
+				fmt.Println(err)
+				continue
+			} else {
+				// automatic payment after listing ends
+				for _, bid := range bids[len(bids)-int(listing.BidActiveRank):] {
+					if bid.AutomaticPayment {
+						bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+						if err != nil {
+							fmt.Println(err)
+							continue
+						}
+
+						cacheCtx, write := ctx.CacheContext()
+						err = k.PayFullBid(cacheCtx, &types.MsgPayFullBid{
+							Sender: bidder.Bytes(),
+							NftId:  listing.NftId,
+						})
+						if err == nil {
+							write()
+						} else {
+							fmt.Println(err)
+							continue
+						}
+					}
+				}
+			}
+		}
+	}
 }
