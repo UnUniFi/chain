@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"sort"
 	"time"
 
 	"github.com/UnUniFi/chain/x/nftmarket/types"
@@ -49,6 +50,20 @@ func (k Keeper) GetBidsByNft(ctx sdk.Context, nftIdBytes []byte) []types.NftBid 
 
 		bids = append(bids, bid)
 	}
+
+	// sort bids by rank
+	sort.SliceStable(bids, func(i, j int) bool {
+		if bids[i].Amount.Amount.LT(bids[j].Amount.Amount) {
+			return true
+		}
+		if bids[i].Amount.Amount.GT(bids[j].Amount.Amount) {
+			return false
+		}
+		if bids[i].BidTime.After(bids[j].BidTime) {
+			return true
+		}
+		return false
+	})
 	return bids
 }
 
