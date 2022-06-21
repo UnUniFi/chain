@@ -173,7 +173,7 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 		return err
 	}
 
-	if listing.State != types.ListingState_BIDDING {
+	if listing.State != types.ListingState_BIDDING && listing.State != types.ListingState_SELLING {
 		return types.ErrNftListingNotInBidState
 	}
 

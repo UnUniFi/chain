@@ -106,9 +106,13 @@ func (msg MsgExpandListingPeriod) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgPlaceBid{}
 
-func NewMsgPlaceBid(sender sdk.AccAddress) MsgPlaceBid {
+// todo
+func NewMsgPlaceBid(sender sdk.AccAddress, nftId NftIdentifier, amount sdk.Coin, automaticPayment bool) MsgPlaceBid {
 	return MsgPlaceBid{
-		Sender: sender.Bytes(),
+		Sender:           sender.Bytes(),
+		NftId:            nftId,
+		Amount:           amount,
+		AutomaticPayment: automaticPayment,
 	}
 }
 
