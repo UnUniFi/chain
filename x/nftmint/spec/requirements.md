@@ -57,7 +57,7 @@
 
 #### MintingPermission
 
-1. The `MintingPermission` is recored with `Class.Id`.
+1. The `MintingPermission` is recored with `Class.Id` in boolean type.
 1. If the `MintingPermission` is `True`, only the owner of `Class` can mint `NFT`s under that `Class`.
 1. If the `MintingPermission` is `False`, anyone can mint `NFT` under that `Class`.
 
@@ -77,7 +77,7 @@
 
 ## Mint
 
-1. The owner of `Class` can choose the permission to mint NFT when to create `Class`.
+1. The owner of `Class` can choose the permission to mint `NFT` when to create `Class`.
 1. If minted, the total supply of `NFT`s in `Class` increases in SDk's x/nft module.
 1. The original minter address of `NFT` should be recorded with `Class.Id` and `NFT.Id`.
 
