@@ -6,10 +6,29 @@
 
 **_The requirements for collective NFT mainly._**
 
-- Anyone can create Collective NFT by creating `Class` and its belonging `NFT`s while the owner of `Class` controls the minting permission.
+- For the sale, listing and selling can be done in x/nftmarket mudule. (doesn't support simple NFT sale with fixed price at the moment.)
+
+## What this feature mainly provide and doesn't
+
+### Possible
+
+- Anyone can create Collective NFT by creating `Class` and its belonging `NFT`s while the owner of `Class` controls the minting permission like CryptoPunks.
 - The NFT standard generally follows ERC721 by default.
 - The content of `NFT.Uri` (metadata strucure) follows the other major market place standards.
-- For the sale, listing and selling can be done in x/nftmarket mudule. (doesn't support simple NFT sale with fixed price at the moment.)
+- The owner of `NFT` can Burn its `NFT`.
+- Update `Class` data with each specific message.
+- If the module which performs the data transtion between cosmos SDK's x/nft module and wasmd module is implemented, the `NFT` can be extended by CosmWasm.
+- The `Class.Id` can be queried by `Class.Name` if the full name is matched.
+- ( For the sale, listing and selling can be done in x/nftmarket mudule.)
+
+### Impossible
+
+- The NFT data field is limited. So the addition of data field by the creator is impossible.
+- The flexible `Class.Id` is impossible.
+- The flexible `NFT.Id` is impossible.
+- The flexible `NFT.Uri` is impossible.
+- The addition of function to `NFT` behavior is impossible by the features on the chain.
+- This module doesn't support simple NFT sale with fixed price at the moment.
 
 ## Creating Class
 
@@ -159,8 +178,7 @@ From cosmos SDk's x/nft module:
 
 - Users can mint NFTs under specific Class while storing main data off-chain, like CryptoPunks.
 - The owner of `NFT` can Burn its `NFT`.
-- Update `NFT` data if it's allowed by the creator of that `Class` at the creation moment.
-- Update `Class` data if it's allowed by the creator of that `Class`.
+- Update `Class` data with each specific message.
 - If the module which performs the data transtion between cosmos SDK's x/nft module and wasmd module is implemented, the `NFT` can be extended by CosmWasm.
 - The `Class.Id` can be queried by `Class.Name` if the full name is matched.
 
@@ -168,6 +186,8 @@ From cosmos SDk's x/nft module:
 
 - The NFT data field is limited. So the addition of data field by the creator is impossible.
 - The flexible `Class.Id` is impossible.
+- The flexible `NFT.Id` is impossible.
+- The flexible `NFT.Uri` is impossible.
 - The addition of function to `NFT` behavior is impossible by the features on the chain.
 
 ## Constant
