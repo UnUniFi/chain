@@ -172,9 +172,10 @@ func (msg MsgCancelBid) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgEndNftListing{}
 
-func NewMsgEndNftListing(sender sdk.AccAddress) MsgEndNftListing {
+func NewMsgEndNftListing(sender sdk.AccAddress, nftId NftIdentifier) MsgEndNftListing {
 	return MsgEndNftListing{
 		Sender: sender.Bytes(),
+		NftId:  nftId,
 	}
 }
 

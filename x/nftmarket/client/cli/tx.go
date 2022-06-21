@@ -27,6 +27,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(
 		CmdCreateListing(),
 		CmdCreatePlaceBid(),
+		CmdEndlisting(),
 	)
 
 	return cmd
@@ -113,5 +114,41 @@ $ %s tx %s placebid 1 1 100uguu --automatic-payment --from myKeyName --chain-id 
 	cmd.Flags().BoolP(FlagAutomaticPayment, "p", false, "automation payment")
 	flags.AddTxFlagsToCmd(cmd)
 
+	return cmd
+}
+
+func CmdEndlisting() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "endlisting [class-id] [nft-id]",
+		Short: "end listing",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`end listing.
+Example:
+$ %s tx %s endlisting 1 1 --from myKeyName --chain-id ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			classId := args[0]
+			nftId := args[1]
+			nftIde := types.NftIdentifier{
+				ClassId: classId,
+				NftId:   nftId,
+			}
+
+			msg := types.NewMsgEndNftListing(clientCtx.GetFromAddress(), nftIde)
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }
