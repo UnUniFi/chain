@@ -217,48 +217,41 @@ The requirements for Non-transferable NFT minting.
 
 ## Logic Concept
 
-Current one idea is to create non-transferable NFT with the specific type of the data field and store those NFTs in our nftmint module’s KVStore not to be transfered by calling native nft module’s message.   
-Since this type of NFT cannot be transferred, it doesn't need to store the data in cosmos SDK's x/nft module.
-Hence, it's ok to define new type in `NFT.Data` field to identify which type of NFT it is on UnUniFi's x/nftmint module.
+Current one idea is to create non-transferable NFT with same flow as normal NFTs,but store those NFTs in our `nftmint` module’s KVStore, not to be transfered by calling native nft module’s message.   
+This can be achieved by putting `Transferable` key in `ClassAttributes` and only separate minting method from the normal minting method to store that `NFT` in our `nftmint` module.   
+In this way, we can use same message outside of module implementation only if we set the conditions in each method that message calls.   
 
-## Mint
+**The requirements for ntNFT have many common in normal NFT's. So I don't write obvious ones.**
 
-1. Anyone can create `Class` to mint ntNFT.
-1. owner of `Class` can restrict the right to mint ntNFT.
-1. The total supply of `NFT`s of `Class` increases.
+## Creating Class
+
+Same as normal NFT's.
 
 ## Burn
 
-1. The NFTs can be burned.
-1. The owner of `Class` can choose restrict levels that 0 is `Nobody` and 1 is `OnlyClassOwner`.
-1. In case of 0 level, nobody can burn `NFT`s' data under that `Class`.
-1. In case of 1 level, the owner of `Class` of the `NFT` can burn its all `NFT`s' data.
-1. The total supply of `NFT`s in `Class` deceases.
+Same as normal NFT's.
 
 ## Transfer
 
-1. Any owner of `NFT` can't transfer `NFT`.
-1. Transfer is already achieved by sdk's x/nft module.
+#### Class
+
+1. The owner of `Class` can transfer the ownership to any recipient.
+
+#### ntNFT
+
+1. Any `ntNFT` can't be transferred.
+1. This can be achieved by not implementing transfer method to our `nftmint` module.
 
 ## Update
 
-1. The owner of `Class` of `NFT` can restrict ability of `NFT`s under that `class` to be updated.
-1. The owner of `Class` can choose restrict levels that 0 is `Nobody` and 1 is `OnlyClassOwner`.
-1. In case of 0 level, nobody can update `NFT`s' data under that `Class`.
-1. In case of 1 level, the owner of `Class` of the `NFT` can update its all `NFT`s' data.
+Same as normal NFT's.
 
 ## Validation
 
-1. There's no duplicating `Class.Id` on the chain.
-1. There's no duplicating `NFT.Id` in a `Class`.
-1. TokenURI must be legal by length (idea: len(tokenURI) > 0).
-1. The `Class.Id` and `NFT.Id` format must follows sdk's nft module definition.
-1. The `Class.Data` must be something like `"nfNFT"`. (not determined yet).
+1. Same validation can be applied because many designs can be brought from normal `NFT`'s.
 
 ## Query
 
-1. The owner of `Class` can be queried by `Class.Id`.
-1. The minter of `NFT` can be queried by `Class.Id` and `NFT.Id`.
-1. The `NFT` total supply in a `Class` can be queried by `Class.Id`.
-1. The whole `Class` and `NFT` data can be queried by their `Class.Id` and `Class.Id` and `NFT.Id`.
-1. The owner addresses of `NFT`s in a `Class` can all be queried by `Class.Id`.
+Almost same as normal's.
+
+1. The `ClassAttributes.Transferable` can be queried by the `Class.Id`.
