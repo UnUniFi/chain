@@ -29,14 +29,15 @@ flowchart TD
 
 ## listing state
 
-1. unsold_state
-   NFT not listed for listing
-1. listing_state
-1. bidding_state
-1. SellingDecision_state
-1. liquidation_state
-1. end_listing_state
-1. successful_bid_state
+|No |state                |Description.                                                                                                                                         |
+|---|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+|1  |unsold_state         |NFT not listed for listing                                                                                                                           |
+|2  |listing_state        |It's the state of listing.                                                                                                                           |
+|3  |bidding_state        |It's state that there are bids in the listing                                                                                                        |
+|4  |SellingDecision_state|It's state that the lister has decided to sell                                                                                                       |
+|5  |liquidation_state    |The value of the Denom used for bidding has dropped. Therefore, the collateral rate for the stabled coins issued by lister has exceeded the threshold|
+|6  |end_listing_state    |It's just the state of the listing period has ended.                                                                                                 |
+|7  |successful_bid_state |The lister has ended and the candidate bidder has paid for the item. The successful bidder and lister can exchange NFTs and tokens.                  |
 
 ### msg list
 
