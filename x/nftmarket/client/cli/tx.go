@@ -27,7 +27,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(
 		CmdCreateListing(),
 		CmdCreatePlaceBid(),
-		CmdEndlisting(),
+		CmdEndListing(),
 		CmdBorrow(),
 	)
 
@@ -118,7 +118,7 @@ $ %s tx %s placebid 1 1 100uguu --automatic-payment --from myKeyName --chain-id 
 	return cmd
 }
 
-func CmdEndlisting() *cobra.Command {
+func CmdEndListing() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "endlisting [class-id] [nft-id]",
 		Short: "end listing",
