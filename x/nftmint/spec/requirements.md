@@ -172,24 +172,6 @@ From cosmos SDk's x/nft module:
 - Class(class_id) class
 - Classes(pagination) classes, pagination
 
-## What this feature mainly provide and doesn't
-
-### Possible
-
-- Users can mint NFTs under specific Class while storing main data off-chain, like CryptoPunks.
-- The owner of `NFT` can Burn its `NFT`.
-- Update `Class` data with each specific message.
-- If the module which performs the data transtion between cosmos SDK's x/nft module and wasmd module is implemented, the `NFT` can be extended by CosmWasm.
-- The `Class.Id` can be queried by `Class.Name` if the full name is matched.
-
-### Impossible
-
-- The NFT data field is limited. So the addition of data field by the creator is impossible.
-- The flexible `Class.Id` is impossible.
-- The flexible `NFT.Id` is impossible.
-- The flexible `NFT.Uri` is impossible.
-- The addition of function to `NFT` behavior is impossible by the features on the chain.
-
 ## Constant
 
 **NOTE: This sectino might be removed.**
@@ -209,7 +191,7 @@ Write down those variable which we must define constantly to validate. (var name
 Or, some of those could be solved by fixing and generating automatically in a protocol.   
 The way to handle those elements have not been determined yet.
 
-# WIP: Non-transferable NFT (ntNFT)
+# Non-transferable NFT (ntNFT)
 
 **Maybe this must be performed by Smartcontract in CosmWasm to be easy**
 
