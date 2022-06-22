@@ -9,12 +9,12 @@ message MsgCreateClass {
   string name = 1;
   string base_token_uri = 2;
   string total_supply_cap = 3;
-  bool minting_permission = 4; 
+  bool minting_permission = 4; // flag option. default: true
   string sender = 5; // initial owner
-  string symbol = 6; // flag optional
-  string description = 7; // flag optional
-  string class_uri = 8; // flag optional
-  string class_uri_hash = 9; // flag optional
+  string symbol = 6; // flag option
+  string description = 7; // flag option
+  string class_uri = 8; // flag option
+  string class_uri_hash = 9; // flag option
 }
 ```
 
