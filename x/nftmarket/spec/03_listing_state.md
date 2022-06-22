@@ -45,7 +45,7 @@ flowchart TD
 | --- | -------------------- |
 | 1   | sell Msg             |
 | 2   | cancel sell Msg      |
-| 3   | buy back Msg         |
+| 3   | ------------         |
 | 4   | SellingDecision Msg  |
 | 5   | end listing Msg      |
 | 6   | bid Msg              |
@@ -75,7 +75,7 @@ flowchart TD
     check_pay_fee --yes--> successful_bid_state
     check_pay_fee --no--> Deposit_collection_process_top_bidder
     Deposit_collection_process_top_bidder --> bidding_state
-　  bidding_state   -->|3.buy_back_Msg| unsold_state
+　  bidding_state   -->|2.cancel_sell_msg| unsold_state
     listing_state   -->|2.cancel_sell_msg| unsold_state
 　  Extend_listing_period-->|No_or_NonAction|　end_listing_state
 　  liquidation -->|Yes_5.end_listing_Msg|　end_listing_state
