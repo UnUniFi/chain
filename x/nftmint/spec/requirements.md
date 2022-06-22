@@ -6,28 +6,27 @@
 
 **_The requirements for collective NFT mainly._**
 
-- For the sale, listing and selling can be done in x/nftmarket mudule. (doesn't support simple NFT sale with fixed price at the moment.)
-
 ## What this feature mainly provide and doesn't
 
 ### Possible
 
-- Anyone can create Collective NFT by creating `Class` and its belonging `NFT`s while the owner of `Class` controls the minting permission like CryptoPunks.
+- Anyone can create Collective NFT by creating `Class` and its belonging `NFT`s while the owner of `Class` controls the minting permission. (Collective NFT means the NFT project like CryptoPunks.)
 - The NFT standard generally follows ERC721 by default.
 - The content of `NFT.Uri` (metadata strucure) follows the other major market place standards.
 - The owner of `NFT` can Burn its `NFT`.
-- Update `Class` data with each specific message.
-- If the module which performs the data transtion between cosmos SDK's x/nft module and wasmd module is implemented, the `NFT` can be extended by CosmWasm.
-- The `Class.Id` can be queried by `Class.Name` if the full name is matched.
-- ( For the sale, listing and selling can be done in x/nftmarket mudule.)
+- The owner of `Class` can update `Class` data with each specific message.
+
+- The `Class.Id` can be queried by `Class.Name` if the full name is matched. 
+- ( If the module which performs the data transion between cosmos SDK's x/nft module and wasmd module is implemented, the `NFT` can be extended by using CosmWasm. )
+- ( For the sale, listing and selling can be done in x/nftmarket mudule. )
 
 ### Impossible
 
-- The NFT data field is limited. So the addition of data field by the creator is impossible.
-- The flexible `Class.Id` is impossible.
-- The flexible `NFT.Id` is impossible.
-- The flexible `NFT.Uri` is impossible.
-- The addition of function to `NFT` behavior is impossible by the features on the chain.
+- The NFT data field is limited. So the addition of data field by the creators is impossible.
+- The flexible `Class.Id` is not supported.
+- The flexible `NFT.Id` is not supported.
+- The flexible `NFT.Uri` is not supported.
+- The addition of function to `NFT` behavior by the creators and third-party developers is impossible by the features on the chain.
 - This module doesn't support simple NFT sale with fixed price at the moment.
 
 ## Creating Class
@@ -53,11 +52,12 @@
 #### TokenSupplyCap
 
 1. `TokenSupplyCap` is recorded with `Class.Id` in this module.
-1. The `TotalSupply` can't be exceeded over `TokenSupplyCap`.
+1. The `TotalSupply` of `NFT`s in a `Class` can't be exceeded over `TokenSupplyCap`.
 
 #### MintingPermission
 
-1. The `MintingPermission` is recored with `Class.Id` in boolean type.
+1. The `MintingPermission` is recored with `Class.Id` in boolean type as a flag option.
+1. The default value is `True`.
 1. If the `MintingPermission` is `True`, only the owner of `Class` can mint `NFT`s under that `Class`.
 1. If the `MintingPermission` is `False`, anyone can mint `NFT` under that `Class`.
 
@@ -67,7 +67,7 @@
 
 1. `NFT.Id` is the number counted from 1 by one automatically.
 1. `NFT.Id` can use SDK's module storing token supply data.
-1. `NFT.Id` shouldn't exceed the `TokenSupplyCap`.
+1. `NFT.Id` mustn't exceed the `TokenSupplyCap`.
 
 #### NFT.Uri
 
