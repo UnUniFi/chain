@@ -128,7 +128,7 @@ Example:
 
 ```sh
 grpcurl -plaintext \
-    -d '{"nftLimit":"1"}' \
+    -d '{"classId":"a10", "nftLimit":"1"}' \
     localhost:9090 \
     ununifif.nftmarket.v1beta1.Query/Class
 ```
