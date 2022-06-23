@@ -19,14 +19,20 @@ Options:
 
 Please refer to the other pages under x/nftmint/spec to know what below words mean.
 
+What elements are required to store:
+
 - `Class.Id` - the unique identifier of collective NFT
 - `NFT.Id` - the unique identifier in collective NFT
 - `Class.Name` - the collective name
 - `Class.Symbol` - the collective NFT's ticker
-- `NFT.Name` - the specific NFT name
-- `Class.Uri` - the meta content location of collective NFT
 - `NFT.Uri` - the metadata location of each NFT
+
+Optional fields:
+
+- `Class.Uri` - the meta content location of collective NFT
 - `Class.Description` - the description of collective NFT
+- `Class.UriHash` - hash value of the content in uri
+- `NFT.UriHash` - hash value of the content in uri
 
 ### Content of `NFT.Uri` (metadsata structure)
 
@@ -38,7 +44,7 @@ The possible elements which we should apply from the OpenSea document:
 - external_url - This is the URL that will appear below the asset's image on OpenSea and will allow users to leave OpenSea and view the item on your site.
 - description - A human readable description of the item. 
 - name - Name of the item.
-- attribute - These are the attributes for the item, which will show up on the OpenSea page for the item. 
+- attributes - These are the attributes for the item, which will show up on the OpenSea page for the item. 
 - background_color - Background color of the item on OpenSea. Must be a six-character hexadecimal without a pre-pended #.
 - animation_url - A URL to a multi-media attachment for the item. The file extensions GLTF, GLB, WEBM, MP4, M4V, OGV, and OGG are supported, along with the audio-only extensions MP3, WAV, and OGA.
 - youtube_url - A URL to a YouTube video.
