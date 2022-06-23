@@ -178,10 +178,7 @@ Example Output:
       "uriHash":"xxxxx",
       "nft":[
         {
-          "id":"a10",
-          "name":"crypotpunk",
-          "description":"crypotpunk is awsome",
-          "symbol":"cryp",
+          "id":"ax10",
           "uri":"http...",
           "uriHash":"xxxxx",
         }
