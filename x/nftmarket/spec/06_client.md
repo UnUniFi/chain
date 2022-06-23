@@ -68,31 +68,50 @@ ununifid tx nftmarket listing a10 a10 --from myKeyName --chain-id ununifi-x
 
 A user can query the `nftmarket` module using gRPC endpoints.
 
-<!-- todo: write section -->
-### Balance
+### Classes
 
-The `Balance` endpoint allows users to query account balance by address for a given denomination.
+The `Classes` endpoint allows users to query all listing nft series.
 
 ```sh
-cosmos.bank.v1beta1.Query/Balance
+ununifif.nftmarket.v1beta1.Query/Classes
 ```
 
 Example:
 
 ```sh
 grpcurl -plaintext \
-    -d '{"address":"cosmos1..","denom":"stake"}' \
+    -d '{"nftLimit":"1"}' \
     localhost:9090 \
-    cosmos.bank.v1beta1.Query/Balance
+    ununifif.nftmarket.v1beta1.Query/Classes
 ```
 
 Example Output:
 
 ```json
 {
-  "balance": {
-    "denom": "stake",
-    "amount": "1000000000"
+  "classes": [
+    {
+      "id":"a10",
+      "name":"crypotpunk",
+      "description":"crypotpunk is awsome",
+      "symbol":"cryp",
+      "uri":"http...",
+      "uriHash":"xxxxx",
+      "nft":[
+        {
+          "id":"a10",
+          "name":"crypotpunk",
+          "description":"crypotpunk is awsome",
+          "symbol":"cryp",
+          "uri":"http...",
+          "uriHash":"xxxxx",
+        }
+      ],
+      "nftCount":20,
+    }
+  ],
+  "pagination": {
+    "total": "1"
   }
 }
 ```
