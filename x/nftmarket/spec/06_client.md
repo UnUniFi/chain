@@ -158,3 +158,55 @@ Example Output:
   }
 }
 ```
+
+### NFT
+
+The `NFT` endpoint allows users to query nft.
+
+```sh
+ununifif.nftmarket.v1beta1.Query/Nft
+```
+
+Example:
+
+```sh
+grpcurl -plaintext \
+    -d '{"classId":"a10","nftId":"a10"}' \
+    localhost:9090 \
+    ununifif.nftmarket.v1beta1.Query/Nft
+```
+
+Example Output:
+
+```json
+{
+  "nft":{
+    "id":"a10",
+    "name":"crypotpunk",
+    "description":"crypotpunk is awsome",
+    "symbol":"cryp",
+    "uri":"http...",
+    "uriHash":"xxxxx",
+    "uriHash":"xxxxx",
+    "listingType":"DIRECT_ASSET_BORROW",
+    "bidToken":"uguu",
+    "state":"BIDDING",
+    "minBid":"1",
+    "bidActiverank":"2",
+    "bids":[
+      {
+        "bidder":"ununifi1...",
+        "amount":"100uguu",
+      },
+      {
+        "bidder":"ununifi1...",
+        "amount":"99uguu",
+      },
+      {
+        "bidder":"ununifi1...",
+        "amount":"98uguu",
+      }
+    ],
+  }
+}
+```
