@@ -13,7 +13,7 @@ message ClassAttributes {
   string owner = 2;
   string base_token_uri = 3;
   MintingPermission minting_permission = 4;
-  (undefined) token_supply_cap = 5;
+  uint64 token_supply_cap = 5;
 }
 
 enum MintingPermission {
