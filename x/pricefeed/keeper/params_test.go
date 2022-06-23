@@ -1,13 +1,11 @@
 package keeper_test
 
 import (
-	"testing"
-
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	tmtime "github.com/tendermint/tendermint/types/time"
+	tmtime "github.com/tendermint/tendermint/libs/time"
 
 	"github.com/UnUniFi/chain/app"
 	"github.com/UnUniFi/chain/types"
@@ -66,6 +64,7 @@ func (suite *KeeperTestSuite) TestGetAuthorizedAddresses() {
 
 	suite.Require().ElementsMatch(oracles, actualOracles)
 }
-func TestKeeperTestSuite(t *testing.T) {
-	suite.Run(t, new(KeeperTestSuite))
-}
+
+// func TestKeeperTestSuite(t *testing.T) {
+// 	suite.Run(t, new(KeeperTestSuite))
+// }

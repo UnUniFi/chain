@@ -2,7 +2,6 @@ package cdp_test
 
 import (
 	"math/rand"
-	"testing"
 	"time"
 
 	"github.com/stretchr/testify/suite"
@@ -11,8 +10,8 @@ import (
 	simulation "github.com/cosmos/cosmos-sdk/types/simulation"
 
 	tmabcitypes "github.com/tendermint/tendermint/abci/types"
+	tmtime "github.com/tendermint/tendermint/libs/time"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/UnUniFi/chain/app"
 	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
@@ -185,6 +184,6 @@ func (suite *ModuleTestSuite) TestSeizeSingleCdpWithFees() {
 	suite.False(found)
 }
 
-func TestModuleTestSuite(t *testing.T) {
-	suite.Run(t, new(ModuleTestSuite))
-}
+// func TestModuleTestSuite(t *testing.T) {
+// 	suite.Run(t, new(ModuleTestSuite))
+// }

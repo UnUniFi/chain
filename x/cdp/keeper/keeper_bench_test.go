@@ -5,14 +5,14 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/cosmos/cosmos-sdk/x/bank/testutil"
 
+	tmtime "github.com/tendermint/tendermint/libs/time"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/UnUniFi/chain/app"
 	"github.com/UnUniFi/chain/x/cdp/keeper"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
-	"github.com/cosmos/cosmos-sdk/simapp"
 )
 
 // saving the result to a module level variable ensures the compiler doesn't optimize the test away
@@ -53,7 +53,7 @@ func BenchmarkAccountIteration(b *testing.B) {
 				addr := sdk.AccAddress(arr)
 				acc := ak.NewAccountWithAddress(ctx, addr)
 				if bm.coins {
-					simapp.FundAccount(tApp.BankKeeper, ctx, acc.GetAddress(), coins)
+					testutil.FundAccount(tApp.BankKeeper, ctx, acc.GetAddress(), coins)
 				}
 				ak.SetAccount(ctx, acc)
 			}

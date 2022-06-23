@@ -1,15 +1,14 @@
 package keeper_test
 
 import (
-	"testing"
 	"time"
 
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	tmtime "github.com/tendermint/tendermint/libs/time"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/UnUniFi/chain/app"
 	"github.com/UnUniFi/chain/x/ununifidist/keeper"
@@ -165,6 +164,6 @@ func (suite *KeeperTestSuite) TestMintNotActive() {
 	suite.Equal(initialSupply, finalSupply)
 }
 
-func TestKeeperTestSuite(t *testing.T) {
-	suite.Run(t, new(KeeperTestSuite))
-}
+// func TestKeeperTestSuite(t *testing.T) {
+// 	suite.Run(t, new(KeeperTestSuite))
+// }

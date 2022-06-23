@@ -2,14 +2,13 @@ package keeper_test
 
 import (
 	"errors"
-	"testing"
 
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	tmtime "github.com/tendermint/tendermint/libs/time"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/UnUniFi/chain/app"
 	"github.com/UnUniFi/chain/x/cdp/keeper"
@@ -127,6 +126,6 @@ func (suite *DepositTestSuite) TestWithdrawCollateral() {
 	suite.Require().True(errors.Is(err, cdptypes.ErrDepositNotFound))
 }
 
-func TestDepositTestSuite(t *testing.T) {
-	suite.Run(t, new(DepositTestSuite))
-}
+// func TestDepositTestSuite(t *testing.T) {
+// 	suite.Run(t, new(DepositTestSuite))
+// }

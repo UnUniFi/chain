@@ -3,7 +3,6 @@ package keeper_test
 import (
 	"errors"
 	"math/rand"
-	"testing"
 	"time"
 
 	"github.com/stretchr/testify/suite"
@@ -11,8 +10,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simulation "github.com/cosmos/cosmos-sdk/types/simulation"
 
+	tmtime "github.com/tendermint/tendermint/libs/time"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/UnUniFi/chain/app"
 	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
@@ -206,6 +205,6 @@ func (suite *SeizeTestSuite) TestApplyLiquidationPenalty() {
 	suite.Panics(func() { suite.keeper.ApplyLiquidationPenalty(suite.ctx, "lol-a", i(1000)) })
 }
 
-func TestSeizeTestSuite(t *testing.T) {
-	suite.Run(t, new(SeizeTestSuite))
-}
+// func TestSeizeTestSuite(t *testing.T) {
+// 	suite.Run(t, new(SeizeTestSuite))
+// }

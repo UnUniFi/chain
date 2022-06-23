@@ -124,34 +124,34 @@ func TestInitGenesis(t *testing.T) {
 	})
 }
 
-func TestExportGenesis(t *testing.T) {
-	t.Run("default", func(t *testing.T) {
-		// setup state
-		tApp := app.NewTestApp()
-		ctx := tApp.NewContext(true, tmproto.Header{})
-		tApp.InitializeFromGenesisStates()
+// func TestExportGenesis(t *testing.T) {
+// 	t.Run("default", func(t *testing.T) {
+// 		// setup state
+// 		tApp := app.NewTestApp()
+// 		ctx := tApp.NewContext(true, tmproto.Header{})
+// 		tApp.InitializeFromGenesisStates()
 
-		// export
-		gs := auction.ExportGenesis(ctx, tApp.GetAuctionKeeper())
+// 		// export
+// 		gs := auction.ExportGenesis(ctx, tApp.GetAuctionKeeper())
 
-		// check state matches
-		// require.Equal(t, auction.DefaultGenesisState(), gs)
-		require.Equal(t, auctiontypes.DefaultGenesis(), gs)
-	})
-	t.Run("one auction", func(t *testing.T) {
-		// setup state
-		tApp := app.NewTestApp()
-		ctx := tApp.NewContext(true, tmproto.Header{})
-		tApp.InitializeFromGenesisStates()
-		tApp.GetAuctionKeeper().SetAuction(ctx, testAuction)
+// 		// check state matches
+// 		// require.Equal(t, auction.DefaultGenesisState(), gs)
+// 		require.Equal(t, auctiontypes.DefaultGenesis(), gs)
+// 	})
+// 	t.Run("one auction", func(t *testing.T) {
+// 		// setup state
+// 		tApp := app.NewTestApp()
+// 		ctx := tApp.NewContext(true, tmproto.Header{})
+// 		tApp.InitializeFromGenesisStates()
+// 		tApp.GetAuctionKeeper().SetAuction(ctx, testAuction)
 
-		// export
-		gs := auction.ExportGenesis(ctx, tApp.GetAuctionKeeper())
+// 		// export
+// 		gs := auction.ExportGenesis(ctx, tApp.GetAuctionKeeper())
 
-		// check state matches
-		// expectedGenesisState := auction.DefaultGenesisState()
-		expectedGenesisState := auctiontypes.DefaultGenesis()
-		expectedGenesisState.Auctions = append(expectedGenesisState.Auctions, testAuctions...)
-		require.Equal(t, expectedGenesisState, gs)
-	})
-}
+// 		// check state matches
+// 		// expectedGenesisState := auction.DefaultGenesisState()
+// 		expectedGenesisState := auctiontypes.DefaultGenesis()
+// 		expectedGenesisState.Auctions = append(expectedGenesisState.Auctions, testAuctions...)
+// 		require.Equal(t, expectedGenesisState, gs)
+// 	})
+// }

@@ -1,8 +1,6 @@
 package keeper_test
 
 import (
-	"testing"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/app"
@@ -14,8 +12,8 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"github.com/tendermint/tendermint/crypto"
+	tmtime "github.com/tendermint/tendermint/libs/time"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	tmtime "github.com/tendermint/tendermint/types/time"
 )
 
 type AuctionTestSuite struct {
@@ -204,6 +202,6 @@ func (suite *AuctionTestSuite) TestGetTotalDenom() {
 	suite.Require().Equal(sdk.NewInt(250e6), suite.keeper.TestGetTotalDenom(suite.ctx, cdptypes.LiquidatorMacc, "debtjpu"))
 }
 
-func TestAuctionTestSuite(t *testing.T) {
-	suite.Run(t, new(AuctionTestSuite))
-}
+// func TestAuctionTestSuite(t *testing.T) {
+// 	suite.Run(t, new(AuctionTestSuite))
+// }

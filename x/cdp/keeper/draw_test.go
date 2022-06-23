@@ -2,15 +2,14 @@ package keeper_test
 
 import (
 	"errors"
-	"testing"
 	"time"
 
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	tmtime "github.com/tendermint/tendermint/libs/time"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/UnUniFi/chain/app"
 	"github.com/UnUniFi/chain/x/cdp/keeper"
@@ -192,6 +191,6 @@ func (suite *DrawTestSuite) TestModuleAccountFailure() {
 	})
 }
 
-func TestDrawTestSuite(t *testing.T) {
-	suite.Run(t, new(DrawTestSuite))
-}
+// func TestDrawTestSuite(t *testing.T) {
+// 	suite.Run(t, new(DrawTestSuite))
+// }

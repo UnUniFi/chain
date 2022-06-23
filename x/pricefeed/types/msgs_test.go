@@ -8,7 +8,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	tmtime "github.com/tendermint/tendermint/types/time"
+	tmtime "github.com/tendermint/tendermint/libs/time"
 )
 
 func TestMsgPlaceBid_ValidateBasic(t *testing.T) {
