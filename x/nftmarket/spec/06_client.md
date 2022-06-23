@@ -115,3 +115,46 @@ Example Output:
   }
 }
 ```
+
+### Class
+
+The `Class` endpoint allows users to query listing nft series.
+
+```sh
+ununifif.nftmarket.v1beta1.Query/Class
+```
+
+Example:
+
+```sh
+grpcurl -plaintext \
+    -d '{"nftLimit":"1"}' \
+    localhost:9090 \
+    ununifif.nftmarket.v1beta1.Query/Class
+```
+
+Example Output:
+
+```json
+{
+  "class": {
+      "id":"a10",
+      "name":"crypotpunk",
+      "description":"crypotpunk is awsome",
+      "symbol":"cryp",
+      "uri":"http...",
+      "uriHash":"xxxxx",
+      "nft":[
+        {
+          "id":"a10",
+          "name":"crypotpunk",
+          "description":"crypotpunk is awsome",
+          "symbol":"cryp",
+          "uri":"http...",
+          "uriHash":"xxxxx",
+        }
+      ],
+      "nftCount":20,
+  }
+}
+```
