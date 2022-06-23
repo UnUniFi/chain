@@ -12,8 +12,14 @@ message ClassAttributes {
   string class_id = 1;
   string owner = 2;
   string base_token_uri = 3;
-  bool minting_permission = 4;
+  MintingPermission minting_permission = 4;
   (undefined) token_supply_cap = 5;
+}
+
+enum MintingPermission {
+  OnlyOwner = 1;
+  Anyone = 2;
+  WhiteList = 3;
 }
 ```
 
