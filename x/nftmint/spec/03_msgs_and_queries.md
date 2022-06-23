@@ -44,7 +44,7 @@ message MsgUpdateBaseTokenUri {
 ### UpdateTokenSupplyCap
 
 ```protobuf
-message MsgUpdateTokenSupplyCapo {
+message MsgUpdateTokenSupplyCap {
   string sender = 1;
   string class_id = 2; 
   string token_supply_cap = 3;
