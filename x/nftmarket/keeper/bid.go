@@ -149,7 +149,7 @@ func (k Keeper) GetAllCancelledBids(ctx sdk.Context) []types.NftBid {
 func (k Keeper) GetMaturedCancelledBids(ctx sdk.Context, endTime time.Time) []types.NftBid {
 	store := ctx.KVStore(k.storeKey)
 	timeKey := getCancelledBidTimeKey(endTime)
-	it := store.Iterator([]byte(types.KeyPrefixEndTimeNftListing), storetypes.InclusiveEndBytes(timeKey))
+	it := store.Iterator([]byte(types.KeyPrefixNftBidCancelled), storetypes.InclusiveEndBytes(timeKey))
 	defer it.Close()
 
 	bids := []types.NftBid{}

@@ -8,6 +8,10 @@ func (m NftListing) IsActive() bool {
 	return m.State == ListingState_LISTING || m.State == ListingState_BIDDING
 }
 
+func (m NftListing) IsFullPayment() bool {
+	return m.State == ListingState_SELLING_DECISION || m.State == ListingState_END_LISTING
+}
+
 func (ni NftIdentifier) IdBytes() []byte {
 	return NftBytes(ni.ClassId, ni.NftId)
 }
