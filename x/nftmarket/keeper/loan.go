@@ -67,9 +67,8 @@ func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
 		return types.ErrInvalidBorrowDenom
 	}
 
-	// TODO: check listing status check if required
-	// TODO: calculate maximum borrow amount for the listing
-	maxDebt := sdk.ZeroInt()
+	// calculate maximum borrow amount for the listing
+	maxDebt := k.TotalActiveRankDeposit(ctx, msg.NftId.IdBytes())
 
 	currDebt := k.GetDebtByNft(ctx, msg.NftId.IdBytes())
 	if msg.Amount.Add(currDebt.Loan).Amount.GT(maxDebt) {
