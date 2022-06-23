@@ -158,9 +158,9 @@ Please refer them since I don't write duplicated queries here. ([Query service m
 
 1. ClassOwner(class_id) owner
 1. NFTMinter(class_id, nft_id) minter
-1. ClassUpdateStatusLevel(class_id) status
-1. NFTUpdateStatusLevel(class_id) status
 1. ClassByName(class_name) []class_id
+1. ClassBaseTokenUri() base_token_uri
+1. ClassTokenSupplyCap() token_supply_cap
 
 From cosmos SDk's x/nft module:
 
