@@ -10,14 +10,14 @@ The `nftmint` module provides below messages.
 
 ```protobuf
 message MsgCreateClass {
-  string name = 1;
-  string base_token_uri = 2;
-  string total_supply_cap = 3;
-  string sender = 5; // initial owner
-  bool minting_permission = 4; // flag option. default: true
-  string symbol = 6; // flag option
-  string description = 7; // flag option
-  string class_uri = 8; // flag option
+  string sender = 1; // initial owner
+  string name = 2;
+  string base_token_uri = 3;
+  string total_supply_cap = 4;
+  MintingPermission minting_permission = 5; // flag option. default: true
+  string symbol = 7; // flag option
+  string description = 8; // flag option
+  string class_uri = 9; // flag option
 }
 ```
 
@@ -25,8 +25,8 @@ message MsgCreateClass {
 
 ```protobuf
 message MsgSendClass {
-  string class_id = 1;
-  string sender = 2;
+  string sender = 1;
+  string class_id = 2;
   string recipient = 3;
 }
 ```
@@ -35,9 +35,9 @@ message MsgSendClass {
 
 ```protobuf
 message MsgUpdateBaseTokenUri {
-  string class_id = 1; 
-  string base_token_uri = 2;
-  string sender = 3;
+  string sender = 1;
+  string class_id = 2; 
+  string base_token_uri = 3;
 }
 ```
 
@@ -45,9 +45,9 @@ message MsgUpdateBaseTokenUri {
 
 ```protobuf
 message MsgUpdateBaseTokenUri {
-  string class_id = 1; 
-  string token_supply_cap = 2;
-  string sender = 3;
+  string sender = 1;
+  string class_id = 2; 
+  string token_supply_cap = 3;
 }
 ```
 
@@ -64,9 +64,9 @@ message MsgMintNFT {
 
 ```protobuf
 message MsgBurnNFT {
-  string class_id = 1;
-  string nft_id = 2; 
-  string sender = 3;
+  string sender = 1;
+  string class_id = 2;
+  string nft_id = 3;
 }
 ```
 
