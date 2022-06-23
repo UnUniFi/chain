@@ -16,29 +16,48 @@ The `query` commands allow users to query `nftmarket` state.
 ununifid query nftmarket --help
 ```
 <!-- todo: write section -->
-#### balances
+#### classes
 
-The `balances` command allows users to query account balances by address.
+The `classes` endpoint allows users to query all listing nft series.
 
 ```sh
-ununifid query bank balances [address] [flags]
+ununifid query nftmarket classes [flags]
 ```
 
 Example:
 
 ```sh
-ununifid query bank balances cosmos1..
+ununifid query nftmarket classes 
 ```
 
 Example Output:
 
 ```yml
-balances:
-- amount: "1000000000"
-  denom: stake
+classes:
+- id: a10
+  name: crypotpunk
+  description: crypotpunk is awsome
+  symbol: cryp
+  uri: http...
+  uriHash: xxxxx
+  nft:
+  - id: ax10
+    uri: http...
+    uriHash: xxxxx
+  nftCount: 20
+- id: b10
+  name: ape
+  description: ape is awsome
+  symbol: ape
+  uri: http...
+  uriHash: xxxxx
+  nft:
+  - id: bx10
+    uri: http...
+    uriHash: xxxxx
+  nftCount: 5
 pagination:
-  next_key: null
-  total: "0"
+  total: '2'
 ```
 
 ### Transactions
@@ -99,19 +118,32 @@ Example Output:
       "uriHash":"xxxxx",
       "nft":[
         {
-          "id":"a10",
-          "name":"crypotpunk",
-          "description":"crypotpunk is awsome",
-          "symbol":"cryp",
+          "id":"ax10",
           "uri":"http...",
-          "uriHash":"xxxxx",
+          "uriHash":"xxxxx"
         }
       ],
-      "nftCount":20,
+      "nftCount":20
+    },
+    {
+      "id":"b10",
+      "name":"ape",
+      "description":"ape is awsome",
+      "symbol":"ape",
+      "uri":"http...",
+      "uriHash":"xxxxx",
+      "nft":[
+        {
+          "id":"bx10",
+          "uri":"http...",
+          "uriHash":"xxxxx"
+        }
+      ],
+      "nftCount":5
     }
   ],
   "pagination": {
-    "total": "1"
+    "total": "2"
   }
 }
 ```
