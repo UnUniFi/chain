@@ -17,7 +17,7 @@
 - The owner of `Class` can update `Class` data with each specific message.
 
 - The `Class.Id` can be queried by `Class.Name` if the full name is matched. 
-- ( If the module which performs the data transion between cosmos SDK's x/nft module and wasmd module is implemented, the `NFT` can be extended by using CosmWasm. )
+- ( If the module which performs the data transition between cosmos SDK's x/nft module and wasmd module is implemented, the `NFT` can be extended by using CosmWasm. )
 - ( For the sale, listing and selling can be done in x/nftmarket mudule. )
 
 ### Impossible
@@ -57,9 +57,10 @@
 #### MintingPermission
 
 1. The `MintingPermission` is recored with `Class.Id` in boolean type as a flag option.
-1. The default value is `True`.
-1. If the `MintingPermission` is `True`, only the owner of `Class` can mint `NFT`s under that `Class`.
-1. If the `MintingPermission` is `False`, anyone can mint `NFT` under that `Class`.
+1. The default value is `OnlyOwner`.
+1. If the `MintingPermission` is `OnlyOwner`, only the owner of `Class` can mint `NFT`s under that `Class`.
+1. If the `MintingPermission` is `Anyone`, anyone can mint `NFT` under that `Class`.
+1. If the `MintingPermission` is `WhiteList`, only the accounts who are registerd in whitelist can mint `NFT` under that `Class`.
 
 ## NFT and Relating Attributes
 
@@ -152,7 +153,7 @@ Please refer them since I don't write duplicated queries here. ([Query service m
 1. The minter address of `NFT` can be queried by `Class.Id` and `NFT.Id`.
 1. The `update_status_level` of `Class` can be queried by `Class.Id`.
 1. The `update_status_level` of `NFT` can be queried by `Class.Id`.
-1. The list of `Class.Id` can be queried by `Class.Name`. **NOTE: return object has not been decided yet.** Possible choises are just `Class.Id`.
+1. The list of `Class.Id` can be queried by `Class.Name`. **NOTE: return object has not been decided yet.** Possible choices are just `Class.Id`.
 
 #### Query Services
 
@@ -161,6 +162,8 @@ Please refer them since I don't write duplicated queries here. ([Query service m
 1. ClassByName(class_name) []class_id
 1. ClassBaseTokenUri() base_token_uri
 1. ClassTokenSupplyCap() token_supply_cap
+1. ClassMintingPermission() minting_permission
+1. ClassTransferable() transferable 
 
 From cosmos SDk's x/nft module:
 
@@ -174,7 +177,7 @@ From cosmos SDk's x/nft module:
 
 ## Constant
 
-**NOTE: This sectino might be removed.**
+**NOTE: This section might be removed.**
 
 There're some flexible variables that sdk's nft module has like minimum and maximum `Class.Id` string length.   
 Write down those variable which we must define constantly to validate. (var name is not fixed, just momentary)   
