@@ -1,0 +1,97 @@
+syntax = "proto3";
+package ununifi.nftmint;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "nftmint/nftmint.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/nftmint/types";
+
+service Msg {
+  rpc CreateClass(MsgCreateClass) returns (MsgCreateClassRespone);
+  rpc SendClass(MsgSendClass) returns (MsgSendClassRespone);
+  rpc UpdateBaseTokenUri(MsgUpdateBaseTokenUri) returns (MsgUpdateBaseTokenUriResponse);
+  rpc UpdateTokenSupplyCap(MsgUpdateTokenSupplyCap) returns (MsgUpdateTokenSupplyCapResponse);
+  rpc MintNFT(MsgMintNFT) returns (MsgMintNFTReponse);
+  rpc BurnNFT(MsgBurnNFT) returns (MsgBurnNFTResponse);
+}
+
+message MsgCreateClass {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string name = 2;
+  string base_token_uri = 3 [ (gogoproto.customname) = "URI" ];
+  uint64 total_supply_cap = 4;
+  MintingPermission minting_permission = 5;
+  string symbol = 7;
+  string description = 8;
+  string class_uri = 9 [ (gogoproto.customname) = "URI" ];
+}
+message MsgCreateClassRespone {}
+
+message MsgSendClass {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string class_id = 2;
+  string recipient = 3 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgSendClassRespone {}
+
+message MsgUpdateBaseTokenUri {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string class_id = 2; 
+  string base_token_uri = 3 [ (gogoproto.customname) = "URI" ];
+}
+message MsgUpdateBaseTokenUriResponse {}
+
+message MsgUpdateTokenSupplyCap {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string class_id = 2; 
+  uint64 token_supply_cap = 3;
+}
+message MsgUpdateTokenSupplyCapResponse {}
+
+
+message MsgMintNFT {
+    string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string class_id = 2;
+  string recipient = 3 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgMintNFTReponse {}
+
+message MsgBurnNFT {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string class_id = 2;
+  string nft_id = 3;
+}
+message MsgBurnNFTResponse {}
