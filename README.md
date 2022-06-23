@@ -26,7 +26,7 @@ Clone the UnUniFi blockchain repository, check out the given branch, and build i
 ```bash
 git clone https://github.com/UnUniFi/chain chain_repo  
 cd chain_repo
-git checkout main
+git checkout v1.0.0
 git pull
 make install
 ```
