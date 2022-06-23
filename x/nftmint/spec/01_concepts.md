@@ -32,7 +32,8 @@ The `NFT.Uri` consists of `ClassAttributes.BaseTokenUri` and `NFT.Id`.
 
 #### MintingPermission
 
-The `ClassAttributes.MintingPermission` represents the premission level to mint `NFT` under the `Class`.
+The `ClassAttributes.MintingPermission` represents the premission level to mint `NFT` under the `Class`.   
+There're three status, which are `OnlyOwner`, `Anyone` and `WhiteList`.
 
 #### Owner
 
