@@ -12,6 +12,10 @@ func (m NftListing) IsFullPayment() bool {
 	return m.State == ListingState_SELLING_DECISION || m.State == ListingState_END_LISTING
 }
 
+func (m NftListing) IsSuccessfulBid() bool {
+	return m.State == ListingState_SUCCESSFUL_BID
+}
+
 func (ni NftIdentifier) IdBytes() []byte {
 	return NftBytes(ni.ClassId, ni.NftId)
 }

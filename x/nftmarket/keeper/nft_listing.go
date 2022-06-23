@@ -77,7 +77,9 @@ func (k Keeper) SetNftListing(ctx sdk.Context, listing types.NftListing) {
 	if listing.IsActive() {
 		store.Set(append(getTimeKey(types.KeyPrefixEndTimeNftListing, listing.EndAt), nftIdBytes...), nftIdBytes)
 	} else if listing.IsFullPayment() {
-		store.Set(append(getTimeKey(types.KeyPrefixEndTimeNftListing, listing.FullPaymentEndAt), nftIdBytes...), nftIdBytes)
+		store.Set(append(getTimeKey(types.KeyPrefixFullPaymentPeriodListing, listing.FullPaymentEndAt), nftIdBytes...), nftIdBytes)
+	} else if listing.IsSuccessfulBid() {
+		store.Set(append(getTimeKey(types.KeyPrefixSuccessfulBidListing, listing.SuccessfulBidEndAt), nftIdBytes...), nftIdBytes)
 	}
 }
 
@@ -95,7 +97,9 @@ func (k Keeper) DeleteNftListing(ctx sdk.Context, listing types.NftListing) {
 	if listing.IsActive() {
 		store.Delete(getTimeKey(types.KeyPrefixEndTimeNftListing, listing.EndAt))
 	} else if listing.IsFullPayment() {
-		store.Delete(append(getTimeKey(types.KeyPrefixEndTimeNftListing, listing.FullPaymentEndAt), nftIdBytes...))
+		store.Delete(append(getTimeKey(types.KeyPrefixFullPaymentPeriodListing, listing.FullPaymentEndAt), nftIdBytes...))
+	} else if listing.IsSuccessfulBid() {
+		store.Delete(append(getTimeKey(types.KeyPrefixSuccessfulBidListing, listing.SuccessfulBidEndAt), nftIdBytes...))
 	}
 }
 
@@ -122,6 +126,25 @@ func (k Keeper) GetFullPaymentNftListingsEndingAt(ctx sdk.Context, endTime time.
 	store := ctx.KVStore(k.storeKey)
 	timeKey := getTimeKey(types.KeyPrefixFullPaymentPeriodListing, endTime)
 	it := store.Iterator([]byte(types.KeyPrefixFullPaymentPeriodListing), storetypes.InclusiveEndBytes(timeKey))
+	defer it.Close()
+
+	listings := []types.NftListing{}
+	for ; it.Valid(); it.Next() {
+		nftIdBytes := it.Value()
+		listing, err := k.GetNftListingByIdBytes(ctx, nftIdBytes)
+		if err != nil {
+			panic(err)
+		}
+
+		listings = append(listings, listing)
+	}
+	return listings
+}
+
+func (k Keeper) GetSuccessfulBidNftListingsEndingAt(ctx sdk.Context, endTime time.Time) []types.NftListing {
+	store := ctx.KVStore(k.storeKey)
+	timeKey := getTimeKey(types.KeyPrefixSuccessfulBidListing, endTime)
+	it := store.Iterator([]byte(types.KeyPrefixSuccessfulBidListing), storetypes.InclusiveEndBytes(timeKey))
 	defer it.Close()
 
 	listings := []types.NftListing{}
@@ -511,9 +534,41 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 				}
 				listing.EndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingExtendSeconds))
 				k.SetNftListing(ctx, listing)
+			} else {
+				// schedule NFT / token send after X days
+				listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
+				listing.State = types.ListingState_SUCCESSFUL_BID
+				k.SetNftListing(ctx, listing)
 			}
 		} else if listing.State == types.ListingState_END_LISTING {
 			// TODO: determine winner bidder from fully paid bids
+			// TODO: if winner bidder exists who paid full amount
+			{
+				// schedule NFT / token send after X days
+				listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
+				listing.State = types.ListingState_SUCCESSFUL_BID
+				k.SetNftListing(ctx, listing)
+
+				// TODO: the deposit amount of the wining bidder candidates below the successful bidder will be returned
+				// TODO: how to handle winning bidder candidates above successful bidder that didn't pay full amount?
+			}
+			// TODO: if all winning bidder candidates do not pay,
+			{
+				// TODO: the amount of the collected deposit plus NFT to be listed will be given to the lister
+			}
 		}
 	}
+}
+
+func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
+	params := k.GetParamSet(ctx)
+	// get listings ended earlier
+	listings := k.GetFullPaymentNftListingsEndingAt(ctx, ctx.BlockTime())
+
+	_, _ = params, listings
+
+	// TODO: transfer nft to winner bidder
+	// TODO: the winning bid price paid to the lister will be the amount of the
+	// （deposit_collected + (bidder price - bidder deposit)) * (1.00 - fee_rate) Note: fee_rate variable name could be changed
+
 }

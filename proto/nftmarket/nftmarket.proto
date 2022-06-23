@@ -58,7 +58,12 @@ message NftListing {
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
-  uint64 auto_relisted_count = 11;
+  google.protobuf.Timestamp successful_bid_end_at = 11 [
+    (gogoproto.moretags) = "yaml:\"successful_bid_end_at\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  uint64 auto_relisted_count = 12;
 }
 
 message NftBid {
