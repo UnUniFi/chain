@@ -146,15 +146,3 @@ message QueryClassMintingPermissionResponse {
   string minting_permission = 1;
 }
 ```
-
-### ClassTransferable
-
-```protobuf
-message QueryClassTransferableRequest {
-  string class_id = 1;
-}
-
-message QueryClassTransferableResponse {
-  string transferable = 1;
-}
-```
