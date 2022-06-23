@@ -225,7 +225,7 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 	}
 
 	// check nft is bidding status
-	if listing.State != types.ListingState_BIDDING && listing.State != types.ListingState_SELLING {
+	if listing.State != types.ListingState_SELLING && listing.State != types.ListingState_BIDDING {
 		return types.ErrStatusCannotCancelListing
 	}
 
@@ -441,7 +441,11 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 			// if winner bidder did not pay full bid, nft is listed again after deleting winner bidder
 			if bid.PaidAmount.LT(bid.Amount.Amount) {
 				k.DeleteBid(ctx, bid)
-				listing.State = types.ListingState_BIDDING
+				if len(bids) == 1 {
+					listing.State = types.ListingState_SELLING
+				} else {
+					listing.State = types.ListingState_BIDDING
+				}
 				listing.EndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingExtendSeconds))
 				k.SetNftListing(ctx, listing)
 			}

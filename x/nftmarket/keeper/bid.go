@@ -173,7 +173,7 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 		return err
 	}
 
-	if listing.State != types.ListingState_BIDDING {
+	if listing.State != types.ListingState_SELLING && listing.State != types.ListingState_BIDDING {
 		return types.ErrNftListingNotInBidState
 	}
 
@@ -218,6 +218,9 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 
 	// extend bid if there's bid within gap time
 	params := k.GetParamSet(ctx)
+	if listing.State == types.ListingState_SELLING {
+		listing.State = types.ListingState_BIDDING
+	}
 	gapTime := ctx.BlockTime().Add(time.Duration(params.NftListingGapTime) * time.Second)
 	if listing.EndAt.Before(gapTime) {
 		listing.EndAt = gapTime

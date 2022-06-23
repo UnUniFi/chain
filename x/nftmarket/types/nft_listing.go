@@ -5,7 +5,7 @@ func (m NftListing) IdBytes() []byte {
 }
 
 func (m NftListing) IsActive() bool {
-	return m.State == ListingState_BIDDING
+	return m.State == ListingState_SELLING || m.State == ListingState_BIDDING
 }
 
 func (ni NftIdentifier) IdBytes() []byte {
