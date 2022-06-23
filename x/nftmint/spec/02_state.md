@@ -17,9 +17,9 @@ message ClassAttributes {
 }
 
 enum MintingPermission {
-  OnlyOwner = 1;
-  Anyone = 2;
-  WhiteList = 3;
+  OnlyOwner = 0;
+  Anyone = 1;
+  WhiteList = 2;
 }
 ```
 
