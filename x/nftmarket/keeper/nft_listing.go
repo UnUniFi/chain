@@ -181,7 +181,7 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 		NftId:         msg.NftId,
 		Owner:         owner.String(),
 		ListingType:   msg.ListingType,
-		State:         types.ListingState_SELLING,
+		State:         types.ListingState_LISTING,
 		BidToken:      msg.BidToken,
 		MinBid:        msg.MinBid,
 		BidActiveRank: bidActiveRank,
@@ -225,7 +225,7 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 	}
 
 	// check nft is bidding status
-	if listing.State != types.ListingState_SELLING && listing.State != types.ListingState_BIDDING {
+	if listing.State != types.ListingState_LISTING && listing.State != types.ListingState_BIDDING {
 		return types.ErrStatusCannotCancelListing
 	}
 
@@ -338,6 +338,42 @@ func (k Keeper) ExpandListingPeriod(ctx sdk.Context, msg *types.MsgExpandListing
 	return nil
 }
 
+func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) error {
+	// check listing already exists
+	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
+	if err == nil {
+		return types.ErrNftListingAlreadyExists
+	}
+
+	// Check nft exists
+	_, found := k.nftKeeper.GetNFT(ctx, msg.NftId.ClassId, msg.NftId.NftId)
+	if !found {
+		return types.ErrNftDoesNotExists
+	}
+
+	// check ownership of listing
+	if listing.Owner != msg.Sender.AccAddress().String() {
+		return types.ErrNotNftListingOwner
+	}
+
+	// check if listing is already ended or on selling decision status
+	if listing.State == types.ListingState_END_LISTING || listing.State == types.ListingState_SELLING_DECISION {
+		return types.ErrListingAlreadyEnded
+	}
+
+	listing.State = types.ListingState_SELLING_DECISION
+	k.SetNftListing(ctx, listing)
+
+	// Emit event for nft listing end
+	ctx.EventManager().EmitTypedEvent(&types.EventSellingDecision{
+		Owner:   msg.Sender.AccAddress().String(),
+		ClassId: msg.NftId.ClassId,
+		NftId:   msg.NftId.NftId,
+	})
+
+	return nil
+}
+
 func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) error {
 	// check listing already exists
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
@@ -357,7 +393,7 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 	}
 
 	// check if listing is already ended
-	if listing.State == types.ListingState_END_LISTING {
+	if listing.State == types.ListingState_END_LISTING || listing.State == types.ListingState_SELLING_DECISION {
 		return types.ErrListingAlreadyEnded
 	}
 
@@ -442,7 +478,7 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 			if bid.PaidAmount.LT(bid.Amount.Amount) {
 				k.DeleteBid(ctx, bid)
 				if len(bids) == 1 {
-					listing.State = types.ListingState_SELLING
+					listing.State = types.ListingState_LISTING
 				} else {
 					listing.State = types.ListingState_BIDDING
 				}

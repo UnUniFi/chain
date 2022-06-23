@@ -13,11 +13,12 @@ enum ListingType {
   LATE_SHIPPING = 2;
 }
 enum ListingState {
-  SELLING = 0;
+  LISTING = 0;
   BIDDING = 1;
-  LIQUIDATION = 2;
-  END_LISTING = 3;
-  SUCCESSFUL_BID = 4;
+  SELLING_DECISION = 2;
+  LIQUIDATION = 3;
+  END_LISTING = 4;
+  SUCCESSFUL_BID = 5;
 }
 
 message NftIdentifier {
@@ -110,6 +111,12 @@ message EventCancelListNfting {
 }
 
 message EventExpandListingPeriod {
+  string owner = 1;
+  string class_id = 2;
+  string nft_id = 3;
+}
+
+message EventSellingDecision {
   string owner = 1;
   string class_id = 2;
   string nft_id = 3;

@@ -173,7 +173,7 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 		return err
 	}
 
-	if listing.State != types.ListingState_SELLING && listing.State != types.ListingState_BIDDING {
+	if listing.State != types.ListingState_LISTING && listing.State != types.ListingState_BIDDING {
 		return types.ErrNftListingNotInBidState
 	}
 
@@ -218,14 +218,14 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 
 	// extend bid if there's bid within gap time
 	params := k.GetParamSet(ctx)
-	if listing.State == types.ListingState_SELLING {
+	if listing.State == types.ListingState_LISTING {
 		listing.State = types.ListingState_BIDDING
 	}
 	gapTime := ctx.BlockTime().Add(time.Duration(params.NftListingGapTime) * time.Second)
 	if listing.EndAt.Before(gapTime) {
 		listing.EndAt = gapTime
-		k.SetNftListing(ctx, listing)
 	}
+	k.SetNftListing(ctx, listing)
 
 	// Emit event for placing bid
 	ctx.EventManager().EmitTypedEvent(&types.EventPlaceBid{
@@ -308,12 +308,12 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 }
 
 func (k Keeper) PayFullBid(ctx sdk.Context, msg *types.MsgPayFullBid) error {
-	// Verify listing is in SUCCESSFUL_BID state
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
 		return err
 	}
 
+	// Verify listing is in SUCCESSFUL_BID state
 	if listing.State != types.ListingState_SUCCESSFUL_BID {
 		return types.ErrNftListingNotInSuccessfulBidPhase
 	}
