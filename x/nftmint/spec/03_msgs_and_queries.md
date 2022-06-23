@@ -107,7 +107,7 @@ message QueryClassIdByNameRequest {
 }
 
 message QueryClassIdByNameResponse {
-  string class_id = 1;
+  repeated string class_id = 1;
 }
 ```
 
