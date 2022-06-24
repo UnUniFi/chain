@@ -2,7 +2,7 @@ syntax = "proto3";
 package ununifi.nftmint;
 
 import "gogoproto/gogo.proto";
-import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
 import "nftmint/nftmint.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/nftmint/types";
@@ -12,12 +12,12 @@ service Query {
     option (google.api.http).get = "/ununifi/nftmint/params";
   }
   rpc ClassOwner(QueryClassOwnerRequest) returns (QueryClassOwnerResponse) {
-    option (google.api.http).get = "/ununifi/nftmint/params";
+    option (google.api.http).get = "/ununifi/nftmint/class_owner";
   }
     rpc NFTMinter(QueryNFTMinterRequest) returns (QueryNFTMinterResponse) {
-    option (google.api.http).get = "/ununifi/nftmint/params";
+    option (google.api.http).get = "/ununifi/nftmint/nft_minter";
   }
-    rpc ClassIdByName(QueryClassIdByNameequest) returns (QueryClassIdByNameResponse) {
+    rpc ClassIdByName(QueryClassIdByNameRequest) returns (QueryClassIdByNameResponse) {
     option (google.api.http).get = "/ununifi/nftmint/class_id_by_name";
   }
     rpc ClassBaseTokenUri(QueryClassBaseTokenUriRequest) returns (QueryClassBaseTokenUriResponse) {
@@ -25,9 +25,6 @@ service Query {
   }
     rpc ClassTokenSupplyCap(QueryClassTokenSupplyCapRequest) returns (QueryClassTokenSupplyCapResponse) {
     option (google.api.http).get = "/ununifi/nftmint/class_token_supply_cap";
-  }
-    rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/ununifi/nftmint/params";
   }
 }
 
@@ -40,7 +37,7 @@ message QueryClassOwnerRequest {
   string class_id = 1;
 }
 message QueryClassOwnerResponse {
-  string owner = 1 [ (cosmos_proto.scalar) = "github.com/UnUniFi/chain/types.StringAccAddress" ];
+  string owner = 1 [ (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress" ];
 }
 
 message QueryNFTMinterRequest {
@@ -48,7 +45,7 @@ message QueryNFTMinterRequest {
   string nft_id = 2;
 }
 message QueryNFTMinterResponse {
-  string minter = 1 [ (cosmos_proto.scalar) = "github.com/UnUniFi/chain/types.StringAccAddress" ];
+  string minter = 1 [ (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress" ];
 }
 
 message QueryClassIdByNameRequest {

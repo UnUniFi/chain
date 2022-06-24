@@ -40,7 +40,7 @@ message EventCreateClass {
   string owner = 1;
   string class_id = 2;
   string base_token_uri = 3;
-  string token_supply_cap = 4
+  string token_supply_cap = 4;
   MintingPermission minting_permission = 5;
 }
 
@@ -53,7 +53,7 @@ message EventSendClass {
 message EventUpdateBaseTokenUri {
   string owner = 1;
   string class_id = 2;
-  string base_token_uri = 1;
+  string base_token_uri = 3;
 }
 
 message EventUpdateTokenSupplyCap {
