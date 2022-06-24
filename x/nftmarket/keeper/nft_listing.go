@@ -507,6 +507,26 @@ func (k Keeper) ProcessEndingNftListings(ctx sdk.Context) {
 						}
 					}
 				}
+
+				// automatically cancel bids for not active rank
+				for _, bid := range bids[:len(bids)-int(listing.BidActiveRank)] {
+					bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+					if err != nil {
+						fmt.Println(err)
+						continue
+					}
+					cacheCtx, write := ctx.CacheContext()
+					err = k.CancelBid(cacheCtx, &types.MsgCancelBid{
+						Sender: bidder.Bytes(),
+						NftId:  listing.NftId,
+					})
+					if err == nil {
+						write()
+					} else {
+						fmt.Println(err)
+						continue
+					}
+				}
 			}
 		}
 	}
