@@ -14,6 +14,9 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 	// handle full payment period endings
 	k.HandleFullPaymentsPeriodEndings(ctx)
 
+	// deliever successful bids
+	k.DelieverSuccessfulBids(ctx)
+
 	// process matured nft bids cancel
 	err := k.HandleMaturedCancelledBids(ctx)
 	if err != nil {

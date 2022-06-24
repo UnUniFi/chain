@@ -76,6 +76,10 @@ func (k Keeper) SetNftListing(ctx sdk.Context, listing types.NftListing) {
 
 	if listing.IsActive() {
 		store.Set(append(getTimeKey(types.KeyPrefixEndTimeNftListing, listing.EndAt), nftIdBytes...), nftIdBytes)
+	} else if listing.IsFullPayment() {
+		store.Set(append(getTimeKey(types.KeyPrefixFullPaymentPeriodListing, listing.FullPaymentEndAt), nftIdBytes...), nftIdBytes)
+	} else if listing.IsSuccessfulBid() {
+		store.Set(append(getTimeKey(types.KeyPrefixSuccessfulBidListing, listing.SuccessfulBidEndAt), nftIdBytes...), nftIdBytes)
 	}
 }
 
@@ -92,6 +96,10 @@ func (k Keeper) DeleteNftListing(ctx sdk.Context, listing types.NftListing) {
 
 	if listing.IsActive() {
 		store.Delete(getTimeKey(types.KeyPrefixEndTimeNftListing, listing.EndAt))
+	} else if listing.IsFullPayment() {
+		store.Delete(append(getTimeKey(types.KeyPrefixFullPaymentPeriodListing, listing.FullPaymentEndAt), nftIdBytes...))
+	} else if listing.IsSuccessfulBid() {
+		store.Delete(append(getTimeKey(types.KeyPrefixSuccessfulBidListing, listing.SuccessfulBidEndAt), nftIdBytes...))
 	}
 }
 
@@ -99,6 +107,44 @@ func (k Keeper) GetActiveNftListingsEndingAt(ctx sdk.Context, endTime time.Time)
 	store := ctx.KVStore(k.storeKey)
 	timeKey := getTimeKey(types.KeyPrefixEndTimeNftListing, endTime)
 	it := store.Iterator([]byte(types.KeyPrefixEndTimeNftListing), storetypes.InclusiveEndBytes(timeKey))
+	defer it.Close()
+
+	listings := []types.NftListing{}
+	for ; it.Valid(); it.Next() {
+		nftIdBytes := it.Value()
+		listing, err := k.GetNftListingByIdBytes(ctx, nftIdBytes)
+		if err != nil {
+			panic(err)
+		}
+
+		listings = append(listings, listing)
+	}
+	return listings
+}
+
+func (k Keeper) GetFullPaymentNftListingsEndingAt(ctx sdk.Context, endTime time.Time) []types.NftListing {
+	store := ctx.KVStore(k.storeKey)
+	timeKey := getTimeKey(types.KeyPrefixFullPaymentPeriodListing, endTime)
+	it := store.Iterator([]byte(types.KeyPrefixFullPaymentPeriodListing), storetypes.InclusiveEndBytes(timeKey))
+	defer it.Close()
+
+	listings := []types.NftListing{}
+	for ; it.Valid(); it.Next() {
+		nftIdBytes := it.Value()
+		listing, err := k.GetNftListingByIdBytes(ctx, nftIdBytes)
+		if err != nil {
+			panic(err)
+		}
+
+		listings = append(listings, listing)
+	}
+	return listings
+}
+
+func (k Keeper) GetSuccessfulBidNftListingsEndingAt(ctx sdk.Context, endTime time.Time) []types.NftListing {
+	store := ctx.KVStore(k.storeKey)
+	timeKey := getTimeKey(types.KeyPrefixSuccessfulBidListing, endTime)
+	it := store.Iterator([]byte(types.KeyPrefixSuccessfulBidListing), storetypes.InclusiveEndBytes(timeKey))
 	defer it.Close()
 
 	listings := []types.NftListing{}
@@ -181,7 +227,7 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 		NftId:         msg.NftId,
 		Owner:         owner.String(),
 		ListingType:   msg.ListingType,
-		State:         types.ListingState_SELLING,
+		State:         types.ListingState_LISTING,
 		BidToken:      msg.BidToken,
 		MinBid:        msg.MinBid,
 		BidActiveRank: bidActiveRank,
@@ -225,7 +271,7 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 	}
 
 	// check nft is bidding status
-	if listing.State != types.ListingState_BIDDING && listing.State != types.ListingState_SELLING {
+	if listing.State != types.ListingState_LISTING && listing.State != types.ListingState_BIDDING {
 		return types.ErrStatusCannotCancelListing
 	}
 
@@ -338,6 +384,44 @@ func (k Keeper) ExpandListingPeriod(ctx sdk.Context, msg *types.MsgExpandListing
 	return nil
 }
 
+func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) error {
+	// check listing already exists
+	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
+	if err == nil {
+		return types.ErrNftListingAlreadyExists
+	}
+
+	// Check nft exists
+	_, found := k.nftKeeper.GetNFT(ctx, msg.NftId.ClassId, msg.NftId.NftId)
+	if !found {
+		return types.ErrNftDoesNotExists
+	}
+
+	// check ownership of listing
+	if listing.Owner != msg.Sender.AccAddress().String() {
+		return types.ErrNotNftListingOwner
+	}
+
+	// check if listing is already ended or on selling decision status
+	if listing.State == types.ListingState_END_LISTING || listing.State == types.ListingState_SELLING_DECISION {
+		return types.ErrListingAlreadyEnded
+	}
+
+	params := k.GetParamSet(ctx)
+	listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
+	listing.State = types.ListingState_SELLING_DECISION
+	k.SetNftListing(ctx, listing)
+
+	// Emit event for nft listing end
+	ctx.EventManager().EmitTypedEvent(&types.EventSellingDecision{
+		Owner:   msg.Sender.AccAddress().String(),
+		ClassId: msg.NftId.ClassId,
+		NftId:   msg.NftId.NftId,
+	})
+
+	return nil
+}
+
 func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) error {
 	// check listing already exists
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
@@ -357,10 +441,12 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 	}
 
 	// check if listing is already ended
-	if listing.State == types.ListingState_END_LISTING {
+	if listing.State == types.ListingState_END_LISTING || listing.State == types.ListingState_SELLING_DECISION {
 		return types.ErrListingAlreadyEnded
 	}
 
+	params := k.GetParamSet(ctx)
+	listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
 	listing.State = types.ListingState_END_LISTING
 	k.SetNftListing(ctx, listing)
 
@@ -429,11 +515,11 @@ func (k Keeper) ProcessEndingNftListings(ctx sdk.Context) {
 func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 	params := k.GetParamSet(ctx)
 	// get listings ended earlier
-	listings := k.GetActiveNftListingsEndingAt(ctx, ctx.BlockTime().Add(-time.Duration(params.NftListingFullPaymentPeriod)*time.Second))
+	listings := k.GetFullPaymentNftListingsEndingAt(ctx, ctx.BlockTime())
 
 	// handle not fully paid bids
 	for _, listing := range listings {
-		if listing.State == types.ListingState_SUCCESSFUL_BID {
+		if listing.State == types.ListingState_SELLING_DECISION {
 			bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
 			i := len(bids) - 1
 			bid := bids[i]
@@ -441,10 +527,48 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 			// if winner bidder did not pay full bid, nft is listed again after deleting winner bidder
 			if bid.PaidAmount.LT(bid.Amount.Amount) {
 				k.DeleteBid(ctx, bid)
-				listing.State = types.ListingState_BIDDING
+				if len(bids) == 1 {
+					listing.State = types.ListingState_LISTING
+				} else {
+					listing.State = types.ListingState_BIDDING
+				}
 				listing.EndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingExtendSeconds))
 				k.SetNftListing(ctx, listing)
+			} else {
+				// schedule NFT / token send after X days
+				listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
+				listing.State = types.ListingState_SUCCESSFUL_BID
+				k.SetNftListing(ctx, listing)
+			}
+		} else if listing.State == types.ListingState_END_LISTING {
+			// TODO: determine winner bidder from fully paid bids
+			// TODO: if winner bidder exists who paid full amount
+			{
+				// schedule NFT / token send after X days
+				listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
+				listing.State = types.ListingState_SUCCESSFUL_BID
+				k.SetNftListing(ctx, listing)
+
+				// TODO: the deposit amount of the wining bidder candidates below the successful bidder will be returned
+				// TODO: how to handle winning bidder candidates above successful bidder that didn't pay full amount?
+			}
+			// TODO: if all winning bidder candidates do not pay,
+			{
+				// TODO: the amount of the collected deposit plus NFT to be listed will be given to the lister
 			}
 		}
 	}
+}
+
+func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
+	params := k.GetParamSet(ctx)
+	// get listings ended earlier
+	listings := k.GetFullPaymentNftListingsEndingAt(ctx, ctx.BlockTime())
+
+	_, _ = params, listings
+
+	// TODO: transfer nft to winner bidder
+	// TODO: the winning bid price paid to the lister will be the amount of the
+	// （deposit_collected + (bidder price - bidder deposit)) * (1.00 - fee_rate) Note: fee_rate variable name could be changed
+
 }

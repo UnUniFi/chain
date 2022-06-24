@@ -170,6 +170,37 @@ func (msg MsgCancelBid) GetSigners() []sdk.AccAddress {
 }
 
 // ensure Msg interface compliance at compile time
+var _ sdk.Msg = &MsgSellingDecision{}
+
+func NewMsgSellingDecision(sender sdk.AccAddress) MsgSellingDecision {
+	return MsgSellingDecision{
+		Sender: sender.Bytes(),
+	}
+}
+
+// Route return the message type used for routing the message.
+func (msg MsgSellingDecision) Route() string { return RouterKey }
+
+// Type returns a human-readable string for the message, intended for utilization within tags.
+func (msg MsgSellingDecision) Type() string { return "nft_selling_decision" }
+
+// ValidateBasic does a simple validation check that doesn't require access to state.
+func (msg MsgSellingDecision) ValidateBasic() error {
+	return nil
+}
+
+// GetSignBytes gets the canonical byte representation of the Msg.
+func (msg MsgSellingDecision) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners returns the addresses of signers that must sign.
+func (msg MsgSellingDecision) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msg.Sender.AccAddress()}
+}
+
+// ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgEndNftListing{}
 
 func NewMsgEndNftListing(sender sdk.AccAddress, nftId NftIdentifier) MsgEndNftListing {

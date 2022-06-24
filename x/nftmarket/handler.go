@@ -30,6 +30,9 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgCancelBid:
 			res, err := msgServer.CancelBid(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgSellingDecision:
+			res, err := msgServer.SellingDecision(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgEndNftListing:
 			res, err := msgServer.EndNftListing(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)

@@ -13,11 +13,12 @@ enum ListingType {
   LATE_SHIPPING = 2;
 }
 enum ListingState {
-  SELLING = 0;
+  LISTING = 0;
   BIDDING = 1;
-  LIQUIDATION = 2;
-  END_LISTING = 3;
-  SUCCESSFUL_BID = 4;
+  SELLING_DECISION = 2;
+  LIQUIDATION = 3;
+  END_LISTING = 4;
+  SUCCESSFUL_BID = 5;
 }
 
 message NftIdentifier {
@@ -52,7 +53,17 @@ message NftListing {
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
-  uint64 auto_relisted_count = 10;
+  google.protobuf.Timestamp full_payment_end_at = 10 [
+    (gogoproto.moretags) = "yaml:\"full_payment_end_at\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  google.protobuf.Timestamp successful_bid_end_at = 11 [
+    (gogoproto.moretags) = "yaml:\"successful_bid_end_at\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  uint64 auto_relisted_count = 12;
 }
 
 message NftBid {
@@ -110,6 +121,12 @@ message EventCancelListNfting {
 }
 
 message EventExpandListingPeriod {
+  string owner = 1;
+  string class_id = 2;
+  string nft_id = 3;
+}
+
+message EventSellingDecision {
   string owner = 1;
   string class_id = 2;
   string nft_id = 3;

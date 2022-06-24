@@ -27,8 +27,12 @@ const (
 	KeyPrefixNftListing = "nft_listing"
 	// nft listing by owner
 	KeyPrefixAddressNftListing = "address_nft_listing"
-	// nft listing by end time
+	// active nft listing by end time
 	KeyPrefixEndTimeNftListing = "end_time_nft_listing"
+	// full payment period listing by end time
+	KeyPrefixFullPaymentPeriodListing = "full_payment_period_listing"
+	// successful bid listing by nft send time
+	KeyPrefixSuccessfulBidListing = "successful_bid_listing"
 	// nft bid by nft_id
 	KeyPrefixNftBid = "nft_bid"
 	// nft bid cancelled

@@ -61,7 +61,6 @@ func (k Keeper) DecreaseDebt(ctx sdk.Context, nftBytes []byte, amount sdk.Coin) 
 }
 
 func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
-	// Verify listing is in SUCCESSFUL_BID state
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
 		return err
@@ -72,9 +71,8 @@ func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
 		return types.ErrInvalidBorrowDenom
 	}
 
-	// TODO: check listing status check if required
-	// TODO: calculate maximum borrow amount for the listing
-	maxDebt := sdk.ZeroInt()
+	// calculate maximum borrow amount for the listing
+	maxDebt := k.TotalActiveRankDeposit(ctx, msg.NftId.IdBytes())
 
 	currDebt := k.GetDebtByNft(ctx, msg.NftId.IdBytes())
 	if !sdk.Coin.IsNil(currDebt.Loan) && msg.Amount.Add(currDebt.Loan).Amount.GT(maxDebt) {
@@ -101,7 +99,6 @@ func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
 }
 
 func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
-	// Verify listing is in SUCCESSFUL_BID state
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
 		return err
@@ -137,7 +134,6 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 }
 
 func (k Keeper) Liquidate(ctx sdk.Context, msg *types.MsgLiquidate) error {
-	// Verify listing is in SUCCESSFUL_BID state
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
 		return err
