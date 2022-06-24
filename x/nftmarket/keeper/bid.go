@@ -262,6 +262,13 @@ func higherBids(bids []types.NftBid, amount sdk.Int) uint64 {
 	return higherBids
 }
 
+func (k Keeper) SafeCloseBid(ctx sdk.Context, bid types.NftBid, paidAmountRecv sdk.AccAddress) error {
+	// Delete bid
+	k.DeleteBid(ctx, bid)
+
+	return k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, paidAmountRecv, sdk.Coins{sdk.NewCoin(bid.Amount.Denom, bid.PaidAmount)})
+}
+
 func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 	// Verify listing is in BIDDING state
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())

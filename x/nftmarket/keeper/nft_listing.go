@@ -539,8 +539,8 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 
 	// handle not fully paid bids
 	for _, listing := range listings {
+		bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
 		if listing.State == types.ListingState_SELLING_DECISION {
-			bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
 			i := len(bids) - 1
 			bid := bids[i]
 
@@ -561,20 +561,63 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 				k.SetNftListing(ctx, listing)
 			}
 		} else if listing.State == types.ListingState_END_LISTING {
-			// TODO: determine winner bidder from fully paid bids
-			// TODO: if winner bidder exists who paid full amount
-			{
+			index := len(bids) - 1
+			for ; index >= 0; index-- {
+				bid := bids[index]
+				if bid.PaidAmount.Equal(bid.Amount.Amount) {
+					break
+				}
+			}
+
+			if index >= 0 { // if winner bidder exists who paid full amount
 				// schedule NFT / token send after X days
 				listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
 				listing.State = types.ListingState_SUCCESSFUL_BID
 				k.SetNftListing(ctx, listing)
 
-				// TODO: the deposit amount of the wining bidder candidates below the successful bidder will be returned
-				// TODO: how to handle winning bidder candidates above successful bidder that didn't pay full amount?
-			}
-			// TODO: if all winning bidder candidates do not pay,
-			{
-				// TODO: the amount of the collected deposit plus NFT to be listed will be given to the lister
+				for i, bid := range bids {
+					if index != i {
+						cacheCtx, write := ctx.CacheContext()
+						bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+						if err != nil {
+							continue
+						}
+						err = k.SafeCloseBid(cacheCtx, bid, bidder)
+						if err == nil {
+							write()
+						} else {
+							fmt.Println(err)
+						}
+					}
+				}
+				// TODO: shouldn't we handle winning bidder candidates above successful bidder that didn't pay full amount?
+			} else { // if all winning bidder candidates do not pay
+				// the amount of the collected deposit plus NFT to be listed will be given to the lister
+				listingOwner, err := sdk.AccAddressFromBech32(listing.Owner)
+				if err != nil {
+					continue
+				}
+				for _, bid := range bids {
+					cacheCtx, write := ctx.CacheContext()
+					err = k.SafeCloseBid(cacheCtx, bid, listingOwner)
+					if err == nil {
+						write()
+					} else {
+						fmt.Println(err)
+					}
+				}
+
+				// transfer nft to listing owner
+				cacheCtx, write := ctx.CacheContext()
+				err = k.nftKeeper.Transfer(cacheCtx, listing.NftId.ClassId, listing.NftId.NftId, listingOwner)
+				if err != nil {
+					fmt.Println(err)
+				} else {
+					write()
+				}
+
+				// remove listing
+				k.DeleteNftListing(ctx, listing)
 			}
 		}
 	}
