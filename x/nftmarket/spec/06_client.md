@@ -210,12 +210,9 @@ Example Output:
 ```json
 {
   "nft":{
-    "id":"a10",
-    "name":"crypotpunk",
-    "description":"crypotpunk is awsome",
-    "symbol":"cryp",
+    "classId":"a10",
+    "id":"ax10",
     "uri":"http...",
-    "uriHash":"xxxxx",
     "uriHash":"xxxxx",
     "listingType":"DIRECT_ASSET_BORROW",
     "bidToken":"uguu",
