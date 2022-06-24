@@ -15,7 +15,7 @@ enum MintingPermission {
 message ClassAttributes {
   string class_id = 1;
   string owner = 2 [ (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress" ];
-  string base_token_uri = 3 [ (gogoproto.customname) = "URI" ];
+  string base_token_uri = 3;
   MintingPermission minting_permission = 4;
   uint64 token_supply_cap = 5;
 }

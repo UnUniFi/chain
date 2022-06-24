@@ -59,7 +59,7 @@ message QueryClassBaseTokenUriRequest {
   string class_id = 1;
 }
 message QueryClassBaseTokenUriResponse {
-  string base_token_uri = 1 [ (gogoproto.customname) = "URI" ];
+  string base_token_uri = 1;
 }
 
 message QueryClassTokenSupplyCapRequest {

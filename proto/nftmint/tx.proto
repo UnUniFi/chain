@@ -2,7 +2,6 @@ syntax = "proto3";
 package ununifi.nftmint;
 
 import "gogoproto/gogo.proto";
-import "google/protobuf/timestamp.proto";
 import "nftmint/nftmint.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/nftmint/types";
@@ -23,12 +22,12 @@ message MsgCreateClass {
     (gogoproto.nullable) = false
   ];
   string name = 2;
-  string base_token_uri = 3 [ (gogoproto.customname) = "URI" ];
+  string base_token_uri = 3;
   uint64 total_supply_cap = 4;
   MintingPermission minting_permission = 5;
   string symbol = 7;
   string description = 8;
-  string class_uri = 9 [ (gogoproto.customname) = "URI" ];
+  string class_uri = 9;
 }
 message MsgCreateClassRespone {}
 
@@ -54,7 +53,7 @@ message MsgUpdateBaseTokenUri {
     (gogoproto.nullable) = false
   ];
   string class_id = 2; 
-  string base_token_uri = 3 [ (gogoproto.customname) = "URI" ];
+  string base_token_uri = 3;
 }
 message MsgUpdateBaseTokenUriResponse {}
 

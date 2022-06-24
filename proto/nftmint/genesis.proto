@@ -2,7 +2,6 @@ syntax = "proto3";
 package ununifi.nftmint;
 
 import "gogoproto/gogo.proto";
-import "google/protobuf/timestamp.proto";
 import "nftmint/nftmint.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/nftmint/types";
