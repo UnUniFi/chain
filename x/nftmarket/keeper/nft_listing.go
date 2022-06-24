@@ -629,9 +629,39 @@ func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 	listings := k.GetFullPaymentNftListingsEndingAt(ctx, ctx.BlockTime())
 
 	_, _ = params, listings
+	for _, listing := range listings {
+		bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
+		if len(bids) != 1 {
+			continue
+		}
+		bid := bids[0]
+		bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+		if err != nil {
+			continue
+		}
 
-	// TODO: transfer nft to winner bidder
-	// TODO: the winning bid price paid to the lister will be the amount of the
-	// （deposit_collected + (bidder price - bidder deposit)) * (1.00 - fee_rate) Note: fee_rate variable name could be changed
+		listingOwner, err := sdk.AccAddressFromBech32(listing.Owner)
+		if err != nil {
+			continue
+		}
 
+		cacheCtx, write := ctx.CacheContext()
+		err = k.nftKeeper.Transfer(cacheCtx, listing.NftId.ClassId, listing.NftId.NftId, bidder)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		} else {
+			write()
+		}
+
+		// TODO: the winning bid price paid to the lister will be the amount of the
+		// （deposit_collected + (bidder price - bidder deposit)) * (1.00 - fee_rate) Note: fee_rate variable name could be changed
+		err = k.bankKeeper.SendCoinsFromModuleToAccount(cacheCtx, types.ModuleName, listingOwner, sdk.Coins{bid.Amount})
+		if err != nil {
+			fmt.Println(err)
+			continue
+		} else {
+			write()
+		}
+	}
 }
