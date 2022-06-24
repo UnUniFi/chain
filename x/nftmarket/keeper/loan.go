@@ -46,7 +46,11 @@ func (k Keeper) DeleteDebt(ctx sdk.Context, nftBytes []byte) {
 
 func (k Keeper) IncreaseDebt(ctx sdk.Context, nftBytes []byte, amount sdk.Coin) {
 	currDebt := k.GetDebtByNft(ctx, nftBytes)
-	currDebt.Loan = currDebt.Loan.Add(amount)
+	if sdk.Coin.IsNil(currDebt.Loan) {
+		currDebt.Loan = amount
+	} else {
+		currDebt.Loan = currDebt.Loan.Add(amount)
+	}
 	k.SetDebt(ctx, currDebt)
 }
 
@@ -71,7 +75,7 @@ func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
 	maxDebt := k.TotalActiveRankDeposit(ctx, msg.NftId.IdBytes())
 
 	currDebt := k.GetDebtByNft(ctx, msg.NftId.IdBytes())
-	if msg.Amount.Add(currDebt.Loan).Amount.GT(maxDebt) {
+	if !sdk.Coin.IsNil(currDebt.Loan) && msg.Amount.Add(currDebt.Loan).Amount.GT(maxDebt) {
 		return types.ErrDebtExceedsMaxDebt
 	}
 

@@ -106,9 +106,13 @@ func (msg MsgExpandListingPeriod) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgPlaceBid{}
 
-func NewMsgPlaceBid(sender sdk.AccAddress) MsgPlaceBid {
+// todo
+func NewMsgPlaceBid(sender sdk.AccAddress, nftId NftIdentifier, amount sdk.Coin, automaticPayment bool) MsgPlaceBid {
 	return MsgPlaceBid{
-		Sender: sender.Bytes(),
+		Sender:           sender.Bytes(),
+		NftId:            nftId,
+		Amount:           amount,
+		AutomaticPayment: automaticPayment,
 	}
 }
 
@@ -199,9 +203,10 @@ func (msg MsgSellingDecision) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgEndNftListing{}
 
-func NewMsgEndNftListing(sender sdk.AccAddress) MsgEndNftListing {
+func NewMsgEndNftListing(sender sdk.AccAddress, nftId NftIdentifier) MsgEndNftListing {
 	return MsgEndNftListing{
 		Sender: sender.Bytes(),
+		NftId:  nftId,
 	}
 }
 
@@ -261,9 +266,11 @@ func (msg MsgPayFullBid) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgBorrow{}
 
-func NewMsgBorrow(sender sdk.AccAddress) MsgBorrow {
+func NewMsgBorrow(sender sdk.AccAddress, nftId NftIdentifier, amount sdk.Coin) MsgBorrow {
 	return MsgBorrow{
 		Sender: sender.Bytes(),
+		NftId:  nftId,
+		Amount: amount,
 	}
 }
 
