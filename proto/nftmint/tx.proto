@@ -23,7 +23,7 @@ message MsgCreateClass {
   ];
   string name = 2;
   string base_token_uri = 3;
-  uint64 total_supply_cap = 4;
+  uint64 token_supply_cap = 4;
   MintingPermission minting_permission = 5;
   string symbol = 7;
   string description = 8;
@@ -39,7 +39,7 @@ message MsgSendClass {
   ];
   string class_id = 2;
   string recipient = 3 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.moretags) = "yaml:\"recipient\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
@@ -77,7 +77,7 @@ message MsgMintNFT {
   ];
   string class_id = 2;
   string recipient = 3 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.moretags) = "yaml:\"recipient\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
