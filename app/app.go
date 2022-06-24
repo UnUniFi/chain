@@ -236,7 +236,7 @@ var (
 		ununifidisttypes.ModuleName: {authtypes.Minter},
 		// wasm.ModuleName:             {authtypes.Burner},
 		nft.ModuleName:            nil,
-		nftmarkettypes.ModuleName: {authtypes.Minter, authtypes.Burner},
+		nftmarkettypes.ModuleName: nil,
 	}
 
 	// module accounts that are allowed to receive tokens
