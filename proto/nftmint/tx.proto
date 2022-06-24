@@ -95,5 +95,3 @@ message MsgBurnNFT {
   string nft_id = 3;
 }
 message MsgBurnNFTResponse {}
-
-// TODO: events definition
