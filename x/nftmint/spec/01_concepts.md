@@ -46,6 +46,11 @@ The `NFT` data is defined in sdk's x/nft module.
 We use that type definition and store the generated `NFT` data on UnUnifi in x/nft module.   
 This represents the `NFT` content.
 
+### NFT Id
+
+The `NFT.Id` is the identifier of the `NFT` in the `Class`.   
+In UnUniFi, `NFT.Id` in` Class` starts from 0 and is incremented by 1 each time it is created. This number doesn't necessary connect to the token supply number because supply number decreases when the `NFT` is burned. But, the `NFT.Id` counter should not be affected.
+
 ## Mint
 
 Minting `NFT` is achieved by sending `MsgMintNFT` message with `Class.Id`. 
