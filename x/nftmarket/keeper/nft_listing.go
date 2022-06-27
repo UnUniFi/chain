@@ -200,17 +200,6 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 		return types.ErrNotSupportedBidToken
 	}
 
-	// pay fees for nft listing
-	listingFee := params.NftListingCommissionFee
-	if listingFee.IsPositive() {
-		feeCoins := sdk.Coins{listingFee}
-		sender := sdk.AccAddress(msg.Sender)
-		err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, feeCoins)
-		if err != nil {
-			return err
-		}
-	}
-
 	// Send ownership to market module
 	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
 	err = k.nftKeeper.Transfer(ctx, msg.NftId.ClassId, msg.NftId.NftId, moduleAddr)
@@ -625,6 +614,7 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 
 func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 	params := k.GetParamSet(ctx)
+	commissionFee := params.NftListingCommissionFee
 	// get listings ended earlier
 	listings := k.GetFullPaymentNftListingsEndingAt(ctx, ctx.BlockTime())
 
@@ -654,9 +644,24 @@ func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 			write()
 		}
 
+		// pay commission fees for nft listing
+		fee := bid.PaidAmount.Mul(sdk.NewInt(int64(commissionFee))).Quo(sdk.NewInt(100))
+		if fee.IsPositive() {
+			feeCoins := sdk.Coins{sdk.NewCoin(bid.Amount.Denom, fee)}
+			err = k.bankKeeper.SendCoinsFromModuleToModule(cacheCtx, types.ModuleName, types.NftTradingFee, feeCoins)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			} else {
+				write()
+			}
+		}
+
+		listerPayment := bid.PaidAmount.Sub(fee)
+
 		// TODO: the winning bid price paid to the lister will be the amount of the
 		// （deposit_collected + (bidder price - bidder deposit)) * (1.00 - fee_rate) Note: fee_rate variable name could be changed
-		err = k.bankKeeper.SendCoinsFromModuleToAccount(cacheCtx, types.ModuleName, listingOwner, sdk.Coins{bid.Amount})
+		err = k.bankKeeper.SendCoinsFromModuleToAccount(cacheCtx, types.ModuleName, listingOwner, sdk.Coins{sdk.NewCoin(bid.Amount.Denom, listerPayment)})
 		if err != nil {
 			fmt.Println(err)
 			continue

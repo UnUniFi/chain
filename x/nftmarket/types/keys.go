@@ -9,6 +9,9 @@ const (
 	// ModuleName defines the module name
 	ModuleName = "nftmarket"
 
+	// Module account for nft trading fee collection
+	NftTradingFee = "nfttradingfee"
+
 	// StoreKey defines the primary module store key
 	StoreKey = "ununifinftmarket"
 
