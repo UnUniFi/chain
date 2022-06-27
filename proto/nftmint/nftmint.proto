@@ -26,6 +26,11 @@ message NFTAttributes {
   string minter = 3 [ (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress" ];
 }
 
+message OwningList {
+  string owner = 1;
+  repeated string class_id = 2;
+}
+
 message Params {
   uint64 MaxTokenSupplyLimit = 1;
   uint64 MinClassNameLen = 2;
