@@ -68,7 +68,6 @@ message MsgUpdateTokenSupplyCap {
 }
 message MsgUpdateTokenSupplyCapResponse {}
 
-
 message MsgMintNFT {
     string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
@@ -76,7 +75,8 @@ message MsgMintNFT {
     (gogoproto.nullable) = false
   ];
   string class_id = 2;
-  string recipient = 3 [
+  string nft_id = 3;
+  string recipient = 4 [
     (gogoproto.moretags) = "yaml:\"recipient\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
