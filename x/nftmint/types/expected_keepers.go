@@ -17,8 +17,9 @@ type NftKeeper interface {
 	Update(ctx sdk.Context, token nfttypes.NFT) error
 	Transfer(ctx sdk.Context, classID string, nftID string, receiver sdk.AccAddress) error
 
-	GetClass(classid string) nfttypes.Class
-	GetClasses() []nfttypes.Class
+	GetClass(ctx sdk.Context, classID string) (nfttypes.Class, bool)
+	GetClasses(ctx sdk.Context) []nfttypes.Class
+	HasClass(ctx sdk.Context, classId string) bool
 
 	GetNFT(ctx sdk.Context, classID, nftID string) (nfttypes.NFT, bool)
 	GetNFTsOfClassByOwner(ctx sdk.Context, classID string, owner sdk.AccAddress) (nfts []nfttypes.NFT)
