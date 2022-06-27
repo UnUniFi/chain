@@ -164,6 +164,7 @@ Please refer them since I don't write duplicated queries here. ([Query service m
 1. ClassTokenSupplyCap() token_supply_cap
 1. ClassMintingPermission() minting_permission
 1. ClassTransferable() transferable 
+1. ClassIdsByOwner(owner) []class_id
 
 From cosmos SDk's x/nft module:
 
