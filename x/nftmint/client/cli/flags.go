@@ -15,7 +15,7 @@ var (
 )
 
 func init() {
-	FsCreateClass.String(FlagSymbol, "", "Class Symbol")
+	FsCreateClass.String(FlagSymbol, "", "Class symbol")
 	FsCreateClass.String(FlagDescription, "", "Description for denom")
-	FsCreateClass.String(FlagClassUri, "", "Content uri for class")
+	FsCreateClass.String(FlagClassUri, "", "Content URI for class")
 }

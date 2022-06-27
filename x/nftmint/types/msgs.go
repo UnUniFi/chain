@@ -37,6 +37,18 @@ func (msg MsgCreateClass) Route() string { return RouterKey }
 func (msg MsgCreateClass) Type() string { return TypeMsgCreateClass }
 
 // TODO: impl validate func
+func (msg MsgCreateClass) ValidateBasic() error {
+	// TODO: the validation against:
+	// Name
+	// BaseTokenUri
+	// TokenSupplyCap
+	// MintingPermission
+	// Symbol
+	// Description
+	// ClassUri
+
+	return nil
+}
 
 // GetSigners implements Msg
 func (m MsgCreateClass) GetSigners() []sdk.AccAddress {
