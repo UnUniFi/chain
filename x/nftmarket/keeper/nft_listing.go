@@ -567,11 +567,7 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 				for i, bid := range bids {
 					if index != i {
 						cacheCtx, write := ctx.CacheContext()
-						bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
-						if err != nil {
-							continue
-						}
-						err = k.SafeCloseBid(cacheCtx, bid, bidder)
+						err := k.SafeCloseBid(cacheCtx, bid)
 						if err == nil {
 							write()
 						} else {
@@ -586,15 +582,15 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 				if err != nil {
 					continue
 				}
+
+				depositCollected := sdk.ZeroInt()
 				for _, bid := range bids {
-					cacheCtx, write := ctx.CacheContext()
-					err = k.SafeCloseBid(cacheCtx, bid, listingOwner)
-					if err == nil {
-						write()
-					} else {
-						fmt.Println(err)
-					}
+					depositCollected = depositCollected.Add(bid.PaidAmount)
+					k.DeleteBid(ctx, bid)
 				}
+
+				// pay fee
+				k.ProcessPaymentWithCommissionFee(ctx, listingOwner, listing.BidToken, depositCollected)
 
 				// transfer nft to listing owner
 				cacheCtx, write := ctx.CacheContext()
@@ -614,7 +610,6 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 
 func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 	params := k.GetParamSet(ctx)
-	commissionFee := params.NftListingCommissionFee
 	// get listings ended earlier
 	listings := k.GetFullPaymentNftListingsEndingAt(ctx, ctx.BlockTime())
 
@@ -644,29 +639,33 @@ func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 			write()
 		}
 
-		// pay commission fees for nft listing
-		fee := bid.PaidAmount.Mul(sdk.NewInt(int64(commissionFee))).Quo(sdk.NewInt(100))
-		if fee.IsPositive() {
-			feeCoins := sdk.Coins{sdk.NewCoin(bid.Amount.Denom, fee)}
-			err = k.bankKeeper.SendCoinsFromModuleToModule(cacheCtx, types.ModuleName, types.NftTradingFee, feeCoins)
-			if err != nil {
-				fmt.Println(err)
-				continue
-			} else {
-				write()
-			}
-		}
+		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, bid.Amount.Denom, bid.PaidAmount)
+	}
+}
 
-		listerPayment := bid.PaidAmount.Sub(fee)
-
-		// TODO: the winning bid price paid to the lister will be the amount of the
-		// （deposit_collected + (bidder price - bidder deposit)) * (1.00 - fee_rate) Note: fee_rate variable name could be changed
-		err = k.bankKeeper.SendCoinsFromModuleToAccount(cacheCtx, types.ModuleName, listingOwner, sdk.Coins{sdk.NewCoin(bid.Amount.Denom, listerPayment)})
+func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, denom string, amount sdk.Int) {
+	params := k.GetParamSet(ctx)
+	commissionFee := params.NftListingCommissionFee
+	cacheCtx, write := ctx.CacheContext()
+	// pay commission fees for nft listing
+	fee := amount.Mul(sdk.NewInt(int64(commissionFee))).Quo(sdk.NewInt(100))
+	if fee.IsPositive() {
+		feeCoins := sdk.Coins{sdk.NewCoin(denom, fee)}
+		err := k.bankKeeper.SendCoinsFromModuleToModule(cacheCtx, types.ModuleName, types.NftTradingFee, feeCoins)
 		if err != nil {
 			fmt.Println(err)
-			continue
+			return
 		} else {
 			write()
 		}
+	}
+
+	listerPayment := amount.Sub(fee)
+	err := k.bankKeeper.SendCoinsFromModuleToAccount(cacheCtx, types.ModuleName, listingOwner, sdk.Coins{sdk.NewCoin(denom, listerPayment)})
+	if err != nil {
+		fmt.Println(err)
+		return
+	} else {
+		write()
 	}
 }
