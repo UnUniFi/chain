@@ -146,3 +146,15 @@ message QueryClassMintingPermissionResponse {
   string minting_permission = 1;
 }
 ```
+
+### ClassIdsByOwner
+
+```protobuf
+message QueryClassIdsByOwnerRequest {
+  string owner = 1;
+}
+
+message QueryClassIdsByOwnerResponse {
+  repeated string class_id = 1;
+}
+```
