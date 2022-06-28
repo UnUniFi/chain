@@ -57,22 +57,18 @@ func NewCmdCreateClass() *cobra.Command {
 			if err != nil {
 				return err
 			}
-
 			mintingPermission, err := strconv.ParseInt(args[3], 10, 32)
 			if err != nil {
 				return err
 			}
-
 			classSymbol, err := cmd.Flags().GetString(FlagSymbol)
 			if err != nil {
 				return err
 			}
-
 			classDescription, err := cmd.Flags().GetString(FlagDescription)
 			if err != nil {
 				return err
 			}
-
 			classUri, err := cmd.Flags().GetString(FlagClassUri)
 			if err != nil {
 				return err
@@ -89,10 +85,15 @@ func NewCmdCreateClass() *cobra.Command {
 				classUri,
 			)
 
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
 
+	cmd.Flags().AddFlagSet(FsCreateClass)
 	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }
