@@ -14,7 +14,7 @@ const (
 	MemStoreKey = "mem_nftmint"
 )
 
-const (
-	// class attributes infor by class_id
-	KeyPrefixClassAttributes = "class_attributes"
+var (
+	// KeyPrefixClassAttributes defines prefix key for ClassAttributes
+	KeyPrefixClassAttributes = []byte{0x01}
 )

@@ -41,3 +41,23 @@ func NewKeeper(cdc codec.Codec, storeKey, memKey storetypes.StoreKey,
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
+
+func (k Keeper) CreateClassAttributes(
+	ctx sdk.Context,
+	classID string,
+	owner sdk.AccAddress,
+	baseTokenUri string,
+	mintingPermission types.MintingPermission,
+	tokenSupplyCap uint64,
+) {
+	k.SaveClassAttributes(
+		ctx,
+		types.NewClassAttributes(
+			classID,
+			owner,
+			baseTokenUri,
+			mintingPermission,
+			tokenSupplyCap,
+		),
+	)
+}
