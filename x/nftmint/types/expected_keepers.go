@@ -10,7 +10,7 @@ type AccountKeeper interface {
 }
 
 type NftKeeper interface {
-	NewClass(class nfttypes.Class)
+	SaveClass(ctx sdk.Context, class nfttypes.Class) error
 
 	Mint(ctx sdk.Context, token nfttypes.NFT, receiver sdk.AccAddress) error
 	Burn(ctx sdk.Context, classID string, nftID string) error
