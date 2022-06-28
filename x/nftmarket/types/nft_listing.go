@@ -4,6 +4,10 @@ func (m NftListing) IdBytes() []byte {
 	return m.NftId.IdBytes()
 }
 
+func (m NftListing) ClassIdBytes() []byte {
+	return m.NftId.ClassIdBytes()
+}
+
 func (m NftListing) IsActive() bool {
 	return m.State == ListingState_LISTING || m.State == ListingState_BIDDING
 }
@@ -18,6 +22,10 @@ func (m NftListing) IsSuccessfulBid() bool {
 
 func (ni NftIdentifier) IdBytes() []byte {
 	return NftBytes(ni.ClassId, ni.NftId)
+}
+
+func (ni NftIdentifier) ClassIdBytes() []byte {
+	return []byte(ni.ClassId)
 }
 
 func (b NftBid) IdBytes() []byte {

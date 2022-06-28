@@ -45,6 +45,8 @@ const (
 	KeyPrefixAddressNftLoan = "address_nft_loan"
 	// rewards by address
 	KeyPrefixAddressRewards = "rewards"
+	// class by address
+	KeyPrefixClass = "class"
 )
 
 func NftBytes(classId, nftId string) []byte {
@@ -85,4 +87,12 @@ func AddressNftLoanKey(addr sdk.AccAddress, nftIdBytes []byte) []byte {
 
 func AddressRewardsKey(addr sdk.AccAddress) []byte {
 	return append([]byte(KeyPrefixAddressRewards), address.MustLengthPrefix(addr)...)
+}
+
+func ClassKey(addr sdk.AccAddress) []byte {
+	return append([]byte(KeyPrefixClass), address.MustLengthPrefix(addr)...)
+}
+
+func ClassIdKey(classId string) []byte {
+	return ClassKey([]byte(classId))
 }
