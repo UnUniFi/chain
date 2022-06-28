@@ -1,7 +1,7 @@
 # Concepts
 
 `yield-aggregator` module provides the function for yield aggregation.
-It find the optimal usage of funds (e.g. the highest interest rate pool) and automatically manage assets.
+It find the optimal target of funds for asset management (e.g. the highest interest rate pool).
 
 `nft-marketmaker` module and CosmWasm contracts will call the keeper of this module.
 
