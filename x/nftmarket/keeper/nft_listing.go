@@ -253,17 +253,6 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 		return types.ErrNotSupportedBidToken
 	}
 
-	// pay fees for nft listing
-	listingFee := params.NftListingCommissionFee
-	if !sdk.Coin.IsNil(listingFee) && listingFee.IsPositive() {
-		feeCoins := sdk.Coins{listingFee}
-		sender := sdk.AccAddress(msg.Sender)
-		err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, feeCoins)
-		if err != nil {
-			return err
-		}
-	}
-
 	// Send ownership to market module
 	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
 	err = k.nftKeeper.Transfer(ctx, msg.NftId.ClassId, msg.NftId.NftId, moduleAddr)
@@ -592,8 +581,8 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 
 	// handle not fully paid bids
 	for _, listing := range listings {
+		bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
 		if listing.State == types.ListingState_SELLING_DECISION {
-			bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
 			i := len(bids) - 1
 			bid := bids[i]
 
@@ -614,20 +603,59 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 				k.SaveNftListing(ctx, listing)
 			}
 		} else if listing.State == types.ListingState_END_LISTING {
-			// TODO: determine winner bidder from fully paid bids
-			// TODO: if winner bidder exists who paid full amount
-			{
+			index := len(bids) - 1
+			for ; index >= 0; index-- {
+				bid := bids[index]
+				if bid.PaidAmount.Equal(bid.Amount.Amount) {
+					break
+				}
+			}
+
+			if index >= 0 { // if winner bidder exists who paid full amount
 				// schedule NFT / token send after X days
 				listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
 				listing.State = types.ListingState_SUCCESSFUL_BID
 				k.SaveNftListing(ctx, listing)
 
-				// TODO: the deposit amount of the wining bidder candidates below the successful bidder will be returned
-				// TODO: how to handle winning bidder candidates above successful bidder that didn't pay full amount?
-			}
-			// TODO: if all winning bidder candidates do not pay,
-			{
-				// TODO: the amount of the collected deposit plus NFT to be listed will be given to the lister
+				for i, bid := range bids {
+					if index != i {
+						cacheCtx, write := ctx.CacheContext()
+						err := k.SafeCloseBid(cacheCtx, bid)
+						if err == nil {
+							write()
+						} else {
+							fmt.Println(err)
+						}
+					}
+				}
+				// TODO: shouldn't we handle winning bidder candidates above successful bidder that didn't pay full amount?
+			} else { // if all winning bidder candidates do not pay
+				// the amount of the collected deposit plus NFT to be listed will be given to the lister
+				listingOwner, err := sdk.AccAddressFromBech32(listing.Owner)
+				if err != nil {
+					continue
+				}
+
+				depositCollected := sdk.ZeroInt()
+				for _, bid := range bids {
+					depositCollected = depositCollected.Add(bid.PaidAmount)
+					k.DeleteBid(ctx, bid)
+				}
+
+				// pay fee
+				k.ProcessPaymentWithCommissionFee(ctx, listingOwner, listing.BidToken, depositCollected)
+
+				// transfer nft to listing owner
+				cacheCtx, write := ctx.CacheContext()
+				err = k.nftKeeper.Transfer(cacheCtx, listing.NftId.ClassId, listing.NftId.NftId, listingOwner)
+				if err != nil {
+					fmt.Println(err)
+				} else {
+					write()
+				}
+
+				// remove listing
+				k.DeleteNftListing(ctx, listing)
 			}
 		}
 	}
@@ -639,11 +667,60 @@ func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 	listings := k.GetFullPaymentNftListingsEndingAt(ctx, ctx.BlockTime())
 
 	_, _ = params, listings
+	for _, listing := range listings {
+		bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
+		if len(bids) != 1 {
+			continue
+		}
+		bid := bids[0]
+		bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+		if err != nil {
+			continue
+		}
 
-	// TODO: transfer nft to winner bidder
-	// TODO: the winning bid price paid to the lister will be the amount of the
-	// （deposit_collected + (bidder price - bidder deposit)) * (1.00 - fee_rate) Note: fee_rate variable name could be changed
+		listingOwner, err := sdk.AccAddressFromBech32(listing.Owner)
+		if err != nil {
+			continue
+		}
 
+		cacheCtx, write := ctx.CacheContext()
+		err = k.nftKeeper.Transfer(cacheCtx, listing.NftId.ClassId, listing.NftId.NftId, bidder)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		} else {
+			write()
+		}
+
+		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, bid.Amount.Denom, bid.PaidAmount)
+	}
+}
+
+func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, denom string, amount sdk.Int) {
+	params := k.GetParamSet(ctx)
+	commissionFee := params.NftListingCommissionFee
+	cacheCtx, write := ctx.CacheContext()
+	// pay commission fees for nft listing
+	fee := amount.Mul(sdk.NewInt(int64(commissionFee))).Quo(sdk.NewInt(100))
+	if fee.IsPositive() {
+		feeCoins := sdk.Coins{sdk.NewCoin(denom, fee)}
+		err := k.bankKeeper.SendCoinsFromModuleToModule(cacheCtx, types.ModuleName, types.NftTradingFee, feeCoins)
+		if err != nil {
+			fmt.Println(err)
+			return
+		} else {
+			write()
+		}
+	}
+
+	listerPayment := amount.Sub(fee)
+	err := k.bankKeeper.SendCoinsFromModuleToAccount(cacheCtx, types.ModuleName, listingOwner, sdk.Coins{sdk.NewCoin(denom, listerPayment)})
+	if err != nil {
+		fmt.Println(err)
+		return
+	} else {
+		write()
+	}
 }
 
 func (k Keeper) GetClassByClassIdByte(ctx sdk.Context, classId []byte) (types.Class, error) {

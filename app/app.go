@@ -235,8 +235,9 @@ var (
 		cdptypes.LiquidatorMacc:     {authtypes.Minter, authtypes.Burner},
 		ununifidisttypes.ModuleName: {authtypes.Minter},
 		// wasm.ModuleName:             {authtypes.Burner},
-		nft.ModuleName:            nil,
-		nftmarkettypes.ModuleName: nil,
+		nft.ModuleName:               nil,
+		nftmarkettypes.ModuleName:    nil,
+		nftmarkettypes.NftTradingFee: nil,
 	}
 
 	// module accounts that are allowed to receive tokens

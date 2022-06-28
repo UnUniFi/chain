@@ -114,7 +114,7 @@ message Params {
   uint64 nft_listing_nft_delivery_period = 13;
   uint64 nft_creator_share_percentage = 14;
   string market_administrator = 15;
-  cosmos.base.v1beta1.Coin nft_listing_commission_fee = 16 [ (gogoproto.nullable) = false ];
+  uint64 nft_listing_commission_fee = 16;
   uint64 nft_listing_extend_seconds = 17;
   cosmos.base.v1beta1.Coin nft_listing_period_extend_fee_per_hour = 18 [ (gogoproto.nullable) = false ];
 }
