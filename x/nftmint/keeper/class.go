@@ -11,28 +11,6 @@ import (
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 )
 
-func (k Keeper) CreateClass(ctx sdk.Context, creator sdk.AccAddress, className, classSymbol, classUri, classDescription string) error {
-	classID, err := k.CreateClassId(ctx, creator)
-	if err != nil {
-		return err
-	}
-
-	exists := k.nftKeeper.HasClass(ctx, classID)
-	if exists {
-		return nfttypes.ErrClassExists
-	}
-
-	// TODO: set Class
-
-	// TODO: Set ClassAttributes
-	// err = saveClassAttributes()
-	// if err != nil {
-	// 	 return err
-	// }
-
-	return nil
-}
-
 // TODO: method to create class_id
 func (k Keeper) CreateClassId(ctx sdk.Context, creator sdk.AccAddress) (string, error) {
 	sequence, err := k.accountKeeper.GetSequence(ctx, creator)
