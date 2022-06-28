@@ -18,7 +18,7 @@ type NftKeeper interface {
 	Transfer(ctx sdk.Context, classID string, nftID string, receiver sdk.AccAddress) error
 
 	GetClass(ctx sdk.Context, classID string) (nfttypes.Class, bool)
-	GetClasses(ctx sdk.Context) []nfttypes.Class
+	GetClasses(ctx sdk.Context) (classes []*nfttypes.Class)
 	HasClass(ctx sdk.Context, classId string) bool
 
 	GetNFT(ctx sdk.Context, classID, nftID string) (nfttypes.NFT, bool)
