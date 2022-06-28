@@ -74,6 +74,9 @@
   
     - [Msg](#ununifi.cdp.Msg)
   
+- [ethereum/signdoc.proto](#ethereum/signdoc.proto)
+    - [SignDocForMetamask](#ununifi.ethereum.SignDocForMetamask)
+  
 - [incentive/incentive.proto](#incentive/incentive.proto)
     - [BaseClaim](#ununifi.incentive.BaseClaim)
     - [BaseMultiClaim](#ununifi.incentive.BaseMultiClaim)
@@ -99,6 +102,54 @@
     - [MsgClaimCdpMintingRewardResponse](#ununifi.incentive.MsgClaimCdpMintingRewardResponse)
   
     - [Msg](#ununifi.incentive.Msg)
+  
+- [nftmint/nftmint.proto](#nftmint/nftmint.proto)
+    - [ClassAttributes](#ununifi.nftmint.ClassAttributes)
+    - [EventBurnNFT](#ununifi.nftmint.EventBurnNFT)
+    - [EventCreateClass](#ununifi.nftmint.EventCreateClass)
+    - [EventMintNFT](#ununifi.nftmint.EventMintNFT)
+    - [EventSendClass](#ununifi.nftmint.EventSendClass)
+    - [EventUpdateBaseTokenUri](#ununifi.nftmint.EventUpdateBaseTokenUri)
+    - [EventUpdateTokenSupplyCap](#ununifi.nftmint.EventUpdateTokenSupplyCap)
+    - [NFTAttributes](#ununifi.nftmint.NFTAttributes)
+    - [Params](#ununifi.nftmint.Params)
+  
+    - [MintingPermission](#ununifi.nftmint.MintingPermission)
+  
+- [nftmint/genesis.proto](#nftmint/genesis.proto)
+    - [GenesisState](#ununifi.nftmint.GenesisState)
+  
+- [nftmint/query.proto](#nftmint/query.proto)
+    - [QueryClassBaseTokenUriRequest](#ununifi.nftmint.QueryClassBaseTokenUriRequest)
+    - [QueryClassBaseTokenUriResponse](#ununifi.nftmint.QueryClassBaseTokenUriResponse)
+    - [QueryClassIdByNameRequest](#ununifi.nftmint.QueryClassIdByNameRequest)
+    - [QueryClassIdByNameResponse](#ununifi.nftmint.QueryClassIdByNameResponse)
+    - [QueryClassOwnerRequest](#ununifi.nftmint.QueryClassOwnerRequest)
+    - [QueryClassOwnerResponse](#ununifi.nftmint.QueryClassOwnerResponse)
+    - [QueryClassTokenSupplyCapRequest](#ununifi.nftmint.QueryClassTokenSupplyCapRequest)
+    - [QueryClassTokenSupplyCapResponse](#ununifi.nftmint.QueryClassTokenSupplyCapResponse)
+    - [QueryNFTMinterRequest](#ununifi.nftmint.QueryNFTMinterRequest)
+    - [QueryNFTMinterResponse](#ununifi.nftmint.QueryNFTMinterResponse)
+    - [QueryParamsRequest](#ununifi.nftmint.QueryParamsRequest)
+    - [QueryParamsResponse](#ununifi.nftmint.QueryParamsResponse)
+  
+    - [Query](#ununifi.nftmint.Query)
+  
+- [nftmint/tx.proto](#nftmint/tx.proto)
+    - [MsgBurnNFT](#ununifi.nftmint.MsgBurnNFT)
+    - [MsgBurnNFTResponse](#ununifi.nftmint.MsgBurnNFTResponse)
+    - [MsgCreateClass](#ununifi.nftmint.MsgCreateClass)
+    - [MsgCreateClassRespone](#ununifi.nftmint.MsgCreateClassRespone)
+    - [MsgMintNFT](#ununifi.nftmint.MsgMintNFT)
+    - [MsgMintNFTReponse](#ununifi.nftmint.MsgMintNFTReponse)
+    - [MsgSendClass](#ununifi.nftmint.MsgSendClass)
+    - [MsgSendClassRespone](#ununifi.nftmint.MsgSendClassRespone)
+    - [MsgUpdateBaseTokenUri](#ununifi.nftmint.MsgUpdateBaseTokenUri)
+    - [MsgUpdateBaseTokenUriResponse](#ununifi.nftmint.MsgUpdateBaseTokenUriResponse)
+    - [MsgUpdateTokenSupplyCap](#ununifi.nftmint.MsgUpdateTokenSupplyCap)
+    - [MsgUpdateTokenSupplyCapResponse](#ununifi.nftmint.MsgUpdateTokenSupplyCapResponse)
+  
+    - [Msg](#ununifi.nftmint.Msg)
   
 - [pricefeed/pricefeed.proto](#pricefeed/pricefeed.proto)
     - [CurrentPrice](#ununifi.pricefeed.CurrentPrice)
@@ -1051,6 +1102,40 @@ Query defines the gRPC querier service.
 
 
 
+<a name="ethereum/signdoc.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ethereum/signdoc.proto
+
+
+
+<a name="ununifi.ethereum.SignDocForMetamask"></a>
+
+### SignDocForMetamask
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `body` | [cosmos.tx.v1beta1.TxBody](#cosmos.tx.v1beta1.TxBody) |  |  |
+| `auth_info` | [cosmos.tx.v1beta1.AuthInfo](#cosmos.tx.v1beta1.AuthInfo) |  |  |
+| `chain_id` | [string](#string) |  |  |
+| `account_number` | [uint64](#uint64) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="incentive/incentive.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -1348,6 +1433,633 @@ Query defines the gRPC querier service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `ClaimCdpMintingReward` | [MsgClaimCdpMintingReward](#ununifi.incentive.MsgClaimCdpMintingReward) | [MsgClaimCdpMintingRewardResponse](#ununifi.incentive.MsgClaimCdpMintingRewardResponse) |  | |
+
+ <!-- end services -->
+
+
+
+<a name="nftmint/nftmint.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## nftmint/nftmint.proto
+
+
+
+<a name="ununifi.nftmint.ClassAttributes"></a>
+
+### ClassAttributes
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `owner` | [string](#string) |  |  |
+| `base_token_uri` | [string](#string) |  |  |
+| `minting_permission` | [MintingPermission](#ununifi.nftmint.MintingPermission) |  |  |
+| `token_supply_cap` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.EventBurnNFT"></a>
+
+### EventBurnNFT
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `burner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.EventCreateClass"></a>
+
+### EventCreateClass
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `base_token_uri` | [string](#string) |  |  |
+| `token_supply_cap` | [string](#string) |  |  |
+| `minting_permission` | [MintingPermission](#ununifi.nftmint.MintingPermission) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.EventMintNFT"></a>
+
+### EventMintNFT
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+| `owner` | [string](#string) |  |  |
+| `minter` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.EventSendClass"></a>
+
+### EventSendClass
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `receiver` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.EventUpdateBaseTokenUri"></a>
+
+### EventUpdateBaseTokenUri
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `base_token_uri` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.EventUpdateTokenSupplyCap"></a>
+
+### EventUpdateTokenSupplyCap
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `token_supply_cap` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.NFTAttributes"></a>
+
+### NFTAttributes
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+| `minter` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.Params"></a>
+
+### Params
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `MaxTokenSupplyLimit` | [uint64](#uint64) |  |  |
+| `MinClassNameLen` | [uint64](#uint64) |  |  |
+| `MaxClassNameLen` | [uint64](#uint64) |  |  |
+| `MaxClassUriLen` | [uint64](#uint64) |  |  |
+| `MaxBaseTokenUriLen` | [uint64](#uint64) |  |  |
+| `MaxSymbolLen` | [uint64](#uint64) |  |  |
+| `MaxDescriptionLen` | [uint64](#uint64) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="ununifi.nftmint.MintingPermission"></a>
+
+### MintingPermission
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| OnlyOwner | 0 |  |
+| Anyone | 1 |  |
+| WhiteList | 2 |  |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="nftmint/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## nftmint/genesis.proto
+
+
+
+<a name="ununifi.nftmint.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the nftmint module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.nftmint.Params) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="nftmint/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## nftmint/query.proto
+
+
+
+<a name="ununifi.nftmint.QueryClassBaseTokenUriRequest"></a>
+
+### QueryClassBaseTokenUriRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryClassBaseTokenUriResponse"></a>
+
+### QueryClassBaseTokenUriResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `base_token_uri` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryClassIdByNameRequest"></a>
+
+### QueryClassIdByNameRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_name` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryClassIdByNameResponse"></a>
+
+### QueryClassIdByNameResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryClassOwnerRequest"></a>
+
+### QueryClassOwnerRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryClassOwnerResponse"></a>
+
+### QueryClassOwnerResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryClassTokenSupplyCapRequest"></a>
+
+### QueryClassTokenSupplyCapRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryClassTokenSupplyCapResponse"></a>
+
+### QueryClassTokenSupplyCapResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `token_supply_cap` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryNFTMinterRequest"></a>
+
+### QueryNFTMinterRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryNFTMinterResponse"></a>
+
+### QueryNFTMinterResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `minter` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.nftmint.Params) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.nftmint.Query"></a>
+
+### Query
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#ununifi.nftmint.QueryParamsRequest) | [QueryParamsResponse](#ununifi.nftmint.QueryParamsResponse) |  | GET|/ununifi/nftmint/params|
+| `ClassOwner` | [QueryClassOwnerRequest](#ununifi.nftmint.QueryClassOwnerRequest) | [QueryClassOwnerResponse](#ununifi.nftmint.QueryClassOwnerResponse) |  | GET|/ununifi/nftmint/class_owner|
+| `NFTMinter` | [QueryNFTMinterRequest](#ununifi.nftmint.QueryNFTMinterRequest) | [QueryNFTMinterResponse](#ununifi.nftmint.QueryNFTMinterResponse) |  | GET|/ununifi/nftmint/nft_minter|
+| `ClassIdByName` | [QueryClassIdByNameRequest](#ununifi.nftmint.QueryClassIdByNameRequest) | [QueryClassIdByNameResponse](#ununifi.nftmint.QueryClassIdByNameResponse) |  | GET|/ununifi/nftmint/class_id_by_name|
+| `ClassBaseTokenUri` | [QueryClassBaseTokenUriRequest](#ununifi.nftmint.QueryClassBaseTokenUriRequest) | [QueryClassBaseTokenUriResponse](#ununifi.nftmint.QueryClassBaseTokenUriResponse) |  | GET|/ununifi/nftmint/class_base_token_uri|
+| `ClassTokenSupplyCap` | [QueryClassTokenSupplyCapRequest](#ununifi.nftmint.QueryClassTokenSupplyCapRequest) | [QueryClassTokenSupplyCapResponse](#ununifi.nftmint.QueryClassTokenSupplyCapResponse) |  | GET|/ununifi/nftmint/class_token_supply_cap|
+
+ <!-- end services -->
+
+
+
+<a name="nftmint/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## nftmint/tx.proto
+
+
+
+<a name="ununifi.nftmint.MsgBurnNFT"></a>
+
+### MsgBurnNFT
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgBurnNFTResponse"></a>
+
+### MsgBurnNFTResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgCreateClass"></a>
+
+### MsgCreateClass
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `name` | [string](#string) |  |  |
+| `base_token_uri` | [string](#string) |  |  |
+| `token_supply_cap` | [uint64](#uint64) |  |  |
+| `minting_permission` | [MintingPermission](#ununifi.nftmint.MintingPermission) |  |  |
+| `symbol` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `class_uri` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgCreateClassRespone"></a>
+
+### MsgCreateClassRespone
+
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgMintNFT"></a>
+
+### MsgMintNFT
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `recipient` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgMintNFTReponse"></a>
+
+### MsgMintNFTReponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgSendClass"></a>
+
+### MsgSendClass
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `recipient` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgSendClassRespone"></a>
+
+### MsgSendClassRespone
+
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgUpdateBaseTokenUri"></a>
+
+### MsgUpdateBaseTokenUri
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `base_token_uri` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgUpdateBaseTokenUriResponse"></a>
+
+### MsgUpdateBaseTokenUriResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgUpdateTokenSupplyCap"></a>
+
+### MsgUpdateTokenSupplyCap
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `token_supply_cap` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgUpdateTokenSupplyCapResponse"></a>
+
+### MsgUpdateTokenSupplyCapResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.nftmint.Msg"></a>
+
+### Msg
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `CreateClass` | [MsgCreateClass](#ununifi.nftmint.MsgCreateClass) | [MsgCreateClassRespone](#ununifi.nftmint.MsgCreateClassRespone) |  | |
+| `SendClass` | [MsgSendClass](#ununifi.nftmint.MsgSendClass) | [MsgSendClassRespone](#ununifi.nftmint.MsgSendClassRespone) |  | |
+| `UpdateBaseTokenUri` | [MsgUpdateBaseTokenUri](#ununifi.nftmint.MsgUpdateBaseTokenUri) | [MsgUpdateBaseTokenUriResponse](#ununifi.nftmint.MsgUpdateBaseTokenUriResponse) |  | |
+| `UpdateTokenSupplyCap` | [MsgUpdateTokenSupplyCap](#ununifi.nftmint.MsgUpdateTokenSupplyCap) | [MsgUpdateTokenSupplyCapResponse](#ununifi.nftmint.MsgUpdateTokenSupplyCapResponse) |  | |
+| `MintNFT` | [MsgMintNFT](#ununifi.nftmint.MsgMintNFT) | [MsgMintNFTReponse](#ununifi.nftmint.MsgMintNFTReponse) |  | |
+| `BurnNFT` | [MsgBurnNFT](#ununifi.nftmint.MsgBurnNFT) | [MsgBurnNFTResponse](#ununifi.nftmint.MsgBurnNFTResponse) |  | |
 
  <!-- end services -->
 
