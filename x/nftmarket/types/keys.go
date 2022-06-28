@@ -48,6 +48,16 @@ const (
 	KeyPrefixAddressNftLoan = "address_nft_loan"
 	// rewards by address
 	KeyPrefixAddressRewards = "rewards"
+	// Cumulative number of listing transactions
+	KeyPrefixListingTxsCount = "listing_txs_count"
+	// Average winning price
+	KeyPrefixAvgWinningPrice = "average_winning_price"
+	// Average winning price
+	KeyPrefixBidCount = "bid_count"
+	// listers
+	KeyPrefixListers = "lister"
+	// successful bidders
+	KeyPrefixSuccessfulBidder = "successful_bidder"
 )
 
 func NftBytes(classId, nftId string) []byte {
