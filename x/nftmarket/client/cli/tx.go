@@ -31,6 +31,16 @@ func GetTxCmd() *cobra.Command {
 		CmdBorrow(),
 	)
 
+	// rpc CancelNftListing(MsgCancelNftListing) returns (MsgCancelNftListingResponse);
+	// rpc ExpandListingPeriod(MsgExpandListingPeriod) returns (MsgExpandListingPeriodResponse);
+	// rpc CancelBid(MsgCancelBid) returns (MsgCancelBidResponse);
+	// rpc SellingDecision(MsgSellingDecision) returns (MsgSellingDecisionResponse);
+	// rpc PayFullBid(MsgPayFullBid) returns (MsgPayFullBidResponse);
+	// rpc Repay(MsgRepay) returns (MsgRepayResponse);
+	// rpc MintStableCoin(MsgMintStableCoin) returns (MsgMintStableCoinResponse);
+	// rpc BurnStableCoin(MsgBurnStableCoin) returns (MsgBurnStableCoinResponse);
+	// rpc Liquidate(MsgLiquidate) returns (MsgLiquidateResponse);
+
 	return cmd
 }
 
