@@ -7,11 +7,11 @@ import "nftmint/nftmint.proto";
 option go_package = "github.com/UnUniFi/chain/x/nftmint/types";
 
 service Msg {
-  rpc CreateClass(MsgCreateClass) returns (MsgCreateClassRespone);
-  rpc SendClass(MsgSendClass) returns (MsgSendClassRespone);
+  rpc CreateClass(MsgCreateClass) returns (MsgCreateClassResponse);
+  rpc SendClass(MsgSendClass) returns (MsgSendClassResponse);
   rpc UpdateBaseTokenUri(MsgUpdateBaseTokenUri) returns (MsgUpdateBaseTokenUriResponse);
   rpc UpdateTokenSupplyCap(MsgUpdateTokenSupplyCap) returns (MsgUpdateTokenSupplyCapResponse);
-  rpc MintNFT(MsgMintNFT) returns (MsgMintNFTReponse);
+  rpc MintNFT(MsgMintNFT) returns (MsgMintNFTResponse);
   rpc BurnNFT(MsgBurnNFT) returns (MsgBurnNFTResponse);
 }
 
@@ -29,7 +29,7 @@ message MsgCreateClass {
   string description = 8;
   string class_uri = 9;
 }
-message MsgCreateClassRespone {}
+message MsgCreateClassResponse {}
 
 message MsgSendClass {
   string sender = 1 [
@@ -44,7 +44,7 @@ message MsgSendClass {
     (gogoproto.nullable) = false
   ];
 }
-message MsgSendClassRespone {}
+message MsgSendClassResponse {}
 
 message MsgUpdateBaseTokenUri {
   string sender = 1 [
@@ -82,7 +82,7 @@ message MsgMintNFT {
     (gogoproto.nullable) = false
   ];
 }
-message MsgMintNFTReponse {}
+message MsgMintNFTResponse {}
 
 message MsgBurnNFT {
   string sender = 1 [
