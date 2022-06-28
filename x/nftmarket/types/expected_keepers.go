@@ -3,6 +3,7 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/cosmos/cosmos-sdk/x/nft"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 )
 
@@ -28,6 +29,10 @@ type BankKeeper interface {
 }
 
 type NftKeeper interface {
+	// todo: delete
+	SaveClass(ctx sdk.Context, class nfttypes.Class) error
+	GetClass(ctx sdk.Context, classID string) (nft.Class, bool)
+
 	Mint(ctx sdk.Context, token nfttypes.NFT, receiver sdk.AccAddress) error
 	Burn(ctx sdk.Context, classID string, nftID string) error
 
