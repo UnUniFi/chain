@@ -44,9 +44,10 @@ func (msg MsgListNft) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgCancelNftListing{}
 
-func NewMsgCancelNftListing(sender sdk.AccAddress) MsgCancelNftListing {
+func NewMsgCancelNftListing(sender sdk.AccAddress, nftId NftIdentifier) MsgCancelNftListing {
 	return MsgCancelNftListing{
 		Sender: sender.Bytes(),
+		NftId:  nftId,
 	}
 }
 
@@ -75,9 +76,10 @@ func (msg MsgCancelNftListing) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgExpandListingPeriod{}
 
-func NewMsgExpandListingPeriod(sender sdk.AccAddress) MsgExpandListingPeriod {
+func NewMsgExpandListingPeriod(sender sdk.AccAddress, nftId NftIdentifier) MsgExpandListingPeriod {
 	return MsgExpandListingPeriod{
 		Sender: sender.Bytes(),
+		NftId:  nftId,
 	}
 }
 
@@ -141,9 +143,10 @@ func (msg MsgPlaceBid) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgCancelBid{}
 
-func NewMsgCancelBid(sender sdk.AccAddress) MsgCancelBid {
+func NewMsgCancelBid(sender sdk.AccAddress, nftId NftIdentifier) MsgCancelBid {
 	return MsgCancelBid{
 		Sender: sender.Bytes(),
+		NftId:  nftId,
 	}
 }
 
@@ -172,9 +175,10 @@ func (msg MsgCancelBid) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgSellingDecision{}
 
-func NewMsgSellingDecision(sender sdk.AccAddress) MsgSellingDecision {
+func NewMsgSellingDecision(sender sdk.AccAddress, nftId NftIdentifier) MsgSellingDecision {
 	return MsgSellingDecision{
 		Sender: sender.Bytes(),
+		NftId:  nftId,
 	}
 }
 
@@ -235,9 +239,10 @@ func (msg MsgEndNftListing) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgPayFullBid{}
 
-func NewMsgPayFullBid(sender sdk.AccAddress) MsgPayFullBid {
+func NewMsgPayFullBid(sender sdk.AccAddress, nftId NftIdentifier) MsgPayFullBid {
 	return MsgPayFullBid{
 		Sender: sender.Bytes(),
+		NftId:  nftId,
 	}
 }
 
@@ -299,9 +304,11 @@ func (msg MsgBorrow) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgRepay{}
 
-func NewMsgRepay(sender sdk.AccAddress) MsgRepay {
+func NewMsgRepay(sender sdk.AccAddress, nftId NftIdentifier, amount sdk.Coin) MsgRepay {
 	return MsgRepay{
 		Sender: sender.Bytes(),
+		NftId:  nftId,
+		Amount: amount,
 	}
 }
 
