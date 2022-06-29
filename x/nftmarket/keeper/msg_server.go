@@ -21,6 +21,16 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 
 var _ types.MsgServer = msgServer{}
 
+func (k msgServer) MintNft(c context.Context, msg *types.MsgMintNft) (*types.MsgMintNftResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	err := k.keeper.MintNft(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+	return &types.MsgMintNftResponse{}, nil
+}
+
 func (k msgServer) ListNft(c context.Context, msg *types.MsgListNft) (*types.MsgListNftResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 

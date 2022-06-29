@@ -15,6 +15,11 @@ ununifid add-genesis-account faucet 100000000000uguu,100000000000ubtc,1000000000
 ununifid gentx my_validator 100000000uguu --chain-id ununifi-test-private-m1 --keyring-backend test;
 ununifid collect-gentxs;
 
+# query nft
+ununifid query nft nft a10 a10
+
+# mint an nft
+ununifid tx nftmarket mint a10 a10 uri 888838 --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block
 
 # listing nft
 ununifid tx nftmarket listing a10 a10 --chain-id  ununifi-test-private-m1 --from my_validator --keyring-backend test --gas 300000 -y |jq .

@@ -25,6 +25,7 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(
+		CmdMintNft(),
 		CmdCreateListing(),
 		CmdCancelNftListing(),
 		CmdExpandListingPeriod(),
@@ -39,6 +40,35 @@ func GetTxCmd() *cobra.Command {
 		CmdBurnStableCoin(),
 		CmdLiquidate(),
 	)
+
+	return cmd
+}
+
+func CmdMintNft() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "mint [class-id] [nft-id] [uri] [uri-hash]",
+		Short: "Mint an nft",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Mint an nft.
+Example:
+$ %s tx %s mint a10 a10 uri 888838  --from myKeyName --chain-id ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(4),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgMintNft(clientCtx.GetFromAddress(), args[0], args[1], args[2], args[3])
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
 }

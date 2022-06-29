@@ -5,6 +5,41 @@ import (
 )
 
 // ensure Msg interface compliance at compile time
+var _ sdk.Msg = &MsgMintNft{}
+
+func NewMsgMintNft(sender sdk.AccAddress, classId, nftId, uri, uriHash string) MsgMintNft {
+	return MsgMintNft{
+		Sender:     sender.Bytes(),
+		ClassId:    classId,
+		NftId:      nftId,
+		NftUri:     uri,
+		NftUriHash: uriHash,
+	}
+}
+
+// Route return the message type used for routing the message.
+func (msg MsgMintNft) Route() string { return RouterKey }
+
+// Type returns a human-readable string for the message, intended for utilization within tags.
+func (msg MsgMintNft) Type() string { return "mint_nft" }
+
+// ValidateBasic does a simple validation check that doesn't require access to state.
+func (msg MsgMintNft) ValidateBasic() error {
+	return nil
+}
+
+// GetSignBytes gets the canonical byte representation of the Msg.
+func (msg MsgMintNft) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners returns the addresses of signers that must sign.
+func (msg MsgMintNft) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msg.Sender.AccAddress()}
+}
+
+// ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgListNft{}
 
 // todo: Implementation fields

@@ -9,6 +9,7 @@ import "nftmarket/nftmarket.proto";
 option go_package = "github.com/UnUniFi/chain/x/nftmarket/types";
 
 service Msg {
+  rpc MintNft(MsgMintNft) returns (MsgMintNftResponse);
   rpc ListNft(MsgListNft) returns (MsgListNftResponse);
   rpc CancelNftListing(MsgCancelNftListing) returns (MsgCancelNftListingResponse);
   rpc ExpandListingPeriod(MsgExpandListingPeriod) returns (MsgExpandListingPeriodResponse);
@@ -23,6 +24,19 @@ service Msg {
   rpc BurnStableCoin(MsgBurnStableCoin) returns (MsgBurnStableCoinResponse);
   rpc Liquidate(MsgLiquidate) returns (MsgLiquidateResponse);
 }
+
+message MsgMintNft {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string classId = 2;
+  string nftId = 3;
+  string nftUri = 4;
+  string nftUriHash = 5;
+}
+message MsgMintNftResponse {}
 
 message MsgListNft {
   string sender = 1 [
