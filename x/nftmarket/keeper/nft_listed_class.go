@@ -28,7 +28,7 @@ func (k Keeper) SetListedClass(ctx sdk.Context, listing types.NftListing) {
 		store.Set(types.ClassKey(listing.ClassIdBytes()), bz)
 	} else {
 
-		// todo delete dumplicate nftid
+		// todo delete duplicated nftid
 		class := types.ListedClass{}
 		k.cdc.MustUnmarshal(bzIdlist, &class)
 		class.NftIds = append(class.NftIds, listing.NftId.NftId)
