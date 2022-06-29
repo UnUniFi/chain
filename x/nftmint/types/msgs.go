@@ -3,6 +3,7 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 )
 
 // nftmint message types
@@ -84,16 +85,18 @@ func (msg MsgMintNFT) Route() string { return RouterKey }
 
 func (msg MsgMintNFT) Type() string { return TypeMsgMintNFT }
 
-// TODO: Impl validate func
 func (msg MsgMintNFT) ValidateBasic() error {
 	if msg.Sender.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
-	// TODO: the validation against:
-	// class-id validation
-	// if class-id exists
-	// nft-id validation
-	//
+
+	if err := nfttypes.ValidateClassID(msg.ClassId); err != nil {
+		return sdkerrors.Wrapf(nfttypes.ErrInvalidClassID, "Invalid class id (%s)", msg.ClassId)
+	}
+
+	if err := nfttypes.ValidateNFTID(msg.NftId); err != nil {
+		return sdkerrors.Wrapf(nfttypes.ErrInvalidID, "Invalid nft id (%s)", msg.NftId)
+	}
 
 	return nil
 }

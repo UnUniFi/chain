@@ -5,6 +5,8 @@ import (
 
 	"github.com/UnUniFi/chain/x/nftmint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 )
 
 type msgServer struct {
@@ -49,6 +51,11 @@ func (k msgServer) UpdateTokenSupplyCap(c context.Context, msg *types.MsgUpdateT
 
 func (k msgServer) MintNFT(c context.Context, msg *types.MsgMintNFT) (*types.MsgMintNFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
+	exists := k.keeper.nftKeeper.HasClass(ctx, msg.ClassId)
+	if !exists {
+		return nil, sdkerrors.Wrap(nfttypes.ErrClassExists, msg.ClassId)
+	}
 
 	if err := k.keeper.MintNFT(ctx, msg.ClassId, msg.NftId, msg.Recipient.AccAddress()); err != nil {
 		return nil, err
