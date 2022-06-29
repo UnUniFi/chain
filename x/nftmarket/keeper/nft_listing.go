@@ -61,49 +61,7 @@ func getTimeKey(prefix string, timestamp time.Time) []byte {
 
 func (k Keeper) SaveNftListing(ctx sdk.Context, listing types.NftListing) {
 	k.SetNftListing(ctx, listing)
-	k.UpdateClass(ctx, listing)
-}
-
-func (k Keeper) UpdateClass(ctx sdk.Context, listing types.NftListing) {
-	switch listing.State {
-	case types.ListingState_LISTING:
-		k.SetClass(ctx, listing)
-	case types.ListingState_SUCCESSFUL_BID:
-		// todo delete nftid from class
-	}
-}
-
-func (k Keeper) SetClass(ctx sdk.Context, listing types.NftListing) {
-	store := ctx.KVStore(k.storeKey)
-	bzIdlist := store.Get(types.ClassKey(listing.ClassIdBytes()))
-	if bzIdlist == nil {
-		bz := k.cdc.MustMarshal(
-			&types.Class{
-				ClassId: listing.NftId.ClassId,
-				NftIds:  []string{listing.NftId.NftId},
-			},
-		)
-		store.Set(types.ClassKey(listing.ClassIdBytes()), bz)
-	} else {
-
-		// todo delete dumplicate nftid
-		class := types.Class{}
-		k.cdc.MustUnmarshal(bzIdlist, &class)
-		class.NftIds = append(class.NftIds, listing.NftId.NftId)
-		bz := k.cdc.MustMarshal(&class)
-		store.Set(types.ClassKey(listing.ClassIdBytes()), bz)
-	}
-}
-
-func (k Keeper) GetClass(ctx sdk.Context, classIdByte []byte) (types.Class, error) {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(classIdByte)
-	if bz == nil {
-		return types.Class{}, types.ErrNftListingDoesNotExist
-	}
-	class := types.Class{}
-	k.cdc.MustUnmarshal(bz, &class)
-	return class, nil
+	k.UpdateListedClass(ctx, listing)
 }
 
 func (k Keeper) SetNftListing(ctx sdk.Context, listing types.NftListing) {
@@ -721,33 +679,6 @@ func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sd
 	} else {
 		write()
 	}
-}
-
-func (k Keeper) GetClassByClassIdByte(ctx sdk.Context, classId []byte) (types.Class, error) {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(classId)
-	if bz == nil {
-		return types.Class{}, types.ErrNftListingDoesNotExist
-	}
-	class := types.Class{}
-	k.cdc.MustUnmarshal(bz, &class)
-	return class, nil
-}
-
-func (k Keeper) GetClasses(ctx sdk.Context) ([]types.Class, error) {
-	store := ctx.KVStore(k.storeKey)
-	classes := []types.Class{}
-	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixClass))
-	defer it.Close()
-
-	for ; it.Valid(); it.Next() {
-		var class types.Class
-		k.cdc.MustUnmarshal(it.Value(), &class)
-
-		classes = append(classes, class)
-	}
-
-	return classes, nil
 }
 
 // todo: delete
