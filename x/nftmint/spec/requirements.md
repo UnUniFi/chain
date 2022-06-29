@@ -66,9 +66,9 @@
 
 #### NFT.Id
 
-1. `NFT.Id` is the number counted from 1 by one automatically.
-1. `NFT.Id` can use SDK's module storing token supply data.
-1. `NFT.Id` mustn't exceed the `TokenSupplyCap`.
+1. `NFT.Id` is unique id under `Class`.
+1. `NFT.Id` is set to be an argument in `MsgMintNFT`.
+1. `NFT.Id` have some validation critea.
 
 #### NFT.Uri
 
@@ -163,7 +163,6 @@ Please refer them since I don't write duplicated queries here. ([Query service m
 1. ClassBaseTokenUri() base_token_uri
 1. ClassTokenSupplyCap() token_supply_cap
 1. ClassMintingPermission() minting_permission
-1. ClassTransferable() transferable 
 1. ClassIdsByOwner(owner) []class_id
 
 From cosmos SDk's x/nft module:
