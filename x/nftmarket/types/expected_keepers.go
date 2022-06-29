@@ -29,8 +29,6 @@ type BankKeeper interface {
 }
 
 type NftKeeper interface {
-	// todo: delete
-	SaveClass(ctx sdk.Context, class nfttypes.Class) error
 	GetClass(ctx sdk.Context, classID string) (nft.Class, bool)
 
 	Mint(ctx sdk.Context, token nfttypes.NFT, receiver sdk.AccAddress) error
