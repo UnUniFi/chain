@@ -33,7 +33,7 @@ func (k msgServer) CreateClass(c context.Context, msg *types.MsgCreateClass) (*t
 	}
 
 	k.keeper.CreateClassAttributes(ctx, classID, msg.Sender.AccAddress(), msg.BaseTokenUri, msg.MintingPermission, msg.TokenSupplyCap)
-
+	k.keeper.AddClassIDToOwningClassList(ctx, msg.Sender.AccAddress(), classID)
 	return &types.MsgCreateClassResponse{}, nil
 }
 
@@ -46,6 +46,7 @@ func (k msgServer) UpdateBaseTokenUri(c context.Context, msg *types.MsgUpdateBas
 func (k msgServer) UpdateTokenSupplyCap(c context.Context, msg *types.MsgUpdateTokenSupplyCap) (*types.MsgUpdateTokenSupplyCapResponse, error) {
 	return &types.MsgUpdateTokenSupplyCapResponse{}, nil
 }
+
 func (k msgServer) MintNFT(c context.Context, msg *types.MsgMintNFT) (*types.MsgMintNFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
@@ -59,6 +60,7 @@ func (k msgServer) MintNFT(c context.Context, msg *types.MsgMintNFT) (*types.Msg
 
 	return &types.MsgMintNFTResponse{}, nil
 }
+
 func (k msgServer) BurnNFT(c context.Context, msg *types.MsgBurnNFT) (*types.MsgBurnNFTResponse, error) {
 	return &types.MsgBurnNFTResponse{}, nil
 }

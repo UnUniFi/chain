@@ -30,3 +30,8 @@ func NewClassAttributes(
 		TokenSupplyCap:    tokenSupplyCap,
 	}
 }
+
+func NewOwningClassList(owner sdk.AccAddress) OwningClassList {
+	var classIDList []string
+	return OwningClassList{Owner: owner.String(), ClassId: classIDList}
+}

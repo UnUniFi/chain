@@ -59,16 +59,7 @@ func (k Keeper) CreateClassAttributes(
 	mintingPermission types.MintingPermission,
 	tokenSupplyCap uint64,
 ) {
-	k.SaveClassAttributes(
-		ctx,
-		types.NewClassAttributes(
-			classID,
-			owner,
-			baseTokenUri,
-			mintingPermission,
-			tokenSupplyCap,
-		),
-	)
+	k.SetClassAttributes(ctx, types.NewClassAttributes(classID, owner, baseTokenUri, mintingPermission, tokenSupplyCap))
 }
 
 func (k Keeper) MintNFT(
@@ -82,15 +73,7 @@ func (k Keeper) MintNFT(
 	}
 
 	nftUri := classAttributes.BaseTokenUri + nftID
-	return k.nftKeeper.Mint(
-		ctx,
-		types.NewNFT(
-			classID,
-			nftID,
-			nftUri,
-		),
-		owner,
-	)
+	return k.nftKeeper.Mint(ctx, types.NewNFT(classID, nftID, nftUri), owner)
 }
 
 func (k Keeper) CreateNFTAttributes(
@@ -98,12 +81,5 @@ func (k Keeper) CreateNFTAttributes(
 	classID, nftID string,
 	minter sdk.AccAddress,
 ) error {
-	return k.SaveNFTAttributes(
-		ctx,
-		types.NewNFTAttributes(
-			classID,
-			nftID,
-			minter,
-		),
-	)
+	return k.SaveNFTAttributes(ctx, types.NewNFTAttributes(classID, nftID, minter))
 }

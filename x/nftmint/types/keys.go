@@ -1,5 +1,9 @@
 package types
 
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
+
 const (
 	// ModuleName defines the module name
 	ModuleName = "nftmint"
@@ -23,9 +27,17 @@ var (
 
 	// KeyPrefixNFTAttributes defines prefix key for NFTAttributes
 	KeyPrefixNFTAttributes = []byte{0x02}
+
+	// KeyPrefixOwningClassList defines prefix key for OwningClassList
+	KeyPrefixOwningClassList = []byte{0x03}
 )
 
 func NFTAttributesKey(classID, nftID string) []byte {
 	nftIdentifier := classID + nftID
 	return []byte(nftIdentifier)
+}
+
+func OwningClassListKey(owner string) []byte {
+	ownerAddr, _ := sdk.AccAddressFromBech32(owner)
+	return ownerAddr.Bytes()
 }
