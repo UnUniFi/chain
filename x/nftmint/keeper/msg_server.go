@@ -22,13 +22,6 @@ var _ types.MsgServer = msgServer{}
 func (k msgServer) CreateClass(c context.Context, msg *types.MsgCreateClass) (*types.MsgCreateClassResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	// TODO: Make some validation additionaly against:
-	// - name
-	// - symbol
-	// - baseTokenUri
-	// - description
-	// - classUri
-
 	classID, err := k.keeper.CreateClassId(ctx, msg.Sender.AccAddress())
 	if err != nil {
 		return nil, err
@@ -54,6 +47,16 @@ func (k msgServer) UpdateTokenSupplyCap(c context.Context, msg *types.MsgUpdateT
 	return &types.MsgUpdateTokenSupplyCapResponse{}, nil
 }
 func (k msgServer) MintNFT(c context.Context, msg *types.MsgMintNFT) (*types.MsgMintNFTResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := k.keeper.MintNFT(ctx, msg.ClassId, msg.NftId, msg.Recipient.AccAddress()); err != nil {
+		return nil, err
+	}
+
+	if err := k.keeper.CreateNFTAttributes(ctx, msg.ClassId, msg.NftId, msg.Sender.AccAddress()); err != nil {
+		return nil, err
+	}
+
 	return &types.MsgMintNFTResponse{}, nil
 }
 func (k msgServer) BurnNFT(c context.Context, msg *types.MsgBurnNFT) (*types.MsgBurnNFTResponse, error) {

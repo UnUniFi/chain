@@ -11,6 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
 )
 
@@ -19,7 +20,7 @@ func GetTxCmd() *cobra.Command {
 	nftTxCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      "nftmint transactions subcommands",
-		Long:                       "Provides the most common nft logic for upper-level applications, compatible with Ethereum's erc721 contract",
+		Long:                       "Provides the most common nft minting applications, compatible with Ethereum's erc721 contract",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
@@ -27,6 +28,7 @@ func GetTxCmd() *cobra.Command {
 
 	nftTxCmd.AddCommand(
 		NewCmdCreateClass(),
+		NewCmdMintNFT(),
 	)
 
 	return nftTxCmd
@@ -39,7 +41,7 @@ func NewCmdCreateClass() *cobra.Command {
 		Args:  cobra.ExactArgs(4),
 		Short: "create class for minting NFTs",
 		Long: strings.TrimSpace(fmt.Sprintf(
-			"$ %s tx %s send <class-name> <base-token-uri> <token-supply-cap> <minting-permission>"+
+			"$ %s tx %s create-class <class-name> <base-token-uri> <token-supply-cap> <minting-permission>"+
 				"--from <sender> "+
 				"--symbol <class-symbol> "+
 				"--description <class-description> "+
@@ -83,6 +85,56 @@ func NewCmdCreateClass() *cobra.Command {
 				classSymbol,
 				classDescription,
 				classUri,
+			)
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	cmd.Flags().AddFlagSet(FsCreateClass)
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewCmdMintNFT() *cobra.Command {
+	cmd := &cobra.Command{
+		// TODO: write appropriate guide
+		Use:   "mint-nft [class-id] [nft-id] [receiver] --from [sender]",
+		Args:  cobra.ExactArgs(3),
+		Short: "mint NFT under specific class by class-id",
+		Long: strings.TrimSpace(fmt.Sprintf(
+			"$ %s tx %s mint-nft <class-id> <nft-id> <receiver>"+
+				"--from <sender> "+
+				"--chain-id=<chain-id> "+
+				"--fees=<fee>", version.AppName, types.ModuleName),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			sender := clientCtx.GetFromAddress()
+
+			recipient := args[2]
+			var recipientAddr sdk.AccAddress
+			if len(recipient) == 0 {
+				recipientAddr = sender
+			}
+			recipientAddr, err = sdk.AccAddressFromBech32(recipient)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgMintNFT(
+				sender,
+				args[0],
+				args[1],
+				recipientAddr,
 			)
 
 			if err := msg.ValidateBasic(); err != nil {

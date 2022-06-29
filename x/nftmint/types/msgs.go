@@ -11,7 +11,10 @@ const (
 	TypeMsgMintNFT     = "mint-nft"
 )
 
-var _ sdk.Msg = &MsgCreateClass{}
+var (
+	_ sdk.Msg = &MsgCreateClass{}
+	_ sdk.Msg = &MsgMintNFT{}
+)
 
 func NewMsgCreateClass(
 	sender sdk.AccAddress,
@@ -59,33 +62,49 @@ func (msg MsgCreateClass) GetSignBytes() []byte {
 	return sdk.MustSortJSON(bz)
 }
 
-// GetSigners implements Msg
+// GetSigners returns the addresses of signers that must sign.
 func (msg MsgCreateClass) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Sender.AccAddress()}
 }
 
-// var _ sdk.Msg = &MsgMintNFT{}
+func NewMsgMintNFT(
+	sender sdk.AccAddress,
+	classID, nftID string,
+	recipient sdk.AccAddress,
+) *MsgMintNFT {
+	return &MsgMintNFT{
+		Sender:    sender.Bytes(),
+		ClassId:   classID,
+		NftId:     nftID,
+		Recipient: recipient.Bytes(),
+	}
+}
 
-// func NewMsgMintNFT(
-// 	sender sdk.AccAddress,
-// 	classId string,
-// 	recipient sdk.AccAddress,
-// ) *MsgMintNFT {
-// 	return &MsgMintNFT{
-// 		Sender:    sender.Bytes(),
-// 		ClassId:   classId,
-// 		Recipient: recipient.Bytes(),
-// 	}
-// }
+func (msg MsgMintNFT) Route() string { return RouterKey }
 
-// func (msg MsgMintNFT) Route() string { return RouterKey }
+func (msg MsgMintNFT) Type() string { return TypeMsgMintNFT }
 
-// func (msg MsgMintNFT) Type() string { return TypeMsgMintNFT }
+// TODO: Impl validate func
+func (msg MsgMintNFT) ValidateBasic() error {
+	if msg.Sender.AccAddress().Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
+	}
+	// TODO: the validation against:
+	// class-id validation
+	// if class-id exists
+	// nft-id validation
+	//
 
-// // TODO: impl validate func
+	return nil
+}
 
-// // GetSigners implements Msg
-// func (m MsgMintNFT) GetSigners() []sdk.AccAddress {
-// 	signer, _ := sdk.AccAddressFromBech32(string(m.Sender))
-// 	return []sdk.AccAddress{signer}
-// }
+// GetSignBytes gets the canonical byte representation of the Msg.
+func (msg MsgMintNFT) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners returns the addresses of signers that must sign.
+func (msg MsgMintNFT) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msg.Sender.AccAddress()}
+}
