@@ -76,7 +76,7 @@ message QueryListedClassResponse {
   string class = 1;
   string name = 2;
   string description = 3;
-  string sybol = 4;
+  string symbol = 4;
   string uri = 5;
   string urihash = 6;
   repeated Nft nfts = 7;

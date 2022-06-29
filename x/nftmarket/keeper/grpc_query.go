@@ -129,7 +129,7 @@ func (k Keeper) GetListedClass(ctx sdk.Context, classId string, limit int) (*typ
 		Class:       class.ClassId,
 		Name:        classInfo.Name,
 		Description: classInfo.Description,
-		Sybol:       classInfo.Symbol,
+		Symbol:      classInfo.Symbol,
 		Uri:         classInfo.Uri,
 		Urihash:     classInfo.UriHash,
 		NftCount:    uint64(len(class.NftIds)),
