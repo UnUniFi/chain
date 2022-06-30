@@ -40,7 +40,11 @@ message QueryClassOwnerRequest {
   string class_id = 1;
 }
 message QueryClassOwnerResponse {
-  string owner = 1 [ (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress" ];
+  string owner = 1  [
+    (gogoproto.moretags) = "yaml:\"owner\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryNFTMinterRequest {
@@ -48,7 +52,11 @@ message QueryNFTMinterRequest {
   string nft_id = 2;
 }
 message QueryNFTMinterResponse {
-  string minter = 1 [ (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress" ];
+  string minter = 1  [
+    (gogoproto.moretags) = "yaml:\"minter\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryClassIdsByNameRequest {
@@ -73,7 +81,11 @@ message QueryClassTokenSupplyCapResponse {
 }
 
 message QueryClassIdsByOwnerRequest {
-  string owner = 1;
+  string owner = 1 [
+    (gogoproto.moretags) = "yaml:\"owner\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
 }
 message QueryClassIdsByOwnerResponse {
   repeated string class_id = 1;

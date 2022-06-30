@@ -14,7 +14,11 @@ enum MintingPermission {
 
 message ClassAttributes {
   string class_id = 1;
-  string owner = 2 ;
+  string owner = 2  [
+    (gogoproto.moretags) = "yaml:\"owner\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
   string base_token_uri = 3;
   MintingPermission minting_permission = 4;
   uint64 token_supply_cap = 5;
@@ -23,11 +27,19 @@ message ClassAttributes {
 message NFTAttributes {
   string class_id = 1;
   string nft_id = 2;
-  string minter = 3;
+  string minter = 3 [
+    (gogoproto.moretags) = "yaml:\"minter\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message OwningClassList {
-  string owner = 1;
+  string owner = 1 [
+    (gogoproto.moretags) = "yaml:\"owner\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
   repeated string class_id = 2;
 }
 
@@ -42,7 +54,11 @@ message Params {
 }
 
 message EventCreateClass {
-  string owner = 1;
+  string owner = 1 [
+    (gogoproto.moretags) = "yaml:\"owner\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
   string class_id = 2;
   string base_token_uri = 3;
   string token_supply_cap = 4;
@@ -50,19 +66,35 @@ message EventCreateClass {
 }
 
 message EventSendClass {
-  string sender = 1;
-  string receiver = 2;
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string receiver = 2 [
+    (gogoproto.moretags) = "yaml:\"receiver\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
   string class_id = 3;
 }
 
 message EventUpdateBaseTokenUri {
-  string owner = 1;
+  string owner = 1 [
+    (gogoproto.moretags) = "yaml:\"owner\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
   string class_id = 2;
   string base_token_uri = 3;
 }
 
 message EventUpdateTokenSupplyCap {
-  string owner = 1;
+  string owner = 1 [
+    (gogoproto.moretags) = "yaml:\"owner\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
   string class_id = 2;
   string token_supply_cap = 3;
 }
@@ -70,12 +102,24 @@ message EventUpdateTokenSupplyCap {
 message EventMintNFT {
   string class_id = 1;
   string nft_id = 2;
-  string owner = 3;
-  string minter = 4;
+  string owner = 3 [
+    (gogoproto.moretags) = "yaml:\"owner\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string minter = 4 [
+    (gogoproto.moretags) = "yaml:\"minter\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message EventBurnNFT {
-  string burner = 1;
+  string burner = 1 [
+    (gogoproto.moretags) = "yaml:\"burner\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
   string class_id = 2;
   string nft_id = 3;
 }
