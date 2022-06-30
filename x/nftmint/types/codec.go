@@ -14,6 +14,10 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCreateClass{},
 		&MsgMintNFT{},
+		&MsgSendClass{},
+		&MsgUpdateBaseTokenUri{},
+		&MsgUpdateTokenSupplyCap{},
+		&MsgBurnNFT{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
