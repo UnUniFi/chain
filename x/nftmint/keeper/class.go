@@ -22,6 +22,9 @@ func (k Keeper) CreateClassId(ctx sdk.Context, creator sdk.AccAddress) (string, 
 	// TODO: create random string from accaddress and sequence
 	// q is bech32 or hex as encoding format
 	classID := "initial"
+	if err := nfttypes.ValidateClassID(classID); err != nil {
+		return "", sdkerrors.Wrapf(nfttypes.ErrInvalidClassID, "Invalid class id (%s)", classID)
+	}
 
 	exists := k.nftKeeper.HasClass(ctx, classID)
 	if exists {
@@ -44,7 +47,7 @@ func (k Keeper) SetOwningClassList(ctx sdk.Context, owningClassList types.Owning
 	prefixStore := prefix.NewStore(store, types.KeyPrefixOwningClassList)
 
 	bz := k.cdc.MustMarshal(&owningClassList)
-	owningClassListKey := types.OwningClassListKey(owningClassList.Owner)
+	owningClassListKey := types.OwningClassListKey(owningClassList.Owner.AccAddress())
 	prefixStore.Set(owningClassListKey, bz)
 }
 

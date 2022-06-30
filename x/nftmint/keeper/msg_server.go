@@ -39,7 +39,7 @@ func (k msgServer) CreateClass(c context.Context, msg *types.MsgCreateClass) (*t
 	k.keeper.AddClassIDToOwningClassList(ctx, msg.Sender.AccAddress(), classID)
 
 	ctx.EventManager().EmitTypedEvent(&types.EventCreateClass{
-		Owner:             msg.Sender.AccAddress().String(),
+		Owner:             msg.Sender,
 		ClassId:           classID,
 		BaseTokenUri:      msg.BaseTokenUri,
 		TokenSupplyCap:    strconv.FormatUint(msg.TokenSupplyCap, 10),
@@ -78,8 +78,8 @@ func (k msgServer) MintNFT(c context.Context, msg *types.MsgMintNFT) (*types.Msg
 	ctx.EventManager().EmitTypedEvent(&types.EventMintNFT{
 		ClassId: msg.ClassId,
 		NftId:   msg.NftId,
-		Owner:   msg.Recipient.AccAddress().String(),
-		Minter:  msg.Sender.AccAddress().String(),
+		Owner:   msg.Recipient,
+		Minter:  msg.Sender,
 	})
 	return &types.MsgMintNFTResponse{}, nil
 }

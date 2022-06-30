@@ -17,6 +17,6 @@ func NewNFTAttributes(classID, nftID string, minter sdk.AccAddress) NFTAttribute
 	return NFTAttributes{
 		ClassId: classID,
 		NftId:   nftID,
-		Minter:  minter.String(),
+		Minter:  minter.Bytes(),
 	}
 }

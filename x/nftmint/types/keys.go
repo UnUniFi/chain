@@ -37,7 +37,7 @@ func NFTAttributesKey(classID, nftID string) []byte {
 	return []byte(nftIdentifier)
 }
 
-func OwningClassListKey(owner string) []byte {
-	ownerAddr, _ := sdk.AccAddressFromBech32(owner)
+func OwningClassListKey(owner sdk.AccAddress) []byte {
+	ownerAddr, _ := sdk.AccAddressFromBech32(owner.String())
 	return ownerAddr.Bytes()
 }

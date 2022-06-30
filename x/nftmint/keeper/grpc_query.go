@@ -4,19 +4,42 @@ import (
 	"context"
 
 	"github.com/UnUniFi/chain/x/nftmint/types"
-	// sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	// "google.golang.org/grpc/codes"
 	// "google.golang.org/grpc/status"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 )
 
 var _ types.QueryServer = Keeper{}
 
-func (k Keeper) Params(context.Context, *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
-	return &types.QueryParamsResponse{}, nil
+func (k Keeper) Params(c context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid argument")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	return &types.QueryParamsResponse{
+		Params: k.GetParamSet(ctx),
+	}, nil
 }
 
-func (k Keeper) ClassOwner(context.Context, *types.QueryClassOwnerRequest) (*types.QueryClassOwnerResponse, error) {
-	return &types.QueryClassOwnerResponse{}, nil
+func (k Keeper) ClassOwner(c context.Context, req *types.QueryClassOwnerRequest) (*types.QueryClassOwnerResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid argument")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	classAttributes, found := k.GetClassAttributes(ctx, req.ClassId)
+	if !found {
+		return nil, sdkerrors.Wrap(nfttypes.ErrClassNotExists, "class which has that class id doesn't exist")
+	}
+	return &types.QueryClassOwnerResponse{
+		Owner: classAttributes.Owner,
+	}, nil
 }
 
 func (k Keeper) NFTMinter(context.Context, *types.QueryNFTMinterRequest) (*types.QueryNFTMinterResponse, error) {
@@ -35,6 +58,18 @@ func (k Keeper) ClassTokenSupplyCap(context.Context, *types.QueryClassTokenSuppl
 	return &types.QueryClassTokenSupplyCapResponse{}, nil
 }
 
-func (k Keeper) ClassIdsByOwner(context.Context, *types.QueryClassIdsByOwnerRequest) (*types.QueryClassIdsByOwnerResponse, error) {
-	return &types.QueryClassIdsByOwnerResponse{}, nil
+func (k Keeper) ClassIdsByOwner(c context.Context, req *types.QueryClassIdsByOwnerRequest) (*types.QueryClassIdsByOwnerResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid argument")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	classIDList, found := k.GetOwningClassList(ctx, req.Owner.AccAddress())
+	if !found {
+		return nil, sdkerrors.Wrap(types.ErrOwningClassListNotExists, "owner doesn't have any class")
+	}
+
+	return &types.QueryClassIdsByOwnerResponse{
+		ClassId: classIDList.ClassId,
+	}, nil
 }
