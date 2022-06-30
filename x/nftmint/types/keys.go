@@ -8,8 +8,11 @@ const (
 	// ModuleName defines the module name
 	ModuleName = "nftmint"
 
+	// ChainName defines the chain name to put StoreKey for avoiding the KVStore collision to sdk's nft module KVStore key
+	ChainName = "ununifi"
+
 	// StoreKey defines the primary module store key
-	StoreKey = "ununifi" + ModuleName
+	StoreKey = ChainName + ModuleName
 
 	// RouterKey is the message route for nftmint
 	RouterKey = ModuleName
