@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/UnUniFi/chain/x/nftmint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -36,6 +37,15 @@ func (k msgServer) CreateClass(c context.Context, msg *types.MsgCreateClass) (*t
 
 	k.keeper.CreateClassAttributes(ctx, classID, msg.Sender.AccAddress(), msg.BaseTokenUri, msg.MintingPermission, msg.TokenSupplyCap)
 	k.keeper.AddClassIDToOwningClassList(ctx, msg.Sender.AccAddress(), classID)
+
+	ctx.EventManager().EmitTypedEvent(&types.EventCreateClass{
+		Owner:             msg.Sender.AccAddress().String(),
+		ClassId:           classID,
+		BaseTokenUri:      msg.BaseTokenUri,
+		TokenSupplyCap:    strconv.FormatUint(msg.TokenSupplyCap, 10),
+		MintingPermission: msg.MintingPermission,
+	})
+
 	return &types.MsgCreateClassResponse{}, nil
 }
 
@@ -65,6 +75,12 @@ func (k msgServer) MintNFT(c context.Context, msg *types.MsgMintNFT) (*types.Msg
 		return nil, err
 	}
 
+	ctx.EventManager().EmitTypedEvent(&types.EventMintNFT{
+		ClassId: msg.ClassId,
+		NftId:   msg.NftId,
+		Owner:   msg.Recipient.AccAddress().String(),
+		Minter:  msg.Sender.AccAddress().String(),
+	})
 	return &types.MsgMintNFTResponse{}, nil
 }
 
