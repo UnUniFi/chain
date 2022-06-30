@@ -23,8 +23,8 @@ func NewMsgCreateClass(
 	tokenSupplyCap uint64,
 	mintingPermission MintingPermission,
 	symbol, description, classUri string,
-) *MsgCreateClass {
-	return &MsgCreateClass{
+) MsgCreateClass {
+	return MsgCreateClass{
 		Sender:            sender.Bytes(),
 		Name:              name,
 		BaseTokenUri:      baseTokenUri,
@@ -72,8 +72,8 @@ func NewMsgMintNFT(
 	sender sdk.AccAddress,
 	classID, nftID string,
 	recipient sdk.AccAddress,
-) *MsgMintNFT {
-	return &MsgMintNFT{
+) MsgMintNFT {
+	return MsgMintNFT{
 		Sender:    sender.Bytes(),
 		ClassId:   classID,
 		NftId:     nftID,

@@ -125,7 +125,7 @@ import (
 	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
 
 	"github.com/UnUniFi/chain/x/nftmint"
-	nftmintKeeper "github.com/UnUniFi/chain/x/nftmint/keeper"
+	nftmintkeeper "github.com/UnUniFi/chain/x/nftmint/keeper"
 	nftminttypes "github.com/UnUniFi/chain/x/nftmint/types"
 	// "github.com/CosmWasm/wasmd/x/wasm"
 	// wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
@@ -311,7 +311,7 @@ type App struct {
 	incentiveKeeper   incentivekeeper.Keeper
 	ununifidistKeeper ununifidistkeeper.Keeper
 	pricefeedKeeper   pricefeedkeeper.Keeper
-	nftmintKeeper     nftmintKeeper.Keeper
+	nftmintKeeper     nftmintkeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -559,7 +559,7 @@ func NewApp(
 		app.BankKeeper,
 	)
 
-	app.nftmintKeeper = nftmintKeeper.NewKeeper(
+	app.nftmintKeeper = nftmintkeeper.NewKeeper(
 		appCodec,
 		keys[nftminttypes.StoreKey],
 		keys[nftminttypes.MemStoreKey],

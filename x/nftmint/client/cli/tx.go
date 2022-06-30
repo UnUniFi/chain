@@ -17,7 +17,7 @@ import (
 
 // GetTxCmd returns the transaction commands for this module
 func GetTxCmd() *cobra.Command {
-	nftTxCmd := &cobra.Command{
+	cmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      "nftmint transactions subcommands",
 		Long:                       "Provides the most common nft minting applications, compatible with Ethereum's erc721 contract",
@@ -26,15 +26,15 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	nftTxCmd.AddCommand(
-		NewCmdCreateClass(),
-		NewCmdMintNFT(),
+	cmd.AddCommand(
+		CmdCreateClass(),
+		CmdMintNFT(),
 	)
 
-	return nftTxCmd
+	return cmd
 }
 
-func NewCmdCreateClass() *cobra.Command {
+func CmdCreateClass() *cobra.Command {
 	cmd := &cobra.Command{
 		// TODO: write appropriate guide
 		Use:   "create-class [class-name] [nft-id] [receiver] --from [sender]",
@@ -86,11 +86,9 @@ func NewCmdCreateClass() *cobra.Command {
 				classDescription,
 				classUri,
 			)
-
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
@@ -100,7 +98,7 @@ func NewCmdCreateClass() *cobra.Command {
 	return cmd
 }
 
-func NewCmdMintNFT() *cobra.Command {
+func CmdMintNFT() *cobra.Command {
 	cmd := &cobra.Command{
 		// TODO: write appropriate guide
 		Use:   "mint-nft [class-id] [nft-id] [receiver] --from [sender]",
