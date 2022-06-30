@@ -18,6 +18,7 @@ ununifid collect-gentxs;
 # query nft
 ununifid query nft nft a10 a10
 ununifid query nft owner a10 a10
+ununifid query nftmarket listed_nfts
 
 # mint an nft
 ununifid tx nftmarket mint a10 a10 uri 888838 --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block

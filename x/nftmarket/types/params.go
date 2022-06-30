@@ -14,26 +14,7 @@ var (
 
 // NewParams returns a new params object
 func NewParams() Params {
-	return Params{
-		MinStakingForListing:               sdk.ZeroInt(),
-		DefaultBidActiveRank:               1,
-		BidTokens:                          []string{DefaultBidToken},
-		AutoRelistingCountIfNoBid:          2,
-		NftListingDelaySeconds:             10,
-		NftListingPeriodInitial:            200,
-		NftListingCancelRequiredSeconds:    20,
-		NftListingCancelFeePercentage:      5,
-		NftListingGapTime:                  20,
-		BidCancelRequiredSeconds:           20,
-		BidTokenDisburseSecondsAfterCancel: 20,
-		NftListingFullPaymentPeriod:        30,
-		NftListingNftDeliveryPeriod:        30,
-		NftCreatorSharePercentage:          5,
-		MarketAdministrator:                "",
-		NftListingCommissionFee:            5,
-		NftListingExtendSeconds:            30,
-		NftListingPeriodExtendFeePerHour:   sdk.NewInt64Coin(DefaultBidToken, 1000000),
-	}
+	return DefaultParams()
 }
 
 // DefaultParams returns default params for incentive module
@@ -42,9 +23,9 @@ func DefaultParams() Params {
 		MinStakingForListing:               sdk.ZeroInt(),
 		DefaultBidActiveRank:               1,
 		BidTokens:                          []string{DefaultBidToken},
-		AutoRelistingCountIfNoBid:          2,
+		AutoRelistingCountIfNoBid:          1,
 		NftListingDelaySeconds:             10,
-		NftListingPeriodInitial:            200,
+		NftListingPeriodInitial:            60,
 		NftListingCancelRequiredSeconds:    20,
 		NftListingCancelFeePercentage:      5,
 		NftListingGapTime:                  20,
