@@ -31,7 +31,7 @@ func NewClassAttributes(
 	}
 }
 
-func NewOwningClassList(owner sdk.AccAddress) OwningClassList {
+func NewOwningClassIdList(owner sdk.AccAddress) OwningClassIdList {
 	var classIDList []string
-	return OwningClassList{Owner: owner.Bytes(), ClassId: classIDList}
+	return OwningClassIdList{Owner: owner.Bytes(), ClassId: classIDList}
 }

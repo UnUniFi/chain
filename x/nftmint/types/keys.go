@@ -32,7 +32,7 @@ var (
 	KeyPrefixNFTAttributes = []byte{0x02}
 
 	// KeyPrefixOwningClassList defines prefix key for OwningClassList
-	KeyPrefixOwningClassList = []byte{0x03}
+	KeyPrefixOwningClassIdList = []byte{0x03}
 )
 
 func NFTAttributesKey(classID, nftID string) []byte {
@@ -40,7 +40,7 @@ func NFTAttributesKey(classID, nftID string) []byte {
 	return []byte(nftIdentifier)
 }
 
-func OwningClassListKey(owner sdk.AccAddress) []byte {
+func OwningClassIdListKey(owner sdk.AccAddress) []byte {
 	ownerAddr, _ := sdk.AccAddressFromBech32(owner.String())
 	return ownerAddr.Bytes()
 }

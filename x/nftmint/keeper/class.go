@@ -42,13 +42,13 @@ func (k Keeper) SetClassAttributes(ctx sdk.Context, classAttributes types.ClassA
 	prefixStore.Set([]byte(classAttributes.ClassId), bz)
 }
 
-func (k Keeper) SetOwningClassList(ctx sdk.Context, owningClassList types.OwningClassList) {
+func (k Keeper) SetOwningClassList(ctx sdk.Context, owningClassIdList types.OwningClassIdList) {
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, types.KeyPrefixOwningClassList)
+	prefixStore := prefix.NewStore(store, types.KeyPrefixOwningClassIdList)
 
-	bz := k.cdc.MustMarshal(&owningClassList)
-	owningClassListKey := types.OwningClassListKey(owningClassList.Owner.AccAddress())
-	prefixStore.Set(owningClassListKey, bz)
+	bz := k.cdc.MustMarshal(&owningClassIdList)
+	owningClassIdListKey := types.OwningClassIdListKey(owningClassIdList.Owner.AccAddress())
+	prefixStore.Set(owningClassIdListKey, bz)
 }
 
 func (k Keeper) GetClassAttributes(ctx sdk.Context, classID string) (types.ClassAttributes, bool) {
@@ -64,40 +64,40 @@ func (k Keeper) GetClassAttributes(ctx sdk.Context, classID string) (types.Class
 	return classAttributes, true
 }
 
-func (k Keeper) GetOwningClassList(ctx sdk.Context, owner sdk.AccAddress) (types.OwningClassList, bool) {
+func (k Keeper) GetOwningClassIdList(ctx sdk.Context, owner sdk.AccAddress) (types.OwningClassIdList, bool) {
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, types.KeyPrefixOwningClassList)
+	prefixStore := prefix.NewStore(store, types.KeyPrefixOwningClassIdList)
 
-	var owningClassList types.OwningClassList
+	var owningClassIdList types.OwningClassIdList
 	bz := prefixStore.Get(owner.Bytes())
 	if len(bz) == 0 {
-		return types.OwningClassList{}, false
+		return types.OwningClassIdList{}, false
 	}
 
-	k.cdc.MustUnmarshal(bz, &owningClassList)
-	return owningClassList, true
+	k.cdc.MustUnmarshal(bz, &owningClassIdList)
+	return owningClassIdList, true
 }
 
-func (k Keeper) AddClassIDToOwningClassList(ctx sdk.Context, owner sdk.AccAddress, classID string) {
-	owningClassList, exists := k.GetOwningClassList(ctx, owner)
+func (k Keeper) AddClassIDToOwningClassIdList(ctx sdk.Context, owner sdk.AccAddress, classID string) {
+	owningClassIdList, exists := k.GetOwningClassIdList(ctx, owner)
 	if !exists {
-		owningClassList = types.NewOwningClassList(owner)
+		owningClassIdList = types.NewOwningClassIdList(owner)
 	}
-	owningClassList.ClassId = append(owningClassList.ClassId, classID)
-	k.SetOwningClassList(ctx, owningClassList)
+	owningClassIdList.ClassId = append(owningClassIdList.ClassId, classID)
+	k.SetOwningClassList(ctx, owningClassIdList)
 }
 
 func (k Keeper) DeleteClassIDInOwningClassList(ctx sdk.Context, owner sdk.AccAddress, classID string) error {
-	owningClassList, exists := k.GetOwningClassList(ctx, owner)
+	owningClassIdList, exists := k.GetOwningClassIdList(ctx, owner)
 	if !exists {
-		return sdkerrors.Wrap(types.ErrOwningClassListNotExists, owner.String())
+		return sdkerrors.Wrap(types.ErrOwningClassIdListNotExists, owner.String())
 	}
 
-	index := SliceIndex(owningClassList.ClassId, classID)
+	index := SliceIndex(owningClassIdList.ClassId, classID)
 	if index == -1 {
 		return sdkerrors.Wrap(types.ErrIndexNotFoundInOwningClassIDs, classID)
 	}
 
-	owningClassList.ClassId = RemoveIndex(owningClassList.ClassId, index)
+	owningClassIdList.ClassId = RemoveIndex(owningClassIdList.ClassId, index)
 	return nil
 }

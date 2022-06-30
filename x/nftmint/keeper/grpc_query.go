@@ -8,8 +8,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	// "google.golang.org/grpc/codes"
-	// "google.golang.org/grpc/status"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 )
@@ -27,7 +25,7 @@ func (k Keeper) Params(c context.Context, req *types.QueryParamsRequest) (*types
 	}, nil
 }
 
-func (k Keeper) ClassOwner(c context.Context, req *types.QueryClassOwnerRequest) (*types.QueryClassOwnerResponse, error) {
+func (k Keeper) ClassAttributes(c context.Context, req *types.QueryClassAttributesRequest) (*types.QueryClassAttributesResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid argument")
 	}
@@ -37,8 +35,8 @@ func (k Keeper) ClassOwner(c context.Context, req *types.QueryClassOwnerRequest)
 	if !found {
 		return nil, sdkerrors.Wrap(nfttypes.ErrClassNotExists, "class which has that class id doesn't exist")
 	}
-	return &types.QueryClassOwnerResponse{
-		Owner: classAttributes.Owner,
+	return &types.QueryClassAttributesResponse{
+		ClassAttributes: &classAttributes,
 	}, nil
 }
 
@@ -50,26 +48,22 @@ func (k Keeper) ClassIdByName(context.Context, *types.QueryClassIdsByNameRequest
 	return &types.QueryClassIdsByNameResponse{}, nil
 }
 
-func (k Keeper) ClassBaseTokenUri(context.Context, *types.QueryClassBaseTokenUriRequest) (*types.QueryClassBaseTokenUriResponse, error) {
-	return &types.QueryClassBaseTokenUriResponse{}, nil
-}
-
-func (k Keeper) ClassTokenSupplyCap(context.Context, *types.QueryClassTokenSupplyCapRequest) (*types.QueryClassTokenSupplyCapResponse, error) {
-	return &types.QueryClassTokenSupplyCapResponse{}, nil
-}
-
 func (k Keeper) ClassIdsByOwner(c context.Context, req *types.QueryClassIdsByOwnerRequest) (*types.QueryClassIdsByOwnerResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid argument")
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	classIDList, found := k.GetOwningClassList(ctx, req.Owner.AccAddress())
+	owner, err := sdk.AccAddressFromBech32(req.Owner)
+	if err != nil {
+		return nil, err
+	}
+	owningClassIdList, found := k.GetOwningClassIdList(ctx, owner)
 	if !found {
-		return nil, sdkerrors.Wrap(types.ErrOwningClassListNotExists, "owner doesn't have any class")
+		return nil, sdkerrors.Wrap(types.ErrOwningClassIdListNotExists, "owner doesn't have any class")
 	}
 
 	return &types.QueryClassIdsByOwnerResponse{
-		ClassId: classIDList.ClassId,
+		OwningClassIdList: &owningClassIdList,
 	}, nil
 }

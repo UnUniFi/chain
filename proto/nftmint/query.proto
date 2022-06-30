@@ -11,7 +11,7 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/ununifi/nftmint/params";
   }
-  rpc ClassOwner(QueryClassOwnerRequest) returns (QueryClassOwnerResponse) {
+  rpc ClassAttributes(QueryClassAttributesRequest) returns (QueryClassAttributesResponse) {
     option (google.api.http).get = "/ununifi/nftmint/class_owner";
   }
   rpc NFTMinter(QueryNFTMinterRequest) returns (QueryNFTMinterResponse) {
@@ -19,12 +19,6 @@ service Query {
   }
   rpc ClassIdByName(QueryClassIdsByNameRequest) returns (QueryClassIdsByNameResponse) {
     option (google.api.http).get = "/ununifi/nftmint/class_ids_by_name";
-  }
-  rpc ClassBaseTokenUri(QueryClassBaseTokenUriRequest) returns (QueryClassBaseTokenUriResponse) {
-    option (google.api.http).get = "/ununifi/nftmint/class_base_token_uri";
-  }
-  rpc ClassTokenSupplyCap(QueryClassTokenSupplyCapRequest) returns (QueryClassTokenSupplyCapResponse) {
-    option (google.api.http).get = "/ununifi/nftmint/class_token_supply_cap";
   }
   rpc ClassIdsByOwner(QueryClassIdsByOwnerRequest) returns (QueryClassIdsByOwnerResponse) {
     option (google.api.http).get = "/ununifi/nftmint/class_ids_by_owner";
@@ -36,15 +30,11 @@ message QueryParamsResponse {
   Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryClassOwnerRequest {
+message QueryClassAttributesRequest {
   string class_id = 1;
 }
-message QueryClassOwnerResponse {
-  string owner = 1  [
-    (gogoproto.moretags) = "yaml:\"owner\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
+message QueryClassAttributesResponse {
+  ClassAttributes class_attributes = 1;
 }
 
 message QueryNFTMinterRequest {
@@ -52,41 +42,19 @@ message QueryNFTMinterRequest {
   string nft_id = 2;
 }
 message QueryNFTMinterResponse {
-  string minter = 1  [
-    (gogoproto.moretags) = "yaml:\"minter\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
+  NFTAttributes nft_attributes = 1;
 }
 
 message QueryClassIdsByNameRequest {
   string class_name = 1;
 }
 message QueryClassIdsByNameResponse {
-  repeated string class_id = 1;
-}
-
-message QueryClassBaseTokenUriRequest {
-  string class_id = 1;
-}
-message QueryClassBaseTokenUriResponse {
-  string base_token_uri = 1;
-}
-
-message QueryClassTokenSupplyCapRequest {
-  string class_id = 1;
-}
-message QueryClassTokenSupplyCapResponse {
-  uint64 token_supply_cap = 1;
+  ClassNameIdList class_name_id_list = 1;
 }
 
 message QueryClassIdsByOwnerRequest {
-  string owner = 1 [
-    (gogoproto.moretags) = "yaml:\"owner\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
+  string owner = 1;
 }
 message QueryClassIdsByOwnerResponse {
-  repeated string class_id = 1;
+  OwningClassIdList owning_class_id_list = 1;
 }
