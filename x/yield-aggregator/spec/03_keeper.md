@@ -10,13 +10,15 @@ Get `AssetManagementTarget`s with `asset_management_account_id`.
 
 Get `AssetManagementTarget`s with `denom`.
 
-## ReportDailyPercent
-
-Called from `nft-marketmaker` module and CosmWasm contracts.
-Must contain the signature of `pub_key` of `AssetManagementAccount`.
-
 ## GetDepositsOfAddress
 
 ## Deposit
 
 ## Withdraw
+
+## Handler
+
+BlockHandlerかなんかでそれぞれのコントラクトに情報とりにいく
+nft-marketmakerはcosmwasmじゃなくてgolangモジュールなので、２つのやり方
+- golangモジュールに情報取りに行く処理も書く
+- ngt-marketmakerをラップするcosmwasmコントラクトを書く

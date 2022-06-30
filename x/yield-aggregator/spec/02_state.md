@@ -21,7 +21,7 @@ In expression of protobuf, it is `repeated AssetManagemenTarget`.
 message AssetManagementTarget {
   string id = 1;
   string asset_management_account_id = 2;
-  string denom = 3;
+  repeated string denom = 3; // 比率とdenomのペアの配列にする必要？
   google.protobuf.Duration unbonding_time = 4 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
 }
 ```
@@ -29,6 +29,8 @@ message AssetManagementTarget {
 ## `daily_percents`
 
 In expression of protobuf, it is `repeated DailyPercent`.
+
+TODO: PredictedDailyPercent
 
 ```protobuf
 message DailyPercent {
@@ -47,9 +49,10 @@ message Deposit {
   string id = 1;
   string from_address = 2;
   repeated cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false];
-  google.protobuf.Duration daily_percent_calculation_period = 4 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
-  google.protobuf.Duration max_unbonding_time = 4 [(gogoproto.nullable) = true, (gogoproto.stdduration) = true];
-  google.protobuf.Timestamp date = 5 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Any strategy = 4;
+  // google.protobuf.Duration daily_percent_calculation_period = 4 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+  google.protobuf.Duration max_unbonding_time = 5 [(gogoproto.nullable) = true, (gogoproto.stdduration) = true];
+  google.protobuf.Timestamp date = 6 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
 }
 ```
 
