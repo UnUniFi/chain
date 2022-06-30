@@ -9,7 +9,7 @@ const (
 	ModuleName = "nftmint"
 
 	// StoreKey defines the primary module store key
-	StoreKey = ModuleName
+	StoreKey = "ununifi" + ModuleName
 
 	// RouterKey is the message route for nftmint
 	RouterKey = ModuleName
