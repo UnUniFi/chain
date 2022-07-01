@@ -37,11 +37,11 @@ func GetTxCmd() *cobra.Command {
 func CmdCreateClass() *cobra.Command {
 	cmd := &cobra.Command{
 		// TODO: write appropriate guide
-		Use:   "create-class [class-name] [nft-id] [receiver] --from [sender]",
+		Use:   "create-class [class-name] [base-token-uri]] [token-supply-cap] [minting-permission] --from [sender]",
 		Args:  cobra.ExactArgs(4),
 		Short: "create class for minting NFTs",
 		Long: strings.TrimSpace(fmt.Sprintf(
-			"$ %s tx %s create-class <class-name> <base-token-uri> <token-supply-cap> <minting-permission>"+
+			"Example:$ %s tx %s create-class <class-name> <base-token-uri> <token-supply-cap> <minting-permission: 0=OnlyOwner, 1=Anyone>"+
 				"--from <sender> "+
 				"--symbol <class-symbol> "+
 				"--description <class-description> "+
@@ -105,7 +105,8 @@ func CmdMintNFT() *cobra.Command {
 		Args:  cobra.ExactArgs(3),
 		Short: "mint NFT under specific class by class-id",
 		Long: strings.TrimSpace(fmt.Sprintf(
-			"$ %s tx %s mint-nft <class-id> <nft-id> <receiver>"+
+			"Note: nft-id will be that nft-uri combined with base token uri of the class-id, like <base-token-uri><nft-id>"+
+				"$ %s tx %s mint-nft <class-id> <nft-id> <receiver>"+
 				"--from <sender> "+
 				"--chain-id=<chain-id> "+
 				"--fees=<fee>", version.AppName, types.ModuleName),
@@ -119,11 +120,7 @@ func CmdMintNFT() *cobra.Command {
 			sender := clientCtx.GetFromAddress()
 
 			recipient := args[2]
-			var recipientAddr sdk.AccAddress
-			if len(recipient) == 0 {
-				recipientAddr = sender
-			}
-			recipientAddr, err = sdk.AccAddressFromBech32(recipient)
+			recipientAddr, err := sdk.AccAddressFromBech32(recipient)
 			if err != nil {
 				return err
 			}

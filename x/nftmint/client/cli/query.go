@@ -4,10 +4,12 @@ import (
 	// "context"
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/UnUniFi/chain/x/nftmint/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/version"
 
 	"github.com/spf13/cobra"
 )
@@ -58,9 +60,13 @@ func CmdQueryParams() *cobra.Command {
 
 func CmdQueryClassAttributes() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "class-owner",
+		Use:   "class-attributes",
 		Args:  cobra.ExactArgs(1),
-		Short: "Query the owner of class",
+		Short: "Query the class attributes by class-id",
+		Long: strings.TrimSpace(fmt.Sprintf(
+			"Example: $ %s query %s class-attributes classID",
+			version.AppName, types.ModuleName),
+		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -86,6 +92,10 @@ func CmdQueryClassIdsByOwner() *cobra.Command {
 		Use:   "class-ids-by-owner",
 		Args:  cobra.ExactArgs(1),
 		Short: "Query classIDs owned by the owner address",
+		Long: strings.TrimSpace(fmt.Sprintf(
+			"Example: $ %s query %s class-ids-by-owner ununifi1exampleaddress",
+			version.AppName, types.ModuleName),
+		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
