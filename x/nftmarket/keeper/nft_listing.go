@@ -478,6 +478,14 @@ func (k Keeper) ProcessEndingNftListings(ctx sdk.Context) {
 				fmt.Println(err)
 				continue
 			}
+			if len(bids) == 0 {
+				err = k.nftKeeper.Transfer(ctx, listing.NftId.ClassId, listing.NftId.NftId, listingOwner)
+				if err != nil {
+					panic(err)
+				}
+				k.DeleteNftListing(ctx, listing)
+				continue
+			}
 			err = k.EndNftListing(ctx, &types.MsgEndNftListing{
 				Sender: listingOwner.Bytes(),
 				NftId:  listing.NftId,
