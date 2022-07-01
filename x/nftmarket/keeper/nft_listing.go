@@ -320,8 +320,8 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 func (k Keeper) ExpandListingPeriod(ctx sdk.Context, msg *types.MsgExpandListingPeriod) error {
 	// check listing already exists
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
-	if err == nil {
-		return types.ErrNftListingAlreadyExists
+	if err != nil {
+		return types.ErrNftListingDoesNotExist
 	}
 
 	// Check nft exists
@@ -336,7 +336,7 @@ func (k Keeper) ExpandListingPeriod(ctx sdk.Context, msg *types.MsgExpandListing
 	}
 
 	// check nft is bidding status
-	if listing.State != types.ListingState_BIDDING {
+	if !listing.IsActive() {
 		return types.ErrListingIsNotInBiddingStatus
 	}
 
@@ -372,7 +372,7 @@ func (k Keeper) ExpandListingPeriod(ctx sdk.Context, msg *types.MsgExpandListing
 	}
 
 	// update listing end time
-	listing.EndAt = listing.EndAt.Add(time.Duration(params.NftListingExtendSeconds))
+	listing.EndAt = listing.EndAt.Add(time.Second * time.Duration(params.NftListingExtendSeconds))
 	k.SetNftListing(ctx, listing)
 
 	// Emit event for nft listing cancel
