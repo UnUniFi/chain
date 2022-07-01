@@ -14,7 +14,7 @@ message MsgCreateClass {
   string name = 2;
   string base_token_uri = 3;
   string total_supply_cap = 4;
-  MintingPermission minting_permission = 5; // flag option. default: true
+  MintingPermission minting_permission = 5;
   string symbol = 7; // flag option
   string description = 8; // flag option
   string class_uri = 9; // flag option
@@ -74,76 +74,37 @@ message MsgBurnNFT {
 
 The `nftmint` module supports below queries.
 
-### ClassOwner
+### ClassAttributes
 
 ```protobuf
-message QueryClassOwnerRequest {
+message QueryClassAttributesRequest {
   string class_id = 1;
 }
-
-message QueryClassOwnerResponse {
-  string owner = 1;
+message QueryClassAttributesResponse {
+  ClassAttributes class_attributes = 1;
 }
 ```
 
-### ClassNFTMinter
+### NFTMinter
 
 ```protobuf
 message QueryNFTMinterRequest {
   string class_id = 1;
   string nft_id = 2;
 }
-
 message QueryNFTMinterResponse {
-  string minter = 1;
+  NFTAttributes nft_attributes = 1;
 }
 ```
 
 ### ClassClassIdByName
 
 ```protobuf
-message QueryClassIdByNameRequest {
+message QueryClassIdsByNameRequest {
   string class_name = 1;
 }
-
-message QueryClassIdByNameResponse {
-  repeated string class_id = 1;
-}
-```
-
-### ClassBaseTokenUri
-
-```protobuf
-message QueryClassBaseTokenUriRequest {
-  string class_id = 1;
-}
-
-message QueryClassBaseTokenUriResponse {
-  string base_token_uri = 1;
-}
-```
-
-### ClassTokenSupplyCap
-
-```protobuf
-message QueryClassTokenSupplyCapRequest {
-  string class_id = 1;
-}
-
-message QueryClassTokenSupplyCapResponse {
-  string token_supply_cap = 1;
-}
-```
-
-### ClassMintingPermission
-
-```protobuf
-message QueryClassMintingPermissionRequest {
-  string class_id = 1;
-}
-
-message QueryClassMintingPermissionResponse {
-  string minting_permission = 1;
+message QueryClassIdsByNameResponse {
+  ClassNameIdList class_name_id_list = 1;
 }
 ```
 
@@ -153,8 +114,7 @@ message QueryClassMintingPermissionResponse {
 message QueryClassIdsByOwnerRequest {
   string owner = 1;
 }
-
 message QueryClassIdsByOwnerResponse {
-  repeated string class_id = 1;
+  OwningClassIdList owning_class_id_list = 1;
 }
 ```
