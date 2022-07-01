@@ -1,7 +1,9 @@
 package keeper
 
 import (
-	"fmt"
+	"crypto/sha256"
+	"encoding/hex"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,21 +13,29 @@ import (
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 )
 
-// TODO: method to create class_id
+const (
+	PrefixClassId    = "ununifinft/"
+	LenHashByteToHex = 32 - 20
+)
+
 func (k Keeper) CreateClassId(ctx sdk.Context, creator sdk.AccAddress) (string, error) {
 	sequence, err := k.accountKeeper.GetSequence(ctx, creator)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("%d", sequence)
+	sequenceByte := UintToByte(sequence)
+	addrByte := creator.Bytes()
+	idByte := append(addrByte, sequenceByte...)
 
-	// TODO: create random string from accaddress and sequence
-	// q is bech32 or hex as encoding format
-	classID := "initial"
+	idHash := sha256.Sum256(idByte)
+	idString := hex.EncodeToString(idHash[LenHashByteToHex:])
+	classID := PrefixClassId + strings.ToUpper(idString)
+
 	if err := nfttypes.ValidateClassID(classID); err != nil {
 		return "", sdkerrors.Wrapf(nfttypes.ErrInvalidClassID, "Invalid class id (%s)", classID)
 	}
 
+	// Check the dupulication
 	exists := k.nftKeeper.HasClass(ctx, classID)
 	if exists {
 		return "", sdkerrors.Wrap(nfttypes.ErrClassExists, classID)
