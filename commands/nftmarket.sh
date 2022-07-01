@@ -42,6 +42,7 @@ ununifid tx nftmarket selling_decision a10 a10 --chain-id=test --from=validator 
 
 # place bid
 ununifid tx nftmarket placebid a10 a10 100uguu --chain-id  ununifi-test-private-m1 --from my_receiver --keyring-backend test --gas 300000 -y|jq .
+ununifid tx nftmarket placebid a10 a10 100uguu --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block
 
 # cancel bid
 ununifid tx nftmarket cancelbid a10 a10 --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block

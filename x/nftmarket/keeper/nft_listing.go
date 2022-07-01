@@ -337,7 +337,7 @@ func (k Keeper) ExpandListingPeriod(ctx sdk.Context, msg *types.MsgExpandListing
 
 	// check nft is bidding status
 	if !listing.IsActive() {
-		return types.ErrListingIsNotInBiddingStatus
+		return types.ErrListingIsNotInStatusToBid
 	}
 
 	// pay nft listing extend fee
@@ -388,8 +388,8 @@ func (k Keeper) ExpandListingPeriod(ctx sdk.Context, msg *types.MsgExpandListing
 func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) error {
 	// check listing already exists
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
-	if err == nil {
-		return types.ErrNftListingAlreadyExists
+	if err != nil {
+		return types.ErrNftListingDoesNotExist
 	}
 
 	// Check nft exists
@@ -404,8 +404,8 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 	}
 
 	// check if listing is already ended or on selling decision status
-	if listing.State == types.ListingState_END_LISTING || listing.State == types.ListingState_SELLING_DECISION {
-		return types.ErrListingAlreadyEnded
+	if listing.State != types.ListingState_BIDDING {
+		return types.ErrListingNeedsToBeBiddingStatus
 	}
 
 	params := k.GetParamSet(ctx)
