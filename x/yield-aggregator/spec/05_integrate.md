@@ -30,7 +30,7 @@ Send the Denom back to the module within the Unbonding_time.
 
 ## example
 
-send 100UGUU to YF from YA
+send 10000UGUU to YF from YA
 
 ```json
 
@@ -45,7 +45,7 @@ send 100UGUU to YF from YA
       "amount": [
         {
           "denom":"uguu",
-          "amount":100,
+          "amount":10000,
         }
       ],
       "targetId": "1",
@@ -70,7 +70,7 @@ send 379UGUU to YA from YF
       "amount": [
         {
           "denom":"uguu",
-          "amount":379,
+          "amount":10038,
         }
       ],
       "targetId": "1",
