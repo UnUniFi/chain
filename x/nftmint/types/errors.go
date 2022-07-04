@@ -9,4 +9,5 @@ var (
 	ErrClassAttributesNotExists      = sdkerrors.Register(ModuleName, 2, "class attributes does not exist")
 	ErrOwningClassIdListNotExists    = sdkerrors.Register(ModuleName, 3, "owning class list does not exist")
 	ErrIndexNotFoundInOwningClassIDs = sdkerrors.Register(ModuleName, 4, "class id is not found in list")
+	ErrInvalidMintingPermission      = sdkerrors.Register(ModuleName, 5, "invalid minting permission")
 )

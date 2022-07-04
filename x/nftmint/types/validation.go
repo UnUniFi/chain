@@ -1,5 +1,9 @@
 package types
 
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
+
 // TODO: the validation against:
 // Name
 // BaseTokenUri, ClassUri
@@ -7,6 +11,21 @@ package types
 // MintingPermission
 // Symbol
 // Description
+
+func ValidateMintingPermission(classAttributes ClassAttributes, minter sdk.AccAddress) error {
+	switch classAttributes.MintingPermission {
+	case 0:
+		owner := classAttributes.Owner.AccAddress().String()
+		if owner != minter.String() {
+			return ErrInvalidMintingPermission
+		}
+		return nil
+	case 1:
+		return nil
+	default:
+		return ErrInvalidMintingPermission
+	}
+}
 
 func ValidateName(className string) error {
 	return nil
@@ -17,10 +36,6 @@ func ValidateUri(uri string) error {
 }
 
 func ValidateTokenSupplyCap(tokenSupplyCap uint64) error {
-	return nil
-}
-
-func ValidateMintingPermission(MintingPermission MintingPermission) error {
 	return nil
 }
 

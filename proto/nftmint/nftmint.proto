@@ -9,7 +9,7 @@ option go_package = "github.com/UnUniFi/chain/x/nftmint/types";
 enum MintingPermission {
   OnlyOwner = 0;
   Anyone = 1;
-  WhiteList = 2;
+  // WhiteList = 2;
 }
 
 message ClassAttributes {

@@ -16,18 +16,19 @@ func (k Keeper) MintNFT(ctx sdk.Context, msg *types.MsgMintNFT) error {
 
 	classAttributes, exists := k.GetClassAttributes(ctx, msg.ClassId)
 	if !exists {
-		return sdkerrors.Wrap(nfttypes.ErrClassNotExists, msg.ClassId)
+		return sdkerrors.Wrapf(types.ErrClassAttributesNotExists, "class attributes with class id %s doesn't exist", msg.ClassId)
 	}
 	// TODO: validate minting permission from ClassAttributes
-	// if err := CheckMintingPermission(ctx, msg.ClassId, msg.NftId, msg.Recipient.AccAddress()); err != nil {
-	//   return nil, err
-	// }
+	err := types.ValidateMintingPermission(classAttributes, msg.Recipient.AccAddress())
+	if err != nil {
+		return err
+	}
 
 	nftUri := classAttributes.BaseTokenUri + msg.NftId
 	// TODO: validate uri
 	// err := types.ValidateUri(nftUri)
 
-	err := k.nftKeeper.Mint(ctx, types.NewNFT(msg.ClassId, msg.NftId, nftUri), msg.Recipient.AccAddress())
+	err = k.nftKeeper.Mint(ctx, types.NewNFT(msg.ClassId, msg.NftId, nftUri), msg.Recipient.AccAddress())
 	if err != nil {
 		return err
 	}
