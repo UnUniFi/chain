@@ -98,7 +98,22 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 				NftId:   nftId,
 			}
 
-			msg := types.NewMsgListNft(clientCtx.GetFromAddress(), nftIde)
+			bidActiveRank, err := cmd.Flags().GetUint64(FlagBidActiveRank)
+			if err != nil {
+				return err
+			}
+
+			minBid, err := cmd.Flags().GetUint64(FlagMinBid)
+			if err != nil {
+				return err
+			}
+
+			bidToken, err := cmd.Flags().GetString(FlagBidToken)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgListNft(clientCtx.GetFromAddress(), nftIde, bidToken, bidActiveRank, sdk.NewInt(int64(minBid)))
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -106,6 +121,9 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 		},
 	}
 
+	cmd.Flags().Uint64(FlagBidActiveRank, 1, "bid active rank")
+	cmd.Flags().String(FlagBidToken, "uguu", "bid token")
+	cmd.Flags().Uint64(FlagMinBid, 1, "min bid amount")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd

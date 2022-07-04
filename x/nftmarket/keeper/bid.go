@@ -202,6 +202,8 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 	bidder := msg.Sender.AccAddress()
 	increaseAmount := msg.Amount.Amount
 	paidAmount := sdk.ZeroInt()
+
+	// if previous bid exists add more on top of existings
 	bid, err := k.GetBid(ctx, msg.NftId.IdBytes(), bidder)
 	if err == nil {
 		if bid.Amount.Amount.GTE(msg.Amount.Amount) {

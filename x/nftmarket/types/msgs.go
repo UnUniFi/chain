@@ -44,13 +44,13 @@ var _ sdk.Msg = &MsgListNft{}
 
 // todo: Implementation fields
 // BidToken, MinBid, BidHook, ListingType
-func NewMsgListNft(sender sdk.AccAddress, nftId NftIdentifier) MsgListNft {
+func NewMsgListNft(sender sdk.AccAddress, nftId NftIdentifier, bidToken string, bidActiveRank uint64, minBid sdk.Int) MsgListNft {
 	return MsgListNft{
 		Sender:        sender.Bytes(),
 		NftId:         nftId,
-		BidToken:      "uguu",
-		MinBid:        sdk.NewInt(1),
-		BidActiveRank: 1,
+		BidToken:      bidToken,
+		MinBid:        minBid,
+		BidActiveRank: bidActiveRank,
 	}
 }
 

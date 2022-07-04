@@ -19,6 +19,7 @@ ununifid collect-gentxs;
 ununifid query nft nft a10 a10
 ununifid query nft owner a10 a10
 ununifid query nftmarket listed_nfts
+ununifid query nftmarket nft_bids a10 a10
 
 # mint an nft
 ununifid tx nftmarket mint a10 a10 uri 888838 --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block
@@ -26,6 +27,7 @@ ununifid tx nftmarket mint a10 a10 uri 888838 --chain-id=test --from=validator -
 # listing nft
 ununifid tx nftmarket listing a10 a10 --chain-id  ununifi-test-private-m1 --from my_validator --keyring-backend test --gas 300000 -y |jq .
 ununifid tx nftmarket listing a10 a10 --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block
+ununifid tx nftmarket listing a10 a10 --min-bid=1 --bid-token=uguu --bid-active-rank=2 --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block
 
 # cancel listing
 ununifid tx nftmarket cancel_listing a10 a10 --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block
@@ -42,7 +44,7 @@ ununifid tx nftmarket selling_decision a10 a10 --chain-id=test --from=validator 
 
 # place bid
 ununifid tx nftmarket placebid a10 a10 100uguu --chain-id  ununifi-test-private-m1 --from my_receiver --keyring-backend test --gas 300000 -y|jq .
-ununifid tx nftmarket placebid a10 a10 100uguu --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block
+ununifid tx nftmarket placebid a10 a10 100uguu --automatic-payment=false --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block
 
 # cancel bid
 ununifid tx nftmarket cancelbid a10 a10 --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block
