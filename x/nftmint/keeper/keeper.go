@@ -9,8 +9,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
@@ -42,26 +40,4 @@ func NewKeeper(cdc codec.Codec, storeKey, memKey storetypes.StoreKey,
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
-}
-
-func (k Keeper) MintNFT(
-	ctx sdk.Context,
-	classID, nftID string,
-	owner sdk.AccAddress,
-) error {
-	classAttributes, exists := k.GetClassAttributes(ctx, classID)
-	if !exists {
-		return sdkerrors.Wrap(nfttypes.ErrClassNotExists, classID)
-	}
-
-	nftUri := classAttributes.BaseTokenUri + nftID
-	return k.nftKeeper.Mint(ctx, types.NewNFT(classID, nftID, nftUri), owner)
-}
-
-func (k Keeper) CreateNFTAttributes(
-	ctx sdk.Context,
-	classID, nftID string,
-	minter sdk.AccAddress,
-) error {
-	return k.SaveNFTAttributes(ctx, types.NewNFTAttributes(classID, nftID, minter))
 }

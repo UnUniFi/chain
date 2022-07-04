@@ -4,10 +4,43 @@ import (
 	"github.com/UnUniFi/chain/x/nftmint/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 )
 
-func (k Keeper) SaveNFTAttributes(ctx sdk.Context, nftAttributes types.NFTAttributes) error {
-	// TODO: save in kvstore
+func (k Keeper) MintNFT(ctx sdk.Context, msg *types.MsgMintNFT) error {
+	exists := k.nftKeeper.HasClass(ctx, msg.ClassId)
+	if !exists {
+		return sdkerrors.Wrap(nfttypes.ErrClassExists, msg.ClassId)
+	}
+
+	classAttributes, exists := k.GetClassAttributes(ctx, msg.ClassId)
+	if !exists {
+		return sdkerrors.Wrap(nfttypes.ErrClassNotExists, msg.ClassId)
+	}
+	// TODO: validate minting permission from ClassAttributes
+	// if err := CheckMintingPermission(ctx, msg.ClassId, msg.NftId, msg.Recipient.AccAddress()); err != nil {
+	//   return nil, err
+	// }
+
+	nftUri := classAttributes.BaseTokenUri + msg.NftId
+	// TODO: validate uri
+	// err := types.ValidateUri(nftUri)
+
+	err := k.nftKeeper.Mint(ctx, types.NewNFT(msg.ClassId, msg.NftId, nftUri), msg.Recipient.AccAddress())
+	if err != nil {
+		return err
+	}
+
+	err = k.SetNFTAttributes(ctx, types.NewNFTAttributes(msg.ClassId, msg.NftId, msg.Sender.AccAddress()))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (k Keeper) SetNFTAttributes(ctx sdk.Context, nftAttributes types.NFTAttributes) error {
 	bz := k.cdc.MustMarshal(&nftAttributes)
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixNFTAttributes))
