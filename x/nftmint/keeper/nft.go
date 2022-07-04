@@ -53,10 +53,9 @@ func (k Keeper) SetNFTAttributes(ctx sdk.Context, nftAttributes types.NFTAttribu
 func (k Keeper) GetNFTAttributes(ctx sdk.Context, classID, nftID string) (types.NFTAttributes, bool) {
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixNFTAttributes))
-	nftAttributesKey := types.NFTAttributesKey(classID, nftID)
 
 	var nftAttributes types.NFTAttributes
-	bz := prefixStore.Get(nftAttributesKey)
+	bz := prefixStore.Get(types.NFTAttributesKey(classID, nftID))
 	if len(bz) == 0 {
 		return types.NFTAttributes{}, false
 	}

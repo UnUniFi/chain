@@ -19,12 +19,18 @@ func (k Keeper) CreateClass(ctx sdk.Context, classID string, msg *types.MsgCreat
 		return sdkerrors.Wrap(nfttypes.ErrClassExists, classID)
 	}
 
-	err := k.nftKeeper.SaveClass(ctx, types.NewClass(classID, msg.Name, msg.Symbol, msg.Description, msg.ClassUri))
+	err := k.nftKeeper.SaveClass(
+		ctx,
+		types.NewClass(classID, msg.Name, msg.Symbol, msg.Description, msg.ClassUri),
+	)
 	if err != nil {
 		return err
 	}
 
-	err = k.CreateClassAttributes(ctx, classID, msg.Sender.AccAddress(), msg.BaseTokenUri, msg.MintingPermission, msg.TokenSupplyCap)
+	err = k.SetClassAttributes(
+		ctx,
+		types.NewClassAttributes(classID, msg.Sender.AccAddress(), msg.BaseTokenUri, msg.MintingPermission, msg.TokenSupplyCap),
+	)
 	if err != nil {
 		return err
 	}
@@ -35,20 +41,6 @@ func (k Keeper) CreateClass(ctx sdk.Context, classID string, msg *types.MsgCreat
 		return err
 	}
 
-	return nil
-}
-
-func (k Keeper) CreateClassAttributes(
-	ctx sdk.Context,
-	classID string,
-	owner sdk.AccAddress,
-	baseTokenUri string,
-	mintingPermission types.MintingPermission,
-	tokenSupplyCap uint64,
-) error {
-	if err := k.SetClassAttributes(ctx, types.NewClassAttributes(classID, owner, baseTokenUri, mintingPermission, tokenSupplyCap)); err != nil {
-		return err
-	}
 	return nil
 }
 
