@@ -1,10 +1,6 @@
 package keeper
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
-	"strings"
-
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
@@ -40,19 +36,6 @@ func (k Keeper) CreateClass(ctx sdk.Context, classID string, msg *types.MsgCreat
 	}
 
 	return nil
-}
-
-// Create class id on UnUniFi using addr sequence and addr byte
-func createClassId(num uint64, addr sdk.Address) string {
-	sequenceByte := UintToByte(num)
-	addrByte := addr.Bytes()
-	idByte := append(addrByte, sequenceByte...)
-
-	idHash := sha256.Sum256(idByte)
-	idString := hex.EncodeToString(idHash[LenHashByteToHex:])
-	classID := PrefixClassId + strings.ToUpper(idString)
-
-	return classID
 }
 
 func (k Keeper) CreateClassAttributes(
