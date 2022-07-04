@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	PrefixClassId    = "ununifinft/"
+	PrefixClassId    = "ununifi/"
 	LenHashByteToHex = 32 - 20
 )
 
