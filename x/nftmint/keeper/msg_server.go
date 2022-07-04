@@ -25,9 +25,14 @@ var _ types.MsgServer = msgServer{}
 func (k msgServer) CreateClass(c context.Context, msg *types.MsgCreateClass) (*types.MsgCreateClassResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	classID, err := k.keeper.CreateClassId(ctx, msg.Sender.AccAddress())
+	seq, err := k.keeper.accountKeeper.GetSequence(ctx, msg.Sender.AccAddress())
 	if err != nil {
 		return nil, err
+	}
+
+	classID := createClassId(seq, msg.Sender.AccAddress())
+	if exists := k.keeper.nftKeeper.HasClass(ctx, classID); !exists {
+		return nil, sdkerrors.Wrap(nfttypes.ErrClassExists, classID)
 	}
 
 	err = k.keeper.CreateClass(ctx, classID, msg.Name, msg.Symbol, msg.Description, msg.ClassUri)
@@ -66,6 +71,11 @@ func (k msgServer) MintNFT(c context.Context, msg *types.MsgMintNFT) (*types.Msg
 	if !exists {
 		return nil, sdkerrors.Wrap(nfttypes.ErrClassExists, msg.ClassId)
 	}
+
+	// TODO: validate minting permission from ClassAttributes
+	// if err := CheckMintingPermission(ctx, msg.ClassId, msg.NftId, msg.Recipient.AccAddress()); err != nil {
+	//   return nil, err
+	// }
 
 	if err := k.keeper.MintNFT(ctx, msg.ClassId, msg.NftId, msg.Recipient.AccAddress()); err != nil {
 		return nil, err

@@ -10,7 +10,6 @@ import (
 
 	"github.com/UnUniFi/chain/x/nftmint/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 )
 
 const (
@@ -18,30 +17,17 @@ const (
 	LenHashByteToHex = 32 - 20
 )
 
-func (k Keeper) CreateClassId(ctx sdk.Context, creator sdk.AccAddress) (string, error) {
-	sequence, err := k.accountKeeper.GetSequence(ctx, creator)
-	if err != nil {
-		panic(err)
-	}
-	sequenceByte := UintToByte(sequence)
-	addrByte := creator.Bytes()
+// Create class id on UnUniFi using addr sequence and addr byte
+func createClassId(num uint64, addr sdk.Address) string {
+	sequenceByte := UintToByte(num)
+	addrByte := addr.Bytes()
 	idByte := append(addrByte, sequenceByte...)
 
 	idHash := sha256.Sum256(idByte)
 	idString := hex.EncodeToString(idHash[LenHashByteToHex:])
 	classID := PrefixClassId + strings.ToUpper(idString)
 
-	if err := nfttypes.ValidateClassID(classID); err != nil {
-		return "", sdkerrors.Wrapf(nfttypes.ErrInvalidClassID, "Invalid class id (%s)", classID)
-	}
-
-	// Check the dupulication
-	exists := k.nftKeeper.HasClass(ctx, classID)
-	if exists {
-		return "", sdkerrors.Wrap(nfttypes.ErrClassExists, classID)
-	}
-
-	return classID, nil
+	return classID
 }
 
 func (k Keeper) SetClassAttributes(ctx sdk.Context, classAttributes types.ClassAttributes) {
