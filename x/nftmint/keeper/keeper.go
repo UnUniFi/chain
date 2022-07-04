@@ -44,24 +44,6 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k Keeper) CreateClass(
-	ctx sdk.Context,
-	classID, name, symbol, description, classUri string,
-) error {
-	return k.nftKeeper.SaveClass(ctx, types.NewClass(classID, name, symbol, description, classUri))
-}
-
-func (k Keeper) CreateClassAttributes(
-	ctx sdk.Context,
-	classID string,
-	owner sdk.AccAddress,
-	baseTokenUri string,
-	mintingPermission types.MintingPermission,
-	tokenSupplyCap uint64,
-) {
-	k.SetClassAttributes(ctx, types.NewClassAttributes(classID, owner, baseTokenUri, mintingPermission, tokenSupplyCap))
-}
-
 func (k Keeper) MintNFT(
 	ctx sdk.Context,
 	classID, nftID string,

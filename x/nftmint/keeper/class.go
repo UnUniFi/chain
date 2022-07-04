@@ -7,6 +7,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 
 	"github.com/UnUniFi/chain/x/nftmint/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -16,6 +17,30 @@ const (
 	PrefixClassId    = "ununifi/"
 	LenHashByteToHex = 32 - 20
 )
+
+func (k Keeper) CreateClass(ctx sdk.Context, classID string, msg *types.MsgCreateClass) error {
+	if exists := k.nftKeeper.HasClass(ctx, classID); !exists {
+		return sdkerrors.Wrap(nfttypes.ErrClassExists, classID)
+	}
+
+	err := k.nftKeeper.SaveClass(ctx, types.NewClass(classID, msg.Name, msg.Symbol, msg.Description, msg.ClassUri))
+	if err != nil {
+		return err
+	}
+
+	err = k.CreateClassAttributes(ctx, classID, msg.Sender.AccAddress(), msg.BaseTokenUri, msg.MintingPermission, msg.TokenSupplyCap)
+	if err != nil {
+		return err
+	}
+
+	owningClassIdList := k.AddClassIDToOwningClassIdList(ctx, msg.Sender.AccAddress(), classID)
+	err = k.SetOwningClassIdList(ctx, owningClassIdList)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 
 // Create class id on UnUniFi using addr sequence and addr byte
 func createClassId(num uint64, addr sdk.Address) string {
@@ -30,21 +55,42 @@ func createClassId(num uint64, addr sdk.Address) string {
 	return classID
 }
 
-func (k Keeper) SetClassAttributes(ctx sdk.Context, classAttributes types.ClassAttributes) {
-	bz := k.cdc.MustMarshal(&classAttributes)
+func (k Keeper) CreateClassAttributes(
+	ctx sdk.Context,
+	classID string,
+	owner sdk.AccAddress,
+	baseTokenUri string,
+	mintingPermission types.MintingPermission,
+	tokenSupplyCap uint64,
+) error {
+	if err := k.SetClassAttributes(ctx, types.NewClassAttributes(classID, owner, baseTokenUri, mintingPermission, tokenSupplyCap)); err != nil {
+		return err
+	}
+	return nil
+}
 
+func (k Keeper) SetClassAttributes(ctx sdk.Context, classAttributes types.ClassAttributes) error {
+	bz, err := k.cdc.Marshal(&classAttributes)
+	if err != nil {
+		return sdkerrors.Wrap(err, "Marshal nftmint.ClassAttributes failed")
+	}
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixClassAttributes))
 	prefixStore.Set([]byte(classAttributes.ClassId), bz)
+	return nil
 }
 
-func (k Keeper) SetOwningClassList(ctx sdk.Context, owningClassIdList types.OwningClassIdList) {
+func (k Keeper) SetOwningClassIdList(ctx sdk.Context, owningClassIdList types.OwningClassIdList) error {
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, types.KeyPrefixOwningClassIdList)
 
-	bz := k.cdc.MustMarshal(&owningClassIdList)
+	bz, err := k.cdc.Marshal(&owningClassIdList)
+	if err != nil {
+		return sdkerrors.Wrap(err, "Marshal nftmint.OwningClassIdList failed")
+	}
 	owningClassIdListKey := types.OwningClassIdListKey(owningClassIdList.Owner.AccAddress())
 	prefixStore.Set(owningClassIdListKey, bz)
+	return nil
 }
 
 func (k Keeper) GetClassAttributes(ctx sdk.Context, classID string) (types.ClassAttributes, bool) {
@@ -74,13 +120,13 @@ func (k Keeper) GetOwningClassIdList(ctx sdk.Context, owner sdk.AccAddress) (typ
 	return owningClassIdList, true
 }
 
-func (k Keeper) AddClassIDToOwningClassIdList(ctx sdk.Context, owner sdk.AccAddress, classID string) {
+func (k Keeper) AddClassIDToOwningClassIdList(ctx sdk.Context, owner sdk.AccAddress, classID string) types.OwningClassIdList {
 	owningClassIdList, exists := k.GetOwningClassIdList(ctx, owner)
 	if !exists {
 		owningClassIdList = types.NewOwningClassIdList(owner)
 	}
 	owningClassIdList.ClassId = append(owningClassIdList.ClassId, classID)
-	k.SetOwningClassList(ctx, owningClassIdList)
+	return owningClassIdList
 }
 
 func (k Keeper) DeleteClassIDInOwningClassList(ctx sdk.Context, owner sdk.AccAddress, classID string) error {

@@ -31,17 +31,10 @@ func (k msgServer) CreateClass(c context.Context, msg *types.MsgCreateClass) (*t
 	}
 
 	classID := createClassId(seq, msg.Sender.AccAddress())
-	if exists := k.keeper.nftKeeper.HasClass(ctx, classID); !exists {
-		return nil, sdkerrors.Wrap(nfttypes.ErrClassExists, classID)
-	}
-
-	err = k.keeper.CreateClass(ctx, classID, msg.Name, msg.Symbol, msg.Description, msg.ClassUri)
+	err = k.keeper.CreateClass(ctx, classID, msg)
 	if err != nil {
 		return nil, err
 	}
-
-	k.keeper.CreateClassAttributes(ctx, classID, msg.Sender.AccAddress(), msg.BaseTokenUri, msg.MintingPermission, msg.TokenSupplyCap)
-	k.keeper.AddClassIDToOwningClassIdList(ctx, msg.Sender.AccAddress(), classID)
 
 	ctx.EventManager().EmitTypedEvent(&types.EventCreateClass{
 		Owner:             msg.Sender.AccAddress().String(),
