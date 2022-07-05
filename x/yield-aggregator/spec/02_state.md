@@ -60,6 +60,8 @@ message Deposit {
 
 In expression of protobuf, it is `repeated Order`.
 
+See 06_strategy.md for `strategy`
+
 ```protobuf
 message FarmingOrder {
   string id = 1;
