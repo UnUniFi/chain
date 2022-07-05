@@ -29,6 +29,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdQueryParams(),
 		CmdQueryClassAttributes(),
 		CmdQueryClassIdsByOwner(),
+		CmdQueryClassIdsByName(),
 	)
 
 	return cmd
@@ -109,6 +110,35 @@ func CmdQueryClassIdsByOwner() *cobra.Command {
 				return err
 			}
 			return clientCtx.PrintProto(res.OwningClassIdList)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdQueryClassIdsByName() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "class-ids-by-name",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query classIDs which have the class name",
+		Long: strings.TrimSpace(fmt.Sprintf(
+			"Example: $ %s query %s class-name-id-list MyCollective",
+			version.AppName, types.ModuleName),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.ClassIdsByName(
+				context.Background(),
+				&types.QueryClassIdsByNameRequest{ClassName: args[0]},
+			)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res.ClassNameIdList)
 		},
 	}
 

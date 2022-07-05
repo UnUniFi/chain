@@ -15,7 +15,8 @@ const (
 )
 
 func (k Keeper) CreateClass(ctx sdk.Context, classID string, msg *types.MsgCreateClass) error {
-	if exists := k.nftKeeper.HasClass(ctx, classID); !exists {
+	exists := k.nftKeeper.HasClass(ctx, classID)
+	if exists {
 		return sdkerrors.Wrap(nfttypes.ErrClassExists, classID)
 	}
 
@@ -37,6 +38,12 @@ func (k Keeper) CreateClass(ctx sdk.Context, classID string, msg *types.MsgCreat
 
 	owningClassIdList := k.AddClassIDToOwningClassIdList(ctx, msg.Sender.AccAddress(), classID)
 	err = k.SetOwningClassIdList(ctx, owningClassIdList)
+	if err != nil {
+		return err
+	}
+
+	classNameIdList := k.AddClassNameIdList(ctx, msg.Name, classID)
+	err = k.SetClassNameIdList(ctx, classNameIdList)
 	if err != nil {
 		return err
 	}
@@ -68,6 +75,18 @@ func (k Keeper) SetOwningClassIdList(ctx sdk.Context, owningClassIdList types.Ow
 	return nil
 }
 
+func (k Keeper) SetClassNameIdList(ctx sdk.Context, classNameIdList types.ClassNameIdList) error {
+	store := ctx.KVStore(k.storeKey)
+	prefixStore := prefix.NewStore(store, types.KeyPrefixClassNameIdList)
+
+	bz, err := k.cdc.Marshal(&classNameIdList)
+	if err != nil {
+		return sdkerrors.Wrap(err, "Marshal nftmint.ClassNameIdList failed")
+	}
+	prefixStore.Set([]byte(classNameIdList.ClassName), bz)
+	return nil
+}
+
 func (k Keeper) GetClassAttributes(ctx sdk.Context, classID string) (types.ClassAttributes, bool) {
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, types.KeyPrefixClassAttributes)
@@ -90,9 +109,21 @@ func (k Keeper) GetOwningClassIdList(ctx sdk.Context, owner sdk.AccAddress) (typ
 	if len(bz) == 0 {
 		return types.OwningClassIdList{}, false
 	}
-
 	k.cdc.MustUnmarshal(bz, &owningClassIdList)
 	return owningClassIdList, true
+}
+
+func (k Keeper) GetClassNameIdList(ctx sdk.Context, className string) (types.ClassNameIdList, bool) {
+	store := ctx.KVStore(k.storeKey)
+	prefixStore := prefix.NewStore(store, types.KeyPrefixClassNameIdList)
+
+	var classNameIdList types.ClassNameIdList
+	bz := prefixStore.Get([]byte(className))
+	if len(bz) == 0 {
+		return types.ClassNameIdList{}, false
+	}
+	k.cdc.MustUnmarshal(bz, &classNameIdList)
+	return classNameIdList, true
 }
 
 func (k Keeper) AddClassIDToOwningClassIdList(ctx sdk.Context, owner sdk.AccAddress, classID string) types.OwningClassIdList {
@@ -102,6 +133,15 @@ func (k Keeper) AddClassIDToOwningClassIdList(ctx sdk.Context, owner sdk.AccAddr
 	}
 	owningClassIdList.ClassId = append(owningClassIdList.ClassId, classID)
 	return owningClassIdList
+}
+
+func (k Keeper) AddClassNameIdList(ctx sdk.Context, className string, classID string) types.ClassNameIdList {
+	classNameIdList, exists := k.GetClassNameIdList(ctx, className)
+	if !exists {
+		classNameIdList = types.NewClassNameIdList(className)
+	}
+	classNameIdList.ClassId = append(classNameIdList.ClassId, classID)
+	return classNameIdList
 }
 
 func (k Keeper) DeleteClassIDInOwningClassList(ctx sdk.Context, owner sdk.AccAddress, classID string) error {

@@ -17,7 +17,7 @@ service Query {
   rpc NFTMinter(QueryNFTMinterRequest) returns (QueryNFTMinterResponse) {
     option (google.api.http).get = "/ununifi/nftmint/nft_minter";
   }
-  rpc ClassIdByName(QueryClassIdsByNameRequest) returns (QueryClassIdsByNameResponse) {
+  rpc ClassIdsByName(QueryClassIdsByNameRequest) returns (QueryClassIdsByNameResponse) {
     option (google.api.http).get = "/ununifi/nftmint/class_ids_by_name";
   }
   rpc ClassIdsByOwner(QueryClassIdsByOwnerRequest) returns (QueryClassIdsByOwnerResponse) {

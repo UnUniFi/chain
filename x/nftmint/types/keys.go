@@ -33,6 +33,9 @@ var (
 
 	// KeyPrefixOwningClassList defines prefix key for OwningClassList
 	KeyPrefixOwningClassIdList = []byte{0x03}
+
+	// KeyPrefixClassNameIdList defines prefix key for ClassNameIdList
+	KeyPrefixClassNameIdList = []byte{0x04}
 )
 
 func NFTAttributesKey(classID, nftID string) []byte {

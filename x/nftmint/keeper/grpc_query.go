@@ -44,8 +44,18 @@ func (k Keeper) NFTMinter(context.Context, *types.QueryNFTMinterRequest) (*types
 	return &types.QueryNFTMinterResponse{}, nil
 }
 
-func (k Keeper) ClassIdByName(context.Context, *types.QueryClassIdsByNameRequest) (*types.QueryClassIdsByNameResponse, error) {
-	return &types.QueryClassIdsByNameResponse{}, nil
+func (k Keeper) ClassIdsByName(c context.Context, req *types.QueryClassIdsByNameRequest) (*types.QueryClassIdsByNameResponse, error) {
+	// TODO: validate class name format first
+	// err := types.ValidateClassName(req.ClassName)
+
+	ctx := sdk.UnwrapSDKContext(c)
+	classNameIdList, exists := k.GetClassNameIdList(ctx, req.ClassName)
+	if !exists {
+		return nil, sdkerrors.Wrap(types.ErrClassNameIdListNotExists, req.ClassName)
+	}
+	return &types.QueryClassIdsByNameResponse{
+		ClassNameIdList: &classNameIdList,
+	}, nil
 }
 
 func (k Keeper) ClassIdsByOwner(c context.Context, req *types.QueryClassIdsByOwnerRequest) (*types.QueryClassIdsByOwnerResponse, error) {
