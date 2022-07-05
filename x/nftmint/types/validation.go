@@ -15,8 +15,8 @@ import (
 func ValidateMintingPermission(classAttributes ClassAttributes, minter sdk.AccAddress) error {
 	switch classAttributes.MintingPermission {
 	case 0:
-		owner := classAttributes.Owner.AccAddress().String()
-		if owner != minter.String() {
+		owner := classAttributes.Owner.AccAddress()
+		if !owner.Equals(minter) {
 			return ErrInvalidMintingPermission
 		}
 		return nil

@@ -29,6 +29,7 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(
 		CmdCreateClass(),
 		CmdMintNFT(),
+		CmdBurnNFT(),
 	)
 
 	return cmd
@@ -36,7 +37,6 @@ func GetTxCmd() *cobra.Command {
 
 func CmdCreateClass() *cobra.Command {
 	cmd := &cobra.Command{
-		// TODO: write appropriate guide
 		Use:   "create-class [class-name] [base-token-uri]] [token-supply-cap] [minting-permission] --from [sender]",
 		Args:  cobra.ExactArgs(4),
 		Short: "create class for minting NFTs",
@@ -100,12 +100,12 @@ func CmdCreateClass() *cobra.Command {
 
 func CmdMintNFT() *cobra.Command {
 	cmd := &cobra.Command{
-		// TODO: write appropriate guide
 		Use:   "mint-nft [class-id] [nft-id] [receiver] --from [sender]",
 		Args:  cobra.ExactArgs(3),
 		Short: "mint NFT under specific class by class-id",
 		Long: strings.TrimSpace(fmt.Sprintf(
-			"Note: nft-id will be that nft-uri combined with base token uri of the class-id, like <base-token-uri><nft-id>"+
+			"Note: nft-id must start with [a-zA-Z] character."+
+				"nft-id will be that nft-uri combined with base token uri of the class-id, like <base-token-uri><nft-id>"+
 				"$ %s tx %s mint-nft <class-id> <nft-id> <receiver>"+
 				"--from <sender> "+
 				"--chain-id=<chain-id> "+
@@ -141,6 +141,37 @@ func CmdMintNFT() *cobra.Command {
 	}
 
 	cmd.Flags().AddFlagSet(FsCreateClass)
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdBurnNFT() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "burn-nft [class-id] [nft-id] --from [sender]",
+		Args:  cobra.ExactArgs(2),
+		Short: "burn specified NFT",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			sender := clientCtx.GetFromAddress()
+
+			msg := types.NewMsgBurnNFT(
+				sender,
+				args[0],
+				args[1],
+			)
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
 	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }

@@ -195,15 +195,32 @@ func (msg MsgUpdateTokenSupplyCap) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Sender.AccAddress()}
 }
 
-// TODO: func NewMsgSendClass() *MsgSendClass {}
+func NewMsgBurnNFT(
+	burner sdk.AccAddress,
+	classID, nftID string,
+) *MsgBurnNFT {
+	return &MsgBurnNFT{
+		Sender:  burner.Bytes(),
+		ClassId: classID,
+		NftId:   nftID,
+	}
+}
+
 func (msg MsgBurnNFT) Route() string { return RouterKey }
 
 func (msg MsgBurnNFT) Type() string { return TypeMsgBurnNFT }
 
-// TODO: Impl validate func
 func (msg MsgBurnNFT) ValidateBasic() error {
 	if msg.Sender.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
+	}
+
+	if err := nfttypes.ValidateClassID(msg.ClassId); err != nil {
+		return sdkerrors.Wrapf(nfttypes.ErrInvalidClassID, "Invalid class id (%s)", msg.ClassId)
+	}
+
+	if err := nfttypes.ValidateNFTID(msg.NftId); err != nil {
+		return sdkerrors.Wrapf(nfttypes.ErrInvalidID, "Invalid nft id (%s)", msg.NftId)
 	}
 
 	return nil

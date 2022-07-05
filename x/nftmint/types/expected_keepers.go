@@ -24,6 +24,7 @@ type NftKeeper interface {
 	GetNFT(ctx sdk.Context, classID, nftID string) (nfttypes.NFT, bool)
 	GetNFTsOfClassByOwner(ctx sdk.Context, classID string, owner sdk.AccAddress) (nfts []nfttypes.NFT)
 	GetNFTsOfClass(ctx sdk.Context, classID string) (nfts []nfttypes.NFT)
+	HasNFT(ctx sdk.Context, classID, nftID string) bool
 
 	GetOwner(ctx sdk.Context, classID string, nftID string) sdk.AccAddress
 	GetBalance(ctx sdk.Context, classID string, owner sdk.AccAddress) uint64

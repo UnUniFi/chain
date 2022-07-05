@@ -72,5 +72,16 @@ func (k msgServer) MintNFT(c context.Context, msg *types.MsgMintNFT) (*types.Msg
 }
 
 func (k msgServer) BurnNFT(c context.Context, msg *types.MsgBurnNFT) (*types.MsgBurnNFTResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := k.keeper.BurnNFT(ctx, msg); err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitTypedEvent(&types.EventBurnNFT{
+		Burner:  msg.Sender.AccAddress().String(),
+		ClassId: msg.ClassId,
+		NftId:   msg.NftId,
+	})
 	return &types.MsgBurnNFTResponse{}, nil
 }
