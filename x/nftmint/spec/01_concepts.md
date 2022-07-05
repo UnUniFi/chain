@@ -49,14 +49,14 @@ This represents the `NFT` content.
 ### NFT Id
 
 The `NFT.Id` is the identifier of the `NFT` in the `Class`.   
-In UnUniFi, `NFT.Id` in` Class` starts from 0 and is incremented by 1 each time it is created. This number doesn't necessary connect to the token supply number because supply number decreases when the `NFT` is burned. But, the `NFT.Id` counter should not be affected.
+The `NFT.Id` will be chose by the minter and become a part of `NFT.Uri`, following this rule: `NFT.Uri = ClassAttributes.BaseTokenUri + NFT.Id`
 
 ## Mint
 
-Minting `NFT` is achieved by sending `MsgMintNFT` message with `Class.Id`. 
+Minting `NFT` is achieved by sending `MsgMintNFT` message with `Class.Id`, `NFT.Id` and `Receiver`. 
 But, there's minting permission in some case.   
-If the attached `Class` has `False` attribute regarding `ClassAttributes.MintingPermission`, anyone can mint `NFT`.
-If the attached `Class` has `True` attribute regarding `ClassAttributes.MintingPermission`, only the `ClassAttributes.Owner` can mint `NFT`.
+If the attached `Class` has `OnlyOwner` attribute regarding `ClassAttributes.MintingPermission`, only owner of `Class` can mint `NFT`.
+If the attached `Class` has `Anyone` attribute regarding `ClassAttributes.MintingPermission`, anyone can mint `NFT`.
 
 ## Update
 
