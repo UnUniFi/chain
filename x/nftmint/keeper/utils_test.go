@@ -1,8 +1,9 @@
-package keeper
+package keeper_test
 
 import (
 	"testing"
 
+	"github.com/UnUniFi/chain/x/nftmint/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 	"github.com/stretchr/testify/require"
@@ -16,12 +17,12 @@ func TestCreateId(t *testing.T) {
 	var seq uint64 = 0
 	addr := testAddr
 	accAddr, _ := sdk.AccAddressFromBech32(addr)
-	classIdSeq0 := createClassId(seq, accAddr)
+	classIdSeq0 := keeper.CreateClassId(seq, accAddr) // createClassId(seq, accAddr)
 	err := nfttypes.ValidateClassID(classIdSeq0)
 	require.NoError(t, err)
 
 	seq += 1
-	classIdSeq1 := createClassId(seq, accAddr)
+	classIdSeq1 := keeper.CreateClassId(seq, accAddr)
 	require.NoError(t, err)
 	require.NotEqual(t, classIdSeq0, classIdSeq1)
 }

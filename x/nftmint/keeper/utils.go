@@ -29,7 +29,7 @@ func UintToByte(u uint64) []byte {
 }
 
 // Create class id on UnUniFi using addr sequence and addr byte
-func createClassId(num uint64, addr sdk.Address) string {
+func CreateClassId(num uint64, addr sdk.Address) string {
 	sequenceByte := UintToByte(num)
 	addrByte := addr.Bytes()
 	idByte := append(addrByte, sequenceByte...)

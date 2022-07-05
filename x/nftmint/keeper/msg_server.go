@@ -28,7 +28,7 @@ func (k msgServer) CreateClass(c context.Context, msg *types.MsgCreateClass) (*t
 		return nil, err
 	}
 
-	classID := createClassId(seq, msg.Sender.AccAddress())
+	classID := CreateClassId(seq, msg.Sender.AccAddress())
 	err = k.keeper.CreateClass(ctx, classID, msg)
 	if err != nil {
 		return nil, err

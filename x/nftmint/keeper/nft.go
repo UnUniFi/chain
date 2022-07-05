@@ -19,7 +19,7 @@ func (k Keeper) MintNFT(ctx sdk.Context, msg *types.MsgMintNFT) error {
 		return sdkerrors.Wrapf(types.ErrClassAttributesNotExists, "class attributes with class id %s doesn't exist", msg.ClassId)
 	}
 	// TODO: validate minting permission from ClassAttributes
-	err := types.ValidateMintingPermission(classAttributes, msg.Recipient.AccAddress())
+	err := types.ValidateMintingPermission(classAttributes, msg.Sender.AccAddress())
 	if err != nil {
 		return err
 	}
