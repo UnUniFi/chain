@@ -21,9 +21,25 @@ enum MintingPermission {
   Anyone = 1;
   WhiteList = 2;
 }
+
+message OwningClassIdList {
+  string owner = 1 [
+    (gogoproto.moretags) = "yaml:\"owner\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  repeated string class_id = 2;
+}
+
+message ClassNameIdList {
+  string class_name = 1;
+  repeated string class_id = 2;
+}
 ```
 
-- ClassAttributes:`format(class_id) -> ClassAttributes`
+- ClassAttributes: `format(class_id) -> ClassAttributes`
+- OwningClassIdList: `format(owner) -> OwningClassIdList`
+- ClassNameIdList: `format(name) -> ClassNameIdList`
 
 ## NFT and its Relating Attributes
 
