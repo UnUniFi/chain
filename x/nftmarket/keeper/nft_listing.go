@@ -413,6 +413,32 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 	listing.State = types.ListingState_SELLING_DECISION
 	k.SetNftListing(ctx, listing)
 
+	// automatic payment if enabled
+	bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
+	if len(bids) > 0 {
+		winnerIndex := len(bids) - 1
+		bid := bids[winnerIndex]
+		if bid.AutomaticPayment {
+			bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+			if err != nil {
+				fmt.Println(err)
+				return err
+			}
+
+			cacheCtx, write := ctx.CacheContext()
+			err = k.PayFullBid(cacheCtx, &types.MsgPayFullBid{
+				Sender: bidder.Bytes(),
+				NftId:  listing.NftId,
+			})
+			if err == nil {
+				write()
+			} else {
+				fmt.Println(err)
+				return err
+			}
+		}
+	}
+
 	// Emit event for nft listing end
 	ctx.EventManager().EmitTypedEvent(&types.EventSellingDecision{
 		Owner:   msg.Sender.AccAddress().String(),
@@ -522,12 +548,10 @@ func (k Keeper) ProcessEndingNftListings(ctx sdk.Context) {
 	listings := k.GetActiveNftListingsEndingAt(ctx, ctx.BlockTime())
 	for _, listing := range listings {
 		bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
-		if listing.AutoRelistedCount < params.AutoRelistingCountIfNoBid {
-			if len(bids) == 0 {
-				listing.EndAt = listing.EndAt.Add(time.Duration(params.NftListingExtendSeconds) * time.Second)
-				listing.AutoRelistedCount++
-				k.SetNftListing(ctx, listing)
-			}
+		if listing.AutoRelistedCount < params.AutoRelistingCountIfNoBid && len(bids) == 0 {
+			listing.EndAt = listing.EndAt.Add(time.Duration(params.NftListingExtendSeconds) * time.Second)
+			listing.AutoRelistedCount++
+			k.SetNftListing(ctx, listing)
 		} else {
 			listingOwner, err := sdk.AccAddressFromBech32(listing.Owner)
 			if err != nil {
@@ -636,7 +660,7 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 	params := k.GetParamSet(ctx)
 	// get listings ended earlier
-	listings := k.GetFullPaymentNftListingsEndingAt(ctx, ctx.BlockTime())
+	listings := k.GetSuccessfulBidNftListingsEndingAt(ctx, ctx.BlockTime())
 
 	_, _ = params, listings
 	for _, listing := range listings {
@@ -665,6 +689,9 @@ func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 		}
 
 		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, bid.Amount.Denom, bid.PaidAmount)
+
+		k.DeleteBid(ctx, bid)
+		k.DeleteNftListing(ctx, listing)
 	}
 }
 

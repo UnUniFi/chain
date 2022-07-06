@@ -169,7 +169,12 @@ func (k Keeper) TotalActiveRankDeposit(ctx sdk.Context, nftIdBytes []byte) sdk.I
 
 	bids := k.GetBidsByNft(ctx, nftIdBytes)
 	totalActiveRankDeposit := sdk.ZeroInt()
-	for _, bid := range bids[len(bids)-int(listing.BidActiveRank):] {
+
+	winnerCandidateStartIndex := len(bids) - int(listing.BidActiveRank)
+	if winnerCandidateStartIndex < 0 {
+		winnerCandidateStartIndex = 0
+	}
+	for _, bid := range bids[winnerCandidateStartIndex:] {
 		totalActiveRankDeposit = totalActiveRankDeposit.Add(bid.Amount.Amount)
 	}
 	return totalActiveRankDeposit
@@ -310,8 +315,14 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 		for _, b := range bids {
 			totalDeposit = totalDeposit.Add(b.PaidAmount)
 		}
-		if bid.PaidAmount.Add(listingDebt.Loan.Amount).GT(totalDeposit) {
-			cancelFee = bid.PaidAmount.Add(listingDebt.Loan.Amount).Sub(totalDeposit)
+
+		// PANIC HERE XXXXlistingDebt
+		loanAmount := sdk.ZeroInt()
+		if listingDebt.NftId.NftId != "" {
+			loanAmount = listingDebt.Loan.Amount
+		}
+		if bid.PaidAmount.Add(loanAmount).GT(totalDeposit) {
+			cancelFee = bid.PaidAmount.Add(loanAmount).Sub(totalDeposit)
 		}
 	}
 
@@ -339,11 +350,6 @@ func (k Keeper) PayFullBid(ctx sdk.Context, msg *types.MsgPayFullBid) error {
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
 		return err
-	}
-
-	// Verify listing is in SUCCESSFUL_BID state
-	if listing.State != types.ListingState_SUCCESSFUL_BID {
-		return types.ErrNftListingNotInSuccessfulBidPhase
 	}
 
 	bidder := msg.Sender.AccAddress()
