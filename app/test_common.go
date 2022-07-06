@@ -113,7 +113,7 @@ func (tApp TestApp) GetIncentiveKeeper() incentivekeeper.Keeper     { return tAp
 // InitializeFromGenesisStates calls InitChain on the app using the default genesis state, overwitten with any passed in genesis states
 func (tApp TestApp) InitializeFromGenesisStates(genesisStates ...GenesisState) TestApp {
 	// Create a default genesis state and overwrite with provided values
-	genesisState := NewDefaultGenesisState(tApp.appCodec)
+	genesisState := NewDefaultGenesisState()
 	for _, state := range genesisStates {
 		for k, v := range state {
 			genesisState[k] = v
@@ -140,7 +140,7 @@ func (tApp TestApp) InitializeFromGenesisStates(genesisStates ...GenesisState) T
 // InitializeFromGenesisStatesWithTime calls InitChain on the app using the default genesis state, overwitten with any passed in genesis states and genesis Time
 func (tApp TestApp) InitializeFromGenesisStatesWithTime(genTime time.Time, genesisStates ...GenesisState) TestApp {
 	// Create a default genesis state and overwrite with provided values
-	genesisState := NewDefaultGenesisState(tApp.appCodec)
+	genesisState := NewDefaultGenesisState()
 	for _, state := range genesisStates {
 		for k, v := range state {
 			genesisState[k] = v
@@ -168,7 +168,7 @@ func (tApp TestApp) InitializeFromGenesisStatesWithTime(genTime time.Time, genes
 // InitializeFromGenesisStatesWithTimeAndChainID calls InitChain on the app using the default genesis state, overwitten with any passed in genesis states and genesis Time
 func (tApp TestApp) InitializeFromGenesisStatesWithTimeAndChainID(genTime time.Time, chainID string, genesisStates ...GenesisState) TestApp {
 	// Create a default genesis state and overwrite with provided values
-	genesisState := NewDefaultGenesisState(tApp.appCodec)
+	genesisState := NewDefaultGenesisState()
 	for _, state := range genesisStates {
 		for k, v := range state {
 			genesisState[k] = v

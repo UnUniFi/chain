@@ -838,6 +838,10 @@ func NewApp(
 	return app
 }
 
+func (app *App) SimulationManager() *module.SimulationManager {
+	return app.sm
+}
+
 func (app *App) setTxHandler(txConfig client.TxConfig, indexEventsStr []string) {
 	indexEvents := map[string]struct{}{}
 	for _, e := range indexEventsStr {

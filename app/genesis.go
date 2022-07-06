@@ -2,8 +2,8 @@ package app
 
 import (
 	"encoding/json"
-
-	"github.com/cosmos/cosmos-sdk/codec"
+	// "github.com/CosmWasm/wasmd/x/wasm"
+	// wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 )
 
 // The genesis state of the blockchain is represented here as a map of raw json
@@ -16,6 +16,21 @@ import (
 type GenesisState map[string]json.RawMessage
 
 // NewDefaultGenesisState generates the default state for the application.
-func NewDefaultGenesisState(cdc codec.JSONCodec) GenesisState {
-	return ModuleBasics.DefaultGenesis(cdc)
+func NewDefaultGenesisState() GenesisState {
+	encCfg := MakeEncodingConfig()
+	gen := ModuleBasics.DefaultGenesis(encCfg.Marshaler)
+
+	// here we override wasm config to make it permissioned by default
+	/*
+			wasmd package using cosmos sdk v0.45.x which isn't compatible with v.46.x
+		  So commenting out the related part at the moment
+	*/
+	// wasmGen := wasm.GenesisState{
+	// 	Params: wasmtypes.Params{
+	// 		CodeUploadAccess:             wasmtypes.AllowNobody,
+	// 		InstantiateDefaultPermission: wasmtypes.AccessTypeEverybody,
+	// 	},
+	// }
+	// gen[wasmGen.ModuleName] = encCfg.Marshaler.MustMarshalJSON(&wasmGen)
+	return gen
 }
