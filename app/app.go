@@ -312,7 +312,7 @@ type App struct {
 	incentiveKeeper   incentivekeeper.Keeper
 	ununifidistKeeper ununifidistkeeper.Keeper
 	pricefeedKeeper   pricefeedkeeper.Keeper
-	nftmarketKeeper   nftmarketkeeper.Keeper
+	NftmarketKeeper   nftmarketkeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -560,7 +560,7 @@ func NewApp(
 		app.BankKeeper,
 	)
 
-	app.nftmarketKeeper = nftmarketkeeper.NewKeeper(
+	app.NftmarketKeeper = nftmarketkeeper.NewKeeper(
 		appCodec,
 		keys[nftmarkettypes.StoreKey],
 		keys[nftmarkettypes.MemStoreKey],
@@ -659,7 +659,7 @@ func NewApp(
 		incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
 		ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
 		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
-		nftmarket.NewAppModule(appCodec, app.nftmarketKeeper, app.AccountKeeper, app.BankKeeper),
+		nftmarket.NewAppModule(appCodec, app.NftmarketKeeper, app.AccountKeeper, app.BankKeeper),
 		// wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
 	)
 
