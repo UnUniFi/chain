@@ -49,11 +49,11 @@ message ClassNameIdList {
 }
 
 message Params {
-  uint64 MaxTokenSupplyLimit = 1;
+  uint64 MaxTokenSupplyCap = 1;
   uint64 MinClassNameLen = 2;
   uint64 MaxClassNameLen = 3;
-  uint64 MaxClassUriLen	= 4;
-  uint64 MaxBaseTokenUriLen	= 5;
+  uint64 MinUriLen = 4;
+  uint64 MaxUriLen	= 5;
   uint64 MaxSymbolLen	= 6;
   uint64 MaxDescriptionLen = 7;
 }
