@@ -46,6 +46,17 @@ func (k msgServer) CreateClass(c context.Context, msg *types.MsgCreateClass) (*t
 }
 
 func (k msgServer) SendClass(c context.Context, msg *types.MsgSendClass) (*types.MsgSendClassResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := k.keeper.SendClass(ctx, msg); err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitTypedEvent(&types.EventSendClass{
+		Sender:   msg.Sender.AccAddress().String(),
+		ClassId:  msg.ClassId,
+		Receiver: msg.Recipient.AccAddress().String(),
+	})
 	return &types.MsgSendClassResponse{}, nil
 }
 func (k msgServer) UpdateBaseTokenUri(c context.Context, msg *types.MsgUpdateBaseTokenUri) (*types.MsgUpdateBaseTokenUriResponse, error) {

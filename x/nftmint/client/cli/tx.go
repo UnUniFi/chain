@@ -30,6 +30,7 @@ func GetTxCmd() *cobra.Command {
 		CmdCreateClass(),
 		CmdMintNFT(),
 		CmdBurnNFT(),
+		CmdSendClass(),
 	)
 
 	return cmd
@@ -162,6 +163,42 @@ func CmdBurnNFT() *cobra.Command {
 				sender,
 				args[0],
 				args[1],
+			)
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdSendClass() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "send-class [class-id] [recipient] --from [sender]",
+		Args:  cobra.ExactArgs(2),
+		Short: "send the ownership of class",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			sender := clientCtx.GetFromAddress()
+			recipient := args[1]
+			recipientAddr, err := sdk.AccAddressFromBech32(recipient)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgSendClass(
+				sender,
+				args[0],
+				recipientAddr,
 			)
 
 			if err := msg.ValidateBasic(); err != nil {

@@ -51,6 +51,28 @@ func (k Keeper) CreateClass(ctx sdk.Context, classID string, msg *types.MsgCreat
 	return nil
 }
 
+func (k Keeper) SendClass(ctx sdk.Context, msg *types.MsgSendClass) error {
+	if exists := k.nftKeeper.HasClass(ctx, msg.ClassId); !exists {
+		return sdkerrors.Wrap(nfttypes.ErrClassNotExists, msg.ClassId)
+	}
+
+	classAttirbutes, exists := k.GetClassAttributes(ctx, msg.ClassId)
+	if !exists {
+		return sdkerrors.Wrap(types.ErrClassAttributesNotExists, msg.ClassId)
+	}
+
+	if !msg.Sender.AccAddress().Equals(classAttirbutes.Owner.AccAddress()) {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not the owner of the class", msg.Sender.AccAddress().String())
+	}
+
+	classAttirbutes.Owner = msg.Recipient
+	if err := k.SetClassAttributes(ctx, classAttirbutes); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (k Keeper) SetClassAttributes(ctx sdk.Context, classAttributes types.ClassAttributes) error {
 	bz, err := k.cdc.Marshal(&classAttributes)
 	if err != nil {

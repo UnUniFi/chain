@@ -120,15 +120,25 @@ func (msg MsgMintNFT) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Sender.AccAddress()}
 }
 
-// TODO: func NewMsgSendClass() *MsgSendClass {}
+func NewMsgSendClass(sender sdk.AccAddress, classID string, recipient sdk.AccAddress) *MsgSendClass {
+	return &MsgSendClass{
+		Sender:    sender.Bytes(),
+		ClassId:   classID,
+		Recipient: recipient.Bytes(),
+	}
+}
+
 func (msg MsgSendClass) Route() string { return RouterKey }
 
 func (msg MsgSendClass) Type() string { return TypeMsgSendClass }
 
-// TODO: Impl validate func
 func (msg MsgSendClass) ValidateBasic() error {
 	if msg.Sender.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
+	}
+
+	if err := nfttypes.ValidateClassID(msg.ClassId); err != nil {
+		return sdkerrors.Wrapf(nfttypes.ErrInvalidClassID, "Invalid class id (%s)", msg.ClassId)
 	}
 
 	return nil
