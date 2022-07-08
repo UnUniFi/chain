@@ -31,6 +31,7 @@ func GetTxCmd() *cobra.Command {
 		CmdMintNFT(),
 		CmdBurnNFT(),
 		CmdSendClass(),
+		CmdUpdateTokenSupplyCap(),
 	)
 
 	return cmd
@@ -199,6 +200,42 @@ func CmdSendClass() *cobra.Command {
 				sender,
 				args[0],
 				recipientAddr,
+			)
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdUpdateTokenSupplyCap() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-token-supply-cap [class-id] [token-supply-cap] --from [sender]",
+		Args:  cobra.ExactArgs(2),
+		Short: "update the token supply cap of class specified by class id",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			sender := clientCtx.GetFromAddress()
+
+			tokenSupplyCap, err := strconv.ParseUint(args[1], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgUpdateTokenSupplyCap(
+				sender,
+				args[0],
+				tokenSupplyCap,
 			)
 
 			if err := msg.ValidateBasic(); err != nil {

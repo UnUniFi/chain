@@ -10,13 +10,13 @@ import (
 
 const (
 	// For the test, use "cosmos" prefix
-	testAddr           = "cosmos1nyd8wdqyrnjfwfnfysv6t0rrpcj4pmzkykytjh"
-	testAddr2          = "cosmos1chjjqrherp2lgmj9wsqwe6leercydncqx2v209"
-	testClassName      = "UnUniFi"
-	testUri            = "ipfs://test/"
-	testTokenSupplyCap = 10000
-	testSymbol         = "TEST"
-	testDescription    = "This description is for the valdation uni test"
+	testAddr        = "cosmos1nyd8wdqyrnjfwfnfysv6t0rrpcj4pmzkykytjh"
+	testAddr2       = "cosmos1chjjqrherp2lgmj9wsqwe6leercydncqx2v209"
+	testClassName   = "UnUniFi"
+	testUri         = "ipfs://test/"
+	testTokenSupply = 10000
+	testSymbol      = "TEST"
+	testDescription = "This description is for the valdation uni test"
 )
 
 func TestValidateMintingPermission(t *testing.T) {
@@ -94,12 +94,12 @@ func TestValidateTokenSupplyCap(t *testing.T) {
 	params := types.DefaultParams()
 
 	// valid case
-	err := types.ValidateTokenSupplyCap(params.MaxTokenSupplyCap, testTokenSupplyCap)
+	err := types.ValidateTokenSupplyCap(params.MaxNFTSupplyCap, testTokenSupply)
 	require.NoError(t, err)
 
 	// invalid case which token supply cap is bigger than the default MaxTokenSupplyCap
-	invalidTokenSupplyCap := testTokenSupplyCap * ((params.MaxTokenSupplyCap)/testTokenSupplyCap + 1)
-	err = types.ValidateTokenSupplyCap(params.MaxTokenSupplyCap, invalidTokenSupplyCap)
+	invalidTokenSupply := testTokenSupply * ((params.MaxNFTSupplyCap)/testTokenSupply + 1)
+	err = types.ValidateTokenSupplyCap(params.MaxNFTSupplyCap, invalidTokenSupply)
 	require.Error(t, err)
 }
 

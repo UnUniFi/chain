@@ -63,6 +63,17 @@ func (k msgServer) UpdateBaseTokenUri(c context.Context, msg *types.MsgUpdateBas
 	return &types.MsgUpdateBaseTokenUriResponse{}, nil
 }
 func (k msgServer) UpdateTokenSupplyCap(c context.Context, msg *types.MsgUpdateTokenSupplyCap) (*types.MsgUpdateTokenSupplyCapResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := k.keeper.UpdateTokenSupplyCap(ctx, msg); err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitTypedEvent(&types.EventUpdateTokenSupplyCap{
+		Owner:          msg.Sender.AccAddress().String(),
+		ClassId:        msg.ClassId,
+		TokenSupplyCap: strconv.FormatUint(msg.TokenSupplyCap, 10),
+	})
 	return &types.MsgUpdateTokenSupplyCapResponse{}, nil
 }
 

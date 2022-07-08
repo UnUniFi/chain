@@ -42,9 +42,9 @@ func ValidateUri(minLen, maxLen uint64, uri string) error {
 	return nil
 }
 
-func ValidateTokenSupplyCap(maxCap uint64, tokenSupplyCap uint64) error {
-	if tokenSupplyCap > maxCap {
-		strTokenSupplyCap := strconv.FormatUint(tokenSupplyCap, 10)
+func ValidateTokenSupplyCap(maxCap uint64, tokenSupply uint64) error {
+	if tokenSupply > maxCap {
+		strTokenSupplyCap := strconv.FormatUint(tokenSupply, 10)
 		return sdkerrors.Wrap(ErrInvalidTokenSupplyCap, strTokenSupplyCap)
 	}
 	return nil

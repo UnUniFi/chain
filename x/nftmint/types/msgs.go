@@ -180,7 +180,14 @@ func (msg MsgUpdateBaseTokenUri) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Sender.AccAddress()}
 }
 
-// TODO: func NewMsgSendClass() *MsgSendClass {}
+func NewMsgUpdateTokenSupplyCap(sender sdk.AccAddress, classID string, tokenSupplyCap uint64) *MsgUpdateTokenSupplyCap {
+	return &MsgUpdateTokenSupplyCap{
+		Sender:         sender.Bytes(),
+		ClassId:        classID,
+		TokenSupplyCap: tokenSupplyCap,
+	}
+}
+
 func (msg MsgUpdateTokenSupplyCap) Route() string { return RouterKey }
 
 func (msg MsgUpdateTokenSupplyCap) Type() string { return TypeMsgUpdateTokenSupplyCap }
@@ -189,6 +196,10 @@ func (msg MsgUpdateTokenSupplyCap) Type() string { return TypeMsgUpdateTokenSupp
 func (msg MsgUpdateTokenSupplyCap) ValidateBasic() error {
 	if msg.Sender.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
+	}
+
+	if err := nfttypes.ValidateClassID(msg.ClassId); err != nil {
+		return sdkerrors.Wrapf(nfttypes.ErrInvalidClassID, "Invalid class id (%s)", msg.ClassId)
 	}
 
 	return nil

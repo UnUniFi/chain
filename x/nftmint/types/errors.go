@@ -16,4 +16,5 @@ var (
 	ErrInvalidTokenSupplyCap         = sdkerrors.Register(ModuleName, 9, "invalid token supply cap on UnUniFi")
 	ErrClassSymbolInvalidLength      = sdkerrors.Register(ModuleName, 10, "invalid class symbol length on UnUniFi")
 	ErrClassDescriptionInvalidLength = sdkerrors.Register(ModuleName, 11, "invalid class description length on UnUniFi")
+	ErrTokenSupplyBelow              = sdkerrors.Register(ModuleName, 12, "updating token supply cap number is over the number of the current supplied token")
 )

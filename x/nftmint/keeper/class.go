@@ -73,6 +73,33 @@ func (k Keeper) SendClass(ctx sdk.Context, msg *types.MsgSendClass) error {
 	return nil
 }
 
+func (k Keeper) UpdateTokenSupplyCap(ctx sdk.Context, msg *types.MsgUpdateTokenSupplyCap) error {
+	if exists := k.nftKeeper.HasClass(ctx, msg.ClassId); !exists {
+		return sdkerrors.Wrap(nfttypes.ErrClassNotExists, msg.ClassId)
+	}
+
+	classAttirbutes, exists := k.GetClassAttributes(ctx, msg.ClassId)
+	if !exists {
+		return sdkerrors.Wrap(types.ErrClassAttributesNotExists, msg.ClassId)
+	}
+
+	if !msg.Sender.AccAddress().Equals(classAttirbutes.Owner.AccAddress()) {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not the owner of the class", msg.Sender.AccAddress().String())
+	}
+
+	currentSupply := k.nftKeeper.GetTotalSupply(ctx, msg.ClassId)
+	if msg.TokenSupplyCap < currentSupply {
+		return sdkerrors.Wrapf(types.ErrTokenSupplyBelow, "%d is over %d which is the current supplied token number.", msg.TokenSupplyCap, currentSupply)
+	}
+
+	classAttirbutes.TokenSupplyCap = msg.TokenSupplyCap
+	if err := k.SetClassAttributes(ctx, classAttirbutes); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (k Keeper) SetClassAttributes(ctx sdk.Context, classAttributes types.ClassAttributes) error {
 	bz, err := k.cdc.Marshal(&classAttributes)
 	if err != nil {
