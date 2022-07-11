@@ -93,7 +93,7 @@ message QueryNFTMinterRequest {
   string nft_id = 2;
 }
 message QueryNFTMinterResponse {
-  NFTAttributes nft_attributes = 1;
+  string minter = 1;
 }
 ```
 
