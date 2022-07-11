@@ -59,9 +59,22 @@ func (k msgServer) SendClass(c context.Context, msg *types.MsgSendClass) (*types
 	})
 	return &types.MsgSendClassResponse{}, nil
 }
+
 func (k msgServer) UpdateBaseTokenUri(c context.Context, msg *types.MsgUpdateBaseTokenUri) (*types.MsgUpdateBaseTokenUriResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := k.keeper.UpdateBaseTokenUri(ctx, msg); err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitTypedEvent(&types.EventUpdateBaseTokenUri{
+		Owner:        msg.Sender.AccAddress().String(),
+		ClassId:      msg.ClassId,
+		BaseTokenUri: msg.BaseTokenUri,
+	})
 	return &types.MsgUpdateBaseTokenUriResponse{}, nil
 }
+
 func (k msgServer) UpdateTokenSupplyCap(c context.Context, msg *types.MsgUpdateTokenSupplyCap) (*types.MsgUpdateTokenSupplyCapResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 

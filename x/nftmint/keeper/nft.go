@@ -64,6 +64,24 @@ func (k Keeper) BurnNFT(ctx sdk.Context, msg *types.MsgBurnNFT) error {
 	return nil
 }
 
+func (k Keeper) UpdateNFTUri(ctx sdk.Context, classID, baseTokenUri string) error {
+	nfts := k.nftKeeper.GetNFTsOfClass(ctx, classID)
+	if len(nfts) == 0 {
+		return nil
+	}
+
+	for _, nft := range nfts {
+		nftUriLatest := baseTokenUri + nft.Id
+		nft.Uri = nftUriLatest
+		// TODO: uri len validation
+		if err := k.nftKeeper.Update(ctx, nft); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (k Keeper) SetNFTAttributes(ctx sdk.Context, nftAttributes types.NFTAttributes) error {
 	bz := k.cdc.MustMarshal(&nftAttributes)
 	store := ctx.KVStore(k.storeKey)

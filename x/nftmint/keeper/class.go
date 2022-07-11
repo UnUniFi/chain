@@ -1,6 +1,10 @@
 package keeper
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
+	"strings"
+
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
@@ -51,6 +55,19 @@ func (k Keeper) CreateClass(ctx sdk.Context, classID string, msg *types.MsgCreat
 	return nil
 }
 
+// Create class id on UnUniFi using addr sequence and addr byte
+func CreateClassId(num uint64, addr sdk.Address) string {
+	sequenceByte := UintToByte(num)
+	addrByte := addr.Bytes()
+	idByte := append(addrByte, sequenceByte...)
+
+	idHash := sha256.Sum256(idByte)
+	idString := hex.EncodeToString(idHash[LenHashByteToHex:])
+	classID := PrefixClassId + strings.ToUpper(idString)
+
+	return classID
+}
+
 func (k Keeper) SendClass(ctx sdk.Context, msg *types.MsgSendClass) error {
 	if exists := k.nftKeeper.HasClass(ctx, msg.ClassId); !exists {
 		return sdkerrors.Wrap(nfttypes.ErrClassNotExists, msg.ClassId)
@@ -74,27 +91,63 @@ func (k Keeper) SendClass(ctx sdk.Context, msg *types.MsgSendClass) error {
 }
 
 func (k Keeper) UpdateTokenSupplyCap(ctx sdk.Context, msg *types.MsgUpdateTokenSupplyCap) error {
-	if exists := k.nftKeeper.HasClass(ctx, msg.ClassId); !exists {
-		return sdkerrors.Wrap(nfttypes.ErrClassNotExists, msg.ClassId)
-	}
-
-	classAttirbutes, exists := k.GetClassAttributes(ctx, msg.ClassId)
+	classAttributes, exists := k.GetClassAttributes(ctx, msg.ClassId)
 	if !exists {
 		return sdkerrors.Wrap(types.ErrClassAttributesNotExists, msg.ClassId)
 	}
 
-	if !msg.Sender.AccAddress().Equals(classAttirbutes.Owner.AccAddress()) {
-		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not the owner of the class", msg.Sender.AccAddress().String())
+	err := k.IsUpgradable(ctx, msg.Sender.AccAddress(), classAttributes)
+	if err != nil {
+		return err
 	}
+
+	// TODO: tokenSupplyCap validation
 
 	currentSupply := k.nftKeeper.GetTotalSupply(ctx, msg.ClassId)
 	if msg.TokenSupplyCap < currentSupply {
 		return sdkerrors.Wrapf(types.ErrTokenSupplyBelow, "%d is over %d which is the current supplied token number.", msg.TokenSupplyCap, currentSupply)
 	}
 
-	classAttirbutes.TokenSupplyCap = msg.TokenSupplyCap
-	if err := k.SetClassAttributes(ctx, classAttirbutes); err != nil {
+	classAttributes.TokenSupplyCap = msg.TokenSupplyCap
+	if err := k.SetClassAttributes(ctx, classAttributes); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (k Keeper) UpdateBaseTokenUri(ctx sdk.Context, msg *types.MsgUpdateBaseTokenUri) error {
+	classAttributes, exists := k.GetClassAttributes(ctx, msg.ClassId)
+	if !exists {
+		return sdkerrors.Wrap(types.ErrClassAttributesNotExists, msg.ClassId)
+	}
+
+	err := k.IsUpgradable(ctx, msg.Sender.AccAddress(), classAttributes)
+	if err != nil {
+		return err
+	}
+
+	// TODO: baseTokenUri validation
+
+	classAttributes.BaseTokenUri = msg.BaseTokenUri
+	if err := k.SetClassAttributes(ctx, classAttributes); err != nil {
+		return err
+	}
+
+	if err = k.UpdateNFTUri(ctx, classAttributes.ClassId, classAttributes.BaseTokenUri); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (k Keeper) IsUpgradable(ctx sdk.Context, sender sdk.AccAddress, classAttributes types.ClassAttributes) error {
+	if exists := k.nftKeeper.HasClass(ctx, classAttributes.ClassId); !exists {
+		return sdkerrors.Wrap(nfttypes.ErrClassNotExists, classAttributes.ClassId)
+	}
+
+	if !sender.Equals(classAttributes.Owner.AccAddress()) {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not the owner of the class", sender.String())
 	}
 
 	return nil

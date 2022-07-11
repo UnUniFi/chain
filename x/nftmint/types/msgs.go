@@ -155,7 +155,14 @@ func (msg MsgSendClass) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Sender.AccAddress()}
 }
 
-// TODO: func NewMsgUpdateBaseTokenUri() *MsgSendClass {}
+func NewMsgUpdateBaseTokenUri(sender sdk.AccAddress, classID, baseTokenUri string) *MsgUpdateBaseTokenUri {
+	return &MsgUpdateBaseTokenUri{
+		Sender:       sender.Bytes(),
+		ClassId:      classID,
+		BaseTokenUri: baseTokenUri,
+	}
+}
+
 func (msg MsgUpdateBaseTokenUri) Route() string { return RouterKey }
 
 func (msg MsgUpdateBaseTokenUri) Type() string { return TypeMsgUpdateBaseTokenUri }
