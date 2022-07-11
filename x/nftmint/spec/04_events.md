@@ -4,9 +4,6 @@ The `nftmint` module emits the following events:
 
 ## MsgCreateClass
 
-| Type | Attribute Key | Attribute Value |
-| ---- | ------------- | --------------- |
-
 ```protobuf
 message EventCreateClass {
   string owner = 1;
@@ -19,9 +16,6 @@ message EventCreateClass {
 
 ## MsgSendClass
 
-| Type | Attribute Key | Attribute Value |
-| ---- | ------------- | --------------- |
-
 ```protobuf
 message EventSendClass {
   string sender = 1;
@@ -31,9 +25,6 @@ message EventSendClass {
 ```
 
 ## MsgUpdateBaseTokenUri
-
-| Type | Attribute Key | Attribute Value |
-| ---- | ------------- | --------------- |
 
 ```protobuf
 message EventUpdateBaseTokenUri {
@@ -45,9 +36,6 @@ message EventUpdateBaseTokenUri {
 
 ## MsgUpdateTokenSupplyCap
 
-| Type | Attribute Key | Attribute Value |
-| ---- | ------------- | --------------- |
-
 ```protobuf
 message EventUpdateTokenSupplyCap {
   string owner = 1;
@@ -57,9 +45,6 @@ message EventUpdateTokenSupplyCap {
 ```
 
 ## MsgMintNFT
-
-| Type | Attribute Key | Attribute Value |
-| ---- | ------------- | --------------- |
 
 ```protobuf
 message EventMintNFT {
@@ -71,9 +56,6 @@ message EventMintNFT {
 ```
 
 ## MsgBurnNFT
-
-| Type | Attribute Key | Attribute Value |
-| ---- | ------------- | --------------- |
 
 ```protobuf
 message EventBurnNFT {
