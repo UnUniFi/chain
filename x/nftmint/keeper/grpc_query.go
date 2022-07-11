@@ -40,8 +40,20 @@ func (k Keeper) ClassAttributes(c context.Context, req *types.QueryClassAttribut
 	}, nil
 }
 
-func (k Keeper) NFTMinter(context.Context, *types.QueryNFTMinterRequest) (*types.QueryNFTMinterResponse, error) {
-	return &types.QueryNFTMinterResponse{}, nil
+func (k Keeper) NFTMinter(c context.Context, req *types.QueryNFTMinterRequest) (*types.QueryNFTMinterResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid argument")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	nftMinter, exists := k.GetNFTMinter(ctx, req.ClassId, req.NftId)
+	if !exists {
+		return nil, sdkerrors.Wrapf(types.ErrNftAttributesNotExists, "NftAttributes with this %s class and %s nft id doesn't exist", req.ClassId, req.NftId)
+	}
+
+	return &types.QueryNFTMinterResponse{
+		Minter: nftMinter.String(),
+	}, nil
 }
 
 func (k Keeper) ClassIdsByName(c context.Context, req *types.QueryClassIdsByNameRequest) (*types.QueryClassIdsByNameResponse, error) {

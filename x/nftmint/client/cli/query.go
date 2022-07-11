@@ -30,6 +30,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdQueryClassAttributes(),
 		CmdQueryClassIdsByOwner(),
 		CmdQueryClassIdsByName(),
+		CmdQueryNFTMinter(),
 	)
 
 	return cmd
@@ -80,7 +81,7 @@ func CmdQueryClassAttributes() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			return clientCtx.PrintProto(res.ClassAttributes)
+			return clientCtx.PrintProto(res)
 		},
 	}
 
@@ -109,7 +110,7 @@ func CmdQueryClassIdsByOwner() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			return clientCtx.PrintProto(res.OwningClassIdList)
+			return clientCtx.PrintProto(res)
 		},
 	}
 
@@ -138,7 +139,35 @@ func CmdQueryClassIdsByName() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			return clientCtx.PrintProto(res.ClassNameIdList)
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdQueryNFTMinter() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "nft-minter",
+		Args:  cobra.ExactArgs(2),
+		Short: "Query nft minter with class and nft id",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.NFTMinter(
+				context.Background(),
+				&types.QueryNFTMinterRequest{
+					ClassId: args[0],
+					NftId:   args[1],
+				},
+			)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
 		},
 	}
 

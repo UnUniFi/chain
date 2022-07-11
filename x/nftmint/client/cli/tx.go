@@ -32,6 +32,7 @@ func GetTxCmd() *cobra.Command {
 		CmdBurnNFT(),
 		CmdSendClass(),
 		CmdUpdateTokenSupplyCap(),
+		CmdUpdateBaseTokenUri(),
 	)
 
 	return cmd
@@ -236,6 +237,37 @@ func CmdUpdateTokenSupplyCap() *cobra.Command {
 				sender,
 				args[0],
 				tokenSupplyCap,
+			)
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdUpdateBaseTokenUri() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-base-token-uri [class-id] [base-token-uri] --from [sender]",
+		Args:  cobra.ExactArgs(2),
+		Short: "update the base token uri of class specified by class id and automatically change the belonging nft uris",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			sender := clientCtx.GetFromAddress()
+
+			msg := types.NewMsgUpdateBaseTokenUri(
+				sender,
+				args[0],
+				args[1],
 			)
 
 			if err := msg.ValidateBasic(); err != nil {

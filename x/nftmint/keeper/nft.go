@@ -35,7 +35,7 @@ func (k Keeper) MintNFT(ctx sdk.Context, msg *types.MsgMintNFT) error {
 		return err
 	}
 
-	err = k.SetNFTAttributes(ctx, types.NewNFTAttributes(msg.ClassId, msg.NftId, msg.Sender.AccAddress()))
+	err = k.SetNFTMinter(ctx, msg.ClassId, msg.NftId, msg.Sender.AccAddress())
 	if err != nil {
 		return err
 	}
@@ -82,26 +82,23 @@ func (k Keeper) UpdateNFTUri(ctx sdk.Context, classID, baseTokenUri string) erro
 	return nil
 }
 
-func (k Keeper) SetNFTAttributes(ctx sdk.Context, nftAttributes types.NFTAttributes) error {
-	bz := k.cdc.MustMarshal(&nftAttributes)
+func (k Keeper) SetNFTMinter(ctx sdk.Context, classID, nftID string, minter sdk.AccAddress) error {
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixNFTAttributes))
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixNFTMinter))
 
-	nftAttributesKey := types.NFTAttributesKey(nftAttributes.ClassId, nftAttributes.NftId)
-	prefixStore.Set(nftAttributesKey, bz)
+	prefixStore.Set(types.NFTMinterKey(classID, nftID), minter.Bytes())
 	return nil
 }
 
-func (k Keeper) GetNFTAttributes(ctx sdk.Context, classID, nftID string) (types.NFTAttributes, bool) {
+func (k Keeper) GetNFTMinter(ctx sdk.Context, classID, nftID string) (sdk.AccAddress, bool) {
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixNFTAttributes))
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixNFTMinter))
 
-	var nftAttributes types.NFTAttributes
-	bz := prefixStore.Get(types.NFTAttributesKey(classID, nftID))
+	bz := prefixStore.Get(types.NFTMinterKey(classID, nftID))
 	if len(bz) == 0 {
-		return types.NFTAttributes{}, false
+		return nil, false
 	}
 
-	k.cdc.MustUnmarshal(bz, &nftAttributes)
-	return nftAttributes, true
+	minter := sdk.AccAddress(bz)
+	return minter, true
 }

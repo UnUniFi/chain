@@ -17,4 +17,5 @@ var (
 	ErrClassSymbolInvalidLength      = sdkerrors.Register(ModuleName, 10, "invalid class symbol length on UnUniFi")
 	ErrClassDescriptionInvalidLength = sdkerrors.Register(ModuleName, 11, "invalid class description length on UnUniFi")
 	ErrTokenSupplyBelow              = sdkerrors.Register(ModuleName, 12, "updating token supply cap number is over the number of the current supplied token")
+	ErrNftAttributesNotExists        = sdkerrors.Register(ModuleName, 13, "nft attributes does not exist")
 )

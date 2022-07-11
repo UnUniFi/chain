@@ -29,7 +29,7 @@ var (
 	KeyPrefixClassAttributes = []byte{0x01}
 
 	// KeyPrefixNFTAttributes defines prefix key for NFTAttributes
-	KeyPrefixNFTAttributes = []byte{0x02}
+	KeyPrefixNFTMinter = []byte{0x02}
 
 	// KeyPrefixOwningClassList defines prefix key for OwningClassList
 	KeyPrefixOwningClassIdList = []byte{0x03}
@@ -38,7 +38,7 @@ var (
 	KeyPrefixClassNameIdList = []byte{0x04}
 )
 
-func NFTAttributesKey(classID, nftID string) []byte {
+func NFTMinterKey(classID, nftID string) []byte {
 	nftIdentifier := classID + nftID
 	return []byte(nftIdentifier)
 }
