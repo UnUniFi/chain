@@ -311,7 +311,7 @@ type App struct {
 	incentiveKeeper   incentivekeeper.Keeper
 	ununifidistKeeper ununifidistkeeper.Keeper
 	pricefeedKeeper   pricefeedkeeper.Keeper
-	nftmintKeeper     nftmintkeeper.Keeper
+	NftmintKeeper     nftmintkeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -559,7 +559,7 @@ func NewApp(
 		app.BankKeeper,
 	)
 
-	app.nftmintKeeper = nftmintkeeper.NewKeeper(
+	app.NftmintKeeper = nftmintkeeper.NewKeeper(
 		appCodec,
 		keys[nftminttypes.StoreKey],
 		keys[nftminttypes.MemStoreKey],
@@ -657,7 +657,7 @@ func NewApp(
 		incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
 		ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
 		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
-		nftmint.NewAppModule(appCodec, app.nftmintKeeper, app.AccountKeeper),
+		nftmint.NewAppModule(appCodec, app.NftmintKeeper, app.AccountKeeper),
 		// wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
 	)
 
@@ -1054,5 +1054,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ununifidisttypes.ModuleName)
 	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
 	// paramsKeeper.Subspace(wasm.ModuleName)
+	paramsKeeper.Subspace(nftminttypes.ModuleName)
 	return paramsKeeper
 }
