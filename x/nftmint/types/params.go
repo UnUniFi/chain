@@ -3,35 +3,59 @@ package types
 import (
 	fmt "fmt"
 
-	paramstype "github.com/cosmos/cosmos-sdk/x/params/types"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+)
+
+const (
+	DefaultMaxNFTSupplyCap   = 100000
+	DefaultMinClassNameLen   = 3
+	DefaultMaxClassNameLen   = 128
+	DefaultMinUriLen         = 8
+	DefaultMaxUriLen         = 512
+	DefaultMaxSymbolLen      = 16
+	DefaultMaxDescriptionLen = 1024
 )
 
 // NewParams returns a new params object
-func NewParams() Params {
-	return DefaultParams()
+func NewParams(
+	maxNFTMintSupplyCap,
+	minClassNameLen, maxClassNameLen,
+	minUriLen, maxUriLen,
+	maxSymbolLen,
+	maxDescriptionLen uint64,
+) Params {
+	return Params{
+		MaxNFTSupplyCap:   maxNFTMintSupplyCap,
+		MinClassNameLen:   minClassNameLen,
+		MaxClassNameLen:   maxClassNameLen,
+		MinUriLen:         minUriLen,
+		MaxUriLen:         maxClassNameLen,
+		MaxSymbolLen:      maxSymbolLen,
+		MaxDescriptionLen: maxDescriptionLen,
+	}
 }
 
 // DefaultParams returns default params for nftmint module
 func DefaultParams() Params {
 	return Params{
-		MaxTokenSupplyCap: 100000,
-		MinClassNameLen:   3,
-		MaxClassNameLen:   128,
-		MinUriLen:         8,
-		MaxUriLen:         512,
-		MaxSymbolLen:      16,
-		MaxDescriptionLen: 1024,
+		MaxNFTSupplyCap:   DefaultMaxNFTSupplyCap,
+		MinClassNameLen:   DefaultMinClassNameLen,
+		MaxClassNameLen:   DefaultMaxClassNameLen,
+		MinUriLen:         DefaultMinUriLen,
+		MaxUriLen:         DefaultMaxUriLen,
+		MaxSymbolLen:      DefaultMaxSymbolLen,
+		MaxDescriptionLen: DefaultMaxDescriptionLen,
 	}
 }
 
 // ParamKeyTable Key declaration for parameters
-func ParamKeyTable() paramstype.KeyTable {
-	return paramstype.NewKeyTable().RegisterParamSet(&Params{})
+func ParamKeyTable() paramstypes.KeyTable {
+	return paramstypes.NewKeyTable().RegisterParamSet(&Params{})
 }
 
 // Parameter keys
 var (
-	KeyMaxTokenSupplyCap = []byte("MaxTokenSupplyCap")
+	KeyMaxNFTSupplyCap   = []byte("MaxNFTSupplyCap")
 	KeyMinClassNameLen   = []byte("MinClassNameLen")
 	KeyMaxClassNameLen   = []byte("MaxClassNameLen")
 	KeyMinUriLen         = []byte("MinUriLen")
@@ -41,21 +65,21 @@ var (
 )
 
 // ParamSetPairs implements the ParamSet interface and returns all the key/value pairs
-func (p *Params) ParamSetPairs() paramstype.ParamSetPairs {
-	return paramstype.ParamSetPairs{
-		paramstype.NewParamSetPair(KeyMaxTokenSupplyCap, &p.MaxTokenSupplyCap, validateMaxTokenSupplyCap),
-		paramstype.NewParamSetPair(KeyMinClassNameLen, &p.MinClassNameLen, validateMinClassNameLen),
-		paramstype.NewParamSetPair(KeyMaxClassNameLen, &p.MinClassNameLen, validateMaxClassNameLen),
-		paramstype.NewParamSetPair(KeyMinUriLen, &p.MinUriLen, validateMinUriLen),
-		paramstype.NewParamSetPair(KeyMaxClassUriLen, &p.MaxUriLen, validateMaxUriLen),
-		paramstype.NewParamSetPair(KeyMaxSymbolLen, &p.MaxSymbolLen, validateMaxSymbolLen),
-		paramstype.NewParamSetPair(KeyMaxDescriptionLen, &p.MaxDescriptionLen, validateMaxDescriptionLen),
+func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
+	return paramstypes.ParamSetPairs{
+		paramstypes.NewParamSetPair(KeyMaxNFTSupplyCap, &p.MaxNFTSupplyCap, validateMaxNFTSupplyCap),
+		paramstypes.NewParamSetPair(KeyMinClassNameLen, &p.MinClassNameLen, validateMinClassNameLen),
+		paramstypes.NewParamSetPair(KeyMaxClassNameLen, &p.MinClassNameLen, validateMaxClassNameLen),
+		paramstypes.NewParamSetPair(KeyMinUriLen, &p.MinUriLen, validateMinUriLen),
+		paramstypes.NewParamSetPair(KeyMaxClassUriLen, &p.MaxUriLen, validateMaxUriLen),
+		paramstypes.NewParamSetPair(KeyMaxSymbolLen, &p.MaxSymbolLen, validateMaxSymbolLen),
+		paramstypes.NewParamSetPair(KeyMaxDescriptionLen, &p.MaxDescriptionLen, validateMaxDescriptionLen),
 	}
 }
 
 // Validate checks that the parameters have valid values.
 func (p Params) Validate() error {
-	if err := validateMaxTokenSupplyCap(p.MaxTokenSupplyCap); err != nil {
+	if err := validateMaxNFTSupplyCap(p.MaxNFTSupplyCap); err != nil {
 		return err
 	}
 
@@ -86,7 +110,7 @@ func (p Params) Validate() error {
 	return nil
 }
 
-func validateMaxTokenSupplyCap(i interface{}) error {
+func validateMaxNFTSupplyCap(i interface{}) error {
 	_, ok := i.(uint64)
 	if !ok {
 		return fmt.Errorf("invalid parameter types: %T", i)

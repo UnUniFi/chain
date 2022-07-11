@@ -49,7 +49,7 @@ message ClassNameIdList {
 }
 
 message Params {
-  uint64 MaxTokenSupplyCap = 1;
+  uint64 MaxNFTSupplyCap = 1;
   uint64 MinClassNameLen = 2;
   uint64 MaxClassNameLen = 3;
   uint64 MinUriLen = 4;
