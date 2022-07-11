@@ -3,8 +3,10 @@ package keeper_test
 import (
 	"time"
 
+	ununifitypes "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/nftmarket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
@@ -182,6 +184,171 @@ func (suite *KeeperTestSuite) TestNftListingBasics() {
 	successfulNftListingsEnding = suite.app.NftmarketKeeper.GetSuccessfulBidNftListingsEndingAt(suite.ctx, future)
 	suite.Require().Len(successfulNftListingsEnding, 0)
 }
+
+func (suite *KeeperTestSuite) TestListNft() {
+	acc1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	acc2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	tests := []struct {
+		testCase   string
+		classId    string
+		nftId      string
+		nftOwner   sdk.AccAddress
+		lister     sdk.AccAddress
+		bidToken   string
+		activeRank uint64
+		mintBefore bool
+		listBefore bool
+		expectPass bool
+	}{
+		{
+			testCase:   "not existing nft",
+			classId:    "class1",
+			nftId:      "nft1",
+			nftOwner:   acc1,
+			lister:     acc1,
+			bidToken:   "uguu",
+			activeRank: 1,
+			mintBefore: false,
+			listBefore: false,
+			expectPass: false,
+		},
+		{
+			testCase:   "already listed",
+			classId:    "class2",
+			nftId:      "nft2",
+			nftOwner:   acc1,
+			lister:     acc1,
+			bidToken:   "uguu",
+			activeRank: 1,
+			mintBefore: true,
+			listBefore: true,
+			expectPass: false,
+		},
+		{
+			testCase:   "not owned nft",
+			classId:    "class3",
+			nftId:      "nft3",
+			nftOwner:   acc1,
+			lister:     acc2,
+			bidToken:   "uguu",
+			activeRank: 1,
+			mintBefore: true,
+			listBefore: false,
+			expectPass: false,
+		},
+		{
+			testCase:   "unsupported bid token",
+			classId:    "class4",
+			nftId:      "nft4",
+			nftOwner:   acc1,
+			lister:     acc1,
+			bidToken:   "xxxx",
+			activeRank: 1,
+			mintBefore: true,
+			listBefore: false,
+			expectPass: false,
+		},
+		{
+			testCase:   "successful listing with default active rank",
+			classId:    "class5",
+			nftId:      "nft5",
+			nftOwner:   acc1,
+			lister:     acc1,
+			bidToken:   "uguu",
+			activeRank: 0,
+			mintBefore: true,
+			listBefore: false,
+			expectPass: true,
+		},
+		{
+			testCase:   "successful listing with non-default active rank",
+			classId:    "class6",
+			nftId:      "nft6",
+			nftOwner:   acc1,
+			lister:     acc1,
+			bidToken:   "uguu",
+			activeRank: 100,
+			mintBefore: true,
+			listBefore: false,
+			expectPass: true,
+		},
+	}
+
+	for _, tc := range tests {
+		if tc.mintBefore {
+			suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+				Id:          tc.classId,
+				Name:        tc.classId,
+				Symbol:      tc.classId,
+				Description: tc.classId,
+				Uri:         tc.classId,
+			})
+			err := suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
+				ClassId: tc.classId,
+				Id:      tc.nftId,
+				Uri:     tc.nftId,
+				UriHash: tc.nftId,
+			}, tc.nftOwner)
+			suite.Require().NoError(err)
+		}
+		if tc.listBefore {
+			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
+				Sender:        ununifitypes.StringAccAddress(tc.lister),
+				NftId:         types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId},
+				ListingType:   types.ListingType_DIRECT_ASSET_BORROW,
+				BidToken:      tc.bidToken,
+				MinBid:        sdk.ZeroInt(),
+				BidActiveRank: tc.activeRank,
+			})
+			suite.Require().NoError(err)
+		}
+		err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
+			Sender:        ununifitypes.StringAccAddress(tc.lister),
+			NftId:         types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId},
+			ListingType:   types.ListingType_DIRECT_ASSET_BORROW,
+			BidToken:      tc.bidToken,
+			MinBid:        sdk.ZeroInt(),
+			BidActiveRank: tc.activeRank,
+		})
+
+		if tc.expectPass {
+			suite.Require().NoError(err)
+
+			params := suite.app.NftmarketKeeper.GetParamSet(suite.ctx)
+			// get listing
+			listing, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, (types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId}).IdBytes())
+			suite.Require().NoError(err)
+
+			// check ownership is transferred
+			moduleAddr := suite.app.AccountKeeper.GetModuleAddress(types.ModuleName)
+			nftOwner := suite.app.NFTKeeper.GetOwner(suite.ctx, tc.classId, tc.nftId)
+			suite.Require().Equal(nftOwner.String(), moduleAddr.String())
+
+			// check bid active rank is set to default if zero
+			if tc.activeRank == 0 {
+				suite.Require().Equal(params.DefaultBidActiveRank, listing.BidActiveRank)
+			}
+
+			// check startedAt is set as current time
+			suite.Require().Equal(suite.ctx.BlockTime(), listing.StartedAt)
+
+			// check endAt is set from initial listing duration
+			suite.Require().Equal(suite.ctx.BlockTime().Add(time.Second*time.Duration(params.NftListingPeriodInitial)), listing.EndAt)
+		} else {
+			suite.Require().Error(err)
+		}
+	}
+}
+
+// TODO:Add test for CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing) error
+// TODO:Add test for ExpandListingPeriod(ctx sdk.Context, msg *types.MsgExpandListingPeriod) error
+// TODO:Add test for SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) error
+// TODO:Add test for EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) error
+// TODO:Add test for ProcessEndingNftListings(ctx sdk.Context)
+// TODO:Add test for HandleFullPaymentsPeriodEndings(ctx sdk.Context)
+// TODO:Add test for DelieverSuccessfulBids(ctx sdk.Context)
+// TODO:Add test for ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, denom string, amount sdk.Int)
 
 // TODO: add test for NftListing following scenario
 // Create Nft
