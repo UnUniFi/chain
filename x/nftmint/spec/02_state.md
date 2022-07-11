@@ -43,14 +43,5 @@ message ClassNameIdList {
 
 ## NFT and its Relating Attributes
 
-These params aren't updated once they're created at the minting moment.
-
-```protobuf
-message NFTAttributes {
-  string class_id = 1;
-  string nft_id = 2;
-  string minter = 3;
-}
-```
-
-- NFTAttributes: `format(class_id) -> NFTAttributes`
+There aren't types defined in proto for the relating to nft data.
+But, in UnUniFi, the minter of each NFT is recorded.
