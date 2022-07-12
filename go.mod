@@ -3,6 +3,7 @@ module github.com/UnUniFi/chain
 go 1.17
 
 require (
+	cosmossdk.io/math v1.0.0-beta.2
 	github.com/cosmos/cosmos-sdk v0.46.0-rc1
 	github.com/ethereum/go-ethereum v1.10.17
 	github.com/gogo/protobuf v1.3.3
@@ -29,7 +30,6 @@ require (
 	cloud.google.com/go/storage v1.14.0 // indirect
 	cosmossdk.io/api v0.1.0-alpha8 // indirect
 	cosmossdk.io/errors v1.0.0-beta.6 // indirect
-	cosmossdk.io/math v1.0.0-beta.2 // indirect
 	filippo.io/edwards25519 v1.0.0-rc.1 // indirect
 	github.com/99designs/keyring v1.1.6 // indirect
 	github.com/Workiva/go-datastructures v1.0.53 // indirect
