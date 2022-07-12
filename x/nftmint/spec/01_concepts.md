@@ -42,14 +42,20 @@ The initial owner is the sender of `MsgCreateClass`. This parameter can be chang
 
 ## NFT
 
-The `NFT` data is defined in sdk's x/nft module.   
-We use that type definition and store the generated `NFT` data on UnUnifi in x/nft module.   
+The `NFT` data structure is defined in sdk's x/nft module.   
+We use that type definition and store the generated `NFT` data on UnUnifi in x/nft module, not in the x/nftmint module.   
 This represents the `NFT` content.
 
 ### NFT Id
 
 The `NFT.Id` is the identifier of the `NFT` in the `Class`.   
 The `NFT.Id` will be chose by the minter and become a part of `NFT.Uri`, following this rule: `NFT.Uri = ClassAttributes.BaseTokenUri + NFT.Id`
+
+### NFT Uri
+
+The `NFT.Uri` is the parameter which `NFT` has. The content which is in `NFT.Uri` location usually represents the core information of the `NFT`. 
+In UnUniFi, the `NFT.Uri` is defined as following formula:   
+`NFT.Uri = ClassAttributes.BaseTokenUri = NFT.id`
 
 ## Mint
 
@@ -68,14 +74,15 @@ In this case, every belonging `NFT.Uri`s are changed at once.
 
 ## Burn
 
-
+The NFTs can be burned by the owner of `NFT`.
+As we handle NFTs on NFTFi protocol on UnUniFi, the burn permission belongs only the owner of the `NFT`.
 
 ## Transrer
 
 ### Class Ownership
 
 The owner of the `Class` is recorded with `Class.Id`.
-And we support the transition of the `ClassAttributes.Owner` by the sending `ClassAttributes.Owner` to any recipient.
+And we support the transition of the `ClassAttributes.Owner` by the sending `MsgSendClass` message which change `ClassAttributes.Owner` to any recipient.
 
 #### Normal NFT
 
