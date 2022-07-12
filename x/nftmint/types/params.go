@@ -59,7 +59,7 @@ var (
 	KeyMinClassNameLen   = []byte("MinClassNameLen")
 	KeyMaxClassNameLen   = []byte("MaxClassNameLen")
 	KeyMinUriLen         = []byte("MinUriLen")
-	KeyMaxClassUriLen    = []byte("MaxUriLen")
+	KeyMaxUriLen         = []byte("MaxUriLen")
 	KeyMaxSymbolLen      = []byte("MaxSymbolLen")
 	KeyMaxDescriptionLen = []byte("MaxDescriptionLen")
 )
@@ -69,9 +69,9 @@ func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 	return paramstypes.ParamSetPairs{
 		paramstypes.NewParamSetPair(KeyMaxNFTSupplyCap, &p.MaxNFTSupplyCap, validateMaxNFTSupplyCap),
 		paramstypes.NewParamSetPair(KeyMinClassNameLen, &p.MinClassNameLen, validateMinClassNameLen),
-		paramstypes.NewParamSetPair(KeyMaxClassNameLen, &p.MinClassNameLen, validateMaxClassNameLen),
+		paramstypes.NewParamSetPair(KeyMaxClassNameLen, &p.MaxClassNameLen, validateMaxClassNameLen),
 		paramstypes.NewParamSetPair(KeyMinUriLen, &p.MinUriLen, validateMinUriLen),
-		paramstypes.NewParamSetPair(KeyMaxClassUriLen, &p.MaxUriLen, validateMaxUriLen),
+		paramstypes.NewParamSetPair(KeyMaxUriLen, &p.MaxUriLen, validateMaxUriLen),
 		paramstypes.NewParamSetPair(KeyMaxSymbolLen, &p.MaxSymbolLen, validateMaxSymbolLen),
 		paramstypes.NewParamSetPair(KeyMaxDescriptionLen, &p.MaxDescriptionLen, validateMaxDescriptionLen),
 	}

@@ -48,19 +48,10 @@ func (msg MsgCreateClass) Route() string { return RouterKey }
 
 func (msg MsgCreateClass) Type() string { return TypeMsgCreateClass }
 
-// TODO: Impl validate func
 func (msg MsgCreateClass) ValidateBasic() error {
 	if msg.Sender.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
-	// TODO: the validation against:
-	// Name
-	// BaseTokenUri
-	// TokenSupplyCap
-	// MintingPermission
-	// Symbol
-	// Description
-	// ClassUri
 
 	return nil
 }
@@ -167,12 +158,14 @@ func (msg MsgUpdateBaseTokenUri) Route() string { return RouterKey }
 
 func (msg MsgUpdateBaseTokenUri) Type() string { return TypeMsgUpdateBaseTokenUri }
 
-// TODO: Impl validate func
 func (msg MsgUpdateBaseTokenUri) ValidateBasic() error {
 	if msg.Sender.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
 
+	if err := nfttypes.ValidateClassID(msg.ClassId); err != nil {
+		return sdkerrors.Wrapf(nfttypes.ErrInvalidClassID, "Invalid class id (%s)", msg.ClassId)
+	}
 	return nil
 }
 
@@ -199,7 +192,6 @@ func (msg MsgUpdateTokenSupplyCap) Route() string { return RouterKey }
 
 func (msg MsgUpdateTokenSupplyCap) Type() string { return TypeMsgUpdateTokenSupplyCap }
 
-// TODO: Impl validate func
 func (msg MsgUpdateTokenSupplyCap) ValidateBasic() error {
 	if msg.Sender.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")

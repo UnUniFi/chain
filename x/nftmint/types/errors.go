@@ -18,4 +18,5 @@ var (
 	ErrClassDescriptionInvalidLength = sdkerrors.Register(ModuleName, 11, "invalid class description length on UnUniFi")
 	ErrTokenSupplyBelow              = sdkerrors.Register(ModuleName, 12, "updating token supply cap number is over the number of the current supplied token")
 	ErrNftAttributesNotExists        = sdkerrors.Register(ModuleName, 13, "nft attributes does not exist")
+	ErrTokenSupplyCapOver            = sdkerrors.Register(ModuleName, 14, "current token supply is reached the number of the defined token supply cap")
 )

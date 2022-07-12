@@ -8,9 +8,9 @@ import (
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 )
 
+// MintNFT does validate the contents of MsgMintNFT and operate whole flow for MintNFT message
 func (k Keeper) MintNFT(ctx sdk.Context, msg *types.MsgMintNFT) error {
-	exists := k.nftKeeper.HasClass(ctx, msg.ClassId)
-	if !exists {
+	if !k.nftKeeper.HasClass(ctx, msg.ClassId) {
 		return sdkerrors.Wrap(nfttypes.ErrClassExists, msg.ClassId)
 	}
 
@@ -18,31 +18,33 @@ func (k Keeper) MintNFT(ctx sdk.Context, msg *types.MsgMintNFT) error {
 	if !exists {
 		return sdkerrors.Wrapf(types.ErrClassAttributesNotExists, "class attributes with class id %s doesn't exist", msg.ClassId)
 	}
-	// TODO: validate minting permission from ClassAttributes
-	err := types.ValidateMintingPermission(classAttributes, msg.Sender.AccAddress())
-	if err != nil {
-		return err
-	}
 
 	nftUri := classAttributes.BaseTokenUri + msg.NftId
-	// TODO: validate uri
-	// err := types.ValidateUri(nftUri)
-
-	// TODO: validate token supply cap
-
-	err = k.nftKeeper.Mint(ctx, types.NewNFT(msg.ClassId, msg.NftId, nftUri), msg.Recipient.AccAddress())
+	params := k.GetParamSet(ctx)
+	currentTokenSupply := k.nftKeeper.GetTotalSupply(ctx, msg.ClassId)
+	err := types.ValidateMintNFT(
+		params,
+		classAttributes.MintingPermission,
+		classAttributes.Owner.AccAddress(), msg.Sender.AccAddress(),
+		nftUri,
+		currentTokenSupply, classAttributes.TokenSupplyCap,
+	)
 	if err != nil {
 		return err
 	}
 
-	err = k.SetNFTMinter(ctx, msg.ClassId, msg.NftId, msg.Sender.AccAddress())
-	if err != nil {
+	if err := k.nftKeeper.Mint(ctx, types.NewNFT(msg.ClassId, msg.NftId, nftUri), msg.Recipient.AccAddress()); err != nil {
+		return err
+	}
+
+	if err := k.SetNFTMinter(ctx, msg.ClassId, msg.NftId, msg.Sender.AccAddress()); err != nil {
 		return err
 	}
 
 	return nil
 }
 
+// BurnNFT does validate the contents of MsgBurnNFT and operate whole flow for BurnNFT message
 func (k Keeper) BurnNFT(ctx sdk.Context, msg *types.MsgBurnNFT) error {
 	if !k.nftKeeper.HasClass(ctx, msg.ClassId) {
 		return sdkerrors.Wrap(nfttypes.ErrClassNotExists, msg.ClassId)
@@ -57,23 +59,26 @@ func (k Keeper) BurnNFT(ctx sdk.Context, msg *types.MsgBurnNFT) error {
 		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not the owner of nft %s", msg.Sender.AccAddress().String(), msg.NftId)
 	}
 
-	err := k.nftKeeper.Burn(ctx, msg.ClassId, msg.NftId)
-	if err != nil {
+	if err := k.nftKeeper.Burn(ctx, msg.ClassId, msg.NftId); err != nil {
 		return err
 	}
 	return nil
 }
 
+// UpdateNFTUri is called in UpdateBaseTokenUri message to apply the changed BaseTokenUri to each NFT.Uri
 func (k Keeper) UpdateNFTUri(ctx sdk.Context, classID, baseTokenUri string) error {
 	nfts := k.nftKeeper.GetNFTsOfClass(ctx, classID)
 	if len(nfts) == 0 {
 		return nil
 	}
 
+	params := k.GetParamSet(ctx)
 	for _, nft := range nfts {
 		nftUriLatest := baseTokenUri + nft.Id
 		nft.Uri = nftUriLatest
-		// TODO: uri len validation
+		if err := types.ValidateUri(params.MinUriLen, params.MaxUriLen, nftUriLatest); err != nil {
+			return err
+		}
 		if err := k.nftKeeper.Update(ctx, nft); err != nil {
 			return err
 		}

@@ -30,6 +30,10 @@ func (k Keeper) ClassAttributes(c context.Context, req *types.QueryClassAttribut
 		return nil, status.Error(codes.InvalidArgument, "invalid argument")
 	}
 
+	if err := nfttypes.ValidateClassID(req.ClassId); err != nil {
+		return nil, err
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 	classAttributes, found := k.GetClassAttributes(ctx, req.ClassId)
 	if !found {
@@ -45,6 +49,13 @@ func (k Keeper) NFTMinter(c context.Context, req *types.QueryNFTMinterRequest) (
 		return nil, status.Error(codes.InvalidArgument, "invalid argument")
 	}
 
+	if err := nfttypes.ValidateClassID(req.ClassId); err != nil {
+		return nil, err
+	}
+	if err := nfttypes.ValidateNFTID(req.NftId); err != nil {
+		return nil, err
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 	nftMinter, exists := k.GetNFTMinter(ctx, req.ClassId, req.NftId)
 	if !exists {
@@ -57,10 +68,12 @@ func (k Keeper) NFTMinter(c context.Context, req *types.QueryNFTMinterRequest) (
 }
 
 func (k Keeper) ClassIdsByName(c context.Context, req *types.QueryClassIdsByNameRequest) (*types.QueryClassIdsByNameResponse, error) {
-	// TODO: validate class name format first
-	// err := types.ValidateClassName(req.ClassName)
-
 	ctx := sdk.UnwrapSDKContext(c)
+	params := k.GetParamSet(ctx)
+	if err := types.ValidateClassName(params.MinClassNameLen, params.MaxClassNameLen, req.ClassName); err != nil {
+		return nil, err
+	}
+
 	classNameIdList, exists := k.GetClassNameIdList(ctx, req.ClassName)
 	if !exists {
 		return nil, sdkerrors.Wrap(types.ErrClassNameIdListNotExists, req.ClassName)

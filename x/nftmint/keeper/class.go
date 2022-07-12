@@ -18,37 +18,39 @@ const (
 	LenHashByteToHex = 32 - 20
 )
 
+// CreateClass does validate the contents of MsgCreateClass and operate whole flow for CreateClass message
 func (k Keeper) CreateClass(ctx sdk.Context, classID string, msg *types.MsgCreateClass) error {
 	exists := k.nftKeeper.HasClass(ctx, classID)
 	if exists {
 		return sdkerrors.Wrap(nfttypes.ErrClassExists, classID)
 	}
 
-	err := k.nftKeeper.SaveClass(
-		ctx,
-		types.NewClass(classID, msg.Name, msg.Symbol, msg.Description, msg.ClassUri),
+	params := k.GetParamSet(ctx)
+	err := types.ValidateCreateClass(
+		params,
+		msg.Name, msg.Symbol, msg.BaseTokenUri, msg.Description,
+		msg.MintingPermission,
+		msg.TokenSupplyCap,
 	)
 	if err != nil {
 		return err
 	}
 
-	err = k.SetClassAttributes(
-		ctx,
-		types.NewClassAttributes(classID, msg.Sender.AccAddress(), msg.BaseTokenUri, msg.MintingPermission, msg.TokenSupplyCap),
-	)
-	if err != nil {
+	if err := k.nftKeeper.SaveClass(ctx, types.NewClass(classID, msg.Name, msg.Symbol, msg.Description, msg.ClassUri)); err != nil {
+		return err
+	}
+
+	if err = k.SetClassAttributes(ctx, types.NewClassAttributes(classID, msg.Sender.AccAddress(), msg.BaseTokenUri, msg.MintingPermission, msg.TokenSupplyCap)); err != nil {
 		return err
 	}
 
 	owningClassIdList := k.AddClassIDToOwningClassIdList(ctx, msg.Sender.AccAddress(), classID)
-	err = k.SetOwningClassIdList(ctx, owningClassIdList)
-	if err != nil {
+	if err = k.SetOwningClassIdList(ctx, owningClassIdList); err != nil {
 		return err
 	}
 
 	classNameIdList := k.AddClassNameIdList(ctx, msg.Name, classID)
-	err = k.SetClassNameIdList(ctx, classNameIdList)
-	if err != nil {
+	if err = k.SetClassNameIdList(ctx, classNameIdList); err != nil {
 		return err
 	}
 
@@ -68,8 +70,9 @@ func CreateClassId(num uint64, addr sdk.Address) string {
 	return classID
 }
 
+// SendClass does validate the contents of MsgSendClass and operate whole flow for SendClass message
 func (k Keeper) SendClass(ctx sdk.Context, msg *types.MsgSendClass) error {
-	if exists := k.nftKeeper.HasClass(ctx, msg.ClassId); !exists {
+	if !k.nftKeeper.HasClass(ctx, msg.ClassId) {
 		return sdkerrors.Wrap(nfttypes.ErrClassNotExists, msg.ClassId)
 	}
 
@@ -90,22 +93,24 @@ func (k Keeper) SendClass(ctx sdk.Context, msg *types.MsgSendClass) error {
 	return nil
 }
 
+// UpdateTokenSupplyCap does validate the contents of MsgUpdateTokenSupplyCap and operate whole flow for UpdateTokenSupplyCap message
 func (k Keeper) UpdateTokenSupplyCap(ctx sdk.Context, msg *types.MsgUpdateTokenSupplyCap) error {
 	classAttributes, exists := k.GetClassAttributes(ctx, msg.ClassId)
 	if !exists {
 		return sdkerrors.Wrap(types.ErrClassAttributesNotExists, msg.ClassId)
 	}
 
-	err := k.IsUpgradable(ctx, msg.Sender.AccAddress(), classAttributes)
-	if err != nil {
+	if err := k.IsUpgradable(ctx, msg.Sender.AccAddress(), classAttributes); err != nil {
 		return err
 	}
 
-	// TODO: tokenSupplyCap validation
-
+	params := k.GetParamSet(ctx)
+	if err := types.ValidateTokenSupplyCap(params.MaxNFTSupplyCap, msg.TokenSupplyCap); err != nil {
+		return err
+	}
 	currentSupply := k.nftKeeper.GetTotalSupply(ctx, msg.ClassId)
-	if msg.TokenSupplyCap < currentSupply {
-		return sdkerrors.Wrapf(types.ErrTokenSupplyBelow, "%d is over %d which is the current supplied token number.", msg.TokenSupplyCap, currentSupply)
+	if err := types.ValidateTokenSupply(currentSupply, params.MaxNFTSupplyCap); err != nil {
+		return err
 	}
 
 	classAttributes.TokenSupplyCap = msg.TokenSupplyCap
@@ -116,31 +121,35 @@ func (k Keeper) UpdateTokenSupplyCap(ctx sdk.Context, msg *types.MsgUpdateTokenS
 	return nil
 }
 
+// UpdateBaseTokenUri does validate the contents of MsgUpdateBaseTokenUri and operate whole flow for UpdateBaseTokenUri message
 func (k Keeper) UpdateBaseTokenUri(ctx sdk.Context, msg *types.MsgUpdateBaseTokenUri) error {
 	classAttributes, exists := k.GetClassAttributes(ctx, msg.ClassId)
 	if !exists {
 		return sdkerrors.Wrap(types.ErrClassAttributesNotExists, msg.ClassId)
 	}
 
-	err := k.IsUpgradable(ctx, msg.Sender.AccAddress(), classAttributes)
-	if err != nil {
+	if err := k.IsUpgradable(ctx, msg.Sender.AccAddress(), classAttributes); err != nil {
 		return err
 	}
 
-	// TODO: baseTokenUri validation
+	params := k.GetParamSet(ctx)
+	if err := types.ValidateUri(params.MinUriLen, params.MaxUriLen, msg.BaseTokenUri); err != nil {
+		return err
+	}
 
 	classAttributes.BaseTokenUri = msg.BaseTokenUri
 	if err := k.SetClassAttributes(ctx, classAttributes); err != nil {
 		return err
 	}
 
-	if err = k.UpdateNFTUri(ctx, classAttributes.ClassId, classAttributes.BaseTokenUri); err != nil {
+	if err := k.UpdateNFTUri(ctx, classAttributes.ClassId, classAttributes.BaseTokenUri); err != nil {
 		return err
 	}
 
 	return nil
 }
 
+// check if update relating messages are permitted
 func (k Keeper) IsUpgradable(ctx sdk.Context, sender sdk.AccAddress, classAttributes types.ClassAttributes) error {
 	if exists := k.nftKeeper.HasClass(ctx, classAttributes.ClassId); !exists {
 		return sdkerrors.Wrap(nfttypes.ErrClassNotExists, classAttributes.ClassId)
