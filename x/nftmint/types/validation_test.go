@@ -10,13 +10,15 @@ import (
 
 const (
 	// For the test, use "cosmos" prefix
-	testAddr        = "cosmos1nyd8wdqyrnjfwfnfysv6t0rrpcj4pmzkykytjh"
-	testAddr2       = "cosmos1chjjqrherp2lgmj9wsqwe6leercydncqx2v209"
-	testClassName   = "UnUniFi"
-	testUri         = "ipfs://test/"
-	testTokenSupply = 10000
-	testSymbol      = "TEST"
-	testDescription = "This description is for the valdation uni test"
+	testAddr               = "cosmos1nyd8wdqyrnjfwfnfysv6t0rrpcj4pmzkykytjh"
+	testAddr2              = "cosmos1chjjqrherp2lgmj9wsqwe6leercydncqx2v209"
+	testAddr3              = "cosmos1hzgsxn26pn7zt0g3yssld7cmj86zr7fhhu2r3g"
+	testClassName          = "UnUniFi"
+	testUri                = "ipfs://test/"
+	testTokenSupplyCap     = 10000
+	testCurrentTokenSupply = 10
+	testSymbol             = "TEST"
+	testDescription        = "This description is for the valdation uni test"
 )
 
 func TestValidateMintingPermission(t *testing.T) {
@@ -26,25 +28,26 @@ func TestValidateMintingPermission(t *testing.T) {
 		Owner:             owner.Bytes(),
 		MintingPermission: 0,
 	}
-	err := types.ValidateMintingPermission(classAttirbutes, owner)
+	err := types.ValidateMintingPermission(classAttirbutes.MintingPermission, owner, owner)
 	require.NoError(t, err)
 
 	falseCase, _ := sdk.AccAddressFromBech32(testAddr2)
-	err = types.ValidateMintingPermission(classAttirbutes, falseCase)
+	err = types.ValidateMintingPermission(classAttirbutes.MintingPermission, owner, falseCase)
 	require.Error(t, err)
 
 	// AnyOne case
 	classAttirbutes = types.ClassAttributes{
 		MintingPermission: 1,
 	}
-	err = types.ValidateMintingPermission(classAttirbutes, owner)
+	anyoneCase, _ := sdk.AccAddressFromBech32(testAddr3)
+	err = types.ValidateMintingPermission(classAttirbutes.MintingPermission, owner, anyoneCase)
 	require.NoError(t, err)
 
 	// In case of now allowed option
 	classAttirbutes = types.ClassAttributes{
 		MintingPermission: 3,
 	}
-	err = types.ValidateMintingPermission(classAttirbutes, owner)
+	err = types.ValidateMintingPermission(classAttirbutes.MintingPermission, nil, nil)
 	require.Error(t, err)
 }
 
@@ -94,12 +97,22 @@ func TestValidateTokenSupplyCap(t *testing.T) {
 	params := types.DefaultParams()
 
 	// valid case
-	err := types.ValidateTokenSupplyCap(params.MaxNFTSupplyCap, testTokenSupply)
+	err := types.ValidateTokenSupplyCap(params.MaxNFTSupplyCap, testTokenSupplyCap)
 	require.NoError(t, err)
 
 	// invalid case which token supply cap is bigger than the default MaxTokenSupplyCap
-	invalidTokenSupply := testTokenSupply * ((params.MaxNFTSupplyCap)/testTokenSupply + 1)
+	invalidTokenSupply := testTokenSupplyCap * ((params.MaxNFTSupplyCap)/testTokenSupplyCap + 1)
 	err = types.ValidateTokenSupplyCap(params.MaxNFTSupplyCap, invalidTokenSupply)
+	require.Error(t, err)
+}
+
+func TestValidateTokenSupply(t *testing.T) {
+	err := types.ValidateTokenSupply(testCurrentTokenSupply, testTokenSupplyCap)
+	require.NoError(t, err)
+
+	// invalid case which current token supply is over the token supply cap
+	invalidTokenSupplyCap := 5
+	err = types.ValidateTokenSupply(testCurrentTokenSupply, uint64(invalidTokenSupplyCap))
 	require.Error(t, err)
 }
 
