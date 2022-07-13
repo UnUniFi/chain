@@ -109,7 +109,7 @@ func (k Keeper) UpdateTokenSupplyCap(ctx sdk.Context, msg *types.MsgUpdateTokenS
 		return err
 	}
 	currentSupply := k.nftKeeper.GetTotalSupply(ctx, msg.ClassId)
-	if err := types.ValidateTokenSupply(currentSupply, params.MaxNFTSupplyCap); err != nil {
+	if err := types.ValidateTokenSupply(currentSupply, msg.TokenSupplyCap); err != nil {
 		return err
 	}
 
