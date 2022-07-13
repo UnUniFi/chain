@@ -437,7 +437,6 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 				write()
 			} else {
 				fmt.Println(err)
-				return err
 			}
 		}
 	}
