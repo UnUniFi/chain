@@ -685,6 +685,8 @@ func (suite *KeeperTestSuite) TestSellingDecision() {
 	acc1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	acc2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
+	params := suite.app.NftmarketKeeper.GetParamSet(suite.ctx)
+
 	tests := []struct {
 		testCase      string
 		classId       string
@@ -815,10 +817,10 @@ func (suite *KeeperTestSuite) TestSellingDecision() {
 			suite.Require().NoError(err)
 		}
 
-		// lastBidder := sdk.AccAddress{}
+		lastBidder := sdk.AccAddress{}
 		for i := 0; i < tc.numBids; i++ {
 			bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-			// lastBidder = bidder
+			lastBidder = bidder
 
 			// init tokens to addr
 			coin := sdk.NewInt64Coin("uguu", int64(1000000*(i+1)))
@@ -859,24 +861,23 @@ func (suite *KeeperTestSuite) TestSellingDecision() {
 
 		if tc.expectPass {
 			suite.Require().NoError(err)
+			if tc.autoPayment {
+				bid, err := suite.app.NftmarketKeeper.GetBid(suite.ctx, nftIdentifier.IdBytes(), lastBidder)
+				suite.Require().NoError(err)
+				if tc.enoughAutoPay {
+					// check automatic payment execution when user has enough balance
+					suite.Require().Equal(bid.PaidAmount, bid.Amount.Amount)
+				} else {
+					// check automatic payment when the user does not have enough balance
+					suite.Require().NotEqual(bid.PaidAmount, bid.Amount.Amount)
+				}
+			}
 
-			// check state update after the execution
 			// check full payment end time update
-			// check automatic payment execution when user has enough balance
-			// check automatic payment when the user does not have enough balance
-
-			// // check fee is paid
-			// newExecutorBalance := suite.app.BankKeeper.GetBalance(suite.ctx, tc.executor, "uguu")
-			// suite.Require().True(newExecutorBalance.Amount.LT(oldExecutorBalance.Amount))
-
-			// // check winner bidders get extend fee
-			// newLastBidderBalance := suite.app.BankKeeper.GetBalance(suite.ctx, lastBidder, "uguu")
-			// suite.Require().True(newLastBidderBalance.Amount.GT(oldLastBidderBalance.Amount))
-
-			// // check listing endAt is extended
-			// listing, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
-			// suite.Require().NoError(err)
-			// suite.Require().True(oldListing.EndAt.Before(listing.EndAt))
+			listing, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+			suite.Require().NoError(err)
+			suite.Require().Equal(listing.State, types.ListingState_SELLING_DECISION)
+			suite.Require().Equal(suite.ctx.BlockTime().Add(time.Second*time.Duration(params.NftListingFullPaymentPeriod)), listing.FullPaymentEndAt)
 		} else {
 			suite.Require().Error(err)
 		}
