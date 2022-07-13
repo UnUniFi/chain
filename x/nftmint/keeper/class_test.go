@@ -187,7 +187,7 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 		Name:              "test",
 		BaseTokenUri:      "ipfs",
 		TokenSupplyCap:    10000,
-		MintingPermission: 10,
+		MintingPermission: 10, // not allowed minting permission option
 	}
 	err = suite.app.NftmintKeeper.CreateClass(suite.ctx, classIdInInvalidCase, &testMsgCreateClassInvalidMintingPermission)
 	suite.Require().Error(err)
@@ -224,26 +224,82 @@ func (suite *KeeperTestSuite) SendClass() {
 	// invalid sender of MsgSendclass
 	invalidSender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
-	testMsgCreateClassInvalidSender := types.MsgSendClass{
-		Sender:    invalidSender.Bytes(),
+	testMsgSendClassInvalidSender := types.MsgSendClass{
+		Sender:    invalidSender.Bytes(), // not the owner of class
 		ClassId:   classId,
 		Recipient: recipient.Bytes(),
 	}
-	err = suite.app.NftmintKeeper.SendClass(suite.ctx, &testMsgCreateClassInvalidSender)
+	err = suite.app.NftmintKeeper.SendClass(suite.ctx, &testMsgSendClassInvalidSender)
 	suite.Require().Error(err)
 
 	// invalid class id specification
 	invalidClassId := "nonexistance"
 	testMsgCreateClassInvalidClassId := types.MsgSendClass{
 		Sender:    sender.Bytes(),
-		ClassId:   invalidClassId,
+		ClassId:   invalidClassId, // non-existant class
 		Recipient: recipient.Bytes(),
 	}
 	err = suite.app.NftmintKeeper.SendClass(suite.ctx, &testMsgCreateClassInvalidClassId)
 	suite.Require().Error(err)
 }
 
-// TODO: sendClass msg
+// test for the MsgUpdateTokenSupplyCap relating functions
+func (suite *KeeperTestSuite) TestUpdateTokenSupplyCap() {
+	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	sender_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, sender)
+	classId := keeper.CreateClassId(sender_seq, sender)
 
-// TODO: updateTokenSupplyCap msg
+	testMsgCreateClass := types.MsgCreateClass{
+		Sender:            sender.Bytes(),
+		Name:              "test",
+		BaseTokenUri:      "ipfs://testcid-sample/",
+		TokenSupplyCap:    10000,
+		MintingPermission: 0,
+	}
+
+	_ = suite.app.NftmintKeeper.CreateClass(suite.ctx, classId, &testMsgCreateClass)
+
+	testMsgUpdateTokenSupplyCap := types.MsgUpdateTokenSupplyCap{
+		Sender:         sender.Bytes(),
+		ClassId:        classId,
+		TokenSupplyCap: 100,
+	}
+	err := suite.app.NftmintKeeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCap)
+	suite.Require().NoError(err)
+	classAttributes, exists := suite.app.NftmintKeeper.GetClassAttributes(suite.ctx, classId)
+	suite.Require().True(exists)
+	suite.Require().Equal(testMsgUpdateTokenSupplyCap.TokenSupplyCap, classAttributes.TokenSupplyCap)
+
+	// invalid sender of MsgUpdateTokenSupplyCap
+	invalidSender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	testMsgUpdateTokenSupplyCapInvalidSender := types.MsgUpdateTokenSupplyCap{
+		Sender:         invalidSender.Bytes(), // not the owner of class
+		ClassId:        classId,
+		TokenSupplyCap: 100,
+	}
+	err = suite.app.NftmintKeeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCapInvalidSender)
+	suite.Require().Error(err)
+
+	// invalid token supply cap specification
+	testMsgUpdateTokenSupplyCapInvalidCap := types.MsgUpdateTokenSupplyCap{
+		Sender:         sender.Bytes(),
+		ClassId:        classId,
+		TokenSupplyCap: 1000000, // bigger than the maximum token supply cap on UnUniFi
+	}
+	err = suite.app.NftmintKeeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCapInvalidCap)
+	suite.Require().Error(err)
+
+	// invalid case which current token supply is bigger than the updating supply cap
+	_ = suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{ClassId: classId, Id: "a00"}, sender)
+	_ = suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{ClassId: classId, Id: "a01"}, sender)
+	testMsgUpdateTokenSupplyCapSmaller := types.MsgUpdateTokenSupplyCap{
+		Sender:         sender.Bytes(),
+		ClassId:        classId,
+		TokenSupplyCap: 1, // smaller than the current token supply 2 of the specified class
+	}
+	err = suite.app.NftmintKeeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCapSmaller)
+	suite.Require().Error(err)
+}
+
 // TODO: updateBaseTokenUri msg
