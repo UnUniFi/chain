@@ -193,6 +193,57 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 	suite.Require().Error(err)
 }
 
+func (suite *KeeperTestSuite) SendClass() {
+	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	sender_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, sender)
+	classId := keeper.CreateClassId(sender_seq, sender)
+
+	testMsgCreateClass := types.MsgCreateClass{
+		Sender:            sender.Bytes(),
+		Name:              "test",
+		BaseTokenUri:      "ipfs://testcid-sample/",
+		TokenSupplyCap:    10000,
+		MintingPermission: 0,
+	}
+	_ = suite.app.NftmintKeeper.CreateClass(suite.ctx, classId, &testMsgCreateClass)
+
+	recipient := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	testMsgSendClass := types.MsgSendClass{
+		Sender:    sender.Bytes(),
+		ClassId:   classId,
+		Recipient: recipient.Bytes(),
+	}
+	err := suite.app.NftmintKeeper.SendClass(suite.ctx, &testMsgSendClass)
+	suite.Require().NoError(err)
+	// check if recipient address becomes new owner of class
+	classAttributes, exists := suite.app.NftmintKeeper.GetClassAttributes(suite.ctx, classId)
+	suite.Require().True(exists)
+	suite.Require().Equal(recipient, classAttributes.Owner.AccAddress())
+
+	// invalid sender of MsgSendclass
+	invalidSender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	testMsgCreateClassInvalidSender := types.MsgSendClass{
+		Sender:    invalidSender.Bytes(),
+		ClassId:   classId,
+		Recipient: recipient.Bytes(),
+	}
+	err = suite.app.NftmintKeeper.SendClass(suite.ctx, &testMsgCreateClassInvalidSender)
+	suite.Require().Error(err)
+
+	// invalid class id specification
+	invalidClassId := "nonexistance"
+	testMsgCreateClassInvalidClassId := types.MsgSendClass{
+		Sender:    sender.Bytes(),
+		ClassId:   invalidClassId,
+		Recipient: recipient.Bytes(),
+	}
+	err = suite.app.NftmintKeeper.SendClass(suite.ctx, &testMsgCreateClassInvalidClassId)
+	suite.Require().Error(err)
+}
+
 // TODO: sendClass msg
+
 // TODO: updateTokenSupplyCap msg
 // TODO: updateBaseTokenUri msg
