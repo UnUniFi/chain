@@ -1090,7 +1090,143 @@ func (suite *KeeperTestSuite) TestEndNftListing() {
 	}
 }
 
-// TODO:Add test for ProcessEndingNftListings(ctx sdk.Context)
+func (suite *KeeperTestSuite) TestProcessEndingNftListings() {
+	acc1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	params := suite.app.NftmarketKeeper.GetParamSet(suite.ctx)
+
+	tests := []struct {
+		testCase            string
+		classId             string
+		nftId               string
+		nftOwner            sdk.AccAddress
+		numBids             int
+		relistedCount       uint64
+		expectedToEnd       bool
+		expectedToBeRemoved bool
+	}{
+		{
+			testCase:            "no bid nft listing extend when relisted count not reached the limit",
+			classId:             "class1",
+			nftId:               "nft1",
+			nftOwner:            acc1,
+			numBids:             0,
+			relistedCount:       0,
+			expectedToEnd:       false,
+			expectedToBeRemoved: false,
+		},
+		{
+			testCase:            "no bid nft listing end when relisted count reached",
+			classId:             "class2",
+			nftId:               "nft2",
+			nftOwner:            acc1,
+			numBids:             0,
+			relistedCount:       params.AutoRelistingCountIfNoBid,
+			expectedToEnd:       true,
+			expectedToBeRemoved: true,
+		},
+		{
+			testCase:            "bids existing nft listing end when relisted count not reached",
+			classId:             "class3",
+			nftId:               "nft3",
+			nftOwner:            acc1,
+			numBids:             1,
+			relistedCount:       0,
+			expectedToEnd:       true,
+			expectedToBeRemoved: false,
+		},
+		{
+			testCase:            "bids existing nft listing end when relisted count reached",
+			classId:             "class4",
+			nftId:               "nft4",
+			nftOwner:            acc1,
+			numBids:             1,
+			relistedCount:       params.AutoRelistingCountIfNoBid,
+			expectedToEnd:       true,
+			expectedToBeRemoved: false,
+		},
+	}
+
+	for _, tc := range tests {
+		suite.SetupTest()
+
+		now := time.Now().UTC()
+		suite.ctx = suite.ctx.WithBlockTime(now)
+
+		coin := sdk.NewInt64Coin("uguu", int64(1000000000))
+		err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{coin})
+		suite.NoError(err)
+		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, tc.nftOwner, sdk.Coins{coin})
+		suite.NoError(err)
+
+		suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+			Id:          tc.classId,
+			Name:        tc.classId,
+			Symbol:      tc.classId,
+			Description: tc.classId,
+			Uri:         tc.classId,
+		})
+		err = suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
+			ClassId: tc.classId,
+			Id:      tc.nftId,
+			Uri:     tc.nftId,
+			UriHash: tc.nftId,
+		}, tc.nftOwner)
+		suite.Require().NoError(err)
+
+		nftIdentifier := types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId}
+		err = suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
+			Sender:        ununifitypes.StringAccAddress(tc.nftOwner),
+			NftId:         nftIdentifier,
+			ListingType:   types.ListingType_DIRECT_ASSET_BORROW,
+			BidToken:      "uguu",
+			MinBid:        sdk.ZeroInt(),
+			BidActiveRank: 2,
+		})
+		suite.Require().NoError(err)
+		listing, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+		suite.Require().NoError(err)
+		listing.AutoRelistedCount = tc.relistedCount
+		suite.app.NftmarketKeeper.SetNftListing(suite.ctx, listing)
+
+		for i := 0; i < tc.numBids; i++ {
+			bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+			// init tokens to addr
+			coin := sdk.NewInt64Coin("uguu", int64(1000000*(i+1)))
+			err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{coin})
+			suite.NoError(err)
+			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{coin})
+			suite.NoError(err)
+
+			err := suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
+				Sender:           ununifitypes.StringAccAddress(bidder),
+				NftId:            nftIdentifier,
+				Amount:           coin,
+				AutomaticPayment: true,
+			})
+			suite.Require().NoError(err)
+		}
+
+		suite.ctx = suite.ctx.WithBlockTime(now.Add(time.Second * time.Duration(params.NftListingPeriodInitial+1)))
+		suite.app.NftmarketKeeper.ProcessEndingNftListings(suite.ctx)
+
+		if tc.expectedToBeRemoved {
+			_, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+			suite.Require().Error(err)
+		} else {
+			listing, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+			suite.Require().NoError(err)
+
+			if tc.expectedToEnd {
+				suite.Require().Equal(listing.State, types.ListingState_END_LISTING)
+			} else {
+				suite.Require().NotEqual(listing.State, types.ListingState_END_LISTING)
+			}
+		}
+	}
+}
+
 // TODO:Add test for HandleFullPaymentsPeriodEndings(ctx sdk.Context)
 // TODO:Add test for DelieverSuccessfulBids(ctx sdk.Context)
 // TODO:Add test for ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, denom string, amount sdk.Int)
