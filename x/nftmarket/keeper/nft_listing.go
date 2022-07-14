@@ -521,11 +521,13 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 				fmt.Println(err)
 				continue
 			}
+			// Delete bid
+			k.DeleteBid(ctx, bid)
 			cacheCtx, write := ctx.CacheContext()
-			err = k.CancelBid(cacheCtx, &types.MsgCancelBid{
-				Sender: bidder.Bytes(),
-				NftId:  listing.NftId,
-			})
+			err = k.bankKeeper.SendCoinsFromModuleToAccount(cacheCtx, types.ModuleName, bidder, sdk.Coins{sdk.NewCoin(bid.Amount.Denom, bid.PaidAmount)})
+			if err != nil {
+				return err
+			}
 			if err == nil {
 				write()
 			} else {
