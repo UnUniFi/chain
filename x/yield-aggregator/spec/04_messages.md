@@ -10,6 +10,13 @@ submit proposal for delete yield farm.
 
 submit proposal for stop yield farm. //for security incident
 
+```protobuf
+message AssetManagementAccount {
+  string id = 1;
+  string name = 2;
+}
+```
+
 ## MsgYieldFarmTargetProposal(execute only gov mod)
 
 submit proposal for add new yield farm target.
@@ -19,6 +26,17 @@ submit proposal for add new yield farm target update.
 submit proposal for add delete yield farm target.
 
 submit proposal for stop yield farm target.  //for security incident  
+
+```protobuf
+message AssetManagementTarget {
+  string id = 1;
+  string asset_management_account_id = 2;
+  string account_address = 4;
+  repeated AssetCondition asset_conditions = 5;
+  google.protobuf.Duration unbonding_time = 6 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+  IntegrateInfo integrate_info = 7;
+}
+```
 
 ## MsgDeposit
 

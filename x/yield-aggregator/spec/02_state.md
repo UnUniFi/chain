@@ -1,19 +1,6 @@
 # State
 
-## `asset_management_accounts`
-
-In expression of protobuf, it is `repeated AssetManagementAccount`.
-
-```protobuf
-message AssetManagementAccount {
-  string id = 1;
-  string name = 2;
-}
-``
-
-## `asset_management_targets`
-
-In expression of protobuf, it is `repeated AssetManagemenTarget`.
+## `asset_management`
 
 ```protobuf
 enum IntegrateType {
@@ -41,7 +28,14 @@ message AssetManagementTarget {
   IntegrateInfo integrate_info = 7;
 }
 
+message AssetManagementAccount {
+  string id = 1;
+  string name = 2;
+  repeated AssetManagementTarget asset_management_targets = 3;
+}
 ```
+
+- AssetManagementAccount: "asset_management_account" | format(account_id) -> AssetManagementAccount
 
 ## `daily_percents`
 
@@ -56,6 +50,8 @@ message DailyPercent {
   google.protobuf.Timestamp date = 3 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
 }
 ```
+
+- DailyPercent: "daily_percent" | format(asset_management_target_id,year,month,day,hour) -> DailyPercent
 
 ## `UserInfo`
 
