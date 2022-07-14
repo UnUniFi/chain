@@ -6,7 +6,7 @@
 type Keeper interface {
   AssetManagementAccountGetKeeper
   AddAssetManagementAccounts(ctx sdk.Context, id string, name string)
-  UpadteAssetManagementAccounts(ctx sdk.Context, id string, obj types.AssetManagementAccount)
+  UpdateAssetManagementAccounts(ctx sdk.Context, id string, obj types.AssetManagementAccount)
   DeleteAssetManagementAccounts(ctx sdk.Context, id string)
   AddAssetManagementTargetsOfAccount(ctx sdk.Context, account_id string, obj types.AssetManagementTarget)
   UpdateAssetManagementTargetsOfAccount(ctx sdk.Context, targetId string, obj types.AssetManagementTarget)
@@ -23,6 +23,15 @@ type Keeper interface {
   GetAssetManagementAccounts(ctx sdk.Context)
   GetAssetManagementTargetsOfAccount(ctx sdk.Context, accountId string)
   GetAssetManagementTargetsOfDenom(ctx sdk.Context, accountId string, denom string)
+}
+
+```
+
+## AssetManagementAccountBankKeeper
+
+```go
+type Keeper interface {
+  PayBack(ctx sdk.Context, targetId string, farmingUnit FarmingUnit)
 }
 
 ```
