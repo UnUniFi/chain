@@ -1,10 +1,8 @@
 package keeper_test
 
 import (
-	"fmt"
 	"testing"
 
-	ununifitypes "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/nftmint/keeper"
 	"github.com/UnUniFi/chain/x/nftmint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -21,7 +19,7 @@ const (
 )
 
 // test basic functions of nftmint
-func (suite *KeeperTestSuite) TestNftMintBasics() {
+func (suite *KeeperTestSuite) TestNftMintClassBasics() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	owner_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, owner)
 
@@ -43,7 +41,7 @@ func (suite *KeeperTestSuite) TestNftMintBasics() {
 	var classIdList []string
 	classIdList = append(classIdList, classId)
 	owningClassIdList := types.OwningClassIdList{
-		Owner:   ununifitypes.StringAccAddress(owner),
+		Owner:   owner.Bytes(),
 		ClassId: classIdList,
 	}
 	// check setting OwningClassIdList function
@@ -73,7 +71,6 @@ func (suite *KeeperTestSuite) TestNftMintBasics() {
 func TestCreateId(t *testing.T) {
 	var seq uint64 = 0
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-	fmt.Println(addr.String())
 	accAddr, _ := sdk.AccAddressFromBech32(addr.String())
 	classIdSeq0 := keeper.CreateClassId(seq, accAddr)
 	err := nfttypes.ValidateClassID(classIdSeq0)

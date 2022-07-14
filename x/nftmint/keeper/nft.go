@@ -26,7 +26,7 @@ func (k Keeper) MintNFT(ctx sdk.Context, msg *types.MsgMintNFT) error {
 		params,
 		classAttributes.MintingPermission,
 		classAttributes.Owner.AccAddress(), msg.Sender.AccAddress(),
-		nftUri,
+		nftUri, msg.NftId,
 		currentTokenSupply, classAttributes.TokenSupplyCap,
 	)
 	if err != nil {
