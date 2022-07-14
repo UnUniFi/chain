@@ -113,15 +113,7 @@ func (suite *KeeperTestSuite) TestBurnNFT() {
 	sender_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, sender)
 
 	classId := keeper.CreateClassId(sender_seq, sender)
-	_ = suite.CreateClass(suite.ctx, classId, sender)
-
-	testMsgMintNFT := types.MsgMintNFT{
-		Sender:    sender.Bytes(),
-		ClassId:   classId,
-		NftId:     testNFTId,
-		Recipient: sender.Bytes(),
-	}
-	_ = suite.app.NftmintKeeper.MintNFT(suite.ctx, &testMsgMintNFT)
+	_ = suite.MintNFT(suite.ctx, classId, testNFTId, sender)
 
 	testMsgBurnNFT := types.MsgBurnNFT{
 		Sender:  sender.Bytes(),
@@ -136,7 +128,7 @@ func (suite *KeeperTestSuite) TestBurnNFT() {
 
 	// invalid case which sender is not the owner of the nft
 	invalidSender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	_ = suite.app.NftmintKeeper.MintNFT(suite.ctx, &testMsgMintNFT)
+	_ = suite.MintNFT(suite.ctx, classId, testNFTId, sender)
 	testMsgBurnNFTInvalidSender := types.MsgBurnNFT{
 		Sender:  invalidSender.Bytes(),
 		ClassId: classId,
@@ -147,4 +139,46 @@ func (suite *KeeperTestSuite) TestBurnNFT() {
 	// check if not burned as intended
 	exists = suite.app.NFTKeeper.HasNFT(suite.ctx, classId, testNFTId)
 	suite.Require().True(exists)
+}
+
+// tests for UpdateNFTUri function
+func (suite *KeeperTestSuite) TestUpdateNFTUri() {
+	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	sender_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, sender)
+
+	classId := keeper.CreateClassId(sender_seq, sender)
+	_ = suite.MintNFT(suite.ctx, classId, testNFTId, sender)
+
+	updatingBaseTokenUri := "ipfs://test-latest/"
+	err := suite.app.NftmintKeeper.UpdateNFTUri(suite.ctx, classId, updatingBaseTokenUri)
+	suite.Require().NoError(err)
+	nft, _ := suite.app.NFTKeeper.GetNFT(suite.ctx, classId, testNFTId)
+	expectedNFTUri := updatingBaseTokenUri + testNFTId
+	suite.Require().Equal(expectedNFTUri, nft.Uri)
+
+	// invalid BaseTokenUri length defined on UnUniFi
+	invalidBaseTokenUri := "invalid"
+	for i := 0; i < types.DefaultMaxUriLen; i++ {
+		invalidBaseTokenUri += "a"
+	}
+	err = suite.app.NftmintKeeper.UpdateNFTUri(suite.ctx, classId, invalidBaseTokenUri)
+	suite.Require().Error(err)
+	// check if nft uri doesn't change after updating
+	nft, _ = suite.app.NFTKeeper.GetNFT(suite.ctx, classId, testNFTId)
+	expectedNFTUri = updatingBaseTokenUri + testNFTId
+	suite.Require().Equal(expectedNFTUri, nft.Uri)
+}
+
+// mint nft method for keeper test
+func (suite *KeeperTestSuite) MintNFT(ctx sdk.Context, classID, nftID string, sender sdk.AccAddress) error {
+	_ = suite.CreateClass(suite.ctx, classID, sender)
+
+	testMsgMintNFT := types.MsgMintNFT{
+		Sender:    sender.Bytes(),
+		ClassId:   classID,
+		NftId:     nftID,
+		Recipient: sender.Bytes(),
+	}
+	err := suite.app.NftmintKeeper.MintNFT(suite.ctx, &testMsgMintNFT)
+	return err
 }
