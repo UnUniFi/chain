@@ -1095,8 +1095,63 @@ func (suite *KeeperTestSuite) TestEndNftListing() {
 // TODO:Add test for DelieverSuccessfulBids(ctx sdk.Context)
 // TODO:Add test for ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, denom string, amount sdk.Int)
 
-// TODO: add test for NftListing following scenario
-// Create Nft
-// List Nft
-// End NftListing
-// Check GetActiveNftListingsEndingAt is not showing any value
+func (suite *KeeperTestSuite) TestActiveNftListingsEndingAtQueueRemovalOnNftListingEnd() {
+	suite.SetupTest()
+
+	classId := "class1"
+	nftId := "nf1"
+	nftOwner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	now := time.Now().UTC()
+
+	suite.ctx = suite.ctx.WithBlockTime(now)
+	coin := sdk.NewInt64Coin("uguu", int64(1000000000))
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{coin})
+	suite.NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, nftOwner, sdk.Coins{coin})
+	suite.NoError(err)
+
+	suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+		Id:          classId,
+		Name:        classId,
+		Symbol:      classId,
+		Description: classId,
+		Uri:         classId,
+	})
+	err = suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
+		ClassId: classId,
+		Id:      nftId,
+		Uri:     nftId,
+		UriHash: nftId,
+	}, nftOwner)
+	suite.Require().NoError(err)
+
+	nftIdentifier := types.NftIdentifier{ClassId: classId, NftId: nftId}
+	err = suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
+		Sender:        ununifitypes.StringAccAddress(nftOwner),
+		NftId:         nftIdentifier,
+		ListingType:   types.ListingType_DIRECT_ASSET_BORROW,
+		BidToken:      "uguu",
+		MinBid:        sdk.ZeroInt(),
+		BidActiveRank: 2,
+	})
+	suite.Require().NoError(err)
+
+	listing, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+	suite.Require().NoError(err)
+	suite.Require().True(listing.IsActive())
+
+	// check number before end listing
+	params := suite.app.NftmarketKeeper.GetParamSet(suite.ctx)
+	activeNftListings := suite.app.NftmarketKeeper.GetActiveNftListingsEndingAt(suite.ctx, now.Add(time.Second*time.Duration(params.NftListingPeriodInitial+1)))
+	suite.Require().Len(activeNftListings, 1)
+
+	err = suite.app.NftmarketKeeper.EndNftListing(suite.ctx, &types.MsgEndNftListing{
+		Sender: ununifitypes.StringAccAddress(nftOwner),
+		NftId:  nftIdentifier,
+	})
+	suite.Require().NoError(err)
+
+	// check number after end listing
+	activeNftListings = suite.app.NftmarketKeeper.GetActiveNftListingsEndingAt(suite.ctx, now.Add(time.Second*time.Duration(params.NftListingPeriodInitial+1)))
+	suite.Require().Len(activeNftListings, 0)
+}
