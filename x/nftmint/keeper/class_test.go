@@ -83,6 +83,7 @@ func TestCreateId(t *testing.T) {
 	require.NotEqual(t, classIdSeq0, classIdSeq1)
 }
 
+// test for the CreateClass relating functions
 func (suite *KeeperTestSuite) TestCreateClass() {
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	sender_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, sender)

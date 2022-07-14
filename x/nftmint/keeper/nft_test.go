@@ -106,3 +106,45 @@ func (suite *KeeperTestSuite) TestMintNFT() {
 	exists = suite.app.NFTKeeper.HasNFT(suite.ctx, classId, testNFTId2)
 	suite.Require().False(exists)
 }
+
+// tests for the BurnNFT relating functions
+func (suite *KeeperTestSuite) TestBurnNFT() {
+	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	sender_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, sender)
+
+	classId := keeper.CreateClassId(sender_seq, sender)
+	_ = suite.CreateClass(suite.ctx, classId, sender)
+
+	testMsgMintNFT := types.MsgMintNFT{
+		Sender:    sender.Bytes(),
+		ClassId:   classId,
+		NftId:     testNFTId,
+		Recipient: sender.Bytes(),
+	}
+	_ = suite.app.NftmintKeeper.MintNFT(suite.ctx, &testMsgMintNFT)
+
+	testMsgBurnNFT := types.MsgBurnNFT{
+		Sender:  sender.Bytes(),
+		ClassId: classId,
+		NftId:   testNFTId,
+	}
+	err := suite.app.NftmintKeeper.BurnNFT(suite.ctx, &testMsgBurnNFT)
+	suite.Require().NoError(err)
+	// check if burned successfully
+	exists := suite.app.NFTKeeper.HasNFT(suite.ctx, classId, testNFTId)
+	suite.Require().False(exists)
+
+	// invalid case which sender is not the owner of the nft
+	invalidSender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	_ = suite.app.NftmintKeeper.MintNFT(suite.ctx, &testMsgMintNFT)
+	testMsgBurnNFTInvalidSender := types.MsgBurnNFT{
+		Sender:  invalidSender.Bytes(),
+		ClassId: classId,
+		NftId:   testNFTId,
+	}
+	err = suite.app.NftmintKeeper.BurnNFT(suite.ctx, &testMsgBurnNFTInvalidSender)
+	suite.Require().Error(err)
+	// check if not burned as intended
+	exists = suite.app.NFTKeeper.HasNFT(suite.ctx, classId, testNFTId)
+	suite.Require().True(exists)
+}
