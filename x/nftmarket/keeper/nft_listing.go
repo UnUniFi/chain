@@ -381,7 +381,7 @@ func (k Keeper) ExpandListingPeriod(ctx sdk.Context, msg *types.MsgExpandListing
 
 	// update listing end time
 	listing.EndAt = listing.EndAt.Add(time.Second * time.Duration(params.NftListingExtendSeconds))
-	k.SetNftListing(ctx, listing)
+	k.SaveNftListing(ctx, listing)
 
 	// Emit event for nft listing cancel
 	ctx.EventManager().EmitTypedEvent(&types.EventExpandListingPeriod{
@@ -490,7 +490,7 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 		params := k.GetParamSet(ctx)
 		listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
 		listing.State = types.ListingState_END_LISTING
-		k.SetNftListing(ctx, listing)
+		k.SaveNftListing(ctx, listing)
 
 		// automatic payment after listing ends
 		winnerCandidateStartIndex := len(bids) - int(listing.BidActiveRank)
@@ -560,7 +560,7 @@ func (k Keeper) ProcessEndingNftListings(ctx sdk.Context) {
 		if listing.AutoRelistedCount < params.AutoRelistingCountIfNoBid && len(bids) == 0 {
 			listing.EndAt = listing.EndAt.Add(time.Duration(params.NftListingExtendSeconds) * time.Second)
 			listing.AutoRelistedCount++
-			k.SetNftListing(ctx, listing)
+			k.SaveNftListing(ctx, listing)
 		} else {
 			listingOwner, err := sdk.AccAddressFromBech32(listing.Owner)
 			if err != nil {
