@@ -1,8 +1,8 @@
 # Events
 
-The `nftmint` module emits the following events:
+The `nftmint` module emits the following events.
 
-## MsgCreateClass
+## EventMsgCreateClass
 
 ```protobuf
 message EventCreateClass {
@@ -14,7 +14,7 @@ message EventCreateClass {
 }
 ```
 
-## MsgSendClass
+## EventMsgSendClass
 
 ```protobuf
 message EventSendClass {
@@ -24,7 +24,7 @@ message EventSendClass {
 }
 ```
 
-## MsgUpdateBaseTokenUri
+## EventMsgUpdateBaseTokenUri
 
 ```protobuf
 message EventUpdateBaseTokenUri {
@@ -34,7 +34,7 @@ message EventUpdateBaseTokenUri {
 }
 ```
 
-## MsgUpdateTokenSupplyCap
+## EventMsgUpdateTokenSupplyCap
 
 ```protobuf
 message EventUpdateTokenSupplyCap {
@@ -44,7 +44,7 @@ message EventUpdateTokenSupplyCap {
 }
 ```
 
-## MsgMintNFT
+## EventMsgMintNFT
 
 ```protobuf
 message EventMintNFT {
@@ -55,7 +55,7 @@ message EventMintNFT {
 }
 ```
 
-## MsgBurnNFT
+## EventMsgBurnNFT
 
 ```protobuf
 message EventBurnNFT {

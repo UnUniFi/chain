@@ -1,17 +1,16 @@
 # Messages and Queries
 
-**NOTE: This is very early draft.**
-
 ## Messages
 
 The `nftmint` module provides below messages.
 
 ### CreateClass
 
-CreateClass message is used to create class for minting NFTs using cosmos sdk's x/nft module functions.  
+CreateClass message is used to create `Class` for minting NFTs using cosmos sdk's x/nft module functions.  
 In cosmos sdk, the `Class` object is to the contract in EVM. So to mint NFT requires corresponding the `Class`.   
 
-The `MintingPermission` defines who can mint NFTs under this `Class`. The current providing options are `OnlyOwner` and `Anyone`.   
+Additionaly on UnUniFi, we create `ClassAttributes` data with some parameters.   
+The `MintingPermission` defines who can mint NFTs under this `Class`. The current providing options are `OnlyOwner` (0) and `Anyone` (1).   
 If the `Class` have `OnlyOwner` permission, the NFTs can be minted by literaly only owner of the `Class`.   
 If the `Class` have `Anyone` permission, the NFTs can be minted by anyone.   
 
@@ -41,7 +40,8 @@ enum MintingPermission {
 
 ### SendClass
 
-The SendClass message is used to change the owner of the `Class` on UnUniFi.
+The SendClass message is used to change the owner of the `Class` on UnUniFi.   
+Technically speaking, this message, if accepted, changes the parameter value of the `ClassAttributes.Owner` to the recipient.
 
 ```protobuf
 message MsgSendClass {

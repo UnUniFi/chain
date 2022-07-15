@@ -1,7 +1,5 @@
 # Concepts
 
-**NOTE: This is very early draft.**
-
 The `x/nftmint` module implements the feature to mint NFTs on UnUniFi.
 
 ## Class
@@ -9,19 +7,19 @@ The `x/nftmint` module implements the feature to mint NFTs on UnUniFi.
 The `Class` data is defined in sdk's x/nft module.   
 We use that type definition and store the generated `Class` data on UnUniFi in x/nft module.   
 This is similar to metadata of each belonging `NFT`.   
-On UnUniFi, to create `Class` requires to send a `MsgCreateClass` message with `Class.Name`, `ClassAttributes.BaseTokenUri` and `ClassAttributes.TokenSupplyCap` and as options, `ClassAttributes.MintingPermission`, `Class.Symbol`, `Class.Description` and `Class.Uri`.
+On UnUniFi, to create `Class` requires to send a `MsgCreateClass` message with `Class.Name`, `ClassAttributes.BaseTokenUri` and `ClassAttributes.TokenSupplyCap`, `ClassAttributes.MintingPermission` and as options, `Class.Symbol`, `Class.Description` and `Class.Uri`.
 Some of these data can be updated after the creation by the owner of the `Class`.
 
 ### Class Id
 
 `Class.Id` must be unique because this is the identifier of its belonging `NFT`s. It's like contract address of ERC721 contract on evm chains.   
 The way to be generated `Class.Id` in this protocol follows: 
-(undefined)
+hash(AccAddress.Byte() + accoutn.sequence)
 
 #### TokenSupplyCap
 
 `ClassAttributes.TokenSupplyCap` is max token supply number of each `Class`'s `NFT`. This value is set when to be created `Class`.   
-There's the limitation by the global oprion.   
+There's the limitation by the global parameter.   
 `ClassAttributes.TokenSupplyCap` can be updated by the owner of that `Class`.
 
 #### BaseTokenUri
@@ -38,7 +36,7 @@ There're three status, which are `OnlyOwner`, `Anyone` and `WhiteList`.
 #### Owner
 
 The `ClassAttributes.Owner` represents the owner of the `Class`.   
-The initial owner is the sender of `MsgCreateClass`. This parameter can be changed by sending `MsgSendClass`.
+The initial owner is the sender of `MsgCreateClass`. This parameter can be changed by sending `MsgSendClass` by the only owner.
 
 ## NFT
 
@@ -49,28 +47,34 @@ This represents the `NFT` content.
 ### NFT Id
 
 The `NFT.Id` is the identifier of the `NFT` in the `Class`.   
-The `NFT.Id` will be chose by the minter and become a part of `NFT.Uri`, following this rule: `NFT.Uri = ClassAttributes.BaseTokenUri + NFT.Id`
+The `NFT.Id` will be chose by the minter and become a part of `NFT.Uri`.
 
 ### NFT Uri
 
 The `NFT.Uri` is the parameter which `NFT` has. The content which is in `NFT.Uri` location usually represents the core information of the `NFT`. 
 In UnUniFi, the `NFT.Uri` is defined as following formula:   
-`NFT.Uri = ClassAttributes.BaseTokenUri = NFT.id`
+`NFT.Uri = ClassAttributes.BaseTokenUri = NFT.id`   
+e.g.   
+ClassAttributes.BaseTokenUri = "ipfs://sample/",   
+NFT.Id = "a00"   
+**NFT.Uri = "ipfs://sample/a00"**
 
 ## Mint
 
 Minting `NFT` is achieved by sending `MsgMintNFT` message with `Class.Id`, `NFT.Id` and `Receiver`. 
 But, there's minting permission in some case.   
-If the attached `Class` has `OnlyOwner` attribute regarding `ClassAttributes.MintingPermission`, only owner of `Class` can mint `NFT`.
-If the attached `Class` has `Anyone` attribute regarding `ClassAttributes.MintingPermission`, anyone can mint `NFT`.
+If the attached `Class` has `OnlyOwner` attribute regarding `ClassAttributes.MintingPermission`, only owner of `Class` can mint `NFT`.   
+If the attached `Class` has `Anyone` attribute regarding `ClassAttributes.MintingPermission`, anyone can mint `NFT`.   
+The current minting options are above two cases.
 
 ## Update
 
 ### Class related Attributes
 
-At the moment, we plan to support the update of the `ClassAttributes` and `Class` data by managing messages for each data.   
+At the moment, we support the update of the `ClassAttributes` and `Class` data by managing messages for each data.   
 e.g. We set `MsgUpdateBaseTokenUri` fot the `ClassAttributes.Owner` to update the `ClassAttributes.BaseTokenUri`.   
-In this case, every belonging `NFT.Uri`s are changed at once.
+In this case, every belonging `NFT.Uri` will be changed at once.
+And we provide `MsgUpdateTokenSupplyCap` for the `ClassAttributes.Owner` to update the `ClassAttributes.TokenSupplyCap`. But, you can't make token supply cap lowner that the current token supply number.
 
 ## Burn
 
@@ -81,11 +85,11 @@ As we handle NFTs on NFTFi protocol on UnUniFi, the burn permission belongs only
 
 ### Class Ownership
 
-The owner of the `Class` is recorded with `Class.Id`.
+The owner of the `Class` is recorded in `ClassAttribtues` as `Owner` parameter.   
 And we support the transition of the `ClassAttributes.Owner` by the sending `MsgSendClass` message which change `ClassAttributes.Owner` to any recipient.
 
 #### Normal NFT
 
-The normal NFT transfer is achieved by cosmos SDK's x/nft message.   
-It performs changing owner which is connected specific `Class.Id` and `NFT.Id` in the KVStore in that module.   
+The normal NFT transfer is achieved by cosmos sdk's x/nft message.   
+It performs changing owner which is connected to specific `Class.Id` and `NFT.Id` in the KVStore in that module.   
 So, it only requires `Class` and `NFT` objects are in that module and the sender (current owner) signature to transfer it.

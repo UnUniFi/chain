@@ -1,11 +1,13 @@
 # State
 
-**NOTE: This is very early draft.**
-
 ## Class and its Relating Attributes
 
-The parameters in `ClassAttributes` can be updated by implementing messages to achieve it.   
-The explanation of each params lies in [here](https://github.com/UnUniFi/chain/blob/design/spec/x/nftmint/spec/02_state.md).
+### ClassAttributes
+
+We use `ClassAttributes` data object to represent the information which sdk's x/nft module's `Class` doesn't have like owner of the `Class`.     
+We require to choose the parameter values when to send `MsgCreateClass` message. To change the parameters in `ClassAttributes` can be made by sending messages to achieve it like `MsgUpdateBaseTokenUri`.   
+The close explanation of each parameter lies in 01_concept page.
+
 
 ```protobuf
 message ClassAttributes {
@@ -21,7 +23,14 @@ enum MintingPermission {
   Anyone = 1;
   WhiteList = 2;
 }
+```
 
+### OwningClassIdList
+
+OwningClassIdList data is to record the class ids which are owned by specific address.   
+This is specifically used to query `QueryClassIdsByOwner`.
+
+```protobuf
 message OwningClassIdList {
   string owner = 1 [
     (gogoproto.moretags) = "yaml:\"owner\"",
@@ -30,18 +39,27 @@ message OwningClassIdList {
   ];
   repeated string class_id = 2;
 }
+```
 
+### ClassNameIdList
+
+ClassNameIdList data is to record the class ids which has specific name.   
+This is specifically used to query `QueryClassIdsByName`.
+
+```protobuf
 message ClassNameIdList {
   string class_name = 1;
   repeated string class_id = 2;
 }
 ```
 
-- ClassAttributes: `format(class_id) -> ClassAttributes`
-- OwningClassIdList: `format(owner) -> OwningClassIdList`
-- ClassNameIdList: `format(name) -> ClassNameIdList`
+- ClassAttributes with prefix "0x01": `format(class_id) -> ClassAttributes`
+- OwningClassIdList with prefix "0x03": `format(owner) -> OwningClassIdList`
+- ClassNameIdList with prefix "0x04": `format(name) -> ClassNameIdList`
 
 ## NFT and its Relating Attributes
 
 There aren't types defined in proto for the relating to nft data.
 But, in UnUniFi, the minter of each NFT is recorded.
+
+- Minter with prefix "0x02": `format(class_id + nft_id) -> AccAddress.Byte()`
