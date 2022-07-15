@@ -100,7 +100,7 @@ func (k Keeper) DeleteNftListing(ctx sdk.Context, listing types.NftListing) {
 	store.Delete(types.NftAddressNftListingKey(owner, nftIdBytes))
 
 	if listing.IsActive() {
-		store.Delete(getTimeKey(types.KeyPrefixEndTimeNftListing, listing.EndAt))
+		store.Delete(append(getTimeKey(types.KeyPrefixEndTimeNftListing, listing.EndAt), nftIdBytes...))
 	} else if listing.IsFullPayment() {
 		store.Delete(append(getTimeKey(types.KeyPrefixFullPaymentPeriodListing, listing.FullPaymentEndAt), nftIdBytes...))
 	} else if listing.IsSuccessfulBid() {
@@ -243,8 +243,8 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing) error {
 	// check listing already exists
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
-	if err == nil {
-		return types.ErrNftListingAlreadyExists
+	if err != nil {
+		return types.ErrNftListingDoesNotExist
 	}
 
 	// Check nft exists
@@ -260,27 +260,33 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 
 	// The listing of items can only be cancelled after N seconds have elapsed from the time it was placed on the marketplace
 	params := k.GetParamSet(ctx)
-	if listing.StartedAt.Add(time.Duration(params.NftListingCancelRequiredSeconds) * time.Second).Before(ctx.BlockTime()) {
+	if listing.StartedAt.Add(time.Duration(params.NftListingCancelRequiredSeconds) * time.Second).After(ctx.BlockTime()) {
 		return types.ErrNotTimeForCancel
 	}
 
 	// check nft is bidding status
-	if listing.State != types.ListingState_LISTING && listing.State != types.ListingState_BIDDING {
+	if !listing.IsActive() {
 		return types.ErrStatusCannotCancelListing
 	}
 
 	bids := k.GetBidsByNft(ctx, msg.NftId.IdBytes())
 
+	winnerCandidateStartIndex := len(bids) - int(listing.BidActiveRank)
+	if winnerCandidateStartIndex < 0 {
+		winnerCandidateStartIndex = 0
+	}
 	// distribute cancellation fee to winner bidders
-	for _, bid := range bids[len(bids)-int(listing.BidActiveRank):] {
+	for _, bid := range bids[winnerCandidateStartIndex:] {
 		bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
 		if err != nil {
 			return err
 		}
-		cancelFee := bid.Amount.Amount.Mul(sdk.NewInt(int64(params.NftListingCancelFeePercentage) / 100))
-		err = k.bankKeeper.SendCoins(ctx, msg.Sender.AccAddress(), bidder, sdk.Coins{sdk.NewCoin(listing.BidToken, cancelFee)})
-		if err != nil {
-			return err
+		cancelFee := bid.Amount.Amount.Mul(sdk.NewInt(int64(params.NftListingCancelFeePercentage))).Quo(sdk.NewInt(100))
+		if cancelFee.IsPositive() {
+			err = k.bankKeeper.SendCoins(ctx, msg.Sender.AccAddress(), bidder, sdk.Coins{sdk.NewCoin(listing.BidToken, cancelFee)})
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -319,8 +325,8 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 func (k Keeper) ExpandListingPeriod(ctx sdk.Context, msg *types.MsgExpandListingPeriod) error {
 	// check listing already exists
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
-	if err == nil {
-		return types.ErrNftListingAlreadyExists
+	if err != nil {
+		return types.ErrNftListingDoesNotExist
 	}
 
 	// Check nft exists
@@ -335,38 +341,47 @@ func (k Keeper) ExpandListingPeriod(ctx sdk.Context, msg *types.MsgExpandListing
 	}
 
 	// check nft is bidding status
-	if listing.State != types.ListingState_BIDDING {
-		return types.ErrListingIsNotInBiddingStatus
+	if !listing.IsActive() {
+		return types.ErrListingIsNotInStatusToBid
 	}
 
 	// pay nft listing extend fee
 	params := k.GetParamSet(ctx)
-	feeAmount := params.NftListingPeriodExtendFeePerHour.Amount.Mul(sdk.NewInt(int64(params.NftListingExtendSeconds / 3600)))
+	feeAmount := params.NftListingPeriodExtendFeePerHour.Amount.Mul(sdk.NewInt(int64(params.NftListingExtendSeconds))).Quo(sdk.NewInt(3600))
 
 	// distribute nft listing extend fee to winner bidders
 	bids := k.GetBidsByNft(ctx, msg.NftId.IdBytes())
 	totalBidAmount := sdk.ZeroInt()
-	for _, bid := range bids[len(bids)-int(listing.BidActiveRank):] {
+
+	winnerCandidateStartIndex := len(bids) - int(listing.BidActiveRank)
+	if winnerCandidateStartIndex < 0 {
+		winnerCandidateStartIndex = 0
+	}
+
+	for _, bid := range bids[winnerCandidateStartIndex:] {
 		totalBidAmount = totalBidAmount.Add(bid.Amount.Amount)
 	}
+
 	if totalBidAmount.IsPositive() {
-		for _, bid := range bids[len(bids)-int(listing.BidActiveRank):] {
+		for _, bid := range bids[winnerCandidateStartIndex:] {
 			bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
 			if err != nil {
 				return err
 			}
 			bidderCommission := bid.Amount.Amount.Mul(feeAmount).Quo(totalBidAmount)
-			commmission := sdk.NewCoin(params.NftListingPeriodExtendFeePerHour.Denom, bidderCommission)
-			err = k.bankKeeper.SendCoins(ctx, msg.Sender.AccAddress(), bidder, sdk.Coins{commmission})
-			if err != nil {
-				return err
+			if bidderCommission.IsPositive() {
+				commmission := sdk.NewCoin(params.NftListingPeriodExtendFeePerHour.Denom, bidderCommission)
+				err = k.bankKeeper.SendCoins(ctx, msg.Sender.AccAddress(), bidder, sdk.Coins{commmission})
+				if err != nil {
+					return err
+				}
 			}
 		}
 	}
 
 	// update listing end time
-	listing.EndAt = listing.EndAt.Add(time.Duration(params.NftListingExtendSeconds))
-	k.SaveNftListing(ctx, listing)
+	listing.EndAt = listing.EndAt.Add(time.Second * time.Duration(params.NftListingExtendSeconds))
+	k.SetNftListing(ctx, listing)
 
 	// Emit event for nft listing cancel
 	ctx.EventManager().EmitTypedEvent(&types.EventExpandListingPeriod{
@@ -381,8 +396,8 @@ func (k Keeper) ExpandListingPeriod(ctx sdk.Context, msg *types.MsgExpandListing
 func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) error {
 	// check listing already exists
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
-	if err == nil {
-		return types.ErrNftListingAlreadyExists
+	if err != nil {
+		return types.ErrNftListingDoesNotExist
 	}
 
 	// Check nft exists
@@ -397,14 +412,39 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 	}
 
 	// check if listing is already ended or on selling decision status
-	if listing.State == types.ListingState_END_LISTING || listing.State == types.ListingState_SELLING_DECISION {
-		return types.ErrListingAlreadyEnded
+	if listing.State != types.ListingState_BIDDING {
+		return types.ErrListingNeedsToBeBiddingStatus
 	}
 
 	params := k.GetParamSet(ctx)
 	listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
 	listing.State = types.ListingState_SELLING_DECISION
 	k.SaveNftListing(ctx, listing)
+
+	// automatic payment if enabled
+	bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
+	if len(bids) > 0 {
+		winnerIndex := len(bids) - 1
+		bid := bids[winnerIndex]
+		if bid.AutomaticPayment {
+			bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+			if err != nil {
+				fmt.Println(err)
+				return err
+			}
+
+			cacheCtx, write := ctx.CacheContext()
+			err = k.PayFullBid(cacheCtx, &types.MsgPayFullBid{
+				Sender: bidder.Bytes(),
+				NftId:  listing.NftId,
+			})
+			if err == nil {
+				write()
+			} else {
+				fmt.Println(err)
+			}
+		}
+	}
 
 	// Emit event for nft listing end
 	ctx.EventManager().EmitTypedEvent(&types.EventSellingDecision{
@@ -419,8 +459,8 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) error {
 	// check listing already exists
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
-	if err == nil {
-		return types.ErrNftListingAlreadyExists
+	if err != nil {
+		return types.ErrNftListingDoesNotExist
 	}
 
 	// Check nft exists
@@ -439,10 +479,68 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 		return types.ErrListingAlreadyEnded
 	}
 
-	params := k.GetParamSet(ctx)
-	listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
-	listing.State = types.ListingState_END_LISTING
-	k.SaveNftListing(ctx, listing)
+	bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
+	if len(bids) == 0 {
+		err = k.nftKeeper.Transfer(ctx, listing.NftId.ClassId, listing.NftId.NftId, msg.Sender.AccAddress())
+		if err != nil {
+			panic(err)
+		}
+		k.DeleteNftListing(ctx, listing)
+	} else {
+		params := k.GetParamSet(ctx)
+		listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
+		listing.State = types.ListingState_END_LISTING
+		k.SetNftListing(ctx, listing)
+
+		// automatic payment after listing ends
+		winnerCandidateStartIndex := len(bids) - int(listing.BidActiveRank)
+		if winnerCandidateStartIndex < 0 {
+			winnerCandidateStartIndex = 0
+		}
+		for _, bid := range bids[winnerCandidateStartIndex:] {
+			if bid.AutomaticPayment {
+				bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+				if err != nil {
+					fmt.Println(err)
+					continue
+				}
+
+				cacheCtx, write := ctx.CacheContext()
+				err = k.PayFullBid(cacheCtx, &types.MsgPayFullBid{
+					Sender: bidder.Bytes(),
+					NftId:  listing.NftId,
+				})
+				if err == nil {
+					write()
+				} else {
+					fmt.Println(err)
+					continue
+				}
+			}
+		}
+
+		// automatically cancel bids for not active rank
+		for _, bid := range bids[:winnerCandidateStartIndex] {
+			bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			// Delete bid
+			k.DeleteBid(ctx, bid)
+			cacheCtx, write := ctx.CacheContext()
+			err = k.bankKeeper.SendCoinsFromModuleToAccount(cacheCtx, types.ModuleName, bidder, sdk.Coins{sdk.NewCoin(bid.Amount.Denom, bid.PaidAmount)})
+			if err != nil {
+				return err
+			}
+			if err == nil {
+				write()
+			} else {
+				fmt.Println(err)
+				continue
+			}
+		}
+	}
 
 	// Emit event for nft listing end
 	ctx.EventManager().EmitTypedEvent(&types.EventEndListNfting{
@@ -459,12 +557,10 @@ func (k Keeper) ProcessEndingNftListings(ctx sdk.Context) {
 	listings := k.GetActiveNftListingsEndingAt(ctx, ctx.BlockTime())
 	for _, listing := range listings {
 		bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
-		if listing.AutoRelistedCount < params.AutoRelistingCountIfNoBid {
-			if len(bids) == 0 {
-				listing.EndAt = listing.EndAt.Add(time.Duration(params.NftListingExtendSeconds) * time.Second)
-				listing.AutoRelistedCount++
-				k.SaveNftListing(ctx, listing)
-			}
+		if listing.AutoRelistedCount < params.AutoRelistingCountIfNoBid && len(bids) == 0 {
+			listing.EndAt = listing.EndAt.Add(time.Duration(params.NftListingExtendSeconds) * time.Second)
+			listing.AutoRelistedCount++
+			k.SetNftListing(ctx, listing)
 		} else {
 			listingOwner, err := sdk.AccAddressFromBech32(listing.Owner)
 			if err != nil {
@@ -478,49 +574,6 @@ func (k Keeper) ProcessEndingNftListings(ctx sdk.Context) {
 			if err != nil {
 				fmt.Println(err)
 				continue
-			} else {
-				// automatic payment after listing ends
-				for _, bid := range bids[len(bids)-int(listing.BidActiveRank):] {
-					if bid.AutomaticPayment {
-						bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
-						if err != nil {
-							fmt.Println(err)
-							continue
-						}
-
-						cacheCtx, write := ctx.CacheContext()
-						err = k.PayFullBid(cacheCtx, &types.MsgPayFullBid{
-							Sender: bidder.Bytes(),
-							NftId:  listing.NftId,
-						})
-						if err == nil {
-							write()
-						} else {
-							fmt.Println(err)
-							continue
-						}
-					}
-				}
-
-				// automatically cancel bids for not active rank
-				for _, bid := range bids[:len(bids)-int(listing.BidActiveRank)] {
-					bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
-					if err != nil {
-						fmt.Println(err)
-						continue
-					}
-					cacheCtx, write := ctx.CacheContext()
-					err = k.CancelBid(cacheCtx, &types.MsgCancelBid{
-						Sender: bidder.Bytes(),
-						NftId:  listing.NftId,
-					})
-					if err == nil {
-						write()
-					} else {
-						fmt.Println(err)
-						continue
-					}
-				}
 			}
 		}
 	}
@@ -616,7 +669,7 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 	params := k.GetParamSet(ctx)
 	// get listings ended earlier
-	listings := k.GetFullPaymentNftListingsEndingAt(ctx, ctx.BlockTime())
+	listings := k.GetSuccessfulBidNftListingsEndingAt(ctx, ctx.BlockTime())
 
 	_, _ = params, listings
 	for _, listing := range listings {
@@ -645,6 +698,9 @@ func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 		}
 
 		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, bid.Amount.Denom, bid.PaidAmount)
+
+		k.DeleteBid(ctx, bid)
+		k.DeleteNftListing(ctx, listing)
 	}
 }
 

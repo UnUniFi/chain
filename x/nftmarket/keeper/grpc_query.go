@@ -143,8 +143,9 @@ func (k Keeper) Loans(c context.Context, req *types.QueryLoansRequest) (*types.Q
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
-	return &types.QueryLoansResponse{}, nil
+	return &types.QueryLoansResponse{
+		Loans: k.GetAllDebts(ctx),
+	}, nil
 }
 
 func (k Keeper) CDPsList(c context.Context, req *types.QueryCDPsListRequest) (*types.QueryCDPsListResponse, error) {

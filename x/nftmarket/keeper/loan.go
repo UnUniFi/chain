@@ -44,9 +44,10 @@ func (k Keeper) DeleteDebt(ctx sdk.Context, nftBytes []byte) {
 	store.Delete(types.NftLoanKey(nftBytes))
 }
 
-func (k Keeper) IncreaseDebt(ctx sdk.Context, nftBytes []byte, amount sdk.Coin) {
-	currDebt := k.GetDebtByNft(ctx, nftBytes)
+func (k Keeper) IncreaseDebt(ctx sdk.Context, nftId types.NftIdentifier, amount sdk.Coin) {
+	currDebt := k.GetDebtByNft(ctx, nftId.IdBytes())
 	if sdk.Coin.IsNil(currDebt.Loan) {
+		currDebt.NftId = nftId
 		currDebt.Loan = amount
 	} else {
 		currDebt.Loan = currDebt.Loan.Add(amount)
@@ -54,8 +55,8 @@ func (k Keeper) IncreaseDebt(ctx sdk.Context, nftBytes []byte, amount sdk.Coin) 
 	k.SetDebt(ctx, currDebt)
 }
 
-func (k Keeper) DecreaseDebt(ctx sdk.Context, nftBytes []byte, amount sdk.Coin) {
-	currDebt := k.GetDebtByNft(ctx, nftBytes)
+func (k Keeper) DecreaseDebt(ctx sdk.Context, nftId types.NftIdentifier, amount sdk.Coin) {
+	currDebt := k.GetDebtByNft(ctx, nftId.IdBytes())
 	currDebt.Loan = currDebt.Loan.Sub(amount)
 	k.SetDebt(ctx, currDebt)
 }
@@ -79,7 +80,7 @@ func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
 		return types.ErrDebtExceedsMaxDebt
 	}
 
-	k.IncreaseDebt(ctx, msg.NftId.IdBytes(), msg.Amount)
+	k.IncreaseDebt(ctx, msg.NftId, msg.Amount)
 
 	sender := msg.Sender.AccAddress()
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, sdk.Coins{msg.Amount})
@@ -114,7 +115,7 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 		return types.ErrRepayAmountExceedsLoanAmount
 	}
 
-	k.DecreaseDebt(ctx, msg.NftId.IdBytes(), msg.Amount)
+	k.DecreaseDebt(ctx, msg.NftId, msg.Amount)
 
 	sender := msg.Sender.AccAddress()
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{msg.Amount})
