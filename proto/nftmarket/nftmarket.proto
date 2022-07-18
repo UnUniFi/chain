@@ -31,6 +31,17 @@ message Loan {
   cosmos.base.v1beta1.Coin loan = 2 [ (gogoproto.nullable) = false ];
 }
 
+message ListedClass {
+  string class_id = 1;
+  repeated string nft_ids = 2;
+}
+
+message ListedNft {
+  string id = 1;
+  string uri = 2;
+  string uri_hash = 3;
+}
+
 message NftListing {
   NftIdentifier nft_id = 1 [ (gogoproto.nullable) = false ];
   string owner =  2;
