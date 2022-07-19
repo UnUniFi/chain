@@ -1,0 +1,11 @@
+syntax = "proto3";
+package ununifi.chain.yieldaggregator;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/yieldaggregator/types";
+
+// Params defines the parameters for the module.
+message Params {
+  string test = 1;
+}

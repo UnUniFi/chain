@@ -74,6 +74,9 @@
   
     - [Msg](#ununifi.cdp.Msg)
   
+- [ethereum/signdoc.proto](#ethereum/signdoc.proto)
+    - [SignDocForMetamask](#ununifi.ethereum.SignDocForMetamask)
+  
 - [incentive/incentive.proto](#incentive/incentive.proto)
     - [BaseClaim](#ununifi.incentive.BaseClaim)
     - [BaseMultiClaim](#ununifi.incentive.BaseMultiClaim)
@@ -145,6 +148,21 @@
     - [QueryParamsResponse](#ununifi.ununifidist.QueryParamsResponse)
   
     - [Query](#ununifi.ununifidist.Query)
+  
+- [yieldaggregator/params.proto](#yieldaggregator/params.proto)
+    - [Params](#ununifi.chain.yieldaggregator.Params)
+  
+- [yieldaggregator/genesis.proto](#yieldaggregator/genesis.proto)
+    - [GenesisState](#ununifi.chain.yieldaggregator.GenesisState)
+  
+- [yieldaggregator/query.proto](#yieldaggregator/query.proto)
+    - [QueryParamsRequest](#ununifi.chain.yieldaggregator.QueryParamsRequest)
+    - [QueryParamsResponse](#ununifi.chain.yieldaggregator.QueryParamsResponse)
+  
+    - [Query](#ununifi.chain.yieldaggregator.Query)
+  
+- [yieldaggregator/tx.proto](#yieldaggregator/tx.proto)
+    - [Msg](#ununifi.chain.yieldaggregator.Msg)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -1051,6 +1069,40 @@ Query defines the gRPC querier service.
 
 
 
+<a name="ethereum/signdoc.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ethereum/signdoc.proto
+
+
+
+<a name="ununifi.ethereum.SignDocForMetamask"></a>
+
+### SignDocForMetamask
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `body` | [cosmos.tx.v1beta1.TxBody](#cosmos.tx.v1beta1.TxBody) |  |  |
+| `auth_info` | [cosmos.tx.v1beta1.AuthInfo](#cosmos.tx.v1beta1.AuthInfo) |  |  |
+| `chain_id` | [string](#string) |  |  |
+| `account_number` | [uint64](#uint64) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="incentive/incentive.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -1889,6 +1941,146 @@ Query defines the gRPC querier service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Params` | [QueryParamsRequest](#ununifi.ununifidist.QueryParamsRequest) | [QueryParamsResponse](#ununifi.ununifidist.QueryParamsResponse) |  | GET|/ununifi/ununifidist/params|
 | `Balances` | [QueryGetBalancesRequest](#ununifi.ununifidist.QueryGetBalancesRequest) | [QueryGetBalancesResponse](#ununifi.ununifidist.QueryGetBalancesResponse) | this line is used by starport scaffolding # 2 | GET|/ununifi/ununifidist/balances|
+
+ <!-- end services -->
+
+
+
+<a name="yieldaggregator/params.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yieldaggregator/params.proto
+
+
+
+<a name="ununifi.chain.yieldaggregator.Params"></a>
+
+### Params
+Params defines the parameters for the module.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `test` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="yieldaggregator/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yieldaggregator/genesis.proto
+
+
+
+<a name="ununifi.chain.yieldaggregator.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the yieldaggregator module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.chain.yieldaggregator.Params) |  | this line is used by starport scaffolding # genesis/proto/state |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="yieldaggregator/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yieldaggregator/query.proto
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+QueryParamsRequest is request type for the Query/Params RPC method.
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+QueryParamsResponse is response type for the Query/Params RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.chain.yieldaggregator.Params) |  | params holds all the parameters of this module. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.chain.yieldaggregator.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#ununifi.chain.yieldaggregator.QueryParamsRequest) | [QueryParamsResponse](#ununifi.chain.yieldaggregator.QueryParamsResponse) | Parameters queries the parameters of the module.
+
+this line is used by starport scaffolding # 2 | GET|/UnUniFi/chain/yieldaggregator/params|
+
+ <!-- end services -->
+
+
+
+<a name="yieldaggregator/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yieldaggregator/tx.proto
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.chain.yieldaggregator.Msg"></a>
+
+### Msg
+Msg defines the Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
 
  <!-- end services -->
 
