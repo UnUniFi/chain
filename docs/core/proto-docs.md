@@ -162,6 +162,11 @@
     - [Query](#ununifi.chain.yieldaggregator.Query)
   
 - [yieldaggregator/tx.proto](#yieldaggregator/tx.proto)
+    - [MsgDeposit](#ununifi.chain.yieldaggregator.MsgDeposit)
+    - [MsgDepositResponse](#ununifi.chain.yieldaggregator.MsgDepositResponse)
+    - [MsgWithdraw](#ununifi.chain.yieldaggregator.MsgWithdraw)
+    - [MsgWithdrawResponse](#ununifi.chain.yieldaggregator.MsgWithdrawResponse)
+  
     - [Msg](#ununifi.chain.yieldaggregator.Msg)
   
 - [Scalar Value Types](#scalar-value-types)
@@ -2067,6 +2072,59 @@ this line is used by starport scaffolding # 2 | GET|/UnUniFi/chain/yieldaggregat
 ## yieldaggregator/tx.proto
 
 
+
+<a name="ununifi.chain.yieldaggregator.MsgDeposit"></a>
+
+### MsgDeposit
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+| `execute_orders` | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgDepositResponse"></a>
+
+### MsgDepositResponse
+
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgWithdraw"></a>
+
+### MsgWithdraw
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgWithdrawResponse"></a>
+
+### MsgWithdrawResponse
+
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -2081,6 +2139,7 @@ Msg defines the Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Deposit` | [MsgDeposit](#ununifi.chain.yieldaggregator.MsgDeposit) | [MsgDepositResponse](#ununifi.chain.yieldaggregator.MsgDepositResponse) | rpc Withdraw(MsgWithdraw) returns (MsgWithdrawResponse); | |
 
  <!-- end services -->
 

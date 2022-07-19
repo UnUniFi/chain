@@ -1,13 +1,37 @@
 syntax = "proto3";
 package ununifi.chain.yieldaggregator;
 
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
 // this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "github.com/UnUniFi/chain/x/yieldaggregator/types";
 
 // Msg defines the Msg service.
 service Msg {
-    // this line is used by starport scaffolding # proto/tx/rpc
+  rpc Deposit(MsgDeposit) returns (MsgDepositResponse);
+  // rpc Withdraw(MsgWithdraw) returns (MsgWithdrawResponse);
 }
 
-// this line is used by starport scaffolding # proto/tx/message
+message MsgDeposit {
+  string from_address = 1[
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  repeated cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
+  bool execute_orders = 3;
+}
+
+message MsgDepositResponse {}
+
+message MsgWithdraw {
+  string from_address = 1[
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  repeated cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
+}
+
+message MsgWithdrawResponse {}
+

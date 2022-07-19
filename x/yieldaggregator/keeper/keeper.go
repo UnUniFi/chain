@@ -45,3 +45,13 @@ func NewKeeper(
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
+
+func (k Keeper) Deposit(ctx sdk.Context, msg *types.MsgDeposit) error {
+
+	return nil
+}
+
+func (k Keeper) Withdraw(ctx sdk.Context, msg *types.MsgWithdraw) error {
+
+	return nil
+}
