@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	tmtime "github.com/tendermint/tendermint/libs/time"
+	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/UnUniFi/chain/app"
 	ununifitypes "github.com/UnUniFi/chain/types"
