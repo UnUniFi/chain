@@ -5,6 +5,7 @@ import (
 
 	"github.com/UnUniFi/chain/x/nftmarket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
@@ -169,7 +170,53 @@ func (suite *KeeperTestSuite) TestCancelledBid() {
 	suite.Require().Len(maturedCancelledBids, 0)
 }
 
-// TODO: add test for SafeCloseBid(ctx sdk.Context, bid types.NftBid)
+func (suite *KeeperTestSuite) TestSafeCloseBid() {
+	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	now := time.Now().UTC()
+	bids := []types.NftBid{
+		{
+			NftId: types.NftIdentifier{
+				ClassId: "1",
+				NftId:   "1",
+			},
+			Bidder:           owner.String(),
+			Amount:           sdk.NewInt64Coin("uguu", 1000000),
+			AutomaticPayment: true,
+			PaidAmount:       sdk.NewInt(1000000),
+			BidTime:          now,
+		},
+	}
+
+	for _, bid := range bids {
+		suite.app.NftmarketKeeper.SetBid(suite.ctx, bid)
+	}
+
+	// try safe close of bids when module account does not have enough balance
+	for _, bid := range bids {
+		cacheCtx, _ := suite.ctx.CacheContext()
+		err := suite.app.NftmarketKeeper.SafeCloseBid(cacheCtx, bid)
+		suite.Require().Error(err)
+	}
+
+	// allocate tokens to the module
+	coin := sdk.NewInt64Coin("uguu", int64(1000000000))
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{coin})
+	suite.NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.ModuleName, sdk.Coins{coin})
+	suite.NoError(err)
+
+	// try safe close of bids when module account has enough balance
+	for _, bid := range bids {
+		cacheCtx, _ := suite.ctx.CacheContext()
+		err := suite.app.NftmarketKeeper.SafeCloseBid(cacheCtx, bid)
+		suite.Require().NoError(err)
+
+		// check tokens are received
+		balance := suite.app.BankKeeper.GetBalance(cacheCtx, owner, "uguu")
+		suite.Require().True(balance.IsPositive())
+	}
+}
 
 // TODO: add test for TotalActiveRankDeposit(ctx sdk.Context, nftIdBytes []byte)
 
