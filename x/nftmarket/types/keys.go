@@ -37,7 +37,7 @@ const (
 	// successful bid listing by nft send time
 	KeyPrefixSuccessfulBidListing = "successful_bid_listing"
 	// nft bid by nft_id
-	KeyPrefixNftBid = "nft_bid"
+	KeyPrefixNftBid = "nft_bid_original"
 	// nft bid cancelled
 	KeyPrefixNftBidCancelled = "nft_bid_cancelled"
 	// nft bid by owner

@@ -98,10 +98,76 @@ func (suite *KeeperTestSuite) TestNftBidBasics() {
 	suite.Require().Len(nftBids, 0)
 }
 
-// TODO: add test for SetCancelledBid(ctx sdk.Context, bid types.NftBid)
-// TODO: add test for GetAllCancelledBids(ctx sdk.Context)
-// TODO: add test for GetMaturedCancelledBids(ctx sdk.Context, endTime time.Time)
-// TODO: add test for DeleteCancelledBid(ctx sdk.Context, bid types.NftBid)
+func (suite *KeeperTestSuite) TestCancelledBid() {
+	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	owner2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	now := time.Now().UTC()
+	cancelledBids := []types.NftBid{
+		{
+			NftId: types.NftIdentifier{
+				ClassId: "1",
+				NftId:   "1",
+			},
+			Bidder:           owner.String(),
+			Amount:           sdk.NewInt64Coin("uguu", 1000000),
+			AutomaticPayment: true,
+			PaidAmount:       sdk.NewInt(1000000),
+			BidTime:          now,
+		},
+		{
+			NftId: types.NftIdentifier{
+				ClassId: "1",
+				NftId:   "1",
+			},
+			Bidder:           owner2.String(),
+			Amount:           sdk.NewInt64Coin("uguu", 1000000),
+			AutomaticPayment: true,
+			PaidAmount:       sdk.NewInt(1000000),
+			BidTime:          now,
+		},
+		{
+			NftId: types.NftIdentifier{
+				ClassId: "1",
+				NftId:   "2",
+			},
+			Bidder:           owner.String(),
+			Amount:           sdk.NewInt64Coin("uguu", 1000000),
+			AutomaticPayment: true,
+			PaidAmount:       sdk.NewInt(1000000),
+			BidTime:          now.Add(time.Second),
+		},
+	}
+
+	for _, bid := range cancelledBids {
+		suite.app.NftmarketKeeper.SetCancelledBid(suite.ctx, bid)
+	}
+
+	// check all cancelled bids
+	allCancelledBids := suite.app.NftmarketKeeper.GetAllCancelledBids(suite.ctx)
+	suite.Require().Len(allCancelledBids, len(cancelledBids))
+
+	// check matured cancelled bids
+	maturedCancelledBids := suite.app.NftmarketKeeper.GetMaturedCancelledBids(suite.ctx, now.Add(time.Second))
+	suite.Require().Len(maturedCancelledBids, 2)
+
+	// check normal bids
+	allBids := suite.app.NftmarketKeeper.GetAllBids(suite.ctx)
+	suite.Require().Len(allBids, 0)
+
+	// delete all cancelled bids
+	for _, bid := range cancelledBids {
+		suite.app.NftmarketKeeper.DeleteCancelledBid(suite.ctx, bid)
+	}
+
+	// check all cancelled bids
+	allCancelledBids = suite.app.NftmarketKeeper.GetAllCancelledBids(suite.ctx)
+	suite.Require().Len(allCancelledBids, 0)
+
+	// check matured cancelled bids
+	maturedCancelledBids = suite.app.NftmarketKeeper.GetMaturedCancelledBids(suite.ctx, now)
+	suite.Require().Len(maturedCancelledBids, 0)
+}
 
 // TODO: add test for SafeCloseBid(ctx sdk.Context, bid types.NftBid)
 
