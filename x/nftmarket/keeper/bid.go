@@ -175,7 +175,7 @@ func (k Keeper) TotalActiveRankDeposit(ctx sdk.Context, nftIdBytes []byte) sdk.I
 		winnerCandidateStartIndex = 0
 	}
 	for _, bid := range bids[winnerCandidateStartIndex:] {
-		totalActiveRankDeposit = totalActiveRankDeposit.Add(bid.Amount.Amount)
+		totalActiveRankDeposit = totalActiveRankDeposit.Add(bid.PaidAmount)
 	}
 	return totalActiveRankDeposit
 }

@@ -3,9 +3,11 @@ package keeper_test
 import (
 	"time"
 
+	ununifitypes "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/nftmarket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
@@ -218,7 +220,75 @@ func (suite *KeeperTestSuite) TestSafeCloseBid() {
 	}
 }
 
-// TODO: add test for TotalActiveRankDeposit(ctx sdk.Context, nftIdBytes []byte)
+func (suite *KeeperTestSuite) TestTotalActiveRankDeposit() {
+	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	owner2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	owner3 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	classId := "1"
+	nftId := "1"
+	suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+		Id:          classId,
+		Name:        classId,
+		Symbol:      classId,
+		Description: classId,
+		Uri:         classId,
+	})
+	err := suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
+		ClassId: classId,
+		Id:      nftId,
+		Uri:     nftId,
+		UriHash: nftId,
+	}, owner)
+	suite.Require().NoError(err)
+
+	nftIdentifier := types.NftIdentifier{ClassId: classId, NftId: nftId}
+	err = suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
+		Sender:        ununifitypes.StringAccAddress(owner),
+		NftId:         nftIdentifier,
+		ListingType:   types.ListingType_DIRECT_ASSET_BORROW,
+		BidToken:      "uguu",
+		MinBid:        sdk.ZeroInt(),
+		BidActiveRank: 2,
+	})
+	suite.Require().NoError(err)
+
+	now := time.Now().UTC()
+	bids := []types.NftBid{
+		{
+			NftId:            nftIdentifier,
+			Bidder:           owner.String(),
+			Amount:           sdk.NewInt64Coin("uguu", 1000000),
+			AutomaticPayment: true,
+			PaidAmount:       sdk.NewInt(1000000),
+			BidTime:          now,
+		},
+		{
+			NftId:            nftIdentifier,
+			Bidder:           owner2.String(),
+			Amount:           sdk.NewInt64Coin("uguu", 2000000),
+			AutomaticPayment: true,
+			PaidAmount:       sdk.NewInt(1500000),
+			BidTime:          now,
+		},
+		{
+			NftId:            nftIdentifier,
+			Bidder:           owner3.String(),
+			Amount:           sdk.NewInt64Coin("uguu", 3000000),
+			AutomaticPayment: true,
+			PaidAmount:       sdk.NewInt(2000000),
+			BidTime:          now,
+		},
+	}
+
+	for _, bid := range bids {
+		suite.app.NftmarketKeeper.SetBid(suite.ctx, bid)
+	}
+
+	// check total active rank deposit
+	activeRankDeposit := suite.app.NftmarketKeeper.TotalActiveRankDeposit(suite.ctx, nftIdentifier.IdBytes())
+	suite.Require().Equal(activeRankDeposit, sdk.NewInt(3500000))
+}
 
 // TODO: add test for PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid)
 // TODO: add test for CancelBid(ctx sdk.Context, msg *types.MsgCancelBid)
