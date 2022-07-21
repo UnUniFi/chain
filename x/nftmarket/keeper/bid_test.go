@@ -290,7 +290,227 @@ func (suite *KeeperTestSuite) TestTotalActiveRankDeposit() {
 	suite.Require().Equal(activeRankDeposit, sdk.NewInt(3500000))
 }
 
-// TODO: add test for PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid)
+func (suite *KeeperTestSuite) TestPlaceBid() {
+	acc1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	tests := []struct {
+		testCase     string
+		classId      string
+		nftId        string
+		nftOwner     sdk.AccAddress
+		bidder       sdk.AccAddress
+		prevBids     int
+		originAmount sdk.Coin
+		amount       sdk.Coin
+		listBefore   bool
+		endedListing bool
+		expectPass   bool
+	}{
+		{
+			testCase:     "bid on not listed nft",
+			classId:      "class1",
+			nftId:        "nft1",
+			nftOwner:     acc1,
+			bidder:       bidder,
+			prevBids:     0,
+			originAmount: sdk.NewInt64Coin("uguu", 0),
+			amount:       sdk.NewInt64Coin("uguu", 10000000),
+			listBefore:   false,
+			endedListing: false,
+			expectPass:   false,
+		},
+		{
+			testCase:     "already ended listing",
+			classId:      "class4",
+			nftId:        "nft4",
+			nftOwner:     acc1,
+			bidder:       bidder,
+			prevBids:     0,
+			originAmount: sdk.NewInt64Coin("uguu", 0),
+			amount:       sdk.NewInt64Coin("uguu", 10000000),
+			listBefore:   true,
+			endedListing: true,
+			expectPass:   false,
+		},
+		{
+			testCase:     "invalid denom bid",
+			classId:      "class2",
+			nftId:        "nft2",
+			nftOwner:     acc1,
+			bidder:       bidder,
+			prevBids:     0,
+			originAmount: sdk.NewInt64Coin("uguu", 0),
+			amount:       sdk.NewInt64Coin("xxxx", 10000000),
+			listBefore:   true,
+			endedListing: false,
+			expectPass:   false,
+		},
+		{
+			testCase:     "lower than min bid",
+			classId:      "class3",
+			nftId:        "nft3",
+			nftOwner:     acc1,
+			bidder:       bidder,
+			prevBids:     0,
+			originAmount: sdk.NewInt64Coin("uguu", 0),
+			amount:       sdk.NewInt64Coin("uguu", 1),
+			listBefore:   true,
+			endedListing: false,
+			expectPass:   false,
+		},
+		{
+			testCase:     "successful bid increase case when original bid exists",
+			classId:      "class5",
+			nftId:        "nft5",
+			nftOwner:     acc1,
+			bidder:       bidder,
+			prevBids:     0,
+			originAmount: sdk.NewInt64Coin("uguu", 1000000),
+			amount:       sdk.NewInt64Coin("uguu", 2000000),
+			listBefore:   true,
+			endedListing: false,
+			expectPass:   true,
+		},
+		{
+			testCase:     "successful bid when only lower bids exists",
+			classId:      "class5",
+			nftId:        "nft5",
+			nftOwner:     acc1,
+			bidder:       bidder,
+			prevBids:     2,
+			originAmount: sdk.NewInt64Coin("uguu", 0),
+			amount:       sdk.NewInt64Coin("uguu", 20000000),
+			listBefore:   true,
+			endedListing: false,
+			expectPass:   true,
+		},
+		{
+			testCase:     "successful bid when no bids exists case",
+			classId:      "class5",
+			nftId:        "nft5",
+			nftOwner:     acc1,
+			bidder:       bidder,
+			prevBids:     0,
+			originAmount: sdk.NewInt64Coin("uguu", 0),
+			amount:       sdk.NewInt64Coin("uguu", 20000000),
+			listBefore:   true,
+			endedListing: false,
+			expectPass:   true,
+		},
+	}
+
+	for _, tc := range tests {
+		suite.SetupTest()
+
+		suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+			Id:          tc.classId,
+			Name:        tc.classId,
+			Symbol:      tc.classId,
+			Description: tc.classId,
+			Uri:         tc.classId,
+		})
+		err := suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
+			ClassId: tc.classId,
+			Id:      tc.nftId,
+			Uri:     tc.nftId,
+			UriHash: tc.nftId,
+		}, tc.nftOwner)
+		suite.Require().NoError(err)
+
+		nftIdentifier := types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId}
+		if tc.listBefore {
+			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
+				Sender:        ununifitypes.StringAccAddress(tc.nftOwner),
+				NftId:         nftIdentifier,
+				ListingType:   types.ListingType_DIRECT_ASSET_BORROW,
+				BidToken:      "uguu",
+				MinBid:        sdk.NewInt(10),
+				BidActiveRank: 2,
+			})
+			suite.Require().NoError(err)
+		}
+
+		for i := 0; i < tc.prevBids; i++ {
+			bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+			// init tokens to addr
+			coin := sdk.NewInt64Coin("uguu", int64(1000000*(i+1)))
+			err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{coin})
+			suite.NoError(err)
+			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{coin})
+			suite.NoError(err)
+
+			err := suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
+				Sender:           ununifitypes.StringAccAddress(bidder),
+				NftId:            nftIdentifier,
+				Amount:           coin,
+				AutomaticPayment: false,
+			})
+			suite.Require().NoError(err)
+		}
+
+		if tc.originAmount.IsPositive() {
+			err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{tc.originAmount})
+			suite.NoError(err)
+			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, tc.bidder, sdk.Coins{tc.originAmount})
+			suite.NoError(err)
+
+			err := suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
+				Sender:           ununifitypes.StringAccAddress(bidder),
+				NftId:            nftIdentifier,
+				Amount:           tc.originAmount,
+				AutomaticPayment: false,
+			})
+			suite.Require().NoError(err)
+		}
+
+		if tc.endedListing {
+			err := suite.app.NftmarketKeeper.EndNftListing(suite.ctx, &types.MsgEndNftListing{
+				Sender: ununifitypes.StringAccAddress(tc.nftOwner),
+				NftId:  nftIdentifier,
+			})
+			suite.Require().NoError(err)
+		}
+
+		// mint coins to the bidder
+		err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{tc.amount})
+		suite.NoError(err)
+		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, tc.bidder, sdk.Coins{tc.amount})
+		suite.NoError(err)
+
+		oldBidderBalance := suite.app.BankKeeper.GetBalance(suite.ctx, tc.bidder, "uguu")
+		err = suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
+			Sender:           ununifitypes.StringAccAddress(tc.bidder),
+			NftId:            nftIdentifier,
+			Amount:           tc.amount,
+			AutomaticPayment: false,
+		})
+
+		if tc.expectPass {
+			suite.Require().NoError(err)
+
+			// check bidder balance reduction
+			bidderNewBalance := suite.app.BankKeeper.GetBalance(suite.ctx, tc.bidder, "uguu")
+			suite.Require().True(bidderNewBalance.Amount.LT(oldBidderBalance.Amount))
+
+			// check bid paid amount
+			suite.Require().Equal(bidderNewBalance.Amount.Add(tc.amount.Amount.Sub(tc.originAmount.Amount).Quo(sdk.NewInt(2))), oldBidderBalance.Amount)
+
+			// check if nft listing status is BIDDING
+			listing, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+			suite.Require().NoError(err)
+			suite.Require().Equal(listing.State, types.ListingState_BIDDING)
+
+			// check listing update when it is within gas time
+			params := suite.app.NftmarketKeeper.GetParamSet(suite.ctx)
+			suite.Require().True(listing.EndAt.After(suite.ctx.BlockTime().Add(time.Duration(params.NftListingGapTime) * time.Second)))
+		} else {
+			suite.Require().Error(err)
+		}
+	}
+}
+
 // TODO: add test for CancelBid(ctx sdk.Context, msg *types.MsgCancelBid)
 // TODO: add test for PayFullBid(ctx sdk.Context, msg *types.MsgPayFullBid)
 // TODO: add test for HandleMaturedCancelledBids(ctx sdk.Context)
