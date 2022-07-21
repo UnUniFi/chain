@@ -6,12 +6,19 @@ Any frontend creator of UnUniFi NFT market and NFTFi service are the subjects to
 
 ### Joining Frontend Incentive
 
-Any subjects can send a register message with the `frontend_name` and `subject_weight_map`.  
+Any subjects can send a register message with the `frontend_name` and `subject_weight_map`.   
+Or you can simply contrains the address in the target transaction's memo field.   
 
 ### Getting Frontend Incentive Reward 
 
 Once the `frontend_name` is registered, they insert that `frontend_name` in the target message's memo field precisely to get the reward.
-Current considering target message is `MsgPayAuctionFee`.
+Current target message is `MsgPayFullBid`.   
+Or you can simply contrains the address in the target transaction's memo field.   
+The difference of them is whether you can set the weight for each address.   
+e.g. In memo field of MsgPayFullBid,   
+{"frontend-incentive": "`frontend_name`"}  
+or   
+{"frontend-incentive": ["address1", "address2"]}
 
 ### Withdrawing Frontend Incentive Reward
 
@@ -23,4 +30,3 @@ In other way, they can withdraw specific denom reward by sending `MsgWithdrawSpe
 
 All the reward comes from the NFT trading fee which is defined in protocol as glocal parameter. 
 There is nothing inflational effect or depletion.
-
