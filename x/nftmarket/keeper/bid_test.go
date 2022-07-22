@@ -876,4 +876,68 @@ func (suite *KeeperTestSuite) TestPayFullBid() {
 	}
 }
 
-// TODO: add test for HandleMaturedCancelledBids(ctx sdk.Context)
+func (suite *KeeperTestSuite) TestHandleMaturedCancelledBids() {
+	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	owner2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	now := time.Now().UTC()
+	cancelledBids := []types.NftBid{
+		{
+			NftId: types.NftIdentifier{
+				ClassId: "1",
+				NftId:   "1",
+			},
+			Bidder:           owner.String(),
+			Amount:           sdk.NewInt64Coin("uguu", 1000000),
+			AutomaticPayment: true,
+			PaidAmount:       sdk.NewInt(1000000),
+			BidTime:          now,
+		},
+		{
+			NftId: types.NftIdentifier{
+				ClassId: "1",
+				NftId:   "1",
+			},
+			Bidder:           owner2.String(),
+			Amount:           sdk.NewInt64Coin("uguu", 1000000),
+			AutomaticPayment: true,
+			PaidAmount:       sdk.NewInt(1000000),
+			BidTime:          now,
+		},
+		{
+			NftId: types.NftIdentifier{
+				ClassId: "1",
+				NftId:   "2",
+			},
+			Bidder:           owner.String(),
+			Amount:           sdk.NewInt64Coin("uguu", 1000000),
+			AutomaticPayment: true,
+			PaidAmount:       sdk.NewInt(1000000),
+			BidTime:          now.Add(time.Second),
+		},
+	}
+
+	for _, bid := range cancelledBids {
+		suite.app.NftmarketKeeper.SetCancelledBid(suite.ctx, bid)
+	}
+
+	// check matured cancelled bids
+	maturedCancelledBids := suite.app.NftmarketKeeper.GetMaturedCancelledBids(suite.ctx, now.Add(time.Second))
+	suite.Require().Len(maturedCancelledBids, 2)
+
+	// allocate tokens to the module
+	suite.ctx = suite.ctx.WithBlockTime(now.Add(time.Second))
+	coin := sdk.NewInt64Coin("uguu", int64(1000000000))
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{coin})
+	suite.NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.ModuleName, sdk.Coins{coin})
+	suite.NoError(err)
+
+	// execute matured cancelled bids
+	err = suite.app.NftmarketKeeper.HandleMaturedCancelledBids(suite.ctx)
+	suite.Require().NoError(err)
+
+	// check matured cancelled bids after handle
+	maturedCancelledBids = suite.app.NftmarketKeeper.GetMaturedCancelledBids(suite.ctx, now.Add(time.Second))
+	suite.Require().Len(maturedCancelledBids, 0)
+}
