@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"fmt"
 	"sort"
 	"time"
 
@@ -309,8 +308,6 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 	}
 
 	cancelFee := sdk.ZeroInt()
-	fmt.Println("higherBids(bids, bid.Amount.Amount)", higherBids(bids, bid.Amount.Amount))
-	fmt.Println("listing.BidActiveRank", listing.BidActiveRank)
 	if higherBids(bids, bid.Amount.Amount) <= listing.BidActiveRank {
 		// Cancellation Fee Formula: MAX{canceling_bidder's_deposit - (total_deposit - borrowed_lister_amount), 0}
 		listingDebt := k.GetDebtByNft(ctx, msg.NftId.IdBytes())
@@ -319,17 +316,12 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 			totalDeposit = totalDeposit.Add(b.PaidAmount)
 		}
 
-		fmt.Println("bid.PaidAmount", bid.PaidAmount)
-		fmt.Println("totalDeposit", totalDeposit)
-		// PANIC HERE XXXXlistingDebt
 		loanAmount := sdk.ZeroInt()
 		if listingDebt.NftId.NftId != "" {
 			loanAmount = listingDebt.Loan.Amount
 		}
-		fmt.Println("loanAmount", loanAmount)
 		if bid.PaidAmount.Add(loanAmount).GT(totalDeposit) {
 			cancelFee = bid.PaidAmount.Add(loanAmount).Sub(totalDeposit)
-			fmt.Println("cancelFee", cancelFee)
 		}
 	}
 
