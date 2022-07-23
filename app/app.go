@@ -121,7 +121,7 @@ import (
 )
 
 const Name = "ununifi"
-const upgradeName = "Alpha"
+const upgradeName = "upgrade-test-v1"
 
 // We pull these out so we can set them with LDFLAGS in the Makefile
 var (
@@ -803,18 +803,32 @@ func NewApp(
 
 	app.UpgradeKeeper.SetUpgradeHandler(
 		upgradeName,
-		func(ctx sdk.Context, _ upgradetypes.Plan, _ module.VersionMap) (module.VersionMap, error) {
-			app.IBCKeeper.ConnectionKeeper.SetParams(ctx, ibcconnectiontypes.DefaultParams())
+		func(ctx sdk.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
+			ctx.Logger().Info(fmt.Sprintf("update start:%s", upgradeName))
+			// app.IBCKeeper.ConnectionKeeper.SetParams(ctx, ibcconnectiontypes.DefaultParams())
 
-			fromVM := make(map[string]uint64)
-			for moduleName := range app.mm.Modules {
-				fromVM[moduleName] = 1
+			bankPram := app.BankKeeper.GetParams(ctx)
+			bankPram.DefaultSendEnabled = true
+			app.BankKeeper.SetParams(ctx, bankPram)
+
+			fromAddr, err := sdk.AccAddressFromBech32("ununifi1nv4ekqt0stvjncpu3gf6yjtwrdter8p9u58agy")
+			if err != nil {
+				panic(err)
 			}
-			// override versions for _new_ modules as to not skip InitGenesis
-			fromVM[authz.ModuleName] = 0
-			fromVM[feegrant.ModuleName] = 0
 
-			return app.mm.RunMigrations(ctx, app.configurator, fromVM)
+			toAddr, err := sdk.AccAddressFromBech32("ununifi1l7velnsm6722v44mscnf53q7umwncjrh4mk8rc")
+			if err != nil {
+				panic(err)
+			}
+			err = app.BankKeeper.SendCoins(ctx, fromAddr, toAddr, sdk.NewCoins(sdk.NewCoin("uguu", sdk.NewInt(100000))))
+			if err != nil {
+				panic(err)
+			}
+
+			bankPram.DefaultSendEnabled = false
+			app.BankKeeper.SetParams(ctx, bankPram)
+
+			return app.mm.RunMigrations(ctx, app.configurator, vm)
 		},
 	)
 
