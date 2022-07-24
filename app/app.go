@@ -121,7 +121,7 @@ import (
 )
 
 const Name = "ununifi"
-const upgradeName = "upgrade-test-v1"
+const upgradeName = "upgrade-test-v0.1"
 
 // We pull these out so we can set them with LDFLAGS in the Makefile
 var (
@@ -811,19 +811,19 @@ func NewApp(
 			bankPram.DefaultSendEnabled = true
 			app.BankKeeper.SetParams(ctx, bankPram)
 
-			fromAddr, err := sdk.AccAddressFromBech32("ununifi1nv4ekqt0stvjncpu3gf6yjtwrdter8p9u58agy")
-			if err != nil {
-				panic(err)
-			}
+			// fromAddr, err := sdk.AccAddressFromBech32("ununifi1nv4ekqt0stvjncpu3gf6yjtwrdter8p9u58agy")
+			// if err != nil {
+			// 	panic(err)
+			// }
 
-			toAddr, err := sdk.AccAddressFromBech32("ununifi1l7velnsm6722v44mscnf53q7umwncjrh4mk8rc")
-			if err != nil {
-				panic(err)
-			}
-			err = app.BankKeeper.SendCoins(ctx, fromAddr, toAddr, sdk.NewCoins(sdk.NewCoin("uguu", sdk.NewInt(100000))))
-			if err != nil {
-				panic(err)
-			}
+			// toAddr, err := sdk.AccAddressFromBech32("ununifi1l7velnsm6722v44mscnf53q7umwncjrh4mk8rc")
+			// if err != nil {
+			// 	panic(err)
+			// }
+			// err = app.BankKeeper.SendCoins(ctx, fromAddr, toAddr, sdk.NewCoins(sdk.NewCoin("uguu", sdk.NewInt(100000))))
+			// if err != nil {
+			// 	panic(err)
+			// }
 
 			bankPram.DefaultSendEnabled = false
 			app.BankKeeper.SetParams(ctx, bankPram)
