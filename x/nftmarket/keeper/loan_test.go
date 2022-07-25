@@ -245,10 +245,174 @@ func (suite *KeeperTestSuite) TestBorrow() {
 }
 
 func (suite *KeeperTestSuite) TestRepay() {
-	// not existing listing
-	// invalid repay denom
-	// check debt increased
-	// check tokens are sent from end user to module
+	acc1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	acc2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	tests := []struct {
+		testCase     string
+		classId      string
+		nftId        string
+		nftOwner     sdk.AccAddress
+		borrower     sdk.AccAddress
+		prevBids     int
+		borrowAmount sdk.Coin
+		amount       sdk.Coin
+		listBefore   bool
+		expectPass   bool
+	}{
+		{
+			testCase:     "repay on not listed nft",
+			classId:      "class1",
+			nftId:        "nft1",
+			nftOwner:     acc1,
+			borrower:     acc1,
+			prevBids:     0,
+			borrowAmount: sdk.NewInt64Coin("uguu", 0),
+			amount:       sdk.NewInt64Coin("uguu", 10000000),
+			listBefore:   false,
+			expectPass:   false,
+		},
+		{
+			testCase:     "repay request by non owner",
+			classId:      "class3",
+			nftId:        "nft3",
+			nftOwner:     acc1,
+			borrower:     acc2,
+			prevBids:     2,
+			borrowAmount: sdk.NewInt64Coin("uguu", 0),
+			amount:       sdk.NewInt64Coin("uguu", 1),
+			listBefore:   true,
+			expectPass:   false,
+		},
+		{
+			testCase:     "invalid repay denom",
+			classId:      "class2",
+			nftId:        "nft2",
+			nftOwner:     acc1,
+			borrower:     acc1,
+			prevBids:     2,
+			borrowAmount: sdk.NewInt64Coin("uguu", 0),
+			amount:       sdk.NewInt64Coin("xxxx", 10000000),
+			listBefore:   true,
+			expectPass:   false,
+		},
+		{
+			testCase:     "repay more than debt",
+			classId:      "class3",
+			nftId:        "nft3",
+			nftOwner:     acc1,
+			borrower:     acc1,
+			prevBids:     1,
+			borrowAmount: sdk.NewInt64Coin("uguu", 100),
+			amount:       sdk.NewInt64Coin("uguu", 10000),
+			listBefore:   true,
+			expectPass:   false,
+		},
+		{
+			testCase:     "successful full repay",
+			classId:      "class5",
+			nftId:        "nft5",
+			nftOwner:     acc1,
+			borrower:     acc1,
+			prevBids:     2,
+			borrowAmount: sdk.NewInt64Coin("uguu", 1000000),
+			amount:       sdk.NewInt64Coin("uguu", 1000000),
+			listBefore:   true,
+			expectPass:   true,
+		},
+		{
+			testCase:     "successful partial repay",
+			classId:      "class5",
+			nftId:        "nft5",
+			nftOwner:     acc1,
+			borrower:     acc1,
+			prevBids:     2,
+			borrowAmount: sdk.NewInt64Coin("uguu", 1000000),
+			amount:       sdk.NewInt64Coin("uguu", 100000),
+			listBefore:   true,
+			expectPass:   true,
+		},
+	}
+
+	for _, tc := range tests {
+		suite.SetupTest()
+
+		suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+			Id:          tc.classId,
+			Name:        tc.classId,
+			Symbol:      tc.classId,
+			Description: tc.classId,
+			Uri:         tc.classId,
+		})
+		err := suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
+			ClassId: tc.classId,
+			Id:      tc.nftId,
+			Uri:     tc.nftId,
+			UriHash: tc.nftId,
+		}, tc.nftOwner)
+		suite.Require().NoError(err)
+
+		nftIdentifier := types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId}
+		if tc.listBefore {
+			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
+				Sender:        ununifitypes.StringAccAddress(tc.nftOwner),
+				NftId:         nftIdentifier,
+				ListingType:   types.ListingType_DIRECT_ASSET_BORROW,
+				BidToken:      "uguu",
+				MinBid:        sdk.NewInt(10),
+				BidActiveRank: 2,
+			})
+			suite.Require().NoError(err)
+		}
+
+		for i := 0; i < tc.prevBids; i++ {
+			bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+			// init tokens to addr
+			coin := sdk.NewInt64Coin("uguu", int64(1000000*(i+1)))
+			err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{coin})
+			suite.NoError(err)
+			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{coin})
+			suite.NoError(err)
+
+			err := suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
+				Sender:           ununifitypes.StringAccAddress(bidder),
+				NftId:            nftIdentifier,
+				Amount:           coin,
+				AutomaticPayment: false,
+			})
+			suite.Require().NoError(err)
+		}
+
+		if tc.borrowAmount.IsPositive() {
+			err := suite.app.NftmarketKeeper.Borrow(suite.ctx, &types.MsgBorrow{
+				Sender: ununifitypes.StringAccAddress(tc.borrower),
+				NftId:  nftIdentifier,
+				Amount: tc.borrowAmount,
+			})
+			suite.Require().NoError(err)
+		}
+
+		oldRepayerBalance := suite.app.BankKeeper.GetBalance(suite.ctx, tc.borrower, "uguu")
+		err = suite.app.NftmarketKeeper.Repay(suite.ctx, &types.MsgRepay{
+			Sender: ununifitypes.StringAccAddress(tc.borrower),
+			NftId:  nftIdentifier,
+			Amount: tc.amount,
+		})
+
+		if tc.expectPass {
+			suite.Require().NoError(err)
+
+			repayerNewBalance := suite.app.BankKeeper.GetBalance(suite.ctx, tc.borrower, "uguu")
+			suite.Require().True(repayerNewBalance.Amount.LT(oldRepayerBalance.Amount))
+
+			// check debt decrease
+			loan := suite.app.NftmarketKeeper.GetDebtByNft(suite.ctx, nftIdentifier.IdBytes())
+			suite.Require().True(loan.Loan.Amount.Equal(tc.borrowAmount.Amount.Sub(tc.amount.Amount)))
+		} else {
+			suite.Require().Error(err)
+		}
+	}
 }
 
 func (suite *KeeperTestSuite) Liquidate() {
