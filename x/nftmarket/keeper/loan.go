@@ -72,6 +72,10 @@ func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
 		return types.ErrInvalidBorrowDenom
 	}
 
+	if listing.Owner != msg.Sender.AccAddress().String() {
+		return types.ErrNotNftListingOwner
+	}
+
 	// calculate maximum borrow amount for the listing
 	maxDebt := k.TotalActiveRankDeposit(ctx, msg.NftId.IdBytes())
 
@@ -103,6 +107,10 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
 		return err
+	}
+
+	if listing.Owner != msg.Sender.AccAddress().String() {
+		return types.ErrNotNftListingOwner
 	}
 
 	// check listing token == msg.Amount.Denom
