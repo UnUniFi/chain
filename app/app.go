@@ -118,7 +118,7 @@ import (
 )
 
 const Name = "ununifi"
-const upgradeName = "upgrade-test-v0.2"
+const upgradeName = "upgrade-test-v0.4"
 
 // We pull these out so we can set them with LDFLAGS in the Makefile
 var (
