@@ -118,7 +118,7 @@ import (
 )
 
 const Name = "ununifi"
-const upgradeName = "upgrade-test-v0.4"
+const upgradeName = "upgrade_test_v0.5"
 
 // We pull these out so we can set them with LDFLAGS in the Makefile
 var (
@@ -801,6 +801,7 @@ func NewApp(
 		func(ctx sdk.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 
 			ctx.Logger().Info(fmt.Sprintf("update start:%s", upgradeName))
+			ctx.Logger().Info(fmt.Sprintf("update start test:%s", upgradeName))
 			// add liquidity modules
 			// liquidity is auto init
 
