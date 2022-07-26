@@ -3,12 +3,13 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/UnUniFi/chain/x/nftmint/keeper"
-	"github.com/UnUniFi/chain/x/nftmint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/ed25519"
+
+	"github.com/UnUniFi/chain/x/nftmint/keeper"
+	"github.com/UnUniFi/chain/x/nftmint/types"
 )
 
 const (
@@ -16,6 +17,7 @@ const (
 	testBaseTokenUri      = "ipfs://testcid-sample/"
 	testTokenSupplyCap    = 10000
 	testMintingPermission = 0
+	testNftID             = "a00"
 )
 
 // test basic functions of nftmint
@@ -292,60 +294,85 @@ func (suite *KeeperTestSuite) TestUpdateBaseTokenUri() {
 	sender_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, sender)
 	classId := keeper.CreateClassId(sender_seq, sender)
 	_ = suite.CreateClass(suite.ctx, classId, sender)
-	nftId := "a00"
-	_ = suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{ClassId: classId, Id: nftId}, sender)
+	_ = suite.MintNFT(suite.ctx, classId, testNftID, sender)
 
-	updatingBaseTokenuri := "ipfs://testcid-sample-latest/"
-	testMsgUpdateBaseTokenUri := types.MsgUpdateBaseTokenUri{
-		Sender:       sender.Bytes(),
-		ClassId:      classId,
-		BaseTokenUri: updatingBaseTokenuri,
-	}
-	err := suite.app.NftmintKeeper.UpdateBaseTokenUri(suite.ctx, &testMsgUpdateBaseTokenUri)
-	suite.Require().NoError(err)
-
-	gotClassAttributes, exists := suite.app.NftmintKeeper.GetClassAttributes(suite.ctx, classId)
-	suite.Require().True(exists)
-	expectedBaseTokenUri := updatingBaseTokenuri
-	suite.Require().Equal(expectedBaseTokenUri, gotClassAttributes.BaseTokenUri)
-	expectedNFTUri := updatingBaseTokenuri + nftId
-	nft, _ := suite.app.NFTKeeper.GetNFT(suite.ctx, classId, nftId)
-	suite.Require().Equal(expectedNFTUri, nft.Uri)
-
-	// invalid sender case
 	invalidSender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-
-	testMsgUpdateBaseTokenUriInvalidSender := types.MsgUpdateBaseTokenUri{
-		Sender:       invalidSender.Bytes(), // not the owner of class
-		ClassId:      classId,
-		BaseTokenUri: updatingBaseTokenuri,
-	}
-	err = suite.app.NftmintKeeper.UpdateBaseTokenUri(suite.ctx, &testMsgUpdateBaseTokenUriInvalidSender)
-	suite.Require().Error(err)
-
-	// invalid case which updating BaseTokenUri is longer than the maximum length on UnUniFi
-	baseTokenUriInvalidLonger := "test"
-	for i := 0; i < types.DefaultMaxUriLen; i++ {
+	var baseTokenUriInvalidLonger string
+	for i := 0; i <= types.DefaultMaxUriLen; i++ {
 		baseTokenUriInvalidLonger += "a"
 	}
-	testMsgUpdateBaseTokenUriInvaliLonger := types.MsgUpdateBaseTokenUri{
-		Sender:       sender.Bytes(),
-		ClassId:      classId,
-		BaseTokenUri: baseTokenUriInvalidLonger,
-	}
-	err = suite.app.NftmintKeeper.UpdateBaseTokenUri(suite.ctx, &testMsgUpdateBaseTokenUriInvaliLonger)
-	suite.Require().Error(err)
 
-	// invalid case which updating BaseTokenUri is shorter than the maximum length on UnUniFi
-	baseTokenUriInvalidShorter := "t"
-
-	testMsgUpdateBaseTokenUriInvalidShorter := types.MsgUpdateBaseTokenUri{
-		Sender:       sender.Bytes(),
-		ClassId:      classId,
-		BaseTokenUri: baseTokenUriInvalidShorter,
+	tests := []struct {
+		testCase          string
+		msg               types.MsgUpdateBaseTokenUri
+		validSender       bool
+		validBaseTokenUir bool
+	}{
+		{
+			testCase: "invalid sender",
+			msg: types.MsgUpdateBaseTokenUri{
+				Sender:       invalidSender.Bytes(), // not the owner of class
+				ClassId:      classId,
+				BaseTokenUri: "ipfs://testcid-sample-latest/",
+			},
+			validSender:       false,
+			validBaseTokenUir: true,
+		},
+		{
+			testCase: "updating BaseTokenUri is longer than the maximum length on UnUniFi",
+			msg: types.MsgUpdateBaseTokenUri{
+				Sender:       sender.Bytes(),
+				ClassId:      classId,
+				BaseTokenUri: baseTokenUriInvalidLonger,
+			},
+			validSender:       true,
+			validBaseTokenUir: false,
+		},
+		{
+			testCase: "updating BaseTokenUri is longer than the maximum length on UnUniFi",
+			msg: types.MsgUpdateBaseTokenUri{
+				Sender:       sender.Bytes(),
+				ClassId:      classId,
+				BaseTokenUri: "t",
+			},
+			validSender:       true,
+			validBaseTokenUir: false,
+		},
+		{
+			testCase: "successful case",
+			msg: types.MsgUpdateBaseTokenUri{
+				Sender:       sender.Bytes(),
+				ClassId:      classId,
+				BaseTokenUri: "ipfs://testcid-sample-latest/",
+			},
+			validSender:       true,
+			validBaseTokenUir: true,
+		},
 	}
-	err = suite.app.NftmintKeeper.UpdateBaseTokenUri(suite.ctx, &testMsgUpdateBaseTokenUriInvalidShorter)
-	suite.Require().Error(err)
+
+	for _, tc := range tests {
+		err := suite.app.NftmintKeeper.UpdateBaseTokenUri(suite.ctx, &tc.msg)
+
+		// invalid cases
+		if !tc.validSender || !tc.validBaseTokenUir {
+			suite.Require().Error(err)
+			gotClassAttributes, _ := suite.app.NftmintKeeper.GetClassAttributes(suite.ctx, classId)
+			suite.Require().Equal(testBaseTokenUri, gotClassAttributes.BaseTokenUri)
+			nft, _ := suite.app.NFTKeeper.GetNFT(suite.ctx, classId, testNftID)
+			expectedNFTUri := testBaseTokenUri + testNFTId
+			suite.Require().Equal(expectedNFTUri, nft.Uri)
+		}
+
+		// valid case
+		if tc.validSender && tc.validBaseTokenUir {
+			suite.Require().NoError(err)
+			gotClassAttributes, _ := suite.app.NftmintKeeper.GetClassAttributes(suite.ctx, classId)
+			suite.Require().Equal(tc.msg.BaseTokenUri, gotClassAttributes.BaseTokenUri)
+			nft, _ := suite.app.NFTKeeper.GetNFT(suite.ctx, classId, testNftID)
+			expectedNFTUri := tc.msg.BaseTokenUri + testNftID
+			suite.Require().Equal(expectedNFTUri, nft.Uri)
+		}
+	}
 }
 
 // execute CreateClass as the common function
