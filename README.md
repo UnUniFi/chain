@@ -15,10 +15,10 @@ sudo apt install -y jq git build-essential
 Install Go. Use the 17.x series version.
 
 ```bash
-$ wget https://go.dev/dl/go1.17.linux-amd64.tar.gz
-$ rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.17.linux-amd64.tar.gz
+$ wget https://go.dev/dl/go1.18.linux-amd64.tar.gz
+$ rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.18.linux-amd64.tar.gz
 $ go version
-go version go1.17 linux/amd64
+go version go1.18 linux/amd64
 ```
 
 Clone the UnUniFi blockchain repository, check out the given branch, and build it with `make install` to build binaries.
@@ -26,7 +26,7 @@ Clone the UnUniFi blockchain repository, check out the given branch, and build i
 ```bash
 git clone https://github.com/UnUniFi/chain chain_repo  
 cd chain_repo
-git checkout main
+git checkout v1.0.0
 git pull
 make install
 ```

@@ -1,5 +1,31 @@
 {
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "cSpell.enabled": true,
+  "tabnine.experimentalAutoImports": true,
+  "go.lintTool": "golangci-lint",
+  "go.formatTool": "goimports",
+  "go.useLanguageServer": true,
+  "[go.mod]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  },
+  "[go]": {
+    "editor.snippetSuggestions": "none",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  },
+  "gopls": {
+    "local": "github.com/UnUniFi/chain"
+  },
+  "files.eol": "\n",
+  "[proto3]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
+  "clang-format.style": "{BasedOnStyle: Google, IndentWidth: 2, ColumnLimit: 120, AlignConsecutiveAssignments: true, AlignConsecutiveDeclarations: true, SpacesInSquareBrackets: true}",
 }
