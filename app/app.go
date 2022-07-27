@@ -8,6 +8,9 @@ import (
 	"strings"
 
 	appparams "github.com/UnUniFi/chain/app/params"
+	// Upgrades from earlier versions of Ununifi
+	v1 "github.com/UnUniFi/chain/app/upgrades/v1"
+
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
@@ -118,7 +121,6 @@ import (
 )
 
 const Name = "ununifi"
-const upgradeName = "upgrade_test_v0.5"
 
 // We pull these out so we can set them with LDFLAGS in the Makefile
 var (
@@ -796,51 +798,14 @@ func NewApp(
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
 
-	app.UpgradeKeeper.SetUpgradeHandler(
-		upgradeName,
-		func(ctx sdk.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
-
-			ctx.Logger().Info(fmt.Sprintf("update start:%s", upgradeName))
-			ctx.Logger().Info(fmt.Sprintf("update start test:%s", upgradeName))
-			// add liquidity modules
-			// liquidity is auto init
-
-			// transPram := app.TransferKeeper.GetParams(ctx)
-			// transPram.ReceiveEnabled = true
-			// transPram.SendEnabled = true
-			// app.TransferKeeper.SetParams(ctx, transPram)
-			// bankPram := app.BankKeeper.GetParams(ctx)
-			// bankPram.DefaultSendEnabled = true
-			// app.BankKeeper.SetParams(ctx, bankPram)
-
-			// fromAddr, err := sdk.AccAddressFromBech32("ununifi1a8jcsmla6heu99ldtazc27dna4qcd4jygsthx6")
-			// if err != nil {
-			// 	panic(err)
-			// }
-
-			// toAddr, err := sdk.AccAddressFromBech32("ununifi1d6zd6awgjxuwrf4y863c9stz9m0eec4ghfy24c")
-			// if err != nil {
-			// 	panic(err)
-			// }
-			// err = app.BankKeeper.SendCoins(ctx, fromAddr, toAddr, sdk.NewCoins(sdk.NewCoin("uguu", sdk.NewInt(100000))))
-			// // err = app.BankKeeper.AddCoins(ctx, addr, sdk.Coins{sdk.Coin{Denom: "stake", Amount: sdk.NewInt(345600000)}})
-			// if err != nil {
-			// 	panic(err)
-			// }
-
-			// bankPram.DefaultSendEnabled = false
-			// app.BankKeeper.SetParams(ctx, bankPram)
-
-			return app.mm.RunMigrations(ctx, app.configurator, vm)
-		},
-	)
+	app.setupUpgradeHandlers()
 
 	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
 	if err != nil {
 		panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
 	}
 
-	if upgradeInfo.Name == upgradeName && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
+	if upgradeInfo.Name == v1.UpgradeName && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
 		storeUpgrades := store.StoreUpgrades{
 			Added: []string{liquiditytypes.ModuleName},
 		}
@@ -1019,4 +984,13 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
 	paramsKeeper.Subspace(wasm.ModuleName)
 	return paramsKeeper
+}
+
+func (app *App) setupUpgradeHandlers() {
+	app.UpgradeKeeper.SetUpgradeHandler(
+		v1.UpgradeName,
+		v1.CreateUpgradeHandler(
+			app.mm,
+			app.configurator,
+			app.BankKeeper))
 }
