@@ -2367,42 +2367,47 @@ paths:
                           type: string
                         conversion_factor:
                           type: string
-                  debt_param:
-                    type: object
-                    properties:
-                      denom:
-                        type: string
-                      reference_asset:
-                        type: string
-                      conversion_factor:
-                        type: string
-                      debt_floor:
-                        type: string
-                  global_debt_limit:
-                    type: object
-                    properties:
-                      denom:
-                        type: string
-                      amount:
-                        type: string
-                    description: >-
-                      Coin defines a token with a denomination and an amount.
+                  debt_params:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        reference_asset:
+                          type: string
+                        conversion_factor:
+                          type: string
+                        debt_floor:
+                          type: string
+                        global_debt_limit:
+                          type: object
+                          properties:
+                            denom:
+                              type: string
+                            amount:
+                              type: string
+                          description: >-
+                            Coin defines a token with a denomination and an
+                            amount.
 
 
-                      NOTE: The amount field is an Int which implements the
-                      custom method
+                            NOTE: The amount field is an Int which implements
+                            the custom method
 
-                      signatures required by gogoproto.
-                  surplus_auction_threshold:
-                    type: string
-                  surplus_auction_lot:
-                    type: string
-                  debt_auction_threshold:
-                    type: string
-                  debt_auction_lot:
-                    type: string
-                  circuit_breaker:
-                    type: boolean
+                            signatures required by gogoproto.
+                        debt_denom:
+                          type: string
+                        surplus_auction_threshold:
+                          type: string
+                        surplus_auction_lot:
+                          type: string
+                        debt_auction_threshold:
+                          type: string
+                        debt_auction_lot:
+                          type: string
+                        circuit_breaker:
+                          type: boolean
         default:
           description: An unexpected error response.
           schema:
@@ -4329,6 +4334,30 @@ definitions:
         type: string
       debt_floor:
         type: string
+      global_debt_limit:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      debt_denom:
+        type: string
+      surplus_auction_threshold:
+        type: string
+      surplus_auction_lot:
+        type: string
+      debt_auction_threshold:
+        type: string
+      debt_auction_lot:
+        type: string
+      circuit_breaker:
+        type: boolean
   ununifi.cdp.Deposit:
     type: object
     properties:
@@ -4397,39 +4426,46 @@ definitions:
               type: string
             conversion_factor:
               type: string
-      debt_param:
-        type: object
-        properties:
-          denom:
-            type: string
-          reference_asset:
-            type: string
-          conversion_factor:
-            type: string
-          debt_floor:
-            type: string
-      global_debt_limit:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
+      debt_params:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            reference_asset:
+              type: string
+            conversion_factor:
+              type: string
+            debt_floor:
+              type: string
+            global_debt_limit:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
 
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
-      surplus_auction_threshold:
-        type: string
-      surplus_auction_lot:
-        type: string
-      debt_auction_threshold:
-        type: string
-      debt_auction_lot:
-        type: string
-      circuit_breaker:
-        type: boolean
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+            debt_denom:
+              type: string
+            surplus_auction_threshold:
+              type: string
+            surplus_auction_lot:
+              type: string
+            debt_auction_threshold:
+              type: string
+            debt_auction_lot:
+              type: string
+            circuit_breaker:
+              type: boolean
   ununifi.cdp.QueryAllAccountResponse:
     type: object
     properties:
@@ -4869,42 +4905,46 @@ definitions:
                   type: string
                 conversion_factor:
                   type: string
-          debt_param:
-            type: object
-            properties:
-              denom:
-                type: string
-              reference_asset:
-                type: string
-              conversion_factor:
-                type: string
-              debt_floor:
-                type: string
-          global_debt_limit:
-            type: object
-            properties:
-              denom:
-                type: string
-              amount:
-                type: string
-            description: >-
-              Coin defines a token with a denomination and an amount.
+          debt_params:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                reference_asset:
+                  type: string
+                conversion_factor:
+                  type: string
+                debt_floor:
+                  type: string
+                global_debt_limit:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
 
 
-              NOTE: The amount field is an Int which implements the custom
-              method
+                    NOTE: The amount field is an Int which implements the custom
+                    method
 
-              signatures required by gogoproto.
-          surplus_auction_threshold:
-            type: string
-          surplus_auction_lot:
-            type: string
-          debt_auction_threshold:
-            type: string
-          debt_auction_lot:
-            type: string
-          circuit_breaker:
-            type: boolean
+                    signatures required by gogoproto.
+                debt_denom:
+                  type: string
+                surplus_auction_threshold:
+                  type: string
+                surplus_auction_lot:
+                  type: string
+                debt_auction_threshold:
+                  type: string
+                debt_auction_lot:
+                  type: string
+                circuit_breaker:
+                  type: boolean
   ununifi.incentive.Multiplier:
     type: object
     properties:
