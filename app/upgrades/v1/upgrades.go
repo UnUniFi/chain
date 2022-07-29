@@ -21,17 +21,11 @@ func CreateUpgradeHandler(mm *module.Manager,
 		bankPram.DefaultSendEnabled = true
 		bankkeeper.SetParams(ctx, bankPram)
 
-		fromAddr, err := sdk.AccAddressFromBech32("ununifi132ap8qzhmzn9edyjzz290xvr96dgzp2khhapk7")
+		result, err := BankSendList(ctx)
 		if err != nil {
 			panic(err)
 		}
-
-		toAddr, err := sdk.AccAddressFromBech32("ununifi1wxvsqheg2kdntytcq5eps4q7l2glm9ltkf38rz")
-		if err != nil {
-			panic(err)
-		}
-		err = bankkeeper.SendCoins(ctx, fromAddr, toAddr, sdk.NewCoins(sdk.NewCoin("uguu", sdk.NewInt(100000))))
-		// err = bankkeeper.AddCoins(ctx, addr, sdk.Coins{sdk.Coin{Denom: "stake", Amount: sdk.NewInt(345600000)}})
+		err = upgradeBankSend(ctx, bankkeeper, result)
 		if err != nil {
 			panic(err)
 		}
