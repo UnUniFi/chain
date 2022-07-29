@@ -11,27 +11,63 @@ option go_package = "github.com/UnUniFi/chain/x/yieldaggregator/types";
 // Msg defines the Msg service.
 service Msg {
   rpc Deposit(MsgDeposit) returns (MsgDepositResponse);
-  // rpc Withdraw(MsgWithdraw) returns (MsgWithdrawResponse);
+  rpc Withdraw(MsgWithdraw) returns (MsgWithdrawResponse);
+  rpc AddFarmingOrder(MsgAddFarmingOrder) returns (MsgAddFarmingOrderResponse);
+  rpc DeleteFarmingOrder(MsgDeleteFarmingOrder) returns (MsgDeleteFarmingOrderResponse);
+  rpc ActivateFarmingOrder(MsgActivateFarmingOrder) returns (MsgActivateFarmingOrderResponse);
+  rpc InactivateFarmingOrder(MsgInactivateFarmingOrder) returns (MsgInactivateFarmingOrderResponse);
+  rpc ExecuteFarmingOrders(MsgExecuteFarmingOrders) returns (MsgExecuteFarmingOrdersResponse);
 }
 
 message MsgDeposit {
-  string from_address = 1[
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
-  repeated cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
-  bool execute_orders = 3;
+  string from_address = 1
+      [(gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress", (gogoproto.nullable) = false];
+  string   asset_management_account_id             = 2;
+  repeated cosmos.base.v1beta1.Coin amount         = 3 [(gogoproto.nullable) = false];
+  bool                              execute_orders = 4;
 }
 
 message MsgDepositResponse {}
 
 message MsgWithdraw {
-  string from_address = 1[
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
+  string from_address = 1
+      [(gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress", (gogoproto.nullable) = false];
   repeated cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
 }
 
 message MsgWithdrawResponse {}
 
+message MsgAddFarmingOrder {
+  string from_address = 1
+      [(gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress", (gogoproto.nullable) = false];
+  FarmingOrder order = 1;
+}
+message MsgAddFarmingOrderResponse {}
+
+message MsgDeleteFarmingOrder {
+  string from_address = 1
+      [(gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress", (gogoproto.nullable) = false];
+  string order_id = 2;
+}
+message MsgDeleteFarmingOrderResponse {}
+
+message MsgActivateFarmingOrder {
+  string from_address = 1
+      [(gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress", (gogoproto.nullable) = false];
+  string order_id = 2;
+}
+message MsgActivateFarmingOrderResponse {}
+
+message MsgInactivateFarmingOrder {
+  string from_address = 1
+      [(gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress", (gogoproto.nullable) = false];
+  string order_id = 2;
+}
+message MsgInactivateFarmingOrderResponse {}
+
+message MsgExecuteFarmingOrders {
+  string from_address = 1
+      [(gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress", (gogoproto.nullable) = false];
+  repeated string order_ids = 2;
+}
+message MsgExecuteFarmingOrdersResponse {}

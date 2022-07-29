@@ -3,8 +3,9 @@ package keeper
 import (
 	"context"
 
-	"github.com/UnUniFi/chain/x/yieldaggregator/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/UnUniFi/chain/x/yieldaggregator/types"
 )
 
 type msgServer struct {

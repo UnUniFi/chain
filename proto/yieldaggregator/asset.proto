@@ -1,0 +1,88 @@
+syntax = "proto3";
+package ununifi.chain.yieldaggregator;
+
+import "gogoproto/gogo.proto";
+import "yieldaggregator/params.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/yieldaggregator/types";
+
+enum IntegrateType {
+  GOLANG_MOD = 1;
+  COSMWASM   = 2;
+}
+message IntegrateInfo {
+  IntegrateType type = 1;
+  // for cosmwasm contract
+  string contract_ibc_port_id = 2;
+  // for golang module
+  string mod_name = 3;
+}
+message AssetCondition {
+  string denom = 1 [(gogoproto.nullable) = false];
+  string min   = 2;
+  uint32 ratio = 3;
+}
+message AssetManagementTarget {
+  string                   id                          = 1;
+  string                   asset_management_account_id = 2;
+  string                   account_address             = 4;
+  repeated AssetCondition  asset_conditions            = 5;
+  google.protobuf.Duration unbonding_time = 6 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+  IntegrateInfo            integrate_info = 7;
+}
+
+message AssetManagementAccount {
+  string                         id                       = 1;
+  string                         name                     = 2;
+  repeated AssetManagementTarget asset_management_targets = 3;
+}
+
+message FarmingOrder {
+  string                    id                 = 1;
+  string                    from_address       = 2;
+  google.protobuf.Any       strategy           = 3;
+  google.protobuf.Duration  max_unbonding_time = 4 [(gogoproto.nullable) = true, (gogoproto.stdduration) = true];
+  unit32                    overall_ratio      = 5;
+  string                    min                = 6;
+  string                    max                = 7;
+  google.protobuf.Timestamp date               = 8 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  bool                      active             = 9;
+}
+
+message UserInfo {
+  repeated cosmos.base.v0beta1.Coin amount         = 1 [(gogoproto.nullable) = false];
+  repeated FarmingOrder             farming_orders = 2;
+  uint64                            farmed_counter = 3;
+}
+
+message FarmingUnit {
+  string   id                                          = 1;
+  string   acount_id                                   = 2;
+  string   target_id                                   = 3;
+  repeated cosmos.base.v1beta1.Coin amount             = 4 [(gogoproto.nullable) = false];
+  string                            farming_start_time = 5;
+  string                            unbonding_time     = 6;
+}
+
+// Strategy types
+// recent30DaysHighDPRStrategy -	Invest in the best DPR destination in the last 30 days on average
+// recent1DayHighDPRStrategy	- Invest in the best DPR destination in the last average day
+// notHaveDPRStrategy - Invest in something that does not have a DPR.
+// ManualStrategy - Manual investment, whiteTargetIdlist required.
+message Strategy {
+  string          strategy_type          = 1;
+  repeated string whitelisted_target_ids = 2;
+  repeated string blacklisted_target_ids = 3;
+}
+
+message DailyPercent {
+  string                    asset_management_target_id = 1;
+  string                    rate = 2 [(gogoproto.customtype) = "Dec", (gogoproto.nullable) = false];
+  google.protobuf.Timestamp date = 3 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+}
+
+message DepositAllocation {
+  string                   id       = 1;
+  string                   order_id = 2;
+  cosmos.base.v1beta1.Coin amount   = 3 [(gogoproto.nullable) = false];
+}
