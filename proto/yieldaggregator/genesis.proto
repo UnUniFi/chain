@@ -3,12 +3,10 @@ package ununifi.chain.yieldaggregator;
 
 import "gogoproto/gogo.proto";
 import "yieldaggregator/params.proto";
-// this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "github.com/UnUniFi/chain/x/yieldaggregator/types";
 
 // GenesisState defines the yieldaggregator module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
-  // this line is used by starport scaffolding # genesis/proto/state
 }

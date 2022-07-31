@@ -2,13 +2,17 @@ syntax = "proto3";
 package ununifi.chain.yieldaggregator;
 
 import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/any.proto";
 import "yieldaggregator/params.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/yieldaggregator/types";
 
 enum IntegrateType {
-  GOLANG_MOD = 1;
-  COSMWASM   = 2;
+  GOLANG_MOD = 0;
+  COSMWASM   = 1;
 }
 message IntegrateInfo {
   IntegrateType type = 1;
@@ -18,7 +22,7 @@ message IntegrateInfo {
   string mod_name = 3;
 }
 message AssetCondition {
-  string denom = 1 [(gogoproto.nullable) = false];
+  string denom = 1;
   string min   = 2;
   uint32 ratio = 3;
 }
@@ -27,8 +31,8 @@ message AssetManagementTarget {
   string                   asset_management_account_id = 2;
   string                   account_address             = 4;
   repeated AssetCondition  asset_conditions            = 5;
-  google.protobuf.Duration unbonding_time = 6 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
-  IntegrateInfo            integrate_info = 7;
+  google.protobuf.Duration unbonding_time              = 6 [(gogoproto.stdduration) = true];
+  IntegrateInfo            integrate_info              = 7;
 }
 
 message AssetManagementAccount {
@@ -42,7 +46,7 @@ message FarmingOrder {
   string                    from_address       = 2;
   google.protobuf.Any       strategy           = 3;
   google.protobuf.Duration  max_unbonding_time = 4 [(gogoproto.nullable) = true, (gogoproto.stdduration) = true];
-  unit32                    overall_ratio      = 5;
+  uint32                    overall_ratio      = 5;
   string                    min                = 6;
   string                    max                = 7;
   google.protobuf.Timestamp date               = 8 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
@@ -50,7 +54,7 @@ message FarmingOrder {
 }
 
 message UserInfo {
-  repeated cosmos.base.v0beta1.Coin amount         = 1 [(gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin amount         = 1 [(gogoproto.nullable) = false];
   repeated FarmingOrder             farming_orders = 2;
   uint64                            farmed_counter = 3;
 }

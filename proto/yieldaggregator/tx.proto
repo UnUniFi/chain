@@ -3,8 +3,7 @@ package ununifi.chain.yieldaggregator;
 
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
-
-// this line is used by starport scaffolding # proto/tx/import
+import "yieldaggregator/asset.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/yieldaggregator/types";
 
@@ -40,7 +39,7 @@ message MsgWithdrawResponse {}
 message MsgAddFarmingOrder {
   string from_address = 1
       [(gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress", (gogoproto.nullable) = false];
-  FarmingOrder order = 1;
+  FarmingOrder order = 2;
 }
 message MsgAddFarmingOrderResponse {}
 
