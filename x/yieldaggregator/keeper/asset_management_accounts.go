@@ -7,20 +7,50 @@ import (
 )
 
 // asset management keeper functions
-func (k Keeper) AddAssetManagementAccounts(ctx sdk.Context, id string, name string) error {
-
+func (k Keeper) AddAssetManagementAccount(ctx sdk.Context, id string, name string) error {
 	return nil
 }
 
-func (k Keeper) UpdateAssetManagementAccounts(ctx sdk.Context, id string, obj types.AssetManagementAccount) error {
+func (k Keeper) UpdateAssetManagementAccount(ctx sdk.Context, id string, obj types.AssetManagementAccount) error {
 	return nil
 }
 
-func (k Keeper) DeleteAssetManagementAccounts(ctx sdk.Context, id string) error {
-	return nil
+func (k Keeper) DeleteAssetManagementAccount(ctx sdk.Context, id string) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(types.AssetManagementAccountKey(id))
 }
 
-func (k Keeper) GetAssetManagementAccounts(ctx sdk.Context) {
+func (k Keeper) SetAssetManagementAccount(ctx sdk.Context, obj types.AssetManagementAccount) {
+	bz := k.cdc.MustMarshal(&obj)
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.AssetManagementAccountKey(obj.Id), bz)
+}
+
+func (k Keeper) GetAssetManagementAccount(ctx sdk.Context, id string) types.AssetManagementAccount {
+	acc := types.AssetManagementAccount{}
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.AssetManagementAccountKey(id))
+	if bz == nil {
+		return acc
+	}
+	k.cdc.MustUnmarshal(bz, &acc)
+	return acc
+}
+
+func (k Keeper) GetAllAssetManagementAccounts(ctx sdk.Context) []types.AssetManagementAccount {
+	store := ctx.KVStore(k.storeKey)
+
+	accs := []types.AssetManagementAccount{}
+	it := sdk.KVStorePrefixIterator(store, []byte(types.PrefixKeyAssetManagementAccount))
+	defer it.Close()
+
+	for ; it.Valid(); it.Next() {
+		acc := types.AssetManagementAccount{}
+		k.cdc.MustUnmarshal(it.Value(), &acc)
+
+		accs = append(accs, acc)
+	}
+	return accs
 }
 
 // deposit

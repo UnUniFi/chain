@@ -25,3 +25,11 @@ const (
 	PrefixKeyAssetManagementAccount = "asset_management_account_"
 	PrefixKeyAssetManagementTarget  = "asset_management_target_"
 )
+
+func AssetManagementAccountKey(id string) []byte {
+	return append([]byte(PrefixKeyAssetManagementAccount), id...)
+}
+
+func AssetManagementTargetKey(id string) []byte {
+	return append([]byte(PrefixKeyAssetManagementTarget), id...)
+}
