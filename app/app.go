@@ -7,8 +7,6 @@ import (
 	"os"
 	"path/filepath"
 
-	ante "github.com/UnUniFi/chain/app/ante"
-	appparams "github.com/UnUniFi/chain/app/params"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
@@ -83,6 +81,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 
+	ante "github.com/UnUniFi/chain/app/ante"
+	appparams "github.com/UnUniFi/chain/app/params"
+
 	// "github.com/cosmos/ibc-go/v3/modules/apps/transfer"
 	// ibctransferkeeper "github.com/cosmos/ibc-go/v3/modules/apps/transfer/keeper"
 	// ibctransfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
@@ -115,18 +116,18 @@ import (
 	"github.com/UnUniFi/chain/x/incentive"
 	incentivekeeper "github.com/UnUniFi/chain/x/incentive/keeper"
 	incentivetypes "github.com/UnUniFi/chain/x/incentive/types"
+	"github.com/UnUniFi/chain/x/nftmarket"
+	nftmarketkeeper "github.com/UnUniFi/chain/x/nftmarket/keeper"
+	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
+	"github.com/UnUniFi/chain/x/nftmint"
+	nftmintkeeper "github.com/UnUniFi/chain/x/nftmint/keeper"
+	nftminttypes "github.com/UnUniFi/chain/x/nftmint/types"
 	"github.com/UnUniFi/chain/x/pricefeed"
 	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 	"github.com/UnUniFi/chain/x/ununifidist"
 	ununifidistkeeper "github.com/UnUniFi/chain/x/ununifidist/keeper"
 	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
-	"github.com/UnUniFi/chain/x/nftmint"
-	nftmintkeeper "github.com/UnUniFi/chain/x/nftmint/keeper"
-	nftminttypes "github.com/UnUniFi/chain/x/nftmint/types"
-	"github.com/UnUniFi/chain/x/nftmarket"
-	nftmarketkeeper "github.com/UnUniFi/chain/x/nftmarket/keeper"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
 	// "github.com/CosmWasm/wasmd/x/wasm"
 	// wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 )
@@ -236,9 +237,8 @@ var (
 		cdptypes.LiquidatorMacc:     {authtypes.Minter, authtypes.Burner},
 		ununifidisttypes.ModuleName: {authtypes.Minter},
 		// wasm.ModuleName:             {authtypes.Burner},
-		nft.ModuleName:          nil,
-		nftminttypes.ModuleName: nil,
 		nft.ModuleName:               nil,
+		nftminttypes.ModuleName:      nil,
 		nftmarkettypes.ModuleName:    nil,
 		nftmarkettypes.NftTradingFee: nil,
 	}
@@ -571,6 +571,9 @@ func NewApp(
 		keys[nftminttypes.MemStoreKey],
 		app.GetSubspace(nftminttypes.ModuleName),
 		app.AccountKeeper,
+		app.NFTKeeper,
+	)
+
 	app.NftmarketKeeper = nftmarketkeeper.NewKeeper(
 		appCodec,
 		keys[nftmarkettypes.StoreKey],
