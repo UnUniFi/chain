@@ -30,6 +30,6 @@ func AssetManagementAccountKey(id string) []byte {
 	return append([]byte(PrefixKeyAssetManagementAccount), id...)
 }
 
-func AssetManagementTargetKey(id string) []byte {
-	return append([]byte(PrefixKeyAssetManagementTarget), id...)
+func AssetManagementTargetKey(accountId, targetId string) []byte {
+	return append(append([]byte(PrefixKeyAssetManagementTarget), accountId...), targetId...)
 }

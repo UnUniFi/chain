@@ -8,10 +8,23 @@ import (
 
 // asset management keeper functions
 func (k Keeper) AddAssetManagementAccount(ctx sdk.Context, id string, name string) error {
+	acc := k.GetAssetManagementAccount(ctx, id)
+	if acc.Id != "" {
+		return types.ErrAssetManagementAccountAlreadyExists
+	}
+	k.SetAssetManagementAccount(ctx, types.AssetManagementAccount{
+		Id:   id,
+		Name: name,
+	})
 	return nil
 }
 
 func (k Keeper) UpdateAssetManagementAccount(ctx sdk.Context, id string, obj types.AssetManagementAccount) error {
+	acc := k.GetAssetManagementAccount(ctx, id)
+	if acc.Id == "" {
+		return types.ErrAssetManagementAccountDoesNotExists
+	}
+	k.SetAssetManagementAccount(ctx, obj)
 	return nil
 }
 

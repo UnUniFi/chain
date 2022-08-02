@@ -8,6 +8,6 @@ import (
 
 // x/yieldaggregator module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
-	
+	ErrAssetManagementAccountAlreadyExists = sdkerrors.Register(ModuleName, 2, "asset management account already exists")
+	ErrAssetManagementAccountDoesNotExists = sdkerrors.Register(ModuleName, 3, "asset management account does not exist")
 )
