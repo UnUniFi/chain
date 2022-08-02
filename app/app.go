@@ -121,10 +121,12 @@ import (
 	"github.com/UnUniFi/chain/x/ununifidist"
 	ununifidistkeeper "github.com/UnUniFi/chain/x/ununifidist/keeper"
 	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
-
 	"github.com/UnUniFi/chain/x/nftmint"
 	nftmintkeeper "github.com/UnUniFi/chain/x/nftmint/keeper"
 	nftminttypes "github.com/UnUniFi/chain/x/nftmint/types"
+	"github.com/UnUniFi/chain/x/nftmarket"
+	nftmarketkeeper "github.com/UnUniFi/chain/x/nftmarket/keeper"
+	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
 	// "github.com/CosmWasm/wasmd/x/wasm"
 	// wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 )
@@ -215,6 +217,7 @@ var (
 		ununifidist.AppModuleBasic{},
 		incentive.AppModuleBasic{},
 		nftmint.AppModuleBasic{},
+		nftmarket.AppModuleBasic{},
 		// wasm.AppModuleBasic{},
 	)
 
@@ -235,6 +238,9 @@ var (
 		// wasm.ModuleName:             {authtypes.Burner},
 		nft.ModuleName:          nil,
 		nftminttypes.ModuleName: nil,
+		nft.ModuleName:               nil,
+		nftmarkettypes.ModuleName:    nil,
+		nftmarkettypes.NftTradingFee: nil,
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -310,6 +316,7 @@ type App struct {
 	ununifidistKeeper ununifidistkeeper.Keeper
 	pricefeedKeeper   pricefeedkeeper.Keeper
 	NftmintKeeper     nftmintkeeper.Keeper
+	NftmarketKeeper   nftmarketkeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -362,6 +369,7 @@ func NewApp(
 		// wasm.StoreKey,
 		nftkeeper.StoreKey,
 		nftminttypes.StoreKey,
+		nftmarkettypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -563,6 +571,13 @@ func NewApp(
 		keys[nftminttypes.MemStoreKey],
 		app.GetSubspace(nftminttypes.ModuleName),
 		app.AccountKeeper,
+	app.NftmarketKeeper = nftmarketkeeper.NewKeeper(
+		appCodec,
+		keys[nftmarkettypes.StoreKey],
+		keys[nftmarkettypes.MemStoreKey],
+		app.GetSubspace(nftmarkettypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
 		app.NFTKeeper,
 	)
 
@@ -656,6 +671,7 @@ func NewApp(
 		ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
 		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
 		nftmint.NewAppModule(appCodec, app.NftmintKeeper, app.AccountKeeper),
+		nftmarket.NewAppModule(appCodec, app.NftmarketKeeper, app.AccountKeeper, app.BankKeeper),
 		// wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
 	)
 
@@ -689,6 +705,7 @@ func NewApp(
 		incentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
 		nftminttypes.ModuleName,
+		nftmarkettypes.ModuleName,
 
 		// ibchost.ModuleName,
 		// ibctransfertypes.ModuleName,
@@ -721,6 +738,7 @@ func NewApp(
 		incentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
 		nftminttypes.ModuleName,
+		nftmarkettypes.ModuleName,
 
 		// ibchost.ModuleName,
 		// ibctransfertypes.ModuleName,
@@ -761,6 +779,7 @@ func NewApp(
 		incentivetypes.ModuleName,
 		ununifidisttypes.ModuleName,
 		nftminttypes.ModuleName,
+		nftmarkettypes.ModuleName,
 
 		// ibchost.ModuleName,
 		// ibctransfertypes.ModuleName,
@@ -1045,6 +1064,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(incentivetypes.ModuleName)
 	paramsKeeper.Subspace(ununifidisttypes.ModuleName)
 	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
+	paramsKeeper.Subspace(nftmarkettypes.ModuleName)
 	// paramsKeeper.Subspace(wasm.ModuleName)
 	paramsKeeper.Subspace(nftminttypes.ModuleName)
 	return paramsKeeper
