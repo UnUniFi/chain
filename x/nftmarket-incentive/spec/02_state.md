@@ -6,17 +6,17 @@
 
 ```protobuf
 message FrontendIncentive {
-  string frontend_name = 1;
+  string incentive_id = 1;
   repeated string subjects = 2;
   repeated undetermined weights = 3;
 }
 ```
 
-- FrontendIncentive: `"frontend_name" -> format(FrontendIncentive)`
+- FrontendIncentive: `"incentive_id" -> format(FrontendIncentive)`
 
 ## RewardTable
 
-RewardTable is the record of the rewards for the subject of the `frontend-incentive`.
+RewardTable is the record of the rewards for the subject of the `nftmarket-incentive`.
 
 ```protobuf
 message FrontendReward {

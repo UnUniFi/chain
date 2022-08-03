@@ -4,13 +4,13 @@
 
 ## Messages
 
-All messages of `frontend-incentive`.
+All messages of `nftmarket-incentive`.
 
 ### Frontend Register
 
 ```protobuf
 message MsgFrontendRegister {
-  string frontend_name = 1;
+  string incentive_id = 1;
   repeated string subjects = 2 [
     (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
@@ -53,13 +53,13 @@ message MsgWithdrawSpecificFrontendReward {
 
 ## Queries
 
-All queries of `frontend-incentive`.
+All queries of `nftmarket-incentive`.
 
 ### FrontendIncentive
 
 ```protobuf
 message QueryFrontendIncentiveRequest {
-  string frontend_name = 1;
+  string incentive_id = 1;
 }
 ```
 
