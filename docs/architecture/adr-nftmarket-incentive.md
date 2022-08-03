@@ -45,8 +45,8 @@ It's the module account that collect the protocol earned fees from x/nftmarket m
 - nftmarket-incentive reward comes from the fee that is made in `nftmarket` module
 - Those rewards have some denoms which are used in nftmarket
 - Those rewards are accumulated at the timing hooks are called
-- Those rewards are determined by the `reward_rate` of the global option of this module and the protocol earned NFT trading fee amount
-- Those rewards' calculation is `the trading fee * reward_rate`, the fee indicates some specific transaction fee (e.g. MsgPayAuctionFee's optional fee, not tx fee)
+- Those rewards are determined by the `reward_rate` of the global option of this module in `reward_setting` and the protocol earned NFT trading fee amount
+- Those rewards' calculation is `the trading fee * reward_rate`
 - Subjects register `incentive_id` and each addresses and its weights (`subject_weight_map`) to receive the reward by sending a message at first
 - Subjects have to put registerd `incentive_id` in a target message's memo field to accumulate the frontend_reward
 - Subjects can send a withdrawal message to actually receive the frontend_incentive reward
