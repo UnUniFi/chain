@@ -138,10 +138,10 @@ type NftmarketHooks interface {
 
 The check list to achieve all requirements of this module.
 
-- [ ] At EndBlock, is it possible to distinguish transactions from message type?
-- [ ] Is it possible to extract arguments of that message?
-- [ ] Is it possible to extract memo field data of that message?
-- [ ] Is possible to distinguish transaction succeeds
-- [ ] Best way to get subject address and its weight via CLI (json file or map?)
-- [ ] The way to contain reward information for each addresses and denoms
-- [ ] Can you use the handler in the transaction tips article
+- [x] At EndBlock, is it possible to distinguish transactions from message type?
+- [x] Is it possible to extract arguments of that message?
+- [x] Is it possible to extract memo field data of that message?
+- [x] Is possible to distinguish transaction succeeds
+- [x] Best way to get subject address and its weight via CLI (json file or map?)
+- [x] The way to contain reward information for each addresses and denoms
+- [x] Can you use the handler in the transaction tips article
