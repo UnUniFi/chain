@@ -126,7 +126,7 @@ The interfaces:
 ```go
 type NftmarketHooks interface {
    AfterNftListed(ctx sdk.Context, nft_id types.NftIdentifier, incentive_id string)
-   AfterNftPaid(ctx sdk.Context, fee_amount mathInt, fee_denom string)
+   AfterNftPaid(ctx sdk.Context, nft_id types.NftIdentifier, fee_amount mathInt, fee_denom string)
 }
 ```
 
