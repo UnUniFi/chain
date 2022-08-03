@@ -14,10 +14,21 @@ The definition of the specific terms which are related to this module.
 incentive_id is the unique identifier in the `incentive_store`. Hence, it can't be duplicated.    
 
 `weight`   
-The ratio of the reward distribution in a     `incentive_store` unit. `incentive_store` can contain several `subject`s and ratio for each. 
+The ratio of the reward distribution in a `incentive_store` unit.   
+`incentive_store` can contain several `subject`s and ratio for each.   
+
+`reward_setting`   
+The setting about `reward_type` and `reward_rate`.   
+
+`incentive_type`    
+The type of incentive for the subject.    
+We first have `frontend`.   
 
 `reward_rate`   
-The rate to determine the percentage for the `nftmarket-incentive` reward out of the total trading fee.
+The rate to determine the percentage for the `nftmarket-incentive` reward out of the total trading fee.    
+This value is connected to the `incentive_type`.    
+e.g.  
+`frontend` - `0.8`   
 
 `denom`   
 The token ticker like GUU, BTC etc.   
@@ -31,9 +42,9 @@ It's the module account that collect the protocol earned fees from x/nftmarket m
 
 ## Incentive system
 
-- nftmarket-incentive reward comes from the fee that is made in some specific transactions (e.g. MsgPayAuctionFee's optional fee, not tx fee)
+- nftmarket-incentive reward comes from the fee that is made in `nftmarket` module
 - Those rewards have some denoms which are used in nftmarket
-- Those rewards are accumulated at EndBlock
+- Those rewards are accumulated at the timing hooks are called
 - Those rewards are determined by the `reward_rate` of the global option of this module and the protocol earned NFT trading fee amount
 - Those rewards' calculation is `the trading fee * reward_rate`, the fee indicates some specific transaction fee (e.g. MsgPayAuctionFee's optional fee, not tx fee)
 - Subjects register `incentive_id` and each addresses and its weights (`subject_weight_map`) to receive the reward by sending a message at first
