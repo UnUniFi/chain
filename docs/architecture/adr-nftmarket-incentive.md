@@ -127,6 +127,7 @@ message RewardRate {
 1. The reward amount is in the hook function
 1. At this moment, what it's needed to do is just update the stored data regarding reward amount for the denom of the subjects address by number
 1. Hooks are also called for resistration of the incentive with `incentive_id` and `NftIdentifier`.
+1. To pass the `incentive_id` from the memo data of `MsgListNft` requires a method to get memo data in the process of `MsgListNft` in `x/nftmarket` module.
 
 The interfaces:
 
