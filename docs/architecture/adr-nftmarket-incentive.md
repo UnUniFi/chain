@@ -56,7 +56,7 @@ It's the module account that collect the protocol earned fees from x/nftmarket m
 ## Register
 
 1. Subjects first register the addresses, weights of the proportion of the rewards and `incentive_id` to be used to identify the subject to take rewards in `incentive_store` (e.g. ununifi1a~, 0.5, ununifi1b~, 0.5 registering_name)
-1. Weights mush be tottaly added to 1.0
+1. Weights mush be totaly added to 1.0 (undetermined)
 1. The `incentive_id` must be unique for each
 1. The object related to one `incentive_id` is static
 1. Any address pairs or an address can resister `incentive_store`
@@ -64,9 +64,8 @@ It's the module account that collect the protocol earned fees from x/nftmarket m
 ## Accumulate reward
 
 1. If the `incentive_id` is put into the specified field (currently considering memo field) for the target messages like MsgPayAuctionFee, the `reward_rate` of the consumed trading fee which is made in that transaction (not tx fee) is accumulated to the subjects
-1. The reward accumulation is exucuted at EndBlock
-1. The consumed trading fee is calculated from the target message's argument
-1. The reward is stored as just data in the `nftmarket-incentive` module with the subject address as key
+1. The reward accumulation is exucuted at the timing hooks are called
+1. The reward is stored as just data in the `nftmarket-incentive` module with the subject address as key (not for each `incentive_id`)
 
 ## Withdrawal
 
@@ -79,7 +78,6 @@ It's the module account that collect the protocol earned fees from x/nftmarket m
 
 1. The reward is distributed when eligible subject sends withdrawal message
 1. The reward comes from the module account that accumulates the consumed trading fee
-1. The `reward_rate` determines the maximum rate of amount for the `nftmarket-incentive` in the consumed trading fee
 
 ### The way to achieve distribution
 
@@ -94,28 +92,43 @@ It's the module account that collect the protocol earned fees from x/nftmarket m
 
 ## Params
 
+`reward_setting`   
+This contains `reward_type` and `reward_rate` in array for the incentive configuration.   
+e.g.
+```protobuf
+message RewardSetting {
+  repeated RewardRate reward_rate = 1;
+}
+```
+
 `reward_rate`   
 The factor to multipy the trading fee for the reward of this module.   
-e.g. If `reward_rate` is 80% and the trading fee that is made in a target message is 100GUU, the actual reward for target `incentive_id` subjects is `100GUU * 0.80 = 80GUU`.   
+e.g. If `reward_rate` is 80% and the trading fee that is made in a target message is 100GUU, the actual reward for target `incentive_id` subjects is `100GUU * 0.80 = 80GUU`.  
 
-`message_type`   
-The specific message types which are subject to the `nftmarket-incentive`
+```protobuf
+message RewardRate {
+  string reward_type = 1;
+  unsure rate = 2;
+}
+``` 
 
-## EndBlock
+## Hooks
 
 **This logic is not finalized. Needed to be researched.**
 
-1. Update the reward amount if there are target transactions in a block and that has `incentive_id` in memo field
-1. The reward is calculated `trading fee * reward_rate`, trading fee indicates the protocol earned fee by NFT trading
+1. Update the reward amount when the according hook function is called in `nftmarket` module
+1. The reward amount is in the hook function
 1. At this moment, what it's needed to do is just update the stored data regarding reward amount for the denom of the subjects address by number
-1. Need to distinguish between success and failure of the txs before.
+1. Hooks are also called for resistration of the incentive with `incentive_id` and `NftIdentifier`.
 
-## Target message type
+The interfaces:
 
-1. There's specific message type which is subject to `nftmarket-incentive`.
-1. The criteria to choose the message type to be suject is the cash flow to the lister
-1. Current idea is MsgPayFullBid type is what that is.
-1. Possibly the message type to be subject for `nftmarket-incentive` will increase.
+```go
+type NftmarketHooks interface {
+   AfterNftListed(ctx sdk.Context, nft_id types.NftIdentifier, incentive_id string)
+   AfterNftPaid(ctx sdk.Context, fee_amount mathInt, fee_denom string)
+}
+```
 
 # Check List
 
