@@ -48,16 +48,16 @@ It's the module account that collect the protocol earned fees from x/nftmarket m
 - Those rewards are determined by the `reward_rate` of the global option of this module in `reward_setting` and the protocol earned NFT trading fee amount
 - Those rewards' calculation is `the trading fee * reward_rate`
 - Subjects register `incentive_id` and each addresses and its weights (`subject_weight_map`) to receive the reward by sending a message at first
-- Subjects have to put registerd `incentive_id` in a target message's memo field to accumulate the frontend_reward
-- Subjects can send a withdrawal message to actually receive the frontend_incentive reward
+- Subjects have to put registerd `incentive_id` in a target message's memo field to accumulate the nftmarket_reward
+- Subjects can send a withdrawal message to actually receive the nftmarket_incentive reward
 - Subjects can see how much reward is accumulated for their address
 - The reward is distributed from the module account that accumulates the NFT trading fee
 
 ## Service Flow
 
 1. Subject send a `MsgRegister` message to register `incentive_id` and addresses.
-1. At the `AfterNftListed` hook function, connect that `NftIdentifier` with the `incentive_id` by passing memo filed data through an argument.
-1. At the `AfterNftPaid` hook function, record the reward which the `incentive_id` earned by passing exact `fee_amount` and `fee_denom` in the argument of that hook function.
+1. At the `AfterNftListed` hooks function, connect that `NftIdentifier` with the `incentive_id` by passing memo filed data through an argument.
+1. At the `AfterNftPaid` hooks function, record the reward which the `incentive_id` earned by passing exact `fee_amount` and `fee_denom` in the argument of that hook function.
 1. At the `MsgWithdrawResward`, execute bank send method from the module account which accumulate fees internally.
 
 ## Register
@@ -123,8 +123,8 @@ message RewardRate {
 
 **This logic is not finalized. Needed to be researched.**
 
-1. Update the reward amount when the according hook function is called in `nftmarket` module
-1. The reward amount is in the hook function
+1. Update the reward amount when the according hooks function is called in `nftmarket` module
+1. The reward amount is in the hooks function
 1. At this moment, what it's needed to do is just update the stored data regarding reward amount for the denom of the subjects address by number
 1. Hooks are also called for resistration of the incentive with `incentive_id` and `NftIdentifier`.
 1. To pass the `incentive_id` from the memo data of `MsgListNft` requires a method to get memo data in the process of `MsgListNft` in `x/nftmarket` module.
