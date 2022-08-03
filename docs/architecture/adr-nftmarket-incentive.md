@@ -53,6 +53,13 @@ It's the module account that collect the protocol earned fees from x/nftmarket m
 - Subjects can see how much reward is accumulated for their address
 - The reward is distributed from the module account that accumulates the NFT trading fee
 
+## Service Flow
+
+1. Subject send a `MsgRegister` message to register `incentive_id` and addresses.
+1. At the `AfterNftListed` hook function, connect that `NftIdentifier` with the `incentive_id` by passing memo filed data through an argument.
+1. At the `AfterNftPaid` hook function, record the reward which the `incentive_id` earned by passing exact `fee_amount` and `fee_denom` in the argument of that hook function.
+1. At the `MsgWithdrawResward`, execute bank send method from the module account which accumulate fees internally.
+
 ## Register
 
 1. Subjects first register the addresses, weights of the proportion of the rewards and `incentive_id` to be used to identify the subject to take rewards in `incentive_store` (e.g. ununifi1a~, 0.5, ununifi1b~, 0.5 registering_name)
