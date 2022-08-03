@@ -2,31 +2,25 @@
 
 **NOTE: This is early draft.**
 
-Any frontend creator of UnUniFi NFT market and NFTFi service are the subjects to recieve Frontend Incentive reward from the NFT trading fee in many denoms which are used in NFT market.
+This module aims to provide the incentive for the parties which especially bring value to our NFTFi service like frontend service creator.   
+Fucosing on the case for the frontend service creator, any of them who creates UnUniFi NFT market and NFTFi frontend service are the subjects to recieve Nftmarket Incentive reward from the NFT trading fee in many denoms which are used in NFT market.
 
-### Joining Frontend Incentive
+## Joining Nftmarket Incentive
 
 Any subjects can send a register message with the `incentive_id` and `subject_weight_map`.   
-Or you can simply contrains the address in the target transaction's memo field.   
 
-### Getting Frontend Incentive Reward 
+## Getting Nftmarket Incentive Reward
 
-Once the `incentive_id` is registered, they insert that `incentive_id` in the target message's memo field precisely to get the reward.
-Current target message is `MsgPayFullBid`.   
-Or you can simply contrains the address in the target transaction's memo field.   
-The difference of them is whether you can set the weight for each address.   
-e.g. In memo field of MsgPayFullBid,   
-{"nftmarket-incentive": "`incentive_id`"}  
-or   
-{"nftmarket-incentive": ["address1", "address2"]}
+Once the `incentive_id` is registered, they insert that `incentive_id` in the target message's whic is `MsgListNft` memo field precisely to get the reward.
+Once the `NftIdentifer` on the market is connected with `incentive_id`, `AfterNftPaid` hook function triggers methods to reflect the reward amount for according addresses in `incentive_id`.
 
-### Withdrawing Frontend Incentive Reward
+## Withdrawing Nftmarket Incentive Reward
 
 Any registered subjects can withdraw thier reward by sending a withdrawal message if they are there.   
-They can withdraw all rewards across all denoms by sending `MsgWithdrawAllFrontendReward`.   
-In other way, they can withdraw specific denom reward by sending `MsgWithdrawSpecificFrontendReward`.
+They can withdraw all rewards across all denoms by sending `MsgWithdrawAllRewards`.   
+In other way, they can withdraw specific denom reward by sending `MsgWithdrawSpecificDenomReward`.
 
-### The Reward Mechanism
+## The Reward Mechanism
 
-All the reward comes from the NFT trading fee which is defined in protocol as glocal parameter. 
-There is nothing inflational effect or depletion.
+All the reward comes from the NFT trading fee which is defined in protocol as glocal parameter.   
+There is nothing inflational effect or depletion by rewarding subjects.
