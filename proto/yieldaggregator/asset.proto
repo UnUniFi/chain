@@ -36,9 +36,8 @@ message AssetManagementTarget {
 }
 
 message AssetManagementAccount {
-  string                         id                       = 1;
-  string                         name                     = 2;
-  repeated AssetManagementTarget asset_management_targets = 3;
+  string id   = 1;
+  string name = 2;
 }
 
 message FarmingOrder {
@@ -80,8 +79,8 @@ message Strategy {
 }
 
 message DailyPercent {
-  string                    asset_management_target_id = 1;
-  string                    rate = 2 [(gogoproto.customtype) = "Dec", (gogoproto.nullable) = false];
+  string asset_management_target_id = 1;
+  string rate = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
   google.protobuf.Timestamp date = 3 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
 }
 

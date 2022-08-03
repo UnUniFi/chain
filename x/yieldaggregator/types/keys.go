@@ -1,5 +1,7 @@
 package types
 
+import sdk "github.com/cosmos/cosmos-sdk/types"
+
 const (
 	// ModuleName defines the module name
 	ModuleName = "yieldaggregator"
@@ -24,6 +26,7 @@ func KeyPrefix(p string) []byte {
 const (
 	PrefixKeyAssetManagementAccount = "asset_management_account_"
 	PrefixKeyAssetManagementTarget  = "asset_management_target_"
+	PrefixKeyFarmingOrder           = "farming_order_"
 )
 
 func AssetManagementAccountKey(id string) []byte {
@@ -32,4 +35,8 @@ func AssetManagementAccountKey(id string) []byte {
 
 func AssetManagementTargetKey(accountId, targetId string) []byte {
 	return append(append([]byte(PrefixKeyAssetManagementTarget), accountId...), targetId...)
+}
+
+func FarmingOrderKey(sender sdk.AccAddress, orderId string) []byte {
+	return append(append([]byte(PrefixKeyFarmingOrder), sender...), orderId...)
 }
