@@ -71,8 +71,8 @@ func CreateClassId(num uint64, addr sdk.Address) string {
 	return classID
 }
 
-// SendClass does validate the contents of MsgSendClass and operate whole flow for SendClass message
-func (k Keeper) SendClass(ctx sdk.Context, msg *types.MsgSendClass) error {
+// SendClassOwnership does validate the contents of MsgSendClassOwnership and operate whole flow for SendClassOwnership message
+func (k Keeper) SendClassOwnership(ctx sdk.Context, msg *types.MsgSendClassOwnership) error {
 	if !k.nftKeeper.HasClass(ctx, msg.ClassId) {
 		return sdkerrors.Wrap(nfttypes.ErrClassNotExists, msg.ClassId)
 	}

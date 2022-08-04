@@ -7,12 +7,13 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/UnUniFi/chain/x/nftmint/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
+
+	"github.com/UnUniFi/chain/x/nftmint/types"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -30,7 +31,7 @@ func GetTxCmd() *cobra.Command {
 		CmdCreateClass(),
 		CmdMintNFT(),
 		CmdBurnNFT(),
-		CmdSendClass(),
+		CmdSendClassOwnership(),
 		CmdUpdateTokenSupplyCap(),
 		CmdUpdateBaseTokenUri(),
 	)
@@ -179,7 +180,7 @@ func CmdBurnNFT() *cobra.Command {
 	return cmd
 }
 
-func CmdSendClass() *cobra.Command {
+func CmdSendClassOwnership() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "send-class [class-id] [recipient] --from [sender]",
 		Args:  cobra.ExactArgs(2),
@@ -197,7 +198,7 @@ func CmdSendClass() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgSendClass(
+			msg := types.NewMsgSendClassOwnership(
 				sender,
 				args[0],
 				recipientAddr,

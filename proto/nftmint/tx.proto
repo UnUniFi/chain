@@ -8,7 +8,7 @@ option go_package = "github.com/UnUniFi/chain/x/nftmint/types";
 
 service Msg {
   rpc CreateClass(MsgCreateClass) returns (MsgCreateClassResponse);
-  rpc SendClass(MsgSendClass) returns (MsgSendClassResponse);
+  rpc SendClassOwnership(MsgSendClassOwnership) returns (MsgSendClassOwnershipResponse);
   rpc UpdateBaseTokenUri(MsgUpdateBaseTokenUri) returns (MsgUpdateBaseTokenUriResponse);
   rpc UpdateTokenSupplyCap(MsgUpdateTokenSupplyCap) returns (MsgUpdateTokenSupplyCapResponse);
   rpc MintNFT(MsgMintNFT) returns (MsgMintNFTResponse);
@@ -31,7 +31,7 @@ message MsgCreateClass {
 }
 message MsgCreateClassResponse {}
 
-message MsgSendClass {
+message MsgSendClassOwnership {
   string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
@@ -44,7 +44,7 @@ message MsgSendClass {
     (gogoproto.nullable) = false
   ];
 }
-message MsgSendClassResponse {}
+message MsgSendClassOwnershipResponse {}
 
 message MsgUpdateBaseTokenUri {
   string sender = 1 [

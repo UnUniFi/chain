@@ -14,7 +14,7 @@ message EventCreateClass {
   MintingPermission minting_permission = 5;
 }
 
-message EventSendClass {
+message EventSendClassOwnership {
   string sender = 1;
   string receiver = 2;
   string class_id = 3;

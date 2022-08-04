@@ -10,7 +10,7 @@ import (
 const (
 	TypeMsgCreateClass          = "create-class"
 	TypeMsgMintNFT              = "mint-nft"
-	TypeMsgSendClass            = "send-class"
+	TypeMsgSendClassOwnership   = "send-class"
 	TypeMsgUpdateBaseTokenUri   = "update-base-token-uri"
 	TypeMsgUpdateTokenSupplyCap = "update-token-supply-cap"
 	TypeMsgBurnNFT              = "burn-nft"
@@ -19,7 +19,7 @@ const (
 var (
 	_ sdk.Msg = &MsgCreateClass{}
 	_ sdk.Msg = &MsgMintNFT{}
-	_ sdk.Msg = &MsgSendClass{}
+	_ sdk.Msg = &MsgSendClassOwnership{}
 	_ sdk.Msg = &MsgUpdateBaseTokenUri{}
 	_ sdk.Msg = &MsgUpdateTokenSupplyCap{}
 	_ sdk.Msg = &MsgBurnNFT{}
@@ -111,19 +111,19 @@ func (msg MsgMintNFT) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Sender.AccAddress()}
 }
 
-func NewMsgSendClass(sender sdk.AccAddress, classID string, recipient sdk.AccAddress) *MsgSendClass {
-	return &MsgSendClass{
+func NewMsgSendClassOwnership(sender sdk.AccAddress, classID string, recipient sdk.AccAddress) *MsgSendClassOwnership {
+	return &MsgSendClassOwnership{
 		Sender:    sender.Bytes(),
 		ClassId:   classID,
 		Recipient: recipient.Bytes(),
 	}
 }
 
-func (msg MsgSendClass) Route() string { return RouterKey }
+func (msg MsgSendClassOwnership) Route() string { return RouterKey }
 
-func (msg MsgSendClass) Type() string { return TypeMsgSendClass }
+func (msg MsgSendClassOwnership) Type() string { return TypeMsgSendClassOwnership }
 
-func (msg MsgSendClass) ValidateBasic() error {
+func (msg MsgSendClassOwnership) ValidateBasic() error {
 	if msg.Sender.AccAddress().Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
@@ -136,13 +136,13 @@ func (msg MsgSendClass) ValidateBasic() error {
 }
 
 // GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgSendClass) GetSignBytes() []byte {
+func (msg MsgSendClassOwnership) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
-func (msg MsgSendClass) GetSigners() []sdk.AccAddress {
+func (msg MsgSendClassOwnership) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Sender.AccAddress()}
 }
 

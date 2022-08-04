@@ -192,8 +192,8 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 	suite.Require().Error(err)
 }
 
-// test for the SendClass relating functions
-func (suite *KeeperTestSuite) TestSendClass() {
+// test for the SendClassOwnership relating functions
+func (suite *KeeperTestSuite) TestSendClassOwnership() {
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	sender_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, sender)
 	classId := keeper.CreateClassId(sender_seq, sender)
@@ -201,12 +201,12 @@ func (suite *KeeperTestSuite) TestSendClass() {
 
 	recipient := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
-	testMsgSendClass := types.MsgSendClass{
+	testMsgSendClassOwnership := types.MsgSendClassOwnership{
 		Sender:    sender.Bytes(),
 		ClassId:   classId,
 		Recipient: recipient.Bytes(),
 	}
-	err := suite.app.NftmintKeeper.SendClass(suite.ctx, &testMsgSendClass)
+	err := suite.app.NftmintKeeper.SendClassOwnership(suite.ctx, &testMsgSendClassOwnership)
 	suite.Require().NoError(err)
 	// check if recipient address becomes new owner of class
 	classAttributes, exists := suite.app.NftmintKeeper.GetClassAttributes(suite.ctx, classId)
@@ -214,25 +214,25 @@ func (suite *KeeperTestSuite) TestSendClass() {
 	expectedOwner := recipient
 	suite.Require().Equal(expectedOwner, classAttributes.Owner.AccAddress())
 
-	// invalid sender of MsgSendclass
+	// invalid sender of MsgSendClassOwnership
 	invalidSender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
-	testMsgSendClassInvalidSender := types.MsgSendClass{
+	testMsgSendClassOwnershipInvalidSender := types.MsgSendClassOwnership{
 		Sender:    invalidSender.Bytes(), // not the owner of class
 		ClassId:   classId,
 		Recipient: recipient.Bytes(),
 	}
-	err = suite.app.NftmintKeeper.SendClass(suite.ctx, &testMsgSendClassInvalidSender)
+	err = suite.app.NftmintKeeper.SendClassOwnership(suite.ctx, &testMsgSendClassOwnershipInvalidSender)
 	suite.Require().Error(err)
 
 	// invalid class id specification
 	invalidClassId := "nonexistance"
-	testMsgCreateClassInvalidClassId := types.MsgSendClass{
+	testMsgCreateClassInvalidClassId := types.MsgSendClassOwnership{
 		Sender:    sender.Bytes(),
 		ClassId:   invalidClassId, // non-existant class
 		Recipient: recipient.Bytes(),
 	}
-	err = suite.app.NftmintKeeper.SendClass(suite.ctx, &testMsgCreateClassInvalidClassId)
+	err = suite.app.NftmintKeeper.SendClassOwnership(suite.ctx, &testMsgCreateClassInvalidClassId)
 	suite.Require().Error(err)
 }
 

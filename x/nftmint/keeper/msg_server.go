@@ -4,8 +4,9 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/UnUniFi/chain/x/nftmint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/UnUniFi/chain/x/nftmint/types"
 )
 
 type msgServer struct {
@@ -45,19 +46,19 @@ func (k msgServer) CreateClass(c context.Context, msg *types.MsgCreateClass) (*t
 	return &types.MsgCreateClassResponse{}, nil
 }
 
-func (k msgServer) SendClass(c context.Context, msg *types.MsgSendClass) (*types.MsgSendClassResponse, error) {
+func (k msgServer) SendClassOwnership(c context.Context, msg *types.MsgSendClassOwnership) (*types.MsgSendClassOwnershipResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := k.keeper.SendClass(ctx, msg); err != nil {
+	if err := k.keeper.SendClassOwnership(ctx, msg); err != nil {
 		return nil, err
 	}
 
-	ctx.EventManager().EmitTypedEvent(&types.EventSendClass{
+	ctx.EventManager().EmitTypedEvent(&types.EventSendClassOwnership{
 		Sender:   msg.Sender.AccAddress().String(),
 		ClassId:  msg.ClassId,
 		Receiver: msg.Recipient.AccAddress().String(),
 	})
-	return &types.MsgSendClassResponse{}, nil
+	return &types.MsgSendClassOwnershipResponse{}, nil
 }
 
 func (k msgServer) UpdateBaseTokenUri(c context.Context, msg *types.MsgUpdateBaseTokenUri) (*types.MsgUpdateBaseTokenUriResponse, error) {
