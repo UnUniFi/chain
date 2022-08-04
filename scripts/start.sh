@@ -1,9 +1,8 @@
-
-
-
 #!/bin/sh
 
 rm -rf ~/.ununifi
+
+set -o errexit -o nounset
 
 # Build genesis
 ununifid init --chain-id=test test
@@ -21,4 +20,4 @@ sed -E -i "s/enabled-unsafe-cors = false/enabled-unsafe-cors = true/" ~/.ununifi
 sed -E -i "s/pruning = \".*\"/pruning = \"everything\"/" ~/.ununifi/config/app.toml;
 
 # Start node
-ununifid start
+ununifid start --pruning=nothing --minimum-gas-prices=0stake
