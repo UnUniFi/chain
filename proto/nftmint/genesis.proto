@@ -1,0 +1,16 @@
+syntax = "proto3";
+package ununifi.nftmint;
+
+import "gogoproto/gogo.proto";
+import "nftmint/nftmint.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/nftmint/types";
+
+// GenesisState defines the nftmint module's genesis state.
+message GenesisState {
+  Params params = 1 [
+    (gogoproto.moretags) = "yaml:\"params\"",
+    (gogoproto.nullable) = false
+  ];
+}
+  
