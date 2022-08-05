@@ -45,6 +45,21 @@
           "Params": "PricefeedParams"
         }
       }
+    },
+    {
+      "url": "./tmp-swagger-gen/nftmint/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "NftmintParams"
+        }
+      }
+    },    {
+      "url": "./tmp-swagger-gen/nftmarket/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "NftmarketParams"
+        }
+      }
     }
   ]
 }
