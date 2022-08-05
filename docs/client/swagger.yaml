@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  title: JPYX - Legacy REST and gRPC Gateway docs
+  title: UnUniFi - Legacy REST and gRPC Gateway docs
   description: A REST interface for state queries, legacy transactions
   version: 1.0.0
 paths:
@@ -3362,6 +3362,976 @@ paths:
           type: boolean
       tags:
         - Query
+  /ununifi/nftmint/class_ids_by_name:
+    get:
+      operationId: ClassIdsByName
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              class_name_id_list:
+                type: object
+                properties:
+                  class_name:
+                    type: string
+                  class_id:
+                    type: array
+                    items:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_name
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /ununifi/nftmint/class_ids_by_owner:
+    get:
+      operationId: ClassIdsByOwner
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              owning_class_id_list:
+                type: object
+                properties:
+                  owner:
+                    type: string
+                  class_id:
+                    type: array
+                    items:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: owner
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /ununifi/nftmint/class_owner:
+    get:
+      operationId: ClassAttributes
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              class_attributes:
+                type: object
+                properties:
+                  class_id:
+                    type: string
+                  owner:
+                    type: string
+                  base_token_uri:
+                    type: string
+                  minting_permission:
+                    type: string
+                    enum:
+                      - OnlyOwner
+                      - Anyone
+                    default: OnlyOwner
+                  token_supply_cap:
+                    type: string
+                    format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_id
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /ununifi/nftmint/nft_minter:
+    get:
+      operationId: NFTMinter
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              minter:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_id
+          in: query
+          required: false
+          type: string
+        - name: nft_id
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /ununifi/nftmint/params:
+    get:
+      operationId: NftmintParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                type: object
+                properties:
+                  MaxNFTSupplyCap:
+                    type: string
+                    format: uint64
+                  MinClassNameLen:
+                    type: string
+                    format: uint64
+                  MaxClassNameLen:
+                    type: string
+                    format: uint64
+                  MinUriLen:
+                    type: string
+                    format: uint64
+                  MaxUriLen:
+                    type: string
+                    format: uint64
+                  MaxSymbolLen:
+                    type: string
+                    format: uint64
+                  MaxDescriptionLen:
+                    type: string
+                    format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /ununifi/nftmarket/bidder_bids/{bidder}:
+    get:
+      operationId: BidderBids
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              bids:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    nft_id:
+                      type: object
+                      properties:
+                        class_id:
+                          type: string
+                        nft_id:
+                          type: string
+                    bidder:
+                      type: string
+                    amount:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                    automatic_payment:
+                      type: boolean
+                    paid_amount:
+                      type: string
+                    bid_time:
+                      type: string
+                      format: date-time
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: bidder
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /ununifi/nftmarket/cdps_list:
+    get:
+      operationId: CDPsList
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /ununifi/nftmarket/listed_class/{class_id}/{nft_limit}:
+    get:
+      operationId: ListedClass
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              class_id:
+                type: string
+              name:
+                type: string
+              description:
+                type: string
+              symbol:
+                type: string
+              uri:
+                type: string
+              urihash:
+                type: string
+              nfts:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    uri:
+                      type: string
+                    uri_hash:
+                      type: string
+              nft_count:
+                type: string
+                format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_id
+          in: path
+          required: true
+          type: string
+        - name: nft_limit
+          in: path
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - Query
+  /ununifi/nftmarket/listed_classes:
+    get:
+      operationId: ListedClasses
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              classes:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    class_id:
+                      type: string
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    symbol:
+                      type: string
+                    uri:
+                      type: string
+                    urihash:
+                      type: string
+                    nfts:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          uri:
+                            type: string
+                          uri_hash:
+                            type: string
+                    nft_count:
+                      type: string
+                      format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: nft_limit
+          in: query
+          required: false
+          type: integer
+          format: int32
+      tags:
+        - Query
+  /ununifi/nftmarket/listed_nfts:
+    get:
+      operationId: ListedNfts
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              listings:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    nft_id:
+                      type: object
+                      properties:
+                        class_id:
+                          type: string
+                        nft_id:
+                          type: string
+                    owner:
+                      type: string
+                    listing_type:
+                      type: string
+                      enum:
+                        - DIRECT_ASSET_BORROW
+                        - SYNTHETIC_ASSET_CREATION
+                        - LATE_SHIPPING
+                      default: DIRECT_ASSET_BORROW
+                    state:
+                      type: string
+                      enum:
+                        - LISTING
+                        - BIDDING
+                        - SELLING_DECISION
+                        - LIQUIDATION
+                        - END_LISTING
+                        - SUCCESSFUL_BID
+                      default: LISTING
+                    bid_token:
+                      type: string
+                    min_bid:
+                      type: string
+                    bid_active_rank:
+                      type: string
+                      format: uint64
+                    started_at:
+                      type: string
+                      format: date-time
+                    end_at:
+                      type: string
+                      format: date-time
+                    full_payment_end_at:
+                      type: string
+                      format: date-time
+                    successful_bid_end_at:
+                      type: string
+                      format: date-time
+                    auto_relisted_count:
+                      type: string
+                      format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /ununifi/nftmarket/loans:
+    get:
+      operationId: Loans
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              loans:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    nft_id:
+                      type: object
+                      properties:
+                        class_id:
+                          type: string
+                        nft_id:
+                          type: string
+                    loan:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /ununifi/nftmarket/nft_bids/{class_id}/{nft_id}:
+    get:
+      operationId: NftBids
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              bids:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    nft_id:
+                      type: object
+                      properties:
+                        class_id:
+                          type: string
+                        nft_id:
+                          type: string
+                    bidder:
+                      type: string
+                    amount:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                    automatic_payment:
+                      type: boolean
+                    paid_amount:
+                      type: string
+                    bid_time:
+                      type: string
+                      format: date-time
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_id
+          in: path
+          required: true
+          type: string
+        - name: nft_id
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /ununifi/nftmarket/nft_listing/{class_id}/{nft_id}:
+    get:
+      operationId: NftListing
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              listing:
+                type: object
+                properties:
+                  nft_id:
+                    type: object
+                    properties:
+                      class_id:
+                        type: string
+                      nft_id:
+                        type: string
+                  owner:
+                    type: string
+                  listing_type:
+                    type: string
+                    enum:
+                      - DIRECT_ASSET_BORROW
+                      - SYNTHETIC_ASSET_CREATION
+                      - LATE_SHIPPING
+                    default: DIRECT_ASSET_BORROW
+                  state:
+                    type: string
+                    enum:
+                      - LISTING
+                      - BIDDING
+                      - SELLING_DECISION
+                      - LIQUIDATION
+                      - END_LISTING
+                      - SUCCESSFUL_BID
+                    default: LISTING
+                  bid_token:
+                    type: string
+                  min_bid:
+                    type: string
+                  bid_active_rank:
+                    type: string
+                    format: uint64
+                  started_at:
+                    type: string
+                    format: date-time
+                  end_at:
+                    type: string
+                    format: date-time
+                  full_payment_end_at:
+                    type: string
+                    format: date-time
+                  successful_bid_end_at:
+                    type: string
+                    format: date-time
+                  auto_relisted_count:
+                    type: string
+                    format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_id
+          in: path
+          required: true
+          type: string
+        - name: nft_id
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /ununifi/nftmarket/params:
+    get:
+      operationId: NftmarketParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                type: object
+                properties:
+                  min_staking_for_listing:
+                    type: string
+                  default_bid_active_rank:
+                    type: string
+                    format: uint64
+                  bid_tokens:
+                    type: array
+                    items:
+                      type: string
+                  auto_relisting_count_if_no_bid:
+                    type: string
+                    format: uint64
+                  nft_listing_delay_seconds:
+                    type: string
+                    format: uint64
+                  nft_listing_period_initial:
+                    type: string
+                    format: uint64
+                  nft_listing_cancel_required_seconds:
+                    type: string
+                    format: uint64
+                  nft_listing_cancel_fee_percentage:
+                    type: string
+                    format: uint64
+                  nft_listing_gap_time:
+                    type: string
+                    format: uint64
+                  bid_cancel_required_seconds:
+                    type: string
+                    format: uint64
+                  bid_token_disburse_seconds_after_cancel:
+                    type: string
+                    format: uint64
+                  nft_listing_full_payment_period:
+                    type: string
+                    format: uint64
+                  nft_listing_nft_delivery_period:
+                    type: string
+                    format: uint64
+                  nft_creator_share_percentage:
+                    type: string
+                    format: uint64
+                  market_administrator:
+                    type: string
+                  nft_listing_commission_fee:
+                    type: string
+                    format: uint64
+                  nft_listing_extend_seconds:
+                    type: string
+                    format: uint64
+                  nft_listing_period_extend_fee_per_hour:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
+
+
+                      NOTE: The amount field is an Int which implements the
+                      custom method
+
+                      signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /ununifi/nftmarket/rewards/{address}:
+    get:
+      operationId: Rewards
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              rewards:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
 definitions:
   cosmos.base.query.v1beta1.PageRequest:
     type: object
@@ -5389,3 +6359,719 @@ definitions:
                     type: string
                 active:
                   type: boolean
+  ununifi.nftmint.ClassAttributes:
+    type: object
+    properties:
+      class_id:
+        type: string
+      owner:
+        type: string
+      base_token_uri:
+        type: string
+      minting_permission:
+        type: string
+        enum:
+          - OnlyOwner
+          - Anyone
+        default: OnlyOwner
+      token_supply_cap:
+        type: string
+        format: uint64
+  ununifi.nftmint.ClassNameIdList:
+    type: object
+    properties:
+      class_name:
+        type: string
+      class_id:
+        type: array
+        items:
+          type: string
+  ununifi.nftmint.MintingPermission:
+    type: string
+    enum:
+      - OnlyOwner
+      - Anyone
+    default: OnlyOwner
+  ununifi.nftmint.OwningClassIdList:
+    type: object
+    properties:
+      owner:
+        type: string
+      class_id:
+        type: array
+        items:
+          type: string
+  ununifi.nftmint.Params:
+    type: object
+    properties:
+      MaxNFTSupplyCap:
+        type: string
+        format: uint64
+      MinClassNameLen:
+        type: string
+        format: uint64
+      MaxClassNameLen:
+        type: string
+        format: uint64
+      MinUriLen:
+        type: string
+        format: uint64
+      MaxUriLen:
+        type: string
+        format: uint64
+      MaxSymbolLen:
+        type: string
+        format: uint64
+      MaxDescriptionLen:
+        type: string
+        format: uint64
+  ununifi.nftmint.QueryClassAttributesResponse:
+    type: object
+    properties:
+      class_attributes:
+        type: object
+        properties:
+          class_id:
+            type: string
+          owner:
+            type: string
+          base_token_uri:
+            type: string
+          minting_permission:
+            type: string
+            enum:
+              - OnlyOwner
+              - Anyone
+            default: OnlyOwner
+          token_supply_cap:
+            type: string
+            format: uint64
+  ununifi.nftmint.QueryClassIdsByNameResponse:
+    type: object
+    properties:
+      class_name_id_list:
+        type: object
+        properties:
+          class_name:
+            type: string
+          class_id:
+            type: array
+            items:
+              type: string
+  ununifi.nftmint.QueryClassIdsByOwnerResponse:
+    type: object
+    properties:
+      owning_class_id_list:
+        type: object
+        properties:
+          owner:
+            type: string
+          class_id:
+            type: array
+            items:
+              type: string
+  ununifi.nftmint.QueryNFTMinterResponse:
+    type: object
+    properties:
+      minter:
+        type: string
+  ununifi.nftmint.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        type: object
+        properties:
+          MaxNFTSupplyCap:
+            type: string
+            format: uint64
+          MinClassNameLen:
+            type: string
+            format: uint64
+          MaxClassNameLen:
+            type: string
+            format: uint64
+          MinUriLen:
+            type: string
+            format: uint64
+          MaxUriLen:
+            type: string
+            format: uint64
+          MaxSymbolLen:
+            type: string
+            format: uint64
+          MaxDescriptionLen:
+            type: string
+            format: uint64
+  ununifi.nftmarket.ListedNft:
+    type: object
+    properties:
+      id:
+        type: string
+      uri:
+        type: string
+      uri_hash:
+        type: string
+  ununifi.nftmarket.ListingState:
+    type: string
+    enum:
+      - LISTING
+      - BIDDING
+      - SELLING_DECISION
+      - LIQUIDATION
+      - END_LISTING
+      - SUCCESSFUL_BID
+    default: LISTING
+  ununifi.nftmarket.ListingType:
+    type: string
+    enum:
+      - DIRECT_ASSET_BORROW
+      - SYNTHETIC_ASSET_CREATION
+      - LATE_SHIPPING
+    default: DIRECT_ASSET_BORROW
+  ununifi.nftmarket.Loan:
+    type: object
+    properties:
+      nft_id:
+        type: object
+        properties:
+          class_id:
+            type: string
+          nft_id:
+            type: string
+      loan:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+  ununifi.nftmarket.NftBid:
+    type: object
+    properties:
+      nft_id:
+        type: object
+        properties:
+          class_id:
+            type: string
+          nft_id:
+            type: string
+      bidder:
+        type: string
+      amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      automatic_payment:
+        type: boolean
+      paid_amount:
+        type: string
+      bid_time:
+        type: string
+        format: date-time
+  ununifi.nftmarket.NftIdentifier:
+    type: object
+    properties:
+      class_id:
+        type: string
+      nft_id:
+        type: string
+  ununifi.nftmarket.NftListing:
+    type: object
+    properties:
+      nft_id:
+        type: object
+        properties:
+          class_id:
+            type: string
+          nft_id:
+            type: string
+      owner:
+        type: string
+      listing_type:
+        type: string
+        enum:
+          - DIRECT_ASSET_BORROW
+          - SYNTHETIC_ASSET_CREATION
+          - LATE_SHIPPING
+        default: DIRECT_ASSET_BORROW
+      state:
+        type: string
+        enum:
+          - LISTING
+          - BIDDING
+          - SELLING_DECISION
+          - LIQUIDATION
+          - END_LISTING
+          - SUCCESSFUL_BID
+        default: LISTING
+      bid_token:
+        type: string
+      min_bid:
+        type: string
+      bid_active_rank:
+        type: string
+        format: uint64
+      started_at:
+        type: string
+        format: date-time
+      end_at:
+        type: string
+        format: date-time
+      full_payment_end_at:
+        type: string
+        format: date-time
+      successful_bid_end_at:
+        type: string
+        format: date-time
+      auto_relisted_count:
+        type: string
+        format: uint64
+  ununifi.nftmarket.Params:
+    type: object
+    properties:
+      min_staking_for_listing:
+        type: string
+      default_bid_active_rank:
+        type: string
+        format: uint64
+      bid_tokens:
+        type: array
+        items:
+          type: string
+      auto_relisting_count_if_no_bid:
+        type: string
+        format: uint64
+      nft_listing_delay_seconds:
+        type: string
+        format: uint64
+      nft_listing_period_initial:
+        type: string
+        format: uint64
+      nft_listing_cancel_required_seconds:
+        type: string
+        format: uint64
+      nft_listing_cancel_fee_percentage:
+        type: string
+        format: uint64
+      nft_listing_gap_time:
+        type: string
+        format: uint64
+      bid_cancel_required_seconds:
+        type: string
+        format: uint64
+      bid_token_disburse_seconds_after_cancel:
+        type: string
+        format: uint64
+      nft_listing_full_payment_period:
+        type: string
+        format: uint64
+      nft_listing_nft_delivery_period:
+        type: string
+        format: uint64
+      nft_creator_share_percentage:
+        type: string
+        format: uint64
+      market_administrator:
+        type: string
+      nft_listing_commission_fee:
+        type: string
+        format: uint64
+      nft_listing_extend_seconds:
+        type: string
+        format: uint64
+      nft_listing_period_extend_fee_per_hour:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+  ununifi.nftmarket.QueryBidderBidsResponse:
+    type: object
+    properties:
+      bids:
+        type: array
+        items:
+          type: object
+          properties:
+            nft_id:
+              type: object
+              properties:
+                class_id:
+                  type: string
+                nft_id:
+                  type: string
+            bidder:
+              type: string
+            amount:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+            automatic_payment:
+              type: boolean
+            paid_amount:
+              type: string
+            bid_time:
+              type: string
+              format: date-time
+  ununifi.nftmarket.QueryCDPsListResponse:
+    type: object
+  ununifi.nftmarket.QueryListedClassResponse:
+    type: object
+    properties:
+      class_id:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
+      symbol:
+        type: string
+      uri:
+        type: string
+      urihash:
+        type: string
+      nfts:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+            uri:
+              type: string
+            uri_hash:
+              type: string
+      nft_count:
+        type: string
+        format: uint64
+  ununifi.nftmarket.QueryListedClassesResponse:
+    type: object
+    properties:
+      classes:
+        type: array
+        items:
+          type: object
+          properties:
+            class_id:
+              type: string
+            name:
+              type: string
+            description:
+              type: string
+            symbol:
+              type: string
+            uri:
+              type: string
+            urihash:
+              type: string
+            nfts:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  uri:
+                    type: string
+                  uri_hash:
+                    type: string
+            nft_count:
+              type: string
+              format: uint64
+  ununifi.nftmarket.QueryListedNftsResponse:
+    type: object
+    properties:
+      listings:
+        type: array
+        items:
+          type: object
+          properties:
+            nft_id:
+              type: object
+              properties:
+                class_id:
+                  type: string
+                nft_id:
+                  type: string
+            owner:
+              type: string
+            listing_type:
+              type: string
+              enum:
+                - DIRECT_ASSET_BORROW
+                - SYNTHETIC_ASSET_CREATION
+                - LATE_SHIPPING
+              default: DIRECT_ASSET_BORROW
+            state:
+              type: string
+              enum:
+                - LISTING
+                - BIDDING
+                - SELLING_DECISION
+                - LIQUIDATION
+                - END_LISTING
+                - SUCCESSFUL_BID
+              default: LISTING
+            bid_token:
+              type: string
+            min_bid:
+              type: string
+            bid_active_rank:
+              type: string
+              format: uint64
+            started_at:
+              type: string
+              format: date-time
+            end_at:
+              type: string
+              format: date-time
+            full_payment_end_at:
+              type: string
+              format: date-time
+            successful_bid_end_at:
+              type: string
+              format: date-time
+            auto_relisted_count:
+              type: string
+              format: uint64
+  ununifi.nftmarket.QueryLoansResponse:
+    type: object
+    properties:
+      loans:
+        type: array
+        items:
+          type: object
+          properties:
+            nft_id:
+              type: object
+              properties:
+                class_id:
+                  type: string
+                nft_id:
+                  type: string
+            loan:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+  ununifi.nftmarket.QueryNftBidsResponse:
+    type: object
+    properties:
+      bids:
+        type: array
+        items:
+          type: object
+          properties:
+            nft_id:
+              type: object
+              properties:
+                class_id:
+                  type: string
+                nft_id:
+                  type: string
+            bidder:
+              type: string
+            amount:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+            automatic_payment:
+              type: boolean
+            paid_amount:
+              type: string
+            bid_time:
+              type: string
+              format: date-time
+  ununifi.nftmarket.QueryNftListingResponse:
+    type: object
+    properties:
+      listing:
+        type: object
+        properties:
+          nft_id:
+            type: object
+            properties:
+              class_id:
+                type: string
+              nft_id:
+                type: string
+          owner:
+            type: string
+          listing_type:
+            type: string
+            enum:
+              - DIRECT_ASSET_BORROW
+              - SYNTHETIC_ASSET_CREATION
+              - LATE_SHIPPING
+            default: DIRECT_ASSET_BORROW
+          state:
+            type: string
+            enum:
+              - LISTING
+              - BIDDING
+              - SELLING_DECISION
+              - LIQUIDATION
+              - END_LISTING
+              - SUCCESSFUL_BID
+            default: LISTING
+          bid_token:
+            type: string
+          min_bid:
+            type: string
+          bid_active_rank:
+            type: string
+            format: uint64
+          started_at:
+            type: string
+            format: date-time
+          end_at:
+            type: string
+            format: date-time
+          full_payment_end_at:
+            type: string
+            format: date-time
+          successful_bid_end_at:
+            type: string
+            format: date-time
+          auto_relisted_count:
+            type: string
+            format: uint64
+  ununifi.nftmarket.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        type: object
+        properties:
+          min_staking_for_listing:
+            type: string
+          default_bid_active_rank:
+            type: string
+            format: uint64
+          bid_tokens:
+            type: array
+            items:
+              type: string
+          auto_relisting_count_if_no_bid:
+            type: string
+            format: uint64
+          nft_listing_delay_seconds:
+            type: string
+            format: uint64
+          nft_listing_period_initial:
+            type: string
+            format: uint64
+          nft_listing_cancel_required_seconds:
+            type: string
+            format: uint64
+          nft_listing_cancel_fee_percentage:
+            type: string
+            format: uint64
+          nft_listing_gap_time:
+            type: string
+            format: uint64
+          bid_cancel_required_seconds:
+            type: string
+            format: uint64
+          bid_token_disburse_seconds_after_cancel:
+            type: string
+            format: uint64
+          nft_listing_full_payment_period:
+            type: string
+            format: uint64
+          nft_listing_nft_delivery_period:
+            type: string
+            format: uint64
+          nft_creator_share_percentage:
+            type: string
+            format: uint64
+          market_administrator:
+            type: string
+          nft_listing_commission_fee:
+            type: string
+            format: uint64
+          nft_listing_extend_seconds:
+            type: string
+            format: uint64
+          nft_listing_period_extend_fee_per_hour:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+  ununifi.nftmarket.QueryRewardsResponse:
+    type: object
+    properties:
+      rewards:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
