@@ -3362,7 +3362,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /ununifi/nftmint/class_ids_by_name:
+  /ununifi/nftmint/class_ids_by_name/{class_name}:
     get:
       operationId: ClassIdsByName
       responses:
@@ -3404,12 +3404,12 @@ paths:
                       format: byte
       parameters:
         - name: class_name
-          in: query
-          required: false
+          in: path
+          required: true
           type: string
       tags:
         - Query
-  /ununifi/nftmint/class_ids_by_owner:
+  /ununifi/nftmint/class_ids_by_owner/{owner}:
     get:
       operationId: ClassIdsByOwner
       responses:
@@ -3451,12 +3451,12 @@ paths:
                       format: byte
       parameters:
         - name: owner
-          in: query
-          required: false
+          in: path
+          required: true
           type: string
       tags:
         - Query
-  /ununifi/nftmint/class_owner:
+  /ununifi/nftmint/class_owner/{class_id}:
     get:
       operationId: ClassAttributes
       responses:
@@ -3507,12 +3507,12 @@ paths:
                       format: byte
       parameters:
         - name: class_id
-          in: query
-          required: false
+          in: path
+          required: true
           type: string
       tags:
         - Query
-  /ununifi/nftmint/nft_minter:
+  /ununifi/nftmint/nft_minter/{class_id}/{nft_id}:
     get:
       operationId: NFTMinter
       responses:
@@ -3547,12 +3547,12 @@ paths:
                       format: byte
       parameters:
         - name: class_id
-          in: query
-          required: false
+          in: path
+          required: true
           type: string
         - name: nft_id
-          in: query
-          required: false
+          in: path
+          required: true
           type: string
       tags:
         - Query
