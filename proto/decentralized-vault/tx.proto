@@ -1,0 +1,13 @@
+syntax = "proto3";
+package ununifi.decentralizedvault;
+
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/UnUniFi/chain/x/decentralized-vault/types";
+
+// Msg defines the Msg service.
+service Msg {
+  // this line is used by starport scaffolding # proto/tx/rpc
+}
+
+// this line is used by starport scaffolding # proto/tx/message

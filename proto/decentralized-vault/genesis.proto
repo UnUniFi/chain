@@ -1,0 +1,14 @@
+syntax = "proto3";
+package ununifi.decentralizedvault;
+
+import "gogoproto/gogo.proto";
+import "decentralized-vault/params.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/UnUniFi/chain/x/decentralized-vault/types";
+
+// GenesisState defines the decentralizedvault module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+}
