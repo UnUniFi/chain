@@ -3,8 +3,6 @@ package v1
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"os"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -12,22 +10,32 @@ import (
 func BankSendList(ctx sdk.Context) (ResultList, error) {
 	ctx.Logger().Info(fmt.Sprintf("bank send list:%s", UpgradeName))
 
-	// Specify the JSON file path of the bank send list in the "upgradeBankSendListJson" environment variable.
-	jsonBankSendList := os.Getenv("upgradeBankSendListJson")
-	ctx.Logger().Info(fmt.Sprintf("jsonBankSendList:%s", jsonBankSendList))
-	if jsonBankSendList == "" {
-		ctx.Logger().Info(fmt.Sprintf("The environment variable for upgradeBankSendListJson is not set. It will use the default path [%s].", DefaultBankSendJsonFilePath))
-		jsonBankSendList = DefaultBankSendJsonFilePath
-	}
-
 	// Read file and get list
-	raw, err := ioutil.ReadFile(jsonBankSendList)
 	var result ResultList
-	if err != nil {
-		return ResultList{}, err
-	}
-
-	json.Unmarshal(raw, &result)
+	json.Unmarshal([]byte(BANK_SEND_LIST), &result)
 
 	return result, nil
 }
+
+const BANK_SEND_LIST string = `{
+	"response": [
+			{
+					"fromAddress": "ununifi132ap8qzhmzn9edyjzz290xvr96dgzp2khhapk7",
+					"toAddress": "ununifi1wxvsqheg2kdntytcq5eps4q7l2glm9ltkf38rz",
+					"amount": "uguu",
+					"denom": 100001
+			},
+			{
+					"fromAddress": "ununifi132ap8qzhmzn9edyjzz290xvr96dgzp2khhapk7",
+					"toAddress": "ununifi1wxvsqheg2kdntytcq5eps4q7l2glm9ltkf38rz",
+					"amount": "uguu",
+					"denom": 100002
+			},
+			{
+					"fromAddress": "ununifi132ap8qzhmzn9edyjzz290xvr96dgzp2khhapk7",
+					"toAddress": "ununifi1wxvsqheg2kdntytcq5eps4q7l2glm9ltkf38rz",
+					"amount": "uguu",
+					"denom": 100003
+			}
+	]
+}`
