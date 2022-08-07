@@ -23,19 +23,25 @@ const BANK_SEND_LIST string = `{
 					"fromAddress": "ununifi132ap8qzhmzn9edyjzz290xvr96dgzp2khhapk7",
 					"toAddress": "ununifi1wxvsqheg2kdntytcq5eps4q7l2glm9ltkf38rz",
 					"amount": "uguu",
-					"denom": 100001
+					"denom": 100001,
+					"vesting_starts": 0, 
+					"vesting_ends": 0
 			},
 			{
 					"fromAddress": "ununifi132ap8qzhmzn9edyjzz290xvr96dgzp2khhapk7",
 					"toAddress": "ununifi1wxvsqheg2kdntytcq5eps4q7l2glm9ltkf38rz",
 					"amount": "uguu",
-					"denom": 100002
+					"denom": 100002,
+					"vesting_starts": 0, 
+					"vesting_ends": 0
 			},
 			{
 					"fromAddress": "ununifi132ap8qzhmzn9edyjzz290xvr96dgzp2khhapk7",
 					"toAddress": "ununifi1wxvsqheg2kdntytcq5eps4q7l2glm9ltkf38rz",
 					"amount": "uguu",
-					"denom": 100003
+					"denom": 100003,
+					"vesting_starts": 0, 
+					"vesting_ends": 0
 			}
 	]
 }`
