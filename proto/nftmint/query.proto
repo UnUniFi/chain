@@ -12,16 +12,16 @@ service Query {
     option (google.api.http).get = "/ununifi/nftmint/params";
   }
   rpc ClassAttributes(QueryClassAttributesRequest) returns (QueryClassAttributesResponse) {
-    option (google.api.http).get = "/ununifi/nftmint/class_owner";
+    option (google.api.http).get = "/ununifi/nftmint/class_owner/{class_id}";
   }
   rpc NFTMinter(QueryNFTMinterRequest) returns (QueryNFTMinterResponse) {
-    option (google.api.http).get = "/ununifi/nftmint/nft_minter";
+    option (google.api.http).get = "/ununifi/nftmint/nft_minter/{class_id}/{nft_id}";
   }
   rpc ClassIdsByName(QueryClassIdsByNameRequest) returns (QueryClassIdsByNameResponse) {
-    option (google.api.http).get = "/ununifi/nftmint/class_ids_by_name";
+    option (google.api.http).get = "/ununifi/nftmint/class_ids_by_name/{class_name}";
   }
   rpc ClassIdsByOwner(QueryClassIdsByOwnerRequest) returns (QueryClassIdsByOwnerResponse) {
-    option (google.api.http).get = "/ununifi/nftmint/class_ids_by_owner";
+    option (google.api.http).get = "/ununifi/nftmint/class_ids_by_owner/{owner}";
   }
 }
 
