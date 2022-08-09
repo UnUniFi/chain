@@ -68,10 +68,30 @@ func (k Keeper) GetAllAssetManagementAccounts(ctx sdk.Context) []types.AssetMana
 
 // deposit
 func (k Keeper) Deposit(ctx sdk.Context, msg *types.MsgDeposit) error {
+	acc := k.GetAssetManagementAccount(ctx, msg.AssetManagementAccountId)
+	if acc.Id == "" {
+		return types.ErrAssetManagementAccountDoesNotExists
+	}
+
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, msg.FromAddress.AccAddress(), types.ModuleName, msg.Amount)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 // withdraw
 func (k Keeper) Withdraw(ctx sdk.Context, msg *types.MsgWithdraw) error {
+	acc := k.GetAssetManagementAccount(ctx, msg.AssetManagementAccountId)
+	if acc.Id == "" {
+		return types.ErrAssetManagementAccountDoesNotExists
+	}
+
+	err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, msg.FromAddress.AccAddress(), msg.Amount)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

@@ -7,8 +7,6 @@ import (
 	"os"
 	"path/filepath"
 
-	ante "github.com/UnUniFi/chain/app/ante"
-	appparams "github.com/UnUniFi/chain/app/params"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
@@ -83,6 +81,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 
+	ante "github.com/UnUniFi/chain/app/ante"
+	appparams "github.com/UnUniFi/chain/app/params"
+
 	// "github.com/cosmos/ibc-go/v3/modules/apps/transfer"
 	// ibctransferkeeper "github.com/cosmos/ibc-go/v3/modules/apps/transfer/keeper"
 	// ibctransfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
@@ -121,6 +122,9 @@ import (
 	"github.com/UnUniFi/chain/x/ununifidist"
 	ununifidistkeeper "github.com/UnUniFi/chain/x/ununifidist/keeper"
 	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
+	"github.com/UnUniFi/chain/x/yieldaggregator"
+	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
+	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
 	// "github.com/CosmWasm/wasmd/x/wasm"
 	// wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 )
@@ -210,6 +214,7 @@ var (
 		pricefeed.AppModuleBasic{},
 		ununifidist.AppModuleBasic{},
 		incentive.AppModuleBasic{},
+		yieldaggregator.AppModuleBasic{},
 		// wasm.AppModuleBasic{},
 	)
 
@@ -298,11 +303,12 @@ type App struct {
 	// ScopedWasmKeeper     capabilitykeeper.ScopedKeeper
 
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
-	auctionKeeper     auctionkeeper.Keeper
-	cdpKeeper         cdpkeeper.Keeper
-	incentiveKeeper   incentivekeeper.Keeper
-	ununifidistKeeper ununifidistkeeper.Keeper
-	pricefeedKeeper   pricefeedkeeper.Keeper
+	auctionKeeper         auctionkeeper.Keeper
+	cdpKeeper             cdpkeeper.Keeper
+	incentiveKeeper       incentivekeeper.Keeper
+	yieldaggregatorKeeper yieldaggregatorkeeper.Keeper
+	ununifidistKeeper     ununifidistkeeper.Keeper
+	pricefeedKeeper       pricefeedkeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -351,6 +357,7 @@ func NewApp(
 		capabilitytypes.StoreKey, feegrant.StoreKey, authzkeeper.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 		auctiontypes.StoreKey, cdptypes.StoreKey, incentivetypes.StoreKey,
+		yieldaggregatortypes.StoreKey,
 		ununifidisttypes.StoreKey, pricefeedtypes.StoreKey,
 		// wasm.StoreKey,
 		nftkeeper.StoreKey,
@@ -551,6 +558,13 @@ func NewApp(
 
 	app.cdpKeeper = *cdpKeeper.SetHooks(cdptypes.NewMultiCdpHooks(app.incentiveKeeper.Hooks()))
 
+	app.yieldaggregatorKeeper = *yieldaggregatorkeeper.NewKeeper(
+		appCodec,
+		keys[yieldaggregatortypes.StoreKey],
+		app.GetSubspace(yieldaggregatortypes.ModuleName),
+		app.BankKeeper,
+	)
+
 	// wasmDir := filepath.Join(homePath, "wasm")
 	// wasmConfig, err := wasm.ReadWasmConfig(appOpts)
 	// if err != nil {
@@ -638,6 +652,7 @@ func NewApp(
 		incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
 		ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
 		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
+		yieldaggregator.NewAppModule(appCodec, app.yieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
 		// wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
 	)
 
@@ -670,6 +685,7 @@ func NewApp(
 		cdptypes.ModuleName,
 		incentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
+		yieldaggregatortypes.ModuleName,
 
 		// ibchost.ModuleName,
 		// ibctransfertypes.ModuleName,
@@ -701,6 +717,7 @@ func NewApp(
 		cdptypes.ModuleName,
 		incentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
+		yieldaggregatortypes.ModuleName,
 
 		// ibchost.ModuleName,
 		// ibctransfertypes.ModuleName,
@@ -740,6 +757,7 @@ func NewApp(
 		cdptypes.ModuleName,
 		incentivetypes.ModuleName,
 		ununifidisttypes.ModuleName,
+		yieldaggregatortypes.ModuleName,
 
 		// ibchost.ModuleName,
 		// ibctransfertypes.ModuleName,
@@ -770,6 +788,7 @@ func NewApp(
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
+		yieldaggregator.NewAppModule(appCodec, app.yieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
 		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
 		// wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
 		// ibc.NewAppModule(app.IBCKeeper),
@@ -1024,6 +1043,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(incentivetypes.ModuleName)
 	paramsKeeper.Subspace(ununifidisttypes.ModuleName)
 	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
+	paramsKeeper.Subspace(yieldaggregatortypes.ModuleName)
 	// paramsKeeper.Subspace(wasm.ModuleName)
 	return paramsKeeper
 }

@@ -102,5 +102,15 @@ func (k Keeper) InactivateFarmingOrder(ctx sdk.Context, addr sdk.AccAddress, far
 }
 
 func (k Keeper) ExecuteFarmingOrders(ctx sdk.Context, addr sdk.AccAddress) {
-	// TODO: implement
+	// TODO: create farming units from farming orders execution
+	// TODO: reduce users' owned tokens
+	// TODO: allocate tokens to farming unit
+
+	orders := k.GetFarmingOrdersOfAddress(ctx, addr)
+	for _, order := range orders {
+		// order.
+	}
+
+	// AssetManagementTarget
+	targets := k.GetAssetManagementTargetsOfAccount(ctx, addr)
 }

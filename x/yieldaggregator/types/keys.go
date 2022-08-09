@@ -14,9 +14,6 @@ const (
 
 	// QuerierRoute defines the module's query routing key
 	QuerierRoute = ModuleName
-
-	// MemStoreKey defines the in-memory store key
-	MemStoreKey = "mem_yieldaggregator"
 )
 
 func KeyPrefix(p string) []byte {
@@ -27,6 +24,7 @@ const (
 	PrefixKeyAssetManagementAccount = "asset_management_account_"
 	PrefixKeyAssetManagementTarget  = "asset_management_target_"
 	PrefixKeyFarmingOrder           = "farming_order_"
+	PrefixKeyFarmingUnit            = "farming_unit_"
 )
 
 func AssetManagementAccountKey(id string) []byte {
@@ -39,4 +37,8 @@ func AssetManagementTargetKey(accountId, targetId string) []byte {
 
 func FarmingOrderKey(sender sdk.AccAddress, orderId string) []byte {
 	return append(append([]byte(PrefixKeyFarmingOrder), sender...), orderId...)
+}
+
+func FarmingUnitKey(sender sdk.AccAddress, unitId string) []byte {
+	return append(append([]byte(PrefixKeyFarmingUnit), sender...), unitId...)
 }
