@@ -1,4 +1,4 @@
-# ADR: nftmarket-incentive Module
+# ADR: ecosystem-incentive Module
 
 ## Status
 
@@ -25,7 +25,7 @@ The type of incentive for the subject.
 We first have `frontend`.   
 
 `reward_rate`   
-The rate to determine the percentage for the `nftmarket-incentive` reward out of the total trading fee.    
+The rate to determine the percentage for the `ecosystem-incentive` reward out of the total trading fee.    
 This value is connected to the `incentive_type`.    
 e.g.  
 `frontend` - `0.8`   
@@ -35,14 +35,14 @@ The token ticker like GUU, BTC etc.
 In UnUniFi NFT market, some tokens other than GUU (native UnUniFi token) can be used to purchase NFTs. So the rewards are accumuleted in some denoms.
 
 `reward_payer`   
-The account to pay the reward for `nftmarket-incentive` protocol.   
+The account to pay the reward for `ecosystem-incentive` protocol.   
 It's the module account that collect the protocol earned fees from x/nftmarket module.
 
 # Basic specs
 
 ## Incentive system
 
-- nftmarket-incentive reward comes from the fee that is made in `nftmarket` module
+- ecosystem-incentive reward comes from the fee that is made in `nftmarket` module
 - Those rewards have some denoms which are used in nftmarket
 - Those rewards are accumulated at the timing hooks are called
 - Those rewards are determined by the `reward_rate` of the global option of this module in `reward_setting` and the protocol earned NFT trading fee amount
@@ -72,11 +72,11 @@ It's the module account that collect the protocol earned fees from x/nftmarket m
 
 1. If the `incentive_id` is put into the specified field (currently considering memo field) for the target messages like MsgPayAuctionFee, the `reward_rate` of the consumed trading fee which is made in that transaction (not tx fee) is accumulated to the subjects
 1. The reward accumulation is exucuted at the timing hooks are called
-1. The reward is stored as just data in the `nftmarket-incentive` module with the subject address as key (not for each `incentive_id`)
+1. The reward is stored as just data in the `ecosystem-incentive` module with the subject address as key (not for each `incentive_id`)
 
 ## Withdrawal
 
-1. Subject account of nftmarket-incentive can withdraw those accumulated rewards
+1. Subject account of ecosystem-incentive can withdraw those accumulated rewards
 1. Subject account can withdraw all accumulated rewards for all denom at once
 1. Subject account can withdraw accumulated reward of the specific denom
 1. If the sender module account doesn't have enough funds for the withdrawal, the witthdrawal tx fails with emitting the specific event with the reason.

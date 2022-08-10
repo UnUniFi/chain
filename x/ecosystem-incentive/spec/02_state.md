@@ -16,7 +16,7 @@ message IncentiveStore {
 
 ## RewardTable
 
-RewardTable is the record of the rewards for the subject of the `nftmarket-incentive`.
+RewardTable is the record of the rewards for the subject of the `ecosystem-incentive`.
 
 ```protobuf
 message Reward {

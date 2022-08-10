@@ -15,7 +15,7 @@ type NftmarketHooks interface {
 
 ## AfterNftListed
 
-This hooks function is called for the resistration for the `nftmarket-incentive` with the `incentive_id` and `NftIdentifiler` if the `incentive_id` is already registered on `nftmarket-incentive` module by sending `MsgRegister` message.   
+This hooks function is called for the resistration for the `ecosystem-incentive` with the `incentive_id` and `NftIdentifiler` if the `incentive_id` is already registered on `ecosystem-incentive` module by sending `MsgRegister` message.   
 To pass the `incentive_id` from the memo data of `MsgListNft` requires a method to get memo data in the process of `MsgListNft` in `x/nftmarket` module.
 
 ## AfterNftPaid

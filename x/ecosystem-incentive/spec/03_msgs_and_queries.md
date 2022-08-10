@@ -4,7 +4,7 @@
 
 ## Messages
 
-All messages of `nftmarket-incentive`.
+All messages of `ecosystem-incentive`.
 
 ### Register
 
@@ -53,7 +53,7 @@ message MsgWithdrawSpecificDenomReward {
 
 ## Queries
 
-All queries of `nftmarket-incentive`.
+All queries of `ecosystem-incentive`.
 
 ### IncentiveStore (?)
 
