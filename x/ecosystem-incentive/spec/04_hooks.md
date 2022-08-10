@@ -4,7 +4,7 @@
 
 All rewards accumulation are executed when the according hooks function is called.   
 
-The hooks functions interfaces in x/nftmarket module:
+The example hooks functions interfaces in x/nftmarket module:
 
 ```go
 type NftmarketHooks interface {

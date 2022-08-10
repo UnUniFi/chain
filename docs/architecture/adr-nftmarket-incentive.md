@@ -88,7 +88,7 @@ It's the module account that collect the protocol earned fees from x/nftmarket m
 
 ### The way to achieve distribution
 
-1. Actually sending corresponding coin for reward in a process using SendCoinFromModuleAccount 
+1. Actually sending corresponding coin for reward in a process using SendCoinFromModuleAccount
 1. (Or possibly in a process, mint corresponding coin for reward for the subject address and just subtract corresponding coin from the subject module account)
 
 ## Query
@@ -117,7 +117,7 @@ message RewardRate {
   string reward_type = 1;
   unsure rate = 2;
 }
-``` 
+```
 
 ## Hooks
 
