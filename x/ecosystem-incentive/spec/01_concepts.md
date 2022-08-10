@@ -2,7 +2,7 @@
 
 **NOTE: This is early draft.**
 
-This module aims to provide the incentive for the parties which especially bring value to our NFTFi service like frontend service creator.   
+This module aims to provide the incentive for the parties which especially bring value to our ecosystem like frontend service creator.   
 Fucosing on the case for the frontend service creator, any of them who creates UnUniFi NFT market and NFTFi frontend service are the subjects to recieve Nftmarket Incentive reward from the NFT trading fee in many denoms which are used in NFT market.
 
 ## Joining Nftmarket Incentive
