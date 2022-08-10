@@ -21,9 +21,8 @@ service Msg {
 message MsgDeposit {
   string from_address = 1
       [(gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress", (gogoproto.nullable) = false];
-  string   asset_management_account_id             = 2;
-  repeated cosmos.base.v1beta1.Coin amount         = 3 [(gogoproto.nullable) = false];
-  bool                              execute_orders = 4;
+  repeated cosmos.base.v1beta1.Coin amount         = 2 [(gogoproto.nullable) = false];
+  bool                              execute_orders = 3;
 }
 
 message MsgDepositResponse {}

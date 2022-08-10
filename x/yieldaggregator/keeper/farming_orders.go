@@ -103,14 +103,36 @@ func (k Keeper) InactivateFarmingOrder(ctx sdk.Context, addr sdk.AccAddress, far
 
 func (k Keeper) ExecuteFarmingOrders(ctx sdk.Context, addr sdk.AccAddress) {
 	// TODO: create farming units from farming orders execution
-	// TODO: reduce users' owned tokens
 	// TODO: allocate tokens to farming unit
 
+	overallRatio := uint32(0)
 	orders := k.GetFarmingOrdersOfAddress(ctx, addr)
 	for _, order := range orders {
-		// order.
+		overallRatio = order.OverallRatio
 	}
 
-	// AssetManagementTarget
-	targets := k.GetAssetManagementTargetsOfAccount(ctx, addr)
+	deposit := k.GetUserDeposit(ctx, addr)
+	for _, order := range orders {
+		orderAlloc := sdk.Coins{}
+		for _, coin := range deposit {
+			orderAlloc = orderAlloc.Add(sdk.NewCoin(coin.Denom, coin.Amount.Mul(sdk.NewInt(int64(order.OverallRatio))).Quo(sdk.NewInt(int64(overallRatio)))))
+		}
+
+		// TODO: move tokens to asset management targets based on strategy
+		targets := k.GetAssetManagementTargetsOfAccount(ctx, addr)
+
+		// TODO: set correct fields for farming unit
+		k.SetFarmingUnit(ctx, types.FarmingUnit{
+			Id:               "",
+			AccountId:        "",
+			TargetId:         "",
+			Amount:           orderAlloc,
+			FarmingStartTime: ctx.BlockTime().String(),
+			UnbondingTime:    "",
+			Owner:            addr.String(),
+		})
+	}
+
+	// reduce user owned tokens since its allocated to farming units
+	k.DeleteUserDeposit(ctx, addr)
 }

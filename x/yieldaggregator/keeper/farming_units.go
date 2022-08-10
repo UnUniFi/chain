@@ -22,6 +22,7 @@ func (k Keeper) AddFarmingUnit(ctx sdk.Context, obj types.FarmingUnit) error {
 
 func (k Keeper) StopFarmingUnit(ctx sdk.Context, obj types.FarmingUnit) error {
 	// TODO: this should perform action to yield farm target
+	return nil
 }
 
 func (k Keeper) GetFarmingUnitsOfAddress(ctx sdk.Context, addr sdk.AccAddress) []types.FarmingUnit {

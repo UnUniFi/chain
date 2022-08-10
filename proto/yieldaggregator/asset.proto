@@ -53,9 +53,15 @@ message FarmingOrder {
 }
 
 message UserInfo {
-  repeated cosmos.base.v1beta1.Coin amount         = 1 [(gogoproto.nullable) = false];
-  repeated FarmingOrder             farming_orders = 2;
-  uint64                            farmed_counter = 3;
+  string   user                                    = 1;
+  repeated cosmos.base.v1beta1.Coin amount         = 2 [(gogoproto.nullable) = false];
+  repeated FarmingOrder             farming_orders = 3;
+  uint64                            farmed_counter = 4;
+}
+
+message UserDeposit {
+  string   user                            = 1;
+  repeated cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
 }
 
 message FarmingUnit {
