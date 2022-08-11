@@ -43,7 +43,7 @@ message AssetManagementAccount {
 message FarmingOrder {
   string                    id                 = 1;
   string                    from_address       = 2;
-  google.protobuf.Any       strategy           = 3;
+  Strategy                  strategy           = 3;
   google.protobuf.Duration  max_unbonding_time = 4 [(gogoproto.nullable) = true, (gogoproto.stdduration) = true];
   uint32                    overall_ratio      = 5;
   string                    min                = 6;

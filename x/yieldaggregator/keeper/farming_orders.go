@@ -101,10 +101,7 @@ func (k Keeper) InactivateFarmingOrder(ctx sdk.Context, addr sdk.AccAddress, far
 	return nil
 }
 
-func (k Keeper) ExecuteFarmingOrders(ctx sdk.Context, addr sdk.AccAddress) {
-	// TODO: create farming units from farming orders execution
-	// TODO: allocate tokens to farming unit
-
+func (k Keeper) ExecuteFarmingOrders(ctx sdk.Context, addr sdk.AccAddress) error {
 	overallRatio := uint32(0)
 	orders := k.GetFarmingOrdersOfAddress(ctx, addr)
 	for _, order := range orders {
@@ -118,21 +115,40 @@ func (k Keeper) ExecuteFarmingOrders(ctx sdk.Context, addr sdk.AccAddress) {
 			orderAlloc = orderAlloc.Add(sdk.NewCoin(coin.Denom, coin.Amount.Mul(sdk.NewInt(int64(order.OverallRatio))).Quo(sdk.NewInt(int64(overallRatio)))))
 		}
 
-		// TODO: move tokens to asset management targets based on strategy
-		targets := k.GetAssetManagementTargetsOfAccount(ctx, addr)
+		// move tokens to asset management targets based on strategy
+		strategy := order.Strategy
+		switch strategy.StrategyType {
+		case "recent30DaysHighDPRStrategy": // Invest in the best DPR destination in the last 30 days on average
+			// TODO: implement individual strategy once historical info calcuator is ready
+			fallthrough
+		case "recent1DayHighDPRStrategy": // Invest in the best DPR destination in the last average day
+			// TODO: implement individual strategy once historical info calcuator is ready
+			fallthrough
+		case "notHaveDPRStrategy": // Invest in something that does not have a DPR
+			// TODO: implement individual strategy once historical info calcuator is ready
+			fallthrough
+		case "ManualStrategy": // Manual investment, whiteTargetIdlist required
+			targets := k.GetAllAssetManagementTargets(ctx)
+			if len(targets) == 0 {
+				return types.ErrNoAssetManagementTargetExists
+			}
+			target := targets[0]
 
-		// TODO: set correct fields for farming unit
-		k.SetFarmingUnit(ctx, types.FarmingUnit{
-			Id:               "",
-			AccountId:        "",
-			TargetId:         "",
-			Amount:           orderAlloc,
-			FarmingStartTime: ctx.BlockTime().String(),
-			UnbondingTime:    "",
-			Owner:            addr.String(),
-		})
+			// TODO: set correct fields for farming unit
+			farmUnit := types.FarmingUnit{
+				Id:               "",
+				AccountId:        "",
+				TargetId:         "",
+				Amount:           orderAlloc,
+				FarmingStartTime: ctx.BlockTime().String(),
+				UnbondingTime:    "",
+				Owner:            addr.String(),
+			}
+			k.InvestOnTarget(ctx, target, farmUnit)
+		}
 	}
 
 	// reduce user owned tokens since its allocated to farming units
 	k.DeleteUserDeposit(ctx, addr)
+	return nil
 }
