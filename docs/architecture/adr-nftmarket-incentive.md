@@ -103,7 +103,7 @@ It's the module account that collect the protocol earned fees from x/nftmarket m
 This contains `reward_type` and `reward_rate` in array for the incentive configuration.   
 e.g.
 ```protobuf
-message RewardSetting {
+message RewardParams {
   repeated RewardRate reward_rate = 1;
 }
 ```

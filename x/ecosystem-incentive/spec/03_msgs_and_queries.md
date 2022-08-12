@@ -9,7 +9,7 @@ All messages of `ecosystem-incentive`.
 ### Register
 
 ```protobuf
-message MsgRegister {
+message MsgFrontendRegister {
   string incentive_id = 1;
   repeated string subjects = 2 [
     (gogoproto.moretags) = "yaml:\"sender\"",
@@ -55,7 +55,7 @@ message MsgWithdrawSpecificDenomReward {
 
 All queries of `ecosystem-incentive`.
 
-### IncentiveStore (?)
+### IncentiveStore
 
 ```protobuf
 message QueryIncentiveRequest {
