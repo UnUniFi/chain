@@ -10,15 +10,14 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/UnUniFi/chain/x/yieldaggregator/types"
+	"github.com/UnUniFi/chain/x/yieldfarm/types"
 )
 
 type Keeper struct {
-	cdc             codec.BinaryCodec
-	storeKey        storetypes.StoreKey
-	paramstore      paramtypes.Subspace
-	bankKeeper      types.BankKeeper
-	yieldfarmKeeper types.YieldFarmKeeper
+	cdc        codec.BinaryCodec
+	storeKey   storetypes.StoreKey
+	paramstore paramtypes.Subspace
+	bankKeeper types.BankKeeper
 }
 
 func NewKeeper(
@@ -26,7 +25,6 @@ func NewKeeper(
 	storeKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
 	bk types.BankKeeper,
-	yfk types.YieldFarmKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -34,11 +32,10 @@ func NewKeeper(
 	}
 
 	return &Keeper{
-		cdc:             cdc,
-		storeKey:        storeKey,
-		paramstore:      ps,
-		bankKeeper:      bk,
-		yieldfarmKeeper: yfk,
+		cdc:        cdc,
+		storeKey:   storeKey,
+		paramstore: ps,
+		bankKeeper: bk,
 	}
 }
 
