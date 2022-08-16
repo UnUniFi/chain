@@ -134,11 +134,13 @@ func (k Keeper) ExecuteFarmingOrders(ctx sdk.Context, addr sdk.AccAddress) error
 			}
 			target := targets[0]
 
-			// TODO: set correct fields for farming unit
+			lastFarmingUnitId := k.GetLastFarmingUnitId(ctx)
+			newFarmingUnitId := lastFarmingUnitId + 1
+			k.SetLastFarmingUnitId(ctx, newFarmingUnitId)
 			farmUnit := types.FarmingUnit{
-				Id:               "",
-				AccountId:        "",
-				TargetId:         "",
+				Id:               newFarmingUnitId,
+				AccountId:        target.AssetManagementAccountId,
+				TargetId:         target.Id,
 				Amount:           orderAlloc,
 				FarmingStartTime: ctx.BlockTime().String(),
 				UnbondingTime:    "",

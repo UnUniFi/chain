@@ -125,6 +125,9 @@ import (
 	"github.com/UnUniFi/chain/x/yieldaggregator"
 	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
 	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
+	"github.com/UnUniFi/chain/x/yieldfarm"
+	yieldfarmkeeper "github.com/UnUniFi/chain/x/yieldfarm/keeper"
+	yieldfarmtypes "github.com/UnUniFi/chain/x/yieldfarm/types"
 	// "github.com/CosmWasm/wasmd/x/wasm"
 	// wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 )
@@ -214,6 +217,7 @@ var (
 		pricefeed.AppModuleBasic{},
 		ununifidist.AppModuleBasic{},
 		incentive.AppModuleBasic{},
+		yieldfarm.AppModuleBasic{},
 		yieldaggregator.AppModuleBasic{},
 		// wasm.AppModuleBasic{},
 	)
@@ -306,6 +310,7 @@ type App struct {
 	auctionKeeper         auctionkeeper.Keeper
 	cdpKeeper             cdpkeeper.Keeper
 	incentiveKeeper       incentivekeeper.Keeper
+	yieldfarmKeeper       yieldfarmkeeper.Keeper
 	yieldaggregatorKeeper yieldaggregatorkeeper.Keeper
 	ununifidistKeeper     ununifidistkeeper.Keeper
 	pricefeedKeeper       pricefeedkeeper.Keeper
@@ -357,6 +362,7 @@ func NewApp(
 		capabilitytypes.StoreKey, feegrant.StoreKey, authzkeeper.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 		auctiontypes.StoreKey, cdptypes.StoreKey, incentivetypes.StoreKey,
+		yieldfarmtypes.ModuleName,
 		yieldaggregatortypes.StoreKey,
 		ununifidisttypes.StoreKey, pricefeedtypes.StoreKey,
 		// wasm.StoreKey,
@@ -558,11 +564,19 @@ func NewApp(
 
 	app.cdpKeeper = *cdpKeeper.SetHooks(cdptypes.NewMultiCdpHooks(app.incentiveKeeper.Hooks()))
 
+	app.yieldfarmKeeper = *yieldfarmkeeper.NewKeeper(
+		appCodec,
+		keys[yieldaggregatortypes.StoreKey],
+		app.GetSubspace(yieldaggregatortypes.ModuleName),
+		app.BankKeeper,
+	)
+
 	app.yieldaggregatorKeeper = *yieldaggregatorkeeper.NewKeeper(
 		appCodec,
 		keys[yieldaggregatortypes.StoreKey],
 		app.GetSubspace(yieldaggregatortypes.ModuleName),
 		app.BankKeeper,
+		app.yieldfarmKeeper,
 	)
 
 	// wasmDir := filepath.Join(homePath, "wasm")
@@ -652,6 +666,7 @@ func NewApp(
 		incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
 		ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
 		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
+		yieldfarm.NewAppModule(appCodec, app.yieldfarmKeeper, app.AccountKeeper, app.BankKeeper),
 		yieldaggregator.NewAppModule(appCodec, app.yieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
 		// wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
 	)
@@ -685,6 +700,7 @@ func NewApp(
 		cdptypes.ModuleName,
 		incentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
+		yieldfarmtypes.ModuleName,
 		yieldaggregatortypes.ModuleName,
 
 		// ibchost.ModuleName,
@@ -717,6 +733,7 @@ func NewApp(
 		cdptypes.ModuleName,
 		incentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
+		yieldfarmtypes.ModuleName,
 		yieldaggregatortypes.ModuleName,
 
 		// ibchost.ModuleName,
@@ -757,6 +774,7 @@ func NewApp(
 		cdptypes.ModuleName,
 		incentivetypes.ModuleName,
 		ununifidisttypes.ModuleName,
+		yieldfarmtypes.ModuleName,
 		yieldaggregatortypes.ModuleName,
 
 		// ibchost.ModuleName,
@@ -788,6 +806,7 @@ func NewApp(
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
+		yieldfarm.NewAppModule(appCodec, app.yieldfarmKeeper, app.AccountKeeper, app.BankKeeper),
 		yieldaggregator.NewAppModule(appCodec, app.yieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
 		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
 		// wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
@@ -1043,6 +1062,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(incentivetypes.ModuleName)
 	paramsKeeper.Subspace(ununifidisttypes.ModuleName)
 	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
+	paramsKeeper.Subspace(yieldfarmtypes.ModuleName)
 	paramsKeeper.Subspace(yieldaggregatortypes.ModuleName)
 	// paramsKeeper.Subspace(wasm.ModuleName)
 	return paramsKeeper

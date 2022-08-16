@@ -15,4 +15,5 @@ message GenesisState {
   repeated FarmingOrder           farming_orders            = 4 [(gogoproto.nullable) = false];
   repeated FarmingUnit            farming_units             = 5 [(gogoproto.nullable) = false];
   repeated UserInfo               user_infos                = 6 [(gogoproto.nullable) = false];
+  uint64                          last_farming_unit_id      = 7;
 }

@@ -65,7 +65,7 @@ message UserDeposit {
 }
 
 message FarmingUnit {
-  string   id                                          = 1;
+  uint64   id                                          = 1;
   string   account_id                                  = 2;
   string   target_id                                   = 3;
   repeated cosmos.base.v1beta1.Coin amount             = 4 [(gogoproto.nullable) = false];

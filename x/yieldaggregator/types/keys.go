@@ -26,6 +26,7 @@ const (
 	PrefixKeyFarmingOrder           = "farming_order_"
 	PrefixKeyFarmingUnit            = "farming_unit_"
 	PrefixKeyUserDeposit            = "user_deposit_"
+	KeyLastFarmingUnit              = "last_farming_unit"
 )
 
 func AssetManagementAccountKey(id string) []byte {
@@ -40,8 +41,8 @@ func FarmingOrderKey(sender sdk.AccAddress, orderId string) []byte {
 	return append(append([]byte(PrefixKeyFarmingOrder), sender...), orderId...)
 }
 
-func FarmingUnitKey(sender sdk.AccAddress, unitId string) []byte {
-	return append(append([]byte(PrefixKeyFarmingUnit), sender...), unitId...)
+func FarmingUnitKey(sender sdk.AccAddress, unitId uint64) []byte {
+	return append(append([]byte(PrefixKeyFarmingUnit), sender...), sdk.Uint64ToBigEndian(unitId)...)
 }
 
 func UserDepositKey(user sdk.AccAddress) []byte {
