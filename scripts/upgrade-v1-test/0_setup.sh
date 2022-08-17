@@ -53,7 +53,10 @@ sudo ufw enable;
 sudo ufw status;
 
 # dammy user
-echo "cruel melt pulse sniff margin inspire frequent ostrich credit shop real ankle anger human vintage ribbon make cricket miracle pole thought rebel fame skull" > ~/backup-faucet-amnemonic.txt
+echo "cruel melt pulse sniff margin inspire frequent ostrich credit shop real ankle anger human vintage ribbon make cricket miracle pole thought rebel fame skull" > ~/backup-faucet-a-mnemonic.txt
 echo "harsh lunar orient canal chalk pupil pupil duck scorpion mandate crack artwork token smart elevator eternal end change cup thought yellow trust brass busy" > ~/backup-validator-a-mnemonic.txt
+echo "idle mass away toward habit renew month awkward border drill identify wrong recall true before announce exist satoshi large mountain enough note eager move" > ~/backup-faucet-b-mnemonic.txt
+echo "jewel feel valley thank prize okay vehicle recycle test asthma affair flush air slab cry exercise tide park girl need kiss garden thank step" > ~/backup-faucet-c-mnemonic.txt
+echo "seat top exile tank wrestle aunt love debris nasty source refuse cave zone engine cloud scene figure fashion pass bench tourist pulse useful ankle" > ~/backup-faucet-d-mnemonic.txt
 
-source ~/.profile;
+# source ~/.profile;

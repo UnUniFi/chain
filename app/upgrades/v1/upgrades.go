@@ -5,12 +5,14 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
 
 func CreateUpgradeHandler(mm *module.Manager,
 	configurator module.Configurator,
+	authkeeper authkeeper.AccountKeeper,
 	bankkeeper bankkeeper.Keeper) upgradetypes.UpgradeHandler {
 	return func(ctx sdk.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		ctx.Logger().Info(fmt.Sprintf("update start:%s", UpgradeName))
@@ -25,7 +27,7 @@ func CreateUpgradeHandler(mm *module.Manager,
 		if err != nil {
 			panic(err)
 		}
-		err = upgradeBankSend(ctx, bankkeeper, result)
+		err = upgradeBankSend(ctx, authkeeper, bankkeeper, result)
 		if err != nil {
 			panic(err)
 		}

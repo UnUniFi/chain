@@ -6,20 +6,28 @@
 # in an environment where ununifid has already been set up.
 set -e
 cd $HOME
-source .profile;
 sudo rm -rf ~/.ununifi
 ununifid init ununifi-upgrade-test-v1 --chain-id ununifi-upgrade-test-v1
 sed -i '/\[api\]/,+3 s/enable = false/enable = true/' ~/.ununifi/config/app.toml;
 sed -i 's/minimum-gas-prices = ".*"/minimum-gas-prices = "0uguu"/' ~/.ununifi/config/app.toml;
 sed -i 's/stake/uguu/g' ~/.ununifi/config/genesis.json;
-jq '.app_state.bank.params.default_send_enabled = false'  ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
-jq '.app_state.gov.voting_params.voting_period = "20s"'  ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
+# jq '.app_state.bank.params.default_send_enabled = true'  ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
+# jq '.app_state.gov.voting_params.voting_period = "20s"'  ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
 ununifid keys add validator-a --recover < ~/backup-validator-a-mnemonic.txt;
 ununifid add-genesis-account validator-a 125000000000000uguu;
 ununifid gentx validator-a 120000000000000uguu --chain-id ununifi-upgrade-test-v1 --keyring-backend test;
 ununifid collect-gentxs;
+
 ununifid keys add faucet --recover < ~/backup-faucet-a-mnemonic.txt;
-ununifid add-genesis-account faucet 125000000000000uguu;
+ununifid add-genesis-account faucet 125000000000uguu;
+
+ununifid keys add faucet-b --recover < ~/backup-faucet-b-mnemonic.txt
+ununifid add-genesis-account faucet-b 125000000000uguu --vesting-amount 125000000000uguu --vesting-start-time 1660521600 --vesting-end-time 1660665600
+
+ununifid keys add faucet-c --recover < ~/backup-faucet-c-mnemonic.txt
+ununifid add-genesis-account faucet-c 125000000000uguu --vesting-amount 125000000000uguu --vesting-end-time 1660665600
+
+ununifid keys add faucet-d --recover < ~/backup-faucet-d-mnemonic.txt
 
 go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@v1.0.0
 mkdir -p $DAEMON_HOME/cosmovisor
