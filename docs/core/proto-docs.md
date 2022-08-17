@@ -103,6 +103,118 @@
   
     - [Msg](#ununifi.incentive.Msg)
   
+- [nftmint/nftmint.proto](#nftmint/nftmint.proto)
+    - [ClassAttributes](#ununifi.nftmint.ClassAttributes)
+    - [EventBurnNFT](#ununifi.nftmint.EventBurnNFT)
+    - [EventCreateClass](#ununifi.nftmint.EventCreateClass)
+    - [EventMintNFT](#ununifi.nftmint.EventMintNFT)
+    - [EventSendClass](#ununifi.nftmint.EventSendClass)
+    - [EventUpdateBaseTokenUri](#ununifi.nftmint.EventUpdateBaseTokenUri)
+    - [EventUpdateTokenSupplyCap](#ununifi.nftmint.EventUpdateTokenSupplyCap)
+    - [NFTAttributes](#ununifi.nftmint.NFTAttributes)
+    - [Params](#ununifi.nftmint.Params)
+  
+    - [MintingPermission](#ununifi.nftmint.MintingPermission)
+  
+- [nftmint/genesis.proto](#nftmint/genesis.proto)
+    - [GenesisState](#ununifi.nftmint.GenesisState)
+  
+- [nftmint/query.proto](#nftmint/query.proto)
+    - [QueryClassBaseTokenUriRequest](#ununifi.nftmint.QueryClassBaseTokenUriRequest)
+    - [QueryClassBaseTokenUriResponse](#ununifi.nftmint.QueryClassBaseTokenUriResponse)
+    - [QueryClassIdByNameRequest](#ununifi.nftmint.QueryClassIdByNameRequest)
+    - [QueryClassIdByNameResponse](#ununifi.nftmint.QueryClassIdByNameResponse)
+    - [QueryClassOwnerRequest](#ununifi.nftmint.QueryClassOwnerRequest)
+    - [QueryClassOwnerResponse](#ununifi.nftmint.QueryClassOwnerResponse)
+    - [QueryClassTokenSupplyCapRequest](#ununifi.nftmint.QueryClassTokenSupplyCapRequest)
+    - [QueryClassTokenSupplyCapResponse](#ununifi.nftmint.QueryClassTokenSupplyCapResponse)
+    - [QueryNFTMinterRequest](#ununifi.nftmint.QueryNFTMinterRequest)
+    - [QueryNFTMinterResponse](#ununifi.nftmint.QueryNFTMinterResponse)
+    - [QueryParamsRequest](#ununifi.nftmint.QueryParamsRequest)
+    - [QueryParamsResponse](#ununifi.nftmint.QueryParamsResponse)
+  
+    - [Query](#ununifi.nftmint.Query)
+  
+- [nftmint/tx.proto](#nftmint/tx.proto)
+    - [MsgBurnNFT](#ununifi.nftmint.MsgBurnNFT)
+    - [MsgBurnNFTResponse](#ununifi.nftmint.MsgBurnNFTResponse)
+    - [MsgCreateClass](#ununifi.nftmint.MsgCreateClass)
+    - [MsgCreateClassRespone](#ununifi.nftmint.MsgCreateClassRespone)
+    - [MsgMintNFT](#ununifi.nftmint.MsgMintNFT)
+    - [MsgMintNFTReponse](#ununifi.nftmint.MsgMintNFTReponse)
+    - [MsgSendClass](#ununifi.nftmint.MsgSendClass)
+    - [MsgSendClassRespone](#ununifi.nftmint.MsgSendClassRespone)
+    - [MsgUpdateBaseTokenUri](#ununifi.nftmint.MsgUpdateBaseTokenUri)
+    - [MsgUpdateBaseTokenUriResponse](#ununifi.nftmint.MsgUpdateBaseTokenUriResponse)
+    - [MsgUpdateTokenSupplyCap](#ununifi.nftmint.MsgUpdateTokenSupplyCap)
+    - [MsgUpdateTokenSupplyCapResponse](#ununifi.nftmint.MsgUpdateTokenSupplyCapResponse)
+  
+    - [Msg](#ununifi.nftmint.Msg)
+    
+- [nftmarket/nftmarket.proto](#nftmarket/nftmarket.proto)
+    - [EventListNft](#ununifi.nftmarket.EventListNft)
+    - [Loan](#ununifi.nftmarket.Loan)
+    - [NftBid](#ununifi.nftmarket.NftBid)
+    - [NftIdentifier](#ununifi.nftmarket.NftIdentifier)
+    - [NftListing](#ununifi.nftmarket.NftListing)
+    - [Params](#ununifi.nftmarket.Params)
+  
+    - [ListingState](#ununifi.nftmarket.ListingState)
+    - [ListingType](#ununifi.nftmarket.ListingType)
+  
+- [nftmarket/genesis.proto](#nftmarket/genesis.proto)
+    - [GenesisState](#ununifi.nftmarket.GenesisState)
+  
+- [nftmarket/query.proto](#nftmarket/query.proto)
+    - [QueryBidderBidsRequest](#ununifi.nftmarket.QueryBidderBidsRequest)
+    - [QueryBidderBidsResponse](#ununifi.nftmarket.QueryBidderBidsResponse)
+    - [QueryCDPsListRequest](#ununifi.nftmarket.QueryCDPsListRequest)
+    - [QueryCDPsListResponse](#ununifi.nftmarket.QueryCDPsListResponse)
+    - [QueryListedNftsRequest](#ununifi.nftmarket.QueryListedNftsRequest)
+    - [QueryListedNftsResponse](#ununifi.nftmarket.QueryListedNftsResponse)
+    - [QueryLoansRequest](#ununifi.nftmarket.QueryLoansRequest)
+    - [QueryLoansResponse](#ununifi.nftmarket.QueryLoansResponse)
+    - [QueryNftBidsRequest](#ununifi.nftmarket.QueryNftBidsRequest)
+    - [QueryNftBidsResponse](#ununifi.nftmarket.QueryNftBidsResponse)
+    - [QueryNftListingRequest](#ununifi.nftmarket.QueryNftListingRequest)
+    - [QueryNftListingResponse](#ununifi.nftmarket.QueryNftListingResponse)
+    - [QueryParamsRequest](#ununifi.nftmarket.QueryParamsRequest)
+    - [QueryParamsResponse](#ununifi.nftmarket.QueryParamsResponse)
+    - [QueryRewardsRequest](#ununifi.nftmarket.QueryRewardsRequest)
+    - [QueryRewardsResponse](#ununifi.nftmarket.QueryRewardsResponse)
+  
+    - [Query](#ununifi.nftmarket.Query)
+  
+- [nftmarket/tx.proto](#nftmarket/tx.proto)
+    - [MsgBorrow](#ununifi.nftmarket.MsgBorrow)
+    - [MsgBorrowResponse](#ununifi.nftmarket.MsgBorrowResponse)
+    - [MsgBurnStableCoin](#ununifi.nftmarket.MsgBurnStableCoin)
+    - [MsgBurnStableCoinResponse](#ununifi.nftmarket.MsgBurnStableCoinResponse)
+    - [MsgCancelBid](#ununifi.nftmarket.MsgCancelBid)
+    - [MsgCancelBidResponse](#ununifi.nftmarket.MsgCancelBidResponse)
+    - [MsgCancelNftListing](#ununifi.nftmarket.MsgCancelNftListing)
+    - [MsgCancelNftListingResponse](#ununifi.nftmarket.MsgCancelNftListingResponse)
+    - [MsgEndNftListing](#ununifi.nftmarket.MsgEndNftListing)
+    - [MsgEndNftListingResponse](#ununifi.nftmarket.MsgEndNftListingResponse)
+    - [MsgExpandListingPeriod](#ununifi.nftmarket.MsgExpandListingPeriod)
+    - [MsgExpandListingPeriodResponse](#ununifi.nftmarket.MsgExpandListingPeriodResponse)
+    - [MsgLiquidate](#ununifi.nftmarket.MsgLiquidate)
+    - [MsgLiquidateResponse](#ununifi.nftmarket.MsgLiquidateResponse)
+    - [MsgListNft](#ununifi.nftmarket.MsgListNft)
+    - [MsgListNftResponse](#ununifi.nftmarket.MsgListNftResponse)
+    - [MsgMintStableCoin](#ununifi.nftmarket.MsgMintStableCoin)
+    - [MsgMintStableCoinResponse](#ununifi.nftmarket.MsgMintStableCoinResponse)
+    - [MsgNftBuyBack](#ununifi.nftmarket.MsgNftBuyBack)
+    - [MsgNftBuyBackResponse](#ununifi.nftmarket.MsgNftBuyBackResponse)
+    - [MsgPayFullBid](#ununifi.nftmarket.MsgPayFullBid)
+    - [MsgPayFullBidResponse](#ununifi.nftmarket.MsgPayFullBidResponse)
+    - [MsgPlaceBid](#ununifi.nftmarket.MsgPlaceBid)
+    - [MsgPlaceBidResponse](#ununifi.nftmarket.MsgPlaceBidResponse)
+    - [MsgRepay](#ununifi.nftmarket.MsgRepay)
+    - [MsgRepayResponse](#ununifi.nftmarket.MsgRepayResponse)
+  
+    - [Msg](#ununifi.nftmarket.Msg)
+  
 - [pricefeed/pricefeed.proto](#pricefeed/pricefeed.proto)
     - [CurrentPrice](#ununifi.pricefeed.CurrentPrice)
     - [Market](#ununifi.pricefeed.Market)
@@ -1405,6 +1517,1460 @@ Query defines the gRPC querier service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `ClaimCdpMintingReward` | [MsgClaimCdpMintingReward](#ununifi.incentive.MsgClaimCdpMintingReward) | [MsgClaimCdpMintingRewardResponse](#ununifi.incentive.MsgClaimCdpMintingRewardResponse) |  | |
+
+ <!-- end services -->
+ 
+ 
+ 
+<a name="nftmarket/nftmarket.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## nftmarket/nftmarket.proto
+
+
+
+<a name="ununifi.nftmarket.EventListNft"></a>
+
+### EventListNft
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.Loan"></a>
+
+### Loan
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+| `loan` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.NftBid"></a>
+
+### NftBid
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+| `bidder` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.NftIdentifier"></a>
+
+### NftIdentifier
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.NftListing"></a>
+
+### NftListing
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+| `owner` | [string](#string) |  |  |
+| `listing_type` | [ListingType](#ununifi.nftmarket.ListingType) |  |  |
+| `state` | [ListingState](#ununifi.nftmarket.ListingState) |  |  |
+| `bid_token` | [string](#string) |  |  |
+| `min_bid` | [string](#string) |  |  |
+| `bid_hook` | [uint64](#uint64) |  | 1 - 100 |
+| `end_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.Params"></a>
+
+### Params
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `min_staking_for_listing` | [string](#string) |  |  |
+| `bid_tokens` | [string](#string) | repeated |  |
+| `auto_relisting_count_if_no_bid` | [uint64](#uint64) |  |  |
+| `nft_listing_delay_seconds` | [uint64](#uint64) |  |  |
+| `nft_listing_period_initial` | [uint64](#uint64) |  |  |
+| `nft_listing_cancel_required_seconds` | [uint64](#uint64) |  |  |
+| `nft_listing_buy_back_extra_percentage` | [uint64](#uint64) |  |  |
+| `nft_listing_gap_time` | [uint64](#uint64) |  |  |
+| `bid_cancel_required_seconds` | [uint64](#uint64) |  |  |
+| `bid_token_disburse_seconds_after_cancel` | [uint64](#uint64) |  |  |
+| `nft_listing_full_payment_period` | [uint64](#uint64) |  |  |
+| `nft_listing_nft_delivery_period` | [uint64](#uint64) |  |  |
+| `nft_creator_share_percentage` | [uint64](#uint64) |  |  |
+| `market_administrator` | [string](#string) |  |  |
+| `nft_listing_commission_fee` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `nft_listing_extend_seconds` | [uint64](#uint64) |  |  |
+| `nft_listing_period_extend_fee_per_hour` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="ununifi.nftmarket.ListingState"></a>
+
+### ListingState
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| SELLING | 0 |  |
+| BIDDING | 1 |  |
+| LIQUIDATION | 2 |  |
+| END_LISTING | 3 |  |
+| SUCCESSFUL_BID | 4 |  |
+
+
+
+<a name="ununifi.nftmarket.ListingType"></a>
+
+### ListingType
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| DIRECT_ASSET_BORROW | 0 |  |
+| SYNTHETIC_ASSET_CREATION | 1 |  |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="nftmarket/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## nftmarket/genesis.proto
+
+
+
+<a name="ununifi.nftmarket.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the nftmarket module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.nftmarket.Params) |  |  |
+| `listings` | [NftListing](#ununifi.nftmarket.NftListing) | repeated |  |
+| `bids` | [NftBid](#ununifi.nftmarket.NftBid) | repeated |  |
+| `loans` | [Loan](#ununifi.nftmarket.Loan) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="nftmarket/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## nftmarket/query.proto
+
+
+
+<a name="ununifi.nftmarket.QueryBidderBidsRequest"></a>
+
+### QueryBidderBidsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `bidder` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryBidderBidsResponse"></a>
+
+### QueryBidderBidsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `bids` | [NftBid](#ununifi.nftmarket.NftBid) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryCDPsListRequest"></a>
+
+### QueryCDPsListRequest
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryCDPsListResponse"></a>
+
+### QueryCDPsListResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryListedNftsRequest"></a>
+
+### QueryListedNftsRequest
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryListedNftsResponse"></a>
+
+### QueryListedNftsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `listings` | [NftListing](#ununifi.nftmarket.NftListing) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryLoansRequest"></a>
+
+### QueryLoansRequest
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryLoansResponse"></a>
+
+### QueryLoansResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `loans` | [Loan](#ununifi.nftmarket.Loan) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryNftBidsRequest"></a>
+
+### QueryNftBidsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryNftBidsResponse"></a>
+
+### QueryNftBidsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `bids` | [NftBid](#ununifi.nftmarket.NftBid) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryNftListingRequest"></a>
+
+### QueryNftListingRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryNftListingResponse"></a>
+
+### QueryNftListingResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `listing` | [NftListing](#ununifi.nftmarket.NftListing) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.nftmarket.Params) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryRewardsRequest"></a>
+
+### QueryRewardsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryRewardsResponse"></a>
+
+### QueryRewardsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rewards` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.nftmarket.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#ununifi.nftmarket.QueryParamsRequest) | [QueryParamsResponse](#ununifi.nftmarket.QueryParamsResponse) |  | GET|/ununifi/nftmarket/params|
+| `NftListing` | [QueryNftListingRequest](#ununifi.nftmarket.QueryNftListingRequest) | [QueryNftListingResponse](#ununifi.nftmarket.QueryNftListingResponse) |  | GET|/ununifi/nftmarket/nft_listing/{class_id}/{nft_id}|
+| `ListedNfts` | [QueryListedNftsRequest](#ununifi.nftmarket.QueryListedNftsRequest) | [QueryListedNftsResponse](#ununifi.nftmarket.QueryListedNftsResponse) |  | GET|/ununifi/nftmarket/listed_nfts|
+| `Loans` | [QueryLoansRequest](#ununifi.nftmarket.QueryLoansRequest) | [QueryLoansResponse](#ununifi.nftmarket.QueryLoansResponse) |  | GET|/ununifi/nftmarket/loans|
+| `CDPsList` | [QueryCDPsListRequest](#ununifi.nftmarket.QueryCDPsListRequest) | [QueryCDPsListResponse](#ununifi.nftmarket.QueryCDPsListResponse) |  | GET|/ununifi/nftmarket/cdps_list|
+| `NftBids` | [QueryNftBidsRequest](#ununifi.nftmarket.QueryNftBidsRequest) | [QueryNftBidsResponse](#ununifi.nftmarket.QueryNftBidsResponse) |  | GET|/ununifi/nftmarket/nft_bids/{class_id}/{nft_id}|
+| `BidderBids` | [QueryBidderBidsRequest](#ununifi.nftmarket.QueryBidderBidsRequest) | [QueryBidderBidsResponse](#ununifi.nftmarket.QueryBidderBidsResponse) |  | GET|/ununifi/nftmarket/bidder_bids/{bidder}|
+| `Rewards` | [QueryRewardsRequest](#ununifi.nftmarket.QueryRewardsRequest) | [QueryRewardsResponse](#ununifi.nftmarket.QueryRewardsResponse) |  | GET|/ununifi/nftmarket/rewards/{address}|
+
+ <!-- end services -->
+
+
+
+<a name="nftmarket/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## nftmarket/tx.proto
+
+
+
+<a name="ununifi.nftmarket.MsgBorrow"></a>
+
+### MsgBorrow
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgBorrowResponse"></a>
+
+### MsgBorrowResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgBurnStableCoin"></a>
+
+### MsgBurnStableCoin
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgBurnStableCoinResponse"></a>
+
+### MsgBurnStableCoinResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgCancelBid"></a>
+
+### MsgCancelBid
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgCancelBidResponse"></a>
+
+### MsgCancelBidResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgCancelNftListing"></a>
+
+### MsgCancelNftListing
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgCancelNftListingResponse"></a>
+
+### MsgCancelNftListingResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgEndNftListing"></a>
+
+### MsgEndNftListing
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgEndNftListingResponse"></a>
+
+### MsgEndNftListingResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgExpandListingPeriod"></a>
+
+### MsgExpandListingPeriod
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgExpandListingPeriodResponse"></a>
+
+### MsgExpandListingPeriodResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgLiquidate"></a>
+
+### MsgLiquidate
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgLiquidateResponse"></a>
+
+### MsgLiquidateResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgListNft"></a>
+
+### MsgListNft
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+| `listing_type` | [ListingType](#ununifi.nftmarket.ListingType) |  |  |
+| `bid_token` | [string](#string) |  |  |
+| `min_bid` | [string](#string) |  |  |
+| `bid_hook` | [uint64](#uint64) |  | 1 - 100; if 0, uses default on params |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgListNftResponse"></a>
+
+### MsgListNftResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgMintStableCoin"></a>
+
+### MsgMintStableCoin
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgMintStableCoinResponse"></a>
+
+### MsgMintStableCoinResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgNftBuyBack"></a>
+
+### MsgNftBuyBack
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgNftBuyBackResponse"></a>
+
+### MsgNftBuyBackResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgPayFullBid"></a>
+
+### MsgPayFullBid
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgPayFullBidResponse"></a>
+
+### MsgPayFullBidResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgPlaceBid"></a>
+
+### MsgPlaceBid
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgPlaceBidResponse"></a>
+
+### MsgPlaceBidResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgRepay"></a>
+
+### MsgRepay
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgRepayResponse"></a>
+
+### MsgRepayResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.nftmarket.Msg"></a>
+
+### Msg
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `ListNft` | [MsgListNft](#ununifi.nftmarket.MsgListNft) | [MsgListNftResponse](#ununifi.nftmarket.MsgListNftResponse) |  | |
+| `CancelNftListing` | [MsgCancelNftListing](#ununifi.nftmarket.MsgCancelNftListing) | [MsgCancelNftListingResponse](#ununifi.nftmarket.MsgCancelNftListingResponse) |  | |
+| `NftBuyBack` | [MsgNftBuyBack](#ununifi.nftmarket.MsgNftBuyBack) | [MsgNftBuyBackResponse](#ununifi.nftmarket.MsgNftBuyBackResponse) |  | |
+| `ExpandListingPeriod` | [MsgExpandListingPeriod](#ununifi.nftmarket.MsgExpandListingPeriod) | [MsgExpandListingPeriodResponse](#ununifi.nftmarket.MsgExpandListingPeriodResponse) |  | |
+| `PlaceBid` | [MsgPlaceBid](#ununifi.nftmarket.MsgPlaceBid) | [MsgPlaceBidResponse](#ununifi.nftmarket.MsgPlaceBidResponse) |  | |
+| `CancelBid` | [MsgCancelBid](#ununifi.nftmarket.MsgCancelBid) | [MsgCancelBidResponse](#ununifi.nftmarket.MsgCancelBidResponse) |  | |
+| `EndNftListing` | [MsgEndNftListing](#ununifi.nftmarket.MsgEndNftListing) | [MsgEndNftListingResponse](#ununifi.nftmarket.MsgEndNftListingResponse) |  | |
+| `PayFullBid` | [MsgPayFullBid](#ununifi.nftmarket.MsgPayFullBid) | [MsgPayFullBidResponse](#ununifi.nftmarket.MsgPayFullBidResponse) |  | |
+| `Borrow` | [MsgBorrow](#ununifi.nftmarket.MsgBorrow) | [MsgBorrowResponse](#ununifi.nftmarket.MsgBorrowResponse) |  | |
+| `Repay` | [MsgRepay](#ununifi.nftmarket.MsgRepay) | [MsgRepayResponse](#ununifi.nftmarket.MsgRepayResponse) |  | |
+| `MintStableCoin` | [MsgMintStableCoin](#ununifi.nftmarket.MsgMintStableCoin) | [MsgMintStableCoinResponse](#ununifi.nftmarket.MsgMintStableCoinResponse) |  | |
+| `BurnStableCoin` | [MsgBurnStableCoin](#ununifi.nftmarket.MsgBurnStableCoin) | [MsgBurnStableCoinResponse](#ununifi.nftmarket.MsgBurnStableCoinResponse) |  | |
+| `Liquidate` | [MsgLiquidate](#ununifi.nftmarket.MsgLiquidate) | [MsgLiquidateResponse](#ununifi.nftmarket.MsgLiquidateResponse) |  | |
+
+ <!-- end services -->
+
+
+
+<a name="nftmint/nftmint.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## nftmint/nftmint.proto
+
+
+
+<a name="ununifi.nftmint.ClassAttributes"></a>
+
+### ClassAttributes
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `owner` | [string](#string) |  |  |
+| `base_token_uri` | [string](#string) |  |  |
+| `minting_permission` | [MintingPermission](#ununifi.nftmint.MintingPermission) |  |  |
+| `token_supply_cap` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.EventBurnNFT"></a>
+
+### EventBurnNFT
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `burner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.EventCreateClass"></a>
+
+### EventCreateClass
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `base_token_uri` | [string](#string) |  |  |
+| `token_supply_cap` | [string](#string) |  |  |
+| `minting_permission` | [MintingPermission](#ununifi.nftmint.MintingPermission) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.EventMintNFT"></a>
+
+### EventMintNFT
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+| `owner` | [string](#string) |  |  |
+| `minter` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.EventSendClass"></a>
+
+### EventSendClass
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `receiver` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.EventUpdateBaseTokenUri"></a>
+
+### EventUpdateBaseTokenUri
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `base_token_uri` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.EventUpdateTokenSupplyCap"></a>
+
+### EventUpdateTokenSupplyCap
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `token_supply_cap` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.NFTAttributes"></a>
+
+### NFTAttributes
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+| `minter` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.Params"></a>
+
+### Params
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `MaxTokenSupplyLimit` | [uint64](#uint64) |  |  |
+| `MinClassNameLen` | [uint64](#uint64) |  |  |
+| `MaxClassNameLen` | [uint64](#uint64) |  |  |
+| `MaxClassUriLen` | [uint64](#uint64) |  |  |
+| `MaxBaseTokenUriLen` | [uint64](#uint64) |  |  |
+| `MaxSymbolLen` | [uint64](#uint64) |  |  |
+| `MaxDescriptionLen` | [uint64](#uint64) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="ununifi.nftmint.MintingPermission"></a>
+
+### MintingPermission
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| OnlyOwner | 0 |  |
+| Anyone | 1 |  |
+| WhiteList | 2 |  |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="nftmint/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## nftmint/genesis.proto
+
+
+
+<a name="ununifi.nftmint.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the nftmint module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.nftmint.Params) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="nftmint/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## nftmint/query.proto
+
+
+
+<a name="ununifi.nftmint.QueryClassBaseTokenUriRequest"></a>
+
+### QueryClassBaseTokenUriRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryClassBaseTokenUriResponse"></a>
+
+### QueryClassBaseTokenUriResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `base_token_uri` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryClassIdByNameRequest"></a>
+
+### QueryClassIdByNameRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_name` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryClassIdByNameResponse"></a>
+
+### QueryClassIdByNameResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryClassOwnerRequest"></a>
+
+### QueryClassOwnerRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryClassOwnerResponse"></a>
+
+### QueryClassOwnerResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryClassTokenSupplyCapRequest"></a>
+
+### QueryClassTokenSupplyCapRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryClassTokenSupplyCapResponse"></a>
+
+### QueryClassTokenSupplyCapResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `token_supply_cap` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryNFTMinterRequest"></a>
+
+### QueryNFTMinterRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryNFTMinterResponse"></a>
+
+### QueryNFTMinterResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `minter` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+
+
+
+
+
+
+
+<a name="ununifi.nftmint.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.nftmint.Params) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.nftmint.Query"></a>
+
+### Query
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#ununifi.nftmint.QueryParamsRequest) | [QueryParamsResponse](#ununifi.nftmint.QueryParamsResponse) |  | GET|/ununifi/nftmint/params|
+| `ClassOwner` | [QueryClassOwnerRequest](#ununifi.nftmint.QueryClassOwnerRequest) | [QueryClassOwnerResponse](#ununifi.nftmint.QueryClassOwnerResponse) |  | GET|/ununifi/nftmint/class_owner|
+| `NFTMinter` | [QueryNFTMinterRequest](#ununifi.nftmint.QueryNFTMinterRequest) | [QueryNFTMinterResponse](#ununifi.nftmint.QueryNFTMinterResponse) |  | GET|/ununifi/nftmint/nft_minter|
+| `ClassIdByName` | [QueryClassIdByNameRequest](#ununifi.nftmint.QueryClassIdByNameRequest) | [QueryClassIdByNameResponse](#ununifi.nftmint.QueryClassIdByNameResponse) |  | GET|/ununifi/nftmint/class_id_by_name|
+| `ClassBaseTokenUri` | [QueryClassBaseTokenUriRequest](#ununifi.nftmint.QueryClassBaseTokenUriRequest) | [QueryClassBaseTokenUriResponse](#ununifi.nftmint.QueryClassBaseTokenUriResponse) |  | GET|/ununifi/nftmint/class_base_token_uri|
+| `ClassTokenSupplyCap` | [QueryClassTokenSupplyCapRequest](#ununifi.nftmint.QueryClassTokenSupplyCapRequest) | [QueryClassTokenSupplyCapResponse](#ununifi.nftmint.QueryClassTokenSupplyCapResponse) |  | GET|/ununifi/nftmint/class_token_supply_cap|
+
+ <!-- end services -->
+
+
+
+<a name="nftmint/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## nftmint/tx.proto
+
+
+
+<a name="ununifi.nftmint.MsgBurnNFT"></a>
+
+### MsgBurnNFT
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgBurnNFTResponse"></a>
+
+### MsgBurnNFTResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgCreateClass"></a>
+
+### MsgCreateClass
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `name` | [string](#string) |  |  |
+| `base_token_uri` | [string](#string) |  |  |
+| `token_supply_cap` | [uint64](#uint64) |  |  |
+| `minting_permission` | [MintingPermission](#ununifi.nftmint.MintingPermission) |  |  |
+| `symbol` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `class_uri` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgCreateClassRespone"></a>
+
+### MsgCreateClassRespone
+
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgMintNFT"></a>
+
+### MsgMintNFT
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `recipient` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgMintNFTReponse"></a>
+
+### MsgMintNFTReponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgSendClass"></a>
+
+### MsgSendClass
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `recipient` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgSendClassRespone"></a>
+
+### MsgSendClassRespone
+
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgUpdateBaseTokenUri"></a>
+
+### MsgUpdateBaseTokenUri
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `base_token_uri` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgUpdateBaseTokenUriResponse"></a>
+
+### MsgUpdateBaseTokenUriResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgUpdateTokenSupplyCap"></a>
+
+### MsgUpdateTokenSupplyCap
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `token_supply_cap` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmint.MsgUpdateTokenSupplyCapResponse"></a>
+
+### MsgUpdateTokenSupplyCapResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.nftmint.Msg"></a>
+
+### Msg
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `CreateClass` | [MsgCreateClass](#ununifi.nftmint.MsgCreateClass) | [MsgCreateClassRespone](#ununifi.nftmint.MsgCreateClassRespone) |  | |
+| `SendClass` | [MsgSendClass](#ununifi.nftmint.MsgSendClass) | [MsgSendClassRespone](#ununifi.nftmint.MsgSendClassRespone) |  | |
+| `UpdateBaseTokenUri` | [MsgUpdateBaseTokenUri](#ununifi.nftmint.MsgUpdateBaseTokenUri) | [MsgUpdateBaseTokenUriResponse](#ununifi.nftmint.MsgUpdateBaseTokenUriResponse) |  | |
+| `UpdateTokenSupplyCap` | [MsgUpdateTokenSupplyCap](#ununifi.nftmint.MsgUpdateTokenSupplyCap) | [MsgUpdateTokenSupplyCapResponse](#ununifi.nftmint.MsgUpdateTokenSupplyCapResponse) |  | |
+| `MintNFT` | [MsgMintNFT](#ununifi.nftmint.MsgMintNFT) | [MsgMintNFTReponse](#ununifi.nftmint.MsgMintNFTReponse) |  | |
+| `BurnNFT` | [MsgBurnNFT](#ununifi.nftmint.MsgBurnNFT) | [MsgBurnNFTResponse](#ununifi.nftmint.MsgBurnNFTResponse) |  | |
 
  <!-- end services -->
 

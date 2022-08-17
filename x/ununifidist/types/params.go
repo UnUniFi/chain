@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstype "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	tmtime "github.com/tendermint/tendermint/libs/time"
+	tmtime "github.com/tendermint/tendermint/types/time"
 
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 )

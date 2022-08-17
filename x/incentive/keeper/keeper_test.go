@@ -12,8 +12,8 @@ import (
 
 	// supplyexported "github.com/cosmos/cosmos-sdk/x/supply/exported"
 
-	tmtime "github.com/tendermint/tendermint/libs/time"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/UnUniFi/chain/app"
 	// committeekeeper "github.com/UnUniFi/chain/x/committee/keeper"
