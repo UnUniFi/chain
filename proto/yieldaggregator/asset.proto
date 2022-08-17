@@ -30,9 +30,9 @@ message AssetManagementTarget {
   string                   id                          = 1;
   string                   asset_management_account_id = 2;
   string                   account_address             = 4;
-  repeated AssetCondition  asset_conditions            = 5;
-  google.protobuf.Duration unbonding_time              = 6 [(gogoproto.stdduration) = true];
-  IntegrateInfo            integrate_info              = 7;
+  repeated AssetCondition  asset_conditions            = 5 [(gogoproto.nullable) = false];
+  google.protobuf.Duration unbonding_time = 6 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+  IntegrateInfo            integrate_info = 7 [(gogoproto.nullable) = false];
 }
 
 message AssetManagementAccount {
@@ -43,8 +43,8 @@ message AssetManagementAccount {
 message FarmingOrder {
   string                    id                 = 1;
   string                    from_address       = 2;
-  Strategy                  strategy           = 3;
-  google.protobuf.Duration  max_unbonding_time = 4 [(gogoproto.nullable) = true, (gogoproto.stdduration) = true];
+  Strategy                  strategy           = 3 [(gogoproto.nullable) = false];
+  google.protobuf.Duration  max_unbonding_time = 4 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
   uint32                    overall_ratio      = 5;
   string                    min                = 6;
   string                    max                = 7;

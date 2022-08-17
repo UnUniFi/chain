@@ -319,8 +319,8 @@ type App struct {
 	pricefeedKeeper       pricefeedkeeper.Keeper
 	NftmintKeeper         nftmintkeeper.Keeper
 	NftmarketKeeper       nftmarketkeeper.Keeper
-	yieldfarmKeeper       yieldfarmkeeper.Keeper
-	yieldaggregatorKeeper yieldaggregatorkeeper.Keeper
+	YieldfarmKeeper       yieldfarmkeeper.Keeper
+	YieldaggregatorKeeper yieldaggregatorkeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -592,19 +592,19 @@ func NewApp(
 
 	app.cdpKeeper = *cdpKeeper.SetHooks(cdptypes.NewMultiCdpHooks(app.incentiveKeeper.Hooks()))
 
-	app.yieldfarmKeeper = *yieldfarmkeeper.NewKeeper(
+	app.YieldfarmKeeper = *yieldfarmkeeper.NewKeeper(
 		appCodec,
 		keys[yieldaggregatortypes.StoreKey],
 		app.GetSubspace(yieldaggregatortypes.ModuleName),
 		app.BankKeeper,
 	)
 
-	app.yieldaggregatorKeeper = *yieldaggregatorkeeper.NewKeeper(
+	app.YieldaggregatorKeeper = *yieldaggregatorkeeper.NewKeeper(
 		appCodec,
 		keys[yieldaggregatortypes.StoreKey],
 		app.GetSubspace(yieldaggregatortypes.ModuleName),
 		app.BankKeeper,
-		app.yieldfarmKeeper,
+		app.YieldfarmKeeper,
 	)
 
 	// wasmDir := filepath.Join(homePath, "wasm")
@@ -790,7 +790,6 @@ func NewApp(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
-		// this line is used by starport scaffolding # stargate/app/initGenesis
 		auctiontypes.ModuleName,
 		pricefeedtypes.ModuleName,
 		cdptypes.ModuleName,
@@ -826,8 +825,8 @@ func NewApp(
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
-		yieldfarm.NewAppModule(appCodec, app.yieldfarmKeeper, app.AccountKeeper, app.BankKeeper),
-		yieldaggregator.NewAppModule(appCodec, app.yieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
+		yieldfarm.NewAppModule(appCodec, app.YieldfarmKeeper, app.AccountKeeper, app.BankKeeper),
+		yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
 		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
 		// wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
 		// ibc.NewAppModule(app.IBCKeeper),
