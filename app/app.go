@@ -116,8 +116,10 @@ import (
 	"github.com/UnUniFi/chain/x/incentive"
 	incentivekeeper "github.com/UnUniFi/chain/x/incentive/keeper"
 	incentivetypes "github.com/UnUniFi/chain/x/incentive/types"
+	"github.com/UnUniFi/chain/x/nftmarket"
 	nftmarketkeeper "github.com/UnUniFi/chain/x/nftmarket/keeper"
 	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
+	"github.com/UnUniFi/chain/x/nftmint"
 	nftmintkeeper "github.com/UnUniFi/chain/x/nftmint/keeper"
 	nftminttypes "github.com/UnUniFi/chain/x/nftmint/types"
 	"github.com/UnUniFi/chain/x/pricefeed"
@@ -221,6 +223,10 @@ var (
 		pricefeed.AppModuleBasic{},
 		ununifidist.AppModuleBasic{},
 		incentive.AppModuleBasic{},
+		nftmint.AppModuleBasic{},
+		nftmarket.AppModuleBasic{},
+		yieldfarm.AppModuleBasic{},
+		yieldaggregator.AppModuleBasic{},
 		// wasm.AppModuleBasic{},
 	)
 
@@ -239,10 +245,12 @@ var (
 		cdptypes.LiquidatorMacc:     {authtypes.Minter, authtypes.Burner},
 		ununifidisttypes.ModuleName: {authtypes.Minter},
 		// wasm.ModuleName:             {authtypes.Burner},
-		nft.ModuleName:               nil,
-		nftminttypes.ModuleName:      nil,
-		nftmarkettypes.ModuleName:    nil,
-		nftmarkettypes.NftTradingFee: nil,
+		nft.ModuleName:                  nil,
+		nftminttypes.ModuleName:         nil,
+		nftmarkettypes.ModuleName:       nil,
+		nftmarkettypes.NftTradingFee:    nil,
+		yieldfarmtypes.ModuleName:       {authtypes.Minter},
+		yieldaggregatortypes.ModuleName: nil,
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -369,7 +377,7 @@ func NewApp(
 		capabilitytypes.StoreKey, feegrant.StoreKey, authzkeeper.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 		auctiontypes.StoreKey, cdptypes.StoreKey, incentivetypes.StoreKey,
-		yieldfarmtypes.ModuleName,
+		yieldfarmtypes.StoreKey,
 		yieldaggregatortypes.StoreKey,
 		ununifidisttypes.StoreKey, pricefeedtypes.StoreKey,
 		// wasm.StoreKey,
@@ -694,6 +702,10 @@ func NewApp(
 		incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
 		ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
 		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
+		nftmint.NewAppModule(appCodec, app.NftmintKeeper, app.AccountKeeper),
+		nftmarket.NewAppModule(appCodec, app.NftmarketKeeper, app.AccountKeeper, app.BankKeeper),
+		yieldfarm.NewAppModule(appCodec, app.YieldfarmKeeper, app.AccountKeeper, app.BankKeeper),
+		yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
 		// wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
 	)
 
@@ -726,6 +738,10 @@ func NewApp(
 		cdptypes.ModuleName,
 		incentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
+		nftminttypes.ModuleName,
+		nftmarkettypes.ModuleName,
+		yieldfarmtypes.ModuleName,
+		yieldaggregatortypes.ModuleName,
 
 		// ibchost.ModuleName,
 		// ibctransfertypes.ModuleName,
@@ -757,6 +773,10 @@ func NewApp(
 		cdptypes.ModuleName,
 		incentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
+		nftminttypes.ModuleName,
+		nftmarkettypes.ModuleName,
+		yieldfarmtypes.ModuleName,
+		yieldaggregatortypes.ModuleName,
 
 		// ibchost.ModuleName,
 		// ibctransfertypes.ModuleName,
@@ -795,6 +815,10 @@ func NewApp(
 		cdptypes.ModuleName,
 		incentivetypes.ModuleName,
 		ununifidisttypes.ModuleName,
+		nftminttypes.ModuleName,
+		nftmarkettypes.ModuleName,
+		yieldfarmtypes.ModuleName,
+		yieldaggregatortypes.ModuleName,
 
 		// ibchost.ModuleName,
 		// ibctransfertypes.ModuleName,
@@ -825,6 +849,8 @@ func NewApp(
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
+		// nftmint.NewAppModule(appCodec, app.NftmintKeeper, app.AccountKeeper),
+		// nftmarket.NewAppModule(appCodec, app.NftmarketKeeper, app.AccountKeeper, app.BankKeeper),
 		yieldfarm.NewAppModule(appCodec, app.YieldfarmKeeper, app.AccountKeeper, app.BankKeeper),
 		yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
 		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
@@ -1081,7 +1107,10 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(incentivetypes.ModuleName)
 	paramsKeeper.Subspace(ununifidisttypes.ModuleName)
 	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
+	paramsKeeper.Subspace(nftmarkettypes.ModuleName)
 	// paramsKeeper.Subspace(wasm.ModuleName)
 	paramsKeeper.Subspace(nftminttypes.ModuleName)
+	paramsKeeper.Subspace(yieldaggregatortypes.ModuleName)
+	paramsKeeper.Subspace(yieldfarmtypes.ModuleName)
 	return paramsKeeper
 }
