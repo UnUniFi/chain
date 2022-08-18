@@ -34,11 +34,6 @@ func (k Keeper) AddFarmingUnit(ctx sdk.Context, obj types.FarmingUnit) error {
 	return nil
 }
 
-func (k Keeper) StopFarmingUnit(ctx sdk.Context, obj types.FarmingUnit) error {
-	// TODO: this should perform action to yield farm target
-	return nil
-}
-
 func (k Keeper) GetFarmingUnitsOfAddress(ctx sdk.Context, addr sdk.AccAddress) []types.FarmingUnit {
 	store := ctx.KVStore(k.storeKey)
 
@@ -65,9 +60,13 @@ func (k Keeper) SetFarmingUnit(ctx sdk.Context, obj types.FarmingUnit) {
 	store.Set(types.FarmingUnitKey(addr, obj.Id), bz)
 }
 
-func (k Keeper) DeleteFarmingUnit(ctx sdk.Context, addr sdk.AccAddress, unitId uint64) {
+func (k Keeper) DeleteFarmingUnit(ctx sdk.Context, obj types.FarmingUnit) {
 	store := ctx.KVStore(k.storeKey)
-	store.Delete(types.FarmingUnitKey(addr, unitId))
+	addr, err := sdk.AccAddressFromBech32(obj.Owner)
+	if err != nil {
+		panic(err)
+	}
+	store.Delete(types.FarmingUnitKey(addr, obj.Id))
 }
 
 func (k Keeper) GetFarmingUnit(ctx sdk.Context, addr sdk.AccAddress, unitId uint64) types.FarmingUnit {

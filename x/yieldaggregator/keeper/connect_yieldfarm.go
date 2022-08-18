@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
@@ -85,7 +83,6 @@ func (k Keeper) ClaimAllFarmUnitRewards(ctx sdk.Context) {
 		target := k.GetAssetManagementTarget(ctx, farmUnit.AccountId, farmUnit.TargetId)
 		err := k.ClaimRewardsFromTarget(ctx, target, farmUnit)
 		if err != nil {
-			fmt.Println("err", err)
 			continue
 		}
 	}

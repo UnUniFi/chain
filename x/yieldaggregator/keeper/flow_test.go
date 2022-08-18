@@ -8,6 +8,8 @@ import (
 	"github.com/tendermint/tendermint/crypto/ed25519"
 
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
+	"github.com/UnUniFi/chain/x/yieldfarm"
+	yieldfarmtypes "github.com/UnUniFi/chain/x/yieldfarm/types"
 )
 
 func (suite *KeeperTestSuite) TestInvestmentFlow() {
@@ -38,13 +40,14 @@ func (suite *KeeperTestSuite) TestInvestmentFlow() {
 	coins := sdk.Coins{sdk.NewInt64Coin("uguu", 1000000)}
 	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
 	suite.NoError(err)
-	err = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.ModuleName, coins)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, farmer, coins)
 	suite.NoError(err)
-	suite.app.YieldaggregatorKeeper.Deposit(suite.ctx, &types.MsgDeposit{
+	err = suite.app.YieldaggregatorKeeper.Deposit(suite.ctx, &types.MsgDeposit{
 		FromAddress:   farmer.Bytes(),
 		Amount:        coins,
 		ExecuteOrders: false,
 	})
+	suite.NoError(err)
 
 	// create farming order by farmer
 	suite.app.YieldaggregatorKeeper.SetFarmingOrder(suite.ctx, types.FarmingOrder{
@@ -69,20 +72,64 @@ func (suite *KeeperTestSuite) TestInvestmentFlow() {
 	farmUnits := suite.app.YieldaggregatorKeeper.GetFarmingUnitsOfAddress(suite.ctx, farmer)
 	suite.Require().GreaterOrEqual(len(farmUnits), 1)
 
-	// after a month
-	future := now.Add(time.Hour * 24 * 30)
+	// check deposit result on yieldfarm module
+	farmUnit := farmUnits[0]
+	yFarmInfo := suite.app.YieldfarmKeeper.GetFarmerInfo(suite.ctx, farmUnit.GetAddress())
+	suite.Require().Equal(yFarmInfo, yieldfarmtypes.FarmerInfo{
+		Account: farmUnit.GetAddress().String(),
+		Amount:  coins,
+		Rewards: sdk.Coins(nil),
+	})
+
+	// after a day
+	future := now.Add(time.Hour * 24)
 	suite.ctx = suite.ctx.WithBlockTime(future)
+
+	// allocate reward
+	yieldfarm.EndBlocker(suite.ctx, suite.app.YieldfarmKeeper)
+
+	// check deposit result on yieldfarm module
+	yFarmInfo = suite.app.YieldfarmKeeper.GetFarmerInfo(suite.ctx, farmUnit.GetAddress())
+	suite.Require().Equal(yFarmInfo.Rewards, []sdk.Coin{sdk.NewInt64Coin("uguu", 10000)}) // 1% yield
 
 	// claim rewards after a time for all units
 	suite.app.YieldaggregatorKeeper.ClaimAllFarmUnitRewards(suite.ctx)
 
+	// check claim result on yieldfarm module
+	yFarmInfo = suite.app.YieldfarmKeeper.GetFarmerInfo(suite.ctx, farmUnit.GetAddress())
+	suite.Require().Equal(yFarmInfo.Rewards, []sdk.Coin(nil)) // amount after claim
+
 	// stop farming and close farm unit
-	err = suite.app.YieldaggregatorKeeper.StopFarmingUnit(suite.ctx, farmUnits[0])
+	err = suite.app.YieldaggregatorKeeper.StopFarmingUnit(suite.ctx, farmUnit)
 	suite.Require().NoError(err)
 
-	// withdraw whole "uguu" by farmer
-	suite.app.YieldaggregatorKeeper.Withdraw(suite.ctx, &types.MsgWithdraw{
-		FromAddress: farmer.Bytes(),
-		Amount:      coins,
+	// withdraw from farming unit
+	err = suite.app.YieldaggregatorKeeper.WithdrawFarmingUnit(suite.ctx, farmUnit)
+	suite.Require().NoError(err)
+
+	// check user deposit balance
+	deposit := suite.app.YieldaggregatorKeeper.GetUserDeposit(suite.ctx, farmer)
+	suite.Require().Equal(deposit, sdk.Coins{sdk.NewInt64Coin("uguu", 1010000)})
+
+	// check stop result on yieldfarm module
+	yFarmInfo = suite.app.YieldfarmKeeper.GetFarmerInfo(suite.ctx, farmUnit.GetAddress())
+	suite.Require().Equal(yFarmInfo, yieldfarmtypes.FarmerInfo{
+		Account: farmUnit.GetAddress().String(),
+		Amount:  sdk.Coins(nil),
+		Rewards: sdk.Coins(nil),
 	})
+
+	// withdraw whole "uguu" by farmer
+	err = suite.app.YieldaggregatorKeeper.Withdraw(suite.ctx, &types.MsgWithdraw{
+		FromAddress: farmer.Bytes(),
+		Amount:      deposit,
+	})
+	suite.Require().NoError(err)
+
+	// check user deposit balance
+	deposit = suite.app.YieldaggregatorKeeper.GetUserDeposit(suite.ctx, farmer)
+	suite.Require().Equal(deposit, sdk.Coins(nil))
+
+	balance := suite.app.BankKeeper.GetBalance(suite.ctx, farmer, "uguu")
+	suite.Require().Equal(balance, sdk.NewInt64Coin("uguu", 1010000))
 }

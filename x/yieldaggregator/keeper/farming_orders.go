@@ -154,3 +154,30 @@ func (k Keeper) ExecuteFarmingOrders(ctx sdk.Context, addr sdk.AccAddress) error
 	k.DeleteUserDeposit(ctx, addr)
 	return nil
 }
+
+func (k Keeper) StopFarmingUnit(ctx sdk.Context, obj types.FarmingUnit) error {
+	target := k.GetAssetManagementTarget(ctx, obj.AccountId, obj.TargetId)
+	err := k.BeginWithdrawFromTarget(ctx, target, obj)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (k Keeper) WithdrawFarmingUnit(ctx sdk.Context, obj types.FarmingUnit) error {
+	addr := obj.GetAddress()
+	balances := k.bankKeeper.GetAllBalances(ctx, addr)
+	if balances.IsAllPositive() {
+		err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, balances)
+		if err != nil {
+			return err
+		}
+
+		unitOwner := sdk.MustAccAddressFromBech32(obj.Owner)
+		k.IncreaseUserDeposit(ctx, unitOwner, balances)
+	}
+
+	k.DeleteFarmingUnit(ctx, obj)
+	return nil
+}
