@@ -3,7 +3,6 @@ package v1
 import (
 	"fmt"
 	"strconv"
-	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
@@ -26,30 +25,38 @@ func upgradeBankSend(
 	before_total_supply := bankkeeper.GetSupply(ctx, "uguu")
 	ctx.Logger().Info(fmt.Sprintf("bank send : total supply[%d]", before_total_supply.Amount))
 
+	fromAddr, err := sdk.AccAddressFromBech32(FromAddressValidator)
+	if err != nil {
+		panic(err)
+	}
 	// Validator
 	for index, value := range bank_send_list.Validator {
 		ctx.Logger().Info(fmt.Sprintf("bank send validator :%s[%s]", strconv.Itoa(index), value.ToAddress))
-		coin := tokenAllocation(ctx, authkeeper, bankkeeper, index, value)
+		coin := tokenAllocation(ctx, authkeeper, bankkeeper, index, value, fromAddr)
 		total_allocate_coin.Add(coin)
 	}
 
 	// Check the amount of tokens sent
-	assumed_coin.Add(sdk.NewCoin("uguu", sdk.NewInt(TOTAL_AMOUNT_VALIDATOR)))
+	assumed_coin.Add(sdk.NewCoin("uguu", sdk.NewInt(TotalAmountValidator)))
 	if !total_allocate_coin.IsEqual(assumed_coin) {
 		panic(fmt.Sprintf("error: assumed amount sent to the validator does not match.: Actual[%d] Assumed[%d]",
 			total_allocate_coin.Amount,
 			assumed_coin.Amount))
 	}
 
+	fromAddr, err = sdk.AccAddressFromBech32(FromAddressAirdrop)
+	if err != nil {
+		panic(err)
+	}
 	// Airdrop, Community reward and Moderator
 	for index, value := range bank_send_list.AirdropCommunityRewardModerator {
 		ctx.Logger().Info(fmt.Sprintf("bank send :%s", strconv.Itoa(index)))
-		coin := tokenAllocation(ctx, authkeeper, bankkeeper, index, value)
+		coin := tokenAllocation(ctx, authkeeper, bankkeeper, index, value, fromAddr)
 		total_allocate_coin.Add(coin)
 	}
 
 	// Check the amount of tokens sent
-	assumed_coin.Add(sdk.NewCoin("uguu", sdk.NewInt(TOTAL_AMOUNT_EXCEPT_VALIDATOR)))
+	assumed_coin.Add(sdk.NewCoin("uguu", sdk.NewInt(TotalAmountExceptValidator)))
 	if !total_allocate_coin.IsEqual(assumed_coin) {
 		panic(fmt.Sprintf("error: assumed amount sent to the Airdrop, Community reward and Moderator does not match.: Actual[%d] Assumed[%d]",
 			total_allocate_coin.Amount,
@@ -68,14 +75,11 @@ func tokenAllocation(
 	authkeeper authkeeper.AccountKeeper,
 	bankkeeper bankkeeper.Keeper,
 	index int,
-	value BankSendTarget) sdk.Coin {
+	value BankSendTarget,
+	fromAddr sdk.AccAddress) sdk.Coin {
 	not_exist_vesting_account := true
 
 	// check exits VestingAccount
-	fromAddr, err := sdk.AccAddressFromBech32(value.FromAddress)
-	if err != nil {
-		panic(err)
-	}
 	toAddr, err := sdk.AccAddressFromBech32(value.ToAddress)
 	if err != nil {
 		panic(err)
@@ -86,16 +90,13 @@ func tokenAllocation(
 	}
 
 	cont_acc, ok := accI.(*authvesting.ContinuousVestingAccount)
-	add_coin := sdk.NewCoins(sdk.NewCoin(value.Amount, sdk.NewInt(value.Denom)))
+	add_coin := sdk.NewCoin(value.Denom, sdk.NewInt(value.Amount))
 	if ok {
 		ctx.Logger().Info(fmt.Sprintf("bank send[%s] : ContinuousVestingAccount is exits [%s]", strconv.Itoa(index), cont_acc.String()))
 		not_exist_vesting_account = false
 
 		// 	add coins
-		cont_acc.TrackDelegation(
-			time.Now(),
-			cont_acc.GetOriginalVesting(),
-			add_coin)
+		cont_acc.OriginalVesting.Add(add_coin)
 		// start time sets a more past date.
 		if cont_acc.GetStartTime() > value.VestingStarts {
 			cont_acc.StartTime = value.VestingStarts
@@ -118,10 +119,7 @@ func tokenAllocation(
 		not_exist_vesting_account = false
 
 		// 	add coins
-		delayed_acc.TrackDelegation(
-			time.Unix(delayed_acc.EndTime, 0),
-			delayed_acc.GetOriginalVesting(),
-			add_coin)
+		delayed_acc.OriginalVesting.Add(add_coin)
 
 		// end time sets a more future date.
 		if delayed_acc.GetEndTime() < value.VestingEnds {
@@ -140,7 +138,7 @@ func tokenAllocation(
 		// 	create vesting account
 		cont_vesting_acc := authvesting.NewContinuousVestingAccount(
 			accI.(*types.BaseAccount),
-			add_coin,
+			sdk.NewCoins(add_coin),
 			value.VestingStarts,
 			value.VestingEnds)
 
@@ -150,11 +148,11 @@ func tokenAllocation(
 
 		authkeeper.SetAccount(ctx, cont_vesting_acc)
 
-		if err := bankkeeper.SendCoins(ctx, fromAddr, toAddr, add_coin); err != nil {
+		if err := bankkeeper.SendCoins(ctx, fromAddr, toAddr, sdk.NewCoins(add_coin)); err != nil {
 			panic(err)
 		}
 		ctx.Logger().Info(fmt.Sprintf("bank send[%s] : NewContinuousVestingAccount [%s]", strconv.Itoa(index), cont_vesting_acc.String()))
 	}
 
-	return add_coin[0]
+	return add_coin
 }
