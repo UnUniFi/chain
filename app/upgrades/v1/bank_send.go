@@ -111,6 +111,11 @@ func tokenAllocation(
 		}
 
 		authkeeper.SetAccount(ctx, cont_acc)
+
+		if err := bankkeeper.SendCoins(ctx, fromAddr, toAddr, sdk.NewCoins(add_coin)); err != nil {
+			panic(err)
+		}
+		ctx.Logger().Info(fmt.Sprintf("bank send[%s] : ContinuousVestingAccount [%s]", strconv.Itoa(index), cont_acc.String()))
 	}
 
 	delayed_acc, ok := accI.(*authvesting.DelayedVestingAccount)
@@ -130,6 +135,11 @@ func tokenAllocation(
 		}
 
 		authkeeper.SetAccount(ctx, delayed_acc)
+
+		if err := bankkeeper.SendCoins(ctx, fromAddr, toAddr, sdk.NewCoins(add_coin)); err != nil {
+			panic(err)
+		}
+		ctx.Logger().Info(fmt.Sprintf("bank send[%s] : DelayedVestingAccount [%s]", strconv.Itoa(index), delayed_acc.String()))
 	}
 
 	if not_exist_vesting_account {
