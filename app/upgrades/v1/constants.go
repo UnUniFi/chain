@@ -1,6 +1,6 @@
 package v1
 
-const UpgradeName string = "upgrade_v1"
+const UpgradeName string = "v1-beta.2"
 
 const TotalAmountValidator int64 = 4656862745096
 const TotalAmountExceptValidator int64 = 304963298762
