@@ -6,7 +6,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 )
@@ -78,6 +78,7 @@ func tokenAllocation(
 	value BankSendTarget,
 	fromAddr sdk.AccAddress) sdk.Coin {
 	not_exist_vesting_account := true
+	add_coin := sdk.NewCoin(value.Denom, sdk.NewInt(value.Amount))
 
 	// check exits VestingAccount
 	toAddr, err := sdk.AccAddressFromBech32(value.ToAddress)
@@ -86,11 +87,13 @@ func tokenAllocation(
 	}
 	accI := authkeeper.GetAccount(ctx, toAddr)
 	if accI == nil {
-		panic(fmt.Sprintf("error address not exist: [%s][%s]", strconv.Itoa(index), value.ToAddress))
+		// panic(fmt.Sprintf("error address not exist: [%s][%s][%s]", strconv.Itoa(index), value.ToAddress, toAddr.String()))
+		accI = authkeeper.NewAccountWithAddress(ctx, toAddr)
+		authkeeper.SetAccount(ctx, accI)
 	}
 
 	cont_acc, ok := accI.(*authvesting.ContinuousVestingAccount)
-	add_coin := sdk.NewCoin(value.Denom, sdk.NewInt(value.Amount))
+
 	if ok {
 		ctx.Logger().Info(fmt.Sprintf("bank send[%s] : ContinuousVestingAccount is exits [%s]", strconv.Itoa(index), cont_acc.String()))
 		not_exist_vesting_account = false
@@ -147,7 +150,7 @@ func tokenAllocation(
 		// not exist
 		// 	create vesting account
 		cont_vesting_acc := authvesting.NewContinuousVestingAccount(
-			accI.(*types.BaseAccount),
+			accI.(*authtypes.BaseAccount),
 			sdk.NewCoins(add_coin),
 			value.VestingStarts,
 			value.VestingEnds)
