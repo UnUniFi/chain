@@ -179,8 +179,8 @@ func tokenAllocation(
 		not_exist_vesting_account = false
 
 		// 	add coins
-		newAmount := cont_acc.DelegatedVesting.Add(add_coin)
-		cont_acc.DelegatedVesting = newAmount
+		newAmount := delayed_acc.DelegatedVesting.Add(add_coin)
+		delayed_acc.DelegatedVesting = newAmount
 
 		// end time sets a more future date.
 		if delayed_acc.GetEndTime() < value.VestingEnds {
