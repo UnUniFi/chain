@@ -34,8 +34,10 @@ echo " " >> changed_data.txt
 
 echo "Moderators" >> changed_data.txt
 echo "ununifi1qhxnlhh53y2t73urgdqqxn7ttkseegwz62aq4j" >> changed_data.txt
+ununifid q auth account ununifi1qhxnlhh53y2t73urgdqqxn7ttkseegwz62aq4j >> changed_data.txt
 ununifid q bank balances ununifi1qhxnlhh53y2t73urgdqqxn7ttkseegwz62aq4j >> changed_data.txt
 echo "ununifi1v45254hgxun3vnydjcl6dhw6sz82ulftu6t53s" >> changed_data.txt
+ununifid q auth account ununifi1v45254hgxun3vnydjcl6dhw6sz82ulftu6t53s >> changed_data.txt
 ununifid q bank balances ununifi1v45254hgxun3vnydjcl6dhw6sz82ulftu6t53s >> changed_data.txt
 echo " " >> changed_data.txt
 
