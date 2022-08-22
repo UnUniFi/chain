@@ -144,11 +144,6 @@ func tokenAllocation(
 		panic(err)
 	}
 	accI := authkeeper.GetAccount(ctx, toAddr)
-	if accI == nil {
-		// panic(fmt.Sprintf("error address not exist: [%s][%s][%s]", strconv.Itoa(index), value.ToAddress, toAddr.String()))
-		// accI = authkeeper.NewAccountWithAddress(ctx, toAddr)
-		// authkeeper.SetAccount(ctx, accI)
-	}
 
 	cont_acc, ok := accI.(*authvesting.ContinuousVestingAccount)
 
@@ -157,7 +152,9 @@ func tokenAllocation(
 		not_exist_vesting_account = false
 
 		// 	add coins
-		cont_acc.OriginalVesting.Add(add_coin)
+		newAmount := cont_acc.OriginalVesting.Add(add_coin)
+		cont_acc.OriginalVesting = newAmount
+
 		// start time sets a more past date.
 		if cont_acc.GetStartTime() > value.VestingStarts {
 			cont_acc.StartTime = value.VestingStarts
@@ -182,7 +179,8 @@ func tokenAllocation(
 		not_exist_vesting_account = false
 
 		// 	add coins
-		delayed_acc.OriginalVesting.Add(add_coin)
+		newAmount := cont_acc.DelegatedVesting.Add(add_coin)
+		cont_acc.DelegatedVesting = newAmount
 
 		// end time sets a more future date.
 		if delayed_acc.GetEndTime() < value.VestingEnds {
@@ -200,7 +198,7 @@ func tokenAllocation(
 	if not_exist_vesting_account {
 		ctx.Logger().Info(fmt.Sprintf("bank send[%s] : ContinuousVestingAccount / DelayedVestingAccount not exits", strconv.Itoa(index)))
 		// not exist
-		// 	create vesting account
+		//  create vesting account
 		cont_vesting_acc := authvesting.NewContinuousVestingAccount(
 			accI.(*authtypes.BaseAccount),
 			sdk.NewCoins(add_coin),
