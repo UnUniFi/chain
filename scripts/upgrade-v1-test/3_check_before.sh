@@ -37,3 +37,12 @@ echo "ununifi19srj7ga7t2pyflz7f50le5fv0wa9kuf7tmdtla" >> changed_data.txt
 ununifid q bank balances ununifi19srj7ga7t2pyflz7f50le5fv0wa9kuf7tmdtla >> changed_data.txt
 echo "ununifi1r500cehqg5u6fhsaysmhu4cnw5pz3lxcqhgaq7" >> changed_data.txt
 ununifid q bank balances ununifi1r500cehqg5u6fhsaysmhu4cnw5pz3lxcqhgaq7 >> changed_data.txt
+echo " " >> changed_data.txt
+
+echo "Forfeit" >> changed_data.txt 
+echo "ununifi1dc8nfka4dgw90rfejrfncsp5rmgtj5ppkfma5v" >> changed_data.txt
+ununifid q bank balances ununifi1dc8nfka4dgw90rfejrfncsp5rmgtj5ppkfma5v >> changed_data.txt
+echo "ununifi1khscuq3ku9gf9mpgvg897lacug9tn8mhjhldv4" >> changed_data.txt
+ununifid q bank balances ununifi1khscuq3ku9gf9mpgvg897lacug9tn8mhjhldv4 >> changed_data.txt
+echo "ununifi1j77ze43j79njy3sd62e3umpuglgwqn3ddezqmn" >> changed_data.txt
+ununifid q bank balances ununifi1j77ze43j79njy3sd62e3umpuglgwqn3ddezqmn >> changed_data.txt
