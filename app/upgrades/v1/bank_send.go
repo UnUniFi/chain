@@ -34,6 +34,12 @@ func upgradeBankSend(
 		ctx.Logger().Info(fmt.Sprintf("bank send validator :%s[%s]", strconv.Itoa(index), value.ToAddress))
 		coin := tokenAllocation(ctx, authkeeper, bankkeeper, index, value, fromAddr)
 		total_allocate_coin.Add(coin)
+		normalToken := sdk.NewCoin(Denom, sdk.NewInt(FundAmountValidator))
+		toAddr, _ := sdk.AccAddressFromBech32(value.ToAddress)
+		if err := bankkeeper.SendCoins(ctx, fromAddr, toAddr, sdk.NewCoins(normalToken)); err != nil {
+			panic(err)
+		}
+		total_allocate_coin.Add(normalToken)
 	}
 
 	// Check the amount of tokens sent
