@@ -11,7 +11,7 @@ echo "ununifi19f0w9svr905fhefusyx4z8sf83j6et0gkfnrpz" >> changed_data.txt
 ununifid q bank balances ununifi19f0w9svr905fhefusyx4z8sf83j6et0gkfnrpz >> changed_data.txt
 echo " " >> changed_data.txt
 
-echo "Others" >> changed_data.txt 
+echo "Airdrop" >> changed_data.txt 
 echo "ununifi1wqpdt48849gwr6qfslnu0vvrp7k40662w8nt3f" >> changed_data.txt
 ununifid q bank balances ununifi1wqpdt48849gwr6qfslnu0vvrp7k40662w8nt3f >> changed_data.txt
 echo "ununifi1cgjhlgdnzlxp94j9msdl6gxf6qd8eh7wmmdqcn" >> changed_data.txt
@@ -30,6 +30,13 @@ echo "ununifi1atmdkat7mqh35u5cpr29njs0qfv33ewn2hdrrv" >> changed_data.txt
 ununifid q bank balances ununifi1atmdkat7mqh35u5cpr29njs0qfv33ewn2hdrrv >> changed_data.txt
 echo "ununifi19570z7f7r2x69056hc5ez3tk9gtau3vyg2zlt7" >> changed_data.txt
 ununifid q bank balances ununifi19570z7f7r2x69056hc5ez3tk9gtau3vyg2zlt7 >> changed_data.txt
+echo " " >> changed_data.txt
+
+echo "Moderators" >> changed_data.txt
+echo "ununifi1qhxnlhh53y2t73urgdqqxn7ttkseegwz62aq4j" >> changed_data.txt
+ununifid q bank balances ununifi1qhxnlhh53y2t73urgdqqxn7ttkseegwz62aq4j >> changed_data.txt
+echo "ununifi1v45254hgxun3vnydjcl6dhw6sz82ulftu6t53s" >> changed_data.txt
+ununifid q bank balances ununifi1v45254hgxun3vnydjcl6dhw6sz82ulftu6t53s >> changed_data.txt
 echo " " >> changed_data.txt
 
 echo "Senders" >> changed_data.txt 
