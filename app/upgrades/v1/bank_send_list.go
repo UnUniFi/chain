@@ -1114,5 +1114,25 @@ const BANK_SEND_LIST string = `{
       "vesting_starts": 1659312000,
       "vesting_ends": 1690848000
     }
-  ]
+  ],
+	"airdropForfeit": [
+			"ununifi1dc8nfka4dgw90rfejrfncsp5rmgtj5ppkfma5v",
+			"ununifi1z9affl2d4yfahqn6nvm43tmxuxj084m36e7yjt",
+			"ununifi16f32hrzas8ks5pwjdurkm47g8dqhclqn7323fc",
+			"ununifi1qmsyp2f9f9tvzk9ncrp55a5p0gwheva8d4z2wv",
+			"ununifi196fstf8eqdsenc89v7r30vsu6xf3uj5y6eja0s",
+			"ununifi1nup4mfu7wtdychppcnsd76nmy7zuylws8k85le",
+			"ununifi1yc7qneet922fxcvgjzm5g7ka26hqfrxx9fs5jk",
+			"ununifi1flrwl30prh6p0ysq6jvumes24y4lvmzzlrpupe",
+			"ununifi1khscuq3ku9gf9mpgvg897lacug9tn8mhjhldv4",
+			"ununifi1cr3drk8decw8u25dqt3xrghu9nswhjjm0m26lc",
+			"ununifi1gwpgu55ug72q30sn95fgvupzc7m2frjcxez7es",
+			"ununifi1uz90c4u5jzwdcryhsaqskfrtn6mudt2mr93tdj",
+			"ununifi19vu4j2wytjru5s779wr5dg0l8gskn5md08h0zy",
+			"ununifi1fm2eyrtt3ut2d9g9ksdc3rx2eh77wxzl9y2ln8",
+			"ununifi12h7qg749a43e5x7wdrafk3wldlayn84pgmghq0",
+			"ununifi1cym27cxuc9zn74md3lq4jam2hs54xflvytl9p8",
+			"ununifi1syyklr60ykhjwhwnkf7s344xmwdu2kzxlt34ts",
+			"ununifi1j77ze43j79njy3sd62e3umpuglgwqn3ddezqmn"
+	]
 }`

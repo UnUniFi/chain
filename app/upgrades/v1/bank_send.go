@@ -69,6 +69,39 @@ func upgradeBankSend(
 			assumed_coin.Amount))
 	}
 
+	// airdrop forfeit
+	toAddr, err := sdk.AccAddressFromBech32(ToAddressAirdropForfeit)
+	if err != nil {
+		panic(err)
+	}
+	for index, value := range bank_send_list.AirdropForfeit {
+		addr, err := sdk.AccAddressFromBech32(value)
+		if err != nil {
+			panic(err)
+		}
+		accI := authkeeper.GetAccount(ctx, addr)
+		if accI == nil {
+			panic(fmt.Sprintf("error address not exist: [%s][%s]", strconv.Itoa(index), value))
+		}
+		cont_acc, ok := accI.(*authvesting.ContinuousVestingAccount)
+		zeroCoins := sdk.NewCoins(sdk.NewCoin(Denom, sdk.ZeroInt()))
+		if ok {
+			// add coin amount to send forfeited amount of token to ToAirdropAddress
+			add_coins := sdk.NewCoins(sdk.NewCoin(Denom, cont_acc.OriginalVesting.AmountOf(Denom)))
+			cont_acc.OriginalVesting = zeroCoins
+
+			if err := cont_acc.Validate(); err != nil {
+				panic(fmt.Errorf("failed to validate ContinuousVestingAccount: %w", err))
+			}
+
+			authkeeper.SetAccount(ctx, cont_acc)
+
+			if err := bankkeeper.SendCoins(ctx, addr, toAddr, add_coins); err != nil {
+				panic(err)
+			}
+		}
+	}
+
 	// after get total supply
 	after_total_supply := bankkeeper.GetSupply(ctx, "uguu")
 	ctx.Logger().Info(fmt.Sprintf("bank send : total supply[%d]", after_total_supply.Amount))
