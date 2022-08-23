@@ -17,8 +17,7 @@ func CreateUpgradeHandler(mm *module.Manager,
 	return func(ctx sdk.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		ctx.Logger().Info(fmt.Sprintf("update start:%s", UpgradeName))
 		ctx.Logger().Info(fmt.Sprintf("update start test:%s", UpgradeName))
-		// add liquidity modules
-		// liquidity is auto init
+
 		bankPram := bankkeeper.GetParams(ctx)
 		bankPram.DefaultSendEnabled = true
 		bankkeeper.SetParams(ctx, bankPram)

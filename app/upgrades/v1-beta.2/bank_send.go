@@ -140,6 +140,7 @@ func tokenAllocation(
 		panic(err)
 	}
 
+	// if the account is not existant, this method creates account internally
 	if err := bankkeeper.SendCoins(ctx, fromAddr, toAddr, sdk.NewCoins(add_coin)); err != nil {
 		panic(err)
 	}
