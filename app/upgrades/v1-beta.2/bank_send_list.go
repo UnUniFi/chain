@@ -22,14 +22,14 @@ const BANK_SEND_LIST string = `{
 	"validator": [
     {
       "toAddress": "ununifi1az7xg9wyfruf94teg9u2dr8dec7sjf6esultlc",
-      "amount": 2328411372548,
+      "amount": 2794117647058,
       "denom": "uguu",
       "vesting_starts": 1661126400,
       "vesting_ends": 1724284800
     },
     {
       "toAddress": "ununifi199j70q49338yz9r83xsmfescn74gxachwfp9cs",
-      "amount": 2328411372548,
+      "amount": 2794117647058,
       "denom": "uguu",
       "vesting_starts": 1661126400,
       "vesting_ends": 1724284800
