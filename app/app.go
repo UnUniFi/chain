@@ -81,6 +81,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 
+	yieldaggregatorclient "github.com/UnUniFi/chain/x/yieldaggregator/client"
+
 	ante "github.com/UnUniFi/chain/app/ante"
 	appparams "github.com/UnUniFi/chain/app/params"
 
@@ -182,8 +184,16 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 		upgradeclient.LegacyCancelProposalHandler,
 		// ibcclientclient.UpdateClientProposalHandler,
 		// ibcclientclient.UpgradeProposalHandler,
-		// this line is used by starport scaffolding # stargate/app/govProposalHandler
+		yieldaggregatorclient.ProposalAddYieldFarmHandler,
+		yieldaggregatorclient.ProposalUpdateYieldFarm,
+		yieldaggregatorclient.ProposalStopYieldFarm,
+		yieldaggregatorclient.ProposalRemoveYieldFarm,
+		yieldaggregatorclient.ProposalAddYieldFarmTarget,
+		yieldaggregatorclient.ProposalUpdateYieldFarmTarget,
+		yieldaggregatorclient.ProposalStopYieldFarmTarget,
+		yieldaggregatorclient.ProposalRemoveYieldFarmTarget,
 	)
+
 	// govProposalHandlers = append(govProposalHandlers, wasmclient.ProposalHandlers...)
 
 	return govProposalHandlers
@@ -503,6 +513,7 @@ func NewApp(
 	govRouter := govv1beta1.NewRouter()
 	govRouter.
 		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
+		AddRoute(yieldaggregatortypes.RouterKey, yieldaggregator.NewProposalHandler(app.YieldaggregatorKeeper)).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
 		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)) //.

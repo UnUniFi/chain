@@ -33,11 +33,13 @@ message AssetManagementTarget {
   repeated AssetCondition  asset_conditions            = 5 [(gogoproto.nullable) = false];
   google.protobuf.Duration unbonding_time = 6 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
   IntegrateInfo            integrate_info = 7 [(gogoproto.nullable) = false];
+  bool                     enabled        = 8;
 }
 
 message AssetManagementAccount {
-  string id   = 1;
-  string name = 2;
+  string id      = 1;
+  string name    = 2;
+  bool   enabled = 3;
 }
 
 message FarmingOrder {
