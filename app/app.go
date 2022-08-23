@@ -7,8 +7,6 @@ import (
 	"os"
 	"path/filepath"
 
-	ante "github.com/UnUniFi/chain/app/ante"
-	appparams "github.com/UnUniFi/chain/app/params"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
@@ -83,6 +81,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 
+	ante "github.com/UnUniFi/chain/app/ante"
+	appparams "github.com/UnUniFi/chain/app/params"
+
 	// "github.com/cosmos/ibc-go/v3/modules/apps/transfer"
 	// ibctransferkeeper "github.com/cosmos/ibc-go/v3/modules/apps/transfer/keeper"
 	// ibctransfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
@@ -125,6 +126,10 @@ import (
 	"github.com/UnUniFi/chain/x/nftmarket"
 	nftmarketkeeper "github.com/UnUniFi/chain/x/nftmarket/keeper"
 	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
+
+	decentralizedvault "github.com/UnUniFi/chain/x/decentralized-vault"
+	decentralizedvaultkeeper "github.com/UnUniFi/chain/x/decentralized-vault/keeper"
+	decentralizedvaulttypes "github.com/UnUniFi/chain/x/decentralized-vault/types"
 	// "github.com/CosmWasm/wasmd/x/wasm"
 	// wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 )
@@ -215,6 +220,7 @@ var (
 		ununifidist.AppModuleBasic{},
 		incentive.AppModuleBasic{},
 		nftmarket.AppModuleBasic{},
+		decentralizedvault.AppModuleBasic{},
 		// wasm.AppModuleBasic{},
 	)
 
@@ -233,9 +239,10 @@ var (
 		cdptypes.LiquidatorMacc:     {authtypes.Minter, authtypes.Burner},
 		ununifidisttypes.ModuleName: {authtypes.Minter},
 		// wasm.ModuleName:             {authtypes.Burner},
-		nft.ModuleName:               nil,
-		nftmarkettypes.ModuleName:    nil,
-		nftmarkettypes.NftTradingFee: nil,
+		nft.ModuleName:                     nil,
+		nftmarkettypes.ModuleName:          nil,
+		nftmarkettypes.NftTradingFee:       nil,
+		decentralizedvaulttypes.ModuleName: nil,
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -305,12 +312,13 @@ type App struct {
 	// ScopedWasmKeeper     capabilitykeeper.ScopedKeeper
 
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
-	auctionKeeper     auctionkeeper.Keeper
-	cdpKeeper         cdpkeeper.Keeper
-	incentiveKeeper   incentivekeeper.Keeper
-	ununifidistKeeper ununifidistkeeper.Keeper
-	pricefeedKeeper   pricefeedkeeper.Keeper
-	NftmarketKeeper   nftmarketkeeper.Keeper
+	auctionKeeper            auctionkeeper.Keeper
+	cdpKeeper                cdpkeeper.Keeper
+	incentiveKeeper          incentivekeeper.Keeper
+	ununifidistKeeper        ununifidistkeeper.Keeper
+	pricefeedKeeper          pricefeedkeeper.Keeper
+	NftmarketKeeper          nftmarketkeeper.Keeper
+	DecentralizedvaultKeeper decentralizedvaultkeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -363,6 +371,7 @@ func NewApp(
 		// wasm.StoreKey,
 		nftkeeper.StoreKey,
 		nftmarkettypes.StoreKey,
+		decentralizedvaulttypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -568,6 +577,15 @@ func NewApp(
 		app.NFTKeeper,
 	)
 
+	app.DecentralizedvaultKeeper = decentralizedvaultkeeper.NewKeeper(
+		appCodec,
+		keys[decentralizedvaulttypes.StoreKey],
+		keys[decentralizedvaulttypes.MemStoreKey],
+		app.GetSubspace(decentralizedvaulttypes.ModuleName),
+		app.AccountKeeper,
+		app.NFTKeeper,
+	)
+
 	app.cdpKeeper = *cdpKeeper.SetHooks(cdptypes.NewMultiCdpHooks(app.incentiveKeeper.Hooks()))
 
 	// wasmDir := filepath.Join(homePath, "wasm")
@@ -658,6 +676,7 @@ func NewApp(
 		ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
 		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
 		nftmarket.NewAppModule(appCodec, app.NftmarketKeeper, app.AccountKeeper, app.BankKeeper),
+		decentralizedvault.NewAppModule(appCodec, app.DecentralizedvaultKeeper, app.AccountKeeper, app.BankKeeper),
 		// wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
 	)
 
@@ -691,6 +710,7 @@ func NewApp(
 		incentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
 		nftmarkettypes.ModuleName,
+		decentralizedvaulttypes.ModuleName,
 
 		// ibchost.ModuleName,
 		// ibctransfertypes.ModuleName,
@@ -723,6 +743,7 @@ func NewApp(
 		incentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
 		nftmarkettypes.ModuleName,
+		decentralizedvaulttypes.ModuleName,
 
 		// ibchost.ModuleName,
 		// ibctransfertypes.ModuleName,
@@ -763,6 +784,7 @@ func NewApp(
 		incentivetypes.ModuleName,
 		ununifidisttypes.ModuleName,
 		nftmarkettypes.ModuleName,
+		decentralizedvaulttypes.ModuleName,
 
 		// ibchost.ModuleName,
 		// ibctransfertypes.ModuleName,
@@ -1048,6 +1070,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ununifidisttypes.ModuleName)
 	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
 	paramsKeeper.Subspace(nftmarkettypes.ModuleName)
+	paramsKeeper.Subspace(decentralizedvaulttypes.ModuleName)
 	// paramsKeeper.Subspace(wasm.ModuleName)
 	return paramsKeeper
 }

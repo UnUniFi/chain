@@ -1,13 +1,83 @@
 syntax = "proto3";
 package ununifi.decentralizedvault;
 
-// this line is used by starport scaffolding # proto/tx/import
+import "gogoproto/gogo.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/decentralized-vault/types";
 
 // Msg defines the Msg service.
 service Msg {
-  // this line is used by starport scaffolding # proto/tx/rpc
+  rpc NftLocked(MsgNftLocked) returns (MsgNftLockedResponse);
+  rpc NftUnlocked(MsgNftUnlocked) returns (MsgNftUnlockedResponse);
+  rpc NftTransferRequest(MsgNftTransferRequest) returns (MsgNftTransferRequestResponse);
+  rpc NftRejectTransfer(MsgNftRejectTransfer) returns (MsgNftRejectTransferResponse);
+  rpc NftTransferred(MsgNftTransferred) returns (MsgNftTransferredResponse);
 }
 
-// this line is used by starport scaffolding # proto/tx/message
+message MsgNftLocked {
+  string sender = 1 [
+    (gogoproto.moretags)   = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable)   = false
+  ];
+  string toAddress = 2 [
+    (gogoproto.moretags)   = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable)   = false
+  ];
+  string nftId   = 3;
+  string uri     = 4;
+  string uriHash = 5;
+}
+
+message MsgNftLockedResponse {}
+
+message MsgNftUnlocked {
+  string sender = 1 [
+    (gogoproto.moretags)   = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable)   = false
+  ];
+  string toAddress = 2 [
+    (gogoproto.moretags)   = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable)   = false
+  ];
+  string nftId = 3;
+}
+
+message MsgNftUnlockedResponse {}
+
+message MsgNftTransferRequest {
+  string sender = 1 [
+    (gogoproto.moretags)   = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable)   = false
+  ];
+  string ethAddress = 2;
+  string nftId      = 3;
+}
+
+message MsgNftTransferRequestResponse {}
+
+message MsgNftRejectTransfer {
+  string sender = 1 [
+    (gogoproto.moretags)   = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable)   = false
+  ];
+  string nftId = 2;
+}
+
+message MsgNftRejectTransferResponse {}
+
+message MsgNftTransferred {
+  string sender = 1 [
+    (gogoproto.moretags)   = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable)   = false
+  ];
+  string nftId = 2;
+}
+
+message MsgNftTransferredResponse {}

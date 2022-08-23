@@ -74,6 +74,38 @@
   
     - [Msg](#ununifi.cdp.Msg)
   
+- [decentralized-vault/params.proto](#decentralized-vault/params.proto)
+    - [Params](#ununifi.decentralizedvault.Params)
+  
+- [decentralized-vault/decentralized-vault.proto](#decentralized-vault/decentralized-vault.proto)
+    - [TransferRequest](#ununifi.decentralizedvault.TransferRequest)
+  
+- [decentralized-vault/genesis.proto](#decentralized-vault/genesis.proto)
+    - [GenesisState](#ununifi.decentralizedvault.GenesisState)
+  
+- [decentralized-vault/query.proto](#decentralized-vault/query.proto)
+    - [QueryParamsRequest](#ununifi.decentralizedvault.QueryParamsRequest)
+    - [QueryParamsResponse](#ununifi.decentralizedvault.QueryParamsResponse)
+  
+    - [Query](#ununifi.decentralizedvault.Query)
+  
+- [decentralized-vault/tx.proto](#decentralized-vault/tx.proto)
+    - [MsgNftLocked](#ununifi.decentralizedvault.MsgNftLocked)
+    - [MsgNftLockedResponse](#ununifi.decentralizedvault.MsgNftLockedResponse)
+    - [MsgNftRejectTransfer](#ununifi.decentralizedvault.MsgNftRejectTransfer)
+    - [MsgNftRejectTransferResponse](#ununifi.decentralizedvault.MsgNftRejectTransferResponse)
+    - [MsgNftTransferRequest](#ununifi.decentralizedvault.MsgNftTransferRequest)
+    - [MsgNftTransferRequestResponse](#ununifi.decentralizedvault.MsgNftTransferRequestResponse)
+    - [MsgNftTransferred](#ununifi.decentralizedvault.MsgNftTransferred)
+    - [MsgNftTransferredResponse](#ununifi.decentralizedvault.MsgNftTransferredResponse)
+    - [MsgNftUnlocked](#ununifi.decentralizedvault.MsgNftUnlocked)
+    - [MsgNftUnlockedResponse](#ununifi.decentralizedvault.MsgNftUnlockedResponse)
+  
+    - [Msg](#ununifi.decentralizedvault.Msg)
+  
+- [ethereum/signdoc.proto](#ethereum/signdoc.proto)
+    - [SignDocForMetamask](#ununifi.ethereum.SignDocForMetamask)
+  
 - [incentive/incentive.proto](#incentive/incentive.proto)
     - [BaseClaim](#ununifi.incentive.BaseClaim)
     - [BaseMultiClaim](#ununifi.incentive.BaseMultiClaim)
@@ -101,7 +133,19 @@
     - [Msg](#ununifi.incentive.Msg)
   
 - [nftmarket/nftmarket.proto](#nftmarket/nftmarket.proto)
+    - [EventBorrow](#ununifi.nftmarket.EventBorrow)
+    - [EventCancelBid](#ununifi.nftmarket.EventCancelBid)
+    - [EventCancelListNfting](#ununifi.nftmarket.EventCancelListNfting)
+    - [EventEndListNfting](#ununifi.nftmarket.EventEndListNfting)
+    - [EventExpandListingPeriod](#ununifi.nftmarket.EventExpandListingPeriod)
+    - [EventLiquidate](#ununifi.nftmarket.EventLiquidate)
     - [EventListNft](#ununifi.nftmarket.EventListNft)
+    - [EventPayFullBid](#ununifi.nftmarket.EventPayFullBid)
+    - [EventPlaceBid](#ununifi.nftmarket.EventPlaceBid)
+    - [EventRepay](#ununifi.nftmarket.EventRepay)
+    - [EventSellingDecision](#ununifi.nftmarket.EventSellingDecision)
+    - [ListedClass](#ununifi.nftmarket.ListedClass)
+    - [ListedNft](#ununifi.nftmarket.ListedNft)
     - [Loan](#ununifi.nftmarket.Loan)
     - [NftBid](#ununifi.nftmarket.NftBid)
     - [NftIdentifier](#ununifi.nftmarket.NftIdentifier)
@@ -119,6 +163,10 @@
     - [QueryBidderBidsResponse](#ununifi.nftmarket.QueryBidderBidsResponse)
     - [QueryCDPsListRequest](#ununifi.nftmarket.QueryCDPsListRequest)
     - [QueryCDPsListResponse](#ununifi.nftmarket.QueryCDPsListResponse)
+    - [QueryListedClassRequest](#ununifi.nftmarket.QueryListedClassRequest)
+    - [QueryListedClassResponse](#ununifi.nftmarket.QueryListedClassResponse)
+    - [QueryListedClassesRequest](#ununifi.nftmarket.QueryListedClassesRequest)
+    - [QueryListedClassesResponse](#ununifi.nftmarket.QueryListedClassesResponse)
     - [QueryListedNftsRequest](#ununifi.nftmarket.QueryListedNftsRequest)
     - [QueryListedNftsResponse](#ununifi.nftmarket.QueryListedNftsResponse)
     - [QueryLoansRequest](#ununifi.nftmarket.QueryLoansRequest)
@@ -151,16 +199,18 @@
     - [MsgLiquidateResponse](#ununifi.nftmarket.MsgLiquidateResponse)
     - [MsgListNft](#ununifi.nftmarket.MsgListNft)
     - [MsgListNftResponse](#ununifi.nftmarket.MsgListNftResponse)
+    - [MsgMintNft](#ununifi.nftmarket.MsgMintNft)
+    - [MsgMintNftResponse](#ununifi.nftmarket.MsgMintNftResponse)
     - [MsgMintStableCoin](#ununifi.nftmarket.MsgMintStableCoin)
     - [MsgMintStableCoinResponse](#ununifi.nftmarket.MsgMintStableCoinResponse)
-    - [MsgNftBuyBack](#ununifi.nftmarket.MsgNftBuyBack)
-    - [MsgNftBuyBackResponse](#ununifi.nftmarket.MsgNftBuyBackResponse)
     - [MsgPayFullBid](#ununifi.nftmarket.MsgPayFullBid)
     - [MsgPayFullBidResponse](#ununifi.nftmarket.MsgPayFullBidResponse)
     - [MsgPlaceBid](#ununifi.nftmarket.MsgPlaceBid)
     - [MsgPlaceBidResponse](#ununifi.nftmarket.MsgPlaceBidResponse)
     - [MsgRepay](#ununifi.nftmarket.MsgRepay)
     - [MsgRepayResponse](#ununifi.nftmarket.MsgRepayResponse)
+    - [MsgSellingDecision](#ununifi.nftmarket.MsgSellingDecision)
+    - [MsgSellingDecisionResponse](#ununifi.nftmarket.MsgSellingDecisionResponse)
   
     - [Msg](#ununifi.nftmarket.Msg)
   
@@ -1115,6 +1165,353 @@ Query defines the gRPC querier service.
 
 
 
+<a name="decentralized-vault/params.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## decentralized-vault/params.proto
+
+
+
+<a name="ununifi.decentralizedvault.Params"></a>
+
+### Params
+Params defines the parameters for the module.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `postIds` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="decentralized-vault/decentralized-vault.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## decentralized-vault/decentralized-vault.proto
+
+
+
+<a name="ununifi.decentralizedvault.TransferRequest"></a>
+
+### TransferRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `eth_address` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="decentralized-vault/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## decentralized-vault/genesis.proto
+
+
+
+<a name="ununifi.decentralizedvault.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the decentralizedvault module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.decentralizedvault.Params) |  | this line is used by starport scaffolding # genesis/proto/state |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="decentralized-vault/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## decentralized-vault/query.proto
+
+
+
+<a name="ununifi.decentralizedvault.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+QueryParamsRequest is request type for the Query/Params RPC method.
+
+
+
+
+
+
+<a name="ununifi.decentralizedvault.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+QueryParamsResponse is response type for the Query/Params RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.decentralizedvault.Params) |  | params holds all the parameters of this module. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.decentralizedvault.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#ununifi.decentralizedvault.QueryParamsRequest) | [QueryParamsResponse](#ununifi.decentralizedvault.QueryParamsResponse) | Parameters queries the parameters of the module.
+
+this line is used by starport scaffolding # 2 | GET|/UnUniFi/chain/decentralized-vault/params|
+
+ <!-- end services -->
+
+
+
+<a name="decentralized-vault/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## decentralized-vault/tx.proto
+
+
+
+<a name="ununifi.decentralizedvault.MsgNftLocked"></a>
+
+### MsgNftLocked
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `toAddress` | [string](#string) |  |  |
+| `nftId` | [string](#string) |  |  |
+| `uri` | [string](#string) |  |  |
+| `uriHash` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.decentralizedvault.MsgNftLockedResponse"></a>
+
+### MsgNftLockedResponse
+
+
+
+
+
+
+
+<a name="ununifi.decentralizedvault.MsgNftRejectTransfer"></a>
+
+### MsgNftRejectTransfer
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nftId` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.decentralizedvault.MsgNftRejectTransferResponse"></a>
+
+### MsgNftRejectTransferResponse
+
+
+
+
+
+
+
+<a name="ununifi.decentralizedvault.MsgNftTransferRequest"></a>
+
+### MsgNftTransferRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `ethAddress` | [string](#string) |  |  |
+| `nftId` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.decentralizedvault.MsgNftTransferRequestResponse"></a>
+
+### MsgNftTransferRequestResponse
+
+
+
+
+
+
+
+<a name="ununifi.decentralizedvault.MsgNftTransferred"></a>
+
+### MsgNftTransferred
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nftId` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.decentralizedvault.MsgNftTransferredResponse"></a>
+
+### MsgNftTransferredResponse
+
+
+
+
+
+
+
+<a name="ununifi.decentralizedvault.MsgNftUnlocked"></a>
+
+### MsgNftUnlocked
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `toAddress` | [string](#string) |  |  |
+| `nftId` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.decentralizedvault.MsgNftUnlockedResponse"></a>
+
+### MsgNftUnlockedResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.decentralizedvault.Msg"></a>
+
+### Msg
+Msg defines the Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `NftLocked` | [MsgNftLocked](#ununifi.decentralizedvault.MsgNftLocked) | [MsgNftLockedResponse](#ununifi.decentralizedvault.MsgNftLockedResponse) |  | |
+| `NftUnlocked` | [MsgNftUnlocked](#ununifi.decentralizedvault.MsgNftUnlocked) | [MsgNftUnlockedResponse](#ununifi.decentralizedvault.MsgNftUnlockedResponse) |  | |
+| `NftTransferRequest` | [MsgNftTransferRequest](#ununifi.decentralizedvault.MsgNftTransferRequest) | [MsgNftTransferRequestResponse](#ununifi.decentralizedvault.MsgNftTransferRequestResponse) |  | |
+| `NftRejectTransfer` | [MsgNftRejectTransfer](#ununifi.decentralizedvault.MsgNftRejectTransfer) | [MsgNftRejectTransferResponse](#ununifi.decentralizedvault.MsgNftRejectTransferResponse) |  | |
+| `NftTransferred` | [MsgNftTransferred](#ununifi.decentralizedvault.MsgNftTransferred) | [MsgNftTransferredResponse](#ununifi.decentralizedvault.MsgNftTransferredResponse) |  | |
+
+ <!-- end services -->
+
+
+
+<a name="ethereum/signdoc.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ethereum/signdoc.proto
+
+
+
+<a name="ununifi.ethereum.SignDocForMetamask"></a>
+
+### SignDocForMetamask
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `body` | [cosmos.tx.v1beta1.TxBody](#cosmos.tx.v1beta1.TxBody) |  |  |
+| `auth_info` | [cosmos.tx.v1beta1.AuthInfo](#cosmos.tx.v1beta1.AuthInfo) |  |  |
+| `chain_id` | [string](#string) |  |  |
+| `account_number` | [uint64](#uint64) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="incentive/incentive.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -1424,6 +1821,109 @@ Query defines the gRPC querier service.
 
 
 
+<a name="ununifi.nftmarket.EventBorrow"></a>
+
+### EventBorrow
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `borrower` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.EventCancelBid"></a>
+
+### EventCancelBid
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `bidder` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.EventCancelListNfting"></a>
+
+### EventCancelListNfting
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.EventEndListNfting"></a>
+
+### EventEndListNfting
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.EventExpandListingPeriod"></a>
+
+### EventExpandListingPeriod
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.EventLiquidate"></a>
+
+### EventLiquidate
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `liquidator` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="ununifi.nftmarket.EventListNft"></a>
 
 ### EventListNft
@@ -1441,6 +1941,109 @@ Query defines the gRPC querier service.
 
 
 
+<a name="ununifi.nftmarket.EventPayFullBid"></a>
+
+### EventPayFullBid
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `bidder` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.EventPlaceBid"></a>
+
+### EventPlaceBid
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `bidder` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.EventRepay"></a>
+
+### EventRepay
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `repayer` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.EventSellingDecision"></a>
+
+### EventSellingDecision
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.ListedClass"></a>
+
+### ListedClass
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_ids` | [string](#string) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.ListedNft"></a>
+
+### ListedNft
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  |  |
+| `uri` | [string](#string) |  |  |
+| `uri_hash` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="ununifi.nftmarket.Loan"></a>
 
 ### Loan
@@ -1450,7 +2053,7 @@ Query defines the gRPC querier service.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
-| `loan` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+| `loan` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -1468,6 +2071,9 @@ Query defines the gRPC querier service.
 | `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
 | `bidder` | [string](#string) |  |  |
 | `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `automatic_payment` | [bool](#bool) |  |  |
+| `paid_amount` | [string](#string) |  |  |
+| `bid_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 
 
 
@@ -1504,8 +2110,12 @@ Query defines the gRPC querier service.
 | `state` | [ListingState](#ununifi.nftmarket.ListingState) |  |  |
 | `bid_token` | [string](#string) |  |  |
 | `min_bid` | [string](#string) |  |  |
-| `bid_hook` | [uint64](#uint64) |  | 1 - 100 |
+| `bid_active_rank` | [uint64](#uint64) |  |  |
+| `started_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `end_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `full_payment_end_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `successful_bid_end_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `auto_relisted_count` | [uint64](#uint64) |  |  |
 
 
 
@@ -1521,12 +2131,13 @@ Query defines the gRPC querier service.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `min_staking_for_listing` | [string](#string) |  |  |
+| `default_bid_active_rank` | [uint64](#uint64) |  |  |
 | `bid_tokens` | [string](#string) | repeated |  |
 | `auto_relisting_count_if_no_bid` | [uint64](#uint64) |  |  |
 | `nft_listing_delay_seconds` | [uint64](#uint64) |  |  |
 | `nft_listing_period_initial` | [uint64](#uint64) |  |  |
 | `nft_listing_cancel_required_seconds` | [uint64](#uint64) |  |  |
-| `nft_listing_buy_back_extra_percentage` | [uint64](#uint64) |  |  |
+| `nft_listing_cancel_fee_percentage` | [uint64](#uint64) |  |  |
 | `nft_listing_gap_time` | [uint64](#uint64) |  |  |
 | `bid_cancel_required_seconds` | [uint64](#uint64) |  |  |
 | `bid_token_disburse_seconds_after_cancel` | [uint64](#uint64) |  |  |
@@ -1534,7 +2145,7 @@ Query defines the gRPC querier service.
 | `nft_listing_nft_delivery_period` | [uint64](#uint64) |  |  |
 | `nft_creator_share_percentage` | [uint64](#uint64) |  |  |
 | `market_administrator` | [string](#string) |  |  |
-| `nft_listing_commission_fee` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `nft_listing_commission_fee` | [uint64](#uint64) |  |  |
 | `nft_listing_extend_seconds` | [uint64](#uint64) |  |  |
 | `nft_listing_period_extend_fee_per_hour` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
@@ -1552,11 +2163,12 @@ Query defines the gRPC querier service.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| SELLING | 0 |  |
+| LISTING | 0 |  |
 | BIDDING | 1 |  |
-| LIQUIDATION | 2 |  |
-| END_LISTING | 3 |  |
-| SUCCESSFUL_BID | 4 |  |
+| SELLING_DECISION | 2 |  |
+| LIQUIDATION | 3 |  |
+| END_LISTING | 4 |  |
+| SUCCESSFUL_BID | 5 |  |
 
 
 
@@ -1569,6 +2181,7 @@ Query defines the gRPC querier service.
 | ---- | ------ | ----------- |
 | DIRECT_ASSET_BORROW | 0 |  |
 | SYNTHETIC_ASSET_CREATION | 1 |  |
+| LATE_SHIPPING | 2 |  |
 
 
  <!-- end enums -->
@@ -1597,6 +2210,7 @@ GenesisState defines the nftmarket module's genesis state.
 | `params` | [Params](#ununifi.nftmarket.Params) |  |  |
 | `listings` | [NftListing](#ununifi.nftmarket.NftListing) | repeated |  |
 | `bids` | [NftBid](#ununifi.nftmarket.NftBid) | repeated |  |
+| `cancelled_bids` | [NftBid](#ununifi.nftmarket.NftBid) | repeated |  |
 | `loans` | [Loan](#ununifi.nftmarket.Loan) | repeated |  |
 
 
@@ -1664,6 +2278,74 @@ GenesisState defines the nftmarket module's genesis state.
 
 ### QueryCDPsListResponse
 
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryListedClassRequest"></a>
+
+### QueryListedClassRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_limit` | [int32](#int32) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryListedClassResponse"></a>
+
+### QueryListedClassResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `name` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `symbol` | [string](#string) |  |  |
+| `uri` | [string](#string) |  |  |
+| `urihash` | [string](#string) |  |  |
+| `nfts` | [ListedNft](#ununifi.nftmarket.ListedNft) | repeated |  |
+| `nft_count` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryListedClassesRequest"></a>
+
+### QueryListedClassesRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `nft_limit` | [int32](#int32) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryListedClassesResponse"></a>
+
+### QueryListedClassesResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `classes` | [QueryListedClassResponse](#ununifi.nftmarket.QueryListedClassResponse) | repeated |  |
 
 
 
@@ -1853,6 +2535,8 @@ Query defines the gRPC querier service.
 | `Params` | [QueryParamsRequest](#ununifi.nftmarket.QueryParamsRequest) | [QueryParamsResponse](#ununifi.nftmarket.QueryParamsResponse) |  | GET|/ununifi/nftmarket/params|
 | `NftListing` | [QueryNftListingRequest](#ununifi.nftmarket.QueryNftListingRequest) | [QueryNftListingResponse](#ununifi.nftmarket.QueryNftListingResponse) |  | GET|/ununifi/nftmarket/nft_listing/{class_id}/{nft_id}|
 | `ListedNfts` | [QueryListedNftsRequest](#ununifi.nftmarket.QueryListedNftsRequest) | [QueryListedNftsResponse](#ununifi.nftmarket.QueryListedNftsResponse) |  | GET|/ununifi/nftmarket/listed_nfts|
+| `ListedClasses` | [QueryListedClassesRequest](#ununifi.nftmarket.QueryListedClassesRequest) | [QueryListedClassesResponse](#ununifi.nftmarket.QueryListedClassesResponse) |  | GET|/ununifi/nftmarket/listed_classes|
+| `ListedClass` | [QueryListedClassRequest](#ununifi.nftmarket.QueryListedClassRequest) | [QueryListedClassResponse](#ununifi.nftmarket.QueryListedClassResponse) |  | GET|/ununifi/nftmarket/listed_class/{class_id}/{nft_limit}|
 | `Loans` | [QueryLoansRequest](#ununifi.nftmarket.QueryLoansRequest) | [QueryLoansResponse](#ununifi.nftmarket.QueryLoansResponse) |  | GET|/ununifi/nftmarket/loans|
 | `CDPsList` | [QueryCDPsListRequest](#ununifi.nftmarket.QueryCDPsListRequest) | [QueryCDPsListResponse](#ununifi.nftmarket.QueryCDPsListResponse) |  | GET|/ununifi/nftmarket/cdps_list|
 | `NftBids` | [QueryNftBidsRequest](#ununifi.nftmarket.QueryNftBidsRequest) | [QueryNftBidsResponse](#ununifi.nftmarket.QueryNftBidsResponse) |  | GET|/ununifi/nftmarket/nft_bids/{class_id}/{nft_id}|
@@ -1880,7 +2564,7 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  |  |
 | `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
-| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -2065,7 +2749,7 @@ Query defines the gRPC querier service.
 | `listing_type` | [ListingType](#ununifi.nftmarket.ListingType) |  |  |
 | `bid_token` | [string](#string) |  |  |
 | `min_bid` | [string](#string) |  |  |
-| `bid_hook` | [uint64](#uint64) |  | 1 - 100; if 0, uses default on params |
+| `bid_active_rank` | [uint64](#uint64) |  |  |
 
 
 
@@ -2075,6 +2759,35 @@ Query defines the gRPC querier service.
 <a name="ununifi.nftmarket.MsgListNftResponse"></a>
 
 ### MsgListNftResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgMintNft"></a>
+
+### MsgMintNft
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `classId` | [string](#string) |  |  |
+| `nftId` | [string](#string) |  |  |
+| `nftUri` | [string](#string) |  |  |
+| `nftUriHash` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgMintNftResponse"></a>
+
+### MsgMintNftResponse
 
 
 
@@ -2100,32 +2813,6 @@ Query defines the gRPC querier service.
 <a name="ununifi.nftmarket.MsgMintStableCoinResponse"></a>
 
 ### MsgMintStableCoinResponse
-
-
-
-
-
-
-
-<a name="ununifi.nftmarket.MsgNftBuyBack"></a>
-
-### MsgNftBuyBack
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  |  |
-| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
-
-
-
-
-
-
-<a name="ununifi.nftmarket.MsgNftBuyBackResponse"></a>
-
-### MsgNftBuyBackResponse
 
 
 
@@ -2169,7 +2856,8 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  |  |
 | `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
-| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `automatic_payment` | [bool](#bool) |  |  |
 
 
 
@@ -2196,7 +2884,7 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  |  |
 | `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
-| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -2206,6 +2894,32 @@ Query defines the gRPC querier service.
 <a name="ununifi.nftmarket.MsgRepayResponse"></a>
 
 ### MsgRepayResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgSellingDecision"></a>
+
+### MsgSellingDecision
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgSellingDecisionResponse"></a>
+
+### MsgSellingDecisionResponse
 
 
 
@@ -2226,12 +2940,13 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `MintNft` | [MsgMintNft](#ununifi.nftmarket.MsgMintNft) | [MsgMintNftResponse](#ununifi.nftmarket.MsgMintNftResponse) |  | |
 | `ListNft` | [MsgListNft](#ununifi.nftmarket.MsgListNft) | [MsgListNftResponse](#ununifi.nftmarket.MsgListNftResponse) |  | |
 | `CancelNftListing` | [MsgCancelNftListing](#ununifi.nftmarket.MsgCancelNftListing) | [MsgCancelNftListingResponse](#ununifi.nftmarket.MsgCancelNftListingResponse) |  | |
-| `NftBuyBack` | [MsgNftBuyBack](#ununifi.nftmarket.MsgNftBuyBack) | [MsgNftBuyBackResponse](#ununifi.nftmarket.MsgNftBuyBackResponse) |  | |
 | `ExpandListingPeriod` | [MsgExpandListingPeriod](#ununifi.nftmarket.MsgExpandListingPeriod) | [MsgExpandListingPeriodResponse](#ununifi.nftmarket.MsgExpandListingPeriodResponse) |  | |
 | `PlaceBid` | [MsgPlaceBid](#ununifi.nftmarket.MsgPlaceBid) | [MsgPlaceBidResponse](#ununifi.nftmarket.MsgPlaceBidResponse) |  | |
 | `CancelBid` | [MsgCancelBid](#ununifi.nftmarket.MsgCancelBid) | [MsgCancelBidResponse](#ununifi.nftmarket.MsgCancelBidResponse) |  | |
+| `SellingDecision` | [MsgSellingDecision](#ununifi.nftmarket.MsgSellingDecision) | [MsgSellingDecisionResponse](#ununifi.nftmarket.MsgSellingDecisionResponse) |  | |
 | `EndNftListing` | [MsgEndNftListing](#ununifi.nftmarket.MsgEndNftListing) | [MsgEndNftListingResponse](#ununifi.nftmarket.MsgEndNftListingResponse) |  | |
 | `PayFullBid` | [MsgPayFullBid](#ununifi.nftmarket.MsgPayFullBid) | [MsgPayFullBidResponse](#ununifi.nftmarket.MsgPayFullBidResponse) |  | |
 | `Borrow` | [MsgBorrow](#ununifi.nftmarket.MsgBorrow) | [MsgBorrowResponse](#ununifi.nftmarket.MsgBorrowResponse) |  | |
