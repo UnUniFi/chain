@@ -1,4 +1,4 @@
-package v1
+package v1_beta2
 
 const UpgradeName string = "v1-beta.2"
 

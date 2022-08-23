@@ -9,7 +9,7 @@ import (
 
 	appparams "github.com/UnUniFi/chain/app/params"
 	// Upgrades from earlier versions of Ununifi
-	v1 "github.com/UnUniFi/chain/app/upgrades/v1"
+	v1_beta2 "github.com/UnUniFi/chain/app/upgrades/v1-beta.2"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -811,7 +811,7 @@ func NewApp(
 		panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
 	}
 
-	if upgradeInfo.Name == v1.UpgradeName && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
+	if upgradeInfo.Name == v1_beta2.UpgradeName && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
 		storeUpgrades := store.StoreUpgrades{
 			Added: []string{},
 		}
@@ -994,8 +994,8 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 
 func (app *App) setupUpgradeHandlers() {
 	app.UpgradeKeeper.SetUpgradeHandler(
-		v1.UpgradeName,
-		v1.CreateUpgradeHandler(
+		v1_beta2.UpgradeName,
+		v1_beta2.CreateUpgradeHandler(
 			app.mm,
 			app.configurator,
 			app.AccountKeeper,
