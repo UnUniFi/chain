@@ -31,6 +31,7 @@ const BANK_SEND_LIST string = `{
       "toAddress": "ununifi199j70q49338yz9r83xsmfescn74gxachwfp9cs",
       "amount": 2794117647058,
       "denom": "uguu",
+
       "vesting_starts": 1661126400,
       "vesting_ends": 1724284800
     },
@@ -395,7 +396,7 @@ const BANK_SEND_LIST string = `{
     },
     {
       "toAddress": "ununifi17yn38x8hjkn9sed9vxkn7858f2t52uk4g8tnyk",
-      "amount": 856653340,
+      "amount": 4306618350,
       "denom": "uguu",
       "vesting_starts": 1664582400,
       "vesting_ends": 1696032000
@@ -787,7 +788,7 @@ const BANK_SEND_LIST string = `{
     },
     {
       "toAddress": "ununifi1rzd3awqzl6h67u8ltdjnzfm7rqv5jse9zshhtr",
-      "amount": 8755422688,
+      "amount": 8119615558,
       "denom": "uguu",
       "vesting_starts": 1664582400,
       "vesting_ends": 1696032000
@@ -892,21 +893,21 @@ const BANK_SEND_LIST string = `{
     },
     {
       "toAddress": "ununifi1s37k9ryxegcfp857r9pm79azc4x72l7vzjjg4j",
-      "amount": 37895834536,
+      "amount": 39931147019,
       "denom": "uguu",
       "vesting_starts": 1656633600,
       "vesting_ends": 1688169600
     },
     {
       "toAddress": "ununifi1pfkuyknmfhp4uhhd7tqr4yeqvs9qdttvfgfsfm",
-      "amount": 16699688467,
+      "amount": 15984064863,
       "denom": "uguu",
       "vesting_starts": 1659312000,
       "vesting_ends": 1690848000
     },
     {
       "toAddress": "ununifi1ydtts8a9r5jr0qmls9cy60p2j9ewvg6mrnkh4z",
-      "amount": 20763358505,
+      "amount": 19949166364,
       "denom": "uguu",
       "vesting_starts": 1659312000,
       "vesting_ends": 1690848000
@@ -920,7 +921,7 @@ const BANK_SEND_LIST string = `{
     },
     {
       "toAddress": "ununifi17c7l66wgut2trha0qv996tqtg4scwusp4wm649",
-      "amount": 1900237529,
+      "amount": 3800475059,
       "denom": "uguu",
       "vesting_starts": 1656633600,
       "vesting_ends": 1688169600
@@ -990,7 +991,7 @@ const BANK_SEND_LIST string = `{
     },
     {
       "toAddress": "ununifi104xee9d8gquaz7vyzwzurxjxk0sutqqf3emht6",
-      "amount": 5591588761,
+      "amount": 5216547499,
       "denom": "uguu",
       "vesting_starts": 1659312000,
       "vesting_ends": 1690848000
@@ -1074,21 +1075,21 @@ const BANK_SEND_LIST string = `{
     },
     {
       "toAddress": "ununifi1avd4jplu89t6ds66udfspsv9nlkwn2ru03jy9j",
-      "amount": 1205797101,
+      "amount": 2660283832,
       "denom": "uguu",
       "vesting_starts": 1659312000,
       "vesting_ends": 1690848000
     },
     {
       "toAddress": "ununifi1v45254hgxun3vnydjcl6dhw6sz82ulftu6t53s",
-      "amount": 19967751002,
+      "amount": 18164935135,
       "denom": "uguu",
       "vesting_starts": 1659312000,
       "vesting_ends": 1690848000
     },
     {
       "toAddress": "ununifi1paj00usj7k69f9vvpknazcppr48pwnyqxg4lqj",
-      "amount": 2040858592,
+      "amount": 18164935135,
       "denom": "uguu",
       "vesting_starts": 1659312000,
       "vesting_ends": 1690848000
@@ -1102,18 +1103,25 @@ const BANK_SEND_LIST string = `{
     },
     {
       "toAddress": "ununifi1skex8qg79h667zdvnsgt09pum9f7yyr5zv0dar",
-      "amount": 23154188671,
+      "amount": 23914037190,
       "denom": "uguu",
       "vesting_starts": 1659312000,
       "vesting_ends": 1690848000
     },
     {
       "toAddress": "ununifi1qhxnlhh53y2t73urgdqqxn7ttkseegwz62aq4j",
-      "amount": 2401218952,
+      "amount": 2184421596,
       "denom": "uguu",
       "vesting_starts": 1659312000,
       "vesting_ends": 1690848000
-    }
+    },
+		{
+			"toAddress": "ununifi1pnndh4ge5svw86myh3ng9cd0s729y4x3eh5gn8",
+			"amount": 283145825,
+			"denom": "uguu",
+			"vesting_starts": 1659312000,
+			"vesting_ends": 1690848000
+		}
   ],
 	"airdropForfeit": [
 			"ununifi1dc8nfka4dgw90rfejrfncsp5rmgtj5ppkfma5v",
