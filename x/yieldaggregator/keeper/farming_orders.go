@@ -134,19 +134,7 @@ func (k Keeper) ExecuteFarmingOrders(ctx sdk.Context, addr sdk.AccAddress) error
 			}
 			target := targets[0]
 
-			lastFarmingUnitId := k.GetLastFarmingUnitId(ctx)
-			newFarmingUnitId := lastFarmingUnitId + 1
-			k.SetLastFarmingUnitId(ctx, newFarmingUnitId)
-			farmUnit := types.FarmingUnit{
-				Id:               newFarmingUnitId,
-				AccountId:        target.AssetManagementAccountId,
-				TargetId:         target.Id,
-				Amount:           orderAlloc,
-				FarmingStartTime: ctx.BlockTime().String(),
-				UnbondingTime:    "",
-				Owner:            addr.String(),
-			}
-			k.InvestOnTarget(ctx, target, farmUnit)
+			k.InvestOnTarget(ctx, addr, target, orderAlloc)
 		}
 	}
 
@@ -157,7 +145,8 @@ func (k Keeper) ExecuteFarmingOrders(ctx sdk.Context, addr sdk.AccAddress) error
 
 func (k Keeper) StopFarmingUnit(ctx sdk.Context, obj types.FarmingUnit) error {
 	target := k.GetAssetManagementTarget(ctx, obj.AccountId, obj.TargetId)
-	err := k.BeginWithdrawFromTarget(ctx, target, obj)
+	addr := sdk.MustAccAddressFromBech32(obj.Owner)
+	err := k.BeginWithdrawFromTarget(ctx, addr, target, sdk.Coins{})
 	if err != nil {
 		return err
 	}

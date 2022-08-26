@@ -6,28 +6,9 @@ import (
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
 )
 
-func (k Keeper) SetLastFarmingUnitId(ctx sdk.Context, id uint64) {
-	store := ctx.KVStore(k.storeKey)
-	store.Set([]byte(types.KeyLastFarmingUnit), sdk.Uint64ToBigEndian(id))
-}
-
-func (k Keeper) GetLastFarmingUnitId(ctx sdk.Context) uint64 {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get([]byte(types.KeyLastFarmingUnit))
-	if bz == nil {
-		return 0
-	}
-	return sdk.BigEndianToUint64(bz)
-}
-
 func (k Keeper) AddFarmingUnit(ctx sdk.Context, obj types.FarmingUnit) error {
-	addr, err := sdk.AccAddressFromBech32(obj.Owner)
-	if err != nil {
-		panic(err)
-	}
-
-	unit := k.GetFarmingUnit(ctx, addr, obj.Id)
-	if unit.Id != 0 {
+	unit := k.GetFarmingUnit(ctx, obj.Owner, obj.AccountId, obj.TargetId)
+	if unit.AccountId != "" {
 		return types.ErrFarmingUnitAlreadyExists
 	}
 	k.SetFarmingUnit(ctx, obj)
@@ -53,26 +34,18 @@ func (k Keeper) GetFarmingUnitsOfAddress(ctx sdk.Context, addr sdk.AccAddress) [
 func (k Keeper) SetFarmingUnit(ctx sdk.Context, obj types.FarmingUnit) {
 	bz := k.cdc.MustMarshal(&obj)
 	store := ctx.KVStore(k.storeKey)
-	addr, err := sdk.AccAddressFromBech32(obj.Owner)
-	if err != nil {
-		panic(err)
-	}
-	store.Set(types.FarmingUnitKey(addr, obj.Id), bz)
+	store.Set(types.FarmingUnitKey(obj.Owner, obj.AccountId, obj.TargetId), bz)
 }
 
 func (k Keeper) DeleteFarmingUnit(ctx sdk.Context, obj types.FarmingUnit) {
 	store := ctx.KVStore(k.storeKey)
-	addr, err := sdk.AccAddressFromBech32(obj.Owner)
-	if err != nil {
-		panic(err)
-	}
-	store.Delete(types.FarmingUnitKey(addr, obj.Id))
+	store.Delete(types.FarmingUnitKey(obj.Owner, obj.AccountId, obj.TargetId))
 }
 
-func (k Keeper) GetFarmingUnit(ctx sdk.Context, addr sdk.AccAddress, unitId uint64) types.FarmingUnit {
+func (k Keeper) GetFarmingUnit(ctx sdk.Context, addr string, accId, targetId string) types.FarmingUnit {
 	unit := types.FarmingUnit{}
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.FarmingUnitKey(addr, unitId))
+	bz := store.Get(types.FarmingUnitKey(addr, accId, targetId))
 	if bz == nil {
 		return unit
 	}

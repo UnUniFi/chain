@@ -66,14 +66,17 @@ message UserDeposit {
   repeated cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
 }
 
+// FarmingUnit is managing users' investment on a yield farm target
+// Here, amount field is the amount withdrawable instantly, staked amount on yield farms are not calculated here
+// since the value of staked amount could change after deposit - it's only determined at the time of withdrawal
+// from the farm
 message FarmingUnit {
-  uint64   id                                          = 1;
-  string   account_id                                  = 2;
-  string   target_id                                   = 3;
-  repeated cosmos.base.v1beta1.Coin amount             = 4 [(gogoproto.nullable) = false];
-  string                            farming_start_time = 5;
-  string                            unbonding_time     = 6;
-  string                            owner              = 7;
+  string   account_id                                   = 1;
+  string   target_id                                    = 2;
+  repeated cosmos.base.v1beta1.Coin amount              = 3 [(gogoproto.nullable) = false];
+  string                            farming_start_time  = 4;
+  google.protobuf.Timestamp         unbonding_starttime = 5 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  string                            owner               = 6;
 }
 
 // Strategy types

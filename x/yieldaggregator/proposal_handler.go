@@ -42,7 +42,7 @@ func handleProposalAddYieldFarm(ctx sdk.Context, k keeper.Keeper, p *types.Propo
 }
 
 func handleProposalUpdateYieldFarm(ctx sdk.Context, k keeper.Keeper, p *types.ProposalUpdateYieldFarm) error {
-	return k.UpdateAssetManagementAccount(ctx, p.Account.Id, *p.Account)
+	return k.UpdateAssetManagementAccount(ctx, *p.Account)
 }
 
 func handleProposalStopYieldFarm(ctx sdk.Context, k keeper.Keeper, p *types.ProposalStopYieldFarm) error {
@@ -61,6 +61,7 @@ func handleProposalRemoveYieldFarm(ctx sdk.Context, k keeper.Keeper, p *types.Pr
 		return types.ErrAssetManagementAccountDoesNotExists
 	}
 	k.DeleteAssetManagementAccount(ctx, p.Id)
+	k.DeleteAssetManagementTargetsOfAccount(ctx, p.Id)
 	return nil
 }
 
@@ -70,6 +71,7 @@ func handleProposalAddYieldFarmTarget(ctx sdk.Context, k keeper.Keeper, p *types
 }
 
 func handleProposalUpdateYieldFarmTarget(ctx sdk.Context, k keeper.Keeper, p *types.ProposalUpdateYieldFarmTarget) error {
+	// TODO: should automatically withdraw all the funds from the target
 	target := k.GetAssetManagementTarget(ctx, p.Target.AssetManagementAccountId, p.Target.Id)
 	if target.Id == "" {
 		return types.ErrNoAssetManagementTargetExists
@@ -79,6 +81,8 @@ func handleProposalUpdateYieldFarmTarget(ctx sdk.Context, k keeper.Keeper, p *ty
 }
 
 func handleProposalStopYieldFarmTarget(ctx sdk.Context, k keeper.Keeper, p *types.ProposalStopYieldFarmTarget) error {
+	// TODO: should automatically withdraw all the funds from the target
+
 	target := k.GetAssetManagementTarget(ctx, p.AssetManagementAccountId, p.Id)
 	if target.Id == "" {
 		return types.ErrNoAssetManagementTargetExists
@@ -89,6 +93,8 @@ func handleProposalStopYieldFarmTarget(ctx sdk.Context, k keeper.Keeper, p *type
 }
 
 func handleProposalRemoveYieldFarmTarget(ctx sdk.Context, k keeper.Keeper, p *types.ProposalRemoveYieldFarmTarget) error {
+	// TODO: should ensure that all the tokens are unbonded via stop proposal
+
 	target := k.GetAssetManagementTarget(ctx, p.AssetManagementAccountId, p.Id)
 	if target.Id == "" {
 		return types.ErrNoAssetManagementTargetExists

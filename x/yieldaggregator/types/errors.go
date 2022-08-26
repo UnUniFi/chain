@@ -15,4 +15,5 @@ var (
 	ErrFarmingUnitAlreadyExists            = sdkerrors.Register(ModuleName, 6, "farming unit already exists")
 	ErrFarmingUnitDoesNotExist             = sdkerrors.Register(ModuleName, 7, "farming unit does not exist")
 	ErrNoAssetManagementTargetExists       = sdkerrors.Register(ModuleName, 8, "no asset management target exists")
+	ErrUnbondingTimeNotPassed              = sdkerrors.Register(ModuleName, 9, "unbonding time not passed")
 )

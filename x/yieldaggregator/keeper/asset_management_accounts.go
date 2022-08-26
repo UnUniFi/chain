@@ -19,8 +19,8 @@ func (k Keeper) AddAssetManagementAccount(ctx sdk.Context, id string, name strin
 	return nil
 }
 
-func (k Keeper) UpdateAssetManagementAccount(ctx sdk.Context, id string, obj types.AssetManagementAccount) error {
-	acc := k.GetAssetManagementAccount(ctx, id)
+func (k Keeper) UpdateAssetManagementAccount(ctx sdk.Context, obj types.AssetManagementAccount) error {
+	acc := k.GetAssetManagementAccount(ctx, obj.Id)
 	if acc.Id == "" {
 		return types.ErrAssetManagementAccountDoesNotExists
 	}

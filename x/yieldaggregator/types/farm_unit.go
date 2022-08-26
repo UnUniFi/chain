@@ -8,5 +8,5 @@ import (
 )
 
 func (f FarmingUnit) GetAddress() sdk.AccAddress {
-	return authtypes.NewModuleAddress(fmt.Sprintf("farming_unit_%d", f.Id))
+	return authtypes.NewModuleAddress(fmt.Sprintf("farming_unit_%s___%s___%s", f.Owner, f.AccountId, f.TargetId))
 }

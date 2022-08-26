@@ -41,8 +41,8 @@ func FarmingOrderKey(sender sdk.AccAddress, orderId string) []byte {
 	return append(append([]byte(PrefixKeyFarmingOrder), sender...), orderId...)
 }
 
-func FarmingUnitKey(sender sdk.AccAddress, unitId uint64) []byte {
-	return append(append([]byte(PrefixKeyFarmingUnit), sender...), sdk.Uint64ToBigEndian(unitId)...)
+func FarmingUnitKey(owner string, accId, targetId string) []byte {
+	return append(append(append([]byte(PrefixKeyFarmingUnit), owner...), accId...), targetId...)
 }
 
 func UserDepositKey(user sdk.AccAddress) []byte {
