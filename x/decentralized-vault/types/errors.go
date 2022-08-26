@@ -13,4 +13,6 @@ var (
 	ErrTransferRequestDoesNotExists = sdkerrors.Register(ModuleName, 2, "transfer request does not exist")
 	ErrOracleDoesNotRegister        = sdkerrors.Register(ModuleName, 3, "oracle does not exist")
 	ErrOracleDoesNotMatch           = sdkerrors.Register(ModuleName, 4, "sender does not mach oracle address")
+	ErrInUseNft                     = sdkerrors.Register(ModuleName, 5, "this nft is in use")
+	ErrNotDepositedNft              = sdkerrors.Register(ModuleName, 6, "nft is not deposited")
 )

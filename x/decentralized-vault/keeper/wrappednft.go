@@ -5,6 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/nft"
 
 	"github.com/UnUniFi/chain/x/decentralized-vault/types"
+	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
 func (k Keeper) NftLocked(ctx sdk.Context, msg *types.MsgNftLocked) error {
@@ -22,8 +23,13 @@ func (k Keeper) NftUnlocked(ctx sdk.Context, msg *types.MsgNftUnlocked) error {
 		return err
 	}
 
-	// todo: check nft market if not listhing
-	// todo: check nft owner have nft?
+	if k.IsListedNft(ctx, msg.NftId) {
+		return types.ErrInUseNft
+	}
+
+	if k.hasNft(ctx, msg.NftId, msg.ToAddress.AccAddress()) {
+		return types.ErrNotNftOwner
+	}
 
 	return k.BurnWrappedNft(ctx, msg.NftId)
 }
@@ -42,8 +48,13 @@ func (k Keeper) NftTransferred(ctx sdk.Context, msg *types.MsgNftTransferred) er
 		return err
 	}
 
-	// todo: check nft market
-	// todo: check deposited
+	if k.IsListedNft(ctx, msg.NftId) {
+		return types.ErrInUseNft
+	}
+
+	if k.hasNft(ctx, msg.NftId, k.accountKeeper.GetModuleAddress(types.ModuleName)) {
+		return types.ErrNotDepositedNft
+	}
 
 	return k.BurnWrappedNft(ctx, msg.NftId)
 }
@@ -110,7 +121,10 @@ func (k Keeper) DepositWrappedNft(ctx sdk.Context, msg *types.MsgNftTransferRequ
 		return nft.ErrNFTNotExists
 	}
 
-	// todo: check nft market
+	if k.IsListedNft(ctx, msg.NftId) {
+		return types.ErrInUseNft
+	}
+
 	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
 
 	owner := k.nftKeeper.GetOwner(ctx, types.WrappedClassId, msg.NftId)
@@ -139,11 +153,19 @@ func (k Keeper) WithdrawWrappedNft(ctx sdk.Context, msg *types.MsgNftRejectTrans
 		return nft.ErrNFTNotExists
 	}
 
-	// todo: check nft market
+	if k.IsListedNft(ctx, msg.NftId) {
+		return types.ErrInUseNft
+	}
+	if k.hasNft(ctx, msg.NftId, k.accountKeeper.GetModuleAddress(types.ModuleName)) {
+		return types.ErrNotDepositedNft
+	}
 
 	req, err := k.GetTransferRequestByIdBytes(ctx, []byte(msg.NftId))
-	// todo: error check
 	owner, err := sdk.AccAddressFromBech32(req.Owner)
+	if err != nil {
+		return err
+	}
+
 	err = k.nftKeeper.Transfer(ctx, types.WrappedClassId, msg.NftId, owner)
 	return err
 }
@@ -164,4 +186,26 @@ func (k Keeper) GetTransferRequestByIdBytes(ctx sdk.Context, nftIdBytes []byte) 
 	transferRequest := types.TransferRequest{}
 	k.cdc.MustUnmarshal(bz, &transferRequest)
 	return transferRequest, nil
+}
+
+func (k Keeper) IsListedNft(ctx sdk.Context, nftId string) bool {
+	nftIde := nftmarkettypes.NftIdentifier{
+		ClassId: types.WrappedClassId,
+		NftId:   nftId,
+	}
+	lisitngNft, err := k.nftmarketKeeper.GetNftListingByIdBytes(ctx, nftIde.IdBytes())
+	if (lisitngNft != nftmarkettypes.NftListing{} || err != nil) {
+		return false
+	} else {
+		return true
+	}
+}
+
+func (k Keeper) hasNft(ctx sdk.Context, nftId string, address sdk.AccAddress) bool {
+	owner := k.nftKeeper.GetOwner(ctx, types.WrappedClassId, nftId)
+	if owner.String() != address.String() {
+		return false
+	} else {
+		return true
+	}
 }

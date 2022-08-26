@@ -584,6 +584,7 @@ func NewApp(
 		app.GetSubspace(decentralizedvaulttypes.ModuleName),
 		app.AccountKeeper,
 		app.NFTKeeper,
+		app.NftmarketKeeper,
 	)
 
 	app.cdpKeeper = *cdpKeeper.SetHooks(cdptypes.NewMultiCdpHooks(app.incentiveKeeper.Hooks()))

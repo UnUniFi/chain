@@ -5,6 +5,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
+
+	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -36,4 +38,8 @@ type NftKeeper interface {
 	GetBalance(ctx sdk.Context, classID string, owner sdk.AccAddress) uint64
 	GetTotalSupply(ctx sdk.Context, classID string) uint64
 	HasNFT(ctx sdk.Context, classID, id string) bool
+}
+
+type NftMarketKeeper interface {
+	GetNftListingByIdBytes(ctx sdk.Context, nftIdBytes []byte) (nftmarkettypes.NftListing, error)
 }

@@ -16,12 +16,13 @@ import (
 
 type (
 	Keeper struct {
-		cdc           codec.Codec
-		storeKey      storetypes.StoreKey
-		memKey        storetypes.StoreKey
-		paramSpace    paramtypes.Subspace
-		accountKeeper types.AccountKeeper
-		nftKeeper     types.NftKeeper
+		cdc             codec.Codec
+		storeKey        storetypes.StoreKey
+		memKey          storetypes.StoreKey
+		paramSpace      paramtypes.Subspace
+		accountKeeper   types.AccountKeeper
+		nftKeeper       types.NftKeeper
+		nftmarketKeeper types.NftMarketKeeper
 	}
 )
 
@@ -32,18 +33,20 @@ func NewKeeper(
 	paramSpace paramtypes.Subspace,
 	accountKeeper types.AccountKeeper,
 	nftKeeper types.NftKeeper,
+	nftmarketKeeper types.NftMarketKeeper,
 ) Keeper {
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
 
 	return Keeper{
-		cdc:           cdc,
-		storeKey:      storeKey,
-		memKey:        memKey,
-		paramSpace:    paramSpace,
-		accountKeeper: accountKeeper,
-		nftKeeper:     nftKeeper,
+		cdc:             cdc,
+		storeKey:        storeKey,
+		memKey:          memKey,
+		paramSpace:      paramSpace,
+		accountKeeper:   accountKeeper,
+		nftKeeper:       nftKeeper,
+		nftmarketKeeper: nftmarketKeeper,
 	}
 }
 
