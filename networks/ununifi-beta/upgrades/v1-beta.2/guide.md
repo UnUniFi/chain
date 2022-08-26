@@ -1,5 +1,12 @@
 # v1-beta.1 to v1-beta.2 Upgrade Guide
 
+## Purpose of this upgrade
+
+This proposal aims to do upgrade to UnUniFi v1.0.0-beta.2. The main function is the same after the upgrade. But, we distribute token for the community program winners, moderators and airdrop salgated accounts under the upgrade operation. The
+reason why we do by upgrade is we currently make the feature to send tokens disable.
+
+## Brief guide
+
 All validators nodes should upgrades to `v1.0.0-beta.2`. The `v1.0.0-beta.2` binary is state machine compatible with `v1.0.0-beta.1` until block 14181300. At 12:00AM UTC on August 30th, 2022, we will have a coordinated re-start of the network. 
 All validator nodes have to do is set the binary of `v1.0.0-beta.2` in the appropriate location before 14181300 block height.   
 At 14181300, if you use cosmovisor, the system automatically upgrades the binary and block 14181300 will be mined with over 67% voting power.   
