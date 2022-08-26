@@ -27,7 +27,7 @@ func (k Keeper) NftUnlocked(ctx sdk.Context, msg *types.MsgNftUnlocked) error {
 		return types.ErrInUseNft
 	}
 
-	if k.hasNft(ctx, msg.NftId, msg.ToAddress.AccAddress()) {
+	if !k.hasNft(ctx, msg.NftId, msg.ToAddress.AccAddress()) {
 		return types.ErrNotNftOwner
 	}
 
@@ -35,10 +35,37 @@ func (k Keeper) NftUnlocked(ctx sdk.Context, msg *types.MsgNftUnlocked) error {
 }
 
 func (k Keeper) NftTransferRequest(ctx sdk.Context, msg *types.MsgNftTransferRequest) error {
-	return k.DepositWrappedNft(ctx, msg)
+	_, exists := k.nftKeeper.GetNFT(ctx, types.WrappedClassId, msg.NftId)
+	if !exists {
+		return nft.ErrNFTNotExists
+	}
+	if k.IsListedNft(ctx, msg.NftId) {
+		return types.ErrInUseNft
+	}
+	if !k.hasNft(ctx, msg.NftId, msg.Sender.AccAddress()) {
+		return types.ErrNotNftOwner
+	}
+
+	return k.DepositWrappedNft(ctx, msg.Sender.AccAddress(), msg.NftId, msg.EthAddress)
 }
 
 func (k Keeper) NftRejectTransfer(ctx sdk.Context, msg *types.MsgNftRejectTransfer) error {
+	isTrustworthySender, err := k.IsTrustedSender(ctx, msg.Sender.AccAddress())
+	if !isTrustworthySender {
+		return err
+	}
+
+	_, exists := k.nftKeeper.GetNFT(ctx, types.WrappedClassId, msg.NftId)
+	if !exists {
+		return nft.ErrNFTNotExists
+	}
+	if k.IsListedNft(ctx, msg.NftId) {
+		return types.ErrInUseNft
+	}
+	if !k.hasNft(ctx, msg.NftId, k.accountKeeper.GetModuleAddress(types.ModuleName)) {
+		return types.ErrNotDepositedNft
+	}
+
 	return k.WithdrawWrappedNft(ctx, msg)
 }
 
@@ -52,7 +79,7 @@ func (k Keeper) NftTransferred(ctx sdk.Context, msg *types.MsgNftTransferred) er
 		return types.ErrInUseNft
 	}
 
-	if k.hasNft(ctx, msg.NftId, k.accountKeeper.GetModuleAddress(types.ModuleName)) {
+	if !k.hasNft(ctx, msg.NftId, k.accountKeeper.GetModuleAddress(types.ModuleName)) {
 		return types.ErrNotDepositedNft
 	}
 
@@ -115,52 +142,22 @@ func (k Keeper) BurnWrappedNft(ctx sdk.Context, nftId string) error {
 	return err
 }
 
-func (k Keeper) DepositWrappedNft(ctx sdk.Context, msg *types.MsgNftTransferRequest) error {
-	_, exists := k.nftKeeper.GetNFT(ctx, types.WrappedClassId, msg.NftId)
-	if !exists {
-		return nft.ErrNFTNotExists
-	}
-
-	if k.IsListedNft(ctx, msg.NftId) {
-		return types.ErrInUseNft
-	}
-
-	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
-
-	owner := k.nftKeeper.GetOwner(ctx, types.WrappedClassId, msg.NftId)
-	if owner.String() != msg.Sender.AccAddress().String() {
-		return types.ErrNotNftOwner
-	}
-
+func (k Keeper) DepositWrappedNft(ctx sdk.Context, depositor sdk.AccAddress, nftId, ethAddress string) error {
 	transferRequest := types.TransferRequest{
-		NftId:      msg.NftId,
-		Owner:      owner.String(),
-		EthAddress: msg.EthAddress,
+		NftId:      nftId,
+		Owner:      depositor.String(),
+		EthAddress: ethAddress,
 	}
 	k.SetTransferRequest(ctx, transferRequest)
-	err := k.nftKeeper.Transfer(ctx, types.WrappedClassId, msg.NftId, moduleAddr)
+	err := k.nftKeeper.Transfer(ctx, types.WrappedClassId, nftId, k.accountKeeper.GetModuleAddress(types.ModuleName))
 	return err
 }
 
 func (k Keeper) WithdrawWrappedNft(ctx sdk.Context, msg *types.MsgNftRejectTransfer) error {
-	isTrustworthySender, err := k.IsTrustedSender(ctx, msg.Sender.AccAddress())
-	if !isTrustworthySender {
+	req, err := k.GetTransferRequestByIdBytes(ctx, []byte(msg.NftId))
+	if err != nil {
 		return err
 	}
-
-	_, exists := k.nftKeeper.GetNFT(ctx, types.WrappedClassId, msg.NftId)
-	if !exists {
-		return nft.ErrNFTNotExists
-	}
-
-	if k.IsListedNft(ctx, msg.NftId) {
-		return types.ErrInUseNft
-	}
-	if k.hasNft(ctx, msg.NftId, k.accountKeeper.GetModuleAddress(types.ModuleName)) {
-		return types.ErrNotDepositedNft
-	}
-
-	req, err := k.GetTransferRequestByIdBytes(ctx, []byte(msg.NftId))
 	owner, err := sdk.AccAddressFromBech32(req.Owner)
 	if err != nil {
 		return err

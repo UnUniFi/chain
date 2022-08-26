@@ -41,7 +41,7 @@ func GetTxCmd() *cobra.Command {
 		CmdNftUnlocked(),
 		CmdNftTransferRequest(),
 		CmdRejectTransferRequest(),
-		CmdRejectTransferred(),
+		CmdTransferred(),
 	)
 
 	return cmd
@@ -165,7 +165,7 @@ $ %s tx %s reject-transfer a10 --from myKeyName --chain-id ununifi-x
 	return cmd
 }
 
-func CmdRejectTransferred() *cobra.Command {
+func CmdTransferred() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "transferred [nft-id]",
 		Short: "nft transferred",
