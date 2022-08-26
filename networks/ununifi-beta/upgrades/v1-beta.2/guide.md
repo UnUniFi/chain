@@ -7,9 +7,9 @@ reason why we do by upgrade is we currently make the feature to send tokens disa
 
 ## Brief guide
 
-All validators nodes should upgrades to `v1.0.0-beta.2`. The `v1.0.0-beta.2` binary is state machine compatible with `v1.0.0-beta.1` until block 14181300. At 12:00AM UTC on August 30th, 2022, we will have a coordinated re-start of the network. 
-All validator nodes have to do is set the binary of `v1.0.0-beta.2` in the appropriate location before 14181300 block height.   
-At 14181300, if you use cosmovisor, the system automatically upgrades the binary and block 14181300 will be mined with over 67% voting power.   
+All validators nodes should upgrades to `v1.0.0-beta.2`. The `v1.0.0-beta.2` binary is state machine compatible with `v1.0.0-beta.1` until block 1481300. At 18:00 UTC on August 30th, 2022, we will have a coordinated re-start of the network. 
+All validator nodes have to do is set the binary of `v1.0.0-beta.2` in the appropriate location before 1481300 block height.   
+At 1418130, if you use cosmovisor, the system automatically upgrades the binary and block 1481300 will be mined with over 67% voting power.   
 
 ## Go Requirement
 
