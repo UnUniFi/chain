@@ -5,6 +5,7 @@ package types
 
 import (
 	fmt "fmt"
+	github_com_UnUniFi_chain_types "github.com/UnUniFi/chain/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	io "io"
@@ -24,15 +25,77 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Params defines the parameters for the module.
+type Network struct {
+	NetworkId string                                            `protobuf:"bytes,1,opt,name=network_id,json=networkId,proto3" json:"network_id,omitempty" yaml:"network_id"`
+	Asset     string                                            `protobuf:"bytes,2,opt,name=asset,proto3" json:"asset,omitempty" yaml:"asset"`
+	Oracles   []github_com_UnUniFi_chain_types.StringAccAddress `protobuf:"bytes,3,rep,name=oracles,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"oracles" yaml:"oracles"`
+	Active    bool                                              `protobuf:"varint,4,opt,name=active,proto3" json:"active,omitempty" yaml:"active"`
+}
+
+func (m *Network) Reset()         { *m = Network{} }
+func (m *Network) String() string { return proto.CompactTextString(m) }
+func (*Network) ProtoMessage()    {}
+func (*Network) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1d55352ef0511835, []int{0}
+}
+func (m *Network) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Network) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Network.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Network) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Network.Merge(m, src)
+}
+func (m *Network) XXX_Size() int {
+	return m.Size()
+}
+func (m *Network) XXX_DiscardUnknown() {
+	xxx_messageInfo_Network.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Network proto.InternalMessageInfo
+
+func (m *Network) GetNetworkId() string {
+	if m != nil {
+		return m.NetworkId
+	}
+	return ""
+}
+
+func (m *Network) GetAsset() string {
+	if m != nil {
+		return m.Asset
+	}
+	return ""
+}
+
+func (m *Network) GetActive() bool {
+	if m != nil {
+		return m.Active
+	}
+	return false
+}
+
 type Params struct {
-	PostIds string `protobuf:"bytes,1,opt,name=postIds,proto3" json:"postIds,omitempty"`
+	PostIds  string    `protobuf:"bytes,1,opt,name=postIds,proto3" json:"postIds,omitempty"`
+	Networks []Network `protobuf:"bytes,2,rep,name=networks,proto3" json:"networks" yaml:"networks"`
 }
 
 func (m *Params) Reset()         { *m = Params{} }
 func (m *Params) String() string { return proto.CompactTextString(m) }
 func (*Params) ProtoMessage()    {}
 func (*Params) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1d55352ef0511835, []int{0}
+	return fileDescriptor_1d55352ef0511835, []int{1}
 }
 func (m *Params) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -68,26 +131,107 @@ func (m *Params) GetPostIds() string {
 	return ""
 }
 
+func (m *Params) GetNetworks() []Network {
+	if m != nil {
+		return m.Networks
+	}
+	return nil
+}
+
 func init() {
+	proto.RegisterType((*Network)(nil), "ununifi.decentralizedvault.Network")
 	proto.RegisterType((*Params)(nil), "ununifi.decentralizedvault.Params")
 }
 
 func init() { proto.RegisterFile("decentralized-vault/params.proto", fileDescriptor_1d55352ef0511835) }
 
 var fileDescriptor_1d55352ef0511835 = []byte{
-	// 181 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x48, 0x49, 0x4d, 0x4e,
-	0xcd, 0x2b, 0x29, 0x4a, 0xcc, 0xc9, 0xac, 0x4a, 0x4d, 0xd1, 0x2d, 0x4b, 0x2c, 0xcd, 0x29, 0xd1,
-	0x2f, 0x48, 0x2c, 0x4a, 0xcc, 0x2d, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x92, 0x2a, 0xcd,
-	0x2b, 0xcd, 0xcb, 0x4c, 0xcb, 0xd4, 0x43, 0x51, 0x09, 0x56, 0x28, 0x25, 0x92, 0x9e, 0x9f, 0x9e,
-	0x0f, 0x56, 0xa6, 0x0f, 0x62, 0x41, 0x74, 0x28, 0x29, 0x71, 0xb1, 0x05, 0x80, 0x4d, 0x10, 0x92,
-	0xe0, 0x62, 0x2f, 0xc8, 0x2f, 0x2e, 0xf1, 0x4c, 0x29, 0x96, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x0c,
-	0x82, 0x71, 0x9d, 0xfc, 0x4e, 0x3c, 0x92, 0x63, 0xbc, 0xf0, 0x48, 0x8e, 0xf1, 0xc1, 0x23, 0x39,
-	0xc6, 0x09, 0x8f, 0xe5, 0x18, 0x2e, 0x3c, 0x96, 0x63, 0xb8, 0xf1, 0x58, 0x8e, 0x21, 0xca, 0x24,
-	0x3d, 0xb3, 0x24, 0xa3, 0x34, 0x49, 0x2f, 0x39, 0x3f, 0x57, 0x3f, 0x34, 0x2f, 0x34, 0x2f, 0xd3,
-	0x2d, 0x53, 0x3f, 0x39, 0x23, 0x31, 0x33, 0x4f, 0xbf, 0x42, 0x1f, 0x9b, 0x63, 0x4b, 0x2a, 0x0b,
-	0x52, 0x8b, 0x93, 0xd8, 0xc0, 0x56, 0x1b, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff, 0x44, 0xea, 0x10,
-	0x57, 0xd0, 0x00, 0x00, 0x00,
+	// 380 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x92, 0x4d, 0x6b, 0xdb, 0x30,
+	0x18, 0xc7, 0xed, 0x64, 0xcb, 0x8b, 0xf6, 0x1a, 0xb3, 0x31, 0x93, 0x83, 0x6d, 0x34, 0x18, 0xde,
+	0x61, 0x36, 0x6c, 0x39, 0xed, 0x16, 0x1f, 0x06, 0xb9, 0x84, 0xe1, 0x11, 0x18, 0xbd, 0x14, 0x45,
+	0x56, 0x1d, 0x51, 0x47, 0x32, 0x96, 0x9c, 0x36, 0xa5, 0x1f, 0xa2, 0x1f, 0x2b, 0xc7, 0x1c, 0x4b,
+	0x0f, 0xa6, 0x24, 0xdf, 0xc0, 0x97, 0x5e, 0x4b, 0x64, 0xa7, 0x25, 0xd0, 0xdc, 0x9e, 0x97, 0xff,
+	0xf3, 0x48, 0xff, 0x9f, 0x04, 0x9c, 0x88, 0x60, 0xc2, 0x64, 0x86, 0x12, 0x7a, 0x45, 0xa2, 0x1f,
+	0x0b, 0x94, 0x27, 0xd2, 0x4f, 0x51, 0x86, 0xe6, 0xc2, 0x4b, 0x33, 0x2e, 0xb9, 0xd1, 0xcf, 0x59,
+	0xce, 0xe8, 0x19, 0xf5, 0x0e, 0x94, 0x4a, 0xd8, 0xff, 0x14, 0xf3, 0x98, 0x2b, 0x99, 0xbf, 0x8b,
+	0xaa, 0x09, 0xf8, 0xa0, 0x83, 0xf6, 0x98, 0xc8, 0x0b, 0x9e, 0x9d, 0x1b, 0x03, 0x00, 0x58, 0x15,
+	0x9e, 0xd2, 0xc8, 0xd4, 0x1d, 0xdd, 0xed, 0x06, 0x9f, 0xcb, 0xc2, 0xee, 0x2d, 0xd1, 0x3c, 0xf9,
+	0x0d, 0x9f, 0x7b, 0x30, 0xec, 0xd6, 0xc9, 0x28, 0x32, 0xbe, 0x81, 0xd7, 0x48, 0x08, 0x22, 0xcd,
+	0x86, 0x1a, 0xf8, 0x58, 0x16, 0xf6, 0xdb, 0x6a, 0x40, 0x95, 0x61, 0x58, 0xb5, 0x0d, 0x0c, 0xda,
+	0x3c, 0x43, 0x38, 0x21, 0xc2, 0x6c, 0x3a, 0x4d, 0xb7, 0x1b, 0x8c, 0x56, 0x85, 0xad, 0xdd, 0x15,
+	0xb6, 0x1f, 0x53, 0x39, 0xcb, 0xa7, 0x1e, 0xe6, 0x73, 0x7f, 0xc2, 0x26, 0x8c, 0xfe, 0xa1, 0x3e,
+	0x9e, 0x21, 0xca, 0x7c, 0xb9, 0x4c, 0x89, 0xf0, 0xfe, 0xc9, 0x8c, 0xb2, 0x78, 0x88, 0xf1, 0x30,
+	0x8a, 0x32, 0x22, 0x44, 0x59, 0xd8, 0xef, 0xab, 0x03, 0xea, 0x7d, 0x30, 0xdc, 0x6f, 0x36, 0xbe,
+	0x83, 0x16, 0xc2, 0x92, 0x2e, 0x88, 0xf9, 0xca, 0xd1, 0xdd, 0x4e, 0xd0, 0x2b, 0x0b, 0xfb, 0x5d,
+	0x7d, 0x1b, 0x55, 0x87, 0x61, 0x2d, 0x80, 0xd7, 0xa0, 0xf5, 0x57, 0xb1, 0x33, 0x4c, 0xd0, 0x4e,
+	0xb9, 0x90, 0xa3, 0x48, 0x54, 0xa6, 0xc3, 0x7d, 0x6a, 0xfc, 0x07, 0x9d, 0xda, 0xa8, 0x30, 0x1b,
+	0x4e, 0xd3, 0x7d, 0xf3, 0xf3, 0xab, 0x77, 0x1c, 0xb1, 0x57, 0x83, 0x0c, 0xbe, 0xec, 0x9c, 0x95,
+	0x85, 0xfd, 0xe1, 0x00, 0x9c, 0x80, 0xe1, 0xd3, 0xb6, 0x60, 0xbc, 0xda, 0x58, 0xfa, 0x7a, 0x63,
+	0xe9, 0xf7, 0x1b, 0x4b, 0xbf, 0xd9, 0x5a, 0xda, 0x7a, 0x6b, 0x69, 0xb7, 0x5b, 0x4b, 0x3b, 0x19,
+	0x1c, 0xc5, 0x71, 0xe9, 0xbf, 0xf4, 0x01, 0x14, 0xa4, 0x69, 0x4b, 0x3d, 0xe7, 0xaf, 0xc7, 0x00,
+	0x00, 0x00, 0xff, 0xff, 0xc8, 0x33, 0xa1, 0x2f, 0x24, 0x02, 0x00, 0x00,
+}
+
+func (m *Network) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Network) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Network) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Active {
+		i--
+		if m.Active {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.Oracles) > 0 {
+		for iNdEx := len(m.Oracles) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size := m.Oracles[iNdEx].Size()
+				i -= size
+				if _, err := m.Oracles[iNdEx].MarshalTo(dAtA[i:]); err != nil {
+					return 0, err
+				}
+				i = encodeVarintParams(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.Asset) > 0 {
+		i -= len(m.Asset)
+		copy(dAtA[i:], m.Asset)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.Asset)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.NetworkId) > 0 {
+		i -= len(m.NetworkId)
+		copy(dAtA[i:], m.NetworkId)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.NetworkId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *Params) Marshal() (dAtA []byte, err error) {
@@ -110,6 +254,20 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.Networks) > 0 {
+		for iNdEx := len(m.Networks) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Networks[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintParams(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
 	if len(m.PostIds) > 0 {
 		i -= len(m.PostIds)
 		copy(dAtA[i:], m.PostIds)
@@ -131,6 +289,32 @@ func encodeVarintParams(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *Network) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.NetworkId)
+	if l > 0 {
+		n += 1 + l + sovParams(uint64(l))
+	}
+	l = len(m.Asset)
+	if l > 0 {
+		n += 1 + l + sovParams(uint64(l))
+	}
+	if len(m.Oracles) > 0 {
+		for _, e := range m.Oracles {
+			l = e.Size()
+			n += 1 + l + sovParams(uint64(l))
+		}
+	}
+	if m.Active {
+		n += 2
+	}
+	return n
+}
+
 func (m *Params) Size() (n int) {
 	if m == nil {
 		return 0
@@ -141,6 +325,12 @@ func (m *Params) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovParams(uint64(l))
 	}
+	if len(m.Networks) > 0 {
+		for _, e := range m.Networks {
+			l = e.Size()
+			n += 1 + l + sovParams(uint64(l))
+		}
+	}
 	return n
 }
 
@@ -149,6 +339,176 @@ func sovParams(x uint64) (n int) {
 }
 func sozParams(x uint64) (n int) {
 	return sovParams(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *Network) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowParams
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Network: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Network: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NetworkId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NetworkId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Asset", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Asset = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Oracles", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			var v github_com_UnUniFi_chain_types.StringAccAddress
+			m.Oracles = append(m.Oracles, v)
+			if err := m.Oracles[len(m.Oracles)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Active", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Active = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipParams(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthParams
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *Params) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -210,6 +570,40 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.PostIds = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Networks", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Networks = append(m.Networks, Network{})
+			if err := m.Networks[len(m.Networks)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

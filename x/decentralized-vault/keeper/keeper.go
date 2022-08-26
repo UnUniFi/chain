@@ -19,7 +19,7 @@ type (
 		cdc           codec.Codec
 		storeKey      storetypes.StoreKey
 		memKey        storetypes.StoreKey
-		paramstore    paramtypes.Subspace
+		paramSpace    paramtypes.Subspace
 		accountKeeper types.AccountKeeper
 		nftKeeper     types.NftKeeper
 	}
@@ -29,20 +29,19 @@ func NewKeeper(
 	cdc codec.Codec,
 	storeKey,
 	memKey storetypes.StoreKey,
-	ps paramtypes.Subspace,
+	paramSpace paramtypes.Subspace,
 	accountKeeper types.AccountKeeper,
 	nftKeeper types.NftKeeper,
 ) Keeper {
-	// set KeyTable if it has not already been set
-	if !ps.HasKeyTable() {
-		ps = ps.WithKeyTable(types.ParamKeyTable())
+	if !paramSpace.HasKeyTable() {
+		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
 
 	return Keeper{
 		cdc:           cdc,
 		storeKey:      storeKey,
 		memKey:        memKey,
-		paramstore:    ps,
+		paramSpace:    paramSpace,
 		accountKeeper: accountKeeper,
 		nftKeeper:     nftKeeper,
 	}

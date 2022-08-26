@@ -6,6 +6,17 @@ import "gogoproto/gogo.proto";
 option go_package = "github.com/UnUniFi/chain/x/decentralized-vault/types";
 
 // Params defines the parameters for the module.
+message Network {
+  string          network_id = 1 [(gogoproto.moretags) = "yaml:\"network_id\""];
+  string          asset      = 2 [(gogoproto.moretags) = "yaml:\"asset\""];
+  repeated string oracles    = 3 [
+    (gogoproto.moretags)   = "yaml:\"oracles\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable)   = false
+  ];
+  bool active = 4 [(gogoproto.moretags) = "yaml:\"active\""];
+}
 message Params {
-  string postIds = 1;
+  string           postIds  = 1;
+  repeated Network networks = 2 [(gogoproto.moretags) = "yaml:\"networks\"", (gogoproto.nullable) = false];
 }

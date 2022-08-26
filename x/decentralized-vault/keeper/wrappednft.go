@@ -1,16 +1,31 @@
 package keeper
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/nft"
 
 	"github.com/UnUniFi/chain/x/decentralized-vault/types"
 )
 
+func (k Keeper) IsTrustedSender(ctx sdk.Context, senderAddress sdk.AccAddress) (bool, error) {
+	oracles := k.GetOracles(ctx, "Ethereum")
+	if len(oracles) == 0 {
+		return false, types.ErrOracleDoesNotRegister
+	}
+	for _, oracle := range oracles {
+		if senderAddress.Equals(oracle) {
+			return true, nil
+		}
+	}
+	return false, types.ErrOracleDoesNotMatch
+}
+
 func (k Keeper) MintWrappedNft(ctx sdk.Context, msg *types.MsgNftLocked) error {
-	//todo: check trust sender address
+	isTrustworthySender, err := k.IsTrustedSender(ctx, msg.Sender.AccAddress())
+	if !isTrustworthySender {
+		return err
+	}
+
 	nftId := msg.NftId
 	_, exists := k.nftKeeper.GetNFT(ctx, types.WrappedClassId, nftId)
 	if exists {
@@ -25,7 +40,10 @@ func (k Keeper) MintWrappedNft(ctx sdk.Context, msg *types.MsgNftLocked) error {
 			Symbol:      types.WrappedClassSymbol,
 			Description: types.WrappedClassDescription,
 		}
-		k.nftKeeper.SaveClass(ctx, class)
+		err = k.nftKeeper.SaveClass(ctx, class)
+		if err != nil {
+			return err
+		}
 	}
 
 	expNFT := nft.NFT{
@@ -34,13 +52,16 @@ func (k Keeper) MintWrappedNft(ctx sdk.Context, msg *types.MsgNftLocked) error {
 		Uri:     msg.Uri,
 		UriHash: msg.UriHash,
 	}
-	err := k.nftKeeper.Mint(ctx, expNFT, msg.ToAddress.AccAddress())
+	err = k.nftKeeper.Mint(ctx, expNFT, msg.ToAddress.AccAddress())
 
 	return err
 }
 
 func (k Keeper) BurnWrappedNft(ctx sdk.Context, msg *types.MsgNftUnlocked) error {
-	//todo: check trust sender address
+	isTrustworthySender, err := k.IsTrustedSender(ctx, msg.Sender.AccAddress())
+	if !isTrustworthySender {
+		return err
+	}
 	_, exists := k.nftKeeper.GetNFT(ctx, types.WrappedClassId, msg.NftId)
 	if !exists {
 		return nft.ErrNFTNotExists
@@ -49,13 +70,13 @@ func (k Keeper) BurnWrappedNft(ctx sdk.Context, msg *types.MsgNftUnlocked) error
 	// todo: check nft market
 	// todo: check nft owner
 
-	err := k.nftKeeper.Burn(ctx, types.WrappedClassId, msg.NftId)
+	err = k.nftKeeper.Burn(ctx, types.WrappedClassId, msg.NftId)
 
 	return err
 }
 
 func (k Keeper) DepositWrappedNft(ctx sdk.Context, msg *types.MsgNftTransferRequest) error {
-	//todo: check trust sender address
+
 	_, exists := k.nftKeeper.GetNFT(ctx, types.WrappedClassId, msg.NftId)
 	if !exists {
 		return nft.ErrNFTNotExists
@@ -65,8 +86,6 @@ func (k Keeper) DepositWrappedNft(ctx sdk.Context, msg *types.MsgNftTransferRequ
 	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
 
 	owner := k.nftKeeper.GetOwner(ctx, types.WrappedClassId, msg.NftId)
-	fmt.Println(owner.String())
-	fmt.Println(msg.Sender.AccAddress().String())
 	if owner.String() != msg.Sender.AccAddress().String() {
 		return types.ErrNotNftOwner
 	}
@@ -82,7 +101,11 @@ func (k Keeper) DepositWrappedNft(ctx sdk.Context, msg *types.MsgNftTransferRequ
 }
 
 func (k Keeper) WithdrawWrappedNft(ctx sdk.Context, msg *types.MsgNftRejectTransfer) error {
-	//todo: check trust sender address
+	isTrustworthySender, err := k.IsTrustedSender(ctx, msg.Sender.AccAddress())
+	if !isTrustworthySender {
+		return err
+	}
+
 	_, exists := k.nftKeeper.GetNFT(ctx, types.WrappedClassId, msg.NftId)
 	if !exists {
 		return nft.ErrNFTNotExists
@@ -116,7 +139,11 @@ func (k Keeper) GetTransferRequestByIdBytes(ctx sdk.Context, nftIdBytes []byte) 
 }
 
 func (k Keeper) NftTransferred(ctx sdk.Context, msg *types.MsgNftTransferred) error {
-	//todo: check trust sender address
+	isTrustworthySender, err := k.IsTrustedSender(ctx, msg.Sender.AccAddress())
+	if !isTrustworthySender {
+		return err
+	}
+
 	_, exists := k.nftKeeper.GetNFT(ctx, types.WrappedClassId, msg.NftId)
 	if !exists {
 		return nft.ErrNFTNotExists
@@ -125,7 +152,7 @@ func (k Keeper) NftTransferred(ctx sdk.Context, msg *types.MsgNftTransferred) er
 	// todo: check nft market
 	// todo: check nft owner
 
-	err := k.nftKeeper.Burn(ctx, types.WrappedClassId, msg.NftId)
+	err = k.nftKeeper.Burn(ctx, types.WrappedClassId, msg.NftId)
 
 	return err
 }

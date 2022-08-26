@@ -11,4 +11,6 @@ var (
 	ErrSample                       = sdkerrors.Register(ModuleName, 1100, "sample error")
 	ErrNotNftOwner                  = sdkerrors.Register(ModuleName, 1, "not the owner of nft")
 	ErrTransferRequestDoesNotExists = sdkerrors.Register(ModuleName, 2, "transfer request does not exist")
+	ErrOracleDoesNotRegister        = sdkerrors.Register(ModuleName, 3, "oracle does not exist")
+	ErrOracleDoesNotMatch           = sdkerrors.Register(ModuleName, 4, "sender does not mach oracle address")
 )
