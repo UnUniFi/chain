@@ -57,12 +57,6 @@ func (p Params) Validate() error {
 	return validateNetworksParams(p.Networks)
 }
 
-// String implements the Stringer interface.
-// func (p Params) String() string {
-// 	out, _ := yaml.Marshal(p)
-// 	return string(out)
-// }
-
 type Networks []Network
 
 func (n Network) Validate() error {
