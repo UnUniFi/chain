@@ -23,7 +23,7 @@ var _ types.MsgServer = msgServer{}
 func (k msgServer) NftLocked(c context.Context, msg *types.MsgNftLocked) (*types.MsgNftLockedResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	err := k.keeper.MintWrappedNft(ctx, msg)
+	err := k.keeper.NftLocked(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +33,7 @@ func (k msgServer) NftLocked(c context.Context, msg *types.MsgNftLocked) (*types
 func (k msgServer) NftUnlocked(c context.Context, msg *types.MsgNftUnlocked) (*types.MsgNftUnlockedResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	err := k.keeper.BurnWrappedNft(ctx, msg)
+	err := k.keeper.NftUnlocked(ctx, msg)
 	if err != nil {
 		return nil, err
 	}

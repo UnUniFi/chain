@@ -20,13 +20,17 @@ func (k Keeper) IsTrustedSender(ctx sdk.Context, senderAddress sdk.AccAddress) (
 	return false, types.ErrOracleDoesNotMatch
 }
 
-func (k Keeper) MintWrappedNft(ctx sdk.Context, msg *types.MsgNftLocked) error {
+func (k Keeper) NftLocked(ctx sdk.Context, msg *types.MsgNftLocked) error {
 	isTrustworthySender, err := k.IsTrustedSender(ctx, msg.Sender.AccAddress())
 	if !isTrustworthySender {
 		return err
 	}
 
-	nftId := msg.NftId
+	return k.MintWrappedNft(ctx, msg.NftId, msg.Uri, msg.UriHash, msg.ToAddress.AccAddress())
+}
+
+func (k Keeper) MintWrappedNft(ctx sdk.Context, nftId, uri, uriHash string, receiver sdk.AccAddress) error {
+	var err error
 	_, exists := k.nftKeeper.GetNFT(ctx, types.WrappedClassId, nftId)
 	if exists {
 		return nft.ErrNFTExists
@@ -49,20 +53,25 @@ func (k Keeper) MintWrappedNft(ctx sdk.Context, msg *types.MsgNftLocked) error {
 	expNFT := nft.NFT{
 		ClassId: types.WrappedClassId,
 		Id:      nftId,
-		Uri:     msg.Uri,
-		UriHash: msg.UriHash,
+		Uri:     uri,
+		UriHash: uriHash,
 	}
-	err = k.nftKeeper.Mint(ctx, expNFT, msg.ToAddress.AccAddress())
+	err = k.nftKeeper.Mint(ctx, expNFT, receiver)
 
 	return err
 }
 
-func (k Keeper) BurnWrappedNft(ctx sdk.Context, msg *types.MsgNftUnlocked) error {
+func (k Keeper) NftUnlocked(ctx sdk.Context, msg *types.MsgNftUnlocked) error {
 	isTrustworthySender, err := k.IsTrustedSender(ctx, msg.Sender.AccAddress())
 	if !isTrustworthySender {
 		return err
 	}
-	_, exists := k.nftKeeper.GetNFT(ctx, types.WrappedClassId, msg.NftId)
+
+	return k.BurnWrappedNft(ctx, msg.NftId)
+}
+
+func (k Keeper) BurnWrappedNft(ctx sdk.Context, nftId string) error {
+	_, exists := k.nftKeeper.GetNFT(ctx, types.WrappedClassId, nftId)
 	if !exists {
 		return nft.ErrNFTNotExists
 	}
@@ -70,7 +79,7 @@ func (k Keeper) BurnWrappedNft(ctx sdk.Context, msg *types.MsgNftUnlocked) error
 	// todo: check nft market
 	// todo: check nft owner
 
-	err = k.nftKeeper.Burn(ctx, types.WrappedClassId, msg.NftId)
+	err := k.nftKeeper.Burn(ctx, types.WrappedClassId, nftId)
 
 	return err
 }

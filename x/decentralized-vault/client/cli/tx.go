@@ -36,7 +36,7 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(
-		CmdMintWrappedNft(),
+		CmdNftLocked(),
 		CmdNftTransferRequest(),
 		CmdRejectTransferRequest(),
 	)
@@ -44,14 +44,14 @@ func GetTxCmd() *cobra.Command {
 	return cmd
 }
 
-func CmdMintWrappedNft() *cobra.Command {
+func CmdNftLocked() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint [nft-id] [uri] [uri-hash]",
-		Short: "Mint an nft",
+		Use:   "nft-locked [nft-id] [uri] [uri-hash]",
+		Short: "locked nft on other network",
 		Long: strings.TrimSpace(
-			fmt.Sprintf(`Mint an nft.
+			fmt.Sprintf(`locked nft on other network.
 Example:
-$ %s tx %s mint a10 uri 888838  --from myKeyName --chain-id ununifi-x
+$ %s tx %s nft-locked a10 uri 888838  --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
