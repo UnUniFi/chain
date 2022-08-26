@@ -7,6 +7,47 @@ import (
 	"github.com/UnUniFi/chain/x/decentralized-vault/types"
 )
 
+func (k Keeper) NftLocked(ctx sdk.Context, msg *types.MsgNftLocked) error {
+	isTrustworthySender, err := k.IsTrustedSender(ctx, msg.Sender.AccAddress())
+	if !isTrustworthySender {
+		return err
+	}
+
+	return k.MintWrappedNft(ctx, msg.NftId, msg.Uri, msg.UriHash, msg.ToAddress.AccAddress())
+}
+
+func (k Keeper) NftUnlocked(ctx sdk.Context, msg *types.MsgNftUnlocked) error {
+	isTrustworthySender, err := k.IsTrustedSender(ctx, msg.Sender.AccAddress())
+	if !isTrustworthySender {
+		return err
+	}
+
+	// todo: check nft market if not listhing
+	// todo: check nft owner have nft?
+
+	return k.BurnWrappedNft(ctx, msg.NftId)
+}
+
+func (k Keeper) NftTransferRequest(ctx sdk.Context, msg *types.MsgNftTransferRequest) error {
+	return k.DepositWrappedNft(ctx, msg)
+}
+
+func (k Keeper) NftRejectTransfer(ctx sdk.Context, msg *types.MsgNftRejectTransfer) error {
+	return k.WithdrawWrappedNft(ctx, msg)
+}
+
+func (k Keeper) NftTransferred(ctx sdk.Context, msg *types.MsgNftTransferred) error {
+	isTrustworthySender, err := k.IsTrustedSender(ctx, msg.Sender.AccAddress())
+	if !isTrustworthySender {
+		return err
+	}
+
+	// todo: check nft market
+	// todo: check deposited
+
+	return k.BurnWrappedNft(ctx, msg.NftId)
+}
+
 func (k Keeper) IsTrustedSender(ctx sdk.Context, senderAddress sdk.AccAddress) (bool, error) {
 	oracles := k.GetOracles(ctx, "Ethereum")
 	if len(oracles) == 0 {
@@ -18,15 +59,6 @@ func (k Keeper) IsTrustedSender(ctx sdk.Context, senderAddress sdk.AccAddress) (
 		}
 	}
 	return false, types.ErrOracleDoesNotMatch
-}
-
-func (k Keeper) NftLocked(ctx sdk.Context, msg *types.MsgNftLocked) error {
-	isTrustworthySender, err := k.IsTrustedSender(ctx, msg.Sender.AccAddress())
-	if !isTrustworthySender {
-		return err
-	}
-
-	return k.MintWrappedNft(ctx, msg.NftId, msg.Uri, msg.UriHash, msg.ToAddress.AccAddress())
 }
 
 func (k Keeper) MintWrappedNft(ctx sdk.Context, nftId, uri, uriHash string, receiver sdk.AccAddress) error {
@@ -61,18 +93,6 @@ func (k Keeper) MintWrappedNft(ctx sdk.Context, nftId, uri, uriHash string, rece
 	return err
 }
 
-func (k Keeper) NftUnlocked(ctx sdk.Context, msg *types.MsgNftUnlocked) error {
-	isTrustworthySender, err := k.IsTrustedSender(ctx, msg.Sender.AccAddress())
-	if !isTrustworthySender {
-		return err
-	}
-
-	// todo: check nft market if not listhing
-	// todo: check nft owner have nft?
-
-	return k.BurnWrappedNft(ctx, msg.NftId)
-}
-
 func (k Keeper) BurnWrappedNft(ctx sdk.Context, nftId string) error {
 	_, exists := k.nftKeeper.GetNFT(ctx, types.WrappedClassId, nftId)
 	if !exists {
@@ -82,10 +102,6 @@ func (k Keeper) BurnWrappedNft(ctx sdk.Context, nftId string) error {
 	err := k.nftKeeper.Burn(ctx, types.WrappedClassId, nftId)
 
 	return err
-}
-
-func (k Keeper) NftTransferRequest(ctx sdk.Context, msg *types.MsgNftTransferRequest) error {
-	return k.DepositWrappedNft(ctx, msg)
 }
 
 func (k Keeper) DepositWrappedNft(ctx sdk.Context, msg *types.MsgNftTransferRequest) error {
@@ -110,10 +126,6 @@ func (k Keeper) DepositWrappedNft(ctx sdk.Context, msg *types.MsgNftTransferRequ
 	k.SetTransferRequest(ctx, transferRequest)
 	err := k.nftKeeper.Transfer(ctx, types.WrappedClassId, msg.NftId, moduleAddr)
 	return err
-}
-
-func (k Keeper) NftRejectTransfer(ctx sdk.Context, msg *types.MsgNftRejectTransfer) error {
-	return k.WithdrawWrappedNft(ctx, msg)
 }
 
 func (k Keeper) WithdrawWrappedNft(ctx sdk.Context, msg *types.MsgNftRejectTransfer) error {
@@ -152,16 +164,4 @@ func (k Keeper) GetTransferRequestByIdBytes(ctx sdk.Context, nftIdBytes []byte) 
 	transferRequest := types.TransferRequest{}
 	k.cdc.MustUnmarshal(bz, &transferRequest)
 	return transferRequest, nil
-}
-
-func (k Keeper) NftTransferred(ctx sdk.Context, msg *types.MsgNftTransferred) error {
-	isTrustworthySender, err := k.IsTrustedSender(ctx, msg.Sender.AccAddress())
-	if !isTrustworthySender {
-		return err
-	}
-
-	// todo: check nft market
-	// todo: check deposited
-
-	return k.BurnWrappedNft(ctx, msg.NftId)
 }

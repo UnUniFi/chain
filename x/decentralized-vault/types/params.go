@@ -57,6 +57,7 @@ func (p Params) Validate() error {
 	return validateNetworksParams(p.Networks)
 }
 
+// todo: split source
 type Networks []Network
 
 func (n Network) Validate() error {
