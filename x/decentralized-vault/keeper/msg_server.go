@@ -43,7 +43,7 @@ func (k msgServer) NftUnlocked(c context.Context, msg *types.MsgNftUnlocked) (*t
 func (k msgServer) NftTransferRequest(c context.Context, msg *types.MsgNftTransferRequest) (*types.MsgNftTransferRequestResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	err := k.keeper.DepositWrappedNft(ctx, msg)
+	err := k.keeper.NftTransferRequest(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (k msgServer) NftTransferRequest(c context.Context, msg *types.MsgNftTransf
 func (k msgServer) NftRejectTransfer(c context.Context, msg *types.MsgNftRejectTransfer) (*types.MsgNftRejectTransferResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	err := k.keeper.WithdrawWrappedNft(ctx, msg)
+	err := k.keeper.NftRejectTransfer(ctx, msg)
 	if err != nil {
 		return nil, err
 	}

@@ -7,10 +7,10 @@ import (
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgNftLocked{}
 
-func NewMsgNftLocked(sender sdk.AccAddress, nftId, uri, uriHash string) MsgNftLocked {
+func NewMsgNftLocked(sender, receiver sdk.AccAddress, nftId, uri, uriHash string) MsgNftLocked {
 	return MsgNftLocked{
 		Sender:    sender.Bytes(),
-		ToAddress: sender.Bytes(),
+		ToAddress: receiver.Bytes(),
 		NftId:     nftId,
 		Uri:       uri,
 		UriHash:   uriHash,
@@ -42,10 +42,10 @@ func (msg MsgNftLocked) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgNftUnlocked{}
 
-func NewMsgNftUnlocked(sender sdk.AccAddress, nftId, uri, uriHash string) MsgNftUnlocked {
+func NewMsgNftUnlocked(sender, target sdk.AccAddress, nftId string) MsgNftUnlocked {
 	return MsgNftUnlocked{
 		Sender:    sender.Bytes(),
-		ToAddress: sender.Bytes(),
+		ToAddress: target.Bytes(),
 		NftId:     nftId,
 	}
 }

@@ -67,6 +67,9 @@ func (k Keeper) NftUnlocked(ctx sdk.Context, msg *types.MsgNftUnlocked) error {
 		return err
 	}
 
+	// todo: check nft market if not listhing
+	// todo: check nft owner have nft?
+
 	return k.BurnWrappedNft(ctx, msg.NftId)
 }
 
@@ -76,16 +79,16 @@ func (k Keeper) BurnWrappedNft(ctx sdk.Context, nftId string) error {
 		return nft.ErrNFTNotExists
 	}
 
-	// todo: check nft market
-	// todo: check nft owner
-
 	err := k.nftKeeper.Burn(ctx, types.WrappedClassId, nftId)
 
 	return err
 }
 
-func (k Keeper) DepositWrappedNft(ctx sdk.Context, msg *types.MsgNftTransferRequest) error {
+func (k Keeper) NftTransferRequest(ctx sdk.Context, msg *types.MsgNftTransferRequest) error {
+	return k.DepositWrappedNft(ctx, msg)
+}
 
+func (k Keeper) DepositWrappedNft(ctx sdk.Context, msg *types.MsgNftTransferRequest) error {
 	_, exists := k.nftKeeper.GetNFT(ctx, types.WrappedClassId, msg.NftId)
 	if !exists {
 		return nft.ErrNFTNotExists
@@ -107,6 +110,10 @@ func (k Keeper) DepositWrappedNft(ctx sdk.Context, msg *types.MsgNftTransferRequ
 	k.SetTransferRequest(ctx, transferRequest)
 	err := k.nftKeeper.Transfer(ctx, types.WrappedClassId, msg.NftId, moduleAddr)
 	return err
+}
+
+func (k Keeper) NftRejectTransfer(ctx sdk.Context, msg *types.MsgNftRejectTransfer) error {
+	return k.WithdrawWrappedNft(ctx, msg)
 }
 
 func (k Keeper) WithdrawWrappedNft(ctx sdk.Context, msg *types.MsgNftRejectTransfer) error {
@@ -153,15 +160,8 @@ func (k Keeper) NftTransferred(ctx sdk.Context, msg *types.MsgNftTransferred) er
 		return err
 	}
 
-	_, exists := k.nftKeeper.GetNFT(ctx, types.WrappedClassId, msg.NftId)
-	if !exists {
-		return nft.ErrNFTNotExists
-	}
-
 	// todo: check nft market
-	// todo: check nft owner
+	// todo: check deposited
 
-	err = k.nftKeeper.Burn(ctx, types.WrappedClassId, msg.NftId)
-
-	return err
+	return k.BurnWrappedNft(ctx, msg.NftId)
 }
