@@ -19,7 +19,7 @@ func (k Keeper) GetFarmingUnitsOfAddress(ctx sdk.Context, addr sdk.AccAddress) [
 	store := ctx.KVStore(k.storeKey)
 
 	units := []types.FarmingUnit{}
-	it := sdk.KVStorePrefixIterator(store, append([]byte(types.PrefixKeyFarmingUnit), addr...))
+	it := sdk.KVStorePrefixIterator(store, append([]byte(types.PrefixKeyFarmingUnit), addr.String()...))
 	defer it.Close()
 
 	for ; it.Valid(); it.Next() {

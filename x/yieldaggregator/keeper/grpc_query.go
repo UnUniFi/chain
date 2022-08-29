@@ -18,8 +18,15 @@ func (k Keeper) AssetManagementAccount(c context.Context, req *types.QueryAssetM
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
-	return &types.QueryAssetManagementAccountResponse{}, nil
+	amAcc := k.GetAssetManagementAccount(ctx, req.Id)
+	targets := k.GetAssetManagementTargetsOfAccount(ctx, req.Id)
+	return &types.QueryAssetManagementAccountResponse{
+		Account: types.AssetManagementAccountInfo{
+			Id:                     amAcc.Id,
+			Name:                   amAcc.Name,
+			AssetManagementTargets: targets,
+		},
+	}, nil
 }
 
 func (k Keeper) AllAssetManagementAccounts(c context.Context, req *types.QueryAllAssetManagementAccountsRequest) (*types.QueryAllAssetManagementAccountsResponse, error) {
@@ -28,8 +35,19 @@ func (k Keeper) AllAssetManagementAccounts(c context.Context, req *types.QueryAl
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
-	return &types.QueryAllAssetManagementAccountsResponse{}, nil
+	amAccs := k.GetAllAssetManagementAccounts(ctx)
+	amAccInfos := []types.AssetManagementAccountInfo{}
+	for _, amAcc := range amAccs {
+		targets := k.GetAssetManagementTargetsOfAccount(ctx, amAcc.Id)
+		amAccInfos = append(amAccInfos, types.AssetManagementAccountInfo{
+			Id:                     amAcc.Id,
+			Name:                   amAcc.Name,
+			AssetManagementTargets: targets,
+		})
+	}
+	return &types.QueryAllAssetManagementAccountsResponse{
+		Accounts: amAccInfos,
+	}, nil
 }
 
 func (k Keeper) UserInfo(c context.Context, req *types.QueryUserInfoRequest) (*types.QueryUserInfoResponse, error) {
@@ -38,16 +56,33 @@ func (k Keeper) UserInfo(c context.Context, req *types.QueryUserInfoRequest) (*t
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
-	return &types.QueryUserInfoResponse{}, nil
+	addr, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
+		return nil, err
+	}
+	orders := k.GetFarmingOrdersOfAddress(ctx, sdk.AccAddress(req.Address))
+
+	farmingUnits := k.GetFarmingUnitsOfAddress(ctx, addr)
+	amounts := sdk.Coins{}
+	for _, fu := range farmingUnits {
+		amounts = amounts.Add(fu.Amount...)
+	}
+	return &types.QueryUserInfoResponse{
+		UserInfo: types.QueryUserInfo{
+			Amount:        amounts,
+			FarmingOrders: orders,
+			FarmedCounter: 0,
+		},
+	}, nil
 }
 
-func (k Keeper) AllUserInfos(c context.Context, req *types.QueryAllUserInfosRequest) (*types.QueryAllUserInfosResponse, error) {
+func (k Keeper) AllFarmingUnits(c context.Context, req *types.QueryAllFarmingUnitsRequest) (*types.QueryAllFarmingUnitsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
-	return &types.QueryAllUserInfosResponse{}, nil
+	return &types.QueryAllFarmingUnitsResponse{
+		Units: k.GetAllFarmingUnits(ctx),
+	}, nil
 }

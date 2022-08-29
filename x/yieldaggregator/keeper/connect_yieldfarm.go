@@ -15,12 +15,14 @@ func (k Keeper) InvestOnTarget(ctx sdk.Context, addr sdk.AccAddress, target type
 		farmingUnit = types.FarmingUnit{
 			AccountId:          target.AssetManagementAccountId,
 			TargetId:           target.Id,
-			Amount:             sdk.Coins{},
+			Amount:             amount,
 			FarmingStartTime:   ctx.BlockTime().String(),
 			UnbondingStarttime: time.Time{},
 			Owner:              addr.String(),
 		}
 		k.SetFarmingUnit(ctx, farmingUnit)
+	} else {
+		farmingUnit.Amount = sdk.Coins(farmingUnit.Amount).Add(amount...)
 	}
 
 	// move tokens to farm target
@@ -88,8 +90,7 @@ func (k Keeper) ClaimWithdrawFromTarget(ctx sdk.Context, addr sdk.AccAddress, ta
 				return err
 			}
 		}
-		farmingUnit.Amount = sdk.Coins(farmingUnit.Amount).Add(balances...)
-		k.SetFarmingUnit(ctx, farmingUnit)
+		k.IncreaseUserDeposit(ctx, addr, balances)
 	case types.IntegrateType_COSMWASM:
 		// TODO: implement claim withdraw flow in case of cosmwasm
 	}
@@ -114,8 +115,7 @@ func (k Keeper) ClaimRewardsFromTarget(ctx sdk.Context, addr sdk.AccAddress, tar
 				return err
 			}
 		}
-		farmingUnit.Amount = sdk.Coins(farmingUnit.Amount).Add(balances...)
-		k.SetFarmingUnit(ctx, farmingUnit)
+		k.IncreaseUserDeposit(ctx, addr, balances)
 	case types.IntegrateType_COSMWASM:
 		// TODO: implement claim rewards flow in case of cosmwasm
 	}

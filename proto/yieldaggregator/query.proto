@@ -26,7 +26,7 @@ service Query {
   rpc UserInfo(QueryUserInfoRequest) returns (QueryUserInfoResponse) {
     option (google.api.http).get = "/UnUniFi/chain/yieldaggregator/user_info/{address}";
   }
-  rpc AllUserInfos(QueryAllUserInfosRequest) returns (QueryAllUserInfosResponse) {
+  rpc AllFarmingUnits(QueryAllFarmingUnitsRequest) returns (QueryAllFarmingUnitsResponse) {
     option (google.api.http).get = "/UnUniFi/chain/yieldaggregator/all_user_infos";
   }
 }
@@ -43,7 +43,7 @@ message QueryParamsResponse {
 message AssetManagementAccountInfo {
   string                         id                       = 1;
   string                         name                     = 2;
-  repeated AssetManagementTarget asset_management_targets = 3;
+  repeated AssetManagementTarget asset_management_targets = 3 [(gogoproto.nullable) = false];
 }
 
 message QueryAssetManagementAccountRequest {
@@ -55,12 +55,12 @@ message QueryAssetManagementAccountResponse {
 
 message QueryAllAssetManagementAccountsRequest {}
 message QueryAllAssetManagementAccountsResponse {
-  repeated AssetManagementAccountInfo account = 1 [(gogoproto.nullable) = false];
+  repeated AssetManagementAccountInfo accounts = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryUserInfo {
   repeated cosmos.base.v1beta1.Coin amount         = 1 [(gogoproto.nullable) = false];
-  repeated FarmingOrder             farming_orders = 2;
+  repeated FarmingOrder             farming_orders = 2 [(gogoproto.nullable) = false];
   uint64                            farmed_counter = 3;
 }
 message QueryUserInfoRequest {
@@ -70,7 +70,7 @@ message QueryUserInfoResponse {
   QueryUserInfo user_info = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryAllUserInfosRequest {}
-message QueryAllUserInfosResponse {
-  repeated QueryUserInfo user_info = 1 [(gogoproto.nullable) = false];
+message QueryAllFarmingUnitsRequest {}
+message QueryAllFarmingUnitsResponse {
+  repeated FarmingUnit units = 1 [(gogoproto.nullable) = false];
 }

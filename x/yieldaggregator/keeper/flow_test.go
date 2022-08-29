@@ -99,6 +99,20 @@ func (suite *KeeperTestSuite) TestInvestmentFlow() {
 	yFarmInfo = suite.app.YieldfarmKeeper.GetFarmerInfo(suite.ctx, farmUnit.GetAddress())
 	suite.Require().Equal(yFarmInfo.Rewards, []sdk.Coin(nil)) // amount after claim
 
+	// withdraw from farm unit to user deposit
+	err = suite.app.YieldaggregatorKeeper.ClaimWithdrawFromTarget(suite.ctx, farmer, amTarget)
+	suite.Require().NoError(err)
+
+	// execute farming order once more
+	suite.app.YieldaggregatorKeeper.ExecuteFarmingOrders(suite.ctx, farmer)
+
+	// check update farm unit
+	farmUnits = suite.app.YieldaggregatorKeeper.GetFarmingUnitsOfAddress(suite.ctx, farmer)
+	suite.Require().GreaterOrEqual(len(farmUnits), 1)
+	farmUnit = farmUnits[0]
+	yFarmInfo = suite.app.YieldfarmKeeper.GetFarmerInfo(suite.ctx, farmUnit.GetAddress())
+	suite.Require().Equal(yFarmInfo.Amount, []sdk.Coin{sdk.NewInt64Coin("uguu", 1010000)})
+
 	// stop farming and close farm unit
 	err = suite.app.YieldaggregatorKeeper.StopFarmingUnit(suite.ctx, farmUnit)
 	suite.Require().NoError(err)
