@@ -1,4 +1,4 @@
-package v1_beta2
+package v1_beta3
 
 import (
 	"encoding/json"
