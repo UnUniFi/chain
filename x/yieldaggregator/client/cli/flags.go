@@ -16,6 +16,17 @@ const (
 	FlagUnbondingSeconds              = "unbonding-seconds"
 	FlagAssetConditions               = "asset-conditions"
 	FlagIntegrateType                 = "integration-type"
+	FlagExecuteOrders                 = "execute-orders"
+	FlagFarmingOrderId                = "farming-order-id"
+	FlagStrategyType                  = "strategy-type"
+	FlagWhitelistedTargetIds          = "whitelisted-target-ids"
+	FlagBlacklistedTargetIds          = "blacklisted-target-ids"
+	FlagMaxUnbondingSeconds           = "max-unbonding-seconds"
+	FlagOverallRatio                  = "overall-ratio"
+	FlagMin                           = "min"
+	FlagMax                           = "max"
+	FlagDate                          = "date"
+	FlagActive                        = "active"
 )
 
 func FlagProposalTx() *flag.FlagSet {
@@ -60,6 +71,31 @@ func FlagStopAssetManagementTarget() *flag.FlagSet {
 
 	fs.String(FlagAssetManagementAccountId, "", "id of the asset management account")
 	fs.String(FlagAssetManagementTargetId, "", "id of the asset management target")
+
+	return fs
+}
+
+func FlagDepositCmd() *flag.FlagSet {
+	fs := flag.NewFlagSet("", flag.ContinueOnError)
+
+	fs.Bool(FlagExecuteOrders, false, "required flag when execute orders as part of deposit")
+
+	return fs
+}
+
+func FlagFarmingOrder() *flag.FlagSet {
+	fs := flag.NewFlagSet("", flag.ContinueOnError)
+
+	fs.String(FlagFarmingOrderId, "", "order id")
+	fs.String(FlagStrategyType, "", "strategy type")
+	fs.String(FlagWhitelistedTargetIds, "", "whitelisted target ids")
+	fs.String(FlagBlacklistedTargetIds, "", "blacklisted target ids")
+	fs.Uint64(FlagMaxUnbondingSeconds, 0, "maximum unbonding seconds on the order")
+	fs.Uint32(FlagOverallRatio, 0, "ratio on fund split")
+	fs.String(FlagMin, "", "minimum deposit amount")
+	fs.String(FlagMax, "", "maximum deposit amount")
+	fs.Uint64(FlagDate, 0, "order start timestamp")
+	fs.Bool(FlagActive, false, "shows if order is active or not")
 
 	return fs
 }

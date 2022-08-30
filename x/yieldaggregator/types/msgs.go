@@ -7,8 +7,12 @@ import (
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgDeposit{}
 
-func NewMsgDeposit(sender sdk.AccAddress) MsgDeposit {
-	return MsgDeposit{}
+func NewMsgDeposit(sender sdk.AccAddress, amounts sdk.Coins, executeOrders bool) MsgDeposit {
+	return MsgDeposit{
+		FromAddress:   sender.Bytes(),
+		Amount:        amounts,
+		ExecuteOrders: executeOrders,
+	}
 }
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
@@ -24,8 +28,11 @@ func (msg MsgDeposit) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgWithdraw{}
 
-func NewMsgWithdraw(sender sdk.AccAddress) MsgWithdraw {
-	return MsgWithdraw{}
+func NewMsgWithdraw(sender sdk.AccAddress, amounts sdk.Coins) MsgWithdraw {
+	return MsgWithdraw{
+		FromAddress: sender.Bytes(),
+		Amount:      amounts,
+	}
 }
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
@@ -41,8 +48,11 @@ func (msg MsgWithdraw) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgAddFarmingOrder{}
 
-func NewMsgAddFarmingOrder(sender sdk.AccAddress) MsgAddFarmingOrder {
-	return MsgAddFarmingOrder{}
+func NewMsgAddFarmingOrder(sender sdk.AccAddress, order FarmingOrder) MsgAddFarmingOrder {
+	return MsgAddFarmingOrder{
+		FromAddress: sender.Bytes(),
+		Order:       &order,
+	}
 }
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
@@ -58,8 +68,11 @@ func (msg MsgAddFarmingOrder) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgDeleteFarmingOrder{}
 
-func NewMsgDeleteFarmingOrder(sender sdk.AccAddress) MsgDeleteFarmingOrder {
-	return MsgDeleteFarmingOrder{}
+func NewMsgDeleteFarmingOrder(sender sdk.AccAddress, orderId string) MsgDeleteFarmingOrder {
+	return MsgDeleteFarmingOrder{
+		FromAddress: sender.Bytes(),
+		OrderId:     orderId,
+	}
 }
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
@@ -75,8 +88,11 @@ func (msg MsgDeleteFarmingOrder) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgActivateFarmingOrder{}
 
-func NewMsgActivateFarmingOrder(sender sdk.AccAddress) MsgActivateFarmingOrder {
-	return MsgActivateFarmingOrder{}
+func NewMsgActivateFarmingOrder(sender sdk.AccAddress, orderId string) MsgActivateFarmingOrder {
+	return MsgActivateFarmingOrder{
+		FromAddress: sender.Bytes(),
+		OrderId:     orderId,
+	}
 }
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
@@ -92,8 +108,11 @@ func (msg MsgActivateFarmingOrder) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgInactivateFarmingOrder{}
 
-func NewMsgInactivateFarmingOrder(sender sdk.AccAddress) MsgInactivateFarmingOrder {
-	return MsgInactivateFarmingOrder{}
+func NewMsgInactivateFarmingOrder(sender sdk.AccAddress, orderId string) MsgInactivateFarmingOrder {
+	return MsgInactivateFarmingOrder{
+		FromAddress: sender.Bytes(),
+		OrderId:     orderId,
+	}
 }
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
@@ -109,8 +128,11 @@ func (msg MsgInactivateFarmingOrder) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgExecuteFarmingOrders{}
 
-func NewMsgExecuteFarmingOrders(sender sdk.AccAddress) MsgExecuteFarmingOrders {
-	return MsgExecuteFarmingOrders{}
+func NewMsgExecuteFarmingOrders(sender sdk.AccAddress, orderIds []string) MsgExecuteFarmingOrders {
+	return MsgExecuteFarmingOrders{
+		FromAddress: sender.Bytes(),
+		OrderIds:    orderIds,
+	}
 }
 
 // ValidateBasic does a simple validation check that doesn't require access to state.

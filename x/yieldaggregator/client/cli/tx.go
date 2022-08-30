@@ -12,6 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/version"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
@@ -37,6 +38,13 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(
+		NewDepositTxCmd(),
+		NewWithdrawTxCmd(),
+		NewAddFarmingOrderTxCmd(),
+		NewDeleteFarmingOrderTxCmd(),
+		NewActivateFarmingOrderTxCmd(),
+		NewInactivateFarmingOrderTxCmd(),
+		NewExecuteFarmingOrdersTxCmd(),
 		NewSubmitProposalAddYieldFarmTxCmd(),
 		NewSubmitProposalUpdateYieldFarmTxCmd(),
 		NewSubmitProposalStopYieldFarmTxCmd(),
@@ -45,6 +53,290 @@ func GetTxCmd() *cobra.Command {
 		NewSubmitProposalUpdateYieldFarmTargetTxCmd(),
 		NewSubmitProposalStopYieldFarmTargetTxCmd(),
 	)
+
+	return cmd
+}
+
+func NewDepositTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "deposit [amounts]",
+		Short: "Deposit tokens into yield aggregator",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Deposit tokens into yield aggregator.
+Example:
+$ %s tx %s deposit 10000guu --execute-orders=true  --from=myKeyName --chain-id=ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			executeOrders, err := cmd.Flags().GetBool(FlagExecuteOrders)
+			if err != nil {
+				return err
+			}
+
+			amounts, err := sdk.ParseCoinsNormalized(args[0])
+			if err != nil {
+				return err
+			}
+			msg := types.NewMsgDeposit(clientCtx.GetFromAddress(), amounts, executeOrders)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().AddFlagSet(FlagDepositCmd())
+
+	return cmd
+}
+
+func NewWithdrawTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "withdraw [amounts]",
+		Short: "Withdraw tokens from yield aggregator",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Withdraw tokens from yield aggregator.
+Example:
+$ %s tx %s withdraw 10000guu --from=myKeyName --chain-id=ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			amounts, err := sdk.ParseCoinsNormalized(args[0])
+			if err != nil {
+				return err
+			}
+			msg := types.NewMsgWithdraw(clientCtx.GetFromAddress(), amounts)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func NewAddFarmingOrderTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "add-farming-order [flags]",
+		Short: "Add farming order for an account",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Add farming order for an account.
+Example:
+$ %s tx %s add-farming-order [flags] --from=myKeyName --chain-id=ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			farmingOrderId, err := cmd.Flags().GetString(FlagFarmingOrderId)
+			if err != nil {
+				return err
+			}
+
+			strategyType, err := cmd.Flags().GetString(FlagStrategyType)
+			if err != nil {
+				return err
+			}
+
+			whitelistedTargetIdsStr, err := cmd.Flags().GetString(FlagWhitelistedTargetIds)
+			if err != nil {
+				return err
+			}
+
+			blacklistedTargetIdsStr, err := cmd.Flags().GetString(FlagBlacklistedTargetIds)
+			if err != nil {
+				return err
+			}
+
+			maxUnbondingSeconds, err := cmd.Flags().GetUint64(FlagMaxUnbondingSeconds)
+			if err != nil {
+				return err
+			}
+
+			overallRatio, err := cmd.Flags().GetUint32(FlagOverallRatio)
+			if err != nil {
+				return err
+			}
+
+			min, err := cmd.Flags().GetString(FlagMin)
+			if err != nil {
+				return err
+			}
+
+			max, err := cmd.Flags().GetString(FlagMax)
+			if err != nil {
+				return err
+			}
+
+			timestamp, err := cmd.Flags().GetUint64(FlagDate)
+			if err != nil {
+				return err
+			}
+
+			active, err := cmd.Flags().GetBool(FlagActive)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgAddFarmingOrder(clientCtx.GetFromAddress(), types.FarmingOrder{
+				Id:          farmingOrderId,
+				FromAddress: clientCtx.GetFromAddress().String(),
+				Strategy: types.Strategy{
+					StrategyType:         strategyType,
+					WhitelistedTargetIds: strings.Split(whitelistedTargetIdsStr, ","),
+					BlacklistedTargetIds: strings.Split(blacklistedTargetIdsStr, ","),
+				},
+				MaxUnbondingTime: time.Duration(maxUnbondingSeconds) * time.Second,
+				OverallRatio:     overallRatio,
+				Min:              min,
+				Max:              max,
+				Date:             time.Unix(int64(timestamp), 0),
+				Active:           active,
+			})
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().AddFlagSet(FlagFarmingOrder())
+
+	return cmd
+}
+
+func NewDeleteFarmingOrderTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "delete-farming-order [order-id]",
+		Short: "Delete farming order from an account",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Delete farming order from an account.
+Example:
+$ %s tx %s delete-farming-order order1 --from=myKeyName --chain-id=ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgDeleteFarmingOrder(clientCtx.GetFromAddress(), args[0])
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func NewActivateFarmingOrderTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "activate-farming-order [order-id]",
+		Short: "Activate farming order from an account",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Activate farming order from an account.
+Example:
+$ %s tx %s activate-farming-order order1 --from=myKeyName --chain-id=ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgActivateFarmingOrder(clientCtx.GetFromAddress(), args[0])
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func NewInactivateFarmingOrderTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "inactivate-farming-order [order-id]",
+		Short: "Inactivate farming order from an account",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Inactivate farming order from an account.
+Example:
+$ %s tx %s inactivate-farming-order order1 --from=myKeyName --chain-id=ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgInactivateFarmingOrder(clientCtx.GetFromAddress(), args[0])
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func NewExecuteFarmingOrdersTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "execute-farming-orders [order-ids]",
+		Short: "Execute farming orders on an account",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Execute farming orders on an account.
+Example:
+$ %s tx %s execute-farming-orders order1,order2 --from=myKeyName --chain-id=ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			orderIds := strings.Split(args[0], ",")
+
+			msg := types.NewMsgExecuteFarmingOrders(clientCtx.GetFromAddress(), orderIds)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
 }

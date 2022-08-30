@@ -101,9 +101,8 @@ func (k Keeper) InactivateFarmingOrder(ctx sdk.Context, addr sdk.AccAddress, far
 	return nil
 }
 
-func (k Keeper) ExecuteFarmingOrders(ctx sdk.Context, addr sdk.AccAddress) error {
+func (k Keeper) ExecuteFarmingOrders(ctx sdk.Context, addr sdk.AccAddress, orders []types.FarmingOrder) error {
 	overallRatio := uint32(0)
-	orders := k.GetFarmingOrdersOfAddress(ctx, addr)
 	for _, order := range orders {
 		overallRatio = order.OverallRatio
 	}

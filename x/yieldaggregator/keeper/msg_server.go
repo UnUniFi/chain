@@ -73,7 +73,18 @@ func (k msgServer) InactivateFarmingOrder(c context.Context, msg *types.MsgInact
 
 func (k msgServer) ExecuteFarmingOrders(c context.Context, msg *types.MsgExecuteFarmingOrders) (*types.MsgExecuteFarmingOrdersResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+	orders := []types.FarmingOrder{}
 
-	k.Keeper.ExecuteFarmingOrders(ctx, msg.FromAddress.AccAddress())
+	for _, orderId := range msg.OrderIds {
+		order := k.Keeper.GetFarmingOrder(ctx, msg.FromAddress.AccAddress(), orderId)
+		if order.Id == "" {
+			return nil, types.ErrFarmingOrderDoesNotExist
+		}
+		orders = append(orders, order)
+	}
+	err := k.Keeper.ExecuteFarmingOrders(ctx, msg.FromAddress.AccAddress(), orders)
+	if err != nil {
+		return nil, err
+	}
 	return &types.MsgExecuteFarmingOrdersResponse{}, nil
 }

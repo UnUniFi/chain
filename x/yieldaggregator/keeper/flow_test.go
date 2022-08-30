@@ -66,7 +66,8 @@ func (suite *KeeperTestSuite) TestInvestmentFlow() {
 	})
 
 	// execute farming order by farmer
-	suite.app.YieldaggregatorKeeper.ExecuteFarmingOrders(suite.ctx, farmer)
+	orders := suite.app.YieldaggregatorKeeper.GetFarmingOrdersOfAddress(suite.ctx, farmer)
+	suite.app.YieldaggregatorKeeper.ExecuteFarmingOrders(suite.ctx, farmer, orders)
 
 	// check farm unit created
 	farmUnits := suite.app.YieldaggregatorKeeper.GetFarmingUnitsOfAddress(suite.ctx, farmer)
@@ -104,7 +105,7 @@ func (suite *KeeperTestSuite) TestInvestmentFlow() {
 	suite.Require().NoError(err)
 
 	// execute farming order once more
-	suite.app.YieldaggregatorKeeper.ExecuteFarmingOrders(suite.ctx, farmer)
+	suite.app.YieldaggregatorKeeper.ExecuteFarmingOrders(suite.ctx, farmer, orders)
 
 	// check update farm unit
 	farmUnits = suite.app.YieldaggregatorKeeper.GetFarmingUnitsOfAddress(suite.ctx, farmer)
