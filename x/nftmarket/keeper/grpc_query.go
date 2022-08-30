@@ -3,10 +3,11 @@ package keeper
 import (
 	"context"
 
-	"github.com/UnUniFi/chain/x/nftmarket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
 func (k Keeper) Params(c context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
@@ -176,7 +177,7 @@ func (k Keeper) BidderBids(c context.Context, req *types.QueryBidderBidsRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	bids := k.GetBidsByBidder(ctx, sdk.AccAddress(req.Bidder))
+	bids := k.GetBidsByBidder(ctx, sdk.AccAddress(sdk.MustAccAddressFromBech32(req.Bidder)))
 	return &types.QueryBidderBidsResponse{
 		Bids: bids,
 	}, nil
