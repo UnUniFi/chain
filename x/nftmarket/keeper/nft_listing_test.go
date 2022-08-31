@@ -3,12 +3,13 @@ package keeper_test
 import (
 	"time"
 
-	ununifitypes "github.com/UnUniFi/chain/types"
-	"github.com/UnUniFi/chain/x/nftmarket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 	"github.com/tendermint/tendermint/crypto/ed25519"
+
+	ununifitypes "github.com/UnUniFi/chain/types"
+	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
 // test basic functions of nft listing
@@ -187,8 +188,10 @@ func (suite *KeeperTestSuite) TestNftListingBasics() {
 }
 
 func (suite *KeeperTestSuite) TestListNft() {
-	acc1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	acc2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	acc1 := suite.addrs[0]
+	acc2 := suite.addrs[1]
+	// suite.addrs[0] = acc1
+	// suite.addrs[1] = acc2
 
 	tests := []struct {
 		testCase   string
@@ -270,6 +273,18 @@ func (suite *KeeperTestSuite) TestListNft() {
 			lister:     acc1,
 			bidToken:   "uguu",
 			activeRank: 100,
+			mintBefore: true,
+			listBefore: false,
+			expectPass: true,
+		},
+		{
+			testCase:   "successful anther owner",
+			classId:    "class7",
+			nftId:      "nft7",
+			nftOwner:   acc2,
+			lister:     acc2,
+			bidToken:   "uguu",
+			activeRank: 0,
 			mintBefore: true,
 			listBefore: false,
 			expectPass: true,
