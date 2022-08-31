@@ -2,7 +2,7 @@ package v1_beta3
 
 const UpgradeName string = "v1-beta.3"
 
-const TotalAmountValidator int64 = 4656942745096
+const TotalAmountValidator int64 = 7274629058824
 const TotalAmountExceptValidator int64 = 304963298762
 const TotalForfeitAmount int64 = 30839520258
 const FundAmountValidator int64 = 20000000

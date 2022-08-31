@@ -55,6 +55,13 @@ const BANK_SEND_LIST string = `{
       "denom": "uguu",
       "vesting_starts": 1661990400,
       "vesting_ends": 1725148800
+    },
+		{
+      "toAddress": "ununifi14ktdwtyz82u28wzthsnvt8m70hu74h98h49eak",
+      "amount": 2617627058824,
+      "denom": "uguu",
+      "vesting_starts": 1661990400,
+      "vesting_ends": 1725148800
     }
 	],
   "airdropCommunityRewardModerator": [

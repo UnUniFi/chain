@@ -27,7 +27,7 @@ If you use cosmovisor which we highly recommend, create the required folder, mak
 mkdir -p $DAEMON_HOME/cosmovisor/upgrades/v1-beta.3/bin
 cd $HOME/<ununifi-repo>
 git pull
-git checkout v1-beta.3
+git checkout v1.0.0-beta.3
 make build -B
 cp ./build/ununifid $DAEMON_HOME/cosmovisor/upgrades/v1-beta.3/bin
 ```
