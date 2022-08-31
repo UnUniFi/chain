@@ -58,7 +58,12 @@ message QueryNftListingResponse {
   NftListing listing = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryListedNftsRequest {}
+message QueryListedNftsRequest {
+  string owner = 1 [
+    (gogoproto.moretags)  = "yaml:\"bidder\"",
+    (cosmos_proto.scalar) = "github.com/UnUniFi/chain/types.StringAccAddress"
+  ];
+}
 message QueryListedNftsRequestM {}
 message QueryListedClassesRequest {
   int32 nft_limit = 1;
