@@ -47,46 +47,50 @@ service Query {
 
 message QueryParamsRequest {}
 message QueryParamsResponse {
-  Params params = 1 [ (gogoproto.nullable) = false ];
+  Params params = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryNftListingRequest {
   string class_id = 1;
-  string nft_id = 2;
+  string nft_id   = 2;
 }
 message QueryNftListingResponse {
-  NftListing listing = 1 [ (gogoproto.nullable) = false ];
+  NftListing listing = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryListedNftsRequest {}
+message QueryListedNftsRequestM {}
 message QueryListedClassesRequest {
   int32 nft_limit = 1;
 }
 message QueryListedClassRequest {
-  string class_id = 1;
-  int32 nft_limit = 2;
+  string class_id  = 1;
+  int32  nft_limit = 2;
 }
 message QueryListedNftsResponse {
-  repeated NftListing listings = 1 [ (gogoproto.nullable) = false ];
+  repeated NftListing listings = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryListedNftsResponseM {
+  repeated NftListing listings = 1 [(gogoproto.nullable) = false];
 }
 message QueryListedClassesResponse {
   repeated QueryListedClassResponse classes = 1;
 }
 message QueryListedClassResponse {
-  string class_id = 1;
-  string name = 2;
-  string description = 3;
-  string symbol = 4;
-  string uri = 5;
-  string urihash = 6;
-  repeated ListedNft nfts = 7;
-  uint64 nft_count = 8;
+  string             class_id    = 1;
+  string             name        = 2;
+  string             description = 3;
+  string             symbol      = 4;
+  string             uri         = 5;
+  string             urihash     = 6;
+  repeated ListedNft nfts        = 7;
+  uint64             nft_count   = 8;
 }
-
 
 message QueryLoansRequest {}
 message QueryLoansResponse {
-  repeated Loan loans = 1 [ (gogoproto.nullable) = false ];
+  repeated Loan loans = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryCDPsListRequest {}
@@ -97,25 +101,25 @@ message QueryCDPsListResponse {
 
 message QueryNftBidsRequest {
   string class_id = 1;
-  string nft_id = 2;
+  string nft_id   = 2;
 }
 message QueryNftBidsResponse {
-  repeated NftBid bids = 1 [ (gogoproto.nullable) = false ];
+  repeated NftBid bids = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryBidderBidsRequest {
   string bidder = 1 [
-    (gogoproto.moretags) = "yaml:\"bidder\"",
+    (gogoproto.moretags)  = "yaml:\"bidder\"",
     (cosmos_proto.scalar) = "github.com/UnUniFi/chain/types.StringAccAddress"
   ];
 }
 message QueryBidderBidsResponse {
-  repeated NftBid bids = 1 [ (gogoproto.nullable) = false ];
+  repeated NftBid bids = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryRewardsRequest {
   uint64 address = 1;
 }
 message QueryRewardsResponse {
-  repeated cosmos.base.v1beta1.Coin rewards = 1 [ (gogoproto.nullable) = false ];
+  repeated cosmos.base.v1beta1.Coin rewards = 1 [(gogoproto.nullable) = false];
 }
