@@ -60,7 +60,7 @@ message QueryNftListingResponse {
 
 message QueryListedNftsRequest {
   string owner = 1 [
-    (gogoproto.moretags)  = "yaml:\"bidder\"",
+    (gogoproto.moretags)  = "yaml:\"owner\"",
     (cosmos_proto.scalar) = "github.com/UnUniFi/chain/types.StringAccAddress"
   ];
 }
