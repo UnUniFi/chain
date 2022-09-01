@@ -5,4 +5,5 @@ const (
 	FlagBidActiveRank    = "bid-active-rank"
 	FlagBidToken         = "bid-token"
 	FlagMinBid           = "min-bid"
+	FlagOwner            = "owner"
 )
