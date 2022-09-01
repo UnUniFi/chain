@@ -190,8 +190,6 @@ func (suite *KeeperTestSuite) TestNftListingBasics() {
 func (suite *KeeperTestSuite) TestListNft() {
 	acc1 := suite.addrs[0]
 	acc2 := suite.addrs[1]
-	// suite.addrs[0] = acc1
-	// suite.addrs[1] = acc2
 
 	tests := []struct {
 		testCase   string
