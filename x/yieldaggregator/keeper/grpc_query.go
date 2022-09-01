@@ -60,16 +60,13 @@ func (k Keeper) UserInfo(c context.Context, req *types.QueryUserInfoRequest) (*t
 	if err != nil {
 		return nil, err
 	}
-	orders := k.GetFarmingOrdersOfAddress(ctx, sdk.AccAddress(req.Address))
 
-	farmingUnits := k.GetFarmingUnitsOfAddress(ctx, addr)
-	amounts := sdk.Coins{}
-	for _, fu := range farmingUnits {
-		amounts = amounts.Add(fu.Amount...)
-	}
+	orders := k.GetFarmingOrdersOfAddress(ctx, addr)
+
+	deposits := k.GetUserDeposit(ctx, addr)
 	return &types.QueryUserInfoResponse{
 		UserInfo: types.QueryUserInfo{
-			Amount:        amounts,
+			Amount:        deposits,
 			FarmingOrders: orders,
 			FarmedCounter: 0,
 		},

@@ -346,7 +346,7 @@ $ %s tx %s execute-farming-orders order1,order2 --from=myKeyName --chain-id=unun
 func NewSubmitProposalAddYieldFarmTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal-add-yieldfarm",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(0),
 		Short: "Submit a proposal to add yield farm",
 		Long:  fmt.Sprintf(`Submit a proposal to add yield farm.`),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -418,7 +418,7 @@ func NewSubmitProposalAddYieldFarmTxCmd() *cobra.Command {
 func NewSubmitProposalUpdateYieldFarmTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal-update-yieldfarm",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(0),
 		Short: "Submit a proposal to update a yield farm",
 		Long:  fmt.Sprintf(`Submit a proposal to update a yield farm.`),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -489,7 +489,7 @@ func NewSubmitProposalUpdateYieldFarmTxCmd() *cobra.Command {
 func NewSubmitProposalStopYieldFarmTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal-stop-yieldfarm",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(0),
 		Short: "Submit a proposal to stop a yield farm",
 		Long:  fmt.Sprintf(`Submit a proposal to stop a yield farm.`),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -546,7 +546,7 @@ func NewSubmitProposalStopYieldFarmTxCmd() *cobra.Command {
 func NewSubmitProposalRemoveYieldFarmTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal-remove-yieldfarm",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(0),
 		Short: "Submit a proposal to remove a yield farm",
 		Long:  fmt.Sprintf(`Submit a proposal to remove a yield farm.`),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -602,7 +602,7 @@ func NewSubmitProposalRemoveYieldFarmTxCmd() *cobra.Command {
 func NewSubmitProposalAddYieldFarmTargetTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal-add-yieldfarmtarget",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(0),
 		Short: "Submit a proposal to add a yield farm target",
 		Long:  fmt.Sprintf(`Submit a proposal to add a yield farm target.`),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -661,7 +661,7 @@ func NewSubmitProposalAddYieldFarmTargetTxCmd() *cobra.Command {
 func NewSubmitProposalUpdateYieldFarmTargetTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal-update-yieldfarmtarget",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(0),
 		Short: "Submit a proposal to update a yield farm target",
 		Long:  fmt.Sprintf(`Submit a proposal to update a yield farm target.`),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -781,7 +781,7 @@ func getAssetManagementTargetFromFlags(cmd *cobra.Command) (*types.AssetManageme
 func NewSubmitProposalStopYieldFarmTargetTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal-stop-yieldfarmtarget",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(0),
 		Short: "Submit a proposal to stop a yield farm target",
 		Long:  fmt.Sprintf(`Submit a proposal to stop a yield farm target.`),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -843,7 +843,7 @@ func NewSubmitProposalStopYieldFarmTargetTxCmd() *cobra.Command {
 func NewSubmitProposalRemoveYieldFarmTargetTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal-remove-yieldfarmtarget",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(0),
 		Short: "Submit a proposal to remove a yield farm target",
 		Long:  fmt.Sprintf(`Submit a proposal to remove a yield farm target.`),
 		RunE: func(cmd *cobra.Command, args []string) error {

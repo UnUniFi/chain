@@ -81,8 +81,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 
-	yieldaggregatorclient "github.com/UnUniFi/chain/x/yieldaggregator/client"
-
 	ante "github.com/UnUniFi/chain/app/ante"
 	appparams "github.com/UnUniFi/chain/app/params"
 
@@ -184,14 +182,14 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 		upgradeclient.LegacyCancelProposalHandler,
 		// ibcclientclient.UpdateClientProposalHandler,
 		// ibcclientclient.UpgradeProposalHandler,
-		yieldaggregatorclient.ProposalAddYieldFarmHandler,
-		yieldaggregatorclient.ProposalUpdateYieldFarm,
-		yieldaggregatorclient.ProposalStopYieldFarm,
-		yieldaggregatorclient.ProposalRemoveYieldFarm,
-		yieldaggregatorclient.ProposalAddYieldFarmTarget,
-		yieldaggregatorclient.ProposalUpdateYieldFarmTarget,
-		yieldaggregatorclient.ProposalStopYieldFarmTarget,
-		yieldaggregatorclient.ProposalRemoveYieldFarmTarget,
+		// yieldaggregatorclient.ProposalAddYieldFarmHandler,
+		// yieldaggregatorclient.ProposalUpdateYieldFarm,
+		// yieldaggregatorclient.ProposalStopYieldFarm,
+		// yieldaggregatorclient.ProposalRemoveYieldFarm,
+		// yieldaggregatorclient.ProposalAddYieldFarmTarget,
+		// yieldaggregatorclient.ProposalUpdateYieldFarmTarget,
+		// yieldaggregatorclient.ProposalStopYieldFarmTarget,
+		// yieldaggregatorclient.ProposalRemoveYieldFarmTarget,
 	)
 
 	// govProposalHandlers = append(govProposalHandlers, wasmclient.ProposalHandlers...)
