@@ -166,6 +166,20 @@ func (k Keeper) Loans(c context.Context, req *types.QueryLoansRequest) (*types.Q
 	}, nil
 }
 
+func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.QueryLoanResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	nftId := types.NftIdentifier{
+		ClassId: req.ClassId,
+		NftId:   req.NftId,
+	}
+	ctx := sdk.UnwrapSDKContext(c)
+	return &types.QueryLoanResponse{
+		Loan: k.GetDebtByNft(ctx, nftId.IdBytes()),
+	}, nil
+}
+
 func (k Keeper) CDPsList(c context.Context, req *types.QueryCDPsListRequest) (*types.QueryCDPsListResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
