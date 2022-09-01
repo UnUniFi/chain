@@ -52,6 +52,7 @@ func GetTxCmd() *cobra.Command {
 		NewSubmitProposalAddYieldFarmTargetTxCmd(),
 		NewSubmitProposalUpdateYieldFarmTargetTxCmd(),
 		NewSubmitProposalStopYieldFarmTargetTxCmd(),
+		NewSubmitProposalRemoveYieldFarmTargetTxCmd(),
 	)
 
 	return cmd
@@ -592,6 +593,7 @@ func NewSubmitProposalRemoveYieldFarmTxCmd() *cobra.Command {
 	}
 
 	cmd.Flags().AddFlagSet(FlagProposalTx())
+	cmd.Flags().AddFlagSet(FlagStopAssetManagementAccount())
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -743,7 +745,7 @@ func getAssetManagementTargetFromFlags(cmd *cobra.Command) (*types.AssetManageme
 	assetConditionStrArr := strings.Split(assetConditionsStr, ",")
 	for _, assetConditionStr := range assetConditionStrArr {
 		split := strings.Split(assetConditionStr, ":")
-		if len(split) != 2 {
+		if len(split) != 3 {
 			return nil, fmt.Errorf("invalid asset condition expression")
 		}
 		ratio, err := strconv.Atoi(split[2])
