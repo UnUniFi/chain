@@ -42,6 +42,13 @@ func upgradeBankSend(
 		total_allocate_coin.Add(normalToken)
 	}
 
+	// Lend validatos
+	for index, value := range bank_send_list.LendValidator {
+		ctx.Logger().Info(fmt.Sprintf("bank send validator :%s[%s]", strconv.Itoa(index), value.ToAddress))
+		coin := tokenAllocation(ctx, authkeeper, bankkeeper, index, value, fromAddr)
+		total_allocate_coin.Add(coin)
+	}
+
 	// Check the amount of tokens sent
 	assumed_coin.Add(sdk.NewCoin(Denom, sdk.NewInt(TotalAmountValidator)))
 	if !total_allocate_coin.IsEqual(assumed_coin) {

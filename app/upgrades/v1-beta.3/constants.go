@@ -13,9 +13,11 @@ const Denom string = "uguu"
 
 type ResultList struct {
 	Validator                       []BankSendTarget `json:"validator"`
+	LendValidator                   []BankSendTarget `json:"lendValidator"`
 	AirdropCommunityRewardModerator []BankSendTarget `json:"airdropCommunityRewardModerator"`
 	AirdropForfeit                  []string         `json:"airdropForfeit"`
 }
+
 type BankSendTarget struct {
 	ToAddress     string `json:"toAddress,omitempty"`
 	Denom         string `json:"denom,omitempty"`
