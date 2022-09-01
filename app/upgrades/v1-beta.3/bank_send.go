@@ -88,6 +88,17 @@ func upgradeBankSend(
 		}
 	}
 
+	// others
+	for index, value := range bank_send_list.Others {
+		fromAddr, _ := sdk.AccAddressFromBech32(value.FromAddress)
+		bankTarget := value.BankSendTarget
+		ctx.Logger().Info(fmt.Sprintf("bank send :%s", strconv.Itoa(index)))
+		// subtract token from sender
+		token := sdk.NewCoin(bankTarget.Denom, sdk.NewInt(bankTarget.Amount))
+		changeVestingAmount(ctx, authkeeper, token, fromAddr, false)
+		_ = tokenAllocation(ctx, authkeeper, bankkeeper, index, bankTarget, fromAddr)
+	}
+
 	// after get total supply
 	after_total_supply := bankkeeper.GetSupply(ctx, Denom)
 	ctx.Logger().Info(fmt.Sprintf("bank send : total supply[%d]", after_total_supply.Amount))
@@ -129,6 +140,31 @@ func forfeitToken(
 		}
 	}
 	return nil
+}
+
+func changeVestingAmount(
+	ctx sdk.Context,
+	authkeeper authkeeper.AccountKeeper,
+	amount sdk.Coin,
+	addr sdk.AccAddress,
+	add bool,
+) {
+	// subtract token from sender
+	accI := authkeeper.GetAccount(ctx, addr)
+
+	cont_acc, _ := accI.(*authvesting.ContinuousVestingAccount)
+	if add {
+		modifiedAmount := cont_acc.OriginalVesting.Add(amount)
+		cont_acc.OriginalVesting = modifiedAmount
+	} else {
+		modifiedAmount := cont_acc.OriginalVesting.Sub(sdk.NewCoins(amount))
+		cont_acc.OriginalVesting = modifiedAmount
+	}
+
+	if err := cont_acc.Validate(); err != nil {
+		panic(fmt.Errorf("failed to validate ContinuousVestingAccount: %w", err))
+	}
+	authkeeper.SetAccount(ctx, cont_acc)
 }
 
 func tokenAllocation(

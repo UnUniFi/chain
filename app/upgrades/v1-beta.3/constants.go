@@ -12,10 +12,11 @@ const ToAddressAirdropForfeit string = "ununifi1r500cehqg5u6fhsaysmhu4cnw5pz3lxc
 const Denom string = "uguu"
 
 type ResultList struct {
-	Validator                       []BankSendTarget `json:"validator"`
-	LendValidator                   []BankSendTarget `json:"lendValidator"`
-	AirdropCommunityRewardModerator []BankSendTarget `json:"airdropCommunityRewardModerator"`
-	AirdropForfeit                  []string         `json:"airdropForfeit"`
+	Validator                       []BankSendTarget        `json:"validator"`
+	LendValidator                   []BankSendTarget        `json:"lendValidator"`
+	AirdropCommunityRewardModerator []BankSendTarget        `json:"airdropCommunityRewardModerator"`
+	AirdropForfeit                  []string                `json:"airdropForfeit"`
+	Others                          []SpecialBankSendTarget `json:"others"`
 }
 
 type BankSendTarget struct {
@@ -24,4 +25,9 @@ type BankSendTarget struct {
 	Amount        int64  `json:"amount,omitempty"`
 	VestingStarts int64  `json:"vesting_starts,omitempty"`
 	VestingEnds   int64  `json:"vesting_ends,omitempty"`
+}
+
+type SpecialBankSendTarget struct {
+	FromAddress    string         `json:"fromAddress,omitempty"`
+	BankSendTarget BankSendTarget `json:"bankSendTarget,omitempty"`
 }
