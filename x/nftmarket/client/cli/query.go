@@ -4,10 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/UnUniFi/chain/x/nftmarket/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
+
+	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module
@@ -100,7 +101,19 @@ func CmdQueryListedNfts() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryListedNftsRequest{}
+			owner, err := cmd.Flags().GetString(FlagOwner)
+			if err != nil {
+				return err
+			}
+
+			var params *types.QueryListedNftsRequest
+			if owner != "" {
+				params = &types.QueryListedNftsRequest{
+					Owner: owner,
+				}
+			} else {
+				params = &types.QueryListedNftsRequest{}
+			}
 
 			res, err := queryClient.ListedNfts(context.Background(), params)
 			if err != nil {
@@ -110,6 +123,8 @@ func CmdQueryListedNfts() *cobra.Command {
 			return clientCtx.PrintProto(res)
 		},
 	}
+
+	cmd.Flags().String(FlagOwner, "", "nft owner address")
 
 	flags.AddQueryFlagsToCmd(cmd)
 

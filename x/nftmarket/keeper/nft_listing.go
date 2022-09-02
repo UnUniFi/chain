@@ -6,8 +6,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/x/nftmarket/types"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+
+	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
 func (k Keeper) GetNftListingByIdBytes(ctx sdk.Context, nftIdBytes []byte) (types.NftListing, error) {

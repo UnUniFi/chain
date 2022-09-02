@@ -43,7 +43,24 @@ func (k Keeper) ListedNfts(c context.Context, req *types.QueryListedNftsRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	listings := k.GetAllNftListings(ctx)
+	if req.Owner != "" {
+		acc, err := sdk.AccAddressFromBech32(req.Owner)
+		if err != nil {
+			return nil, status.Error(codes.InvalidArgument, "invalid request. address wrong")
+		}
+		return k.ListedNftsByOwner(ctx, acc)
+	} else {
+		listings := k.GetAllNftListings(ctx)
+		return &types.QueryListedNftsResponse{
+			Listings: listings,
+		}, nil
+	}
+
+}
+
+func (k Keeper) ListedNftsByOwner(c context.Context, address sdk.AccAddress) (*types.QueryListedNftsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	listings := k.GetListingsByOwner(ctx, address)
 	return &types.QueryListedNftsResponse{
 		Listings: listings,
 	}, nil
