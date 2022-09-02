@@ -8,7 +8,7 @@ In short, we do state-modification in the middle of this upgrade to send some to
 
 ## Brief guide
 
-All validators nodes should upgrades to `v1.0.0-beta.3`. The `v1.0.0-beta.3` binary is state machine compatible with `v1.0.0-beta.1` until **block 1597000. At 01:00 UTC on September 6th, 2022**, we will have a coordinated re-start of the network. 
+All validators nodes should upgrades to `v1.0.0-beta.3`. The `v1.0.0-beta.3` binary is state machine compatible with `v1.0.0-beta.1` until **block 1597000. At 01:00 UTC on September 7th, 2022**, we will have a coordinated re-start of the network. 
 All validator(full) nodes have to do is set the binary of `v1.0.0-beta.3` in the appropriate location before 1597000 block height.   
 At 1597000, if you use cosmovisor, the system automatically upgrades the binary and block 1597000 will be mined with over 67% voting power.   
 
