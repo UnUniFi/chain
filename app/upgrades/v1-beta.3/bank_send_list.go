@@ -1,4 +1,4 @@
-package v1_beta2
+package v1_beta3
 
 import (
 	"encoding/json"
@@ -22,35 +22,86 @@ const BANK_SEND_LIST string = `{
 	"validator": [
     {
       "toAddress": "ununifi1az7xg9wyfruf94teg9u2dr8dec7sjf6esultlc",
-      "amount": 2794117647058,
+      "amount": 2328411000000,
       "denom": "uguu",
-      "vesting_starts": 1661126400,
-      "vesting_ends": 1724284800
+      "vesting_starts": 1693526400,
+      "vesting_ends": 1725148800
     },
     {
       "toAddress": "ununifi199j70q49338yz9r83xsmfescn74gxachwfp9cs",
-      "amount": 2794117647058,
+      "amount": 2328411000000,
       "denom": "uguu",
 
-      "vesting_starts": 1661126400,
-      "vesting_ends": 1724284800
+      "vesting_starts": 1693526400,
+      "vesting_ends": 1725148800
     },
     {
       "toAddress": "ununifi1w92q2r53jgvyvcuuwmlggrvum7c6j72y403puk",
       "amount": 20000000,
       "denom": "uguu",
-      "vesting_starts": 1661126400,
-      "vesting_ends": 1724284800
+      "vesting_starts": 1693526400,
+      "vesting_ends": 1725148800
     },
     {
       "toAddress": "ununifi19f0w9svr905fhefusyx4z8sf83j6et0gkfnrpz",
       "amount": 20000000,
       "denom": "uguu",
-      "vesting_starts": 1661126400,
-      "vesting_ends": 1724284800
+      "vesting_starts": 1693526400,
+      "vesting_ends": 1725148800
+    },
+    {
+      "toAddress": "ununifi1ca3k5gk7elrpej8rd74hruu2pm8dn5jzny2qqe",
+      "amount": 20000000,
+      "denom": "uguu",
+      "vesting_starts": 1693526400,
+      "vesting_ends": 1725148800
+    },
+		{
+      "toAddress": "ununifi14ktdwtyz82u28wzthsnvt8m70hu74h98h49eak",
+      "amount": 2617627058824,
+      "denom": "uguu",
+      "vesting_starts": 1693526400,
+      "vesting_ends": 1725148800
     }
 	],
-  "airdropCommunityRewardModerator": [
+	"lendValidator": [
+		{
+			"toAddress": "ununifi1n92vgzkyn32n4wgk0wetq5xw5j5v8zwseetg8f",
+			"amount": 576653179398,
+			"denom": "uguu",
+			"vesting_starts": 1684972800,
+      "vesting_ends": 1716508800
+		},
+		{
+			"toAddress": "ununifi1zqt3snrfpq7zlqvwzvm4v926w26pcmrutklsl9",
+			"amount": 576983703088,
+			"denom": "uguu",
+			"vesting_starts": 1684972800,
+      "vesting_ends": 1716508800
+		},
+		{
+			"toAddress": "ununifi1p705f2vfnqx6t0k68my4ah6w4gdcujs3yvcwua",
+			"amount": 524564637871,
+			"denom": "uguu",
+			"vesting_starts": 1684972800,
+      "vesting_ends": 1716508800
+		},
+		{
+			"toAddress": "ununifi1gwcrz4cnzfurdxfcz7k4uklcrqd6prrme8m66s",
+			"amount": 498338807151,
+			"denom": "uguu",
+			"vesting_starts": 1684972800,
+      "vesting_ends": 1716508800
+		},
+		{
+			"toAddress": "ununifi13ua8cusfmx3lwta4n76vjuf6rarr5m90hggnvq",
+			"amount": 498341531779,
+			"denom": "uguu",
+			"vesting_starts": 1684972800,
+      "vesting_ends": 1716508800
+		}
+	],
+	"airdropCommunityRewardModerator": [
     {
       "toAddress": "ununifi1vntg7ecgu7f3vydjmzlrtnav5pqlr7wezcw38h",
       "amount": 1199314676,
@@ -1142,5 +1193,67 @@ const BANK_SEND_LIST string = `{
 			"ununifi1cym27cxuc9zn74md3lq4jam2hs54xflvytl9p8",
 			"ununifi1syyklr60ykhjwhwnkf7s344xmwdu2kzxlt34ts",
 			"ununifi1j77ze43j79njy3sd62e3umpuglgwqn3ddezqmn"
+	],
+	"others": [
+		{
+			"fromAddress": "ununifi15h3drpk7mf0gn38eh3xnwmn4jrnkvlx7kvgj69",
+			"bankSendTarget": {
+				"toAddress": "ununifi1yajezpax35eyks3vzg60nsrtlwd75zu3xmy4w9",
+				"amount": 1038782191118,
+				"denom": "uguu",
+				"vesting_starts": 1684972800,
+				"vesting_ends": 1748044800
+			}
+		},
+		{
+			"fromAddress": "ununifi15h3drpk7mf0gn38eh3xnwmn4jrnkvlx7kvgj69",
+			"bankSendTarget": {
+				"toAddress": "ununifi13tgmuaupx9z73zwgj6jjcyqytv7rggqup42yr0",
+				"amount": 3116346573354,
+				"denom": "uguu",
+				"vesting_starts": 1684972800,
+				"vesting_ends": 1748044800
+			}
+		},
+		{
+			"fromAddress": "ununifi1lxjfmrd8xrsxxty7kemrz3rpgswrt8vtsq37nc",
+			"bankSendTarget": {
+				"toAddress": "ununifi1n52fqanrnyr47nj9w92qc04u28tmc4g4xalx8u",
+				"amount": 445192367622,
+				"denom": "uguu",
+				"vesting_starts": 1684972800,
+				"vesting_ends": 1748044800
+			}
+		},
+		{
+			"fromAddress": "ununifi1lxjfmrd8xrsxxty7kemrz3rpgswrt8vtsq37nc",
+			"bankSendTarget": {
+				"toAddress": "ununifi1cqfqf3rmdrklyg38s4qhfekh2rj2s86r7064w4",
+				"amount": 445192367622,
+				"denom": "uguu",
+				"vesting_starts": 1684972800,
+				"vesting_ends": 1748044800
+			}
+		},
+		{
+			"fromAddress": "ununifi1lxjfmrd8xrsxxty7kemrz3rpgswrt8vtsq37nc",
+			"bankSendTarget": {
+				"toAddress": "ununifi1wsnnxp3efqy9qu8xqv033nltmauqhvwj3nxg3k",
+				"amount": 296794911748,
+				"denom": "uguu",
+				"vesting_starts": 1684972800,
+				"vesting_ends": 1748044800
+			}
+		},
+		{
+			"fromAddress": "ununifi130rpfseu72la5rlnmmejr6w2hc7qhaqsdrh8am",
+			"bankSendTarget": {
+				"toAddress": "ununifi1s2wf3ena7gw992lmf0pzrqyzm6ejx5rkwahvd5",
+				"amount": 654402000000,
+				"denom": "uguu",
+				"vesting_starts": 1684972800,
+				"vesting_ends": 1748044800
+			}
+		}
 	]
 }`

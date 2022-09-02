@@ -7,7 +7,7 @@
 set -e
 
 # --upgrade-info '{"binaries":{"linux/amd64":"https://github.com/hikaruNagamine/shared/releases/download/v1/ununifid_v1?checksum=md5:d8852a87392511f8b31bfadcb35a536f"}}' \
-ununifid tx gov submit-proposal software-upgrade v1-beta.2 \
+ununifid tx gov submit-proposal software-upgrade v1-beta.3 \
 --title upgrade-test-v1 \
 --description upgrade \
 --upgrade-height 20 \
@@ -27,3 +27,6 @@ yes --from validator-a \
 --yes --chain-id ununifi-upgrade-test-v1 | jq .;
 
 ununifid query gov proposals;
+
+mkdir -p ~/.ununifi/cosmovisor/upgrades/v1-beta.3/bin
+cp ./build/ununifid ~/.ununifi/cosmovisor/upgrades/v1-beta.3/bin
