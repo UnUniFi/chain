@@ -140,9 +140,7 @@
     - [QueryListedClassesRequest](#ununifi.nftmarket.QueryListedClassesRequest)
     - [QueryListedClassesResponse](#ununifi.nftmarket.QueryListedClassesResponse)
     - [QueryListedNftsRequest](#ununifi.nftmarket.QueryListedNftsRequest)
-    - [QueryListedNftsRequestM](#ununifi.nftmarket.QueryListedNftsRequestM)
     - [QueryListedNftsResponse](#ununifi.nftmarket.QueryListedNftsResponse)
-    - [QueryListedNftsResponseM](#ununifi.nftmarket.QueryListedNftsResponseM)
     - [QueryLoanRequest](#ununifi.nftmarket.QueryLoanRequest)
     - [QueryLoanResponse](#ununifi.nftmarket.QueryLoanResponse)
     - [QueryLoansRequest](#ununifi.nftmarket.QueryLoansRequest)
@@ -2103,34 +2101,9 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-<a name="ununifi.nftmarket.QueryListedNftsRequestM"></a>
-
-### QueryListedNftsRequestM
-
-
-
-
-
-
-
 <a name="ununifi.nftmarket.QueryListedNftsResponse"></a>
 
 ### QueryListedNftsResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `listings` | [NftListing](#ununifi.nftmarket.NftListing) | repeated |  |
-
-
-
-
-
-
-<a name="ununifi.nftmarket.QueryListedNftsResponseM"></a>
-
-### QueryListedNftsResponseM
 
 
 
