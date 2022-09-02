@@ -24,8 +24,14 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		k.SetFarmingOrder(ctx, order)
 	}
 
-	// TODO: set FarmingUnits
-	// TODO: set UserInfos
+	for _, unit := range genState.FarmingUnits {
+		k.SetFarmingUnit(ctx, unit)
+	}
+
+	for _, deposit := range genState.UserDeposits {
+		addr := sdk.MustAccAddressFromBech32(deposit.User)
+		k.SetUserDeposit(ctx, addr, deposit.Amount)
+	}
 }
 
 // ExportGenesis returns the capability module's exported genesis.
@@ -35,8 +41,8 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.AssetManagementAccounts = k.GetAllAssetManagementAccounts(ctx)
 	genesis.AssetManagementTargets = k.GetAllAssetManagementTargets(ctx)
 	genesis.FarmingOrders = k.GetAllFarmingOrders(ctx)
+	genesis.FarmingUnits = k.GetAllFarmingUnits(ctx)
+	genesis.UserDeposits = k.GetAllUserDeposits(ctx)
 
-	// TODO: set FarmingUnits
-	// TODO: set UserInfos
 	return genesis
 }
