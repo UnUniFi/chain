@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
@@ -222,4 +223,50 @@ func (k Keeper) Rewards(c context.Context, req *types.QueryRewardsRequest) (*typ
 	ctx := sdk.UnwrapSDKContext(c)
 	_ = ctx
 	return &types.QueryRewardsResponse{}, nil
+}
+
+func (k Keeper) PaymentStatus(c context.Context, req *types.QueryPaymentStatusRequest) (*types.QueryPaymentStatusResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	_ = ctx
+	nft := types.NftIdentifier{
+		ClassId: req.ClassId,
+		NftId:   req.NftId,
+	}
+	listing, err := k.GetNftListingByIdBytes(ctx, nft.IdBytes())
+	if err != nil {
+		return &types.QueryPaymentStatusResponse{}, err
+	}
+	bids := k.GetBidsByNft(ctx, nft.IdBytes())
+	if len(bids) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "not existing bidder")
+	}
+
+	var bidderBid types.NftBid
+	for _, v := range bids {
+		if v.Bidder == req.Bidder {
+			bidderBid = v
+		}
+	}
+	if (bidderBid == types.NftBid{}) {
+		return nil, status.Error(codes.InvalidArgument, "does not match bidder")
+	}
+
+	allPaid := listing.State >= types.ListingState_END_LISTING && bidderBid.Amount.Amount.Equal(bidderBid.PaidAmount)
+	fmt.Println(allPaid)
+	return &types.QueryPaymentStatusResponse{
+		PaymentStatus: types.PaymentStatus{
+			NftId:            listing.NftId,
+			State:            listing.State,
+			Bidder:           bidderBid.Bidder,
+			Amount:           bidderBid.Amount,
+			AutomaticPayment: bidderBid.AutomaticPayment,
+			PaidAmount:       bidderBid.PaidAmount,
+			BidTime:          bidderBid.BidTime,
+			AllPaid:          false,
+		},
+	}, nil
 }

@@ -130,6 +130,7 @@
     - [GenesisState](#ununifi.nftmarket.GenesisState)
   
 - [nftmarket/query.proto](#nftmarket/query.proto)
+    - [PaymentStatus](#ununifi.nftmarket.PaymentStatus)
     - [QueryBidderBidsRequest](#ununifi.nftmarket.QueryBidderBidsRequest)
     - [QueryBidderBidsResponse](#ununifi.nftmarket.QueryBidderBidsResponse)
     - [QueryCDPsListRequest](#ununifi.nftmarket.QueryCDPsListRequest)
@@ -142,6 +143,8 @@
     - [QueryListedNftsRequestM](#ununifi.nftmarket.QueryListedNftsRequestM)
     - [QueryListedNftsResponse](#ununifi.nftmarket.QueryListedNftsResponse)
     - [QueryListedNftsResponseM](#ununifi.nftmarket.QueryListedNftsResponseM)
+    - [QueryLoanRequest](#ununifi.nftmarket.QueryLoanRequest)
+    - [QueryLoanResponse](#ununifi.nftmarket.QueryLoanResponse)
     - [QueryLoansRequest](#ununifi.nftmarket.QueryLoansRequest)
     - [QueryLoansResponse](#ununifi.nftmarket.QueryLoansResponse)
     - [QueryNftBidsRequest](#ununifi.nftmarket.QueryNftBidsRequest)
@@ -150,6 +153,8 @@
     - [QueryNftListingResponse](#ununifi.nftmarket.QueryNftListingResponse)
     - [QueryParamsRequest](#ununifi.nftmarket.QueryParamsRequest)
     - [QueryParamsResponse](#ununifi.nftmarket.QueryParamsResponse)
+    - [QueryPaymentStatusRequest](#ununifi.nftmarket.QueryPaymentStatusRequest)
+    - [QueryPaymentStatusResponse](#ununifi.nftmarket.QueryPaymentStatusResponse)
     - [QueryRewardsRequest](#ununifi.nftmarket.QueryRewardsRequest)
     - [QueryRewardsResponse](#ununifi.nftmarket.QueryRewardsResponse)
   
@@ -1943,6 +1948,28 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
+<a name="ununifi.nftmarket.PaymentStatus"></a>
+
+### PaymentStatus
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+| `bidder` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `automatic_payment` | [bool](#bool) |  |  |
+| `paid_amount` | [string](#string) |  |  |
+| `bid_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `state` | [ListingState](#ununifi.nftmarket.ListingState) |  |  |
+| `all_paid` | [bool](#bool) |  |  |
+
+
+
+
+
+
 <a name="ununifi.nftmarket.QueryBidderBidsRequest"></a>
 
 ### QueryBidderBidsRequest
@@ -2116,6 +2143,37 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
+<a name="ununifi.nftmarket.QueryLoanRequest"></a>
+
+### QueryLoanRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryLoanResponse"></a>
+
+### QueryLoanResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `loan` | [Loan](#ununifi.nftmarket.Loan) |  |  |
+
+
+
+
+
+
 <a name="ununifi.nftmarket.QueryLoansRequest"></a>
 
 ### QueryLoansRequest
@@ -2228,6 +2286,38 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
+<a name="ununifi.nftmarket.QueryPaymentStatusRequest"></a>
+
+### QueryPaymentStatusRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+| `bidder` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryPaymentStatusResponse"></a>
+
+### QueryPaymentStatusResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `paymentStatus` | [PaymentStatus](#ununifi.nftmarket.PaymentStatus) |  |  |
+
+
+
+
+
+
 <a name="ununifi.nftmarket.QueryRewardsRequest"></a>
 
 ### QueryRewardsRequest
@@ -2277,9 +2367,11 @@ Query defines the gRPC querier service.
 | `ListedClasses` | [QueryListedClassesRequest](#ununifi.nftmarket.QueryListedClassesRequest) | [QueryListedClassesResponse](#ununifi.nftmarket.QueryListedClassesResponse) |  | GET|/ununifi/nftmarket/listed_classes|
 | `ListedClass` | [QueryListedClassRequest](#ununifi.nftmarket.QueryListedClassRequest) | [QueryListedClassResponse](#ununifi.nftmarket.QueryListedClassResponse) |  | GET|/ununifi/nftmarket/listed_class/{class_id}/{nft_limit}|
 | `Loans` | [QueryLoansRequest](#ununifi.nftmarket.QueryLoansRequest) | [QueryLoansResponse](#ununifi.nftmarket.QueryLoansResponse) |  | GET|/ununifi/nftmarket/loans|
+| `Loan` | [QueryLoanRequest](#ununifi.nftmarket.QueryLoanRequest) | [QueryLoanResponse](#ununifi.nftmarket.QueryLoanResponse) |  | GET|/ununifi/nftmarket/loans/{class_id}/{nft_id}|
 | `CDPsList` | [QueryCDPsListRequest](#ununifi.nftmarket.QueryCDPsListRequest) | [QueryCDPsListResponse](#ununifi.nftmarket.QueryCDPsListResponse) |  | GET|/ununifi/nftmarket/cdps_list|
 | `NftBids` | [QueryNftBidsRequest](#ununifi.nftmarket.QueryNftBidsRequest) | [QueryNftBidsResponse](#ununifi.nftmarket.QueryNftBidsResponse) |  | GET|/ununifi/nftmarket/nft_bids/{class_id}/{nft_id}|
 | `BidderBids` | [QueryBidderBidsRequest](#ununifi.nftmarket.QueryBidderBidsRequest) | [QueryBidderBidsResponse](#ununifi.nftmarket.QueryBidderBidsResponse) |  | GET|/ununifi/nftmarket/bidder_bids/{bidder}|
+| `PaymentStatus` | [QueryPaymentStatusRequest](#ununifi.nftmarket.QueryPaymentStatusRequest) | [QueryPaymentStatusResponse](#ununifi.nftmarket.QueryPaymentStatusResponse) |  | GET|/ununifi/nftmarket/payment_status/{class_id}/{nft_id}/{bidder}|
 | `Rewards` | [QueryRewardsRequest](#ununifi.nftmarket.QueryRewardsRequest) | [QueryRewardsResponse](#ununifi.nftmarket.QueryRewardsResponse) |  | GET|/ununifi/nftmarket/rewards/{address}|
 
  <!-- end services -->
