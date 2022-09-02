@@ -3,7 +3,8 @@
 ## Purpose of this upgrade
 
 This proposal aims to do upgrade to UnUniFi `v1.0.0-beta.3`. The main function is the same after the upgrade. But, we distribute token for the community program winners, moderators and airdrop salgated accounts under the upgrade operation. The
-reason why we do by upgrade is we currently make the feature to send tokens disable.
+reason why we do by upgrade is we currently make the feature to send tokens disable.  
+In short, we do state-modification in the middle of this upgrade to send some token.
 
 ## Brief guide
 
