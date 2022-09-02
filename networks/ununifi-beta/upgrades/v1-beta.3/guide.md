@@ -3,13 +3,14 @@
 ## Purpose of this upgrade
 
 This proposal aims to do upgrade to UnUniFi `v1.0.0-beta.3`. The main function is the same after the upgrade. But, we distribute token for the community program winners, moderators and airdrop salgated accounts under the upgrade operation. The
-reason why we do by upgrade is we currently make the feature to send tokens disable.
+reason why we do by upgrade is we currently make the feature to send tokens disable.  
+In short, we do state-modification in the middle of this upgrade to send some token.
 
 ## Brief guide
 
-All validators nodes should upgrades to `v1.0.0-beta.3`. The `v1.0.0-beta.3` binary is state machine compatible with `v1.0.0-beta.1` until block 1481300. At 18:00 UTC on August 30th, 2022, we will have a coordinated re-start of the network. 
-All validator nodes have to do is set the binary of `v1.0.0-beta.3` in the appropriate location before 1481300 block height.   
-At 1418130, if you use cosmovisor, the system automatically upgrades the binary and block 1481300 will be mined with over 67% voting power.   
+All validators nodes should upgrades to `v1.0.0-beta.3`. The `v1.0.0-beta.3` binary is state machine compatible with `v1.0.0-beta.1` until **block 1597000. At 01:00 UTC on September 7th, 2022**, we will have a coordinated re-start of the network. 
+All validator(full) nodes have to do is set the binary of `v1.0.0-beta.3` in the appropriate location before 1597000 block height.   
+At 1597000, if you use cosmovisor, the system automatically upgrades the binary and block 1597000 will be mined with over 67% voting power.   
 
 ## Go Requirement
 
@@ -29,6 +30,8 @@ cd $HOME/<ununifi-repo>
 git pull
 git checkout v1.0.0-beta.3
 make build -B
+# you can take checksum in case (but, note that the value can be changed easily)
+# md5: 9340e63cf6a04530218b151cb9e554b4
 cp ./build/ununifid $DAEMON_HOME/cosmovisor/upgrades/v1-beta.3/bin
 ```
 
