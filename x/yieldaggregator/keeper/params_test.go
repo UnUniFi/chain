@@ -9,7 +9,7 @@ func (suite *KeeperTestSuite) TestParamsGetSet() {
 	params := suite.app.YieldaggregatorKeeper.GetParams(suite.ctx)
 
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	params.RewardRateFeeders = []string{addr.String()}
+	params.RewardRateFeeders = addr.String()
 
 	suite.app.YieldaggregatorKeeper.SetParams(suite.ctx, params)
 	newParams := suite.app.YieldaggregatorKeeper.GetParams(suite.ctx)

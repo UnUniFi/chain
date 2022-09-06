@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -94,7 +95,8 @@ func (k msgServer) SetDailyRewardPercent(c context.Context, msg *types.MsgSetDai
 
 	params := k.GetParams(ctx)
 	isFeeder := false
-	for _, feeder := range params.RewardRateFeeders {
+	feeders := strings.Split(params.RewardRateFeeders, ",")
+	for _, feeder := range feeders {
 		if feeder == msg.FromAddress.AccAddress().String() {
 			isFeeder = true
 		}
