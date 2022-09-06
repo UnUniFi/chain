@@ -88,3 +88,27 @@ func (k msgServer) ExecuteFarmingOrders(c context.Context, msg *types.MsgExecute
 	}
 	return &types.MsgExecuteFarmingOrdersResponse{}, nil
 }
+
+func (k msgServer) SetDailyRewardPercent(c context.Context, msg *types.MsgSetDailyRewardPercent) (*types.MsgSetDailyRewardPercentResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	params := k.GetParams(ctx)
+	isFeeder := false
+	for _, feeder := range params.RewardRateFeeders {
+		if feeder == msg.FromAddress.AccAddress().String() {
+			isFeeder = true
+		}
+	}
+
+	if !isFeeder {
+		return nil, types.ErrNotDailyRewardPercentFeeder
+	}
+
+	k.Keeper.SetDailyRewardPercent(ctx, types.DailyPercent{
+		AccountId: msg.AccountId,
+		TargetId:  msg.TargetId,
+		Rate:      msg.Rate,
+		Date:      msg.Date,
+	})
+	return &types.MsgSetDailyRewardPercentResponse{}, nil
+}

@@ -1,6 +1,8 @@
 package types
 
 import (
+	"time"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -122,6 +124,29 @@ func (msg MsgInactivateFarmingOrder) ValidateBasic() error {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgInactivateFarmingOrder) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msg.FromAddress.AccAddress()}
+}
+
+// ensure Msg interface compliance at compile time
+var _ sdk.Msg = &MsgSetDailyRewardPercent{}
+
+func NewMsgSetDailyRewardPercent(sender sdk.AccAddress, accId, tarId string, rate sdk.Dec, timestamp int) MsgSetDailyRewardPercent {
+	return MsgSetDailyRewardPercent{
+		FromAddress: sender.Bytes(),
+		AccountId:   accId,
+		TargetId:    tarId,
+		Rate:        rate,
+		Date:        time.Unix(int64(timestamp), 0),
+	}
+}
+
+// ValidateBasic does a simple validation check that doesn't require access to state.
+func (msg MsgSetDailyRewardPercent) ValidateBasic() error {
+	return nil
+}
+
+// GetSigners returns the addresses of signers that must sign.
+func (msg MsgSetDailyRewardPercent) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.FromAddress.AccAddress()}
 }
 

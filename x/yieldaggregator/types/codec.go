@@ -20,6 +20,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgActivateFarmingOrder{},
 		&MsgInactivateFarmingOrder{},
 		&MsgExecuteFarmingOrders{},
+		&MsgSetDailyRewardPercent{},
 	)
 
 	registry.RegisterImplementations(

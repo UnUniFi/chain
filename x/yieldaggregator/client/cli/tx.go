@@ -45,6 +45,7 @@ func GetTxCmd() *cobra.Command {
 		NewActivateFarmingOrderTxCmd(),
 		NewInactivateFarmingOrderTxCmd(),
 		NewExecuteFarmingOrdersTxCmd(),
+		NewSetDailyRewardPercentTxCmd(),
 		NewSubmitProposalAddYieldFarmTxCmd(),
 		NewSubmitProposalUpdateYieldFarmTxCmd(),
 		NewSubmitProposalStopYieldFarmTxCmd(),
@@ -330,6 +331,45 @@ $ %s tx %s execute-farming-orders order1,order2 --from=myKeyName --chain-id=unun
 			orderIds := strings.Split(args[0], ",")
 
 			msg := types.NewMsgExecuteFarmingOrders(clientCtx.GetFromAddress(), orderIds)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func NewSetDailyRewardPercentTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-daily-reward-percent [acc_id] [tar_id] [rate] [timestamp]",
+		Short: "Set daily reward percent by feeder",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Set daily reward percent by feeder.
+Example:
+$ %s tx %s set-daily-reward-percent OsmosisFarm OsmosisGUUFarm 0.1 1662429412 --from=myKeyName --chain-id=ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(4),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			rate, err := sdk.NewDecFromStr(args[2])
+			if err != nil {
+				return err
+			}
+
+			timestamp, err := strconv.Atoi(args[3])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgSetDailyRewardPercent(clientCtx.GetFromAddress(), args[0], args[1], rate, timestamp)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

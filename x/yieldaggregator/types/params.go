@@ -1,6 +1,10 @@
 package types
 
 import (
+	fmt "fmt"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	paramstype "github.com/cosmos/cosmos-sdk/x/params/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
@@ -21,18 +25,40 @@ func DefaultParams() Params {
 	return NewParams()
 }
 
-// ParamSetPairs get the params.ParamSet
-func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
-	return paramtypes.ParamSetPairs{}
+// Parameter keys
+var (
+	KeyRewardRateFeeders = []byte("RewardRateFeeders")
+)
+
+// ParamSetPairs implements the ParamSet interface and returns all the key/value pairs
+func (p *Params) ParamSetPairs() paramstype.ParamSetPairs {
+	return paramstype.ParamSetPairs{
+		paramstype.NewParamSetPair(KeyRewardRateFeeders, &p.RewardRateFeeders, validateRewardRateFeeders),
+	}
 }
 
-// Validate validates the set of params
+// Validate checks that the parameters have valid values.
 func (p Params) Validate() error {
+
+	if err := validateRewardRateFeeders(p.RewardRateFeeders); err != nil {
+		return err
+	}
+
 	return nil
 }
 
-// String implements the Stringer interface.
-// func (p Params) String() string {
-// 	out, _ := yaml.Marshal(p)
-// 	return string(out)
-// }
+func validateRewardRateFeeders(i interface{}) error {
+	v, ok := i.([]string)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	for _, addr := range v {
+		_, err := sdk.AccAddressFromBech32(addr)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

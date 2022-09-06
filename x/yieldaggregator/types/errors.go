@@ -16,4 +16,5 @@ var (
 	ErrFarmingUnitDoesNotExist             = sdkerrors.Register(ModuleName, 7, "farming unit does not exist")
 	ErrNoAssetManagementTargetExists       = sdkerrors.Register(ModuleName, 8, "no asset management target exists")
 	ErrUnbondingTimeNotPassed              = sdkerrors.Register(ModuleName, 9, "unbonding time not passed")
+	ErrNotDailyRewardPercentFeeder         = sdkerrors.Register(ModuleName, 10, "not a daily reward percent feeder")
 )

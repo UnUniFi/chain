@@ -7,5 +7,5 @@ option go_package = "github.com/UnUniFi/chain/x/yieldaggregator/types";
 
 // Params defines the parameters for the module.
 message Params {
-  string test = 1;
+  repeated string reward_rate_feeders = 1;
 }

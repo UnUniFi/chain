@@ -1,18 +1,17 @@
 package keeper_test
 
-// import (
-// 	"testing"
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/tendermint/tendermint/crypto/ed25519"
+)
 
-// 	"github.com/stretchr/testify/require"
-// 	testkeeper "github.com/UnUniFi/chain/testutil/keeper"
-// 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
-// )
+func (suite *KeeperTestSuite) TestParamsGetSet() {
+	params := suite.app.YieldaggregatorKeeper.GetParams(suite.ctx)
 
-// func TestGetParams(t *testing.T) {
-// 	k, ctx := testkeeper.YieldaggregatorKeeper(t)
-// 	params := types.DefaultParams()
+	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	params.RewardRateFeeders = []string{addr.String()}
 
-// 	k.SetParams(ctx, params)
-
-// 	require.EqualValues(t, params, k.GetParams(ctx))
-// }
+	suite.app.YieldaggregatorKeeper.SetParams(suite.ctx, params)
+	newParams := suite.app.YieldaggregatorKeeper.GetParams(suite.ctx)
+	suite.Require().Equal(params, newParams)
+}
