@@ -16,4 +16,5 @@ message GenesisState {
   repeated FarmingUnit            farming_units             = 5 [(gogoproto.nullable) = false];
   repeated UserDeposit            user_deposits             = 6 [(gogoproto.nullable) = false];
   uint64                          last_farming_unit_id      = 7;
+  repeated DailyPercent           daily_percents            = 8 [(gogoproto.nullable) = false];
 }

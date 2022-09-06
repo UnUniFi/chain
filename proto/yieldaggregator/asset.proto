@@ -91,9 +91,10 @@ message Strategy {
 }
 
 message DailyPercent {
-  string asset_management_target_id = 1;
-  string rate = 2 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
-  google.protobuf.Timestamp date = 3 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  string account_id = 1;
+  string target_id  = 2;
+  string rate = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  google.protobuf.Timestamp date = 4 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
 }
 
 message DepositAllocation {

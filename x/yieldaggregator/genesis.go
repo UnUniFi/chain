@@ -32,17 +32,23 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		addr := sdk.MustAccAddressFromBech32(deposit.User)
 		k.SetUserDeposit(ctx, addr, deposit.Amount)
 	}
+
+	for _, reward := range genState.DailyPercents {
+		k.SetDailyRewardPercent(ctx, reward)
+	}
 }
 
-// ExportGenesis returns the capability module's exported genesis.
+// ExportGenesis returns the module's exported genesis.
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
-	genesis := types.DefaultGenesis()
-	genesis.Params = k.GetParams(ctx)
-	genesis.AssetManagementAccounts = k.GetAllAssetManagementAccounts(ctx)
-	genesis.AssetManagementTargets = k.GetAllAssetManagementTargets(ctx)
-	genesis.FarmingOrders = k.GetAllFarmingOrders(ctx)
-	genesis.FarmingUnits = k.GetAllFarmingUnits(ctx)
-	genesis.UserDeposits = k.GetAllUserDeposits(ctx)
+	genesis := &types.GenesisState{
+		Params:                  k.GetParams(ctx),
+		AssetManagementAccounts: k.GetAllAssetManagementAccounts(ctx),
+		AssetManagementTargets:  k.GetAllAssetManagementTargets(ctx),
+		FarmingOrders:           k.GetAllFarmingOrders(ctx),
+		FarmingUnits:            k.GetAllFarmingUnits(ctx),
+		UserDeposits:            k.GetAllUserDeposits(ctx),
+		DailyPercents:           k.GetAllDailyRewardPercents(ctx),
+	}
 
 	return genesis
 }

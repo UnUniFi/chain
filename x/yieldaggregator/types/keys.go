@@ -26,7 +26,8 @@ const (
 	PrefixKeyFarmingOrder           = "farming_order_"
 	PrefixKeyFarmingUnit            = "farming_unit_"
 	PrefixKeyUserDeposit            = "user_deposit_"
-	KeyLastFarmingUnit              = "last_farming_unit"
+	KeyLastFarmingUnit              = "last_farming_unit_"
+	PrefixKeyDailyPercent           = "daily_percent_"
 )
 
 func AssetManagementAccountKey(id string) []byte {
@@ -43,6 +44,10 @@ func FarmingOrderKey(sender sdk.AccAddress, orderId string) []byte {
 
 func FarmingUnitKey(owner string, accId, targetId string) []byte {
 	return append(append(append([]byte(PrefixKeyFarmingUnit), owner...), accId...), targetId...)
+}
+
+func DailyRewardKey(accId, targetId string) []byte {
+	return append(append([]byte(PrefixKeyDailyPercent), accId...), targetId...)
 }
 
 func UserDepositKey(user sdk.AccAddress) []byte {
