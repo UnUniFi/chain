@@ -509,12 +509,12 @@ func NewApp(
 
 	app.YieldfarmKeeper = *yieldfarmkeeper.NewKeeper(
 		appCodec,
-		keys[yieldaggregatortypes.StoreKey],
-		app.GetSubspace(yieldaggregatortypes.ModuleName),
+		keys[yieldfarmtypes.StoreKey],
+		app.GetSubspace(yieldfarmtypes.ModuleName),
 		app.BankKeeper,
 	)
 
-	app.YieldaggregatorKeeper = *yieldaggregatorkeeper.NewKeeper(
+	app.YieldaggregatorKeeper = yieldaggregatorkeeper.NewKeeper(
 		appCodec,
 		keys[yieldaggregatortypes.StoreKey],
 		app.GetSubspace(yieldaggregatortypes.ModuleName),

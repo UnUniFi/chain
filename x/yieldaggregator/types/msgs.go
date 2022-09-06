@@ -136,7 +136,7 @@ func NewMsgSetDailyRewardPercent(sender sdk.AccAddress, accId, tarId string, rat
 		AccountId:   accId,
 		TargetId:    tarId,
 		Rate:        rate,
-		Date:        time.Unix(int64(timestamp), 0),
+		Date:        time.Unix(int64(timestamp), 0).UTC(),
 	}
 }
 
