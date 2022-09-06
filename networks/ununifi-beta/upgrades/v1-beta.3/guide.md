@@ -30,8 +30,9 @@ cd $HOME/<ununifi-repo>
 git pull
 git checkout v1.0.0-beta.3
 make build -B
-# you can take checksum in case (but, note that the value can be changed easily)
-# md5: 9340e63cf6a04530218b151cb9e554b4
+## to make sure the build status
+# ./build/ununifid version
+# HEAD-86084c9b48052927684621efcd8f4f4d8f5746dc
 cp ./build/ununifid $DAEMON_HOME/cosmovisor/upgrades/v1-beta.3/bin
 ```
 
