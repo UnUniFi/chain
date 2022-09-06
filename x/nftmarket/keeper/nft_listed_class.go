@@ -4,18 +4,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/nftmarket/types"
+	"github.com/UnUniFi/chain/x/nftmint/keeper"
 )
 
-func (k Keeper) UpdateListedClass(ctx sdk.Context, listing types.NftListing) {
-	switch listing.State {
-	case types.ListingState_LISTING:
-		k.SetListedClass(ctx, listing)
-	case types.ListingState_SUCCESSFUL_BID:
-		// todo delete nftid from class
-	}
-}
-
-func (k Keeper) SetListedClass(ctx sdk.Context, listing types.NftListing) {
+func (k Keeper) SetListingInListedClass(ctx sdk.Context, listing types.NftListing) {
 	store := ctx.KVStore(k.storeKey)
 	bzIdlist := store.Get(types.ClassKey(listing.ClassIdBytes()))
 	if bzIdlist == nil {
@@ -35,6 +27,19 @@ func (k Keeper) SetListedClass(ctx sdk.Context, listing types.NftListing) {
 		bz := k.cdc.MustMarshal(&class)
 		store.Set(types.ClassKey(listing.ClassIdBytes()), bz)
 	}
+}
+
+func (k Keeper) DeleteListingFromListedClass(ctx sdk.Context, listing types.NftListing) {
+	store := ctx.KVStore(k.storeKey)
+	bzIdlist := store.Get(types.ClassKey(listing.ClassIdBytes()))
+
+	class := types.ListedClass{}
+	k.cdc.MustUnmarshal(bzIdlist, &class)
+
+	removeIndex := keeper.SliceIndex(class.NftIds, listing.NftId.NftId)
+	class.NftIds = keeper.RemoveIndex(class.NftIds, removeIndex)
+	bz := k.cdc.MustMarshal(&class)
+	store.Set(types.ClassKey(listing.ClassIdBytes()), bz)
 }
 
 func (k Keeper) GetListedClassByClassIdBytes(ctx sdk.Context, classIdByte []byte) (types.ListedClass, error) {
