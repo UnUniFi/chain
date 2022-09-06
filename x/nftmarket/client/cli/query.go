@@ -3,6 +3,7 @@ package cli
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -31,6 +32,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdQueryBidderBids(),
 		CmdQueryCDPsList(),
 		CmdQueryRewards(),
+		CmdQueryListedClass(),
 	)
 
 	return cmd
@@ -253,6 +255,38 @@ func CmdQueryRewards() *cobra.Command {
 			params := &types.QueryRewardsRequest{}
 
 			res, err := queryClient.Rewards(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdQueryListedClass() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "listed_class [class-id] [nft-limit]",
+		Short: "shows listed nft ids and uris in defined class-id",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+			nftLimit, err := strconv.ParseInt(args[1], 10, 32)
+			if err != nil {
+				return err
+			}
+			req := types.QueryListedClassRequest{
+				ClassId:  args[0],
+				NftLimit: int32(nftLimit),
+			}
+
+			res, err := queryClient.ListedClass(context.Background(), &req)
 			if err != nil {
 				return err
 			}
