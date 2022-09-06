@@ -17,6 +17,7 @@ service Msg {
   rpc ActivateFarmingOrder(MsgActivateFarmingOrder) returns (MsgActivateFarmingOrderResponse);
   rpc InactivateFarmingOrder(MsgInactivateFarmingOrder) returns (MsgInactivateFarmingOrderResponse);
   rpc ExecuteFarmingOrders(MsgExecuteFarmingOrders) returns (MsgExecuteFarmingOrdersResponse);
+  rpc SetDailyRewardPercent(MsgSetDailyRewardPercent) returns (MsgSetDailyRewardPercentResponse);
 }
 
 message MsgDeposit {

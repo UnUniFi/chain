@@ -2,6 +2,7 @@ package types
 
 import (
 	fmt "fmt"
+	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstype "github.com/cosmos/cosmos-sdk/x/params/types"
@@ -48,12 +49,18 @@ func (p Params) Validate() error {
 }
 
 func validateRewardRateFeeders(i interface{}) error {
-	v, ok := i.([]string)
+	v, ok := i.(string)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	for _, addr := range v {
+	if v == "" {
+		return nil
+	}
+
+	addrs := strings.Split(v, ",")
+
+	for _, addr := range addrs {
 		_, err := sdk.AccAddressFromBech32(addr)
 		if err != nil {
 			return err

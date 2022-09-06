@@ -17,15 +17,15 @@ func (k Keeper) DeleteDailyRewardPercent(ctx sdk.Context, obj types.DailyPercent
 	store.Delete(types.DailyRewardKey(obj.AccountId, obj.TargetId))
 }
 
-func (k Keeper) GetDailyRewardPercent(ctx sdk.Context, addr string, accId, targetId string) types.FarmingUnit {
-	unit := types.FarmingUnit{}
+func (k Keeper) GetDailyRewardPercent(ctx sdk.Context, accId, targetId string) types.DailyPercent {
+	percent := types.DailyPercent{}
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.DailyRewardKey(accId, targetId))
 	if bz == nil {
-		return unit
+		return percent
 	}
-	k.cdc.MustUnmarshal(bz, &unit)
-	return unit
+	k.cdc.MustUnmarshal(bz, &percent)
+	return percent
 }
 
 func (k Keeper) GetAllDailyRewardPercents(ctx sdk.Context) []types.DailyPercent {
