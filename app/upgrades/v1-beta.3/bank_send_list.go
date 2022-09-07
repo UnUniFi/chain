@@ -1186,10 +1186,8 @@ const BANK_SEND_LIST string = `{
 			"ununifi1khscuq3ku9gf9mpgvg897lacug9tn8mhjhldv4",
 			"ununifi1cr3drk8decw8u25dqt3xrghu9nswhjjm0m26lc",
 			"ununifi1gwpgu55ug72q30sn95fgvupzc7m2frjcxez7es",
-			"ununifi1uz90c4u5jzwdcryhsaqskfrtn6mudt2mr93tdj",
 			"ununifi19vu4j2wytjru5s779wr5dg0l8gskn5md08h0zy",
 			"ununifi1fm2eyrtt3ut2d9g9ksdc3rx2eh77wxzl9y2ln8",
-			"ununifi12h7qg749a43e5x7wdrafk3wldlayn84pgmghq0",
 			"ununifi1cym27cxuc9zn74md3lq4jam2hs54xflvytl9p8",
 			"ununifi1syyklr60ykhjwhwnkf7s344xmwdu2kzxlt34ts",
 			"ununifi1j77ze43j79njy3sd62e3umpuglgwqn3ddezqmn"
@@ -1257,3 +1255,7 @@ const BANK_SEND_LIST string = `{
 		}
 	]
 }`
+
+// ignored addresses for this upgrade
+// ununifi1uz90c4u5jzwdcryhsaqskfrtn6mudt2mr93tdj
+// ununifi12h7qg749a43e5x7wdrafk3wldlayn84pgmghq0
