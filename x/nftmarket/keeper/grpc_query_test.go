@@ -231,7 +231,6 @@ func (s *KeeperTestSuite) TestLoan() {
 		{
 			"success empty",
 			func(index int, require *require.Assertions) {
-				// req = &types.QueryListedNftsRequest{}
 			},
 			&types.QueryLoanRequest{},
 			"",
