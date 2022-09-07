@@ -221,7 +221,6 @@ func (s *KeeperTestSuite) TestListedNfts() {
 }
 
 func (s *KeeperTestSuite) TestLoan() {
-	// var req *types.QueryLoanRequest
 	testCases := []struct {
 		msg       string
 		malleate  func(index int, require *require.Assertions)
