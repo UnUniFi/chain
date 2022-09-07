@@ -27,6 +27,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdQueryNftListing(),
 		CmdQueryListedNfts(),
 		CmdQueryLoans(),
+		CmdQueryLoan(),
 		CmdQueryNftBids(),
 		CmdQueryBidderBids(),
 		CmdQueryCDPsList(),
@@ -144,6 +145,35 @@ func CmdQueryLoans() *cobra.Command {
 			params := &types.QueryLoansRequest{}
 
 			res, err := queryClient.Loans(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdQueryLoan() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "loan [class-id] [nft-id]",
+		Short: "shows nft loan",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QueryLoanRequest{
+				ClassId: args[0],
+				NftId:   args[1],
+			}
+
+			res, err := queryClient.Loan(context.Background(), params)
 			if err != nil {
 				return err
 			}

@@ -31,6 +31,10 @@ service Query {
   rpc Loans(QueryLoansRequest) returns (QueryLoansResponse) {
     option (google.api.http).get = "/ununifi/nftmarket/loans";
   }
+
+  rpc Loan(QueryLoanRequest) returns (QueryLoanResponse) {
+    option (google.api.http).get = "/ununifi/nftmarket/loans/{class_id}/{nft_id}";
+  }
   rpc CDPsList(QueryCDPsListRequest) returns (QueryCDPsListResponse) {
     option (google.api.http).get = "/ununifi/nftmarket/cdps_list";
   }
@@ -64,7 +68,6 @@ message QueryListedNftsRequest {
     (cosmos_proto.scalar) = "github.com/UnUniFi/chain/types.StringAccAddress"
   ];
 }
-message QueryListedNftsRequestM {}
 message QueryListedClassesRequest {
   int32 nft_limit = 1;
 }
@@ -76,9 +79,6 @@ message QueryListedNftsResponse {
   repeated NftListing listings = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryListedNftsResponseM {
-  repeated NftListing listings = 1 [(gogoproto.nullable) = false];
-}
 message QueryListedClassesResponse {
   repeated QueryListedClassResponse classes = 1;
 }
@@ -96,6 +96,15 @@ message QueryListedClassResponse {
 message QueryLoansRequest {}
 message QueryLoansResponse {
   repeated Loan loans = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryLoanRequest {
+  string class_id = 1;
+  string nft_id   = 2;
+}
+
+message QueryLoanResponse {
+  Loan loan = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryCDPsListRequest {}

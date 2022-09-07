@@ -219,3 +219,80 @@ func (s *KeeperTestSuite) TestListedNfts() {
 		})
 	}
 }
+
+func (s *KeeperTestSuite) TestLoan() {
+	// var req *types.QueryLoanRequest
+	testCases := []struct {
+		msg       string
+		malleate  func(index int, require *require.Assertions)
+		req       *types.QueryLoanRequest
+		expError  string
+		expResult types.Loan
+	}{
+		{
+			"success empty",
+			func(index int, require *require.Assertions) {
+				// req = &types.QueryListedNftsRequest{}
+			},
+			&types.QueryLoanRequest{},
+			"",
+			types.Loan{
+				NftId: types.NftIdentifier{},
+				Loan: sdk.Coin{
+					Amount: sdk.NewInt(0),
+				},
+			},
+		},
+		{
+			"fail invalid class id",
+			func(index int, require *require.Assertions) {
+			},
+			&types.QueryLoanRequest{
+				ClassId: "ddfdifd",
+				NftId:   "a10",
+			},
+			"",
+			types.Loan{
+				NftId: types.NftIdentifier{},
+				Loan: sdk.Coin{
+					Amount: sdk.NewInt(0),
+				},
+			},
+		},
+		{
+			"Success",
+			func(index int, require *require.Assertions) {
+				s.TestBorrow()
+			},
+			&types.QueryLoanRequest{
+				ClassId: "class5",
+				NftId:   "nft5",
+			},
+			"",
+			types.Loan{
+				NftId: types.NftIdentifier{
+					ClassId: "class5",
+					NftId:   "nft5",
+				},
+				Loan: sdk.Coin{
+					Denom:  "uguu",
+					Amount: sdk.NewInt(2000000),
+				},
+			},
+		},
+	}
+	for index, tc := range testCases {
+		s.Run(fmt.Sprintf("Case %s", tc.msg), func() {
+			require := s.Require()
+			tc.malleate(index, require)
+			result, err := s.queryClient.Loan(gocontext.Background(), tc.req)
+			if tc.expError == "" {
+				require.NoError(err)
+				require.Equal(result.Loan, tc.expResult, "the error occurred on:%d", index)
+			} else {
+				require.Error(err)
+				require.Contains(err.Error(), tc.expError)
+			}
+		})
+	}
+}
