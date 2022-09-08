@@ -83,3 +83,14 @@ func (k Keeper) AllFarmingUnits(c context.Context, req *types.QueryAllFarmingUni
 		Units: k.GetAllFarmingUnits(ctx),
 	}, nil
 }
+
+func (k Keeper) DailyRewardPercents(c context.Context, req *types.QueryDailyRewardPercentsRequest) (*types.QueryDailyRewardPercentsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	return &types.QueryDailyRewardPercentsResponse{
+		DailyPercents: k.GetAllDailyRewardPercents(ctx),
+	}, nil
+}

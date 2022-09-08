@@ -28,6 +28,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdQueryAllAssetManagementAccounts(),
 		CmdQueryUserInfo(),
 		CmdQueryAllFarmingUnits(),
+		CmdQueryDailyRewardPercents(),
 	)
 
 	return cmd
@@ -120,6 +121,30 @@ func CmdQueryAllFarmingUnits() *cobra.Command {
 			queryClient := types.NewQueryClient(clientCtx)
 
 			res, err := queryClient.AllFarmingUnits(context.Background(), &types.QueryAllFarmingUnitsRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdQueryDailyRewardPercents() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "daily-reward-percents",
+		Short: "query all daily reward percents",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.DailyRewardPercents(context.Background(), &types.QueryDailyRewardPercentsRequest{})
 			if err != nil {
 				return err
 			}

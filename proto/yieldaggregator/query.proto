@@ -29,6 +29,9 @@ service Query {
   rpc AllFarmingUnits(QueryAllFarmingUnitsRequest) returns (QueryAllFarmingUnitsResponse) {
     option (google.api.http).get = "/UnUniFi/chain/yieldaggregator/all_user_infos";
   }
+  rpc DailyRewardPercents(QueryDailyRewardPercentsRequest) returns (QueryDailyRewardPercentsResponse) {
+    option (google.api.http).get = "/UnUniFi/chain/yieldaggregator/daily_reward_percents";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -73,4 +76,9 @@ message QueryUserInfoResponse {
 message QueryAllFarmingUnitsRequest {}
 message QueryAllFarmingUnitsResponse {
   repeated FarmingUnit units = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryDailyRewardPercentsRequest {}
+message QueryDailyRewardPercentsResponse {
+  repeated DailyPercent daily_percents = 1 [(gogoproto.nullable) = false];
 }

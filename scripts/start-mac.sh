@@ -15,7 +15,10 @@ ununifid add-genesis-account $(ununifid keys show debug --address) 1000000000000
 ununifid gentx validator 100000000stake --chain-id=test
 ununifid collect-gentxs
 
+VALIDATOR=$(ununifid keys show validator --address)
+
 sed -i '' 's/"voting_period": "172800s"/"voting_period": "20s"/g' $HOME/.ununifi/config/genesis.json
+sed -i '' 's/"reward_rate_feeders": ""/"reward_rate_feeders": "'$VALIDATOR'"/g' $HOME/.ununifi/config/genesis.json
 
 # Start node
 ununifid start --pruning=nothing --minimum-gas-prices=0stake
