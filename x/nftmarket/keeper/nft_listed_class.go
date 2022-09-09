@@ -7,6 +7,27 @@ import (
 	"github.com/UnUniFi/chain/x/nftmint/keeper"
 )
 
+func (k Keeper) UpdateListedClass(ctx sdk.Context, listing types.NftListing) {
+	// if listing doesn't exist, delete it from listed calss
+	if _, err := k.GetNftListingByIdBytes(ctx, listing.IdBytes()); err != nil {
+		k.DeleteListingFromListedClass(ctx, listing)
+		return
+	}
+
+	switch listing.State {
+	case types.ListingState_LISTING:
+		k.SetListingInListedClass(ctx, listing)
+	case types.ListingState_END_LISTING:
+		k.DeleteListingFromListedClass(ctx, listing)
+	case types.ListingState_SUCCESSFUL_BID:
+		k.DeleteListingFromListedClass(ctx, listing)
+	case types.ListingState_SELLING_DECISION:
+		k.DeleteListingFromListedClass(ctx, listing)
+	case types.ListingState_LIQUIDATION:
+		k.DeleteListingFromListedClass(ctx, listing)
+	}
+}
+
 func (k Keeper) SetListingInListedClass(ctx sdk.Context, listing types.NftListing) {
 	store := ctx.KVStore(k.storeKey)
 	bzIdlist := store.Get(types.ClassKey(listing.ClassIdBytes()))
@@ -38,6 +59,12 @@ func (k Keeper) DeleteListingFromListedClass(ctx sdk.Context, listing types.NftL
 
 	removeIndex := keeper.SliceIndex(class.NftIds, listing.NftId.NftId)
 	class.NftIds = keeper.RemoveIndex(class.NftIds, removeIndex)
+	// if class doens't have any listed nft, just delete class id key from kvstore
+	if len(class.NftIds) == 0 {
+		store.Delete(types.ClassKey(listing.ClassIdBytes()))
+		return
+	}
+
 	bz := k.cdc.MustMarshal(&class)
 	store.Set(types.ClassKey(listing.ClassIdBytes()), bz)
 }

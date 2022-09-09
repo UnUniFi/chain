@@ -84,11 +84,6 @@ func (k Keeper) SetNftListing(ctx sdk.Context, listing types.NftListing) {
 	}
 }
 
-func (k Keeper) DeleteListings(ctx sdk.Context, listing types.NftListing) {
-	k.DeleteNftListing(ctx, listing)
-	k.DeleteListingFromListedClass(ctx, listing)
-}
-
 func (k Keeper) DeleteNftListing(ctx sdk.Context, listing types.NftListing) {
 	nftIdBytes := listing.IdBytes()
 	store := ctx.KVStore(k.storeKey)
@@ -230,7 +225,7 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 		EndAt:         ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingPeriodInitial)),
 	}
 	k.SetNftListing(ctx, listing)
-	k.SetListingInListedClass(ctx, listing)
+	k.UpdateListedClass(ctx, listing)
 
 	// Emit event for nft listing
 	ctx.EventManager().EmitTypedEvent(&types.EventListNft{
@@ -312,7 +307,9 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 	}
 
 	// delete listing
-	k.DeleteListings(ctx, listing)
+	k.DeleteNftListing(ctx, listing)
+	listing.State = types.ListingState_END_LISTING
+	k.UpdateListedClass(ctx, listing)
 
 	// Emit event for nft listing cancel
 	ctx.EventManager().EmitTypedEvent(&types.EventCancelListNfting{
@@ -422,6 +419,7 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 	listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
 	listing.State = types.ListingState_SELLING_DECISION
 	k.SetNftListing(ctx, listing)
+	k.UpdateListedClass(ctx, listing)
 
 	// automatic payment if enabled
 	bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
@@ -487,13 +485,14 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 		if err != nil {
 			panic(err)
 		}
-		k.DeleteListings(ctx, listing)
+		k.DeleteNftListing(ctx, listing)
+		k.UpdateListedClass(ctx, listing)
 	} else {
 		params := k.GetParamSet(ctx)
 		listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
 		listing.State = types.ListingState_END_LISTING
 		k.SetNftListing(ctx, listing)
-		k.DeleteListingFromListedClass(ctx, listing)
+		k.UpdateListedClass(ctx, listing)
 
 		// automatic payment after listing ends
 		winnerCandidateStartIndex := len(bids) - int(listing.BidActiveRank)
@@ -609,6 +608,7 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 				listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
 				listing.State = types.ListingState_SUCCESSFUL_BID
 				k.SetNftListing(ctx, listing)
+				k.UpdateListedClass(ctx, listing)
 			}
 		} else if listing.State == types.ListingState_END_LISTING {
 			index := len(bids) - 1
@@ -624,6 +624,7 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 				listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
 				listing.State = types.ListingState_SUCCESSFUL_BID
 				k.SetNftListing(ctx, listing)
+				k.UpdateListedClass(ctx, listing)
 
 				for i, bid := range bids {
 					if index != i {
@@ -663,7 +664,8 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 				}
 
 				// remove listing
-				k.DeleteListings(ctx, listing)
+				k.DeleteNftListing(ctx, listing)
+				k.UpdateListedClass(ctx, listing)
 			}
 		}
 	}
@@ -703,7 +705,8 @@ func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, bid.Amount.Denom, bid.PaidAmount)
 
 		k.DeleteBid(ctx, bid)
-		k.DeleteListings(ctx, listing)
+		k.DeleteNftListing(ctx, listing)
+		k.UpdateListedClass(ctx, listing)
 	}
 }
 
