@@ -8,6 +8,9 @@ import (
 	"strings"
 
 	appparams "github.com/UnUniFi/chain/app/params"
+	// Upgrades from earlier versions of Ununifi
+	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
+
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
@@ -86,9 +89,11 @@ import (
 	porttypes "github.com/cosmos/ibc-go/v2/modules/core/05-port/types"
 	ibchost "github.com/cosmos/ibc-go/v2/modules/core/24-host"
 	ibckeeper "github.com/cosmos/ibc-go/v2/modules/core/keeper"
-	"github.com/gravity-devs/liquidity/x/liquidity"
-	liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
-	liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
+
+	// "github.com/gravity-devs/liquidity/x/liquidity"
+	// liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
+	// liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
+
 	"github.com/spf13/cast"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmjson "github.com/tendermint/tendermint/libs/json"
@@ -118,7 +123,6 @@ import (
 )
 
 const Name = "ununifi"
-const upgradeName = "Q3update"
 
 // We pull these out so we can set them with LDFLAGS in the Makefile
 var (
@@ -194,7 +198,7 @@ var (
 		evidence.AppModuleBasic{},
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
-		liquidity.AppModuleBasic{},
+		// liquidity.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 		auction.AppModuleBasic{},
 		cdp.AppModuleBasic{},
@@ -212,13 +216,13 @@ var (
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
-		liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
-		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
-		auctiontypes.ModuleName:        nil,
-		cdptypes.ModuleName:            {authtypes.Minter, authtypes.Burner},
-		cdptypes.LiquidatorMacc:        {authtypes.Minter, authtypes.Burner},
-		ununifidisttypes.ModuleName:    {authtypes.Minter},
-		wasm.ModuleName:                {authtypes.Burner},
+		// liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
+		ibctransfertypes.ModuleName: {authtypes.Minter, authtypes.Burner},
+		auctiontypes.ModuleName:     nil,
+		cdptypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
+		cdptypes.LiquidatorMacc:     {authtypes.Minter, authtypes.Burner},
+		ununifidisttypes.ModuleName: {authtypes.Minter},
+		wasm.ModuleName:             {authtypes.Burner},
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -276,8 +280,8 @@ type App struct {
 	TransferKeeper   ibctransferkeeper.Keeper
 	FeeGrantKeeper   feegrantkeeper.Keeper
 	AuthzKeeper      authzkeeper.Keeper
-	LiquidityKeeper  liquiditykeeper.Keeper
-	WasmKeeper       wasm.Keeper
+	// LiquidityKeeper  liquiditykeeper.Keeper
+	WasmKeeper wasm.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -330,7 +334,9 @@ func NewApp(
 		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey,
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
-		evidencetypes.StoreKey, liquiditytypes.StoreKey, ibctransfertypes.StoreKey,
+		evidencetypes.StoreKey,
+		// liquiditytypes.StoreKey,
+		ibctransfertypes.StoreKey,
 		capabilitytypes.StoreKey, feegrant.StoreKey, authzkeeper.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 		auctiontypes.StoreKey, cdptypes.StoreKey, incentivetypes.StoreKey,
@@ -442,14 +448,14 @@ func NewApp(
 		homePath,
 		app.BaseApp,
 	)
-	app.LiquidityKeeper = liquiditykeeper.NewKeeper(
-		appCodec,
-		keys[liquiditytypes.StoreKey],
-		app.GetSubspace(liquiditytypes.ModuleName),
-		app.BankKeeper,
-		app.AccountKeeper,
-		app.DistrKeeper,
-	)
+	// app.LiquidityKeeper = liquiditykeeper.NewKeeper(
+	// 	appCodec,
+	// 	keys[liquiditytypes.StoreKey],
+	// 	app.GetSubspace(liquiditytypes.ModuleName),
+	// 	app.BankKeeper,
+	// 	app.AccountKeeper,
+	// 	app.DistrKeeper,
+	// )
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
@@ -625,7 +631,7 @@ func NewApp(
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
-		liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
+		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
 		transferModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 		auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
@@ -658,7 +664,7 @@ func NewApp(
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		// additional non simd modules
-		liquiditytypes.ModuleName,
+		// liquiditytypes.ModuleName,
 		ununifidisttypes.ModuleName,
 		auctiontypes.ModuleName,
 		cdptypes.ModuleName,
@@ -674,7 +680,7 @@ func NewApp(
 		crisistypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
-		liquiditytypes.ModuleName,
+		// liquiditytypes.ModuleName,
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
@@ -719,7 +725,7 @@ func NewApp(
 		crisistypes.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
-		liquiditytypes.ModuleName,
+		// liquiditytypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		feegrant.ModuleName,
 		authz.ModuleName,
@@ -761,7 +767,7 @@ func NewApp(
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
-		liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
+		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		transferModule,
@@ -796,52 +802,16 @@ func NewApp(
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
 
-	app.UpgradeKeeper.SetUpgradeHandler(
-		upgradeName,
-		func(ctx sdk.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
-
-			ctx.Logger().Info(fmt.Sprintf("update start:%s", upgradeName))
-			// add liquidity modules
-			// liquidity is auto init
-
-			transPram := app.TransferKeeper.GetParams(ctx)
-			transPram.ReceiveEnabled = true
-			transPram.SendEnabled = true
-			app.TransferKeeper.SetParams(ctx, transPram)
-			bankPram := app.BankKeeper.GetParams(ctx)
-			bankPram.DefaultSendEnabled = true
-			app.BankKeeper.SetParams(ctx, bankPram)
-
-			fromAddr, err := sdk.AccAddressFromBech32("ununifi1a8jcsmla6heu99ldtazc27dna4qcd4jygsthx6")
-			if err != nil {
-				panic(err)
-			}
-
-			toAddr, err := sdk.AccAddressFromBech32("ununifi1d6zd6awgjxuwrf4y863c9stz9m0eec4ghfy24c")
-			if err != nil {
-				panic(err)
-			}
-			err = app.BankKeeper.SendCoins(ctx, fromAddr, toAddr, sdk.NewCoins(sdk.NewCoin("uguu", sdk.NewInt(100000))))
-			// err = app.BankKeeper.AddCoins(ctx, addr, sdk.Coins{sdk.Coin{Denom: "stake", Amount: sdk.NewInt(345600000)}})
-			if err != nil {
-				panic(err)
-			}
-
-			bankPram.DefaultSendEnabled = false
-			app.BankKeeper.SetParams(ctx, bankPram)
-
-			return app.mm.RunMigrations(ctx, app.configurator, vm)
-		},
-	)
+	app.setupUpgradeHandlers()
 
 	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
 	if err != nil {
 		panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
 	}
 
-	if upgradeInfo.Name == upgradeName && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
+	if upgradeInfo.Name == v1_beta3.UpgradeName && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
 		storeUpgrades := store.StoreUpgrades{
-			Added: []string{liquiditytypes.ModuleName},
+			Added: []string{},
 		}
 
 		// configure store loader that checks if version == upgradeHeight and applies store upgrades
@@ -1007,7 +977,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(slashingtypes.ModuleName)
 	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govtypes.ParamKeyTable())
 	paramsKeeper.Subspace(crisistypes.ModuleName)
-	paramsKeeper.Subspace(liquiditytypes.ModuleName)
+	// paramsKeeper.Subspace(liquiditytypes.ModuleName)
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
@@ -1018,4 +988,14 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
 	paramsKeeper.Subspace(wasm.ModuleName)
 	return paramsKeeper
+}
+
+func (app *App) setupUpgradeHandlers() {
+	app.UpgradeKeeper.SetUpgradeHandler(
+		v1_beta3.UpgradeName,
+		v1_beta3.CreateUpgradeHandler(
+			app.mm,
+			app.configurator,
+			app.AccountKeeper,
+			app.BankKeeper))
 }
