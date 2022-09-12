@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"sort"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
@@ -176,8 +177,38 @@ func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.Que
 		NftId:   req.NftId,
 	}
 	ctx := sdk.UnwrapSDKContext(c)
+	nft, err := k.GetNftListingByIdBytes(ctx, nftId.IdBytes())
+	if err != nil {
+		return &types.QueryLoanResponse{
+			Loan:           types.Loan{},
+			BorrowingLimit: sdk.ZeroInt(),
+		}, nil
+	}
+	bids := k.GetBidsByNft(ctx, nftId.IdBytes())
+	// Change the order of bids to  descending order
+	sort.SliceStable(bids, func(i, j int) bool {
+		if bids[i].Amount.Amount.LT(bids[j].Amount.Amount) {
+			return false
+		}
+		if bids[i].Amount.Amount.GT(bids[j].Amount.Amount) {
+			return true
+		}
+		if bids[i].BidTime.After(bids[j].BidTime) {
+			return true
+		}
+		return false
+	})
+	max := sdk.ZeroInt()
+	for i, v := range bids {
+		if i+1 > int(nft.BidActiveRank) {
+			break
+		}
+		max = max.Add(v.PaidAmount)
+	}
+
 	return &types.QueryLoanResponse{
-		Loan: k.GetDebtByNft(ctx, nftId.IdBytes()),
+		Loan:           k.GetDebtByNft(ctx, nftId.IdBytes()),
+		BorrowingLimit: max,
 	}, nil
 }
 

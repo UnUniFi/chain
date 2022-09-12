@@ -2138,9 +2138,10 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field  | Type                            | Label | Description |
-|--------|---------------------------------|-------|-------------|
-| `loan` | [Loan](#ununifi.nftmarket.Loan) |       |             |
+| Field             | Type                            | Label | Description |
+|-------------------|---------------------------------|-------|-------------|
+| `loan`            | [Loan](#ununifi.nftmarket.Loan) |       |             |
+| `borrowing_limit` | [string](#string)               |       |             |
 
 
 

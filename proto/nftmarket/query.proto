@@ -107,7 +107,12 @@ message QueryLoanRequest {
 }
 
 message QueryLoanResponse {
-  Loan loan = 1 [(gogoproto.nullable) = false];
+  Loan   loan            = 1 [(gogoproto.nullable) = false];
+  string borrowing_limit = 2 [
+    (gogoproto.moretags)   = "yaml:\"borrowing_limit\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable)   = false
+  ];
 }
 
 message QueryCDPsListRequest {}
