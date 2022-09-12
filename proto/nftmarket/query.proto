@@ -141,23 +141,6 @@ message QueryPaymentStatusResponse {
   PaymentStatus paymentStatus = 1 [(gogoproto.nullable) = false];
 }
 
-import "google/protobuf/timestamp.proto";
-message PaymentStatus {
-  NftIdentifier            nft_id            = 1 [(gogoproto.nullable) = false];
-  string                   bidder            = 2;
-  cosmos.base.v1beta1.Coin amount            = 3 [(gogoproto.nullable) = false];
-  bool                     automatic_payment = 4;
-  string                   paid_amount       = 5 [
-    (gogoproto.moretags)   = "yaml:\"paid_amount\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable)   = false
-  ];
-  google.protobuf.Timestamp bid_time = 6
-      [(gogoproto.moretags) = "yaml:\"bid_time\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
-  ListingState state    = 7;
-  bool         all_paid = 8;
-}
-
 message QueryBidderBidsRequest {
   string bidder = 1 [
     (gogoproto.moretags)  = "yaml:\"bidder\"",

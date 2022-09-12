@@ -122,6 +122,7 @@
     - [NftIdentifier](#ununifi.nftmarket.NftIdentifier)
     - [NftListing](#ununifi.nftmarket.NftListing)
     - [Params](#ununifi.nftmarket.Params)
+    - [PaymentStatus](#ununifi.nftmarket.PaymentStatus)
   
     - [ListingState](#ununifi.nftmarket.ListingState)
     - [ListingType](#ununifi.nftmarket.ListingType)
@@ -130,7 +131,6 @@
     - [GenesisState](#ununifi.nftmarket.GenesisState)
   
 - [nftmarket/query.proto](#nftmarket/query.proto)
-    - [PaymentStatus](#ununifi.nftmarket.PaymentStatus)
     - [QueryBidderBidsRequest](#ununifi.nftmarket.QueryBidderBidsRequest)
     - [QueryBidderBidsResponse](#ununifi.nftmarket.QueryBidderBidsResponse)
     - [QueryCDPsListRequest](#ununifi.nftmarket.QueryCDPsListRequest)
@@ -1865,6 +1865,28 @@ Query defines the gRPC querier service.
 
 
 
+
+<a name="ununifi.nftmarket.PaymentStatus"></a>
+
+### PaymentStatus
+
+
+
+| Field               | Type                                                    | Label | Description |
+|---------------------|---------------------------------------------------------|-------|-------------|
+| `nft_id`            | [NftIdentifier](#ununifi.nftmarket.NftIdentifier)       |       |             |
+| `bidder`            | [string](#string)                                       |       |             |
+| `amount`            | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |       |             |
+| `automatic_payment` | [bool](#bool)                                           |       |             |
+| `paid_amount`       | [string](#string)                                       |       |             |
+| `bid_time`          | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
+| `state`             | [ListingState](#ununifi.nftmarket.ListingState)         |       |             |
+| `all_paid`          | [bool](#bool)                                           |       |             |
+
+
+
+
+
  <!-- end messages -->
 
 
@@ -1943,28 +1965,6 @@ GenesisState defines the nftmarket module's genesis state.
 <p align="right"><a href="#top">Top</a></p>
 
 ## nftmarket/query.proto
-
-
-
-<a name="ununifi.nftmarket.PaymentStatus"></a>
-
-### PaymentStatus
-
-
-
-| Field               | Type                                                    | Label | Description |
-|---------------------|---------------------------------------------------------|-------|-------------|
-| `nft_id`            | [NftIdentifier](#ununifi.nftmarket.NftIdentifier)       |       |             |
-| `bidder`            | [string](#string)                                       |       |             |
-| `amount`            | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |       |             |
-| `automatic_payment` | [bool](#bool)                                           |       |             |
-| `paid_amount`       | [string](#string)                                       |       |             |
-| `bid_time`          | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
-| `state`             | [ListingState](#ununifi.nftmarket.ListingState)         |       |             |
-| `all_paid`          | [bool](#bool)                                           |       |             |
-
-
-
 
 
 
