@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 	"sort"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -262,7 +261,6 @@ func (k Keeper) PaymentStatus(c context.Context, req *types.QueryPaymentStatusRe
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
 	nft := types.NftIdentifier{
 		ClassId: req.ClassId,
 		NftId:   req.NftId,
@@ -287,7 +285,6 @@ func (k Keeper) PaymentStatus(c context.Context, req *types.QueryPaymentStatusRe
 	}
 
 	allPaid := listing.State >= types.ListingState_END_LISTING && bidderBid.Amount.Amount.Equal(bidderBid.PaidAmount)
-	fmt.Println(allPaid)
 	return &types.QueryPaymentStatusResponse{
 		PaymentStatus: types.PaymentStatus{
 			NftId:            listing.NftId,
@@ -297,7 +294,7 @@ func (k Keeper) PaymentStatus(c context.Context, req *types.QueryPaymentStatusRe
 			AutomaticPayment: bidderBid.AutomaticPayment,
 			PaidAmount:       bidderBid.PaidAmount,
 			BidTime:          bidderBid.BidTime,
-			AllPaid:          false,
+			AllPaid:          allPaid,
 		},
 	}, nil
 }
