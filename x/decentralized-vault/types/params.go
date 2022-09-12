@@ -6,10 +6,6 @@ import (
 	"strings"
 
 	paramstype "github.com/cosmos/cosmos-sdk/x/params/types"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	ununifitypes "github.com/UnUniFi/chain/types"
 )
 
 var _ paramstype.ParamSet = (*Params)(nil)
@@ -31,17 +27,22 @@ func NewParams() Params {
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
-	beAddr, _ := sdk.AccAddressFromBech32("ununifi1a8jcsmla6heu99ldtazc27dna4qcd4jygsthx6")
-	addr := ununifitypes.StringAccAddress(beAddr)
+	// todo fixme
+	// beAddr, _ := sdk.AccAddressFromBech32("ununifi1a8jcsmla6heu99ldtazc27dna4qcd4jygsthx6")
+	// addr := ununifitypes.StringAccAddress(beAddr)
+	// return Params{
+	// 	Networks: []Network{
+	// 		{
+	// 			NetworkId: "Ethereum",
+	// 			Asset:     "ETH",
+	// 			Oracles:   []ununifitypes.StringAccAddress{addr},
+	// 			Active:    true,
+	// 		},
+	// 	},
+	// }
+
 	return Params{
-		Networks: []Network{
-			{
-				NetworkId: "Ethereum",
-				Asset:     "ETH",
-				Oracles:   []ununifitypes.StringAccAddress{addr},
-				Active:    true,
-			},
-		},
+		Networks: []Network{},
 	}
 }
 

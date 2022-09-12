@@ -74,10 +74,11 @@ func (msg MsgNftUnlocked) GetSigners() []sdk.AccAddress {
 
 var _ sdk.Msg = &MsgNftTransferRequest{}
 
-func NewMsgNftTransferRequest(sender sdk.AccAddress, nftId string) MsgNftTransferRequest {
+func NewMsgNftTransferRequest(sender sdk.AccAddress, nftId, ethAddress string) MsgNftTransferRequest {
 	return MsgNftTransferRequest{
-		Sender: sender.Bytes(),
-		NftId:  nftId,
+		Sender:     sender.Bytes(),
+		NftId:      nftId,
+		EthAddress: ethAddress,
 	}
 }
 

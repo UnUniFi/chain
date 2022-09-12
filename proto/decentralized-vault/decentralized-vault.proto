@@ -11,3 +11,15 @@ message TransferRequest {
   string eth_address = 2;
   string nft_id      = 3;
 }
+
+message TransferRequestNft {
+  string id       = 1;
+  string uri      = 2;
+  string uri_hash = 3;
+  string owner    = 4 [
+    (gogoproto.moretags)   = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable)   = false
+  ];
+  string ethAddress = 6;
+}

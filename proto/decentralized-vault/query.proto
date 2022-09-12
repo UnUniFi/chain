@@ -5,17 +5,21 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "decentralized-vault/params.proto";
-// this line is used by starport scaffolding # 1
+import "decentralized-vault/decentralized-vault.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/decentralized-vault/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/decentralized-vault/params";
+    option (google.api.http).get = "/ununiFi/decentralized-vault/params";
   }
-  // this line is used by starport scaffolding # 2
+  rpc TransferRequestedNfts(QueryTransferRequestedNftsRequest) returns (QueryTransferRequestedNftsResponse) {
+    option (google.api.http).get = "/ununifi/decentralized-vault/requested_nfts";
+  }
+  rpc TransferRequestedNft(QueryTransferRequestedNftRequest) returns (QueryTransferRequestedNftResponse) {
+    option (google.api.http).get = "/ununifi/decentralized-vault/requested_nft/{nft_id}";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -23,8 +27,18 @@ message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
 
-// this line is used by starport scaffolding # 3
+message QueryTransferRequestedNftsRequest {
+  int32 nft_limit = 1;
+}
+message QueryTransferRequestedNftsResponse {
+  repeated QueryTransferRequestedNftResponse nfts = 1;
+}
+message QueryTransferRequestedNftRequest {
+  string nft_id = 1;
+}
+message QueryTransferRequestedNftResponse {
+  TransferRequestNft nft = 1;
+}

@@ -109,21 +109,21 @@ $ %s tx %s nft-locked ununifi1wgjh88unam4tuln0ju6l6q6cd08zk2vs87uytv a10 --from 
 
 func CmdNftTransferRequest() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "transfer-request [nft-id]",
+		Use:   "transfer-request [nft-id] [eth-address]",
 		Short: "nft transfer request",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`nft transfer request.
 Example:
 $ %s tx %s transfer-request a10 --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(1),
+		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgNftTransferRequest(clientCtx.GetFromAddress(), args[0])
+			msg := types.NewMsgNftTransferRequest(clientCtx.GetFromAddress(), args[0], args[1])
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

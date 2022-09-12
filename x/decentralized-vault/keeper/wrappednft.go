@@ -206,3 +206,25 @@ func (k Keeper) hasNft(ctx sdk.Context, nftId string, address sdk.AccAddress) bo
 		return true
 	}
 }
+
+func (k Keeper) GetTransferRequests(ctx sdk.Context, limit int) ([]types.TransferRequest, error) {
+	store := ctx.KVStore(k.storeKey)
+	transferRequests := []types.TransferRequest{}
+	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixTransferRequest))
+	counter := 0
+	defer it.Close()
+
+	for ; it.Valid(); it.Next() {
+		if counter >= limit {
+			break
+		}
+
+		var transferRequest types.TransferRequest
+		k.cdc.MustUnmarshal(it.Value(), &transferRequest)
+
+		transferRequests = append(transferRequests, transferRequest)
+		counter++
+	}
+
+	return transferRequests, nil
+}

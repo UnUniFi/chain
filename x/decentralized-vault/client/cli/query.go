@@ -1,12 +1,16 @@
 package cli
 
 import (
+	"context"
 	"fmt"
+
 	// "strings"
 
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+
 	// "github.com/cosmos/cosmos-sdk/client/flags"
 	// sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -24,8 +28,74 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	cmd.AddCommand(CmdQueryParams())
-	// this line is used by starport scaffolding # 1
+	cmd.AddCommand(
+		CmdQueryParams(),
+		CmdQueryTransferRequestedNft(),
+		CmdQueryTransferRequestedNfts(),
+	)
+
+	return cmd
+}
+
+func CmdQueryTransferRequestedNft() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "transfer_request [nft_id]",
+		Short: "shows transfer request nft",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QueryTransferRequestedNftRequest{
+				NftId: args[0],
+			}
+
+			res, err := queryClient.TransferRequestedNft(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdQueryTransferRequestedNfts() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "transfer_requests",
+		Short: "shows all transfer request nft",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			//todo add limit
+			queryClient := types.NewQueryClient(clientCtx)
+
+			limit, err := cmd.Flags().GetInt32(FlagNftTransferRequestLimit)
+			if err != nil {
+				return err
+			}
+
+			params := &types.QueryTransferRequestedNftsRequest{
+				NftLimit: limit,
+			}
+
+			res, err := queryClient.TransferRequestedNfts(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	cmd.Flags().Int32(FlagNftTransferRequestLimit, 1, "nft transfer request limit")
+	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd
 }
