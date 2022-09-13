@@ -9,8 +9,8 @@ The example hooks functions interfaces in x/nftmarket module:
 ```go
 type NftmarketHooks interface {
    AfterNftListed(ctx sdk.Context, nft_id types.NftIdentifier, incentive_id string)
-   AfterNftPaid(ctx sdk.Context, nft_id types.NftIdentifier, fee_amount mathInt, fee_denom string)
-   AfterNftUnlisted(ctx sdk.Context, nft_id types.NftIdentifier)
+   AfterNftPaymentWithCommission(ctx sdk.Context, nft_id types.NftIdentifier, fee_amount mathInt, fee_denom string)
+   AfterNftUnlistedWituoutPayment(ctx sdk.Context, nft_id types.NftIdentifier)
 }
 ```
 
@@ -19,12 +19,25 @@ type NftmarketHooks interface {
 This hooks function is called for the resistration for the `ecosystem-incentive` with the `incentive_id` and `NftIdentifiler` if the `incentive_id` is already registered on `ecosystem-incentive` module by sending `MsgRegister` message.   
 To pass the `incentive_id` from the memo data of `MsgListNft` requires a method to get memo data in the process of `MsgListNft` in `x/nftmarket` module.
 
-## AfterNftPaid
+### Location to be inserted
+
+- `ListNft(ctx sdk.Context, msg *types.MsgListNft)` from x/nftmarket in nft_listing.go
+
+## AfterNftPaymentWithCommission
 
 This hooks function is called for the accumulation of the reward for the subjects which are connected with the `nft_id` in the argument.
 The calculation of the actual reward amount is executed in methods which this hook function calls in this module.
 
-## AfterNftUnlisted
+### Location to be inserted
+
+- `ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, denom string, amount sdk.Int)`  from x/nftmarket in nft_listing.go
+
+## AfterNftUnlistedWituoutPayment
 
 This hook function is called when a nft is unlisted for some reason like liquidation.   
 The purpose is to remove the unlisted nft information from `IncentiveIdTable` KVStore to keep the data consystent.
+
+### Location to be inserted
+
+- `CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing)` from x/nftmarket in nft_listing.go
+- Case which bid's length for the listing is 0 in `EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing)` from x/nftmarket in nft_listing.go
