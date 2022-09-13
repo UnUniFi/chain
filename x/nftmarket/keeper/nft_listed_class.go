@@ -17,6 +17,8 @@ func (k Keeper) UpdateListedClass(ctx sdk.Context, listing types.NftListing) {
 	switch listing.State {
 	case types.ListingState_LISTING:
 		k.SetListingInListedClass(ctx, listing)
+	case types.ListingState_BIDDING:
+		k.SetListingInListedClass(ctx, listing)
 	case types.ListingState_END_LISTING:
 		k.DeleteListingFromListedClass(ctx, listing)
 	case types.ListingState_SUCCESSFUL_BID:
