@@ -59,7 +59,8 @@ message Params {
 }
 
 message RewardParams {
-  repeated RewardRate reward_rate = 1;
+  string module_name = 1;
+  repeated RewardRate reward_rate = 2;
 }
 
 message RewardRate {
@@ -68,7 +69,7 @@ message RewardRate {
 }
 
 enum RewardType {
-  Frontend = 0; // example
+  NFTMARKET_FRONTEND = 0; // example
 }
 ```
 
@@ -93,7 +94,7 @@ The v1 archtecture is:
 ```json
 {
   "version": "v1",
-  "incentive-type": 0, // for Frontend in this example
+  "incentive-type": 0, // for NFTMARKET_FRONTEND in this example
   "incentive-id": "incentive_id"
 }
 ```
