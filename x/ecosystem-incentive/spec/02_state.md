@@ -24,9 +24,9 @@ message IncentiveStore {
 
 - Incentive: `"incentive_id" -> format(IncentiveStore)`
 
-## IncentiveIdTable
+## NftmarketFrontendIncentiveIdTable
 
-- incentive_id_table: `format(nft_id) -> format(incentive_id)`
+- nftmarket_frontend_incentive_id_table: `format(nft_id) -> format(incentive_id)`
 
 This KVStore manages what NFT is connected to which `incentive_id`.
 
