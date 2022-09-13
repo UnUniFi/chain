@@ -9,7 +9,7 @@ All messages of `ecosystem-incentive`.
 ### Register
 
 ```protobuf
-message MsgFrontendRegister {
+message MsgIncentiveRegister {
   string incentive_id = 1;
   repeated string subjects = 2 [
     (gogoproto.moretags) = "yaml:\"sender\"",
