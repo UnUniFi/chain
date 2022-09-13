@@ -607,8 +607,8 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 				listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
 				listing.State = types.ListingState_SUCCESSFUL_BID
 				k.SetNftListing(ctx, listing)
-				k.UpdateListedClass(ctx, listing)
 			}
+			k.UpdateListedClass(ctx, listing)
 		} else if listing.State == types.ListingState_END_LISTING {
 			index := len(bids) - 1
 			for ; index >= 0; index-- {
