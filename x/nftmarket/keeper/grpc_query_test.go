@@ -221,26 +221,27 @@ func (s *KeeperTestSuite) TestListedNfts() {
 }
 
 func (s *KeeperTestSuite) TestLoan() {
-	// var req *types.QueryLoanRequest
 	testCases := []struct {
 		msg       string
 		malleate  func(index int, require *require.Assertions)
 		req       *types.QueryLoanRequest
 		expError  string
-		expResult types.Loan
+		expResult types.QueryLoanResponse
 	}{
 		{
 			"success empty",
 			func(index int, require *require.Assertions) {
-				// req = &types.QueryListedNftsRequest{}
 			},
 			&types.QueryLoanRequest{},
 			"",
-			types.Loan{
-				NftId: types.NftIdentifier{},
-				Loan: sdk.Coin{
-					Amount: sdk.NewInt(0),
+			types.QueryLoanResponse{
+				Loan: types.Loan{
+					NftId: types.NftIdentifier{},
+					Loan: sdk.Coin{
+						Amount: sdk.NewInt(0),
+					},
 				},
+				BorrowingLimit: sdk.ZeroInt(),
 			},
 		},
 		{
@@ -252,11 +253,14 @@ func (s *KeeperTestSuite) TestLoan() {
 				NftId:   "a10",
 			},
 			"",
-			types.Loan{
-				NftId: types.NftIdentifier{},
-				Loan: sdk.Coin{
-					Amount: sdk.NewInt(0),
+			types.QueryLoanResponse{
+				Loan: types.Loan{
+					NftId: types.NftIdentifier{},
+					Loan: sdk.Coin{
+						Amount: sdk.NewInt(0),
+					},
 				},
+				BorrowingLimit: sdk.ZeroInt(),
 			},
 		},
 		{
@@ -269,15 +273,18 @@ func (s *KeeperTestSuite) TestLoan() {
 				NftId:   "nft5",
 			},
 			"",
-			types.Loan{
-				NftId: types.NftIdentifier{
-					ClassId: "class5",
-					NftId:   "nft5",
+			types.QueryLoanResponse{
+				Loan: types.Loan{
+					NftId: types.NftIdentifier{
+						ClassId: "class5",
+						NftId:   "nft5",
+					},
+					Loan: sdk.Coin{
+						Denom:  "uguu",
+						Amount: sdk.NewInt(2000000),
+					},
 				},
-				Loan: sdk.Coin{
-					Denom:  "uguu",
-					Amount: sdk.NewInt(2000000),
-				},
+				BorrowingLimit: sdk.NewInt(3500000),
 			},
 		},
 	}
@@ -288,7 +295,7 @@ func (s *KeeperTestSuite) TestLoan() {
 			result, err := s.queryClient.Loan(gocontext.Background(), tc.req)
 			if tc.expError == "" {
 				require.NoError(err)
-				require.Equal(result.Loan, tc.expResult, "the error occurred on:%d", index)
+				require.Equal(result, &tc.expResult, "the error occurred on:%d", index)
 			} else {
 				require.Error(err)
 				require.Contains(err.Error(), tc.expError)
