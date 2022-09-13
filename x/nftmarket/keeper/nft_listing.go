@@ -308,7 +308,6 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 
 	// delete listing
 	k.DeleteNftListing(ctx, listing)
-	listing.State = types.ListingState_END_LISTING
 	k.UpdateListedClass(ctx, listing)
 
 	// Emit event for nft listing cancel
