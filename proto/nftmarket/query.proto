@@ -64,7 +64,7 @@ message QueryListedNftsRequest {
     (cosmos_proto.scalar) = "github.com/UnUniFi/chain/types.StringAccAddress"
   ];
 }
-
+message QueryListedNftsRequestM {}
 message QueryListedClassesRequest {
   int32 nft_limit = 1;
 }
@@ -76,6 +76,9 @@ message QueryListedNftsResponse {
   repeated NftListing listings = 1 [(gogoproto.nullable) = false];
 }
 
+message QueryListedNftsResponseM {
+  repeated NftListing listings = 1 [(gogoproto.nullable) = false];
+}
 message QueryListedClassesResponse {
   repeated QueryListedClassResponse classes = 1;
 }
