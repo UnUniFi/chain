@@ -7,12 +7,14 @@ Fucosing on the case for the frontend service creator, any of them who creates U
 
 ## Joining Ecosystem Incentive
 
-Any subjects can send a register message with the `incentive_id` and `subject_weight_map`.   
+Any subjects can send a register message `MsgIncentiveRegister` with the `incentive_id` and `subject_weight_map`.   
 
 ## Getting Ecosystem Incentive Reward
 
-Once the `incentive_id` is registered, they insert that `incentive_id` in the target message's whic is `MsgListNft` memo field precisely to get the reward.
-Once the `NftIdentifer` on the market is connected with `incentive_id`, `AfterNftPaid` hook function triggers methods to reflect the reward amount for according addresses in `incentive_id`.
+This model of distribution reward could be applied to many use-cases. But, we write down only about the case for Nftmarket Frontend model here for better explanation of the sense of this module.   
+First, the subjects must register to get incentive by sending `MsgIncentiveRegister`.   
+Once the `incentive_id` is registered, they insert that `incentive_id` in the target message which is `MsgListNft` memo field precisely to get the reward for the Nftmarket Frontend incentive mode.
+Once the `NftIdentifer` on the market is connected with `incentive_id`, `AfterNftPaymentWithCommission` hook function triggers methods to reflect the reward amount for according addresses in `incentive_id`.
 
 ## Withdrawing Ecosystem Incentive Reward
 
@@ -22,5 +24,5 @@ In other way, they can withdraw specific denom reward by sending `MsgWithdrawSpe
 
 ## The Reward Mechanism
 
-All the reward comes from the NFT trading fee which is defined in protocol as glocal parameter.   
+All the reward comes from the fees that UnUniFi protocol earned without gas fee which is defined in protocol as glocal parameter.   
 There is nothing inflational effect or depletion by rewarding subjects.
