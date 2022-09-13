@@ -94,9 +94,11 @@ The v1 archtecture is:
 ```json
 {
   "version": "v1",
-  "incentive-type": 0, // for NFTMARKET_FRONTEND in this example
+  "incentive-type": 0,
   "incentive-id": "incentive_id"
 }
 ```
 
-There's a lot of chances to be changed this structure with the change of the version. Please note it when to use.
+The `incentive_type` 0 means `NFTMARKET_FRONTEND` type here for the record.
+
+NOTE: There's a lot of chances to be changed this structure with the change of the version. Please note it when to use.
