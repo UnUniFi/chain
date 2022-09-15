@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/nftmarket/types"
@@ -64,6 +66,11 @@ func (k Keeper) DeleteListingFromListedClass(ctx sdk.Context, listing types.NftL
 	k.cdc.MustUnmarshal(bzIdlist, &class)
 
 	removeIndex := keeper.SliceIndex(class.NftIds, listing.NftId.NftId)
+	fmt.Println("Remove Index is:")
+	fmt.Println(removeIndex)
+	if removeIndex == -1 {
+		return
+	}
 	class.NftIds = keeper.RemoveIndex(class.NftIds, removeIndex)
 	// if class doens't have any listed nft, just delete class id key from kvstore
 	if len(class.NftIds) == 0 {
