@@ -8,7 +8,7 @@ The example hooks functions interfaces in x/nftmarket module:
 
 ```go
 type NftmarketHooks interface {
-   AfterNftListed(ctx sdk.Context, nft_id types.NftIdentifier, memo string)
+   AfterNftListed(ctx sdk.Context, nft_id types.NftIdentifier, tx_memo string)
    AfterNftPaymentWithCommission(ctx sdk.Context, nft_id types.NftIdentifier, fee_amount mathInt, fee_denom string)
    AfterNftUnlistedWituoutPayment(ctx sdk.Context, nft_id types.NftIdentifier)
 }
