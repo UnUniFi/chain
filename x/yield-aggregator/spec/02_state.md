@@ -1,30 +1,41 @@
 # State
 
-## `asset_management_accounts`
-
-In expression of protobuf, it is `repeated AssetManagementAccount`.
+## `asset_management`
 
 ```protobuf
-message AssetManagementAccount {
-  string id = 1;
-  string name = 2;
-  string module_account_address = 3;
-  google.protobuf.Any pub_key = 4;
+enum IntegrateType {
+  GOLANG_MOD = 1; 
+  COSMWASM = 2; 
 }
-```
-
-## `asset_management_targets`
-
-In expression of protobuf, it is `repeated AssetManagemenTarget`.
-
-```protobuf
+message IntegrateInfo {
+  IntegrateType type = 1;
+  //for cosmwasm contract
+  string contract_ibc_port_id = 2;
+  //for golang module
+  string mod_name = 3;
+}
+message AssetCondition {
+  string denom = 1[(gogoproto.nullable) = false];
+  string min = 2;
+  uint32 ratio = 3;
+}
 message AssetManagementTarget {
   string id = 1;
   string asset_management_account_id = 2;
-  repeated string denom = 3; // 比率とdenomのペアの配列にする必要？
-  google.protobuf.Duration unbonding_time = 4 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+  string account_address = 4;
+  repeated AssetCondition asset_conditions = 5;
+  google.protobuf.Duration unbonding_time = 6 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+  IntegrateInfo integrate_info = 7;
+}
+
+message AssetManagementAccount {
+  string id = 1;
+  string name = 2;
+  repeated AssetManagementTarget asset_management_targets = 3;
 }
 ```
+
+- AssetManagementAccount: "asset_management_account" | format(account_id) -> AssetManagementAccount
 
 ## `daily_percents`
 
@@ -40,21 +51,44 @@ message DailyPercent {
 }
 ```
 
-## `deposits`
+- DailyPercent: "daily_percent" | format(asset_management_target_id,year,month,day,hour) -> DailyPercent
 
-In expression of protobuf, it is `repeated Deposit`.
+## `UserInfo`
+
+See 06_strategy.md for `strategy`
 
 ```protobuf
-message Deposit {
+message FarmingOrder {
   string id = 1;
   string from_address = 2;
-  repeated cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false];
-  google.protobuf.Any strategy = 4;
-  // google.protobuf.Duration daily_percent_calculation_period = 4 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
-  google.protobuf.Duration max_unbonding_time = 5 [(gogoproto.nullable) = true, (gogoproto.stdduration) = true];
-  google.protobuf.Timestamp date = 6 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Any strategy = 3;
+  google.protobuf.Duration max_unbonding_time = 4 [(gogoproto.nullable) = true, (gogoproto.stdduration) = true];
+  unit32 overall_ratio = 5;
+  string min = 6;
+  string max = 7;
+  google.protobuf.Timestamp date = 8 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  bool active = 9;
+}
+
+message UserInfo {
+  repeated cosmos.base.v0beta1.Coin amount = 1 [(gogoproto.nullable) = false];
+  repeated FarmingOrder farming_orders = 2;
+  uint64 farmed_counter = 3;
+}
+
+message FarmingUnit {
+  string id = 1;
+  string acount_id = 2;
+  string target_id = 3;
+  repeated cosmos.base.v1beta1.Coin amount = 4 [(gogoproto.nullable) = false];
+  string farming_start_time = 5;
+  string unbonding_time = 6;
 }
 ```
+
+- UserInfo: "user_info" | format(address) -> UserInfo
+
+- FarmingUnit: "farming_unit" | format(end_time, account_id, target_id, user_address, user_farmed_counter) -> FarmingUnit
 
 If recent 30 days are designated in `daily_percent_calculation_period`, APY will be calculated with recent 30 days DPR.
 
@@ -67,7 +101,7 @@ Targets which have the highest APY calculated with DPR, will be used for the tar
 ```protobuf
 message DepositAllocation {
   string id = 1;
-  string deposit_id = 2;
+  string order_id = 2;
   cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false];
 }
 ```
