@@ -44,6 +44,12 @@ func (k Keeper) SetListingInListedClass(ctx sdk.Context, listing types.NftListin
 	} else {
 		class := types.ListedClass{}
 		k.cdc.MustUnmarshal(bzIdlist, &class)
+
+		// return if the nft_id already exists
+		index := keeper.SliceIndex(class.NftIds, listing.NftId.NftId)
+		if index != -1 {
+			return
+		}
 		class.NftIds = append(class.NftIds, listing.NftId.NftId)
 		bz := k.cdc.MustMarshal(&class)
 		store.Set(types.ClassKey(listing.ClassIdBytes()), bz)
