@@ -13,13 +13,19 @@ service Msg {
 }
 
 message MsgIncentiveRegister {
-  string incentive_id = 1;
-  repeated string subject_addrs = 2 [
+  string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
-  repeated string weights = 3;
+  string incentive_id = 2;
+  repeated string subject_addrs = 3 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  // TODO: Modify weight type or even whole structure of this msg
+  repeated string weights = 4;
 }
 message MsgIncentiveRegisterResponse {}
 
