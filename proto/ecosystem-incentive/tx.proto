@@ -1,0 +1,12 @@
+syntax = "proto3";
+package UnUniFi.chain.ecosystemincentive;
+
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/UnUniFi/chain/x/ecosystem-incentive/types";
+
+// Msg defines the Msg service.
+service Msg {
+
+}
+
