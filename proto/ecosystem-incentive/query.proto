@@ -47,11 +47,7 @@ message QueryIncentiveUnitResponse {
 }
 
 message QueryAllRewardsRequest {
-  string subject_addr = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
+  string subject_addr = 1;
 }
 
 message QueryAllRewardsResponse {
@@ -59,11 +55,7 @@ message QueryAllRewardsResponse {
 }
 
 message QueryRewardRequest {
-  string subject_addr = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
+  string subject_addr = 1;
   string denom = 2;
 }
 
