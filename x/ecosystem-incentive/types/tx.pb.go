@@ -29,7 +29,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type MsgIncentiveRegister struct {
+type MsgRegister struct {
 	Sender       github_com_UnUniFi_chain_types.StringAccAddress   `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"sender" yaml:"sender"`
 	IncentiveId  string                                            `protobuf:"bytes,2,opt,name=incentive_id,json=incentiveId,proto3" json:"incentive_id,omitempty"`
 	SubjectAddrs []github_com_UnUniFi_chain_types.StringAccAddress `protobuf:"bytes,3,rep,name=subject_addrs,json=subjectAddrs,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"subject_addrs" yaml:"sender"`
@@ -37,18 +37,18 @@ type MsgIncentiveRegister struct {
 	Weights []string `protobuf:"bytes,4,rep,name=weights,proto3" json:"weights,omitempty"`
 }
 
-func (m *MsgIncentiveRegister) Reset()         { *m = MsgIncentiveRegister{} }
-func (m *MsgIncentiveRegister) String() string { return proto.CompactTextString(m) }
-func (*MsgIncentiveRegister) ProtoMessage()    {}
-func (*MsgIncentiveRegister) Descriptor() ([]byte, []int) {
+func (m *MsgRegister) Reset()         { *m = MsgRegister{} }
+func (m *MsgRegister) String() string { return proto.CompactTextString(m) }
+func (*MsgRegister) ProtoMessage()    {}
+func (*MsgRegister) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5f4f2600114c5509, []int{0}
 }
-func (m *MsgIncentiveRegister) XXX_Unmarshal(b []byte) error {
+func (m *MsgRegister) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgIncentiveRegister) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgRegister) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgIncentiveRegister.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgRegister.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -58,47 +58,47 @@ func (m *MsgIncentiveRegister) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-func (m *MsgIncentiveRegister) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgIncentiveRegister.Merge(m, src)
+func (m *MsgRegister) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRegister.Merge(m, src)
 }
-func (m *MsgIncentiveRegister) XXX_Size() int {
+func (m *MsgRegister) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgIncentiveRegister) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgIncentiveRegister.DiscardUnknown(m)
+func (m *MsgRegister) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRegister.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgIncentiveRegister proto.InternalMessageInfo
+var xxx_messageInfo_MsgRegister proto.InternalMessageInfo
 
-func (m *MsgIncentiveRegister) GetIncentiveId() string {
+func (m *MsgRegister) GetIncentiveId() string {
 	if m != nil {
 		return m.IncentiveId
 	}
 	return ""
 }
 
-func (m *MsgIncentiveRegister) GetWeights() []string {
+func (m *MsgRegister) GetWeights() []string {
 	if m != nil {
 		return m.Weights
 	}
 	return nil
 }
 
-type MsgIncentiveRegisterResponse struct {
+type MsgRegisterResponse struct {
 }
 
-func (m *MsgIncentiveRegisterResponse) Reset()         { *m = MsgIncentiveRegisterResponse{} }
-func (m *MsgIncentiveRegisterResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgIncentiveRegisterResponse) ProtoMessage()    {}
-func (*MsgIncentiveRegisterResponse) Descriptor() ([]byte, []int) {
+func (m *MsgRegisterResponse) Reset()         { *m = MsgRegisterResponse{} }
+func (m *MsgRegisterResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgRegisterResponse) ProtoMessage()    {}
+func (*MsgRegisterResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5f4f2600114c5509, []int{1}
 }
-func (m *MsgIncentiveRegisterResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgRegisterResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgIncentiveRegisterResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgRegisterResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgIncentiveRegisterResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgRegisterResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -108,17 +108,17 @@ func (m *MsgIncentiveRegisterResponse) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
-func (m *MsgIncentiveRegisterResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgIncentiveRegisterResponse.Merge(m, src)
+func (m *MsgRegisterResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRegisterResponse.Merge(m, src)
 }
-func (m *MsgIncentiveRegisterResponse) XXX_Size() int {
+func (m *MsgRegisterResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgIncentiveRegisterResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgIncentiveRegisterResponse.DiscardUnknown(m)
+func (m *MsgRegisterResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRegisterResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgIncentiveRegisterResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgRegisterResponse proto.InternalMessageInfo
 
 type MsgWithdrawAllRewards struct {
 	Sender github_com_UnUniFi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"sender" yaml:"sender"`
@@ -238,21 +238,21 @@ func (m *MsgWithdrawReward) GetDenom() string {
 	return ""
 }
 
-type MsgWithdrawRewardsResponse struct {
+type MsgWithdrawRewardResponse struct {
 }
 
-func (m *MsgWithdrawRewardsResponse) Reset()         { *m = MsgWithdrawRewardsResponse{} }
-func (m *MsgWithdrawRewardsResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgWithdrawRewardsResponse) ProtoMessage()    {}
-func (*MsgWithdrawRewardsResponse) Descriptor() ([]byte, []int) {
+func (m *MsgWithdrawRewardResponse) Reset()         { *m = MsgWithdrawRewardResponse{} }
+func (m *MsgWithdrawRewardResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgWithdrawRewardResponse) ProtoMessage()    {}
+func (*MsgWithdrawRewardResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5f4f2600114c5509, []int{5}
 }
-func (m *MsgWithdrawRewardsResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgWithdrawRewardResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgWithdrawRewardsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgWithdrawRewardResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgWithdrawRewardsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgWithdrawRewardResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -262,60 +262,59 @@ func (m *MsgWithdrawRewardsResponse) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-func (m *MsgWithdrawRewardsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgWithdrawRewardsResponse.Merge(m, src)
+func (m *MsgWithdrawRewardResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgWithdrawRewardResponse.Merge(m, src)
 }
-func (m *MsgWithdrawRewardsResponse) XXX_Size() int {
+func (m *MsgWithdrawRewardResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgWithdrawRewardsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgWithdrawRewardsResponse.DiscardUnknown(m)
+func (m *MsgWithdrawRewardResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgWithdrawRewardResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgWithdrawRewardsResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgWithdrawRewardResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgIncentiveRegister)(nil), "ununifi.ecosystemincentive.MsgIncentiveRegister")
-	proto.RegisterType((*MsgIncentiveRegisterResponse)(nil), "ununifi.ecosystemincentive.MsgIncentiveRegisterResponse")
+	proto.RegisterType((*MsgRegister)(nil), "ununifi.ecosystemincentive.MsgRegister")
+	proto.RegisterType((*MsgRegisterResponse)(nil), "ununifi.ecosystemincentive.MsgRegisterResponse")
 	proto.RegisterType((*MsgWithdrawAllRewards)(nil), "ununifi.ecosystemincentive.MsgWithdrawAllRewards")
 	proto.RegisterType((*MsgWithdrawAllRewardsResponse)(nil), "ununifi.ecosystemincentive.MsgWithdrawAllRewardsResponse")
 	proto.RegisterType((*MsgWithdrawReward)(nil), "ununifi.ecosystemincentive.MsgWithdrawReward")
-	proto.RegisterType((*MsgWithdrawRewardsResponse)(nil), "ununifi.ecosystemincentive.MsgWithdrawRewardsResponse")
+	proto.RegisterType((*MsgWithdrawRewardResponse)(nil), "ununifi.ecosystemincentive.MsgWithdrawRewardResponse")
 }
 
 func init() { proto.RegisterFile("ecosystem-incentive/tx.proto", fileDescriptor_5f4f2600114c5509) }
 
 var fileDescriptor_5f4f2600114c5509 = []byte{
-	// 449 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x94, 0xcf, 0x6e, 0xd3, 0x40,
-	0x10, 0xc6, 0xe3, 0x06, 0x8a, 0x18, 0x5a, 0xa4, 0x5a, 0x41, 0xb2, 0xac, 0xe0, 0x14, 0x9f, 0xb8,
-	0xd4, 0xe6, 0x9f, 0x10, 0x70, 0x4b, 0x0f, 0x88, 0x1e, 0xc2, 0xc1, 0xa8, 0x42, 0xe2, 0x52, 0x1c,
-	0xef, 0xb0, 0x59, 0x14, 0xef, 0x46, 0x3b, 0x1b, 0x52, 0x9f, 0x90, 0x10, 0x37, 0x2e, 0x3c, 0x04,
-	0x0f, 0xd3, 0x63, 0x8f, 0x88, 0x43, 0x84, 0x92, 0x37, 0xe0, 0x09, 0x90, 0xeb, 0x64, 0x85, 0x88,
-	0x2b, 0x88, 0x04, 0xbd, 0x79, 0xbd, 0xbf, 0xf9, 0xe6, 0xd3, 0x7e, 0xa3, 0x81, 0x36, 0x66, 0x8a,
-	0x0a, 0x32, 0x98, 0xef, 0x09, 0x99, 0xa1, 0x34, 0xe2, 0x1d, 0xc6, 0xe6, 0x38, 0x1a, 0x69, 0x65,
-	0x94, 0xeb, 0x8f, 0xe5, 0x58, 0x8a, 0x37, 0x22, 0xb2, 0x94, 0x85, 0xfc, 0x16, 0x57, 0x5c, 0x9d,
-	0x61, 0x71, 0xf9, 0x55, 0x55, 0x84, 0x5f, 0x36, 0xa0, 0xd5, 0x23, 0x7e, 0xb0, 0xc4, 0x12, 0xe4,
-	0x82, 0x0c, 0x6a, 0xf7, 0x35, 0x6c, 0x12, 0x4a, 0x86, 0xda, 0x73, 0x76, 0x9d, 0xdb, 0x57, 0xf7,
-	0x9f, 0x9d, 0x4c, 0x3b, 0x8d, 0x6f, 0xd3, 0x4e, 0xcc, 0x85, 0x19, 0x8c, 0xfb, 0x51, 0xa6, 0xf2,
-	0xf8, 0x50, 0x1e, 0x4a, 0xf1, 0x54, 0xc4, 0xd9, 0x20, 0x15, 0x32, 0x36, 0xc5, 0x08, 0x29, 0x7a,
-	0x61, 0xb4, 0x90, 0xbc, 0x9b, 0x65, 0x5d, 0xc6, 0x34, 0x12, 0xfd, 0x98, 0x76, 0xb6, 0x8b, 0x34,
-	0x1f, 0x3e, 0x09, 0x2b, 0xb9, 0x30, 0x59, 0xe8, 0xba, 0xb7, 0x60, 0xcb, 0xba, 0x3b, 0x12, 0xcc,
-	0xdb, 0x28, 0xfb, 0x24, 0xd7, 0xec, 0xbf, 0x03, 0xe6, 0xe6, 0xb0, 0x4d, 0xe3, 0xfe, 0x5b, 0xcc,
-	0xcc, 0x51, 0xca, 0x98, 0x26, 0xaf, 0xb9, 0xdb, 0xfc, 0xa7, 0x5e, 0xb6, 0x16, 0xf2, 0x25, 0x40,
-	0xae, 0x07, 0x57, 0x26, 0x28, 0xf8, 0xc0, 0x90, 0x77, 0xa9, 0x6c, 0x94, 0x2c, 0x8f, 0x61, 0x00,
-	0xed, 0xba, 0x57, 0x4a, 0x90, 0x46, 0x4a, 0x12, 0x86, 0x05, 0xdc, 0xe8, 0x11, 0x7f, 0x29, 0xcc,
-	0x80, 0xe9, 0x74, 0xd2, 0x1d, 0x0e, 0x13, 0x9c, 0xa4, 0x9a, 0xd1, 0xff, 0x7f, 0xc6, 0xb0, 0x03,
-	0x37, 0x6b, 0x5b, 0x5b, 0x6f, 0x9f, 0x1c, 0xd8, 0xf9, 0x85, 0xa8, 0xae, 0x2f, 0x20, 0xdf, 0x16,
-	0x5c, 0x66, 0x28, 0x55, 0xbe, 0x08, 0xb6, 0x3a, 0x84, 0x6d, 0xf0, 0x57, 0xcc, 0x58, 0xaf, 0xf7,
-	0x3e, 0x36, 0xa1, 0xd9, 0x23, 0xee, 0xbe, 0x87, 0x9d, 0xd5, 0x91, 0xbc, 0x13, 0x9d, 0x3f, 0xde,
-	0x51, 0x5d, 0x3c, 0xfe, 0xa3, 0x75, 0x2b, 0x96, 0x46, 0xdc, 0x0f, 0x0e, 0xb8, 0x35, 0x71, 0xde,
-	0xfd, 0x83, 0xe0, 0x6a, 0x89, 0xff, 0x78, 0xed, 0x12, 0x6b, 0x62, 0x02, 0xd7, 0x7f, 0x4b, 0x6d,
-	0xef, 0x2f, 0xc5, 0x2a, 0xdc, 0x7f, 0xb8, 0x16, 0x6e, 0x1b, 0xef, 0x3f, 0x3f, 0x99, 0x05, 0xce,
-	0xe9, 0x2c, 0x70, 0xbe, 0xcf, 0x02, 0xe7, 0xf3, 0x3c, 0x68, 0x9c, 0xce, 0x83, 0xc6, 0xd7, 0x79,
-	0xd0, 0x78, 0xf5, 0xe0, 0xdc, 0xf1, 0x38, 0x8e, 0x6b, 0x57, 0x53, 0x39, 0x34, 0xfd, 0xcd, 0xb3,
-	0x65, 0x73, 0xff, 0x67, 0x00, 0x00, 0x00, 0xff, 0xff, 0x95, 0x9c, 0x09, 0x27, 0xbe, 0x04, 0x00,
-	0x00,
+	// 443 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x54, 0xbf, 0x6f, 0xd3, 0x40,
+	0x18, 0x8d, 0x13, 0x28, 0xf0, 0xb5, 0x45, 0xe2, 0x68, 0x25, 0x63, 0xc0, 0x29, 0x5e, 0x60, 0xa9,
+	0x4f, 0xfc, 0x1a, 0x60, 0x4b, 0x07, 0x04, 0x43, 0x18, 0x8c, 0x2a, 0x24, 0x96, 0xe2, 0xf8, 0x3e,
+	0x2e, 0x87, 0xe2, 0xbb, 0xe8, 0xbe, 0x4b, 0xd3, 0xac, 0xac, 0x2c, 0xec, 0xfc, 0x43, 0x1d, 0x3b,
+	0x22, 0x86, 0x08, 0x25, 0x0b, 0x33, 0x7f, 0x01, 0x72, 0x9d, 0x58, 0x11, 0x4d, 0x45, 0x2b, 0x41,
+	0x37, 0x9f, 0xef, 0x7d, 0xef, 0x3d, 0xdd, 0x7b, 0xfa, 0xe0, 0x0e, 0x66, 0x86, 0x46, 0xe4, 0x30,
+	0xdf, 0x56, 0x3a, 0x43, 0xed, 0xd4, 0x3e, 0x72, 0x77, 0x10, 0xf7, 0xad, 0x71, 0x86, 0x05, 0x03,
+	0x3d, 0xd0, 0xea, 0x83, 0x8a, 0x2b, 0x54, 0x05, 0x0a, 0x36, 0xa4, 0x91, 0xe6, 0x18, 0xc6, 0x8b,
+	0xaf, 0x72, 0x22, 0xfa, 0x5a, 0x87, 0xd5, 0x36, 0xc9, 0x04, 0xa5, 0x22, 0x87, 0x96, 0xbd, 0x87,
+	0x15, 0x42, 0x2d, 0xd0, 0xfa, 0xde, 0x96, 0xf7, 0xe0, 0xda, 0xce, 0xcb, 0xc3, 0x71, 0xb3, 0xf6,
+	0x7d, 0xdc, 0xe4, 0x52, 0xb9, 0xee, 0xa0, 0x13, 0x67, 0x26, 0xe7, 0xbb, 0x7a, 0x57, 0xab, 0x17,
+	0x8a, 0x67, 0xdd, 0x54, 0x69, 0xee, 0x46, 0x7d, 0xa4, 0xf8, 0x8d, 0xb3, 0x4a, 0xcb, 0x56, 0x96,
+	0xb5, 0x84, 0xb0, 0x48, 0xf4, 0x6b, 0xdc, 0x5c, 0x1f, 0xa5, 0x79, 0xef, 0x79, 0x54, 0xd2, 0x45,
+	0xc9, 0x8c, 0x97, 0xdd, 0x83, 0xb5, 0xca, 0xd4, 0x9e, 0x12, 0x7e, 0xbd, 0xd0, 0x49, 0x56, 0xab,
+	0x7f, 0xaf, 0x04, 0xcb, 0x61, 0x9d, 0x06, 0x9d, 0x8f, 0x98, 0xb9, 0xbd, 0x54, 0x08, 0x4b, 0x7e,
+	0x63, 0xab, 0xf1, 0x4f, 0xbd, 0xac, 0xcd, 0xe8, 0x0b, 0x00, 0x31, 0x1f, 0xae, 0x0c, 0x51, 0xc9,
+	0xae, 0x23, 0xff, 0x52, 0x21, 0x94, 0xcc, 0x8f, 0xd1, 0x26, 0xdc, 0x5c, 0x78, 0x9c, 0x04, 0xa9,
+	0x6f, 0x34, 0x61, 0x34, 0x82, 0xcd, 0x36, 0xc9, 0xb7, 0xca, 0x75, 0x85, 0x4d, 0x87, 0xad, 0x5e,
+	0x2f, 0xc1, 0x61, 0x6a, 0x05, 0xfd, 0xff, 0xd7, 0x8b, 0x9a, 0x70, 0x77, 0xa9, 0x74, 0xe5, 0xed,
+	0xb3, 0x07, 0x37, 0x16, 0x10, 0xe5, 0xf5, 0x05, 0xc4, 0xba, 0x01, 0x97, 0x05, 0x6a, 0x93, 0xcf,
+	0xf2, 0x2c, 0x0f, 0xd1, 0x6d, 0xb8, 0x75, 0xc2, 0xcc, 0xdc, 0xea, 0xa3, 0x9f, 0x75, 0x68, 0xb4,
+	0x49, 0x32, 0x01, 0x57, 0xab, 0xfe, 0xdd, 0x8f, 0x4f, 0xaf, 0x70, 0xbc, 0x90, 0x45, 0xc0, 0xcf,
+	0x08, 0x9c, 0xab, 0xb1, 0x4f, 0x1e, 0xb0, 0x25, 0x91, 0x3d, 0xfc, 0x0b, 0xcf, 0xc9, 0x91, 0xe0,
+	0xd9, 0xb9, 0x47, 0x2a, 0x13, 0xfb, 0x70, 0xfd, 0x8f, 0x64, 0xb6, 0xcf, 0x48, 0x56, 0xc2, 0x83,
+	0xa7, 0xe7, 0x82, 0xcf, 0x75, 0x77, 0x5e, 0x1f, 0x4e, 0x42, 0xef, 0x68, 0x12, 0x7a, 0x3f, 0x26,
+	0xa1, 0xf7, 0x65, 0x1a, 0xd6, 0x8e, 0xa6, 0x61, 0xed, 0xdb, 0x34, 0xac, 0xbd, 0x7b, 0x72, 0x6a,
+	0x03, 0x0e, 0xf8, 0xd2, 0x5d, 0x53, 0xf4, 0xa2, 0xb3, 0x72, 0xbc, 0x3d, 0x1e, 0xff, 0x0e, 0x00,
+	0x00, 0xff, 0xff, 0x54, 0xea, 0x8e, 0x73, 0x8f, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -330,9 +329,9 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	IncentiveRegister(ctx context.Context, in *MsgIncentiveRegister, opts ...grpc.CallOption) (*MsgIncentiveRegisterResponse, error)
+	Register(ctx context.Context, in *MsgRegister, opts ...grpc.CallOption) (*MsgRegisterResponse, error)
 	WithdrawAllRewards(ctx context.Context, in *MsgWithdrawAllRewards, opts ...grpc.CallOption) (*MsgWithdrawAllRewardsResponse, error)
-	WithdrawReward(ctx context.Context, in *MsgWithdrawReward, opts ...grpc.CallOption) (*MsgWithdrawRewardsResponse, error)
+	WithdrawReward(ctx context.Context, in *MsgWithdrawReward, opts ...grpc.CallOption) (*MsgWithdrawRewardResponse, error)
 }
 
 type msgClient struct {
@@ -343,9 +342,9 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) IncentiveRegister(ctx context.Context, in *MsgIncentiveRegister, opts ...grpc.CallOption) (*MsgIncentiveRegisterResponse, error) {
-	out := new(MsgIncentiveRegisterResponse)
-	err := c.cc.Invoke(ctx, "/ununifi.ecosystemincentive.Msg/IncentiveRegister", in, out, opts...)
+func (c *msgClient) Register(ctx context.Context, in *MsgRegister, opts ...grpc.CallOption) (*MsgRegisterResponse, error) {
+	out := new(MsgRegisterResponse)
+	err := c.cc.Invoke(ctx, "/ununifi.ecosystemincentive.Msg/Register", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -361,8 +360,8 @@ func (c *msgClient) WithdrawAllRewards(ctx context.Context, in *MsgWithdrawAllRe
 	return out, nil
 }
 
-func (c *msgClient) WithdrawReward(ctx context.Context, in *MsgWithdrawReward, opts ...grpc.CallOption) (*MsgWithdrawRewardsResponse, error) {
-	out := new(MsgWithdrawRewardsResponse)
+func (c *msgClient) WithdrawReward(ctx context.Context, in *MsgWithdrawReward, opts ...grpc.CallOption) (*MsgWithdrawRewardResponse, error) {
+	out := new(MsgWithdrawRewardResponse)
 	err := c.cc.Invoke(ctx, "/ununifi.ecosystemincentive.Msg/WithdrawReward", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -372,22 +371,22 @@ func (c *msgClient) WithdrawReward(ctx context.Context, in *MsgWithdrawReward, o
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	IncentiveRegister(context.Context, *MsgIncentiveRegister) (*MsgIncentiveRegisterResponse, error)
+	Register(context.Context, *MsgRegister) (*MsgRegisterResponse, error)
 	WithdrawAllRewards(context.Context, *MsgWithdrawAllRewards) (*MsgWithdrawAllRewardsResponse, error)
-	WithdrawReward(context.Context, *MsgWithdrawReward) (*MsgWithdrawRewardsResponse, error)
+	WithdrawReward(context.Context, *MsgWithdrawReward) (*MsgWithdrawRewardResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) IncentiveRegister(ctx context.Context, req *MsgIncentiveRegister) (*MsgIncentiveRegisterResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method IncentiveRegister not implemented")
+func (*UnimplementedMsgServer) Register(ctx context.Context, req *MsgRegister) (*MsgRegisterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
 func (*UnimplementedMsgServer) WithdrawAllRewards(ctx context.Context, req *MsgWithdrawAllRewards) (*MsgWithdrawAllRewardsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WithdrawAllRewards not implemented")
 }
-func (*UnimplementedMsgServer) WithdrawReward(ctx context.Context, req *MsgWithdrawReward) (*MsgWithdrawRewardsResponse, error) {
+func (*UnimplementedMsgServer) WithdrawReward(ctx context.Context, req *MsgWithdrawReward) (*MsgWithdrawRewardResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WithdrawReward not implemented")
 }
 
@@ -395,20 +394,20 @@ func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
-func _Msg_IncentiveRegister_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgIncentiveRegister)
+func _Msg_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRegister)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).IncentiveRegister(ctx, in)
+		return srv.(MsgServer).Register(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ununifi.ecosystemincentive.Msg/IncentiveRegister",
+		FullMethod: "/ununifi.ecosystemincentive.Msg/Register",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).IncentiveRegister(ctx, req.(*MsgIncentiveRegister))
+		return srv.(MsgServer).Register(ctx, req.(*MsgRegister))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -454,8 +453,8 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "IncentiveRegister",
-			Handler:    _Msg_IncentiveRegister_Handler,
+			MethodName: "Register",
+			Handler:    _Msg_Register_Handler,
 		},
 		{
 			MethodName: "WithdrawAllRewards",
@@ -470,7 +469,7 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	Metadata: "ecosystem-incentive/tx.proto",
 }
 
-func (m *MsgIncentiveRegister) Marshal() (dAtA []byte, err error) {
+func (m *MsgRegister) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -480,12 +479,12 @@ func (m *MsgIncentiveRegister) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgIncentiveRegister) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgRegister) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgIncentiveRegister) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgRegister) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -533,7 +532,7 @@ func (m *MsgIncentiveRegister) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgIncentiveRegisterResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgRegisterResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -543,12 +542,12 @@ func (m *MsgIncentiveRegisterResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgIncentiveRegisterResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgRegisterResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgIncentiveRegisterResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgRegisterResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -652,7 +651,7 @@ func (m *MsgWithdrawReward) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgWithdrawRewardsResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgWithdrawRewardResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -662,12 +661,12 @@ func (m *MsgWithdrawRewardsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgWithdrawRewardsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgWithdrawRewardResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgWithdrawRewardsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgWithdrawRewardResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -686,7 +685,7 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgIncentiveRegister) Size() (n int) {
+func (m *MsgRegister) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -713,7 +712,7 @@ func (m *MsgIncentiveRegister) Size() (n int) {
 	return n
 }
 
-func (m *MsgIncentiveRegisterResponse) Size() (n int) {
+func (m *MsgRegisterResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -757,7 +756,7 @@ func (m *MsgWithdrawReward) Size() (n int) {
 	return n
 }
 
-func (m *MsgWithdrawRewardsResponse) Size() (n int) {
+func (m *MsgWithdrawRewardResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -772,7 +771,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgIncentiveRegister) Unmarshal(dAtA []byte) error {
+func (m *MsgRegister) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -795,10 +794,10 @@ func (m *MsgIncentiveRegister) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgIncentiveRegister: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgRegister: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgIncentiveRegister: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgRegister: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -956,7 +955,7 @@ func (m *MsgIncentiveRegister) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgIncentiveRegisterResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgRegisterResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -979,10 +978,10 @@ func (m *MsgIncentiveRegisterResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgIncentiveRegisterResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgRegisterResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgIncentiveRegisterResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgRegisterResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -1256,7 +1255,7 @@ func (m *MsgWithdrawReward) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgWithdrawRewardsResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgWithdrawRewardResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1279,10 +1278,10 @@ func (m *MsgWithdrawRewardsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgWithdrawRewardsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgWithdrawRewardResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgWithdrawRewardsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgWithdrawRewardResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
