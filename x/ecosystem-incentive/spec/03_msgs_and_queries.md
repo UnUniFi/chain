@@ -4,13 +4,13 @@
 
 ## Messages
 
-All messages of `frontend-incentive`.
+All messages of `ecosystem-incentive`.
 
-### Frontend Register
+### Register
 
 ```protobuf
-message MsgFrontendRegister {
-  string frontend_name = 1;
+message MsgIncentiveRegister {
+  string incentive_id = 1;
   repeated string subjects = 2 [
     (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
@@ -22,12 +22,12 @@ message MsgFrontendRegister {
 
 or possibly take json file
 
-### WithdrawAllFrontendReward
+### WithdrawAllRewards
 
 A message to withdraw all accumulated rewards across all denoms.
 
 ```protobuf
-message MsgWithdrawAllFrontendReward {
+message MsgWithdrawAllRewards {
   string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
@@ -36,12 +36,12 @@ message MsgWithdrawAllFrontendReward {
 }
 ```
 
-### WithdrawSpecificFrontendReward
+### WithdrawSpecificReward
 
 A message to withdraw accumulated reward of specified denom.
 
 ```protobuf
-message MsgWithdrawSpecificFrontendReward {
+message MsgWithdrawSpecificDenomReward {
   string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
@@ -53,20 +53,20 @@ message MsgWithdrawSpecificFrontendReward {
 
 ## Queries
 
-All queries of `frontend-incentive`.
+All queries of `ecosystem-incentive`.
 
-### FrontendIncentive
+### IncentiveStore
 
 ```protobuf
-message QueryFrontendIncentiveRequest {
-  string frontend_name = 1;
+message QueryIncentiveRequest {
+  string incentive_id = 1;
 }
 ```
 
-### AllFrontendReward
+### AllRewards
 
 ```protobuf
-message QueryAllFrontendRewardRequest {
+message QueryAllRewardsRequest {
   string subject = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
@@ -75,10 +75,10 @@ message QueryAllFrontendRewardRequest {
 }
 ```
 
-### SpecificDenomFrontendReward
+### SpecificDenomReward
 
 ```protobuf
-message QuerySpecificDenomFrontendRewardRequest {
+message QuerySpecificDenomRewardRequest {
   string subject = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
