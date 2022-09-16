@@ -1,5 +1,5 @@
 syntax = "proto3";
-package UnUniFi.chain.ecosystemincentive;
+package ununifi.ecosystemincentive;
 
 import "gogoproto/gogo.proto";
 
@@ -7,6 +7,23 @@ option go_package = "github.com/UnUniFi/chain/x/ecosystem-incentive/types";
 
 // Params defines the parameters for the module.
 message Params {
-  option (gogoproto.goproto_stringer) = false;
-  
+  repeated RewardParams reward_params = 1 [
+    (gogoproto.moretags) = "yaml:\"reward_params\"",
+    (gogoproto.nullable) = false
+  ];
+  repeated RewardType reward_types = 2;
+}
+
+message RewardParams {
+  string module_name = 1;
+  repeated RewardRate reward_rate = 2;
+}
+
+message RewardRate {
+  RewardType reward_type = 1;
+  string rate = 2;
+}
+
+enum RewardType {
+  NFTMARKET_FRONTEND = 0;
 }

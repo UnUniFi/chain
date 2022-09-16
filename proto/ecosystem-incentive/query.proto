@@ -1,11 +1,12 @@
 syntax = "proto3";
-package UnUniFi.chain.ecosystemincentive;
+package ununifi.ecosystemincentive;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "ecosystemincentive/params.proto";
-// this line is used by starport scaffolding # 1
+import "ecosystem-incentive/params.proto";
+import "ecosystem-incentive/ecosystem_incentive.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/ecosystem-incentive/types";
 
@@ -13,9 +14,20 @@ option go_package = "github.com/UnUniFi/chain/x/ecosystem-incentive/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/ecosystemincentive/params";
+    option (google.api.http).get = "/ununifi/ecosystem_incentive/params";
   }
   
+  rpc IncentiveUnit(QueryIncentiveUnitRequest) returns (QueryIncentiveUnitResponse) {
+    option (google.api.http).get = "/ununifi/ecosystem_incentive/incentive_unit/{incentive_id}";
+  }
+
+  rpc AllRewards(QueryAllRewardsRequest) returns (QueryAllRewardsResponse) {
+    option (google.api.http).get = "/ununifi/ecosystem_incentive/all_rewards/{subject_addr}";
+  }
+   
+  rpc Reward(QueryRewardRequest) returns (QueryRewardResponse) {
+    option (google.api.http).get = "/ununifi/ecosystem_incentive/reward/{subject_addr}/{denom}";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -25,4 +37,36 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryIncentiveUnitRequest {
+  string incentive_id = 1;
+}
+message QueryIncentiveUnitResponse {
+  IncentiveUnit incentive_unit = 1;
+}
+
+message QueryAllRewardsRequest {
+  string subject_addr = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryAllRewardsResponse {
+  Reward rewards = 1;
+}
+
+message QueryRewardRequest {
+  string subject_addr = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string denom = 2;
+}
+
+message QueryRewardResponse {
+  cosmos.base.v1beta1.Coin reward = 1;
 }

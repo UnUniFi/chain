@@ -1,8 +1,8 @@
 syntax = "proto3";
-package UnUniFi.chain.ecosystemincentive;
+package ununifi.ecosystemincentive;
 
 import "gogoproto/gogo.proto";
-import "ecosystemincentive/params.proto";
+import "ecosystem-incentive/params.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "github.com/UnUniFi/chain/x/ecosystem-incentive/types";
