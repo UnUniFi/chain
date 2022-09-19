@@ -13,8 +13,9 @@ func (k Keeper) AddAssetManagementAccount(ctx sdk.Context, id string, name strin
 		return types.ErrAssetManagementAccountAlreadyExists
 	}
 	k.SetAssetManagementAccount(ctx, types.AssetManagementAccount{
-		Id:   id,
-		Name: name,
+		Id:      id,
+		Name:    name,
+		Enabled: true,
 	})
 	return nil
 }

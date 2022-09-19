@@ -48,6 +48,8 @@ func (k Keeper) BeginWithdrawFromTarget(ctx sdk.Context, addr sdk.AccAddress, ta
 	if farmingUnit.AccountId == "" {
 		return types.ErrFarmingUnitDoesNotExist
 	}
+	farmingUnit.UnbondingStarttime = ctx.BlockTime()
+	k.SetFarmingUnit(ctx, farmingUnit)
 
 	switch target.IntegrateInfo.Type {
 	case types.IntegrateType_GOLANG_MOD:
