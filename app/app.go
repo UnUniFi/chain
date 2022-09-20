@@ -591,6 +591,7 @@ func NewApp(
 
 	app.NftmarketKeeper = nftmarketkeeper.NewKeeper(
 		appCodec,
+		encodingConfig.TxConfig,
 		keys[nftmarkettypes.StoreKey],
 		keys[nftmarkettypes.MemStoreKey],
 		app.GetSubspace(nftmarkettypes.ModuleName),
