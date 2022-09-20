@@ -45,3 +45,9 @@ type NftKeeper interface {
 	GetTotalSupply(ctx sdk.Context, classID string) uint64
 	HasNFT(ctx sdk.Context, classID, id string) bool
 }
+
+type NftmarketHooks interface {
+	AfterNftListed(ctx sdk.Context, nftIdentifier []byte, txMemo string)
+	AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier []byte, fee sdk.Coin)
+	AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier []byte)
+}
