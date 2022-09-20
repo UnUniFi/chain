@@ -9,14 +9,20 @@ All messages of `ecosystem-incentive`.
 ### Register
 
 ```protobuf
-message MsgIncentiveRegister {
-  string incentive_id = 1;
-  repeated string subjects = 2 [
+message MsgRegister {
+  string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
-  repeated undetermined weights = 3;
+  string incentive_id = 2;
+  repeated string subject_addrs = 3 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  // TODO: Modify weight type or even whole structure of this msg
+  repeated string weights = 4;
 }
 ```
 
@@ -36,12 +42,12 @@ message MsgWithdrawAllRewards {
 }
 ```
 
-### WithdrawSpecificReward
+### WithdrawReward
 
 A message to withdraw accumulated reward of specified denom.
 
 ```protobuf
-message MsgWithdrawSpecificDenomReward {
+message MsgWithdrawReward {
   string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
@@ -58,7 +64,7 @@ All queries of `ecosystem-incentive`.
 ### IncentiveStore
 
 ```protobuf
-message QueryIncentiveRequest {
+message QueryIncentiveUnitRequest {
   string incentive_id = 1;
 }
 ```
