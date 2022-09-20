@@ -8,16 +8,16 @@ The example hooks functions interfaces in x/nftmarket module:
 
 ```go
 type NftmarketHooks interface {
-   AfterNftListed(ctx sdk.Context, nft_id types.NftIdentifier, tx_memo string)
-   AfterNftPaymentWithCommission(ctx sdk.Context, nft_id types.NftIdentifier, fee_amount mathInt, fee_denom string)
-   AfterNftUnlistedWituoutPayment(ctx sdk.Context, nft_id types.NftIdentifier)
+	AfterNftListed(ctx sdk.Context, nftIdentifier []byte, txMemo string)
+	AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier []byte, fee sdk.Coin)
+	AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier []byte)
 }
 ```
 
 ## AfterNftListed
 
-This hooks function is called for the resistration for the `ecosystem-incentive` with the `incentive_id` and `NftIdentifiler` if the `incentive_id` is already registered on `ecosystem-incentive` module by sending `MsgRegister` message.   
-To pass the `incentive_id` from the memo data of `MsgListNft` requires a method to get memo data in the process of `MsgListNft` in `x/nftmarket` module.
+This hooks function is called for the resistration for the `ecosystem-incentive` with the `txMemo` and `nftIdentifiler`.   
+To pass the `txMemo` from the memo data of `MsgListNft` requires a method to get memo data in the process of `MsgListNft` in `x/nftmarket` module.
 
 ### Location to be inserted
 
@@ -25,7 +25,7 @@ To pass the `incentive_id` from the memo data of `MsgListNft` requires a method 
 
 ## AfterNftPaymentWithCommission
 
-This hooks function is called for the accumulation of the reward for the subjects which are connected with the `nft_id` in the argument.
+This hooks function is called for the accumulation of the reward for the subjects which are connected with the `nftIdentifiler` in the argument.
 The calculation of the actual reward amount is executed in methods which this hook function calls in this module.
 
 ### Location to be inserted
@@ -35,7 +35,7 @@ The calculation of the actual reward amount is executed in methods which this ho
 ## AfterNftUnlistedWituoutPayment
 
 This hook function is called when a nft is unlisted for some reason like liquidation.   
-The purpose is to remove the unlisted nft information from `IncentiveIdTable` KVStore to keep the data consystent.
+The purpose is to remove the unlisted nft information from `NftmarketFrontendIncentiveIdTable` KVStore to keep the data consystent.
 
 ### Location to be inserted
 
