@@ -2,27 +2,41 @@
 
 **NOTE: This is early draft.**
 
-## IncentiveStore
+## IncentiveUnit
+
+```protobuf
+message IncentiveUnit {
+  string incentive_id = 1;
+  repeated SubjectInfo subject_info_list = 2;
+}
+
+message SubjectInfo {
+  string address = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string wight = 2 [
+    (gogoproto.moretags) = "yaml:\"auction_size\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+```
+
+- Incentive: `"incentive_id" -> format(IncentiveStore)`
 
 ### incentive_id
 
 `incentive_id` is the unique identifier in the `incentive_store` for the subjects. Hence, it can't be duplicated.
+
+## SubjectInfo
 
 ### weight
 
 The ratio of the reward distribution in a `incentive_store` unit.   
 `incentive_store` can contain several `subject`s and ratio for each.   
 
-```protobuf
-message IncentiveStore {
-  string incentive_id = 1;
-  repeated string subjects = 2;
-  repeated undetermined weights = 3;
-  RewardType reward_type = 4;
-}
-```
-
-- Incentive: `"incentive_id" -> format(IncentiveStore)`
 
 ## NftmarketFrontendIncentiveIdTable
 
