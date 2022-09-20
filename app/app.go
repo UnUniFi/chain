@@ -97,6 +97,8 @@ import (
 	dbm "github.com/tendermint/tm-db"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
+	"github.com/CosmWasm/wasmd/x/wasm"
+	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 	"github.com/UnUniFi/chain/x/auction"
 	auctionkeeper "github.com/UnUniFi/chain/x/auction/keeper"
 	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
@@ -112,9 +114,12 @@ import (
 	"github.com/UnUniFi/chain/x/ununifidist"
 	ununifidistkeeper "github.com/UnUniFi/chain/x/ununifidist/keeper"
 	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
-
-	"github.com/CosmWasm/wasmd/x/wasm"
-	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
+	"github.com/UnUniFi/chain/x/yieldaggregator"
+	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
+	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
+	"github.com/UnUniFi/chain/x/yieldfarm"
+	yieldfarmkeeper "github.com/UnUniFi/chain/x/yieldfarm/keeper"
+	yieldfarmtypes "github.com/UnUniFi/chain/x/yieldfarm/types"
 )
 
 const Name = "ununifi"
@@ -202,23 +207,27 @@ var (
 		ununifidist.AppModuleBasic{},
 		incentive.AppModuleBasic{},
 		wasm.AppModuleBasic{},
+		yieldfarm.AppModuleBasic{},
+		yieldaggregator.AppModuleBasic{},
 	)
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName:     nil,
-		distrtypes.ModuleName:          nil,
-		minttypes.ModuleName:           {authtypes.Minter},
-		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
-		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
-		govtypes.ModuleName:            {authtypes.Burner},
-		liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
-		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
-		auctiontypes.ModuleName:        nil,
-		cdptypes.ModuleName:            {authtypes.Minter, authtypes.Burner},
-		cdptypes.LiquidatorMacc:        {authtypes.Minter, authtypes.Burner},
-		ununifidisttypes.ModuleName:    {authtypes.Minter},
-		wasm.ModuleName:                {authtypes.Burner},
+		authtypes.FeeCollectorName:      nil,
+		distrtypes.ModuleName:           nil,
+		minttypes.ModuleName:            {authtypes.Minter},
+		stakingtypes.BondedPoolName:     {authtypes.Burner, authtypes.Staking},
+		stakingtypes.NotBondedPoolName:  {authtypes.Burner, authtypes.Staking},
+		govtypes.ModuleName:             {authtypes.Burner},
+		liquiditytypes.ModuleName:       {authtypes.Minter, authtypes.Burner},
+		ibctransfertypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
+		auctiontypes.ModuleName:         nil,
+		cdptypes.ModuleName:             {authtypes.Minter, authtypes.Burner},
+		cdptypes.LiquidatorMacc:         {authtypes.Minter, authtypes.Burner},
+		ununifidisttypes.ModuleName:     {authtypes.Minter},
+		wasm.ModuleName:                 {authtypes.Burner},
+		yieldfarmtypes.ModuleName:       {authtypes.Minter},
+		yieldaggregatortypes.ModuleName: nil,
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -285,11 +294,13 @@ type App struct {
 	ScopedWasmKeeper     capabilitykeeper.ScopedKeeper
 
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
-	auctionKeeper     auctionkeeper.Keeper
-	cdpKeeper         cdpkeeper.Keeper
-	incentiveKeeper   incentivekeeper.Keeper
-	ununifidistKeeper ununifidistkeeper.Keeper
-	pricefeedKeeper   pricefeedkeeper.Keeper
+	auctionKeeper         auctionkeeper.Keeper
+	cdpKeeper             cdpkeeper.Keeper
+	incentiveKeeper       incentivekeeper.Keeper
+	ununifidistKeeper     ununifidistkeeper.Keeper
+	pricefeedKeeper       pricefeedkeeper.Keeper
+	YieldfarmKeeper       yieldfarmkeeper.Keeper
+	YieldaggregatorKeeper yieldaggregatorkeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -336,6 +347,8 @@ func NewApp(
 		auctiontypes.StoreKey, cdptypes.StoreKey, incentivetypes.StoreKey,
 		ununifidisttypes.StoreKey, pricefeedtypes.StoreKey,
 		wasm.StoreKey,
+		yieldfarmtypes.StoreKey,
+		yieldaggregatortypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -457,6 +470,21 @@ func NewApp(
 		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks(), app.incentiveKeeper.Hooks()),
 	)
 
+	app.YieldfarmKeeper = *yieldfarmkeeper.NewKeeper(
+		appCodec,
+		keys[yieldfarmtypes.StoreKey],
+		app.GetSubspace(yieldfarmtypes.ModuleName),
+		app.BankKeeper,
+	)
+
+	app.YieldaggregatorKeeper = yieldaggregatorkeeper.NewKeeper(
+		appCodec,
+		keys[yieldaggregatortypes.StoreKey],
+		app.GetSubspace(yieldaggregatortypes.ModuleName),
+		app.BankKeeper,
+		app.YieldfarmKeeper,
+	)
+
 	// Create IBC Keeper
 	app.IBCKeeper = ibckeeper.NewKeeper(
 		appCodec,
@@ -471,6 +499,7 @@ func NewApp(
 	govRouter := govtypes.NewRouter()
 	govRouter.
 		AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
+		AddRoute(yieldaggregatortypes.RouterKey, yieldaggregator.NewProposalHandler(app.YieldaggregatorKeeper)).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
 		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
@@ -634,6 +663,8 @@ func NewApp(
 		ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
 		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
+		yieldfarm.NewAppModule(appCodec, app.YieldfarmKeeper, app.AccountKeeper, app.BankKeeper),
+		yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -668,6 +699,8 @@ func NewApp(
 		ibchost.ModuleName,
 		ibctransfertypes.ModuleName,
 		wasm.ModuleName,
+		yieldfarmtypes.ModuleName,
+		yieldaggregatortypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -698,6 +731,8 @@ func NewApp(
 		ibchost.ModuleName,
 		ibctransfertypes.ModuleName,
 		wasm.ModuleName,
+		yieldfarmtypes.ModuleName,
+		yieldaggregatortypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -737,6 +772,8 @@ func NewApp(
 		ibctransfertypes.ModuleName,
 		// wasm after ibc transfer
 		wasm.ModuleName,
+		yieldfarmtypes.ModuleName,
+		yieldaggregatortypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -771,6 +808,8 @@ func NewApp(
 		// incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
 		// ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
 		// pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
+		yieldfarm.NewAppModule(appCodec, app.YieldfarmKeeper, app.AccountKeeper, app.BankKeeper),
+		yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
 	)
 
 	// initialize stores
@@ -1017,5 +1056,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ununifidisttypes.ModuleName)
 	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
 	paramsKeeper.Subspace(wasm.ModuleName)
+	paramsKeeper.Subspace(yieldfarmtypes.ModuleName)
+	paramsKeeper.Subspace(yieldaggregatortypes.ModuleName)
 	return paramsKeeper
 }

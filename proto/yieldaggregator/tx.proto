@@ -1,0 +1,83 @@
+syntax = "proto3";
+package ununifi.chain.yieldaggregator;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "yieldaggregator/asset.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/yieldaggregator/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc Deposit(MsgDeposit) returns (MsgDepositResponse);
+  rpc Withdraw(MsgWithdraw) returns (MsgWithdrawResponse);
+  rpc AddFarmingOrder(MsgAddFarmingOrder) returns (MsgAddFarmingOrderResponse);
+  rpc DeleteFarmingOrder(MsgDeleteFarmingOrder) returns (MsgDeleteFarmingOrderResponse);
+  rpc ActivateFarmingOrder(MsgActivateFarmingOrder) returns (MsgActivateFarmingOrderResponse);
+  rpc InactivateFarmingOrder(MsgInactivateFarmingOrder) returns (MsgInactivateFarmingOrderResponse);
+  rpc ExecuteFarmingOrders(MsgExecuteFarmingOrders) returns (MsgExecuteFarmingOrdersResponse);
+  rpc SetDailyRewardPercent(MsgSetDailyRewardPercent) returns (MsgSetDailyRewardPercentResponse);
+}
+
+message MsgDeposit {
+  string from_address = 1
+      [(gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress", (gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin amount         = 2 [(gogoproto.nullable) = false];
+  bool                              execute_orders = 3;
+}
+
+message MsgDepositResponse {}
+
+message MsgWithdraw {
+  string from_address = 1
+      [(gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress", (gogoproto.nullable) = false];
+  repeated cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
+}
+
+message MsgWithdrawResponse {}
+
+message MsgAddFarmingOrder {
+  string from_address = 1
+      [(gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress", (gogoproto.nullable) = false];
+  FarmingOrder order = 2;
+}
+message MsgAddFarmingOrderResponse {}
+
+message MsgDeleteFarmingOrder {
+  string from_address = 1
+      [(gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress", (gogoproto.nullable) = false];
+  string order_id = 2;
+}
+message MsgDeleteFarmingOrderResponse {}
+
+message MsgActivateFarmingOrder {
+  string from_address = 1
+      [(gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress", (gogoproto.nullable) = false];
+  string order_id = 2;
+}
+message MsgActivateFarmingOrderResponse {}
+
+message MsgInactivateFarmingOrder {
+  string from_address = 1
+      [(gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress", (gogoproto.nullable) = false];
+  string order_id = 2;
+}
+message MsgInactivateFarmingOrderResponse {}
+
+message MsgExecuteFarmingOrders {
+  string from_address = 1
+      [(gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress", (gogoproto.nullable) = false];
+  repeated string order_ids = 2;
+}
+message MsgExecuteFarmingOrdersResponse {}
+
+message MsgSetDailyRewardPercent {
+  string from_address = 1
+      [(gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress", (gogoproto.nullable) = false];
+  string account_id = 2;
+  string target_id  = 3;
+  string rate = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  google.protobuf.Timestamp date = 5 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+}
+message MsgSetDailyRewardPercentResponse {}
