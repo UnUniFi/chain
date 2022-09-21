@@ -20,8 +20,7 @@ set -o errexit -o nounset
 
 # create class and get the class id
 # ununifid tx nftmint create-class Test[ClassName] ipfs://testcid/[BaseTokenUri] 1000[TokenSupplyCap] 0[MintingPermission]  --from debug --chain-id test"
-CLASS_ID=$(ununifid tx nftmint create-class Test ipfs://testcid/ 1000 0  --from debug --chain-id test -y --output json | jq -r '.events[-1].attributes[1].value')
-
+CLASS_ID=$(ununifid tx nftmint create-class Test ipfs://testcid/ 1000 0  --from debug --chain-id test -y  -o json |jq -r '.logs[0].events[1].attributes[].value' | grep "ununifi-" | sed 's/^.*"\(.*\)".*$/\1/')
 ## NOTE: $CLASS_ID returns "class_id" that returns error against below messages. 
 ##       Just try redefine CLASS_ID with simple text or just replace once you get the class_id.
 ##       If you know the solution for this, please let me know or just commit and push.
