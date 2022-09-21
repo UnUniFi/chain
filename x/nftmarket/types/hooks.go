@@ -10,7 +10,7 @@ func NewMultiNftmarketHooks(hooks ...NftmarketHooks) MultiNftmarketHooks {
 	return hooks
 }
 
-// BeforeCdpModified runs after a nft is listed
+// AfterNftListed runs after a nft is listed
 func (h MultiNftmarketHooks) AfterNftListed(ctx sdk.Context, nftIdentifier []byte, txMemo string) {
 	for i := range h {
 		h[i].AfterNftListed(ctx, nftIdentifier, txMemo)
