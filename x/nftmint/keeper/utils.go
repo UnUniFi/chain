@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 )
 
+// use with error handler
 func SliceIndex(s []string, element string) int {
 	for i := 0; i < len(s); i++ {
 		if element == s[i] {
