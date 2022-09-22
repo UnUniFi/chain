@@ -3,6 +3,8 @@ package keeper
 import (
 	"context"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
 )
 
@@ -21,6 +23,20 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 var _ types.MsgServer = msgServer{}
 
 func (k msgServer) Register(c context.Context, msg *types.MsgRegister) (*types.MsgRegisterResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	subjectInfoList, err := k.keeper.Register(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := ctx.EventManager().EmitTypedEvent(&types.EventRegister{
+		IncentiveId:     msg.IncentiveId,
+		SubjectInfoList: subjectInfoList,
+	}); err != nil {
+		return nil, err
+	}
+
 	return &types.MsgRegisterResponse{}, nil
 }
 

@@ -16,3 +16,11 @@ const (
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_ecosystemincentive"
 )
+
+var (
+	// KeyPrefixIncentiveUnit defines prefix key for IncentiveUnit
+	KeyPrefixIncentiveUnit = []byte{0x01}
+
+	// KeyPrefixReward defines prefix key for Reward
+	KeyPrefixReward = []byte{0x02}
+)
