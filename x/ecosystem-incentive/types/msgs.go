@@ -19,9 +19,10 @@ var (
 )
 
 func NewMsgRegister(
+	sender sdk.AccAddress,
 	incentiveId string,
 	subjectAccAddrs []sdk.AccAddress,
-	weights []string,
+	weights []sdk.Dec,
 ) *MsgRegister {
 	var subjectAddrs []types.StringAccAddress
 	for _, accAddr := range subjectAccAddrs {
