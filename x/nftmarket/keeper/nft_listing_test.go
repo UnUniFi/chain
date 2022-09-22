@@ -1582,7 +1582,11 @@ func (suite *KeeperTestSuite) TestProcessPaymentWithCommissionFee() {
 	err = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.ModuleName, sdk.Coins{sdk.NewCoin("uguu", amount)})
 	suite.NoError(err)
 
-	suite.app.NftmarketKeeper.ProcessPaymentWithCommissionFee(suite.ctx, owner, "uguu", amount)
+	// TODO: delete
+	// -----
+	var nftIdByte []byte
+	suite.app.NftmarketKeeper.ProcessPaymentWithCommissionFee(suite.ctx, owner, "uguu", amount, nftIdByte)
+	// -----
 
 	params := suite.app.NftmarketKeeper.GetParamSet(suite.ctx)
 	fee := amount.Mul(sdk.NewInt(int64(params.NftListingCommissionFee))).Quo(sdk.NewInt(100))
