@@ -1,35 +1,37 @@
 syntax = "proto3";
 package ununifi.ecosystemincentive;
 
+import "ecosystem-incentive/ecosystem_incentive.proto";
 import "gogoproto/gogo.proto";
-import "google/api/annotations.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/ecosystem-incentive/types";
 
-message IncentiveUnit {
+message EventRegister {
   string incentive_id = 1;
   repeated SubjectInfo subject_info_list = 2;
 }
 
-message SubjectInfo {
-  string address = 1 [
-    (gogoproto.moretags) = "yaml:\"subject\"",
+message EventWithdrawAllReward {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
-  string weight = 2 [
-    (gogoproto.moretags) = "yaml:\"weight\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+  repeated cosmos.base.v1beta1.Coin rewards = 2 [
+    (gogoproto.moretags) = "yaml:\"all_withdrawn_rewards\"",
     (gogoproto.nullable) = false
   ];
 }
 
-message Reward {
-  string subject_addr = 1 [
-    (gogoproto.moretags) = "yaml:\"subject_addr\"",
+message EventWithdrawReward {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
-  repeated cosmos.base.v1beta1.Coin rewards = 2;
+  cosmos.base.v1beta1.Coin reward = 2 [
+    (gogoproto.moretags) = "yaml:\"withdrawn_reward\"",
+    (gogoproto.nullable) = false
+  ];
 }
