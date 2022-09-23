@@ -11,8 +11,35 @@ import (
 	// Upgrades from earlier versions of Ununifi
 	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
 
-	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/spf13/cast"
+	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/tendermint/tendermint/libs/log"
+	tmos "github.com/tendermint/tendermint/libs/os"
+	dbm "github.com/tendermint/tm-db"
+
+	"github.com/UnUniFi/chain/x/auction"
+	auctionkeeper "github.com/UnUniFi/chain/x/auction/keeper"
+	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
+	"github.com/UnUniFi/chain/x/cdp"
+	cdpkeeper "github.com/UnUniFi/chain/x/cdp/keeper"
+	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	"github.com/UnUniFi/chain/x/incentive"
+	incentivekeeper "github.com/UnUniFi/chain/x/incentive/keeper"
+	incentivetypes "github.com/UnUniFi/chain/x/incentive/types"
+	"github.com/UnUniFi/chain/x/pricefeed"
+	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
+	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
+	"github.com/UnUniFi/chain/x/ununifidist"
+	ununifidistkeeper "github.com/UnUniFi/chain/x/ununifidist/keeper"
+	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
+	"github.com/UnUniFi/chain/x/yieldaggregator"
+	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
+	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
+	"github.com/UnUniFi/chain/x/yieldfarm"
+	yieldfarmkeeper "github.com/UnUniFi/chain/x/yieldfarm/keeper"
+	yieldfarmtypes "github.com/UnUniFi/chain/x/yieldfarm/types"
+	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -25,7 +52,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	ante "github.com/cosmos/cosmos-sdk/x/auth/ante"
+	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
@@ -79,52 +106,28 @@ import (
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	transfer "github.com/cosmos/ibc-go/v2/modules/apps/transfer"
-	ibctransferkeeper "github.com/cosmos/ibc-go/v2/modules/apps/transfer/keeper"
-	ibctransfertypes "github.com/cosmos/ibc-go/v2/modules/apps/transfer/types"
-	ibc "github.com/cosmos/ibc-go/v2/modules/core"
-	ibcclient "github.com/cosmos/ibc-go/v2/modules/core/02-client"
-	ibcclientclient "github.com/cosmos/ibc-go/v2/modules/core/02-client/client"
-	ibcclienttypes "github.com/cosmos/ibc-go/v2/modules/core/02-client/types"
-	porttypes "github.com/cosmos/ibc-go/v2/modules/core/05-port/types"
-	ibchost "github.com/cosmos/ibc-go/v2/modules/core/24-host"
-	ibckeeper "github.com/cosmos/ibc-go/v2/modules/core/keeper"
-
-	// "github.com/gravity-devs/liquidity/x/liquidity"
-	// liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
-	// liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
-
-	"github.com/spf13/cast"
-	abci "github.com/tendermint/tendermint/abci/types"
+	transfer "github.com/cosmos/ibc-go/v3/modules/apps/transfer"
+	ibctransferkeeper "github.com/cosmos/ibc-go/v3/modules/apps/transfer/keeper"
+	ibctransfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
+	ibc "github.com/cosmos/ibc-go/v3/modules/core"
+	ibcclient "github.com/cosmos/ibc-go/v3/modules/core/02-client"
+	ibcclientclient "github.com/cosmos/ibc-go/v3/modules/core/02-client/client"
+	ibcclienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	porttypes "github.com/cosmos/ibc-go/v3/modules/core/05-port/types"
+	ibchost "github.com/cosmos/ibc-go/v3/modules/core/24-host"
+	ibckeeper "github.com/cosmos/ibc-go/v3/modules/core/keeper"
 	tmjson "github.com/tendermint/tendermint/libs/json"
-	"github.com/tendermint/tendermint/libs/log"
-	tmos "github.com/tendermint/tendermint/libs/os"
-	dbm "github.com/tendermint/tm-db"
 
-	// this line is used by starport scaffolding # stargate/app/moduleImport
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
-	"github.com/UnUniFi/chain/x/auction"
-	auctionkeeper "github.com/UnUniFi/chain/x/auction/keeper"
-	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
-	"github.com/UnUniFi/chain/x/cdp"
-	cdpkeeper "github.com/UnUniFi/chain/x/cdp/keeper"
-	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
-	"github.com/UnUniFi/chain/x/incentive"
-	incentivekeeper "github.com/UnUniFi/chain/x/incentive/keeper"
-	incentivetypes "github.com/UnUniFi/chain/x/incentive/types"
-	"github.com/UnUniFi/chain/x/pricefeed"
-	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
-	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
-	"github.com/UnUniFi/chain/x/ununifidist"
-	ununifidistkeeper "github.com/UnUniFi/chain/x/ununifidist/keeper"
-	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
-	"github.com/UnUniFi/chain/x/yieldaggregator"
-	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
-	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
-	"github.com/UnUniFi/chain/x/yieldfarm"
-	yieldfarmkeeper "github.com/UnUniFi/chain/x/yieldfarm/keeper"
-	yieldfarmtypes "github.com/UnUniFi/chain/x/yieldfarm/types"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	"github.com/prometheus/client_golang/prometheus"
+
+	ica "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts"
+	icahost "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/host"
+	icahostkeeper "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/host/keeper"
+	icahosttypes "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/host/types"
+	icatypes "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/types"
 )
 
 const Name = "ununifi"
@@ -157,11 +160,19 @@ func GetEnabledProposals() []wasm.ProposalType {
 	return proposals
 }
 
-// this line is used by starport scaffolding # stargate/wasm/app/enabledProposals
+func GetWasmOpts(appOpts servertypes.AppOptions) []wasm.Option {
+	var wasmOpts []wasm.Option
+	if cast.ToBool(appOpts.Get("telemetry.enabled")) {
+		wasmOpts = append(wasmOpts, wasmkeeper.WithVMCacheMetrics(prometheus.DefaultRegisterer))
+	}
+
+	return wasmOpts
+}
 
 func getGovProposalHandlers() []govclient.ProposalHandler {
 	var govProposalHandlers []govclient.ProposalHandler
 	// this line is used by starport scaffolding # stargate/app/govProposalHandlers
+	govProposalHandlers = wasmclient.ProposalHandlers
 
 	govProposalHandlers = append(govProposalHandlers,
 		paramsclient.ProposalHandler,
@@ -172,7 +183,6 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 		ibcclientclient.UpgradeProposalHandler,
 		// this line is used by starport scaffolding # stargate/app/govProposalHandler
 	)
-	govProposalHandlers = append(govProposalHandlers, wasmclient.ProposalHandlers...)
 
 	return govProposalHandlers
 }
@@ -224,12 +234,13 @@ var (
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
 		// liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
-		ibctransfertypes.ModuleName: {authtypes.Minter, authtypes.Burner},
-		auctiontypes.ModuleName:     nil,
-		cdptypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
-		cdptypes.LiquidatorMacc:     {authtypes.Minter, authtypes.Burner},
-		ununifidisttypes.ModuleName: {authtypes.Minter},
-		wasm.ModuleName:             {authtypes.Burner},
+		ibctransfertypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
+		icatypes.ModuleName:             nil,
+		auctiontypes.ModuleName:         nil,
+		cdptypes.ModuleName:             {authtypes.Minter, authtypes.Burner},
+		cdptypes.LiquidatorMacc:         {authtypes.Minter, authtypes.Burner},
+		ununifidisttypes.ModuleName:     {authtypes.Minter},
+		wasm.ModuleName:                 {authtypes.Burner},
 		yieldfarmtypes.ModuleName:       {authtypes.Minter},
 		yieldaggregatortypes.ModuleName: nil,
 	}
@@ -292,8 +303,11 @@ type App struct {
 	// LiquidityKeeper  liquiditykeeper.Keeper
 	WasmKeeper wasm.Keeper
 
+	ICAHostKeeper icahostkeeper.Keeper
+
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
+	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 	ScopedWasmKeeper     capabilitykeeper.ScopedKeeper
 
@@ -326,7 +340,6 @@ func NewApp(
 	invCheckPeriod uint,
 	encodingConfig appparams.EncodingConfig,
 	enabledProposals []wasm.ProposalType,
-	// this line is used by starport scaffolding # stargate/app/newArgument
 	appOpts servertypes.AppOptions,
 	wasmOpts []wasm.Option,
 	baseAppOptions ...func(*baseapp.BaseApp),
@@ -345,6 +358,7 @@ func NewApp(
 		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey,
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
+		icahosttypes.StoreKey,
 		evidencetypes.StoreKey,
 		// liquiditytypes.StoreKey,
 		ibctransfertypes.StoreKey,
@@ -387,7 +401,9 @@ func NewApp(
 
 	// grant capabilities for the ibc and ibc-transfer modules
 	scopedIBCKeeper := app.CapabilityKeeper.ScopeToModule(ibchost.ModuleName)
+	scopedICAHostKeeper := app.CapabilityKeeper.ScopeToModule(icahosttypes.SubModuleName)
 	scopedTransferKeeper := app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
+
 	scopedWasmKeeper := app.CapabilityKeeper.ScopeToModule(wasm.ModuleName)
 	app.CapabilityKeeper.Seal()
 
@@ -470,6 +486,9 @@ func NewApp(
 	// 	app.DistrKeeper,
 	// )
 
+	// upgrade handlers
+	cfg := module.NewConfigurator(appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
+
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
 	app.StakingKeeper = *stakingKeeper.SetHooks(
@@ -491,6 +510,7 @@ func NewApp(
 		app.YieldfarmKeeper,
 	)
 
+	// Create IBC Keeper
 	// Create IBC Keeper
 	app.IBCKeeper = ibckeeper.NewKeeper(
 		appCodec,
@@ -517,16 +537,27 @@ func NewApp(
 		keys[ibctransfertypes.StoreKey],
 		app.GetSubspace(ibctransfertypes.ModuleName),
 		app.IBCKeeper.ChannelKeeper,
+		app.IBCKeeper.ChannelKeeper,
 		&app.IBCKeeper.PortKeeper,
 		app.AccountKeeper,
 		app.BankKeeper,
 		scopedTransferKeeper,
 	)
 	transferModule := transfer.NewAppModule(app.TransferKeeper)
+	transferIBCModule := transfer.NewIBCModule(app.TransferKeeper)
 
-	// create static IBC router, add transfer route, then set and seal it
-	ibcRouter := porttypes.NewRouter()
-	ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferModule)
+	app.ICAHostKeeper = icahostkeeper.NewKeeper(
+		appCodec,
+		keys[icahosttypes.StoreKey],
+		app.GetSubspace(icahosttypes.SubModuleName),
+		app.IBCKeeper.ChannelKeeper,
+		&app.IBCKeeper.PortKeeper,
+		app.AccountKeeper,
+		scopedICAHostKeeper,
+		app.MsgServiceRouter(),
+	)
+	icaModule := ica.NewAppModule(nil, &app.ICAHostKeeper)
+	icaHostIBCModule := icahost.NewIBCModule(app.ICAHostKeeper)
 
 	// Create evidence Keeper for to register the IBC light client misbehaviour evidence route
 	evidenceKeeper := evidencekeeper.NewKeeper(
@@ -589,6 +620,7 @@ func NewApp(
 	if err != nil {
 		panic(fmt.Sprintf("error while reading wasm config: %s", err))
 	}
+
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
 	supportedFeatures := "iterator,staking,stargate"
@@ -615,7 +647,11 @@ func NewApp(
 	if len(enabledProposals) != 0 {
 		govRouter.AddRoute(wasm.RouterKey, wasm.NewWasmProposalHandler(app.WasmKeeper, enabledProposals))
 	}
-	ibcRouter.AddRoute(wasm.ModuleName, wasm.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper))
+	// Create static IBC router, add transfer route, then set and seal it
+	ibcRouter := porttypes.NewRouter()
+	ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferIBCModule).
+		AddRoute(wasm.ModuleName, wasm.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper)).
+		AddRoute(icahosttypes.SubModuleName, icaHostIBCModule)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
 	app.GovKeeper = govkeeper.NewKeeper(
@@ -662,13 +698,14 @@ func NewApp(
 		params.NewAppModule(app.ParamsKeeper),
 		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
 		transferModule,
+		icaModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 		auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
 		cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.pricefeedKeeper),
 		incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
 		ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
 		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
-		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
+		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper), yieldfarm.NewAppModule(appCodec, app.YieldfarmKeeper, app.AccountKeeper, app.BankKeeper),
 		yieldfarm.NewAppModule(appCodec, app.YieldfarmKeeper, app.AccountKeeper, app.BankKeeper),
 		yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
 	)
@@ -704,6 +741,7 @@ func NewApp(
 
 		ibchost.ModuleName,
 		ibctransfertypes.ModuleName,
+		icatypes.ModuleName,
 		wasm.ModuleName,
 		yieldfarmtypes.ModuleName,
 		yieldaggregatortypes.ModuleName,
@@ -736,6 +774,7 @@ func NewApp(
 
 		ibchost.ModuleName,
 		ibctransfertypes.ModuleName,
+		icatypes.ModuleName,
 		wasm.ModuleName,
 		yieldfarmtypes.ModuleName,
 		yieldaggregatortypes.ModuleName,
@@ -776,7 +815,7 @@ func NewApp(
 
 		ibchost.ModuleName,
 		ibctransfertypes.ModuleName,
-		// wasm after ibc transfer
+		icatypes.ModuleName,
 		wasm.ModuleName,
 		yieldfarmtypes.ModuleName,
 		yieldaggregatortypes.ModuleName,
@@ -784,8 +823,7 @@ func NewApp(
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
-	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
-	app.mm.RegisterServices(app.configurator)
+	app.mm.RegisterServices(cfg)
 
 	// create the simulation manager and define the order of the modules for deterministic simulations
 	//
@@ -805,7 +843,7 @@ func NewApp(
 		params.NewAppModule(app.ParamsKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
-		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
+		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		transferModule,
 		// TODO
@@ -833,7 +871,7 @@ func NewApp(
 	)
 
 	if err != nil {
-		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
+		panic(err)
 	}
 
 	app.SetAnteHandler(anteHandler)
@@ -866,6 +904,8 @@ func NewApp(
 	app.ScopedIBCKeeper = scopedIBCKeeper
 	app.ScopedTransferKeeper = scopedTransferKeeper
 	app.ScopedWasmKeeper = scopedWasmKeeper
+	app.ScopedICAHostKeeper = scopedICAHostKeeper
+
 	return app
 }
 
@@ -1019,6 +1059,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	// paramsKeeper.Subspace(liquiditytypes.ModuleName)
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
+	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 	paramsKeeper.Subspace(auctiontypes.ModuleName)
 	paramsKeeper.Subspace(cdptypes.ModuleName)
