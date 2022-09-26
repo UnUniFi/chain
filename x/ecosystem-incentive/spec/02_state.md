@@ -65,25 +65,42 @@ message Reward {
 
 ```protobuf
 message Params {
-  repeated RewardParam reward_params = 1 [
+  repeated RewardParams reward_params = 1 [
     (gogoproto.moretags) = "yaml:\"reward_params\"",
     (gogoproto.nullable) = false
   ];
-  repeated RewardType reward_types = 2;
+  repeated RewardType reward_types = 2 [
+    (gogoproto.moretags) = "yaml:\"reward_types\"",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message RewardParams {
-  string module_name = 1;
-  repeated RewardRate reward_rate = 2;
+  string module_name = 1 [
+    (gogoproto.moretags) = "yaml:\"module_name\"",
+    (gogoproto.nullable) = false
+  ];
+  repeated RewardRate reward_rate = 2 [
+    (gogoproto.moretags) = "yaml:\"reward_rate\"",
+    (gogoproto.nullable) = false
+  ];
 }
 
+// RewardRate defines the ratio to take reward for a specific reward_type.
+// The total sum of reward_rate in a module cannot be exceed 1
 message RewardRate {
   RewardType reward_type = 1;
-  unsure rate = 2;
+  string rate = 2[
+    (gogoproto.moretags) = "yaml:\"reward_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+    (gogoproto.nullable) = false,
+  ];
 }
 
+// At first, we go with this one type.
+// NFTMARKET_FRONTEND type reward will be disributed for the creators of frontend of UnUniFi's services.
 enum RewardType {
-  NFTMARKET_FRONTEND = 0; // example
+  NFTMARKET_FRONTEND = 0;
 }
 ```
 
