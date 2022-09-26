@@ -104,11 +104,21 @@ message MsgWithdrawReward {
 
 All queries of `ecosystem-incentive`.
 
-### IncentiveStore
+### IncentiveUnit
 
 ```protobuf
 message QueryIncentiveUnitRequest {
-  string incentive_id = 1;
+  string incentive_id = 1
+    [ (gogoproto.moretags) = "yaml:\"incentive_id\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryIncentiveUnitResponse {
+  IncentiveUnit incentive_unit = 1 [
+    (gogoproto.moretags) = "yaml:\"incentive_unit\"",
+    (gogoproto.nullable) = false
+  ];
 }
 ```
 
@@ -116,9 +126,16 @@ message QueryIncentiveUnitRequest {
 
 ```protobuf
 message QueryAllRewardsRequest {
-  string subject = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
+  string subject_addr = 1 [
+    (gogoproto.moretags) = "yaml:\"subject_addr\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryAllRewardsResponse {
+  Reward rewards = 1 [
+    (gogoproto.moretags) = "yaml:\"rewards\"",
     (gogoproto.nullable) = false
   ];
 }
@@ -127,11 +144,22 @@ message QueryAllRewardsRequest {
 ### SpecificDenomReward
 
 ```protobuf
-message QuerySpecificDenomRewardRequest {
-  string subject = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+message QueryRewardRequest {
+  string subject_addr = 1 [
+    (gogoproto.moretags) = "yaml:\"subject_addr\"",
     (gogoproto.nullable) = false
   ];
-  string denom = 2;
+  string denom = 2 [
+    (gogoproto.moretags) = "yaml:\"denom\"",
+    (gogoproto.nullable) = false
+  ];
 }
+
+message QueryRewardResponse {
+  cosmos.base.v1beta1.Coin reward = 1 [
+    (gogoproto.moretags) = "yaml:\"reward\"",
+    (gogoproto.nullable) = false
+  ];
+}
+```
+
