@@ -16,7 +16,11 @@ message IncentiveUnit {
 }
 
 message SubjectInfo {
-  string address = 1 [ (gogoproto.moretags) = "yaml:\"subject_addr\"" ];
+  string address = 1 [
+    (gogoproto.moretags) = "yaml:\"subject_addr\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
   string weight = 2 [
     (gogoproto.moretags) = "yaml:\"weight\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
@@ -50,11 +54,15 @@ This KVStore manages what NFT is connected to which `incentive_id`.
 RewardTable is the record of the rewards for the subject of the `ecosystem-incentive`.
 
 ```protobuf
-message SubjectInfo {
-  string address = 1 [ (gogoproto.moretags) = "yaml:\"subject_addr\"" ];
-  string weight = 2 [
-    (gogoproto.moretags) = "yaml:\"weight\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+message Reward {
+  string subject_addr = 1 [
+    (gogoproto.moretags) = "yaml:\"subject_addr\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  repeated cosmos.base.v1beta1.Coin rewards = 2 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.moretags) = "yaml:\"rewards\"",
     (gogoproto.nullable) = false
   ];
 }
