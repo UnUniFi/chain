@@ -1285,9 +1285,9 @@ Params defines the parameters for the module.
 GenesisState defines the decentralizedvault module's genesis state.
 
 
-| Field    | Type                                         | Label | Description                                                     |
-|----------|----------------------------------------------|-------|-----------------------------------------------------------------|
-| `params` | [Params](#ununifi.decentralizedvault.Params) |       | this line is used by starport scaffolding # genesis/proto/state |
+| Field    | Type                                         | Label | Description |
+|----------|----------------------------------------------|-------|-------------|
+| `params` | [Params](#ununifi.decentralizedvault.Params) |       |             |
 
 
 

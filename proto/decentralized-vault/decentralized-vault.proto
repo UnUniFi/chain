@@ -17,7 +17,7 @@ message TransferRequestNft {
   string uri      = 2;
   string uri_hash = 3;
   string owner    = 4 [
-    (gogoproto.moretags)   = "yaml:\"sender\"",
+    (gogoproto.moretags)   = "yaml:\"owner\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable)   = false
   ];
