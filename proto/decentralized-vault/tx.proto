@@ -21,7 +21,7 @@ message MsgNftLocked {
     (gogoproto.nullable)   = false
   ];
   string toAddress = 2 [
-    (gogoproto.moretags)   = "yaml:\"sender\"",
+    (gogoproto.moretags)   = "yaml:\"toAddress\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable)   = false
   ];
@@ -39,7 +39,7 @@ message MsgNftUnlocked {
     (gogoproto.nullable)   = false
   ];
   string toAddress = 2 [
-    (gogoproto.moretags)   = "yaml:\"sender\"",
+    (gogoproto.moretags)   = "yaml:\"toAddress\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable)   = false
   ];
