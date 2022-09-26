@@ -6,8 +6,13 @@
 
 ```protobuf
 message IncentiveUnit {
-  string incentive_id = 1;
-  repeated SubjectInfo subject_info_list = 2;
+  string incentive_id = 1 [
+    (gogoproto.moretags) = "yaml:\"incentive_id\""
+  ];
+  repeated SubjectInfo subject_info_list = 2 [
+    (gogoproto.moretags) = "yaml:\"subject_info_lists\"",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message SubjectInfo {
@@ -50,12 +55,16 @@ RewardTable is the record of the rewards for the subject of the `ecosystem-incen
 
 ```protobuf
 message Reward {
-  string subject = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
+  string subject_addr = 1 [
+    (gogoproto.moretags) = "yaml:\"subject_addr\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
-  repeated cosmos.base.v1beta1.Coin rewards = 2;
+  repeated cosmos.base.v1beta1.Coin rewards = 2 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.moretags) = "yaml:\"rewards\"",
+    (gogoproto.nullable) = false
+  ];
 }
 ```
 
@@ -65,20 +74,13 @@ message Reward {
 
 ```protobuf
 message Params {
-  repeated RewardParams reward_params = 1 [
-    (gogoproto.moretags) = "yaml:\"reward_params\"",
-    (gogoproto.nullable) = false
-  ];
-  repeated RewardType reward_types = 2 [
-    (gogoproto.moretags) = "yaml:\"reward_types\"",
-    (gogoproto.nullable) = false
-  ];
+  repeated RewardParams reward_params = 1 [ (gogoproto.moretags) = "yaml:\"reward_params\"" ];
+  repeated RewardType reward_types = 2 [ (gogoproto.moretags) = "yaml:\"reward_types\"" ];
 }
 
 message RewardParams {
   string module_name = 1 [
-    (gogoproto.moretags) = "yaml:\"module_name\"",
-    (gogoproto.nullable) = false
+    (gogoproto.moretags) = "yaml:\"module_name\""
   ];
   repeated RewardRate reward_rate = 2 [
     (gogoproto.moretags) = "yaml:\"reward_rate\"",
@@ -92,8 +94,8 @@ message RewardRate {
   RewardType reward_type = 1;
   string rate = 2[
     (gogoproto.moretags) = "yaml:\"reward_rate\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
-    (gogoproto.nullable) = false,
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
   ];
 }
 

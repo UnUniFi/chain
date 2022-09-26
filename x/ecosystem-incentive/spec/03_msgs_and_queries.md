@@ -17,18 +17,19 @@ message MsgRegister {
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
-  string incentive_id = 2;
+  string incentive_id = 2 [ (gogoproto.moretags) = "yaml:\"incentive_id\"" ];
   repeated string subject_addrs = 3 [
-    (gogoproto.moretags) = "yaml:\"subject\"",
+    (gogoproto.moretags) = "yaml:\"subject_addrs\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   repeated string weights = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.moretags) = "yaml:\"weight\"",
+    (gogoproto.moretags) = "yaml:\"weights\"",
     (gogoproto.nullable) = false
   ];
 }
+message MsgRegisterResponse {}
 ```
 
 `weights` must be `1.000000000000000000` (just ok as long as  it represent 1).   
@@ -93,10 +94,7 @@ message MsgWithdrawReward {
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
-  string denom = 2 
-    [ (gogoproto.moretags) = "yaml:\"denom\"",
-    (gogoproto.nullable) = false
-  ];
+  string denom = 2 [ (gogoproto.moretags) = "yaml:\"denom\"" ];
 }
 ```
 
@@ -108,17 +106,11 @@ All queries of `ecosystem-incentive`.
 
 ```protobuf
 message QueryIncentiveUnitRequest {
-  string incentive_id = 1
-    [ (gogoproto.moretags) = "yaml:\"incentive_id\"",
-    (gogoproto.nullable) = false
-  ];
+  string incentive_id = 1 [ (gogoproto.moretags) = "yaml:\"incentive_id\"" ];
 }
 
 message QueryIncentiveUnitResponse {
-  IncentiveUnit incentive_unit = 1 [
-    (gogoproto.moretags) = "yaml:\"incentive_unit\"",
-    (gogoproto.nullable) = false
-  ];
+  IncentiveUnit incentive_unit = 1 [ (gogoproto.moretags) = "yaml:\"incentive_unit\"" ];
 }
 ```
 
@@ -126,11 +118,7 @@ message QueryIncentiveUnitResponse {
 
 ```protobuf
 message QueryAllRewardsRequest {
-  string subject_addr = 1 [
-    (gogoproto.moretags) = "yaml:\"subject_addr\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
+  string subject_addr = 1 [ (gogoproto.moretags) = "yaml:\"subject_addr\"" ];
 }
 
 message QueryAllRewardsResponse {
@@ -145,18 +133,13 @@ message QueryAllRewardsResponse {
 
 ```protobuf
 message QueryRewardRequest {
-  string subject_addr = 1 [
-    (gogoproto.moretags) = "yaml:\"subject_addr\"",
-    (gogoproto.nullable) = false
-  ];
-  string denom = 2 [
-    (gogoproto.moretags) = "yaml:\"denom\"",
-    (gogoproto.nullable) = false
-  ];
+  string subject_addr = 1 [ (gogoproto.moretags) = "yaml:\"subject_addr\"" ];
+  string denom = 2 [ (gogoproto.moretags) = "yaml:\"denom\"" ];
 }
 
 message QueryRewardResponse {
   cosmos.base.v1beta1.Coin reward = 1 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin",
     (gogoproto.moretags) = "yaml:\"reward\"",
     (gogoproto.nullable) = false
   ];
