@@ -17,12 +17,15 @@ message MsgRegister {
   ];
   string incentive_id = 2;
   repeated string subject_addrs = 3 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.moretags) = "yaml:\"subject\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
-  // TODO: Modify weight type or even whole structure of this msg
-  repeated string weights = 4;
+  repeated string weights = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.moretags) = "yaml:\"weight\"",
+    (gogoproto.nullable) = false
+  ];
 }
 ```
 
