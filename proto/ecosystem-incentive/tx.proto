@@ -19,16 +19,15 @@ message MsgRegister {
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
-  string incentive_id = 2;
+  string incentive_id = 2 [ (gogoproto.moretags) = "yaml:\"incentive_id\"" ];
   repeated string subject_addrs = 3 [
-    (gogoproto.moretags) = "yaml:\"subject\"",
+    (gogoproto.moretags) = "yaml:\"subject_addrs\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
-  // TODO: Modify weight type or even whole structure of this msg
   repeated string weights = 4 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.moretags) = "yaml:\"weight\"",
+    (gogoproto.moretags) = "yaml:\"weights\"",
     (gogoproto.nullable) = false
   ];
 }
@@ -49,6 +48,6 @@ message MsgWithdrawReward {
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
-  string denom = 2;
+  string denom = 2 [ (gogoproto.moretags) = "yaml:\"denom\"" ];
 }
 message MsgWithdrawRewardResponse {}

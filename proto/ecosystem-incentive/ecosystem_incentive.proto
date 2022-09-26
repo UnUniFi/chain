@@ -8,13 +8,18 @@ import "cosmos/base/v1beta1/coin.proto";
 option go_package = "github.com/UnUniFi/chain/x/ecosystem-incentive/types";
 
 message IncentiveUnit {
-  string incentive_id = 1;
-  repeated SubjectInfo subject_info_list = 2;
+  string incentive_id = 1 [
+    (gogoproto.moretags) = "yaml:\"incentive_id\""
+  ];
+  repeated SubjectInfo subject_info_list = 2 [
+    (gogoproto.moretags) = "yaml:\"subject_info_lists\"",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message SubjectInfo {
   string address = 1 [
-    (gogoproto.moretags) = "yaml:\"subject\"",
+    (gogoproto.moretags) = "yaml:\"subject_addr\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
@@ -31,5 +36,9 @@ message Reward {
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
-  repeated cosmos.base.v1beta1.Coin rewards = 2;
+  repeated cosmos.base.v1beta1.Coin rewards = 2 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.moretags) = "yaml:\"rewards\"",
+    (gogoproto.nullable) = false
+  ];
 }

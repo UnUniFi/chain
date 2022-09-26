@@ -4,7 +4,7 @@ package ununifi.ecosystemincentive;
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "ecosystem-incentive/params.proto";
+import "ecosystem-incentive/genesis.proto";
 import "ecosystem-incentive/ecosystem_incentive.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
@@ -30,35 +30,44 @@ service Query {
   }
 }
 
-// QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
-// QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
   // params holds all the parameters of this module.
-  Params params = 1 [(gogoproto.nullable) = false];
+  Params params = 1 [ 
+    (gogoproto.moretags) = "yaml:\"params\"",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryIncentiveUnitRequest {
-  string incentive_id = 1;
+  string incentive_id = 1 [ (gogoproto.moretags) = "yaml:\"incentive_id\"" ];
 }
+
 message QueryIncentiveUnitResponse {
-  IncentiveUnit incentive_unit = 1;
+  IncentiveUnit incentive_unit = 1 [ (gogoproto.moretags) = "yaml:\"incentive_unit\"" ];
 }
 
 message QueryAllRewardsRequest {
-  string subject_addr = 1;
+  string subject_addr = 1 [ (gogoproto.moretags) = "yaml:\"subject_addr\"" ];
 }
 
 message QueryAllRewardsResponse {
-  Reward rewards = 1;
+  Reward rewards = 1 [
+    (gogoproto.moretags) = "yaml:\"rewards\"",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryRewardRequest {
-  string subject_addr = 1;
-  string denom = 2;
+  string subject_addr = 1 [ (gogoproto.moretags) = "yaml:\"subject_addr\"" ];
+  string denom = 2 [ (gogoproto.moretags) = "yaml:\"denom\"" ];
 }
 
 message QueryRewardResponse {
-  cosmos.base.v1beta1.Coin reward = 1;
+  cosmos.base.v1beta1.Coin reward = 1 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.moretags) = "yaml:\"reward\"",
+    (gogoproto.nullable) = false
+  ];
 }

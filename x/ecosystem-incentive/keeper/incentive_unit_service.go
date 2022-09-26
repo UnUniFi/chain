@@ -9,12 +9,12 @@ import (
 )
 
 // Register method record subjects info in IncentiveUnit type
-func (k Keeper) Register(ctx sdk.Context, msg *types.MsgRegister) ([]*types.SubjectInfo, error) {
+func (k Keeper) Register(ctx sdk.Context, msg *types.MsgRegister) (*[]types.SubjectInfo, error) {
 	if _, exists := k.GetIncentiveUnit(ctx, msg.IncentiveId); exists {
 		return nil, sdkerrors.Wrap(types.ErrRegisteredIncentiveId, msg.IncentiveId)
 	}
 
-	var subjectInfoList []*types.SubjectInfo
+	var subjectInfoList []types.SubjectInfo
 	for i := 0; i < len(msg.SubjectAddrs); i++ {
 		subjectInfo := types.NewSubjectInfo(msg.SubjectAddrs[i].AccAddress(), msg.Weights[i])
 		subjectInfoList = append(subjectInfoList, subjectInfo)
@@ -25,7 +25,7 @@ func (k Keeper) Register(ctx sdk.Context, msg *types.MsgRegister) ([]*types.Subj
 		return nil, err
 	}
 
-	return subjectInfoList, nil
+	return &subjectInfoList, nil
 }
 
 func (k Keeper) SetIncentiveUnit(ctx sdk.Context, incentiveUnit types.IncentiveUnit) error {
