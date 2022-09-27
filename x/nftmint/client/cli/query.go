@@ -1,15 +1,13 @@
 package cli
 
 import (
-	// "context"
 	"context"
 	"fmt"
-	"strings"
 
-	"github.com/UnUniFi/chain/x/nftmint/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/version"
+
+	"github.com/UnUniFi/chain/x/nftmint/types"
 
 	"github.com/spf13/cobra"
 )
@@ -62,13 +60,9 @@ func CmdQueryParams() *cobra.Command {
 
 func CmdQueryClassAttributes() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "class-attributes",
+		Use:   "class-attributes [class-id]",
 		Args:  cobra.ExactArgs(1),
 		Short: "Query the class attributes by class-id",
-		Long: strings.TrimSpace(fmt.Sprintf(
-			"Example: $ %s query %s class-attributes classID",
-			version.AppName, types.ModuleName),
-		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -91,13 +85,9 @@ func CmdQueryClassAttributes() *cobra.Command {
 
 func CmdQueryClassIdsByOwner() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "class-ids-by-owner",
+		Use:   "class-ids-by-owner [owner-address]",
 		Args:  cobra.ExactArgs(1),
 		Short: "Query classIDs owned by the owner address",
-		Long: strings.TrimSpace(fmt.Sprintf(
-			"Example: $ %s query %s class-ids-by-owner ununifi1exampleaddress",
-			version.AppName, types.ModuleName),
-		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -120,13 +110,9 @@ func CmdQueryClassIdsByOwner() *cobra.Command {
 
 func CmdQueryClassIdsByName() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "class-ids-by-name",
+		Use:   "class-ids-by-name [class-name]",
 		Args:  cobra.ExactArgs(1),
 		Short: "Query classIDs which have the class name",
-		Long: strings.TrimSpace(fmt.Sprintf(
-			"Example: $ %s query %s class-name-id-list MyCollective",
-			version.AppName, types.ModuleName),
-		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -149,7 +135,7 @@ func CmdQueryClassIdsByName() *cobra.Command {
 
 func CmdQueryNFTMinter() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "nft-minter",
+		Use:   "nft-minter [class-id] [nft-id]",
 		Args:  cobra.ExactArgs(2),
 		Short: "Query nft minter with class and nft id",
 		RunE: func(cmd *cobra.Command, args []string) error {
