@@ -88,6 +88,10 @@ func (msg MsgWithdrawAllRewards) Route() string { return RouterKey }
 func (msg MsgWithdrawAllRewards) Type() string { return TypeMsgWithdrawAllRewards }
 
 func (msg MsgWithdrawAllRewards) ValidateBasic() error {
+	if msg.Sender.AccAddress().Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
+	}
+
 	return nil
 }
 
@@ -117,6 +121,10 @@ func (msg MsgWithdrawReward) Route() string { return RouterKey }
 func (msg MsgWithdrawReward) Type() string { return TypeMsgWithdrawReward }
 
 func (msg MsgWithdrawReward) ValidateBasic() error {
+	if msg.Sender.AccAddress().Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
+	}
+
 	return nil
 }
 

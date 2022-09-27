@@ -10,8 +10,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 
-	// "github.com/cosmos/cosmos-sdk/client/flags"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
@@ -29,13 +27,15 @@ func GetTxCmd() *cobra.Command {
 
 	cmd.AddCommand(
 		CmdRegister(),
+		CmdWithdrawAllRewards(),
+		CmdWithdrawReward(),
 	)
 	return cmd
 }
 
 func CmdRegister() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "register [flags]",
+		Use:   "register [file-path] [flags]",
 		Args:  cobra.ExactArgs(0),
 		Short: "register incentive-unit to get ecosystem-incentive reward",
 		Long:  "Example command: $ %s tx %s register --register-file [json-file-path]",
@@ -109,4 +109,59 @@ func BuildRegisterInputs(fs *pflag.FlagSet) (string, []sdk.AccAddress, []sdk.Dec
 	}
 
 	return incentiveId, subjectAddrs, weights, nil
+}
+
+func CmdWithdrawAllRewards() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "withdraw-all-rewards [flags]",
+		Args:  cobra.ExactArgs(0),
+		Short: "withdraw all accumulated rewards in ecosystem-incentive for tx-sender",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgWithdrawAllRewards(
+				clientCtx.GetFromAddress(),
+			)
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdWithdrawReward() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "withdraw-reward [denom] [flags]",
+		Args:  cobra.ExactArgs(1),
+		Short: "withdraw accumulated reward for the specific denom in ecosystem-incentive for tx-sender",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgWithdrawReward(
+				clientCtx.GetFromAddress(),
+				args[0],
+			)
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
 }

@@ -17,13 +17,14 @@ message EventRegister {
   ];
 }
 
-message EventWithdrawAllReward {
+message EventWithdrawAllRewards {
   string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
   repeated cosmos.base.v1beta1.Coin rewards = 2 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
     (gogoproto.moretags) = "yaml:\"all_withdrawn_rewards\"",
     (gogoproto.nullable) = false
   ];
@@ -36,6 +37,7 @@ message EventWithdrawReward {
     (gogoproto.nullable) = false
   ];
   cosmos.base.v1beta1.Coin reward = 2 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin",
     (gogoproto.moretags) = "yaml:\"withdrawn_reward\"",
     (gogoproto.nullable) = false
   ];
