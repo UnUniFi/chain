@@ -144,7 +144,6 @@ func CmdMintNFT() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().AddFlagSet(FsCreateClass)
 	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }
