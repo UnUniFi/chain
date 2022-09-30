@@ -408,22 +408,6 @@ func (s *KeeperTestSuite) TestClasses() {
 			types.QueryListedClassesResponse{
 				Classes: []*types.QueryListedClassResponse{
 					{
-						ClassId:     "class2",
-						Name:        "class2",
-						Description: "class2",
-						Symbol:      "class2",
-						Uri:         "class2",
-						Urihash:     "",
-						Nfts: []*types.ListedNft{
-							{
-								Id:      "nft2",
-								Uri:     "nft2",
-								UriHash: "nft2",
-							},
-						},
-						NftCount: 1,
-					},
-					{
 						ClassId:     "class5",
 						Name:        "class5",
 						Description: "class5",
@@ -435,38 +419,6 @@ func (s *KeeperTestSuite) TestClasses() {
 								Id:      "nft5",
 								Uri:     "nft5",
 								UriHash: "nft5",
-							},
-						},
-						NftCount: 1,
-					},
-					{
-						ClassId:     "class6",
-						Name:        "class6",
-						Description: "class6",
-						Symbol:      "class6",
-						Uri:         "class6",
-						Urihash:     "",
-						Nfts: []*types.ListedNft{
-							{
-								Id:      "nft6",
-								Uri:     "nft6",
-								UriHash: "nft6",
-							},
-						},
-						NftCount: 1,
-					},
-					{
-						ClassId:     "class7",
-						Name:        "class7",
-						Description: "class7",
-						Symbol:      "class7",
-						Uri:         "class7",
-						Urihash:     "",
-						Nfts: []*types.ListedNft{
-							{
-								Id:      "nft7",
-								Uri:     "nft7",
-								UriHash: "nft7",
 							},
 						},
 						NftCount: 1,
