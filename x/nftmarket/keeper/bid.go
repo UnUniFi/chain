@@ -4,9 +4,10 @@ import (
 	"sort"
 	"time"
 
-	"github.com/UnUniFi/chain/x/nftmarket/types"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
 func (k Keeper) GetBid(ctx sdk.Context, nftIdBytes []byte, bidder sdk.AccAddress) (types.NftBid, error) {
@@ -246,7 +247,7 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 	if listing.EndAt.Before(gapTime) {
 		listing.EndAt = gapTime
 	}
-	k.SetNftListing(ctx, listing)
+	k.SaveNftListing(ctx, listing)
 
 	// Emit event for placing bid
 	ctx.EventManager().EmitTypedEvent(&types.EventPlaceBid{
