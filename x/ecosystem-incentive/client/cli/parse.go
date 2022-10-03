@@ -49,5 +49,4 @@ func parseRegisterFlags(fs *pflag.FlagSet) (*registerInputs, error) {
 	}
 
 	return registerInputs, nil
-
 }

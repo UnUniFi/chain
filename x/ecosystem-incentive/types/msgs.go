@@ -21,7 +21,7 @@ var (
 
 func NewMsgRegister(
 	sender sdk.AccAddress,
-	incentiveId string,
+	incentiveUnitId string,
 	subjectAccAddrs []sdk.AccAddress,
 	weights []sdk.Dec,
 ) *MsgRegister {
@@ -31,10 +31,10 @@ func NewMsgRegister(
 	}
 
 	return &MsgRegister{
-		Sender:       sender.Bytes(),
-		IncentiveId:  incentiveId,
-		SubjectAddrs: subjectAddrs,
-		Weights:      weights,
+		Sender:          sender.Bytes(),
+		IncentiveUnitId: incentiveUnitId,
+		SubjectAddrs:    subjectAddrs,
+		Weights:         weights,
 	}
 }
 

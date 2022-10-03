@@ -18,7 +18,7 @@ service Query {
   }
   
   rpc IncentiveUnit(QueryIncentiveUnitRequest) returns (QueryIncentiveUnitResponse) {
-    option (google.api.http).get = "/ununifi/ecosystem_incentive/incentive_unit/{incentive_id}";
+    option (google.api.http).get = "/ununifi/ecosystem_incentive/incentive_unit/{incentive_unit_id}";
   }
 
   rpc AllRewards(QueryAllRewardsRequest) returns (QueryAllRewardsResponse) {
@@ -41,7 +41,7 @@ message QueryParamsResponse {
 }
 
 message QueryIncentiveUnitRequest {
-  string incentive_id = 1 [ (gogoproto.moretags) = "yaml:\"incentive_id\"" ];
+  string incentive_unit_id = 1 [ (gogoproto.moretags) = "yaml:\"incentive_unit_id\"" ];
 }
 
 message QueryIncentiveUnitResponse {

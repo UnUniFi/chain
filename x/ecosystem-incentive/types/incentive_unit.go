@@ -2,9 +2,9 @@ package types
 
 import sdk "github.com/cosmos/cosmos-sdk/types"
 
-func NewIncentiveUnit(incentiveId string, subjectsInfo []SubjectInfo) IncentiveUnit {
+func NewIncentiveUnit(id string, subjectsInfo []SubjectInfo) IncentiveUnit {
 	return IncentiveUnit{
-		IncentiveId:     incentiveId,
+		Id:              id,
 		SubjectInfoList: subjectsInfo,
 	}
 }

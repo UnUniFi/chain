@@ -88,7 +88,7 @@ func BuildRegisterInputs(fs *pflag.FlagSet) (string, []sdk.AccAddress, []sdk.Dec
 	if err != nil {
 		return "", nil, nil, err
 	}
-	incentiveId := registerInputs.IncentiveId
+	incentiveId := registerInputs.IncentiveUnitId
 
 	var subjectAddrs []sdk.AccAddress
 	for _, addr := range registerInputs.SubjectAddrs {

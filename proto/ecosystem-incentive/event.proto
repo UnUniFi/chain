@@ -8,8 +8,8 @@ import "cosmos/base/v1beta1/coin.proto";
 option go_package = "github.com/UnUniFi/chain/x/ecosystem-incentive/types";
 
 message EventRegister {
-  string incentive_id = 1 [
-    (gogoproto.moretags) = "yaml:\"incentive_id\""
+  string incentive_unit_id = 1 [
+    (gogoproto.moretags) = "yaml:\"incentive_unit_id\""
   ];
   repeated SubjectInfo subject_info_list = 2 [
     (gogoproto.moretags) = "yaml:\"subject_info_lists\"",

@@ -10,8 +10,8 @@ import (
 
 // Register method record subjects info in IncentiveUnit type
 func (k Keeper) Register(ctx sdk.Context, msg *types.MsgRegister) (*[]types.SubjectInfo, error) {
-	if _, exists := k.GetIncentiveUnit(ctx, msg.IncentiveId); exists {
-		return nil, sdkerrors.Wrap(types.ErrRegisteredIncentiveId, msg.IncentiveId)
+	if _, exists := k.GetIncentiveUnit(ctx, msg.IncentiveUnitId); exists {
+		return nil, sdkerrors.Wrap(types.ErrRegisteredIncentiveId, msg.IncentiveUnitId)
 	}
 
 	var subjectInfoList []types.SubjectInfo
@@ -20,7 +20,7 @@ func (k Keeper) Register(ctx sdk.Context, msg *types.MsgRegister) (*[]types.Subj
 		subjectInfoList = append(subjectInfoList, subjectInfo)
 	}
 
-	incentiveUnit := types.NewIncentiveUnit(msg.IncentiveId, subjectInfoList)
+	incentiveUnit := types.NewIncentiveUnit(msg.IncentiveUnitId, subjectInfoList)
 	if err := k.SetIncentiveUnit(ctx, incentiveUnit); err != nil {
 		return nil, err
 	}
@@ -36,16 +36,16 @@ func (k Keeper) SetIncentiveUnit(ctx sdk.Context, incentiveUnit types.IncentiveU
 
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnit))
-	prefixStore.Set([]byte(incentiveUnit.IncentiveId), bz)
+	prefixStore.Set([]byte(incentiveUnit.Id), bz)
 
 	return nil
 }
 
-func (k Keeper) GetIncentiveUnit(ctx sdk.Context, incentiveId string) (types.IncentiveUnit, bool) {
+func (k Keeper) GetIncentiveUnit(ctx sdk.Context, id string) (types.IncentiveUnit, bool) {
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnit))
 
-	bz := prefixStore.Get([]byte(incentiveId))
+	bz := prefixStore.Get([]byte(id))
 	if len(bz) == 0 {
 		return types.IncentiveUnit{}, false
 	}
@@ -55,9 +55,9 @@ func (k Keeper) GetIncentiveUnit(ctx sdk.Context, incentiveId string) (types.Inc
 	return incentiveUnit, true
 }
 
-func (k Keeper) DeleteIncentiveUnit(ctx sdk.Context, incentiveId string) {
+func (k Keeper) DeleteIncentiveUnit(ctx sdk.Context, id string) {
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnit))
 
-	prefixStore.Delete([]byte(incentiveId))
+	prefixStore.Delete([]byte(id))
 }

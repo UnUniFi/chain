@@ -62,15 +62,15 @@ func request_Query_IncentiveUnit_0(ctx context.Context, marshaler runtime.Marsha
 		_   = err
 	)
 
-	val, ok = pathParams["incentive_id"]
+	val, ok = pathParams["incentive_unit_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "incentive_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "incentive_unit_id")
 	}
 
-	protoReq.IncentiveId, err = runtime.String(val)
+	protoReq.IncentiveUnitId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "incentive_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "incentive_unit_id", err)
 	}
 
 	msg, err := client.IncentiveUnit(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -89,15 +89,15 @@ func local_request_Query_IncentiveUnit_0(ctx context.Context, marshaler runtime.
 		_   = err
 	)
 
-	val, ok = pathParams["incentive_id"]
+	val, ok = pathParams["incentive_unit_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "incentive_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "incentive_unit_id")
 	}
 
-	protoReq.IncentiveId, err = runtime.String(val)
+	protoReq.IncentiveUnitId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "incentive_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "incentive_unit_id", err)
 	}
 
 	msg, err := server.IncentiveUnit(ctx, &protoReq)
@@ -460,7 +460,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 var (
 	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"ununifi", "ecosystem_incentive", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_IncentiveUnit_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"ununifi", "ecosystem_incentive", "incentive_unit", "incentive_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_IncentiveUnit_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"ununifi", "ecosystem_incentive", "incentive_unit", "incentive_unit_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_AllRewards_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"ununifi", "ecosystem_incentive", "all_rewards", "subject_addr"}, "", runtime.AssumeColonVerbOpt(false)))
 

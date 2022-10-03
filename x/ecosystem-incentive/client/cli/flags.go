@@ -9,15 +9,15 @@ const (
 	FlagRegisterFile = "register-file"
 
 	// Names of fields in incentive-unit json file
-	IncentiveUnitId           = "incentive-id"
+	IncentiveUnitId           = "incentive-unit-id"
 	IncentiveUnitSubjectAddrs = "subject-addrs"
 	IncentiveUnitWeights      = "weights"
 )
 
 type registerInputs struct {
-	IncentiveId  string   `json:"incentive-id"`
-	SubjectAddrs []string `json:"subject-addrs"`
-	Weights      []string `json:"weights"`
+	IncentiveUnitId string   `json:"incentive-unit-id"`
+	SubjectAddrs    []string `json:"subject-addrs"`
+	Weights         []string `json:"weights"`
 }
 
 func FlagSetRegister() *flag.FlagSet {
