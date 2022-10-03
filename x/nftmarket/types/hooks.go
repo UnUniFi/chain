@@ -11,7 +11,7 @@ func NewMultiNftmarketHooks(hooks ...NftmarketHooks) MultiNftmarketHooks {
 }
 
 // AfterNftListed runs after a nft is listed
-func (h MultiNftmarketHooks) AfterNftListed(ctx sdk.Context, nftIdentifier []byte, txMemo string) {
+func (h MultiNftmarketHooks) AfterNftListed(ctx sdk.Context, nftIdentifier []byte, txMemo []byte) {
 	for i := range h {
 		h[i].AfterNftListed(ctx, nftIdentifier, txMemo)
 	}

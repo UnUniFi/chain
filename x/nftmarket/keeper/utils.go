@@ -17,11 +17,8 @@ func Contains(a []string, x string) bool {
 
 // TODO: delete
 // -----
-func (k Keeper) GetMemo(ctx sdk.Context) (string, error) {
+func (k Keeper) GetMemo(ctx sdk.Context) ([]byte, error) {
 	txBytes := ctx.TxBytes()
-	// copy tx byte data just for the reference
-	// var bytes = make([]byte, len(txBytes))
-	// _ = copy(bytes, txBytes)
 
 	/// NOTE: this way requires txConfig by importing it into keeper struct
 	txData, err := k.txCfg.TxDecoder()(txBytes)
@@ -35,13 +32,12 @@ func (k Keeper) GetMemo(ctx sdk.Context) (string, error) {
 	}
 
 	txBldr, err := k.txCfg.WrapTxBuilder(txData)
-	memo := txBldr.GetTx().GetMemo()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
+	memo := txBldr.GetTx().GetMemo()
 
-	fmt.Println("MEMO: ", memo)
-	return memo, nil
+	return []byte(memo), nil
 }
 
 // -----

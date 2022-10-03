@@ -8,7 +8,7 @@ import (
 
 var _ types.NftmarketHooks = Keeper{}
 
-func (k Keeper) AfterNftListed(ctx sdk.Context, nftIdentifier []byte, txMemo string) {
+func (k Keeper) AfterNftListed(ctx sdk.Context, nftIdentifier []byte, txMemo []byte) {
 	if k.hooks != nil {
 		k.hooks.AfterNftListed(ctx, nftIdentifier, txMemo)
 	}

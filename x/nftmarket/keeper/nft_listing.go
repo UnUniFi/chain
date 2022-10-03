@@ -238,7 +238,9 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 	if err != nil {
 		fmt.Errorf(err.Error())
 	}
-	k.hooks.AfterNftListed(ctx, nftIdByte, txMemo)
+	if len(txMemo) != 0 {
+		k.hooks.AfterNftListed(ctx, nftIdByte, txMemo)
+	}
 	// ------
 
 	// Emit event for nft listing
