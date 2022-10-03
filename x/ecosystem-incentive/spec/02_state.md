@@ -6,8 +6,8 @@
 
 ```protobuf
 message IncentiveUnit {
-  string incentive_id = 1 [
-    (gogoproto.moretags) = "yaml:\"incentive_id\""
+  string id = 1 [
+    (gogoproto.moretags) = "yaml:\"id\""
   ];
   repeated SubjectInfo subject_info_list = 2 [
     (gogoproto.moretags) = "yaml:\"subject_info_lists\"",

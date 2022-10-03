@@ -6,8 +6,8 @@ An event to be emitted when to be registered an `incentive_unit` by being called
 
 ```proto
 message EventRegister {
-  string incentive_id = 1 [
-    (gogoproto.moretags) = "yaml:\"incentive_id\""
+  string incentive_unit_id = 1 [
+    (gogoproto.moretags) = "yaml:\"incentive_unit_id\""
   ];
   repeated SubjectInfo subject_info_list = 2 [
     (gogoproto.moretags) = "yaml:\"subject_info_lists\"",

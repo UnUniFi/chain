@@ -17,7 +17,7 @@ message MsgRegister {
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
-  string incentive_id = 2 [ (gogoproto.moretags) = "yaml:\"incentive_id\"" ];
+  string incentive_unit_id = 2 [ (gogoproto.moretags) = "yaml:\"incentive_unit_id\"" ];
   repeated string subject_addrs = 3 [
     (gogoproto.moretags) = "yaml:\"subject_addrs\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
@@ -106,7 +106,7 @@ All queries of `ecosystem-incentive`.
 
 ```protobuf
 message QueryIncentiveUnitRequest {
-  string incentive_id = 1 [ (gogoproto.moretags) = "yaml:\"incentive_id\"" ];
+  string incentive_unit_id = 1 [ (gogoproto.moretags) = "yaml:\"incentive_unit_id\"" ];
 }
 
 message QueryIncentiveUnitResponse {
