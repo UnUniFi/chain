@@ -38,7 +38,12 @@ func (k Keeper) InvestOnTarget(ctx sdk.Context, addr sdk.AccAddress, target type
 			return err
 		}
 	case types.IntegrateType_COSMWASM:
-		// TODO: implement investment flow in case of cosmwasm
+		wasmMsg := `{"deposit_native_token":{}}`
+		contractAddr := sdk.MustAccAddressFromBech32(target.AccountAddress)
+		_, err := k.wasmKeeper.Execute(ctx, contractAddr, farmingUnit.GetAddress(), []byte(wasmMsg), amount)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -65,7 +70,12 @@ func (k Keeper) BeginWithdrawFromTarget(ctx sdk.Context, addr sdk.AccAddress, ta
 			return err
 		}
 	case types.IntegrateType_COSMWASM:
-		// TODO: implement begin withdraw flow in case of cosmwasm
+		wasmMsg := `{"start_unbond":{}}`
+		contractAddr := sdk.MustAccAddressFromBech32(target.AccountAddress)
+		_, err := k.wasmKeeper.Execute(ctx, contractAddr, farmingUnit.GetAddress(), []byte(wasmMsg), sdk.Coins{})
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -94,7 +104,13 @@ func (k Keeper) ClaimWithdrawFromTarget(ctx sdk.Context, addr sdk.AccAddress, ta
 		}
 		k.IncreaseUserDeposit(ctx, addr, balances)
 	case types.IntegrateType_COSMWASM:
-		// TODO: implement claim withdraw flow in case of cosmwasm
+		wasmMsg := `{"claim_unbond":{}}`
+		contractAddr := sdk.MustAccAddressFromBech32(target.AccountAddress)
+		_, err := k.wasmKeeper.Execute(ctx, contractAddr, farmingUnit.GetAddress(), []byte(wasmMsg), sdk.Coins{})
+		if err != nil {
+			return err
+		}
+
 	}
 	return nil
 }
@@ -119,7 +135,12 @@ func (k Keeper) ClaimRewardsFromTarget(ctx sdk.Context, addr sdk.AccAddress, tar
 		}
 		k.IncreaseUserDeposit(ctx, addr, balances)
 	case types.IntegrateType_COSMWASM:
-		// TODO: implement claim rewards flow in case of cosmwasm
+		wasmMsg := `{"claim_all_rewards":{}}`
+		contractAddr := sdk.MustAccAddressFromBech32(target.AccountAddress)
+		_, err := k.wasmKeeper.Execute(ctx, contractAddr, farmingUnit.GetAddress(), []byte(wasmMsg), sdk.Coins{})
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

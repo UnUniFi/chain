@@ -495,22 +495,6 @@ func NewApp(
 		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks(), app.incentiveKeeper.Hooks()),
 	)
 
-	app.YieldfarmKeeper = *yieldfarmkeeper.NewKeeper(
-		appCodec,
-		keys[yieldfarmtypes.StoreKey],
-		app.GetSubspace(yieldfarmtypes.ModuleName),
-		app.BankKeeper,
-	)
-
-	app.YieldaggregatorKeeper = yieldaggregatorkeeper.NewKeeper(
-		appCodec,
-		keys[yieldaggregatortypes.StoreKey],
-		app.GetSubspace(yieldaggregatortypes.ModuleName),
-		app.BankKeeper,
-		app.YieldfarmKeeper,
-	)
-
-	// Create IBC Keeper
 	// Create IBC Keeper
 	app.IBCKeeper = ibckeeper.NewKeeper(
 		appCodec,
@@ -653,6 +637,22 @@ func NewApp(
 		AddRoute(wasm.ModuleName, wasm.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper)).
 		AddRoute(icahosttypes.SubModuleName, icaHostIBCModule)
 	app.IBCKeeper.SetRouter(ibcRouter)
+
+	app.YieldfarmKeeper = *yieldfarmkeeper.NewKeeper(
+		appCodec,
+		keys[yieldfarmtypes.StoreKey],
+		app.GetSubspace(yieldfarmtypes.ModuleName),
+		app.BankKeeper,
+	)
+
+	app.YieldaggregatorKeeper = yieldaggregatorkeeper.NewKeeper(
+		appCodec,
+		keys[yieldaggregatortypes.StoreKey],
+		app.GetSubspace(yieldaggregatortypes.ModuleName),
+		app.BankKeeper,
+		app.YieldfarmKeeper,
+		wasmkeeper.NewDefaultPermissionKeeper(app.WasmKeeper),
+	)
 
 	app.GovKeeper = govkeeper.NewKeeper(
 		appCodec,
