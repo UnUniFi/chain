@@ -30,7 +30,7 @@ message SubjectInfo {
   ];
 }
 
-message Reward {
+message RewardStore {
   string subject_addr = 1 [
     (gogoproto.moretags) = "yaml:\"subject_addr\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",

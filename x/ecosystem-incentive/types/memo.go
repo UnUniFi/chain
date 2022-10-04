@@ -7,7 +7,6 @@ import (
 
 type incentiveInputs struct {
 	Version         string `json:"version"`
-	IncentiveType   uint32 `json:"incentive-type"`
 	IncentiveUnitId string `json:"incentive-unit-id"`
 }
 

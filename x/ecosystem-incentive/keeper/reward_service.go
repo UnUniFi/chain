@@ -65,7 +65,7 @@ func (k Keeper) AccumulateReward(ctx sdk.Context, nftId []byte, fee sdk.Coin) {
 	// Emit Event when to be accumulated reward
 }
 
-func (k Keeper) SetReward(ctx sdk.Context, reward types.Reward) error {
+func (k Keeper) SetReward(ctx sdk.Context, reward types.RewardStore) error {
 	bz, err := k.cdc.Marshal(&reward)
 	if err != nil {
 		return err
@@ -78,16 +78,16 @@ func (k Keeper) SetReward(ctx sdk.Context, reward types.Reward) error {
 	return nil
 }
 
-func (k Keeper) GetReward(ctx sdk.Context, subject sdk.AccAddress) (types.Reward, bool) {
+func (k Keeper) GetReward(ctx sdk.Context, subject sdk.AccAddress) (types.RewardStore, bool) {
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixReward))
 
 	bz := prefixStore.Get(subject)
 	if len(bz) == 0 {
-		return types.Reward{}, false
+		return types.RewardStore{}, false
 	}
 
-	var reward types.Reward
+	var reward types.RewardStore
 	k.cdc.MustUnmarshal(bz, &reward)
 	return reward, true
 }

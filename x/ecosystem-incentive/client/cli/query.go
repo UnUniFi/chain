@@ -17,7 +17,7 @@ import (
 func GetQueryCmd(queryRoute string) *cobra.Command {
 	// Group ecosystemincentive queries under a subcommand
 	cmd := &cobra.Command{
-		Use:                        types.ModuleName,
+		Use:                        "ecosystem-incentive",
 		Short:                      fmt.Sprintf("Querying commands for the %s module", types.ModuleName),
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
@@ -25,7 +25,6 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	}
 
 	cmd.AddCommand(CmdQueryParams())
-	// this line is used by starport scaffolding # 1
 
 	return cmd
 }

@@ -4,7 +4,7 @@ package ununifi.ecosystemincentive;
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "ecosystem-incentive/genesis.proto";
+import "ecosystem-incentive/params.proto";
 import "ecosystem-incentive/ecosystem_incentive.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
@@ -53,7 +53,7 @@ message QueryAllRewardsRequest {
 }
 
 message QueryAllRewardsResponse {
-  Reward rewards = 1 [
+  RewardStore rewards = 1 [
     (gogoproto.moretags) = "yaml:\"rewards\"",
     (gogoproto.nullable) = false
   ];
