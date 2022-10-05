@@ -5,11 +5,6 @@ import (
 	"encoding/json"
 )
 
-// type incentiveInputs struct {
-// 	Version         string `json:"version"`
-// 	IncentiveUnitId string `json:"incentive-unit-id"`
-// }
-
 type XMemoInputs MemoInputs
 
 type XMemoInputsExceptions struct {

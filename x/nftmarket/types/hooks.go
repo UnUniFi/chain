@@ -11,21 +11,21 @@ func NewMultiNftmarketHooks(hooks ...NftmarketHooks) MultiNftmarketHooks {
 }
 
 // AfterNftListed runs after a nft is listed
-func (h MultiNftmarketHooks) AfterNftListed(ctx sdk.Context, nftIdentifier []byte, txMemo []byte) {
+func (h MultiNftmarketHooks) AfterNftListed(ctx sdk.Context, nftIdentifier NftIdentifier, txMemo string) {
 	for i := range h {
 		h[i].AfterNftListed(ctx, nftIdentifier, txMemo)
 	}
 }
 
 // AfterNftPaymentWithCommission runs after a nft is sold and paid properly
-func (h MultiNftmarketHooks) AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier []byte, fee sdk.Coin) {
+func (h MultiNftmarketHooks) AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier NftIdentifier, fee sdk.Coin) {
 	for i := range h {
 		h[i].AfterNftPaymentWithCommission(ctx, nftIdentifier, fee)
 	}
 }
 
 // AfterNftUnlistedWithoutPayment runs after a nft is unlisted without any payment
-func (h MultiNftmarketHooks) AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier []byte) {
+func (h MultiNftmarketHooks) AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier NftIdentifier) {
 	for i := range h {
 		h[i].AfterNftUnlistedWithoutPayment(ctx, nftIdentifier)
 	}

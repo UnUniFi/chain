@@ -1584,8 +1584,8 @@ func (suite *KeeperTestSuite) TestProcessPaymentWithCommissionFee() {
 
 	// TODO: delete
 	// -----
-	var nftIdByte []byte
-	suite.app.NftmarketKeeper.ProcessPaymentWithCommissionFee(suite.ctx, owner, "uguu", amount, nftIdByte)
+	var nftId types.NftIdentifier
+	suite.app.NftmarketKeeper.ProcessPaymentWithCommissionFee(suite.ctx, owner, "uguu", amount, nftId)
 	// -----
 
 	params := suite.app.NftmarketKeeper.GetParamSet(suite.ctx)

@@ -17,7 +17,7 @@ func Contains(a []string, x string) bool {
 
 // TODO: delete
 // -----
-func (k Keeper) GetMemo(ctx sdk.Context) ([]byte, error) {
+func (k Keeper) GetMemo(ctx sdk.Context) (string, error) {
 	txBytes := ctx.TxBytes()
 
 	/// NOTE: this way requires txConfig by importing it into keeper struct
@@ -33,11 +33,11 @@ func (k Keeper) GetMemo(ctx sdk.Context) ([]byte, error) {
 
 	txBldr, err := k.txCfg.WrapTxBuilder(txData)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	memo := txBldr.GetTx().GetMemo()
 
-	return []byte(memo), nil
+	return memo, nil
 }
 
 // -----

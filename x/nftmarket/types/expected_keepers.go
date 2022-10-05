@@ -47,7 +47,7 @@ type NftKeeper interface {
 }
 
 type NftmarketHooks interface {
-	AfterNftListed(ctx sdk.Context, nftIdentifier []byte, txMemo []byte)
-	AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier []byte, fee sdk.Coin)
-	AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier []byte)
+	AfterNftListed(ctx sdk.Context, nftIdentifier NftIdentifier, txMemo string)
+	AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier NftIdentifier, fee sdk.Coin)
+	AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier NftIdentifier)
 }

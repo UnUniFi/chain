@@ -6,6 +6,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
+	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
 // WithdrawReward is called to execute the actuall operation for MsgWithdrawReward
@@ -60,7 +61,7 @@ func (k Keeper) WithdrawAllRewards(ctx sdk.Context, msg *types.MsgWithdrawAllRew
 
 // AccumulateReward is called in AfterNftPaymentWithCommission hook method
 // This method updates the reward information for the subject who is associated with the nftId
-func (k Keeper) AccumulateReward(ctx sdk.Context, nftId []byte, fee sdk.Coin) {
+func (k Keeper) AccumulateReward(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, fee sdk.Coin) {
 
 	// Emit Event when to be accumulated reward
 }

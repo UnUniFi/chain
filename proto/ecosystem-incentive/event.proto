@@ -42,3 +42,9 @@ message EventWithdrawReward {
     (gogoproto.nullable) = false
   ];
 }
+
+message EventFailedParsingMemoInputs {
+  string class_id = 2 [ (gogoproto.moretags) = "yaml:\"class_id\"" ];
+  string nft_id = 3 [ (gogoproto.moretags) = "yaml:\"nft_id\"" ];
+  string memo = 4 [ (gogoproto.moretags) = "yaml:\"memo\"" ];
+}

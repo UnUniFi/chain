@@ -20,20 +20,27 @@ func (k Keeper) Hooks() Hooks { return Hooks{k} }
 
 // ------------------- Nftmarket Module Hooks -------------------
 
-func (h Hooks) AfterNftListed(ctx sdk.Context, nftIdentifier []byte, txMemo []byte) {
-	_, err := types.ParseMemo(txMemo)
+func (h Hooks) AfterNftListed(ctx sdk.Context, nftIdentifier nftmarkettypes.NftIdentifier, txMemo string) {
+	_, err := types.ParseMemo([]byte(txMemo))
 
-	// return immediately if memo data cannot be decoded properly
+	// return immediately after emitting event to tell decoding failed
+	// if memo data cannot be decoded properly
 	// this doesn't mean MsgListNft fail. It succeeds anyway.
 	if err != nil {
-		fmt.Println(err)
+		_ = fmt.Errorf(err.Error())
+		_ = ctx.EventManager().EmitTypedEvent(&types.EventFailedParsingMemoInputs{
+			ClassId: nftIdentifier.ClassId,
+			NftId:   nftIdentifier.NftId,
+			Memo:    txMemo,
+		})
 		return
 	}
+
 }
 
-func (h Hooks) AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier []byte, fee sdk.Coin) {
+func (h Hooks) AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier nftmarkettypes.NftIdentifier, fee sdk.Coin) {
 	h.k.AccumulateReward(ctx, nftIdentifier, fee)
 }
 
-func (h Hooks) AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier []byte) {
+func (h Hooks) AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier nftmarkettypes.NftIdentifier) {
 }
