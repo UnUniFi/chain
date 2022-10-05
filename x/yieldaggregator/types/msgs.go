@@ -169,3 +169,22 @@ func (msg MsgExecuteFarmingOrders) ValidateBasic() error {
 func (msg MsgExecuteFarmingOrders) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.FromAddress.AccAddress()}
 }
+
+// ensure Msg interface compliance at compile time
+var _ sdk.Msg = &MsgBeginWithdrawAll{}
+
+func NewMsgBeginWithdrawAll(sender sdk.AccAddress) MsgBeginWithdrawAll {
+	return MsgBeginWithdrawAll{
+		FromAddress: sender.Bytes(),
+	}
+}
+
+// ValidateBasic does a simple validation check that doesn't require access to state.
+func (msg MsgBeginWithdrawAll) ValidateBasic() error {
+	return nil
+}
+
+// GetSigners returns the addresses of signers that must sign.
+func (msg MsgBeginWithdrawAll) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msg.FromAddress.AccAddress()}
+}

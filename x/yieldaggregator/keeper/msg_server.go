@@ -114,3 +114,18 @@ func (k msgServer) SetDailyRewardPercent(c context.Context, msg *types.MsgSetDai
 	})
 	return &types.MsgSetDailyRewardPercentResponse{}, nil
 }
+
+func (k msgServer) BeginWithdrawAll(c context.Context, msg *types.MsgBeginWithdrawAll) (*types.MsgBeginWithdrawAllResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	units := k.Keeper.GetFarmingUnitsOfAddress(ctx, msg.FromAddress.AccAddress())
+
+	for _, unit := range units {
+		err := k.Keeper.StopFarmingUnit(ctx, unit)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return &types.MsgBeginWithdrawAllResponse{}, nil
+}

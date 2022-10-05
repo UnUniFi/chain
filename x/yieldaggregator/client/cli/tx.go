@@ -46,6 +46,7 @@ func GetTxCmd() *cobra.Command {
 		NewInactivateFarmingOrderTxCmd(),
 		NewExecuteFarmingOrdersTxCmd(),
 		NewSetDailyRewardPercentTxCmd(),
+		NewBeginWithdrawAllTxCmd(),
 		NewSubmitProposalAddYieldFarmTxCmd(),
 		NewSubmitProposalUpdateYieldFarmTxCmd(),
 		NewSubmitProposalStopYieldFarmTxCmd(),
@@ -370,6 +371,35 @@ $ %s tx %s set-daily-reward-percent OsmosisFarm OsmosisGUUFarm 0.1 1662429412 --
 			}
 
 			msg := types.NewMsgSetDailyRewardPercent(clientCtx.GetFromAddress(), args[0], args[1], rate, timestamp)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func NewBeginWithdrawAllTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "begin-withdraw-all",
+		Short: "Begin withdraw all for a user",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Begin withdraw all for a user.
+Example:
+$ %s tx %s begin-withdraw-all --from=myKeyName --chain-id=ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgBeginWithdrawAll(clientCtx.GetFromAddress())
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

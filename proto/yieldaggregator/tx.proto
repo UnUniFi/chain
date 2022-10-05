@@ -12,6 +12,7 @@ option go_package = "github.com/UnUniFi/chain/x/yieldaggregator/types";
 service Msg {
   rpc Deposit(MsgDeposit) returns (MsgDepositResponse);
   rpc Withdraw(MsgWithdraw) returns (MsgWithdrawResponse);
+  rpc BeginWithdrawAll(MsgBeginWithdrawAll) returns (MsgBeginWithdrawAllResponse);
   rpc AddFarmingOrder(MsgAddFarmingOrder) returns (MsgAddFarmingOrderResponse);
   rpc DeleteFarmingOrder(MsgDeleteFarmingOrder) returns (MsgDeleteFarmingOrderResponse);
   rpc ActivateFarmingOrder(MsgActivateFarmingOrder) returns (MsgActivateFarmingOrderResponse);
@@ -81,3 +82,11 @@ message MsgSetDailyRewardPercent {
   google.protobuf.Timestamp date = 5 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
 }
 message MsgSetDailyRewardPercentResponse {}
+
+message MsgBeginWithdrawAll {
+  string from_address = 1 [
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgBeginWithdrawAllResponse {}

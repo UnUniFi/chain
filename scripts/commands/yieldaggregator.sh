@@ -18,6 +18,7 @@ ununifid tx yieldaggregator set-daily-reward-percent OsmosisFarm OsmosisGUUFarm 
 
 # deposit/withdraw txs
 ununifid tx yieldaggregator deposit 1000000uguu --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block
+ununifid tx yieldaggregator begin-withdraw-all --chain-id=test --from=validator --keyring-backend=test --gas=500000 -y --broadcast-mode=block
 ununifid tx yieldaggregator withdraw 1000000uguu --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block
 
 # proposal txs
@@ -28,6 +29,10 @@ ununifid tx yieldaggregator proposal-update-yieldfarm --title="title" --descript
 
 ununifid query gov proposals
 ununifid tx gov vote 1 yes  --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block
+
+# cosmwasm yieldfarm target
+CONTRACT=ununifi14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sm5z28e
+ununifid tx yieldaggregator proposal-add-yieldfarmtarget --title="title" --description="description" --deposit=10000000stake --assetmanagement-account-id="OsmosisFarm" --assetmanagement-account-address="$CONTRACT" --assetmanagement-target-id="OsmosisGUUFarm" --unbonding-seconds=10 --asset-conditions="uguu:1:2,stake:10:2" --integration-type="COSMWASM" --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block
 
 ununifid tx yieldaggregator proposal-add-yieldfarmtarget --title="title" --description="description" --deposit=10000000stake --assetmanagement-account-id="OsmosisFarm" --assetmanagement-account-address="" --assetmanagement-target-id="OsmosisGUUFarm" --unbonding-seconds=10 --asset-conditions="uguu:1:2,stake:10:2" --integration-type="GOLANG_MOD" --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block
 ununifid tx yieldaggregator proposal-update-yieldfarmtarget --title="title" --description="description" --deposit=10000000stake --assetmanagement-account-id="OsmosisFarm" --assetmanagement-account-address="" --assetmanagement-target-id="OsmosisGUUFarm" --unbonding-seconds=10 --asset-conditions="uguu:1:2,stake:10:2" --integration-type="GOLANG_MOD" --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block
