@@ -5,40 +5,40 @@ import (
 	"encoding/json"
 )
 
-type incentiveInputs struct {
-	Version         string `json:"version"`
-	IncentiveUnitId string `json:"incentive-unit-id"`
-}
+// type incentiveInputs struct {
+// 	Version         string `json:"version"`
+// 	IncentiveUnitId string `json:"incentive-unit-id"`
+// }
 
-type XIncentiveInputs incentiveInputs
+type XMemoInputs MemoInputs
 
-type XIncentiveInputsExceptions struct {
-	XIncentiveInputs
+type XMemoInputsExceptions struct {
+	XMemoInputs
 	Other *string // other won't raise an error
 }
 
-func ParseMemo(memoContent []byte) (*incentiveInputs, error) {
-	incentiveInputs := &incentiveInputs{}
+func ParseMemo(memoContent []byte) (*MemoInputs, error) {
+	memoInputs := &MemoInputs{}
 
-	if err := incentiveInputs.UnmarshalJSON(memoContent); err != nil {
+	if err := memoInputs.UnmarshalJSON(memoContent); err != nil {
 		// TODO: emit Event
 		return nil, err
 	}
 
 	// make exception if unknown fields exists
-	return incentiveInputs, nil
+	return memoInputs, nil
 }
 
 // UnmarshalJSON should error if there are fields unexpected.
-func (memo *incentiveInputs) UnmarshalJSON(data []byte) error {
-	var incentiveE XIncentiveInputsExceptions
+func (memo *MemoInputs) UnmarshalJSON(data []byte) error {
+	var memoInputsE XMemoInputsExceptions
 	dec := json.NewDecoder(bytes.NewReader(data))
 	dec.DisallowUnknownFields() // Force
 
-	if err := dec.Decode(&incentiveE); err != nil {
+	if err := dec.Decode(&memoInputsE); err != nil {
 		return err
 	}
 
-	*memo = incentiveInputs(incentiveE.XIncentiveInputs)
+	*memo = MemoInputs(memoInputsE.XMemoInputs)
 	return nil
 }
