@@ -16,4 +16,5 @@ var (
 	ErrNftIdForFrontendDoesntExist  = sdkerrors.Register(ModuleName, 9, "the nft_id is not recorded")
 	ErrRewardRateNotFound           = sdkerrors.Register(ModuleName, 10, "the reward rate in the params was not found")
 	ErrAddressNotHaveReward         = sdkerrors.Register(ModuleName, 11, "the address doesn't have any rewards")
+	ErrUnknownMemoVersion           = sdkerrors.Register(ModuleName, 12, "the version in the memo inputs is unknown")
 )

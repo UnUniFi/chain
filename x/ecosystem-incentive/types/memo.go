@@ -37,3 +37,7 @@ func (memo *MemoInputs) UnmarshalJSON(data []byte) error {
 	*memo = MemoInputs(memoInputsE.XMemoInputs)
 	return nil
 }
+
+var AvailableVersions = []string{
+	"v1",
+}

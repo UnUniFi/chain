@@ -16,4 +16,9 @@ ununifid tx ecosystem-incentive register --register-file ./scripts/commands/ecos
 # to see if AfterNftPaymentWithCommission hook method will be triggered
 ununifid tx nftmarket listing $CLASS_ID a10 --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block \
 --note='{"version":"v1","incentive-unit-id":"incentive-unit-1"}';
-ununifid tx nftmarket placebid $CLASS_ID a10 100uguu --automatic-payment=true --chain-id=test --from=debug --keyring-backend=test --gas=300000 -y;
+ununifid tx nftmarket placebid $CLASS_ID a10 10000uguu --automatic-payment=true --chain-id=test --from=debug --keyring-backend=test --gas=300000 -y;
+
+# expect accumulating rewards are 125uguu for each
+
+# queries
+ununifid q ecosystem-incentive recorded-incentive-unit-id $CLASS_ID a10

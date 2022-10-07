@@ -36,7 +36,20 @@ func (h Hooks) AfterNftListed(ctx sdk.Context, nftIdentifier nftmarkettypes.NftI
 		return
 	}
 
-	h.k.RecordNftIdWithIncentiveUnitId(ctx, nftIdentifier, memoInputs.IncentiveUnitId)
+	// guide the execution based on the version in the memo inputs
+	// switch by values of AvailableVersions which is defined in ../types/memo.go
+	//var AvailableVersions = []string{
+	//	"v1",
+	//	}
+	switch memoInputs.Version {
+	// types.AvailableVersions[0] = "v1"
+	case types.AvailableVersions[0]:
+		h.k.RecordNftIdWithIncentiveUnitId(ctx, nftIdentifier, memoInputs.IncentiveUnitId)
+
+	// If the value doesn't match any cases, emit error message and don't do anything
+	default:
+		_ = fmt.Errorf(types.ErrUnknownMemoVersion.Error())
+	}
 }
 
 func (h Hooks) AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier nftmarkettypes.NftIdentifier, fee sdk.Coin) {
