@@ -44,11 +44,16 @@ func (h Hooks) AfterNftListed(ctx sdk.Context, nftIdentifier nftmarkettypes.NftI
 	switch memoInputs.Version {
 	// types.AvailableVersions[0] = "v1"
 	case types.AvailableVersions[0]:
+		// Store the incentive-unit-id in NftIdForFrontend KVStore with nft-id as key
 		h.k.RecordNftIdWithIncentiveUnitId(ctx, nftIdentifier, memoInputs.IncentiveUnitId)
 
-	// If the value doesn't match any cases, emit error message and don't do anything
+	// If the value doesn't match any cases, emit event and don't do anything
 	default:
-		_ = fmt.Errorf(types.ErrUnknownMemoVersion.Error())
+		_ = ctx.EventManager().EmitTypedEvent(&types.EventVersionUnmatched{
+			UnmatchedVersion: memoInputs.Version,
+			ClassId:          nftIdentifier.ClassId,
+			NftId:            nftIdentifier.NftId,
+		})
 	}
 }
 
