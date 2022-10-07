@@ -1,14 +1,13 @@
 package cli
 
 import (
+	"context"
 	"fmt"
-	// "strings"
 
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	// "github.com/cosmos/cosmos-sdk/client/flags"
-	// sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 
 	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
 )
@@ -24,7 +23,91 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	cmd.AddCommand(CmdQueryParams())
+	cmd.AddCommand(
+		CmdQueryParams(),
+		CmdQueryRecordedIncentiveUnitId(),
+		CmdQueryAllRewards(),
+		CmdQueryIncentiveUnit(),
+	)
 
+	return cmd
+}
+
+func CmdQueryRecordedIncentiveUnitId() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "recorded-incentive-unit-id [class-id] [nft-id]",
+		Short: "shows incentive-unit-id recorded with the class and nft ids",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			req := &types.QueryRecordedIncentiveUnitIdRequest{
+				ClassId: args[0],
+				NftId:   args[1],
+			}
+
+			res, err := queryClient.RecordedIncentiveUnitId(context.Background(), req)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdQueryAllRewards() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "all-rewards [address]",
+		Short: "shows all rewards that defined address have",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			req := &types.QueryAllRewardsRequest{
+				SubjectAddr: args[0],
+			}
+
+			res, err := queryClient.AllRewards(context.Background(), req)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdQueryIncentiveUnit() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "incentive-unit [incentive-unit-id]",
+		Short: "shows incentive-unit data",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			req := &types.QueryIncentiveUnitRequest{
+				IncentiveUnitId: args[0],
+			}
+
+			res, err := queryClient.IncentiveUnit(context.Background(), req)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
 	return cmd
 }

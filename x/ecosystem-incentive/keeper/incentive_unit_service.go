@@ -16,7 +16,7 @@ func (k Keeper) Register(ctx sdk.Context, msg *types.MsgRegister) (*[]types.Subj
 
 	var subjectInfoList []types.SubjectInfo
 	for i := 0; i < len(msg.SubjectAddrs); i++ {
-		subjectInfo := types.NewSubjectInfo(msg.SubjectAddrs[i].AccAddress(), msg.Weights[i])
+		subjectInfo := types.NewSubjectInfo(msg.SubjectAddrs[i], msg.Weights[i])
 		subjectInfoList = append(subjectInfoList, subjectInfo)
 	}
 

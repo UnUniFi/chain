@@ -6,12 +6,11 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
 // WithdrawReward is called to execute the actuall operation for MsgWithdrawReward
 func (k Keeper) WithdrawReward(ctx sdk.Context, msg *types.MsgWithdrawReward) (sdk.Coin, error) {
-	reward, exists := k.GetReward(ctx, msg.Sender.AccAddress())
+	reward, exists := k.GetRewardStore(ctx, msg.Sender.AccAddress())
 	if !(exists) {
 		return sdk.Coin{}, sdkerrors.Wrap(types.ErrRewardNotExists, msg.Sender.AccAddress().String())
 	}
@@ -42,7 +41,7 @@ func (k Keeper) WithdrawReward(ctx sdk.Context, msg *types.MsgWithdrawReward) (s
 // WithdrawAllRewards is called to execute the actuall operation for MsgWithdrawAllRewards
 // After sending the all accumulated rewards, delete types.Reward data from KVStore for the subject
 func (k Keeper) WithdrawAllRewards(ctx sdk.Context, msg *types.MsgWithdrawAllRewards) (sdk.Coins, error) {
-	reward, exists := k.GetReward(ctx, msg.Sender.AccAddress())
+	reward, exists := k.GetRewardStore(ctx, msg.Sender.AccAddress())
 	if !(exists) {
 		return sdk.Coins{}, sdkerrors.Wrap(types.ErrRewardNotExists, msg.Sender.AccAddress().String())
 	}
@@ -55,33 +54,26 @@ func (k Keeper) WithdrawAllRewards(ctx sdk.Context, msg *types.MsgWithdrawAllRew
 	}
 
 	// delete types.Reward data from KVStore since it became none
-	k.DeleteReward(ctx, msg.Sender.AccAddress())
+	k.DeleteRewardStore(ctx, msg.Sender.AccAddress())
 	return reward.Rewards, nil
 }
 
-// AccumulateReward is called in AfterNftPaymentWithCommission hook method
-// This method updates the reward information for the subject who is associated with the nftId
-func (k Keeper) AccumulateReward(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, fee sdk.Coin) {
-
-	// Emit Event when to be accumulated reward
-}
-
-func (k Keeper) SetReward(ctx sdk.Context, reward types.RewardStore) error {
-	bz, err := k.cdc.Marshal(&reward)
+func (k Keeper) SetRewardStore(ctx sdk.Context, rewardStore types.RewardStore) error {
+	bz, err := k.cdc.Marshal(&rewardStore)
 	if err != nil {
 		return err
 	}
 
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixReward))
-	prefixStore.Set(reward.SubjectAddr, bz)
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRewardStore))
+	prefixStore.Set(rewardStore.SubjectAddr.AccAddress(), bz)
 
 	return nil
 }
 
-func (k Keeper) GetReward(ctx sdk.Context, subject sdk.AccAddress) (types.RewardStore, bool) {
+func (k Keeper) GetRewardStore(ctx sdk.Context, subject sdk.AccAddress) (types.RewardStore, bool) {
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixReward))
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRewardStore))
 
 	bz := prefixStore.Get(subject)
 	if len(bz) == 0 {
@@ -93,7 +85,7 @@ func (k Keeper) GetReward(ctx sdk.Context, subject sdk.AccAddress) (types.Reward
 	return reward, true
 }
 
-func (k Keeper) DeleteReward(ctx sdk.Context, subject sdk.AccAddress) {
+func (k Keeper) DeleteRewardStore(ctx sdk.Context, subject sdk.AccAddress) {
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnit))
 

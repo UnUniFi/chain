@@ -1,10 +1,14 @@
 package types
 
-import sdk "github.com/cosmos/cosmos-sdk/types"
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
-func NewReward(subject sdk.AccAddress, rewards sdk.Coins) RewardStore {
+	ununifitypes "github.com/UnUniFi/chain/types"
+)
+
+func NewRewardStore(subject ununifitypes.StringAccAddress, rewards sdk.Coins) RewardStore {
 	return RewardStore{
-		SubjectAddr: subject.Bytes(),
+		SubjectAddr: subject,
 		Rewards:     rewards,
 	}
 }
