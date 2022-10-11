@@ -35,6 +35,17 @@ func (k Keeper) WithdrawReward(ctx sdk.Context, msg *types.MsgWithdrawReward) (s
 		return sdk.Coin{}, sdkerrors.Wrap(types.ErrCoinAmount, reward.Rewards.AmountOf(msg.Denom).String())
 	}
 
+	// If the reward for at least one denom remains, just reset
+	// the RewardStore data for the subject.
+	// Otherwise, delete the data by key
+	if reward.Rewards.Empty() {
+		k.DeleteRewardStore(ctx, reward.SubjectAddr.AccAddress())
+	} else {
+		if err := k.SetRewardStore(ctx, reward); err != nil {
+			return sdk.Coin{}, err
+		}
+	}
+
 	return rewardCoin, nil
 }
 
@@ -44,6 +55,10 @@ func (k Keeper) WithdrawAllRewards(ctx sdk.Context, msg *types.MsgWithdrawAllRew
 	reward, exists := k.GetRewardStore(ctx, msg.Sender.AccAddress())
 	if !(exists) {
 		return sdk.Coins{}, sdkerrors.Wrap(types.ErrRewardNotExists, msg.Sender.AccAddress().String())
+	}
+
+	if reward.Rewards.Empty() {
+		return sdk.Coins{}, types.ErrAddressNotHaveReward
 	}
 
 	// TODO: decide how to define module accout to send token
@@ -87,7 +102,7 @@ func (k Keeper) GetRewardStore(ctx sdk.Context, subject sdk.AccAddress) (types.R
 
 func (k Keeper) DeleteRewardStore(ctx sdk.Context, subject sdk.AccAddress) {
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnit))
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRewardStore))
 
 	prefixStore.Delete(subject)
 }
