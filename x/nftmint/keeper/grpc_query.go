@@ -3,11 +3,10 @@ package keeper
 import (
 	"context"
 
+        "github.com/UnUniFi/chain/x/nftmint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	"github.com/UnUniFi/chain/x/nftmint/types"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
