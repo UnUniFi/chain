@@ -10,8 +10,14 @@ import (
 
 // Register method record subjects info in IncentiveUnit type
 func (k Keeper) Register(ctx sdk.Context, msg *types.MsgRegister) (*[]types.SubjectInfo, error) {
+	// check if the IncentiveUnitId is already registered
 	if _, exists := k.GetIncentiveUnit(ctx, msg.IncentiveUnitId); exists {
 		return nil, sdkerrors.Wrap(types.ErrRegisteredIncentiveId, msg.IncentiveUnitId)
+	}
+
+	// check the length of the IncentiveUnitId by referring MaxInentiveUnitIdLen in the Params
+	if err := k.IncentiveUnitIdLenValidation(ctx, msg.IncentiveUnitId); err != nil {
+		return nil, err
 	}
 
 	var subjectInfoList []types.SubjectInfo

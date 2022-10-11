@@ -19,7 +19,9 @@ var (
 			},
 		},
 	}
-	KeyRewardParams = []byte("RewardParams")
+	DefaultMaxIncentiveUnitIdLen uint64 = 128
+	KeyRewardParams                     = []byte("RewardParams")
+	KeyMaxIncentiveUnitIdLen            = []byte("MaxIncentiveUnitId")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -35,7 +37,8 @@ func NewParams() Params {
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return Params{
-		RewardParams: DafaultRewardParams,
+		RewardParams:          DafaultRewardParams,
+		MaxIncentiveUnitIdLen: DefaultMaxIncentiveUnitIdLen,
 	}
 }
 
@@ -43,6 +46,7 @@ func DefaultParams() Params {
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(KeyRewardParams, &p.RewardParams, validateRewardParams),
+		paramtypes.NewParamSetPair(KeyMaxIncentiveUnitIdLen, &p.MaxIncentiveUnitIdLen, validateMaxIncentiveUnitId),
 	}
 }
 
@@ -50,6 +54,10 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 func (p Params) Validate() error {
 
 	if err := validateRewardParams(p.RewardParams); err != nil {
+		return err
+	}
+
+	if err := validateMaxIncentiveUnitId(p.MaxIncentiveUnitIdLen); err != nil {
 		return err
 	}
 
@@ -65,8 +73,11 @@ func validateRewardParams(i interface{}) error {
 	return nil
 }
 
-// // String implements the Stringer interface.
-// func (p Params) String() string {
-// 	out, _ := yaml.Marshal(p)
-// 	return string(out)
-// }
+func validateMaxIncentiveUnitId(i interface{}) error {
+	_, ok := i.(uint64)
+	if !ok {
+		return fmt.Errorf("invalid parameter types: %T", i)
+	}
+
+	return nil
+}

@@ -16,7 +16,6 @@ func ParseMemo(memoContent []byte) (*MemoInputs, error) {
 	memoInputs := &MemoInputs{}
 
 	if err := memoInputs.UnmarshalJSON(memoContent); err != nil {
-		// TODO: emit Event
 		return nil, err
 	}
 

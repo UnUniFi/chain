@@ -8,6 +8,7 @@ option go_package = "github.com/UnUniFi/chain/x/ecosystem-incentive/types";
 // Params defines the parameters for the module.
 message Params {
   repeated RewardParams reward_params = 1 [ (gogoproto.moretags) = "yaml:\"reward_params\"" ];
+  uint64 MaxIncentiveUnitIdLen = 2 [ (gogoproto.moretags) = "yaml:\"max_incentive_unit_id\"" ];
 }
 
 // RewardParams defines which module have which rewards type and rate 
