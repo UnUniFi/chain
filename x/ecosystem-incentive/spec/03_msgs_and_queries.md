@@ -55,7 +55,8 @@ weights = [
 
 We receive a JSON file in CLI command for this message.
 Example JSON file for CLI tx command:
-```json
+
+```Json
 {
 	"incentive-id": "incentive-unit1",
 	"subject-addrs": [

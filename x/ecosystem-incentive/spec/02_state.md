@@ -75,7 +75,7 @@ message Reward {
 ```protobuf
 message Params {
   repeated RewardParams reward_params = 1 [ (gogoproto.moretags) = "yaml:\"reward_params\"" ];
-  repeated RewardType reward_types = 2 [ (gogoproto.moretags) = "yaml:\"reward_types\"" ];
+  uint64 MaxIncentiveUnitIdLen = 2 [ (gogoproto.moretags) = "yaml:\"max_incentive_unit_id\"" ];
 }
 
 message RewardParams {
@@ -91,9 +91,9 @@ message RewardParams {
 // RewardRate defines the ratio to take reward for a specific reward_type.
 // The total sum of reward_rate in a module cannot be exceed 1
 message RewardRate {
-  RewardType reward_type = 1;
-  string rate = 2[
-    (gogoproto.moretags) = "yaml:\"reward_rate\"",
+  RewardType reward_type = 1 [ (gogoproto.moretags) = "yaml:\"reward_type\"" ];
+  string rate = 2 [
+    (gogoproto.moretags) = "yaml:\"rate\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
@@ -106,7 +106,7 @@ enum RewardType {
 }
 ```
 
-`Params` contains `RewardParams` as the configuration of this module parameters.
+`Params` contains `RewardParams` as the configuration of this module parameters and `MaxIncentiveUnitIdLen` as to define the max length of the IncentiveUnitId.
 
 ### RewardRate
 
@@ -117,3 +117,7 @@ e.g. If `reward_rate` is 80% and the trading fee that is made in a target messag
 
 The reward type manages the types of the reward for the various subject.
 At first, we support frontend creator. But, the reward will be able to distributed for the different type of parties in our ecosystem.
+
+### MaxIncentiveUnitIdLen
+
+The length of `IncentiveUnitId` must be between `MaxIncentiveUnitIdLen` and 0.
