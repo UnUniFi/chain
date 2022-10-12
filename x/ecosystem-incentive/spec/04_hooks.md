@@ -8,15 +8,15 @@ The example hooks functions interfaces in x/nftmarket module:
 
 ```go
 type NftmarketHooks interface {
-	AfterNftListed(ctx sdk.Context, nftIdentifier []byte, txMemo string)
-	AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier []byte, fee sdk.Coin)
-	AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier []byte)
+	AfterNftListed(ctx sdk.Context, nftIdentifier NftIdentifier, txMemo string)
+	AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier NftIdentifier, fee sdk.Coin)
+	AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier NftIdentifier)
 }
 ```
 
 ## AfterNftListed
 
-This hooks function is called for the resistration for the `ecosystem-incentive` with the `txMemo` and `nftIdentifiler`.   
+This hook function is called for the resistration for the `ecosystem-incentive` with the `txMemo` and `nftIdentifiler`.   
 To pass the `txMemo` from the memo data of `MsgListNft` requires a method to get memo data in the process of `MsgListNft` in `x/nftmarket` module.
 
 ### Location to be inserted
@@ -25,7 +25,7 @@ To pass the `txMemo` from the memo data of `MsgListNft` requires a method to get
 
 ## AfterNftPaymentWithCommission
 
-This hooks function is called for the accumulation of the reward for the subjects which are connected with the `nftIdentifiler` in the argument.
+This hook function is called for the accumulation of the reward for the subjects which are connected with the `nftIdentifiler` in the argument.
 The calculation of the actual reward amount is executed in methods which this hook function calls in this module.
 
 ### Location to be inserted
