@@ -9,10 +9,8 @@ const (
 	// ModuleName defines the module name
 	ModuleName = "nftmarket"
 
-	// TODO: highly possible to be changed in terms of module account and the way
-	// to define it
 	// Module account for nft trading fee collection
-	NftTradingFee = "ecosystemincentive"
+	NftTradingFee = "nfttradingfee"
 
 	// StoreKey defines the primary module store key
 	StoreKey = "ununifinftmarket"

@@ -242,10 +242,10 @@ var (
 		ecosystemincentivetypes.ModuleName: nil,
 		ununifidisttypes.ModuleName:        {authtypes.Minter},
 		// wasm.ModuleName:             {authtypes.Burner},
-		nft.ModuleName:            nil,
-		nftminttypes.ModuleName:   nil,
-		nftmarkettypes.ModuleName: nil,
-		// nftmarkettypes.NftTradingFee: nil,
+		nft.ModuleName:               nil,
+		nftminttypes.ModuleName:      nil,
+		nftmarkettypes.ModuleName:    nil,
+		nftmarkettypes.NftTradingFee: nil,
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -589,9 +589,8 @@ func NewApp(
 		app.NFTKeeper,
 	)
 
-	nftmarketKeeper := nftmarketkeeper.NewKeeper(
+	app.NftmarketKeeper = nftmarketkeeper.NewKeeper(
 		appCodec,
-		encodingConfig.TxConfig,
 		keys[nftmarkettypes.StoreKey],
 		keys[nftmarkettypes.MemStoreKey],
 		app.GetSubspace(nftmarkettypes.ModuleName),
@@ -602,7 +601,6 @@ func NewApp(
 
 	// create Keeper objects which have Hooks
 	app.cdpKeeper = *cdpKeeper.SetHooks(cdptypes.NewMultiCdpHooks(app.incentiveKeeper.Hooks()))
-	app.NftmarketKeeper = *nftmarketKeeper.SetHooks(nftmarkettypes.NewMultiNftmarketHooks(app.ecosystemincentiveKeeper.Hooks()))
 
 	// wasmDir := filepath.Join(homePath, "wasm")
 	// wasmConfig, err := wasm.ReadWasmConfig(appOpts)

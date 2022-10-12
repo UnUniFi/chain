@@ -231,17 +231,6 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 	}
 	k.SaveNftListing(ctx, listing)
 
-	// TODO: delete
-	// -----
-	txMemo, err := k.GetMemo(ctx)
-	if err != nil {
-		fmt.Errorf(err.Error())
-	}
-	if len(txMemo) != 0 {
-		k.hooks.AfterNftListed(ctx, msg.NftId, txMemo)
-	}
-	// ------
-
 	// Emit event for nft listing
 	ctx.EventManager().EmitTypedEvent(&types.EventListNft{
 		Owner:   msg.Sender.AccAddress().String(),
@@ -323,9 +312,6 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 
 	// delete listing
 	k.DeleteNftListing(ctx, listing)
-
-	// TODO: delete
-	k.hooks.AfterNftUnlistedWithoutPayment(ctx, listing.NftId)
 
 	// Emit event for nft listing cancel
 	ctx.EventManager().EmitTypedEvent(&types.EventCancelListNfting{
@@ -501,9 +487,6 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 			panic(err)
 		}
 		k.DeleteNftListing(ctx, listing)
-
-		// TODO: delete
-		k.hooks.AfterNftUnlistedWithoutPayment(ctx, listing.NftId)
 	} else {
 		params := k.GetParamSet(ctx)
 		listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
@@ -666,7 +649,7 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 				}
 
 				// pay fee
-				k.ProcessPaymentWithCommissionFee(ctx, listingOwner, listing.BidToken, depositCollected, listing.NftId)
+				k.ProcessPaymentWithCommissionFee(ctx, listingOwner, listing.BidToken, depositCollected)
 
 				// transfer nft to listing owner
 				cacheCtx, write := ctx.CacheContext()
@@ -715,16 +698,14 @@ func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 			write()
 		}
 
-		// TODO: delete change
-		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, bid.Amount.Denom, bid.PaidAmount, listing.NftId)
+		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, bid.Amount.Denom, bid.PaidAmount)
 
 		k.DeleteBid(ctx, bid)
 		k.DeleteNftListing(ctx, listing)
 	}
 }
 
-// TODO: delete change
-func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, denom string, amount sdk.Int, nftId types.NftIdentifier) {
+func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, denom string, amount sdk.Int) {
 	params := k.GetParamSet(ctx)
 	commissionFee := params.NftListingCommissionFee
 	cacheCtx, write := ctx.CacheContext()
@@ -749,7 +730,4 @@ func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sd
 	} else {
 		write()
 	}
-
-	// TODO: delete
-	k.hooks.AfterNftPaymentWithCommission(ctx, nftId, sdk.NewCoin(denom, fee))
 }
