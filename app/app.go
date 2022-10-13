@@ -317,7 +317,7 @@ type App struct {
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 	auctionKeeper            auctionkeeper.Keeper
 	cdpKeeper                cdpkeeper.Keeper
-	ecosystemincentiveKeeper ecosystemincentivekeeper.Keeper
+	EcosystemincentiveKeeper ecosystemincentivekeeper.Keeper
 	incentiveKeeper          incentivekeeper.Keeper
 	ununifidistKeeper        ununifidistkeeper.Keeper
 	pricefeedKeeper          pricefeedkeeper.Keeper
@@ -554,7 +554,7 @@ func NewApp(
 		app.pricefeedKeeper,
 		maccPerms,
 	)
-	app.ecosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
+	app.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
 		appCodec,
 		keys[ecosystemincentivetypes.StoreKey],
 		keys[ecosystemincentivetypes.MemStoreKey],
@@ -686,7 +686,7 @@ func NewApp(
 		// this line is used by starport scaffolding # stargate/app/appModule
 		auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
 		cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.pricefeedKeeper),
-		ecosystemincentive.NewAppModule(appCodec, app.ecosystemincentiveKeeper, app.AccountKeeper, app.BankKeeper),
+		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.AccountKeeper, app.BankKeeper),
 		incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
 		ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
 		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
