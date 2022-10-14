@@ -112,7 +112,7 @@ func (k Keeper) AccumulateRewardForFrontend(ctx sdk.Context, nftId nftmarkettype
 	incentiveUnit, exists := k.GetIncentiveUnit(ctx, incentiveUnitId)
 	if !exists {
 		// emit event to inform the incentiveUnit is not registered with incentiveUnitId and return
-		_ = ctx.EventManager().EmitTypedEvent(&types.EventRecordedIncentiveUnitId{
+		_ = ctx.EventManager().EmitTypedEvent(&types.EventNotRegisteredIncentiveUnitId{
 			IncentiveUnitId: incentiveUnitId,
 		})
 		return
