@@ -35,7 +35,7 @@ func (suite *KeeperTestSuite) TestRecordNftIdWithIncentiveUnitId() {
 			expectPass:      false,
 		},
 		{
-			testCase:        "registed",
+			testCase:        "registered",
 			classId:         "class2",
 			nftId:           "nft2",
 			incentiveUnitId: "id2",
