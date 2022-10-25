@@ -9,6 +9,7 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	simapp "github.com/UnUniFi/chain/app"
+	"github.com/UnUniFi/chain/x/decentralized-vault/keeper"
 	"github.com/UnUniFi/chain/x/decentralized-vault/types"
 )
 
@@ -19,6 +20,7 @@ type KeeperTestSuite struct {
 	app         *simapp.App
 	addrs       []sdk.AccAddress
 	queryClient types.QueryClient
+	msgServer   types.MsgServer
 }
 
 func (suite *KeeperTestSuite) SetupTest() {
@@ -32,6 +34,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	queryHelper := baseapp.NewQueryServerTestHelper(suite.ctx, app.InterfaceRegistry())
 	types.RegisterQueryServer(queryHelper, app.DecentralizedvaultKeeper)
 	suite.queryClient = types.NewQueryClient(queryHelper)
+	suite.msgServer = keeper.NewMsgServerImpl(suite.app.DecentralizedvaultKeeper)
 }
 
 func TestKeeperSuite(t *testing.T) {
