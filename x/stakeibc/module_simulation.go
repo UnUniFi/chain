@@ -10,14 +10,12 @@ import (
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
-	"github.com/UnUniFi/chain/testutil/sample"
 	stakeibcsimulation "github.com/UnUniFi/chain/x/stakeibc/simulation"
 	"github.com/UnUniFi/chain/x/stakeibc/types"
 )
 
 // avoid unused import issue
 var (
-	_ = sample.AccAddress
 	_ = stakeibcsimulation.FindAccount
 	_ = simappparams.StakePerAccount
 	_ = simulation.MsgEntryKind
