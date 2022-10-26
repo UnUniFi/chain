@@ -3,12 +3,14 @@ package keeper_test
 import (
 	"fmt"
 	"reflect"
+	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/tendermint/tendermint/crypto/ed25519"
 
 	ununifitypes "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/decentralized-vault/types"
+	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
 func (suite *KeeperTestSuite) TestNftLocked() {
@@ -176,12 +178,14 @@ func (suite *KeeperTestSuite) TestNftTransferRequest() {
 	testCases := []struct {
 		msg      string
 		expError string
+		preRun   func()
 		postMsg  types.MsgNftTransferRequest
 		owner    sdk.AccAddress
 	}{
 		{
 			"success",
 			"",
+			func() {},
 			types.MsgNftTransferRequest{
 				Sender:     ununifitypes.StringAccAddress(suite.addrs[1]),
 				NftId:      nftid,
@@ -192,6 +196,7 @@ func (suite *KeeperTestSuite) TestNftTransferRequest() {
 		{
 			"not owner",
 			"not the owner of nft",
+			func() {},
 			types.MsgNftTransferRequest{
 				Sender:     ununifitypes.StringAccAddress(suite.addrs[0]),
 				NftId:      nftid,
@@ -202,6 +207,7 @@ func (suite *KeeperTestSuite) TestNftTransferRequest() {
 		{
 			"not exits nft",
 			"nft does not exist",
+			func() {},
 			types.MsgNftTransferRequest{
 				Sender:     ununifitypes.StringAccAddress(suite.addrs[0]),
 				NftId:      "xxxxxx",
@@ -209,17 +215,43 @@ func (suite *KeeperTestSuite) TestNftTransferRequest() {
 			},
 			suite.addrs[0],
 		},
-		// todo: implement nft listed case
-		// {
-		// 	"nft listed",
-		// 	"nft does not exist",
-		// 	types.MsgNftTransferRequest{
-		// 		Sender:     ununifitypes.StringAccAddress(suite.addrs[0]),
-		// 		NftId:      "xxxxxx",
-		// 		EthAddress: "xxxxxx",
-		// 	},
-		// 	suite.addrs[0],
-		// },
+		{
+			"nft listed",
+			"this nft is in use",
+			func() {
+				now := time.Now().UTC()
+				owner := suite.addrs[0]
+				listings := []nftmarkettypes.NftListing{
+					{
+						NftId: nftmarkettypes.NftIdentifier{
+							ClassId: types.WrappedClassId,
+							NftId:   nftid,
+						},
+						Owner:              owner.String(),
+						ListingType:        nftmarkettypes.ListingType_DIRECT_ASSET_BORROW,
+						State:              nftmarkettypes.ListingState_LISTING,
+						BidToken:           "uguu",
+						MinBid:             sdk.OneInt(),
+						BidActiveRank:      1,
+						StartedAt:          now,
+						EndAt:              now,
+						FullPaymentEndAt:   time.Time{},
+						SuccessfulBidEndAt: time.Time{},
+						AutoRelistedCount:  0,
+					},
+				}
+
+				for _, listing := range listings {
+					suite.app.NftmarketKeeper.SetNftListing(suite.ctx, listing)
+				}
+			},
+			types.MsgNftTransferRequest{
+				Sender:     ununifitypes.StringAccAddress(suite.addrs[0]),
+				NftId:      nftid,
+				EthAddress: "xxxxxx",
+			},
+			suite.addrs[0],
+		},
 	}
 
 	msg := types.MsgNftLocked{
@@ -234,6 +266,8 @@ func (suite *KeeperTestSuite) TestNftTransferRequest() {
 	suite.Require().NoError(err)
 	for index, tc := range testCases {
 		suite.Run(fmt.Sprintf("Case %s", tc.msg), func() {
+			tc.preRun()
+
 			require := suite.Require()
 			err := suite.app.DecentralizedvaultKeeper.NftTransferRequest(suite.ctx, &tc.postMsg)
 			if tc.expError == "" {
@@ -270,12 +304,14 @@ func (suite *KeeperTestSuite) TestNftRejectTransfer() {
 	testCases := []struct {
 		msg      string
 		expError string
+		preRun   func()
 		postMsg  testPostMsgType
 		owner    sdk.AccAddress
 	}{
 		{
 			"not trusted sender",
 			"sender does not mach oracle address",
+			func() {},
 			testPostMsgType{
 				Sender: ununifitypes.StringAccAddress(suite.addrs[1]),
 				NftId:  nftid,
@@ -285,6 +321,7 @@ func (suite *KeeperTestSuite) TestNftRejectTransfer() {
 		{
 			"not exits nft",
 			"nft does not exist",
+			func() {},
 			testPostMsgType{
 				Sender: ununifitypes.StringAccAddress(suite.addrs[0]),
 				NftId:  "xxxxxx",
@@ -294,6 +331,7 @@ func (suite *KeeperTestSuite) TestNftRejectTransfer() {
 		{
 			"not exits nft",
 			"nft does not exist",
+			func() {},
 			testPostMsgType{
 				Sender: ununifitypes.StringAccAddress(suite.addrs[0]),
 				NftId:  "xxxxxx",
@@ -303,6 +341,7 @@ func (suite *KeeperTestSuite) TestNftRejectTransfer() {
 		{
 			"not deposit",
 			"nft is not deposited",
+			func() {},
 			testPostMsgType{
 				Sender: ununifitypes.StringAccAddress(suite.addrs[0]),
 				NftId:  nftid2,
@@ -312,23 +351,49 @@ func (suite *KeeperTestSuite) TestNftRejectTransfer() {
 		{
 			"success",
 			"",
+			func() {},
 			testPostMsgType{
 				Sender: ununifitypes.StringAccAddress(suite.addrs[0]),
 				NftId:  nftid,
 			},
 			suite.addrs[1],
 		},
-		// todo: implement nft listed case
-		// {
-		// 	"nft listed",
-		// 	"nft does not exist",
-		// 	types.MsgNftTransferRequest{
-		// 		Sender:     ununifitypes.StringAccAddress(suite.addrs[0]),
-		// 		NftId:      "xxxxxx",
-		// 		EthAddress: "xxxxxx",
-		// 	},
-		// 	suite.addrs[0],
-		// },
+		{
+			"nft listed",
+			"this nft is in use",
+			func() {
+				now := time.Now().UTC()
+				owner := suite.addrs[0]
+				listings := []nftmarkettypes.NftListing{
+					{
+						NftId: nftmarkettypes.NftIdentifier{
+							ClassId: types.WrappedClassId,
+							NftId:   nftid,
+						},
+						Owner:              owner.String(),
+						ListingType:        nftmarkettypes.ListingType_DIRECT_ASSET_BORROW,
+						State:              nftmarkettypes.ListingState_LISTING,
+						BidToken:           "uguu",
+						MinBid:             sdk.OneInt(),
+						BidActiveRank:      1,
+						StartedAt:          now,
+						EndAt:              now,
+						FullPaymentEndAt:   time.Time{},
+						SuccessfulBidEndAt: time.Time{},
+						AutoRelistedCount:  0,
+					},
+				}
+
+				for _, listing := range listings {
+					suite.app.NftmarketKeeper.SetNftListing(suite.ctx, listing)
+				}
+			},
+			testPostMsgType{
+				Sender: ununifitypes.StringAccAddress(suite.addrs[0]),
+				NftId:  nftid,
+			},
+			suite.addrs[1],
+		},
 	}
 
 	msg := types.MsgNftLocked{
@@ -361,6 +426,7 @@ func (suite *KeeperTestSuite) TestNftRejectTransfer() {
 
 	for index, tc := range testCases {
 		suite.Run(fmt.Sprintf("Case %s", tc.msg), func() {
+			tc.preRun()
 			require := suite.Require()
 			postMsg := types.MsgNftRejectTransfer(tc.postMsg)
 			err := suite.app.DecentralizedvaultKeeper.NftRejectTransfer(suite.ctx, &postMsg)
@@ -381,6 +447,7 @@ func (suite *KeeperTestSuite) TestNftTransferred() {
 	type testPostMsgType types.MsgNftTransferred
 	nftid := "a10"
 	nftid2 := "a11"
+	nftid3 := "a12"
 	testUri := "testUri"
 	testUriHash := "testUriHash"
 	mp := types.Params{
@@ -399,12 +466,14 @@ func (suite *KeeperTestSuite) TestNftTransferred() {
 	testCases := []struct {
 		msg      string
 		expError string
+		preRun   func()
 		postMsg  testPostMsgType
 		owner    sdk.AccAddress
 	}{
 		{
 			"not trusted sender",
 			"sender does not mach oracle address",
+			func() {},
 			testPostMsgType{
 				Sender: ununifitypes.StringAccAddress(suite.addrs[1]),
 				NftId:  nftid,
@@ -414,6 +483,7 @@ func (suite *KeeperTestSuite) TestNftTransferred() {
 		{
 			"not exits nft",
 			"nft is not deposited",
+			func() {},
 			testPostMsgType{
 				Sender: ununifitypes.StringAccAddress(suite.addrs[0]),
 				NftId:  "xxxxxx",
@@ -423,6 +493,7 @@ func (suite *KeeperTestSuite) TestNftTransferred() {
 		{
 			"not deposit",
 			"nft is not deposited",
+			func() {},
 			testPostMsgType{
 				Sender: ununifitypes.StringAccAddress(suite.addrs[0]),
 				NftId:  nftid2,
@@ -430,25 +501,62 @@ func (suite *KeeperTestSuite) TestNftTransferred() {
 			suite.addrs[1],
 		},
 		{
+			"nft listed",
+			"this nft is in use",
+			func() {
+				now := time.Now().UTC()
+				owner := suite.addrs[0]
+				msg := types.MsgNftLocked{
+					Sender:    ununifitypes.StringAccAddress(suite.addrs[0]),
+					ToAddress: ununifitypes.StringAccAddress(suite.addrs[1]),
+					NftId:     nftid3,
+					Uri:       testUri,
+					UriHash:   testUriHash,
+				}
+
+				err := suite.app.DecentralizedvaultKeeper.NftLocked(suite.ctx, &msg)
+				suite.Require().NoError(err)
+
+				listings := []nftmarkettypes.NftListing{
+					{
+						NftId: nftmarkettypes.NftIdentifier{
+							ClassId: types.WrappedClassId,
+							NftId:   nftid3,
+						},
+						Owner:              owner.String(),
+						ListingType:        nftmarkettypes.ListingType_DIRECT_ASSET_BORROW,
+						State:              nftmarkettypes.ListingState_LISTING,
+						BidToken:           "uguu",
+						MinBid:             sdk.OneInt(),
+						BidActiveRank:      1,
+						StartedAt:          now,
+						EndAt:              now,
+						FullPaymentEndAt:   time.Time{},
+						SuccessfulBidEndAt: time.Time{},
+						AutoRelistedCount:  0,
+					},
+				}
+
+				for _, listing := range listings {
+					suite.app.NftmarketKeeper.SetNftListing(suite.ctx, listing)
+				}
+			},
+			testPostMsgType{
+				Sender: ununifitypes.StringAccAddress(suite.addrs[0]),
+				NftId:  nftid3,
+			},
+			sdk.AccAddress(nil),
+		},
+		{
 			"success",
 			"",
+			func() {},
 			testPostMsgType{
 				Sender: ununifitypes.StringAccAddress(suite.addrs[0]),
 				NftId:  nftid,
 			},
 			sdk.AccAddress(nil),
 		},
-		// todo: implement nft listed case
-		// {
-		// 	"nft listed",
-		// 	"nft does not exist",
-		// 	types.MsgNftTransferRequest{
-		// 		Sender:     ununifitypes.StringAccAddress(suite.addrs[0]),
-		// 		NftId:      "xxxxxx",
-		// 		EthAddress: "xxxxxx",
-		// 	},
-		// 	suite.addrs[0],
-		// },
 	}
 
 	msg := types.MsgNftLocked{
@@ -481,6 +589,8 @@ func (suite *KeeperTestSuite) TestNftTransferred() {
 
 	for index, tc := range testCases {
 		suite.Run(fmt.Sprintf("Case %s", tc.msg), func() {
+			tc.preRun()
+
 			require := suite.Require()
 			postMsg := types.MsgNftTransferred(tc.postMsg)
 			err := suite.app.DecentralizedvaultKeeper.NftTransferred(suite.ctx, &postMsg)
@@ -1041,8 +1151,6 @@ func (suite *KeeperTestSuite) TestKeeper_GetTransferRequestByIdBytes() {
 
 func (suite *KeeperTestSuite) TestKeeper_IsListedNft() {
 	nftid := "a10"
-	// testUri := "testUri"
-	// testUriHash := "testUriHash"
 
 	mp := types.Params{
 		Networks: []types.Network{
@@ -1075,46 +1183,50 @@ func (suite *KeeperTestSuite) TestKeeper_IsListedNft() {
 			},
 			want: false,
 		},
-		// {
-		// 	name: "success true",
-		// 	preRun: func() error {
-		// 		now := time.Now().UTC()
-		// 		owner := suite.addrs[0]
-		// 		listings := []nftmarkettypes.NftListing{
-		// 			{
-		// 				NftId: nftmarkettypes.NftIdentifier{
-		// 					ClassId: types.WrappedClassId,
-		// 					NftId:   nftid,
-		// 				},
-		// 				Owner:              owner.String(),
-		// 				ListingType:        nftmarkettypes.ListingType_DIRECT_ASSET_BORROW,
-		// 				State:              nftmarkettypes.ListingState_LISTING,
-		// 				BidToken:           "uguu",
-		// 				MinBid:             sdk.OneInt(),
-		// 				BidActiveRank:      1,
-		// 				StartedAt:          now,
-		// 				EndAt:              now,
-		// 				FullPaymentEndAt:   time.Time{},
-		// 				SuccessfulBidEndAt: time.Time{},
-		// 				AutoRelistedCount:  0,
-		// 			},
-		// 		}
+		{
+			name: "success true",
+			preRun: func() error {
+				now := time.Now().UTC()
+				owner := suite.addrs[0]
+				listings := []nftmarkettypes.NftListing{
+					{
+						NftId: nftmarkettypes.NftIdentifier{
+							ClassId: types.WrappedClassId,
+							NftId:   nftid,
+						},
+						Owner:              owner.String(),
+						ListingType:        nftmarkettypes.ListingType_DIRECT_ASSET_BORROW,
+						State:              nftmarkettypes.ListingState_LISTING,
+						BidToken:           "uguu",
+						MinBid:             sdk.OneInt(),
+						BidActiveRank:      1,
+						StartedAt:          now,
+						EndAt:              now,
+						FullPaymentEndAt:   time.Time{},
+						SuccessfulBidEndAt: time.Time{},
+						AutoRelistedCount:  0,
+					},
+				}
 
-		// 		for _, listing := range listings {
-		// 			suite.app.NftmarketKeeper.SetNftListing(suite.ctx, listing)
-		// 		}
-		// 		for _, listing := range listings {
-		// 			gotListing, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, listing.IdBytes())
-		// 			suite.Require().NoError(err)
-		// 			suite.Require().Equal(listing, gotListing)
-		// 		}
-		// 		return nil
-		// 	},
-		// 	args: args{
-		// 		nftid,
-		// 	},
-		// 	want: true,
-		// },
+				for _, listing := range listings {
+					suite.app.NftmarketKeeper.SetNftListing(suite.ctx, listing)
+				}
+				for _, listing := range listings {
+					gotListing, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, listing.IdBytes())
+					suite.Require().NoError(err)
+					suite.Require().Equal(listing, gotListing)
+				}
+				// nftIdentifier := nftmarkettypes.NftIdentifier{ClassId: types.WrappedClassId, NftId: nftid2}
+				// gotListing, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+				// suite.Require().Equal(nftmarkettypes.NftListing{}, gotListing)
+				// suite.Require().NoError(err)
+				return nil
+			},
+			args: args{
+				nftid,
+			},
+			want: true,
+		},
 	}
 	for _, tt := range tests {
 		suite.Run(fmt.Sprintf("Case %s", tt.name), func() {

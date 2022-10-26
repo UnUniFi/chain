@@ -191,7 +191,7 @@ func (k Keeper) IsListedNft(ctx sdk.Context, nftId string) bool {
 		NftId:   nftId,
 	}
 	lisitngNft, err := k.nftmarketKeeper.GetNftListingByIdBytes(ctx, nftIde.IdBytes())
-	if (lisitngNft != nftmarkettypes.NftListing{} || err != nil) {
+	if (lisitngNft == nftmarkettypes.NftListing{} || err != nil) {
 		return false
 	} else {
 		return true
