@@ -31,4 +31,5 @@ var (
 	ErrCannotCancelListingSingleBid      = sdkerrors.Register(ModuleName, 24, "cannot cancel single bid of the listing")
 	ErrBidCancelIsAllowedAfterSomeTime   = sdkerrors.Register(ModuleName, 25, "bid cancel is allowed after some time after bid")
 	ErrListingNeedsToBeBiddingStatus     = sdkerrors.Register(ModuleName, 26, "listing needs to be in BIDDING status")
+	ErrNotBorrowing                      = sdkerrors.Register(ModuleName, 27, "borrowing amount is 0")
 )
