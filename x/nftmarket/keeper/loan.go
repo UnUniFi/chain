@@ -121,9 +121,9 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 
 	currDebt := k.GetDebtByNft(ctx, msg.NftId.IdBytes())
 
-	// return err if borrowing amount is 0
+	// return err if borrowing didn't happen once before
 	if currDebt.Loan.IsNil() {
-		return types.ErrNotBorrowing
+		return types.ErrNotBorrowed
 	}
 
 	if msg.Amount.Amount.GT(currDebt.Loan.Amount) {
