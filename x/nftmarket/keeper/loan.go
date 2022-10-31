@@ -1,8 +1,9 @@
 package keeper
 
 import (
-	"github.com/UnUniFi/chain/x/nftmarket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
 func (k Keeper) GetDebtByNft(ctx sdk.Context, nftIdBytes []byte) types.Loan {
@@ -119,6 +120,12 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 	}
 
 	currDebt := k.GetDebtByNft(ctx, msg.NftId.IdBytes())
+
+	// return err if borrowing didn't happen once before
+	if currDebt.Loan.IsNil() {
+		return types.ErrNotBorrowed
+	}
+
 	if msg.Amount.Amount.GT(currDebt.Loan.Amount) {
 		return types.ErrRepayAmountExceedsLoanAmount
 	}
