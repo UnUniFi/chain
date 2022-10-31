@@ -614,6 +614,18 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 				listing.State = types.ListingState_SUCCESSFUL_BID
 			}
 			k.SaveNftListing(ctx, listing)
+
+			// Reset the loan data for a lister
+			// If the bid.PaidAmount is more than loan.Coin.Amount, then just delete the loan data for lister.
+			// Otherwise, subtract bid.PaidAmount from loaning amount
+			loan := k.GetDebtByNft(ctx, listing.IdBytes())
+			if loan.Loan.Amount.LT(bid.PaidAmount) {
+				k.DeleteDebt(ctx, listing.IdBytes())
+			} else {
+				renewedLoanAmount := loan.Loan.Amount.Sub(bid.PaidAmount)
+				loan.Loan.Amount = renewedLoanAmount
+				k.SetDebt(ctx, loan)
+			}
 		} else if listing.State == types.ListingState_END_LISTING {
 			index := len(bids) - 1
 			for ; index >= 0; index-- {
