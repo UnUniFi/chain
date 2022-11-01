@@ -45,6 +45,15 @@ func (k Keeper) DeleteDebt(ctx sdk.Context, nftBytes []byte) {
 	store.Delete(types.NftLoanKey(nftBytes))
 }
 
+// remove debt from KVStore by using DeleteDebt method with the feature
+// to judge if it exists before calling it
+func (k Keeper) RemoveDebt(ctx sdk.Context, nftBytes []byte) {
+	loan := k.GetDebtByNft(ctx, nftBytes)
+	if !loan.Loan.Amount.IsNil() {
+		k.DeleteDebt(ctx, nftBytes)
+	}
+}
+
 func (k Keeper) IncreaseDebt(ctx sdk.Context, nftId types.NftIdentifier, amount sdk.Coin) {
 	currDebt := k.GetDebtByNft(ctx, nftId.IdBytes())
 	if sdk.Coin.IsNil(currDebt.Loan) {

@@ -608,24 +608,29 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 					listing.State = types.ListingState_BIDDING
 				}
 				listing.EndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingExtendSeconds))
+
+				// Reset the loan data for a lister
+				// If the bid.PaidAmount is more than loan.Coin.Amount, then just delete the loan data for lister.
+				// Otherwise, subtract bid.PaidAmount from loaning amount
+				loan := k.GetDebtByNft(ctx, listing.IdBytes())
+				if !loan.Loan.Amount.IsNil() {
+					if loan.Loan.Amount.LT(bid.PaidAmount) {
+						k.DeleteDebt(ctx, listing.IdBytes())
+					} else {
+						renewedLoanAmount := loan.Loan.Amount.Sub(bid.PaidAmount)
+						loan.Loan.Amount = renewedLoanAmount
+						k.SetDebt(ctx, loan)
+					}
+				}
 			} else {
 				// schedule NFT / token send after X days
 				listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
 				listing.State = types.ListingState_SUCCESSFUL_BID
+
+				// delete the loan data for the nftId which is deleted from the market
+				k.RemoveDebt(ctx, listing.IdBytes())
 			}
 			k.SaveNftListing(ctx, listing)
-
-			// Reset the loan data for a lister
-			// If the bid.PaidAmount is more than loan.Coin.Amount, then just delete the loan data for lister.
-			// Otherwise, subtract bid.PaidAmount from loaning amount
-			loan := k.GetDebtByNft(ctx, listing.IdBytes())
-			if loan.Loan.Amount.LT(bid.PaidAmount) {
-				k.DeleteDebt(ctx, listing.IdBytes())
-			} else {
-				renewedLoanAmount := loan.Loan.Amount.Sub(bid.PaidAmount)
-				loan.Loan.Amount = renewedLoanAmount
-				k.SetDebt(ctx, loan)
-			}
 		} else if listing.State == types.ListingState_END_LISTING {
 			index := len(bids) - 1
 			for ; index >= 0; index-- {
@@ -682,6 +687,8 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 				// remove listing
 				k.DeleteNftListings(ctx, listing)
 			}
+			// delete the loan data for the nftId which is deleted from the market anyway
+			k.RemoveDebt(ctx, listing.IdBytes())
 		}
 	}
 }
