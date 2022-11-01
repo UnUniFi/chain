@@ -415,7 +415,7 @@ func NewApp(
 		stakeibcmoduletypes.StoreKey,
 		epochsmoduletypes.StoreKey,
 		interchainquerytypes.StoreKey,
-		icacontrollertypes.StoreKey, icahosttypes.StoreKey,
+		icacontrollertypes.StoreKey,
 		recordsmoduletypes.StoreKey,
 		icacallbacksmoduletypes.StoreKey,
 	)
@@ -455,7 +455,6 @@ func NewApp(
 	scopedICAControllerKeeper := app.CapabilityKeeper.ScopeToModule(icacontrollertypes.SubModuleName)
 
 	scopedWasmKeeper := app.CapabilityKeeper.ScopeToModule(wasm.ModuleName)
-	app.CapabilityKeeper.Seal()
 
 	// add keepers
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
