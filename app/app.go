@@ -676,7 +676,7 @@ func NewApp(
 		scopedICAHostKeeper,
 		app.MsgServiceRouter(),
 	)
-	icaModule := ica.NewAppModule(nil, &app.ICAHostKeeper)
+	icaModule := ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper)
 	icaHostIBCModule := icahost.NewIBCModule(app.ICAHostKeeper)
 
 	// Stack one contains
