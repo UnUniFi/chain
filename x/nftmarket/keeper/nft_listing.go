@@ -614,7 +614,7 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 				// Otherwise, subtract bid.PaidAmount from loaning amount
 				loan := k.GetDebtByNft(ctx, listing.IdBytes())
 				if !loan.Loan.Amount.IsNil() {
-					if loan.Loan.Amount.LT(bid.PaidAmount) {
+					if loan.Loan.Amount.LTE(bid.PaidAmount) {
 						k.DeleteDebt(ctx, listing.IdBytes())
 					} else {
 						renewedLoanAmount := loan.Loan.Amount.Sub(bid.PaidAmount)
