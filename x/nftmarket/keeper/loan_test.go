@@ -536,8 +536,6 @@ func (suite *KeeperTestSuite) TestLoanManagement() {
 		suite.app.NftmarketKeeper.HandleFullPaymentsPeriodEndings(suite.ctx)
 		loan := suite.app.NftmarketKeeper.GetDebtByNft(suite.ctx, nftIdentifier.IdBytes())
 
-		listing, _ = suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
-
 		switch tc.listingState {
 		case types.ListingState_SELLING_DECISION:
 			if tc.fullPay {
