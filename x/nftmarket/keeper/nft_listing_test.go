@@ -1718,3 +1718,133 @@ func (suite *KeeperTestSuite) TestDelieverSuccessfulBidForPositiveLoan() {
 	_, err = suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
 	suite.Require().Error(err)
 }
+
+// TestReListingDataManagement is a test to check if the all data related listing like bid and loan
+// works as intended when the list is re-listed by system or even by user's hand
+func (suite *KeeperTestSuite) TestReListingDataManagement() {
+	acc1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	params := suite.app.NftmarketKeeper.GetParamSet(suite.ctx)
+	nftIdentifier := types.NftIdentifier{ClassId: "class1", NftId: "nft1"}
+	nftOwner := acc1
+
+	tests := []struct {
+		testCase     string
+		numBids      int
+		listingState types.ListingState
+		borrow       bool
+	}{
+		{
+			testCase:     "selling decision listing when highest bid is not paid and no more bids",
+			numBids:      1,
+			listingState: types.ListingState_SELLING_DECISION,
+			borrow:       true,
+		}, // status => ListingState_LISTING
+		{
+			testCase:     "selling decision listing when highest bid is not paid, and more bids",
+			numBids:      2,
+			listingState: types.ListingState_SELLING_DECISION,
+			borrow:       true,
+		}, // status => ListingState_BIDDING
+		{
+			testCase:     "end listing when no bids is not paid",
+			numBids:      1,
+			listingState: types.ListingState_END_LISTING,
+			borrow:       true,
+		}, // status => delist
+	}
+
+	for _, tc := range tests {
+		suite.SetupTest()
+
+		now := time.Now().UTC()
+		suite.ctx = suite.ctx.WithBlockTime(now)
+
+		coin := sdk.NewInt64Coin("uguu", int64(1000000000))
+		_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{coin})
+		_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, nftOwner, sdk.Coins{coin})
+
+		_ = suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+			Id:     nftIdentifier.ClassId,
+			Name:   nftIdentifier.ClassId,
+			Symbol: nftIdentifier.ClassId,
+		})
+		_ = suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
+			ClassId: nftIdentifier.ClassId,
+			Id:      nftIdentifier.NftId,
+		}, nftOwner)
+
+		_ = suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
+			Sender:        ununifitypes.StringAccAddress(nftOwner),
+			NftId:         nftIdentifier,
+			ListingType:   types.ListingType_DIRECT_ASSET_BORROW,
+			BidToken:      "uguu",
+			MinBid:        sdk.ZeroInt(),
+			BidActiveRank: 2,
+		})
+		listing, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+		suite.Require().NoError(err)
+
+		for i := 0; i < tc.numBids; i++ {
+			if tc.borrow {
+				suite.PlaceAndBorrow(coin, nftIdentifier, nftOwner, false, 2)
+			} else {
+				bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+				// init tokens to addr
+				coin := sdk.NewInt64Coin("uguu", int64(1000000*(i+1)))
+				_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{coin})
+				_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{coin})
+
+				_ = suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
+					Sender:           ununifitypes.StringAccAddress(bidder),
+					NftId:            nftIdentifier,
+					Amount:           coin,
+					AutomaticPayment: false,
+				})
+			}
+		}
+
+		listing.State = tc.listingState
+		suite.app.NftmarketKeeper.SetNftListing(suite.ctx, listing)
+
+		// oldNftOwnerBalance := suite.app.BankKeeper.GetBalance(suite.ctx, nftOwner, "uguu")
+		suite.ctx = suite.ctx.WithBlockTime(now.Add(time.Second * time.Duration(params.NftListingPeriodInitial+1)))
+		suite.app.NftmarketKeeper.HandleFullPaymentsPeriodEndings(suite.ctx)
+		bids := suite.app.NftmarketKeeper.GetBidsByNft(suite.ctx, nftIdentifier.IdBytes())
+		loan := suite.app.NftmarketKeeper.GetDebtByNft(suite.ctx, nftIdentifier.IdBytes())
+
+		switch tc.listingState {
+		case types.ListingState_SELLING_DECISION:
+			if tc.numBids > 1 {
+				// status => ListingState_BIDDING
+				listing, err = suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+				suite.Require().NoError(err)
+				suite.Require().Equal(listing.State, types.ListingState_BIDDING)
+				suite.Require().NotEmpty(bids)
+				suite.Require().NotEmpty(loan)
+			} else {
+				// status => ListingState_LISTING
+
+				listing, err = suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+				suite.Require().NoError(err)
+				suite.Require().Equal(listing.State, types.ListingState_LISTING)
+				suite.Require().Empty(bids)
+				suite.Require().Empty(loan)
+			}
+		case types.ListingState_END_LISTING:
+			// all the bids closed, pay depositCollected, nft listing delete, transfer nft to fully paid bidder
+			// _, err = suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+			// suite.Require().Error(err)
+
+			// bids := suite.app.NftmarketKeeper.GetBidsByNft(suite.ctx, nftIdentifier.IdBytes())
+			// suite.Require().Len(bids, 0)
+
+			// newOwnerBalance := suite.app.BankKeeper.GetBalance(suite.ctx, nftOwner, "uguu")
+			// suite.Require().True(newOwnerBalance.Amount.GT(oldNftOwnerBalance.Amount))
+
+			// nft, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+			// suite.Require().NoError(err)
+			// suite.Require().Equal(nft.Owner, nftOwner)
+		}
+	}
+
+}

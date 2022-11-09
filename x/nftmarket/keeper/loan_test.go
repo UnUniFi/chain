@@ -510,13 +510,13 @@ func (suite *KeeperTestSuite) TestLoanManagement() {
 		listing, _ := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
 
 		if !tc.multiBid {
-			suite.Borrow(bidAmount, nftIdentifier, nftOwner, tc.fullPay)
+			suite.PlaceAndBorrow(bidAmount, nftIdentifier, nftOwner, tc.fullPay, 10)
 		} else if tc.overBorrow {
 			for i := 0; i < 2; i++ {
-				suite.Borrow(bidAmount, nftIdentifier, nftOwner, tc.fullPay)
+				suite.PlaceAndBorrow(bidAmount, nftIdentifier, nftOwner, tc.fullPay, 10)
 			}
 		} else {
-			suite.Borrow(bidAmount, nftIdentifier, nftOwner, tc.fullPay)
+			suite.PlaceAndBorrow(bidAmount, nftIdentifier, nftOwner, tc.fullPay, 10)
 			bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 			_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{bidAmount})
 			_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{bidAmount})
@@ -556,7 +556,7 @@ func (suite *KeeperTestSuite) TestLoanManagement() {
 }
 
 // this method is for TestLoanManagement
-func (suite *KeeperTestSuite) Borrow(coin sdk.Coin, nftId types.NftIdentifier, nftOwner sdk.AccAddress, fullPay bool) {
+func (suite *KeeperTestSuite) PlaceAndBorrow(coin sdk.Coin, nftId types.NftIdentifier, nftOwner sdk.AccAddress, fullPay bool, bidActiveRank uint64) {
 	bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{coin})
 	_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{coin})
@@ -571,7 +571,7 @@ func (suite *KeeperTestSuite) Borrow(coin sdk.Coin, nftId types.NftIdentifier, n
 	err = suite.app.NftmarketKeeper.Borrow(suite.ctx, &types.MsgBorrow{
 		Sender: ununifitypes.StringAccAddress(nftOwner),
 		NftId:  nftId,
-		Amount: sdk.NewCoin("uguu", coin.Amount.Quo(sdk.NewInt(10))),
+		Amount: sdk.NewCoin("uguu", coin.Amount.Quo(sdk.NewInt(int64(bidActiveRank)))),
 	})
 	suite.Require().NoError(err)
 
