@@ -754,11 +754,14 @@ func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sd
 	}
 	listerPayment := amount.Sub(fee)
 	listerPayment = listerPayment.Sub(loanAmount)
-	err := k.bankKeeper.SendCoinsFromModuleToAccount(cacheCtx, types.ModuleName, listingOwner, sdk.Coins{sdk.NewCoin(denom, listerPayment)})
-	if err != nil {
-		fmt.Println(err)
-		return
-	} else {
-		write()
+	if !listerPayment.IsZero() {
+		err := k.bankKeeper.SendCoinsFromModuleToAccount(cacheCtx, types.ModuleName, listingOwner, sdk.Coins{sdk.NewCoin(denom, listerPayment)})
+		if err != nil {
+			fmt.Println(err)
+			return
+		} else {
+			write()
+		}
 	}
+
 }
