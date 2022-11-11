@@ -1,12 +1,15 @@
 package keeper_test
 
 import (
-	ununifitypes "github.com/UnUniFi/chain/types"
-	"github.com/UnUniFi/chain/x/nftmarket/types"
+	"time"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 	"github.com/tendermint/tendermint/crypto/ed25519"
+
+	ununifitypes "github.com/UnUniFi/chain/types"
+	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
 func (suite *KeeperTestSuite) TestDebtBasics() {
@@ -412,6 +415,172 @@ func (suite *KeeperTestSuite) TestRepay() {
 		} else {
 			suite.Require().Error(err)
 		}
+	}
+}
+
+// TestLoanManagement is a test to see if the management of loan data is properly working.
+// Specifically, this tests loan situation in HandleFullPaymentPeriodEnding method.
+func (suite *KeeperTestSuite) TestLoanManagement() {
+	acc1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	params := suite.app.NftmarketKeeper.GetParamSet(suite.ctx)
+	bidAmount := sdk.NewCoin("uguu", sdk.NewInt(100))
+	nftOwner := acc1
+	nftIdentifier := types.NftIdentifier{ClassId: "class1", NftId: "nft1"}
+
+	tests := []struct {
+		testCase     string
+		listingState types.ListingState
+		fullPay      bool
+		multiBid     bool
+		overBorrow   bool
+	}{
+		{
+			testCase:     "unit borrow in selling decision listing when highest bid is paid",
+			listingState: types.ListingState_SELLING_DECISION,
+			fullPay:      true,
+			multiBid:     false,
+		}, // add successful listing state with SuccessfulBidEndAt field + types.ListingState_SUCCESSFUL_BID status
+		{
+			testCase:     "unit borrow in selling decision listing when highest bid is not paid and no more bids",
+			listingState: types.ListingState_SELLING_DECISION,
+			fullPay:      false,
+			multiBid:     false,
+		}, // status => ListingState_LISTING
+		//
+		{
+			testCase:     "multi borrow in selling decision listing when highest bid is not paid, and more bids",
+			listingState: types.ListingState_SELLING_DECISION,
+			fullPay:      false,
+			multiBid:     true,
+			overBorrow:   true,
+		}, // status => ListingState_BIDDING
+		// loan data is removed since only one bid exists.
+		{
+			testCase:     "multi borrow in selling decision listing when highest bid is not paid, and more bids",
+			listingState: types.ListingState_SELLING_DECISION,
+			fullPay:      false,
+			multiBid:     true,
+			overBorrow:   false,
+		}, // status => ListingState_BIDDING
+		// loan data is removed since only one bid exists.
+		{
+			testCase:     "borrow in ended listing, when fully paid bid exists",
+			listingState: types.ListingState_END_LISTING,
+			fullPay:      true,
+			multiBid:     false,
+		}, // add successful bid state with SuccessfulBidEndAt field + types.ListingState_SUCCESSFUL_BID status, close all the other bids
+		// and loan data is just removed.
+		{
+			testCase:     "borrow in ended listing, when fully paid bid does not exist",
+			listingState: types.ListingState_END_LISTING,
+			fullPay:      false,
+			multiBid:     false,
+		}, // all the bids closed, pay depositCollected, nft listing delete, transfer nft to fully paid bidder
+		// and loan data is just removed.
+	}
+
+	for _, tc := range tests {
+		suite.SetupTest()
+
+		now := time.Now().UTC()
+		suite.ctx = suite.ctx.WithBlockTime(now)
+
+		_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{bidAmount})
+		_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, nftOwner, sdk.Coins{bidAmount})
+
+		suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+			Id:     nftIdentifier.ClassId,
+			Name:   nftIdentifier.ClassId,
+			Symbol: nftIdentifier.ClassId,
+		})
+		_ = suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
+			ClassId: nftIdentifier.ClassId,
+			Id:      nftIdentifier.NftId,
+		}, nftOwner)
+
+		_ = suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
+			Sender:        ununifitypes.StringAccAddress(nftOwner),
+			NftId:         nftIdentifier,
+			ListingType:   types.ListingType_DIRECT_ASSET_BORROW,
+			BidToken:      "uguu",
+			MinBid:        sdk.ZeroInt(),
+			BidActiveRank: 10,
+		})
+		listing, _ := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+
+		if !tc.multiBid {
+			suite.PlaceAndBorrow(bidAmount, nftIdentifier, nftOwner, tc.fullPay, 10)
+		} else if tc.overBorrow {
+			for i := 0; i < 2; i++ {
+				suite.PlaceAndBorrow(bidAmount, nftIdentifier, nftOwner, tc.fullPay, 10)
+			}
+		} else {
+			suite.PlaceAndBorrow(bidAmount, nftIdentifier, nftOwner, tc.fullPay, 10)
+			bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+			_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{bidAmount})
+			_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{bidAmount})
+
+			_ = suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
+				Sender:           ununifitypes.StringAccAddress(bidder),
+				NftId:            nftIdentifier,
+				Amount:           bidAmount,
+				AutomaticPayment: true,
+			})
+		}
+
+		listing.State = tc.listingState
+		suite.app.NftmarketKeeper.SetNftListing(suite.ctx, listing)
+
+		suite.ctx = suite.ctx.WithBlockTime(now.Add(time.Second * time.Duration(params.NftListingPeriodInitial+1)))
+		suite.app.NftmarketKeeper.HandleFullPaymentsPeriodEndings(suite.ctx)
+		loan := suite.app.NftmarketKeeper.GetDebtByNft(suite.ctx, nftIdentifier.IdBytes())
+
+		switch tc.listingState {
+		case types.ListingState_SELLING_DECISION:
+			if tc.fullPay {
+				// afte the fullpay, every loan must be removed
+				suite.Require().Empty(loan.Loan)
+			} else {
+				if tc.multiBid && tc.overBorrow {
+					suite.Require().Equal(bidAmount.Amount.QuoRaw(10), loan.Loan.Amount)
+				} else {
+					suite.Require().Empty(loan.Loan)
+				}
+			}
+		case types.ListingState_END_LISTING:
+			// under END_LISTING condition, loan must be removed after HandleFullPaymentsPeriodEndings
+			suite.Require().Empty(loan.Loan)
+		}
+	}
+}
+
+// this method is for TestLoanManagement
+func (suite *KeeperTestSuite) PlaceAndBorrow(coin sdk.Coin, nftId types.NftIdentifier, nftOwner sdk.AccAddress, fullPay bool, bidActiveRank uint64) {
+	bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{coin})
+	_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{coin})
+
+	err := suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
+		Sender:           ununifitypes.StringAccAddress(bidder),
+		NftId:            nftId,
+		Amount:           coin,
+		AutomaticPayment: true,
+	})
+	suite.Require().NoError(err)
+	err = suite.app.NftmarketKeeper.Borrow(suite.ctx, &types.MsgBorrow{
+		Sender: ununifitypes.StringAccAddress(nftOwner),
+		NftId:  nftId,
+		Amount: sdk.NewCoin("uguu", coin.Amount.Quo(sdk.NewInt(int64(bidActiveRank)))),
+	})
+	suite.Require().NoError(err)
+
+	if fullPay {
+		err := suite.app.NftmarketKeeper.PayFullBid(suite.ctx, &types.MsgPayFullBid{
+			Sender: ununifitypes.StringAccAddress(bidder),
+			NftId:  nftId,
+		})
+		suite.Require().NoError(err)
 	}
 }
 
