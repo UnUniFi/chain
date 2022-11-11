@@ -124,6 +124,7 @@ import (
 	icacontroller "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/controller"
 	icacontrollerkeeper "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/controller/keeper"
 	icacontrollertypes "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/controller/types"
+	icagenesistypes "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/types"
 	transfer "github.com/cosmos/ibc-go/v3/modules/apps/transfer"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v3/modules/apps/transfer/keeper"
 	ibctransfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
@@ -1140,6 +1141,21 @@ func (app *App) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.Res
 	if err := tmjson.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
 	}
+	icaRawGenesisState := genesisState[icatypes.ModuleName]
+
+	var icaGenesisState icagenesistypes.GenesisState
+	if err := app.cdc.UnmarshalJSON(icaRawGenesisState, &icaGenesisState); err != nil {
+		panic(err)
+	}
+
+	icaGenesisState.HostGenesisState.Params.AllowMessages = []string{"*"} // allow all msgs
+	genesisJson, err := app.cdc.MarshalJSON(icaGenesisState)
+	if err != nil {
+		panic(err)
+	}
+
+	genesisState[icatypes.ModuleName] = genesisJson
+
 	app.UpgradeKeeper.SetModuleVersionMap(ctx, app.mm.GetVersionMap())
 	return app.mm.InitGenesis(ctx, app.appCodec, genesisState)
 }
