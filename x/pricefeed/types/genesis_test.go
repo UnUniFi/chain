@@ -7,16 +7,14 @@ import (
 	"github.com/UnUniFi/chain/types"
 	"github.com/stretchr/testify/require"
 
-	tmtypes "github.com/tendermint/tendermint/types"
-
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func TestGenesisStateValidate(t *testing.T) {
 	now := time.Now()
-	mockPrivKey := tmtypes.NewMockPV()
-	pubkey, err := mockPrivKey.GetPubKey()
-	require.NoError(t, err)
+	mockPrivKey := ed25519.GenPrivKey()
+	pubkey := mockPrivKey.PubKey()
 	addr := sdk.AccAddress(pubkey.Address())
 
 	testCases := []struct {

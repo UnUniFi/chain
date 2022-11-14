@@ -43,7 +43,7 @@ func (k Keeper) ClaimCdpMintingReward(ctx sdk.Context, addr sdk.AccAddress, mult
 		return err
 	}
 
-	rewardAmount := claim.Reward.Amount.ToDec().Mul(multiplier.Factor).RoundInt()
+	rewardAmount := sdk.NewDecFromInt(claim.Reward.Amount).Mul(multiplier.Factor).RoundInt()
 	if rewardAmount.IsZero() {
 		return types.ErrZeroClaim
 	}

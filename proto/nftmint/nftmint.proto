@@ -1,0 +1,49 @@
+syntax = "proto3";
+package ununifi.nftmint;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/nftmint/types";
+
+enum MintingPermission {
+  OnlyOwner = 0;
+  Anyone = 1;
+  // WhiteList = 2;
+}
+
+message ClassAttributes {
+  string class_id = 1;
+  string owner = 2 [
+    (gogoproto.moretags) = "yaml:\"owner\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string base_token_uri = 3;
+  MintingPermission minting_permission = 4;
+  uint64 token_supply_cap = 5;
+}
+
+message OwningClassIdList {
+  string owner = 1 [
+    (gogoproto.moretags) = "yaml:\"owner\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  repeated string class_id = 2;
+}
+
+message ClassNameIdList {
+  string class_name = 1;
+  repeated string class_id = 2;
+}
+
+message Params {
+  uint64 MaxNFTSupplyCap = 1;
+  uint64 MinClassNameLen = 2;
+  uint64 MaxClassNameLen = 3;
+  uint64 MinUriLen = 4;
+  uint64 MaxUriLen	= 5;
+  uint64 MaxSymbolLen	= 6;
+  uint64 MaxDescriptionLen = 7;
+}

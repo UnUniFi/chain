@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	"errors"
-	"testing"
 
 	"github.com/stretchr/testify/suite"
 
@@ -127,6 +126,6 @@ func (suite *DepositTestSuite) TestWithdrawCollateral() {
 	suite.Require().True(errors.Is(err, cdptypes.ErrDepositNotFound))
 }
 
-func TestDepositTestSuite(t *testing.T) {
-	suite.Run(t, new(DepositTestSuite))
-}
+// func TestDepositTestSuite(t *testing.T) {
+// 	suite.Run(t, new(DepositTestSuite))
+// }

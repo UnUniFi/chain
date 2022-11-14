@@ -11,6 +11,7 @@ import (
 	"github.com/UnUniFi/chain/x/pricefeed/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
@@ -19,13 +20,13 @@ import (
 type (
 	Keeper struct {
 		cdc        codec.Codec
-		storeKey   sdk.StoreKey
-		memKey     sdk.StoreKey
+		storeKey   storetypes.StoreKey
+		memKey     storetypes.StoreKey
 		paramSpace paramtypes.Subspace
 	}
 )
 
-func NewKeeper(cdc codec.Codec, storeKey, memKey sdk.StoreKey, paramSpace paramtypes.Subspace) Keeper {
+func NewKeeper(cdc codec.Codec, storeKey, memKey storetypes.StoreKey, paramSpace paramtypes.Subspace) Keeper {
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}

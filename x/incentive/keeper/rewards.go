@@ -28,7 +28,7 @@ func (k Keeper) AccumulateCdpMintingRewards(ctx sdk.Context, rewardPeriod types.
 
 	denoms, _ := k.GetGenesisDenoms(ctx)
 
-	totalPrincipal := k.cdpKeeper.GetTotalPrincipal(ctx, rewardPeriod.CollateralType, denoms.PrincipalDenom).ToDec()
+	totalPrincipal := sdk.NewDecFromInt(k.cdpKeeper.GetTotalPrincipal(ctx, rewardPeriod.CollateralType, denoms.PrincipalDenom))
 	if totalPrincipal.IsZero() {
 		k.SetPreviousCdpMintingAccrualTime(ctx, rewardPeriod.CollateralType, ctx.BlockTime())
 		return nil
@@ -39,7 +39,7 @@ func (k Keeper) AccumulateCdpMintingRewards(ctx sdk.Context, rewardPeriod types.
 		k.SetPreviousCdpMintingAccrualTime(ctx, rewardPeriod.CollateralType, ctx.BlockTime())
 		return nil
 	}
-	rewardFactor := newRewards.ToDec().Mul(cdpFactor).Quo(totalPrincipal)
+	rewardFactor := sdk.NewDecFromInt(newRewards).Mul(cdpFactor).Quo(totalPrincipal)
 
 	previousRewardFactor, found := k.GetCdpMintingRewardFactor(ctx, rewardPeriod.CollateralType)
 	if !found {
@@ -120,7 +120,7 @@ func (k Keeper) SynchronizeCdpMintingReward(ctx sdk.Context, cdp cdptypes.Cdp) {
 		return
 	}
 	claim.RewardIndexes[index].RewardFactor = globalRewardFactor
-	newRewardsAmount := rewardsAccumulatedFactor.Mul(cdp.GetTotalPrincipal().Amount.ToDec()).RoundInt()
+	newRewardsAmount := rewardsAccumulatedFactor.Mul(sdk.NewDecFromInt(cdp.GetTotalPrincipal().Amount)).RoundInt()
 	if newRewardsAmount.IsZero() {
 		k.SetCdpMintingClaim(ctx, claim)
 		return
@@ -212,7 +212,7 @@ func (k Keeper) SimulateCdpMintingSynchronization(ctx sdk.Context, claim types.C
 		if !found {
 			continue
 		}
-		newRewardsAmount := rewardsAccumulatedFactor.Mul(cdp.GetTotalPrincipal().Amount.ToDec()).RoundInt()
+		newRewardsAmount := rewardsAccumulatedFactor.Mul(sdk.NewDecFromInt(cdp.GetTotalPrincipal().Amount)).RoundInt()
 		if newRewardsAmount.IsZero() {
 			continue
 		}

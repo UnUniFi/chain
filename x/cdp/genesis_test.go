@@ -2,7 +2,6 @@ package cdp_test
 
 import (
 	"strings"
-	"testing"
 	"time"
 
 	"github.com/stretchr/testify/suite"
@@ -132,6 +131,6 @@ func (suite *GenesisTestSuite) TestValidGenState() {
 	})
 }
 
-func TestGenesisTestSuite(t *testing.T) {
-	suite.Run(t, new(GenesisTestSuite))
-}
+// func TestGenesisTestSuite(t *testing.T) {
+// 	suite.Run(t, new(GenesisTestSuite))
+// }

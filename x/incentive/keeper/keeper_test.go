@@ -1,14 +1,13 @@
 package keeper_test
 
 import (
-	"testing"
-
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	// authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
+	"github.com/cosmos/cosmos-sdk/x/bank/testutil"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
 	// supplyexported "github.com/cosmos/cosmos-sdk/x/supply/exported"
@@ -21,7 +20,6 @@ import (
 	// hardkeeper "github.com/UnUniFi/chain/x/hard/keeper"
 	"github.com/UnUniFi/chain/x/incentive/keeper"
 	"github.com/UnUniFi/chain/x/incentive/types"
-	"github.com/cosmos/cosmos-sdk/simapp"
 )
 
 // Test suite used for all keeper tests
@@ -101,7 +99,7 @@ func (suite *KeeperTestSuite) TestIterateJPYXMintingClaims() {
 func (suite *KeeperTestSuite) createPeriodicVestingAccount(origVesting sdk.Coins, periods vestingtypes.Periods, startTime, endTime int64) (*vestingtypes.PeriodicVestingAccount, error) {
 	_, addr := app.GeneratePrivKeyAddressPairs(1)
 	bacc := authtypes.NewBaseAccountWithAddress(addr[0])
-	simapp.FundAccount(suite.app.BankKeeper, suite.ctx, bacc.GetAddress(), origVesting)
+	testutil.FundAccount(suite.app.BankKeeper, suite.ctx, bacc.GetAddress(), origVesting)
 	bva := vestingtypes.NewBaseVestingAccount(bacc, origVesting, endTime)
 	err := bva.Validate()
 	if err != nil {
@@ -121,6 +119,6 @@ func d(str string) sdk.Dec                  { return sdk.MustNewDecFromStr(str) 
 func c(denom string, amount int64) sdk.Coin { return sdk.NewInt64Coin(denom, amount) }
 func cs(coins ...sdk.Coin) sdk.Coins        { return sdk.NewCoins(coins...) }
 
-func TestKeeperTestSuite(t *testing.T) {
-	suite.Run(t, new(KeeperTestSuite))
-}
+// func TestKeeperTestSuite(t *testing.T) {
+// 	suite.Run(t, new(KeeperTestSuite))
+// }

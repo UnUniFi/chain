@@ -1,7 +1,6 @@
 package types_test
 
 import (
-	"testing"
 	"time"
 
 	"github.com/stretchr/testify/suite"
@@ -96,6 +95,6 @@ func (suite *ParamTestSuite) TestParamValidation() {
 	}
 }
 
-func TestGenesisTestSuite(t *testing.T) {
-	suite.Run(t, new(ParamTestSuite))
-}
+// func TestGenesisTestSuite(t *testing.T) {
+// 	suite.Run(t, new(ParamTestSuite))
+// }

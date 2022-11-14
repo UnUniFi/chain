@@ -1,8 +1,6 @@
 package pricefeed_test
 
 import (
-	"testing"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/app"
@@ -38,6 +36,6 @@ func (suite *GenesisTestSuite) TestValidGenState() {
 	})
 }
 
-func TestGenesisTestSuite(t *testing.T) {
-	suite.Run(t, new(GenesisTestSuite))
-}
+// func TestGenesisTestSuite(t *testing.T) {
+// 	suite.Run(t, new(GenesisTestSuite))
+// }
