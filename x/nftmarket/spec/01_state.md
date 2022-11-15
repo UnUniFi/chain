@@ -31,12 +31,8 @@ message NftListing {
   ListingType listing_type = 2;
   ListingState state = 3;
   string bid_token = 4;
-  string min_bid = 5 [
-    (gogoproto.moretags) = "yaml:\"min_bid\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  uint64 bid_active_rank = 6;
+  uint64 minimum_deposit_rate = 5;
+  bool automatic_overdraft = 6;
 }
 ```
 
@@ -51,7 +47,11 @@ message NftListing {
 message NftBid {
   NftIdentifier nft_id = 1 [ (gogoproto.nullable) = false ];
   string bidder = 2;
-  cosmos.base.v1beta1.Coin amount = 3 [ (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin bid_amount = 3 [ (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin deposit_amount = 4 [ (gogoproto.nullable) = false ];
+  google.protobuf.Timestamp bidding_period = 5 [ (gogoproto.nullable) = false ];
+  uint64 deposit_lending_rate = 6 [ (gogoproto.nullable) = false ];
+  bool automatic_payment = 7;
 }
 ```
 
