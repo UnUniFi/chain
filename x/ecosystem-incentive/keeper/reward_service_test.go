@@ -98,7 +98,61 @@ func (suite *KeeperTestSuite) TestWithdrawReward() {
 	}
 }
 
-// TODO
-func (suite *KeeperTestSuite) TestWithdrawAllReward() {
+func (suite *KeeperTestSuite) TestWithdrawAllRewards() {
+	testCases := []struct {
+		testCase    string
+		withdrawer  sdk.AccAddress
+		rewards     sdk.Coins
+		validDenom  bool
+		rewardExist bool
+		success     bool
+	}{
+		{
+			testCase:    "ordinal success case",
+			withdrawer:  suite.addrs[0],
+			rewards:     sdk.NewCoins(sdk.NewCoin("uguu", sdk.NewInt(10))),
+			validDenom:  true,
+			rewardExist: true,
+			success:     true,
+		},
+		{
+			testCase:    "no reward accumulated",
+			withdrawer:  suite.addrs[0],
+			rewards:     sdk.Coins{},
+			validDenom:  true,
+			rewardExist: false,
+			success:     false,
+		},
+	}
 
+	for _, tc := range testCases {
+		_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, tc.rewards)
+		_ = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.ModuleName, tc.rewards)
+
+		if tc.success {
+			err := suite.app.EcosystemincentiveKeeper.SetRewardStore(suite.ctx, types.RewardStore{
+				SubjectAddr: tc.withdrawer.Bytes(),
+				Rewards:     tc.rewards,
+			})
+			suite.Require().NoError(err)
+
+			withdrewRewards, err := suite.app.EcosystemincentiveKeeper.WithdrawAllRewards(suite.ctx, &types.MsgWithdrawAllRewards{
+				Sender: tc.withdrawer.Bytes(),
+			})
+			suite.Require().NoError(err)
+			suite.Require().Equal(withdrewRewards, tc.rewards)
+
+			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.Bytes())
+			suite.Require().False(exists)
+		} else {
+			_, err := suite.app.EcosystemincentiveKeeper.WithdrawAllRewards(suite.ctx, &types.MsgWithdrawAllRewards{
+				Sender: tc.withdrawer.Bytes(),
+			})
+			suite.Require().Error(err)
+			suite.Require().EqualError(err, sdkerrors.Wrap(types.ErrRewardNotExists, tc.withdrawer.String()).Error())
+
+			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.Bytes())
+			suite.Require().False(exists)
+		}
+	}
 }
