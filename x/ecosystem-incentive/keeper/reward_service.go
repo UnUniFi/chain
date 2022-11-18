@@ -57,10 +57,6 @@ func (k Keeper) WithdrawAllRewards(ctx sdk.Context, msg *types.MsgWithdrawAllRew
 		return sdk.Coins{}, sdkerrors.Wrap(types.ErrRewardNotExists, msg.Sender.AccAddress().String())
 	}
 
-	if reward.Rewards.Empty() {
-		return sdk.Coins{}, types.ErrAddressNotHaveReward
-	}
-
 	// TODO: decide how to define module accout to send token
 	// send coin from the specific module account which accumulate all fees on UnUniFi(?)
 	if err := k.bankKeeper.SendCoinsFromModuleToAccount(
