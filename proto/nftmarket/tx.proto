@@ -27,153 +27,151 @@ service Msg {
 
 message MsgMintNft {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.moretags)   = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
-  string classId = 2;
-  string nftId = 3;
-  string nftUri = 4;
+  string classId    = 2;
+  string nftId      = 3;
+  string nftUri     = 4;
   string nftUriHash = 5;
 }
 message MsgMintNftResponse {}
 
 message MsgListNft {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.moretags)   = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
-  NftIdentifier nft_id = 2 [ (gogoproto.nullable) = false ];
-  ListingType listing_type = 3;
-  string bid_token = 4;
-  string min_bid = 5 [
-    (gogoproto.moretags) = "yaml:\"min_bid\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-  uint64 bid_active_rank = 6;
+  NftIdentifier nft_id               = 2 [(gogoproto.nullable) = false];
+  ListingType   listing_type         = 3;
+  string        bid_token            = 4;
+  uint64        minimum_deposit_rate = 5;
+  bool          automatic_overdraft  = 6;
 }
 message MsgListNftResponse {}
 
 message MsgCancelNftListing {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.moretags)   = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
-  NftIdentifier nft_id = 2 [ (gogoproto.nullable) = false ];
+  NftIdentifier nft_id = 2 [(gogoproto.nullable) = false];
 }
 message MsgCancelNftListingResponse {}
 
 message MsgExpandListingPeriod {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.moretags)   = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
-  NftIdentifier nft_id = 2 [ (gogoproto.nullable) = false ];
+  NftIdentifier nft_id = 2 [(gogoproto.nullable) = false];
 }
 message MsgExpandListingPeriodResponse {}
 
 message MsgPlaceBid {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.moretags)   = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
-  NftIdentifier nft_id = 2 [ (gogoproto.nullable) = false ];
-  cosmos.base.v1beta1.Coin amount = 3 [ (gogoproto.nullable) = false ];
-  bool automatic_payment = 4;
+  NftIdentifier             nft_id               = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin  amount               = 3 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp bidding_period       = 4 [(gogoproto.nullable) = false];
+  uint64                    deposit_lending_rate = 5 [(gogoproto.nullable) = false];
+  bool                      automatic_payment    = 6;
 }
 message MsgPlaceBidResponse {}
 
 message MsgCancelBid {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.moretags)   = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
-  NftIdentifier nft_id = 2 [ (gogoproto.nullable) = false ];
+  NftIdentifier nft_id = 2 [(gogoproto.nullable) = false];
 }
 message MsgCancelBidResponse {}
 
 message MsgEndNftListing {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.moretags)   = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
-  NftIdentifier nft_id = 2 [ (gogoproto.nullable) = false ];
+  NftIdentifier nft_id = 2 [(gogoproto.nullable) = false];
 }
 message MsgEndNftListingResponse {}
 
 message MsgSellingDecision {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.moretags)   = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
-  NftIdentifier nft_id = 2 [ (gogoproto.nullable) = false ];
+  NftIdentifier nft_id = 2 [(gogoproto.nullable) = false];
 }
 message MsgSellingDecisionResponse {}
 
 message MsgPayFullBid {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.moretags)   = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
-  NftIdentifier nft_id = 2 [ (gogoproto.nullable) = false ];
+  NftIdentifier nft_id = 2 [(gogoproto.nullable) = false];
 }
 message MsgPayFullBidResponse {}
 
 message MsgBorrow {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.moretags)   = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
-  NftIdentifier nft_id = 2 [ (gogoproto.nullable) = false ];
-  cosmos.base.v1beta1.Coin amount = 3 [ (gogoproto.nullable) = false ];
+  NftIdentifier            nft_id = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false];
 }
 message MsgBorrowResponse {}
 
 message MsgRepay {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.moretags)   = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
-  NftIdentifier nft_id = 2 [ (gogoproto.nullable) = false ];
-  cosmos.base.v1beta1.Coin amount = 3 [ (gogoproto.nullable) = false ];
+  NftIdentifier            nft_id = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false];
 }
 message MsgRepayResponse {}
 
 message MsgMintStableCoin {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.moretags)   = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
 }
 message MsgMintStableCoinResponse {}
 
 message MsgBurnStableCoin {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.moretags)   = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
 }
 message MsgBurnStableCoinResponse {}
 
 message MsgLiquidate {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.moretags)   = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
-  NftIdentifier nft_id = 2 [ (gogoproto.nullable) = false ];
+  NftIdentifier nft_id = 2 [(gogoproto.nullable) = false];
 }
 message MsgLiquidateResponse {}

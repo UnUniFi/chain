@@ -43,18 +43,14 @@ message ListedNft {
 }
 
 message NftListing {
-  NftIdentifier nft_id       = 1 [(gogoproto.nullable) = false];
-  string        owner        = 2;
-  ListingType   listing_type = 3;
-  ListingState  state        = 4;
-  string        bid_token    = 5;
-  string        min_bid      = 6 [
-    (gogoproto.moretags)   = "yaml:\"min_bid\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable)   = false
-  ];
-  uint64                    bid_active_rank = 7;
-  google.protobuf.Timestamp started_at      = 8
+  NftIdentifier             nft_id               = 1 [(gogoproto.nullable) = false];
+  string                    owner                = 2;
+  ListingType               listing_type         = 3;
+  ListingState              state                = 4;
+  string                    bid_token            = 5;
+  uint64                    minimum_deposit_rate = 6;
+  bool                      automatic_overdraft  = 7;
+  google.protobuf.Timestamp started_at           = 8
       [(gogoproto.moretags) = "yaml:\"started_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
   google.protobuf.Timestamp end_at = 9
       [(gogoproto.moretags) = "yaml:\"end_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
@@ -69,16 +65,18 @@ message NftListing {
 }
 
 message NftBid {
-  NftIdentifier            nft_id            = 1 [(gogoproto.nullable) = false];
-  string                   bidder            = 2;
-  cosmos.base.v1beta1.Coin amount            = 3 [(gogoproto.nullable) = false];
-  bool                     automatic_payment = 4;
-  string                   paid_amount       = 5 [
+  NftIdentifier            nft_id         = 1 [(gogoproto.nullable) = false];
+  string                   bidder         = 2;
+  cosmos.base.v1beta1.Coin bid_amount     = 3 [(gogoproto.nullable) = false];
+  string                   deposit_amount = 4 [
     (gogoproto.moretags)   = "yaml:\"paid_amount\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable)   = false
   ];
-  google.protobuf.Timestamp bid_time = 6
+  google.protobuf.Timestamp bidding_period       = 5 [(gogoproto.nullable) = false];
+  uint64                    deposit_lending_rate = 6 [(gogoproto.nullable) = false];
+  bool                      automatic_payment    = 7;
+  google.protobuf.Timestamp bid_time             = 8
       [(gogoproto.moretags) = "yaml:\"bid_time\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
 }
 
