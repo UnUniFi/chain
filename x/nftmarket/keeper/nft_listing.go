@@ -59,6 +59,7 @@ func getTimeKey(prefix string, timestamp time.Time) []byte {
 	return bz
 }
 
+// call this method when you want to call SetNftListing
 func (k Keeper) SaveNftListing(ctx sdk.Context, listing types.NftListing) {
 	k.SetNftListing(ctx, listing)
 	k.UpdateListedClass(ctx, listing)
@@ -66,7 +67,7 @@ func (k Keeper) SaveNftListing(ctx sdk.Context, listing types.NftListing) {
 
 func (k Keeper) SetNftListing(ctx sdk.Context, listing types.NftListing) {
 	if oldListing, err := k.GetNftListingByIdBytes(ctx, listing.IdBytes()); err == nil {
-		k.DeleteNftListing(ctx, oldListing)
+		k.DeleteNftListings(ctx, oldListing)
 	}
 
 	nftIdBytes := listing.IdBytes()
@@ -87,6 +88,12 @@ func (k Keeper) SetNftListing(ctx sdk.Context, listing types.NftListing) {
 	} else if listing.IsSuccessfulBid() {
 		store.Set(append(getTimeKey(types.KeyPrefixSuccessfulBidListing, listing.SuccessfulBidEndAt), nftIdBytes...), nftIdBytes)
 	}
+}
+
+// call this method when you want to call DeleteNftListing
+func (k Keeper) DeleteNftListings(ctx sdk.Context, listing types.NftListing) {
+	k.DeleteNftListing(ctx, listing)
+	k.UpdateListedClass(ctx, listing)
 }
 
 func (k Keeper) DeleteNftListing(ctx sdk.Context, listing types.NftListing) {
@@ -321,7 +328,7 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 	}
 
 	// delete listing
-	k.DeleteNftListing(ctx, listing)
+	k.DeleteNftListings(ctx, listing)
 
 	// Call AfterNftUnlistedWithoutPayment to delete NFT ID from the ecosystem-incentive KVStore
 	// since it's unlisted.
@@ -500,7 +507,7 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 		if err != nil {
 			panic(err)
 		}
-		k.DeleteNftListing(ctx, listing)
+		k.DeleteNftListings(ctx, listing)
 
 		// Call AfterNftUnlistedWithoutPayment to delete NFT ID from the ecosystem-incentive KVStore
 		// since it's unlisted.
@@ -695,7 +702,7 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 				}
 
 				// remove listing
-				k.DeleteNftListing(ctx, listing)
+				k.DeleteNftListings(ctx, listing)
 			}
 			// delete the loan data for the nftId which is deleted from the market anyway
 			k.RemoveDebt(ctx, listing.IdBytes())
@@ -738,7 +745,7 @@ func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, bid.Amount.Denom, bid.PaidAmount, loan.Loan.Amount, listing.NftId)
 
 		k.DeleteBid(ctx, bid)
-		k.DeleteNftListing(ctx, listing)
+		k.DeleteNftListings(ctx, listing)
 	}
 }
 
