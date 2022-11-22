@@ -1,8 +1,9 @@
 package keeper
 
 import (
-	"github.com/UnUniFi/chain/x/nftmarket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
 func (k Keeper) GetDebtByNft(ctx sdk.Context, nftIdBytes []byte) types.Loan {
@@ -42,6 +43,15 @@ func (k Keeper) SetDebt(ctx sdk.Context, loan types.Loan) {
 func (k Keeper) DeleteDebt(ctx sdk.Context, nftBytes []byte) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.NftLoanKey(nftBytes))
+}
+
+// remove debt (loan) from KVStore by using DeleteDebt method with the feature
+// to judge if it exists before calling it
+func (k Keeper) RemoveDebt(ctx sdk.Context, nftBytes []byte) {
+	loan := k.GetDebtByNft(ctx, nftBytes)
+	if !loan.Loan.Amount.IsNil() {
+		k.DeleteDebt(ctx, nftBytes)
+	}
 }
 
 func (k Keeper) IncreaseDebt(ctx sdk.Context, nftId types.NftIdentifier, amount sdk.Coin) {
@@ -119,6 +129,12 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 	}
 
 	currDebt := k.GetDebtByNft(ctx, msg.NftId.IdBytes())
+
+	// return err if borrowing didn't happen once before
+	if currDebt.Loan.IsNil() {
+		return types.ErrNotBorrowed
+	}
+
 	if msg.Amount.Amount.GT(currDebt.Loan.Amount) {
 		return types.ErrRepayAmountExceedsLoanAmount
 	}

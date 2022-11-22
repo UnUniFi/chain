@@ -303,3 +303,142 @@ func (s *KeeperTestSuite) TestLoan() {
 		})
 	}
 }
+
+func (s *KeeperTestSuite) TestClasses() {
+	testCases := []struct {
+		msg       string
+		malleate  func(index int, require *require.Assertions)
+		req       *types.QueryListedClassesRequest
+		expError  string
+		expResult types.QueryListedClassesResponse
+	}{
+		{
+			"success empty",
+			func(index int, require *require.Assertions) {
+			},
+			&types.QueryListedClassesRequest{},
+			"",
+			types.QueryListedClassesResponse{
+				Classes: []*types.QueryListedClassResponse(nil),
+			},
+		},
+		{
+			"Success list nft",
+			func(index int, require *require.Assertions) {
+				s.TestListNft()
+			},
+			&types.QueryListedClassesRequest{},
+			"",
+			types.QueryListedClassesResponse{
+				Classes: []*types.QueryListedClassResponse{
+					{
+						ClassId:     "class2",
+						Name:        "class2",
+						Description: "class2",
+						Symbol:      "class2",
+						Uri:         "class2",
+						Urihash:     "",
+						Nfts: []*types.ListedNft{
+							{
+								Id:      "nft2",
+								Uri:     "nft2",
+								UriHash: "nft2",
+							},
+						},
+						NftCount: 1,
+					},
+					{
+						ClassId:     "class5",
+						Name:        "class5",
+						Description: "class5",
+						Symbol:      "class5",
+						Uri:         "class5",
+						Urihash:     "",
+						Nfts: []*types.ListedNft{
+							{
+								Id:      "nft5",
+								Uri:     "nft5",
+								UriHash: "nft5",
+							},
+						},
+						NftCount: 1,
+					},
+					{
+						ClassId:     "class6",
+						Name:        "class6",
+						Description: "class6",
+						Symbol:      "class6",
+						Uri:         "class6",
+						Urihash:     "",
+						Nfts: []*types.ListedNft{
+							{
+								Id:      "nft6",
+								Uri:     "nft6",
+								UriHash: "nft6",
+							},
+						},
+						NftCount: 1,
+					},
+					{
+						ClassId:     "class7",
+						Name:        "class7",
+						Description: "class7",
+						Symbol:      "class7",
+						Uri:         "class7",
+						Urihash:     "",
+						Nfts: []*types.ListedNft{
+							{
+								Id:      "nft7",
+								Uri:     "nft7",
+								UriHash: "nft7",
+							},
+						},
+						NftCount: 1,
+					},
+				},
+			},
+		},
+		{
+			"Success plaace bid",
+			func(index int, require *require.Assertions) {
+				s.TestPlaceBid()
+			},
+			&types.QueryListedClassesRequest{},
+			"",
+			types.QueryListedClassesResponse{
+				Classes: []*types.QueryListedClassResponse{
+					{
+						ClassId:     "class5",
+						Name:        "class5",
+						Description: "class5",
+						Symbol:      "class5",
+						Uri:         "class5",
+						Urihash:     "",
+						Nfts: []*types.ListedNft{
+							{
+								Id:      "nft5",
+								Uri:     "nft5",
+								UriHash: "nft5",
+							},
+						},
+						NftCount: 1,
+					},
+				},
+			},
+		},
+	}
+	for index, tc := range testCases {
+		s.Run(fmt.Sprintf("Case %s", tc.msg), func() {
+			require := s.Require()
+			tc.malleate(index, require)
+			result, err := s.queryClient.ListedClasses(gocontext.Background(), tc.req)
+			if tc.expError == "" {
+				require.NoError(err)
+				require.Equal(result, &tc.expResult, "the error occurred on:%d", index)
+			} else {
+				require.Error(err)
+				require.Contains(err.Error(), tc.expError)
+			}
+		})
+	}
+}

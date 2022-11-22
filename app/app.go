@@ -589,8 +589,9 @@ func NewApp(
 		app.NFTKeeper,
 	)
 
-	app.NftmarketKeeper = nftmarketkeeper.NewKeeper(
+	nftmarketKeeper := nftmarketkeeper.NewKeeper(
 		appCodec,
+		encodingConfig.TxConfig,
 		keys[nftmarkettypes.StoreKey],
 		keys[nftmarkettypes.MemStoreKey],
 		app.GetSubspace(nftmarkettypes.ModuleName),
@@ -601,6 +602,7 @@ func NewApp(
 
 	// create Keeper objects which have Hooks
 	app.cdpKeeper = *cdpKeeper.SetHooks(cdptypes.NewMultiCdpHooks(app.incentiveKeeper.Hooks()))
+	app.NftmarketKeeper = *nftmarketKeeper.SetHooks(nftmarkettypes.NewMultiNftmarketHooks())
 
 	// wasmDir := filepath.Join(homePath, "wasm")
 	// wasmConfig, err := wasm.ReadWasmConfig(appOpts)
