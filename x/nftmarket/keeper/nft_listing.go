@@ -508,10 +508,6 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 			panic(err)
 		}
 		k.DeleteNftListings(ctx, listing)
-
-		// Call AfterNftUnlistedWithoutPayment to delete NFT ID from the ecosystem-incentive KVStore
-		// since it's unlisted.
-		k.AfterNftUnlistedWithoutPayment(ctx, listing.NftId)
 	} else {
 		params := k.GetParamSet(ctx)
 		listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
@@ -574,6 +570,12 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 		ClassId: msg.NftId.ClassId,
 		NftId:   msg.NftId.NftId,
 	})
+
+	// Call AfterNftUnlistedWithoutPayment to delete NFT ID from the ecosystem-incentive KVStore
+	// since it's unlisted.
+	if _, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes()); err != nil {
+		k.AfterNftUnlistedWithoutPayment(ctx, listing.NftId)
+	}
 
 	return nil
 }
