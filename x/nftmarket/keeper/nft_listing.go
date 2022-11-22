@@ -238,7 +238,7 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 		_ = fmt.Errorf(err.Error())
 	}
 	if len(txMemo) != 0 {
-		k.hooks.AfterNftListed(ctx, msg.NftId, txMemo)
+		k.AfterNftListed(ctx, msg.NftId, txMemo)
 	}
 
 	// Emit event for nft listing
@@ -325,7 +325,7 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 
 	// Call AfterNftUnlistedWithoutPayment to delete NFT ID from the ecosystem-incentive KVStore
 	// since it's unlisted.
-	k.hooks.AfterNftUnlistedWithoutPayment(ctx, listing.NftId)
+	k.AfterNftUnlistedWithoutPayment(ctx, listing.NftId)
 
 	// Emit event for nft listing cancel
 	ctx.EventManager().EmitTypedEvent(&types.EventCancelListNfting{
@@ -504,7 +504,7 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 
 		// Call AfterNftUnlistedWithoutPayment to delete NFT ID from the ecosystem-incentive KVStore
 		// since it's unlisted.
-		k.hooks.AfterNftUnlistedWithoutPayment(ctx, listing.NftId)
+		k.AfterNftUnlistedWithoutPayment(ctx, listing.NftId)
 	} else {
 		params := k.GetParamSet(ctx)
 		listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
@@ -776,5 +776,5 @@ func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sd
 
 	// Call AfterNftPaymentWithCommission hook method to inform the payment is successfuly
 	// executed.
-	k.hooks.AfterNftPaymentWithCommission(ctx, nftId, sdk.NewCoin(denom, fee))
+	k.AfterNftPaymentWithCommission(ctx, nftId, sdk.NewCoin(denom, fee))
 }
