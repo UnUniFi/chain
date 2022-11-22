@@ -3,7 +3,7 @@ package keeper
 import (
 	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/client"
 )
 
 func Contains(a []string, x string) bool {
@@ -15,25 +15,23 @@ func Contains(a []string, x string) bool {
 	return false
 }
 
-func (k Keeper) GetMemo(ctx sdk.Context) (string, error) {
-	txBytes := ctx.TxBytes()
-
+func GetMemo(txBytes []byte, txCfg client.TxConfig) string {
 	/// NOTE: this way requires txConfig by importing it into keeper struct
-	txData, err := k.txCfg.TxDecoder()(txBytes)
+	txData, err := txCfg.TxDecoder()(txBytes)
 	if err != nil {
 		fmt.Printf("err: %v\n", err)
 
-		txData, err = k.txCfg.TxJSONDecoder()(txBytes)
+		txData, err = txCfg.TxJSONDecoder()(txBytes)
 		if err != nil {
 			fmt.Printf("err: %v\n", err)
 		}
 	}
 
-	txBldr, err := k.txCfg.WrapTxBuilder(txData)
+	txBldr, err := txCfg.WrapTxBuilder(txData)
 	if err != nil {
-		return "", err
+		return ""
 	}
 	memo := txBldr.GetTx().GetMemo()
 
-	return memo, nil
+	return memo
 }

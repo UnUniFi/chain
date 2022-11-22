@@ -1,8 +1,6 @@
 package types_test
 
 import (
-	// 	"strconv"
-
 	"testing"
 
 	simapp "github.com/UnUniFi/chain/app"
@@ -11,7 +9,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	// 	"github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -23,14 +20,18 @@ type KeeperTestSuite struct {
 	addrs []sdk.AccAddress
 }
 
-func (suite *KeeperTestSuite) SetupTest() {
+func (suite *KeeperTestSuite) SetupTest(hooks types.NftmarketHooks) {
 	isCheckTx := false
 
 	app := simapp.Setup(suite.T(), isCheckTx)
 
 	suite.ctx = app.BaseApp.NewContext(isCheckTx, tmproto.Header{})
-	suite.addrs = simapp.AddTestAddrsIncremental(app, suite.ctx, 3, sdk.NewInt(30000000))
+	suite.addrs = simapp.AddTestAddrsIncremental(app, suite.ctx, 1, sdk.NewInt(30000000))
 	suite.app = app
+
+	if hooks != nil {
+		suite.app.NftmarketKeeper.SetHooks(hooks)
+	}
 }
 
 func TestKeeperSuite(t *testing.T) {
@@ -118,7 +119,7 @@ func (suite *KeeperTestSuite) TestHooksPanicRecovery() {
 	}
 
 	for tcIndex, tc := range tests {
-		suite.SetupTest()
+		suite.SetupTest(nil)
 		hookRefs := []types.NftmarketHooks{}
 
 		for _, hook := range tc.hooks {
@@ -127,6 +128,7 @@ func (suite *KeeperTestSuite) TestHooksPanicRecovery() {
 
 		// insert dummy hook struct as part of NftmarketHooks
 		hooks := types.NewMultiNftmarketHooks(hookRefs...)
+		// suite.app.NftmarketKeeper.SetHooks(hooks)
 
 		if tc.lenEvents == 0 {
 			suite.Panics(func() {
