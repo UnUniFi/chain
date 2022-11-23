@@ -13,12 +13,10 @@ enum ListingType {
   LATE_SHIPPING            = 2;
 }
 enum ListingState {
-  LISTING          = 0;
-  BIDDING          = 1;
-  SELLING_DECISION = 2;
-  LIQUIDATION      = 3;
-  END_LISTING      = 4;
-  SUCCESSFUL_BID   = 5;
+  LISTING        = 0;
+  BIDDING        = 1;
+  END_LISTING    = 2;
+  SUCCESSFUL_BID = 3;
 }
 
 message NftIdentifier {
