@@ -377,6 +377,8 @@ func (suite *KeeperTestSuite) TestListNft() {
 func (suite *KeeperTestSuite) TestCancelNftListing() {
 	acc1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	acc2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	keeper := suite.keeper
+	nftKeeper := suite.nftKeeper
 
 	params := suite.app.NftmarketKeeper.GetParamSet(suite.ctx)
 
@@ -391,6 +393,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 		listBefore   bool
 		endedListing bool
 		expectPass   bool
+		hookCounter  uint8
 	}{
 		{
 			testCase:     "not existing listing",
@@ -403,6 +406,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 			listBefore:   false,
 			endedListing: false,
 			expectPass:   false,
+			hookCounter:  0,
 		},
 		{
 			testCase:     "not owned nft listing",
@@ -415,6 +419,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 			listBefore:   true,
 			endedListing: false,
 			expectPass:   false,
+			hookCounter:  0,
 		},
 		{
 			testCase:     "cancel time not pass",
@@ -427,6 +432,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 			listBefore:   true,
 			endedListing: false,
 			expectPass:   false,
+			hookCounter:  0,
 		},
 		{
 			testCase:     "already ended listing",
@@ -439,6 +445,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 			listBefore:   true,
 			endedListing: true,
 			expectPass:   false,
+			hookCounter:  0,
 		},
 		{
 			testCase:     "successful cancel without cancel fee",
@@ -451,6 +458,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 			listBefore:   true,
 			endedListing: false,
 			expectPass:   true,
+			hookCounter:  1,
 		},
 		{
 			testCase:     "successful cancel with cancel fee",
@@ -463,18 +471,23 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 			listBefore:   true,
 			endedListing: false,
 			expectPass:   true,
+			hookCounter:  2,
 		},
 	}
 
-	for _, tc := range tests {
-		suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+	for i, tc := range tests {
+		if i == 0 {
+			successAfterNftUnlistedWithoutPaymentCounter = 0
+		}
+
+		nftKeeper.SaveClass(suite.ctx, nfttypes.Class{
 			Id:          tc.classId,
 			Name:        tc.classId,
 			Symbol:      tc.classId,
 			Description: tc.classId,
 			Uri:         tc.classId,
 		})
-		err := suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
+		err := nftKeeper.Mint(suite.ctx, nfttypes.NFT{
 			ClassId: tc.classId,
 			Id:      tc.nftId,
 			Uri:     tc.nftId,
@@ -484,7 +497,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 
 		nftIdentifier := types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId}
 		if tc.listBefore {
-			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
+			err := keeper.ListNft(suite.ctx, &types.MsgListNft{
 				Sender:        ununifitypes.StringAccAddress(tc.nftOwner),
 				NftId:         nftIdentifier,
 				ListingType:   types.ListingType_DIRECT_ASSET_BORROW,
@@ -505,7 +518,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{coin})
 			suite.NoError(err)
 
-			err := suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
+			err := keeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
 				Sender:           ununifitypes.StringAccAddress(bidder),
 				NftId:            nftIdentifier,
 				Amount:           coin,
@@ -524,7 +537,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 
 		oldCancellerBalance := suite.app.BankKeeper.GetBalance(suite.ctx, tc.canceller, "uguu")
 		suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(tc.cancelAfter))
-		err = suite.app.NftmarketKeeper.CancelNftListing(suite.ctx, &types.MsgCancelNftListing{
+		err = keeper.CancelNftListing(suite.ctx, &types.MsgCancelNftListing{
 			Sender: ununifitypes.StringAccAddress(tc.canceller),
 			NftId:  nftIdentifier,
 		})
@@ -533,7 +546,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 			suite.Require().NoError(err)
 
 			// check all bids are closed and returned
-			nftBids := suite.app.NftmarketKeeper.GetBidsByNft(suite.ctx, nftIdentifier.IdBytes())
+			nftBids := keeper.GetBidsByNft(suite.ctx, nftIdentifier.IdBytes())
 			suite.Require().Len(nftBids, 0)
 
 			// check cancel fee is reduced from listing owner
@@ -543,15 +556,17 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 			}
 
 			// check nft ownership is returned back to owner
-			owner := suite.app.NFTKeeper.GetOwner(suite.ctx, tc.classId, tc.nftId)
+			owner := nftKeeper.GetOwner(suite.ctx, tc.classId, tc.nftId)
 			suite.Require().Equal(owner, tc.nftOwner)
 
 			// check nft listing is deleted
-			_, err = suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+			_, err := keeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
 			suite.Require().Error(err)
 		} else {
 			suite.Require().Error(err)
 		}
+
+		suite.Require().Equal(tc.hookCounter, successAfterNftUnlistedWithoutPaymentCounter)
 	}
 }
 
