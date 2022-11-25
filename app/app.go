@@ -602,7 +602,7 @@ func NewApp(
 
 	// create Keeper objects which have Hooks
 	app.cdpKeeper = *cdpKeeper.SetHooks(cdptypes.NewMultiCdpHooks(app.incentiveKeeper.Hooks()))
-	app.NftmarketKeeper = *nftmarketKeeper.SetHooks(nftmarkettypes.NewMultiNftmarketHooks())
+	app.NftmarketKeeper = *nftmarketKeeper.SetHooks(nftmarkettypes.NewMultiNftmarketHooks(app.EcosystemincentiveKeeper.Hooks()))
 
 	// wasmDir := filepath.Join(homePath, "wasm")
 	// wasmConfig, err := wasm.ReadWasmConfig(appOpts)
