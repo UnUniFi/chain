@@ -240,7 +240,7 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 
 	// get the memo data from Tx contains MsgListNft
 	// If memo data is empty, the hook method is not gonna be called.
-	txMemo, err := k.GetMemo(ctx)
+	txMemo, err := GetMemo(ctx.TxBytes(), k.txCfg)
 	if err != nil {
 		_ = fmt.Errorf(err.Error())
 	}
