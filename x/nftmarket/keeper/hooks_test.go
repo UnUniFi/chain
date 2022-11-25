@@ -10,8 +10,7 @@ var successAfterNftListedCounter uint8
 var successAfterNftPaymentWithCommissionCounter uint8
 var successAfterNftUnlistedWithoutPaymentCounter uint8
 
-type dummyNftmarketHook struct {
-}
+type dummyNftmarketHook struct{}
 
 func (hook *dummyNftmarketHook) AfterNftListed(ctx sdk.Context, nftId types.NftIdentifier, txMemo string) {
 	successAfterNftListedCounter += 1
