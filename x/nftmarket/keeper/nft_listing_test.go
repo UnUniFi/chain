@@ -934,100 +934,110 @@ func (suite *KeeperTestSuite) TestEndNftListing() {
 	params := suite.app.NftmarketKeeper.GetParamSet(suite.ctx)
 
 	tests := []struct {
-		testCase      string
-		classId       string
-		nftId         string
-		nftOwner      sdk.AccAddress
-		executor      sdk.AccAddress
-		numBids       int
-		enoughAutoPay bool
-		autoPayment   bool
-		listBefore    bool
-		endedListing  bool
-		expectPass    bool
+		testCase            string
+		classId             string
+		nftId               string
+		nftOwner            sdk.AccAddress
+		executor            sdk.AccAddress
+		numBids             int
+		enoughAutoPay       bool
+		autoPayment         bool
+		listBefore          bool
+		endedListing        bool
+		expectPass          bool
+		unlistedHookCounter uint8
 	}{
 		{
-			testCase:      "not existing listing",
-			classId:       "class1",
-			nftId:         "nft1",
-			nftOwner:      acc1,
-			executor:      acc1,
-			numBids:       0,
-			enoughAutoPay: true,
-			autoPayment:   false,
-			listBefore:    false,
-			endedListing:  false,
-			expectPass:    false,
+			testCase:            "not existing listing",
+			classId:             "class1",
+			nftId:               "nft1",
+			nftOwner:            acc1,
+			executor:            acc1,
+			numBids:             0,
+			enoughAutoPay:       true,
+			autoPayment:         false,
+			listBefore:          false,
+			endedListing:        false,
+			expectPass:          false,
+			unlistedHookCounter: 0,
 		},
 		{
-			testCase:      "not owned nft listing",
-			classId:       "class2",
-			nftId:         "nft2",
-			nftOwner:      acc1,
-			executor:      acc2,
-			numBids:       0,
-			enoughAutoPay: true,
-			autoPayment:   false,
-			listBefore:    true,
-			endedListing:  false,
-			expectPass:    false,
+			testCase:            "not owned nft listing",
+			classId:             "class2",
+			nftId:               "nft2",
+			nftOwner:            acc1,
+			executor:            acc2,
+			numBids:             0,
+			enoughAutoPay:       true,
+			autoPayment:         false,
+			listBefore:          true,
+			endedListing:        false,
+			expectPass:          false,
+			unlistedHookCounter: 0,
 		},
 		{
-			testCase:      "already ended nft listing",
-			classId:       "class3",
-			nftId:         "nft3",
-			nftOwner:      acc1,
-			executor:      acc2,
-			numBids:       1,
-			enoughAutoPay: true,
-			autoPayment:   false,
-			listBefore:    true,
-			endedListing:  true,
-			expectPass:    false,
+			testCase:            "already ended nft listing",
+			classId:             "class3",
+			nftId:               "nft3",
+			nftOwner:            acc1,
+			executor:            acc2,
+			numBids:             1,
+			enoughAutoPay:       true,
+			autoPayment:         false,
+			listBefore:          true,
+			endedListing:        true,
+			expectPass:          false,
+			unlistedHookCounter: 0,
 		},
 		{
-			testCase:      "successful nft listing ending when no bid",
-			classId:       "class4",
-			nftId:         "nft4",
-			nftOwner:      acc1,
-			executor:      acc1,
-			numBids:       0,
-			enoughAutoPay: true,
-			autoPayment:   false,
-			listBefore:    true,
-			endedListing:  false,
-			expectPass:    true,
+			testCase:            "successful nft listing ending when no bid",
+			classId:             "class4",
+			nftId:               "nft4",
+			nftOwner:            acc1,
+			executor:            acc1,
+			numBids:             0,
+			enoughAutoPay:       true,
+			autoPayment:         false,
+			listBefore:          true,
+			endedListing:        false,
+			expectPass:          true,
+			unlistedHookCounter: 1,
 		},
 		{
-			testCase:      "successful nft listing ending with automatic payment enabled with not enough balance",
-			classId:       "class5",
-			nftId:         "nft5",
-			nftOwner:      acc1,
-			executor:      acc1,
-			numBids:       1,
-			enoughAutoPay: false,
-			autoPayment:   true,
-			listBefore:    true,
-			endedListing:  false,
-			expectPass:    true,
+			testCase:            "successful nft listing ending with automatic payment enabled with not enough balance",
+			classId:             "class5",
+			nftId:               "nft5",
+			nftOwner:            acc1,
+			executor:            acc1,
+			numBids:             1,
+			enoughAutoPay:       false,
+			autoPayment:         true,
+			listBefore:          true,
+			endedListing:        false,
+			expectPass:          true,
+			unlistedHookCounter: 0,
 		},
 		{
-			testCase:      "successful nft listing ending without automatic payment",
-			classId:       "class6",
-			nftId:         "nft6",
-			nftOwner:      acc1,
-			executor:      acc1,
-			numBids:       4,
-			enoughAutoPay: true,
-			autoPayment:   false,
-			listBefore:    true,
-			endedListing:  false,
-			expectPass:    true,
+			testCase:            "successful nft listing ending without automatic payment",
+			classId:             "class6",
+			nftId:               "nft6",
+			nftOwner:            acc1,
+			executor:            acc1,
+			numBids:             4,
+			enoughAutoPay:       true,
+			autoPayment:         false,
+			listBefore:          true,
+			endedListing:        false,
+			expectPass:          true,
+			unlistedHookCounter: 0,
 		},
 	}
 
 	for _, tc := range tests {
 		suite.SetupTest()
+		keeper := suite.keeper
+		nftKeeper := suite.nftKeeper
+		successAfterNftUnlistedWithoutPaymentCounter = 0
 
 		coin := sdk.NewInt64Coin("uguu", int64(1000000000))
 		err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{coin})
@@ -1035,14 +1045,14 @@ func (suite *KeeperTestSuite) TestEndNftListing() {
 		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, tc.executor, sdk.Coins{coin})
 		suite.NoError(err)
 
-		suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+		nftKeeper.SaveClass(suite.ctx, nfttypes.Class{
 			Id:          tc.classId,
 			Name:        tc.classId,
 			Symbol:      tc.classId,
 			Description: tc.classId,
 			Uri:         tc.classId,
 		})
-		err = suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
+		err = nftKeeper.Mint(suite.ctx, nfttypes.NFT{
 			ClassId: tc.classId,
 			Id:      tc.nftId,
 			Uri:     tc.nftId,
@@ -1052,7 +1062,7 @@ func (suite *KeeperTestSuite) TestEndNftListing() {
 
 		nftIdentifier := types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId}
 		if tc.listBefore {
-			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
+			err := keeper.ListNft(suite.ctx, &types.MsgListNft{
 				Sender:        ununifitypes.StringAccAddress(tc.nftOwner),
 				NftId:         nftIdentifier,
 				ListingType:   types.ListingType_DIRECT_ASSET_BORROW,
@@ -1079,7 +1089,7 @@ func (suite *KeeperTestSuite) TestEndNftListing() {
 			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{mintCoin})
 			suite.NoError(err)
 
-			err := suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
+			err := keeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
 				Sender:           ununifitypes.StringAccAddress(bidder),
 				NftId:            nftIdentifier,
 				Amount:           coin,
@@ -1089,14 +1099,14 @@ func (suite *KeeperTestSuite) TestEndNftListing() {
 		}
 
 		if tc.endedListing {
-			err := suite.app.NftmarketKeeper.EndNftListing(suite.ctx, &types.MsgEndNftListing{
+			err := keeper.EndNftListing(suite.ctx, &types.MsgEndNftListing{
 				Sender: ununifitypes.StringAccAddress(tc.nftOwner),
 				NftId:  nftIdentifier,
 			})
 			suite.Require().NoError(err)
 		}
 
-		err = suite.app.NftmarketKeeper.EndNftListing(suite.ctx, &types.MsgEndNftListing{
+		err = keeper.EndNftListing(suite.ctx, &types.MsgEndNftListing{
 			Sender: ununifitypes.StringAccAddress(tc.executor),
 			NftId:  nftIdentifier,
 		})
@@ -1104,7 +1114,7 @@ func (suite *KeeperTestSuite) TestEndNftListing() {
 		if tc.expectPass {
 			suite.Require().NoError(err)
 			if tc.autoPayment {
-				bid, err := suite.app.NftmarketKeeper.GetBid(suite.ctx, nftIdentifier.IdBytes(), lastBidder)
+				bid, err := keeper.GetBid(suite.ctx, nftIdentifier.IdBytes(), lastBidder)
 				suite.Require().NoError(err)
 				if tc.enoughAutoPay {
 					// check automatic payment execution when user has enough balance
@@ -1117,23 +1127,24 @@ func (suite *KeeperTestSuite) TestEndNftListing() {
 
 			if tc.numBids == 0 {
 				// successful end when there's no bid - delete listing directly and transfer nft back to owner
-				_, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+				_, err := keeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
 				suite.Require().Error(err)
 			} else {
 				// check full payment end time update
-				listing, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+				listing, err := keeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
 				suite.Require().NoError(err)
 				suite.Require().Equal(listing.State, types.ListingState_END_LISTING)
 				suite.Require().Equal(suite.ctx.BlockTime().Add(time.Second*time.Duration(params.NftListingFullPaymentPeriod)), listing.FullPaymentEndAt)
 
 				// check non-active bids are cancelled automatically
-				bids := suite.app.NftmarketKeeper.GetBidsByNft(suite.ctx, nftIdentifier.IdBytes())
+				bids := keeper.GetBidsByNft(suite.ctx, nftIdentifier.IdBytes())
 				suite.Require().True(len(bids) <= int(listing.BidActiveRank))
 			}
 
 		} else {
 			suite.Require().Error(err)
 		}
+		suite.Require().Equal(tc.unlistedHookCounter, successAfterNftUnlistedWithoutPaymentCounter)
 	}
 }
 
@@ -1151,6 +1162,7 @@ func (suite *KeeperTestSuite) TestProcessEndingNftListings() {
 		relistedCount       uint64
 		expectedToEnd       bool
 		expectedToBeRemoved bool
+		unlistedHookCounter uint8
 	}{
 		{
 			testCase:            "no bid nft listing extend when relisted count not reached the limit",
@@ -1161,6 +1173,7 @@ func (suite *KeeperTestSuite) TestProcessEndingNftListings() {
 			relistedCount:       0,
 			expectedToEnd:       false,
 			expectedToBeRemoved: false,
+			unlistedHookCounter: 0,
 		},
 		{
 			testCase:            "no bid nft listing end when relisted count reached",
@@ -1171,6 +1184,7 @@ func (suite *KeeperTestSuite) TestProcessEndingNftListings() {
 			relistedCount:       params.AutoRelistingCountIfNoBid,
 			expectedToEnd:       true,
 			expectedToBeRemoved: true,
+			unlistedHookCounter: 1,
 		},
 		{
 			testCase:            "bids existing nft listing end when relisted count not reached",
@@ -1181,6 +1195,7 @@ func (suite *KeeperTestSuite) TestProcessEndingNftListings() {
 			relistedCount:       0,
 			expectedToEnd:       true,
 			expectedToBeRemoved: false,
+			unlistedHookCounter: 0,
 		},
 		{
 			testCase:            "bids existing nft listing end when relisted count reached",
@@ -1191,11 +1206,15 @@ func (suite *KeeperTestSuite) TestProcessEndingNftListings() {
 			relistedCount:       params.AutoRelistingCountIfNoBid,
 			expectedToEnd:       true,
 			expectedToBeRemoved: false,
+			unlistedHookCounter: 0,
 		},
 	}
 
 	for _, tc := range tests {
 		suite.SetupTest()
+		keeper := suite.keeper
+		nftKeeper := suite.nftKeeper
+		successAfterNftUnlistedWithoutPaymentCounter = 0
 
 		now := time.Now().UTC()
 		suite.ctx = suite.ctx.WithBlockTime(now)
@@ -1206,14 +1225,14 @@ func (suite *KeeperTestSuite) TestProcessEndingNftListings() {
 		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, tc.nftOwner, sdk.Coins{coin})
 		suite.NoError(err)
 
-		suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+		nftKeeper.SaveClass(suite.ctx, nfttypes.Class{
 			Id:          tc.classId,
 			Name:        tc.classId,
 			Symbol:      tc.classId,
 			Description: tc.classId,
 			Uri:         tc.classId,
 		})
-		err = suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
+		err = nftKeeper.Mint(suite.ctx, nfttypes.NFT{
 			ClassId: tc.classId,
 			Id:      tc.nftId,
 			Uri:     tc.nftId,
@@ -1222,7 +1241,7 @@ func (suite *KeeperTestSuite) TestProcessEndingNftListings() {
 		suite.Require().NoError(err)
 
 		nftIdentifier := types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId}
-		err = suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
+		err = keeper.ListNft(suite.ctx, &types.MsgListNft{
 			Sender:        ununifitypes.StringAccAddress(tc.nftOwner),
 			NftId:         nftIdentifier,
 			ListingType:   types.ListingType_DIRECT_ASSET_BORROW,
@@ -1231,10 +1250,10 @@ func (suite *KeeperTestSuite) TestProcessEndingNftListings() {
 			BidActiveRank: 2,
 		})
 		suite.Require().NoError(err)
-		listing, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+		listing, err := keeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
 		suite.Require().NoError(err)
 		listing.AutoRelistedCount = tc.relistedCount
-		suite.app.NftmarketKeeper.SetNftListing(suite.ctx, listing)
+		keeper.SetNftListing(suite.ctx, listing)
 
 		for i := 0; i < tc.numBids; i++ {
 			bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
@@ -1246,7 +1265,7 @@ func (suite *KeeperTestSuite) TestProcessEndingNftListings() {
 			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{coin})
 			suite.NoError(err)
 
-			err := suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
+			err := keeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
 				Sender:           ununifitypes.StringAccAddress(bidder),
 				NftId:            nftIdentifier,
 				Amount:           coin,
@@ -1256,13 +1275,13 @@ func (suite *KeeperTestSuite) TestProcessEndingNftListings() {
 		}
 
 		suite.ctx = suite.ctx.WithBlockTime(now.Add(time.Second * time.Duration(params.NftListingPeriodInitial+1)))
-		suite.app.NftmarketKeeper.ProcessEndingNftListings(suite.ctx)
+		keeper.ProcessEndingNftListings(suite.ctx)
 
 		if tc.expectedToBeRemoved {
-			_, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+			_, err := keeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
 			suite.Require().Error(err)
 		} else {
-			listing, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+			listing, err := keeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
 			suite.Require().NoError(err)
 
 			if tc.expectedToEnd {
@@ -1271,6 +1290,7 @@ func (suite *KeeperTestSuite) TestProcessEndingNftListings() {
 				suite.Require().NotEqual(listing.State, types.ListingState_END_LISTING)
 			}
 		}
+		suite.Require().Equal(tc.unlistedHookCounter, successAfterNftUnlistedWithoutPaymentCounter)
 	}
 }
 
