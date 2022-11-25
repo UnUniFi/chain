@@ -82,10 +82,6 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.nftKeeper = nftKeeper
 	suite.keeper = keeper
 }
-
-func (suite *KeeperTestSuite) TestSuiteKeeper() {
-	suite.SetupTest()
-}
 func TestKeeperSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))
 }
