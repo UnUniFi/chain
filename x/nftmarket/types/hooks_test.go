@@ -2,13 +2,11 @@ package types_test
 
 import (
 	"testing"
-	time "time"
 
 	simapp "github.com/UnUniFi/chain/app"
 	"github.com/UnUniFi/chain/x/nftmarket/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/nft"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/stretchr/testify/suite"
@@ -142,8 +140,7 @@ func (suite *KeeperTestSuite) TestHooksPanicRecovery() {
 			})
 		} else {
 			suite.NotPanics(func() {
-				// hooks.AfterNftListed(suite.ctx, nftId, "test")
-				suite.MockListNft(suite.addrs[0], nftId)
+				hooks.AfterNftListed(suite.ctx, nftId, "test")
 
 				hooks.AfterNftPaymentWithCommission(suite.ctx, nftId, sdk.Coin{Denom: "uguu", Amount: sdk.OneInt()})
 
@@ -156,74 +153,4 @@ func (suite *KeeperTestSuite) TestHooksPanicRecovery() {
 			suite.Require().Equal(tc.expectedCounterValues[i], nftmarketHook.successCounter, "test case index %d", tcIndex)
 		}
 	}
-}
-
-func (suite *KeeperTestSuite) TestAfterNftListedInListNft() {
-	hooks := dummyNftmarketHook{}
-	suite.SetupTest(&hooks)
-	//suite.app.NftmarketKeeper.SetHooks(&hooks)
-	nftId := types.NftIdentifier{
-		ClassId: "dummyhook",
-		NftId:   "dummyhook",
-	}
-	suite.MockListNft(suite.addrs[0], nftId)
-
-	suite.Require().Equal(1, hooks.successCounter)
-}
-
-func (suite *KeeperTestSuite) MockListNft(sender sdk.AccAddress, nftId types.NftIdentifier) error {
-	suite.app.NFTKeeper.SaveClass(suite.ctx, nft.Class{
-		Id: nftId.ClassId,
-	})
-	suite.app.NFTKeeper.Mint(suite.ctx, nft.NFT{
-		ClassId: nftId.ClassId,
-		Id:      nftId.NftId,
-	}, suite.addrs[0])
-	msg := types.MsgListNft{
-		Sender:        sender.Bytes(),
-		NftId:         nftId,
-		ListingType:   types.ListingType_DIRECT_ASSET_BORROW,
-		BidToken:      "uguu",
-		MinBid:        sdk.OneInt(),
-		BidActiveRank: 3,
-	}
-
-	// check listing already exists
-	_, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftId.IdBytes())
-	if err == nil {
-		return types.ErrNftListingAlreadyExists
-	}
-
-	// Check nft exists
-	_, found := suite.app.NFTKeeper.GetNFT(suite.ctx, nftId.ClassId, nftId.NftId)
-	if !found {
-		return types.ErrNftDoesNotExists
-	}
-
-	// check ownership of nft
-	owner := suite.app.NFTKeeper.GetOwner(suite.ctx, nftId.ClassId, nftId.NftId)
-	if owner.String() != sender.String() {
-		return types.ErrNotNftOwner
-	}
-	// create listing
-	bidActiveRank := msg.BidActiveRank
-
-	params := suite.app.NftmarketKeeper.GetParamSet(suite.ctx)
-	listing := types.NftListing{
-		NftId:         msg.NftId,
-		Owner:         owner.String(),
-		ListingType:   msg.ListingType,
-		State:         types.ListingState_LISTING,
-		BidToken:      msg.BidToken,
-		MinBid:        msg.MinBid,
-		BidActiveRank: bidActiveRank,
-		StartedAt:     suite.ctx.BlockTime(),
-		EndAt:         suite.ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingPeriodInitial)),
-	}
-	suite.app.NftmarketKeeper.SaveNftListing(suite.ctx, listing)
-
-	// this method is mock for list nft to serve in test to avoid tx memo retrieving.
-	txMemo := "test"
-	suite.app.NftmarketKeeper.AfterNftListed(suite.ctx, msg.NftId, txMemo)
-	return nil
 }
