@@ -239,9 +239,7 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 	k.SaveNftListing(ctx, listing)
 
 	// get the memo data from Tx contains MsgListNft
-	// If memo data is empty, the hook method is not gonna be called.
-	txMemo := GetMemo(ctx.TxBytes(), k.txCfg)
-	k.AfterNftListed(ctx, msg.NftId, txMemo)
+	k.AfterNftListed(ctx, msg.NftId, GetMemo(ctx.TxBytes(), k.txCfg))
 
 	// Emit event for nft listing
 	ctx.EventManager().EmitTypedEvent(&types.EventListNft{
