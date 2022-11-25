@@ -45,7 +45,8 @@ type KeeperTestSuite struct {
 	app         *simapp.App
 	addrs       []sdk.AccAddress
 	queryClient types.QueryClient
-	// keeper      keeper.Keeper
+	keeper      keeper.Keeper
+	nftKeeper   nftkeeper.Keeper
 }
 
 func (suite *KeeperTestSuite) SetupTest() {
@@ -64,23 +65,22 @@ func (suite *KeeperTestSuite) SetupTest() {
 	appCodec := encodingConfig.Marshaler
 
 	txCfg := encodingConfig.TxConfig
-	keys := sdk.NewKVStoreKeys(authtypes.StoreKey, banktypes.StoreKey, types.StoreKey, types.MemStoreKey, nft.StoreKey)
 	accountKeeper := authkeeper.NewAccountKeeper(
-		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms, sdk.Bech32MainPrefix,
+		appCodec, app.GetKey(authtypes.StoreKey), app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms, sdk.Bech32MainPrefix,
 	)
 	bankKeeper := bankkeeper.NewBaseKeeper(
 		appCodec,
-		keys[banktypes.StoreKey],
+		app.GetKey(banktypes.StoreKey),
 		app.AccountKeeper,
 		app.GetSubspace(banktypes.ModuleName),
 		app.BlockedAddrs(),
 	)
-	nftKeeper := nftkeeper.NewKeeper(keys[nft.StoreKey], appCodec, accountKeeper, bankKeeper)
-	keeper := keeper.NewKeeper(appCodec, txCfg, keys[types.StoreKey], keys[types.MemStoreKey], suite.app.GetSubspace(types.ModuleName), accountKeeper, bankKeeper, nftKeeper)
+	nftKeeper := nftkeeper.NewKeeper(app.GetKey(nft.StoreKey), appCodec, accountKeeper, bankKeeper)
+	keeper := keeper.NewKeeper(appCodec, txCfg, app.GetKey(types.StoreKey), app.GetKey(types.MemStoreKey), suite.app.GetSubspace(types.ModuleName), accountKeeper, bankKeeper, nftKeeper)
 	hooks := dummyNftmarketHook{}
 	keeper.SetHooks(&hooks)
-	// suite.keeper = keeper
-	// suite.app.NftmarketKeeper = keeper
+	suite.nftKeeper = nftKeeper
+	suite.keeper = keeper
 }
 
 func (suite *KeeperTestSuite) TestSuiteKeeper() {
