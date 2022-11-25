@@ -190,7 +190,8 @@ func (suite *KeeperTestSuite) TestNftListingBasics() {
 func (suite *KeeperTestSuite) TestListNft() {
 	acc1 := suite.addrs[0]
 	acc2 := suite.addrs[1]
-
+	keeper := suite.keeper
+	nftKeeper := suite.nftKeeper
 	tests := []struct {
 		testCase   string
 		classId    string
@@ -291,14 +292,14 @@ func (suite *KeeperTestSuite) TestListNft() {
 
 	for _, tc := range tests {
 		if tc.mintBefore {
-			suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+			nftKeeper.SaveClass(suite.ctx, nfttypes.Class{
 				Id:          tc.classId,
 				Name:        tc.classId,
 				Symbol:      tc.classId,
 				Description: tc.classId,
 				Uri:         tc.classId,
 			})
-			err := suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
+			err := nftKeeper.Mint(suite.ctx, nfttypes.NFT{
 				ClassId: tc.classId,
 				Id:      tc.nftId,
 				Uri:     tc.nftId,
@@ -307,7 +308,7 @@ func (suite *KeeperTestSuite) TestListNft() {
 			suite.Require().NoError(err)
 		}
 		if tc.listBefore {
-			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
+			err := keeper.ListNft(suite.ctx, &types.MsgListNft{
 				Sender:        ununifitypes.StringAccAddress(tc.lister),
 				NftId:         types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId},
 				ListingType:   types.ListingType_DIRECT_ASSET_BORROW,
@@ -317,7 +318,7 @@ func (suite *KeeperTestSuite) TestListNft() {
 			})
 			suite.Require().NoError(err)
 		}
-		err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
+		err := keeper.ListNft(suite.ctx, &types.MsgListNft{
 			Sender:        ununifitypes.StringAccAddress(tc.lister),
 			NftId:         types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId},
 			ListingType:   types.ListingType_DIRECT_ASSET_BORROW,
@@ -329,14 +330,14 @@ func (suite *KeeperTestSuite) TestListNft() {
 		if tc.expectPass {
 			suite.Require().NoError(err)
 
-			params := suite.app.NftmarketKeeper.GetParamSet(suite.ctx)
+			params := keeper.GetParamSet(suite.ctx)
 			// get listing
-			listing, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, (types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId}).IdBytes())
+			listing, err := keeper.GetNftListingByIdBytes(suite.ctx, (types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId}).IdBytes())
 			suite.Require().NoError(err)
 
 			// check ownership is transferred
 			moduleAddr := suite.app.AccountKeeper.GetModuleAddress(types.ModuleName)
-			nftOwner := suite.app.NFTKeeper.GetOwner(suite.ctx, tc.classId, tc.nftId)
+			nftOwner := nftKeeper.GetOwner(suite.ctx, tc.classId, tc.nftId)
 			suite.Require().Equal(nftOwner.String(), moduleAddr.String())
 
 			// check bid active rank is set to default if zero
