@@ -15,7 +15,7 @@ func Contains(a []string, x string) bool {
 	return false
 }
 
-func GetMemo(txBytes []byte, txCfg client.TxConfig) (string, error) {
+func GetMemo(txBytes []byte, txCfg client.TxConfig) string {
 	/// NOTE: this way requires txConfig by importing it into keeper struct
 	txData, err := txCfg.TxDecoder()(txBytes)
 	if err != nil {
@@ -29,9 +29,9 @@ func GetMemo(txBytes []byte, txCfg client.TxConfig) (string, error) {
 
 	txBldr, err := txCfg.WrapTxBuilder(txData)
 	if err != nil {
-		return "", err
+		return ""
 	}
 	memo := txBldr.GetTx().GetMemo()
 
-	return memo, nil
+	return memo
 }
