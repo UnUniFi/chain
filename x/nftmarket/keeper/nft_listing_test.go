@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"fmt"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -192,105 +193,117 @@ func (suite *KeeperTestSuite) TestListNft() {
 	acc2 := suite.addrs[1]
 	keeper := suite.keeper
 	nftKeeper := suite.nftKeeper
+
 	tests := []struct {
-		testCase   string
-		classId    string
-		nftId      string
-		nftOwner   sdk.AccAddress
-		lister     sdk.AccAddress
-		bidToken   string
-		activeRank uint64
-		mintBefore bool
-		listBefore bool
-		expectPass bool
+		testCase    string
+		classId     string
+		nftId       string
+		nftOwner    sdk.AccAddress
+		lister      sdk.AccAddress
+		bidToken    string
+		activeRank  uint64
+		mintBefore  bool
+		listBefore  bool
+		expectPass  bool
+		hookCounter uint8
 	}{
 		{
-			testCase:   "not existing nft",
-			classId:    "class1",
-			nftId:      "nft1",
-			nftOwner:   acc1,
-			lister:     acc1,
-			bidToken:   "uguu",
-			activeRank: 1,
-			mintBefore: false,
-			listBefore: false,
-			expectPass: false,
+			testCase:    "not existing nft",
+			classId:     "class1",
+			nftId:       "nft1",
+			nftOwner:    acc1,
+			lister:      acc1,
+			bidToken:    "uguu",
+			activeRank:  1,
+			mintBefore:  false,
+			listBefore:  false,
+			expectPass:  false,
+			hookCounter: 0,
 		},
 		{
-			testCase:   "already listed",
-			classId:    "class2",
-			nftId:      "nft2",
-			nftOwner:   acc1,
-			lister:     acc1,
-			bidToken:   "uguu",
-			activeRank: 1,
-			mintBefore: true,
-			listBefore: true,
-			expectPass: false,
+			testCase:    "already listed",
+			classId:     "class2",
+			nftId:       "nft2",
+			nftOwner:    acc1,
+			lister:      acc1,
+			bidToken:    "uguu",
+			activeRank:  1,
+			mintBefore:  true,
+			listBefore:  true,
+			expectPass:  false,
+			hookCounter: 1,
 		},
 		{
-			testCase:   "not owned nft",
-			classId:    "class3",
-			nftId:      "nft3",
-			nftOwner:   acc1,
-			lister:     acc2,
-			bidToken:   "uguu",
-			activeRank: 1,
-			mintBefore: true,
-			listBefore: false,
-			expectPass: false,
+			testCase:    "not owned nft",
+			classId:     "class3",
+			nftId:       "nft3",
+			nftOwner:    acc1,
+			lister:      acc2,
+			bidToken:    "uguu",
+			activeRank:  1,
+			mintBefore:  true,
+			listBefore:  false,
+			expectPass:  false,
+			hookCounter: 1,
 		},
 		{
-			testCase:   "unsupported bid token",
-			classId:    "class4",
-			nftId:      "nft4",
-			nftOwner:   acc1,
-			lister:     acc1,
-			bidToken:   "xxxx",
-			activeRank: 1,
-			mintBefore: true,
-			listBefore: false,
-			expectPass: false,
+			testCase:    "unsupported bid token",
+			classId:     "class4",
+			nftId:       "nft4",
+			nftOwner:    acc1,
+			lister:      acc1,
+			bidToken:    "xxxx",
+			activeRank:  1,
+			mintBefore:  true,
+			listBefore:  false,
+			expectPass:  false,
+			hookCounter: 1,
 		},
 		{
-			testCase:   "successful listing with default active rank",
-			classId:    "class5",
-			nftId:      "nft5",
-			nftOwner:   acc1,
-			lister:     acc1,
-			bidToken:   "uguu",
-			activeRank: 0,
-			mintBefore: true,
-			listBefore: false,
-			expectPass: true,
+			testCase:    "successful listing with default active rank",
+			classId:     "class5",
+			nftId:       "nft5",
+			nftOwner:    acc1,
+			lister:      acc1,
+			bidToken:    "uguu",
+			activeRank:  0,
+			mintBefore:  true,
+			listBefore:  false,
+			expectPass:  true,
+			hookCounter: 2,
 		},
 		{
-			testCase:   "successful listing with non-default active rank",
-			classId:    "class6",
-			nftId:      "nft6",
-			nftOwner:   acc1,
-			lister:     acc1,
-			bidToken:   "uguu",
-			activeRank: 100,
-			mintBefore: true,
-			listBefore: false,
-			expectPass: true,
+			testCase:    "successful listing with non-default active rank",
+			classId:     "class6",
+			nftId:       "nft6",
+			nftOwner:    acc1,
+			lister:      acc1,
+			bidToken:    "uguu",
+			activeRank:  100,
+			mintBefore:  true,
+			listBefore:  false,
+			expectPass:  true,
+			hookCounter: 3,
 		},
 		{
-			testCase:   "successful anther owner",
-			classId:    "class7",
-			nftId:      "nft7",
-			nftOwner:   acc2,
-			lister:     acc2,
-			bidToken:   "uguu",
-			activeRank: 0,
-			mintBefore: true,
-			listBefore: false,
-			expectPass: true,
+			testCase:    "successful anther owner",
+			classId:     "class7",
+			nftId:       "nft7",
+			nftOwner:    acc2,
+			lister:      acc2,
+			bidToken:    "uguu",
+			activeRank:  0,
+			mintBefore:  true,
+			listBefore:  false,
+			expectPass:  true,
+			hookCounter: 4,
 		},
 	}
 
-	for _, tc := range tests {
+	for i, tc := range tests {
+		if i == 0 {
+			successAfterNftListedCounter = 0
+		}
 		if tc.mintBefore {
 			nftKeeper.SaveClass(suite.ctx, nfttypes.Class{
 				Id:          tc.classId,
@@ -353,6 +366,11 @@ func (suite *KeeperTestSuite) TestListNft() {
 		} else {
 			suite.Require().Error(err)
 		}
+
+		fmt.Println(tc)
+		fmt.Println(tc.hookCounter)
+		fmt.Println(successAfterNftListedCounter)
+		suite.Require().Equal(tc.hookCounter, successAfterNftListedCounter)
 	}
 }
 

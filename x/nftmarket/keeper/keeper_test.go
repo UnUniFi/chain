@@ -29,12 +29,9 @@ var (
 		authtypes.FeeCollectorName: nil,
 		distrtypes.ModuleName:      nil,
 		minttypes.ModuleName:       {authtypes.Minter},
-		// liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
-		// ibctransfertypes.ModuleName: {authtypes.Minter, authtypes.Burner},
-		// wasm.ModuleName:             {authtypes.Burner},
-		nft.ModuleName:      nil,
-		types.ModuleName:    nil,
-		types.NftTradingFee: nil,
+		nft.ModuleName:             nil,
+		types.ModuleName:           nil,
+		types.NftTradingFee:        nil,
 	}
 )
 

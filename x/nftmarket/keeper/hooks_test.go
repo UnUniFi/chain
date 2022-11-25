@@ -6,18 +6,21 @@ import (
 	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
+var successAfterNftListedCounter uint8
+var successAfterNftPaymentWithCommissionCounter uint8
+var successAfterNftUnlistedWithoutPaymentCounter uint8
+
 type dummyNftmarketHook struct {
-	successCounter int
 }
 
 func (hook *dummyNftmarketHook) AfterNftListed(ctx sdk.Context, nftId types.NftIdentifier, txMemo string) {
-	hook.successCounter += 1
+	successAfterNftListedCounter += 1
 }
 
 func (hook *dummyNftmarketHook) AfterNftPaymentWithCommission(ctx sdk.Context, nftId types.NftIdentifier, fee sdk.Coin) {
-	hook.successCounter += 1
+	successAfterNftPaymentWithCommissionCounter += 1
 }
 
 func (hook *dummyNftmarketHook) AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftId types.NftIdentifier) {
-	hook.successCounter += 1
+	successAfterNftUnlistedWithoutPaymentCounter += 1
 }
