@@ -19,7 +19,7 @@ import (
 // of Nftmarket in AfterNftPaymentWithCommission method.
 func (k Keeper) RecordNftIdWithIncentiveUnitId(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, incentiveUnitId string) {
 	// panic if the nftId is already recorded in the store.
-	if _, exists := k.GetNftIdForFrontend(ctx, nftId); exists {
+	if _, exists := k.GetIncentiveUnitIdByNftId(ctx, nftId); exists {
 		panic(sdkerrors.Wrap(types.ErrRecordedNftId, nftId.String()))
 	}
 
@@ -36,7 +36,7 @@ func (k Keeper) RecordNftIdWithIncentiveUnitId(ctx sdk.Context, nftId nftmarkett
 		return
 	}
 
-	if err := k.SetNftIdForFrontend(ctx, nftId, incentiveUnitId); err != nil {
+	if err := k.SetIncentiveUnitIdByNftId(ctx, nftId, incentiveUnitId); err != nil {
 		panic(err)
 	}
 
@@ -48,17 +48,17 @@ func (k Keeper) RecordNftIdWithIncentiveUnitId(ctx sdk.Context, nftId nftmarkett
 	})
 }
 
-// DeleteNftId deletes nftId and incentiveUnitId from NftIdForFrontend KVStore to clean the record.
-func (k Keeper) DeleteNftId(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier) {
+// DeleteIncentiveUnitIdByNftId deletes nftId and incentiveUnitId from IncentiveUnitIdByNftId KVStore to clean the record.
+func (k Keeper) DeleteIncentiveUnitIdByNftId(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier) {
 	// If the passed NftId doesn't exist in the KVStore, emit the error message
 	//  but not panic and just return
-	incentiveUnitId, exists := k.GetNftIdForFrontend(ctx, nftId)
+	incentiveUnitId, exists := k.GetIncentiveUnitIdByNftId(ctx, nftId)
 	if !exists {
-		_ = fmt.Errorf(sdkerrors.Wrap(types.ErrNftIdForFrontendDoesntExist, nftId.String()).Error())
+		_ = fmt.Errorf(sdkerrors.Wrap(types.ErrIncentiveUnitIdByNftIdDoesntExist, nftId.String()).Error())
 		return
 	}
 
-	k.DeleteNftIdForFrontend(ctx, nftId)
+	k.DeleteIncentiveUnitIdByNftId(ctx, nftId)
 
 	// emit event for telling the nftId is deleted from the KVStore
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventDeletedNftIdRecordedForFrontendReward{
@@ -68,17 +68,17 @@ func (k Keeper) DeleteNftId(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier)
 	})
 }
 
-func (k Keeper) SetNftIdForFrontend(ctx sdk.Context, nftIdByte nftmarkettypes.NftIdentifier, incentiveUnitId string) error {
+func (k Keeper) SetIncentiveUnitIdByNftId(ctx sdk.Context, nftIdByte nftmarkettypes.NftIdentifier, incentiveUnitId string) error {
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixNftIdForFrontend))
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnitIdByNftId))
 	prefixStore.Set(nftIdByte.IdBytes(), []byte(incentiveUnitId))
 
 	return nil
 }
 
-func (k Keeper) GetNftIdForFrontend(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier) (string, bool) {
+func (k Keeper) GetIncentiveUnitIdByNftId(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier) (string, bool) {
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixNftIdForFrontend))
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnitIdByNftId))
 
 	bz := prefixStore.Get(nftId.IdBytes())
 	if len(bz) == 0 {
@@ -88,18 +88,17 @@ func (k Keeper) GetNftIdForFrontend(ctx sdk.Context, nftId nftmarkettypes.NftIde
 	return string(bz), true
 }
 
-func (k Keeper) DeleteNftIdForFrontend(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier) {
-	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixNftIdForFrontend))
-
-	prefixStore.Delete(nftId.IdBytes())
+// DeleteFrontendRecord is called in case to clean the record related for frontend incentive
+func (k Keeper) DeleteFrontendRecord(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier) {
+	// Delete incentive unit id by nft id
+	k.DeleteIncentiveUnitIdByNftId(ctx, nftId)
 }
 
 // AccumulateReward is called in AfterNftPaymentWithCommission hook method
 // This method updates the reward information for the subject who is associated with the nftId
 func (k Keeper) AccumulateRewardForFrontend(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, fee sdk.Coin) {
-	// get incentiveUnitId by nftId from NftIdForFrontend KVStore
-	incentiveUnitId, exists := k.GetNftIdForFrontend(ctx, nftId)
+	// get incentiveUnitId by nftId from IncentiveUnitIdByNftId KVStore
+	incentiveUnitId, exists := k.GetIncentiveUnitIdByNftId(ctx, nftId)
 	if !exists {
 		// emit event to inform the nftId is not associated with incentiveUnitId and return
 		_ = ctx.EventManager().EmitTypedEvent(&types.EventNotRecordedNftId{

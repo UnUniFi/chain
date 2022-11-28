@@ -63,11 +63,11 @@ func (h Hooks) AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier nftm
 	h.k.AccumulateRewardForFrontend(ctx, nftIdentifier, fee)
 
 	// delete the recorded nft-id with incetive-unit-id
-	h.k.DeleteNftId(ctx, nftIdentifier)
+	h.k.DeleteFrontendRecord(ctx, nftIdentifier)
 }
 
 // AfterNftUnlistedWithoutPayment is called every time nft is unlisted without payment
 func (h Hooks) AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier nftmarkettypes.NftIdentifier) {
 	// delete the recorded nft-id with incetive-unit-id
-	h.k.DeleteNftId(ctx, nftIdentifier)
+	h.k.DeleteFrontendRecord(ctx, nftIdentifier)
 }

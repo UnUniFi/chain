@@ -85,7 +85,6 @@ func (suite *KeeperTestSuite) TestRecordNftIdWithIncentiveUnitId() {
 			err := suite.RecordNftIdWithIncentiveUnitIdTest(suite.ctx, nftId, test.incentiveUnitId)
 			suite.Require().Error(err)
 		}
-
 	}
 }
 
@@ -228,7 +227,7 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 // since the normal RecordNftIdWithIncentiveUnitId doesn't return any value by intention
 func (suite *KeeperTestSuite) RecordNftIdWithIncentiveUnitIdTest(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, incentiveUnitId string) error {
 	// panic if the nftId is already recorded in the store.
-	if _, exists := suite.app.EcosystemincentiveKeeper.GetNftIdForFrontend(ctx, nftId); exists {
+	if _, exists := suite.app.EcosystemincentiveKeeper.GetIncentiveUnitIdByNftId(ctx, nftId); exists {
 		return types.ErrRecordedNftId
 	}
 
@@ -237,7 +236,7 @@ func (suite *KeeperTestSuite) RecordNftIdWithIncentiveUnitIdTest(ctx sdk.Context
 		return types.ErrNotRegisteredIncentiveUnitId
 	}
 
-	if err := suite.app.EcosystemincentiveKeeper.SetNftIdForFrontend(ctx, nftId, incentiveUnitId); err != nil {
+	if err := suite.app.EcosystemincentiveKeeper.SetIncentiveUnitIdByNftId(ctx, nftId, incentiveUnitId); err != nil {
 		return err
 	}
 
@@ -246,10 +245,10 @@ func (suite *KeeperTestSuite) RecordNftIdWithIncentiveUnitIdTest(ctx sdk.Context
 
 // Just mock method to use in only test
 func (suite *KeeperTestSuite) AccumulateRewardForFrontendTest(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, fee sdk.Coin) error {
-	// get incentiveUnitId by nftId from NftIdForFrontend KVStore
-	incentiveUnitId, exists := suite.app.EcosystemincentiveKeeper.GetNftIdForFrontend(ctx, nftId)
+	// get incentiveUnitId by nftId from IncentiveUnitIdByNftId KVStore
+	incentiveUnitId, exists := suite.app.EcosystemincentiveKeeper.GetIncentiveUnitIdByNftId(ctx, nftId)
 	if !exists {
-		return types.ErrNftIdForFrontendDoesntExist
+		return types.ErrIncentiveUnitIdByNftIdDoesntExist
 	}
 
 	incentiveUnit, exists := suite.app.EcosystemincentiveKeeper.GetIncentiveUnit(ctx, incentiveUnitId)

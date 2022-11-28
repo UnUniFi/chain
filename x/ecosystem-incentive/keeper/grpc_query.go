@@ -73,9 +73,9 @@ func (k Keeper) RecordedIncentiveUnitId(c context.Context, req *types.QueryRecor
 		NftId:   req.NftId,
 	}
 
-	incentiveUnitid, exists := k.GetNftIdForFrontend(ctx, nftIdentifier)
+	incentiveUnitid, exists := k.GetIncentiveUnitIdByNftId(ctx, nftIdentifier)
 	if !exists {
-		return nil, sdkerrors.Wrapf(types.ErrNftIdForFrontendDoesntExist, "class id: %s\nnft id: %s", req.ClassId, req.NftId)
+		return nil, sdkerrors.Wrapf(types.ErrIncentiveUnitIdByNftIdDoesntExist, "class id: %s\nnft id: %s", req.ClassId, req.NftId)
 	}
 	return &types.QueryRecordedIncentiveUnitIdResponse{IncentiveUnitId: incentiveUnitid}, nil
 }

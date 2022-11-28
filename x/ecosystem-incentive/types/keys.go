@@ -24,6 +24,6 @@ var (
 	// KeyPrefixReward defines prefix key for Reward
 	KeyPrefixRewardStore = []byte{0x02}
 
-	// KeyPrefixNftIdForFrontend defines prefix key for nft_id with incentive_id
-	KeyPrefixNftIdForFrontend = []byte{0x03}
+	// KeyPrefixIncentiveUnitIdByNftId defines prefix key for nft_id with incentive_id
+	KeyPrefixIncentiveUnitIdByNftId = []byte{0x03}
 )
