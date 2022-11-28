@@ -41,7 +41,7 @@ func CmdRegister() *cobra.Command {
 		Long:  "Example command: $ %s tx %s register --register-file [json-file-path]",
 		Example: `Example of a json file to pass:
 {
-	"incentive-id": "incentive-unit-1",
+	"incentive-unit-id": "incentive-unit-1",
 	"subject-addrs": [
 		"ununifi17gs6kgph4657epky2ctl9sf66ucyua939nexgl",
 		"ununifi1w9s3wpkh0kfk0t40m4lwjsx6h2v6gktsvfrgux"
