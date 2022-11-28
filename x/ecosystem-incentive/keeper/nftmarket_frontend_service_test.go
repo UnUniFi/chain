@@ -13,7 +13,7 @@ import (
 	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
-func (suite *KeeperTestSuite) TestRecordNftIdWithIncentiveUnitId() {
+func (suite *KeeperTestSuite) TestRecordIncentiveUnitIdWithNftId() {
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 	tests := []struct {
@@ -74,7 +74,7 @@ func (suite *KeeperTestSuite) TestRecordNftIdWithIncentiveUnitId() {
 				},
 			)
 
-			err := suite.RecordNftIdWithIncentiveUnitIdTest(suite.ctx, nftId, test.incentiveUnitId)
+			err := suite.RecordIncentiveUnitIdWithNftIdTest(suite.ctx, nftId, test.incentiveUnitId)
 
 			if test.expectPass {
 				suite.Require().NoError(err)
@@ -82,7 +82,7 @@ func (suite *KeeperTestSuite) TestRecordNftIdWithIncentiveUnitId() {
 				suite.Require().Error(err)
 			}
 		} else {
-			err := suite.RecordNftIdWithIncentiveUnitIdTest(suite.ctx, nftId, test.incentiveUnitId)
+			err := suite.RecordIncentiveUnitIdWithNftIdTest(suite.ctx, nftId, test.incentiveUnitId)
 			suite.Require().Error(err)
 		}
 	}
@@ -190,7 +190,7 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 			})
 
 		if test.record {
-			suite.app.EcosystemincentiveKeeper.RecordNftIdWithIncentiveUnitId(suite.ctx, test.nftId, test.incentiveUnitId)
+			suite.app.EcosystemincentiveKeeper.RecordIncentiveUnitIdWithNftId(suite.ctx, test.nftId, test.incentiveUnitId)
 		}
 
 		if test.expect {
@@ -222,10 +222,10 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 	}
 }
 
-// RecordNftIdWithIncentiveUnitIdTest is a mehtod to have the exact same logic
+// RecordIncentiveUnitIdWithNftIdTest is a mehtod to have the exact same logic
 // for being used in test cases to return error as return value
-// since the normal RecordNftIdWithIncentiveUnitId doesn't return any value by intention
-func (suite *KeeperTestSuite) RecordNftIdWithIncentiveUnitIdTest(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, incentiveUnitId string) error {
+// since the normal RecordIncentiveUnitIdWithNftId doesn't return any value by intention
+func (suite *KeeperTestSuite) RecordIncentiveUnitIdWithNftIdTest(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, incentiveUnitId string) error {
 	// panic if the nftId is already recorded in the store.
 	if _, exists := suite.app.EcosystemincentiveKeeper.GetIncentiveUnitIdByNftId(ctx, nftId); exists {
 		return types.ErrRecordedNftId

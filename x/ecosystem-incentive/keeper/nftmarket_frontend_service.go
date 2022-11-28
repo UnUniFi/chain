@@ -17,7 +17,7 @@ import (
 // RecordIncentiveIdWithNftId is for recording incentiveUnitId with nftId
 // to know of the receriver of the incentive reward for the frontend creator
 // of Nftmarket in AfterNftPaymentWithCommission method.
-func (k Keeper) RecordNftIdWithIncentiveUnitId(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, incentiveUnitId string) {
+func (k Keeper) RecordIncentiveUnitIdWithNftId(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, incentiveUnitId string) {
 	// panic if the nftId is already recorded in the store.
 	if _, exists := k.GetIncentiveUnitIdByNftId(ctx, nftId); exists {
 		panic(sdkerrors.Wrap(types.ErrRecordedNftId, nftId.String()))
