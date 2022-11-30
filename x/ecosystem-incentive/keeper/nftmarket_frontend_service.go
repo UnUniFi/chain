@@ -48,8 +48,8 @@ func (k Keeper) RecordIncentiveUnitIdWithNftId(ctx sdk.Context, nftId nftmarkett
 	})
 }
 
-// DeleteIncentiveUnitIdByNftId deletes nftId and incentiveUnitId from IncentiveUnitIdByNftId KVStore to clean the record.
-func (k Keeper) DeleteIncentiveUnitIdByNftId(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier) {
+// DeleteFrontendRecord is called in case to clean the record related for frontend incentive
+func (k Keeper) DeleteFrontendRecord(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier) {
 	// If the passed NftId doesn't exist in the KVStore, emit the error message
 	//  but not panic and just return
 	incentiveUnitId, exists := k.GetIncentiveUnitIdByNftId(ctx, nftId)
@@ -88,10 +88,13 @@ func (k Keeper) GetIncentiveUnitIdByNftId(ctx sdk.Context, nftId nftmarkettypes.
 	return string(bz), true
 }
 
-// DeleteFrontendRecord is called in case to clean the record related for frontend incentive
-func (k Keeper) DeleteFrontendRecord(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier) {
+// DeleteIncentiveUnitIdByNftId deletes nftId and incentiveUnitId from IncentiveUnitIdByNftId KVStore to clean the record.
+func (k Keeper) DeleteIncentiveUnitIdByNftId(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier) {
 	// Delete incentive unit id by nft id
-	k.DeleteIncentiveUnitIdByNftId(ctx, nftId)
+	store := ctx.KVStore(k.storeKey)
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnitIdByNftId))
+
+	prefixStore.Delete(nftId.IdBytes())
 }
 
 // AccumulateReward is called in AfterNftPaymentWithCommission hook method
@@ -108,39 +111,26 @@ func (k Keeper) AccumulateRewardForFrontend(ctx sdk.Context, nftId nftmarkettype
 		return
 	}
 
-	incentiveUnit, exists := k.GetIncentiveUnit(ctx, incentiveUnitId)
-	if !exists {
-		// emit event to inform the incentiveUnit is not registered with incentiveUnitId and return
-		_ = ctx.EventManager().EmitTypedEvent(&types.EventNotRegisteredIncentiveUnitId{
-			IncentiveUnitId: incentiveUnitId,
-		})
-		return
-	}
-
+	incentiveUnit, _ := k.GetIncentiveUnit(ctx, incentiveUnitId)
 	nftmarketFrontendRewardRate := k.GetNftmarketFrontendRewardRate(ctx)
-
-	// if the reward rate was not found, emit panic
+	// if the reward rate was not found, cause panic
 	if nftmarketFrontendRewardRate == sdk.ZeroDec() {
 		panic(sdkerrors.Wrap(types.ErrRewardRateNotFound, "nftmarket frontend"))
 	}
-
 	// rewardAmountForAll = fee * rewardRate
-	rewardAmountForAll := nftmarketFrontendRewardRate.MulInt(fee.Amount).RoundInt()
+	totalRewardForIncentiveUnit, rewardsForEach := CalculateRewardsForEachSubject(
+		extractWeightsFromSliceOfSubjectInfo(incentiveUnit.SubjectInfoList),
+		fee,
+		nftmarketFrontendRewardRate,
+	)
 
-	for _, subjectInfo := range incentiveUnit.SubjectInfoList {
+	for i, subjectInfo := range incentiveUnit.SubjectInfoList {
 		rewardStore, exists := k.GetRewardStore(ctx, subjectInfo.Address.AccAddress())
 		if !exists {
 			rewardStore = types.NewRewardStore(subjectInfo.Address, nil)
 		}
 
-		weight := subjectInfo.Weight
-
-		// calculate actual reward to distribute for the subject addr by considering
-		// its weight defined in IncentivenUnit
-		// newRewardAmount = weight * rewardAmountForAll
-		newRewardAmount := weight.MulInt(rewardAmountForAll).RoundInt()
-		rewardCoin := sdk.NewCoin(fee.Denom, newRewardAmount)
-		rewardStore.Rewards = rewardStore.Rewards.Add(sdk.NewCoins(rewardCoin)...)
+		rewardStore.Rewards = rewardStore.Rewards.Add(sdk.NewCoins(rewardsForEach[i])...)
 		if err := k.SetRewardStore(ctx, rewardStore); err != nil {
 			panic(err)
 		}
@@ -150,8 +140,32 @@ func (k Keeper) AccumulateRewardForFrontend(ctx sdk.Context, nftId nftmarkettype
 	// received new reward
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventUpdatedReward{
 		IncentiveUnitId: incentiveUnitId,
-		Reward:          sdk.NewCoin(fee.Denom, rewardAmountForAll),
+		Reward:          sdk.NewCoin(fee.Denom, totalRewardForIncentiveUnit),
 	})
+}
+
+// calculate actual reward to distribute for the subject addr by considering
+// its weight defined in IncentivenUnit
+// newRewardAmount = weight * rewardAmountForAll
+func CalculateRewardsForEachSubject(weights []sdk.Dec, totalFee sdk.Coin, nftmarketFrontendRewardRate sdk.Dec) (sdk.Int, []sdk.Coin) {
+	var rewardsForEach []sdk.Coin
+	totalRewardForIncentiveUnit := nftmarketFrontendRewardRate.MulInt(totalFee.Amount).RoundInt()
+
+	for _, weight := range weights {
+		newRewardAmount := weight.MulInt(totalRewardForIncentiveUnit).RoundInt()
+		rewardCoin := sdk.NewCoin(totalFee.Denom, newRewardAmount)
+		rewardsForEach = append(rewardsForEach, rewardCoin)
+	}
+
+	return totalRewardForIncentiveUnit, rewardsForEach
+}
+
+func extractWeightsFromSliceOfSubjectInfo(subjectsInfo []types.SubjectInfo) []sdk.Dec {
+	var weights []sdk.Dec
+	for _, subject := range subjectsInfo {
+		weights = append(weights, subject.Weight)
+	}
+	return weights
 }
 
 func (k Keeper) GetNftmarketFrontendRewardRate(ctx sdk.Context) sdk.Dec {
