@@ -240,5 +240,61 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 	}
 }
 
-// TODO: test
-// func (suite *KeeperTestSuite) TestAfterNftUnlistedWithoutPayment()
+func (suite *KeeperTestSuite) TestAfterNftUnlistedWithoutPayment() {
+	tests := []struct {
+		testCase        string
+		nftId           nftmarkettypes.NftIdentifier
+		incentiveUnitId string
+		subjectAddrs    []ununifitypes.StringAccAddress
+		weights         []sdk.Dec
+		registerBefore  bool
+		expectPass      bool
+	}{
+		{
+			testCase: "ordinal case",
+			nftId: nftmarkettypes.NftIdentifier{
+				ClassId: "class1",
+				NftId:   "nft1",
+			},
+			incentiveUnitId: "incentiveUnitId1",
+			subjectAddrs: []ununifitypes.StringAccAddress{
+				ununifitypes.StringAccAddress(suite.addrs[0]),
+			},
+			weights:        []sdk.Dec{sdk.MustNewDecFromStr("1")},
+			registerBefore: true,
+		},
+		{
+			testCase: "not recorded case",
+			nftId: nftmarkettypes.NftIdentifier{
+				ClassId: "class2",
+				NftId:   "nft2",
+			},
+			incentiveUnitId: "incentiveUnitId2",
+			subjectAddrs: []ununifitypes.StringAccAddress{
+				ununifitypes.StringAccAddress(suite.addrs[0]),
+			},
+			weights:        []sdk.Dec{sdk.MustNewDecFromStr("1")},
+			registerBefore: true,
+		},
+	}
+
+	for _, tc := range tests {
+		_, err := suite.app.EcosystemincentiveKeeper.Register(suite.ctx, &types.MsgRegister{
+			Sender:          tc.subjectAddrs[0],
+			IncentiveUnitId: tc.incentiveUnitId,
+			SubjectAddrs:    tc.subjectAddrs,
+			Weights:         tc.weights,
+		})
+		suite.Require().NoError(err)
+		if tc.registerBefore {
+			suite.app.EcosystemincentiveKeeper.RecordIncentiveUnitIdWithNftId(suite.ctx, tc.nftId, tc.incentiveUnitId)
+		}
+
+		suite.NotPanics(func() {
+			suite.app.EcosystemincentiveKeeper.Hooks().AfterNftUnlistedWithoutPayment(suite.ctx, tc.nftId)
+		})
+
+		_, exists := suite.app.EcosystemincentiveKeeper.GetIncentiveUnitIdByNftId(suite.ctx, tc.nftId)
+		suite.Require().False(exists)
+	}
+}
