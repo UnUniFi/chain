@@ -113,9 +113,10 @@ func (k Keeper) AccumulateRewardForFrontend(ctx sdk.Context, nftId nftmarkettype
 
 	incentiveUnit, _ := k.GetIncentiveUnit(ctx, incentiveUnitId)
 	nftmarketFrontendRewardRate := k.GetNftmarketFrontendRewardRate(ctx)
-	// if the reward rate was not found, cause panic
+	// if the reward rate was not found or set as zero, just return
 	if nftmarketFrontendRewardRate == sdk.ZeroDec() {
-		panic(sdkerrors.Wrap(types.ErrRewardRateNotFound, "nftmarket frontend"))
+		_ = fmt.Errorf(sdkerrors.Wrap(types.ErrRewardRateNotFound, "nftmarket frontend").Error())
+		return
 	}
 	// rewardAmountForAll = fee * rewardRate
 	totalRewardForIncentiveUnit, rewardsForEach := CalculateRewardsForEachSubject(
@@ -182,5 +183,6 @@ func (k Keeper) GetNftmarketFrontendRewardRate(ctx sdk.Context) sdk.Dec {
 		}
 	}
 
+	// if target param wasn't found somehow, return zero dec
 	return sdk.ZeroDec()
 }
