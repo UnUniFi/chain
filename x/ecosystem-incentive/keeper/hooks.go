@@ -58,9 +58,12 @@ func (h Hooks) AfterNftListed(ctx sdk.Context, nftIdentifier nftmarkettypes.NftI
 }
 
 func (h Hooks) AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier nftmarkettypes.NftIdentifier, fee sdk.Coin) {
-	// call AccumulateRewardForFrontend method to update reward information
-	// for the subjects defined by incentiveUnitId associated with nftIdentifier
-	h.k.AccumulateRewardForFrontend(ctx, nftIdentifier, fee)
+	// if there's no fee, return
+	if !fee.IsZero() {
+		// call AccumulateRewardForFrontend method to update reward information
+		// for the subjects defined by incentiveUnitId associated with nftIdentifier
+		h.k.AccumulateRewardForFrontend(ctx, nftIdentifier, fee)
+	}
 
 	// delete the recorded nft-id with incetive-unit-id
 	h.k.DeleteFrontendRecord(ctx, nftIdentifier)
