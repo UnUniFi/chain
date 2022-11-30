@@ -19,6 +19,11 @@ ununifid tx nftmarket listing $CLASS_ID a10 --chain-id=test --from=validator --k
 ununifid tx nftmarket placebid $CLASS_ID a10 10000uguu --automatic-payment=true --chain-id=test --from=debug --keyring-backend=test --gas=300000 -y;
 
 # expect accumulating rewards are 125uguu for each
+# ununifid q ecosystem-incentive  all-rewards $(ununifid keys show -a debug)
 
 # queries
 ununifid q ecosystem-incentive recorded-incentive-unit-id $CLASS_ID a10
+
+# withdraw reward txs
+# ununifid tx ecosystem-incentive withdraw-all-rewards --from debug --chain-id=test -y;
+# ununifid tx ecosystem-incentive withdraw-reward uguu --from debug --chain-id=test -y;

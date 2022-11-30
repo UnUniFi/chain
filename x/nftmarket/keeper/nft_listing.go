@@ -8,6 +8,8 @@ import (
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 
+	ecoincentivetypes "github.com/UnUniFi/chain/x/ecosystem-incentive/types"
+
 	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
@@ -752,7 +754,7 @@ func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sd
 	fee := amount.Mul(sdk.NewInt(int64(commissionFee))).Quo(sdk.NewInt(100))
 	if fee.IsPositive() {
 		feeCoins := sdk.Coins{sdk.NewCoin(denom, fee)}
-		err := k.bankKeeper.SendCoinsFromModuleToModule(cacheCtx, types.ModuleName, types.NftTradingFee, feeCoins)
+		err := k.bankKeeper.SendCoinsFromModuleToModule(cacheCtx, types.ModuleName, ecoincentivetypes.ModuleName, feeCoins)
 		if err != nil {
 			fmt.Println(err)
 			return

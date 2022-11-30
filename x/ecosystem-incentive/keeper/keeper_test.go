@@ -26,12 +26,12 @@ import (
 
 var (
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName:   nil,
-		distrtypes.ModuleName:        nil,
-		minttypes.ModuleName:         {authtypes.Minter},
-		nft.ModuleName:               nil,
-		nftmarkettypes.ModuleName:    nil,
-		nftmarkettypes.NftTradingFee: nil,
+		authtypes.FeeCollectorName: nil,
+		distrtypes.ModuleName:      nil,
+		minttypes.ModuleName:       {authtypes.Minter},
+		nft.ModuleName:             nil,
+		nftmarkettypes.ModuleName:  nil,
+		// nftmarkettypes.NftTradingFee: nil,
 	}
 )
 

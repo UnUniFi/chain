@@ -242,10 +242,10 @@ var (
 		ecosystemincentivetypes.ModuleName: nil,
 		ununifidisttypes.ModuleName:        {authtypes.Minter},
 		// wasm.ModuleName:             {authtypes.Burner},
-		nft.ModuleName:               nil,
-		nftminttypes.ModuleName:      nil,
-		nftmarkettypes.ModuleName:    nil,
-		nftmarkettypes.NftTradingFee: nil,
+		nft.ModuleName:            nil,
+		nftminttypes.ModuleName:   nil,
+		nftmarkettypes.ModuleName: nil,
+		// nftmarkettypes.NftTradingFee: nil,
 	}
 
 	// module accounts that are allowed to receive tokens

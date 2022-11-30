@@ -10,7 +10,8 @@ const (
 	ModuleName = "nftmarket"
 
 	// Module account for nft trading fee collection
-	NftTradingFee = "nfttradingfee"
+	// use ecosystem-incentive module account for now
+	// [unused] NftTradingFee = "nfttradingfee"
 
 	// StoreKey defines the primary module store key
 	StoreKey = "ununifinftmarket"

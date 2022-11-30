@@ -31,7 +31,7 @@ var (
 		minttypes.ModuleName:       {authtypes.Minter},
 		nft.ModuleName:             nil,
 		types.ModuleName:           nil,
-		types.NftTradingFee:        nil,
+		// types.NftTradingFee:        nil,
 	}
 )
 
