@@ -32,7 +32,7 @@ message NftListing {
   ListingState state = 3;
   string bid_token = 4;
   uint64 minimum_deposit_rate = 5;
-  bool automatic_overdraft = 6;
+  bool automatic_refinancing = 6;
 }
 ```
 

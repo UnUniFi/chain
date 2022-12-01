@@ -67,6 +67,28 @@ flowchart TD
     linkStyle 6 stroke:#ff3,stroke-width:4px,color:red;
     linkStyle 7 stroke:#ff3,stroke-width:4px,color:red;
 ```
+### liquidation check flow
+```mermaid
+flowchart TD
+    end_listing_state>change end_listing_stateunsold_state]
+
+　  bidding_state   -->　expired_bid_check{expired bid?}
+　  expired_bid_check   -->|no| finish_liquidation_check
+　  expired_bid_check   -->|yes| borrow_check{lister borrow token?}
+　  borrow_check   -->|no| finish_liquidation_check
+　  borrow_check   -->|yes| borrow_expired_bid_deposit{borrow expired bid deposit?}
+　  borrow_expired_bid_deposit   -->|no| finish_liquidation_check
+　  borrow_expired_bid_deposit   -->|yes| check_debt_vs_borrow_amount_available{expired bid deposit borrowed amount > available borrow amount?}
+　  check_debt_vs_borrow_amount_available   -->|no| auto_refinancing_process
+　  re-borrow_process   --> finish_liquidation_check
+　  check_debt_vs_borrow_amount_available   -->|yes| liquidation_occurs
+　  liquidation_occurs   -->|yes| end_listing_state
+
+```
+what is auto_refinancing_process
+auto_refinancing_process is the automatic borrowing of tokens to pay off debt when the amount available for borrowing exceeds the debt.
+
+
 ### paycheck flow
 #### SellingDecisions pay check flow
 
