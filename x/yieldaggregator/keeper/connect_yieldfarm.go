@@ -3,9 +3,10 @@ package keeper
 import (
 	"time"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
+	stakeibckeeper "github.com/UnUniFi/chain/x/stakeibc/keeper"
+	stakeibctypes "github.com/UnUniFi/chain/x/stakeibc/types"
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (k Keeper) InvestOnTarget(ctx sdk.Context, addr sdk.AccAddress, target types.AssetManagementTarget, amount sdk.Coins) error {
@@ -33,9 +34,29 @@ func (k Keeper) InvestOnTarget(ctx sdk.Context, addr sdk.AccAddress, target type
 		if err != nil {
 			return err
 		}
-		err = k.yieldfarmKeeper.Deposit(ctx, address, amount)
-		if err != nil {
-			return err
+		switch target.IntegrateInfo.ModName {
+		case "stakeibc":
+			for _, token := range amount {
+				msg := &stakeibctypes.MsgLiquidStake{
+					Creator:   addr.String(),
+					Amount:    token.Amount.Uint64(),
+					HostDenom: token.Denom,
+				}
+
+				msgServer := stakeibckeeper.NewMsgServerImpl(k.stakeibcKeeper)
+				_, err := msgServer.LiquidStake(
+					sdk.WrapSDKContext(ctx),
+					msg,
+				)
+				if err != nil {
+					return err
+				}
+			}
+		default:
+			err = k.yieldfarmKeeper.Deposit(ctx, address, amount)
+			if err != nil {
+				return err
+			}
 		}
 	case types.IntegrateType_COSMWASM:
 		wasmMsg := `{"deposit_native_token":{}}`
@@ -60,14 +81,35 @@ func (k Keeper) BeginWithdrawFromTarget(ctx sdk.Context, addr sdk.AccAddress, ta
 	case types.IntegrateType_GOLANG_MOD:
 		address := farmingUnit.GetAddress()
 
-		// request full withdraw from target if amount is empty
-		if amount.String() == "" {
-			farmerInfo := k.yieldfarmKeeper.GetFarmerInfo(ctx, address)
-			amount = farmerInfo.Amount
-		}
-		err := k.yieldfarmKeeper.Withdraw(ctx, address, amount)
-		if err != nil {
-			return err
+		switch target.IntegrateInfo.ModName {
+		case "stakeibc":
+			hostZones := k.stakeibcKeeper.GetAllHostZone(ctx)
+			for _, zone := range hostZones {
+				msg := stakeibctypes.NewMsgRedeemStake(
+					address.String(),
+					amount.AmountOf(zone.IBCDenom).Uint64(),
+					zone.ChainId,
+					address.String(),
+				)
+				msgServer := stakeibckeeper.NewMsgServerImpl(k.stakeibcKeeper)
+				_, err := msgServer.RedeemStake(
+					sdk.WrapSDKContext(ctx),
+					msg,
+				)
+				if err != nil {
+					return err
+				}
+			}
+		default:
+			// request full withdraw from target if amount is empty
+			if amount.String() == "" {
+				farmerInfo := k.yieldfarmKeeper.GetFarmerInfo(ctx, address)
+				amount = farmerInfo.Amount
+			}
+			err := k.yieldfarmKeeper.Withdraw(ctx, address, amount)
+			if err != nil {
+				return err
+			}
 		}
 	case types.IntegrateType_COSMWASM:
 		wasmMsg := `{"start_unbond":{}}`

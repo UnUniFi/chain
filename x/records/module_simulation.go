@@ -10,13 +10,11 @@ import (
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
-	recordssimulation "github.com/UnUniFi/chain/x/records/simulation"
 	"github.com/UnUniFi/chain/x/records/types"
 )
 
 // avoid unused import issue
 var (
-	_ = recordssimulation.FindAccount
 	_ = simappparams.StakePerAccount
 	_ = simulation.MsgEntryKind
 	_ = baseapp.Paramspace

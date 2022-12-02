@@ -6,6 +6,7 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	stakeibckeeper "github.com/UnUniFi/chain/x/stakeibc/keeper"
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
@@ -20,6 +21,7 @@ type Keeper struct {
 	bankKeeper      types.BankKeeper
 	yieldfarmKeeper types.YieldFarmKeeper
 	wasmKeeper      wasmtypes.ContractOpsKeeper
+	stakeibcKeeper  stakeibckeeper.Keeper
 }
 
 func NewKeeper(
@@ -29,6 +31,7 @@ func NewKeeper(
 	bk types.BankKeeper,
 	yfk types.YieldFarmKeeper,
 	wasmKeeper wasmtypes.ContractOpsKeeper,
+	stakeibcKeeper stakeibckeeper.Keeper,
 ) Keeper {
 	// set KeyTable if it has not already been set
 	if !paramSpace.HasKeyTable() {
@@ -42,6 +45,7 @@ func NewKeeper(
 		bankKeeper:      bk,
 		yieldfarmKeeper: yfk,
 		wasmKeeper:      wasmKeeper,
+		stakeibcKeeper:  stakeibcKeeper,
 	}
 }
 
