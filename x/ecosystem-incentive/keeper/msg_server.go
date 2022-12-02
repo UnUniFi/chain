@@ -31,8 +31,8 @@ func (k msgServer) Register(c context.Context, msg *types.MsgRegister) (*types.M
 	}
 
 	if err := ctx.EventManager().EmitTypedEvent(&types.EventRegister{
-		IncentiveUnitId: msg.IncentiveUnitId,
-		SubjectInfoList: *subjectInfoList,
+		IncentiveUnitId:  msg.IncentiveUnitId,
+		SubjectInfoLists: *subjectInfoList,
 	}); err != nil {
 		return nil, err
 	}
@@ -49,8 +49,8 @@ func (k msgServer) WithdrawAllRewards(c context.Context, msg *types.MsgWithdrawA
 	}
 
 	if err := ctx.EventManager().EmitTypedEvent(&types.EventWithdrawAllRewards{
-		Sender:  msg.Sender,
-		Rewards: rewards,
+		Sender:              msg.Sender,
+		AllWithdrawnRewards: rewards,
 	}); err != nil {
 		return nil, err
 	}
@@ -67,8 +67,8 @@ func (k msgServer) WithdrawReward(c context.Context, msg *types.MsgWithdrawRewar
 	}
 
 	if err := ctx.EventManager().EmitTypedEvent(&types.EventWithdrawReward{
-		Sender: msg.Sender,
-		Reward: reward,
+		Sender:          msg.Sender,
+		WithdrawnReward: reward,
 	}); err != nil {
 		return nil, err
 	}

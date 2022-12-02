@@ -15,7 +15,7 @@ func NewIncentiveUnit(id string, subjectsInfos []SubjectInfo) IncentiveUnit {
 
 func NewSubjectInfo(subjectAddr ununifitypes.StringAccAddress, weight sdk.Dec) SubjectInfo {
 	return SubjectInfo{
-		Address: subjectAddr,
-		Weight:  weight,
+		SubjectAddr: subjectAddr,
+		Weight:      weight,
 	}
 }

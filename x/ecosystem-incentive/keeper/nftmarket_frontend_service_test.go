@@ -266,10 +266,10 @@ func (suite *KeeperTestSuite) AccumulateRewardForFrontendTest(ctx sdk.Context, n
 	// rewardAmountForAll = fee * rewardRate
 	rewardAmountForAll := nftmarketFrontendRewardRate.MulInt(fee.Amount).RoundInt()
 
-	for _, subjectInfo := range incentiveUnit.SubjectInfoList {
-		rewardStore, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(ctx, subjectInfo.Address.AccAddress())
+	for _, subjectInfo := range incentiveUnit.SubjectInfoLists {
+		rewardStore, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(ctx, subjectInfo.SubjectAddr.AccAddress())
 		if !exists {
-			rewardStore = types.NewRewardStore(subjectInfo.Address, nil)
+			rewardStore = types.NewRewardStore(subjectInfo.SubjectAddr, nil)
 		}
 
 		weight := subjectInfo.Weight

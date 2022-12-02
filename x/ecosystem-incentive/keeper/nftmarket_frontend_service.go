@@ -126,9 +126,9 @@ func (k Keeper) AccumulateRewardForFrontend(ctx sdk.Context, nftId nftmarkettype
 	)
 
 	for i, subjectInfo := range incentiveUnit.SubjectInfoLists {
-		rewardStore, exists := k.GetRewardStore(ctx, subjectInfo.Address.AccAddress())
+		rewardStore, exists := k.GetRewardStore(ctx, subjectInfo.SubjectAddr.AccAddress())
 		if !exists {
-			rewardStore = types.NewRewardStore(subjectInfo.Address, nil)
+			rewardStore = types.NewRewardStore(subjectInfo.SubjectAddr, nil)
 		}
 
 		rewardStore.Rewards = rewardStore.Rewards.Add(sdk.NewCoins(rewardsForEach[i])...)
@@ -141,7 +141,7 @@ func (k Keeper) AccumulateRewardForFrontend(ctx sdk.Context, nftId nftmarkettype
 	// received new reward
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventUpdatedReward{
 		IncentiveUnitId: incentiveUnitId,
-		Reward:          sdk.NewCoin(fee.Denom, totalRewardForIncentiveUnit),
+		EarnedReward:    sdk.NewCoin(fee.Denom, totalRewardForIncentiveUnit),
 	})
 }
 

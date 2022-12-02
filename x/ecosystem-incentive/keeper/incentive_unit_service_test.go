@@ -72,7 +72,7 @@ func (suite *KeeperTestSuite) TestRegister() {
 		if tc.success {
 			suite.Require().NoError(err)
 			for i, subject := range *subjectInfo {
-				suite.Require().Equal(subject.Address, tc.subjectAddrs[i])
+				suite.Require().Equal(subject.SubjectAddr, tc.subjectAddrs[i])
 				suite.Require().Equal(subject.Weight, tc.weights[i])
 			}
 		} else {
