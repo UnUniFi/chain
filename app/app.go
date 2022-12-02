@@ -558,7 +558,6 @@ func NewApp(
 		appCodec,
 		keys[ecosystemincentivetypes.StoreKey],
 		app.GetSubspace(ecosystemincentivetypes.ModuleName),
-		app.AccountKeeper,
 		app.BankKeeper,
 	)
 	app.incentiveKeeper = incentivekeeper.NewKeeper(
@@ -687,7 +686,7 @@ func NewApp(
 		// this line is used by starport scaffolding # stargate/app/appModule
 		auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
 		cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.pricefeedKeeper),
-		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.AccountKeeper, app.BankKeeper),
+		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
 		incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
 		ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
 		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
