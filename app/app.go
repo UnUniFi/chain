@@ -557,7 +557,6 @@ func NewApp(
 	app.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
 		appCodec,
 		keys[ecosystemincentivetypes.StoreKey],
-		keys[ecosystemincentivetypes.MemStoreKey],
 		app.GetSubspace(ecosystemincentivetypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper,
