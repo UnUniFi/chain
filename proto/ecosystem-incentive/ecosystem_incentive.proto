@@ -10,8 +10,8 @@ message IncentiveUnit {
   string id = 1 [
     (gogoproto.moretags) = "yaml:\"id\""
   ];
-  repeated SubjectInfo subject_info_list = 2 [
-    (gogoproto.moretags) = "yaml:\"subject_info_list\"",
+  repeated SubjectInfo subject_info_lists = 2 [
+    (gogoproto.moretags) = "yaml:\"subject_info_lists\"",
     (gogoproto.nullable) = false
   ];
 }
@@ -35,9 +35,9 @@ message RewardStore {
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
-  repeated cosmos.base.v1beta1.Coin reward = 2 [
+  repeated cosmos.base.v1beta1.Coin rewards = 2 [
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
-    (gogoproto.moretags) = "yaml:\"reward\"",
+    (gogoproto.moretags) = "yaml:\"rewards\"",
     (gogoproto.nullable) = false
   ];
 }

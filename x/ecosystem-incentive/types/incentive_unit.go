@@ -6,10 +6,10 @@ import (
 	ununifitypes "github.com/UnUniFi/chain/types"
 )
 
-func NewIncentiveUnit(id string, subjectsInfo []SubjectInfo) IncentiveUnit {
+func NewIncentiveUnit(id string, subjectsInfos []SubjectInfo) IncentiveUnit {
 	return IncentiveUnit{
-		Id:              id,
-		SubjectInfoList: subjectsInfo,
+		Id:               id,
+		SubjectInfoLists: subjectsInfos,
 	}
 }
 

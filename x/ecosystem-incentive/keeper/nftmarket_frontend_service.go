@@ -120,12 +120,12 @@ func (k Keeper) AccumulateRewardForFrontend(ctx sdk.Context, nftId nftmarkettype
 	}
 	// rewardAmountForAll = fee * rewardRate
 	totalRewardForIncentiveUnit, rewardsForEach := CalculateRewardsForEachSubject(
-		extractWeightsFromSliceOfSubjectInfo(incentiveUnit.SubjectInfoList),
+		extractWeightsFromSliceOfSubjectInfo(incentiveUnit.SubjectInfoLists),
 		fee,
 		nftmarketFrontendRewardRate,
 	)
 
-	for i, subjectInfo := range incentiveUnit.SubjectInfoList {
+	for i, subjectInfo := range incentiveUnit.SubjectInfoLists {
 		rewardStore, exists := k.GetRewardStore(ctx, subjectInfo.Address.AccAddress())
 		if !exists {
 			rewardStore = types.NewRewardStore(subjectInfo.Address, nil)
