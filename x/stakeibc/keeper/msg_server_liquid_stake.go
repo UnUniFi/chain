@@ -12,6 +12,81 @@ import (
 	"github.com/UnUniFi/chain/x/stakeibc/types"
 )
 
+func (k Keeper) LiquidStake(goCtx context.Context, sender sdk.AccAddress, amount sdk.Coin) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Init variables
+	// deposit `amount` of `denom` token to the stakeibc module
+	// NOTE: Should we add an additional check here? This is a pretty important line of code
+	// NOTE: If sender doesn't have enough inCoin, this errors (error is hard to interpret)
+	// check that hostZone is registered
+	// strided tx stakeibc liquid-stake 100 uatom
+	hostZone, err := k.GetHostZoneFromIBCDenom(ctx, amount.Denom)
+	if err != nil {
+		k.Logger(ctx).Error(fmt.Sprintf("Host Zone not found for denom (%s)", amount.Denom))
+		return sdkerrors.Wrapf(types.ErrInvalidHostZone, "no host zone found for denom (%s)", amount.Denom)
+	}
+
+	// Creator owns at least "amount" of inCoin
+	balance := k.bankKeeper.GetBalance(ctx, sender, amount.Denom)
+	if balance.IsLT(amount) {
+		k.Logger(ctx).Error(fmt.Sprintf("balance is lower than staking amount. staking amount: %d, balance: %d", amount.Amount, balance.Amount.Int64()))
+		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, "balance is lower than staking amount. staking amount: %d, balance: %d", amount.Amount, balance.Amount.Int64())
+	}
+	// check that the token is an IBC token
+	isIbcToken := types.IsIBCToken(amount.Denom)
+	if !isIbcToken {
+		k.Logger(ctx).Error("invalid token denom - denom is not an IBC token (%s)", amount.Denom)
+		return sdkerrors.Wrapf(types.ErrInvalidToken, "denom is not an IBC token (%s)", amount.Denom)
+	}
+
+	// safety check: redemption rate must be above safety threshold
+	rateIsSafe, err := k.IsRedemptionRateWithinSafetyBounds(ctx, *hostZone)
+	if !rateIsSafe || (err != nil) {
+		errMsg := fmt.Sprintf("IsRedemptionRateWithinSafetyBounds check failed. hostZone: %s, err: %s", hostZone.String(), err.Error())
+		return sdkerrors.Wrapf(types.ErrRedemptionRateOutsideSafetyBounds, errMsg)
+	}
+
+	bech32ZoneAddress, err := sdk.AccAddressFromBech32(hostZone.Address)
+	if err != nil {
+		return fmt.Errorf("could not bech32 decode address %s of zone with id: %s", hostZone.Address, hostZone.ChainId)
+	}
+	err = k.bankKeeper.SendCoins(ctx, sender, bech32ZoneAddress, sdk.NewCoins(amount))
+	if err != nil {
+		k.Logger(ctx).Error("failed to send tokens from Account to Module")
+		return sdkerrors.Wrap(err, "failed to send tokens from Account to Module")
+	}
+	// mint user `amount` of the corresponding stAsset
+	// NOTE: We should ensure that denoms are unique - we don't want anyone spoofing denoms
+	err = k.MintStAsset(ctx, sender, amount.Amount.Uint64(), hostZone.HostDenom)
+	if err != nil {
+		k.Logger(ctx).Error("failed to send tokens from Account to Module")
+		return sdkerrors.Wrapf(err, "failed to mint %s stAssets to user", hostZone.HostDenom)
+	}
+
+	// create a deposit record of these tokens (pending transfer)
+	strideEpochTracker, found := k.GetEpochTracker(ctx, epochtypes.STRIDE_EPOCH)
+	if !found {
+		k.Logger(ctx).Error("failed to find stride epoch")
+		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "no epoch number for epoch (%s)", epochtypes.STRIDE_EPOCH)
+	}
+	// Does this use too much gas?
+	depositRecord, found := k.RecordsKeeper.GetDepositRecordByEpochAndChain(ctx, strideEpochTracker.EpochNumber, hostZone.ChainId)
+	if !found {
+		k.Logger(ctx).Error("failed to find deposit record")
+		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, fmt.Sprintf("no deposit record for epoch (%d)", strideEpochTracker.EpochNumber))
+	}
+	msgAmt, err := cast.ToInt64E(amount.Amount)
+	if err != nil {
+		k.Logger(ctx).Error("failed to convert msg.Amount to int64")
+		return sdkerrors.Wrapf(err, "failed to convert msg.Amount to int64")
+	}
+	depositRecord.Amount += msgAmt
+	k.RecordsKeeper.SetDepositRecord(ctx, *depositRecord)
+
+	return nil
+}
+
 func (k msgServer) LiquidStake(goCtx context.Context, msg *types.MsgLiquidStake) (*types.MsgLiquidStakeResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
@@ -98,7 +173,7 @@ func (k msgServer) LiquidStake(goCtx context.Context, msg *types.MsgLiquidStake)
 	return &types.MsgLiquidStakeResponse{}, nil
 }
 
-func (k msgServer) MintStAsset(ctx sdk.Context, sender sdk.AccAddress, amount uint64, denom string) error {
+func (k Keeper) MintStAsset(ctx sdk.Context, sender sdk.AccAddress, amount uint64, denom string) error {
 	stAssetDenom := types.StAssetDenomFromHostZoneDenom(denom)
 
 	// TODO(TEST-7): Add an exchange rate here! What object should we store the exchange rate on?
