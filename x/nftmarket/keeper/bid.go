@@ -202,18 +202,21 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 	if listing.BidToken != msg.BidAmount.Denom {
 		return types.ErrInvalidBidDenom
 	}
+	// todo we not decided rebid spec
 
-	// todo change check logic
-	// if listing.MinBid.GT(msg.Amount.Amount) {
-	// 	return types.ErrInvalidBidAmount
-	// }
+	bids := k.GetBidsByNft(ctx, listing.IdBytes())
+	err = CheckBidParams(listing, msg.BidAmount, msg.DepositAmount, bids)
+	if err != nil {
+		return err
+	}
 
 	// todo update for v2
-	// bidder := msg.Sender.AccAddress()
+	bidder := msg.Sender.AccAddress()
+
+	// todo we not decided rebid spec
+	// todo update for v2
 	// increaseAmount := msg.BidAmount.Amount
 	// paidAmount := sdk.ZeroInt()
-
-	// todo update for v2
 	// if previous bid exists add more on top of existings
 	// bid, err := k.GetBid(ctx, msg.NftId.IdBytes(), bidder)
 	// if err == nil {
@@ -229,13 +232,10 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 
 	// todo update for v2
 	// Transfer required amount of token from bid account to module
-	// initialDeposit := increaseAmount.Quo(sdk.NewInt(int64(listing.BidActiveRank)))
-	// if initialDeposit.IsPositive() {
-	// 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, bidder, types.ModuleName, sdk.Coins{sdk.NewCoin(listing.BidToken, initialDeposit)})
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// }
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, bidder, types.ModuleName, sdk.Coins{msg.DepositAmount})
+	if err != nil {
+		return err
+	}
 
 	// todo update for v2
 	// Add new bid on the listing
@@ -244,8 +244,8 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 		Bidder:           msg.Sender.AccAddress().String(),
 		BidAmount:        msg.BidAmount,
 		AutomaticPayment: msg.AutomaticPayment,
-		// PaidAmount:       paidAmount.Add(initialDeposit),
-		BidTime: ctx.BlockTime(),
+		DepositAmount:    msg.DepositAmount,
+		BidTime:          ctx.BlockTime(),
 	})
 
 	// extend bid if there's bid within gap time
@@ -253,6 +253,7 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 	if listing.State == types.ListingState_LISTING {
 		listing.State = types.ListingState_BIDDING
 	}
+	// todo implement listing end
 	gapTime := ctx.BlockTime().Add(time.Duration(params.NftListingGapTime) * time.Second)
 	if listing.EndAt.Before(gapTime) {
 		listing.EndAt = gapTime
@@ -409,5 +410,33 @@ func (k Keeper) HandleMaturedCancelledBids(ctx sdk.Context) error {
 		k.DeleteCancelledBid(ctx, bid)
 	}
 
+	return nil
+}
+
+// todo add unit test
+func CheckBidParams(listing types.NftListing, bid, deposit sdk.Coin, bids []types.NftBid) error {
+	c, err := sdk.NewDecFromStr(listing.MinimumDepositRate)
+	if err != nil {
+		return err
+	}
+	p := sdk.NewDecFromInt(bid.Amount)
+	cp := c.Mul(p)
+	depositDec := sdk.NewDecFromInt(deposit.Amount)
+	if cp.LT(depositDec) {
+		// todo add suitable error msg
+		// need more deposit
+		return err
+	}
+	q := bid
+	s := deposit
+	for _, bid := range bids {
+		q.Add(bid.BidAmount)
+		s.Add(bid.DepositAmount)
+	}
+	if depositDec.LT(sdk.NewDecFromInt(q.Sub(s).Amount)) {
+		// todo add suitable error msg
+		// deposit amount bigger
+		return err
+	}
 	return nil
 }
