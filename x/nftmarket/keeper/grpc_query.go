@@ -176,20 +176,20 @@ func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.Que
 		NftId:   req.NftId,
 	}
 	ctx := sdk.UnwrapSDKContext(c)
-	nft, err := k.GetNftListingByIdBytes(ctx, nftId.IdBytes())
-	if err != nil {
-		return &types.QueryLoanResponse{
-			Loan:           types.Loan{},
-			BorrowingLimit: sdk.ZeroInt(),
-		}, nil
-	}
+	// nft, err := k.GetNftListingByIdBytes(ctx, nftId.IdBytes())
+	// if err != nil {
+	// 	return &types.QueryLoanResponse{
+	// 		Loan:           types.Loan{},
+	// 		BorrowingLimit: sdk.ZeroInt(),
+	// 	}, nil
+	// }
 	bids := k.GetBidsByNft(ctx, nftId.IdBytes())
 	// Change the order of bids to  descending order
 	sort.SliceStable(bids, func(i, j int) bool {
-		if bids[i].Amount.Amount.LT(bids[j].Amount.Amount) {
+		if bids[i].BidAmount.Amount.LT(bids[j].BidAmount.Amount) {
 			return false
 		}
-		if bids[i].Amount.Amount.GT(bids[j].Amount.Amount) {
+		if bids[i].BidAmount.Amount.GT(bids[j].BidAmount.Amount) {
 			return true
 		}
 		if bids[i].BidTime.After(bids[j].BidTime) {
@@ -198,11 +198,9 @@ func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.Que
 		return false
 	})
 	max := sdk.ZeroInt()
-	for i, v := range bids {
-		if i+1 > int(nft.BidActiveRank) {
-			break
-		}
-		max = max.Add(v.PaidAmount)
+	// todo update for v2
+	for _, v := range bids {
+		max = max.Add(v.DepositAmount.Amount)
 	}
 
 	return &types.QueryLoanResponse{
@@ -284,15 +282,15 @@ func (k Keeper) PaymentStatus(c context.Context, req *types.QueryPaymentStatusRe
 		return nil, status.Error(codes.InvalidArgument, "does not match bidder")
 	}
 
-	allPaid := listing.State >= types.ListingState_END_LISTING && bidderBid.Amount.Amount.Equal(bidderBid.PaidAmount)
+	allPaid := listing.State >= types.ListingState_END_LISTING && bidderBid.BidAmount.Amount.Equal(bidderBid.DepositAmount.Amount)
 	return &types.QueryPaymentStatusResponse{
 		PaymentStatus: types.PaymentStatus{
 			NftId:            listing.NftId,
 			State:            listing.State,
 			Bidder:           bidderBid.Bidder,
-			Amount:           bidderBid.Amount,
+			Amount:           bidderBid.BidAmount,
 			AutomaticPayment: bidderBid.AutomaticPayment,
-			PaidAmount:       bidderBid.PaidAmount,
+			PaidAmount:       bidderBid.DepositAmount.Amount,
 			BidTime:          bidderBid.BidTime,
 			AllPaid:          allPaid,
 		},

@@ -157,26 +157,3 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 
 	return nil
 }
-
-func (k Keeper) Liquidate(ctx sdk.Context, msg *types.MsgLiquidate) error {
-	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
-	if err != nil {
-		return err
-	}
-
-	if listing.State != types.ListingState_LIQUIDATION {
-		return types.ErrNftListingNotInLiquidation
-	}
-
-	// TODO: handle nft sending
-	// TODO: handle token flow
-
-	// Emit event for liquidation
-	ctx.EventManager().EmitTypedEvent(&types.EventLiquidate{
-		Liquidator: msg.Sender.AccAddress().String(),
-		ClassId:    msg.NftId.ClassId,
-		NftId:      msg.NftId.NftId,
-	})
-
-	return nil
-}

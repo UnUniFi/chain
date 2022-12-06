@@ -4,6 +4,7 @@ package ununifi.nftmarket;
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/nftmarket/types";
 
@@ -13,10 +14,11 @@ enum ListingType {
   LATE_SHIPPING            = 2;
 }
 enum ListingState {
-  LISTING        = 0;
-  BIDDING        = 1;
-  END_LISTING    = 2;
-  SUCCESSFUL_BID = 3;
+  LISTING          = 0;
+  BIDDING          = 1;
+  SELLING_DECISION = 2;
+  END_LISTING      = 3;
+  SUCCESSFUL_BID   = 4;
 }
 
 message NftIdentifier {
@@ -41,14 +43,14 @@ message ListedNft {
 }
 
 message NftListing {
-  NftIdentifier             nft_id               = 1 [(gogoproto.nullable) = false];
-  string                    owner                = 2;
-  ListingType               listing_type         = 3;
-  ListingState              state                = 4;
-  string                    bid_token            = 5;
-  uint64                    minimum_deposit_rate = 6;
-  bool                      automatic_overdraft  = 7;
-  google.protobuf.Timestamp started_at           = 8
+  NftIdentifier             nft_id                = 1 [(gogoproto.nullable) = false];
+  string                    owner                 = 2;
+  ListingType               listing_type          = 3;
+  ListingState              state                 = 4;
+  string                    bid_token             = 5;
+  string                    minimum_deposit_rate  = 6 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  bool                      automatic_refinancing = 7;
+  google.protobuf.Timestamp started_at            = 8
       [(gogoproto.moretags) = "yaml:\"started_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
   google.protobuf.Timestamp end_at = 9
       [(gogoproto.moretags) = "yaml:\"end_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
@@ -63,16 +65,12 @@ message NftListing {
 }
 
 message NftBid {
-  NftIdentifier            nft_id         = 1 [(gogoproto.nullable) = false];
-  string                   bidder         = 2;
-  cosmos.base.v1beta1.Coin bid_amount     = 3 [(gogoproto.nullable) = false];
-  string                   deposit_amount = 4 [
-    (gogoproto.moretags)   = "yaml:\"paid_amount\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable)   = false
-  ];
-  google.protobuf.Timestamp bidding_period       = 5 [(gogoproto.nullable) = false];
-  uint64                    deposit_lending_rate = 6 [(gogoproto.nullable) = false];
+  NftIdentifier             nft_id               = 1 [(gogoproto.nullable) = false];
+  string                    bidder               = 2;
+  cosmos.base.v1beta1.Coin  bid_amount           = 3 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin  deposit_amount       = 4 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp bidding_period       = 5 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  string                    deposit_lending_rate = 6 [(cosmos_proto.scalar) = "cosmos.Dec"];
   bool                      automatic_payment    = 7;
   google.protobuf.Timestamp bid_time             = 8
       [(gogoproto.moretags) = "yaml:\"bid_time\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];

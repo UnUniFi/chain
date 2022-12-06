@@ -161,24 +161,16 @@
 - [nftmarket/tx.proto](#nftmarket/tx.proto)
     - [MsgBorrow](#ununifi.nftmarket.MsgBorrow)
     - [MsgBorrowResponse](#ununifi.nftmarket.MsgBorrowResponse)
-    - [MsgBurnStableCoin](#ununifi.nftmarket.MsgBurnStableCoin)
-    - [MsgBurnStableCoinResponse](#ununifi.nftmarket.MsgBurnStableCoinResponse)
     - [MsgCancelBid](#ununifi.nftmarket.MsgCancelBid)
     - [MsgCancelBidResponse](#ununifi.nftmarket.MsgCancelBidResponse)
     - [MsgCancelNftListing](#ununifi.nftmarket.MsgCancelNftListing)
     - [MsgCancelNftListingResponse](#ununifi.nftmarket.MsgCancelNftListingResponse)
     - [MsgEndNftListing](#ununifi.nftmarket.MsgEndNftListing)
     - [MsgEndNftListingResponse](#ununifi.nftmarket.MsgEndNftListingResponse)
-    - [MsgExpandListingPeriod](#ununifi.nftmarket.MsgExpandListingPeriod)
-    - [MsgExpandListingPeriodResponse](#ununifi.nftmarket.MsgExpandListingPeriodResponse)
-    - [MsgLiquidate](#ununifi.nftmarket.MsgLiquidate)
-    - [MsgLiquidateResponse](#ununifi.nftmarket.MsgLiquidateResponse)
     - [MsgListNft](#ununifi.nftmarket.MsgListNft)
     - [MsgListNftResponse](#ununifi.nftmarket.MsgListNftResponse)
     - [MsgMintNft](#ununifi.nftmarket.MsgMintNft)
     - [MsgMintNftResponse](#ununifi.nftmarket.MsgMintNftResponse)
-    - [MsgMintStableCoin](#ununifi.nftmarket.MsgMintStableCoin)
-    - [MsgMintStableCoinResponse](#ununifi.nftmarket.MsgMintStableCoinResponse)
     - [MsgPayFullBid](#ununifi.nftmarket.MsgPayFullBid)
     - [MsgPayFullBidResponse](#ununifi.nftmarket.MsgPayFullBidResponse)
     - [MsgPlaceBid](#ununifi.nftmarket.MsgPlaceBid)
@@ -302,16 +294,16 @@
 
 
 
-| Field               | Type                                                    | Label | Description |
-|---------------------|---------------------------------------------------------|-------|-------------|
-| `id`                | [uint64](#uint64)                                       |       |             |
-| `initiator`         | [string](#string)                                       |       |             |
-| `lot`               | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |       |             |
-| `bidder`            | [string](#string)                                       |       |             |
-| `bid`               | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |       |             |
-| `has_received_bids` | [bool](#bool)                                           |       |             |
-| `end_time`          | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
-| `max_end_time`      | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [uint64](#uint64) |  |  |
+| `initiator` | [string](#string) |  |  |
+| `lot` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `bidder` | [string](#string) |  |  |
+| `bid` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `has_received_bids` | [bool](#bool) |  |  |
+| `end_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `max_end_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 
 
 
@@ -324,12 +316,12 @@
 
 
 
-| Field                | Type                                                  | Label    | Description |
-|----------------------|-------------------------------------------------------|----------|-------------|
-| `base_auction`       | [BaseAuction](#ununifi.auction.BaseAuction)           |          |             |
-| `corresponding_debt` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |          |             |
-| `max_bid`            | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |          |             |
-| `lot_returns`        | [WeightedAddress](#ununifi.auction.WeightedAddress)   | repeated |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `base_auction` | [BaseAuction](#ununifi.auction.BaseAuction) |  |  |
+| `corresponding_debt` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `max_bid` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `lot_returns` | [WeightedAddress](#ununifi.auction.WeightedAddress) | repeated |  |
 
 
 
@@ -342,10 +334,10 @@
 
 
 
-| Field                | Type                                                  | Label | Description |
-|----------------------|-------------------------------------------------------|-------|-------------|
-| `base_auction`       | [BaseAuction](#ununifi.auction.BaseAuction)           |       |             |
-| `corresponding_debt` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `base_auction` | [BaseAuction](#ununifi.auction.BaseAuction) |  |  |
+| `corresponding_debt` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -358,13 +350,13 @@
 
 
 
-| Field                  | Type                                                  | Label | Description |
-|------------------------|-------------------------------------------------------|-------|-------------|
-| `max_auction_duration` | [google.protobuf.Duration](#google.protobuf.Duration) |       |             |
-| `bid_duration`         | [google.protobuf.Duration](#google.protobuf.Duration) |       |             |
-| `increment_surplus`    | [string](#string)                                     |       |             |
-| `increment_debt`       | [string](#string)                                     |       |             |
-| `increment_collateral` | [string](#string)                                     |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `max_auction_duration` | [google.protobuf.Duration](#google.protobuf.Duration) |  |  |
+| `bid_duration` | [google.protobuf.Duration](#google.protobuf.Duration) |  |  |
+| `increment_surplus` | [string](#string) |  |  |
+| `increment_debt` | [string](#string) |  |  |
+| `increment_collateral` | [string](#string) |  |  |
 
 
 
@@ -377,9 +369,9 @@
 
 
 
-| Field          | Type                                        | Label | Description |
-|----------------|---------------------------------------------|-------|-------------|
-| `base_auction` | [BaseAuction](#ununifi.auction.BaseAuction) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `base_auction` | [BaseAuction](#ununifi.auction.BaseAuction) |  |  |
 
 
 
@@ -392,10 +384,10 @@
 
 
 
-| Field     | Type              | Label | Description |
-|-----------|-------------------|-------|-------------|
-| `address` | [string](#string) |       |             |
-| `weight`  | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+| `weight` | [string](#string) |  |  |
 
 
 
@@ -424,11 +416,11 @@
 GenesisState defines the auction module's genesis state.
 
 
-| Field             | Type                                        | Label    | Description                                                     |
-|-------------------|---------------------------------------------|----------|-----------------------------------------------------------------|
-| `next_auction_id` | [uint64](#uint64)                           |          |                                                                 |
-| `params`          | [Params](#ununifi.auction.Params)           |          |                                                                 |
-| `auctions`        | [google.protobuf.Any](#google.protobuf.Any) | repeated | this line is used by starport scaffolding # genesis/proto/state |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `next_auction_id` | [uint64](#uint64) |  |  |
+| `params` | [Params](#ununifi.auction.Params) |  |  |
+| `auctions` | [google.protobuf.Any](#google.protobuf.Any) | repeated | this line is used by starport scaffolding # genesis/proto/state |
 
 
 
@@ -457,9 +449,9 @@ GenesisState defines the auction module's genesis state.
 
 
 
-| Field        | Type                                                                            | Label | Description |
-|--------------|---------------------------------------------------------------------------------|-------|-------------|
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
 
 
 
@@ -472,10 +464,10 @@ GenesisState defines the auction module's genesis state.
 
 
 
-| Field        | Type                                                                              | Label    | Description |
-|--------------|-----------------------------------------------------------------------------------|----------|-------------|
-| `auctions`   | [google.protobuf.Any](#google.protobuf.Any)                                       | repeated |             |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |          |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `auctions` | [google.protobuf.Any](#google.protobuf.Any) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
 
 
 
@@ -488,9 +480,9 @@ GenesisState defines the auction module's genesis state.
 this line is used by starport scaffolding # 3
 
 
-| Field | Type              | Label | Description |
-|-------|-------------------|-------|-------------|
-| `id`  | [uint64](#uint64) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [uint64](#uint64) |  |  |
 
 
 
@@ -503,9 +495,9 @@ this line is used by starport scaffolding # 3
 
 
 
-| Field     | Type                                        | Label | Description |
-|-----------|---------------------------------------------|-------|-------------|
-| `auction` | [google.protobuf.Any](#google.protobuf.Any) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `auction` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
 
 
 
@@ -528,9 +520,9 @@ this line is used by starport scaffolding # 3
 
 
 
-| Field    | Type                              | Label | Description |
-|----------|-----------------------------------|-------|-------------|
-| `params` | [Params](#ununifi.auction.Params) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.auction.Params) |  |  |
 
 
 
@@ -548,11 +540,11 @@ this line is used by starport scaffolding # 3
 ### Query
 Query defines the gRPC querier service.
 
-| Method Name  | Request Type                                                      | Response Type                                                       | Description                                   | HTTP Verb | Endpoint                       |
-|--------------|-------------------------------------------------------------------|---------------------------------------------------------------------|-----------------------------------------------|-----------|--------------------------------|
-| `Params`     | [QueryParamsRequest](#ununifi.auction.QueryParamsRequest)         | [QueryParamsResponse](#ununifi.auction.QueryParamsResponse)         |                                               | GET       | /ununifi/auction/params        |
-| `Auction`    | [QueryGetAuctionRequest](#ununifi.auction.QueryGetAuctionRequest) | [QueryGetAuctionResponse](#ununifi.auction.QueryGetAuctionResponse) | this line is used by starport scaffolding # 2 | GET       | /ununifi/auction/auctions/{id} |
-| `AuctionAll` | [QueryAllAuctionRequest](#ununifi.auction.QueryAllAuctionRequest) | [QueryAllAuctionResponse](#ununifi.auction.QueryAllAuctionResponse) |                                               | GET       | /ununifi/auction/auctions      |
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#ununifi.auction.QueryParamsRequest) | [QueryParamsResponse](#ununifi.auction.QueryParamsResponse) |  | GET|/ununifi/auction/params|
+| `Auction` | [QueryGetAuctionRequest](#ununifi.auction.QueryGetAuctionRequest) | [QueryGetAuctionResponse](#ununifi.auction.QueryGetAuctionResponse) | this line is used by starport scaffolding # 2 | GET|/ununifi/auction/auctions/{id}|
+| `AuctionAll` | [QueryAllAuctionRequest](#ununifi.auction.QueryAllAuctionRequest) | [QueryAllAuctionResponse](#ununifi.auction.QueryAllAuctionResponse) |  | GET|/ununifi/auction/auctions|
 
  <!-- end services -->
 
@@ -571,11 +563,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field        | Type                                                  | Label | Description |
-|--------------|-------------------------------------------------------|-------|-------------|
-| `auction_id` | [uint64](#uint64)                                     |       |             |
-| `bidder`     | [string](#string)                                     |       |             |
-| `amount`     | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `auction_id` | [uint64](#uint64) |  |  |
+| `bidder` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -624,11 +616,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field                     | Type                                                  | Label | Description |
-|---------------------------|-------------------------------------------------------|-------|-------------|
-| `cdp`                     | [Cdp](#ununifi.cdp.Cdp)                               |       |             |
-| `collateral_value`        | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
-| `collateralization_ratio` | [string](#string)                                     |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `cdp` | [Cdp](#ununifi.cdp.Cdp) |  |  |
+| `collateral_value` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `collateralization_ratio` | [string](#string) |  |  |
 
 
 
@@ -641,16 +633,16 @@ Query defines the gRPC querier service.
 
 
 
-| Field              | Type                                                    | Label | Description |
-|--------------------|---------------------------------------------------------|-------|-------------|
-| `id`               | [uint64](#uint64)                                       |       |             |
-| `owner`            | [string](#string)                                       |       |             |
-| `type`             | [string](#string)                                       |       |             |
-| `collateral`       | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |       |             |
-| `principal`        | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |       |             |
-| `accumulated_fees` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |       |             |
-| `fees_updated`     | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
-| `interest_factor`  | [string](#string)                                       |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [uint64](#uint64) |  |  |
+| `owner` | [string](#string) |  |  |
+| `type` | [string](#string) |  |  |
+| `collateral` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `principal` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `accumulated_fees` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `fees_updated` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `interest_factor` | [string](#string) |  |  |
 
 
 
@@ -663,21 +655,21 @@ Query defines the gRPC querier service.
 
 
 
-| Field                                 | Type                                                  | Label | Description |
-|---------------------------------------|-------------------------------------------------------|-------|-------------|
-| `denom`                               | [string](#string)                                     |       |             |
-| `type`                                | [string](#string)                                     |       |             |
-| `liquidation_ratio`                   | [string](#string)                                     |       |             |
-| `debt_limit`                          | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
-| `stability_fee`                       | [string](#string)                                     |       |             |
-| `auction_size`                        | [string](#string)                                     |       |             |
-| `liquidation_penalty`                 | [string](#string)                                     |       |             |
-| `prefix`                              | [uint32](#uint32)                                     |       |             |
-| `spot_market_id`                      | [string](#string)                                     |       |             |
-| `liquidation_market_id`               | [string](#string)                                     |       |             |
-| `keeper_reward_percentage`            | [string](#string)                                     |       |             |
-| `check_collateralization_index_count` | [string](#string)                                     |       |             |
-| `conversion_factor`                   | [string](#string)                                     |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+| `type` | [string](#string) |  |  |
+| `liquidation_ratio` | [string](#string) |  |  |
+| `debt_limit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `stability_fee` | [string](#string) |  |  |
+| `auction_size` | [string](#string) |  |  |
+| `liquidation_penalty` | [string](#string) |  |  |
+| `prefix` | [uint32](#uint32) |  |  |
+| `spot_market_id` | [string](#string) |  |  |
+| `liquidation_market_id` | [string](#string) |  |  |
+| `keeper_reward_percentage` | [string](#string) |  |  |
+| `check_collateralization_index_count` | [string](#string) |  |  |
+| `conversion_factor` | [string](#string) |  |  |
 
 
 
@@ -690,19 +682,19 @@ Query defines the gRPC querier service.
 
 
 
-| Field                       | Type                                                  | Label | Description |
-|-----------------------------|-------------------------------------------------------|-------|-------------|
-| `denom`                     | [string](#string)                                     |       |             |
-| `reference_asset`           | [string](#string)                                     |       |             |
-| `conversion_factor`         | [string](#string)                                     |       |             |
-| `debt_floor`                | [string](#string)                                     |       |             |
-| `global_debt_limit`         | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
-| `debt_denom`                | [string](#string)                                     |       |             |
-| `surplus_auction_threshold` | [string](#string)                                     |       |             |
-| `surplus_auction_lot`       | [string](#string)                                     |       |             |
-| `debt_auction_threshold`    | [string](#string)                                     |       |             |
-| `debt_auction_lot`          | [string](#string)                                     |       |             |
-| `circuit_breaker`           | [bool](#bool)                                         |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+| `reference_asset` | [string](#string) |  |  |
+| `conversion_factor` | [string](#string) |  |  |
+| `debt_floor` | [string](#string) |  |  |
+| `global_debt_limit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `debt_denom` | [string](#string) |  |  |
+| `surplus_auction_threshold` | [string](#string) |  |  |
+| `surplus_auction_lot` | [string](#string) |  |  |
+| `debt_auction_threshold` | [string](#string) |  |  |
+| `debt_auction_lot` | [string](#string) |  |  |
+| `circuit_breaker` | [bool](#bool) |  |  |
 
 
 
@@ -715,11 +707,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field       | Type                                                  | Label | Description |
-|-------------|-------------------------------------------------------|-------|-------------|
-| `cdp_id`    | [uint64](#uint64)                                     |       |             |
-| `depositor` | [string](#string)                                     |       |             |
-| `amount`    | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `cdp_id` | [uint64](#uint64) |  |  |
+| `depositor` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -732,10 +724,10 @@ Query defines the gRPC querier service.
 
 
 
-| Field               | Type                                            | Label    | Description |
-|---------------------|-------------------------------------------------|----------|-------------|
-| `collateral_params` | [CollateralParam](#ununifi.cdp.CollateralParam) | repeated |             |
-| `debt_params`       | [DebtParam](#ununifi.cdp.DebtParam)             | repeated |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `collateral_params` | [CollateralParam](#ununifi.cdp.CollateralParam) | repeated |  |
+| `debt_params` | [DebtParam](#ununifi.cdp.DebtParam) | repeated |  |
 
 
 
@@ -764,11 +756,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field                        | Type                                                    | Label | Description |
-|------------------------------|---------------------------------------------------------|-------|-------------|
-| `collateral_type`            | [string](#string)                                       |       |             |
-| `previous_accumulation_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
-| `interest_factor`            | [string](#string)                                       |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `collateral_type` | [string](#string) |  |  |
+| `previous_accumulation_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `interest_factor` | [string](#string) |  |  |
 
 
 
@@ -781,15 +773,15 @@ Query defines the gRPC querier service.
 GenesisState defines the cdp module's genesis state.
 
 
-| Field                         | Type                                                            | Label    | Description                                                     |
-|-------------------------------|-----------------------------------------------------------------|----------|-----------------------------------------------------------------|
-| `params`                      | [Params](#ununifi.cdp.Params)                                   |          |                                                                 |
-| `cdps`                        | [Cdp](#ununifi.cdp.Cdp)                                         | repeated |                                                                 |
-| `deposits`                    | [Deposit](#ununifi.cdp.Deposit)                                 | repeated |                                                                 |
-| `starting_cdp_id`             | [uint64](#uint64)                                               |          |                                                                 |
-| `gov_denom`                   | [string](#string)                                               |          |                                                                 |
-| `previous_accumulation_times` | [GenesisAccumulationTime](#ununifi.cdp.GenesisAccumulationTime) | repeated |                                                                 |
-| `total_principals`            | [GenesisTotalPrincipal](#ununifi.cdp.GenesisTotalPrincipal)     | repeated | this line is used by starport scaffolding # genesis/proto/state |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.cdp.Params) |  |  |
+| `cdps` | [Cdp](#ununifi.cdp.Cdp) | repeated |  |
+| `deposits` | [Deposit](#ununifi.cdp.Deposit) | repeated |  |
+| `starting_cdp_id` | [uint64](#uint64) |  |  |
+| `gov_denom` | [string](#string) |  |  |
+| `previous_accumulation_times` | [GenesisAccumulationTime](#ununifi.cdp.GenesisAccumulationTime) | repeated |  |
+| `total_principals` | [GenesisTotalPrincipal](#ununifi.cdp.GenesisTotalPrincipal) | repeated | this line is used by starport scaffolding # genesis/proto/state |
 
 
 
@@ -802,10 +794,10 @@ GenesisState defines the cdp module's genesis state.
 
 
 
-| Field             | Type              | Label | Description |
-|-------------------|-------------------|-------|-------------|
-| `collateral_type` | [string](#string) |       |             |
-| `total_principal` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `collateral_type` | [string](#string) |  |  |
+| `total_principal` | [string](#string) |  |  |
 
 
 
@@ -844,9 +836,9 @@ GenesisState defines the cdp module's genesis state.
 
 
 
-| Field      | Type                                        | Label    | Description |
-|------------|---------------------------------------------|----------|-------------|
-| `accounts` | [google.protobuf.Any](#google.protobuf.Any) | repeated |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `accounts` | [google.protobuf.Any](#google.protobuf.Any) | repeated |  |
 
 
 
@@ -859,9 +851,9 @@ GenesisState defines the cdp module's genesis state.
 
 
 
-| Field        | Type                                                                            | Label | Description |
-|--------------|---------------------------------------------------------------------------------|-------|-------------|
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
 
 
 
@@ -874,10 +866,10 @@ GenesisState defines the cdp module's genesis state.
 
 
 
-| Field        | Type                                                                              | Label    | Description |
-|--------------|-----------------------------------------------------------------------------------|----------|-------------|
-| `cdp`        | [AugmentedCdp](#ununifi.cdp.AugmentedCdp)                                         | repeated |             |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |          |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `cdp` | [AugmentedCdp](#ununifi.cdp.AugmentedCdp) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
 
 
 
@@ -890,10 +882,10 @@ GenesisState defines the cdp module's genesis state.
 
 
 
-| Field             | Type              | Label | Description |
-|-------------------|-------------------|-------|-------------|
-| `owner`           | [string](#string) |       |             |
-| `collateral_type` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `collateral_type` | [string](#string) |  |  |
 
 
 
@@ -906,9 +898,9 @@ GenesisState defines the cdp module's genesis state.
 
 
 
-| Field      | Type                            | Label    | Description |
-|------------|---------------------------------|----------|-------------|
-| `deposits` | [Deposit](#ununifi.cdp.Deposit) | repeated |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `deposits` | [Deposit](#ununifi.cdp.Deposit) | repeated |  |
 
 
 
@@ -921,10 +913,10 @@ GenesisState defines the cdp module's genesis state.
 this line is used by starport scaffolding # 3
 
 
-| Field             | Type              | Label | Description |
-|-------------------|-------------------|-------|-------------|
-| `owner`           | [string](#string) |       |             |
-| `collateral_type` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `collateral_type` | [string](#string) |  |  |
 
 
 
@@ -937,9 +929,9 @@ this line is used by starport scaffolding # 3
 
 
 
-| Field | Type                                      | Label | Description |
-|-------|-------------------------------------------|-------|-------------|
-| `cdp` | [AugmentedCdp](#ununifi.cdp.AugmentedCdp) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `cdp` | [AugmentedCdp](#ununifi.cdp.AugmentedCdp) |  |  |
 
 
 
@@ -962,9 +954,9 @@ this line is used by starport scaffolding # 3
 
 
 
-| Field    | Type                          | Label | Description |
-|----------|-------------------------------|-------|-------------|
-| `params` | [Params](#ununifi.cdp.Params) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.cdp.Params) |  |  |
 
 
 
@@ -982,13 +974,13 @@ this line is used by starport scaffolding # 3
 ### Query
 Query defines the gRPC querier service.
 
-| Method Name  | Request Type                                                  | Response Type                                                   | Description                                   | HTTP Verb | Endpoint                                                                |
-|--------------|---------------------------------------------------------------|-----------------------------------------------------------------|-----------------------------------------------|-----------|-------------------------------------------------------------------------|
-| `Params`     | [QueryParamsRequest](#ununifi.cdp.QueryParamsRequest)         | [QueryParamsResponse](#ununifi.cdp.QueryParamsResponse)         |                                               | GET       | /ununifi/cdp/params                                                     |
-| `Cdp`        | [QueryGetCdpRequest](#ununifi.cdp.QueryGetCdpRequest)         | [QueryGetCdpResponse](#ununifi.cdp.QueryGetCdpResponse)         | this line is used by starport scaffolding # 2 | GET       | /ununifi/cdp/cdps/owners/{owner}/collateral-types/{collateral_type}/cdp |
-| `CdpAll`     | [QueryAllCdpRequest](#ununifi.cdp.QueryAllCdpRequest)         | [QueryAllCdpResponse](#ununifi.cdp.QueryAllCdpResponse)         |                                               | GET       | /ununifi/cdp/cdps                                                       |
-| `AccountAll` | [QueryAllAccountRequest](#ununifi.cdp.QueryAllAccountRequest) | [QueryAllAccountResponse](#ununifi.cdp.QueryAllAccountResponse) |                                               | GET       | /ununifi/cdp/accounts                                                   |
-| `DepositAll` | [QueryAllDepositRequest](#ununifi.cdp.QueryAllDepositRequest) | [QueryAllDepositResponse](#ununifi.cdp.QueryAllDepositResponse) |                                               | GET       | /ununifi/cdp/deposits/owners/{owner}/collateral-types/{collateral_type} |
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#ununifi.cdp.QueryParamsRequest) | [QueryParamsResponse](#ununifi.cdp.QueryParamsResponse) |  | GET|/ununifi/cdp/params|
+| `Cdp` | [QueryGetCdpRequest](#ununifi.cdp.QueryGetCdpRequest) | [QueryGetCdpResponse](#ununifi.cdp.QueryGetCdpResponse) | this line is used by starport scaffolding # 2 | GET|/ununifi/cdp/cdps/owners/{owner}/collateral-types/{collateral_type}/cdp|
+| `CdpAll` | [QueryAllCdpRequest](#ununifi.cdp.QueryAllCdpRequest) | [QueryAllCdpResponse](#ununifi.cdp.QueryAllCdpResponse) |  | GET|/ununifi/cdp/cdps|
+| `AccountAll` | [QueryAllAccountRequest](#ununifi.cdp.QueryAllAccountRequest) | [QueryAllAccountResponse](#ununifi.cdp.QueryAllAccountResponse) |  | GET|/ununifi/cdp/accounts|
+| `DepositAll` | [QueryAllDepositRequest](#ununifi.cdp.QueryAllDepositRequest) | [QueryAllDepositResponse](#ununifi.cdp.QueryAllDepositResponse) |  | GET|/ununifi/cdp/deposits/owners/{owner}/collateral-types/{collateral_type}|
 
  <!-- end services -->
 
@@ -1007,12 +999,12 @@ Query defines the gRPC querier service.
 
 
 
-| Field             | Type                                                  | Label | Description |
-|-------------------|-------------------------------------------------------|-------|-------------|
-| `sender`          | [string](#string)                                     |       |             |
-| `collateral`      | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
-| `principal`       | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
-| `collateral_type` | [string](#string)                                     |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `collateral` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `principal` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `collateral_type` | [string](#string) |  |  |
 
 
 
@@ -1035,12 +1027,12 @@ Query defines the gRPC querier service.
 
 
 
-| Field             | Type                                                  | Label | Description |
-|-------------------|-------------------------------------------------------|-------|-------------|
-| `depositor`       | [string](#string)                                     |       |             |
-| `owner`           | [string](#string)                                     |       |             |
-| `collateral`      | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
-| `collateral_type` | [string](#string)                                     |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `depositor` | [string](#string) |  |  |
+| `owner` | [string](#string) |  |  |
+| `collateral` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `collateral_type` | [string](#string) |  |  |
 
 
 
@@ -1063,11 +1055,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field             | Type                                                  | Label | Description |
-|-------------------|-------------------------------------------------------|-------|-------------|
-| `sender`          | [string](#string)                                     |       |             |
-| `collateral_type` | [string](#string)                                     |       |             |
-| `principal`       | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `collateral_type` | [string](#string) |  |  |
+| `principal` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -1090,11 +1082,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field             | Type              | Label | Description |
-|-------------------|-------------------|-------|-------------|
-| `keeper`          | [string](#string) |       |             |
-| `borrower`        | [string](#string) |       |             |
-| `collateral_type` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `keeper` | [string](#string) |  |  |
+| `borrower` | [string](#string) |  |  |
+| `collateral_type` | [string](#string) |  |  |
 
 
 
@@ -1117,11 +1109,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field             | Type                                                  | Label | Description |
-|-------------------|-------------------------------------------------------|-------|-------------|
-| `sender`          | [string](#string)                                     |       |             |
-| `collateral_type` | [string](#string)                                     |       |             |
-| `payment`         | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `collateral_type` | [string](#string) |  |  |
+| `payment` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -1144,12 +1136,12 @@ Query defines the gRPC querier service.
 
 
 
-| Field             | Type                                                  | Label | Description |
-|-------------------|-------------------------------------------------------|-------|-------------|
-| `depositor`       | [string](#string)                                     |       |             |
-| `owner`           | [string](#string)                                     |       |             |
-| `collateral`      | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
-| `collateral_type` | [string](#string)                                     |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `depositor` | [string](#string) |  |  |
+| `owner` | [string](#string) |  |  |
+| `collateral` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `collateral_type` | [string](#string) |  |  |
 
 
 
@@ -1203,12 +1195,12 @@ Query defines the gRPC querier service.
 
 
 
-| Field            | Type                                                      | Label | Description |
-|------------------|-----------------------------------------------------------|-------|-------------|
-| `body`           | [cosmos.tx.v1beta1.TxBody](#cosmos.tx.v1beta1.TxBody)     |       |             |
-| `auth_info`      | [cosmos.tx.v1beta1.AuthInfo](#cosmos.tx.v1beta1.AuthInfo) |       |             |
-| `chain_id`       | [string](#string)                                         |       |             |
-| `account_number` | [uint64](#uint64)                                         |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `body` | [cosmos.tx.v1beta1.TxBody](#cosmos.tx.v1beta1.TxBody) |  |  |
+| `auth_info` | [cosmos.tx.v1beta1.AuthInfo](#cosmos.tx.v1beta1.AuthInfo) |  |  |
+| `chain_id` | [string](#string) |  |  |
+| `account_number` | [uint64](#uint64) |  |  |
 
 
 
@@ -1237,10 +1229,10 @@ Query defines the gRPC querier service.
 
 
 
-| Field    | Type                                                  | Label | Description |
-|----------|-------------------------------------------------------|-------|-------------|
-| `owner`  | [string](#string)                                     |       |             |
-| `reward` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `reward` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -1253,10 +1245,10 @@ Query defines the gRPC querier service.
 
 
 
-| Field    | Type                                                  | Label    | Description |
-|----------|-------------------------------------------------------|----------|-------------|
-| `owner`  | [string](#string)                                     |          |             |
-| `reward` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `reward` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
 
 
 
@@ -1269,10 +1261,10 @@ Query defines the gRPC querier service.
 
 
 
-| Field            | Type                                          | Label    | Description |
-|------------------|-----------------------------------------------|----------|-------------|
-| `base_claim`     | [BaseClaim](#ununifi.incentive.BaseClaim)     |          |             |
-| `reward_indexes` | [RewardIndex](#ununifi.incentive.RewardIndex) | repeated |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `base_claim` | [BaseClaim](#ununifi.incentive.BaseClaim) |  |  |
+| `reward_indexes` | [RewardIndex](#ununifi.incentive.RewardIndex) | repeated |  |
 
 
 
@@ -1285,11 +1277,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field           | Type              | Label | Description |
-|-----------------|-------------------|-------|-------------|
-| `name`          | [string](#string) |       |             |
-| `months_lockup` | [int64](#int64)   |       |             |
-| `factor`        | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  |  |
+| `months_lockup` | [int64](#int64) |  |  |
+| `factor` | [string](#string) |  |  |
 
 
 
@@ -1302,11 +1294,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field                        | Type                                                    | Label    | Description |
-|------------------------------|---------------------------------------------------------|----------|-------------|
-| `cdp_minting_reward_periods` | [RewardPeriod](#ununifi.incentive.RewardPeriod)         | repeated |             |
-| `claim_multipliers`          | [Multiplier](#ununifi.incentive.Multiplier)             | repeated |             |
-| `claim_end`                  | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |          |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `cdp_minting_reward_periods` | [RewardPeriod](#ununifi.incentive.RewardPeriod) | repeated |  |
+| `claim_multipliers` | [Multiplier](#ununifi.incentive.Multiplier) | repeated |  |
+| `claim_end` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 
 
 
@@ -1319,10 +1311,10 @@ Query defines the gRPC querier service.
 
 
 
-| Field             | Type              | Label | Description |
-|-------------------|-------------------|-------|-------------|
-| `collateral_type` | [string](#string) |       |             |
-| `reward_factor`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `collateral_type` | [string](#string) |  |  |
+| `reward_factor` | [string](#string) |  |  |
 
 
 
@@ -1335,13 +1327,13 @@ Query defines the gRPC querier service.
 
 
 
-| Field                | Type                                                    | Label | Description |
-|----------------------|---------------------------------------------------------|-------|-------------|
-| `active`             | [bool](#bool)                                           |       |             |
-| `collateral_type`    | [string](#string)                                       |       |             |
-| `start`              | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
-| `end`                | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
-| `rewards_per_second` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `active` | [bool](#bool) |  |  |
+| `collateral_type` | [string](#string) |  |  |
+| `start` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `end` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `rewards_per_second` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -1370,10 +1362,10 @@ Query defines the gRPC querier service.
 
 
 
-| Field                        | Type                                                    | Label | Description |
-|------------------------------|---------------------------------------------------------|-------|-------------|
-| `collateral_type`            | [string](#string)                                       |       |             |
-| `previous_accumulation_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `collateral_type` | [string](#string) |  |  |
+| `previous_accumulation_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 
 
 
@@ -1386,10 +1378,10 @@ Query defines the gRPC querier service.
 
 
 
-| Field                      | Type              | Label | Description |
-|----------------------------|-------------------|-------|-------------|
-| `principal_denom`          | [string](#string) |       |             |
-| `cdp_minting_reward_denom` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `principal_denom` | [string](#string) |  |  |
+| `cdp_minting_reward_denom` | [string](#string) |  |  |
 
 
 
@@ -1402,12 +1394,12 @@ Query defines the gRPC querier service.
 GenesisState defines the incentive module's genesis state.
 
 
-| Field                    | Type                                                                  | Label    | Description                                                     |
-|--------------------------|-----------------------------------------------------------------------|----------|-----------------------------------------------------------------|
-| `params`                 | [Params](#ununifi.incentive.Params)                                   |          |                                                                 |
-| `cdp_accumulation_times` | [GenesisAccumulationTime](#ununifi.incentive.GenesisAccumulationTime) | repeated |                                                                 |
-| `cdp_minting_claims`     | [CdpMintingClaim](#ununifi.incentive.CdpMintingClaim)                 | repeated |                                                                 |
-| `denoms`                 | [GenesisDenoms](#ununifi.incentive.GenesisDenoms)                     |          | this line is used by starport scaffolding # genesis/proto/state |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.incentive.Params) |  |  |
+| `cdp_accumulation_times` | [GenesisAccumulationTime](#ununifi.incentive.GenesisAccumulationTime) | repeated |  |
+| `cdp_minting_claims` | [CdpMintingClaim](#ununifi.incentive.CdpMintingClaim) | repeated |  |
+| `denoms` | [GenesisDenoms](#ununifi.incentive.GenesisDenoms) |  | this line is used by starport scaffolding # genesis/proto/state |
 
 
 
@@ -1446,9 +1438,9 @@ GenesisState defines the incentive module's genesis state.
 
 
 
-| Field    | Type                                | Label | Description |
-|----------|-------------------------------------|-------|-------------|
-| `params` | [Params](#ununifi.incentive.Params) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.incentive.Params) |  |  |
 
 
 
@@ -1466,9 +1458,9 @@ GenesisState defines the incentive module's genesis state.
 ### Query
 Query defines the gRPC querier service.
 
-| Method Name | Request Type                                                | Response Type                                                 | Description                                   | HTTP Verb | Endpoint                  |
-|-------------|-------------------------------------------------------------|---------------------------------------------------------------|-----------------------------------------------|-----------|---------------------------|
-| `Params`    | [QueryParamsRequest](#ununifi.incentive.QueryParamsRequest) | [QueryParamsResponse](#ununifi.incentive.QueryParamsResponse) | this line is used by starport scaffolding # 2 | GET       | /ununifi/incentive/params |
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#ununifi.incentive.QueryParamsRequest) | [QueryParamsResponse](#ununifi.incentive.QueryParamsResponse) | this line is used by starport scaffolding # 2 | GET|/ununifi/incentive/params|
 
  <!-- end services -->
 
@@ -1487,10 +1479,10 @@ Query defines the gRPC querier service.
 
 
 
-| Field             | Type              | Label | Description |
-|-------------------|-------------------|-------|-------------|
-| `sender`          | [string](#string) |       |             |
-| `multiplier_name` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `multiplier_name` | [string](#string) |  |  |
 
 
 
@@ -1539,12 +1531,12 @@ Query defines the gRPC querier service.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `borrower` | [string](#string) |       |             |
-| `class_id` | [string](#string) |       |             |
-| `nft_id`   | [string](#string) |       |             |
-| `amount`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `borrower` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
 
 
 
@@ -1557,11 +1549,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `bidder`   | [string](#string) |       |             |
-| `class_id` | [string](#string) |       |             |
-| `nft_id`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `bidder` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
 
 
 
@@ -1574,11 +1566,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `owner`    | [string](#string) |       |             |
-| `class_id` | [string](#string) |       |             |
-| `nft_id`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
 
 
 
@@ -1591,11 +1583,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `owner`    | [string](#string) |       |             |
-| `class_id` | [string](#string) |       |             |
-| `nft_id`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
 
 
 
@@ -1608,11 +1600,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `owner`    | [string](#string) |       |             |
-| `class_id` | [string](#string) |       |             |
-| `nft_id`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
 
 
 
@@ -1625,11 +1617,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field        | Type              | Label | Description |
-|--------------|-------------------|-------|-------------|
-| `liquidator` | [string](#string) |       |             |
-| `class_id`   | [string](#string) |       |             |
-| `nft_id`     | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `liquidator` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
 
 
 
@@ -1642,11 +1634,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `owner`    | [string](#string) |       |             |
-| `class_id` | [string](#string) |       |             |
-| `nft_id`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
 
 
 
@@ -1659,11 +1651,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `bidder`   | [string](#string) |       |             |
-| `class_id` | [string](#string) |       |             |
-| `nft_id`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `bidder` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
 
 
 
@@ -1676,12 +1668,12 @@ Query defines the gRPC querier service.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `bidder`   | [string](#string) |       |             |
-| `class_id` | [string](#string) |       |             |
-| `nft_id`   | [string](#string) |       |             |
-| `amount`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `bidder` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
 
 
 
@@ -1694,12 +1686,12 @@ Query defines the gRPC querier service.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `repayer`  | [string](#string) |       |             |
-| `class_id` | [string](#string) |       |             |
-| `nft_id`   | [string](#string) |       |             |
-| `amount`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `repayer` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
 
 
 
@@ -1712,11 +1704,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `owner`    | [string](#string) |       |             |
-| `class_id` | [string](#string) |       |             |
-| `nft_id`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
 
 
 
@@ -1729,10 +1721,10 @@ Query defines the gRPC querier service.
 
 
 
-| Field      | Type              | Label    | Description |
-|------------|-------------------|----------|-------------|
-| `class_id` | [string](#string) |          |             |
-| `nft_ids`  | [string](#string) | repeated |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_ids` | [string](#string) | repeated |  |
 
 
 
@@ -1745,11 +1737,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `id`       | [string](#string) |       |             |
-| `uri`      | [string](#string) |       |             |
-| `uri_hash` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  |  |
+| `uri` | [string](#string) |  |  |
+| `uri_hash` | [string](#string) |  |  |
 
 
 
@@ -1762,10 +1754,10 @@ Query defines the gRPC querier service.
 
 
 
-| Field    | Type                                                  | Label | Description |
-|----------|-------------------------------------------------------|-------|-------------|
-| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier)     |       |             |
-| `loan`   | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+| `loan` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -1778,14 +1770,16 @@ Query defines the gRPC querier service.
 
 
 
-| Field               | Type                                                    | Label | Description |
-|---------------------|---------------------------------------------------------|-------|-------------|
-| `nft_id`            | [NftIdentifier](#ununifi.nftmarket.NftIdentifier)       |       |             |
-| `bidder`            | [string](#string)                                       |       |             |
-| `amount`            | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |       |             |
-| `automatic_payment` | [bool](#bool)                                           |       |             |
-| `paid_amount`       | [string](#string)                                       |       |             |
-| `bid_time`          | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+| `bidder` | [string](#string) |  |  |
+| `bid_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `deposit_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `bidding_period` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `deposit_lending_rate` | [string](#string) |  |  |
+| `automatic_payment` | [bool](#bool) |  |  |
+| `bid_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 
 
 
@@ -1798,10 +1792,10 @@ Query defines the gRPC querier service.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `class_id` | [string](#string) |       |             |
-| `nft_id`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
 
 
 
@@ -1814,20 +1808,20 @@ Query defines the gRPC querier service.
 
 
 
-| Field                   | Type                                                    | Label | Description |
-|-------------------------|---------------------------------------------------------|-------|-------------|
-| `nft_id`                | [NftIdentifier](#ununifi.nftmarket.NftIdentifier)       |       |             |
-| `owner`                 | [string](#string)                                       |       |             |
-| `listing_type`          | [ListingType](#ununifi.nftmarket.ListingType)           |       |             |
-| `state`                 | [ListingState](#ununifi.nftmarket.ListingState)         |       |             |
-| `bid_token`             | [string](#string)                                       |       |             |
-| `min_bid`               | [string](#string)                                       |       |             |
-| `bid_active_rank`       | [uint64](#uint64)                                       |       |             |
-| `started_at`            | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
-| `end_at`                | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
-| `full_payment_end_at`   | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
-| `successful_bid_end_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
-| `auto_relisted_count`   | [uint64](#uint64)                                       |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+| `owner` | [string](#string) |  |  |
+| `listing_type` | [ListingType](#ununifi.nftmarket.ListingType) |  |  |
+| `state` | [ListingState](#ununifi.nftmarket.ListingState) |  |  |
+| `bid_token` | [string](#string) |  |  |
+| `minimum_deposit_rate` | [string](#string) |  |  |
+| `automatic_refinancing` | [bool](#bool) |  |  |
+| `started_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `end_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `full_payment_end_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `successful_bid_end_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `auto_relisted_count` | [uint64](#uint64) |  |  |
 
 
 
@@ -1840,26 +1834,26 @@ Query defines the gRPC querier service.
 
 
 
-| Field                                     | Type                                                  | Label    | Description |
-|-------------------------------------------|-------------------------------------------------------|----------|-------------|
-| `min_staking_for_listing`                 | [string](#string)                                     |          |             |
-| `default_bid_active_rank`                 | [uint64](#uint64)                                     |          |             |
-| `bid_tokens`                              | [string](#string)                                     | repeated |             |
-| `auto_relisting_count_if_no_bid`          | [uint64](#uint64)                                     |          |             |
-| `nft_listing_delay_seconds`               | [uint64](#uint64)                                     |          |             |
-| `nft_listing_period_initial`              | [uint64](#uint64)                                     |          |             |
-| `nft_listing_cancel_required_seconds`     | [uint64](#uint64)                                     |          |             |
-| `nft_listing_cancel_fee_percentage`       | [uint64](#uint64)                                     |          |             |
-| `nft_listing_gap_time`                    | [uint64](#uint64)                                     |          |             |
-| `bid_cancel_required_seconds`             | [uint64](#uint64)                                     |          |             |
-| `bid_token_disburse_seconds_after_cancel` | [uint64](#uint64)                                     |          |             |
-| `nft_listing_full_payment_period`         | [uint64](#uint64)                                     |          |             |
-| `nft_listing_nft_delivery_period`         | [uint64](#uint64)                                     |          |             |
-| `nft_creator_share_percentage`            | [uint64](#uint64)                                     |          |             |
-| `market_administrator`                    | [string](#string)                                     |          |             |
-| `nft_listing_commission_fee`              | [uint64](#uint64)                                     |          |             |
-| `nft_listing_extend_seconds`              | [uint64](#uint64)                                     |          |             |
-| `nft_listing_period_extend_fee_per_hour`  | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |          |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `min_staking_for_listing` | [string](#string) |  |  |
+| `default_bid_active_rank` | [uint64](#uint64) |  |  |
+| `bid_tokens` | [string](#string) | repeated |  |
+| `auto_relisting_count_if_no_bid` | [uint64](#uint64) |  |  |
+| `nft_listing_delay_seconds` | [uint64](#uint64) |  |  |
+| `nft_listing_period_initial` | [uint64](#uint64) |  |  |
+| `nft_listing_cancel_required_seconds` | [uint64](#uint64) |  |  |
+| `nft_listing_cancel_fee_percentage` | [uint64](#uint64) |  |  |
+| `nft_listing_gap_time` | [uint64](#uint64) |  |  |
+| `bid_cancel_required_seconds` | [uint64](#uint64) |  |  |
+| `bid_token_disburse_seconds_after_cancel` | [uint64](#uint64) |  |  |
+| `nft_listing_full_payment_period` | [uint64](#uint64) |  |  |
+| `nft_listing_nft_delivery_period` | [uint64](#uint64) |  |  |
+| `nft_creator_share_percentage` | [uint64](#uint64) |  |  |
+| `market_administrator` | [string](#string) |  |  |
+| `nft_listing_commission_fee` | [uint64](#uint64) |  |  |
+| `nft_listing_extend_seconds` | [uint64](#uint64) |  |  |
+| `nft_listing_period_extend_fee_per_hour` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -1872,16 +1866,16 @@ Query defines the gRPC querier service.
 
 
 
-| Field               | Type                                                    | Label | Description |
-|---------------------|---------------------------------------------------------|-------|-------------|
-| `nft_id`            | [NftIdentifier](#ununifi.nftmarket.NftIdentifier)       |       |             |
-| `bidder`            | [string](#string)                                       |       |             |
-| `amount`            | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |       |             |
-| `automatic_payment` | [bool](#bool)                                           |       |             |
-| `paid_amount`       | [string](#string)                                       |       |             |
-| `bid_time`          | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
-| `state`             | [ListingState](#ununifi.nftmarket.ListingState)         |       |             |
-| `all_paid`          | [bool](#bool)                                           |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+| `bidder` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `automatic_payment` | [bool](#bool) |  |  |
+| `paid_amount` | [string](#string) |  |  |
+| `bid_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `state` | [ListingState](#ununifi.nftmarket.ListingState) |  |  |
+| `all_paid` | [bool](#bool) |  |  |
 
 
 
@@ -1895,14 +1889,13 @@ Query defines the gRPC querier service.
 ### ListingState
 
 
-| Name             | Number | Description |
-|------------------|--------|-------------|
-| LISTING          | 0      |             |
-| BIDDING          | 1      |             |
-| SELLING_DECISION | 2      |             |
-| LIQUIDATION      | 3      |             |
-| END_LISTING      | 4      |             |
-| SUCCESSFUL_BID   | 5      |             |
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| LISTING | 0 |  |
+| BIDDING | 1 |  |
+| SELLING_DECISION | 2 |  |
+| END_LISTING | 3 |  |
+| SUCCESSFUL_BID | 4 |  |
 
 
 
@@ -1911,11 +1904,11 @@ Query defines the gRPC querier service.
 ### ListingType
 
 
-| Name                     | Number | Description |
-|--------------------------|--------|-------------|
-| DIRECT_ASSET_BORROW      | 0      |             |
-| SYNTHETIC_ASSET_CREATION | 1      |             |
-| LATE_SHIPPING            | 2      |             |
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| DIRECT_ASSET_BORROW | 0 |  |
+| SYNTHETIC_ASSET_CREATION | 1 |  |
+| LATE_SHIPPING | 2 |  |
 
 
  <!-- end enums -->
@@ -1939,13 +1932,13 @@ Query defines the gRPC querier service.
 GenesisState defines the nftmarket module's genesis state.
 
 
-| Field            | Type                                        | Label    | Description |
-|------------------|---------------------------------------------|----------|-------------|
-| `params`         | [Params](#ununifi.nftmarket.Params)         |          |             |
-| `listings`       | [NftListing](#ununifi.nftmarket.NftListing) | repeated |             |
-| `bids`           | [NftBid](#ununifi.nftmarket.NftBid)         | repeated |             |
-| `cancelled_bids` | [NftBid](#ununifi.nftmarket.NftBid)         | repeated |             |
-| `loans`          | [Loan](#ununifi.nftmarket.Loan)             | repeated |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.nftmarket.Params) |  |  |
+| `listings` | [NftListing](#ununifi.nftmarket.NftListing) | repeated |  |
+| `bids` | [NftBid](#ununifi.nftmarket.NftBid) | repeated |  |
+| `cancelled_bids` | [NftBid](#ununifi.nftmarket.NftBid) | repeated |  |
+| `loans` | [Loan](#ununifi.nftmarket.Loan) | repeated |  |
 
 
 
@@ -1974,9 +1967,9 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field    | Type              | Label | Description |
-|----------|-------------------|-------|-------------|
-| `bidder` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `bidder` | [string](#string) |  |  |
 
 
 
@@ -1989,9 +1982,9 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field  | Type                                | Label    | Description |
-|--------|-------------------------------------|----------|-------------|
-| `bids` | [NftBid](#ununifi.nftmarket.NftBid) | repeated |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `bids` | [NftBid](#ununifi.nftmarket.NftBid) | repeated |  |
 
 
 
@@ -2024,10 +2017,10 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field       | Type              | Label | Description |
-|-------------|-------------------|-------|-------------|
-| `class_id`  | [string](#string) |       |             |
-| `nft_limit` | [int32](#int32)   |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_limit` | [int32](#int32) |  |  |
 
 
 
@@ -2040,16 +2033,16 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field         | Type                                      | Label    | Description |
-|---------------|-------------------------------------------|----------|-------------|
-| `class_id`    | [string](#string)                         |          |             |
-| `name`        | [string](#string)                         |          |             |
-| `description` | [string](#string)                         |          |             |
-| `symbol`      | [string](#string)                         |          |             |
-| `uri`         | [string](#string)                         |          |             |
-| `urihash`     | [string](#string)                         |          |             |
-| `nfts`        | [ListedNft](#ununifi.nftmarket.ListedNft) | repeated |             |
-| `nft_count`   | [uint64](#uint64)                         |          |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `name` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `symbol` | [string](#string) |  |  |
+| `uri` | [string](#string) |  |  |
+| `urihash` | [string](#string) |  |  |
+| `nfts` | [ListedNft](#ununifi.nftmarket.ListedNft) | repeated |  |
+| `nft_count` | [uint64](#uint64) |  |  |
 
 
 
@@ -2062,9 +2055,9 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field       | Type            | Label | Description |
-|-------------|-----------------|-------|-------------|
-| `nft_limit` | [int32](#int32) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `nft_limit` | [int32](#int32) |  |  |
 
 
 
@@ -2077,9 +2070,9 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field     | Type                                                                    | Label    | Description |
-|-----------|-------------------------------------------------------------------------|----------|-------------|
-| `classes` | [QueryListedClassResponse](#ununifi.nftmarket.QueryListedClassResponse) | repeated |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `classes` | [QueryListedClassResponse](#ununifi.nftmarket.QueryListedClassResponse) | repeated |  |
 
 
 
@@ -2092,9 +2085,9 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field   | Type              | Label | Description |
-|---------|-------------------|-------|-------------|
-| `owner` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
 
 
 
@@ -2107,9 +2100,9 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field      | Type                                        | Label    | Description |
-|------------|---------------------------------------------|----------|-------------|
-| `listings` | [NftListing](#ununifi.nftmarket.NftListing) | repeated |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `listings` | [NftListing](#ununifi.nftmarket.NftListing) | repeated |  |
 
 
 
@@ -2122,10 +2115,10 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `class_id` | [string](#string) |       |             |
-| `nft_id`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
 
 
 
@@ -2138,10 +2131,10 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field             | Type                            | Label | Description |
-|-------------------|---------------------------------|-------|-------------|
-| `loan`            | [Loan](#ununifi.nftmarket.Loan) |       |             |
-| `borrowing_limit` | [string](#string)               |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `loan` | [Loan](#ununifi.nftmarket.Loan) |  |  |
+| `borrowing_limit` | [string](#string) |  |  |
 
 
 
@@ -2164,9 +2157,9 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field   | Type                            | Label    | Description |
-|---------|---------------------------------|----------|-------------|
-| `loans` | [Loan](#ununifi.nftmarket.Loan) | repeated |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `loans` | [Loan](#ununifi.nftmarket.Loan) | repeated |  |
 
 
 
@@ -2179,10 +2172,10 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `class_id` | [string](#string) |       |             |
-| `nft_id`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
 
 
 
@@ -2195,9 +2188,9 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field  | Type                                | Label    | Description |
-|--------|-------------------------------------|----------|-------------|
-| `bids` | [NftBid](#ununifi.nftmarket.NftBid) | repeated |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `bids` | [NftBid](#ununifi.nftmarket.NftBid) | repeated |  |
 
 
 
@@ -2210,10 +2203,10 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `class_id` | [string](#string) |       |             |
-| `nft_id`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
 
 
 
@@ -2226,9 +2219,9 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field     | Type                                        | Label | Description |
-|-----------|---------------------------------------------|-------|-------------|
-| `listing` | [NftListing](#ununifi.nftmarket.NftListing) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `listing` | [NftListing](#ununifi.nftmarket.NftListing) |  |  |
 
 
 
@@ -2251,9 +2244,9 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field    | Type                                | Label | Description |
-|----------|-------------------------------------|-------|-------------|
-| `params` | [Params](#ununifi.nftmarket.Params) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.nftmarket.Params) |  |  |
 
 
 
@@ -2266,11 +2259,11 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `class_id` | [string](#string) |       |             |
-| `nft_id`   | [string](#string) |       |             |
-| `bidder`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+| `bidder` | [string](#string) |  |  |
 
 
 
@@ -2283,9 +2276,9 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field           | Type                                              | Label | Description |
-|-----------------|---------------------------------------------------|-------|-------------|
-| `paymentStatus` | [PaymentStatus](#ununifi.nftmarket.PaymentStatus) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `paymentStatus` | [PaymentStatus](#ununifi.nftmarket.PaymentStatus) |  |  |
 
 
 
@@ -2298,9 +2291,9 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field     | Type              | Label | Description |
-|-----------|-------------------|-------|-------------|
-| `address` | [uint64](#uint64) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [uint64](#uint64) |  |  |
 
 
 
@@ -2313,9 +2306,9 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
-| Field     | Type                                                  | Label    | Description |
-|-----------|-------------------------------------------------------|----------|-------------|
-| `rewards` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rewards` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
 
 
 
@@ -2333,20 +2326,20 @@ GenesisState defines the nftmarket module's genesis state.
 ### Query
 Query defines the gRPC querier service.
 
-| Method Name     | Request Type                                                              | Response Type                                                               | Description | HTTP Verb | Endpoint                                                       |
-|-----------------|---------------------------------------------------------------------------|-----------------------------------------------------------------------------|-------------|-----------|----------------------------------------------------------------|
-| `Params`        | [QueryParamsRequest](#ununifi.nftmarket.QueryParamsRequest)               | [QueryParamsResponse](#ununifi.nftmarket.QueryParamsResponse)               |             | GET       | /ununifi/nftmarket/params                                      |
-| `NftListing`    | [QueryNftListingRequest](#ununifi.nftmarket.QueryNftListingRequest)       | [QueryNftListingResponse](#ununifi.nftmarket.QueryNftListingResponse)       |             | GET       | /ununifi/nftmarket/nft_listing/{class_id}/{nft_id}             |
-| `ListedNfts`    | [QueryListedNftsRequest](#ununifi.nftmarket.QueryListedNftsRequest)       | [QueryListedNftsResponse](#ununifi.nftmarket.QueryListedNftsResponse)       |             | GET       | /ununifi/nftmarket/listed_nfts                                 |
-| `ListedClasses` | [QueryListedClassesRequest](#ununifi.nftmarket.QueryListedClassesRequest) | [QueryListedClassesResponse](#ununifi.nftmarket.QueryListedClassesResponse) |             | GET       | /ununifi/nftmarket/listed_classes                              |
-| `ListedClass`   | [QueryListedClassRequest](#ununifi.nftmarket.QueryListedClassRequest)     | [QueryListedClassResponse](#ununifi.nftmarket.QueryListedClassResponse)     |             | GET       | /ununifi/nftmarket/listed_class/{class_id}/{nft_limit}         |
-| `Loans`         | [QueryLoansRequest](#ununifi.nftmarket.QueryLoansRequest)                 | [QueryLoansResponse](#ununifi.nftmarket.QueryLoansResponse)                 |             | GET       | /ununifi/nftmarket/loans                                       |
-| `Loan`          | [QueryLoanRequest](#ununifi.nftmarket.QueryLoanRequest)                   | [QueryLoanResponse](#ununifi.nftmarket.QueryLoanResponse)                   |             | GET       | /ununifi/nftmarket/loans/{class_id}/{nft_id}                   |
-| `CDPsList`      | [QueryCDPsListRequest](#ununifi.nftmarket.QueryCDPsListRequest)           | [QueryCDPsListResponse](#ununifi.nftmarket.QueryCDPsListResponse)           |             | GET       | /ununifi/nftmarket/cdps_list                                   |
-| `NftBids`       | [QueryNftBidsRequest](#ununifi.nftmarket.QueryNftBidsRequest)             | [QueryNftBidsResponse](#ununifi.nftmarket.QueryNftBidsResponse)             |             | GET       | /ununifi/nftmarket/nft_bids/{class_id}/{nft_id}                |
-| `BidderBids`    | [QueryBidderBidsRequest](#ununifi.nftmarket.QueryBidderBidsRequest)       | [QueryBidderBidsResponse](#ununifi.nftmarket.QueryBidderBidsResponse)       |             | GET       | /ununifi/nftmarket/bidder_bids/{bidder}                        |
-| `PaymentStatus` | [QueryPaymentStatusRequest](#ununifi.nftmarket.QueryPaymentStatusRequest) | [QueryPaymentStatusResponse](#ununifi.nftmarket.QueryPaymentStatusResponse) |             | GET       | /ununifi/nftmarket/payment_status/{class_id}/{nft_id}/{bidder} |
-| `Rewards`       | [QueryRewardsRequest](#ununifi.nftmarket.QueryRewardsRequest)             | [QueryRewardsResponse](#ununifi.nftmarket.QueryRewardsResponse)             |             | GET       | /ununifi/nftmarket/rewards/{address}                           |
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#ununifi.nftmarket.QueryParamsRequest) | [QueryParamsResponse](#ununifi.nftmarket.QueryParamsResponse) |  | GET|/ununifi/nftmarket/params|
+| `NftListing` | [QueryNftListingRequest](#ununifi.nftmarket.QueryNftListingRequest) | [QueryNftListingResponse](#ununifi.nftmarket.QueryNftListingResponse) |  | GET|/ununifi/nftmarket/nft_listing/{class_id}/{nft_id}|
+| `ListedNfts` | [QueryListedNftsRequest](#ununifi.nftmarket.QueryListedNftsRequest) | [QueryListedNftsResponse](#ununifi.nftmarket.QueryListedNftsResponse) |  | GET|/ununifi/nftmarket/listed_nfts|
+| `ListedClasses` | [QueryListedClassesRequest](#ununifi.nftmarket.QueryListedClassesRequest) | [QueryListedClassesResponse](#ununifi.nftmarket.QueryListedClassesResponse) |  | GET|/ununifi/nftmarket/listed_classes|
+| `ListedClass` | [QueryListedClassRequest](#ununifi.nftmarket.QueryListedClassRequest) | [QueryListedClassResponse](#ununifi.nftmarket.QueryListedClassResponse) |  | GET|/ununifi/nftmarket/listed_class/{class_id}/{nft_limit}|
+| `Loans` | [QueryLoansRequest](#ununifi.nftmarket.QueryLoansRequest) | [QueryLoansResponse](#ununifi.nftmarket.QueryLoansResponse) |  | GET|/ununifi/nftmarket/loans|
+| `Loan` | [QueryLoanRequest](#ununifi.nftmarket.QueryLoanRequest) | [QueryLoanResponse](#ununifi.nftmarket.QueryLoanResponse) |  | GET|/ununifi/nftmarket/loans/{class_id}/{nft_id}|
+| `CDPsList` | [QueryCDPsListRequest](#ununifi.nftmarket.QueryCDPsListRequest) | [QueryCDPsListResponse](#ununifi.nftmarket.QueryCDPsListResponse) |  | GET|/ununifi/nftmarket/cdps_list|
+| `NftBids` | [QueryNftBidsRequest](#ununifi.nftmarket.QueryNftBidsRequest) | [QueryNftBidsResponse](#ununifi.nftmarket.QueryNftBidsResponse) |  | GET|/ununifi/nftmarket/nft_bids/{class_id}/{nft_id}|
+| `BidderBids` | [QueryBidderBidsRequest](#ununifi.nftmarket.QueryBidderBidsRequest) | [QueryBidderBidsResponse](#ununifi.nftmarket.QueryBidderBidsResponse) |  | GET|/ununifi/nftmarket/bidder_bids/{bidder}|
+| `PaymentStatus` | [QueryPaymentStatusRequest](#ununifi.nftmarket.QueryPaymentStatusRequest) | [QueryPaymentStatusResponse](#ununifi.nftmarket.QueryPaymentStatusResponse) |  | GET|/ununifi/nftmarket/payment_status/{class_id}/{nft_id}/{bidder}|
+| `Rewards` | [QueryRewardsRequest](#ununifi.nftmarket.QueryRewardsRequest) | [QueryRewardsResponse](#ununifi.nftmarket.QueryRewardsResponse) |  | GET|/ununifi/nftmarket/rewards/{address}|
 
  <!-- end services -->
 
@@ -2365,11 +2358,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field    | Type                                                  | Label | Description |
-|----------|-------------------------------------------------------|-------|-------------|
-| `sender` | [string](#string)                                     |       |             |
-| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier)     |       |             |
-| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -2386,41 +2379,16 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.nftmarket.MsgBurnStableCoin"></a>
-
-### MsgBurnStableCoin
-
-
-
-| Field    | Type              | Label | Description |
-|----------|-------------------|-------|-------------|
-| `sender` | [string](#string) |       |             |
-
-
-
-
-
-
-<a name="ununifi.nftmarket.MsgBurnStableCoinResponse"></a>
-
-### MsgBurnStableCoinResponse
-
-
-
-
-
-
-
 <a name="ununifi.nftmarket.MsgCancelBid"></a>
 
 ### MsgCancelBid
 
 
 
-| Field    | Type                                              | Label | Description |
-|----------|---------------------------------------------------|-------|-------------|
-| `sender` | [string](#string)                                 |       |             |
-| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
 
 
 
@@ -2443,10 +2411,10 @@ Query defines the gRPC querier service.
 
 
 
-| Field    | Type                                              | Label | Description |
-|----------|---------------------------------------------------|-------|-------------|
-| `sender` | [string](#string)                                 |       |             |
-| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
 
 
 
@@ -2469,10 +2437,10 @@ Query defines the gRPC querier service.
 
 
 
-| Field    | Type                                              | Label | Description |
-|----------|---------------------------------------------------|-------|-------------|
-| `sender` | [string](#string)                                 |       |             |
-| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
 
 
 
@@ -2489,72 +2457,20 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.nftmarket.MsgExpandListingPeriod"></a>
-
-### MsgExpandListingPeriod
-
-
-
-| Field    | Type                                              | Label | Description |
-|----------|---------------------------------------------------|-------|-------------|
-| `sender` | [string](#string)                                 |       |             |
-| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |       |             |
-
-
-
-
-
-
-<a name="ununifi.nftmarket.MsgExpandListingPeriodResponse"></a>
-
-### MsgExpandListingPeriodResponse
-
-
-
-
-
-
-
-<a name="ununifi.nftmarket.MsgLiquidate"></a>
-
-### MsgLiquidate
-
-
-
-| Field    | Type                                              | Label | Description |
-|----------|---------------------------------------------------|-------|-------------|
-| `sender` | [string](#string)                                 |       |             |
-| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |       |             |
-
-
-
-
-
-
-<a name="ununifi.nftmarket.MsgLiquidateResponse"></a>
-
-### MsgLiquidateResponse
-
-
-
-
-
-
-
 <a name="ununifi.nftmarket.MsgListNft"></a>
 
 ### MsgListNft
 
 
 
-| Field             | Type                                              | Label | Description |
-|-------------------|---------------------------------------------------|-------|-------------|
-| `sender`          | [string](#string)                                 |       |             |
-| `nft_id`          | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |       |             |
-| `listing_type`    | [ListingType](#ununifi.nftmarket.ListingType)     |       |             |
-| `bid_token`       | [string](#string)                                 |       |             |
-| `min_bid`         | [string](#string)                                 |       |             |
-| `bid_active_rank` | [uint64](#uint64)                                 |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+| `listing_type` | [ListingType](#ununifi.nftmarket.ListingType) |  |  |
+| `bid_token` | [string](#string) |  |  |
+| `minimum_deposit_rate` | [string](#string) |  | 1% = 0.01 |
+| `automatic_refinancing` | [bool](#bool) |  |  |
 
 
 
@@ -2577,13 +2493,13 @@ Query defines the gRPC querier service.
 
 
 
-| Field        | Type              | Label | Description |
-|--------------|-------------------|-------|-------------|
-| `sender`     | [string](#string) |       |             |
-| `classId`    | [string](#string) |       |             |
-| `nftId`      | [string](#string) |       |             |
-| `nftUri`     | [string](#string) |       |             |
-| `nftUriHash` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `classId` | [string](#string) |  |  |
+| `nftId` | [string](#string) |  |  |
+| `nftUri` | [string](#string) |  |  |
+| `nftUriHash` | [string](#string) |  |  |
 
 
 
@@ -2600,41 +2516,16 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.nftmarket.MsgMintStableCoin"></a>
-
-### MsgMintStableCoin
-
-
-
-| Field    | Type              | Label | Description |
-|----------|-------------------|-------|-------------|
-| `sender` | [string](#string) |       |             |
-
-
-
-
-
-
-<a name="ununifi.nftmarket.MsgMintStableCoinResponse"></a>
-
-### MsgMintStableCoinResponse
-
-
-
-
-
-
-
 <a name="ununifi.nftmarket.MsgPayFullBid"></a>
 
 ### MsgPayFullBid
 
 
 
-| Field    | Type                                              | Label | Description |
-|----------|---------------------------------------------------|-------|-------------|
-| `sender` | [string](#string)                                 |       |             |
-| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
 
 
 
@@ -2657,12 +2548,15 @@ Query defines the gRPC querier service.
 
 
 
-| Field               | Type                                                  | Label | Description |
-|---------------------|-------------------------------------------------------|-------|-------------|
-| `sender`            | [string](#string)                                     |       |             |
-| `nft_id`            | [NftIdentifier](#ununifi.nftmarket.NftIdentifier)     |       |             |
-| `amount`            | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
-| `automatic_payment` | [bool](#bool)                                         |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+| `bid_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `bidding_period` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `deposit_lending_rate` | [string](#string) |  |  |
+| `automatic_payment` | [bool](#bool) |  |  |
+| `deposit_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -2685,11 +2579,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field    | Type                                                  | Label | Description |
-|----------|-------------------------------------------------------|-------|-------------|
-| `sender` | [string](#string)                                     |       |             |
-| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier)     |       |             |
-| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -2712,10 +2606,10 @@ Query defines the gRPC querier service.
 
 
 
-| Field    | Type                                              | Label | Description |
-|----------|---------------------------------------------------|-------|-------------|
-| `sender` | [string](#string)                                 |       |             |
-| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
 
 
 
@@ -2748,7 +2642,6 @@ Query defines the gRPC querier service.
 | `MintNft` | [MsgMintNft](#ununifi.nftmarket.MsgMintNft) | [MsgMintNftResponse](#ununifi.nftmarket.MsgMintNftResponse) |  | |
 | `ListNft` | [MsgListNft](#ununifi.nftmarket.MsgListNft) | [MsgListNftResponse](#ununifi.nftmarket.MsgListNftResponse) |  | |
 | `CancelNftListing` | [MsgCancelNftListing](#ununifi.nftmarket.MsgCancelNftListing) | [MsgCancelNftListingResponse](#ununifi.nftmarket.MsgCancelNftListingResponse) |  | |
-| `ExpandListingPeriod` | [MsgExpandListingPeriod](#ununifi.nftmarket.MsgExpandListingPeriod) | [MsgExpandListingPeriodResponse](#ununifi.nftmarket.MsgExpandListingPeriodResponse) |  | |
 | `PlaceBid` | [MsgPlaceBid](#ununifi.nftmarket.MsgPlaceBid) | [MsgPlaceBidResponse](#ununifi.nftmarket.MsgPlaceBidResponse) |  | |
 | `CancelBid` | [MsgCancelBid](#ununifi.nftmarket.MsgCancelBid) | [MsgCancelBidResponse](#ununifi.nftmarket.MsgCancelBidResponse) |  | |
 | `SellingDecision` | [MsgSellingDecision](#ununifi.nftmarket.MsgSellingDecision) | [MsgSellingDecisionResponse](#ununifi.nftmarket.MsgSellingDecisionResponse) |  | |
@@ -2756,9 +2649,6 @@ Query defines the gRPC querier service.
 | `PayFullBid` | [MsgPayFullBid](#ununifi.nftmarket.MsgPayFullBid) | [MsgPayFullBidResponse](#ununifi.nftmarket.MsgPayFullBidResponse) |  | |
 | `Borrow` | [MsgBorrow](#ununifi.nftmarket.MsgBorrow) | [MsgBorrowResponse](#ununifi.nftmarket.MsgBorrowResponse) |  | |
 | `Repay` | [MsgRepay](#ununifi.nftmarket.MsgRepay) | [MsgRepayResponse](#ununifi.nftmarket.MsgRepayResponse) |  | |
-| `MintStableCoin` | [MsgMintStableCoin](#ununifi.nftmarket.MsgMintStableCoin) | [MsgMintStableCoinResponse](#ununifi.nftmarket.MsgMintStableCoinResponse) |  | |
-| `BurnStableCoin` | [MsgBurnStableCoin](#ununifi.nftmarket.MsgBurnStableCoin) | [MsgBurnStableCoinResponse](#ununifi.nftmarket.MsgBurnStableCoinResponse) |  | |
-| `Liquidate` | [MsgLiquidate](#ununifi.nftmarket.MsgLiquidate) | [MsgLiquidateResponse](#ununifi.nftmarket.MsgLiquidateResponse) |  | |
 
  <!-- end services -->
 
@@ -2777,13 +2667,13 @@ Query defines the gRPC querier service.
 
 
 
-| Field                | Type                                                    | Label | Description |
-|----------------------|---------------------------------------------------------|-------|-------------|
-| `class_id`           | [string](#string)                                       |       |             |
-| `owner`              | [string](#string)                                       |       |             |
-| `base_token_uri`     | [string](#string)                                       |       |             |
-| `minting_permission` | [MintingPermission](#ununifi.nftmint.MintingPermission) |       |             |
-| `token_supply_cap`   | [uint64](#uint64)                                       |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `owner` | [string](#string) |  |  |
+| `base_token_uri` | [string](#string) |  |  |
+| `minting_permission` | [MintingPermission](#ununifi.nftmint.MintingPermission) |  |  |
+| `token_supply_cap` | [uint64](#uint64) |  |  |
 
 
 
@@ -2796,10 +2686,10 @@ Query defines the gRPC querier service.
 
 
 
-| Field        | Type              | Label    | Description |
-|--------------|-------------------|----------|-------------|
-| `class_name` | [string](#string) |          |             |
-| `class_id`   | [string](#string) | repeated |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_name` | [string](#string) |  |  |
+| `class_id` | [string](#string) | repeated |  |
 
 
 
@@ -2812,10 +2702,10 @@ Query defines the gRPC querier service.
 
 
 
-| Field      | Type              | Label    | Description |
-|------------|-------------------|----------|-------------|
-| `owner`    | [string](#string) |          |             |
-| `class_id` | [string](#string) | repeated |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) | repeated |  |
 
 
 
@@ -2828,15 +2718,15 @@ Query defines the gRPC querier service.
 
 
 
-| Field               | Type              | Label | Description |
-|---------------------|-------------------|-------|-------------|
-| `MaxNFTSupplyCap`   | [uint64](#uint64) |       |             |
-| `MinClassNameLen`   | [uint64](#uint64) |       |             |
-| `MaxClassNameLen`   | [uint64](#uint64) |       |             |
-| `MinUriLen`         | [uint64](#uint64) |       |             |
-| `MaxUriLen`         | [uint64](#uint64) |       |             |
-| `MaxSymbolLen`      | [uint64](#uint64) |       |             |
-| `MaxDescriptionLen` | [uint64](#uint64) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `MaxNFTSupplyCap` | [uint64](#uint64) |  |  |
+| `MinClassNameLen` | [uint64](#uint64) |  |  |
+| `MaxClassNameLen` | [uint64](#uint64) |  |  |
+| `MinUriLen` | [uint64](#uint64) |  |  |
+| `MaxUriLen` | [uint64](#uint64) |  |  |
+| `MaxSymbolLen` | [uint64](#uint64) |  |  |
+| `MaxDescriptionLen` | [uint64](#uint64) |  |  |
 
 
 
@@ -2850,10 +2740,10 @@ Query defines the gRPC querier service.
 ### MintingPermission
 
 
-| Name      | Number | Description    |
-|-----------|--------|----------------|
-| OnlyOwner | 0      |                |
-| Anyone    | 1      | WhiteList = 2; |
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| OnlyOwner | 0 |  |
+| Anyone | 1 | WhiteList = 2; |
 
 
  <!-- end enums -->
@@ -2877,11 +2767,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `burner`   | [string](#string) |       |             |
-| `class_id` | [string](#string) |       |             |
-| `nft_id`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `burner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
 
 
 
@@ -2894,13 +2784,13 @@ Query defines the gRPC querier service.
 
 
 
-| Field                | Type                                                    | Label | Description |
-|----------------------|---------------------------------------------------------|-------|-------------|
-| `owner`              | [string](#string)                                       |       |             |
-| `class_id`           | [string](#string)                                       |       |             |
-| `base_token_uri`     | [string](#string)                                       |       |             |
-| `token_supply_cap`   | [string](#string)                                       |       |             |
-| `minting_permission` | [MintingPermission](#ununifi.nftmint.MintingPermission) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `base_token_uri` | [string](#string) |  |  |
+| `token_supply_cap` | [string](#string) |  |  |
+| `minting_permission` | [MintingPermission](#ununifi.nftmint.MintingPermission) |  |  |
 
 
 
@@ -2913,12 +2803,12 @@ Query defines the gRPC querier service.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `class_id` | [string](#string) |       |             |
-| `nft_id`   | [string](#string) |       |             |
-| `owner`    | [string](#string) |       |             |
-| `minter`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+| `owner` | [string](#string) |  |  |
+| `minter` | [string](#string) |  |  |
 
 
 
@@ -2931,11 +2821,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `sender`   | [string](#string) |       |             |
-| `receiver` | [string](#string) |       |             |
-| `class_id` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `receiver` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
 
 
 
@@ -2948,11 +2838,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field            | Type              | Label | Description |
-|------------------|-------------------|-------|-------------|
-| `owner`          | [string](#string) |       |             |
-| `class_id`       | [string](#string) |       |             |
-| `base_token_uri` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `base_token_uri` | [string](#string) |  |  |
 
 
 
@@ -2965,11 +2855,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field              | Type              | Label | Description |
-|--------------------|-------------------|-------|-------------|
-| `owner`            | [string](#string) |       |             |
-| `class_id`         | [string](#string) |       |             |
-| `token_supply_cap` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `token_supply_cap` | [string](#string) |  |  |
 
 
 
@@ -2998,9 +2888,9 @@ Query defines the gRPC querier service.
 GenesisState defines the nftmint module's genesis state.
 
 
-| Field    | Type                              | Label | Description |
-|----------|-----------------------------------|-------|-------------|
-| `params` | [Params](#ununifi.nftmint.Params) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.nftmint.Params) |  |  |
 
 
 
@@ -3029,9 +2919,9 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `class_id` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
 
 
 
@@ -3044,9 +2934,9 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-| Field              | Type                                                | Label | Description |
-|--------------------|-----------------------------------------------------|-------|-------------|
-| `class_attributes` | [ClassAttributes](#ununifi.nftmint.ClassAttributes) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_attributes` | [ClassAttributes](#ununifi.nftmint.ClassAttributes) |  |  |
 
 
 
@@ -3059,9 +2949,9 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-| Field        | Type              | Label | Description |
-|--------------|-------------------|-------|-------------|
-| `class_name` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_name` | [string](#string) |  |  |
 
 
 
@@ -3074,9 +2964,9 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-| Field                | Type                                                | Label | Description |
-|----------------------|-----------------------------------------------------|-------|-------------|
-| `class_name_id_list` | [ClassNameIdList](#ununifi.nftmint.ClassNameIdList) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_name_id_list` | [ClassNameIdList](#ununifi.nftmint.ClassNameIdList) |  |  |
 
 
 
@@ -3089,9 +2979,9 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-| Field   | Type              | Label | Description |
-|---------|-------------------|-------|-------------|
-| `owner` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
 
 
 
@@ -3104,9 +2994,9 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-| Field                  | Type                                                    | Label | Description |
-|------------------------|---------------------------------------------------------|-------|-------------|
-| `owning_class_id_list` | [OwningClassIdList](#ununifi.nftmint.OwningClassIdList) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owning_class_id_list` | [OwningClassIdList](#ununifi.nftmint.OwningClassIdList) |  |  |
 
 
 
@@ -3119,10 +3009,10 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `class_id` | [string](#string) |       |             |
-| `nft_id`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
 
 
 
@@ -3135,9 +3025,9 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-| Field    | Type              | Label | Description |
-|----------|-------------------|-------|-------------|
-| `minter` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `minter` | [string](#string) |  |  |
 
 
 
@@ -3160,9 +3050,9 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-| Field    | Type                              | Label | Description |
-|----------|-----------------------------------|-------|-------------|
-| `params` | [Params](#ununifi.nftmint.Params) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.nftmint.Params) |  |  |
 
 
 
@@ -3180,13 +3070,13 @@ GenesisState defines the nftmint module's genesis state.
 ### Query
 
 
-| Method Name       | Request Type                                                                | Response Type                                                                 | Description | HTTP Verb | Endpoint                                        |
-|-------------------|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------|-------------|-----------|-------------------------------------------------|
-| `Params`          | [QueryParamsRequest](#ununifi.nftmint.QueryParamsRequest)                   | [QueryParamsResponse](#ununifi.nftmint.QueryParamsResponse)                   |             | GET       | /ununifi/nftmint/params                         |
-| `ClassAttributes` | [QueryClassAttributesRequest](#ununifi.nftmint.QueryClassAttributesRequest) | [QueryClassAttributesResponse](#ununifi.nftmint.QueryClassAttributesResponse) |             | GET       | /ununifi/nftmint/class_owner/{class_id}         |
-| `NFTMinter`       | [QueryNFTMinterRequest](#ununifi.nftmint.QueryNFTMinterRequest)             | [QueryNFTMinterResponse](#ununifi.nftmint.QueryNFTMinterResponse)             |             | GET       | /ununifi/nftmint/nft_minter/{class_id}/{nft_id} |
-| `ClassIdsByName`  | [QueryClassIdsByNameRequest](#ununifi.nftmint.QueryClassIdsByNameRequest)   | [QueryClassIdsByNameResponse](#ununifi.nftmint.QueryClassIdsByNameResponse)   |             | GET       | /ununifi/nftmint/class_ids_by_name/{class_name} |
-| `ClassIdsByOwner` | [QueryClassIdsByOwnerRequest](#ununifi.nftmint.QueryClassIdsByOwnerRequest) | [QueryClassIdsByOwnerResponse](#ununifi.nftmint.QueryClassIdsByOwnerResponse) |             | GET       | /ununifi/nftmint/class_ids_by_owner/{owner}     |
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#ununifi.nftmint.QueryParamsRequest) | [QueryParamsResponse](#ununifi.nftmint.QueryParamsResponse) |  | GET|/ununifi/nftmint/params|
+| `ClassAttributes` | [QueryClassAttributesRequest](#ununifi.nftmint.QueryClassAttributesRequest) | [QueryClassAttributesResponse](#ununifi.nftmint.QueryClassAttributesResponse) |  | GET|/ununifi/nftmint/class_owner/{class_id}|
+| `NFTMinter` | [QueryNFTMinterRequest](#ununifi.nftmint.QueryNFTMinterRequest) | [QueryNFTMinterResponse](#ununifi.nftmint.QueryNFTMinterResponse) |  | GET|/ununifi/nftmint/nft_minter/{class_id}/{nft_id}|
+| `ClassIdsByName` | [QueryClassIdsByNameRequest](#ununifi.nftmint.QueryClassIdsByNameRequest) | [QueryClassIdsByNameResponse](#ununifi.nftmint.QueryClassIdsByNameResponse) |  | GET|/ununifi/nftmint/class_ids_by_name/{class_name}|
+| `ClassIdsByOwner` | [QueryClassIdsByOwnerRequest](#ununifi.nftmint.QueryClassIdsByOwnerRequest) | [QueryClassIdsByOwnerResponse](#ununifi.nftmint.QueryClassIdsByOwnerResponse) |  | GET|/ununifi/nftmint/class_ids_by_owner/{owner}|
 
  <!-- end services -->
 
@@ -3205,11 +3095,11 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-| Field      | Type              | Label | Description |
-|------------|-------------------|-------|-------------|
-| `sender`   | [string](#string) |       |             |
-| `class_id` | [string](#string) |       |             |
-| `nft_id`   | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
 
 
 
@@ -3232,16 +3122,16 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-| Field                | Type                                                    | Label | Description |
-|----------------------|---------------------------------------------------------|-------|-------------|
-| `sender`             | [string](#string)                                       |       |             |
-| `name`               | [string](#string)                                       |       |             |
-| `base_token_uri`     | [string](#string)                                       |       |             |
-| `token_supply_cap`   | [uint64](#uint64)                                       |       |             |
-| `minting_permission` | [MintingPermission](#ununifi.nftmint.MintingPermission) |       |             |
-| `symbol`             | [string](#string)                                       |       |             |
-| `description`        | [string](#string)                                       |       |             |
-| `class_uri`          | [string](#string)                                       |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `name` | [string](#string) |  |  |
+| `base_token_uri` | [string](#string) |  |  |
+| `token_supply_cap` | [uint64](#uint64) |  |  |
+| `minting_permission` | [MintingPermission](#ununifi.nftmint.MintingPermission) |  |  |
+| `symbol` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `class_uri` | [string](#string) |  |  |
 
 
 
@@ -3264,12 +3154,12 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-| Field       | Type              | Label | Description |
-|-------------|-------------------|-------|-------------|
-| `sender`    | [string](#string) |       |             |
-| `class_id`  | [string](#string) |       |             |
-| `nft_id`    | [string](#string) |       |             |
-| `recipient` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+| `recipient` | [string](#string) |  |  |
 
 
 
@@ -3292,11 +3182,11 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-| Field       | Type              | Label | Description |
-|-------------|-------------------|-------|-------------|
-| `sender`    | [string](#string) |       |             |
-| `class_id`  | [string](#string) |       |             |
-| `recipient` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `recipient` | [string](#string) |  |  |
 
 
 
@@ -3319,11 +3209,11 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-| Field            | Type              | Label | Description |
-|------------------|-------------------|-------|-------------|
-| `sender`         | [string](#string) |       |             |
-| `class_id`       | [string](#string) |       |             |
-| `base_token_uri` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `base_token_uri` | [string](#string) |  |  |
 
 
 
@@ -3346,11 +3236,11 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-| Field              | Type              | Label | Description |
-|--------------------|-------------------|-------|-------------|
-| `sender`           | [string](#string) |       |             |
-| `class_id`         | [string](#string) |       |             |
-| `token_supply_cap` | [uint64](#uint64) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `token_supply_cap` | [uint64](#uint64) |  |  |
 
 
 
@@ -3404,10 +3294,10 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-| Field       | Type              | Label | Description |
-|-------------|-------------------|-------|-------------|
-| `market_id` | [string](#string) |       |             |
-| `price`     | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `market_id` | [string](#string) |  |  |
+| `price` | [string](#string) |  |  |
 
 
 
@@ -3420,13 +3310,13 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-| Field         | Type              | Label    | Description |
-|---------------|-------------------|----------|-------------|
-| `market_id`   | [string](#string) |          |             |
-| `base_asset`  | [string](#string) |          |             |
-| `quote_asset` | [string](#string) |          |             |
-| `oracles`     | [string](#string) | repeated |             |
-| `active`      | [bool](#bool)     |          |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `market_id` | [string](#string) |  |  |
+| `base_asset` | [string](#string) |  |  |
+| `quote_asset` | [string](#string) |  |  |
+| `oracles` | [string](#string) | repeated |  |
+| `active` | [bool](#bool) |  |  |
 
 
 
@@ -3439,9 +3329,9 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-| Field     | Type                                | Label    | Description |
-|-----------|-------------------------------------|----------|-------------|
-| `markets` | [Market](#ununifi.pricefeed.Market) | repeated |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `markets` | [Market](#ununifi.pricefeed.Market) | repeated |  |
 
 
 
@@ -3454,12 +3344,12 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-| Field            | Type                                                    | Label | Description |
-|------------------|---------------------------------------------------------|-------|-------------|
-| `market_id`      | [string](#string)                                       |       |             |
-| `oracle_address` | [string](#string)                                       |       |             |
-| `price`          | [string](#string)                                       |       |             |
-| `expiry`         | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `market_id` | [string](#string) |  |  |
+| `oracle_address` | [string](#string) |  |  |
+| `price` | [string](#string) |  |  |
+| `expiry` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 
 
 
@@ -3488,9 +3378,9 @@ GenesisState defines the nftmint module's genesis state.
 GenesisState defines the pricefeed module's genesis state.
 
 
-| Field           | Type                                          | Label    | Description                                                     |
-|-----------------|-----------------------------------------------|----------|-----------------------------------------------------------------|
-| `params`        | [Params](#ununifi.pricefeed.Params)           |          |                                                                 |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.pricefeed.Params) |  |  |
 | `posted_prices` | [PostedPrice](#ununifi.pricefeed.PostedPrice) | repeated | this line is used by starport scaffolding # genesis/proto/state |
 
 
@@ -3520,9 +3410,9 @@ GenesisState defines the pricefeed module's genesis state.
 this line is used by starport scaffolding # 3
 
 
-| Field        | Type                                                                            | Label | Description |
-|--------------|---------------------------------------------------------------------------------|-------|-------------|
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
 
 
 
@@ -3535,10 +3425,10 @@ this line is used by starport scaffolding # 3
 
 
 
-| Field        | Type                                                                              | Label    | Description |
-|--------------|-----------------------------------------------------------------------------------|----------|-------------|
-| `markets`    | [Market](#ununifi.pricefeed.Market)                                               | repeated |             |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |          |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `markets` | [Market](#ununifi.pricefeed.Market) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
 
 
 
@@ -3551,10 +3441,10 @@ this line is used by starport scaffolding # 3
 
 
 
-| Field        | Type                                                                            | Label | Description |
-|--------------|---------------------------------------------------------------------------------|-------|-------------|
-| `market_id`  | [string](#string)                                                               |       |             |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `market_id` | [string](#string) |  |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
 
 
 
@@ -3567,10 +3457,10 @@ this line is used by starport scaffolding # 3
 
 
 
-| Field        | Type                                                                              | Label    | Description |
-|--------------|-----------------------------------------------------------------------------------|----------|-------------|
-| `oracles`    | [string](#string)                                                                 | repeated |             |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |          |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `oracles` | [string](#string) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
 
 
 
@@ -3583,9 +3473,9 @@ this line is used by starport scaffolding # 3
 
 
 
-| Field        | Type                                                                            | Label | Description |
-|--------------|---------------------------------------------------------------------------------|-------|-------------|
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
 
 
 
@@ -3598,10 +3488,10 @@ this line is used by starport scaffolding # 3
 
 
 
-| Field        | Type                                                                              | Label    | Description |
-|--------------|-----------------------------------------------------------------------------------|----------|-------------|
-| `prices`     | [CurrentPrice](#ununifi.pricefeed.CurrentPrice)                                   | repeated |             |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |          |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `prices` | [CurrentPrice](#ununifi.pricefeed.CurrentPrice) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
 
 
 
@@ -3614,10 +3504,10 @@ this line is used by starport scaffolding # 3
 
 
 
-| Field        | Type                                                                            | Label | Description |
-|--------------|---------------------------------------------------------------------------------|-------|-------------|
-| `market_id`  | [string](#string)                                                               |       |             |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `market_id` | [string](#string) |  |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
 
 
 
@@ -3630,10 +3520,10 @@ this line is used by starport scaffolding # 3
 
 
 
-| Field        | Type                                                                              | Label    | Description |
-|--------------|-----------------------------------------------------------------------------------|----------|-------------|
-| `prices`     | [PostedPrice](#ununifi.pricefeed.PostedPrice)                                     | repeated |             |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |          |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `prices` | [PostedPrice](#ununifi.pricefeed.PostedPrice) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
 
 
 
@@ -3646,9 +3536,9 @@ this line is used by starport scaffolding # 3
 
 
 
-| Field       | Type              | Label | Description |
-|-------------|-------------------|-------|-------------|
-| `market_id` | [string](#string) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `market_id` | [string](#string) |  |  |
 
 
 
@@ -3661,9 +3551,9 @@ this line is used by starport scaffolding # 3
 
 
 
-| Field   | Type                                            | Label | Description |
-|---------|-------------------------------------------------|-------|-------------|
-| `price` | [CurrentPrice](#ununifi.pricefeed.CurrentPrice) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `price` | [CurrentPrice](#ununifi.pricefeed.CurrentPrice) |  |  |
 
 
 
@@ -3686,9 +3576,9 @@ this line is used by starport scaffolding # 3
 
 
 
-| Field    | Type                                | Label | Description |
-|----------|-------------------------------------|-------|-------------|
-| `params` | [Params](#ununifi.pricefeed.Params) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.pricefeed.Params) |  |  |
 
 
 
@@ -3706,14 +3596,14 @@ this line is used by starport scaffolding # 3
 ### Query
 Query defines the gRPC querier service.
 
-| Method Name   | Request Type                                                          | Response Type                                                           | Description                                   | HTTP Verb | Endpoint                                          |
-|---------------|-----------------------------------------------------------------------|-------------------------------------------------------------------------|-----------------------------------------------|-----------|---------------------------------------------------|
-| `Params`      | [QueryParamsRequest](#ununifi.pricefeed.QueryParamsRequest)           | [QueryParamsResponse](#ununifi.pricefeed.QueryParamsResponse)           |                                               | GET       | /ununifi/pricefeed/params                         |
-| `MarketAll`   | [QueryAllMarketRequest](#ununifi.pricefeed.QueryAllMarketRequest)     | [QueryAllMarketResponse](#ununifi.pricefeed.QueryAllMarketResponse)     | this line is used by starport scaffolding # 2 | GET       | /ununifi/pricefeed/markets                        |
-| `OracleAll`   | [QueryAllOracleRequest](#ununifi.pricefeed.QueryAllOracleRequest)     | [QueryAllOracleResponse](#ununifi.pricefeed.QueryAllOracleResponse)     |                                               | GET       | /ununifi/pricefeed/markets/{market_id}/oracles    |
-| `Price`       | [QueryGetPriceRequest](#ununifi.pricefeed.QueryGetPriceRequest)       | [QueryGetPriceResponse](#ununifi.pricefeed.QueryGetPriceResponse)       |                                               | GET       | /ununifi/pricefeed/markets/{market_id}/price      |
-| `PriceAll`    | [QueryAllPriceRequest](#ununifi.pricefeed.QueryAllPriceRequest)       | [QueryAllPriceResponse](#ununifi.pricefeed.QueryAllPriceResponse)       |                                               | GET       | /ununifi/pricefeed/prices                         |
-| `RawPriceAll` | [QueryAllRawPriceRequest](#ununifi.pricefeed.QueryAllRawPriceRequest) | [QueryAllRawPriceResponse](#ununifi.pricefeed.QueryAllRawPriceResponse) |                                               | GET       | /ununifi/pricefeed/markets/{market_id}/raw_prices |
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#ununifi.pricefeed.QueryParamsRequest) | [QueryParamsResponse](#ununifi.pricefeed.QueryParamsResponse) |  | GET|/ununifi/pricefeed/params|
+| `MarketAll` | [QueryAllMarketRequest](#ununifi.pricefeed.QueryAllMarketRequest) | [QueryAllMarketResponse](#ununifi.pricefeed.QueryAllMarketResponse) | this line is used by starport scaffolding # 2 | GET|/ununifi/pricefeed/markets|
+| `OracleAll` | [QueryAllOracleRequest](#ununifi.pricefeed.QueryAllOracleRequest) | [QueryAllOracleResponse](#ununifi.pricefeed.QueryAllOracleResponse) |  | GET|/ununifi/pricefeed/markets/{market_id}/oracles|
+| `Price` | [QueryGetPriceRequest](#ununifi.pricefeed.QueryGetPriceRequest) | [QueryGetPriceResponse](#ununifi.pricefeed.QueryGetPriceResponse) |  | GET|/ununifi/pricefeed/markets/{market_id}/price|
+| `PriceAll` | [QueryAllPriceRequest](#ununifi.pricefeed.QueryAllPriceRequest) | [QueryAllPriceResponse](#ununifi.pricefeed.QueryAllPriceResponse) |  | GET|/ununifi/pricefeed/prices|
+| `RawPriceAll` | [QueryAllRawPriceRequest](#ununifi.pricefeed.QueryAllRawPriceRequest) | [QueryAllRawPriceResponse](#ununifi.pricefeed.QueryAllRawPriceResponse) |  | GET|/ununifi/pricefeed/markets/{market_id}/raw_prices|
 
  <!-- end services -->
 
@@ -3732,12 +3622,12 @@ Query defines the gRPC querier service.
 
 
 
-| Field       | Type                                                    | Label | Description |
-|-------------|---------------------------------------------------------|-------|-------------|
-| `from`      | [string](#string)                                       |       |             |
-| `market_id` | [string](#string)                                       |       |             |
-| `price`     | [string](#string)                                       |       |             |
-| `expiry`    | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  |  |
+| `market_id` | [string](#string) |  |  |
+| `price` | [string](#string) |  |  |
+| `expiry` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 
 
 
@@ -3786,10 +3676,10 @@ Query defines the gRPC querier service.
 
 
 
-| Field     | Type                                  | Label    | Description |
-|-----------|---------------------------------------|----------|-------------|
-| `active`  | [bool](#bool)                         |          |             |
-| `periods` | [Period](#ununifi.ununifidist.Period) | repeated |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `active` | [bool](#bool) |  |  |
+| `periods` | [Period](#ununifi.ununifidist.Period) | repeated |  |
 
 
 
@@ -3802,11 +3692,11 @@ Query defines the gRPC querier service.
 
 
 
-| Field       | Type                                                    | Label | Description |
-|-------------|---------------------------------------------------------|-------|-------------|
-| `start`     | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
-| `end`       | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
-| `inflation` | [string](#string)                                       |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `start` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `end` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `inflation` | [string](#string) |  |  |
 
 
 
@@ -3835,11 +3725,11 @@ Query defines the gRPC querier service.
 GenesisState defines the ununifidist module's genesis state.
 
 
-| Field                 | Type                                                    | Label | Description                                                     |
-|-----------------------|---------------------------------------------------------|-------|-----------------------------------------------------------------|
-| `params`              | [Params](#ununifi.ununifidist.Params)                   |       |                                                                 |
-| `previous_block_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |                                                                 |
-| `gov_denom`           | [string](#string)                                       |       | this line is used by starport scaffolding # genesis/proto/state |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.ununifidist.Params) |  |  |
+| `previous_block_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `gov_denom` | [string](#string) |  | this line is used by starport scaffolding # genesis/proto/state |
 
 
 
@@ -3878,9 +3768,9 @@ GenesisState defines the ununifidist module's genesis state.
 
 
 
-| Field      | Type                                                  | Label    | Description |
-|------------|-------------------------------------------------------|----------|-------------|
-| `balances` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `balances` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
 
 
 
@@ -3903,9 +3793,9 @@ GenesisState defines the ununifidist module's genesis state.
 
 
 
-| Field    | Type                                  | Label | Description |
-|----------|---------------------------------------|-------|-------------|
-| `params` | [Params](#ununifi.ununifidist.Params) |       |             |
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.ununifidist.Params) |  |  |
 
 
 
@@ -3923,10 +3813,10 @@ GenesisState defines the ununifidist module's genesis state.
 ### Query
 Query defines the gRPC querier service.
 
-| Method Name | Request Type                                                            | Response Type                                                             | Description                                   | HTTP Verb | Endpoint                      |
-|-------------|-------------------------------------------------------------------------|---------------------------------------------------------------------------|-----------------------------------------------|-----------|-------------------------------|
-| `Params`    | [QueryParamsRequest](#ununifi.ununifidist.QueryParamsRequest)           | [QueryParamsResponse](#ununifi.ununifidist.QueryParamsResponse)           |                                               | GET       | /ununifi/ununifidist/params   |
-| `Balances`  | [QueryGetBalancesRequest](#ununifi.ununifidist.QueryGetBalancesRequest) | [QueryGetBalancesResponse](#ununifi.ununifidist.QueryGetBalancesResponse) | this line is used by starport scaffolding # 2 | GET       | /ununifi/ununifidist/balances |
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#ununifi.ununifidist.QueryParamsRequest) | [QueryParamsResponse](#ununifi.ununifidist.QueryParamsResponse) |  | GET|/ununifi/ununifidist/params|
+| `Balances` | [QueryGetBalancesRequest](#ununifi.ununifidist.QueryGetBalancesRequest) | [QueryGetBalancesResponse](#ununifi.ununifidist.QueryGetBalancesResponse) | this line is used by starport scaffolding # 2 | GET|/ununifi/ununifidist/balances|
 
  <!-- end services -->
 
@@ -3934,20 +3824,20 @@ Query defines the gRPC querier service.
 
 ## Scalar Value Types
 
-| .proto Type                    | Notes                                                                                                                                           | C++    | Java       | Python      | Go      | C#         | PHP            | Ruby                           |
-|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|--------|------------|-------------|---------|------------|----------------|--------------------------------|
-| <a name="double" /> double     |                                                                                                                                                 | double | double     | float       | float64 | double     | float          | Float                          |
-| <a name="float" /> float       |                                                                                                                                                 | float  | float      | float       | float32 | float      | float          | Float                          |
-| <a name="int32" /> int32       | Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint32 instead. | int32  | int        | int         | int32   | int        | integer        | Bignum or Fixnum (as required) |
-| <a name="int64" /> int64       | Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint64 instead. | int64  | long       | int/long    | int64   | long       | integer/string | Bignum                         |
-| <a name="uint32" /> uint32     | Uses variable-length encoding.                                                                                                                  | uint32 | int        | int/long    | uint32  | uint       | integer        | Bignum or Fixnum (as required) |
-| <a name="uint64" /> uint64     | Uses variable-length encoding.                                                                                                                  | uint64 | long       | int/long    | uint64  | ulong      | integer/string | Bignum or Fixnum (as required) |
-| <a name="sint32" /> sint32     | Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int32s.                            | int32  | int        | int         | int32   | int        | integer        | Bignum or Fixnum (as required) |
-| <a name="sint64" /> sint64     | Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int64s.                            | int64  | long       | int/long    | int64   | long       | integer/string | Bignum                         |
-| <a name="fixed32" /> fixed32   | Always four bytes. More efficient than uint32 if values are often greater than 2^28.                                                            | uint32 | int        | int         | uint32  | uint       | integer        | Bignum or Fixnum (as required) |
-| <a name="fixed64" /> fixed64   | Always eight bytes. More efficient than uint64 if values are often greater than 2^56.                                                           | uint64 | long       | int/long    | uint64  | ulong      | integer/string | Bignum                         |
-| <a name="sfixed32" /> sfixed32 | Always four bytes.                                                                                                                              | int32  | int        | int         | int32   | int        | integer        | Bignum or Fixnum (as required) |
-| <a name="sfixed64" /> sfixed64 | Always eight bytes.                                                                                                                             | int64  | long       | int/long    | int64   | long       | integer/string | Bignum                         |
-| <a name="bool" /> bool         |                                                                                                                                                 | bool   | boolean    | boolean     | bool    | bool       | boolean        | TrueClass/FalseClass           |
-| <a name="string" /> string     | A string must always contain UTF-8 encoded or 7-bit ASCII text.                                                                                 | string | String     | str/unicode | string  | string     | string         | String (UTF-8)                 |
-| <a name="bytes" /> bytes       | May contain any arbitrary sequence of bytes.                                                                                                    | string | ByteString | str         | []byte  | ByteString | string         | String (ASCII-8BIT)            |
+| .proto Type | Notes | C++ | Java | Python | Go | C# | PHP | Ruby |
+| ----------- | ----- | --- | ---- | ------ | -- | -- | --- | ---- |
+| <a name="double" /> double |  | double | double | float | float64 | double | float | Float |
+| <a name="float" /> float |  | float | float | float | float32 | float | float | Float |
+| <a name="int32" /> int32 | Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint32 instead. | int32 | int | int | int32 | int | integer | Bignum or Fixnum (as required) |
+| <a name="int64" /> int64 | Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint64 instead. | int64 | long | int/long | int64 | long | integer/string | Bignum |
+| <a name="uint32" /> uint32 | Uses variable-length encoding. | uint32 | int | int/long | uint32 | uint | integer | Bignum or Fixnum (as required) |
+| <a name="uint64" /> uint64 | Uses variable-length encoding. | uint64 | long | int/long | uint64 | ulong | integer/string | Bignum or Fixnum (as required) |
+| <a name="sint32" /> sint32 | Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int32s. | int32 | int | int | int32 | int | integer | Bignum or Fixnum (as required) |
+| <a name="sint64" /> sint64 | Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int64s. | int64 | long | int/long | int64 | long | integer/string | Bignum |
+| <a name="fixed32" /> fixed32 | Always four bytes. More efficient than uint32 if values are often greater than 2^28. | uint32 | int | int | uint32 | uint | integer | Bignum or Fixnum (as required) |
+| <a name="fixed64" /> fixed64 | Always eight bytes. More efficient than uint64 if values are often greater than 2^56. | uint64 | long | int/long | uint64 | ulong | integer/string | Bignum |
+| <a name="sfixed32" /> sfixed32 | Always four bytes. | int32 | int | int | int32 | int | integer | Bignum or Fixnum (as required) |
+| <a name="sfixed64" /> sfixed64 | Always eight bytes. | int64 | long | int/long | int64 | long | integer/string | Bignum |
+| <a name="bool" /> bool |  | bool | boolean | boolean | bool | bool | boolean | TrueClass/FalseClass |
+| <a name="string" /> string | A string must always contain UTF-8 encoded or 7-bit ASCII text. | string | String | str/unicode | string | string | string | String (UTF-8) |
+| <a name="bytes" /> bytes | May contain any arbitrary sequence of bytes. | string | ByteString | str | []byte | ByteString | string | String (ASCII-8BIT) |
