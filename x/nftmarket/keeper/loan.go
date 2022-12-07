@@ -87,7 +87,7 @@ func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
 	}
 
 	// calculate maximum borrow amount for the listing
-	maxDebt := k.TotalActiveRankDeposit(ctx, msg.NftId.IdBytes())
+	maxDebt := MaxPossibleBorrowAmount(k.GetBidsByNft(ctx, msg.NftId.IdBytes()))
 
 	currDebt := k.GetDebtByNft(ctx, msg.NftId.IdBytes())
 	if !sdk.Coin.IsNil(currDebt.Loan) && msg.Amount.Add(currDebt.Loan).Amount.GT(maxDebt) {
@@ -156,4 +156,12 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 	})
 
 	return nil
+}
+
+func MaxPossibleBorrowAmount(bids []types.NftBid) sdk.Int {
+	maxPossibleBorrowAmount := sdk.ZeroInt()
+	for _, bid := range bids {
+		maxPossibleBorrowAmount = maxPossibleBorrowAmount.Add(bid.DepositAmount.Amount)
+	}
+	return maxPossibleBorrowAmount
 }
