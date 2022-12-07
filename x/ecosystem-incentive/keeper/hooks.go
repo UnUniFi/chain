@@ -21,23 +21,20 @@ func (k Keeper) Hooks() Hooks { return Hooks{k} }
 // ------------------- Nftmarket Module Hooks -------------------
 
 func (h Hooks) AfterNftListed(ctx sdk.Context, nftIdentifier nftmarkettypes.NftIdentifier, txMemo string) {
-	if len(txMemo) != 0 {
-		memoInputs, err := types.ParseMemo([]byte(txMemo))
+	memoInputs, err := types.ParseMemo([]byte(txMemo))
 
-		// return immediately after emitting event to tell decoding failed
-		// if memo data cannot be decoded properly
-		// this doesn't mean MsgListNft fail. It succeeds anyway.
-		if err != nil {
-			_ = ctx.EventManager().EmitTypedEvent(&types.EventFailedParsingMemoInputs{
-				ClassId: nftIdentifier.ClassId,
-				NftId:   nftIdentifier.NftId,
-				Memo:    txMemo,
-			})
-			return
-		}	
+	// return immediately after emitting event to tell decoding failed
+	// if memo data cannot be decoded properly
+	// this doesn't mean MsgListNft fail. It succeeds anyway.
+	if err != nil {
+		_ = fmt.Errorf(err.Error())
+		_ = ctx.EventManager().EmitTypedEvent(&types.EventFailedParsingMemoInputs{
+			ClassId: nftIdentifier.ClassId,
+			NftId:   nftIdentifier.NftId,
+			Memo:    txMemo,
+		})
+		return
 	}
-
-
 
 	// guide the execution based on the version in the memo inputs
 	// switch by values of AvailableVersions which is defined in ../types/memo.go
