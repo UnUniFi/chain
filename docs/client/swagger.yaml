@@ -3942,6 +3942,11 @@ paths:
                     value:
                       type: string
                       format: byte
+      parameters:
+        - name: owner
+          in: query
+          required: false
+          type: string
       tags:
         - Query
   /ununifi/nftmarket/loans:
@@ -4002,6 +4007,75 @@ paths:
                     value:
                       type: string
                       format: byte
+      tags:
+        - Query
+  /ununifi/nftmarket/loans/{class_id}/{nft_id}:
+    get:
+      operationId: Loan
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              loan:
+                type: object
+                properties:
+                  nft_id:
+                    type: object
+                    properties:
+                      class_id:
+                        type: string
+                      nft_id:
+                        type: string
+                  loan:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
+
+
+                      NOTE: The amount field is an Int which implements the
+                      custom method
+
+                      signatures required by gogoproto.
+              borrowing_limit:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_id
+          in: path
+          required: true
+          type: string
+        - name: nft_id
+          in: path
+          required: true
+          type: string
       tags:
         - Query
   /ununifi/nftmarket/nft_bids/{class_id}/{nft_id}:
@@ -4274,6 +4348,98 @@ paths:
                     value:
                       type: string
                       format: byte
+      tags:
+        - Query
+  /ununifi/nftmarket/payment_status/{class_id}/{nft_id}/{bidder}:
+    get:
+      operationId: PaymentStatus
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              paymentStatus:
+                type: object
+                properties:
+                  nft_id:
+                    type: object
+                    properties:
+                      class_id:
+                        type: string
+                      nft_id:
+                        type: string
+                  bidder:
+                    type: string
+                  amount:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
+
+
+                      NOTE: The amount field is an Int which implements the
+                      custom method
+
+                      signatures required by gogoproto.
+                  automatic_payment:
+                    type: boolean
+                  paid_amount:
+                    type: string
+                  bid_time:
+                    type: string
+                    format: date-time
+                  state:
+                    type: string
+                    enum:
+                      - LISTING
+                      - BIDDING
+                      - SELLING_DECISION
+                      - LIQUIDATION
+                      - END_LISTING
+                      - SUCCESSFUL_BID
+                    default: LISTING
+                  all_paid:
+                    type: boolean
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_id
+          in: path
+          required: true
+          type: string
+        - name: nft_id
+          in: path
+          required: true
+          type: string
+        - name: bidder
+          in: path
+          required: true
+          type: string
       tags:
         - Query
   /ununifi/nftmarket/rewards/{address}:
@@ -6704,6 +6870,49 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
+  ununifi.nftmarket.PaymentStatus:
+    type: object
+    properties:
+      nft_id:
+        type: object
+        properties:
+          class_id:
+            type: string
+          nft_id:
+            type: string
+      bidder:
+        type: string
+      amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      automatic_payment:
+        type: boolean
+      paid_amount:
+        type: string
+      bid_time:
+        type: string
+        format: date-time
+      state:
+        type: string
+        enum:
+          - LISTING
+          - BIDDING
+          - SELLING_DECISION
+          - LIQUIDATION
+          - END_LISTING
+          - SUCCESSFUL_BID
+        default: LISTING
+      all_paid:
+        type: boolean
   ununifi.nftmarket.QueryBidderBidsResponse:
     type: object
     properties:
@@ -6864,6 +7073,36 @@ definitions:
             auto_relisted_count:
               type: string
               format: uint64
+  ununifi.nftmarket.QueryLoanResponse:
+    type: object
+    properties:
+      loan:
+        type: object
+        properties:
+          nft_id:
+            type: object
+            properties:
+              class_id:
+                type: string
+              nft_id:
+                type: string
+          loan:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+      borrowing_limit:
+        type: string
   ununifi.nftmarket.QueryLoansResponse:
     type: object
     properties:
@@ -7058,6 +7297,55 @@ definitions:
               method
 
               signatures required by gogoproto.
+  ununifi.nftmarket.QueryPaymentStatusResponse:
+    type: object
+    properties:
+      paymentStatus:
+        type: object
+        properties:
+          nft_id:
+            type: object
+            properties:
+              class_id:
+                type: string
+              nft_id:
+                type: string
+          bidder:
+            type: string
+          amount:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          automatic_payment:
+            type: boolean
+          paid_amount:
+            type: string
+          bid_time:
+            type: string
+            format: date-time
+          state:
+            type: string
+            enum:
+              - LISTING
+              - BIDDING
+              - SELLING_DECISION
+              - LIQUIDATION
+              - END_LISTING
+              - SUCCESSFUL_BID
+            default: LISTING
+          all_paid:
+            type: boolean
   ununifi.nftmarket.QueryRewardsResponse:
     type: object
     properties:
