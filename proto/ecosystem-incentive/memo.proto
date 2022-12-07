@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/ecosystem-incentive/types";
 
-message memoInputs {
+message MemoInputs {
   string version = 1 [
     (gogoproto.moretags) = "yaml:\"version\"",
     (gogoproto.jsontag) = "version"
