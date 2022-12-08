@@ -57,21 +57,6 @@ func (suite *KeeperTestSuite) TestParams() {
 			},
 			expErr: true,
 		},
-		// {
-		// 	name:   "negative base proposer reward",
-		// 	input:  types.Params{},
-		// 	expErr: true,
-		// },
-		// {
-		// 	name:   "bonus proposer reward > 1",
-		// 	input:  types.Params{},
-		// 	expErr: true,
-		// },
-		// {
-		// 	name:   "negative bonus proposer reward",
-		// 	input:  types.Params{},
-		// 	expErr: true,
-		// },
 	}
 
 	for _, tc := range testCases {
