@@ -1,7 +1,7 @@
 package types_test
 
 // TODO
-func TestValidateIncentiveUnitIdLen() {}
+// func TestValidateIncentiveUnitIdLen() {}
 
 // TODO
-func TestValidateSubjectInfoNum() {}
+// func TestValidateSubjectInfoNum() {}
