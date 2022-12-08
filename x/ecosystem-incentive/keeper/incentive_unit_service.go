@@ -16,7 +16,7 @@ func (k Keeper) Register(ctx sdk.Context, msg *types.MsgRegister) (*[]types.Subj
 	}
 
 	// check the length of the IncentiveUnitId by referring MaxInentiveUnitIdLen in the Params
-	if err := k.IncentiveUnitIdLenValidation(ctx, msg.IncentiveUnitId); err != nil {
+	if err := types.ValidateIncentiveUnitIdLen(k.GetMaxIncentiveUnitIdLen(ctx), msg.IncentiveUnitId); err != nil {
 		return nil, err
 	}
 

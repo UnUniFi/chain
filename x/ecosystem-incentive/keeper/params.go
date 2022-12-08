@@ -16,6 +16,10 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	k.paramstore.SetParamSet(ctx, &params)
 }
 
+func (k Keeper) GetMaxIncentiveUnitIdLen(ctx sdk.Context) uint64 {
+	return k.GetParams(ctx).MaxIncentiveUnitIdLen
+}
+
 func (k Keeper) GetMaxSubjectInfoNumInUnitParam(ctx sdk.Context) uint64 {
 	return k.GetParams(ctx).MaxSubjectInfoNumInUnit
 }
