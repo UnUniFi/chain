@@ -18,4 +18,5 @@ var (
 	ErrAddressNotHaveReward              = sdkerrors.Register(ModuleName, 11, "the address doesn't have any rewards")
 	ErrUnknownMemoVersion                = sdkerrors.Register(ModuleName, 12, "the version in the memo inputs is unknown")
 	ErrInvalidIncentiveUnitIdLen         = sdkerrors.Register(ModuleName, 13, "the length of incentive unit id is invalid")
+	ErrInvalidSubjectInfoNumInUnit       = sdkerrors.Register(ModuleName, 14, "the number of subject info in a incentive unit is invalid")
 )
