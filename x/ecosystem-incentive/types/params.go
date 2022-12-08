@@ -65,9 +65,17 @@ func (p Params) Validate() error {
 }
 
 func validateRewardParams(i interface{}) error {
-	_, ok := i.([]*RewardParams)
+	rewardParams, ok := i.([]*RewardParams)
 	if !ok {
 		return fmt.Errorf("invalid paramter type: %T", i)
+	}
+
+	for _, rewardParam := range rewardParams {
+		for _, rate := range rewardParam.RewardRate {
+			if rate.Rate.GT(sdk.OneDec()) {
+				return fmt.Errorf("each reward rate must be less than 1 dec")
+			}
+		}
 	}
 
 	return nil
