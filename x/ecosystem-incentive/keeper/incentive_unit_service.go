@@ -29,7 +29,7 @@ func (k Keeper) Register(ctx sdk.Context, msg *types.MsgRegister) (*[]types.Subj
 	incentiveUnit := types.NewIncentiveUnit(msg.IncentiveUnitId, subjectInfoList)
 
 	// checks if the number of the subject info is vaid
-	if err := types.ValidateMaxSubjectInfoNumInUnit(k.GetMaxSubjectInfoNumInUnitParam(ctx), incentiveUnit); err != nil {
+	if err := types.ValidateSubjectInfoNumInUnit(k.GetMaxSubjectInfoNumInUnitParam(ctx), incentiveUnit); err != nil {
 		return nil, err
 	}
 
