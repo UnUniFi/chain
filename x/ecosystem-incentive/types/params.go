@@ -19,9 +19,11 @@ var (
 			},
 		},
 	}
-	DefaultMaxIncentiveUnitIdLen uint64 = 128
-	KeyRewardParams                     = []byte("RewardParams")
-	KeyMaxIncentiveUnitIdLen            = []byte("MaxIncentiveUnitId")
+	DefaultMaxIncentiveUnitIdLen   uint64 = 128
+	DefaultMaxSubjectInfoNumInUnit uint64 = 15
+	KeyRewardParams                       = []byte("RewardParams")
+	KeyMaxIncentiveUnitIdLen              = []byte("MaxIncentiveUnitId")
+	KeyMaxSubjectInfoNumInUnit            = []byte("MaxSubjectInfoNumInUnit")
 )
 
 // ParamKeyTable the param key table for launch module
@@ -37,8 +39,9 @@ func NewParams() Params {
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return Params{
-		RewardParams:          DafaultRewardParams,
-		MaxIncentiveUnitIdLen: DefaultMaxIncentiveUnitIdLen,
+		RewardParams:            DafaultRewardParams,
+		MaxIncentiveUnitIdLen:   DefaultMaxIncentiveUnitIdLen,
+		MaxSubjectInfoNumInUnit: DefaultMaxSubjectInfoNumInUnit,
 	}
 }
 
@@ -46,7 +49,8 @@ func DefaultParams() Params {
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(KeyRewardParams, &p.RewardParams, validateRewardParams),
-		paramtypes.NewParamSetPair(KeyMaxIncentiveUnitIdLen, &p.MaxIncentiveUnitIdLen, validateMaxIncentiveUnitId),
+		paramtypes.NewParamSetPair(KeyMaxIncentiveUnitIdLen, &p.MaxIncentiveUnitIdLen, validateMaxIncentiveUnitIdLen),
+		paramtypes.NewParamSetPair(KeyMaxSubjectInfoNumInUnit, &p.MaxSubjectInfoNumInUnit, validateMaxSubjectInfoNumInUnit),
 	}
 }
 
@@ -57,7 +61,11 @@ func (p Params) Validate() error {
 		return err
 	}
 
-	if err := validateMaxIncentiveUnitId(p.MaxIncentiveUnitIdLen); err != nil {
+	if err := validateMaxIncentiveUnitIdLen(p.MaxIncentiveUnitIdLen); err != nil {
+		return err
+	}
+
+	if err := validateMaxSubjectInfoNumInUnit(p.MaxSubjectInfoNumInUnit); err != nil {
 		return err
 	}
 
@@ -85,10 +93,27 @@ func validateRewardParams(i interface{}) error {
 	return nil
 }
 
-func validateMaxIncentiveUnitId(i interface{}) error {
-	_, ok := i.(uint64)
+func validateMaxIncentiveUnitIdLen(i interface{}) error {
+	maxIncentiveUnitIdLen, ok := i.(uint64)
 	if !ok {
 		return fmt.Errorf("invalid parameter types: %T", i)
+	}
+
+	if maxIncentiveUnitIdLen < 0 {
+		return fmt.Errorf("maxIncentiveUnitIdLen should be positive")
+	}
+
+	return nil
+}
+
+func validateMaxSubjectInfoNumInUnit(i interface{}) error {
+	maxSubjectInfoNumInUnit, ok := i.(uint64)
+	if !ok {
+		return fmt.Errorf("invalid parameter types: %T", i)
+	}
+
+	if maxSubjectInfoNumInUnit < 0 {
+		return fmt.Errorf("maxSubjectInfoNumInUnit should be positive")
 	}
 
 	return nil
