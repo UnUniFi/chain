@@ -75,6 +75,10 @@ func validateRewardParams(i interface{}) error {
 			if rate.Rate.GT(sdk.OneDec()) {
 				return fmt.Errorf("each reward rate must be less than 1 dec")
 			}
+
+			if rate.Rate.IsNegative() {
+				return fmt.Errorf("each reward rate must be positive")
+			}
 		}
 	}
 
