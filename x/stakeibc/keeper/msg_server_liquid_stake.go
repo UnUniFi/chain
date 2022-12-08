@@ -12,9 +12,7 @@ import (
 	"github.com/UnUniFi/chain/x/stakeibc/types"
 )
 
-func (k Keeper) LiquidStake(goCtx context.Context, sender sdk.AccAddress, amount sdk.Coin) error {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k Keeper) LiquidStake(ctx sdk.Context, sender sdk.AccAddress, amount sdk.Coin) error {
 	// Init variables
 	// deposit `amount` of `denom` token to the stakeibc module
 	// NOTE: Should we add an additional check here? This is a pretty important line of code

@@ -3,8 +3,6 @@ package keeper
 import (
 	"time"
 
-	stakeibckeeper "github.com/UnUniFi/chain/x/stakeibc/keeper"
-	stakeibctypes "github.com/UnUniFi/chain/x/stakeibc/types"
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -37,16 +35,10 @@ func (k Keeper) InvestOnTarget(ctx sdk.Context, addr sdk.AccAddress, target type
 		switch target.IntegrateInfo.ModName {
 		case "stakeibc":
 			for _, token := range amount {
-				msg := &stakeibctypes.MsgLiquidStake{
-					Creator:   addr.String(),
-					Amount:    token.Amount.Uint64(),
-					HostDenom: token.Denom,
-				}
-
-				msgServer := stakeibckeeper.NewMsgServerImpl(k.stakeibcKeeper)
-				_, err := msgServer.LiquidStake(
-					sdk.WrapSDKContext(ctx),
-					msg,
+				err := k.stakeibcKeeper.LiquidStake(
+					ctx,
+					addr,
+					token,
 				)
 				if err != nil {
 					return err
@@ -83,18 +75,12 @@ func (k Keeper) BeginWithdrawFromTarget(ctx sdk.Context, addr sdk.AccAddress, ta
 
 		switch target.IntegrateInfo.ModName {
 		case "stakeibc":
-			hostZones := k.stakeibcKeeper.GetAllHostZone(ctx)
-			for _, zone := range hostZones {
-				msg := stakeibctypes.NewMsgRedeemStake(
+			for _, coin := range amount {
+				err := k.stakeibcKeeper.RedeemStake(
+					ctx,
+					address,
+					coin,
 					address.String(),
-					amount.AmountOf(zone.IBCDenom).Uint64(),
-					zone.ChainId,
-					address.String(),
-				)
-				msgServer := stakeibckeeper.NewMsgServerImpl(k.stakeibcKeeper)
-				_, err := msgServer.RedeemStake(
-					sdk.WrapSDKContext(ctx),
-					msg,
 				)
 				if err != nil {
 					return err
