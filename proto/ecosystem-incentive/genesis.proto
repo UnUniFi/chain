@@ -11,4 +11,5 @@ option go_package = "github.com/UnUniFi/chain/x/ecosystem-incentive/types";
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
   repeated IncentiveUnit incentive_units = 2 [(gogoproto.nullable) = false];
+  repeated RewardStore reward_stores = 3 [(gogoproto.nullable) = false];
 }
