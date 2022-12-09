@@ -4498,6 +4498,305 @@ paths:
           format: uint64
       tags:
         - Query
+  /ununifi/ecosystem_incentive/all_rewards/{subject_addr}:
+    get:
+      operationId: AllRewards
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              rewards:
+                type: object
+                properties:
+                  subject_addr:
+                    type: string
+                  rewards:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: subject_addr
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /ununifi/ecosystem_incentive/incentive_unit/{incentive_unit_id}:
+    get:
+      operationId: IncentiveUnit
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              incentive_unit:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  subject_info_lists:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        subject_addr:
+                          type: string
+                        weight:
+                          type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: incentive_unit_id
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /ununifi/ecosystem_incentive/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: EcosystemincentiveParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+                properties:
+                  reward_params:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        module_name:
+                          type: string
+                        reward_rate:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              reward_type:
+                                type: string
+                                enum:
+                                  - NFTMARKET_FRONTEND
+                                default: NFTMARKET_FRONTEND
+                                description: >-
+                                  At first, we go with this one type.
+
+                                  NFTMARKET_FRONTEND type reward will be
+                                  disributed for the creators of frontend of
+                                  UnUniFi's services.
+                              rate:
+                                type: string
+                            title: >-
+                              RewardRate defines the ratio to take reward for a
+                              specific reward_type.
+
+                              The total sum of reward_rate in a module cannot be
+                              exceed 1
+                      title: >-
+                        RewardParams defines which module have which rewards
+                        type and rate 
+
+                        to maintain the correctness of the fee rate in a module
+
+                        e.g. if nftmarket module have "Frontend" and
+                        "Collection" incentive, 
+
+                        the combined those rates for the incentive cannot be
+                        exceed 1
+                  max_incentive_unit_id_len:
+                    type: string
+                    format: uint64
+                  max_subject_info_num_in_unit:
+                    type: string
+                    format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /ununifi/ecosystem_incentive/recorded_incentive_unit_id/{class_id}/{nft_id}:
+    get:
+      operationId: RecordedIncentiveUnitId
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              incentive_unit_id:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_id
+          in: path
+          required: true
+          type: string
+        - name: nft_id
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /ununifi/ecosystem_incentive/reward/{subject_addr}/{denom}:
+    get:
+      operationId: Reward
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              reward:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: subject_addr
+          in: path
+          required: true
+          type: string
+        - name: denom
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
 definitions:
   cosmos.base.query.v1beta1.PageRequest:
     type: object
@@ -7363,3 +7662,266 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
+  ununifi.ecosystemincentive.IncentiveUnit:
+    type: object
+    properties:
+      id:
+        type: string
+      subject_info_lists:
+        type: array
+        items:
+          type: object
+          properties:
+            subject_addr:
+              type: string
+            weight:
+              type: string
+  ununifi.ecosystemincentive.Params:
+    type: object
+    properties:
+      reward_params:
+        type: array
+        items:
+          type: object
+          properties:
+            module_name:
+              type: string
+            reward_rate:
+              type: array
+              items:
+                type: object
+                properties:
+                  reward_type:
+                    type: string
+                    enum:
+                      - NFTMARKET_FRONTEND
+                    default: NFTMARKET_FRONTEND
+                    description: >-
+                      At first, we go with this one type.
+
+                      NFTMARKET_FRONTEND type reward will be disributed for the
+                      creators of frontend of UnUniFi's services.
+                  rate:
+                    type: string
+                title: >-
+                  RewardRate defines the ratio to take reward for a specific
+                  reward_type.
+
+                  The total sum of reward_rate in a module cannot be exceed 1
+          title: >-
+            RewardParams defines which module have which rewards type and rate 
+
+            to maintain the correctness of the fee rate in a module
+
+            e.g. if nftmarket module have "Frontend" and "Collection"
+            incentive, 
+
+            the combined those rates for the incentive cannot be exceed 1
+      max_incentive_unit_id_len:
+        type: string
+        format: uint64
+      max_subject_info_num_in_unit:
+        type: string
+        format: uint64
+    description: Params defines the parameters for the module.
+  ununifi.ecosystemincentive.QueryAllRewardsResponse:
+    type: object
+    properties:
+      rewards:
+        type: object
+        properties:
+          subject_addr:
+            type: string
+          rewards:
+            type: array
+            items:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+  ununifi.ecosystemincentive.QueryIncentiveUnitResponse:
+    type: object
+    properties:
+      incentive_unit:
+        type: object
+        properties:
+          id:
+            type: string
+          subject_info_lists:
+            type: array
+            items:
+              type: object
+              properties:
+                subject_addr:
+                  type: string
+                weight:
+                  type: string
+  ununifi.ecosystemincentive.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+        properties:
+          reward_params:
+            type: array
+            items:
+              type: object
+              properties:
+                module_name:
+                  type: string
+                reward_rate:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      reward_type:
+                        type: string
+                        enum:
+                          - NFTMARKET_FRONTEND
+                        default: NFTMARKET_FRONTEND
+                        description: >-
+                          At first, we go with this one type.
+
+                          NFTMARKET_FRONTEND type reward will be disributed for
+                          the creators of frontend of UnUniFi's services.
+                      rate:
+                        type: string
+                    title: >-
+                      RewardRate defines the ratio to take reward for a specific
+                      reward_type.
+
+                      The total sum of reward_rate in a module cannot be exceed
+                      1
+              title: >-
+                RewardParams defines which module have which rewards type and
+                rate 
+
+                to maintain the correctness of the fee rate in a module
+
+                e.g. if nftmarket module have "Frontend" and "Collection"
+                incentive, 
+
+                the combined those rates for the incentive cannot be exceed 1
+          max_incentive_unit_id_len:
+            type: string
+            format: uint64
+          max_subject_info_num_in_unit:
+            type: string
+            format: uint64
+  ununifi.ecosystemincentive.QueryRecordedIncentiveUnitIdResponse:
+    type: object
+    properties:
+      incentive_unit_id:
+        type: string
+  ununifi.ecosystemincentive.QueryRewardResponse:
+    type: object
+    properties:
+      reward:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+  ununifi.ecosystemincentive.RewardParams:
+    type: object
+    properties:
+      module_name:
+        type: string
+      reward_rate:
+        type: array
+        items:
+          type: object
+          properties:
+            reward_type:
+              type: string
+              enum:
+                - NFTMARKET_FRONTEND
+              default: NFTMARKET_FRONTEND
+              description: >-
+                At first, we go with this one type.
+
+                NFTMARKET_FRONTEND type reward will be disributed for the
+                creators of frontend of UnUniFi's services.
+            rate:
+              type: string
+          title: >-
+            RewardRate defines the ratio to take reward for a specific
+            reward_type.
+
+            The total sum of reward_rate in a module cannot be exceed 1
+    title: |-
+      RewardParams defines which module have which rewards type and rate 
+      to maintain the correctness of the fee rate in a module
+      e.g. if nftmarket module have "Frontend" and "Collection" incentive, 
+      the combined those rates for the incentive cannot be exceed 1
+  ununifi.ecosystemincentive.RewardRate:
+    type: object
+    properties:
+      reward_type:
+        type: string
+        enum:
+          - NFTMARKET_FRONTEND
+        default: NFTMARKET_FRONTEND
+        description: >-
+          At first, we go with this one type.
+
+          NFTMARKET_FRONTEND type reward will be disributed for the creators of
+          frontend of UnUniFi's services.
+      rate:
+        type: string
+    title: |-
+      RewardRate defines the ratio to take reward for a specific reward_type.
+      The total sum of reward_rate in a module cannot be exceed 1
+  ununifi.ecosystemincentive.RewardStore:
+    type: object
+    properties:
+      subject_addr:
+        type: string
+      rewards:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
+  ununifi.ecosystemincentive.RewardType:
+    type: string
+    enum:
+      - NFTMARKET_FRONTEND
+    default: NFTMARKET_FRONTEND
+    description: >-
+      At first, we go with this one type.
+
+      NFTMARKET_FRONTEND type reward will be disributed for the creators of
+      frontend of UnUniFi's services.
+  ununifi.ecosystemincentive.SubjectInfo:
+    type: object
+    properties:
+      subject_addr:
+        type: string
+      weight:
+        type: string
