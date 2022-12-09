@@ -25,7 +25,7 @@ func (k Keeper) RecordIncentiveUnitIdWithNftId(ctx sdk.Context, nftId nftmarkett
 
 	// check incentiveUnitId is already registered
 	if _, exists := k.GetIncentiveUnit(ctx, incentiveUnitId); !exists {
-		_ = fmt.Errorf(sdkerrors.Wrap(types.ErrNotRegisteredIncentiveUnitId, incentiveUnitId).Error())
+		k.Logger(ctx).Error(types.ErrNotRegisteredIncentiveUnitId.Error())
 
 		// emit event to inform that recording nftid failed because the incentiveUnitId is not registered yet.
 		_ = ctx.EventManager().EmitTypedEvent(&types.EventNotRegisteredIncentiveUnitId{
