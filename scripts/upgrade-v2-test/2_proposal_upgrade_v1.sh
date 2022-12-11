@@ -30,4 +30,4 @@ ununifid query gov proposals;
 
 mkdir -p ~/.ununifi/cosmovisor/upgrades/v2-beta.1/bin
 # Prepare binary files for updates in advance and place them in the update folder 
-cp ~/ununifid_v2.1 ~/.ununifi/cosmovisor/upgrades/v2-beta.1/bin/ununifid
+cp ~/ununifid_v2 ~/.ununifi/cosmovisor/upgrades/v2-beta.1/bin/ununifid
