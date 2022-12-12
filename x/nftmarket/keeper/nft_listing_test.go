@@ -9,6 +9,7 @@ import (
 	"github.com/tendermint/tendermint/crypto/ed25519"
 
 	ununifitypes "github.com/UnUniFi/chain/types"
+	ecoincentivetypes "github.com/UnUniFi/chain/x/ecosystem-incentive/types"
 	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
@@ -1669,7 +1670,7 @@ func (suite *KeeperTestSuite) TestProcessPaymentWithCommissionFee() {
 		listingPayment := amount.Sub(fee).Sub(tc.loanAmount)
 
 		// check fee paid to NftTradingFee
-		tradingFeeModuleAcc := suite.app.AccountKeeper.GetModuleAddress(types.NftTradingFee)
+		tradingFeeModuleAcc := suite.app.AccountKeeper.GetModuleAddress(ecoincentivetypes.ModuleName)
 		tradingFeeBal := suite.app.BankKeeper.GetBalance(suite.ctx, tradingFeeModuleAcc, "uguu")
 		suite.Require().Equal(tradingFeeBal, sdk.NewCoin("uguu", fee))
 
