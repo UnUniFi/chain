@@ -278,7 +278,7 @@ func (k Keeper) PaymentStatus(c context.Context, req *types.QueryPaymentStatusRe
 			bidderBid = v
 		}
 	}
-	if (bidderBid == types.NftBid{}) {
+	if (bidderBid.Equal(types.NftBid{})) {
 		return nil, status.Error(codes.InvalidArgument, "does not match bidder")
 	}
 

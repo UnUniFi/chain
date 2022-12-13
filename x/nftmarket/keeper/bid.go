@@ -203,6 +203,10 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 		return types.ErrInvalidBidDenom
 	}
 	// todo we not decided rebid spec
+	// re-bidのとき
+	// 自動借り換えを行う
+	// 自動借り換えは
+	// 以前の利息を計算して引き継ぐ
 
 	bids := k.GetBidsByNft(ctx, listing.IdBytes())
 	err = CheckBidParams(listing, msg.BidAmount, msg.DepositAmount, bids)

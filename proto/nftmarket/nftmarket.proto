@@ -64,6 +64,12 @@ message NftListing {
   uint64 auto_relisted_count = 12;
 }
 
+message borrowing {
+  cosmos.base.v1beta1.Coin  amount               = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin  paid_interest_amount = 2 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp start_at             = 3 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+}
+
 message NftBid {
   NftIdentifier             nft_id               = 1 [(gogoproto.nullable) = false];
   string                    bidder               = 2;
@@ -74,6 +80,9 @@ message NftBid {
   bool                      automatic_payment    = 7;
   google.protobuf.Timestamp bid_time             = 8
       [(gogoproto.moretags) = "yaml:\"bid_time\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  cosmos.base.v1beta1.Coin interest_amount = 9 [(gogoproto.nullable) = false];
+  // lister borrowing bidder info
+  repeated borrowing borrowings = 10 [(gogoproto.nullable) = false];
 }
 
 message Params {

@@ -123,6 +123,7 @@
     - [NftListing](#ununifi.nftmarket.NftListing)
     - [Params](#ununifi.nftmarket.Params)
     - [PaymentStatus](#ununifi.nftmarket.PaymentStatus)
+    - [borrowing](#ununifi.nftmarket.borrowing)
   
     - [ListingState](#ununifi.nftmarket.ListingState)
     - [ListingType](#ununifi.nftmarket.ListingType)
@@ -1780,6 +1781,8 @@ Query defines the gRPC querier service.
 | `deposit_lending_rate` | [string](#string) |  |  |
 | `automatic_payment` | [bool](#bool) |  |  |
 | `bid_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `interest_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `borrowings` | [borrowing](#ununifi.nftmarket.borrowing) | repeated | lister borrowing bidder info |
 
 
 
@@ -1876,6 +1879,23 @@ Query defines the gRPC querier service.
 | `bid_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `state` | [ListingState](#ununifi.nftmarket.ListingState) |  |  |
 | `all_paid` | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.borrowing"></a>
+
+### borrowing
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `paid_interest_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `start_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 
 
 

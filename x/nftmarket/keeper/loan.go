@@ -3,6 +3,8 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	time "time"
+
 	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
@@ -87,11 +89,42 @@ func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
 	}
 
 	// calculate maximum borrow amount for the listing
-	maxDebt := MaxPossibleBorrowAmount(k.GetBidsByNft(ctx, msg.NftId.IdBytes()))
+	bids := k.GetBidsByNft(ctx, msg.NftId.IdBytes())
+	maxDebt := MaxPossibleBorrowAmount(bids)
 
 	currDebt := k.GetDebtByNft(ctx, msg.NftId.IdBytes())
 	if !sdk.Coin.IsNil(currDebt.Loan) && msg.Amount.Add(currDebt.Loan).Amount.GT(maxDebt) {
 		return types.ErrDebtExceedsMaxDebt
+	}
+	// todo check is sort lower interest rate
+	// todo same deposit re-borrow logic
+	requireAmount := sdk.NewCoin(msg.Amount.Denom, msg.Amount.Amount)
+	for _, bid := range bids {
+		if requireAmount.IsZero() {
+			break
+		}
+		// todo calc borrowed amount on bid
+		usableAmount := bid.DepositAmount
+
+		// bigger msg Amount
+		if requireAmount.IsGTE(usableAmount) {
+			lend := types.Borrowing{
+				Amount:             sdk.NewCoin(bid.DepositAmount.Denom, bid.DepositAmount.Amount),
+				StartAt:            ctx.BlockTime(),
+				PaidInterestAmount: sdk.NewCoin(bid.DepositAmount.Denom, sdk.ZeroInt()),
+			}
+			bid.Borrowings = append(bid.Borrowings, lend)
+			requireAmount.Sub(lend.Amount)
+		} else {
+			lend := types.Borrowing{
+				Amount:             sdk.NewCoin(requireAmount.Denom, requireAmount.Amount),
+				StartAt:            ctx.BlockTime(),
+				PaidInterestAmount: sdk.NewCoin(requireAmount.Denom, sdk.ZeroInt()),
+			}
+			bid.Borrowings = append(bid.Borrowings, lend)
+			requireAmount.Amount = sdk.ZeroInt()
+		}
+		k.SetBid(ctx, bid)
 	}
 
 	k.IncreaseDebt(ctx, msg.NftId, msg.Amount)
@@ -114,6 +147,7 @@ func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
 }
 
 func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
+	// todo set interest amount in bid info
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
 		return err
@@ -137,6 +171,67 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 
 	if msg.Amount.Amount.GT(currDebt.Loan.Amount) {
 		return types.ErrRepayAmountExceedsLoanAmount
+	}
+
+	bids := k.GetBidsByNft(ctx, msg.NftId.IdBytes())
+	// todo higher interest rate list
+	for i := 0; i < len(bids)/2; i++ {
+		bids[i], bids[len(bids)-i-1] = bids[len(bids)-i-1], bids[i]
+	}
+
+	for _, bid := range bids {
+		if msg.Amount.IsZero() {
+			break
+		}
+		if len(bid.Borrowings) == 0 {
+			continue
+		}
+
+		len := []types.Borrowing{}
+		for _, lend := range bid.Borrowings {
+			if msg.Amount.IsZero() {
+				break
+			}
+			principal := lend.Amount
+			interest := CalcInterest(principal, bid.DepositLendingRate, lend.StartAt, ctx.BlockTime())
+			interest.Sub(lend.PaidInterestAmount)
+			total := sdk.NewCoin(principal.Denom, sdk.ZeroInt())
+			total.Add(principal)
+			total.Add(interest)
+			// bigger msg Amount
+			if msg.Amount.IsGTE(total) {
+				bid.InterestAmount.Add(interest)
+				msg.Amount.Sub(total)
+				principal.Amount = sdk.ZeroInt()
+			} else {
+				// bigger total Amount
+				if msg.Amount.IsGTE(interest) {
+					// can paid interest
+					if msg.Amount.Amount.GT(interest.Amount) {
+						// all paid interest and part paid principal
+						msg.Amount.Sub(interest)
+						bid.InterestAmount.Add(interest)
+						principal.Sub(msg.Amount)
+						lend.PaidInterestAmount.Amount = sdk.ZeroInt()
+						lend.StartAt = ctx.BlockTime()
+					} else {
+						// all paid interest
+						bid.InterestAmount.Add(interest)
+						lend.PaidInterestAmount.Add(interest)
+						msg.Amount.Sub(interest)
+					}
+				} else {
+					// can not paid interest
+					bid.InterestAmount.Add(msg.Amount)
+					lend.PaidInterestAmount.Add(msg.Amount)
+				}
+				msg.Amount.Amount = sdk.ZeroInt()
+				len = append(len, lend)
+			}
+		}
+		// clean up Borrowings
+		bid.Borrowings = len
+		k.SetBid(ctx, bid)
 	}
 
 	k.DecreaseDebt(ctx, msg.NftId, msg.Amount)
@@ -164,4 +259,10 @@ func MaxPossibleBorrowAmount(bids []types.NftBid) sdk.Int {
 		maxPossibleBorrowAmount = maxPossibleBorrowAmount.Add(bid.DepositAmount.Amount)
 	}
 	return maxPossibleBorrowAmount
+}
+
+// todo calc
+func CalcInterest(lendCoin sdk.Coin, lendingRate string, start, end time.Time) sdk.Coin {
+	interest := sdk.ZeroInt()
+	return sdk.NewCoin(lendCoin.Denom, interest)
 }

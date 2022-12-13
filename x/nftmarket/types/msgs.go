@@ -1,6 +1,8 @@
 package types
 
 import (
+	time "time"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -44,11 +46,14 @@ var _ sdk.Msg = &MsgListNft{}
 
 // todo: Implementation fields
 // BidToken, MinBid, BidHook, ListingType
-func NewMsgListNft(sender sdk.AccAddress, nftId NftIdentifier, bidToken string, bidActiveRank uint64, minBid sdk.Int) MsgListNft {
+func NewMsgListNft(sender sdk.AccAddress, nftId NftIdentifier, bidToken, minimumDepositRate string, autoRefi bool) MsgListNft {
 	return MsgListNft{
-		Sender:   sender.Bytes(),
-		NftId:    nftId,
-		BidToken: bidToken,
+		Sender:               sender.Bytes(),
+		NftId:                nftId,
+		BidToken:             bidToken,
+		MinimumDepositRate:   minimumDepositRate,
+		ListingType:          ListingType_DIRECT_ASSET_BORROW,
+		AutomaticRefinancing: autoRefi,
 	}
 }
 
@@ -110,12 +115,16 @@ func (msg MsgCancelNftListing) GetSigners() []sdk.AccAddress {
 var _ sdk.Msg = &MsgPlaceBid{}
 
 // todo
-func NewMsgPlaceBid(sender sdk.AccAddress, nftId NftIdentifier, amount sdk.Coin, automaticPayment bool) MsgPlaceBid {
+func NewMsgPlaceBid(sender sdk.AccAddress, nftId NftIdentifier, bidAmount, depositAmount sdk.Coin,
+	deposit_lending_rate string, bidding_period time.Time, automaticPayment bool) MsgPlaceBid {
 	return MsgPlaceBid{
-		Sender:           sender.Bytes(),
-		NftId:            nftId,
-		BidAmount:        amount,
-		AutomaticPayment: automaticPayment,
+		Sender:             sender.Bytes(),
+		NftId:              nftId,
+		BidAmount:          bidAmount,
+		AutomaticPayment:   automaticPayment,
+		BiddingPeriod:      bidding_period,
+		DepositLendingRate: deposit_lending_rate,
+		DepositAmount:      depositAmount,
 	}
 }
 
