@@ -1,57 +1,70 @@
 #!/bin/bash
 
 echo "Validators"  >> changed_data.txt
-echo "ununifi1az7xg9wyfruf94teg9u2dr8dec7sjf6esultlc" >> changed_data.txt
-ununifid q bank balances ununifi1az7xg9wyfruf94teg9u2dr8dec7sjf6esultlc >> changed_data.txt
-echo  "ununifi199j70q49338yz9r83xsmfescn74gxachwfp9cs" >> changed_data.txt
-ununifid q bank balances ununifi199j70q49338yz9r83xsmfescn74gxachwfp9cs >> changed_data.txt
-echo "ununifi1w92q2r53jgvyvcuuwmlggrvum7c6j72y403puk" >> changed_data.txt
-ununifid q bank balances ununifi1w92q2r53jgvyvcuuwmlggrvum7c6j72y403puk >> changed_data.txt
-echo "ununifi19f0w9svr905fhefusyx4z8sf83j6et0gkfnrpz" >> changed_data.txt
-ununifid q bank balances ununifi19f0w9svr905fhefusyx4z8sf83j6et0gkfnrpz >> changed_data.txt
+echo "ununifi1jzr5ux9ydjmrch54c04rjt3fr5pdlrx08ng6p8" >> changed_data.txt
+ununifid q bank balances ununifi1jzr5ux9ydjmrch54c04rjt3fr5pdlrx08ng6p8 >> changed_data.txt
+echo  "ununifi1n92vgzkyn32n4wgk0wetq5xw5j5v8zwseetg8f" >> changed_data.txt
+ununifid q bank balances ununifi1n92vgzkyn32n4wgk0wetq5xw5j5v8zwseetg8f >> changed_data.txt
+echo "ununifi1zqt3snrfpq7zlqvwzvm4v926w26pcmrutklsl9" >> changed_data.txt
+ununifid q bank balances ununifi1zqt3snrfpq7zlqvwzvm4v926w26pcmrutklsl9 >> changed_data.txt
+echo "ununifi1uny0f22uj5mn93sgg5d80nhnl7608fd9ap4ld6" >> changed_data.txt
+ununifid q bank balances ununifi1uny0f22uj5mn93sgg5d80nhnl7608fd9ap4ld6 >> changed_data.txt
 echo " " >> changed_data.txt
 
-echo "Airdrop" >> changed_data.txt 
-echo "ununifi1wqpdt48849gwr6qfslnu0vvrp7k40662w8nt3f" >> changed_data.txt
-ununifid q bank balances ununifi1wqpdt48849gwr6qfslnu0vvrp7k40662w8nt3f >> changed_data.txt
-echo "ununifi1cgjhlgdnzlxp94j9msdl6gxf6qd8eh7wmmdqcn" >> changed_data.txt
-ununifid q bank balances ununifi1cgjhlgdnzlxp94j9msdl6gxf6qd8eh7wmmdqcn >> changed_data.txt
-echo "ununifi1vgjxz84exe55pmvmhrjgd50kuf8nteam9ql3lv" >> changed_data.txt
-ununifid q bank balances ununifi1vgjxz84exe55pmvmhrjgd50kuf8nteam9ql3lv >> changed_data.txt
-echo "ununifi1cxthcxhsks5hfdd5zfmz2t6gkjapvunte4en4q" >> changed_data.txt
-ununifid q bank balances ununifi1cxthcxhsks5hfdd5zfmz2t6gkjapvunte4en4q >> changed_data.txt
-echo "ununifi16m5j7e232uuwgf0qa5ujc9g8rfels40e7jkhxr" >> changed_data.txt
-ununifid q bank balances ununifi16m5j7e232uuwgf0qa5ujc9g8rfels40e7jkhxr >> changed_data.txt
-echo "ununifi1zjee39sw23unvvnw0vxl3fmz33k3s3mfp4ea92" >> changed_data.txt
-ununifid q bank balances ununifi1zjee39sw23unvvnw0vxl3fmz33k3s3mfp4ea92 >> changed_data.txt
-echo "ununifi1vkecuxvetuv86tgnjfkalmtcgy29l37hl74yuk" >> changed_data.txt
-ununifid q bank balances ununifi1vkecuxvetuv86tgnjfkalmtcgy29l37hl74yuk >> changed_data.txt
-echo "ununifi1atmdkat7mqh35u5cpr29njs0qfv33ewn2hdrrv" >> changed_data.txt
-ununifid q bank balances ununifi1atmdkat7mqh35u5cpr29njs0qfv33ewn2hdrrv >> changed_data.txt
-echo "ununifi19570z7f7r2x69056hc5ez3tk9gtau3vyg2zlt7" >> changed_data.txt
-ununifid q bank balances ununifi19570z7f7r2x69056hc5ez3tk9gtau3vyg2zlt7 >> changed_data.txt
+echo "Ecocsytem Development(Community Program, Competition, Moderator)" >> changed_data.txt 
+echo "ununifi1ydk5djlj53p84gq9c3fhxe7mt3urhk0g5sq0vr" >> changed_data.txt
+ununifid q bank balances ununifi1ydk5djlj53p84gq9c3fhxe7mt3urhk0g5sq0vr >> changed_data.txt
+echo "ununifi1k8f9hre2szp7p7mjwp70kaydz5hl2lunuzvp78" >> changed_data.txt
+ununifid q bank balances ununifi1k8f9hre2szp7p7mjwp70kaydz5hl2lunuzvp78 >> changed_data.txt
+echo "ununifi1qxfymvcz8h2ahnapezz2ed4awh29qswygt2prx" >> changed_data.txt
+ununifid q bank balances ununifi1qxfymvcz8h2ahnapezz2ed4awh29qswygt2prx >> changed_data.txt
+echo "ununifi182tul2dksmwur370ks4ghel0yr8mmgrf9g45ay" >> changed_data.txt
+ununifid q bank balances ununifi182tul2dksmwur370ks4ghel0yr8mmgrf9g45ay >> changed_data.txt
+echo "ununifi18g8870c64sr3t4v6802rj2h4m2xwj6udeuuj6h" >> changed_data.txt
+ununifid q bank balances ununifi18g8870c64sr3t4v6802rj2h4m2xwj6udeuuj6h >> changed_data.txt
+echo "ununifi1ydtts8a9r5jr0qmls9cy60p2j9ewvg6mrnkh4z" >> changed_data.txt
+ununifid q bank balances ununifi1ydtts8a9r5jr0qmls9cy60p2j9ewvg6mrnkh4z >> changed_data.txt
+echo "ununifi1453sp8gyfje8y8kuux9rhald6yzcjk03ylkmxj" >> changed_data.txt
+ununifid q bank balances ununifi1453sp8gyfje8y8kuux9rhald6yzcjk03ylkmxj >> changed_data.txt
+echo "ununifi1avd4jplu89t6ds66udfspsv9nlkwn2ru03jy9j" >> changed_data.txt
+ununifid q bank balances ununifi1avd4jplu89t6ds66udfspsv9nlkwn2ru03jy9j >> changed_data.txt
+echo "ununifi1paj00usj7k69f9vvpknazcppr48pwnyqxg4lqj" >> changed_data.txt
+ununifid q bank balances ununifi1paj00usj7k69f9vvpknazcppr48pwnyqxg4lqj >> changed_data.txt
 echo " " >> changed_data.txt
 
-echo "Moderators" >> changed_data.txt
-echo "ununifi1qhxnlhh53y2t73urgdqqxn7ttkseegwz62aq4j" >> changed_data.txt
-ununifid q auth account ununifi1qhxnlhh53y2t73urgdqqxn7ttkseegwz62aq4j >> changed_data.txt
-ununifid q bank balances ununifi1qhxnlhh53y2t73urgdqqxn7ttkseegwz62aq4j >> changed_data.txt
-echo "ununifi1v45254hgxun3vnydjcl6dhw6sz82ulftu6t53s" >> changed_data.txt
-ununifid q auth account ununifi1v45254hgxun3vnydjcl6dhw6sz82ulftu6t53s >> changed_data.txt
-ununifid q bank balances ununifi1v45254hgxun3vnydjcl6dhw6sz82ulftu6t53s >> changed_data.txt
+echo "Marketing(Existing VC of Japanese company)" >> changed_data.txt
+echo "ununifi1llr0q0ggvnyu7fxh57wxkuvmlpyf6ygmknga26" >> changed_data.txt
+ununifid q auth account ununifi1llr0q0ggvnyu7fxh57wxkuvmlpyf6ygmknga26 >> changed_data.txt
+ununifid q bank balances ununifi1llr0q0ggvnyu7fxh57wxkuvmlpyf6ygmknga26 >> changed_data.txt
+echo "ununifi1uny0f22uj5mn93sgg5d80nhnl7608fd9ap4ld6" >> changed_data.txt
+ununifid q auth account ununifi1uny0f22uj5mn93sgg5d80nhnl7608fd9ap4ld6 >> changed_data.txt
+ununifid q bank balances ununifi1uny0f22uj5mn93sgg5d80nhnl7608fd9ap4ld6 >> changed_data.txt
+echo "ununifi1yf5cv54mclv84y2gufafh9cm2yzdne64zasfnk" >> changed_data.txt
+ununifid q auth account ununifi1yf5cv54mclv84y2gufafh9cm2yzdne64zasfnk >> changed_data.txt
+ununifid q bank balances ununifi1yf5cv54mclv84y2gufafh9cm2yzdne64zasfnk >> changed_data.txt
+echo "ununifi172rcust8rcuf5ef2j4ywrfccf9lre70dmv8k8v" >> changed_data.txt
+ununifid q auth account ununifi172rcust8rcuf5ef2j4ywrfccf9lre70dmv8k8v >> changed_data.txt
+ununifid q bank balances ununifi172rcust8rcuf5ef2j4ywrfccf9lre70dmv8k8v >> changed_data.txt
+echo " " >> changed_data.txt
+
+echo "advisors(Advisor)" >> changed_data.txt
+echo "ununifi1g94dh4vzqflc4xrjerza9t7ydc5gfpc4zhtal2" >> changed_data.txt
+ununifid q auth account ununifi1g94dh4vzqflc4xrjerza9t7ydc5gfpc4zhtal2 >> changed_data.txt
+ununifid q bank balances ununifi1g94dh4vzqflc4xrjerza9t7ydc5gfpc4zhtal2 >> changed_data.txt
+echo "ununifi1dn7ta3u4zxlug5npfcy3ue6stjlfw7kscynwtp" >> changed_data.txt
+ununifid q auth account ununifi1dn7ta3u4zxlug5npfcy3ue6stjlfw7kscynwtp >> changed_data.txt
+ununifid q bank balances ununifi1dn7ta3u4zxlug5npfcy3ue6stjlfw7kscynwtp >> changed_data.txt
 echo " " >> changed_data.txt
 
 echo "Senders" >> changed_data.txt 
+echo "ununifi1q6jfv5un5cc7lh26njttg0tje0jevt93shy9zv" >> changed_data.txt
+ununifid q bank balances ununifi1q6jfv5un5cc7lh26njttg0tje0jevt93shy9zv >> changed_data.txt
 echo "ununifi19srj7ga7t2pyflz7f50le5fv0wa9kuf7tmdtla" >> changed_data.txt
 ununifid q bank balances ununifi19srj7ga7t2pyflz7f50le5fv0wa9kuf7tmdtla >> changed_data.txt
-echo "ununifi1r500cehqg5u6fhsaysmhu4cnw5pz3lxcqhgaq7" >> changed_data.txt
-ununifid q bank balances ununifi1r500cehqg5u6fhsaysmhu4cnw5pz3lxcqhgaq7 >> changed_data.txt
+echo "ununifi1pa29ejcfrylh69pvntrx3va9xej69tnx7re567" >> changed_data.txt
+ununifid q bank balances ununifi1pa29ejcfrylh69pvntrx3va9xej69tnx7re567 >> changed_data.txt
+echo "ununifi1khe6yv4zswaergkrzv0dmq3afcda5fx4jjmf07" >> changed_data.txt
+ununifid q bank balances ununifi1khe6yv4zswaergkrzv0dmq3afcda5fx4jjmf07 >> changed_data.txt
+echo "ununifi1y8430kzjeudf8x0zyvcdgqlzcnwt3zqzedayt9" >> changed_data.txt
+ununifid q bank balances ununifi1y8430kzjeudf8x0zyvcdgqlzcnwt3zqzedayt9 >> changed_data.txt
 echo " " >> changed_data.txt
-
-echo "Forfeit" >> changed_data.txt 
-echo "ununifi1dc8nfka4dgw90rfejrfncsp5rmgtj5ppkfma5v" >> changed_data.txt
-ununifid q bank balances ununifi1dc8nfka4dgw90rfejrfncsp5rmgtj5ppkfma5v >> changed_data.txt
-echo "ununifi1khscuq3ku9gf9mpgvg897lacug9tn8mhjhldv4" >> changed_data.txt
-ununifid q bank balances ununifi1khscuq3ku9gf9mpgvg897lacug9tn8mhjhldv4 >> changed_data.txt
-echo "ununifi1j77ze43j79njy3sd62e3umpuglgwqn3ddezqmn" >> changed_data.txt
-ununifid q bank balances ununifi1j77ze43j79njy3sd62e3umpuglgwqn3ddezqmn >> changed_data.txt
