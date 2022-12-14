@@ -11,6 +11,8 @@ The subjects put the required information in somewhare (current idea is memo fie
 [State](https://github.com/UnUniFi/chain/blob/design/spec/x/ecosystem-incentive/spec/02_state.md)
 [Messages and Queries](https://github.com/UnUniFi/chain/blob/design/spec/x/ecosystem-incentive/spec/03_messages.md)   
 [Hooks](https://github.com/UnUniFi/chain/blob/design/spec/x/ecosystem-incentive/spec/04_hooks.md)   
+[Memo Structure](https://github.com/UnUniFi/chain/blob/design/spec/x/ecosystem-incentive/spec/05_memo_structure.md)   
+[Events](https://github.com/UnUniFi/chain/blob/design/spec/x/ecosystem-incentive/spec/06_events.md)   
 
 ### For developers in the core team
 
