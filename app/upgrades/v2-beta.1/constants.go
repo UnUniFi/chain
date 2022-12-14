@@ -7,20 +7,26 @@ import (
 
 const UpgradeName string = "v2-beta.1"
 
-const TotalAmountValidator int64 = 9949510918111
-const TotalAmountExceptValidator int64 = 304963298762
-const TotalForfeitAmount int64 = 30839520258
+const TotalAmountValidator int64 = 9271174601858
+const TotalAmountEcocsytemDevelopment int64 = 408999999969 
+// const TotalAmountEcocsytemDevelopment int64 = 402207556569 // -6792443400
+const TotalAmountMarketing int64 = 906880000000
+const TotalAmountAdvisors int64 = 2100000000000
+const TotalAmountTransferredValidator int64 = 2205862352941 // validator -> validator (In preparation for the processing of money transfers to validators, when combining accounts into a single)
+const TotalDelegationAmountValidator int64 = 2050518544482 // Ecocsytem Development -> validator
 const FundAmountValidator int64 = 20000000
-const FromAddressValidator string = "ununifi19srj7ga7t2pyflz7f50le5fv0wa9kuf7tmdtla"
-const FromAddressAirdrop string = "ununifi1r500cehqg5u6fhsaysmhu4cnw5pz3lxcqhgaq7"
-const ToAddressAirdropForfeit string = "ununifi1r500cehqg5u6fhsaysmhu4cnw5pz3lxcqhgaq7"
+const FromAddressValidator string = "ununifi1q6jfv5un5cc7lh26njttg0tje0jevt93shy9zv"
+const FromAddressEcocsytemDevelopment string = "ununifi1pa29ejcfrylh69pvntrx3va9xej69tnx7re567"
+const FromAddressMarketing string = "ununifi1khe6yv4zswaergkrzv0dmq3afcda5fx4jjmf07"
+const FromAddressAdvisors string = "ununifi1y8430kzjeudf8x0zyvcdgqlzcnwt3zqzedayt9"
 const Denom string = "uguu"
 
 type ResultList struct {
 	Validator                       []BankSendTarget        `json:"validator"`
 	LendValidator                   []BankSendTarget        `json:"lendValidator"`
-	AirdropCommunityRewardModerator []BankSendTarget        `json:"airdropCommunityRewardModerator"`
-	AirdropForfeit                  []string                `json:"airdropForfeit"`
+	EcocsytemDevelopment            []BankSendTarget        `json:"ecocsytemDevelopment"`
+	Marketing                       []BankSendTarget        `json:"marketing"`
+	Advisors                        []BankSendTarget        `json:"advisors"`
 	Others                          []SpecialBankSendTarget `json:"others"`
 }
 

@@ -25,6 +25,28 @@ func upgradeBankSend(
 	before_total_supply := bankkeeper.GetSupply(ctx, Denom)
 	ctx.Logger().Info(fmt.Sprintf("bank send : total supply[%d]", before_total_supply.Amount))
 
+	// others
+	for index, value := range bank_send_list.Others {
+		fromAddr, _ := sdk.AccAddressFromBech32(value.FromAddress)
+		bankTarget := value.BankSendTarget
+		ctx.Logger().Info(fmt.Sprintf("bank send :%s", strconv.Itoa(index)))
+		normalToken := sdk.NewCoin(bankTarget.Denom, sdk.NewInt(bankTarget.Amount))
+		toAddr, _ := sdk.AccAddressFromBech32(bankTarget.ToAddress)
+		if err := bankkeeper.SendCoins(ctx, fromAddr, toAddr, sdk.NewCoins(normalToken)); err != nil {
+			panic(err)
+		}
+		total_allocate_coin.Add(normalToken)
+	}
+
+	// Check the amount of tokens sent
+	assumed_coin.Add(sdk.NewCoin(Denom, sdk.NewInt(TotalAmountTransferredValidator)))
+	assumed_coin.Add(sdk.NewCoin(Denom, sdk.NewInt(TotalDelegationAmountValidator)))
+	if !total_allocate_coin.IsEqual(assumed_coin) {
+		panic(fmt.Sprintf("error: assumed amount sent to the others validator does not match.: Actual[%d] Assumed[%d]",
+			total_allocate_coin.Amount,
+			assumed_coin.Amount))
+	}
+
 	fromAddr, err := sdk.AccAddressFromBech32(FromAddressValidator)
 	if err != nil {
 		panic(err)
@@ -57,46 +79,61 @@ func upgradeBankSend(
 			assumed_coin.Amount))
 	}
 
-	fromAddr, err = sdk.AccAddressFromBech32(FromAddressAirdrop)
+	fromAddr, err = sdk.AccAddressFromBech32(FromAddressEcocsytemDevelopment)
 	if err != nil {
 		panic(err)
 	}
-	// Airdrop, Community reward and Moderator
-	for index, value := range bank_send_list.AirdropCommunityRewardModerator {
+	// Ecocsytem Development(Community Program, Competition, Moderator)
+	for index, value := range bank_send_list.EcocsytemDevelopment {
 		ctx.Logger().Info(fmt.Sprintf("bank send :%s", strconv.Itoa(index)))
 		coin := tokenAllocation(ctx, authkeeper, bankkeeper, index, value, fromAddr)
 		total_allocate_coin.Add(coin)
 	}
 
 	// Check the amount of tokens sent
-	assumed_coin.Add(sdk.NewCoin(Denom, sdk.NewInt(TotalAmountExceptValidator)))
+	assumed_coin.Add(sdk.NewCoin(Denom, sdk.NewInt(TotalAmountEcocsytemDevelopment)))
 	if !total_allocate_coin.IsEqual(assumed_coin) {
-		panic(fmt.Sprintf("error: assumed amount sent to the Airdrop, Community reward and Moderator does not match.: Actual[%d] Assumed[%d]",
+		panic(fmt.Sprintf("error: assumed amount sent to the Ecocsytem Development(Community Program, Competition, Moderator) does not match.: Actual[%d] Assumed[%d]",
 			total_allocate_coin.Amount,
 			assumed_coin.Amount))
 	}
 
-	// airdrop forfeit
-	toAddr, err := sdk.AccAddressFromBech32(ToAddressAirdropForfeit)
+	fromAddr, err = sdk.AccAddressFromBech32(FromAddressMarketing)
 	if err != nil {
 		panic(err)
 	}
-	for index, value := range bank_send_list.AirdropForfeit {
-		err = forfeitToken(ctx, authkeeper, bankkeeper, index, value, toAddr)
-		if err != nil {
-			panic(err)
-		}
+	// Marketing(Existing VC of Japanese company)
+	for index, value := range bank_send_list.Marketing {
+		ctx.Logger().Info(fmt.Sprintf("bank send :%s", strconv.Itoa(index)))
+		coin := tokenAllocation(ctx, authkeeper, bankkeeper, index, value, fromAddr)
+		total_allocate_coin.Add(coin)
 	}
 
-	// others
-	for index, value := range bank_send_list.Others {
-		fromAddr, _ := sdk.AccAddressFromBech32(value.FromAddress)
-		bankTarget := value.BankSendTarget
+	// Check the amount of tokens sent
+	assumed_coin.Add(sdk.NewCoin(Denom, sdk.NewInt(TotalAmountMarketing)))
+	if !total_allocate_coin.IsEqual(assumed_coin) {
+		panic(fmt.Sprintf("error: assumed amount sent to the Marketing(Existing VC of Japanese company) does not match.: Actual[%d] Assumed[%d]",
+			total_allocate_coin.Amount,
+			assumed_coin.Amount))
+	}
+
+	fromAddr, err = sdk.AccAddressFromBech32(FromAddressAdvisors)
+	if err != nil {
+		panic(err)
+	}
+	// advisors(Advisor)
+	for index, value := range bank_send_list.Advisors {
 		ctx.Logger().Info(fmt.Sprintf("bank send :%s", strconv.Itoa(index)))
-		// subtract token from sender
-		token := sdk.NewCoin(bankTarget.Denom, sdk.NewInt(bankTarget.Amount))
-		changeVestingAmount(ctx, authkeeper, token, fromAddr, false)
-		_ = tokenAllocation(ctx, authkeeper, bankkeeper, index, bankTarget, fromAddr)
+		coin := tokenAllocation(ctx, authkeeper, bankkeeper, index, value, fromAddr)
+		total_allocate_coin.Add(coin)
+	}
+
+	// Check the amount of tokens sent
+	assumed_coin.Add(sdk.NewCoin(Denom, sdk.NewInt(TotalAmountAdvisors)))
+	if !total_allocate_coin.IsEqual(assumed_coin) {
+		panic(fmt.Sprintf("error: assumed amount sent to the advisors(Advisor) does not match.: Actual[%d] Assumed[%d]",
+			total_allocate_coin.Amount,
+			assumed_coin.Amount))
 	}
 
 	// after get total supply
@@ -105,68 +142,6 @@ func upgradeBankSend(
 
 	return nil
 }
-
-func forfeitToken(
-	ctx sdk.Context,
-	authkeeper authkeeper.AccountKeeper,
-	bankkeeper bankkeeper.Keeper,
-	index int,
-	fromAddr string,
-	toAddr sdk.AccAddress,
-) error {
-	addr, err := sdk.AccAddressFromBech32(fromAddr)
-	if err != nil {
-		return err
-	}
-	accI := authkeeper.GetAccount(ctx, addr)
-	if accI == nil {
-		panic(fmt.Sprintf("error address not exist: [%s][%s]", strconv.Itoa(index), fromAddr))
-	}
-	cont_acc, ok := accI.(*authvesting.ContinuousVestingAccount)
-	zeroCoins := sdk.NewCoins(sdk.NewCoin(Denom, sdk.ZeroInt()))
-	if ok {
-		// add coin amount to send forfeited amount of token to ToAirdropAddress
-		add_coins := sdk.NewCoins(sdk.NewCoin(Denom, cont_acc.OriginalVesting.AmountOf(Denom)))
-		cont_acc.OriginalVesting = zeroCoins
-
-		if err := cont_acc.Validate(); err != nil {
-			panic(fmt.Errorf("failed to validate ContinuousVestingAccount: %w", err))
-		}
-
-		authkeeper.SetAccount(ctx, cont_acc)
-
-		if err := bankkeeper.SendCoins(ctx, addr, toAddr, add_coins); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func changeVestingAmount(
-	ctx sdk.Context,
-	authkeeper authkeeper.AccountKeeper,
-	amount sdk.Coin,
-	addr sdk.AccAddress,
-	add bool,
-) {
-	// subtract token from sender
-	accI := authkeeper.GetAccount(ctx, addr)
-
-	cont_acc, _ := accI.(*authvesting.ContinuousVestingAccount)
-	if add {
-		modifiedAmount := cont_acc.OriginalVesting.Add(amount)
-		cont_acc.OriginalVesting = modifiedAmount
-	} else {
-		modifiedAmount := cont_acc.OriginalVesting.Sub(sdk.NewCoins(amount))
-		cont_acc.OriginalVesting = modifiedAmount
-	}
-
-	if err := cont_acc.Validate(); err != nil {
-		panic(fmt.Errorf("failed to validate ContinuousVestingAccount: %w", err))
-	}
-	authkeeper.SetAccount(ctx, cont_acc)
-}
-
 func tokenAllocation(
 	ctx sdk.Context,
 	authkeeper authkeeper.AccountKeeper,
