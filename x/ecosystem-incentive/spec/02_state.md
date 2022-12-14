@@ -75,7 +75,8 @@ message Reward {
 ```protobuf
 message Params {
   repeated RewardParams reward_params = 1 [ (gogoproto.moretags) = "yaml:\"reward_params\"" ];
-  uint64 MaxIncentiveUnitIdLen = 2 [ (gogoproto.moretags) = "yaml:\"max_incentive_unit_id\"" ];
+  uint64 max_incentive_unit_id_len = 2 [ (gogoproto.moretags) = "yaml:\"max_incentive_unit_id_len\"" ];
+  uint64 max_subject_info_num_in_unit = 3 [ (gogoproto.moretags) = "yaml:\"max_subject_info_num_in_unit\"" ];
 }
 
 message RewardParams {
