@@ -1,4 +1,4 @@
-package v1-beta4
+package v1_beta4
 
 import (
 	"github.com/UnUniFi/chain/app/upgrades"
