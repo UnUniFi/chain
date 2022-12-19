@@ -7,8 +7,8 @@
 set -e
 cd $HOME
 sudo rm -rf ~/.ununifi
-ununifid init ununifi-upgrade-test-v2 --chain-id ununifi-upgrade-test-v2
-wget https://raw.githubusercontent.com/UnUniFi/network/test/upgrade-v1/test/upgrade-v2/genesis-mainnet-mock-added-users-upgrade-v2.json -O  ~/.ununifi/config/genesis.json
+ununifid init ununifi-upgrade-test-v1-beta4 --chain-id ununifi-upgrade-test--beta4
+wget https://raw.githubusercontent.com/UnUniFi/network/test/upgrade-v1/test/upgrade-v1-beta4/genesis-mainnet-mock-added-users-upgrade-v1-beta4.json -O  ~/.ununifi/config/genesis.json
 sed -i '/\[api\]/,+3 s/enable = false/enable = true/' ~/.ununifi/config/app.toml;
 sed -i 's/minimum-gas-prices = ".*"/minimum-gas-prices = "0uguu"/' ~/.ununifi/config/app.toml;
 sed -i 's/stake/uguu/g' ~/.ununifi/config/genesis.json;
@@ -16,7 +16,7 @@ sed -i 's/stake/uguu/g' ~/.ununifi/config/genesis.json;
 # jq '.app_state.gov.voting_params.voting_period = "20s"'  ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
 ununifid keys add validator-a --recover < ~/backup-validator-a-mnemonic.txt;
 ununifid add-genesis-account validator-a 125000000000000uguu;
-ununifid gentx validator-a 120000000000000uguu --chain-id ununifi-upgrade-test-v2 --keyring-backend test;
+ununifid gentx validator-a 120000000000000uguu --chain-id ununifi-upgrade-test-v1-beta4 --keyring-backend test;
 ununifid collect-gentxs;
 
 go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@v1.0.0

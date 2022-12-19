@@ -1,11 +1,11 @@
-package v2_beta1
+package v1-beta4
 
 import (
 	"github.com/UnUniFi/chain/app/upgrades"
 	store "github.com/cosmos/cosmos-sdk/store/types"
 )
 
-const UpgradeName string = "v2-beta.1"
+const UpgradeName string = "v1-beta.4"
 
 const TotalAmountValidator int64 = 9271174601858
 const TotalAmountEcocsytemDevelopment int64 = 408999999969 

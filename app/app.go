@@ -11,7 +11,7 @@ import (
 	// Upgrades from earlier versions of Ununifi
 	"github.com/UnUniFi/chain/app/upgrades"
 	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
-	v2_beta1 "github.com/UnUniFi/chain/app/upgrades/v2-beta.1"
+	v1_beta4 "github.com/UnUniFi/chain/app/upgrades/v1-beta.4"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -143,7 +143,7 @@ var (
 		CreateUpgradeHandler: v1_beta3.CreateUpgradeHandler,
 		StoreUpgrades:        store.StoreUpgrades{},
 	}
-	Upgrades = []upgrades.Upgrade{v1_beta3Upgrade, v2_beta1.Upgrade}
+	Upgrades = []upgrades.Upgrade{v1_beta3Upgrade, v1_beta4.Upgrade}
 )
 
 // GetEnabledProposals parses the ProposalsEnabled / EnableSpecificProposals values to
