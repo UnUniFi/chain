@@ -1,0 +1,124 @@
+syntax = "proto3";
+package ununifi.derivatives;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/derivatives/types";
+
+enum AssetType {
+  Real = 0;
+  Imaginary = 1;
+}
+
+enum PositionType {
+  PerpetualFuturesShort = 0;
+  PerpetualFuturesShort = 1;
+  EuropeanCall = 2;
+  EuropeanPut = 3;
+  PerpetualCall = 4;
+  PerpetualPut = 5;
+}
+
+message Pool {
+  message Asset {
+    string denom = 1 [
+      (gogoproto.moretags) = "yaml:\"denom\"",
+      (gogoproto.nullable) = false
+    ];
+    AssetType type = 2 [
+      (gogoproto.moretags) = "yaml:\"type\"",
+      (gogoproto.nullable) = false
+    ];
+    string target_weight = 3 [
+      (gogoproto.moretags) = "yaml:\"target_weight\"",
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ];
+  }
+
+  repeated Asset accepted_assets = 1 [
+    (gogoproto.moretags) = "yaml:\"accepted_assets\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message Subpool {
+  message Asset {
+    string denom = 1 [
+      (gogoproto.moretags) = "yaml:\"denom\"",
+      (gogoproto.nullable) = false
+    ];
+    string weight = 2 [
+      (gogoproto.moretags) = "yaml:\"weight\"",
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ];
+  }
+
+  repeated Asset accepted_asstes = 1 [
+    (gogoproto.moretags) = "yaml:\"accepted_assets\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message PriceData {
+  string denom = 1 [
+    (gogoproto.moretags) = "yaml:\"denom\"",
+    (gogoproto.nullable) = false
+  ];
+  int64 price = 2 [
+    (gogoproto.moretags) = "yaml:\"price\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message Position {
+  string address = 1 [
+    (gogoproto.moretags) = "yaml:\"address\"",
+    (gogoproto.nullable) = false
+  ];
+  string denom = 2 [
+    (gogoproto.moretags) = "yaml:\"denom\"",
+    (gogoproto.nullable) = false
+  ];
+  PositionType position_type = 3 [
+    (gogoproto.moretags) = "yaml:\"position_type\"",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Timestamp start_at = 4 [
+    (gogoproto.moretags) = "yaml:\"start_at\"",
+    (gogoproto.nullable) = false
+  ];
+  string leverage = 5 [
+    (gogoproto.moretags) = "yaml:\"leverage\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message Params {
+  Pool pool = 1 [
+    (gogoproto.moretags) = "yaml:\"pool\"",
+    (gogoproto.nullable) = false
+  ];
+  repeated Subpool subpools = 2 [
+    (gogoproto.moretags) = "yaml:\"subpools\"",
+    (gogoproto.nullable) = false
+  ];
+  string base_lpt_mint_fee = 3 [
+    (gogoproto.moretags) = "yaml:\"base_lpt_mint_fee\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string base_lpt_redeem_fee = 4 [
+    (gogoproto.moretags) = "yaml:\"base_lpt_redeem_fee\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string borrowing_fee_rate_per_hour = 5 [
+    (gogoproto.moretags) = "yaml:\"borrowing_fee_rate_per_hour\"",
+    (gogoproto.nullable) = false
+  ];
+}

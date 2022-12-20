@@ -1,0 +1,56 @@
+syntax = "proto3";
+package ununifi.derivatives;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/derivatives/types";
+
+service Msg {
+  rpc MintLiquidityProviderToken(MsgMintLiquidityProviderToken) returns (MsgMintLiquidityProviderTokenResponse);
+  rpc BurnLiquidityProviderToken(MsgBurnLiquidityProviderToken) returns (MsgBurnLiquidityProviderTokenResponse);
+  rpc OpenPosition(MsgOpenPosition) returns (MsgOpenPositionResponse);
+  rpc ClosePosition(MsgClosePosition) returns (MsgClosePositionResponse);
+}
+
+message MsgMintLiquidityProviderToken {
+  cosmos.base.v1beta1.Coin amount = 1 [
+    (gogoproto.moretags) = "yaml:\"amount\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgMintLiquidityProviderTokenResponse {}
+
+message MsgBurnLiquidityProviderToken {
+  string amount = 1 [
+    (gogoproto.moretags) = "yaml:\"amount\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgBurnLiquidityProviderTokenResponse {}
+
+message MsgOpenPosition {
+  cosmos.base.v1beta1.Coin margin = 1 [
+    (gogoproto.moretags) = "yaml:\"margin\"",
+    (gogoproto.nullable) = false
+  ];
+
+  PositionType position_type = 2;
+  google.protobuf.Any position = 3;
+}
+
+message MsgOpenPositionResponse {}
+
+message MsgClosePosition {
+  string position_id = 1 [
+    (gogoproto.moretags) = "yaml:\"margin\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgClosePositionResponse {}
