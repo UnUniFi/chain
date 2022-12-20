@@ -26,6 +26,11 @@ message NftIdentifier {
   string nft_id   = 2;
 }
 
+message BidId {
+  NftIdentifier nft_id = 1;
+  string        bidder = 2;
+}
+
 message Loan {
   NftIdentifier            nft_id = 1 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin loan   = 2 [(gogoproto.nullable) = false];
@@ -75,14 +80,21 @@ message NftBid {
   string                    bidder               = 2;
   cosmos.base.v1beta1.Coin  bid_amount           = 3 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin  deposit_amount       = 4 [(gogoproto.nullable) = false];
-  google.protobuf.Timestamp bidding_period       = 5 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
-  string                    deposit_lending_rate = 6 [(cosmos_proto.scalar) = "cosmos.Dec"];
-  bool                      automatic_payment    = 7;
-  google.protobuf.Timestamp bid_time             = 8
+  cosmos.base.v1beta1.Coin  paid_amount          = 5 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp bidding_period       = 6 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  string                    deposit_lending_rate = 7 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable)   = false
+  ];
+  bool                      automatic_payment = 8;
+  google.protobuf.Timestamp bid_time          = 9
       [(gogoproto.moretags) = "yaml:\"bid_time\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
-  cosmos.base.v1beta1.Coin interest_amount = 9 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin interest_amount = 10 [(gogoproto.nullable) = false];
   // lister borrowing bidder info
-  repeated borrowing borrowings = 10 [(gogoproto.nullable) = false];
+  repeated borrowing borrowings = 11 [(gogoproto.nullable) = false];
+  // todo remove nft_id,bidder then use it
+  BidId id = 12 [(gogoproto.nullable) = false];
 }
 
 message Params {

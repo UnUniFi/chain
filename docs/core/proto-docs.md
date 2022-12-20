@@ -104,6 +104,7 @@
     - [Msg](#ununifi.incentive.Msg)
   
 - [nftmarket/nftmarket.proto](#nftmarket/nftmarket.proto)
+    - [BidId](#ununifi.nftmarket.BidId)
     - [EventBorrow](#ununifi.nftmarket.EventBorrow)
     - [EventCancelBid](#ununifi.nftmarket.EventCancelBid)
     - [EventCancelListNfting](#ununifi.nftmarket.EventCancelListNfting)
@@ -1526,6 +1527,22 @@ Query defines the gRPC querier service.
 
 
 
+<a name="ununifi.nftmarket.BidId"></a>
+
+### BidId
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+| `bidder` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="ununifi.nftmarket.EventBorrow"></a>
 
 ### EventBorrow
@@ -1777,12 +1794,14 @@ Query defines the gRPC querier service.
 | `bidder` | [string](#string) |  |  |
 | `bid_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `deposit_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `paid_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `bidding_period` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `deposit_lending_rate` | [string](#string) |  |  |
 | `automatic_payment` | [bool](#bool) |  |  |
 | `bid_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `interest_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `borrowings` | [borrowing](#ununifi.nftmarket.borrowing) | repeated | lister borrowing bidder info |
+| `id` | [BidId](#ununifi.nftmarket.BidId) |  | todo remove nft_id,bidder then use it |
 
 
 
