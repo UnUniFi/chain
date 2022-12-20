@@ -16,7 +16,12 @@ service Msg {
 }
 
 message MsgMintLiquidityProviderToken {
-  cosmos.base.v1beta1.Coin amount = 1 [
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin amount = 2 [
     (gogoproto.moretags) = "yaml:\"amount\"",
     (gogoproto.nullable) = false
   ];
@@ -25,7 +30,12 @@ message MsgMintLiquidityProviderToken {
 message MsgMintLiquidityProviderTokenResponse {}
 
 message MsgBurnLiquidityProviderToken {
-  string amount = 1 [
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string amount = 2 [
     (gogoproto.moretags) = "yaml:\"amount\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
@@ -35,19 +45,29 @@ message MsgBurnLiquidityProviderToken {
 message MsgBurnLiquidityProviderTokenResponse {}
 
 message MsgOpenPosition {
-  cosmos.base.v1beta1.Coin margin = 1 [
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin margin = 2 [
     (gogoproto.moretags) = "yaml:\"margin\"",
     (gogoproto.nullable) = false
   ];
 
-  PositionType position_type = 2;
-  google.protobuf.Any position = 3;
+  PositionType position_type = 3;
+  google.protobuf.Any position = 4;
 }
 
 message MsgOpenPositionResponse {}
 
 message MsgClosePosition {
-  string position_id = 1 [
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string position_id = 2 [
     (gogoproto.moretags) = "yaml:\"margin\"",
     (gogoproto.nullable) = false
   ];
