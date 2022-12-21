@@ -712,14 +712,14 @@ const BANK_SEND_LIST string = `{
       "amount": 100000000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1687186800
     },
     {
       "toAddress": "ununifi1dn7ta3u4zxlug5npfcy3ue6stjlfw7kscynwtp",
       "amount": 2000000000000,
       "denom": "uguu",
       "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
+      "vesting_ends": 1687186800
     }
   ],
 	"others": [
