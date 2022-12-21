@@ -8,8 +8,8 @@ import (
 const UpgradeName string = "v1-beta.4"
 
 const TotalAmountValidator int64 = 9271174601858
-const TotalAmountEcocsytemDevelopment int64 = 408999999969 
-// const TotalAmountEcocsytemDevelopment int64 = 402207556569 // -6792443400
+// const TotalAmountEcocsytemDevelopment int64 = 408999999969 
+const TotalAmountEcocsytemDevelopment int64 = 402207556569 // -6792443400 (TotalAmount excluding Vanya)
 const TotalAmountMarketing int64 = 906880000000
 const TotalAmountAdvisors int64 = 2100000000000
 const TotalAmountTransferredValidator int64 = 2205862352941 // validator -> validator (In preparation for the processing of money transfers to validators, when combining accounts into a single)

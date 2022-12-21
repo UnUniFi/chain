@@ -18,8 +18,8 @@ func upgradeBankSend(
 	bank_send_list ResultList) error {
 	ctx.Logger().Info(fmt.Sprintf("upgrade :%s", UpgradeName))
 
-	total_allocate_coin := sdk.NewCoin(Denom, sdk.NewInt(0))
-	assumed_coin := sdk.NewCoin(Denom, sdk.NewInt(0))
+	total_allocate_coin := int64(0)
+	assumed_coin := int64(0)
 
 	// before get total supply
 	before_total_supply := bankkeeper.GetSupply(ctx, Denom)
@@ -35,16 +35,16 @@ func upgradeBankSend(
 		if err := bankkeeper.SendCoins(ctx, fromAddr, toAddr, sdk.NewCoins(normalToken)); err != nil {
 			panic(err)
 		}
-		total_allocate_coin.Add(normalToken)
+		total_allocate_coin += normalToken.Amount.Int64()
 	}
 
 	// Check the amount of tokens sent
-	assumed_coin.Add(sdk.NewCoin(Denom, sdk.NewInt(TotalAmountTransferredValidator)))
-	assumed_coin.Add(sdk.NewCoin(Denom, sdk.NewInt(TotalDelegationAmountValidator)))
-	if !total_allocate_coin.IsEqual(assumed_coin) {
+	assumed_coin += TotalAmountTransferredValidator
+	assumed_coin += TotalDelegationAmountValidator
+	if total_allocate_coin != assumed_coin {
 		panic(fmt.Sprintf("error: assumed amount sent to the others validator does not match.: Actual[%d] Assumed[%d]",
-			total_allocate_coin.Amount,
-			assumed_coin.Amount))
+			total_allocate_coin,
+			assumed_coin))
 	}
 
 	fromAddr, err := sdk.AccAddressFromBech32(FromAddressValidator)
@@ -55,28 +55,28 @@ func upgradeBankSend(
 	for index, value := range bank_send_list.Validator {
 		ctx.Logger().Info(fmt.Sprintf("bank send validator :%s[%s]", strconv.Itoa(index), value.ToAddress))
 		coin := tokenAllocation(ctx, authkeeper, bankkeeper, index, value, fromAddr)
-		total_allocate_coin.Add(coin)
+		total_allocate_coin += coin.Amount.Int64()
 		normalToken := sdk.NewCoin(Denom, sdk.NewInt(FundAmountValidator))
 		toAddr, _ := sdk.AccAddressFromBech32(value.ToAddress)
 		if err := bankkeeper.SendCoins(ctx, fromAddr, toAddr, sdk.NewCoins(normalToken)); err != nil {
 			panic(err)
 		}
-		total_allocate_coin.Add(normalToken)
+		total_allocate_coin += normalToken.Amount.Int64()
 	}
 
 	// Lend validatos
 	for index, value := range bank_send_list.LendValidator {
 		ctx.Logger().Info(fmt.Sprintf("bank send validator :%s[%s]", strconv.Itoa(index), value.ToAddress))
 		coin := tokenAllocation(ctx, authkeeper, bankkeeper, index, value, fromAddr)
-		total_allocate_coin.Add(coin)
+		total_allocate_coin += coin.Amount.Int64()
 	}
 
 	// Check the amount of tokens sent
-	assumed_coin.Add(sdk.NewCoin(Denom, sdk.NewInt(TotalAmountValidator)))
-	if !total_allocate_coin.IsEqual(assumed_coin) {
-		panic(fmt.Sprintf("error: assumed amount sent to the validator does not match.: Actual[%d] Assumed[%d]",
-			total_allocate_coin.Amount,
-			assumed_coin.Amount))
+	assumed_coin += TotalAmountValidator
+	if total_allocate_coin != assumed_coin {
+			panic(fmt.Sprintf("error: assumed amount sent to the validator does not match.: Actual[%d] Assumed[%d]",
+			total_allocate_coin,
+			assumed_coin))
 	}
 
 	fromAddr, err = sdk.AccAddressFromBech32(FromAddressEcocsytemDevelopment)
@@ -87,15 +87,15 @@ func upgradeBankSend(
 	for index, value := range bank_send_list.EcocsytemDevelopment {
 		ctx.Logger().Info(fmt.Sprintf("bank send :%s", strconv.Itoa(index)))
 		coin := tokenAllocation(ctx, authkeeper, bankkeeper, index, value, fromAddr)
-		total_allocate_coin.Add(coin)
+		total_allocate_coin += coin.Amount.Int64()
 	}
 
 	// Check the amount of tokens sent
-	assumed_coin.Add(sdk.NewCoin(Denom, sdk.NewInt(TotalAmountEcocsytemDevelopment)))
-	if !total_allocate_coin.IsEqual(assumed_coin) {
-		panic(fmt.Sprintf("error: assumed amount sent to the Ecocsytem Development(Community Program, Competition, Moderator) does not match.: Actual[%d] Assumed[%d]",
-			total_allocate_coin.Amount,
-			assumed_coin.Amount))
+	assumed_coin += TotalAmountEcocsytemDevelopment
+	if total_allocate_coin != assumed_coin {
+			panic(fmt.Sprintf("error: assumed amount sent to the Ecocsytem Development(Community Program, Competition, Moderator) does not match.: Actual[%d] Assumed[%d]",
+			total_allocate_coin,
+			assumed_coin))
 	}
 
 	fromAddr, err = sdk.AccAddressFromBech32(FromAddressMarketing)
@@ -106,15 +106,15 @@ func upgradeBankSend(
 	for index, value := range bank_send_list.Marketing {
 		ctx.Logger().Info(fmt.Sprintf("bank send :%s", strconv.Itoa(index)))
 		coin := tokenAllocation(ctx, authkeeper, bankkeeper, index, value, fromAddr)
-		total_allocate_coin.Add(coin)
+		total_allocate_coin += coin.Amount.Int64()
 	}
 
 	// Check the amount of tokens sent
-	assumed_coin.Add(sdk.NewCoin(Denom, sdk.NewInt(TotalAmountMarketing)))
-	if !total_allocate_coin.IsEqual(assumed_coin) {
-		panic(fmt.Sprintf("error: assumed amount sent to the Marketing(Existing VC of Japanese company) does not match.: Actual[%d] Assumed[%d]",
-			total_allocate_coin.Amount,
-			assumed_coin.Amount))
+	assumed_coin += TotalAmountMarketing
+	if total_allocate_coin != assumed_coin {
+			panic(fmt.Sprintf("error: assumed amount sent to the Marketing(Existing VC of Japanese company) does not match.: Actual[%d] Assumed[%d]",
+			total_allocate_coin,
+			assumed_coin))
 	}
 
 	fromAddr, err = sdk.AccAddressFromBech32(FromAddressAdvisors)
@@ -125,15 +125,15 @@ func upgradeBankSend(
 	for index, value := range bank_send_list.Advisors {
 		ctx.Logger().Info(fmt.Sprintf("bank send :%s", strconv.Itoa(index)))
 		coin := tokenAllocation(ctx, authkeeper, bankkeeper, index, value, fromAddr)
-		total_allocate_coin.Add(coin)
+		total_allocate_coin += coin.Amount.Int64()
 	}
 
 	// Check the amount of tokens sent
-	assumed_coin.Add(sdk.NewCoin(Denom, sdk.NewInt(TotalAmountAdvisors)))
-	if !total_allocate_coin.IsEqual(assumed_coin) {
-		panic(fmt.Sprintf("error: assumed amount sent to the advisors(Advisor) does not match.: Actual[%d] Assumed[%d]",
-			total_allocate_coin.Amount,
-			assumed_coin.Amount))
+	assumed_coin += TotalAmountAdvisors
+	if total_allocate_coin != assumed_coin {
+			panic(fmt.Sprintf("error: assumed amount sent to the advisors(Advisor) does not match.: Actual[%d] Assumed[%d]",
+			total_allocate_coin,
+			assumed_coin))
 	}
 
 	// after get total supply
