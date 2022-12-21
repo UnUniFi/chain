@@ -57,7 +57,7 @@ message Subpool {
     ];
   }
 
-  repeated Asset accepted_asstes = 1 [
+  repeated Asset accepted_assets = 1 [
     (gogoproto.moretags) = "yaml:\"accepted_assets\"",
     (gogoproto.nullable) = false
   ];
