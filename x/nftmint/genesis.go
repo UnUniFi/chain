@@ -1,9 +1,10 @@
 package nftmint
 
 import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/UnUniFi/chain/x/nftmint/keeper"
 	"github.com/UnUniFi/chain/x/nftmint/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // InitGenesis initializes the store state from a genesis state.
@@ -13,7 +14,14 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKe
 
 // ExportGenesis export genesis state for nftmarket module
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
+	classAttributesList := k.GetClassAttributesList(ctx)
+	owningClassIdLists := k.GetOwningClassIdLists(ctx)
+	classNameIdLists := k.GetClassNameIdLists(ctx)
+
 	return types.GenesisState{
-		Params: k.GetParamSet(ctx),
+		Params:              k.GetParamSet(ctx),
+		ClassAttributesList: classAttributesList,
+		OwningClassIdLists:  owningClassIdLists,
+		ClassNameIdLists:    classNameIdLists,
 	}
 }
