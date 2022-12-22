@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"testing"
 	"time"
 
 	"github.com/stretchr/testify/suite"
@@ -165,6 +164,6 @@ func (suite *KeeperTestSuite) TestMintNotActive() {
 	suite.Equal(initialSupply, finalSupply)
 }
 
-func TestKeeperTestSuite(t *testing.T) {
-	suite.Run(t, new(KeeperTestSuite))
-}
+// func TestKeeperTestSuite(t *testing.T) {
+// 	suite.Run(t, new(KeeperTestSuite))
+// }

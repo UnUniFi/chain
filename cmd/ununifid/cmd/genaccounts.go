@@ -44,45 +44,41 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 
 			config.SetRoot(clientCtx.HomeDir)
 
+			var kr keyring.Keyring
+			addr, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				inBuf := bufio.NewReader(cmd.InOrStdin())
+				keyringBackend, _ := cmd.Flags().GetString(flags.FlagKeyringBackend)
+
+				if keyringBackend != "" && clientCtx.Keyring == nil {
+					var err error
+					kr, err = keyring.New(sdk.KeyringServiceName(), keyringBackend, clientCtx.HomeDir, inBuf, clientCtx.Codec)
+					if err != nil {
+						return err
+					}
+				} else {
+					kr = clientCtx.Keyring
+				}
+
+				k, err := kr.Key(args[0])
+				if err != nil {
+					return fmt.Errorf("failed to get address from Keyring: %w", err)
+				}
+
+				addr, err = k.GetAddress()
+				if err != nil {
+					return err
+				}
+			}
+
 			coins, err := sdk.ParseCoinsNormalized(args[1])
 			if err != nil {
 				return fmt.Errorf("failed to parse coins: %w", err)
 			}
 
-			addr, err := sdk.AccAddressFromBech32(args[0])
-			if err != nil {
-				inBuf := bufio.NewReader(cmd.InOrStdin())
-				keyringBackend, err := cmd.Flags().GetString(flags.FlagKeyringBackend)
-				if err != nil {
-					return err
-				}
-
-				// attempt to lookup address from Keybase if no address was provided
-				kb, err := keyring.New(sdk.KeyringServiceName(), keyringBackend, clientCtx.HomeDir, inBuf)
-				if err != nil {
-					return err
-				}
-
-				info, err := kb.Key(args[0])
-				if err != nil {
-					return fmt.Errorf("failed to get address from Keybase: %w", err)
-				}
-
-				addr = info.GetAddress()
-			}
-
-			vestingStart, err := cmd.Flags().GetInt64(flagVestingStart)
-			if err != nil {
-				return err
-			}
-			vestingEnd, err := cmd.Flags().GetInt64(flagVestingEnd)
-			if err != nil {
-				return err
-			}
-			vestingAmtStr, err := cmd.Flags().GetString(flagVestingAmt)
-			if err != nil {
-				return err
-			}
+			vestingStart, _ := cmd.Flags().GetInt64(flagVestingStart)
+			vestingEnd, _ := cmd.Flags().GetInt64(flagVestingEnd)
+			vestingAmtStr, _ := cmd.Flags().GetString(flagVestingAmt)
 
 			vestingAmt, err := sdk.ParseCoinsNormalized(vestingAmtStr)
 			if err != nil {
@@ -159,6 +155,7 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 			bankGenState := banktypes.GetGenesisStateFromAppState(clientCtx.Codec, appState)
 			bankGenState.Balances = append(bankGenState.Balances, balances)
 			bankGenState.Balances = banktypes.SanitizeGenesisBalances(bankGenState.Balances)
+			bankGenState.Supply = bankGenState.Supply.Add(balances.Coins...)
 
 			bankGenStateBz, err := clientCtx.Codec.MarshalJSON(bankGenState)
 			if err != nil {

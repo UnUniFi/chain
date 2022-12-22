@@ -156,6 +156,6 @@ test-unit:
 proto-gen:
 	@echo "Generating Protobuf files"
 	# need buf and proto plugin
-	# cd docs/devtools/Makefile
+	# cd docs/devtools
 	# make buf-tools
 	./proto/gen.sh

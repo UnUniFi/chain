@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	"errors"
-	"testing"
 	"time"
 
 	"github.com/stretchr/testify/suite"
@@ -192,6 +191,6 @@ func (suite *DrawTestSuite) TestModuleAccountFailure() {
 	})
 }
 
-func TestDrawTestSuite(t *testing.T) {
-	suite.Run(t, new(DrawTestSuite))
-}
+// func TestDrawTestSuite(t *testing.T) {
+// 	suite.Run(t, new(DrawTestSuite))
+// }

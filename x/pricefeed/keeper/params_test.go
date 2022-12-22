@@ -1,8 +1,6 @@
 package keeper_test
 
 import (
-	"testing"
-
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -66,6 +64,7 @@ func (suite *KeeperTestSuite) TestGetAuthorizedAddresses() {
 
 	suite.Require().ElementsMatch(oracles, actualOracles)
 }
-func TestKeeperTestSuite(t *testing.T) {
-	suite.Run(t, new(KeeperTestSuite))
-}
+
+// func TestKeeperTestSuite(t *testing.T) {
+// 	suite.Run(t, new(KeeperTestSuite))
+// }

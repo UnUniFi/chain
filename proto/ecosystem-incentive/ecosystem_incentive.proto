@@ -1,0 +1,43 @@
+syntax = "proto3";
+package ununifi.ecosystemincentive;
+
+import "gogoproto/gogo.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/ecosystem-incentive/types";
+
+message IncentiveUnit {
+  string id = 1 [
+    (gogoproto.moretags) = "yaml:\"id\""
+  ];
+  repeated SubjectInfo subject_info_lists = 2 [
+    (gogoproto.moretags) = "yaml:\"subject_info_lists\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message SubjectInfo {
+  string subject_addr = 1 [
+    (gogoproto.moretags) = "yaml:\"subject_addr\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string weight = 2 [
+    (gogoproto.moretags) = "yaml:\"weight\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message RewardStore {
+  string subject_addr = 1 [
+    (gogoproto.moretags) = "yaml:\"subject_addr\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  repeated cosmos.base.v1beta1.Coin rewards = 2 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.moretags) = "yaml:\"rewards\"",
+    (gogoproto.nullable) = false
+  ];
+}

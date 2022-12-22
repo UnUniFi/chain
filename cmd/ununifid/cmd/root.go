@@ -6,10 +6,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/CosmWasm/wasmd/x/wasm"
+	// "github.com/CosmWasm/wasmd/x/wasm"
 	"github.com/UnUniFi/chain/app/params"
-	"github.com/cosmos/cosmos-sdk/snapshots"
-	"github.com/prometheus/client_golang/prometheus"
+	tmcfg "github.com/tendermint/tendermint/config"
 
 	"github.com/UnUniFi/chain/app"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -21,11 +20,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/server"
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
+	"github.com/cosmos/cosmos-sdk/snapshots"
+	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
 	"github.com/cosmos/cosmos-sdk/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
-	vestingcli "github.com/cosmos/cosmos-sdk/x/auth/vesting/client/cli"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
@@ -35,9 +35,8 @@ import (
 	tmcli "github.com/tendermint/tendermint/libs/cli"
 	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"
-
 	// this line is used by starport scaffolding # stargate/root/import
-	Wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	// Wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 )
 
 var ChainID string
@@ -66,8 +65,10 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 			if err := client.SetCmdClientContextHandler(initClientCtx, cmd); err != nil {
 				return err
 			}
-			customTemplate, customConfig := initAppConfig()
-			return server.InterceptConfigsPreRunHandler(cmd, customTemplate, customConfig)
+			customAppTemplate, customAppConfig := initAppConfig()
+			customTMConfig := initTendermintConfig()
+
+			return server.InterceptConfigsPreRunHandler(cmd, customAppTemplate, customAppConfig, customTMConfig)
 		},
 	}
 
@@ -78,6 +79,18 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 	})
 
 	return rootCmd, encodingConfig
+}
+
+// initTendermintConfig helps to override default Tendermint Config values.
+// return tmcfg.DefaultConfig if no custom configuration is required for the application.
+func initTendermintConfig() *tmcfg.Config {
+	cfg := tmcfg.DefaultConfig()
+
+	// these values put a higher strain on node memory
+	// cfg.P2P.MaxNumInboundPeers = 100
+	// cfg.P2P.MaxNumOutboundPeers = 40
+
+	return cfg
 }
 
 func initAppConfig() (string, interface{}) {
@@ -173,7 +186,6 @@ func txCommand() *cobra.Command {
 		authcmd.GetEncodeCommand(),
 		authcmd.GetDecodeCommand(),
 		flags.LineBreak,
-		vestingcli.GetTxCmd(),
 	)
 
 	app.ModuleBasics.AddTxCommands(cmd)
@@ -219,10 +231,15 @@ func (a appCreator) newApp(
 		panic(err)
 	}
 
-	var wasmOpts []wasm.Option
-	if cast.ToBool(appOpts.Get("telemetry.enabled")) {
-		wasmOpts = append(wasmOpts, Wasmkeeper.WithVMCacheMetrics(prometheus.DefaultRegisterer))
-	}
+	// var wasmOpts []wasm.Option
+	// if cast.ToBool(appOpts.Get("telemetry.enabled")) {
+	// 	wasmOpts = append(wasmOpts, Wasmkeeper.WithVMCacheMetrics(prometheus.DefaultRegisterer))
+	// }
+
+	snapshotOptions := snapshottypes.NewSnapshotOptions(
+		cast.ToUint64(appOpts.Get(server.FlagStateSyncSnapshotInterval)),
+		cast.ToUint32(appOpts.Get(server.FlagStateSyncSnapshotKeepRecent)),
+	)
 
 	return app.NewApp(
 		logger, db, traceStore, true, skipUpgradeHeights,
@@ -230,9 +247,9 @@ func (a appCreator) newApp(
 		cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)),
 		a.encCfg,
 		// this line is used by starport scaffolding # stargate/root/appArgument
-		app.GetEnabledProposals(),
+		// app.GetEnabledProposals(),
 		appOpts,
-		wasmOpts,
+		// wasmOpts,
 		baseapp.SetPruning(pruningOpts),
 		baseapp.SetMinGasPrices(cast.ToString(appOpts.Get(server.FlagMinGasPrices))),
 		baseapp.SetMinRetainBlocks(cast.ToUint64(appOpts.Get(server.FlagMinRetainBlocks))),
@@ -241,9 +258,7 @@ func (a appCreator) newApp(
 		baseapp.SetInterBlockCache(cache),
 		baseapp.SetTrace(cast.ToBool(appOpts.Get(server.FlagTrace))),
 		baseapp.SetIndexEvents(cast.ToStringSlice(appOpts.Get(server.FlagIndexEvents))),
-		baseapp.SetSnapshotStore(snapshotStore),
-		baseapp.SetSnapshotInterval(cast.ToUint64(appOpts.Get(server.FlagStateSyncSnapshotInterval))),
-		baseapp.SetSnapshotKeepRecent(cast.ToUint32(appOpts.Get(server.FlagStateSyncSnapshotKeepRecent))),
+		baseapp.SetSnapshot(snapshotStore, snapshotOptions),
 	)
 }
 
@@ -269,7 +284,7 @@ func (a appCreator) appExport(
 	if height == -1 {
 		loadLatest = true
 	}
-	var emptyWasmOpts []wasm.Option
+	// var emptyWasmOpts []wasm.Option
 	anApp = app.NewApp(
 		logger,
 		db,
@@ -279,9 +294,9 @@ func (a appCreator) appExport(
 		homePath,
 		cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)),
 		a.encCfg,
-		app.GetEnabledProposals(),
+		// app.GetEnabledProposals(),
 		appOpts,
-		emptyWasmOpts,
+		// emptyWasmOpts,
 	)
 
 	if height != -1 {

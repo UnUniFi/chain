@@ -5,7 +5,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/staking"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
@@ -2794,8 +2794,8 @@ func (suite *KeeperTestSuite) deliverMsgCreateValidator(ctx sdk.Context, address
 		stakingtypes.NewCommissionRates(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
 		sdk.NewInt(1_000_000),
 	)
-	handleStakingMsg := staking.NewHandler(suite.stakingKeeper)
-	_, err := handleStakingMsg(ctx, msg)
+	msgServer := stakingkeeper.NewMsgServerImpl(suite.stakingKeeper)
+	_, err := msgServer.CreateValidator(ctx, msg)
 	return err
 }
 
@@ -2805,7 +2805,7 @@ func (suite *KeeperTestSuite) deliverMsgDelegate(ctx sdk.Context, delegator sdk.
 		validator,
 		amount,
 	)
-	handleStakingMsg := staking.NewHandler(suite.stakingKeeper)
-	_, err := handleStakingMsg(ctx, msg)
+	msgServer := stakingkeeper.NewMsgServerImpl(suite.stakingKeeper)
+	_, err := msgServer.Delegate(ctx, msg)
 	return err
 }

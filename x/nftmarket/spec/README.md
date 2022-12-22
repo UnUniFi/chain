@@ -1,11 +1,19 @@
+<!--
+order: 0
+title: Nftmarket Overview
+parent:
+  title: "nftmarket"
+-->
+
 # `nftmarket`
 
 ## Abstract
 
-stablecoins can be minted with NFT as collateral
+This module support functionalities for nft marketplace (list / bid), nft collateral borrowing and liquidation.
 
-## This module is implemented step by step.
-1. NFTを出品できる
-1. NFTを落札できる
-1. NFTに入札があった場合に出品者はステーブルトークンを発行できる
+## Contents
 
+1. **[State](01_state.md)**
+2. **[Messages](02_messages.md)**
+3. **[Events](03_events.md)**
+4. **[Parameters](04_params.md)**
