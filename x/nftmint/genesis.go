@@ -11,15 +11,21 @@ import (
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKeeper, gs types.GenesisState) {
 	k.SetParamSet(ctx, gs.Params)
 	for _, classAttributes := range gs.ClassAttributesList {
-		k.SetClassAttributes(ctx, *classAttributes)
+		if err := k.SetClassAttributes(ctx, *classAttributes); err != nil {
+			panic(err)
+		}
 	}
 
 	for _, classNameIdList := range gs.ClassNameIdLists {
-		k.SetClassNameIdList(ctx, *classNameIdList)
+		if err := k.SetClassNameIdList(ctx, *classNameIdList); err != nil {
+			panic(err)
+		}
 	}
 
 	for _, owningClassIdList := range gs.OwningClassIdLists {
-		k.SetOwningClassIdList(ctx, *owningClassIdList)
+		if err := k.SetOwningClassIdList(ctx, *owningClassIdList); err != nil {
+			panic(err)
+		}
 	}
 }
 
