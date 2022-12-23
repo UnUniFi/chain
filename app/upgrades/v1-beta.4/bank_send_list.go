@@ -681,29 +681,29 @@ const BANK_SEND_LIST string = `{
       "toAddress": "ununifi1llr0q0ggvnyu7fxh57wxkuvmlpyf6ygmknga26",
       "amount": 241720000000,
       "denom": "uguu",
-      "vesting_starts": 1703084400,
-      "vesting_ends": 1734620400
+      "vesting_starts": 1671548400,
+      "vesting_ends": 1702998000
     },
     {
       "toAddress": "ununifi1uny0f22uj5mn93sgg5d80nhnl7608fd9ap4ld6",
       "amount": 241720000000,
       "denom": "uguu",
-      "vesting_starts": 1703084400,
-      "vesting_ends": 1734620400
+      "vesting_starts": 1671548400,
+      "vesting_ends": 1702998000
     },
     {
       "toAddress": "ununifi1yf5cv54mclv84y2gufafh9cm2yzdne64zasfnk",
       "amount": 181720000000,
       "denom": "uguu",
-      "vesting_starts": 1703084400,
-      "vesting_ends": 1734620400
+      "vesting_starts": 1671548400,
+      "vesting_ends": 1702998000
     },
     {
       "toAddress": "ununifi172rcust8rcuf5ef2j4ywrfccf9lre70dmv8k8v",
       "amount": 241720000000,
       "denom": "uguu",
-      "vesting_starts": 1703084400,
-      "vesting_ends": 1734620400
+      "vesting_starts": 1671548400,
+      "vesting_ends": 1702998000
     }
   ],
   "advisors": [
