@@ -32,6 +32,10 @@ service Query {
   rpc RecordedIncentiveUnitId(QueryRecordedIncentiveUnitIdRequest) returns (QueryRecordedIncentiveUnitIdResponse) {
     option (google.api.http).get = "/ununifi/ecosystem_incentive/recorded_incentive_unit_id/{class_id}/{nft_id}";
   }
+
+  rpc IncentiveUnitIdsByAddr(QueryIncentiveUnitIdsByAddrRequest) returns (QueryIncentiveUnitIdsByAddrResponse) {
+    option (google.api.http).get = "/ununifi/ecosystem_incentive/incentive_unit_ids_by_addr/{address}";
+  }
 }
 
 message QueryParamsRequest {}
@@ -83,4 +87,15 @@ message QueryRecordedIncentiveUnitIdRequest {
 
 message QueryRecordedIncentiveUnitIdResponse {
   string incentive_unit_id = 1 [ (gogoproto.moretags) = "yaml:\"incentive_unit_id\"" ];
+}
+
+message QueryIncentiveUnitIdsByAddrRequest {
+  string address = 1 [ (gogoproto.moretags) = "yaml:\"address\"" ];
+}
+
+message QueryIncentiveUnitIdsByAddrResponse {
+  IncentiveUnitIdsByAddr incentive_unit_ids_by_addr = 1 [ 
+    (gogoproto.moretags) = "yaml:\"incentive_unit_ids_by_addr\"",
+    (gogoproto.nullable) = false
+  ];
 }

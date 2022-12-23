@@ -79,3 +79,7 @@ func (k Keeper) RecordedIncentiveUnitId(c context.Context, req *types.QueryRecor
 	}
 	return &types.QueryRecordedIncentiveUnitIdResponse{IncentiveUnitId: incentiveUnitid}, nil
 }
+
+func (k Keeper) IncentiveUnitIdsByAddr(c context.Context, req *types.QueryIncentiveUnitIdsByAddrRequest) (*types.QueryIncentiveUnitIdsByAddrResponse, error) {
+	return &types.QueryIncentiveUnitIdsByAddrResponse{}, nil
+}
