@@ -143,7 +143,10 @@ var (
 		CreateUpgradeHandler: v1_beta3.CreateUpgradeHandler,
 		StoreUpgrades:        store.StoreUpgrades{},
 	}
-	Upgrades = []upgrades.Upgrade{v1_beta3Upgrade, v1_beta4.Upgrade}
+	Upgrades = []upgrades.Upgrade{
+		v1_beta3Upgrade, 
+		v1_beta4.Upgrade
+	}
 )
 
 // GetEnabledProposals parses the ProposalsEnabled / EnableSpecificProposals values to
