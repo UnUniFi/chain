@@ -145,7 +145,7 @@ var (
 	}
 	Upgrades = []upgrades.Upgrade{
 		v1_beta3Upgrade, 
-		v1_beta4.Upgrade
+		v1_beta4.Upgrade,
 	}
 )
 
