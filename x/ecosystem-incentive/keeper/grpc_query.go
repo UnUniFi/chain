@@ -2,14 +2,11 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	ununifitypes "github.com/UnUniFi/chain/types"
 
 	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
 	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
@@ -107,10 +104,13 @@ func (k Keeper) IncentiveUnitIdsByAddr(c context.Context, req *types.QueryIncent
 		return nil, status.Error(codes.InvalidArgument, "invalid argument")
 	}
 	ctx := sdk.UnwrapSDKContext(c)
-	fmt.Println(req.Address)
-	fmt.Println(ununifitypes.StringAccAddress(req.Address))
-	incentiveUnitIdsByAddr := k.GetIncentiveUnitIdsByAddr(ctx, ununifitypes.StringAccAddress(req.Address))
-	fmt.Println(incentiveUnitIdsByAddr)
+
+	addr, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
+		return nil, err
+	}
+	incentiveUnitIdsByAddr := k.GetIncentiveUnitIdsByAddr(ctx, addr)
+
 	if incentiveUnitIdsByAddr.Address.AccAddress().Empty() {
 		return nil, types.ErrAddressNotHasIncentiveUnitId
 	}
