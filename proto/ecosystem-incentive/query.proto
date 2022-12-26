@@ -90,7 +90,9 @@ message QueryRecordedIncentiveUnitIdResponse {
 }
 
 message QueryIncentiveUnitIdsByAddrRequest {
-  string address = 1 [ (gogoproto.moretags) = "yaml:\"address\"" ];
+  string address = 1 [ 
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
 }
 
 message QueryIncentiveUnitIdsByAddrResponse {
