@@ -33,13 +33,6 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 			panic(err)
 		}
 	}
-
-	// for _, incentiveUnitIdsByAddr := range genState.IncentiveUnitIdsByAddr {
-	// 	if err := k.SetIncentiveUnitIdsByAddr(ctx, incentiveUnitIdsByAddr); err != nil {
-	// 		panic(err)
-	// 	}
-	// }
-
 }
 
 // ExportGenesis returns the capability module's exported genesis.
