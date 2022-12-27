@@ -106,6 +106,38 @@ func (k Keeper) GetIncentiveUnitIdsByAddr(ctx sdk.Context, address sdk.AccAddres
 	return incentiveUnitIdsByAddr
 }
 
+func (k Keeper) GetAllIncentiveUnits(ctx sdk.Context) []types.IncentiveUnit {
+	store := ctx.KVStore(k.storeKey)
+	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixIncentiveUnit))
+	defer it.Close()
+
+	allIncentiveUnits := []types.IncentiveUnit{}
+	for ; it.Valid(); it.Next() {
+		var incentiveUnit types.IncentiveUnit
+		k.cdc.MustUnmarshal(it.Value(), &incentiveUnit)
+
+		allIncentiveUnits = append(allIncentiveUnits, incentiveUnit)
+	}
+
+	return allIncentiveUnits
+}
+
+func (k Keeper) GetAllIncentiveUnitIdsByAddrs(ctx sdk.Context) []types.IncentiveUnitIdsByAddr {
+	store := ctx.KVStore(k.storeKey)
+	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixIncentiveUnitIdsByAddr))
+	defer it.Close()
+
+	allIncentiveUnitIdsByAddrs := []types.IncentiveUnitIdsByAddr{}
+	for ; it.Valid(); it.Next() {
+		var incentiveUnitIdsByAddr types.IncentiveUnitIdsByAddr
+		k.cdc.MustUnmarshal(it.Value(), &incentiveUnitIdsByAddr)
+
+		allIncentiveUnitIdsByAddrs = append(allIncentiveUnitIdsByAddrs, incentiveUnitIdsByAddr)
+	}
+
+	return allIncentiveUnitIdsByAddrs
+}
+
 func (k Keeper) DeleteIncentiveUnit(ctx sdk.Context, id string) {
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnit))
