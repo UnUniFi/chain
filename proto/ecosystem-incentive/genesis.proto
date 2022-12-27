@@ -12,4 +12,5 @@ message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
   repeated IncentiveUnit incentive_units = 2 [(gogoproto.nullable) = false];
   repeated RewardStore reward_stores = 3 [(gogoproto.nullable) = false];
+  repeated IncentiveUnitIdsByAddr incentive_unit_ids_by_addr = 4 [(gogoproto.nullable) = false];
 }
