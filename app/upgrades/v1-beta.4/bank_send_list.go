@@ -172,13 +172,6 @@ const BANK_SEND_LIST string = `{
       "vesting_ends": 1702998000
     },
     {
-      "toAddress": "ununifi12fvdlw4ltmexpvj957gfintnhrrr4n4ay7u503",
-      "amount": 6792443400,
-      "denom": "uguu",
-      "vesting_starts": 1671548400,
-      "vesting_ends": 1702998000
-    },
-    {
       "toAddress": "ununifi1mcvgt3306fw8zx95hyacem932jusvu5epqalqy",
       "amount": 2470498444,
       "denom": "uguu",
@@ -741,3 +734,12 @@ const BANK_SEND_LIST string = `{
 		}
 	]
 }`
+
+// excluding address since the format of the address is wrong.
+// {
+//   "toAddress": "ununifi12fvdlw4ltmexpvj957gfintnhrrr4n4ay7u503",
+//   "amount": 6792443400,
+//   "denom": "uguu",
+//   "vesting_starts": 1671548400,
+//   "vesting_ends": 1702998000
+// },
