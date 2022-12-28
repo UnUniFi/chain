@@ -23,14 +23,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, nftKeeper types.NftKeeper, gs
 // ExportGenesis export genesis state for nftmarket module
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 	classAttributesList := k.GetClassAttributesList(ctx)
-	owningClassIdLists := k.GetOwningClassIdLists(ctx)
-	classNameIdLists := k.GetClassNameIdLists(ctx)
 
 	return types.GenesisState{
 		Params:              k.GetParamSet(ctx),
 		ClassAttributesList: classAttributesList,
-		OwningClassIdLists:  owningClassIdLists,
-		ClassNameIdLists:    classNameIdLists,
 	}
 }
 
