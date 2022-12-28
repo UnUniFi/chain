@@ -41,7 +41,6 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.Params = k.GetParams(ctx)
 	genesis.IncentiveUnits = k.GetAllIncentiveUnits(ctx)
 	genesis.RewardStores = k.GetAllRewardStores(ctx)
-	genesis.IncentiveUnitIdsByAddr = k.GetAllIncentiveUnitIdsByAddrs(ctx)
 
 	return genesis
 }
