@@ -1,6 +1,7 @@
 syntax = "proto3";
 package ununifi.derivatives;
 
+import "google/protobuf/any.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "cosmos/base/v1beta1/coin.proto";
@@ -12,13 +13,22 @@ enum AssetType {
   Imaginary = 1;
 }
 
-enum PositionType {
-  PerpetualFuturesShort = 0;
-  PerpetualFuturesShort = 1;
-  EuropeanCall = 2;
-  EuropeanPut = 3;
-  PerpetualCall = 4;
-  PerpetualPut = 5;
+message PerpetualFuturesLong {
+}
+
+message PerpetualFuturesShort {
+}
+
+message EuropeanCall {
+}
+
+message EuropeanPut {
+}
+
+message PerpetualCall {
+}
+
+message PerpetualPut {
 }
 
 message Pool {
@@ -83,7 +93,7 @@ message Position {
     (gogoproto.moretags) = "yaml:\"denom\"",
     (gogoproto.nullable) = false
   ];
-  PositionType position_type = 3 [
+  google.protobuf.Any position_type = 3 [
     (gogoproto.moretags) = "yaml:\"position_type\"",
     (gogoproto.nullable) = false
   ];

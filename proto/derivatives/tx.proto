@@ -55,7 +55,7 @@ message MsgOpenPosition {
     (gogoproto.nullable) = false
   ];
 
-  PositionType position_type = 3;
+  google.protobuf.Any position_type = 3;
   google.protobuf.Any position = 4;
 }
 
