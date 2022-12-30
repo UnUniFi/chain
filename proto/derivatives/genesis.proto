@@ -1,0 +1,14 @@
+syntax = "proto3";
+package ununifi.derivatives;
+
+import "gogoproto/gogo.proto";
+import "derivatives/derivatives.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/UnUniFi/chain/x/derivatives/types";
+
+// GenesisState defines the derivatives module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+}
