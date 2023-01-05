@@ -19,6 +19,12 @@ func (gs GenesisState) Validate() error {
 		return err
 	}
 
+	for _, classAttributes := range gs.ClassAttributesList {
+		if err := ValidateClassAttributes(*classAttributes, gs.Params); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
