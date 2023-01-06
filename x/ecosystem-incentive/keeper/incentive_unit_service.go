@@ -83,7 +83,7 @@ func (k Keeper) GetIncentiveUnit(ctx sdk.Context, id string) (types.IncentiveUni
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnit))
 
 	bz := prefixStore.Get([]byte(id))
-	if len(bz) == 0 {
+	if bz == nil {
 		return types.IncentiveUnit{}, false
 	}
 
@@ -97,7 +97,7 @@ func (k Keeper) GetIncentiveUnitIdsByAddr(ctx sdk.Context, address sdk.AccAddres
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnitIdsByAddr))
 
 	bz := prefixStore.Get(address)
-	if len(bz) == 0 {
+	if bz == nil {
 		return types.IncentiveUnitIdsByAddr{}
 	}
 
