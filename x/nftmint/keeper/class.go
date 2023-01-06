@@ -204,7 +204,7 @@ func (k Keeper) GetClassAttributes(ctx sdk.Context, classID string) (types.Class
 	prefixStore := prefix.NewStore(store, types.KeyPrefixClassAttributes)
 
 	bz := prefixStore.Get([]byte(classID))
-	if len(bz) == 0 {
+	if bz == nil {
 		return types.ClassAttributes{}, false
 	}
 	var classAttributes types.ClassAttributes
@@ -218,7 +218,7 @@ func (k Keeper) GetOwningClassIdList(ctx sdk.Context, owner sdk.AccAddress) (typ
 
 	var owningClassIdList types.OwningClassIdList
 	bz := prefixStore.Get(owner.Bytes())
-	if len(bz) == 0 {
+	if bz == nil {
 		return types.OwningClassIdList{}, false
 	}
 	k.cdc.MustUnmarshal(bz, &owningClassIdList)
@@ -231,7 +231,7 @@ func (k Keeper) GetClassNameIdList(ctx sdk.Context, className string) (types.Cla
 
 	var classNameIdList types.ClassNameIdList
 	bz := prefixStore.Get([]byte(className))
-	if len(bz) == 0 {
+	if bz == nil {
 		return types.ClassNameIdList{}, false
 	}
 	k.cdc.MustUnmarshal(bz, &classNameIdList)

@@ -1,11 +1,12 @@
 package keeper
 
 import (
-	"github.com/UnUniFi/chain/x/nftmint/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
+
+	"github.com/UnUniFi/chain/x/nftmint/types"
 )
 
 // MintNFT does validate the contents of MsgMintNFT and operate whole flow for MintNFT message
@@ -100,7 +101,7 @@ func (k Keeper) GetNFTMinter(ctx sdk.Context, classID, nftID string) (sdk.AccAdd
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixNFTMinter))
 
 	bz := prefixStore.Get(types.NFTMinterKey(classID, nftID))
-	if len(bz) == 0 {
+	if bz == nil {
 		return nil, false
 	}
 
