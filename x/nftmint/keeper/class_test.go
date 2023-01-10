@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/ed25519"
 
+	ununifitypes "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/nftmint/keeper"
 	"github.com/UnUniFi/chain/x/nftmint/types"
 )
@@ -387,4 +388,87 @@ func (suite *KeeperTestSuite) CreateClass(ctx sdk.Context, classID string, sende
 
 	err := suite.app.NftmintKeeper.CreateClass(ctx, classID, &testMsgCreateClass)
 	return err
+}
+
+// test for the GetOwningClassIdList relating functions
+func (suite *KeeperTestSuite) TestGetOwningClassIdList() {
+	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	owner_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, owner)
+	classId := keeper.CreateClassId(owner_seq, owner)
+	_ = suite.CreateClass(suite.ctx, classId, owner)
+
+	invalidOwner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	tests := []struct {
+		testCase     string
+		ownerAddress sdk.AccAddress
+		validOwner   bool
+	}{
+		{
+			testCase:     "invalid sender",
+			ownerAddress: invalidOwner,
+			validOwner:   false,
+		},
+		{
+			testCase:     "successful case",
+			ownerAddress: owner,
+			validOwner:   true,
+		},
+	}
+	for _, tc := range tests {
+		res, valid := suite.app.NftmintKeeper.GetOwningClassIdList(suite.ctx, tc.ownerAddress)
+
+		// invalid cases
+		if !tc.validOwner {
+			suite.Require().False(valid)
+			suite.Require().Equal(len(res.ClassId), 0)
+		}
+
+		// valid case
+		if tc.validOwner {
+			suite.Require().True(valid)
+			suite.Require().Equal(res.Owner, ununifitypes.StringAccAddress(tc.ownerAddress))
+			suite.Require().Equal(res.ClassId[0], classId)
+		}
+	}
+}
+
+// test for the GetClassNameIdList relating functions
+func (suite *KeeperTestSuite) TestGetClassNameIdList() {
+	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	owner_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, owner)
+	classId := keeper.CreateClassId(owner_seq, owner)
+	_ = suite.CreateClass(suite.ctx, classId, owner)
+
+	tests := []struct {
+		testCase   string
+		className  string
+		validClass bool
+	}{
+		{
+			testCase:   "invalid class name",
+			className:  "invalid_class",
+			validClass: false,
+		},
+		{
+			testCase:   "successful case",
+			className:  testName,
+			validClass: true,
+		},
+	}
+	for _, tc := range tests {
+		res, valid := suite.app.NftmintKeeper.GetClassNameIdList(suite.ctx, tc.className)
+
+		// invalid cases
+		if !tc.validClass {
+			suite.Require().False(valid)
+			suite.Require().Equal(len(res.ClassId), 0)
+		}
+
+		// valid case
+		if tc.validClass {
+			suite.Require().True(valid)
+			suite.Require().Equal(res.ClassId[0], classId)
+		}
+	}
 }
