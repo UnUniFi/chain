@@ -390,6 +390,47 @@ func (suite *KeeperTestSuite) CreateClass(ctx sdk.Context, classID string, sende
 	return err
 }
 
+// test for the GetClassAttributes relating functions
+func (suite *KeeperTestSuite) TestGetClassAttributes() {
+	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	owner_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, owner)
+	classId := keeper.CreateClassId(owner_seq, owner)
+	_ = suite.CreateClass(suite.ctx, classId, owner)
+
+	tests := []struct {
+		testCase   string
+		classId    string
+		validClass bool
+	}{
+		{
+			testCase:   "invalid class name",
+			classId:    "invalid_class_id",
+			validClass: false,
+		},
+		{
+			testCase:   "successful case",
+			classId:    classId,
+			validClass: true,
+		},
+	}
+	for _, tc := range tests {
+		res, valid := suite.app.NftmintKeeper.GetClassAttributes(suite.ctx, tc.classId)
+
+		// invalid cases
+		if !tc.validClass {
+			suite.Require().False(valid)
+			suite.Require().Equal(res.ClassId, "")
+		}
+
+		// valid case
+		if tc.validClass {
+			suite.Require().True(valid)
+			suite.Require().Equal(res.ClassId, classId)
+			suite.Require().Equal(res.Owner.AccAddress(), owner)
+		}
+	}
+}
+
 // test for the GetOwningClassIdList relating functions
 func (suite *KeeperTestSuite) TestGetOwningClassIdList() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
