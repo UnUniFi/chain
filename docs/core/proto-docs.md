@@ -88,6 +88,7 @@
     - [PriceData](#ununifi.derivatives.PriceData)
     - [Subpool](#ununifi.derivatives.Subpool)
     - [Subpool.Asset](#ununifi.derivatives.Subpool.Asset)
+    - [UserDeposit](#ununifi.derivatives.UserDeposit)
   
     - [AssetType](#ununifi.derivatives.AssetType)
   
@@ -1394,6 +1395,7 @@ Query defines the gRPC querier service.
 | `denom` | [string](#string) |  |  |
 | `type` | [AssetType](#ununifi.derivatives.AssetType) |  |  |
 | `target_weight` | [string](#string) |  |  |
+| `name` | [string](#string) |  |  |
 
 
 
@@ -1460,6 +1462,22 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `denom` | [string](#string) |  |  |
 | `weight` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.UserDeposit"></a>
+
+### UserDeposit
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `asset_id` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
 
 
 
@@ -1588,6 +1606,7 @@ this line is used by starport scaffolding # 2 | GET|/UnUniFi/derivatives/params|
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  |  |
 | `amount` | [string](#string) |  |  |
+| `asset_id` | [string](#string) |  |  |
 
 
 
