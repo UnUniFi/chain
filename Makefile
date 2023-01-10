@@ -144,10 +144,78 @@ distclean: clean
 ###############################################################################
 ###                                 Tests                                   ###
 ###############################################################################
+PACKAGES_UNIT=$(shell go list ./... | grep -E -v 'tests/simulator|e2e')
+PACKAGES_E2E=$(shell go list ./... | grep '/e2e')
 
 test: test-unit
 test-unit:
 	@VERSION=$(VERSION) go test  ./... 
+
+# test-e2e runs a full e2e test suite
+# deletes any pre-existing Osmosis containers before running.
+#
+# Attempts to delete Docker resources at the end.
+# May fail to do so if stopped mid way.
+# In that case, run `make e2e-remove-resources`
+# manually.
+# Utilizes Go cache.
+test-e2e-check:
+	echo $(PACKAGES_E2E)
+
+test-e2e: e2e-setup test-e2e-ci
+
+# test-e2e-ci runs a full e2e test suite
+# does not do any validation about the state of the Docker environment
+# As a result, avoid using this locally.
+test-e2e-ci:
+	@VERSION=$(VERSION) OSMOSIS_E2E=True OSMOSIS_E2E_DEBUG_LOG=False OSMOSIS_E2E_UPGRADE_VERSION=$(E2E_UPGRADE_VERSION)  go test -mod=readonly -timeout=25m -v $(PACKAGES_E2E)
+
+# test-e2e-debug runs a full e2e test suite but does
+# not attempt to delete Docker resources at the end.
+test-e2e-debug: e2e-setup
+	@VERSION=$(VERSION) OSMOSIS_E2E=True OSMOSIS_E2E_DEBUG_LOG=True OSMOSIS_E2E_UPGRADE_VERSION=$(E2E_UPGRADE_VERSION) OSMOSIS_E2E_SKIP_CLEANUP=True OSMOSIS_E2E_SKIP_UPGRADE=True OSMOSIS_E2E_SKIP_IBC=True go test -mod=readonly -timeout=25m -v $(PACKAGES_E2E) -count=1
+
+# test-e2e-short runs the e2e test with only short tests.
+# Does not delete any of the containers after running.
+# Deletes any existing containers before running.
+# Does not use Go cache.
+test-e2e-short: e2e-setup
+	@VERSION=$(VERSION) OSMOSIS_E2E=True OSMOSIS_E2E_DEBUG_LOG=True OSMOSIS_E2E_SKIP_UPGRADE=True OSMOSIS_E2E_SKIP_IBC=True OSMOSIS_E2E_SKIP_STATE_SYNC=True OSMOSIS_E2E_SKIP_CLEANUP=True go test -mod=readonly -timeout=25m -v $(PACKAGES_E2E) -count=1
+
+test-mutation:
+	@bash scripts/mutation-test.sh $(MODULES)
+
+benchmark:
+	@go test -mod=readonly -bench=. $(PACKAGES_UNIT)
+
+build-e2e-script:
+	mkdir -p $(BUILDDIR)
+	go build -mod=readonly $(BUILD_FLAGS) -o $(BUILDDIR)/ ./tests/e2e/initialization/$(E2E_SCRIPT_NAME)
+
+docker-build-debug:
+	@DOCKER_BUILDKIT=1 docker build -t ununifi:${COMMIT} --build-arg BASE_IMG_TAG=debug -f Dockerfile .
+	@DOCKER_BUILDKIT=1 docker tag ununifi:${COMMIT} ununifi:debug
+
+docker-build-debug-alpine:
+	@DOCKER_BUILDKIT=1 docker build -t ununifi:${COMMIT} --build-arg BASE_IMG_TAG=debug --build-arg RUNNER_IMAGE=$(RUNNER_BASE_IMAGE_ALPINE) -f Dockerfile .
+	@DOCKER_BUILDKIT=1 docker tag ununifi:${COMMIT} ununifi:debug
+
+docker-build-e2e-init-chain:
+	@DOCKER_BUILDKIT=1 docker build -t ununifi-e2e-init-chain:debug --build-arg E2E_SCRIPT_NAME=chain --platform=linux/x86_64 -f tests/e2e/initialization/init.Dockerfile .
+
+docker-build-e2e-init-node:
+	@DOCKER_BUILDKIT=1 docker build -t ununifi-e2e-init-node:debug --build-arg E2E_SCRIPT_NAME=node --platform=linux/x86_64 -f tests/e2e/initialization/init.Dockerfile .
+
+e2e-setup: e2e-check-image-sha e2e-remove-resources
+	@echo Finished e2e environment setup, ready to start the test
+
+e2e-check-image-sha:
+	tests/e2e/scripts/run/check_image_sha.sh
+
+e2e-remove-resources:
+	tests/e2e/scripts/run/remove_stale_resources.sh
+
+.PHONY: test-mutation
 
 ###############################################################################
 ###                                Protobuf                                 ###
