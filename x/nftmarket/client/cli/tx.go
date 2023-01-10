@@ -1,4 +1,4 @@
-package cli
+ackage cli
 
 import (
 	"fmt"

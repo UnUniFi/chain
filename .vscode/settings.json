@@ -14,11 +14,12 @@
     }
   },
   "[go]": {
-    "editor.snippetSuggestions": "none",
+    "editor.snippetSuggestions": "top",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
       "source.organizeImports": true
-    }
+    },
+    "editor.suggest.snippetsPreventQuickSuggestions": true
   },
   "gopls": {
     "local": "github.com/UnUniFi/chain"

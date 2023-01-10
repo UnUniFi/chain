@@ -531,11 +531,11 @@ func (k Keeper) ProcessEndingNftListings(ctx sdk.Context) {
 		}
 
 		listing, err := k.GetNftListingByIdBytes(ctx, bid.NftId.IdBytes())
-		if !listing.IsSelling() {
-			continue
-		}
 		if err != nil {
 			panic("does not exits list")
+		}
+		if !listing.IsSelling() {
+			continue
 		}
 		checkListingsWithBorrowedBids[listing] = append(checkListingsWithBorrowedBids[listing], bid)
 	}
@@ -543,7 +543,6 @@ func (k Keeper) ProcessEndingNftListings(ctx sdk.Context) {
 	for listing, expiredBorrowedBids := range checkListingsWithBorrowedBids {
 		bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
 		if listing.CanRefinancing(bids, expiredBorrowedBids) {
-			// todo refinancing
 			fmt.Println("---occur refinaing---")
 			k.Refinancings(ctx, listing, expiredBorrowedBids)
 		} else if listing.State == types.ListingState_END_LISTING {

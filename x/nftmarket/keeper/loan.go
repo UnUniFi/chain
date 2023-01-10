@@ -3,8 +3,6 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	time "time"
-
 	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
@@ -115,20 +113,20 @@ func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, require s
 		usableAmount := bid.BorrowableAmount()
 		// bigger msg Amount
 		if requireAmount.IsGTE(usableAmount) {
-			lend := types.Borrowing{
+			borrow := types.Borrowing{
 				Amount:             sdk.NewCoin(usableAmount.Denom, usableAmount.Amount),
 				StartAt:            ctx.BlockTime(),
 				PaidInterestAmount: sdk.NewCoin(usableAmount.Denom, sdk.ZeroInt()),
 			}
-			bid.Borrowings = append(bid.Borrowings, lend)
-			requireAmount = requireAmount.Sub(lend.Amount)
+			bid.Borrowings = append(bid.Borrowings, borrow)
+			requireAmount = requireAmount.Sub(borrow.Amount)
 		} else {
-			lend := types.Borrowing{
+			borrow := types.Borrowing{
 				Amount:             sdk.NewCoin(requireAmount.Denom, requireAmount.Amount),
 				StartAt:            ctx.BlockTime(),
 				PaidInterestAmount: sdk.NewCoin(requireAmount.Denom, sdk.ZeroInt()),
 			}
-			bid.Borrowings = append(bid.Borrowings, lend)
+			bid.Borrowings = append(bid.Borrowings, borrow)
 			requireAmount.Amount = sdk.ZeroInt()
 		}
 		k.SetBid(ctx, bid)
@@ -202,59 +200,69 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 	for i := 0; i < len(bids)/2; i++ {
 		bids[i], bids[len(bids)-i-1] = bids[len(bids)-i-1], bids[i]
 	}
-
+	repaidAmount := sdk.NewCoin(msg.Amount.Denom, msg.Amount.Amount)
 	for _, bid := range bids {
-		if msg.Amount.IsZero() {
+		if repaidAmount.IsZero() {
 			break
 		}
 		if len(bid.Borrowings) == 0 {
-			continue
+			break
 		}
 
-		len := []types.Borrowing{}
-		for _, lend := range bid.Borrowings {
-			if msg.Amount.IsZero() {
+		borrowings := []types.Borrowing{}
+		for _, borrow := range bid.Borrowings {
+			if repaidAmount.IsZero() {
 				break
 			}
-			principal := lend.Amount
-			interest := CalcInterest(principal, bid.DepositLendingRate, lend.StartAt, ctx.BlockTime())
-			interest.Sub(lend.PaidInterestAmount)
-			total := sdk.NewCoin(principal.Denom, sdk.ZeroInt())
-			total.Add(principal)
-			total.Add(interest)
-			// bigger msg Amount
-			if msg.Amount.IsGTE(total) {
-				bid.InterestAmount.Add(interest)
-				msg.Amount.Sub(total)
-				principal.Amount = sdk.ZeroInt()
-			} else {
-				// bigger total Amount
-				if msg.Amount.IsGTE(interest) {
-					// can paid interest
-					if msg.Amount.Amount.GT(interest.Amount) {
-						// all paid interest and part paid principal
-						msg.Amount.Sub(interest)
-						bid.InterestAmount.Add(interest)
-						principal.Sub(msg.Amount)
-						lend.PaidInterestAmount.Amount = sdk.ZeroInt()
-						lend.StartAt = ctx.BlockTime()
-					} else {
-						// all paid interest
-						bid.InterestAmount.Add(interest)
-						lend.PaidInterestAmount.Add(interest)
-						msg.Amount.Sub(interest)
-					}
-				} else {
-					// can not paid interest
-					bid.InterestAmount.Add(msg.Amount)
-					lend.PaidInterestAmount.Add(msg.Amount)
-				}
-				msg.Amount.Amount = sdk.ZeroInt()
-				len = append(len, lend)
+
+			// repaidAmount.Amount = borrow.RepayThenGetAmount(repaidAmount, bid, ctx.BlockTime())
+			receipt := borrow.RepayThenGetReceipt(repaidAmount, ctx.BlockTime(), bid.CalcInterestF())
+			repaidAmount.Amount = receipt.Charge.Amount
+			bid.InterestAmount = bid.InterestAmount.Add(receipt.PaidInterestAmount)
+
+			if !borrow.IsAllRepaid() {
+				borrowings = append(borrowings, borrow)
 			}
 		}
+		// 	principal := borrow.Amount
+		// 	interest := bid.CalcInterest(principal, bid.DepositLendingRate, borrow.StartAt, ctx.BlockTime())
+		// 	interest = interest.Sub(borrow.PaidInterestAmount)
+		// 	total := sdk.NewCoin(principal.Denom, sdk.ZeroInt())
+		// 	total = total.Add(principal)
+		// 	total = total.Add(interest)
+		// 	// bigger msg Amount
+		// 	if msg.Amount.IsGTE(total) {
+		// 		bid.InterestAmount = bid.InterestAmount.Add(interest)
+		// 		msg.Amount = msg.Amount.Sub(total)
+		// 		principal.Amount = sdk.ZeroInt()
+		// 	} else {
+		// 		// bigger total Amount
+		// 		if msg.Amount.IsGTE(interest) {
+		// 			// can paid interest
+		// 			if msg.Amount.Amount.GT(interest.Amount) {
+		// 				// all paid interest and part paid principal
+		// 				msg.Amount = msg.Amount.Sub(interest)
+		// 				bid.InterestAmount = bid.InterestAmount.Add(interest)
+		// 				principal = principal.Sub(msg.Amount)
+		// 				borrow.PaidInterestAmount.Amount = sdk.ZeroInt()
+		// 				borrow.StartAt = ctx.BlockTime()
+		// 			} else {
+		// 				// all paid interest
+		// 				bid.InterestAmount = bid.InterestAmount.Add(interest)
+		// 				borrow.PaidInterestAmount = borrow.PaidInterestAmount.Add(interest)
+		// 				msg.Amount = msg.Amount.Sub(interest)
+		// 			}
+		// 		} else {
+		// 			// can not paid interest
+		// 			bid.InterestAmount.Add(msg.Amount)
+		// 			borrow.PaidInterestAmount.Add(msg.Amount)
+		// 		}
+		// 		msg.Amount.Amount = sdk.ZeroInt()
+		// 		borrowings = append(borrowings, borrow)
+		// 	}
+		// }
 		// clean up Borrowings
-		bid.Borrowings = len
+		bid.Borrowings = borrowings
 		k.SetBid(ctx, bid)
 	}
 
@@ -283,10 +291,4 @@ func MaxPossibleBorrowAmount(bids []types.NftBid) sdk.Int {
 		maxPossibleBorrowAmount = maxPossibleBorrowAmount.Add(bid.DepositAmount.Amount)
 	}
 	return maxPossibleBorrowAmount
-}
-
-// todo calc
-func CalcInterest(lendCoin sdk.Coin, lendingRate sdk.Dec, start, end time.Time) sdk.Coin {
-	interest := sdk.ZeroInt()
-	return sdk.NewCoin(lendCoin.Denom, interest)
 }
