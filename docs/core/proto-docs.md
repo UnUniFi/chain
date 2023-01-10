@@ -1395,7 +1395,6 @@ Query defines the gRPC querier service.
 | `denom` | [string](#string) |  |  |
 | `type` | [AssetType](#ununifi.derivatives.AssetType) |  |  |
 | `target_weight` | [string](#string) |  |  |
-| `name` | [string](#string) |  |  |
 
 
 
@@ -1476,7 +1475,7 @@ Query defines the gRPC querier service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `asset_id` | [string](#string) |  |  |
+| `denom` | [string](#string) |  |  |
 | `amount` | [string](#string) |  |  |
 
 
@@ -1606,7 +1605,6 @@ this line is used by starport scaffolding # 2 | GET|/UnUniFi/derivatives/params|
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  |  |
 | `amount` | [string](#string) |  |  |
-| `asset_id` | [string](#string) |  |  |
 
 
 

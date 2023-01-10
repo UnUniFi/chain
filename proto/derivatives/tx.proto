@@ -40,9 +40,6 @@ message MsgBurnLiquidityProviderToken {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
-  string asset_id = 3 [
-    (gogoproto.moretags) = "yaml:\"asset_id\""
-  ];
 }
 
 message MsgBurnLiquidityProviderTokenResponse {}

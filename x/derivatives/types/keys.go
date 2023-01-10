@@ -34,6 +34,6 @@ func AddressDepositKeyPrefix(depositor sdk.AccAddress) []byte {
 	return append([]byte(KeyPrefixAddressDeposit), address.MustLengthPrefix(depositor)...)
 }
 
-func AssetKeyPrefix(name string) []byte {
-	return append([]byte(KeyPrefixDerivativesPoolAssets), []byte(name)...)
+func AssetKeyPrefix(denom string) []byte {
+	return append([]byte(KeyPrefixDerivativesPoolAssets), []byte(denom)...)
 }

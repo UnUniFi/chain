@@ -27,7 +27,7 @@ func (k Keeper) AddPoolAsset(ctx sdk.Context, asset types.Pool_Asset) {
 	store := ctx.KVStore(k.storeKey)
 
 	bz := k.cdc.MustMarshal(&asset)
-	store.Set(types.AssetKeyPrefix(asset.GetName()), bz)
+	store.Set(types.AssetKeyPrefix(asset.GetDenom()), bz)
 }
 
 func (k Keeper) GetUserDeposits(ctx sdk.Context, depositor sdk.AccAddress) []types.UserDeposit {
@@ -52,4 +52,20 @@ func (k Keeper) DepositPoolAsset(ctx sdk.Context, depositor sdk.AccAddress, depo
 
 	bz := k.cdc.MustMarshal(&deposit_data)
 	store.Set(types.AddressDepositKeyPrefix(depositor), bz)
+}
+
+func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLiquidityProviderToken) error {
+	depositor := msg.Sender.AccAddress()
+	deposit_data := types.UserDeposit{
+		Amount: msg.Amount.Amount,
+		Denom:  msg.Amount.Denom,
+	}
+
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, depositor, types.ModuleName, sdk.Coins{msg.Amount})
+	if err != nil {
+		return err
+	}
+
+	k.DepositPoolAsset(ctx, depositor, deposit_data)
+	return nil
 }

@@ -44,9 +44,6 @@ message Pool {
       (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
       (gogoproto.nullable) = false
     ];
-    string name = 4 [
-      (gogoproto.moretags) = "yaml:\"name\""
-    ];
   }
 
   repeated Asset accepted_assets = 1 [
@@ -83,12 +80,12 @@ message PriceData {
 }
 
 message UserDeposit {
-  string asset_id = 1 [
-    (gogoproto.moretags) = "yaml:\"asset_id\""
+  string denom = 1 [
+    (gogoproto.moretags) = "yaml:\"denom\""
   ];
   string amount = 2 [
     (gogoproto.moretags) = "yaml:\"amount\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
 }
