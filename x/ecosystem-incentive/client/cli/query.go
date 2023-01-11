@@ -28,6 +28,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdQueryRecordedIncentiveUnitId(),
 		CmdQueryAllRewards(),
 		CmdQueryIncentiveUnit(),
+		CmdQueryIncentiveUnitIdsByAddr(),
 	)
 
 	return cmd
@@ -101,6 +102,32 @@ func CmdQueryIncentiveUnit() *cobra.Command {
 			}
 
 			res, err := queryClient.IncentiveUnit(context.Background(), req)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdQueryIncentiveUnitIdsByAddr() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "incentive-unit-ids-by-addr [address]",
+		Short: "shows incentive-unit-ids to which the address belongs",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			req := &types.QueryIncentiveUnitIdsByAddrRequest{
+				Address: args[0],
+			}
+
+			res, err := queryClient.IncentiveUnitIdsByAddr(context.Background(), req)
 			if err != nil {
 				return err
 			}

@@ -87,7 +87,7 @@ func (k Keeper) GetRewardStore(ctx sdk.Context, subject sdk.AccAddress) (types.R
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRewardStore))
 
 	bz := prefixStore.Get(subject)
-	if len(bz) == 0 {
+	if bz == nil {
 		return types.RewardStore{}, false
 	}
 
