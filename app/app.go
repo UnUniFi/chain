@@ -131,6 +131,7 @@ import (
 	"github.com/UnUniFi/chain/x/ununifidist"
 	ununifidistkeeper "github.com/UnUniFi/chain/x/ununifidist/keeper"
 	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
+	vaultkeeper "github.com/UnUniFi/chain/x/vault/keeper"
 	// "github.com/CosmWasm/wasmd/x/wasm"
 	// wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 )
@@ -323,6 +324,7 @@ type App struct {
 	pricefeedKeeper          pricefeedkeeper.Keeper
 	NftmintKeeper            nftmintkeeper.Keeper
 	NftmarketKeeper          nftmarketkeeper.Keeper
+	vaultKeeper              vaultkeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -596,6 +598,16 @@ func NewApp(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.NFTKeeper,
+	)
+
+	app.vaultKeeper = vaultkeeper.NewKeeper(
+		appCodec,
+		encodingConfig.TxConfig,
+		keys[nftmarkettypes.StoreKey],
+		keys[nftmarkettypes.MemStoreKey],
+		app.GetSubspace(nftmarkettypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
 	)
 
 	// create Keeper objects which have Hooks
