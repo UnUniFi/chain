@@ -1,9 +1,13 @@
 package keeper
 
 import (
+	"fmt"
+	"math/big"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
+	pftypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
 func (k Keeper) GetPoolAssets(ctx sdk.Context) []types.Pool_Asset {
@@ -56,7 +60,7 @@ func (k Keeper) DepositPoolAsset(ctx sdk.Context, depositor sdk.AccAddress, depo
 
 func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLiquidityProviderToken) error {
 	depositor := msg.Sender.AccAddress()
-	deposit_data := types.UserDeposit{
+	depositData := types.UserDeposit{
 		Amount: msg.Amount.Amount,
 		Denom:  msg.Amount.Denom,
 	}
@@ -66,6 +70,45 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 		return err
 	}
 
-	k.DepositPoolAsset(ctx, depositor, deposit_data)
+	marketId := fmt.Sprintf("%s:%s", msg.Amount.Denom, "USDC")
+	price, err := k.pricefeedKeeper.GetCurrentPrice(ctx, marketId)
+	if err != nil {
+		return err
+	}
+
+	dlpMarketId := fmt.Sprintf("%s:%s", "DLP", "USDC")
+	assetMc := price.Price.Mul(sdk.Dec(msg.Amount.Amount))
+
+	// currently mint to module and need to send it to msg.sender
+	currentSupply := k.bankKeeper.GetSupply(ctx, "DLP")
+	if currentSupply.Amount.IsZero() {
+		// first deposit should mint 1 million tokens
+		k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin("DLP", sdk.NewInt(1000000))})
+		initialDlpPrice := *(assetMc.BigInt().Div(assetMc.BigInt(), big.NewInt(1000000)))
+		k.pricefeedKeeper.SetCurrentPrice(ctx, dlpMarketId, pftypes.CurrentPrice{Price: sdk.Dec(initialDlpPrice)})
+	} else {
+		dlpPrice, err := k.pricefeedKeeper.GetCurrentPrice(ctx, dlpMarketId)
+		if err != nil {
+			return err
+		}
+
+		newSupply := *(assetMc.BigInt().Div(assetMc.BigInt(), dlpPrice.Price.BigInt()))
+		k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin("DLP", sdk.NewInt(newSupply.Int64()))})
+	}
+
+	k.DepositPoolAsset(ctx, depositor, depositData)
+	return nil
+}
+
+func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgBurnLiquidityProviderToken) error {
+
+	return nil
+}
+
+func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
+	return nil
+}
+
+func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) error {
 	return nil
 }

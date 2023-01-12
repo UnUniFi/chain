@@ -3,6 +3,8 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
+
+	pftypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -22,4 +24,13 @@ type BankKeeper interface {
 	// Methods imported from bank should be defined here
 	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 	BurnCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
+}
+
+// PricefeedKeeper defines the expected interface for the pricefeed  (noalias)
+type PricefeedKeeper interface {
+	GetCurrentPrice(sdk.Context, string) (pftypes.CurrentPrice, error)
+	GetParams(sdk.Context) pftypes.Params
+	// These are used for testing TODO replace mockApp with keeper in tests to remove these
+	SetParams(sdk.Context, pftypes.Params)
+	SetCurrentPrice(sdk.Context, string, pftypes.CurrentPrice) error
 }
