@@ -1,0 +1,21 @@
+syntax = "proto3";
+package ununifi.vault;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/vault/types";
+
+service Msg {
+  rpc ParamsUpdate(MsgParamsUpdate) returns (MsgParamsUpdateResponse);
+}
+
+message MsgParamsUpdate {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgParamsUpdateResponse {}
