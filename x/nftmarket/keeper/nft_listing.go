@@ -96,6 +96,15 @@ func (k Keeper) SetNftListing(ctx sdk.Context, listing types.NftListing) {
 func (k Keeper) DeleteNftListings(ctx sdk.Context, listing types.NftListing) {
 	k.DeleteNftListing(ctx, listing)
 	k.UpdateListedClass(ctx, listing)
+
+	// Emit event for EventNftlistingDeleted to tell listing is ended perfectly
+	ctx.EventManager().EmitTypedEvent(&types.EventNftlistingDeleted{
+		Owner:     listing.Owner,
+		ClassId:   listing.NftId.ClassId,
+		NftId:     listing.NftId.NftId,
+		StartedAt: &listing.StartedAt,
+		EndAt:     &listing.EndAt,
+	})
 }
 
 func (k Keeper) DeleteNftListing(ctx sdk.Context, listing types.NftListing) {
@@ -700,6 +709,13 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 
 				// remove listing
 				k.DeleteNftListings(ctx, listing)
+
+				// insert end listNfting event here
+				ctx.EventManager().EmitTypedEvent(&types.EventEndListNfting{
+					Owner:   listingOwner.String(),
+					ClassId: listing.NftId.ClassId,
+					NftId:   listing.NftId.NftId,
+				})
 			}
 			// delete the loan data for the nftId which is deleted from the market anyway
 			k.RemoveDebt(ctx, listing.IdBytes())
