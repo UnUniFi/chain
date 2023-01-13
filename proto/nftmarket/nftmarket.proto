@@ -114,7 +114,6 @@ message EventListNft {
 
   // below properties are only for the poc
   google.protobuf.Timestamp started_at = 4 [(gogoproto.stdtime) = true];
-  google.protobuf.Timestamp end_at = 5 [(gogoproto.stdtime) = true];
 }
 
 message EventCancelListNfting {

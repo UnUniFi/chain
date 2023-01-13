@@ -102,12 +102,17 @@ func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
 		return err
 	}
 
+	// ----- PoC2 -----
+	blockTime := ctx.BlockTime()
+	// ----------------
+
 	// Emit event for paying full bid
 	ctx.EventManager().EmitTypedEvent(&types.EventBorrow{
-		Borrower: msg.Sender.AccAddress().String(),
-		ClassId:  msg.NftId.ClassId,
-		NftId:    msg.NftId.NftId,
-		Amount:   msg.Amount.String(),
+		Borrower:  msg.Sender.AccAddress().String(),
+		ClassId:   msg.NftId.ClassId,
+		NftId:     msg.NftId.NftId,
+		Amount:    msg.Amount.String(),
+		BlockTime: &blockTime,
 	})
 
 	return nil

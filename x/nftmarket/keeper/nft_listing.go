@@ -254,9 +254,10 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 
 	// Emit event for nft listing
 	ctx.EventManager().EmitTypedEvent(&types.EventListNft{
-		Owner:   msg.Sender.AccAddress().String(),
-		ClassId: msg.NftId.ClassId,
-		NftId:   msg.NftId.NftId,
+		Owner:     msg.Sender.AccAddress().String(),
+		ClassId:   msg.NftId.ClassId,
+		NftId:     msg.NftId.NftId,
+		StartedAt: &listing.StartedAt,
 	})
 
 	return nil
