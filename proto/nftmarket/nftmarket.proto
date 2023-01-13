@@ -222,6 +222,5 @@ message EventNftlistingDeleted {
   string nft_id   = 3;
   google.protobuf.Timestamp started_at = 4 [(gogoproto.stdtime) = true];
   google.protobuf.Timestamp end_at = 5 [(gogoproto.stdtime) = true];
-  cosmos.base.v1beta1.Coin max_borrowable_amount = 6;
   cosmos.base.v1beta1.Coin borrowing_amount = 7;
 }
