@@ -107,6 +107,22 @@ message Params {
   cosmos.base.v1beta1.Coin nft_listing_period_extend_fee_per_hour  = 18 [(gogoproto.nullable) = false];
 }
 
+// for poc2 to track the key data related to the financial function
+message KeyDataForPoC2 {
+  google.protobuf.Timestamp started_at = 1 [
+    (gogoproto.moretags) = "yaml:\"started_at\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  google.protobuf.Timestamp end_at = 2 [
+    (gogoproto.moretags) = "yaml:\"end_at\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  cosmos.base.v1beta1.Coin max_borrowable_amount_in_listing_period = 3 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin total_borrowed_amount = 4 [(gogoproto.nullable) = false];
+}
+
 message EventListNft {
   string owner    = 1;
   string class_id = 2;
