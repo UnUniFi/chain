@@ -31,7 +31,36 @@ func (k Keeper) AddPoolAsset(ctx sdk.Context, asset types.Pool_Asset) {
 	store := ctx.KVStore(k.storeKey)
 
 	bz := k.cdc.MustMarshal(&asset)
-	store.Set(types.AssetKeyPrefix(asset.GetDenom()), bz)
+	store.Set(types.AssetKeyPrefix(asset.Denom), bz)
+
+	coin := sdk.Coin{
+		Denom:  asset.Denom,
+		Amount: sdk.ZeroInt(),
+	}
+	coinBz := k.cdc.MustMarshal(&coin)
+	store.Set(types.AssetDepositKeyPrefix(asset.Denom), coinBz)
+}
+
+func (k Keeper) IsAssetValid(ctx sdk.Context, iasset types.Pool_Asset) bool {
+	assets := k.GetPoolAssets(ctx)
+
+	for _, asset := range assets {
+		if asset.Denom == iasset.Denom {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (k Keeper) GetAssetBalance(ctx sdk.Context, asset types.Pool_Asset) sdk.Coin {
+	store := ctx.KVStore(k.storeKey)
+
+	coin := sdk.Coin{}
+	bz := store.Get(types.AssetDepositKeyPrefix(asset.Denom))
+	k.cdc.MustUnmarshal(bz, &coin)
+
+	return coin
 }
 
 func (k Keeper) GetUserDeposits(ctx sdk.Context, depositor sdk.AccAddress) []types.UserDeposit {
@@ -55,7 +84,17 @@ func (k Keeper) DepositPoolAsset(ctx sdk.Context, depositor sdk.AccAddress, depo
 	store := ctx.KVStore(k.storeKey)
 
 	bz := k.cdc.MustMarshal(&deposit_data)
-	store.Set(types.AddressDepositKeyPrefix(depositor), bz)
+
+	store.Set(types.AddressAssetDepositKeyPrefix(depositor, deposit_data.Denom), bz)
+
+	key := types.AssetDepositKeyPrefix(deposit_data.Denom)
+	coinBz := store.Get(key)
+	coin := sdk.Coin{}
+	k.cdc.MustUnmarshal(coinBz, &coin)
+	coin.Amount.Add(deposit_data.Amount)
+
+	coinBz = k.cdc.MustMarshal(&coin)
+	store.Set(key, coinBz)
 }
 
 func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLiquidityProviderToken) error {
@@ -93,7 +132,10 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 		}
 
 		newSupply := *(assetMc.BigInt().Div(assetMc.BigInt(), dlpPrice.Price.BigInt()))
-		k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin("DLP", sdk.NewInt(newSupply.Int64()))})
+		err = k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin("DLP", sdk.NewInt(newSupply.Int64()))})
+		if err != nil {
+			return err
+		}
 	}
 
 	k.DepositPoolAsset(ctx, depositor, depositData)
@@ -101,6 +143,31 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 }
 
 func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgBurnLiquidityProviderToken) error {
+	sender := msg.Sender.AccAddress()
+	amount := msg.Amount
+
+	userBalance := k.bankKeeper.GetBalance(ctx, sender, "DLP")
+	if userBalance.Amount.LT(amount) {
+		return types.ErrInvalidRedeemAmount
+	}
+
+	totalSupply := k.bankKeeper.GetSupply(ctx, "DLP")
+
+	assets := k.GetPoolAssets(ctx)
+
+	for _, asset := range assets {
+		coinBalance := k.GetAssetBalance(ctx, asset)
+		tempAmount := coinBalance.Amount.Mul(userBalance.Amount)
+		balanceToRedeem := tempAmount.BigInt().Div(tempAmount.BigInt(), totalSupply.Amount.BigInt())
+
+		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, sdk.Coins{sdk.NewCoin(asset.Denom, sdk.NewInt(balanceToRedeem.Int64()))})
+
+		if err != nil {
+			return err
+		}
+	}
+
+	k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin("DLP", amount)})
 
 	return nil
 }
