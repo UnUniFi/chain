@@ -186,12 +186,11 @@ func (suite *KeeperTestSuite) TestBorrow() {
 		nftIdentifier := types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId}
 		if tc.listBefore {
 			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
-				Sender:        ununifitypes.StringAccAddress(tc.nftOwner),
-				NftId:         nftIdentifier,
-				ListingType:   types.ListingType_DIRECT_ASSET_BORROW,
-				BidToken:      "uguu",
-				MinBid:        sdk.NewInt(10),
-				BidActiveRank: 2,
+				Sender:             ununifitypes.StringAccAddress(tc.nftOwner),
+				NftId:              nftIdentifier,
+				ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
+				BidToken:           "uguu",
+				MinimumDepositRate: "0.1",
 			})
 			suite.Require().NoError(err)
 		}
@@ -209,7 +208,7 @@ func (suite *KeeperTestSuite) TestBorrow() {
 			err := suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
 				Sender:           ununifitypes.StringAccAddress(bidder),
 				NftId:            nftIdentifier,
-				Amount:           coin,
+				BidAmount:        coin,
 				AutomaticPayment: false,
 			})
 			suite.Require().NoError(err)
@@ -358,12 +357,11 @@ func (suite *KeeperTestSuite) TestRepay() {
 		nftIdentifier := types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId}
 		if tc.listBefore {
 			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
-				Sender:        ununifitypes.StringAccAddress(tc.nftOwner),
-				NftId:         nftIdentifier,
-				ListingType:   types.ListingType_DIRECT_ASSET_BORROW,
-				BidToken:      "uguu",
-				MinBid:        sdk.NewInt(10),
-				BidActiveRank: 2,
+				Sender:             ununifitypes.StringAccAddress(tc.nftOwner),
+				NftId:              nftIdentifier,
+				ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
+				BidToken:           "uguu",
+				MinimumDepositRate: "0.1",
 			})
 			suite.Require().NoError(err)
 		}
@@ -381,7 +379,7 @@ func (suite *KeeperTestSuite) TestRepay() {
 			err := suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
 				Sender:           ununifitypes.StringAccAddress(bidder),
 				NftId:            nftIdentifier,
-				Amount:           coin,
+				BidAmount:        coin,
 				AutomaticPayment: false,
 			})
 			suite.Require().NoError(err)
@@ -500,12 +498,11 @@ func (suite *KeeperTestSuite) TestLoanManagement() {
 		}, nftOwner)
 
 		_ = suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
-			Sender:        ununifitypes.StringAccAddress(nftOwner),
-			NftId:         nftIdentifier,
-			ListingType:   types.ListingType_DIRECT_ASSET_BORROW,
-			BidToken:      "uguu",
-			MinBid:        sdk.ZeroInt(),
-			BidActiveRank: 10,
+			Sender:             ununifitypes.StringAccAddress(nftOwner),
+			NftId:              nftIdentifier,
+			ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
+			BidToken:           "uguu",
+			MinimumDepositRate: "0.1",
 		})
 		listing, _ := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
 
@@ -524,7 +521,7 @@ func (suite *KeeperTestSuite) TestLoanManagement() {
 			_ = suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
 				Sender:           ununifitypes.StringAccAddress(bidder),
 				NftId:            nftIdentifier,
-				Amount:           bidAmount,
+				BidAmount:        bidAmount,
 				AutomaticPayment: true,
 			})
 		}
@@ -564,7 +561,7 @@ func (suite *KeeperTestSuite) PlaceAndBorrow(coin sdk.Coin, nftId types.NftIdent
 	err := suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
 		Sender:           ununifitypes.StringAccAddress(bidder),
 		NftId:            nftId,
-		Amount:           coin,
+		BidAmount:        coin,
 		AutomaticPayment: true,
 	})
 	suite.Require().NoError(err)

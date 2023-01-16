@@ -1,8 +1,6 @@
 package types
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 )
@@ -105,13 +103,6 @@ func ClassIdKey(classId string) []byte {
 }
 
 func NftBidBytes(classId, nftId, bidder string) []byte {
-	fmt.Print(byte(0xFF))
-	fmt.Println("show oxff")
-	fmt.Print(append(NftBytes(classId, nftId), byte(0xFF)))
-	fmt.Println("show one")
-
-	fmt.Print(append(append(NftBytes(classId, nftId), byte(0xFF)), []byte(bidder)...))
-	fmt.Println("show tow")
 	return append(append(NftBytes(classId, nftId), byte(0xFF)), []byte(bidder)...)
 }
 

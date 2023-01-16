@@ -679,6 +679,67 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 	}
 }
 
+func (k Keeper) LiquidationProcess(ctx sdk.Context, bids []types.NftBid, listing types.NftListing, params types.Params) {
+	index := len(bids) - 1
+	for ; index >= 0; index-- {
+		bid := bids[index]
+		bid.PaidAmount = bid.PaidAmount.Add(bid.DepositAmount)
+		if bid.PaidAmount.Equal(bid.BidAmount) {
+			break
+		}
+	}
+
+	if index >= 0 { // if winner bidder exists who paid full amount
+		// schedule NFT / token send after X days
+		listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
+		listing.State = types.ListingState_SUCCESSFUL_BID
+		k.SaveNftListing(ctx, listing)
+
+		for i, bid := range bids {
+			if index != i {
+				cacheCtx, write := ctx.CacheContext()
+				err := k.SafeCloseBid(cacheCtx, bid)
+				if err == nil {
+					write()
+				} else {
+					fmt.Println(err)
+				}
+			}
+		}
+		// TODO: shouldn't we handle winning bidder candidates above successful bidder that didn't pay full amount?
+	} else { // if all winning bidder candidates do not pay
+		// the amount of the collected deposit plus NFT to be listed will be given to the lister
+		listingOwner, err := sdk.AccAddressFromBech32(listing.Owner)
+		if err != nil {
+			return
+		}
+
+		depositCollected := sdk.ZeroInt()
+		for _, bid := range bids {
+			depositCollected = depositCollected.Add(bid.DepositAmount.Amount)
+			k.DeleteBid(ctx, bid)
+		}
+
+		// pay fee
+		loan := k.GetDebtByNft(ctx, listing.IdBytes())
+		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, listing.BidToken, depositCollected, loan.Loan.Amount)
+
+		// transfer nft to listing owner
+		cacheCtx, write := ctx.CacheContext()
+		err = k.nftKeeper.Transfer(cacheCtx, listing.NftId.ClassId, listing.NftId.NftId, listingOwner)
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			write()
+		}
+
+		// remove listing
+		k.DeleteNftListings(ctx, listing)
+	}
+	// delete the loan data for the nftId which is deleted from the market anyway
+	k.RemoveDebt(ctx, listing.IdBytes())
+}
+
 func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 	params := k.GetParamSet(ctx)
 	// get listings ended earlier

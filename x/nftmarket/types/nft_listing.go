@@ -95,3 +95,11 @@ func (m NftListing) MaxPossibleBorrowAmount(bids, expiredBids []NftBid) sdk.Int 
 func (m NftListing) IsSelling() bool {
 	return m.State == ListingState_LISTING || m.State == ListingState_BIDDING
 }
+
+func (m NftListing) CanCancelBid() bool {
+	return m.CanBid()
+}
+
+func (m NftListing) CanBid() bool {
+	return m.State == ListingState_LISTING || m.State == ListingState_BIDDING
+}

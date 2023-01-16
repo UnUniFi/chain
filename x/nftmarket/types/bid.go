@@ -82,6 +82,18 @@ func (m NftBid) IsPaidBidAmount() bool {
 	return fullPaidAmount.Equal(m.BidAmount)
 }
 
+func (m NftBid) CanCancel() bool {
+	return !m.IsBorrowing()
+}
+
+func (m NftBid) CanReBid() bool {
+	return !m.IsBorrowing()
+}
+
+func (m NftBid) IsNil() bool {
+	return m.Bidder == ""
+}
+
 type NftBids []NftBid
 
 func (m NftBids) SortBorrowing() NftBids {
@@ -123,13 +135,21 @@ func (m NftBids) GetHighestBid() NftBid {
 	return highestBidder
 }
 
+func (m NftBids) GetBidByBidder(bidder string) NftBid {
+	for _, bid := range m {
+		if bid.Bidder == bidder {
+			return bid
+		}
+	}
+	return NftBid{}
+}
+
 // todo: add proto then use it
 type RepayReceipt struct {
 	Charge             sdk.Coin
 	PaidInterestAmount sdk.Coin
 }
 
-// Repay(msg.Amount, bid, ctx.BlockTime())
 func (m *Borrowing) RepayThenGetReceipt(payAmount sdk.Coin, payTime time.Time, calcInterestF func(lendCoin sdk.Coin, start, end time.Time) sdk.Coin) RepayReceipt {
 	principal := m.Amount
 	interest := calcInterestF(principal, m.StartAt, payTime)

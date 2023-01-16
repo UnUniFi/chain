@@ -32,4 +32,7 @@ var (
 	ErrBidCancelIsAllowedAfterSomeTime   = sdkerrors.Register(ModuleName, 25, "bid cancel is allowed after some time after bid")
 	ErrListingNeedsToBeBiddingStatus     = sdkerrors.Register(ModuleName, 26, "listing needs to be in BIDDING status")
 	ErrNotBorrowed                       = sdkerrors.Register(ModuleName, 27, "not borrowed yet once")
+	ErrBorrowedDeposit                   = sdkerrors.Register(ModuleName, 28, "borrowed bid deposit")
+	ErrCannotCancelBid                   = sdkerrors.Register(ModuleName, 29, "listing is not in state where bid can be cancelled")
+	ErrCannotParseDec                    = sdkerrors.Register(ModuleName, 30, "cannot parse decimal")
 )
