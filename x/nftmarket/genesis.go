@@ -27,10 +27,11 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKe
 // ExportGenesis export genesis state for nftmarket module
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 	return types.GenesisState{
-		Params:        k.GetParamSet(ctx),
-		Listings:      k.GetAllNftListings(ctx),
-		Bids:          k.GetAllBids(ctx),
-		CancelledBids: k.GetAllCancelledBids(ctx),
-		Loans:         k.GetAllDebts(ctx),
+		Params:             k.GetParamSet(ctx),
+		Listings:           k.GetAllNftListings(ctx),
+		Bids:               k.GetAllBids(ctx),
+		CancelledBids:      k.GetAllCancelledBids(ctx),
+		Loans:              k.GetAllDebts(ctx),
+		KeyDataForPoc2List: k.GetAllKeyDataForPoC2(ctx),
 	}
 }
