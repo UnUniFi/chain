@@ -11,7 +11,7 @@ import (
 func (k Keeper) GetKeyDataForPoC2(ctx sdk.Context, nftIdBytes []byte, startedAt time.Time) types.KeyDataForPoC2 {
 	keyDataForPoC2 := types.KeyDataForPoC2{}
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.NftLoanKey(nftIdBytes))
+	bz := store.Get(types.KeyDataForPoC2Key(nftIdBytes, startedAt))
 	if bz == nil {
 		return keyDataForPoC2
 	}

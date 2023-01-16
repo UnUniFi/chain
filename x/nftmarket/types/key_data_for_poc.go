@@ -36,7 +36,8 @@ func (m KeyDataForPoC2) CalculateDuration() KeyDataForPoC2 {
 }
 
 func (m KeyDataForPoC2) UpdateMaxBorrowableAmount(currentMaxBorrowableAmount sdk.Coin) KeyDataForPoC2 {
-	if m.MaxBorrowableAmountInListingPeriod.IsLT(currentMaxBorrowableAmount) {
+	if m.MaxBorrowableAmountInListingPeriod.IsZero() ||
+		m.MaxBorrowableAmountInListingPeriod.IsLT(currentMaxBorrowableAmount) {
 		m.MaxBorrowableAmountInListingPeriod = currentMaxBorrowableAmount
 	}
 	return m
@@ -44,7 +45,11 @@ func (m KeyDataForPoC2) UpdateMaxBorrowableAmount(currentMaxBorrowableAmount sdk
 
 // update totalBorrowedAmount by adding new bid amount and return KeyDataForPoC2
 func (m KeyDataForPoC2) UpdateTotalBorrowedAmount(newBidAmount sdk.Coin) KeyDataForPoC2 {
-	m.TotalBorrowedAmount = m.TotalBorrowedAmount.Add(newBidAmount)
+	if m.TotalBorrowedAmount.IsZero() {
+		m.TotalBorrowedAmount = newBidAmount
+	} else {
+		m.TotalBorrowedAmount = m.TotalBorrowedAmount.Add(newBidAmount)
+	}
 	return m
 }
 
