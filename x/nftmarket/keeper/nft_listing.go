@@ -69,7 +69,7 @@ func (k Keeper) SaveNftListing(ctx sdk.Context, listing types.NftListing) {
 
 func (k Keeper) SetNftListing(ctx sdk.Context, listing types.NftListing) {
 	if oldListing, err := k.GetNftListingByIdBytes(ctx, listing.IdBytes()); err == nil {
-		k.DeleteNftListings(ctx, oldListing)
+		k.DeleteNftListingsCustom(ctx, oldListing)
 	}
 
 	nftIdBytes := listing.IdBytes()
@@ -105,6 +105,11 @@ func (k Keeper) DeleteNftListings(ctx sdk.Context, listing types.NftListing) {
 		StartedAt: &listing.StartedAt,
 		EndAt:     &listing.EndAt,
 	})
+}
+
+func (k Keeper) DeleteNftListingsCustom(ctx sdk.Context, listing types.NftListing) {
+	k.DeleteNftListing(ctx, listing)
+	k.UpdateListedClass(ctx, listing)
 }
 
 func (k Keeper) DeleteNftListing(ctx sdk.Context, listing types.NftListing) {
