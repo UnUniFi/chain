@@ -142,6 +142,11 @@ func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, require s
 
 	// ----- PoC2 -----
 	blockTime := ctx.BlockTime()
+
+	// update totalBorrowedAmount in KeyDataForPoC2 and set it again
+	keyDataForPoC2 := k.GetKeyDataForPoC2(ctx, listing.NftId.IdBytes(), listing.StartedAt)
+	keyDataForPoC2 = keyDataForPoC2.UpdateTotalBorrowedAmount(require)
+	k.SetKeyDataForPoC2(ctx, keyDataForPoC2)
 	// ----------------
 
 	// Emit event for paying full bid
