@@ -19,12 +19,11 @@ func KeyDataForPoC2Key(nftIdBytes []byte, started_time time.Time) []byte {
 func NewKeyDataForPoC2(
 	nftId NftIdentifier,
 	startedAt time.Time,
-	totalBidCount uint64,
 ) KeyDataForPoC2 {
 	return KeyDataForPoC2{
 		NftId:         nftId,
 		StartedAt:     startedAt,
-		TotalBidCount: totalBidCount,
+		TotalBidCount: 0,
 	}
 }
 
@@ -37,7 +36,7 @@ func (m KeyDataForPoC2) CalculateDuration() KeyDataForPoC2 {
 }
 
 func (m KeyDataForPoC2) UpdateMaxBorrowableAmount(currentMaxBorrowableAmount sdk.Coin) KeyDataForPoC2 {
-	if m.MaxBorrowableAmountInListingPeriod.IsLTE(currentMaxBorrowableAmount) {
+	if m.MaxBorrowableAmountInListingPeriod.IsLT(currentMaxBorrowableAmount) {
 		m.MaxBorrowableAmountInListingPeriod = currentMaxBorrowableAmount
 	}
 	return m
