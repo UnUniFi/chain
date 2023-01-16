@@ -270,7 +270,7 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 
 	// ----- PoC2 -----
 	// create new KeyDataForPoC2 using types.NewKeyDataForPoC2 and set it in KVStore
-	keyDataForPoC2 := types.NewKeyDataForPoC2(listing.NftId, listing.StartedAt)
+	keyDataForPoC2 := types.NewKeyDataForPoC2(listing.NftId, listing.StartedAt, listing.Owner)
 	k.SetKeyDataForPoC2(ctx, keyDataForPoC2)
 	// ----------------
 

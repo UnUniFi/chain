@@ -137,6 +137,9 @@ message KeyDataForPoC2 {
   uint64 total_bid_count = 7 [
     (gogoproto.moretags) = "yaml:\"total_bid_count\""
   ]; 
+  string lister = 8 [
+    (gogoproto.moretags) = "yaml:\"lister\""
+  ]; 
 }
 
 message EventListNft {

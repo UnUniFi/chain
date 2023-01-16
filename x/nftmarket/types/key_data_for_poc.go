@@ -19,11 +19,13 @@ func KeyDataForPoC2Key(nftIdBytes []byte, started_time time.Time) []byte {
 func NewKeyDataForPoC2(
 	nftId NftIdentifier,
 	startedAt time.Time,
+	lister string,
 ) KeyDataForPoC2 {
 	return KeyDataForPoC2{
 		NftId:         nftId,
 		StartedAt:     startedAt,
 		TotalBidCount: 0,
+		Lister:        lister,
 	}
 }
 
