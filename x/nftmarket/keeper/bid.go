@@ -252,7 +252,7 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 	// ----- PoC2 ------
 	// update MaxBorrowableAmount, TotalBorrowedAmount and totalBidCount in KeyDataForPoC2
 	keyDataForPoC2 := k.GetKeyDataForPoC2(ctx, listing.NftId.IdBytes(), listing.StartedAt)
-	keyDataForPoC2 = keyDataForPoC2.UpdateTotalBidCount()
+	keyDataForPoC2 = keyDataForPoC2.TotalBidCountUp()
 	maxBorrowableAmount := sdk.Coin{Denom: listing.BidToken, Amount: k.TotalActiveRankDeposit(ctx, listing.NftId.IdBytes())}
 	keyDataForPoC2 = keyDataForPoC2.UpdateMaxBorrowableAmount(maxBorrowableAmount)
 	k.SetKeyDataForPoC2(ctx, keyDataForPoC2)

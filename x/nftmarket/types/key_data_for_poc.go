@@ -49,7 +49,7 @@ func (m KeyDataForPoC2) UpdateTotalBorrowedAmount(newBidAmount sdk.Coin) KeyData
 }
 
 // update totalBidCount by adding 1 and return KeyDataForPoC2
-func (m KeyDataForPoC2) UpdateTotalBidCount() KeyDataForPoC2 {
+func (m KeyDataForPoC2) TotalBidCountUp() KeyDataForPoC2 {
 	m.TotalBidCount++
 	return m
 }
