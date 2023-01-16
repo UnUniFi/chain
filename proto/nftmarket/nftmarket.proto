@@ -126,6 +126,9 @@ message EventListNft {
   string owner    = 1;
   string class_id = 2;
   string nft_id   = 3;
+
+  // below properties are only for the poc
+  google.protobuf.Timestamp started_at = 4 [(gogoproto.stdtime) = true];
 }
 
 message EventCancelListNfting {
@@ -157,6 +160,10 @@ message EventPlaceBid {
   string class_id = 2;
   string nft_id   = 3;
   string amount   = 4;
+
+  // below properties are only for the poc
+  cosmos.base.v1beta1.Coin max_borrowable_amount = 5;
+  google.protobuf.Timestamp block_time = 6 [(gogoproto.stdtime) = true];
 }
 
 message EventCancelBid {
@@ -176,6 +183,9 @@ message EventBorrow {
   string class_id = 2;
   string nft_id   = 3;
   string amount   = 4;
+
+  // below properties are only for the poc
+  google.protobuf.Timestamp block_time = 5 [(gogoproto.stdtime) = true];
 }
 
 message EventRepay {
@@ -205,4 +215,15 @@ message PaymentStatus {
       [(gogoproto.moretags) = "yaml:\"bid_time\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
   ListingState state    = 7;
   bool         all_paid = 8;
+}
+
+// EventNftlistingDeleted is an event emitted when a nft listing is deleted
+// this is for the poc, but this can be used in the real case, I guess
+message EventNftlistingDeleted {
+  string owner    = 1;
+  string class_id = 2;
+  string nft_id   = 3;
+  google.protobuf.Timestamp started_at = 4 [(gogoproto.stdtime) = true];
+  google.protobuf.Timestamp end_at = 5 [(gogoproto.stdtime) = true];
+  cosmos.base.v1beta1.Coin borrowing_amount = 6;
 }
