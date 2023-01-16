@@ -140,12 +140,17 @@ func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, require s
 		return err
 	}
 
+	// ----- PoC2 -----
+	blockTime := ctx.BlockTime()
+	// ----------------
+
 	// Emit event for paying full bid
 	ctx.EventManager().EmitTypedEvent(&types.EventBorrow{
-		Borrower: borrower,
-		ClassId:  nft.ClassId,
-		NftId:    nft.NftId,
-		Amount:   require.String(),
+		Borrower:  borrower,
+		ClassId:   nft.ClassId,
+		NftId:     nft.NftId,
+		Amount:    require.String(),
+		BlockTime: &blockTime,
 	})
 
 	return nil

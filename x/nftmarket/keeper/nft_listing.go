@@ -67,7 +67,7 @@ func (k Keeper) SaveNftListing(ctx sdk.Context, listing types.NftListing) {
 
 func (k Keeper) SetNftListing(ctx sdk.Context, listing types.NftListing) {
 	if oldListing, err := k.GetNftListingByIdBytes(ctx, listing.IdBytes()); err == nil {
-		k.DeleteNftListings(ctx, oldListing)
+		k.DeleteNftListingsCustom(ctx, oldListing)
 	}
 
 	nftIdBytes := listing.IdBytes()
@@ -92,6 +92,20 @@ func (k Keeper) SetNftListing(ctx sdk.Context, listing types.NftListing) {
 
 // call this method when you want to call DeleteNftListing
 func (k Keeper) DeleteNftListings(ctx sdk.Context, listing types.NftListing) {
+	k.DeleteNftListing(ctx, listing)
+	k.UpdateListedClass(ctx, listing)
+
+	// Emit event for EventNftlistingDeleted to tell listing is ended perfectly
+	ctx.EventManager().EmitTypedEvent(&types.EventNftlistingDeleted{
+		Owner:     listing.Owner,
+		ClassId:   listing.NftId.ClassId,
+		NftId:     listing.NftId.NftId,
+		StartedAt: &listing.StartedAt,
+		EndAt:     &listing.EndAt,
+	})
+}
+
+func (k Keeper) DeleteNftListingsCustom(ctx sdk.Context, listing types.NftListing) {
 	k.DeleteNftListing(ctx, listing)
 	k.UpdateListedClass(ctx, listing)
 }
@@ -220,9 +234,10 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 
 	// Emit event for nft listing
 	ctx.EventManager().EmitTypedEvent(&types.EventListNft{
-		Owner:   msg.Sender.AccAddress().String(),
-		ClassId: msg.NftId.ClassId,
-		NftId:   msg.NftId.NftId,
+		Owner:     msg.Sender.AccAddress().String(),
+		ClassId:   msg.NftId.ClassId,
+		NftId:     msg.NftId.NftId,
+		StartedAt: &listing.StartedAt,
 	})
 
 	return nil
