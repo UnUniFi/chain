@@ -109,30 +109,32 @@ message Params {
 
 // for poc2 to track the key data related to the financial function
 message KeyDataForPoC2 {
-  google.protobuf.Timestamp started_at = 1 [
+  NftIdentifier nft_id = 1 [
+    (gogoproto.moretags) = "yaml:\"nft_id\"",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Timestamp started_at = 2 [
     (gogoproto.moretags) = "yaml:\"started_at\"",
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
-  google.protobuf.Timestamp end_at = 2 [
+  google.protobuf.Timestamp end_at = 3 [
     (gogoproto.moretags) = "yaml:\"end_at\"",
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
-  google.protobuf.Timestamp listed_duration_in_seconds = 3 [
-    (gogoproto.moretags) = "yaml:\"listed_duration_in_seconds\"",
-    (gogoproto.nullable) = false,
-    (gogoproto.stdtime) = true
+  int64 listed_duration_in_seconds = 4 [
+    (gogoproto.moretags) = "yaml:\"listed_duration_in_seconds\""
   ];
-  cosmos.base.v1beta1.Coin max_borrowable_amount_in_listing_period = 4 [
+  cosmos.base.v1beta1.Coin max_borrowable_amount_in_listing_period = 5 [
     (gogoproto.moretags) = "yaml:\"max_borrowable_amount_in_listing_period\"",
     (gogoproto.nullable) = false
   ];
-  cosmos.base.v1beta1.Coin total_borrowed_amount = 5 [
+  cosmos.base.v1beta1.Coin total_borrowed_amount = 6 [
     (gogoproto.moretags) = "yaml:\"total_borrowed_amount\"",
     (gogoproto.nullable) = false
   ];
-  uint64 total_bid_count = 6 [
+  uint64 total_bid_count = 7 [
     (gogoproto.moretags) = "yaml:\"total_bid_count\""
   ]; 
 }
