@@ -75,29 +75,36 @@
     - [Msg](#ununifi.cdp.Msg)
   
 - [derivatives/derivatives.proto](#derivatives/derivatives.proto)
-    - [EuropeanCall](#ununifi.derivatives.EuropeanCall)
-    - [EuropeanPut](#ununifi.derivatives.EuropeanPut)
     - [Params](#ununifi.derivatives.Params)
-    - [PerpetualCall](#ununifi.derivatives.PerpetualCall)
-    - [PerpetualFuturesLong](#ununifi.derivatives.PerpetualFuturesLong)
-    - [PerpetualFuturesShort](#ununifi.derivatives.PerpetualFuturesShort)
-    - [PerpetualPut](#ununifi.derivatives.PerpetualPut)
     - [Pool](#ununifi.derivatives.Pool)
     - [Pool.Asset](#ununifi.derivatives.Pool.Asset)
-    - [Position](#ununifi.derivatives.Position)
     - [PriceData](#ununifi.derivatives.PriceData)
     - [Subpool](#ununifi.derivatives.Subpool)
     - [Subpool.Asset](#ununifi.derivatives.Subpool.Asset)
     - [UserDeposit](#ununifi.derivatives.UserDeposit)
+    - [WrappedPosition](#ununifi.derivatives.WrappedPosition)
   
     - [AssetType](#ununifi.derivatives.AssetType)
+    - [PositionType](#ununifi.derivatives.PositionType)
   
 - [derivatives/genesis.proto](#derivatives/genesis.proto)
     - [GenesisState](#ununifi.derivatives.GenesisState)
   
+- [derivatives/perpetual_futures.proto](#derivatives/perpetual_futures.proto)
+    - [PerpetualFuturesPosition](#ununifi.derivatives.PerpetualFuturesPosition)
+  
+- [derivatives/perpetual_options.proto](#derivatives/perpetual_options.proto)
+    - [PerpetualOptionsPosition](#ununifi.derivatives.PerpetualOptionsPosition)
+  
+    - [OptionType](#ununifi.derivatives.OptionType)
+  
 - [derivatives/query.proto](#derivatives/query.proto)
+    - [QueryClaimableLiquidityProviderRewardsRequest](#ununifi.derivatives.QueryClaimableLiquidityProviderRewardsRequest)
+    - [QueryClaimableLiquidityProviderRewardsResponse](#ununifi.derivatives.QueryClaimableLiquidityProviderRewardsResponse)
     - [QueryParamsRequest](#ununifi.derivatives.QueryParamsRequest)
     - [QueryParamsResponse](#ununifi.derivatives.QueryParamsResponse)
+    - [QueryPositionsRequest](#ununifi.derivatives.QueryPositionsRequest)
+    - [QueryPositionsResponse](#ununifi.derivatives.QueryPositionsResponse)
   
     - [Query](#ununifi.derivatives.Query)
   
@@ -1292,26 +1299,6 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.EuropeanCall"></a>
-
-### EuropeanCall
-
-
-
-
-
-
-
-<a name="ununifi.derivatives.EuropeanPut"></a>
-
-### EuropeanPut
-
-
-
-
-
-
-
 <a name="ununifi.derivatives.Params"></a>
 
 ### Params
@@ -1325,46 +1312,6 @@ Query defines the gRPC querier service.
 | `base_lpt_mint_fee` | [string](#string) |  |  |
 | `base_lpt_redeem_fee` | [string](#string) |  |  |
 | `borrowing_fee_rate_per_hour` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.PerpetualCall"></a>
-
-### PerpetualCall
-
-
-
-
-
-
-
-<a name="ununifi.derivatives.PerpetualFuturesLong"></a>
-
-### PerpetualFuturesLong
-
-
-
-
-
-
-
-<a name="ununifi.derivatives.PerpetualFuturesShort"></a>
-
-### PerpetualFuturesShort
-
-
-
-
-
-
-
-<a name="ununifi.derivatives.PerpetualPut"></a>
-
-### PerpetualPut
-
 
 
 
@@ -1397,25 +1344,6 @@ Query defines the gRPC querier service.
 | `denom` | [string](#string) |  |  |
 | `type` | [AssetType](#ununifi.derivatives.AssetType) |  |  |
 | `target_weight` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.Position"></a>
-
-### Position
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  |  |
-| `denom` | [string](#string) |  |  |
-| `position_type` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-| `start_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
-| `leverage` | [string](#string) |  |  |
 
 
 
@@ -1484,6 +1412,24 @@ Query defines the gRPC querier service.
 
 
 
+
+<a name="ununifi.derivatives.WrappedPosition"></a>
+
+### WrappedPosition
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  |  |
+| `address` | [string](#string) |  |  |
+| `start_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `position` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+
+
+
+
+
  <!-- end messages -->
 
 
@@ -1496,6 +1442,19 @@ Query defines the gRPC querier service.
 | ---- | ------ | ----------- |
 | Real | 0 |  |
 | Imaginary | 1 |  |
+
+
+
+<a name="ununifi.derivatives.PositionType"></a>
+
+### PositionType
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| POSITION_UNKNOWN | 0 |  |
+| LONG | 1 |  |
+| SHORT | 2 |  |
 
 
  <!-- end enums -->
@@ -1537,10 +1496,125 @@ GenesisState defines the derivatives module's genesis state.
 
 
 
+<a name="derivatives/perpetual_futures.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## derivatives/perpetual_futures.proto
+
+
+
+<a name="ununifi.derivatives.PerpetualFuturesPosition"></a>
+
+### PerpetualFuturesPosition
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `position_type` | [PositionType](#ununifi.derivatives.PositionType) |  |  |
+| `denom` | [string](#string) |  |  |
+| `quote_denom` | [string](#string) |  |  |
+| `size` | [string](#string) |  |  |
+| `leverage` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="derivatives/perpetual_options.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## derivatives/perpetual_options.proto
+
+
+
+<a name="ununifi.derivatives.PerpetualOptionsPosition"></a>
+
+### PerpetualOptionsPosition
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `option_type` | [OptionType](#ununifi.derivatives.OptionType) |  |  |
+| `position_type` | [PositionType](#ununifi.derivatives.PositionType) |  |  |
+| `denom` | [string](#string) |  |  |
+| `quote_denom` | [string](#string) |  |  |
+| `strike_price` | [string](#string) |  |  |
+| `premium` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="ununifi.derivatives.OptionType"></a>
+
+### OptionType
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| OPTION_UNKNOWN | 0 |  |
+| CALL | 1 |  |
+| PUT | 2 |  |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="derivatives/query.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
 ## derivatives/query.proto
+
+
+
+<a name="ununifi.derivatives.QueryClaimableLiquidityProviderRewardsRequest"></a>
+
+### QueryClaimableLiquidityProviderRewardsRequest
+this line is used by starport scaffolding # 3
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryClaimableLiquidityProviderRewardsResponse"></a>
+
+### QueryClaimableLiquidityProviderRewardsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
 
 
 
@@ -1568,6 +1642,37 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 
 
 
+
+<a name="ununifi.derivatives.QueryPositionsRequest"></a>
+
+### QueryPositionsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPositionsResponse"></a>
+
+### QueryPositionsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `positions` | [WrappedPosition](#ununifi.derivatives.WrappedPosition) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -1582,9 +1687,9 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#ununifi.derivatives.QueryParamsRequest) | [QueryParamsResponse](#ununifi.derivatives.QueryParamsResponse) | Parameters queries the parameters of the module.
-
-this line is used by starport scaffolding # 2 | GET|/UnUniFi/derivatives/params|
+| `Params` | [QueryParamsRequest](#ununifi.derivatives.QueryParamsRequest) | [QueryParamsResponse](#ununifi.derivatives.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/UnUniFi/derivatives/params|
+| `ClaimableLiquidityProviderRewards` | [QueryClaimableLiquidityProviderRewardsRequest](#ununifi.derivatives.QueryClaimableLiquidityProviderRewardsRequest) | [QueryClaimableLiquidityProviderRewardsResponse](#ununifi.derivatives.QueryClaimableLiquidityProviderRewardsResponse) | this line is used by starport scaffolding # 2 | GET|/UnUniFi/derivatives/liquidity-providers/{address}/claimable-rewards|
+| `Positions` | [QueryPositionsRequest](#ununifi.derivatives.QueryPositionsRequest) | [QueryPositionsResponse](#ununifi.derivatives.QueryPositionsResponse) |  | GET|/UnUniFi/derivatives/positions/{address}|
 
  <!-- end services -->
 
@@ -1710,7 +1815,6 @@ this line is used by starport scaffolding # 2 | GET|/UnUniFi/derivatives/params|
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  |  |
 | `margin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-| `position_type` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
 | `position` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
 
 

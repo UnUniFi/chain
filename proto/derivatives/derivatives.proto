@@ -13,22 +13,29 @@ enum AssetType {
   Imaginary = 1;
 }
 
-message PerpetualFuturesLong {
+enum PositionType {
+  POSITION_UNKNOWN = 0;
+  LONG = 1;
+  SHORT = 2;
 }
 
-message PerpetualFuturesShort {
-}
-
-message EuropeanCall {
-}
-
-message EuropeanPut {
-}
-
-message PerpetualCall {
-}
-
-message PerpetualPut {
+message WrappedPosition {
+  string id = 1 [
+    (gogoproto.moretags) = "yaml:\"id\""
+  ];
+  string address = 2 [
+    (gogoproto.moretags) = "yaml:\"address\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Timestamp start_at = 3 [
+    (gogoproto.moretags) = "yaml:\"start_at\"",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Any position = 5 [
+    (gogoproto.moretags) = "yaml:\"position\"",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message Pool {
@@ -85,30 +92,6 @@ message UserDeposit {
   ];
   string amount = 2 [
     (gogoproto.moretags) = "yaml:\"amount\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-}
-
-message Position {
-  string address = 1 [
-    (gogoproto.moretags) = "yaml:\"address\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
-  string denom = 2 [
-    (gogoproto.moretags) = "yaml:\"denom\""
-  ];
-  google.protobuf.Any position_type = 3 [
-    (gogoproto.moretags) = "yaml:\"position_type\"",
-    (gogoproto.nullable) = false
-  ];
-  google.protobuf.Timestamp start_at = 4 [
-    (gogoproto.moretags) = "yaml:\"start_at\"",
-    (gogoproto.nullable) = false
-  ];
-  string leverage = 5 [
-    (gogoproto.moretags) = "yaml:\"leverage\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];

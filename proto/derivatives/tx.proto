@@ -56,8 +56,10 @@ message MsgOpenPosition {
     (gogoproto.nullable) = false
   ];
 
-  google.protobuf.Any position_type = 3;
-  google.protobuf.Any position = 4;
+  google.protobuf.Any position = 3[
+    (gogoproto.moretags) = "yaml:\"position\"",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgOpenPositionResponse {}
@@ -69,7 +71,7 @@ message MsgClosePosition {
     (gogoproto.nullable) = false
   ];
   string position_id = 2 [
-    (gogoproto.moretags) = "yaml:\"margin\""
+    (gogoproto.moretags) = "yaml:\"position_id\""
   ];
 }
 

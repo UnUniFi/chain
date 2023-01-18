@@ -1,0 +1,41 @@
+syntax = "proto3";
+package ununifi.derivatives;
+
+import "google/protobuf/any.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "derivatives/derivatives.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/derivatives/types";
+
+enum OptionType {
+  OPTION_UNKNOWN = 0;
+  CALL = 1;
+  PUT = 2;
+}
+
+message PerpetualOptionsPosition {
+  OptionType option_type = 1 [
+    (gogoproto.moretags) = "yaml:\"option_type\""
+  ];
+  PositionType position_type = 2 [
+    (gogoproto.moretags) = "yaml:\"position_type\""
+  ];
+  string denom = 3 [
+    (gogoproto.moretags) = "yaml:\"denom\""
+  ];
+  string quote_denom = 4 [
+    (gogoproto.moretags) = "yaml:\"quote_denom\""
+  ];
+  string strike_price = 5 [
+    (gogoproto.moretags) = "yaml:\"strike_price\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string premium = 6 [
+    (gogoproto.moretags) = "yaml:\"premium\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
