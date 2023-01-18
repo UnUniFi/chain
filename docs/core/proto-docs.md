@@ -90,10 +90,10 @@
 - [derivatives/genesis.proto](#derivatives/genesis.proto)
     - [GenesisState](#ununifi.derivatives.GenesisState)
   
-- [derivatives/perpetual-futures.proto](#derivatives/perpetual-futures.proto)
+- [derivatives/perpetual_futures.proto](#derivatives/perpetual_futures.proto)
     - [PerpetualFuturesPosition](#ununifi.derivatives.PerpetualFuturesPosition)
   
-- [derivatives/perpetual-options.proto](#derivatives/perpetual-options.proto)
+- [derivatives/perpetual_options.proto](#derivatives/perpetual_options.proto)
     - [PerpetualOptionsPosition](#ununifi.derivatives.PerpetualOptionsPosition)
   
     - [OptionType](#ununifi.derivatives.OptionType)
@@ -1492,10 +1492,10 @@ GenesisState defines the derivatives module's genesis state.
 
 
 
-<a name="derivatives/perpetual-futures.proto"></a>
+<a name="derivatives/perpetual_futures.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## derivatives/perpetual-futures.proto
+## derivatives/perpetual_futures.proto
 
 
 
@@ -1526,10 +1526,10 @@ GenesisState defines the derivatives module's genesis state.
 
 
 
-<a name="derivatives/perpetual-options.proto"></a>
+<a name="derivatives/perpetual_options.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## derivatives/perpetual-options.proto
+## derivatives/perpetual_options.proto
 
 
 
