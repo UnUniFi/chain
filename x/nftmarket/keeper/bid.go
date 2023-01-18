@@ -250,19 +250,24 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 	k.SaveNftListing(ctx, listing)
 
 	// ----- PoC2 ------
-	maxBorrowableAmount := k.TotalActiveRankDeposit(ctx, listing.NftId.IdBytes())
-	blockTime := ctx.BlockTime()
-	// -----------------
+	// update MaxBorrowableAmount, TotalBorrowedAmount and totalBidCount in KeyDataForPoC2
+	keyDataForPoC2 := k.GetKeyDataForPoC2(ctx, listing.NftId.IdBytes(), listing.StartedAt)
+	keyDataForPoC2 = keyDataForPoC2.TotalBidCountUp()
+	maxBorrowableAmount := sdk.Coin{Denom: msg.Amount.Denom, Amount: k.TotalActiveRankDeposit(ctx, listing.NftId.IdBytes())}
+	keyDataForPoC2 = keyDataForPoC2.UpdateMaxBorrowableAmount(maxBorrowableAmount)
+	k.SetKeyDataForPoC2(ctx, keyDataForPoC2)
 
+	blockTime := ctx.BlockTime()
 	// Emit event for placing bid
 	ctx.EventManager().EmitTypedEvent(&types.EventPlaceBid{
 		Bidder:              msg.Sender.AccAddress().String(),
 		ClassId:             msg.NftId.ClassId,
 		NftId:               msg.NftId.NftId,
 		Amount:              msg.Amount.String(),
-		MaxBorrowableAmount: &sdk.Coin{Denom: listing.BidToken, Amount: maxBorrowableAmount},
+		MaxBorrowableAmount: &maxBorrowableAmount,
 		BlockTime:           &blockTime,
 	})
+	// -----------------
 
 	return nil
 }

@@ -104,6 +104,11 @@ func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
 
 	// ----- PoC2 -----
 	blockTime := ctx.BlockTime()
+
+	// update totalBorrowedAmount in KeyDataForPoC2 and set it again
+	keyDataForPoC2 := k.GetKeyDataForPoC2(ctx, listing.NftId.IdBytes(), listing.StartedAt)
+	keyDataForPoC2 = keyDataForPoC2.UpdateTotalBorrowedAmount(msg.Amount)
+	k.SetKeyDataForPoC2(ctx, keyDataForPoC2)
 	// ----------------
 
 	// Emit event for paying full bid

@@ -97,6 +97,13 @@ func (k Keeper) DeleteNftListings(ctx sdk.Context, listing types.NftListing) {
 	k.DeleteNftListing(ctx, listing)
 	k.UpdateListedClass(ctx, listing)
 
+	// ---- PoC2 -----
+	// record endAt in KeyDataForPoC2 and calcuate listing duration and set it back
+	keyDataForPoC2 := k.GetKeyDataForPoC2(ctx, listing.NftId.IdBytes(), listing.StartedAt)
+	keyDataForPoC2.EndAt = listing.EndAt
+	keyDataForPoC2 = keyDataForPoC2.CalculateDuration()
+	k.SetKeyDataForPoC2(ctx, keyDataForPoC2)
+
 	// Emit event for EventNftlistingDeleted to tell listing is ended perfectly
 	ctx.EventManager().EmitTypedEvent(&types.EventNftlistingDeleted{
 		Owner:     listing.Owner,
@@ -105,6 +112,7 @@ func (k Keeper) DeleteNftListings(ctx sdk.Context, listing types.NftListing) {
 		StartedAt: &listing.StartedAt,
 		EndAt:     &listing.EndAt,
 	})
+	// ---------------
 }
 
 func (k Keeper) DeleteNftListingsCustom(ctx sdk.Context, listing types.NftListing) {
@@ -264,6 +272,12 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 		NftId:     msg.NftId.NftId,
 		StartedAt: &listing.StartedAt,
 	})
+
+	// ----- PoC2 -----
+	// create new KeyDataForPoC2 using types.NewKeyDataForPoC2 and set it in KVStore
+	keyDataForPoC2 := types.NewKeyDataForPoC2(listing.NftId, listing.StartedAt, listing.Owner)
+	k.SetKeyDataForPoC2(ctx, keyDataForPoC2)
+	// ----------------
 
 	return nil
 }
