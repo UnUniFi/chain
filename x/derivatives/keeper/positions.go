@@ -3,14 +3,16 @@ package keeper
 import (
 	"fmt"
 	"math/big"
+	"time"
 
+	cdcTypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
-	pftypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
-func (k Keeper) GetUserPositionsLength(ctx sdk.Context, user sdk.AccAddress) []types.Position {
+func (k Keeper) GetUserPositions(ctx sdk.Context, user sdk.AccAddress) []types.Position {
 	store := ctx.KVStore(k.storeKey)
 
 	positions := []types.Position{}
@@ -18,9 +20,10 @@ func (k Keeper) GetUserPositionsLength(ctx sdk.Context, user sdk.AccAddress) []t
 	defer it.Close()
 
 	for ; it.Valid(); it.Next() {
-		position := types.Position{}
+		positionAny := cdcTypes.Any{}
+		k.cdc.Unmarshal(it.Value(), &positionAny)
 
-		k.cdc.Unmarshal(it.Value(), &position)
+		position, _ := types.UnpackPosition(&positionAny)
 
 		positions = append(positions, position)
 	}
@@ -28,16 +31,23 @@ func (k Keeper) GetUserPositionsLength(ctx sdk.Context, user sdk.AccAddress) []t
 	return positions
 }
 
-func (k Keeper) CreatePosition(ctx sdk.Context, positionKey []byte, position types.Position) {
+func (k Keeper) CreatePosition(ctx sdk.Context, positionKey []byte, positionAny cdcTypes.Any) {
 	store := ctx.KVStore(k.storeKey)
 
-	bz := k.cdc.MustMarshal(*position)
+	wrappedPosition := types.WrappedPosition{
+		Id:       "",
+		Address:  nil,
+		StartAt:  *timestamppb.New(time.Now()), // TODO
+		Position: positionAny,
+	}
+
+	bz := k.cdc.MustMarshal(&wrappedPosition)
 	store.Set(positionKey, bz)
 }
 
 func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
 	sender := msg.Sender.AccAddress()
-	positions := k.GetUserPositionsLength(ctx, sender)
+	positions := k.GetUserPositions(ctx, sender)
 	positionCount := len(positions)
 
 	positionKey := types.AddressPositionWithIdKeyPrefix(sender, positionCount+1)
