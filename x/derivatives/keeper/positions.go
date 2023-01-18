@@ -67,7 +67,7 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 	positionKey := types.AddressPositionWithIdKeyPrefix(sender, positionCount+1)
 
 	wrappedPosition := types.WrappedPosition{
-		Id:       string(positionKey),
+		Id:       string(positionKey), // TODO
 		Address:  msg.Sender,
 		StartAt:  *timestamppb.New(time.Now()), // TODO
 		Position: msg.Position,
@@ -75,6 +75,17 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 
 	// Not sure how to convert any type to position type
 	k.CreatePosition(ctx, wrappedPosition)
+
+	position, err := types.UnpackPosition(&msg.Position)
+	if err != nil {
+		return err
+	}
+	switch position.(type) {
+	case *types.PerpetualFuturesPosition:
+		return k.OpenPerpetualFuturesPosition(ctx, msg.Sender.AccAddress(), position.(*types.PerpetualFuturesPosition))
+	case *types.PerpetualOptionsPosition:
+		return k.OpenPerpetualOptionsPosition(ctx, msg.Sender.AccAddress(), position.(*types.PerpetualOptionsPosition))
+	}
 
 	return nil
 }
@@ -85,10 +96,21 @@ func (k Keeper) Claim(ctx sdk.Context, msg *types.MsgClaim) error {
 }
 
 func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) error {
-	position := k.GetPosition(ctx, msg.Sender.AccAddress(), 0) // TODO: id
-	k.DeletePosition(ctx, msg.Sender.AccAddress(), 0)          // TODO: id
+	wrappedPosition := k.GetPosition(ctx, msg.Sender.AccAddress(), 0) // TODO: id
+	k.DeletePosition(ctx, msg.Sender.AccAddress(), 0)                 // TODO: id
 
-	k.CreateClosedPosition(ctx, position)
+	k.CreateClosedPosition(ctx, wrappedPosition)
+
+	position, err := types.UnpackPosition(&wrappedPosition.Position)
+	if err != nil {
+		return err
+	}
+	switch position.(type) {
+	case *types.PerpetualFuturesPosition:
+		return k.ClosePerpetualFuturesPosition(ctx, msg.Sender.AccAddress(), position.(*types.PerpetualFuturesPosition))
+	case *types.PerpetualOptionsPosition:
+		return k.ClosePerpetualOptionsPosition(ctx, msg.Sender.AccAddress(), position.(*types.PerpetualOptionsPosition))
+	}
 
 	return nil
 }
