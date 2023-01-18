@@ -12,18 +12,16 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
-func (k Keeper) GetUserPositions(ctx sdk.Context, user sdk.AccAddress) []types.Position {
+func (k Keeper) GetUserPositions(ctx sdk.Context, user sdk.AccAddress) []types.WrappedPosition {
 	store := ctx.KVStore(k.storeKey)
 
-	positions := []types.Position{}
+	positions := []types.WrappedPosition{}
 	it := sdk.KVStorePrefixIterator(store, types.AddressPositionKeyPrefix(user))
 	defer it.Close()
 
 	for ; it.Valid(); it.Next() {
-		positionAny := cdcTypes.Any{}
-		k.cdc.Unmarshal(it.Value(), &positionAny)
-
-		position, _ := types.UnpackPosition(&positionAny)
+		position := types.WrappedPosition{}
+		k.cdc.Unmarshal(it.Value(), &position)
 
 		positions = append(positions, position)
 	}
@@ -31,18 +29,34 @@ func (k Keeper) GetUserPositions(ctx sdk.Context, user sdk.AccAddress) []types.P
 	return positions
 }
 
-func (k Keeper) CreatePosition(ctx sdk.Context, positionKey []byte, positionAny cdcTypes.Any) {
+func (k Keeper) CreatePosition(ctx sdk.Context, wrappedPosition types.WrappedPosition) {
 	store := ctx.KVStore(k.storeKey)
 
-	wrappedPosition := types.WrappedPosition{
-		Id:       "",
-		Address:  nil,
-		StartAt:  *timestamppb.New(time.Now()), // TODO
-		Position: positionAny,
-	}
+	bz := k.cdc.MustMarshal(&wrappedPosition)
+	store.Set(types.AddressPositionWithIdKeyPrefix(wrappedPosition.Address.AccAddress(), 0), bz) // TODO: id
+}
+
+func (k Keeper) GetPosition(ctx sdk.Context, address sdk.AccAddress, id int) types.WrappedPosition {
+	store := ctx.KVStore(k.storeKey)
+
+	bz := store.Get(types.AddressPositionWithIdKeyPrefix(address, id))
+	position := types.WrappedPosition{}
+	k.cdc.Unmarshal(bz, &position)
+
+	return position
+}
+
+func (k Keeper) DeletePosition(ctx sdk.Context, address sdk.AccAddress, id int) {
+	store := ctx.KVStore(k.storeKey)
+
+	store.Delete(types.AddressPositionWithIdKeyPrefix(address, id))
+}
+
+func (k Keeper) CreateClosedPosition(ctx sdk.Context, wrappedPosition types.WrappedPosition) {
+	store := ctx.KVStore(k.storeKey)
 
 	bz := k.cdc.MustMarshal(&wrappedPosition)
-	store.Set(positionKey, bz)
+	store.Set(types.AddressClosedPositionWithIdKeyPrefix(wrappedPosition.Address.AccAddress(), 0), bz) // TODO: id
 }
 
 func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
@@ -52,8 +66,15 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 
 	positionKey := types.AddressPositionWithIdKeyPrefix(sender, positionCount+1)
 
+	wrappedPosition := types.WrappedPosition{
+		Id:       string(positionKey),
+		Address:  msg.Sender,
+		StartAt:  *timestamppb.New(time.Now()), // TODO
+		Position: msg.Position,
+	}
+
 	// Not sure how to convert any type to position type
-	k.CreatePosition(ctx, positionKey, msg.Position)
+	k.CreatePosition(ctx, wrappedPosition)
 
 	return nil
 }
@@ -64,5 +85,10 @@ func (k Keeper) Claim(ctx sdk.Context, msg *types.MsgClaim) error {
 }
 
 func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) error {
+	position := k.GetPosition(ctx, msg.Sender.AccAddress(), 0) // TODO: id
+	k.DeletePosition(ctx, msg.Sender.AccAddress(), 0)          // TODO: id
+
+	k.CreateClosedPosition(ctx, position)
+
 	return nil
 }

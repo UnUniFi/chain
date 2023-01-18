@@ -21,17 +21,18 @@ const (
 
 const (
 	// pool assets
-	KeyPrefixDerivativesPoolAssets = "derivatives_pool_assets"
+	KeyPrefixDerivativesPoolAssets = "pool_assets"
 	// subpool assets
-	KeyPrefixDerivativesSubpoolAssets = "derivatives_subpool_assets"
+	KeyPrefixDerivativesSubpoolAssets = "subpool_assets"
 	// user deposited real assets
-	KeyPrefixDerivativesUserDepositedAssets = "derivatives_user_deposited_assets"
+	KeyPrefixDerivativesUserDepositedAssets = "user_deposited_assets"
 	// User deposits by address
-	KeyPrefixAddressDeposit = "derivatives_address_deposit"
+	KeyPrefixAddressDeposit = "address_deposit"
 	// assets deposits by denom
-	KeyPrefixAssetDeposit = "derivatives_asset_deposit"
+	KeyPrefixAssetDeposit = "asset_deposit"
 	//
-	KeyPrefixPosition = "derivatives_position"
+	KeyPrefixPosition       = "position"
+	KeyPrefixClosedPosition = "closed_position"
 )
 
 func AddressDepositKeyPrefix(depositor sdk.AccAddress) []byte {
@@ -55,5 +56,13 @@ func AddressPositionKeyPrefix(sender sdk.AccAddress) []byte {
 }
 
 func AddressPositionWithIdKeyPrefix(sender sdk.AccAddress, posId int) []byte {
+	return append(AddressPositionKeyPrefix(sender), byte(posId))
+}
+
+func AddressClosedPositionKeyPrefix(sender sdk.AccAddress) []byte {
+	return append([]byte(KeyPrefixPosition), address.MustLengthPrefix(sender)...)
+}
+
+func AddressClosedPositionWithIdKeyPrefix(sender sdk.AccAddress, posId int) []byte {
 	return append(AddressPositionKeyPrefix(sender), byte(posId))
 }

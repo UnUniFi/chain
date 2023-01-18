@@ -1,7 +1,10 @@
 package keeper
 
 import (
+	"context"
+
 	"github.com/UnUniFi/chain/x/derivatives/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type msgServer struct {
@@ -15,3 +18,13 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 }
 
 var _ types.MsgServer = msgServer{}
+
+func (k msgServer) OpenPosition(c context.Context, msg *types.MsgOpenPosition) (*types.MsgOpenPositionResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	err := k.Keeper.OpenPosition(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+	return &types.MsgOpenPositionResponse{}, nil
+}
