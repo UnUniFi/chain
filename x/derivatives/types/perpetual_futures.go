@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/codec/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gogo/protobuf/proto"
 )
 
@@ -22,4 +23,8 @@ func UnpackPerpetualFuturesPosition(positionAny *types.Any) (Position, error) {
 	}
 
 	return nil, nil
+}
+
+func CalculatePrincipal(position PerpetualFuturesPosition) sdk.Dec {
+	return position.Size_.Quo(sdk.NewDecFromInt(position.Leverage))
 }

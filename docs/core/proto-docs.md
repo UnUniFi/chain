@@ -1510,6 +1510,7 @@ GenesisState defines the derivatives module's genesis state.
 | `position_type` | [PositionType](#ununifi.derivatives.PositionType) |  |  |
 | `denom` | [string](#string) |  |  |
 | `quote_denom` | [string](#string) |  |  |
+| `size` | [string](#string) |  |  |
 | `leverage` | [string](#string) |  |  |
 
 

@@ -31,8 +31,11 @@ const (
 	// assets deposits by denom
 	KeyPrefixAssetDeposit = "asset_deposit"
 	//
-	KeyPrefixPosition       = "position"
-	KeyPrefixClosedPosition = "closed_position"
+	KeyPrefixPosition         = "position"
+	KeyPrefixClosedPosition   = "closed_position"
+	KeyPrefixPerpetualFutures = "perpetual_futures"
+	KeyPrefixPerpetualOptions = "perpetual_options"
+	KeyPrefixNetPosition      = "net_position"
 )
 
 func AddressDepositKeyPrefix(depositor sdk.AccAddress) []byte {
@@ -65,4 +68,8 @@ func AddressClosedPositionKeyPrefix(sender sdk.AccAddress) []byte {
 
 func AddressClosedPositionWithIdKeyPrefix(sender sdk.AccAddress, posId int) []byte {
 	return append(AddressPositionKeyPrefix(sender), byte(posId))
+}
+
+func DenomNetPositionPerpetualFuturesKeyPrefix(denom string) []byte {
+	return append(append([]byte(KeyPrefixPerpetualFutures), []byte(KeyPrefixNetPosition)...), []byte(denom)...)
 }

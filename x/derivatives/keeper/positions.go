@@ -62,6 +62,7 @@ func (k Keeper) CreateClosedPosition(ctx sdk.Context, wrappedPosition types.Wrap
 func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
 	sender := msg.Sender.AccAddress()
 	positions := k.GetUserPositions(ctx, sender)
+	// TODO: this way cause bugs because closed positions are deleted from the store of opened positions. So it may be better to hold a last id in a KV store space.
 	positionCount := len(positions)
 
 	positionKey := types.AddressPositionWithIdKeyPrefix(sender, positionCount+1)
@@ -86,11 +87,6 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 	case *types.PerpetualOptionsPosition:
 		return k.OpenPerpetualOptionsPosition(ctx, msg.Sender.AccAddress(), position.(*types.PerpetualOptionsPosition))
 	}
-
-	return nil
-}
-
-func (k Keeper) Claim(ctx sdk.Context, msg *types.MsgClaim) error {
 
 	return nil
 }

@@ -19,7 +19,12 @@ message PerpetualFuturesPosition {
   string quote_denom = 3 [
     (gogoproto.moretags) = "yaml:\"quote_denom\""
   ];
-  string leverage = 4 [
+  string size = 4 [
+    (gogoproto.moretags) = "yaml:\"size\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string leverage = 5 [
     (gogoproto.moretags) = "yaml:\"leverage\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
