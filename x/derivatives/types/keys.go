@@ -30,6 +30,8 @@ const (
 	KeyPrefixAddressDeposit = "derivatives_address_deposit"
 	// assets deposits by denom
 	KeyPrefixAssetDeposit = "derivatives_asset_deposit"
+	//
+	KeyPrefixPosition = "derivatives_position"
 )
 
 func AddressDepositKeyPrefix(depositor sdk.AccAddress) []byte {
@@ -46,4 +48,12 @@ func AssetKeyPrefix(denom string) []byte {
 
 func AssetDepositKeyPrefix(denom string) []byte {
 	return append([]byte(KeyPrefixAssetDeposit), []byte(denom)...)
+}
+
+func AddressPositionKeyPrefix(sender sdk.AccAddress) []byte {
+	return append([]byte(KeyPrefixPosition), address.MustLengthPrefix(sender)...)
+}
+
+func AddressPositionWithIdKeyPrefix(sender sdk.AccAddress, posId int) []byte {
+	return append(AddressPositionKeyPrefix(sender), byte(posId))
 }

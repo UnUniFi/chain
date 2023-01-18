@@ -104,6 +104,8 @@
 - [derivatives/tx.proto](#derivatives/tx.proto)
     - [MsgBurnLiquidityProviderToken](#ununifi.derivatives.MsgBurnLiquidityProviderToken)
     - [MsgBurnLiquidityProviderTokenResponse](#ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse)
+    - [MsgClaim](#ununifi.derivatives.MsgClaim)
+    - [MsgClaimResponse](#ununifi.derivatives.MsgClaimResponse)
     - [MsgClosePosition](#ununifi.derivatives.MsgClosePosition)
     - [MsgClosePositionResponse](#ununifi.derivatives.MsgClosePositionResponse)
     - [MsgMintLiquidityProviderToken](#ununifi.derivatives.MsgMintLiquidityProviderToken)
@@ -1621,6 +1623,31 @@ this line is used by starport scaffolding # 2 | GET|/UnUniFi/derivatives/params|
 
 
 
+<a name="ununifi.derivatives.MsgClaim"></a>
+
+### MsgClaim
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.MsgClaimResponse"></a>
+
+### MsgClaimResponse
+
+
+
+
+
+
+
 <a name="ununifi.derivatives.MsgClosePosition"></a>
 
 ### MsgClosePosition
@@ -1716,6 +1743,7 @@ this line is used by starport scaffolding # 2 | GET|/UnUniFi/derivatives/params|
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `MintLiquidityProviderToken` | [MsgMintLiquidityProviderToken](#ununifi.derivatives.MsgMintLiquidityProviderToken) | [MsgMintLiquidityProviderTokenResponse](#ununifi.derivatives.MsgMintLiquidityProviderTokenResponse) |  | |
 | `BurnLiquidityProviderToken` | [MsgBurnLiquidityProviderToken](#ununifi.derivatives.MsgBurnLiquidityProviderToken) | [MsgBurnLiquidityProviderTokenResponse](#ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse) |  | |
+| `Claim` | [MsgClaim](#ununifi.derivatives.MsgClaim) | [MsgClaimResponse](#ununifi.derivatives.MsgClaimResponse) |  | |
 | `OpenPosition` | [MsgOpenPosition](#ununifi.derivatives.MsgOpenPosition) | [MsgOpenPositionResponse](#ununifi.derivatives.MsgOpenPositionResponse) |  | |
 | `ClosePosition` | [MsgClosePosition](#ununifi.derivatives.MsgClosePosition) | [MsgClosePositionResponse](#ununifi.derivatives.MsgClosePositionResponse) |  | |
 
