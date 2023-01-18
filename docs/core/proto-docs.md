@@ -99,8 +99,12 @@
     - [OptionType](#ununifi.derivatives.OptionType)
   
 - [derivatives/query.proto](#derivatives/query.proto)
+    - [QueryClaimableLiquidityProviderRewardsRequest](#ununifi.derivatives.QueryClaimableLiquidityProviderRewardsRequest)
+    - [QueryClaimableLiquidityProviderRewardsResponse](#ununifi.derivatives.QueryClaimableLiquidityProviderRewardsResponse)
     - [QueryParamsRequest](#ununifi.derivatives.QueryParamsRequest)
     - [QueryParamsResponse](#ununifi.derivatives.QueryParamsResponse)
+    - [QueryPositionsRequest](#ununifi.derivatives.QueryPositionsRequest)
+    - [QueryPositionsResponse](#ununifi.derivatives.QueryPositionsResponse)
   
     - [Query](#ununifi.derivatives.Query)
   
@@ -1583,6 +1587,37 @@ GenesisState defines the derivatives module's genesis state.
 
 
 
+<a name="ununifi.derivatives.QueryClaimableLiquidityProviderRewardsRequest"></a>
+
+### QueryClaimableLiquidityProviderRewardsRequest
+this line is used by starport scaffolding # 3
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryClaimableLiquidityProviderRewardsResponse"></a>
+
+### QueryClaimableLiquidityProviderRewardsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
 <a name="ununifi.derivatives.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
@@ -1607,6 +1642,37 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 
 
 
+
+<a name="ununifi.derivatives.QueryPositionsRequest"></a>
+
+### QueryPositionsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPositionsResponse"></a>
+
+### QueryPositionsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `positions` | [WrappedPosition](#ununifi.derivatives.WrappedPosition) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -1621,9 +1687,9 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#ununifi.derivatives.QueryParamsRequest) | [QueryParamsResponse](#ununifi.derivatives.QueryParamsResponse) | Parameters queries the parameters of the module.
-
-this line is used by starport scaffolding # 2 | GET|/UnUniFi/derivatives/params|
+| `Params` | [QueryParamsRequest](#ununifi.derivatives.QueryParamsRequest) | [QueryParamsResponse](#ununifi.derivatives.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/UnUniFi/derivatives/params|
+| `ClaimableLiquidityProviderRewards` | [QueryClaimableLiquidityProviderRewardsRequest](#ununifi.derivatives.QueryClaimableLiquidityProviderRewardsRequest) | [QueryClaimableLiquidityProviderRewardsResponse](#ununifi.derivatives.QueryClaimableLiquidityProviderRewardsResponse) | this line is used by starport scaffolding # 2 | GET|/UnUniFi/derivatives/liquidity-providers/{address}/claimable-rewards|
+| `Positions` | [QueryPositionsRequest](#ununifi.derivatives.QueryPositionsRequest) | [QueryPositionsResponse](#ununifi.derivatives.QueryPositionsResponse) |  | GET|/UnUniFi/derivatives/positions/{address}|
 
  <!-- end services -->
 
