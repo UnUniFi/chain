@@ -1,16 +1,25 @@
 package keeper
 
 import (
-	"fmt"
-	"math/big"
 	"time"
 
-	cdcTypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
+
+func (k Keeper) GetLastPositionId(ctx sdk.Context) (id uint64) {
+	store := ctx.KVStore(k.storeKey)
+
+	bz := store.Get([]byte(types.KeyPrefixLastPositionId))
+	if bz == nil {
+		panic("last position id not set in genesis")
+	}
+
+	id = types.GetPositionIdFromBytes(bz)
+	return
+}
 
 func (k Keeper) GetUserPositions(ctx sdk.Context, user sdk.AccAddress) []types.WrappedPosition {
 	store := ctx.KVStore(k.storeKey)
@@ -33,10 +42,11 @@ func (k Keeper) CreatePosition(ctx sdk.Context, wrappedPosition types.WrappedPos
 	store := ctx.KVStore(k.storeKey)
 
 	bz := k.cdc.MustMarshal(&wrappedPosition)
-	store.Set(types.AddressPositionWithIdKeyPrefix(wrappedPosition.Address.AccAddress(), 0), bz) // TODO: id
+	positionId := types.GetPositionIdFromString(wrappedPosition.Id)
+	store.Set(types.AddressPositionWithIdKeyPrefix(wrappedPosition.Address.AccAddress(), positionId), bz)
 }
 
-func (k Keeper) GetPosition(ctx sdk.Context, address sdk.AccAddress, id int) types.WrappedPosition {
+func (k Keeper) GetPosition(ctx sdk.Context, address sdk.AccAddress, id uint64) types.WrappedPosition {
 	store := ctx.KVStore(k.storeKey)
 
 	bz := store.Get(types.AddressPositionWithIdKeyPrefix(address, id))
@@ -46,7 +56,7 @@ func (k Keeper) GetPosition(ctx sdk.Context, address sdk.AccAddress, id int) typ
 	return position
 }
 
-func (k Keeper) DeletePosition(ctx sdk.Context, address sdk.AccAddress, id int) {
+func (k Keeper) DeletePosition(ctx sdk.Context, address sdk.AccAddress, id uint64) {
 	store := ctx.KVStore(k.storeKey)
 
 	store.Delete(types.AddressPositionWithIdKeyPrefix(address, id))
@@ -56,25 +66,23 @@ func (k Keeper) CreateClosedPosition(ctx sdk.Context, wrappedPosition types.Wrap
 	store := ctx.KVStore(k.storeKey)
 
 	bz := k.cdc.MustMarshal(&wrappedPosition)
-	store.Set(types.AddressClosedPositionWithIdKeyPrefix(wrappedPosition.Address.AccAddress(), 0), bz) // TODO: id
+	positionId := types.GetPositionIdFromString(wrappedPosition.Id)
+	store.Set(types.AddressClosedPositionWithIdKeyPrefix(wrappedPosition.Address.AccAddress(), positionId), bz)
 }
 
 func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
 	sender := msg.Sender.AccAddress()
-	positions := k.GetUserPositions(ctx, sender)
-	// TODO: this way cause bugs because closed positions are deleted from the store of opened positions. So it may be better to hold a last id in a KV store space.
-	positionCount := len(positions)
+	lastPositionId := k.GetLastPositionId(ctx)
 
-	positionKey := types.AddressPositionWithIdKeyPrefix(sender, positionCount+1)
+	positionKey := types.AddressPositionWithIdKeyPrefix(sender, lastPositionId+1)
 
 	wrappedPosition := types.WrappedPosition{
-		Id:       string(positionKey), // TODO
+		Id:       string(positionKey),
 		Address:  msg.Sender,
 		StartAt:  *timestamppb.New(time.Now()), // TODO
 		Position: msg.Position,
 	}
 
-	// Not sure how to convert any type to position type
 	k.CreatePosition(ctx, wrappedPosition)
 
 	position, err := types.UnpackPosition(&msg.Position)
@@ -92,8 +100,9 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 }
 
 func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) error {
-	wrappedPosition := k.GetPosition(ctx, msg.Sender.AccAddress(), 0) // TODO: id
-	k.DeletePosition(ctx, msg.Sender.AccAddress(), 0)                 // TODO: id
+	positionId := types.GetPositionIdFromBytes([]byte(msg.PositionId))
+	wrappedPosition := k.GetPosition(ctx, msg.Sender.AccAddress(), positionId)
+	k.DeletePosition(ctx, msg.Sender.AccAddress(), positionId)
 
 	k.CreateClosedPosition(ctx, wrappedPosition)
 

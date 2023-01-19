@@ -1,6 +1,8 @@
 package types
 
 import (
+	"encoding/binary"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 )
@@ -36,7 +38,22 @@ const (
 	KeyPrefixPerpetualFutures = "perpetual_futures"
 	KeyPrefixPerpetualOptions = "perpetual_options"
 	KeyPrefixNetPosition      = "net_position"
+	KeyPrefixLastPositionId   = "last_position_id"
 )
+
+func GetPositionIdBytes(posId uint64) (posIdBz []byte) {
+	posIdBz = make([]byte, 8)
+	binary.BigEndian.PutUint64(posIdBz, posId)
+	return
+}
+
+func GetPositionIdFromBytes(bz []byte) uint64 {
+	return binary.BigEndian.Uint64(bz)
+}
+
+func GetPositionIdFromString(idStr string) uint64 {
+	return GetPositionIdFromBytes([]byte(idStr))
+}
 
 func AddressDepositKeyPrefix(depositor sdk.AccAddress) []byte {
 	return append([]byte(KeyPrefixAddressDeposit), address.MustLengthPrefix(depositor)...)
@@ -58,16 +75,16 @@ func AddressPositionKeyPrefix(sender sdk.AccAddress) []byte {
 	return append([]byte(KeyPrefixPosition), address.MustLengthPrefix(sender)...)
 }
 
-func AddressPositionWithIdKeyPrefix(sender sdk.AccAddress, posId int) []byte {
-	return append(AddressPositionKeyPrefix(sender), byte(posId))
+func AddressPositionWithIdKeyPrefix(sender sdk.AccAddress, posId uint64) []byte {
+	return append(AddressPositionKeyPrefix(sender), GetPositionIdBytes(posId)...)
 }
 
 func AddressClosedPositionKeyPrefix(sender sdk.AccAddress) []byte {
 	return append([]byte(KeyPrefixPosition), address.MustLengthPrefix(sender)...)
 }
 
-func AddressClosedPositionWithIdKeyPrefix(sender sdk.AccAddress, posId int) []byte {
-	return append(AddressPositionKeyPrefix(sender), byte(posId))
+func AddressClosedPositionWithIdKeyPrefix(sender sdk.AccAddress, posId uint64) []byte {
+	return append(AddressPositionKeyPrefix(sender), GetPositionIdBytes(posId)...)
 }
 
 func DenomNetPositionPerpetualFuturesKeyPrefix(denom string) []byte {
