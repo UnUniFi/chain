@@ -111,8 +111,8 @@
 - [derivatives/tx.proto](#derivatives/tx.proto)
     - [MsgBurnLiquidityProviderToken](#ununifi.derivatives.MsgBurnLiquidityProviderToken)
     - [MsgBurnLiquidityProviderTokenResponse](#ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse)
-    - [MsgClaim](#ununifi.derivatives.MsgClaim)
-    - [MsgClaimResponse](#ununifi.derivatives.MsgClaimResponse)
+    - [MsgClaimLiquidityProviderRewards](#ununifi.derivatives.MsgClaimLiquidityProviderRewards)
+    - [MsgClaimLiquidityProviderRewardsResponse](#ununifi.derivatives.MsgClaimLiquidityProviderRewardsResponse)
     - [MsgClosePosition](#ununifi.derivatives.MsgClosePosition)
     - [MsgClosePositionResponse](#ununifi.derivatives.MsgClosePositionResponse)
     - [MsgMintLiquidityProviderToken](#ununifi.derivatives.MsgMintLiquidityProviderToken)
@@ -1728,9 +1728,9 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.MsgClaim"></a>
+<a name="ununifi.derivatives.MsgClaimLiquidityProviderRewards"></a>
 
-### MsgClaim
+### MsgClaimLiquidityProviderRewards
 
 
 
@@ -1743,9 +1743,9 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.MsgClaimResponse"></a>
+<a name="ununifi.derivatives.MsgClaimLiquidityProviderRewardsResponse"></a>
 
-### MsgClaimResponse
+### MsgClaimLiquidityProviderRewardsResponse
 
 
 
@@ -1847,7 +1847,7 @@ Query defines the gRPC querier service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `MintLiquidityProviderToken` | [MsgMintLiquidityProviderToken](#ununifi.derivatives.MsgMintLiquidityProviderToken) | [MsgMintLiquidityProviderTokenResponse](#ununifi.derivatives.MsgMintLiquidityProviderTokenResponse) |  | |
 | `BurnLiquidityProviderToken` | [MsgBurnLiquidityProviderToken](#ununifi.derivatives.MsgBurnLiquidityProviderToken) | [MsgBurnLiquidityProviderTokenResponse](#ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse) |  | |
-| `Claim` | [MsgClaim](#ununifi.derivatives.MsgClaim) | [MsgClaimResponse](#ununifi.derivatives.MsgClaimResponse) |  | |
+| `ClaimLiquidityProviderRewards` | [MsgClaimLiquidityProviderRewards](#ununifi.derivatives.MsgClaimLiquidityProviderRewards) | [MsgClaimLiquidityProviderRewardsResponse](#ununifi.derivatives.MsgClaimLiquidityProviderRewardsResponse) |  | |
 | `OpenPosition` | [MsgOpenPosition](#ununifi.derivatives.MsgOpenPosition) | [MsgOpenPositionResponse](#ununifi.derivatives.MsgOpenPositionResponse) |  | |
 | `ClosePosition` | [MsgClosePosition](#ununifi.derivatives.MsgClosePosition) | [MsgClosePositionResponse](#ununifi.derivatives.MsgClosePositionResponse) |  | |
 

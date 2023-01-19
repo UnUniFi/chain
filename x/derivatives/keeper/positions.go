@@ -21,10 +21,10 @@ func (k Keeper) GetLastPositionId(ctx sdk.Context) (id uint64) {
 	return
 }
 
-func (k Keeper) GetUserPositions(ctx sdk.Context, user sdk.AccAddress) []types.WrappedPosition {
+func (k Keeper) GetUserPositions(ctx sdk.Context, user sdk.AccAddress) []*types.WrappedPosition {
 	store := ctx.KVStore(k.storeKey)
 
-	positions := []types.WrappedPosition{}
+	positions := []*types.WrappedPosition{}
 	it := sdk.KVStorePrefixIterator(store, types.AddressPositionKeyPrefix(user))
 	defer it.Close()
 
@@ -32,7 +32,7 @@ func (k Keeper) GetUserPositions(ctx sdk.Context, user sdk.AccAddress) []types.W
 		position := types.WrappedPosition{}
 		k.cdc.Unmarshal(it.Value(), &position)
 
-		positions = append(positions, position)
+		positions = append(positions, &position)
 	}
 
 	return positions

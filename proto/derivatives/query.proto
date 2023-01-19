@@ -5,6 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
 import "derivatives/derivatives.proto";
 // this line is used by starport scaffolding # 1
 
@@ -39,7 +40,7 @@ message QueryParamsResponse {
 message QueryClaimableLiquidityProviderRewardsRequest {
   string address = 1 [
     (gogoproto.moretags)  = "yaml:\"address\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress"
+    (cosmos_proto.scalar) = "github.com/UnUniFi/chain/types.StringAccAddress"
   ];
 }
 
@@ -51,7 +52,7 @@ message QueryClaimableLiquidityProviderRewardsResponse {
 message QueryPositionsRequest {
   string address = 1 [
     (gogoproto.moretags)  = "yaml:\"address\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress"
+    (cosmos_proto.scalar) = "github.com/UnUniFi/chain/types.StringAccAddress"
   ];
 }
 

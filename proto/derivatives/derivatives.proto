@@ -5,6 +5,7 @@ import "google/protobuf/any.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/derivatives/types";
 
@@ -25,8 +26,7 @@ message WrappedPosition {
   ];
   string address = 2 [
     (gogoproto.moretags) = "yaml:\"address\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (cosmos_proto.scalar) = "github.com/UnUniFi/chain/types.StringAccAddress"
   ];
   google.protobuf.Timestamp start_at = 3 [
     (gogoproto.moretags) = "yaml:\"start_at\"",

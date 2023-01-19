@@ -32,10 +32,9 @@ func (k Keeper) Positions(c context.Context, req *types.QueryPositionsRequest) (
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	amount, err := nil, nil // TODO
-	if err != nil {
-		return nil, err
-	}
+	positions := k.GetUserPositions(ctx, sdk.AccAddress(req.Address))
 
-	return &types.QueryPositionsResponse{}, nil
+	return &types.QueryPositionsResponse{
+		Positions: positions,
+	}, nil
 }

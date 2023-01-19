@@ -11,7 +11,7 @@ option go_package = "github.com/UnUniFi/chain/x/derivatives/types";
 service Msg {
   rpc MintLiquidityProviderToken(MsgMintLiquidityProviderToken) returns (MsgMintLiquidityProviderTokenResponse);
   rpc BurnLiquidityProviderToken(MsgBurnLiquidityProviderToken) returns (MsgBurnLiquidityProviderTokenResponse);
-  rpc Claim(MsgClaim) returns (MsgClaimResponse);
+  rpc ClaimLiquidityProviderRewards(MsgClaimLiquidityProviderRewards) returns (MsgClaimLiquidityProviderRewardsResponse);
   rpc OpenPosition(MsgOpenPosition) returns (MsgOpenPositionResponse);
   rpc ClosePosition(MsgClosePosition) returns (MsgClosePositionResponse);
 }
@@ -77,7 +77,7 @@ message MsgClosePosition {
 
 message MsgClosePositionResponse {}
 
-message MsgClaim {
+message MsgClaimLiquidityProviderRewards {
   string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
@@ -85,4 +85,4 @@ message MsgClaim {
   ];
 }
 
-message MsgClaimResponse {}
+message MsgClaimLiquidityProviderRewardsResponse {}
