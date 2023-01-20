@@ -1851,6 +1851,110 @@ func (m *EventNftlistingDeleted) GetBorrowingAmount() *types.Coin {
 	return nil
 }
 
+type Liquidation struct {
+	Amount          types.Coin `protobuf:"bytes,1,opt,name=amount,proto3" json:"amount"`
+	LiquidationDate time.Time  `protobuf:"bytes,2,opt,name=liquidation_date,json=liquidationDate,proto3,stdtime" json:"liquidation_date"`
+}
+
+func (m *Liquidation) Reset()         { *m = Liquidation{} }
+func (m *Liquidation) String() string { return proto.CompactTextString(m) }
+func (*Liquidation) ProtoMessage()    {}
+func (*Liquidation) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f0570683065f368b, []int{21}
+}
+func (m *Liquidation) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Liquidation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Liquidation.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Liquidation) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Liquidation.Merge(m, src)
+}
+func (m *Liquidation) XXX_Size() int {
+	return m.Size()
+}
+func (m *Liquidation) XXX_DiscardUnknown() {
+	xxx_messageInfo_Liquidation.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Liquidation proto.InternalMessageInfo
+
+func (m *Liquidation) GetAmount() types.Coin {
+	if m != nil {
+		return m.Amount
+	}
+	return types.Coin{}
+}
+
+func (m *Liquidation) GetLiquidationDate() time.Time {
+	if m != nil {
+		return m.LiquidationDate
+	}
+	return time.Time{}
+}
+
+type Liquidations struct {
+	Liquidation     *Liquidation  `protobuf:"bytes,1,opt,name=liquidation,proto3" json:"liquidation,omitempty"`
+	NextLiquidation []Liquidation `protobuf:"bytes,2,rep,name=next_liquidation,json=nextLiquidation,proto3" json:"next_liquidation"`
+}
+
+func (m *Liquidations) Reset()         { *m = Liquidations{} }
+func (m *Liquidations) String() string { return proto.CompactTextString(m) }
+func (*Liquidations) ProtoMessage()    {}
+func (*Liquidations) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f0570683065f368b, []int{22}
+}
+func (m *Liquidations) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Liquidations) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Liquidations.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Liquidations) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Liquidations.Merge(m, src)
+}
+func (m *Liquidations) XXX_Size() int {
+	return m.Size()
+}
+func (m *Liquidations) XXX_DiscardUnknown() {
+	xxx_messageInfo_Liquidations.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Liquidations proto.InternalMessageInfo
+
+func (m *Liquidations) GetLiquidation() *Liquidation {
+	if m != nil {
+		return m.Liquidation
+	}
+	return nil
+}
+
+func (m *Liquidations) GetNextLiquidation() []Liquidation {
+	if m != nil {
+		return m.NextLiquidation
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterEnum("ununifi.nftmarket.ListingType", ListingType_name, ListingType_value)
 	proto.RegisterEnum("ununifi.nftmarket.ListingState", ListingState_name, ListingState_value)
@@ -1877,6 +1981,8 @@ func init() {
 	proto.RegisterType((*EventLiquidate)(nil), "ununifi.nftmarket.EventLiquidate")
 	proto.RegisterType((*PaymentStatus)(nil), "ununifi.nftmarket.PaymentStatus")
 	proto.RegisterType((*EventNftlistingDeleted)(nil), "ununifi.nftmarket.EventNftlistingDeleted")
+	proto.RegisterType((*Liquidation)(nil), "ununifi.nftmarket.Liquidation")
+	proto.RegisterType((*Liquidations)(nil), "ununifi.nftmarket.Liquidations")
 }
 
 func init() { proto.RegisterFile("nftmarket/nftmarket.proto", fileDescriptor_f0570683065f368b) }
@@ -3468,6 +3574,96 @@ func (m *EventNftlistingDeleted) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	return len(dAtA) - i, nil
 }
 
+func (m *Liquidation) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Liquidation) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Liquidation) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	n24, err24 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.LiquidationDate, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.LiquidationDate):])
+	if err24 != nil {
+		return 0, err24
+	}
+	i -= n24
+	i = encodeVarintNftmarket(dAtA, i, uint64(n24))
+	i--
+	dAtA[i] = 0x12
+	{
+		size, err := m.Amount.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintNftmarket(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *Liquidations) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Liquidations) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Liquidations) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.NextLiquidation) > 0 {
+		for iNdEx := len(m.NextLiquidation) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.NextLiquidation[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintNftmarket(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if m.Liquidation != nil {
+		{
+			size, err := m.Liquidation.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintNftmarket(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintNftmarket(dAtA []byte, offset int, v uint64) int {
 	offset -= sovNftmarket(v)
 	base := offset
@@ -4076,6 +4272,38 @@ func (m *EventNftlistingDeleted) Size() (n int) {
 	if m.BorrowingAmount != nil {
 		l = m.BorrowingAmount.Size()
 		n += 1 + l + sovNftmarket(uint64(l))
+	}
+	return n
+}
+
+func (m *Liquidation) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.Amount.Size()
+	n += 1 + l + sovNftmarket(uint64(l))
+	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.LiquidationDate)
+	n += 1 + l + sovNftmarket(uint64(l))
+	return n
+}
+
+func (m *Liquidations) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Liquidation != nil {
+		l = m.Liquidation.Size()
+		n += 1 + l + sovNftmarket(uint64(l))
+	}
+	if len(m.NextLiquidation) > 0 {
+		for _, e := range m.NextLiquidation {
+			l = e.Size()
+			n += 1 + l + sovNftmarket(uint64(l))
+		}
 	}
 	return n
 }
@@ -8747,6 +8975,242 @@ func (m *EventNftlistingDeleted) Unmarshal(dAtA []byte) error {
 				m.BorrowingAmount = &types.Coin{}
 			}
 			if err := m.BorrowingAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipNftmarket(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthNftmarket
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Liquidation) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowNftmarket
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Liquidation: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Liquidation: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowNftmarket
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthNftmarket
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthNftmarket
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LiquidationDate", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowNftmarket
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthNftmarket
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthNftmarket
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.LiquidationDate, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipNftmarket(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthNftmarket
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Liquidations) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowNftmarket
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Liquidations: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Liquidations: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Liquidation", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowNftmarket
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthNftmarket
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthNftmarket
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Liquidation == nil {
+				m.Liquidation = &Liquidation{}
+			}
+			if err := m.Liquidation.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NextLiquidation", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowNftmarket
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthNftmarket
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthNftmarket
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NextLiquidation = append(m.NextLiquidation, Liquidation{})
+			if err := m.NextLiquidation[len(m.NextLiquidation)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

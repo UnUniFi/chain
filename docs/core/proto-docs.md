@@ -116,6 +116,8 @@
     - [EventPlaceBid](#ununifi.nftmarket.EventPlaceBid)
     - [EventRepay](#ununifi.nftmarket.EventRepay)
     - [EventSellingDecision](#ununifi.nftmarket.EventSellingDecision)
+    - [Liquidation](#ununifi.nftmarket.Liquidation)
+    - [Liquidations](#ununifi.nftmarket.Liquidations)
     - [ListedClass](#ununifi.nftmarket.ListedClass)
     - [ListedNft](#ununifi.nftmarket.ListedNft)
     - [Loan](#ununifi.nftmarket.Loan)
@@ -137,6 +139,8 @@
     - [QueryBidderBidsResponse](#ununifi.nftmarket.QueryBidderBidsResponse)
     - [QueryCDPsListRequest](#ununifi.nftmarket.QueryCDPsListRequest)
     - [QueryCDPsListResponse](#ununifi.nftmarket.QueryCDPsListResponse)
+    - [QueryLiquidationRequest](#ununifi.nftmarket.QueryLiquidationRequest)
+    - [QueryLiquidationResponse](#ununifi.nftmarket.QueryLiquidationResponse)
     - [QueryListedClassRequest](#ununifi.nftmarket.QueryListedClassRequest)
     - [QueryListedClassResponse](#ununifi.nftmarket.QueryListedClassResponse)
     - [QueryListedClassesRequest](#ununifi.nftmarket.QueryListedClassesRequest)
@@ -1733,6 +1737,38 @@ Query defines the gRPC querier service.
 
 
 
+<a name="ununifi.nftmarket.Liquidation"></a>
+
+### Liquidation
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `liquidation_date` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.Liquidations"></a>
+
+### Liquidations
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `liquidation` | [Liquidation](#ununifi.nftmarket.Liquidation) |  |  |
+| `next_liquidation` | [Liquidation](#ununifi.nftmarket.Liquidation) | repeated |  |
+
+
+
+
+
+
 <a name="ununifi.nftmarket.ListedClass"></a>
 
 ### ListedClass
@@ -2044,6 +2080,37 @@ GenesisState defines the nftmarket module's genesis state.
 
 ### QueryCDPsListResponse
 
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryLiquidationRequest"></a>
+
+### QueryLiquidationRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.QueryLiquidationResponse"></a>
+
+### QueryLiquidationResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `liquidations` | [Liquidations](#ununifi.nftmarket.Liquidations) |  |  |
 
 
 
@@ -2379,6 +2446,7 @@ Query defines the gRPC querier service.
 | `BidderBids` | [QueryBidderBidsRequest](#ununifi.nftmarket.QueryBidderBidsRequest) | [QueryBidderBidsResponse](#ununifi.nftmarket.QueryBidderBidsResponse) |  | GET|/ununifi/nftmarket/bidder_bids/{bidder}|
 | `PaymentStatus` | [QueryPaymentStatusRequest](#ununifi.nftmarket.QueryPaymentStatusRequest) | [QueryPaymentStatusResponse](#ununifi.nftmarket.QueryPaymentStatusResponse) |  | GET|/ununifi/nftmarket/payment_status/{class_id}/{nft_id}/{bidder}|
 | `Rewards` | [QueryRewardsRequest](#ununifi.nftmarket.QueryRewardsRequest) | [QueryRewardsResponse](#ununifi.nftmarket.QueryRewardsResponse) |  | GET|/ununifi/nftmarket/rewards/{address}|
+| `Liquidation` | [QueryLiquidationRequest](#ununifi.nftmarket.QueryLiquidationRequest) | [QueryLiquidationResponse](#ununifi.nftmarket.QueryLiquidationResponse) |  | GET|/ununifi/nftmarket/liquidation/{class_id}/{nft_id}|
 
  <!-- end services -->
 

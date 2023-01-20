@@ -122,6 +122,15 @@ func (m NftBids) SortLowerDepositAmount() NftBids {
 	return dest
 }
 
+func (m NftBids) SortLowerBiddingPeriod() NftBids {
+	dest := NftBids{}
+	dest = append(NftBids{}, m...)
+	sort.SliceStable(dest, func(i, j int) bool {
+		return dest[i].BiddingPeriod.Before(dest[j].BiddingPeriod)
+	})
+	return dest
+}
+
 func (m NftBids) GetHighestBid() NftBid {
 	highestBidder := NftBid{
 		BidAmount: sdk.NewCoin(m[0].BidAmount.Denom, sdk.ZeroInt()),
@@ -142,6 +151,79 @@ func (m NftBids) GetBidByBidder(bidder string) NftBid {
 		}
 	}
 	return NftBid{}
+}
+
+func (m NftBids) MakeExcludeExpiredBids(expiredBids NftBids) NftBids {
+	excludeList := make(map[string]bool)
+	for _, s := range expiredBids {
+		excludeList[s.Bidder] = true
+	}
+	var newArr NftBids
+	for _, s := range m {
+		if !excludeList[s.Bidder] {
+			newArr = append(newArr, s)
+		}
+	}
+	return newArr
+}
+
+func (m NftBids) MakeBorrowedBidExcludeExpiredBids(borrowAmount sdk.Coin, start time.Time, expiredBids NftBids) NftBids {
+	newBids := m.MakeExcludeExpiredBids(expiredBids)
+	newBids.BorrowFromBids(borrowAmount, start)
+	return newBids
+}
+
+func (m *NftBids) BorrowFromBids(borrowAmount sdk.Coin, start time.Time) {
+	bids := []NftBid(*m)
+	for i := 0; i < len(bids); i++ {
+		bid := &bids[i]
+		if borrowAmount.IsZero() {
+			break
+		}
+
+		usableAmount := bid.BorrowableAmount()
+		if usableAmount.Amount.IsZero() {
+			continue
+		}
+
+		// bigger msg Amount
+		if borrowAmount.IsGTE(usableAmount) {
+			borrow := Borrowing{
+				Amount:             sdk.NewCoin(usableAmount.Denom, usableAmount.Amount),
+				StartAt:            start,
+				PaidInterestAmount: sdk.NewCoin(usableAmount.Denom, sdk.ZeroInt()),
+			}
+			bid.Borrowings = append(bid.Borrowings, borrow)
+			borrowAmount = borrowAmount.Sub(borrow.Amount)
+		} else {
+			borrow := Borrowing{
+				Amount:             sdk.NewCoin(borrowAmount.Denom, borrowAmount.Amount),
+				StartAt:            start,
+				PaidInterestAmount: sdk.NewCoin(borrowAmount.Denom, sdk.ZeroInt()),
+			}
+			bid.Borrowings = append(bid.Borrowings, borrow)
+			borrowAmount.Amount = sdk.ZeroInt()
+		}
+		// todo: execute func
+		// k.SetBid(ctx, bid)
+
+	}
+}
+
+func (m NftBids) BorrowableAmount(denom string) sdk.Coin {
+	coin := sdk.NewCoin(denom, sdk.ZeroInt())
+	for _, s := range m {
+		coin = coin.Add(s.BorrowableAmount())
+	}
+	return coin
+}
+
+func (m NftBids) LiquidationAmount(denom string, end time.Time) sdk.Coin {
+	coin := sdk.NewCoin(denom, sdk.ZeroInt())
+	for _, s := range m {
+		coin = coin.Add(s.LiquidationAmount(end))
+	}
+	return coin
 }
 
 // todo: add proto then use it

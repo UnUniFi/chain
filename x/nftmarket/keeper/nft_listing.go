@@ -571,7 +571,7 @@ func (k Keeper) ProcessEndingNftListings(ctx sdk.Context) {
 
 	for listing, expiredBorrowedBids := range checkListingsWithBorrowedBids {
 		bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
-		if listing.CanRefinancing(bids, expiredBorrowedBids) {
+		if listing.CanRefinancing(bids, expiredBorrowedBids, ctx.BlockTime()) {
 			fmt.Println("---occur refinaing---")
 			k.Refinancings(ctx, listing, expiredBorrowedBids)
 		} else if listing.State == types.ListingState_END_LISTING {
