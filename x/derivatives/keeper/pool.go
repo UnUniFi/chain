@@ -192,8 +192,3 @@ func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgBurnLi
 
 	return nil
 }
-
-func (k Keeper) ClaimLiquidityProviderRewards(ctx sdk.Context, msg *types.MsgClaimLiquidityProviderRewards) error {
-
-	return nil
-}

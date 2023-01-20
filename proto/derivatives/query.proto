@@ -18,8 +18,8 @@ service Query {
     option (google.api.http).get = "/UnUniFi/derivatives/params";
   }
   // this line is used by starport scaffolding # 2
-  rpc ClaimableLiquidityProviderRewards(QueryClaimableLiquidityProviderRewardsRequest) returns (QueryClaimableLiquidityProviderRewardsResponse) {
-    option (google.api.http).get = "/UnUniFi/derivatives/liquidity-providers/{address}/claimable-rewards";
+  rpc LiquidityProviderRewardsSinceLastRedemption(QueryLiquidityProviderRewardsSinceLastRedemptionRequest) returns (QueryLiquidityProviderRewardsSinceLastRedemptionResponse) {
+    option (google.api.http).get = "/UnUniFi/derivatives/liquidity-providers/{address}/rewards-since-last-redemption";
   }
 
   rpc Positions(QueryPositionsRequest) returns (QueryPositionsResponse) {
@@ -37,14 +37,14 @@ message QueryParamsResponse {
 }
 
 // this line is used by starport scaffolding # 3
-message QueryClaimableLiquidityProviderRewardsRequest {
+message QueryLiquidityProviderRewardsSinceLastRedemptionRequest {
   string address = 1 [
     (gogoproto.moretags)  = "yaml:\"address\"",
     (cosmos_proto.scalar) = "github.com/UnUniFi/chain/types.StringAccAddress"
   ];
 }
 
-message QueryClaimableLiquidityProviderRewardsResponse {
+message QueryLiquidityProviderRewardsSinceLastRedemptionResponse {
   repeated cosmos.base.v1beta1.Coin amount = 1 [
     (gogoproto.moretags) = "yaml:\"amount\"",
     (gogoproto.nullable) = false

@@ -33,13 +33,15 @@ const (
 	// assets deposits by denom
 	KeyPrefixAssetDeposit = "asset_deposit"
 	//
-	KeyPrefixPosition         = "position"
-	KeyPrefixClosedPosition   = "closed_position"
-	KeyPrefixPerpetualFutures = "perpetual_futures"
-	KeyPrefixPerpetualOptions = "perpetual_options"
-	KeyPrefixNetPosition      = "net_position"
-	KeyPrefixLastPositionId   = "last_position_id"
-	KeyPrefixAccumulatedFee   = "accumulated_fee"
+	KeyPrefixPosition                                  = "position"
+	KeyPrefixClosedPosition                            = "closed_position"
+	KeyPrefixPerpetualFutures                          = "perpetual_futures"
+	KeyPrefixPerpetualOptions                          = "perpetual_options"
+	KeyPrefixNetPosition                               = "net_position"
+	KeyPrefixLastPositionId                            = "last_position_id"
+	KeyPrefixAccumulatedFee                            = "accumulated_fee"
+	KeyPrefixLPTokenMarketCapBreakdownAtLastRedemption = "lpt_market_cap_breakdown_at_last_redemption"
+	KeyPrefixLPTokenSupplyAtLastRedemption             = "lpt_supply_at_last_redemption"
 )
 
 func GetPositionIdBytes(posId uint64) (posIdBz []byte) {
@@ -90,4 +92,12 @@ func AddressClosedPositionWithIdKeyPrefix(sender sdk.AccAddress, posId uint64) [
 
 func DenomNetPositionPerpetualFuturesKeyPrefix(denom string) []byte {
 	return append(append([]byte(KeyPrefixPerpetualFutures), []byte(KeyPrefixNetPosition)...), []byte(denom)...)
+}
+
+func AddressLPTokenMarketCapBreakdownAtTimeOfLastRedemptionKeyPrefix(sender sdk.AccAddress) []byte {
+	return append([]byte(KeyPrefixLPTokenMarketCapBreakdownAtLastRedemption), address.MustLengthPrefix(sender)...)
+}
+
+func AddressLPTokenSupplyAtTimeOfLastRedemptionKeyPrefix(sender sdk.AccAddress) []byte {
+	return append([]byte(KeyPrefixLPTokenSupplyAtLastRedemption), address.MustLengthPrefix(sender)...)
 }

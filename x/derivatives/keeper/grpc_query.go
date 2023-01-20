@@ -12,7 +12,8 @@ import (
 
 var _ types.QueryServer = Keeper{}
 
-func (k Keeper) ClaimableLiquidityProviderRewards(c context.Context, req *types.QueryClaimableLiquidityProviderRewardsRequest) (*types.QueryClaimableLiquidityProviderRewardsResponse, error) {
+// TODO: just returning APY instead of amount is better for current specification
+func (k Keeper) LiquidityProviderRewardsSinceLastRedemption(c context.Context, req *types.QueryLiquidityProviderRewardsSinceLastRedemptionRequest) (*types.QueryLiquidityProviderRewardsSinceLastRedemptionResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -27,7 +28,7 @@ func (k Keeper) ClaimableLiquidityProviderRewards(c context.Context, req *types.
 	tempAmount := accumulatedFee.Amount.Mul(userBalance.Amount)
 	feeAmount := tempAmount.BigInt().Div(tempAmount.BigInt(), totalSupply.Amount.BigInt())
 
-	return &types.QueryClaimableLiquidityProviderRewardsResponse{
+	return &types.QueryLiquidityProviderRewardsSinceLastRedemptionResponse{
 		Amount: sdk.Coins{sdk.NewCoin(accumulatedFee.Denom, sdk.NewInt(feeAmount.Int64()))},
 	}, nil
 }
