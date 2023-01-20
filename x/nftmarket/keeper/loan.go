@@ -109,6 +109,7 @@ func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, require s
 	// todo same deposit re-borrow logic
 	requireAmount := sdk.NewCoin(require.Denom, require.Amount)
 	borrowingOrderBids := bids.SortBorrowing()
+	// todo use BorrowFromBids
 	for _, bid := range borrowingOrderBids {
 		if requireAmount.IsZero() {
 			break

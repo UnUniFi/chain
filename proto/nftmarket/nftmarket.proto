@@ -206,3 +206,13 @@ message PaymentStatus {
   ListingState state    = 7;
   bool         all_paid = 8;
 }
+
+message Liquidation{
+  cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp liquidation_date = 2 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+}
+
+message Liquidations{
+  Liquidation liquidation = 1 [(gogoproto.nullable) = true];
+  repeated Liquidation next_liquidation = 2 [(gogoproto.nullable) = false];
+}

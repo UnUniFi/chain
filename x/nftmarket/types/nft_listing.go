@@ -1,7 +1,7 @@
 package types
 
 import (
-	"fmt"
+	time "time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -38,23 +38,13 @@ func (b NftBid) IdBytes() []byte {
 	return b.NftId.IdBytes()
 }
 
-func (m NftListing) CanRefinancing(allBids, expiredBids []NftBid) bool {
-	fmt.Println("CanRefinancing-val")
-	fmt.Println(allBids)
-	fmt.Println(expiredBids)
-	fmt.Println("CanRefinancing")
-	fmt.Println(m.AutomaticRefinancing)
+func (m NftListing) CanRefinancing(allBids, expiredBids []NftBid, now time.Time) bool {
 	if !m.AutomaticRefinancing {
 		return false
 	}
-	fmt.Println("usableAmount")
 	usableAmount := m.MaxPossibleBorrowAmount(allBids, expiredBids)
-	fmt.Print(usableAmount)
-	fmt.Println()
-	fmt.Println("liquidationAmount")
-	liquidationAmount := m.CalcAmount(expiredBids)
-	fmt.Println(liquidationAmount)
-	if liquidationAmount.GT(usableAmount) {
+	liquidationAmount := NftBids(expiredBids).LiquidationAmount(m.BidToken, now)
+	if liquidationAmount.Amount.GT(usableAmount) {
 		return false
 	}
 	return true
@@ -65,31 +55,20 @@ func (m NftListing) CalcAmount(bids []NftBid) sdk.Int {
 }
 
 func (m NftListing) CalcAmountF(bids []NftBid, conditionF func(bid NftBid) bool) sdk.Int {
-	maxPossibleBorrowAmount := sdk.ZeroInt()
+	DepositAmount := sdk.ZeroInt()
 	for _, bid := range bids {
 		if conditionF(bid) {
 			continue
 		}
-		maxPossibleBorrowAmount = maxPossibleBorrowAmount.Add(bid.DepositAmount.Amount)
+		DepositAmount = DepositAmount.Add(bid.DepositAmount.Amount)
 	}
-	return maxPossibleBorrowAmount
+	return DepositAmount
 }
 
 func (m NftListing) MaxPossibleBorrowAmount(bids, expiredBids []NftBid) sdk.Int {
-	f := func() func(NftBid) bool {
-		expiredBidsMap := map[string]NftBid{}
-		for _, bid := range expiredBids {
-			expiredBidsMap[bid.GetIdToString()] = bid
-		}
-		return func(bid NftBid) bool {
-			if _, ok := expiredBidsMap[bid.GetIdToString()]; ok {
-				return true
-			} else {
-				return false
-			}
-		}
-	}
-	return m.CalcAmountF(bids, f())
+	newBids := NftBids(bids).MakeExcludeExpiredBids(expiredBids)
+	borrowableAmount := newBids.BorrowableAmount(m.BidToken)
+	return borrowableAmount.Amount
 }
 
 func (m NftListing) IsSelling() bool {
