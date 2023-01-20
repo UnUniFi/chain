@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
@@ -61,6 +62,26 @@ func (k Keeper) GetAssetBalance(ctx sdk.Context, asset types.Pool_Asset) sdk.Coi
 	k.cdc.MustUnmarshal(bz, &coin)
 
 	return coin
+}
+
+func (k Keeper) GetAccumulatedFee(ctx sdk.Context) sdk.Coin {
+	store := ctx.KVStore(k.storeKey)
+
+	coin := sdk.Coin{}
+	bz := store.Get([]byte(types.KeyPrefixAccumulatedFee))
+	k.cdc.MustUnmarshal(bz, &coin)
+
+	return coin
+}
+
+func (k Keeper) AddAccumulatedFee(ctx sdk.Context, feeAmount math.Int) {
+	store := ctx.KVStore(k.storeKey)
+
+	fee := k.GetAccumulatedFee(ctx)
+	fee.Amount = fee.Amount.Add(feeAmount)
+
+	bz := k.cdc.MustMarshal(&fee)
+	store.Set([]byte(types.KeyPrefixAccumulatedFee), bz)
 }
 
 func (k Keeper) GetUserDeposits(ctx sdk.Context, depositor sdk.AccAddress) []types.UserDeposit {

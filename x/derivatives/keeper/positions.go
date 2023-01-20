@@ -21,6 +21,23 @@ func (k Keeper) GetLastPositionId(ctx sdk.Context) (id uint64) {
 	return
 }
 
+func (k Keeper) GetAllPositions(ctx sdk.Context) []*types.WrappedPosition {
+	store := ctx.KVStore(k.storeKey)
+
+	positions := []*types.WrappedPosition{}
+	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixPosition))
+	defer it.Close()
+
+	for ; it.Valid(); it.Next() {
+		position := types.WrappedPosition{}
+		k.cdc.Unmarshal(it.Value(), &position)
+
+		positions = append(positions, &position)
+	}
+
+	return positions
+}
+
 func (k Keeper) GetUserPositions(ctx sdk.Context, user sdk.AccAddress) []*types.WrappedPosition {
 	store := ctx.KVStore(k.storeKey)
 

@@ -1312,6 +1312,7 @@ Query defines the gRPC querier service.
 | `base_lpt_mint_fee` | [string](#string) |  |  |
 | `base_lpt_redeem_fee` | [string](#string) |  |  |
 | `borrowing_fee_rate_per_hour` | [string](#string) |  |  |
+| `commission_rate` | [string](#string) |  |  |
 
 
 

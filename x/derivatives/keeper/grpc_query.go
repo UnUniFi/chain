@@ -18,12 +18,18 @@ func (k Keeper) ClaimableLiquidityProviderRewards(c context.Context, req *types.
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	amount, err := nil, nil // TODO
-	if err != nil {
-		return nil, err
-	}
+	totalSupply := k.bankKeeper.GetSupply(ctx, "DLP")
+	user := sdk.AccAddress(req.Address)
+	userBalance := k.bankKeeper.GetBalance(ctx, user, "DLP")
+	// TODO: not sure about the fee payout token - is it DLP or real asset?
+	accumulatedFee := k.GetAccumulatedFee(ctx)
 
-	return &types.QueryClaimableLiquidityProviderRewardsResponse{}, nil
+	tempAmount := accumulatedFee.Amount.Mul(userBalance.Amount)
+	feeAmount := tempAmount.BigInt().Div(tempAmount.BigInt(), totalSupply.Amount.BigInt())
+
+	return &types.QueryClaimableLiquidityProviderRewardsResponse{
+		Amount: sdk.Coins{sdk.NewCoin(accumulatedFee.Denom, sdk.NewInt(feeAmount.Int64()))},
+	}, nil
 }
 
 func (k Keeper) Positions(c context.Context, req *types.QueryPositionsRequest) (*types.QueryPositionsResponse, error) {
@@ -31,8 +37,14 @@ func (k Keeper) Positions(c context.Context, req *types.QueryPositionsRequest) (
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
+	positions := []*types.WrappedPosition{}
+
 	ctx := sdk.UnwrapSDKContext(c)
-	positions := k.GetUserPositions(ctx, sdk.AccAddress(req.Address))
+	if req.Address == "" {
+		positions = k.GetAllPositions(ctx)
+	} else {
+		positions = k.GetUserPositions(ctx, sdk.AccAddress(req.Address))
+	}
 
 	return &types.QueryPositionsResponse{
 		Positions: positions,

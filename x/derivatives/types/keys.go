@@ -39,6 +39,7 @@ const (
 	KeyPrefixPerpetualOptions = "perpetual_options"
 	KeyPrefixNetPosition      = "net_position"
 	KeyPrefixLastPositionId   = "last_position_id"
+	KeyPrefixAccumulatedFee   = "accumulated_fee"
 )
 
 func GetPositionIdBytes(posId uint64) (posIdBz []byte) {

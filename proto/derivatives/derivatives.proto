@@ -26,7 +26,8 @@ message WrappedPosition {
   ];
   string address = 2 [
     (gogoproto.moretags) = "yaml:\"address\"",
-    (cosmos_proto.scalar) = "github.com/UnUniFi/chain/types.StringAccAddress"
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
   ];
   google.protobuf.Timestamp start_at = 3 [
     (gogoproto.moretags) = "yaml:\"start_at\"",
@@ -118,6 +119,11 @@ message Params {
   ];
   string borrowing_fee_rate_per_hour = 5 [
     (gogoproto.moretags) = "yaml:\"borrowing_fee_rate_per_hour\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string commission_rate = 6 [
+    (gogoproto.moretags) = "yaml:\"commission_rate\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
