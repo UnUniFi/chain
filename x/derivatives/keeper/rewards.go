@@ -22,11 +22,12 @@ func (k Keeper) GetLPTokenMarketCapBreakdownAtLastRedemption(ctx sdk.Context, pr
 }
 
 func (k Keeper) SetLPTokenMarketCapBreakdownAtLastRedemption(ctx sdk.Context, provider sdk.AccAddress, marketCap types.PoolMarketCap) error {
-
-	return nil
-}
-
-func (k Keeper) GetLiquidityProviderRewardsSinceLastRedemption(ctx sdk.Context, provider sdk.AccAddress) error {
+	bz, err := k.cdc.Marshal(&marketCap)
+	if err != nil {
+		return err
+	}
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.AddressLPTokenMarketCapBreakdownAtTimeOfLastRedemptionKeyPrefix(provider), bz)
 
 	return nil
 }

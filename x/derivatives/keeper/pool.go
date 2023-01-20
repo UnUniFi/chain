@@ -167,6 +167,7 @@ func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgBurnLi
 	sender := msg.Sender.AccAddress()
 	amount := msg.Amount
 
+	// TODO: change DLP to udlp. u is a substitiution of μ. 1,000,000 udlp is treated as 1 DLP in user interfaces.
 	userBalance := k.bankKeeper.GetBalance(ctx, sender, "DLP")
 	if userBalance.Amount.LT(amount) {
 		return types.ErrInvalidRedeemAmount
