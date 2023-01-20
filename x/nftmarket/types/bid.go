@@ -100,6 +100,10 @@ func (m NftBids) SortBorrowing() NftBids {
 	return m.SortLowerLendingRate()
 }
 
+func (m NftBids) SortRepay() NftBids {
+	return m.SortHigherLendingRate()
+}
+
 func (m NftBids) SortLiquidation() NftBids {
 	return m.SortLowerDepositAmount()
 }
@@ -109,6 +113,15 @@ func (m NftBids) SortLowerLendingRate() NftBids {
 	dest = append(NftBids{}, m...)
 	sort.SliceStable(dest, func(i, j int) bool {
 		return dest[i].DepositLendingRate.LT(dest[j].DepositLendingRate)
+	})
+	return dest
+}
+
+func (m NftBids) SortHigherLendingRate() NftBids {
+	dest := NftBids{}
+	dest = append(NftBids{}, m...)
+	sort.SliceStable(dest, func(i, j int) bool {
+		return dest[i].DepositLendingRate.GT(dest[j].DepositLendingRate)
 	})
 	return dest
 }

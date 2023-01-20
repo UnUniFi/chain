@@ -392,7 +392,7 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 		return err
 	}
 
-	if listing.CanCancelBid() {
+	if !listing.CanCancelBid() {
 		return types.ErrCannotCancelBid
 	}
 
