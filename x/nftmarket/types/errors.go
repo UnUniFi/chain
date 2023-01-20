@@ -35,4 +35,6 @@ var (
 	ErrBorrowedDeposit                   = sdkerrors.Register(ModuleName, 28, "borrowed bid deposit")
 	ErrCannotCancelBid                   = sdkerrors.Register(ModuleName, 29, "listing is not in state where bid can be cancelled")
 	ErrCannotParseDec                    = sdkerrors.Register(ModuleName, 30, "cannot parse decimal")
+	ErrNotEnoughDeposit                  = sdkerrors.Register(ModuleName, 31, "not enough deposit")
+	ErrBidParamInvalid                   = sdkerrors.Register(ModuleName, 32, "bid param invalid")
 )
