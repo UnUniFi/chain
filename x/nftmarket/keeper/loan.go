@@ -200,18 +200,14 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 		return types.ErrRepayAmountExceedsLoanAmount
 	}
 
-	bids := k.GetBidsByNft(ctx, msg.NftId.IdBytes())
-	// todo higher interest rate list
-	for i := 0; i < len(bids)/2; i++ {
-		bids[i], bids[len(bids)-i-1] = bids[len(bids)-i-1], bids[i]
-	}
+	bids := types.NftBids(k.GetBidsByNft(ctx, msg.NftId.IdBytes())).SortRepay()
 	repaidAmount := sdk.NewCoin(msg.Amount.Denom, msg.Amount.Amount)
 	for _, bid := range bids {
 		if repaidAmount.IsZero() {
 			break
 		}
 		if len(bid.Borrowings) == 0 {
-			break
+			continue
 		}
 
 		borrowings := []types.Borrowing{}
