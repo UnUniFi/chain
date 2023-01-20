@@ -487,10 +487,8 @@ func CheckBidParams(listing types.NftListing, bid, deposit sdk.Coin, bids []type
 	p := sdk.NewDecFromInt(bid.Amount)
 	cp := c.Mul(p)
 	depositDec := sdk.NewDecFromInt(deposit.Amount)
-	if cp.LT(depositDec) {
-		// todo add suitable error msg
-		// need more deposit
-		return err
+	if cp.GT(depositDec) {
+		return types.ErrNotEnoughDeposit
 	}
 	q := bid
 	s := deposit
@@ -498,10 +496,14 @@ func CheckBidParams(listing types.NftListing, bid, deposit sdk.Coin, bids []type
 		q.Add(bid.BidAmount)
 		s.Add(bid.DepositAmount)
 	}
-	if depositDec.LT(sdk.NewDecFromInt(q.Sub(s).Amount)) {
-		// todo add suitable error msg
+	if q.IsLTE(s) {
+		return types.ErrBidParamInvalid
+	}
+	q_s := q.Sub(s)
+	q_s_dec := sdk.NewDecFromInt(q_s.Amount)
+	if depositDec.GT(q_s_dec) {
 		// deposit amount bigger
-		return err
+		return types.ErrBidParamInvalid
 	}
 	return nil
 }
