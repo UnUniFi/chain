@@ -25,7 +25,10 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAdd
 
 func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAddress, position *types.PerpetualFuturesPosition) error {
 	// TODO: calculate payoffs
-	// Didn't consider leverage yet
+	// Didn't consider leverage yet by Alan
+	// ^ position.Size_ is already contain the leverage.
+	// See x/derivatives/types/perpetual_futures.go CalculatePrincipal.
+	// position_size = leverage * principal by Yu
 	params := k.GetParams(ctx)
 	// decimal is 6
 	commissionRate := params.CommissionRate
