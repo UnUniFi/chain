@@ -116,7 +116,12 @@ message PoolMarketCap {
     ];
   }
 
-  repeated Breakdown breakdown = 1 [
+  string total = 1 [
+    (gogoproto.moretags) = "yaml:\"total\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  repeated Breakdown breakdown = 2 [
     (gogoproto.moretags) = "yaml:\"breakdown\"",
     (gogoproto.nullable) = false
   ];

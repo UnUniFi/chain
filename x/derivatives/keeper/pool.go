@@ -118,6 +118,60 @@ func (k Keeper) DepositPoolAsset(ctx sdk.Context, depositor sdk.AccAddress, depo
 	store.Set(key, coinBz)
 }
 
+func (k Keeper) GetPoolMarketCapSnapshot(ctx sdk.Context, height int64) types.PoolMarketCap {
+	store := ctx.KVStore(k.storeKey)
+
+	bz := store.Get(types.AddressPoolMarketCapSnapshotKeyPrefix(height))
+	marketCap := types.PoolMarketCap{}
+	k.cdc.Unmarshal(bz, &marketCap)
+
+	return marketCap
+}
+
+func (k Keeper) SetPoolMarketCapSnapshot(ctx sdk.Context, height int64, marketCap types.PoolMarketCap) error {
+	bz, err := k.cdc.Marshal(&marketCap)
+	if err != nil {
+		return err
+	}
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.AddressPoolMarketCapSnapshotKeyPrefix(height), bz)
+
+	return nil
+}
+
+func (k Keeper) GetLPTokenSupplySnapshot(ctx sdk.Context, height int64) sdk.Dec {
+	store := ctx.KVStore(k.storeKey)
+
+	bz := store.Get(types.AddressLPTokenSupplySnapshotKeyPrefix(height))
+	supply := sdk.Dec{}
+	supply.Unmarshal(bz)
+
+	return supply
+}
+
+func (k Keeper) SetLPTokenSupplySnapshot(ctx sdk.Context, height int64, supply sdk.Dec) error {
+	bz, err := supply.Marshal()
+	if err != nil {
+		return err
+	}
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.AddressLPTokenSupplySnapshotKeyPrefix(height), bz)
+
+	return nil
+}
+
+func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
+	return k.GetPoolMarketCapSnapshot(ctx, ctx.BlockHeight())
+}
+
+func (k Keeper) GetLPTokenSupply(ctx sdk.Context) sdk.Dec {
+	return k.GetLPTokenSupplySnapshot(ctx, ctx.BlockHeight())
+}
+
+func (k Keeper) GetLPTokenPrice(ctx sdk.Context) sdk.Dec {
+	return k.GetPoolMarketCap(ctx).CalculateLPTokenPrice(k.GetLPTokenSupply(ctx))
+}
+
 func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLiquidityProviderToken) error {
 	depositor := msg.Sender.AccAddress()
 	depositData := types.UserDeposit{
@@ -147,6 +201,8 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 		initialDlpPrice := *(assetMc.BigInt().Div(assetMc.BigInt(), big.NewInt(1000000)))
 		k.pricefeedKeeper.SetCurrentPrice(ctx, dlpMarketId, pftypes.CurrentPrice{Price: sdk.Dec(initialDlpPrice)})
 	} else {
+		//TODO: use GetLiquidityProviderTokenPrice
+
 		dlpPrice, err := k.pricefeedKeeper.GetCurrentPrice(ctx, dlpMarketId)
 		if err != nil {
 			return err

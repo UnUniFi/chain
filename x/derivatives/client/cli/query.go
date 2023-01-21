@@ -33,22 +33,41 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	return cmd
 }
 
-func CmdQueryClaimableLiquidityProviderRewards() *cobra.Command {
+func CmdQueryLiquidityProviderTokenRealAPY() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "claimable-rewards [address]",
-		Short: "shows the claimable liquidity provider rewards of the designated address",
-		Args:  cobra.ExactArgs(1),
+		Use:   "lpt-real-apy [beforeHeight] [afterHeight]",
+		Short: "shows the real Annual Percent Yield between beforeHeight and afterHeight",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			address, err := sdk.AccAddressFromBech32(args[0])
+			res, err := queryClient.LiquidityProviderTokenRealAPY(context.Background(), &types.QueryLiquidityProviderTokenRealAPYRequest{})
 			if err != nil {
 				return err
 			}
 
-			res, err := queryClient.ClaimableLiquidityProviderRewards(context.Background(), &types.QueryClaimableLiquidityProviderRewardsRequest{Address: (*ununifiTypes.StringAccAddress)(&address)})
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdQueryLiquidityProviderTokenNominalAPY() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "lpt-nominal-apy [beforeHeight] [afterHeight]",
+		Short: "shows the nominal Annual Percent Yield between beforeHeight and afterHeight",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.LiquidityProviderTokenNominalAPY(context.Background(), &types.QueryLiquidityProviderTokenNominalAPYRequest{})
 			if err != nil {
 				return err
 			}
