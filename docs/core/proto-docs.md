@@ -78,6 +78,8 @@
     - [Params](#ununifi.derivatives.Params)
     - [Pool](#ununifi.derivatives.Pool)
     - [Pool.Asset](#ununifi.derivatives.Pool.Asset)
+    - [PoolMarketCap](#ununifi.derivatives.PoolMarketCap)
+    - [PoolMarketCap.Breakdown](#ununifi.derivatives.PoolMarketCap.Breakdown)
     - [PriceData](#ununifi.derivatives.PriceData)
     - [Subpool](#ununifi.derivatives.Subpool)
     - [Subpool.Asset](#ununifi.derivatives.Subpool.Asset)
@@ -99,8 +101,8 @@
     - [OptionType](#ununifi.derivatives.OptionType)
   
 - [derivatives/query.proto](#derivatives/query.proto)
-    - [QueryClaimableLiquidityProviderRewardsRequest](#ununifi.derivatives.QueryClaimableLiquidityProviderRewardsRequest)
-    - [QueryClaimableLiquidityProviderRewardsResponse](#ununifi.derivatives.QueryClaimableLiquidityProviderRewardsResponse)
+    - [QueryLiquidityProviderRewardsSinceLastRedemptionRequest](#ununifi.derivatives.QueryLiquidityProviderRewardsSinceLastRedemptionRequest)
+    - [QueryLiquidityProviderRewardsSinceLastRedemptionResponse](#ununifi.derivatives.QueryLiquidityProviderRewardsSinceLastRedemptionResponse)
     - [QueryParamsRequest](#ununifi.derivatives.QueryParamsRequest)
     - [QueryParamsResponse](#ununifi.derivatives.QueryParamsResponse)
     - [QueryPositionsRequest](#ununifi.derivatives.QueryPositionsRequest)
@@ -111,8 +113,6 @@
 - [derivatives/tx.proto](#derivatives/tx.proto)
     - [MsgBurnLiquidityProviderToken](#ununifi.derivatives.MsgBurnLiquidityProviderToken)
     - [MsgBurnLiquidityProviderTokenResponse](#ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse)
-    - [MsgClaimLiquidityProviderRewards](#ununifi.derivatives.MsgClaimLiquidityProviderRewards)
-    - [MsgClaimLiquidityProviderRewardsResponse](#ununifi.derivatives.MsgClaimLiquidityProviderRewardsResponse)
     - [MsgClosePosition](#ununifi.derivatives.MsgClosePosition)
     - [MsgClosePositionResponse](#ununifi.derivatives.MsgClosePositionResponse)
     - [MsgMintLiquidityProviderToken](#ununifi.derivatives.MsgMintLiquidityProviderToken)
@@ -1351,6 +1351,38 @@ Query defines the gRPC querier service.
 
 
 
+<a name="ununifi.derivatives.PoolMarketCap"></a>
+
+### PoolMarketCap
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `breakdown` | [PoolMarketCap.Breakdown](#ununifi.derivatives.PoolMarketCap.Breakdown) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.PoolMarketCap.Breakdown"></a>
+
+### PoolMarketCap.Breakdown
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+| `price` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="ununifi.derivatives.PriceData"></a>
 
 ### PriceData
@@ -1401,7 +1433,7 @@ Query defines the gRPC querier service.
 <a name="ununifi.derivatives.UserDeposit"></a>
 
 ### UserDeposit
-
+TODO: Delete this. Not needed because claim function utilize redemption functionality
 
 
 | Field | Type | Label | Description |
@@ -1588,9 +1620,9 @@ GenesisState defines the derivatives module's genesis state.
 
 
 
-<a name="ununifi.derivatives.QueryClaimableLiquidityProviderRewardsRequest"></a>
+<a name="ununifi.derivatives.QueryLiquidityProviderRewardsSinceLastRedemptionRequest"></a>
 
-### QueryClaimableLiquidityProviderRewardsRequest
+### QueryLiquidityProviderRewardsSinceLastRedemptionRequest
 this line is used by starport scaffolding # 3
 
 
@@ -1603,9 +1635,9 @@ this line is used by starport scaffolding # 3
 
 
 
-<a name="ununifi.derivatives.QueryClaimableLiquidityProviderRewardsResponse"></a>
+<a name="ununifi.derivatives.QueryLiquidityProviderRewardsSinceLastRedemptionResponse"></a>
 
-### QueryClaimableLiquidityProviderRewardsResponse
+### QueryLiquidityProviderRewardsSinceLastRedemptionResponse
 
 
 
@@ -1689,7 +1721,7 @@ Query defines the gRPC querier service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Params` | [QueryParamsRequest](#ununifi.derivatives.QueryParamsRequest) | [QueryParamsResponse](#ununifi.derivatives.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/UnUniFi/derivatives/params|
-| `ClaimableLiquidityProviderRewards` | [QueryClaimableLiquidityProviderRewardsRequest](#ununifi.derivatives.QueryClaimableLiquidityProviderRewardsRequest) | [QueryClaimableLiquidityProviderRewardsResponse](#ununifi.derivatives.QueryClaimableLiquidityProviderRewardsResponse) | this line is used by starport scaffolding # 2 | GET|/UnUniFi/derivatives/liquidity-providers/{address}/claimable-rewards|
+| `LiquidityProviderRewardsSinceLastRedemption` | [QueryLiquidityProviderRewardsSinceLastRedemptionRequest](#ununifi.derivatives.QueryLiquidityProviderRewardsSinceLastRedemptionRequest) | [QueryLiquidityProviderRewardsSinceLastRedemptionResponse](#ununifi.derivatives.QueryLiquidityProviderRewardsSinceLastRedemptionResponse) | this line is used by starport scaffolding # 2 | GET|/UnUniFi/derivatives/liquidity-providers/{address}/rewards-since-last-redemption|
 | `Positions` | [QueryPositionsRequest](#ununifi.derivatives.QueryPositionsRequest) | [QueryPositionsResponse](#ununifi.derivatives.QueryPositionsResponse) |  | GET|/UnUniFi/derivatives/positions/{address}|
 
  <!-- end services -->
@@ -1722,31 +1754,6 @@ Query defines the gRPC querier service.
 <a name="ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse"></a>
 
 ### MsgBurnLiquidityProviderTokenResponse
-
-
-
-
-
-
-
-<a name="ununifi.derivatives.MsgClaimLiquidityProviderRewards"></a>
-
-### MsgClaimLiquidityProviderRewards
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.MsgClaimLiquidityProviderRewardsResponse"></a>
-
-### MsgClaimLiquidityProviderRewardsResponse
 
 
 
@@ -1848,7 +1855,6 @@ Query defines the gRPC querier service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `MintLiquidityProviderToken` | [MsgMintLiquidityProviderToken](#ununifi.derivatives.MsgMintLiquidityProviderToken) | [MsgMintLiquidityProviderTokenResponse](#ununifi.derivatives.MsgMintLiquidityProviderTokenResponse) |  | |
 | `BurnLiquidityProviderToken` | [MsgBurnLiquidityProviderToken](#ununifi.derivatives.MsgBurnLiquidityProviderToken) | [MsgBurnLiquidityProviderTokenResponse](#ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse) |  | |
-| `ClaimLiquidityProviderRewards` | [MsgClaimLiquidityProviderRewards](#ununifi.derivatives.MsgClaimLiquidityProviderRewards) | [MsgClaimLiquidityProviderRewardsResponse](#ununifi.derivatives.MsgClaimLiquidityProviderRewardsResponse) |  | |
 | `OpenPosition` | [MsgOpenPosition](#ununifi.derivatives.MsgOpenPosition) | [MsgOpenPositionResponse](#ununifi.derivatives.MsgOpenPositionResponse) |  | |
 | `ClosePosition` | [MsgClosePosition](#ununifi.derivatives.MsgClosePosition) | [MsgClosePositionResponse](#ununifi.derivatives.MsgClosePositionResponse) |  | |
 

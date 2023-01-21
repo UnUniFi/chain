@@ -39,17 +39,6 @@ func (k msgServer) BurnLiquidityProviderToken(c context.Context, msg *types.MsgB
 	return &types.MsgBurnLiquidityProviderTokenResponse{}, nil
 }
 
-// TODO: rename MsgClaim to MsgClaimLiquidityProviderRewards
-func (k msgServer) Claim(c context.Context, msg *types.MsgClaim) (*types.MsgClaimResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-
-	err := k.Keeper.Claim(ctx, msg)
-	if err != nil {
-		return nil, err
-	}
-	return &types.MsgClaimResponse{}, nil
-}
-
 func (k msgServer) OpenPosition(c context.Context, msg *types.MsgOpenPosition) (*types.MsgOpenPositionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 

@@ -116,26 +116,26 @@ func (m *QueryParamsResponse) GetParams() Params {
 }
 
 // this line is used by starport scaffolding # 3
-type QueryClaimableLiquidityProviderRewardsRequest struct {
+type QueryLiquidityProviderRewardsSinceLastRedemptionRequest struct {
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty" yaml:"address"`
 }
 
-func (m *QueryClaimableLiquidityProviderRewardsRequest) Reset() {
-	*m = QueryClaimableLiquidityProviderRewardsRequest{}
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionRequest) Reset() {
+	*m = QueryLiquidityProviderRewardsSinceLastRedemptionRequest{}
 }
-func (m *QueryClaimableLiquidityProviderRewardsRequest) String() string {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionRequest) String() string {
 	return proto.CompactTextString(m)
 }
-func (*QueryClaimableLiquidityProviderRewardsRequest) ProtoMessage() {}
-func (*QueryClaimableLiquidityProviderRewardsRequest) Descriptor() ([]byte, []int) {
+func (*QueryLiquidityProviderRewardsSinceLastRedemptionRequest) ProtoMessage() {}
+func (*QueryLiquidityProviderRewardsSinceLastRedemptionRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_2e622b2562178c0b, []int{2}
 }
-func (m *QueryClaimableLiquidityProviderRewardsRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryClaimableLiquidityProviderRewardsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryClaimableLiquidityProviderRewardsRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryLiquidityProviderRewardsSinceLastRedemptionRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -145,46 +145,46 @@ func (m *QueryClaimableLiquidityProviderRewardsRequest) XXX_Marshal(b []byte, de
 		return b[:n], nil
 	}
 }
-func (m *QueryClaimableLiquidityProviderRewardsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryClaimableLiquidityProviderRewardsRequest.Merge(m, src)
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryLiquidityProviderRewardsSinceLastRedemptionRequest.Merge(m, src)
 }
-func (m *QueryClaimableLiquidityProviderRewardsRequest) XXX_Size() int {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryClaimableLiquidityProviderRewardsRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryClaimableLiquidityProviderRewardsRequest.DiscardUnknown(m)
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryLiquidityProviderRewardsSinceLastRedemptionRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryClaimableLiquidityProviderRewardsRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryLiquidityProviderRewardsSinceLastRedemptionRequest proto.InternalMessageInfo
 
-func (m *QueryClaimableLiquidityProviderRewardsRequest) GetAddress() string {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionRequest) GetAddress() string {
 	if m != nil {
 		return m.Address
 	}
 	return ""
 }
 
-type QueryClaimableLiquidityProviderRewardsResponse struct {
+type QueryLiquidityProviderRewardsSinceLastRedemptionResponse struct {
 	Amount     []types.Coin        `protobuf:"bytes,1,rep,name=amount,proto3" json:"amount" yaml:"amount"`
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *QueryClaimableLiquidityProviderRewardsResponse) Reset() {
-	*m = QueryClaimableLiquidityProviderRewardsResponse{}
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionResponse) Reset() {
+	*m = QueryLiquidityProviderRewardsSinceLastRedemptionResponse{}
 }
-func (m *QueryClaimableLiquidityProviderRewardsResponse) String() string {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionResponse) String() string {
 	return proto.CompactTextString(m)
 }
-func (*QueryClaimableLiquidityProviderRewardsResponse) ProtoMessage() {}
-func (*QueryClaimableLiquidityProviderRewardsResponse) Descriptor() ([]byte, []int) {
+func (*QueryLiquidityProviderRewardsSinceLastRedemptionResponse) ProtoMessage() {}
+func (*QueryLiquidityProviderRewardsSinceLastRedemptionResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_2e622b2562178c0b, []int{3}
 }
-func (m *QueryClaimableLiquidityProviderRewardsResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryClaimableLiquidityProviderRewardsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryClaimableLiquidityProviderRewardsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryLiquidityProviderRewardsSinceLastRedemptionResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -194,26 +194,26 @@ func (m *QueryClaimableLiquidityProviderRewardsResponse) XXX_Marshal(b []byte, d
 		return b[:n], nil
 	}
 }
-func (m *QueryClaimableLiquidityProviderRewardsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryClaimableLiquidityProviderRewardsResponse.Merge(m, src)
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryLiquidityProviderRewardsSinceLastRedemptionResponse.Merge(m, src)
 }
-func (m *QueryClaimableLiquidityProviderRewardsResponse) XXX_Size() int {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryClaimableLiquidityProviderRewardsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryClaimableLiquidityProviderRewardsResponse.DiscardUnknown(m)
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryLiquidityProviderRewardsSinceLastRedemptionResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryClaimableLiquidityProviderRewardsResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryLiquidityProviderRewardsSinceLastRedemptionResponse proto.InternalMessageInfo
 
-func (m *QueryClaimableLiquidityProviderRewardsResponse) GetAmount() []types.Coin {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionResponse) GetAmount() []types.Coin {
 	if m != nil {
 		return m.Amount
 	}
 	return nil
 }
 
-func (m *QueryClaimableLiquidityProviderRewardsResponse) GetPagination() *query.PageResponse {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionResponse) GetPagination() *query.PageResponse {
 	if m != nil {
 		return m.Pagination
 	}
@@ -319,8 +319,8 @@ func (m *QueryPositionsResponse) GetPagination() *query.PageResponse {
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "ununifi.derivatives.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "ununifi.derivatives.QueryParamsResponse")
-	proto.RegisterType((*QueryClaimableLiquidityProviderRewardsRequest)(nil), "ununifi.derivatives.QueryClaimableLiquidityProviderRewardsRequest")
-	proto.RegisterType((*QueryClaimableLiquidityProviderRewardsResponse)(nil), "ununifi.derivatives.QueryClaimableLiquidityProviderRewardsResponse")
+	proto.RegisterType((*QueryLiquidityProviderRewardsSinceLastRedemptionRequest)(nil), "ununifi.derivatives.QueryLiquidityProviderRewardsSinceLastRedemptionRequest")
+	proto.RegisterType((*QueryLiquidityProviderRewardsSinceLastRedemptionResponse)(nil), "ununifi.derivatives.QueryLiquidityProviderRewardsSinceLastRedemptionResponse")
 	proto.RegisterType((*QueryPositionsRequest)(nil), "ununifi.derivatives.QueryPositionsRequest")
 	proto.RegisterType((*QueryPositionsResponse)(nil), "ununifi.derivatives.QueryPositionsResponse")
 }
@@ -328,47 +328,48 @@ func init() {
 func init() { proto.RegisterFile("derivatives/query.proto", fileDescriptor_2e622b2562178c0b) }
 
 var fileDescriptor_2e622b2562178c0b = []byte{
-	// 631 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x54, 0x41, 0x4f, 0x13, 0x4f,
-	0x14, 0xef, 0xf0, 0xe7, 0x5f, 0xc3, 0x10, 0x3d, 0x0c, 0xa0, 0x50, 0x64, 0xc1, 0xd5, 0x84, 0x06,
-	0xed, 0x8e, 0xe0, 0x49, 0x6f, 0x2c, 0x8a, 0x1e, 0x38, 0xd4, 0x35, 0xc4, 0xc4, 0x0b, 0x99, 0xee,
-	0x8e, 0xcb, 0x24, 0xdd, 0x99, 0x65, 0x67, 0xb7, 0xd2, 0x18, 0x13, 0xe3, 0x27, 0x20, 0x31, 0xf1,
-	0xec, 0xc5, 0x6f, 0xe0, 0x37, 0xf0, 0xc2, 0x91, 0xe8, 0xc5, 0x13, 0x31, 0xd4, 0x4f, 0xc0, 0xd1,
-	0x93, 0xe9, 0xcc, 0x2c, 0xdd, 0x62, 0x91, 0x26, 0x1a, 0x6f, 0xdb, 0x79, 0xbf, 0xdf, 0x7b, 0xbf,
-	0xf7, 0x7b, 0xef, 0x15, 0x5e, 0x09, 0x68, 0xc2, 0x5a, 0x24, 0x65, 0x2d, 0x2a, 0xf1, 0x4e, 0x46,
-	0x93, 0xb6, 0x13, 0x27, 0x22, 0x15, 0x68, 0x22, 0xe3, 0x19, 0x67, 0xcf, 0x99, 0x53, 0x00, 0x54,
-	0x26, 0x43, 0x11, 0x0a, 0x15, 0xc7, 0xdd, 0x2f, 0x0d, 0xad, 0x5c, 0x0d, 0x85, 0x08, 0x9b, 0x14,
-	0x93, 0x98, 0x61, 0xc2, 0xb9, 0x48, 0x49, 0xca, 0x04, 0x97, 0x26, 0xba, 0xe4, 0x0b, 0x19, 0x09,
-	0x89, 0x1b, 0x44, 0x52, 0x5d, 0x01, 0xb7, 0x96, 0x1b, 0x34, 0x25, 0xcb, 0x38, 0x26, 0x21, 0xe3,
-	0x0a, 0x6c, 0xb0, 0x56, 0x11, 0x9b, 0xa3, 0x7c, 0xc1, 0xf2, 0xf8, 0x8c, 0x8e, 0x6f, 0x69, 0x09,
-	0xfa, 0x87, 0x09, 0xcd, 0x15, 0x1b, 0x29, 0x7c, 0xeb, 0xb0, 0x3d, 0x09, 0xd1, 0xe3, 0x6e, 0xed,
-	0x3a, 0x49, 0x48, 0x24, 0x3d, 0xba, 0x93, 0x51, 0x99, 0xda, 0x75, 0x38, 0xd1, 0xf7, 0x2a, 0x63,
-	0xc1, 0x25, 0x45, 0x77, 0x61, 0x39, 0x56, 0x2f, 0xd3, 0x60, 0x01, 0x54, 0xc7, 0x57, 0x66, 0x9d,
-	0x01, 0x66, 0x38, 0x9a, 0xe4, 0x8e, 0xee, 0x1f, 0xce, 0x97, 0x3c, 0x43, 0xb0, 0xf7, 0x00, 0xac,
-	0xa9, 0x94, 0x6b, 0x4d, 0xc2, 0x22, 0xd2, 0x68, 0xd2, 0x0d, 0xb6, 0x93, 0xb1, 0x80, 0xa5, 0xed,
-	0x7a, 0x22, 0x5a, 0x2c, 0xa0, 0x89, 0x47, 0x5f, 0x90, 0x24, 0xc8, 0x35, 0xa0, 0x2d, 0x78, 0x81,
-	0x04, 0x41, 0x42, 0xa5, 0xae, 0x36, 0xe6, 0x3e, 0x38, 0x3e, 0x9c, 0xbf, 0xd4, 0x26, 0x51, 0xf3,
-	0x9e, 0x6d, 0x02, 0xf6, 0xe7, 0x8f, 0x35, 0x1c, 0xb2, 0x74, 0x3b, 0x6b, 0x38, 0xbe, 0x88, 0xf0,
-	0x26, 0xdf, 0xe4, 0x6c, 0x9d, 0x61, 0x7f, 0x9b, 0x30, 0x8e, 0xd3, 0x76, 0x4c, 0xa5, 0xf3, 0x24,
-	0x4d, 0x18, 0x0f, 0x57, 0x7d, 0x7f, 0x55, 0x73, 0xbc, 0x3c, 0xab, 0xfd, 0x09, 0x40, 0x67, 0x58,
-	0x49, 0xc6, 0x80, 0x47, 0xb0, 0x4c, 0x22, 0x91, 0xf1, 0x74, 0x1a, 0x2c, 0xfc, 0x57, 0x1d, 0x5f,
-	0x99, 0x71, 0x8c, 0xd7, 0xdd, 0xc1, 0x38, 0x66, 0x30, 0xce, 0x9a, 0x60, 0xdc, 0x9d, 0xea, 0xb6,
-	0x7f, 0x7c, 0x38, 0x7f, 0xd1, 0x28, 0x56, 0x34, 0xdb, 0x33, 0x7c, 0xf4, 0x10, 0xc2, 0xde, 0x94,
-	0xa7, 0x47, 0x94, 0x9d, 0x8b, 0x7d, 0xd9, 0xf4, 0xd2, 0xe5, 0x39, 0xeb, 0x24, 0xa4, 0xb9, 0x0c,
-	0xaf, 0x40, 0xb5, 0x77, 0xe1, 0x94, 0x1e, 0x95, 0x90, 0x4c, 0xad, 0xd7, 0x3f, 0xf3, 0xef, 0x03,
-	0x80, 0x97, 0x4f, 0x97, 0x36, 0x3e, 0xb9, 0x70, 0x2c, 0xce, 0x1f, 0x8d, 0x55, 0x37, 0x06, 0xee,
-	0xca, 0xd3, 0x84, 0xc4, 0x31, 0x0d, 0xf2, 0x0c, 0x5e, 0x8f, 0xf6, 0xd7, 0x1c, 0x5a, 0x79, 0x3f,
-	0x0a, 0xff, 0x57, 0x3a, 0xd1, 0x6b, 0x00, 0xcb, 0x7a, 0x3b, 0xd1, 0xe2, 0x40, 0x39, 0xbf, 0x9e,
-	0x42, 0xa5, 0x7a, 0x3e, 0x50, 0xd7, 0xb4, 0xaf, 0xbf, 0xf9, 0xf2, 0xfd, 0xed, 0xc8, 0x1c, 0x9a,
-	0x3d, 0xf1, 0xb1, 0x78, 0x7a, 0xfa, 0x0e, 0xd0, 0x0f, 0x00, 0xaf, 0x9d, 0xbb, 0x6f, 0xc8, 0x3d,
-	0xbb, 0xe8, 0xb0, 0xf7, 0x53, 0x59, 0xfb, 0xa3, 0x1c, 0xa6, 0xa7, 0x0d, 0xd5, 0xd3, 0x3a, 0xba,
-	0x3f, 0xb0, 0xa7, 0x66, 0x4e, 0xaf, 0xc5, 0x86, 0x2f, 0xf1, 0x4b, 0xb3, 0x1e, 0xaf, 0xb0, 0x9f,
-	0x57, 0xa9, 0x25, 0xa6, 0xad, 0x77, 0x00, 0x8e, 0x9d, 0x2c, 0x0b, 0x5a, 0xfa, 0x8d, 0xb3, 0xa7,
-	0x96, 0xb9, 0x72, 0x73, 0x28, 0xac, 0x11, 0x7d, 0x5b, 0x89, 0x5e, 0x42, 0xd5, 0xc1, 0x83, 0xc8,
-	0xf1, 0x3d, 0xa9, 0xee, 0xfa, 0xfe, 0x91, 0x05, 0x0e, 0x8e, 0x2c, 0xf0, 0xed, 0xc8, 0x02, 0x7b,
-	0x1d, 0xab, 0x74, 0xd0, 0xb1, 0x4a, 0x5f, 0x3b, 0x56, 0xe9, 0xd9, 0xad, 0x33, 0xcf, 0x63, 0xb7,
-	0x2f, 0xab, 0x3a, 0x96, 0x46, 0x59, 0xfd, 0xa9, 0xde, 0xf9, 0x19, 0x00, 0x00, 0xff, 0xff, 0xdd,
-	0x88, 0xda, 0x0a, 0x3e, 0x06, 0x00, 0x00,
+	// 647 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x54, 0x4f, 0x4f, 0x13, 0x41,
+	0x14, 0xef, 0x22, 0xd6, 0x30, 0x44, 0x0f, 0x03, 0x28, 0x14, 0x59, 0xc8, 0x6a, 0x42, 0x03, 0x76,
+	0x47, 0xf0, 0xe0, 0x9f, 0x1b, 0x35, 0xa2, 0x07, 0x4c, 0xea, 0x12, 0xa2, 0xf1, 0x42, 0xa6, 0xbb,
+	0xe3, 0x32, 0x49, 0x3b, 0xb3, 0xcc, 0xcc, 0x56, 0x1a, 0x63, 0x62, 0xfc, 0x04, 0x26, 0x26, 0x1e,
+	0x3c, 0xeb, 0x37, 0xf0, 0x43, 0x10, 0x13, 0x13, 0xa2, 0x17, 0x4f, 0xc4, 0x80, 0x9f, 0x80, 0x4f,
+	0x60, 0x3a, 0x33, 0x4b, 0x17, 0x2c, 0x6a, 0x13, 0xe2, 0x6d, 0x3b, 0xef, 0xf7, 0x7e, 0xef, 0xbd,
+	0xdf, 0xfb, 0xbd, 0x82, 0x4b, 0x11, 0x11, 0xb4, 0x85, 0x15, 0x6d, 0x11, 0x89, 0x36, 0x53, 0x22,
+	0xda, 0x7e, 0x22, 0xb8, 0xe2, 0x70, 0x24, 0x65, 0x29, 0xa3, 0xcf, 0xa8, 0x9f, 0x03, 0x94, 0x46,
+	0x63, 0x1e, 0x73, 0x1d, 0x47, 0x9d, 0x2f, 0x03, 0x2d, 0x5d, 0x8e, 0x39, 0x8f, 0x1b, 0x04, 0xe1,
+	0x84, 0x22, 0xcc, 0x18, 0x57, 0x58, 0x51, 0xce, 0xa4, 0x8d, 0xce, 0x85, 0x5c, 0x36, 0xb9, 0x44,
+	0x75, 0x2c, 0x89, 0xa9, 0x80, 0x5a, 0x0b, 0x75, 0xa2, 0xf0, 0x02, 0x4a, 0x70, 0x4c, 0x99, 0x06,
+	0x5b, 0xac, 0x9b, 0xc7, 0x66, 0xa8, 0x90, 0xd3, 0x2c, 0x3e, 0x61, 0xe2, 0xeb, 0xa6, 0x05, 0xf3,
+	0xc3, 0x86, 0xa6, 0xf2, 0x83, 0xe4, 0xbe, 0x4d, 0xd8, 0x1b, 0x05, 0xf0, 0x51, 0xa7, 0x76, 0x0d,
+	0x0b, 0xdc, 0x94, 0x01, 0xd9, 0x4c, 0x89, 0x54, 0x5e, 0x0d, 0x8c, 0x1c, 0x79, 0x95, 0x09, 0x67,
+	0x92, 0xc0, 0xdb, 0xa0, 0x98, 0xe8, 0x97, 0x71, 0x67, 0xc6, 0x29, 0x0f, 0x2f, 0x4e, 0xfa, 0x3d,
+	0xc4, 0xf0, 0x4d, 0x52, 0x75, 0x70, 0x7b, 0x77, 0xba, 0x10, 0xd8, 0x04, 0xef, 0xbd, 0x03, 0x6e,
+	0x6a, 0xca, 0x15, 0xba, 0x99, 0xd2, 0x88, 0xaa, 0x76, 0x4d, 0xf0, 0x16, 0x8d, 0x88, 0x08, 0xc8,
+	0x73, 0x2c, 0x22, 0xb9, 0x4a, 0x59, 0x48, 0x56, 0xb0, 0x54, 0x01, 0x89, 0x48, 0x33, 0xe9, 0x0c,
+	0x6f, 0xbb, 0x81, 0xeb, 0xe0, 0x1c, 0x8e, 0x22, 0x41, 0xa4, 0xa9, 0x3b, 0x54, 0xbd, 0x77, 0xb0,
+	0x3b, 0x7d, 0xa1, 0x8d, 0x9b, 0x8d, 0x3b, 0x9e, 0x0d, 0x78, 0x5f, 0x3f, 0x55, 0x50, 0x4c, 0xd5,
+	0x46, 0x5a, 0xf7, 0x43, 0xde, 0x44, 0x6b, 0x6c, 0x8d, 0xd1, 0x65, 0x8a, 0xc2, 0x0d, 0x4c, 0x19,
+	0x52, 0xed, 0x84, 0x48, 0x7f, 0x55, 0x09, 0xca, 0xe2, 0xa5, 0x30, 0x5c, 0x32, 0x39, 0x41, 0xc6,
+	0xea, 0x7d, 0x71, 0xc0, 0xad, 0xfe, 0x9b, 0xb3, 0xa2, 0x3c, 0x00, 0x45, 0xdc, 0xe4, 0x29, 0x53,
+	0xe3, 0xce, 0xcc, 0x99, 0xf2, 0xf0, 0xe2, 0x84, 0x6f, 0xf5, 0xef, 0x2c, 0xcb, 0xb7, 0xcb, 0xf2,
+	0xef, 0x72, 0xca, 0xaa, 0x63, 0x1d, 0x49, 0x0e, 0x76, 0xa7, 0xcf, 0xdb, 0xde, 0x75, 0x9a, 0x17,
+	0xd8, 0x7c, 0x78, 0x1f, 0x80, 0xee, 0xe6, 0xc7, 0x07, 0xb4, 0xc4, 0xb3, 0x47, 0xd8, 0x8c, 0x11,
+	0x33, 0xce, 0x1a, 0x8e, 0x49, 0xd6, 0x46, 0x90, 0x4b, 0xf5, 0xb6, 0xc0, 0x98, 0x59, 0x1f, 0x97,
+	0x54, 0x5b, 0xee, 0xbf, 0x29, 0xf9, 0xd1, 0x01, 0x17, 0x8f, 0x97, 0xb6, 0x3a, 0x55, 0xc1, 0x50,
+	0x92, 0x3d, 0x5a, 0xa9, 0xae, 0xf6, 0xf4, 0xcf, 0x63, 0x81, 0x93, 0x84, 0x44, 0x19, 0x43, 0xd0,
+	0x4d, 0x3b, 0x35, 0x85, 0x16, 0x3f, 0x0f, 0x82, 0xb3, 0xba, 0x4f, 0xf8, 0xca, 0x01, 0x45, 0xe3,
+	0x58, 0x38, 0xdb, 0xb3, 0x9d, 0xdf, 0xcf, 0xa3, 0x54, 0xfe, 0x3b, 0xd0, 0xd4, 0xf4, 0xae, 0xbc,
+	0xfe, 0xf6, 0xf3, 0xed, 0xc0, 0x14, 0x9c, 0x3c, 0xd4, 0x31, 0x7f, 0x8e, 0xe6, 0x36, 0xe0, 0x87,
+	0x01, 0x30, 0xdf, 0x87, 0xf3, 0xe0, 0xca, 0xc9, 0xe5, 0xfb, 0xbf, 0xae, 0xd2, 0xc3, 0x53, 0x62,
+	0xb3, 0x13, 0x3f, 0xd1, 0x13, 0x07, 0xb0, 0xd6, 0x73, 0xe2, 0x46, 0xc6, 0x58, 0x49, 0x2c, 0xa5,
+	0x44, 0x2f, 0xac, 0x79, 0x5e, 0x22, 0x61, 0xe8, 0x2b, 0xb2, 0xc3, 0x5f, 0x69, 0x60, 0xa9, 0x2a,
+	0xa2, 0x3b, 0xf6, 0x3b, 0x07, 0x0c, 0x1d, 0xda, 0x0a, 0xce, 0xfd, 0x61, 0x07, 0xc7, 0x6c, 0x5f,
+	0x9a, 0xff, 0x27, 0xac, 0x1d, 0xe0, 0xba, 0x1e, 0x60, 0x0e, 0x96, 0x7b, 0xaf, 0x2c, 0xc3, 0x77,
+	0xdb, 0xae, 0x2e, 0x6f, 0xef, 0xb9, 0xce, 0xce, 0x9e, 0xeb, 0xfc, 0xd8, 0x73, 0x9d, 0x37, 0xfb,
+	0x6e, 0x61, 0x67, 0xdf, 0x2d, 0x7c, 0xdf, 0x77, 0x0b, 0x4f, 0xaf, 0x9d, 0x78, 0x48, 0x5b, 0x47,
+	0x58, 0xf5, 0x59, 0xd5, 0x8b, 0xfa, 0x2f, 0xf9, 0xc6, 0xaf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x16,
+	0x82, 0x45, 0x34, 0x7c, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -386,7 +387,7 @@ type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// this line is used by starport scaffolding # 2
-	ClaimableLiquidityProviderRewards(ctx context.Context, in *QueryClaimableLiquidityProviderRewardsRequest, opts ...grpc.CallOption) (*QueryClaimableLiquidityProviderRewardsResponse, error)
+	LiquidityProviderRewardsSinceLastRedemption(ctx context.Context, in *QueryLiquidityProviderRewardsSinceLastRedemptionRequest, opts ...grpc.CallOption) (*QueryLiquidityProviderRewardsSinceLastRedemptionResponse, error)
 	Positions(ctx context.Context, in *QueryPositionsRequest, opts ...grpc.CallOption) (*QueryPositionsResponse, error)
 }
 
@@ -407,9 +408,9 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) ClaimableLiquidityProviderRewards(ctx context.Context, in *QueryClaimableLiquidityProviderRewardsRequest, opts ...grpc.CallOption) (*QueryClaimableLiquidityProviderRewardsResponse, error) {
-	out := new(QueryClaimableLiquidityProviderRewardsResponse)
-	err := c.cc.Invoke(ctx, "/ununifi.derivatives.Query/ClaimableLiquidityProviderRewards", in, out, opts...)
+func (c *queryClient) LiquidityProviderRewardsSinceLastRedemption(ctx context.Context, in *QueryLiquidityProviderRewardsSinceLastRedemptionRequest, opts ...grpc.CallOption) (*QueryLiquidityProviderRewardsSinceLastRedemptionResponse, error) {
+	out := new(QueryLiquidityProviderRewardsSinceLastRedemptionResponse)
+	err := c.cc.Invoke(ctx, "/ununifi.derivatives.Query/LiquidityProviderRewardsSinceLastRedemption", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -430,7 +431,7 @@ type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// this line is used by starport scaffolding # 2
-	ClaimableLiquidityProviderRewards(context.Context, *QueryClaimableLiquidityProviderRewardsRequest) (*QueryClaimableLiquidityProviderRewardsResponse, error)
+	LiquidityProviderRewardsSinceLastRedemption(context.Context, *QueryLiquidityProviderRewardsSinceLastRedemptionRequest) (*QueryLiquidityProviderRewardsSinceLastRedemptionResponse, error)
 	Positions(context.Context, *QueryPositionsRequest) (*QueryPositionsResponse, error)
 }
 
@@ -441,8 +442,8 @@ type UnimplementedQueryServer struct {
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (*UnimplementedQueryServer) ClaimableLiquidityProviderRewards(ctx context.Context, req *QueryClaimableLiquidityProviderRewardsRequest) (*QueryClaimableLiquidityProviderRewardsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ClaimableLiquidityProviderRewards not implemented")
+func (*UnimplementedQueryServer) LiquidityProviderRewardsSinceLastRedemption(ctx context.Context, req *QueryLiquidityProviderRewardsSinceLastRedemptionRequest) (*QueryLiquidityProviderRewardsSinceLastRedemptionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LiquidityProviderRewardsSinceLastRedemption not implemented")
 }
 func (*UnimplementedQueryServer) Positions(ctx context.Context, req *QueryPositionsRequest) (*QueryPositionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Positions not implemented")
@@ -470,20 +471,20 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_ClaimableLiquidityProviderRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryClaimableLiquidityProviderRewardsRequest)
+func _Query_LiquidityProviderRewardsSinceLastRedemption_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryLiquidityProviderRewardsSinceLastRedemptionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).ClaimableLiquidityProviderRewards(ctx, in)
+		return srv.(QueryServer).LiquidityProviderRewardsSinceLastRedemption(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ununifi.derivatives.Query/ClaimableLiquidityProviderRewards",
+		FullMethod: "/ununifi.derivatives.Query/LiquidityProviderRewardsSinceLastRedemption",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).ClaimableLiquidityProviderRewards(ctx, req.(*QueryClaimableLiquidityProviderRewardsRequest))
+		return srv.(QueryServer).LiquidityProviderRewardsSinceLastRedemption(ctx, req.(*QueryLiquidityProviderRewardsSinceLastRedemptionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -515,8 +516,8 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "ClaimableLiquidityProviderRewards",
-			Handler:    _Query_ClaimableLiquidityProviderRewards_Handler,
+			MethodName: "LiquidityProviderRewardsSinceLastRedemption",
+			Handler:    _Query_LiquidityProviderRewardsSinceLastRedemption_Handler,
 		},
 		{
 			MethodName: "Positions",
@@ -583,7 +584,7 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryClaimableLiquidityProviderRewardsRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -593,12 +594,12 @@ func (m *QueryClaimableLiquidityProviderRewardsRequest) Marshal() (dAtA []byte, 
 	return dAtA[:n], nil
 }
 
-func (m *QueryClaimableLiquidityProviderRewardsRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryClaimableLiquidityProviderRewardsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -613,7 +614,7 @@ func (m *QueryClaimableLiquidityProviderRewardsRequest) MarshalToSizedBuffer(dAt
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryClaimableLiquidityProviderRewardsResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -623,12 +624,12 @@ func (m *QueryClaimableLiquidityProviderRewardsResponse) Marshal() (dAtA []byte,
 	return dAtA[:n], nil
 }
 
-func (m *QueryClaimableLiquidityProviderRewardsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryClaimableLiquidityProviderRewardsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -772,7 +773,7 @@ func (m *QueryParamsResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryClaimableLiquidityProviderRewardsRequest) Size() (n int) {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -785,7 +786,7 @@ func (m *QueryClaimableLiquidityProviderRewardsRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryClaimableLiquidityProviderRewardsResponse) Size() (n int) {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -975,7 +976,7 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryClaimableLiquidityProviderRewardsRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -998,10 +999,10 @@ func (m *QueryClaimableLiquidityProviderRewardsRequest) Unmarshal(dAtA []byte) e
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryClaimableLiquidityProviderRewardsRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryLiquidityProviderRewardsSinceLastRedemptionRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryClaimableLiquidityProviderRewardsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryLiquidityProviderRewardsSinceLastRedemptionRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1057,7 +1058,7 @@ func (m *QueryClaimableLiquidityProviderRewardsRequest) Unmarshal(dAtA []byte) e
 	}
 	return nil
 }
-func (m *QueryClaimableLiquidityProviderRewardsResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryLiquidityProviderRewardsSinceLastRedemptionResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1080,10 +1081,10 @@ func (m *QueryClaimableLiquidityProviderRewardsResponse) Unmarshal(dAtA []byte) 
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryClaimableLiquidityProviderRewardsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryLiquidityProviderRewardsSinceLastRedemptionResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryClaimableLiquidityProviderRewardsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryLiquidityProviderRewardsSinceLastRedemptionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

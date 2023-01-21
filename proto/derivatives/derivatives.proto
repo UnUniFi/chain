@@ -87,6 +87,7 @@ message PriceData {
   ];
 }
 
+// TODO: Delete this. Not needed because claim function utilize redemption functionality
 message UserDeposit {
   string denom = 1 [
     (gogoproto.moretags) = "yaml:\"denom\""
@@ -94,6 +95,29 @@ message UserDeposit {
   string amount = 2 [
     (gogoproto.moretags) = "yaml:\"amount\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message PoolMarketCap {
+  message Breakdown {
+    string denom = 1 [
+      (gogoproto.moretags) = "yaml:\"denom\""
+    ];
+    string amount = 2 [
+    (gogoproto.moretags) = "yaml:\"amount\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+    ];
+    string price = 3 [
+      (gogoproto.moretags) = "yaml:\"price\"",
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ];
+  }
+
+  repeated Breakdown breakdown = 1 [
+    (gogoproto.moretags) = "yaml:\"breakdown\"",
     (gogoproto.nullable) = false
   ];
 }
