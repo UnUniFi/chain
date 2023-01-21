@@ -19,9 +19,9 @@ func (k Keeper) LiquidityProviderRewardsSinceLastRedemption(c context.Context, r
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	totalSupply := k.bankKeeper.GetSupply(ctx, "DLP")
+	totalSupply := k.bankKeeper.GetSupply(ctx, types.LiquidityProviderTokenDenom)
 	user := sdk.AccAddress(req.Address)
-	userBalance := k.bankKeeper.GetBalance(ctx, user, "DLP")
+	userBalance := k.bankKeeper.GetBalance(ctx, user, types.LiquidityProviderTokenDenom)
 	// TODO: not sure about the fee payout token - is it DLP or real asset?
 	accumulatedFee := k.GetAccumulatedFee(ctx)
 

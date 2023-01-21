@@ -45,6 +45,10 @@ const (
 	KeyPrefixAPYMeasureId          = "apy_measure_id"
 )
 
+const (
+	LiquidityProviderTokenDenom = "udlp"
+)
+
 func GetPositionIdBytes(posId uint64) (posIdBz []byte) {
 	posIdBz = make([]byte, 8)
 	binary.BigEndian.PutUint64(posIdBz, posId)
