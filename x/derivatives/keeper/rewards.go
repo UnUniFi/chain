@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) GetLPNominalAP(ctx sdk.Context, beforeHeight int64, afterHeight int64) sdk.Dec {
+func (k Keeper) GetLPNominalYieldRate(ctx sdk.Context, beforeHeight int64, afterHeight int64) sdk.Dec {
 	poolMarketCapBefore := k.GetPoolMarketCapSnapshot(ctx, beforeHeight)
 	lptSupplyBefore := k.GetLPTokenSupplySnapshot(ctx, beforeHeight)
 
@@ -35,9 +35,9 @@ func (k Keeper) GetInflationRateOfAssetsInPool(ctx sdk.Context, beforeHeight int
 	return diff.Quo(poolMarketCapBefore.Total)
 }
 
-func (k Keeper) GetLPRealAP(ctx sdk.Context, beforeHeight int64, afterHeight int64) sdk.Dec {
+func (k Keeper) GetLPRealYieldRate(ctx sdk.Context, beforeHeight int64, afterHeight int64) sdk.Dec {
 	// This is known as Fisher equation in Economics
-	nominalInterestRate := k.GetLPNominalAP(ctx, beforeHeight, afterHeight)
+	nominalInterestRate := k.GetLPNominalYieldRate(ctx, beforeHeight, afterHeight)
 	inflationRate := k.GetInflationRateOfAssetsInPool(ctx, beforeHeight, afterHeight)
 
 	nominalInterestRatePlus1 := nominalInterestRate.Add(sdk.NewDec(1))
