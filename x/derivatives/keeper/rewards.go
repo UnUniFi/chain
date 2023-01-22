@@ -49,3 +49,8 @@ func (k Keeper) GetLPRealYieldRate(ctx sdk.Context, beforeHeight int64, afterHei
 
 	return realInterestRate
 }
+
+func (k Keeper) AnnualizeYieldRate(ctx sdk.Context, yieldRate sdk.Dec, beforeHeight int64, afterHeight int64) sdk.Dec {
+	// TODO
+	return nil
+}

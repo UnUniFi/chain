@@ -34,9 +34,27 @@ func (k Keeper) LiquidityProviderRewardsSinceLastRedemption(c context.Context, r
 }
 
 func (k Keeper) LiquidityProviderTokenRealAPY(c context.Context, req *types.QueryLiquidityProviderTokenRealAPYRequest) (*types.QueryLiquidityProviderTokenRealAPYResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(c)
+
+	rate := k.GetLPNominalYieldRate(ctx, req.BeforeHeight, req.AfterHeight)
+	annualized := k.AnnualizeYieldRate(ctx, rate, req.BeforeHeight, req.AfterHeight)
+
+	return &types.QueryLiquidityProviderTokenRealAPYResponse{Apy: annualized.String()}, nil
 }
 
 func (k Keeper) LiquidityProviderTokenNominalAPY(c context.Context, req *types.QueryLiquidityProviderTokenNominalAPYRequest) (*types.QueryLiquidityProviderTokenNominalAPYResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(c)
+
+	rate := k.GetLPNominalYieldRate(ctx, req.BeforeHeight, req.AfterHeight)
+	annualized := k.AnnualizeYieldRate(ctx, rate, req.BeforeHeight, req.AfterHeight)
+
+	return &types.QueryLiquidityProviderTokenNominalAPYResponse{Apy: annualized.String()}, nil
 }
 
 func (k Keeper) Positions(c context.Context, req *types.QueryPositionsRequest) (*types.QueryPositionsResponse, error) {
