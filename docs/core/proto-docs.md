@@ -101,8 +101,10 @@
     - [OptionType](#ununifi.derivatives.OptionType)
   
 - [derivatives/query.proto](#derivatives/query.proto)
-    - [QueryLiquidityProviderRewardsSinceLastRedemptionRequest](#ununifi.derivatives.QueryLiquidityProviderRewardsSinceLastRedemptionRequest)
-    - [QueryLiquidityProviderRewardsSinceLastRedemptionResponse](#ununifi.derivatives.QueryLiquidityProviderRewardsSinceLastRedemptionResponse)
+    - [QueryLiquidityProviderTokenNominalAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYRequest)
+    - [QueryLiquidityProviderTokenNominalAPYResponse](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYResponse)
+    - [QueryLiquidityProviderTokenRealAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenRealAPYRequest)
+    - [QueryLiquidityProviderTokenRealAPYResponse](#ununifi.derivatives.QueryLiquidityProviderTokenRealAPYResponse)
     - [QueryParamsRequest](#ununifi.derivatives.QueryParamsRequest)
     - [QueryParamsResponse](#ununifi.derivatives.QueryParamsResponse)
     - [QueryPositionsRequest](#ununifi.derivatives.QueryPositionsRequest)
@@ -1359,6 +1361,8 @@ Query defines the gRPC querier service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `total` | [string](#string) |  |  |
+| `quote_denom` | [string](#string) |  |  |
 | `breakdown` | [PoolMarketCap.Breakdown](#ununifi.derivatives.PoolMarketCap.Breakdown) | repeated |  |
 
 
@@ -1620,31 +1624,62 @@ GenesisState defines the derivatives module's genesis state.
 
 
 
-<a name="ununifi.derivatives.QueryLiquidityProviderRewardsSinceLastRedemptionRequest"></a>
+<a name="ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYRequest"></a>
 
-### QueryLiquidityProviderRewardsSinceLastRedemptionRequest
+### QueryLiquidityProviderTokenNominalAPYRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `before_height` | [int64](#int64) |  |  |
+| `after_height` | [int64](#int64) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYResponse"></a>
+
+### QueryLiquidityProviderTokenNominalAPYResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `apy` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryLiquidityProviderTokenRealAPYRequest"></a>
+
+### QueryLiquidityProviderTokenRealAPYRequest
 this line is used by starport scaffolding # 3
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  |  |
+| `before_height` | [int64](#int64) |  |  |
+| `after_height` | [int64](#int64) |  |  |
 
 
 
 
 
 
-<a name="ununifi.derivatives.QueryLiquidityProviderRewardsSinceLastRedemptionResponse"></a>
+<a name="ununifi.derivatives.QueryLiquidityProviderTokenRealAPYResponse"></a>
 
-### QueryLiquidityProviderRewardsSinceLastRedemptionResponse
+### QueryLiquidityProviderTokenRealAPYResponse
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+| `apy` | [string](#string) |  |  |
 
 
 
@@ -1721,7 +1756,8 @@ Query defines the gRPC querier service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Params` | [QueryParamsRequest](#ununifi.derivatives.QueryParamsRequest) | [QueryParamsResponse](#ununifi.derivatives.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/UnUniFi/derivatives/params|
-| `LiquidityProviderRewardsSinceLastRedemption` | [QueryLiquidityProviderRewardsSinceLastRedemptionRequest](#ununifi.derivatives.QueryLiquidityProviderRewardsSinceLastRedemptionRequest) | [QueryLiquidityProviderRewardsSinceLastRedemptionResponse](#ununifi.derivatives.QueryLiquidityProviderRewardsSinceLastRedemptionResponse) | this line is used by starport scaffolding # 2 | GET|/UnUniFi/derivatives/liquidity-providers/{address}/rewards-since-last-redemption|
+| `LiquidityProviderTokenRealAPY` | [QueryLiquidityProviderTokenRealAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenRealAPYRequest) | [QueryLiquidityProviderTokenRealAPYResponse](#ununifi.derivatives.QueryLiquidityProviderTokenRealAPYResponse) | this line is used by starport scaffolding # 2 | GET|/UnUniFi/derivatives/liquidity-providers/real-apy|
+| `LiquidityProviderTokenNominalAPY` | [QueryLiquidityProviderTokenNominalAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYRequest) | [QueryLiquidityProviderTokenNominalAPYResponse](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYResponse) |  | GET|/UnUniFi/derivatives/liquidity-providers/nominal-apy|
 | `Positions` | [QueryPositionsRequest](#ununifi.derivatives.QueryPositionsRequest) | [QueryPositionsResponse](#ununifi.derivatives.QueryPositionsResponse) |  | GET|/UnUniFi/derivatives/positions/{address}|
 
  <!-- end services -->

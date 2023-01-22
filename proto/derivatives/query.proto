@@ -22,7 +22,7 @@ service Query {
     option (google.api.http).get = "/UnUniFi/derivatives/liquidity-providers/real-apy";
   }
 
-  rpc LiquidityProviderTokenNominalAPY(QueryLiquidityProviderTokenNominalAPYRequest) returns (QueryLiquidityProviderTokenNominalAPYesponse) {
+  rpc LiquidityProviderTokenNominalAPY(QueryLiquidityProviderTokenNominalAPYRequest) returns (QueryLiquidityProviderTokenNominalAPYResponse) {
     option (google.api.http).get = "/UnUniFi/derivatives/liquidity-providers/nominal-apy";
   }
 
@@ -43,10 +43,10 @@ message QueryParamsResponse {
 // this line is used by starport scaffolding # 3
 message QueryLiquidityProviderTokenRealAPYRequest {
   int64 before_height = 1 [
-    (gogoproto.moretags)  = "yaml:\"before_height\"",
+    (gogoproto.moretags)  = "yaml:\"before_height\""
   ];
-  int64 after_height = 1 [
-    (gogoproto.moretags)  = "yaml:\"after_height\"",
+  int64 after_height = 2 [
+    (gogoproto.moretags)  = "yaml:\"after_height\""
   ];
 }
 
@@ -59,10 +59,10 @@ message QueryLiquidityProviderTokenRealAPYResponse {
 
 message QueryLiquidityProviderTokenNominalAPYRequest {
   int64 before_height = 1 [
-    (gogoproto.moretags)  = "yaml:\"before_height\"",
+    (gogoproto.moretags)  = "yaml:\"before_height\""
   ];
-  int64 after_height = 1 [
-    (gogoproto.moretags)  = "yaml:\"after_height\"",
+  int64 after_height = 2 [
+    (gogoproto.moretags)  = "yaml:\"after_height\""
   ];
 }
 
