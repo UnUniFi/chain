@@ -164,9 +164,8 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 	return k.GetPoolMarketCapSnapshot(ctx, ctx.BlockHeight())
 }
 
-func (k Keeper) GetLPTokenSupply(ctx sdk.Context) sdk.Dec {
-	// k.bankKeeper.GetSupply(ctx, "udlp")
-	return k.GetLPTokenSupplySnapshot(ctx, ctx.BlockHeight())
+func (k Keeper) GetLPTokenSupply(ctx sdk.Context) sdk.Int {
+	return k.bankKeeper.GetSupply(ctx, "udlp").Amount
 }
 
 func (k Keeper) GetLPTokenPrice(ctx sdk.Context) sdk.Dec {

@@ -23,6 +23,7 @@ func (k Keeper) GetInflationRateOfAssetsInPool(ctx sdk.Context, beforeHeight int
 	poolMarketCapAfterWithBeforeAmount := sdk.NewDec(0)
 
 	// TODO: consider an overflow of poolMarketCapAfter[i]
+	// It might be better to use map type with string key (denom is used for key)
 	for i := range poolMarketCapBefore.Breakdown {
 		amountBefore := poolMarketCapBefore.Breakdown[i].Amount
 		priceAfter := poolMarketCapAfter.Breakdown[i].Price
@@ -51,6 +52,6 @@ func (k Keeper) GetLPRealYieldRate(ctx sdk.Context, beforeHeight int64, afterHei
 }
 
 func (k Keeper) AnnualizeYieldRate(ctx sdk.Context, yieldRate sdk.Dec, beforeHeight int64, afterHeight int64) sdk.Dec {
-	// TODO
+	// TODO: get the blocktime of beforeHeight and afterHeight, then calculate yieldRate * (timespan of afterHeight - beforeHeight) / (timespan of one year)
 	return nil
 }
