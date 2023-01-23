@@ -161,7 +161,8 @@ func (k Keeper) SetLPTokenSupplySnapshot(ctx sdk.Context, height int64, supply s
 }
 
 func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
-	return k.GetPoolMarketCapSnapshot(ctx, ctx.BlockHeight())
+	// TODO: implement. Don't use GetPoolMarketCapSnapshot because it can't be used for latest block
+	return types.PoolMarketCap{}
 }
 
 func (k Keeper) GetLPTokenSupply(ctx sdk.Context) sdk.Int {

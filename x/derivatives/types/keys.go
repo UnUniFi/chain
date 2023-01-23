@@ -42,7 +42,6 @@ const (
 	KeyPrefixAccumulatedFee        = "accumulated_fee"
 	KeyPrefixPoolMarketCapSnapshot = "pool_market_cap_snapshot"
 	KeyPrefixLPTokenSupplySnapshot = "lpt_supply_snapshot"
-	KeyPrefixAPYMeasureId          = "apy_measure_id"
 )
 
 const (
