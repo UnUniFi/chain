@@ -12,16 +12,16 @@ import (
 
 var _ types.QueryServer = Keeper{}
 
-// TODO: just returning APY instead of amount is better for current specification
+// TODO: remove
 func (k Keeper) LiquidityProviderRewardsSinceLastRedemption(c context.Context, req *types.QueryLiquidityProviderRewardsSinceLastRedemptionRequest) (*types.QueryLiquidityProviderRewardsSinceLastRedemptionResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	totalSupply := k.bankKeeper.GetSupply(ctx, "DLP")
+	totalSupply := k.bankKeeper.GetSupply(ctx, types.LiquidityProviderTokenDenom)
 	user := sdk.AccAddress(req.Address)
-	userBalance := k.bankKeeper.GetBalance(ctx, user, "DLP")
+	userBalance := k.bankKeeper.GetBalance(ctx, user, types.LiquidityProviderTokenDenom)
 	// TODO: not sure about the fee payout token - is it DLP or real asset?
 	accumulatedFee := k.GetAccumulatedFee(ctx)
 
@@ -31,6 +31,30 @@ func (k Keeper) LiquidityProviderRewardsSinceLastRedemption(c context.Context, r
 	return &types.QueryLiquidityProviderRewardsSinceLastRedemptionResponse{
 		Amount: sdk.Coins{sdk.NewCoin(accumulatedFee.Denom, sdk.NewInt(feeAmount.Int64()))},
 	}, nil
+}
+
+func (k Keeper) LiquidityProviderTokenRealAPY(c context.Context, req *types.QueryLiquidityProviderTokenRealAPYRequest) (*types.QueryLiquidityProviderTokenRealAPYResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(c)
+
+	rate := k.GetLPNominalYieldRate(ctx, req.BeforeHeight, req.AfterHeight)
+	annualized := k.AnnualizeYieldRate(ctx, rate, req.BeforeHeight, req.AfterHeight)
+
+	return &types.QueryLiquidityProviderTokenRealAPYResponse{Apy: annualized.String()}, nil
+}
+
+func (k Keeper) LiquidityProviderTokenNominalAPY(c context.Context, req *types.QueryLiquidityProviderTokenNominalAPYRequest) (*types.QueryLiquidityProviderTokenNominalAPYResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(c)
+
+	rate := k.GetLPNominalYieldRate(ctx, req.BeforeHeight, req.AfterHeight)
+	annualized := k.AnnualizeYieldRate(ctx, rate, req.BeforeHeight, req.AfterHeight)
+
+	return &types.QueryLiquidityProviderTokenNominalAPYResponse{Apy: annualized.String()}, nil
 }
 
 func (k Keeper) Positions(c context.Context, req *types.QueryPositionsRequest) (*types.QueryPositionsResponse, error) {

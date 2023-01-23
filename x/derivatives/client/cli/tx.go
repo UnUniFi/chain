@@ -39,7 +39,6 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(
 		CmdMintLiquidityProviderToken(),
 		CmdBurnLiquidityProviderToken(),
-		CmdClaimLiquidityProviderRewards(),
 		CmdOpenPerpetualFuturesPosition(),
 		CmdClosePerpetualFuturesPosition(),
 		CmdOpenPerpetualOptionsPosition(),
@@ -101,39 +100,6 @@ $ %s tx %s burn-lpt --from myKeyName --chain-id ununifi-x
 			sender := clientCtx.GetFromAddress()
 
 			msg := types.MsgBurnLiquidityProviderToken{
-				Sender: ununifiType.StringAccAddress(sender),
-			}
-
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-	return cmd
-}
-
-func CmdClaimLiquidityProviderRewards() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "claim-lp-rewards",
-		Short: "claim liquidity provider rewards",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`claim liquidity provider rewards.
-Example:
-$ %s tx %s claim-lp-rewards --from myKeyName --chain-id ununifi-x
-`, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(3),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			sender := clientCtx.GetFromAddress()
-
-			msg := types.MsgClaim{
 				Sender: ununifiType.StringAccAddress(sender),
 			}
 

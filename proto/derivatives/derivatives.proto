@@ -105,9 +105,9 @@ message PoolMarketCap {
       (gogoproto.moretags) = "yaml:\"denom\""
     ];
     string amount = 2 [
-    (gogoproto.moretags) = "yaml:\"amount\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
+      (gogoproto.moretags) = "yaml:\"amount\"",
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+      (gogoproto.nullable) = false
     ];
     string price = 3 [
       (gogoproto.moretags) = "yaml:\"price\"",
@@ -116,7 +116,15 @@ message PoolMarketCap {
     ];
   }
 
-  repeated Breakdown breakdown = 1 [
+  string total = 1 [
+    (gogoproto.moretags) = "yaml:\"total\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string quote_denom = 2 [
+    (gogoproto.moretags) = "yaml:\"quote_denom\""
+  ];
+  repeated Breakdown breakdown = 3 [
     (gogoproto.moretags) = "yaml:\"breakdown\"",
     (gogoproto.nullable) = false
   ];

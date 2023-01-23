@@ -18,8 +18,12 @@ service Query {
     option (google.api.http).get = "/UnUniFi/derivatives/params";
   }
   // this line is used by starport scaffolding # 2
-  rpc LiquidityProviderRewardsSinceLastRedemption(QueryLiquidityProviderRewardsSinceLastRedemptionRequest) returns (QueryLiquidityProviderRewardsSinceLastRedemptionResponse) {
-    option (google.api.http).get = "/UnUniFi/derivatives/liquidity-providers/{address}/rewards-since-last-redemption";
+  rpc LiquidityProviderTokenRealAPY(QueryLiquidityProviderTokenRealAPYRequest) returns (QueryLiquidityProviderTokenRealAPYResponse) {
+    option (google.api.http).get = "/UnUniFi/derivatives/liquidity-providers/real-apy";
+  }
+
+  rpc LiquidityProviderTokenNominalAPY(QueryLiquidityProviderTokenNominalAPYRequest) returns (QueryLiquidityProviderTokenNominalAPYResponse) {
+    option (google.api.http).get = "/UnUniFi/derivatives/liquidity-providers/nominal-apy";
   }
 
   rpc Positions(QueryPositionsRequest) returns (QueryPositionsResponse) {
@@ -37,19 +41,36 @@ message QueryParamsResponse {
 }
 
 // this line is used by starport scaffolding # 3
-message QueryLiquidityProviderRewardsSinceLastRedemptionRequest {
-  string address = 1 [
-    (gogoproto.moretags)  = "yaml:\"address\"",
-    (cosmos_proto.scalar) = "github.com/UnUniFi/chain/types.StringAccAddress"
+message QueryLiquidityProviderTokenRealAPYRequest {
+  int64 before_height = 1 [
+    (gogoproto.moretags)  = "yaml:\"before_height\""
+  ];
+  int64 after_height = 2 [
+    (gogoproto.moretags)  = "yaml:\"after_height\""
   ];
 }
 
-message QueryLiquidityProviderRewardsSinceLastRedemptionResponse {
-  repeated cosmos.base.v1beta1.Coin amount = 1 [
-    (gogoproto.moretags) = "yaml:\"amount\"",
-    (gogoproto.nullable) = false
+message QueryLiquidityProviderTokenRealAPYResponse {
+  string apy = 1 [
+    (gogoproto.moretags)  = "yaml:\"apy\"",
+    (cosmos_proto.scalar) = "github.com/cosmos/cosmos-sdk/types.Dec"
   ];
-	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryLiquidityProviderTokenNominalAPYRequest {
+  int64 before_height = 1 [
+    (gogoproto.moretags)  = "yaml:\"before_height\""
+  ];
+  int64 after_height = 2 [
+    (gogoproto.moretags)  = "yaml:\"after_height\""
+  ];
+}
+
+message QueryLiquidityProviderTokenNominalAPYResponse {
+  string apy = 1 [
+    (gogoproto.moretags)  = "yaml:\"apy\"",
+    (cosmos_proto.scalar) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
 }
 
 message QueryPositionsRequest {
