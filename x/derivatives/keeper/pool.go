@@ -185,6 +185,7 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 		return err
 	}
 
+	//TODO: Don't use string literal directly. Define something in key.go or save the quote denom in the parameters of Pool
 	marketId := fmt.Sprintf("%s:%s", msg.Amount.Denom, "USDC")
 	price, err := k.pricefeedKeeper.GetCurrentPrice(ctx, marketId)
 	if err != nil {
