@@ -61,6 +61,7 @@ func (k Keeper) GetAssetBalance(ctx sdk.Context, asset types.Pool_Asset) sdk.Coi
 	return coin
 }
 
+// TODO: this function may be not needed because Just adding fees to the pool is enough. Users can claim them by using redemption functionality.
 func (k Keeper) GetAccumulatedFee(ctx sdk.Context) sdk.Coin {
 	store := ctx.KVStore(k.storeKey)
 
@@ -71,6 +72,7 @@ func (k Keeper) GetAccumulatedFee(ctx sdk.Context) sdk.Coin {
 	return coin
 }
 
+// TODO: this function may be not needed because Just adding fees to the pool is enough. Users can claim them by using redemption functionality.
 func (k Keeper) AddAccumulatedFee(ctx sdk.Context, feeAmount sdk.Dec) {
 	store := ctx.KVStore(k.storeKey)
 
@@ -81,6 +83,7 @@ func (k Keeper) AddAccumulatedFee(ctx sdk.Context, feeAmount sdk.Dec) {
 	store.Set([]byte(types.KeyPrefixAccumulatedFee), bz)
 }
 
+// TODO: use []sdk.Coin instead of types.UserDeposit. They are same types
 func (k Keeper) GetUserDeposits(ctx sdk.Context, depositor sdk.AccAddress) []types.UserDeposit {
 	store := ctx.KVStore(k.storeKey)
 

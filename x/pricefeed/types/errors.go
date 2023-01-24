@@ -20,4 +20,6 @@ var (
 	ErrInvalidOracle = sdkerrors.Register(ModuleName, 6, "oracle does not exist or not authorized")
 	// ErrAssetNotFound error for not found asset
 	ErrAssetNotFound = sdkerrors.Register(ModuleName, 7, "asset not found")
+
+	ErrInternalDenomNotFound = sdkerrors.Register(ModuleName, 8, "internal denom not found")
 )

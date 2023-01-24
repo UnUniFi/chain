@@ -345,6 +345,7 @@
   
 - [pricefeed/pricefeed.proto](#pricefeed/pricefeed.proto)
     - [CurrentPrice](#ununifi.pricefeed.CurrentPrice)
+    - [DenomPair](#ununifi.pricefeed.DenomPair)
     - [Market](#ununifi.pricefeed.Market)
     - [Params](#ununifi.pricefeed.Params)
     - [PostedPrice](#ununifi.pricefeed.PostedPrice)
@@ -4797,6 +4798,22 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
+<a name="ununifi.pricefeed.DenomPair"></a>
+
+### DenomPair
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `internal_denom` | [string](#string) |  |  |
+| `market_denom` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="ununifi.pricefeed.Market"></a>
 
 ### Market
@@ -4825,6 +4842,7 @@ GenesisState defines the nftmint module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `markets` | [Market](#ununifi.pricefeed.Market) | repeated |  |
+| `denom_pairs` | [DenomPair](#ununifi.pricefeed.DenomPair) | repeated |  |
 
 
 

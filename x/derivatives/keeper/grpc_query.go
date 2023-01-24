@@ -12,7 +12,7 @@ import (
 
 var _ types.QueryServer = Keeper{}
 
-// TODO: remove
+// TODO: delete this function because we use LiquidityProviderTokenRealAPY and LiquidityProviderTokenNominalAPY
 func (k Keeper) LiquidityProviderRewardsSinceLastRedemption(c context.Context, req *types.QueryLiquidityProviderRewardsSinceLastRedemptionRequest) (*types.QueryLiquidityProviderRewardsSinceLastRedemptionResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -22,7 +22,7 @@ func (k Keeper) LiquidityProviderRewardsSinceLastRedemption(c context.Context, r
 	totalSupply := k.bankKeeper.GetSupply(ctx, types.LiquidityProviderTokenDenom)
 	user := sdk.AccAddress(req.Address)
 	userBalance := k.bankKeeper.GetBalance(ctx, user, types.LiquidityProviderTokenDenom)
-	// TODO: not sure about the fee payout token - is it DLP or real asset?
+
 	accumulatedFee := k.GetAccumulatedFee(ctx)
 
 	tempAmount := accumulatedFee.Amount.Mul(userBalance.Amount)
