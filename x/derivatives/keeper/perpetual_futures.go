@@ -34,7 +34,12 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAd
 	commissionRate := params.CommissionRate
 	feeAmount := position.Size_.Mul(commissionRate).Quo(sdk.NewDecWithPrec(1, 6))
 	tradeAmount := position.Size_.Sub(feeAmount)
+
+	// TODO: AddAccumulatedFee may be not needed. Jump to the definition of AddAccumulatedFee to read more comments.
 	k.AddAccumulatedFee(ctx, feeAmount)
+	k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.Coins{sdk.NewCoin(position.Denom, feeAmount.RoundInt())})
+
+	// TODO: transfer the principal (margin = collateral) and profits from Pool to the trader or from the trader to Pool.
 
 	switch position.PositionType {
 	case types.PositionType_LONG:
@@ -46,8 +51,6 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAd
 	case types.PositionType_POSITION_UNKNOWN:
 		return fmt.Errorf("unknown position type")
 	}
-
-	k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.Coins{sdk.NewCoin(position.Denom, feeAmount.RoundInt())})
 
 	return nil
 }

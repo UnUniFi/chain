@@ -48,11 +48,10 @@ const (
 
 const (
 	LiquidityProviderTokenDenom = "udlp"
-	QuoteDenom                  = "USDC"
 )
 
-func GetMarketId(lhs string) string {
-	return fmt.Sprintf("%s:%s", lhs, QuoteDenom)
+func GetMarketId(lhs string, rhs string) string {
+	return fmt.Sprintf("%s:%s", lhs, rhs)
 }
 
 func GetPositionIdBytes(posId uint64) (posIdBz []byte) {

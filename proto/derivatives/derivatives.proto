@@ -60,24 +60,7 @@ message Pool {
   ];
 }
 
-message Subpool {
-  message Asset {
-    string denom = 1 [
-      (gogoproto.moretags) = "yaml:\"denom\""
-    ];
-    string weight = 2 [
-      (gogoproto.moretags) = "yaml:\"weight\"",
-      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-      (gogoproto.nullable) = false
-    ];
-  }
-
-  repeated Asset accepted_assets = 1 [
-    (gogoproto.moretags) = "yaml:\"accepted_assets\"",
-    (gogoproto.nullable) = false
-  ];
-}
-
+// TODO: Is this needed?
 message PriceData {
   string denom = 1 [
     (gogoproto.moretags) = "yaml:\"denom\""
@@ -135,9 +118,8 @@ message Params {
     (gogoproto.moretags) = "yaml:\"pool\"",
     (gogoproto.nullable) = false
   ];
-  repeated Subpool subpools = 2 [
-    (gogoproto.moretags) = "yaml:\"subpools\"",
-    (gogoproto.nullable) = false
+  string lpt_price_quote_denom = 2 [
+    (gogoproto.moretags) = "yaml:\"lpt_price_quote_denom\""
   ];
   string base_lpt_mint_fee = 3 [
     (gogoproto.moretags) = "yaml:\"base_lpt_mint_fee\"",

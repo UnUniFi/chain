@@ -23,6 +23,19 @@ func (k Keeper) GetMarkets(ctx sdk.Context) []types.Market {
 	return k.GetParams(ctx).Markets
 }
 
+func (k Keeper) GetDenomPairs(ctx sdk.Context) []types.DenomPair {
+	return k.GetParams(ctx).DenomPairs
+}
+
+func (k Keeper) GetMarketDenom(ctx sdk.Context, internalDenom string) (string, error) {
+	for _, pair := range k.GetDenomPairs(ctx) {
+		if internalDenom == pair.InternalDenom {
+			return pair.MarketDenom, nil
+		}
+	}
+	return "", sdkerrors.Wrap(types.ErrInternalDenomNotFound, internalDenom)
+}
+
 // GetOracles returns the oracles in the pricefeed store
 func (k Keeper) GetOracles(ctx sdk.Context, marketID string) ([]sdk.AccAddress, error) {
 	for _, m := range k.GetMarkets(ctx) {
