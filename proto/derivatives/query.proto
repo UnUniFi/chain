@@ -53,7 +53,7 @@ message QueryLiquidityProviderTokenRealAPYRequest {
 message QueryLiquidityProviderTokenRealAPYResponse {
   string apy = 1 [
     (gogoproto.moretags)  = "yaml:\"apy\"",
-    (cosmos_proto.scalar) = "github.com/cosmos/cosmos-sdk/types.Dec"
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
   ];
 }
 
@@ -69,14 +69,14 @@ message QueryLiquidityProviderTokenNominalAPYRequest {
 message QueryLiquidityProviderTokenNominalAPYResponse {
   string apy = 1 [
     (gogoproto.moretags)  = "yaml:\"apy\"",
-    (cosmos_proto.scalar) = "github.com/cosmos/cosmos-sdk/types.Dec"
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
   ];
 }
 
 message QueryPositionsRequest {
   string address = 1 [
     (gogoproto.moretags)  = "yaml:\"address\"",
-    (cosmos_proto.scalar) = "github.com/UnUniFi/chain/types.StringAccAddress"
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress"
   ];
 }
 

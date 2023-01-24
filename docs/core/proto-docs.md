@@ -81,8 +81,6 @@
     - [PoolMarketCap](#ununifi.derivatives.PoolMarketCap)
     - [PoolMarketCap.Breakdown](#ununifi.derivatives.PoolMarketCap.Breakdown)
     - [PriceData](#ununifi.derivatives.PriceData)
-    - [Subpool](#ununifi.derivatives.Subpool)
-    - [Subpool.Asset](#ununifi.derivatives.Subpool.Asset)
     - [UserDeposit](#ununifi.derivatives.UserDeposit)
     - [WrappedPosition](#ununifi.derivatives.WrappedPosition)
   
@@ -1311,7 +1309,7 @@ Query defines the gRPC querier service.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `pool` | [Pool](#ununifi.derivatives.Pool) |  |  |
-| `subpools` | [Subpool](#ununifi.derivatives.Subpool) | repeated |  |
+| `lpt_price_quote_denom` | [string](#string) |  |  |
 | `base_lpt_mint_fee` | [string](#string) |  |  |
 | `base_lpt_redeem_fee` | [string](#string) |  |  |
 | `borrowing_fee_rate_per_hour` | [string](#string) |  |  |
@@ -1391,44 +1389,13 @@ Query defines the gRPC querier service.
 <a name="ununifi.derivatives.PriceData"></a>
 
 ### PriceData
-
+TODO: Is this needed?
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `denom` | [string](#string) |  |  |
 | `price` | [int64](#int64) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.Subpool"></a>
-
-### Subpool
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `accepted_assets` | [Subpool.Asset](#ununifi.derivatives.Subpool.Asset) | repeated |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.Subpool.Asset"></a>
-
-### Subpool.Asset
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `denom` | [string](#string) |  |  |
-| `weight` | [string](#string) |  |  |
 
 
 

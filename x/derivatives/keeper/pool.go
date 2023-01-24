@@ -139,11 +139,11 @@ func (k Keeper) SetPoolMarketCapSnapshot(ctx sdk.Context, height int64, marketCa
 	return nil
 }
 
-func (k Keeper) GetLPTokenSupplySnapshot(ctx sdk.Context, height int64) sdk.Dec {
+func (k Keeper) GetLPTokenSupplySnapshot(ctx sdk.Context, height int64) sdk.Int {
 	store := ctx.KVStore(k.storeKey)
 
 	bz := store.Get(types.AddressLPTokenSupplySnapshotKeyPrefix(height))
-	supply := sdk.Dec{}
+	supply := sdk.Int{}
 	supply.Unmarshal(bz)
 
 	return supply
@@ -160,15 +160,24 @@ func (k Keeper) SetLPTokenSupplySnapshot(ctx sdk.Context, height int64, supply s
 	return nil
 }
 
+func (k Keeper) GetLPTPriceMarketQuoteDenom(ctx sdk.Context) string {
+	internalQuoteDenom := k.GetParams(ctx).LptPriceQuoteDenom
+	marketQuoteDenom := k.pricefeedKeeper.GetMarketDenom(ctx, internalQuoteDenom)
+
+	return marketQuoteDenom
+}
+
 func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 	assets := k.GetPoolAssets(ctx)
 
 	breakdowns := []types.PoolMarketCap_Breakdown{}
 	mc := sdk.NewDec(0)
 
+	marketQuoteDenom := k.GetLPTPriceMarketQuoteDenom(ctx)
+
 	for _, asset := range assets {
 		balance := k.GetAssetBalance(ctx, asset)
-		price, err := k.GetPrice(ctx, types.GetMarketId(asset.Denom))
+		price, err := k.GetPrice(ctx, types.GetMarketId(asset.Denom, marketQuoteDenom))
 
 		if err != nil {
 			panic("not able to calculate market cap")
@@ -180,18 +189,18 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 			Price:  price.Price,
 		}
 		breakdowns = append(breakdowns, breakdown)
-		mc.Add(sdk.Dec(balance.Amount).Mul(price.Price))
+		mc.Add(sdk.Dec(sdk.NewDecFromInt(balance.Amount)).Mul(price.Price))
 	}
 
 	return types.PoolMarketCap{
 		Total:      mc,
-		QuoteDenom: types.QuoteDenom,
+		QuoteDenom: marketQuoteDenom,
 		Breakdown:  breakdowns,
 	}
 }
 
 func (k Keeper) GetLPTokenSupply(ctx sdk.Context) sdk.Int {
-	return k.bankKeeper.GetSupply(ctx, "udlp").Amount
+	return k.bankKeeper.GetSupply(ctx, types.LiquidityProviderTokenDenom).Amount
 }
 
 func (k Keeper) GetLPTokenPrice(ctx sdk.Context) sdk.Dec {
@@ -220,7 +229,8 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 		return err
 	}
 
-	dlpMarketId := types.GetMarketId(types.LiquidityProviderTokenDenom)
+	marketQuoteDenom := k.GetLPTPriceMarketQuoteDenom(ctx)
+	dlpMarketId := types.GetMarketId(types.LiquidityProviderTokenDenom, marketQuoteDenom)
 	assetMc := price.Price.Mul(sdk.Dec(msg.Amount.Amount))
 
 	// currently mint to module and need to send it to msg.sender
@@ -235,10 +245,10 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 			Price:  price.Price,
 		})
 
-		// TODO: not needed to set price to pricefeed module. Just use SetPoolMarketCapSnapshot
+		// TODO: remove this. The EndBlocker works this role
 		k.SetPoolMarketCapSnapshot(ctx, ctx.BlockHeight(), types.PoolMarketCap{
 			Total:      assetMc,
-			QuoteDenom: types.QuoteDenom,
+			QuoteDenom: marketQuoteDenom,
 			Breakdown:  breakdowns,
 		})
 	} else {
