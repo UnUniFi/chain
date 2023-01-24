@@ -32,21 +32,22 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAd
 	params := k.GetParams(ctx)
 	// decimal is 6
 	commissionRate := params.CommissionRate
-	tempAmount := position.Size_.Mul(commissionRate)
-	feeAmount := sdk.NewInt(tempAmount.BigInt().Div(tempAmount.BigInt(), sdk.NewDec(1000000).BigInt()).Int64())
-	tradeAmount := position.Size_.Sub(sdk.NewDec(feeAmount.Int64()))
+	feeAmount := position.Size_.Mul(commissionRate).Quo(sdk.NewDecWithPrec(1, 6))
+	tradeAmount := position.Size_.Sub(feeAmount)
 	k.AddAccumulatedFee(ctx, feeAmount)
 
 	switch position.PositionType {
 	case types.PositionType_LONG:
-		k.SubPerpetualFuturesNetPositionOfDenom(ctx, position.Denom, tradeAmount) // TODO: amount
+		k.SubPerpetualFuturesNetPositionOfDenom(ctx, position.Denom, tradeAmount)
 		break
 	case types.PositionType_SHORT:
-		k.AddPerpetualFuturesNetPositionOfDenom(ctx, position.Denom, tradeAmount) // TODO: amount
+		k.AddPerpetualFuturesNetPositionOfDenom(ctx, position.Denom, tradeAmount)
 		break
 	case types.PositionType_POSITION_UNKNOWN:
 		return fmt.Errorf("unknown position type")
 	}
+
+	k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.Coins{sdk.NewCoin(position.Denom, feeAmount.RoundInt())})
 
 	return nil
 }

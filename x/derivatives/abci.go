@@ -1,8 +1,9 @@
 package derivatives
 
 import (
-	"github.com/UnUniFi/chain/x/derivatives/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/UnUniFi/chain/x/derivatives/keeper"
 )
 
 // BeginBlocker
@@ -13,5 +14,5 @@ func BeginBlocker(ctx sdk.Context, k keeper.Keeper) {
 
 // EndBlocker
 func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
-	// TODO: save PoolMarketCap
+	k.SetPoolMarketCapSnapshot(ctx, ctx.BlockHeight(), k.GetPoolMarketCap(ctx))
 }

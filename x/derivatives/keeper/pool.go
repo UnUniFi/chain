@@ -1,9 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-	"math/big"
-
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -74,11 +71,11 @@ func (k Keeper) GetAccumulatedFee(ctx sdk.Context) sdk.Coin {
 	return coin
 }
 
-func (k Keeper) AddAccumulatedFee(ctx sdk.Context, feeAmount math.Int) {
+func (k Keeper) AddAccumulatedFee(ctx sdk.Context, feeAmount sdk.Dec) {
 	store := ctx.KVStore(k.storeKey)
 
 	fee := k.GetAccumulatedFee(ctx)
-	fee.Amount = fee.Amount.Add(feeAmount)
+	fee.Amount = fee.Amount.Add(feeAmount.RoundInt())
 
 	bz := k.cdc.MustMarshal(&fee)
 	store.Set([]byte(types.KeyPrefixAccumulatedFee), bz)
@@ -161,8 +158,33 @@ func (k Keeper) SetLPTokenSupplySnapshot(ctx sdk.Context, height int64, supply s
 }
 
 func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
-	// TODO: implement. Don't use GetPoolMarketCapSnapshot because it can't be used for latest block
-	return types.PoolMarketCap{}
+	assets := k.GetPoolAssets(ctx)
+
+	breakdowns := []types.PoolMarketCap_Breakdown{}
+	mc := sdk.NewDec(0)
+
+	for _, asset := range assets {
+		balance := k.GetAssetBalance(ctx, asset)
+		price, err := k.GetPrice(ctx, types.GetMarketId(asset.Denom))
+
+		if err != nil {
+			panic("not able to calculate market cap")
+		}
+
+		breakdown := types.PoolMarketCap_Breakdown{
+			Denom:  asset.Denom,
+			Amount: balance.Amount,
+			Price:  price.Price,
+		}
+		breakdowns = append(breakdowns, breakdown)
+		mc.Add(sdk.Dec(balance.Amount).Mul(price.Price))
+	}
+
+	return types.PoolMarketCap{
+		Total:      mc,
+		QuoteDenom: types.QuoteDenom,
+		Breakdown:  breakdowns,
+	}
 }
 
 func (k Keeper) GetLPTokenSupply(ctx sdk.Context) sdk.Int {
@@ -171,6 +193,10 @@ func (k Keeper) GetLPTokenSupply(ctx sdk.Context) sdk.Int {
 
 func (k Keeper) GetLPTokenPrice(ctx sdk.Context) sdk.Dec {
 	return k.GetPoolMarketCap(ctx).CalculateLPTokenPrice(k.GetLPTokenSupply(ctx))
+}
+
+func (k Keeper) GetPrice(ctx sdk.Context, marketId string) (pftypes.CurrentPrice, error) {
+	return k.pricefeedKeeper.GetCurrentPrice(ctx, marketId)
 }
 
 func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLiquidityProviderToken) error {
@@ -185,35 +211,38 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 		return err
 	}
 
-	//TODO: Don't use string literal directly. Define something in key.go or save the quote denom in the parameters of Pool
-	marketId := fmt.Sprintf("%s:%s", msg.Amount.Denom, "USDC")
-	price, err := k.pricefeedKeeper.GetCurrentPrice(ctx, marketId)
+	marketId := types.GetMarketId(msg.Amount.Denom)
+	price, err := k.GetPrice(ctx, marketId)
 	if err != nil {
 		return err
 	}
 
-	dlpMarketId := fmt.Sprintf("%s:%s", types.LiquidityProviderTokenDenom, "USDC")
+	dlpMarketId := types.GetMarketId(types.LiquidityProviderTokenDenom)
 	assetMc := price.Price.Mul(sdk.Dec(msg.Amount.Amount))
 
 	// currently mint to module and need to send it to msg.sender
 	currentSupply := k.bankKeeper.GetSupply(ctx, types.LiquidityProviderTokenDenom)
 	if currentSupply.Amount.IsZero() {
 		// first deposit should mint 1 token
-		k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.NewInt(1000000))})
-		initialDlpPrice := *(assetMc.BigInt().Div(assetMc.BigInt(), big.NewInt(1000000)))
+		k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(types.LiquidityProviderTokenDenom, math.Int(sdk.NewDecWithPrec(1000000, 0)))})
+		breakdowns := []types.PoolMarketCap_Breakdown{}
+		breakdowns = append(breakdowns, types.PoolMarketCap_Breakdown{
+			Denom:  msg.Amount.Denom,
+			Amount: msg.Amount.Amount,
+			Price:  price.Price,
+		})
 
 		// TODO: not needed to set price to pricefeed module. Just use SetPoolMarketCapSnapshot
-		k.pricefeedKeeper.SetCurrentPrice(ctx, dlpMarketId, pftypes.CurrentPrice{Price: sdk.Dec(initialDlpPrice)})
+		k.SetPoolMarketCapSnapshot(ctx, ctx.BlockHeight(), types.PoolMarketCap{
+			Total:      assetMc,
+			QuoteDenom: types.QuoteDenom,
+			Breakdown:  breakdowns,
+		})
 	} else {
-		//TODO: use GetLiquidityProviderTokenPrice
+		dlpPrice := k.GetLPTokenPrice(ctx)
 
-		dlpPrice, err := k.pricefeedKeeper.GetCurrentPrice(ctx, dlpMarketId)
-		if err != nil {
-			return err
-		}
-
-		newSupply := *(assetMc.BigInt().Div(assetMc.BigInt(), dlpPrice.Price.BigInt()))
-		err = k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.NewIntFromBigInt(&newSupply))})
+		newSupply := assetMc.Quo(dlpPrice)
+		err = k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(types.LiquidityProviderTokenDenom, newSupply.RoundInt())})
 		if err != nil {
 			return err
 		}

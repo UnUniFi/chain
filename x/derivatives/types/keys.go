@@ -2,9 +2,11 @@ package types
 
 import (
 	"encoding/binary"
+	"fmt"
+	"strconv"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
-	"strconv"
 )
 
 const (
@@ -46,7 +48,12 @@ const (
 
 const (
 	LiquidityProviderTokenDenom = "udlp"
+	QuoteDenom                  = "USDC"
 )
+
+func GetMarketId(lhs string) string {
+	return fmt.Sprintf("%s:%s", lhs, QuoteDenom)
+}
 
 func GetPositionIdBytes(posId uint64) (posIdBz []byte) {
 	posIdBz = make([]byte, 8)
