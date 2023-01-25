@@ -14,6 +14,8 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAdd
 		return err
 	}
 
+	// TODO: levy margin (principal, collateral)
+
 	k.SaveOpenPositionPrice(ctx, positionId, price)
 
 	switch position.PositionType {
