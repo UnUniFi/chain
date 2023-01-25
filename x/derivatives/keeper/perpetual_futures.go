@@ -8,7 +8,14 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
-func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAddress, position *types.PerpetualFuturesPosition) error {
+func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAddress, positionId uint64, position *types.PerpetualFuturesPosition) error {
+	price, err := k.GetAssetPrice(ctx, position.Denom)
+	if err != nil {
+		return err
+	}
+
+	k.SaveOpenPositionPrice(ctx, positionId, price)
+
 	switch position.PositionType {
 	case types.PositionType_LONG:
 		k.AddPerpetualFuturesNetPositionOfDenom(ctx, position.Denom, position.Size_)
@@ -23,34 +30,67 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAdd
 	return nil
 }
 
-func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAddress, position *types.PerpetualFuturesPosition) error {
+func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAddress, positionId uint64, position *types.PerpetualFuturesPosition) error {
 	// TODO: calculate payoffs
 	// Didn't consider leverage yet by Alan
 	// ^ position.Size_ is already contain the leverage.
 	// See x/derivatives/types/perpetual_futures.go CalculatePrincipal.
 	// position_size = leverage * principal by Yu
 	params := k.GetParams(ctx)
-	// decimal is 6
+	// decimal is 12
 	commissionRate := params.CommissionRate
 	feeAmount := position.Size_.Mul(commissionRate).Quo(sdk.NewDecWithPrec(1, 6))
 	tradeAmount := position.Size_.Sub(feeAmount)
 
-	// TODO: AddAccumulatedFee may be not needed. Jump to the definition of AddAccumulatedFee to read more comments.
-	k.AddAccumulatedFee(ctx, feeAmount)
+	price, err := k.GetAssetPrice(ctx, position.Denom)
+	if err != nil {
+		return err
+	}
+
+	k.SaveClosedPositionPrice(ctx, positionId, price)
+	openPrice := k.GetOpenPositionPrice(ctx, positionId)
+
 	k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.Coins{sdk.NewCoin(position.Denom, feeAmount.RoundInt())})
 
-	// TODO: transfer the principal (margin = collateral) and profits from Pool to the trader or from the trader to Pool.
+	principal := types.CalculatePrincipal(*position)
+	amountToUser := sdk.Dec{}
 
 	switch position.PositionType {
 	case types.PositionType_LONG:
 		k.SubPerpetualFuturesNetPositionOfDenom(ctx, position.Denom, tradeAmount)
+
+		if price.Price.GTE(openPrice.Price) {
+			profit := price.Price.Mul(sdk.NewDecFromInt(position.Leverage)).Sub(position.Size_)
+			profitAmount := profit.Quo(price.Price)
+
+			amountToUser = principal.Add(profitAmount)
+		} else {
+			loss := position.Size_.Sub(price.Price.Mul(sdk.NewDecFromInt(position.Leverage)))
+			lossAmount := loss.Quo(price.Price)
+
+			amountToUser = principal.Sub(lossAmount)
+		}
 		break
 	case types.PositionType_SHORT:
 		k.AddPerpetualFuturesNetPositionOfDenom(ctx, position.Denom, tradeAmount)
+
+		if price.Price.LTE(openPrice.Price) {
+			profit := position.Size_.Sub(price.Price.Mul(sdk.NewDecFromInt(position.Leverage)))
+			profitAmount := profit.Quo(price.Price)
+
+			amountToUser = principal.Add(profitAmount)
+		} else {
+			loss := price.Price.Mul(sdk.NewDecFromInt(position.Leverage)).Sub(position.Size_)
+			lossAmount := loss.Quo(price.Price)
+
+			amountToUser = principal.Sub(lossAmount)
+		}
 		break
 	case types.PositionType_POSITION_UNKNOWN:
 		return fmt.Errorf("unknown position type")
 	}
+
+	k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, address, sdk.Coins{sdk.NewCoin(position.Denom, amountToUser.RoundInt())})
 
 	return nil
 }

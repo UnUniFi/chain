@@ -12,27 +12,6 @@ import (
 
 var _ types.QueryServer = Keeper{}
 
-// TODO: delete this function because we use LiquidityProviderTokenRealAPY and LiquidityProviderTokenNominalAPY
-func (k Keeper) LiquidityProviderRewardsSinceLastRedemption(c context.Context, req *types.QueryLiquidityProviderRewardsSinceLastRedemptionRequest) (*types.QueryLiquidityProviderRewardsSinceLastRedemptionResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	totalSupply := k.bankKeeper.GetSupply(ctx, types.LiquidityProviderTokenDenom)
-	user := sdk.AccAddress(req.Address)
-	userBalance := k.bankKeeper.GetBalance(ctx, user, types.LiquidityProviderTokenDenom)
-
-	accumulatedFee := k.GetAccumulatedFee(ctx)
-
-	tempAmount := accumulatedFee.Amount.Mul(userBalance.Amount)
-	feeAmount := tempAmount.BigInt().Div(tempAmount.BigInt(), totalSupply.Amount.BigInt())
-
-	return &types.QueryLiquidityProviderRewardsSinceLastRedemptionResponse{
-		Amount: sdk.Coins{sdk.NewCoin(accumulatedFee.Denom, sdk.NewInt(feeAmount.Int64()))},
-	}, nil
-}
-
 func (k Keeper) LiquidityProviderTokenRealAPY(c context.Context, req *types.QueryLiquidityProviderTokenRealAPYRequest) (*types.QueryLiquidityProviderTokenRealAPYResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")

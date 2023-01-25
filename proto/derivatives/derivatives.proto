@@ -60,28 +60,6 @@ message Pool {
   ];
 }
 
-// TODO: Is this needed?
-message PriceData {
-  string denom = 1 [
-    (gogoproto.moretags) = "yaml:\"denom\""
-  ];
-  int64 price = 2 [
-    (gogoproto.moretags) = "yaml:\"price\""
-  ];
-}
-
-// TODO: Delete this. Not needed because claim function utilize redemption functionality
-message UserDeposit {
-  string denom = 1 [
-    (gogoproto.moretags) = "yaml:\"denom\""
-  ];
-  string amount = 2 [
-    (gogoproto.moretags) = "yaml:\"amount\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
-}
-
 message PoolMarketCap {
   message Breakdown {
     string denom = 1 [

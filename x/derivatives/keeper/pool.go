@@ -61,38 +61,15 @@ func (k Keeper) GetAssetBalance(ctx sdk.Context, asset types.Pool_Asset) sdk.Coi
 	return coin
 }
 
-// TODO: this function may be not needed because Just adding fees to the pool is enough. Users can claim them by using redemption functionality.
-func (k Keeper) GetAccumulatedFee(ctx sdk.Context) sdk.Coin {
+func (k Keeper) GetUserDeposits(ctx sdk.Context, depositor sdk.AccAddress) []sdk.Coin {
 	store := ctx.KVStore(k.storeKey)
 
-	coin := sdk.Coin{}
-	bz := store.Get([]byte(types.KeyPrefixAccumulatedFee))
-	k.cdc.MustUnmarshal(bz, &coin)
-
-	return coin
-}
-
-// TODO: this function may be not needed because Just adding fees to the pool is enough. Users can claim them by using redemption functionality.
-func (k Keeper) AddAccumulatedFee(ctx sdk.Context, feeAmount sdk.Dec) {
-	store := ctx.KVStore(k.storeKey)
-
-	fee := k.GetAccumulatedFee(ctx)
-	fee.Amount = fee.Amount.Add(feeAmount.RoundInt())
-
-	bz := k.cdc.MustMarshal(&fee)
-	store.Set([]byte(types.KeyPrefixAccumulatedFee), bz)
-}
-
-// TODO: use []sdk.Coin instead of types.UserDeposit. They are same types
-func (k Keeper) GetUserDeposits(ctx sdk.Context, depositor sdk.AccAddress) []types.UserDeposit {
-	store := ctx.KVStore(k.storeKey)
-
-	deposits := []types.UserDeposit{}
+	deposits := []sdk.Coin{}
 	it := sdk.KVStorePrefixIterator(store, types.AddressDepositKeyPrefix(depositor))
 	defer it.Close()
 
 	for ; it.Valid(); it.Next() {
-		deposit := types.UserDeposit{}
+		deposit := sdk.Coin{}
 		k.cdc.Unmarshal(it.Value(), &deposit)
 
 		deposits = append(deposits, deposit)
@@ -101,7 +78,7 @@ func (k Keeper) GetUserDeposits(ctx sdk.Context, depositor sdk.AccAddress) []typ
 	return deposits
 }
 
-func (k Keeper) DepositPoolAsset(ctx sdk.Context, depositor sdk.AccAddress, deposit_data types.UserDeposit) {
+func (k Keeper) DepositPoolAsset(ctx sdk.Context, depositor sdk.AccAddress, deposit_data sdk.Coin) {
 	store := ctx.KVStore(k.storeKey)
 
 	bz := k.cdc.MustMarshal(&deposit_data)
@@ -167,6 +144,11 @@ func (k Keeper) GetLPTPriceMarketQuoteDenom(ctx sdk.Context) string {
 	return marketQuoteDenom
 }
 
+func (k Keeper) GetAssetPrice(ctx sdk.Context, denom string) (pftypes.CurrentPrice, error) {
+	marketQuoteDenom := k.GetLPTPriceMarketQuoteDenom(ctx)
+	return k.GetPrice(ctx, types.GetMarketId(denom, marketQuoteDenom))
+}
+
 func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 	assets := k.GetPoolAssets(ctx)
 
@@ -177,7 +159,7 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 
 	for _, asset := range assets {
 		balance := k.GetAssetBalance(ctx, asset)
-		price, err := k.GetPrice(ctx, types.GetMarketId(asset.Denom, marketQuoteDenom))
+		price, err := k.GetAssetPrice(ctx, asset.Denom)
 
 		if err != nil {
 			panic("not able to calculate market cap")
@@ -213,7 +195,7 @@ func (k Keeper) GetPrice(ctx sdk.Context, marketId string) (pftypes.CurrentPrice
 
 func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLiquidityProviderToken) error {
 	depositor := msg.Sender.AccAddress()
-	depositData := types.UserDeposit{
+	depositData := sdk.Coin{
 		Amount: msg.Amount.Amount,
 		Denom:  msg.Amount.Denom,
 	}
@@ -223,14 +205,12 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 		return err
 	}
 
-	marketId := types.GetMarketId(msg.Amount.Denom)
-	price, err := k.GetPrice(ctx, marketId)
+	price, err := k.GetAssetPrice(ctx, msg.Amount.Denom)
 	if err != nil {
 		return err
 	}
 
 	marketQuoteDenom := k.GetLPTPriceMarketQuoteDenom(ctx)
-	dlpMarketId := types.GetMarketId(types.LiquidityProviderTokenDenom, marketQuoteDenom)
 	assetMc := price.Price.Mul(sdk.Dec(msg.Amount.Amount))
 
 	// currently mint to module and need to send it to msg.sender

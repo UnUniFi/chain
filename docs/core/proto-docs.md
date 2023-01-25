@@ -80,8 +80,6 @@
     - [Pool.Asset](#ununifi.derivatives.Pool.Asset)
     - [PoolMarketCap](#ununifi.derivatives.PoolMarketCap)
     - [PoolMarketCap.Breakdown](#ununifi.derivatives.PoolMarketCap.Breakdown)
-    - [PriceData](#ununifi.derivatives.PriceData)
-    - [UserDeposit](#ununifi.derivatives.UserDeposit)
     - [WrappedPosition](#ununifi.derivatives.WrappedPosition)
   
     - [AssetType](#ununifi.derivatives.AssetType)
@@ -1380,38 +1378,6 @@ Query defines the gRPC querier service.
 | `denom` | [string](#string) |  |  |
 | `amount` | [string](#string) |  |  |
 | `price` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.PriceData"></a>
-
-### PriceData
-TODO: Is this needed?
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `denom` | [string](#string) |  |  |
-| `price` | [int64](#int64) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.UserDeposit"></a>
-
-### UserDeposit
-TODO: Delete this. Not needed because claim function utilize redemption functionality
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `denom` | [string](#string) |  |  |
-| `amount` | [string](#string) |  |  |
 
 
 

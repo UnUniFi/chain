@@ -7,6 +7,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
+	pftypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
 func (k Keeper) GetLastPositionId(ctx sdk.Context) (id uint64) {
@@ -19,6 +20,13 @@ func (k Keeper) GetLastPositionId(ctx sdk.Context) (id uint64) {
 
 	id = types.GetPositionIdFromBytes(bz)
 	return
+}
+
+func (k Keeper) IncreaseLastPositionId(ctx sdk.Context) {
+	store := ctx.KVStore(k.storeKey)
+
+	lastPositionId := k.GetLastPositionId(ctx)
+	store.Set([]byte(types.KeyPrefixLastPositionId), types.GetPositionIdBytes(lastPositionId+1))
 }
 
 func (k Keeper) GetAllPositions(ctx sdk.Context) []*types.WrappedPosition {
@@ -87,11 +95,45 @@ func (k Keeper) CreateClosedPosition(ctx sdk.Context, wrappedPosition types.Wrap
 	store.Set(types.AddressClosedPositionWithIdKeyPrefix(wrappedPosition.Address.AccAddress(), positionId), bz)
 }
 
+func (k Keeper) SaveOpenPositionPrice(ctx sdk.Context, positionId uint64, price pftypes.CurrentPrice) {
+	store := ctx.KVStore(k.storeKey)
+
+	bz := k.cdc.MustMarshal(&price)
+	store.Set(types.OpenPositionPriceKeyPrefix(positionId), bz)
+}
+
+func (k Keeper) GetOpenPositionPrice(ctx sdk.Context, positionId uint64) pftypes.CurrentPrice {
+	store := ctx.KVStore(k.storeKey)
+
+	price := pftypes.CurrentPrice{}
+	bz := store.Get(types.OpenPositionPriceKeyPrefix(positionId))
+	k.cdc.MustUnmarshal(bz, &price)
+
+	return price
+}
+
+func (k Keeper) SaveClosedPositionPrice(ctx sdk.Context, positionId uint64, price pftypes.CurrentPrice) {
+	store := ctx.KVStore(k.storeKey)
+
+	bz := k.cdc.MustMarshal(&price)
+	store.Set(types.ClosedPositionPriceKeyPrefix(positionId), bz)
+}
+
+func (k Keeper) GetClosedPositionPrice(ctx sdk.Context, positionId uint64) pftypes.CurrentPrice {
+	store := ctx.KVStore(k.storeKey)
+
+	price := pftypes.CurrentPrice{}
+	bz := store.Get(types.ClosedPositionPriceKeyPrefix(positionId))
+	k.cdc.MustUnmarshal(bz, &price)
+
+	return price
+}
+
 func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
 	sender := msg.Sender.AccAddress()
 	lastPositionId := k.GetLastPositionId(ctx)
 
-	positionKey := types.AddressPositionWithIdKeyPrefix(sender, lastPositionId+1)
+	positionKey := types.AddressPositionWithIdKeyPrefix(sender, lastPositionId)
 
 	wrappedPosition := types.WrappedPosition{
 		Id:       string(positionKey),
@@ -108,10 +150,12 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 	}
 	switch position.(type) {
 	case *types.PerpetualFuturesPosition:
-		return k.OpenPerpetualFuturesPosition(ctx, msg.Sender.AccAddress(), position.(*types.PerpetualFuturesPosition))
+		return k.OpenPerpetualFuturesPosition(ctx, msg.Sender.AccAddress(), lastPositionId, position.(*types.PerpetualFuturesPosition))
 	case *types.PerpetualOptionsPosition:
 		return k.OpenPerpetualOptionsPosition(ctx, msg.Sender.AccAddress(), position.(*types.PerpetualOptionsPosition))
 	}
+
+	k.IncreaseLastPositionId(ctx)
 
 	return nil
 }
@@ -129,7 +173,7 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 	}
 	switch position.(type) {
 	case *types.PerpetualFuturesPosition:
-		return k.ClosePerpetualFuturesPosition(ctx, msg.Sender.AccAddress(), position.(*types.PerpetualFuturesPosition))
+		return k.ClosePerpetualFuturesPosition(ctx, msg.Sender.AccAddress(), positionId, position.(*types.PerpetualFuturesPosition))
 	case *types.PerpetualOptionsPosition:
 		return k.ClosePerpetualOptionsPosition(ctx, msg.Sender.AccAddress(), position.(*types.PerpetualOptionsPosition))
 	}

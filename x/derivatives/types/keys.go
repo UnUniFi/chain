@@ -44,6 +44,8 @@ const (
 	KeyPrefixAccumulatedFee        = "accumulated_fee"
 	KeyPrefixPoolMarketCapSnapshot = "pool_market_cap_snapshot"
 	KeyPrefixLPTokenSupplySnapshot = "lpt_supply_snapshot"
+	KeyPrefixPositionPrice         = "position_price"
+	KeyPrefixClosedPositionPrice   = "closed_position_price"
 )
 
 const (
@@ -110,4 +112,12 @@ func AddressPoolMarketCapSnapshotKeyPrefix(height int64) []byte {
 
 func AddressLPTokenSupplySnapshotKeyPrefix(height int64) []byte {
 	return append([]byte(KeyPrefixLPTokenSupplySnapshot), []byte(strconv.FormatInt(height, 10))...)
+}
+
+func OpenPositionPriceKeyPrefix(posId uint64) []byte {
+	return append([]byte(KeyPrefixPositionPrice), GetPositionIdBytes(posId)...)
+}
+
+func ClosedPositionPriceKeyPrefix(posId uint64) []byte {
+	return append([]byte(KeyPrefixClosedPositionPrice), GetPositionIdBytes(posId)...)
 }
