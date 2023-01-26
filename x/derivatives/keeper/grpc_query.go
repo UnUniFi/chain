@@ -21,7 +21,7 @@ func (k Keeper) LiquidityProviderTokenRealAPY(c context.Context, req *types.Quer
 	rate := k.GetLPNominalYieldRate(ctx, req.BeforeHeight, req.AfterHeight)
 	annualized := k.AnnualizeYieldRate(ctx, rate, req.BeforeHeight, req.AfterHeight)
 
-	return &types.QueryLiquidityProviderTokenRealAPYResponse{Apy: annualized.String()}, nil
+	return &types.QueryLiquidityProviderTokenRealAPYResponse{Apy: &annualized}, nil
 }
 
 func (k Keeper) LiquidityProviderTokenNominalAPY(c context.Context, req *types.QueryLiquidityProviderTokenNominalAPYRequest) (*types.QueryLiquidityProviderTokenNominalAPYResponse, error) {
@@ -33,7 +33,7 @@ func (k Keeper) LiquidityProviderTokenNominalAPY(c context.Context, req *types.Q
 	rate := k.GetLPNominalYieldRate(ctx, req.BeforeHeight, req.AfterHeight)
 	annualized := k.AnnualizeYieldRate(ctx, rate, req.BeforeHeight, req.AfterHeight)
 
-	return &types.QueryLiquidityProviderTokenNominalAPYResponse{Apy: annualized.String()}, nil
+	return &types.QueryLiquidityProviderTokenNominalAPYResponse{Apy: &annualized}, nil
 }
 
 func (k Keeper) Positions(c context.Context, req *types.QueryPositionsRequest) (*types.QueryPositionsResponse, error) {
@@ -44,10 +44,11 @@ func (k Keeper) Positions(c context.Context, req *types.QueryPositionsRequest) (
 	positions := []*types.WrappedPosition{}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if req.Address == "" {
+	// If address is empty, error should be emitted. It is better to prepare another query for all positions
+	if req.Address.AccAddress().String() == "" {
 		positions = k.GetAllPositions(ctx)
 	} else {
-		positions = k.GetUserPositions(ctx, sdk.AccAddress(req.Address))
+		positions = k.GetUserPositions(ctx, req.Address.AccAddress())
 	}
 
 	return &types.QueryPositionsResponse{
