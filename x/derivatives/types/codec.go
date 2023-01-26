@@ -17,9 +17,13 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgMintLiquidityProviderToken{},
 	)
-	registry.RegisterImplementations((*Position)(nil),
-		&PerpetualFuturesPosition{},
-		&PerpetualOptionsPosition{},
+	registry.RegisterImplementations((*OpenedPositionI)(nil),
+		&PerpetualFuturesOpenedPosition{},
+		&PerpetualOptionsOpenedPosition{},
+	)
+	registry.RegisterImplementations((*ClosedPositionI)(nil),
+		&PerpetualFuturesClosedPosition{},
+		&PerpetualOptionsClosedPosition{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

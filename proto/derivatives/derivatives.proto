@@ -20,7 +20,7 @@ enum PositionType {
   SHORT = 2;
 }
 
-message WrappedPosition {
+message OpenedPosition {
   string id = 1 [
     (gogoproto.moretags) = "yaml:\"id\""
   ];
@@ -29,12 +29,55 @@ message WrappedPosition {
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
-  google.protobuf.Timestamp start_at = 3 [
-    (gogoproto.moretags) = "yaml:\"start_at\"",
+  google.protobuf.Timestamp opened_at = 3 [
+    (gogoproto.moretags) = "yaml:\"opened_at\"",
     (gogoproto.nullable) = false
+  ];
+  uint64 opened_height = 4 [
+    (gogoproto.moretags) = "yaml:\"opened_height\""
   ];
   google.protobuf.Any position = 5 [
     (gogoproto.moretags) = "yaml:\"position\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message ClosedPosition {
+  string id = 1 [
+    (gogoproto.moretags) = "yaml:\"id\""
+  ];
+  string address = 2 [
+    (gogoproto.moretags) = "yaml:\"address\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Timestamp opened_at = 3 [
+    (gogoproto.moretags) = "yaml:\"opened_at\"",
+    (gogoproto.nullable) = false
+  ];
+  uint64 opened_height = 4 [
+    (gogoproto.moretags) = "yaml:\"opened_height\""
+  ];
+  google.protobuf.Timestamp closed_at = 5 [
+    (gogoproto.moretags) = "yaml:\"closed_at\"",
+    (gogoproto.nullable) = false
+  ];
+  uint64 closed_height = 6 [
+    (gogoproto.moretags) = "yaml:\"closed_height\""
+  ];
+  google.protobuf.Any position = 7 [
+    (gogoproto.moretags) = "yaml:\"position\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message AcceptedLiquidationNeededReport {
+  string position_id = 1 [
+    (gogoproto.moretags) = "yaml:\"position_id\""
+  ];
+  string sender = 2 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
 }
@@ -69,7 +112,12 @@ message Pool {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  repeated Asset accepted_assets = 5 [
+  string liquidation_needed_report_reward_rate = 5 [
+    (gogoproto.moretags) = "yaml:\"liquidation_needed_report_reward_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  repeated Asset accepted_assets = 6 [
     (gogoproto.moretags) = "yaml:\"accepted_assets\"",
     (gogoproto.nullable) = false
   ];

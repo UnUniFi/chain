@@ -2,7 +2,6 @@ package types
 
 import (
 	"encoding/binary"
-	"fmt"
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -31,21 +30,17 @@ const (
 	// user deposited real assets
 	KeyPrefixDerivativesUserDepositedAssets = "user_deposited_assets"
 	// User deposits by address
-	KeyPrefixAddressDeposit = "address_deposit"
-	// assets deposits by denom
-	KeyPrefixAssetDeposit = "asset_deposit"
+	KeyPrefixPoolDeposit = "pool_deposit"
 	//
-	KeyPrefixPosition              = "position"
+	KeyPrefixOpenedPosition        = "opened_position"
 	KeyPrefixClosedPosition        = "closed_position"
 	KeyPrefixPerpetualFutures      = "perpetual_futures"
 	KeyPrefixPerpetualOptions      = "perpetual_options"
-	KeyPrefixNetPosition           = "net_position"
+	KeyPrefixNetPositionAmount     = "net_position_amount"
 	KeyPrefixLastPositionId        = "last_position_id"
 	KeyPrefixAccumulatedFee        = "accumulated_fee"
 	KeyPrefixPoolMarketCapSnapshot = "pool_market_cap_snapshot"
 	KeyPrefixLPTokenSupplySnapshot = "lpt_supply_snapshot"
-	KeyPrefixPositionPrice         = "position_price"
-	KeyPrefixClosedPositionPrice   = "closed_position_price"
 	KeyPrefixPositionMargin        = "position_margin"
 	KeyPrefixImaginaryFundingRate  = "imaginary_funding_rate"
 )
@@ -53,10 +48,6 @@ const (
 const (
 	LiquidityProviderTokenDenom = "udlp"
 )
-
-func GetMarketId(lhs string, rhs string) string {
-	return fmt.Sprintf("%s:%s", lhs, rhs)
-}
 
 func GetPositionIdBytes(posId uint64) (posIdBz []byte) {
 	posIdBz = make([]byte, 8)
@@ -72,12 +63,12 @@ func GetPositionIdFromString(idStr string) uint64 {
 	return GetPositionIdFromBytes([]byte(idStr))
 }
 
-func AddressDepositKeyPrefix(depositor sdk.AccAddress) []byte {
-	return append([]byte(KeyPrefixAddressDeposit), address.MustLengthPrefix(depositor)...)
+func AddressPoolDepositKeyPrefix(depositor sdk.AccAddress) []byte {
+	return append([]byte(KeyPrefixPoolDeposit), address.MustLengthPrefix(depositor)...)
 }
 
-func AddressAssetDepositKeyPrefix(depositor sdk.AccAddress, denom string) []byte {
-	return append(append([]byte(KeyPrefixAddressDeposit), address.MustLengthPrefix(depositor)...), []byte(denom)...)
+func AddressAssetPoolDepositKeyPrefix(depositor sdk.AccAddress, denom string) []byte {
+	return append(append([]byte(KeyPrefixPoolDeposit), address.MustLengthPrefix(depositor)...), []byte(denom)...)
 }
 
 func AssetKeyPrefix(denom string) []byte {
@@ -85,27 +76,27 @@ func AssetKeyPrefix(denom string) []byte {
 }
 
 func AssetDepositKeyPrefix(denom string) []byte {
-	return append([]byte(KeyPrefixAssetDeposit), []byte(denom)...)
+	return append([]byte(KeyPrefixPoolDeposit), []byte(denom)...)
 }
 
-func AddressPositionKeyPrefix(sender sdk.AccAddress) []byte {
-	return append([]byte(KeyPrefixPosition), address.MustLengthPrefix(sender)...)
-}
-
-func AddressPositionWithIdKeyPrefix(sender sdk.AccAddress, posId uint64) []byte {
-	return append(AddressPositionKeyPrefix(sender), GetPositionIdBytes(posId)...)
+func AddressOpenedPositionKeyPrefix(sender sdk.AccAddress) []byte {
+	return append([]byte(KeyPrefixOpenedPosition), address.MustLengthPrefix(sender)...)
 }
 
 func AddressClosedPositionKeyPrefix(sender sdk.AccAddress) []byte {
-	return append([]byte(KeyPrefixPosition), address.MustLengthPrefix(sender)...)
+	return append([]byte(KeyPrefixClosedPosition), address.MustLengthPrefix(sender)...)
 }
 
-func AddressClosedPositionWithIdKeyPrefix(sender sdk.AccAddress, posId uint64) []byte {
-	return append(AddressPositionKeyPrefix(sender), GetPositionIdBytes(posId)...)
+func AddressOpenedPositionWithIdKeyPrefix(sender sdk.AccAddress, posId string) []byte {
+	return append(AddressOpenedPositionKeyPrefix(sender), []byte(posId)...)
+}
+
+func AddressClosedPositionWithIdKeyPrefix(sender sdk.AccAddress, posId string) []byte {
+	return append(AddressClosedPositionKeyPrefix(sender), []byte(posId)...)
 }
 
 func DenomNetPositionPerpetualFuturesKeyPrefix(denom string) []byte {
-	return append(append([]byte(KeyPrefixPerpetualFutures), []byte(KeyPrefixNetPosition)...), []byte(denom)...)
+	return append(append([]byte(KeyPrefixPerpetualFutures), []byte(KeyPrefixNetPositionAmount)...), []byte(denom)...)
 }
 
 func AddressPoolMarketCapSnapshotKeyPrefix(height int64) []byte {
@@ -116,14 +107,6 @@ func AddressLPTokenSupplySnapshotKeyPrefix(height int64) []byte {
 	return append([]byte(KeyPrefixLPTokenSupplySnapshot), []byte(strconv.FormatInt(height, 10))...)
 }
 
-func OpenPositionPriceKeyPrefix(posId uint64) []byte {
-	return append([]byte(KeyPrefixPositionPrice), GetPositionIdBytes(posId)...)
-}
-
-func ClosedPositionPriceKeyPrefix(posId uint64) []byte {
-	return append([]byte(KeyPrefixClosedPositionPrice), GetPositionIdBytes(posId)...)
-}
-
-func DepositedPositionMarginKeyPrefix(posId uint64) []byte {
-	return append([]byte(KeyPrefixPositionMargin), GetPositionIdBytes(posId)...)
+func RemainingMarginKeyPrefix(posId string) []byte {
+	return append([]byte(KeyPrefixPositionMargin), []byte(posId)...)
 }

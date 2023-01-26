@@ -49,7 +49,7 @@ func (k Keeper) AllPositions(c context.Context, req *types.QueryAllPositionsRequ
 	}, nil
 }
 
-func (k Keeper) AddressPositions(c context.Context, req *types.QueryAddressPositionsRequest) (*types.QueryAddressPositionsResponse, error) {
+func (k Keeper) AddressOpeningPositions(c context.Context, req *types.QueryAddressOpeningPositionsRequest) (*types.QueryAddressOpeningPositionsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -59,9 +59,26 @@ func (k Keeper) AddressPositions(c context.Context, req *types.QueryAddressPosit
 	if req.Address.AccAddress().String() == "" {
 		return nil, status.Error(codes.InvalidArgument, "invalid address")
 	}
-	positions := k.GetUserPositions(ctx, req.Address.AccAddress())
+	positions := k.GetAddressOpeningPositions(ctx, req.Address.AccAddress())
 
-	return &types.QueryAddressPositionsResponse{
+	return &types.QueryAddressOpeningPositionsResponse{
+		Positions: positions,
+	}, nil
+}
+
+func (k Keeper) AddressClosedPositions(c context.Context, req *types.QueryAddressClosedPositionsRequest) (*types.QueryAddressClosedPositionsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	// If address is empty, error should be emitted. It is better to prepare another query for all positions
+	if req.Address.AccAddress().String() == "" {
+		return nil, status.Error(codes.InvalidArgument, "invalid address")
+	}
+	positions := k.GetAddressClosedPositions(ctx, req.Address.AccAddress())
+
+	return &types.QueryAddressClosedPositionsResponse{
 		Positions: positions,
 	}, nil
 }

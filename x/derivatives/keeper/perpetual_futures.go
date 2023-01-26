@@ -8,23 +8,27 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
-func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAddress, positionId uint64, margin sdk.Coin, position *types.PerpetualFuturesPosition) error {
-	price, err := k.GetAssetPrice(ctx, position.Pair.Denom)
+func (k Keeper) PerpetualFuturesOpenedPositionFactory(ctx sdk.Context, positionInstance *types.PerpetualFuturesPosition) (*types.PerpetualFuturesOpenedPosition, error) {
+	price, err := k.GetPairPrice(ctx, positionInstance.Pair)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	// TODO: levy margin (principal, collateral)
-	k.SaveDepositedMargin(ctx, positionId, margin)
+	return &types.PerpetualFuturesOpenedPosition{
+		PerpetualFuturesPosition: *&positionInstance,
+		OpeningPrice:             *price,
+	}, nil
+}
 
-	k.SaveOpenPositionPrice(ctx, positionId, price)
+func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, openedPosition types.OpenedPosition, positionInstance *types.PerpetualFuturesOpenedPosition) error {
+	k.CreateOpenedPosition(ctx, openedPosition)
 
-	switch position.PositionType {
+	switch positionInstance.PositionType {
 	case types.PositionType_LONG:
-		k.AddPerpetualFuturesNetPositionOfDenom(ctx, position.Pair.Denom, position.Size_)
+		k.AddPerpetualFuturesNetPositionOfDenom(ctx, positionInstance.Pair.Denom, positionInstance.Size_)
 		break
 	case types.PositionType_SHORT:
-		k.SubPerpetualFuturesNetPositionOfDenom(ctx, position.Pair.Denom, position.Size_)
+		k.SubPerpetualFuturesNetPositionOfDenom(ctx, positionInstance.Pair.Denom, positionInstance.Size_)
 		break
 	case types.PositionType_POSITION_UNKNOWN:
 		return fmt.Errorf("unknown position type")
@@ -33,51 +37,50 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAdd
 	return nil
 }
 
-func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAddress, positionId uint64, position *types.PerpetualFuturesPosition) error {
+func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, closedPosition types.ClosedPosition, positionInstance *types.PerpetualFuturesClosedPosition) error {
 	params := k.GetParams(ctx)
 	commissionRate := params.PerpetualFutures.CommissionRate
-	feeAmount := position.Size_.Mul(commissionRate)
-	tradeAmount := position.Size_.Sub(feeAmount)
+	feeAmount := positionInstance.Size_.Mul(commissionRate)
+	tradeAmount := positionInstance.Size_.Sub(feeAmount)
 
-	price, err := k.GetAssetPrice(ctx, position.Pair.Denom)
+	price, err := k.GetAssetPrice(ctx, positionInstance.Pair.Denom)
 	if err != nil {
 		return err
 	}
 
-	k.SaveClosedPositionPrice(ctx, positionId, price)
-	openPrice := k.GetOpenPositionPrice(ctx, positionId)
+	openPrice := positionInstance.OpeningPrice
 
-	k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.Coins{sdk.NewCoin(position.Pair.Denom, feeAmount.RoundInt())})
+	k.bankKeeper.SendCoinsFromAccountToModule(ctx, closedPosition.Address.AccAddress(), types.ModuleName, sdk.Coins{sdk.NewCoin(positionInstance.Pair.Denom, feeAmount.RoundInt())})
 
-	principal := types.CalculatePrincipal(*position)
+	principal := types.CalculatePrincipal(*positionInstance.PerpetualFuturesPosition)
 	amountToUser := sdk.Dec{}
 
-	switch position.PositionType {
+	switch positionInstance.PositionType {
 	case types.PositionType_LONG:
-		k.SubPerpetualFuturesNetPositionOfDenom(ctx, position.Pair.Denom, tradeAmount)
+		k.SubPerpetualFuturesNetPositionOfDenom(ctx, positionInstance.Pair.Denom, tradeAmount)
 
-		if price.Price.GTE(openPrice.Price) {
-			profit := price.Price.Mul(sdk.NewDecFromInt(position.Leverage)).Sub(position.Size_)
+		if price.Price.GTE(openPrice) {
+			profit := price.Price.Mul(sdk.NewDecFromInt(positionInstance.Leverage)).Sub(positionInstance.Size_)
 			profitAmount := profit.Quo(price.Price)
 
 			amountToUser = principal.Add(profitAmount)
 		} else {
-			loss := position.Size_.Sub(price.Price.Mul(sdk.NewDecFromInt(position.Leverage)))
+			loss := positionInstance.Size_.Sub(price.Price.Mul(sdk.NewDecFromInt(positionInstance.Leverage)))
 			lossAmount := loss.Quo(price.Price)
 
 			amountToUser = principal.Sub(lossAmount)
 		}
 		break
 	case types.PositionType_SHORT:
-		k.AddPerpetualFuturesNetPositionOfDenom(ctx, position.Pair.Denom, tradeAmount)
+		k.AddPerpetualFuturesNetPositionOfDenom(ctx, positionInstance.Pair.Denom, tradeAmount)
 
-		if price.Price.LTE(openPrice.Price) {
-			profit := position.Size_.Sub(price.Price.Mul(sdk.NewDecFromInt(position.Leverage)))
+		if price.Price.LTE(openPrice) {
+			profit := positionInstance.Size_.Sub(price.Price.Mul(sdk.NewDecFromInt(positionInstance.Leverage)))
 			profitAmount := profit.Quo(price.Price)
 
 			amountToUser = principal.Add(profitAmount)
 		} else {
-			loss := price.Price.Mul(sdk.NewDecFromInt(position.Leverage)).Sub(position.Size_)
+			loss := price.Price.Mul(sdk.NewDecFromInt(positionInstance.Leverage)).Sub(positionInstance.Size_)
 			lossAmount := loss.Quo(price.Price)
 
 			amountToUser = principal.Sub(lossAmount)
@@ -87,7 +90,7 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAd
 		return fmt.Errorf("unknown position type")
 	}
 
-	k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, address, sdk.Coins{sdk.NewCoin(position.Pair.Denom, amountToUser.RoundInt())})
+	k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, closedPosition.Address.AccAddress(), sdk.Coins{sdk.NewCoin(positionInstance.Pair.Denom, amountToUser.RoundInt())})
 
 	return nil
 }

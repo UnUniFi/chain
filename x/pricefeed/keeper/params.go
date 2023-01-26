@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -27,13 +28,30 @@ func (k Keeper) GetDenomTickerPairs(ctx sdk.Context) []types.DenomTickerPair {
 	return k.GetParams(ctx).DenomTickerPairs
 }
 
-func (k Keeper) GetMarketDenom(ctx sdk.Context, internalDenom string) (string, error) {
+func (k Keeper) GetTicker(ctx sdk.Context, denom string) (string, error) {
 	for _, pair := range k.GetDenomTickerPairs(ctx) {
-		if internalDenom == pair.Denom {
+		if denom == pair.Denom {
 			return pair.Ticker, nil
 		}
 	}
-	return "", sdkerrors.Wrap(types.ErrInternalDenomNotFound, internalDenom)
+	return "", sdkerrors.Wrap(types.ErrInternalDenomNotFound, denom)
+}
+
+func (k Keeper) GetMarketId(ctx sdk.Context, lhsTicker string, rhsTicker string) string {
+	return fmt.Sprintf("%s:%s", lhsTicker, rhsTicker)
+}
+
+func (k Keeper) GetMarketIdFromDenom(ctx sdk.Context, lhsDenom string, rhsDenom string) (string, error) {
+	lhsTicker, err := k.GetTicker(ctx, lhsDenom)
+	if err != nil {
+		return "", err
+	}
+	rhsTicker, err := k.GetTicker(ctx, rhsDenom)
+	if err != nil {
+		return "", err
+	}
+
+	return k.GetMarketId(ctx, lhsTicker, rhsTicker), nil
 }
 
 // GetOracles returns the oracles in the pricefeed store
