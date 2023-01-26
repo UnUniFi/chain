@@ -22,18 +22,15 @@ message PerpetualOptionsPosition {
   PositionType position_type = 2 [
     (gogoproto.moretags) = "yaml:\"position_type\""
   ];
-  string denom = 3 [
-    (gogoproto.moretags) = "yaml:\"denom\""
+  Pair pair = 3 [
+    (gogoproto.moretags) = "yaml:\"pair\""
   ];
-  string quote_denom = 4 [
-    (gogoproto.moretags) = "yaml:\"quote_denom\""
-  ];
-  string strike_price = 5 [
+  string strike_price = 4 [
     (gogoproto.moretags) = "yaml:\"strike_price\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string premium = 6 [
+  string premium = 5 [
     (gogoproto.moretags) = "yaml:\"premium\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false

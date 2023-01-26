@@ -47,9 +47,9 @@ message PostedPrice {
   ];
 }
 
-message DenomPair {
-  string internal_denom = 1 [(gogoproto.moretags) = "yaml:\"internal_denom\""];
-  string market_denom = 2 [(gogoproto.moretags) = "yaml:\"market_denom\""];
+message DenomTickerPair {
+  string denom = 1 [(gogoproto.moretags) = "yaml:\"denom\""];
+  string ticker = 2 [(gogoproto.moretags) = "yaml:\"ticker\""];
 }
 
 message Params {
