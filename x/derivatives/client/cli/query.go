@@ -28,7 +28,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 
 	cmd.AddCommand(CmdQueryParams())
 	// this line is used by starport scaffolding # 1
-	cmd.AddCommand(CmdQueryLiquidityProviderTokenRealAPY(), CmdQueryLiquidityProviderTokenNominalAPY(), CmdQueryPositions())
+	cmd.AddCommand(CmdQueryLiquidityProviderTokenRealAPY(), CmdQueryLiquidityProviderTokenNominalAPY(), CmdQueryAddressPositions())
 
 	return cmd
 }
@@ -81,7 +81,7 @@ func CmdQueryLiquidityProviderTokenNominalAPY() *cobra.Command {
 	return cmd
 }
 
-func CmdQueryPositions() *cobra.Command {
+func CmdQueryAddressPositions() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "positions [address]",
 		Short: "shows the positions owned by the designated address",
@@ -96,7 +96,7 @@ func CmdQueryPositions() *cobra.Command {
 				return err
 			}
 
-			res, err := queryClient.Positions(context.Background(), &types.QueryPositionsRequest{Address: (*ununifiTypes.StringAccAddress)(&address)})
+			res, err := queryClient.AddressPositions(context.Background(), &types.QueryAddressPositionsRequest{Address: (*ununifiTypes.StringAccAddress)(&address)})
 			if err != nil {
 				return err
 			}

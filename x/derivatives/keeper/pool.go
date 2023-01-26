@@ -137,16 +137,15 @@ func (k Keeper) SetLPTokenSupplySnapshot(ctx sdk.Context, height int64, supply s
 	return nil
 }
 
-func (k Keeper) GetLPTPriceMarketQuoteDenom(ctx sdk.Context) string {
-	internalQuoteDenom := k.GetParams(ctx).LptPriceQuoteDenom
-	marketQuoteDenom := k.pricefeedKeeper.GetMarketDenom(ctx, internalQuoteDenom)
-
-	return marketQuoteDenom
+func (k Keeper) GetQuoteTicker(ctx sdk.Context) string {
+	return k.GetParams(ctx).Pool.QuoteTicker
 }
 
 func (k Keeper) GetAssetPrice(ctx sdk.Context, denom string) (pftypes.CurrentPrice, error) {
-	marketQuoteDenom := k.GetLPTPriceMarketQuoteDenom(ctx)
-	return k.GetPrice(ctx, types.GetMarketId(denom, marketQuoteDenom))
+	ticker := k.pricefeedKeeper.GetMarketDenom(ctx, denom)
+	quoteTicker := k.GetQuoteTicker(ctx)
+
+	return k.GetPrice(ctx, types.GetMarketId(ticker, quoteTicker))
 }
 
 func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
@@ -155,7 +154,7 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 	breakdowns := []types.PoolMarketCap_Breakdown{}
 	mc := sdk.NewDec(0)
 
-	marketQuoteDenom := k.GetLPTPriceMarketQuoteDenom(ctx)
+	quoteTicker := k.GetQuoteTicker(ctx)
 
 	for _, asset := range assets {
 		balance := k.GetAssetBalance(ctx, asset)
@@ -175,9 +174,9 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 	}
 
 	return types.PoolMarketCap{
-		Total:      mc,
-		QuoteDenom: marketQuoteDenom,
-		Breakdown:  breakdowns,
+		QuoteTicker: quoteTicker,
+		Total:       mc,
+		Breakdown:   breakdowns,
 	}
 }
 

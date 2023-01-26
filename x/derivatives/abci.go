@@ -11,8 +11,8 @@ func levyImaginaryFundingRateAndLiquidateInsufficientMarginPositions(ctx sdk.Con
 	params := k.GetParams(ctx)
 	wrappedPositions := k.GetAllPositions(ctx)
 	assets := k.GetPoolAssets(ctx)
-	fundingRateProportionalCoefficient := params.FundingRateProportionalCoefficient
-	commissionRate := params.CommissionRate
+	fundingRateProportionalCoefficient := params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient
+	commissionRate := params.PerpetualFutures.CommissionRate
 
 	imaginaryFundingRates := make(map[string]sdk.Dec)
 
@@ -33,7 +33,7 @@ func levyImaginaryFundingRateAndLiquidateInsufficientMarginPositions(ctx sdk.Con
 		case *types.PerpetualFuturesPosition:
 			futuresPosition := position.(*types.PerpetualFuturesPosition)
 			depositedMargin := k.GetDepositedMargin(ctx, positionId)
-			imaginaryFundingRate := imaginaryFundingRates[futuresPosition.Denom]
+			imaginaryFundingRate := imaginaryFundingRates[futuresPosition.Pair.Denom]
 			imaginaryFundingFee := sdk.NewDecFromInt(depositedMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
 			commissionFee := sdk.NewDecFromInt(depositedMargin.Amount).Mul(commissionRate).RoundInt()
 
@@ -55,7 +55,7 @@ func levyImaginaryFundingRateAndLiquidateInsufficientMarginPositions(ctx sdk.Con
 
 			k.SaveDepositedMargin(ctx, positionId, depositedMargin)
 
-			if sdk.NewDecFromInt(depositedMargin.Amount).Mul(sdk.NewDecWithPrec(1, 0)).LT(principal.Mul(params.MarginMaintenanceRate)) {
+			if sdk.NewDecFromInt(depositedMargin.Amount).Mul(sdk.NewDecWithPrec(1, 0)).LT(principal.Mul(params.PerpetualFutures.MarginMaintenanceRate)) {
 				k.ClosePerpetualFuturesPosition(ctx, wrappedPosition.Address.AccAddress(), positionId, futuresPosition)
 			}
 			return

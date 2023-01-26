@@ -9,7 +9,7 @@ import (
 )
 
 func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAddress, positionId uint64, margin sdk.Coin, position *types.PerpetualFuturesPosition) error {
-	price, err := k.GetAssetPrice(ctx, position.Denom)
+	price, err := k.GetAssetPrice(ctx, position.Pair.Denom)
 	if err != nil {
 		return err
 	}
@@ -21,10 +21,10 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAdd
 
 	switch position.PositionType {
 	case types.PositionType_LONG:
-		k.AddPerpetualFuturesNetPositionOfDenom(ctx, position.Denom, position.Size_)
+		k.AddPerpetualFuturesNetPositionOfDenom(ctx, position.Pair.Denom, position.Size_)
 		break
 	case types.PositionType_SHORT:
-		k.SubPerpetualFuturesNetPositionOfDenom(ctx, position.Denom, position.Size_)
+		k.SubPerpetualFuturesNetPositionOfDenom(ctx, position.Pair.Denom, position.Size_)
 		break
 	case types.PositionType_POSITION_UNKNOWN:
 		return fmt.Errorf("unknown position type")
@@ -35,11 +35,11 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAdd
 
 func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAddress, positionId uint64, position *types.PerpetualFuturesPosition) error {
 	params := k.GetParams(ctx)
-	commissionRate := params.CommissionRate
+	commissionRate := params.PerpetualFutures.CommissionRate
 	feeAmount := position.Size_.Mul(commissionRate)
 	tradeAmount := position.Size_.Sub(feeAmount)
 
-	price, err := k.GetAssetPrice(ctx, position.Denom)
+	price, err := k.GetAssetPrice(ctx, position.Pair.Denom)
 	if err != nil {
 		return err
 	}
@@ -47,14 +47,14 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAd
 	k.SaveClosedPositionPrice(ctx, positionId, price)
 	openPrice := k.GetOpenPositionPrice(ctx, positionId)
 
-	k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.Coins{sdk.NewCoin(position.Denom, feeAmount.RoundInt())})
+	k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.Coins{sdk.NewCoin(position.Pair.Denom, feeAmount.RoundInt())})
 
 	principal := types.CalculatePrincipal(*position)
 	amountToUser := sdk.Dec{}
 
 	switch position.PositionType {
 	case types.PositionType_LONG:
-		k.SubPerpetualFuturesNetPositionOfDenom(ctx, position.Denom, tradeAmount)
+		k.SubPerpetualFuturesNetPositionOfDenom(ctx, position.Pair.Denom, tradeAmount)
 
 		if price.Price.GTE(openPrice.Price) {
 			profit := price.Price.Mul(sdk.NewDecFromInt(position.Leverage)).Sub(position.Size_)
@@ -69,7 +69,7 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAd
 		}
 		break
 	case types.PositionType_SHORT:
-		k.AddPerpetualFuturesNetPositionOfDenom(ctx, position.Denom, tradeAmount)
+		k.AddPerpetualFuturesNetPositionOfDenom(ctx, position.Pair.Denom, tradeAmount)
 
 		if price.Price.LTE(openPrice.Price) {
 			profit := position.Size_.Sub(price.Price.Mul(sdk.NewDecFromInt(position.Leverage)))
@@ -87,7 +87,7 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAd
 		return fmt.Errorf("unknown position type")
 	}
 
-	k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, address, sdk.Coins{sdk.NewCoin(position.Denom, amountToUser.RoundInt())})
+	k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, address, sdk.Coins{sdk.NewCoin(position.Pair.Denom, amountToUser.RoundInt())})
 
 	return nil
 }

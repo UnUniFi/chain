@@ -36,22 +36,32 @@ func (k Keeper) LiquidityProviderTokenNominalAPY(c context.Context, req *types.Q
 	return &types.QueryLiquidityProviderTokenNominalAPYResponse{Apy: &annualized}, nil
 }
 
-func (k Keeper) Positions(c context.Context, req *types.QueryPositionsRequest) (*types.QueryPositionsResponse, error) {
+func (k Keeper) AllPositions(c context.Context, req *types.QueryAllPositionsRequest) (*types.QueryAllPositionsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	positions := []*types.WrappedPosition{}
+	ctx := sdk.UnwrapSDKContext(c)
+	positions := k.GetAllPositions(ctx)
+
+	return &types.QueryAllPositionsResponse{
+		Positions: positions,
+	}, nil
+}
+
+func (k Keeper) AddressPositions(c context.Context, req *types.QueryAddressPositionsRequest) (*types.QueryAddressPositionsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	// If address is empty, error should be emitted. It is better to prepare another query for all positions
 	if req.Address.AccAddress().String() == "" {
-		positions = k.GetAllPositions(ctx)
-	} else {
-		positions = k.GetUserPositions(ctx, req.Address.AccAddress())
+		return nil, status.Error(codes.InvalidArgument, "invalid address")
 	}
+	positions := k.GetUserPositions(ctx, req.Address.AccAddress())
 
-	return &types.QueryPositionsResponse{
+	return &types.QueryAddressPositionsResponse{
 		Positions: positions,
 	}, nil
 }

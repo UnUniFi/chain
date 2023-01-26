@@ -23,14 +23,14 @@ func (k Keeper) GetMarkets(ctx sdk.Context) []types.Market {
 	return k.GetParams(ctx).Markets
 }
 
-func (k Keeper) GetDenomPairs(ctx sdk.Context) []types.DenomPair {
-	return k.GetParams(ctx).DenomPairs
+func (k Keeper) GetDenomTickerPairs(ctx sdk.Context) []types.DenomTickerPair {
+	return k.GetParams(ctx).DenomTickerPairs
 }
 
 func (k Keeper) GetMarketDenom(ctx sdk.Context, internalDenom string) (string, error) {
-	for _, pair := range k.GetDenomPairs(ctx) {
-		if internalDenom == pair.InternalDenom {
-			return pair.MarketDenom, nil
+	for _, pair := range k.GetDenomTickerPairs(ctx) {
+		if internalDenom == pair.Denom {
+			return pair.Ticker, nil
 		}
 	}
 	return "", sdkerrors.Wrap(types.ErrInternalDenomNotFound, internalDenom)
