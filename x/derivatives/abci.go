@@ -64,9 +64,7 @@ func levyImaginaryFundingRateAndLiquidateInsufficientMarginPositions(ctx sdk.Con
 			k.SaveDepositedMargin(ctx, positionId, depositedMargin)
 
 			if sdk.NewDecFromInt(depositedMargin.Amount).Mul(sdk.NewDecWithPrec(1, 0)).LT(principal.Mul(params.MarginMaintenanceRate)) {
-				// liquidate
-				// don't know how to get address
-				// k.ClosePerpetualFuturesPosition(ctx, , positionId, futuresPosition)
+				k.ClosePerpetualFuturesPosition(ctx, wrappedPosition.Address.AccAddress(), positionId, futuresPosition)
 			}
 			return
 		case *types.PerpetualOptionsPosition:
