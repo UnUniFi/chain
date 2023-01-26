@@ -13,20 +13,47 @@ message PerpetualFuturesPosition {
   PositionType position_type = 1 [
     (gogoproto.moretags) = "yaml:\"position_type\""
   ];
-  string denom = 2 [
-    (gogoproto.moretags) = "yaml:\"denom\""
+  Pair pair = 2 [
+    (gogoproto.moretags) = "yaml:\"pair\"",
+    (gogoproto.nullable) = false
   ];
-  string quote_denom = 3 [
-    (gogoproto.moretags) = "yaml:\"quote_denom\""
-  ];
-  string size = 4 [
+  string size = 3 [
     (gogoproto.moretags) = "yaml:\"size\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string leverage = 5 [
+  string leverage = 4 [
     (gogoproto.moretags) = "yaml:\"leverage\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message PerpetualFuturesOpenedPosition {
+  PerpetualFuturesPosition position = 1 [
+    (gogoproto.moretags) = "yaml:\"position\"",
+    (gogoproto.embed) = true
+  ];
+  string opening_price = 2 [
+    (gogoproto.moretags) = "yaml:\"price\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message PerpetualFuturesClosedPosition {
+  PerpetualFuturesPosition position = 1 [
+    (gogoproto.moretags) = "yaml:\"position\"",
+    (gogoproto.embed) = true
+  ];
+  string opening_price = 2 [
+    (gogoproto.moretags) = "yaml:\"opening_price\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string closing_price = 3 [
+    (gogoproto.moretags) = "yaml:\"closing_price\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
 }

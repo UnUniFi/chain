@@ -36,22 +36,49 @@ func (k Keeper) LiquidityProviderTokenNominalAPY(c context.Context, req *types.Q
 	return &types.QueryLiquidityProviderTokenNominalAPYResponse{Apy: &annualized}, nil
 }
 
-func (k Keeper) Positions(c context.Context, req *types.QueryPositionsRequest) (*types.QueryPositionsResponse, error) {
+func (k Keeper) AllPositions(c context.Context, req *types.QueryAllPositionsRequest) (*types.QueryAllPositionsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	positions := []*types.WrappedPosition{}
+	ctx := sdk.UnwrapSDKContext(c)
+	positions := k.GetAllPositions(ctx)
+
+	return &types.QueryAllPositionsResponse{
+		Positions: positions,
+	}, nil
+}
+
+func (k Keeper) AddressOpeningPositions(c context.Context, req *types.QueryAddressOpeningPositionsRequest) (*types.QueryAddressOpeningPositionsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	// If address is empty, error should be emitted. It is better to prepare another query for all positions
 	if req.Address.AccAddress().String() == "" {
-		positions = k.GetAllPositions(ctx)
-	} else {
-		positions = k.GetUserPositions(ctx, req.Address.AccAddress())
+		return nil, status.Error(codes.InvalidArgument, "invalid address")
+	}
+	positions := k.GetAddressOpeningPositions(ctx, req.Address.AccAddress())
+
+	return &types.QueryAddressOpeningPositionsResponse{
+		Positions: positions,
+	}, nil
+}
+
+func (k Keeper) AddressClosedPositions(c context.Context, req *types.QueryAddressClosedPositionsRequest) (*types.QueryAddressClosedPositionsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	return &types.QueryPositionsResponse{
+	ctx := sdk.UnwrapSDKContext(c)
+	// If address is empty, error should be emitted. It is better to prepare another query for all positions
+	if req.Address.AccAddress().String() == "" {
+		return nil, status.Error(codes.InvalidArgument, "invalid address")
+	}
+	positions := k.GetAddressClosedPositions(ctx, req.Address.AccAddress())
+
+	return &types.QueryAddressClosedPositionsResponse{
 		Positions: positions,
 	}, nil
 }

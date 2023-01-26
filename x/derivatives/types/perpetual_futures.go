@@ -8,16 +8,44 @@ import (
 	"github.com/gogo/protobuf/proto"
 )
 
-var _ Position = (*PerpetualFuturesPosition)(nil)
+var _ PositionI = (*PerpetualFuturesPosition)(nil)
+var _ OpenedPositionI = (*PerpetualFuturesOpenedPosition)(nil)
+var _ ClosedPositionI = (*PerpetualFuturesClosedPosition)(nil)
 
 type PerpetualFuturesPositions []PerpetualFuturesPosition
 
-func UnpackPerpetualFuturesPosition(positionAny *types.Any) (Position, error) {
+func UnpackPerpetualFuturesPosition(positionAny *types.Any) (PositionI, error) {
 	if positionAny == nil {
 		return nil, fmt.Errorf("this Any is nil")
 	}
 	if positionAny.TypeUrl == "/"+proto.MessageName(&PerpetualFuturesPosition{}) {
 		var position PerpetualFuturesPosition
+		position.Unmarshal(positionAny.Value)
+		return &position, nil
+	}
+
+	return nil, nil
+}
+
+func UnpackPerpetualFuturesOpenedPosition(positionAny *types.Any) (*PerpetualFuturesOpenedPosition, error) {
+	if positionAny == nil {
+		return nil, fmt.Errorf("this Any is nil")
+	}
+	if positionAny.TypeUrl == "/"+proto.MessageName(&PerpetualFuturesOpenedPosition{}) {
+		var position PerpetualFuturesOpenedPosition
+		position.Unmarshal(positionAny.Value)
+		return &position, nil
+	}
+
+	return nil, nil
+}
+
+func UnpackPerpetualFuturesClosedPosition(positionAny *types.Any) (*PerpetualFuturesClosedPosition, error) {
+	if positionAny == nil {
+		return nil, fmt.Errorf("this Any is nil")
+	}
+	if positionAny.TypeUrl == "/"+proto.MessageName(&PerpetualFuturesClosedPosition{}) {
+		var position PerpetualFuturesClosedPosition
 		position.Unmarshal(positionAny.Value)
 		return &position, nil
 	}

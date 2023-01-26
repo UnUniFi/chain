@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -65,7 +67,7 @@ func (k Keeper) GetUserDeposits(ctx sdk.Context, depositor sdk.AccAddress) []sdk
 	store := ctx.KVStore(k.storeKey)
 
 	deposits := []sdk.Coin{}
-	it := sdk.KVStorePrefixIterator(store, types.AddressDepositKeyPrefix(depositor))
+	it := sdk.KVStorePrefixIterator(store, types.AddressPoolDepositKeyPrefix(depositor))
 	defer it.Close()
 
 	for ; it.Valid(); it.Next() {
@@ -83,7 +85,7 @@ func (k Keeper) DepositPoolAsset(ctx sdk.Context, depositor sdk.AccAddress, depo
 
 	bz := k.cdc.MustMarshal(&deposit_data)
 
-	store.Set(types.AddressAssetDepositKeyPrefix(depositor, deposit_data.Denom), bz)
+	store.Set(types.AddressAssetPoolDepositKeyPrefix(depositor, deposit_data.Denom), bz)
 
 	key := types.AssetDepositKeyPrefix(deposit_data.Denom)
 	coinBz := store.Get(key)
@@ -137,19 +139,30 @@ func (k Keeper) SetLPTokenSupplySnapshot(ctx sdk.Context, height int64, supply s
 	return nil
 }
 
-func (k Keeper) GetLPTPriceMarketQuoteDenom(ctx sdk.Context) string {
-	internalQuoteDenom := k.GetParams(ctx).LptPriceQuoteDenom
-	marketQuoteDenom, err := k.pricefeedKeeper.GetMarketDenom(ctx, internalQuoteDenom)
-	if err != nil {
-		panic("not able to get market quote denom")
-	}
-
-	return marketQuoteDenom
+func (k Keeper) GetQuoteTicker(ctx sdk.Context) string {
+	return k.GetParams(ctx).Pool.QuoteTicker
 }
 
-func (k Keeper) GetAssetPrice(ctx sdk.Context, denom string) (pftypes.CurrentPrice, error) {
-	marketQuoteDenom := k.GetLPTPriceMarketQuoteDenom(ctx)
-	return k.GetPrice(ctx, types.GetMarketId(denom, marketQuoteDenom))
+func (k Keeper) GetPairPrice(ctx sdk.Context, pair types.Pair) (*sdk.Dec, error) {
+	marketId, err := k.pricefeedKeeper.GetMarketIdFromDenom(ctx, pair.Denom, pair.QuoteDenom)
+	if err != nil {
+		return nil, err
+	}
+	price, err := k.pricefeedKeeper.GetCurrentPrice(ctx, marketId)
+
+	return &price.Price, err
+}
+
+func (k Keeper) GetAssetPrice(ctx sdk.Context, denom string) (*pftypes.CurrentPrice, error) {
+	ticker, err := k.pricefeedKeeper.GetTicker(ctx, denom)
+	if err != nil {
+		return nil, err
+	}
+	quoteTicker := k.GetQuoteTicker(ctx)
+
+	price, err := k.GetPrice(ctx, ticker, quoteTicker)
+
+	return &price, err
 }
 
 func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
@@ -158,7 +171,7 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 	breakdowns := []types.PoolMarketCap_Breakdown{}
 	mc := sdk.NewDec(0)
 
-	marketQuoteDenom := k.GetLPTPriceMarketQuoteDenom(ctx)
+	quoteTicker := k.GetQuoteTicker(ctx)
 
 	for _, asset := range assets {
 		balance := k.GetAssetBalance(ctx, asset)
@@ -178,9 +191,9 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 	}
 
 	return types.PoolMarketCap{
-		Total:      mc,
-		QuoteDenom: marketQuoteDenom,
-		Breakdown:  breakdowns,
+		QuoteTicker: quoteTicker,
+		Total:       mc,
+		Breakdown:   breakdowns,
 	}
 }
 
@@ -192,7 +205,8 @@ func (k Keeper) GetLPTokenPrice(ctx sdk.Context) sdk.Dec {
 	return k.GetPoolMarketCap(ctx).CalculateLPTokenPrice(k.GetLPTokenSupply(ctx))
 }
 
-func (k Keeper) GetPrice(ctx sdk.Context, marketId string) (pftypes.CurrentPrice, error) {
+func (k Keeper) GetPrice(ctx sdk.Context, lhsTicker string, rhsTicker string) (pftypes.CurrentPrice, error) {
+	marketId := fmt.Sprintf("%s:%s", lhsTicker, rhsTicker)
 	return k.pricefeedKeeper.GetCurrentPrice(ctx, marketId)
 }
 

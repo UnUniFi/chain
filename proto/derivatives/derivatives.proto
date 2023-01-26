@@ -20,7 +20,7 @@ enum PositionType {
   SHORT = 2;
 }
 
-message WrappedPosition {
+message OpenedPosition {
   string id = 1 [
     (gogoproto.moretags) = "yaml:\"id\""
   ];
@@ -29,12 +29,55 @@ message WrappedPosition {
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
-  google.protobuf.Timestamp start_at = 3 [
-    (gogoproto.moretags) = "yaml:\"start_at\"",
+  google.protobuf.Timestamp opened_at = 3 [
+    (gogoproto.moretags) = "yaml:\"opened_at\"",
     (gogoproto.nullable) = false
+  ];
+  uint64 opened_height = 4 [
+    (gogoproto.moretags) = "yaml:\"opened_height\""
   ];
   google.protobuf.Any position = 5 [
     (gogoproto.moretags) = "yaml:\"position\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message ClosedPosition {
+  string id = 1 [
+    (gogoproto.moretags) = "yaml:\"id\""
+  ];
+  string address = 2 [
+    (gogoproto.moretags) = "yaml:\"address\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Timestamp opened_at = 3 [
+    (gogoproto.moretags) = "yaml:\"opened_at\"",
+    (gogoproto.nullable) = false
+  ];
+  uint64 opened_height = 4 [
+    (gogoproto.moretags) = "yaml:\"opened_height\""
+  ];
+  google.protobuf.Timestamp closed_at = 5 [
+    (gogoproto.moretags) = "yaml:\"closed_at\"",
+    (gogoproto.nullable) = false
+  ];
+  uint64 closed_height = 6 [
+    (gogoproto.moretags) = "yaml:\"closed_height\""
+  ];
+  google.protobuf.Any position = 7 [
+    (gogoproto.moretags) = "yaml:\"position\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message AcceptedLiquidationNeededReport {
+  string position_id = 1 [
+    (gogoproto.moretags) = "yaml:\"position_id\""
+  ];
+  string sender = 2 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
 }
@@ -44,17 +87,37 @@ message Pool {
     string denom = 1 [
       (gogoproto.moretags) = "yaml:\"denom\""
     ];
-    AssetType type = 2 [
-      (gogoproto.moretags) = "yaml:\"type\""
-    ];
-    string target_weight = 3 [
+    string target_weight = 2 [
       (gogoproto.moretags) = "yaml:\"target_weight\"",
       (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
       (gogoproto.nullable) = false
     ];
   }
 
-  repeated Asset accepted_assets = 1 [
+  string quote_ticker = 1 [
+    (gogoproto.moretags) = "yaml:\"quote_ticker\""
+  ];
+  string base_lpt_mint_fee = 2 [
+    (gogoproto.moretags) = "yaml:\"base_lpt_mint_fee\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string base_lpt_redeem_fee = 3 [
+    (gogoproto.moretags) = "yaml:\"base_lpt_redeem_fee\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string borrowing_fee_rate_per_hour = 4 [
+    (gogoproto.moretags) = "yaml:\"borrowing_fee_rate_per_hour\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string liquidation_needed_report_reward_rate = 5 [
+    (gogoproto.moretags) = "yaml:\"liquidation_needed_report_reward_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  repeated Asset accepted_assets = 6 [
     (gogoproto.moretags) = "yaml:\"accepted_assets\"",
     (gogoproto.nullable) = false
   ];
@@ -77,16 +140,82 @@ message PoolMarketCap {
     ];
   }
 
-  string total = 1 [
+  string quote_ticker = 1 [
+    (gogoproto.moretags) = "yaml:\"quote_ticker\""
+  ];
+  string total = 2 [
     (gogoproto.moretags) = "yaml:\"total\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string quote_denom = 2 [
-    (gogoproto.moretags) = "yaml:\"quote_denom\""
-  ];
   repeated Breakdown breakdown = 3 [
     (gogoproto.moretags) = "yaml:\"breakdown\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message Pair {
+  string denom = 1 [
+    (gogoproto.moretags)  = "yaml:\"denom\""
+  ];
+  string quote_denom = 2 [
+    (gogoproto.moretags)  = "yaml:\"quote_denom\""
+  ];
+}
+
+message PerpetualFuturesPairParams {
+  Pair pair = 1 [
+    (gogoproto.moretags)  = "yaml:\"pair\"",
+    (gogoproto.embed) = true
+  ];
+  
+}
+
+message PerpetualFuturesParams {
+  string commission_rate = 1 [
+    (gogoproto.moretags) = "yaml:\"commission_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string margin_maintenance_rate = 2 [
+    (gogoproto.moretags) = "yaml:\"margin_maintenance_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string imaginary_funding_rate_proportional_coefficient = 3 [
+    (gogoproto.moretags) = "yaml:\"imaginary_funding_rate_proportonal_coefficient\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  repeated Pair pairs = 4 [
+    (gogoproto.moretags) = "yaml:\"pairs\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message PerpetualOptionsParams {
+  string premium_commission_rate = 1 [
+    (gogoproto.moretags) = "yaml:\"premium_commission_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string strike_commission_rate = 2 [
+    (gogoproto.moretags) = "yaml:\"premium_commission_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string margin_maintenance_rate = 3 [
+    (gogoproto.moretags) = "yaml:\"margin_maintenance_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string imaginary_funding_rate_proportional_coefficient = 4 [
+    (gogoproto.moretags) = "yaml:\"imaginary_funding_rate_proportonal_coefficient\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  repeated Pair pairs = 5 [
+    (gogoproto.moretags) = "yaml:\"pairs\"",
     (gogoproto.nullable) = false
   ];
 }
@@ -96,37 +225,12 @@ message Params {
     (gogoproto.moretags) = "yaml:\"pool\"",
     (gogoproto.nullable) = false
   ];
-  string lpt_price_quote_denom = 2 [
-    (gogoproto.moretags) = "yaml:\"lpt_price_quote_denom\""
-  ];
-  string base_lpt_mint_fee = 3 [
-    (gogoproto.moretags) = "yaml:\"base_lpt_mint_fee\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+  PerpetualFuturesParams perpetual_futures = 2 [
+    (gogoproto.moretags) = "yaml:\"perpetual_futures\"",
     (gogoproto.nullable) = false
   ];
-  string base_lpt_redeem_fee = 4 [
-    (gogoproto.moretags) = "yaml:\"base_lpt_redeem_fee\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string borrowing_fee_rate_per_hour = 5 [
-    (gogoproto.moretags) = "yaml:\"borrowing_fee_rate_per_hour\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string commission_rate = 6 [
-    (gogoproto.moretags) = "yaml:\"commission_rate\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string margin_maintenance_rate = 7 [
-    (gogoproto.moretags) = "yaml:\"margin_maintenance_rate\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string funding_rate_proportional_coefficient = 8 [
-    (gogoproto.moretags) = "yaml:\"funding_rate_proportonal_coefficient\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+  PerpetualOptionsParams perpetual_options = 3 [
+    (gogoproto.moretags) = "yaml:\"perpetual_options\"",
     (gogoproto.nullable) = false
   ];
 }

@@ -18,6 +18,10 @@ service Query {
     option (google.api.http).get = "/ununifi/derivatives/params";
   }
   // this line is used by starport scaffolding # 2
+  rpc Pool(QueryPoolRequest) returns (QueryPoolResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/pool";
+  }
+
   rpc LiquidityProviderTokenRealAPY(QueryLiquidityProviderTokenRealAPYRequest) returns (QueryLiquidityProviderTokenRealAPYResponse) {
     option (google.api.http).get = "/ununifi/derivatives/liquidity-providers/real-apy";
   }
@@ -26,8 +30,36 @@ service Query {
     option (google.api.http).get = "/ununifi/derivatives/liquidity-providers/nominal-apy";
   }
 
-  rpc Positions(QueryPositionsRequest) returns (QueryPositionsResponse) {
-    option (google.api.http).get = "/ununifi/derivatives/positions/{address}";
+  rpc PerpetualFutures(QueryPerpetualFuturesRequest) returns (QueryPerpetualFuturesResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/perpetual-futures";
+  }
+
+  rpc PerpetualFuturesPair(QueryPerpetualFuturesPairRequest) returns (QueryPerpetualFuturesPairResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/perpetual-futures/{denom}/{quote_denom}";
+  }
+
+  rpc PerpetualOptions(QueryPerpetualOptionsRequest) returns (QueryPerpetualOptionsResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/perpetual-options";
+  }
+
+  rpc PerpetualOptionsPair(QueryPerpetualOptionsPairRequest) returns (QueryPerpetualOptionsPairResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/perpetual-options/{denom}/{quote_denom}";
+  }
+
+  rpc AllOpeningPositions(QueryAllOpeningPositionsRequest) returns (QueryAllOpeningPositionsResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/positions/opening";
+  }
+
+  rpc ClosedPosition(QueryClosedPositionRequest) returns (QueryClosedPositionResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/positions/closed/{id}";
+  }
+
+  rpc AddressOpeningPositions(QueryAddressOpeningPositionsRequest) returns (QueryAddressOpeningPositionsResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/positions/{address}/opening";
+  }
+
+  rpc AddressClosedPositions(QueryAddressClosedPositionsRequest) returns (QueryAddressClosedPositionsResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/positions/{address}/closed";
   }
 }
 
@@ -41,6 +73,26 @@ message QueryParamsResponse {
 }
 
 // this line is used by starport scaffolding # 3
+message QueryPoolRequest {}
+
+message QueryPoolResponse {
+  string metrics_quote_ticker = 1 [
+    (gogoproto.moretags)  = "yaml:\"metrics_quote_ticker\""
+  ];
+  PoolMarketCap pool_market_cap = 2 [
+    (gogoproto.moretags)  = "yaml:\"pool_market_cap\""
+  ];
+  string volume_24hours = 3 [
+    (gogoproto.moretags)  = "yaml:\"volume_24hours\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+  string fees_24hours = 4 [
+    (gogoproto.moretags)  = "yaml:\"fees_24hours\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+  
+}
+
 message QueryLiquidityProviderTokenRealAPYRequest {
   int64 before_height = 1 [
     (gogoproto.moretags)  = "yaml:\"before_height\""
@@ -73,14 +125,117 @@ message QueryLiquidityProviderTokenNominalAPYResponse {
   ];
 }
 
-message QueryPositionsRequest {
+message QueryPerpetualFuturesRequest {}
+
+message QueryPerpetualFuturesResponse {
+  string metrics_quote_ticker = 2 [
+    (gogoproto.moretags)  = "yaml:\"metrics_quote_ticker\""
+  ];
+  string volume_24hours = 3 [
+    (gogoproto.moretags)  = "yaml:\"volume_24hours\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+  string fees_24hours = 4 [
+    (gogoproto.moretags)  = "yaml:\"fees_24hours\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+  string long_positions = 5 [
+    (gogoproto.moretags)  = "yaml:\"long_positions\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+  string short_positions = 6 [
+    (gogoproto.moretags)  = "yaml:\"short_positions\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+}
+
+message QueryPerpetualFuturesPairRequest {
+  string denom = 1 [
+    (gogoproto.moretags)  = "yaml:\"denom\""
+  ];
+  string quote_denom = 2 [
+    (gogoproto.moretags)  = "yaml:\"quote_denom\""
+  ];
+}
+
+message QueryPerpetualFuturesPairResponse {
+  string price = 1 [
+    (gogoproto.moretags)  = "yaml:\"price\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+  string metrics_quote_ticker = 2 [
+    (gogoproto.moretags)  = "yaml:\"metrics_quote_ticker\""
+  ];
+  string volume_24hours = 3 [
+    (gogoproto.moretags)  = "yaml:\"volume_24hours\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+  string fees_24hours = 4 [
+    (gogoproto.moretags)  = "yaml:\"fees_24hours\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+  string long_positions = 5 [
+    (gogoproto.moretags)  = "yaml:\"long_positions\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+  string short_positions = 6 [
+    (gogoproto.moretags)  = "yaml:\"short_positions\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+}
+
+message QueryPerpetualOptionsRequest {}
+
+message QueryPerpetualOptionsResponse {}
+
+message QueryPerpetualOptionsPairRequest {
+  string denom = 1 [
+    (gogoproto.moretags)  = "yaml:\"denom\""
+  ];
+  string quote_denom = 2 [
+    (gogoproto.moretags)  = "yaml:\"quote_denom\""
+  ];
+}
+
+message QueryPerpetualOptionsPairResponse {}
+
+message QueryAllOpeningPositionsRequest {}
+
+message QueryAllOpeningPositionsResponse {
+  repeated OpenedPosition positions = 1;
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryClosedPositionRequest {
+  string id = 1 [
+    (gogoproto.moretags)  = "yaml:\"id\""
+  ];
+}
+
+message QueryClosedPositionResponse {
+  ClosedPosition position = 1;
+}
+
+message QueryAddressOpeningPositionsRequest {
   string address = 1 [
     (gogoproto.moretags)  = "yaml:\"address\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress"
   ];
 }
 
-message QueryPositionsResponse {
-  repeated WrappedPosition positions = 1;
+message QueryAddressOpeningPositionsResponse {
+  repeated OpenedPosition positions = 1;
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryAddressClosedPositionsRequest {
+  string address = 1 [
+    (gogoproto.moretags)  = "yaml:\"address\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress"
+  ];
+}
+
+message QueryAddressClosedPositionsResponse {
+  repeated ClosedPosition positions = 1;
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

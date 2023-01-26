@@ -58,10 +58,9 @@ func (OptionType) EnumDescriptor() ([]byte, []int) {
 type PerpetualOptionsPosition struct {
 	OptionType   OptionType                             `protobuf:"varint,1,opt,name=option_type,json=optionType,proto3,enum=ununifi.derivatives.OptionType" json:"option_type,omitempty" yaml:"option_type"`
 	PositionType PositionType                           `protobuf:"varint,2,opt,name=position_type,json=positionType,proto3,enum=ununifi.derivatives.PositionType" json:"position_type,omitempty" yaml:"position_type"`
-	Denom        string                                 `protobuf:"bytes,3,opt,name=denom,proto3" json:"denom,omitempty" yaml:"denom"`
-	QuoteDenom   string                                 `protobuf:"bytes,4,opt,name=quote_denom,json=quoteDenom,proto3" json:"quote_denom,omitempty" yaml:"quote_denom"`
-	StrikePrice  github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=strike_price,json=strikePrice,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"strike_price" yaml:"strike_price"`
-	Premium      github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,6,opt,name=premium,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"premium" yaml:"premium"`
+	Pair         Pair                                   `protobuf:"bytes,3,opt,name=pair,proto3" json:"pair" yaml:"pair"`
+	StrikePrice  github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=strike_price,json=strikePrice,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"strike_price" yaml:"strike_price"`
+	Premium      github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=premium,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"premium" yaml:"premium"`
 }
 
 func (m *PerpetualOptionsPosition) Reset()         { *m = PerpetualOptionsPosition{} }
@@ -111,23 +110,92 @@ func (m *PerpetualOptionsPosition) GetPositionType() PositionType {
 	return PositionType_POSITION_UNKNOWN
 }
 
-func (m *PerpetualOptionsPosition) GetDenom() string {
+func (m *PerpetualOptionsPosition) GetPair() Pair {
 	if m != nil {
-		return m.Denom
+		return m.Pair
 	}
-	return ""
+	return Pair{}
 }
 
-func (m *PerpetualOptionsPosition) GetQuoteDenom() string {
-	if m != nil {
-		return m.QuoteDenom
-	}
-	return ""
+type PerpetualOptionsOpenedPosition struct {
+	*PerpetualOptionsPosition `protobuf:"bytes,1,opt,name=position,proto3,embedded=position" json:"position,omitempty" yaml:"position"`
 }
+
+func (m *PerpetualOptionsOpenedPosition) Reset()         { *m = PerpetualOptionsOpenedPosition{} }
+func (m *PerpetualOptionsOpenedPosition) String() string { return proto.CompactTextString(m) }
+func (*PerpetualOptionsOpenedPosition) ProtoMessage()    {}
+func (*PerpetualOptionsOpenedPosition) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a8ecd39830a7920f, []int{1}
+}
+func (m *PerpetualOptionsOpenedPosition) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *PerpetualOptionsOpenedPosition) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_PerpetualOptionsOpenedPosition.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *PerpetualOptionsOpenedPosition) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PerpetualOptionsOpenedPosition.Merge(m, src)
+}
+func (m *PerpetualOptionsOpenedPosition) XXX_Size() int {
+	return m.Size()
+}
+func (m *PerpetualOptionsOpenedPosition) XXX_DiscardUnknown() {
+	xxx_messageInfo_PerpetualOptionsOpenedPosition.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PerpetualOptionsOpenedPosition proto.InternalMessageInfo
+
+type PerpetualOptionsClosedPosition struct {
+	*PerpetualOptionsPosition `protobuf:"bytes,1,opt,name=position,proto3,embedded=position" json:"position,omitempty" yaml:"position"`
+}
+
+func (m *PerpetualOptionsClosedPosition) Reset()         { *m = PerpetualOptionsClosedPosition{} }
+func (m *PerpetualOptionsClosedPosition) String() string { return proto.CompactTextString(m) }
+func (*PerpetualOptionsClosedPosition) ProtoMessage()    {}
+func (*PerpetualOptionsClosedPosition) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a8ecd39830a7920f, []int{2}
+}
+func (m *PerpetualOptionsClosedPosition) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *PerpetualOptionsClosedPosition) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_PerpetualOptionsClosedPosition.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *PerpetualOptionsClosedPosition) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PerpetualOptionsClosedPosition.Merge(m, src)
+}
+func (m *PerpetualOptionsClosedPosition) XXX_Size() int {
+	return m.Size()
+}
+func (m *PerpetualOptionsClosedPosition) XXX_DiscardUnknown() {
+	xxx_messageInfo_PerpetualOptionsClosedPosition.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PerpetualOptionsClosedPosition proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterEnum("ununifi.derivatives.OptionType", OptionType_name, OptionType_value)
 	proto.RegisterType((*PerpetualOptionsPosition)(nil), "ununifi.derivatives.PerpetualOptionsPosition")
+	proto.RegisterType((*PerpetualOptionsOpenedPosition)(nil), "ununifi.derivatives.PerpetualOptionsOpenedPosition")
+	proto.RegisterType((*PerpetualOptionsClosedPosition)(nil), "ununifi.derivatives.PerpetualOptionsClosedPosition")
 }
 
 func init() {
@@ -135,38 +203,41 @@ func init() {
 }
 
 var fileDescriptor_a8ecd39830a7920f = []byte{
-	// 493 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x52, 0xcf, 0x6f, 0xd3, 0x30,
-	0x18, 0x4d, 0xd6, 0xfd, 0x00, 0xb7, 0x54, 0x95, 0x37, 0xa1, 0x30, 0x89, 0x64, 0x04, 0x69, 0x9a,
-	0x10, 0xc4, 0x1a, 0x3b, 0x20, 0x71, 0x82, 0x32, 0x26, 0x21, 0xa6, 0x36, 0x8a, 0x5a, 0x81, 0x76,
-	0x09, 0x49, 0xea, 0xa5, 0xd6, 0x9a, 0xd8, 0xc4, 0x4e, 0x45, 0xff, 0x0b, 0xfe, 0xac, 0x1d, 0x77,
-	0x44, 0x1c, 0x22, 0xd4, 0xfe, 0x07, 0xbd, 0x23, 0xa1, 0xda, 0x29, 0x18, 0xb4, 0x0b, 0xa7, 0x7c,
-	0x9f, 0xbf, 0xf7, 0xde, 0xf7, 0x5e, 0x6c, 0xf0, 0x78, 0x84, 0x0b, 0x32, 0x8d, 0x04, 0x99, 0x62,
-	0x8e, 0x18, 0x2e, 0x18, 0x16, 0x65, 0x34, 0x09, 0x29, 0x13, 0x84, 0xe6, 0xdc, 0x63, 0x05, 0x15,
-	0x14, 0xee, 0x96, 0x79, 0x99, 0x93, 0x4b, 0xe2, 0x69, 0xe0, 0xfd, 0x07, 0x29, 0xa5, 0xe9, 0x04,
-	0x23, 0x09, 0x89, 0xcb, 0x4b, 0x14, 0xe5, 0x33, 0x85, 0xdf, 0xdf, 0x4b, 0x69, 0x4a, 0x65, 0x89,
-	0x56, 0x55, 0x7d, 0xea, 0xfc, 0x4b, 0x10, 0x24, 0xc3, 0x5c, 0x44, 0x19, 0xab, 0x01, 0x76, 0x42,
-	0x79, 0x46, 0x39, 0x8a, 0x23, 0x8e, 0xd1, 0xf4, 0x38, 0xc6, 0x22, 0x3a, 0x46, 0x09, 0x25, 0x79,
-	0x3d, 0x7f, 0xa8, 0x7b, 0xd5, 0x6a, 0x35, 0x76, 0x7f, 0x36, 0x80, 0xe5, 0xaf, 0x13, 0xf4, 0x55,
-	0x00, 0x9f, 0x72, 0xb2, 0x2a, 0xe0, 0x47, 0xd0, 0x54, 0x99, 0x42, 0x31, 0x63, 0xd8, 0x32, 0x0f,
-	0xcc, 0xa3, 0xf6, 0x73, 0xc7, 0xbb, 0x25, 0x98, 0xa7, 0xa8, 0x83, 0x19, 0xc3, 0xdd, 0xfb, 0xcb,
-	0xca, 0x81, 0xb3, 0x28, 0x9b, 0xbc, 0x74, 0x35, 0xb6, 0x1b, 0x00, 0xfa, 0x1b, 0x03, 0x3f, 0x81,
-	0x7b, 0xac, 0xde, 0xa2, 0xb4, 0x37, 0xa4, 0xf6, 0xa3, 0x5b, 0xb5, 0xd7, 0x7e, 0xa4, 0xba, 0xb5,
-	0xac, 0x9c, 0x3d, 0xa5, 0xfe, 0x97, 0x82, 0x1b, 0xb4, 0x98, 0x86, 0x83, 0x87, 0x60, 0x6b, 0x84,
-	0x73, 0x9a, 0x59, 0x8d, 0x03, 0xf3, 0xe8, 0x6e, 0xb7, 0xb3, 0xac, 0x9c, 0x96, 0xa2, 0xc9, 0x63,
-	0x37, 0x50, 0x63, 0xf8, 0x02, 0x34, 0x3f, 0x97, 0x54, 0xe0, 0x50, 0xa1, 0x37, 0x25, 0x5a, 0x8b,
-	0xa0, 0x0d, 0xdd, 0x00, 0xc8, 0xee, 0x54, 0x12, 0xc7, 0xa0, 0xc5, 0x45, 0x41, 0xae, 0x70, 0xc8,
-	0x0a, 0x92, 0x60, 0x6b, 0x4b, 0x32, 0xdf, 0x5e, 0x57, 0x8e, 0xf1, 0xbd, 0x72, 0x0e, 0x53, 0x22,
-	0xc6, 0x65, 0xec, 0x25, 0x34, 0x43, 0xf5, 0x0d, 0xa9, 0xcf, 0x33, 0x3e, 0xba, 0x42, 0x2b, 0xc3,
-	0xdc, 0x3b, 0xc5, 0xc9, 0xb2, 0x72, 0x76, 0xd5, 0x1e, 0x5d, 0xcb, 0x0d, 0x9a, 0xaa, 0xf5, 0x57,
-	0x1d, 0xbc, 0x00, 0x3b, 0xac, 0xc0, 0x19, 0x29, 0x33, 0x6b, 0x5b, 0x2e, 0x79, 0xf5, 0xdf, 0x4b,
-	0xda, 0xf5, 0x1f, 0x53, 0x32, 0x6e, 0xb0, 0x16, 0x7c, 0x72, 0x02, 0xc0, 0x9f, 0xab, 0x83, 0x10,
-	0xb4, 0xfb, 0xfe, 0xe0, 0x5d, 0xbf, 0x17, 0x0e, 0x7b, 0xef, 0x7b, 0xfd, 0x0f, 0xbd, 0x8e, 0x01,
-	0xef, 0x80, 0xcd, 0x37, 0xaf, 0xcf, 0xcf, 0x3b, 0x26, 0xdc, 0x01, 0x0d, 0x7f, 0x38, 0xe8, 0x6c,
-	0x74, 0xcf, 0xae, 0xe7, 0xb6, 0x79, 0x33, 0xb7, 0xcd, 0x1f, 0x73, 0xdb, 0xfc, 0xba, 0xb0, 0x8d,
-	0x9b, 0x85, 0x6d, 0x7c, 0x5b, 0xd8, 0xc6, 0xc5, 0x53, 0xcd, 0xd1, 0x30, 0x1f, 0xe6, 0xe4, 0x8c,
-	0xa0, 0x64, 0x1c, 0x91, 0x1c, 0x7d, 0xd1, 0x1f, 0x9f, 0xf2, 0x16, 0x6f, 0xcb, 0x37, 0x78, 0xf2,
-	0x2b, 0x00, 0x00, 0xff, 0xff, 0xd0, 0xde, 0x76, 0x24, 0x50, 0x03, 0x00, 0x00,
+	// 538 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x93, 0x41, 0x6f, 0xd3, 0x3c,
+	0x18, 0xc7, 0x9b, 0xb5, 0xef, 0xbb, 0xe1, 0x8e, 0x52, 0xb9, 0x13, 0x64, 0x93, 0x48, 0x4a, 0x90,
+	0x50, 0x85, 0x58, 0xac, 0x75, 0x37, 0x4e, 0x90, 0xc1, 0x24, 0xc4, 0xd4, 0x56, 0x51, 0x2b, 0xd0,
+	0x2e, 0xc5, 0x49, 0xbd, 0xd6, 0x5a, 0x13, 0x5b, 0xb1, 0x53, 0xd1, 0x3b, 0x1f, 0x80, 0x8f, 0xb5,
+	0x63, 0x8f, 0x88, 0x43, 0x34, 0xb5, 0xdf, 0xa0, 0x9f, 0x00, 0x35, 0x4e, 0x4b, 0x36, 0x95, 0x03,
+	0x17, 0x4e, 0x79, 0x1c, 0x3f, 0xcf, 0xef, 0xf9, 0x3f, 0xfe, 0xdb, 0xe0, 0xf9, 0x80, 0x44, 0x74,
+	0x82, 0x25, 0x9d, 0x10, 0x81, 0x38, 0x89, 0x38, 0x91, 0x31, 0x1e, 0xf7, 0x19, 0x97, 0x94, 0x85,
+	0xc2, 0xe6, 0x11, 0x93, 0x0c, 0xd6, 0xe2, 0x30, 0x0e, 0xe9, 0x15, 0xb5, 0x73, 0xc9, 0x47, 0x87,
+	0x43, 0xc6, 0x86, 0x63, 0x82, 0xd2, 0x14, 0x2f, 0xbe, 0x42, 0x38, 0x9c, 0xaa, 0xfc, 0xa3, 0x83,
+	0x21, 0x1b, 0xb2, 0x34, 0x44, 0xab, 0x28, 0xfb, 0x6b, 0xde, 0x2f, 0x90, 0x34, 0x20, 0x42, 0xe2,
+	0x80, 0x67, 0x09, 0x86, 0xcf, 0x44, 0xc0, 0x04, 0xf2, 0xb0, 0x20, 0x68, 0x72, 0xe2, 0x11, 0x89,
+	0x4f, 0x90, 0xcf, 0x68, 0x98, 0xed, 0x3f, 0xcd, 0x6b, 0xcd, 0xc5, 0x6a, 0xdb, 0xba, 0x2d, 0x02,
+	0xbd, 0xb3, 0x9e, 0xa0, 0xad, 0x06, 0xe8, 0x30, 0x41, 0x57, 0x01, 0xfc, 0x0c, 0xca, 0x6a, 0xa6,
+	0xbe, 0x9c, 0x72, 0xa2, 0x6b, 0x75, 0xad, 0x51, 0x69, 0x9a, 0xf6, 0x96, 0xc1, 0x6c, 0x55, 0xda,
+	0x9d, 0x72, 0xe2, 0x3c, 0x5e, 0x26, 0x26, 0x9c, 0xe2, 0x60, 0xfc, 0xda, 0xca, 0x55, 0x5b, 0x2e,
+	0x60, 0x9b, 0x1c, 0xf8, 0x05, 0x3c, 0xe4, 0x59, 0x17, 0xc5, 0xde, 0x49, 0xd9, 0xcf, 0xb6, 0xb2,
+	0xd7, 0x7a, 0x52, 0xba, 0xbe, 0x4c, 0xcc, 0x03, 0x45, 0xbf, 0x43, 0xb0, 0xdc, 0x7d, 0x9e, 0xcb,
+	0x83, 0x0e, 0x28, 0x71, 0x4c, 0x23, 0xbd, 0x58, 0xd7, 0x1a, 0xe5, 0xe6, 0xe1, 0x76, 0x30, 0xa6,
+	0x91, 0x53, 0xbb, 0x49, 0xcc, 0xc2, 0x32, 0x31, 0xcb, 0x19, 0x14, 0xd3, 0xc8, 0x72, 0xd3, 0x5a,
+	0x38, 0x02, 0xfb, 0x42, 0x46, 0xf4, 0x9a, 0xf4, 0x79, 0x44, 0x7d, 0xa2, 0x97, 0xea, 0x5a, 0xe3,
+	0x81, 0xf3, 0x7e, 0x55, 0xf0, 0x33, 0x31, 0x5f, 0x0c, 0xa9, 0x1c, 0xc5, 0x9e, 0xed, 0xb3, 0x00,
+	0x65, 0x26, 0xa8, 0xcf, 0xb1, 0x18, 0x5c, 0xa3, 0x95, 0x26, 0x61, 0xbf, 0x23, 0xfe, 0x32, 0x31,
+	0x6b, 0x0a, 0x9d, 0x67, 0x59, 0x6e, 0x59, 0x2d, 0x3b, 0xab, 0x15, 0xbc, 0x04, 0xbb, 0x3c, 0x22,
+	0x01, 0x8d, 0x03, 0xfd, 0xbf, 0xb4, 0xc9, 0x9b, 0xbf, 0x6e, 0x52, 0xc9, 0xf4, 0x2b, 0x8c, 0xe5,
+	0xae, 0x81, 0xd6, 0x37, 0x0d, 0x18, 0xf7, 0x2d, 0x6e, 0x73, 0x12, 0x92, 0xc1, 0xc6, 0x68, 0x0f,
+	0xec, 0xad, 0x0f, 0x2f, 0x75, 0xb9, 0xdc, 0x3c, 0xde, 0x7e, 0x60, 0x7f, 0xb8, 0x29, 0xce, 0x93,
+	0x59, 0x62, 0x6a, 0xcb, 0xc4, 0x7c, 0x74, 0xd7, 0x19, 0xcb, 0xdd, 0x70, 0xb7, 0xca, 0x38, 0x1b,
+	0x33, 0xf1, 0x6f, 0x65, 0xbc, 0x3c, 0x05, 0xe0, 0xf7, 0x5d, 0x85, 0x10, 0x54, 0xda, 0x9d, 0xee,
+	0x87, 0x76, 0xab, 0xdf, 0x6b, 0x7d, 0x6c, 0xb5, 0x3f, 0xb5, 0xaa, 0x05, 0xb8, 0x07, 0x4a, 0x67,
+	0x6f, 0x2f, 0x2e, 0xaa, 0x1a, 0xdc, 0x05, 0xc5, 0x4e, 0xaf, 0x5b, 0xdd, 0x71, 0xce, 0x6f, 0xe6,
+	0x86, 0x36, 0x9b, 0x1b, 0xda, 0xed, 0xdc, 0xd0, 0xbe, 0x2f, 0x8c, 0xc2, 0x6c, 0x61, 0x14, 0x7e,
+	0x2c, 0x8c, 0xc2, 0xe5, 0xab, 0x9c, 0x3f, 0xbd, 0xb0, 0x17, 0xd2, 0x73, 0x8a, 0xfc, 0x11, 0xa6,
+	0x21, 0xfa, 0x9a, 0x7f, 0x6d, 0xca, 0x29, 0xef, 0xff, 0xf4, 0xd1, 0x9d, 0xfe, 0x0a, 0x00, 0x00,
+	0xff, 0xff, 0xd8, 0x09, 0x73, 0x93, 0x41, 0x04, 0x00, 0x00,
 }
 
 func (m *PerpetualOptionsPosition) Marshal() (dAtA []byte, err error) {
@@ -198,7 +269,7 @@ func (m *PerpetualOptionsPosition) MarshalToSizedBuffer(dAtA []byte) (int, error
 		i = encodeVarintPerpetualOptions(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x32
+	dAtA[i] = 0x2a
 	{
 		size := m.StrikePrice.Size()
 		i -= size
@@ -208,21 +279,17 @@ func (m *PerpetualOptionsPosition) MarshalToSizedBuffer(dAtA []byte) (int, error
 		i = encodeVarintPerpetualOptions(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x2a
-	if len(m.QuoteDenom) > 0 {
-		i -= len(m.QuoteDenom)
-		copy(dAtA[i:], m.QuoteDenom)
-		i = encodeVarintPerpetualOptions(dAtA, i, uint64(len(m.QuoteDenom)))
-		i--
-		dAtA[i] = 0x22
+	dAtA[i] = 0x22
+	{
+		size, err := m.Pair.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintPerpetualOptions(dAtA, i, uint64(size))
 	}
-	if len(m.Denom) > 0 {
-		i -= len(m.Denom)
-		copy(dAtA[i:], m.Denom)
-		i = encodeVarintPerpetualOptions(dAtA, i, uint64(len(m.Denom)))
-		i--
-		dAtA[i] = 0x1a
-	}
+	i--
+	dAtA[i] = 0x1a
 	if m.PositionType != 0 {
 		i = encodeVarintPerpetualOptions(dAtA, i, uint64(m.PositionType))
 		i--
@@ -232,6 +299,76 @@ func (m *PerpetualOptionsPosition) MarshalToSizedBuffer(dAtA []byte) (int, error
 		i = encodeVarintPerpetualOptions(dAtA, i, uint64(m.OptionType))
 		i--
 		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *PerpetualOptionsOpenedPosition) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *PerpetualOptionsOpenedPosition) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *PerpetualOptionsOpenedPosition) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.PerpetualOptionsPosition != nil {
+		{
+			size, err := m.PerpetualOptionsPosition.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintPerpetualOptions(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *PerpetualOptionsClosedPosition) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *PerpetualOptionsClosedPosition) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *PerpetualOptionsClosedPosition) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.PerpetualOptionsPosition != nil {
+		{
+			size, err := m.PerpetualOptionsPosition.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintPerpetualOptions(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -259,18 +396,38 @@ func (m *PerpetualOptionsPosition) Size() (n int) {
 	if m.PositionType != 0 {
 		n += 1 + sovPerpetualOptions(uint64(m.PositionType))
 	}
-	l = len(m.Denom)
-	if l > 0 {
-		n += 1 + l + sovPerpetualOptions(uint64(l))
-	}
-	l = len(m.QuoteDenom)
-	if l > 0 {
-		n += 1 + l + sovPerpetualOptions(uint64(l))
-	}
+	l = m.Pair.Size()
+	n += 1 + l + sovPerpetualOptions(uint64(l))
 	l = m.StrikePrice.Size()
 	n += 1 + l + sovPerpetualOptions(uint64(l))
 	l = m.Premium.Size()
 	n += 1 + l + sovPerpetualOptions(uint64(l))
+	return n
+}
+
+func (m *PerpetualOptionsOpenedPosition) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.PerpetualOptionsPosition != nil {
+		l = m.PerpetualOptionsPosition.Size()
+		n += 1 + l + sovPerpetualOptions(uint64(l))
+	}
+	return n
+}
+
+func (m *PerpetualOptionsClosedPosition) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.PerpetualOptionsPosition != nil {
+		l = m.PerpetualOptionsPosition.Size()
+		n += 1 + l + sovPerpetualOptions(uint64(l))
+	}
 	return n
 }
 
@@ -349,9 +506,9 @@ func (m *PerpetualOptionsPosition) Unmarshal(dAtA []byte) error {
 			}
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Pair", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowPerpetualOptions
@@ -361,57 +518,26 @@ func (m *PerpetualOptionsPosition) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthPerpetualOptions
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthPerpetualOptions
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Denom = string(dAtA[iNdEx:postIndex])
+			if err := m.Pair.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field QuoteDenom", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowPerpetualOptions
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthPerpetualOptions
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthPerpetualOptions
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.QuoteDenom = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field StrikePrice", wireType)
 			}
@@ -445,7 +571,7 @@ func (m *PerpetualOptionsPosition) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 6:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Premium", wireType)
 			}
@@ -476,6 +602,178 @@ func (m *PerpetualOptionsPosition) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.Premium.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPerpetualOptions(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPerpetualOptions
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *PerpetualOptionsOpenedPosition) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPerpetualOptions
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: PerpetualOptionsOpenedPosition: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: PerpetualOptionsOpenedPosition: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PerpetualOptionsPosition", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPerpetualOptions
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthPerpetualOptions
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthPerpetualOptions
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.PerpetualOptionsPosition == nil {
+				m.PerpetualOptionsPosition = &PerpetualOptionsPosition{}
+			}
+			if err := m.PerpetualOptionsPosition.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPerpetualOptions(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPerpetualOptions
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *PerpetualOptionsClosedPosition) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPerpetualOptions
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: PerpetualOptionsClosedPosition: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: PerpetualOptionsClosedPosition: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PerpetualOptionsPosition", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPerpetualOptions
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthPerpetualOptions
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthPerpetualOptions
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.PerpetualOptionsPosition == nil {
+				m.PerpetualOptionsPosition = &PerpetualOptionsPosition{}
+			}
+			if err := m.PerpetualOptionsPosition.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

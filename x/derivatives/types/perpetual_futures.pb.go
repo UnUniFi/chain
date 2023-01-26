@@ -29,10 +29,9 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type PerpetualFuturesPosition struct {
 	PositionType PositionType                           `protobuf:"varint,1,opt,name=position_type,json=positionType,proto3,enum=ununifi.derivatives.PositionType" json:"position_type,omitempty" yaml:"position_type"`
-	Denom        string                                 `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty" yaml:"denom"`
-	QuoteDenom   string                                 `protobuf:"bytes,3,opt,name=quote_denom,json=quoteDenom,proto3" json:"quote_denom,omitempty" yaml:"quote_denom"`
-	Size_        github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=size,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"size" yaml:"size"`
-	Leverage     github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,5,opt,name=leverage,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"leverage" yaml:"leverage"`
+	Pair         Pair                                   `protobuf:"bytes,2,opt,name=pair,proto3" json:"pair" yaml:"pair"`
+	Size_        github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=size,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"size" yaml:"size"`
+	Leverage     github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=leverage,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"leverage" yaml:"leverage"`
 }
 
 func (m *PerpetualFuturesPosition) Reset()         { *m = PerpetualFuturesPosition{} }
@@ -75,22 +74,94 @@ func (m *PerpetualFuturesPosition) GetPositionType() PositionType {
 	return PositionType_POSITION_UNKNOWN
 }
 
-func (m *PerpetualFuturesPosition) GetDenom() string {
+func (m *PerpetualFuturesPosition) GetPair() Pair {
 	if m != nil {
-		return m.Denom
+		return m.Pair
 	}
-	return ""
+	return Pair{}
 }
 
-func (m *PerpetualFuturesPosition) GetQuoteDenom() string {
-	if m != nil {
-		return m.QuoteDenom
-	}
-	return ""
+type PerpetualFuturesOpenedPosition struct {
+	*PerpetualFuturesPosition `protobuf:"bytes,1,opt,name=position,proto3,embedded=position" json:"position,omitempty" yaml:"position"`
+	OpeningPrice              github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=opening_price,json=openingPrice,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"opening_price" yaml:"price"`
 }
+
+func (m *PerpetualFuturesOpenedPosition) Reset()         { *m = PerpetualFuturesOpenedPosition{} }
+func (m *PerpetualFuturesOpenedPosition) String() string { return proto.CompactTextString(m) }
+func (*PerpetualFuturesOpenedPosition) ProtoMessage()    {}
+func (*PerpetualFuturesOpenedPosition) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8782b9e89770133d, []int{1}
+}
+func (m *PerpetualFuturesOpenedPosition) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *PerpetualFuturesOpenedPosition) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_PerpetualFuturesOpenedPosition.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *PerpetualFuturesOpenedPosition) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PerpetualFuturesOpenedPosition.Merge(m, src)
+}
+func (m *PerpetualFuturesOpenedPosition) XXX_Size() int {
+	return m.Size()
+}
+func (m *PerpetualFuturesOpenedPosition) XXX_DiscardUnknown() {
+	xxx_messageInfo_PerpetualFuturesOpenedPosition.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PerpetualFuturesOpenedPosition proto.InternalMessageInfo
+
+type PerpetualFuturesClosedPosition struct {
+	*PerpetualFuturesPosition `protobuf:"bytes,1,opt,name=position,proto3,embedded=position" json:"position,omitempty" yaml:"position"`
+	OpeningPrice              github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=opening_price,json=openingPrice,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"opening_price" yaml:"opening_price"`
+	ClosingPrice              github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=closing_price,json=closingPrice,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"closing_price" yaml:"closing_price"`
+}
+
+func (m *PerpetualFuturesClosedPosition) Reset()         { *m = PerpetualFuturesClosedPosition{} }
+func (m *PerpetualFuturesClosedPosition) String() string { return proto.CompactTextString(m) }
+func (*PerpetualFuturesClosedPosition) ProtoMessage()    {}
+func (*PerpetualFuturesClosedPosition) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8782b9e89770133d, []int{2}
+}
+func (m *PerpetualFuturesClosedPosition) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *PerpetualFuturesClosedPosition) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_PerpetualFuturesClosedPosition.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *PerpetualFuturesClosedPosition) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PerpetualFuturesClosedPosition.Merge(m, src)
+}
+func (m *PerpetualFuturesClosedPosition) XXX_Size() int {
+	return m.Size()
+}
+func (m *PerpetualFuturesClosedPosition) XXX_DiscardUnknown() {
+	xxx_messageInfo_PerpetualFuturesClosedPosition.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PerpetualFuturesClosedPosition proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterType((*PerpetualFuturesPosition)(nil), "ununifi.derivatives.PerpetualFuturesPosition")
+	proto.RegisterType((*PerpetualFuturesOpenedPosition)(nil), "ununifi.derivatives.PerpetualFuturesOpenedPosition")
+	proto.RegisterType((*PerpetualFuturesClosedPosition)(nil), "ununifi.derivatives.PerpetualFuturesClosedPosition")
 }
 
 func init() {
@@ -98,34 +169,40 @@ func init() {
 }
 
 var fileDescriptor_8782b9e89770133d = []byte{
-	// 422 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x91, 0x4f, 0x6b, 0xd4, 0x40,
-	0x18, 0x87, 0x37, 0xb6, 0x15, 0x9d, 0xd6, 0x3f, 0xc4, 0x22, 0xb1, 0x60, 0xa6, 0x46, 0x28, 0x3d,
-	0x68, 0x86, 0xea, 0x41, 0x10, 0x3c, 0xb8, 0x94, 0x05, 0x6f, 0x35, 0xd8, 0x8b, 0x20, 0xeb, 0x24,
-	0xfb, 0x6e, 0x3a, 0x98, 0xcc, 0x8c, 0x99, 0x99, 0x60, 0xfc, 0x12, 0xfa, 0xb1, 0x7a, 0xdc, 0xa3,
-	0x78, 0x08, 0xb2, 0xfb, 0x0d, 0xf2, 0x09, 0x64, 0x67, 0xb2, 0x12, 0xc5, 0x4b, 0x4f, 0x79, 0x33,
-	0xef, 0xf3, 0x7b, 0x32, 0x6f, 0x5e, 0xf4, 0x78, 0x06, 0x15, 0xab, 0xa9, 0x66, 0x35, 0x28, 0x22,
-	0xa1, 0x92, 0xa0, 0x0d, 0x2d, 0xa6, 0x73, 0xa3, 0x4d, 0x05, 0x2a, 0x96, 0x95, 0xd0, 0xc2, 0xbf,
-	0x67, 0xb8, 0xe1, 0x6c, 0xce, 0xe2, 0x01, 0x7c, 0xf0, 0x20, 0x17, 0x22, 0x2f, 0x80, 0x58, 0x24,
-	0x35, 0x73, 0x42, 0x79, 0xe3, 0xf8, 0x83, 0xfd, 0x5c, 0xe4, 0xc2, 0x96, 0x64, 0x5d, 0xf5, 0xa7,
-	0xf8, 0xdf, 0x80, 0x66, 0x25, 0x28, 0x4d, 0x4b, 0xd9, 0x03, 0x61, 0x26, 0x54, 0x29, 0x14, 0x49,
-	0xa9, 0x02, 0x52, 0x9f, 0xa4, 0xa0, 0xe9, 0x09, 0xc9, 0x04, 0xe3, 0x7d, 0xff, 0xe1, 0xf0, 0xae,
-	0x83, 0xda, 0xb5, 0xa3, 0x6f, 0x5b, 0x28, 0x38, 0xdb, 0x4c, 0x30, 0x71, 0x03, 0x9c, 0x09, 0xc5,
-	0x34, 0x13, 0xdc, 0xff, 0x88, 0x6e, 0xc9, 0xbe, 0x9e, 0xea, 0x46, 0x42, 0xe0, 0x1d, 0x7a, 0xc7,
-	0xb7, 0x9f, 0x3d, 0x8a, 0xff, 0x33, 0x5a, 0xbc, 0x49, 0xbd, 0x6b, 0x24, 0x8c, 0x83, 0xae, 0xc5,
-	0xfb, 0x0d, 0x2d, 0x8b, 0x97, 0xd1, 0x5f, 0x86, 0x28, 0xd9, 0x93, 0x03, 0xce, 0x3f, 0x42, 0x3b,
-	0x33, 0xe0, 0xa2, 0x0c, 0xae, 0x1d, 0x7a, 0xc7, 0x37, 0xc7, 0x77, 0xbb, 0x16, 0xef, 0xb9, 0x98,
-	0x3d, 0x8e, 0x12, 0xd7, 0xf6, 0x5f, 0xa0, 0xdd, 0xcf, 0x46, 0x68, 0x98, 0x3a, 0x7a, 0xcb, 0xd2,
-	0xf7, 0xbb, 0x16, 0xfb, 0x8e, 0x1e, 0x34, 0xa3, 0x04, 0xd9, 0xb7, 0x53, 0x1b, 0x7c, 0x8b, 0xb6,
-	0x15, 0xfb, 0x0a, 0xc1, 0xb6, 0x4d, 0xbc, 0xba, 0x6c, 0xf1, 0xe8, 0x67, 0x8b, 0x8f, 0x72, 0xa6,
-	0x2f, 0x4c, 0x1a, 0x67, 0xa2, 0x24, 0xfd, 0xff, 0x73, 0x8f, 0xa7, 0x6a, 0xf6, 0x89, 0xac, 0x2f,
-	0xaa, 0xe2, 0x53, 0xc8, 0xba, 0x16, 0xef, 0x3a, 0xff, 0xda, 0x11, 0x25, 0x56, 0xe5, 0x7f, 0x40,
-	0x37, 0x0a, 0xa8, 0xa1, 0xa2, 0x39, 0x04, 0x3b, 0x56, 0xfb, 0xfa, 0x0a, 0xda, 0x37, 0x5c, 0x77,
-	0x2d, 0xbe, 0xe3, 0xb4, 0x1b, 0x4f, 0x94, 0xfc, 0x51, 0x8e, 0x27, 0x97, 0xcb, 0xd0, 0x5b, 0x2c,
-	0x43, 0xef, 0xd7, 0x32, 0xf4, 0xbe, 0xaf, 0xc2, 0xd1, 0x62, 0x15, 0x8e, 0x7e, 0xac, 0xc2, 0xd1,
-	0xfb, 0x27, 0x03, 0xfd, 0x39, 0x3f, 0xe7, 0x6c, 0xc2, 0x48, 0x76, 0x41, 0x19, 0x27, 0x5f, 0x86,
-	0x9b, 0x75, 0x1f, 0x4a, 0xaf, 0xdb, 0x05, 0x3f, 0xff, 0x1d, 0x00, 0x00, 0xff, 0xff, 0x55, 0x80,
-	0x95, 0x47, 0xad, 0x02, 0x00, 0x00,
+	// 520 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x94, 0x4f, 0x8b, 0xd3, 0x40,
+	0x18, 0xc6, 0x9b, 0x6e, 0x91, 0xdd, 0xb4, 0xab, 0x90, 0x5d, 0x30, 0xbb, 0x60, 0x52, 0x23, 0x48,
+	0x0f, 0x6e, 0x86, 0xad, 0x37, 0x41, 0xc1, 0x28, 0x05, 0x4f, 0xd6, 0xe0, 0x5e, 0x04, 0xa9, 0x93,
+	0xf4, 0x6d, 0x76, 0xd8, 0x74, 0x66, 0xc8, 0x4c, 0x8a, 0xf5, 0x53, 0xf8, 0xb1, 0xf6, 0xd8, 0xa3,
+	0x78, 0x08, 0xd2, 0x9e, 0xbc, 0xf6, 0x13, 0x48, 0xfe, 0xb5, 0x69, 0xad, 0x87, 0x22, 0xec, 0xa9,
+	0xef, 0x74, 0xde, 0xf9, 0x3d, 0xef, 0xf3, 0x4c, 0x18, 0xf5, 0xc9, 0x10, 0x22, 0x32, 0xc1, 0x92,
+	0x4c, 0x40, 0x20, 0x0e, 0x11, 0x07, 0x19, 0xe3, 0x70, 0x30, 0x8a, 0x65, 0x1c, 0x81, 0xb0, 0x79,
+	0xc4, 0x24, 0xd3, 0x4e, 0x62, 0x1a, 0x53, 0x32, 0x22, 0x76, 0xa5, 0xf9, 0xfc, 0x2c, 0x60, 0x2c,
+	0x08, 0x01, 0x65, 0x2d, 0x5e, 0x3c, 0x42, 0x98, 0x4e, 0xf3, 0xfe, 0xf3, 0xd3, 0x80, 0x05, 0x2c,
+	0x2b, 0x51, 0x5a, 0x15, 0xff, 0x9a, 0xdb, 0x07, 0x24, 0x19, 0x83, 0x90, 0x78, 0xcc, 0x8b, 0x06,
+	0xc3, 0x67, 0x62, 0xcc, 0x04, 0xf2, 0xb0, 0x00, 0x34, 0xb9, 0xf4, 0x40, 0xe2, 0x4b, 0xe4, 0x33,
+	0x42, 0x8b, 0xfd, 0x47, 0xd5, 0x59, 0x2b, 0x75, 0xbe, 0x6d, 0x2d, 0xeb, 0xaa, 0xde, 0x2f, 0x1d,
+	0xf4, 0x72, 0x03, 0x7d, 0x26, 0x88, 0x24, 0x8c, 0x6a, 0x5f, 0xd4, 0x63, 0x5e, 0xd4, 0x03, 0x39,
+	0xe5, 0xa0, 0x2b, 0x6d, 0xa5, 0x73, 0xbf, 0xfb, 0xd8, 0xde, 0x61, 0xcd, 0x2e, 0x4f, 0x7d, 0x9c,
+	0x72, 0x70, 0xf4, 0x65, 0x62, 0x9e, 0x4e, 0xf1, 0x38, 0x7c, 0x61, 0x6d, 0x10, 0x2c, 0xb7, 0xc5,
+	0x2b, 0x7d, 0x9a, 0xa3, 0x36, 0x38, 0x26, 0x91, 0x5e, 0x6f, 0x2b, 0x9d, 0x66, 0xf7, 0x6c, 0x37,
+	0x18, 0x93, 0xc8, 0x39, 0xb9, 0x4d, 0xcc, 0xda, 0x32, 0x31, 0x9b, 0x05, 0x14, 0x93, 0xc8, 0x72,
+	0xb3, 0xb3, 0xda, 0x07, 0xb5, 0x21, 0xc8, 0x37, 0xd0, 0x0f, 0xda, 0x4a, 0xe7, 0xc8, 0x79, 0x99,
+	0x36, 0xfe, 0x4c, 0xcc, 0xa7, 0x01, 0x91, 0xd7, 0xb1, 0x67, 0xfb, 0x6c, 0x8c, 0x8a, 0x88, 0xf2,
+	0x9f, 0x0b, 0x31, 0xbc, 0x41, 0xe9, 0x2c, 0xc2, 0x7e, 0x0b, 0xfe, 0x1a, 0x99, 0x32, 0x2c, 0x37,
+	0x43, 0x69, 0x9f, 0xd5, 0xc3, 0x10, 0x26, 0x10, 0xe1, 0x00, 0xf4, 0x46, 0x86, 0x7d, 0xbd, 0x07,
+	0xf6, 0x1d, 0x95, 0xcb, 0xc4, 0x7c, 0x90, 0x63, 0x4b, 0x8e, 0xe5, 0xae, 0x90, 0xd6, 0x6f, 0x45,
+	0x35, 0xb6, 0x43, 0x7f, 0xcf, 0x81, 0xc2, 0x70, 0x15, 0xbd, 0xa7, 0x1e, 0x96, 0x41, 0x65, 0xa9,
+	0x37, 0xbb, 0x17, 0xbb, 0xc3, 0xf9, 0xc7, 0xdd, 0x39, 0x0f, 0x67, 0x89, 0xa9, 0xac, 0xc7, 0x28,
+	0x61, 0x96, 0xbb, 0xe2, 0x6a, 0xbe, 0x7a, 0xcc, 0x38, 0x50, 0x42, 0x83, 0x01, 0x8f, 0x88, 0x0f,
+	0xd9, 0x2d, 0x1c, 0x39, 0xaf, 0xf6, 0x4e, 0xb0, 0x55, 0x68, 0xa4, 0x10, 0xcb, 0x6d, 0x15, 0xd0,
+	0x7e, 0xb6, 0x4c, 0xea, 0x7f, 0x7b, 0x7d, 0x13, 0x32, 0x71, 0xc7, 0x5e, 0x6f, 0x76, 0x7b, 0xed,
+	0xed, 0xed, 0xb5, 0xf8, 0xaa, 0x37, 0x60, 0x5b, 0x9e, 0x53, 0x31, 0x3f, 0x64, 0x62, 0x2d, 0x76,
+	0xf0, 0x7f, 0x62, 0x1b, 0x30, 0xcb, 0x6d, 0x15, 0xeb, 0x4c, 0xcc, 0xe9, 0xdd, 0xce, 0x0d, 0x65,
+	0x36, 0x37, 0x94, 0x5f, 0x73, 0x43, 0xf9, 0xbe, 0x30, 0x6a, 0xb3, 0x85, 0x51, 0xfb, 0xb1, 0x30,
+	0x6a, 0x9f, 0x9e, 0x55, 0x74, 0xae, 0xe8, 0x15, 0x25, 0x3d, 0x82, 0xfc, 0x6b, 0x4c, 0x28, 0xfa,
+	0x5a, 0x7d, 0x09, 0x72, 0x45, 0xef, 0x5e, 0xf6, 0x20, 0x3c, 0xff, 0x13, 0x00, 0x00, 0xff, 0xff,
+	0x6f, 0x0f, 0xa9, 0x45, 0xdd, 0x04, 0x00, 0x00,
 }
 
 func (m *PerpetualFuturesPosition) Marshal() (dAtA []byte, err error) {
@@ -157,7 +234,7 @@ func (m *PerpetualFuturesPosition) MarshalToSizedBuffer(dAtA []byte) (int, error
 		i = encodeVarintPerpetualFutures(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x2a
+	dAtA[i] = 0x22
 	{
 		size := m.Size_.Size()
 		i -= size
@@ -167,25 +244,121 @@ func (m *PerpetualFuturesPosition) MarshalToSizedBuffer(dAtA []byte) (int, error
 		i = encodeVarintPerpetualFutures(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x22
-	if len(m.QuoteDenom) > 0 {
-		i -= len(m.QuoteDenom)
-		copy(dAtA[i:], m.QuoteDenom)
-		i = encodeVarintPerpetualFutures(dAtA, i, uint64(len(m.QuoteDenom)))
-		i--
-		dAtA[i] = 0x1a
+	dAtA[i] = 0x1a
+	{
+		size, err := m.Pair.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintPerpetualFutures(dAtA, i, uint64(size))
 	}
-	if len(m.Denom) > 0 {
-		i -= len(m.Denom)
-		copy(dAtA[i:], m.Denom)
-		i = encodeVarintPerpetualFutures(dAtA, i, uint64(len(m.Denom)))
-		i--
-		dAtA[i] = 0x12
-	}
+	i--
+	dAtA[i] = 0x12
 	if m.PositionType != 0 {
 		i = encodeVarintPerpetualFutures(dAtA, i, uint64(m.PositionType))
 		i--
 		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *PerpetualFuturesOpenedPosition) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *PerpetualFuturesOpenedPosition) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *PerpetualFuturesOpenedPosition) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.OpeningPrice.Size()
+		i -= size
+		if _, err := m.OpeningPrice.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintPerpetualFutures(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	if m.PerpetualFuturesPosition != nil {
+		{
+			size, err := m.PerpetualFuturesPosition.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintPerpetualFutures(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *PerpetualFuturesClosedPosition) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *PerpetualFuturesClosedPosition) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *PerpetualFuturesClosedPosition) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.ClosingPrice.Size()
+		i -= size
+		if _, err := m.ClosingPrice.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintPerpetualFutures(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	{
+		size := m.OpeningPrice.Size()
+		i -= size
+		if _, err := m.OpeningPrice.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintPerpetualFutures(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	if m.PerpetualFuturesPosition != nil {
+		{
+			size, err := m.PerpetualFuturesPosition.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintPerpetualFutures(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -210,17 +383,43 @@ func (m *PerpetualFuturesPosition) Size() (n int) {
 	if m.PositionType != 0 {
 		n += 1 + sovPerpetualFutures(uint64(m.PositionType))
 	}
-	l = len(m.Denom)
-	if l > 0 {
-		n += 1 + l + sovPerpetualFutures(uint64(l))
-	}
-	l = len(m.QuoteDenom)
-	if l > 0 {
-		n += 1 + l + sovPerpetualFutures(uint64(l))
-	}
+	l = m.Pair.Size()
+	n += 1 + l + sovPerpetualFutures(uint64(l))
 	l = m.Size_.Size()
 	n += 1 + l + sovPerpetualFutures(uint64(l))
 	l = m.Leverage.Size()
+	n += 1 + l + sovPerpetualFutures(uint64(l))
+	return n
+}
+
+func (m *PerpetualFuturesOpenedPosition) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.PerpetualFuturesPosition != nil {
+		l = m.PerpetualFuturesPosition.Size()
+		n += 1 + l + sovPerpetualFutures(uint64(l))
+	}
+	l = m.OpeningPrice.Size()
+	n += 1 + l + sovPerpetualFutures(uint64(l))
+	return n
+}
+
+func (m *PerpetualFuturesClosedPosition) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.PerpetualFuturesPosition != nil {
+		l = m.PerpetualFuturesPosition.Size()
+		n += 1 + l + sovPerpetualFutures(uint64(l))
+	}
+	l = m.OpeningPrice.Size()
+	n += 1 + l + sovPerpetualFutures(uint64(l))
+	l = m.ClosingPrice.Size()
 	n += 1 + l + sovPerpetualFutures(uint64(l))
 	return n
 }
@@ -281,9 +480,9 @@ func (m *PerpetualFuturesPosition) Unmarshal(dAtA []byte) error {
 			}
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Pair", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowPerpetualFutures
@@ -293,57 +492,26 @@ func (m *PerpetualFuturesPosition) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthPerpetualFutures
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthPerpetualFutures
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Denom = string(dAtA[iNdEx:postIndex])
+			if err := m.Pair.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field QuoteDenom", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowPerpetualFutures
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthPerpetualFutures
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthPerpetualFutures
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.QuoteDenom = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Size_", wireType)
 			}
@@ -377,7 +545,7 @@ func (m *PerpetualFuturesPosition) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 5:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Leverage", wireType)
 			}
@@ -408,6 +576,280 @@ func (m *PerpetualFuturesPosition) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.Leverage.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPerpetualFutures(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *PerpetualFuturesOpenedPosition) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPerpetualFutures
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: PerpetualFuturesOpenedPosition: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: PerpetualFuturesOpenedPosition: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PerpetualFuturesPosition", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPerpetualFutures
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.PerpetualFuturesPosition == nil {
+				m.PerpetualFuturesPosition = &PerpetualFuturesPosition{}
+			}
+			if err := m.PerpetualFuturesPosition.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field OpeningPrice", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPerpetualFutures
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.OpeningPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPerpetualFutures(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *PerpetualFuturesClosedPosition) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPerpetualFutures
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: PerpetualFuturesClosedPosition: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: PerpetualFuturesClosedPosition: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PerpetualFuturesPosition", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPerpetualFutures
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.PerpetualFuturesPosition == nil {
+				m.PerpetualFuturesPosition = &PerpetualFuturesPosition{}
+			}
+			if err := m.PerpetualFuturesPosition.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field OpeningPrice", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPerpetualFutures
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.OpeningPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClosingPrice", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPerpetualFutures
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.ClosingPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

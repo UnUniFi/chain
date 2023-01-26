@@ -47,9 +47,9 @@ message PostedPrice {
   ];
 }
 
-message DenomPair {
-  string internal_denom = 1 [(gogoproto.moretags) = "yaml:\"internal_denom\""];
-  string market_denom = 2 [(gogoproto.moretags) = "yaml:\"market_denom\""];
+message DenomTickerPair {
+  string denom = 1 [(gogoproto.moretags) = "yaml:\"denom\""];
+  string ticker = 2 [(gogoproto.moretags) = "yaml:\"ticker\""];
 }
 
 message Params {
@@ -57,8 +57,8 @@ message Params {
     (gogoproto.moretags) = "yaml:\"markets\"",
     (gogoproto.nullable) = false
   ];
-  repeated DenomPair denom_pairs = 2 [
-    (gogoproto.moretags) = "yaml:\"denom_pairs\"",
+  repeated DenomTickerPair denom_ticker_pairs = 2 [
+    (gogoproto.moretags) = "yaml:\"denom_ticker_pairs\"",
     (gogoproto.nullable) = false
   ];
 }

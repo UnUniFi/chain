@@ -9,10 +9,10 @@ import (
 
 func levyImaginaryFundingRateAndLiquidateInsufficientMarginPositions(ctx sdk.Context, k keeper.Keeper) {
 	params := k.GetParams(ctx)
-	wrappedPositions := k.GetAllPositions(ctx)
+	openedPositions := k.GetAllOpenedPositions(ctx)
 	assets := k.GetPoolAssets(ctx)
-	fundingRateProportionalCoefficient := params.FundingRateProportionalCoefficient
-	commissionRate := params.CommissionRate
+	fundingRateProportionalCoefficient := params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient
+	commissionRate := params.PerpetualFutures.CommissionRate
 
 	imaginaryFundingRates := make(map[string]sdk.Dec)
 
@@ -22,9 +22,9 @@ func levyImaginaryFundingRateAndLiquidateInsufficientMarginPositions(ctx sdk.Con
 		imaginaryFundingRates[asset.Denom] = imaginaryFundingRate
 	}
 
-	for _, wrappedPosition := range wrappedPositions {
-		positionId := types.GetPositionIdFromString(wrappedPosition.Id)
-		position, err := types.UnpackPosition(&wrappedPosition.Position)
+	for _, openedPosition := range openedPositions {
+		positionId := types.GetPositionIdFromString(openedPosition.Id)
+		position, err := types.UnpackOpenedPosition(&openedPosition.Position)
 		if err != nil {
 			panic("unable to unpack open position")
 		}
@@ -32,32 +32,33 @@ func levyImaginaryFundingRateAndLiquidateInsufficientMarginPositions(ctx sdk.Con
 		switch position.(type) {
 		case *types.PerpetualFuturesPosition:
 			futuresPosition := position.(*types.PerpetualFuturesPosition)
-			depositedMargin := k.GetDepositedMargin(ctx, positionId)
-			imaginaryFundingRate := imaginaryFundingRates[futuresPosition.Denom]
-			imaginaryFundingFee := sdk.NewDecFromInt(depositedMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
-			commissionFee := sdk.NewDecFromInt(depositedMargin.Amount).Mul(commissionRate).RoundInt()
+			remainingMargin := k.GetRemainingMargin(ctx, positionId)
+			imaginaryFundingRate := imaginaryFundingRates[futuresPosition.Pair.Denom]
+			imaginaryFundingFee := sdk.NewDecFromInt(remainingMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
+			commissionFee := sdk.NewDecFromInt(remainingMargin.Amount).Mul(commissionRate).RoundInt()
 
 			principal := types.CalculatePrincipal(*futuresPosition)
 
 			if imaginaryFundingRate.IsNegative() {
 				if futuresPosition.PositionType == types.PositionType_SHORT {
-					depositedMargin.Amount = depositedMargin.Amount.Sub(imaginaryFundingFee)
+					remainingMargin.Amount = remainingMargin.Amount.Sub(imaginaryFundingFee)
 				} else {
-					depositedMargin.Amount = depositedMargin.Amount.Add(imaginaryFundingFee.Sub(commissionFee))
+					remainingMargin.Amount = remainingMargin.Amount.Add(imaginaryFundingFee.Sub(commissionFee))
 				}
 			} else {
 				if futuresPosition.PositionType == types.PositionType_LONG {
-					depositedMargin.Amount = depositedMargin.Amount.Sub(imaginaryFundingFee)
+					remainingMargin.Amount = remainingMargin.Amount.Sub(imaginaryFundingFee)
 				} else {
-					depositedMargin.Amount = depositedMargin.Amount.Add(imaginaryFundingFee.Sub(commissionFee))
+					remainingMargin.Amount = remainingMargin.Amount.Add(imaginaryFundingFee.Sub(commissionFee))
 				}
 			}
 
-			k.SaveDepositedMargin(ctx, positionId, depositedMargin)
+			k.SatRemainingMargin(ctx, positionId, remainingMargin)
 
-			if sdk.NewDecFromInt(depositedMargin.Amount).Mul(sdk.NewDecWithPrec(1, 0)).LT(principal.Mul(params.MarginMaintenanceRate)) {
-				k.ClosePerpetualFuturesPosition(ctx, wrappedPosition.Address.AccAddress(), positionId, futuresPosition)
-			}
+			// TODO: go to the handler of MsgReportLiquidationNeeded
+			// if sdk.NewDecFromInt(remainingMargin.Amount).Mul(sdk.NewDecWithPrec(1, 0)).LT(principal.Mul(params.PerpetualFutures.MarginMaintenanceRate)) {
+			// 	k.ClosePerpetualFuturesPosition(ctx, openedPosition.Address.AccAddress(), positionId, futuresPosition)
+			// }
 			return
 		case *types.PerpetualOptionsPosition:
 			return

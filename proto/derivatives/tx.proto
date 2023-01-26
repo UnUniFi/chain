@@ -13,6 +13,7 @@ service Msg {
   rpc BurnLiquidityProviderToken(MsgBurnLiquidityProviderToken) returns (MsgBurnLiquidityProviderTokenResponse);
   rpc OpenPosition(MsgOpenPosition) returns (MsgOpenPositionResponse);
   rpc ClosePosition(MsgClosePosition) returns (MsgClosePositionResponse);
+  rpc ReportLiquidationNeededPosition(MsgReportLiquidationNeededPosition) returns (MsgReportLiquidationNeededPositionResponse);
 }
 
 message MsgMintLiquidityProviderToken {
@@ -75,3 +76,16 @@ message MsgClosePosition {
 }
 
 message MsgClosePositionResponse {}
+
+message MsgReportLiquidationNeededPosition {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string position_id = 2 [
+    (gogoproto.moretags) = "yaml:\"position_id\""
+  ];
+}
+
+message MsgReportLiquidationNeededPositionResponse {}
