@@ -15,19 +15,19 @@ option go_package = "github.com/UnUniFi/chain/x/derivatives/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/UnUniFi/derivatives/params";
+    option (google.api.http).get = "/ununifi/derivatives/params";
   }
   // this line is used by starport scaffolding # 2
   rpc LiquidityProviderTokenRealAPY(QueryLiquidityProviderTokenRealAPYRequest) returns (QueryLiquidityProviderTokenRealAPYResponse) {
-    option (google.api.http).get = "/UnUniFi/derivatives/liquidity-providers/real-apy";
+    option (google.api.http).get = "/ununifi/derivatives/liquidity-providers/real-apy";
   }
 
   rpc LiquidityProviderTokenNominalAPY(QueryLiquidityProviderTokenNominalAPYRequest) returns (QueryLiquidityProviderTokenNominalAPYResponse) {
-    option (google.api.http).get = "/UnUniFi/derivatives/liquidity-providers/nominal-apy";
+    option (google.api.http).get = "/ununifi/derivatives/liquidity-providers/nominal-apy";
   }
 
   rpc Positions(QueryPositionsRequest) returns (QueryPositionsResponse) {
-    option (google.api.http).get = "/UnUniFi/derivatives/positions/{address}";
+    option (google.api.http).get = "/ununifi/derivatives/positions/{address}";
   }
 }
 
