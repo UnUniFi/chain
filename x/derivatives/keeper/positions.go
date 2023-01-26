@@ -129,6 +129,23 @@ func (k Keeper) GetClosedPositionPrice(ctx sdk.Context, positionId uint64) pftyp
 	return price
 }
 
+func (k Keeper) SaveDepositedMargin(ctx sdk.Context, positionId uint64, margin sdk.Coin) {
+	store := ctx.KVStore(k.storeKey)
+
+	bz := k.cdc.MustMarshal(&margin)
+	store.Set(types.DepositedPositionMarginKeyPrefix(positionId), bz)
+}
+
+func (k Keeper) GetDepositedMargin(ctx sdk.Context, positionId uint64) sdk.Coin {
+	store := ctx.KVStore(k.storeKey)
+
+	margin := sdk.Coin{}
+	bz := store.Get(types.DepositedPositionMarginKeyPrefix(positionId))
+	k.cdc.MustUnmarshal(bz, &margin)
+
+	return margin
+}
+
 func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
 	sender := msg.Sender.AccAddress()
 	lastPositionId := k.GetLastPositionId(ctx)
@@ -150,7 +167,7 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 	}
 	switch position.(type) {
 	case *types.PerpetualFuturesPosition:
-		return k.OpenPerpetualFuturesPosition(ctx, msg.Sender.AccAddress(), lastPositionId, position.(*types.PerpetualFuturesPosition))
+		return k.OpenPerpetualFuturesPosition(ctx, msg.Sender.AccAddress(), lastPositionId, msg.Margin, position.(*types.PerpetualFuturesPosition))
 	case *types.PerpetualOptionsPosition:
 		return k.OpenPerpetualOptionsPosition(ctx, msg.Sender.AccAddress(), position.(*types.PerpetualOptionsPosition))
 	}

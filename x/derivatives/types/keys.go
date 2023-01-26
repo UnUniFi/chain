@@ -46,6 +46,8 @@ const (
 	KeyPrefixLPTokenSupplySnapshot = "lpt_supply_snapshot"
 	KeyPrefixPositionPrice         = "position_price"
 	KeyPrefixClosedPositionPrice   = "closed_position_price"
+	KeyPrefixPositionMargin        = "position_margin"
+	KeyPrefixImaginaryFundingRate  = "imaginary_funding_rate"
 )
 
 const (
@@ -120,4 +122,8 @@ func OpenPositionPriceKeyPrefix(posId uint64) []byte {
 
 func ClosedPositionPriceKeyPrefix(posId uint64) []byte {
 	return append([]byte(KeyPrefixClosedPositionPrice), GetPositionIdBytes(posId)...)
+}
+
+func DepositedPositionMarginKeyPrefix(posId uint64) []byte {
+	return append([]byte(KeyPrefixPositionMargin), GetPositionIdBytes(posId)...)
 }

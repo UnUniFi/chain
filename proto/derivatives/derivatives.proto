@@ -119,4 +119,19 @@ message Params {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
+  string margin_maintenance_rate = 7 [
+    (gogoproto.moretags) = "yaml:\"margin_maintenance_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string imaginary_funding_rate_commission_rate = 8 [
+    (gogoproto.moretags) = "yaml:\"imaginary_funding_rate_commission_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string funding_rate_proportonal_coefficient = 9 [
+    (gogoproto.moretags) = "yaml:\"funding_rate_proportonal_coefficient\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }

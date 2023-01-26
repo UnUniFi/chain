@@ -8,13 +8,14 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
-func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAddress, positionId uint64, position *types.PerpetualFuturesPosition) error {
+func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, address sdk.AccAddress, positionId uint64, margin sdk.Coin, position *types.PerpetualFuturesPosition) error {
 	price, err := k.GetAssetPrice(ctx, position.Denom)
 	if err != nil {
 		return err
 	}
 
 	// TODO: levy margin (principal, collateral)
+	k.SaveDepositedMargin(ctx, positionId, margin)
 
 	k.SaveOpenPositionPrice(ctx, positionId, price)
 

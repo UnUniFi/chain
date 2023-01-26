@@ -193,6 +193,22 @@ func (k Keeper) GetPrice(ctx sdk.Context, marketId string) (pftypes.CurrentPrice
 	return k.pricefeedKeeper.GetCurrentPrice(ctx, marketId)
 }
 
+func (k Keeper) GetImaginaryFundingRate(ctx sdk.Context) sdk.Dec {
+	store := ctx.KVStore(k.storeKey)
+
+	bz := store.Get([]byte(types.KeyPrefixImaginaryFundingRate))
+	fundingRate := sdk.MustNewDecFromStr(string(bz))
+
+	return fundingRate
+}
+
+func (k Keeper) SetImaginaryFundingRate(ctx sdk.Context, fundingRate sdk.Dec) {
+	store := ctx.KVStore(k.storeKey)
+	bz := []byte(fundingRate.String())
+
+	store.Set([]byte(types.KeyPrefixImaginaryFundingRate), bz)
+}
+
 func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLiquidityProviderToken) error {
 	depositor := msg.Sender.AccAddress()
 	depositData := sdk.Coin{
