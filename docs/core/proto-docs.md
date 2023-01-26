@@ -1691,10 +1691,10 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#ununifi.derivatives.QueryParamsRequest) | [QueryParamsResponse](#ununifi.derivatives.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/UnUniFi/derivatives/params|
-| `LiquidityProviderTokenRealAPY` | [QueryLiquidityProviderTokenRealAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenRealAPYRequest) | [QueryLiquidityProviderTokenRealAPYResponse](#ununifi.derivatives.QueryLiquidityProviderTokenRealAPYResponse) | this line is used by starport scaffolding # 2 | GET|/UnUniFi/derivatives/liquidity-providers/real-apy|
-| `LiquidityProviderTokenNominalAPY` | [QueryLiquidityProviderTokenNominalAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYRequest) | [QueryLiquidityProviderTokenNominalAPYResponse](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYResponse) |  | GET|/UnUniFi/derivatives/liquidity-providers/nominal-apy|
-| `Positions` | [QueryPositionsRequest](#ununifi.derivatives.QueryPositionsRequest) | [QueryPositionsResponse](#ununifi.derivatives.QueryPositionsResponse) |  | GET|/UnUniFi/derivatives/positions/{address}|
+| `Params` | [QueryParamsRequest](#ununifi.derivatives.QueryParamsRequest) | [QueryParamsResponse](#ununifi.derivatives.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/ununifi/derivatives/params|
+| `LiquidityProviderTokenRealAPY` | [QueryLiquidityProviderTokenRealAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenRealAPYRequest) | [QueryLiquidityProviderTokenRealAPYResponse](#ununifi.derivatives.QueryLiquidityProviderTokenRealAPYResponse) | this line is used by starport scaffolding # 2 | GET|/ununifi/derivatives/liquidity-providers/real-apy|
+| `LiquidityProviderTokenNominalAPY` | [QueryLiquidityProviderTokenNominalAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYRequest) | [QueryLiquidityProviderTokenNominalAPYResponse](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYResponse) |  | GET|/ununifi/derivatives/liquidity-providers/nominal-apy|
+| `Positions` | [QueryPositionsRequest](#ununifi.derivatives.QueryPositionsRequest) | [QueryPositionsResponse](#ununifi.derivatives.QueryPositionsResponse) |  | GET|/ununifi/derivatives/positions/{address}|
 
  <!-- end services -->
 
