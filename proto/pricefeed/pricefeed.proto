@@ -57,8 +57,8 @@ message Params {
     (gogoproto.moretags) = "yaml:\"markets\"",
     (gogoproto.nullable) = false
   ];
-  repeated DenomPair denom_pairs = 2 [
-    (gogoproto.moretags) = "yaml:\"denom_pairs\"",
+  repeated DenomTickerPair denom_ticker_pairs = 2 [
+    (gogoproto.moretags) = "yaml:\"denom_ticker_pairs\"",
     (gogoproto.nullable) = false
   ];
 }
