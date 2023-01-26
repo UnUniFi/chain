@@ -27,12 +27,12 @@ func UnpackPerpetualFuturesPosition(positionAny *types.Any) (PositionI, error) {
 	return nil, nil
 }
 
-func UnpackPerpetualFuturesOpenedPosition(positionAny *types.Any) (OpenedPositionI, error) {
+func UnpackPerpetualFuturesOpenedPosition(positionAny *types.Any) (*PerpetualFuturesOpenedPosition, error) {
 	if positionAny == nil {
 		return nil, fmt.Errorf("this Any is nil")
 	}
 	if positionAny.TypeUrl == "/"+proto.MessageName(&PerpetualFuturesOpenedPosition{}) {
-		var position PerpetualFuturesPosition
+		var position PerpetualFuturesOpenedPosition
 		position.Unmarshal(positionAny.Value)
 		return &position, nil
 	}
@@ -40,12 +40,12 @@ func UnpackPerpetualFuturesOpenedPosition(positionAny *types.Any) (OpenedPositio
 	return nil, nil
 }
 
-func UnpackPerpetualFuturesClosedPosition(positionAny *types.Any) (ClosedPositionI, error) {
+func UnpackPerpetualFuturesClosedPosition(positionAny *types.Any) (*PerpetualFuturesClosedPosition, error) {
 	if positionAny == nil {
 		return nil, fmt.Errorf("this Any is nil")
 	}
 	if positionAny.TypeUrl == "/"+proto.MessageName(&PerpetualFuturesClosedPosition{}) {
-		var position PerpetualFuturesPosition
+		var position PerpetualFuturesClosedPosition
 		position.Unmarshal(positionAny.Value)
 		return &position, nil
 	}

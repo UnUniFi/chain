@@ -118,25 +118,15 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 	k.SatRemainingMargin(ctx, positionId, msg.Margin)
 
 	// TODO: need to be refactored
-	wrappedPosition := types.OpenedPosition{
-		Id:       string(positionKey),
-		Address:  msg.Sender,
-		OpenedAt: *timestamppb.New(ctx.BlockTime()),
-		Position: nil,
-	}
-
-	k.CreateOpenedPosition(ctx, wrappedPosition)
-
-	// TODO: need to be refactored
-	position, err := types.UnpackOpenedPosition(&msg.Position)
+	position, err := types.UnpackPosition(&msg.Position)
 	if err != nil {
 		return err
 	}
 	switch position.(type) {
 	case *types.PerpetualFuturesPosition:
-		return k.OpenPerpetualFuturesPosition(ctx, msg.Sender.AccAddress(), lastPositionId, position.(*types.PerpetualFuturesPosition))
+		return k.OpenPerpetualFuturesPosition(ctx, positionId, msg.Sender.AccAddress(), position.(*types.PerpetualFuturesPosition))
 	case *types.PerpetualOptionsPosition:
-		return k.OpenPerpetualOptionsPosition(ctx, msg.Sender.AccAddress(), position.(*types.PerpetualOptionsPosition))
+		return k.OpenPerpetualOptionsPosition(ctx, positionId, msg.Sender.AccAddress(), position.(*types.PerpetualOptionsPosition))
 	}
 
 	k.IncreaseLastPositionId(ctx)
@@ -146,31 +136,23 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 
 func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) error {
 	positionId := msg.PositionId
-	OpenedPosition := k.GetIdAddressOpenedPosition(ctx, msg.Sender.AccAddress(), positionId)
+	openedPosition := k.GetIdAddressOpenedPosition(ctx, msg.Sender.AccAddress(), positionId)
 
-	if msg.Sender.AccAddress().String() != OpenedPosition.Address.AccAddress().String() {
+	if msg.Sender.AccAddress().String() != openedPosition.Address.AccAddress().String() {
 		return nil // TODO: return error
 	}
 
 	k.DeleteOpenedPosition(ctx, msg.Sender.AccAddress(), positionId)
 
-	closedPosition := types.ClosedPosition{
-		Id: positionId,
-		// TODO:
-	}
-
-	k.CreateClosedPosition(ctx, closedPosition)
-
-	// TODO: need to be refactored
-	position, err := types.UnpackOpenedPosition(&OpenedPosition.Position)
+	position, err := types.UnpackOpenedPosition(&openedPosition.Position)
 	if err != nil {
 		return err
 	}
 	switch position.(type) {
 	case *types.PerpetualFuturesPosition:
-		return k.ClosePerpetualFuturesPosition(ctx, closedPosition, position.(*types.PerpetualFuturesClosedPosition))
+		return k.ClosePerpetualFuturesPosition(ctx, openedPosition, position.(*types.PerpetualFuturesOpenedPosition))
 	case *types.PerpetualOptionsPosition:
-		return k.ClosePerpetualOptionsPosition(ctx, closedPosition, position.(*types.PerpetualOptionsClosedPosition))
+		return k.ClosePerpetualOptionsPosition(ctx, openedPosition, position.(*types.PerpetualOptionsOpenedPosition))
 	}
 
 	return nil

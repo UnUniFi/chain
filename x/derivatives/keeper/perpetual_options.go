@@ -11,10 +11,10 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
-func (k Keeper) OpenPerpetualOptionsPosition(ctx sdk.Context, openedPosition types.OpenedPosition, positionInstance *types.PerpetualOptionsOpenedPosition) error {
+func (k Keeper) OpenPerpetualOptionsPosition(ctx sdk.Context, positionId string, sender sdk.AccAddress, positionInstance *types.PerpetualOptionsPosition) error {
 	return nil
 }
 
-func (k Keeper) ClosePerpetualOptionsPosition(ctx sdk.Context, closedPosition types.ClosedPosition, positionInstance *types.PerpetualOptionsClosedPosition) error {
+func (k Keeper) ClosePerpetualOptionsPosition(ctx sdk.Context, openedPosition types.OpenedPosition, positionInstance *types.PerpetualOptionsOpenedPosition) error {
 	return nil
 }
