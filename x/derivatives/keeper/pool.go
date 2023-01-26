@@ -139,7 +139,10 @@ func (k Keeper) SetLPTokenSupplySnapshot(ctx sdk.Context, height int64, supply s
 
 func (k Keeper) GetLPTPriceMarketQuoteDenom(ctx sdk.Context) string {
 	internalQuoteDenom := k.GetParams(ctx).LptPriceQuoteDenom
-	marketQuoteDenom := k.pricefeedKeeper.GetMarketDenom(ctx, internalQuoteDenom)
+	marketQuoteDenom, err := k.pricefeedKeeper.GetMarketDenom(ctx, internalQuoteDenom)
+	if err != nil {
+		panic("not able to get market quote denom")
+	}
 
 	return marketQuoteDenom
 }

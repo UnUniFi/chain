@@ -30,8 +30,7 @@ type BankKeeper interface {
 type PricefeedKeeper interface {
 	GetCurrentPrice(sdk.Context, string) (pftypes.CurrentPrice, error)
 	GetParams(sdk.Context) pftypes.Params
-	GetMarketDenom(ctx sdk.Context, internalDenom string) string
+	GetMarketDenom(ctx sdk.Context, internalDenom string) (string, error)
 	// These are used for testing TODO replace mockApp with keeper in tests to remove these
 	SetParams(sdk.Context, pftypes.Params)
-	SetCurrentPrice(sdk.Context, string, pftypes.CurrentPrice) error
 }
