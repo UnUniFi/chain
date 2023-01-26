@@ -1313,8 +1313,7 @@ Query defines the gRPC querier service.
 | `borrowing_fee_rate_per_hour` | [string](#string) |  |  |
 | `commission_rate` | [string](#string) |  |  |
 | `margin_maintenance_rate` | [string](#string) |  |  |
-| `imaginary_funding_rate_commission_rate` | [string](#string) |  |  |
-| `funding_rate_proportonal_coefficient` | [string](#string) |  |  |
+| `funding_rate_proportional_coefficient` | [string](#string) |  |  |
 
 
 

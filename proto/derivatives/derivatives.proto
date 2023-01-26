@@ -124,12 +124,7 @@ message Params {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string imaginary_funding_rate_commission_rate = 8 [
-    (gogoproto.moretags) = "yaml:\"imaginary_funding_rate_commission_rate\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string funding_rate_proportonal_coefficient = 9 [
+  string funding_rate_proportional_coefficient = 8 [
     (gogoproto.moretags) = "yaml:\"funding_rate_proportonal_coefficient\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false

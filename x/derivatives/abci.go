@@ -19,12 +19,14 @@ func levyImaginaryFundingRateAndLiquidateInsufficientMarginPositions(ctx sdk.Con
 	params := k.GetParams(ctx)
 	wrappedPositions := k.GetAllPositions(ctx)
 	assets := k.GetPoolAssets(ctx)
+	fundingRateProportionalCoefficient := params.FundingRateProportionalCoefficient
+	commissionRate := params.CommissionRate
 
 	imaginaryFundingRates := make(map[string]sdk.Dec)
 
 	for _, asset := range assets {
 		netPosition := k.GetPerpetualFuturesNetPositionOfDenom(ctx, asset.Denom)
-		imaginaryFundingRate := netPosition.Mul(params.FundingRateProportonalCoefficient).Quo(sdk.NewDecWithPrec(1, 0))
+		imaginaryFundingRate := netPosition.Mul(fundingRateProportionalCoefficient)
 		imaginaryFundingRates[asset.Denom] = imaginaryFundingRate
 	}
 
@@ -39,25 +41,23 @@ func levyImaginaryFundingRateAndLiquidateInsufficientMarginPositions(ctx sdk.Con
 		case *types.PerpetualFuturesPosition:
 			futuresPosition := position.(*types.PerpetualFuturesPosition)
 			depositedMargin := k.GetDepositedMargin(ctx, positionId)
-			// TODO: do I need to calculated from imaginary funding rate?
-			fundingRateFee := sdk.NewDecFromInt(depositedMargin.Amount).Mul(params.ImaginaryFundingRateCommissionRate).Quo(sdk.NewDecWithPrec(1, 0)).RoundInt()
-
-			depositedMargin.Amount = depositedMargin.Amount.Sub(fundingRateFee)
+			imaginaryFundingRate := imaginaryFundingRates[futuresPosition.Denom]
+			imaginaryFundingFee := sdk.NewDecFromInt(depositedMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
+			commissionFee := sdk.NewDecFromInt(depositedMargin.Amount).Mul(commissionRate).RoundInt()
 
 			principal := types.CalculatePrincipal(*futuresPosition)
-			imaginaryFundingRate := imaginaryFundingRates[futuresPosition.Denom]
 
 			if imaginaryFundingRate.IsNegative() {
 				if futuresPosition.PositionType == types.PositionType_SHORT {
-					depositedMargin.Amount = depositedMargin.Amount.Sub(imaginaryFundingRate.RoundInt())
+					depositedMargin.Amount = depositedMargin.Amount.Sub(imaginaryFundingFee)
 				} else {
-					depositedMargin.Amount = depositedMargin.Amount.Add(imaginaryFundingRate.RoundInt()).Sub(fundingRateFee)
+					depositedMargin.Amount = depositedMargin.Amount.Add(imaginaryFundingFee.Sub(commissionFee))
 				}
 			} else {
 				if futuresPosition.PositionType == types.PositionType_LONG {
-					depositedMargin.Amount = depositedMargin.Amount.Sub(imaginaryFundingRate.RoundInt())
+					depositedMargin.Amount = depositedMargin.Amount.Sub(imaginaryFundingFee)
 				} else {
-					depositedMargin.Amount = depositedMargin.Amount.Add(imaginaryFundingRate.RoundInt()).Sub(fundingRateFee)
+					depositedMargin.Amount = depositedMargin.Amount.Add(imaginaryFundingFee.Sub(commissionFee))
 				}
 			}
 
