@@ -400,13 +400,13 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"UnUniFi", "derivatives", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"ununifi", "derivatives", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_LiquidityProviderTokenRealAPY_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"UnUniFi", "derivatives", "liquidity-providers", "real-apy"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_LiquidityProviderTokenRealAPY_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"ununifi", "derivatives", "liquidity-providers", "real-apy"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_LiquidityProviderTokenNominalAPY_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"UnUniFi", "derivatives", "liquidity-providers", "nominal-apy"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_LiquidityProviderTokenNominalAPY_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"ununifi", "derivatives", "liquidity-providers", "nominal-apy"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Positions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"UnUniFi", "derivatives", "positions", "address"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Positions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"ununifi", "derivatives", "positions", "address"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (
