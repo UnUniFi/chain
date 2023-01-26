@@ -226,7 +226,6 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 		return err
 	}
 
-	marketQuoteDenom := k.GetLPTPriceMarketQuoteDenom(ctx)
 	assetMc := price.Price.Mul(sdk.Dec(msg.Amount.Amount))
 
 	// currently mint to module and need to send it to msg.sender
@@ -234,19 +233,6 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 	if currentSupply.Amount.IsZero() {
 		// first deposit should mint 1 token
 		k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(types.LiquidityProviderTokenDenom, math.Int(sdk.NewDecWithPrec(1000000, 0)))})
-		breakdowns := []types.PoolMarketCap_Breakdown{}
-		breakdowns = append(breakdowns, types.PoolMarketCap_Breakdown{
-			Denom:  msg.Amount.Denom,
-			Amount: msg.Amount.Amount,
-			Price:  price.Price,
-		})
-
-		// TODO: remove this. The EndBlocker works this role
-		k.SetPoolMarketCapSnapshot(ctx, ctx.BlockHeight(), types.PoolMarketCap{
-			Total:      assetMc,
-			QuoteDenom: marketQuoteDenom,
-			Breakdown:  breakdowns,
-		})
 	} else {
 		dlpPrice := k.GetLPTokenPrice(ctx)
 

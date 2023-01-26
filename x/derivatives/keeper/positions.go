@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"time"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
@@ -155,7 +153,7 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 	wrappedPosition := types.WrappedPosition{
 		Id:       string(positionKey),
 		Address:  msg.Sender,
-		StartAt:  *timestamppb.New(time.Now()), // TODO
+		StartAt:  *timestamppb.New(ctx.BlockTime()),
 		Position: msg.Position,
 	}
 
