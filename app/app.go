@@ -113,6 +113,8 @@ import (
 	"github.com/UnUniFi/chain/x/cdp"
 	cdpkeeper "github.com/UnUniFi/chain/x/cdp/keeper"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
+	derivativestypes "github.com/UnUniFi/chain/x/derivatives/types"
 	ecosystemincentive "github.com/UnUniFi/chain/x/ecosystem-incentive"
 	ecosystemincentivekeeper "github.com/UnUniFi/chain/x/ecosystem-incentive/keeper"
 	ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystem-incentive/types"
@@ -323,6 +325,7 @@ type App struct {
 	pricefeedKeeper          pricefeedkeeper.Keeper
 	NftmintKeeper            nftmintkeeper.Keeper
 	NftmarketKeeper          nftmarketkeeper.Keeper
+	DerivativesKeeper        derivativeskeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -596,6 +599,15 @@ func NewApp(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.NFTKeeper,
+	)
+
+	app.DerivativesKeeper = derivativeskeeper.NewKeeper(
+		appCodec,
+		keys[derivativestypes.StoreKey],
+		keys[derivativestypes.MemStoreKey],
+		app.GetSubspace(derivativestypes.ModuleName),
+		app.BankKeeper,
+		app.pricefeedKeeper,
 	)
 
 	// create Keeper objects which have Hooks

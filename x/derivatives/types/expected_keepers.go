@@ -35,5 +35,4 @@ type PricefeedKeeper interface {
 	GetMarketIdFromDenom(ctx sdk.Context, lhsDenom string, rhsDenom string) (string, error)
 	// These are used for testing TODO replace mockApp with keeper in tests to remove these
 	SetParams(sdk.Context, pftypes.Params)
-	SetCurrentPrice(sdk.Context, string, pftypes.CurrentPrice) error
 }
