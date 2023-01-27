@@ -30,7 +30,8 @@ message Position {
   ];
   google.protobuf.Timestamp opened_at = 4 [
     (gogoproto.moretags) = "yaml:\"opened_at\"",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
   ];
   uint64 opened_height = 5 [
     (gogoproto.moretags) = "yaml:\"opened_height\""

@@ -209,10 +209,10 @@ func (k Keeper) ReportLiquidationNeededPosition(ctx sdk.Context, msg *types.MsgR
 
 	switch positionInstance.(type) {
 	case *types.PerpetualFuturesPositionInstance:
-		err = k.ReportLiquidationNeededPerpetualFuturesPosition(ctx, remainingMargin, *position, *positionInstance.(*types.PerpetualFuturesPositionInstance))
+		err = k.ReportLiquidationNeededPerpetualFuturesPosition(ctx, msg.RewardRecipient, remainingMargin, *position, *positionInstance.(*types.PerpetualFuturesPositionInstance))
 		break
 	case *types.PerpetualOptionsPositionInstance:
-		err = k.ReportLiquidationNeededPerpetualOptionsPosition(ctx, remainingMargin, *position, *positionInstance.(*types.PerpetualOptionsPositionInstance))
+		err = k.ReportLiquidationNeededPerpetualOptionsPosition(ctx, msg.RewardRecipient, remainingMargin, *position, *positionInstance.(*types.PerpetualOptionsPositionInstance))
 		break
 	default:
 		panic("")

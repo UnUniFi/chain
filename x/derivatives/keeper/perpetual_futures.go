@@ -6,7 +6,6 @@ import (
 	ununifiTypes "github.com/UnUniFi/chain/types"
 	codecTypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
@@ -24,7 +23,7 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 	position := types.Position{
 		Id:               positionId,
 		Address:          sender,
-		OpenedAt:         *timestamppb.New(ctx.BlockTime()),
+		OpenedAt:         ctx.BlockTime(),
 		OpenedHeight:     uint64(ctx.BlockHeight()),
 		OpenedRate:       *openedRate,
 		PositionInstance: *any,

@@ -19,6 +19,6 @@ func (k Keeper) OpenPerpetualOptionsPosition(ctx sdk.Context, positionId string,
 func (k Keeper) ClosePerpetualOptionsPosition(ctx sdk.Context, position types.Position, positionInstance types.PerpetualOptionsPositionInstance) error {
 	return nil
 }
-func (k Keeper) ReportLiquidationNeededPerpetualOptionsPosition(ctx sdk.Context, remainingMargin sdk.Coin, position types.Position, positionInstance types.PerpetualOptionsPositionInstance) error {
+func (k Keeper) ReportLiquidationNeededPerpetualOptionsPosition(ctx sdk.Context, rewardRecipient ununifiTypes.StringAccAddress, remainingMargin sdk.Coin, position types.Position, positionInstance types.PerpetualOptionsPositionInstance) error {
 	return nil
 }

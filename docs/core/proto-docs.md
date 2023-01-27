@@ -2049,6 +2049,7 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  |  |
 | `position_id` | [string](#string) |  |  |
+| `reward_recipient` | [string](#string) |  |  |
 
 
 

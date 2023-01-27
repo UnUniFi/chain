@@ -200,8 +200,7 @@ message QueryAllPositionsResponse {
 
 message QueryAddressPositionsRequest {
   string address = 1 [
-    (gogoproto.moretags)  = "yaml:\"address\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress"
+    (gogoproto.moretags)  = "yaml:\"address\""
   ];
 }
 
