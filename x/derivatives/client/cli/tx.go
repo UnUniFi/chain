@@ -49,14 +49,14 @@ func GetTxCmd() *cobra.Command {
 
 func CmdMintLiquidityProviderToken() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint-lpt",
+		Use:   "mint-lpt [amount]",
 		Short: "mint liquidity provider token",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`mint liquidity provider token.
 Example:
 $ %s tx %s mint-lpt --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(3),
+		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -65,8 +65,14 @@ $ %s tx %s mint-lpt --from myKeyName --chain-id ununifi-x
 
 			sender := clientCtx.GetFromAddress()
 
+			amount, err := sdk.ParseCoinNormalized(args[0])
+			if err != nil {
+				return err
+			}
+
 			msg := types.MsgMintLiquidityProviderToken{
 				Sender: ununifiType.StringAccAddress(sender),
+				Amount: amount,
 			}
 
 			if err := msg.ValidateBasic(); err != nil {
@@ -82,14 +88,14 @@ $ %s tx %s mint-lpt --from myKeyName --chain-id ununifi-x
 
 func CmdBurnLiquidityProviderToken() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn-lpt",
+		Use:   "burn-lpt [amount]",
 		Short: "burn liquidity provider token",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`burn liquidity provider token.
 Example:
 $ %s tx %s burn-lpt --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(3),
+		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -97,9 +103,14 @@ $ %s tx %s burn-lpt --from myKeyName --chain-id ununifi-x
 			}
 
 			sender := clientCtx.GetFromAddress()
+			amount, ok := sdk.NewIntFromString(args[0])
+			if !ok {
+				return fmt.Errorf("invalid amount")
+			}
 
 			msg := types.MsgBurnLiquidityProviderToken{
 				Sender: ununifiType.StringAccAddress(sender),
+				Amount: amount,
 			}
 
 			if err := msg.ValidateBasic(); err != nil {
@@ -235,7 +246,7 @@ func CmdReportLiquidationNeededPosition() *cobra.Command {
 		Use:   "report-liquidation",
 		Short: "report liquidation needed position",
 		Long: strings.TrimSpace(
-			fmt.Sprintf(`close position.
+			fmt.Sprintf(`report liquidation needed position.
 Example:
 $ %s tx %s report-liquidation --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),

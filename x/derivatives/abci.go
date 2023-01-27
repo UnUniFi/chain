@@ -10,16 +10,14 @@ import (
 func levyImaginaryFundingRate(ctx sdk.Context, k keeper.Keeper) {
 	params := k.GetParams(ctx)
 	positions := k.GetAllPositions(ctx)
-	assets := k.GetPoolAssets(ctx)
-	fundingRateProportionalCoefficient := params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient
-	commissionRate := params.PerpetualFutures.CommissionRate
 
-	imaginaryFundingRates := make(map[types.Market]sdk.Dec)
+	perpetualFuturesMarkets := params.PerpetualFutures.Markets
+	perpetualFuturesImaginaryFundingRates := make(map[types.Market]sdk.Dec)
 
-	for _, asset := range assets {
-		netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, asset.Denom)
-		imaginaryFundingRate := netPosition.Mul(fundingRateProportionalCoefficient)
-		imaginaryFundingRates[asset.Denom] = imaginaryFundingRate
+	for _, perpetualFuturesMarket := range perpetualFuturesMarkets {
+		netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, perpetualFuturesMarket)
+		imaginaryFundingRate := netPosition.Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
+		perpetualFuturesImaginaryFundingRates[perpetualFuturesMarket] = imaginaryFundingRate
 	}
 
 	for _, position := range positions {
@@ -32,9 +30,9 @@ func levyImaginaryFundingRate(ctx sdk.Context, k keeper.Keeper) {
 		case *types.PerpetualFuturesPositionInstance:
 			futuresPosition := positionInstance.(*types.PerpetualFuturesPositionInstance)
 			remainingMargin := *k.GetRemainingMargin(ctx, position.Id)
-			imaginaryFundingRate := imaginaryFundingRates[position.Market]
+			imaginaryFundingRate := perpetualFuturesImaginaryFundingRates[position.Market]
 			imaginaryFundingFee := sdk.NewDecFromInt(remainingMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
-			commissionFee := sdk.NewDecFromInt(remainingMargin.Amount).Mul(commissionRate).RoundInt()
+			commissionFee := sdk.NewDecFromInt(remainingMargin.Amount).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
 
 			if imaginaryFundingRate.IsNegative() {
 				if futuresPosition.PositionType == types.PositionType_SHORT {

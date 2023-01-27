@@ -11,7 +11,10 @@ var _ PositionInstance = (*PerpetualFuturesPositionInstance)(nil)
 func UnpackPerpetualFuturesPositionInstance(positionAny types.Any) PositionInstance {
 	if positionAny.TypeUrl == "/"+proto.MessageName(&PerpetualFuturesPositionInstance{}) {
 		var position PerpetualFuturesPositionInstance
-		position.Unmarshal(positionAny.Value)
+		err := position.Unmarshal(positionAny.Value)
+		if err != nil {
+			return nil
+		}
 		return &position
 	}
 
