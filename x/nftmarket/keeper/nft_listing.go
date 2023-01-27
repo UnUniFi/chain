@@ -434,13 +434,18 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 		return types.ErrListingNeedsToBeBiddingStatus
 	}
 
+	bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
+	if len(bids) == 0 {
+		// no bids
+		return types.ErrNotExistsBid
+	}
+
 	params := k.GetParamSet(ctx)
 	listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
 	listing.State = types.ListingState_SELLING_DECISION
 	k.SaveNftListing(ctx, listing)
 
 	// automatic payment if enabled
-	bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
 	if len(bids) > 0 {
 		winnerIndex := len(bids) - 1
 		bid := bids[winnerIndex]

@@ -37,4 +37,5 @@ var (
 	ErrCannotParseDec                    = sdkerrors.Register(ModuleName, 30, "cannot parse decimal")
 	ErrNotEnoughDeposit                  = sdkerrors.Register(ModuleName, 31, "not enough deposit")
 	ErrBidParamInvalid                   = sdkerrors.Register(ModuleName, 32, "bid param invalid")
+	ErrNotExistsBid                      = sdkerrors.Register(ModuleName, 33, "not exists bid")
 )
