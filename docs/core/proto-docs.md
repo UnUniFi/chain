@@ -112,10 +112,12 @@
     - [EventExpandListingPeriod](#ununifi.nftmarket.EventExpandListingPeriod)
     - [EventLiquidate](#ununifi.nftmarket.EventLiquidate)
     - [EventListNft](#ununifi.nftmarket.EventListNft)
+    - [EventNftlistingDeleted](#ununifi.nftmarket.EventNftlistingDeleted)
     - [EventPayFullBid](#ununifi.nftmarket.EventPayFullBid)
     - [EventPlaceBid](#ununifi.nftmarket.EventPlaceBid)
     - [EventRepay](#ununifi.nftmarket.EventRepay)
     - [EventSellingDecision](#ununifi.nftmarket.EventSellingDecision)
+    - [KeyDataForPoC2](#ununifi.nftmarket.KeyDataForPoC2)
     - [Liquidation](#ununifi.nftmarket.Liquidation)
     - [Liquidations](#ununifi.nftmarket.Liquidations)
     - [ListedClass](#ununifi.nftmarket.ListedClass)
@@ -1559,6 +1561,7 @@ Query defines the gRPC querier service.
 | `class_id` | [string](#string) |  |  |
 | `nft_id` | [string](#string) |  |  |
 | `amount` | [string](#string) |  |  |
+| `block_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | below properties are only for the poc |
 
 
 
@@ -1661,6 +1664,28 @@ Query defines the gRPC querier service.
 | `owner` | [string](#string) |  |  |
 | `class_id` | [string](#string) |  |  |
 | `nft_id` | [string](#string) |  |  |
+| `started_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | below properties are only for the poc |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.EventNftlistingDeleted"></a>
+
+### EventNftlistingDeleted
+EventNftlistingDeleted is an event emitted when a nft listing is deleted
+this is for the poc, but this can be used in the real case, I guess
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+| `started_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `end_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `borrowing_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -1696,6 +1721,8 @@ Query defines the gRPC querier service.
 | `class_id` | [string](#string) |  |  |
 | `nft_id` | [string](#string) |  |  |
 | `amount` | [string](#string) |  |  |
+| `max_borrowable_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | below properties are only for the poc |
+| `block_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 
 
 
@@ -1731,6 +1758,29 @@ Query defines the gRPC querier service.
 | `owner` | [string](#string) |  |  |
 | `class_id` | [string](#string) |  |  |
 | `nft_id` | [string](#string) |  |  |
+| `selling_price` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.KeyDataForPoC2"></a>
+
+### KeyDataForPoC2
+for poc2 to track the key data related to the financial function
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+| `started_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `end_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `listed_duration_in_seconds` | [int64](#int64) |  |  |
+| `max_borrowable_amount_in_listing_period` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `total_borrowed_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `total_bid_count` | [uint64](#uint64) |  |  |
+| `lister` | [string](#string) |  |  |
 
 
 
@@ -2014,6 +2064,9 @@ GenesisState defines the nftmarket module's genesis state.
 | `bids` | [NftBid](#ununifi.nftmarket.NftBid) | repeated |  |
 | `cancelled_bids` | [NftBid](#ununifi.nftmarket.NftBid) | repeated |  |
 | `loans` | [Loan](#ununifi.nftmarket.Loan) | repeated |  |
+| `key_data_for_poc2_list` | [KeyDataForPoC2](#ununifi.nftmarket.KeyDataForPoC2) | repeated | ----- PoC2 -----
+
+---------------- |
 
 
 

@@ -182,6 +182,7 @@ message EventSellingDecision {
   string owner    = 1;
   string class_id = 2;
   string nft_id   = 3;
+  cosmos.base.v1beta1.Coin selling_price = 4 [(gogoproto.nullable) = true];
 }
 
 message EventEndListNfting {

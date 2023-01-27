@@ -439,11 +439,13 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 	listing.State = types.ListingState_SELLING_DECISION
 	k.SaveNftListing(ctx, listing)
 
+	var winnerBid *types.NftBid
 	// automatic payment if enabled
 	bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
 	if len(bids) > 0 {
 		winnerIndex := len(bids) - 1
 		bid := bids[winnerIndex]
+		winnerBid = &bid
 		if bid.AutomaticPayment {
 			bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
 			if err != nil {
@@ -466,9 +468,10 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 
 	// Emit event for nft listing end
 	ctx.EventManager().EmitTypedEvent(&types.EventSellingDecision{
-		Owner:   msg.Sender.AccAddress().String(),
-		ClassId: msg.NftId.ClassId,
-		NftId:   msg.NftId.NftId,
+		Owner:        msg.Sender.AccAddress().String(),
+		ClassId:      msg.NftId.ClassId,
+		NftId:        msg.NftId.NftId,
+		SellingPrice: &winnerBid.BidAmount,
 	})
 
 	return nil
