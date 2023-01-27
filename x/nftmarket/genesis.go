@@ -22,6 +22,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKe
 	for _, loan := range gs.Loans {
 		k.SetDebt(ctx, loan)
 	}
+
+	for _, keyData := range gs.KeyDataForPoc2List {
+		k.SetKeyDataForPoC2(ctx, keyData)
+	}
 }
 
 // ExportGenesis export genesis state for nftmarket module
