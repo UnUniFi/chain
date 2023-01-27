@@ -58,3 +58,13 @@ func (k msgServer) ClosePosition(c context.Context, msg *types.MsgClosePosition)
 	}
 	return &types.MsgClosePositionResponse{}, nil
 }
+
+func (k msgServer) ReportLiquidationNeededPosition(c context.Context, msg *types.MsgReportLiquidationNeededPosition) (*types.MsgReportLiquidationNeededPositionResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	err := k.Keeper.ReportLiquidationNeededPosition(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+	return &types.MsgReportLiquidationNeededPositionResponse{}, nil
+}

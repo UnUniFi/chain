@@ -36,20 +36,20 @@ func (k Keeper) LiquidityProviderTokenNominalAPY(c context.Context, req *types.Q
 	return &types.QueryLiquidityProviderTokenNominalAPYResponse{Apy: &annualized}, nil
 }
 
-func (k Keeper) AllOpeningPositions(c context.Context, req *types.QueryAllOpeningPositionsRequest) (*types.QueryAllOpeningPositionsResponse, error) {
+func (k Keeper) AllPositions(c context.Context, req *types.QueryAllPositionsRequest) (*types.QueryAllPositionsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	positions := k.GetAllOpenedPositions(ctx)
+	positions := k.GetAllPositions(ctx)
 
-	return &types.QueryAllOpeningPositionsResponse{
+	return &types.QueryAllPositionsResponse{
 		Positions: positions,
 	}, nil
 }
 
-func (k Keeper) AddressOpeningPositions(c context.Context, req *types.QueryAddressOpeningPositionsRequest) (*types.QueryAddressOpeningPositionsResponse, error) {
+func (k Keeper) AddressPositions(c context.Context, req *types.QueryAddressPositionsRequest) (*types.QueryAddressPositionsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -59,40 +59,10 @@ func (k Keeper) AddressOpeningPositions(c context.Context, req *types.QueryAddre
 	if req.Address.AccAddress().String() == "" {
 		return nil, status.Error(codes.InvalidArgument, "invalid address")
 	}
-	positions := k.GetAddressOpenedPositions(ctx, req.Address.AccAddress())
+	positions := k.GetAddressPositions(ctx, req.Address.AccAddress())
 
-	return &types.QueryAddressOpeningPositionsResponse{
+	return &types.QueryAddressPositionsResponse{
 		Positions: positions,
-	}, nil
-}
-
-func (k Keeper) AddressClosedPositions(c context.Context, req *types.QueryAddressClosedPositionsRequest) (*types.QueryAddressClosedPositionsResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	// If address is empty, error should be emitted. It is better to prepare another query for all positions
-	if req.Address.AccAddress().String() == "" {
-		return nil, status.Error(codes.InvalidArgument, "invalid address")
-	}
-	positions := k.GetAddressClosedPositions(ctx, req.Address.AccAddress())
-
-	return &types.QueryAddressClosedPositionsResponse{
-		Positions: positions,
-	}, nil
-}
-
-func (k Keeper) ClosedPosition(c context.Context, req *types.QueryClosedPositionRequest) (*types.QueryClosedPositionResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	position := k.GetClosedPosition(ctx, req.Id)
-
-	return &types.QueryClosedPositionResponse{
-		Position: position,
 	}, nil
 }
 
@@ -118,7 +88,7 @@ func (k Keeper) PerpetualFutures(c context.Context, req *types.QueryPerpetualFut
 	}, nil
 }
 
-func (k Keeper) PerpetualFuturesPair(c context.Context, req *types.QueryPerpetualFuturesPairRequest) (*types.QueryPerpetualFuturesPairResponse, error) {
+func (k Keeper) PerpetualFuturesMarket(c context.Context, req *types.QueryPerpetualFuturesMarketRequest) (*types.QueryPerpetualFuturesMarketResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -132,7 +102,7 @@ func (k Keeper) PerpetualFuturesPair(c context.Context, req *types.QueryPerpetua
 	longPositions := sdk.NewDec(0)
 	shortPositions := sdk.NewDec(0)
 
-	return &types.QueryPerpetualFuturesPairResponse{
+	return &types.QueryPerpetualFuturesMarketResponse{
 		Price:              &price,
 		MetricsQuoteTicker: metricsQuoteTicker,
 		Volume_24Hours:     &volume24Hours,
@@ -153,7 +123,7 @@ func (k Keeper) PerpetualOptions(c context.Context, req *types.QueryPerpetualOpt
 	return &types.QueryPerpetualOptionsResponse{}, nil
 }
 
-func (k Keeper) PerpetualOptionsPair(c context.Context, req *types.QueryPerpetualOptionsPairRequest) (*types.QueryPerpetualOptionsPairResponse, error) {
+func (k Keeper) PerpetualOptionsMarket(c context.Context, req *types.QueryPerpetualOptionsMarketRequest) (*types.QueryPerpetualOptionsMarketResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -161,7 +131,7 @@ func (k Keeper) PerpetualOptionsPair(c context.Context, req *types.QueryPerpetua
 	ctx := sdk.UnwrapSDKContext(c)
 	// TODO: implement the handler logic
 
-	return &types.QueryPerpetualOptionsPairResponse{}, nil
+	return &types.QueryPerpetualOptionsMarketResponse{}, nil
 }
 
 func (k Keeper) Pool(c context.Context, req *types.QueryPoolRequest) (*types.QueryPoolResponse, error) {

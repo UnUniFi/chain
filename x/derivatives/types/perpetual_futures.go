@@ -1,58 +1,23 @@
 package types
 
 import (
-	"fmt"
-
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gogo/protobuf/proto"
 )
 
-var _ PositionI = (*PerpetualFuturesPosition)(nil)
-var _ OpenedPositionI = (*PerpetualFuturesOpenedPosition)(nil)
-var _ ClosedPositionI = (*PerpetualFuturesClosedPosition)(nil)
+var _ PositionInstance = (*PerpetualFuturesPositionInstance)(nil)
 
-type PerpetualFuturesPositions []PerpetualFuturesPosition
-
-func UnpackPerpetualFuturesPosition(positionAny *types.Any) (PositionI, error) {
-	if positionAny == nil {
-		return nil, fmt.Errorf("this Any is nil")
-	}
-	if positionAny.TypeUrl == "/"+proto.MessageName(&PerpetualFuturesPosition{}) {
-		var position PerpetualFuturesPosition
+func UnpackPerpetualFuturesPositionInstance(positionAny types.Any) PositionInstance {
+	if positionAny.TypeUrl == "/"+proto.MessageName(&PerpetualFuturesPositionInstance{}) {
+		var position PerpetualFuturesPositionInstance
 		position.Unmarshal(positionAny.Value)
-		return &position, nil
+		return &position
 	}
 
-	return nil, nil
+	return nil
 }
 
-func UnpackPerpetualFuturesOpenedPosition(positionAny *types.Any) (*PerpetualFuturesOpenedPosition, error) {
-	if positionAny == nil {
-		return nil, fmt.Errorf("this Any is nil")
-	}
-	if positionAny.TypeUrl == "/"+proto.MessageName(&PerpetualFuturesOpenedPosition{}) {
-		var position PerpetualFuturesOpenedPosition
-		position.Unmarshal(positionAny.Value)
-		return &position, nil
-	}
-
-	return nil, nil
-}
-
-func UnpackPerpetualFuturesClosedPosition(positionAny *types.Any) (*PerpetualFuturesClosedPosition, error) {
-	if positionAny == nil {
-		return nil, fmt.Errorf("this Any is nil")
-	}
-	if positionAny.TypeUrl == "/"+proto.MessageName(&PerpetualFuturesClosedPosition{}) {
-		var position PerpetualFuturesClosedPosition
-		position.Unmarshal(positionAny.Value)
-		return &position, nil
-	}
-
-	return nil, nil
-}
-
-func CalculatePrincipal(position PerpetualFuturesPosition) sdk.Dec {
+func CalculatePrincipal(position PerpetualFuturesPositionInstance) sdk.Dec {
 	return position.Size_.Quo(sdk.NewDecFromInt(position.Leverage))
 }

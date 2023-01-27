@@ -3,7 +3,6 @@ package keeper
 import (
 	"fmt"
 
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
@@ -143,7 +142,7 @@ func (k Keeper) GetQuoteTicker(ctx sdk.Context) string {
 	return k.GetParams(ctx).Pool.QuoteTicker
 }
 
-func (k Keeper) GetPairPrice(ctx sdk.Context, pair types.Pair) (*sdk.Dec, error) {
+func (k Keeper) GetPairRate(ctx sdk.Context, pair types.Market) (*sdk.Dec, error) {
 	marketId, err := k.pricefeedKeeper.GetMarketIdFromDenom(ctx, pair.Denom, pair.QuoteDenom)
 	if err != nil {
 		return nil, err
@@ -249,7 +248,7 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 	currentSupply := k.bankKeeper.GetSupply(ctx, types.LiquidityProviderTokenDenom)
 	if currentSupply.Amount.IsZero() {
 		// first deposit should mint 1 token
-		k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(types.LiquidityProviderTokenDenom, math.Int(sdk.NewDecWithPrec(1000000, 0)))})
+		k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.NewInt(1000000))})
 	} else {
 		dlpPrice := k.GetLPTokenPrice(ctx)
 

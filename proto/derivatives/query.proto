@@ -34,7 +34,7 @@ service Query {
     option (google.api.http).get = "/ununifi/derivatives/perpetual-futures";
   }
 
-  rpc PerpetualFuturesPair(QueryPerpetualFuturesPairRequest) returns (QueryPerpetualFuturesPairResponse) {
+  rpc PerpetualFuturesMarket(QueryPerpetualFuturesMarketRequest) returns (QueryPerpetualFuturesMarketResponse) {
     option (google.api.http).get = "/ununifi/derivatives/perpetual-futures/{denom}/{quote_denom}";
   }
 
@@ -42,24 +42,16 @@ service Query {
     option (google.api.http).get = "/ununifi/derivatives/perpetual-options";
   }
 
-  rpc PerpetualOptionsPair(QueryPerpetualOptionsPairRequest) returns (QueryPerpetualOptionsPairResponse) {
+  rpc PerpetualOptionsMarket(QueryPerpetualOptionsMarketRequest) returns (QueryPerpetualOptionsMarketResponse) {
     option (google.api.http).get = "/ununifi/derivatives/perpetual-options/{denom}/{quote_denom}";
   }
 
-  rpc AllOpeningPositions(QueryAllOpeningPositionsRequest) returns (QueryAllOpeningPositionsResponse) {
-    option (google.api.http).get = "/ununifi/derivatives/positions/opening";
+  rpc AllPositions(QueryAllPositionsRequest) returns (QueryAllPositionsResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/positions";
   }
 
-  rpc ClosedPosition(QueryClosedPositionRequest) returns (QueryClosedPositionResponse) {
-    option (google.api.http).get = "/ununifi/derivatives/positions/closed/{id}";
-  }
-
-  rpc AddressOpeningPositions(QueryAddressOpeningPositionsRequest) returns (QueryAddressOpeningPositionsResponse) {
-    option (google.api.http).get = "/ununifi/derivatives/positions/{address}/opening";
-  }
-
-  rpc AddressClosedPositions(QueryAddressClosedPositionsRequest) returns (QueryAddressClosedPositionsResponse) {
-    option (google.api.http).get = "/ununifi/derivatives/positions/{address}/closed";
+  rpc AddressPositions(QueryAddressPositionsRequest) returns (QueryAddressPositionsResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/positions/{address}";
   }
 }
 
@@ -149,7 +141,7 @@ message QueryPerpetualFuturesResponse {
   ];
 }
 
-message QueryPerpetualFuturesPairRequest {
+message QueryPerpetualFuturesMarketRequest {
   string denom = 1 [
     (gogoproto.moretags)  = "yaml:\"denom\""
   ];
@@ -158,7 +150,7 @@ message QueryPerpetualFuturesPairRequest {
   ];
 }
 
-message QueryPerpetualFuturesPairResponse {
+message QueryPerpetualFuturesMarketResponse {
   string price = 1 [
     (gogoproto.moretags)  = "yaml:\"price\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
@@ -188,7 +180,7 @@ message QueryPerpetualOptionsRequest {}
 
 message QueryPerpetualOptionsResponse {}
 
-message QueryPerpetualOptionsPairRequest {
+message QueryPerpetualOptionsMarketRequest {
   string denom = 1 [
     (gogoproto.moretags)  = "yaml:\"denom\""
   ];
@@ -197,45 +189,23 @@ message QueryPerpetualOptionsPairRequest {
   ];
 }
 
-message QueryPerpetualOptionsPairResponse {}
+message QueryPerpetualOptionsMarketResponse {}
 
-message QueryAllOpeningPositionsRequest {}
+message QueryAllPositionsRequest {}
 
-message QueryAllOpeningPositionsResponse {
-  repeated OpenedPosition positions = 1;
+message QueryAllPositionsResponse {
+  repeated Position positions = 1;
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message QueryClosedPositionRequest {
-  string id = 1 [
-    (gogoproto.moretags)  = "yaml:\"id\""
-  ];
-}
-
-message QueryClosedPositionResponse {
-  ClosedPosition position = 1;
-}
-
-message QueryAddressOpeningPositionsRequest {
+message QueryAddressPositionsRequest {
   string address = 1 [
     (gogoproto.moretags)  = "yaml:\"address\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress"
   ];
 }
 
-message QueryAddressOpeningPositionsResponse {
-  repeated OpenedPosition positions = 1;
-	cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-message QueryAddressClosedPositionsRequest {
-  string address = 1 [
-    (gogoproto.moretags)  = "yaml:\"address\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress"
-  ];
-}
-
-message QueryAddressClosedPositionsResponse {
-  repeated ClosedPosition positions = 1;
+message QueryAddressPositionsResponse {
+  repeated Position positions = 1;
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
