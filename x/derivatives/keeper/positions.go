@@ -2,10 +2,8 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
-	pftypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
 func (k Keeper) GetLastPositionId(ctx sdk.Context) string {
@@ -22,8 +20,8 @@ func (k Keeper) GetLastPositionId(ctx sdk.Context) string {
 func (k Keeper) IncreaseLastPositionId(ctx sdk.Context) {
 	store := ctx.KVStore(k.storeKey)
 
-	lastPositionId := k.GetLastPositionId(ctx)
-	store.Set([]byte(types.KeyPrefixLastPositionId), []byte(lastPositionId+1))
+	lastPositionId := types.GetPositionIdFromString(k.GetLastPositionId(ctx))
+	store.Set([]byte(types.KeyPrefixLastPositionId), types.GetPositionIdBytes(lastPositionId+1))
 }
 
 func (k Keeper) GetAllOpenedPositions(ctx sdk.Context) []*types.OpenedPosition {
@@ -60,6 +58,31 @@ func (k Keeper) GetAddressOpenedPositions(ctx sdk.Context, user sdk.AccAddress) 
 	return positions
 }
 
+func (k Keeper) GetAddressClosedPositions(ctx sdk.Context, user sdk.AccAddress) []*types.ClosedPosition {
+	store := ctx.KVStore(k.storeKey)
+
+	positions := []*types.ClosedPosition{}
+	it := sdk.KVStorePrefixIterator(store, types.AddressClosedPositionKeyPrefix(user))
+	defer it.Close()
+
+	for ; it.Valid(); it.Next() {
+		position := types.ClosedPosition{}
+		k.cdc.Unmarshal(it.Value(), &position)
+
+		positions = append(positions, &position)
+	}
+
+	return positions
+}
+
+func (k Keeper) GetClosedPosition(ctx sdk.Context, positionId string) *types.ClosedPosition {
+	store := ctx.KVStore(k.storeKey)
+
+	position := types.ClosedPosition{}
+	// TODO: implement this
+	return &position
+}
+
 func (k Keeper) CreateOpenedPosition(ctx sdk.Context, OpenedPosition types.OpenedPosition) {
 	store := ctx.KVStore(k.storeKey)
 
@@ -90,7 +113,7 @@ func (k Keeper) CreateClosedPosition(ctx sdk.Context, closedPosition types.Close
 	store.Set(types.AddressClosedPositionWithIdKeyPrefix(closedPosition.Address.AccAddress(), closedPosition.Id), bz)
 }
 
-func (k Keeper) SatRemainingMargin(ctx sdk.Context, positionId string, margin sdk.Coin) {
+func (k Keeper) SetRemainingMargin(ctx sdk.Context, positionId string, margin sdk.Coin) {
 	store := ctx.KVStore(k.storeKey)
 
 	bz := k.cdc.MustMarshal(&margin)
@@ -115,7 +138,7 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 	positionId := string(positionKey)
 
 	// TODO: subtract margin from user's balance
-	k.SatRemainingMargin(ctx, positionId, msg.Margin)
+	k.SetRemainingMargin(ctx, positionId, msg.Margin)
 
 	// TODO: need to be refactored
 	position, err := types.UnpackPosition(&msg.Position)
