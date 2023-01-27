@@ -128,12 +128,14 @@ import (
 	"github.com/UnUniFi/chain/x/ununifidist"
 	ununifidistkeeper "github.com/UnUniFi/chain/x/ununifidist/keeper"
 	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
+
 	// "github.com/CosmWasm/wasmd/x/wasm"
 	// wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
+	ununifitypes "github.com/UnUniFi/chain/types"
 )
 
 const Name = "ununifi"
-const upgradeName = "Alpha"
+const upgradeName = "pocv2update1"
 
 // We pull these out so we can set them with LDFLAGS in the Makefile
 var (
@@ -853,18 +855,24 @@ func NewApp(
 
 	app.UpgradeKeeper.SetUpgradeHandler(
 		upgradeName,
-		func(ctx sdk.Context, _ upgradetypes.Plan, _ module.VersionMap) (module.VersionMap, error) {
+		func(ctx sdk.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 			// app.IBCKeeper.ConnectionKeeper.SetParams(ctx, ibcconnectiontypes.DefaultParams())
 
-			fromVM := make(map[string]uint64)
-			for moduleName := range app.mm.Modules {
-				fromVM[moduleName] = 1
+			msgs := []nftmarkettypes.MsgSellingDecision{
+				{
+					NftId: nftmarkettypes.NftIdentifier{
+						ClassId: "ununifi",
+						NftId:   "1",
+					},
+					Sender: ununifitypes.StringAccAddress(sdk.MustAccAddressFromBech32("ununif1jxazgm67et0ce260kvrpfv50acuushpjsz2y0e")),
+				},
 			}
-			// override versions for _new_ modules as to not skip InitGenesis
-			fromVM[authz.ModuleName] = 0
-			fromVM[feegrant.ModuleName] = 0
 
-			return app.mm.RunMigrations(ctx, app.configurator, fromVM)
+			for _, msg := range msgs {
+				app.NftmarketKeeper.SellingDecision(ctx, &msg)
+			}
+
+			return app.mm.RunMigrations(ctx, app.configurator, vm)
 		},
 	)
 
