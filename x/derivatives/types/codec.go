@@ -19,7 +19,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgBurnLiquidityProviderToken{},
 		&MsgOpenPosition{},
 		&MsgClosePosition{},
-		&MsgReportLiquidationNeededPosition{},
+		&MsgReportLiquidation{},
 	)
 	registry.RegisterImplementations((*PositionInstance)(nil),
 		&PerpetualFuturesPositionInstance{},

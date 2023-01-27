@@ -7,13 +7,14 @@ import (
 
 	"github.com/spf13/cobra"
 
-	ununifiType "github.com/UnUniFi/chain/types"
-	"github.com/UnUniFi/chain/x/derivatives/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
+
+	ununifiType "github.com/UnUniFi/chain/types"
+	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
 var (
@@ -41,7 +42,7 @@ func GetTxCmd() *cobra.Command {
 		CmdBurnLiquidityProviderToken(),
 		CmdOpenPosition(),
 		CmdClosePosition(),
-		CmdReportLiquidationNeededPosition(),
+		CmdReportLiquidation(),
 	)
 
 	return cmd
@@ -241,7 +242,7 @@ $ %s tx %s close-position --from myKeyName --chain-id ununifi-x
 	return cmd
 }
 
-func CmdReportLiquidationNeededPosition() *cobra.Command {
+func CmdReportLiquidation() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "report-liquidation",
 		Short: "report liquidation needed position",
@@ -259,7 +260,7 @@ $ %s tx %s report-liquidation --from myKeyName --chain-id ununifi-x
 
 			sender := clientCtx.GetFromAddress()
 
-			msg := types.MsgReportLiquidationNeededPosition{
+			msg := types.MsgReportLiquidation{
 				Sender: ununifiType.StringAccAddress(sender),
 			}
 

@@ -44,6 +44,7 @@ var _ sdk.Msg = &MsgBurnLiquidityProviderToken{}
 func NewMsgBurnLiquidityProviderToken(sender ununifiTypes.StringAccAddress, amount sdk.Int) MsgBurnLiquidityProviderToken {
 	return MsgBurnLiquidityProviderToken{
 		Sender: sender,
+		Amount: amount,
 	}
 }
 
@@ -136,10 +137,10 @@ func (msg MsgClosePosition) GetSigners() []sdk.AccAddress {
 }
 
 // ensure Msg interface compliance at compile time
-var _ sdk.Msg = &MsgReportLiquidationNeededPosition{}
+var _ sdk.Msg = &MsgReportLiquidation{}
 
-func NewMsgReportLiquidationNeededPosition(sender ununifiTypes.StringAccAddress, positionId string, rewardRecipient ununifiTypes.StringAccAddress) MsgReportLiquidationNeededPosition {
-	return MsgReportLiquidationNeededPosition{
+func NewMsgReportLiquidation(sender ununifiTypes.StringAccAddress, positionId string, rewardRecipient ununifiTypes.StringAccAddress) MsgReportLiquidation {
+	return MsgReportLiquidation{
 		Sender:          sender,
 		PositionId:      positionId,
 		RewardRecipient: rewardRecipient,
@@ -147,25 +148,25 @@ func NewMsgReportLiquidationNeededPosition(sender ununifiTypes.StringAccAddress,
 }
 
 // Route return the message type used for routing the message.
-func (msg MsgReportLiquidationNeededPosition) Route() string { return RouterKey }
+func (msg MsgReportLiquidation) Route() string { return RouterKey }
 
 // Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgReportLiquidationNeededPosition) Type() string {
+func (msg MsgReportLiquidation) Type() string {
 	return "report_liquidation"
 }
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
-func (msg MsgReportLiquidationNeededPosition) ValidateBasic() error {
+func (msg MsgReportLiquidation) ValidateBasic() error {
 	return nil
 }
 
 // GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgReportLiquidationNeededPosition) GetSignBytes() []byte {
+func (msg MsgReportLiquidation) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
-func (msg MsgReportLiquidationNeededPosition) GetSigners() []sdk.AccAddress {
+func (msg MsgReportLiquidation) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Sender.AccAddress()}
 }

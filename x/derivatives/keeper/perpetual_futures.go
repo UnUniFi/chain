@@ -59,7 +59,7 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Po
 
 	k.bankKeeper.SendCoinsFromAccountToModule(ctx, position.Address.AccAddress(), types.ModuleName, sdk.Coins{sdk.NewCoin(position.Market.Denom, feeAmount.RoundInt())}) // TODO: this is wrong.
 
-	principal := types.CalculatePrincipal(positionInstance)
+	principal := positionInstance.CalculatePrincipal()
 	amountToUser := sdk.Dec{}
 
 	switch positionInstance.PositionType {
@@ -106,7 +106,7 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Po
 
 func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient ununifiTypes.StringAccAddress, remainingMargin sdk.Coin, position types.Position, positionInstance types.PerpetualFuturesPositionInstance) error {
 	params := k.GetParams(ctx)
-	principal := types.CalculatePrincipal(positionInstance)
+	principal := positionInstance.CalculatePrincipal()
 
 	if sdk.NewDecFromInt(remainingMargin.Amount).Mul(sdk.NewDecWithPrec(1, 0)).LT(principal.Mul(params.PerpetualFutures.MarginMaintenanceRate)) {
 		k.ClosePerpetualFuturesPosition(ctx, position, positionInstance)

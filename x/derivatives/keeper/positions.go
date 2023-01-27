@@ -99,28 +99,6 @@ func (k Keeper) DeletePosition(ctx sdk.Context, address sdk.AccAddress, id strin
 	store.Delete(types.AddressPositionWithIdKeyPrefix(address, id))
 }
 
-func (k Keeper) SetRemainingMargin(ctx sdk.Context, positionId string, margin sdk.Coin) {
-	store := ctx.KVStore(k.storeKey)
-
-	bz := k.cdc.MustMarshal(&margin)
-	store.Set(types.RemainingMarginKeyPrefix(positionId), bz)
-}
-
-func (k Keeper) GetRemainingMargin(ctx sdk.Context, positionId string) *sdk.Coin {
-	store := ctx.KVStore(k.storeKey)
-
-	margin := sdk.Coin{}
-	bz := store.Get(types.RemainingMarginKeyPrefix(positionId))
-
-	if bz == nil {
-		return nil
-	}
-
-	k.cdc.MustUnmarshal(bz, &margin)
-
-	return &margin
-}
-
 func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
 	sender := msg.Sender.AccAddress()
 	lastPositionId := k.GetLastPositionId(ctx)
@@ -193,7 +171,7 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 	return nil
 }
 
-func (k Keeper) ReportLiquidationNeededPosition(ctx sdk.Context, msg *types.MsgReportLiquidationNeededPosition) error {
+func (k Keeper) ReportLiquidation(ctx sdk.Context, msg *types.MsgReportLiquidation) error {
 	position := k.GetPositionWithId(ctx, msg.PositionId)
 
 	if position == nil {

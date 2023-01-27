@@ -131,8 +131,8 @@
     - [MsgMintLiquidityProviderTokenResponse](#ununifi.derivatives.MsgMintLiquidityProviderTokenResponse)
     - [MsgOpenPosition](#ununifi.derivatives.MsgOpenPosition)
     - [MsgOpenPositionResponse](#ununifi.derivatives.MsgOpenPositionResponse)
-    - [MsgReportLiquidationNeededPosition](#ununifi.derivatives.MsgReportLiquidationNeededPosition)
-    - [MsgReportLiquidationNeededPositionResponse](#ununifi.derivatives.MsgReportLiquidationNeededPositionResponse)
+    - [MsgReportLiquidation](#ununifi.derivatives.MsgReportLiquidation)
+    - [MsgReportLiquidationResponse](#ununifi.derivatives.MsgReportLiquidationResponse)
   
     - [Msg](#ununifi.derivatives.Msg)
   
@@ -2039,9 +2039,9 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.MsgReportLiquidationNeededPosition"></a>
+<a name="ununifi.derivatives.MsgReportLiquidation"></a>
 
-### MsgReportLiquidationNeededPosition
+### MsgReportLiquidation
 
 
 
@@ -2056,9 +2056,9 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.MsgReportLiquidationNeededPositionResponse"></a>
+<a name="ununifi.derivatives.MsgReportLiquidationResponse"></a>
 
-### MsgReportLiquidationNeededPositionResponse
+### MsgReportLiquidationResponse
 
 
 
@@ -2083,7 +2083,7 @@ Query defines the gRPC querier service.
 | `BurnLiquidityProviderToken` | [MsgBurnLiquidityProviderToken](#ununifi.derivatives.MsgBurnLiquidityProviderToken) | [MsgBurnLiquidityProviderTokenResponse](#ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse) |  | |
 | `OpenPosition` | [MsgOpenPosition](#ununifi.derivatives.MsgOpenPosition) | [MsgOpenPositionResponse](#ununifi.derivatives.MsgOpenPositionResponse) |  | |
 | `ClosePosition` | [MsgClosePosition](#ununifi.derivatives.MsgClosePosition) | [MsgClosePositionResponse](#ununifi.derivatives.MsgClosePositionResponse) |  | |
-| `ReportLiquidationNeededPosition` | [MsgReportLiquidationNeededPosition](#ununifi.derivatives.MsgReportLiquidationNeededPosition) | [MsgReportLiquidationNeededPositionResponse](#ununifi.derivatives.MsgReportLiquidationNeededPositionResponse) |  | |
+| `ReportLiquidation` | [MsgReportLiquidation](#ununifi.derivatives.MsgReportLiquidation) | [MsgReportLiquidationResponse](#ununifi.derivatives.MsgReportLiquidationResponse) |  | |
 
  <!-- end services -->
 
