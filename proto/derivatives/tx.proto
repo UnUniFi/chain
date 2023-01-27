@@ -6,6 +6,8 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/any.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
+import "derivatives/derivatives.proto";
+
 option go_package = "github.com/UnUniFi/chain/x/derivatives/types";
 
 service Msg {
@@ -13,7 +15,7 @@ service Msg {
   rpc BurnLiquidityProviderToken(MsgBurnLiquidityProviderToken) returns (MsgBurnLiquidityProviderTokenResponse);
   rpc OpenPosition(MsgOpenPosition) returns (MsgOpenPositionResponse);
   rpc ClosePosition(MsgClosePosition) returns (MsgClosePositionResponse);
-  rpc ReportLiquidationNeededPosition(MsgReportLiquidationNeededPosition) returns (MsgReportLiquidationNeededPositionResponse);
+  rpc ReportLiquidation(MsgReportLiquidation) returns (MsgReportLiquidationResponse);
 }
 
 message MsgMintLiquidityProviderToken {
@@ -55,9 +57,12 @@ message MsgOpenPosition {
     (gogoproto.moretags) = "yaml:\"margin\"",
     (gogoproto.nullable) = false
   ];
-
-  google.protobuf.Any position = 3[
-    (gogoproto.moretags) = "yaml:\"position\"",
+  Market market = 3 [
+    (gogoproto.moretags) = "yaml:\"market\"",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Any position_instance = 4 [
+    (gogoproto.moretags) = "yaml:\"position_instance\"",
     (gogoproto.nullable) = false
   ];
 }
@@ -77,7 +82,7 @@ message MsgClosePosition {
 
 message MsgClosePositionResponse {}
 
-message MsgReportLiquidationNeededPosition {
+message MsgReportLiquidation {
   string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
@@ -86,6 +91,11 @@ message MsgReportLiquidationNeededPosition {
   string position_id = 2 [
     (gogoproto.moretags) = "yaml:\"position_id\""
   ];
+  string reward_recipient = 3 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
 }
 
-message MsgReportLiquidationNeededPositionResponse {}
+message MsgReportLiquidationResponse {}

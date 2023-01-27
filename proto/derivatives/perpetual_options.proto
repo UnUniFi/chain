@@ -15,39 +15,21 @@ enum OptionType {
   PUT = 2;
 }
 
-message PerpetualOptionsPosition {
+message PerpetualOptionsPositionInstance {
   OptionType option_type = 1 [
     (gogoproto.moretags) = "yaml:\"option_type\""
   ];
   PositionType position_type = 2 [
     (gogoproto.moretags) = "yaml:\"position_type\""
   ];
-  Pair pair = 3 [
-    (gogoproto.moretags) = "yaml:\"pair\"",
-    (gogoproto.nullable) = false
-  ];
-  string strike_price = 4 [
+  string strike_price = 3 [
     (gogoproto.moretags) = "yaml:\"strike_price\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string premium = 5 [
+  string premium = 4 [
     (gogoproto.moretags) = "yaml:\"premium\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
-  ];
-}
-
-message PerpetualOptionsOpenedPosition {
-  PerpetualOptionsPosition position = 1 [
-    (gogoproto.moretags) = "yaml:\"position\"",
-    (gogoproto.embed) = true
-  ];
-}
-
-message PerpetualOptionsClosedPosition {
-  PerpetualOptionsPosition position = 1 [
-    (gogoproto.moretags) = "yaml:\"position\"",
-    (gogoproto.embed) = true
   ];
 }

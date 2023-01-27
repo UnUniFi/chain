@@ -24,15 +24,15 @@ func (k Keeper) IncreaseLastPositionId(ctx sdk.Context) {
 	store.Set([]byte(types.KeyPrefixLastPositionId), types.GetPositionIdBytes(lastPositionId+1))
 }
 
-func (k Keeper) GetAllOpenedPositions(ctx sdk.Context) []*types.OpenedPosition {
+func (k Keeper) GetAllPositions(ctx sdk.Context) []*types.Position {
 	store := ctx.KVStore(k.storeKey)
 
-	positions := []*types.OpenedPosition{}
-	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixOpenedPosition))
+	positions := []*types.Position{}
+	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixPosition))
 	defer it.Close()
 
 	for ; it.Valid(); it.Next() {
-		position := types.OpenedPosition{}
+		position := types.Position{}
 		k.cdc.Unmarshal(it.Value(), &position)
 
 		positions = append(positions, &position)
@@ -41,117 +41,94 @@ func (k Keeper) GetAllOpenedPositions(ctx sdk.Context) []*types.OpenedPosition {
 	return positions
 }
 
-func (k Keeper) GetAddressOpenedPositions(ctx sdk.Context, user sdk.AccAddress) []*types.OpenedPosition {
+func (k Keeper) GetPositionWithId(ctx sdk.Context, id string) *types.Position {
 	store := ctx.KVStore(k.storeKey)
 
-	positions := []*types.OpenedPosition{}
-	it := sdk.KVStorePrefixIterator(store, types.AddressOpenedPositionKeyPrefix(user))
-	defer it.Close()
-
-	for ; it.Valid(); it.Next() {
-		position := types.OpenedPosition{}
-		k.cdc.Unmarshal(it.Value(), &position)
-
-		positions = append(positions, &position)
+	bz := store.Get(types.PositionWithIdKeyPrefix(id))
+	if bz == nil {
+		return nil
 	}
+	position := types.Position{}
+	k.cdc.MustUnmarshal(bz, &position)
 
-	return positions
-}
-
-func (k Keeper) GetAddressClosedPositions(ctx sdk.Context, user sdk.AccAddress) []*types.ClosedPosition {
-	store := ctx.KVStore(k.storeKey)
-
-	positions := []*types.ClosedPosition{}
-	it := sdk.KVStorePrefixIterator(store, types.AddressClosedPositionKeyPrefix(user))
-	defer it.Close()
-
-	for ; it.Valid(); it.Next() {
-		position := types.ClosedPosition{}
-		k.cdc.Unmarshal(it.Value(), &position)
-
-		positions = append(positions, &position)
-	}
-
-	return positions
-}
-
-func (k Keeper) GetClosedPosition(ctx sdk.Context, positionId string) *types.ClosedPosition {
-	store := ctx.KVStore(k.storeKey)
-
-	position := types.ClosedPosition{}
-	// TODO: implement this
 	return &position
 }
 
-func (k Keeper) CreateOpenedPosition(ctx sdk.Context, OpenedPosition types.OpenedPosition) {
+func (k Keeper) GetAddressPositions(ctx sdk.Context, user sdk.AccAddress) []*types.Position {
 	store := ctx.KVStore(k.storeKey)
 
-	bz := k.cdc.MustMarshal(&OpenedPosition)
-	store.Set(types.AddressOpenedPositionWithIdKeyPrefix(OpenedPosition.Address.AccAddress(), OpenedPosition.Id), bz)
+	positions := []*types.Position{}
+	it := sdk.KVStorePrefixIterator(store, types.AddressPositionKeyPrefix(user))
+	defer it.Close()
+
+	for ; it.Valid(); it.Next() {
+		position := types.Position{}
+		k.cdc.Unmarshal(it.Value(), &position)
+
+		positions = append(positions, &position)
+	}
+
+	return positions
 }
 
-func (k Keeper) GetIdAddressOpenedPosition(ctx sdk.Context, address sdk.AccAddress, id string) types.OpenedPosition {
+func (k Keeper) GetAddressPositionWithId(ctx sdk.Context, address sdk.AccAddress, id string) *types.Position {
 	store := ctx.KVStore(k.storeKey)
 
-	bz := store.Get(types.AddressOpenedPositionWithIdKeyPrefix(address, id))
-	position := types.OpenedPosition{}
-	k.cdc.Unmarshal(bz, &position)
+	bz := store.Get(types.AddressPositionWithIdKeyPrefix(address, id))
+	if bz == nil {
+		return nil
+	}
+	position := types.Position{}
+	k.cdc.MustUnmarshal(bz, &position)
 
-	return position
+	return &position
 }
 
-func (k Keeper) DeleteOpenedPosition(ctx sdk.Context, address sdk.AccAddress, id string) {
+func (k Keeper) CreatePosition(ctx sdk.Context, position types.Position) {
 	store := ctx.KVStore(k.storeKey)
 
-	store.Delete(types.AddressOpenedPositionWithIdKeyPrefix(address, id))
+	bz := k.cdc.MustMarshal(&position)
+	store.Set(types.PositionWithIdKeyPrefix(position.Id), bz)
+	store.Set(types.AddressPositionWithIdKeyPrefix(position.Address.AccAddress(), position.Id), bz)
 }
 
-func (k Keeper) CreateClosedPosition(ctx sdk.Context, closedPosition types.ClosedPosition) {
+func (k Keeper) DeletePosition(ctx sdk.Context, address sdk.AccAddress, id string) {
 	store := ctx.KVStore(k.storeKey)
 
-	bz := k.cdc.MustMarshal(&closedPosition)
-	store.Set(types.AddressClosedPositionWithIdKeyPrefix(closedPosition.Address.AccAddress(), closedPosition.Id), bz)
-}
-
-func (k Keeper) SetRemainingMargin(ctx sdk.Context, positionId string, margin sdk.Coin) {
-	store := ctx.KVStore(k.storeKey)
-
-	bz := k.cdc.MustMarshal(&margin)
-	store.Set(types.RemainingMarginKeyPrefix(positionId), bz)
-}
-
-func (k Keeper) GetRemainingMargin(ctx sdk.Context, positionId string) sdk.Coin {
-	store := ctx.KVStore(k.storeKey)
-
-	margin := sdk.Coin{}
-	bz := store.Get(types.RemainingMarginKeyPrefix(positionId))
-	k.cdc.MustUnmarshal(bz, &margin)
-
-	return margin
+	store.Delete(types.PositionWithIdKeyPrefix(id))
+	store.Delete(types.AddressPositionWithIdKeyPrefix(address, id))
 }
 
 func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
 	sender := msg.Sender.AccAddress()
 	lastPositionId := k.GetLastPositionId(ctx)
 
-	positionKey := types.AddressOpenedPositionWithIdKeyPrefix(sender, lastPositionId)
+	positionKey := types.AddressPositionWithIdKeyPrefix(sender, lastPositionId)
 	positionId := string(positionKey)
 
-	// TODO: subtract margin from user's balance
+	k.bankKeeper.SendCoinsFromAccountToModule(ctx, msg.Sender.AccAddress(), types.ModuleName, sdk.NewCoins(msg.Margin))
 	k.SetRemainingMargin(ctx, positionId, msg.Margin)
 
-	// TODO: need to be refactored
-	position, err := types.UnpackPosition(&msg.Position)
+	positionInstance, err := types.UnpackPositionInstance(msg.PositionInstance)
 	if err != nil {
 		return err
 	}
-	switch position.(type) {
-	case *types.PerpetualFuturesPosition:
-		return k.OpenPerpetualFuturesPosition(ctx, positionId, msg.Sender.AccAddress(), position.(*types.PerpetualFuturesPosition))
-	case *types.PerpetualOptionsPosition:
-		return k.OpenPerpetualOptionsPosition(ctx, positionId, msg.Sender.AccAddress(), position.(*types.PerpetualOptionsPosition))
+
+	var position *types.Position
+	switch positionInstance.(type) {
+	case *types.PerpetualFuturesPositionInstance:
+		position, err = k.OpenPerpetualFuturesPosition(ctx, positionId, msg.Sender, msg.Margin, msg.Market, *positionInstance.(*types.PerpetualFuturesPositionInstance))
+	case *types.PerpetualOptionsPositionInstance:
+		position, err = k.OpenPerpetualOptionsPosition(ctx, positionId, msg.Sender, msg.Margin, msg.Market, *positionInstance.(*types.PerpetualOptionsPositionInstance))
+	default:
+		panic("")
 	}
 
+	if err != nil {
+		return err
+	}
+
+	k.CreatePosition(ctx, *position)
 	k.IncreaseLastPositionId(ctx)
 
 	return nil
@@ -159,23 +136,68 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 
 func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) error {
 	positionId := msg.PositionId
-	openedPosition := k.GetIdAddressOpenedPosition(ctx, msg.Sender.AccAddress(), positionId)
+	position := k.GetAddressPositionWithId(ctx, msg.Sender.AccAddress(), positionId)
 
-	if msg.Sender.AccAddress().String() != openedPosition.Address.AccAddress().String() {
+	if position == nil {
 		return nil // TODO: return error
 	}
 
-	k.DeleteOpenedPosition(ctx, msg.Sender.AccAddress(), positionId)
+	if msg.Sender.AccAddress().String() != position.Address.AccAddress().String() {
+		return nil // TODO: return error
+	}
 
-	position, err := types.UnpackOpenedPosition(&openedPosition.Position)
+	positionInstance, err := types.UnpackPositionInstance(position.PositionInstance)
 	if err != nil {
 		return err
 	}
-	switch position.(type) {
-	case *types.PerpetualFuturesPosition:
-		return k.ClosePerpetualFuturesPosition(ctx, openedPosition, position.(*types.PerpetualFuturesOpenedPosition))
-	case *types.PerpetualOptionsPosition:
-		return k.ClosePerpetualOptionsPosition(ctx, openedPosition, position.(*types.PerpetualOptionsOpenedPosition))
+
+	switch positionInstance.(type) {
+	case *types.PerpetualFuturesPositionInstance:
+		err = k.ClosePerpetualFuturesPosition(ctx, *position, *positionInstance.(*types.PerpetualFuturesPositionInstance))
+		break
+	case *types.PerpetualOptionsPositionInstance:
+		err = k.ClosePerpetualOptionsPosition(ctx, *position, *positionInstance.(*types.PerpetualOptionsPositionInstance))
+		break
+	default:
+		panic("")
+	}
+
+	if err != nil {
+		return err
+	}
+
+	k.DeletePosition(ctx, msg.Sender.AccAddress(), positionId)
+
+	return nil
+}
+
+func (k Keeper) ReportLiquidation(ctx sdk.Context, msg *types.MsgReportLiquidation) error {
+	position := k.GetPositionWithId(ctx, msg.PositionId)
+
+	if position == nil {
+		return nil // TODO: return error
+	}
+
+	positionInstance, err := types.UnpackPositionInstance(position.PositionInstance)
+	if err != nil {
+		return err
+	}
+
+	remainingMargin := *k.GetRemainingMargin(ctx, msg.PositionId)
+
+	switch positionInstance.(type) {
+	case *types.PerpetualFuturesPositionInstance:
+		err = k.ReportLiquidationNeededPerpetualFuturesPosition(ctx, msg.RewardRecipient, remainingMargin, *position, *positionInstance.(*types.PerpetualFuturesPositionInstance))
+		break
+	case *types.PerpetualOptionsPositionInstance:
+		err = k.ReportLiquidationNeededPerpetualOptionsPosition(ctx, msg.RewardRecipient, remainingMargin, *position, *positionInstance.(*types.PerpetualOptionsPositionInstance))
+		break
+	default:
+		panic("")
+	}
+
+	if err != nil {
+		return err
 	}
 
 	return nil

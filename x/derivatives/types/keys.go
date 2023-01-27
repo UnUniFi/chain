@@ -2,6 +2,7 @@ package types
 
 import (
 	"encoding/binary"
+	"fmt"
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -32,8 +33,8 @@ const (
 	// User deposits by address
 	KeyPrefixPoolDeposit = "pool_deposit"
 	//
-	KeyPrefixOpenedPosition        = "opened_position"
-	KeyPrefixClosedPosition        = "closed_position"
+	KeyPrefixPosition              = "position"
+	KeyPrefixUserPosition          = "user_position"
 	KeyPrefixPerpetualFutures      = "perpetual_futures"
 	KeyPrefixPerpetualOptions      = "perpetual_options"
 	KeyPrefixNetPositionAmount     = "net_position_amount"
@@ -79,24 +80,20 @@ func AssetDepositKeyPrefix(denom string) []byte {
 	return append([]byte(KeyPrefixPoolDeposit), []byte(denom)...)
 }
 
-func AddressOpenedPositionKeyPrefix(sender sdk.AccAddress) []byte {
-	return append([]byte(KeyPrefixOpenedPosition), address.MustLengthPrefix(sender)...)
+func PositionWithIdKeyPrefix(posId string) []byte {
+	return append([]byte(KeyPrefixPosition), []byte(posId)...)
 }
 
-func AddressClosedPositionKeyPrefix(sender sdk.AccAddress) []byte {
-	return append([]byte(KeyPrefixClosedPosition), address.MustLengthPrefix(sender)...)
+func AddressPositionKeyPrefix(sender sdk.AccAddress) []byte {
+	return append([]byte(KeyPrefixUserPosition), address.MustLengthPrefix(sender)...)
 }
 
-func AddressOpenedPositionWithIdKeyPrefix(sender sdk.AccAddress, posId string) []byte {
-	return append(AddressOpenedPositionKeyPrefix(sender), []byte(posId)...)
+func AddressPositionWithIdKeyPrefix(sender sdk.AccAddress, posId string) []byte {
+	return append(AddressPositionKeyPrefix(sender), []byte(posId)...)
 }
 
-func AddressClosedPositionWithIdKeyPrefix(sender sdk.AccAddress, posId string) []byte {
-	return append(AddressClosedPositionKeyPrefix(sender), []byte(posId)...)
-}
-
-func DenomNetPositionPerpetualFuturesKeyPrefix(denom string) []byte {
-	return append(append([]byte(KeyPrefixPerpetualFutures), []byte(KeyPrefixNetPositionAmount)...), []byte(denom)...)
+func DenomNetPositionPerpetualFuturesKeyPrefix(denom string, quoteDenom string) []byte {
+	return append(append([]byte(KeyPrefixPerpetualFutures), []byte(KeyPrefixNetPositionAmount)...), []byte(fmt.Sprintf("%s/%s", denom, quoteDenom))...)
 }
 
 func AddressPoolMarketCapSnapshotKeyPrefix(height int64) []byte {

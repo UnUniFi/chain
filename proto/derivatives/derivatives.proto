@@ -9,75 +9,40 @@ import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/derivatives/types";
 
-enum AssetType {
-  Real = 0;
-  Imaginary = 1;
-}
-
 enum PositionType {
   POSITION_UNKNOWN = 0;
   LONG = 1;
   SHORT = 2;
 }
 
-message OpenedPosition {
+message Position {
   string id = 1 [
     (gogoproto.moretags) = "yaml:\"id\""
   ];
-  string address = 2 [
+  Market market = 2 [
+    (gogoproto.moretags) = "yaml:\"market\"",
+    (gogoproto.nullable) = false
+  ];
+  string address = 3 [
     (gogoproto.moretags) = "yaml:\"address\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
     (gogoproto.nullable) = false
   ];
-  google.protobuf.Timestamp opened_at = 3 [
+  google.protobuf.Timestamp opened_at = 4 [
     (gogoproto.moretags) = "yaml:\"opened_at\"",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
   ];
-  uint64 opened_height = 4 [
+  uint64 opened_height = 5 [
     (gogoproto.moretags) = "yaml:\"opened_height\""
   ];
-  google.protobuf.Any position = 5 [
-    (gogoproto.moretags) = "yaml:\"position\"",
+  string opened_rate = 6 [
+    (gogoproto.moretags) = "yaml:\"opened_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-}
-
-message ClosedPosition {
-  string id = 1 [
-    (gogoproto.moretags) = "yaml:\"id\""
-  ];
-  string address = 2 [
-    (gogoproto.moretags) = "yaml:\"address\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
-  google.protobuf.Timestamp opened_at = 3 [
-    (gogoproto.moretags) = "yaml:\"opened_at\"",
-    (gogoproto.nullable) = false
-  ];
-  uint64 opened_height = 4 [
-    (gogoproto.moretags) = "yaml:\"opened_height\""
-  ];
-  google.protobuf.Timestamp closed_at = 5 [
-    (gogoproto.moretags) = "yaml:\"closed_at\"",
-    (gogoproto.nullable) = false
-  ];
-  uint64 closed_height = 6 [
-    (gogoproto.moretags) = "yaml:\"closed_height\""
-  ];
-  google.protobuf.Any position = 7 [
-    (gogoproto.moretags) = "yaml:\"position\"",
-    (gogoproto.nullable) = false
-  ];
-}
-
-message AcceptedLiquidationNeededReport {
-  string position_id = 1 [
-    (gogoproto.moretags) = "yaml:\"position_id\""
-  ];
-  string sender = 2 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+  google.protobuf.Any position_instance = 7 [
+    (gogoproto.moretags) = "yaml:\"position_instance\"",
     (gogoproto.nullable) = false
   ];
 }
@@ -154,21 +119,13 @@ message PoolMarketCap {
   ];
 }
 
-message Pair {
+message Market {
   string denom = 1 [
     (gogoproto.moretags)  = "yaml:\"denom\""
   ];
   string quote_denom = 2 [
     (gogoproto.moretags)  = "yaml:\"quote_denom\""
   ];
-}
-
-message PerpetualFuturesPairParams {
-  Pair pair = 1 [
-    (gogoproto.moretags)  = "yaml:\"pair\"",
-    (gogoproto.embed) = true
-  ];
-  
 }
 
 message PerpetualFuturesParams {
@@ -187,8 +144,8 @@ message PerpetualFuturesParams {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  repeated Pair pairs = 4 [
-    (gogoproto.moretags) = "yaml:\"pairs\"",
+  repeated Market markets = 4 [
+    (gogoproto.moretags) = "yaml:\"markets\"",
     (gogoproto.nullable) = false
   ];
 }
@@ -214,8 +171,8 @@ message PerpetualOptionsParams {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  repeated Pair pairs = 5 [
-    (gogoproto.moretags) = "yaml:\"pairs\"",
+  repeated Market markets = 5 [
+    (gogoproto.moretags) = "yaml:\"markets\"",
     (gogoproto.nullable) = false
   ];
 }

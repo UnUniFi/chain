@@ -7,37 +7,32 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
-func levyImaginaryFundingRateAndLiquidateInsufficientMarginPositions(ctx sdk.Context, k keeper.Keeper) {
+func levyImaginaryFundingRate(ctx sdk.Context, k keeper.Keeper) {
 	params := k.GetParams(ctx)
-	openedPositions := k.GetAllOpenedPositions(ctx)
-	assets := k.GetPoolAssets(ctx)
-	fundingRateProportionalCoefficient := params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient
-	commissionRate := params.PerpetualFutures.CommissionRate
+	positions := k.GetAllPositions(ctx)
 
-	imaginaryFundingRates := make(map[string]sdk.Dec)
+	perpetualFuturesMarkets := params.PerpetualFutures.Markets
+	perpetualFuturesImaginaryFundingRates := make(map[types.Market]sdk.Dec)
 
-	for _, asset := range assets {
-		netPosition := k.GetPerpetualFuturesNetPositionOfDenom(ctx, asset.Denom)
-		imaginaryFundingRate := netPosition.Mul(fundingRateProportionalCoefficient)
-		imaginaryFundingRates[asset.Denom] = imaginaryFundingRate
+	for _, perpetualFuturesMarket := range perpetualFuturesMarkets {
+		netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, perpetualFuturesMarket)
+		imaginaryFundingRate := netPosition.Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
+		perpetualFuturesImaginaryFundingRates[perpetualFuturesMarket] = imaginaryFundingRate
 	}
 
-	for _, openedPosition := range openedPositions {
-		positionId := types.GetPositionIdFromString(openedPosition.Id)
-		position, err := types.UnpackOpenedPosition(&openedPosition.Position)
+	for _, position := range positions {
+		positionInstance, err := types.UnpackPositionInstance(position.PositionInstance)
 		if err != nil {
 			panic("unable to unpack open position")
 		}
 
-		switch position.(type) {
-		case *types.PerpetualFuturesPosition:
-			futuresPosition := position.(*types.PerpetualFuturesPosition)
-			remainingMargin := k.GetRemainingMargin(ctx, positionId)
-			imaginaryFundingRate := imaginaryFundingRates[futuresPosition.Pair.Denom]
+		switch positionInstance.(type) {
+		case *types.PerpetualFuturesPositionInstance:
+			futuresPosition := positionInstance.(*types.PerpetualFuturesPositionInstance)
+			remainingMargin := *k.GetRemainingMargin(ctx, position.Id)
+			imaginaryFundingRate := perpetualFuturesImaginaryFundingRates[position.Market]
 			imaginaryFundingFee := sdk.NewDecFromInt(remainingMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
-			commissionFee := sdk.NewDecFromInt(remainingMargin.Amount).Mul(commissionRate).RoundInt()
-
-			principal := types.CalculatePrincipal(*futuresPosition)
+			commissionFee := sdk.NewDecFromInt(remainingMargin.Amount).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
 
 			if imaginaryFundingRate.IsNegative() {
 				if futuresPosition.PositionType == types.PositionType_SHORT {
@@ -53,14 +48,10 @@ func levyImaginaryFundingRateAndLiquidateInsufficientMarginPositions(ctx sdk.Con
 				}
 			}
 
-			k.SatRemainingMargin(ctx, positionId, remainingMargin)
+			k.SetRemainingMargin(ctx, position.Id, remainingMargin)
 
-			// TODO: go to the handler of MsgReportLiquidationNeeded
-			// if sdk.NewDecFromInt(remainingMargin.Amount).Mul(sdk.NewDecWithPrec(1, 0)).LT(principal.Mul(params.PerpetualFutures.MarginMaintenanceRate)) {
-			// 	k.ClosePerpetualFuturesPosition(ctx, openedPosition.Address.AccAddress(), positionId, futuresPosition)
-			// }
 			return
-		case *types.PerpetualOptionsPosition:
+		case *types.PerpetualOptionsPositionInstance:
 			return
 		}
 	}
@@ -70,8 +61,11 @@ func setPoolMarketCapSnapshot(ctx sdk.Context, k keeper.Keeper) {
 	k.SetPoolMarketCapSnapshot(ctx, ctx.BlockHeight(), k.GetPoolMarketCap(ctx))
 }
 
+func BeginBlocker(ctx sdk.Context, k keeper.Keeper) {
+	levyImaginaryFundingRate(ctx, k)
+}
+
 // EndBlocker
 func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
-	levyImaginaryFundingRateAndLiquidateInsufficientMarginPositions(ctx, k)
 	setPoolMarketCapSnapshot(ctx, k)
 }

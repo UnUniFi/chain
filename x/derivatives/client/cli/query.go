@@ -11,7 +11,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	ununifiTypes "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
@@ -91,12 +90,12 @@ func CmdQueryAddressPositions() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			address, err := sdk.AccAddressFromBech32(args[0])
+			_, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
 
-			res, err := queryClient.AddressPositions(context.Background(), &types.QueryAddressPositionsRequest{Address: (*ununifiTypes.StringAccAddress)(&address)})
+			res, err := queryClient.AddressPositions(context.Background(), &types.QueryAddressPositionsRequest{Address: args[0]})
 			if err != nil {
 				return err
 			}

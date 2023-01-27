@@ -7,56 +7,20 @@ import (
 	"github.com/gogo/protobuf/proto"
 )
 
-type PositionI interface {
+type PositionInstance interface {
 	proto.Message
 }
 
-type OpenedPositionI interface {
-	proto.Message
-}
-
-type ClosedPositionI interface {
-	proto.Message
-}
-
-func UnpackPosition(positionAny *types.Any) (PositionI, error) {
-	position, err := UnpackPerpetualFuturesPosition(positionAny)
-	if position != nil || err != nil {
-		return position, err
+func UnpackPositionInstance(positionAny types.Any) (PositionInstance, error) {
+	position := UnpackPerpetualFuturesPositionInstance(positionAny)
+	if position != nil {
+		return position, nil
 	}
 
-	position, err = UnpackPerpetualOptionsPosition(positionAny)
-	if position != nil || err != nil {
-		return position, err
+	position = UnpackPerpetualOptionsPosition(positionAny)
+	if position != nil {
+		return position, nil
 	}
 
-	return nil, fmt.Errorf("this Any doesn't have Position value")
-}
-
-func UnpackOpenedPosition(positionAny *types.Any) (OpenedPositionI, error) {
-	position, err := UnpackPerpetualFuturesOpenedPosition(positionAny)
-	if position != nil || err != nil {
-		return position, err
-	}
-
-	position, err = UnpackPerpetualOptionsOpenedPosition(positionAny)
-	if position != nil || err != nil {
-		return position, err
-	}
-
-	return nil, fmt.Errorf("this Any doesn't have Position value")
-}
-
-func UnpackClosedPosition(positionAny *types.Any) (ClosedPositionI, error) {
-	position, err := UnpackPerpetualFuturesClosedPosition(positionAny)
-	if position != nil || err != nil {
-		return position, err
-	}
-
-	position, err = UnpackPerpetualOptionsClosedPosition(positionAny)
-	if position != nil || err != nil {
-		return position, err
-	}
-
-	return nil, fmt.Errorf("this Any doesn't have Position value")
+	return nil, fmt.Errorf("this Any doesn't have PositionInstance value")
 }

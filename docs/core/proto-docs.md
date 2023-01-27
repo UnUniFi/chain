@@ -75,58 +75,46 @@
     - [Msg](#ununifi.cdp.Msg)
   
 - [derivatives/derivatives.proto](#derivatives/derivatives.proto)
-    - [AcceptedLiquidationNeededReport](#ununifi.derivatives.AcceptedLiquidationNeededReport)
-    - [ClosedPosition](#ununifi.derivatives.ClosedPosition)
-    - [OpenedPosition](#ununifi.derivatives.OpenedPosition)
-    - [Pair](#ununifi.derivatives.Pair)
+    - [Market](#ununifi.derivatives.Market)
     - [Params](#ununifi.derivatives.Params)
-    - [PerpetualFuturesPairParams](#ununifi.derivatives.PerpetualFuturesPairParams)
     - [PerpetualFuturesParams](#ununifi.derivatives.PerpetualFuturesParams)
     - [PerpetualOptionsParams](#ununifi.derivatives.PerpetualOptionsParams)
     - [Pool](#ununifi.derivatives.Pool)
     - [Pool.Asset](#ununifi.derivatives.Pool.Asset)
     - [PoolMarketCap](#ununifi.derivatives.PoolMarketCap)
     - [PoolMarketCap.Breakdown](#ununifi.derivatives.PoolMarketCap.Breakdown)
+    - [Position](#ununifi.derivatives.Position)
   
-    - [AssetType](#ununifi.derivatives.AssetType)
     - [PositionType](#ununifi.derivatives.PositionType)
   
 - [derivatives/genesis.proto](#derivatives/genesis.proto)
     - [GenesisState](#ununifi.derivatives.GenesisState)
   
 - [derivatives/perpetual_futures.proto](#derivatives/perpetual_futures.proto)
-    - [PerpetualFuturesClosedPosition](#ununifi.derivatives.PerpetualFuturesClosedPosition)
-    - [PerpetualFuturesOpenedPosition](#ununifi.derivatives.PerpetualFuturesOpenedPosition)
-    - [PerpetualFuturesPosition](#ununifi.derivatives.PerpetualFuturesPosition)
+    - [PerpetualFuturesPositionInstance](#ununifi.derivatives.PerpetualFuturesPositionInstance)
   
 - [derivatives/perpetual_options.proto](#derivatives/perpetual_options.proto)
-    - [PerpetualOptionsClosedPosition](#ununifi.derivatives.PerpetualOptionsClosedPosition)
-    - [PerpetualOptionsOpenedPosition](#ununifi.derivatives.PerpetualOptionsOpenedPosition)
-    - [PerpetualOptionsPosition](#ununifi.derivatives.PerpetualOptionsPosition)
+    - [PerpetualOptionsPositionInstance](#ununifi.derivatives.PerpetualOptionsPositionInstance)
   
     - [OptionType](#ununifi.derivatives.OptionType)
   
 - [derivatives/query.proto](#derivatives/query.proto)
-    - [QueryAddressClosedPositionsRequest](#ununifi.derivatives.QueryAddressClosedPositionsRequest)
-    - [QueryAddressClosedPositionsResponse](#ununifi.derivatives.QueryAddressClosedPositionsResponse)
-    - [QueryAddressOpeningPositionsRequest](#ununifi.derivatives.QueryAddressOpeningPositionsRequest)
-    - [QueryAddressOpeningPositionsResponse](#ununifi.derivatives.QueryAddressOpeningPositionsResponse)
-    - [QueryAllOpeningPositionsRequest](#ununifi.derivatives.QueryAllOpeningPositionsRequest)
-    - [QueryAllOpeningPositionsResponse](#ununifi.derivatives.QueryAllOpeningPositionsResponse)
-    - [QueryClosedPositionRequest](#ununifi.derivatives.QueryClosedPositionRequest)
-    - [QueryClosedPositionResponse](#ununifi.derivatives.QueryClosedPositionResponse)
+    - [QueryAddressPositionsRequest](#ununifi.derivatives.QueryAddressPositionsRequest)
+    - [QueryAddressPositionsResponse](#ununifi.derivatives.QueryAddressPositionsResponse)
+    - [QueryAllPositionsRequest](#ununifi.derivatives.QueryAllPositionsRequest)
+    - [QueryAllPositionsResponse](#ununifi.derivatives.QueryAllPositionsResponse)
     - [QueryLiquidityProviderTokenNominalAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYRequest)
     - [QueryLiquidityProviderTokenNominalAPYResponse](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYResponse)
     - [QueryLiquidityProviderTokenRealAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenRealAPYRequest)
     - [QueryLiquidityProviderTokenRealAPYResponse](#ununifi.derivatives.QueryLiquidityProviderTokenRealAPYResponse)
     - [QueryParamsRequest](#ununifi.derivatives.QueryParamsRequest)
     - [QueryParamsResponse](#ununifi.derivatives.QueryParamsResponse)
-    - [QueryPerpetualFuturesPairRequest](#ununifi.derivatives.QueryPerpetualFuturesPairRequest)
-    - [QueryPerpetualFuturesPairResponse](#ununifi.derivatives.QueryPerpetualFuturesPairResponse)
+    - [QueryPerpetualFuturesMarketRequest](#ununifi.derivatives.QueryPerpetualFuturesMarketRequest)
+    - [QueryPerpetualFuturesMarketResponse](#ununifi.derivatives.QueryPerpetualFuturesMarketResponse)
     - [QueryPerpetualFuturesRequest](#ununifi.derivatives.QueryPerpetualFuturesRequest)
     - [QueryPerpetualFuturesResponse](#ununifi.derivatives.QueryPerpetualFuturesResponse)
-    - [QueryPerpetualOptionsPairRequest](#ununifi.derivatives.QueryPerpetualOptionsPairRequest)
-    - [QueryPerpetualOptionsPairResponse](#ununifi.derivatives.QueryPerpetualOptionsPairResponse)
+    - [QueryPerpetualOptionsMarketRequest](#ununifi.derivatives.QueryPerpetualOptionsMarketRequest)
+    - [QueryPerpetualOptionsMarketResponse](#ununifi.derivatives.QueryPerpetualOptionsMarketResponse)
     - [QueryPerpetualOptionsRequest](#ununifi.derivatives.QueryPerpetualOptionsRequest)
     - [QueryPerpetualOptionsResponse](#ununifi.derivatives.QueryPerpetualOptionsResponse)
     - [QueryPoolRequest](#ununifi.derivatives.QueryPoolRequest)
@@ -143,8 +131,8 @@
     - [MsgMintLiquidityProviderTokenResponse](#ununifi.derivatives.MsgMintLiquidityProviderTokenResponse)
     - [MsgOpenPosition](#ununifi.derivatives.MsgOpenPosition)
     - [MsgOpenPositionResponse](#ununifi.derivatives.MsgOpenPositionResponse)
-    - [MsgReportLiquidationNeededPosition](#ununifi.derivatives.MsgReportLiquidationNeededPosition)
-    - [MsgReportLiquidationNeededPositionResponse](#ununifi.derivatives.MsgReportLiquidationNeededPositionResponse)
+    - [MsgReportLiquidation](#ununifi.derivatives.MsgReportLiquidation)
+    - [MsgReportLiquidationResponse](#ununifi.derivatives.MsgReportLiquidationResponse)
   
     - [Msg](#ununifi.derivatives.Msg)
   
@@ -1326,65 +1314,9 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.AcceptedLiquidationNeededReport"></a>
+<a name="ununifi.derivatives.Market"></a>
 
-### AcceptedLiquidationNeededReport
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `position_id` | [string](#string) |  |  |
-| `sender` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.ClosedPosition"></a>
-
-### ClosedPosition
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  |  |
-| `address` | [string](#string) |  |  |
-| `opened_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
-| `opened_height` | [uint64](#uint64) |  |  |
-| `closed_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
-| `closed_height` | [uint64](#uint64) |  |  |
-| `position` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.OpenedPosition"></a>
-
-### OpenedPosition
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  |  |
-| `address` | [string](#string) |  |  |
-| `opened_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
-| `opened_height` | [uint64](#uint64) |  |  |
-| `position` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.Pair"></a>
-
-### Pair
+### Market
 
 
 
@@ -1415,21 +1347,6 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.PerpetualFuturesPairParams"></a>
-
-### PerpetualFuturesPairParams
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `pair` | [Pair](#ununifi.derivatives.Pair) |  |  |
-
-
-
-
-
-
 <a name="ununifi.derivatives.PerpetualFuturesParams"></a>
 
 ### PerpetualFuturesParams
@@ -1441,7 +1358,7 @@ Query defines the gRPC querier service.
 | `commission_rate` | [string](#string) |  |  |
 | `margin_maintenance_rate` | [string](#string) |  |  |
 | `imaginary_funding_rate_proportional_coefficient` | [string](#string) |  |  |
-| `pairs` | [Pair](#ununifi.derivatives.Pair) | repeated |  |
+| `markets` | [Market](#ununifi.derivatives.Market) | repeated |  |
 
 
 
@@ -1460,7 +1377,7 @@ Query defines the gRPC querier service.
 | `strike_commission_rate` | [string](#string) |  |  |
 | `margin_maintenance_rate` | [string](#string) |  |  |
 | `imaginary_funding_rate_proportional_coefficient` | [string](#string) |  |  |
-| `pairs` | [Pair](#ununifi.derivatives.Pair) | repeated |  |
+| `markets` | [Market](#ununifi.derivatives.Market) | repeated |  |
 
 
 
@@ -1536,19 +1453,28 @@ Query defines the gRPC querier service.
 
 
 
+
+<a name="ununifi.derivatives.Position"></a>
+
+### Position
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  |  |
+| `market` | [Market](#ununifi.derivatives.Market) |  |  |
+| `address` | [string](#string) |  |  |
+| `opened_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `opened_height` | [uint64](#uint64) |  |  |
+| `opened_rate` | [string](#string) |  |  |
+| `position_instance` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+
+
+
+
+
  <!-- end messages -->
-
-
-<a name="ununifi.derivatives.AssetType"></a>
-
-### AssetType
-
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| Real | 0 |  |
-| Imaginary | 1 |  |
-
 
 
 <a name="ununifi.derivatives.PositionType"></a>
@@ -1609,49 +1535,15 @@ GenesisState defines the derivatives module's genesis state.
 
 
 
-<a name="ununifi.derivatives.PerpetualFuturesClosedPosition"></a>
+<a name="ununifi.derivatives.PerpetualFuturesPositionInstance"></a>
 
-### PerpetualFuturesClosedPosition
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `position` | [PerpetualFuturesPosition](#ununifi.derivatives.PerpetualFuturesPosition) |  |  |
-| `opening_price` | [string](#string) |  |  |
-| `closing_price` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.PerpetualFuturesOpenedPosition"></a>
-
-### PerpetualFuturesOpenedPosition
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `position` | [PerpetualFuturesPosition](#ununifi.derivatives.PerpetualFuturesPosition) |  |  |
-| `opening_price` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.PerpetualFuturesPosition"></a>
-
-### PerpetualFuturesPosition
+### PerpetualFuturesPositionInstance
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `position_type` | [PositionType](#ununifi.derivatives.PositionType) |  |  |
-| `pair` | [Pair](#ununifi.derivatives.Pair) |  |  |
 | `size` | [string](#string) |  |  |
 | `leverage` | [string](#string) |  |  |
 
@@ -1676,39 +1568,9 @@ GenesisState defines the derivatives module's genesis state.
 
 
 
-<a name="ununifi.derivatives.PerpetualOptionsClosedPosition"></a>
+<a name="ununifi.derivatives.PerpetualOptionsPositionInstance"></a>
 
-### PerpetualOptionsClosedPosition
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `position` | [PerpetualOptionsPosition](#ununifi.derivatives.PerpetualOptionsPosition) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.PerpetualOptionsOpenedPosition"></a>
-
-### PerpetualOptionsOpenedPosition
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `position` | [PerpetualOptionsPosition](#ununifi.derivatives.PerpetualOptionsPosition) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.PerpetualOptionsPosition"></a>
-
-### PerpetualOptionsPosition
+### PerpetualOptionsPositionInstance
 
 
 
@@ -1716,7 +1578,6 @@ GenesisState defines the derivatives module's genesis state.
 | ----- | ---- | ----- | ----------- |
 | `option_type` | [OptionType](#ununifi.derivatives.OptionType) |  |  |
 | `position_type` | [PositionType](#ununifi.derivatives.PositionType) |  |  |
-| `pair` | [Pair](#ununifi.derivatives.Pair) |  |  |
 | `strike_price` | [string](#string) |  |  |
 | `premium` | [string](#string) |  |  |
 
@@ -1754,40 +1615,9 @@ GenesisState defines the derivatives module's genesis state.
 
 
 
-<a name="ununifi.derivatives.QueryAddressClosedPositionsRequest"></a>
+<a name="ununifi.derivatives.QueryAddressPositionsRequest"></a>
 
-### QueryAddressClosedPositionsRequest
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.QueryAddressClosedPositionsResponse"></a>
-
-### QueryAddressClosedPositionsResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `positions` | [ClosedPosition](#ununifi.derivatives.ClosedPosition) | repeated |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.QueryAddressOpeningPositionsRequest"></a>
-
-### QueryAddressOpeningPositionsRequest
+### QueryAddressPositionsRequest
 
 
 
@@ -1800,15 +1630,15 @@ GenesisState defines the derivatives module's genesis state.
 
 
 
-<a name="ununifi.derivatives.QueryAddressOpeningPositionsResponse"></a>
+<a name="ununifi.derivatives.QueryAddressPositionsResponse"></a>
 
-### QueryAddressOpeningPositionsResponse
+### QueryAddressPositionsResponse
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `positions` | [OpenedPosition](#ununifi.derivatives.OpenedPosition) | repeated |  |
+| `positions` | [Position](#ununifi.derivatives.Position) | repeated |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
 
 
@@ -1816,56 +1646,26 @@ GenesisState defines the derivatives module's genesis state.
 
 
 
-<a name="ununifi.derivatives.QueryAllOpeningPositionsRequest"></a>
+<a name="ununifi.derivatives.QueryAllPositionsRequest"></a>
 
-### QueryAllOpeningPositionsRequest
-
-
+### QueryAllPositionsRequest
 
 
 
 
 
-<a name="ununifi.derivatives.QueryAllOpeningPositionsResponse"></a>
 
-### QueryAllOpeningPositionsResponse
+
+<a name="ununifi.derivatives.QueryAllPositionsResponse"></a>
+
+### QueryAllPositionsResponse
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `positions` | [OpenedPosition](#ununifi.derivatives.OpenedPosition) | repeated |  |
+| `positions` | [Position](#ununifi.derivatives.Position) | repeated |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.QueryClosedPositionRequest"></a>
-
-### QueryClosedPositionRequest
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.QueryClosedPositionResponse"></a>
-
-### QueryClosedPositionResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `position` | [ClosedPosition](#ununifi.derivatives.ClosedPosition) |  |  |
 
 
 
@@ -1959,9 +1759,9 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 
 
 
-<a name="ununifi.derivatives.QueryPerpetualFuturesPairRequest"></a>
+<a name="ununifi.derivatives.QueryPerpetualFuturesMarketRequest"></a>
 
-### QueryPerpetualFuturesPairRequest
+### QueryPerpetualFuturesMarketRequest
 
 
 
@@ -1975,9 +1775,9 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 
 
 
-<a name="ununifi.derivatives.QueryPerpetualFuturesPairResponse"></a>
+<a name="ununifi.derivatives.QueryPerpetualFuturesMarketResponse"></a>
 
-### QueryPerpetualFuturesPairResponse
+### QueryPerpetualFuturesMarketResponse
 
 
 
@@ -2024,9 +1824,9 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 
 
 
-<a name="ununifi.derivatives.QueryPerpetualOptionsPairRequest"></a>
+<a name="ununifi.derivatives.QueryPerpetualOptionsMarketRequest"></a>
 
-### QueryPerpetualOptionsPairRequest
+### QueryPerpetualOptionsMarketRequest
 
 
 
@@ -2040,9 +1840,9 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 
 
 
-<a name="ununifi.derivatives.QueryPerpetualOptionsPairResponse"></a>
+<a name="ununifi.derivatives.QueryPerpetualOptionsMarketResponse"></a>
 
-### QueryPerpetualOptionsPairResponse
+### QueryPerpetualOptionsMarketResponse
 
 
 
@@ -2116,13 +1916,11 @@ Query defines the gRPC querier service.
 | `LiquidityProviderTokenRealAPY` | [QueryLiquidityProviderTokenRealAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenRealAPYRequest) | [QueryLiquidityProviderTokenRealAPYResponse](#ununifi.derivatives.QueryLiquidityProviderTokenRealAPYResponse) |  | GET|/ununifi/derivatives/liquidity-providers/real-apy|
 | `LiquidityProviderTokenNominalAPY` | [QueryLiquidityProviderTokenNominalAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYRequest) | [QueryLiquidityProviderTokenNominalAPYResponse](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYResponse) |  | GET|/ununifi/derivatives/liquidity-providers/nominal-apy|
 | `PerpetualFutures` | [QueryPerpetualFuturesRequest](#ununifi.derivatives.QueryPerpetualFuturesRequest) | [QueryPerpetualFuturesResponse](#ununifi.derivatives.QueryPerpetualFuturesResponse) |  | GET|/ununifi/derivatives/perpetual-futures|
-| `PerpetualFuturesPair` | [QueryPerpetualFuturesPairRequest](#ununifi.derivatives.QueryPerpetualFuturesPairRequest) | [QueryPerpetualFuturesPairResponse](#ununifi.derivatives.QueryPerpetualFuturesPairResponse) |  | GET|/ununifi/derivatives/perpetual-futures/{denom}/{quote_denom}|
+| `PerpetualFuturesMarket` | [QueryPerpetualFuturesMarketRequest](#ununifi.derivatives.QueryPerpetualFuturesMarketRequest) | [QueryPerpetualFuturesMarketResponse](#ununifi.derivatives.QueryPerpetualFuturesMarketResponse) |  | GET|/ununifi/derivatives/perpetual-futures/{denom}/{quote_denom}|
 | `PerpetualOptions` | [QueryPerpetualOptionsRequest](#ununifi.derivatives.QueryPerpetualOptionsRequest) | [QueryPerpetualOptionsResponse](#ununifi.derivatives.QueryPerpetualOptionsResponse) |  | GET|/ununifi/derivatives/perpetual-options|
-| `PerpetualOptionsPair` | [QueryPerpetualOptionsPairRequest](#ununifi.derivatives.QueryPerpetualOptionsPairRequest) | [QueryPerpetualOptionsPairResponse](#ununifi.derivatives.QueryPerpetualOptionsPairResponse) |  | GET|/ununifi/derivatives/perpetual-options/{denom}/{quote_denom}|
-| `AllOpeningPositions` | [QueryAllOpeningPositionsRequest](#ununifi.derivatives.QueryAllOpeningPositionsRequest) | [QueryAllOpeningPositionsResponse](#ununifi.derivatives.QueryAllOpeningPositionsResponse) |  | GET|/ununifi/derivatives/positions/opening|
-| `ClosedPosition` | [QueryClosedPositionRequest](#ununifi.derivatives.QueryClosedPositionRequest) | [QueryClosedPositionResponse](#ununifi.derivatives.QueryClosedPositionResponse) |  | GET|/ununifi/derivatives/positions/closed/{id}|
-| `AddressOpeningPositions` | [QueryAddressOpeningPositionsRequest](#ununifi.derivatives.QueryAddressOpeningPositionsRequest) | [QueryAddressOpeningPositionsResponse](#ununifi.derivatives.QueryAddressOpeningPositionsResponse) |  | GET|/ununifi/derivatives/positions/{address}/opening|
-| `AddressClosedPositions` | [QueryAddressClosedPositionsRequest](#ununifi.derivatives.QueryAddressClosedPositionsRequest) | [QueryAddressClosedPositionsResponse](#ununifi.derivatives.QueryAddressClosedPositionsResponse) |  | GET|/ununifi/derivatives/positions/{address}/closed|
+| `PerpetualOptionsMarket` | [QueryPerpetualOptionsMarketRequest](#ununifi.derivatives.QueryPerpetualOptionsMarketRequest) | [QueryPerpetualOptionsMarketResponse](#ununifi.derivatives.QueryPerpetualOptionsMarketResponse) |  | GET|/ununifi/derivatives/perpetual-options/{denom}/{quote_denom}|
+| `AllPositions` | [QueryAllPositionsRequest](#ununifi.derivatives.QueryAllPositionsRequest) | [QueryAllPositionsResponse](#ununifi.derivatives.QueryAllPositionsResponse) |  | GET|/ununifi/derivatives/positions|
+| `AddressPositions` | [QueryAddressPositionsRequest](#ununifi.derivatives.QueryAddressPositionsRequest) | [QueryAddressPositionsResponse](#ununifi.derivatives.QueryAddressPositionsResponse) |  | GET|/ununifi/derivatives/positions/{address}|
 
  <!-- end services -->
 
@@ -2223,7 +2021,8 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  |  |
 | `margin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-| `position` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+| `market` | [Market](#ununifi.derivatives.Market) |  |  |
+| `position_instance` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
 
 
 
@@ -2240,9 +2039,9 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.MsgReportLiquidationNeededPosition"></a>
+<a name="ununifi.derivatives.MsgReportLiquidation"></a>
 
-### MsgReportLiquidationNeededPosition
+### MsgReportLiquidation
 
 
 
@@ -2250,15 +2049,16 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  |  |
 | `position_id` | [string](#string) |  |  |
+| `reward_recipient` | [string](#string) |  |  |
 
 
 
 
 
 
-<a name="ununifi.derivatives.MsgReportLiquidationNeededPositionResponse"></a>
+<a name="ununifi.derivatives.MsgReportLiquidationResponse"></a>
 
-### MsgReportLiquidationNeededPositionResponse
+### MsgReportLiquidationResponse
 
 
 
@@ -2283,7 +2083,7 @@ Query defines the gRPC querier service.
 | `BurnLiquidityProviderToken` | [MsgBurnLiquidityProviderToken](#ununifi.derivatives.MsgBurnLiquidityProviderToken) | [MsgBurnLiquidityProviderTokenResponse](#ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse) |  | |
 | `OpenPosition` | [MsgOpenPosition](#ununifi.derivatives.MsgOpenPosition) | [MsgOpenPositionResponse](#ununifi.derivatives.MsgOpenPositionResponse) |  | |
 | `ClosePosition` | [MsgClosePosition](#ununifi.derivatives.MsgClosePosition) | [MsgClosePositionResponse](#ununifi.derivatives.MsgClosePositionResponse) |  | |
-| `ReportLiquidationNeededPosition` | [MsgReportLiquidationNeededPosition](#ununifi.derivatives.MsgReportLiquidationNeededPosition) | [MsgReportLiquidationNeededPositionResponse](#ununifi.derivatives.MsgReportLiquidationNeededPositionResponse) |  | |
+| `ReportLiquidation` | [MsgReportLiquidation](#ununifi.derivatives.MsgReportLiquidation) | [MsgReportLiquidationResponse](#ununifi.derivatives.MsgReportLiquidationResponse) |  | |
 
  <!-- end services -->
 
