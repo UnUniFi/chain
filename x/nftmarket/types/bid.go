@@ -145,6 +145,9 @@ func (m NftBids) SortLowerBiddingPeriod() NftBids {
 }
 
 func (m NftBids) GetHighestBid() NftBid {
+	if len(m) == 0 {
+		return NftBid{}
+	}
 	highestBidder := NftBid{
 		BidAmount: sdk.NewCoin(m[0].BidAmount.Denom, sdk.ZeroInt()),
 	}

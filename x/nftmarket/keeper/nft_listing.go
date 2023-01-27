@@ -615,6 +615,12 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 		if listing.State == types.ListingState_SELLING_DECISION {
 			// todo get higher bidding price Bid
 			HighestBid := bids.GetHighestBid()
+			if HighestBid.IsNil() {
+				listing.State = types.ListingState_LISTING
+				listing.EndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingExtendSeconds))
+				k.SaveNftListing(ctx, listing)
+				continue
+			}
 			// if winner bidder did not pay full bid, nft is listed again after deleting winner bidder
 			if !HighestBid.IsPaidBidAmount() {
 				k.DeleteBid(ctx, HighestBid)
