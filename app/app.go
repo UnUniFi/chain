@@ -380,6 +380,7 @@ func NewApp(
 		nftkeeper.StoreKey,
 		nftminttypes.StoreKey,
 		nftmarkettypes.StoreKey,
+		derivativestypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)

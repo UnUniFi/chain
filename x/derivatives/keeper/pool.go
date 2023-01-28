@@ -23,6 +23,16 @@ func (k Keeper) GetPoolAssets(ctx sdk.Context) []types.Pool_Asset {
 	return assets
 }
 
+func (k Keeper) GetPoolAssetByDenom(ctx sdk.Context, denom string) types.Pool_Asset {
+	store := ctx.KVStore(k.storeKey)
+
+	asset := types.Pool_Asset{}
+	bz := store.Get(types.AssetKeyPrefix(denom))
+	k.cdc.MustUnmarshal(bz, &asset)
+
+	return asset
+}
+
 func (k Keeper) AddPoolAsset(ctx sdk.Context, asset types.Pool_Asset) {
 	store := ctx.KVStore(k.storeKey)
 
@@ -49,11 +59,11 @@ func (k Keeper) IsAssetValid(ctx sdk.Context, iasset types.Pool_Asset) bool {
 	return false
 }
 
-func (k Keeper) GetAssetBalance(ctx sdk.Context, asset types.Pool_Asset) sdk.Coin {
+func (k Keeper) GetAssetBalance(ctx sdk.Context, denom string) sdk.Coin {
 	store := ctx.KVStore(k.storeKey)
 
 	coin := sdk.Coin{}
-	bz := store.Get(types.AssetDepositKeyPrefix(asset.Denom))
+	bz := store.Get(types.AssetDepositKeyPrefix(denom))
 	k.cdc.MustUnmarshal(bz, &coin)
 
 	return coin
@@ -76,18 +86,18 @@ func (k Keeper) GetUserDeposits(ctx sdk.Context, depositor sdk.AccAddress) []sdk
 	return deposits
 }
 
-func (k Keeper) DepositPoolAsset(ctx sdk.Context, depositor sdk.AccAddress, deposit_data sdk.Coin) {
+func (k Keeper) DepositPoolAsset(ctx sdk.Context, depositor sdk.AccAddress, asset sdk.Coin) {
 	store := ctx.KVStore(k.storeKey)
 
-	bz := k.cdc.MustMarshal(&deposit_data)
+	bz := k.cdc.MustMarshal(&asset)
 
-	store.Set(types.AddressAssetPoolDepositKeyPrefix(depositor, deposit_data.Denom), bz)
+	store.Set(types.AddressAssetPoolDepositKeyPrefix(depositor, asset.Denom), bz)
 
-	key := types.AssetDepositKeyPrefix(deposit_data.Denom)
+	key := types.AssetDepositKeyPrefix(asset.Denom)
 	coinBz := store.Get(key)
 	coin := sdk.Coin{}
 	k.cdc.MustUnmarshal(coinBz, &coin)
-	coin.Amount.Add(deposit_data.Amount)
+	coin.Amount = coin.Amount.Add(asset.Amount)
 
 	coinBz = k.cdc.MustMarshal(&coin)
 	store.Set(key, coinBz)
@@ -127,7 +137,7 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 	quoteTicker := k.GetPoolQuoteTicker(ctx)
 
 	for _, asset := range assets {
-		balance := k.GetAssetBalance(ctx, asset)
+		balance := k.GetAssetBalance(ctx, asset.Denom)
 		price, err := k.GetAssetPrice(ctx, asset.Denom)
 
 		if err != nil {

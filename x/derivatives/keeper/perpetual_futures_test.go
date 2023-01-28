@@ -19,65 +19,69 @@ func (suite *KeeperTestSuite) TestReportLiquidationNeededPerpetualFuturesPositio
 }
 
 func (suite *KeeperTestSuite) TestSetPerpetualFuturesNetPositionOfMarket() {
-	// owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-
-	netPosition := sdk.Coin{
-		Denom:  "uusd",
-		Amount: sdk.NewInt(100),
+	market := types.Market{
+		Denom:      "uatom",
+		QuoteDenom: "uusdc",
 	}
 
-	suite.keeper.SetPerpetualFuturesNetPositionOfMarket(suite.ctx, "marketId", netPosition)
+	netPosition := sdk.NewDec(100)
+
+	suite.keeper.SetPerpetualFuturesNetPositionOfMarket(suite.ctx, market, netPosition)
 
 	// Check if the netPosition was set
-	netPositionOfMarket := suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, "marketId")
+	netPositionOfMarket := suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market)
 
-	suite.Require().Equal(netPositionOfMarket, &netPosition)
+	suite.Require().Equal(netPositionOfMarket, netPosition)
 }
 
 func (suite *KeeperTestSuite) TestAddPerpetualFuturesNetPositionOfMarket() {
-	netPosition := sdk.Coin{
-		Denom:  "uusd",
-		Amount: sdk.NewInt(100),
+	market := types.Market{
+		Denom:      "uatom",
+		QuoteDenom: "uusdc",
 	}
 
-	suite.keeper.SetPerpetualFuturesNetPositionOfMarket(suite.ctx, "marketId", netPosition)
+	netPosition := sdk.NewDec(100)
+
+	suite.keeper.SetPerpetualFuturesNetPositionOfMarket(suite.ctx, market, netPosition)
 
 	// Check if the netPosition was set
-	netPositionOfMarket := suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, "marketId")
+	netPositionOfMarket := suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market)
 
-	suite.Require().Equal(netPositionOfMarket, &netPosition)
+	suite.Require().Equal(netPositionOfMarket, netPosition)
 
 	// Add 50 more
-	netPosition.Amount = sdk.NewInt(150)
+	netAddPosition := sdk.NewDec(50)
 
-	suite.keeper.AddPerpetualFuturesNetPositionOfMarket(suite.ctx, "marketId", netPosition)
+	suite.keeper.AddPerpetualFuturesNetPositionOfMarket(suite.ctx, market, netAddPosition)
 
 	// Check if the netPosition was set
-	netPositionOfMarket = suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, "marketId")
+	netPositionOfMarket = suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market)
 
-	suite.Require().Equal(netPositionOfMarket, &netPosition)
+	suite.Require().Equal(netPositionOfMarket, netPosition.Add(netAddPosition))
 }
 
 func (suite *KeeperTestSuite) TestSubPerpetualFuturesNetPositionOfMarket() {
-	netPosition := sdk.Coin{
-		Denom:  "uusd",
-		Amount: sdk.NewInt(100),
+	market := types.Market{
+		Denom:      "uatom",
+		QuoteDenom: "uusdc",
 	}
 
-	suite.keeper.SetPerpetualFuturesNetPositionOfMarket(suite.ctx, "marketId", netPosition)
+	netPosition := sdk.NewDec(100)
+
+	suite.keeper.SetPerpetualFuturesNetPositionOfMarket(suite.ctx, market, netPosition)
 
 	// Check if the netPosition was set
-	netPositionOfMarket := suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, "marketId")
+	netPositionOfMarket := suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market)
 
-	suite.Require().Equal(netPositionOfMarket, &netPosition)
+	suite.Require().Equal(netPositionOfMarket, netPosition)
 
 	// Sub 50 more
-	netPosition.Amount = sdk.NewInt(50)
+	netSubPosition := sdk.NewDec(50)
 
-	suite.keeper.SubPerpetualFuturesNetPositionOfMarket(suite.ctx, "marketId", netPosition)
+	suite.keeper.SubPerpetualFuturesNetPositionOfMarket(suite.ctx, market, netSubPosition)
 
 	// Check if the netPosition was set
-	netPositionOfMarket = suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, "marketId")
+	netPositionOfMarket = suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market)
 
-	suite.Require().Equal(netPositionOfMarket, &netPosition)
+	suite.Require().Equal(netPositionOfMarket, netPosition.Sub(netSubPosition))
 }

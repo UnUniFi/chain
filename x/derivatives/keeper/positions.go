@@ -10,15 +10,17 @@ func (k Keeper) GetLastPositionId(ctx sdk.Context) string {
 	store := ctx.KVStore(k.storeKey)
 
 	bz := store.Get([]byte(types.KeyPrefixLastPositionId))
-	if bz == nil {
-		panic("last position id not set in genesis")
-	}
 
 	return string(bz)
 }
 
 func (k Keeper) IncreaseLastPositionId(ctx sdk.Context) {
 	store := ctx.KVStore(k.storeKey)
+
+	bz := store.Get([]byte(types.KeyPrefixLastPositionId))
+	if bz == nil {
+		store.Set([]byte(types.KeyPrefixLastPositionId), types.GetPositionIdBytes(0))
+	}
 
 	lastPositionId := types.GetPositionIdFromString(k.GetLastPositionId(ctx))
 	store.Set([]byte(types.KeyPrefixLastPositionId), types.GetPositionIdBytes(lastPositionId+1))

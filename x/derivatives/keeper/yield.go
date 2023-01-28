@@ -28,7 +28,7 @@ func (k Keeper) GetInflationRateOfAssetsInPool(ctx sdk.Context, beforeHeight int
 		amountBefore := poolMarketCapBefore.Breakdown[i].Amount
 		priceAfter := poolMarketCapAfter.Breakdown[i].Price
 
-		poolMarketCapAfterWithBeforeAmount.Add(sdk.Dec(amountBefore).Mul(priceAfter))
+		poolMarketCapAfterWithBeforeAmount.Add(sdk.NewDecFromInt(amountBefore).Mul(priceAfter))
 	}
 
 	diff := poolMarketCapAfterWithBeforeAmount.Sub(poolMarketCapBefore.Total)

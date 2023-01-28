@@ -87,7 +87,7 @@ func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgBurnLi
 	assets := k.GetPoolAssets(ctx)
 
 	for _, asset := range assets {
-		coinBalance := k.GetAssetBalance(ctx, asset)
+		coinBalance := k.GetAssetBalance(ctx, asset.Denom)
 		tempAmount := coinBalance.Amount.Mul(userBalance.Amount)
 		balanceToRedeem := tempAmount.BigInt().Div(tempAmount.BigInt(), totalSupply.Amount.BigInt())
 
