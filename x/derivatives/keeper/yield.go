@@ -52,7 +52,8 @@ func (k Keeper) GetLPRealYieldRate(ctx sdk.Context, beforeHeight int64, afterHei
 }
 
 func (k Keeper) AnnualizeYieldRate(ctx sdk.Context, yieldRate sdk.Dec, beforeHeight int64, afterHeight int64) sdk.Dec {
-	// TODO: get the blocktime of beforeHeight and afterHeight, then calculate yieldRate * (timespan of afterHeight - beforeHeight) / (timespan of one year)
+	// TODO: get the block time of beforeHeight and afterHeight, then calculate yieldRate * (afterBlockTime - beforeBlockTime) / (time span of one year)
+	// Saving block_time of each height is not efficient, but an only way that we can do currently. Is there a better way?
 
 	panic("")
 }
