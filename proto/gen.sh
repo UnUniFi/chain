@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # https://docs.buf.build/installation/
 # https://github.com/grpc-ecosystem/grpc-gateway#installation
-# Note: go version 16
+# Note: go version 1.18, buf version 1.13.1
 # go mod tidy
 # go install \
 #     github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
@@ -22,25 +22,27 @@ protoc_gen_gocosmos() {
 
 protoc_gen_gocosmos
 
-proto_dirs=$(find ./proto -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
+echo "buf generate start"
+cd proto
+proto_dirs=$(find ./ -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
 for dir in $proto_dirs; do
-  buf protoc \
-    -I "proto" \
-    -I "proto-thirdparty" \
-    --gocosmos_out=plugins=interfacetype+grpc,\
-Mgoogle/protobuf/any.proto=github.com/cosmos/cosmos-sdk/codec/types:. \
-    --grpc-gateway_out=logtostderr=true,allow_colon_final_segments=true:. \
-  $(find "${dir}" -maxdepth 1 -name '*.proto')
-
+  for file in $(find "${dir}" -maxdepth 1 -name '*.proto'); do
+    buf generate --template buf.gen.yaml $file
+  done
 done
 
+# cd ..
+
 # command to generate docs using protoc-gen-doc
-buf protoc \
-  -I "proto" \
-  -I "proto-thirdparty" \
-  --doc_out=./docs/core \
-  --doc_opt=./docs/protodoc-markdown.tmpl,proto-docs.md \
-  $(find "$(pwd)/proto" -maxdepth 5 -name '*.proto')
+# buf protoc \
+#   -I "proto" \
+#   -I "proto-thirdparty" \
+#   --doc_out=./docs/core \
+#   --doc_opt=/docs/protodoc-markdown.tmpl,proto-docs.md. \
+#   $(find "$(pwd)/proto" -maxdepth 5 -name '*.proto')
+
+cd ..
+
 go mod tidy
 
 # move proto files to the right places
