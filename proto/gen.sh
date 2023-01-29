@@ -24,24 +24,18 @@ protoc_gen_gocosmos
 
 echo "buf generate start"
 cd proto
-proto_dirs=$(find ./ -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
-for dir in $proto_dirs; do
-  for file in $(find "${dir}" -maxdepth 1 -name '*.proto'); do
-    buf generate --template buf.gen.yaml $file
-  done
-done
-
-# cd ..
-
-# command to generate docs using protoc-gen-doc
-# buf protoc \
-#   -I "proto" \
-#   -I "proto-thirdparty" \
-#   --doc_out=./docs/core \
-#   --doc_opt=/docs/protodoc-markdown.tmpl,proto-docs.md. \
-#   $(find "$(pwd)/proto" -maxdepth 5 -name '*.proto')
+buf generate --template buf.gen.yaml
 
 cd ..
+
+echo "doc generate"
+# command to generate docs using protoc-gen-doc
+protoc \
+  -I "proto" \
+  -I "proto-thirdparty" \
+  --doc_out=./docs/core \
+  --doc_opt=./docs/protodoc-markdown.tmpl,proto-docs.md:./ \
+  ./proto/*/*.proto
 
 go mod tidy
 
