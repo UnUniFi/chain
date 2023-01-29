@@ -69,7 +69,15 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 	for index, position := range positions {
 		positionId := fmt.Sprintf("%d", index)
 		positionInStore := suite.keeper.GetPositionWithId(suite.ctx, positionId)
+
+		positionInstance, _ := types.UnpackPositionInstance(position.PositionInstance)
+		positionInstanceInstore, _ := types.UnpackPositionInstance(positionInStore.PositionInstance)
+
+		position.PositionInstance.Reset()
+		positionInStore.PositionInstance.Reset()
+
 		suite.Require().Equal(position, *positionInStore)
+		suite.Require().Equal(positionInstance, positionInstanceInstore)
 	}
 
 	// Check if the position was added
