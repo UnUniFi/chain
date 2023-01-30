@@ -47,7 +47,7 @@ UNAME_M ?= $(shell uname -m)
 TOOLS_DESTDIR  ?= $(GOPATH)/bin
 RUNSIM         = $(TOOLS_DESTDIR)/runsim
 
-BUF_VERSION ?= 1.0.0-rc10
+BUF_VERSION ?= 1.13.1
 PROTOC_VERSION ?= 3.11.2
 
 ifeq ($(UNAME_S),Linux)
