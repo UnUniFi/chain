@@ -44,6 +44,7 @@ const (
 	KeyPrefixLPTokenSupplySnapshot = "lpt_supply_snapshot"
 	KeyPrefixPositionMargin        = "position_margin"
 	KeyPrefixImaginaryFundingRate  = "imaginary_funding_rate"
+	KeyPrefixBlockTimestamp        = "block_timestamp"
 )
 
 const (
@@ -62,6 +63,16 @@ func GetPositionIdFromBytes(bz []byte) uint64 {
 
 func GetPositionIdFromString(idStr string) uint64 {
 	return GetPositionIdFromBytes([]byte(idStr))
+}
+
+func GetBlockTimestampBytes(timestamp int64) (timestampBz []byte) {
+	timestampBz = make([]byte, 8)
+	binary.BigEndian.PutUint64(timestampBz, uint64(timestamp))
+	return
+}
+
+func GetBlockTimestampFromBytes(bz []byte) int64 {
+	return int64(binary.BigEndian.Uint64(bz))
 }
 
 func AddressPoolDepositKeyPrefix(depositor sdk.AccAddress) []byte {
@@ -106,4 +117,8 @@ func AddressLPTokenSupplySnapshotKeyPrefix(height int64) []byte {
 
 func RemainingMarginKeyPrefix(posId string) []byte {
 	return append([]byte(KeyPrefixPositionMargin), []byte(posId)...)
+}
+
+func BlockTimestampWithHeight(height int64) []byte {
+	return append([]byte(KeyPrefixBlockTimestamp), []byte(strconv.FormatInt(height, 10))...)
 }

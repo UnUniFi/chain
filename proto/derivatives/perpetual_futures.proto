@@ -24,3 +24,22 @@ message PerpetualFuturesPositionInstance {
     (gogoproto.nullable) = false
   ];
 }
+
+message EventPerpetualFuturesPositionOpened {
+  string sender = 1;
+  string position_id = 2;
+}
+
+message EventPerpetualFuturesPositionClosed {
+  string sender = 1;
+  string position_id = 2;
+  string fee_amount = 3;
+  string trade_amount = 4;
+}
+
+message EventPerpetualFuturesPositionLiquidated {
+  string reward_recipient = 1;
+  string position_id = 2;
+  string remaining_margin = 3;
+  string reward_amount = 4;
+}

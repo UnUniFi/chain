@@ -1,11 +1,13 @@
 package keeper
 
 import (
+	"errors"
 	"fmt"
 
-	ununifiTypes "github.com/UnUniFi/chain/types"
 	codecTypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	ununifiTypes "github.com/UnUniFi/chain/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
@@ -40,7 +42,10 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 		return nil, fmt.Errorf("unknown position type")
 	}
 
-	// TODO: emit event
+	ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionOpened{
+		Sender:     sender.AccAddress().String(),
+		PositionId: positionId,
+	})
 
 	return &position, nil
 }
@@ -99,7 +104,12 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Po
 
 	k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, position.Address.AccAddress(), sdk.Coins{sdk.NewCoin(position.Market.Denom, amountToUser.RoundInt())})
 
-	// TODO: emit event
+	ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionClosed{
+		Sender:      position.Address.AccAddress().String(),
+		PositionId:  position.Id,
+		FeeAmount:   feeAmount.String(),
+		TradeAmount: tradeAmount.String(),
+	})
 
 	return nil
 }
@@ -115,11 +125,16 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 		reward := sdk.NewCoins(sdk.NewCoin(remainingMargin.Denom, rewardAmount))
 		k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
 
-		// TODO: emit event
+		ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionLiquidated{
+			RewardRecipient: rewardRecipient.AccAddress().String(),
+			PositionId:      position.Id,
+			RemainingMargin: remainingMargin.String(),
+			RewardAmount:    rewardAmount.String(),
+		})
+		return nil
 	}
 
-	// TODO: return error if report is invalid
-	return nil
+	return errors.New("no liquidation needed")
 }
 
 func (k Keeper) GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market) sdk.Dec {

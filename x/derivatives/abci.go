@@ -61,6 +61,10 @@ func setPoolMarketCapSnapshot(ctx sdk.Context, k keeper.Keeper) {
 	k.SetPoolMarketCapSnapshot(ctx, ctx.BlockHeight(), k.GetPoolMarketCap(ctx))
 }
 
+func saveBlockTime(ctx sdk.Context, k keeper.Keeper) {
+	k.SaveBlockTimestamp(ctx, ctx.BlockHeight(), ctx.BlockTime())
+}
+
 // BeginBlocker
 func BeginBlocker(ctx sdk.Context, k keeper.Keeper) {
 	// TODO: make this function calling every 8 hours.
@@ -71,4 +75,5 @@ func BeginBlocker(ctx sdk.Context, k keeper.Keeper) {
 // EndBlocker
 func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 	setPoolMarketCapSnapshot(ctx, k)
+	saveBlockTime(ctx, k)
 }

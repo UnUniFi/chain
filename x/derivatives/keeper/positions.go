@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"errors"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
@@ -141,11 +143,11 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 	position := k.GetAddressPositionWithId(ctx, msg.Sender.AccAddress(), positionId)
 
 	if position == nil {
-		return nil // TODO: return error
+		return errors.New("position not found")
 	}
 
 	if msg.Sender.AccAddress().String() != position.Address.AccAddress().String() {
-		return nil // TODO: return error
+		return errors.New("not owner")
 	}
 
 	positionInstance, err := types.UnpackPositionInstance(position.PositionInstance)
@@ -177,7 +179,7 @@ func (k Keeper) ReportLiquidation(ctx sdk.Context, msg *types.MsgReportLiquidati
 	position := k.GetPositionWithId(ctx, msg.PositionId)
 
 	if position == nil {
-		return nil // TODO: return error
+		return errors.New("position not found")
 	}
 
 	positionInstance, err := types.UnpackPositionInstance(position.PositionInstance)

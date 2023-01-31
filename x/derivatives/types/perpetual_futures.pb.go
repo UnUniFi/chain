@@ -73,8 +73,201 @@ func (m *PerpetualFuturesPositionInstance) GetPositionType() PositionType {
 	return PositionType_POSITION_UNKNOWN
 }
 
+type EventPerpetualFuturesPositionOpened struct {
+	Sender     string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	PositionId string `protobuf:"bytes,2,opt,name=position_id,json=positionId,proto3" json:"position_id,omitempty"`
+}
+
+func (m *EventPerpetualFuturesPositionOpened) Reset()         { *m = EventPerpetualFuturesPositionOpened{} }
+func (m *EventPerpetualFuturesPositionOpened) String() string { return proto.CompactTextString(m) }
+func (*EventPerpetualFuturesPositionOpened) ProtoMessage()    {}
+func (*EventPerpetualFuturesPositionOpened) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8782b9e89770133d, []int{1}
+}
+func (m *EventPerpetualFuturesPositionOpened) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventPerpetualFuturesPositionOpened) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventPerpetualFuturesPositionOpened.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventPerpetualFuturesPositionOpened) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventPerpetualFuturesPositionOpened.Merge(m, src)
+}
+func (m *EventPerpetualFuturesPositionOpened) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventPerpetualFuturesPositionOpened) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventPerpetualFuturesPositionOpened.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventPerpetualFuturesPositionOpened proto.InternalMessageInfo
+
+func (m *EventPerpetualFuturesPositionOpened) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
+
+func (m *EventPerpetualFuturesPositionOpened) GetPositionId() string {
+	if m != nil {
+		return m.PositionId
+	}
+	return ""
+}
+
+type EventPerpetualFuturesPositionClosed struct {
+	Sender      string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	PositionId  string `protobuf:"bytes,2,opt,name=position_id,json=positionId,proto3" json:"position_id,omitempty"`
+	FeeAmount   string `protobuf:"bytes,3,opt,name=fee_amount,json=feeAmount,proto3" json:"fee_amount,omitempty"`
+	TradeAmount string `protobuf:"bytes,4,opt,name=trade_amount,json=tradeAmount,proto3" json:"trade_amount,omitempty"`
+}
+
+func (m *EventPerpetualFuturesPositionClosed) Reset()         { *m = EventPerpetualFuturesPositionClosed{} }
+func (m *EventPerpetualFuturesPositionClosed) String() string { return proto.CompactTextString(m) }
+func (*EventPerpetualFuturesPositionClosed) ProtoMessage()    {}
+func (*EventPerpetualFuturesPositionClosed) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8782b9e89770133d, []int{2}
+}
+func (m *EventPerpetualFuturesPositionClosed) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventPerpetualFuturesPositionClosed) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventPerpetualFuturesPositionClosed.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventPerpetualFuturesPositionClosed) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventPerpetualFuturesPositionClosed.Merge(m, src)
+}
+func (m *EventPerpetualFuturesPositionClosed) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventPerpetualFuturesPositionClosed) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventPerpetualFuturesPositionClosed.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventPerpetualFuturesPositionClosed proto.InternalMessageInfo
+
+func (m *EventPerpetualFuturesPositionClosed) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
+
+func (m *EventPerpetualFuturesPositionClosed) GetPositionId() string {
+	if m != nil {
+		return m.PositionId
+	}
+	return ""
+}
+
+func (m *EventPerpetualFuturesPositionClosed) GetFeeAmount() string {
+	if m != nil {
+		return m.FeeAmount
+	}
+	return ""
+}
+
+func (m *EventPerpetualFuturesPositionClosed) GetTradeAmount() string {
+	if m != nil {
+		return m.TradeAmount
+	}
+	return ""
+}
+
+type EventPerpetualFuturesPositionLiquidated struct {
+	RewardRecipient string `protobuf:"bytes,1,opt,name=reward_recipient,json=rewardRecipient,proto3" json:"reward_recipient,omitempty"`
+	PositionId      string `protobuf:"bytes,2,opt,name=position_id,json=positionId,proto3" json:"position_id,omitempty"`
+	RemainingMargin string `protobuf:"bytes,3,opt,name=remaining_margin,json=remainingMargin,proto3" json:"remaining_margin,omitempty"`
+	RewardAmount    string `protobuf:"bytes,4,opt,name=reward_amount,json=rewardAmount,proto3" json:"reward_amount,omitempty"`
+}
+
+func (m *EventPerpetualFuturesPositionLiquidated) Reset() {
+	*m = EventPerpetualFuturesPositionLiquidated{}
+}
+func (m *EventPerpetualFuturesPositionLiquidated) String() string { return proto.CompactTextString(m) }
+func (*EventPerpetualFuturesPositionLiquidated) ProtoMessage()    {}
+func (*EventPerpetualFuturesPositionLiquidated) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8782b9e89770133d, []int{3}
+}
+func (m *EventPerpetualFuturesPositionLiquidated) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventPerpetualFuturesPositionLiquidated) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventPerpetualFuturesPositionLiquidated.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventPerpetualFuturesPositionLiquidated) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventPerpetualFuturesPositionLiquidated.Merge(m, src)
+}
+func (m *EventPerpetualFuturesPositionLiquidated) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventPerpetualFuturesPositionLiquidated) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventPerpetualFuturesPositionLiquidated.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventPerpetualFuturesPositionLiquidated proto.InternalMessageInfo
+
+func (m *EventPerpetualFuturesPositionLiquidated) GetRewardRecipient() string {
+	if m != nil {
+		return m.RewardRecipient
+	}
+	return ""
+}
+
+func (m *EventPerpetualFuturesPositionLiquidated) GetPositionId() string {
+	if m != nil {
+		return m.PositionId
+	}
+	return ""
+}
+
+func (m *EventPerpetualFuturesPositionLiquidated) GetRemainingMargin() string {
+	if m != nil {
+		return m.RemainingMargin
+	}
+	return ""
+}
+
+func (m *EventPerpetualFuturesPositionLiquidated) GetRewardAmount() string {
+	if m != nil {
+		return m.RewardAmount
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*PerpetualFuturesPositionInstance)(nil), "ununifi.derivatives.PerpetualFuturesPositionInstance")
+	proto.RegisterType((*EventPerpetualFuturesPositionOpened)(nil), "ununifi.derivatives.EventPerpetualFuturesPositionOpened")
+	proto.RegisterType((*EventPerpetualFuturesPositionClosed)(nil), "ununifi.derivatives.EventPerpetualFuturesPositionClosed")
+	proto.RegisterType((*EventPerpetualFuturesPositionLiquidated)(nil), "ununifi.derivatives.EventPerpetualFuturesPositionLiquidated")
 }
 
 func init() {
@@ -82,31 +275,41 @@ func init() {
 }
 
 var fileDescriptor_8782b9e89770133d = []byte{
-	// 379 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x91, 0xcf, 0x4a, 0xeb, 0x40,
-	0x14, 0xc6, 0x93, 0xde, 0xcb, 0xe5, 0xde, 0xdc, 0x7f, 0x10, 0xbb, 0x88, 0x05, 0x93, 0x1a, 0x41,
-	0xba, 0xd0, 0x0c, 0xd5, 0x9d, 0xe0, 0xc2, 0x22, 0x85, 0xee, 0x6a, 0xb1, 0x1b, 0x41, 0xea, 0x24,
-	0x3d, 0x4d, 0x07, 0x93, 0x99, 0x21, 0x33, 0x09, 0xc6, 0xa7, 0xf0, 0x69, 0x7c, 0x86, 0x2e, 0xbb,
-	0x14, 0x17, 0x41, 0xda, 0x37, 0xe8, 0x13, 0x48, 0x93, 0x54, 0xa2, 0xb8, 0x71, 0x35, 0x1f, 0xe7,
-	0x7c, 0xe7, 0x77, 0xe6, 0xe3, 0x68, 0x7b, 0x63, 0x88, 0x48, 0x82, 0x25, 0x49, 0x40, 0x20, 0x0e,
-	0x11, 0x07, 0x19, 0xe3, 0x60, 0x34, 0x89, 0x65, 0x1c, 0x81, 0x70, 0x78, 0xc4, 0x24, 0xd3, 0xb7,
-	0x62, 0x1a, 0x53, 0x32, 0x21, 0x4e, 0xc5, 0xdc, 0xd8, 0xf6, 0x19, 0xf3, 0x03, 0x40, 0xb9, 0xc5,
-	0x8d, 0x27, 0x08, 0xd3, 0xb4, 0xf0, 0x37, 0xea, 0x3e, 0xf3, 0x59, 0x2e, 0xd1, 0x5a, 0x95, 0x55,
-	0xeb, 0xe3, 0x80, 0x24, 0x21, 0x08, 0x89, 0x43, 0x5e, 0x1a, 0x4c, 0x8f, 0x89, 0x90, 0x09, 0xe4,
-	0x62, 0x01, 0x28, 0x69, 0xbb, 0x20, 0x71, 0x1b, 0x79, 0x8c, 0xd0, 0xb2, 0xbf, 0x53, 0xfd, 0x6b,
-	0x45, 0x17, 0x6d, 0xfb, 0xb1, 0xa6, 0x35, 0xfb, 0x9b, 0x04, 0xdd, 0x22, 0x40, 0x9f, 0x09, 0x22,
-	0x09, 0xa3, 0x3d, 0x2a, 0x24, 0xa6, 0x1e, 0xe8, 0x37, 0xda, 0x5f, 0x5e, 0xd6, 0x46, 0x32, 0xe5,
-	0x60, 0xa8, 0x4d, 0xb5, 0xf5, 0xef, 0x68, 0xd7, 0xf9, 0x24, 0xa2, 0xb3, 0x99, 0xbe, 0x4c, 0x39,
-	0x74, 0x8c, 0x55, 0x66, 0xd5, 0x53, 0x1c, 0x06, 0x27, 0xf6, 0x3b, 0x82, 0x3d, 0xf8, 0xc3, 0x2b,
-	0x3e, 0xfd, 0x42, 0xfb, 0x2e, 0xc8, 0x3d, 0x18, 0xb5, 0xa6, 0xda, 0xfa, 0xd5, 0x39, 0x9d, 0x65,
-	0x96, 0xf2, 0x9c, 0x59, 0xfb, 0x3e, 0x91, 0xd3, 0xd8, 0x75, 0x3c, 0x16, 0xa2, 0x32, 0x66, 0xf1,
-	0x1c, 0x8a, 0xf1, 0x2d, 0x5a, 0x73, 0x84, 0x73, 0x0e, 0xde, 0x2a, 0xb3, 0x7e, 0x17, 0x3b, 0xd6,
-	0x0c, 0x7b, 0x90, 0xa3, 0xf4, 0x6b, 0xed, 0x67, 0x00, 0x09, 0x44, 0xd8, 0x07, 0xe3, 0x5b, 0x8e,
-	0x3d, 0xfb, 0x02, 0xb6, 0x47, 0xe5, 0x2a, 0xb3, 0xfe, 0x17, 0xd8, 0x0d, 0xc7, 0x1e, 0xbc, 0x21,
-	0x3b, 0xdd, 0xd9, 0xc2, 0x54, 0xe7, 0x0b, 0x53, 0x7d, 0x59, 0x98, 0xea, 0xc3, 0xd2, 0x54, 0xe6,
-	0x4b, 0x53, 0x79, 0x5a, 0x9a, 0xca, 0xd5, 0x41, 0x05, 0x3f, 0xa4, 0x43, 0x4a, 0xba, 0x04, 0x79,
-	0x53, 0x4c, 0x28, 0xba, 0xab, 0x1e, 0xa0, 0x58, 0xe4, 0xfe, 0xc8, 0xef, 0x70, 0xfc, 0x1a, 0x00,
-	0x00, 0xff, 0xff, 0xfb, 0xcc, 0x4f, 0x96, 0x54, 0x02, 0x00, 0x00,
+	// 543 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x93, 0xd1, 0x6a, 0x13, 0x41,
+	0x14, 0x86, 0xb3, 0xb5, 0x14, 0x33, 0x49, 0x8d, 0xac, 0x45, 0x62, 0xa1, 0xbb, 0xe9, 0x06, 0xb4,
+	0x82, 0xee, 0x50, 0xbd, 0x13, 0xbc, 0x68, 0xd4, 0x40, 0x40, 0xb1, 0x2e, 0xf6, 0x46, 0xd0, 0x38,
+	0xd9, 0x3d, 0xd9, 0x0e, 0x66, 0x67, 0xd6, 0x99, 0xd9, 0x68, 0x7c, 0x0a, 0x1f, 0xc1, 0xa7, 0xf0,
+	0x0d, 0x84, 0x5e, 0xf6, 0x52, 0xbc, 0x08, 0x92, 0xbc, 0x41, 0x9e, 0x40, 0x32, 0xb3, 0x1b, 0xb6,
+	0xa2, 0x16, 0xe9, 0xd5, 0xce, 0xfe, 0xf3, 0xcf, 0x77, 0xce, 0x7f, 0x98, 0x41, 0xed, 0x08, 0x04,
+	0x1d, 0x13, 0x45, 0xc7, 0x20, 0x71, 0x0a, 0x22, 0x05, 0x95, 0x91, 0x51, 0x7f, 0x98, 0xa9, 0x4c,
+	0x80, 0xf4, 0x53, 0xc1, 0x15, 0xb7, 0xaf, 0x65, 0x2c, 0x63, 0x74, 0x48, 0xfd, 0x92, 0x79, 0xfb,
+	0x46, 0xcc, 0x79, 0x3c, 0x02, 0xac, 0x2d, 0x83, 0x6c, 0x88, 0x09, 0x9b, 0x18, 0xff, 0xf6, 0x56,
+	0xcc, 0x63, 0xae, 0x97, 0x78, 0xb9, 0xca, 0x55, 0xf7, 0xf7, 0x03, 0x8a, 0x26, 0x20, 0x15, 0x49,
+	0xd2, 0xdc, 0xe0, 0x84, 0x5c, 0x26, 0x5c, 0xe2, 0x01, 0x91, 0x80, 0xc7, 0xfb, 0x03, 0x50, 0x64,
+	0x1f, 0x87, 0x9c, 0xb2, 0x7c, 0x7f, 0xa7, 0xdc, 0x6b, 0x69, 0x6d, 0xb6, 0xbd, 0xaf, 0x6b, 0xa8,
+	0x75, 0x58, 0x24, 0xe8, 0x9a, 0x00, 0x87, 0x5c, 0x52, 0x45, 0x39, 0xeb, 0x31, 0xa9, 0x08, 0x0b,
+	0xc1, 0x7e, 0x8b, 0x36, 0xd3, 0x5c, 0xeb, 0xab, 0x49, 0x0a, 0x4d, 0xab, 0x65, 0xed, 0x5d, 0xb9,
+	0xb7, 0xeb, 0xff, 0x21, 0xa2, 0x5f, 0x9c, 0x7e, 0x39, 0x49, 0xa1, 0xd3, 0x5c, 0x4c, 0xdd, 0xad,
+	0x09, 0x49, 0x46, 0x0f, 0xbc, 0x33, 0x04, 0x2f, 0xa8, 0xa7, 0x25, 0x9f, 0xfd, 0x02, 0xad, 0x4b,
+	0xfa, 0x09, 0x9a, 0x6b, 0x2d, 0x6b, 0xaf, 0xda, 0x79, 0x78, 0x32, 0x75, 0x2b, 0x3f, 0xa6, 0xee,
+	0xcd, 0x98, 0xaa, 0xe3, 0x6c, 0xe0, 0x87, 0x3c, 0xc1, 0x79, 0x4c, 0xf3, 0xb9, 0x2b, 0xa3, 0x77,
+	0x78, 0xc9, 0x91, 0xfe, 0x63, 0x08, 0x17, 0x53, 0xb7, 0x66, 0x6a, 0x2c, 0x19, 0x5e, 0xa0, 0x51,
+	0xf6, 0x6b, 0x74, 0x79, 0x04, 0x63, 0x10, 0x24, 0x86, 0xe6, 0x25, 0x8d, 0x3d, 0xf8, 0x0f, 0x6c,
+	0x8f, 0xa9, 0xc5, 0xd4, 0x6d, 0x18, 0x6c, 0xc1, 0xf1, 0x82, 0x15, 0xd2, 0x7b, 0x83, 0xda, 0x4f,
+	0xc6, 0xc0, 0xd4, 0xdf, 0x86, 0xf7, 0x3c, 0x05, 0x06, 0x91, 0x7d, 0x1d, 0x6d, 0x48, 0x60, 0x11,
+	0x08, 0x3d, 0xb3, 0x6a, 0x90, 0xff, 0xd9, 0x2e, 0xaa, 0xad, 0x06, 0x42, 0x23, 0x93, 0x3b, 0x40,
+	0x85, 0xd4, 0x8b, 0xbc, 0x2f, 0xd6, 0x39, 0x05, 0x1e, 0x8d, 0xb8, 0xbc, 0x40, 0x01, 0x7b, 0x07,
+	0xa1, 0x21, 0x40, 0x9f, 0x24, 0x3c, 0x63, 0xca, 0x4c, 0x28, 0xa8, 0x0e, 0x01, 0x0e, 0xb4, 0x60,
+	0xef, 0xa2, 0xba, 0x12, 0x24, 0x5a, 0x19, 0xd6, 0xb5, 0xa1, 0xa6, 0x35, 0x63, 0xf1, 0xbe, 0x59,
+	0xe8, 0xd6, 0x3f, 0x5b, 0x7c, 0x4a, 0xdf, 0x67, 0x34, 0x22, 0x0a, 0x22, 0xfb, 0x36, 0xba, 0x2a,
+	0xe0, 0x03, 0x11, 0x51, 0x5f, 0x40, 0x48, 0x53, 0x0a, 0x4c, 0xe5, 0x0d, 0x37, 0x8c, 0x1e, 0x14,
+	0xf2, 0xf9, 0x9d, 0x6b, 0x56, 0x42, 0x28, 0xa3, 0x2c, 0xee, 0x27, 0x44, 0xc4, 0x94, 0xe5, 0xfd,
+	0x37, 0x56, 0xfa, 0x33, 0x2d, 0xdb, 0x6d, 0xb4, 0x99, 0x97, 0x3d, 0x13, 0xa3, 0x6e, 0x44, 0x93,
+	0xa3, 0xd3, 0x3d, 0x99, 0x39, 0xd6, 0xe9, 0xcc, 0xb1, 0x7e, 0xce, 0x1c, 0xeb, 0xf3, 0xdc, 0xa9,
+	0x9c, 0xce, 0x9d, 0xca, 0xf7, 0xb9, 0x53, 0x79, 0x75, 0xa7, 0x74, 0x53, 0x8e, 0xd8, 0x11, 0xa3,
+	0x5d, 0x8a, 0xc3, 0x63, 0x42, 0x19, 0xfe, 0x58, 0x7e, 0x4b, 0xe6, 0xce, 0x0c, 0x36, 0xf4, 0x93,
+	0xba, 0xff, 0x2b, 0x00, 0x00, 0xff, 0xff, 0xa2, 0xe0, 0xfb, 0xaf, 0x1f, 0x04, 0x00, 0x00,
 }
 
 func (m *PerpetualFuturesPositionInstance) Marshal() (dAtA []byte, err error) {
@@ -157,6 +360,145 @@ func (m *PerpetualFuturesPositionInstance) MarshalToSizedBuffer(dAtA []byte) (in
 	return len(dAtA) - i, nil
 }
 
+func (m *EventPerpetualFuturesPositionOpened) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventPerpetualFuturesPositionOpened) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventPerpetualFuturesPositionOpened) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.PositionId) > 0 {
+		i -= len(m.PositionId)
+		copy(dAtA[i:], m.PositionId)
+		i = encodeVarintPerpetualFutures(dAtA, i, uint64(len(m.PositionId)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintPerpetualFutures(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *EventPerpetualFuturesPositionClosed) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventPerpetualFuturesPositionClosed) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventPerpetualFuturesPositionClosed) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.TradeAmount) > 0 {
+		i -= len(m.TradeAmount)
+		copy(dAtA[i:], m.TradeAmount)
+		i = encodeVarintPerpetualFutures(dAtA, i, uint64(len(m.TradeAmount)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.FeeAmount) > 0 {
+		i -= len(m.FeeAmount)
+		copy(dAtA[i:], m.FeeAmount)
+		i = encodeVarintPerpetualFutures(dAtA, i, uint64(len(m.FeeAmount)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.PositionId) > 0 {
+		i -= len(m.PositionId)
+		copy(dAtA[i:], m.PositionId)
+		i = encodeVarintPerpetualFutures(dAtA, i, uint64(len(m.PositionId)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintPerpetualFutures(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *EventPerpetualFuturesPositionLiquidated) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventPerpetualFuturesPositionLiquidated) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventPerpetualFuturesPositionLiquidated) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.RewardAmount) > 0 {
+		i -= len(m.RewardAmount)
+		copy(dAtA[i:], m.RewardAmount)
+		i = encodeVarintPerpetualFutures(dAtA, i, uint64(len(m.RewardAmount)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.RemainingMargin) > 0 {
+		i -= len(m.RemainingMargin)
+		copy(dAtA[i:], m.RemainingMargin)
+		i = encodeVarintPerpetualFutures(dAtA, i, uint64(len(m.RemainingMargin)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.PositionId) > 0 {
+		i -= len(m.PositionId)
+		copy(dAtA[i:], m.PositionId)
+		i = encodeVarintPerpetualFutures(dAtA, i, uint64(len(m.PositionId)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.RewardRecipient) > 0 {
+		i -= len(m.RewardRecipient)
+		copy(dAtA[i:], m.RewardRecipient)
+		i = encodeVarintPerpetualFutures(dAtA, i, uint64(len(m.RewardRecipient)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintPerpetualFutures(dAtA []byte, offset int, v uint64) int {
 	offset -= sovPerpetualFutures(v)
 	base := offset
@@ -181,6 +523,73 @@ func (m *PerpetualFuturesPositionInstance) Size() (n int) {
 	n += 1 + l + sovPerpetualFutures(uint64(l))
 	l = m.Leverage.Size()
 	n += 1 + l + sovPerpetualFutures(uint64(l))
+	return n
+}
+
+func (m *EventPerpetualFuturesPositionOpened) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovPerpetualFutures(uint64(l))
+	}
+	l = len(m.PositionId)
+	if l > 0 {
+		n += 1 + l + sovPerpetualFutures(uint64(l))
+	}
+	return n
+}
+
+func (m *EventPerpetualFuturesPositionClosed) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovPerpetualFutures(uint64(l))
+	}
+	l = len(m.PositionId)
+	if l > 0 {
+		n += 1 + l + sovPerpetualFutures(uint64(l))
+	}
+	l = len(m.FeeAmount)
+	if l > 0 {
+		n += 1 + l + sovPerpetualFutures(uint64(l))
+	}
+	l = len(m.TradeAmount)
+	if l > 0 {
+		n += 1 + l + sovPerpetualFutures(uint64(l))
+	}
+	return n
+}
+
+func (m *EventPerpetualFuturesPositionLiquidated) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.RewardRecipient)
+	if l > 0 {
+		n += 1 + l + sovPerpetualFutures(uint64(l))
+	}
+	l = len(m.PositionId)
+	if l > 0 {
+		n += 1 + l + sovPerpetualFutures(uint64(l))
+	}
+	l = len(m.RemainingMargin)
+	if l > 0 {
+		n += 1 + l + sovPerpetualFutures(uint64(l))
+	}
+	l = len(m.RewardAmount)
+	if l > 0 {
+		n += 1 + l + sovPerpetualFutures(uint64(l))
+	}
 	return n
 }
 
@@ -305,6 +714,476 @@ func (m *PerpetualFuturesPositionInstance) Unmarshal(dAtA []byte) error {
 			if err := m.Leverage.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPerpetualFutures(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EventPerpetualFuturesPositionOpened) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPerpetualFutures
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EventPerpetualFuturesPositionOpened: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EventPerpetualFuturesPositionOpened: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPerpetualFutures
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PositionId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPerpetualFutures
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PositionId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPerpetualFutures(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EventPerpetualFuturesPositionClosed) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPerpetualFutures
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EventPerpetualFuturesPositionClosed: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EventPerpetualFuturesPositionClosed: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPerpetualFutures
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PositionId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPerpetualFutures
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PositionId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FeeAmount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPerpetualFutures
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.FeeAmount = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TradeAmount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPerpetualFutures
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TradeAmount = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPerpetualFutures(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EventPerpetualFuturesPositionLiquidated) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPerpetualFutures
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EventPerpetualFuturesPositionLiquidated: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EventPerpetualFuturesPositionLiquidated: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RewardRecipient", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPerpetualFutures
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RewardRecipient = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PositionId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPerpetualFutures
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PositionId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RemainingMargin", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPerpetualFutures
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RemainingMargin = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RewardAmount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPerpetualFutures
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPerpetualFutures
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RewardAmount = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

@@ -91,6 +91,9 @@
     - [GenesisState](#ununifi.derivatives.GenesisState)
   
 - [derivatives/perpetual_futures.proto](#derivatives/perpetual_futures.proto)
+    - [EventPerpetualFuturesPositionClosed](#ununifi.derivatives.EventPerpetualFuturesPositionClosed)
+    - [EventPerpetualFuturesPositionLiquidated](#ununifi.derivatives.EventPerpetualFuturesPositionLiquidated)
+    - [EventPerpetualFuturesPositionOpened](#ununifi.derivatives.EventPerpetualFuturesPositionOpened)
     - [PerpetualFuturesPositionInstance](#ununifi.derivatives.PerpetualFuturesPositionInstance)
   
 - [derivatives/perpetual_options.proto](#derivatives/perpetual_options.proto)
@@ -1532,6 +1535,58 @@ GenesisState defines the derivatives module's genesis state.
 <p align="right"><a href="#top">Top</a></p>
 
 ## derivatives/perpetual_futures.proto
+
+
+
+<a name="ununifi.derivatives.EventPerpetualFuturesPositionClosed"></a>
+
+### EventPerpetualFuturesPositionClosed
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `position_id` | [string](#string) |  |  |
+| `fee_amount` | [string](#string) |  |  |
+| `trade_amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.EventPerpetualFuturesPositionLiquidated"></a>
+
+### EventPerpetualFuturesPositionLiquidated
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `reward_recipient` | [string](#string) |  |  |
+| `position_id` | [string](#string) |  |  |
+| `remaining_margin` | [string](#string) |  |  |
+| `reward_amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.EventPerpetualFuturesPositionOpened"></a>
+
+### EventPerpetualFuturesPositionOpened
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `position_id` | [string](#string) |  |  |
+
+
+
 
 
 

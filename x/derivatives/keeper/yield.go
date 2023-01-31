@@ -1,8 +1,29 @@
 package keeper
 
 import (
+	"time"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/UnUniFi/chain/x/derivatives/types"
 )
+
+func (k Keeper) SaveBlockTimestamp(ctx sdk.Context, height int64, blockTime time.Time) {
+	store := ctx.KVStore(k.storeKey)
+
+	store.Set(types.BlockTimestampWithHeight(height), types.GetBlockTimestampBytes(blockTime.Unix()))
+}
+
+func (k Keeper) GetBlockTimestamp(ctx sdk.Context, height int64) time.Time {
+	store := ctx.KVStore(k.storeKey)
+
+	bz := store.Get(types.BlockTimestampWithHeight(height))
+	if bz == nil {
+		return time.Time{}
+	}
+
+	return time.Unix(types.GetBlockTimestampFromBytes(bz), 0)
+}
 
 func (k Keeper) GetLPNominalYieldRate(ctx sdk.Context, beforeHeight int64, afterHeight int64) sdk.Dec {
 	poolMarketCapBefore := k.GetPoolMarketCapSnapshot(ctx, beforeHeight)
@@ -52,8 +73,10 @@ func (k Keeper) GetLPRealYieldRate(ctx sdk.Context, beforeHeight int64, afterHei
 }
 
 func (k Keeper) AnnualizeYieldRate(ctx sdk.Context, yieldRate sdk.Dec, beforeHeight int64, afterHeight int64) sdk.Dec {
-	// TODO: get the block time of beforeHeight and afterHeight, then calculate yieldRate * (afterBlockTime - beforeBlockTime) / (time span of one year)
-	// Saving block_time of each height is not efficient, but an only way that we can do currently. Is there a better way?
+	beforeBlockTime := k.GetBlockTimestamp(ctx, beforeHeight)
+	afterBlockTime := k.GetBlockTimestamp(ctx, afterHeight)
 
-	panic("")
+	annualizedYieldRate := yieldRate.Mul(sdk.NewDec(afterBlockTime.Sub(beforeBlockTime).Nanoseconds()).Quo(sdk.NewDec(time.Hour.Nanoseconds() * 24 * 365)))
+
+	return annualizedYieldRate
 }
