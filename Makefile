@@ -158,5 +158,4 @@ proto-gen:
 	# need buf and proto plugin
 	# cd docs/devtools
 	# make buf-tools
-	# make protoc
 	./proto/gen.sh
