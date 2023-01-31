@@ -546,7 +546,7 @@ func (k Keeper) GetActiveNftBiddingsEndingAt(ctx sdk.Context, endTime time.Time)
 func (k Keeper) DeleteBidsWithoutBorrowing(ctx sdk.Context, bids []types.NftBid) {
 	for _, bid := range bids {
 		if !bid.IsBorrowing() {
-			k.DeleteBid(ctx, bid)
+			k.SafeCloseBid(ctx, bid)
 		}
 	}
 }
