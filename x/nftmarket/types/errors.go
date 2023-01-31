@@ -38,4 +38,6 @@ var (
 	ErrNotEnoughDeposit                  = sdkerrors.Register(ModuleName, 31, "not enough deposit")
 	ErrBidParamInvalid                   = sdkerrors.Register(ModuleName, 32, "bid param invalid")
 	ErrNotExistsBid                      = sdkerrors.Register(ModuleName, 33, "not exists bid")
+	ErrCannotCancelListingWithBids       = sdkerrors.Register(ModuleName, 34, "cannot cancel listing with bids")
+	ErrCannotCancelListingWithDebt       = sdkerrors.Register(ModuleName, 35, "cannot cancel listing with debt")
 )
