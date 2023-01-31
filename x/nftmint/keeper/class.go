@@ -21,39 +21,39 @@ const (
 
 // CreateClass does validate the contents of MsgCreateClass and operate whole flow for CreateClass message
 func (k Keeper) CreateClass(ctx sdk.Context, classID string, msg *types.MsgCreateClass) error {
-	exists := k.nftKeeper.HasClass(ctx, classID)
-	if exists {
-		return sdkerrors.Wrap(nfttypes.ErrClassExists, classID)
-	}
+	// exists := k.nftKeeper.HasClass(ctx, classID)
+	// if exists {
+	// 	return sdkerrors.Wrap(nfttypes.ErrClassExists, classID)
+	// }
 
-	params := k.GetParamSet(ctx)
-	err := types.ValidateCreateClass(
-		params,
-		msg.Name, msg.Symbol, msg.BaseTokenUri, msg.Description,
-		msg.MintingPermission,
-		msg.TokenSupplyCap,
-	)
-	if err != nil {
-		return err
-	}
+	// params := k.GetParamSet(ctx)
+	// err := types.ValidateCreateClass(
+	// 	params,
+	// 	msg.Name, msg.Symbol, msg.BaseTokenUri, msg.Description,
+	// 	msg.MintingPermission,
+	// 	msg.TokenSupplyCap,
+	// )
+	// if err != nil {
+	// 	return err
+	// }
 
-	if err := k.nftKeeper.SaveClass(ctx, types.NewClass(classID, msg.Name, msg.Symbol, msg.Description, msg.ClassUri)); err != nil {
-		return err
-	}
+	// if err := k.nftKeeper.SaveClass(ctx, types.NewClass(classID, msg.Name, msg.Symbol, msg.Description, msg.ClassUri)); err != nil {
+	// 	return err
+	// }
 
-	if err = k.SetClassAttributes(ctx, types.NewClassAttributes(classID, msg.Sender.AccAddress(), msg.BaseTokenUri, msg.MintingPermission, msg.TokenSupplyCap)); err != nil {
-		return err
-	}
+	// if err = k.SetClassAttributes(ctx, types.NewClassAttributes(classID, msg.Sender.AccAddress(), msg.BaseTokenUri, msg.MintingPermission, msg.TokenSupplyCap)); err != nil {
+	// 	return err
+	// }
 
-	owningClassIdList := k.AddClassIDToOwningClassIdList(ctx, msg.Sender.AccAddress(), classID)
-	if err = k.SetOwningClassIdList(ctx, owningClassIdList); err != nil {
-		return err
-	}
+	// owningClassIdList := k.AddClassIDToOwningClassIdList(ctx, msg.Sender.AccAddress(), classID)
+	// if err = k.SetOwningClassIdList(ctx, owningClassIdList); err != nil {
+	// 	return err
+	// }
 
-	classNameIdList := k.AddClassNameIdList(ctx, msg.Name, classID)
-	if err = k.SetClassNameIdList(ctx, classNameIdList); err != nil {
-		return err
-	}
+	// classNameIdList := k.AddClassNameIdList(ctx, msg.Name, classID)
+	// if err = k.SetClassNameIdList(ctx, classNameIdList); err != nil {
+	// 	return err
+	// }
 
 	return nil
 }
