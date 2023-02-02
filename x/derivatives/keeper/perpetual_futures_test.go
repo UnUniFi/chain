@@ -12,11 +12,11 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 	positionId := "0"
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
-	margin := sdk.NewCoin("uatom", sdk.NewInt(50))
+	margin := sdk.NewCoin("btc", sdk.NewInt(50))
 
 	market := types.Market{
-		Denom:      "uatom",
-		QuoteDenom: "uusdc",
+		Denom:      "btc",
+		QuoteDenom: "usdc",
 	}
 
 	suite.keeper.SetPerpetualFuturesNetPositionOfMarket(suite.ctx, market, sdk.NewDec(0))
@@ -27,7 +27,10 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 		Leverage:     sdk.NewInt(5),
 	}
 
-	suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, positionId, owner.Bytes(), margin, market, positionInst)
+	position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, positionId, owner.Bytes(), margin, market, positionInst)
+
+	suite.Require().NoError(err)
+	suite.Require().NotNil(position)
 
 	// Check if the position was added
 	netPosition := suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market)

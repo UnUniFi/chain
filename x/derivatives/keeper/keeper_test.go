@@ -16,6 +16,7 @@ import (
 
 	simapp "github.com/UnUniFi/chain/app"
 	appparams "github.com/UnUniFi/chain/app/params"
+	ununifitypes "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/derivatives/keeper"
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
@@ -23,11 +24,12 @@ import (
 type KeeperTestSuite struct {
 	suite.Suite
 
-	ctx         sdk.Context
-	app         *simapp.App
-	addrs       []sdk.AccAddress
-	queryClient types.QueryClient
-	keeper      keeper.Keeper
+	ctx             sdk.Context
+	app             *simapp.App
+	addrs           []sdk.AccAddress
+	queryClient     types.QueryClient
+	keeper          keeper.Keeper
+	pricefeedKeeper pricefeedkeeper.Keeper
 }
 
 func (suite *KeeperTestSuite) SetupTest() {
@@ -58,8 +60,24 @@ func (suite *KeeperTestSuite) SetupTest() {
 		app.GetMemKey(pricefeedtypes.MemStoreKey),
 		app.GetSubspace(pricefeedtypes.ModuleName),
 	)
+	pfParams := pricefeedtypes.Params{
+		Markets: []pricefeedtypes.Market{
+			{MarketId: "btc:usd", BaseAsset: "btc", QuoteAsset: "usd", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+			{MarketId: "usdc:usd", BaseAsset: "usdc", QuoteAsset: "usd", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+			{MarketId: "bnb:usd", BaseAsset: "bnb", QuoteAsset: "usd", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+			{MarketId: "bjpy:usd", BaseAsset: "bjpy", QuoteAsset: "usd", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+		},
+		DenomTickerPairs: []pricefeedtypes.DenomTickerPair{
+			{Denom: "btc", Ticker: "btc:usd"},
+			{Denom: "usdc", Ticker: "usdc:usd"},
+			{Denom: "bnb", Ticker: "bnb:usd"},
+			{Denom: "bjpy", Ticker: "bjpy:usd"},
+		},
+	}
+	pricefeedKeeper.SetParams(suite.ctx, pfParams)
 	keeper := keeper.NewKeeper(appCodec, app.GetKey(types.StoreKey), app.GetKey(types.MemStoreKey), suite.app.GetSubspace(types.ModuleName), bankKeeper, pricefeedKeeper)
 	suite.keeper = keeper
+	suite.pricefeedKeeper = pricefeedKeeper
 }
 
 func TestKeeperSuite(t *testing.T) {
