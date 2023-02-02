@@ -368,8 +368,19 @@ func (k Keeper) SafeCloseBid(ctx sdk.Context, bid types.NftBid) error {
 	// Delete bid
 	k.DeleteBid(ctx, bid)
 
-	// todo send paid amount to bidder
+	if bid.PaidAmount.Amount.GT(sdk.ZeroInt()) {
+		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{sdk.NewCoin(bid.PaidAmount.Denom, bid.PaidAmount.Amount)})
+		if err != nil {
+			return err
+		}
+	}
 	return k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{sdk.NewCoin(bid.DepositAmount.Denom, bid.DepositAmount.Amount)})
+}
+
+func (k Keeper) SafeCloseBidCollectDeposit(ctx sdk.Context, bid types.NftBid, listing types.NftListing) (types.NftListing, error) {
+	listing.CollectedAmount = listing.CollectedAmount.Add(bid.DepositAmount)
+	k.DeleteBid(ctx, bid)
+	return listing, nil
 }
 
 func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
@@ -493,14 +504,23 @@ func CheckBidParams(listing types.NftListing, bid, deposit sdk.Coin, bids []type
 	q := bid
 	s := deposit
 	for _, bid := range bids {
-		q.Add(bid.BidAmount)
-		s.Add(bid.DepositAmount)
+		q = q.Add(bid.BidAmount)
+		s = s.Add(bid.DepositAmount)
 	}
+
+	bidLen := 1
+	if len(bids) > 0 {
+		// sum new bid and old bids
+		bidLen = len(bids) + 1
+	}
+	q.Amount = q.Amount.Quo(sdk.NewInt(int64(bidLen)))
 	if q.IsLTE(s) {
 		return types.ErrBidParamInvalid
 	}
 	q_s := q.Sub(s)
 	q_s_dec := sdk.NewDecFromInt(q_s.Amount)
+	// todo implement min{bid, q-s}
+
 	if depositDec.GT(q_s_dec) {
 		// deposit amount bigger
 		return types.ErrBidParamInvalid

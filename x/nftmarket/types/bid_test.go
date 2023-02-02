@@ -415,3 +415,216 @@ func TestRepayThenGetReceipt(t *testing.T) {
 		})
 	}
 }
+
+func TestSortLiquidation(t *testing.T) {
+
+	// test SortLiquidation in NftBids
+	testCases := []struct {
+		name   string
+		bids   types.NftBids
+		expect types.NftBids
+	}{
+		{
+			"higher bidder",
+			types.NftBids{
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(100)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(50)),
+				},
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(103)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(20)),
+				},
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(102)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(2)),
+				},
+			},
+			types.NftBids{
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(103)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(20)),
+				},
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(102)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(2)),
+				},
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(100)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(50)),
+				},
+			},
+		},
+		{
+			"higher deposit",
+			types.NftBids{
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(103)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(50)),
+				},
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(103)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(20)),
+				},
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(103)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(2)),
+				},
+			},
+			types.NftBids{
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(103)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(50)),
+				},
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(103)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(20)),
+				},
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(103)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(2)),
+				},
+			},
+		},
+		{
+			"higher deposit and greater than qDash",
+			types.NftBids{
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(100)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(50)),
+				},
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(102)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(20)),
+				},
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(103)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(2)),
+				},
+			},
+			types.NftBids{
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(102)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(20)),
+				},
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(103)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(2)),
+				},
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(100)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(50)),
+				},
+			},
+		},
+		{
+			"higher deposit and greater than qDash 2",
+			types.NftBids{
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(103)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(2)),
+				},
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(102)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(20)),
+				},
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(100)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(50)),
+				},
+			},
+			types.NftBids{
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(102)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(20)),
+				},
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(103)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(2)),
+				},
+				types.NftBid{
+					BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(100)),
+					DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(50)),
+				},
+			},
+		},
+	}
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			result := tc.bids.SortLiquidation()
+			for i := 0; i < len(result); i++ {
+				if result[i].BidAmount.Equal(tc.expect[i].BidAmount) && result[i].DepositAmount.Equal(tc.expect[i].DepositAmount) {
+				} else {
+					t.Error(tc.name, "not expect result")
+					t.Log(i)
+					t.Log(result[i].BidAmount, tc.expect[i].BidAmount)
+					t.Log(result[i].DepositAmount, tc.expect[i].DepositAmount)
+				}
+			}
+		})
+	}
+
+}
+
+// test GetAverageBidAmount
+func TestGetAverageBidAmount(t *testing.T) {
+	testCases := []struct {
+		name   string
+		bids   types.NftBids
+		expect sdk.Coin
+	}{
+		{
+			"empty",
+			types.NftBids{},
+			sdk.Coin{},
+		},
+		{
+			"one",
+			types.NftBids{
+				types.NftBid{
+					BidAmount: sdk.NewCoin("uguu", sdk.NewInt(100)),
+				},
+			},
+			sdk.NewCoin("uguu", sdk.NewInt(100)),
+		},
+		{
+			"two",
+			types.NftBids{
+				types.NftBid{
+					BidAmount: sdk.NewCoin("uguu", sdk.NewInt(100)),
+				},
+				types.NftBid{
+					BidAmount: sdk.NewCoin("uguu", sdk.NewInt(200)),
+				},
+			},
+			sdk.NewCoin("uguu", sdk.NewInt(150)),
+		},
+		{
+			"three",
+			types.NftBids{
+				types.NftBid{
+					BidAmount: sdk.NewCoin("uguu", sdk.NewInt(100)),
+				},
+				types.NftBid{
+					BidAmount: sdk.NewCoin("uguu", sdk.NewInt(200)),
+				},
+				types.NftBid{
+					BidAmount: sdk.NewCoin("uguu", sdk.NewInt(300)),
+				},
+			},
+			sdk.NewCoin("uguu", sdk.NewInt(200)),
+		},
+	}
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			result := tc.bids.GetAverageBidAmount()
+			if result.Equal(tc.expect) {
+			} else {
+				t.Error(tc.name, "not expect result")
+				t.Log(result, tc.expect)
+			}
+		})
+	}
+}

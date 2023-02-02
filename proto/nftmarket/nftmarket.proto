@@ -67,6 +67,7 @@ message NftListing {
     (gogoproto.stdtime)  = true
   ];
   uint64 auto_relisted_count = 12;
+  cosmos.base.v1beta1.Coin collected_amount = 13 [(gogoproto.nullable) = false];
 }
 
 message borrowing {

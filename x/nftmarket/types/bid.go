@@ -105,7 +105,7 @@ func (m NftBids) SortRepay() NftBids {
 }
 
 func (m NftBids) SortLiquidation() NftBids {
-	return m.SortLowerDepositAmount()
+	return m.SortDepositAboveAvgBid()
 }
 
 func (m NftBids) SortLowerLendingRate() NftBids {
@@ -126,11 +126,21 @@ func (m NftBids) SortHigherLendingRate() NftBids {
 	return dest
 }
 
-func (m NftBids) SortLowerDepositAmount() NftBids {
+func (m NftBids) SortDepositAboveAvgBid() NftBids {
 	dest := NftBids{}
+	if len(m) == 0 {
+		return dest
+	}
+	qDash := m.GetAverageBidAmount()
 	dest = append(NftBids{}, m...)
 	sort.SliceStable(dest, func(i, j int) bool {
-		return dest[i].DepositAmount.IsLT(dest[j].DepositAmount)
+		if dest[i].BidAmount.IsLT(qDash) {
+			return false
+		}
+		if dest[j].BidAmount.IsLT(qDash) {
+			return true
+		}
+		return dest[i].DepositAmount.IsGTE(dest[j].DepositAmount)
 	})
 	return dest
 }
@@ -142,6 +152,18 @@ func (m NftBids) SortLowerBiddingPeriod() NftBids {
 		return dest[i].BiddingPeriod.Before(dest[j].BiddingPeriod)
 	})
 	return dest
+}
+
+func (m NftBids) GetAverageBidAmount() sdk.Coin {
+	if len(m) == 0 {
+		return sdk.Coin{}
+	}
+	denom := m[0].BidAmount.Denom
+	totalAmount := sdk.NewCoin(denom, sdk.ZeroInt())
+	for _, bid := range m {
+		totalAmount = totalAmount.Add(bid.BidAmount)
+	}
+	return sdk.NewCoin(denom, totalAmount.Amount.Quo(sdk.NewInt(int64(len(m)))))
 }
 
 func (m NftBids) GetHighestBid() NftBid {
