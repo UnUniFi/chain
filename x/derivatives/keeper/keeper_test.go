@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"testing"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -62,19 +63,21 @@ func (suite *KeeperTestSuite) SetupTest() {
 	)
 	pfParams := pricefeedtypes.Params{
 		Markets: []pricefeedtypes.Market{
-			{MarketId: "btc:usd", BaseAsset: "btc", QuoteAsset: "usd", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
-			{MarketId: "usdc:usd", BaseAsset: "usdc", QuoteAsset: "usd", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
-			{MarketId: "bnb:usd", BaseAsset: "bnb", QuoteAsset: "usd", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
-			{MarketId: "bjpy:usd", BaseAsset: "bjpy", QuoteAsset: "usd", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+			{MarketId: "btc:usdc", BaseAsset: "btc", QuoteAsset: "usdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+			{MarketId: "usdc:usdc", BaseAsset: "usdc", QuoteAsset: "usdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+			{MarketId: "bnb:usdc", BaseAsset: "bnb", QuoteAsset: "usdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+			{MarketId: "bjpy:usdc", BaseAsset: "bjpy", QuoteAsset: "usdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
 		},
 		DenomTickerPairs: []pricefeedtypes.DenomTickerPair{
-			{Denom: "btc", Ticker: "btc:usd"},
-			{Denom: "usdc", Ticker: "usdc:usd"},
-			{Denom: "bnb", Ticker: "bnb:usd"},
-			{Denom: "bjpy", Ticker: "bjpy:usd"},
+			{Denom: "btc", Ticker: "btc"},
+			{Denom: "usdc", Ticker: "usdc"},
 		},
 	}
 	pricefeedKeeper.SetParams(suite.ctx, pfParams)
+	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "btc:usdc", sdk.MustNewDecFromStr("8000.00"), suite.ctx.BlockTime().Add(1*time.Hour))
+	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "usdc:usdc", sdk.MustNewDecFromStr("1.00"), suite.ctx.BlockTime().Add(1*time.Hour))
+	pricefeedKeeper.SetCurrentPrices(suite.ctx, "btc:usdc")
+	pricefeedKeeper.SetCurrentPrices(suite.ctx, "usdc:usdc")
 	keeper := keeper.NewKeeper(appCodec, app.GetKey(types.StoreKey), app.GetKey(types.MemStoreKey), suite.app.GetSubspace(types.ModuleName), bankKeeper, pricefeedKeeper)
 	suite.keeper = keeper
 	suite.pricefeedKeeper = pricefeedKeeper
