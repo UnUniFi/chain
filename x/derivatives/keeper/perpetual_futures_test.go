@@ -15,7 +15,7 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 	margin := sdk.NewCoin("uatom", sdk.NewInt(50))
 
 	market := types.Market{
-		Denom:      "uatom",
+		BaseDenom:  "uatom",
 		QuoteDenom: "uusdc",
 	}
 
@@ -48,7 +48,7 @@ func (suite *KeeperTestSuite) TestReportLiquidationNeededPerpetualFuturesPositio
 
 func (suite *KeeperTestSuite) TestSetPerpetualFuturesNetPositionOfMarket() {
 	market := types.Market{
-		Denom:      "uatom",
+		BaseDenom:  "uatom",
 		QuoteDenom: "uusdc",
 	}
 
@@ -64,7 +64,7 @@ func (suite *KeeperTestSuite) TestSetPerpetualFuturesNetPositionOfMarket() {
 
 func (suite *KeeperTestSuite) TestAddPerpetualFuturesNetPositionOfMarket() {
 	market := types.Market{
-		Denom:      "uatom",
+		BaseDenom:  "uatom",
 		QuoteDenom: "uusdc",
 	}
 
@@ -90,7 +90,7 @@ func (suite *KeeperTestSuite) TestAddPerpetualFuturesNetPositionOfMarket() {
 
 func (suite *KeeperTestSuite) TestSubPerpetualFuturesNetPositionOfMarket() {
 	market := types.Market{
-		Denom:      "uatom",
+		BaseDenom:  "uatom",
 		QuoteDenom: "uusdc",
 	}
 
