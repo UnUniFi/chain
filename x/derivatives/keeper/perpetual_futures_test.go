@@ -12,11 +12,11 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 	positionId := "0"
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
-	margin := sdk.NewCoin("btc", sdk.NewInt(50))
+	margin := sdk.NewCoin("uatom", sdk.NewInt(50))
 
 	market := types.Market{
-		Denom:      "btc",
-		QuoteDenom: "usdc",
+		Denom:      "uatom",
+		QuoteDenom: "uusdc",
 	}
 
 	suite.keeper.SetPerpetualFuturesNetPositionOfMarket(suite.ctx, market, sdk.NewDec(0))
@@ -24,7 +24,7 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 	positionInst := types.PerpetualFuturesPositionInstance{
 		PositionType: types.PositionType_LONG,
 		Size_:        sdk.NewDecWithPrec(100, 0),
-		Leverage:     sdk.NewInt(5),
+		Leverage:     5,
 	}
 
 	position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, positionId, owner.Bytes(), margin, market, positionInst)

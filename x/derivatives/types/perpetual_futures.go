@@ -22,5 +22,5 @@ func UnpackPerpetualFuturesPositionInstance(positionAny types.Any) PositionInsta
 }
 
 func (positionInstance PerpetualFuturesPositionInstance) CalculatePrincipal() sdk.Dec {
-	return positionInstance.Size_.Quo(sdk.NewDecFromInt(positionInstance.Leverage))
+	return positionInstance.Size_.Quo(sdk.NewDec(int64(positionInstance.Leverage)))
 }

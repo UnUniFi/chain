@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -24,17 +25,12 @@ func (k Keeper) GetMarkets(ctx sdk.Context) []types.Market {
 	return k.GetParams(ctx).Markets
 }
 
-func (k Keeper) GetDenomTickerPairs(ctx sdk.Context) []types.DenomTickerPair {
-	return k.GetParams(ctx).DenomTickerPairs
-}
-
 func (k Keeper) GetTicker(ctx sdk.Context, denom string) (string, error) {
-	for _, pair := range k.GetDenomTickerPairs(ctx) {
-		if denom == pair.Denom {
-			return pair.Ticker, nil
-		}
+	metadata, exists := k.bankKeeper.GetDenomMetaData(ctx, denom)
+	if !exists {
+		return "", sdkerrors.Wrap(types.ErrInternalDenomNotFound, denom)
 	}
-	return "", sdkerrors.Wrap(types.ErrInternalDenomNotFound, denom)
+	return metadata.Symbol, nil
 }
 
 func (k Keeper) GetMarketId(ctx sdk.Context, lhsTicker string, rhsTicker string) string {

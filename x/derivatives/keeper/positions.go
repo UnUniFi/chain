@@ -111,7 +111,6 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 	positionId := string(positionKey)
 
 	k.bankKeeper.SendCoinsFromAccountToModule(ctx, msg.Sender.AccAddress(), types.ModuleName, sdk.NewCoins(msg.Margin))
-	k.SetRemainingMargin(ctx, positionId, msg.Margin)
 
 	positionInstance, err := types.UnpackPositionInstance(msg.PositionInstance)
 	if err != nil {
@@ -187,7 +186,7 @@ func (k Keeper) ReportLiquidation(ctx sdk.Context, msg *types.MsgReportLiquidati
 		return err
 	}
 
-	remainingMargin := *k.GetRemainingMargin(ctx, msg.PositionId)
+	remainingMargin := position.RemainingMargin
 
 	switch positionInstance.(type) {
 	case *types.PerpetualFuturesPositionInstance:

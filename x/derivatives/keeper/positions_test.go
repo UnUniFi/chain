@@ -18,7 +18,7 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 	position0Inst, err := codecTypes.NewAnyWithValue(&types.PerpetualFuturesPositionInstance{
 		PositionType: types.PositionType_LONG,
 		Size_:        sdk.NewDecWithPrec(100, 0),
-		Leverage:     sdk.NewInt(5),
+		Leverage:     5,
 	})
 
 	if err != nil {
@@ -28,7 +28,7 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 	position1Inst, err := codecTypes.NewAnyWithValue(&types.PerpetualFuturesPositionInstance{
 		PositionType: types.PositionType_LONG,
 		Size_:        sdk.NewDecWithPrec(100, 0),
-		Leverage:     sdk.NewInt(5),
+		Leverage:     5,
 	})
 
 	if err != nil {
@@ -93,7 +93,7 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 	position0Inst, err := codecTypes.NewAnyWithValue(&types.PerpetualFuturesPositionInstance{
 		PositionType: types.PositionType_LONG,
 		Size_:        sdk.NewDecWithPrec(100, 0),
-		Leverage:     sdk.NewInt(5),
+		Leverage:     5,
 	})
 
 	if err != nil {
@@ -103,7 +103,7 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 	position1Inst, err := codecTypes.NewAnyWithValue(&types.PerpetualFuturesPositionInstance{
 		PositionType: types.PositionType_LONG,
 		Size_:        sdk.NewDecWithPrec(100, 0),
-		Leverage:     sdk.NewInt(5),
+		Leverage:     5,
 	})
 
 	if err != nil {

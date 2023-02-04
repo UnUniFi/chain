@@ -546,6 +546,7 @@ func NewApp(
 		keys[pricefeedtypes.StoreKey],
 		keys[pricefeedtypes.MemStoreKey],
 		app.GetSubspace(pricefeedtypes.ModuleName),
+		app.BankKeeper,
 	)
 	cdpKeeper := cdpkeeper.NewKeeper(
 		appCodec,

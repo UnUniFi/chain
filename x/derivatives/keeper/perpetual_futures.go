@@ -72,12 +72,12 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Po
 		k.SubPerpetualFuturesNetPositionOfMarket(ctx, position.Market, tradeAmount)
 
 		if closedRate.GTE(openedRate) {
-			profit := closedRate.Mul(sdk.NewDecFromInt(positionInstance.Leverage)).Sub(positionInstance.Size_)
+			profit := closedRate.Mul(sdk.NewDec(int64(positionInstance.Leverage))).Sub(positionInstance.Size_)
 			profitAmount := profit.Quo(*closedRate)
 
 			amountToUser = principal.Add(profitAmount)
 		} else {
-			loss := positionInstance.Size_.Sub(closedRate.Mul(sdk.NewDecFromInt(positionInstance.Leverage)))
+			loss := positionInstance.Size_.Sub(closedRate.Mul(sdk.NewDec(int64(positionInstance.Leverage))))
 			lossAmount := loss.Quo(*closedRate)
 
 			amountToUser = principal.Sub(lossAmount)
@@ -87,12 +87,12 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Po
 		k.AddPerpetualFuturesNetPositionOfMarket(ctx, position.Market, tradeAmount)
 
 		if closedRate.LTE(openedRate) {
-			profit := positionInstance.Size_.Sub(closedRate.Mul(sdk.NewDecFromInt(positionInstance.Leverage)))
+			profit := positionInstance.Size_.Sub(closedRate.Mul(sdk.NewDec(int64(positionInstance.Leverage))))
 			profitAmount := profit.Quo(*closedRate)
 
 			amountToUser = principal.Add(profitAmount)
 		} else {
-			loss := closedRate.Mul(sdk.NewDecFromInt(positionInstance.Leverage)).Sub(positionInstance.Size_)
+			loss := closedRate.Mul(sdk.NewDec(int64(positionInstance.Leverage))).Sub(positionInstance.Size_)
 			lossAmount := loss.Quo(*closedRate)
 
 			amountToUser = principal.Sub(lossAmount)

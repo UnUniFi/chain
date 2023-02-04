@@ -18,10 +18,8 @@ message PerpetualFuturesPositionInstance {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string leverage = 3 [
-    (gogoproto.moretags) = "yaml:\"leverage\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
+  uint32 leverage = 3 [
+    (gogoproto.moretags) = "yaml:\"leverage\""
   ];
 }
 

@@ -29,7 +29,7 @@ func levyImaginaryFundingRate(ctx sdk.Context, k keeper.Keeper) {
 		switch positionInstance.(type) {
 		case *types.PerpetualFuturesPositionInstance:
 			futuresPosition := positionInstance.(*types.PerpetualFuturesPositionInstance)
-			remainingMargin := *k.GetRemainingMargin(ctx, position.Id)
+			remainingMargin := position.RemainingMargin
 			imaginaryFundingRate := perpetualFuturesImaginaryFundingRates[position.Market]
 			imaginaryFundingFee := sdk.NewDecFromInt(remainingMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
 			commissionFee := sdk.NewDecFromInt(remainingMargin.Amount).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
@@ -47,8 +47,6 @@ func levyImaginaryFundingRate(ctx sdk.Context, k keeper.Keeper) {
 					remainingMargin.Amount = remainingMargin.Amount.Add(imaginaryFundingFee.Sub(commissionFee))
 				}
 			}
-
-			k.SetRemainingMargin(ctx, position.Id, remainingMargin)
 
 			return
 		case *types.PerpetualOptionsPositionInstance:

@@ -55,29 +55,66 @@ func (suite *KeeperTestSuite) SetupTest() {
 		app.BlockedAddrs(),
 	)
 
+	metadataAtom := banktypes.Metadata{
+		Description: "The native staking token of the Cosmos Hub.",
+		DenomUnits: []*banktypes.DenomUnit{
+			{
+				Denom:    "uatom",
+				Exponent: 0,
+				Aliases:  []string{"microatom"},
+			},
+			{
+				Denom:    "atom",
+				Exponent: 6,
+				Aliases:  []string{"ATOM"},
+			},
+		},
+		Base:    "uatom",
+		Display: "atom",
+		Symbol:  "ATOM",
+	}
+
+	metadataUsdc := banktypes.Metadata{
+		Description: "USD Coin",
+		DenomUnits: []*banktypes.DenomUnit{
+			{
+				Denom:    "uusdc",
+				Exponent: 0,
+			},
+			{
+				Denom:    "usdc",
+				Exponent: 18,
+			},
+		},
+		Base:    "uusdc",
+		Display: "usdc",
+		Symbol:  "USDC",
+	}
+
+	bankKeeper.SetDenomMetaData(suite.ctx, metadataAtom)
+	bankKeeper.SetDenomMetaData(suite.ctx, metadataUsdc)
+
 	pricefeedKeeper := pricefeedkeeper.NewKeeper(
 		appCodec,
 		app.GetKey(pricefeedtypes.StoreKey),
 		app.GetMemKey(pricefeedtypes.MemStoreKey),
 		app.GetSubspace(pricefeedtypes.ModuleName),
+		bankKeeper,
 	)
 	pfParams := pricefeedtypes.Params{
 		Markets: []pricefeedtypes.Market{
-			{MarketId: "btc:usdc", BaseAsset: "btc", QuoteAsset: "usdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
-			{MarketId: "usdc:usdc", BaseAsset: "usdc", QuoteAsset: "usdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
-			{MarketId: "bnb:usdc", BaseAsset: "bnb", QuoteAsset: "usdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
-			{MarketId: "bjpy:usdc", BaseAsset: "bjpy", QuoteAsset: "usdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
-		},
-		DenomTickerPairs: []pricefeedtypes.DenomTickerPair{
-			{Denom: "btc", Ticker: "btc"},
-			{Denom: "usdc", Ticker: "usdc"},
+			{MarketId: "ATOM:USDC", BaseAsset: "uatom", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+			{MarketId: "USDC:USDC", BaseAsset: "uusdc", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
 		},
 	}
 	pricefeedKeeper.SetParams(suite.ctx, pfParams)
-	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "btc:usdc", sdk.MustNewDecFromStr("8000.00"), suite.ctx.BlockTime().Add(1*time.Hour))
-	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "usdc:usdc", sdk.MustNewDecFromStr("1.00"), suite.ctx.BlockTime().Add(1*time.Hour))
-	pricefeedKeeper.SetCurrentPrices(suite.ctx, "btc:usdc")
-	pricefeedKeeper.SetCurrentPrices(suite.ctx, "usdc:usdc")
+
+	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "ATOM:USDC", sdk.MustNewDecFromStr("15.28"), suite.ctx.BlockTime().Add(1*time.Hour))
+	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "USDC:USDC", sdk.MustNewDecFromStr("1.00"), suite.ctx.BlockTime().Add(1*time.Hour))
+
+	pricefeedKeeper.SetCurrentPrices(suite.ctx, "ATOM:USDC")
+	pricefeedKeeper.SetCurrentPrices(suite.ctx, "USDC:USDC")
+
 	keeper := keeper.NewKeeper(appCodec, app.GetKey(types.StoreKey), app.GetKey(types.MemStoreKey), suite.app.GetSubspace(types.ModuleName), bankKeeper, pricefeedKeeper)
 	suite.keeper = keeper
 	suite.pricefeedKeeper = pricefeedKeeper

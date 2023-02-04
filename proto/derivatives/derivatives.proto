@@ -41,7 +41,11 @@ message Position {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  google.protobuf.Any position_instance = 7 [
+  cosmos.base.v1beta1.Coin remaining_margin = 7 [
+    (gogoproto.moretags) = "yaml:\"remaining_margin\"",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Any position_instance = 8 [
     (gogoproto.moretags) = "yaml:\"position_instance\"",
     (gogoproto.nullable) = false
   ];

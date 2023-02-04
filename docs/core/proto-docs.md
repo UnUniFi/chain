@@ -360,7 +360,6 @@
   
 - [pricefeed/pricefeed.proto](#pricefeed/pricefeed.proto)
     - [CurrentPrice](#ununifi.pricefeed.CurrentPrice)
-    - [DenomTickerPair](#ununifi.pricefeed.DenomTickerPair)
     - [Market](#ununifi.pricefeed.Market)
     - [Params](#ununifi.pricefeed.Params)
     - [PostedPrice](#ununifi.pricefeed.PostedPrice)
@@ -1471,6 +1470,7 @@ Query defines the gRPC querier service.
 | `opened_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `opened_height` | [uint64](#uint64) |  |  |
 | `opened_rate` | [string](#string) |  |  |
+| `remaining_margin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `position_instance` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
 
 
@@ -1600,7 +1600,7 @@ GenesisState defines the derivatives module's genesis state.
 | ----- | ---- | ----- | ----------- |
 | `position_type` | [PositionType](#ununifi.derivatives.PositionType) |  |  |
 | `size` | [string](#string) |  |  |
-| `leverage` | [string](#string) |  |  |
+| `leverage` | [uint32](#uint32) |  |  |
 
 
 
@@ -5043,22 +5043,6 @@ GenesisState defines the nftmint module's genesis state.
 
 
 
-<a name="ununifi.pricefeed.DenomTickerPair"></a>
-
-### DenomTickerPair
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `denom` | [string](#string) |  |  |
-| `ticker` | [string](#string) |  |  |
-
-
-
-
-
-
 <a name="ununifi.pricefeed.Market"></a>
 
 ### Market
@@ -5087,7 +5071,6 @@ GenesisState defines the nftmint module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `markets` | [Market](#ununifi.pricefeed.Market) | repeated |  |
-| `denom_ticker_pairs` | [DenomTickerPair](#ununifi.pricefeed.DenomTickerPair) | repeated |  |
 
 
 
