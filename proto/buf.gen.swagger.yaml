@@ -1,0 +1,6 @@
+version: v1
+plugins:
+  - name: openapiv2
+    out: ./tmp-swagger-gen
+    opt: logtostderr=true,openapi_naming_strategy=fqn,simple_operation_ids=true
+    strategy: all
