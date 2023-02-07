@@ -170,15 +170,15 @@ func request_Query_PerpetualFuturesMarket_0(ctx context.Context, marshaler runti
 		_   = err
 	)
 
-	val, ok = pathParams["denom"]
+	val, ok = pathParams["base_denom"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "denom")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "base_denom")
 	}
 
-	protoReq.Denom, err = runtime.String(val)
+	protoReq.BaseDenom, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "denom", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "base_denom", err)
 	}
 
 	val, ok = pathParams["quote_denom"]
@@ -208,15 +208,15 @@ func local_request_Query_PerpetualFuturesMarket_0(ctx context.Context, marshaler
 		_   = err
 	)
 
-	val, ok = pathParams["denom"]
+	val, ok = pathParams["base_denom"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "denom")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "base_denom")
 	}
 
-	protoReq.Denom, err = runtime.String(val)
+	protoReq.BaseDenom, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "denom", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "base_denom", err)
 	}
 
 	val, ok = pathParams["quote_denom"]
@@ -264,15 +264,15 @@ func request_Query_PerpetualOptionsMarket_0(ctx context.Context, marshaler runti
 		_   = err
 	)
 
-	val, ok = pathParams["denom"]
+	val, ok = pathParams["base_denom"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "denom")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "base_denom")
 	}
 
-	protoReq.Denom, err = runtime.String(val)
+	protoReq.BaseDenom, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "denom", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "base_denom", err)
 	}
 
 	val, ok = pathParams["quote_denom"]
@@ -302,15 +302,15 @@ func local_request_Query_PerpetualOptionsMarket_0(ctx context.Context, marshaler
 		_   = err
 	)
 
-	val, ok = pathParams["denom"]
+	val, ok = pathParams["base_denom"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "denom")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "base_denom")
 	}
 
-	protoReq.Denom, err = runtime.String(val)
+	protoReq.BaseDenom, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "denom", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "base_denom", err)
 	}
 
 	val, ok = pathParams["quote_denom"]
@@ -892,11 +892,11 @@ var (
 
 	pattern_Query_PerpetualFutures_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"ununifi", "derivatives", "perpetual-futures"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_PerpetualFuturesMarket_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"ununifi", "derivatives", "perpetual-futures", "denom", "quote_denom"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_PerpetualFuturesMarket_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"ununifi", "derivatives", "perpetual-futures", "base_denom", "quote_denom"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_PerpetualOptions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"ununifi", "derivatives", "perpetual-options"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_PerpetualOptionsMarket_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"ununifi", "derivatives", "perpetual-options", "denom", "quote_denom"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_PerpetualOptionsMarket_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"ununifi", "derivatives", "perpetual-options", "base_denom", "quote_denom"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_AllPositions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"ununifi", "derivatives", "positions"}, "", runtime.AssumeColonVerbOpt(false)))
 

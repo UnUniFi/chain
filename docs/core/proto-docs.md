@@ -1324,7 +1324,7 @@ Query defines the gRPC querier service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `denom` | [string](#string) |  |  |
+| `base_denom` | [string](#string) |  |  |
 | `quote_denom` | [string](#string) |  |  |
 
 
@@ -1823,7 +1823,7 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `denom` | [string](#string) |  |  |
+| `base_denom` | [string](#string) |  |  |
 | `quote_denom` | [string](#string) |  |  |
 
 
@@ -1888,7 +1888,7 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `denom` | [string](#string) |  |  |
+| `base_denom` | [string](#string) |  |  |
 | `quote_denom` | [string](#string) |  |  |
 
 
@@ -1972,9 +1972,9 @@ Query defines the gRPC querier service.
 | `LiquidityProviderTokenRealAPY` | [QueryLiquidityProviderTokenRealAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenRealAPYRequest) | [QueryLiquidityProviderTokenRealAPYResponse](#ununifi.derivatives.QueryLiquidityProviderTokenRealAPYResponse) |  | GET|/ununifi/derivatives/liquidity-providers/real-apy|
 | `LiquidityProviderTokenNominalAPY` | [QueryLiquidityProviderTokenNominalAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYRequest) | [QueryLiquidityProviderTokenNominalAPYResponse](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYResponse) |  | GET|/ununifi/derivatives/liquidity-providers/nominal-apy|
 | `PerpetualFutures` | [QueryPerpetualFuturesRequest](#ununifi.derivatives.QueryPerpetualFuturesRequest) | [QueryPerpetualFuturesResponse](#ununifi.derivatives.QueryPerpetualFuturesResponse) |  | GET|/ununifi/derivatives/perpetual-futures|
-| `PerpetualFuturesMarket` | [QueryPerpetualFuturesMarketRequest](#ununifi.derivatives.QueryPerpetualFuturesMarketRequest) | [QueryPerpetualFuturesMarketResponse](#ununifi.derivatives.QueryPerpetualFuturesMarketResponse) |  | GET|/ununifi/derivatives/perpetual-futures/{denom}/{quote_denom}|
+| `PerpetualFuturesMarket` | [QueryPerpetualFuturesMarketRequest](#ununifi.derivatives.QueryPerpetualFuturesMarketRequest) | [QueryPerpetualFuturesMarketResponse](#ununifi.derivatives.QueryPerpetualFuturesMarketResponse) |  | GET|/ununifi/derivatives/perpetual-futures/{base_denom}/{quote_denom}|
 | `PerpetualOptions` | [QueryPerpetualOptionsRequest](#ununifi.derivatives.QueryPerpetualOptionsRequest) | [QueryPerpetualOptionsResponse](#ununifi.derivatives.QueryPerpetualOptionsResponse) |  | GET|/ununifi/derivatives/perpetual-options|
-| `PerpetualOptionsMarket` | [QueryPerpetualOptionsMarketRequest](#ununifi.derivatives.QueryPerpetualOptionsMarketRequest) | [QueryPerpetualOptionsMarketResponse](#ununifi.derivatives.QueryPerpetualOptionsMarketResponse) |  | GET|/ununifi/derivatives/perpetual-options/{denom}/{quote_denom}|
+| `PerpetualOptionsMarket` | [QueryPerpetualOptionsMarketRequest](#ununifi.derivatives.QueryPerpetualOptionsMarketRequest) | [QueryPerpetualOptionsMarketResponse](#ununifi.derivatives.QueryPerpetualOptionsMarketResponse) |  | GET|/ununifi/derivatives/perpetual-options/{base_denom}/{quote_denom}|
 | `AllPositions` | [QueryAllPositionsRequest](#ununifi.derivatives.QueryAllPositionsRequest) | [QueryAllPositionsResponse](#ununifi.derivatives.QueryAllPositionsResponse) |  | GET|/ununifi/derivatives/positions|
 | `AddressPositions` | [QueryAddressPositionsRequest](#ununifi.derivatives.QueryAddressPositionsRequest) | [QueryAddressPositionsResponse](#ununifi.derivatives.QueryAddressPositionsResponse) |  | GET|/ununifi/derivatives/positions/{address}|
 

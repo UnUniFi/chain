@@ -35,7 +35,7 @@ service Query {
   }
 
   rpc PerpetualFuturesMarket(QueryPerpetualFuturesMarketRequest) returns (QueryPerpetualFuturesMarketResponse) {
-    option (google.api.http).get = "/ununifi/derivatives/perpetual-futures/{denom}/{quote_denom}";
+    option (google.api.http).get = "/ununifi/derivatives/perpetual-futures/{base_denom}/{quote_denom}";
   }
 
   rpc PerpetualOptions(QueryPerpetualOptionsRequest) returns (QueryPerpetualOptionsResponse) {
@@ -43,7 +43,7 @@ service Query {
   }
 
   rpc PerpetualOptionsMarket(QueryPerpetualOptionsMarketRequest) returns (QueryPerpetualOptionsMarketResponse) {
-    option (google.api.http).get = "/ununifi/derivatives/perpetual-options/{denom}/{quote_denom}";
+    option (google.api.http).get = "/ununifi/derivatives/perpetual-options/{base_denom}/{quote_denom}";
   }
 
   rpc AllPositions(QueryAllPositionsRequest) returns (QueryAllPositionsResponse) {
@@ -142,8 +142,8 @@ message QueryPerpetualFuturesResponse {
 }
 
 message QueryPerpetualFuturesMarketRequest {
-  string denom = 1 [
-    (gogoproto.moretags)  = "yaml:\"denom\""
+  string base_denom = 1 [
+    (gogoproto.moretags)  = "yaml:\"base_denom\""
   ];
   string quote_denom = 2 [
     (gogoproto.moretags)  = "yaml:\"quote_denom\""
@@ -181,8 +181,8 @@ message QueryPerpetualOptionsRequest {}
 message QueryPerpetualOptionsResponse {}
 
 message QueryPerpetualOptionsMarketRequest {
-  string denom = 1 [
-    (gogoproto.moretags)  = "yaml:\"denom\""
+  string base_denom = 1 [
+    (gogoproto.moretags)  = "yaml:\"base_denom\""
   ];
   string quote_denom = 2 [
     (gogoproto.moretags)  = "yaml:\"quote_denom\""

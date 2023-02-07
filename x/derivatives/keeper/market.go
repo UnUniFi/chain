@@ -10,7 +10,7 @@ import (
 )
 
 func (k Keeper) GetPairRate(ctx sdk.Context, pair types.Market) (*sdk.Dec, error) {
-	marketId, err := k.pricefeedKeeper.GetMarketIdFromDenom(ctx, pair.Denom, pair.QuoteDenom)
+	marketId, err := k.pricefeedKeeper.GetMarketIdFromDenom(ctx, pair.BaseDenom, pair.QuoteDenom)
 	if err != nil {
 		return nil, err
 	}

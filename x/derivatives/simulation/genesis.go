@@ -45,11 +45,11 @@ func RandomizedGenState(simState *module.SimulationState) {
 				ImaginaryFundingRateProportionalCoefficient: sdk.NewDecWithPrec(1, 4),
 				Markets: []types.Market{
 					{
-						Denom:      "btc",
+						BaseDenom:  "btc",
 						QuoteDenom: "usd",
 					},
 					{
-						Denom:      "eth",
+						BaseDenom:  "eth",
 						QuoteDenom: "usd",
 					},
 				},

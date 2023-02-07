@@ -62,7 +62,7 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Po
 		return err
 	}
 
-	k.bankKeeper.SendCoinsFromAccountToModule(ctx, position.Address.AccAddress(), types.ModuleName, sdk.Coins{sdk.NewCoin(position.Market.Denom, feeAmount.RoundInt())}) // TODO: this is wrong.
+	k.bankKeeper.SendCoinsFromAccountToModule(ctx, position.Address.AccAddress(), types.ModuleName, sdk.Coins{sdk.NewCoin(position.Market.BaseDenom, feeAmount.RoundInt())}) // TODO: this is wrong.
 
 	principal := positionInstance.CalculatePrincipal()
 	amountToUser := sdk.Dec{}
@@ -102,7 +102,7 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Po
 		return fmt.Errorf("unknown position type")
 	}
 
-	k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, position.Address.AccAddress(), sdk.Coins{sdk.NewCoin(position.Market.Denom, amountToUser.RoundInt())})
+	k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, position.Address.AccAddress(), sdk.Coins{sdk.NewCoin(position.Market.BaseDenom, amountToUser.RoundInt())})
 
 	ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionClosed{
 		Sender:      position.Address.AccAddress().String(),
@@ -140,7 +140,7 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 func (k Keeper) GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market) sdk.Dec {
 	store := ctx.KVStore(k.storeKey)
 
-	bz := store.Get(types.DenomNetPositionPerpetualFuturesKeyPrefix(market.Denom, market.QuoteDenom))
+	bz := store.Get(types.DenomNetPositionPerpetualFuturesKeyPrefix(market.BaseDenom, market.QuoteDenom))
 	amount := sdk.MustNewDecFromStr(string(bz))
 
 	return amount
@@ -150,7 +150,7 @@ func (k Keeper) SetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market t
 	store := ctx.KVStore(k.storeKey)
 	bz := []byte(amount.String())
 
-	store.Set(types.DenomNetPositionPerpetualFuturesKeyPrefix(market.Denom, market.QuoteDenom), bz)
+	store.Set(types.DenomNetPositionPerpetualFuturesKeyPrefix(market.BaseDenom, market.QuoteDenom), bz)
 }
 
 func (k Keeper) AddPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market, rhs sdk.Dec) {

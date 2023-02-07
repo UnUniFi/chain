@@ -40,7 +40,7 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 			Id:      "0",
 			Address: owner.Bytes(),
 			Market: types.Market{
-				Denom:      "uatom",
+				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
 			},
 			OpenedAt:         time.Now().UTC(),
@@ -52,7 +52,7 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 			Id:      "1",
 			Address: owner.Bytes(),
 			Market: types.Market{
-				Denom:      "uatom",
+				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
 			},
 			OpenedAt:         time.Now().UTC(),
@@ -115,7 +115,7 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 			Id:      "0",
 			Address: owner.Bytes(),
 			Market: types.Market{
-				Denom:      "uatom",
+				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
 			},
 			OpenedAt:         time.Now(),
@@ -127,7 +127,7 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 			Id:      "1",
 			Address: owner2.Bytes(),
 			Market: types.Market{
-				Denom:      "uatom",
+				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
 			},
 			OpenedAt:         time.Now(),
