@@ -145,9 +145,17 @@ distclean: clean
 ###                                 Tests                                   ###
 ###############################################################################
 
-test: test-unit
-test-unit:
+test: test-unit-all
+
+test-unit-all:
 	@VERSION=$(VERSION) go test  ./... 
+
+NAMES = nftmarket auction cdp nftmint
+
+test-unit: $(addprefix test-unit-, $(NAMES))
+
+test-unit-%:
+	@go test ./x/${@:test-unit-%=%}/...
 
 ###############################################################################
 ###                                Protobuf                                 ###
