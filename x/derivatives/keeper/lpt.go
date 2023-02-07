@@ -6,6 +6,14 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
+func (k Keeper) GetLPTokenBaseMintFee(ctx sdk.Context) sdk.Dec {
+	return k.GetParams(ctx).Pool.BaseLptMintFee
+}
+
+func (k Keeper) GetLPTokenBaseRedeemFee(ctx sdk.Context) sdk.Dec {
+	return k.GetParams(ctx).Pool.BaseLptRedeemFee
+}
+
 func (k Keeper) GetLPTokenSupplySnapshot(ctx sdk.Context, height int64) sdk.Int {
 	store := ctx.KVStore(k.storeKey)
 
@@ -33,6 +41,43 @@ func (k Keeper) GetLPTokenSupply(ctx sdk.Context) sdk.Int {
 
 func (k Keeper) GetLPTokenPrice(ctx sdk.Context) sdk.Dec {
 	return k.GetPoolMarketCap(ctx).CalculateLPTokenPrice(k.GetLPTokenSupply(ctx))
+}
+
+func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemDenom string) (sdk.Coin, sdk.Coin, error) {
+	lptPrice := k.GetLPTokenPrice(ctx)
+	redeemAssetPrice, err := k.GetAssetPrice(ctx, redeemDenom)
+
+	if err != nil {
+		return sdk.Coin{}, sdk.Coin{}, err
+	}
+
+	totalSupply := k.bankKeeper.GetSupply(ctx, types.LiquidityProviderTokenDenom)
+	if totalSupply.Amount.IsZero() {
+		return sdk.Coin{}, sdk.Coin{}, types.ErrNoLiquidityProviderToken
+	}
+
+	redeemAssetBalance := k.GetAssetBalance(ctx, redeemDenom)
+
+	// redeem amount = lptPrice * lptAmount / redeemAssetPrice
+	redeemAmount := lptPrice.Mul(sdk.NewDecFromInt(lptAmount)).Quo(redeemAssetPrice.Price)
+
+	if redeemAmount.GT(sdk.NewDecFromInt(redeemAssetBalance.Amount)) {
+		return sdk.Coin{}, sdk.Coin{}, types.ErrInvalidRedeemAmount
+	}
+
+	targetAmount, err := k.GetAssetTargetAmount(ctx, redeemDenom)
+	if err != nil {
+		return sdk.Coin{}, sdk.Coin{}, err
+	}
+
+	increaseRate := sdk.NewDecFromInt(targetAmount.Amount).Sub(sdk.NewDecFromInt(redeemAssetBalance.Amount)).Quo(sdk.NewDecFromInt(targetAmount.Amount))
+	if increaseRate.IsNegative() {
+		increaseRate = sdk.NewDec(0)
+	}
+
+	redeemFeeRate := k.GetLPTokenBaseRedeemFee(ctx).Mul(increaseRate.Add(sdk.NewDecWithPrec(1, 0)))
+
+	return sdk.NewCoin(redeemDenom, redeemAmount.TruncateInt()), sdk.NewCoin(redeemDenom, redeemFeeRate.TruncateInt()), nil
 }
 
 func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLiquidityProviderToken) error {
@@ -76,27 +121,21 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgBurnLiquidityProviderToken) error {
 	sender := msg.Sender.AccAddress()
 	amount := msg.Amount
+	redeemDenom := msg.RedeemDenom
 
 	userBalance := k.bankKeeper.GetBalance(ctx, sender, types.LiquidityProviderTokenDenom)
 	if userBalance.Amount.LT(amount) {
 		return types.ErrInvalidRedeemAmount
 	}
 
-	totalSupply := k.bankKeeper.GetSupply(ctx, types.LiquidityProviderTokenDenom)
-
-	assets := k.GetPoolAssets(ctx)
-
-	for _, asset := range assets {
-		coinBalance := k.GetAssetBalance(ctx, asset.Denom)
-		tempAmount := coinBalance.Amount.Mul(userBalance.Amount)
-		balanceToRedeem := tempAmount.BigInt().Div(tempAmount.BigInt(), totalSupply.Amount.BigInt())
-
-		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, sdk.Coins{sdk.NewCoin(asset.Denom, sdk.NewInt(balanceToRedeem.Int64()))})
-
-		if err != nil {
-			return err
-		}
+	redeemAmount, redeemFee, err := k.GetRedeemDenomAmount(ctx, amount, redeemDenom)
+	if err != nil {
+		panic("failed to get redeemable amount")
 	}
+
+	k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, sdk.Coins{redeemAmount})
+
+	// send redeem fee to fee collector
 
 	k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(types.LiquidityProviderTokenDenom, amount)})
 

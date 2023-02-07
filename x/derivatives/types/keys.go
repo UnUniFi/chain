@@ -45,6 +45,7 @@ const (
 	KeyPrefixPositionMargin        = "position_margin"
 	KeyPrefixImaginaryFundingRate  = "imaginary_funding_rate"
 	KeyPrefixBlockTimestamp        = "block_timestamp"
+	KeyPrefixLPTBaseRedeemFee      = "lpt_base_redeem_fee"
 )
 
 const (

@@ -8,5 +8,6 @@ import (
 
 // x/derivatives module sentinel errors
 var (
-	ErrInvalidRedeemAmount = sdkerrors.Register(ModuleName, 1, "redeem amount exceeds user balance")
+	ErrInvalidRedeemAmount      = sdkerrors.Register(ModuleName, 1, "redeem amount exceeds user balance")
+	ErrNoLiquidityProviderToken = sdkerrors.Register(ModuleName, 2, "no liquidity provider token")
 )

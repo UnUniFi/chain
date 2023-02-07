@@ -69,6 +69,19 @@ func (k Keeper) GetAssetBalance(ctx sdk.Context, denom string) sdk.Coin {
 	return coin
 }
 
+func (k Keeper) GetAssetTargetAmount(ctx sdk.Context, denom string) (sdk.Coin, error) {
+	mc := k.GetPoolMarketCap(ctx)
+	asset := k.GetPoolAssetByDenom(ctx, denom)
+
+	price, err := k.GetAssetPrice(ctx, denom)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+
+	targetAmount := mc.Total.Mul(asset.TargetWeight).Quo(price.Price)
+	return sdk.NewCoin(denom, targetAmount.TruncateInt()), nil
+}
+
 func (k Keeper) GetUserDeposits(ctx sdk.Context, depositor sdk.AccAddress) []sdk.Coin {
 	store := ctx.KVStore(k.storeKey)
 

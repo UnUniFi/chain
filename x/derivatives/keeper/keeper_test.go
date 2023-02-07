@@ -103,17 +103,16 @@ func (suite *KeeperTestSuite) SetupTest() {
 	)
 	pfParams := pricefeedtypes.Params{
 		Markets: []pricefeedtypes.Market{
+			{MarketId: "USDC:USD", BaseAsset: "uusdc", QuoteAsset: "usd", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+			{MarketId: "ATOM:USD", BaseAsset: "uatom", QuoteAsset: "usd", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
 			{MarketId: "ATOM:USDC", BaseAsset: "uatom", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
-			{MarketId: "USDC:USDC", BaseAsset: "uusdc", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
 		},
 	}
 	pricefeedKeeper.SetParams(suite.ctx, pfParams)
 
 	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "ATOM:USDC", sdk.MustNewDecFromStr("15.28"), suite.ctx.BlockTime().Add(1*time.Hour))
-	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "USDC:USDC", sdk.MustNewDecFromStr("1.00"), suite.ctx.BlockTime().Add(1*time.Hour))
 
 	pricefeedKeeper.SetCurrentPrices(suite.ctx, "ATOM:USDC")
-	pricefeedKeeper.SetCurrentPrices(suite.ctx, "USDC:USDC")
 
 	keeper := keeper.NewKeeper(appCodec, app.GetKey(types.StoreKey), app.GetKey(types.MemStoreKey), suite.app.GetSubspace(types.ModuleName), bankKeeper, pricefeedKeeper)
 	suite.keeper = keeper

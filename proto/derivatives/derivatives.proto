@@ -45,7 +45,12 @@ message Position {
     (gogoproto.moretags) = "yaml:\"remaining_margin\"",
     (gogoproto.nullable) = false
   ];
-  google.protobuf.Any position_instance = 8 [
+  google.protobuf.Timestamp last_levied_at = 8 [
+    (gogoproto.moretags) = "yaml:\"last_levied_at\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  google.protobuf.Any position_instance = 9 [
     (gogoproto.moretags) = "yaml:\"position_instance\"",
     (gogoproto.nullable) = false
   ];

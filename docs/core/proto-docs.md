@@ -1471,6 +1471,7 @@ Query defines the gRPC querier service.
 | `opened_height` | [uint64](#uint64) |  |  |
 | `opened_rate` | [string](#string) |  |  |
 | `remaining_margin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `last_levied_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `position_instance` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
 
 
@@ -1998,6 +1999,7 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  |  |
 | `amount` | [string](#string) |  |  |
+| `redeem_denom` | [string](#string) |  |  |
 
 
 

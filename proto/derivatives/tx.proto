@@ -43,6 +43,9 @@ message MsgBurnLiquidityProviderToken {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
+  string redeem_denom = 3 [
+    (gogoproto.moretags) = "yaml:\"redeem_denom\""
+  ];
 }
 
 message MsgBurnLiquidityProviderTokenResponse {}
