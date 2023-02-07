@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Script to start network with pricefeed
+# just run ./start.sh
+
 rm -rf ~/.ununifi
 
 set -o errexit -o nounset
@@ -26,7 +29,10 @@ sed -i '' 's/stake/uguu/g' ~/.ununifi/config/genesis.json;
 
 # modify genesis.json
 PRICEFEED=$(ununifid keys show pricefeed --address)
-jq '.app_state.pricefeed.params.markets = [{ "market_id": "ubtc:jpy", "base_asset": "ubtc", "quote_asset": "jpy", "oracles": [ "'$PRICEFEED'" ], "active": true }, { "market_id": "ubtc:jpy:30", "base_asset": "ubtc", "quote_asset": "jpy", "oracles": [ "'$PRICEFEED'" ], "active": true }]'  ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
+jq '.app_state.pricefeed.params.markets = [{ "market_id": "ubtc:usd", "base_asset": "ubtc", "quote_asset": "usd", "oracles": [ "'$PRICEFEED'" ], "active": true }, { "market_id": "ubtc:usd:30", "base_asset": "ubtc", "quote_asset": "usd", "oracles": [ "'$PRICEFEED'" ], "active": true }]'  ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
+
+# run pricefeed
+./setup_pricefeed.sh
 
 # Start node
 ununifid start
