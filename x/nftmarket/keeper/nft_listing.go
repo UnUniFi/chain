@@ -698,11 +698,80 @@ func (k Keeper) LiquidationProcess(ctx sdk.Context, bids types.NftBids, listing 
 	bids = bids.SortLiquidation()
 	existWinner := false
 
+	winnerBid := bids.GetWinnerBid()
+	if winnerBid.IsNil() {
+		// collected all deposit
+		listingOwner, err := sdk.AccAddressFromBech32(listing.Owner)
+		if err != nil {
+			panic(err)
+		}
+		for _, bid := range bids {
+			updateListing, err := k.SafeCloseBidCollectDeposit(ctx, bid, listing)
+			if err != nil {
+				panic(err)
+			}
+			listing = updateListing
+		}
+		depositCollected := listing.CollectedAmount
+		// pay fee
+		loan := k.GetDebtByNft(ctx, listing.IdBytes())
+		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, listing.BidToken, depositCollected.Amount, loan.Loan.Amount)
+		// transfer nft to listing owner
+		cacheCtx, write := ctx.CacheContext()
+		err = k.nftKeeper.Transfer(cacheCtx, listing.NftId.ClassId, listing.NftId.NftId, listingOwner)
+		if err != nil {
+			panic(err)
+		} else {
+			write()
+		}
+		// remove listing
+		k.DeleteNftListings(ctx, listing)
+	} else {
+		collectedBids, refundBids := bids.MakeCollectedBidsAndRefundBids()
+		for _, bid := range collectedBids {
+			// not pay bidder amount, collected deposit
+			cacheCtx, write := ctx.CacheContext()
+			updatedListing, err := k.SafeCloseBidCollectDeposit(cacheCtx, bid, listing)
+			if err == nil {
+				write()
+			} else {
+				panic(err)
+			}
+			listing = updatedListing
+		}
+
+		surplusAmount := k.GetSurplusAmount(bids, winnerBid).Add(listing.CollectedAmount)
+		totalInterest := refundBids.TotalInterestAmount(ctx.BlockTime())
+		if totalInterest.IsLTE(surplusAmount) {
+			listing.CollectedAmount = listing.CollectedAmount.Sub(totalInterest)
+			for _, bid := range refundBids {
+				k.SafeCloseBidWithAllInterest(ctx, bid)
+			}
+		} else {
+			decTotalInterest := sdk.NewDecFromInt(totalInterest.Amount)
+			decSurplusAmount := sdk.NewDecFromInt(surplusAmount.Amount)
+			for _, bid := range refundBids {
+				decInterestAmount := bid.TotalInterestAmountDec(ctx.BlockTime())
+				bidderRate := decInterestAmount.Amount.Quo(decTotalInterest)
+				bidderGetInterest := decSurplusAmount.Mul(bidderRate).RoundInt()
+				cacheCtx, write := ctx.CacheContext()
+				err := k.SafeCloseBidWithPartInterest(cacheCtx, bid, sdk.NewCoin(bid.DepositAmount.Denom, bidderGetInterest))
+				if err == nil {
+					write()
+				} else {
+					panic(err)
+				}
+			}
+		}
+		listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
+		listing.State = types.ListingState_SUCCESSFUL_BID
+		k.SaveNftListing(ctx, listing)
+	}
+
 	for _, bid := range bids {
 		// check bidder is paid full amount
 		if !existWinner {
-			bid.PaidAmount = bid.PaidAmount.Add(bid.DepositAmount)
-			if bid.PaidAmount.Equal(bid.BidAmount) {
+			if bid.IsPaidBidAmount() {
 				existWinner = true
 				listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
 				listing.State = types.ListingState_SUCCESSFUL_BID
@@ -736,14 +805,10 @@ func (k Keeper) LiquidationProcess(ctx sdk.Context, bids types.NftBids, listing 
 		if err != nil {
 			return err
 		}
-		depositCollected := sdk.ZeroInt()
-		for _, bid := range bids {
-			depositCollected = depositCollected.Add(bid.DepositAmount.Amount)
-			k.DeleteBid(ctx, bid)
-		}
+		depositCollected := listing.CollectedAmount
 		// pay fee
 		loan := k.GetDebtByNft(ctx, listing.IdBytes())
-		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, listing.BidToken, depositCollected, loan.Loan.Amount)
+		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, listing.BidToken, depositCollected.Amount, loan.Loan.Amount)
 		// transfer nft to listing owner
 		cacheCtx, write := ctx.CacheContext()
 		err = k.nftKeeper.Transfer(cacheCtx, listing.NftId.ClassId, listing.NftId.NftId, listingOwner)
@@ -833,4 +898,12 @@ func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sd
 		}
 	}
 
+}
+
+// get surplus amount
+func (k Keeper) GetSurplusAmount(bids types.NftBids, winBid types.NftBid) sdk.Coin {
+	if len(bids) == 0 {
+		return sdk.Coin{}
+	}
+	return winBid.BidAmount.Sub(bids.TotalDeposit())
 }
