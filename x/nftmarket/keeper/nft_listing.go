@@ -803,16 +803,14 @@ func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sd
 		loanAmount = sdk.ZeroInt()
 	}
 	listerPayment := amount.Sub(fee)
+	if listerPayment.IsNegative() {
+		panic("lister cannot pay fees")
+	}
 	listerPayment = listerPayment.Sub(loanAmount)
+	if listerPayment.IsNegative() {
+		listerPayment = amount.Sub(fee)
+	}
 	if !listerPayment.IsZero() {
-
-		// temporary fix
-		// fix me
-		moduleAcc := k.accountKeeper.GetModuleAddress(types.ModuleName)
-		modAmount := k.bankKeeper.GetBalance(ctx, moduleAcc, denom)
-		if modAmount.Amount.LT(listerPayment) {
-			k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(denom, listerPayment)})
-		}
 		err := k.bankKeeper.SendCoinsFromModuleToAccount(cacheCtx, types.ModuleName, listingOwner, sdk.Coins{sdk.NewCoin(denom, listerPayment)})
 		if err != nil {
 			fmt.Println(err)
