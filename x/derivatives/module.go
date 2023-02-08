@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	// this line is used by starport scaffolding # 1
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -11,14 +12,15 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/UnUniFi/chain/x/derivatives/client/cli"
-	"github.com/UnUniFi/chain/x/derivatives/keeper"
-	"github.com/UnUniFi/chain/x/derivatives/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+
+	"github.com/UnUniFi/chain/x/derivatives/client/cli"
+	"github.com/UnUniFi/chain/x/derivatives/keeper"
+	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
 var (
@@ -123,7 +125,7 @@ func (am AppModule) LegacyQuerierHandler(_ *codec.LegacyAmino) sdk.Querier {
 
 // RegisterServices registers a gRPC query service to respond to the module-specific gRPC queries
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
+	// types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
 	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
 }
 
