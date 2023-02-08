@@ -226,6 +226,7 @@ var (
 		incentive.AppModuleBasic{},
 		nftmint.AppModuleBasic{},
 		nftmarket.AppModuleBasic{},
+		derivatives.AppModuleBasic{},
 		// wasm.AppModuleBasic{},
 	)
 
@@ -245,9 +246,10 @@ var (
 		ecosystemincentivetypes.ModuleName: nil,
 		ununifidisttypes.ModuleName:        {authtypes.Minter},
 		// wasm.ModuleName:             {authtypes.Burner},
-		nft.ModuleName:            nil,
-		nftminttypes.ModuleName:   nil,
-		nftmarkettypes.ModuleName: nil,
+		nft.ModuleName:              nil,
+		nftminttypes.ModuleName:     nil,
+		nftmarkettypes.ModuleName:   nil,
+		derivativestypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 		// nftmarkettypes.NftTradingFee: nil,
 	}
 
