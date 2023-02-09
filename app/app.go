@@ -113,6 +113,7 @@ import (
 	"github.com/UnUniFi/chain/x/cdp"
 	cdpkeeper "github.com/UnUniFi/chain/x/cdp/keeper"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	"github.com/UnUniFi/chain/x/derivatives"
 	derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
 	derivativestypes "github.com/UnUniFi/chain/x/derivatives/types"
 	ecosystemincentive "github.com/UnUniFi/chain/x/ecosystem-incentive"
@@ -225,6 +226,7 @@ var (
 		incentive.AppModuleBasic{},
 		nftmint.AppModuleBasic{},
 		nftmarket.AppModuleBasic{},
+		derivatives.AppModuleBasic{},
 		// wasm.AppModuleBasic{},
 	)
 
@@ -244,9 +246,10 @@ var (
 		ecosystemincentivetypes.ModuleName: nil,
 		ununifidisttypes.ModuleName:        {authtypes.Minter},
 		// wasm.ModuleName:             {authtypes.Burner},
-		nft.ModuleName:            nil,
-		nftminttypes.ModuleName:   nil,
-		nftmarkettypes.ModuleName: nil,
+		nft.ModuleName:              nil,
+		nftminttypes.ModuleName:     nil,
+		nftmarkettypes.ModuleName:   nil,
+		derivativestypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 		// nftmarkettypes.NftTradingFee: nil,
 	}
 
@@ -671,6 +674,7 @@ func NewApp(
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 
+	// tbbbt
 	app.mm = module.NewManager(
 		genutil.NewAppModule(
 			app.AccountKeeper,
@@ -701,6 +705,7 @@ func NewApp(
 		auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
 		cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.pricefeedKeeper),
 		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
+		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.AccountKeeper, app.BankKeeper),
 		incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
 		ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
 		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
@@ -741,7 +746,7 @@ func NewApp(
 		pricefeedtypes.ModuleName,
 		nftminttypes.ModuleName,
 		nftmarkettypes.ModuleName,
-
+		derivativestypes.ModuleName,
 		// ibchost.ModuleName,
 		// ibctransfertypes.ModuleName,
 		// wasm.ModuleName,
@@ -775,6 +780,7 @@ func NewApp(
 		nftminttypes.ModuleName,
 		nftmarkettypes.ModuleName,
 		ecosystemincentivetypes.ModuleName,
+		derivativestypes.ModuleName,
 		// ibchost.ModuleName,
 		// ibctransfertypes.ModuleName,
 		// wasm.ModuleName,
@@ -816,6 +822,7 @@ func NewApp(
 		nftminttypes.ModuleName,
 		nftmarkettypes.ModuleName,
 		ecosystemincentivetypes.ModuleName,
+		derivativestypes.ModuleName,
 		// ibchost.ModuleName,
 		// ibctransfertypes.ModuleName,
 		// wasm after ibc transfer
@@ -1103,5 +1110,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	// paramsKeeper.Subspace(wasm.ModuleName)
 	paramsKeeper.Subspace(nftminttypes.ModuleName)
 	paramsKeeper.Subspace(ecosystemincentivetypes.ModuleName)
+	paramsKeeper.Subspace(derivativestypes.ModuleName)
 	return paramsKeeper
 }
