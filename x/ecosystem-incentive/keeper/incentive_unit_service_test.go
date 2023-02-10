@@ -74,6 +74,9 @@ func (suite *KeeperTestSuite) TestRegister() {
 			for i, subject := range *subjectInfo {
 				suite.Require().Equal(subject.SubjectAddr, tc.subjectAddrs[i])
 				suite.Require().Equal(subject.Weight, tc.weights[i])
+
+				incentiveUnitIdsByAddr := suite.app.EcosystemincentiveKeeper.GetIncentiveUnitIdsByAddr(suite.ctx, subject.SubjectAddr.AccAddress())
+				suite.Require().Contains(incentiveUnitIdsByAddr.IncentiveUnitIds, tc.incentiveUnitId)
 			}
 		} else {
 			suite.Require().Error(err)

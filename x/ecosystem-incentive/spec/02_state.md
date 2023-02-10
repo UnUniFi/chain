@@ -80,13 +80,10 @@ message Params {
 }
 
 message RewardParams {
-  string module_name = 1 [
-    (gogoproto.moretags) = "yaml:\"module_name\""
-  ];
-  repeated RewardRate reward_rate = 2 [
-    (gogoproto.moretags) = "yaml:\"reward_rate\"",
-    (gogoproto.nullable) = false
-  ];
+  string module_name = 1 [(gogoproto.nullable) = false];
+  repeated IncentiveUnit incentive_units = 2 [(gogoproto.nullable) = false];
+  repeated RewardStore reward_stores = 3 [(gogoproto.nullable) = false];
+  repeated IncentiveUnitIdsByAddr incentive_unit_ids_by_addr = 4 [(gogoproto.nullable) = false];
 }
 
 // RewardRate defines the ratio to take reward for a specific reward_type.
@@ -122,3 +119,21 @@ At first, we support frontend creator. But, the reward will be able to distribut
 ### MaxIncentiveUnitIdLen
 
 The length of `IncentiveUnitId` must be between `MaxIncentiveUnitIdLen` and 0.
+
+## IncentiveUnitIdsByAddr
+
+IncentiveUnitIdsByAddr is the collection of the incentive unit ids for each address.
+
+```protobuf
+message IncentiveUnitIdsByAddr {
+  string address = 1 [
+    (gogoproto.moretags) = "yaml:\"address\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  repeated string incentive_unit_ids = 2 [
+    (gogoproto.moretags) = "yaml:\"incentive_unit_ids\"",
+    (gogoproto.nullable) = false
+  ];
+}
+```

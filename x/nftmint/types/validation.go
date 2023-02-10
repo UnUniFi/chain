@@ -57,6 +57,18 @@ func ValidateMintNFT(
 	return nil
 }
 
+func ValidateClassAttributes(classAttributes ClassAttributes, params Params) error {
+	if err := ValidateUri(params.MinUriLen, params.MaxUriLen, classAttributes.BaseTokenUri); err != nil {
+		return err
+	}
+
+	if err := ValidateTokenSupplyCap(params.MaxNFTSupplyCap, classAttributes.TokenSupplyCap); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func ValidateMintingPermission(mintingPermission MintingPermission, owner, minter sdk.AccAddress) error {
 	switch mintingPermission {
 	case 0:
@@ -72,7 +84,6 @@ func ValidateMintingPermission(mintingPermission MintingPermission, owner, minte
 }
 
 // Measure length of the string as byte length
-
 func ValidateClassName(minLen, maxLen uint64, className string) error {
 	len := len(className)
 	if len < int(minLen) || len > int(maxLen) {

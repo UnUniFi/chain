@@ -147,3 +147,19 @@ message QueryRewardResponse {
 }
 ```
 
+### IncentiveUnitIdsByAddr
+
+```protobuf
+message QueryIncentiveUnitIdsByAddrRequest {
+  string address = 1 [
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+}
+
+message QueryIncentiveUnitIdsByAddrResponse {
+  IncentiveUnitIdsByAddr incentive_unit_ids_by_addr = 1 [
+    (gogoproto.moretags) = "yaml:\"incentive_unit_ids_by_addr\"",
+    (gogoproto.nullable) = false
+  ];
+}
+```

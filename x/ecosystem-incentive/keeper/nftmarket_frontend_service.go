@@ -81,7 +81,7 @@ func (k Keeper) GetIncentiveUnitIdByNftId(ctx sdk.Context, nftId nftmarkettypes.
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnitIdByNftId))
 
 	bz := prefixStore.Get(nftId.IdBytes())
-	if len(bz) == 0 {
+	if bz == nil {
 		return "", false
 	}
 
