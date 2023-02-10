@@ -35,6 +35,7 @@ jq '.app_state.derivatives.params.pool.base_lpt_redeem_fee = "0.001"' ~/.ununifi
 jq '.app_state.derivatives.params.pool.accepted_assets = [{"denom":"ubtc", "target_weight": "0.6"}, {"denom":"uusd", "target_weight":"0.4"}]' ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
 jq '.app_state.derivatives.params.perpetual_futures.commission_rate = "0.001"' ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
 jq '.app_state.derivatives.params.perpetual_futures.margin_maintenance_rate = "0.5"' ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
+jq '.app_state.derivatives.params.perpetual_futures.imaginary_funding_rate_proportional_coefficient = "0.0005"' ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
 jq '.app_state.derivatives.params.perpetual_futures.markets = [{"base_denom": "ubtc", "quote_denom": "uusd" }]' ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
 
 # run pricefeed
