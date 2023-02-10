@@ -92,8 +92,7 @@ message Pool {
     (gogoproto.nullable) = false
   ];
   repeated Asset accepted_assets = 6 [
-    (gogoproto.moretags) = "yaml:\"accepted_assets\"",
-    (gogoproto.nullable) = false
+    (gogoproto.moretags) = "yaml:\"accepted_assets\""
   ];
 }
 
@@ -154,8 +153,7 @@ message PerpetualFuturesParams {
     (gogoproto.nullable) = false
   ];
   repeated Market markets = 4 [
-    (gogoproto.moretags) = "yaml:\"markets\"",
-    (gogoproto.nullable) = false
+    (gogoproto.moretags) = "yaml:\"markets\""
   ];
 }
 
@@ -181,10 +179,11 @@ message PerpetualOptionsParams {
     (gogoproto.nullable) = false
   ];
   repeated Market markets = 5 [
-    (gogoproto.moretags) = "yaml:\"markets\"",
-    (gogoproto.nullable) = false
+    (gogoproto.moretags) = "yaml:\"markets\""
   ];
 }
+// (gogoproto.nullable) = false
+
 
 message Params {
   Pool pool = 1 [
