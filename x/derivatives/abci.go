@@ -15,9 +15,9 @@ func levyImaginaryFundingRate(ctx sdk.Context, k keeper.Keeper) {
 	perpetualFuturesImaginaryFundingRates := make(map[types.Market]sdk.Dec)
 
 	for _, perpetualFuturesMarket := range perpetualFuturesMarkets {
-		netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, perpetualFuturesMarket)
+		netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, *perpetualFuturesMarket)
 		imaginaryFundingRate := netPosition.Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
-		perpetualFuturesImaginaryFundingRates[perpetualFuturesMarket] = imaginaryFundingRate
+		perpetualFuturesImaginaryFundingRates[*perpetualFuturesMarket] = imaginaryFundingRate
 	}
 
 	for _, position := range positions {
