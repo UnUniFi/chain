@@ -17,10 +17,6 @@ func (suite *KeeperTestSuite) AddPoolAssets() []types.Pool_Asset {
 			Denom:        "uatom",
 			TargetWeight: sdk.NewDec(10),
 		},
-		{
-			Denom:        "uguu",
-			TargetWeight: sdk.NewDec(100),
-		},
 	}
 
 	for _, asset := range assets {
@@ -52,7 +48,6 @@ func (suite *KeeperTestSuite) TestDepositPoolAsset() {
 	depositors := []sdk.AccAddress{
 		sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes()),
 		sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes()),
-		sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes()),
 	}
 
 	assets := []sdk.Coin{
@@ -63,10 +58,6 @@ func (suite *KeeperTestSuite) TestDepositPoolAsset() {
 		{
 			Denom:  "uatom",
 			Amount: sdk.NewInt(10),
-		},
-		{
-			Denom:  "uguu",
-			Amount: sdk.NewInt(1000),
 		},
 	}
 
@@ -86,7 +77,6 @@ func (suite *KeeperTestSuite) TestSetPoolMarketCapSnapshot() {
 	depositors := []sdk.AccAddress{
 		sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes()),
 		sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes()),
-		sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes()),
 	}
 
 	height := suite.ctx.BlockHeight()
@@ -99,10 +89,6 @@ func (suite *KeeperTestSuite) TestSetPoolMarketCapSnapshot() {
 		{
 			Denom:  "uatom",
 			Amount: sdk.NewInt(10),
-		},
-		{
-			Denom:  "uguu",
-			Amount: sdk.NewInt(1000),
 		},
 	}
 

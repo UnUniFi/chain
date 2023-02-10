@@ -47,6 +47,7 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 			OpenedHeight:     1,
 			OpenedRate:       sdk.NewDec(10),
 			PositionInstance: *position0Inst,
+			RemainingMargin:  sdk.NewCoin("uusdc", sdk.NewInt(1000)),
 		},
 		{
 			Id:      "1",
@@ -59,6 +60,7 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 			OpenedHeight:     2,
 			OpenedRate:       sdk.NewDec(10),
 			PositionInstance: *position1Inst,
+			RemainingMargin:  sdk.NewCoin("uatom", sdk.NewInt(1000)),
 		},
 	}
 

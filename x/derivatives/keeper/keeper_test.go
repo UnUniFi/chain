@@ -111,10 +111,21 @@ func (suite *KeeperTestSuite) SetupTest() {
 	pricefeedKeeper.SetParams(suite.ctx, pfParams)
 
 	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "ATOM:USDC", sdk.MustNewDecFromStr("15.28"), suite.ctx.BlockTime().Add(1*time.Hour))
+	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "ATOM:USD", sdk.MustNewDecFromStr("15.28"), suite.ctx.BlockTime().Add(1*time.Hour))
+	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "USDC:USD", sdk.MustNewDecFromStr("1"), suite.ctx.BlockTime().Add(1*time.Hour))
 
 	pricefeedKeeper.SetCurrentPrices(suite.ctx, "ATOM:USDC")
+	pricefeedKeeper.SetCurrentPrices(suite.ctx, "ATOM:USD")
+	pricefeedKeeper.SetCurrentPrices(suite.ctx, "USDC:USD")
 
 	keeper := keeper.NewKeeper(appCodec, app.GetKey(types.StoreKey), app.GetKey(types.MemStoreKey), suite.app.GetSubspace(types.ModuleName), bankKeeper, pricefeedKeeper)
+
+	params := types.Params{
+		Pool: types.Pool{
+			QuoteTicker: "USD",
+		},
+	}
+	keeper.SetParams(suite.ctx, params)
 	suite.keeper = keeper
 	suite.pricefeedKeeper = pricefeedKeeper
 }
