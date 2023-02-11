@@ -106,6 +106,10 @@
     - [QueryAddressPositionsResponse](#ununifi.derivatives.QueryAddressPositionsResponse)
     - [QueryAllPositionsRequest](#ununifi.derivatives.QueryAllPositionsRequest)
     - [QueryAllPositionsResponse](#ununifi.derivatives.QueryAllPositionsResponse)
+    - [QueryEstimateDLPTokenAmountRequest](#ununifi.derivatives.QueryEstimateDLPTokenAmountRequest)
+    - [QueryEstimateDLPTokenAmountResponse](#ununifi.derivatives.QueryEstimateDLPTokenAmountResponse)
+    - [QueryEstimateRedeemAmountRequest](#ununifi.derivatives.QueryEstimateRedeemAmountRequest)
+    - [QueryEstimateRedeemAmountResponse](#ununifi.derivatives.QueryEstimateRedeemAmountResponse)
     - [QueryLiquidityProviderTokenNominalAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYRequest)
     - [QueryLiquidityProviderTokenNominalAPYResponse](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYResponse)
     - [QueryLiquidityProviderTokenRealAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenRealAPYRequest)
@@ -1370,7 +1374,7 @@ Query defines the gRPC querier service.
 <a name="ununifi.derivatives.PerpetualOptionsParams"></a>
 
 ### PerpetualOptionsParams
-
+(gogoproto.nullable) = false
 
 
 | Field | Type | Label | Description |
@@ -1728,6 +1732,70 @@ GenesisState defines the derivatives module's genesis state.
 
 
 
+<a name="ununifi.derivatives.QueryEstimateDLPTokenAmountRequest"></a>
+
+### QueryEstimateDLPTokenAmountRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `mint_denom` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryEstimateDLPTokenAmountResponse"></a>
+
+### QueryEstimateDLPTokenAmountResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `amount` | [string](#string) |  |  |
+| `fee` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryEstimateRedeemAmountRequest"></a>
+
+### QueryEstimateRedeemAmountRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `redeem_denom` | [string](#string) |  |  |
+| `lpt_amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryEstimateRedeemAmountResponse"></a>
+
+### QueryEstimateRedeemAmountResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `amount` | [string](#string) |  |  |
+| `fee` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYRequest"></a>
 
 ### QueryLiquidityProviderTokenNominalAPYRequest
@@ -1977,6 +2045,8 @@ Query defines the gRPC querier service.
 | `PerpetualOptionsMarket` | [QueryPerpetualOptionsMarketRequest](#ununifi.derivatives.QueryPerpetualOptionsMarketRequest) | [QueryPerpetualOptionsMarketResponse](#ununifi.derivatives.QueryPerpetualOptionsMarketResponse) |  | GET|/ununifi/derivatives/perpetual-options/{base_denom}/{quote_denom}|
 | `AllPositions` | [QueryAllPositionsRequest](#ununifi.derivatives.QueryAllPositionsRequest) | [QueryAllPositionsResponse](#ununifi.derivatives.QueryAllPositionsResponse) |  | GET|/ununifi/derivatives/positions|
 | `AddressPositions` | [QueryAddressPositionsRequest](#ununifi.derivatives.QueryAddressPositionsRequest) | [QueryAddressPositionsResponse](#ununifi.derivatives.QueryAddressPositionsResponse) |  | GET|/ununifi/derivatives/positions/{address}|
+| `EstimateDLPTokenAmount` | [QueryEstimateDLPTokenAmountRequest](#ununifi.derivatives.QueryEstimateDLPTokenAmountRequest) | [QueryEstimateDLPTokenAmountResponse](#ununifi.derivatives.QueryEstimateDLPTokenAmountResponse) |  | GET|/ununifi/derivatives/estimate-dlp-token-amount|
+| `EstimateRedeemAmount` | [QueryEstimateRedeemAmountRequest](#ununifi.derivatives.QueryEstimateRedeemAmountRequest) | [QueryEstimateRedeemAmountResponse](#ununifi.derivatives.QueryEstimateRedeemAmountResponse) |  | GET|/ununifi/derivatives/estimate-redeem-amount|
 
  <!-- end services -->
 

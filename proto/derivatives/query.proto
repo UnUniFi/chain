@@ -53,6 +53,14 @@ service Query {
   rpc AddressPositions(QueryAddressPositionsRequest) returns (QueryAddressPositionsResponse) {
     option (google.api.http).get = "/ununifi/derivatives/positions/{address}";
   }
+
+  rpc EstimateDLPTokenAmount(QueryEstimateDLPTokenAmountRequest) returns (QueryEstimateDLPTokenAmountResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/estimate-dlp-token-amount";
+  }
+
+  rpc EstimateRedeemAmount(QueryEstimateRedeemAmountRequest) returns (QueryEstimateRedeemAmountResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/estimate-redeem-amount";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -207,4 +215,46 @@ message QueryAddressPositionsRequest {
 message QueryAddressPositionsResponse {
   repeated Position positions = 1;
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryEstimateDLPTokenAmountRequest {
+  string mint_denom = 1 [
+    (gogoproto.moretags)  = "yaml:\"mint_denom\""
+  ];
+  string amount = 2 [
+    (gogoproto.moretags)  = "yaml:\"amount\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
+  ];
+}
+
+message QueryEstimateDLPTokenAmountResponse {
+  string amount = 1 [
+    (gogoproto.moretags)  = "yaml:\"amount\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
+  ];
+  string fee = 2 [
+    (gogoproto.moretags)  = "yaml:\"fee\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
+  ];
+}
+
+message QueryEstimateRedeemAmountRequest {
+  string redeem_denom = 1 [
+    (gogoproto.moretags)  = "yaml:\"redeem_denom\""
+  ];
+  string lpt_amount = 2 [
+    (gogoproto.moretags)  = "yaml:\"lpt_amount\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
+  ];
+}
+
+message QueryEstimateRedeemAmountResponse {
+  string amount = 1 [
+    (gogoproto.moretags)  = "yaml:\"amount\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
+  ];
+  string fee = 2 [
+    (gogoproto.moretags)  = "yaml:\"fee\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
+  ];
 }

@@ -157,3 +157,37 @@ func (k Keeper) AddressPositions(c context.Context, req *types.QueryAddressPosit
 		Positions: positions,
 	}, nil
 }
+
+func (k Keeper) EstimateDLPTokenAmount(c context.Context, req *types.QueryEstimateDLPTokenAmountRequest) (*types.QueryEstimateDLPTokenAmountResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	mintAmount, mintFee, err := k.GetLPTokenAmount(ctx, sdk.NewCoin(req.MintDenom, *req.Amount))
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	return &types.QueryEstimateDLPTokenAmountResponse{
+		Amount: &mintAmount.Amount,
+		Fee:    &mintFee.Amount,
+	}, nil
+}
+
+func (k Keeper) EstimateRedeemAmount(c context.Context, req *types.QueryEstimateRedeemAmountRequest) (*types.QueryEstimateRedeemAmountResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	redeemAmount, redeemFee, err := k.GetRedeemDenomAmount(ctx, *req.LptAmount, req.RedeemDenom)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	return &types.QueryEstimateRedeemAmountResponse{
+		Amount: &redeemAmount.Amount,
+		Fee:    &redeemFee.Amount,
+	}, nil
+}
