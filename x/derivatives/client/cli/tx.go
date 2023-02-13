@@ -13,6 +13,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
 
+	codecType "github.com/cosmos/cosmos-sdk/codec/types"
+
 	ununifiType "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
@@ -178,7 +180,7 @@ $ %s tx %s open-position perpetual-futures --from myKeyName --chain-id ununifi-x
 
 func CmdOpenPerpetualOptionsPosition() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "perpetual-options",
+		Use:   "perpetual-options [margin] [base-denom] [quote-denom]",
 		Short: "open perpetual options position",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`open perpetual options position.
@@ -191,13 +193,34 @@ $ %s tx %s open-position perpetual-options --from myKeyName --chain-id ununifi-x
 			if err != nil {
 				return err
 			}
-
 			sender := clientCtx.GetFromAddress()
-
-			msg := types.MsgOpenPosition{
-				Sender: ununifiType.StringAccAddress(sender),
+			margin, err := sdk.ParseCoinNormalized(args[0])
+			baseDenom := args[1]
+			quoteDenom := args[2]
+			if err != nil {
+				return err
 			}
 
+			// todo: use args to create position instance
+			positionInstVal := types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.NewDecWithPrec(100, 0),
+				Leverage:     5,
+			}
+			positionInstBz, err := positionInstVal.Marshal()
+			if err != nil {
+				return err
+			}
+			positionInstance := codecType.Any{
+				TypeUrl: "/ununifi.derivatives.PerpetualFuturesPositionInstance",
+				Value:   positionInstBz,
+			}
+
+			market := types.Market{
+				BaseDenom:  baseDenom,
+				QuoteDenom: quoteDenom,
+			}
+			msg := types.NewMsgOpenPosition(sender, margin, market, positionInstance)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
