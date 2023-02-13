@@ -13,7 +13,7 @@
       "args": [
         "start",
         "--home",
-        "./data/test-1"
+        "./data/test"
       ],
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "prepare tx",
@@ -27,7 +27,7 @@
       "args": [
         "start",
         "--home",
-        "./data/test-1"
+        "./data/test"
       ],
       "cwd": "${workspaceFolder}",
     },
@@ -40,7 +40,7 @@
       "args": [
         "start",
         "--home",
-        "./data/test-1"
+        "./data/test"
       ],
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "init config",
