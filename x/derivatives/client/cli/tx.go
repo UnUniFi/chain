@@ -147,45 +147,12 @@ func CmdOpenPosition() *cobra.Command {
 
 func CmdOpenPerpetualFuturesPosition() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "perpetual-futures",
+		Use:   "perpetual-futures [margin] [base-denom] [quote-denom]",
 		Short: "open perpetual futures position",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`open perpetual futures position.
 Example:
 $ %s tx %s open-position perpetual-futures --from myKeyName --chain-id ununifi-x
-`, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(3),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			sender := clientCtx.GetFromAddress()
-
-			msg := types.MsgOpenPosition{
-				Sender: ununifiType.StringAccAddress(sender),
-			}
-
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-	return cmd
-}
-
-func CmdOpenPerpetualOptionsPosition() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "perpetual-options [margin] [base-denom] [quote-denom]",
-		Short: "open perpetual options position",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`open perpetual options position.
-Example:
-$ %s tx %s open-position perpetual-options --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -225,6 +192,25 @@ $ %s tx %s open-position perpetual-options --from myKeyName --chain-id ununifi-x
 				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdOpenPerpetualOptionsPosition() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "perpetual-options [margin] [base-denom] [quote-denom]",
+		Short: "open perpetual options position",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`open perpetual options position.
+Example:
+$ %s tx %s open-position perpetual-options --from myKeyName --chain-id ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return fmt.Errorf("not implemented")
 		},
 	}
 
