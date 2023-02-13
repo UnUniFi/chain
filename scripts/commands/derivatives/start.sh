@@ -54,11 +54,7 @@ jq '.app_state.derivatives.params.perpetual_futures.markets = [{"base_denom": "u
 jq '.app_state.bank.denom_metadata = [{"base" : "ubtc" , "symbol": "ubtc"}, {"base" : "uusd", "symbol": "usd"}]' ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
 
 # run pricefeed
-<<<<<<< HEAD
 $SCRIPT_DIR/setup_pricefeed.sh
-=======
-# ./setup_pricefeed.sh
->>>>>>> c2ffb25e0857c2ace22b3537a759aea9bd60e7a6
 
 # Start node
 ununifid start
