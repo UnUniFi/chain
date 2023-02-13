@@ -108,7 +108,10 @@ func (k Keeper) DepositPoolAsset(ctx sdk.Context, depositor sdk.AccAddress, asse
 
 	key := types.AssetDepositKeyPrefix(asset.Denom)
 	coinBz := store.Get(key)
-	coin := sdk.Coin{}
+	coin := sdk.Coin{
+		Denom:  asset.Denom,
+		Amount: sdk.ZeroInt(),
+	}
 	k.cdc.MustUnmarshal(coinBz, &coin)
 	coin.Amount = coin.Amount.Add(asset.Amount)
 
