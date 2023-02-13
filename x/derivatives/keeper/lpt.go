@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
@@ -133,9 +131,6 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 	if err != nil {
 		return err
 	}
-
-	fmt.Println("\nmintAmount\n", mintAmount)
-	fmt.Println("\nmintFee\n", mintFee)
 
 	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{mintAmount})
 	if err != nil {
