@@ -18,7 +18,7 @@ var (
 
 func DefaultPool() Pool {
 	return Pool{
-		QuoteTicker:                       "",
+		QuoteTicker:                       "usd",
 		BaseLptMintFee:                    sdk.MustNewDecFromStr("0.001"),
 		BaseLptRedeemFee:                  sdk.MustNewDecFromStr("0.001"),
 		BorrowingFeeRatePerHour:           sdk.ZeroDec(),
