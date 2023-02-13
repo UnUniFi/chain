@@ -1,0 +1,37 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "type": "shell",
+      "cwd": "${workspaceFolder}",
+      "command": "make build -B",
+      "problemMatcher": [
+        "$go"
+      ]
+    },
+    {
+      "label": "init config",
+      "type": "shell",
+      "cwd": "${workspaceFolder}",
+      "command": "scripts/setup/init.sh",
+      "problemMatcher": [
+        "$go"
+      ],
+      "dependsOn": [
+        "build",
+      ]
+    },
+    {
+      "label": "prepare tx",
+      "type": "shell",
+      "cwd": "${workspaceFolder}",
+      "command": "nohup scripts/commands/prepare.sh sleep ... & sleep 0.1",
+      "dependsOn": [
+        "init config",
+      ],
+    },
+  ]
+}

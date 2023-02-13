@@ -77,7 +77,7 @@ func (k Keeper) SetRewardStore(ctx sdk.Context, rewardStore types.RewardStore) e
 
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRewardStore))
-	prefixStore.Set(rewardStore.SubjectAddr.AccAddress(), bz)
+	prefixStore.Set(rewardStore.SubjectAddr.AccAddress().Bytes(), bz)
 
 	return nil
 }
@@ -87,13 +87,29 @@ func (k Keeper) GetRewardStore(ctx sdk.Context, subject sdk.AccAddress) (types.R
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRewardStore))
 
 	bz := prefixStore.Get(subject)
-	if len(bz) == 0 {
+	if bz == nil {
 		return types.RewardStore{}, false
 	}
 
 	var reward types.RewardStore
 	k.cdc.MustUnmarshal(bz, &reward)
 	return reward, true
+}
+
+func (k Keeper) GetAllRewardStores(ctx sdk.Context) []types.RewardStore {
+	store := ctx.KVStore(k.storeKey)
+	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixRewardStore))
+	defer it.Close()
+
+	allRewardStores := []types.RewardStore{}
+	for ; it.Valid(); it.Next() {
+		var rewardStore types.RewardStore
+		k.cdc.MustUnmarshal(it.Value(), &rewardStore)
+
+		allRewardStores = append(allRewardStores, rewardStore)
+	}
+
+	return allRewardStores
 }
 
 func (k Keeper) DeleteRewardStore(ctx sdk.Context, subject sdk.AccAddress) {

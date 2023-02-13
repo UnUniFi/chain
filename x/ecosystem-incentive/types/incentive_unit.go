@@ -19,3 +19,27 @@ func NewSubjectInfo(subjectAddr ununifitypes.StringAccAddress, weight sdk.Dec) S
 		Weight:      weight,
 	}
 }
+
+func NewIncentiveUnitIdsByAddr(address ununifitypes.StringAccAddress, incentiveUnitId string) IncentiveUnitIdsByAddr {
+	var incentiveUnitIds []string
+	incentiveUnitIds = append(incentiveUnitIds, incentiveUnitId)
+
+	return IncentiveUnitIdsByAddr{
+		Address:          address,
+		IncentiveUnitIds: incentiveUnitIds,
+	}
+}
+
+func (m IncentiveUnitIdsByAddr) AddIncentiveUnitId(incentiveUnitId string) []string {
+	return append(m.IncentiveUnitIds, incentiveUnitId)
+}
+
+func (m IncentiveUnitIdsByAddr) CreateOrUpdate(address ununifitypes.StringAccAddress, incentiveUnitId string) IncentiveUnitIdsByAddr {
+	if m.Address.AccAddress().Empty() {
+		m = NewIncentiveUnitIdsByAddr(address, incentiveUnitId)
+	} else {
+		m.IncentiveUnitIds = m.AddIncentiveUnitId(incentiveUnitId)
+	}
+
+	return m
+}
