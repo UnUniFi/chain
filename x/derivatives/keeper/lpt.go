@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
@@ -47,7 +49,13 @@ func (k Keeper) GetLPTokenAmount(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sd
 	currentSupply := k.bankKeeper.GetSupply(ctx, types.LiquidityProviderTokenDenom)
 
 	if currentSupply.Amount.IsZero() {
-		return sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.NewInt(1)), sdk.Coin{}, nil
+		return sdk.NewCoin(
+				types.LiquidityProviderTokenDenom, sdk.NewInt(1)),
+			sdk.Coin{
+				Denom:  types.LiquidityProviderTokenDenom,
+				Amount: sdk.ZeroInt(),
+			},
+			nil
 	}
 
 	lptPrice := k.GetLPTokenPrice(ctx)
@@ -125,12 +133,17 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 	if err != nil {
 		return err
 	}
+
+	fmt.Println("\nmintAmount\n", mintAmount)
+	fmt.Println("\nmintFee\n", mintFee)
+
 	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{mintAmount})
 	if err != nil {
 		return err
 	}
 
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, depositor, sdk.Coins{mintAmount.Sub(mintFee)})
+	// tbbt
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, depositor, sdk.Coins{mintAmount.Sub(mintFee)}) //Sub(mintFee)})
 	if err != nil {
 		return err
 	}
