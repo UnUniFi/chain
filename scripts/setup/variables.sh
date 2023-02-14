@@ -1,6 +1,6 @@
 BINARY=./build/ununifid
 CHAIN_DIR=./data
-CHAINID_1=test-1
+CHAINID_1=test
 BINARY_MAIN_TOKEN=uguu
 # BINARY_MAIN_TOKEN=stake
 VAL1=val

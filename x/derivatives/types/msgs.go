@@ -74,9 +74,9 @@ func (msg MsgBurnLiquidityProviderToken) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgOpenPosition{}
 
-func NewMsgOpenPosition(sender ununifiTypes.StringAccAddress, margin sdk.Coin, market Market, positionInstance codecTypes.Any) MsgOpenPosition {
+func NewMsgOpenPosition(sender sdk.AccAddress, margin sdk.Coin, market Market, positionInstance codecTypes.Any) MsgOpenPosition {
 	return MsgOpenPosition{
-		Sender:           sender,
+		Sender:           sender.Bytes(),
 		Margin:           margin,
 		Market:           market,
 		PositionInstance: positionInstance,

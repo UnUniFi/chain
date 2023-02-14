@@ -158,8 +158,11 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 	positionKey := types.AddressPositionWithIdKeyPrefix(sender, lastPositionId)
 	positionId := string(positionKey)
 
-	k.bankKeeper.SendCoinsFromAccountToModule(ctx, msg.Sender.AccAddress(), types.ModuleName, sdk.NewCoins(msg.Margin))
+	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, msg.Sender.AccAddress(), types.ModuleName, sdk.NewCoins(msg.Margin)); err != nil {
+		return err
+	}
 
+	// fixme check first bank.send last
 	positionInstance, err := types.UnpackPositionInstance(msg.PositionInstance)
 	if err != nil {
 		return err

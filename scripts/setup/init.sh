@@ -34,10 +34,10 @@ echo $USER_MNEMONIC_4 | $BINARY keys add $USER4 --home $CHAIN_DIR/$CHAINID_1 --r
 echo $PRICEFEED_MNEMONIC | $BINARY keys add $PRICEFEED --home $CHAIN_DIR/$CHAINID_1 --recover --keyring-backend=test
 
 $BINARY add-genesis-account $($BINARY --home $CHAIN_DIR/$CHAINID_1 keys show $VAL1 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN --home $CHAIN_DIR/$CHAINID_1
-$BINARY add-genesis-account $($BINARY --home $CHAIN_DIR/$CHAINID_1 keys show $USER1 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN  --home $CHAIN_DIR/$CHAINID_1
-$BINARY add-genesis-account $($BINARY --home $CHAIN_DIR/$CHAINID_1 keys show $USER2 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN  --home $CHAIN_DIR/$CHAINID_1
-$BINARY add-genesis-account $($BINARY --home $CHAIN_DIR/$CHAINID_1 keys show $USER3 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN  --home $CHAIN_DIR/$CHAINID_1
-$BINARY add-genesis-account $($BINARY --home $CHAIN_DIR/$CHAINID_1 keys show $USER4 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN  --home $CHAIN_DIR/$CHAINID_1
+$BINARY add-genesis-account $($BINARY --home $CHAIN_DIR/$CHAINID_1 keys show $USER1 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusd --home $CHAIN_DIR/$CHAINID_1
+$BINARY add-genesis-account $($BINARY --home $CHAIN_DIR/$CHAINID_1 keys show $USER2 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusd --home $CHAIN_DIR/$CHAINID_1
+$BINARY add-genesis-account $($BINARY --home $CHAIN_DIR/$CHAINID_1 keys show $USER3 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusd --home $CHAIN_DIR/$CHAINID_1
+$BINARY add-genesis-account $($BINARY --home $CHAIN_DIR/$CHAINID_1 keys show $USER4 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusd  --home $CHAIN_DIR/$CHAINID_1
 $BINARY add-genesis-account $($BINARY --home $CHAIN_DIR/$CHAINID_1 keys show $PRICEFEED --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusd  --home $CHAIN_DIR/$CHAINID_1
 
 echo "Creating and collecting gentx..."
@@ -60,7 +60,6 @@ sed -i '/\[api\]/,+3 s/enable = false/enable = true/' $CHAIN_DIR/$CHAINID_1/conf
 sed -i -e 's/minimum-gas-prices = ""/minimum-gas-prices = '\"0$BINARY_MAIN_TOKEN\"/'' $CHAIN_DIR/$CHAINID_1/config/app.toml;
 $sed_i 's/mode = "full"/mode = "validator"/' $CHAIN_DIR/$CHAINID_1/config/config.toml;
 $sed_i "s/enabled-unsafe-cors = false/enabled-unsafe-cors = true/" $CHAIN_DIR/$CHAINID_1/config/app.toml;
-$sed_i 's/mode = "full"/mode = "validator"/' $CHAIN_DIR/$CHAINID_1/config/config.toml;
 $sed_i 's/minimum-gas-prices = ""/minimum-gas-prices = "0uguu"/' $CHAIN_DIR/$CHAINID_1/config/app.toml;
 $sed_i 's/stake/uguu/g' $CHAIN_DIR/$CHAINID_1/config/genesis.json;
 

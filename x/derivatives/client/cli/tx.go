@@ -13,6 +13,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
 
+	codecType "github.com/cosmos/cosmos-sdk/codec/types"
+
 	ununifiType "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
@@ -138,7 +140,7 @@ func CmdOpenPosition() *cobra.Command {
 	// this line is used by starport scaffolding # 1
 	cmd.AddCommand(
 		CmdOpenPerpetualFuturesPosition(),
-		CmdOpenPerpetualOptionsPosition(),
+		// CmdOpenPerpetualOptionsPosition(),
 	)
 
 	return cmd
@@ -146,7 +148,7 @@ func CmdOpenPosition() *cobra.Command {
 
 func CmdOpenPerpetualFuturesPosition() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "perpetual-futures",
+		Use:   "perpetual-futures [margin] [base-denom] [quote-denom]",
 		Short: "open perpetual futures position",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`open perpetual futures position.
@@ -159,46 +161,34 @@ $ %s tx %s open-position perpetual-futures --from myKeyName --chain-id ununifi-x
 			if err != nil {
 				return err
 			}
-
 			sender := clientCtx.GetFromAddress()
-
-			msg := types.MsgOpenPosition{
-				Sender: ununifiType.StringAccAddress(sender),
-			}
-
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-	return cmd
-}
-
-func CmdOpenPerpetualOptionsPosition() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "perpetual-options",
-		Short: "open perpetual options position",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`open perpetual options position.
-Example:
-$ %s tx %s open-position perpetual-options --from myKeyName --chain-id ununifi-x
-`, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(3),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
+			margin, err := sdk.ParseCoinNormalized(args[0])
+			baseDenom := args[1]
+			quoteDenom := args[2]
 			if err != nil {
 				return err
 			}
 
-			sender := clientCtx.GetFromAddress()
-
-			msg := types.MsgOpenPosition{
-				Sender: ununifiType.StringAccAddress(sender),
+			// todo: use args to create position instance
+			positionInstVal := types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.NewDecWithPrec(100, 0),
+				Leverage:     5,
+			}
+			positionInstBz, err := positionInstVal.Marshal()
+			if err != nil {
+				return err
+			}
+			positionInstance := codecType.Any{
+				TypeUrl: "/ununifi.derivatives.PerpetualFuturesPositionInstance",
+				Value:   positionInstBz,
 			}
 
+			market := types.Market{
+				BaseDenom:  baseDenom,
+				QuoteDenom: quoteDenom,
+			}
+			msg := types.NewMsgOpenPosition(sender, margin, market, positionInstance)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -209,6 +199,25 @@ $ %s tx %s open-position perpetual-options --from myKeyName --chain-id ununifi-x
 	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }
+
+// func CmdOpenPerpetualOptionsPosition() *cobra.Command {
+// 	cmd := &cobra.Command{
+// 		Use:   "perpetual-options [margin] [base-denom] [quote-denom]",
+// 		Short: "open perpetual options position",
+// 		Long: strings.TrimSpace(
+// 			fmt.Sprintf(`open perpetual options position.
+// Example:
+// $ %s tx %s open-position perpetual-options --from myKeyName --chain-id ununifi-x
+// `, version.AppName, types.ModuleName)),
+// 		Args: cobra.ExactArgs(3),
+// 		RunE: func(cmd *cobra.Command, args []string) error {
+// 			return fmt.Errorf("not implemented")
+// 		},
+// 	}
+
+// 	flags.AddTxFlagsToCmd(cmd)
+// 	return cmd
+// }
 
 func CmdClosePosition() *cobra.Command {
 	cmd := &cobra.Command{

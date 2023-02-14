@@ -33,5 +33,11 @@
         "init config",
       ],
     },
+    {
+      "label": "run pricefeed",
+      "type": "shell",
+      "cwd": "${workspaceFolder}",
+      "command": "scripts/commands/derivatives/setup_pricefeed.sh",
+    },
   ]
 }
