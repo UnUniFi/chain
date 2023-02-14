@@ -47,13 +47,7 @@ func (k Keeper) GetLPTokenAmount(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sd
 	currentSupply := k.bankKeeper.GetSupply(ctx, types.LiquidityProviderTokenDenom)
 
 	if currentSupply.Amount.IsZero() {
-		return sdk.NewCoin(
-				types.LiquidityProviderTokenDenom, sdk.NewInt(1)),
-			sdk.Coin{
-				Denom:  types.LiquidityProviderTokenDenom,
-				Amount: sdk.ZeroInt(),
-			},
-			nil
+		return k.InitialLiquidityProviderTokenSupply(ctx, amount)
 	}
 
 	lptPrice := k.GetLPTokenPrice(ctx)
@@ -119,6 +113,13 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 	return sdk.NewCoin(redeemDenom, redeemAmount.TruncateInt()), sdk.NewCoin(redeemDenom, redeemAmount.Mul(redeemFeeRate).TruncateInt()), nil
 }
 
+// TODO: implement correct logic to return the initial liquidity provider token supply
+func (k Keeper) InitialLiquidityProviderTokenSupply(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sdk.Coin, error) {
+	return sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.NewInt(1)),
+		sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.ZeroInt()),
+		nil
+}
+
 func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLiquidityProviderToken) error {
 	depositor := msg.Sender.AccAddress()
 
@@ -137,8 +138,12 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 		return err
 	}
 
-	// tbbt
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, depositor, sdk.Coins{mintAmount.Sub(mintFee)}) //Sub(mintFee)})
+	reductedMintAmount, err := mintAmount.SafeSub(mintFee)
+	if err != nil {
+		return err
+	}
+
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, depositor, sdk.Coins{reductedMintAmount})
 	if err != nil {
 		return err
 	}
