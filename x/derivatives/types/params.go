@@ -16,6 +16,36 @@ var (
 	KeyPerpetualOptions = []byte("PerpetualOptions")
 )
 
+func DefaultPool() Pool {
+	return Pool{
+		QuoteTicker:                       "usd",
+		BaseLptMintFee:                    sdk.MustNewDecFromStr("0.001"),
+		BaseLptRedeemFee:                  sdk.MustNewDecFromStr("0.001"),
+		BorrowingFeeRatePerHour:           sdk.ZeroDec(),
+		LiquidationNeededReportRewardRate: sdk.ZeroDec(),
+		AcceptedAssets:                    []*Pool_Asset{},
+	}
+}
+
+func DefaultPerpetualFuturesParams() PerpetualFuturesParams {
+	return PerpetualFuturesParams{
+		CommissionRate:        sdk.MustNewDecFromStr("0.001"),
+		MarginMaintenanceRate: sdk.MustNewDecFromStr("0.5"),
+		ImaginaryFundingRateProportionalCoefficient: sdk.MustNewDecFromStr("0.0005"),
+		Markets: []*Market{},
+	}
+}
+
+func DefaultPerpetualOptionsParams() PerpetualOptionsParams {
+	return PerpetualOptionsParams{
+		PremiumCommissionRate:                       sdk.ZeroDec(),
+		StrikeCommissionRate:                        sdk.MustNewDecFromStr("0.001"),
+		MarginMaintenanceRate:                       sdk.ZeroDec(),
+		ImaginaryFundingRateProportionalCoefficient: sdk.ZeroDec(),
+		Markets: []*Market{},
+	}
+}
+
 // ParamKeyTable the param key table for launch module
 func ParamKeyTable() paramtypes.KeyTable {
 	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
@@ -23,16 +53,16 @@ func ParamKeyTable() paramtypes.KeyTable {
 
 // NewParams creates a new Params instance
 func NewParams() Params {
-	return Params{
-		Pool:             Pool{},
-		PerpetualFutures: PerpetualFuturesParams{},
-		PerpetualOptions: PerpetualOptionsParams{},
-	}
+	return DefaultParams()
 }
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
-	return NewParams()
+	return Params{
+		Pool:             DefaultPool(),
+		PerpetualFutures: DefaultPerpetualFuturesParams(),
+		PerpetualOptions: DefaultPerpetualOptionsParams(),
+	}
 }
 
 // ParamSetPairs get the params.ParamSet

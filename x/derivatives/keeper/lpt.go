@@ -132,12 +132,14 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 	if err != nil {
 		return err
 	}
+
 	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{mintAmount})
 	if err != nil {
 		return err
 	}
 
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, depositor, sdk.Coins{mintAmount.Sub(mintFee)})
+	// tbbt
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, depositor, sdk.Coins{mintAmount.Sub(mintFee)}) //Sub(mintFee)})
 	if err != nil {
 		return err
 	}

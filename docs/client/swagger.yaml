@@ -4619,6 +4619,53 @@ paths:
           type: string
       tags:
         - Query
+  /ununifi/ecosystem_incentive/incentive_unit_ids_by_addr/{address}:
+    get:
+      operationId: IncentiveUnitIdsByAddr
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              incentive_unit_ids_by_addr:
+                type: object
+                properties:
+                  address:
+                    type: string
+                  incentive_unit_ids:
+                    type: array
+                    items:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /ununifi/ecosystem_incentive/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -10328,6 +10375,15 @@ definitions:
               type: string
             weight:
               type: string
+  ununifi.ecosystemincentive.IncentiveUnitIdsByAddr:
+    type: object
+    properties:
+      address:
+        type: string
+      incentive_unit_ids:
+        type: array
+        items:
+          type: string
   ununifi.ecosystemincentive.Params:
     type: object
     properties:
@@ -10401,6 +10457,18 @@ definitions:
                 method
 
                 signatures required by gogoproto.
+  ununifi.ecosystemincentive.QueryIncentiveUnitIdsByAddrResponse:
+    type: object
+    properties:
+      incentive_unit_ids_by_addr:
+        type: object
+        properties:
+          address:
+            type: string
+          incentive_unit_ids:
+            type: array
+            items:
+              type: string
   ununifi.ecosystemincentive.QueryIncentiveUnitResponse:
     type: object
     properties:

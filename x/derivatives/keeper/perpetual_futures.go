@@ -141,6 +141,10 @@ func (k Keeper) GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market t
 	store := ctx.KVStore(k.storeKey)
 
 	bz := store.Get(types.DenomNetPositionPerpetualFuturesKeyPrefix(market.BaseDenom, market.QuoteDenom))
+	if bz == nil {
+		return sdk.ZeroDec()
+	}
+
 	amount := sdk.MustNewDecFromStr(string(bz))
 
 	return amount

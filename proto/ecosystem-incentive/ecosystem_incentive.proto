@@ -41,3 +41,12 @@ message RewardStore {
     (gogoproto.nullable) = false
   ];
 }
+
+message IncentiveUnitIdsByAddr {
+  string address = 1 [
+    (gogoproto.moretags) = "yaml:\"address\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  repeated string incentive_unit_ids = 2 [ (gogoproto.moretags) = "yaml:\"incentive_unit_ids\"" ];
+}

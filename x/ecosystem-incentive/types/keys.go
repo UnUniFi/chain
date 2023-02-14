@@ -26,4 +26,7 @@ var (
 
 	// KeyPrefixIncentiveUnitIdByNftId defines prefix key for nft_id with incentive_id
 	KeyPrefixIncentiveUnitIdByNftId = []byte{0x03}
+
+	// KeyPrefixIncentiveUnitIdByAddr defines prefix key for incentiveUnitIdsByAddr with address
+	KeyPrefixIncentiveUnitIdsByAddr = []byte{0x04}
 )
