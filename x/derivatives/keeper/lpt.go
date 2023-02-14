@@ -120,12 +120,12 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 	return sdk.NewCoin(redeemDenom, redeemAmount.TruncateInt()), sdk.NewCoin(redeemDenom, redeemAmount.Mul(redeemFeeRate).TruncateInt()), nil
 }
 
-// TODO: implement correct logic to return the initial liquidity provider token supply
-func (k Keeper) InitialLiquidityProviderTokenSupply(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sdk.Coin, error) {
-	return sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.NewInt(1)),
-		sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.ZeroInt()),
-		nil
-}
+// // TODO: implement correct logic to return the initial liquidity provider token supply
+// func (k Keeper) InitialLiquidityProviderTokenSupply(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sdk.Coin, error) {
+// 	return sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.NewInt(1)),
+// 		sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.ZeroInt()),
+// 		nil
+// }
 
 func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLiquidityProviderToken) error {
 	depositor := msg.Sender.AccAddress()
