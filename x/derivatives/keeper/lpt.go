@@ -46,25 +46,32 @@ func (k Keeper) GetLPTokenPrice(ctx sdk.Context) sdk.Dec {
 func (k Keeper) GetLPTokenAmount(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sdk.Coin, error) {
 	currentSupply := k.bankKeeper.GetSupply(ctx, types.LiquidityProviderTokenDenom)
 
-	if currentSupply.Amount.IsZero() {
-		return sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.NewInt(1)), sdk.Coin{}, nil
-	}
-
-	lptPrice := k.GetLPTokenPrice(ctx)
 	assetPrice, err := k.GetAssetPrice(ctx, amount.Denom)
 	if err != nil {
 		return sdk.Coin{}, sdk.Coin{}, err
 	}
-
-	assetMc := assetPrice.Price.Mul(sdk.NewDecFromInt(amount.Amount))
-	mintAmount := assetMc.Quo(lptPrice)
-
 	actualAmount := k.GetAssetBalance(ctx, amount.Denom)
 
 	targetAmount, err := k.GetAssetTargetAmount(ctx, amount.Denom)
 	if err != nil {
 		return sdk.Coin{}, sdk.Coin{}, err
 	}
+
+	// initial_lp_token_price = Σ target_weight_of_ith_asset * price_of_ith_asset
+	// initial_lp_supply = pool_marketcap / initial_lp_token_price
+	if currentSupply.Amount.IsZero() {
+		// TODO: we can eliminate unnecessary calculation -> assetPrice.Price
+		poolMarketCap := assetPrice.Price.Mul(sdk.NewDecFromInt(actualAmount.Amount))
+		initialLPTokenPrice := assetPrice.Price.Mul(sdk.NewDecFromInt(targetAmount.Amount))
+		initialLPTokenSupply := poolMarketCap.Quo(initialLPTokenPrice)
+
+		return sdk.NewCoin(types.LiquidityProviderTokenDenom, initialLPTokenSupply.TruncateInt()), sdk.Coin{}, nil
+	}
+
+	lptPrice := k.GetLPTokenPrice(ctx)
+
+	assetMc := assetPrice.Price.Mul(sdk.NewDecFromInt(amount.Amount))
+	mintAmount := assetMc.Quo(lptPrice)
 
 	increaseRate := sdk.NewDecFromInt(actualAmount.Amount).Sub(sdk.NewDecFromInt(targetAmount.Amount)).Quo(sdk.NewDecFromInt(targetAmount.Amount))
 	if increaseRate.IsNegative() {

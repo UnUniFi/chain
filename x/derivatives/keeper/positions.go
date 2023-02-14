@@ -103,6 +103,54 @@ func (k Keeper) DeletePosition(ctx sdk.Context, address sdk.AccAddress, id strin
 	store.Delete(types.AddressPositionWithIdKeyPrefix(address, id))
 }
 
+func (k Keeper) levyImaginaryFundingRate(ctx sdk.Context) error {
+	params := k.GetParams(ctx)
+	positions := k.GetAllPositions(ctx)
+
+	perpetualFuturesMarkets := params.PerpetualFutures.Markets
+	perpetualFuturesImaginaryFundingRates := make(map[types.Market]sdk.Dec)
+
+	for _, perpetualFuturesMarket := range perpetualFuturesMarkets {
+		netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, *perpetualFuturesMarket)
+		imaginaryFundingRate := netPosition.Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
+		perpetualFuturesImaginaryFundingRates[*perpetualFuturesMarket] = imaginaryFundingRate
+	}
+
+	for _, position := range positions {
+		positionInstance, err := types.UnpackPositionInstance(position.PositionInstance)
+		if err != nil {
+			return err
+		}
+
+		switch positionInstance.(type) {
+		case *types.PerpetualFuturesPositionInstance:
+			futuresPosition := positionInstance.(*types.PerpetualFuturesPositionInstance)
+			remainingMargin := position.RemainingMargin
+			imaginaryFundingRate := perpetualFuturesImaginaryFundingRates[position.Market]
+			imaginaryFundingFee := sdk.NewDecFromInt(remainingMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
+			commissionFee := sdk.NewDecFromInt(remainingMargin.Amount).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
+
+			if imaginaryFundingRate.IsNegative() {
+				if futuresPosition.PositionType == types.PositionType_SHORT {
+					remainingMargin.Amount = remainingMargin.Amount.Sub(imaginaryFundingFee)
+				} else {
+					remainingMargin.Amount = remainingMargin.Amount.Add(imaginaryFundingFee.Sub(commissionFee))
+				}
+			} else {
+				if futuresPosition.PositionType == types.PositionType_LONG {
+					remainingMargin.Amount = remainingMargin.Amount.Sub(imaginaryFundingFee)
+				} else {
+					remainingMargin.Amount = remainingMargin.Amount.Add(imaginaryFundingFee.Sub(commissionFee))
+				}
+			}
+		case *types.PerpetualOptionsPositionInstance:
+
+		}
+	}
+
+	return nil
+}
+
 func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
 	sender := msg.Sender.AccAddress()
 	lastPositionId := k.GetLastPositionId(ctx)
@@ -204,4 +252,8 @@ func (k Keeper) ReportLiquidation(ctx sdk.Context, msg *types.MsgReportLiquidati
 	}
 
 	return nil
+}
+
+func (k Keeper) ReportLevyPeriod(ctx sdk.Context, msg *types.MsgReportLevyPeriod) error {
+	return k.levyImaginaryFundingRate(ctx)
 }
