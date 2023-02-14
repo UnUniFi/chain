@@ -16,6 +16,7 @@ service Msg {
   rpc OpenPosition(MsgOpenPosition) returns (MsgOpenPositionResponse);
   rpc ClosePosition(MsgClosePosition) returns (MsgClosePositionResponse);
   rpc ReportLiquidation(MsgReportLiquidation) returns (MsgReportLiquidationResponse);
+  rpc ReportLevyPeriod(MsgReportLevyPeriod) returns (MsgReportLevyPeriodResponse);
 }
 
 message MsgMintLiquidityProviderToken {
@@ -102,3 +103,7 @@ message MsgReportLiquidation {
 }
 
 message MsgReportLiquidationResponse {}
+
+message MsgReportLevyPeriod {}
+
+message MsgReportLevyPeriodResponse {}

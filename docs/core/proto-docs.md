@@ -138,6 +138,8 @@
     - [MsgMintLiquidityProviderTokenResponse](#ununifi.derivatives.MsgMintLiquidityProviderTokenResponse)
     - [MsgOpenPosition](#ununifi.derivatives.MsgOpenPosition)
     - [MsgOpenPositionResponse](#ununifi.derivatives.MsgOpenPositionResponse)
+    - [MsgReportLevyPeriod](#ununifi.derivatives.MsgReportLevyPeriod)
+    - [MsgReportLevyPeriodResponse](#ununifi.derivatives.MsgReportLevyPeriodResponse)
     - [MsgReportLiquidation](#ununifi.derivatives.MsgReportLiquidation)
     - [MsgReportLiquidationResponse](#ununifi.derivatives.MsgReportLiquidationResponse)
   
@@ -2166,6 +2168,26 @@ Query defines the gRPC querier service.
 
 
 
+<a name="ununifi.derivatives.MsgReportLevyPeriod"></a>
+
+### MsgReportLevyPeriod
+
+
+
+
+
+
+
+<a name="ununifi.derivatives.MsgReportLevyPeriodResponse"></a>
+
+### MsgReportLevyPeriodResponse
+
+
+
+
+
+
+
 <a name="ununifi.derivatives.MsgReportLiquidation"></a>
 
 ### MsgReportLiquidation
@@ -2211,6 +2233,7 @@ Query defines the gRPC querier service.
 | `OpenPosition` | [MsgOpenPosition](#ununifi.derivatives.MsgOpenPosition) | [MsgOpenPositionResponse](#ununifi.derivatives.MsgOpenPositionResponse) |  | |
 | `ClosePosition` | [MsgClosePosition](#ununifi.derivatives.MsgClosePosition) | [MsgClosePositionResponse](#ununifi.derivatives.MsgClosePositionResponse) |  | |
 | `ReportLiquidation` | [MsgReportLiquidation](#ununifi.derivatives.MsgReportLiquidation) | [MsgReportLiquidationResponse](#ununifi.derivatives.MsgReportLiquidationResponse) |  | |
+| `ReportLevyPeriod` | [MsgReportLevyPeriod](#ununifi.derivatives.MsgReportLevyPeriod) | [MsgReportLevyPeriodResponse](#ununifi.derivatives.MsgReportLevyPeriodResponse) |  | |
 
  <!-- end services -->
 

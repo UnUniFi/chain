@@ -171,3 +171,33 @@ func (msg MsgReportLiquidation) GetSignBytes() []byte {
 func (msg MsgReportLiquidation) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Sender.AccAddress()}
 }
+
+var _ sdk.Msg = &MsgReportLevyPeriod{}
+
+func NewMsgReportLevyPeriod() MsgReportLevyPeriod {
+	return MsgReportLevyPeriod{}
+}
+
+// Route return the message type used for routing the message.
+func (msg MsgReportLevyPeriod) Route() string { return RouterKey }
+
+// Type returns a human-readable string for the message, intended for utilization within tags.
+func (msg MsgReportLevyPeriod) Type() string {
+	return "report_levy_period"
+}
+
+// ValidateBasic does a simple validation check that doesn't require access to state.
+func (msg MsgReportLevyPeriod) ValidateBasic() error {
+	return nil
+}
+
+// GetSignBytes gets the canonical byte representation of the Msg.
+func (msg MsgReportLevyPeriod) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners returns the addresses of signers that must sign.
+func (msg MsgReportLevyPeriod) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{}
+}

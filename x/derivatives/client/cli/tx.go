@@ -45,6 +45,7 @@ func GetTxCmd() *cobra.Command {
 		CmdOpenPosition(),
 		CmdClosePosition(),
 		CmdReportLiquidation(),
+		CmdReportLevyPeriod(),
 	)
 
 	return cmd
@@ -281,5 +282,12 @@ $ %s tx %s report-liquidation --from myKeyName --chain-id ununifi-x
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdReportLevyPeriod() *cobra.Command {
+	// TODO: add flags
+	cmd := &cobra.Command{}
+
 	return cmd
 }

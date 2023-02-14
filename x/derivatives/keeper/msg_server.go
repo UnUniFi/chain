@@ -69,3 +69,14 @@ func (k msgServer) ReportLiquidation(c context.Context, msg *types.MsgReportLiqu
 	}
 	return &types.MsgReportLiquidationResponse{}, nil
 }
+
+func (k msgServer) ReportLevyPeriod(c context.Context, msg *types.MsgReportLevyPeriod) (*types.MsgReportLevyPeriodResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	err := k.Keeper.ReportLevyPeriod(ctx, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgReportLevyPeriodResponse{}, nil
+}
