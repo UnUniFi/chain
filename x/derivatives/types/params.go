@@ -23,7 +23,7 @@ func DefaultPool() Pool {
 		BaseLptRedeemFee:                  sdk.MustNewDecFromStr("0.001"),
 		BorrowingFeeRatePerHour:           sdk.ZeroDec(),
 		LiquidationNeededReportRewardRate: sdk.ZeroDec(),
-		AcceptedAssets:                    []*Pool_Asset{},
+		AcceptedAssets:                    []*Asset{},
 	}
 }
 

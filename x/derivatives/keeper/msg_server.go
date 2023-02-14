@@ -80,3 +80,11 @@ func (k msgServer) ReportLevyPeriod(c context.Context, msg *types.MsgReportLevyP
 
 	return &types.MsgReportLevyPeriodResponse{}, nil
 }
+
+func (k msgServer) AddAssetToPool(c context.Context, msg *types.MsgAddAssetToPool) (*types.MsgAddAssetToPoolResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	k.Keeper.AddPoolAsset(ctx, msg.Asset)
+
+	return &types.MsgAddAssetToPoolResponse{}, nil
+}

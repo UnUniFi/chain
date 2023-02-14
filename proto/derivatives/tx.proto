@@ -17,6 +17,7 @@ service Msg {
   rpc ClosePosition(MsgClosePosition) returns (MsgClosePositionResponse);
   rpc ReportLiquidation(MsgReportLiquidation) returns (MsgReportLiquidationResponse);
   rpc ReportLevyPeriod(MsgReportLevyPeriod) returns (MsgReportLevyPeriodResponse);
+  rpc AddAssetToPool(MsgAddAssetToPool) returns (MsgAddAssetToPoolResponse);
 }
 
 message MsgMintLiquidityProviderToken {
@@ -107,3 +108,12 @@ message MsgReportLiquidationResponse {}
 message MsgReportLevyPeriod {}
 
 message MsgReportLevyPeriodResponse {}
+
+message MsgAddAssetToPool {
+  Asset asset = 1 [
+    (gogoproto.moretags) = "yaml:\"asset\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgAddAssetToPoolResponse {}

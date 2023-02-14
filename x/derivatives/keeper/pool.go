@@ -6,15 +6,15 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
-func (k Keeper) GetPoolAssets(ctx sdk.Context) []types.Pool_Asset {
+func (k Keeper) GetPoolAssets(ctx sdk.Context) []types.Asset {
 	store := ctx.KVStore(k.storeKey)
 
-	assets := []types.Pool_Asset{}
+	assets := []types.Asset{}
 	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixDerivativesPoolAssets))
 	defer it.Close()
 
 	for ; it.Valid(); it.Next() {
-		asset := types.Pool_Asset{}
+		asset := types.Asset{}
 		k.cdc.Unmarshal(it.Value(), &asset)
 
 		assets = append(assets, asset)
@@ -23,17 +23,17 @@ func (k Keeper) GetPoolAssets(ctx sdk.Context) []types.Pool_Asset {
 	return assets
 }
 
-func (k Keeper) GetPoolAssetByDenom(ctx sdk.Context, denom string) types.Pool_Asset {
+func (k Keeper) GetPoolAssetByDenom(ctx sdk.Context, denom string) types.Asset {
 	store := ctx.KVStore(k.storeKey)
 
-	asset := types.Pool_Asset{}
+	asset := types.Asset{}
 	bz := store.Get(types.AssetKeyPrefix(denom))
 	k.cdc.MustUnmarshal(bz, &asset)
 
 	return asset
 }
 
-func (k Keeper) AddPoolAsset(ctx sdk.Context, asset types.Pool_Asset) {
+func (k Keeper) AddPoolAsset(ctx sdk.Context, asset types.Asset) {
 	store := ctx.KVStore(k.storeKey)
 
 	bz := k.cdc.MustMarshal(&asset)
@@ -47,7 +47,7 @@ func (k Keeper) AddPoolAsset(ctx sdk.Context, asset types.Pool_Asset) {
 	store.Set(types.AssetDepositKeyPrefix(asset.Denom), coinBz)
 }
 
-func (k Keeper) IsAssetValid(ctx sdk.Context, iasset types.Pool_Asset) bool {
+func (k Keeper) IsAssetValid(ctx sdk.Context, iasset types.Asset) bool {
 	assets := k.GetPoolAssets(ctx)
 
 	for _, asset := range assets {
