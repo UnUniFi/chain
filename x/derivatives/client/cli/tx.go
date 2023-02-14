@@ -139,7 +139,7 @@ func CmdOpenPosition() *cobra.Command {
 	// this line is used by starport scaffolding # 1
 	cmd.AddCommand(
 		CmdOpenPerpetualFuturesPosition(),
-		CmdOpenPerpetualOptionsPosition(),
+		// CmdOpenPerpetualOptionsPosition(),
 	)
 
 	return cmd
@@ -199,24 +199,24 @@ $ %s tx %s open-position perpetual-futures --from myKeyName --chain-id ununifi-x
 	return cmd
 }
 
-func CmdOpenPerpetualOptionsPosition() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "perpetual-options [margin] [base-denom] [quote-denom]",
-		Short: "open perpetual options position",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`open perpetual options position.
-Example:
-$ %s tx %s open-position perpetual-options --from myKeyName --chain-id ununifi-x
-`, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(3),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return fmt.Errorf("not implemented")
-		},
-	}
+// func CmdOpenPerpetualOptionsPosition() *cobra.Command {
+// 	cmd := &cobra.Command{
+// 		Use:   "perpetual-options [margin] [base-denom] [quote-denom]",
+// 		Short: "open perpetual options position",
+// 		Long: strings.TrimSpace(
+// 			fmt.Sprintf(`open perpetual options position.
+// Example:
+// $ %s tx %s open-position perpetual-options --from myKeyName --chain-id ununifi-x
+// `, version.AppName, types.ModuleName)),
+// 		Args: cobra.ExactArgs(3),
+// 		RunE: func(cmd *cobra.Command, args []string) error {
+// 			return fmt.Errorf("not implemented")
+// 		},
+// 	}
 
-	flags.AddTxFlagsToCmd(cmd)
-	return cmd
-}
+// 	flags.AddTxFlagsToCmd(cmd)
+// 	return cmd
+// }
 
 func CmdClosePosition() *cobra.Command {
 	cmd := &cobra.Command{
