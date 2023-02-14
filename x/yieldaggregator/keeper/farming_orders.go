@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
@@ -133,7 +135,14 @@ func (k Keeper) ExecuteFarmingOrders(ctx sdk.Context, addr sdk.AccAddress, order
 			}
 			target := targets[0]
 
-			k.InvestOnTarget(ctx, addr, target, orderAlloc)
+			cacheCtx, write := ctx.CacheContext()
+			err := k.InvestOnTarget(cacheCtx, addr, target, orderAlloc)
+			if err != nil {
+				fmt.Println("ERROR on InvestOnTarget", err)
+				return err
+			} else {
+				write()
+			}
 		}
 	}
 
@@ -143,14 +152,22 @@ func (k Keeper) ExecuteFarmingOrders(ctx sdk.Context, addr sdk.AccAddress, order
 }
 
 func (k Keeper) StopFarmingUnit(ctx sdk.Context, obj types.FarmingUnit) error {
+	fmt.Println("DEBUG StopFarmingUnit", obj)
+
 	target := k.GetAssetManagementTarget(ctx, obj.AccountId, obj.TargetId)
 	addr, err := sdk.AccAddressFromBech32(obj.Owner)
 	if err != nil {
 		return err
 	}
-	err = k.BeginWithdrawFromTarget(ctx, addr, target, sdk.Coins{})
+
+	cacheCtx, write := ctx.CacheContext()
+	err = k.BeginWithdrawFromTarget(cacheCtx, addr, target, obj.Amount)
 	if err != nil {
+		fmt.Println("ERROR stopping farming unit", err)
 		return err
+	} else {
+		fmt.Println("SUCCESS BeginWithdrawFromTarget", obj)
+		write()
 	}
 
 	return nil

@@ -16,6 +16,7 @@ const (
 	FlagUnbondingSeconds              = "unbonding-seconds"
 	FlagAssetConditions               = "asset-conditions"
 	FlagIntegrateType                 = "integration-type"
+	FlagModName                       = "module-name"
 	FlagExecuteOrders                 = "execute-orders"
 	FlagFarmingOrderId                = "farming-order-id"
 	FlagStrategyType                  = "strategy-type"
@@ -63,6 +64,7 @@ func FlagAddAssetManagementTarget() *flag.FlagSet {
 	fs.Uint64(FlagUnbondingSeconds, 0, "unbonding seconds")
 	fs.String(FlagAssetConditions, "", "asset conditions string")
 	fs.String(FlagIntegrateType, "", "integration type, GOLANG_MOD | COSMWASM")
+	fs.String(FlagModName, "", "module name to invest on, stakeibc | yieldfarm")
 	return fs
 }
 

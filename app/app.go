@@ -555,16 +555,6 @@ func NewApp(
 		scopedIBCKeeper,
 	)
 
-	// register the proposal types
-	govRouter := govtypes.NewRouter()
-	govRouter.
-		AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
-		AddRoute(yieldaggregatortypes.RouterKey, yieldaggregator.NewProposalHandler(app.YieldaggregatorKeeper)).
-		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
-		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
-		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
-		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
-
 	// Create Transfer Keepers
 	app.TransferKeeper = ibctransferkeeper.NewKeeper(
 		appCodec,
@@ -624,7 +614,7 @@ func NewApp(
 		keys[stakeibcmoduletypes.StoreKey],
 		keys[stakeibcmoduletypes.MemStoreKey],
 		app.GetSubspace(stakeibcmoduletypes.ModuleName),
-		// app.IBCKeeper.ChannelKeeper,
+		app.IBCKeeper.ChannelKeeper,
 		// &app.IBCKeeper.PortKeeper,
 		app.AccountKeeper,
 		app.BankKeeper,
@@ -645,14 +635,6 @@ func NewApp(
 	if err != nil {
 		return nil
 	}
-
-	epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
-	app.EpochsKeeper = *epochsKeeper.SetHooks(
-		epochsmoduletypes.NewMultiEpochHooks(
-			app.StakeibcKeeper.Hooks(),
-		),
-	)
-	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
 
 	icacallbacksModule := icacallbacksmodule.NewAppModule(appCodec, app.IcacallbacksKeeper, app.AccountKeeper, app.BankKeeper)
 	// Register ICA calllbacks
@@ -753,6 +735,42 @@ func NewApp(
 
 	app.cdpKeeper = *cdpKeeper.SetHooks(cdptypes.NewMultiCdpHooks(app.incentiveKeeper.Hooks()))
 
+	app.YieldfarmKeeper = *yieldfarmkeeper.NewKeeper(
+		appCodec,
+		keys[yieldfarmtypes.StoreKey],
+		app.GetSubspace(yieldfarmtypes.ModuleName),
+		app.BankKeeper,
+	)
+
+	app.YieldaggregatorKeeper = yieldaggregatorkeeper.NewKeeper(
+		appCodec,
+		keys[yieldaggregatortypes.StoreKey],
+		app.GetSubspace(yieldaggregatortypes.ModuleName),
+		app.BankKeeper,
+		app.YieldfarmKeeper,
+		wasmkeeper.NewDefaultPermissionKeeper(app.WasmKeeper),
+		app.StakeibcKeeper,
+	)
+
+	epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
+	app.EpochsKeeper = *epochsKeeper.SetHooks(
+		epochsmoduletypes.NewMultiEpochHooks(
+			app.StakeibcKeeper.Hooks(),
+			app.YieldaggregatorKeeper.Hooks(),
+		),
+	)
+	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
+
+	// register the proposal types
+	govRouter := govtypes.NewRouter()
+	govRouter.
+		AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
+		AddRoute(yieldaggregatortypes.RouterKey, yieldaggregator.NewProposalHandler(app.YieldaggregatorKeeper)).
+		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
+		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
+		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
+		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
+
 	wasmDir := filepath.Join(homePath, "wasm")
 	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
 	if err != nil {
@@ -795,22 +813,6 @@ func NewApp(
 		AddRoute(stakeibcmoduletypes.ModuleName, icamiddlewareStack).
 		AddRoute(icacallbacksmoduletypes.ModuleName, icamiddlewareStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
-
-	app.YieldfarmKeeper = *yieldfarmkeeper.NewKeeper(
-		appCodec,
-		keys[yieldfarmtypes.StoreKey],
-		app.GetSubspace(yieldfarmtypes.ModuleName),
-		app.BankKeeper,
-	)
-
-	app.YieldaggregatorKeeper = yieldaggregatorkeeper.NewKeeper(
-		appCodec,
-		keys[yieldaggregatortypes.StoreKey],
-		app.GetSubspace(yieldaggregatortypes.ModuleName),
-		app.BankKeeper,
-		app.YieldfarmKeeper,
-		wasmkeeper.NewDefaultPermissionKeeper(app.WasmKeeper),
-	)
 
 	app.GovKeeper = govkeeper.NewKeeper(
 		appCodec,

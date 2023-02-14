@@ -834,6 +834,11 @@ func getAssetManagementTargetFromFlags(cmd *cobra.Command) (*types.AssetManageme
 		return nil, err
 	}
 
+	modName, err := cmd.Flags().GetString(FlagModName)
+	if err != nil {
+		return nil, err
+	}
+
 	return &types.AssetManagementTarget{
 		Id:                       assetManagementTargetId,
 		AssetManagementAccountId: assetManagementAccId,
@@ -843,7 +848,7 @@ func getAssetManagementTargetFromFlags(cmd *cobra.Command) (*types.AssetManageme
 		IntegrateInfo: types.IntegrateInfo{
 			Type:              types.IntegrateType(types.IntegrateType_value[integrateType]),
 			ContractIbcPortId: "",
-			ModName:           "",
+			ModName:           modName,
 		},
 	}, nil
 }

@@ -33,6 +33,7 @@ func (k Keeper) UnmarshalClaimCallbackArgs(ctx sdk.Context, claimCallback []byte
 }
 
 func ClaimCallback(k Keeper, ctx sdk.Context, packet channeltypes.Packet, ack *channeltypes.Acknowledgement, args []byte) error {
+	fmt.Println("DEBUG: ClaimCallback start")
 	// deserialize the args
 	claimCallback, err := k.UnmarshalClaimCallbackArgs(ctx, args)
 	if err != nil {

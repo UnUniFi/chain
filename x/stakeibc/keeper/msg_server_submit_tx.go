@@ -146,7 +146,7 @@ func (k Keeper) UpdateWithdrawalBalance(ctx sdk.Context, zoneInfo types.HostZone
 	data := bankTypes.CreateAccountBalancesPrefix(addr)
 
 	// get ttl, the end of the ICA buffer window
-	epochType := epochstypes.STRIDE_EPOCH
+	epochType := epochstypes.BASE_EPOCH
 	ttl, err := k.GetICATimeoutNanos(ctx, epochType)
 	if err != nil {
 		errMsg := fmt.Sprintf("Failed to get ICA timeout nanos for epochType %s using param, error: %s", epochType, err.Error())
@@ -211,7 +211,7 @@ func (k Keeper) SubmitTxsStrideEpoch(
 	callbackArgs []byte,
 ) (uint64, error) {
 	k.Logger(ctx).Info(fmt.Sprintf("SubmitTxsStrideEpoch %v", msgs))
-	sequence, err := k.SubmitTxsEpoch(ctx, connectionId, msgs, account, epochstypes.STRIDE_EPOCH, callbackId, callbackArgs)
+	sequence, err := k.SubmitTxsEpoch(ctx, connectionId, msgs, account, epochstypes.BASE_EPOCH, callbackId, callbackArgs)
 	if err != nil {
 		return 0, err
 	}
@@ -375,7 +375,7 @@ func (k Keeper) QueryValidatorExchangeRate(ctx sdk.Context, msg *types.MsgUpdate
 	data := stakingtypes.GetValidatorKey(valAddr)
 
 	// get ttl
-	ttl, err := k.GetStartTimeNextEpoch(ctx, epochstypes.STRIDE_EPOCH)
+	ttl, err := k.GetStartTimeNextEpoch(ctx, epochstypes.BASE_EPOCH)
 	if err != nil {
 		errMsg := fmt.Sprintf("could not get start time for next epoch: %s", err.Error())
 		k.Logger(ctx).Error(errMsg)
@@ -426,7 +426,7 @@ func (k Keeper) QueryDelegationsIcq(ctx sdk.Context, hostZone types.HostZone, va
 	data := stakingtypes.GetDelegationKey(delAddr, valAddr)
 
 	// get ttl
-	ttl, err := k.GetStartTimeNextEpoch(ctx, epochstypes.STRIDE_EPOCH)
+	ttl, err := k.GetStartTimeNextEpoch(ctx, epochstypes.BASE_EPOCH)
 	if err != nil {
 		errMsg := fmt.Sprintf("could not get start time for next epoch: %s", err.Error())
 		k.Logger(ctx).Error(errMsg)

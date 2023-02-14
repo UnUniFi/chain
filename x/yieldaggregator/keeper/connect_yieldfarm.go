@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
@@ -37,7 +38,7 @@ func (k Keeper) InvestOnTarget(ctx sdk.Context, addr sdk.AccAddress, target type
 			for _, token := range amount {
 				err := k.stakeibcKeeper.LiquidStake(
 					ctx,
-					addr,
+					address,
 					token,
 				)
 				if err != nil {
@@ -73,9 +74,15 @@ func (k Keeper) BeginWithdrawFromTarget(ctx sdk.Context, addr sdk.AccAddress, ta
 	case types.IntegrateType_GOLANG_MOD:
 		address := farmingUnit.GetAddress()
 
+		// request full withdraw from the unit if amount is empty
+		if amount.String() == "" {
+			amount = farmingUnit.Amount
+		}
 		switch target.IntegrateInfo.ModName {
 		case "stakeibc":
+			fmt.Println("SUCCESS BeginWithdrawFromTarget.1", amount)
 			for _, coin := range amount {
+				fmt.Println("SUCCESS BeginWithdrawFromTarget-1", coin)
 				err := k.stakeibcKeeper.RedeemStake(
 					ctx,
 					address,
@@ -87,11 +94,6 @@ func (k Keeper) BeginWithdrawFromTarget(ctx sdk.Context, addr sdk.AccAddress, ta
 				}
 			}
 		default:
-			// request full withdraw from target if amount is empty
-			if amount.String() == "" {
-				farmerInfo := k.yieldfarmKeeper.GetFarmerInfo(ctx, address)
-				amount = farmerInfo.Amount
-			}
 			err := k.yieldfarmKeeper.Withdraw(ctx, address, amount)
 			if err != nil {
 				return err
@@ -144,24 +146,38 @@ func (k Keeper) ClaimWithdrawFromTarget(ctx sdk.Context, addr sdk.AccAddress, ta
 }
 
 func (k Keeper) ClaimRewardsFromTarget(ctx sdk.Context, addr sdk.AccAddress, target types.AssetManagementTarget) error {
+	fmt.Println("DEBUG ClaimRewardsFromTarget", addr, target)
 	farmingUnit := k.GetFarmingUnit(ctx, addr.String(), target.AssetManagementAccountId, target.Id)
 	if farmingUnit.AccountId == "" {
 		return types.ErrFarmingUnitDoesNotExist
 	}
+	address := farmingUnit.GetAddress()
 
 	// claim and assign rewards to farm units
 	switch target.IntegrateInfo.Type {
 	case types.IntegrateType_GOLANG_MOD:
-		address := farmingUnit.GetAddress()
-		k.yieldfarmKeeper.ClaimRewards(ctx, address)
-		balances := k.bankKeeper.GetAllBalances(ctx, address)
-		if balances.IsAllPositive() {
-			err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, balances)
-			if err != nil {
-				return err
+		switch target.IntegrateInfo.ModName {
+		case "stakeibc":
+			fmt.Println("STAKEIBC UPDATE amount")
+			updatedAmounts := sdk.Coins{}
+			for _, token := range farmingUnit.Amount {
+				updatedAmount := k.stakeibcKeeper.GetUpdatedBalance(ctx, address, token)
+				updatedAmounts = updatedAmounts.Add(sdk.NewCoin(token.Denom, updatedAmount))
 			}
+			farmingUnit.Amount = updatedAmounts
+			k.SetFarmingUnit(ctx, farmingUnit)
+		default:
+			k.yieldfarmKeeper.ClaimRewards(ctx, address)
+			balances := k.bankKeeper.GetAllBalances(ctx, address)
+			if balances.IsAllPositive() {
+				err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, balances)
+				if err != nil {
+					return err
+				}
+			}
+			k.IncreaseUserDeposit(ctx, addr, balances)
 		}
-		k.IncreaseUserDeposit(ctx, addr, balances)
+
 	case types.IntegrateType_COSMWASM:
 		wasmMsg := `{"claim_all_rewards":{}}`
 		contractAddr := sdk.MustAccAddressFromBech32(target.AccountAddress)

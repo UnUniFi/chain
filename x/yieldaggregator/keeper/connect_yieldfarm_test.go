@@ -7,8 +7,12 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/tendermint/tendermint/crypto/ed25519"
 
+	epochtypes "github.com/UnUniFi/chain/x/epochs/types"
+	recordstypes "github.com/UnUniFi/chain/x/records/types"
+	stakeibctypes "github.com/UnUniFi/chain/x/stakeibc/types"
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
 	yieldfarmtypes "github.com/UnUniFi/chain/x/yieldfarm/types"
+	transfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
 )
 
 func (suite *KeeperTestSuite) TestInvestOnTarget() {
@@ -106,7 +110,7 @@ func (suite *KeeperTestSuite) TestBeginWithdrawFromTarget() {
 	})
 
 	// withdraw full amount
-	err = suite.app.YieldaggregatorKeeper.BeginWithdrawFromTarget(suite.ctx, addr1, assetTarget, sdk.Coins{})
+	err = suite.app.YieldaggregatorKeeper.BeginWithdrawFromTarget(suite.ctx, addr1, assetTarget, sdk.Coins{sdk.NewInt64Coin("uguu", 900)})
 	suite.Require().NoError(err)
 
 	// check farmerInfo change
@@ -266,4 +270,95 @@ func (suite *KeeperTestSuite) TestClaimAllFarmUnitRewards() {
 		Amount:  coins,
 		Rewards: sdk.Coins(nil),
 	})
+}
+
+func (suite *KeeperTestSuite) TestClaimAllFarmUnitRewardsIBCStake() {
+	now := time.Now()
+
+	suite.SetupTest()
+	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	// set epoch tracker for env
+	suite.app.StakeibcKeeper.SetEpochTracker(suite.ctx, stakeibctypes.EpochTracker{
+		EpochIdentifier:    epochtypes.BASE_EPOCH,
+		EpochNumber:        1,
+		NextEpochStartTime: uint64(now.Unix()),
+		Duration:           43200,
+	})
+
+	atomHostDenom := "uatom"
+	prefixedDenom := transfertypes.GetPrefixedDenom("transfer", "channel-0", atomHostDenom)
+	atomIbcDenom := transfertypes.ParseDenomTrace(prefixedDenom).IBCDenom()
+
+	// set deposit record for env
+	suite.app.RecordsKeeper.SetDepositRecord(suite.ctx, recordstypes.DepositRecord{
+		Id:                 1,
+		Amount:             100,
+		Denom:              atomIbcDenom,
+		HostZoneId:         "hub-1",
+		Status:             recordstypes.DepositRecord_STAKE,
+		DepositEpochNumber: 1,
+		Source:             recordstypes.DepositRecord_STRIDE,
+	})
+	// set host zone for env
+	zone := stakeibctypes.HostZone{
+		ChainId:               "hub-1",
+		ConnectionId:          "connection-0",
+		Bech32Prefix:          "cosmos",
+		TransferChannelId:     "channel-0",
+		Validators:            []*stakeibctypes.Validator{},
+		BlacklistedValidators: []*stakeibctypes.Validator{},
+		WithdrawalAccount:     nil,
+		FeeAccount:            nil,
+		DelegationAccount:     nil,
+		RedemptionAccount:     nil,
+		IBCDenom:              atomIbcDenom,
+		HostDenom:             atomHostDenom,
+		RedemptionRate:        sdk.NewDec(1),
+		Address:               addr1.String(),
+	}
+	suite.app.StakeibcKeeper.SetHostZone(suite.ctx, zone)
+
+	// mint coins to be spent on liquid staking
+	coins := sdk.Coins{sdk.NewInt64Coin(atomIbcDenom, 1000000)}
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr1, coins)
+	suite.Require().NoError(err)
+
+	assetTarget := types.AssetManagementTarget{
+		AssetManagementAccountId: "AtomFarm",
+		Id:                       "AtomLiquidStaking",
+		IntegrateInfo: types.IntegrateInfo{
+			Type:    types.IntegrateType_GOLANG_MOD,
+			ModName: "stakeibc",
+		},
+		UnbondingTime: time.Hour,
+	}
+
+	// preparation
+	err = suite.app.YieldaggregatorKeeper.Deposit(suite.ctx, &types.MsgDeposit{
+		FromAddress: addr1.Bytes(),
+		Amount:      coins,
+	})
+	suite.Require().NoError(err)
+	suite.app.YieldaggregatorKeeper.SetAssetManagementTarget(suite.ctx, assetTarget)
+	err = suite.app.YieldaggregatorKeeper.InvestOnTarget(suite.ctx, addr1, assetTarget, coins)
+	suite.Require().NoError(err)
+
+	farmUnits := suite.app.YieldaggregatorKeeper.GetFarmingUnitsOfAddress(suite.ctx, addr1)
+	suite.Require().Equal(len(farmUnits), 1)
+	suite.Require().Equal(sdk.Coins(farmUnits[0].Amount).String(), "1000000"+atomIbcDenom)
+
+	// claim after some time
+	suite.ctx = suite.ctx.WithBlockTime(now.Add(time.Hour))
+	zone.RedemptionRate = zone.RedemptionRate.Mul(sdk.NewDec(2)) // 2x redemption rate
+	suite.app.StakeibcKeeper.SetHostZone(suite.ctx, zone)
+
+	suite.app.YieldaggregatorKeeper.ClaimAllFarmUnitRewards(suite.ctx)
+
+	// check after claim
+	farmUnits = suite.app.YieldaggregatorKeeper.GetFarmingUnitsOfAddress(suite.ctx, addr1)
+	suite.Require().Equal(len(farmUnits), 1)
+	suite.Require().Equal(sdk.Coins(farmUnits[0].Amount).String(), "2000000"+atomIbcDenom)
 }

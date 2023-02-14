@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -33,6 +34,16 @@ func (k msgServer) Deposit(c context.Context, msg *types.MsgDeposit) (*types.Msg
 
 func (k msgServer) Withdraw(c context.Context, msg *types.MsgWithdraw) (*types.MsgWithdrawResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
+	units := k.Keeper.GetAllFarmingUnits(ctx)
+	for _, unit := range units {
+		target := k.GetAssetManagementTarget(ctx, unit.AccountId, unit.TargetId)
+		err := k.ClaimWithdrawFromTarget(ctx, msg.FromAddress.AccAddress(), target)
+		fmt.Println("DEBUG Withdraw error", err, target)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	err := k.Keeper.Withdraw(ctx, msg)
 	if err != nil {
@@ -119,7 +130,7 @@ func (k msgServer) BeginWithdrawAll(c context.Context, msg *types.MsgBeginWithdr
 	ctx := sdk.UnwrapSDKContext(c)
 
 	units := k.Keeper.GetFarmingUnitsOfAddress(ctx, msg.FromAddress.AccAddress())
-
+	fmt.Println("DEBUG BeginWithdrawAll", units)
 	for _, unit := range units {
 		err := k.Keeper.StopFarmingUnit(ctx, unit)
 		if err != nil {

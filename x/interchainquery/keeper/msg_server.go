@@ -148,6 +148,7 @@ func (k Keeper) HasQueryExceededTtl(ctx sdk.Context, msg *types.MsgSubmitQueryRe
 }
 
 func (k msgServer) SubmitQueryResponse(goCtx context.Context, msg *types.MsgSubmitQueryResponse) (*types.MsgSubmitQueryResponseResponse, error) {
+	fmt.Println("DEBUG SubmitQueryResponse", string(k.cdc.MustMarshalJSON(msg)))
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// check if the response has an associated query stored on stride

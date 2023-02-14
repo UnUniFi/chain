@@ -62,10 +62,10 @@ func ReinvestCallback(k Keeper, ctx sdk.Context, packet channeltypes.Packet, ack
 	denom := reinvestCallback.ReinvestAmount.Denom
 
 	// fetch epoch
-	strideEpochTracker, found := k.GetEpochTracker(ctx, epochtypes.STRIDE_EPOCH)
+	strideEpochTracker, found := k.GetEpochTracker(ctx, epochtypes.BASE_EPOCH)
 	if !found {
 		k.Logger(ctx).Error("failed to find epoch")
-		return sdkerrors.Wrapf(types.ErrInvalidLengthEpochTracker, "no number for epoch (%s)", epochtypes.STRIDE_EPOCH)
+		return sdkerrors.Wrapf(types.ErrInvalidLengthEpochTracker, "no number for epoch (%s)", epochtypes.BASE_EPOCH)
 	}
 	epochNumber := strideEpochTracker.EpochNumber
 	// create a new record so that rewards are reinvested

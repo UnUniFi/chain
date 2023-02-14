@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	channelkeeper "github.com/cosmos/ibc-go/v3/modules/core/04-channel/keeper"
 	"github.com/spf13/cast"
 	"github.com/tendermint/tendermint/libs/log"
 
@@ -42,6 +43,7 @@ type (
 		RecordsKeeper         recordsmodulekeeper.Keeper
 		StakingKeeper         stakingkeeper.Keeper
 		ICACallbacksKeeper    icacallbackskeeper.Keeper
+		ChannelKeeper         channelkeeper.Keeper
 
 		accountKeeper types.AccountKeeper
 	}
@@ -52,7 +54,7 @@ func NewKeeper(
 	storeKey,
 	memKey sdk.StoreKey,
 	ps paramtypes.Subspace,
-	// channelKeeper cosmosibckeeper.ChannelKeeper,
+	channelKeeper channelkeeper.Keeper,
 	// portKeeper cosmosibckeeper.PortKeeper,
 	// scopedKeeper cosmosibckeeper.ScopedKeeper,
 	accountKeeper types.AccountKeeper,
@@ -84,6 +86,7 @@ func NewKeeper(
 		RecordsKeeper:         RecordsKeeper,
 		StakingKeeper:         StakingKeeper,
 		ICACallbacksKeeper:    ICACallbacksKeeper,
+		ChannelKeeper:         channelKeeper,
 	}
 }
 
@@ -157,9 +160,9 @@ func (k Keeper) GetConnectionId(ctx sdk.Context, portId string) (string, error) 
 // helper to get what share of the curr epoch we're through
 func (k Keeper) GetStrideEpochElapsedShare(ctx sdk.Context) (sdk.Dec, error) {
 	// Get the current stride epoch
-	epochTracker, found := k.GetEpochTracker(ctx, epochstypes.STRIDE_EPOCH)
+	epochTracker, found := k.GetEpochTracker(ctx, epochstypes.BASE_EPOCH)
 	if !found {
-		errMsg := fmt.Sprintf("Failed to get epoch tracker for %s", epochstypes.STRIDE_EPOCH)
+		errMsg := fmt.Sprintf("Failed to get epoch tracker for %s", epochstypes.BASE_EPOCH)
 		k.Logger(ctx).Error(errMsg)
 		return sdk.ZeroDec(), sdkerrors.Wrapf(sdkerrors.ErrNotFound, errMsg)
 	}

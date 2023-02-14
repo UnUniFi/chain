@@ -72,7 +72,7 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochInfo epochstypes.EpochInf
 		k.CreateEpochUnbondingRecord(ctx, epochNumber)
 	}
 
-	if epochIdentifier == epochstypes.STRIDE_EPOCH {
+	if epochIdentifier == epochstypes.BASE_EPOCH {
 		k.Logger(ctx).Info(fmt.Sprintf("Stride Epoch %d", epochNumber))
 
 		// NOTE: We could nest this under `if epochNumber%depositInterval == 0 {`

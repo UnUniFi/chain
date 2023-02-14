@@ -235,10 +235,10 @@ func ValidatorExchangeRateCallback(k Keeper, ctx sdk.Context, args []byte, query
 		return sdkerrors.Wrapf(types.ErrValidatorNotFound, errMsg)
 	}
 	// get the stride epoch number
-	strideEpochTracker, found := k.GetEpochTracker(ctx, epochtypes.STRIDE_EPOCH)
+	strideEpochTracker, found := k.GetEpochTracker(ctx, epochtypes.BASE_EPOCH)
 	if !found {
 		k.Logger(ctx).Error("failed to find stride epoch")
-		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "no epoch number for epoch (%s)", epochtypes.STRIDE_EPOCH)
+		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "no epoch number for epoch (%s)", epochtypes.BASE_EPOCH)
 	}
 
 	// If the validator's delegation shares is 0, we'll get a division by zero error when trying to get the exchange rate
@@ -324,10 +324,10 @@ func DelegatorSharesCallback(k Keeper, ctx sdk.Context, args []byte, query icqty
 	}
 
 	// get the validator's internal exchange rate, aborting if it hasn't been updated this epoch
-	strideEpochTracker, found := k.GetEpochTracker(ctx, epochtypes.STRIDE_EPOCH)
+	strideEpochTracker, found := k.GetEpochTracker(ctx, epochtypes.BASE_EPOCH)
 	if !found {
 		k.Logger(ctx).Error("failed to find stride epoch")
-		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "no epoch number for epoch (%s)", epochtypes.STRIDE_EPOCH)
+		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "no epoch number for epoch (%s)", epochtypes.BASE_EPOCH)
 	}
 	if validator.InternalExchangeRate.EpochNumber != strideEpochTracker.GetEpochNumber() {
 		errMsg := fmt.Sprintf("DelegationCallback: validator (%s) internal exchange rate has not been updated this epoch (epoch #%d)",

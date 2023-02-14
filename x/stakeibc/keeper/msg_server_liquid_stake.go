@@ -54,6 +54,9 @@ func (k Keeper) LiquidStake(ctx sdk.Context, sender sdk.AccAddress, amount sdk.C
 		k.Logger(ctx).Error("failed to send tokens from Account to Module")
 		return sdkerrors.Wrap(err, "failed to send tokens from Account to Module")
 	}
+
+	fmt.Println("DEBUG: bech32ZoneAddress", hostZone.Address)
+	fmt.Println("DEBUG: MintStAsset", sender.String(), amount.Amount.Uint64())
 	// mint user `amount` of the corresponding stAsset
 	// NOTE: We should ensure that denoms are unique - we don't want anyone spoofing denoms
 	err = k.MintStAsset(ctx, sender, amount.Amount.Uint64(), hostZone.HostDenom)
@@ -63,10 +66,10 @@ func (k Keeper) LiquidStake(ctx sdk.Context, sender sdk.AccAddress, amount sdk.C
 	}
 
 	// create a deposit record of these tokens (pending transfer)
-	strideEpochTracker, found := k.GetEpochTracker(ctx, epochtypes.STRIDE_EPOCH)
+	strideEpochTracker, found := k.GetEpochTracker(ctx, epochtypes.BASE_EPOCH)
 	if !found {
 		k.Logger(ctx).Error("failed to find stride epoch")
-		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "no epoch number for epoch (%s)", epochtypes.STRIDE_EPOCH)
+		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "no epoch number for epoch (%s)", epochtypes.BASE_EPOCH)
 	}
 	// Does this use too much gas?
 	depositRecord, found := k.RecordsKeeper.GetDepositRecordByEpochAndChain(ctx, strideEpochTracker.EpochNumber, hostZone.ChainId)
@@ -74,11 +77,8 @@ func (k Keeper) LiquidStake(ctx sdk.Context, sender sdk.AccAddress, amount sdk.C
 		k.Logger(ctx).Error("failed to find deposit record")
 		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, fmt.Sprintf("no deposit record for epoch (%d)", strideEpochTracker.EpochNumber))
 	}
-	msgAmt, err := cast.ToInt64E(amount.Amount)
-	if err != nil {
-		k.Logger(ctx).Error("failed to convert msg.Amount to int64")
-		return sdkerrors.Wrapf(err, "failed to convert msg.Amount to int64")
-	}
+
+	msgAmt := amount.Amount.Int64()
 	depositRecord.Amount += msgAmt
 	k.RecordsKeeper.SetDepositRecord(ctx, *depositRecord)
 
@@ -149,10 +149,10 @@ func (k msgServer) LiquidStake(goCtx context.Context, msg *types.MsgLiquidStake)
 	}
 
 	// create a deposit record of these tokens (pending transfer)
-	strideEpochTracker, found := k.GetEpochTracker(ctx, epochtypes.STRIDE_EPOCH)
+	strideEpochTracker, found := k.GetEpochTracker(ctx, epochtypes.BASE_EPOCH)
 	if !found {
 		k.Logger(ctx).Error("failed to find stride epoch")
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "no epoch number for epoch (%s)", epochtypes.STRIDE_EPOCH)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "no epoch number for epoch (%s)", epochtypes.BASE_EPOCH)
 	}
 	// Does this use too much gas?
 	depositRecord, found := k.RecordsKeeper.GetDepositRecordByEpochAndChain(ctx, strideEpochTracker.EpochNumber, hostZone.ChainId)

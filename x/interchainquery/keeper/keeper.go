@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"encoding/hex"
 	"fmt"
 	"strings"
 
@@ -51,7 +52,7 @@ func (k *Keeper) MakeRequest(ctx sdk.Context, connection_id string, chain_id str
 		"connection_id", connection_id,
 		"chain_id", chain_id,
 		"query_type", query_type,
-		"request", request,
+		"request", hex.EncodeToString(request),
 		"period", period,
 		"module", module,
 		"callback", callback_id,

@@ -142,9 +142,9 @@ func (k msgServer) RegisterHostZone(goCtx context.Context, msg *types.MsgRegiste
 	k.RecordsKeeper.SetEpochUnbondingRecord(ctx, *updatedEpochUnbondingRecord)
 
 	// create an empty deposit record for the host zone
-	strideEpochTracker, found := k.GetEpochTracker(ctx, epochtypes.STRIDE_EPOCH)
+	strideEpochTracker, found := k.GetEpochTracker(ctx, epochtypes.BASE_EPOCH)
 	if !found {
-		return nil, sdkerrors.Wrapf(types.ErrEpochNotFound, "epoch tracker (%s) not found", epochtypes.STRIDE_EPOCH)
+		return nil, sdkerrors.Wrapf(types.ErrEpochNotFound, "epoch tracker (%s) not found", epochtypes.BASE_EPOCH)
 	}
 	depositRecord := recordstypes.DepositRecord{
 		Id:                 0,

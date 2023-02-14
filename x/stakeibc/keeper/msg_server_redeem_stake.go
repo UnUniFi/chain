@@ -15,6 +15,22 @@ import (
 	"github.com/UnUniFi/chain/utils"
 )
 
+func (k Keeper) GetUpdatedBalance(ctx sdk.Context, sender sdk.AccAddress, amount sdk.Coin) sdk.Int {
+	// get host zone from IBC denom
+	hostZone, err := k.GetHostZoneFromIBCDenom(ctx, amount.Denom)
+	if err != nil {
+		fmt.Println("ERROR getting hostZone")
+		return sdk.ZeroInt()
+	}
+
+	// calculate updated amount
+	stDenom := types.StAssetDenomFromHostZoneDenom(hostZone.HostDenom)
+	balance := k.bankKeeper.GetBalance(ctx, sender, stDenom)
+	updatedAmount := balance.Amount.ToDec().Mul(hostZone.RedemptionRate).RoundInt()
+	fmt.Println("Updated amount", updatedAmount.String())
+	return updatedAmount
+}
+
 func (k Keeper) RedeemStake(ctx sdk.Context, sender sdk.AccAddress, amount sdk.Coin, receiver string) error {
 	// then make sure host zone is valid
 	hostZone, err := k.GetHostZoneFromIBCDenom(ctx, amount.Denom)
@@ -33,19 +49,12 @@ func (k Keeper) RedeemStake(ctx sdk.Context, sender sdk.AccAddress, amount sdk.C
 		return sdkerrors.Wrapf(recordstypes.ErrRedemptionAlreadyExists, "user already redeemed this epoch: %s", redemptionId)
 	}
 
-	// ensure the recipient address is a valid bech32 address on the hostZone
-	// TODO(TEST-112) do we need to check the hostZone before this check? Would need access to keeper
-	_, err = utils.AccAddressFromBech32(receiver, hostZone.Bech32Prefix)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid receiver address (%s)", err)
-	}
-
 	if amount.Amount.Uint64() > hostZone.StakedBal {
 		return sdkerrors.Wrapf(types.ErrInvalidAmount, "cannot unstake an amount g.t. staked balance on host zone: %d", amount.Amount)
 	}
 
 	// safety check: redemption rate must be within safety bounds
-	rateIsSafe, err := k.IsRedemptionRateWithinSafetyBounds(ctx, hostZone)
+	rateIsSafe, err := k.IsRedemptionRateWithinSafetyBounds(ctx, *hostZone)
 	if !rateIsSafe || (err != nil) {
 		errMsg := fmt.Sprintf("IsRedemptionRateWithinSafetyBounds check failed. hostZone: %s, err: %s", hostZone.String(), err.Error())
 		return sdkerrors.Wrapf(types.ErrRedemptionRateOutsideSafetyBounds, errMsg)
@@ -70,7 +79,7 @@ func (k Keeper) RedeemStake(ctx sdk.Context, sender sdk.AccAddress, amount sdk.C
 	k.Logger(ctx).Info(fmt.Sprintf("Redemption issuer IBCDenom balance: %v%s", balance.Amount, balance.Denom))
 	k.Logger(ctx).Info(fmt.Sprintf("Redemption requested redemotion amount: %v%s", inCoin.Amount, inCoin.Denom))
 	if balance.Amount.LT(amount.Amount) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "balance is lower than redemption amount. redemption amount: %d, balance %d: ", amount.Amount, balance.Amount)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidCoins, "balance is lower than redemption amount. redemption amount: %d, balance %d: ", amount.Amount.Int64(), balance.Amount.Int64())
 	}
 	// UNBONDING RECORD KEEPING
 	userRedemptionRecord := recordstypes.UserRedemptionRecord{
@@ -112,12 +121,7 @@ func (k Keeper) RedeemStake(ctx sdk.Context, sender sdk.AccAddress, amount sdk.C
 	}
 
 	// record the number of stAssets that should be burned after unbonding
-	stTokenAmount, err := cast.ToUint64E(amount.Amount)
-	if err != nil {
-		errMsg := fmt.Sprintf("Could not convert redemption amount to int64 in redeem stake | %s", err.Error())
-		k.Logger(ctx).Error(errMsg)
-		return sdkerrors.Wrapf(types.ErrIntCast, errMsg)
-	}
+	stTokenAmount := amount.Amount.Uint64()
 	hostZoneUnbonding.StTokenAmount += stTokenAmount
 
 	// Actually set the records, we wait until now to prevent any errors
