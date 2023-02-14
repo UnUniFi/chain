@@ -122,7 +122,32 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 	params := types.Params{
 		Pool: types.Pool{
-			QuoteTicker: "USD",
+			QuoteTicker:                       "USD",
+			BaseLptMintFee:                    sdk.NewDecWithPrec(1, 4),
+			BaseLptRedeemFee:                  sdk.NewDecWithPrec(1, 4),
+			BorrowingFeeRatePerHour:           sdk.NewDecWithPrec(1, 4),
+			LiquidationNeededReportRewardRate: sdk.NewDecWithPrec(1, 6),
+			AcceptedAssets: []*types.Asset{
+				{
+					Denom:        "uatom",
+					TargetWeight: sdk.NewDecWithPrec(1, 2),
+				},
+				{
+					Denom:        "uusdc",
+					TargetWeight: sdk.NewDecWithPrec(14, 2),
+				},
+			},
+		},
+		PerpetualFutures: types.PerpetualFuturesParams{
+			CommissionRate:        sdk.NewDecWithPrec(1, 4),
+			MarginMaintenanceRate: sdk.NewDecWithPrec(1, 2),
+			ImaginaryFundingRateProportionalCoefficient: sdk.NewDecWithPrec(1, 4),
+			Markets: []*types.Market{
+				{
+					BaseDenom:  "uatom",
+					QuoteDenom: "uusdc",
+				},
+			},
 		},
 	}
 	keeper.SetParams(suite.ctx, params)
