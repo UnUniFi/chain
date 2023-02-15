@@ -4,10 +4,33 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/keeper"
+	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
 func setPoolMarketCapSnapshot(ctx sdk.Context, k keeper.Keeper) {
+	// move on only if price is ready
+	if !IsPriceReady(ctx, k) {
+		return
+	}
+
 	k.SetPoolMarketCapSnapshot(ctx, ctx.BlockHeight(), k.GetPoolMarketCap(ctx))
+}
+
+func IsPriceReady(ctx sdk.Context, k keeper.Keeper) bool {
+	assets := k.GetPoolAssets(ctx)
+
+	for _, asset := range assets {
+		_, err := k.GetAssetPrice(ctx, asset.Denom)
+		if err != nil {
+			ctx.EventManager().EmitTypedEvent(&types.EventPriceIsNotFeeded{
+				Asset: asset.String(),
+			})
+
+			return false
+		}
+	}
+
+	return true
 }
 
 func saveBlockTime(ctx sdk.Context, k keeper.Keeper) {
