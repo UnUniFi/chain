@@ -175,3 +175,20 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 		Breakdown:   breakdowns,
 	}
 }
+
+func (k Keeper) IsPriceReady(ctx sdk.Context) bool {
+	assets := k.GetPoolAssets(ctx)
+
+	for _, asset := range assets {
+		_, err := k.GetAssetPrice(ctx, asset.Denom)
+		if err != nil {
+			ctx.EventManager().EmitTypedEvent(&types.EventPriceIsNotFeeded{
+				Asset: asset.String(),
+			})
+
+			return false
+		}
+	}
+
+	return true
+}

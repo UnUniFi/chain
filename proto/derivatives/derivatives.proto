@@ -199,3 +199,9 @@ message Params {
     (gogoproto.nullable) = false
   ];
 }
+
+message EventPriceIsNotFeeded {
+  string asset = 1 [
+    (gogoproto.moretags) = "yaml:\"asset\""
+  ];
+}
