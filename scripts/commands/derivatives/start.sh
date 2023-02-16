@@ -41,7 +41,8 @@ $sed_i 's/stake/uguu/g' ~/.ununifi/config/genesis.json;
 
 # modify genesis.json
 PRICEFEED=$(ununifid keys show pricefeed --address)
-jq '.app_state.pricefeed.params.markets = [{ "market_id": "ubtc:usd", "base_asset": "ubtc", "quote_asset": "usd", "oracles": [ "'$PRICEFEED'" ], "active": true }, { "market_id": "ubtc:usd:30", "base_asset": "ubtc", "quote_asset": "usd", "oracles": [ "'$PRICEFEED'" ], "active": true }]'  ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
+jq '.app_state.pricefeed.params.markets = [{ "market_id": "ubtc:usd", "base_asset": "ubtc", "quote_asset": "usd", "oracles": [ "'$PRICEFEED'" ], "active": true }, { "market_id": "ubtc:usd:30", "base_asset": "ubtc", "quote_asset": "usd", "oracles": [ "'$PRICEFEED'" ], "active": true }, 
+  { "market_id": "uusdc:usd", "base_asset": "uusdc", "quote_asset": "usd", "oracles": [ "'$PRICEFEED'" ], "active": true }, { "market_id": "uusdc:usd:30", "base_asset": "uusdc", "quote_asset": "usd", "oracles": [ "'$PRICEFEED'" ], "active": true }]'  ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
 jq '.app_state.derivatives.params.pool.quote_ticker = "usd"' ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
 jq '.app_state.derivatives.params.pool.base_lpt_mint_fee = "0.001"' ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
 jq '.app_state.derivatives.params.pool.base_lpt_redeem_fee = "0.001"' ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
@@ -51,7 +52,7 @@ jq '.app_state.derivatives.params.perpetual_futures.margin_maintenance_rate = "0
 jq '.app_state.derivatives.params.perpetual_futures.imaginary_funding_rate_proportional_coefficient = "0.0005"' ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
 jq '.app_state.derivatives.params.perpetual_futures.markets = [{"base_denom": "ubtc", "quote_denom": "uusd" }]' ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
 
-jq '.app_state.bank.denom_metadata = [{"base" : "ubtc" , "symbol": "ubtc"}, {"base" : "uusd", "symbol": "usd"}]' ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
+jq '.app_state.bank.denom_metadata = [{"base" : "ubtc" , "symbol": "ubtc"}, {"base" : "uusd", "symbol": "uusdc"}]' ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
 
 # run pricefeed
 $SCRIPT_DIR/setup_pricefeed.sh
