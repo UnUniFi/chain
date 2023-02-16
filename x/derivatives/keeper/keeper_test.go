@@ -56,39 +56,25 @@ func (suite *KeeperTestSuite) SetupTest() {
 	)
 
 	metadataAtom := banktypes.Metadata{
-		Description: "The native staking token of the Cosmos Hub.",
 		DenomUnits: []*banktypes.DenomUnit{
 			{
 				Denom:    "uatom",
-				Exponent: 0,
-				Aliases:  []string{"microatom"},
-			},
-			{
-				Denom:    "atom",
 				Exponent: 6,
-				Aliases:  []string{"ATOM"},
 			},
 		},
-		Base:    "uatom",
-		Display: "atom",
-		Symbol:  "ATOM",
+		Base:   "uatom",
+		Symbol: "uatom",
 	}
 
 	metadataUsdc := banktypes.Metadata{
-		Description: "USD Coin",
 		DenomUnits: []*banktypes.DenomUnit{
 			{
 				Denom:    "uusdc",
-				Exponent: 0,
-			},
-			{
-				Denom:    "usdc",
-				Exponent: 18,
+				Exponent: 6,
 			},
 		},
-		Base:    "uusdc",
-		Display: "usdc",
-		Symbol:  "USDC",
+		Base:   "uusdc",
+		Symbol: "uusdc",
 	}
 
 	bankKeeper.SetDenomMetaData(suite.ctx, metadataAtom)
@@ -103,54 +89,37 @@ func (suite *KeeperTestSuite) SetupTest() {
 	)
 	pfParams := pricefeedtypes.Params{
 		Markets: []pricefeedtypes.Market{
-			{MarketId: "USDC:USD", BaseAsset: "uusdc", QuoteAsset: "usd", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
-			{MarketId: "ATOM:USD", BaseAsset: "uatom", QuoteAsset: "usd", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
-			{MarketId: "ATOM:USDC", BaseAsset: "uatom", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+			{MarketId: "uusdc:usd", BaseAsset: "uusdc", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+			{MarketId: "uatom:usd", BaseAsset: "uatom", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+			{MarketId: "uatom:usdc", BaseAsset: "uatom", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
 		},
 	}
 	pricefeedKeeper.SetParams(suite.ctx, pfParams)
 
-	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "ATOM:USDC", sdk.MustNewDecFromStr("15.28"), suite.ctx.BlockTime().Add(1*time.Hour))
-	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "ATOM:USD", sdk.MustNewDecFromStr("15.28"), suite.ctx.BlockTime().Add(1*time.Hour))
-	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "USDC:USD", sdk.MustNewDecFromStr("1"), suite.ctx.BlockTime().Add(1*time.Hour))
+	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:usdc", sdk.MustNewDecFromStr("0.00001528"), suite.ctx.BlockTime().Add(1*time.Hour))
+	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:usd", sdk.MustNewDecFromStr("0.00001528"), suite.ctx.BlockTime().Add(1*time.Hour))
+	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uusdc:usd", sdk.MustNewDecFromStr("0.000001"), suite.ctx.BlockTime().Add(1*time.Hour))
 
-	pricefeedKeeper.SetCurrentPrices(suite.ctx, "ATOM:USDC")
-	pricefeedKeeper.SetCurrentPrices(suite.ctx, "ATOM:USD")
-	pricefeedKeeper.SetCurrentPrices(suite.ctx, "USDC:USD")
+	pricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:usdc")
+	pricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:usd")
+	pricefeedKeeper.SetCurrentPrices(suite.ctx, "uusdc:usd")
 
 	keeper := keeper.NewKeeper(appCodec, app.GetKey(types.StoreKey), app.GetKey(types.MemStoreKey), suite.app.GetSubspace(types.ModuleName), bankKeeper, pricefeedKeeper)
 
-	params := types.Params{
-		Pool: types.Pool{
-			QuoteTicker:                       "USD",
-			BaseLptMintFee:                    sdk.NewDecWithPrec(1, 4),
-			BaseLptRedeemFee:                  sdk.NewDecWithPrec(1, 4),
-			BorrowingFeeRatePerHour:           sdk.NewDecWithPrec(1, 4),
-			LiquidationNeededReportRewardRate: sdk.NewDecWithPrec(1, 6),
-			AcceptedAssets: []*types.Asset{
-				{
-					Denom:        "uatom",
-					TargetWeight: sdk.NewDecWithPrec(1, 2),
-				},
-				{
-					Denom:        "uusdc",
-					TargetWeight: sdk.NewDecWithPrec(14, 2),
-				},
-			},
-		},
-		PerpetualFutures: types.PerpetualFuturesParams{
-			CommissionRate:        sdk.NewDecWithPrec(1, 4),
-			MarginMaintenanceRate: sdk.NewDecWithPrec(1, 2),
-			ImaginaryFundingRateProportionalCoefficient: sdk.NewDecWithPrec(1, 4),
-			Markets: []*types.Market{
-				{
-					BaseDenom:  "uatom",
-					QuoteDenom: "uusdc",
-				},
-			},
-		},
+	params := types.DefaultParams()
+	params.Pool.AcceptedAssets = []*types.Asset{
+		{Denom: "uatom", TargetWeight: sdk.MustNewDecFromStr("0.5")},
+		{Denom: "uusdc", TargetWeight: sdk.MustNewDecFromStr("0.5")},
 	}
+	params.PerpetualFutures.Markets = []*types.Market{
+		{BaseDenom: "uatom", QuoteDenom: "uusdc"},
+	}
+
 	keeper.SetParams(suite.ctx, params)
+
+	for _, asset := range params.Pool.AcceptedAssets {
+		keeper.AddPoolAsset(suite.ctx, *asset)
+	}
 	suite.keeper = keeper
 	suite.pricefeedKeeper = pricefeedKeeper
 }
