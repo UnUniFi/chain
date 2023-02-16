@@ -75,6 +75,7 @@
     - [Msg](#ununifi.cdp.Msg)
   
 - [derivatives/derivatives.proto](#derivatives/derivatives.proto)
+    - [Asset](#ununifi.derivatives.Asset)
     - [EventPriceIsNotFeeded](#ununifi.derivatives.EventPriceIsNotFeeded)
     - [Market](#ununifi.derivatives.Market)
     - [Params](#ununifi.derivatives.Params)
@@ -1324,6 +1325,22 @@ Query defines the gRPC querier service.
 <p align="right"><a href="#top">Top</a></p>
 
 ## derivatives/derivatives.proto
+
+
+
+<a name="ununifi.derivatives.Asset"></a>
+
+### Asset
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+| `target_weight` | [string](#string) |  |  |
+
+
+
 
 
 

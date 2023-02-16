@@ -46,6 +46,12 @@ func (k Keeper) GetLPTokenPrice(ctx sdk.Context) sdk.Dec {
 func (k Keeper) GetLPTokenAmount(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sdk.Coin, error) {
 	currentSupply := k.bankKeeper.GetSupply(ctx, types.LiquidityProviderTokenDenom)
 
+	// initial_lp_token_price = Σ target_weight_of_ith_asset * price_of_ith_asset
+	// initial_lp_supply = pool_marketcap / initial_lp_token_price
+	if currentSupply.Amount.IsZero() {
+		return k.InitialLiquidityProviderTokenSupply(ctx, amount)
+	}
+
 	assetPrice, err := k.GetAssetPrice(ctx, amount.Denom)
 	if err != nil {
 		return sdk.Coin{}, sdk.Coin{}, err
@@ -55,17 +61,6 @@ func (k Keeper) GetLPTokenAmount(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sd
 	targetAmount, err := k.GetAssetTargetAmount(ctx, amount.Denom)
 	if err != nil {
 		return sdk.Coin{}, sdk.Coin{}, err
-	}
-
-	// initial_lp_token_price = Σ target_weight_of_ith_asset * price_of_ith_asset
-	// initial_lp_supply = pool_marketcap / initial_lp_token_price
-	if currentSupply.Amount.IsZero() {
-		// TODO: we can eliminate unnecessary calculation -> assetPrice.Price
-		poolMarketCap := assetPrice.Price.Mul(sdk.NewDecFromInt(actualAmount.Amount))
-		initialLPTokenPrice := assetPrice.Price.Mul(sdk.NewDecFromInt(targetAmount.Amount))
-		initialLPTokenSupply := poolMarketCap.Quo(initialLPTokenPrice)
-
-		return sdk.NewCoin(types.LiquidityProviderTokenDenom, initialLPTokenSupply.TruncateInt()), sdk.Coin{}, nil
 	}
 
 	lptPrice := k.GetLPTokenPrice(ctx)
@@ -120,12 +115,25 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 	return sdk.NewCoin(redeemDenom, redeemAmount.TruncateInt()), sdk.NewCoin(redeemDenom, redeemAmount.Mul(redeemFeeRate).TruncateInt()), nil
 }
 
-// // TODO: implement correct logic to return the initial liquidity provider token supply
-// func (k Keeper) InitialLiquidityProviderTokenSupply(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sdk.Coin, error) {
-// 	return sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.NewInt(1)),
-// 		sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.ZeroInt()),
-// 		nil
-// }
+func (k Keeper) InitialLiquidityProviderTokenSupply(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sdk.Coin, error) {
+	assetPrice, err := k.GetAssetPrice(ctx, amount.Denom)
+	if err != nil {
+		return sdk.Coin{}, sdk.Coin{}, err
+	}
+	actualAmount := k.GetAssetBalance(ctx, amount.Denom)
+
+	targetAmount, err := k.GetAssetTargetAmount(ctx, amount.Denom)
+	if err != nil {
+		return sdk.Coin{}, sdk.Coin{}, err
+	}
+
+	// TODO: we can eliminate unnecessary calculation -> assetPrice.Price
+	poolMarketCap := assetPrice.Price.Mul(sdk.NewDecFromInt(actualAmount.Amount))
+	initialLPTokenPrice := assetPrice.Price.Mul(sdk.NewDecFromInt(targetAmount.Amount))
+	initialLPTokenSupply := poolMarketCap.Quo(initialLPTokenPrice)
+
+	return sdk.NewCoin(types.LiquidityProviderTokenDenom, initialLPTokenSupply.TruncateInt()), sdk.Coin{}, nil
+}
 
 func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLiquidityProviderToken) error {
 	depositor := msg.Sender.AccAddress()
