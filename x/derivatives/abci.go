@@ -7,6 +7,11 @@ import (
 )
 
 func setPoolMarketCapSnapshot(ctx sdk.Context, k keeper.Keeper) {
+	// move on only if price is ready
+	if !k.IsPriceReady(ctx) {
+		return
+	}
+
 	k.SetPoolMarketCapSnapshot(ctx, ctx.BlockHeight(), k.GetPoolMarketCap(ctx))
 }
 

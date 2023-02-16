@@ -75,6 +75,7 @@
     - [Msg](#ununifi.cdp.Msg)
   
 - [derivatives/derivatives.proto](#derivatives/derivatives.proto)
+    - [EventPriceIsNotFeeded](#ununifi.derivatives.EventPriceIsNotFeeded)
     - [Market](#ununifi.derivatives.Market)
     - [Params](#ununifi.derivatives.Params)
     - [PerpetualFuturesParams](#ununifi.derivatives.PerpetualFuturesParams)
@@ -147,6 +148,7 @@
   
 - [ecosystem-incentive/ecosystem_incentive.proto](#ecosystem-incentive/ecosystem_incentive.proto)
     - [IncentiveUnit](#ununifi.ecosystemincentive.IncentiveUnit)
+    - [IncentiveUnitIdsByAddr](#ununifi.ecosystemincentive.IncentiveUnitIdsByAddr)
     - [RewardStore](#ununifi.ecosystemincentive.RewardStore)
     - [SubjectInfo](#ununifi.ecosystemincentive.SubjectInfo)
   
@@ -178,6 +180,8 @@
 - [ecosystem-incentive/query.proto](#ecosystem-incentive/query.proto)
     - [QueryAllRewardsRequest](#ununifi.ecosystemincentive.QueryAllRewardsRequest)
     - [QueryAllRewardsResponse](#ununifi.ecosystemincentive.QueryAllRewardsResponse)
+    - [QueryIncentiveUnitIdsByAddrRequest](#ununifi.ecosystemincentive.QueryIncentiveUnitIdsByAddrRequest)
+    - [QueryIncentiveUnitIdsByAddrResponse](#ununifi.ecosystemincentive.QueryIncentiveUnitIdsByAddrResponse)
     - [QueryIncentiveUnitRequest](#ununifi.ecosystemincentive.QueryIncentiveUnitRequest)
     - [QueryIncentiveUnitResponse](#ununifi.ecosystemincentive.QueryIncentiveUnitResponse)
     - [QueryParamsRequest](#ununifi.ecosystemincentive.QueryParamsRequest)
@@ -1322,6 +1326,21 @@ Query defines the gRPC querier service.
 
 
 
+<a name="ununifi.derivatives.EventPriceIsNotFeeded"></a>
+
+### EventPriceIsNotFeeded
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `asset` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="ununifi.derivatives.Market"></a>
 
 ### Market
@@ -2262,6 +2281,22 @@ Query defines the gRPC querier service.
 
 
 
+<a name="ununifi.ecosystemincentive.IncentiveUnitIdsByAddr"></a>
+
+### IncentiveUnitIdsByAddr
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+| `incentive_unit_ids` | [string](#string) | repeated |  |
+
+
+
+
+
+
 <a name="ununifi.ecosystemincentive.RewardStore"></a>
 
 ### RewardStore
@@ -2667,6 +2702,36 @@ GenesisState defines the ecosystemincentive module's genesis state.
 
 
 
+<a name="ununifi.ecosystemincentive.QueryIncentiveUnitIdsByAddrRequest"></a>
+
+### QueryIncentiveUnitIdsByAddrRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.QueryIncentiveUnitIdsByAddrResponse"></a>
+
+### QueryIncentiveUnitIdsByAddrResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `incentive_unit_ids_by_addr` | [IncentiveUnitIdsByAddr](#ununifi.ecosystemincentive.IncentiveUnitIdsByAddr) |  |  |
+
+
+
+
+
+
 <a name="ununifi.ecosystemincentive.QueryIncentiveUnitRequest"></a>
 
 ### QueryIncentiveUnitRequest
@@ -2802,6 +2867,7 @@ Query defines the gRPC querier service.
 | `AllRewards` | [QueryAllRewardsRequest](#ununifi.ecosystemincentive.QueryAllRewardsRequest) | [QueryAllRewardsResponse](#ununifi.ecosystemincentive.QueryAllRewardsResponse) |  | GET|/ununifi/ecosystem_incentive/all_rewards/{subject_addr}|
 | `Reward` | [QueryRewardRequest](#ununifi.ecosystemincentive.QueryRewardRequest) | [QueryRewardResponse](#ununifi.ecosystemincentive.QueryRewardResponse) |  | GET|/ununifi/ecosystem_incentive/reward/{subject_addr}/{denom}|
 | `RecordedIncentiveUnitId` | [QueryRecordedIncentiveUnitIdRequest](#ununifi.ecosystemincentive.QueryRecordedIncentiveUnitIdRequest) | [QueryRecordedIncentiveUnitIdResponse](#ununifi.ecosystemincentive.QueryRecordedIncentiveUnitIdResponse) |  | GET|/ununifi/ecosystem_incentive/recorded_incentive_unit_id/{class_id}/{nft_id}|
+| `IncentiveUnitIdsByAddr` | [QueryIncentiveUnitIdsByAddrRequest](#ununifi.ecosystemincentive.QueryIncentiveUnitIdsByAddrRequest) | [QueryIncentiveUnitIdsByAddrResponse](#ununifi.ecosystemincentive.QueryIncentiveUnitIdsByAddrResponse) |  | GET|/ununifi/ecosystem_incentive/incentive_unit_ids_by_addr/{address}|
 
  <!-- end services -->
 
@@ -4725,6 +4791,7 @@ GenesisState defines the nftmint module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#ununifi.nftmint.Params) |  |  |
+| `class_attributes_list` | [ClassAttributes](#ununifi.nftmint.ClassAttributes) | repeated |  |
 
 
 
