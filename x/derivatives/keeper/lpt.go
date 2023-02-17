@@ -205,7 +205,7 @@ func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgBurnLi
 		return err
 	}
 
-	err = k.DecreaseRedeemDenomAmount(ctx, redeemAmount)
+	err = k.DecreaseRedeemDenomAmount(ctx, redeemAmount.Add(redeemFee))
 	if err != nil {
 		return err
 	}
