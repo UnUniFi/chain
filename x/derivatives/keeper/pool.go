@@ -69,6 +69,22 @@ func (k Keeper) GetAssetBalance(ctx sdk.Context, denom string) sdk.Coin {
 	return coin
 }
 
+func (k Keeper) SetAssetBalance(ctx sdk.Context, coin sdk.Coin) error {
+	store := ctx.KVStore(k.storeKey)
+
+	if coin.Validate() != nil {
+		return types.ErrNoLiquidityProviderToken
+	}
+
+	coinBz, err := k.cdc.Marshal(&coin)
+	if err != nil {
+		return err
+	}
+
+	store.Set(types.AssetDepositKeyPrefix(coin.Denom), coinBz)
+	return nil
+}
+
 func (k Keeper) GetAssetTargetAmount(ctx sdk.Context, denom string) (sdk.Coin, error) {
 	mc := k.GetPoolMarketCap(ctx)
 	asset := k.GetPoolAssetByDenom(ctx, denom)
@@ -166,7 +182,7 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 			Price:  price.Price,
 		}
 		breakdowns = append(breakdowns, breakdown)
-		mc.Add(sdk.Dec(sdk.NewDecFromInt(balance.Amount)).Mul(price.Price))
+		mc = mc.Add(sdk.Dec(sdk.NewDecFromInt(balance.Amount)).Mul(price.Price))
 	}
 
 	return types.PoolMarketCap{

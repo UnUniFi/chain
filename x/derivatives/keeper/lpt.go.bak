@@ -40,7 +40,9 @@ func (k Keeper) GetLPTokenSupply(ctx sdk.Context) sdk.Int {
 }
 
 func (k Keeper) GetLPTokenPrice(ctx sdk.Context) sdk.Dec {
-	return k.GetPoolMarketCap(ctx).CalculateLPTokenPrice(k.GetLPTokenSupply(ctx))
+	poolMarketCap := k.GetPoolMarketCap(ctx)
+	return poolMarketCap.CalculateLPTokenPrice(k.GetLPTokenSupply(ctx))
+	// return.CalculateLPTokenPrice()
 }
 
 func (k Keeper) GetLPTokenAmount(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sdk.Coin, error) {
@@ -62,6 +64,11 @@ func (k Keeper) GetLPTokenAmount(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sd
 	if currentSupply.Amount.IsZero() {
 		// TODO: we can eliminate unnecessary calculation -> assetPrice.Price
 		return k.InitialLiquidityProviderTokenSupply(ctx, actualAmount)
+		// poolMarketCap := assetPrice.Price.Mul(sdk.NewDecFromInt(actualAmount.Amount))
+		// initialLPTokenPrice := assetPrice.Price.Mul(sdk.NewDecFromInt(targetAmount.Amount))
+		// initialLPTokenSupply := poolMarketCap.Quo(initialLPTokenPrice)
+
+		// return sdk.NewCoin(types.LiquidityProviderTokenDenom, initialLPTokenSupply.TruncateInt()), sdk.Coin{}, nil
 	}
 
 	lptPrice := k.GetLPTokenPrice(ctx)

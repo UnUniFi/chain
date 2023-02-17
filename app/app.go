@@ -613,6 +613,7 @@ func NewApp(
 		app.GetSubspace(derivativestypes.ModuleName),
 		app.BankKeeper,
 		app.pricefeedKeeper,
+		app.AccountKeeper,
 	)
 
 	// create Keeper objects which have Hooks

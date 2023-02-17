@@ -45,7 +45,7 @@ func GetTxCmd() *cobra.Command {
 		CmdOpenPosition(),
 		CmdClosePosition(),
 		CmdReportLiquidation(),
-		CmdReportLevyPeriod(),
+		// CmdOpenPerpetualOptionsPosition(),
 	)
 
 	return cmd
@@ -92,14 +92,14 @@ $ %s tx %s mint-lpt --from myKeyName --chain-id ununifi-x
 
 func CmdBurnLiquidityProviderToken() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn-lpt [amount] [redeem-denom]",
+		Use:   "burn-lpt [amount]",
 		Short: "burn liquidity provider token",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`burn liquidity provider token.
 Example:
-$ %s tx %s burn-lpt 1 ubtc --from myKeyName --chain-id ununifi-x
+$ %s tx %s burn-lpt --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(2),
+		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -111,9 +111,11 @@ $ %s tx %s burn-lpt 1 ubtc --from myKeyName --chain-id ununifi-x
 			if !ok {
 				return fmt.Errorf("invalid amount")
 			}
-			denom := args[1]
 
-			msg := types.NewMsgBurnLiquidityProviderToken(sender, amount, denom)
+			msg := types.MsgBurnLiquidityProviderToken{
+				Sender: ununifiType.StringAccAddress(sender),
+				Amount: amount,
+			}
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -138,7 +140,7 @@ func CmdOpenPosition() *cobra.Command {
 	// this line is used by starport scaffolding # 1
 	cmd.AddCommand(
 		CmdOpenPerpetualFuturesPosition(),
-		// CmdOpenPerpetualOptionsPosition(),
+		CmdOpenPerpetualOptionsPosition(),
 	)
 
 	return cmd
@@ -146,12 +148,45 @@ func CmdOpenPosition() *cobra.Command {
 
 func CmdOpenPerpetualFuturesPosition() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "perpetual-futures [margin] [base-denom] [quote-denom]",
+		Use:   "perpetual-futures",
 		Short: "open perpetual futures position",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`open perpetual futures position.
 Example:
 $ %s tx %s open-position perpetual-futures --from myKeyName --chain-id ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			sender := clientCtx.GetFromAddress()
+
+			msg := types.MsgOpenPosition{
+				Sender: ununifiType.StringAccAddress(sender),
+			}
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdOpenPerpetualOptionsPosition() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "perpetual-options [margin] [base-denom] [quote-denom]",
+		Short: "open perpetual options position",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`open perpetual options position.
+Example:
+$ %s tx %s open-position perpetual-options --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -197,25 +232,6 @@ $ %s tx %s open-position perpetual-futures --from myKeyName --chain-id ununifi-x
 	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }
-
-// func CmdOpenPerpetualOptionsPosition() *cobra.Command {
-// 	cmd := &cobra.Command{
-// 		Use:   "perpetual-options [margin] [base-denom] [quote-denom]",
-// 		Short: "open perpetual options position",
-// 		Long: strings.TrimSpace(
-// 			fmt.Sprintf(`open perpetual options position.
-// Example:
-// $ %s tx %s open-position perpetual-options --from myKeyName --chain-id ununifi-x
-// `, version.AppName, types.ModuleName)),
-// 		Args: cobra.ExactArgs(3),
-// 		RunE: func(cmd *cobra.Command, args []string) error {
-// 			return fmt.Errorf("not implemented")
-// 		},
-// 	}
-
-// 	flags.AddTxFlagsToCmd(cmd)
-// 	return cmd
-// }
 
 func CmdClosePosition() *cobra.Command {
 	cmd := &cobra.Command{
@@ -280,12 +296,5 @@ $ %s tx %s report-liquidation --from myKeyName --chain-id ununifi-x
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	return cmd
-}
-
-func CmdReportLevyPeriod() *cobra.Command {
-	// TODO: add flags
-	cmd := &cobra.Command{}
-
 	return cmd
 }
