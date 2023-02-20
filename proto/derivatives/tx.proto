@@ -104,6 +104,20 @@ message MsgReportLiquidation {
 
 message MsgReportLiquidationResponse {}
 
-message MsgReportLevyPeriod {}
+message MsgReportLevyPeriod {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string position_id = 2 [
+    (gogoproto.moretags) = "yaml:\"position_id\""
+  ];
+  string reward_recipient = 3 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
 
 message MsgReportLevyPeriodResponse {}

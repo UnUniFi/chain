@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"errors"
+	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -88,7 +89,7 @@ func (k Keeper) GetAddressPositionWithId(ctx sdk.Context, address sdk.AccAddress
 	return &position
 }
 
-func (k Keeper) CreatePosition(ctx sdk.Context, position types.Position) {
+func (k Keeper) SetPosition(ctx sdk.Context, position types.Position) {
 	store := ctx.KVStore(k.storeKey)
 
 	bz := k.cdc.MustMarshal(&position)
@@ -101,54 +102,6 @@ func (k Keeper) DeletePosition(ctx sdk.Context, address sdk.AccAddress, id strin
 
 	store.Delete(types.PositionWithIdKeyPrefix(id))
 	store.Delete(types.AddressPositionWithIdKeyPrefix(address, id))
-}
-
-func (k Keeper) levyImaginaryFundingRate(ctx sdk.Context) error {
-	params := k.GetParams(ctx)
-	positions := k.GetAllPositions(ctx)
-
-	perpetualFuturesMarkets := params.PerpetualFutures.Markets
-	perpetualFuturesImaginaryFundingRates := make(map[types.Market]sdk.Dec)
-
-	for _, perpetualFuturesMarket := range perpetualFuturesMarkets {
-		netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, *perpetualFuturesMarket)
-		imaginaryFundingRate := netPosition.Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
-		perpetualFuturesImaginaryFundingRates[*perpetualFuturesMarket] = imaginaryFundingRate
-	}
-
-	for _, position := range positions {
-		positionInstance, err := types.UnpackPositionInstance(position.PositionInstance)
-		if err != nil {
-			return err
-		}
-
-		switch positionInstance.(type) {
-		case *types.PerpetualFuturesPositionInstance:
-			futuresPosition := positionInstance.(*types.PerpetualFuturesPositionInstance)
-			remainingMargin := position.RemainingMargin
-			imaginaryFundingRate := perpetualFuturesImaginaryFundingRates[position.Market]
-			imaginaryFundingFee := sdk.NewDecFromInt(remainingMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
-			commissionFee := sdk.NewDecFromInt(remainingMargin.Amount).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
-
-			if imaginaryFundingRate.IsNegative() {
-				if futuresPosition.PositionType == types.PositionType_SHORT {
-					remainingMargin.Amount = remainingMargin.Amount.Sub(imaginaryFundingFee)
-				} else {
-					remainingMargin.Amount = remainingMargin.Amount.Add(imaginaryFundingFee.Sub(commissionFee))
-				}
-			} else {
-				if futuresPosition.PositionType == types.PositionType_LONG {
-					remainingMargin.Amount = remainingMargin.Amount.Sub(imaginaryFundingFee)
-				} else {
-					remainingMargin.Amount = remainingMargin.Amount.Add(imaginaryFundingFee.Sub(commissionFee))
-				}
-			}
-		case *types.PerpetualOptionsPositionInstance:
-
-		}
-	}
-
-	return nil
 }
 
 func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
@@ -169,11 +122,11 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 	}
 
 	var position *types.Position
-	switch positionInstance.(type) {
+	switch positionInstance := positionInstance.(type) {
 	case *types.PerpetualFuturesPositionInstance:
-		position, err = k.OpenPerpetualFuturesPosition(ctx, positionId, msg.Sender, msg.Margin, msg.Market, *positionInstance.(*types.PerpetualFuturesPositionInstance))
+		position, err = k.OpenPerpetualFuturesPosition(ctx, positionId, msg.Sender, msg.Margin, msg.Market, *positionInstance)
 	case *types.PerpetualOptionsPositionInstance:
-		position, err = k.OpenPerpetualOptionsPosition(ctx, positionId, msg.Sender, msg.Margin, msg.Market, *positionInstance.(*types.PerpetualOptionsPositionInstance))
+		position, err = k.OpenPerpetualOptionsPosition(ctx, positionId, msg.Sender, msg.Margin, msg.Market, *positionInstance)
 	default:
 		panic("")
 	}
@@ -182,7 +135,7 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 		return err
 	}
 
-	k.CreatePosition(ctx, *position)
+	k.SetPosition(ctx, *position)
 	k.IncreaseLastPositionId(ctx)
 
 	return nil
@@ -205,12 +158,12 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 		return err
 	}
 
-	switch positionInstance.(type) {
+	switch positionInstance := positionInstance.(type) {
 	case *types.PerpetualFuturesPositionInstance:
-		err = k.ClosePerpetualFuturesPosition(ctx, *position, *positionInstance.(*types.PerpetualFuturesPositionInstance))
+		err = k.ClosePerpetualFuturesPosition(ctx, *position, *positionInstance)
 		break
 	case *types.PerpetualOptionsPositionInstance:
-		err = k.ClosePerpetualOptionsPosition(ctx, *position, *positionInstance.(*types.PerpetualOptionsPositionInstance))
+		err = k.ClosePerpetualOptionsPosition(ctx, *position, *positionInstance)
 		break
 	default:
 		panic("")
@@ -237,14 +190,12 @@ func (k Keeper) ReportLiquidation(ctx sdk.Context, msg *types.MsgReportLiquidati
 		return err
 	}
 
-	remainingMargin := position.RemainingMargin
-
-	switch positionInstance.(type) {
+	switch positionInstance := positionInstance.(type) {
 	case *types.PerpetualFuturesPositionInstance:
-		err = k.ReportLiquidationNeededPerpetualFuturesPosition(ctx, msg.RewardRecipient, remainingMargin, *position, *positionInstance.(*types.PerpetualFuturesPositionInstance))
+		err = k.ReportLiquidationNeededPerpetualFuturesPosition(ctx, msg.RewardRecipient, *position, *positionInstance)
 		break
 	case *types.PerpetualOptionsPositionInstance:
-		err = k.ReportLiquidationNeededPerpetualOptionsPosition(ctx, msg.RewardRecipient, remainingMargin, *position, *positionInstance.(*types.PerpetualOptionsPositionInstance))
+		err = k.ReportLiquidationNeededPerpetualOptionsPosition(ctx, msg.RewardRecipient, *position, *positionInstance)
 		break
 	default:
 		panic("")
@@ -258,5 +209,35 @@ func (k Keeper) ReportLiquidation(ctx sdk.Context, msg *types.MsgReportLiquidati
 }
 
 func (k Keeper) ReportLevyPeriod(ctx sdk.Context, msg *types.MsgReportLevyPeriod) error {
-	return k.levyImaginaryFundingRate(ctx)
+	position := k.GetPositionWithId(ctx, msg.PositionId)
+
+	if position == nil {
+		return errors.New("position not found")
+	}
+
+	if ctx.BlockTime().Sub(position.LastLeviedAt) < time.Duration(8)*time.Hour {
+		return errors.New("It hasn't passed 8 hours since last levy")
+	}
+
+	positionInstance, err := types.UnpackPositionInstance(position.PositionInstance)
+	if err != nil {
+		return err
+	}
+
+	switch positionInstance := positionInstance.(type) {
+	case *types.PerpetualFuturesPositionInstance:
+		err = k.ReportLevyPeriodPerpetualFuturesPosition(ctx, msg.RewardRecipient, *position, *positionInstance)
+		break
+	case *types.PerpetualOptionsPositionInstance:
+		// err = k.ReportLevyPeriodPerpetualOptionsPosition(ctx, msg.RewardRecipient, *position, *positionInstance)
+		break
+	default:
+		panic("")
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

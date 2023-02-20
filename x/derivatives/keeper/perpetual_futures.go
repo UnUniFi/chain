@@ -114,27 +114,67 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Po
 	return nil
 }
 
-func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient ununifiTypes.StringAccAddress, remainingMargin sdk.Coin, position types.Position, positionInstance types.PerpetualFuturesPositionInstance) error {
+func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient ununifiTypes.StringAccAddress, position types.Position, positionInstance types.PerpetualFuturesPositionInstance) error {
 	params := k.GetParams(ctx)
 	principal := positionInstance.CalculatePrincipal()
 
-	if sdk.NewDecFromInt(remainingMargin.Amount).Mul(sdk.NewDecWithPrec(1, 0)).LT(principal.Mul(params.PerpetualFutures.MarginMaintenanceRate)) {
+	if sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(sdk.NewDecWithPrec(1, 0)).LT(principal.Mul(params.PerpetualFutures.MarginMaintenanceRate)) {
 		k.ClosePerpetualFuturesPosition(ctx, position, positionInstance)
 
-		rewardAmount := sdk.NewDecFromInt(remainingMargin.Amount).Mul(params.Pool.LiquidationNeededReportRewardRate).RoundInt()
-		reward := sdk.NewCoins(sdk.NewCoin(remainingMargin.Denom, rewardAmount))
+		rewardAmount := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.Pool.ReportLiquidationRewardRate).RoundInt()
+		reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))
 		k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
 
 		ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionLiquidated{
 			RewardRecipient: rewardRecipient.AccAddress().String(),
 			PositionId:      position.Id,
-			RemainingMargin: remainingMargin.String(),
+			RemainingMargin: position.RemainingMargin.String(),
 			RewardAmount:    rewardAmount.String(),
 		})
 		return nil
 	}
 
 	return errors.New("no liquidation needed")
+}
+
+func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient ununifiTypes.StringAccAddress, position types.Position, positionInstance types.PerpetualFuturesPositionInstance) error {
+	params := k.GetParams(ctx)
+
+	netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, position.Market)
+
+	imaginaryFundingRate := netPosition.Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
+	imaginaryFundingFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
+	commissionFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
+
+	if imaginaryFundingRate.IsNegative() {
+		if positionInstance.PositionType == types.PositionType_SHORT {
+			position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(imaginaryFundingFee)
+		} else {
+			position.RemainingMargin.Amount = position.RemainingMargin.Amount.Add(imaginaryFundingFee.Sub(commissionFee))
+		}
+	} else {
+		if positionInstance.PositionType == types.PositionType_LONG {
+			position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(imaginaryFundingFee)
+		} else {
+			position.RemainingMargin.Amount = position.RemainingMargin.Amount.Add(imaginaryFundingFee.Sub(commissionFee))
+		}
+	}
+	position.LastLeviedAt = ctx.BlockTime()
+
+	rewardAmount := sdk.NewDecFromInt(commissionFee).Mul(params.Pool.ReportLevyPeriodRewardRate).RoundInt()
+	reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))
+	k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
+
+	k.SetPosition(ctx, position)
+
+	ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionLevied{
+		RewardRecipient: rewardRecipient.AccAddress().String(),
+		PositionId:      position.Id,
+		RemainingMargin: position.RemainingMargin.String(),
+		RewardAmount:    rewardAmount.String(),
+	})
+
+	return nil
 }
 
 func (k Keeper) GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market) sdk.Dec {
