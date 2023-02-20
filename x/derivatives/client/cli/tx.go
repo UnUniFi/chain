@@ -92,14 +92,14 @@ $ %s tx %s mint-lpt --from myKeyName --chain-id ununifi-x
 
 func CmdBurnLiquidityProviderToken() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn-lpt [amount]",
+		Use:   "burn-lpt [amount] [redeem-denom]",
 		Short: "burn liquidity provider token",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`burn liquidity provider token.
 Example:
-$ %s tx %s burn-lpt --from myKeyName --chain-id ununifi-x
+$ %s tx %s burn-lpt 1 ubtc --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(1),
+		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -111,11 +111,9 @@ $ %s tx %s burn-lpt --from myKeyName --chain-id ununifi-x
 			if !ok {
 				return fmt.Errorf("invalid amount")
 			}
+			denom := args[1]
 
-			msg := types.MsgBurnLiquidityProviderToken{
-				Sender: ununifiType.StringAccAddress(sender),
-				Amount: amount,
-			}
+			msg := types.NewMsgBurnLiquidityProviderToken(sender, amount, denom)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err

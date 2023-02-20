@@ -18,3 +18,5 @@ USER_MNEMONIC_4="charge split umbrella day gauge two orphan random human clerk b
 PRICEFEED_MNEMONIC="jelly fortune hire delay impose daughter praise amazing patch gesture easy achieve intact genre swamp gossip aisle arrest item seek inherit cradle hover involve"
 
 PRICEFEED_ADDRESS=ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr
+
+conf="--home $CHAIN_DIR/$CHAINID_1 --chain-id $CHAINID_1 --keyring-backend test --gas 300000 -y --broadcast-mode=block"

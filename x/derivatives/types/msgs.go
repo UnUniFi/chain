@@ -42,10 +42,11 @@ func (msg MsgMintLiquidityProviderToken) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgBurnLiquidityProviderToken{}
 
-func NewMsgBurnLiquidityProviderToken(sender ununifiTypes.StringAccAddress, amount sdk.Int) MsgBurnLiquidityProviderToken {
+func NewMsgBurnLiquidityProviderToken(sender sdk.AccAddress, amount sdk.Int, denom string) MsgBurnLiquidityProviderToken {
 	return MsgBurnLiquidityProviderToken{
-		Sender: sender,
-		Amount: amount,
+		Sender:      sender.Bytes(),
+		Amount:      amount,
+		RedeemDenom: denom,
 	}
 }
 

@@ -61,14 +61,11 @@ func (k Keeper) GetLPTokenAmount(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sd
 	// initial_lp_supply = pool_marketcap / initial_lp_token_price
 	if currentSupply.Amount.IsZero() {
 		// TODO: we can eliminate unnecessary calculation -> assetPrice.Price
-		poolMarketCap := assetPrice.Price.Mul(sdk.NewDecFromInt(actualAmount.Amount))
-		initialLPTokenPrice := assetPrice.Price.Mul(sdk.NewDecFromInt(targetAmount.Amount))
-		initialLPTokenSupply := poolMarketCap.Quo(initialLPTokenPrice)
-
-		return sdk.NewCoin(types.LiquidityProviderTokenDenom, initialLPTokenSupply.TruncateInt()), sdk.Coin{}, nil
+		return k.InitialLiquidityProviderTokenSupply(ctx, actualAmount)
 	}
 
 	lptPrice := k.GetLPTokenPrice(ctx)
+	// todo if lptPrice is zero, return error
 
 	assetMc := assetPrice.Price.Mul(sdk.NewDecFromInt(amount.Amount))
 	mintAmount := assetMc.Quo(lptPrice)
@@ -99,9 +96,9 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 	redeemAssetBalance := k.GetAssetBalance(ctx, redeemDenom)
 
 	// redeem amount = lptPrice * lptAmount / redeemAssetPrice
-	redeemAmount := lptPrice.Mul(sdk.NewDecFromInt(lptAmount)).Quo(redeemAssetPrice.Price)
+	totalRedeemAmount := lptPrice.Mul(sdk.NewDecFromInt(lptAmount)).Quo(redeemAssetPrice.Price)
 
-	if redeemAmount.GT(sdk.NewDecFromInt(redeemAssetBalance.Amount)) {
+	if totalRedeemAmount.GT(sdk.NewDecFromInt(redeemAssetBalance.Amount)) {
 		return sdk.Coin{}, sdk.Coin{}, types.ErrInvalidRedeemAmount
 	}
 
@@ -117,15 +114,47 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 
 	redeemFeeRate := k.GetLPTokenBaseRedeemFee(ctx).Mul(increaseRate.Add(sdk.NewDecWithPrec(1, 0)))
 
-	return sdk.NewCoin(redeemDenom, redeemAmount.TruncateInt()), sdk.NewCoin(redeemDenom, redeemAmount.Mul(redeemFeeRate).TruncateInt()), nil
+	redeem := sdk.NewCoin(redeemDenom, totalRedeemAmount.TruncateInt())
+	fee := sdk.NewCoin(redeemDenom, totalRedeemAmount.Mul(redeemFeeRate).TruncateInt())
+	redeem, err = redeem.SafeSub(fee)
+	if err != nil {
+		return sdk.Coin{}, sdk.Coin{}, err
+	}
+	return redeem, fee, nil
 }
 
-// // TODO: implement correct logic to return the initial liquidity provider token supply
-// func (k Keeper) InitialLiquidityProviderTokenSupply(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sdk.Coin, error) {
-// 	return sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.NewInt(1)),
-// 		sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.ZeroInt()),
-// 		nil
+func (k Keeper) DecreaseRedeemDenomAmount(ctx sdk.Context, amount sdk.Coin) error {
+	redeemAssetBalance := k.GetAssetBalance(ctx, amount.Denom)
+	decreasedAmount, err := redeemAssetBalance.SafeSub(amount)
+	if err != nil {
+		return err
+	}
+
+	err = k.SetAssetBalance(ctx, decreasedAmount)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// TODO: implement
+// func (k Keeper) IncreaseRedeemDenomAmount(ctx sdk.Context, amount sdk.Coin) error {
+// 	redeemAssetBalance := k.GetAssetBalance(ctx, amount.Denom)
+// 	increasedAmount := redeemAssetBalance.Add(amount)
+
+// 	err := k.SetAssetBalance(ctx, increasedAmount)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
 // }
+
+// // TODO: implement correct logic to return the initial liquidity provider token supply
+func (k Keeper) InitialLiquidityProviderTokenSupply(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sdk.Coin, error) {
+	return sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.NewInt(1)),
+		sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.ZeroInt()),
+		nil
+}
 
 func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLiquidityProviderToken) error {
 	depositor := msg.Sender.AccAddress()
@@ -160,6 +189,8 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 }
 
 func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgBurnLiquidityProviderToken) error {
+	// todo:check validator address,amount,redeem denom
+	// todo: use CacheCtx
 	sender := msg.Sender.AccAddress()
 	amount := msg.Amount
 	redeemDenom := msg.RedeemDenom
@@ -173,18 +204,52 @@ func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgBurnLi
 	if err != nil {
 		panic("failed to get redeemable amount")
 	}
+	// todo send fee pool
+	_ = redeemFee
 
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, sdk.Coins{redeemAmount.Sub(redeemFee)})
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, sdk.Coins{redeemAmount})
 	if err != nil {
 		return err
 	}
 
-	// send redeem fee to fee collector
-
-	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.Coins{sdk.NewCoin(types.LiquidityProviderTokenDenom, amount)})
+	err = k.BurnCoin(ctx, sender, sdk.NewCoin(types.LiquidityProviderTokenDenom, amount))
 	if err != nil {
 		return err
 	}
 
+	err = k.CollectedFee(ctx, redeemFee)
+	if err != nil {
+		return err
+	}
+
+	err = k.DecreaseRedeemDenomAmount(ctx, redeemAmount.Add(redeemFee))
+	if err != nil {
+		return err
+	}
+
+	// todo emit event
+	return nil
+}
+
+// todo: make unit-test
+func (k Keeper) BurnCoin(ctx sdk.Context, burner sdk.AccAddress, amount sdk.Coin) error {
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, burner, types.ModuleName, sdk.Coins{amount})
+	if err != nil {
+		return err
+	}
+	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.Coins{amount})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// collect fee
+func (k Keeper) CollectedFee(ctx sdk.Context, fee sdk.Coin) error {
+	// todo: implement
+	// LP fee = 70%
+	// Protocol fee = 30%
+	// fee.Amount.Mul(sdk.NewInt(0.7))
+	// k.IncreaseRedeemDenomAmount(ctx, fee)
 	return nil
 }
