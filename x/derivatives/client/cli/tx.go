@@ -146,14 +146,14 @@ func CmdOpenPosition() *cobra.Command {
 
 func CmdOpenPerpetualFuturesPosition() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "perpetual-futures [margin] [base-denom] [quote-denom]",
+		Use:   "perpetual-futures [margin] [base-denom] [quote-denom] [long/short]",
 		Short: "open perpetual futures position",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`open perpetual futures position.
 Example:
 $ %s tx %s open-position perpetual-futures --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(3),
+		Args: cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -167,12 +167,23 @@ $ %s tx %s open-position perpetual-futures --from myKeyName --chain-id ununifi-x
 				return err
 			}
 
-			// todo: use args to create position instance
+			// todo: use args (or flags) to create position instance
+			var positionType types.PositionType
+			switch args[3] {
+			case "long":
+				positionType = types.PositionType_LONG
+			case "short":
+				positionType = types.PositionType_SHORT
+			default:
+				return fmt.Errorf("invalid position type")
+			}
+
 			positionInstVal := types.PerpetualFuturesPositionInstance{
-				PositionType: types.PositionType_LONG,
+				PositionType: positionType,
 				Size_:        sdk.NewDecWithPrec(100, 0),
 				Leverage:     5,
 			}
+
 			positionInstBz, err := positionInstVal.Marshal()
 			if err != nil {
 				return err
