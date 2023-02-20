@@ -24,11 +24,13 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 
 	position := types.Position{
 		Id:               positionId,
+		Market:           market,
 		Address:          sender,
 		OpenedAt:         ctx.BlockTime(),
 		OpenedHeight:     uint64(ctx.BlockHeight()),
 		OpenedRate:       *openedRate,
 		PositionInstance: *any,
+		RemainingMargin:  margin,
 	}
 
 	switch positionInstance.PositionType {
