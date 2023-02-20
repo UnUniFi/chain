@@ -1,8 +1,8 @@
 BINARY=./build/ununifid
 CHAIN_DIR=./data
 CHAINID_1=test
+NODE_HOME=$CHAIN_DIR/$CHAINID_1
 BINARY_MAIN_TOKEN=uguu
-# BINARY_MAIN_TOKEN=stake
 VAL1=val
 USER1=user1
 USER2=user2
@@ -19,4 +19,4 @@ PRICEFEED_MNEMONIC="jelly fortune hire delay impose daughter praise amazing patc
 
 PRICEFEED_ADDRESS=ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr
 
-conf="--home $CHAIN_DIR/$CHAINID_1 --chain-id $CHAINID_1 --keyring-backend test --gas 300000 -y --broadcast-mode=block"
+conf="--home=$NODE_HOME --chain-id=$CHAINID_1 --keyring-backend=test -y --broadcast-mode=block"

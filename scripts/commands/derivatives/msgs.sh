@@ -11,6 +11,9 @@ $BINARY tx derivatives mint-lpt 100000ubtc --from=$USER1 $conf | jq .raw_log | s
 $BINARY tx derivatives burn-lpt 1 ubtc --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g'
 $BINARY tx derivatives burn-lpt 1 ubtc --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g'
 
-# error show command
-# ununifid tx derivatives open-position perpetual-futures 100ubtc 10ubtc 10usd  --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g'
-# ununifid tx derivatives open-position perpetual-futures 100ubtc ubtc uusd  --from=$USER1 $conf | jq .
+# open-position perpetual-futures
+$BINARY tx derivatives open-position perpetual-futures 100ubtc ubtc uusdc long --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g'
+$BINARY tx derivatives open-position perpetual-futures 100uusdc ubtc uusdc short --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g'
+
+# query positions
+$BINARY q derivatives positions $(ununifid keys show -a $USER1) --home=$NOME_HOME

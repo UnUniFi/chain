@@ -11,68 +11,80 @@ if pgrep -x "$BINARY" >/dev/null; then
 fi
 
 echo "Removing previous data..."
-rm -rf $CHAIN_DIR/$CHAINID_1 &> /dev/null
+rm -rf $NODE_HOME &> /dev/null
 
 # Add directories for both chains, exit if an error occurs
-if ! mkdir -p $CHAIN_DIR/$CHAINID_1 2>/dev/null; then
+if ! mkdir -p $NODE_HOME 2>/dev/null; then
     echo "Failed to create chain folder. Aborting..."
     exit 1
 fi
 
 echo "Initializing $CHAINID_1..."
-$BINARY init test --home $CHAIN_DIR/$CHAINID_1 --chain-id=$CHAINID_1
+$BINARY init test --home $NODE_HOME --chain-id=$CHAINID_1
 
 # change main token
-sed -i -e 's/\bstake\b/'$BINARY_MAIN_TOKEN'/g' $CHAIN_DIR/$CHAINID_1/config/genesis.json
+sed -i -e 's/\bstake\b/'$BINARY_MAIN_TOKEN'/g' $NODE_HOME/config/genesis.json
 
 echo "Adding genesis accounts..."
-echo $VAL_MNEMONIC_1    | $BINARY keys add $VAL1 --home $CHAIN_DIR/$CHAINID_1 --recover --keyring-backend=test
-echo $USER_MNEMONIC_1 | $BINARY keys add $USER1 --home $CHAIN_DIR/$CHAINID_1 --recover --keyring-backend=test
-echo $USER_MNEMONIC_2 | $BINARY keys add $USER2 --home $CHAIN_DIR/$CHAINID_1 --recover --keyring-backend=test
-echo $USER_MNEMONIC_3 | $BINARY keys add $USER3 --home $CHAIN_DIR/$CHAINID_1 --recover --keyring-backend=test
-echo $USER_MNEMONIC_4 | $BINARY keys add $USER4 --home $CHAIN_DIR/$CHAINID_1 --recover --keyring-backend=test
-echo $PRICEFEED_MNEMONIC | $BINARY keys add $PRICEFEED --home $CHAIN_DIR/$CHAINID_1 --recover --keyring-backend=test
+echo $VAL_MNEMONIC_1    | $BINARY keys add $VAL1 --home $NODE_HOME --recover --keyring-backend=test
+echo $USER_MNEMONIC_1 | $BINARY keys add $USER1 --home $NODE_HOME --recover --keyring-backend=test
+echo $USER_MNEMONIC_2 | $BINARY keys add $USER2 --home $NODE_HOME --recover --keyring-backend=test
+echo $USER_MNEMONIC_3 | $BINARY keys add $USER3 --home $NODE_HOME --recover --keyring-backend=test
+echo $USER_MNEMONIC_4 | $BINARY keys add $USER4 --home $NODE_HOME --recover --keyring-backend=test
+echo $PRICEFEED_MNEMONIC | $BINARY keys add $PRICEFEED --home $NODE_HOME --recover --keyring-backend=test
 
-$BINARY add-genesis-account $($BINARY --home $CHAIN_DIR/$CHAINID_1 keys show $VAL1 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN --home $CHAIN_DIR/$CHAINID_1
-$BINARY add-genesis-account $($BINARY --home $CHAIN_DIR/$CHAINID_1 keys show $USER1 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusd --home $CHAIN_DIR/$CHAINID_1
-$BINARY add-genesis-account $($BINARY --home $CHAIN_DIR/$CHAINID_1 keys show $USER2 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusd --home $CHAIN_DIR/$CHAINID_1
-$BINARY add-genesis-account $($BINARY --home $CHAIN_DIR/$CHAINID_1 keys show $USER3 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusd --home $CHAIN_DIR/$CHAINID_1
-$BINARY add-genesis-account $($BINARY --home $CHAIN_DIR/$CHAINID_1 keys show $USER4 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusd  --home $CHAIN_DIR/$CHAINID_1
-$BINARY add-genesis-account $($BINARY --home $CHAIN_DIR/$CHAINID_1 keys show $PRICEFEED --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusd  --home $CHAIN_DIR/$CHAINID_1
+$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $VAL1 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN --home $NODE_HOME
+$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $USER1 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
+$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $USER2 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
+$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $USER3 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
+$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $USER4 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc  --home $NODE_HOME
+$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $PRICEFEED --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc  --home $NODE_HOME
 
 echo "Creating and collecting gentx..."
-$BINARY gentx $VAL1 7000000000$BINARY_MAIN_TOKEN --home $CHAIN_DIR/$CHAINID_1 --chain-id $CHAINID_1 --keyring-backend test
-$BINARY collect-gentxs --home $CHAIN_DIR/$CHAINID_1
+$BINARY gentx $VAL1 7000000000$BINARY_MAIN_TOKEN --home $NODE_HOME --chain-id $CHAINID_1 --keyring-backend test
+$BINARY collect-gentxs --home $NODE_HOME
 
 echo "Changing defaults config files..."
 OS=$(uname -s)
 if [ "$OS" == "Darwin" ]; then
   echo $OS
   sleep 1
-  sed_i="sed -i ''"
+  sed_i="sed -i '' "
 elif [ "$OS" == "Linux" ]; then
   echo $OS
   sleep 1
   sed_i="sed -i"
 fi
 
-sed -i '/\[api\]/,+3 s/enable = false/enable = true/' $CHAIN_DIR/$CHAINID_1/config/app.toml;
-sed -i -e 's/minimum-gas-prices = ""/minimum-gas-prices = '\"0$BINARY_MAIN_TOKEN\"/'' $CHAIN_DIR/$CHAINID_1/config/app.toml;
-$sed_i 's/mode = "full"/mode = "validator"/' $CHAIN_DIR/$CHAINID_1/config/config.toml;
-$sed_i "s/enabled-unsafe-cors = false/enabled-unsafe-cors = true/" $CHAIN_DIR/$CHAINID_1/config/app.toml;
-$sed_i 's/minimum-gas-prices = ""/minimum-gas-prices = "0uguu"/' $CHAIN_DIR/$CHAINID_1/config/app.toml;
-$sed_i 's/stake/uguu/g' $CHAIN_DIR/$CHAINID_1/config/genesis.json;
+$sed_i '/\[api\]/,+3 s/enable = false/enable = true/' $NODE_HOME/config/app.toml;
+$sed_i 's/mode = "full"/mode = "validator"/' $NODE_HOME/config/config.toml;
+$sed_i "s/enabled-unsafe-cors = false/enabled-unsafe-cors = true/" $NODE_HOME/config/app.toml;
+$sed_i 's/minimum-gas-prices = ""/minimum-gas-prices = "0uguu"/' $NODE_HOME/config/app.toml;
+$sed_i 's/stake/uguu/g' $NODE_HOME/config/genesis.json;
 
 
 # PRICEFEED=$(ununifid keys show pricefeed --address)
-jq '.app_state.pricefeed.params.markets = [{ "market_id": "ubtc:usd", "base_asset": "ubtc", "quote_asset": "usd", "oracles": [ "'$PRICEFEED_ADDRESS'" ], "active": true }, { "market_id": "ubtc:usd:30", "base_asset": "ubtc", "quote_asset": "usd", "oracles": [ "'$PRICEFEED_ADDRESS'" ], "active": true }, { "market_id": "uusdc:usd", "base_asset": "uusdc", "quote_asset": "usd", "oracles": [ "'$PRICEFEED_ADDRESS'" ], "active": true }, { "market_id": "uusdc:usd:30", "base_asset": "uusdc", "quote_asset": "usd", "oracles": [ "'$PRICEFEED_ADDRESS'" ], "active": true }]'  $CHAIN_DIR/$CHAINID_1/config/genesis.json > temp.json ; mv temp.json $CHAIN_DIR/$CHAINID_1/config/genesis.json;
-jq '.app_state.derivatives.params.pool.base_lpt_mint_fee = "0.001"' $CHAIN_DIR/$CHAINID_1/config/genesis.json > temp.json ; mv temp.json $CHAIN_DIR/$CHAINID_1/config/genesis.json;
-jq '.app_state.derivatives.params.pool.base_lpt_redeem_fee = "0.001"' $CHAIN_DIR/$CHAINID_1/config/genesis.json > temp.json ; mv temp.json $CHAIN_DIR/$CHAINID_1/config/genesis.json;
-jq '.app_state.derivatives.params.pool.accepted_assets = [{"denom":"ubtc", "target_weight": "0.6"}, {"denom":"uusd", "target_weight":"0.4"}]' $CHAIN_DIR/$CHAINID_1/config/genesis.json > temp.json ; mv temp.json $CHAIN_DIR/$CHAINID_1/config/genesis.json;
-jq '.app_state.derivatives.params.perpetual_futures.commission_rate = "0.001"' $CHAIN_DIR/$CHAINID_1/config/genesis.json > temp.json ; mv temp.json $CHAIN_DIR/$CHAINID_1/config/genesis.json;
-jq '.app_state.derivatives.params.perpetual_futures.margin_maintenance_rate = "0.5"' $CHAIN_DIR/$CHAINID_1/config/genesis.json > temp.json ; mv temp.json $CHAIN_DIR/$CHAINID_1/config/genesis.json;
-jq '.app_state.derivatives.params.perpetual_futures.imaginary_funding_rate_proportional_coefficient = "0.0005"' $CHAIN_DIR/$CHAINID_1/config/genesis.json > temp.json ; mv temp.json $CHAIN_DIR/$CHAINID_1/config/genesis.json;
-jq '.app_state.derivatives.params.perpetual_futures.markets = [{"base_denom": "ubtc", "quote_denom": "uusd" }]' $CHAIN_DIR/$CHAINID_1/config/genesis.json > temp.json ; mv temp.json $CHAIN_DIR/$CHAINID_1/config/genesis.json;
-jq '.app_state.bank.denom_metadata = [{"base" : "ubtc" , "symbol": "ubtc"}, {"base" : "uusd", "symbol": "uusdc"}]' $CHAIN_DIR/$CHAINID_1/config/genesis.json > temp.json ; mv temp.json $CHAIN_DIR/$CHAINID_1/config/genesis.json;
-jq '.app_state.pricefeed.posted_prices = [{ "expiry": "2023-03-16T08:09:36Z", "market_id": "ubtc:usd", "oracle_address": "'$PRICEFEED_ADDRESS'", "price": "0.024685479658997589" }, { "expiry": "2023-03-16T08:10:23Z", "market_id": "ubtc:usd:30", "oracle_address": "'$PRICEFEED_ADDRESS'", "price": "0.024598836603779452" }, { "expiry": "2023-03-16T08:10:50Z", "market_id": "uusdc:usd", "oracle_address": "'$PRICEFEED_ADDRESS'", "price": "0.000001000142055948" }, { "expiry": "2023-03-16T08:10:50Z", "market_id": "uusdc:usd:30", "oracle_address": "'$PRICEFEED_ADDRESS'", "price": "0.000001000142055948" }]'  $CHAIN_DIR/$CHAINID_1/config/genesis.json > temp.json ; mv temp.json $CHAIN_DIR/$CHAINID_1/config/genesis.json;
+jq '.app_state.pricefeed.params.markets = [
+  { "market_id": "ubtc:usd", "base_asset": "ubtc", "quote_asset": "usd", "oracles": [ "'$PRICEFEED_ADDRESS'" ], "active": true },
+  { "market_id": "ubtc:usd:30", "base_asset": "ubtc", "quote_asset": "usd", "oracles": [ "'$PRICEFEED_ADDRESS'" ], "active": true },
+  { "market_id": "uusdc:usd", "base_asset": "uusdc", "quote_asset": "usd", "oracles": [ "'$PRICEFEED_ADDRESS'" ], "active": true },
+  { "market_id": "uusdc:usd:30", "base_asset": "uusdc", "quote_asset": "usd", "oracles": [ "'$PRICEFEED_ADDRESS'" ], "active": true },
+  {"market_id": "uusdc:ubtc", "base_asset":"uusdc", "quote_asset":"ubtc", "oracles": ["'$PRICEFEED'"], "active": true}
+  ]'  $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.derivatives.params.pool.base_lpt_mint_fee = "0.001"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.derivatives.params.pool.base_lpt_redeem_fee = "0.001"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.derivatives.params.pool.accepted_assets = [{"denom":"ubtc", "target_weight": "0.6"}, {"denom":"uusd", "target_weight":"0.4"}]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.derivatives.params.perpetual_futures.commission_rate = "0.001"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.derivatives.params.perpetual_futures.margin_maintenance_rate = "0.5"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.derivatives.params.perpetual_futures.imaginary_funding_rate_proportional_coefficient = "0.0005"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.derivatives.params.perpetual_futures.markets = [{"base_denom": "ubtc", "quote_denom": "uusd" }]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.bank.denom_metadata = [{"base" : "ubtc" , "symbol": "ubtc"}, {"base" : "uusd", "symbol": "uusdc"}]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.pricefeed.posted_prices = [
+  {"expiry": "2024-02-20T12:02:01Z","market_id": "ubtc:usd","oracle_address": "ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr","price": "0.024508410211260500"},
+  {"expiry": "2024-02-20T12:02:47Z","market_id": "ubtc:usd:30","oracle_address": "ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr","price": "0.005779087260702010"},
+  {"expiry": "2024-02-20T12:03:30Z","market_id": "uusdc:usd","oracle_address": "ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr","price": "0.000001001479651825"},
+  {"expiry": "2024-02-20T12:04:11Z","market_id": "uusdc:usd:30","oracle_address": "ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr","price": "0.000001002011358752"},
+  {"expiry": "2024-02-20T12:00:38Z","market_id": "ubtc:uusdc","oracle_address": "ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr","price": "24528.185864015486004064"}
+]'  $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 
+ununifid start --home=$NODE_HOME
