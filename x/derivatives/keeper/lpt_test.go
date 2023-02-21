@@ -24,4 +24,4 @@ func (suite *KeeperTestSuite) TestInitialLiquidityProviderTokenSupply() {
 }
 
 // TODO: impl test
-// func (suite *KeeperTestSuite) TestGetLPTokenAmount() {}
+// func (suite *KeeperTestSuite) TestDetermineMintingLPTokenAmount() {}
