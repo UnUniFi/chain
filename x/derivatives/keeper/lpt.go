@@ -4,6 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
+	pftypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
 func (k Keeper) GetLPTokenBaseMintFee(ctx sdk.Context) sdk.Dec {
@@ -50,24 +51,22 @@ func (k Keeper) GetLPTokenAmount(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sd
 	if err != nil {
 		return sdk.Coin{}, sdk.Coin{}, err
 	}
-	actualAmount := k.GetAssetBalance(ctx, amount.Denom)
 
+	assetMc := assetPrice.Price.Mul(sdk.NewDecFromInt(amount.Amount))
+
+	if currentSupply.Amount.IsZero() {
+		// TODO: we can eliminate unnecessary calculation -> assetPrice.Price
+		return k.InitialLiquidityProviderTokenSupply(ctx, assetPrice, assetMc, amount.Denom)
+	}
+
+	actualAmount := k.GetAssetBalance(ctx, amount.Denom)
 	targetAmount, err := k.GetAssetTargetAmount(ctx, amount.Denom)
 	if err != nil {
 		return sdk.Coin{}, sdk.Coin{}, err
 	}
-
-	// initial_lp_token_price = Σ target_weight_of_ith_asset * price_of_ith_asset
-	// initial_lp_supply = pool_marketcap / initial_lp_token_price
-	if currentSupply.Amount.IsZero() {
-		// TODO: we can eliminate unnecessary calculation -> assetPrice.Price
-		return k.InitialLiquidityProviderTokenSupply(ctx, actualAmount)
-	}
-
 	lptPrice := k.GetLPTokenPrice(ctx)
 	// todo if lptPrice is zero, return error
 
-	assetMc := assetPrice.Price.Mul(sdk.NewDecFromInt(amount.Amount))
 	mintAmount := assetMc.Quo(lptPrice)
 
 	increaseRate := sdk.NewDecFromInt(actualAmount.Amount).Sub(sdk.NewDecFromInt(targetAmount.Amount)).Quo(sdk.NewDecFromInt(targetAmount.Amount))
@@ -149,9 +148,16 @@ func (k Keeper) DecreaseRedeemDenomAmount(ctx sdk.Context, amount sdk.Coin) erro
 // 	return nil
 // }
 
-// // TODO: implement correct logic to return the initial liquidity provider token supply
-func (k Keeper) InitialLiquidityProviderTokenSupply(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sdk.Coin, error) {
-	return sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.NewInt(1)),
+// Initial Liquidity Provider Token Supply is determined below formulas
+// initial_lp_token_price = Σ target_weight_of_ith_asset * price_of_ith_asset
+// pool_marketcap = price_of_ith_asset * amount_of_ith_deopsited_asset
+// initial_lp_supply = pool_marketcap / initial_lp_token_price
+func (k Keeper) InitialLiquidityProviderTokenSupply(ctx sdk.Context, assetPrice *pftypes.CurrentPrice, assetMarketCap sdk.Dec, depositDenom string) (sdk.Coin, sdk.Coin, error) {
+	assetInfo := k.GetPoolAssetByDenom(ctx, depositDenom)
+	initialLPTokenPrice := assetPrice.Price.Mul(assetInfo.TargetWeight)
+	initialLPTokenSupply := assetMarketCap.Quo(initialLPTokenPrice)
+
+	return sdk.NewCoin(types.LiquidityProviderTokenDenom, initialLPTokenSupply.TruncateInt()),
 		sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.ZeroInt()),
 		nil
 }
