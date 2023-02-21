@@ -164,7 +164,7 @@ func (k Keeper) EstimateDLPTokenAmount(c context.Context, req *types.QueryEstima
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	mintAmount, mintFee, err := k.GetLPTokenAmount(ctx, sdk.NewCoin(req.MintDenom, *req.Amount))
+	mintAmount, mintFee, err := k.DetermineMintingLPTokenAmount(ctx, sdk.NewCoin(req.MintDenom, *req.Amount))
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}

@@ -44,7 +44,7 @@ func (k Keeper) GetLPTokenPrice(ctx sdk.Context) sdk.Dec {
 	return k.GetPoolMarketCap(ctx).CalculateLPTokenPrice(k.GetLPTokenSupply(ctx))
 }
 
-func (k Keeper) GetLPTokenAmount(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sdk.Coin, error) {
+func (k Keeper) LPTokenAmount(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sdk.Coin, error) {
 	currentSupply := k.bankKeeper.GetSupply(ctx, types.LiquidityProviderTokenDenom)
 
 	assetPrice, err := k.GetAssetPrice(ctx, amount.Denom)
@@ -164,6 +164,8 @@ func (k Keeper) InitialLiquidityProviderTokenSupply(ctx sdk.Context, assetPrice 
 
 func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLiquidityProviderToken) error {
 	depositor := msg.Sender.AccAddress()
+
+	// TODO: check if deposit token is acceptable
 
 	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, depositor, types.ModuleName, sdk.Coins{msg.Amount})
 	if err != nil {

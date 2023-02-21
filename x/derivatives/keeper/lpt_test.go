@@ -14,8 +14,9 @@ func (suite *KeeperTestSuite) TestInitialLiquidityProviderTokenSupply() {
 	if err != nil {
 		suite.Fail("failed to get initial LPT supply")
 	}
-	suite.Condition(initialLPTSupply.Amount.IsPositive)
-	suite.Condition(fee.Amount.IsZero)
+	suite.Require().Condition(initialLPTSupply.Amount.IsPositive)
+	suite.Require().Condition(fee.Amount.IsZero)
+	suite.Require().Nil(err)
 }
 
 // TODO: impl test
