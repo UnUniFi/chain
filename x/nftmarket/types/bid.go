@@ -10,6 +10,20 @@ import (
 func (m NftBid) Equal(b NftBid) bool {
 	return m.Bidder == b.Bidder && m.NftId == b.NftId && m.BidAmount.Equal(b.BidAmount)
 }
+func (m NftBid) IsLT(b NftBid) bool {
+	if b.BidAmount.IsLTE(m.BidAmount) {
+		return false
+	}
+	if b.DepositAmount.IsLTE(m.DepositAmount) {
+		return false
+	}
+	if b.DepositLendingRate.GTE(m.DepositLendingRate) {
+		return false
+	}
+
+	return true
+}
+
 func (m NftBid) GetIdToByte() []byte {
 	return NftBidBytes(m.NftId.ClassId, m.NftId.NftId, m.Bidder)
 }
@@ -171,6 +185,15 @@ func (m NftBids) SortLowerBiddingPeriod() NftBids {
 	return dest
 }
 
+func (m NftBids) SortHigherDeposit() NftBids {
+	dest := NftBids{}
+	dest = append(NftBids{}, m...)
+	sort.SliceStable(dest, func(i, j int) bool {
+		return dest[i].DepositAmount.IsGTE(dest[j].DepositAmount)
+	})
+	return dest
+}
+
 func (m NftBids) GetAverageBidAmount() sdk.Coin {
 	if len(m) == 0 {
 		return sdk.Coin{}
@@ -205,9 +228,13 @@ func (m NftBids) GetBidByBidder(bidder string) NftBid {
 	return NftBid{}
 }
 
-func (m NftBids) MakeExcludeExpiredBids(expiredBids NftBids) NftBids {
+func (m NftBids) RemoveBid(targetBid NftBid) NftBids {
+	return m.RemoveBids(NftBids{targetBid})
+}
+
+func (m NftBids) RemoveBids(excludeBids NftBids) NftBids {
 	excludeList := make(map[string]bool)
-	for _, s := range expiredBids {
+	for _, s := range excludeBids {
 		excludeList[s.Bidder] = true
 	}
 	var newArr NftBids
@@ -217,6 +244,10 @@ func (m NftBids) MakeExcludeExpiredBids(expiredBids NftBids) NftBids {
 		}
 	}
 	return newArr
+}
+
+func (m NftBids) MakeExcludeExpiredBids(expiredBids NftBids) NftBids {
+	return m.RemoveBids(expiredBids)
 }
 
 func (m NftBids) MakeBorrowedBidExcludeExpiredBids(borrowAmount sdk.Coin, start time.Time, expiredBids NftBids) NftBids {
@@ -325,6 +356,22 @@ func (m NftBids) LiquidationAmount(denom string, end time.Time) sdk.Coin {
 		coin = coin.Add(s.LiquidationAmount(end))
 	}
 	return coin
+}
+
+func (m NftBids) FindKickOutBid(newBid NftBid, end time.Time) NftBid {
+	HigherDepositBids := m.SortHigherDeposit()
+	kickOutBid := NftBid{}
+	for _, b := range HigherDepositBids {
+		if b.IsLT(newBid) {
+			refundAmount := b.TotalInterestAmount(end)
+			refundAmount = refundAmount.Add(b.DepositAmount)
+			if refundAmount.IsLT(newBid.DepositAmount) {
+				kickOutBid = b
+				break
+			}
+		}
+	}
+	return kickOutBid
 }
 
 // todo: add proto then use it
