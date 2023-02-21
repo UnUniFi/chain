@@ -65,7 +65,7 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 	}
 
 	for _, position := range positions {
-		suite.keeper.CreatePosition(suite.ctx, position)
+		suite.keeper.SetPosition(suite.ctx, position)
 	}
 
 	for index, position := range positions {
@@ -140,7 +140,7 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 	}
 
 	for _, position := range positions {
-		suite.keeper.CreatePosition(suite.ctx, position)
+		suite.keeper.SetPosition(suite.ctx, position)
 	}
 
 	// Check if the position was added
