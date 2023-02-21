@@ -18,12 +18,13 @@ var (
 
 func DefaultPool() Pool {
 	return Pool{
-		QuoteTicker:                       "usd",
-		BaseLptMintFee:                    sdk.MustNewDecFromStr("0.001"),
-		BaseLptRedeemFee:                  sdk.MustNewDecFromStr("0.001"),
-		BorrowingFeeRatePerHour:           sdk.ZeroDec(),
-		LiquidationNeededReportRewardRate: sdk.ZeroDec(),
-		AcceptedAssets:                    []*Pool_Asset{},
+		QuoteTicker:                 "usd",
+		BaseLptMintFee:              sdk.MustNewDecFromStr("0.001"),
+		BaseLptRedeemFee:            sdk.MustNewDecFromStr("0.001"),
+		BorrowingFeeRatePerHour:     sdk.ZeroDec(),
+		ReportLiquidationRewardRate: sdk.ZeroDec(),
+		ReportLevyPeriodRewardRate:  sdk.ZeroDec(),
+		AcceptedAssets:              []*Pool_Asset{},
 	}
 }
 
@@ -110,8 +111,12 @@ func validatePool(i interface{}) error {
 		return fmt.Errorf("invalid borrowing fee rate per hour: %s", pool.BorrowingFeeRatePerHour)
 	}
 
-	if !pool.LiquidationNeededReportRewardRate.LTE(sdk.OneDec()) {
-		return fmt.Errorf("invalid liquidation needed report reward rate: %s", pool.LiquidationNeededReportRewardRate)
+	if !pool.ReportLiquidationRewardRate.LTE(sdk.OneDec()) {
+		return fmt.Errorf("invalid liquidation needed report reward rate: %s", pool.ReportLiquidationRewardRate)
+	}
+
+	if !pool.ReportLevyPeriodRewardRate.LTE(sdk.OneDec()) {
+		return fmt.Errorf("invalid liquidation needed report reward rate: %s", pool.ReportLevyPeriodRewardRate)
 	}
 
 	return nil

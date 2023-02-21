@@ -86,12 +86,17 @@ message Pool {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  string liquidation_needed_report_reward_rate = 5 [
-    (gogoproto.moretags) = "yaml:\"liquidation_needed_report_reward_rate\"",
+  string report_liquidation_reward_rate = 5 [
+    (gogoproto.moretags) = "yaml:\"report_liquidation_reward_rate\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  repeated Asset accepted_assets = 6 [
+  string report_levy_period_reward_rate = 6 [
+    (gogoproto.moretags) = "yaml:\"report_levy_period_reward_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  repeated Asset accepted_assets = 7 [
     (gogoproto.moretags) = "yaml:\"accepted_assets\""
   ];
 }

@@ -93,6 +93,7 @@
   
 - [derivatives/perpetual_futures.proto](#derivatives/perpetual_futures.proto)
     - [EventPerpetualFuturesPositionClosed](#ununifi.derivatives.EventPerpetualFuturesPositionClosed)
+    - [EventPerpetualFuturesPositionLevied](#ununifi.derivatives.EventPerpetualFuturesPositionLevied)
     - [EventPerpetualFuturesPositionLiquidated](#ununifi.derivatives.EventPerpetualFuturesPositionLiquidated)
     - [EventPerpetualFuturesPositionOpened](#ununifi.derivatives.EventPerpetualFuturesPositionOpened)
     - [PerpetualFuturesPositionInstance](#ununifi.derivatives.PerpetualFuturesPositionInstance)
@@ -1423,7 +1424,8 @@ Query defines the gRPC querier service.
 | `base_lpt_mint_fee` | [string](#string) |  |  |
 | `base_lpt_redeem_fee` | [string](#string) |  |  |
 | `borrowing_fee_rate_per_hour` | [string](#string) |  |  |
-| `liquidation_needed_report_reward_rate` | [string](#string) |  |  |
+| `report_liquidation_reward_rate` | [string](#string) |  |  |
+| `report_levy_period_reward_rate` | [string](#string) |  |  |
 | `accepted_assets` | [Pool.Asset](#ununifi.derivatives.Pool.Asset) | repeated |  |
 
 
@@ -1576,6 +1578,24 @@ GenesisState defines the derivatives module's genesis state.
 | `position_id` | [string](#string) |  |  |
 | `fee_amount` | [string](#string) |  |  |
 | `trade_amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.EventPerpetualFuturesPositionLevied"></a>
+
+### EventPerpetualFuturesPositionLevied
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `reward_recipient` | [string](#string) |  |  |
+| `position_id` | [string](#string) |  |  |
+| `remaining_margin` | [string](#string) |  |  |
+| `reward_amount` | [string](#string) |  |  |
 
 
 
@@ -2191,6 +2211,13 @@ Query defines the gRPC querier service.
 
 ### MsgReportLevyPeriod
 
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `position_id` | [string](#string) |  |  |
+| `reward_recipient` | [string](#string) |  |  |
 
 
 

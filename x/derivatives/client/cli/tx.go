@@ -263,14 +263,14 @@ $ %s tx %s close-position --from myKeyName --chain-id ununifi-x
 
 func CmdReportLiquidation() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "report-liquidation",
+		Use:   "report-liquidation [position-id] [reward-recipient]",
 		Short: "report liquidation needed position",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`report liquidation needed position.
 Example:
 $ %s tx %s report-liquidation --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(3),
+		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -278,9 +278,15 @@ $ %s tx %s report-liquidation --from myKeyName --chain-id ununifi-x
 			}
 
 			sender := clientCtx.GetFromAddress()
+			recipient, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
 
 			msg := types.MsgReportLiquidation{
-				Sender: ununifiType.StringAccAddress(sender),
+				Sender:          ununifiType.StringAccAddress(sender),
+				PositionId:      args[0],
+				RewardRecipient: ununifiType.StringAccAddress(recipient),
 			}
 
 			if err := msg.ValidateBasic(); err != nil {
@@ -295,8 +301,40 @@ $ %s tx %s report-liquidation --from myKeyName --chain-id ununifi-x
 }
 
 func CmdReportLevyPeriod() *cobra.Command {
-	// TODO: add flags
-	cmd := &cobra.Command{}
+	cmd := &cobra.Command{
+		Use:   "report-levy-period [position-id] [reward-recipient]",
+		Short: "report levy needed position",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`report levy needed position.
+Example:
+$ %s tx %s report-levy-period --from myKeyName --chain-id ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
 
+			sender := clientCtx.GetFromAddress()
+			recipient, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+
+			msg := types.MsgReportLevyPeriod{
+				Sender:          ununifiType.StringAccAddress(sender),
+				PositionId:      args[0],
+				RewardRecipient: ununifiType.StringAccAddress(recipient),
+			}
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }
