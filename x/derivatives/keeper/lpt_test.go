@@ -1,6 +1,10 @@
 package keeper_test
 
-import sdk "github.com/cosmos/cosmos-sdk/types"
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/UnUniFi/chain/x/derivatives/types"
+)
 
 // TODO: impl more various situations for the test cases
 func (suite *KeeperTestSuite) TestInitialLiquidityProviderTokenSupply() {
@@ -15,7 +19,7 @@ func (suite *KeeperTestSuite) TestInitialLiquidityProviderTokenSupply() {
 		suite.Fail("failed to get initial LPT supply")
 	}
 	suite.Require().Condition(initialLPTSupply.Amount.IsPositive)
-	suite.Require().Condition(fee.Amount.IsZero)
+	suite.Require().Equal(fee, sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.ZeroInt()))
 	suite.Require().Nil(err)
 }
 
