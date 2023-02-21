@@ -2,9 +2,8 @@ package keeper
 
 import (
 	"errors"
-	"time"
-	"fmt"
 	"strconv"
+	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -19,7 +18,7 @@ func (k Keeper) GetLastPositionId(ctx sdk.Context) string {
 	return string(bz)
 }
 
-func (k Keeper) GetLastPosition(ctx sdk.Context) (types.Position, error) {
+func (k Keeper) GetLastPosition(ctx sdk.Context) types.Position {
 	store := ctx.KVStore(k.storeKey)
 
 	position := types.Position{}
@@ -30,10 +29,10 @@ func (k Keeper) GetLastPosition(ctx sdk.Context) (types.Position, error) {
 	for ; it.Valid(); it.Next() {
 		position := types.Position{}
 		k.cdc.Unmarshal(it.Value(), &position)
-		return position, nil
+		return position
 	}
 
-	return position, fmt.Errorf("position not found")
+	return position
 }
 
 func (k Keeper) IncreaseLastPositionId(ctx sdk.Context) {
@@ -126,10 +125,7 @@ func (k Keeper) DeletePosition(ctx sdk.Context, address sdk.AccAddress, id strin
 func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
 	// todo check sender amount for margin
 
-	lastPosition, err := k.GetLastPosition(ctx)
-	if err != nil {
-		panic("failed to get last position")
-	}
+	lastPosition := k.GetLastPosition(ctx)
 
 	var positionId string
 	if lastPosition.Id == "" {
