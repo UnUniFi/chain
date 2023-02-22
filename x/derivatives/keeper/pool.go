@@ -141,7 +141,9 @@ func (k Keeper) GetPoolMarketCapSnapshot(ctx sdk.Context, height int64) types.Po
 
 	bz := store.Get(types.AddressPoolMarketCapSnapshotKeyPrefix(height))
 	marketCap := types.PoolMarketCap{}
-	k.cdc.Unmarshal(bz, &marketCap)
+	if err := k.cdc.Unmarshal(bz, &marketCap); err != nil {
+		return types.PoolMarketCap{}
+	}
 
 	return marketCap
 }

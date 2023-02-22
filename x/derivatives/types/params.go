@@ -11,7 +11,7 @@ import (
 var _ paramtypes.ParamSet = (*Params)(nil)
 
 var (
-	KeyPool             = []byte("Pool")
+	KeyPoolParams       = []byte("PoolParams")
 	keyPerpetualFutures = []byte("PerpetualFutures")
 	KeyPerpetualOptions = []byte("PerpetualOptions")
 )
@@ -69,7 +69,7 @@ func DefaultParams() Params {
 // ParamSetPairs get the params.ParamSet
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
-		paramtypes.NewParamSetPair(KeyPool, &p.PoolParams, validatePool),
+		paramtypes.NewParamSetPair(KeyPoolParams, &p.PoolParams, validatePoolParams),
 		paramtypes.NewParamSetPair(keyPerpetualFutures, &p.PerpetualFutures, validatePerpetualFutures),
 		paramtypes.NewParamSetPair(KeyPerpetualOptions, &p.PerpetualOptions, validatePerpetualOptions),
 	}
@@ -77,7 +77,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 
 // Validate validates the set of params
 func (p Params) Validate() error {
-	if err := validatePool(p.PoolParams); err != nil {
+	if err := validatePoolParams(p.PoolParams); err != nil {
 		return err
 	}
 
@@ -92,7 +92,7 @@ func (p Params) Validate() error {
 	return nil
 }
 
-func validatePool(i interface{}) error {
+func validatePoolParams(i interface{}) error {
 	// check type
 	pool, ok := i.(PoolParams)
 	if !ok {
