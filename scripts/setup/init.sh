@@ -74,7 +74,7 @@ jq '.app_state.pricefeed.params.markets = [
   ]'  $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.pool.base_lpt_mint_fee = "0.001"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.pool.base_lpt_redeem_fee = "0.001"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
-jq '.app_state.derivatives.params.pool.accepted_assets = [{"denom":"ubtc", "target_weight": "0.6"}, {"denom":"uusd", "target_weight":"0.4"}]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.derivatives.params.pool.accepted_assets = [{"denom":"ubtc", "target_weight": "0.6"}, {"denom":"uusdc", "target_weight":"0.4"}]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.perpetual_futures.commission_rate = "0.001"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.perpetual_futures.margin_maintenance_rate = "0.5"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.perpetual_futures.imaginary_funding_rate_proportional_coefficient = "0.0005"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
