@@ -56,7 +56,7 @@ message Position {
   ];
 }
 
-message Pool {
+message PoolParams {
   message Asset {
     string denom = 1 [
       (gogoproto.moretags) = "yaml:\"denom\""
@@ -191,8 +191,8 @@ message PerpetualOptionsParams {
 
 
 message Params {
-  Pool pool = 1 [
-    (gogoproto.moretags) = "yaml:\"pool\"",
+  PoolParams pool_params = 1 [
+    (gogoproto.moretags) = "yaml:\"pool_params\"",
     (gogoproto.nullable) = false
   ];
   PerpetualFuturesParams perpetual_futures = 2 [
