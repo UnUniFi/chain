@@ -49,7 +49,7 @@ func (k Keeper) ListedNfts(c context.Context, req *types.QueryListedNftsRequest)
 		if err != nil {
 			return nil, status.Error(codes.InvalidArgument, "invalid request. address wrong")
 		}
-		return k.ListedNftsByOwner(ctx, acc)
+		return k.ListedNftsByOwner(c, acc)
 	} else {
 		listings := k.GetAllNftListings(ctx)
 		return &types.QueryListedNftsResponse{
