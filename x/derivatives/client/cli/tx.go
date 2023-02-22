@@ -237,7 +237,7 @@ func CmdClosePosition() *cobra.Command {
 Example:
 $ %s tx %s close-position --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(3),
+		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -245,10 +245,9 @@ $ %s tx %s close-position --from myKeyName --chain-id ununifi-x
 			}
 
 			sender := clientCtx.GetFromAddress()
+			potisionId := args[0]
 
-			msg := types.MsgClosePosition{
-				Sender: ununifiType.StringAccAddress(sender),
-			}
+			msg := types.NewMsgClosePosition(sender, potisionId)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err

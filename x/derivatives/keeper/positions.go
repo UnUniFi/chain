@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"errors"
+	"strconv"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -15,6 +16,23 @@ func (k Keeper) GetLastPositionId(ctx sdk.Context) string {
 	bz := store.Get([]byte(types.KeyPrefixLastPositionId))
 
 	return string(bz)
+}
+
+func (k Keeper) GetLastPosition(ctx sdk.Context) types.Position {
+	store := ctx.KVStore(k.storeKey)
+
+	position := types.Position{}
+
+	it := sdk.KVStoreReversePrefixIterator(store, []byte(types.KeyPrefixPosition))
+	defer it.Close()
+
+	for ; it.Valid(); it.Next() {
+		position := types.Position{}
+		k.cdc.Unmarshal(it.Value(), &position)
+		return position
+	}
+
+	return position
 }
 
 func (k Keeper) IncreaseLastPositionId(ctx sdk.Context) {
@@ -105,11 +123,18 @@ func (k Keeper) DeletePosition(ctx sdk.Context, address sdk.AccAddress, id strin
 }
 
 func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
-	sender := msg.Sender.AccAddress()
-	lastPositionId := k.GetLastPositionId(ctx)
+	// todo check sender amount for margin
 
-	positionKey := types.AddressPositionWithIdKeyPrefix(sender, lastPositionId)
-	positionId := string(positionKey)
+	lastPosition := k.GetLastPosition(ctx)
+
+	var positionId string
+	if lastPosition.Id == "" {
+		positionId = "0"
+	} else {
+		// increment position id
+		lastPositionId, _ := strconv.Atoi(lastPosition.Id)
+		positionId = strconv.Itoa(lastPositionId + 1)
+	}
 
 	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, msg.Sender.AccAddress(), types.ModuleName, sdk.NewCoins(msg.Margin)); err != nil {
 		return err

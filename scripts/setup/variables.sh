@@ -17,6 +17,11 @@ USER_MNEMONIC_3="among follow tooth egg unhappy city road expire solution visit 
 USER_MNEMONIC_4="charge split umbrella day gauge two orphan random human clerk buzz funny cabin purse fluid lecture blouse keen twist loud animal supply hat scare"
 PRICEFEED_MNEMONIC="jelly fortune hire delay impose daughter praise amazing patch gesture easy achieve intact genre swamp gossip aisle arrest item seek inherit cradle hover involve"
 
+VAL_ADDRESS_1=ununifi1a8jcsmla6heu99ldtazc27dna4qcd4jygsthx6
+USER_ADDRESS_1=ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w
+USER_ADDRESS_2=ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla
+USER_ADDRESS_3=ununifi1y3t7sp0nfe2nfda7r9gf628g6ym6e7d44evfv6
+USER_ADDRESS_4=ununifi1pp2ruuhs0k7ayaxjupwj4k5qmgh0d72wrdyjyu
 PRICEFEED_ADDRESS=ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr
 
 conf="--home=$NODE_HOME --chain-id=$CHAINID_1 --keyring-backend=test -y --broadcast-mode=block"
