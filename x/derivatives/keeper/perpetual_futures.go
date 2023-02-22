@@ -123,7 +123,7 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 	if sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(sdk.NewDecWithPrec(1, 0)).LT(principal.Mul(params.PerpetualFutures.MarginMaintenanceRate)) {
 		k.ClosePerpetualFuturesPosition(ctx, position, positionInstance)
 
-		rewardAmount := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.Pool.ReportLiquidationRewardRate).RoundInt()
+		rewardAmount := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PoolParams.ReportLiquidationRewardRate).RoundInt()
 		reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))
 		k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
 
@@ -163,7 +163,7 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 	}
 	position.LastLeviedAt = ctx.BlockTime()
 
-	rewardAmount := sdk.NewDecFromInt(commissionFee).Mul(params.Pool.ReportLevyPeriodRewardRate).RoundInt()
+	rewardAmount := sdk.NewDecFromInt(commissionFee).Mul(params.PoolParams.ReportLevyPeriodRewardRate).RoundInt()
 	reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))
 	k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
 

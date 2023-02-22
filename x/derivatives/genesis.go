@@ -12,7 +12,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
 	// todo load genesis state when restart
-	for _, asset := range genState.Params.Pool.AcceptedAssets {
+	for _, asset := range genState.Params.PoolParams.AcceptedAssets {
 		k.AddPoolAsset(ctx, *asset)
 	}
 	for _, market := range genState.Params.PerpetualFutures.Markets {

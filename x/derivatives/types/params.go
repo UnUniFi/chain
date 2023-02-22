@@ -16,15 +16,15 @@ var (
 	KeyPerpetualOptions = []byte("PerpetualOptions")
 )
 
-func DefaultPool() Pool {
-	return Pool{
+func DefaultPoolParams() PoolParams {
+	return PoolParams{
 		QuoteTicker:                 "usd",
 		BaseLptMintFee:              sdk.MustNewDecFromStr("0.001"),
 		BaseLptRedeemFee:            sdk.MustNewDecFromStr("0.001"),
 		BorrowingFeeRatePerHour:     sdk.ZeroDec(),
 		ReportLiquidationRewardRate: sdk.ZeroDec(),
 		ReportLevyPeriodRewardRate:  sdk.ZeroDec(),
-		AcceptedAssets:              []*Pool_Asset{},
+		AcceptedAssets:              []*PoolParams_Asset{},
 	}
 }
 
@@ -60,7 +60,7 @@ func NewParams() Params {
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return Params{
-		Pool:             DefaultPool(),
+		PoolParams:       DefaultPoolParams(),
 		PerpetualFutures: DefaultPerpetualFuturesParams(),
 		PerpetualOptions: DefaultPerpetualOptionsParams(),
 	}
@@ -69,7 +69,7 @@ func DefaultParams() Params {
 // ParamSetPairs get the params.ParamSet
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
-		paramtypes.NewParamSetPair(KeyPool, &p.Pool, validatePool),
+		paramtypes.NewParamSetPair(KeyPool, &p.PoolParams, validatePool),
 		paramtypes.NewParamSetPair(keyPerpetualFutures, &p.PerpetualFutures, validatePerpetualFutures),
 		paramtypes.NewParamSetPair(KeyPerpetualOptions, &p.PerpetualOptions, validatePerpetualOptions),
 	}
@@ -77,7 +77,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 
 // Validate validates the set of params
 func (p Params) Validate() error {
-	if err := validatePool(p.Pool); err != nil {
+	if err := validatePool(p.PoolParams); err != nil {
 		return err
 	}
 
@@ -94,7 +94,7 @@ func (p Params) Validate() error {
 
 func validatePool(i interface{}) error {
 	// check type
-	pool, ok := i.(Pool)
+	pool, ok := i.(PoolParams)
 	if !ok {
 		return fmt.Errorf("invalid paramter type: %T", i)
 	}

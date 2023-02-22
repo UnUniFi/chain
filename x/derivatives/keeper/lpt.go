@@ -7,11 +7,11 @@ import (
 )
 
 func (k Keeper) GetLPTokenBaseMintFee(ctx sdk.Context) sdk.Dec {
-	return k.GetParams(ctx).Pool.BaseLptMintFee
+	return k.GetParams(ctx).PoolParams.BaseLptMintFee
 }
 
 func (k Keeper) GetLPTokenBaseRedeemFee(ctx sdk.Context) sdk.Dec {
-	return k.GetParams(ctx).Pool.BaseLptRedeemFee
+	return k.GetParams(ctx).PoolParams.BaseLptRedeemFee
 }
 
 func (k Keeper) GetLPTokenSupplySnapshot(ctx sdk.Context, height int64) sdk.Int {

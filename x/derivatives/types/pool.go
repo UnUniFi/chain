@@ -1,6 +1,6 @@
 package types
 
-func (p Pool) Validate() error {
+func (p PoolParams) Validate() error {
 	// TODO: add validation
 	return nil
 }
