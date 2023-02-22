@@ -36,6 +36,7 @@ func (k Keeper) GetPoolAssetByDenom(ctx sdk.Context, denom string) types.PoolPar
 func (k Keeper) AddPoolAsset(ctx sdk.Context, asset types.PoolParams_Asset) {
 	store := ctx.KVStore(k.storeKey)
 
+	// TODO: remove below two lines as to change the way to handle PoolParams_Asset validation or reference
 	bz := k.cdc.MustMarshal(&asset)
 	store.Set(types.AssetKeyPrefix(asset.Denom), bz)
 
