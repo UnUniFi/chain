@@ -29,10 +29,10 @@ func (k Keeper) IncreaseLastPositionId(ctx sdk.Context) {
 	store.Set([]byte(types.KeyPrefixLastPositionId), types.GetPositionIdBytes(lastPositionId+1))
 }
 
-func (k Keeper) GetAllPositions(ctx sdk.Context) []*types.Position {
+func (k Keeper) GetAllPositions(ctx sdk.Context) []types.Position {
 	store := ctx.KVStore(k.storeKey)
 
-	positions := []*types.Position{}
+	positions := []types.Position{}
 	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixPosition))
 	defer it.Close()
 
@@ -40,7 +40,7 @@ func (k Keeper) GetAllPositions(ctx sdk.Context) []*types.Position {
 		position := types.Position{}
 		k.cdc.Unmarshal(it.Value(), &position)
 
-		positions = append(positions, &position)
+		positions = append(positions, position)
 	}
 
 	return positions

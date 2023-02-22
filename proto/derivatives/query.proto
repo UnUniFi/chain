@@ -202,7 +202,10 @@ message QueryPerpetualOptionsMarketResponse {}
 message QueryAllPositionsRequest {}
 
 message QueryAllPositionsResponse {
-  repeated Position positions = 1;
+  repeated Position positions = 1 [
+    (gogoproto.moretags)  = "yaml:\"positions\"",
+    (gogoproto.nullable) = false
+  ];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
