@@ -38,6 +38,7 @@ import (
 
 	// this line is used by starport scaffolding # stargate/root/import
 	Wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	ununifiapp "github.com/UnUniFi/chain/app"
 )
 
 var ChainID string
@@ -121,6 +122,7 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig) {
 		queryCommand(),
 		txCommand(),
 		keys.Commands(app.DefaultNodeHome),
+		testnetCmd(ununifiapp.ModuleBasics, banktypes.GenesisBalancesIterator{}),
 	)
 }
 
