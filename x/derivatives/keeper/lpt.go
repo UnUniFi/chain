@@ -51,19 +51,19 @@ func (k Keeper) DetermineMintingLPTokenAmount(ctx sdk.Context, amount sdk.Coin) 
 	if err != nil {
 		return sdk.Coin{}, sdk.Coin{}, err
 	}
+	actualAmount := k.GetAssetBalance(ctx, amount.Denom)
+
+	targetAmount, err := k.GetAssetTargetAmount(ctx, amount.Denom)
+	if err != nil {
+		return sdk.Coin{}, sdk.Coin{}, err
+	}
 
 	assetMc := assetPrice.Price.Mul(sdk.NewDecFromInt(amount.Amount))
-
 	if currentSupply.Amount.IsZero() {
 		// TODO: we can eliminate unnecessary calculation -> assetPrice.Price
 		return k.InitialLiquidityProviderTokenSupply(ctx, assetPrice, assetMc, amount.Denom)
 	}
 
-	actualAmount := k.GetAssetBalance(ctx, amount.Denom)
-	targetAmount, err := k.GetAssetTargetAmount(ctx, amount.Denom)
-	if err != nil {
-		return sdk.Coin{}, sdk.Coin{}, err
-	}
 	lptPrice := k.GetLPTokenPrice(ctx)
 	// todo if lptPrice is zero, return error
 
