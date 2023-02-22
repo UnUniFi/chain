@@ -81,7 +81,7 @@ jq '.app_state.derivatives.params.perpetual_futures.imaginary_funding_rate_propo
 jq '.app_state.derivatives.params.perpetual_futures.markets = [{"base_denom": "ubtc", "quote_denom": "uusdc" }]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.bank.denom_metadata = [
   {"base" : "ubtc" , "symbol": "ubtc"},
-  {"base" : "uusd", "symbol": "uusdc"}
+  {"base" : "uusdc", "symbol": "uusdc"}
   ]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.pricefeed.posted_prices = [
   {"expiry": "2024-02-20T12:02:01Z","market_id": "ubtc:usd","oracle_address": "ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr","price": "0.024508410211260500"},
