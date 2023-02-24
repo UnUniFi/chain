@@ -230,6 +230,15 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 		InterestAmount:     sdk.NewCoin(listing.BidToken, sdk.ZeroInt()),
 	}
 
+	// -------------poc v2 condition-----------------------
+	now := time.Now()
+	limit := now.Add(time.Hour * 24 * 3)
+	// bidding period max 3 days
+	if newBid.BiddingPeriod.After(limit) {
+		return fmt.Errorf("bidding period max 3 days")
+	}
+	// -------------poc v2 condition end-----------------------
+
 	if !oldBid.IsNil() {
 		return k.ReBid(ctx, listing, oldBid, newBid, bids)
 	} else {
@@ -240,6 +249,7 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 func (k Keeper) ManualBid(ctx sdk.Context, listing types.NftListing, newBid types.NftBid, bids types.NftBids) error {
 	err := CheckBidParams(listing, newBid.BidAmount, newBid.DepositAmount, bids)
 	if err != nil {
+		// -------------poc v2 condition-----------------------
 		return err
 		// disable kick out bid
 		// kickOutBid := bids.FindKickOutBid(newBid, ctx.BlockTime())
@@ -258,6 +268,7 @@ func (k Keeper) ManualBid(ctx sdk.Context, listing types.NftListing, newBid type
 		// 		}
 		// 	}
 		// }
+		// -------------poc v2 condition end-----------------------
 	}
 
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sdk.MustAccAddressFromBech32(newBid.Bidder), types.ModuleName, sdk.Coins{newBid.DepositAmount})
