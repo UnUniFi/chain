@@ -142,7 +142,7 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient ununifiTypes.StringAccAddress, position types.Position, positionInstance types.PerpetualFuturesPositionInstance) error {
 	params := k.GetParams(ctx)
 
-	netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, position.Market)
+	netPosition := k.GetPositionSizeOfNetPositionOfMarket(ctx, position.Market)
 
 	imaginaryFundingRate := netPosition.Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
 	imaginaryFundingFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
@@ -179,36 +179,61 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 	return nil
 }
 
-func (k Keeper) GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market) sdk.Dec {
+func (k Keeper) GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market) types.PerpetualFuturesNetPositionOfMarket {
 	store := ctx.KVStore(k.storeKey)
 
 	bz := store.Get(types.DenomNetPositionPerpetualFuturesKeyPrefix(market.BaseDenom, market.QuoteDenom))
 	if bz == nil {
-		return sdk.ZeroDec()
+		return types.PerpetualFuturesNetPositionOfMarket{}
 	}
 
-	amount := sdk.MustNewDecFromStr(string(bz))
-
-	return amount
+	netPositionOfMarket := types.PerpetualFuturesNetPositionOfMarket{}
+	k.cdc.MustUnmarshal(bz, &netPositionOfMarket)
+	return netPositionOfMarket
 }
 
-func (k Keeper) SetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market, amount sdk.Dec) {
-	store := ctx.KVStore(k.storeKey)
-	bz := []byte(amount.String())
+func (k Keeper) GetPositionSizeOfNetPositionOfMarket(ctx sdk.Context, market types.Market) sdk.Dec {
+	return k.GetPerpetualFuturesNetPositionOfMarket(ctx, market).PositionSize
+}
 
-	store.Set(types.DenomNetPositionPerpetualFuturesKeyPrefix(market.BaseDenom, market.QuoteDenom), bz)
+func (k Keeper) GetAllPerpetualFuturesNetPositionOfMarket(ctx sdk.Context) []types.PerpetualFuturesNetPositionOfMarket {
+	store := ctx.KVStore(k.storeKey)
+
+	perpetualFuturesNetPositionOfMarkets := []types.PerpetualFuturesNetPositionOfMarket{}
+	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixPerpetualFutures))
+	defer it.Close()
+
+	for ; it.Valid(); it.Next() {
+		netPositionOfMarket := types.PerpetualFuturesNetPositionOfMarket{}
+		k.cdc.MustUnmarshal(it.Value(), &netPositionOfMarket)
+
+		perpetualFuturesNetPositionOfMarkets = append(
+			perpetualFuturesNetPositionOfMarkets,
+			netPositionOfMarket,
+		)
+	}
+	return perpetualFuturesNetPositionOfMarkets
+}
+
+func (k Keeper) SetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, NetPositionOfMarket types.PerpetualFuturesNetPositionOfMarket) {
+	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshal(&NetPositionOfMarket)
+
+	store.Set(types.DenomNetPositionPerpetualFuturesKeyPrefix(NetPositionOfMarket.Market.BaseDenom, NetPositionOfMarket.Market.QuoteDenom), bz)
 }
 
 func (k Keeper) AddPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market, rhs sdk.Dec) {
-	lhs := k.GetPerpetualFuturesNetPositionOfMarket(ctx, market)
+	lhs := k.GetPositionSizeOfNetPositionOfMarket(ctx, market)
 	result := lhs.Add(rhs)
 
-	k.SetPerpetualFuturesNetPositionOfMarket(ctx, market, result)
+	perpetualFuturesNetPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(market, result)
+	k.SetPerpetualFuturesNetPositionOfMarket(ctx, perpetualFuturesNetPositionOfMarket)
 }
 
 func (k Keeper) SubPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market, rhs sdk.Dec) {
-	lhs := k.GetPerpetualFuturesNetPositionOfMarket(ctx, market)
+	lhs := k.GetPositionSizeOfNetPositionOfMarket(ctx, market)
 	result := lhs.Sub(rhs)
 
-	k.SetPerpetualFuturesNetPositionOfMarket(ctx, market, result)
+	perpetualFuturesNetPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(market, result)
+	k.SetPerpetualFuturesNetPositionOfMarket(ctx, perpetualFuturesNetPositionOfMarket)
 }

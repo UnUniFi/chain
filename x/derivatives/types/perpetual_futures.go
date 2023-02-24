@@ -24,3 +24,10 @@ func UnpackPerpetualFuturesPositionInstance(positionAny types.Any) PositionInsta
 func (positionInstance PerpetualFuturesPositionInstance) CalculatePrincipal() sdk.Dec {
 	return positionInstance.Size_.Quo(sdk.NewDec(int64(positionInstance.Leverage)))
 }
+
+func NewPerpetualFuturesNetPositionOfMarket(market Market, position_size sdk.Dec) PerpetualFuturesNetPositionOfMarket {
+	return PerpetualFuturesNetPositionOfMarket{
+		Market:       market,
+		PositionSize: position_size,
+	}
+}
