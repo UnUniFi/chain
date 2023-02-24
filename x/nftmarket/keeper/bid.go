@@ -240,22 +240,24 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 func (k Keeper) ManualBid(ctx sdk.Context, listing types.NftListing, newBid types.NftBid, bids types.NftBids) error {
 	err := CheckBidParams(listing, newBid.BidAmount, newBid.DepositAmount, bids)
 	if err != nil {
-		kickOutBid := bids.FindKickOutBid(newBid, ctx.BlockTime())
-		if kickOutBid.IsNil() {
-			// cannot kick out bid
-			return err
-		} else {
-			bids = bids.RemoveBids(types.NftBids{kickOutBid})
-			err = CheckBidParams(listing, newBid.BidAmount, newBid.DepositAmount, bids)
-			if err != nil {
-				return err
-			} else {
-				err = k.SafeCloseBidWithAllInterest(ctx, kickOutBid)
-				if err != nil {
-					return err
-				}
-			}
-		}
+		return err
+		// disable kick out bid
+		// kickOutBid := bids.FindKickOutBid(newBid, ctx.BlockTime())
+		// if kickOutBid.IsNil() {
+		// 	// cannot kick out bid
+		// 	return err
+		// } else {
+		// 	bids = bids.RemoveBids(types.NftBids{kickOutBid})
+		// 	err = CheckBidParams(listing, newBid.BidAmount, newBid.DepositAmount, bids)
+		// 	if err != nil {
+		// 		return err
+		// 	} else {
+		// 		err = k.SafeCloseBidWithAllInterest(ctx, kickOutBid)
+		// 		if err != nil {
+		// 			return err
+		// 		}
+		// 	}
+		// }
 	}
 
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sdk.MustAccAddressFromBech32(newBid.Bidder), types.ModuleName, sdk.Coins{newBid.DepositAmount})
