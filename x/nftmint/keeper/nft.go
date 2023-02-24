@@ -1,44 +1,55 @@
 package keeper
 
 import (
+	"fmt"
+
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 
 	"github.com/UnUniFi/chain/x/nftmint/types"
 )
 
 // MintNFT does validate the contents of MsgMintNFT and operate whole flow for MintNFT message
 func (k Keeper) MintNFT(ctx sdk.Context, msg *types.MsgMintNFT) error {
-	// if !k.nftKeeper.HasClass(ctx, msg.ClassId) {
-	// 	return sdkerrors.Wrap(nfttypes.ErrClassExists, msg.ClassId)
-	// }
+	// -------------------poc v2 condition------------------------
+	validator, _ := sdk.AccAddressFromBech32("ununifi1a8jcsmla6heu99ldtazc27dna4qcd4jygsthx6")
+	if !validator.Equals(msg.Sender.AccAddress()) {
+		return fmt.Errorf("sender is not validator")
+	}
+	// -------------------poc v2 condition end------------------------
 
-	// classAttributes, exists := k.GetClassAttributes(ctx, msg.ClassId)
-	// if !exists {
-	// 	return sdkerrors.Wrapf(types.ErrClassAttributesNotExists, "class attributes with class id %s doesn't exist", msg.ClassId)
-	// }
+	if !k.nftKeeper.HasClass(ctx, msg.ClassId) {
+		return sdkerrors.Wrap(nfttypes.ErrClassExists, msg.ClassId)
+	}
 
-	// nftUri := classAttributes.BaseTokenUri + msg.NftId
-	// params := k.GetParamSet(ctx)
-	// currentTokenSupply := k.nftKeeper.GetTotalSupply(ctx, msg.ClassId)
-	// err := types.ValidateMintNFT(
-	// 	params,
-	// 	classAttributes.MintingPermission,
-	// 	classAttributes.Owner.AccAddress(), msg.Sender.AccAddress(),
-	// 	nftUri, msg.NftId,
-	// 	currentTokenSupply, classAttributes.TokenSupplyCap,
-	// )
-	// if err != nil {
-	// 	return err
-	// }
+	classAttributes, exists := k.GetClassAttributes(ctx, msg.ClassId)
+	if !exists {
+		return sdkerrors.Wrapf(types.ErrClassAttributesNotExists, "class attributes with class id %s doesn't exist", msg.ClassId)
+	}
 
-	// if err := k.nftKeeper.Mint(ctx, types.NewNFT(msg.ClassId, msg.NftId, nftUri), msg.Recipient.AccAddress()); err != nil {
-	// 	return err
-	// }
+	nftUri := classAttributes.BaseTokenUri + msg.NftId
+	params := k.GetParamSet(ctx)
+	currentTokenSupply := k.nftKeeper.GetTotalSupply(ctx, msg.ClassId)
+	err := types.ValidateMintNFT(
+		params,
+		classAttributes.MintingPermission,
+		classAttributes.Owner.AccAddress(), msg.Sender.AccAddress(),
+		nftUri, msg.NftId,
+		currentTokenSupply, classAttributes.TokenSupplyCap,
+	)
+	if err != nil {
+		return err
+	}
 
-	// if err := k.SetNFTMinter(ctx, msg.ClassId, msg.NftId, msg.Sender.AccAddress()); err != nil {
-	// 	return err
-	// }
+	if err := k.nftKeeper.Mint(ctx, types.NewNFT(msg.ClassId, msg.NftId, nftUri), msg.Recipient.AccAddress()); err != nil {
+		return err
+	}
+
+	if err := k.SetNFTMinter(ctx, msg.ClassId, msg.NftId, msg.Sender.AccAddress()); err != nil {
+		return err
+	}
 
 	return nil
 }

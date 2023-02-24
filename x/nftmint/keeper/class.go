@@ -3,6 +3,7 @@ package keeper
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -21,39 +22,46 @@ const (
 
 // CreateClass does validate the contents of MsgCreateClass and operate whole flow for CreateClass message
 func (k Keeper) CreateClass(ctx sdk.Context, classID string, msg *types.MsgCreateClass) error {
-	// exists := k.nftKeeper.HasClass(ctx, classID)
-	// if exists {
-	// 	return sdkerrors.Wrap(nfttypes.ErrClassExists, classID)
-	// }
+	// -------------------poc v2 condition------------------------
+	validator, _ := sdk.AccAddressFromBech32("ununifi1a8jcsmla6heu99ldtazc27dna4qcd4jygsthx6")
+	if !validator.Equals(msg.Sender.AccAddress()) {
+		return fmt.Errorf("sender is not validator")
+	}
+	// -------------------poc v2 condition end------------------------
 
-	// params := k.GetParamSet(ctx)
-	// err := types.ValidateCreateClass(
-	// 	params,
-	// 	msg.Name, msg.Symbol, msg.BaseTokenUri, msg.Description,
-	// 	msg.MintingPermission,
-	// 	msg.TokenSupplyCap,
-	// )
-	// if err != nil {
-	// 	return err
-	// }
+	exists := k.nftKeeper.HasClass(ctx, classID)
+	if exists {
+		return sdkerrors.Wrap(nfttypes.ErrClassExists, classID)
+	}
 
-	// if err := k.nftKeeper.SaveClass(ctx, types.NewClass(classID, msg.Name, msg.Symbol, msg.Description, msg.ClassUri)); err != nil {
-	// 	return err
-	// }
+	params := k.GetParamSet(ctx)
+	err := types.ValidateCreateClass(
+		params,
+		msg.Name, msg.Symbol, msg.BaseTokenUri, msg.Description,
+		msg.MintingPermission,
+		msg.TokenSupplyCap,
+	)
+	if err != nil {
+		return err
+	}
 
-	// if err = k.SetClassAttributes(ctx, types.NewClassAttributes(classID, msg.Sender.AccAddress(), msg.BaseTokenUri, msg.MintingPermission, msg.TokenSupplyCap)); err != nil {
-	// 	return err
-	// }
+	if err := k.nftKeeper.SaveClass(ctx, types.NewClass(classID, msg.Name, msg.Symbol, msg.Description, msg.ClassUri)); err != nil {
+		return err
+	}
 
-	// owningClassIdList := k.AddClassIDToOwningClassIdList(ctx, msg.Sender.AccAddress(), classID)
-	// if err = k.SetOwningClassIdList(ctx, owningClassIdList); err != nil {
-	// 	return err
-	// }
+	if err = k.SetClassAttributes(ctx, types.NewClassAttributes(classID, msg.Sender.AccAddress(), msg.BaseTokenUri, msg.MintingPermission, msg.TokenSupplyCap)); err != nil {
+		return err
+	}
 
-	// classNameIdList := k.AddClassNameIdList(ctx, msg.Name, classID)
-	// if err = k.SetClassNameIdList(ctx, classNameIdList); err != nil {
-	// 	return err
-	// }
+	owningClassIdList := k.AddClassIDToOwningClassIdList(ctx, msg.Sender.AccAddress(), classID)
+	if err = k.SetOwningClassIdList(ctx, owningClassIdList); err != nil {
+		return err
+	}
+
+	classNameIdList := k.AddClassNameIdList(ctx, msg.Name, classID)
+	if err = k.SetClassNameIdList(ctx, classNameIdList); err != nil {
+		return err
+	}
 
 	return nil
 }
