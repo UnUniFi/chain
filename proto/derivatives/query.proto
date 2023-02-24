@@ -7,7 +7,7 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
 import "derivatives/derivatives.proto";
-// this line is used by starport scaffolding # 1
+import "derivatives/params.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/derivatives/types";
 
