@@ -109,9 +109,9 @@ func (msg MsgOpenPosition) GetSigners() []sdk.AccAddress {
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgClosePosition{}
 
-func NewMsgClosePosition(sender ununifiTypes.StringAccAddress, positionId string) MsgClosePosition {
+func NewMsgClosePosition(sender sdk.AccAddress, positionId string) MsgClosePosition {
 	return MsgClosePosition{
-		Sender:     sender,
+		Sender:     sender.Bytes(),
 		PositionId: positionId,
 	}
 }
