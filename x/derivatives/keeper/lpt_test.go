@@ -15,10 +15,11 @@ func (suite *KeeperTestSuite) TestInitialLiquidityProviderTokenSupply() {
 		Price:    mockPrice,
 	}
 
-	mockAssetMarketCap := mockPrice.Mul(sdk.NewDecFromInt(sdk.OneInt()))
+	mockDepositingTokenAmount := sdk.OneDec()
+	mockAssetMarketCap := mockPrice.Mul(mockDepositingTokenAmount)
 
 	initialLPTSupply, fee, err := suite.app.DerivativesKeeper.InitialLiquidityProviderTokenSupply(suite.ctx, mockAssetPrice, mockAssetMarketCap, TestBaseTokenDenom)
-	suite.Require().Condition(initialLPTSupply.Amount.IsPositive)
+	suite.Require().Equal(sdk.NewInt(2), initialLPTSupply.Amount)
 	suite.Require().Equal(fee, sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.ZeroInt()))
 	suite.Require().Nil(err)
 }

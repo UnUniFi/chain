@@ -148,7 +148,7 @@ func (k Keeper) DecreaseRedeemDenomAmount(ctx sdk.Context, amount sdk.Coin) erro
 // 	return nil
 // }
 
-// Initial Liquidity Provider Token Supply is determined below formulas
+// Initial Liquidity Provider Token Supply is determined in following formulas
 // initial_lp_token_price = Σ target_weight_of_ith_asset * price_of_ith_asset
 // pool_marketcap = price_of_ith_asset * amount_of_ith_deopsited_asset
 // initial_lp_supply = pool_marketcap / initial_lp_token_price
