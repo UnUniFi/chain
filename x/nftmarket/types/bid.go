@@ -10,6 +10,20 @@ import (
 func (m NftBid) Equal(b NftBid) bool {
 	return m.Bidder == b.Bidder && m.NftId == b.NftId && m.BidAmount.Equal(b.BidAmount)
 }
+func (m NftBid) IsLT(b NftBid) bool {
+	if b.BidAmount.IsLTE(m.BidAmount) {
+		return false
+	}
+	if b.DepositAmount.IsLTE(m.DepositAmount) {
+		return false
+	}
+	if b.DepositLendingRate.GTE(m.DepositLendingRate) {
+		return false
+	}
+
+	return true
+}
+
 func (m NftBid) GetIdToByte() []byte {
 	return NftBidBytes(m.NftId.ClassId, m.NftId.NftId, m.Bidder)
 }
@@ -73,6 +87,23 @@ func (m NftBid) CalcInterestF() func(lendCoin sdk.Coin, start, end time.Time) sd
 	return f(m.DepositLendingRate)
 }
 
+func (m NftBid) TotalInterestAmount(endTime time.Time) sdk.Coin {
+	totalInterestAmount := sdk.NewCoin(m.InterestAmount.Denom, m.InterestAmount.Amount)
+	for _, v := range m.Borrowings {
+		totalInterestAmount = totalInterestAmount.Add(m.CalcInterest(v.Amount, m.DepositLendingRate, v.StartAt, endTime))
+	}
+	return totalInterestAmount
+}
+
+func (m NftBid) TotalInterestAmountDec(endTime time.Time) sdk.DecCoin {
+	totalInterestAmount := sdk.NewDecCoin(m.InterestAmount.Denom, m.InterestAmount.Amount)
+	for _, v := range m.Borrowings {
+		interest := m.CalcInterest(v.Amount, m.DepositLendingRate, v.StartAt, endTime)
+		totalInterestAmount = totalInterestAmount.Add(sdk.NewDecCoin(interest.Denom, interest.Amount))
+	}
+	return totalInterestAmount
+}
+
 func (m NftBid) FullPaidAmount() sdk.Coin {
 	return m.PaidAmount.Add(m.DepositAmount)
 }
@@ -105,7 +136,7 @@ func (m NftBids) SortRepay() NftBids {
 }
 
 func (m NftBids) SortLiquidation() NftBids {
-	return m.SortLowerDepositAmount()
+	return m.SortDepositAboveAvgBid()
 }
 
 func (m NftBids) SortLowerLendingRate() NftBids {
@@ -126,11 +157,21 @@ func (m NftBids) SortHigherLendingRate() NftBids {
 	return dest
 }
 
-func (m NftBids) SortLowerDepositAmount() NftBids {
+func (m NftBids) SortDepositAboveAvgBid() NftBids {
 	dest := NftBids{}
+	if len(m) == 0 {
+		return dest
+	}
+	qDash := m.GetAverageBidAmount()
 	dest = append(NftBids{}, m...)
 	sort.SliceStable(dest, func(i, j int) bool {
-		return dest[i].DepositAmount.IsLT(dest[j].DepositAmount)
+		if dest[i].BidAmount.IsLT(qDash) {
+			return false
+		}
+		if dest[j].BidAmount.IsLT(qDash) {
+			return true
+		}
+		return dest[i].DepositAmount.IsGTE(dest[j].DepositAmount)
 	})
 	return dest
 }
@@ -142,6 +183,27 @@ func (m NftBids) SortLowerBiddingPeriod() NftBids {
 		return dest[i].BiddingPeriod.Before(dest[j].BiddingPeriod)
 	})
 	return dest
+}
+
+func (m NftBids) SortHigherDeposit() NftBids {
+	dest := NftBids{}
+	dest = append(NftBids{}, m...)
+	sort.SliceStable(dest, func(i, j int) bool {
+		return dest[i].DepositAmount.IsGTE(dest[j].DepositAmount)
+	})
+	return dest
+}
+
+func (m NftBids) GetAverageBidAmount() sdk.Coin {
+	if len(m) == 0 {
+		return sdk.Coin{}
+	}
+	denom := m[0].BidAmount.Denom
+	totalAmount := sdk.NewCoin(denom, sdk.ZeroInt())
+	for _, bid := range m {
+		totalAmount = totalAmount.Add(bid.BidAmount)
+	}
+	return sdk.NewCoin(denom, totalAmount.Amount.Quo(sdk.NewInt(int64(len(m)))))
 }
 
 func (m NftBids) GetHighestBid() NftBid {
@@ -166,9 +228,13 @@ func (m NftBids) GetBidByBidder(bidder string) NftBid {
 	return NftBid{}
 }
 
-func (m NftBids) MakeExcludeExpiredBids(expiredBids NftBids) NftBids {
+func (m NftBids) RemoveBid(targetBid NftBid) NftBids {
+	return m.RemoveBids(NftBids{targetBid})
+}
+
+func (m NftBids) RemoveBids(excludeBids NftBids) NftBids {
 	excludeList := make(map[string]bool)
-	for _, s := range expiredBids {
+	for _, s := range excludeBids {
 		excludeList[s.Bidder] = true
 	}
 	var newArr NftBids
@@ -180,10 +246,41 @@ func (m NftBids) MakeExcludeExpiredBids(expiredBids NftBids) NftBids {
 	return newArr
 }
 
+func (m NftBids) MakeExcludeExpiredBids(expiredBids NftBids) NftBids {
+	return m.RemoveBids(expiredBids)
+}
+
 func (m NftBids) MakeBorrowedBidExcludeExpiredBids(borrowAmount sdk.Coin, start time.Time, expiredBids NftBids) NftBids {
 	newBids := m.MakeExcludeExpiredBids(expiredBids)
 	newBids.BorrowFromBids(borrowAmount, start)
 	return newBids
+}
+func (m NftBids) MakeCollectedBidsAndRefundBids() (NftBids, NftBids) {
+	collectedBids := NftBids{}
+	refundBids := NftBids{}
+	existWinner := false
+	for _, bid := range m {
+		if existWinner {
+			if bid.IsPaidBidAmount() {
+				existWinner = true
+				continue
+			} else {
+				collectedBids = append(collectedBids, bid)
+			}
+		}
+		refundBids = append(refundBids, bid)
+	}
+	return collectedBids, refundBids
+}
+
+// get winner bid
+func (m NftBids) GetWinnerBid() NftBid {
+	for _, bid := range m {
+		if bid.IsPaidBidAmount() {
+			return bid
+		}
+	}
+	return NftBid{}
 }
 
 func (m *NftBids) BorrowFromBids(borrowAmount sdk.Coin, start time.Time) {
@@ -231,12 +328,50 @@ func (m NftBids) BorrowableAmount(denom string) sdk.Coin {
 	return coin
 }
 
+func (m NftBids) TotalDeposit() sdk.Coin {
+	if len(m) == 0 {
+		return sdk.Coin{}
+	}
+	coin := sdk.NewCoin(m[0].DepositAmount.Denom, sdk.ZeroInt())
+	for _, s := range m {
+		coin = coin.Add(s.DepositAmount)
+	}
+	return coin
+}
+
+func (m NftBids) TotalInterestAmount(end time.Time) sdk.Coin {
+	if len(m) == 0 {
+		return sdk.Coin{}
+	}
+	coin := sdk.NewCoin(m[0].DepositAmount.Denom, sdk.ZeroInt())
+	for _, bid := range m {
+		coin = coin.Add(bid.TotalInterestAmount(end))
+	}
+	return coin
+}
+
 func (m NftBids) LiquidationAmount(denom string, end time.Time) sdk.Coin {
 	coin := sdk.NewCoin(denom, sdk.ZeroInt())
 	for _, s := range m {
 		coin = coin.Add(s.LiquidationAmount(end))
 	}
 	return coin
+}
+
+func (m NftBids) FindKickOutBid(newBid NftBid, end time.Time) NftBid {
+	HigherDepositBids := m.SortHigherDeposit()
+	kickOutBid := NftBid{}
+	for _, b := range HigherDepositBids {
+		if b.IsLT(newBid) {
+			refundAmount := b.TotalInterestAmount(end)
+			refundAmount = refundAmount.Add(b.DepositAmount)
+			if refundAmount.IsLT(newBid.DepositAmount) {
+				kickOutBid = b
+				break
+			}
+		}
+	}
+	return kickOutBid
 }
 
 // todo: add proto then use it

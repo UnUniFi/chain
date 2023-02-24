@@ -1930,6 +1930,7 @@ for poc2 to track the key data related to the financial function
 | `full_payment_end_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `successful_bid_end_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `auto_relisted_count` | [uint64](#uint64) |  |  |
+| `collected_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
