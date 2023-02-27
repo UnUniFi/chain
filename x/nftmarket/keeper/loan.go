@@ -189,15 +189,16 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 		return types.ErrInvalidRepayDenom
 	}
 
+	listerAmount := k.bankKeeper.GetBalance(ctx, msg.Sender.AccAddress(), msg.Amount.Denom)
+	if listerAmount.Amount.LT(msg.Amount.Amount) {
+		return types.ErrInsufficientBalance
+	}
+
 	currDebt := k.GetDebtByNft(ctx, msg.NftId.IdBytes())
 
 	// return err if borrowing didn't happen once before
 	if currDebt.Loan.IsNil() {
 		return types.ErrNotBorrowed
-	}
-
-	if msg.Amount.Amount.GT(currDebt.Loan.Amount) {
-		return types.ErrRepayAmountExceedsLoanAmount
 	}
 
 	bids := types.NftBids(k.GetBidsByNft(ctx, msg.NftId.IdBytes())).SortRepay()
@@ -216,7 +217,6 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 				break
 			}
 
-			// repaidAmount.Amount = borrow.RepayThenGetAmount(repaidAmount, bid, ctx.BlockTime())
 			receipt := borrow.RepayThenGetReceipt(repaidAmount, ctx.BlockTime(), bid.CalcInterestF())
 			repaidAmount.Amount = receipt.Charge.Amount
 			bid.InterestAmount = bid.InterestAmount.Add(receipt.PaidInterestAmount)
@@ -225,52 +225,15 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 				borrowings = append(borrowings, borrow)
 			}
 		}
-		// 	principal := borrow.Amount
-		// 	interest := bid.CalcInterest(principal, bid.DepositLendingRate, borrow.StartAt, ctx.BlockTime())
-		// 	interest = interest.Sub(borrow.PaidInterestAmount)
-		// 	total := sdk.NewCoin(principal.Denom, sdk.ZeroInt())
-		// 	total = total.Add(principal)
-		// 	total = total.Add(interest)
-		// 	// bigger msg Amount
-		// 	if msg.Amount.IsGTE(total) {
-		// 		bid.InterestAmount = bid.InterestAmount.Add(interest)
-		// 		msg.Amount = msg.Amount.Sub(total)
-		// 		principal.Amount = sdk.ZeroInt()
-		// 	} else {
-		// 		// bigger total Amount
-		// 		if msg.Amount.IsGTE(interest) {
-		// 			// can paid interest
-		// 			if msg.Amount.Amount.GT(interest.Amount) {
-		// 				// all paid interest and part paid principal
-		// 				msg.Amount = msg.Amount.Sub(interest)
-		// 				bid.InterestAmount = bid.InterestAmount.Add(interest)
-		// 				principal = principal.Sub(msg.Amount)
-		// 				borrow.PaidInterestAmount.Amount = sdk.ZeroInt()
-		// 				borrow.StartAt = ctx.BlockTime()
-		// 			} else {
-		// 				// all paid interest
-		// 				bid.InterestAmount = bid.InterestAmount.Add(interest)
-		// 				borrow.PaidInterestAmount = borrow.PaidInterestAmount.Add(interest)
-		// 				msg.Amount = msg.Amount.Sub(interest)
-		// 			}
-		// 		} else {
-		// 			// can not paid interest
-		// 			bid.InterestAmount.Add(msg.Amount)
-		// 			borrow.PaidInterestAmount.Add(msg.Amount)
-		// 		}
-		// 		msg.Amount.Amount = sdk.ZeroInt()
-		// 		borrowings = append(borrowings, borrow)
-		// 	}
-		// }
 		// clean up Borrowings
 		bid.Borrowings = borrowings
 		k.SetBid(ctx, bid)
 	}
 
-	k.DecreaseDebt(ctx, msg.NftId, msg.Amount)
-
 	sender := msg.Sender.AccAddress()
-	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{msg.Amount})
+	debitAmount := msg.Amount.Sub(repaidAmount)
+	k.DecreaseDebt(ctx, msg.NftId, debitAmount)
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{debitAmount})
 	if err != nil {
 		return err
 	}

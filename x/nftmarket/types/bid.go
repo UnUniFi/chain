@@ -386,8 +386,7 @@ func (m *Borrowing) RepayThenGetReceipt(payAmount sdk.Coin, payTime time.Time, c
 	interest = interest.Sub(m.PaidInterestAmount)
 	paidInterestAmount := sdk.NewCoin(principal.Denom, sdk.ZeroInt())
 	total := sdk.NewCoin(principal.Denom, sdk.ZeroInt())
-	total = total.Add(principal)
-	total = total.Add(interest)
+	total = total.Add(principal).Add(interest)
 	// bigger msg Amount
 	if payAmount.IsGTE(total) {
 		// bid.InterestAmount = bid.InterestAmount.Add(interest)
