@@ -80,10 +80,10 @@
     - [Params](#ununifi.derivatives.Params)
     - [PerpetualFuturesParams](#ununifi.derivatives.PerpetualFuturesParams)
     - [PerpetualOptionsParams](#ununifi.derivatives.PerpetualOptionsParams)
-    - [Pool](#ununifi.derivatives.Pool)
-    - [Pool.Asset](#ununifi.derivatives.Pool.Asset)
     - [PoolMarketCap](#ununifi.derivatives.PoolMarketCap)
     - [PoolMarketCap.Breakdown](#ununifi.derivatives.PoolMarketCap.Breakdown)
+    - [PoolParams](#ununifi.derivatives.PoolParams)
+    - [PoolParams.Asset](#ununifi.derivatives.PoolParams.Asset)
     - [Position](#ununifi.derivatives.Position)
   
     - [PositionType](#ununifi.derivatives.PositionType)
@@ -1366,7 +1366,7 @@ Query defines the gRPC querier service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `pool` | [Pool](#ununifi.derivatives.Pool) |  |  |
+| `pool_params` | [PoolParams](#ununifi.derivatives.PoolParams) |  |  |
 | `perpetual_futures` | [PerpetualFuturesParams](#ununifi.derivatives.PerpetualFuturesParams) |  |  |
 | `perpetual_options` | [PerpetualOptionsParams](#ununifi.derivatives.PerpetualOptionsParams) |  |  |
 
@@ -1412,43 +1412,6 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.Pool"></a>
-
-### Pool
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `quote_ticker` | [string](#string) |  |  |
-| `base_lpt_mint_fee` | [string](#string) |  |  |
-| `base_lpt_redeem_fee` | [string](#string) |  |  |
-| `borrowing_fee_rate_per_hour` | [string](#string) |  |  |
-| `report_liquidation_reward_rate` | [string](#string) |  |  |
-| `report_levy_period_reward_rate` | [string](#string) |  |  |
-| `accepted_assets` | [Pool.Asset](#ununifi.derivatives.Pool.Asset) | repeated |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.Pool.Asset"></a>
-
-### Pool.Asset
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `denom` | [string](#string) |  |  |
-| `target_weight` | [string](#string) |  |  |
-
-
-
-
-
-
 <a name="ununifi.derivatives.PoolMarketCap"></a>
 
 ### PoolMarketCap
@@ -1477,6 +1440,43 @@ Query defines the gRPC querier service.
 | `denom` | [string](#string) |  |  |
 | `amount` | [string](#string) |  |  |
 | `price` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.PoolParams"></a>
+
+### PoolParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `quote_ticker` | [string](#string) |  |  |
+| `base_lpt_mint_fee` | [string](#string) |  |  |
+| `base_lpt_redeem_fee` | [string](#string) |  |  |
+| `borrowing_fee_rate_per_hour` | [string](#string) |  |  |
+| `report_liquidation_reward_rate` | [string](#string) |  |  |
+| `report_levy_period_reward_rate` | [string](#string) |  |  |
+| `accepted_assets` | [PoolParams.Asset](#ununifi.derivatives.PoolParams.Asset) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.PoolParams.Asset"></a>
+
+### PoolParams.Asset
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+| `target_weight` | [string](#string) |  |  |
 
 
 
@@ -1543,7 +1543,9 @@ GenesisState defines the derivatives module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#ununifi.derivatives.Params) |  | this line is used by starport scaffolding # genesis/proto/state |
+| `params` | [Params](#ununifi.derivatives.Params) |  |  |
+| `positions` | [Position](#ununifi.derivatives.Position) | repeated |  |
+| `pool_market_cap` | [PoolMarketCap](#ununifi.derivatives.PoolMarketCap) |  |  |
 
 
 

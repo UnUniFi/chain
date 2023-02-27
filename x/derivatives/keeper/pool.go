@@ -6,15 +6,15 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
-func (k Keeper) GetPoolAssets(ctx sdk.Context) []types.Pool_Asset {
+func (k Keeper) GetPoolAssets(ctx sdk.Context) []types.PoolParams_Asset {
 	store := ctx.KVStore(k.storeKey)
 
-	assets := []types.Pool_Asset{}
+	assets := []types.PoolParams_Asset{}
 	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixDerivativesPoolAssets))
 	defer it.Close()
 
 	for ; it.Valid(); it.Next() {
-		asset := types.Pool_Asset{}
+		asset := types.PoolParams_Asset{}
 		k.cdc.Unmarshal(it.Value(), &asset)
 
 		assets = append(assets, asset)
@@ -23,19 +23,20 @@ func (k Keeper) GetPoolAssets(ctx sdk.Context) []types.Pool_Asset {
 	return assets
 }
 
-func (k Keeper) GetPoolAssetByDenom(ctx sdk.Context, denom string) types.Pool_Asset {
+func (k Keeper) GetPoolAssetByDenom(ctx sdk.Context, denom string) types.PoolParams_Asset {
 	store := ctx.KVStore(k.storeKey)
 
-	asset := types.Pool_Asset{}
+	asset := types.PoolParams_Asset{}
 	bz := store.Get(types.AssetKeyPrefix(denom))
 	k.cdc.MustUnmarshal(bz, &asset)
 
 	return asset
 }
 
-func (k Keeper) AddPoolAsset(ctx sdk.Context, asset types.Pool_Asset) {
+func (k Keeper) AddPoolAsset(ctx sdk.Context, asset types.PoolParams_Asset) {
 	store := ctx.KVStore(k.storeKey)
 
+	// TODO: remove below two lines as to change the way to handle PoolParams_Asset validation or reference
 	bz := k.cdc.MustMarshal(&asset)
 	store.Set(types.AssetKeyPrefix(asset.Denom), bz)
 
@@ -47,7 +48,7 @@ func (k Keeper) AddPoolAsset(ctx sdk.Context, asset types.Pool_Asset) {
 	store.Set(types.AssetDepositKeyPrefix(asset.Denom), coinBz)
 }
 
-func (k Keeper) IsAssetValid(ctx sdk.Context, iasset types.Pool_Asset) bool {
+func (k Keeper) IsAssetValid(ctx sdk.Context, iasset types.PoolParams_Asset) bool {
 	assets := k.GetPoolAssets(ctx)
 
 	for _, asset := range assets {
@@ -140,7 +141,9 @@ func (k Keeper) GetPoolMarketCapSnapshot(ctx sdk.Context, height int64) types.Po
 
 	bz := store.Get(types.AddressPoolMarketCapSnapshotKeyPrefix(height))
 	marketCap := types.PoolMarketCap{}
-	k.cdc.Unmarshal(bz, &marketCap)
+	if err := k.cdc.Unmarshal(bz, &marketCap); err != nil {
+		return types.PoolMarketCap{}
+	}
 
 	return marketCap
 }
@@ -157,7 +160,7 @@ func (k Keeper) SetPoolMarketCapSnapshot(ctx sdk.Context, height int64, marketCa
 }
 
 func (k Keeper) GetPoolQuoteTicker(ctx sdk.Context) string {
-	return k.GetParams(ctx).Pool.QuoteTicker
+	return k.GetParams(ctx).PoolParams.QuoteTicker
 }
 
 func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {

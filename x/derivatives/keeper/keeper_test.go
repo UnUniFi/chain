@@ -112,9 +112,9 @@ func (suite *KeeperTestSuite) SetupTest() {
 	keeper := keeper.NewKeeper(appCodec, app.GetKey(types.StoreKey), app.GetKey(types.MemStoreKey), suite.app.GetSubspace(types.ModuleName), bankKeeper, pricefeedKeeper)
 
 	params := types.DefaultParams()
-	params.Pool.AcceptedAssets = []*types.Pool_Asset{
-		{Denom: TestBaseTokenDenom, TargetWeight: sdk.MustNewDecFromStr("0.5")},
-		{Denom: TestQuoteTokenDenom, TargetWeight: sdk.MustNewDecFromStr("0.5")},
+	params.PoolParams.AcceptedAssets = []*types.PoolParams_Asset{
+		{Denom: "uatom", TargetWeight: sdk.MustNewDecFromStr("0.5")},
+		{Denom: "uusdc", TargetWeight: sdk.MustNewDecFromStr("0.5")},
 	}
 	params.PerpetualFutures.Markets = []*types.Market{
 		{BaseDenom: TestBaseTokenDenom, QuoteDenom: TestQuoteTokenDenom},
@@ -122,7 +122,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 	keeper.SetParams(suite.ctx, params)
 
-	for _, asset := range params.Pool.AcceptedAssets {
+	for _, asset := range params.PoolParams.AcceptedAssets {
 		keeper.AddPoolAsset(suite.ctx, *asset)
 	}
 	suite.keeper = keeper

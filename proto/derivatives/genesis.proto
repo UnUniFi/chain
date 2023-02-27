@@ -3,12 +3,15 @@ package ununifi.derivatives;
 
 import "gogoproto/gogo.proto";
 import "derivatives/derivatives.proto";
-// this line is used by starport scaffolding # genesis/proto/import
+import "derivatives/perpetual_futures.proto";
+import "derivatives/params.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/derivatives/types";
 
 // GenesisState defines the derivatives module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
-  // this line is used by starport scaffolding # genesis/proto/state
+  repeated Position positions = 2 [(gogoproto.nullable) = false];
+  PoolMarketCap pool_market_cap = 3 [(gogoproto.nullable) = false];
+  repeated PerpetualFuturesNetPositionOfMarket perpetual_futures_net_position_of_market = 4 [(gogoproto.nullable) = false];
 }

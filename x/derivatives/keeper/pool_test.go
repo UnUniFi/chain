@@ -7,8 +7,8 @@ import (
 	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
-func (suite *KeeperTestSuite) AddPoolAssets() []types.Pool_Asset {
-	assets := []types.Pool_Asset{
+func (suite *KeeperTestSuite) AddPoolAssets() []types.PoolParams_Asset {
+	assets := []types.PoolParams_Asset{
 		{
 			Denom:        "uusdc",
 			TargetWeight: sdk.NewDec(1),

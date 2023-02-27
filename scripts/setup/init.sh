@@ -72,9 +72,12 @@ jq '.app_state.pricefeed.params.markets = [
   { "market_id": "ubtc:uusdc", "base_asset":"ubtc", "quote_asset":"uusdc", "oracles": ["'$PRICEFEED_ADDRESS'"], "active": true},
   { "market_id": "ubtc:uusdc:30", "base_asset":"ubtc", "quote_asset":"uusdc", "oracles": ["'$PRICEFEED_ADDRESS'"], "active": true}
   ]'  $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
-jq '.app_state.derivatives.params.pool.base_lpt_mint_fee = "0.001"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
-jq '.app_state.derivatives.params.pool.base_lpt_redeem_fee = "0.001"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
-jq '.app_state.derivatives.params.pool.accepted_assets = [{"denom":"ubtc", "target_weight": "0.6"}, {"denom":"uusdc", "target_weight":"0.4"}]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.derivatives.params.pool_params.quote_ticker = "usd"' ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
+jq '.app_state.derivatives.params.pool_params.base_lpt_mint_fee = "0.001"' ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
+jq '.app_state.derivatives.params.pool_params.base_lpt_redeem_fee = "0.001"' ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
+jq '.app_state.derivatives.params.pool_params.report_liquidation_reward_rate = "0.001"' ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
+jq '.app_state.derivatives.params.pool_params.report_levy_period_reward_rate = "0.001"' ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
+jq '.app_state.derivatives.params.pool_params.accepted_assets = [{"denom":"ubtc", "target_weight": "0.6"}, {"denom":"uusdc", "target_weight":"0.4"}]' ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
 jq '.app_state.derivatives.params.perpetual_futures.commission_rate = "0.001"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.perpetual_futures.margin_maintenance_rate = "0.5"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.perpetual_futures.imaginary_funding_rate_proportional_coefficient = "0.0005"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
