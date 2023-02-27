@@ -325,7 +325,7 @@ type App struct {
 	EcosystemincentiveKeeper ecosystemincentivekeeper.Keeper
 	incentiveKeeper          incentivekeeper.Keeper
 	ununifidistKeeper        ununifidistkeeper.Keeper
-	pricefeedKeeper          pricefeedkeeper.Keeper
+	PricefeedKeeper          pricefeedkeeper.Keeper
 	NftmintKeeper            nftmintkeeper.Keeper
 	NftmarketKeeper          nftmarketkeeper.Keeper
 	DerivativesKeeper        derivativeskeeper.Keeper
@@ -544,7 +544,7 @@ func NewApp(
 		app.AccountKeeper,
 		app.BankKeeper,
 	)
-	app.pricefeedKeeper = pricefeedkeeper.NewKeeper(
+	app.PricefeedKeeper = pricefeedkeeper.NewKeeper(
 		appCodec,
 		keys[pricefeedtypes.StoreKey],
 		keys[pricefeedtypes.MemStoreKey],
@@ -559,7 +559,7 @@ func NewApp(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.auctionKeeper,
-		app.pricefeedKeeper,
+		app.PricefeedKeeper,
 		maccPerms,
 	)
 	app.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
@@ -612,7 +612,7 @@ func NewApp(
 		keys[derivativestypes.MemStoreKey],
 		app.GetSubspace(derivativestypes.ModuleName),
 		app.BankKeeper,
-		app.pricefeedKeeper,
+		app.PricefeedKeeper,
 	)
 
 	// create Keeper objects which have Hooks
@@ -703,12 +703,12 @@ func NewApp(
 		// transferModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 		auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
-		cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.pricefeedKeeper),
+		cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.PricefeedKeeper),
 		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
 		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
 		incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
 		ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
-		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
+		pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
 		nftmint.NewAppModule(appCodec, app.NftmintKeeper, app.NFTKeeper),
 		nftmarket.NewAppModule(appCodec, app.NftmarketKeeper, app.AccountKeeper, app.BankKeeper),
 		// wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
@@ -858,10 +858,10 @@ func NewApp(
 		// transferModule,
 		// TODO
 		// auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
-		// cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.pricefeedKeeper),
+		// cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.PricefeedKeeper),
 		// incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
 		// ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
-		// pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
+		// pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
 	)
 
 	// initialize stores

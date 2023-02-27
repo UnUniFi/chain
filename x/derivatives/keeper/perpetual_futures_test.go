@@ -1,6 +1,11 @@
 package keeper_test
 
 import (
+	"time"
+
+	ununifitypes "github.com/UnUniFi/chain/types"
+	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
+
 	"github.com/tendermint/tendermint/crypto/ed25519"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
@@ -21,6 +26,15 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 
 	netPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(market, sdk.ZeroDec())
 	suite.keeper.SetPerpetualFuturesNetPositionOfMarket(suite.ctx, netPositionOfMarket)
+	_, err := suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:uusdc", sdk.NewDec(13), suite.ctx.BlockTime().Add(time.Hour*3))
+	suite.Require().NoError(err)
+	params := suite.app.PricefeedKeeper.GetParams(suite.ctx)
+	params.Markets = []pricefeedtypes.Market{
+		{MarketId: "uatom:uusdc", BaseAsset: "uatom", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+	}
+	suite.app.PricefeedKeeper.SetParams(suite.ctx, params)
+	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:uusdc")
+	suite.Require().NoError(err)
 
 	positionInst := types.PerpetualFuturesPositionInstance{
 		PositionType: types.PositionType_LONG,
