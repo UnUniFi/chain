@@ -22,6 +22,11 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
+var (
+	TestBaseTokenDenom  = "uatom"
+	TestQuoteTokenDenom = "uusdc"
+)
+
 type KeeperTestSuite struct {
 	suite.Suite
 
@@ -58,23 +63,23 @@ func (suite *KeeperTestSuite) SetupTest() {
 	metadataAtom := banktypes.Metadata{
 		DenomUnits: []*banktypes.DenomUnit{
 			{
-				Denom:    "uatom",
+				Denom:    TestBaseTokenDenom,
 				Exponent: 6,
 			},
 		},
-		Base:   "uatom",
-		Symbol: "uatom",
+		Base:   TestBaseTokenDenom,
+		Symbol: TestBaseTokenDenom,
 	}
 
 	metadataUsdc := banktypes.Metadata{
 		DenomUnits: []*banktypes.DenomUnit{
 			{
-				Denom:    "uusdc",
+				Denom:    TestQuoteTokenDenom,
 				Exponent: 6,
 			},
 		},
-		Base:   "uusdc",
-		Symbol: "uusdc",
+		Base:   TestQuoteTokenDenom,
+		Symbol: TestQuoteTokenDenom,
 	}
 
 	bankKeeper.SetDenomMetaData(suite.ctx, metadataAtom)
@@ -89,9 +94,9 @@ func (suite *KeeperTestSuite) SetupTest() {
 	)
 	pfParams := pricefeedtypes.Params{
 		Markets: []pricefeedtypes.Market{
-			{MarketId: "uusdc:usd", BaseAsset: "uusdc", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
-			{MarketId: "uatom:usd", BaseAsset: "uatom", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
-			{MarketId: "uatom:usdc", BaseAsset: "uatom", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+			{MarketId: "uusdc:usd", BaseAsset: TestQuoteTokenDenom, QuoteAsset: TestQuoteTokenDenom, Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+			{MarketId: "uatom:usd", BaseAsset: TestBaseTokenDenom, QuoteAsset: TestQuoteTokenDenom, Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+			{MarketId: "uatom:usdc", BaseAsset: TestBaseTokenDenom, QuoteAsset: TestQuoteTokenDenom, Oracles: []ununifitypes.StringAccAddress{}, Active: true},
 		},
 	}
 	pricefeedKeeper.SetParams(suite.ctx, pfParams)
@@ -108,11 +113,11 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 	params := types.DefaultParams()
 	params.Pool.AcceptedAssets = []*types.Pool_Asset{
-		{Denom: "uatom", TargetWeight: sdk.MustNewDecFromStr("0.5")},
-		{Denom: "uusdc", TargetWeight: sdk.MustNewDecFromStr("0.5")},
+		{Denom: TestBaseTokenDenom, TargetWeight: sdk.MustNewDecFromStr("0.5")},
+		{Denom: TestQuoteTokenDenom, TargetWeight: sdk.MustNewDecFromStr("0.5")},
 	}
 	params.PerpetualFutures.Markets = []*types.Market{
-		{BaseDenom: "uatom", QuoteDenom: "uusdc"},
+		{BaseDenom: TestBaseTokenDenom, QuoteDenom: TestQuoteTokenDenom},
 	}
 
 	keeper.SetParams(suite.ctx, params)
