@@ -20,3 +20,7 @@ package keeper_test
 // func (m NftListing) CanRefinancing(allBids, expiredBids []NftBid, now time.Time) bool {
 // func (m NftListing) CalcAmount(bids []NftBid) sdk.Int {
 // func (m NftListing) CalcAmountF(bids []NftBid, conditionF func(bid NftBid) bool) sdk.Int {
+
+// TODO: update for panic handling
+// TODO: more comment on the code
+// TODO: write test scenarios using CLI example test flow
