@@ -515,6 +515,8 @@ func CheckBidParams(listing types.NftListing, bid, deposit sdk.Coin, bids []type
 	}
 	q.Amount = q.Amount.Quo(sdk.NewInt(int64(bidLen)))
 	if q.IsLTE(s) {
+		fmt.Println("q", q.String())
+		fmt.Println("s", s.String())
 		return types.ErrBidParamInvalid
 	}
 	q_s := q.Sub(s)
@@ -522,6 +524,8 @@ func CheckBidParams(listing types.NftListing, bid, deposit sdk.Coin, bids []type
 	// todo implement min{bid, q-s}
 
 	if depositDec.GT(q_s_dec) {
+		fmt.Println("depositDec", depositDec.String())
+		fmt.Println("q_s_dec", q_s_dec.String())
 		// deposit amount bigger
 		return types.ErrBidParamInvalid
 	}

@@ -813,6 +813,7 @@ func (suite *KeeperTestSuite) TestSellingDecision() {
 
 			// init tokens to addr
 			coin := sdk.NewInt64Coin("uguu", int64(1000000*(i+1)))
+			halfCoin := sdk.NewInt64Coin("uguu", int64(1000000*(i+1)/2))
 			mintCoin := coin
 			if !tc.enoughAutoPay {
 				mintCoin = sdk.NewInt64Coin("uguu", int64(1000000*(i+1)/2))
@@ -823,10 +824,12 @@ func (suite *KeeperTestSuite) TestSellingDecision() {
 			suite.NoError(err)
 
 			err := suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
-				Sender:           ununifitypes.StringAccAddress(bidder),
-				NftId:            nftIdentifier,
-				BidAmount:        coin,
-				AutomaticPayment: tc.autoPayment,
+				Sender:             ununifitypes.StringAccAddress(bidder),
+				NftId:              nftIdentifier,
+				BidAmount:          coin,
+				DepositAmount:      halfCoin,
+				AutomaticPayment:   tc.autoPayment,
+				DepositLendingRate: "0.1",
 			})
 			suite.Require().NoError(err)
 		}

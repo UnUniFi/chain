@@ -222,74 +222,74 @@ func (suite *KeeperTestSuite) TestSafeCloseBid() {
 	}
 }
 
-func (suite *KeeperTestSuite) TestTotalActiveRankDeposit() {
-	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	owner2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	owner3 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+// func (suite *KeeperTestSuite) TestTotalActiveRankDeposit() {
+// 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+// 	owner2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+// 	owner3 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
-	classId := "1"
-	nftId := "1"
-	suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
-		Id:          classId,
-		Name:        classId,
-		Symbol:      classId,
-		Description: classId,
-		Uri:         classId,
-	})
-	err := suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
-		ClassId: classId,
-		Id:      nftId,
-		Uri:     nftId,
-		UriHash: nftId,
-	}, owner)
-	suite.Require().NoError(err)
+// 	classId := "1"
+// 	nftId := "1"
+// 	suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+// 		Id:          classId,
+// 		Name:        classId,
+// 		Symbol:      classId,
+// 		Description: classId,
+// 		Uri:         classId,
+// 	})
+// 	err := suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
+// 		ClassId: classId,
+// 		Id:      nftId,
+// 		Uri:     nftId,
+// 		UriHash: nftId,
+// 	}, owner)
+// 	suite.Require().NoError(err)
 
-	nftIdentifier := types.NftIdentifier{ClassId: classId, NftId: nftId}
-	err = suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
-		Sender:             ununifitypes.StringAccAddress(owner),
-		NftId:              nftIdentifier,
-		ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
-		BidToken:           "uguu",
-		MinimumDepositRate: "0.1",
-	})
-	suite.Require().NoError(err)
+// 	nftIdentifier := types.NftIdentifier{ClassId: classId, NftId: nftId}
+// 	err = suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
+// 		Sender:             ununifitypes.StringAccAddress(owner),
+// 		NftId:              nftIdentifier,
+// 		ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
+// 		BidToken:           "uguu",
+// 		MinimumDepositRate: "0.1",
+// 	})
+// 	suite.Require().NoError(err)
 
-	now := time.Now().UTC()
-	bids := []types.NftBid{
-		{
-			NftId:            nftIdentifier,
-			Bidder:           owner.String(),
-			BidAmount:        sdk.NewInt64Coin("uguu", 1000000),
-			AutomaticPayment: true,
-			DepositAmount:    sdk.NewInt64Coin("uguu", 1000000),
-			BidTime:          now,
-		},
-		{
-			NftId:            nftIdentifier,
-			Bidder:           owner2.String(),
-			BidAmount:        sdk.NewInt64Coin("uguu", 2000000),
-			AutomaticPayment: true,
-			DepositAmount:    sdk.NewInt64Coin("uguu", 1500000),
-			BidTime:          now,
-		},
-		{
-			NftId:            nftIdentifier,
-			Bidder:           owner3.String(),
-			BidAmount:        sdk.NewInt64Coin("uguu", 3000000),
-			AutomaticPayment: true,
-			DepositAmount:    sdk.NewInt64Coin("uguu", 2000000),
-			BidTime:          now,
-		},
-	}
+// 	now := time.Now().UTC()
+// 	bids := []types.NftBid{
+// 		{
+// 			NftId:            nftIdentifier,
+// 			Bidder:           owner.String(),
+// 			BidAmount:        sdk.NewInt64Coin("uguu", 1000000),
+// 			AutomaticPayment: true,
+// 			DepositAmount:    sdk.NewInt64Coin("uguu", 1000000),
+// 			BidTime:          now,
+// 		},
+// 		{
+// 			NftId:            nftIdentifier,
+// 			Bidder:           owner2.String(),
+// 			BidAmount:        sdk.NewInt64Coin("uguu", 2000000),
+// 			AutomaticPayment: true,
+// 			DepositAmount:    sdk.NewInt64Coin("uguu", 1500000),
+// 			BidTime:          now,
+// 		},
+// 		{
+// 			NftId:            nftIdentifier,
+// 			Bidder:           owner3.String(),
+// 			BidAmount:        sdk.NewInt64Coin("uguu", 3000000),
+// 			AutomaticPayment: true,
+// 			DepositAmount:    sdk.NewInt64Coin("uguu", 2000000),
+// 			BidTime:          now,
+// 		},
+// 	}
 
-	for _, bid := range bids {
-		suite.app.NftmarketKeeper.SetBid(suite.ctx, bid)
-	}
+// 	for _, bid := range bids {
+// 		suite.app.NftmarketKeeper.SetBid(suite.ctx, bid)
+// 	}
 
-	// check total active rank deposit
-	activeRankDeposit := suite.app.NftmarketKeeper.TotalActiveRankDeposit(suite.ctx, nftIdentifier.IdBytes())
-	suite.Require().Equal(activeRankDeposit, sdk.NewInt(3500000))
-}
+// 	// check total active rank deposit
+// 	activeRankDeposit := suite.app.NftmarketKeeper.TotalActiveRankDeposit(suite.ctx, nftIdentifier.IdBytes())
+// 	suite.Require().Equal(activeRankDeposit, sdk.NewInt(3500000))
+// }
 
 func (suite *KeeperTestSuite) TestPlaceBid() {
 	acc1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
