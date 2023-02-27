@@ -28,7 +28,6 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 	}
 
 	position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, positionId, owner.Bytes(), margin, market, positionInst)
-
 	suite.Require().NoError(err)
 	suite.Require().NotNil(position)
 
