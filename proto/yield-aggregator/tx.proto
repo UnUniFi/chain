@@ -1,0 +1,43 @@
+syntax = "proto3";
+package ununifi.chain.yieldaggregator;
+
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/UnUniFi/chain/x/yieldaggregator/types";
+
+// Msg defines the Msg service.
+service Msg {
+    // this line is used by starport scaffolding # proto/tx/rpc
+    rpc DepositToVault(MsgDepositToVault) returns (MsgDepositToVaultResponse);
+    rpc WithdrawFromVault(MsgWithdrawFromVault) returns (MsgWithdrawFromVaultResponse);
+}
+
+// this line is used by starport scaffolding # proto/tx/message
+message MsgDepositToVault {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string sender = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
+}
+
+message MsgDepositToVaultResponse {}
+
+message MsgWithdrawFromVault {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string sender = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string principal_denom = 2;
+  string strategy_id = 3;
+  string lp_token_amount = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+}
+
+message MsgWithdrawFromVaultResponse {}

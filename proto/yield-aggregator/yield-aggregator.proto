@@ -1,0 +1,45 @@
+syntax = "proto3";
+package ununifi.chain.yieldaggregator;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/yieldaggregator/types";
+
+message Asset {
+  string denom = 1;
+  AssetMetrics metrics = 2 [(gogoproto.nullable) = false];
+  repeated Strategy strategies = 3;
+}
+
+message Strategy {
+  string id = 1;
+  string contract_address = 2;
+  string name = 3;
+  string weight = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+  StrategyMetrics metrics = 5 [(gogoproto.nullable) = false];
+}
+
+message AssetMetrics {
+  string apy = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+  string tvl = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+}
+
+message StrategyMetrics {
+  string apy = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+  string tvl = 2 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+}
