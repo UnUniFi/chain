@@ -73,10 +73,13 @@ func (k Keeper) GetLPRealYieldRate(ctx sdk.Context, beforeHeight int64, afterHei
 }
 
 func (k Keeper) AnnualizeYieldRate(ctx sdk.Context, yieldRate sdk.Dec, beforeHeight int64, afterHeight int64) sdk.Dec {
-	beforeBlockTime := k.GetBlockTimestamp(ctx, beforeHeight)
-	afterBlockTime := k.GetBlockTimestamp(ctx, afterHeight)
+	beforeBlockTimestamp := k.GetBlockTimestamp(ctx, beforeHeight).Unix()
+	afterBlockTimestamp := k.GetBlockTimestamp(ctx, afterHeight).Unix()
 
-	annualizedYieldRate := yieldRate.Mul(sdk.NewDec(afterBlockTime.Sub(beforeBlockTime).Nanoseconds()).Quo(sdk.NewDec(time.Hour.Nanoseconds() * 24 * 365)))
+	if beforeBlockTimestamp == afterBlockTimestamp {
+		return sdk.ZeroDec()
+	}
 
+	annualizedYieldRate := yieldRate.Mul(sdk.NewDec(86400 * 365)).Quo(sdk.NewDec(afterBlockTimestamp - beforeBlockTimestamp))
 	return annualizedYieldRate
 }
