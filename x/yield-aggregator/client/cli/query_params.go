@@ -6,7 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
-	"github.com/UnUniFi/chain/x/yieldaggregator/types"
+
+	"github.com/UnUniFi/chain/x/yield-aggregator/types"
 )
 
 func CmdQueryParams() *cobra.Command {
