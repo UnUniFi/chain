@@ -1,4 +1,4 @@
-package yieldaggregator
+package yield_aggregator
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"

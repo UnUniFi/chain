@@ -344,6 +344,13 @@
   
 - [yield-aggregator/params.proto](#yield-aggregator/params.proto)
     - [Params](#ununifi.chain.yieldaggregator.Params)
+    - [Params.Vault](#ununifi.chain.yieldaggregator.Params.Vault)
+  
+- [yield-aggregator/yield-aggregator.proto](#yield-aggregator/yield-aggregator.proto)
+    - [Strategy](#ununifi.chain.yieldaggregator.Strategy)
+    - [StrategyMetrics](#ununifi.chain.yieldaggregator.StrategyMetrics)
+    - [Vault](#ununifi.chain.yieldaggregator.Vault)
+    - [VaultMetrics](#ununifi.chain.yieldaggregator.VaultMetrics)
   
 - [yield-aggregator/genesis.proto](#yield-aggregator/genesis.proto)
     - [GenesisState](#ununifi.chain.yieldaggregator.GenesisState)
@@ -361,12 +368,6 @@
     - [MsgWithdrawFromVaultResponse](#ununifi.chain.yieldaggregator.MsgWithdrawFromVaultResponse)
   
     - [Msg](#ununifi.chain.yieldaggregator.Msg)
-  
-- [yield-aggregator/yield-aggregator.proto](#yield-aggregator/yield-aggregator.proto)
-    - [Asset](#ununifi.chain.yieldaggregator.Asset)
-    - [AssetMetrics](#ununifi.chain.yieldaggregator.AssetMetrics)
-    - [Strategy](#ununifi.chain.yieldaggregator.Strategy)
-    - [StrategyMetrics](#ununifi.chain.yieldaggregator.StrategyMetrics)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -4753,7 +4754,107 @@ Params defines the parameters for the module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `vaults` | [Params.Vault](#ununifi.chain.yieldaggregator.Params.Vault) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.Params.Vault"></a>
+
+### Params.Vault
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
 | `performance_fee_rate` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="yield-aggregator/yield-aggregator.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yield-aggregator/yield-aggregator.proto
+
+
+
+<a name="ununifi.chain.yieldaggregator.Strategy"></a>
+
+### Strategy
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `vault_denom` | [string](#string) |  |  |
+| `id` | [string](#string) |  |  |
+| `contract_address` | [string](#string) |  |  |
+| `name` | [string](#string) |  |  |
+| `weight` | [string](#string) |  |  |
+| `metrics` | [StrategyMetrics](#ununifi.chain.yieldaggregator.StrategyMetrics) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.StrategyMetrics"></a>
+
+### StrategyMetrics
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `apy` | [string](#string) |  |  |
+| `tvl` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.Vault"></a>
+
+### Vault
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+| `metrics` | [VaultMetrics](#ununifi.chain.yieldaggregator.VaultMetrics) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.VaultMetrics"></a>
+
+### VaultMetrics
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `apy` | [string](#string) |  |  |
+| `tvl` | [string](#string) |  |  |
 
 
 
@@ -4784,7 +4885,9 @@ GenesisState defines the yieldaggregator module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#ununifi.chain.yieldaggregator.Params) |  | this line is used by starport scaffolding # genesis/proto/state |
+| `params` | [Params](#ununifi.chain.yieldaggregator.Params) |  |  |
+| `vaults` | [Vault](#ununifi.chain.yieldaggregator.Vault) | repeated | this line is used by starport scaffolding # genesis/proto/state |
+| `strategies` | [Strategy](#ununifi.chain.yieldaggregator.Strategy) | repeated |  |
 
 
 
@@ -4896,7 +4999,6 @@ this line is used by starport scaffolding # proto/tx/message
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  |  |
 | `principal_denom` | [string](#string) |  |  |
-| `strategy_id` | [string](#string) |  |  |
 | `lp_token_amount` | [string](#string) |  |  |
 
 
@@ -4929,90 +5031,6 @@ Msg defines the Msg service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `DepositToVault` | [MsgDepositToVault](#ununifi.chain.yieldaggregator.MsgDepositToVault) | [MsgDepositToVaultResponse](#ununifi.chain.yieldaggregator.MsgDepositToVaultResponse) | this line is used by starport scaffolding # proto/tx/rpc | |
 | `WithdrawFromVault` | [MsgWithdrawFromVault](#ununifi.chain.yieldaggregator.MsgWithdrawFromVault) | [MsgWithdrawFromVaultResponse](#ununifi.chain.yieldaggregator.MsgWithdrawFromVaultResponse) |  | |
-
- <!-- end services -->
-
-
-
-<a name="yield-aggregator/yield-aggregator.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## yield-aggregator/yield-aggregator.proto
-
-
-
-<a name="ununifi.chain.yieldaggregator.Asset"></a>
-
-### Asset
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `denom` | [string](#string) |  |  |
-| `metrics` | [AssetMetrics](#ununifi.chain.yieldaggregator.AssetMetrics) |  |  |
-| `strategies` | [Strategy](#ununifi.chain.yieldaggregator.Strategy) | repeated |  |
-
-
-
-
-
-
-<a name="ununifi.chain.yieldaggregator.AssetMetrics"></a>
-
-### AssetMetrics
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `apy` | [string](#string) |  |  |
-| `tvl` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ununifi.chain.yieldaggregator.Strategy"></a>
-
-### Strategy
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  |  |
-| `contract_address` | [string](#string) |  |  |
-| `name` | [string](#string) |  |  |
-| `weight` | [string](#string) |  |  |
-| `metrics` | [StrategyMetrics](#ununifi.chain.yieldaggregator.StrategyMetrics) |  |  |
-
-
-
-
-
-
-<a name="ununifi.chain.yieldaggregator.StrategyMetrics"></a>
-
-### StrategyMetrics
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `apy` | [string](#string) |  |  |
-| `tvl` | [string](#string) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
 
  <!-- end services -->
 

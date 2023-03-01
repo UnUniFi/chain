@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"context"
+
 	"github.com/UnUniFi/chain/x/yield-aggregator/types"
 )
 
@@ -15,3 +17,13 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 }
 
 var _ types.MsgServer = msgServer{}
+
+func (k msgServer) DepositToVault(ctx context.Context, msg *types.MsgDepositToVault) (*types.MsgDepositToVaultResponse, error) {
+	k.Keeper.DepositToVault()
+	panic("implement me")
+}
+
+func (k msgServer) WithdrawFromVault(ctx context.Context, msg *types.MsgWithdrawFromVault) (*types.MsgWithdrawFromVaultResponse, error) {
+	k.Keeper.WithdrawFromVault()
+	panic("implement me")
+}
