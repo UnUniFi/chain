@@ -5,9 +5,10 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-    "github.com/UnUniFi/chain/x/yieldaggregator/types"
-    "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
-    keepertest "github.com/UnUniFi/chain/testutil/keeper"
+
+	keepertest "github.com/UnUniFi/chain/testutil/keeper"
+	"github.com/UnUniFi/chain/x/yield-aggregator/keeper"
+	"github.com/UnUniFi/chain/x/yield-aggregator/types"
 )
 
 func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {

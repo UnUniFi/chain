@@ -4,8 +4,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+
 	testkeeper "github.com/UnUniFi/chain/testutil/keeper"
-	"github.com/UnUniFi/chain/x/yieldaggregator/types"
+	"github.com/UnUniFi/chain/x/yield-aggregator/types"
 )
 
 func TestGetParams(t *testing.T) {

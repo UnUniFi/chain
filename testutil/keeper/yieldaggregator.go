@@ -3,8 +3,6 @@ package keeper
 import (
 	"testing"
 
-	"github.com/UnUniFi/chain/x/yieldaggregator/keeper"
-	"github.com/UnUniFi/chain/x/yieldaggregator/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/store"
@@ -15,6 +13,9 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmdb "github.com/tendermint/tm-db"
+
+	"github.com/UnUniFi/chain/x/yield-aggregator/keeper"
+	"github.com/UnUniFi/chain/x/yield-aggregator/types"
 )
 
 func YieldaggregatorKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
@@ -37,10 +38,10 @@ func YieldaggregatorKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		"YieldaggregatorParams",
 	)
 	k := keeper.NewKeeper(
-	    cdc,
-	    storeKey,
-	    memStoreKey,
-	    paramsSubspace, 
+		cdc,
+		storeKey,
+		memStoreKey,
+		paramsSubspace,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())

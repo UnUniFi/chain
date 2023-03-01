@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/UnUniFi/chain/x/yieldaggregator/types"
+	"github.com/UnUniFi/chain/x/yield-aggregator/types"
 )
 
 type msgServer struct {
