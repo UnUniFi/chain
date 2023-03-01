@@ -19,6 +19,10 @@ func (k Keeper) GetLPTokenSupplySnapshot(ctx sdk.Context, height int64) sdk.Int 
 	store := ctx.KVStore(k.storeKey)
 
 	bz := store.Get(types.AddressLPTokenSupplySnapshotKeyPrefix(height))
+	if bz == nil {
+		return sdk.ZeroInt()
+	}
+
 	supply := sdk.Int{}
 	supply.Unmarshal(bz)
 
@@ -129,10 +133,7 @@ func (k Keeper) DecreaseRedeemDenomAmount(ctx sdk.Context, amount sdk.Coin) erro
 		return err
 	}
 
-	err = k.SetAssetBalance(ctx, decreasedAmount)
-	if err != nil {
-		return err
-	}
+	k.SetAssetBalance(ctx, decreasedAmount)
 	return nil
 }
 
