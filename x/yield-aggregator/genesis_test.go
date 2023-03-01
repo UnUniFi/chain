@@ -1,4 +1,4 @@
-// package yieldaggregator_test
+package yield_aggregator_test
 
 // import (
 // 	"testing"

@@ -2,7 +2,7 @@ package types
 
 const (
 	// ModuleName defines the module name
-	ModuleName = "yieldaggregator"
+	ModuleName = "yield_aggregator"
 
 	// StoreKey defines the primary module store key
 	StoreKey = ModuleName
@@ -11,13 +11,9 @@ const (
 	RouterKey = ModuleName
 
 	// MemStoreKey defines the in-memory store key
-	MemStoreKey = "mem_yieldaggregator"
-
-    
+	MemStoreKey = "mem_yield_aggregator"
 )
 
-
-
 func KeyPrefix(p string) []byte {
-    return []byte(p)
+	return []byte(p)
 }

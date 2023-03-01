@@ -25,24 +25,23 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type Asset struct {
-	Denom      string       `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
-	Metrics    AssetMetrics `protobuf:"bytes,2,opt,name=metrics,proto3" json:"metrics"`
-	Strategies []*Strategy  `protobuf:"bytes,3,rep,name=strategies,proto3" json:"strategies,omitempty"`
+type Vault struct {
+	Denom   string       `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Metrics VaultMetrics `protobuf:"bytes,2,opt,name=metrics,proto3" json:"metrics"`
 }
 
-func (m *Asset) Reset()         { *m = Asset{} }
-func (m *Asset) String() string { return proto.CompactTextString(m) }
-func (*Asset) ProtoMessage()    {}
-func (*Asset) Descriptor() ([]byte, []int) {
+func (m *Vault) Reset()         { *m = Vault{} }
+func (m *Vault) String() string { return proto.CompactTextString(m) }
+func (*Vault) ProtoMessage()    {}
+func (*Vault) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f10d0c9816d2a3d4, []int{0}
 }
-func (m *Asset) XXX_Unmarshal(b []byte) error {
+func (m *Vault) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Asset) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Vault) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_Asset.Marshal(b, m, deterministic)
+		return xxx_messageInfo_Vault.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -52,45 +51,39 @@ func (m *Asset) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Asset) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Asset.Merge(m, src)
+func (m *Vault) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Vault.Merge(m, src)
 }
-func (m *Asset) XXX_Size() int {
+func (m *Vault) XXX_Size() int {
 	return m.Size()
 }
-func (m *Asset) XXX_DiscardUnknown() {
-	xxx_messageInfo_Asset.DiscardUnknown(m)
+func (m *Vault) XXX_DiscardUnknown() {
+	xxx_messageInfo_Vault.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Asset proto.InternalMessageInfo
+var xxx_messageInfo_Vault proto.InternalMessageInfo
 
-func (m *Asset) GetDenom() string {
+func (m *Vault) GetDenom() string {
 	if m != nil {
 		return m.Denom
 	}
 	return ""
 }
 
-func (m *Asset) GetMetrics() AssetMetrics {
+func (m *Vault) GetMetrics() VaultMetrics {
 	if m != nil {
 		return m.Metrics
 	}
-	return AssetMetrics{}
-}
-
-func (m *Asset) GetStrategies() []*Strategy {
-	if m != nil {
-		return m.Strategies
-	}
-	return nil
+	return VaultMetrics{}
 }
 
 type Strategy struct {
-	Id              string                                  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ContractAddress string                                  `protobuf:"bytes,2,opt,name=contract_address,json=contractAddress,proto3" json:"contract_address,omitempty"`
-	Name            string                                  `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	Weight          *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=weight,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"weight,omitempty"`
-	Metrics         StrategyMetrics                         `protobuf:"bytes,5,opt,name=metrics,proto3" json:"metrics"`
+	VaultDenom      string                                 `protobuf:"bytes,1,opt,name=vault_denom,json=vaultDenom,proto3" json:"vault_denom,omitempty"`
+	Id              string                                 `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	ContractAddress string                                 `protobuf:"bytes,3,opt,name=contract_address,json=contractAddress,proto3" json:"contract_address,omitempty"`
+	Name            string                                 `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
+	Weight          github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=weight,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"weight"`
+	Metrics         StrategyMetrics                        `protobuf:"bytes,6,opt,name=metrics,proto3" json:"metrics"`
 }
 
 func (m *Strategy) Reset()         { *m = Strategy{} }
@@ -126,6 +119,13 @@ func (m *Strategy) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Strategy proto.InternalMessageInfo
 
+func (m *Strategy) GetVaultDenom() string {
+	if m != nil {
+		return m.VaultDenom
+	}
+	return ""
+}
+
 func (m *Strategy) GetId() string {
 	if m != nil {
 		return m.Id
@@ -154,23 +154,23 @@ func (m *Strategy) GetMetrics() StrategyMetrics {
 	return StrategyMetrics{}
 }
 
-type AssetMetrics struct {
-	Apy *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,1,opt,name=apy,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"apy,omitempty"`
-	Tvl *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=tvl,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"tvl,omitempty"`
+type VaultMetrics struct {
+	Apy github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,1,opt,name=apy,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"apy"`
+	Tvl github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=tvl,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"tvl"`
 }
 
-func (m *AssetMetrics) Reset()         { *m = AssetMetrics{} }
-func (m *AssetMetrics) String() string { return proto.CompactTextString(m) }
-func (*AssetMetrics) ProtoMessage()    {}
-func (*AssetMetrics) Descriptor() ([]byte, []int) {
+func (m *VaultMetrics) Reset()         { *m = VaultMetrics{} }
+func (m *VaultMetrics) String() string { return proto.CompactTextString(m) }
+func (*VaultMetrics) ProtoMessage()    {}
+func (*VaultMetrics) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f10d0c9816d2a3d4, []int{2}
 }
-func (m *AssetMetrics) XXX_Unmarshal(b []byte) error {
+func (m *VaultMetrics) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *AssetMetrics) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *VaultMetrics) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_AssetMetrics.Marshal(b, m, deterministic)
+		return xxx_messageInfo_VaultMetrics.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -180,21 +180,21 @@ func (m *AssetMetrics) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
-func (m *AssetMetrics) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AssetMetrics.Merge(m, src)
+func (m *VaultMetrics) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VaultMetrics.Merge(m, src)
 }
-func (m *AssetMetrics) XXX_Size() int {
+func (m *VaultMetrics) XXX_Size() int {
 	return m.Size()
 }
-func (m *AssetMetrics) XXX_DiscardUnknown() {
-	xxx_messageInfo_AssetMetrics.DiscardUnknown(m)
+func (m *VaultMetrics) XXX_DiscardUnknown() {
+	xxx_messageInfo_VaultMetrics.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_AssetMetrics proto.InternalMessageInfo
+var xxx_messageInfo_VaultMetrics proto.InternalMessageInfo
 
 type StrategyMetrics struct {
-	Apy *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,1,opt,name=apy,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"apy,omitempty"`
-	Tvl *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=tvl,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"tvl,omitempty"`
+	Apy github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,1,opt,name=apy,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"apy"`
+	Tvl github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=tvl,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"tvl"`
 }
 
 func (m *StrategyMetrics) Reset()         { *m = StrategyMetrics{} }
@@ -231,9 +231,9 @@ func (m *StrategyMetrics) XXX_DiscardUnknown() {
 var xxx_messageInfo_StrategyMetrics proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*Asset)(nil), "ununifi.chain.yieldaggregator.Asset")
+	proto.RegisterType((*Vault)(nil), "ununifi.chain.yieldaggregator.Vault")
 	proto.RegisterType((*Strategy)(nil), "ununifi.chain.yieldaggregator.Strategy")
-	proto.RegisterType((*AssetMetrics)(nil), "ununifi.chain.yieldaggregator.AssetMetrics")
+	proto.RegisterType((*VaultMetrics)(nil), "ununifi.chain.yieldaggregator.VaultMetrics")
 	proto.RegisterType((*StrategyMetrics)(nil), "ununifi.chain.yieldaggregator.StrategyMetrics")
 }
 
@@ -242,37 +242,37 @@ func init() {
 }
 
 var fileDescriptor_f10d0c9816d2a3d4 = []byte{
-	// 429 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x93, 0xc1, 0x8a, 0x13, 0x31,
-	0x18, 0xc7, 0x27, 0x9d, 0x76, 0x75, 0xb3, 0xe2, 0x4a, 0xd8, 0xc3, 0xb8, 0xe0, 0x6c, 0x99, 0x83,
-	0x5b, 0x91, 0x66, 0x70, 0xbd, 0x78, 0xdd, 0xb2, 0x28, 0x58, 0x14, 0x19, 0xe9, 0xc5, 0x4b, 0x49,
-	0x33, 0x31, 0x0d, 0x76, 0x92, 0x32, 0x49, 0xab, 0xf3, 0x16, 0x3e, 0x85, 0xe0, 0x59, 0x1f, 0xa2,
-	0xc7, 0xe2, 0x49, 0x3c, 0x14, 0x69, 0x1f, 0xc3, 0x8b, 0x4c, 0x32, 0xa5, 0xa5, 0x8a, 0x0a, 0xbd,
-	0x78, 0x9a, 0xe4, 0xfb, 0xbe, 0xff, 0x7f, 0xfe, 0xf9, 0x85, 0xc0, 0xf3, 0x42, 0xb0, 0x51, 0xda,
-	0x26, 0x9c, 0xe7, 0x8c, 0x13, 0xa3, 0xf2, 0x78, 0xb7, 0x80, 0xc7, 0xb9, 0x32, 0x0a, 0xdd, 0x99,
-	0xc8, 0x89, 0x14, 0xaf, 0x05, 0xa6, 0x43, 0x22, 0x24, 0xb6, 0x53, 0x9b, 0xa1, 0xd3, 0x13, 0xae,
-	0xb8, 0xb2, 0x93, 0x71, 0xb9, 0x72, 0xa2, 0xd3, 0xdb, 0x54, 0xe9, 0x4c, 0xe9, 0xbe, 0x6b, 0xb8,
-	0x8d, 0x6b, 0x45, 0x9f, 0x00, 0x6c, 0x5c, 0x6a, 0xcd, 0x0c, 0x3a, 0x81, 0x8d, 0x94, 0x49, 0x95,
-	0x05, 0xa0, 0x09, 0x5a, 0x87, 0x89, 0xdb, 0xa0, 0x2e, 0xbc, 0x96, 0x31, 0x93, 0x0b, 0xaa, 0x83,
-	0x5a, 0x13, 0xb4, 0x8e, 0x2e, 0xee, 0xe3, 0x3f, 0x26, 0xc0, 0xd6, 0xec, 0x99, 0x93, 0x74, 0xea,
-	0xb3, 0xc5, 0x99, 0x97, 0xac, 0x1d, 0xd0, 0x13, 0x08, 0xb5, 0xc9, 0x89, 0x61, 0x5c, 0x30, 0x1d,
-	0xf8, 0x4d, 0xbf, 0x75, 0x74, 0x71, 0xfe, 0x17, 0xbf, 0x97, 0x4e, 0x50, 0x24, 0x5b, 0xd2, 0xe8,
-	0x07, 0x80, 0xd7, 0xd7, 0x0d, 0x74, 0x13, 0xd6, 0x44, 0x5a, 0xa5, 0xae, 0x89, 0x14, 0xdd, 0x83,
-	0xb7, 0xa8, 0x92, 0x26, 0x27, 0xd4, 0xf4, 0x49, 0x9a, 0xe6, 0x4c, 0xbb, 0xec, 0x87, 0xc9, 0xf1,
-	0xba, 0x7e, 0xe9, 0xca, 0x08, 0xc1, 0xba, 0x24, 0x19, 0x0b, 0x7c, 0xdb, 0xb6, 0x6b, 0xf4, 0x02,
-	0x1e, 0xbc, 0x65, 0x82, 0x0f, 0x4d, 0x50, 0x2f, 0xab, 0x9d, 0x47, 0xdf, 0x16, 0x67, 0x77, 0xb9,
-	0x30, 0xc3, 0xc9, 0x00, 0x53, 0x95, 0x55, 0xf8, 0xaa, 0x4f, 0x5b, 0xa7, 0x6f, 0x62, 0x53, 0x8c,
-	0x99, 0xc6, 0x57, 0x8c, 0x7e, 0xf9, 0xdc, 0x86, 0x15, 0xdd, 0x2b, 0x46, 0x93, 0xca, 0x07, 0x3d,
-	0xdf, 0x30, 0x6c, 0x58, 0x86, 0xf8, 0x1f, 0xcf, 0xfc, 0x7b, 0x8c, 0xd1, 0x07, 0x00, 0x6f, 0x6c,
-	0x63, 0x46, 0x4f, 0xa1, 0x4f, 0xc6, 0x85, 0x43, 0xb0, 0x47, 0xde, 0xd2, 0xa4, 0xf4, 0x32, 0xd3,
-	0x91, 0x03, 0xb6, 0x8f, 0x97, 0x99, 0x8e, 0xa2, 0x8f, 0x00, 0x1e, 0xef, 0x9c, 0xe5, 0x7f, 0xcd,
-	0xda, 0xe9, 0xce, 0x96, 0x21, 0x98, 0x2f, 0x43, 0xf0, 0x7d, 0x19, 0x82, 0xf7, 0xab, 0xd0, 0x9b,
-	0xaf, 0x42, 0xef, 0xeb, 0x2a, 0xf4, 0x5e, 0x3d, 0xd8, 0x32, 0xed, 0xc9, 0x9e, 0x14, 0x8f, 0x45,
-	0x6c, 0xef, 0x2d, 0x7e, 0xf7, 0xcb, 0x2b, 0x75, 0xff, 0x18, 0x1c, 0xd8, 0xc7, 0xf5, 0xf0, 0x67,
-	0x00, 0x00, 0x00, 0xff, 0xff, 0xe9, 0xf8, 0x71, 0x56, 0xd7, 0x03, 0x00, 0x00,
+	// 424 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x93, 0xb1, 0xae, 0xd3, 0x30,
+	0x14, 0x86, 0xe3, 0xdc, 0xb6, 0x70, 0x7d, 0x11, 0x17, 0x59, 0x77, 0x08, 0x95, 0x48, 0xab, 0x0e,
+	0x50, 0x84, 0xea, 0x08, 0x58, 0x59, 0xa8, 0x2a, 0x96, 0x8a, 0x0e, 0x81, 0x32, 0xb0, 0x54, 0xae,
+	0x63, 0x5c, 0x43, 0x62, 0x57, 0x89, 0x53, 0xc8, 0x5b, 0xf0, 0x08, 0x3c, 0x01, 0x12, 0x12, 0x0f,
+	0xd1, 0xb1, 0x62, 0x42, 0x0c, 0x15, 0x6a, 0x5f, 0x04, 0xc5, 0x4e, 0xd5, 0xaa, 0x08, 0x18, 0xba,
+	0x30, 0xc5, 0xfe, 0xcf, 0xf1, 0x7f, 0x7e, 0x7f, 0x91, 0xe1, 0xbd, 0x42, 0xb0, 0x38, 0xea, 0x11,
+	0xce, 0x53, 0xc6, 0x89, 0x56, 0x69, 0x70, 0x2c, 0xe0, 0x79, 0xaa, 0xb4, 0x42, 0x77, 0x72, 0x99,
+	0x4b, 0xf1, 0x46, 0x60, 0x3a, 0x23, 0x42, 0x62, 0xd3, 0xb5, 0x6f, 0x6a, 0x5e, 0x71, 0xc5, 0x95,
+	0xe9, 0x0c, 0xca, 0x95, 0x3d, 0xd4, 0xbc, 0x4d, 0x55, 0x96, 0xa8, 0x6c, 0x62, 0x0b, 0x76, 0x63,
+	0x4b, 0x9d, 0xb7, 0xb0, 0xfe, 0x8a, 0xe4, 0xb1, 0x46, 0x57, 0xb0, 0x1e, 0x31, 0xa9, 0x12, 0x0f,
+	0xb4, 0x41, 0xf7, 0x3c, 0xb4, 0x1b, 0x34, 0x84, 0xd7, 0x12, 0xa6, 0x53, 0x41, 0x33, 0xcf, 0x6d,
+	0x83, 0xee, 0xc5, 0xa3, 0x07, 0xf8, 0xaf, 0x01, 0xb0, 0x31, 0x7b, 0x6e, 0x8f, 0xf4, 0x6b, 0xcb,
+	0x75, 0xcb, 0x09, 0x77, 0x0e, 0x9d, 0x4f, 0x2e, 0xbc, 0xfe, 0x42, 0xa7, 0x44, 0x33, 0x5e, 0xa0,
+	0x16, 0xbc, 0x58, 0x94, 0xbd, 0x93, 0xc3, 0xa9, 0xd0, 0x48, 0x03, 0x33, 0xfa, 0x26, 0x74, 0x45,
+	0x64, 0xa6, 0x9e, 0x87, 0xae, 0x88, 0xd0, 0x7d, 0x78, 0x8b, 0x2a, 0xa9, 0x53, 0x42, 0xf5, 0x84,
+	0x44, 0x51, 0xca, 0xb2, 0xcc, 0x3b, 0x33, 0xd5, 0xcb, 0x9d, 0xfe, 0xd4, 0xca, 0x08, 0xc1, 0x9a,
+	0x24, 0x09, 0xf3, 0x6a, 0xa6, 0x6c, 0xd6, 0xe8, 0x25, 0x6c, 0xbc, 0x67, 0x82, 0xcf, 0xb4, 0x57,
+	0x2f, 0xd5, 0xfe, 0x93, 0x32, 0xdb, 0x8f, 0x75, 0xeb, 0x2e, 0x17, 0x7a, 0x96, 0x4f, 0x31, 0x55,
+	0x49, 0x45, 0xa6, 0xfa, 0xf4, 0xb2, 0xe8, 0x5d, 0xa0, 0x8b, 0x39, 0xcb, 0xf0, 0x80, 0xd1, 0x6f,
+	0x5f, 0x7b, 0xb0, 0x02, 0x37, 0x60, 0x34, 0xac, 0xbc, 0xd0, 0x68, 0xcf, 0xa7, 0x61, 0xf8, 0xe0,
+	0x7f, 0xf0, 0xd9, 0xdd, 0xff, 0x0f, 0x88, 0x3e, 0x03, 0x78, 0xe3, 0x10, 0x21, 0x1a, 0xc1, 0x33,
+	0x32, 0x2f, 0x2c, 0x9e, 0x13, 0x33, 0x97, 0x46, 0xa5, 0x9f, 0x5e, 0xc4, 0x16, 0xeb, 0xa9, 0x7e,
+	0x7a, 0x11, 0x77, 0xbe, 0x00, 0x78, 0x79, 0x74, 0xa7, 0xff, 0x3d, 0x73, 0x7f, 0xb8, 0xdc, 0xf8,
+	0x60, 0xb5, 0xf1, 0xc1, 0xcf, 0x8d, 0x0f, 0x3e, 0x6e, 0x7d, 0x67, 0xb5, 0xf5, 0x9d, 0xef, 0x5b,
+	0xdf, 0x79, 0xfd, 0xf0, 0xc0, 0x74, 0x2c, 0xc7, 0x52, 0x3c, 0x13, 0x81, 0xf9, 0x8f, 0xc1, 0x87,
+	0xdf, 0x1e, 0xa4, 0x9d, 0x31, 0x6d, 0x98, 0x77, 0xf4, 0xf8, 0x57, 0x00, 0x00, 0x00, 0xff, 0xff,
+	0x49, 0x0c, 0x22, 0xa2, 0xc2, 0x03, 0x00, 0x00,
 }
 
-func (m *Asset) Marshal() (dAtA []byte, err error) {
+func (m *Vault) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -282,30 +282,16 @@ func (m *Asset) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Asset) MarshalTo(dAtA []byte) (int, error) {
+func (m *Vault) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Asset) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *Vault) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Strategies) > 0 {
-		for iNdEx := len(m.Strategies) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Strategies[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintYieldAggregator(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x1a
-		}
-	}
 	{
 		size, err := m.Metrics.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
@@ -355,44 +341,49 @@ func (m *Strategy) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintYieldAggregator(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x2a
-	if m.Weight != nil {
-		{
-			size := m.Weight.Size()
-			i -= size
-			if _, err := m.Weight.MarshalTo(dAtA[i:]); err != nil {
-				return 0, err
-			}
-			i = encodeVarintYieldAggregator(dAtA, i, uint64(size))
+	dAtA[i] = 0x32
+	{
+		size := m.Weight.Size()
+		i -= size
+		if _, err := m.Weight.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x22
+		i = encodeVarintYieldAggregator(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0x2a
 	if len(m.Name) > 0 {
 		i -= len(m.Name)
 		copy(dAtA[i:], m.Name)
 		i = encodeVarintYieldAggregator(dAtA, i, uint64(len(m.Name)))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x22
 	}
 	if len(m.ContractAddress) > 0 {
 		i -= len(m.ContractAddress)
 		copy(dAtA[i:], m.ContractAddress)
 		i = encodeVarintYieldAggregator(dAtA, i, uint64(len(m.ContractAddress)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
 	}
 	if len(m.Id) > 0 {
 		i -= len(m.Id)
 		copy(dAtA[i:], m.Id)
 		i = encodeVarintYieldAggregator(dAtA, i, uint64(len(m.Id)))
 		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.VaultDenom) > 0 {
+		i -= len(m.VaultDenom)
+		copy(dAtA[i:], m.VaultDenom)
+		i = encodeVarintYieldAggregator(dAtA, i, uint64(len(m.VaultDenom)))
+		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *AssetMetrics) Marshal() (dAtA []byte, err error) {
+func (m *VaultMetrics) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -402,40 +393,36 @@ func (m *AssetMetrics) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *AssetMetrics) MarshalTo(dAtA []byte) (int, error) {
+func (m *VaultMetrics) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *AssetMetrics) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *VaultMetrics) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Tvl != nil {
-		{
-			size := m.Tvl.Size()
-			i -= size
-			if _, err := m.Tvl.MarshalTo(dAtA[i:]); err != nil {
-				return 0, err
-			}
-			i = encodeVarintYieldAggregator(dAtA, i, uint64(size))
+	{
+		size := m.Tvl.Size()
+		i -= size
+		if _, err := m.Tvl.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x12
+		i = encodeVarintYieldAggregator(dAtA, i, uint64(size))
 	}
-	if m.Apy != nil {
-		{
-			size := m.Apy.Size()
-			i -= size
-			if _, err := m.Apy.MarshalTo(dAtA[i:]); err != nil {
-				return 0, err
-			}
-			i = encodeVarintYieldAggregator(dAtA, i, uint64(size))
+	i--
+	dAtA[i] = 0x12
+	{
+		size := m.Apy.Size()
+		i -= size
+		if _, err := m.Apy.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0xa
+		i = encodeVarintYieldAggregator(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -459,30 +446,26 @@ func (m *StrategyMetrics) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Tvl != nil {
-		{
-			size := m.Tvl.Size()
-			i -= size
-			if _, err := m.Tvl.MarshalTo(dAtA[i:]); err != nil {
-				return 0, err
-			}
-			i = encodeVarintYieldAggregator(dAtA, i, uint64(size))
+	{
+		size := m.Tvl.Size()
+		i -= size
+		if _, err := m.Tvl.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0x12
+		i = encodeVarintYieldAggregator(dAtA, i, uint64(size))
 	}
-	if m.Apy != nil {
-		{
-			size := m.Apy.Size()
-			i -= size
-			if _, err := m.Apy.MarshalTo(dAtA[i:]); err != nil {
-				return 0, err
-			}
-			i = encodeVarintYieldAggregator(dAtA, i, uint64(size))
+	i--
+	dAtA[i] = 0x12
+	{
+		size := m.Apy.Size()
+		i -= size
+		if _, err := m.Apy.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
 		}
-		i--
-		dAtA[i] = 0xa
+		i = encodeVarintYieldAggregator(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -497,7 +480,7 @@ func encodeVarintYieldAggregator(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *Asset) Size() (n int) {
+func (m *Vault) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -509,12 +492,6 @@ func (m *Asset) Size() (n int) {
 	}
 	l = m.Metrics.Size()
 	n += 1 + l + sovYieldAggregator(uint64(l))
-	if len(m.Strategies) > 0 {
-		for _, e := range m.Strategies {
-			l = e.Size()
-			n += 1 + l + sovYieldAggregator(uint64(l))
-		}
-	}
 	return n
 }
 
@@ -524,6 +501,10 @@ func (m *Strategy) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.VaultDenom)
+	if l > 0 {
+		n += 1 + l + sovYieldAggregator(uint64(l))
+	}
 	l = len(m.Id)
 	if l > 0 {
 		n += 1 + l + sovYieldAggregator(uint64(l))
@@ -536,29 +517,23 @@ func (m *Strategy) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovYieldAggregator(uint64(l))
 	}
-	if m.Weight != nil {
-		l = m.Weight.Size()
-		n += 1 + l + sovYieldAggregator(uint64(l))
-	}
+	l = m.Weight.Size()
+	n += 1 + l + sovYieldAggregator(uint64(l))
 	l = m.Metrics.Size()
 	n += 1 + l + sovYieldAggregator(uint64(l))
 	return n
 }
 
-func (m *AssetMetrics) Size() (n int) {
+func (m *VaultMetrics) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Apy != nil {
-		l = m.Apy.Size()
-		n += 1 + l + sovYieldAggregator(uint64(l))
-	}
-	if m.Tvl != nil {
-		l = m.Tvl.Size()
-		n += 1 + l + sovYieldAggregator(uint64(l))
-	}
+	l = m.Apy.Size()
+	n += 1 + l + sovYieldAggregator(uint64(l))
+	l = m.Tvl.Size()
+	n += 1 + l + sovYieldAggregator(uint64(l))
 	return n
 }
 
@@ -568,14 +543,10 @@ func (m *StrategyMetrics) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.Apy != nil {
-		l = m.Apy.Size()
-		n += 1 + l + sovYieldAggregator(uint64(l))
-	}
-	if m.Tvl != nil {
-		l = m.Tvl.Size()
-		n += 1 + l + sovYieldAggregator(uint64(l))
-	}
+	l = m.Apy.Size()
+	n += 1 + l + sovYieldAggregator(uint64(l))
+	l = m.Tvl.Size()
+	n += 1 + l + sovYieldAggregator(uint64(l))
 	return n
 }
 
@@ -585,7 +556,7 @@ func sovYieldAggregator(x uint64) (n int) {
 func sozYieldAggregator(x uint64) (n int) {
 	return sovYieldAggregator(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *Asset) Unmarshal(dAtA []byte) error {
+func (m *Vault) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -608,10 +579,10 @@ func (m *Asset) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Asset: wiretype end group for non-group")
+			return fmt.Errorf("proto: Vault: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Asset: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: Vault: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -679,40 +650,6 @@ func (m *Asset) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Strategies", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowYieldAggregator
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthYieldAggregator
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthYieldAggregator
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Strategies = append(m.Strategies, &Strategy{})
-			if err := m.Strategies[len(m.Strategies)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipYieldAggregator(dAtA[iNdEx:])
@@ -765,6 +702,38 @@ func (m *Strategy) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VaultDenom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowYieldAggregator
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthYieldAggregator
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthYieldAggregator
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.VaultDenom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
 			var stringLen uint64
@@ -795,7 +764,7 @@ func (m *Strategy) Unmarshal(dAtA []byte) error {
 			}
 			m.Id = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ContractAddress", wireType)
 			}
@@ -827,7 +796,7 @@ func (m *Strategy) Unmarshal(dAtA []byte) error {
 			}
 			m.ContractAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
@@ -859,7 +828,7 @@ func (m *Strategy) Unmarshal(dAtA []byte) error {
 			}
 			m.Name = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Weight", wireType)
 			}
@@ -889,13 +858,11 @@ func (m *Strategy) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			var v github_com_cosmos_cosmos_sdk_types.Dec
-			m.Weight = &v
 			if err := m.Weight.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
-		case 5:
+		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Metrics", wireType)
 			}
@@ -949,7 +916,7 @@ func (m *Strategy) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *AssetMetrics) Unmarshal(dAtA []byte) error {
+func (m *VaultMetrics) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -972,10 +939,10 @@ func (m *AssetMetrics) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: AssetMetrics: wiretype end group for non-group")
+			return fmt.Errorf("proto: VaultMetrics: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AssetMetrics: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: VaultMetrics: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1008,8 +975,6 @@ func (m *AssetMetrics) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			var v github_com_cosmos_cosmos_sdk_types.Dec
-			m.Apy = &v
 			if err := m.Apy.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -1044,8 +1009,6 @@ func (m *AssetMetrics) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			var v github_com_cosmos_cosmos_sdk_types.Dec
-			m.Tvl = &v
 			if err := m.Tvl.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -1130,8 +1093,6 @@ func (m *StrategyMetrics) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			var v github_com_cosmos_cosmos_sdk_types.Dec
-			m.Apy = &v
 			if err := m.Apy.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -1166,8 +1127,6 @@ func (m *StrategyMetrics) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			var v github_com_cosmos_cosmos_sdk_types.Dec
-			m.Tvl = &v
 			if err := m.Tvl.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}

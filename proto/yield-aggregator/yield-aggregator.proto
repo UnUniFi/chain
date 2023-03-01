@@ -6,41 +6,46 @@ import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/yield-aggregator/types";
 
-message Asset {
+message Vault {
   string denom = 1;
-  AssetMetrics metrics = 2 [(gogoproto.nullable) = false];
-  repeated Strategy strategies = 3;
+  VaultMetrics metrics = 2 [(gogoproto.nullable) = false];
 }
 
 message Strategy {
-  string id = 1;
-  string contract_address = 2;
-  string name = 3;
-  string weight = 4 [
+  string vault_denom = 1;
+  string id = 2;
+  string contract_address = 3;
+  string name = 4;
+  string weight = 5 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
   ];
-  StrategyMetrics metrics = 5 [(gogoproto.nullable) = false];
+  StrategyMetrics metrics = 6 [(gogoproto.nullable) = false];
 }
 
-message AssetMetrics {
+message VaultMetrics {
   string apy = 1 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
   ];
   string tvl = 2 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
   ];
 }
 
 message StrategyMetrics {
   string apy = 1 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
   ];
   string tvl = 2 [
     (cosmos_proto.scalar) = "cosmos.Dec",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
   ];
 }
