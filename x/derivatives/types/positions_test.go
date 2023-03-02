@@ -12,13 +12,12 @@ import (
 
 // make position.NeedLiquidationPerpetualFutures test
 func TestPosition_NeedLiquidationPerpetualFutures(t *testing.T) {
-	// owner := sdk.MustAccAddressFromBech32("ununifi1a8jcsmla6heu99ldtazc27dna4qcd4jygsthx6")
 	owner, _ := sdk.AccAddressFromBech32("ununifi1a8jcsmla6heu99ldtazc27dna4qcd4jygsthx6")
 	testCases := []struct {
 		name          string
 		position      types.PerpetualFuturesPosition
 		minMarginRate sdk.Dec
-		closedRate    sdk.Dec
+		closedRate    []sdk.Dec //first is base rate, second is quote rate
 		exp           bool
 	}{
 		{
@@ -41,14 +40,17 @@ func TestPosition_NeedLiquidationPerpetualFutures(t *testing.T) {
 				},
 			},
 			minMarginRate: sdk.MustNewDecFromStr("0.1"),
-			closedRate:    sdk.MustNewDecFromStr("100"),
-			exp:           true,
+			closedRate: []sdk.Dec{
+				sdk.MustNewDecFromStr("100"),
+				sdk.MustNewDecFromStr("100"),
+			},
+			exp: true,
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := tc.position.NeedLiquidationPerpetualFutures(tc.minMarginRate, tc.closedRate)
+			result := tc.position.NeedLiquidation(tc.minMarginRate, tc.closedRate[0], tc.closedRate[1])
 			if tc.exp != result {
 				t.Error(tc, "expected %v, got %v", tc.exp, result)
 			}
@@ -62,7 +64,6 @@ type CurrencyRate struct {
 }
 
 func TestPosition_GetMarginMaintenanceRate(t *testing.T) {
-	// owner := sdk.MustAccAddressFromBech32("ununifi1a8jcsmla6heu99ldtazc27dna4qcd4jygsthx6")
 	owner, _ := sdk.AccAddressFromBech32("ununifi1a8jcsmla6heu99ldtazc27dna4qcd4jygsthx6")
 
 	testCases := []struct {
