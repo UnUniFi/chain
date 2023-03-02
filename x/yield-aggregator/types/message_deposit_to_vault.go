@@ -32,6 +32,14 @@ func (msg MsgDepositToVault) ValidateBasic() error {
 	return nil
 }
 
+func (msg *MsgDepositToVault) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgDepositToVault) Type() string {
+	return TypeMsgDepositToVault
+}
+
 func (msg MsgDepositToVault) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
