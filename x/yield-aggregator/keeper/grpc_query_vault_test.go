@@ -33,7 +33,7 @@ func TestVaultQuerySingle(t *testing.T) {
 		},
 		{
 			desc:     "Second",
-			request:  &types.QueryGetVaultRequest{Denom: msgs[0].Denom},
+			request:  &types.QueryGetVaultRequest{Denom: msgs[1].Denom},
 			response: &types.QueryGetVaultResponse{Vault: msgs[1]},
 		},
 		{
