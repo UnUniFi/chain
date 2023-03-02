@@ -16,7 +16,13 @@ import (
 func createNVault(keeper *keeper.Keeper, ctx sdk.Context, vaultDenom string, n int) []types.Vault {
 	items := make([]types.Vault, n)
 	for i := range items {
-		items[i].Denom = fmt.Sprintf("%s-%d", vaultDenom, i)
+		items[i] = types.Vault{
+			Denom: fmt.Sprintf("%s-%d", vaultDenom, i),
+			Metrics: types.VaultMetrics{
+				Apy: sdk.ZeroDec(),
+				Tvl: sdk.ZeroDec(),
+			},
+		}
 		keeper.AppendVault(ctx, items[i])
 	}
 	return items
