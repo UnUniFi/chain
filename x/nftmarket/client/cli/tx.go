@@ -101,6 +101,10 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 			if err != nil {
 				return err
 			}
+			minDepositRateDec, err := sdk.NewDecFromStr(minDepositRate)
+			if err != nil {
+				return err
+			}
 			automaticRef, err := cmd.Flags().GetBool(FlagAutomaticRefinancing)
 			if err != nil {
 				return err
@@ -111,7 +115,7 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 				return err
 			}
 
-			msg := types.NewMsgListNft(clientCtx.GetFromAddress(), nftIde, bidToken, minDepositRate, automaticRef)
+			msg := types.NewMsgListNft(clientCtx.GetFromAddress(), nftIde, bidToken, minDepositRateDec, automaticRef)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -185,7 +189,7 @@ $ %s tx %s placebid 1 1 100uguu --automatic-payment --from myKeyName --chain-id 
 			// bid_end_at := now.Add(time.Hour * time.Duration(bidding_duration_hour))
 			bid_end_at := now.Add(time.Second * time.Duration(bidding_duration_hour))
 
-			msg := types.NewMsgPlaceBid(clientCtx.GetFromAddress(), nftIde, bidCoin, depositCoin, depositInterestRate.String(), bid_end_at, automaticPayment)
+			msg := types.NewMsgPlaceBid(clientCtx.GetFromAddress(), nftIde, bidCoin, depositCoin, depositInterestRate, bid_end_at, automaticPayment)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
