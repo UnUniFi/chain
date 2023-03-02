@@ -14,6 +14,16 @@ import (
 func createNStrategy(keeper *keeper.Keeper, ctx sdk.Context, vaultDenom string, n int) []types.Strategy {
 	items := make([]types.Strategy, n)
 	for i := range items {
+		items[i] = types.Strategy{
+			VaultDenom:      vaultDenom,
+			ContractAddress: "",
+			Name:            "",
+			Weight:          sdk.ZeroDec(),
+			Metrics: types.StrategyMetrics{
+				Apr: sdk.ZeroDec(),
+				Tvl: sdk.ZeroDec(),
+			},
+		}
 		items[i].Id = keeper.AppendStrategy(ctx, vaultDenom, items[i])
 	}
 	return items
