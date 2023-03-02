@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/UnUniFi/chain/testutil/sample"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 )
@@ -23,7 +24,9 @@ func TestMsgWithdrawFromVault_ValidateBasic(t *testing.T) {
 		}, {
 			name: "valid address",
 			msg: MsgWithdrawFromVault{
-				Sender: sample.AccAddress(),
+				Sender:        sample.AccAddress(),
+				VaultDenom:    "uatom",
+				LpTokenAmount: sdk.NewInt(1000),
 			},
 		},
 	}
