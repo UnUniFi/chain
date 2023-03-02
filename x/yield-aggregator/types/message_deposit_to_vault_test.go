@@ -3,9 +3,11 @@ package types
 import (
 	"testing"
 
-	"github.com/UnUniFi/chain/testutil/sample"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
+
+	"github.com/UnUniFi/chain/testutil/sample"
 )
 
 func TestMsgDepositToVault_ValidateBasic(t *testing.T) {
@@ -24,6 +26,7 @@ func TestMsgDepositToVault_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgDepositToVault{
 				Sender: sample.AccAddress(),
+				Amount: sdk.NewCoin("uatom", sdk.NewInt(1000)),
 			},
 		},
 	}
