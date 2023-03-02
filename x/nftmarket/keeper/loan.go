@@ -107,6 +107,10 @@ func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, require s
 	if sdk.Coin.IsNil(currDebt.Loan) {
 		currDebt.Loan = sdk.NewCoin(require.Denom, sdk.ZeroInt())
 	}
+	fmt.Println("currDebt.Loan")
+	fmt.Println(currDebt.Loan)
+	fmt.Println("maxDebt")
+	fmt.Println(maxDebt)
 	if require.Add(currDebt.Loan).Amount.GT(maxDebt) {
 		return types.ErrDebtExceedsMaxDebt
 	}
