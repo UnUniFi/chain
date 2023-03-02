@@ -53,7 +53,7 @@ func TestShowVault(t *testing.T) {
 	}{
 		{
 			desc: "found",
-			id:   fmt.Sprintf("%d", objs[0].Denom),
+			id:   fmt.Sprintf("%s", objs[0].Denom),
 			args: common,
 			obj:  objs[0],
 		},

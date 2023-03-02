@@ -34,6 +34,14 @@ func (msg MsgWithdrawFromVault) ValidateBasic() error {
 	return nil
 }
 
+func (msg *MsgWithdrawFromVault) Route() string {
+	return RouterKey
+}
+
+func (msg *MsgWithdrawFromVault) Type() string {
+	return TypeMsgWithdrawFromVault
+}
+
 func (msg MsgWithdrawFromVault) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
