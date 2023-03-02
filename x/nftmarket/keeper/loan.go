@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/nftmarket/types"
@@ -96,6 +98,8 @@ func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, require s
 	bids := types.NftBids(k.GetBidsByNft(ctx, nft.IdBytes()))
 
 	maxDebt := listing.MaxPossibleBorrowAmount(bids, []types.NftBid{})
+	fmt.Println("maxDebt")
+	fmt.Println(maxDebt)
 
 	currDebt := k.GetDebtByNft(ctx, nft.IdBytes())
 	// todo not depend on Debt
