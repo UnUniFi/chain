@@ -12,6 +12,7 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
+// fixme: it has not been tested
 func (k Keeper) GetCurrentPrice(ctx sdk.Context, denom string) (sdk.Dec, error) {
 	ticker, err := k.pricefeedKeeper.GetTicker(ctx, denom)
 	if err != nil {
