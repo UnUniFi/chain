@@ -69,7 +69,11 @@ func (k Keeper) IncreaseDebt(ctx sdk.Context, nftId types.NftIdentifier, amount 
 
 func (k Keeper) DecreaseDebt(ctx sdk.Context, nftId types.NftIdentifier, amount sdk.Coin) {
 	currDebt := k.GetDebtByNft(ctx, nftId.IdBytes())
+	fmt.Println("DecreaseDebt.currDebt")
+	fmt.Println(currDebt)
 	currDebt.Loan = currDebt.Loan.Sub(amount)
+	fmt.Println("after sub DecreaseDebt.currDebt")
+	fmt.Println(currDebt)
 	k.SetDebt(ctx, currDebt)
 }
 
@@ -183,6 +187,8 @@ func (k Keeper) Refinancings(ctx sdk.Context, listing types.NftListing, liquidat
 func (k Keeper) Refinancing(ctx sdk.Context, listing types.NftListing, bid types.NftBid) {
 	k.DeleteBid(ctx, bid)
 	// todo delete not depend on Debt
+	fmt.Println("bid.BorrowingAmount()")
+	fmt.Println(bid.BorrowingAmount())
 	k.DecreaseDebt(ctx, listing.NftId, bid.BorrowingAmount())
 	liquidationAmount := bid.LiquidationAmount(ctx.BlockTime())
 	err := k.ManualBorrow(ctx, listing.NftId, liquidationAmount, listing.Owner, bid.Bidder)
