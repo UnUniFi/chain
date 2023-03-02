@@ -7,8 +7,8 @@ import (
 	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
-func (suite *KeeperTestSuite) AddPoolAssets() []types.Pool_Asset {
-	assets := []types.Pool_Asset{
+func (suite *KeeperTestSuite) AddPoolAssets() []types.PoolParams_Asset {
+	assets := []types.PoolParams_Asset{
 		{
 			Denom:        "uusdc",
 			TargetWeight: sdk.NewDec(1),
@@ -106,3 +106,10 @@ func (suite *KeeperTestSuite) TestSetPoolMarketCapSnapshot() {
 
 	suite.Require().Equal(marketCap, marketCapInStore)
 }
+
+// TODO: add test for
+// func (k Keeper) IsAssetValid(ctx sdk.Context, iasset types.Pool_Asset) bool {
+// func (k Keeper) SetAssetBalance(ctx sdk.Context, coin sdk.Coin) error {
+// func (k Keeper) GetAssetTargetAmount(ctx sdk.Context, denom string) (sdk.Coin, error) {
+// func (k Keeper) GetUserDeposits(ctx sdk.Context, depositor sdk.AccAddress) []sdk.Coin {
+// func (k Keeper) IsPriceReady(ctx sdk.Context) bool {

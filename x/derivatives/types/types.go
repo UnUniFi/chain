@@ -5,5 +5,8 @@ import (
 )
 
 func (marketCap PoolMarketCap) CalculateLPTokenPrice(supply sdk.Int) sdk.Dec {
+	if supply.IsZero() {
+		return sdk.ZeroDec()
+	}
 	return marketCap.Total.Quo(sdk.NewDecFromInt(supply))
 }

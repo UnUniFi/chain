@@ -14,6 +14,7 @@ func (k Keeper) GetPairRate(ctx sdk.Context, pair types.Market) (*sdk.Dec, error
 	if err != nil {
 		return nil, err
 	}
+
 	price, err := k.pricefeedKeeper.GetCurrentPrice(ctx, marketId)
 
 	return &price.Price, err

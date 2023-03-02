@@ -30,20 +30,20 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(
-		CmdMintNft(),
+		CmdPostPrice(),
 	)
 
 	return cmd
 }
 
-func CmdMintNft() *cobra.Command {
+func CmdPostPrice() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "postprice [market-id] [price] [expiry-seconds]",
 		Short: "postprice ubtc:uusdc 24528.185864015486004064 2024-02-20T12:00:38Z",
 		Long: strings.TrimSpace(
-			fmt.Sprintf(`Mint an nft.
+			fmt.Sprintf(`post price.
 Example:
-$ %s tx %s mint a10 a10 uri 888838  --from myKeyName --chain-id ununifi-x
+$ %s tx %s postprice uusdc:ubtc 24528.185864015486004064 60  --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {

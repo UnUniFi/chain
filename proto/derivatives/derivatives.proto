@@ -76,7 +76,7 @@ message Position {
   ];
 }
 
-message Pool {
+message PoolParams {
   message Asset {
     string denom = 1 [
       (gogoproto.moretags) = "yaml:\"denom\""
@@ -158,70 +158,6 @@ message Market {
   ];
   string quote_denom = 2 [
     (gogoproto.moretags)  = "yaml:\"quote_denom\""
-  ];
-}
-
-message PerpetualFuturesParams {
-  string commission_rate = 1 [
-    (gogoproto.moretags) = "yaml:\"commission_rate\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string margin_maintenance_rate = 2 [
-    (gogoproto.moretags) = "yaml:\"margin_maintenance_rate\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string imaginary_funding_rate_proportional_coefficient = 3 [
-    (gogoproto.moretags) = "yaml:\"imaginary_funding_rate_proportonal_coefficient\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  repeated Market markets = 4 [
-    (gogoproto.moretags) = "yaml:\"markets\""
-  ];
-}
-
-message PerpetualOptionsParams {
-  string premium_commission_rate = 1 [
-    (gogoproto.moretags) = "yaml:\"premium_commission_rate\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string strike_commission_rate = 2 [
-    (gogoproto.moretags) = "yaml:\"premium_commission_rate\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string margin_maintenance_rate = 3 [
-    (gogoproto.moretags) = "yaml:\"margin_maintenance_rate\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  string imaginary_funding_rate_proportional_coefficient = 4 [
-    (gogoproto.moretags) = "yaml:\"imaginary_funding_rate_proportonal_coefficient\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-  repeated Market markets = 5 [
-    (gogoproto.moretags) = "yaml:\"markets\""
-  ];
-}
-// (gogoproto.nullable) = false
-
-
-message Params {
-  Pool pool = 1 [
-    (gogoproto.moretags) = "yaml:\"pool\"",
-    (gogoproto.nullable) = false
-  ];
-  PerpetualFuturesParams perpetual_futures = 2 [
-    (gogoproto.moretags) = "yaml:\"perpetual_futures\"",
-    (gogoproto.nullable) = false
-  ];
-  PerpetualOptionsParams perpetual_options = 3 [
-    (gogoproto.moretags) = "yaml:\"perpetual_options\"",
-    (gogoproto.nullable) = false
   ];
 }
 
