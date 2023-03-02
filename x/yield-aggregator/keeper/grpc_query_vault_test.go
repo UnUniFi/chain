@@ -106,8 +106,7 @@ func TestVaultQueryPaginated(t *testing.T) {
 	t.Run("Total", func(t *testing.T) {
 		resp, err := keeper.VaultAll(wctx, request(nil, 0, 0, true))
 		require.NoError(t, err)
-		// TODO
-		// require.Equal(t, len(msgs), int(resp.Pagination.Total))
+		require.Equal(t, len(msgs), int(resp.Pagination.Total))
 		require.ElementsMatch(t,
 			nullify.Fill(msgs),
 			nullify.Fill(resp.Vaults),
