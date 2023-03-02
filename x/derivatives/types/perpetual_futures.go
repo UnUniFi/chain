@@ -24,3 +24,11 @@ func UnpackPerpetualFuturesPositionInstance(positionAny types.Any) PositionInsta
 func (positionInstance PerpetualFuturesPositionInstance) CalculatePrincipal() sdk.Dec {
 	return positionInstance.Size_.Quo(sdk.NewDec(int64(positionInstance.Leverage)))
 }
+
+func (positionInstance PerpetualFuturesPositionInstance) MarginRequirement(currencyRate sdk.Dec) sdk.Dec {
+	return positionInstance.Size_.Mul(currencyRate).Quo(sdk.NewDec(int64(positionInstance.Leverage)))
+}
+
+func (m PerpetualFuturesPositionInstance) GetOrderSize() sdk.Dec {
+	return sdk.NewDec(int64(m.Leverage)).Mul(m.Size_)
+}

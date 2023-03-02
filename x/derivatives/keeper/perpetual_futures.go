@@ -12,8 +12,25 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
+func (k Keeper) GetCurrentPrice(ctx sdk.Context, denom string) (sdk.Dec, error) {
+	ticker, err := k.pricefeedKeeper.GetTicker(ctx, denom)
+	if err != nil {
+		return sdk.Dec{}, err
+	}
+	rate, err := k.GetPrice(ctx, ticker, "usd")
+	if err != nil {
+		return sdk.Dec{}, err
+	}
+	return rate.Price, nil
+}
+
 func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string, sender ununifiTypes.StringAccAddress, margin sdk.Coin, market types.Market, positionInstance types.PerpetualFuturesPositionInstance) (*types.Position, error) {
-	openedRate, err := k.GetPairRate(ctx, market)
+	openedBaseRate, err := k.GetCurrentPrice(ctx, market.BaseDenom)
+	if err != nil {
+		return nil, err
+	}
+
+	openedQuoteRate, err := k.GetCurrentPrice(ctx, market.BaseDenom)
 	if err != nil {
 		return nil, err
 	}
@@ -28,7 +45,8 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 		Address:          sender,
 		OpenedAt:         ctx.BlockTime(),
 		OpenedHeight:     uint64(ctx.BlockHeight()),
-		OpenedRate:       *openedRate,
+		OpenedBaseRate:   openedBaseRate.Price,
+		OpenedQuoteRate:  openedQuoteRate.Price,
 		PositionInstance: *any,
 		RemainingMargin:  margin,
 	}
@@ -58,7 +76,8 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Po
 	feeAmount := positionInstance.Size_.Mul(commissionRate)
 	tradeAmount := positionInstance.Size_.Sub(feeAmount)
 
-	openedRate := position.OpenedRate
+	// todo: fixme
+	openedRate := position.OpenedBaseRate
 	closedRate, err := k.GetPairRate(ctx, position.Market)
 	if err != nil {
 		return err

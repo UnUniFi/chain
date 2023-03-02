@@ -15,6 +15,21 @@ enum PositionType {
   SHORT = 2;
 }
 
+enum RevenueType {
+  PROFIT = 0;
+  LOSS = 1;
+}
+
+message Revenue {
+  RevenueType revenue_type = 1 [
+    (gogoproto.moretags) = "yaml:\"revenue_type\""
+  ];
+  cosmos.base.v1beta1.Coin amount = 2 [
+    (gogoproto.moretags) = "yaml:\"amount\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
 message Position {
   string id = 1 [
     (gogoproto.moretags) = "yaml:\"id\""
@@ -36,21 +51,26 @@ message Position {
   uint64 opened_height = 5 [
     (gogoproto.moretags) = "yaml:\"opened_height\""
   ];
-  string opened_rate = 6 [
-    (gogoproto.moretags) = "yaml:\"opened_rate\"",
+  string opened_base_rate = 6 [
+    (gogoproto.moretags) = "yaml:\"opened_base_rate\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  cosmos.base.v1beta1.Coin remaining_margin = 7 [
+  string opened_quote_rate = 7 [
+    (gogoproto.moretags) = "yaml:\"opened_quote_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin remaining_margin = 8 [
     (gogoproto.moretags) = "yaml:\"remaining_margin\"",
     (gogoproto.nullable) = false
   ];
-  google.protobuf.Timestamp last_levied_at = 8 [
+  google.protobuf.Timestamp last_levied_at = 9 [
     (gogoproto.moretags) = "yaml:\"last_levied_at\"",
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
-  google.protobuf.Any position_instance = 9 [
+  google.protobuf.Any position_instance = 10 [
     (gogoproto.moretags) = "yaml:\"position_instance\"",
     (gogoproto.nullable) = false
   ];
