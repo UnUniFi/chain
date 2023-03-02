@@ -358,6 +358,12 @@
 - [yield-aggregator/query.proto](#yield-aggregator/query.proto)
     - [QueryParamsRequest](#ununifi.chain.yieldaggregator.QueryParamsRequest)
     - [QueryParamsResponse](#ununifi.chain.yieldaggregator.QueryParamsResponse)
+    - [QueryStrategiesRequest](#ununifi.chain.yieldaggregator.QueryStrategiesRequest)
+    - [QueryStrategiesResponse](#ununifi.chain.yieldaggregator.QueryStrategiesResponse)
+    - [QueryVaultRequest](#ununifi.chain.yieldaggregator.QueryVaultRequest)
+    - [QueryVaultResponse](#ununifi.chain.yieldaggregator.QueryVaultResponse)
+    - [QueryVaultsRequest](#ununifi.chain.yieldaggregator.QueryVaultsRequest)
+    - [QueryVaultsResponse](#ununifi.chain.yieldaggregator.QueryVaultsResponse)
   
     - [Query](#ununifi.chain.yieldaggregator.Query)
   
@@ -4821,7 +4827,7 @@ Params defines the parameters for the module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `apy` | [string](#string) |  |  |
+| `apr` | [string](#string) |  |  |
 | `tvl` | [string](#string) |  |  |
 
 
@@ -4934,6 +4940,93 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 
 
 
+
+<a name="ununifi.chain.yieldaggregator.QueryStrategiesRequest"></a>
+
+### QueryStrategiesRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryStrategiesResponse"></a>
+
+### QueryStrategiesResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `strategies` | [Strategy](#ununifi.chain.yieldaggregator.Strategy) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryVaultRequest"></a>
+
+### QueryVaultRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryVaultResponse"></a>
+
+### QueryVaultResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `vault` | [Vault](#ununifi.chain.yieldaggregator.Vault) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryVaultsRequest"></a>
+
+### QueryVaultsRequest
+
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryVaultsResponse"></a>
+
+### QueryVaultsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `vaults` | [Vault](#ununifi.chain.yieldaggregator.Vault) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -4948,9 +5041,10 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#ununifi.chain.yieldaggregator.QueryParamsRequest) | [QueryParamsResponse](#ununifi.chain.yieldaggregator.QueryParamsResponse) | Parameters queries the parameters of the module.
-
-this line is used by starport scaffolding # 2 | GET|/UnUniFi/chain/yield-aggregator/params|
+| `Params` | [QueryParamsRequest](#ununifi.chain.yieldaggregator.QueryParamsRequest) | [QueryParamsResponse](#ununifi.chain.yieldaggregator.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/UnUniFi/chain/yield-aggregator/params|
+| `Vaults` | [QueryVaultsRequest](#ununifi.chain.yieldaggregator.QueryVaultsRequest) | [QueryVaultsResponse](#ununifi.chain.yieldaggregator.QueryVaultsResponse) | this line is used by starport scaffolding # 2 | GET|/UnUniFi/chain/yield-aggregator/vaults|
+| `Vault` | [QueryVaultRequest](#ununifi.chain.yieldaggregator.QueryVaultRequest) | [QueryVaultResponse](#ununifi.chain.yieldaggregator.QueryVaultResponse) |  | GET|/UnUniFi/chain/yield-aggregator/vaults/{denom}|
+| `Strategies` | [QueryStrategiesRequest](#ununifi.chain.yieldaggregator.QueryStrategiesRequest) | [QueryStrategiesResponse](#ununifi.chain.yieldaggregator.QueryStrategiesResponse) |  | GET|/UnUniFi/chain/yield-aggregator/vaults/{denom}/strategies|
 
  <!-- end services -->
 
