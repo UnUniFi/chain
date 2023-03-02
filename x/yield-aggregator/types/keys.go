@@ -1,5 +1,9 @@
 package types
 
+import (
+	"fmt"
+)
+
 const (
 	// ModuleName defines the module name
 	ModuleName = "yield_aggregator"
@@ -16,4 +20,19 @@ const (
 
 func KeyPrefix(p string) []byte {
 	return []byte(p)
+}
+
+const (
+	VaultKey         = "Vault/value/"
+	VaultCountKey    = "Vault/count/"
+	StrategyKey      = "Strategy/value/"
+	StrategyCountKey = "Strategy/count/"
+)
+
+func KeyPrefixStrategy(vaultDenom string) []byte {
+	return KeyPrefix(fmt.Sprintf("%s%s/%s", VaultKey, vaultDenom, StrategyKey))
+}
+
+func KeyPrefixStrategyCount(vaultDenom string) []byte {
+	return KeyPrefix(fmt.Sprintf("%s%s/%s", VaultKey, vaultDenom, StrategyCountKey))
 }

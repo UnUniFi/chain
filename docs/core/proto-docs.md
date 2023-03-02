@@ -356,14 +356,16 @@
     - [GenesisState](#ununifi.chain.yieldaggregator.GenesisState)
   
 - [yield-aggregator/query.proto](#yield-aggregator/query.proto)
+    - [QueryAllStrategyRequest](#ununifi.chain.yieldaggregator.QueryAllStrategyRequest)
+    - [QueryAllStrategyResponse](#ununifi.chain.yieldaggregator.QueryAllStrategyResponse)
+    - [QueryAllVaultRequest](#ununifi.chain.yieldaggregator.QueryAllVaultRequest)
+    - [QueryAllVaultResponse](#ununifi.chain.yieldaggregator.QueryAllVaultResponse)
+    - [QueryGetStrategyRequest](#ununifi.chain.yieldaggregator.QueryGetStrategyRequest)
+    - [QueryGetStrategyResponse](#ununifi.chain.yieldaggregator.QueryGetStrategyResponse)
+    - [QueryGetVaultRequest](#ununifi.chain.yieldaggregator.QueryGetVaultRequest)
+    - [QueryGetVaultResponse](#ununifi.chain.yieldaggregator.QueryGetVaultResponse)
     - [QueryParamsRequest](#ununifi.chain.yieldaggregator.QueryParamsRequest)
     - [QueryParamsResponse](#ununifi.chain.yieldaggregator.QueryParamsResponse)
-    - [QueryStrategiesRequest](#ununifi.chain.yieldaggregator.QueryStrategiesRequest)
-    - [QueryStrategiesResponse](#ununifi.chain.yieldaggregator.QueryStrategiesResponse)
-    - [QueryVaultRequest](#ununifi.chain.yieldaggregator.QueryVaultRequest)
-    - [QueryVaultResponse](#ununifi.chain.yieldaggregator.QueryVaultResponse)
-    - [QueryVaultsRequest](#ununifi.chain.yieldaggregator.QueryVaultsRequest)
-    - [QueryVaultsResponse](#ununifi.chain.yieldaggregator.QueryVaultsResponse)
   
     - [Query](#ununifi.chain.yieldaggregator.Query)
   
@@ -4808,7 +4810,7 @@ Params defines the parameters for the module.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `vault_denom` | [string](#string) |  |  |
-| `id` | [string](#string) |  |  |
+| `id` | [uint64](#uint64) |  |  |
 | `contract_address` | [string](#string) |  |  |
 | `name` | [string](#string) |  |  |
 | `weight` | [string](#string) |  |  |
@@ -4916,6 +4918,130 @@ GenesisState defines the yieldaggregator module's genesis state.
 
 
 
+<a name="ununifi.chain.yieldaggregator.QueryAllStrategyRequest"></a>
+
+### QueryAllStrategyRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryAllStrategyResponse"></a>
+
+### QueryAllStrategyResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `strategies` | [Strategy](#ununifi.chain.yieldaggregator.Strategy) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryAllVaultRequest"></a>
+
+### QueryAllVaultRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryAllVaultResponse"></a>
+
+### QueryAllVaultResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `vaults` | [Vault](#ununifi.chain.yieldaggregator.Vault) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryGetStrategyRequest"></a>
+
+### QueryGetStrategyRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+| `id` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryGetStrategyResponse"></a>
+
+### QueryGetStrategyResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `strategy` | [Strategy](#ununifi.chain.yieldaggregator.Strategy) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryGetVaultRequest"></a>
+
+### QueryGetVaultRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryGetVaultResponse"></a>
+
+### QueryGetVaultResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `vault` | [Vault](#ununifi.chain.yieldaggregator.Vault) |  |  |
+
+
+
+
+
+
 <a name="ununifi.chain.yieldaggregator.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
@@ -4940,93 +5066,6 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 
 
 
-
-<a name="ununifi.chain.yieldaggregator.QueryStrategiesRequest"></a>
-
-### QueryStrategiesRequest
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `denom` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ununifi.chain.yieldaggregator.QueryStrategiesResponse"></a>
-
-### QueryStrategiesResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `strategies` | [Strategy](#ununifi.chain.yieldaggregator.Strategy) | repeated |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
-
-
-
-
-
-
-<a name="ununifi.chain.yieldaggregator.QueryVaultRequest"></a>
-
-### QueryVaultRequest
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `denom` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ununifi.chain.yieldaggregator.QueryVaultResponse"></a>
-
-### QueryVaultResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `vault` | [Vault](#ununifi.chain.yieldaggregator.Vault) | repeated |  |
-
-
-
-
-
-
-<a name="ununifi.chain.yieldaggregator.QueryVaultsRequest"></a>
-
-### QueryVaultsRequest
-
-
-
-
-
-
-
-<a name="ununifi.chain.yieldaggregator.QueryVaultsResponse"></a>
-
-### QueryVaultsResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `vaults` | [Vault](#ununifi.chain.yieldaggregator.Vault) | repeated |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
-
-
-
-
-
  <!-- end messages -->
 
  <!-- end enums -->
@@ -5042,9 +5081,10 @@ Query defines the gRPC querier service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Params` | [QueryParamsRequest](#ununifi.chain.yieldaggregator.QueryParamsRequest) | [QueryParamsResponse](#ununifi.chain.yieldaggregator.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/UnUniFi/chain/yield-aggregator/params|
-| `Vaults` | [QueryVaultsRequest](#ununifi.chain.yieldaggregator.QueryVaultsRequest) | [QueryVaultsResponse](#ununifi.chain.yieldaggregator.QueryVaultsResponse) | this line is used by starport scaffolding # 2 | GET|/UnUniFi/chain/yield-aggregator/vaults|
-| `Vault` | [QueryVaultRequest](#ununifi.chain.yieldaggregator.QueryVaultRequest) | [QueryVaultResponse](#ununifi.chain.yieldaggregator.QueryVaultResponse) |  | GET|/UnUniFi/chain/yield-aggregator/vaults/{denom}|
-| `Strategies` | [QueryStrategiesRequest](#ununifi.chain.yieldaggregator.QueryStrategiesRequest) | [QueryStrategiesResponse](#ununifi.chain.yieldaggregator.QueryStrategiesResponse) |  | GET|/UnUniFi/chain/yield-aggregator/vaults/{denom}/strategies|
+| `VaultAll` | [QueryAllVaultRequest](#ununifi.chain.yieldaggregator.QueryAllVaultRequest) | [QueryAllVaultResponse](#ununifi.chain.yieldaggregator.QueryAllVaultResponse) | this line is used by starport scaffolding # 2 | GET|/UnUniFi/chain/yield-aggregator/vaults|
+| `Vault` | [QueryGetVaultRequest](#ununifi.chain.yieldaggregator.QueryGetVaultRequest) | [QueryGetVaultResponse](#ununifi.chain.yieldaggregator.QueryGetVaultResponse) |  | GET|/UnUniFi/chain/yield-aggregator/vaults/{denom}|
+| `StrategyAll` | [QueryAllStrategyRequest](#ununifi.chain.yieldaggregator.QueryAllStrategyRequest) | [QueryAllStrategyResponse](#ununifi.chain.yieldaggregator.QueryAllStrategyResponse) |  | GET|/UnUniFi/chain/yield-aggregator/vaults/{denom}/strategies|
+| `Strategy` | [QueryGetStrategyRequest](#ununifi.chain.yieldaggregator.QueryGetStrategyRequest) | [QueryGetStrategyResponse](#ununifi.chain.yieldaggregator.QueryGetStrategyResponse) |  | GET|/UnUniFi/chain/yield-aggregator/vaults/{denom}/strategies/{id}|
 
  <!-- end services -->
 
@@ -5092,7 +5132,7 @@ this line is used by starport scaffolding # proto/tx/message
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  |  |
-| `principal_denom` | [string](#string) |  |  |
+| `vault_denom` | [string](#string) |  |  |
 | `lp_token_amount` | [string](#string) |  |  |
 
 
