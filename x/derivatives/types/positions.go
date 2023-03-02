@@ -81,11 +81,8 @@ func (m PerpetualFuturesPosition) NeedLiquidation(minMarginMaintenanceRate, base
 func (m PerpetualFuturesPosition) GetMarginMaintenanceRate(baseCurrentRate, quoteCurrentRate sdk.Dec) sdk.Dec {
 	if m.PositionInstance.PositionType == PositionType_LONG {
 		marginRequirement := m.PositionInstance.MarginRequirement(m.OpenedBaseRate)
-		fmt.Println(marginRequirement.String())
 		effectiveMargin := sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(baseCurrentRate)
-		fmt.Println(effectiveMargin.String())
 		marginMaintenanceRate := effectiveMargin.Quo(marginRequirement)
-		fmt.Println(marginMaintenanceRate.String())
 		return marginMaintenanceRate
 	} else {
 		// case position type is short
