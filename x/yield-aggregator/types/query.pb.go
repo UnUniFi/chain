@@ -113,21 +113,22 @@ func (m *QueryParamsResponse) GetParams() Params {
 	return Params{}
 }
 
-type QueryVaultsRequest struct {
+type QueryAllVaultRequest struct {
+	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *QueryVaultsRequest) Reset()         { *m = QueryVaultsRequest{} }
-func (m *QueryVaultsRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryVaultsRequest) ProtoMessage()    {}
-func (*QueryVaultsRequest) Descriptor() ([]byte, []int) {
+func (m *QueryAllVaultRequest) Reset()         { *m = QueryAllVaultRequest{} }
+func (m *QueryAllVaultRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryAllVaultRequest) ProtoMessage()    {}
+func (*QueryAllVaultRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ca379d2c4ad0f7ec, []int{2}
 }
-func (m *QueryVaultsRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryAllVaultRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryVaultsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryAllVaultRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryVaultsRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryAllVaultRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -137,35 +138,42 @@ func (m *QueryVaultsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-func (m *QueryVaultsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryVaultsRequest.Merge(m, src)
+func (m *QueryAllVaultRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllVaultRequest.Merge(m, src)
 }
-func (m *QueryVaultsRequest) XXX_Size() int {
+func (m *QueryAllVaultRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryVaultsRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryVaultsRequest.DiscardUnknown(m)
+func (m *QueryAllVaultRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllVaultRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryVaultsRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryAllVaultRequest proto.InternalMessageInfo
 
-type QueryVaultsResponse struct {
-	Vaults     []Vault            `protobuf:"bytes,1,rep,name=vaults,proto3" json:"vaults"`
-	Pagination *query.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+func (m *QueryAllVaultRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
 }
 
-func (m *QueryVaultsResponse) Reset()         { *m = QueryVaultsResponse{} }
-func (m *QueryVaultsResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryVaultsResponse) ProtoMessage()    {}
-func (*QueryVaultsResponse) Descriptor() ([]byte, []int) {
+type QueryAllVaultResponse struct {
+	Vaults     []Vault             `protobuf:"bytes,1,rep,name=vaults,proto3" json:"vaults"`
+	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryAllVaultResponse) Reset()         { *m = QueryAllVaultResponse{} }
+func (m *QueryAllVaultResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryAllVaultResponse) ProtoMessage()    {}
+func (*QueryAllVaultResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ca379d2c4ad0f7ec, []int{3}
 }
-func (m *QueryVaultsResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryAllVaultResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryVaultsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryAllVaultResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryVaultsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryAllVaultResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -175,48 +183,48 @@ func (m *QueryVaultsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *QueryVaultsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryVaultsResponse.Merge(m, src)
+func (m *QueryAllVaultResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllVaultResponse.Merge(m, src)
 }
-func (m *QueryVaultsResponse) XXX_Size() int {
+func (m *QueryAllVaultResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryVaultsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryVaultsResponse.DiscardUnknown(m)
+func (m *QueryAllVaultResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllVaultResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryVaultsResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryAllVaultResponse proto.InternalMessageInfo
 
-func (m *QueryVaultsResponse) GetVaults() []Vault {
+func (m *QueryAllVaultResponse) GetVaults() []Vault {
 	if m != nil {
 		return m.Vaults
 	}
 	return nil
 }
 
-func (m *QueryVaultsResponse) GetPagination() *query.PageRequest {
+func (m *QueryAllVaultResponse) GetPagination() *query.PageResponse {
 	if m != nil {
 		return m.Pagination
 	}
 	return nil
 }
 
-type QueryVaultRequest struct {
+type QueryGetVaultRequest struct {
 	Denom string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
 }
 
-func (m *QueryVaultRequest) Reset()         { *m = QueryVaultRequest{} }
-func (m *QueryVaultRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryVaultRequest) ProtoMessage()    {}
-func (*QueryVaultRequest) Descriptor() ([]byte, []int) {
+func (m *QueryGetVaultRequest) Reset()         { *m = QueryGetVaultRequest{} }
+func (m *QueryGetVaultRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetVaultRequest) ProtoMessage()    {}
+func (*QueryGetVaultRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ca379d2c4ad0f7ec, []int{4}
 }
-func (m *QueryVaultRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetVaultRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryVaultRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetVaultRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryVaultRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetVaultRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -226,41 +234,41 @@ func (m *QueryVaultRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *QueryVaultRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryVaultRequest.Merge(m, src)
+func (m *QueryGetVaultRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetVaultRequest.Merge(m, src)
 }
-func (m *QueryVaultRequest) XXX_Size() int {
+func (m *QueryGetVaultRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryVaultRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryVaultRequest.DiscardUnknown(m)
+func (m *QueryGetVaultRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetVaultRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryVaultRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetVaultRequest proto.InternalMessageInfo
 
-func (m *QueryVaultRequest) GetDenom() string {
+func (m *QueryGetVaultRequest) GetDenom() string {
 	if m != nil {
 		return m.Denom
 	}
 	return ""
 }
 
-type QueryVaultResponse struct {
-	Vault []Vault `protobuf:"bytes,1,rep,name=vault,proto3" json:"vault"`
+type QueryGetVaultResponse struct {
+	Vault Vault `protobuf:"bytes,1,opt,name=vault,proto3" json:"vault"`
 }
 
-func (m *QueryVaultResponse) Reset()         { *m = QueryVaultResponse{} }
-func (m *QueryVaultResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryVaultResponse) ProtoMessage()    {}
-func (*QueryVaultResponse) Descriptor() ([]byte, []int) {
+func (m *QueryGetVaultResponse) Reset()         { *m = QueryGetVaultResponse{} }
+func (m *QueryGetVaultResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetVaultResponse) ProtoMessage()    {}
+func (*QueryGetVaultResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ca379d2c4ad0f7ec, []int{5}
 }
-func (m *QueryVaultResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryGetVaultResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryVaultResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryGetVaultResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryVaultResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryGetVaultResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -270,86 +278,94 @@ func (m *QueryVaultResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-func (m *QueryVaultResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryVaultResponse.Merge(m, src)
+func (m *QueryGetVaultResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetVaultResponse.Merge(m, src)
 }
-func (m *QueryVaultResponse) XXX_Size() int {
+func (m *QueryGetVaultResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryVaultResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryVaultResponse.DiscardUnknown(m)
+func (m *QueryGetVaultResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetVaultResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryVaultResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryGetVaultResponse proto.InternalMessageInfo
 
-func (m *QueryVaultResponse) GetVault() []Vault {
+func (m *QueryGetVaultResponse) GetVault() Vault {
 	if m != nil {
 		return m.Vault
+	}
+	return Vault{}
+}
+
+type QueryAllStrategyRequest struct {
+	Denom      string             `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Pagination *query.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryAllStrategyRequest) Reset()         { *m = QueryAllStrategyRequest{} }
+func (m *QueryAllStrategyRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryAllStrategyRequest) ProtoMessage()    {}
+func (*QueryAllStrategyRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ca379d2c4ad0f7ec, []int{6}
+}
+func (m *QueryAllStrategyRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryAllStrategyRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryAllStrategyRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryAllStrategyRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllStrategyRequest.Merge(m, src)
+}
+func (m *QueryAllStrategyRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryAllStrategyRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllStrategyRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllStrategyRequest proto.InternalMessageInfo
+
+func (m *QueryAllStrategyRequest) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
+func (m *QueryAllStrategyRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
 	}
 	return nil
 }
 
-type QueryStrategiesRequest struct {
-	Denom string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+type QueryAllStrategyResponse struct {
+	Strategies []Strategy          `protobuf:"bytes,1,rep,name=strategies,proto3" json:"strategies"`
+	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *QueryStrategiesRequest) Reset()         { *m = QueryStrategiesRequest{} }
-func (m *QueryStrategiesRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryStrategiesRequest) ProtoMessage()    {}
-func (*QueryStrategiesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ca379d2c4ad0f7ec, []int{6}
-}
-func (m *QueryStrategiesRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryStrategiesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryStrategiesRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryStrategiesRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryStrategiesRequest.Merge(m, src)
-}
-func (m *QueryStrategiesRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryStrategiesRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryStrategiesRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryStrategiesRequest proto.InternalMessageInfo
-
-func (m *QueryStrategiesRequest) GetDenom() string {
-	if m != nil {
-		return m.Denom
-	}
-	return ""
-}
-
-type QueryStrategiesResponse struct {
-	Strategies []Strategy         `protobuf:"bytes,1,rep,name=strategies,proto3" json:"strategies"`
-	Pagination *query.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
-}
-
-func (m *QueryStrategiesResponse) Reset()         { *m = QueryStrategiesResponse{} }
-func (m *QueryStrategiesResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryStrategiesResponse) ProtoMessage()    {}
-func (*QueryStrategiesResponse) Descriptor() ([]byte, []int) {
+func (m *QueryAllStrategyResponse) Reset()         { *m = QueryAllStrategyResponse{} }
+func (m *QueryAllStrategyResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryAllStrategyResponse) ProtoMessage()    {}
+func (*QueryAllStrategyResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ca379d2c4ad0f7ec, []int{7}
 }
-func (m *QueryStrategiesResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryAllStrategyResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryStrategiesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryAllStrategyResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryStrategiesResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryAllStrategyResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -359,82 +375,187 @@ func (m *QueryStrategiesResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *QueryStrategiesResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryStrategiesResponse.Merge(m, src)
+func (m *QueryAllStrategyResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllStrategyResponse.Merge(m, src)
 }
-func (m *QueryStrategiesResponse) XXX_Size() int {
+func (m *QueryAllStrategyResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryStrategiesResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryStrategiesResponse.DiscardUnknown(m)
+func (m *QueryAllStrategyResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllStrategyResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryStrategiesResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryAllStrategyResponse proto.InternalMessageInfo
 
-func (m *QueryStrategiesResponse) GetStrategies() []Strategy {
+func (m *QueryAllStrategyResponse) GetStrategies() []Strategy {
 	if m != nil {
 		return m.Strategies
 	}
 	return nil
 }
 
-func (m *QueryStrategiesResponse) GetPagination() *query.PageRequest {
+func (m *QueryAllStrategyResponse) GetPagination() *query.PageResponse {
 	if m != nil {
 		return m.Pagination
 	}
 	return nil
 }
 
+type QueryGetStrategyRequest struct {
+	Denom string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Id    uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *QueryGetStrategyRequest) Reset()         { *m = QueryGetStrategyRequest{} }
+func (m *QueryGetStrategyRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetStrategyRequest) ProtoMessage()    {}
+func (*QueryGetStrategyRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ca379d2c4ad0f7ec, []int{8}
+}
+func (m *QueryGetStrategyRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetStrategyRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetStrategyRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetStrategyRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetStrategyRequest.Merge(m, src)
+}
+func (m *QueryGetStrategyRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetStrategyRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetStrategyRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetStrategyRequest proto.InternalMessageInfo
+
+func (m *QueryGetStrategyRequest) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
+func (m *QueryGetStrategyRequest) GetId() uint64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+type QueryGetStrategyResponse struct {
+	Strategy Strategy `protobuf:"bytes,1,opt,name=strategy,proto3" json:"strategy"`
+}
+
+func (m *QueryGetStrategyResponse) Reset()         { *m = QueryGetStrategyResponse{} }
+func (m *QueryGetStrategyResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetStrategyResponse) ProtoMessage()    {}
+func (*QueryGetStrategyResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ca379d2c4ad0f7ec, []int{9}
+}
+func (m *QueryGetStrategyResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetStrategyResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetStrategyResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetStrategyResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetStrategyResponse.Merge(m, src)
+}
+func (m *QueryGetStrategyResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetStrategyResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetStrategyResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetStrategyResponse proto.InternalMessageInfo
+
+func (m *QueryGetStrategyResponse) GetStrategy() Strategy {
+	if m != nil {
+		return m.Strategy
+	}
+	return Strategy{}
+}
+
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "ununifi.chain.yieldaggregator.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "ununifi.chain.yieldaggregator.QueryParamsResponse")
-	proto.RegisterType((*QueryVaultsRequest)(nil), "ununifi.chain.yieldaggregator.QueryVaultsRequest")
-	proto.RegisterType((*QueryVaultsResponse)(nil), "ununifi.chain.yieldaggregator.QueryVaultsResponse")
-	proto.RegisterType((*QueryVaultRequest)(nil), "ununifi.chain.yieldaggregator.QueryVaultRequest")
-	proto.RegisterType((*QueryVaultResponse)(nil), "ununifi.chain.yieldaggregator.QueryVaultResponse")
-	proto.RegisterType((*QueryStrategiesRequest)(nil), "ununifi.chain.yieldaggregator.QueryStrategiesRequest")
-	proto.RegisterType((*QueryStrategiesResponse)(nil), "ununifi.chain.yieldaggregator.QueryStrategiesResponse")
+	proto.RegisterType((*QueryAllVaultRequest)(nil), "ununifi.chain.yieldaggregator.QueryAllVaultRequest")
+	proto.RegisterType((*QueryAllVaultResponse)(nil), "ununifi.chain.yieldaggregator.QueryAllVaultResponse")
+	proto.RegisterType((*QueryGetVaultRequest)(nil), "ununifi.chain.yieldaggregator.QueryGetVaultRequest")
+	proto.RegisterType((*QueryGetVaultResponse)(nil), "ununifi.chain.yieldaggregator.QueryGetVaultResponse")
+	proto.RegisterType((*QueryAllStrategyRequest)(nil), "ununifi.chain.yieldaggregator.QueryAllStrategyRequest")
+	proto.RegisterType((*QueryAllStrategyResponse)(nil), "ununifi.chain.yieldaggregator.QueryAllStrategyResponse")
+	proto.RegisterType((*QueryGetStrategyRequest)(nil), "ununifi.chain.yieldaggregator.QueryGetStrategyRequest")
+	proto.RegisterType((*QueryGetStrategyResponse)(nil), "ununifi.chain.yieldaggregator.QueryGetStrategyResponse")
 }
 
 func init() { proto.RegisterFile("yield-aggregator/query.proto", fileDescriptor_ca379d2c4ad0f7ec) }
 
 var fileDescriptor_ca379d2c4ad0f7ec = []byte{
-	// 560 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x94, 0xc1, 0x6a, 0x13, 0x41,
-	0x18, 0xc7, 0x33, 0xd5, 0x04, 0x9c, 0x9e, 0x1c, 0x8b, 0x86, 0xd0, 0xae, 0x65, 0xd1, 0x36, 0x0a,
-	0xce, 0x74, 0x23, 0x16, 0xc4, 0x8b, 0x46, 0xe8, 0x45, 0x84, 0x1a, 0x69, 0x0f, 0xbd, 0x4d, 0xd2,
-	0x71, 0x3a, 0x90, 0xcc, 0x6c, 0x77, 0x66, 0x8b, 0x41, 0xbc, 0xf8, 0x04, 0x82, 0x0f, 0x20, 0x82,
-	0x0f, 0x20, 0x78, 0xf7, 0xdc, 0x63, 0xc1, 0x8b, 0x27, 0x91, 0xc4, 0x07, 0x91, 0xcc, 0x4c, 0xb2,
-	0x49, 0x17, 0x9b, 0x8d, 0x78, 0x4b, 0xbe, 0xf9, 0xfe, 0xdf, 0xff, 0x37, 0x5f, 0xfe, 0x13, 0xb8,
-	0xda, 0x17, 0xac, 0x7b, 0x78, 0x8f, 0x72, 0x9e, 0x30, 0x4e, 0x8d, 0x4a, 0xc8, 0x71, 0xca, 0x92,
-	0x3e, 0x8e, 0x13, 0x65, 0x14, 0x5a, 0x4b, 0x65, 0x2a, 0xc5, 0x2b, 0x81, 0x3b, 0x47, 0x54, 0x48,
-	0x6c, 0x7b, 0xb3, 0xd6, 0xda, 0x0a, 0x57, 0x5c, 0xd9, 0x4e, 0x32, 0xfa, 0xe4, 0x44, 0xb5, 0x55,
-	0xae, 0x14, 0xef, 0x32, 0x42, 0x63, 0x41, 0xa8, 0x94, 0xca, 0x50, 0x23, 0x94, 0xd4, 0xfe, 0xf4,
-	0x6e, 0x47, 0xe9, 0x9e, 0xd2, 0xa4, 0x4d, 0x35, 0x73, 0x5e, 0xe4, 0x24, 0x6a, 0x33, 0x43, 0x23,
-	0x12, 0x53, 0x2e, 0xa4, 0x6d, 0xf6, 0xbd, 0x6b, 0x39, 0xb8, 0x98, 0x26, 0xb4, 0x37, 0x1e, 0xb5,
-	0x99, 0x3b, 0x3e, 0x5f, 0x70, 0x8d, 0xe1, 0x0a, 0x44, 0x2f, 0x46, 0x4e, 0xbb, 0x56, 0xdd, 0x62,
-	0xc7, 0x29, 0xd3, 0x26, 0x3c, 0x80, 0xd7, 0x66, 0xaa, 0x3a, 0x56, 0x52, 0x33, 0xf4, 0x14, 0x56,
-	0x9c, 0x4b, 0x15, 0xac, 0x83, 0xfa, 0x72, 0xe3, 0x36, 0xbe, 0x70, 0x09, 0xd8, 0xc9, 0x9b, 0x97,
-	0x4f, 0x7f, 0xde, 0x2c, 0xb5, 0xbc, 0x74, 0xe2, 0xb8, 0x4f, 0xd3, 0xae, 0x99, 0x38, 0x7e, 0x02,
-	0xde, 0x72, 0x5c, 0xf6, 0x96, 0x4d, 0x58, 0x39, 0xb1, 0x95, 0x2a, 0x58, 0xbf, 0x54, 0x5f, 0x6e,
-	0xdc, 0x9a, 0x63, 0x69, 0xe5, 0x63, 0x47, 0xa7, 0x44, 0x3b, 0x10, 0x66, 0xfb, 0xab, 0x2e, 0x59,
-	0xf4, 0x0d, 0xec, 0x96, 0x8d, 0x47, 0xcb, 0xc6, 0xee, 0x87, 0xf5, 0xcb, 0xc6, 0xbb, 0x94, 0x33,
-	0xcf, 0xd5, 0x9a, 0x52, 0x86, 0x77, 0xe0, 0xd5, 0x0c, 0xd1, 0x37, 0xa0, 0x15, 0x58, 0x3e, 0x64,
-	0x52, 0xf5, 0xec, 0x4a, 0xae, 0xb4, 0xdc, 0x97, 0x70, 0x7f, 0xfa, 0x92, 0x93, 0xcb, 0x3c, 0x86,
-	0x65, 0x8b, 0xf4, 0x0f, 0x77, 0x71, 0xc2, 0x10, 0xc3, 0xeb, 0x76, 0xee, 0x4b, 0x93, 0x50, 0xc3,
-	0xb8, 0x60, 0xfa, 0x62, 0x8e, 0x2f, 0x00, 0xde, 0xc8, 0x09, 0x3c, 0xcd, 0x73, 0x08, 0xf5, 0xa4,
-	0xea, 0x91, 0x36, 0xe7, 0x20, 0xf9, 0x31, 0x7d, 0x4f, 0x35, 0x35, 0xe0, 0x7f, 0x6d, 0xb9, 0xf1,
-	0xb5, 0x0c, 0xcb, 0x16, 0x19, 0x7d, 0x04, 0xb0, 0xe2, 0x22, 0x84, 0xa2, 0x39, 0x5c, 0xf9, 0x0c,
-	0xd7, 0x1a, 0x8b, 0x48, 0xdc, 0x4a, 0x42, 0xfc, 0xee, 0xfb, 0xef, 0x0f, 0x4b, 0x75, 0xb4, 0x41,
-	0xf6, 0xe4, 0x9e, 0x14, 0x3b, 0x82, 0x58, 0x2d, 0xf9, 0xcb, 0x63, 0xb3, 0x84, 0x2e, 0xb0, 0xc5,
-	0x08, 0x67, 0x32, 0x5f, 0x8c, 0x70, 0xf6, 0x3d, 0x14, 0x27, 0xf4, 0xd9, 0xff, 0x0c, 0x60, 0xd9,
-	0x8e, 0x40, 0x5b, 0x85, 0xdd, 0xc6, 0x7c, 0xd1, 0x02, 0x0a, 0x8f, 0xb7, 0x6d, 0xf1, 0xb6, 0x10,
-	0x2e, 0x86, 0x47, 0xde, 0xd8, 0x98, 0xbe, 0x45, 0xdf, 0x00, 0x84, 0x59, 0x44, 0xd1, 0x83, 0x22,
-	0xce, 0xb9, 0x37, 0x50, 0xdb, 0x5e, 0x54, 0xe6, 0xa9, 0x9f, 0x58, 0xea, 0x47, 0xe8, 0xe1, 0x62,
-	0xd4, 0x24, 0x4b, 0x7f, 0xf3, 0xd9, 0xe9, 0x20, 0x00, 0x67, 0x83, 0x00, 0xfc, 0x1a, 0x04, 0xe0,
-	0xfd, 0x30, 0x28, 0x9d, 0x0d, 0x83, 0xd2, 0x8f, 0x61, 0x50, 0x3a, 0x88, 0xb8, 0x30, 0x47, 0x69,
-	0x1b, 0x77, 0x54, 0xef, 0xdc, 0xf8, 0xd7, 0x79, 0x03, 0xd3, 0x8f, 0x99, 0x6e, 0x57, 0xec, 0x7f,
-	0xf3, 0xfd, 0x3f, 0x01, 0x00, 0x00, 0xff, 0xff, 0x0f, 0xcf, 0xd2, 0xb9, 0x82, 0x06, 0x00, 0x00,
+	// 667 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x55, 0x4f, 0x6b, 0x13, 0x41,
+	0x14, 0xcf, 0xc4, 0x26, 0xd6, 0x29, 0x78, 0x18, 0x23, 0x96, 0xd0, 0xae, 0xb2, 0x68, 0x5b, 0x44,
+	0x67, 0x4c, 0x2a, 0x15, 0x11, 0xb4, 0xad, 0xd0, 0x22, 0x22, 0xd4, 0x48, 0x05, 0x7b, 0x10, 0x26,
+	0xcd, 0xb8, 0x1d, 0xd8, 0xec, 0x6c, 0x77, 0x67, 0xab, 0xa1, 0xf4, 0xe2, 0xc9, 0xa3, 0xe0, 0x07,
+	0xf0, 0xa2, 0x17, 0x8f, 0x7e, 0x03, 0xf1, 0xd2, 0x63, 0xc1, 0x8b, 0x27, 0x91, 0xd6, 0x0f, 0x22,
+	0x3b, 0x33, 0x6b, 0x92, 0x5d, 0x6d, 0x76, 0x8b, 0xb7, 0x76, 0xf6, 0xfd, 0xde, 0xef, 0xcf, 0x9b,
+	0x37, 0x81, 0x53, 0x3d, 0xce, 0xdc, 0xce, 0x75, 0xea, 0x38, 0x01, 0x73, 0xa8, 0x14, 0x01, 0xd9,
+	0x8e, 0x58, 0xd0, 0xc3, 0x7e, 0x20, 0xa4, 0x40, 0xd3, 0x91, 0x17, 0x79, 0xfc, 0x05, 0xc7, 0x9b,
+	0x5b, 0x94, 0x7b, 0x58, 0xd5, 0xf6, 0x4b, 0xeb, 0x35, 0x47, 0x38, 0x42, 0x55, 0x92, 0xf8, 0x2f,
+	0x0d, 0xaa, 0x4f, 0x39, 0x42, 0x38, 0x2e, 0x23, 0xd4, 0xe7, 0x84, 0x7a, 0x9e, 0x90, 0x54, 0x72,
+	0xe1, 0x85, 0xe6, 0xeb, 0xd5, 0x4d, 0x11, 0x76, 0x45, 0x48, 0xda, 0x34, 0x64, 0x9a, 0x8b, 0xec,
+	0x34, 0xda, 0x4c, 0xd2, 0x06, 0xf1, 0xa9, 0xc3, 0x3d, 0x55, 0x6c, 0x6a, 0xa7, 0x33, 0xe2, 0x7c,
+	0x1a, 0xd0, 0x6e, 0xd2, 0x6a, 0x36, 0xf3, 0x39, 0x7d, 0xa0, 0x0b, 0xed, 0x1a, 0x44, 0x8f, 0x63,
+	0xa6, 0x35, 0x85, 0x6e, 0xb1, 0xed, 0x88, 0x85, 0xd2, 0xde, 0x80, 0xe7, 0x86, 0x4e, 0x43, 0x5f,
+	0x78, 0x21, 0x43, 0xf7, 0x61, 0x55, 0xb3, 0x4c, 0x82, 0x4b, 0x60, 0x6e, 0xa2, 0x79, 0x05, 0x1f,
+	0x1b, 0x02, 0xd6, 0xf0, 0xe5, 0xb1, 0xfd, 0x1f, 0x17, 0x4b, 0x2d, 0x03, 0xb5, 0x9f, 0xc3, 0x9a,
+	0xea, 0xbd, 0xe4, 0xba, 0x4f, 0x69, 0xe4, 0x4a, 0xc3, 0x89, 0x56, 0x20, 0xec, 0xbb, 0x34, 0x04,
+	0x33, 0x58, 0x47, 0x82, 0xe3, 0x48, 0xb0, 0x8e, 0xdf, 0x44, 0x82, 0xd7, 0xa8, 0xc3, 0x0c, 0xb6,
+	0x35, 0x80, 0xb4, 0x3f, 0x00, 0x78, 0x3e, 0x45, 0x60, 0xe4, 0x2f, 0xc3, 0xea, 0x4e, 0x7c, 0x10,
+	0xcb, 0x3f, 0x35, 0x37, 0xd1, 0xbc, 0x3c, 0x42, 0xbe, 0x42, 0x27, 0xea, 0x35, 0x12, 0xad, 0x0e,
+	0xa9, 0x2c, 0x2b, 0x95, 0xb3, 0x23, 0x55, 0x6a, 0x01, 0x43, 0x32, 0xaf, 0x99, 0x18, 0x56, 0x99,
+	0x1c, 0x8a, 0xa1, 0x06, 0x2b, 0x1d, 0xe6, 0x89, 0xae, 0x4a, 0xe0, 0x4c, 0x4b, 0xff, 0x63, 0x3f,
+	0x33, 0x9e, 0xfa, 0xd5, 0xc6, 0xd3, 0x22, 0xac, 0x28, 0x65, 0x26, 0xb0, 0x22, 0x96, 0x34, 0xd0,
+	0x7e, 0x09, 0x2f, 0x24, 0x71, 0x3d, 0x91, 0x01, 0x95, 0xcc, 0xe9, 0x1d, 0xab, 0x25, 0x35, 0xa8,
+	0xf2, 0x89, 0x07, 0xf5, 0x19, 0xc0, 0xc9, 0x2c, 0xb3, 0xf1, 0xf5, 0x08, 0xc2, 0x50, 0x9f, 0x71,
+	0x96, 0xcc, 0x6b, 0x76, 0x84, 0xb9, 0xa4, 0x89, 0xf1, 0x37, 0xd0, 0xe0, 0xff, 0x8d, 0xed, 0x9e,
+	0x49, 0x6b, 0x95, 0xc9, 0x7c, 0x69, 0x9d, 0x85, 0x65, 0xde, 0x51, 0x8c, 0x63, 0xad, 0x32, 0xef,
+	0xd8, 0xcc, 0x98, 0x1e, 0x6a, 0x60, 0x4c, 0x3f, 0x80, 0xe3, 0x46, 0x73, 0xcf, 0xcc, 0xb3, 0xa0,
+	0xe5, 0x3f, 0xf0, 0xe6, 0x9b, 0xd3, 0xb0, 0xa2, 0x78, 0xd0, 0x7b, 0x00, 0xab, 0x7a, 0x11, 0x51,
+	0x63, 0x44, 0xb7, 0xec, 0x4b, 0x50, 0x6f, 0x16, 0x81, 0x68, 0x1b, 0x36, 0x7e, 0xfd, 0xed, 0xd7,
+	0xbb, 0xf2, 0x1c, 0x9a, 0x21, 0xeb, 0xde, 0xba, 0xc7, 0x57, 0x38, 0x51, 0x58, 0xf2, 0x8f, 0x27,
+	0x0b, 0x7d, 0x04, 0x70, 0x5c, 0x5d, 0xcc, 0x25, 0xd7, 0x45, 0xf3, 0x79, 0x08, 0x53, 0x6f, 0x47,
+	0xfd, 0x66, 0x31, 0x50, 0x51, 0x9d, 0x66, 0xf7, 0x3f, 0x01, 0x58, 0x51, 0x1d, 0xf2, 0x89, 0x4c,
+	0x6d, 0x76, 0x3e, 0x91, 0xe9, 0x05, 0xb7, 0x17, 0x94, 0xc8, 0x1b, 0x08, 0xe7, 0x13, 0x49, 0x76,
+	0xd5, 0xb5, 0xdb, 0x43, 0x5f, 0x00, 0x9c, 0x48, 0x6e, 0x47, 0x9c, 0xeb, 0x42, 0xce, 0x88, 0x52,
+	0xb7, 0xba, 0x7e, 0xab, 0x30, 0xce, 0x08, 0x5f, 0x52, 0xc2, 0xef, 0xa0, 0xdb, 0xc5, 0x84, 0x93,
+	0x81, 0xad, 0xfd, 0x0a, 0xe0, 0x78, 0xd2, 0x37, 0x9f, 0x81, 0xec, 0x5a, 0xe6, 0x33, 0xf0, 0x97,
+	0x6d, 0xb4, 0x57, 0x94, 0x81, 0x45, 0x74, 0xf7, 0xc4, 0x06, 0xc8, 0x2e, 0xef, 0xec, 0x2d, 0x3f,
+	0xdc, 0x3f, 0xb4, 0xc0, 0xc1, 0xa1, 0x05, 0x7e, 0x1e, 0x5a, 0xe0, 0xed, 0x91, 0x55, 0x3a, 0x38,
+	0xb2, 0x4a, 0xdf, 0x8f, 0xac, 0xd2, 0x46, 0xc3, 0xe1, 0x72, 0x2b, 0x6a, 0xe3, 0x4d, 0xd1, 0x4d,
+	0x71, 0xbc, 0xca, 0xb2, 0xc8, 0x9e, 0xcf, 0xc2, 0x76, 0x55, 0xfd, 0x6c, 0xcf, 0xff, 0x0e, 0x00,
+	0x00, 0xff, 0xff, 0xd7, 0x2c, 0x06, 0x81, 0x9d, 0x08, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -452,9 +573,10 @@ type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// this line is used by starport scaffolding # 2
-	Vaults(ctx context.Context, in *QueryVaultsRequest, opts ...grpc.CallOption) (*QueryVaultsResponse, error)
-	Vault(ctx context.Context, in *QueryVaultRequest, opts ...grpc.CallOption) (*QueryVaultResponse, error)
-	Strategies(ctx context.Context, in *QueryStrategiesRequest, opts ...grpc.CallOption) (*QueryStrategiesResponse, error)
+	VaultAll(ctx context.Context, in *QueryAllVaultRequest, opts ...grpc.CallOption) (*QueryAllVaultResponse, error)
+	Vault(ctx context.Context, in *QueryGetVaultRequest, opts ...grpc.CallOption) (*QueryGetVaultResponse, error)
+	StrategyAll(ctx context.Context, in *QueryAllStrategyRequest, opts ...grpc.CallOption) (*QueryAllStrategyResponse, error)
+	Strategy(ctx context.Context, in *QueryGetStrategyRequest, opts ...grpc.CallOption) (*QueryGetStrategyResponse, error)
 }
 
 type queryClient struct {
@@ -474,17 +596,17 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) Vaults(ctx context.Context, in *QueryVaultsRequest, opts ...grpc.CallOption) (*QueryVaultsResponse, error) {
-	out := new(QueryVaultsResponse)
-	err := c.cc.Invoke(ctx, "/ununifi.chain.yieldaggregator.Query/Vaults", in, out, opts...)
+func (c *queryClient) VaultAll(ctx context.Context, in *QueryAllVaultRequest, opts ...grpc.CallOption) (*QueryAllVaultResponse, error) {
+	out := new(QueryAllVaultResponse)
+	err := c.cc.Invoke(ctx, "/ununifi.chain.yieldaggregator.Query/VaultAll", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) Vault(ctx context.Context, in *QueryVaultRequest, opts ...grpc.CallOption) (*QueryVaultResponse, error) {
-	out := new(QueryVaultResponse)
+func (c *queryClient) Vault(ctx context.Context, in *QueryGetVaultRequest, opts ...grpc.CallOption) (*QueryGetVaultResponse, error) {
+	out := new(QueryGetVaultResponse)
 	err := c.cc.Invoke(ctx, "/ununifi.chain.yieldaggregator.Query/Vault", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -492,9 +614,18 @@ func (c *queryClient) Vault(ctx context.Context, in *QueryVaultRequest, opts ...
 	return out, nil
 }
 
-func (c *queryClient) Strategies(ctx context.Context, in *QueryStrategiesRequest, opts ...grpc.CallOption) (*QueryStrategiesResponse, error) {
-	out := new(QueryStrategiesResponse)
-	err := c.cc.Invoke(ctx, "/ununifi.chain.yieldaggregator.Query/Strategies", in, out, opts...)
+func (c *queryClient) StrategyAll(ctx context.Context, in *QueryAllStrategyRequest, opts ...grpc.CallOption) (*QueryAllStrategyResponse, error) {
+	out := new(QueryAllStrategyResponse)
+	err := c.cc.Invoke(ctx, "/ununifi.chain.yieldaggregator.Query/StrategyAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Strategy(ctx context.Context, in *QueryGetStrategyRequest, opts ...grpc.CallOption) (*QueryGetStrategyResponse, error) {
+	out := new(QueryGetStrategyResponse)
+	err := c.cc.Invoke(ctx, "/ununifi.chain.yieldaggregator.Query/Strategy", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -506,9 +637,10 @@ type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// this line is used by starport scaffolding # 2
-	Vaults(context.Context, *QueryVaultsRequest) (*QueryVaultsResponse, error)
-	Vault(context.Context, *QueryVaultRequest) (*QueryVaultResponse, error)
-	Strategies(context.Context, *QueryStrategiesRequest) (*QueryStrategiesResponse, error)
+	VaultAll(context.Context, *QueryAllVaultRequest) (*QueryAllVaultResponse, error)
+	Vault(context.Context, *QueryGetVaultRequest) (*QueryGetVaultResponse, error)
+	StrategyAll(context.Context, *QueryAllStrategyRequest) (*QueryAllStrategyResponse, error)
+	Strategy(context.Context, *QueryGetStrategyRequest) (*QueryGetStrategyResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -518,14 +650,17 @@ type UnimplementedQueryServer struct {
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (*UnimplementedQueryServer) Vaults(ctx context.Context, req *QueryVaultsRequest) (*QueryVaultsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Vaults not implemented")
+func (*UnimplementedQueryServer) VaultAll(ctx context.Context, req *QueryAllVaultRequest) (*QueryAllVaultResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VaultAll not implemented")
 }
-func (*UnimplementedQueryServer) Vault(ctx context.Context, req *QueryVaultRequest) (*QueryVaultResponse, error) {
+func (*UnimplementedQueryServer) Vault(ctx context.Context, req *QueryGetVaultRequest) (*QueryGetVaultResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Vault not implemented")
 }
-func (*UnimplementedQueryServer) Strategies(ctx context.Context, req *QueryStrategiesRequest) (*QueryStrategiesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Strategies not implemented")
+func (*UnimplementedQueryServer) StrategyAll(ctx context.Context, req *QueryAllStrategyRequest) (*QueryAllStrategyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StrategyAll not implemented")
+}
+func (*UnimplementedQueryServer) Strategy(ctx context.Context, req *QueryGetStrategyRequest) (*QueryGetStrategyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Strategy not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -550,26 +685,26 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Vaults_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryVaultsRequest)
+func _Query_VaultAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllVaultRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Vaults(ctx, in)
+		return srv.(QueryServer).VaultAll(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ununifi.chain.yieldaggregator.Query/Vaults",
+		FullMethod: "/ununifi.chain.yieldaggregator.Query/VaultAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Vaults(ctx, req.(*QueryVaultsRequest))
+		return srv.(QueryServer).VaultAll(ctx, req.(*QueryAllVaultRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Query_Vault_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryVaultRequest)
+	in := new(QueryGetVaultRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -581,25 +716,43 @@ func _Query_Vault_Handler(srv interface{}, ctx context.Context, dec func(interfa
 		FullMethod: "/ununifi.chain.yieldaggregator.Query/Vault",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Vault(ctx, req.(*QueryVaultRequest))
+		return srv.(QueryServer).Vault(ctx, req.(*QueryGetVaultRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Strategies_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryStrategiesRequest)
+func _Query_StrategyAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllStrategyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Strategies(ctx, in)
+		return srv.(QueryServer).StrategyAll(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ununifi.chain.yieldaggregator.Query/Strategies",
+		FullMethod: "/ununifi.chain.yieldaggregator.Query/StrategyAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Strategies(ctx, req.(*QueryStrategiesRequest))
+		return srv.(QueryServer).StrategyAll(ctx, req.(*QueryAllStrategyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Strategy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetStrategyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Strategy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ununifi.chain.yieldaggregator.Query/Strategy",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Strategy(ctx, req.(*QueryGetStrategyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -613,16 +766,20 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "Vaults",
-			Handler:    _Query_Vaults_Handler,
+			MethodName: "VaultAll",
+			Handler:    _Query_VaultAll_Handler,
 		},
 		{
 			MethodName: "Vault",
 			Handler:    _Query_Vault_Handler,
 		},
 		{
-			MethodName: "Strategies",
-			Handler:    _Query_Strategies_Handler,
+			MethodName: "StrategyAll",
+			Handler:    _Query_StrategyAll_Handler,
+		},
+		{
+			MethodName: "Strategy",
+			Handler:    _Query_Strategy_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -685,7 +842,7 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryVaultsRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryAllVaultRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -695,20 +852,32 @@ func (m *QueryVaultsRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryVaultsRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryAllVaultRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryVaultsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryAllVaultRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryVaultsResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryAllVaultResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -718,12 +887,12 @@ func (m *QueryVaultsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryVaultsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryAllVaultResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryVaultsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryAllVaultResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -757,7 +926,7 @@ func (m *QueryVaultsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryVaultRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryGetVaultRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -767,12 +936,12 @@ func (m *QueryVaultRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryVaultRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryGetVaultRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryVaultRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryGetVaultRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -787,7 +956,7 @@ func (m *QueryVaultRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryVaultResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryGetVaultResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -797,34 +966,30 @@ func (m *QueryVaultResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryVaultResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryGetVaultResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryVaultResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryGetVaultResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Vault) > 0 {
-		for iNdEx := len(m.Vault) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Vault[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintQuery(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0xa
+	{
+		size, err := m.Vault.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
+		i -= size
+		i = encodeVarintQuery(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryStrategiesRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryAllStrategyRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -834,16 +999,28 @@ func (m *QueryStrategiesRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryStrategiesRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryAllStrategyRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryStrategiesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryAllStrategyRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Denom) > 0 {
 		i -= len(m.Denom)
 		copy(dAtA[i:], m.Denom)
@@ -854,7 +1031,7 @@ func (m *QueryStrategiesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryStrategiesResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryAllStrategyResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -864,12 +1041,12 @@ func (m *QueryStrategiesResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryStrategiesResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryAllStrategyResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryStrategiesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryAllStrategyResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -900,6 +1077,74 @@ func (m *QueryStrategiesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 			dAtA[i] = 0xa
 		}
 	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetStrategyRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetStrategyRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetStrategyRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Id != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetStrategyResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetStrategyResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetStrategyResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.Strategy.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintQuery(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -934,16 +1179,20 @@ func (m *QueryParamsResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryVaultsRequest) Size() (n int) {
+func (m *QueryAllVaultRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
 	return n
 }
 
-func (m *QueryVaultsResponse) Size() (n int) {
+func (m *QueryAllVaultResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -962,7 +1211,7 @@ func (m *QueryVaultsResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryVaultRequest) Size() (n int) {
+func (m *QueryGetVaultRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -975,22 +1224,18 @@ func (m *QueryVaultRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryVaultResponse) Size() (n int) {
+func (m *QueryGetVaultResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if len(m.Vault) > 0 {
-		for _, e := range m.Vault {
-			l = e.Size()
-			n += 1 + l + sovQuery(uint64(l))
-		}
-	}
+	l = m.Vault.Size()
+	n += 1 + l + sovQuery(uint64(l))
 	return n
 }
 
-func (m *QueryStrategiesRequest) Size() (n int) {
+func (m *QueryAllStrategyRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1000,10 +1245,14 @@ func (m *QueryStrategiesRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
 	return n
 }
 
-func (m *QueryStrategiesResponse) Size() (n int) {
+func (m *QueryAllStrategyResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1019,6 +1268,33 @@ func (m *QueryStrategiesResponse) Size() (n int) {
 		l = m.Pagination.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
+	return n
+}
+
+func (m *QueryGetStrategyRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Id != 0 {
+		n += 1 + sovQuery(uint64(m.Id))
+	}
+	return n
+}
+
+func (m *QueryGetStrategyResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.Strategy.Size()
+	n += 1 + l + sovQuery(uint64(l))
 	return n
 }
 
@@ -1161,7 +1437,7 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryVaultsRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryAllVaultRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1184,12 +1460,48 @@ func (m *QueryVaultsRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryVaultsRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryAllVaultRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryVaultsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryAllVaultRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
@@ -1211,7 +1523,7 @@ func (m *QueryVaultsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryVaultsResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryAllVaultResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1234,10 +1546,10 @@ func (m *QueryVaultsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryVaultsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryAllVaultResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryVaultsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryAllVaultResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1304,7 +1616,7 @@ func (m *QueryVaultsResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Pagination == nil {
-				m.Pagination = &query.PageRequest{}
+				m.Pagination = &query.PageResponse{}
 			}
 			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -1331,7 +1643,7 @@ func (m *QueryVaultsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryVaultRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryGetVaultRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1354,10 +1666,10 @@ func (m *QueryVaultRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryVaultRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryGetVaultRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryVaultRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryGetVaultRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1413,7 +1725,7 @@ func (m *QueryVaultRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryVaultResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryGetVaultResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1436,10 +1748,10 @@ func (m *QueryVaultResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryVaultResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryGetVaultResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryVaultResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryGetVaultResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1471,8 +1783,7 @@ func (m *QueryVaultResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Vault = append(m.Vault, Vault{})
-			if err := m.Vault[len(m.Vault)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Vault.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1497,7 +1808,7 @@ func (m *QueryVaultResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryStrategiesRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryAllStrategyRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1520,10 +1831,10 @@ func (m *QueryStrategiesRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryStrategiesRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryAllStrategyRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryStrategiesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryAllStrategyRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1558,6 +1869,42 @@ func (m *QueryStrategiesRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.Denom = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
@@ -1579,7 +1926,7 @@ func (m *QueryStrategiesRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryStrategiesResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryAllStrategyResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1602,10 +1949,10 @@ func (m *QueryStrategiesResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryStrategiesResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryAllStrategyResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryStrategiesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryAllStrategyResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1672,9 +2019,193 @@ func (m *QueryStrategiesResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Pagination == nil {
-				m.Pagination = &query.PageRequest{}
+				m.Pagination = &query.PageResponse{}
 			}
 			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetStrategyRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetStrategyRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetStrategyRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetStrategyResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetStrategyResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetStrategyResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Strategy", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Strategy.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

@@ -18,7 +18,7 @@ import (
 	"github.com/UnUniFi/chain/x/yield-aggregator/types"
 )
 
-func YieldaggregatorKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
+func YieldAggregatorKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
 	memStoreKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
 
@@ -35,7 +35,7 @@ func YieldaggregatorKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		types.Amino,
 		storeKey,
 		memStoreKey,
-		"YieldaggregatorParams",
+		"YieldAggregatorParams",
 	)
 	k := keeper.NewKeeper(
 		cdc,

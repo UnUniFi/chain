@@ -7,9 +7,388 @@
 ## Table of Contents
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+- [auction/auction.proto](#auction/auction.proto)
+  - [BaseAuction](#ununifi.auction.BaseAuction)
+  - [CollateralAuction](#ununifi.auction.CollateralAuction)
+  - [DebtAuction](#ununifi.auction.DebtAuction)
+  - [Params](#ununifi.auction.Params)
+  - [SurplusAuction](#ununifi.auction.SurplusAuction)
+  - [WeightedAddress](#ununifi.auction.WeightedAddress)
+- [auction/genesis.proto](#auction/genesis.proto)
+  - [GenesisState](#ununifi.auction.GenesisState)
+- [auction/query.proto](#auction/query.proto)
+
+  - [QueryAllAuctionRequest](#ununifi.auction.QueryAllAuctionRequest)
+  - [QueryAllAuctionResponse](#ununifi.auction.QueryAllAuctionResponse)
+  - [QueryGetAuctionRequest](#ununifi.auction.QueryGetAuctionRequest)
+  - [QueryGetAuctionResponse](#ununifi.auction.QueryGetAuctionResponse)
+  - [QueryParamsRequest](#ununifi.auction.QueryParamsRequest)
+  - [QueryParamsResponse](#ununifi.auction.QueryParamsResponse)
+
+  - [Query](#ununifi.auction.Query)
+
+- [auction/tx.proto](#auction/tx.proto)
+
+  - [MsgPlaceBid](#ununifi.auction.MsgPlaceBid)
+  - [MsgPlaceBidResponse](#ununifi.auction.MsgPlaceBidResponse)
+
+  - [Msg](#ununifi.auction.Msg)
+
+- [cdp/cdp.proto](#cdp/cdp.proto)
+  - [AugmentedCdp](#ununifi.cdp.AugmentedCdp)
+  - [Cdp](#ununifi.cdp.Cdp)
+  - [CollateralParam](#ununifi.cdp.CollateralParam)
+  - [DebtParam](#ununifi.cdp.DebtParam)
+  - [Deposit](#ununifi.cdp.Deposit)
+  - [Params](#ununifi.cdp.Params)
+- [cdp/genesis.proto](#cdp/genesis.proto)
+  - [GenesisAccumulationTime](#ununifi.cdp.GenesisAccumulationTime)
+  - [GenesisState](#ununifi.cdp.GenesisState)
+  - [GenesisTotalPrincipal](#ununifi.cdp.GenesisTotalPrincipal)
+- [cdp/query.proto](#cdp/query.proto)
+
+  - [QueryAllAccountRequest](#ununifi.cdp.QueryAllAccountRequest)
+  - [QueryAllAccountResponse](#ununifi.cdp.QueryAllAccountResponse)
+  - [QueryAllCdpRequest](#ununifi.cdp.QueryAllCdpRequest)
+  - [QueryAllCdpResponse](#ununifi.cdp.QueryAllCdpResponse)
+  - [QueryAllDepositRequest](#ununifi.cdp.QueryAllDepositRequest)
+  - [QueryAllDepositResponse](#ununifi.cdp.QueryAllDepositResponse)
+  - [QueryGetCdpRequest](#ununifi.cdp.QueryGetCdpRequest)
+  - [QueryGetCdpResponse](#ununifi.cdp.QueryGetCdpResponse)
+  - [QueryParamsRequest](#ununifi.cdp.QueryParamsRequest)
+  - [QueryParamsResponse](#ununifi.cdp.QueryParamsResponse)
+
+  - [Query](#ununifi.cdp.Query)
+
+- [cdp/tx.proto](#cdp/tx.proto)
+
+  - [MsgCreateCdp](#ununifi.cdp.MsgCreateCdp)
+  - [MsgCreateCdpResponse](#ununifi.cdp.MsgCreateCdpResponse)
+  - [MsgDeposit](#ununifi.cdp.MsgDeposit)
+  - [MsgDepositResponse](#ununifi.cdp.MsgDepositResponse)
+  - [MsgDrawDebt](#ununifi.cdp.MsgDrawDebt)
+  - [MsgDrawDebtResponse](#ununifi.cdp.MsgDrawDebtResponse)
+  - [MsgLiquidate](#ununifi.cdp.MsgLiquidate)
+  - [MsgLiquidateResponse](#ununifi.cdp.MsgLiquidateResponse)
+  - [MsgRepayDebt](#ununifi.cdp.MsgRepayDebt)
+  - [MsgRepayDebtResponse](#ununifi.cdp.MsgRepayDebtResponse)
+  - [MsgWithdraw](#ununifi.cdp.MsgWithdraw)
+  - [MsgWithdrawResponse](#ununifi.cdp.MsgWithdrawResponse)
+
+  - [Msg](#ununifi.cdp.Msg)
+
+- [ecosystem-incentive/ecosystem_incentive.proto](#ecosystem-incentive/ecosystem_incentive.proto)
+  - [IncentiveUnit](#ununifi.ecosystemincentive.IncentiveUnit)
+  - [IncentiveUnitIdsByAddr](#ununifi.ecosystemincentive.IncentiveUnitIdsByAddr)
+  - [RewardStore](#ununifi.ecosystemincentive.RewardStore)
+  - [SubjectInfo](#ununifi.ecosystemincentive.SubjectInfo)
+- [ecosystem-incentive/event.proto](#ecosystem-incentive/event.proto)
+  - [EventDeletedNftIdRecordedForFrontendReward](#ununifi.ecosystemincentive.EventDeletedNftIdRecordedForFrontendReward)
+  - [EventFailedParsingMemoInputs](#ununifi.ecosystemincentive.EventFailedParsingMemoInputs)
+  - [EventNotRecordedNftId](#ununifi.ecosystemincentive.EventNotRecordedNftId)
+  - [EventNotRegisteredIncentiveUnitId](#ununifi.ecosystemincentive.EventNotRegisteredIncentiveUnitId)
+  - [EventRecordedIncentiveUnitId](#ununifi.ecosystemincentive.EventRecordedIncentiveUnitId)
+  - [EventRegister](#ununifi.ecosystemincentive.EventRegister)
+  - [EventUpdatedReward](#ununifi.ecosystemincentive.EventUpdatedReward)
+  - [EventVersionUnmatched](#ununifi.ecosystemincentive.EventVersionUnmatched)
+  - [EventWithdrawAllRewards](#ununifi.ecosystemincentive.EventWithdrawAllRewards)
+  - [EventWithdrawReward](#ununifi.ecosystemincentive.EventWithdrawReward)
+- [ecosystem-incentive/params.proto](#ecosystem-incentive/params.proto)
+
+  - [Params](#ununifi.ecosystemincentive.Params)
+  - [RewardParams](#ununifi.ecosystemincentive.RewardParams)
+  - [RewardRate](#ununifi.ecosystemincentive.RewardRate)
+
+  - [RewardType](#ununifi.ecosystemincentive.RewardType)
+
+- [ecosystem-incentive/genesis.proto](#ecosystem-incentive/genesis.proto)
+  - [GenesisState](#ununifi.ecosystemincentive.GenesisState)
+- [ecosystem-incentive/memo.proto](#ecosystem-incentive/memo.proto)
+  - [MemoInputs](#ununifi.ecosystemincentive.MemoInputs)
+- [ecosystem-incentive/query.proto](#ecosystem-incentive/query.proto)
+
+  - [QueryAllRewardsRequest](#ununifi.ecosystemincentive.QueryAllRewardsRequest)
+  - [QueryAllRewardsResponse](#ununifi.ecosystemincentive.QueryAllRewardsResponse)
+  - [QueryIncentiveUnitIdsByAddrRequest](#ununifi.ecosystemincentive.QueryIncentiveUnitIdsByAddrRequest)
+  - [QueryIncentiveUnitIdsByAddrResponse](#ununifi.ecosystemincentive.QueryIncentiveUnitIdsByAddrResponse)
+  - [QueryIncentiveUnitRequest](#ununifi.ecosystemincentive.QueryIncentiveUnitRequest)
+  - [QueryIncentiveUnitResponse](#ununifi.ecosystemincentive.QueryIncentiveUnitResponse)
+  - [QueryParamsRequest](#ununifi.ecosystemincentive.QueryParamsRequest)
+  - [QueryParamsResponse](#ununifi.ecosystemincentive.QueryParamsResponse)
+  - [QueryRecordedIncentiveUnitIdRequest](#ununifi.ecosystemincentive.QueryRecordedIncentiveUnitIdRequest)
+  - [QueryRecordedIncentiveUnitIdResponse](#ununifi.ecosystemincentive.QueryRecordedIncentiveUnitIdResponse)
+  - [QueryRewardRequest](#ununifi.ecosystemincentive.QueryRewardRequest)
+  - [QueryRewardResponse](#ununifi.ecosystemincentive.QueryRewardResponse)
+
+  - [Query](#ununifi.ecosystemincentive.Query)
+
+- [ecosystem-incentive/tx.proto](#ecosystem-incentive/tx.proto)
+
+  - [MsgRegister](#ununifi.ecosystemincentive.MsgRegister)
+  - [MsgRegisterResponse](#ununifi.ecosystemincentive.MsgRegisterResponse)
+  - [MsgWithdrawAllRewards](#ununifi.ecosystemincentive.MsgWithdrawAllRewards)
+  - [MsgWithdrawAllRewardsResponse](#ununifi.ecosystemincentive.MsgWithdrawAllRewardsResponse)
+  - [MsgWithdrawReward](#ununifi.ecosystemincentive.MsgWithdrawReward)
+  - [MsgWithdrawRewardResponse](#ununifi.ecosystemincentive.MsgWithdrawRewardResponse)
+
+  - [Msg](#ununifi.ecosystemincentive.Msg)
+
+- [ethereum/signdoc.proto](#ethereum/signdoc.proto)
+  - [SignDocForMetamask](#ununifi.ethereum.SignDocForMetamask)
+- [incentive/incentive.proto](#incentive/incentive.proto)
+  - [BaseClaim](#ununifi.incentive.BaseClaim)
+  - [BaseMultiClaim](#ununifi.incentive.BaseMultiClaim)
+  - [CdpMintingClaim](#ununifi.incentive.CdpMintingClaim)
+  - [Multiplier](#ununifi.incentive.Multiplier)
+  - [Params](#ununifi.incentive.Params)
+  - [RewardIndex](#ununifi.incentive.RewardIndex)
+  - [RewardPeriod](#ununifi.incentive.RewardPeriod)
+- [incentive/genesis.proto](#incentive/genesis.proto)
+  - [GenesisAccumulationTime](#ununifi.incentive.GenesisAccumulationTime)
+  - [GenesisDenoms](#ununifi.incentive.GenesisDenoms)
+  - [GenesisState](#ununifi.incentive.GenesisState)
+- [incentive/query.proto](#incentive/query.proto)
+
+  - [QueryParamsRequest](#ununifi.incentive.QueryParamsRequest)
+  - [QueryParamsResponse](#ununifi.incentive.QueryParamsResponse)
+
+  - [Query](#ununifi.incentive.Query)
+
+- [incentive/tx.proto](#incentive/tx.proto)
+
+  - [MsgClaimCdpMintingReward](#ununifi.incentive.MsgClaimCdpMintingReward)
+  - [MsgClaimCdpMintingRewardResponse](#ununifi.incentive.MsgClaimCdpMintingRewardResponse)
+
+  - [Msg](#ununifi.incentive.Msg)
+
+- [nftmarket/nftmarket.proto](#nftmarket/nftmarket.proto)
+
+  - [EventBorrow](#ununifi.nftmarket.EventBorrow)
+  - [EventCancelBid](#ununifi.nftmarket.EventCancelBid)
+  - [EventCancelListNfting](#ununifi.nftmarket.EventCancelListNfting)
+  - [EventEndListNfting](#ununifi.nftmarket.EventEndListNfting)
+  - [EventExpandListingPeriod](#ununifi.nftmarket.EventExpandListingPeriod)
+  - [EventLiquidate](#ununifi.nftmarket.EventLiquidate)
+  - [EventListNft](#ununifi.nftmarket.EventListNft)
+  - [EventPayFullBid](#ununifi.nftmarket.EventPayFullBid)
+  - [EventPlaceBid](#ununifi.nftmarket.EventPlaceBid)
+  - [EventRepay](#ununifi.nftmarket.EventRepay)
+  - [EventSellingDecision](#ununifi.nftmarket.EventSellingDecision)
+  - [ListedClass](#ununifi.nftmarket.ListedClass)
+  - [ListedNft](#ununifi.nftmarket.ListedNft)
+  - [Loan](#ununifi.nftmarket.Loan)
+  - [NftBid](#ununifi.nftmarket.NftBid)
+  - [NftIdentifier](#ununifi.nftmarket.NftIdentifier)
+  - [NftListing](#ununifi.nftmarket.NftListing)
+  - [Params](#ununifi.nftmarket.Params)
+  - [PaymentStatus](#ununifi.nftmarket.PaymentStatus)
+
+  - [ListingState](#ununifi.nftmarket.ListingState)
+  - [ListingType](#ununifi.nftmarket.ListingType)
+
+- [nftmarket/genesis.proto](#nftmarket/genesis.proto)
+  - [GenesisState](#ununifi.nftmarket.GenesisState)
+- [nftmarket/query.proto](#nftmarket/query.proto)
+
+  - [QueryBidderBidsRequest](#ununifi.nftmarket.QueryBidderBidsRequest)
+  - [QueryBidderBidsResponse](#ununifi.nftmarket.QueryBidderBidsResponse)
+  - [QueryCDPsListRequest](#ununifi.nftmarket.QueryCDPsListRequest)
+  - [QueryCDPsListResponse](#ununifi.nftmarket.QueryCDPsListResponse)
+  - [QueryListedClassRequest](#ununifi.nftmarket.QueryListedClassRequest)
+  - [QueryListedClassResponse](#ununifi.nftmarket.QueryListedClassResponse)
+  - [QueryListedClassesRequest](#ununifi.nftmarket.QueryListedClassesRequest)
+  - [QueryListedClassesResponse](#ununifi.nftmarket.QueryListedClassesResponse)
+  - [QueryListedNftsRequest](#ununifi.nftmarket.QueryListedNftsRequest)
+  - [QueryListedNftsResponse](#ununifi.nftmarket.QueryListedNftsResponse)
+  - [QueryLoanRequest](#ununifi.nftmarket.QueryLoanRequest)
+  - [QueryLoanResponse](#ununifi.nftmarket.QueryLoanResponse)
+  - [QueryLoansRequest](#ununifi.nftmarket.QueryLoansRequest)
+  - [QueryLoansResponse](#ununifi.nftmarket.QueryLoansResponse)
+  - [QueryNftBidsRequest](#ununifi.nftmarket.QueryNftBidsRequest)
+  - [QueryNftBidsResponse](#ununifi.nftmarket.QueryNftBidsResponse)
+  - [QueryNftListingRequest](#ununifi.nftmarket.QueryNftListingRequest)
+  - [QueryNftListingResponse](#ununifi.nftmarket.QueryNftListingResponse)
+  - [QueryParamsRequest](#ununifi.nftmarket.QueryParamsRequest)
+  - [QueryParamsResponse](#ununifi.nftmarket.QueryParamsResponse)
+  - [QueryPaymentStatusRequest](#ununifi.nftmarket.QueryPaymentStatusRequest)
+  - [QueryPaymentStatusResponse](#ununifi.nftmarket.QueryPaymentStatusResponse)
+  - [QueryRewardsRequest](#ununifi.nftmarket.QueryRewardsRequest)
+  - [QueryRewardsResponse](#ununifi.nftmarket.QueryRewardsResponse)
+
+  - [Query](#ununifi.nftmarket.Query)
+
+- [nftmarket/tx.proto](#nftmarket/tx.proto)
+
+  - [MsgBorrow](#ununifi.nftmarket.MsgBorrow)
+  - [MsgBorrowResponse](#ununifi.nftmarket.MsgBorrowResponse)
+  - [MsgBurnStableCoin](#ununifi.nftmarket.MsgBurnStableCoin)
+  - [MsgBurnStableCoinResponse](#ununifi.nftmarket.MsgBurnStableCoinResponse)
+  - [MsgCancelBid](#ununifi.nftmarket.MsgCancelBid)
+  - [MsgCancelBidResponse](#ununifi.nftmarket.MsgCancelBidResponse)
+  - [MsgCancelNftListing](#ununifi.nftmarket.MsgCancelNftListing)
+  - [MsgCancelNftListingResponse](#ununifi.nftmarket.MsgCancelNftListingResponse)
+  - [MsgEndNftListing](#ununifi.nftmarket.MsgEndNftListing)
+  - [MsgEndNftListingResponse](#ununifi.nftmarket.MsgEndNftListingResponse)
+  - [MsgExpandListingPeriod](#ununifi.nftmarket.MsgExpandListingPeriod)
+  - [MsgExpandListingPeriodResponse](#ununifi.nftmarket.MsgExpandListingPeriodResponse)
+  - [MsgLiquidate](#ununifi.nftmarket.MsgLiquidate)
+  - [MsgLiquidateResponse](#ununifi.nftmarket.MsgLiquidateResponse)
+  - [MsgListNft](#ununifi.nftmarket.MsgListNft)
+  - [MsgListNftResponse](#ununifi.nftmarket.MsgListNftResponse)
+  - [MsgMintNft](#ununifi.nftmarket.MsgMintNft)
+  - [MsgMintNftResponse](#ununifi.nftmarket.MsgMintNftResponse)
+  - [MsgMintStableCoin](#ununifi.nftmarket.MsgMintStableCoin)
+  - [MsgMintStableCoinResponse](#ununifi.nftmarket.MsgMintStableCoinResponse)
+  - [MsgPayFullBid](#ununifi.nftmarket.MsgPayFullBid)
+  - [MsgPayFullBidResponse](#ununifi.nftmarket.MsgPayFullBidResponse)
+  - [MsgPlaceBid](#ununifi.nftmarket.MsgPlaceBid)
+  - [MsgPlaceBidResponse](#ununifi.nftmarket.MsgPlaceBidResponse)
+  - [MsgRepay](#ununifi.nftmarket.MsgRepay)
+  - [MsgRepayResponse](#ununifi.nftmarket.MsgRepayResponse)
+  - [MsgSellingDecision](#ununifi.nftmarket.MsgSellingDecision)
+  - [MsgSellingDecisionResponse](#ununifi.nftmarket.MsgSellingDecisionResponse)
+
+  - [Msg](#ununifi.nftmarket.Msg)
+
+- [nftmint/nftmint.proto](#nftmint/nftmint.proto)
+
+  - [ClassAttributes](#ununifi.nftmint.ClassAttributes)
+  - [ClassNameIdList](#ununifi.nftmint.ClassNameIdList)
+  - [OwningClassIdList](#ununifi.nftmint.OwningClassIdList)
+  - [Params](#ununifi.nftmint.Params)
+
+  - [MintingPermission](#ununifi.nftmint.MintingPermission)
+
+- [nftmint/event.proto](#nftmint/event.proto)
+  - [EventBurnNFT](#ununifi.nftmint.EventBurnNFT)
+  - [EventCreateClass](#ununifi.nftmint.EventCreateClass)
+  - [EventMintNFT](#ununifi.nftmint.EventMintNFT)
+  - [EventSendClassOwnership](#ununifi.nftmint.EventSendClassOwnership)
+  - [EventUpdateBaseTokenUri](#ununifi.nftmint.EventUpdateBaseTokenUri)
+  - [EventUpdateTokenSupplyCap](#ununifi.nftmint.EventUpdateTokenSupplyCap)
+- [nftmint/genesis.proto](#nftmint/genesis.proto)
+  - [GenesisState](#ununifi.nftmint.GenesisState)
+- [nftmint/query.proto](#nftmint/query.proto)
+
+  - [QueryClassAttributesRequest](#ununifi.nftmint.QueryClassAttributesRequest)
+  - [QueryClassAttributesResponse](#ununifi.nftmint.QueryClassAttributesResponse)
+  - [QueryClassIdsByNameRequest](#ununifi.nftmint.QueryClassIdsByNameRequest)
+  - [QueryClassIdsByNameResponse](#ununifi.nftmint.QueryClassIdsByNameResponse)
+  - [QueryClassIdsByOwnerRequest](#ununifi.nftmint.QueryClassIdsByOwnerRequest)
+  - [QueryClassIdsByOwnerResponse](#ununifi.nftmint.QueryClassIdsByOwnerResponse)
+  - [QueryNFTMinterRequest](#ununifi.nftmint.QueryNFTMinterRequest)
+  - [QueryNFTMinterResponse](#ununifi.nftmint.QueryNFTMinterResponse)
+  - [QueryParamsRequest](#ununifi.nftmint.QueryParamsRequest)
+  - [QueryParamsResponse](#ununifi.nftmint.QueryParamsResponse)
+
+  - [Query](#ununifi.nftmint.Query)
+
+- [nftmint/tx.proto](#nftmint/tx.proto)
+
+  - [MsgBurnNFT](#ununifi.nftmint.MsgBurnNFT)
+  - [MsgBurnNFTResponse](#ununifi.nftmint.MsgBurnNFTResponse)
+  - [MsgCreateClass](#ununifi.nftmint.MsgCreateClass)
+  - [MsgCreateClassResponse](#ununifi.nftmint.MsgCreateClassResponse)
+  - [MsgMintNFT](#ununifi.nftmint.MsgMintNFT)
+  - [MsgMintNFTResponse](#ununifi.nftmint.MsgMintNFTResponse)
+  - [MsgSendClassOwnership](#ununifi.nftmint.MsgSendClassOwnership)
+  - [MsgSendClassOwnershipResponse](#ununifi.nftmint.MsgSendClassOwnershipResponse)
+  - [MsgUpdateBaseTokenUri](#ununifi.nftmint.MsgUpdateBaseTokenUri)
+  - [MsgUpdateBaseTokenUriResponse](#ununifi.nftmint.MsgUpdateBaseTokenUriResponse)
+  - [MsgUpdateTokenSupplyCap](#ununifi.nftmint.MsgUpdateTokenSupplyCap)
+  - [MsgUpdateTokenSupplyCapResponse](#ununifi.nftmint.MsgUpdateTokenSupplyCapResponse)
+
+  - [Msg](#ununifi.nftmint.Msg)
+
+- [pricefeed/pricefeed.proto](#pricefeed/pricefeed.proto)
+  - [CurrentPrice](#ununifi.pricefeed.CurrentPrice)
+  - [Market](#ununifi.pricefeed.Market)
+  - [Params](#ununifi.pricefeed.Params)
+  - [PostedPrice](#ununifi.pricefeed.PostedPrice)
+- [pricefeed/genesis.proto](#pricefeed/genesis.proto)
+  - [GenesisState](#ununifi.pricefeed.GenesisState)
+- [pricefeed/query.proto](#pricefeed/query.proto)
+
+  - [QueryAllMarketRequest](#ununifi.pricefeed.QueryAllMarketRequest)
+  - [QueryAllMarketResponse](#ununifi.pricefeed.QueryAllMarketResponse)
+  - [QueryAllOracleRequest](#ununifi.pricefeed.QueryAllOracleRequest)
+  - [QueryAllOracleResponse](#ununifi.pricefeed.QueryAllOracleResponse)
+  - [QueryAllPriceRequest](#ununifi.pricefeed.QueryAllPriceRequest)
+  - [QueryAllPriceResponse](#ununifi.pricefeed.QueryAllPriceResponse)
+  - [QueryAllRawPriceRequest](#ununifi.pricefeed.QueryAllRawPriceRequest)
+  - [QueryAllRawPriceResponse](#ununifi.pricefeed.QueryAllRawPriceResponse)
+  - [QueryGetPriceRequest](#ununifi.pricefeed.QueryGetPriceRequest)
+  - [QueryGetPriceResponse](#ununifi.pricefeed.QueryGetPriceResponse)
+  - [QueryParamsRequest](#ununifi.pricefeed.QueryParamsRequest)
+  - [QueryParamsResponse](#ununifi.pricefeed.QueryParamsResponse)
+
+  - [Query](#ununifi.pricefeed.Query)
+
+- [pricefeed/tx.proto](#pricefeed/tx.proto)
+
+  - [MsgPostPrice](#ununifi.pricefeed.MsgPostPrice)
+  - [MsgPostPriceResponse](#ununifi.pricefeed.MsgPostPriceResponse)
+
+  - [Msg](#ununifi.pricefeed.Msg)
+
+- [ununifidist/ununifidist.proto](#ununifidist/ununifidist.proto)
+  - [Params](#ununifi.ununifidist.Params)
+  - [Period](#ununifi.ununifidist.Period)
+- [ununifidist/genesis.proto](#ununifidist/genesis.proto)
+  - [GenesisState](#ununifi.ununifidist.GenesisState)
+- [ununifidist/query.proto](#ununifidist/query.proto)
+
+  - [QueryGetBalancesRequest](#ununifi.ununifidist.QueryGetBalancesRequest)
+  - [QueryGetBalancesResponse](#ununifi.ununifidist.QueryGetBalancesResponse)
+  - [QueryParamsRequest](#ununifi.ununifidist.QueryParamsRequest)
+  - [QueryParamsResponse](#ununifi.ununifidist.QueryParamsResponse)
+
+  - [Query](#ununifi.ununifidist.Query)
+
+- [yield-aggregator/params.proto](#yield-aggregator/params.proto)
+  - [Params](#ununifi.chain.yieldaggregator.Params)
+  - [Params.Vault](#ununifi.chain.yieldaggregator.Params.Vault)
+- [yield-aggregator/yield-aggregator.proto](#yield-aggregator/yield-aggregator.proto)
+  - [Strategy](#ununifi.chain.yieldaggregator.Strategy)
+  - [StrategyMetrics](#ununifi.chain.yieldaggregator.StrategyMetrics)
+  - [Vault](#ununifi.chain.yieldaggregator.Vault)
+  - [VaultMetrics](#ununifi.chain.yieldaggregator.VaultMetrics)
+- [yield-aggregator/genesis.proto](#yield-aggregator/genesis.proto)
+  - [GenesisState](#ununifi.chain.yieldaggregator.GenesisState)
+- [yield-aggregator/query.proto](#yield-aggregator/query.proto)
+
+  - [QueryAllStrategyRequest](#ununifi.chain.yieldaggregator.QueryAllStrategyRequest)
+  - [QueryAllStrategyResponse](#ununifi.chain.yieldaggregator.QueryAllStrategyResponse)
+  - [QueryAllVaultRequest](#ununifi.chain.yieldaggregator.QueryAllVaultRequest)
+  - [QueryAllVaultResponse](#ununifi.chain.yieldaggregator.QueryAllVaultResponse)
+  - [QueryGetStrategyRequest](#ununifi.chain.yieldaggregator.QueryGetStrategyRequest)
+  - [QueryGetStrategyResponse](#ununifi.chain.yieldaggregator.QueryGetStrategyResponse)
+  - [QueryGetVaultRequest](#ununifi.chain.yieldaggregator.QueryGetVaultRequest)
+  - [QueryGetVaultResponse](#ununifi.chain.yieldaggregator.QueryGetVaultResponse)
+  - [QueryParamsRequest](#ununifi.chain.yieldaggregator.QueryParamsRequest)
+  - [QueryParamsResponse](#ununifi.chain.yieldaggregator.QueryParamsResponse)
+
+  - [Query](#ununifi.chain.yieldaggregator.Query)
+
+- [yield-aggregator/tx.proto](#yield-aggregator/tx.proto)
+
+  - [MsgDepositToVault](#ununifi.chain.yieldaggregator.MsgDepositToVault)
+  - [MsgDepositToVaultResponse](#ununifi.chain.yieldaggregator.MsgDepositToVaultResponse)
+  - [MsgWithdrawFromVault](#ununifi.chain.yieldaggregator.MsgWithdrawFromVault)
+  - [MsgWithdrawFromVaultResponse](#ununifi.chain.yieldaggregator.MsgWithdrawFromVaultResponse)
+
+  - [Msg](#ununifi.chain.yieldaggregator.Msg)
+
+- [Scalar Value Types](#scalar-value-types)
+
+  > > > > > > > bb3bfd2c (feat: iya v2)
 
 - [Protobuf Documentation](#protobuf-documentation)
   - [Table of Contents](#table-of-contents)
+- [\<\<\<\<\<\<\< HEAD](#-head)
   - [auction/auction.proto](#auctionauctionproto)
     - [BaseAuction](#baseauction)
     - [CollateralAuction](#collateralauction)
@@ -124,33 +503,46 @@
     - [QueryParamsRequest](#queryparamsrequest-4)
     - [QueryParamsResponse](#queryparamsresponse-4)
     - [Query](#query-4)
-- [\<\<\<\<\<\<\< HEAD](#-head)
+- [\<\<\<\<\<\<\< HEAD](#-head-1)
   - [yield-aggregator/params.proto](#yield-aggregatorparamsproto)
     - [Params](#params-5)
     - [Params.Vault](#paramsvault)
   - [yield-aggregator/yield-aggregator.proto](#yield-aggregatoryield-aggregatorproto)
     - [Strategy](#strategy)
-    - [StrategyMetrics](#strategymetrics)
-    - [Vault](#vault)
-    - [VaultMetrics](#vaultmetrics)
+- [| `metrics` | StrategyMetrics | | |](#-metrics-----------strategymetrics---------------------)
+  - [StrategyMetrics](#strategymetrics)
+  - [Vault](#vault)
+  - [VaultMetrics](#vaultmetrics)
   - [yield-aggregator/genesis.proto](#yield-aggregatorgenesisproto)
     - [GenesisState](#genesisstate-5)
   - [yield-aggregator/query.proto](#yield-aggregatorqueryproto)
-    - [QueryParamsRequest](#queryparamsrequest-5)
-    - [QueryParamsResponse](#queryparamsresponse-5)
-    - [QueryStrategiesRequest](#querystrategiesrequest)
-    - [QueryStrategiesResponse](#querystrategiesresponse)
-    - [QueryVaultRequest](#queryvaultrequest)
-    - [QueryVaultResponse](#queryvaultresponse)
-    - [QueryVaultsRequest](#queryvaultsrequest)
-    - [QueryVaultsResponse](#queryvaultsresponse)
-    - [Query](#query-5)
+- [\<\<\<\<\<\<\< HEAD](#-head-2)
+  - [QueryAllStrategyRequest](#queryallstrategyrequest)
+  - [QueryAllStrategyResponse](#queryallstrategyresponse)
+  - [QueryAllVaultRequest](#queryallvaultrequest)
+  - [QueryAllVaultResponse](#queryallvaultresponse)
+  - [QueryGetStrategyRequest](#querygetstrategyrequest)
+  - [QueryGetStrategyResponse](#querygetstrategyresponse)
+  - [QueryGetVaultRequest](#querygetvaultrequest)
+  - [QueryGetVaultResponse](#querygetvaultresponse)
+  - [QueryParamsRequest](#queryparamsrequest-5)
+  - [QueryParamsResponse](#queryparamsresponse-5)
+  - [QueryStrategiesRequest](#querystrategiesrequest)
+  - [QueryStrategiesResponse](#querystrategiesresponse)
+  - [QueryVaultRequest](#queryvaultrequest)
+  - [QueryVaultResponse](#queryvaultresponse)
+  - [QueryVaultsRequest](#queryvaultsrequest)
+  - [QueryVaultsResponse](#queryvaultsresponse)
+- [| `pagination` | cosmos.base.query.v1beta1.PageRequest | | |](#-pagination--cosmosbasequeryv1beta1pagerequest------------------------)
+  - [Query](#query-5)
+- [| `Strategies` | QueryStrategiesRequest | QueryStrategiesResponse | | GET | /UnUniFi/chain/yield-aggregator/vaults/{denom}/strategies |](#-strategies--querystrategiesrequest--querystrategiesresponse----------------------------------------------------get--------ununifichainyield-aggregatorvaultsdenomstrategies-)
   - [yield-aggregator/tx.proto](#yield-aggregatortxproto)
     - [MsgDepositToVault](#msgdeposittovault)
     - [MsgDepositToVaultResponse](#msgdeposittovaultresponse)
     - [MsgWithdrawFromVault](#msgwithdrawfromvault)
-    - [MsgWithdrawFromVaultResponse](#msgwithdrawfromvaultresponse)
-    - [Msg](#msg-4)
+- [| `lp_token_amount` | string | | |](#-lp_token_amount--string---------------------)
+  - [MsgWithdrawFromVaultResponse](#msgwithdrawfromvaultresponse)
+  - [Msg](#msg-4)
   - [Scalar Value Types](#scalar-value-types)
 
 > > > > > > > b9a58125 (feat: keeper)
@@ -1328,14 +1720,27 @@ Params defines the parameters for the module.
 
 ### Strategy
 
+<<<<<<< HEAD
+| Field | Type | Label | Description |
+| ------------------ | ----------------------------------------------------------------- | ----- | ----------- |
+| `vault_denom` | [string](#string) | | |
+| `id` | [string](#string) | | |
+| `contract_address` | [string](#string) | | |
+| `name` | [string](#string) | | |
+| `weight` | [string](#string) | | |
+| `metrics` | [StrategyMetrics](#ununifi.chain.yieldaggregator.StrategyMetrics) | | |
+=======
+
 | Field              | Type                                                              | Label | Description |
 | ------------------ | ----------------------------------------------------------------- | ----- | ----------- |
 | `vault_denom`      | [string](#string)                                                 |       |             |
-| `id`               | [string](#string)                                                 |       |             |
+| `id`               | [uint64](#uint64)                                                 |       |             |
 | `contract_address` | [string](#string)                                                 |       |             |
 | `name`             | [string](#string)                                                 |       |             |
 | `weight`           | [string](#string)                                                 |       |             |
 | `metrics`          | [StrategyMetrics](#ununifi.chain.yieldaggregator.StrategyMetrics) |       |             |
+
+> > > > > > > bb3bfd2c (feat: iya v2)
 
 <a name="ununifi.chain.yieldaggregator.StrategyMetrics"></a>
 
@@ -1404,7 +1809,78 @@ GenesisState defines the yieldaggregator module's genesis state.
 
 ## yield-aggregator/query.proto
 
-<a name="ununifi.chain.yieldaggregator.QueryParamsRequest"></a>
+# <<<<<<< HEAD
+
+<a name="ununifi.chain.yieldaggregator.QueryAllStrategyRequest"></a>
+
+### QueryAllStrategyRequest
+
+| Field        | Type                                                                            | Label | Description |
+| ------------ | ------------------------------------------------------------------------------- | ----- | ----------- |
+| `denom`      | [string](#string)                                                               |       |             |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |       |             |
+
+<a name="ununifi.chain.yieldaggregator.QueryAllStrategyResponse"></a>
+
+### QueryAllStrategyResponse
+
+| Field        | Type                                                                              | Label    | Description |
+| ------------ | --------------------------------------------------------------------------------- | -------- | ----------- |
+| `strategies` | [Strategy](#ununifi.chain.yieldaggregator.Strategy)                               | repeated |             |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |          |             |
+
+<a name="ununifi.chain.yieldaggregator.QueryAllVaultRequest"></a>
+
+### QueryAllVaultRequest
+
+| Field        | Type                                                                            | Label | Description |
+| ------------ | ------------------------------------------------------------------------------- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |       |             |
+
+<a name="ununifi.chain.yieldaggregator.QueryAllVaultResponse"></a>
+
+### QueryAllVaultResponse
+
+| Field        | Type                                                                              | Label    | Description |
+| ------------ | --------------------------------------------------------------------------------- | -------- | ----------- |
+| `vaults`     | [Vault](#ununifi.chain.yieldaggregator.Vault)                                     | repeated |             |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |          |             |
+
+<a name="ununifi.chain.yieldaggregator.QueryGetStrategyRequest"></a>
+
+### QueryGetStrategyRequest
+
+| Field   | Type              | Label | Description |
+| ------- | ----------------- | ----- | ----------- |
+| `denom` | [string](#string) |       |             |
+| `id`    | [uint64](#uint64) |       |             |
+
+<a name="ununifi.chain.yieldaggregator.QueryGetStrategyResponse"></a>
+
+### QueryGetStrategyResponse
+
+| Field      | Type                                                | Label | Description |
+| ---------- | --------------------------------------------------- | ----- | ----------- |
+| `strategy` | [Strategy](#ununifi.chain.yieldaggregator.Strategy) |       |             |
+
+<a name="ununifi.chain.yieldaggregator.QueryGetVaultRequest"></a>
+
+### QueryGetVaultRequest
+
+| Field   | Type              | Label | Description |
+| ------- | ----------------- | ----- | ----------- |
+| `denom` | [string](#string) |       |             |
+
+<a name="ununifi.chain.yieldaggregator.QueryGetVaultResponse"></a>
+
+### QueryGetVaultResponse
+
+| Field   | Type                                          | Label | Description |
+| ------- | --------------------------------------------- | ----- | ----------- |
+| `vault` | [Vault](#ununifi.chain.yieldaggregator.Vault) |       |             |
+
+> > > > > > > bb3bfd2c (feat: iya v2)
+> > > > > > > <a name="ununifi.chain.yieldaggregator.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
 
@@ -1416,9 +1892,10 @@ QueryParamsRequest is request type for the Query/Params RPC method.
 
 QueryParamsResponse is response type for the Query/Params RPC method.
 
-| Field    | Type                                            | Label | Description                                     |
+<<<<<<< HEAD
+| Field | Type | Label | Description |
 | -------- | ----------------------------------------------- | ----- | ----------------------------------------------- |
-| `params` | [Params](#ununifi.chain.yieldaggregator.Params) |       | params holds all the parameters of this module. |
+| `params` | [Params](#ununifi.chain.yieldaggregator.Params) | | params holds all the parameters of this module. |
 
 <a name="ununifi.chain.yieldaggregator.QueryStrategiesRequest"></a>
 
@@ -1466,6 +1943,14 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 | `vaults`     | [Vault](#ununifi.chain.yieldaggregator.Vault)                                   | repeated |             |
 | `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |          |             |
 
+=======
+
+| Field    | Type                                            | Label | Description                                     |
+| -------- | ----------------------------------------------- | ----- | ----------------------------------------------- |
+| `params` | [Params](#ununifi.chain.yieldaggregator.Params) |       | params holds all the parameters of this module. |
+
+> > > > > > > bb3bfd2c (feat: iya v2)
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -1478,12 +1963,23 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 
 Query defines the gRPC querier service.
 
-| Method Name  | Request Type                                                                    | Response Type                                                                     | Description                                      | HTTP Verb | Endpoint                                                  |
+<<<<<<< HEAD
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ------------ | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------ | --------- | --------------------------------------------------------- |
-| `Params`     | [QueryParamsRequest](#ununifi.chain.yieldaggregator.QueryParamsRequest)         | [QueryParamsResponse](#ununifi.chain.yieldaggregator.QueryParamsResponse)         | Parameters queries the parameters of the module. | GET       | /UnUniFi/chain/yield-aggregator/params                    |
-| `Vaults`     | [QueryVaultsRequest](#ununifi.chain.yieldaggregator.QueryVaultsRequest)         | [QueryVaultsResponse](#ununifi.chain.yieldaggregator.QueryVaultsResponse)         | this line is used by starport scaffolding # 2    | GET       | /UnUniFi/chain/yield-aggregator/vaults                    |
-| `Vault`      | [QueryVaultRequest](#ununifi.chain.yieldaggregator.QueryVaultRequest)           | [QueryVaultResponse](#ununifi.chain.yieldaggregator.QueryVaultResponse)           |                                                  | GET       | /UnUniFi/chain/yield-aggregator/vaults/{denom}            |
-| `Strategies` | [QueryStrategiesRequest](#ununifi.chain.yieldaggregator.QueryStrategiesRequest) | [QueryStrategiesResponse](#ununifi.chain.yieldaggregator.QueryStrategiesResponse) |                                                  | GET       | /UnUniFi/chain/yield-aggregator/vaults/{denom}/strategies |
+| `Params` | [QueryParamsRequest](#ununifi.chain.yieldaggregator.QueryParamsRequest) | [QueryParamsResponse](#ununifi.chain.yieldaggregator.QueryParamsResponse) | Parameters queries the parameters of the module. | GET | /UnUniFi/chain/yield-aggregator/params |
+| `Vaults` | [QueryVaultsRequest](#ununifi.chain.yieldaggregator.QueryVaultsRequest) | [QueryVaultsResponse](#ununifi.chain.yieldaggregator.QueryVaultsResponse) | this line is used by starport scaffolding # 2 | GET | /UnUniFi/chain/yield-aggregator/vaults |
+| `Vault` | [QueryVaultRequest](#ununifi.chain.yieldaggregator.QueryVaultRequest) | [QueryVaultResponse](#ununifi.chain.yieldaggregator.QueryVaultResponse) | | GET | /UnUniFi/chain/yield-aggregator/vaults/{denom} |
+| `Strategies` | [QueryStrategiesRequest](#ununifi.chain.yieldaggregator.QueryStrategiesRequest) | [QueryStrategiesResponse](#ununifi.chain.yieldaggregator.QueryStrategiesResponse) | | GET | /UnUniFi/chain/yield-aggregator/vaults/{denom}/strategies |
+=======
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#ununifi.chain.yieldaggregator.QueryParamsRequest) | [QueryParamsResponse](#ununifi.chain.yieldaggregator.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/UnUniFi/chain/yield-aggregator/params|
+| `VaultAll` | [QueryAllVaultRequest](#ununifi.chain.yieldaggregator.QueryAllVaultRequest) | [QueryAllVaultResponse](#ununifi.chain.yieldaggregator.QueryAllVaultResponse) | this line is used by starport scaffolding # 2 | GET|/UnUniFi/chain/yield-aggregator/vaults|
+| `Vault` | [QueryGetVaultRequest](#ununifi.chain.yieldaggregator.QueryGetVaultRequest) | [QueryGetVaultResponse](#ununifi.chain.yieldaggregator.QueryGetVaultResponse) | | GET|/UnUniFi/chain/yield-aggregator/vaults/{denom}|
+| `StrategyAll` | [QueryAllStrategyRequest](#ununifi.chain.yieldaggregator.QueryAllStrategyRequest) | [QueryAllStrategyResponse](#ununifi.chain.yieldaggregator.QueryAllStrategyResponse) | | GET|/UnUniFi/chain/yield-aggregator/vaults/{denom}/strategies|
+| `Strategy` | [QueryGetStrategyRequest](#ununifi.chain.yieldaggregator.QueryGetStrategyRequest) | [QueryGetStrategyResponse](#ununifi.chain.yieldaggregator.QueryGetStrategyResponse) | | GET|/UnUniFi/chain/yield-aggregator/vaults/{denom}/strategies/{id}|
+
+> > > > > > > bb3bfd2c (feat: iya v2)
 
  <!-- end services -->
 
@@ -1512,11 +2008,21 @@ this line is used by starport scaffolding # proto/tx/message
 
 ### MsgWithdrawFromVault
 
+<<<<<<< HEAD
+| Field | Type | Label | Description |
+| ----------------- | ----------------- | ----- | ----------- |
+| `sender` | [string](#string) | | |
+| `principal_denom` | [string](#string) | | |
+| `lp_token_amount` | [string](#string) | | |
+=======
+
 | Field             | Type              | Label | Description |
 | ----------------- | ----------------- | ----- | ----------- |
 | `sender`          | [string](#string) |       |             |
-| `principal_denom` | [string](#string) |       |             |
+| `vault_denom`     | [string](#string) |       |             |
 | `lp_token_amount` | [string](#string) |       |             |
+
+> > > > > > > bb3bfd2c (feat: iya v2)
 
 <a name="ununifi.chain.yieldaggregator.MsgWithdrawFromVaultResponse"></a>
 

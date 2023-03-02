@@ -10,7 +10,7 @@ import (
 )
 
 func TestGetParams(t *testing.T) {
-	k, ctx := testkeeper.YieldaggregatorKeeper(t)
+	k, ctx := testkeeper.YieldAggregatorKeeper(t)
 	params := types.DefaultParams()
 
 	k.SetParams(ctx, params)

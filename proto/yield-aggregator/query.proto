@@ -17,16 +17,20 @@ service Query {
     option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/params";
   }
   // this line is used by starport scaffolding # 2
-  rpc Vaults(QueryVaultsRequest) returns (QueryVaultsResponse) {
+  rpc VaultAll(QueryAllVaultRequest) returns (QueryAllVaultResponse) {
     option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/vaults";
   }
 
-  rpc Vault(QueryVaultRequest) returns (QueryVaultResponse) {
+  rpc Vault(QueryGetVaultRequest) returns (QueryGetVaultResponse) {
     option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/vaults/{denom}";
   }
 
-  rpc Strategies(QueryStrategiesRequest) returns (QueryStrategiesResponse) {
+  rpc StrategyAll(QueryAllStrategyRequest) returns (QueryAllStrategyResponse) {
     option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/vaults/{denom}/strategies";
+  }
+
+  rpc Strategy(QueryGetStrategyRequest) returns (QueryGetStrategyResponse) {
+    option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/vaults/{denom}/strategies/{id}";
   }
 }
 
@@ -41,26 +45,38 @@ message QueryParamsResponse {
 
 // this line is used by starport scaffolding # 3
 
-message QueryVaultsRequest {}
+message QueryAllVaultRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
 
-message QueryVaultsResponse {
+message QueryAllVaultResponse {
   repeated Vault vaults = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetVaultRequest {
+  string denom = 1;
+}
+
+message QueryGetVaultResponse {
+  Vault vault = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllStrategyRequest {
+  string denom = 1;
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
-message QueryVaultRequest {
-  string denom = 1;
-}
-
-message QueryVaultResponse {
-  repeated Vault vault = 1 [(gogoproto.nullable) = false];
-}
-
-message QueryStrategiesRequest {
-  string denom = 1;
-}
-
-message QueryStrategiesResponse {
+message QueryAllStrategyResponse {
   repeated Strategy strategies = 1 [(gogoproto.nullable) = false];
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetStrategyRequest {
+  string denom = 1;
+  uint64 id = 2;
+}
+
+message QueryGetStrategyResponse {
+  Strategy strategy = 1 [(gogoproto.nullable) = false];
 }
