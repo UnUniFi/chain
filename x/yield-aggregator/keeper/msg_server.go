@@ -19,11 +19,11 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 var _ types.MsgServer = msgServer{}
 
 func (k msgServer) DepositToVault(ctx context.Context, msg *types.MsgDepositToVault) (*types.MsgDepositToVaultResponse, error) {
-	k.Keeper.DepositToVault()
+	k.Keeper.DepositToVault(msg.Sender, msg.Amount)
 	panic("implement me")
 }
 
 func (k msgServer) WithdrawFromVault(ctx context.Context, msg *types.MsgWithdrawFromVault) (*types.MsgWithdrawFromVaultResponse, error) {
-	k.Keeper.WithdrawFromVault()
+	k.Keeper.WithdrawFromVault(msg.Sender, msg.PrincipalDenom, msg.LpTokenAmount)
 	panic("implement me")
 }

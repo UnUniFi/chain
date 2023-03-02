@@ -6,6 +6,7 @@ import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "yield-aggregator/params.proto";
 // this line is used by starport scaffolding # 1
+import "yield-aggregator/yield-aggregator.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/yield-aggregator/types";
 
@@ -16,6 +17,17 @@ service Query {
     option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/params";
   }
   // this line is used by starport scaffolding # 2
+  rpc Vaults(QueryVaultsRequest) returns (QueryVaultsResponse) {
+    option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/vaults";
+  }
+
+  rpc Vault(QueryVaultRequest) returns (QueryVaultResponse) {
+    option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/vaults/{denom}";
+  }
+
+  rpc Strategies(QueryStrategiesRequest) returns (QueryStrategiesResponse) {
+    option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/vaults/{denom}/strategies";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -28,3 +40,27 @@ message QueryParamsResponse {
 }
 
 // this line is used by starport scaffolding # 3
+
+message QueryVaultsRequest {}
+
+message QueryVaultsResponse {
+  repeated Vault vaults = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryVaultRequest {
+  string denom = 1;
+}
+
+message QueryVaultResponse {
+  repeated Vault vault = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryStrategiesRequest {
+  string denom = 1;
+}
+
+message QueryStrategiesResponse {
+  repeated Strategy strategies = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}

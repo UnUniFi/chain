@@ -6,6 +6,8 @@
 
 ## Table of Contents
 
+<<<<<<< HEAD
+
 - [Protobuf Documentation](#protobuf-documentation)
   - [Table of Contents](#table-of-contents)
   - [auction/auction.proto](#auctionauctionproto)
@@ -122,7 +124,36 @@
     - [QueryParamsRequest](#queryparamsrequest-4)
     - [QueryParamsResponse](#queryparamsresponse-4)
     - [Query](#query-4)
+- [\<\<\<\<\<\<\< HEAD](#-head)
+  - [yield-aggregator/params.proto](#yield-aggregatorparamsproto)
+    - [Params](#params-5)
+    - [Params.Vault](#paramsvault)
+  - [yield-aggregator/yield-aggregator.proto](#yield-aggregatoryield-aggregatorproto)
+    - [Strategy](#strategy)
+    - [StrategyMetrics](#strategymetrics)
+    - [Vault](#vault)
+    - [VaultMetrics](#vaultmetrics)
+  - [yield-aggregator/genesis.proto](#yield-aggregatorgenesisproto)
+    - [GenesisState](#genesisstate-5)
+  - [yield-aggregator/query.proto](#yield-aggregatorqueryproto)
+    - [QueryParamsRequest](#queryparamsrequest-5)
+    - [QueryParamsResponse](#queryparamsresponse-5)
+    - [QueryStrategiesRequest](#querystrategiesrequest)
+    - [QueryStrategiesResponse](#querystrategiesresponse)
+    - [QueryVaultRequest](#queryvaultrequest)
+    - [QueryVaultResponse](#queryvaultresponse)
+    - [QueryVaultsRequest](#queryvaultsrequest)
+    - [QueryVaultsResponse](#queryvaultsresponse)
+    - [Query](#query-5)
+  - [yield-aggregator/tx.proto](#yield-aggregatortxproto)
+    - [MsgDepositToVault](#msgdeposittovault)
+    - [MsgDepositToVaultResponse](#msgdeposittovaultresponse)
+    - [MsgWithdrawFromVault](#msgwithdrawfromvault)
+    - [MsgWithdrawFromVaultResponse](#msgwithdrawfromvaultresponse)
+    - [Msg](#msg-4)
   - [Scalar Value Types](#scalar-value-types)
+
+> > > > > > > b9a58125 (feat: keeper)
 
 <a name="auction/auction.proto"></a>
 
@@ -1251,6 +1282,266 @@ Query defines the gRPC querier service.
 | `Balances`  | [QueryGetBalancesRequest](#ununifi.ununifidist.QueryGetBalancesRequest) | [QueryGetBalancesResponse](#ununifi.ununifidist.QueryGetBalancesResponse) | this line is used by starport scaffolding # 2 | GET       | /ununifi/ununifidist/balances |
 
  <!-- end services -->
+
+# <<<<<<< HEAD
+
+<a name="yield-aggregator/params.proto"></a>
+
+<p align="right"><a href="#top">Top</a></p>
+
+## yield-aggregator/params.proto
+
+<a name="ununifi.chain.yieldaggregator.Params"></a>
+
+### Params
+
+Params defines the parameters for the module.
+
+| Field    | Type                                                        | Label    | Description |
+| -------- | ----------------------------------------------------------- | -------- | ----------- |
+| `vaults` | [Params.Vault](#ununifi.chain.yieldaggregator.Params.Vault) | repeated |             |
+
+<a name="ununifi.chain.yieldaggregator.Params.Vault"></a>
+
+### Params.Vault
+
+| Field                  | Type              | Label | Description |
+| ---------------------- | ----------------- | ----- | ----------- |
+| `denom`                | [string](#string) |       |             |
+| `performance_fee_rate` | [string](#string) |       |             |
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+<a name="yield-aggregator/yield-aggregator.proto"></a>
+
+<p align="right"><a href="#top">Top</a></p>
+
+## yield-aggregator/yield-aggregator.proto
+
+<a name="ununifi.chain.yieldaggregator.Strategy"></a>
+
+### Strategy
+
+| Field              | Type                                                              | Label | Description |
+| ------------------ | ----------------------------------------------------------------- | ----- | ----------- |
+| `vault_denom`      | [string](#string)                                                 |       |             |
+| `id`               | [string](#string)                                                 |       |             |
+| `contract_address` | [string](#string)                                                 |       |             |
+| `name`             | [string](#string)                                                 |       |             |
+| `weight`           | [string](#string)                                                 |       |             |
+| `metrics`          | [StrategyMetrics](#ununifi.chain.yieldaggregator.StrategyMetrics) |       |             |
+
+<a name="ununifi.chain.yieldaggregator.StrategyMetrics"></a>
+
+### StrategyMetrics
+
+| Field | Type              | Label | Description |
+| ----- | ----------------- | ----- | ----------- |
+| `apr` | [string](#string) |       |             |
+| `tvl` | [string](#string) |       |             |
+
+<a name="ununifi.chain.yieldaggregator.Vault"></a>
+
+### Vault
+
+| Field     | Type                                                        | Label | Description |
+| --------- | ----------------------------------------------------------- | ----- | ----------- |
+| `denom`   | [string](#string)                                           |       |             |
+| `metrics` | [VaultMetrics](#ununifi.chain.yieldaggregator.VaultMetrics) |       |             |
+
+<a name="ununifi.chain.yieldaggregator.VaultMetrics"></a>
+
+### VaultMetrics
+
+| Field | Type              | Label | Description |
+| ----- | ----------------- | ----- | ----------- |
+| `apy` | [string](#string) |       |             |
+| `tvl` | [string](#string) |       |             |
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+<a name="yield-aggregator/genesis.proto"></a>
+
+<p align="right"><a href="#top">Top</a></p>
+
+## yield-aggregator/genesis.proto
+
+<a name="ununifi.chain.yieldaggregator.GenesisState"></a>
+
+### GenesisState
+
+GenesisState defines the yieldaggregator module's genesis state.
+
+| Field        | Type                                                | Label    | Description                                                     |
+| ------------ | --------------------------------------------------- | -------- | --------------------------------------------------------------- |
+| `params`     | [Params](#ununifi.chain.yieldaggregator.Params)     |          |                                                                 |
+| `vaults`     | [Vault](#ununifi.chain.yieldaggregator.Vault)       | repeated | this line is used by starport scaffolding # genesis/proto/state |
+| `strategies` | [Strategy](#ununifi.chain.yieldaggregator.Strategy) | repeated |                                                                 |
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+<a name="yield-aggregator/query.proto"></a>
+
+<p align="right"><a href="#top">Top</a></p>
+
+## yield-aggregator/query.proto
+
+<a name="ununifi.chain.yieldaggregator.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+
+QueryParamsRequest is request type for the Query/Params RPC method.
+
+<a name="ununifi.chain.yieldaggregator.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+
+QueryParamsResponse is response type for the Query/Params RPC method.
+
+| Field    | Type                                            | Label | Description                                     |
+| -------- | ----------------------------------------------- | ----- | ----------------------------------------------- |
+| `params` | [Params](#ununifi.chain.yieldaggregator.Params) |       | params holds all the parameters of this module. |
+
+<a name="ununifi.chain.yieldaggregator.QueryStrategiesRequest"></a>
+
+### QueryStrategiesRequest
+
+| Field   | Type              | Label | Description |
+| ------- | ----------------- | ----- | ----------- |
+| `denom` | [string](#string) |       |             |
+
+<a name="ununifi.chain.yieldaggregator.QueryStrategiesResponse"></a>
+
+### QueryStrategiesResponse
+
+| Field        | Type                                                                            | Label    | Description |
+| ------------ | ------------------------------------------------------------------------------- | -------- | ----------- |
+| `strategies` | [Strategy](#ununifi.chain.yieldaggregator.Strategy)                             | repeated |             |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |          |             |
+
+<a name="ununifi.chain.yieldaggregator.QueryVaultRequest"></a>
+
+### QueryVaultRequest
+
+| Field   | Type              | Label | Description |
+| ------- | ----------------- | ----- | ----------- |
+| `denom` | [string](#string) |       |             |
+
+<a name="ununifi.chain.yieldaggregator.QueryVaultResponse"></a>
+
+### QueryVaultResponse
+
+| Field   | Type                                          | Label    | Description |
+| ------- | --------------------------------------------- | -------- | ----------- |
+| `vault` | [Vault](#ununifi.chain.yieldaggregator.Vault) | repeated |             |
+
+<a name="ununifi.chain.yieldaggregator.QueryVaultsRequest"></a>
+
+### QueryVaultsRequest
+
+<a name="ununifi.chain.yieldaggregator.QueryVaultsResponse"></a>
+
+### QueryVaultsResponse
+
+| Field        | Type                                                                            | Label    | Description |
+| ------------ | ------------------------------------------------------------------------------- | -------- | ----------- |
+| `vaults`     | [Vault](#ununifi.chain.yieldaggregator.Vault)                                   | repeated |             |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |          |             |
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+<a name="ununifi.chain.yieldaggregator.Query"></a>
+
+### Query
+
+Query defines the gRPC querier service.
+
+| Method Name  | Request Type                                                                    | Response Type                                                                     | Description                                      | HTTP Verb | Endpoint                                                  |
+| ------------ | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------ | --------- | --------------------------------------------------------- |
+| `Params`     | [QueryParamsRequest](#ununifi.chain.yieldaggregator.QueryParamsRequest)         | [QueryParamsResponse](#ununifi.chain.yieldaggregator.QueryParamsResponse)         | Parameters queries the parameters of the module. | GET       | /UnUniFi/chain/yield-aggregator/params                    |
+| `Vaults`     | [QueryVaultsRequest](#ununifi.chain.yieldaggregator.QueryVaultsRequest)         | [QueryVaultsResponse](#ununifi.chain.yieldaggregator.QueryVaultsResponse)         | this line is used by starport scaffolding # 2    | GET       | /UnUniFi/chain/yield-aggregator/vaults                    |
+| `Vault`      | [QueryVaultRequest](#ununifi.chain.yieldaggregator.QueryVaultRequest)           | [QueryVaultResponse](#ununifi.chain.yieldaggregator.QueryVaultResponse)           |                                                  | GET       | /UnUniFi/chain/yield-aggregator/vaults/{denom}            |
+| `Strategies` | [QueryStrategiesRequest](#ununifi.chain.yieldaggregator.QueryStrategiesRequest) | [QueryStrategiesResponse](#ununifi.chain.yieldaggregator.QueryStrategiesResponse) |                                                  | GET       | /UnUniFi/chain/yield-aggregator/vaults/{denom}/strategies |
+
+ <!-- end services -->
+
+<a name="yield-aggregator/tx.proto"></a>
+
+<p align="right"><a href="#top">Top</a></p>
+
+## yield-aggregator/tx.proto
+
+<a name="ununifi.chain.yieldaggregator.MsgDepositToVault"></a>
+
+### MsgDepositToVault
+
+this line is used by starport scaffolding # proto/tx/message
+
+| Field    | Type                                                  | Label | Description |
+| -------- | ----------------------------------------------------- | ----- | ----------- |
+| `sender` | [string](#string)                                     |       |             |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
+
+<a name="ununifi.chain.yieldaggregator.MsgDepositToVaultResponse"></a>
+
+### MsgDepositToVaultResponse
+
+<a name="ununifi.chain.yieldaggregator.MsgWithdrawFromVault"></a>
+
+### MsgWithdrawFromVault
+
+| Field             | Type              | Label | Description |
+| ----------------- | ----------------- | ----- | ----------- |
+| `sender`          | [string](#string) |       |             |
+| `principal_denom` | [string](#string) |       |             |
+| `lp_token_amount` | [string](#string) |       |             |
+
+<a name="ununifi.chain.yieldaggregator.MsgWithdrawFromVaultResponse"></a>
+
+### MsgWithdrawFromVaultResponse
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+<a name="ununifi.chain.yieldaggregator.Msg"></a>
+
+### Msg
+
+Msg defines the Msg service.
+
+| Method Name         | Request Type                                                                | Response Type                                                                               | Description                                              | HTTP Verb | Endpoint |
+| ------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------- | --------- | -------- |
+| `DepositToVault`    | [MsgDepositToVault](#ununifi.chain.yieldaggregator.MsgDepositToVault)       | [MsgDepositToVaultResponse](#ununifi.chain.yieldaggregator.MsgDepositToVaultResponse)       | this line is used by starport scaffolding # proto/tx/rpc |           |
+| `WithdrawFromVault` | [MsgWithdrawFromVault](#ununifi.chain.yieldaggregator.MsgWithdrawFromVault) | [MsgWithdrawFromVaultResponse](#ununifi.chain.yieldaggregator.MsgWithdrawFromVaultResponse) |                                                          |           |
+
+ <!-- end services -->
+
+> > > > > > > b9a58125 (feat: keeper)
 
 ## Scalar Value Types
 
