@@ -86,7 +86,7 @@ func (m PerpetualFuturesPosition) GetMarginMaintenanceRate(baseCurrentRate, quot
 		return marginMaintenanceRate
 	} else {
 		// case position type is short
-		marginRequirement := m.PositionInstance.MarginRequirement(quoteCurrentRate)
+		marginRequirement := m.PositionInstance.MarginRequirement(baseCurrentRate)
 		effectiveMargin := sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(m.OpenedQuoteRate)
 		marginMaintenanceRate := effectiveMargin.Quo(marginRequirement)
 		return marginMaintenanceRate
