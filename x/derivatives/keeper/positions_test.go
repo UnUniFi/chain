@@ -174,3 +174,12 @@ func (suite *KeeperTestSuite) TestIncreaseLastPositionId() {
 
 	suite.Require().Equal(suite.keeper.GetLastPositionId(suite.ctx), string(types.GetPositionIdBytes(2)))
 }
+
+// TODO: add test for
+// func (k Keeper) GetLastPosition(ctx sdk.Context) types.Position {
+// func (k Keeper) GetAddressPositions(ctx sdk.Context, user sdk.AccAddress) []*types.Position {
+// func (k Keeper) GetAddressPositionWithId(ctx sdk.Context, address sdk.AccAddress, id string) *types.Position {
+// func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
+// func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) error {
+// func (k Keeper) ReportLiquidation(ctx sdk.Context, msg *types.MsgReportLiquidation) error {
+// func (k Keeper) ReportLevyPeriod(ctx sdk.Context, msg *types.MsgReportLevyPeriod) error {
