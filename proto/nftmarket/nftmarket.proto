@@ -53,7 +53,11 @@ message NftListing {
   ListingType               listing_type          = 3;
   ListingState              state                 = 4;
   string                    bid_token             = 5;
-  string                    minimum_deposit_rate  = 6 [(cosmos_proto.scalar) = "cosmos.Dec"];
+  string                    minimum_deposit_rate  = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable)   = false
+  ];
   bool                      automatic_refinancing = 7;
   google.protobuf.Timestamp started_at            = 8
       [(gogoproto.moretags) = "yaml:\"started_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
