@@ -102,10 +102,24 @@ func (m PerpetualFuturesPosition) CalcProfit(closedRate sdk.Dec) Revenue {
 	if sub.IsNegative() {
 		sub = sub.Neg()
 	}
-	resultDec := sub.Mul(m.PositionInstance.GetOrderSize())
+	// resultDec := sub.Mul(m.PositionInstance.GetOrderSize())
+
+	resultDec := sub.Mul(m.PositionInstance.Size_)
+
+	// profit must be calculated in remaining margin denom
+	if m.RemainingMargin.Denom != m.Market.QuoteDenom {
+		resultDec = resultDec.Quo(closedRate)
+	}
+
+	// make it micro unit by multiplying 1000000
+	// this means it assumes the price difference is calculated in normal unit, not micro unit.
+	// e.g. In uubtc/uusdc market, the market price of uubtc is actually in BTC unit.
+	// And, the position size follows the market price unit.
+	actualResultAmount := resultDec.Mul(sdk.MustNewDecFromStr("1000000")).RoundInt()
+
 	return Revenue{
 		RevenueType: revenue,
-		Amount:      sdk.NewCoin(m.Market.BaseDenom, resultDec.RoundInt()),
+		Amount:      sdk.NewCoin(m.RemainingMargin.Denom, actualResultAmount),
 	}
 }
 
