@@ -119,6 +119,6 @@ func (k Keeper) GetAPRFromStrategy(vaultDenom string, id uint64) {
 	// call `get_apr` function of the strategy contract
 }
 
-func (k Keeper) GetPerformanceFeeRate(vaultDenom string, id uint64) {
-	// call `get_performance_fee_rate` function of the strategy contract
+func (k Keeper) GetInterestFeeRate(vaultDenom string, id uint64) {
+	// call `get_interest_fee_rate` function of the strategy contract
 }

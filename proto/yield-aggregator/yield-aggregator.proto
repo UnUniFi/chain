@@ -21,7 +21,7 @@ message Vault {
   string denom = 2;
   string owner = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   cosmos.base.v1beta1.Coin owner_deposit = 4 [(gogoproto.nullable) = false];
-  string commission_rate = 5 [
+  string withdraw_commission_rate = 5 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
