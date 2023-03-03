@@ -43,6 +43,7 @@ func TestPosition_NeedLiquidationPerpetualFutures(t *testing.T) {
 			closedRate: []sdk.Dec{
 				sdk.MustNewDecFromStr("100"),
 				sdk.MustNewDecFromStr("100"),
+				sdk.MustNewDecFromStr("100"),
 			},
 			exp: true,
 		},
@@ -50,7 +51,7 @@ func TestPosition_NeedLiquidationPerpetualFutures(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := tc.position.NeedLiquidation(tc.minMarginRate, tc.closedRate[0], tc.closedRate[1])
+			result := tc.position.NeedLiquidation(tc.minMarginRate, tc.closedRate[0], tc.closedRate[1], tc.closedRate[2])
 			if tc.exp != result {
 				t.Error(tc, "expected %v, got %v", tc.exp, result)
 			}
@@ -63,7 +64,7 @@ type CurrencyRate struct {
 	rate sdk.Dec
 }
 
-func TestPosition_GetMarginMaintenanceRate(t *testing.T) {
+func TestPosition_MarginMaintenanceRate(t *testing.T) {
 	owner, _ := sdk.AccAddressFromBech32("ununifi1a8jcsmla6heu99ldtazc27dna4qcd4jygsthx6")
 
 	testCases := []struct {
@@ -104,6 +105,10 @@ func TestPosition_GetMarginMaintenanceRate(t *testing.T) {
 					name: "ubtc/usd",
 					rate: sdk.MustNewDecFromStr("400"),
 				},
+				{
+					name: "uatom/usd",
+					rate: sdk.MustNewDecFromStr("400"),
+				},
 			},
 			exp: sdk.MustNewDecFromStr("1"),
 		},
@@ -121,7 +126,7 @@ func TestPosition_GetMarginMaintenanceRate(t *testing.T) {
 				OpenedBaseRate:  sdk.MustNewDecFromStr("100"),
 				OpenedQuoteRate: sdk.MustNewDecFromStr("100"),
 				// In the case of Long, BaseDenom is RemainingMargin.
-				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1)),
+				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(10)),
 				PositionInstance: types.PerpetualFuturesPositionInstance{
 					PositionType: types.PositionType_LONG,
 					Size_:        sdk.MustNewDecFromStr("5"),
@@ -136,10 +141,14 @@ func TestPosition_GetMarginMaintenanceRate(t *testing.T) {
 				},
 				{
 					name: "ubtc/usd",
+					rate: sdk.MustNewDecFromStr("100"),
+				},
+				{
+					name: "uatom/usd",
 					rate: sdk.MustNewDecFromStr("90"),
 				},
 			},
-			exp: sdk.MustNewDecFromStr("0.9"),
+			exp: sdk.MustNewDecFromStr("8.0"),
 		},
 		{
 			name: "long position up 10%",
@@ -170,10 +179,14 @@ func TestPosition_GetMarginMaintenanceRate(t *testing.T) {
 				{
 					// up 10%
 					name: "ubtc/usd",
+					rate: sdk.MustNewDecFromStr("100"),
+				},
+				{
+					name: "uatom/usd",
 					rate: sdk.MustNewDecFromStr("110"),
 				},
 			},
-			exp: sdk.MustNewDecFromStr("1.1"),
+			exp: sdk.MustNewDecFromStr("3"),
 		},
 		{
 			name: "short position not change rate",
@@ -200,6 +213,10 @@ func TestPosition_GetMarginMaintenanceRate(t *testing.T) {
 			Rate: []CurrencyRate{
 				{
 					name: "uatom/usd",
+					rate: sdk.MustNewDecFromStr("400"),
+				},
+				{
+					name: "ubtc/usd",
 					rate: sdk.MustNewDecFromStr("400"),
 				},
 				{
@@ -238,10 +255,14 @@ func TestPosition_GetMarginMaintenanceRate(t *testing.T) {
 				},
 				{
 					name: "ubtc/usd",
-					rate: sdk.MustNewDecFromStr("90"),
+					rate: sdk.MustNewDecFromStr("100"),
+				},
+				{
+					name: "ubtc/usd",
+					rate: sdk.MustNewDecFromStr("100"),
 				},
 			},
-			exp: sdk.MustNewDecFromStr("1.111111111111111111"),
+			exp: sdk.MustNewDecFromStr("3.222222222222222222"),
 		},
 		{
 			name: "short position up 10%",
@@ -257,7 +278,7 @@ func TestPosition_GetMarginMaintenanceRate(t *testing.T) {
 				OpenedBaseRate:  sdk.MustNewDecFromStr("100"),
 				OpenedQuoteRate: sdk.MustNewDecFromStr("100"),
 				// In the case of Long, BaseDenom is RemainingMargin.
-				RemainingMargin: sdk.NewCoin("ubtc", sdk.NewInt(1)),
+				RemainingMargin: sdk.NewCoin("ubtc", sdk.NewInt(10)),
 				PositionInstance: types.PerpetualFuturesPositionInstance{
 					PositionType: types.PositionType_SHORT,
 					Size_:        sdk.MustNewDecFromStr("5"),
@@ -272,16 +293,21 @@ func TestPosition_GetMarginMaintenanceRate(t *testing.T) {
 				{
 					// up 10%
 					name: "ubtc/usd",
-					rate: sdk.MustNewDecFromStr("110"),
+					rate: sdk.MustNewDecFromStr("100"),
+				},
+				{
+					// up 10%
+					name: "ubtc/usd",
+					rate: sdk.MustNewDecFromStr("100"),
 				},
 			},
-			exp: sdk.MustNewDecFromStr("0.909090909090909091"),
+			exp: sdk.MustNewDecFromStr("8.181818181818181818"),
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := tc.position.GetMarginMaintenanceRate(tc.Rate[0].rate, tc.Rate[1].rate)
+			result := tc.position.MarginMaintenanceRate(tc.Rate[0].rate, tc.Rate[1].rate, tc.Rate[2].rate)
 			if !tc.exp.Equal(result) {
 				t.Error(tc, "expected %v, got %v", tc.exp, result)
 			}
