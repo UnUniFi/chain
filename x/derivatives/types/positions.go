@@ -12,6 +12,8 @@ type PositionInstance interface {
 	proto.Message
 }
 
+type Positions []Position
+
 func UnpackPositionInstance(positionAny types.Any) (PositionInstance, error) {
 	position := UnpackPerpetualFuturesPositionInstance(positionAny)
 	if position != nil {
@@ -148,4 +150,47 @@ func (a Revenue) Equal(b Revenue) bool {
 		return false
 	}
 	return true
+}
+
+// todo make test
+func (m Positions) EvaluatePositions(posType PositionType, getCurrentPriceF func(denom string) (sdk.Dec, error)) sdk.Dec {
+	usdMap := map[string]sdk.Dec{}
+	result := sdk.ZeroDec()
+	for _, position := range m {
+		ins, err := UnpackPositionInstance(position.PositionInstance)
+		if err != nil {
+			panic(err)
+		}
+
+		if _, ok := usdMap[position.Market.BaseDenom]; !ok {
+			price, err := getCurrentPriceF(position.Market.BaseDenom)
+			if err != nil {
+				panic(err)
+			}
+			usdMap[position.Market.BaseDenom] = price
+		}
+
+		switch positionInstance := ins.(type) {
+		case *PerpetualFuturesPositionInstance:
+			perpetualFuturesPosition := NewPerpetualFuturesPosition(position, *positionInstance)
+			if perpetualFuturesPosition.PositionInstance.PositionType != posType {
+				continue
+			}
+			result = result.Add(perpetualFuturesPosition.EvaluatePosition(usdMap[position.Market.BaseDenom]))
+			break
+		case *PerpetualOptionsPositionInstance:
+			panic("not implemented")
+		default:
+			continue
+		}
+	}
+	return result
+}
+
+func (m Positions) EvaluateLongPositions(getCurrentPriceF func(denom string) (sdk.Dec, error)) sdk.Dec {
+	return m.EvaluatePositions(PositionType_LONG, getCurrentPriceF)
+}
+
+func (m Positions) EvaluateShortPositions(getCurrentPriceF func(denom string) (sdk.Dec, error)) sdk.Dec {
+	return m.EvaluatePositions(PositionType_SHORT, getCurrentPriceF)
 }
