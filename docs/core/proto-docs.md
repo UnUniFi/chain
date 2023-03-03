@@ -344,11 +344,11 @@
   
 - [yield-aggregator/params.proto](#yield-aggregator/params.proto)
     - [Params](#ununifi.chain.yieldaggregator.Params)
-    - [Params.Vault](#ununifi.chain.yieldaggregator.Params.Vault)
   
 - [yield-aggregator/yield-aggregator.proto](#yield-aggregator/yield-aggregator.proto)
     - [Strategy](#ununifi.chain.yieldaggregator.Strategy)
     - [StrategyMetrics](#ununifi.chain.yieldaggregator.StrategyMetrics)
+    - [StrategyWeight](#ununifi.chain.yieldaggregator.StrategyWeight)
     - [Vault](#ununifi.chain.yieldaggregator.Vault)
     - [VaultMetrics](#ununifi.chain.yieldaggregator.VaultMetrics)
   
@@ -370,8 +370,14 @@
     - [Query](#ununifi.chain.yieldaggregator.Query)
   
 - [yield-aggregator/tx.proto](#yield-aggregator/tx.proto)
+    - [MsgCreateVault](#ununifi.chain.yieldaggregator.MsgCreateVault)
+    - [MsgCreateVaultResponse](#ununifi.chain.yieldaggregator.MsgCreateVaultResponse)
+    - [MsgDeleteVault](#ununifi.chain.yieldaggregator.MsgDeleteVault)
+    - [MsgDeleteVaultResponse](#ununifi.chain.yieldaggregator.MsgDeleteVaultResponse)
     - [MsgDepositToVault](#ununifi.chain.yieldaggregator.MsgDepositToVault)
     - [MsgDepositToVaultResponse](#ununifi.chain.yieldaggregator.MsgDepositToVaultResponse)
+    - [MsgTransferVaultOwnership](#ununifi.chain.yieldaggregator.MsgTransferVaultOwnership)
+    - [MsgTransferVaultOwnershipResponse](#ununifi.chain.yieldaggregator.MsgTransferVaultOwnershipResponse)
     - [MsgWithdrawFromVault](#ununifi.chain.yieldaggregator.MsgWithdrawFromVault)
     - [MsgWithdrawFromVaultResponse](#ununifi.chain.yieldaggregator.MsgWithdrawFromVaultResponse)
   
@@ -4762,23 +4768,9 @@ Params defines the parameters for the module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `vaults` | [Params.Vault](#ununifi.chain.yieldaggregator.Params.Vault) | repeated |  |
-
-
-
-
-
-
-<a name="ununifi.chain.yieldaggregator.Params.Vault"></a>
-
-### Params.Vault
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `denom` | [string](#string) |  |  |
-| `performance_fee_rate` | [string](#string) |  |  |
+| `commission_rate` | [string](#string) |  |  |
+| `vault_creation_fee` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `vault_creation_deposit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -4809,12 +4801,10 @@ Params defines the parameters for the module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `vault_denom` | [string](#string) |  |  |
+| `denom` | [string](#string) |  |  |
 | `id` | [uint64](#uint64) |  |  |
 | `contract_address` | [string](#string) |  |  |
 | `name` | [string](#string) |  |  |
-| `weight` | [string](#string) |  |  |
-| `metrics` | [StrategyMetrics](#ununifi.chain.yieldaggregator.StrategyMetrics) |  |  |
 
 
 
@@ -4829,8 +4819,24 @@ Params defines the parameters for the module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `allocation` | [string](#string) |  |  |
 | `apr` | [string](#string) |  |  |
-| `tvl` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.StrategyWeight"></a>
+
+### StrategyWeight
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `strategy_id` | [uint64](#uint64) |  |  |
+| `weight` | [string](#string) |  |  |
 
 
 
@@ -4845,8 +4851,12 @@ Params defines the parameters for the module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `id` | [uint64](#uint64) |  |  |
 | `denom` | [string](#string) |  |  |
-| `metrics` | [VaultMetrics](#ununifi.chain.yieldaggregator.VaultMetrics) |  |  |
+| `owner` | [string](#string) |  |  |
+| `owner_deposit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `commission_rate` | [string](#string) |  |  |
+| `strategy_weights` | [StrategyWeight](#ununifi.chain.yieldaggregator.StrategyWeight) | repeated |  |
 
 
 
@@ -4861,8 +4871,8 @@ Params defines the parameters for the module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `allocation` | [string](#string) |  |  |
 | `apy` | [string](#string) |  |  |
-| `tvl` | [string](#string) |  |  |
 
 
 
@@ -5020,7 +5030,7 @@ GenesisState defines the yieldaggregator module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `denom` | [string](#string) |  |  |
+| `id` | [uint64](#uint64) |  |  |
 
 
 
@@ -5036,6 +5046,7 @@ GenesisState defines the yieldaggregator module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `vault` | [Vault](#ununifi.chain.yieldaggregator.Vault) |  |  |
+| `strategies` | [Strategy](#ununifi.chain.yieldaggregator.Strategy) | repeated |  |
 
 
 
@@ -5082,9 +5093,9 @@ Query defines the gRPC querier service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Params` | [QueryParamsRequest](#ununifi.chain.yieldaggregator.QueryParamsRequest) | [QueryParamsResponse](#ununifi.chain.yieldaggregator.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/UnUniFi/chain/yield-aggregator/params|
 | `VaultAll` | [QueryAllVaultRequest](#ununifi.chain.yieldaggregator.QueryAllVaultRequest) | [QueryAllVaultResponse](#ununifi.chain.yieldaggregator.QueryAllVaultResponse) | this line is used by starport scaffolding # 2 | GET|/UnUniFi/chain/yield-aggregator/vaults|
-| `Vault` | [QueryGetVaultRequest](#ununifi.chain.yieldaggregator.QueryGetVaultRequest) | [QueryGetVaultResponse](#ununifi.chain.yieldaggregator.QueryGetVaultResponse) |  | GET|/UnUniFi/chain/yield-aggregator/vaults/{denom}|
-| `StrategyAll` | [QueryAllStrategyRequest](#ununifi.chain.yieldaggregator.QueryAllStrategyRequest) | [QueryAllStrategyResponse](#ununifi.chain.yieldaggregator.QueryAllStrategyResponse) |  | GET|/UnUniFi/chain/yield-aggregator/vaults/{denom}/strategies|
-| `Strategy` | [QueryGetStrategyRequest](#ununifi.chain.yieldaggregator.QueryGetStrategyRequest) | [QueryGetStrategyResponse](#ununifi.chain.yieldaggregator.QueryGetStrategyResponse) |  | GET|/UnUniFi/chain/yield-aggregator/vaults/{denom}/strategies/{id}|
+| `Vault` | [QueryGetVaultRequest](#ununifi.chain.yieldaggregator.QueryGetVaultRequest) | [QueryGetVaultResponse](#ununifi.chain.yieldaggregator.QueryGetVaultResponse) |  | GET|/UnUniFi/chain/yield-aggregator/vaults/{id}|
+| `StrategyAll` | [QueryAllStrategyRequest](#ununifi.chain.yieldaggregator.QueryAllStrategyRequest) | [QueryAllStrategyResponse](#ununifi.chain.yieldaggregator.QueryAllStrategyResponse) |  | GET|/UnUniFi/chain/yield-aggregator/strategies/{denom}|
+| `Strategy` | [QueryGetStrategyRequest](#ununifi.chain.yieldaggregator.QueryGetStrategyRequest) | [QueryGetStrategyResponse](#ununifi.chain.yieldaggregator.QueryGetStrategyResponse) |  | GET|/UnUniFi/chain/yield-aggregator/strategies/{denom}/{id}|
 
  <!-- end services -->
 
@@ -5097,6 +5108,62 @@ Query defines the gRPC querier service.
 
 
 
+<a name="ununifi.chain.yieldaggregator.MsgCreateVault"></a>
+
+### MsgCreateVault
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `denom` | [string](#string) |  |  |
+| `commission_rate` | [string](#string) |  |  |
+| `strategy_weights` | [StrategyWeight](#ununifi.chain.yieldaggregator.StrategyWeight) | repeated |  |
+| `fee` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `deposit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgCreateVaultResponse"></a>
+
+### MsgCreateVaultResponse
+
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgDeleteVault"></a>
+
+### MsgDeleteVault
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `vault_id` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgDeleteVaultResponse"></a>
+
+### MsgDeleteVaultResponse
+
+
+
+
+
+
+
 <a name="ununifi.chain.yieldaggregator.MsgDepositToVault"></a>
 
 ### MsgDepositToVault
@@ -5106,6 +5173,7 @@ this line is used by starport scaffolding # proto/tx/message
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  |  |
+| `vault_id` | [uint64](#uint64) |  |  |
 | `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
@@ -5123,6 +5191,33 @@ this line is used by starport scaffolding # proto/tx/message
 
 
 
+<a name="ununifi.chain.yieldaggregator.MsgTransferVaultOwnership"></a>
+
+### MsgTransferVaultOwnership
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `vault_id` | [uint64](#uint64) |  |  |
+| `recipient` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgTransferVaultOwnershipResponse"></a>
+
+### MsgTransferVaultOwnershipResponse
+
+
+
+
+
+
+
 <a name="ununifi.chain.yieldaggregator.MsgWithdrawFromVault"></a>
 
 ### MsgWithdrawFromVault
@@ -5132,7 +5227,7 @@ this line is used by starport scaffolding # proto/tx/message
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  |  |
-| `vault_denom` | [string](#string) |  |  |
+| `vault_id` | [uint64](#uint64) |  |  |
 | `lp_token_amount` | [string](#string) |  |  |
 
 
@@ -5165,6 +5260,9 @@ Msg defines the Msg service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `DepositToVault` | [MsgDepositToVault](#ununifi.chain.yieldaggregator.MsgDepositToVault) | [MsgDepositToVaultResponse](#ununifi.chain.yieldaggregator.MsgDepositToVaultResponse) | this line is used by starport scaffolding # proto/tx/rpc | |
 | `WithdrawFromVault` | [MsgWithdrawFromVault](#ununifi.chain.yieldaggregator.MsgWithdrawFromVault) | [MsgWithdrawFromVaultResponse](#ununifi.chain.yieldaggregator.MsgWithdrawFromVaultResponse) |  | |
+| `CreateVault` | [MsgCreateVault](#ununifi.chain.yieldaggregator.MsgCreateVault) | [MsgCreateVaultResponse](#ununifi.chain.yieldaggregator.MsgCreateVaultResponse) |  | |
+| `DeleteVault` | [MsgDeleteVault](#ununifi.chain.yieldaggregator.MsgDeleteVault) | [MsgDeleteVaultResponse](#ununifi.chain.yieldaggregator.MsgDeleteVaultResponse) |  | |
+| `TransferVaultOwnership` | [MsgTransferVaultOwnership](#ununifi.chain.yieldaggregator.MsgTransferVaultOwnership) | [MsgTransferVaultOwnershipResponse](#ununifi.chain.yieldaggregator.MsgTransferVaultOwnershipResponse) |  | |
 
  <!-- end services -->
 

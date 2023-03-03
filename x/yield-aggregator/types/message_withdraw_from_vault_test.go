@@ -25,7 +25,7 @@ func TestMsgWithdrawFromVault_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg: MsgWithdrawFromVault{
 				Sender:        sample.AccAddress(),
-				VaultDenom:    "uatom",
+				VaultId:       1,
 				LpTokenAmount: sdk.NewInt(1000),
 			},
 		},

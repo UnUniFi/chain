@@ -7,6 +7,7 @@ import (
 	fmt "fmt"
 	_ "github.com/cosmos/cosmos-proto"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
+	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	io "io"
@@ -27,7 +28,9 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Params defines the parameters for the module.
 type Params struct {
-	Vaults []Params_Vault `protobuf:"bytes,1,rep,name=vaults,proto3" json:"vaults"`
+	CommissionRate       github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,1,opt,name=commission_rate,json=commissionRate,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"commission_rate"`
+	VaultCreationFee     types.Coin                             `protobuf:"bytes,2,opt,name=vault_creation_fee,json=vaultCreationFee,proto3" json:"vault_creation_fee"`
+	VaultCreationDeposit types.Coin                             `protobuf:"bytes,3,opt,name=vault_creation_deposit,json=vaultCreationDeposit,proto3" json:"vault_creation_deposit"`
 }
 
 func (m *Params) Reset()      { *m = Params{} }
@@ -62,87 +65,50 @@ func (m *Params) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Params proto.InternalMessageInfo
 
-func (m *Params) GetVaults() []Params_Vault {
+func (m *Params) GetVaultCreationFee() types.Coin {
 	if m != nil {
-		return m.Vaults
+		return m.VaultCreationFee
 	}
-	return nil
+	return types.Coin{}
 }
 
-type Params_Vault struct {
-	Denom              string                                 `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
-	PerformanceFeeRate github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=performance_fee_rate,json=performanceFeeRate,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"performance_fee_rate"`
-}
-
-func (m *Params_Vault) Reset()         { *m = Params_Vault{} }
-func (m *Params_Vault) String() string { return proto.CompactTextString(m) }
-func (*Params_Vault) ProtoMessage()    {}
-func (*Params_Vault) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5d4d0a492ea9705, []int{0, 0}
-}
-func (m *Params_Vault) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *Params_Vault) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_Params_Vault.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *Params_Vault) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Params_Vault.Merge(m, src)
-}
-func (m *Params_Vault) XXX_Size() int {
-	return m.Size()
-}
-func (m *Params_Vault) XXX_DiscardUnknown() {
-	xxx_messageInfo_Params_Vault.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Params_Vault proto.InternalMessageInfo
-
-func (m *Params_Vault) GetDenom() string {
+func (m *Params) GetVaultCreationDeposit() types.Coin {
 	if m != nil {
-		return m.Denom
+		return m.VaultCreationDeposit
 	}
-	return ""
+	return types.Coin{}
 }
 
 func init() {
 	proto.RegisterType((*Params)(nil), "ununifi.chain.yieldaggregator.Params")
-	proto.RegisterType((*Params_Vault)(nil), "ununifi.chain.yieldaggregator.Params.Vault")
 }
 
 func init() { proto.RegisterFile("yield-aggregator/params.proto", fileDescriptor_b5d4d0a492ea9705) }
 
 var fileDescriptor_b5d4d0a492ea9705 = []byte{
-	// 319 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xad, 0xcc, 0x4c, 0xcd,
-	0x49, 0xd1, 0x4d, 0x4c, 0x4f, 0x2f, 0x4a, 0x4d, 0x4f, 0x2c, 0xc9, 0x2f, 0xd2, 0x2f, 0x48, 0x2c,
-	0x4a, 0xcc, 0x2d, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x92, 0x2d, 0xcd, 0x2b, 0xcd, 0xcb,
-	0x4c, 0xcb, 0xd4, 0x4b, 0xce, 0x48, 0xcc, 0xcc, 0xd3, 0x03, 0x2b, 0x46, 0xa8, 0x95, 0x12, 0x49,
-	0xcf, 0x4f, 0xcf, 0x07, 0xab, 0xd4, 0x07, 0xb1, 0x20, 0x9a, 0xa4, 0x24, 0x93, 0xf3, 0x8b, 0x73,
-	0xf3, 0x8b, 0xe3, 0x21, 0x12, 0x10, 0x0e, 0x44, 0x4a, 0xe9, 0x25, 0x23, 0x17, 0x5b, 0x00, 0xd8,
-	0x02, 0x21, 0x4f, 0x2e, 0xb6, 0xb2, 0xc4, 0xd2, 0x9c, 0x92, 0x62, 0x09, 0x46, 0x05, 0x66, 0x0d,
-	0x6e, 0x23, 0x6d, 0x3d, 0xbc, 0x76, 0xe9, 0x41, 0xb4, 0xe9, 0x85, 0x81, 0xf4, 0x38, 0xb1, 0x9c,
-	0xb8, 0x27, 0xcf, 0x10, 0x04, 0x35, 0x40, 0xaa, 0x97, 0x91, 0x8b, 0x15, 0x2c, 0x2e, 0x24, 0xc2,
-	0xc5, 0x9a, 0x92, 0x9a, 0x97, 0x9f, 0x2b, 0xc1, 0xa8, 0xc0, 0xa8, 0xc1, 0x19, 0x04, 0xe1, 0x08,
-	0xe5, 0x71, 0x89, 0x14, 0xa4, 0x16, 0xa5, 0xe5, 0x17, 0xe5, 0x26, 0xe6, 0x25, 0xa7, 0xc6, 0xa7,
-	0xa5, 0xa6, 0xc6, 0x17, 0x25, 0x96, 0xa4, 0x4a, 0x30, 0x81, 0x14, 0x39, 0xd9, 0x80, 0xcc, 0xba,
-	0x75, 0x4f, 0x5e, 0x2d, 0x3d, 0xb3, 0x24, 0xa3, 0x34, 0x49, 0x2f, 0x39, 0x3f, 0x17, 0xea, 0x68,
-	0x28, 0xa5, 0x5b, 0x9c, 0x92, 0xad, 0x5f, 0x52, 0x59, 0x90, 0x5a, 0xac, 0xe7, 0x92, 0x9a, 0x7c,
-	0x69, 0x8b, 0x2e, 0x17, 0xd4, 0x4f, 0x2e, 0xa9, 0xc9, 0x41, 0x42, 0x48, 0x26, 0xbb, 0xa5, 0xa6,
-	0x06, 0x25, 0x96, 0xa4, 0x5a, 0xb1, 0xcc, 0x58, 0x20, 0xcf, 0xe0, 0xe4, 0x7d, 0xe2, 0x91, 0x1c,
-	0xe3, 0x85, 0x47, 0x72, 0x8c, 0x0f, 0x1e, 0xc9, 0x31, 0x4e, 0x78, 0x2c, 0xc7, 0x70, 0xe1, 0xb1,
-	0x1c, 0xc3, 0x8d, 0xc7, 0x72, 0x0c, 0x51, 0x86, 0x48, 0x36, 0x85, 0xe6, 0x85, 0xe6, 0x65, 0xba,
-	0x65, 0xea, 0x83, 0x3d, 0xad, 0x5f, 0xa1, 0x8f, 0x11, 0x1f, 0x60, 0x8b, 0x93, 0xd8, 0xc0, 0xe1,
-	0x67, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0xc0, 0xf2, 0x48, 0xeb, 0xb0, 0x01, 0x00, 0x00,
+	// 351 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x51, 0xbd, 0x6a, 0x2a, 0x41,
+	0x14, 0xde, 0xf5, 0x8a, 0x70, 0xf7, 0xc2, 0x4d, 0x58, 0x24, 0xa8, 0xe0, 0x28, 0x29, 0x82, 0x8d,
+	0x33, 0x98, 0x74, 0x21, 0x95, 0x8a, 0x4d, 0x08, 0x04, 0xc1, 0x26, 0x8d, 0xcc, 0x8e, 0xc7, 0x75,
+	0x88, 0x3b, 0xb3, 0xec, 0xcc, 0x4a, 0x7c, 0x8b, 0x94, 0x81, 0x34, 0x79, 0x88, 0x3c, 0x84, 0xa5,
+	0xa4, 0x0a, 0x29, 0x24, 0xe8, 0x8b, 0x84, 0x9d, 0x1d, 0x30, 0x3f, 0x4d, 0xaa, 0x99, 0xc3, 0xf7,
+	0x73, 0x3e, 0xbe, 0xe3, 0xd5, 0x97, 0x1c, 0xe6, 0x93, 0x36, 0x0d, 0xc3, 0x04, 0x42, 0xaa, 0x65,
+	0x42, 0x62, 0x9a, 0xd0, 0x48, 0xe1, 0x38, 0x91, 0x5a, 0xfa, 0xf5, 0x54, 0xa4, 0x82, 0x4f, 0x39,
+	0x66, 0x33, 0xca, 0x05, 0x36, 0xe4, 0x3d, 0xb7, 0x56, 0x0e, 0x65, 0x28, 0x0d, 0x93, 0x64, 0xbf,
+	0x5c, 0x54, 0xab, 0x32, 0xa9, 0x22, 0xa9, 0xc6, 0x39, 0x90, 0x0f, 0x16, 0x42, 0xf9, 0x44, 0x02,
+	0xaa, 0x80, 0x2c, 0x3a, 0x01, 0x68, 0xda, 0x21, 0x4c, 0x72, 0x91, 0xe3, 0xc7, 0x8f, 0x05, 0xaf,
+	0x74, 0x6d, 0x02, 0xf8, 0xe0, 0x1d, 0x30, 0x19, 0x45, 0x5c, 0x29, 0x2e, 0xc5, 0x38, 0xa1, 0x1a,
+	0x2a, 0x6e, 0xd3, 0x6d, 0xfd, 0xed, 0x5e, 0xac, 0x36, 0x0d, 0xe7, 0x6d, 0xd3, 0x38, 0x09, 0xb9,
+	0x9e, 0xa5, 0x01, 0x66, 0x32, 0xb2, 0x4b, 0xec, 0xd3, 0x56, 0x93, 0x5b, 0xa2, 0x97, 0x31, 0x28,
+	0xdc, 0x07, 0xf6, 0xf2, 0xdc, 0xf6, 0x6c, 0x86, 0x3e, 0xb0, 0xe1, 0xff, 0xbd, 0xe9, 0x90, 0x6a,
+	0xf0, 0xaf, 0x3c, 0x7f, 0x41, 0xd3, 0xb9, 0x1e, 0xb3, 0x04, 0xa8, 0xce, 0x56, 0x4d, 0x01, 0x2a,
+	0x85, 0xa6, 0xdb, 0xfa, 0x77, 0x5a, 0xc5, 0x56, 0x98, 0xc5, 0xc5, 0x36, 0x2e, 0xee, 0x49, 0x2e,
+	0xba, 0xc5, 0x2c, 0xc4, 0xf0, 0xd0, 0x48, 0x7b, 0x56, 0x39, 0x00, 0xf0, 0x47, 0xde, 0xd1, 0x37,
+	0xbb, 0x09, 0xc4, 0x52, 0x71, 0x5d, 0xf9, 0xf3, 0x3b, 0xcb, 0xf2, 0x17, 0xcb, 0x7e, 0x2e, 0x3e,
+	0x2f, 0x3e, 0x3c, 0x35, 0x9c, 0xee, 0xe5, 0x6a, 0x8b, 0xdc, 0xf5, 0x16, 0xb9, 0xef, 0x5b, 0xe4,
+	0xde, 0xef, 0x90, 0xb3, 0xde, 0x21, 0xe7, 0x75, 0x87, 0x9c, 0x9b, 0xce, 0xa7, 0x2e, 0x46, 0x62,
+	0x24, 0xf8, 0x80, 0x13, 0x73, 0x32, 0x72, 0x47, 0x7e, 0x5c, 0xd8, 0x54, 0x13, 0x94, 0x4c, 0xe3,
+	0x67, 0x1f, 0x01, 0x00, 0x00, 0xff, 0xff, 0x70, 0x6b, 0xc1, 0x71, 0x02, 0x02, 0x00, 0x00,
 }
 
 func (m *Params) Marshal() (dAtA []byte, err error) {
@@ -165,60 +131,36 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Vaults) > 0 {
-		for iNdEx := len(m.Vaults) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Vaults[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintParams(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0xa
-		}
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *Params_Vault) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *Params_Vault) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *Params_Vault) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
 	{
-		size := m.PerformanceFeeRate.Size()
+		size, err := m.VaultCreationDeposit.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
 		i -= size
-		if _, err := m.PerformanceFeeRate.MarshalTo(dAtA[i:]); err != nil {
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	{
+		size, err := m.VaultCreationFee.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	{
+		size := m.CommissionRate.Size()
+		i -= size
+		if _, err := m.CommissionRate.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintParams(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x12
-	if len(m.Denom) > 0 {
-		i -= len(m.Denom)
-		copy(dAtA[i:], m.Denom)
-		i = encodeVarintParams(dAtA, i, uint64(len(m.Denom)))
-		i--
-		dAtA[i] = 0xa
-	}
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -239,26 +181,11 @@ func (m *Params) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if len(m.Vaults) > 0 {
-		for _, e := range m.Vaults {
-			l = e.Size()
-			n += 1 + l + sovParams(uint64(l))
-		}
-	}
-	return n
-}
-
-func (m *Params_Vault) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Denom)
-	if l > 0 {
-		n += 1 + l + sovParams(uint64(l))
-	}
-	l = m.PerformanceFeeRate.Size()
+	l = m.CommissionRate.Size()
+	n += 1 + l + sovParams(uint64(l))
+	l = m.VaultCreationFee.Size()
+	n += 1 + l + sovParams(uint64(l))
+	l = m.VaultCreationDeposit.Size()
 	n += 1 + l + sovParams(uint64(l))
 	return n
 }
@@ -300,7 +227,41 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Vaults", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field CommissionRate", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.CommissionRate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VaultCreationFee", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -327,66 +288,15 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Vaults = append(m.Vaults, Params_Vault{})
-			if err := m.Vaults[len(m.Vaults)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.VaultCreationFee.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipParams(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthParams
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *Params_Vault) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowParams
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Vault: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Vault: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
+		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field VaultCreationDeposit", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowParams
@@ -396,55 +306,22 @@ func (m *Params_Vault) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthParams
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthParams
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Denom = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PerformanceFeeRate", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthParams
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthParams
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.PerformanceFeeRate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.VaultCreationDeposit.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

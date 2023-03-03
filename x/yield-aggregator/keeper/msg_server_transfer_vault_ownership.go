@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k msgServer) DepositToVault(ctx context.Context, msg *types.MsgDepositToVault) (*types.MsgDepositToVaultResponse, error) {
+func (k msgServer) TransferVaultOwnership(ctx context.Context, msg *types.MsgTransferVaultOwnership) (*types.MsgTransferVaultOwnershipResponse, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	sdkCtx.Context()
 	panic("implement me")

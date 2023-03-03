@@ -11,20 +11,15 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createNStrategy(keeper *keeper.Keeper, ctx sdk.Context, vaultDenom string, n int) []types.Strategy {
+func createNStrategy(keeper *keeper.Keeper, ctx sdk.Context, denom string, n int) []types.Strategy {
 	items := make([]types.Strategy, n)
 	for i := range items {
 		items[i] = types.Strategy{
-			VaultDenom:      vaultDenom,
+			Denom:           denom,
 			ContractAddress: "",
 			Name:            "",
-			Weight:          sdk.ZeroDec(),
-			Metrics: types.StrategyMetrics{
-				Apr: sdk.ZeroDec(),
-				Tvl: sdk.ZeroDec(),
-			},
 		}
-		items[i].Id = keeper.AppendStrategy(ctx, vaultDenom, items[i])
+		items[i].Id = keeper.AppendStrategy(ctx, denom, items[i])
 	}
 	return items
 }
