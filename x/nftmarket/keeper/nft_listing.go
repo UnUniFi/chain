@@ -597,6 +597,9 @@ func (k Keeper) ProcessEndingNftListings(ctx sdk.Context) {
 			liquidationAmount := types.NftBids(expiredBorrowedBids).LiquidationAmount(listing.BidToken, ctx.BlockTime())
 			fmt.Println("liquidationAmount")
 			fmt.Println(liquidationAmount)
+			borrowingAmount := types.NftBids(bids).BorrowingAmount(listing.BidToken)
+			fmt.Println("borrowingAmount")
+			fmt.Println(borrowingAmount)
 			k.Refinancings(ctx, listing, expiredBorrowedBids)
 		} else if listing.State == types.ListingState_END_LISTING {
 			continue

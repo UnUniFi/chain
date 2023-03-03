@@ -328,6 +328,14 @@ func (m NftBids) BorrowableAmount(denom string) sdk.Coin {
 	return coin
 }
 
+func (m NftBids) BorrowingAmount(denom string) sdk.Coin {
+	coin := sdk.NewCoin(denom, sdk.ZeroInt())
+	for _, s := range m {
+		coin = coin.Add(s.BorrowingAmount())
+	}
+	return coin
+}
+
 func (m NftBids) TotalDeposit() sdk.Coin {
 	if len(m) == 0 {
 		return sdk.Coin{}
