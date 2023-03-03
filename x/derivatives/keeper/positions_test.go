@@ -153,16 +153,22 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 
 	// Check if the position was deleted
 	allPositions = suite.keeper.GetAllPositions(suite.ctx)
-
 	suite.Require().Len(allPositions, 1)
+
+	// Check last position
+	lastPosition := suite.keeper.GetLastPosition(suite.ctx)
+	suite.Require().Equal(lastPosition, allPositions[0])
 
 	// Delete the position
 	suite.keeper.DeletePosition(suite.ctx, owner2, "1")
 
 	// Check if the position was deleted
 	allPositions = suite.keeper.GetAllPositions(suite.ctx)
-
 	suite.Require().Len(allPositions, 0)
+
+	// Check last position
+	lastPosition = suite.keeper.GetLastPosition(suite.ctx)
+	suite.Require().Equal(lastPosition, types.Position{})
 }
 
 func (suite *KeeperTestSuite) TestIncreaseLastPositionId() {
@@ -176,7 +182,6 @@ func (suite *KeeperTestSuite) TestIncreaseLastPositionId() {
 }
 
 // TODO: add test for
-// func (k Keeper) GetLastPosition(ctx sdk.Context) types.Position {
 // func (k Keeper) GetAddressPositions(ctx sdk.Context, user sdk.AccAddress) []*types.Position {
 // func (k Keeper) GetAddressPositionWithId(ctx sdk.Context, address sdk.AccAddress, id string) *types.Position {
 // func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
