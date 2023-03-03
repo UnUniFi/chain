@@ -1851,7 +1851,7 @@ Params defines the parameters for the module.
 | `denom` | [string](#string) |  |  |
 | `owner` | [string](#string) |  |  |
 | `owner_deposit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-| `commission_rate` | [string](#string) |  |  |
+| `withdraw_commission_rate` | [string](#string) |  |  |
 | `strategy_weights` | [StrategyWeight](#ununifi.chain.yieldaggregator.StrategyWeight) | repeated |  |
 
 

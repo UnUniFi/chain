@@ -30,11 +30,11 @@ func (k msgServer) CreateVault(ctx context.Context, msg *types.MsgCreateVault) (
 	// TODO: transfer deposit
 
 	vault := types.Vault{
-		Denom:           msg.Denom,
-		Owner:           msg.Sender,
-		OwnerDeposit:    msg.Deposit,
-		CommissionRate:  msg.CommissionRate,
-		StrategyWeights: msg.StrategyWeights,
+		Denom:                  msg.Denom,
+		Owner:                  msg.Sender,
+		OwnerDeposit:           msg.Deposit,
+		WithdrawCommissionRate: msg.CommissionRate,
+		StrategyWeights:        msg.StrategyWeights,
 	}
 
 	k.Keeper.AppendVault(sdkCtx, vault)

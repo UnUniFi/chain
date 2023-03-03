@@ -16,8 +16,8 @@ func createNVault(keeper *keeper.Keeper, ctx sdk.Context, denom string, n int) [
 	items := make([]types.Vault, n)
 	for i := range items {
 		items[i] = types.Vault{
-			Denom:          denom,
-			CommissionRate: sdk.MustNewDecFromStr("0.001"),
+			Denom:                  denom,
+			WithdrawCommissionRate: sdk.MustNewDecFromStr("0.001"),
 		}
 		items[i].Id = keeper.AppendVault(ctx, items[i])
 	}
