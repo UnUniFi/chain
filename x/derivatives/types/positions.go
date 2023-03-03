@@ -34,7 +34,7 @@ func MustUnpackPositionInstance(positionAny types.Any) PositionInstance {
 	return position
 }
 
-func (m Position) NeedLiquidation(MarginMaintenanceRate, baseCurrentUsdRate, quoteCurrentUsdRate, marginUsdRate sdk.Dec) bool {
+func (m Position) NeedLiquidation(MarginMaintenanceRate, currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate sdk.Dec) bool {
 	ins, err := UnpackPositionInstance(m.PositionInstance)
 	if err != nil {
 		return false
@@ -43,7 +43,7 @@ func (m Position) NeedLiquidation(MarginMaintenanceRate, baseCurrentUsdRate, quo
 	switch positionInstance := ins.(type) {
 	case *PerpetualFuturesPositionInstance:
 		perpetualFuturesPosition := NewPerpetualFuturesPosition(m, *positionInstance)
-		return perpetualFuturesPosition.NeedLiquidation(MarginMaintenanceRate, baseCurrentUsdRate, quoteCurrentUsdRate, marginUsdRate)
+		return perpetualFuturesPosition.NeedLiquidation(MarginMaintenanceRate, currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate)
 		break
 	case *PerpetualOptionsPositionInstance:
 		panic("not implemented")
@@ -69,8 +69,8 @@ func NewPerpetualFuturesPosition(position Position, ins PerpetualFuturesPosition
 	}
 }
 
-func (m PerpetualFuturesPosition) NeedLiquidation(minMarginMaintenanceRate, baseCurrentUsdRate, quoteCurrentUsdRate, marginUsdRate sdk.Dec) bool {
-	marginMaintenanceRate := m.MarginMaintenanceRate(baseCurrentUsdRate, quoteCurrentUsdRate, marginUsdRate)
+func (m PerpetualFuturesPosition) NeedLiquidation(minMarginMaintenanceRate, currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate sdk.Dec) bool {
+	marginMaintenanceRate := m.MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate)
 	if marginMaintenanceRate.LT(minMarginMaintenanceRate) {
 		return true
 	} else {
@@ -78,11 +78,11 @@ func (m PerpetualFuturesPosition) NeedLiquidation(minMarginMaintenanceRate, base
 	}
 }
 
-func (m PerpetualFuturesPosition) MarginMaintenanceRate(baseCurrentUsdRate, quoteCurrentUsdRate, marginUsdRate sdk.Dec) sdk.Dec {
-	marginRequirement := m.PositionInstance.MarginRequirement(baseCurrentUsdRate.Quo(marginUsdRate))
-	effectiveMargin := sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(baseCurrentUsdRate.Quo(marginUsdRate))
+func (m PerpetualFuturesPosition) MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate sdk.Dec) sdk.Dec {
+	marginRequirement := m.PositionInstance.MarginRequirement(currentBaseUsdRate.Quo(currentMarginUsdRate))
+	effectiveMargin := sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(currentBaseUsdRate.Quo(currentMarginUsdRate))
 
-	revenue := m.CalcProfit(baseCurrentUsdRate.Quo(quoteCurrentUsdRate))
+	revenue := m.CalcProfit(currentBaseUsdRate.Quo(currentQuoteUsdRate))
 	if revenue.RevenueType == RevenueType_PROFIT {
 		effectiveMargin = effectiveMargin.Add(sdk.NewDecFromInt(revenue.Amount.Amount))
 	} else {
