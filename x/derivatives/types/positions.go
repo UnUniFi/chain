@@ -78,8 +78,7 @@ func (m PerpetualFuturesPosition) NeedLiquidation(minMarginMaintenanceRate, curr
 	}
 }
 
-func (m PerpetualFuturesPosition) MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate sdk.Dec) sdk.Dec {
-	marginRequirement := m.PositionInstance.MarginRequirement(currentBaseUsdRate.Quo(currentMarginUsdRate))
+func (m PerpetualFuturesPosition) EffectiveMargin(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate sdk.Dec) sdk.Dec {
 	effectiveMargin := sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(currentBaseUsdRate.Quo(currentMarginUsdRate))
 
 	revenue := m.CalcProfit(currentBaseUsdRate.Quo(currentQuoteUsdRate))
@@ -88,6 +87,13 @@ func (m PerpetualFuturesPosition) MarginMaintenanceRate(currentBaseUsdRate, curr
 	} else {
 		effectiveMargin = effectiveMargin.Sub(sdk.NewDecFromInt(revenue.Amount.Amount))
 	}
+	return effectiveMargin
+}
+
+func (m PerpetualFuturesPosition) MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate sdk.Dec) sdk.Dec {
+	marginRequirement := m.PositionInstance.MarginRequirement(currentBaseUsdRate.Quo(currentMarginUsdRate))
+	effectiveMargin := m.EffectiveMargin(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate)
+
 	marginMaintenanceRate := effectiveMargin.Quo(marginRequirement)
 	return marginMaintenanceRate
 }
