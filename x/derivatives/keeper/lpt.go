@@ -98,6 +98,9 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 
 	redeemAssetBalance := k.GetAssetBalance(ctx, redeemDenom)
 
+	if redeemAssetPrice.Price.IsNil() || redeemAssetPrice.Price.IsZero() {
+		return sdk.Coin{}, sdk.Coin{}, types.ErrInvalidRedeemAmount
+	}
 	// redeem amount = lptPrice * lptAmount / redeemAssetPrice
 	totalRedeemAmount := lptPrice.Mul(sdk.NewDecFromInt(lptAmount)).Quo(redeemAssetPrice.Price)
 

@@ -106,6 +106,78 @@ func (suite *KeeperTestSuite) TestGetLPNominalYieldRate() {
 	suite.Require().Equal(currentRate, sdk.NewDec(152799999999))
 }
 
-// TODO: add test for
-// func (k Keeper) GetInflationRateOfAssetsInPool(ctx sdk.Context, beforeHeight int64, afterHeight int64) sdk.Dec {
-// func (k Keeper) GetLPRealYieldRate(ctx sdk.Context, beforeHeight int64, afterHeight int64) sdk.Dec {
+func (suite *KeeperTestSuite) TestGetInflationRateOfAssetsInPool() {
+	// check value when no value is initialized
+	uninitializedRate := suite.keeper.GetInflationRateOfAssetsInPool(suite.ctx, 1, 11)
+	suite.Require().Equal(uninitializedRate, sdk.ZeroDec())
+
+	// setup snapshot for block height 1
+	suite.keeper.SetLPTokenSupplySnapshot(suite.ctx, 1, sdk.NewDec(1000000))
+	suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, 1, types.PoolMarketCap{
+		QuoteTicker: "uatom",
+		Total:       sdk.NewDec(100000000),
+		Breakdown: []types.PoolMarketCap_Breakdown{
+			{
+				Denom:  "uatom",
+				Amount: sdk.NewInt(10000000),
+				Price:  sdk.NewDec(10),
+			},
+		},
+	})
+
+	// setup snapshot for block height 11
+	suite.keeper.SetLPTokenSupplySnapshot(suite.ctx, 11, sdk.NewDec(2000000))
+	suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, 11, types.PoolMarketCap{
+		QuoteTicker: "uatom",
+		Total:       sdk.NewDec(300000000),
+		Breakdown: []types.PoolMarketCap_Breakdown{
+			{
+				Denom:  "uatom",
+				Amount: sdk.NewInt(10000000),
+				Price:  sdk.NewDec(30),
+			},
+		},
+	})
+
+	// check value when environment variables are set
+	initializedRate := suite.keeper.GetInflationRateOfAssetsInPool(suite.ctx, 1, 11)
+	suite.Require().Equal(initializedRate, sdk.NewDec(2))
+}
+
+func (suite *KeeperTestSuite) TestGetLPRealYieldRate() {
+	// check value when no value is initialized
+	uninitializedRate := suite.keeper.GetLPRealYieldRate(suite.ctx, 1, 11)
+	suite.Require().Equal(uninitializedRate.String(), sdk.ZeroDec().String())
+
+	// setup snapshot for block height 1
+	suite.keeper.SetLPTokenSupplySnapshot(suite.ctx, 1, sdk.NewDec(1000000))
+	suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, 1, types.PoolMarketCap{
+		QuoteTicker: "uatom",
+		Total:       sdk.NewDec(100000000),
+		Breakdown: []types.PoolMarketCap_Breakdown{
+			{
+				Denom:  "uatom",
+				Amount: sdk.NewInt(10000000),
+				Price:  sdk.NewDec(10),
+			},
+		},
+	})
+
+	// setup snapshot for block height 11
+	suite.keeper.SetLPTokenSupplySnapshot(suite.ctx, 11, sdk.NewDec(2000000))
+	suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, 11, types.PoolMarketCap{
+		QuoteTicker: "uatom",
+		Total:       sdk.NewDec(200000000),
+		Breakdown: []types.PoolMarketCap_Breakdown{
+			{
+				Denom:  "uatom",
+				Amount: sdk.NewInt(20000000),
+				Price:  sdk.NewDec(30),
+			},
+		},
+	})
+
+	// check value when environment variables are set
+	initializedRate := suite.keeper.GetLPRealYieldRate(suite.ctx, 1, 11)
+	suite.Require().Equal(initializedRate.String(), "-0.666666666666666667")
+}
