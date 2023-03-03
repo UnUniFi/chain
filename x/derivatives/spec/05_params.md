@@ -2,40 +2,137 @@
 
 `Params` is included in `GenesisState`. It has below three properties which will be explaned in each section.
 
-```go
-type Params struct {
-	Pool             Pool                   `protobuf:"bytes,1,opt,name=pool,proto3" json:"pool" yaml:"pool"`
-	PerpetualFutures PerpetualFuturesParams `protobuf:"bytes,2,opt,name=perpetual_futures,json=perpetualFutures,proto3" json:"perpetual_futures" yaml:"perpetual_futures"`
-	PerpetualOptions PerpetualOptionsParams `protobuf:"bytes,3,opt,name=perpetual_options,json=perpetualOptions,proto3" json:"perpetual_options" yaml:"perpetual_options"`
+```proto
+message Params {
+  PoolParams pool_params = 1 [
+    (gogoproto.moretags) = "yaml:\"pool_params\"",
+    (gogoproto.nullable) = false
+  ];
+  PerpetualFuturesParams perpetual_futures = 2 [
+    (gogoproto.moretags) = "yaml:\"perpetual_futures\"",
+    (gogoproto.nullable) = false
+  ];
+  PerpetualOptionsParams perpetual_options = 3 [
+    (gogoproto.moretags) = "yaml:\"perpetual_options\"",
+    (gogoproto.nullable) = false
+  ];
 }
 ```
 
-## Pool
+## PoolParams
 
-```go
-type Pool struct {
-	QuoteTicker                       string                                 `protobuf:"bytes,1,opt,name=quote_ticker,json=quoteTicker,proto3" json:"quote_ticker,omitempty" yaml:"quote_ticker"`
-	BaseLptMintFee                    github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=base_lpt_mint_fee,json=baseLptMintFee,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"base_lpt_mint_fee" yaml:"base_lpt_mint_fee"`
-	BaseLptRedeemFee                  github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=base_lpt_redeem_fee,json=baseLptRedeemFee,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"base_lpt_redeem_fee" yaml:"base_lpt_redeem_fee"`
-	BorrowingFeeRatePerHour           github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=borrowing_fee_rate_per_hour,json=borrowingFeeRatePerHour,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"borrowing_fee_rate_per_hour" yaml:"borrowing_fee_rate_per_hour"`
-	LiquidationNeededReportRewardRate github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=liquidation_needed_report_reward_rate,json=liquidationNeededReportRewardRate,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"liquidation_needed_report_reward_rate" yaml:"liquidation_needed_report_reward_rate"`
-	AcceptedAssets                    []*Pool_Asset                          `protobuf:"bytes,6,rep,name=accepted_assets,json=acceptedAssets,proto3" json:"accepted_assets,omitempty" yaml:"accepted_assets"`
+```proto
+message PoolParams {
+  message Asset {
+    string denom = 1 [
+      (gogoproto.moretags) = "yaml:\"denom\""
+    ];
+    string target_weight = 2 [
+      (gogoproto.moretags) = "yaml:\"target_weight\"",
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ];
+  }
+
+  string quote_ticker = 1 [
+    (gogoproto.moretags) = "yaml:\"quote_ticker\""
+  ];
+  string base_lpt_mint_fee = 2 [
+    (gogoproto.moretags) = "yaml:\"base_lpt_mint_fee\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string base_lpt_redeem_fee = 3 [
+    (gogoproto.moretags) = "yaml:\"base_lpt_redeem_fee\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string borrowing_fee_rate_per_hour = 4 [
+    (gogoproto.moretags) = "yaml:\"borrowing_fee_rate_per_hour\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string report_liquidation_reward_rate = 5 [
+    (gogoproto.moretags) = "yaml:\"report_liquidation_reward_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string report_levy_period_reward_rate = 6 [
+    (gogoproto.moretags) = "yaml:\"report_levy_period_reward_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  repeated Asset accepted_assets = 7 [
+    (gogoproto.moretags) = "yaml:\"accepted_assets\""
+  ];
 }
 ```
 
-The tokens in `AcceptedAssets` have to have `DenomMetadata` in bank module.
+### QuoteTicker
 
+`QuoteTicker` defines the ticker of the currency for the market cap to be calculated. The default value is `usd`.
+
+### BaseLptMintFee
+
+`BaseLptMintFee` defines fee ratio in parcentage for the minting DLP token by depositing some token.   
+The default value is `0.001`.
+
+### BaseLptRedeemFee
+
+`BaseLptRedeemFee` defines fee ratio in parcentage for the redeeming DLP token by burning some token.   
+The default value is `0.001`.
+
+### BorrowingFeeRatePerHour
+
+### ReportLiquidationRewardRate
+
+### ReportLevyPeriodRewardRate
+
+### AcceptedAssets
+
+`AcceptedAssets` defines the tokens which can be deposited into a pool to get DLP.   
+The tokens in `AcceptedAssets` have to have `DenomMetadata` in bank module in this current implementation (could be changed).
 
 ## PerpetualFutures
 
-```go
-type PerpetualFuturesParams struct {
-	CommissionRate                              github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,1,opt,name=commission_rate,json=commissionRate,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"commission_rate" yaml:"commission_rate"`
-	MarginMaintenanceRate                       github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=margin_maintenance_rate,json=marginMaintenanceRate,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"margin_maintenance_rate" yaml:"margin_maintenance_rate"`
-	ImaginaryFundingRateProportionalCoefficient github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=imaginary_funding_rate_proportional_coefficient,json=imaginaryFundingRateProportionalCoefficient,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"imaginary_funding_rate_proportional_coefficient" yaml:"imaginary_funding_rate_proportonal_coefficient"`
-	Markets                                     []*Market                              `protobuf:"bytes,4,rep,name=markets,proto3" json:"markets,omitempty" yaml:"markets"`
+```proto
+message PerpetualFuturesParams {
+  string commission_rate = 1 [
+    (gogoproto.moretags) = "yaml:\"commission_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string margin_maintenance_rate = 2 [
+    (gogoproto.moretags) = "yaml:\"margin_maintenance_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string imaginary_funding_rate_proportional_coefficient = 3 [
+    (gogoproto.moretags) = "yaml:\"imaginary_funding_rate_proportonal_coefficient\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  repeated Market markets = 4 [
+    (gogoproto.moretags) = "yaml:\"markets\""
+  ];
 }
 ```
+
+### CommissionRate
+
+The default value is `0.001`.
+
+### MarginMaintenanceRate
+
+The default value is `0.5`.
+
+### ImaginaryFundingRateProportionalCoefficient
+
+The default value is `0.0005`.
+
+### Markets
+
+The `Markets` defines the available trading pair on the perpetual futures market.
 
 ## PerpetualOptioins
 
