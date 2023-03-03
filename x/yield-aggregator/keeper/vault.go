@@ -41,11 +41,11 @@ func (k Keeper) AppendVault(
 	count := k.GetVaultCount(ctx)
 
 	// Set the ID of the appended value
-	// vault.Id = count
+	vault.Id = count
 
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.VaultKey))
 	appendedValue := k.cdc.MustMarshal(&vault)
-	store.Set(GetVaultDenomBytes(vault.Denom), appendedValue)
+	store.Set(GetVaultIDBytes(vault.Id), appendedValue)
 
 	// Update vault count
 	k.SetVaultCount(ctx, count+1)
@@ -57,13 +57,13 @@ func (k Keeper) AppendVault(
 func (k Keeper) SetVault(ctx sdk.Context, vault types.Vault) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.VaultKey))
 	b := k.cdc.MustMarshal(&vault)
-	store.Set(GetVaultDenomBytes(vault.Denom), b)
+	store.Set(GetVaultIDBytes(vault.Id), b)
 }
 
 // GetVault returns a vault from its id
-func (k Keeper) GetVault(ctx sdk.Context, denom string) (val types.Vault, found bool) {
+func (k Keeper) GetVault(ctx sdk.Context, id uint64) (val types.Vault, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.VaultKey))
-	b := store.Get(GetVaultDenomBytes(denom))
+	b := store.Get(GetVaultIDBytes(id))
 	if b == nil {
 		return val, false
 	}
@@ -72,9 +72,9 @@ func (k Keeper) GetVault(ctx sdk.Context, denom string) (val types.Vault, found 
 }
 
 // RemoveVault removes a vault from the store
-func (k Keeper) RemoveVault(ctx sdk.Context, denom string) {
+func (k Keeper) RemoveVault(ctx sdk.Context, id uint64) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.VaultKey))
-	store.Delete(GetVaultDenomBytes(denom))
+	store.Delete(GetVaultIDBytes(id))
 }
 
 // GetAllVault returns all vault
@@ -93,31 +93,18 @@ func (k Keeper) GetAllVault(ctx sdk.Context) (list []types.Vault) {
 	return
 }
 
-// GetVaultDenomBytes returns the byte representation of the Denom
-func GetVaultDenomBytes(denom string) []byte {
-	return []byte(denom)
+// GetStrategyIDBytes returns the byte representation of the ID
+func GetVaultIDBytes(id uint64) []byte {
+	bz := make([]byte, 8)
+	binary.BigEndian.PutUint64(bz, id)
+	return bz
 }
 
-func (k Keeper) GetAPY(ctx sdk.Context, denom string) sdk.Dec {
-	strategies := k.GetAllStrategy(ctx, denom)
-	sum := sdk.ZeroDec()
-
-	for _, strategy := range strategies {
-		sum = sum.Add(strategy.Weight.Mul(strategy.Metrics.Apr))
-	}
-
-	return sum
+// GetStrategyIDFromBytes returns ID in uint64 format from a byte array
+func GetVaultIDFromBytes(bz []byte) uint64 {
+	return binary.BigEndian.Uint64(bz)
 }
 
-func (k Keeper) DepositToVault(ctx sdk.Context, sender string, amount sdk.Coin) {
-	strategies := k.GetAllStrategy(ctx, amount.Denom)
-
-	for _, strategy := range strategies {
-		allocation := strategy.Weight.Mul(sdk.NewDecFromInt(amount.Amount)).TruncateInt()
-		k.StakeToStrategy(amount.Denom, strategy.Id, allocation)
-	}
-}
-
-func (k Keeper) WithdrawFromVault(ctx sdk.Context, sender string, vaultDenom string, LpTokenAmount sdk.Int) {
-
+func (k Keeper) GetAPY(ctx sdk.Context, vaultId uint64) sdk.Dec {
+	panic("implement me")
 }

@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"fmt"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -13,17 +12,14 @@ import (
 	"github.com/UnUniFi/chain/x/yield-aggregator/types"
 )
 
-func createNVault(keeper *keeper.Keeper, ctx sdk.Context, vaultDenom string, n int) []types.Vault {
+func createNVault(keeper *keeper.Keeper, ctx sdk.Context, denom string, n int) []types.Vault {
 	items := make([]types.Vault, n)
 	for i := range items {
 		items[i] = types.Vault{
-			Denom: fmt.Sprintf("%s-%d", vaultDenom, i),
-			Metrics: types.VaultMetrics{
-				Apy: sdk.ZeroDec(),
-				Tvl: sdk.ZeroDec(),
-			},
+			Denom:          denom,
+			CommissionRate: sdk.MustNewDecFromStr("0.001"),
 		}
-		keeper.AppendVault(ctx, items[i])
+		items[i].Id = keeper.AppendVault(ctx, items[i])
 	}
 	return items
 }
@@ -33,7 +29,7 @@ func TestVaultGet(t *testing.T) {
 	vaultDenom := "uatom"
 	items := createNVault(keeper, ctx, vaultDenom, 10)
 	for _, item := range items {
-		got, found := keeper.GetVault(ctx, item.Denom)
+		got, found := keeper.GetVault(ctx, item.Id)
 		require.True(t, found)
 		require.Equal(t,
 			nullify.Fill(&item),
@@ -47,8 +43,8 @@ func TestVaultRemove(t *testing.T) {
 	vaultDenom := "uatom"
 	items := createNVault(keeper, ctx, vaultDenom, 10)
 	for _, item := range items {
-		keeper.RemoveVault(ctx, item.Denom)
-		_, found := keeper.GetVault(ctx, item.Denom)
+		keeper.RemoveVault(ctx, item.Id)
+		_, found := keeper.GetVault(ctx, item.Id)
 		require.False(t, found)
 	}
 }

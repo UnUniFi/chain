@@ -46,7 +46,7 @@ func (k Keeper) Vault(c context.Context, req *types.QueryGetVaultRequest) (*type
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	vault, found := k.GetVault(ctx, req.Denom)
+	vault, found := k.GetVault(ctx, req.Id)
 	if !found {
 		return nil, sdkerrors.ErrKeyNotFound
 	}

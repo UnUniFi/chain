@@ -3,6 +3,7 @@ package ununifi.chain.yieldaggregator;
 
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/yield-aggregator/types";
 
@@ -10,14 +11,11 @@ option go_package = "github.com/UnUniFi/chain/x/yield-aggregator/types";
 message Params {
   option (gogoproto.goproto_stringer) = false;
 
-  message Vault {
-    string denom = 1;
-    string performance_fee_rate = 2 [
-      (cosmos_proto.scalar) = "cosmos.Dec",
-      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-      (gogoproto.nullable) = false
-    ];
-  }
-  
-  repeated Vault vaults = 1 [(gogoproto.nullable) = false];
+  string commission_rate = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin vault_creation_fee = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin vault_creation_deposit = 3 [(gogoproto.nullable) = false];
 }

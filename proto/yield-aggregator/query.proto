@@ -22,15 +22,15 @@ service Query {
   }
 
   rpc Vault(QueryGetVaultRequest) returns (QueryGetVaultResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/vaults/{denom}";
+    option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/vaults/{id}";
   }
 
   rpc StrategyAll(QueryAllStrategyRequest) returns (QueryAllStrategyResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/vaults/{denom}/strategies";
+    option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/strategies/{denom}";
   }
 
   rpc Strategy(QueryGetStrategyRequest) returns (QueryGetStrategyResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/vaults/{denom}/strategies/{id}";
+    option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/strategies/{denom}/{id}";
   }
 }
 
@@ -55,11 +55,12 @@ message QueryAllVaultResponse {
 }
 
 message QueryGetVaultRequest {
-  string denom = 1;
+  uint64 id = 1;
 }
 
 message QueryGetVaultResponse {
   Vault vault = 1 [(gogoproto.nullable) = false];
+  repeated Strategy strategies = 2 [(gogoproto.nullable) = false];
 }
 
 message QueryAllStrategyRequest {

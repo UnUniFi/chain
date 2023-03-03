@@ -7,6 +7,7 @@ import (
 )
 
 func (k msgServer) WithdrawFromVault(ctx context.Context, msg *types.MsgWithdrawFromVault) (*types.MsgWithdrawFromVaultResponse, error) {
-	k.Keeper.WithdrawFromVault(sdk.UnwrapSDKContext(ctx), msg.Sender, msg.VaultDenom, msg.LpTokenAmount)
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	sdkCtx.Context()
 	panic("implement me")
 }
