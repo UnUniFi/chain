@@ -104,18 +104,7 @@ func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, require s
 	maxDebt := listing.MaxPossibleBorrowAmount(bids, []types.NftBid{})
 	fmt.Println("maxDebt")
 	fmt.Println(maxDebt)
-
-	currDebt := k.GetDebtByNft(ctx, nft.IdBytes())
-	// todo not depend on Debt
-	// todo fixme
-	if sdk.Coin.IsNil(currDebt.Loan) {
-		currDebt.Loan = sdk.NewCoin(require.Denom, sdk.ZeroInt())
-	}
-	fmt.Println("currDebt.Loan")
-	fmt.Println(currDebt.Loan)
-	fmt.Println("maxDebt")
-	fmt.Println(maxDebt)
-	if require.Add(currDebt.Loan).Amount.GT(maxDebt) {
+	if require.Amount.GT(maxDebt) {
 		return types.ErrDebtExceedsMaxDebt
 	}
 	// todo same deposit re-borrow logic
