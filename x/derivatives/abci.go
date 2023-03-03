@@ -33,20 +33,20 @@ func CheckPosition(ctx sdk.Context, k keeper.Keeper) {
 	positions := k.GetAllPositions(ctx)
 	params := k.GetParams(ctx)
 	for _, position := range positions {
-		currentBaseRate, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
+		currentBaseUsdRate, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
 		if err != nil {
 			panic(err)
 		}
 
-		currentQuoteRate, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
+		currentQuoteUsdRate, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
 		if err != nil {
 			panic(err)
 		}
-		currentMarginRate, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
+		currentMarginUsdRate, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
 		if err != nil {
 			panic(err)
 		}
-		if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, currentBaseRate, currentQuoteRate, currentMarginRate) {
+		if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate) {
 			msg := types.MsgReportLiquidation{
 				Sender:          position.Address,
 				PositionId:      position.Id,

@@ -34,7 +34,7 @@ func MustUnpackPositionInstance(positionAny types.Any) PositionInstance {
 	return position
 }
 
-func (m Position) NeedLiquidation(MarginMaintenanceRate, baseClosedCurrency, quoteCurrentRate, marginClosedCurrency sdk.Dec) bool {
+func (m Position) NeedLiquidation(MarginMaintenanceRate, baseCurrentUsdRate, quoteCurrentUsdRate, marginUsdRate sdk.Dec) bool {
 	ins, err := UnpackPositionInstance(m.PositionInstance)
 	if err != nil {
 		return false
@@ -43,7 +43,7 @@ func (m Position) NeedLiquidation(MarginMaintenanceRate, baseClosedCurrency, quo
 	switch positionInstance := ins.(type) {
 	case *PerpetualFuturesPositionInstance:
 		perpetualFuturesPosition := NewPerpetualFuturesPosition(m, *positionInstance)
-		return perpetualFuturesPosition.NeedLiquidation(MarginMaintenanceRate, baseClosedCurrency, quoteCurrentRate, marginClosedCurrency)
+		return perpetualFuturesPosition.NeedLiquidation(MarginMaintenanceRate, baseCurrentUsdRate, quoteCurrentUsdRate, marginUsdRate)
 		break
 	case *PerpetualOptionsPositionInstance:
 		panic("not implemented")
@@ -69,8 +69,8 @@ func NewPerpetualFuturesPosition(position Position, ins PerpetualFuturesPosition
 	}
 }
 
-func (m PerpetualFuturesPosition) NeedLiquidation(minMarginMaintenanceRate, baseClosedCurrency, quoteCurrentRate, marginClosedCurrency sdk.Dec) bool {
-	marginMaintenanceRate := m.MarginMaintenanceRate(baseClosedCurrency, quoteCurrentRate, marginClosedCurrency)
+func (m PerpetualFuturesPosition) NeedLiquidation(minMarginMaintenanceRate, baseCurrentUsdRate, quoteCurrentUsdRate, marginUsdRate sdk.Dec) bool {
+	marginMaintenanceRate := m.MarginMaintenanceRate(baseCurrentUsdRate, quoteCurrentUsdRate, marginUsdRate)
 	if marginMaintenanceRate.LT(minMarginMaintenanceRate) {
 		return true
 	} else {
