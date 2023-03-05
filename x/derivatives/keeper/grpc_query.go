@@ -153,6 +153,7 @@ func (k Keeper) AllPositions(c context.Context, req *types.QueryAllPositionsRequ
 		case *types.PerpetualFuturesPositionInstance:
 			break
 		case *types.PerpetualOptionsPositionInstance:
+			panic(positionInstance)
 			break
 		}
 
@@ -193,6 +194,7 @@ func (k Keeper) AddressPositions(c context.Context, req *types.QueryAddressPosit
 		case *types.PerpetualFuturesPositionInstance:
 			break
 		case *types.PerpetualOptionsPositionInstance:
+			panic(positionInstance)
 			break
 		}
 
