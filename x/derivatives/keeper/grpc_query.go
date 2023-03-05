@@ -133,11 +133,34 @@ func (k Keeper) AllPositions(c context.Context, req *types.QueryAllPositionsRequ
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
+	// TODO: pagination
+
 	ctx := sdk.UnwrapSDKContext(c)
 	positions := k.GetAllPositions(ctx)
 
+	queriedPoisitions := make([]types.QueriedPosition, 0)
+	for _, position := range positions {
+		queriedPosition := types.QueriedPosition{
+			Position:    position,
+			QuoteTicker: "USD",
+		}
+		ins, err := types.UnpackPositionInstance(position.PositionInstance)
+		if err != nil {
+			return nil, status.Error(codes.Internal, "internal error")
+		}
+
+		switch positionInstance := ins.(type) {
+		case *types.PerpetualFuturesPositionInstance:
+			break
+		case *types.PerpetualOptionsPositionInstance:
+			break
+		}
+
+		queriedPoisitions = append(queriedPoisitions, queriedPosition)
+	}
+
 	return &types.QueryAllPositionsResponse{
-		Positions: positions,
+		Positions: queriedPoisitions,
 	}, nil
 }
 
@@ -146,6 +169,8 @@ func (k Keeper) AddressPositions(c context.Context, req *types.QueryAddressPosit
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
+	// TODO: pagination
+
 	ctx := sdk.UnwrapSDKContext(c)
 	address, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
@@ -153,8 +178,29 @@ func (k Keeper) AddressPositions(c context.Context, req *types.QueryAddressPosit
 	}
 	positions := k.GetAddressPositions(ctx, address)
 
+	queriedPoisitions := make([]types.QueriedPosition, 0)
+	for _, position := range positions {
+		queriedPosition := types.QueriedPosition{
+			Position:    *position,
+			QuoteTicker: "USD",
+		}
+		ins, err := types.UnpackPositionInstance(position.PositionInstance)
+		if err != nil {
+			return nil, status.Error(codes.Internal, "internal error")
+		}
+
+		switch positionInstance := ins.(type) {
+		case *types.PerpetualFuturesPositionInstance:
+			break
+		case *types.PerpetualOptionsPositionInstance:
+			break
+		}
+
+		queriedPoisitions = append(queriedPoisitions, queriedPosition)
+	}
+
 	return &types.QueryAddressPositionsResponse{
-		Positions: positions,
+		Positions: queriedPoisitions,
 	}, nil
 }
 

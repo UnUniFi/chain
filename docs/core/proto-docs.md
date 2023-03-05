@@ -77,31 +77,35 @@
 - [derivatives/derivatives.proto](#derivatives/derivatives.proto)
     - [EventPriceIsNotFeeded](#ununifi.derivatives.EventPriceIsNotFeeded)
     - [Market](#ununifi.derivatives.Market)
-    - [Params](#ununifi.derivatives.Params)
-    - [PerpetualFuturesParams](#ununifi.derivatives.PerpetualFuturesParams)
-    - [PerpetualOptionsParams](#ununifi.derivatives.PerpetualOptionsParams)
     - [PoolMarketCap](#ununifi.derivatives.PoolMarketCap)
     - [PoolMarketCap.Breakdown](#ununifi.derivatives.PoolMarketCap.Breakdown)
     - [PoolParams](#ununifi.derivatives.PoolParams)
     - [PoolParams.Asset](#ununifi.derivatives.PoolParams.Asset)
     - [Position](#ununifi.derivatives.Position)
+    - [QueriedPosition](#ununifi.derivatives.QueriedPosition)
   
     - [PositionType](#ununifi.derivatives.PositionType)
-  
-- [derivatives/genesis.proto](#derivatives/genesis.proto)
-    - [GenesisState](#ununifi.derivatives.GenesisState)
   
 - [derivatives/perpetual_futures.proto](#derivatives/perpetual_futures.proto)
     - [EventPerpetualFuturesPositionClosed](#ununifi.derivatives.EventPerpetualFuturesPositionClosed)
     - [EventPerpetualFuturesPositionLevied](#ununifi.derivatives.EventPerpetualFuturesPositionLevied)
     - [EventPerpetualFuturesPositionLiquidated](#ununifi.derivatives.EventPerpetualFuturesPositionLiquidated)
     - [EventPerpetualFuturesPositionOpened](#ununifi.derivatives.EventPerpetualFuturesPositionOpened)
+    - [PerpetualFuturesNetPositionOfMarket](#ununifi.derivatives.PerpetualFuturesNetPositionOfMarket)
+    - [PerpetualFuturesParams](#ununifi.derivatives.PerpetualFuturesParams)
     - [PerpetualFuturesPositionInstance](#ununifi.derivatives.PerpetualFuturesPositionInstance)
   
 - [derivatives/perpetual_options.proto](#derivatives/perpetual_options.proto)
+    - [PerpetualOptionsParams](#ununifi.derivatives.PerpetualOptionsParams)
     - [PerpetualOptionsPositionInstance](#ununifi.derivatives.PerpetualOptionsPositionInstance)
   
     - [OptionType](#ununifi.derivatives.OptionType)
+  
+- [derivatives/params.proto](#derivatives/params.proto)
+    - [Params](#ununifi.derivatives.Params)
+  
+- [derivatives/genesis.proto](#derivatives/genesis.proto)
+    - [GenesisState](#ununifi.derivatives.GenesisState)
   
 - [derivatives/query.proto](#derivatives/query.proto)
     - [QueryAddressPositionsRequest](#ununifi.derivatives.QueryAddressPositionsRequest)
@@ -1358,60 +1362,6 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.Params"></a>
-
-### Params
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `pool_params` | [PoolParams](#ununifi.derivatives.PoolParams) |  |  |
-| `perpetual_futures` | [PerpetualFuturesParams](#ununifi.derivatives.PerpetualFuturesParams) |  |  |
-| `perpetual_options` | [PerpetualOptionsParams](#ununifi.derivatives.PerpetualOptionsParams) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.PerpetualFuturesParams"></a>
-
-### PerpetualFuturesParams
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `commission_rate` | [string](#string) |  |  |
-| `margin_maintenance_rate` | [string](#string) |  |  |
-| `imaginary_funding_rate_proportional_coefficient` | [string](#string) |  |  |
-| `markets` | [Market](#ununifi.derivatives.Market) | repeated |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.PerpetualOptionsParams"></a>
-
-### PerpetualOptionsParams
-(gogoproto.nullable) = false
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `premium_commission_rate` | [string](#string) |  |  |
-| `strike_commission_rate` | [string](#string) |  |  |
-| `margin_maintenance_rate` | [string](#string) |  |  |
-| `imaginary_funding_rate_proportional_coefficient` | [string](#string) |  |  |
-| `markets` | [Market](#ununifi.derivatives.Market) | repeated |  |
-
-
-
-
-
-
 <a name="ununifi.derivatives.PoolMarketCap"></a>
 
 ### PoolMarketCap
@@ -1505,6 +1455,26 @@ Query defines the gRPC querier service.
 
 
 
+
+<a name="ununifi.derivatives.QueriedPosition"></a>
+
+### QueriedPosition
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `position` | [Position](#ununifi.derivatives.Position) |  |  |
+| `quote_ticker` | [string](#string) |  |  |
+| `profit_and_loss` | [string](#string) |  |  |
+| `remaining_margin_value` | [string](#string) |  |  |
+| `effective_margin_value` | [string](#string) |  |  |
+| `margin_maintenance_rate` | [string](#string) |  |  |
+
+
+
+
+
  <!-- end messages -->
 
 
@@ -1519,39 +1489,6 @@ Query defines the gRPC querier service.
 | LONG | 1 |  |
 | SHORT | 2 |  |
 
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="derivatives/genesis.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## derivatives/genesis.proto
-
-
-
-<a name="ununifi.derivatives.GenesisState"></a>
-
-### GenesisState
-GenesisState defines the derivatives module's genesis state.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#ununifi.derivatives.Params) |  |  |
-| `positions` | [Position](#ununifi.derivatives.Position) | repeated |  |
-| `pool_market_cap` | [PoolMarketCap](#ununifi.derivatives.PoolMarketCap) |  |  |
-
-
-
-
-
- <!-- end messages -->
 
  <!-- end enums -->
 
@@ -1638,6 +1575,40 @@ GenesisState defines the derivatives module's genesis state.
 
 
 
+<a name="ununifi.derivatives.PerpetualFuturesNetPositionOfMarket"></a>
+
+### PerpetualFuturesNetPositionOfMarket
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `market` | [Market](#ununifi.derivatives.Market) |  |  |
+| `position_size` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.PerpetualFuturesParams"></a>
+
+### PerpetualFuturesParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `commission_rate` | [string](#string) |  |  |
+| `margin_maintenance_rate` | [string](#string) |  |  |
+| `imaginary_funding_rate_proportional_coefficient` | [string](#string) |  |  |
+| `markets` | [Market](#ununifi.derivatives.Market) | repeated |  |
+
+
+
+
+
+
 <a name="ununifi.derivatives.PerpetualFuturesPositionInstance"></a>
 
 ### PerpetualFuturesPositionInstance
@@ -1668,6 +1639,25 @@ GenesisState defines the derivatives module's genesis state.
 <p align="right"><a href="#top">Top</a></p>
 
 ## derivatives/perpetual_options.proto
+
+
+
+<a name="ununifi.derivatives.PerpetualOptionsParams"></a>
+
+### PerpetualOptionsParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `premium_commission_rate` | [string](#string) |  |  |
+| `strike_commission_rate` | [string](#string) |  |  |
+| `margin_maintenance_rate` | [string](#string) |  |  |
+| `imaginary_funding_rate_proportional_coefficient` | [string](#string) |  |  |
+| `markets` | [Market](#ununifi.derivatives.Market) | repeated |  |
+
+
+
 
 
 
@@ -1711,6 +1701,73 @@ GenesisState defines the derivatives module's genesis state.
 
 
 
+<a name="derivatives/params.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## derivatives/params.proto
+
+
+
+<a name="ununifi.derivatives.Params"></a>
+
+### Params
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pool_params` | [PoolParams](#ununifi.derivatives.PoolParams) |  |  |
+| `perpetual_futures` | [PerpetualFuturesParams](#ununifi.derivatives.PerpetualFuturesParams) |  |  |
+| `perpetual_options` | [PerpetualOptionsParams](#ununifi.derivatives.PerpetualOptionsParams) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="derivatives/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## derivatives/genesis.proto
+
+
+
+<a name="ununifi.derivatives.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the derivatives module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.derivatives.Params) |  |  |
+| `positions` | [Position](#ununifi.derivatives.Position) | repeated |  |
+| `pool_market_cap` | [PoolMarketCap](#ununifi.derivatives.PoolMarketCap) |  |  |
+| `perpetual_futures_net_position_of_market` | [PerpetualFuturesNetPositionOfMarket](#ununifi.derivatives.PerpetualFuturesNetPositionOfMarket) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="derivatives/query.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -1727,6 +1784,7 @@ GenesisState defines the derivatives module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
 
 
 
@@ -1741,7 +1799,7 @@ GenesisState defines the derivatives module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `positions` | [Position](#ununifi.derivatives.Position) | repeated |  |
+| `positions` | [QueriedPosition](#ununifi.derivatives.QueriedPosition) | repeated |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
 
 
@@ -1753,6 +1811,11 @@ GenesisState defines the derivatives module's genesis state.
 
 ### QueryAllPositionsRequest
 
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
 
 
 
@@ -1767,7 +1830,7 @@ GenesisState defines the derivatives module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `positions` | [Position](#ununifi.derivatives.Position) | repeated |  |
+| `positions` | [QueriedPosition](#ununifi.derivatives.QueriedPosition) | repeated |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
 
 

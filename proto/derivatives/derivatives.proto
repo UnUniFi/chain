@@ -56,6 +56,36 @@ message Position {
   ];
 }
 
+message QueriedPosition {
+  Position position = 1 [
+    (gogoproto.moretags) = "yaml:\"position\"",
+    (gogoproto.nullable) = false
+  ];
+  string quote_ticker = 2 [
+    (gogoproto.moretags) = "yaml:\"quote_ticker\""
+  ];
+  string profit_and_loss = 3 [
+    (gogoproto.moretags) = "yaml:\"profit_and_loss\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string remaining_margin_value = 4 [
+    (gogoproto.moretags) = "yaml:\"remaining_margin_value\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string effective_margin_value = 5 [
+    (gogoproto.moretags) = "yaml:\"effective_margin_value\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string margin_maintenance_rate = 6 [
+    (gogoproto.moretags) = "yaml:\"margin_maintenance_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
 message PoolParams {
   message Asset {
     string denom = 1 [
