@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gogo/protobuf/proto"
@@ -96,13 +97,11 @@ func (m PerpetualFuturesPosition) GetMarginMaintenanceRate(baseCurrentRate, quot
 	}
 }
 
-func (m PerpetualFuturesPosition) CalcProfit(closedRate sdk.Dec) Revenue {
+func (m PerpetualFuturesPosition) CalcProfitAndLoss(closedRate sdk.Dec) math.Int {
 	sub := closedRate.Sub(m.OpenedBaseRate)
-	revenue := m.GetRevenueType(sub)
-	if sub.IsNegative() {
+	if m.PositionInstance.PositionType == PositionType_SHORT {
 		sub = sub.Neg()
 	}
-	// resultDec := sub.Mul(m.PositionInstance.GetOrderSize())
 
 	resultDec := sub.Mul(m.PositionInstance.Size_)
 
@@ -117,37 +116,13 @@ func (m PerpetualFuturesPosition) CalcProfit(closedRate sdk.Dec) Revenue {
 	// And, the position size follows the market price unit.
 	actualResultAmount := resultDec.Mul(sdk.MustNewDecFromStr("1000000")).RoundInt()
 
-	return Revenue{
-		RevenueType: revenue,
-		Amount:      sdk.NewCoin(m.RemainingMargin.Denom, actualResultAmount),
-	}
+	return actualResultAmount
 }
 
-func (m PerpetualFuturesPosition) GetRevenueType(sub sdk.Dec) RevenueType {
-	if m.PositionInstance.PositionType == PositionType_LONG {
-		if sub.IsPositive() {
-			return RevenueType_PROFIT
-		} else {
-			return RevenueType_LOSS
-		}
-	} else if m.PositionInstance.PositionType == PositionType_SHORT {
-		// todo: think about amount is zero case
-		if sub.IsNegative() {
-			return RevenueType_PROFIT
-		} else {
-			return RevenueType_LOSS
-		}
-	} else {
-		panic("not implemented")
-	}
-}
+func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(closedRate sdk.Dec) math.Int {
+	principal := m.RemainingMargin.Amount
+	pnlAmount := m.CalcProfitAndLoss(closedRate)
+	returningAmount := principal.Add(pnlAmount)
 
-func (a Revenue) Equal(b Revenue) bool {
-	if a.RevenueType != b.RevenueType {
-		return false
-	}
-	if !a.Amount.IsEqual(b.Amount) {
-		return false
-	}
-	return true
+	return returningAmount
 }
