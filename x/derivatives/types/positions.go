@@ -130,12 +130,18 @@ func (m PerpetualFuturesPosition) CalcProfitAndLoss(closedRate sdk.Dec) math.Int
 	return actualResultAmount
 }
 
-func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(closedRate sdk.Dec) math.Int {
+func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(closedRate sdk.Dec) (returningAmount math.Int, lossToLP math.Int) {
 	principal := m.RemainingMargin.Amount
 	pnlAmount := m.CalcProfitAndLoss(closedRate)
-	returningAmount := principal.Add(pnlAmount)
+	returningAmount = principal.Add(pnlAmount)
 
-	return returningAmount
+	// If loss is over the margin, it means liquidity provider takes the loss.
+	if returningAmount.IsNegative() {
+		lossToLP = returningAmount
+		returningAmount = sdk.ZeroInt()
+	}
+
+	return returningAmount, lossToLP
 }
 
 // todo make test

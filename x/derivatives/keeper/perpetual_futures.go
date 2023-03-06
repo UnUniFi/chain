@@ -88,11 +88,10 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Po
 	}
 
 	futuresPosition := types.NewPerpetualFuturesPosition(position, positionInstance)
-	returningAmount := futuresPosition.CalcReturningAmountAtClose(*closedRate)
-	// If loss is over the margin, it means liquidity provider takes the loss.
-	if returningAmount.IsNegative() {
-		returningAmount = sdk.ZeroInt()
-		// emit event to tell how much loss is taken by liquidity provider.
+	returningAmount, lossToLP := futuresPosition.CalcReturningAmountAtClose(*closedRate)
+
+	if !(lossToLP.IsZero()) {
+		// TODO: emit event to tell how much loss is taken by liquidity provider.
 	}
 
 	returningCoin := sdk.NewCoin(position.RemainingMargin.Denom, returningAmount)
