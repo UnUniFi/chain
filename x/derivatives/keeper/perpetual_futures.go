@@ -82,7 +82,8 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Po
 		return err
 	}
 
-	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, position.Address.AccAddress(), types.ModuleName, sdk.Coins{sdk.NewCoin(position.Market.BaseDenom, feeAmount.RoundInt())}) // TODO: this is wrong.
+	// TODO: this is wrong. refer to Issue#407
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, position.Address.AccAddress(), types.ModuleName, sdk.Coins{sdk.NewCoin(position.Market.BaseDenom, feeAmount.RoundInt())})
 	if err != nil {
 		return err
 	}
