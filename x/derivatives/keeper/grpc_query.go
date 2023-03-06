@@ -138,7 +138,7 @@ func (k Keeper) AllPositions(c context.Context, req *types.QueryAllPositionsRequ
 	ctx := sdk.UnwrapSDKContext(c)
 	positions := k.GetAllPositions(ctx)
 
-	queriedPoisitions := make([]types.QueriedPosition, 0)
+	queriedPositions := make([]types.QueriedPosition, 0)
 	for _, position := range positions {
 		queriedPosition := types.QueriedPosition{
 			Position:    position,
@@ -157,11 +157,11 @@ func (k Keeper) AllPositions(c context.Context, req *types.QueryAllPositionsRequ
 			break
 		}
 
-		queriedPoisitions = append(queriedPoisitions, queriedPosition)
+		queriedPositions = append(queriedPositions, queriedPosition)
 	}
 
 	return &types.QueryAllPositionsResponse{
-		Positions: queriedPoisitions,
+		Positions: queriedPositions,
 	}, nil
 }
 
