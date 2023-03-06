@@ -59,7 +59,7 @@ service Query {
   }
 
   rpc AddressPositions(QueryAddressPositionsRequest) returns (QueryAddressPositionsResponse) {
-    option (google.api.http).get = "/ununifi/derivatives//{address}/positions";
+    option (google.api.http).get = "/ununifi/derivatives/{address}/positions";
   }
 
   rpc EstimateDLPTokenAmount(QueryEstimateDLPTokenAmountRequest) returns (QueryEstimateDLPTokenAmountResponse) {

@@ -1320,7 +1320,7 @@ var (
 
 	pattern_Query_PerpetualFuturesPositionSize_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"ununifi", "derivatives", "positions", "perpetual-futures", "position_type", "address"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_AddressPositions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"ununifi", "derivatives", "positions", "address"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_AddressPositions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"ununifi", "derivatives", "address", "positions"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_EstimateDLPTokenAmount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"ununifi", "derivatives", "estimate-dlp-token-amount"}, "", runtime.AssumeColonVerbOpt(false)))
 
