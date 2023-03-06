@@ -125,7 +125,7 @@ func (m PerpetualFuturesPosition) CalcProfitAndLoss(closedRate sdk.Dec) math.Int
 	// this means it assumes the price difference is calculated in normal unit, not micro unit.
 	// e.g. In ubtc/uusdc market, the market price of ubtc is actually in BTC unit.
 	// And, the position size follows the market price unit.
-	actualResultAmount := resultDec.Mul(sdk.MustNewDecFromStr("1000000")).RoundInt()
+	actualResultAmount := resultDec.Mul(sdk.MustNewDecFromStr("1000000")).TruncateInt()
 
 	return actualResultAmount
 }

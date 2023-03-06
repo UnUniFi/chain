@@ -637,10 +637,10 @@ func TestCalcReturningAmountAtClose(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := tc.position.CalcReturningAmountAtClose(tc.closedPairRate)
-			fmt.Println(result)
-			if !tc.exp.Equal(result) {
-				t.Error(tc, "expected %v, got %v", tc.exp, result)
+			returningAmount, lossToLP := tc.position.CalcReturningAmountAtClose(tc.closedPairRate)
+			fmt.Println(returningAmount, lossToLP)
+			if !tc.exp.Equal(returningAmount) {
+				t.Error(tc, "expected %v, got %v", tc.exp, returningAmount)
 			}
 		})
 	}
