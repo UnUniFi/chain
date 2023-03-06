@@ -83,8 +83,10 @@
     - [PoolParams.Asset](#ununifi.derivatives.PoolParams.Asset)
     - [Position](#ununifi.derivatives.Position)
     - [QueriedPosition](#ununifi.derivatives.QueriedPosition)
+    - [Revenue](#ununifi.derivatives.Revenue)
   
     - [PositionType](#ununifi.derivatives.PositionType)
+    - [RevenueType](#ununifi.derivatives.RevenueType)
   
 - [derivatives/perpetual_futures.proto](#derivatives/perpetual_futures.proto)
     - [EventPerpetualFuturesPositionClosed](#ununifi.derivatives.EventPerpetualFuturesPositionClosed)
@@ -93,6 +95,7 @@
     - [EventPerpetualFuturesPositionOpened](#ununifi.derivatives.EventPerpetualFuturesPositionOpened)
     - [PerpetualFuturesNetPositionOfMarket](#ununifi.derivatives.PerpetualFuturesNetPositionOfMarket)
     - [PerpetualFuturesParams](#ununifi.derivatives.PerpetualFuturesParams)
+    - [PerpetualFuturesPosition](#ununifi.derivatives.PerpetualFuturesPosition)
     - [PerpetualFuturesPositionInstance](#ununifi.derivatives.PerpetualFuturesPositionInstance)
   
 - [derivatives/perpetual_options.proto](#derivatives/perpetual_options.proto)
@@ -1446,7 +1449,8 @@ Query defines the gRPC querier service.
 | `address` | [string](#string) |  |  |
 | `opened_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `opened_height` | [uint64](#uint64) |  |  |
-| `opened_rate` | [string](#string) |  |  |
+| `opened_base_rate` | [string](#string) |  |  |
+| `opened_quote_rate` | [string](#string) |  |  |
 | `remaining_margin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `last_levied_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `position_instance` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
@@ -1475,6 +1479,22 @@ Query defines the gRPC querier service.
 
 
 
+
+<a name="ununifi.derivatives.Revenue"></a>
+
+### Revenue
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `revenue_type` | [RevenueType](#ununifi.derivatives.RevenueType) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
  <!-- end messages -->
 
 
@@ -1488,6 +1508,18 @@ Query defines the gRPC querier service.
 | POSITION_UNKNOWN | 0 |  |
 | LONG | 1 |  |
 | SHORT | 2 |  |
+
+
+
+<a name="ununifi.derivatives.RevenueType"></a>
+
+### RevenueType
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| PROFIT | 0 |  |
+| LOSS | 1 |  |
 
 
  <!-- end enums -->
@@ -1603,6 +1635,30 @@ Query defines the gRPC querier service.
 | `margin_maintenance_rate` | [string](#string) |  |  |
 | `imaginary_funding_rate_proportional_coefficient` | [string](#string) |  |  |
 | `markets` | [Market](#ununifi.derivatives.Market) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.PerpetualFuturesPosition"></a>
+
+### PerpetualFuturesPosition
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  |  |
+| `market` | [Market](#ununifi.derivatives.Market) |  |  |
+| `address` | [string](#string) |  |  |
+| `opened_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `opened_height` | [uint64](#uint64) |  |  |
+| `opened_base_rate` | [string](#string) |  |  |
+| `opened_quote_rate` | [string](#string) |  |  |
+| `remaining_margin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `last_levied_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `position_instance` | [PerpetualFuturesPositionInstance](#ununifi.derivatives.PerpetualFuturesPositionInstance) |  |  |
 
 
 
