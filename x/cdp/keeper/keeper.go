@@ -6,12 +6,13 @@ import (
 
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/UnUniFi/chain/x/cdp/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+
+	"github.com/UnUniFi/chain/x/cdp/types"
 )
 
 type (
@@ -23,7 +24,7 @@ type (
 		accountKeeper   types.AccountKeeper
 		bankKeeper      types.BankKeeper
 		auctionKeeper   types.AuctionKeeper
-		pricefeedKeeper types.PricefeedKeeper
+		PricefeedKeeper types.PricefeedKeeper
 		hooks           types.CdpHooks
 		maccPerms       map[string][]string
 	}
@@ -31,7 +32,7 @@ type (
 
 func NewKeeper(cdc codec.Codec, storeKey, memKey storetypes.StoreKey, paramSpace paramtypes.Subspace, accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	auctionKeeper types.AuctionKeeper, pricefeedKeeper types.PricefeedKeeper, maccPerms map[string][]string) Keeper {
+	auctionKeeper types.AuctionKeeper, PricefeedKeeper types.PricefeedKeeper, maccPerms map[string][]string) Keeper {
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
@@ -44,7 +45,7 @@ func NewKeeper(cdc codec.Codec, storeKey, memKey storetypes.StoreKey, paramSpace
 		accountKeeper:   accountKeeper,
 		bankKeeper:      bankKeeper,
 		auctionKeeper:   auctionKeeper,
-		pricefeedKeeper: pricefeedKeeper,
+		PricefeedKeeper: PricefeedKeeper,
 		hooks:           nil,
 		maccPerms:       maccPerms,
 	}

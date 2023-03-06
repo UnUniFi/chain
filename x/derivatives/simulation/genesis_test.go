@@ -40,12 +40,12 @@ func TestRandomizedGenState(t *testing.T) {
 	var derivativesGenesis types.GenesisState
 	simState.Cdc.MustUnmarshalJSON(simState.GenState[types.ModuleName], &derivativesGenesis)
 
-	assert.Equal(t, derivativesGenesis.Params.Pool.QuoteTicker, "uusd")
-	assert.Len(t, derivativesGenesis.Params.Pool.AcceptedAssets, 2)
-	assert.Equal(t, derivativesGenesis.Params.Pool.BaseLptMintFee, sdk.NewDecWithPrec(1, 2))
-	assert.Equal(t, derivativesGenesis.Params.Pool.BaseLptRedeemFee, sdk.NewDecWithPrec(1, 2))
-	assert.Equal(t, derivativesGenesis.Params.Pool.BorrowingFeeRatePerHour, sdk.NewDecWithPrec(1, 6))
-	assert.Equal(t, derivativesGenesis.Params.Pool.ReportLiquidationRewardRate, sdk.NewDecWithPrec(1, 6))
+	assert.Equal(t, derivativesGenesis.Params.PoolParams.QuoteTicker, "uusd")
+	assert.Len(t, derivativesGenesis.Params.PoolParams.AcceptedAssets, 2)
+	assert.Equal(t, derivativesGenesis.Params.PoolParams.BaseLptMintFee, sdk.NewDecWithPrec(1, 2))
+	assert.Equal(t, derivativesGenesis.Params.PoolParams.BaseLptRedeemFee, sdk.NewDecWithPrec(1, 2))
+	assert.Equal(t, derivativesGenesis.Params.PoolParams.BorrowingFeeRatePerHour, sdk.NewDecWithPrec(1, 6))
+	assert.Equal(t, derivativesGenesis.Params.PoolParams.ReportLiquidationRewardRate, sdk.NewDecWithPrec(1, 6))
 	assert.Equal(t, derivativesGenesis.Params.PerpetualFutures.CommissionRate, sdk.NewDecWithPrec(1, 6))
 	assert.Equal(t, derivativesGenesis.Params.PerpetualFutures.MarginMaintenanceRate, sdk.NewDecWithPrec(5, 1))
 	assert.Equal(t, derivativesGenesis.Params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient, sdk.NewDecWithPrec(1, 4))

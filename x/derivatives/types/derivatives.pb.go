@@ -155,14 +155,14 @@ func (m *Position) GetPositionInstance() types1.Any {
 	return types1.Any{}
 }
 
-type Pool struct {
+type PoolParams struct {
 	QuoteTicker                 string                                 `protobuf:"bytes,1,opt,name=quote_ticker,json=quoteTicker,proto3" json:"quote_ticker,omitempty" yaml:"quote_ticker"`
 	BaseLptMintFee              github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=base_lpt_mint_fee,json=baseLptMintFee,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"base_lpt_mint_fee" yaml:"base_lpt_mint_fee"`
 	BaseLptRedeemFee            github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=base_lpt_redeem_fee,json=baseLptRedeemFee,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"base_lpt_redeem_fee" yaml:"base_lpt_redeem_fee"`
 	BorrowingFeeRatePerHour     github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=borrowing_fee_rate_per_hour,json=borrowingFeeRatePerHour,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"borrowing_fee_rate_per_hour" yaml:"borrowing_fee_rate_per_hour"`
 	ReportLiquidationRewardRate github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=report_liquidation_reward_rate,json=reportLiquidationRewardRate,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"report_liquidation_reward_rate" yaml:"report_liquidation_reward_rate"`
 	ReportLevyPeriodRewardRate  github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,6,opt,name=report_levy_period_reward_rate,json=reportLevyPeriodRewardRate,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"report_levy_period_reward_rate" yaml:"report_levy_period_reward_rate"`
-	AcceptedAssets              []*Pool_Asset                          `protobuf:"bytes,7,rep,name=accepted_assets,json=acceptedAssets,proto3" json:"accepted_assets,omitempty" yaml:"accepted_assets"`
+	AcceptedAssets              []*PoolParams_Asset                    `protobuf:"bytes,7,rep,name=accepted_assets,json=acceptedAssets,proto3" json:"accepted_assets,omitempty" yaml:"accepted_assets"`
 }
 
 func (m *Pool) Reset()         { *m = Pool{} }
@@ -171,12 +171,12 @@ func (*Pool) ProtoMessage()    {}
 func (*Pool) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c5fa11d50d3fed76, []int{1}
 }
-func (m *Pool) XXX_Unmarshal(b []byte) error {
+func (m *PoolParams) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Pool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *PoolParams) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_Pool.Marshal(b, m, deterministic)
+		return xxx_messageInfo_PoolParams.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -186,33 +186,33 @@ func (m *Pool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Pool) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Pool.Merge(m, src)
+func (m *PoolParams) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PoolParams.Merge(m, src)
 }
-func (m *Pool) XXX_Size() int {
+func (m *PoolParams) XXX_Size() int {
 	return m.Size()
 }
-func (m *Pool) XXX_DiscardUnknown() {
-	xxx_messageInfo_Pool.DiscardUnknown(m)
+func (m *PoolParams) XXX_DiscardUnknown() {
+	xxx_messageInfo_PoolParams.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Pool proto.InternalMessageInfo
+var xxx_messageInfo_PoolParams proto.InternalMessageInfo
 
-func (m *Pool) GetQuoteTicker() string {
+func (m *PoolParams) GetQuoteTicker() string {
 	if m != nil {
 		return m.QuoteTicker
 	}
 	return ""
 }
 
-func (m *Pool) GetAcceptedAssets() []*Pool_Asset {
+func (m *PoolParams) GetAcceptedAssets() []*PoolParams_Asset {
 	if m != nil {
 		return m.AcceptedAssets
 	}
 	return nil
 }
 
-type Pool_Asset struct {
+type PoolParams_Asset struct {
 	Denom        string                                 `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty" yaml:"denom"`
 	TargetWeight github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=target_weight,json=targetWeight,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"target_weight" yaml:"target_weight"`
 }
@@ -223,12 +223,12 @@ func (*Pool_Asset) ProtoMessage()    {}
 func (*Pool_Asset) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c5fa11d50d3fed76, []int{1, 0}
 }
-func (m *Pool_Asset) XXX_Unmarshal(b []byte) error {
+func (m *PoolParams_Asset) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Pool_Asset) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *PoolParams_Asset) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_Pool_Asset.Marshal(b, m, deterministic)
+		return xxx_messageInfo_PoolParams_Asset.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -238,19 +238,19 @@ func (m *Pool_Asset) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Pool_Asset) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Pool_Asset.Merge(m, src)
+func (m *PoolParams_Asset) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PoolParams_Asset.Merge(m, src)
 }
-func (m *Pool_Asset) XXX_Size() int {
+func (m *PoolParams_Asset) XXX_Size() int {
 	return m.Size()
 }
-func (m *Pool_Asset) XXX_DiscardUnknown() {
-	xxx_messageInfo_Pool_Asset.DiscardUnknown(m)
+func (m *PoolParams_Asset) XXX_DiscardUnknown() {
+	xxx_messageInfo_PoolParams_Asset.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Pool_Asset proto.InternalMessageInfo
+var xxx_messageInfo_PoolParams_Asset proto.InternalMessageInfo
 
-func (m *Pool_Asset) GetDenom() string {
+func (m *PoolParams_Asset) GetDenom() string {
 	if m != nil {
 		return m.Denom
 	}
@@ -610,14 +610,11 @@ func (m *EventPriceIsNotFeeded) GetAsset() string {
 func init() {
 	proto.RegisterEnum("ununifi.derivatives.PositionType", PositionType_name, PositionType_value)
 	proto.RegisterType((*Position)(nil), "ununifi.derivatives.Position")
-	proto.RegisterType((*Pool)(nil), "ununifi.derivatives.Pool")
-	proto.RegisterType((*Pool_Asset)(nil), "ununifi.derivatives.Pool.Asset")
+	proto.RegisterType((*PoolParams)(nil), "ununifi.derivatives.PoolParams")
+	proto.RegisterType((*PoolParams_Asset)(nil), "ununifi.derivatives.PoolParams.Asset")
 	proto.RegisterType((*PoolMarketCap)(nil), "ununifi.derivatives.PoolMarketCap")
 	proto.RegisterType((*PoolMarketCap_Breakdown)(nil), "ununifi.derivatives.PoolMarketCap.Breakdown")
 	proto.RegisterType((*Market)(nil), "ununifi.derivatives.Market")
-	proto.RegisterType((*PerpetualFuturesParams)(nil), "ununifi.derivatives.PerpetualFuturesParams")
-	proto.RegisterType((*PerpetualOptionsParams)(nil), "ununifi.derivatives.PerpetualOptionsParams")
-	proto.RegisterType((*Params)(nil), "ununifi.derivatives.Params")
 	proto.RegisterType((*EventPriceIsNotFeeded)(nil), "ununifi.derivatives.EventPriceIsNotFeeded")
 }
 
@@ -833,7 +830,7 @@ func (m *Position) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *Pool) Marshal() (dAtA []byte, err error) {
+func (m *PoolParams) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -843,12 +840,12 @@ func (m *Pool) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Pool) MarshalTo(dAtA []byte) (int, error) {
+func (m *PoolParams) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Pool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *PoolParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -927,7 +924,7 @@ func (m *Pool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *Pool_Asset) Marshal() (dAtA []byte, err error) {
+func (m *PoolParams_Asset) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -937,12 +934,12 @@ func (m *Pool_Asset) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Pool_Asset) MarshalTo(dAtA []byte) (int, error) {
+func (m *PoolParams_Asset) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Pool_Asset) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *PoolParams_Asset) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1108,203 +1105,6 @@ func (m *Market) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *PerpetualFuturesParams) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *PerpetualFuturesParams) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *PerpetualFuturesParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Markets) > 0 {
-		for iNdEx := len(m.Markets) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Markets[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintDerivatives(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x22
-		}
-	}
-	{
-		size := m.ImaginaryFundingRateProportionalCoefficient.Size()
-		i -= size
-		if _, err := m.ImaginaryFundingRateProportionalCoefficient.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintDerivatives(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x1a
-	{
-		size := m.MarginMaintenanceRate.Size()
-		i -= size
-		if _, err := m.MarginMaintenanceRate.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintDerivatives(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x12
-	{
-		size := m.CommissionRate.Size()
-		i -= size
-		if _, err := m.CommissionRate.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintDerivatives(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0xa
-	return len(dAtA) - i, nil
-}
-
-func (m *PerpetualOptionsParams) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *PerpetualOptionsParams) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *PerpetualOptionsParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Markets) > 0 {
-		for iNdEx := len(m.Markets) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Markets[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintDerivatives(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x2a
-		}
-	}
-	{
-		size := m.ImaginaryFundingRateProportionalCoefficient.Size()
-		i -= size
-		if _, err := m.ImaginaryFundingRateProportionalCoefficient.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintDerivatives(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x22
-	{
-		size := m.MarginMaintenanceRate.Size()
-		i -= size
-		if _, err := m.MarginMaintenanceRate.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintDerivatives(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x1a
-	{
-		size := m.StrikeCommissionRate.Size()
-		i -= size
-		if _, err := m.StrikeCommissionRate.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintDerivatives(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x12
-	{
-		size := m.PremiumCommissionRate.Size()
-		i -= size
-		if _, err := m.PremiumCommissionRate.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintDerivatives(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0xa
-	return len(dAtA) - i, nil
-}
-
-func (m *Params) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *Params) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	{
-		size, err := m.PerpetualOptions.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintDerivatives(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x1a
-	{
-		size, err := m.PerpetualFutures.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintDerivatives(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x12
-	{
-		size, err := m.Pool.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintDerivatives(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0xa
-	return len(dAtA) - i, nil
-}
-
 func (m *EventPriceIsNotFeeded) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1378,7 +1178,7 @@ func (m *Position) Size() (n int) {
 	return n
 }
 
-func (m *Pool) Size() (n int) {
+func (m *PoolParams) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1407,7 +1207,7 @@ func (m *Pool) Size() (n int) {
 	return n
 }
 
-func (m *Pool_Asset) Size() (n int) {
+func (m *PoolParams_Asset) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1474,65 +1274,6 @@ func (m *Market) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovDerivatives(uint64(l))
 	}
-	return n
-}
-
-func (m *PerpetualFuturesParams) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = m.CommissionRate.Size()
-	n += 1 + l + sovDerivatives(uint64(l))
-	l = m.MarginMaintenanceRate.Size()
-	n += 1 + l + sovDerivatives(uint64(l))
-	l = m.ImaginaryFundingRateProportionalCoefficient.Size()
-	n += 1 + l + sovDerivatives(uint64(l))
-	if len(m.Markets) > 0 {
-		for _, e := range m.Markets {
-			l = e.Size()
-			n += 1 + l + sovDerivatives(uint64(l))
-		}
-	}
-	return n
-}
-
-func (m *PerpetualOptionsParams) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = m.PremiumCommissionRate.Size()
-	n += 1 + l + sovDerivatives(uint64(l))
-	l = m.StrikeCommissionRate.Size()
-	n += 1 + l + sovDerivatives(uint64(l))
-	l = m.MarginMaintenanceRate.Size()
-	n += 1 + l + sovDerivatives(uint64(l))
-	l = m.ImaginaryFundingRateProportionalCoefficient.Size()
-	n += 1 + l + sovDerivatives(uint64(l))
-	if len(m.Markets) > 0 {
-		for _, e := range m.Markets {
-			l = e.Size()
-			n += 1 + l + sovDerivatives(uint64(l))
-		}
-	}
-	return n
-}
-
-func (m *Params) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = m.Pool.Size()
-	n += 1 + l + sovDerivatives(uint64(l))
-	l = m.PerpetualFutures.Size()
-	n += 1 + l + sovDerivatives(uint64(l))
-	l = m.PerpetualOptions.Size()
-	n += 1 + l + sovDerivatives(uint64(l))
 	return n
 }
 
@@ -1923,7 +1664,7 @@ func (m *Position) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *Pool) Unmarshal(dAtA []byte) error {
+func (m *PoolParams) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1946,10 +1687,10 @@ func (m *Pool) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Pool: wiretype end group for non-group")
+			return fmt.Errorf("proto: PoolParams: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Pool: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: PoolParams: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2183,7 +1924,7 @@ func (m *Pool) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.AcceptedAssets = append(m.AcceptedAssets, &Pool_Asset{})
+			m.AcceptedAssets = append(m.AcceptedAssets, &PoolParams_Asset{})
 			if err := m.AcceptedAssets[len(m.AcceptedAssets)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -2209,7 +1950,7 @@ func (m *Pool) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *Pool_Asset) Unmarshal(dAtA []byte) error {
+func (m *PoolParams_Asset) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2717,561 +2458,6 @@ func (m *Market) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.QuoteDenom = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipDerivatives(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *PerpetualFuturesParams) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowDerivatives
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: PerpetualFuturesParams: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: PerpetualFuturesParams: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CommissionRate", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDerivatives
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.CommissionRate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MarginMaintenanceRate", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDerivatives
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.MarginMaintenanceRate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ImaginaryFundingRateProportionalCoefficient", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDerivatives
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.ImaginaryFundingRateProportionalCoefficient.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Markets", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDerivatives
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Markets = append(m.Markets, &Market{})
-			if err := m.Markets[len(m.Markets)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipDerivatives(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *PerpetualOptionsParams) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowDerivatives
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: PerpetualOptionsParams: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: PerpetualOptionsParams: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PremiumCommissionRate", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDerivatives
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.PremiumCommissionRate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field StrikeCommissionRate", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDerivatives
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.StrikeCommissionRate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MarginMaintenanceRate", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDerivatives
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.MarginMaintenanceRate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ImaginaryFundingRateProportionalCoefficient", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDerivatives
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.ImaginaryFundingRateProportionalCoefficient.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Markets", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDerivatives
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Markets = append(m.Markets, &Market{})
-			if err := m.Markets[len(m.Markets)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipDerivatives(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *Params) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowDerivatives
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Params: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Params: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Pool", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDerivatives
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.Pool.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PerpetualFutures", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDerivatives
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.PerpetualFutures.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PerpetualOptions", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDerivatives
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthDerivatives
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.PerpetualOptions.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

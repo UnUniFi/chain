@@ -13,6 +13,8 @@ type PositionInstance interface {
 	proto.Message
 }
 
+type Positions []Position
+
 func UnpackPositionInstance(positionAny types.Any) (PositionInstance, error) {
 	position := UnpackPerpetualFuturesPositionInstance(positionAny)
 	if position != nil {
@@ -35,7 +37,7 @@ func MustUnpackPositionInstance(positionAny types.Any) PositionInstance {
 	return position
 }
 
-func (m Position) NeedLiquidation(MarginMaintenanceRate, baseClosedCurrency, quoteCurrentRate sdk.Dec) bool {
+func (m Position) NeedLiquidation(MarginMaintenanceRate, currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate sdk.Dec) bool {
 	ins, err := UnpackPositionInstance(m.PositionInstance)
 	if err != nil {
 		return false
@@ -44,7 +46,7 @@ func (m Position) NeedLiquidation(MarginMaintenanceRate, baseClosedCurrency, quo
 	switch positionInstance := ins.(type) {
 	case *PerpetualFuturesPositionInstance:
 		perpetualFuturesPosition := NewPerpetualFuturesPosition(m, *positionInstance)
-		return perpetualFuturesPosition.NeedLiquidation(MarginMaintenanceRate, baseClosedCurrency, quoteCurrentRate)
+		return perpetualFuturesPosition.NeedLiquidation(MarginMaintenanceRate, currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate)
 		break
 	case *PerpetualOptionsPositionInstance:
 		panic("not implemented")
@@ -70,8 +72,8 @@ func NewPerpetualFuturesPosition(position Position, ins PerpetualFuturesPosition
 	}
 }
 
-func (m PerpetualFuturesPosition) NeedLiquidation(minMarginMaintenanceRate, baseClosedCurrency, quoteCurrentRate sdk.Dec) bool {
-	marginMaintenanceRate := m.GetMarginMaintenanceRate(baseClosedCurrency, quoteCurrentRate)
+func (m PerpetualFuturesPosition) NeedLiquidation(minMarginMaintenanceRate, currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate sdk.Dec) bool {
+	marginMaintenanceRate := m.MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate)
 	if marginMaintenanceRate.LT(minMarginMaintenanceRate) {
 		return true
 	} else {
@@ -79,22 +81,25 @@ func (m PerpetualFuturesPosition) NeedLiquidation(minMarginMaintenanceRate, base
 	}
 }
 
-func (m PerpetualFuturesPosition) GetMarginMaintenanceRate(baseCurrentRate, quoteCurrentRate sdk.Dec) sdk.Dec {
-	if m.PositionInstance.PositionType == PositionType_LONG {
-		marginRequirement := m.PositionInstance.MarginRequirement(m.OpenedBaseRate)
-		fmt.Println(marginRequirement.String())
-		effectiveMargin := sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(baseCurrentRate)
-		fmt.Println(effectiveMargin.String())
-		marginMaintenanceRate := effectiveMargin.Quo(marginRequirement)
-		fmt.Println(marginMaintenanceRate.String())
-		return marginMaintenanceRate
+// todo make test
+func (m PerpetualFuturesPosition) EffectiveMargin(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate sdk.Dec) sdk.Dec {
+	effectiveMargin := sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(currentBaseUsdRate.Quo(currentMarginUsdRate))
+
+	revenue := m.CalcProfit(currentBaseUsdRate.Quo(currentQuoteUsdRate))
+	if revenue.RevenueType == RevenueType_PROFIT {
+		effectiveMargin = effectiveMargin.Add(sdk.NewDecFromInt(revenue.Amount.Amount))
 	} else {
-		// case position type is short
-		marginRequirement := m.PositionInstance.MarginRequirement(quoteCurrentRate)
-		effectiveMargin := sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(m.OpenedQuoteRate)
-		marginMaintenanceRate := effectiveMargin.Quo(marginRequirement)
-		return marginMaintenanceRate
+		effectiveMargin = effectiveMargin.Sub(sdk.NewDecFromInt(revenue.Amount.Amount))
 	}
+	return effectiveMargin
+}
+
+func (m PerpetualFuturesPosition) MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate sdk.Dec) sdk.Dec {
+	marginRequirement := m.PositionInstance.MarginRequirement(currentBaseUsdRate.Quo(currentMarginUsdRate))
+	effectiveMargin := m.EffectiveMargin(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate)
+
+	marginMaintenanceRate := effectiveMargin.Quo(marginRequirement)
+	return marginMaintenanceRate
 }
 
 func (m PerpetualFuturesPosition) CalcProfitAndLoss(closedRate sdk.Dec) math.Int {
@@ -125,4 +130,47 @@ func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(closedRate sdk.Dec)
 	returningAmount := principal.Add(pnlAmount)
 
 	return returningAmount
+}
+
+// todo make test
+func (m Positions) EvaluatePositions(posType PositionType, getCurrentPriceF func(denom string) (sdk.Dec, error)) sdk.Dec {
+	usdMap := map[string]sdk.Dec{}
+	result := sdk.ZeroDec()
+	for _, position := range m {
+		ins, err := UnpackPositionInstance(position.PositionInstance)
+		if err != nil {
+			panic(err)
+		}
+
+		if _, ok := usdMap[position.Market.BaseDenom]; !ok {
+			price, err := getCurrentPriceF(position.Market.BaseDenom)
+			if err != nil {
+				panic(err)
+			}
+			usdMap[position.Market.BaseDenom] = price
+		}
+
+		switch positionInstance := ins.(type) {
+		case *PerpetualFuturesPositionInstance:
+			perpetualFuturesPosition := NewPerpetualFuturesPosition(position, *positionInstance)
+			if perpetualFuturesPosition.PositionInstance.PositionType != posType {
+				continue
+			}
+			result = result.Add(perpetualFuturesPosition.EvaluatePosition(usdMap[position.Market.BaseDenom]))
+			break
+		case *PerpetualOptionsPositionInstance:
+			panic("not implemented")
+		default:
+			continue
+		}
+	}
+	return result
+}
+
+func (m Positions) EvaluateLongPositions(getCurrentPriceF func(denom string) (sdk.Dec, error)) sdk.Dec {
+	return m.EvaluatePositions(PositionType_LONG, getCurrentPriceF)
+}
+
+func (m Positions) EvaluateShortPositions(getCurrentPriceF func(denom string) (sdk.Dec, error)) sdk.Dec {
+	return m.EvaluatePositions(PositionType_SHORT, getCurrentPriceF)
 }

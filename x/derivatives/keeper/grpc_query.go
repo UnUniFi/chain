@@ -164,7 +164,7 @@ func (k Keeper) EstimateDLPTokenAmount(c context.Context, req *types.QueryEstima
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	mintAmount, mintFee, err := k.GetLPTokenAmount(ctx, sdk.NewCoin(req.MintDenom, *req.Amount))
+	mintAmount, mintFee, err := k.DetermineMintingLPTokenAmount(ctx, sdk.NewCoin(req.MintDenom, *req.Amount))
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
@@ -190,4 +190,13 @@ func (k Keeper) EstimateRedeemAmount(c context.Context, req *types.QueryEstimate
 		Amount: &redeemAmount.Amount,
 		Fee:    &redeemFee.Amount,
 	}, nil
+}
+
+func (k Keeper) Params(c context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(c)
+
+	return &types.QueryParamsResponse{Params: k.GetParams(ctx)}, nil
 }

@@ -25,12 +25,28 @@ func (k Keeper) GetBlockTimestamp(ctx sdk.Context, height int64) time.Time {
 	return time.Unix(types.GetBlockTimestampFromBytes(bz), 0)
 }
 
-func (k Keeper) GetLPNominalYieldRate(ctx sdk.Context, beforeHeight int64, afterHeight int64) sdk.Dec {
-	poolMarketCapBefore := k.GetPoolMarketCapSnapshot(ctx, beforeHeight)
-	lptSupplyBefore := k.GetLPTokenSupplySnapshot(ctx, beforeHeight)
+func (k Keeper) GetLPTPriceFromSnapshot(ctx sdk.Context, height int64) sdk.Dec {
+	poolMarketCap := k.GetPoolMarketCapSnapshot(ctx, height)
+	lptSupply := k.GetLPTokenSupplySnapshot(ctx, height)
 
-	lptPriceBefore := poolMarketCapBefore.CalculateLPTokenPrice(lptSupplyBefore)
-	lptPriceAfter := k.GetLPTokenPrice(ctx)
+	lptPrice := poolMarketCap.CalculateLPTokenPrice(lptSupply)
+	return lptPrice
+}
+
+func (k Keeper) GetLPNominalYieldRate(ctx sdk.Context, beforeHeight int64, afterHeight int64) sdk.Dec {
+	lptPriceBefore := k.GetLPTPriceFromSnapshot(ctx, beforeHeight)
+	if lptPriceBefore.IsZero() {
+		return sdk.ZeroDec()
+	}
+
+	lptPriceAfter := sdk.ZeroDec()
+	if afterHeight > ctx.BlockHeight() {
+		return sdk.ZeroDec()
+	} else if afterHeight == ctx.BlockHeight() {
+		lptPriceAfter = k.GetLPTokenPrice(ctx)
+	} else {
+		lptPriceAfter = k.GetLPTPriceFromSnapshot(ctx, afterHeight)
+	}
 
 	diff := lptPriceAfter.Sub(lptPriceBefore)
 
@@ -73,10 +89,13 @@ func (k Keeper) GetLPRealYieldRate(ctx sdk.Context, beforeHeight int64, afterHei
 }
 
 func (k Keeper) AnnualizeYieldRate(ctx sdk.Context, yieldRate sdk.Dec, beforeHeight int64, afterHeight int64) sdk.Dec {
-	beforeBlockTime := k.GetBlockTimestamp(ctx, beforeHeight)
-	afterBlockTime := k.GetBlockTimestamp(ctx, afterHeight)
+	beforeBlockTimestamp := k.GetBlockTimestamp(ctx, beforeHeight).Unix()
+	afterBlockTimestamp := k.GetBlockTimestamp(ctx, afterHeight).Unix()
 
-	annualizedYieldRate := yieldRate.Mul(sdk.NewDec(afterBlockTime.Sub(beforeBlockTime).Nanoseconds()).Quo(sdk.NewDec(time.Hour.Nanoseconds() * 24 * 365)))
+	if beforeBlockTimestamp == afterBlockTimestamp {
+		return sdk.ZeroDec()
+	}
 
+	annualizedYieldRate := yieldRate.Mul(sdk.NewDec(86400 * 365)).Quo(sdk.NewDec(afterBlockTimestamp - beforeBlockTimestamp))
 	return annualizedYieldRate
 }
