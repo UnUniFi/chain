@@ -127,6 +127,8 @@
     - [QueryParamsResponse](#ununifi.derivatives.QueryParamsResponse)
     - [QueryPerpetualFuturesMarketRequest](#ununifi.derivatives.QueryPerpetualFuturesMarketRequest)
     - [QueryPerpetualFuturesMarketResponse](#ununifi.derivatives.QueryPerpetualFuturesMarketResponse)
+    - [QueryPerpetualFuturesPositionSizeRequest](#ununifi.derivatives.QueryPerpetualFuturesPositionSizeRequest)
+    - [QueryPerpetualFuturesPositionSizeResponse](#ununifi.derivatives.QueryPerpetualFuturesPositionSizeResponse)
     - [QueryPerpetualFuturesRequest](#ununifi.derivatives.QueryPerpetualFuturesRequest)
     - [QueryPerpetualFuturesResponse](#ununifi.derivatives.QueryPerpetualFuturesResponse)
     - [QueryPerpetualOptionsMarketRequest](#ununifi.derivatives.QueryPerpetualOptionsMarketRequest)
@@ -135,6 +137,8 @@
     - [QueryPerpetualOptionsResponse](#ununifi.derivatives.QueryPerpetualOptionsResponse)
     - [QueryPoolRequest](#ununifi.derivatives.QueryPoolRequest)
     - [QueryPoolResponse](#ununifi.derivatives.QueryPoolResponse)
+    - [QueryPositionRequest](#ununifi.derivatives.QueryPositionRequest)
+    - [QueryPositionResponse](#ununifi.derivatives.QueryPositionResponse)
   
     - [Query](#ununifi.derivatives.Query)
   
@@ -2081,6 +2085,37 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 
 
 
+<a name="ununifi.derivatives.QueryPerpetualFuturesPositionSizeRequest"></a>
+
+### QueryPerpetualFuturesPositionSizeRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `position_type` | [PositionType](#ununifi.derivatives.PositionType) |  |  |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPerpetualFuturesPositionSizeResponse"></a>
+
+### QueryPerpetualFuturesPositionSizeResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `total_position_size_usd` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
 <a name="ununifi.derivatives.QueryPerpetualFuturesRequest"></a>
 
 ### QueryPerpetualFuturesRequest
@@ -2183,6 +2218,39 @@ this line is used by starport scaffolding # 3
 
 
 
+
+<a name="ununifi.derivatives.QueryPositionRequest"></a>
+
+### QueryPositionRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `position_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPositionResponse"></a>
+
+### QueryPositionResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `position` | [Position](#ununifi.derivatives.Position) |  |  |
+| `valuation_profit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `margin_maintenance_rate` | [string](#string) |  |  |
+| `effective_margin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -2206,6 +2274,8 @@ Query defines the gRPC querier service.
 | `PerpetualOptions` | [QueryPerpetualOptionsRequest](#ununifi.derivatives.QueryPerpetualOptionsRequest) | [QueryPerpetualOptionsResponse](#ununifi.derivatives.QueryPerpetualOptionsResponse) |  | GET|/ununifi/derivatives/perpetual-options|
 | `PerpetualOptionsMarket` | [QueryPerpetualOptionsMarketRequest](#ununifi.derivatives.QueryPerpetualOptionsMarketRequest) | [QueryPerpetualOptionsMarketResponse](#ununifi.derivatives.QueryPerpetualOptionsMarketResponse) |  | GET|/ununifi/derivatives/perpetual-options/{base_denom}/{quote_denom}|
 | `AllPositions` | [QueryAllPositionsRequest](#ununifi.derivatives.QueryAllPositionsRequest) | [QueryAllPositionsResponse](#ununifi.derivatives.QueryAllPositionsResponse) |  | GET|/ununifi/derivatives/positions|
+| `Position` | [QueryPositionRequest](#ununifi.derivatives.QueryPositionRequest) | [QueryPositionResponse](#ununifi.derivatives.QueryPositionResponse) |  | GET|/ununifi/derivatives/positions/{position_id}|
+| `PerpetualFuturesPositionSize` | [QueryPerpetualFuturesPositionSizeRequest](#ununifi.derivatives.QueryPerpetualFuturesPositionSizeRequest) | [QueryPerpetualFuturesPositionSizeResponse](#ununifi.derivatives.QueryPerpetualFuturesPositionSizeResponse) |  | GET|/ununifi/derivatives/positions/perpetual-futures/{position_type}/{address}|
 | `AddressPositions` | [QueryAddressPositionsRequest](#ununifi.derivatives.QueryAddressPositionsRequest) | [QueryAddressPositionsResponse](#ununifi.derivatives.QueryAddressPositionsResponse) |  | GET|/ununifi/derivatives/positions/{address}|
 | `EstimateDLPTokenAmount` | [QueryEstimateDLPTokenAmountRequest](#ununifi.derivatives.QueryEstimateDLPTokenAmountRequest) | [QueryEstimateDLPTokenAmountResponse](#ununifi.derivatives.QueryEstimateDLPTokenAmountResponse) |  | GET|/ununifi/derivatives/estimate-dlp-token-amount|
 | `EstimateRedeemAmount` | [QueryEstimateRedeemAmountRequest](#ununifi.derivatives.QueryEstimateRedeemAmountRequest) | [QueryEstimateRedeemAmountResponse](#ununifi.derivatives.QueryEstimateRedeemAmountResponse) |  | GET|/ununifi/derivatives/estimate-redeem-amount|
