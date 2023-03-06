@@ -15,21 +15,6 @@ enum PositionType {
   SHORT = 2;
 }
 
-enum RevenueType {
-  PROFIT = 0;
-  LOSS = 1;
-}
-
-message Revenue {
-  RevenueType revenue_type = 1 [
-    (gogoproto.moretags) = "yaml:\"revenue_type\""
-  ];
-  cosmos.base.v1beta1.Coin amount = 2 [
-    (gogoproto.moretags) = "yaml:\"amount\"",
-    (gogoproto.nullable) = false
-  ];
-}
-
 message Position {
   string id = 1 [
     (gogoproto.moretags) = "yaml:\"id\""

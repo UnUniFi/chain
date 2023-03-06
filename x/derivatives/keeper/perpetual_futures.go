@@ -77,54 +77,28 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Po
 	feeAmount := positionInstance.Size_.Mul(commissionRate)
 	tradeAmount := positionInstance.Size_.Sub(feeAmount)
 
-	// todo: fixme
-	openedRate := position.OpenedBaseRate
 	closedRate, err := k.GetPairRate(ctx, position.Market)
 	if err != nil {
 		return err
 	}
 
-	k.bankKeeper.SendCoinsFromAccountToModule(ctx, position.Address.AccAddress(), types.ModuleName, sdk.Coins{sdk.NewCoin(position.Market.BaseDenom, feeAmount.RoundInt())}) // TODO: this is wrong.
-
-	principal := positionInstance.CalculatePrincipal()
-	amountToUser := sdk.Dec{}
-
-	switch positionInstance.PositionType {
-	case types.PositionType_LONG:
-		k.SubPerpetualFuturesNetPositionOfMarket(ctx, position.Market, tradeAmount)
-
-		if closedRate.GTE(openedRate) {
-			profit := closedRate.Mul(sdk.NewDec(int64(positionInstance.Leverage))).Sub(positionInstance.Size_)
-			profitAmount := profit.Quo(*closedRate)
-
-			amountToUser = principal.Add(profitAmount)
-		} else {
-			loss := positionInstance.Size_.Sub(closedRate.Mul(sdk.NewDec(int64(positionInstance.Leverage))))
-			lossAmount := loss.Quo(*closedRate)
-
-			amountToUser = principal.Sub(lossAmount)
-		}
-		break
-	case types.PositionType_SHORT:
-		k.AddPerpetualFuturesNetPositionOfMarket(ctx, position.Market, tradeAmount)
-
-		if closedRate.LTE(openedRate) {
-			profit := positionInstance.Size_.Sub(closedRate.Mul(sdk.NewDec(int64(positionInstance.Leverage))))
-			profitAmount := profit.Quo(*closedRate)
-
-			amountToUser = principal.Add(profitAmount)
-		} else {
-			loss := closedRate.Mul(sdk.NewDec(int64(positionInstance.Leverage))).Sub(positionInstance.Size_)
-			lossAmount := loss.Quo(*closedRate)
-
-			amountToUser = principal.Sub(lossAmount)
-		}
-		break
-	case types.PositionType_POSITION_UNKNOWN:
-		return fmt.Errorf("unknown position type")
+	// TODO: this is wrong. refer to Issue#407
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, position.Address.AccAddress(), types.ModuleName, sdk.Coins{sdk.NewCoin(position.Market.BaseDenom, feeAmount.RoundInt())})
+	if err != nil {
+		return err
 	}
 
-	k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, position.Address.AccAddress(), sdk.Coins{sdk.NewCoin(position.Market.BaseDenom, amountToUser.RoundInt())})
+	futuresPosition := types.NewPerpetualFuturesPosition(position, positionInstance)
+	returningAmount, lossToLP := futuresPosition.CalcReturningAmountAtClose(*closedRate)
+
+	if !(lossToLP.IsNil()) {
+		// TODO: emit event to tell how much loss is taken by liquidity provider.
+	}
+
+	returningCoin := sdk.NewCoin(position.RemainingMargin.Denom, returningAmount)
+	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, position.Address.AccAddress(), sdk.Coins{returningCoin}); err != nil {
+		return err
+	}
 
 	ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionClosed{
 		Sender:      position.Address.AccAddress().String(),
