@@ -91,7 +91,7 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Po
 	futuresPosition := types.NewPerpetualFuturesPosition(position, positionInstance)
 	returningAmount, lossToLP := futuresPosition.CalcReturningAmountAtClose(*closedRate)
 
-	if !(lossToLP.IsZero()) {
+	if !(lossToLP.IsNil()) {
 		// TODO: emit event to tell how much loss is taken by liquidity provider.
 	}
 
