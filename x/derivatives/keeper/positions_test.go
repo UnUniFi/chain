@@ -123,7 +123,7 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
 			},
-			OpenedAt:         time.Now(),
+			OpenedAt:         time.Now().UTC(),
 			OpenedHeight:     1,
 			OpenedRate:       sdk.NewDec(10),
 			PositionInstance: *position0Inst,
@@ -135,7 +135,7 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
 			},
-			OpenedAt:         time.Now(),
+			OpenedAt:         time.Now().UTC(),
 			OpenedHeight:     2,
 			OpenedRate:       sdk.NewDec(10),
 			PositionInstance: *position1Inst,
@@ -148,8 +148,16 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 
 	// Check if the position was added
 	allPositions := suite.keeper.GetAllPositions(suite.ctx)
-
 	suite.Require().Len(allPositions, len(positions))
+
+	// check per id
+	for _, position := range positions {
+		p := suite.keeper.GetAddressPositionWithId(suite.ctx, position.Address.AccAddress(), position.Id)
+		suite.Require().NotNil(p)
+		suite.Require().Equal(p.Id, position.Id)
+		suite.Require().Equal(p.Market, position.Market)
+		suite.Require().Equal(p.OpenedRate, position.OpenedRate)
+	}
 
 	// Delete the position
 	suite.keeper.DeletePosition(suite.ctx, owner, "0")
@@ -185,7 +193,6 @@ func (suite *KeeperTestSuite) TestIncreaseLastPositionId() {
 }
 
 // TODO: add test for
-// func (k Keeper) GetAddressPositionWithId(ctx sdk.Context, address sdk.AccAddress, id string) *types.Position {
 // func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
 // func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) error {
 // func (k Keeper) ReportLiquidation(ctx sdk.Context, msg *types.MsgReportLiquidation) error {
