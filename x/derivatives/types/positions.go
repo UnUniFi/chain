@@ -85,12 +85,9 @@ func (m PerpetualFuturesPosition) NeedLiquidation(minMarginMaintenanceRate, curr
 func (m PerpetualFuturesPosition) EffectiveMargin(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate sdk.Dec) sdk.Dec {
 	effectiveMargin := sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(currentBaseUsdRate.Quo(currentMarginUsdRate))
 
-	revenue := m.CalcProfit(currentBaseUsdRate.Quo(currentQuoteUsdRate))
-	if revenue.RevenueType == RevenueType_PROFIT {
-		effectiveMargin = effectiveMargin.Add(sdk.NewDecFromInt(revenue.Amount.Amount))
-	} else {
-		effectiveMargin = effectiveMargin.Sub(sdk.NewDecFromInt(revenue.Amount.Amount))
-	}
+	pnl := m.CalcProfitAndLoss(currentBaseUsdRate.Quo(currentQuoteUsdRate))
+	effectiveMargin = effectiveMargin.Add(sdk.NewDecFromInt(pnl))
+
 	return effectiveMargin
 }
 
@@ -100,6 +97,15 @@ func (m PerpetualFuturesPosition) MarginMaintenanceRate(currentBaseUsdRate, curr
 
 	marginMaintenanceRate := effectiveMargin.Quo(marginRequirement)
 	return marginMaintenanceRate
+}
+
+func (m PerpetualFuturesPosition) OpenedPairRate() sdk.Dec {
+	return m.OpenedBaseRate.Quo(m.OpenedQuoteRate)
+}
+
+// todo make test
+func (m PerpetualFuturesPosition) EvaluatePosition(currentBaseUsdRate sdk.Dec) sdk.Dec {
+	return currentBaseUsdRate.Mul(m.PositionInstance.GetOrderSize())
 }
 
 func (m PerpetualFuturesPosition) CalcProfitAndLoss(closedRate sdk.Dec) math.Int {
