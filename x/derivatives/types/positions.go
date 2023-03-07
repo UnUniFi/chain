@@ -109,7 +109,7 @@ func (m PerpetualFuturesPosition) EvaluatePosition(currentBaseUsdRate sdk.Dec) s
 }
 
 func (m PerpetualFuturesPosition) CalcProfitAndLoss(closedRate sdk.Dec) math.Int {
-	sub := closedRate.Sub(m.OpenedBaseRate)
+	sub := closedRate.Sub(m.OpenedPairRate())
 	if m.PositionInstance.PositionType == PositionType_SHORT {
 		sub = sub.Neg()
 	}
