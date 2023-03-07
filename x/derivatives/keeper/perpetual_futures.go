@@ -64,7 +64,10 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Po
 		return err
 	}
 
-	k.bankKeeper.SendCoinsFromAccountToModule(ctx, position.Address.AccAddress(), types.ModuleName, sdk.Coins{sdk.NewCoin(position.Market.BaseDenom, feeAmount.RoundInt())}) // TODO: this is wrong.
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, position.Address.AccAddress(), types.ModuleName, sdk.Coins{sdk.NewCoin(position.Market.BaseDenom, feeAmount.RoundInt())}) // TODO: this is wrong.
+	if err != nil {
+		return err
+	}
 
 	principal := positionInstance.CalculatePrincipal()
 	amountToUser := sdk.Dec{}
@@ -104,7 +107,10 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Po
 		return fmt.Errorf("unknown position type")
 	}
 
-	k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, position.Address.AccAddress(), sdk.Coins{sdk.NewCoin(position.Market.BaseDenom, amountToUser.RoundInt())})
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, position.Address.AccAddress(), sdk.Coins{sdk.NewCoin(position.Market.BaseDenom, amountToUser.RoundInt())})
+	if err != nil {
+		return err
+	}
 
 	ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionClosed{
 		Sender:      position.Address.AccAddress().String(),
@@ -125,7 +131,10 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 
 		rewardAmount := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PoolParams.ReportLiquidationRewardRate).RoundInt()
 		reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))
-		k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
+		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
+		if err != nil {
+			return err
+		}
 
 		ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionLiquidated{
 			RewardRecipient: rewardRecipient.AccAddress().String(),
@@ -165,7 +174,10 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 
 	rewardAmount := sdk.NewDecFromInt(commissionFee).Mul(params.PoolParams.ReportLevyPeriodRewardRate).RoundInt()
 	reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))
-	k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
+	err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
+	if err != nil {
+		return err
+	}
 
 	k.SetPosition(ctx, position)
 
