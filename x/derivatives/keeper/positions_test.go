@@ -197,7 +197,7 @@ func (suite *KeeperTestSuite) TestIncreaseLastPositionId() {
 	suite.Require().Equal(suite.keeper.GetLastPositionId(suite.ctx), string(types.GetPositionIdBytes(2)))
 }
 
-func (suite *KeeperTestSuite) TestOpenPosition() {
+func (suite *KeeperTestSuite) TestOpenClosePosition() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	// owner2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
@@ -284,9 +284,35 @@ func (suite *KeeperTestSuite) TestOpenPosition() {
 	// 		StrikePrice  sdk.Dec
 	// 		Premium      sdk.Dec
 	// }
+
+	balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
+	suite.Require().Equal(balances.String(), "998000uatom,999900uusdc")
+
+	err = suite.keeper.ClosePosition(suite.ctx, &types.MsgClosePosition{
+		Sender:     owner.Bytes(),
+		PositionId: allPositions[0].Id,
+	})
+	suite.Require().NoError(err)
+	balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
+	suite.Require().Equal(balances.String(), "998017uatom,999900uusdc")
+
+	err = suite.keeper.ClosePosition(suite.ctx, &types.MsgClosePosition{
+		Sender:     owner.Bytes(),
+		PositionId: allPositions[1].Id,
+	})
+	suite.Require().NoError(err)
+	balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
+	suite.Require().Equal(balances.String(), "998034uatom,999900uusdc")
+
+	err = suite.keeper.ClosePosition(suite.ctx, &types.MsgClosePosition{
+		Sender:     owner.Bytes(),
+		PositionId: allPositions[2].Id,
+	})
+	suite.Require().NoError(err)
+	balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
+	suite.Require().Equal(balances.String(), "998057uatom,999900uusdc")
 }
 
 // TODO: add test for
-// func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) error {
 // func (k Keeper) ReportLiquidation(ctx sdk.Context, msg *types.MsgReportLiquidation) error {
 // func (k Keeper) ReportLevyPeriod(ctx sdk.Context, msg *types.MsgReportLevyPeriod) error {
