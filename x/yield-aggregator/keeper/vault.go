@@ -106,5 +106,17 @@ func GetVaultIDFromBytes(bz []byte) uint64 {
 }
 
 func (k Keeper) GetAPY(ctx sdk.Context, vaultId uint64) sdk.Dec {
-	panic("implement me")
+	vault, found := k.GetVault(ctx, vaultId)
+	if !found {
+		return sdk.ZeroDec()
+	}
+
+	sum := sdk.ZeroDec()
+	for _, weight := range vault.StrategyWeights {
+		strategy, _ := k.GetStrategy(ctx, vault.Denom, weight.StrategyId)
+		apr := k.GetAPRFromStrategy(vault.Denom, strategy.Id)
+		sum = sum.Add(apr.Mul(weight.Weight))
+	}
+
+	return sum
 }
