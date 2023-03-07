@@ -71,11 +71,11 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 	return &position, nil
 }
 
-func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Position, positionInstance types.PerpetualFuturesPositionInstance) error {
+func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.PerpetualFuturesPosition) error {
 	params := k.GetParams(ctx)
 	commissionRate := params.PerpetualFutures.CommissionRate
-	feeAmount := positionInstance.Size_.Mul(commissionRate)
-	tradeAmount := positionInstance.Size_.Sub(feeAmount)
+	feeAmount := position.PositionInstance.Size_.Mul(commissionRate)
+	tradeAmount := position.PositionInstance.Size_.Sub(feeAmount)
 
 	closedRate, err := k.GetPairRate(ctx, position.Market)
 	if err != nil {
@@ -88,8 +88,7 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Po
 		return err
 	}
 
-	futuresPosition := types.NewPerpetualFuturesPosition(position, positionInstance)
-	returningAmount, lossToLP := futuresPosition.CalcReturningAmountAtClose(*closedRate)
+	returningAmount, lossToLP := position.CalcReturningAmountAtClose(*closedRate)
 
 	if !(lossToLP.IsNil()) {
 		// TODO: emit event to tell how much loss is taken by liquidity provider.
@@ -110,12 +109,12 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Po
 	return nil
 }
 
-func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient ununifiTypes.StringAccAddress, position types.Position, positionInstance types.PerpetualFuturesPositionInstance) error {
+func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient ununifiTypes.StringAccAddress, position types.PerpetualFuturesPosition) error {
 	params := k.GetParams(ctx)
-	principal := positionInstance.CalculatePrincipal()
+	principal := position.PositionInstance.CalculatePrincipal()
 
 	if sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(sdk.NewDecWithPrec(1, 0)).LT(principal.Mul(params.PerpetualFutures.MarginMaintenanceRate)) {
-		k.ClosePerpetualFuturesPosition(ctx, position, positionInstance)
+		k.ClosePerpetualFuturesPosition(ctx, position)
 
 		rewardAmount := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PoolParams.ReportLiquidationRewardRate).RoundInt()
 		reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))
