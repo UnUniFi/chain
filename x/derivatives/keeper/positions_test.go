@@ -197,9 +197,8 @@ func (suite *KeeperTestSuite) TestIncreaseLastPositionId() {
 	suite.Require().Equal(suite.keeper.GetLastPositionId(suite.ctx), string(types.GetPositionIdBytes(2)))
 }
 
-func (suite *KeeperTestSuite) TestOpenClosePosition() {
+func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	// owner2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 	// set price for asset
 	_, err := suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:uusdc", sdk.NewDec(13), suite.ctx.BlockTime().Add(time.Hour*3))
@@ -288,6 +287,24 @@ func (suite *KeeperTestSuite) TestOpenClosePosition() {
 	balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
 	suite.Require().Equal(balances.String(), "998000uatom,999900uusdc")
 
+	// ReportLiquidation
+	cacheCtx, _ := suite.ctx.CacheContext()
+	err = suite.keeper.ReportLiquidation(cacheCtx, &types.MsgReportLiquidation{
+		Sender:          owner.Bytes(),
+		PositionId:      allPositions[0].Id,
+		RewardRecipient: owner.Bytes(),
+	})
+	suite.Require().Error(err)
+
+	// ReportLevyPeriod
+	cacheCtx, _ = suite.ctx.CacheContext()
+	err = suite.keeper.ReportLevyPeriod(cacheCtx, &types.MsgReportLevyPeriod{
+		Sender:          owner.Bytes(),
+		PositionId:      allPositions[0].Id,
+		RewardRecipient: owner.Bytes(),
+	})
+	suite.Require().Error(err)
+
 	err = suite.keeper.ClosePosition(suite.ctx, &types.MsgClosePosition{
 		Sender:     owner.Bytes(),
 		PositionId: allPositions[0].Id,
@@ -312,7 +329,3 @@ func (suite *KeeperTestSuite) TestOpenClosePosition() {
 	balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
 	suite.Require().Equal(balances.String(), "998057uatom,999900uusdc")
 }
-
-// TODO: add test for
-// func (k Keeper) ReportLiquidation(ctx sdk.Context, msg *types.MsgReportLiquidation) error {
-// func (k Keeper) ReportLevyPeriod(ctx sdk.Context, msg *types.MsgReportLevyPeriod) error {
