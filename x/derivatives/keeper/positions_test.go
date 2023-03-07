@@ -7,9 +7,14 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	codecTypes "github.com/cosmos/cosmos-sdk/codec/types"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/tendermint/tendermint/crypto/ed25519"
 
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+
+	ununifitypes "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/derivatives/types"
+	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
 func (suite *KeeperTestSuite) TestGetAllPositions() {
@@ -192,8 +197,96 @@ func (suite *KeeperTestSuite) TestIncreaseLastPositionId() {
 	suite.Require().Equal(suite.keeper.GetLastPositionId(suite.ctx), string(types.GetPositionIdBytes(2)))
 }
 
+func (suite *KeeperTestSuite) TestOpenPosition() {
+	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	// owner2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	// set price for asset
+	_, err := suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:uusdc", sdk.NewDec(13), suite.ctx.BlockTime().Add(time.Hour*3))
+	suite.Require().NoError(err)
+	params := suite.app.PricefeedKeeper.GetParams(suite.ctx)
+	params.Markets = []pricefeedtypes.Market{
+		{MarketId: "uatom:uusdc", BaseAsset: "uatom", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+	}
+	suite.app.PricefeedKeeper.SetParams(suite.ctx, params)
+	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:uusdc")
+	suite.Require().NoError(err)
+
+	// initial atom balance
+	coins := sdk.Coins{sdk.NewInt64Coin("uatom", 1000000), sdk.NewInt64Coin("uusdc", 1000000)}
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, owner, coins)
+	suite.Require().NoError(err)
+
+	// open a new long future position when no previous position exists
+	positionInstVal := types.PerpetualFuturesPositionInstance{
+		PositionType: types.PositionType_LONG,
+		Size_:        sdk.NewDecWithPrec(100, 0),
+		Leverage:     5,
+	}
+
+	positionAny, err := codectypes.NewAnyWithValue(&positionInstVal)
+	suite.Require().Nil(err)
+	err = suite.keeper.OpenPosition(suite.ctx, &types.MsgOpenPosition{
+		Sender: owner.Bytes(),
+		Margin: sdk.NewInt64Coin("uatom", 1000), // long -> uatom, short -> uusdc
+		Market: types.Market{
+			BaseDenom:  "uatom",
+			QuoteDenom: "uusdc",
+		},
+		PositionInstance: *positionAny,
+	})
+	suite.Require().NoError(err)
+	allPositions := suite.keeper.GetAllPositions(suite.ctx)
+	suite.Require().Len(allPositions, 1)
+
+	// open another position with same size
+	err = suite.keeper.OpenPosition(suite.ctx, &types.MsgOpenPosition{
+		Sender: owner.Bytes(),
+		Margin: sdk.NewInt64Coin("uatom", 1000), // long -> uatom, short -> uusdc
+		Market: types.Market{
+			BaseDenom:  "uatom",
+			QuoteDenom: "uusdc",
+		},
+		PositionInstance: *positionAny,
+	})
+	suite.Require().NoError(err)
+	allPositions = suite.keeper.GetAllPositions(suite.ctx)
+	suite.Require().Len(allPositions, 2)
+
+	// open short future position
+	positionInstVal = types.PerpetualFuturesPositionInstance{
+		PositionType: types.PositionType_SHORT,
+		Size_:        sdk.NewDecWithPrec(100, 0),
+		Leverage:     5,
+	}
+
+	positionAny, err = codectypes.NewAnyWithValue(&positionInstVal)
+	suite.Require().Nil(err)
+	err = suite.keeper.OpenPosition(suite.ctx, &types.MsgOpenPosition{
+		Sender: owner.Bytes(),
+		Margin: sdk.NewInt64Coin("uusdc", 100), // long -> uatom, short -> uusdc
+		Market: types.Market{
+			BaseDenom:  "uatom",
+			QuoteDenom: "uusdc",
+		},
+		PositionInstance: *positionAny,
+	})
+	suite.Require().NoError(err)
+	allPositions = suite.keeper.GetAllPositions(suite.ctx)
+	suite.Require().Len(allPositions, 3)
+
+	// TODO: open long options position after implementation
+	// positionIns := types.PerpetualOptionsPositionInstance{
+	// 		OptionType   OptionType
+	// 		PositionType PositionType
+	// 		StrikePrice  sdk.Dec
+	// 		Premium      sdk.Dec
+	// }
+}
+
 // TODO: add test for
-// func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
 // func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) error {
 // func (k Keeper) ReportLiquidation(ctx sdk.Context, msg *types.MsgReportLiquidation) error {
 // func (k Keeper) ReportLevyPeriod(ctx sdk.Context, msg *types.MsgReportLevyPeriod) error {

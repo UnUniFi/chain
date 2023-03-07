@@ -193,7 +193,11 @@ func (k Keeper) GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market t
 }
 
 func (k Keeper) GetPositionSizeOfNetPositionOfMarket(ctx sdk.Context, market types.Market) sdk.Dec {
-	return k.GetPerpetualFuturesNetPositionOfMarket(ctx, market).PositionSize
+	position := k.GetPerpetualFuturesNetPositionOfMarket(ctx, market)
+	if position.PositionSize.IsNil() {
+		return sdk.ZeroDec()
+	}
+	return position.PositionSize
 }
 
 func (k Keeper) GetAllPerpetualFuturesNetPositionOfMarket(ctx sdk.Context) []types.PerpetualFuturesNetPositionOfMarket {
