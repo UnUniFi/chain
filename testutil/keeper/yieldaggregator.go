@@ -16,6 +16,9 @@ import (
 
 	"github.com/UnUniFi/chain/x/yield-aggregator/keeper"
 	"github.com/UnUniFi/chain/x/yield-aggregator/types"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 )
 
 func YieldAggregatorKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
@@ -37,11 +40,20 @@ func YieldAggregatorKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		memStoreKey,
 		"YieldAggregatorParams",
 	)
+
+	maccPerms := map[string][]string{
+		authtypes.FeeCollectorName: nil,
+		types.ModuleName:           {authtypes.Minter, authtypes.Burner},
+	}
+	accountKeeper := authkeeper.NewAccountKeeper(cdc, storeKey, paramsSubspace, authtypes.ProtoBaseAccount, maccPerms, sdk.Bech32MainPrefix)
+	blockedAddrs := make(map[string]bool)
+	bankKeeper := bankkeeper.NewBaseKeeper(cdc, storeKey, accountKeeper, paramsSubspace, blockedAddrs)
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
 		memStoreKey,
 		paramsSubspace,
+		bankKeeper,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
