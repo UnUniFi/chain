@@ -1,5 +1,13 @@
 # Concepts
 
+- One token many vaults
+- One token many strategies in db
+- One vault has a combination of many strategy ids (weight can't be changed via voting)
+- If user want to change the weight, abolish the vault and let them go to other vault of same token (edited)
+  - this make the rebalancing process very easy
+- Users can create vault without governance, but it needs fee and deposit to prevent spams.
+- Vault creator can configure the commission rate. It makes the vault creation competitive and creates an incentive for creation.
+
 ## Introduction  
 
 NFT backed loan in UnUniFi does not have an automatic earning function.
