@@ -107,8 +107,24 @@ func (suite *KeeperTestSuite) TestSetPoolMarketCapSnapshot() {
 	suite.Require().Equal(marketCap, marketCapInStore)
 }
 
+func (suite *KeeperTestSuite) TestIsAssetValid() {
+	poolAssets := suite.keeper.GetPoolAssets(suite.ctx)
+	suite.Require().Len(poolAssets, 2)
+
+	isValid := suite.keeper.IsAssetValid(suite.ctx, types.PoolParams_Asset{
+		Denom:        "uatom",
+		TargetWeight: sdk.NewDecWithPrec(5, 1),
+	})
+	suite.Require().True(isValid)
+
+	isValid = suite.keeper.IsAssetValid(suite.ctx, types.PoolParams_Asset{
+		Denom:        "xxxx",
+		TargetWeight: sdk.NewDecWithPrec(5, 1),
+	})
+	suite.Require().False(isValid)
+}
+
 // TODO: add test for
-// func (k Keeper) IsAssetValid(ctx sdk.Context, iasset types.Pool_Asset) bool {
 // func (k Keeper) SetAssetBalance(ctx sdk.Context, coin sdk.Coin) error {
 // func (k Keeper) GetAssetTargetAmount(ctx sdk.Context, denom string) (sdk.Coin, error) {
 // func (k Keeper) GetUserDeposits(ctx sdk.Context, depositor sdk.AccAddress) []sdk.Coin {
