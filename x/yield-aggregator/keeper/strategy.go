@@ -115,10 +115,12 @@ func (k Keeper) UnstakeFromStrategy(vaultDenom string, id uint64, amount sdk.Int
 	// call `unstake` function of the strategy contract
 }
 
-func (k Keeper) GetAPRFromStrategy(vaultDenom string, id uint64) {
+func (k Keeper) GetAPRFromStrategy(vaultDenom string, id uint64) sdk.Dec {
 	// call `get_apr` function of the strategy contract
+	panic("not implemented")
 }
 
-func (k Keeper) GetInterestFeeRate(vaultDenom string, id uint64) {
+func (k Keeper) GetInterestFeeRate(vaultDenom string, id uint64) sdk.Dec {
 	// call `get_interest_fee_rate` function of the strategy contract
+	panic("not implemented")
 }
