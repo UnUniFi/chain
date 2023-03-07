@@ -4,6 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/keeper"
+	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
 func setPoolMarketCapSnapshot(ctx sdk.Context, k keeper.Keeper) {
@@ -24,6 +25,42 @@ func BeginBlocker(ctx sdk.Context, k keeper.Keeper) {
 	// TODO: make this function calling every 8 hours.
 	// saving `last_levy_ifr_block_time` in store is one of ways to do so.
 	// levyImaginaryFundingRate(ctx, k)
+	CheckPosition(ctx, k)
+}
+
+// todo: fixme this function is temporary treatment.
+func CheckPosition(ctx sdk.Context, k keeper.Keeper) {
+	positions := k.GetAllPositions(ctx)
+	params := k.GetParams(ctx)
+	for _, position := range positions {
+		currentBaseUsdRate, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
+		if err != nil {
+			panic(err)
+		}
+
+		currentQuoteUsdRate, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
+		if err != nil {
+			panic(err)
+		}
+		currentMarginUsdRate, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
+		if err != nil {
+			panic(err)
+		}
+		if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate) {
+			msg := types.MsgReportLiquidation{
+				Sender:          position.Address,
+				PositionId:      position.Id,
+				RewardRecipient: position.Address,
+			}
+			k.ReportLiquidation(ctx, &msg)
+		}
+		msg := types.MsgReportLevyPeriod{
+			Sender:          position.Address,
+			PositionId:      position.Id,
+			RewardRecipient: position.Address,
+		}
+		k.ReportLevyPeriod(ctx, &msg)
+	}
 }
 
 // EndBlocker
