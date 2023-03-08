@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -146,14 +147,14 @@ func CmdOpenPosition() *cobra.Command {
 
 func CmdOpenPerpetualFuturesPosition() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "perpetual-futures [margin] [base-denom] [quote-denom] [long/short]",
+		Use:   "perpetual-futures [margin] [base-denom] [quote-denom] [long/short] [position-size] [leverage]",
 		Short: "open perpetual futures position",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`open perpetual futures position.
 Example:
 $ %s tx %s open-position perpetual-futures --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(4),
+		Args: cobra.ExactArgs(6),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -178,10 +179,20 @@ $ %s tx %s open-position perpetual-futures --from myKeyName --chain-id ununifi-x
 				return fmt.Errorf("invalid position type")
 			}
 
+			positionSize, err := sdk.NewDecFromStr(args[4])
+			if err != nil {
+				return err
+			}
+			// str to uint32 for levarage from args[5]
+			leverage, err := strconv.ParseUint(args[5], 10, 32)
+			if err != nil {
+				return err
+			}
+
 			positionInstVal := types.PerpetualFuturesPositionInstance{
 				PositionType: positionType,
-				Size_:        sdk.NewDecWithPrec(100, 0),
-				Leverage:     5,
+				Size_:        positionSize,
+				Leverage:     uint32(leverage),
 			}
 
 			positionInstBz, err := positionInstVal.Marshal()
