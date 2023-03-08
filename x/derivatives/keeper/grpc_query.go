@@ -138,26 +138,9 @@ func (k Keeper) AllPositions(c context.Context, req *types.QueryAllPositionsRequ
 	ctx := sdk.UnwrapSDKContext(c)
 	positions := k.GetAllPositions(ctx)
 
-	queriedPositions := make([]types.QueriedPosition, 0)
-	for _, position := range positions {
-		queriedPosition := types.QueriedPosition{
-			Position:    position,
-			QuoteTicker: "USD",
-		}
-		ins, err := types.UnpackPositionInstance(position.PositionInstance)
-		if err != nil {
-			return nil, status.Error(codes.Internal, "internal error")
-		}
-
-		switch positionInstance := ins.(type) {
-		case *types.PerpetualFuturesPositionInstance:
-			break
-		case *types.PerpetualOptionsPositionInstance:
-			panic(positionInstance)
-			break
-		}
-
-		queriedPositions = append(queriedPositions, queriedPosition)
+	queriedPositions, err := k.MakeQueriedPositions(ctx, positions)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	return &types.QueryAllPositionsResponse{
@@ -177,33 +160,67 @@ func (k Keeper) AddressPositions(c context.Context, req *types.QueryAddressPosit
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	positions := k.GetAddressPositions(ctx, address)
+	positions := k.GetAddressPositionsVal(ctx, address)
 
-	queriedPoisitions := make([]types.QueriedPosition, 0)
-	for _, position := range positions {
-		queriedPosition := types.QueriedPosition{
-			Position:    *position,
-			QuoteTicker: "USD",
-		}
-		ins, err := types.UnpackPositionInstance(position.PositionInstance)
-		if err != nil {
-			return nil, status.Error(codes.Internal, "internal error")
-		}
-
-		switch positionInstance := ins.(type) {
-		case *types.PerpetualFuturesPositionInstance:
-			break
-		case *types.PerpetualOptionsPositionInstance:
-			panic(positionInstance)
-			break
-		}
-
-		queriedPoisitions = append(queriedPoisitions, queriedPosition)
+	queriedPositions, err := k.MakeQueriedPositions(ctx, positions)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	return &types.QueryAddressPositionsResponse{
-		Positions: queriedPoisitions,
+		Positions: queriedPositions,
 	}, nil
+}
+
+func (k Keeper) MakeQueriedPositions(ctx sdk.Context, positions types.Positions) ([]types.QueriedPosition, error) {
+	queriedPositions := make([]types.QueriedPosition, 0)
+	usdMap := map[string]sdk.Dec{}
+	for _, position := range positions {
+
+		if _, ok := usdMap[position.Market.BaseDenom]; !ok {
+			price, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
+			if err != nil {
+				return nil, err
+			}
+			usdMap[position.Market.BaseDenom] = price
+		}
+
+		if _, ok := usdMap[position.Market.QuoteDenom]; !ok {
+			price, err := k.GetCurrentPrice(ctx, position.Market.QuoteDenom)
+			if err != nil {
+				return nil, err
+			}
+			usdMap[position.Market.QuoteDenom] = price
+		}
+
+		if _, ok := usdMap[position.RemainingMargin.Denom]; !ok {
+			price, err := k.GetCurrentPrice(ctx, position.RemainingMargin.Denom)
+			if err != nil {
+				return nil, err
+			}
+			usdMap[position.RemainingMargin.Denom] = price
+		}
+		currentBaseUsdRate := usdMap[position.Market.BaseDenom]
+		currentQuoteUsdRate := usdMap[position.Market.QuoteDenom]
+		currentMarginUsdRate := usdMap[position.RemainingMargin.Denom]
+
+		perpetualFuturesPosition, err := types.NewPerpetualFuturesPositionFromPosition(position)
+		if err != nil {
+			// not implemented perpetual options
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+
+		closedPairRate := currentBaseUsdRate.Quo(currentQuoteUsdRate)
+		profit := perpetualFuturesPosition.CalcProfitAndLoss(closedPairRate)
+		queriedPosition := types.QueriedPosition{
+			Position:              position,
+			ValuationProfit:       sdk.NewCoin("uusd", profit),
+			MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate),
+			EffectiveMargin:       sdk.NewCoin("uusd", types.NormalToMicroDenom(perpetualFuturesPosition.EffectiveMargin(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate))),
+		}
+		queriedPositions = append(queriedPositions, queriedPosition)
+	}
+	return queriedPositions, nil
 }
 
 func (k Keeper) Position(c context.Context, req *types.QueryPositionRequest) (*types.QueryPositionResponse, error) {
@@ -226,21 +243,21 @@ func (k Keeper) Position(c context.Context, req *types.QueryPositionRequest) (*t
 		panic(err)
 	}
 
-	currentQuoteUsdRate, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
+	currentQuoteUsdRate, err := k.GetCurrentPrice(ctx, position.Market.QuoteDenom)
 	if err != nil {
 		panic(err)
 	}
-	currentMarginUsdRate, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
+	currentMarginUsdRate, err := k.GetCurrentPrice(ctx, position.RemainingMargin.Denom)
 	if err != nil {
 		panic(err)
 	}
 	closedPairRate := currentBaseUsdRate.Quo(currentQuoteUsdRate)
-	profit := perpetualFuturesPosition.CalcProfit(closedPairRate)
+	profit := perpetualFuturesPosition.CalcProfitAndLoss(closedPairRate)
 	return &types.QueryPositionResponse{
 		Position:              position,
-		ValuationProfit:       profit.Amount,
+		ValuationProfit:       sdk.NewCoin("uusd", profit),
 		MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate),
-		EffectiveMargin:       sdk.NewCoin("usd", perpetualFuturesPosition.EffectiveMargin(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate).RoundInt()),
+		EffectiveMargin:       sdk.NewCoin("uusd", types.NormalToMicroDenom(perpetualFuturesPosition.EffectiveMargin(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate))),
 	}, nil
 }
 

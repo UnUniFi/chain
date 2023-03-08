@@ -1471,10 +1471,9 @@ Query defines the gRPC querier service.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `position` | [Position](#ununifi.derivatives.Position) |  |  |
-| `quote_ticker` | [string](#string) |  |  |
-| `profit_and_loss` | [string](#string) |  |  |
+| `valuation_profit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `remaining_margin_value` | [string](#string) |  |  |
-| `effective_margin_value` | [string](#string) |  |  |
+| `effective_margin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `margin_maintenance_rate` | [string](#string) |  |  |
 
 
