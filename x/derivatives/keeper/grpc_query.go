@@ -133,15 +133,135 @@ func (k Keeper) AllPositions(c context.Context, req *types.QueryAllPositionsRequ
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
+	// TODO: pagination
+
 	ctx := sdk.UnwrapSDKContext(c)
 	positions := k.GetAllPositions(ctx)
 
+	queriedPositions, err := k.MakeQueriedPositions(ctx, positions)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
 	return &types.QueryAllPositionsResponse{
-		Positions: positions,
+		Positions: queriedPositions,
 	}, nil
 }
 
 func (k Keeper) AddressPositions(c context.Context, req *types.QueryAddressPositionsRequest) (*types.QueryAddressPositionsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	// TODO: pagination
+
+	ctx := sdk.UnwrapSDKContext(c)
+	address, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+	positions := k.GetAddressPositionsVal(ctx, address)
+
+	queriedPositions, err := k.MakeQueriedPositions(ctx, positions)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &types.QueryAddressPositionsResponse{
+		Positions: queriedPositions,
+	}, nil
+}
+
+func (k Keeper) MakeQueriedPositions(ctx sdk.Context, positions types.Positions) ([]types.QueriedPosition, error) {
+	queriedPositions := make([]types.QueriedPosition, 0)
+	usdMap := map[string]sdk.Dec{}
+	for _, position := range positions {
+
+		if _, ok := usdMap[position.Market.BaseDenom]; !ok {
+			price, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
+			if err != nil {
+				return nil, err
+			}
+			usdMap[position.Market.BaseDenom] = price
+		}
+
+		if _, ok := usdMap[position.Market.QuoteDenom]; !ok {
+			price, err := k.GetCurrentPrice(ctx, position.Market.QuoteDenom)
+			if err != nil {
+				return nil, err
+			}
+			usdMap[position.Market.QuoteDenom] = price
+		}
+
+		if _, ok := usdMap[position.RemainingMargin.Denom]; !ok {
+			price, err := k.GetCurrentPrice(ctx, position.RemainingMargin.Denom)
+			if err != nil {
+				return nil, err
+			}
+			usdMap[position.RemainingMargin.Denom] = price
+		}
+		currentBaseUsdRate := usdMap[position.Market.BaseDenom]
+		currentQuoteUsdRate := usdMap[position.Market.QuoteDenom]
+		currentMarginUsdRate := usdMap[position.RemainingMargin.Denom]
+
+		perpetualFuturesPosition, err := types.NewPerpetualFuturesPositionFromPosition(position)
+		if err != nil {
+			// not implemented perpetual options
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+
+		closedPairRate := currentBaseUsdRate.Quo(currentQuoteUsdRate)
+		profit := perpetualFuturesPosition.CalcProfitAndLoss(closedPairRate)
+		queriedPosition := types.QueriedPosition{
+			Position:              position,
+			ValuationProfit:       sdk.NewCoin("uusd", profit),
+			MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate),
+			EffectiveMargin:       sdk.NewCoin("uusd", types.NormalToMicroDenom(perpetualFuturesPosition.EffectiveMargin(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate))),
+		}
+		queriedPositions = append(queriedPositions, queriedPosition)
+	}
+	return queriedPositions, nil
+}
+
+func (k Keeper) Position(c context.Context, req *types.QueryPositionRequest) (*types.QueryPositionResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	position := k.GetPositionWithId(ctx, req.PositionId)
+	if position == nil {
+		return &types.QueryPositionResponse{}, nil
+	}
+
+	perpetualFuturesPosition, err := types.NewPerpetualFuturesPositionFromPosition(*position)
+	if err != nil {
+		panic(err)
+	}
+	currentBaseUsdRate, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
+	if err != nil {
+		panic(err)
+	}
+
+	currentQuoteUsdRate, err := k.GetCurrentPrice(ctx, position.Market.QuoteDenom)
+	if err != nil {
+		panic(err)
+	}
+	currentMarginUsdRate, err := k.GetCurrentPrice(ctx, position.RemainingMargin.Denom)
+	if err != nil {
+		panic(err)
+	}
+	closedPairRate := currentBaseUsdRate.Quo(currentQuoteUsdRate)
+	profit := perpetualFuturesPosition.CalcProfitAndLoss(closedPairRate)
+	return &types.QueryPositionResponse{
+		Position:              position,
+		ValuationProfit:       sdk.NewCoin("uusd", profit),
+		MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate),
+		EffectiveMargin:       sdk.NewCoin("uusd", types.NormalToMicroDenom(perpetualFuturesPosition.EffectiveMargin(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate))),
+	}, nil
+}
+
+func (k Keeper) PerpetualFuturesPositionSize(c context.Context, req *types.QueryPerpetualFuturesPositionSizeRequest) (*types.QueryPerpetualFuturesPositionSizeResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -151,10 +271,45 @@ func (k Keeper) AddressPositions(c context.Context, req *types.QueryAddressPosit
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	positions := k.GetAddressPositions(ctx, address)
+	positions := types.Positions(k.GetAddressPositionsVal(ctx, address))
+	getPriceFunc := func(ctx sdk.Context) func(denom string) (sdk.Dec, error) {
+		return func(denom string) (sdk.Dec, error) {
+			return k.GetCurrentPrice(ctx, denom)
+		}
+	}
+	var result sdk.Dec
+	if req.PositionType == types.PositionType_LONG {
+		result = positions.EvaluateLongPositions(getPriceFunc(ctx))
+	} else if req.PositionType == types.PositionType_SHORT {
+		result = positions.EvaluateShortPositions(getPriceFunc(ctx))
+	} else {
+		return nil, status.Error(codes.InvalidArgument, "invalid position type")
+	}
+	return &types.QueryPerpetualFuturesPositionSizeResponse{
+		TotalPositionSizeUsd: sdk.NewCoin("usd", result.RoundInt()),
+	}, nil
 
-	return &types.QueryAddressPositionsResponse{
-		Positions: positions,
+}
+
+func (k Keeper) DLPTokenRates(c context.Context, req *types.QueryDLPTokenRateRequest) (*types.QueryDLPTokenRateResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	params := k.GetParams(ctx)
+	var rates sdk.Coins
+	for _, asset := range params.PoolParams.AcceptedAssets {
+		redeemAmount, redeemFee, err := k.GetRedeemDenomAmount(ctx, sdk.NewInt(1), asset.Denom)
+		if err != nil {
+			return nil, status.Error(codes.InvalidArgument, err.Error())
+		}
+		rates = append(rates, sdk.NewCoin(asset.Denom, redeemAmount.Amount.Sub(redeemFee.Amount)))
+	}
+
+	return &types.QueryDLPTokenRateResponse{
+		Symbol: "DLP",
+		Rates:  rates,
 	}, nil
 }
 

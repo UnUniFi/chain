@@ -13,6 +13,7 @@ import (
 )
 
 // fixme: it has not been tested
+// todo:rename GetCurrentPrice to GetCurrentUsdPrice
 func (k Keeper) GetCurrentPrice(ctx sdk.Context, denom string) (sdk.Dec, error) {
 	ticker, err := k.pricefeedKeeper.GetTicker(ctx, denom)
 	if err != nil {
@@ -78,10 +79,15 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 	tradeAmount := position.PositionInstance.Size_.Sub(feeAmountDec)
 	feeAmount := feeAmountDec.RoundInt()
 
-	closedRate, err := k.GetPairRate(ctx, position.Market)
+	baseUsdPrice, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
 	if err != nil {
 		return err
 	}
+	quoteUsdPrice, err := k.GetCurrentPrice(ctx, position.Market.QuoteDenom)
+	if err != nil {
+		return err
+	}
+	closedRate := baseUsdPrice.Mul(quoteUsdPrice)
 
 	// TODO: this is wrong. refer to Issue#407
 	if !feeAmount.IsZero() {
@@ -91,7 +97,7 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 		}
 	}
 
-	returningAmount, lossToLP := position.CalcReturningAmountAtClose(*closedRate)
+	returningAmount, lossToLP := position.CalcReturningAmountAtClose(closedRate)
 
 	if !(lossToLP.IsNil()) {
 		// TODO: emit event to tell how much loss is taken by liquidity provider.

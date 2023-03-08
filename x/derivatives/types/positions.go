@@ -72,6 +72,32 @@ func NewPerpetualFuturesPosition(position Position, ins PerpetualFuturesPosition
 	}
 }
 
+func NewPerpetualFuturesPositionFromPosition(position Position) (PerpetualFuturesPosition, error) {
+	ins, err := UnpackPositionInstance(position.PositionInstance)
+	if err != nil {
+		return PerpetualFuturesPosition{}, err
+	}
+	switch positionInstance := ins.(type) {
+	case *PerpetualFuturesPositionInstance:
+		return PerpetualFuturesPosition{
+			Id:               position.Id,
+			Market:           position.Market,
+			Address:          position.Address,
+			OpenedAt:         position.OpenedAt,
+			OpenedBaseRate:   position.OpenedBaseRate,
+			OpenedQuoteRate:  position.OpenedQuoteRate,
+			OpenedHeight:     position.OpenedHeight,
+			RemainingMargin:  position.RemainingMargin,
+			LastLeviedAt:     position.LastLeviedAt,
+			PositionInstance: *positionInstance,
+		}, nil
+	default:
+		return PerpetualFuturesPosition{}, fmt.Errorf("this Any doesn't have PerpetualFuturesPositionInstance value")
+		break
+	}
+	return PerpetualFuturesPosition{}, fmt.Errorf("this Any doesn't have PerpetualFuturesPositionInstance value")
+}
+
 func (m PerpetualFuturesPosition) NeedLiquidation(minMarginMaintenanceRate, currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate sdk.Dec) bool {
 	marginMaintenanceRate := m.MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate)
 	if marginMaintenanceRate.LT(minMarginMaintenanceRate) {
@@ -125,9 +151,13 @@ func (m PerpetualFuturesPosition) CalcProfitAndLoss(closedRate sdk.Dec) math.Int
 	// this means it assumes the price difference is calculated in normal unit, not micro unit.
 	// e.g. In ubtc/uusdc market, the market price of ubtc is actually in BTC unit.
 	// And, the position size follows the market price unit.
-	actualResultAmount := resultDec.Mul(sdk.MustNewDecFromStr("1000000")).TruncateInt()
+	actualResultAmount := NormalToMicroDenom(resultDec)
 
 	return actualResultAmount
+}
+
+func NormalToMicroDenom(amount sdk.Dec) math.Int {
+	return amount.Mul(sdk.MustNewDecFromStr("1000000")).TruncateInt()
 }
 
 func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(closedRate sdk.Dec) (returningAmount math.Int, lossToLP math.Int) {

@@ -94,6 +94,23 @@ func (k Keeper) GetAddressPositions(ctx sdk.Context, user sdk.AccAddress) []*typ
 	return positions
 }
 
+func (k Keeper) GetAddressPositionsVal(ctx sdk.Context, user sdk.AccAddress) []types.Position {
+	store := ctx.KVStore(k.storeKey)
+
+	positions := []types.Position{}
+	it := sdk.KVStorePrefixIterator(store, types.AddressPositionKeyPrefix(user))
+	defer it.Close()
+
+	for ; it.Valid(); it.Next() {
+		position := types.Position{}
+		k.cdc.Unmarshal(it.Value(), &position)
+
+		positions = append(positions, position)
+	}
+
+	return positions
+}
+
 func (k Keeper) GetAddressPositionWithId(ctx sdk.Context, address sdk.AccAddress, id string) *types.Position {
 	store := ctx.KVStore(k.storeKey)
 
