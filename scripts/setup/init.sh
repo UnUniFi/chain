@@ -88,11 +88,11 @@ jq '.app_state.bank.denom_metadata = [
   ]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.pricefeed.posted_prices = [
   {"expiry": "2024-02-20T12:02:01Z","market_id": "ubtc:usd","oracle_address": "ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr","price": "0.024508410211260500"},
-  {"expiry": "2024-02-20T12:02:47Z","market_id": "ubtc:usd:30","oracle_address": "ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr","price": "0.005779087260702010"},
+  {"expiry": "2024-02-20T12:02:47Z","market_id": "ubtc:usd:30","oracle_address": "ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr","price": "0.024508410211260500"},
   {"expiry": "2024-02-20T12:03:30Z","market_id": "uusdc:usd","oracle_address": "ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr","price": "0.000001001479651825"},
   {"expiry": "2024-02-20T12:04:11Z","market_id": "uusdc:usd:30","oracle_address": "ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr","price": "0.000001002011358752"},
-  {"expiry": "2024-02-20T12:00:38Z","market_id": "ubtc:uusdc","oracle_address": "ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr","price": "24528.185864015486004064"},
-  {"expiry": "2024-02-20T12:00:38Z","market_id": "ubtc:uusdc:30","oracle_address": "ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr","price": "24528.185864015486004064"}
+  {"expiry": "2024-02-20T12:00:38Z","market_id": "ubtc:uusdc","oracle_address": "ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr","price": "24472.1998760521"},
+  {"expiry": "2024-02-20T12:00:38Z","market_id": "ubtc:uusdc:30","oracle_address": "ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr","price": "24459.2139572006"}
 ]'  $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 
 # ununifid start --home=$NODE_HOME

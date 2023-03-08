@@ -94,6 +94,23 @@ func (k Keeper) GetAddressPositions(ctx sdk.Context, user sdk.AccAddress) []*typ
 	return positions
 }
 
+func (k Keeper) GetAddressPositionsVal(ctx sdk.Context, user sdk.AccAddress) []types.Position {
+	store := ctx.KVStore(k.storeKey)
+
+	positions := []types.Position{}
+	it := sdk.KVStorePrefixIterator(store, types.AddressPositionKeyPrefix(user))
+	defer it.Close()
+
+	for ; it.Valid(); it.Next() {
+		position := types.Position{}
+		k.cdc.Unmarshal(it.Value(), &position)
+
+		positions = append(positions, position)
+	}
+
+	return positions
+}
+
 func (k Keeper) GetAddressPositionWithId(ctx sdk.Context, address sdk.AccAddress, id string) *types.Position {
 	store := ctx.KVStore(k.storeKey)
 
@@ -185,7 +202,8 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 
 	switch positionInstance := positionInstance.(type) {
 	case *types.PerpetualFuturesPositionInstance:
-		err = k.ClosePerpetualFuturesPosition(ctx, *position, *positionInstance)
+		perpetualFuturesPosition := types.NewPerpetualFuturesPosition(*position, *positionInstance)
+		err = k.ClosePerpetualFuturesPosition(ctx, perpetualFuturesPosition)
 		break
 	case *types.PerpetualOptionsPositionInstance:
 		err = k.ClosePerpetualOptionsPosition(ctx, *position, *positionInstance)
@@ -217,7 +235,8 @@ func (k Keeper) ReportLiquidation(ctx sdk.Context, msg *types.MsgReportLiquidati
 
 	switch positionInstance := positionInstance.(type) {
 	case *types.PerpetualFuturesPositionInstance:
-		err = k.ReportLiquidationNeededPerpetualFuturesPosition(ctx, msg.RewardRecipient, *position, *positionInstance)
+		perpetualFuturesPosition := types.NewPerpetualFuturesPosition(*position, *positionInstance)
+		err = k.ReportLiquidationNeededPerpetualFuturesPosition(ctx, msg.RewardRecipient, perpetualFuturesPosition)
 		break
 	case *types.PerpetualOptionsPositionInstance:
 		err = k.ReportLiquidationNeededPerpetualOptionsPosition(ctx, msg.RewardRecipient, *position, *positionInstance)
