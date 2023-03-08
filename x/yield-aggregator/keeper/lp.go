@@ -1,62 +1,70 @@
 package keeper
 
 import (
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/yield-aggregator/types"
 )
 
-func (k Keeper) GetLPTokenDenom(vaultId uint64) string {
-	return fmt.Sprintf("yield-aggregator/vaults/%d", vaultId)
-}
-
-func (k Keeper) MintLPToken(ctx sdk.Context, address sdk.AccAddress, vaultId uint64, amount sdk.Int) {
+func (k Keeper) MintLPToken(ctx sdk.Context, address sdk.AccAddress, vaultId uint64, principalAmount sdk.Int) error {
 	vault, found := k.GetVault(ctx, vaultId)
 	if !found {
+		// TODO
 		panic("vault not found")
 	}
 
-	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.NewCoins(sdk.NewCoin(vault.Denom, amount)))
+	moduleName := types.GetModuleAccountName(vaultId)
+
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, moduleName, sdk.NewCoins(sdk.NewCoin(vault.Denom, principalAmount)))
 	if err != nil {
-		panic(err)
+		return err
 	}
 
-	lpDenom := k.GetLPTokenDenom(vaultId)
+	lpDenom := types.GetLPTokenDenom(vaultId)
 	// TODO: calculate lpAmount
+	// lpAmount = lpSupplyInPool * (principalAmountToMint / principalSupplyInPool)
+	// If principalSupplyInPool is zero, lpAmount = principalAmountToMint
 	lpAmount := sdk.NewInt(0)
-	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(lpDenom, lpAmount)))
+	err = k.bankKeeper.MintCoins(ctx, moduleName, sdk.NewCoins(sdk.NewCoin(lpDenom, lpAmount)))
 	if err != nil {
-		panic(err)
+		return err
 	}
 
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, address, sdk.NewCoins(sdk.NewCoin(lpDenom, lpAmount)))
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, moduleName, address, sdk.NewCoins(sdk.NewCoin(lpDenom, lpAmount)))
 	if err != nil {
-		panic(err)
+		return err
 	}
+
+	return nil
 }
 
-func (k Keeper) BurnLPToken(ctx sdk.Context, address sdk.AccAddress, vaultId uint64, amount sdk.Int) {
+func (k Keeper) BurnLPToken(ctx sdk.Context, address sdk.AccAddress, vaultId uint64, lpAmount sdk.Int) error {
 	vault, found := k.GetVault(ctx, vaultId)
 	if !found {
+		// TODO
 		panic("vault not found")
 	}
 
-	lpDenom := k.GetLPTokenDenom(vaultId)
-	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.NewCoins(sdk.NewCoin(lpDenom, amount)))
+	moduleName := types.GetModuleAccountName(vaultId)
+
+	lpDenom := types.GetLPTokenDenom(vaultId)
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, moduleName, sdk.NewCoins(sdk.NewCoin(lpDenom, lpAmount)))
 	if err != nil {
-		panic(err)
+		return err
 	}
 
-	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(lpDenom, amount)))
+	err = k.bankKeeper.BurnCoins(ctx, moduleName, sdk.NewCoins(sdk.NewCoin(lpDenom, lpAmount)))
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	// TOOD: calculate principalAmount
+	// principalAmount = principalSupplyInPool * (lpAmountToBurn / lpSupplyInPool)
 	principalAmount := sdk.NewInt(0)
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, address, sdk.NewCoins(sdk.NewCoin(vault.Denom, principalAmount)))
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, moduleName, address, sdk.NewCoins(sdk.NewCoin(vault.Denom, principalAmount)))
 	if err != nil {
-		panic(err)
+		return err
 	}
+
+	return nil
 }
