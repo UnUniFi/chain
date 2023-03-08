@@ -1,10 +1,15 @@
 package keeper_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"time"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+
+	ununifitypes "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/derivatives/types"
 	pftypes "github.com/UnUniFi/chain/x/pricefeed/types"
+	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
 // TODO: impl more various situations for the test cases
@@ -24,8 +29,41 @@ func (suite *KeeperTestSuite) TestInitialLiquidityProviderTokenSupply() {
 	suite.Require().Nil(err)
 }
 
-// TODO: impl test
-// func (suite *KeeperTestSuite) TestDetermineMintingLPTokenAmount() {}
+func (suite *KeeperTestSuite) TestDetermineMintingLPTokenAmount() {
+	// when no liquidity provider token's available
+	mintAmount, mintFee, err := suite.keeper.DetermineMintingLPTokenAmount(suite.ctx, sdk.NewInt64Coin("uatom", 10000))
+	suite.Require().NoError(err)
+	suite.Require().Equal(mintAmount.String(), "20000udlp")
+	suite.Require().Equal(mintFee.String(), "0udlp")
+
+	// set price for asset
+	_, err = suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:uusdc", sdk.NewDec(13), suite.ctx.BlockTime().Add(time.Hour*3))
+	suite.Require().NoError(err)
+	params := suite.app.PricefeedKeeper.GetParams(suite.ctx)
+	params.Markets = []pricefeedtypes.Market{
+		{MarketId: "uatom:uusdc", BaseAsset: "uatom", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+	}
+	suite.app.PricefeedKeeper.SetParams(suite.ctx, params)
+	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:uusdc")
+	suite.Require().NoError(err)
+
+	// add pool asset and balance
+	suite.keeper.AddPoolAsset(suite.ctx, types.PoolParams_Asset{
+		Denom:        "uatom",
+		TargetWeight: sdk.OneDec(),
+	})
+	suite.keeper.SetAssetBalance(suite.ctx, sdk.NewInt64Coin("uatom", 1000000))
+
+	// set lp token supply
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{sdk.NewInt64Coin(types.LiquidityProviderTokenDenom, 1000000)})
+	suite.Require().NoError(err)
+
+	// when liquidity provider token's available
+	mintAmount, mintFee, err = suite.keeper.DetermineMintingLPTokenAmount(suite.ctx, sdk.NewInt64Coin("uatom", 10000))
+	suite.Require().NoError(err)
+	suite.Require().Equal(mintAmount.String(), "10000udlp")
+	suite.Require().Equal(mintFee.String(), "10udlp")
+}
 
 // TODO: write test for
 // GetLPTokenSupplySnapshot(ctx sdk.Context, height int64) sdk.Int {

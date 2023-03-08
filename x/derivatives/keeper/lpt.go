@@ -69,7 +69,9 @@ func (k Keeper) DetermineMintingLPTokenAmount(ctx sdk.Context, amount sdk.Coin) 
 	}
 
 	lptPrice := k.GetLPTokenPrice(ctx)
-	// todo if lptPrice is zero, return error
+	if lptPrice.IsZero() {
+		return sdk.Coin{}, sdk.Coin{}, types.ErrZeroLpTokenPrice
+	}
 
 	mintAmount := assetMc.Quo(lptPrice)
 
