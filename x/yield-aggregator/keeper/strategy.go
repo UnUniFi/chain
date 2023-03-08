@@ -107,27 +107,72 @@ func GetStrategyIDFromBytes(bz []byte) uint64 {
 	return binary.BigEndian.Uint64(bz)
 }
 
-func (k Keeper) StakeToStrategy(ctx sdk.Context, vaultDenom string, id uint64, amount sdk.Int) error {
+func (k Keeper) StakeToStrategy(ctx sdk.Context, strategy types.Strategy, amount sdk.Int) error {
+	switch strategy.ContractAddress {
+	case "x/ibc-staking":
+		{
+
+			return nil
+		}
+	}
 	// call `stake` function of the strategy contract
 	panic("not implemented")
+
+	return nil
 }
 
-func (k Keeper) UnstakeFromStrategy(ctx sdk.Context, vaultDenom string, id uint64, amount sdk.Int) error {
+func (k Keeper) UnstakeFromStrategy(ctx sdk.Context, strategy types.Strategy, amount sdk.Int) error {
+	switch strategy.ContractAddress {
+	case "x/ibc-staking":
+		{
+
+			return nil
+		}
+	}
 	// call `unstake` function of the strategy contract
 	panic("not implemented")
+
+	return nil
 }
 
-func (k Keeper) GetAmountFromStrategy(ctx sdk.Context, vaultDenom string, id uint64) sdk.Int {
+func (k Keeper) GetAmountFromStrategy(ctx sdk.Context, strategy types.Strategy) (*sdk.Coin, error) {
+	switch strategy.ContractAddress {
+	case "x/ibc-staking":
+		{
+
+			return nil, nil
+		}
+	}
 	// call `amount` function of the strategy contract
 	panic("not implemented")
+
+	return nil, nil
 }
 
-func (k Keeper) GetAPRFromStrategy(ctx sdk.Context, vaultDenom string, id uint64) sdk.Dec {
+func (k Keeper) GetAPRFromStrategy(ctx sdk.Context, strategy types.Strategy) (*sdk.Dec, error) {
+	switch strategy.ContractAddress {
+	case "x/ibc-staking":
+		{
+
+			return nil, nil
+		}
+	}
 	// call `apr` function of the strategy contract
 	panic("not implemented")
+
+	return nil, nil
 }
 
-func (k Keeper) GetInterestFeeRate(vaultDenom string, id uint64) sdk.Dec {
+func (k Keeper) GetInterestFeeRate(ctx sdk.Context, strategy types.Strategy) (*sdk.Dec, error) {
+	switch strategy.ContractAddress {
+	case "x/ibc-staking":
+		{
+
+			return nil, nil
+		}
+	}
 	// call `interest_fee_rate` function of the strategy contract
 	panic("not implemented")
+
+	return nil, nil
 }

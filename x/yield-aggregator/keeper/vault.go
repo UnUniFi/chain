@@ -105,18 +105,22 @@ func GetVaultIDFromBytes(bz []byte) uint64 {
 	return binary.BigEndian.Uint64(bz)
 }
 
-func (k Keeper) GetAPY(ctx sdk.Context, vaultId uint64) sdk.Dec {
+func (k Keeper) GetAPY(ctx sdk.Context, vaultId uint64) (*sdk.Dec, error) {
 	vault, found := k.GetVault(ctx, vaultId)
 	if !found {
-		return sdk.ZeroDec()
+		// TODO
+		return nil, nil
 	}
 
 	sum := sdk.ZeroDec()
 	for _, weight := range vault.StrategyWeights {
 		strategy, _ := k.GetStrategy(ctx, vault.Denom, weight.StrategyId)
-		apr := k.GetAPRFromStrategy(ctx, vault.Denom, strategy.Id)
+		apr, err := k.GetAPRFromStrategy(ctx, strategy)
+		if err != nil {
+			return nil, err
+		}
 		sum = sum.Add(apr.Mul(weight.Weight))
 	}
 
-	return sum
+	return &sum, nil
 }
