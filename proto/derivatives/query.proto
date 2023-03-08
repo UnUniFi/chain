@@ -62,6 +62,11 @@ service Query {
     option (google.api.http).get = "/ununifi/derivatives/{address}/positions";
   }
 
+
+  rpc DLPTokenRates(QueryDLPTokenRateRequest) returns (QueryDLPTokenRateResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/pools/dlp";
+  }
+
   rpc EstimateDLPTokenAmount(QueryEstimateDLPTokenAmountRequest) returns (QueryEstimateDLPTokenAmountResponse) {
     option (google.api.http).get = "/ununifi/derivatives/estimate-dlp-token-amount";
   }
@@ -273,6 +278,18 @@ message QueryAddressPositionsResponse {
     (gogoproto.nullable) = false
   ];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+
+message QueryDLPTokenRateRequest {
+}
+
+message QueryDLPTokenRateResponse {
+  string symbol = 1;
+  repeated cosmos.base.v1beta1.Coin rates = 2 [
+    (gogoproto.moretags)  = "yaml:\"dlp_rates\"",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryEstimateDLPTokenAmountRequest {

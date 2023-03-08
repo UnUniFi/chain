@@ -291,6 +291,28 @@ func (k Keeper) PerpetualFuturesPositionSize(c context.Context, req *types.Query
 
 }
 
+func (k Keeper) DLPTokenRates(c context.Context, req *types.QueryDLPTokenRateRequest) (*types.QueryDLPTokenRateResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	params := k.GetParams(ctx)
+	var rates sdk.Coins
+	for _, asset := range params.PoolParams.AcceptedAssets {
+		redeemAmount, redeemFee, err := k.GetRedeemDenomAmount(ctx, sdk.NewInt(1), asset.Denom)
+		if err != nil {
+			return nil, status.Error(codes.InvalidArgument, err.Error())
+		}
+		rates = append(rates, sdk.NewCoin(asset.Denom, redeemAmount.Amount.Sub(redeemFee.Amount)))
+	}
+
+	return &types.QueryDLPTokenRateResponse{
+		Symbol: "DLP",
+		Rates:  rates,
+	}, nil
+}
+
 func (k Keeper) EstimateDLPTokenAmount(c context.Context, req *types.QueryEstimateDLPTokenAmountRequest) (*types.QueryEstimateDLPTokenAmountResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")

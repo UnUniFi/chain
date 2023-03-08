@@ -113,6 +113,8 @@
     - [QueryAddressPositionsResponse](#ununifi.derivatives.QueryAddressPositionsResponse)
     - [QueryAllPositionsRequest](#ununifi.derivatives.QueryAllPositionsRequest)
     - [QueryAllPositionsResponse](#ununifi.derivatives.QueryAllPositionsResponse)
+    - [QueryDLPTokenRateRequest](#ununifi.derivatives.QueryDLPTokenRateRequest)
+    - [QueryDLPTokenRateResponse](#ununifi.derivatives.QueryDLPTokenRateResponse)
     - [QueryEstimateDLPTokenAmountRequest](#ununifi.derivatives.QueryEstimateDLPTokenAmountRequest)
     - [QueryEstimateDLPTokenAmountResponse](#ununifi.derivatives.QueryEstimateDLPTokenAmountResponse)
     - [QueryEstimateRedeemAmountRequest](#ununifi.derivatives.QueryEstimateRedeemAmountRequest)
@@ -1867,6 +1869,32 @@ GenesisState defines the derivatives module's genesis state.
 
 
 
+<a name="ununifi.derivatives.QueryDLPTokenRateRequest"></a>
+
+### QueryDLPTokenRateRequest
+
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryDLPTokenRateResponse"></a>
+
+### QueryDLPTokenRateResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `symbol` | [string](#string) |  |  |
+| `rates` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
 <a name="ununifi.derivatives.QueryEstimateDLPTokenAmountRequest"></a>
 
 ### QueryEstimateDLPTokenAmountRequest
@@ -2246,6 +2274,7 @@ Query defines the gRPC querier service.
 | `Position` | [QueryPositionRequest](#ununifi.derivatives.QueryPositionRequest) | [QueryPositionResponse](#ununifi.derivatives.QueryPositionResponse) |  | GET|/ununifi/derivatives/positions/{position_id}|
 | `PerpetualFuturesPositionSize` | [QueryPerpetualFuturesPositionSizeRequest](#ununifi.derivatives.QueryPerpetualFuturesPositionSizeRequest) | [QueryPerpetualFuturesPositionSizeResponse](#ununifi.derivatives.QueryPerpetualFuturesPositionSizeResponse) |  | GET|/ununifi/derivatives/positions/perpetual-futures/{position_type}/{address}|
 | `AddressPositions` | [QueryAddressPositionsRequest](#ununifi.derivatives.QueryAddressPositionsRequest) | [QueryAddressPositionsResponse](#ununifi.derivatives.QueryAddressPositionsResponse) |  | GET|/ununifi/derivatives/{address}/positions|
+| `DLPTokenRates` | [QueryDLPTokenRateRequest](#ununifi.derivatives.QueryDLPTokenRateRequest) | [QueryDLPTokenRateResponse](#ununifi.derivatives.QueryDLPTokenRateResponse) |  | GET|/ununifi/derivatives/pools/dlp|
 | `EstimateDLPTokenAmount` | [QueryEstimateDLPTokenAmountRequest](#ununifi.derivatives.QueryEstimateDLPTokenAmountRequest) | [QueryEstimateDLPTokenAmountResponse](#ununifi.derivatives.QueryEstimateDLPTokenAmountResponse) |  | GET|/ununifi/derivatives/estimate-dlp-token-amount|
 | `EstimateRedeemAmount` | [QueryEstimateRedeemAmountRequest](#ununifi.derivatives.QueryEstimateRedeemAmountRequest) | [QueryEstimateRedeemAmountResponse](#ununifi.derivatives.QueryEstimateRedeemAmountResponse) |  | GET|/ununifi/derivatives/estimate-redeem-amount|
 
