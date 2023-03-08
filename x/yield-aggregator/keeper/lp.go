@@ -10,14 +10,21 @@ import (
 // If principalAmountInVault is zero, lpAmount = principalAmountToMint
 func (k Keeper) EstimateMintAmountInternal(ctx sdk.Context, vaultDenom string, vaultId uint64, principalAmount sdk.Int) sdk.Coin {
 	lpDenom := types.GetLPTokenDenom(vaultId)
-	principalAmountInVault := k.GetAmountFromStrategy(ctx, vaultDenom, vaultId)
+	strategy, found := k.GetStrategy(ctx, vaultDenom, vaultId)
+	if !found {
+		return sdk.NewCoin(lpDenom, sdk.ZeroInt())
+	}
+	principalInVault, err := k.GetAmountFromStrategy(ctx, strategy)
+	if err != nil {
+		return sdk.NewCoin(lpDenom, sdk.ZeroInt())
+	}
 
-	if principalAmountInVault.IsZero() {
+	if principalInVault.IsZero() {
 		return sdk.NewCoin(lpDenom, principalAmount)
 	}
 
 	lpSupply := k.bankKeeper.GetSupply(ctx, lpDenom).Amount
-	lpAmount := lpSupply.Mul(principalAmount).Quo(principalAmountInVault)
+	lpAmount := lpSupply.Mul(principalAmount).Quo(principalInVault.Amount)
 
 	return sdk.NewCoin(lpDenom, lpAmount)
 }
@@ -25,14 +32,21 @@ func (k Keeper) EstimateMintAmountInternal(ctx sdk.Context, vaultDenom string, v
 // calculate principalAmount
 // principalAmount = principalAmountInVault * (lpAmountToBurn / lpSupply)
 func (k Keeper) EstimateRedeemAmountInternal(ctx sdk.Context, vaultDenom string, vaultId uint64, lpAmount sdk.Int) sdk.Coin {
-	principalAmountInVault := k.GetAmountFromStrategy(ctx, vaultDenom, vaultId)
+	strategy, found := k.GetStrategy(ctx, vaultDenom, vaultId)
+	if !found {
+		return sdk.NewCoin(vaultDenom, sdk.ZeroInt())
+	}
+	principalInVault, err := k.GetAmountFromStrategy(ctx, strategy)
+	if err != nil {
+		return sdk.NewCoin(vaultDenom, sdk.ZeroInt())
+	}
 	lpDenom := types.GetLPTokenDenom(vaultId)
 	lpSupply := k.bankKeeper.GetSupply(ctx, lpDenom).Amount
 
 	if lpSupply.IsZero() {
 		return sdk.NewCoin(vaultDenom, sdk.ZeroInt())
 	}
-	principalAmount := principalAmountInVault.Mul(lpAmount).Quo(lpSupply)
+	principalAmount := principalInVault.Amount.Mul(lpAmount).Quo(lpSupply)
 
 	return sdk.NewCoin(vaultDenom, principalAmount)
 }
