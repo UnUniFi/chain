@@ -9,6 +9,17 @@ import (
 
 func (k msgServer) DepositToVault(ctx context.Context, msg *types.MsgDepositToVault) (*types.MsgDepositToVaultResponse, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	sdkCtx.Context()
-	panic("implement me")
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		// TODO
+		return nil, nil
+	}
+
+	err = k.Keeper.MintLPToken(sdkCtx, sender, msg.VaultId, msg.Amount.Amount)
+	if err != nil {
+		// TODO
+		return nil, nil
+	}
+
+	return &types.MsgDepositToVaultResponse{}, nil
 }
