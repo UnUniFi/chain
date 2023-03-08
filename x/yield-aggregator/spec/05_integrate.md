@@ -6,8 +6,9 @@
 interface YieldFarmingContract {
   stake(amount: Coin);
   unstake(amount: Coin);
-  get_apr();
-  get_interest_fee_rate();
+  amount();
+  apr();
+  interest_fee_rate();
 }
 ```
 

@@ -360,6 +360,10 @@
     - [QueryAllStrategyResponse](#ununifi.chain.yieldaggregator.QueryAllStrategyResponse)
     - [QueryAllVaultRequest](#ununifi.chain.yieldaggregator.QueryAllVaultRequest)
     - [QueryAllVaultResponse](#ununifi.chain.yieldaggregator.QueryAllVaultResponse)
+    - [QueryEstimateMintAmountRequest](#ununifi.chain.yieldaggregator.QueryEstimateMintAmountRequest)
+    - [QueryEstimateMintAmountResponse](#ununifi.chain.yieldaggregator.QueryEstimateMintAmountResponse)
+    - [QueryEstimateRedeemAmountRequest](#ununifi.chain.yieldaggregator.QueryEstimateRedeemAmountRequest)
+    - [QueryEstimateRedeemAmountResponse](#ununifi.chain.yieldaggregator.QueryEstimateRedeemAmountResponse)
     - [QueryGetStrategyRequest](#ununifi.chain.yieldaggregator.QueryGetStrategyRequest)
     - [QueryGetStrategyResponse](#ununifi.chain.yieldaggregator.QueryGetStrategyResponse)
     - [QueryGetVaultRequest](#ununifi.chain.yieldaggregator.QueryGetVaultRequest)
@@ -4991,6 +4995,68 @@ GenesisState defines the yieldaggregator module's genesis state.
 
 
 
+<a name="ununifi.chain.yieldaggregator.QueryEstimateMintAmountRequest"></a>
+
+### QueryEstimateMintAmountRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [uint64](#uint64) |  |  |
+| `deposit_amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryEstimateMintAmountResponse"></a>
+
+### QueryEstimateMintAmountResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `mint_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryEstimateRedeemAmountRequest"></a>
+
+### QueryEstimateRedeemAmountRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [uint64](#uint64) |  |  |
+| `burn_amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryEstimateRedeemAmountResponse"></a>
+
+### QueryEstimateRedeemAmountResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `redeem_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
 <a name="ununifi.chain.yieldaggregator.QueryGetStrategyRequest"></a>
 
 ### QueryGetStrategyRequest
@@ -5096,6 +5162,8 @@ Query defines the gRPC querier service.
 | `Vault` | [QueryGetVaultRequest](#ununifi.chain.yieldaggregator.QueryGetVaultRequest) | [QueryGetVaultResponse](#ununifi.chain.yieldaggregator.QueryGetVaultResponse) |  | GET|/UnUniFi/chain/yield-aggregator/vaults/{id}|
 | `StrategyAll` | [QueryAllStrategyRequest](#ununifi.chain.yieldaggregator.QueryAllStrategyRequest) | [QueryAllStrategyResponse](#ununifi.chain.yieldaggregator.QueryAllStrategyResponse) |  | GET|/UnUniFi/chain/yield-aggregator/strategies/{denom}|
 | `Strategy` | [QueryGetStrategyRequest](#ununifi.chain.yieldaggregator.QueryGetStrategyRequest) | [QueryGetStrategyResponse](#ununifi.chain.yieldaggregator.QueryGetStrategyResponse) |  | GET|/UnUniFi/chain/yield-aggregator/strategies/{denom}/{id}|
+| `EstimateMintAmount` | [QueryEstimateMintAmountRequest](#ununifi.chain.yieldaggregator.QueryEstimateMintAmountRequest) | [QueryEstimateMintAmountResponse](#ununifi.chain.yieldaggregator.QueryEstimateMintAmountResponse) |  | GET|/UnUniFi/chain/yield-aggregator/vaults/{id}/estimate-mint-amount|
+| `EstimateRedeemAmount` | [QueryEstimateRedeemAmountRequest](#ununifi.chain.yieldaggregator.QueryEstimateRedeemAmountRequest) | [QueryEstimateRedeemAmountResponse](#ununifi.chain.yieldaggregator.QueryEstimateRedeemAmountResponse) |  | GET|/UnUniFi/chain/yield-aggregator/vaults/{id}/estimate-redeem-amount|
 
  <!-- end services -->
 
