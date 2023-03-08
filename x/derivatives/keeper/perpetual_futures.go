@@ -31,7 +31,7 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 		return nil, err
 	}
 
-	openedQuoteRate, err := k.GetCurrentPrice(ctx, market.BaseDenom)
+	openedQuoteRate, err := k.GetCurrentPrice(ctx, market.QuoteDenom)
 	if err != nil {
 		return nil, err
 	}
@@ -71,60 +71,36 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 	return &position, nil
 }
 
-func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Position, positionInstance types.PerpetualFuturesPositionInstance) error {
+func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.PerpetualFuturesPosition) error {
 	params := k.GetParams(ctx)
 	commissionRate := params.PerpetualFutures.CommissionRate
-	feeAmount := positionInstance.Size_.Mul(commissionRate)
-	tradeAmount := positionInstance.Size_.Sub(feeAmount)
+	feeAmountDec := position.PositionInstance.Size_.Mul(commissionRate)
+	tradeAmount := position.PositionInstance.Size_.Sub(feeAmountDec)
+	feeAmount := feeAmountDec.RoundInt()
 
-	// todo: fixme
-	openedRate := position.OpenedBaseRate
 	closedRate, err := k.GetPairRate(ctx, position.Market)
 	if err != nil {
 		return err
 	}
 
-	k.bankKeeper.SendCoinsFromAccountToModule(ctx, position.Address.AccAddress(), types.ModuleName, sdk.Coins{sdk.NewCoin(position.Market.BaseDenom, feeAmount.RoundInt())}) // TODO: this is wrong.
-
-	principal := positionInstance.CalculatePrincipal()
-	amountToUser := sdk.Dec{}
-
-	switch positionInstance.PositionType {
-	case types.PositionType_LONG:
-		k.SubPerpetualFuturesNetPositionOfMarket(ctx, position.Market, tradeAmount)
-
-		if closedRate.GTE(openedRate) {
-			profit := closedRate.Mul(sdk.NewDec(int64(positionInstance.Leverage))).Sub(positionInstance.Size_)
-			profitAmount := profit.Quo(*closedRate)
-
-			amountToUser = principal.Add(profitAmount)
-		} else {
-			loss := positionInstance.Size_.Sub(closedRate.Mul(sdk.NewDec(int64(positionInstance.Leverage))))
-			lossAmount := loss.Quo(*closedRate)
-
-			amountToUser = principal.Sub(lossAmount)
+	// TODO: this is wrong. refer to Issue#407
+	if !feeAmount.IsZero() {
+		err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, position.Address.AccAddress(), types.ModuleName, sdk.Coins{sdk.NewCoin(position.Market.BaseDenom, feeAmount)})
+		if err != nil {
+			return err
 		}
-		break
-	case types.PositionType_SHORT:
-		k.AddPerpetualFuturesNetPositionOfMarket(ctx, position.Market, tradeAmount)
-
-		if closedRate.LTE(openedRate) {
-			profit := positionInstance.Size_.Sub(closedRate.Mul(sdk.NewDec(int64(positionInstance.Leverage))))
-			profitAmount := profit.Quo(*closedRate)
-
-			amountToUser = principal.Add(profitAmount)
-		} else {
-			loss := closedRate.Mul(sdk.NewDec(int64(positionInstance.Leverage))).Sub(positionInstance.Size_)
-			lossAmount := loss.Quo(*closedRate)
-
-			amountToUser = principal.Sub(lossAmount)
-		}
-		break
-	case types.PositionType_POSITION_UNKNOWN:
-		return fmt.Errorf("unknown position type")
 	}
 
-	k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, position.Address.AccAddress(), sdk.Coins{sdk.NewCoin(position.Market.BaseDenom, amountToUser.RoundInt())})
+	returningAmount, lossToLP := position.CalcReturningAmountAtClose(*closedRate)
+
+	if !(lossToLP.IsNil()) {
+		// TODO: emit event to tell how much loss is taken by liquidity provider.
+	}
+
+	returningCoin := sdk.NewCoin(position.RemainingMargin.Denom, returningAmount)
+	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, position.Address.AccAddress(), sdk.Coins{returningCoin}); err != nil {
+		return err
+	}
 
 	ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionClosed{
 		Sender:      position.Address.AccAddress().String(),
@@ -136,12 +112,24 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Po
 	return nil
 }
 
-func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient ununifiTypes.StringAccAddress, position types.Position, positionInstance types.PerpetualFuturesPositionInstance) error {
+func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient ununifiTypes.StringAccAddress, position types.PerpetualFuturesPosition) error {
 	params := k.GetParams(ctx)
-	principal := positionInstance.CalculatePrincipal()
 
-	if sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(sdk.NewDecWithPrec(1, 0)).LT(principal.Mul(params.PerpetualFutures.MarginMaintenanceRate)) {
-		k.ClosePerpetualFuturesPosition(ctx, position, positionInstance)
+	currentBaseUsdRate, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
+	if err != nil {
+		panic(err)
+	}
+
+	currentQuoteUsdRate, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
+	if err != nil {
+		panic(err)
+	}
+	currentMarginUsdRate, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
+	if err != nil {
+		panic(err)
+	}
+	if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate) {
+		k.ClosePerpetualFuturesPosition(ctx, position)
 
 		rewardAmount := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PoolParams.ReportLiquidationRewardRate).RoundInt()
 		reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))

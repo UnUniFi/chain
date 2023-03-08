@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gogo/protobuf/proto"
@@ -110,12 +111,9 @@ func (m PerpetualFuturesPosition) NeedLiquidation(minMarginMaintenanceRate, curr
 func (m PerpetualFuturesPosition) EffectiveMargin(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate sdk.Dec) sdk.Dec {
 	effectiveMargin := sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(currentBaseUsdRate.Quo(currentMarginUsdRate))
 
-	revenue := m.CalcProfit(currentBaseUsdRate.Quo(currentQuoteUsdRate))
-	if revenue.RevenueType == RevenueType_PROFIT {
-		effectiveMargin = effectiveMargin.Add(sdk.NewDecFromInt(revenue.Amount.Amount))
-	} else {
-		effectiveMargin = effectiveMargin.Sub(sdk.NewDecFromInt(revenue.Amount.Amount))
-	}
+	pnl := m.CalcProfitAndLoss(currentBaseUsdRate.Quo(currentQuoteUsdRate))
+	effectiveMargin = effectiveMargin.Add(sdk.NewDecFromInt(pnl))
+
 	return effectiveMargin
 }
 
@@ -136,46 +134,40 @@ func (m PerpetualFuturesPosition) EvaluatePosition(currentBaseUsdRate sdk.Dec) s
 	return currentBaseUsdRate.Mul(m.PositionInstance.GetOrderSize())
 }
 
-func (m PerpetualFuturesPosition) CalcProfit(closedPairRate sdk.Dec) Revenue {
-	sub := closedPairRate.Sub(m.OpenedPairRate())
-	revenue := m.GetRevenueType(sub)
-	if sub.IsNegative() {
+func (m PerpetualFuturesPosition) CalcProfitAndLoss(closedRate sdk.Dec) math.Int {
+	sub := closedRate.Sub(m.OpenedPairRate())
+	if m.PositionInstance.PositionType == PositionType_SHORT {
 		sub = sub.Neg()
 	}
-	resultDec := sub.Mul(m.PositionInstance.GetOrderSize())
-	return Revenue{
-		RevenueType: revenue,
-		Amount:      sdk.NewCoin(m.Market.BaseDenom, resultDec.RoundInt()),
+
+	resultDec := sub.Mul(m.PositionInstance.Size_)
+
+	// profit must be calculated in remaining margin denom
+	if m.RemainingMargin.Denom != m.Market.QuoteDenom {
+		resultDec = resultDec.Quo(closedRate)
 	}
+
+	// make it micro unit by multiplying 1000000
+	// this means it assumes the price difference is calculated in normal unit, not micro unit.
+	// e.g. In ubtc/uusdc market, the market price of ubtc is actually in BTC unit.
+	// And, the position size follows the market price unit.
+	actualResultAmount := resultDec.Mul(sdk.MustNewDecFromStr("1000000")).TruncateInt()
+
+	return actualResultAmount
 }
 
-func (m PerpetualFuturesPosition) GetRevenueType(sub sdk.Dec) RevenueType {
-	if m.PositionInstance.PositionType == PositionType_LONG {
-		if sub.IsPositive() {
-			return RevenueType_PROFIT
-		} else {
-			return RevenueType_LOSS
-		}
-	} else if m.PositionInstance.PositionType == PositionType_SHORT {
-		// todo: think about amount is zero case
-		if sub.IsNegative() {
-			return RevenueType_PROFIT
-		} else {
-			return RevenueType_LOSS
-		}
-	} else {
-		panic("not implemented")
-	}
-}
+func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(closedRate sdk.Dec) (returningAmount math.Int, lossToLP math.Int) {
+	principal := m.RemainingMargin.Amount
+	pnlAmount := m.CalcProfitAndLoss(closedRate)
+	returningAmount = principal.Add(pnlAmount)
 
-func (a Revenue) Equal(b Revenue) bool {
-	if a.RevenueType != b.RevenueType {
-		return false
+	// If loss is over the margin, it means liquidity provider takes the loss.
+	if returningAmount.IsNegative() {
+		lossToLP = returningAmount
+		returningAmount = sdk.ZeroInt()
 	}
-	if !a.Amount.IsEqual(b.Amount) {
-		return false
-	}
-	return true
+
+	return returningAmount, lossToLP
 }
 
 // todo make test

@@ -83,10 +83,8 @@
     - [PoolParams.Asset](#ununifi.derivatives.PoolParams.Asset)
     - [Position](#ununifi.derivatives.Position)
     - [QueriedPosition](#ununifi.derivatives.QueriedPosition)
-    - [Revenue](#ununifi.derivatives.Revenue)
   
     - [PositionType](#ununifi.derivatives.PositionType)
-    - [RevenueType](#ununifi.derivatives.RevenueType)
   
 - [derivatives/perpetual_futures.proto](#derivatives/perpetual_futures.proto)
     - [EventPerpetualFuturesPositionClosed](#ununifi.derivatives.EventPerpetualFuturesPositionClosed)
@@ -1483,22 +1481,6 @@ Query defines the gRPC querier service.
 
 
 
-
-<a name="ununifi.derivatives.Revenue"></a>
-
-### Revenue
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `revenue_type` | [RevenueType](#ununifi.derivatives.RevenueType) |  |  |
-| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-
-
-
-
-
  <!-- end messages -->
 
 
@@ -1512,18 +1494,6 @@ Query defines the gRPC querier service.
 | POSITION_UNKNOWN | 0 |  |
 | LONG | 1 |  |
 | SHORT | 2 |  |
-
-
-
-<a name="ununifi.derivatives.RevenueType"></a>
-
-### RevenueType
-
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| PROFIT | 0 |  |
-| LOSS | 1 |  |
 
 
  <!-- end enums -->
