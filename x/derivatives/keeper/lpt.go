@@ -25,18 +25,16 @@ func (k Keeper) GetLPTokenSupplySnapshot(ctx sdk.Context, height int64) sdk.Int 
 
 	supply := sdk.Int{}
 	supply.Unmarshal(bz)
-
 	return supply
 }
 
-func (k Keeper) SetLPTokenSupplySnapshot(ctx sdk.Context, height int64, supply sdk.Dec) error {
+func (k Keeper) SetLPTokenSupplySnapshot(ctx sdk.Context, height int64, supply sdk.Int) error {
 	bz, err := supply.Marshal()
 	if err != nil {
 		return err
 	}
 	store := ctx.KVStore(k.storeKey)
 	store.Set(types.AddressLPTokenSupplySnapshotKeyPrefix(height), bz)
-
 	return nil
 }
 

@@ -65,9 +65,15 @@ func (suite *KeeperTestSuite) TestDetermineMintingLPTokenAmount() {
 	suite.Require().Equal(mintFee.String(), "10udlp")
 }
 
+func (suite *KeeperTestSuite) TestLPTokenSupplySnapshotGetSet() {
+	supply := suite.keeper.GetLPTokenSupplySnapshot(suite.ctx, 1)
+	suite.Require().Equal(supply, sdk.ZeroInt())
+	suite.keeper.SetLPTokenSupplySnapshot(suite.ctx, 1, sdk.NewInt(1000000))
+	supply = suite.keeper.GetLPTokenSupplySnapshot(suite.ctx, 1)
+	suite.Require().Equal(supply, sdk.NewInt(1000000))
+}
+
 // TODO: write test for
-// GetLPTokenSupplySnapshot(ctx sdk.Context, height int64) sdk.Int {
-// SetLPTokenSupplySnapshot(ctx sdk.Context, height int64, supply sdk.Dec) error {
 // GetLPTokenSupply(ctx sdk.Context) sdk.Int {
 // GetLPTokenPrice(ctx sdk.Context) sdk.Dec {
 // GetLPTokenAmount(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sdk.Coin, error) {

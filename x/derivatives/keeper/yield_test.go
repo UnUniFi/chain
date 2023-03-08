@@ -51,7 +51,7 @@ func (suite *KeeperTestSuite) TestGetLPNominalYieldRate() {
 	suite.Require().Equal(uninitializedRate, sdk.ZeroDec())
 
 	// setup snapshot for block height 1
-	suite.keeper.SetLPTokenSupplySnapshot(suite.ctx, 1, sdk.NewDec(1000000))
+	suite.keeper.SetLPTokenSupplySnapshot(suite.ctx, 1, sdk.NewInt(1000000))
 	suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, 1, types.PoolMarketCap{
 		QuoteTicker: "uatom",
 		Total:       sdk.NewDec(100000000),
@@ -59,7 +59,7 @@ func (suite *KeeperTestSuite) TestGetLPNominalYieldRate() {
 	})
 
 	// setup snapshot for block height 11
-	suite.keeper.SetLPTokenSupplySnapshot(suite.ctx, 11, sdk.NewDec(2000000))
+	suite.keeper.SetLPTokenSupplySnapshot(suite.ctx, 11, sdk.NewInt(2000000))
 	suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, 11, types.PoolMarketCap{
 		QuoteTicker: "uatom",
 		Total:       sdk.NewDec(300000000),
@@ -99,11 +99,11 @@ func (suite *KeeperTestSuite) TestGetLPNominalYieldRate() {
 
 	// check current height rate
 	pastLptPrice := suite.keeper.GetLPTPriceFromSnapshot(suite.ctx, 1)
-	suite.Require().Equal(pastLptPrice.String(), "0.000000000000000100")
+	suite.Require().Equal(pastLptPrice.String(), "100.000000000000000000")
 	currLptPrice := suite.keeper.GetLPTokenPrice(suite.ctx)
 	suite.Require().Equal(currLptPrice.String(), "0.000015280000000000")
 	currentRate := suite.keeper.GetLPNominalYieldRate(suite.ctx, 1, suite.ctx.BlockHeight())
-	suite.Require().Equal(currentRate, sdk.NewDec(152799999999))
+	suite.Require().Equal(currentRate.String(), "-0.999999847200000000")
 }
 
 func (suite *KeeperTestSuite) TestGetInflationRateOfAssetsInPool() {
@@ -112,7 +112,7 @@ func (suite *KeeperTestSuite) TestGetInflationRateOfAssetsInPool() {
 	suite.Require().Equal(uninitializedRate, sdk.ZeroDec())
 
 	// setup snapshot for block height 1
-	suite.keeper.SetLPTokenSupplySnapshot(suite.ctx, 1, sdk.NewDec(1000000))
+	suite.keeper.SetLPTokenSupplySnapshot(suite.ctx, 1, sdk.NewInt(1000000))
 	suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, 1, types.PoolMarketCap{
 		QuoteTicker: "uatom",
 		Total:       sdk.NewDec(100000000),
@@ -126,7 +126,7 @@ func (suite *KeeperTestSuite) TestGetInflationRateOfAssetsInPool() {
 	})
 
 	// setup snapshot for block height 11
-	suite.keeper.SetLPTokenSupplySnapshot(suite.ctx, 11, sdk.NewDec(2000000))
+	suite.keeper.SetLPTokenSupplySnapshot(suite.ctx, 11, sdk.NewInt(2000000))
 	suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, 11, types.PoolMarketCap{
 		QuoteTicker: "uatom",
 		Total:       sdk.NewDec(300000000),
@@ -150,7 +150,7 @@ func (suite *KeeperTestSuite) TestGetLPRealYieldRate() {
 	suite.Require().Equal(uninitializedRate.String(), sdk.ZeroDec().String())
 
 	// setup snapshot for block height 1
-	suite.keeper.SetLPTokenSupplySnapshot(suite.ctx, 1, sdk.NewDec(1000000))
+	suite.keeper.SetLPTokenSupplySnapshot(suite.ctx, 1, sdk.NewInt(1000000))
 	suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, 1, types.PoolMarketCap{
 		QuoteTicker: "uatom",
 		Total:       sdk.NewDec(100000000),
@@ -164,7 +164,7 @@ func (suite *KeeperTestSuite) TestGetLPRealYieldRate() {
 	})
 
 	// setup snapshot for block height 11
-	suite.keeper.SetLPTokenSupplySnapshot(suite.ctx, 11, sdk.NewDec(2000000))
+	suite.keeper.SetLPTokenSupplySnapshot(suite.ctx, 11, sdk.NewInt(2000000))
 	suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, 11, types.PoolMarketCap{
 		QuoteTicker: "uatom",
 		Total:       sdk.NewDec(200000000),
