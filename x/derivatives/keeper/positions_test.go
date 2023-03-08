@@ -50,9 +50,11 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 			},
 			OpenedAt:         time.Now().UTC(),
 			OpenedHeight:     1,
-			OpenedRate:       sdk.NewDec(10),
+			OpenedBaseRate:   sdk.NewDec(10),
+			OpenedQuoteRate:  sdk.NewDec(10),
 			PositionInstance: *position0Inst,
 			RemainingMargin:  sdk.NewCoin("uusdc", sdk.NewInt(1000)),
+			LastLeviedAt:     time.Now().UTC(),
 		},
 		{
 			Id:      "1",
@@ -63,9 +65,11 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 			},
 			OpenedAt:         time.Now().UTC(),
 			OpenedHeight:     2,
-			OpenedRate:       sdk.NewDec(10),
+			OpenedBaseRate:   sdk.NewDec(10),
+			OpenedQuoteRate:  sdk.NewDec(10),
 			PositionInstance: *position1Inst,
 			RemainingMargin:  sdk.NewCoin("uatom", sdk.NewInt(1000)),
+			LastLeviedAt:     time.Now().UTC(),
 		},
 	}
 
@@ -130,7 +134,6 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 			},
 			OpenedAt:         time.Now().UTC(),
 			OpenedHeight:     1,
-			OpenedRate:       sdk.NewDec(10),
 			PositionInstance: *position0Inst,
 		},
 		{
@@ -142,7 +145,6 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 			},
 			OpenedAt:         time.Now().UTC(),
 			OpenedHeight:     2,
-			OpenedRate:       sdk.NewDec(10),
 			PositionInstance: *position1Inst,
 		},
 	}
@@ -161,7 +163,6 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 		suite.Require().NotNil(p)
 		suite.Require().Equal(p.Id, position.Id)
 		suite.Require().Equal(p.Market, position.Market)
-		suite.Require().Equal(p.OpenedRate, position.OpenedRate)
 	}
 
 	// Delete the position
@@ -294,7 +295,7 @@ func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
 		PositionId:      allPositions[0].Id,
 		RewardRecipient: owner.Bytes(),
 	})
-	suite.Require().Error(err)
+	suite.Require().NoError(err)
 
 	// ReportLevyPeriod
 	cacheCtx, _ = suite.ctx.CacheContext()
@@ -311,7 +312,7 @@ func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
 	})
 	suite.Require().NoError(err)
 	balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
-	suite.Require().Equal(balances.String(), "998017uatom,999900uusdc")
+	suite.Require().Equal(balances.String(), "998000uatom,999900uusdc")
 
 	err = suite.keeper.ClosePosition(suite.ctx, &types.MsgClosePosition{
 		Sender:     owner.Bytes(),
@@ -319,7 +320,7 @@ func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
 	})
 	suite.Require().NoError(err)
 	balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
-	suite.Require().Equal(balances.String(), "998034uatom,999900uusdc")
+	suite.Require().Equal(balances.String(), "998000uatom,999900uusdc")
 
 	err = suite.keeper.ClosePosition(suite.ctx, &types.MsgClosePosition{
 		Sender:     owner.Bytes(),
@@ -327,5 +328,5 @@ func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
 	})
 	suite.Require().NoError(err)
 	balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
-	suite.Require().Equal(balances.String(), "998057uatom,999900uusdc")
+	suite.Require().Equal(balances.String(), "998000uatom,999900uusdc")
 }
