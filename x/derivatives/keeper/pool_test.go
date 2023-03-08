@@ -124,8 +124,15 @@ func (suite *KeeperTestSuite) TestIsAssetValid() {
 	suite.Require().False(isValid)
 }
 
+func (suite *KeeperTestSuite) TestSetGetAssetBalance() {
+	coin := sdk.NewInt64Coin("uatom", 1000000)
+	suite.keeper.SetAssetBalance(suite.ctx, coin)
+
+	amount := suite.keeper.GetAssetBalance(suite.ctx, "uatom")
+	suite.Require().Equal(amount, coin)
+}
+
 // TODO: add test for
-// func (k Keeper) SetAssetBalance(ctx sdk.Context, coin sdk.Coin) error {
 // func (k Keeper) GetAssetTargetAmount(ctx sdk.Context, denom string) (sdk.Coin, error) {
 // func (k Keeper) GetUserDeposits(ctx sdk.Context, depositor sdk.AccAddress) []sdk.Coin {
 // func (k Keeper) IsPriceReady(ctx sdk.Context) bool {
