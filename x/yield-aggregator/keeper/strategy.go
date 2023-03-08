@@ -107,20 +107,27 @@ func GetStrategyIDFromBytes(bz []byte) uint64 {
 	return binary.BigEndian.Uint64(bz)
 }
 
-func (k Keeper) StakeToStrategy(vaultDenom string, id uint64, amount sdk.Int) {
+func (k Keeper) StakeToStrategy(ctx sdk.Context, vaultDenom string, id uint64, amount sdk.Int) error {
 	// call `stake` function of the strategy contract
+	panic("not implemented")
 }
 
-func (k Keeper) UnstakeFromStrategy(vaultDenom string, id uint64, amount sdk.Int) {
+func (k Keeper) UnstakeFromStrategy(ctx sdk.Context, vaultDenom string, id uint64, amount sdk.Int) error {
 	// call `unstake` function of the strategy contract
+	panic("not implemented")
 }
 
-func (k Keeper) GetAPRFromStrategy(vaultDenom string, id uint64) sdk.Dec {
-	// call `get_apr` function of the strategy contract
+func (k Keeper) GetAmountFromStrategy(ctx sdk.Context, vaultDenom string, id uint64) sdk.Int {
+	// call `amount` function of the strategy contract
+	panic("not implemented")
+}
+
+func (k Keeper) GetAPRFromStrategy(ctx sdk.Context, vaultDenom string, id uint64) sdk.Dec {
+	// call `apr` function of the strategy contract
 	panic("not implemented")
 }
 
 func (k Keeper) GetInterestFeeRate(vaultDenom string, id uint64) sdk.Dec {
-	// call `get_interest_fee_rate` function of the strategy contract
+	// call `interest_fee_rate` function of the strategy contract
 	panic("not implemented")
 }

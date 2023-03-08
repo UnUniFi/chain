@@ -371,6 +371,7 @@
 - [yield-aggregator/genesis.proto](#yield-aggregator/genesis.proto)
   - [GenesisState](#ununifi.chain.yieldaggregator.GenesisState)
 - [yield-aggregator/query.proto](#yield-aggregator/query.proto)
+<<<<<<< HEAD
 
   - [QueryAllStrategyRequest](#ununifi.chain.yieldaggregator.QueryAllStrategyRequest)
   - [QueryAllStrategyResponse](#ununifi.chain.yieldaggregator.QueryAllStrategyResponse)
@@ -385,6 +386,25 @@
 
   - [Query](#ununifi.chain.yieldaggregator.Query)
 
+=======
+    - [QueryAllStrategyRequest](#ununifi.chain.yieldaggregator.QueryAllStrategyRequest)
+    - [QueryAllStrategyResponse](#ununifi.chain.yieldaggregator.QueryAllStrategyResponse)
+    - [QueryAllVaultRequest](#ununifi.chain.yieldaggregator.QueryAllVaultRequest)
+    - [QueryAllVaultResponse](#ununifi.chain.yieldaggregator.QueryAllVaultResponse)
+    - [QueryEstimateMintAmountRequest](#ununifi.chain.yieldaggregator.QueryEstimateMintAmountRequest)
+    - [QueryEstimateMintAmountResponse](#ununifi.chain.yieldaggregator.QueryEstimateMintAmountResponse)
+    - [QueryEstimateRedeemAmountRequest](#ununifi.chain.yieldaggregator.QueryEstimateRedeemAmountRequest)
+    - [QueryEstimateRedeemAmountResponse](#ununifi.chain.yieldaggregator.QueryEstimateRedeemAmountResponse)
+    - [QueryGetStrategyRequest](#ununifi.chain.yieldaggregator.QueryGetStrategyRequest)
+    - [QueryGetStrategyResponse](#ununifi.chain.yieldaggregator.QueryGetStrategyResponse)
+    - [QueryGetVaultRequest](#ununifi.chain.yieldaggregator.QueryGetVaultRequest)
+    - [QueryGetVaultResponse](#ununifi.chain.yieldaggregator.QueryGetVaultResponse)
+    - [QueryParamsRequest](#ununifi.chain.yieldaggregator.QueryParamsRequest)
+    - [QueryParamsResponse](#ununifi.chain.yieldaggregator.QueryParamsResponse)
+  
+    - [Query](#ununifi.chain.yieldaggregator.Query)
+  
+>>>>>>> a73d5198 (feat: estimate)
 - [yield-aggregator/tx.proto](#yield-aggregator/tx.proto)
 <<<<<<< HEAD
 
@@ -1959,6 +1979,68 @@ GenesisState defines the yieldaggregator module's genesis state.
 | `vaults`     | [Vault](#ununifi.chain.yieldaggregator.Vault)                                     | repeated |             |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |          |             |
 
+<a name="ununifi.chain.yieldaggregator.QueryEstimateMintAmountRequest"></a>
+
+### QueryEstimateMintAmountRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [uint64](#uint64) |  |  |
+| `deposit_amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryEstimateMintAmountResponse"></a>
+
+### QueryEstimateMintAmountResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `mint_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryEstimateRedeemAmountRequest"></a>
+
+### QueryEstimateRedeemAmountRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [uint64](#uint64) |  |  |
+| `burn_amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryEstimateRedeemAmountResponse"></a>
+
+### QueryEstimateRedeemAmountResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `redeem_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
 <a name="ununifi.chain.yieldaggregator.QueryGetStrategyRequest"></a>
 
 ### QueryGetStrategyRequest
@@ -2126,7 +2208,12 @@ Query defines the gRPC querier service.
 | `Vault` | [QueryGetVaultRequest](#ununifi.chain.yieldaggregator.QueryGetVaultRequest) | [QueryGetVaultResponse](#ununifi.chain.yieldaggregator.QueryGetVaultResponse) |  | GET|/UnUniFi/chain/yield-aggregator/vaults/{id}|
 | `StrategyAll` | [QueryAllStrategyRequest](#ununifi.chain.yieldaggregator.QueryAllStrategyRequest) | [QueryAllStrategyResponse](#ununifi.chain.yieldaggregator.QueryAllStrategyResponse) |  | GET|/UnUniFi/chain/yield-aggregator/strategies/{denom}|
 | `Strategy` | [QueryGetStrategyRequest](#ununifi.chain.yieldaggregator.QueryGetStrategyRequest) | [QueryGetStrategyResponse](#ununifi.chain.yieldaggregator.QueryGetStrategyResponse) |  | GET|/UnUniFi/chain/yield-aggregator/strategies/{denom}/{id}|
+<<<<<<< HEAD
 >>>>>>> 0e15aa06 (feat: multi vault)
+=======
+| `EstimateMintAmount` | [QueryEstimateMintAmountRequest](#ununifi.chain.yieldaggregator.QueryEstimateMintAmountRequest) | [QueryEstimateMintAmountResponse](#ununifi.chain.yieldaggregator.QueryEstimateMintAmountResponse) |  | GET|/UnUniFi/chain/yield-aggregator/vaults/{id}/estimate-mint-amount|
+| `EstimateRedeemAmount` | [QueryEstimateRedeemAmountRequest](#ununifi.chain.yieldaggregator.QueryEstimateRedeemAmountRequest) | [QueryEstimateRedeemAmountResponse](#ununifi.chain.yieldaggregator.QueryEstimateRedeemAmountResponse) |  | GET|/UnUniFi/chain/yield-aggregator/vaults/{id}/estimate-redeem-amount|
+>>>>>>> a73d5198 (feat: estimate)
 
  <!-- end services -->
 

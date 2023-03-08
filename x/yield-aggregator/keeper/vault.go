@@ -114,7 +114,7 @@ func (k Keeper) GetAPY(ctx sdk.Context, vaultId uint64) sdk.Dec {
 	sum := sdk.ZeroDec()
 	for _, weight := range vault.StrategyWeights {
 		strategy, _ := k.GetStrategy(ctx, vault.Denom, weight.StrategyId)
-		apr := k.GetAPRFromStrategy(vault.Denom, strategy.Id)
+		apr := k.GetAPRFromStrategy(ctx, vault.Denom, strategy.Id)
 		sum = sum.Add(apr.Mul(weight.Weight))
 	}
 
