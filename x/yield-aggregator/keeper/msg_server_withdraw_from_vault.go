@@ -2,8 +2,10 @@ package keeper
 
 import (
 	"context"
-	"github.com/UnUniFi/chain/x/yield-aggregator/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/UnUniFi/chain/x/yield-aggregator/types"
 )
 
 func (k msgServer) WithdrawFromVault(ctx context.Context, msg *types.MsgWithdrawFromVault) (*types.MsgWithdrawFromVaultResponse, error) {
@@ -13,7 +15,7 @@ func (k msgServer) WithdrawFromVault(ctx context.Context, msg *types.MsgWithdraw
 		return nil, err
 	}
 
-	err = k.Keeper.BurnLPToken(sdkCtx, sender, msg.VaultId, msg.LpTokenAmount)
+	err = k.Keeper.BurnLPTokenAndRedeem(sdkCtx, sender, msg.VaultId, msg.LpTokenAmount)
 	if err != nil {
 		return nil, err
 	}

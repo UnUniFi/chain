@@ -51,7 +51,7 @@ func (k Keeper) EstimateRedeemAmountInternal(ctx sdk.Context, vaultDenom string,
 	return sdk.NewCoin(vaultDenom, principalAmount)
 }
 
-func (k Keeper) MintLPToken(ctx sdk.Context, address sdk.AccAddress, vaultId uint64, principalAmount sdk.Int) error {
+func (k Keeper) DepositAndMintLPToken(ctx sdk.Context, address sdk.AccAddress, vaultId uint64, principalAmount sdk.Int) error {
 	vault, found := k.GetVault(ctx, vaultId)
 	if !found {
 		// TODO
@@ -80,10 +80,12 @@ func (k Keeper) MintLPToken(ctx sdk.Context, address sdk.AccAddress, vaultId uin
 		return err
 	}
 
+	// TODO: Allocate funds to Strategy module accounts
+
 	return nil
 }
 
-func (k Keeper) BurnLPToken(ctx sdk.Context, address sdk.AccAddress, vaultId uint64, lpAmount sdk.Int) error {
+func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, vaultId uint64, lpAmount sdk.Int) error {
 	vault, found := k.GetVault(ctx, vaultId)
 	if !found {
 		// TODO
@@ -105,6 +107,10 @@ func (k Keeper) BurnLPToken(ctx sdk.Context, address sdk.AccAddress, vaultId uin
 	}
 
 	principal := k.EstimateRedeemAmountInternal(ctx, vault.Denom, vaultId, lpAmount)
+
+	// TODO: Unstake funds from Strategy
+	// TODO: Withdraw funds from "preparation for withdraw" of Strategy module account
+	// TODO: If "preparation for withdraw" is soon to be short, withdraw fee will be imposed
 
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, moduleName, address, sdk.NewCoins(principal))
 	if err != nil {
