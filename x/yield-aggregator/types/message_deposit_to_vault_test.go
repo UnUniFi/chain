@@ -25,8 +25,9 @@ func TestMsgDepositToVault_ValidateBasic(t *testing.T) {
 		}, {
 			name: "valid address",
 			msg: MsgDepositToVault{
-				Sender: sample.AccAddress(),
-				Amount: sdk.NewCoin("uatom", sdk.NewInt(1000)),
+				Sender:  sample.AccAddress(),
+				VaultId: 1,
+				Amount:  sdk.NewCoin("uatom", sdk.NewInt(1000)),
 			},
 		},
 	}

@@ -10,10 +10,11 @@ const TypeMsgDepositToVault = "deposit-to-vault"
 
 var _ sdk.Msg = &MsgDepositToVault{}
 
-func NewMsgDepositToVault(sender string, amount sdk.Coin) *MsgDepositToVault {
+func NewMsgDepositToVault(sender string, vaultId uint64, amount sdk.Coin) *MsgDepositToVault {
 	return &MsgDepositToVault{
-		Sender: sender,
-		Amount: amount,
+		Sender:  sender,
+		VaultId: vaultId,
+		Amount:  amount,
 	}
 }
 
