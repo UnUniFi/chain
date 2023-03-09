@@ -193,16 +193,8 @@ func (k Keeper) MakeQueriedPositions(ctx sdk.Context, positions types.Positions)
 			usdMap[position.Market.QuoteDenom] = price
 		}
 
-		if _, ok := usdMap[position.RemainingMargin.Denom]; !ok {
-			price, err := k.GetCurrentPrice(ctx, position.RemainingMargin.Denom)
-			if err != nil {
-				return nil, err
-			}
-			usdMap[position.RemainingMargin.Denom] = price
-		}
 		currentBaseUsdRate := usdMap[position.Market.BaseDenom]
 		currentQuoteUsdRate := usdMap[position.Market.QuoteDenom]
-		currentMarginUsdRate := usdMap[position.RemainingMargin.Denom]
 
 		perpetualFuturesPosition, err := types.NewPerpetualFuturesPositionFromPosition(position)
 		if err != nil {
@@ -210,13 +202,12 @@ func (k Keeper) MakeQueriedPositions(ctx sdk.Context, positions types.Positions)
 			return nil, status.Error(codes.Internal, err.Error())
 		}
 
-		closedPairRate := currentBaseUsdRate.Quo(currentQuoteUsdRate)
-		profit := perpetualFuturesPosition.CalcProfitAndLoss(closedPairRate)
+		profit := perpetualFuturesPosition.ProfitAndLossInMetrics(currentBaseUsdRate, currentQuoteUsdRate)
 		queriedPosition := types.QueriedPosition{
 			Position:              position,
-			ValuationProfit:       sdk.NewCoin("uusd", profit),
-			MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate),
-			EffectiveMargin:       sdk.NewCoin("uusd", types.NormalToMicroDenom(perpetualFuturesPosition.EffectiveMargin(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate))),
+			ValuationProfit:       sdk.NewCoin("uusd", types.MicroToNormalDenom(profit)),
+			MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate),
+			EffectiveMargin:       sdk.NewCoin("uusd", types.MicroToNormalDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(currentBaseUsdRate, currentQuoteUsdRate))),
 		}
 		queriedPositions = append(queriedPositions, queriedPosition)
 	}
@@ -242,22 +233,17 @@ func (k Keeper) Position(c context.Context, req *types.QueryPositionRequest) (*t
 	if err != nil {
 		panic(err)
 	}
-
 	currentQuoteUsdRate, err := k.GetCurrentPrice(ctx, position.Market.QuoteDenom)
 	if err != nil {
 		panic(err)
 	}
-	currentMarginUsdRate, err := k.GetCurrentPrice(ctx, position.RemainingMargin.Denom)
-	if err != nil {
-		panic(err)
-	}
-	closedPairRate := currentBaseUsdRate.Quo(currentQuoteUsdRate)
-	profit := perpetualFuturesPosition.CalcProfitAndLoss(closedPairRate)
+
+	profit := perpetualFuturesPosition.ProfitAndLossInMetrics(currentBaseUsdRate, currentQuoteUsdRate)
 	return &types.QueryPositionResponse{
 		Position:              position,
-		ValuationProfit:       sdk.NewCoin("uusd", profit),
-		MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate),
-		EffectiveMargin:       sdk.NewCoin("uusd", types.NormalToMicroDenom(perpetualFuturesPosition.EffectiveMargin(currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate))),
+		ValuationProfit:       sdk.NewCoin("uusd", types.MicroToNormalDenom(profit)),
+		MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate),
+		EffectiveMargin:       sdk.NewCoin("uusd", types.MicroToNormalDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(currentBaseUsdRate, currentQuoteUsdRate))),
 	}, nil
 }
 
@@ -300,11 +286,12 @@ func (k Keeper) DLPTokenRates(c context.Context, req *types.QueryDLPTokenRateReq
 	params := k.GetParams(ctx)
 	var rates sdk.Coins
 	for _, asset := range params.PoolParams.AcceptedAssets {
-		redeemAmount, redeemFee, err := k.GetRedeemDenomAmount(ctx, sdk.NewInt(1), asset.Denom)
+		ldpDenomRate, err := k.LptDenomRate(ctx, asset.Denom)
 		if err != nil {
-			return nil, status.Error(codes.InvalidArgument, err.Error())
+			// todo error handing
+			continue
 		}
-		rates = append(rates, sdk.NewCoin(asset.Denom, redeemAmount.Amount.Sub(redeemFee.Amount)))
+		rates = append(rates, sdk.NewCoin(asset.Denom, types.MicroToNormalDenom(ldpDenomRate)))
 	}
 
 	return &types.QueryDLPTokenRateResponse{

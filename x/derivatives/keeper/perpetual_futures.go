@@ -26,6 +26,22 @@ func (k Keeper) GetCurrentPrice(ctx sdk.Context, denom string) (sdk.Dec, error) 
 	return rate.Price, nil
 }
 
+func (k Keeper) GetPairUsdPrice(ctx sdk.Context, base, quote string) (sdk.Dec, sdk.Dec, error) {
+	baseUsdPrice, err := k.GetCurrentPrice(ctx, base)
+	if err != nil {
+		return sdk.Dec{}, sdk.Dec{}, err
+	}
+	quoteUsdPrice, err := k.GetCurrentPrice(ctx, quote)
+	if err != nil {
+		return sdk.Dec{}, sdk.Dec{}, err
+	}
+	return baseUsdPrice, quoteUsdPrice, nil
+}
+
+func (k Keeper) GetPairUsdPriceFromMarket(ctx sdk.Context, market types.Market) (sdk.Dec, sdk.Dec, error) {
+	return k.GetPairUsdPrice(ctx, market.BaseDenom, market.QuoteDenom)
+}
+
 func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string, sender ununifiTypes.StringAccAddress, margin sdk.Coin, market types.Market, positionInstance types.PerpetualFuturesPositionInstance) (*types.Position, error) {
 	openedBaseRate, err := k.GetCurrentPrice(ctx, market.BaseDenom)
 	if err != nil {
@@ -87,7 +103,6 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 	if err != nil {
 		return err
 	}
-	closedRate := baseUsdPrice.Mul(quoteUsdPrice)
 
 	// TODO: this is wrong. refer to Issue#407
 	if !feeAmount.IsZero() {
@@ -97,7 +112,7 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 		}
 	}
 
-	returningAmount, lossToLP := position.CalcReturningAmountAtClose(closedRate)
+	returningAmount, lossToLP := position.CalcReturningAmountAtClose(baseUsdPrice, quoteUsdPrice)
 
 	if !(lossToLP.IsNil()) {
 		// TODO: emit event to tell how much loss is taken by liquidity provider.
@@ -121,20 +136,12 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient ununifiTypes.StringAccAddress, position types.PerpetualFuturesPosition) error {
 	params := k.GetParams(ctx)
 
-	currentBaseUsdRate, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
+	currentBaseUsdRate, currentQuoteUsdRate, err := k.GetPairUsdPriceFromMarket(ctx, position.Market)
 	if err != nil {
 		panic(err)
 	}
 
-	currentQuoteUsdRate, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
-	if err != nil {
-		panic(err)
-	}
-	currentMarginUsdRate, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
-	if err != nil {
-		panic(err)
-	}
-	if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, currentBaseUsdRate, currentQuoteUsdRate, currentMarginUsdRate) {
+	if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, currentBaseUsdRate, currentQuoteUsdRate) {
 		k.ClosePerpetualFuturesPosition(ctx, position)
 
 		rewardAmount := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PoolParams.ReportLiquidationRewardRate).RoundInt()
