@@ -205,9 +205,9 @@ func (k Keeper) MakeQueriedPositions(ctx sdk.Context, positions types.Positions)
 		profit := perpetualFuturesPosition.ProfitAndLossInMetrics(currentBaseUsdRate, currentQuoteUsdRate)
 		queriedPosition := types.QueriedPosition{
 			Position:              position,
-			ValuationProfit:       sdk.NewCoin("uusd", types.NormalToMicroDenom(profit)),
+			ValuationProfit:       sdk.NewCoin("uusd", types.MicroToNormalDenom(profit)),
 			MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate),
-			EffectiveMargin:       sdk.NewCoin("uusd", types.NormalToMicroDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(currentBaseUsdRate, currentQuoteUsdRate))),
+			EffectiveMargin:       sdk.NewCoin("uusd", types.MicroToNormalDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(currentBaseUsdRate, currentQuoteUsdRate))),
 		}
 		queriedPositions = append(queriedPositions, queriedPosition)
 	}
@@ -241,9 +241,9 @@ func (k Keeper) Position(c context.Context, req *types.QueryPositionRequest) (*t
 	profit := perpetualFuturesPosition.ProfitAndLossInMetrics(currentBaseUsdRate, currentQuoteUsdRate)
 	return &types.QueryPositionResponse{
 		Position:              position,
-		ValuationProfit:       sdk.NewCoin("uusd", types.NormalToMicroDenom(profit)),
+		ValuationProfit:       sdk.NewCoin("uusd", types.MicroToNormalDenom(profit)),
 		MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate),
-		EffectiveMargin:       sdk.NewCoin("uusd", types.NormalToMicroDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(currentBaseUsdRate, currentQuoteUsdRate))),
+		EffectiveMargin:       sdk.NewCoin("uusd", types.MicroToNormalDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(currentBaseUsdRate, currentQuoteUsdRate))),
 	}, nil
 }
 
@@ -291,7 +291,7 @@ func (k Keeper) DLPTokenRates(c context.Context, req *types.QueryDLPTokenRateReq
 			// todo error handing
 			continue
 		}
-		rates = append(rates, sdk.NewCoin(asset.Denom, types.NormalToMicroDenom(ldpDenomRate)))
+		rates = append(rates, sdk.NewCoin(asset.Denom, types.MicroToNormalDenom(ldpDenomRate)))
 	}
 
 	return &types.QueryDLPTokenRateResponse{
