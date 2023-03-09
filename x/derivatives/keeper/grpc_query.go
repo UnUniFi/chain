@@ -286,7 +286,7 @@ func (k Keeper) DLPTokenRates(c context.Context, req *types.QueryDLPTokenRateReq
 	params := k.GetParams(ctx)
 	var rates sdk.Coins
 	for _, asset := range params.PoolParams.AcceptedAssets {
-		ldpDenomRate, err := k.LdpDenomRate(ctx, asset.Denom)
+		ldpDenomRate, err := k.LptDenomRate(ctx, asset.Denom)
 		if err != nil {
 			// todo error handing
 			continue
