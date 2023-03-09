@@ -304,9 +304,21 @@ func (k Keeper) EstimateDLPTokenAmount(c context.Context, req *types.QueryEstima
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
+	validAmount, ok := sdk.NewIntFromString(req.Amount)
+	if !ok {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	validCoin := sdk.Coin{
+		Denom:  req.MintDenom,
+		Amount: validAmount,
+	}
+	if validCoin.Validate() != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	mintAmount, mintFee, err := k.DetermineMintingLPTokenAmount(ctx, sdk.NewCoin(req.MintDenom, *req.Amount))
+	mintAmount, mintFee, err := k.DetermineMintingLPTokenAmount(ctx, validCoin)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
@@ -322,8 +334,21 @@ func (k Keeper) EstimateRedeemAmount(c context.Context, req *types.QueryEstimate
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
+	validAmount, ok := sdk.NewIntFromString(req.LptAmount)
+	if !ok {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	validCoin := sdk.Coin{
+		Denom:  req.RedeemDenom,
+		Amount: validAmount,
+	}
+	if validCoin.Validate() != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
-	redeemAmount, redeemFee, err := k.GetRedeemDenomAmount(ctx, *req.LptAmount, req.RedeemDenom)
+	redeemAmount, redeemFee, err := k.GetRedeemDenomAmount(ctx, validCoin.Amount, validCoin.Denom)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}

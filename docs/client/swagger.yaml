@@ -4844,7 +4844,7 @@ paths:
           type: string
       tags:
         - Query
-  /ununifi/derivatives/estimate-dlp-token-amount:
+  /ununifi/derivatives/estimate-dlp-token-amount/{mint_denom}/{amount}:
     get:
       operationId: EstimateDLPTokenAmount
       responses:
@@ -5074,16 +5074,16 @@ paths:
                         }
       parameters:
         - name: mint_denom
-          in: query
-          required: false
+          in: path
+          required: true
           type: string
         - name: amount
-          in: query
-          required: false
+          in: path
+          required: true
           type: string
       tags:
         - Query
-  /ununifi/derivatives/estimate-redeem-amount:
+  /ununifi/derivatives/estimate-redeem-amount/{redeem_denom}/{lpt_amount}:
     get:
       operationId: EstimateRedeemAmount
       responses:
@@ -5313,12 +5313,12 @@ paths:
                         }
       parameters:
         - name: redeem_denom
-          in: query
-          required: false
+          in: path
+          required: true
           type: string
         - name: lpt_amount
-          in: query
-          required: false
+          in: path
+          required: true
           type: string
       tags:
         - Query
