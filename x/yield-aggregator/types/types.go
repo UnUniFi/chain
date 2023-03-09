@@ -6,6 +6,10 @@ func GetLPTokenDenom(vaultId uint64) string {
 	return fmt.Sprintf("yield-aggregator/vaults/%d", vaultId)
 }
 
-func GetModuleAccountName(vaultId uint64) string {
+func GetVaultModuleAccountName(vaultId uint64) string {
 	return fmt.Sprintf("%s/vaults/%d", ModuleName, vaultId)
+}
+
+func GetStrategyModuleAccountName(strategyId uint64) string {
+	return fmt.Sprintf("%s/strategies/%d", ModuleName, strategyId)
 }
