@@ -286,11 +286,12 @@ func (k Keeper) DLPTokenRates(c context.Context, req *types.QueryDLPTokenRateReq
 	params := k.GetParams(ctx)
 	var rates sdk.Coins
 	for _, asset := range params.PoolParams.AcceptedAssets {
-		redeemAmount, redeemFee, err := k.GetRedeemDenomAmount(ctx, sdk.NewInt(1), asset.Denom)
+		ldpDenomRate, err := k.LdpDenomRate(ctx, asset.Denom)
 		if err != nil {
-			return nil, status.Error(codes.InvalidArgument, err.Error())
+			// todo error handing
+			continue
 		}
-		rates = append(rates, sdk.NewCoin(asset.Denom, redeemAmount.Amount.Sub(redeemFee.Amount)))
+		rates = append(rates, sdk.NewCoin(asset.Denom, types.NormalToMicroDenom(ldpDenomRate)))
 	}
 
 	return &types.QueryDLPTokenRateResponse{

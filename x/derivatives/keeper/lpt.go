@@ -83,6 +83,15 @@ func (k Keeper) DetermineMintingLPTokenAmount(ctx sdk.Context, amount sdk.Coin) 
 	return sdk.NewCoin(types.LiquidityProviderTokenDenom, mintAmount.TruncateInt()), sdk.NewCoin(types.LiquidityProviderTokenDenom, mintAmount.Mul(mintFeeRate).TruncateInt()), nil
 }
 
+func (k Keeper) LdpDenomRate(ctx sdk.Context, redeemDenom string) (sdk.Dec, error) {
+	lptPrice := k.GetLPTokenPrice(ctx)
+	redeemAssetPrice, err := k.GetAssetPrice(ctx, redeemDenom)
+	if err != nil {
+		return sdk.Dec{}, err
+	}
+	return lptPrice.Quo(redeemAssetPrice.Price), nil
+}
+
 func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemDenom string) (sdk.Coin, sdk.Coin, error) {
 	lptPrice := k.GetLPTokenPrice(ctx)
 	redeemAssetPrice, err := k.GetAssetPrice(ctx, redeemDenom)
