@@ -111,6 +111,10 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 	// TODO: Unstake funds from Strategy
 	// TODO: Withdraw funds from "preparation for withdraw" of Strategy module account
 	// TODO: If "preparation for withdraw" is soon to be short, withdraw fee will be imposed
+	// withdraw_reserve + tokens_in_unbonding_period + bonding_amount = total_amount
+	// reserve_maintenance_rate = withdraw_reserve / (withdraw_reserve + tokens_in_unbonding_period)
+	// withdraw_fee_rate = e^(-10 * (reserve_maintenance_rate))
+	// If reserve_maintenance_rate is close to 1, withdraw_fee_rate will be close to 0 and vice versa
 
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, moduleName, address, sdk.NewCoins(principal))
 	if err != nil {
