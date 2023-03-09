@@ -1,0 +1,66 @@
+syntax = "proto3";
+package ununifi.chain.yieldaggregator;
+
+import "gogoproto/gogo.proto";
+import "yieldaggregator/params.proto";
+import "yieldaggregator/asset.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/yieldaggregatorv1/types";
+
+// proposal to add new yield farm.
+message ProposalAddYieldFarm {
+  string                 title       = 1;
+  string                 description = 2;
+  AssetManagementAccount account     = 3;
+}
+
+// proposal to update yield farm info
+message ProposalUpdateYieldFarm {
+  string                 title       = 1;
+  string                 description = 2;
+  AssetManagementAccount account     = 3;
+}
+
+// proposal to remove yield farm
+message ProposalStopYieldFarm {
+  string title       = 1;
+  string description = 2;
+  string id          = 3;
+}
+
+// proposal to remove yield farm
+message ProposalRemoveYieldFarm {
+  string title       = 1;
+  string description = 2;
+  string id          = 3;
+}
+
+// proposal to add new yield farm target
+message ProposalAddYieldFarmTarget {
+  string                title       = 1;
+  string                description = 2;
+  AssetManagementTarget target      = 3;
+}
+
+// proposal to update yield farm target
+message ProposalUpdateYieldFarmTarget {
+  string                title       = 1;
+  string                description = 2;
+  AssetManagementTarget target      = 3;
+}
+
+// proposal to stop yield farm target
+message ProposalStopYieldFarmTarget {
+  string title                       = 1;
+  string description                 = 2;
+  string id                          = 3;
+  string asset_management_account_id = 4;
+}
+
+// proposal to delete yield farm target
+message ProposalRemoveYieldFarmTarget {
+  string title                       = 1;
+  string description                 = 2;
+  string id                          = 3;
+  string asset_management_account_id = 4;
+}

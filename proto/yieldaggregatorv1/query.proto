@@ -1,0 +1,84 @@
+syntax = "proto3";
+package ununifi.chain.yieldaggregator;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "yieldaggregator/params.proto";
+import "yieldaggregator/asset.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/yieldaggregatorv1/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/UnUniFi/chain/yieldaggregator/params";
+  }
+  rpc AssetManagementAccount(QueryAssetManagementAccountRequest) returns (QueryAssetManagementAccountResponse) {
+    option (google.api.http).get = "/UnUniFi/chain/yieldaggregator/asset_management_account/{id}";
+  }
+  rpc AllAssetManagementAccounts(QueryAllAssetManagementAccountsRequest)
+      returns (QueryAllAssetManagementAccountsResponse) {
+    option (google.api.http).get = "/UnUniFi/chain/yieldaggregator/all_asset_management_accounts";
+  }
+  rpc UserInfo(QueryUserInfoRequest) returns (QueryUserInfoResponse) {
+    option (google.api.http).get = "/UnUniFi/chain/yieldaggregator/user_info/{address}";
+  }
+  rpc AllFarmingUnits(QueryAllFarmingUnitsRequest) returns (QueryAllFarmingUnitsResponse) {
+    option (google.api.http).get = "/UnUniFi/chain/yieldaggregator/all_user_infos";
+  }
+  rpc DailyRewardPercents(QueryDailyRewardPercentsRequest) returns (QueryDailyRewardPercentsResponse) {
+    option (google.api.http).get = "/UnUniFi/chain/yieldaggregator/daily_reward_percents";
+  }
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message AssetManagementAccountInfo {
+  string                         id                       = 1;
+  string                         name                     = 2;
+  repeated AssetManagementTarget asset_management_targets = 3 [(gogoproto.nullable) = false];
+}
+
+message QueryAssetManagementAccountRequest {
+  string id = 1;
+}
+message QueryAssetManagementAccountResponse {
+  AssetManagementAccountInfo account = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllAssetManagementAccountsRequest {}
+message QueryAllAssetManagementAccountsResponse {
+  repeated AssetManagementAccountInfo accounts = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryUserInfo {
+  repeated cosmos.base.v1beta1.Coin amount         = 1 [(gogoproto.nullable) = false];
+  repeated FarmingOrder             farming_orders = 2 [(gogoproto.nullable) = false];
+  uint64                            farmed_counter = 3;
+}
+message QueryUserInfoRequest {
+  string address = 1;
+}
+message QueryUserInfoResponse {
+  QueryUserInfo user_info = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllFarmingUnitsRequest {}
+message QueryAllFarmingUnitsResponse {
+  repeated FarmingUnit units = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryDailyRewardPercentsRequest {}
+message QueryDailyRewardPercentsResponse {
+  repeated DailyPercent daily_percents = 1 [(gogoproto.nullable) = false];
+}
