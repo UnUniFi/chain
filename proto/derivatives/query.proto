@@ -62,17 +62,16 @@ service Query {
     option (google.api.http).get = "/ununifi/derivatives/{address}/positions";
   }
 
-
   rpc DLPTokenRates(QueryDLPTokenRateRequest) returns (QueryDLPTokenRateResponse) {
     option (google.api.http).get = "/ununifi/derivatives/pools/dlp";
   }
 
   rpc EstimateDLPTokenAmount(QueryEstimateDLPTokenAmountRequest) returns (QueryEstimateDLPTokenAmountResponse) {
-    option (google.api.http).get = "/ununifi/derivatives/estimate-dlp-token-amount";
+    option (google.api.http).get = "/ununifi/derivatives/estimate-dlp-token-amount/{mint_denom}/{amount}";
   }
 
   rpc EstimateRedeemAmount(QueryEstimateRedeemAmountRequest) returns (QueryEstimateRedeemAmountResponse) {
-    option (google.api.http).get = "/ununifi/derivatives/estimate-redeem-amount";
+    option (google.api.http).get = "/ununifi/derivatives/estimate-redeem-amount/{redeem_denom}/{lpt_amount}";
   }
 }
 
@@ -297,19 +296,18 @@ message QueryEstimateDLPTokenAmountRequest {
     (gogoproto.moretags)  = "yaml:\"mint_denom\""
   ];
   string amount = 2 [
-    (gogoproto.moretags)  = "yaml:\"amount\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
+    (gogoproto.moretags)  = "yaml:\"amount\""
   ];
 }
 
 message QueryEstimateDLPTokenAmountResponse {
-  string amount = 1 [
+  cosmos.base.v1beta1.Coin amount = 1 [
     (gogoproto.moretags)  = "yaml:\"amount\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
+    (gogoproto.nullable) = false
   ];
-  string fee = 2 [
+  cosmos.base.v1beta1.Coin fee = 2 [
     (gogoproto.moretags)  = "yaml:\"fee\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
+    (gogoproto.nullable) = false
   ];
 }
 
@@ -318,18 +316,17 @@ message QueryEstimateRedeemAmountRequest {
     (gogoproto.moretags)  = "yaml:\"redeem_denom\""
   ];
   string lpt_amount = 2 [
-    (gogoproto.moretags)  = "yaml:\"lpt_amount\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
+    (gogoproto.moretags)  = "yaml:\"lpt_amount\""
   ];
 }
 
 message QueryEstimateRedeemAmountResponse {
-  string amount = 1 [
+  cosmos.base.v1beta1.Coin amount = 1 [
     (gogoproto.moretags)  = "yaml:\"amount\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
+    (gogoproto.nullable) = false
   ];
-  string fee = 2 [
+  cosmos.base.v1beta1.Coin fee = 2 [
     (gogoproto.moretags)  = "yaml:\"fee\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
+    (gogoproto.nullable) = false
   ];
 }
