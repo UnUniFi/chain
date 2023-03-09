@@ -312,8 +312,8 @@ func (k Keeper) EstimateDLPTokenAmount(c context.Context, req *types.QueryEstima
 	}
 
 	return &types.QueryEstimateDLPTokenAmountResponse{
-		Amount: &mintAmount.Amount,
-		Fee:    &mintFee.Amount,
+		Amount: mintAmount,
+		Fee:    mintFee,
 	}, nil
 }
 
@@ -329,8 +329,8 @@ func (k Keeper) EstimateRedeemAmount(c context.Context, req *types.QueryEstimate
 	}
 
 	return &types.QueryEstimateRedeemAmountResponse{
-		Amount: &redeemAmount.Amount,
-		Fee:    &redeemFee.Amount,
+		Amount: redeemAmount,
+		Fee:    redeemFee,
 	}, nil
 }
 
