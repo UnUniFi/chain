@@ -500,7 +500,7 @@ func TestPerpetualFuturesPosition_CalcProfitAndLoss(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			resultDec := tc.position.ProfitAndLossInMetrics(tc.closedRates[0], tc.closedRates[1])
-			result := types.NormalToMicroDenom(resultDec)
+			result := types.MicroToNormalDenom(resultDec)
 			fmt.Println(result)
 			if !tc.exp.Equal(result) {
 				t.Error(tc, "expected %v, got %v", tc.exp, result)
