@@ -186,11 +186,20 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 		return err
 	}
 
+	if mintFee.IsPositive() {
+		// send mint fee to fee pool
+		err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, types.DerivativeFeeCollector, sdk.Coins{mintFee})
+		if err != nil {
+			return err
+		}
+	}
+
 	reductedMintAmount, err := mintAmount.SafeSub(mintFee)
 	if err != nil {
 		return err
 	}
 
+	// send to user
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, depositor, sdk.Coins{reductedMintAmount})
 	if err != nil {
 		return err
@@ -216,9 +225,16 @@ func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgBurnLi
 	if err != nil {
 		panic("failed to get redeemable amount")
 	}
-	// todo send fee pool
-	_ = redeemFee
 
+	if redeemFee.IsPositive() {
+		// send redeem fee to fee pool
+		err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, types.DerivativeFeeCollector, sdk.Coins{redeemFee})
+		if err != nil {
+			return err
+		}
+	}
+
+	// send redeem amount to the user
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, sdk.Coins{redeemAmount})
 	if err != nil {
 		return err
@@ -243,7 +259,6 @@ func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgBurnLi
 	return nil
 }
 
-// todo: make unit-test
 func (k Keeper) BurnCoin(ctx sdk.Context, burner sdk.AccAddress, amount sdk.Coin) error {
 	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, burner, types.ModuleName, sdk.Coins{amount})
 	if err != nil {
