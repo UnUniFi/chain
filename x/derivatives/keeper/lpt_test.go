@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	"github.com/tendermint/tendermint/crypto/ed25519"
 
 	ununifitypes "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/derivatives/types"
@@ -73,12 +74,175 @@ func (suite *KeeperTestSuite) TestLPTokenSupplySnapshotGetSet() {
 	suite.Require().Equal(supply, sdk.NewInt(1000000))
 }
 
-// TODO: write test for
-// GetLPTokenSupply(ctx sdk.Context) sdk.Int {
-// GetLPTokenPrice(ctx sdk.Context) sdk.Dec {
-// GetLPTokenAmount(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sdk.Coin, error) {
-// GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemDenom string) (sdk.Coin, sdk.Coin, error) {
-// DecreaseRedeemDenomAmount(ctx sdk.Context, amount sdk.Coin) error {
-// MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLiquidityProviderToken) error {
-// BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgBurnLiquidityProviderToken) error {
-// BurnCoin(ctx sdk.Context, burner sdk.AccAddress, amount sdk.Coin) error {
+func (suite *KeeperTestSuite) TestGetLPTokenSupply() {
+	// get initial supply value
+	supply := suite.keeper.GetLPTokenSupply(suite.ctx)
+	suite.Require().Equal(supply, sdk.ZeroInt())
+
+	// add lp token supply
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{sdk.NewInt64Coin(types.LiquidityProviderTokenDenom, 1000000)})
+	suite.Require().NoError(err)
+
+	// get after mint
+	supply = suite.keeper.GetLPTokenSupply(suite.ctx)
+	suite.Require().Equal(supply, sdk.NewInt(1000000))
+}
+
+func (suite *KeeperTestSuite) TestGetLPTokenPrice() {
+	// set price for asset
+	_, err := suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:uusdc", sdk.NewDec(13), suite.ctx.BlockTime().Add(time.Hour*3))
+	suite.Require().NoError(err)
+	params := suite.app.PricefeedKeeper.GetParams(suite.ctx)
+	params.Markets = []pricefeedtypes.Market{
+		{MarketId: "uatom:uusdc", BaseAsset: "uatom", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+	}
+	suite.app.PricefeedKeeper.SetParams(suite.ctx, params)
+	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:uusdc")
+	suite.Require().NoError(err)
+
+	// add pool asset and balance
+	suite.keeper.AddPoolAsset(suite.ctx, types.PoolParams_Asset{
+		Denom:        "uatom",
+		TargetWeight: sdk.OneDec(),
+	})
+	suite.keeper.SetAssetBalance(suite.ctx, sdk.NewInt64Coin("uatom", 1000000))
+
+	// set lp token supply
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{sdk.NewInt64Coin(types.LiquidityProviderTokenDenom, 1000000)})
+	suite.Require().NoError(err)
+
+	// check current height rate
+	currLptPrice := suite.keeper.GetLPTokenPrice(suite.ctx)
+	suite.Require().Equal(currLptPrice.String(), "0.000015280000000000")
+}
+
+func (suite *KeeperTestSuite) TestGetRedeemDenomAmount() {
+	// get uninitialized redeem amount
+	lptAmount := sdk.NewInt(1000000)
+	redeemAmount, redeemFee, err := suite.keeper.GetRedeemDenomAmount(suite.ctx, lptAmount, "uatom")
+	suite.Require().Error(err)
+	suite.Require().True(redeemAmount.IsNil())
+	suite.Require().True(redeemFee.IsNil())
+
+	// set price for asset
+	_, err = suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:uusdc", sdk.NewDec(13), suite.ctx.BlockTime().Add(time.Hour*3))
+	suite.Require().NoError(err)
+	params := suite.app.PricefeedKeeper.GetParams(suite.ctx)
+	params.Markets = []pricefeedtypes.Market{
+		{MarketId: "uatom:uusdc", BaseAsset: "uatom", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+	}
+	suite.app.PricefeedKeeper.SetParams(suite.ctx, params)
+	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:uusdc")
+	suite.Require().NoError(err)
+
+	// add pool asset and balance
+	suite.keeper.AddPoolAsset(suite.ctx, types.PoolParams_Asset{
+		Denom:        "uatom",
+		TargetWeight: sdk.OneDec(),
+	})
+	suite.keeper.SetAssetBalance(suite.ctx, sdk.NewInt64Coin("uatom", 1000000))
+
+	// set lp token supply
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{sdk.NewInt64Coin(types.LiquidityProviderTokenDenom, 1000000)})
+	suite.Require().NoError(err)
+
+	// get initialized redeem amount
+	redeemAmount, redeemFee, err = suite.keeper.GetRedeemDenomAmount(suite.ctx, lptAmount, "uatom")
+	suite.Require().NoError(err)
+	suite.Require().Equal(redeemAmount.String(), "999000uatom")
+	suite.Require().Equal(redeemFee.String(), "1000uatom")
+}
+
+func (suite *KeeperTestSuite) TestDecreaseRedeemDenomAmount() {
+	// try operation on uninitialized environment
+	err := suite.keeper.DecreaseRedeemDenomAmount(suite.ctx, sdk.NewInt64Coin("uatom", 10000))
+	suite.Require().Error(err)
+
+	// set price for asset
+	_, err = suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:uusdc", sdk.NewDec(13), suite.ctx.BlockTime().Add(time.Hour*3))
+	suite.Require().NoError(err)
+	params := suite.app.PricefeedKeeper.GetParams(suite.ctx)
+	params.Markets = []pricefeedtypes.Market{
+		{MarketId: "uatom:uusdc", BaseAsset: "uatom", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+	}
+	suite.app.PricefeedKeeper.SetParams(suite.ctx, params)
+	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:uusdc")
+	suite.Require().NoError(err)
+
+	// add pool asset and balance
+	suite.keeper.AddPoolAsset(suite.ctx, types.PoolParams_Asset{
+		Denom:        "uatom",
+		TargetWeight: sdk.OneDec(),
+	})
+	suite.keeper.SetAssetBalance(suite.ctx, sdk.NewInt64Coin("uatom", 1000000))
+
+	// try after initialization
+	err = suite.keeper.DecreaseRedeemDenomAmount(suite.ctx, sdk.NewInt64Coin("uatom", 10000))
+	suite.Require().NoError(err)
+	assetBalance := suite.keeper.GetAssetBalance(suite.ctx, "uatom")
+	suite.Require().Equal(assetBalance.String(), "990000uatom")
+}
+
+func (suite *KeeperTestSuite) TestBurnCoin() {
+	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	err := suite.keeper.BurnCoin(suite.ctx, owner, sdk.NewInt64Coin("uatom", 10000))
+	suite.Require().Error(err)
+
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{sdk.NewInt64Coin("uatom", 1000000)})
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, owner, sdk.Coins{sdk.NewInt64Coin("uatom", 1000000)})
+	suite.Require().NoError(err)
+
+	err = suite.keeper.BurnCoin(suite.ctx, owner, sdk.NewInt64Coin("uatom", 10000))
+	suite.Require().NoError(err)
+
+	balance := suite.app.BankKeeper.GetBalance(suite.ctx, owner, "uatom")
+	suite.Require().Equal(balance.String(), "990000uatom")
+}
+
+func (suite *KeeperTestSuite) TestMintBurnLiquidityProviderToken() {
+	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{sdk.NewInt64Coin("uatom", 1000000)})
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, owner, sdk.Coins{sdk.NewInt64Coin("uatom", 1000000)})
+	suite.Require().NoError(err)
+
+	// when no liquidity provider token's available
+	err = suite.keeper.MintLiquidityProviderToken(suite.ctx, &types.MsgMintLiquidityProviderToken{
+		Sender: owner.Bytes(),
+		Amount: sdk.NewInt64Coin("uatom", 10000),
+	})
+	suite.Require().NoError(err)
+
+	balance := suite.app.BankKeeper.GetBalance(suite.ctx, owner, "udlp")
+	suite.Require().Equal(balance.String(), "20000udlp")
+
+	// mint more lp tokens
+	err = suite.keeper.MintLiquidityProviderToken(suite.ctx, &types.MsgMintLiquidityProviderToken{
+		Sender: owner.Bytes(),
+		Amount: sdk.NewInt64Coin("uatom", 10000),
+	})
+	suite.Require().NoError(err)
+
+	derivativeFeeCollector := suite.app.AccountKeeper.GetModuleAddress(types.DerivativeFeeCollector)
+	feeBalance := suite.app.BankKeeper.GetAllBalances(suite.ctx, derivativeFeeCollector)
+	suite.Require().Equal(feeBalance.String(), "40udlp")
+
+	balance = suite.app.BankKeeper.GetBalance(suite.ctx, owner, "udlp")
+	suite.Require().Equal(balance.String(), "39960udlp")
+
+	err = suite.keeper.BurnLiquidityProviderToken(suite.ctx, &types.MsgBurnLiquidityProviderToken{
+		Sender:      owner.Bytes(),
+		Amount:      sdk.NewInt(20000),
+		RedeemDenom: "uatom",
+	})
+	suite.Require().NoError(err)
+	balance = suite.app.BankKeeper.GetBalance(suite.ctx, owner, "udlp")
+	suite.Require().Equal(balance.String(), "19960udlp")
+
+	balance = suite.app.BankKeeper.GetBalance(suite.ctx, owner, "uatom")
+	suite.Require().Equal(balance.String(), "989990uatom")
+
+	feeBalance = suite.app.BankKeeper.GetAllBalances(suite.ctx, derivativeFeeCollector)
+	suite.Require().Equal(feeBalance.String(), "10uatom,40udlp")
+}
