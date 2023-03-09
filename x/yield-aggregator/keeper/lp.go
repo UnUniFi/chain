@@ -58,7 +58,7 @@ func (k Keeper) MintLPToken(ctx sdk.Context, address sdk.AccAddress, vaultId uin
 		panic("vault not found")
 	}
 
-	moduleName := types.GetModuleAccountName(vaultId)
+	moduleName := types.GetVaultModuleAccountName(vaultId)
 
 	principal := sdk.NewCoin(vault.Denom, principalAmount)
 
@@ -90,7 +90,7 @@ func (k Keeper) BurnLPToken(ctx sdk.Context, address sdk.AccAddress, vaultId uin
 		panic("vault not found")
 	}
 
-	moduleName := types.GetModuleAccountName(vaultId)
+	moduleName := types.GetVaultModuleAccountName(vaultId)
 
 	lpDenom := types.GetLPTokenDenom(vaultId)
 	lp := sdk.NewCoin(lpDenom, lpAmount)
