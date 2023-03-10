@@ -48,9 +48,9 @@ import (
 	"github.com/UnUniFi/chain/x/ununifidist"
 	ununifidistkeeper "github.com/UnUniFi/chain/x/ununifidist/keeper"
 	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
-	yieldaggregator "github.com/UnUniFi/chain/x/yieldaggregatorv1"
-	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yieldaggregatorv1/keeper"
-	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregatorv1/types"
+	yieldaggregator "github.com/UnUniFi/chain/x/yield-aggregator"
+	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yield-aggregator/keeper"
+	yieldaggregatortypes "github.com/UnUniFi/chain/x/yield-aggregator/types"
 	"github.com/UnUniFi/chain/x/yieldfarm"
 	yieldfarmkeeper "github.com/UnUniFi/chain/x/yieldfarm/keeper"
 	yieldfarmtypes "github.com/UnUniFi/chain/x/yieldfarm/types"
@@ -747,7 +747,6 @@ func NewApp(
 		keys[yieldaggregatortypes.StoreKey],
 		app.GetSubspace(yieldaggregatortypes.ModuleName),
 		app.BankKeeper,
-		app.YieldfarmKeeper,
 		wasmkeeper.NewDefaultPermissionKeeper(app.WasmKeeper),
 		app.StakeibcKeeper,
 	)

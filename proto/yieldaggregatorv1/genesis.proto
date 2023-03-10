@@ -2,8 +2,8 @@ syntax = "proto3";
 package ununifi.chain.yieldaggregator;
 
 import "gogoproto/gogo.proto";
-import "yieldaggregator/params.proto";
-import "yieldaggregator/asset.proto";
+import "yieldaggregatorv1/params.proto";
+import "yieldaggregatorv1/asset.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/yieldaggregatorv1/types";
 

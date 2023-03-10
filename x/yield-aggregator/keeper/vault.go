@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"encoding/binary"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/yield-aggregator/types"
@@ -108,8 +109,7 @@ func GetVaultIDFromBytes(bz []byte) uint64 {
 func (k Keeper) GetAPY(ctx sdk.Context, vaultId uint64) (*sdk.Dec, error) {
 	vault, found := k.GetVault(ctx, vaultId)
 	if !found {
-		// TODO
-		return nil, nil
+		return nil, types.ErrInvalidVaultId
 	}
 
 	sum := sdk.ZeroDec()

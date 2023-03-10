@@ -20,8 +20,7 @@ func (k Keeper) EstimateRedeemAmount(c context.Context, req *types.QueryEstimate
 
 	vault, found := k.GetVault(ctx, req.Id)
 	if !found {
-		// TODO
-		return nil, nil
+		return nil, types.ErrInvalidVaultId
 	}
 	redeemAmount := k.EstimateRedeemAmountInternal(ctx, vault.Denom, vault.Id, req.BurnAmount)
 

@@ -3,7 +3,7 @@ package ununifi.chain.yieldaggregator;
 
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
-import "yieldaggregator/asset.proto";
+import "yieldaggregatorv1/asset.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/yieldaggregatorv1/types";

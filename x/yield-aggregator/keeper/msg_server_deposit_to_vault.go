@@ -12,14 +12,12 @@ func (k msgServer) DepositToVault(ctx context.Context, msg *types.MsgDepositToVa
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
-		// TODO
-		return nil, nil
+		return nil, err
 	}
 
 	err = k.Keeper.DepositAndMintLPToken(sdkCtx, sender, msg.VaultId, msg.Amount.Amount)
 	if err != nil {
-		// TODO
-		return nil, nil
+		return nil, err
 	}
 
 	return &types.MsgDepositToVaultResponse{}, nil

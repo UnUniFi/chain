@@ -26,7 +26,12 @@ message Vault {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  repeated StrategyWeight strategy_weights = 6 [
+  string withdraw_reserve_rate = 6 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  repeated StrategyWeight strategy_weights = 7 [
     (gogoproto.nullable) = false
   ];
 }

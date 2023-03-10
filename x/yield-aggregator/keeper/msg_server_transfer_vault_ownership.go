@@ -12,18 +12,15 @@ func (k msgServer) TransferVaultOwnership(ctx context.Context, msg *types.MsgTra
 
 	vault, found := k.Keeper.GetVault(sdkCtx, msg.VaultId)
 	if !found {
-		// TODO
-		return nil, nil
+		return nil, types.ErrInvalidVaultId
 	}
 
 	if vault.Owner != msg.Sender {
-		// TODO
-		return nil, nil
+		return nil, types.ErrNotVaultOwner
 	}
 
 	_, err := sdk.AccAddressFromBech32(msg.Recipient)
 	if err != nil {
-		// TODO
 		return nil, err
 	}
 

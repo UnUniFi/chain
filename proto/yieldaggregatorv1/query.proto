@@ -5,8 +5,8 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "yieldaggregator/params.proto";
-import "yieldaggregator/asset.proto";
+import "yieldaggregatorv1/params.proto";
+import "yieldaggregatorv1/asset.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/yieldaggregatorv1/types";
 
@@ -14,23 +14,23 @@ option go_package = "github.com/UnUniFi/chain/x/yieldaggregatorv1/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/yieldaggregator/params";
+    option (google.api.http).get = "/UnUniFi/chain/yieldaggregatorv1/params";
   }
   rpc AssetManagementAccount(QueryAssetManagementAccountRequest) returns (QueryAssetManagementAccountResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/yieldaggregator/asset_management_account/{id}";
+    option (google.api.http).get = "/UnUniFi/chain/yieldaggregatorv1/asset_management_account/{id}";
   }
   rpc AllAssetManagementAccounts(QueryAllAssetManagementAccountsRequest)
       returns (QueryAllAssetManagementAccountsResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/yieldaggregator/all_asset_management_accounts";
+    option (google.api.http).get = "/UnUniFi/chain/yieldaggregatorv1/all_asset_management_accounts";
   }
   rpc UserInfo(QueryUserInfoRequest) returns (QueryUserInfoResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/yieldaggregator/user_info/{address}";
+    option (google.api.http).get = "/UnUniFi/chain/yieldaggregatorv1/user_info/{address}";
   }
   rpc AllFarmingUnits(QueryAllFarmingUnitsRequest) returns (QueryAllFarmingUnitsResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/yieldaggregator/all_user_infos";
+    option (google.api.http).get = "/UnUniFi/chain/yieldaggregatorv1/all_user_infos";
   }
   rpc DailyRewardPercents(QueryDailyRewardPercentsRequest) returns (QueryDailyRewardPercentsResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/yieldaggregator/daily_reward_percents";
+    option (google.api.http).get = "/UnUniFi/chain/yieldaggregatorv1/daily_reward_percents";
   }
 }
 
