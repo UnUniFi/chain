@@ -875,6 +875,25 @@ func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 	_, _ = params, listings
 	for _, listing := range listings {
 		bids := types.NftBids(k.GetBidsByNft(ctx, listing.NftId.IdBytes()))
+
+		// temporary fix
+		if len(bids) == 0 {
+			cacheCtx, write := ctx.CacheContext()
+			listingOwner, err := sdk.AccAddressFromBech32(listing.Owner)
+			if err != nil {
+				panic(err)
+			}
+			err = k.nftKeeper.Transfer(cacheCtx, listing.NftId.ClassId, listing.NftId.NftId, listingOwner)
+			k.DeleteNftListings(cacheCtx, listing)
+			k.RemoveDebt(cacheCtx, listing.IdBytes())
+			if err != nil {
+				panic(err)
+			} else {
+				write()
+			}
+			continue
+		}
+
 		winBid := bids.GetHighestBid()
 		// temporary fix
 		if len(bids) != 1 {
