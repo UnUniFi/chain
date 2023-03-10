@@ -874,11 +874,19 @@ func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 
 	_, _ = params, listings
 	for _, listing := range listings {
-		bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
+		bids := types.NftBids(k.GetBidsByNft(ctx, listing.NftId.IdBytes()))
+		winBid := bids.GetHighestBid()
+		// temporary fix
 		if len(bids) != 1 {
+			for _, bid := range bids {
+				if bid.Equal(winBid) {
+					continue
+				}
+				k.SafeCloseBid(ctx, bid)
+			}
 			continue
 		}
-		bid := bids[0]
+		bid := winBid
 		bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
 		if err != nil {
 			continue
