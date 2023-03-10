@@ -45,7 +45,7 @@ func YieldAggregatorKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		authtypes.FeeCollectorName: nil,
 		types.ModuleName:           {authtypes.Minter, authtypes.Burner},
 	}
-	accountKeeper := authkeeper.NewAccountKeeper(cdc, storeKey, paramsSubspace, authtypes.ProtoBaseAccount, maccPerms, sdk.Bech32MainPrefix)
+	accountKeeper := authkeeper.NewAccountKeeper(cdc, storeKey, paramsSubspace, authtypes.ProtoBaseAccount, maccPerms)
 	blockedAddrs := make(map[string]bool)
 	bankKeeper := bankkeeper.NewBaseKeeper(cdc, storeKey, accountKeeper, paramsSubspace, blockedAddrs)
 	k := keeper.NewKeeper(
