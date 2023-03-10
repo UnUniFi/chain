@@ -32,11 +32,6 @@ func NewPerpetualFuturesNetPositionOfMarket(market Market, position_size sdk.Dec
 	}
 }
 
-
 func (positionInstance PerpetualFuturesPositionInstance) MarginRequirement(currencyRate sdk.Dec) sdk.Dec {
 	return positionInstance.Size_.Mul(currencyRate).Quo(sdk.NewDec(int64(positionInstance.Leverage)))
-}
-
-func (m PerpetualFuturesPositionInstance) GetOrderSize() sdk.Dec {
-	return sdk.NewDec(int64(m.Leverage)).Mul(m.Size_)
 }
