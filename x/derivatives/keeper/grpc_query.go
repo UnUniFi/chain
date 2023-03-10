@@ -42,20 +42,27 @@ func (k Keeper) PerpetualFutures(c context.Context, req *types.QueryPerpetualFut
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+	positions := types.Positions(k.GetAllPositions(ctx))
+	getPriceFunc := func(ctx sdk.Context) func(denom string) (sdk.Dec, error) {
+		return func(denom string) (sdk.Dec, error) {
+			return k.GetCurrentPrice(ctx, denom)
+		}
+	}
+
+	longUsd := positions.EvaluateLongPositions(getPriceFunc(ctx))
+	shortUsd := positions.EvaluateShortPositions(getPriceFunc(ctx))
 	// TODO: implement the handler logic
 	ctx.BlockHeight()
-	metricsQuoteTicker := ""
+	metricsQuoteTicker := "USD"
 	volume24Hours := sdk.NewDec(0)
 	fees24Hours := sdk.NewDec(0)
-	longPositions := sdk.NewDec(0)
-	shortPositions := sdk.NewDec(0)
 
 	return &types.QueryPerpetualFuturesResponse{
 		MetricsQuoteTicker: metricsQuoteTicker,
 		Volume_24Hours:     &volume24Hours,
 		Fees_24Hours:       &fees24Hours,
-		LongPositions:      &longPositions,
-		ShortPositions:     &shortPositions,
+		LongPositions:      &longUsd,
+		ShortPositions:     &shortUsd,
 	}, nil
 }
 

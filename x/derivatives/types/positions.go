@@ -113,7 +113,7 @@ func (m PerpetualFuturesPosition) OpenedPairRate() sdk.Dec {
 
 // todo make test
 func (m PerpetualFuturesPosition) EvaluatePosition(currentBaseUsdRate sdk.Dec) sdk.Dec {
-	return currentBaseUsdRate.Mul(m.PositionInstance.GetOrderSize())
+	return currentBaseUsdRate.Mul(m.PositionInstance.Size_)
 }
 
 func MicroToNormalDenom(amount sdk.Dec) math.Int {
@@ -203,7 +203,7 @@ func (m PerpetualFuturesPosition) RequiredMarginInMetrics(baseUSDRate, quoteUSDR
 func (m PerpetualFuturesPosition) ProfitAndLossInQuote(baseUSDRate, quoteUSDRate sdk.Dec) sdk.Dec {
 	// 損益(quote単位) = (longなら1,shortなら-1) * (現在のbase/quoteレート - ポジション開設時base/quoteレート) * ポジションサイズ(base単位)
 	baseQuoteRate := baseUSDRate.Quo(quoteUSDRate)
-	profitOrLoss := baseQuoteRate.Sub(m.OpenedPairRate()).Mul(m.PositionInstance.GetOrderSize())
+	profitOrLoss := baseQuoteRate.Sub(m.OpenedPairRate()).Mul(m.PositionInstance.Size_)
 	if m.PositionInstance.PositionType == PositionType_LONG {
 		return profitOrLoss
 	} else {
