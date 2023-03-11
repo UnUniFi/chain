@@ -1,0 +1,10 @@
+syntax = "proto3";
+package ununifi.chain.copytrading;
+
+option go_package = "github.com/UnUniFi/chain/x/copy-trading/types";
+
+message Tracing {
+  string address = 1; 
+  string exemplary_trader = 2;
+}
+

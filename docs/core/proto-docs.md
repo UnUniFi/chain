@@ -74,6 +74,48 @@
   
     - [Msg](#ununifi.cdp.Msg)
   
+- [copy-trading/exemplary_trader.proto](#copy-trading/exemplary_trader.proto)
+    - [ExemplaryTrader](#ununifi.chain.copytrading.ExemplaryTrader)
+  
+- [copy-trading/params.proto](#copy-trading/params.proto)
+    - [Params](#ununifi.chain.copytrading.Params)
+  
+- [copy-trading/tracing.proto](#copy-trading/tracing.proto)
+    - [Tracing](#ununifi.chain.copytrading.Tracing)
+  
+- [copy-trading/genesis.proto](#copy-trading/genesis.proto)
+    - [GenesisState](#ununifi.chain.copytrading.GenesisState)
+  
+- [copy-trading/query.proto](#copy-trading/query.proto)
+    - [QueryAllExemplaryTraderRequest](#ununifi.chain.copytrading.QueryAllExemplaryTraderRequest)
+    - [QueryAllExemplaryTraderResponse](#ununifi.chain.copytrading.QueryAllExemplaryTraderResponse)
+    - [QueryAllTracingRequest](#ununifi.chain.copytrading.QueryAllTracingRequest)
+    - [QueryAllTracingResponse](#ununifi.chain.copytrading.QueryAllTracingResponse)
+    - [QueryGetExemplaryTraderRequest](#ununifi.chain.copytrading.QueryGetExemplaryTraderRequest)
+    - [QueryGetExemplaryTraderResponse](#ununifi.chain.copytrading.QueryGetExemplaryTraderResponse)
+    - [QueryGetExemplaryTraderTracingRequest](#ununifi.chain.copytrading.QueryGetExemplaryTraderTracingRequest)
+    - [QueryGetExemplaryTraderTracingResponse](#ununifi.chain.copytrading.QueryGetExemplaryTraderTracingResponse)
+    - [QueryGetTracingRequest](#ununifi.chain.copytrading.QueryGetTracingRequest)
+    - [QueryGetTracingResponse](#ununifi.chain.copytrading.QueryGetTracingResponse)
+    - [QueryParamsRequest](#ununifi.chain.copytrading.QueryParamsRequest)
+    - [QueryParamsResponse](#ununifi.chain.copytrading.QueryParamsResponse)
+  
+    - [Query](#ununifi.chain.copytrading.Query)
+  
+- [copy-trading/tx.proto](#copy-trading/tx.proto)
+    - [MsgCreateExemplaryTrader](#ununifi.chain.copytrading.MsgCreateExemplaryTrader)
+    - [MsgCreateExemplaryTraderResponse](#ununifi.chain.copytrading.MsgCreateExemplaryTraderResponse)
+    - [MsgCreateTracing](#ununifi.chain.copytrading.MsgCreateTracing)
+    - [MsgCreateTracingResponse](#ununifi.chain.copytrading.MsgCreateTracingResponse)
+    - [MsgDeleteExemplaryTrader](#ununifi.chain.copytrading.MsgDeleteExemplaryTrader)
+    - [MsgDeleteExemplaryTraderResponse](#ununifi.chain.copytrading.MsgDeleteExemplaryTraderResponse)
+    - [MsgDeleteTracing](#ununifi.chain.copytrading.MsgDeleteTracing)
+    - [MsgDeleteTracingResponse](#ununifi.chain.copytrading.MsgDeleteTracingResponse)
+    - [MsgUpdateExemplaryTrader](#ununifi.chain.copytrading.MsgUpdateExemplaryTrader)
+    - [MsgUpdateExemplaryTraderResponse](#ununifi.chain.copytrading.MsgUpdateExemplaryTraderResponse)
+  
+    - [Msg](#ununifi.chain.copytrading.Msg)
+  
 - [derivatives/derivatives.proto](#derivatives/derivatives.proto)
     - [EventPriceIsNotFeeded](#ununifi.derivatives.EventPriceIsNotFeeded)
     - [Market](#ununifi.derivatives.Market)
@@ -1326,6 +1368,496 @@ Query defines the gRPC querier service.
 | `DrawDebt` | [MsgDrawDebt](#ununifi.cdp.MsgDrawDebt) | [MsgDrawDebtResponse](#ununifi.cdp.MsgDrawDebtResponse) |  | |
 | `RepayDebt` | [MsgRepayDebt](#ununifi.cdp.MsgRepayDebt) | [MsgRepayDebtResponse](#ununifi.cdp.MsgRepayDebtResponse) |  | |
 | `Liquidate` | [MsgLiquidate](#ununifi.cdp.MsgLiquidate) | [MsgLiquidateResponse](#ununifi.cdp.MsgLiquidateResponse) |  | |
+
+ <!-- end services -->
+
+
+
+<a name="copy-trading/exemplary_trader.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## copy-trading/exemplary_trader.proto
+
+
+
+<a name="ununifi.chain.copytrading.ExemplaryTrader"></a>
+
+### ExemplaryTrader
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+| `name` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `profit_commission_rate` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="copy-trading/params.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## copy-trading/params.proto
+
+
+
+<a name="ununifi.chain.copytrading.Params"></a>
+
+### Params
+Params defines the parameters for the module.
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="copy-trading/tracing.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## copy-trading/tracing.proto
+
+
+
+<a name="ununifi.chain.copytrading.Tracing"></a>
+
+### Tracing
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+| `exemplary_trader` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="copy-trading/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## copy-trading/genesis.proto
+
+
+
+<a name="ununifi.chain.copytrading.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the copytrading module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.chain.copytrading.Params) |  |  |
+| `exemplaryTraderList` | [ExemplaryTrader](#ununifi.chain.copytrading.ExemplaryTrader) | repeated |  |
+| `tracingList` | [Tracing](#ununifi.chain.copytrading.Tracing) | repeated | this line is used by starport scaffolding # genesis/proto/state |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="copy-trading/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## copy-trading/query.proto
+
+
+
+<a name="ununifi.chain.copytrading.QueryAllExemplaryTraderRequest"></a>
+
+### QueryAllExemplaryTraderRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.QueryAllExemplaryTraderResponse"></a>
+
+### QueryAllExemplaryTraderResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `exemplaryTrader` | [ExemplaryTrader](#ununifi.chain.copytrading.ExemplaryTrader) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.QueryAllTracingRequest"></a>
+
+### QueryAllTracingRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.QueryAllTracingResponse"></a>
+
+### QueryAllTracingResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `tracing` | [Tracing](#ununifi.chain.copytrading.Tracing) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.QueryGetExemplaryTraderRequest"></a>
+
+### QueryGetExemplaryTraderRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.QueryGetExemplaryTraderResponse"></a>
+
+### QueryGetExemplaryTraderResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `exemplaryTrader` | [ExemplaryTrader](#ununifi.chain.copytrading.ExemplaryTrader) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.QueryGetExemplaryTraderTracingRequest"></a>
+
+### QueryGetExemplaryTraderTracingRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.QueryGetExemplaryTraderTracingResponse"></a>
+
+### QueryGetExemplaryTraderTracingResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `tracing` | [Tracing](#ununifi.chain.copytrading.Tracing) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.QueryGetTracingRequest"></a>
+
+### QueryGetTracingRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.QueryGetTracingResponse"></a>
+
+### QueryGetTracingResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `tracing` | [Tracing](#ununifi.chain.copytrading.Tracing) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+QueryParamsRequest is request type for the Query/Params RPC method.
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+QueryParamsResponse is response type for the Query/Params RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.chain.copytrading.Params) |  | params holds all the parameters of this module. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.chain.copytrading.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#ununifi.chain.copytrading.QueryParamsRequest) | [QueryParamsResponse](#ununifi.chain.copytrading.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/UnUniFi/chain/copy-trading/params|
+| `ExemplaryTrader` | [QueryGetExemplaryTraderRequest](#ununifi.chain.copytrading.QueryGetExemplaryTraderRequest) | [QueryGetExemplaryTraderResponse](#ununifi.chain.copytrading.QueryGetExemplaryTraderResponse) | Queries a ExemplaryTrader by index. | GET|/UnUniFi/chain/copy-trading/exemplary_traders/{address}|
+| `ExemplaryTraderAll` | [QueryAllExemplaryTraderRequest](#ununifi.chain.copytrading.QueryAllExemplaryTraderRequest) | [QueryAllExemplaryTraderResponse](#ununifi.chain.copytrading.QueryAllExemplaryTraderResponse) | Queries a list of ExemplaryTrader items. | GET|/UnUniFi/chain/copy-trading/exemplary_traders|
+| `ExemplaryTraderTracing` | [QueryGetExemplaryTraderTracingRequest](#ununifi.chain.copytrading.QueryGetExemplaryTraderTracingRequest) | [QueryGetExemplaryTraderTracingResponse](#ununifi.chain.copytrading.QueryGetExemplaryTraderTracingResponse) |  | GET|/UnUniFi/chain/copy-trading/exemplary_traders/{address}/tracing|
+| `Tracing` | [QueryGetTracingRequest](#ununifi.chain.copytrading.QueryGetTracingRequest) | [QueryGetTracingResponse](#ununifi.chain.copytrading.QueryGetTracingResponse) | Queries a Tracing by index. | GET|/UnUniFi/chain/copy-trading/tracing/{address}|
+| `TracingAll` | [QueryAllTracingRequest](#ununifi.chain.copytrading.QueryAllTracingRequest) | [QueryAllTracingResponse](#ununifi.chain.copytrading.QueryAllTracingResponse) | Queries a list of Tracing items. | GET|/UnUniFi/chain/copy-trading/tracing|
+
+ <!-- end services -->
+
+
+
+<a name="copy-trading/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## copy-trading/tx.proto
+
+
+
+<a name="ununifi.chain.copytrading.MsgCreateExemplaryTrader"></a>
+
+### MsgCreateExemplaryTrader
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.MsgCreateExemplaryTraderResponse"></a>
+
+### MsgCreateExemplaryTraderResponse
+
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.MsgCreateTracing"></a>
+
+### MsgCreateTracing
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.MsgCreateTracingResponse"></a>
+
+### MsgCreateTracingResponse
+
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.MsgDeleteExemplaryTrader"></a>
+
+### MsgDeleteExemplaryTrader
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.MsgDeleteExemplaryTraderResponse"></a>
+
+### MsgDeleteExemplaryTraderResponse
+
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.MsgDeleteTracing"></a>
+
+### MsgDeleteTracing
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.MsgDeleteTracingResponse"></a>
+
+### MsgDeleteTracingResponse
+
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.MsgUpdateExemplaryTrader"></a>
+
+### MsgUpdateExemplaryTrader
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.copytrading.MsgUpdateExemplaryTraderResponse"></a>
+
+### MsgUpdateExemplaryTraderResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.chain.copytrading.Msg"></a>
+
+### Msg
+Msg defines the Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `CreateExemplaryTrader` | [MsgCreateExemplaryTrader](#ununifi.chain.copytrading.MsgCreateExemplaryTrader) | [MsgCreateExemplaryTraderResponse](#ununifi.chain.copytrading.MsgCreateExemplaryTraderResponse) |  | |
+| `UpdateExemplaryTrader` | [MsgUpdateExemplaryTrader](#ununifi.chain.copytrading.MsgUpdateExemplaryTrader) | [MsgUpdateExemplaryTraderResponse](#ununifi.chain.copytrading.MsgUpdateExemplaryTraderResponse) |  | |
+| `DeleteExemplaryTrader` | [MsgDeleteExemplaryTrader](#ununifi.chain.copytrading.MsgDeleteExemplaryTrader) | [MsgDeleteExemplaryTraderResponse](#ununifi.chain.copytrading.MsgDeleteExemplaryTraderResponse) |  | |
+| `CreateTracing` | [MsgCreateTracing](#ununifi.chain.copytrading.MsgCreateTracing) | [MsgCreateTracingResponse](#ununifi.chain.copytrading.MsgCreateTracingResponse) |  | |
+| `DeleteTracing` | [MsgDeleteTracing](#ununifi.chain.copytrading.MsgDeleteTracing) | [MsgDeleteTracingResponse](#ununifi.chain.copytrading.MsgDeleteTracingResponse) | this line is used by starport scaffolding # proto/tx/rpc | |
 
  <!-- end services -->
 

@@ -1,0 +1,18 @@
+syntax = "proto3";
+package ununifi.chain.copytrading;
+
+import "gogoproto/gogo.proto";
+import "copy-trading/params.proto";
+import "copy-trading/exemplary_trader.proto";
+import "copy-trading/tracing.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/UnUniFi/chain/x/copy-trading/types";
+
+// GenesisState defines the copytrading module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  repeated ExemplaryTrader exemplaryTraderList = 2 [(gogoproto.nullable) = false];
+  repeated Tracing tracingList = 3 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+}

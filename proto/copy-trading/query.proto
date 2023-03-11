@@ -1,0 +1,102 @@
+syntax = "proto3";
+package ununifi.chain.copytrading;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "copy-trading/params.proto";
+import "copy-trading/exemplary_trader.proto";
+import "copy-trading/tracing.proto";
+// this line is used by starport scaffolding # 1
+
+option go_package = "github.com/UnUniFi/chain/x/copy-trading/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/UnUniFi/chain/copy-trading/params";
+  }
+  // Queries a ExemplaryTrader by index.
+	rpc ExemplaryTrader(QueryGetExemplaryTraderRequest) returns (QueryGetExemplaryTraderResponse) {
+		option (google.api.http).get = "/UnUniFi/chain/copy-trading/exemplary_traders/{address}";
+	}
+
+	// Queries a list of ExemplaryTrader items.
+	rpc ExemplaryTraderAll(QueryAllExemplaryTraderRequest) returns (QueryAllExemplaryTraderResponse) {
+		option (google.api.http).get = "/UnUniFi/chain/copy-trading/exemplary_traders";
+	}
+
+  rpc ExemplaryTraderTracing(QueryGetExemplaryTraderTracingRequest) returns (QueryGetExemplaryTraderTracingResponse) {
+		option (google.api.http).get = "/UnUniFi/chain/copy-trading/exemplary_traders/{address}/tracing";
+	}
+
+// Queries a Tracing by index.
+	rpc Tracing(QueryGetTracingRequest) returns (QueryGetTracingResponse) {
+		option (google.api.http).get = "/UnUniFi/chain/copy-trading/tracing/{address}";
+	}
+
+	// Queries a list of Tracing items.
+	rpc TracingAll(QueryAllTracingRequest) returns (QueryAllTracingResponse) {
+		option (google.api.http).get = "/UnUniFi/chain/copy-trading/tracing";
+	}
+
+// this line is used by starport scaffolding # 2
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetExemplaryTraderRequest {
+	  string address = 1;
+
+}
+
+message QueryGetExemplaryTraderResponse {
+	ExemplaryTrader exemplaryTrader = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllExemplaryTraderRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllExemplaryTraderResponse {
+	repeated ExemplaryTrader exemplaryTrader = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetExemplaryTraderTracingRequest {
+  string address = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryGetExemplaryTraderTracingResponse {
+	repeated Tracing tracing = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetTracingRequest {
+	  string address = 1;
+
+}
+
+message QueryGetTracingResponse {
+	Tracing tracing = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllTracingRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllTracingResponse {
+	repeated Tracing tracing = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// this line is used by starport scaffolding # 3

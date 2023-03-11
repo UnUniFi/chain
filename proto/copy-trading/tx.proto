@@ -1,0 +1,48 @@
+syntax = "proto3";
+package ununifi.chain.copytrading;
+
+import "copy-trading/exemplary_trader.proto";
+import "copy-trading/tracing.proto";
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/UnUniFi/chain/x/copy-trading/types";
+
+// Msg defines the Msg service.
+service Msg {
+      rpc CreateExemplaryTrader(MsgCreateExemplaryTrader) returns (MsgCreateExemplaryTraderResponse);
+  rpc UpdateExemplaryTrader(MsgUpdateExemplaryTrader) returns (MsgUpdateExemplaryTraderResponse);
+  rpc DeleteExemplaryTrader(MsgDeleteExemplaryTrader) returns (MsgDeleteExemplaryTraderResponse);
+  rpc CreateTracing(MsgCreateTracing) returns (MsgCreateTracingResponse);
+  rpc DeleteTracing(MsgDeleteTracing) returns (MsgDeleteTracingResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgCreateExemplaryTrader {
+  string sender = 1;
+
+}
+message MsgCreateExemplaryTraderResponse {}
+
+message MsgUpdateExemplaryTrader {
+  string sender = 1;
+
+}
+message MsgUpdateExemplaryTraderResponse {}
+
+message MsgDeleteExemplaryTrader {
+  string sender = 1;
+}
+message MsgDeleteExemplaryTraderResponse {}
+
+message MsgCreateTracing {
+  string sender = 1;
+
+}
+message MsgCreateTracingResponse {}
+
+message MsgDeleteTracing {
+  string sender = 1;
+}
+message MsgDeleteTracingResponse {}
+
+// this line is used by starport scaffolding # proto/tx/message

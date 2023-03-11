@@ -1,0 +1,17 @@
+syntax = "proto3";
+package ununifi.chain.copytrading;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/copy-trading/types";
+
+message ExemplaryTrader {
+  string address = 1; 
+  string name = 2;
+  string description = 3;
+  string profit_commission_rate = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
