@@ -22,9 +22,6 @@ func saveBlockTime(ctx sdk.Context, k keeper.Keeper) {
 
 // BeginBlocker
 func BeginBlocker(ctx sdk.Context, k keeper.Keeper) {
-	// TODO: make this function calling every 8 hours.
-	// saving `last_levy_ifr_block_time` in store is one of ways to do so.
-	// levyImaginaryFundingRate(ctx, k)
 	CheckPosition(ctx, k)
 }
 
