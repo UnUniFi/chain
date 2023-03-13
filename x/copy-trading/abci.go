@@ -11,31 +11,51 @@ import (
 	proto "github.com/gogo/protobuf/proto"
 )
 
+func openPositionHandler(ctx sdk.Context, k keeper.Keeper, event sdk.Event) {
+	var sender, positionId string
+	for _, attribute := range event.Attributes {
+		if string(attribute.Key) == "sender" {
+			sender = string(attribute.Value)
+		}
+		if string(attribute.Key) == "position_id" {
+			positionId = string(attribute.Value)
+		}
+	}
+
+	trader, found := k.GetExemplaryTrader(ctx, sender)
+	if !found {
+		return
+	}
+
+	tracings := k.GetExemplaryTraderTracing(ctx, trader.Address)
+	position := k.DerivativesKeeper.GetPosition(ctx, positionId)
+	for _, tracing := range tracings {
+		k.TracePosition(ctx, tracing, position)
+	}
+}
+
+func closePositionHandler(ctx sdk.Context, k keeper.Keeper, event sdk.Event) {
+	var sender, positionId string
+	for _, attribute := range event.Attributes {
+		if string(attribute.Key) == "sender" {
+			sender = string(attribute.Value)
+		}
+		if string(attribute.Key) == "position_id" {
+			positionId = string(attribute.Value)
+		}
+	}
+
+	// TODO: get position ids list of traced position and if position id is in list, then close it
+}
+
 // EndBlocker
 func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 	for _, event := range ctx.EventManager().Events() {
-		if event.Type != proto.MessageName(&derivativesTypes.EventPerpetualFuturesPositionOpened{}) {
-			continue
+		if event.Type == proto.MessageName(&derivativesTypes.EventPerpetualFuturesPositionOpened{}) {
+			openPositionHandler(ctx, k, event)
 		}
-		var sender, positionId string
-		for _, attribute := range event.Attributes {
-			if string(attribute.Key) == "sender" {
-				sender = string(attribute.Value)
-			}
-			if string(attribute.Key) == "position_id" {
-				positionId = string(attribute.Value)
-			}
-		}
-
-		trader, found := k.GetExemplaryTrader(ctx, sender)
-		if !found {
-			break
-		}
-
-		tracings := k.GetExemplaryTraderTracing(ctx, trader.Address)
-		position := k.DerivativesKeeper.GetPosition(ctx, positionId)
-		for _, tracing := range tracings {
-			k.TracePosition(ctx, tracing, position)
+		if event.Type == proto.MessageName(&derivativesTypes.EventPerpetualFuturesPositionClosed{}) {
+			closePositionHandler(ctx, k, event)
 		}
 	}
 }
