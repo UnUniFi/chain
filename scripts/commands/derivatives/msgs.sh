@@ -8,6 +8,7 @@ SCRIPT_DIR=$(cd $(dirname $0); pwd)
 if [ "$1" = "debug" ]; then
     set -x
     $BINARY tx derivatives mint-lpt 100ubtc --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g';
+    $BINARY tx derivatives open-position perpetual-futures 2500000uusdc ubtc uusdc long 1 1  --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g'
     # $BINARY tx derivatives open-position perpetual-futures 1ubtc ubtc uusdc long 5 5  --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g'
     # $BINARY tx derivatives open-position perpetual-futures 10000ubtc ubtc uusdc long 5 5  --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g'
     $BINARY tx derivatives open-position perpetual-futures 2ubtc ubtc uusdc long 1 1  --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g'

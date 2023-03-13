@@ -69,6 +69,15 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 		RemainingMargin:  margin,
 	}
 
+	if position.RemainingMargin.Amount.IsZero() {
+		return nil, types.ErrorMarginNotEnough
+	}
+
+	params := k.GetParams(ctx)
+	if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, position.OpenedBaseRate, position.OpenedQuoteRate) {
+		return nil, types.ErrorInvalidPositionParams
+	}
+
 	switch positionInstance.PositionType {
 	case types.PositionType_LONG:
 		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.Size_)
