@@ -251,7 +251,7 @@ func (m PerpetualFuturesPosition) RemainingMarginInQuote(quoteUSDRate sdk.Dec) s
 	quoteRemainingMargin := sdk.NewDecFromInt(m.RemainingMargin.Amount)
 	pos := m
 	fmt.Println("pos")
-	fmt.Println(pos)
+	fmt.Println(pos.String())
 	fmt.Println("quoteRemainingMargin")
 	fmt.Println(quoteRemainingMargin)
 	fmt.Println("quoteUSDRate")
