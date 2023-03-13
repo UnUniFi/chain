@@ -45,6 +45,16 @@ func CheckPosition(ctx sdk.Context, k keeper.Keeper) {
 			k.DeletePosition(ctx, sdk.AccAddress(position.Address), position.Id)
 			continue
 		}
+		// this is temporary treatment.
+		// if position id is 0,3,5,7,9 or 10 delete position
+		if position.Id == "0" || position.Id == "3" || position.Id == "5" || position.Id == "7" || position.Id == "9" || position.Id == "10" {
+			posForLog, _ := types.NewPerpetualFuturesPositionFromPosition(position)
+			fmt.Println("deleted position for users:")
+			fmt.Println(posForLog.String())
+			k.DeletePosition(ctx, sdk.AccAddress(position.Address), position.Id)
+			continue
+		}
+
 		currentBaseUsdRate, currentQuoteUsdRate, err := k.GetPairUsdPriceFromMarket(ctx, position.Market)
 		if err != nil {
 			// todo: user logger
