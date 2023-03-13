@@ -69,7 +69,7 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 		RemainingMargin:  margin,
 	}
 
-	if position.RemainingMargin.Amount.IsZero() {
+	if position.Validate() != nil {
 		return nil, types.ErrorMarginNotEnough
 	}
 
