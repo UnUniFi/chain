@@ -206,8 +206,16 @@ func (m PerpetualFuturesPosition) RequiredMarginInMetrics(baseUSDRate, quoteUSDR
 }
 func (m PerpetualFuturesPosition) ProfitAndLossInQuote(baseUSDRate, quoteUSDRate sdk.Dec) sdk.Dec {
 	// 損益(quote単位) = (longなら1,shortなら-1) * (現在のbase/quoteレート - ポジション開設時base/quoteレート) * ポジションサイズ(base単位)
+	fmt.Println("baseUSDRate")
+	fmt.Println(baseUSDRate)
+	fmt.Println("quoteUSDRate")
+	fmt.Println(quoteUSDRate)
 	baseQuoteRate := baseUSDRate.Quo(quoteUSDRate)
+	fmt.Println("baseQuoteRate")
+	fmt.Println(baseQuoteRate)
 	profitOrLoss := baseQuoteRate.Sub(m.OpenedPairRate()).Mul(m.PositionInstance.Size_)
+	fmt.Println("profitOrLoss")
+	fmt.Println(profitOrLoss)
 	if m.PositionInstance.PositionType == PositionType_LONG {
 		return profitOrLoss
 	} else {
