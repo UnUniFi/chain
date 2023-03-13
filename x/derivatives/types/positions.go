@@ -216,16 +216,8 @@ func (m PerpetualFuturesPosition) RequiredMarginInMetrics(baseUSDRate, quoteUSDR
 }
 func (m PerpetualFuturesPosition) ProfitAndLossInQuote(baseUSDRate, quoteUSDRate sdk.Dec) sdk.Dec {
 	// 損益(quote単位) = (longなら1,shortなら-1) * (現在のbase/quoteレート - ポジション開設時base/quoteレート) * ポジションサイズ(base単位)
-	fmt.Println("baseUSDRate")
-	fmt.Println(baseUSDRate.String())
-	fmt.Println("quoteUSDRate")
-	fmt.Println(quoteUSDRate.String())
 	baseQuoteRate := baseUSDRate.Quo(quoteUSDRate)
-	fmt.Println("baseQuoteRate")
-	fmt.Println(baseQuoteRate.String())
 	profitOrLoss := baseQuoteRate.Sub(m.OpenedPairRate()).Mul(m.PositionInstance.Size_)
-	fmt.Println("profitOrLoss")
-	fmt.Println(profitOrLoss.String())
 	if m.PositionInstance.PositionType == PositionType_LONG {
 		return profitOrLoss
 	} else {
@@ -240,32 +232,15 @@ func (m PerpetualFuturesPosition) ProfitAndLossInMetrics(baseUSDRate, quoteUSDRa
 func (m PerpetualFuturesPosition) MarginMaintenanceRate(baseUSDRate, quoteUSDRate sdk.Dec) sdk.Dec {
 	// 証拠金維持率 = 有効証拠金(USD単位) ÷ 必要証拠金(USD単位)
 	effectiveMargin := m.EffectiveMarginInMetrics(baseUSDRate, quoteUSDRate)
-	fmt.Println("effectiveMargin")
-	fmt.Println(effectiveMargin)
 	marginMaintenanceRate := effectiveMargin.Quo(m.RequiredMarginInMetrics(baseUSDRate, quoteUSDRate))
-	fmt.Println("marginMaintenanceRate")
-	fmt.Println(marginMaintenanceRate)
 	return marginMaintenanceRate
 }
 func (m PerpetualFuturesPosition) RemainingMarginInBase(baseUSDRate sdk.Dec) sdk.Dec {
 	// 残存証拠金(USD単位) = 残存証拠金(base単位) * 現在のbase/USDレート
-	baseRemaingMargin := sdk.NewDecFromInt(m.RemainingMargin.Amount)
-	fmt.Println("baseRemaingMargin")
-	fmt.Println(baseRemaingMargin)
-	fmt.Println("baseUSDRate")
-	fmt.Println(baseUSDRate)
 	return sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(baseUSDRate)
 }
 func (m PerpetualFuturesPosition) RemainingMarginInQuote(quoteUSDRate sdk.Dec) sdk.Dec {
 	// 残存証拠金(USD単位) = 残存証拠金(quote単位) * 現在のquote/USDレート
-	quoteRemainingMargin := sdk.NewDecFromInt(m.RemainingMargin.Amount)
-	pos := m
-	fmt.Println("pos")
-	fmt.Println(pos.String())
-	fmt.Println("quoteRemainingMargin")
-	fmt.Println(quoteRemainingMargin)
-	fmt.Println("quoteUSDRate")
-	fmt.Println(quoteUSDRate)
 	return sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(quoteUSDRate)
 }
 func (m PerpetualFuturesPosition) RemainingMarginInMetrics(baseUSDRate, quoteUSDRate sdk.Dec) sdk.Dec {
