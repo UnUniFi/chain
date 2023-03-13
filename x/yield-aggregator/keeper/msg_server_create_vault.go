@@ -7,42 +7,38 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k msgServer) CreateVault(ctx context.Context, msg *types.MsgCreateVault) (*types.MsgCreateVaultResponse, error) {
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
+func (k msgServer) CreateVault(goCtx context.Context, msg *types.MsgCreateVault) (*types.MsgCreateVaultResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	params := k.Keeper.GetParams(sdkCtx)
+	params := k.Keeper.GetParams(ctx)
 
 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
-		// TODO
 		return nil, err
 	}
 
 	if msg.Fee.Denom != params.VaultCreationFee.Denom {
-		// return nil, types.ErrInvalidFeeDenom
-		return nil, nil
+		return nil, types.ErrInvalidFeeDenom
 	}
 	if msg.Fee.IsLT(params.VaultCreationFee) {
-		// return nil, types.ErrInsufficientFee
-		return nil, nil
+		return nil, types.ErrInsufficientFee
 	}
 
 	if msg.Deposit.Denom != params.VaultCreationDeposit.Denom {
-		// return nil, types.ErrInvalidDepositDenom
-		return nil, nil
+		return nil, types.ErrInvalidDepositDenom
 	}
 	if msg.Deposit.IsLT(params.VaultCreationDeposit) {
-		// return nil, types.ErrInsufficientDeposit
-		return nil, nil
+		return nil, types.ErrInsufficientDeposit
 	}
 
 	// transfer fee
-	err = k.bankKeeper.SendCoinsFromAccountToModule(sdkCtx, sender, types.ModuleName, sdk.NewCoins(msg.Fee))
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.NewCoins(msg.Fee))
 	if err != nil {
 		return nil, err
 	}
-	// transfer deposit
-	err = k.bankKeeper.SendCoinsFromAccountToModule(sdkCtx, sender, types.ModuleName, sdk.NewCoins(msg.Deposit))
+
+	// transfer deposit to module account (not for investment but for incentivization of deleting unused vault)
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.NewCoins(msg.Deposit))
 	if err != nil {
 		return nil, err
 	}
@@ -54,8 +50,7 @@ func (k msgServer) CreateVault(ctx context.Context, msg *types.MsgCreateVault) (
 		WithdrawCommissionRate: msg.CommissionRate,
 		StrategyWeights:        msg.StrategyWeights,
 	}
-
-	k.Keeper.AppendVault(sdkCtx, vault)
+	k.Keeper.AppendVault(ctx, vault)
 
 	return &types.MsgCreateVaultResponse{}, nil
 }

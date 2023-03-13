@@ -7,26 +7,30 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k msgServer) DeleteVault(ctx context.Context, msg *types.MsgDeleteVault) (*types.MsgDeleteVaultResponse, error) {
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
+func (k msgServer) DeleteVault(goCtx context.Context, msg *types.MsgDeleteVault) (*types.MsgDeleteVaultResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return nil, err
 	}
-	vault, found := k.Keeper.GetVault(sdkCtx, msg.VaultId)
+	vault, found := k.Keeper.GetVault(ctx, msg.VaultId)
 	if !found {
-		// TODO
-		return nil, nil
+		return nil, types.ErrInvalidVaultId
+	}
+
+	// ensure no funds available on the vault
+	totalVaultAmount := k.VaultAmountTotal(ctx, vault)
+	if totalVaultAmount.IsPositive() {
+		return nil, types.ErrVaultHasPositiveBalance
 	}
 
 	// transfer deposit
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(sdkCtx, types.ModuleName, sender, sdk.NewCoins(vault.OwnerDeposit))
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, sdk.NewCoins(vault.OwnerDeposit))
 	if err != nil {
 		return nil, err
 	}
 
-	k.Keeper.RemoveVault(sdkCtx, msg.VaultId)
-
+	k.Keeper.RemoveVault(ctx, msg.VaultId)
 	return &types.MsgDeleteVaultResponse{}, nil
 }
