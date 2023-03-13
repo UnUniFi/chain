@@ -239,10 +239,20 @@ func (m PerpetualFuturesPosition) MarginMaintenanceRate(baseUSDRate, quoteUSDRat
 }
 func (m PerpetualFuturesPosition) RemainingMarginInBase(baseUSDRate sdk.Dec) sdk.Dec {
 	// 残存証拠金(USD単位) = 残存証拠金(base単位) * 現在のbase/USDレート
+	baseRemaingMargin := sdk.NewDecFromInt(m.RemainingMargin.Amount)
+	fmt.Println("baseRemaingMargin")
+	fmt.Println(baseRemaingMargin)
+	fmt.Println("baseUSDRate")
+	fmt.Println(baseUSDRate)
 	return sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(baseUSDRate)
 }
 func (m PerpetualFuturesPosition) RemainingMarginInQuote(quoteUSDRate sdk.Dec) sdk.Dec {
 	// 残存証拠金(USD単位) = 残存証拠金(quote単位) * 現在のquote/USDレート
+	quoteRemainingMargin := sdk.NewDecFromInt(m.RemainingMargin.Amount)
+	fmt.Println("quoteRemainingMargin")
+	fmt.Println(quoteRemainingMargin)
+	fmt.Println("quoteUSDRate")
+	fmt.Println(quoteUSDRate)
 	return sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(quoteUSDRate)
 }
 func (m PerpetualFuturesPosition) RemainingMarginInMetrics(baseUSDRate, quoteUSDRate sdk.Dec) sdk.Dec {
