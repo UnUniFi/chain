@@ -212,11 +212,20 @@ func (k Keeper) MakeQueriedPositions(ctx sdk.Context, positions types.Positions)
 		}
 
 		profit := perpetualFuturesPosition.ProfitAndLossInMetrics(currentBaseUsdRate, currentQuoteUsdRate)
+		// fixme do not use sdk.Coin directly
+		positiveOrNegativeProfitCoin := sdk.Coin{
+			Denom:  "uusd",
+			Amount: types.MicroToNormalDenom(profit),
+		}
+		positiveOrNegativeEffectiveMargin := sdk.Coin{
+			Denom:  "uusd",
+			Amount: types.MicroToNormalDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(currentBaseUsdRate, currentQuoteUsdRate)),
+		}
 		queriedPosition := types.QueriedPosition{
 			Position:              position,
-			ValuationProfit:       sdk.NewCoin("uusd", types.MicroToNormalDenom(profit)),
+			ValuationProfit:       positiveOrNegativeProfitCoin,
 			MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate),
-			EffectiveMargin:       sdk.NewCoin("uusd", types.MicroToNormalDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(currentBaseUsdRate, currentQuoteUsdRate))),
+			EffectiveMargin:       positiveOrNegativeEffectiveMargin,
 		}
 		queriedPositions = append(queriedPositions, queriedPosition)
 	}
