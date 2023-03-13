@@ -38,7 +38,6 @@ func CheckPosition(ctx sdk.Context, k keeper.Keeper) {
 		if position.Validate() != nil {
 			// this is temporary treatment.
 			fmt.Println("this is temporary treatment.")
-			// copy position another memory location
 			posForLog, _ := types.NewPerpetualFuturesPositionFromPosition(position)
 			fmt.Println("deleted position:")
 			fmt.Println(posForLog.String())
