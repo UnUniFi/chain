@@ -20,77 +20,23 @@ func TestTracingMsgServerCreate(t *testing.T) {
 	k, ctx := keepertest.CopytradingKeeper(t)
 	srv := keeper.NewMsgServerImpl(*k)
 	wctx := sdk.WrapSDKContext(ctx)
-	creator := "A"
+	sender := "A"
 	for i := 0; i < 5; i++ {
-		expected := &types.MsgCreateTracing{Creator: creator,
-			Index: strconv.Itoa(i),
+		expected := &types.MsgCreateTracing{
+			Sender: sender,
 		}
 		_, err := srv.CreateTracing(wctx, expected)
 		require.NoError(t, err)
 		rst, found := k.GetTracing(ctx,
-			expected.Index,
+			expected.Sender,
 		)
 		require.True(t, found)
-		require.Equal(t, expected.Creator, rst.Address)
-	}
-}
-
-func TestTracingMsgServerUpdate(t *testing.T) {
-	creator := "A"
-
-	for _, tc := range []struct {
-		desc    string
-		request *types.MsgUpdateTracing
-		err     error
-	}{
-		{
-			desc: "Completed",
-			request: &types.MsgUpdateTracing{Creator: creator,
-				Index: strconv.Itoa(0),
-			},
-		},
-		{
-			desc: "Unauthorized",
-			request: &types.MsgUpdateTracing{Creator: "B",
-				Index: strconv.Itoa(0),
-			},
-			err: sdkerrors.ErrUnauthorized,
-		},
-		{
-			desc: "KeyNotFound",
-			request: &types.MsgUpdateTracing{Creator: creator,
-				Index: strconv.Itoa(100000),
-			},
-			err: sdkerrors.ErrKeyNotFound,
-		},
-	} {
-		t.Run(tc.desc, func(t *testing.T) {
-			k, ctx := keepertest.CopytradingKeeper(t)
-			srv := keeper.NewMsgServerImpl(*k)
-			wctx := sdk.WrapSDKContext(ctx)
-			expected := &types.MsgCreateTracing{Creator: creator,
-				Index: strconv.Itoa(0),
-			}
-			_, err := srv.CreateTracing(wctx, expected)
-			require.NoError(t, err)
-
-			_, err = srv.UpdateTracing(wctx, tc.request)
-			if tc.err != nil {
-				require.ErrorIs(t, err, tc.err)
-			} else {
-				require.NoError(t, err)
-				rst, found := k.GetTracing(ctx,
-					expected.Index,
-				)
-				require.True(t, found)
-				require.Equal(t, expected.Creator, rst.Address)
-			}
-		})
+		require.Equal(t, expected.Sender, rst.Address)
 	}
 }
 
 func TestTracingMsgServerDelete(t *testing.T) {
-	creator := "A"
+	sender := "A"
 
 	for _, tc := range []struct {
 		desc    string
@@ -99,21 +45,21 @@ func TestTracingMsgServerDelete(t *testing.T) {
 	}{
 		{
 			desc: "Completed",
-			request: &types.MsgDeleteTracing{Creator: creator,
-				Index: strconv.Itoa(0),
+			request: &types.MsgDeleteTracing{
+				Sender: sender,
 			},
 		},
 		{
 			desc: "Unauthorized",
-			request: &types.MsgDeleteTracing{Creator: "B",
-				Index: strconv.Itoa(0),
+			request: &types.MsgDeleteTracing{
+				Sender: "B",
 			},
 			err: sdkerrors.ErrUnauthorized,
 		},
 		{
 			desc: "KeyNotFound",
-			request: &types.MsgDeleteTracing{Creator: creator,
-				Index: strconv.Itoa(100000),
+			request: &types.MsgDeleteTracing{
+				Sender: sender,
 			},
 			err: sdkerrors.ErrKeyNotFound,
 		},
@@ -123,8 +69,8 @@ func TestTracingMsgServerDelete(t *testing.T) {
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
 
-			_, err := srv.CreateTracing(wctx, &types.MsgCreateTracing{Creator: creator,
-				Index: strconv.Itoa(0),
+			_, err := srv.CreateTracing(wctx, &types.MsgCreateTracing{
+				Sender: sender,
 			})
 			require.NoError(t, err)
 			_, err = srv.DeleteTracing(wctx, tc.request)
@@ -133,7 +79,7 @@ func TestTracingMsgServerDelete(t *testing.T) {
 			} else {
 				require.NoError(t, err)
 				_, found := k.GetTracing(ctx,
-					tc.request.Index,
+					tc.request.Sender,
 				)
 				require.False(t, found)
 			}

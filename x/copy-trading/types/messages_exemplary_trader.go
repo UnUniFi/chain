@@ -14,127 +14,118 @@ const (
 var _ sdk.Msg = &MsgCreateExemplaryTrader{}
 
 func NewMsgCreateExemplaryTrader(
-    creator string,
-    index string,
-    
+	sender string,
+
 ) *MsgCreateExemplaryTrader {
-  return &MsgCreateExemplaryTrader{
-		Creator : creator,
-		Index: index,
-		
+	return &MsgCreateExemplaryTrader{
+		Sender: sender,
 	}
 }
 
 func (msg *MsgCreateExemplaryTrader) Route() string {
-  return RouterKey
+	return RouterKey
 }
 
 func (msg *MsgCreateExemplaryTrader) Type() string {
-  return TypeMsgCreateExemplaryTrader
+	return TypeMsgCreateExemplaryTrader
 }
 
 func (msg *MsgCreateExemplaryTrader) GetSigners() []sdk.AccAddress {
-  creator, err := sdk.AccAddressFromBech32(msg.Creator)
-  if err != nil {
-    panic(err)
-  }
-  return []sdk.AccAddress{creator}
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{sender}
 }
 
 func (msg *MsgCreateExemplaryTrader) GetSignBytes() []byte {
-  bz := ModuleCdc.MustMarshalJSON(msg)
-  return sdk.MustSortJSON(bz)
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgCreateExemplaryTrader) ValidateBasic() error {
-  _, err := sdk.AccAddressFromBech32(msg.Creator)
-  	if err != nil {
-  		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-  	}
-  return nil
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
+	}
+	return nil
 }
 
 var _ sdk.Msg = &MsgUpdateExemplaryTrader{}
 
 func NewMsgUpdateExemplaryTrader(
-    creator string,
-    index string,
-    
+	sender string,
+
 ) *MsgUpdateExemplaryTrader {
-  return &MsgUpdateExemplaryTrader{
-		Creator: creator,
-        Index: index,
-        
+	return &MsgUpdateExemplaryTrader{
+		Sender: sender,
 	}
 }
 
 func (msg *MsgUpdateExemplaryTrader) Route() string {
-  return RouterKey
+	return RouterKey
 }
 
 func (msg *MsgUpdateExemplaryTrader) Type() string {
-  return TypeMsgUpdateExemplaryTrader
+	return TypeMsgUpdateExemplaryTrader
 }
 
 func (msg *MsgUpdateExemplaryTrader) GetSigners() []sdk.AccAddress {
-  creator, err := sdk.AccAddressFromBech32(msg.Creator)
-  if err != nil {
-    panic(err)
-  }
-  return []sdk.AccAddress{creator}
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{sender}
 }
 
 func (msg *MsgUpdateExemplaryTrader) GetSignBytes() []byte {
-  bz := ModuleCdc.MustMarshalJSON(msg)
-  return sdk.MustSortJSON(bz)
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgUpdateExemplaryTrader) ValidateBasic() error {
-  _, err := sdk.AccAddressFromBech32(msg.Creator)
-  if err != nil {
-    return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-  }
-   return nil
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
+	}
+	return nil
 }
 
 var _ sdk.Msg = &MsgDeleteExemplaryTrader{}
 
 func NewMsgDeleteExemplaryTrader(
-    creator string,
-    index string,
-    
+	sender string,
+
 ) *MsgDeleteExemplaryTrader {
-  return &MsgDeleteExemplaryTrader{
-		Creator: creator,
-		Index: index,
-        
+	return &MsgDeleteExemplaryTrader{
+		Sender: sender,
 	}
 }
 func (msg *MsgDeleteExemplaryTrader) Route() string {
-  return RouterKey
+	return RouterKey
 }
 
 func (msg *MsgDeleteExemplaryTrader) Type() string {
-  return TypeMsgDeleteExemplaryTrader
+	return TypeMsgDeleteExemplaryTrader
 }
 
 func (msg *MsgDeleteExemplaryTrader) GetSigners() []sdk.AccAddress {
-  creator, err := sdk.AccAddressFromBech32(msg.Creator)
-  if err != nil {
-    panic(err)
-  }
-  return []sdk.AccAddress{creator}
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{sender}
 }
 
 func (msg *MsgDeleteExemplaryTrader) GetSignBytes() []byte {
-  bz := ModuleCdc.MustMarshalJSON(msg)
-  return sdk.MustSortJSON(bz)
+	bz := ModuleCdc.MustMarshalJSON(msg)
+	return sdk.MustSortJSON(bz)
 }
 
 func (msg *MsgDeleteExemplaryTrader) ValidateBasic() error {
-  _, err := sdk.AccAddressFromBech32(msg.Creator)
-  if err != nil {
-    return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-  }
-  return nil
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
+	}
+	return nil
 }

@@ -26,13 +26,11 @@ func SimulateMsgCreateExemplaryTrader(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
-		i := r.Int()
 		msg := &types.MsgCreateExemplaryTrader{
-			Creator: simAccount.Address.String(),
-			Index:   strconv.Itoa(i),
+			Sender: simAccount.Address.String(),
 		}
 
-		_, found := k.GetExemplaryTrader(ctx, msg.Index)
+		_, found := k.GetExemplaryTrader(ctx, msg.Sender)
 		if found {
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "ExemplaryTrader already exist"), nil, nil
 		}
@@ -79,9 +77,7 @@ func SimulateMsgUpdateExemplaryTrader(
 		if !found {
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "exemplaryTrader creator not found"), nil, nil
 		}
-		msg.Creator = simAccount.Address.String()
-
-		msg.Index = exemplaryTrader.Address
+		msg.Sender = simAccount.Address.String()
 
 		txCtx := simulation.OperationInput{
 			R:               r,
@@ -125,9 +121,7 @@ func SimulateMsgDeleteExemplaryTrader(
 		if !found {
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "exemplaryTrader creator not found"), nil, nil
 		}
-		msg.Creator = simAccount.Address.String()
-
-		msg.Index = exemplaryTrader.Address
+		msg.Sender = simAccount.Address.String()
 
 		txCtx := simulation.OperationInput{
 			R:               r,

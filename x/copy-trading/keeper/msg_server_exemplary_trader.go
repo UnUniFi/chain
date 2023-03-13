@@ -15,14 +15,14 @@ func (k msgServer) CreateExemplaryTrader(goCtx context.Context, msg *types.MsgCr
 	// Check if the value already exists
 	_, isFound := k.GetExemplaryTrader(
 		ctx,
-		msg.Index,
+		msg.Sender,
 	)
 	if isFound {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
 	}
 
 	var exemplaryTrader = types.ExemplaryTrader{
-		Address: msg.Creator,
+		Address: msg.Sender,
 	}
 
 	k.SetExemplaryTrader(
@@ -38,19 +38,19 @@ func (k msgServer) UpdateExemplaryTrader(goCtx context.Context, msg *types.MsgUp
 	// Check if the value exists
 	valFound, isFound := k.GetExemplaryTrader(
 		ctx,
-		msg.Index,
+		msg.Sender,
 	)
 	if !isFound {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
 	// Checks if the the msg creator is the same as the current owner
-	if msg.Creator != valFound.Address {
+	if msg.Sender != valFound.Address {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
 	var exemplaryTrader = types.ExemplaryTrader{
-		Address: msg.Creator,
+		Address: msg.Sender,
 	}
 
 	k.SetExemplaryTrader(ctx, exemplaryTrader)
@@ -64,20 +64,20 @@ func (k msgServer) DeleteExemplaryTrader(goCtx context.Context, msg *types.MsgDe
 	// Check if the value exists
 	valFound, isFound := k.GetExemplaryTrader(
 		ctx,
-		msg.Index,
+		msg.Sender,
 	)
 	if !isFound {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
 	// Checks if the the msg creator is the same as the current owner
-	if msg.Creator != valFound.Address {
+	if msg.Sender != valFound.Address {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
 	k.RemoveExemplaryTrader(
 		ctx,
-		msg.Index,
+		msg.Sender,
 	)
 
 	return &types.MsgDeleteExemplaryTraderResponse{}, nil

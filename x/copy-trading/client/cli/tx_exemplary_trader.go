@@ -11,13 +11,10 @@ import (
 
 func CmdCreateExemplaryTrader() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-exemplary-trader [index]",
+		Use:   "create-exemplary-trader",
 		Short: "Create a new exemplary-trader",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			// Get indexes
-			indexIndex := args[0]
-
 			// Get value arguments
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -27,7 +24,6 @@ func CmdCreateExemplaryTrader() *cobra.Command {
 
 			msg := types.NewMsgCreateExemplaryTrader(
 				clientCtx.GetFromAddress().String(),
-				indexIndex,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -43,12 +39,10 @@ func CmdCreateExemplaryTrader() *cobra.Command {
 
 func CmdUpdateExemplaryTrader() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-exemplary-trader [index]",
+		Use:   "update-exemplary-trader",
 		Short: "Update a exemplary-trader",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			// Get indexes
-			indexIndex := args[0]
 
 			// Get value arguments
 
@@ -59,7 +53,6 @@ func CmdUpdateExemplaryTrader() *cobra.Command {
 
 			msg := types.NewMsgUpdateExemplaryTrader(
 				clientCtx.GetFromAddress().String(),
-				indexIndex,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -75,12 +68,10 @@ func CmdUpdateExemplaryTrader() *cobra.Command {
 
 func CmdDeleteExemplaryTrader() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "delete-exemplary-trader [index]",
+		Use:   "delete-exemplary-trader",
 		Short: "Delete a exemplary-trader",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			indexIndex := args[0]
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -88,7 +79,6 @@ func CmdDeleteExemplaryTrader() *cobra.Command {
 
 			msg := types.NewMsgDeleteExemplaryTrader(
 				clientCtx.GetFromAddress().String(),
-				indexIndex,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

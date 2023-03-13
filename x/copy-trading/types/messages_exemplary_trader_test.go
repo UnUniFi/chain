@@ -3,9 +3,9 @@ package types
 import (
 	"testing"
 
+	"github.com/UnUniFi/chain/testutil/sample"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
-	"github.com/UnUniFi/chain/testutil/sample"
 )
 
 func TestMsgCreateExemplaryTrader_ValidateBasic(t *testing.T) {
@@ -17,13 +17,13 @@ func TestMsgCreateExemplaryTrader_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgCreateExemplaryTrader{
-				Creator: "invalid_address",
+				Sender: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgCreateExemplaryTrader{
-				Creator: sample.AccAddress(),
+				Sender: sample.AccAddress(),
 			},
 		},
 	}
@@ -48,13 +48,13 @@ func TestMsgUpdateExemplaryTrader_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgUpdateExemplaryTrader{
-				Creator: "invalid_address",
+				Sender: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgUpdateExemplaryTrader{
-				Creator: sample.AccAddress(),
+				Sender: sample.AccAddress(),
 			},
 		},
 	}
@@ -79,13 +79,13 @@ func TestMsgDeleteExemplaryTrader_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgDeleteExemplaryTrader{
-				Creator: "invalid_address",
+				Sender: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgDeleteExemplaryTrader{
-				Creator: sample.AccAddress(),
+				Sender: sample.AccAddress(),
 			},
 		},
 	}

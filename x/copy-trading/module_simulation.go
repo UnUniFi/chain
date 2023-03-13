@@ -143,17 +143,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		copytradingsimulation.SimulateMsgCreateTracing(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgUpdateTracing int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateTracing, &weightMsgUpdateTracing, nil,
-		func(_ *rand.Rand) {
-			weightMsgUpdateTracing = defaultWeightMsgUpdateTracing
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgUpdateTracing,
-		copytradingsimulation.SimulateMsgUpdateTracing(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
 	var weightMsgDeleteTracing int
 	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteTracing, &weightMsgDeleteTracing, nil,
 		func(_ *rand.Rand) {

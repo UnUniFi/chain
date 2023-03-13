@@ -34,7 +34,6 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdUpdateExemplaryTrader())
 	cmd.AddCommand(CmdDeleteExemplaryTrader())
 	cmd.AddCommand(CmdCreateTracing())
-	cmd.AddCommand(CmdUpdateTracing())
 	cmd.AddCommand(CmdDeleteTracing())
 	// this line is used by starport scaffolding # 1
 

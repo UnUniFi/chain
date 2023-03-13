@@ -20,23 +20,23 @@ func TestExemplaryTraderMsgServerCreate(t *testing.T) {
 	k, ctx := keepertest.CopytradingKeeper(t)
 	srv := keeper.NewMsgServerImpl(*k)
 	wctx := sdk.WrapSDKContext(ctx)
-	creator := "A"
+	sender := "A"
 	for i := 0; i < 5; i++ {
-		expected := &types.MsgCreateExemplaryTrader{Creator: creator,
-			Index: strconv.Itoa(i),
+		expected := &types.MsgCreateExemplaryTrader{
+			Sender: sender,
 		}
 		_, err := srv.CreateExemplaryTrader(wctx, expected)
 		require.NoError(t, err)
 		rst, found := k.GetExemplaryTrader(ctx,
-			expected.Index,
+			expected.Sender,
 		)
 		require.True(t, found)
-		require.Equal(t, expected.Creator, rst.Address)
+		require.Equal(t, expected.Sender, rst.Address)
 	}
 }
 
 func TestExemplaryTraderMsgServerUpdate(t *testing.T) {
-	creator := "A"
+	sender := "A"
 
 	for _, tc := range []struct {
 		desc    string
@@ -45,21 +45,21 @@ func TestExemplaryTraderMsgServerUpdate(t *testing.T) {
 	}{
 		{
 			desc: "Completed",
-			request: &types.MsgUpdateExemplaryTrader{Creator: creator,
-				Index: strconv.Itoa(0),
+			request: &types.MsgUpdateExemplaryTrader{
+				Sender: sender,
 			},
 		},
 		{
 			desc: "Unauthorized",
-			request: &types.MsgUpdateExemplaryTrader{Creator: "B",
-				Index: strconv.Itoa(0),
+			request: &types.MsgUpdateExemplaryTrader{
+				Sender: "B",
 			},
 			err: sdkerrors.ErrUnauthorized,
 		},
 		{
 			desc: "KeyNotFound",
-			request: &types.MsgUpdateExemplaryTrader{Creator: creator,
-				Index: strconv.Itoa(100000),
+			request: &types.MsgUpdateExemplaryTrader{
+				Sender: sender,
 			},
 			err: sdkerrors.ErrKeyNotFound,
 		},
@@ -68,8 +68,8 @@ func TestExemplaryTraderMsgServerUpdate(t *testing.T) {
 			k, ctx := keepertest.CopytradingKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
-			expected := &types.MsgCreateExemplaryTrader{Creator: creator,
-				Index: strconv.Itoa(0),
+			expected := &types.MsgCreateExemplaryTrader{
+				Sender: sender,
 			}
 			_, err := srv.CreateExemplaryTrader(wctx, expected)
 			require.NoError(t, err)
@@ -80,17 +80,17 @@ func TestExemplaryTraderMsgServerUpdate(t *testing.T) {
 			} else {
 				require.NoError(t, err)
 				rst, found := k.GetExemplaryTrader(ctx,
-					expected.Index,
+					expected.Sender,
 				)
 				require.True(t, found)
-				require.Equal(t, expected.Creator, rst.Address)
+				require.Equal(t, expected.Sender, rst.Address)
 			}
 		})
 	}
 }
 
 func TestExemplaryTraderMsgServerDelete(t *testing.T) {
-	creator := "A"
+	sender := "A"
 
 	for _, tc := range []struct {
 		desc    string
@@ -99,21 +99,21 @@ func TestExemplaryTraderMsgServerDelete(t *testing.T) {
 	}{
 		{
 			desc: "Completed",
-			request: &types.MsgDeleteExemplaryTrader{Creator: creator,
-				Index: strconv.Itoa(0),
+			request: &types.MsgDeleteExemplaryTrader{
+				Sender: sender,
 			},
 		},
 		{
 			desc: "Unauthorized",
-			request: &types.MsgDeleteExemplaryTrader{Creator: "B",
-				Index: strconv.Itoa(0),
+			request: &types.MsgDeleteExemplaryTrader{
+				Sender: "B",
 			},
 			err: sdkerrors.ErrUnauthorized,
 		},
 		{
 			desc: "KeyNotFound",
-			request: &types.MsgDeleteExemplaryTrader{Creator: creator,
-				Index: strconv.Itoa(100000),
+			request: &types.MsgDeleteExemplaryTrader{
+				Sender: sender,
 			},
 			err: sdkerrors.ErrKeyNotFound,
 		},
@@ -123,8 +123,8 @@ func TestExemplaryTraderMsgServerDelete(t *testing.T) {
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
 
-			_, err := srv.CreateExemplaryTrader(wctx, &types.MsgCreateExemplaryTrader{Creator: creator,
-				Index: strconv.Itoa(0),
+			_, err := srv.CreateExemplaryTrader(wctx, &types.MsgCreateExemplaryTrader{
+				Sender: sender,
 			})
 			require.NoError(t, err)
 			_, err = srv.DeleteExemplaryTrader(wctx, tc.request)
@@ -133,7 +133,7 @@ func TestExemplaryTraderMsgServerDelete(t *testing.T) {
 			} else {
 				require.NoError(t, err)
 				_, found := k.GetExemplaryTrader(ctx,
-					tc.request.Index,
+					tc.request.Sender,
 				)
 				require.False(t, found)
 			}
