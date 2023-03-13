@@ -42,13 +42,9 @@ func CheckPosition(ctx sdk.Context, k keeper.Keeper) {
 			fmt.Println("this is temporary treatment.")
 			// copy position another memory location
 			copyPos := position
-			copyPos.Id = "9999999"
-			fmt.Println("position.Id")
-			fmt.Println(position.Id)
-			fmt.Println("copyPos.Id")
-			fmt.Println(copyPos.Id)
-			panic("this is temporary treatment.")
 			copyPos.PositionInstance = types1.Any{}
+			fmt.Println("deleted position:")
+			fmt.Println(copyPos.String())
 
 			k.DeletePosition(ctx, sdk.AccAddress(position.Address), position.Id)
 			continue
