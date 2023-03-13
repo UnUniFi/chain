@@ -5,8 +5,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	types1 "github.com/cosmos/cosmos-sdk/codec/types"
-
 	"github.com/UnUniFi/chain/x/derivatives/keeper"
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
@@ -41,10 +39,9 @@ func CheckPosition(ctx sdk.Context, k keeper.Keeper) {
 			// this is temporary treatment.
 			fmt.Println("this is temporary treatment.")
 			// copy position another memory location
-			copyPos := position
-			copyPos.PositionInstance = types1.Any{}
+			posForLog, _ := types.NewPerpetualFuturesPositionFromPosition(position)
 			fmt.Println("deleted position:")
-			fmt.Println(copyPos.String())
+			fmt.Println(posForLog.String())
 
 			k.DeletePosition(ctx, sdk.AccAddress(position.Address), position.Id)
 			continue
