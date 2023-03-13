@@ -229,7 +229,13 @@ func (m PerpetualFuturesPosition) ProfitAndLossInMetrics(baseUSDRate, quoteUSDRa
 }
 func (m PerpetualFuturesPosition) MarginMaintenanceRate(baseUSDRate, quoteUSDRate sdk.Dec) sdk.Dec {
 	// 証拠金維持率 = 有効証拠金(USD単位) ÷ 必要証拠金(USD単位)
-	return m.EffectiveMarginInMetrics(baseUSDRate, quoteUSDRate).Quo(m.RequiredMarginInMetrics(baseUSDRate, quoteUSDRate))
+	effectiveMargin := m.EffectiveMarginInMetrics(baseUSDRate, quoteUSDRate)
+	fmt.Println("effectiveMargin")
+	fmt.Println(effectiveMargin)
+	marginMaintenanceRate := effectiveMargin.Quo(m.RequiredMarginInMetrics(baseUSDRate, quoteUSDRate))
+	fmt.Println("marginMaintenanceRate")
+	fmt.Println(marginMaintenanceRate)
+	return marginMaintenanceRate
 }
 func (m PerpetualFuturesPosition) RemainingMarginInBase(baseUSDRate sdk.Dec) sdk.Dec {
 	// 残存証拠金(USD単位) = 残存証拠金(base単位) * 現在のbase/USDレート
