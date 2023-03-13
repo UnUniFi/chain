@@ -51,7 +51,16 @@ func CheckPosition(ctx sdk.Context, k keeper.Keeper) {
 			posForLog, _ := types.NewPerpetualFuturesPositionFromPosition(position)
 			fmt.Println("deleted position for users:")
 			fmt.Println(posForLog.String())
-			k.DeletePosition(ctx, sdk.AccAddress(position.Address), position.Id)
+			cacheCtx, write := ctx.CacheContext()
+			err := k.ClosePerpetualFuturesPosition(cacheCtx, posForLog)
+			k.DeletePositionTmp(cacheCtx, sdk.AccAddress(position.Address), position.Id)
+			if err != nil {
+				fmt.Println("failed to close position")
+				fmt.Println(err)
+				continue
+			} else {
+				write()
+			}
 			continue
 		}
 

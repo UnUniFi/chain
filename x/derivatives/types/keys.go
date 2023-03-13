@@ -104,12 +104,22 @@ func PositionWithIdKeyPrefix(posId string) []byte {
 	return append([]byte(KeyPrefixPosition), GetPositionIdByteFromString(posId)...)
 }
 
+// todo: delete me
+func PositionWithIdKeyPrefixTmp(posId string) []byte {
+	return append([]byte(KeyPrefixPosition), []byte(posId)...)
+}
+
 func AddressPositionKeyPrefix(sender sdk.AccAddress) []byte {
 	return append([]byte(KeyPrefixUserPosition), address.MustLengthPrefix(sender)...)
 }
 
 func AddressPositionWithIdKeyPrefix(sender sdk.AccAddress, posId string) []byte {
 	return append(AddressPositionKeyPrefix(sender), GetPositionIdByteFromString(posId)...)
+}
+
+// todo: delete me
+func AddressPositionWithIdKeyPrefixTmp(sender sdk.AccAddress, posId string) []byte {
+	return append(AddressPositionKeyPrefix(sender), []byte(posId)...)
 }
 
 func DenomNetPositionPerpetualFuturesKeyPrefix(denom string, quoteDenom string) []byte {
