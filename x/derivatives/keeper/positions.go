@@ -143,13 +143,6 @@ func (k Keeper) DeletePosition(ctx sdk.Context, address sdk.AccAddress, id strin
 	store.Delete(types.AddressPositionWithIdKeyPrefix(address, id))
 }
 
-func (k Keeper) DeletePositionTmp(ctx sdk.Context, address sdk.AccAddress, id string) {
-	store := ctx.KVStore(k.storeKey)
-
-	store.Delete(types.PositionWithIdKeyPrefixTmp(id))
-	store.Delete(types.AddressPositionWithIdKeyPrefixTmp(address, id))
-}
-
 func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
 	// todo check sender amount for margin
 
