@@ -14,10 +14,12 @@ import (
 
 type (
 	Keeper struct {
-		cdc        codec.BinaryCodec
-		storeKey   storetypes.StoreKey
-		memKey     storetypes.StoreKey
-		paramstore paramtypes.Subspace
+		cdc               codec.BinaryCodec
+		storeKey          storetypes.StoreKey
+		memKey            storetypes.StoreKey
+		paramstore        paramtypes.Subspace
+		bankKeeper        types.BankKeeper
+		DerivativesKeeper types.DerivativesKeeper
 	}
 )
 

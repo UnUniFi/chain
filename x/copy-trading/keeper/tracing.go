@@ -5,6 +5,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/copy-trading/types"
+
+	deriativesTypes "github.com/UnUniFi/chain/x/derivatives/types"
 )
 
 // SetTracing set a specific tracing in the store from its index
@@ -61,4 +63,24 @@ func (k Keeper) GetAllTracing(ctx sdk.Context) (list []types.Tracing) {
 	}
 
 	return
+}
+
+func (k Keeper) GetExemplaryTraderTracing(ctx sdk.Context, exemplaryTrader string) (list []types.Tracing) {
+	// TODO: KeyPrefix
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.TracingKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.Tracing
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}
+
+func (k Keeper) TracePosition(ctx sdk.Context, tracing types.Tracing, position deriativesTypes.Position) {
+	tracedPosition := tracing.GenerateTracedPosition(position)
 }

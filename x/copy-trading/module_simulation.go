@@ -1,4 +1,4 @@
-package copytrading
+package copy_trading
 
 import (
 	"math/rand"

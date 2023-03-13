@@ -1,4 +1,4 @@
-package copytrading_test
+package copy_trading_test
 
 import (
 	"testing"

@@ -1450,6 +1450,9 @@ Params defines the parameters for the module.
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  |  |
 | `exemplary_trader` | [string](#string) |  |  |
+| `size_coefficient` | [string](#string) |  |  |
+| `leverage_coefficient` | [string](#string) |  |  |
+| `reverse` | [bool](#bool) |  |  |
 
 
 

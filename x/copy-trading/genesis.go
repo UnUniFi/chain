@@ -1,4 +1,4 @@
-package copytrading
+package copy_trading
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"

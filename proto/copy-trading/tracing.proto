@@ -1,10 +1,20 @@
 syntax = "proto3";
 package ununifi.chain.copytrading;
 
+import "gogoproto/gogo.proto";
+
 option go_package = "github.com/UnUniFi/chain/x/copy-trading/types";
 
 message Tracing {
   string address = 1; 
   string exemplary_trader = 2;
+  string size_coefficient = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string leverage_coefficient = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  bool reverse = 5;
 }
-
