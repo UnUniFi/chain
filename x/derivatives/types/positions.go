@@ -249,6 +249,9 @@ func (m PerpetualFuturesPosition) RemainingMarginInBase(baseUSDRate sdk.Dec) sdk
 func (m PerpetualFuturesPosition) RemainingMarginInQuote(quoteUSDRate sdk.Dec) sdk.Dec {
 	// 残存証拠金(USD単位) = 残存証拠金(quote単位) * 現在のquote/USDレート
 	quoteRemainingMargin := sdk.NewDecFromInt(m.RemainingMargin.Amount)
+	pos := m
+	fmt.Println("pos")
+	fmt.Println(pos)
 	fmt.Println("quoteRemainingMargin")
 	fmt.Println(quoteRemainingMargin)
 	fmt.Println("quoteUSDRate")
