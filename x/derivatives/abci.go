@@ -35,6 +35,13 @@ func CheckPosition(ctx sdk.Context, k keeper.Keeper) {
 	positions := k.GetAllPositions(ctx)
 	params := k.GetParams(ctx)
 	for _, position := range positions {
+		if position.Validate() != nil {
+			// this is temporary treatment.
+			fmt.Println("this is temporary treatment.")
+			fmt.Println(position.String())
+			k.DeletePosition(ctx, sdk.AccAddress(position.Address), position.Id)
+			continue
+		}
 		currentBaseUsdRate, currentQuoteUsdRate, err := k.GetPairUsdPriceFromMarket(ctx, position.Market)
 		if err != nil {
 			// todo: user logger
