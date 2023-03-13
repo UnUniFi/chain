@@ -15,7 +15,7 @@ message GenesisState {
 
 Go to 05_params page.
 
-### Position
+## Position
 
 `Position` field is for the complete data of the all opening position.
 
@@ -72,7 +72,7 @@ message Position {
 - `last_levied_at` is the timestamp of the last levied time.
 - `position_instance` is the `Any` type which contains the actual position data. If it's about perpetual futures, it contains `PositionType`, `Size_` and `Leverage` fields.
 
-### PoolMarketCap
+## PoolMarketCap
 
 `pool_market_cap` field is to contain `PoolMarketCap` data which contains the comprehensive data regarding pool situation for the derivatives.
 
@@ -113,7 +113,7 @@ message PoolMarketCap {
 - `total` is the total value of the all pool assets combined.
 - `breakdown` is the list of the `Breakdown` which contains the information regarding the specific pool asset.
 
-### PerpetualFuturesNetPositionOfMarket
+## PerpetualFuturesNetPositionOfMarket
 
 `PerpetualFuturesNetPositionOfMarket` is the data which contains the inclusive information regarding x/derivatives's PerpetualFutures market.
 
