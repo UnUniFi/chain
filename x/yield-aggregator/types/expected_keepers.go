@@ -26,3 +26,7 @@ type BankKeeper interface {
 	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 	BurnCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 }
+
+type RecordsKeeper interface {
+	GetUserRedemptionRecordBySenderAndDenom(ctx sdk.Context, sender sdk.AccAddress, denom string) sdk.Int
+}

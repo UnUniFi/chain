@@ -21,6 +21,7 @@ type Keeper struct {
 	bankKeeper     types.BankKeeper
 	wasmKeeper     wasmtypes.ContractOpsKeeper
 	stakeibcKeeper stakeibckeeper.Keeper
+	recordsKeeper  types.RecordsKeeper
 }
 
 func NewKeeper(
@@ -30,6 +31,7 @@ func NewKeeper(
 	bk types.BankKeeper,
 	wasmKeeper wasmtypes.ContractOpsKeeper,
 	stakeibcKeeper stakeibckeeper.Keeper,
+	recordsKeeper types.RecordsKeeper,
 ) Keeper {
 	// set KeyTable if it has not already been set
 	if !paramSpace.HasKeyTable() {
@@ -43,6 +45,7 @@ func NewKeeper(
 		bankKeeper:     bk,
 		wasmKeeper:     wasmKeeper,
 		stakeibcKeeper: stakeibcKeeper,
+		recordsKeeper:  recordsKeeper,
 	}
 }
 
