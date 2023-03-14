@@ -31,6 +31,24 @@ func (k Keeper) RemoveUserRedemptionRecord(ctx sdk.Context, id string) {
 	store.Delete([]byte(id))
 }
 
+func (k Keeper) GetUserRedemptionRecordBySenderAndDenom(ctx sdk.Context, sender sdk.AccAddress, denom string) sdk.Int {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.UserRedemptionRecordKey))
+	iterator := sdk.KVStoreReversePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.UserRedemptionRecord
+		k.Cdc.MustUnmarshal(iterator.Value(), &val)
+
+		if val.Sender == sender.String() &&
+			val.Denom == denom {
+			return sdk.NewInt(int64(val.Amount))
+		}
+	}
+	return sdk.ZeroInt()
+}
+
 // GetAllUserRedemptionRecord returns all userRedemptionRecord
 func (k Keeper) GetAllUserRedemptionRecord(ctx sdk.Context) (list []types.UserRedemptionRecord) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.UserRedemptionRecordKey))
