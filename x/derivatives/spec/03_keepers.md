@@ -6,7 +6,7 @@ The important functions of the `DerivativesKeeper` are described below.
 
 ```go
 type Keeper interface {
-
+  
   // Get functions
   GetLPTokenBaseMintFee(ctx sdk.Context) sdk.Dec
   GetLPTokenBaseRedeemFee(ctx sdk.Context) sdk.Dec
