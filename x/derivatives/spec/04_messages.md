@@ -38,6 +38,7 @@ Only the owner of the position can close it. If the position has profit, the pro
 [ReportLiquidation](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/tx.proto#L89-L103)
 
 This Msg reports a position that needs to be liquidated.   
+The report gets the reward based on the fee rate of the liquidation report reward rate in the params.   
 This architecture make the chain avoidable to be aware of liquidation logic in EndBlock handler to enhance the scalability.
 
 ### ReportLevyPeriod
@@ -48,52 +49,18 @@ Report a position that needs to be levied for [imaginary funding rate](todo). Th
 
 ## Queries
 
-### Params
+The derivatives module primarily provides the following queries:
 
-### Pool
-
-[Pool](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L88-L106)
-
-### LiquidityProviderTokenRealAPY
-
-[LiquidityProviderTokenRealAPY](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L108-L122)
-
-### LiquidityProviderTokenNominalAPY
-
-[LiquidityProviderTokenNominalAPY](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L124-L138)
-
-### PerpetualFutures
-
-[PerpetualFutures](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L140-L162)
-
-### PerpetualFuturesMarket
-
-[PerpetualFuturesMarket](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L164-L197)
-
-### AllPositions
-
-[AllPositions](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L214-L224)
-
-### Position
-
-[Position](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L226-L249)
-
-### PerpetualFuturesPositionSize
-
-[PerpetualFuturesPositionSize](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L251-L265)
-
-### AddressPositions
-
-[AddressPositions](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L267-L280)
-
-### DLPTokenRates
-
-[DLPTokenRates](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L283-L292)
-
-### EstimateDLPTokenAmount
-
-[EstimateDLPTokenAmount](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L294-L312)
-
-### EstimateRedeemAmount
-
-[EstimateRedeemAmount](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L314-L332)
+- [Params](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L79-L85)
+- [Pool](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L88-L106)
+- [LiquidityProviderTokenRealAPY](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L108-L122)
+- [LiquidityProviderTokenNominalAPY](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L124-L138)
+- [PerpetualFutures](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L140-L162)
+- [PerpetualFuturesMarket](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L164-L197)
+- [AllPositions](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L214-L224)
+- [Position](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L226-L249)
+- [PerpetualFuturesPositionSize](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L251-L265)
+- [AddressPositions](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L267-L280)
+- [DLPTokenRates](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L283-L292)
+- [EstimateDLPTokenAmount](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L294-L312)
+- [EstimateRedeemAmount](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L314-L332)
