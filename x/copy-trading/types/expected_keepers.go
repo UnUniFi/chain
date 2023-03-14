@@ -21,4 +21,6 @@ type BankKeeper interface {
 
 type DerivativesKeeper interface {
 	GetPosition(ctx sdk.Context, positionId string) derivativesTypes.Position
+	OpenPosition(ctx sdk.Context, msg *derivativesTypes.MsgOpenPosition) error
+	ClosePosition(ctx sdk.Context, msg *derivativesTypes.MsgClosePosition) error
 }

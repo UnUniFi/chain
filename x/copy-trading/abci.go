@@ -46,6 +46,7 @@ func closePositionHandler(ctx sdk.Context, k keeper.Keeper, event sdk.Event) {
 	}
 
 	// TODO: get position ids list of traced position and if position id is in list, then close it
+	// k.DerivativesKeeper.ClosePosition(ctx, &derivativesTypes.MsgClosePosition{Sender: sender, PositionId: positionId})
 }
 
 // EndBlocker

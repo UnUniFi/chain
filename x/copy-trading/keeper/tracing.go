@@ -6,7 +6,7 @@ import (
 
 	"github.com/UnUniFi/chain/x/copy-trading/types"
 
-	deriativesTypes "github.com/UnUniFi/chain/x/derivatives/types"
+	derivativesTypes "github.com/UnUniFi/chain/x/derivatives/types"
 )
 
 // SetTracing set a specific tracing in the store from its index
@@ -81,6 +81,18 @@ func (k Keeper) GetExemplaryTraderTracing(ctx sdk.Context, exemplaryTrader strin
 	return
 }
 
-func (k Keeper) TracePosition(ctx sdk.Context, tracing types.Tracing, position deriativesTypes.Position) {
-	tracedPosition := tracing.GenerateTracedPosition(position)
+func (k Keeper) GenerateTracedPositionOpenMsg(ctx sdk.Context, tracing types.Tracing, position derivativesTypes.Position) derivativesTypes.MsgOpenPosition {
+	tracerAddress := sdk.MustAccAddressFromBech32(tracing.Address)
+	balance := k.bankKeeper.SpendableCoins(ctx, tracerAddress)
+
+	// TODO:
+	// traced_position_size = tracing.SizeCoefficient * position_size
+	// traced_position_leverage = tracing.LeverageCoefficient * position_leverage
+	// if traced_position_margin > balance { adjust_traced_position_size to traced_position_margin = balance }
+}
+
+func (k Keeper) TracePosition(ctx sdk.Context, tracing types.Tracing, position derivativesTypes.Position) {
+	tracedPositionMsg := k.GenerateTracedPositionOpenMsg(ctx, tracing, position)
+
+	k.DerivativesKeeper.OpenPosition(ctx, &tracedPositionMsg)
 }
