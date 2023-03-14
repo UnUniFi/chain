@@ -5,6 +5,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/UnUniFi/chain/x/yield-aggregator/types"
 )
@@ -107,46 +108,101 @@ func GetStrategyIDFromBytes(bz []byte) uint64 {
 	return binary.BigEndian.Uint64(bz)
 }
 
-func (k Keeper) StakeToStrategy(ctx sdk.Context, strategy types.Strategy, amount sdk.Int) error {
+// stake into strategy
+func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy types.Strategy, amount sdk.Int) error {
 	switch strategy.ContractAddress {
 	case "x/ibc-staking":
-		{
+		vaultModName := types.GetVaultModuleAccountName(vault.Id)
+		vaultModAddr := authtypes.NewModuleAddress(vaultModName)
 
-			return nil
-		}
+		return k.stakeibcKeeper.LiquidStake(
+			ctx,
+			vaultModAddr,
+			sdk.NewCoin(vault.Denom, amount),
+		)
+	default:
+		panic("not implemented")
 	}
-	// call `stake` function of the strategy contract
-	panic("not implemented")
+
+	// TODO: call `stake` function of the strategy contract
+	// 		wasmMsg := `{"stake":{}}`
+	// 		contractAddr := sdk.MustAccAddressFromBech32(target.AccountAddress)
+	// 		_, err := k.wasmKeeper.Execute(ctx, contractAddr, farmingUnit.GetAddress(), []byte(wasmMsg), amount)
+	// 		if err != nil {
+	// 			return err
+	// 		}
 
 	return nil
 }
 
-func (k Keeper) UnstakeFromStrategy(ctx sdk.Context, strategy types.Strategy, amount sdk.Int) error {
+// unstake worth of withdrawal amount from the strategy
+func (k Keeper) UnstakeFromStrategy(ctx sdk.Context, vault types.Vault, strategy types.Strategy, amount sdk.Int) error {
 	switch strategy.ContractAddress {
 	case "x/ibc-staking":
 		{
+			vaultModName := types.GetVaultModuleAccountName(vault.Id)
+			vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+			err := k.stakeibcKeeper.RedeemStake(
+				ctx,
+				vaultModAddr,
+				sdk.NewCoin(vault.Denom, amount),
+				vaultModAddr.String(),
+			)
+			if err != nil {
+				return err
+			}
 
 			return nil
 		}
 	}
-	// call `unstake` function of the strategy contract
 	panic("not implemented")
+	// TODO: call `unstake` function of the strategy contract
+	// 		wasmMsg := `{"unstake":{}}`
+	// 		contractAddr := sdk.MustAccAddressFromBech32(target.AccountAddress)
+	// 		_, err := k.wasmKeeper.Execute(ctx, contractAddr, farmingUnit.GetAddress(), []byte(wasmMsg), sdk.Coins{})
+	// 		if err != nil {
+	// 			return err
+	// 		}
 
 	return nil
 }
 
-func (k Keeper) GetAmountFromStrategy(ctx sdk.Context, strategy types.Strategy) (*sdk.Coin, error) {
+func (k Keeper) GetAmountFromStrategy(ctx sdk.Context, vault types.Vault, strategy types.Strategy) (sdk.Coin, error) {
 	switch strategy.ContractAddress {
 	case "x/ibc-staking":
 		{
-
-			return nil, nil
+			vaultModName := types.GetVaultModuleAccountName(vault.Id)
+			vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+			updatedAmount := k.stakeibcKeeper.GetUpdatedBalance(ctx, vaultModAddr, vault.Denom)
+			return sdk.NewCoin(vault.Denom, updatedAmount), nil
 		}
 	}
 	// call `amount` function of the strategy contract
 	panic("not implemented")
 
-	return nil, nil
+	return sdk.Coin{}, nil
+}
+
+func (k Keeper) GetUnbondingAmountFromStrategy(ctx sdk.Context, vault types.Vault, strategy types.Strategy) (sdk.Coin, error) {
+	switch strategy.ContractAddress {
+	case "x/ibc-staking":
+		{
+			vaultModName := types.GetVaultModuleAccountName(vault.Id)
+			vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+			unbondingAmount := k.recordsKeeper.GetUserRedemptionRecordBySenderAndDenom(ctx, vaultModAddr, vault.Denom)
+			return sdk.NewCoin(vault.Denom, unbondingAmount), nil
+		}
+	}
+	// call `amount` function of the strategy contract
+	panic("not implemented")
+	// 		wasmQuery := `{"amount":{}}`
+	// 		contractAddr := sdk.MustAccAddressFromBech32(target.AccountAddress)
+	// 		_, err := k.wasmKeeper.Execute(ctx, contractAddr, farmingUnit.GetAddress(), []byte(wasmQuery), sdk.Coins{})
+	// 		if err != nil {
+	// 			return err
+	// 		}
+
+	return sdk.Coin{}, nil
 }
 
 func (k Keeper) GetAPRFromStrategy(ctx sdk.Context, strategy types.Strategy) (*sdk.Dec, error) {
