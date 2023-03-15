@@ -116,6 +116,7 @@ func (m PerpetualFuturesPosition) EvaluatePosition(currentBaseUsdRate sdk.Dec) s
 	return currentBaseUsdRate.Mul(m.PositionInstance.Size_)
 }
 
+// TODO: consider to use sdk.DecCoin
 func MicroToNormalDenom(amount sdk.Dec) sdk.Int {
 	return amount.Mul(sdk.MustNewDecFromStr("1000000")).TruncateInt()
 }
