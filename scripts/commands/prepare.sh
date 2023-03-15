@@ -11,4 +11,4 @@ until  ununifid q block 2>&1 |grep "last_block_id" >/dev/null 2>&1 ; do
     printf 'waitting...'
     sleep 1
 done
-$SCRIPT_DIR/nftmarket_v2.sh
+# $SCRIPT_DIR/nftmarket_v2.sh

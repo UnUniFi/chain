@@ -204,7 +204,7 @@ func (k Keeper) GetClassAttributes(ctx sdk.Context, classID string) (types.Class
 	prefixStore := prefix.NewStore(store, types.KeyPrefixClassAttributes)
 
 	bz := prefixStore.Get([]byte(classID))
-	if len(bz) == 0 {
+	if bz == nil {
 		return types.ClassAttributes{}, false
 	}
 	var classAttributes types.ClassAttributes
@@ -218,7 +218,7 @@ func (k Keeper) GetOwningClassIdList(ctx sdk.Context, owner sdk.AccAddress) (typ
 
 	var owningClassIdList types.OwningClassIdList
 	bz := prefixStore.Get(owner.Bytes())
-	if len(bz) == 0 {
+	if bz == nil {
 		return types.OwningClassIdList{}, false
 	}
 	k.cdc.MustUnmarshal(bz, &owningClassIdList)
@@ -231,11 +231,50 @@ func (k Keeper) GetClassNameIdList(ctx sdk.Context, className string) (types.Cla
 
 	var classNameIdList types.ClassNameIdList
 	bz := prefixStore.Get([]byte(className))
-	if len(bz) == 0 {
+	if bz == nil {
 		return types.ClassNameIdList{}, false
 	}
 	k.cdc.MustUnmarshal(bz, &classNameIdList)
 	return classNameIdList, true
+}
+
+func (k Keeper) GetClassAttributesList(ctx sdk.Context) (classAttributesList []*types.ClassAttributes) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefixClassAttributes)
+	defer iterator.Close()
+	for ; iterator.Valid(); iterator.Next() {
+		var classAttributes types.ClassAttributes
+		k.cdc.MustUnmarshal(iterator.Value(), &classAttributes)
+		classAttributesList = append(classAttributesList, &classAttributes)
+	}
+
+	return
+}
+
+func (k Keeper) GetOwningClassIdLists(ctx sdk.Context) (owningClassIdLists []*types.OwningClassIdList) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefixOwningClassIdList)
+	defer iterator.Close()
+	for ; iterator.Valid(); iterator.Next() {
+		var owningClassIdList types.OwningClassIdList
+		k.cdc.MustUnmarshal(iterator.Value(), &owningClassIdList)
+		owningClassIdLists = append(owningClassIdLists, &owningClassIdList)
+	}
+
+	return
+}
+
+func (k Keeper) GetClassNameIdLists(ctx sdk.Context) (classNameIdLists []*types.ClassNameIdList) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefixClassNameIdList)
+	defer iterator.Close()
+	for ; iterator.Valid(); iterator.Next() {
+		var classNameIdList types.ClassNameIdList
+		k.cdc.MustUnmarshal(iterator.Value(), &classNameIdList)
+		classNameIdLists = append(classNameIdLists, &classNameIdList)
+	}
+
+	return
 }
 
 func (k Keeper) AddClassIDToOwningClassIdList(ctx sdk.Context, owner sdk.AccAddress, classID string) types.OwningClassIdList {
