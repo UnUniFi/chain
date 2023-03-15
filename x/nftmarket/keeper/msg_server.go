@@ -3,8 +3,9 @@ package keeper
 import (
 	"context"
 
-	"github.com/UnUniFi/chain/x/nftmarket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
 type msgServer struct {
@@ -48,15 +49,6 @@ func (k msgServer) CancelNftListing(c context.Context, msg *types.MsgCancelNftLi
 		return nil, err
 	}
 	return &types.MsgCancelNftListingResponse{}, nil
-}
-
-func (k msgServer) ExpandListingPeriod(c context.Context, msg *types.MsgExpandListingPeriod) (*types.MsgExpandListingPeriodResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-	err := k.keeper.ExpandListingPeriod(ctx, msg)
-	if err != nil {
-		return nil, err
-	}
-	return &types.MsgExpandListingPeriodResponse{}, nil
 }
 
 func (k msgServer) PlaceBid(c context.Context, msg *types.MsgPlaceBid) (*types.MsgPlaceBidResponse, error) {
@@ -120,25 +112,4 @@ func (k msgServer) Repay(c context.Context, msg *types.MsgRepay) (*types.MsgRepa
 		return nil, err
 	}
 	return &types.MsgRepayResponse{}, nil
-}
-
-func (k msgServer) MintStableCoin(c context.Context, msg *types.MsgMintStableCoin) (*types.MsgMintStableCoinResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
-	return &types.MsgMintStableCoinResponse{}, nil
-}
-
-func (k msgServer) BurnStableCoin(c context.Context, msg *types.MsgBurnStableCoin) (*types.MsgBurnStableCoinResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
-	return &types.MsgBurnStableCoinResponse{}, nil
-}
-
-func (k msgServer) Liquidate(c context.Context, msg *types.MsgLiquidate) (*types.MsgLiquidateResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-	err := k.keeper.Liquidate(ctx, msg)
-	if err != nil {
-		return nil, err
-	}
-	return &types.MsgLiquidateResponse{}, nil
 }

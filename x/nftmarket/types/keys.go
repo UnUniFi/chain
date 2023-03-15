@@ -43,6 +43,8 @@ const (
 	KeyPrefixNftBidCancelled = "nft_bid_cancelled"
 	// nft bid by owner
 	KeyPrefixAddressBid = "address_bid"
+	// nft bid by end time
+	KeyPrefixEndTimeNftBid = "end_time_nft_bid"
 	// nft loan by nft_id
 	KeyPrefixNftLoan = "nft_loan"
 	// nft loan by owner
@@ -99,4 +101,34 @@ func ClassKey(addr sdk.AccAddress) []byte {
 
 func ClassIdKey(classId string) []byte {
 	return ClassKey([]byte(classId))
+}
+
+func NftBidBytes(classId, nftId, bidder string) []byte {
+	return append(append(NftBytes(classId, nftId), byte(0xFF)), []byte(bidder)...)
+}
+
+func NftBidBytesToBidId(NftBidBytes []byte) BidId {
+	stringList := []string{}
+	chunk := []byte{}
+	separate := byte(0xFF)
+	for _, idChar := range NftBidBytes {
+		if idChar == separate {
+			stringList = append(stringList, string(chunk))
+			chunk = []byte{}
+			continue
+		}
+		chunk = append(chunk, idChar)
+	}
+	stringList = append(stringList, string(chunk))
+	if len(stringList) != 3 {
+		panic("nft bid byte wrong format")
+	}
+
+	return BidId{
+		NftId: &NftIdentifier{
+			ClassId: stringList[0],
+			NftId:   stringList[1],
+		},
+		Bidder: stringList[2],
+	}
 }

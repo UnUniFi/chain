@@ -14,16 +14,12 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgListNft{},
 		&MsgCancelNftListing{},
-		&MsgExpandListingPeriod{},
 		&MsgPlaceBid{},
 		&MsgCancelBid{},
 		&MsgEndNftListing{},
 		&MsgPayFullBid{},
 		&MsgBorrow{},
 		&MsgRepay{},
-		&MsgMintStableCoin{},
-		&MsgBurnStableCoin{},
-		&MsgLiquidate{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
