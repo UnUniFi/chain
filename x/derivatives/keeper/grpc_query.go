@@ -49,8 +49,8 @@ func (k Keeper) PerpetualFutures(c context.Context, req *types.QueryPerpetualFut
 		}
 	}
 
-	longUsd := positions.EvaluateLongPositions(getPriceFunc(ctx))
-	shortUsd := positions.EvaluateShortPositions(getPriceFunc(ctx))
+	longUUsd := positions.EvaluateLongPositions(getPriceFunc(ctx))
+	shortUUsd := positions.EvaluateShortPositions(getPriceFunc(ctx))
 	// TODO: implement the handler logic
 	ctx.BlockHeight()
 	metricsQuoteTicker := "USD"
@@ -61,8 +61,8 @@ func (k Keeper) PerpetualFutures(c context.Context, req *types.QueryPerpetualFut
 		MetricsQuoteTicker: metricsQuoteTicker,
 		Volume_24Hours:     &volume24Hours,
 		Fees_24Hours:       &fees24Hours,
-		LongPositions:      &longUsd,
-		ShortPositions:     &shortUsd,
+		LongPositions:      sdk.NewCoin("uusd", longUUsd.TruncateInt()),
+		ShortPositions:     sdk.NewCoin("uusd", shortUUsd.TruncateInt()),
 	}, nil
 }
 
@@ -210,11 +210,20 @@ func (k Keeper) MakeQueriedPositions(ctx sdk.Context, positions types.Positions)
 		}
 
 		profit := perpetualFuturesPosition.ProfitAndLossInMetrics(currentBaseUsdRate, currentQuoteUsdRate)
+		// fixme do not use sdk.Coin directly
+		positiveOrNegativeProfitCoin := sdk.Coin{
+			Denom:  "uusd",
+			Amount: types.MicroToNormalDenom(profit),
+		}
+		positiveOrNegativeEffectiveMargin := sdk.Coin{
+			Denom:  "uusd",
+			Amount: types.MicroToNormalDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(currentBaseUsdRate, currentQuoteUsdRate)),
+		}
 		queriedPosition := types.QueriedPosition{
 			Position:              position,
-			ValuationProfit:       sdk.NewCoin("uusd", types.MicroToNormalDenom(profit)),
+			ValuationProfit:       positiveOrNegativeProfitCoin,
 			MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate),
-			EffectiveMargin:       sdk.NewCoin("uusd", types.MicroToNormalDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(currentBaseUsdRate, currentQuoteUsdRate))),
+			EffectiveMargin:       positiveOrNegativeEffectiveMargin,
 		}
 		queriedPositions = append(queriedPositions, queriedPosition)
 	}

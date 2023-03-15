@@ -55,17 +55,26 @@ func (k Keeper) GetLPNominalYieldRate(ctx sdk.Context, beforeHeight int64, after
 
 func (k Keeper) GetInflationRateOfAssetsInPool(ctx sdk.Context, beforeHeight int64, afterHeight int64) sdk.Dec {
 	poolMarketCapBefore := k.GetPoolMarketCapSnapshot(ctx, beforeHeight)
+	if poolMarketCapBefore.Total.IsNil() || poolMarketCapBefore.Total.IsZero() {
+		return sdk.ZeroDec()
+	}
 	poolMarketCapAfter := k.GetPoolMarketCapSnapshot(ctx, afterHeight)
 
 	poolMarketCapAfterWithBeforeAmount := sdk.NewDec(0)
 
-	// TODO: consider an overflow of poolMarketCapAfter[i]
-	// It might be better to use map type with string key (denom is used for key)
-	for i := range poolMarketCapBefore.Breakdown {
-		amountBefore := poolMarketCapBefore.Breakdown[i].Amount
-		priceAfter := poolMarketCapAfter.Breakdown[i].Price
+	afterPrices := make(map[string]sdk.Dec)
+	for _, breakdown := range poolMarketCapAfter.Breakdown {
+		afterPrices[breakdown.Denom] = breakdown.Price
+	}
 
-		poolMarketCapAfterWithBeforeAmount.Add(sdk.NewDecFromInt(amountBefore).Mul(priceAfter))
+	for _, breakdown := range poolMarketCapBefore.Breakdown {
+		amountBefore := breakdown.Amount
+		priceAfter, ok := afterPrices[breakdown.Denom]
+		if !ok {
+			continue
+		}
+
+		poolMarketCapAfterWithBeforeAmount = poolMarketCapAfterWithBeforeAmount.Add(sdk.NewDecFromInt(amountBefore).Mul(priceAfter))
 	}
 
 	diff := poolMarketCapAfterWithBeforeAmount.Sub(poolMarketCapBefore.Total)
@@ -81,8 +90,11 @@ func (k Keeper) GetLPRealYieldRate(ctx sdk.Context, beforeHeight int64, afterHei
 	nominalInterestRatePlus1 := nominalInterestRate.Add(sdk.NewDec(1))
 	inflationRatePlus1 := inflationRate.Add(sdk.NewDec(1))
 
-	quo := nominalInterestRatePlus1.Quo(inflationRatePlus1)
+	if inflationRatePlus1.IsZero() {
+		return sdk.ZeroDec()
+	}
 
+	quo := nominalInterestRatePlus1.Quo(inflationRatePlus1)
 	realInterestRate := quo.Sub(sdk.NewDec(1))
 
 	return realInterestRate

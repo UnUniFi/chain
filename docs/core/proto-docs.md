@@ -2134,8 +2134,8 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 | `metrics_quote_ticker` | [string](#string) |  |  |
 | `volume_24hours` | [string](#string) |  |  |
 | `fees_24hours` | [string](#string) |  |  |
-| `long_positions` | [string](#string) |  |  |
-| `short_positions` | [string](#string) |  |  |
+| `long_positions` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `short_positions` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
