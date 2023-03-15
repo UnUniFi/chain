@@ -51,8 +51,6 @@ func (k Keeper) PerpetualFutures(c context.Context, req *types.QueryPerpetualFut
 
 	longUUsd := positions.EvaluateLongPositions(getPriceFunc(ctx))
 	shortUUsd := positions.EvaluateShortPositions(getPriceFunc(ctx))
-	longUsd := types.MicroToNormalDenom(longUUsd)
-	shortUsd := types.MicroToNormalDenom(shortUUsd)
 	// TODO: implement the handler logic
 	ctx.BlockHeight()
 	metricsQuoteTicker := "USD"
@@ -63,8 +61,8 @@ func (k Keeper) PerpetualFutures(c context.Context, req *types.QueryPerpetualFut
 		MetricsQuoteTicker: metricsQuoteTicker,
 		Volume_24Hours:     &volume24Hours,
 		Fees_24Hours:       &fees24Hours,
-		LongPositions:      sdk.NewCoin("usd", longUsd),
-		ShortPositions:     sdk.NewCoin("usd", shortUsd),
+		LongPositions:      sdk.NewCoin("uusd", longUUsd.TruncateInt()),
+		ShortPositions:     sdk.NewCoin("uusd", shortUUsd.TruncateInt()),
 	}, nil
 }
 
