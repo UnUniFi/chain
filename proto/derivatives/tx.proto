@@ -1,0 +1,123 @@
+syntax = "proto3";
+package ununifi.derivatives;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+import "derivatives/derivatives.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/derivatives/types";
+
+service Msg {
+  rpc MintLiquidityProviderToken(MsgMintLiquidityProviderToken) returns (MsgMintLiquidityProviderTokenResponse);
+  rpc BurnLiquidityProviderToken(MsgBurnLiquidityProviderToken) returns (MsgBurnLiquidityProviderTokenResponse);
+  rpc OpenPosition(MsgOpenPosition) returns (MsgOpenPositionResponse);
+  rpc ClosePosition(MsgClosePosition) returns (MsgClosePositionResponse);
+  rpc ReportLiquidation(MsgReportLiquidation) returns (MsgReportLiquidationResponse);
+  rpc ReportLevyPeriod(MsgReportLevyPeriod) returns (MsgReportLevyPeriodResponse);
+}
+
+message MsgMintLiquidityProviderToken {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin amount = 2 [
+    (gogoproto.moretags) = "yaml:\"amount\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgMintLiquidityProviderTokenResponse {}
+
+message MsgBurnLiquidityProviderToken {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string amount = 2 [
+    (gogoproto.moretags) = "yaml:\"amount\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string redeem_denom = 3 [
+    (gogoproto.moretags) = "yaml:\"redeem_denom\""
+  ];
+}
+
+message MsgBurnLiquidityProviderTokenResponse {}
+
+message MsgOpenPosition {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin margin = 2 [
+    (gogoproto.moretags) = "yaml:\"margin\"",
+    (gogoproto.nullable) = false
+  ];
+  Market market = 3 [
+    (gogoproto.moretags) = "yaml:\"market\"",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Any position_instance = 4 [
+    (gogoproto.moretags) = "yaml:\"position_instance\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgOpenPositionResponse {}
+
+message MsgClosePosition {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string position_id = 2 [
+    (gogoproto.moretags) = "yaml:\"position_id\""
+  ];
+}
+
+message MsgClosePositionResponse {}
+
+message MsgReportLiquidation {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string position_id = 2 [
+    (gogoproto.moretags) = "yaml:\"position_id\""
+  ];
+  string reward_recipient = 3 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgReportLiquidationResponse {}
+
+message MsgReportLevyPeriod {
+  string sender = 1 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string position_id = 2 [
+    (gogoproto.moretags) = "yaml:\"position_id\""
+  ];
+  string reward_recipient = 3 [
+    (gogoproto.moretags) = "yaml:\"sender\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgReportLevyPeriodResponse {}

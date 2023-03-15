@@ -8,13 +8,14 @@ import (
 
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/UnUniFi/chain/x/pricefeed/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+
+	"github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
 type (
@@ -23,10 +24,11 @@ type (
 		storeKey   storetypes.StoreKey
 		memKey     storetypes.StoreKey
 		paramSpace paramtypes.Subspace
+		bankKeeper types.BankKeeper
 	}
 )
 
-func NewKeeper(cdc codec.Codec, storeKey, memKey storetypes.StoreKey, paramSpace paramtypes.Subspace) Keeper {
+func NewKeeper(cdc codec.Codec, storeKey, memKey storetypes.StoreKey, paramSpace paramtypes.Subspace, bankKeeper types.BankKeeper) Keeper {
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
@@ -36,6 +38,7 @@ func NewKeeper(cdc codec.Codec, storeKey, memKey storetypes.StoreKey, paramSpace
 		storeKey:   storeKey,
 		memKey:     memKey,
 		paramSpace: paramSpace,
+		bankKeeper: bankKeeper,
 	}
 }
 
@@ -185,15 +188,16 @@ func (k Keeper) calculateMeanPrice(ctx sdk.Context, prices types.CurrentPrices) 
 func (k Keeper) GetCurrentPrice(ctx sdk.Context, marketID string) (types.CurrentPrice, error) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.CurrentPriceKeySuffix(marketID))
-
 	if bz == nil {
 		return types.CurrentPrice{}, types.ErrNoValidPrice
 	}
+
 	var price types.CurrentPrice
 	err := k.cdc.Unmarshal(bz, &price)
 	if err != nil {
 		return types.CurrentPrice{}, err
 	}
+
 	if price.Price.Equal(sdk.ZeroDec()) {
 		return types.CurrentPrice{}, types.ErrNoValidPrice
 	}

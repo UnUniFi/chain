@@ -74,6 +74,147 @@
   
     - [Msg](#ununifi.cdp.Msg)
   
+- [derivatives/derivatives.proto](#derivatives/derivatives.proto)
+    - [EventPriceIsNotFeeded](#ununifi.derivatives.EventPriceIsNotFeeded)
+    - [Market](#ununifi.derivatives.Market)
+    - [PoolMarketCap](#ununifi.derivatives.PoolMarketCap)
+    - [PoolMarketCap.Breakdown](#ununifi.derivatives.PoolMarketCap.Breakdown)
+    - [PoolParams](#ununifi.derivatives.PoolParams)
+    - [PoolParams.Asset](#ununifi.derivatives.PoolParams.Asset)
+    - [Position](#ununifi.derivatives.Position)
+    - [QueriedPosition](#ununifi.derivatives.QueriedPosition)
+  
+    - [PositionType](#ununifi.derivatives.PositionType)
+  
+- [derivatives/perpetual_futures.proto](#derivatives/perpetual_futures.proto)
+    - [EventPerpetualFuturesPositionClosed](#ununifi.derivatives.EventPerpetualFuturesPositionClosed)
+    - [EventPerpetualFuturesPositionLevied](#ununifi.derivatives.EventPerpetualFuturesPositionLevied)
+    - [EventPerpetualFuturesPositionLiquidated](#ununifi.derivatives.EventPerpetualFuturesPositionLiquidated)
+    - [EventPerpetualFuturesPositionOpened](#ununifi.derivatives.EventPerpetualFuturesPositionOpened)
+    - [PerpetualFuturesNetPositionOfMarket](#ununifi.derivatives.PerpetualFuturesNetPositionOfMarket)
+    - [PerpetualFuturesParams](#ununifi.derivatives.PerpetualFuturesParams)
+    - [PerpetualFuturesPosition](#ununifi.derivatives.PerpetualFuturesPosition)
+    - [PerpetualFuturesPositionInstance](#ununifi.derivatives.PerpetualFuturesPositionInstance)
+  
+- [derivatives/perpetual_options.proto](#derivatives/perpetual_options.proto)
+    - [PerpetualOptionsParams](#ununifi.derivatives.PerpetualOptionsParams)
+    - [PerpetualOptionsPositionInstance](#ununifi.derivatives.PerpetualOptionsPositionInstance)
+  
+    - [OptionType](#ununifi.derivatives.OptionType)
+  
+- [derivatives/params.proto](#derivatives/params.proto)
+    - [Params](#ununifi.derivatives.Params)
+  
+- [derivatives/genesis.proto](#derivatives/genesis.proto)
+    - [GenesisState](#ununifi.derivatives.GenesisState)
+  
+- [derivatives/query.proto](#derivatives/query.proto)
+    - [QueryAddressPositionsRequest](#ununifi.derivatives.QueryAddressPositionsRequest)
+    - [QueryAddressPositionsResponse](#ununifi.derivatives.QueryAddressPositionsResponse)
+    - [QueryAllPositionsRequest](#ununifi.derivatives.QueryAllPositionsRequest)
+    - [QueryAllPositionsResponse](#ununifi.derivatives.QueryAllPositionsResponse)
+    - [QueryDLPTokenRateRequest](#ununifi.derivatives.QueryDLPTokenRateRequest)
+    - [QueryDLPTokenRateResponse](#ununifi.derivatives.QueryDLPTokenRateResponse)
+    - [QueryEstimateDLPTokenAmountRequest](#ununifi.derivatives.QueryEstimateDLPTokenAmountRequest)
+    - [QueryEstimateDLPTokenAmountResponse](#ununifi.derivatives.QueryEstimateDLPTokenAmountResponse)
+    - [QueryEstimateRedeemAmountRequest](#ununifi.derivatives.QueryEstimateRedeemAmountRequest)
+    - [QueryEstimateRedeemAmountResponse](#ununifi.derivatives.QueryEstimateRedeemAmountResponse)
+    - [QueryLiquidityProviderTokenNominalAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYRequest)
+    - [QueryLiquidityProviderTokenNominalAPYResponse](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYResponse)
+    - [QueryLiquidityProviderTokenRealAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenRealAPYRequest)
+    - [QueryLiquidityProviderTokenRealAPYResponse](#ununifi.derivatives.QueryLiquidityProviderTokenRealAPYResponse)
+    - [QueryParamsRequest](#ununifi.derivatives.QueryParamsRequest)
+    - [QueryParamsResponse](#ununifi.derivatives.QueryParamsResponse)
+    - [QueryPerpetualFuturesMarketRequest](#ununifi.derivatives.QueryPerpetualFuturesMarketRequest)
+    - [QueryPerpetualFuturesMarketResponse](#ununifi.derivatives.QueryPerpetualFuturesMarketResponse)
+    - [QueryPerpetualFuturesPositionSizeRequest](#ununifi.derivatives.QueryPerpetualFuturesPositionSizeRequest)
+    - [QueryPerpetualFuturesPositionSizeResponse](#ununifi.derivatives.QueryPerpetualFuturesPositionSizeResponse)
+    - [QueryPerpetualFuturesRequest](#ununifi.derivatives.QueryPerpetualFuturesRequest)
+    - [QueryPerpetualFuturesResponse](#ununifi.derivatives.QueryPerpetualFuturesResponse)
+    - [QueryPerpetualOptionsMarketRequest](#ununifi.derivatives.QueryPerpetualOptionsMarketRequest)
+    - [QueryPerpetualOptionsMarketResponse](#ununifi.derivatives.QueryPerpetualOptionsMarketResponse)
+    - [QueryPerpetualOptionsRequest](#ununifi.derivatives.QueryPerpetualOptionsRequest)
+    - [QueryPerpetualOptionsResponse](#ununifi.derivatives.QueryPerpetualOptionsResponse)
+    - [QueryPoolRequest](#ununifi.derivatives.QueryPoolRequest)
+    - [QueryPoolResponse](#ununifi.derivatives.QueryPoolResponse)
+    - [QueryPositionRequest](#ununifi.derivatives.QueryPositionRequest)
+    - [QueryPositionResponse](#ununifi.derivatives.QueryPositionResponse)
+  
+    - [Query](#ununifi.derivatives.Query)
+  
+- [derivatives/tx.proto](#derivatives/tx.proto)
+    - [MsgBurnLiquidityProviderToken](#ununifi.derivatives.MsgBurnLiquidityProviderToken)
+    - [MsgBurnLiquidityProviderTokenResponse](#ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse)
+    - [MsgClosePosition](#ununifi.derivatives.MsgClosePosition)
+    - [MsgClosePositionResponse](#ununifi.derivatives.MsgClosePositionResponse)
+    - [MsgMintLiquidityProviderToken](#ununifi.derivatives.MsgMintLiquidityProviderToken)
+    - [MsgMintLiquidityProviderTokenResponse](#ununifi.derivatives.MsgMintLiquidityProviderTokenResponse)
+    - [MsgOpenPosition](#ununifi.derivatives.MsgOpenPosition)
+    - [MsgOpenPositionResponse](#ununifi.derivatives.MsgOpenPositionResponse)
+    - [MsgReportLevyPeriod](#ununifi.derivatives.MsgReportLevyPeriod)
+    - [MsgReportLevyPeriodResponse](#ununifi.derivatives.MsgReportLevyPeriodResponse)
+    - [MsgReportLiquidation](#ununifi.derivatives.MsgReportLiquidation)
+    - [MsgReportLiquidationResponse](#ununifi.derivatives.MsgReportLiquidationResponse)
+  
+    - [Msg](#ununifi.derivatives.Msg)
+  
+- [ecosystem-incentive/ecosystem_incentive.proto](#ecosystem-incentive/ecosystem_incentive.proto)
+    - [IncentiveUnit](#ununifi.ecosystemincentive.IncentiveUnit)
+    - [IncentiveUnitIdsByAddr](#ununifi.ecosystemincentive.IncentiveUnitIdsByAddr)
+    - [RewardStore](#ununifi.ecosystemincentive.RewardStore)
+    - [SubjectInfo](#ununifi.ecosystemincentive.SubjectInfo)
+  
+- [ecosystem-incentive/event.proto](#ecosystem-incentive/event.proto)
+    - [EventDeletedNftIdRecordedForFrontendReward](#ununifi.ecosystemincentive.EventDeletedNftIdRecordedForFrontendReward)
+    - [EventFailedParsingMemoInputs](#ununifi.ecosystemincentive.EventFailedParsingMemoInputs)
+    - [EventNotRecordedNftId](#ununifi.ecosystemincentive.EventNotRecordedNftId)
+    - [EventNotRegisteredIncentiveUnitId](#ununifi.ecosystemincentive.EventNotRegisteredIncentiveUnitId)
+    - [EventRecordedIncentiveUnitId](#ununifi.ecosystemincentive.EventRecordedIncentiveUnitId)
+    - [EventRegister](#ununifi.ecosystemincentive.EventRegister)
+    - [EventUpdatedReward](#ununifi.ecosystemincentive.EventUpdatedReward)
+    - [EventVersionUnmatched](#ununifi.ecosystemincentive.EventVersionUnmatched)
+    - [EventWithdrawAllRewards](#ununifi.ecosystemincentive.EventWithdrawAllRewards)
+    - [EventWithdrawReward](#ununifi.ecosystemincentive.EventWithdrawReward)
+  
+- [ecosystem-incentive/params.proto](#ecosystem-incentive/params.proto)
+    - [Params](#ununifi.ecosystemincentive.Params)
+    - [RewardParams](#ununifi.ecosystemincentive.RewardParams)
+    - [RewardRate](#ununifi.ecosystemincentive.RewardRate)
+  
+    - [RewardType](#ununifi.ecosystemincentive.RewardType)
+  
+- [ecosystem-incentive/genesis.proto](#ecosystem-incentive/genesis.proto)
+    - [GenesisState](#ununifi.ecosystemincentive.GenesisState)
+  
+- [ecosystem-incentive/memo.proto](#ecosystem-incentive/memo.proto)
+    - [MemoInputs](#ununifi.ecosystemincentive.MemoInputs)
+  
+- [ecosystem-incentive/query.proto](#ecosystem-incentive/query.proto)
+    - [QueryAllRewardsRequest](#ununifi.ecosystemincentive.QueryAllRewardsRequest)
+    - [QueryAllRewardsResponse](#ununifi.ecosystemincentive.QueryAllRewardsResponse)
+    - [QueryIncentiveUnitIdsByAddrRequest](#ununifi.ecosystemincentive.QueryIncentiveUnitIdsByAddrRequest)
+    - [QueryIncentiveUnitIdsByAddrResponse](#ununifi.ecosystemincentive.QueryIncentiveUnitIdsByAddrResponse)
+    - [QueryIncentiveUnitRequest](#ununifi.ecosystemincentive.QueryIncentiveUnitRequest)
+    - [QueryIncentiveUnitResponse](#ununifi.ecosystemincentive.QueryIncentiveUnitResponse)
+    - [QueryParamsRequest](#ununifi.ecosystemincentive.QueryParamsRequest)
+    - [QueryParamsResponse](#ununifi.ecosystemincentive.QueryParamsResponse)
+    - [QueryRecordedIncentiveUnitIdRequest](#ununifi.ecosystemincentive.QueryRecordedIncentiveUnitIdRequest)
+    - [QueryRecordedIncentiveUnitIdResponse](#ununifi.ecosystemincentive.QueryRecordedIncentiveUnitIdResponse)
+    - [QueryRewardRequest](#ununifi.ecosystemincentive.QueryRewardRequest)
+    - [QueryRewardResponse](#ununifi.ecosystemincentive.QueryRewardResponse)
+  
+    - [Query](#ununifi.ecosystemincentive.Query)
+  
+- [ecosystem-incentive/tx.proto](#ecosystem-incentive/tx.proto)
+    - [MsgRegister](#ununifi.ecosystemincentive.MsgRegister)
+    - [MsgRegisterResponse](#ununifi.ecosystemincentive.MsgRegisterResponse)
+    - [MsgWithdrawAllRewards](#ununifi.ecosystemincentive.MsgWithdrawAllRewards)
+    - [MsgWithdrawAllRewardsResponse](#ununifi.ecosystemincentive.MsgWithdrawAllRewardsResponse)
+    - [MsgWithdrawReward](#ununifi.ecosystemincentive.MsgWithdrawReward)
+    - [MsgWithdrawRewardResponse](#ununifi.ecosystemincentive.MsgWithdrawRewardResponse)
+  
+    - [Msg](#ununifi.ecosystemincentive.Msg)
+  
 - [ethereum/signdoc.proto](#ethereum/signdoc.proto)
     - [SignDocForMetamask](#ununifi.ethereum.SignDocForMetamask)
   
@@ -1188,6 +1329,1871 @@ Query defines the gRPC querier service.
 
 
 
+<a name="derivatives/derivatives.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## derivatives/derivatives.proto
+
+
+
+<a name="ununifi.derivatives.EventPriceIsNotFeeded"></a>
+
+### EventPriceIsNotFeeded
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `asset` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.Market"></a>
+
+### Market
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `base_denom` | [string](#string) |  |  |
+| `quote_denom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.PoolMarketCap"></a>
+
+### PoolMarketCap
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `quote_ticker` | [string](#string) |  |  |
+| `total` | [string](#string) |  |  |
+| `breakdown` | [PoolMarketCap.Breakdown](#ununifi.derivatives.PoolMarketCap.Breakdown) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.PoolMarketCap.Breakdown"></a>
+
+### PoolMarketCap.Breakdown
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+| `price` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.PoolParams"></a>
+
+### PoolParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `quote_ticker` | [string](#string) |  |  |
+| `base_lpt_mint_fee` | [string](#string) |  |  |
+| `base_lpt_redeem_fee` | [string](#string) |  |  |
+| `borrowing_fee_rate_per_hour` | [string](#string) |  |  |
+| `report_liquidation_reward_rate` | [string](#string) |  |  |
+| `report_levy_period_reward_rate` | [string](#string) |  |  |
+| `accepted_assets` | [PoolParams.Asset](#ununifi.derivatives.PoolParams.Asset) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.PoolParams.Asset"></a>
+
+### PoolParams.Asset
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+| `target_weight` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.Position"></a>
+
+### Position
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  |  |
+| `market` | [Market](#ununifi.derivatives.Market) |  |  |
+| `address` | [string](#string) |  |  |
+| `opened_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `opened_height` | [uint64](#uint64) |  |  |
+| `opened_base_rate` | [string](#string) |  |  |
+| `opened_quote_rate` | [string](#string) |  |  |
+| `remaining_margin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `last_levied_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `position_instance` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueriedPosition"></a>
+
+### QueriedPosition
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `position` | [Position](#ununifi.derivatives.Position) |  |  |
+| `valuation_profit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `remaining_margin_value` | [string](#string) |  |  |
+| `effective_margin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `margin_maintenance_rate` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="ununifi.derivatives.PositionType"></a>
+
+### PositionType
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| POSITION_UNKNOWN | 0 |  |
+| LONG | 1 |  |
+| SHORT | 2 |  |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="derivatives/perpetual_futures.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## derivatives/perpetual_futures.proto
+
+
+
+<a name="ununifi.derivatives.EventPerpetualFuturesPositionClosed"></a>
+
+### EventPerpetualFuturesPositionClosed
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `position_id` | [string](#string) |  |  |
+| `fee_amount` | [string](#string) |  |  |
+| `trade_amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.EventPerpetualFuturesPositionLevied"></a>
+
+### EventPerpetualFuturesPositionLevied
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `reward_recipient` | [string](#string) |  |  |
+| `position_id` | [string](#string) |  |  |
+| `remaining_margin` | [string](#string) |  |  |
+| `reward_amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.EventPerpetualFuturesPositionLiquidated"></a>
+
+### EventPerpetualFuturesPositionLiquidated
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `reward_recipient` | [string](#string) |  |  |
+| `position_id` | [string](#string) |  |  |
+| `remaining_margin` | [string](#string) |  |  |
+| `reward_amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.EventPerpetualFuturesPositionOpened"></a>
+
+### EventPerpetualFuturesPositionOpened
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `position_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.PerpetualFuturesNetPositionOfMarket"></a>
+
+### PerpetualFuturesNetPositionOfMarket
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `market` | [Market](#ununifi.derivatives.Market) |  |  |
+| `position_size` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.PerpetualFuturesParams"></a>
+
+### PerpetualFuturesParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `commission_rate` | [string](#string) |  |  |
+| `margin_maintenance_rate` | [string](#string) |  |  |
+| `imaginary_funding_rate_proportional_coefficient` | [string](#string) |  |  |
+| `markets` | [Market](#ununifi.derivatives.Market) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.PerpetualFuturesPosition"></a>
+
+### PerpetualFuturesPosition
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  |  |
+| `market` | [Market](#ununifi.derivatives.Market) |  |  |
+| `address` | [string](#string) |  |  |
+| `opened_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `opened_height` | [uint64](#uint64) |  |  |
+| `opened_base_rate` | [string](#string) |  |  |
+| `opened_quote_rate` | [string](#string) |  |  |
+| `remaining_margin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `last_levied_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `position_instance` | [PerpetualFuturesPositionInstance](#ununifi.derivatives.PerpetualFuturesPositionInstance) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.PerpetualFuturesPositionInstance"></a>
+
+### PerpetualFuturesPositionInstance
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `position_type` | [PositionType](#ununifi.derivatives.PositionType) |  |  |
+| `size` | [string](#string) |  |  |
+| `leverage` | [uint32](#uint32) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="derivatives/perpetual_options.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## derivatives/perpetual_options.proto
+
+
+
+<a name="ununifi.derivatives.PerpetualOptionsParams"></a>
+
+### PerpetualOptionsParams
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `premium_commission_rate` | [string](#string) |  |  |
+| `strike_commission_rate` | [string](#string) |  |  |
+| `margin_maintenance_rate` | [string](#string) |  |  |
+| `imaginary_funding_rate_proportional_coefficient` | [string](#string) |  |  |
+| `markets` | [Market](#ununifi.derivatives.Market) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.PerpetualOptionsPositionInstance"></a>
+
+### PerpetualOptionsPositionInstance
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `option_type` | [OptionType](#ununifi.derivatives.OptionType) |  |  |
+| `position_type` | [PositionType](#ununifi.derivatives.PositionType) |  |  |
+| `strike_price` | [string](#string) |  |  |
+| `premium` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="ununifi.derivatives.OptionType"></a>
+
+### OptionType
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| OPTION_UNKNOWN | 0 |  |
+| CALL | 1 |  |
+| PUT | 2 |  |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="derivatives/params.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## derivatives/params.proto
+
+
+
+<a name="ununifi.derivatives.Params"></a>
+
+### Params
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pool_params` | [PoolParams](#ununifi.derivatives.PoolParams) |  |  |
+| `perpetual_futures` | [PerpetualFuturesParams](#ununifi.derivatives.PerpetualFuturesParams) |  |  |
+| `perpetual_options` | [PerpetualOptionsParams](#ununifi.derivatives.PerpetualOptionsParams) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="derivatives/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## derivatives/genesis.proto
+
+
+
+<a name="ununifi.derivatives.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the derivatives module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.derivatives.Params) |  |  |
+| `positions` | [Position](#ununifi.derivatives.Position) | repeated |  |
+| `pool_market_cap` | [PoolMarketCap](#ununifi.derivatives.PoolMarketCap) |  |  |
+| `perpetual_futures_net_position_of_market` | [PerpetualFuturesNetPositionOfMarket](#ununifi.derivatives.PerpetualFuturesNetPositionOfMarket) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="derivatives/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## derivatives/query.proto
+
+
+
+<a name="ununifi.derivatives.QueryAddressPositionsRequest"></a>
+
+### QueryAddressPositionsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryAddressPositionsResponse"></a>
+
+### QueryAddressPositionsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `positions` | [QueriedPosition](#ununifi.derivatives.QueriedPosition) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryAllPositionsRequest"></a>
+
+### QueryAllPositionsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryAllPositionsResponse"></a>
+
+### QueryAllPositionsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `positions` | [QueriedPosition](#ununifi.derivatives.QueriedPosition) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryDLPTokenRateRequest"></a>
+
+### QueryDLPTokenRateRequest
+
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryDLPTokenRateResponse"></a>
+
+### QueryDLPTokenRateResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `symbol` | [string](#string) |  |  |
+| `rates` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryEstimateDLPTokenAmountRequest"></a>
+
+### QueryEstimateDLPTokenAmountRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `mint_denom` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryEstimateDLPTokenAmountResponse"></a>
+
+### QueryEstimateDLPTokenAmountResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `fee` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryEstimateRedeemAmountRequest"></a>
+
+### QueryEstimateRedeemAmountRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `redeem_denom` | [string](#string) |  |  |
+| `lpt_amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryEstimateRedeemAmountResponse"></a>
+
+### QueryEstimateRedeemAmountResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `fee` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYRequest"></a>
+
+### QueryLiquidityProviderTokenNominalAPYRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `before_height` | [int64](#int64) |  |  |
+| `after_height` | [int64](#int64) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYResponse"></a>
+
+### QueryLiquidityProviderTokenNominalAPYResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `apy` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryLiquidityProviderTokenRealAPYRequest"></a>
+
+### QueryLiquidityProviderTokenRealAPYRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `before_height` | [int64](#int64) |  |  |
+| `after_height` | [int64](#int64) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryLiquidityProviderTokenRealAPYResponse"></a>
+
+### QueryLiquidityProviderTokenRealAPYResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `apy` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+QueryParamsRequest is request type for the Query/Params RPC method.
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+QueryParamsResponse is response type for the Query/Params RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.derivatives.Params) |  | params holds all the parameters of this module. |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPerpetualFuturesMarketRequest"></a>
+
+### QueryPerpetualFuturesMarketRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `base_denom` | [string](#string) |  |  |
+| `quote_denom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPerpetualFuturesMarketResponse"></a>
+
+### QueryPerpetualFuturesMarketResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `price` | [string](#string) |  |  |
+| `metrics_quote_ticker` | [string](#string) |  |  |
+| `volume_24hours` | [string](#string) |  |  |
+| `fees_24hours` | [string](#string) |  |  |
+| `long_positions` | [string](#string) |  |  |
+| `short_positions` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPerpetualFuturesPositionSizeRequest"></a>
+
+### QueryPerpetualFuturesPositionSizeRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `position_type` | [PositionType](#ununifi.derivatives.PositionType) |  |  |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPerpetualFuturesPositionSizeResponse"></a>
+
+### QueryPerpetualFuturesPositionSizeResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `total_position_size_usd` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPerpetualFuturesRequest"></a>
+
+### QueryPerpetualFuturesRequest
+
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPerpetualFuturesResponse"></a>
+
+### QueryPerpetualFuturesResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `metrics_quote_ticker` | [string](#string) |  |  |
+| `volume_24hours` | [string](#string) |  |  |
+| `fees_24hours` | [string](#string) |  |  |
+| `long_positions` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `short_positions` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPerpetualOptionsMarketRequest"></a>
+
+### QueryPerpetualOptionsMarketRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `base_denom` | [string](#string) |  |  |
+| `quote_denom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPerpetualOptionsMarketResponse"></a>
+
+### QueryPerpetualOptionsMarketResponse
+
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPerpetualOptionsRequest"></a>
+
+### QueryPerpetualOptionsRequest
+
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPerpetualOptionsResponse"></a>
+
+### QueryPerpetualOptionsResponse
+
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPoolRequest"></a>
+
+### QueryPoolRequest
+this line is used by starport scaffolding # 3
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPoolResponse"></a>
+
+### QueryPoolResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `metrics_quote_ticker` | [string](#string) |  |  |
+| `pool_market_cap` | [PoolMarketCap](#ununifi.derivatives.PoolMarketCap) |  |  |
+| `volume_24hours` | [string](#string) |  |  |
+| `fees_24hours` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPositionRequest"></a>
+
+### QueryPositionRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `position_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPositionResponse"></a>
+
+### QueryPositionResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `position` | [Position](#ununifi.derivatives.Position) |  |  |
+| `valuation_profit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `margin_maintenance_rate` | [string](#string) |  |  |
+| `effective_margin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.derivatives.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#ununifi.derivatives.QueryParamsRequest) | [QueryParamsResponse](#ununifi.derivatives.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/ununifi/derivatives/params|
+| `Pool` | [QueryPoolRequest](#ununifi.derivatives.QueryPoolRequest) | [QueryPoolResponse](#ununifi.derivatives.QueryPoolResponse) | this line is used by starport scaffolding # 2 | GET|/ununifi/derivatives/pool|
+| `LiquidityProviderTokenRealAPY` | [QueryLiquidityProviderTokenRealAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenRealAPYRequest) | [QueryLiquidityProviderTokenRealAPYResponse](#ununifi.derivatives.QueryLiquidityProviderTokenRealAPYResponse) |  | GET|/ununifi/derivatives/liquidity-providers/real-apy|
+| `LiquidityProviderTokenNominalAPY` | [QueryLiquidityProviderTokenNominalAPYRequest](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYRequest) | [QueryLiquidityProviderTokenNominalAPYResponse](#ununifi.derivatives.QueryLiquidityProviderTokenNominalAPYResponse) |  | GET|/ununifi/derivatives/liquidity-providers/nominal-apy|
+| `PerpetualFutures` | [QueryPerpetualFuturesRequest](#ununifi.derivatives.QueryPerpetualFuturesRequest) | [QueryPerpetualFuturesResponse](#ununifi.derivatives.QueryPerpetualFuturesResponse) |  | GET|/ununifi/derivatives/perpetual-futures|
+| `PerpetualFuturesMarket` | [QueryPerpetualFuturesMarketRequest](#ununifi.derivatives.QueryPerpetualFuturesMarketRequest) | [QueryPerpetualFuturesMarketResponse](#ununifi.derivatives.QueryPerpetualFuturesMarketResponse) |  | GET|/ununifi/derivatives/perpetual-futures/{base_denom}/{quote_denom}|
+| `PerpetualOptions` | [QueryPerpetualOptionsRequest](#ununifi.derivatives.QueryPerpetualOptionsRequest) | [QueryPerpetualOptionsResponse](#ununifi.derivatives.QueryPerpetualOptionsResponse) |  | GET|/ununifi/derivatives/perpetual-options|
+| `PerpetualOptionsMarket` | [QueryPerpetualOptionsMarketRequest](#ununifi.derivatives.QueryPerpetualOptionsMarketRequest) | [QueryPerpetualOptionsMarketResponse](#ununifi.derivatives.QueryPerpetualOptionsMarketResponse) |  | GET|/ununifi/derivatives/perpetual-options/{base_denom}/{quote_denom}|
+| `AllPositions` | [QueryAllPositionsRequest](#ununifi.derivatives.QueryAllPositionsRequest) | [QueryAllPositionsResponse](#ununifi.derivatives.QueryAllPositionsResponse) |  | GET|/ununifi/derivatives/positions|
+| `Position` | [QueryPositionRequest](#ununifi.derivatives.QueryPositionRequest) | [QueryPositionResponse](#ununifi.derivatives.QueryPositionResponse) |  | GET|/ununifi/derivatives/positions/{position_id}|
+| `PerpetualFuturesPositionSize` | [QueryPerpetualFuturesPositionSizeRequest](#ununifi.derivatives.QueryPerpetualFuturesPositionSizeRequest) | [QueryPerpetualFuturesPositionSizeResponse](#ununifi.derivatives.QueryPerpetualFuturesPositionSizeResponse) |  | GET|/ununifi/derivatives/positions/perpetual-futures/{position_type}/{address}|
+| `AddressPositions` | [QueryAddressPositionsRequest](#ununifi.derivatives.QueryAddressPositionsRequest) | [QueryAddressPositionsResponse](#ununifi.derivatives.QueryAddressPositionsResponse) |  | GET|/ununifi/derivatives/{address}/positions|
+| `DLPTokenRates` | [QueryDLPTokenRateRequest](#ununifi.derivatives.QueryDLPTokenRateRequest) | [QueryDLPTokenRateResponse](#ununifi.derivatives.QueryDLPTokenRateResponse) |  | GET|/ununifi/derivatives/pools/dlp|
+| `EstimateDLPTokenAmount` | [QueryEstimateDLPTokenAmountRequest](#ununifi.derivatives.QueryEstimateDLPTokenAmountRequest) | [QueryEstimateDLPTokenAmountResponse](#ununifi.derivatives.QueryEstimateDLPTokenAmountResponse) |  | GET|/ununifi/derivatives/estimate-dlp-token-amount/{mint_denom}/{amount}|
+| `EstimateRedeemAmount` | [QueryEstimateRedeemAmountRequest](#ununifi.derivatives.QueryEstimateRedeemAmountRequest) | [QueryEstimateRedeemAmountResponse](#ununifi.derivatives.QueryEstimateRedeemAmountResponse) |  | GET|/ununifi/derivatives/estimate-redeem-amount/{redeem_denom}/{lpt_amount}|
+
+ <!-- end services -->
+
+
+
+<a name="derivatives/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## derivatives/tx.proto
+
+
+
+<a name="ununifi.derivatives.MsgBurnLiquidityProviderToken"></a>
+
+### MsgBurnLiquidityProviderToken
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+| `redeem_denom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse"></a>
+
+### MsgBurnLiquidityProviderTokenResponse
+
+
+
+
+
+
+
+<a name="ununifi.derivatives.MsgClosePosition"></a>
+
+### MsgClosePosition
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `position_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.MsgClosePositionResponse"></a>
+
+### MsgClosePositionResponse
+
+
+
+
+
+
+
+<a name="ununifi.derivatives.MsgMintLiquidityProviderToken"></a>
+
+### MsgMintLiquidityProviderToken
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.MsgMintLiquidityProviderTokenResponse"></a>
+
+### MsgMintLiquidityProviderTokenResponse
+
+
+
+
+
+
+
+<a name="ununifi.derivatives.MsgOpenPosition"></a>
+
+### MsgOpenPosition
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `margin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `market` | [Market](#ununifi.derivatives.Market) |  |  |
+| `position_instance` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.MsgOpenPositionResponse"></a>
+
+### MsgOpenPositionResponse
+
+
+
+
+
+
+
+<a name="ununifi.derivatives.MsgReportLevyPeriod"></a>
+
+### MsgReportLevyPeriod
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `position_id` | [string](#string) |  |  |
+| `reward_recipient` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.MsgReportLevyPeriodResponse"></a>
+
+### MsgReportLevyPeriodResponse
+
+
+
+
+
+
+
+<a name="ununifi.derivatives.MsgReportLiquidation"></a>
+
+### MsgReportLiquidation
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `position_id` | [string](#string) |  |  |
+| `reward_recipient` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.MsgReportLiquidationResponse"></a>
+
+### MsgReportLiquidationResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.derivatives.Msg"></a>
+
+### Msg
+
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `MintLiquidityProviderToken` | [MsgMintLiquidityProviderToken](#ununifi.derivatives.MsgMintLiquidityProviderToken) | [MsgMintLiquidityProviderTokenResponse](#ununifi.derivatives.MsgMintLiquidityProviderTokenResponse) |  | |
+| `BurnLiquidityProviderToken` | [MsgBurnLiquidityProviderToken](#ununifi.derivatives.MsgBurnLiquidityProviderToken) | [MsgBurnLiquidityProviderTokenResponse](#ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse) |  | |
+| `OpenPosition` | [MsgOpenPosition](#ununifi.derivatives.MsgOpenPosition) | [MsgOpenPositionResponse](#ununifi.derivatives.MsgOpenPositionResponse) |  | |
+| `ClosePosition` | [MsgClosePosition](#ununifi.derivatives.MsgClosePosition) | [MsgClosePositionResponse](#ununifi.derivatives.MsgClosePositionResponse) |  | |
+| `ReportLiquidation` | [MsgReportLiquidation](#ununifi.derivatives.MsgReportLiquidation) | [MsgReportLiquidationResponse](#ununifi.derivatives.MsgReportLiquidationResponse) |  | |
+| `ReportLevyPeriod` | [MsgReportLevyPeriod](#ununifi.derivatives.MsgReportLevyPeriod) | [MsgReportLevyPeriodResponse](#ununifi.derivatives.MsgReportLevyPeriodResponse) |  | |
+
+ <!-- end services -->
+
+
+
+<a name="ecosystem-incentive/ecosystem_incentive.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ecosystem-incentive/ecosystem_incentive.proto
+
+
+
+<a name="ununifi.ecosystemincentive.IncentiveUnit"></a>
+
+### IncentiveUnit
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  |  |
+| `subject_info_lists` | [SubjectInfo](#ununifi.ecosystemincentive.SubjectInfo) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.IncentiveUnitIdsByAddr"></a>
+
+### IncentiveUnitIdsByAddr
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+| `incentive_unit_ids` | [string](#string) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.RewardStore"></a>
+
+### RewardStore
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `subject_addr` | [string](#string) |  |  |
+| `rewards` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.SubjectInfo"></a>
+
+### SubjectInfo
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `subject_addr` | [string](#string) |  |  |
+| `weight` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="ecosystem-incentive/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ecosystem-incentive/event.proto
+
+
+
+<a name="ununifi.ecosystemincentive.EventDeletedNftIdRecordedForFrontendReward"></a>
+
+### EventDeletedNftIdRecordedForFrontendReward
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `incentive_unit_id` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.EventFailedParsingMemoInputs"></a>
+
+### EventFailedParsingMemoInputs
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+| `memo` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.EventNotRecordedNftId"></a>
+
+### EventNotRecordedNftId
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.EventNotRegisteredIncentiveUnitId"></a>
+
+### EventNotRegisteredIncentiveUnitId
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `incentive_unit_id` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.EventRecordedIncentiveUnitId"></a>
+
+### EventRecordedIncentiveUnitId
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `incentive_unit_id` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.EventRegister"></a>
+
+### EventRegister
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `incentive_unit_id` | [string](#string) |  |  |
+| `subject_info_lists` | [SubjectInfo](#ununifi.ecosystemincentive.SubjectInfo) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.EventUpdatedReward"></a>
+
+### EventUpdatedReward
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `incentive_unit_id` | [string](#string) |  |  |
+| `earned_reward` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.EventVersionUnmatched"></a>
+
+### EventVersionUnmatched
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `unmatched_version` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.EventWithdrawAllRewards"></a>
+
+### EventWithdrawAllRewards
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `all_withdrawn_rewards` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.EventWithdrawReward"></a>
+
+### EventWithdrawReward
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `withdrawn_reward` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="ecosystem-incentive/params.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ecosystem-incentive/params.proto
+
+
+
+<a name="ununifi.ecosystemincentive.Params"></a>
+
+### Params
+Params defines the parameters for the module.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `reward_params` | [RewardParams](#ununifi.ecosystemincentive.RewardParams) | repeated |  |
+| `max_incentive_unit_id_len` | [uint64](#uint64) |  |  |
+| `max_subject_info_num_in_unit` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.RewardParams"></a>
+
+### RewardParams
+RewardParams defines which module have which rewards type and rate 
+to maintain the correctness of the fee rate in a module
+e.g. if nftmarket module have "Frontend" and "Collection" incentive, 
+the combined those rates for the incentive cannot be exceed 1
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `module_name` | [string](#string) |  |  |
+| `reward_rate` | [RewardRate](#ununifi.ecosystemincentive.RewardRate) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.RewardRate"></a>
+
+### RewardRate
+RewardRate defines the ratio to take reward for a specific reward_type.
+The total sum of reward_rate in a module cannot be exceed 1
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `reward_type` | [RewardType](#ununifi.ecosystemincentive.RewardType) |  |  |
+| `rate` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="ununifi.ecosystemincentive.RewardType"></a>
+
+### RewardType
+At first, we go with this one type.
+NFTMARKET_FRONTEND type reward will be disributed for the creators of frontend of UnUniFi's services.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| NFTMARKET_FRONTEND | 0 |  |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="ecosystem-incentive/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ecosystem-incentive/genesis.proto
+
+
+
+<a name="ununifi.ecosystemincentive.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the ecosystemincentive module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.ecosystemincentive.Params) |  |  |
+| `incentive_units` | [IncentiveUnit](#ununifi.ecosystemincentive.IncentiveUnit) | repeated |  |
+| `reward_stores` | [RewardStore](#ununifi.ecosystemincentive.RewardStore) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="ecosystem-incentive/memo.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ecosystem-incentive/memo.proto
+
+
+
+<a name="ununifi.ecosystemincentive.MemoInputs"></a>
+
+### MemoInputs
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `version` | [string](#string) |  |  |
+| `incentive_unit_id` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="ecosystem-incentive/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ecosystem-incentive/query.proto
+
+
+
+<a name="ununifi.ecosystemincentive.QueryAllRewardsRequest"></a>
+
+### QueryAllRewardsRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `subject_addr` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.QueryAllRewardsResponse"></a>
+
+### QueryAllRewardsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rewards` | [RewardStore](#ununifi.ecosystemincentive.RewardStore) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.QueryIncentiveUnitIdsByAddrRequest"></a>
+
+### QueryIncentiveUnitIdsByAddrRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.QueryIncentiveUnitIdsByAddrResponse"></a>
+
+### QueryIncentiveUnitIdsByAddrResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `incentive_unit_ids_by_addr` | [IncentiveUnitIdsByAddr](#ununifi.ecosystemincentive.IncentiveUnitIdsByAddr) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.QueryIncentiveUnitRequest"></a>
+
+### QueryIncentiveUnitRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `incentive_unit_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.QueryIncentiveUnitResponse"></a>
+
+### QueryIncentiveUnitResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `incentive_unit` | [IncentiveUnit](#ununifi.ecosystemincentive.IncentiveUnit) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.ecosystemincentive.Params) |  | params holds all the parameters of this module. |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.QueryRecordedIncentiveUnitIdRequest"></a>
+
+### QueryRecordedIncentiveUnitIdRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.QueryRecordedIncentiveUnitIdResponse"></a>
+
+### QueryRecordedIncentiveUnitIdResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `incentive_unit_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.QueryRewardRequest"></a>
+
+### QueryRewardRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `subject_addr` | [string](#string) |  |  |
+| `denom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.QueryRewardResponse"></a>
+
+### QueryRewardResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `reward` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.ecosystemincentive.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#ununifi.ecosystemincentive.QueryParamsRequest) | [QueryParamsResponse](#ununifi.ecosystemincentive.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/ununifi/ecosystem_incentive/params|
+| `IncentiveUnit` | [QueryIncentiveUnitRequest](#ununifi.ecosystemincentive.QueryIncentiveUnitRequest) | [QueryIncentiveUnitResponse](#ununifi.ecosystemincentive.QueryIncentiveUnitResponse) |  | GET|/ununifi/ecosystem_incentive/incentive_unit/{incentive_unit_id}|
+| `AllRewards` | [QueryAllRewardsRequest](#ununifi.ecosystemincentive.QueryAllRewardsRequest) | [QueryAllRewardsResponse](#ununifi.ecosystemincentive.QueryAllRewardsResponse) |  | GET|/ununifi/ecosystem_incentive/all_rewards/{subject_addr}|
+| `Reward` | [QueryRewardRequest](#ununifi.ecosystemincentive.QueryRewardRequest) | [QueryRewardResponse](#ununifi.ecosystemincentive.QueryRewardResponse) |  | GET|/ununifi/ecosystem_incentive/reward/{subject_addr}/{denom}|
+| `RecordedIncentiveUnitId` | [QueryRecordedIncentiveUnitIdRequest](#ununifi.ecosystemincentive.QueryRecordedIncentiveUnitIdRequest) | [QueryRecordedIncentiveUnitIdResponse](#ununifi.ecosystemincentive.QueryRecordedIncentiveUnitIdResponse) |  | GET|/ununifi/ecosystem_incentive/recorded_incentive_unit_id/{class_id}/{nft_id}|
+| `IncentiveUnitIdsByAddr` | [QueryIncentiveUnitIdsByAddrRequest](#ununifi.ecosystemincentive.QueryIncentiveUnitIdsByAddrRequest) | [QueryIncentiveUnitIdsByAddrResponse](#ununifi.ecosystemincentive.QueryIncentiveUnitIdsByAddrResponse) |  | GET|/ununifi/ecosystem_incentive/incentive_unit_ids_by_addr/{address}|
+
+ <!-- end services -->
+
+
+
+<a name="ecosystem-incentive/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ecosystem-incentive/tx.proto
+
+
+
+<a name="ununifi.ecosystemincentive.MsgRegister"></a>
+
+### MsgRegister
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `incentive_unit_id` | [string](#string) |  |  |
+| `subject_addrs` | [string](#string) | repeated |  |
+| `weights` | [string](#string) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.MsgRegisterResponse"></a>
+
+### MsgRegisterResponse
+
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.MsgWithdrawAllRewards"></a>
+
+### MsgWithdrawAllRewards
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.MsgWithdrawAllRewardsResponse"></a>
+
+### MsgWithdrawAllRewardsResponse
+
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.MsgWithdrawReward"></a>
+
+### MsgWithdrawReward
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `denom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.ecosystemincentive.MsgWithdrawRewardResponse"></a>
+
+### MsgWithdrawRewardResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.ecosystemincentive.Msg"></a>
+
+### Msg
+Msg defines the Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Register` | [MsgRegister](#ununifi.ecosystemincentive.MsgRegister) | [MsgRegisterResponse](#ununifi.ecosystemincentive.MsgRegisterResponse) |  | |
+| `WithdrawAllRewards` | [MsgWithdrawAllRewards](#ununifi.ecosystemincentive.MsgWithdrawAllRewards) | [MsgWithdrawAllRewardsResponse](#ununifi.ecosystemincentive.MsgWithdrawAllRewardsResponse) |  | |
+| `WithdrawReward` | [MsgWithdrawReward](#ununifi.ecosystemincentive.MsgWithdrawReward) | [MsgWithdrawRewardResponse](#ununifi.ecosystemincentive.MsgWithdrawRewardResponse) |  | |
+
+ <!-- end services -->
+
+
+
 <a name="ethereum/signdoc.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -1731,6 +3737,8 @@ Query defines the gRPC querier service.
 | `owner` | [string](#string) |  |  |
 | `class_id` | [string](#string) |  |  |
 | `nft_id` | [string](#string) |  |  |
+<<<<<<< HEAD
+=======
 
 
 
@@ -1763,6 +3771,7 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `liquidation` | [Liquidation](#ununifi.nftmarket.Liquidation) |  |  |
 | `next_liquidation` | [Liquidation](#ununifi.nftmarket.Liquidation) | repeated |  |
+>>>>>>> 464f316fc37706860d4585be54bd0585873ebfa5
 
 
 
@@ -1828,6 +3837,12 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
 | `bidder` | [string](#string) |  |  |
+<<<<<<< HEAD
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `automatic_payment` | [bool](#bool) |  |  |
+| `paid_amount` | [string](#string) |  |  |
+| `bid_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+=======
 | `bid_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `deposit_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `paid_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
@@ -1838,6 +3853,7 @@ Query defines the gRPC querier service.
 | `interest_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `borrowings` | [borrowing](#ununifi.nftmarket.borrowing) | repeated | lister borrowing bidder info |
 | `id` | [BidId](#ununifi.nftmarket.BidId) |  | todo remove nft_id,bidder then use it |
+>>>>>>> 464f316fc37706860d4585be54bd0585873ebfa5
 
 
 
@@ -1873,14 +3889,22 @@ Query defines the gRPC querier service.
 | `listing_type` | [ListingType](#ununifi.nftmarket.ListingType) |  |  |
 | `state` | [ListingState](#ununifi.nftmarket.ListingState) |  |  |
 | `bid_token` | [string](#string) |  |  |
+<<<<<<< HEAD
+| `min_bid` | [string](#string) |  |  |
+| `bid_active_rank` | [uint64](#uint64) |  |  |
+=======
 | `minimum_deposit_rate` | [string](#string) |  |  |
 | `automatic_refinancing` | [bool](#bool) |  |  |
+>>>>>>> 464f316fc37706860d4585be54bd0585873ebfa5
 | `started_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `end_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `full_payment_end_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `successful_bid_end_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `auto_relisted_count` | [uint64](#uint64) |  |  |
+<<<<<<< HEAD
+=======
 | `collected_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+>>>>>>> 464f316fc37706860d4585be54bd0585873ebfa5
 
 
 
@@ -1935,6 +3959,8 @@ Query defines the gRPC querier service.
 | `bid_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `state` | [ListingState](#ununifi.nftmarket.ListingState) |  |  |
 | `all_paid` | [bool](#bool) |  |  |
+<<<<<<< HEAD
+=======
 
 
 
@@ -1952,6 +3978,7 @@ Query defines the gRPC querier service.
 | `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `paid_interest_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `start_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+>>>>>>> 464f316fc37706860d4585be54bd0585873ebfa5
 
 
 
@@ -1970,8 +3997,14 @@ Query defines the gRPC querier service.
 | LISTING | 0 |  |
 | BIDDING | 1 |  |
 | SELLING_DECISION | 2 |  |
+<<<<<<< HEAD
+| LIQUIDATION | 3 |  |
+| END_LISTING | 4 |  |
+| SUCCESSFUL_BID | 5 |  |
+=======
 | END_LISTING | 3 |  |
 | SUCCESSFUL_BID | 4 |  |
+>>>>>>> 464f316fc37706860d4585be54bd0585873ebfa5
 
 
 
@@ -2447,7 +4480,10 @@ Query defines the gRPC querier service.
 | `BidderBids` | [QueryBidderBidsRequest](#ununifi.nftmarket.QueryBidderBidsRequest) | [QueryBidderBidsResponse](#ununifi.nftmarket.QueryBidderBidsResponse) |  | GET|/ununifi/nftmarket/bidder_bids/{bidder}|
 | `PaymentStatus` | [QueryPaymentStatusRequest](#ununifi.nftmarket.QueryPaymentStatusRequest) | [QueryPaymentStatusResponse](#ununifi.nftmarket.QueryPaymentStatusResponse) |  | GET|/ununifi/nftmarket/payment_status/{class_id}/{nft_id}/{bidder}|
 | `Rewards` | [QueryRewardsRequest](#ununifi.nftmarket.QueryRewardsRequest) | [QueryRewardsResponse](#ununifi.nftmarket.QueryRewardsResponse) |  | GET|/ununifi/nftmarket/rewards/{address}|
+<<<<<<< HEAD
+=======
 | `Liquidation` | [QueryLiquidationRequest](#ununifi.nftmarket.QueryLiquidationRequest) | [QueryLiquidationResponse](#ununifi.nftmarket.QueryLiquidationResponse) |  | GET|/ununifi/nftmarket/liquidation/{class_id}/{nft_id}|
+>>>>>>> 464f316fc37706860d4585be54bd0585873ebfa5
 
  <!-- end services -->
 
@@ -2487,6 +4523,34 @@ Query defines the gRPC querier service.
 
 
 
+<<<<<<< HEAD
+<a name="ununifi.nftmarket.MsgBurnStableCoin"></a>
+
+### MsgBurnStableCoin
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgBurnStableCoinResponse"></a>
+
+### MsgBurnStableCoinResponse
+
+
+
+
+
+
+
+=======
+>>>>>>> 464f316fc37706860d4585be54bd0585873ebfa5
 <a name="ununifi.nftmarket.MsgCancelBid"></a>
 
 ### MsgCancelBid
@@ -2565,6 +4629,61 @@ Query defines the gRPC querier service.
 
 
 
+<<<<<<< HEAD
+<a name="ununifi.nftmarket.MsgExpandListingPeriod"></a>
+
+### MsgExpandListingPeriod
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgExpandListingPeriodResponse"></a>
+
+### MsgExpandListingPeriodResponse
+
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgLiquidate"></a>
+
+### MsgLiquidate
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgLiquidateResponse"></a>
+
+### MsgLiquidateResponse
+
+
+
+
+
+
+
+=======
+>>>>>>> 464f316fc37706860d4585be54bd0585873ebfa5
 <a name="ununifi.nftmarket.MsgListNft"></a>
 
 ### MsgListNft
@@ -2577,8 +4696,13 @@ Query defines the gRPC querier service.
 | `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
 | `listing_type` | [ListingType](#ununifi.nftmarket.ListingType) |  |  |
 | `bid_token` | [string](#string) |  |  |
+<<<<<<< HEAD
+| `min_bid` | [string](#string) |  |  |
+| `bid_active_rank` | [uint64](#uint64) |  |  |
+=======
 | `minimum_deposit_rate` | [string](#string) |  | 1% = 0.01 |
 | `automatic_refinancing` | [bool](#bool) |  |  |
+>>>>>>> 464f316fc37706860d4585be54bd0585873ebfa5
 
 
 
@@ -2624,6 +4748,34 @@ Query defines the gRPC querier service.
 
 
 
+<<<<<<< HEAD
+<a name="ununifi.nftmarket.MsgMintStableCoin"></a>
+
+### MsgMintStableCoin
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.MsgMintStableCoinResponse"></a>
+
+### MsgMintStableCoinResponse
+
+
+
+
+
+
+
+=======
+>>>>>>> 464f316fc37706860d4585be54bd0585873ebfa5
 <a name="ununifi.nftmarket.MsgPayFullBid"></a>
 
 ### MsgPayFullBid
@@ -2660,11 +4812,16 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  |  |
 | `nft_id` | [NftIdentifier](#ununifi.nftmarket.NftIdentifier) |  |  |
+<<<<<<< HEAD
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `automatic_payment` | [bool](#bool) |  |  |
+=======
 | `bid_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `bidding_period` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `deposit_lending_rate` | [string](#string) |  |  |
 | `automatic_payment` | [bool](#bool) |  |  |
 | `deposit_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+>>>>>>> 464f316fc37706860d4585be54bd0585873ebfa5
 
 
 
@@ -2999,6 +5156,10 @@ GenesisState defines the nftmint module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#ununifi.nftmint.Params) |  |  |
+<<<<<<< HEAD
+| `class_attributes_list` | [ClassAttributes](#ununifi.nftmint.ClassAttributes) | repeated |  |
+=======
+>>>>>>> 464f316fc37706860d4585be54bd0585873ebfa5
 
 
 

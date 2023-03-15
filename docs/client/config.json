@@ -53,7 +53,7 @@
           "Params": "NftmintParams"
         }
       }
-    },    
+    },
     {
       "url": "./tmp-swagger-gen/nftmarket/query.swagger.json",
       "operationIds": {
@@ -67,6 +67,14 @@
       "operationIds": {
         "rename": {
           "Params": "EcosystemincentiveParams"
+        }
+      }
+    },
+    {
+      "url": "./tmp-swagger-gen/derivatives/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "DerivativesParams"
         }
       }
     }
