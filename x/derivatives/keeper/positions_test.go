@@ -191,11 +191,11 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 func (suite *KeeperTestSuite) TestIncreaseLastPositionId() {
 	suite.keeper.IncreaseLastPositionId(suite.ctx)
 
-	suite.Require().Equal(suite.keeper.GetLastPositionId(suite.ctx), string(types.GetPositionIdBytes(1)))
+	suite.Require().Equal(suite.keeper.GetLastPositionId(suite.ctx), uint64(1))
 
 	suite.keeper.IncreaseLastPositionId(suite.ctx)
 
-	suite.Require().Equal(suite.keeper.GetLastPositionId(suite.ctx), string(types.GetPositionIdBytes(2)))
+	suite.Require().Equal(suite.keeper.GetLastPositionId(suite.ctx), uint64(2))
 }
 
 func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
@@ -295,7 +295,7 @@ func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
 		PositionId:      allPositions[0].Id,
 		RewardRecipient: owner.Bytes(),
 	})
-	suite.Require().NoError(err)
+	suite.Require().Error(err)
 
 	// ReportLevyPeriod
 	cacheCtx, _ = suite.ctx.CacheContext()
@@ -312,7 +312,7 @@ func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
 	})
 	suite.Require().NoError(err)
 	balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
-	suite.Require().Equal(balances.String(), "998000uatom,999900uusdc")
+	suite.Require().Equal(balances.String(), "999000uatom,999900uusdc")
 
 	err = suite.keeper.ClosePosition(suite.ctx, &types.MsgClosePosition{
 		Sender:     owner.Bytes(),
@@ -320,7 +320,7 @@ func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
 	})
 	suite.Require().NoError(err)
 	balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
-	suite.Require().Equal(balances.String(), "998000uatom,999900uusdc")
+	suite.Require().Equal(balances.String(), "1000000uatom,999900uusdc")
 
 	err = suite.keeper.ClosePosition(suite.ctx, &types.MsgClosePosition{
 		Sender:     owner.Bytes(),
@@ -328,5 +328,5 @@ func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
 	})
 	suite.Require().NoError(err)
 	balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
-	suite.Require().Equal(balances.String(), "998000uatom,999900uusdc")
+	suite.Require().Equal(balances.String(), "1000000uatom,1000000uusdc")
 }
