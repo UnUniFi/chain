@@ -116,8 +116,12 @@ func (m PerpetualFuturesPosition) EvaluatePosition(currentBaseUsdRate sdk.Dec) s
 	return currentBaseUsdRate.Mul(m.PositionInstance.Size_)
 }
 
-func MicroToNormalDenom(amount sdk.Dec) math.Int {
+func MicroToNormalDenom(amount sdk.Dec) sdk.Int {
 	return amount.Mul(sdk.MustNewDecFromStr("1000000")).TruncateInt()
+}
+
+func MicroToNormalDec(amount sdk.Dec) sdk.Dec {
+	return amount.Mul(sdk.MustNewDecFromStr("1000000"))
 }
 
 func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(baseUSDRate, quoteUSDRate sdk.Dec) (returningAmount math.Int, lossToLP math.Int) {
