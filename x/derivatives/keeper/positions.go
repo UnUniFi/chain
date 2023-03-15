@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"encoding/binary"
 	"errors"
 	"strconv"
 	"time"
@@ -10,12 +11,15 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
-func (k Keeper) GetLastPositionId(ctx sdk.Context) string {
+func (k Keeper) GetLastPositionId(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(k.storeKey)
 
 	bz := store.Get([]byte(types.KeyPrefixLastPositionId))
+	if bz == nil {
+		return 0
+	}
 
-	return string(bz)
+	return binary.BigEndian.Uint64(bz)
 }
 
 func (k Keeper) GetLastPosition(ctx sdk.Context) types.Position {
@@ -43,7 +47,7 @@ func (k Keeper) IncreaseLastPositionId(ctx sdk.Context) {
 		store.Set([]byte(types.KeyPrefixLastPositionId), types.GetPositionIdBytes(0))
 	}
 
-	lastPositionId := types.GetPositionIdFromString(k.GetLastPositionId(ctx))
+	lastPositionId := k.GetLastPositionId(ctx)
 	store.Set([]byte(types.KeyPrefixLastPositionId), types.GetPositionIdBytes(lastPositionId+1))
 }
 
@@ -94,6 +98,23 @@ func (k Keeper) GetAddressPositions(ctx sdk.Context, user sdk.AccAddress) []*typ
 	return positions
 }
 
+func (k Keeper) GetAddressPositionsVal(ctx sdk.Context, user sdk.AccAddress) []types.Position {
+	store := ctx.KVStore(k.storeKey)
+
+	positions := []types.Position{}
+	it := sdk.KVStorePrefixIterator(store, types.AddressPositionKeyPrefix(user))
+	defer it.Close()
+
+	for ; it.Valid(); it.Next() {
+		position := types.Position{}
+		k.cdc.Unmarshal(it.Value(), &position)
+
+		positions = append(positions, position)
+	}
+
+	return positions
+}
+
 func (k Keeper) GetAddressPositionWithId(ctx sdk.Context, address sdk.AccAddress, id string) *types.Position {
 	store := ctx.KVStore(k.storeKey)
 
@@ -125,16 +146,7 @@ func (k Keeper) DeletePosition(ctx sdk.Context, address sdk.AccAddress, id strin
 func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
 	// todo check sender amount for margin
 
-	lastPosition := k.GetLastPosition(ctx)
-
-	var positionId string
-	if lastPosition.Id == "" {
-		positionId = "0"
-	} else {
-		// increment position id
-		lastPositionId, _ := strconv.Atoi(lastPosition.Id)
-		positionId = strconv.Itoa(lastPositionId + 1)
-	}
+	newPositionId := strconv.FormatUint(k.GetLastPositionId(ctx)+1, 10)
 
 	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, msg.Sender.AccAddress(), types.ModuleName, sdk.NewCoins(msg.Margin)); err != nil {
 		return err
@@ -149,9 +161,9 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 	var position *types.Position
 	switch positionInstance := positionInstance.(type) {
 	case *types.PerpetualFuturesPositionInstance:
-		position, err = k.OpenPerpetualFuturesPosition(ctx, positionId, msg.Sender, msg.Margin, msg.Market, *positionInstance)
+		position, err = k.OpenPerpetualFuturesPosition(ctx, newPositionId, msg.Sender, msg.Margin, msg.Market, *positionInstance)
 	case *types.PerpetualOptionsPositionInstance:
-		position, err = k.OpenPerpetualOptionsPosition(ctx, positionId, msg.Sender, msg.Margin, msg.Market, *positionInstance)
+		position, err = k.OpenPerpetualOptionsPosition(ctx, newPositionId, msg.Sender, msg.Margin, msg.Market, *positionInstance)
 	default:
 		panic("")
 	}

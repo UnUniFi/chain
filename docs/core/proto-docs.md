@@ -82,10 +82,9 @@
     - [PoolParams](#ununifi.derivatives.PoolParams)
     - [PoolParams.Asset](#ununifi.derivatives.PoolParams.Asset)
     - [Position](#ununifi.derivatives.Position)
-    - [Revenue](#ununifi.derivatives.Revenue)
+    - [QueriedPosition](#ununifi.derivatives.QueriedPosition)
   
     - [PositionType](#ununifi.derivatives.PositionType)
-    - [RevenueType](#ununifi.derivatives.RevenueType)
   
 - [derivatives/perpetual_futures.proto](#derivatives/perpetual_futures.proto)
     - [EventPerpetualFuturesPositionClosed](#ununifi.derivatives.EventPerpetualFuturesPositionClosed)
@@ -114,6 +113,8 @@
     - [QueryAddressPositionsResponse](#ununifi.derivatives.QueryAddressPositionsResponse)
     - [QueryAllPositionsRequest](#ununifi.derivatives.QueryAllPositionsRequest)
     - [QueryAllPositionsResponse](#ununifi.derivatives.QueryAllPositionsResponse)
+    - [QueryDLPTokenRateRequest](#ununifi.derivatives.QueryDLPTokenRateRequest)
+    - [QueryDLPTokenRateResponse](#ununifi.derivatives.QueryDLPTokenRateResponse)
     - [QueryEstimateDLPTokenAmountRequest](#ununifi.derivatives.QueryEstimateDLPTokenAmountRequest)
     - [QueryEstimateDLPTokenAmountResponse](#ununifi.derivatives.QueryEstimateDLPTokenAmountResponse)
     - [QueryEstimateRedeemAmountRequest](#ununifi.derivatives.QueryEstimateRedeemAmountRequest)
@@ -126,6 +127,8 @@
     - [QueryParamsResponse](#ununifi.derivatives.QueryParamsResponse)
     - [QueryPerpetualFuturesMarketRequest](#ununifi.derivatives.QueryPerpetualFuturesMarketRequest)
     - [QueryPerpetualFuturesMarketResponse](#ununifi.derivatives.QueryPerpetualFuturesMarketResponse)
+    - [QueryPerpetualFuturesPositionSizeRequest](#ununifi.derivatives.QueryPerpetualFuturesPositionSizeRequest)
+    - [QueryPerpetualFuturesPositionSizeResponse](#ununifi.derivatives.QueryPerpetualFuturesPositionSizeResponse)
     - [QueryPerpetualFuturesRequest](#ununifi.derivatives.QueryPerpetualFuturesRequest)
     - [QueryPerpetualFuturesResponse](#ununifi.derivatives.QueryPerpetualFuturesResponse)
     - [QueryPerpetualOptionsMarketRequest](#ununifi.derivatives.QueryPerpetualOptionsMarketRequest)
@@ -134,6 +137,8 @@
     - [QueryPerpetualOptionsResponse](#ununifi.derivatives.QueryPerpetualOptionsResponse)
     - [QueryPoolRequest](#ununifi.derivatives.QueryPoolRequest)
     - [QueryPoolResponse](#ununifi.derivatives.QueryPoolResponse)
+    - [QueryPositionRequest](#ununifi.derivatives.QueryPositionRequest)
+    - [QueryPositionResponse](#ununifi.derivatives.QueryPositionResponse)
   
     - [Query](#ununifi.derivatives.Query)
   
@@ -1459,16 +1464,19 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.Revenue"></a>
+<a name="ununifi.derivatives.QueriedPosition"></a>
 
-### Revenue
+### QueriedPosition
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `revenue_type` | [RevenueType](#ununifi.derivatives.RevenueType) |  |  |
-| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `position` | [Position](#ununifi.derivatives.Position) |  |  |
+| `valuation_profit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `remaining_margin_value` | [string](#string) |  |  |
+| `effective_margin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `margin_maintenance_rate` | [string](#string) |  |  |
 
 
 
@@ -1487,18 +1495,6 @@ Query defines the gRPC querier service.
 | POSITION_UNKNOWN | 0 |  |
 | LONG | 1 |  |
 | SHORT | 2 |  |
-
-
-
-<a name="ununifi.derivatives.RevenueType"></a>
-
-### RevenueType
-
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| PROFIT | 0 |  |
-| LOSS | 1 |  |
 
 
  <!-- end enums -->
@@ -1819,6 +1815,7 @@ GenesisState defines the derivatives module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
 
 
 
@@ -1833,7 +1830,7 @@ GenesisState defines the derivatives module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `positions` | [Position](#ununifi.derivatives.Position) | repeated |  |
+| `positions` | [QueriedPosition](#ununifi.derivatives.QueriedPosition) | repeated |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
 
 
@@ -1845,6 +1842,11 @@ GenesisState defines the derivatives module's genesis state.
 
 ### QueryAllPositionsRequest
 
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
 
 
 
@@ -1859,8 +1861,34 @@ GenesisState defines the derivatives module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `positions` | [Position](#ununifi.derivatives.Position) | repeated |  |
+| `positions` | [QueriedPosition](#ununifi.derivatives.QueriedPosition) | repeated |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryDLPTokenRateRequest"></a>
+
+### QueryDLPTokenRateRequest
+
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryDLPTokenRateResponse"></a>
+
+### QueryDLPTokenRateResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `symbol` | [string](#string) |  |  |
+| `rates` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
 
 
 
@@ -1891,8 +1919,8 @@ GenesisState defines the derivatives module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `amount` | [string](#string) |  |  |
-| `fee` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `fee` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -1923,8 +1951,8 @@ GenesisState defines the derivatives module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `amount` | [string](#string) |  |  |
-| `fee` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `fee` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -2054,6 +2082,37 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 
 
 
+<a name="ununifi.derivatives.QueryPerpetualFuturesPositionSizeRequest"></a>
+
+### QueryPerpetualFuturesPositionSizeRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `position_type` | [PositionType](#ununifi.derivatives.PositionType) |  |  |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPerpetualFuturesPositionSizeResponse"></a>
+
+### QueryPerpetualFuturesPositionSizeResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `total_position_size_usd` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
 <a name="ununifi.derivatives.QueryPerpetualFuturesRequest"></a>
 
 ### QueryPerpetualFuturesRequest
@@ -2156,6 +2215,39 @@ this line is used by starport scaffolding # 3
 
 
 
+
+<a name="ununifi.derivatives.QueryPositionRequest"></a>
+
+### QueryPositionRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `position_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryPositionResponse"></a>
+
+### QueryPositionResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `position` | [Position](#ununifi.derivatives.Position) |  |  |
+| `valuation_profit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `margin_maintenance_rate` | [string](#string) |  |  |
+| `effective_margin` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -2179,9 +2271,12 @@ Query defines the gRPC querier service.
 | `PerpetualOptions` | [QueryPerpetualOptionsRequest](#ununifi.derivatives.QueryPerpetualOptionsRequest) | [QueryPerpetualOptionsResponse](#ununifi.derivatives.QueryPerpetualOptionsResponse) |  | GET|/ununifi/derivatives/perpetual-options|
 | `PerpetualOptionsMarket` | [QueryPerpetualOptionsMarketRequest](#ununifi.derivatives.QueryPerpetualOptionsMarketRequest) | [QueryPerpetualOptionsMarketResponse](#ununifi.derivatives.QueryPerpetualOptionsMarketResponse) |  | GET|/ununifi/derivatives/perpetual-options/{base_denom}/{quote_denom}|
 | `AllPositions` | [QueryAllPositionsRequest](#ununifi.derivatives.QueryAllPositionsRequest) | [QueryAllPositionsResponse](#ununifi.derivatives.QueryAllPositionsResponse) |  | GET|/ununifi/derivatives/positions|
-| `AddressPositions` | [QueryAddressPositionsRequest](#ununifi.derivatives.QueryAddressPositionsRequest) | [QueryAddressPositionsResponse](#ununifi.derivatives.QueryAddressPositionsResponse) |  | GET|/ununifi/derivatives/positions/{address}|
-| `EstimateDLPTokenAmount` | [QueryEstimateDLPTokenAmountRequest](#ununifi.derivatives.QueryEstimateDLPTokenAmountRequest) | [QueryEstimateDLPTokenAmountResponse](#ununifi.derivatives.QueryEstimateDLPTokenAmountResponse) |  | GET|/ununifi/derivatives/estimate-dlp-token-amount|
-| `EstimateRedeemAmount` | [QueryEstimateRedeemAmountRequest](#ununifi.derivatives.QueryEstimateRedeemAmountRequest) | [QueryEstimateRedeemAmountResponse](#ununifi.derivatives.QueryEstimateRedeemAmountResponse) |  | GET|/ununifi/derivatives/estimate-redeem-amount|
+| `Position` | [QueryPositionRequest](#ununifi.derivatives.QueryPositionRequest) | [QueryPositionResponse](#ununifi.derivatives.QueryPositionResponse) |  | GET|/ununifi/derivatives/positions/{position_id}|
+| `PerpetualFuturesPositionSize` | [QueryPerpetualFuturesPositionSizeRequest](#ununifi.derivatives.QueryPerpetualFuturesPositionSizeRequest) | [QueryPerpetualFuturesPositionSizeResponse](#ununifi.derivatives.QueryPerpetualFuturesPositionSizeResponse) |  | GET|/ununifi/derivatives/positions/perpetual-futures/{position_type}/{address}|
+| `AddressPositions` | [QueryAddressPositionsRequest](#ununifi.derivatives.QueryAddressPositionsRequest) | [QueryAddressPositionsResponse](#ununifi.derivatives.QueryAddressPositionsResponse) |  | GET|/ununifi/derivatives/{address}/positions|
+| `DLPTokenRates` | [QueryDLPTokenRateRequest](#ununifi.derivatives.QueryDLPTokenRateRequest) | [QueryDLPTokenRateResponse](#ununifi.derivatives.QueryDLPTokenRateResponse) |  | GET|/ununifi/derivatives/pools/dlp|
+| `EstimateDLPTokenAmount` | [QueryEstimateDLPTokenAmountRequest](#ununifi.derivatives.QueryEstimateDLPTokenAmountRequest) | [QueryEstimateDLPTokenAmountResponse](#ununifi.derivatives.QueryEstimateDLPTokenAmountResponse) |  | GET|/ununifi/derivatives/estimate-dlp-token-amount/{mint_denom}/{amount}|
+| `EstimateRedeemAmount` | [QueryEstimateRedeemAmountRequest](#ununifi.derivatives.QueryEstimateRedeemAmountRequest) | [QueryEstimateRedeemAmountResponse](#ununifi.derivatives.QueryEstimateRedeemAmountResponse) |  | GET|/ununifi/derivatives/estimate-redeem-amount/{redeem_denom}/{lpt_amount}|
 
  <!-- end services -->
 

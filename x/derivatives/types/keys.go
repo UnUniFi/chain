@@ -69,6 +69,11 @@ func GetPositionIdFromString(idStr string) uint64 {
 	return GetPositionIdFromBytes([]byte(idStr))
 }
 
+func GetPositionIdByteFromString(idStr string) []byte {
+	intPosId, _ := strconv.Atoi(idStr)
+	return GetPositionIdBytes(uint64(intPosId))
+}
+
 func GetBlockTimestampBytes(timestamp int64) (timestampBz []byte) {
 	timestampBz = make([]byte, 8)
 	binary.BigEndian.PutUint64(timestampBz, uint64(timestamp))
@@ -96,7 +101,7 @@ func AssetDepositKeyPrefix(denom string) []byte {
 }
 
 func PositionWithIdKeyPrefix(posId string) []byte {
-	return append([]byte(KeyPrefixPosition), []byte(posId)...)
+	return append([]byte(KeyPrefixPosition), GetPositionIdByteFromString(posId)...)
 }
 
 func AddressPositionKeyPrefix(sender sdk.AccAddress) []byte {
@@ -104,7 +109,7 @@ func AddressPositionKeyPrefix(sender sdk.AccAddress) []byte {
 }
 
 func AddressPositionWithIdKeyPrefix(sender sdk.AccAddress, posId string) []byte {
-	return append(AddressPositionKeyPrefix(sender), []byte(posId)...)
+	return append(AddressPositionKeyPrefix(sender), GetPositionIdByteFromString(posId)...)
 }
 
 func DenomNetPositionPerpetualFuturesKeyPrefix(denom string, quoteDenom string) []byte {

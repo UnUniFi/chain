@@ -22,7 +22,7 @@ func TestPosition_NeedLiquidationPerpetualFutures(t *testing.T) {
 		exp           bool
 	}{
 		{
-			name: "default is valid",
+			name: "not_change_rate_is_not_need_liquidation",
 			position: types.PerpetualFuturesPosition{
 				Id:      "0",
 				Address: owner.Bytes(),
@@ -33,17 +33,44 @@ func TestPosition_NeedLiquidationPerpetualFutures(t *testing.T) {
 				OpenedAt:        time.Now().UTC(),
 				OpenedHeight:    1,
 				OpenedBaseRate:  sdk.MustNewDecFromStr("100"),
-				RemainingMargin: sdk.NewCoin("uusdc", sdk.NewInt(1000)),
+				OpenedQuoteRate: sdk.MustNewDecFromStr("100"),
+				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1000)),
 				PositionInstance: types.PerpetualFuturesPositionInstance{
 					PositionType: types.PositionType_LONG,
 					Size_:        sdk.MustNewDecFromStr("10"),
 					Leverage:     5,
 				},
 			},
-			minMarginRate: sdk.MustNewDecFromStr("0.1"),
+			minMarginRate: sdk.MustNewDecFromStr("0.5"),
 			closedRate: []sdk.Dec{
 				sdk.MustNewDecFromStr("100"),
 				sdk.MustNewDecFromStr("100"),
+			},
+			exp: false,
+		},
+		{
+			name: "down_rate_is_need_liquidation",
+			position: types.PerpetualFuturesPosition{
+				Id:      "0",
+				Address: owner.Bytes(),
+				Market: types.Market{
+					BaseDenom:  "uatom",
+					QuoteDenom: "uusdc",
+				},
+				OpenedAt:        time.Now().UTC(),
+				OpenedHeight:    1,
+				OpenedBaseRate:  sdk.MustNewDecFromStr("100"),
+				OpenedQuoteRate: sdk.MustNewDecFromStr("100"),
+				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1)),
+				PositionInstance: types.PerpetualFuturesPositionInstance{
+					PositionType: types.PositionType_LONG,
+					Size_:        sdk.MustNewDecFromStr("1"),
+					Leverage:     1,
+				},
+			},
+			minMarginRate: sdk.MustNewDecFromStr("0.5"),
+			closedRate: []sdk.Dec{
+				sdk.MustNewDecFromStr("1"),
 				sdk.MustNewDecFromStr("100"),
 			},
 			exp: true,
@@ -52,7 +79,7 @@ func TestPosition_NeedLiquidationPerpetualFutures(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := tc.position.NeedLiquidation(tc.minMarginRate, tc.closedRate[0], tc.closedRate[1], tc.closedRate[2])
+			result := tc.position.NeedLiquidation(tc.minMarginRate, tc.closedRate[0], tc.closedRate[1])
 			if tc.exp != result {
 				t.Error(tc, "expected %v, got %v", tc.exp, result)
 			}
@@ -106,10 +133,6 @@ func TestPosition_MarginMaintenanceRate(t *testing.T) {
 					name: "ubtc/usd",
 					rate: sdk.MustNewDecFromStr("400"),
 				},
-				{
-					name: "uatom/usd",
-					rate: sdk.MustNewDecFromStr("400"),
-				},
 			},
 			exp: sdk.MustNewDecFromStr("1"),
 		},
@@ -127,11 +150,11 @@ func TestPosition_MarginMaintenanceRate(t *testing.T) {
 				OpenedBaseRate:  sdk.MustNewDecFromStr("100"),
 				OpenedQuoteRate: sdk.MustNewDecFromStr("100"),
 				// In the case of Long, BaseDenom is RemainingMargin.
-				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(10)),
+				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(100)),
 				PositionInstance: types.PerpetualFuturesPositionInstance{
 					PositionType: types.PositionType_LONG,
-					Size_:        sdk.MustNewDecFromStr("5"),
-					Leverage:     5,
+					Size_:        sdk.MustNewDecFromStr("1"),
+					Leverage:     1,
 				},
 			},
 			// down 10%
@@ -144,12 +167,8 @@ func TestPosition_MarginMaintenanceRate(t *testing.T) {
 					name: "ubtc/usd",
 					rate: sdk.MustNewDecFromStr("100"),
 				},
-				{
-					name: "uatom/usd",
-					rate: sdk.MustNewDecFromStr("90"),
-				},
 			},
-			exp: sdk.MustNewDecFromStr("8.0"),
+			exp: sdk.MustNewDecFromStr("99.888888888888888889"),
 		},
 		{
 			name: "long position up 10%",
@@ -165,7 +184,7 @@ func TestPosition_MarginMaintenanceRate(t *testing.T) {
 				OpenedBaseRate:  sdk.MustNewDecFromStr("100"),
 				OpenedQuoteRate: sdk.MustNewDecFromStr("100"),
 				// In the case of Long, BaseDenom is RemainingMargin.
-				RemainingMargin: sdk.NewCoin("uusdc", sdk.NewInt(1)),
+				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(100)),
 				PositionInstance: types.PerpetualFuturesPositionInstance{
 					PositionType: types.PositionType_LONG,
 					Size_:        sdk.MustNewDecFromStr("5"),
@@ -182,12 +201,8 @@ func TestPosition_MarginMaintenanceRate(t *testing.T) {
 					name: "ubtc/usd",
 					rate: sdk.MustNewDecFromStr("100"),
 				},
-				{
-					name: "uatom/usd",
-					rate: sdk.MustNewDecFromStr("110"),
-				},
 			},
-			exp: sdk.MustNewDecFromStr("3"),
+			exp: sdk.MustNewDecFromStr("102.272727272727272727"),
 		},
 		{
 			name: "short position not change rate",
@@ -220,10 +235,6 @@ func TestPosition_MarginMaintenanceRate(t *testing.T) {
 					name: "ubtc/usd",
 					rate: sdk.MustNewDecFromStr("400"),
 				},
-				{
-					name: "ubtc/usd",
-					rate: sdk.MustNewDecFromStr("400"),
-				},
 			},
 			exp: sdk.MustNewDecFromStr("1"),
 		},
@@ -241,7 +252,7 @@ func TestPosition_MarginMaintenanceRate(t *testing.T) {
 				OpenedBaseRate:  sdk.MustNewDecFromStr("100"),
 				OpenedQuoteRate: sdk.MustNewDecFromStr("100"),
 				// In the case of Long, BaseDenom is RemainingMargin.
-				RemainingMargin: sdk.NewCoin("ubtc", sdk.NewInt(1)),
+				RemainingMargin: sdk.NewCoin("ubtc", sdk.NewInt(100)),
 				PositionInstance: types.PerpetualFuturesPositionInstance{
 					PositionType: types.PositionType_SHORT,
 					Size_:        sdk.MustNewDecFromStr("5"),
@@ -258,12 +269,8 @@ func TestPosition_MarginMaintenanceRate(t *testing.T) {
 					name: "ubtc/usd",
 					rate: sdk.MustNewDecFromStr("100"),
 				},
-				{
-					name: "ubtc/usd",
-					rate: sdk.MustNewDecFromStr("100"),
-				},
 			},
-			exp: sdk.MustNewDecFromStr("3.222222222222222222"),
+			exp: sdk.MustNewDecFromStr("113.888888888888888889"),
 		},
 		{
 			name: "short position up 10%",
@@ -279,7 +286,7 @@ func TestPosition_MarginMaintenanceRate(t *testing.T) {
 				OpenedBaseRate:  sdk.MustNewDecFromStr("100"),
 				OpenedQuoteRate: sdk.MustNewDecFromStr("100"),
 				// In the case of Long, BaseDenom is RemainingMargin.
-				RemainingMargin: sdk.NewCoin("ubtc", sdk.NewInt(10)),
+				RemainingMargin: sdk.NewCoin("ubtc", sdk.NewInt(100)),
 				PositionInstance: types.PerpetualFuturesPositionInstance{
 					PositionType: types.PositionType_SHORT,
 					Size_:        sdk.MustNewDecFromStr("5"),
@@ -296,19 +303,14 @@ func TestPosition_MarginMaintenanceRate(t *testing.T) {
 					name: "ubtc/usd",
 					rate: sdk.MustNewDecFromStr("100"),
 				},
-				{
-					// up 10%
-					name: "ubtc/usd",
-					rate: sdk.MustNewDecFromStr("100"),
-				},
 			},
-			exp: sdk.MustNewDecFromStr("8.181818181818181818"),
+			exp: sdk.MustNewDecFromStr("88.636363636363636364"),
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := tc.position.MarginMaintenanceRate(tc.Rate[0].rate, tc.Rate[1].rate, tc.Rate[2].rate)
+			result := tc.position.MarginMaintenanceRate(tc.Rate[0].rate, tc.Rate[1].rate)
 			if !tc.exp.Equal(result) {
 				t.Error(tc, "expected %v, got %v", tc.exp, result)
 			}
@@ -319,10 +321,10 @@ func TestPosition_MarginMaintenanceRate(t *testing.T) {
 // make PerpetualFuturesPosition.CalcProfitAndLoss test
 func TestPerpetualFuturesPosition_CalcProfitAndLoss(t *testing.T) {
 	testCases := []struct {
-		name       string
-		position   types.PerpetualFuturesPosition
-		closedRate sdk.Dec
-		exp        math.Int
+		name        string
+		position    types.PerpetualFuturesPosition
+		closedRates []sdk.Dec
+		exp         math.Int
 	}{
 		{
 			name: "Long position profit",
@@ -332,15 +334,19 @@ func TestPerpetualFuturesPosition_CalcProfitAndLoss(t *testing.T) {
 					QuoteDenom: "uusdc",
 				},
 				OpenedBaseRate:  sdk.MustNewDecFromStr("10"),
-				RemainingMargin: sdk.NewCoin("uusdc", sdk.NewInt(1000)),
+				OpenedQuoteRate: sdk.MustNewDecFromStr("10"),
+				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1000)),
 				PositionInstance: types.PerpetualFuturesPositionInstance{
 					PositionType: types.PositionType_LONG,
 					Size_:        sdk.MustNewDecFromStr("100"),
 					Leverage:     5,
 				},
 			},
-			closedRate: sdk.MustNewDecFromStr("11.1"),
-			exp:        sdk.NewInt(110000000),
+			closedRates: []sdk.Dec{
+				sdk.MustNewDecFromStr("11.1"),
+				sdk.MustNewDecFromStr("11.1"),
+			},
+			exp: sdk.NewInt(110000000),
 		},
 		{
 			name: "Long position loss",
@@ -357,8 +363,11 @@ func TestPerpetualFuturesPosition_CalcProfitAndLoss(t *testing.T) {
 					Leverage:     5,
 				},
 			},
-			closedRate: sdk.MustNewDecFromStr("9.1"),
-			exp:        sdk.NewInt(-90000000),
+			closedRates: []sdk.Dec{
+				sdk.MustNewDecFromStr("9.1"),
+				sdk.MustNewDecFromStr("9.1"),
+			},
+			exp: sdk.NewInt(-90000000),
 		},
 		{
 			name: "Short position profit",
@@ -375,8 +384,11 @@ func TestPerpetualFuturesPosition_CalcProfitAndLoss(t *testing.T) {
 					Leverage:     5,
 				},
 			},
-			closedRate: sdk.MustNewDecFromStr("9.1"),
-			exp:        sdk.NewInt(90000000),
+			closedRates: []sdk.Dec{
+				sdk.MustNewDecFromStr("9.1"),
+				sdk.MustNewDecFromStr("9.1"),
+			},
+			exp: sdk.NewInt(90000000),
 		},
 		{
 			name: "Short position loss",
@@ -393,8 +405,11 @@ func TestPerpetualFuturesPosition_CalcProfitAndLoss(t *testing.T) {
 					Leverage:     5,
 				},
 			},
-			closedRate: sdk.MustNewDecFromStr("12.1"),
-			exp:        sdk.NewInt(-210000000),
+			closedRates: []sdk.Dec{
+				sdk.MustNewDecFromStr("12.1"),
+				sdk.MustNewDecFromStr("12.1"),
+			},
+			exp: sdk.NewInt(-210000000),
 		},
 		{
 			name: "Profit Long position in base denom margin",
@@ -411,8 +426,11 @@ func TestPerpetualFuturesPosition_CalcProfitAndLoss(t *testing.T) {
 					Leverage:     10,
 				},
 			},
-			closedRate: sdk.MustNewDecFromStr("20"),
-			exp:        sdk.NewInt(500000),
+			closedRates: []sdk.Dec{
+				sdk.MustNewDecFromStr("20"),
+				sdk.MustNewDecFromStr("20"),
+			},
+			exp: sdk.NewInt(500000),
 		},
 		{
 			name: "Profit Short position in base denom margin",
@@ -429,8 +447,11 @@ func TestPerpetualFuturesPosition_CalcProfitAndLoss(t *testing.T) {
 					Leverage:     20,
 				},
 			},
-			closedRate: sdk.MustNewDecFromStr("10"),
-			exp:        sdk.NewInt(1000000),
+			closedRates: []sdk.Dec{
+				sdk.MustNewDecFromStr("10"),
+				sdk.MustNewDecFromStr("10"),
+			},
+			exp: sdk.NewInt(1000000),
 		},
 		{
 			name: "Loss Long position in base denom margin ",
@@ -447,8 +468,11 @@ func TestPerpetualFuturesPosition_CalcProfitAndLoss(t *testing.T) {
 					Leverage:     20,
 				},
 			},
-			closedRate: sdk.MustNewDecFromStr("10"),
-			exp:        sdk.NewInt(-1000000),
+			closedRates: []sdk.Dec{
+				sdk.MustNewDecFromStr("10"),
+				sdk.MustNewDecFromStr("10"),
+			},
+			exp: sdk.NewInt(-1000000),
 		},
 		{
 			name: "Loss Short position in base denom margin",
@@ -465,14 +489,18 @@ func TestPerpetualFuturesPosition_CalcProfitAndLoss(t *testing.T) {
 					Leverage:     10,
 				},
 			},
-			closedRate: sdk.MustNewDecFromStr("20"),
-			exp:        sdk.NewInt(-500000),
+			closedRates: []sdk.Dec{
+				sdk.MustNewDecFromStr("20"),
+				sdk.MustNewDecFromStr("20"),
+			},
+			exp: sdk.NewInt(-500000),
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := tc.position.CalcProfitAndLoss(tc.closedRate)
+			resultDec := tc.position.ProfitAndLossInMetrics(tc.closedRates[0], tc.closedRates[1])
+			result := types.MicroToNormalDenom(resultDec)
 			fmt.Println(result)
 			if !tc.exp.Equal(result) {
 				t.Error(tc, "expected %v, got %v", tc.exp, result)
@@ -637,7 +665,7 @@ func TestCalcReturningAmountAtClose(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			returningAmount, lossToLP := tc.position.CalcReturningAmountAtClose(tc.closedPairRate)
+			returningAmount, lossToLP := tc.position.CalcReturningAmountAtClose(tc.closedPairRate, tc.closedPairRate)
 			fmt.Println(returningAmount, lossToLP)
 			if !tc.exp.Equal(returningAmount) {
 				t.Error(tc, "expected %v, got %v", tc.exp, returningAmount)
