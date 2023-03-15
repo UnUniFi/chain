@@ -161,7 +161,7 @@ func (k Keeper) ClaimRewardsFromTarget(ctx sdk.Context, addr sdk.AccAddress, tar
 			fmt.Println("STAKEIBC UPDATE amount")
 			updatedAmounts := sdk.Coins{}
 			for _, token := range farmingUnit.Amount {
-				updatedAmount := k.stakeibcKeeper.GetUpdatedBalance(ctx, address, token)
+				updatedAmount := k.stakeibcKeeper.GetUpdatedBalance(ctx, address, token.Denom)
 				updatedAmounts = updatedAmounts.Add(sdk.NewCoin(token.Denom, updatedAmount))
 			}
 			farmingUnit.Amount = updatedAmounts

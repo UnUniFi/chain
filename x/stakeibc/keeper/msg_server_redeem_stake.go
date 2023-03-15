@@ -15,9 +15,9 @@ import (
 	"github.com/UnUniFi/chain/utils"
 )
 
-func (k Keeper) GetUpdatedBalance(ctx sdk.Context, sender sdk.AccAddress, amount sdk.Coin) sdk.Int {
+func (k Keeper) GetUpdatedBalance(ctx sdk.Context, sender sdk.AccAddress, hzIbcDenom string) sdk.Int {
 	// get host zone from IBC denom
-	hostZone, err := k.GetHostZoneFromIBCDenom(ctx, amount.Denom)
+	hostZone, err := k.GetHostZoneFromIBCDenom(ctx, hzIbcDenom)
 	if err != nil {
 		fmt.Println("ERROR getting hostZone")
 		return sdk.ZeroInt()
