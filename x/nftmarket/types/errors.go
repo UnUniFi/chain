@@ -41,4 +41,5 @@ var (
 	ErrCannotCancelListingWithBids       = sdkerrors.Register(ModuleName, 34, "cannot cancel listing with bids")
 	ErrCannotCancelListingWithDebt       = sdkerrors.Register(ModuleName, 35, "cannot cancel listing with debt")
 	ErrInterestAmountTooLarge            = sdkerrors.Register(ModuleName, 36, "interest amount too large")
+	ErrInsufficientBalance               = sdkerrors.Register(ModuleName, 37, "insufficient balance")
 )

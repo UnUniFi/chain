@@ -5,8 +5,11 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/nft"
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+
+	ecoincentivetypes "github.com/UnUniFi/chain/x/ecosystem-incentive/types"
 
 	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
@@ -527,6 +530,12 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 		NftId:   msg.NftId.NftId,
 	})
 
+	// Call AfterNftUnlistedWithoutPayment to delete NFT ID from the ecosystem-incentive KVStore
+	// since it's unlisted.
+	if _, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes()); err != nil {
+		k.AfterNftUnlistedWithoutPayment(ctx, listing.NftId)
+	}
+
 	return nil
 }
 
@@ -625,7 +634,6 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 				// schedule NFT / token send after X days
 				listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
 				listing.State = types.ListingState_SUCCESSFUL_BID
-
 				// delete the loan data for the nftId which is deleted from the market
 				k.RemoveDebt(ctx, listing.IdBytes())
 			}
@@ -674,7 +682,7 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 
 				// pay fee
 				loan := k.GetDebtByNft(ctx, listing.IdBytes())
-				k.ProcessPaymentWithCommissionFee(ctx, listingOwner, listing.BidToken, depositCollected, loan.Loan.Amount)
+				k.ProcessPaymentWithCommissionFee(ctx, listingOwner, listing.BidToken, depositCollected, loan.Loan.Amount, listing.NftId)
 
 				// transfer nft to listing owner
 				cacheCtx, write := ctx.CacheContext()
@@ -866,7 +874,7 @@ func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 	}
 }
 
-func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, denom string, amount sdk.Int, loanAmount sdk.Int) {
+func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, denom string, amount sdk.Int, loanAmount sdk.Int, nftId types.NftIdentifier) {
 	params := k.GetParamSet(ctx)
 	commissionFee := params.NftListingCommissionFee
 	cacheCtx, write := ctx.CacheContext()
@@ -874,7 +882,7 @@ func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sd
 	fee := amount.Mul(sdk.NewInt(int64(commissionFee))).Quo(sdk.NewInt(100))
 	if fee.IsPositive() {
 		feeCoins := sdk.Coins{sdk.NewCoin(denom, fee)}
-		err := k.bankKeeper.SendCoinsFromModuleToModule(cacheCtx, types.ModuleName, types.NftTradingFee, feeCoins)
+		err := k.bankKeeper.SendCoinsFromModuleToModule(cacheCtx, types.ModuleName, ecoincentivetypes.ModuleName, feeCoins)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -898,6 +906,50 @@ func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sd
 		}
 	}
 
+	// Call AfterNftPaymentWithCommission hook method to inform the payment is successfuly
+	// executed.
+	k.AfterNftPaymentWithCommission(ctx, nftId, sdk.NewCoin(denom, fee))
+}
+
+// todo: delete
+func (k Keeper) TestMint(ctx sdk.Context, addr sdk.AccAddress, classId, nftId string) {
+	_, exists := k.nftKeeper.GetNFT(ctx, classId, nftId)
+	if exists {
+		return
+	}
+	const (
+		testClassName        = "Crypto Kitty"
+		testClassSymbol      = "kitty"
+		testClassDescription = "Crypto Kitty"
+		testClassURI         = "class uri"
+		testClassURIHash     = "ae702cefd6b6a65fe2f991ad6d9969ed"
+		testURI              = "kitty uri"
+		testURIHash          = "229bfd3c1b431c14a526497873897108"
+	)
+
+	_, hasId := k.nftKeeper.GetClass(ctx, classId)
+	if !hasId {
+		class := nft.Class{
+			Id:          classId,
+			Name:        testClassName,
+			Symbol:      testClassSymbol,
+			Description: testClassDescription,
+			Uri:         testClassURI,
+			UriHash:     testClassURIHash,
+		}
+		k.nftKeeper.SaveClass(ctx, class)
+		fmt.Println("save class")
+	}
+
+	expNFT := nft.NFT{
+		ClassId: classId,
+		Id:      nftId,
+		Uri:     testURI,
+	}
+	err := k.nftKeeper.Mint(ctx, expNFT, addr)
+	if err != nil {
+		fmt.Println("err occur")
+	}
 }
 
 // get surplus amount
