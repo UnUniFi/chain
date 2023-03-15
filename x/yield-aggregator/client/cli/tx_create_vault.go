@@ -1,6 +1,10 @@
 package cli
 
 import (
+	"fmt"
+	"strconv"
+	"strings"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -12,9 +16,12 @@ import (
 
 func CmdTxCreateVault() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-vault [denom] [commission-rate] [fee] [deposit] [[strategy-id] [strategy-weight] ...]",
+		Use:   "create-vault [denom] [commission-rate] [fee] [deposit] [strategyWeights]",
 		Short: "create a new vault",
-		Args:  cobra.NoArgs,
+		Long: `create a new vault
+			ununifid tx yieldaggregator create-vault uguu 0.001 1000uguu 1000000uguu 1:0.1,2:0.9
+		`,
+		Args: cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -31,8 +38,29 @@ func CmdTxCreateVault() *cobra.Command {
 			if err != nil {
 				return err
 			}
+
+			strategyWeightStrs := strings.Split(args[4], ",")
+
 			strategyWeights := make([]types.StrategyWeight, 0)
-			// TODO: append strategyWeights
+			for _, strategyWeightStr := range strategyWeightStrs {
+				split := strings.Split(strategyWeightStr, ":")
+				if len(split) != 2 {
+					return fmt.Errorf("invalid strategy weight: %s", strategyWeightStr)
+				}
+				strategyId, err := strconv.Atoi(split[0])
+				if err != nil {
+					return err
+				}
+				weight, err := sdk.NewDecFromStr(split[1])
+				if err != nil {
+					return err
+				}
+
+				strategyWeights = append(strategyWeights, types.StrategyWeight{
+					StrategyId: uint64(strategyId),
+					Weight:     weight,
+				})
+			}
 
 			msg := types.NewMsgCreateVault(clientCtx.GetFromAddress().String(), denom, commissionRate, strategyWeights, fee, deposit)
 			if err := msg.ValidateBasic(); err != nil {
