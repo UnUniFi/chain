@@ -25,8 +25,6 @@ func (k Keeper) UpdateListedClass(ctx sdk.Context, listing types.NftListing) {
 		k.DeleteListingFromListedClass(ctx, listing)
 	case types.ListingState_SELLING_DECISION:
 		k.DeleteListingFromListedClass(ctx, listing)
-	case types.ListingState_LIQUIDATION:
-		k.DeleteListingFromListedClass(ctx, listing)
 	}
 }
 

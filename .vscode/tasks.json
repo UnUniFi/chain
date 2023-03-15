@@ -33,5 +33,11 @@
         "init config",
       ],
     },
+    {
+      "label": "prepare tx direct",
+      "type": "shell",
+      "cwd": "${workspaceFolder}",
+      "command": "scripts/commands/prepare.sh sleep",
+    },
   ]
 }
