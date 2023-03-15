@@ -15,6 +15,16 @@ type PositionInstance interface {
 
 type Positions []Position
 
+func (m Position) Validate() error {
+	if m.RemainingMargin.Amount.IsZero() {
+		return fmt.Errorf("remaining margin cannot be zero")
+	}
+	if m.RemainingMargin.Amount.IsNegative() {
+		return fmt.Errorf("remaining margin cannot be negative")
+	}
+	return nil
+}
+
 func UnpackPositionInstance(positionAny types.Any) (PositionInstance, error) {
 	position := UnpackPerpetualFuturesPositionInstance(positionAny)
 	if position != nil {

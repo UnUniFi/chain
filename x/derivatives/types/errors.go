@@ -12,4 +12,6 @@ var (
 	ErrNoLiquidityProviderToken = sdkerrors.Register(ModuleName, 2, "no liquidity provider token")
 	ErrInvalidCoins             = sdkerrors.Register(ModuleName, 3, "invalid coins")
 	ErrZeroLpTokenPrice         = sdkerrors.Register(ModuleName, 4, "zero lp token price")
+	ErrorMarginNotEnough        = sdkerrors.Register(ModuleName, 5, "margin is not enough")
+	ErrorInvalidPositionParams  = sdkerrors.Register(ModuleName, 6, "invalid param for position")
 )
