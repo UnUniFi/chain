@@ -205,10 +205,6 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 	if listing.BidToken != msg.BidAmount.Denom {
 		return types.ErrInvalidBidDenom
 	}
-	depositLendingRate, err := sdk.NewDecFromStr(msg.DepositLendingRate)
-	if err != nil {
-		return types.ErrCannotParseDec
-	}
 
 	bids := types.NftBids(k.GetBidsByNft(ctx, listing.IdBytes()))
 	bidder := msg.Sender.AccAddress()
@@ -226,7 +222,7 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 			Bidder: msg.Sender.AccAddress().String(),
 		},
 		PaidAmount:         sdk.NewCoin(listing.BidToken, sdk.ZeroInt()),
-		DepositLendingRate: depositLendingRate,
+		DepositLendingRate: msg.DepositLendingRate,
 		InterestAmount:     sdk.NewCoin(listing.BidToken, sdk.ZeroInt()),
 	}
 
@@ -297,7 +293,7 @@ func (k Keeper) FirstBid(ctx sdk.Context, listing types.NftListing, newBid types
 }
 
 func (k Keeper) ReBid(ctx sdk.Context, listing types.NftListing, oldBid, newBid types.NftBid, bids types.NftBids) error {
-	// todo we not decided rebid spec
+	// TODO: decide specification more in detail
 	// re-bidのとき
 	// 自動借り換えを行う
 	// 自動借り換えは
@@ -491,10 +487,7 @@ func (k Keeper) HandleMaturedCancelledBids(ctx sdk.Context) error {
 
 // todo add unit test
 func CheckBidParams(listing types.NftListing, bid, deposit sdk.Coin, bids []types.NftBid) error {
-	c, err := sdk.NewDecFromStr(listing.MinimumDepositRate)
-	if err != nil {
-		return err
-	}
+	c := listing.MinimumDepositRate
 	p := sdk.NewDecFromInt(bid.Amount)
 	cp := c.Mul(p)
 	depositDec := sdk.NewDecFromInt(deposit.Amount)
