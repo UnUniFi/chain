@@ -9,6 +9,9 @@ import (
 
 	ante "github.com/UnUniFi/chain/app/ante"
 	appparams "github.com/UnUniFi/chain/app/params"
+	// Upgrades from earlier versions of Ununifi
+	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
+
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
@@ -83,7 +86,6 @@ import (
 	ibcclient "github.com/cosmos/ibc-go/v2/modules/core/02-client"
 	ibcclientclient "github.com/cosmos/ibc-go/v2/modules/core/02-client/client"
 	ibcclienttypes "github.com/cosmos/ibc-go/v2/modules/core/02-client/types"
-	ibcconnectiontypes "github.com/cosmos/ibc-go/v2/modules/core/03-connection/types"
 	porttypes "github.com/cosmos/ibc-go/v2/modules/core/05-port/types"
 	ibchost "github.com/cosmos/ibc-go/v2/modules/core/24-host"
 	ibckeeper "github.com/cosmos/ibc-go/v2/modules/core/keeper"
@@ -121,7 +123,6 @@ import (
 )
 
 const Name = "ununifi"
-const upgradeName = "Alpha"
 
 // We pull these out so we can set them with LDFLAGS in the Makefile
 var (
@@ -802,31 +803,16 @@ func NewApp(
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
 
-	app.UpgradeKeeper.SetUpgradeHandler(
-		upgradeName,
-		func(ctx sdk.Context, _ upgradetypes.Plan, _ module.VersionMap) (module.VersionMap, error) {
-			app.IBCKeeper.ConnectionKeeper.SetParams(ctx, ibcconnectiontypes.DefaultParams())
-
-			fromVM := make(map[string]uint64)
-			for moduleName := range app.mm.Modules {
-				fromVM[moduleName] = 1
-			}
-			// override versions for _new_ modules as to not skip InitGenesis
-			fromVM[authz.ModuleName] = 0
-			fromVM[feegrant.ModuleName] = 0
-
-			return app.mm.RunMigrations(ctx, app.configurator, fromVM)
-		},
-	)
+	app.setupUpgradeHandlers()
 
 	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
 	if err != nil {
 		panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
 	}
 
-	if upgradeInfo.Name == upgradeName && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
+	if upgradeInfo.Name == v1_beta3.UpgradeName && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
 		storeUpgrades := store.StoreUpgrades{
-			Added: []string{authz.ModuleName, feegrant.ModuleName},
+			Added: []string{},
 		}
 
 		// configure store loader that checks if version == upgradeHeight and applies store upgrades
@@ -1003,4 +989,14 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
 	paramsKeeper.Subspace(wasm.ModuleName)
 	return paramsKeeper
+}
+
+func (app *App) setupUpgradeHandlers() {
+	app.UpgradeKeeper.SetUpgradeHandler(
+		v1_beta3.UpgradeName,
+		v1_beta3.CreateUpgradeHandler(
+			app.mm,
+			app.configurator,
+			app.AccountKeeper,
+			app.BankKeeper))
 }
