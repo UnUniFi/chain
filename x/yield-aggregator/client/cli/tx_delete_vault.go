@@ -15,7 +15,7 @@ func CmdTxDeleteVault() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete-vault [id]",
 		Short: "delete the vault",
-		Args:  cobra.NoArgs,
+		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 

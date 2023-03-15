@@ -16,7 +16,7 @@ func CmdTxDepositToVault() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "deposit-to-vault [id] [principal-amount]",
 		Short: "deposit to the vault",
-		Args:  cobra.NoArgs,
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 

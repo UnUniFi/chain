@@ -15,7 +15,7 @@ func CmdTxTransferVaultOwnership() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "transfer-vault-ownership [id] [recipient]",
 		Short: "transfer the ownership of a vault",
-		Args:  cobra.NoArgs,
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 

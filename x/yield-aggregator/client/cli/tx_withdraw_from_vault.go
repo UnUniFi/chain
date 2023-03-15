@@ -16,7 +16,7 @@ func CmdTxWithdrawFromVault() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "withdraw-from-vault [id] [lp-token-amount]",
 		Short: "withdraw from the vault",
-		Args:  cobra.NoArgs,
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
