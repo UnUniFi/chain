@@ -2,6 +2,7 @@ package types
 
 import (
 	// errorsmod "cosmossdk.io/errors"
+
 	"github.com/cosmos/cosmos-sdk/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -27,7 +28,27 @@ func (msg MsgCreateVault) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid sender address: %s", err)
 	}
 
-	// TODO
+	if err := sdk.ValidateDenom(msg.Denom); err != nil {
+		return err
+	}
+
+	if msg.CommissionRate.IsNegative() || msg.CommissionRate.GTE(sdk.OneDec()) {
+		return ErrInvalidCommissionRate
+	}
+
+	usedStrategy := make(map[uint64]bool)
+	weightSum := sdk.ZeroDec()
+	for _, strategyWeight := range msg.StrategyWeights {
+		weightSum = weightSum.Add(strategyWeight.Weight)
+		if usedStrategy[strategyWeight.StrategyId] {
+			return ErrDuplicatedStrategy
+		}
+		usedStrategy[strategyWeight.StrategyId] = true
+	}
+
+	if !weightSum.Equal(sdk.OneDec()) {
+		return ErrInvalidStrategyWeightSum
+	}
 
 	return nil
 }

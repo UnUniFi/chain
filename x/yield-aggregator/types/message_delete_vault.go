@@ -23,7 +23,9 @@ func (msg MsgDeleteVault) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid sender address: %s", err)
 	}
 
-	// TODO
+	if msg.VaultId == 0 {
+		return ErrInvalidVaultId
+	}
 
 	return nil
 }
