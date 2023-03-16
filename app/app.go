@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	ante "github.com/UnUniFi/chain/app/ante"
 	appparams "github.com/UnUniFi/chain/app/params"
 	// Upgrades from earlier versions of Ununifi
 	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
@@ -1045,6 +1046,7 @@ func NewApp(
 	app.MountTransientStores(tkeys)
 	app.MountMemoryStores(memKeys)
 	anteHandler, err := ante.NewAnteHandler(
+		appCodec,
 		ante.HandlerOptions{
 			AccountKeeper:   app.AccountKeeper,
 			BankKeeper:      app.BankKeeper,
