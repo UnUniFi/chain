@@ -9,6 +9,7 @@ import (
 
 	ante "github.com/UnUniFi/chain/app/ante"
 	appparams "github.com/UnUniFi/chain/app/params"
+
 	// Upgrades from earlier versions of Ununifi
 	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
 
@@ -68,7 +69,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
+
+	// "github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
