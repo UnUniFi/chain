@@ -3,12 +3,13 @@ package keeper_test
 import (
 	"time"
 
-	ununifitypes "github.com/UnUniFi/chain/types"
-	"github.com/UnUniFi/chain/x/nftmarket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 	"github.com/tendermint/tendermint/crypto/ed25519"
+
+	ununifitypes "github.com/UnUniFi/chain/types"
+	"github.com/UnUniFi/chain/x/nftmarketv1/types"
 )
 
 // test basic functions of bids on nft bids

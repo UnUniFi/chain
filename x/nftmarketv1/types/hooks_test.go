@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	simapp "github.com/UnUniFi/chain/app"
-	"github.com/UnUniFi/chain/x/nftmarket/types"
+	"github.com/UnUniFi/chain/x/nftmarketv1/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"

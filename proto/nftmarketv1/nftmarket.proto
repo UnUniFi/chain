@@ -1,11 +1,11 @@
 syntax = "proto3";
-package ununifi.nftmarket;
+package ununifi.nftmarketv1;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
-option go_package = "github.com/UnUniFi/chain/x/nftmarket/types";
+option go_package = "github.com/UnUniFi/chain/x/nftmarketv1/types";
 
 enum ListingType {
   DIRECT_ASSET_BORROW      = 0;

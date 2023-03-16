@@ -723,7 +723,7 @@ func (k Keeper) LiquidationProcess(ctx sdk.Context, bids types.NftBids, listing 
 		depositCollected := listing.CollectedAmount
 		// pay fee
 		loan := k.GetDebtByNft(ctx, listing.IdBytes())
-		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, listing.BidToken, depositCollected.Amount, loan.Loan.Amount)
+		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, listing.BidToken, depositCollected.Amount, loan.Loan.Amount, listing.NftId)
 		// transfer nft to listing owner
 		cacheCtx, write := ctx.CacheContext()
 		err = k.nftKeeper.Transfer(cacheCtx, listing.NftId.ClassId, listing.NftId.NftId, listingOwner)
@@ -816,7 +816,7 @@ func (k Keeper) LiquidationProcess(ctx sdk.Context, bids types.NftBids, listing 
 		depositCollected := listing.CollectedAmount
 		// pay fee
 		loan := k.GetDebtByNft(ctx, listing.IdBytes())
-		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, listing.BidToken, depositCollected.Amount, loan.Loan.Amount)
+		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, listing.BidToken, depositCollected.Amount, loan.Loan.Amount, listing.NftId)
 		// transfer nft to listing owner
 		cacheCtx, write := ctx.CacheContext()
 		err = k.nftKeeper.Transfer(cacheCtx, listing.NftId.ClassId, listing.NftId.NftId, listingOwner)
@@ -867,7 +867,7 @@ func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 
 		loan := k.GetDebtByNft(ctx, listing.IdBytes())
 		totalPayAmount := listing.CollectedAmount.Add(bid.BidAmount)
-		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, totalPayAmount.Denom, totalPayAmount.Amount, loan.Loan.Amount)
+		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, totalPayAmount.Denom, totalPayAmount.Amount, loan.Loan.Amount, listing.NftId)
 
 		k.DeleteBid(ctx, bid)
 		k.DeleteNftListings(ctx, listing)

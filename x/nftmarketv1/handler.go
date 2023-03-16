@@ -1,12 +1,13 @@
-package nftmarket
+package nftmarketv1
 
 import (
 	"fmt"
 
-	"github.com/UnUniFi/chain/x/nftmarket/keeper"
-	"github.com/UnUniFi/chain/x/nftmarket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	"github.com/UnUniFi/chain/x/nftmarketv1/keeper"
+	"github.com/UnUniFi/chain/x/nftmarketv1/types"
 )
 
 func NewHandler(k keeper.Keeper) sdk.Handler {

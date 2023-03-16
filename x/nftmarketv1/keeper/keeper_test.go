@@ -20,8 +20,8 @@ import (
 
 	simapp "github.com/UnUniFi/chain/app"
 	appparams "github.com/UnUniFi/chain/app/params"
-	"github.com/UnUniFi/chain/x/nftmarket/keeper"
-	"github.com/UnUniFi/chain/x/nftmarket/types"
+	"github.com/UnUniFi/chain/x/nftmarketv1/keeper"
+	"github.com/UnUniFi/chain/x/nftmarketv1/types"
 )
 
 var (
