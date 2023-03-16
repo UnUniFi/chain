@@ -1,25 +1,21 @@
 package keeper_test
 
 import (
-	"testing"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	keepertest "github.com/UnUniFi/chain/testutil/keeper"
 	"github.com/UnUniFi/chain/testutil/nullify"
 	"github.com/UnUniFi/chain/x/yield-aggregator/types"
 )
 
-func TestVaultQuerySingle(t *testing.T) {
-	keeper, ctx := keepertest.YieldAggregatorKeeper(t)
+func (suite *KeeperTestSuite) TestVaultQuerySingle() {
+	keeper, ctx := suite.app.YieldaggregatorKeeper, suite.ctx
 	wctx := sdk.WrapSDKContext(ctx)
 	vaultDenom := "uatom"
-	msgs := createNVault(keeper, ctx, vaultDenom, 2)
+	msgs := createNVault(&keeper, ctx, vaultDenom, 2)
 	for _, tc := range []struct {
 		desc     string
 		request  *types.QueryGetVaultRequest
@@ -46,13 +42,13 @@ func TestVaultQuerySingle(t *testing.T) {
 			err:  status.Error(codes.InvalidArgument, "invalid request"),
 		},
 	} {
-		t.Run(tc.desc, func(t *testing.T) {
+		suite.Run(tc.desc, func() {
 			response, err := keeper.Vault(wctx, tc.request)
 			if tc.err != nil {
-				require.ErrorIs(t, err, tc.err)
+				suite.Require().ErrorIs(err, tc.err)
 			} else {
-				require.NoError(t, err)
-				require.Equal(t,
+				suite.Require().NoError(err)
+				suite.Require().Equal(
 					nullify.Fill(tc.response),
 					nullify.Fill(response),
 				)
@@ -61,11 +57,11 @@ func TestVaultQuerySingle(t *testing.T) {
 	}
 }
 
-func TestVaultQueryPaginated(t *testing.T) {
-	keeper, ctx := keepertest.YieldAggregatorKeeper(t)
+func (suite *KeeperTestSuite) TestVaultQueryPaginated() {
+	keeper, ctx := suite.app.YieldaggregatorKeeper, suite.ctx
 	wctx := sdk.WrapSDKContext(ctx)
 	vaultDenom := "uatom"
-	msgs := createNVault(keeper, ctx, vaultDenom, 5)
+	msgs := createNVault(&keeper, ctx, vaultDenom, 5)
 
 	request := func(next []byte, offset, limit uint64, total bool) *types.QueryAllVaultRequest {
 		return &types.QueryAllVaultRequest{
@@ -77,47 +73,47 @@ func TestVaultQueryPaginated(t *testing.T) {
 			},
 		}
 	}
-	t.Run("ByOffset", func(t *testing.T) {
+	suite.Run("ByOffset", func() {
 		step := 2
 		for i := 0; i < len(msgs); i += step {
 			resp, err := keeper.VaultAll(wctx, request(nil, uint64(i), uint64(step), false))
-			require.NoError(t, err)
-			require.LessOrEqual(t, len(resp.Vaults), step)
-			require.Subset(t,
+			suite.Require().NoError(err)
+			suite.Require().LessOrEqual(len(resp.Vaults), step)
+			suite.Require().Subset(
 				nullify.Fill(msgs),
 				nullify.Fill(resp.Vaults),
 			)
 		}
 	})
-	t.Run("ByKey", func(t *testing.T) {
+	suite.Run("ByKey", func() {
 		step := 2
 		var next []byte
 		for i := 0; i < len(msgs); i += step {
 			resp, err := keeper.VaultAll(wctx, request(next, 0, uint64(step), false))
-			require.NoError(t, err)
-			require.LessOrEqual(t, len(resp.Vaults), step)
-			require.Subset(t,
+			suite.Require().NoError(err)
+			suite.Require().LessOrEqual(len(resp.Vaults), step)
+			suite.Require().Subset(
 				nullify.Fill(msgs),
 				nullify.Fill(resp.Vaults),
 			)
 			next = resp.Pagination.NextKey
 		}
 	})
-	t.Run("Total", func(t *testing.T) {
+	suite.Run("Total", func() {
 		resp, err := keeper.VaultAll(wctx, request(nil, 0, 0, true))
-		require.NoError(t, err)
+		suite.Require().NoError(err)
 
 		// TODO
-		// require.Equal(t, len(msgs), int(resp.Pagination.Total))
-		// require.ElementsMatch(t,
+		// suite.Require().Equal(len(msgs), int(resp.Pagination.Total))
+		// suite.Require().ElementsMatch(t,
 		// 	nullify.Fill(msgs),
 		// 	nullify.Fill(resp.Strategies),
 		// )
 		println(resp)
 		//
 	})
-	t.Run("InvalidRequest", func(t *testing.T) {
+	suite.Run("InvalidRequest", func() {
 		_, err := keeper.VaultAll(wctx, nil)
-		require.ErrorIs(t, err, status.Error(codes.InvalidArgument, "invalid request"))
+		suite.Require().ErrorIs(err, status.Error(codes.InvalidArgument, "invalid request"))
 	})
 }

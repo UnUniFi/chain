@@ -6,7 +6,7 @@ import (
 
 const (
 	// ModuleName defines the module name
-	ModuleName = "yield_aggregator"
+	ModuleName = "yieldaggregator"
 
 	// StoreKey defines the primary module store key
 	StoreKey = ModuleName

@@ -1,14 +1,10 @@
 package keeper_test
 
 import (
-	"testing"
-
-	keepertest "github.com/UnUniFi/chain/testutil/keeper"
 	"github.com/UnUniFi/chain/testutil/nullify"
 	"github.com/UnUniFi/chain/x/yield-aggregator/keeper"
 	"github.com/UnUniFi/chain/x/yield-aggregator/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/stretchr/testify/require"
 )
 
 func createNStrategy(keeper *keeper.Keeper, ctx sdk.Context, denom string, n int) []types.Strategy {
@@ -24,45 +20,50 @@ func createNStrategy(keeper *keeper.Keeper, ctx sdk.Context, denom string, n int
 	return items
 }
 
-func TestStrategyGet(t *testing.T) {
-	keeper, ctx := keepertest.YieldAggregatorKeeper(t)
+func (suite *KeeperTestSuite) TestStrategyGet() {
+	keeper, ctx := suite.app.YieldaggregatorKeeper, suite.ctx
 	vaultDenom := "uatom"
-	items := createNStrategy(keeper, ctx, vaultDenom, 10)
+	items := createNStrategy(&keeper, ctx, vaultDenom, 10)
 	for _, item := range items {
 		got, found := keeper.GetStrategy(ctx, vaultDenom, item.Id)
-		require.True(t, found)
-		require.Equal(t,
+		suite.Require().True(found)
+		suite.Require().Equal(
 			nullify.Fill(&item),
 			nullify.Fill(&got),
 		)
 	}
 }
 
-func TestStrategyRemove(t *testing.T) {
-	keeper, ctx := keepertest.YieldAggregatorKeeper(t)
+func (suite *KeeperTestSuite) TestStrategyRemove() {
+	keeper, ctx := suite.app.YieldaggregatorKeeper, suite.ctx
 	vaultDenom := "uatom"
-	items := createNStrategy(keeper, ctx, vaultDenom, 10)
+	items := createNStrategy(&keeper, ctx, vaultDenom, 10)
 	for _, item := range items {
 		keeper.RemoveStrategy(ctx, vaultDenom, item.Id)
 		_, found := keeper.GetStrategy(ctx, vaultDenom, item.Id)
-		require.False(t, found)
+		suite.Require().False(found)
 	}
 }
 
-func TestStrategyGetAll(t *testing.T) {
-	keeper, ctx := keepertest.YieldAggregatorKeeper(t)
+func (suite *KeeperTestSuite) TestStrategyGetAll() {
+	keeper, ctx := suite.app.YieldaggregatorKeeper, suite.ctx
 	vaultDenom := "uatom"
-	items := createNStrategy(keeper, ctx, vaultDenom, 10)
-	require.ElementsMatch(t,
+	items := createNStrategy(&keeper, ctx, vaultDenom, 10)
+	suite.Require().ElementsMatch(
 		nullify.Fill(items),
 		nullify.Fill(keeper.GetAllStrategy(ctx, vaultDenom)),
 	)
 }
 
-func TestStrategyCount(t *testing.T) {
-	keeper, ctx := keepertest.YieldAggregatorKeeper(t)
+func (suite *KeeperTestSuite) TestStrategyCount() {
+	keeper, ctx := suite.app.YieldaggregatorKeeper, suite.ctx
 	vaultDenom := "uatom"
-	items := createNStrategy(keeper, ctx, vaultDenom, 10)
+	items := createNStrategy(&keeper, ctx, vaultDenom, 10)
 	count := uint64(len(items))
-	require.Equal(t, count, keeper.GetStrategyCount(ctx, vaultDenom))
+	suite.Require().Equal(count, keeper.GetStrategyCount(ctx, vaultDenom))
 }
+
+// TODO: add test for StakeToStrategy
+// TODO: add test for UnstakeFromStrategy
+// TODO: add test for GetAmountFromStrategy
+// TODO: add test for GetUnbondingAmountFromStrategy
