@@ -10,7 +10,7 @@ import (
 
 	ununifitypes "github.com/UnUniFi/chain/types"
 	ecoincentivetypes "github.com/UnUniFi/chain/x/ecosystem-incentive/types"
-	"github.com/UnUniFi/chain/x/nftmarket/types"
+	"github.com/UnUniFi/chain/x/nftmarketv1/types"
 )
 
 // test basic functions of nft listing

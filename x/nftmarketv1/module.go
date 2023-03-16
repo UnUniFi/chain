@@ -1,4 +1,4 @@
-package nftmarket
+package nftmarketv1
 
 import (
 	"context"
@@ -11,14 +11,15 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/UnUniFi/chain/x/nftmarket/client/cli"
-	"github.com/UnUniFi/chain/x/nftmarket/keeper"
-	"github.com/UnUniFi/chain/x/nftmarket/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+
+	"github.com/UnUniFi/chain/x/nftmarketv1/client/cli"
+	"github.com/UnUniFi/chain/x/nftmarketv1/keeper"
+	"github.com/UnUniFi/chain/x/nftmarketv1/types"
 )
 
 var (

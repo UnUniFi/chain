@@ -1,9 +1,10 @@
 package keeper
 
 import (
-	"github.com/UnUniFi/chain/x/nftmarket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/nft"
+
+	"github.com/UnUniFi/chain/x/nftmarketv1/types"
 )
 
 func (k Keeper) MintNft(ctx sdk.Context, msg *types.MsgMintNft) error {

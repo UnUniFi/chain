@@ -9,7 +9,7 @@ import (
 	"github.com/tendermint/tendermint/crypto/ed25519"
 
 	ununifitypes "github.com/UnUniFi/chain/types"
-	"github.com/UnUniFi/chain/x/nftmarket/types"
+	"github.com/UnUniFi/chain/x/nftmarketv1/types"
 )
 
 func (suite *KeeperTestSuite) TestDebtBasics() {

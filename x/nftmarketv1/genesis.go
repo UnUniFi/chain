@@ -1,10 +1,10 @@
-package nftmarket
+package nftmarketv1
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/x/nftmarket/keeper"
-	"github.com/UnUniFi/chain/x/nftmarket/types"
+	"github.com/UnUniFi/chain/x/nftmarketv1/keeper"
+	"github.com/UnUniFi/chain/x/nftmarketv1/types"
 )
 
 // InitGenesis initializes the store state from a genesis state.

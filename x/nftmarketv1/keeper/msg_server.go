@@ -3,8 +3,9 @@ package keeper
 import (
 	"context"
 
-	"github.com/UnUniFi/chain/x/nftmarket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/UnUniFi/chain/x/nftmarketv1/types"
 )
 
 type msgServer struct {
