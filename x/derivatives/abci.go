@@ -1,6 +1,8 @@
 package derivatives
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/keeper"
@@ -35,7 +37,10 @@ func CheckPosition(ctx sdk.Context, k keeper.Keeper) {
 		baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, currentBaseUsdRate)
 		quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, currentQuoteUsdRate)
 		if err != nil {
-			panic(err)
+			// todo: user logger
+			fmt.Println("failed to get pair usd price from market")
+			fmt.Println(err)
+			continue
 		}
 		if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, baseMetricsRate, quoteMetricsRate) {
 			msg := types.MsgReportLiquidation{

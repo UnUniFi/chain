@@ -151,13 +151,13 @@ message QueryPerpetualFuturesResponse {
     (gogoproto.moretags)  = "yaml:\"fees_24hours\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
   ];
-  string long_positions = 5 [
+  cosmos.base.v1beta1.Coin long_positions = 5 [
     (gogoproto.moretags)  = "yaml:\"long_positions\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+    (gogoproto.nullable) = false
   ];
-  string short_positions = 6 [
+  cosmos.base.v1beta1.Coin short_positions = 6 [
     (gogoproto.moretags)  = "yaml:\"short_positions\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+    (gogoproto.nullable) = false
   ];
 }
 

@@ -15,6 +15,16 @@ type PositionInstance interface {
 
 type Positions []Position
 
+func (m Position) Validate() error {
+	if m.RemainingMargin.Amount.IsZero() {
+		return fmt.Errorf("remaining margin cannot be zero")
+	}
+	if m.RemainingMargin.Amount.IsNegative() {
+		return fmt.Errorf("remaining margin cannot be negative")
+	}
+	return nil
+}
+
 func UnpackPositionInstance(positionAny types.Any) (PositionInstance, error) {
 	position := UnpackPerpetualFuturesPositionInstance(positionAny)
 	if position != nil {
@@ -116,8 +126,13 @@ func (m PerpetualFuturesPosition) EvaluatePosition(currentBaseMetricsRate Metric
 	return currentBaseMetricsRate.Amount.Amount.Mul(m.PositionInstance.Size_)
 }
 
-func MicroToNormalDenom(amount sdk.Dec) math.Int {
+// TODO: consider to use sdk.DecCoin
+func MicroToNormalDenom(amount sdk.Dec) sdk.Int {
 	return amount.Mul(sdk.MustNewDecFromStr("1000000")).TruncateInt()
+}
+
+func MicroToNormalDec(amount sdk.Dec) sdk.Dec {
+	return amount.Mul(sdk.MustNewDecFromStr("1000000"))
 }
 
 func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(baseMetricsRate, quoteMetricsRate MetricsRateType) (returningAmount math.Int, lossToLP math.Int) {

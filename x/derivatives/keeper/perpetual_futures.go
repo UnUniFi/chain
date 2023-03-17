@@ -69,6 +69,18 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 		RemainingMargin:  margin,
 	}
 
+	if position.Validate() != nil {
+		return nil, types.ErrorMarginNotEnough
+	}
+
+	params := k.GetParams(ctx)
+	quoteTicker := k.GetPoolQuoteTicker(ctx)
+	baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, position.OpenedBaseRate)
+	quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, position.OpenedQuoteRate)
+	if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, baseMetricsRate, quoteMetricsRate) {
+		return nil, types.ErrorInvalidPositionParams
+	}
+
 	switch positionInstance.PositionType {
 	case types.PositionType_LONG:
 		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.Size_)
@@ -122,8 +134,10 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 	}
 
 	returningCoin := sdk.NewCoin(position.RemainingMargin.Denom, returningAmount)
-	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, position.Address.AccAddress(), sdk.Coins{returningCoin}); err != nil {
-		return err
+	if returningCoin.IsPositive() {
+		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, position.Address.AccAddress(), sdk.Coins{returningCoin}); err != nil {
+			return err
+		}
 	}
 
 	ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionClosed{
@@ -152,7 +166,10 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 
 		rewardAmount := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PoolParams.ReportLiquidationRewardRate).RoundInt()
 		reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))
-		k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
+		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
+		if err != nil {
+			return err
+		}
 
 		ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionLiquidated{
 			RewardRecipient: rewardRecipient.AccAddress().String(),
@@ -192,7 +209,10 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 
 	rewardAmount := sdk.NewDecFromInt(commissionFee).Mul(params.PoolParams.ReportLevyPeriodRewardRate).RoundInt()
 	reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))
-	k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
+	err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
+	if err != nil {
+		return err
+	}
 
 	k.SetPosition(ctx, position)
 
@@ -220,7 +240,11 @@ func (k Keeper) GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market t
 }
 
 func (k Keeper) GetPositionSizeOfNetPositionOfMarket(ctx sdk.Context, market types.Market) sdk.Dec {
-	return k.GetPerpetualFuturesNetPositionOfMarket(ctx, market).PositionSize
+	position := k.GetPerpetualFuturesNetPositionOfMarket(ctx, market)
+	if position.PositionSize.IsNil() {
+		return sdk.ZeroDec()
+	}
+	return position.PositionSize
 }
 
 func (k Keeper) GetAllPerpetualFuturesNetPositionOfMarket(ctx sdk.Context) []types.PerpetualFuturesNetPositionOfMarket {

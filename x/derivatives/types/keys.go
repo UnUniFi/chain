@@ -21,6 +21,9 @@ const (
 
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_derivatives"
+
+	// DerivativeFeeCollector defines the fee collector for derivatives module
+	DerivativeFeeCollector = "derivatives_fee_collector"
 )
 
 const (

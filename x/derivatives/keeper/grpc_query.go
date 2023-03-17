@@ -50,8 +50,8 @@ func (k Keeper) PerpetualFutures(c context.Context, req *types.QueryPerpetualFut
 	}
 
 	quoteTicker := k.GetPoolQuoteTicker(ctx)
-	longUsd := positions.EvaluateLongPositions(quoteTicker, getPriceFunc(ctx))
-	shortUsd := positions.EvaluateShortPositions(quoteTicker, getPriceFunc(ctx))
+	longUUsd := positions.EvaluateLongPositions(quoteTicker, getPriceFunc(ctx))
+	shortUUsd := positions.EvaluateShortPositions(quoteTicker, getPriceFunc(ctx))
 	// TODO: implement the handler logic
 	ctx.BlockHeight()
 	metricsQuoteTicker := "USD"
@@ -62,8 +62,8 @@ func (k Keeper) PerpetualFutures(c context.Context, req *types.QueryPerpetualFut
 		MetricsQuoteTicker: metricsQuoteTicker,
 		Volume_24Hours:     &volume24Hours,
 		Fees_24Hours:       &fees24Hours,
-		LongPositions:      &longUsd,
-		ShortPositions:     &shortUsd,
+		LongPositions:      sdk.NewCoin("uusd", longUUsd.TruncateInt()),
+		ShortPositions:     sdk.NewCoin("uusd", shortUUsd.TruncateInt()),
 	}, nil
 }
 
@@ -214,11 +214,20 @@ func (k Keeper) MakeQueriedPositions(ctx sdk.Context, positions types.Positions)
 		baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, currentBaseUsdRate)
 		quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, currentQuoteUsdRate)
 		profit := perpetualFuturesPosition.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)
+		// fixme do not use sdk.Coin directly
+		positiveOrNegativeProfitCoin := sdk.Coin{
+			Denom:  "uusd",
+			Amount: types.MicroToNormalDenom(profit),
+		}
+		positiveOrNegativeEffectiveMargin := sdk.Coin{
+			Denom:  "uusd",
+			Amount: types.MicroToNormalDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate)),
+		}
 		queriedPosition := types.QueriedPosition{
 			Position:              position,
-			ValuationProfit:       sdk.NewCoin("uusd", types.MicroToNormalDenom(profit)),
+			ValuationProfit:       positiveOrNegativeProfitCoin,
 			MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate),
-			EffectiveMargin:       sdk.NewCoin("uusd", types.MicroToNormalDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate))),
+			EffectiveMargin:       positiveOrNegativeEffectiveMargin,
 		}
 		queriedPositions = append(queriedPositions, queriedPosition)
 	}

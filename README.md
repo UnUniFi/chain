@@ -197,9 +197,6 @@ May 16 17:57:26 cosmovisor[232029]: 5:57PM INF Starting pprof server laddr=local
 
 ## License
 
-Forked from [Kava](github.com/Kava-Labs/kava).
-Thanks Kava Team.
-
 Copyright © UnUniFi development team. All rights reserved.
 
 Licensed under the [Apache v2 License](LICENSE.md).
