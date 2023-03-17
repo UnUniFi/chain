@@ -68,30 +68,16 @@ message PoolParams {
 }
 ```
 
-### QuoteTicker
-
-`QuoteTicker` defines the ticker of the currency for the market cap to be calculated. The default value is `usd`.
-
-### BaseLptMintFee
-
-`BaseLptMintFee` defines fee ratio in parcentage for the minting DLP token by depositing some token.   
+- `QuoteTicker` defines the ticker of the currency for the market cap to be calculated. The default value is `usd`.
+- `BaseLptMintFee` defines fee ratio in parcentage for the minting DLP token by depositing some token.   
 The default value is `0.001`.
-
-### BaseLptRedeemFee
-
-`BaseLptRedeemFee` defines fee ratio in parcentage for the redeeming DLP token by burning some token.   
+- `BaseLptRedeemFee` defines fee ratio in parcentage for the redeeming DLP token by burning some token.   
 The default value is `0.001`.
-
-### BorrowingFeeRatePerHour
-
-### ReportLiquidationRewardRate
-
-### ReportLevyPeriodRewardRate
-
-### AcceptedAssets
-
-`AcceptedAssets` defines the tokens which can be deposited into a pool to get DLP.   
-The tokens in `AcceptedAssets` have to have `DenomMetadata` in bank module in this current implementation (could be changed).
+- `BorrowingFeeRatePerHour` defines fee ratio for the borrowing token from the pool to the traders.
+- `ReportLiquidationRewardRate` defines reward ratio for the reporting the liquidation of the position for a reporter.
+- `ReportLevyPeriodRewardRate` defines reward ratio for the reporting the levy period for a reporter.
+- `AcceptedAssets` defines the tokens which can be deposited into a pool to get DLP.   
+  The tokens in `AcceptedAssets` have to have `DenomMetadata` in bank module in this current implementation (could be changed).
 
 ## PerpetualFutures
 
@@ -118,21 +104,10 @@ message PerpetualFuturesParams {
 }
 ```
 
-### CommissionRate
-
-The default value is `0.001`.
-
-### MarginMaintenanceRate
-
-The default value is `0.5`.
-
-### ImaginaryFundingRateProportionalCoefficient
-
-The default value is `0.0005`.
-
-### Markets
-
-The `Markets` defines the available trading pair on the perpetual futures market.
+- `CommissionRate` is the fee for trading. It's taken when to close a position. The default value is `0.001`.
+- `MarginMaintenanceRate` is used for the determination of the liquidation condition. The default value is `0.5`.
+- `ImaginaryFundingRateProportionalCoefficient` is the fee ratio for the imaginary funding. The default value is `0.0005`.
+- `Markets` defines the available trading pair on the perpetual futures market.
 
 ## PerpetualOptioins
 

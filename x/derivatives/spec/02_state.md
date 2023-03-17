@@ -11,13 +11,13 @@ message GenesisState {
 }
 ```
 
-`GenesisState` is the data structure of the genesis state of the x/derivatives module. It contains the following fields: `params`, `positions`, `pool_market_cap` and `perpetual_futures_net_position_of_market`.
+`GenesisState` is the data structure of the genesis state of the derivatives module. It contains the following fields: `params`, `positions`, `pool_market_cap` and `perpetual_futures_net_position_of_market`.
 
-These fields are made to be able to restart the network from aribitrary genesis state.
+These fields are made to be able to start the network from aribitrary genesis state.
 
 ### Params
 
-Go to 05_params page.
+Go to [05_params](https://github.com/UnUniFi/chain/blob/newDevelop/proto/derivatives/params.proto) page.
 
 ## Position
 
