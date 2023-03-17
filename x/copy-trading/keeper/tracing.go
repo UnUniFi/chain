@@ -85,6 +85,31 @@ func (k Keeper) GenerateTracedPositionOpenMsg(ctx sdk.Context, tracing types.Tra
 	tracerAddress := sdk.MustAccAddressFromBech32(tracing.Address)
 	balance := k.bankKeeper.SpendableCoins(ctx, tracerAddress)
 
+	unpackedPositionInstance, _ := derivativesTypes.UnpackPositionInstance(position.PositionInstance)
+
+	switch positionInstance := unpackedPositionInstance.(type) {
+	case *derivativesTypes.PerpetualFuturesPositionInstance:
+		{
+			tracedPositionSize := tracing.SizeCoefficient.Mul(positionInstance.Size_)
+			tracedPositionLeverage := tracing.LeverageCoefficient.Mul(sdk.NewDec(int64(positionInstance.Leverage))).TruncateInt().Int64()
+			tracedMargin := position.RemainingMargin // TODO
+
+			tracedPositionInstance := derivativesTypes.PerpetualFuturesPositionInstance{
+				PositionType: positionInstance.PositionType,
+				Size_:        tracedPositionSize,
+				Leverage:     uint32(tracedPositionLeverage),
+			}
+
+			tracedMsg := derivativesTypes.NewMsgOpenPosition(sdk.AccAddress(tracing.Address), tracedMargin, position.Market, tracedPositionInstance)
+
+			return tracedMsg
+		}
+	case *derivativesTypes.PerpetualOptionsPositionInstance:
+		{
+			panic("not implemented")
+		}
+	}
+
 	// TODO:
 	// traced_position_size = tracing.SizeCoefficient * position_size
 	// traced_position_leverage = tracing.LeverageCoefficient * position_leverage
