@@ -1,10 +1,19 @@
 package keeper_test
 
 import (
+	"time"
+
 	"github.com/UnUniFi/chain/testutil/nullify"
+	epochtypes "github.com/UnUniFi/chain/x/epochs/types"
+	recordstypes "github.com/UnUniFi/chain/x/records/types"
+	stakeibctypes "github.com/UnUniFi/chain/x/stakeibc/types"
 	"github.com/UnUniFi/chain/x/yield-aggregator/keeper"
 	"github.com/UnUniFi/chain/x/yield-aggregator/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	transfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
+	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
 func createNStrategy(keeper *keeper.Keeper, ctx sdk.Context, denom string, n int) []types.Strategy {
@@ -63,7 +72,216 @@ func (suite *KeeperTestSuite) TestStrategyCount() {
 	suite.Require().Equal(count, keeper.GetStrategyCount(ctx, vaultDenom))
 }
 
-// TODO: add test for StakeToStrategy
-// TODO: add test for UnstakeFromStrategy
+// stake into strategy
+func (suite *KeeperTestSuite) TestStakeToStrategy() {
+	now := time.Now()
+
+	suite.SetupTest()
+	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	// set epoch tracker for env
+	suite.app.StakeibcKeeper.SetEpochTracker(suite.ctx, stakeibctypes.EpochTracker{
+		EpochIdentifier:    epochtypes.BASE_EPOCH,
+		EpochNumber:        1,
+		NextEpochStartTime: uint64(now.Unix()),
+		Duration:           43200,
+	})
+
+	atomHostDenom := "uatom"
+	prefixedDenom := transfertypes.GetPrefixedDenom("transfer", "channel-0", atomHostDenom)
+	atomIbcDenom := transfertypes.ParseDenomTrace(prefixedDenom).IBCDenom()
+
+	// set deposit record for env
+	suite.app.RecordsKeeper.SetDepositRecord(suite.ctx, recordstypes.DepositRecord{
+		Id:                 1,
+		Amount:             100,
+		Denom:              atomIbcDenom,
+		HostZoneId:         "hub-1",
+		Status:             recordstypes.DepositRecord_STAKE,
+		DepositEpochNumber: 1,
+		Source:             recordstypes.DepositRecord_STRIDE,
+	})
+	// set host zone for env
+	zone := stakeibctypes.HostZone{
+		ChainId:               "hub-1",
+		ConnectionId:          "connection-0",
+		Bech32Prefix:          "cosmos",
+		TransferChannelId:     "channel-0",
+		Validators:            []*stakeibctypes.Validator{},
+		BlacklistedValidators: []*stakeibctypes.Validator{},
+		WithdrawalAccount:     nil,
+		FeeAccount:            nil,
+		DelegationAccount:     nil,
+		RedemptionAccount:     nil,
+		IBCDenom:              atomIbcDenom,
+		HostDenom:             atomHostDenom,
+		RedemptionRate:        sdk.NewDec(1),
+		Address:               addr1.String(),
+	}
+	suite.app.StakeibcKeeper.SetHostZone(suite.ctx, zone)
+
+	strategy := types.Strategy{
+		Id:              1,
+		Name:            "AtomLiquidStaking",
+		ContractAddress: "x/ibc-staking",
+		Denom:           atomIbcDenom,
+	}
+
+	vault := types.Vault{
+		Id:                     1,
+		Denom:                  atomIbcDenom,
+		Owner:                  addr1.String(),
+		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
+		WithdrawCommissionRate: sdk.ZeroDec(),
+		WithdrawReserveRate:    sdk.ZeroDec(),
+		StrategyWeights: []types.StrategyWeight{
+			{StrategyId: 1, Weight: sdk.OneDec()},
+		},
+	}
+
+	// mint coins to be spent on liquid staking
+	vaultModName := types.GetVaultModuleAccountName(vault.Id)
+	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+	coins := sdk.Coins{sdk.NewInt64Coin(atomIbcDenom, 1000000)}
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, vaultModAddr, coins)
+	suite.Require().NoError(err)
+
+	// stake to strategy - automatically calls liquid staking
+	err = suite.app.YieldaggregatorKeeper.StakeToStrategy(suite.ctx, vault, strategy, sdk.NewInt(1000_000))
+	suite.Require().NoError(err)
+
+	// check the changes
+	record, found := suite.app.RecordsKeeper.GetDepositRecord(suite.ctx, 1)
+	suite.Require().True(found)
+	suite.Require().Equal(record.Amount, int64(1000_100))
+
+	balance := suite.app.BankKeeper.GetAllBalances(suite.ctx, vaultModAddr)
+	suite.Require().Equal(balance.String(), "1000000stuatom")
+
+	bech32ZoneAddress, err := sdk.AccAddressFromBech32(zone.Address)
+	suite.Require().NoError(err)
+	balance = suite.app.BankKeeper.GetAllBalances(suite.ctx, bech32ZoneAddress)
+	suite.Require().Equal(balance.String(), coins.String())
+}
+
+// unstake from strategy
+func (suite *KeeperTestSuite) TestUnstakeFromStrategy() {
+	now := time.Now()
+
+	suite.SetupTest()
+	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	atomHostDenom := "uatom"
+	prefixedDenom := transfertypes.GetPrefixedDenom("transfer", "channel-0", atomHostDenom)
+	atomIbcDenom := transfertypes.ParseDenomTrace(prefixedDenom).IBCDenom()
+
+	// set host zone for env
+	zone := stakeibctypes.HostZone{
+		ChainId:               "hub-1",
+		ConnectionId:          "connection-0",
+		Bech32Prefix:          "cosmos",
+		TransferChannelId:     "channel-0",
+		Validators:            []*stakeibctypes.Validator{},
+		BlacklistedValidators: []*stakeibctypes.Validator{},
+		WithdrawalAccount:     nil,
+		FeeAccount:            nil,
+		DelegationAccount:     nil,
+		RedemptionAccount:     nil,
+		IBCDenom:              atomIbcDenom,
+		HostDenom:             atomHostDenom,
+		RedemptionRate:        sdk.NewDec(1),
+		Address:               addr1.String(),
+		StakedBal:             1000_000,
+	}
+	suite.app.StakeibcKeeper.SetHostZone(suite.ctx, zone)
+
+	// set epoch tracker for env
+	suite.app.StakeibcKeeper.SetEpochTracker(suite.ctx, stakeibctypes.EpochTracker{
+		EpochIdentifier:    epochtypes.BASE_EPOCH,
+		EpochNumber:        1,
+		NextEpochStartTime: uint64(now.Unix()),
+		Duration:           43200,
+	})
+	suite.app.StakeibcKeeper.SetEpochTracker(suite.ctx, stakeibctypes.EpochTracker{
+		EpochIdentifier:    "day",
+		EpochNumber:        1,
+		NextEpochStartTime: uint64(now.Unix()),
+		Duration:           86400,
+	})
+
+	suite.app.RecordsKeeper.SetEpochUnbondingRecord(suite.ctx, recordstypes.EpochUnbondingRecord{
+		EpochNumber: 1,
+		HostZoneUnbondings: []*recordstypes.HostZoneUnbonding{
+			{
+				StTokenAmount:         0,
+				NativeTokenAmount:     0,
+				Denom:                 zone.HostDenom,
+				HostZoneId:            zone.ChainId,
+				UnbondingTime:         0,
+				Status:                recordstypes.HostZoneUnbonding_BONDED,
+				UserRedemptionRecords: []string{},
+			},
+		},
+	})
+
+	// set deposit record for env
+	suite.app.RecordsKeeper.SetDepositRecord(suite.ctx, recordstypes.DepositRecord{
+		Id:                 1,
+		Amount:             100,
+		Denom:              atomIbcDenom,
+		HostZoneId:         "hub-1",
+		Status:             recordstypes.DepositRecord_STAKE,
+		DepositEpochNumber: 1,
+		Source:             recordstypes.DepositRecord_STRIDE,
+	})
+
+	strategy := types.Strategy{
+		Id:              1,
+		Name:            "AtomLiquidStaking",
+		ContractAddress: "x/ibc-staking",
+		Denom:           atomIbcDenom,
+	}
+
+	vault := types.Vault{
+		Id:                     1,
+		Denom:                  atomIbcDenom,
+		Owner:                  addr1.String(),
+		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
+		WithdrawCommissionRate: sdk.ZeroDec(),
+		WithdrawReserveRate:    sdk.ZeroDec(),
+		StrategyWeights: []types.StrategyWeight{
+			{StrategyId: 1, Weight: sdk.OneDec()},
+		},
+	}
+
+	// mint coins to be spent on liquid staking
+	vaultModName := types.GetVaultModuleAccountName(vault.Id)
+	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+	coins := sdk.Coins{sdk.NewInt64Coin(atomIbcDenom, 1000000)}
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, vaultModAddr, coins)
+	suite.Require().NoError(err)
+
+	// stake to strategy - calls liquid staking
+	err = suite.app.YieldaggregatorKeeper.StakeToStrategy(suite.ctx, vault, strategy, sdk.NewInt(1000_000))
+	suite.Require().NoError(err)
+
+	// stake to strategy - calls redeem stake
+	err = suite.app.YieldaggregatorKeeper.UnstakeFromStrategy(suite.ctx, vault, strategy, sdk.NewInt(1000_000))
+	suite.Require().NoError(err)
+
+	// check the changes
+	unbondingRecord, found := suite.app.RecordsKeeper.GetEpochUnbondingRecord(suite.ctx, 1)
+	suite.Require().True(found)
+	suite.Require().Len(unbondingRecord.HostZoneUnbondings, 1)
+	suite.Require().Equal(unbondingRecord.HostZoneUnbondings[0].StTokenAmount, uint64(1000_000))
+	suite.Require().Equal(unbondingRecord.HostZoneUnbondings[0].Status, recordstypes.HostZoneUnbonding_BONDED)
+	suite.Require().Equal(unbondingRecord.HostZoneUnbondings[0].NativeTokenAmount, uint64(1000_000))
+	suite.Require().Len(unbondingRecord.HostZoneUnbondings[0].UserRedemptionRecords, 1)
+}
+
 // TODO: add test for GetAmountFromStrategy
 // TODO: add test for GetUnbondingAmountFromStrategy
