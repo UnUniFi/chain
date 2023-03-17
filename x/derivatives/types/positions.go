@@ -15,14 +15,44 @@ type PositionInstance interface {
 
 type Positions []Position
 
-func (m Position) Validate() error {
-	if m.RemainingMargin.Amount.IsZero() {
-		return fmt.Errorf("remaining margin cannot be zero")
+func (m Position) IsValid() error {
+	if !m.IsValidMarginAsset() {
+		return fmt.Errorf("margin asset is not valid")
 	}
-	if m.RemainingMargin.Amount.IsNegative() {
-		return fmt.Errorf("remaining margin cannot be negative")
+
+	// check the least requirement for the margin
+	if !m.RemainingMargin.Amount.IsPositive() {
+		return fmt.Errorf("remaining margin must be positive")
 	}
+
+	pfPosition, err := NewPerpetualFuturesPositionFromPosition(m)
+	if err != nil {
+		return err
+	}
+
+	if !pfPosition.IsValidPositionSize() {
+		return fmt.Errorf("position size is not valid")
+	}
+
 	return nil
+}
+
+func (m Position) IsValidMarginAsset() bool {
+	if m.Market.BaseDenom != m.RemainingMargin.Denom && m.Market.QuoteDenom != m.RemainingMargin.Denom {
+		return false
+	}
+
+	return true
+}
+
+func (m PerpetualFuturesPosition) IsValidPositionSize() bool {
+	// check position size validity
+	marginMaintenanceRate := m.MarginMaintenanceRate(m.OpenedBaseRate, m.OpenedQuoteRate)
+	if marginMaintenanceRate.LT(sdk.OneDec()) {
+		return false
+	}
+
+	return true
 }
 
 func UnpackPositionInstance(positionAny types.Any) (PositionInstance, error) {
