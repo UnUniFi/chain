@@ -38,21 +38,13 @@ func (m Position) IsValid() error {
 }
 
 func (m Position) IsValidMarginAsset() bool {
-	if m.Market.BaseDenom != m.RemainingMargin.Denom && m.Market.QuoteDenom != m.RemainingMargin.Denom {
-		return false
-	}
-
-	return true
+	return !(m.Market.BaseDenom != m.RemainingMargin.Denom && m.Market.QuoteDenom != m.RemainingMargin.Denom)
 }
 
 func (m PerpetualFuturesPosition) IsValidPositionSize() bool {
 	// check position size validity
 	marginMaintenanceRate := m.MarginMaintenanceRate(m.OpenedBaseRate, m.OpenedQuoteRate)
-	if marginMaintenanceRate.LT(sdk.OneDec()) {
-		return false
-	}
-
-	return true
+	return !marginMaintenanceRate.LT(sdk.OneDec())
 }
 
 func UnpackPositionInstance(positionAny types.Any) (PositionInstance, error) {

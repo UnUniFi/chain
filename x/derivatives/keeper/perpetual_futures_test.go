@@ -1,11 +1,6 @@
 package keeper_test
 
 import (
-	"time"
-
-	ununifitypes "github.com/UnUniFi/chain/types"
-	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
-
 	"github.com/tendermint/tendermint/crypto/ed25519"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
@@ -14,42 +9,73 @@ import (
 )
 
 func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
-	positionId := "0"
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-
-	margin := sdk.NewCoin("uatom", sdk.NewInt(50))
 
 	market := types.Market{
 		BaseDenom:  "uatom",
 		QuoteDenom: "uusdc",
 	}
 
-	netPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(market, sdk.ZeroDec())
-	suite.keeper.SetPerpetualFuturesNetPositionOfMarket(suite.ctx, netPositionOfMarket)
-	_, err := suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:uusdc", sdk.NewDec(13), suite.ctx.BlockTime().Add(time.Hour*3))
-	suite.Require().NoError(err)
-	params := suite.app.PricefeedKeeper.GetParams(suite.ctx)
-	params.Markets = []pricefeedtypes.Market{
-		{MarketId: "uatom:uusdc", BaseAsset: "uatom", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+	positions := []struct {
+		positionId string
+		margin     sdk.Coin
+		instance   types.PerpetualFuturesPositionInstance
+	}{
+		{
+			positionId: "0",
+			margin:     sdk.NewCoin("uatom", sdk.NewInt(500000)),
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.NewDecWithPrec(2, 0),
+				Leverage:     5,
+			},
+		},
+		{
+			positionId: "1",
+			margin:     sdk.NewCoin("uatom", sdk.NewInt(500000)),
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_SHORT,
+				Size_:        sdk.NewDecWithPrec(1, 0),
+				Leverage:     5,
+			},
+		},
+		{
+			positionId: "2",
+			margin:     sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.NewDecWithPrec(2, 0),
+				Leverage:     20,
+			},
+		},
+		{
+			positionId: "3",
+			margin:     sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_SHORT,
+				Size_:        sdk.NewDecWithPrec(1, 0),
+				Leverage:     10,
+			},
+		},
 	}
-	suite.app.PricefeedKeeper.SetParams(suite.ctx, params)
-	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:uusdc")
-	suite.Require().NoError(err)
 
-	positionInst := types.PerpetualFuturesPositionInstance{
-		PositionType: types.PositionType_LONG,
-		Size_:        sdk.NewDecWithPrec(100, 0),
-		Leverage:     5,
+	expectNetPosition := sdk.ZeroDec()
+	for _, testPosition := range positions {
+		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.Bytes(), testPosition.margin, market, testPosition.instance)
+		suite.Require().NoError(err)
+		suite.Require().NotNil(position)
+
+		// Check if the position was added
+		netPosition := suite.keeper.GetPositionSizeOfNetPositionOfMarket(suite.ctx, market)
+
+		if testPosition.instance.PositionType == types.PositionType_LONG {
+			expectNetPosition = expectNetPosition.Add(testPosition.instance.Size_)
+		} else {
+			expectNetPosition = expectNetPosition.Sub(testPosition.instance.Size_)
+		}
+		suite.Require().Equal(expectNetPosition, netPosition)
 	}
 
-	position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, positionId, owner.Bytes(), margin, market, positionInst)
-	suite.Require().NoError(err)
-	suite.Require().NotNil(position)
-
-	// Check if the position was added
-	netPosition := suite.keeper.GetPositionSizeOfNetPositionOfMarket(suite.ctx, market)
-
-	suite.Require().Equal(netPosition, sdk.NewDecWithPrec(100, 0))
 }
 
 func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
