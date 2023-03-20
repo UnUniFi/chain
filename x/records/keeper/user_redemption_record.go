@@ -31,7 +31,7 @@ func (k Keeper) RemoveUserRedemptionRecord(ctx sdk.Context, id string) {
 	store.Delete([]byte(id))
 }
 
-func (k Keeper) GetUserRedemptionRecordBySenderAndDenom(ctx sdk.Context, sender sdk.AccAddress, denom string) sdk.Int {
+func (k Keeper) GetUserRedemptionRecordBySenderAndHostZone(ctx sdk.Context, sender sdk.AccAddress, zoneId string) sdk.Int {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.UserRedemptionRecordKey))
 	iterator := sdk.KVStoreReversePrefixIterator(store, []byte{})
 
@@ -42,7 +42,7 @@ func (k Keeper) GetUserRedemptionRecordBySenderAndDenom(ctx sdk.Context, sender 
 		k.Cdc.MustUnmarshal(iterator.Value(), &val)
 
 		if val.Sender == sender.String() &&
-			val.Denom == denom {
+			val.HostZoneId == zoneId {
 			return sdk.NewInt(int64(val.Amount))
 		}
 	}

@@ -29,5 +29,5 @@ type BankKeeper interface {
 }
 
 type RecordsKeeper interface {
-	GetUserRedemptionRecordBySenderAndDenom(ctx sdk.Context, sender sdk.AccAddress, denom string) sdk.Int
+	GetUserRedemptionRecordBySenderAndHostZone(ctx sdk.Context, sender sdk.AccAddress, zoneId string) sdk.Int
 }

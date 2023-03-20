@@ -189,7 +189,11 @@ func (k Keeper) GetUnbondingAmountFromStrategy(ctx sdk.Context, vault types.Vaul
 		{
 			vaultModName := types.GetVaultModuleAccountName(vault.Id)
 			vaultModAddr := authtypes.NewModuleAddress(vaultModName)
-			unbondingAmount := k.recordsKeeper.GetUserRedemptionRecordBySenderAndDenom(ctx, vaultModAddr, vault.Denom)
+			zone, err := k.stakeibcKeeper.GetHostZoneFromIBCDenom(ctx, vault.Denom)
+			if err != nil {
+				return sdk.Coin{}, err
+			}
+			unbondingAmount := k.recordsKeeper.GetUserRedemptionRecordBySenderAndHostZone(ctx, vaultModAddr, zone.ChainId)
 			return sdk.NewCoin(vault.Denom, unbondingAmount), nil
 		}
 	}
