@@ -118,11 +118,11 @@ func (k Keeper) DepositAndMintLPToken(ctx sdk.Context, address sdk.AccAddress, v
 	}
 
 	// mint and trasnfer lp token
-	err = k.bankKeeper.MintCoins(ctx, vaultModName, sdk.NewCoins(lp))
+	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(lp))
 	if err != nil {
 		return err
 	}
-	err = k.bankKeeper.SendCoins(ctx, vaultModAddr, address, sdk.NewCoins(lp))
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, address, sdk.NewCoins(lp))
 	if err != nil {
 		return err
 	}
@@ -160,28 +160,17 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
 	lpDenom := types.GetLPTokenDenom(vaultId)
 	lp := sdk.NewCoin(lpDenom, lpAmount)
-	err := k.bankKeeper.SendCoins(ctx, address, vaultModAddr, sdk.NewCoins(lp))
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.NewCoins(lp))
 	if err != nil {
 		return err
 	}
-	err = k.bankKeeper.BurnCoins(ctx, vaultModName, sdk.NewCoins(lp))
+	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(lp))
 	if err != nil {
 		return err
 	}
 
 	// Unstake funds from Strategy
 	amountToUnbond := principal.Amount
-	for _, strategyWeight := range vault.StrategyWeights {
-		strategy, found := k.GetStrategy(ctx, vault.Denom, strategyWeight.StrategyId)
-		if !found {
-			continue
-		}
-		strategyAmount := amountToUnbond.ToDec().Mul(strategyWeight.Weight).RoundInt()
-		err = k.UnstakeFromStrategy(ctx, vault, strategy, strategyAmount)
-		if err != nil {
-			return err
-		}
-	}
 
 	// implement fees on withdrawal
 	amountInVault := k.VaultWithdrawalAmount(ctx, vault)
@@ -195,8 +184,9 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 	// reserve_maintenance_rate = max(0, withdraw_reserve - amount_to_withdraw) / (withdraw_reserve + tokens_in_unbonding_period)
 
 	e := osmomath.NewDecWithPrec(2718281, 6) // 2.718281
-	eInv := osmomath.OneDec().Quo(e)         // e^-1
-	withdrawFeeRate := eInv.Power(osmomath.BigDecFromSDKDec(reserveMaintenanceRate).MulInt64(10)).SDKDec()
+	withdrawFeeRate := osmomath.OneDec().
+		Quo(e.Power(osmomath.BigDecFromSDKDec(reserveMaintenanceRate).MulInt64(10))).
+		SDKDec()
 
 	// withdraw_reserve + tokens_in_unbonding_period + bonding_amount = total_amount
 	// reserve_maintenance_rate = max(0, withdraw_reserve - amount_to_withdraw) / (withdraw_reserve + tokens_in_unbonding_period)

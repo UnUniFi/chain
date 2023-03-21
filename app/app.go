@@ -271,7 +271,7 @@ var (
 		ununifidisttypes.ModuleName:     {authtypes.Minter},
 		wasm.ModuleName:                 {authtypes.Burner},
 		yieldfarmtypes.ModuleName:       {authtypes.Minter},
-		yieldaggregatortypes.ModuleName: nil,
+		yieldaggregatortypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -755,8 +755,8 @@ func NewApp(
 	epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
 	app.EpochsKeeper = *epochsKeeper.SetHooks(
 		epochsmoduletypes.NewMultiEpochHooks(
-			app.StakeibcKeeper.Hooks(),
 			app.YieldaggregatorKeeper.Hooks(),
+			app.StakeibcKeeper.Hooks(),
 		),
 	)
 	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
@@ -765,7 +765,7 @@ func NewApp(
 	govRouter := govtypes.NewRouter()
 	govRouter.
 		AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
-		// AddRoute(yieldaggregatortypes.RouterKey, yieldaggregator.NewProposalHandler(app.YieldaggregatorKeeper)).
+		AddRoute(yieldaggregatortypes.RouterKey, yieldaggregator.NewYieldAggregatorProposalHandler(app.YieldaggregatorKeeper)).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
 		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).

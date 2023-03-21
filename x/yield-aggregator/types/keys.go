@@ -27,9 +27,9 @@ const (
 )
 
 func KeyPrefixStrategy(vaultDenom string) []byte {
-	return KeyPrefix(fmt.Sprintf("%s%s/%s", VaultKey, vaultDenom, StrategyKey))
+	return KeyPrefix(fmt.Sprintf("%s/%s", StrategyKey, vaultDenom))
 }
 
 func KeyPrefixStrategyCount(vaultDenom string) []byte {
-	return KeyPrefix(fmt.Sprintf("%s%s/%s", VaultKey, vaultDenom, StrategyCountKey))
+	return KeyPrefix(fmt.Sprintf("%s/%s", StrategyCountKey, vaultDenom))
 }

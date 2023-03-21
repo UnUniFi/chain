@@ -3,20 +3,20 @@ package yieldfarm
 import (
 	"math/rand"
 
+	"github.com/UnUniFi/chain/x/yieldfarm/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-
-	yieldaggregatorsimulation "github.com/UnUniFi/chain/x/yieldaggregatorv1/simulation"
-	"github.com/UnUniFi/chain/x/yieldaggregatorv1/types"
+	// yieldaggregatorsimulation "github.com/UnUniFi/chain/x/yieldaggregatorv1/simulation"
+	// "github.com/UnUniFi/chain/x/yieldaggregatorv1/types"
 )
 
 // avoid unused import issue
 var (
-	_ = yieldaggregatorsimulation.FindAccount
+	// _ = yieldaggregatorsimulation.FindAccount
 	_ = simappparams.StakePerAccount
 	_ = simulation.MsgEntryKind
 	_ = baseapp.Paramspace

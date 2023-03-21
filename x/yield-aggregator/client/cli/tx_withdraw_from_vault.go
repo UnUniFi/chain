@@ -18,7 +18,10 @@ func CmdTxWithdrawFromVault() *cobra.Command {
 		Short: "withdraw from the vault",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
 
 			id, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
