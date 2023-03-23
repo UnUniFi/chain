@@ -186,12 +186,13 @@ func (suite *KeeperTestSuite) TestBorrow() {
 		nftIdentifier := types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId}
 		if tc.listBefore {
 			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
-				Sender:               ununifitypes.StringAccAddress(tc.nftOwner),
-				NftId:                nftIdentifier,
-				ListingType:          types.ListingType_DIRECT_ASSET_BORROW,
-				BidToken:             "uguu",
-				MinimumDepositRate:   sdk.MustNewDecFromStr("0.01"),
-				AutomaticRefinancing: false,
+				Sender:                   ununifitypes.StringAccAddress(tc.nftOwner),
+				NftId:                    nftIdentifier,
+				ListingType:              types.ListingType_DIRECT_ASSET_BORROW,
+				BidToken:                 "uguu",
+				MinimumDepositRate:       sdk.MustNewDecFromStr("0.01"),
+				AutomaticRefinancing:     false,
+				MinimumBiddingPeriodHour: 1,
 			})
 			suite.Require().NoError(err)
 		}
@@ -211,7 +212,7 @@ func (suite *KeeperTestSuite) TestBorrow() {
 				Sender:             ununifitypes.StringAccAddress(bidder),
 				NftId:              nftIdentifier,
 				BidAmount:          bidAmount,
-				BiddingPeriod:      suite.ctx.BlockTime().AddDate(0, 0, 1),
+				BiddingPeriod:      time.Now().Add(time.Hour * 24),
 				DepositLendingRate: sdk.MustNewDecFromStr("0.05"),
 				AutomaticPayment:   false,
 				DepositAmount:      depositAmount,
@@ -386,7 +387,7 @@ func (suite *KeeperTestSuite) TestRepay() {
 				Sender:             ununifitypes.StringAccAddress(bidder),
 				NftId:              nftIdentifier,
 				BidAmount:          bidAmount,
-				BiddingPeriod:      suite.ctx.BlockTime().AddDate(0, 0, 1),
+				BiddingPeriod:      time.Now().Add(time.Hour * 24),
 				DepositLendingRate: sdk.MustNewDecFromStr("0.05"),
 				AutomaticPayment:   false,
 				DepositAmount:      depositAmount,
@@ -532,7 +533,7 @@ func (suite *KeeperTestSuite) TestLoanManagement() {
 				Sender:             ununifitypes.StringAccAddress(bidder),
 				NftId:              nftIdentifier,
 				BidAmount:          bidAmount,
-				BiddingPeriod:      suite.ctx.BlockTime().AddDate(0, 0, 1),
+				BiddingPeriod:      time.Now().Add(time.Hour * 24),
 				DepositLendingRate: sdk.MustNewDecFromStr("0.05"),
 				AutomaticPayment:   true,
 				DepositAmount:      depositAmount,
@@ -575,7 +576,7 @@ func (suite *KeeperTestSuite) PlaceAndBorrow(bidAmount sdk.Coin, depositAmount s
 		Sender:             ununifitypes.StringAccAddress(bidder),
 		NftId:              nftId,
 		BidAmount:          bidAmount,
-		BiddingPeriod:      suite.ctx.BlockTime().AddDate(0, 0, 1),
+		BiddingPeriod:      time.Now().Add(time.Hour * 24),
 		DepositLendingRate: sdk.MustNewDecFromStr("0.05"),
 		AutomaticPayment:   true,
 		DepositAmount:      depositAmount,

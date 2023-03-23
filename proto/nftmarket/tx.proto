@@ -51,6 +51,7 @@ message MsgListNft {
     (gogoproto.nullable) = false
   ];
   bool   automatic_refinancing = 6;
+  uint64 minimum_bidding_period_hour = 7;
 }
 message MsgListNftResponse {}
 

@@ -115,7 +115,12 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 				return err
 			}
 
-			msg := types.NewMsgListNft(clientCtx.GetFromAddress(), nftIde, bidToken, minDepositRateDec, automaticRef)
+			minBiddingPeriodHour, err := cmd.Flags().GetUint64(FlagMinimumBiddingPeriodHours)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgListNft(clientCtx.GetFromAddress(), nftIde, bidToken, minDepositRateDec, automaticRef, minBiddingPeriodHour)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -125,6 +130,7 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 
 	cmd.Flags().String(FlagBidToken, "uguu", "bid token")
 	cmd.Flags().String(FlagMinimumDepositRate, "0.1", "min minimum deposit rate")
+	cmd.Flags().Uint64(FlagMinimumBiddingPeriodHours, 1, "min minimum deposit rate")
 	cmd.Flags().BoolP(FlagAutomaticRefinancing, "r", false, "automatic refinancing")
 	flags.AddTxFlagsToCmd(cmd)
 

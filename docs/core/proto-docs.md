@@ -3974,6 +3974,7 @@ Query defines the gRPC querier service.
 | `successful_bid_end_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `auto_relisted_count` | [uint64](#uint64) |  |  |
 | `collected_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `minimum_bidding_period_hour` | [uint64](#uint64) |  |  |
 
 
 
@@ -4672,6 +4673,7 @@ Query defines the gRPC querier service.
 | `bid_token` | [string](#string) |  |  |
 | `minimum_deposit_rate` | [string](#string) |  | 1% = 0.01 |
 | `automatic_refinancing` | [bool](#bool) |  |  |
+| `minimum_bidding_period_hour` | [uint64](#uint64) |  |  |
 
 
 
