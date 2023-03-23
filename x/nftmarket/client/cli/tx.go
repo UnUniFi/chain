@@ -194,8 +194,8 @@ $ %s tx %s placebid 1 1 100uguu --automatic-payment --from myKeyName --chain-id 
 			}
 			now := time.Now()
 			// todo fix me
-			bid_end_at := now.Add(time.Hour * time.Duration(bidding_duration_hour))
-			// bid_end_at := now.Add(time.Second * time.Duration(bidding_duration_hour))
+			// bid_end_at := now.Add(time.Hour * time.Duration(bidding_duration_hour))
+			bid_end_at := now.Add(time.Second * time.Duration(bidding_duration_hour))
 
 			msg := types.NewMsgPlaceBid(clientCtx.GetFromAddress(), nftIde, bidCoin, depositCoin, depositInterestRate, bid_end_at, automaticPayment)
 
