@@ -202,16 +202,16 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 	// todo: make test
 	owner := k.nftKeeper.GetOwner(ctx, msg.NftId.ClassId, msg.NftId.NftId)
 	listing := types.NftListing{
-		NftId:                    msg.NftId,
-		Owner:                    owner.String(),
-		ListingType:              msg.ListingType,
-		State:                    types.ListingState_LISTING,
-		BidToken:                 msg.BidToken,
-		MinimumDepositRate:       msg.MinimumDepositRate,
-		AutomaticRefinancing:     msg.AutomaticRefinancing,
-		StartedAt:                ctx.BlockTime(),
-		CollectedAmount:          sdk.NewCoin(msg.BidToken, sdk.ZeroInt()),
-		MinimumBiddingPeriodHour: msg.MinimumBiddingPeriodHour,
+		NftId:                msg.NftId,
+		Owner:                owner.String(),
+		ListingType:          msg.ListingType,
+		State:                types.ListingState_LISTING,
+		BidToken:             msg.BidToken,
+		MinimumDepositRate:   msg.MinimumDepositRate,
+		AutomaticRefinancing: msg.AutomaticRefinancing,
+		StartedAt:            ctx.BlockTime(),
+		CollectedAmount:      sdk.NewCoin(msg.BidToken, sdk.ZeroInt()),
+		MinimumBiddingPeriod: msg.MinimumBiddingPeriod,
 	}
 	k.SaveNftListing(ctx, listing)
 

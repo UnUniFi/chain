@@ -207,7 +207,7 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 	}
 
 	// todo add test case
-	minimumBiddingPeriodHour := time.Now().Add(time.Hour * time.Duration(int64(listing.MinimumBiddingPeriodHour)))
+	minimumBiddingPeriodHour := time.Now().Add(listing.MinimumBiddingPeriod)
 	if msg.BiddingPeriod.Before(minimumBiddingPeriodHour) {
 		return types.ErrSmallBiddingPeriod
 	}

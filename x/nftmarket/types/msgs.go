@@ -46,15 +46,15 @@ var _ sdk.Msg = &MsgListNft{}
 
 // todo: Implementation fields
 // BidToken, MinBid, BidHook, ListingType
-func NewMsgListNft(sender sdk.AccAddress, nftId NftIdentifier, bidToken string, minimumDepositRate sdk.Dec, autoRefi bool, minBiddingPeriodHour uint64) MsgListNft {
+func NewMsgListNft(sender sdk.AccAddress, nftId NftIdentifier, bidToken string, minimumDepositRate sdk.Dec, autoRefi bool, minBiddingPeriod time.Duration) MsgListNft {
 	return MsgListNft{
-		Sender:                   sender.Bytes(),
-		NftId:                    nftId,
-		BidToken:                 bidToken,
-		MinimumDepositRate:       minimumDepositRate,
-		ListingType:              ListingType_DIRECT_ASSET_BORROW,
-		AutomaticRefinancing:     autoRefi,
-		MinimumBiddingPeriodHour: minBiddingPeriodHour,
+		Sender:               sender.Bytes(),
+		NftId:                nftId,
+		BidToken:             bidToken,
+		MinimumDepositRate:   minimumDepositRate,
+		ListingType:          ListingType_DIRECT_ASSET_BORROW,
+		AutomaticRefinancing: autoRefi,
+		MinimumBiddingPeriod: minBiddingPeriod,
 	}
 }
 

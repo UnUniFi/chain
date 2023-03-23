@@ -3,6 +3,7 @@ package ununifi.nftmarket;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
 
@@ -72,7 +73,10 @@ message NftListing {
   ];
   uint64 auto_relisted_count = 12;
   cosmos.base.v1beta1.Coin collected_amount = 13 [(gogoproto.nullable) = false];
-  uint64 minimum_bidding_period_hour = 14;
+  google.protobuf.Duration minimum_bidding_period = 14 [
+    (gogoproto.stdduration) = true,
+    (gogoproto.nullable) = false
+  ];
 }
 
 message borrowing {

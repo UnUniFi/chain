@@ -119,8 +119,10 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 			if err != nil {
 				return err
 			}
+			// convert uint64 to time.Duration
+			minBiddingPeriod := time.Duration(minBiddingPeriodHour) * time.Hour
 
-			msg := types.NewMsgListNft(clientCtx.GetFromAddress(), nftIde, bidToken, minDepositRateDec, automaticRef, minBiddingPeriodHour)
+			msg := types.NewMsgListNft(clientCtx.GetFromAddress(), nftIde, bidToken, minDepositRateDec, automaticRef, minBiddingPeriod)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -192,8 +194,8 @@ $ %s tx %s placebid 1 1 100uguu --automatic-payment --from myKeyName --chain-id 
 			}
 			now := time.Now()
 			// todo fix me
-			// bid_end_at := now.Add(time.Hour * time.Duration(bidding_duration_hour))
-			bid_end_at := now.Add(time.Second * time.Duration(bidding_duration_hour))
+			bid_end_at := now.Add(time.Hour * time.Duration(bidding_duration_hour))
+			// bid_end_at := now.Add(time.Second * time.Duration(bidding_duration_hour))
 
 			msg := types.NewMsgPlaceBid(clientCtx.GetFromAddress(), nftIde, bidCoin, depositCoin, depositInterestRate, bid_end_at, automaticPayment)
 
