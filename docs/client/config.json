@@ -45,6 +45,14 @@
           "Params": "PricefeedParams"
         }
       }
+    },
+    {
+      "url": "./tmp-swagger-gen/yield-aggregator/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "YieldAggregatorParams"
+        }
+      }
     }
   ]
 }
