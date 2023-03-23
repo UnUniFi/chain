@@ -211,6 +211,8 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 		AutomaticRefinancing: msg.AutomaticRefinancing,
 		StartedAt:            ctx.BlockTime(),
 		CollectedAmount:      sdk.NewCoin(msg.BidToken, sdk.ZeroInt()),
+		// todo: add validation.
+		// we should to determine maximum bidding period.
 		MinimumBiddingPeriod: msg.MinimumBiddingPeriod,
 	}
 	k.SaveNftListing(ctx, listing)
