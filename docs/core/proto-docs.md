@@ -2005,7 +2005,6 @@ GenesisState defines the derivatives module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-| `fee` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
