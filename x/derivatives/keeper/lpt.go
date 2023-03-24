@@ -185,11 +185,21 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 
 	// TODO: integrate into ecosystem-incentive module
 	// temporarily, send mint fee to fee pool of the derivatives module
-	if err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, types.DerivativeFeeCollector, sdk.Coins{fee}); err != nil {
-		return err
+	if fee.IsPositive() {
+		if err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, types.DerivativeFeeCollector, sdk.Coins{fee}); err != nil {
+			return err
+		}
+	} else {
+		if fee.IsNegative() {
+			return fmt.Errorf("negative fee: %s", fee)
+		}
 	}
 
 	deposit, err := msg.Amount.SafeSub(fee)
+	if err != nil {
+		return err
+	}
+
 	mintingDLP, err := k.DetermineMintingLPTokenAmount(ctx, deposit)
 	if err != nil {
 		return err
