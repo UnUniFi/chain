@@ -19,9 +19,14 @@ WhitePaper: https://ununifi.io/assets/download/UnUniFi-Whitepaper.pdf
 Fees earned on the platform are directly added to the pool.　Therefore, DLP holders can benefit from them as a reward through the increasement of the DLP price.   
 
 There's dynamic change of the minting and redemption fee rate at this moment. There's the static rate which is defined in the protocol. And, the actual fee rate also consider the difference of asset proportion between target and actual proportion.  The static base fee rate can be modified through the governace voting.
+The potential range of those fee rate are below:
 
-One thing to be noted is that the Liquidity Pool will take the counterpart position
-of a trader’s order, so, if traders get profit, the pool and at the same time liquidity providers get loss.
+```text
+mintFeeRate is proportion to max(0, (actualAmountInPool[i] - targetAmount[i]) / targetAmount[i])
+redeemFeeRate is proportion to max(0, -(actualAmountInPool[i] - targetAmount[i]) / targetAmount[i])
+```
+
+One thing to be noted is that the Liquidity Pool will take the counterpart position of a trader’s order, so, if traders get profit, the pool and at the same time liquidity providers get loss.
 
 ## Perpetual Futures
 
