@@ -62,6 +62,7 @@ func (k Keeper) IsAssetValid(ctx sdk.Context, iasset types.PoolParams_Asset) boo
 	return false
 }
 
+// TODO: The name GetAssetBalance is weird. We need to change the name like "GetAssetAmountInPool"
 func (k Keeper) GetAssetBalance(ctx sdk.Context, denom string) sdk.Coin {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.AssetDepositKeyPrefix(denom))

@@ -23,11 +23,13 @@ func saveBlockTime(ctx sdk.Context, k keeper.Keeper) {
 }
 
 // BeginBlocker
+// In mainnet, BeginBlocker will have no function.
 func BeginBlocker(ctx sdk.Context, k keeper.Keeper) {
 	CheckPosition(ctx, k)
 }
 
 // todo: fixme this function is temporary treatment.
+// In mainnet, this function will be executed by off chain bots.
 func CheckPosition(ctx sdk.Context, k keeper.Keeper) {
 	positions := k.GetAllPositions(ctx)
 	params := k.GetParams(ctx)
@@ -57,6 +59,7 @@ func CheckPosition(ctx sdk.Context, k keeper.Keeper) {
 }
 
 // EndBlocker
+// In EndBlocker, the snapshot of pool market cap and block time are saved.
 func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 	setPoolMarketCapSnapshot(ctx, k)
 	saveBlockTime(ctx, k)
