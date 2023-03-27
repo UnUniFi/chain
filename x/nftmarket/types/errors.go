@@ -42,4 +42,6 @@ var (
 	ErrCannotCancelListingWithDebt       = sdkerrors.Register(ModuleName, 35, "cannot cancel listing with debt")
 	ErrInterestAmountTooLarge            = sdkerrors.Register(ModuleName, 36, "interest amount too large")
 	ErrInsufficientBalance               = sdkerrors.Register(ModuleName, 37, "insufficient balance")
+	ErrSmallBiddingPeriod                = sdkerrors.Register(ModuleName, 38, "bidding period is too short")
+	ErrNotExistsNft                      = sdkerrors.Register(ModuleName, 39, "not exists nft")
 )
