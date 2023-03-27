@@ -70,7 +70,7 @@ func MustUnpackPositionInstance(positionAny types.Any) PositionInstance {
 	return position
 }
 
-func (m Position) NeedLiquidation(MarginMaintenanceRate, currentBaseUsdRate, currentQuoteUsdRate sdk.Dec) bool {
+func (m Position) NeedLiquidation(MarginMaintenanceRate sdk.Dec, currentBaseMetricsRate, currentQuoteMetricsRate MetricsRateType) bool {
 	ins, err := UnpackPositionInstance(m.PositionInstance)
 	if err != nil {
 		return false
@@ -79,7 +79,7 @@ func (m Position) NeedLiquidation(MarginMaintenanceRate, currentBaseUsdRate, cur
 	switch positionInstance := ins.(type) {
 	case *PerpetualFuturesPositionInstance:
 		perpetualFuturesPosition := NewPerpetualFuturesPosition(m, *positionInstance)
-		return perpetualFuturesPosition.NeedLiquidation(MarginMaintenanceRate, currentBaseUsdRate, currentQuoteUsdRate)
+		return perpetualFuturesPosition.NeedLiquidation(MarginMaintenanceRate, currentBaseMetricsRate, currentQuoteMetricsRate)
 		break
 	case *PerpetualOptionsPositionInstance:
 		panic("not implemented")
@@ -131,8 +131,8 @@ func NewPerpetualFuturesPositionFromPosition(position Position) (PerpetualFuture
 	return PerpetualFuturesPosition{}, fmt.Errorf("this Any doesn't have PerpetualFuturesPositionInstance value")
 }
 
-func (m PerpetualFuturesPosition) NeedLiquidation(minMarginMaintenanceRate, currentBaseUsdRate, currentQuoteUsdRate sdk.Dec) bool {
-	marginMaintenanceRate := m.MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate)
+func (m PerpetualFuturesPosition) NeedLiquidation(minMarginMaintenanceRate sdk.Dec, currentBaseMetricsRate, currentQuoteMetricsRate MetricsRateType) bool {
+	marginMaintenanceRate := m.MarginMaintenanceRate(currentBaseMetricsRate, currentQuoteMetricsRate)
 	if marginMaintenanceRate.LT(minMarginMaintenanceRate) {
 		return true
 	} else {
@@ -145,8 +145,8 @@ func (m PerpetualFuturesPosition) OpenedPairRate() sdk.Dec {
 }
 
 // todo make test
-func (m PerpetualFuturesPosition) EvaluatePosition(currentBaseUsdRate sdk.Dec) sdk.Dec {
-	return currentBaseUsdRate.Mul(m.PositionInstance.Size_)
+func (m PerpetualFuturesPosition) EvaluatePosition(currentBaseMetricsRate MetricsRateType) sdk.Dec {
+	return currentBaseMetricsRate.Amount.Amount.Mul(m.PositionInstance.Size_)
 }
 
 // TODO: consider to use sdk.DecCoin
@@ -158,9 +158,9 @@ func MicroToNormalDec(amount sdk.Dec) sdk.Dec {
 	return amount.Mul(sdk.MustNewDecFromStr("1000000"))
 }
 
-func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(baseUSDRate, quoteUSDRate sdk.Dec) (returningAmount math.Int, lossToLP math.Int) {
+func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(baseMetricsRate, quoteMetricsRate MetricsRateType) (returningAmount math.Int, lossToLP math.Int) {
 	principal := m.RemainingMargin.Amount
-	pnlAmount := m.ProfitAndLossInMetrics(baseUSDRate, quoteUSDRate)
+	pnlAmount := m.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)
 
 	returningAmount = principal.Add(pnlAmount.TruncateInt())
 
@@ -174,7 +174,7 @@ func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(baseUSDRate, quoteU
 }
 
 // todo make test
-func (m Positions) EvaluatePositions(posType PositionType, getCurrentPriceF func(denom string) (sdk.Dec, error)) sdk.Dec {
+func (m Positions) EvaluatePositions(posType PositionType, quoteTicker string, getCurrentPriceF func(denom string) (sdk.Dec, error)) sdk.Dec {
 	usdMap := map[string]sdk.Dec{}
 	result := sdk.ZeroDec()
 	for _, position := range m {
@@ -197,7 +197,10 @@ func (m Positions) EvaluatePositions(posType PositionType, getCurrentPriceF func
 			if perpetualFuturesPosition.PositionInstance.PositionType != posType {
 				continue
 			}
-			result = result.Add(perpetualFuturesPosition.EvaluatePosition(usdMap[position.Market.BaseDenom]))
+
+			metricsRate := NewMetricsRateType(quoteTicker, position.Market.BaseDenom, usdMap[position.Market.BaseDenom])
+
+			result = result.Add(perpetualFuturesPosition.EvaluatePosition(metricsRate))
 			break
 		case *PerpetualOptionsPositionInstance:
 			panic("not implemented")
@@ -208,12 +211,12 @@ func (m Positions) EvaluatePositions(posType PositionType, getCurrentPriceF func
 	return result
 }
 
-func (m Positions) EvaluateLongPositions(getCurrentPriceF func(denom string) (sdk.Dec, error)) sdk.Dec {
-	return m.EvaluatePositions(PositionType_LONG, getCurrentPriceF)
+func (m Positions) EvaluateLongPositions(quoteTicker string, getCurrentPriceF func(denom string) (sdk.Dec, error)) sdk.Dec {
+	return m.EvaluatePositions(PositionType_LONG, quoteTicker, getCurrentPriceF)
 }
 
-func (m Positions) EvaluateShortPositions(getCurrentPriceF func(denom string) (sdk.Dec, error)) sdk.Dec {
-	return m.EvaluatePositions(PositionType_SHORT, getCurrentPriceF)
+func (m Positions) EvaluateShortPositions(quoteTicker string, getCurrentPriceF func(denom string) (sdk.Dec, error)) sdk.Dec {
+	return m.EvaluatePositions(PositionType_SHORT, quoteTicker, getCurrentPriceF)
 }
 
 func (m PerpetualFuturesPosition) RequiredMarginInQuote(baseQuoteRate sdk.Dec) sdk.Dec {
@@ -225,22 +228,22 @@ func (m PerpetualFuturesPosition) RequiredMarginInBase() sdk.Dec {
 	return m.PositionInstance.MarginRequirement(sdk.MustNewDecFromStr("1"))
 }
 
-// func (m PerpetualFuturesPosition) RequiredMarginInMetrics(requiredMarginInQuote, quoteUSDRate sdk.Dec) sdk.Dec {
-func (m PerpetualFuturesPosition) RequiredMarginInMetrics(baseUSDRate, quoteUSDRate sdk.Dec) sdk.Dec {
+// func (m PerpetualFuturesPosition) RequiredMarginInMetrics(requiredMarginInQuote, quoteMetricsRate sdk.Dec) sdk.Dec {
+func (m PerpetualFuturesPosition) RequiredMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
 	// 必要証拠金(USD単位) = 必要証拠金(quote単位) * 現在のquote/USDレート
 	//                    = 必要証拠金(base単位) * 現在のbase/USDレート
 	if m.RemainingMargin.Denom == m.Market.QuoteDenom {
-		baseQuoteRate := baseUSDRate.Quo(quoteUSDRate)
-		return m.RequiredMarginInQuote(baseQuoteRate).Mul(quoteUSDRate)
+		baseQuoteRate := baseMetricsRate.Amount.Amount.Quo(quoteMetricsRate.Amount.Amount)
+		return m.RequiredMarginInQuote(baseQuoteRate).Mul(quoteMetricsRate.Amount.Amount)
 	} else if m.RemainingMargin.Denom == m.Market.BaseDenom {
-		return m.RequiredMarginInBase().Mul(baseUSDRate)
+		return m.RequiredMarginInBase().Mul(baseMetricsRate.Amount.Amount)
 	} else {
 		panic("not supported denom")
 	}
 }
-func (m PerpetualFuturesPosition) ProfitAndLossInQuote(baseUSDRate, quoteUSDRate sdk.Dec) sdk.Dec {
+func (m PerpetualFuturesPosition) ProfitAndLossInQuote(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
 	// 損益(quote単位) = (longなら1,shortなら-1) * (現在のbase/quoteレート - ポジション開設時base/quoteレート) * ポジションサイズ(base単位)
-	baseQuoteRate := baseUSDRate.Quo(quoteUSDRate)
+	baseQuoteRate := baseMetricsRate.Amount.Amount.Quo(quoteMetricsRate.Amount.Amount)
 	profitOrLoss := baseQuoteRate.Sub(m.OpenedPairRate()).Mul(m.PositionInstance.Size_)
 	if m.PositionInstance.PositionType == PositionType_LONG {
 		return profitOrLoss
@@ -249,35 +252,47 @@ func (m PerpetualFuturesPosition) ProfitAndLossInQuote(baseUSDRate, quoteUSDRate
 	}
 }
 
-func (m PerpetualFuturesPosition) ProfitAndLossInMetrics(baseUSDRate, quoteUSDRate sdk.Dec) sdk.Dec {
+func (m PerpetualFuturesPosition) ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
 	// 損益(USD単位) = 損益(quote単位) * 現在のquote/USDレート
-	return m.ProfitAndLossInQuote(baseUSDRate, quoteUSDRate).Mul(quoteUSDRate)
+	return m.ProfitAndLossInQuote(baseMetricsRate, quoteMetricsRate).Mul(quoteMetricsRate.Amount.Amount)
 }
-func (m PerpetualFuturesPosition) MarginMaintenanceRate(baseUSDRate, quoteUSDRate sdk.Dec) sdk.Dec {
+func (m PerpetualFuturesPosition) MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
 	// 証拠金維持率 = 有効証拠金(USD単位) ÷ 必要証拠金(USD単位)
-	return m.EffectiveMarginInMetrics(baseUSDRate, quoteUSDRate).Quo(m.RequiredMarginInMetrics(baseUSDRate, quoteUSDRate))
+	return m.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate).Quo(m.RequiredMarginInMetrics(baseMetricsRate, quoteMetricsRate))
 }
-func (m PerpetualFuturesPosition) RemainingMarginInBase(baseUSDRate sdk.Dec) sdk.Dec {
+func (m PerpetualFuturesPosition) RemainingMarginInBase(baseMetricsRate MetricsRateType) sdk.Dec {
 	// 残存証拠金(USD単位) = 残存証拠金(base単位) * 現在のbase/USDレート
-	return sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(baseUSDRate)
+	return sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(baseMetricsRate.Amount.Amount)
 }
-func (m PerpetualFuturesPosition) RemainingMarginInQuote(quoteUSDRate sdk.Dec) sdk.Dec {
+func (m PerpetualFuturesPosition) RemainingMarginInQuote(quoteMetricsRate MetricsRateType) sdk.Dec {
 	// 残存証拠金(USD単位) = 残存証拠金(quote単位) * 現在のquote/USDレート
-	return sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(quoteUSDRate)
+	return sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(quoteMetricsRate.Amount.Amount)
 }
-func (m PerpetualFuturesPosition) RemainingMarginInMetrics(baseUSDRate, quoteUSDRate sdk.Dec) sdk.Dec {
+func (m PerpetualFuturesPosition) RemainingMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
 	// 残存証拠金(USD単位) = 残存証拠金(base単位) * 現在のbase/USDレート
 	//                    = 残存証拠金(quote単位) * 現在のquote/USDレート
 	if m.RemainingMargin.Denom == m.Market.BaseDenom {
-		return m.RemainingMarginInBase(baseUSDRate)
+		return m.RemainingMarginInBase(baseMetricsRate)
 	} else if m.RemainingMargin.Denom == m.Market.QuoteDenom {
-		return m.RemainingMarginInQuote(quoteUSDRate)
+		return m.RemainingMarginInQuote(quoteMetricsRate)
 	} else {
 		panic("not supported denom")
 	}
 }
 
-func (m PerpetualFuturesPosition) EffectiveMarginInMetrics(baseUSDRate, quoteUSDRate sdk.Dec) sdk.Dec {
+func (m PerpetualFuturesPosition) EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
 	// 有効証拠金(USD単位) = 残存証拠金(USD単位) + 損益(USD単位)
-	return m.RemainingMarginInMetrics(baseUSDRate, quoteUSDRate).Add(m.ProfitAndLossInMetrics(baseUSDRate, quoteUSDRate))
+	return m.RemainingMarginInMetrics(baseMetricsRate, quoteMetricsRate).Add(m.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate))
+}
+
+func NewMetricsRateType(unit string, denom string, amount sdk.Dec) MetricsRateType {
+	return MetricsRateType{
+		MetricsUnit: unit,
+		Amount:      sdk.NewDecCoinFromDec(denom, amount),
+	}
+}
+
+type MetricsRateType struct {
+	MetricsUnit string
+	Amount      sdk.DecCoin
 }
