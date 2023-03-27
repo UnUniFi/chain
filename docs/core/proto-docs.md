@@ -143,18 +143,18 @@
     - [Query](#ununifi.derivatives.Query)
   
 - [derivatives/tx.proto](#derivatives/tx.proto)
-    - [MsgBurnLiquidityProviderToken](#ununifi.derivatives.MsgBurnLiquidityProviderToken)
-    - [MsgBurnLiquidityProviderTokenResponse](#ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse)
     - [MsgClosePosition](#ununifi.derivatives.MsgClosePosition)
     - [MsgClosePositionResponse](#ununifi.derivatives.MsgClosePositionResponse)
-    - [MsgMintLiquidityProviderToken](#ununifi.derivatives.MsgMintLiquidityProviderToken)
-    - [MsgMintLiquidityProviderTokenResponse](#ununifi.derivatives.MsgMintLiquidityProviderTokenResponse)
+    - [MsgDepositToPool](#ununifi.derivatives.MsgDepositToPool)
+    - [MsgDepositToPoolResponse](#ununifi.derivatives.MsgDepositToPoolResponse)
     - [MsgOpenPosition](#ununifi.derivatives.MsgOpenPosition)
     - [MsgOpenPositionResponse](#ununifi.derivatives.MsgOpenPositionResponse)
     - [MsgReportLevyPeriod](#ununifi.derivatives.MsgReportLevyPeriod)
     - [MsgReportLevyPeriodResponse](#ununifi.derivatives.MsgReportLevyPeriodResponse)
     - [MsgReportLiquidation](#ununifi.derivatives.MsgReportLiquidation)
     - [MsgReportLiquidationResponse](#ununifi.derivatives.MsgReportLiquidationResponse)
+    - [MsgWithdrawFromPool](#ununifi.derivatives.MsgWithdrawFromPool)
+    - [MsgWithdrawFromPoolResponse](#ununifi.derivatives.MsgWithdrawFromPoolResponse)
   
     - [Msg](#ununifi.derivatives.Msg)
   
@@ -260,10 +260,10 @@
     - [Liquidation](#ununifi.nftmarket.Liquidation)
     - [Liquidations](#ununifi.nftmarket.Liquidations)
     - [ListedClass](#ununifi.nftmarket.ListedClass)
-    - [ListedNft](#ununifi.nftmarket.ListedNft)
     - [Loan](#ununifi.nftmarket.Loan)
     - [NftBid](#ununifi.nftmarket.NftBid)
     - [NftIdentifier](#ununifi.nftmarket.NftIdentifier)
+    - [NftInfo](#ununifi.nftmarket.NftInfo)
     - [NftListing](#ununifi.nftmarket.NftListing)
     - [Params](#ununifi.nftmarket.Params)
     - [PaymentStatus](#ununifi.nftmarket.PaymentStatus)
@@ -276,6 +276,7 @@
     - [GenesisState](#ununifi.nftmarket.GenesisState)
   
 - [nftmarket/query.proto](#nftmarket/query.proto)
+    - [NftListingDetail](#ununifi.nftmarket.NftListingDetail)
     - [QueryBidderBidsRequest](#ununifi.nftmarket.QueryBidderBidsRequest)
     - [QueryBidderBidsResponse](#ununifi.nftmarket.QueryBidderBidsResponse)
     - [QueryCDPsListRequest](#ununifi.nftmarket.QueryCDPsListRequest)
@@ -1695,6 +1696,7 @@ Query defines the gRPC querier service.
 | `margin_maintenance_rate` | [string](#string) |  |  |
 | `imaginary_funding_rate_proportional_coefficient` | [string](#string) |  |  |
 | `markets` | [Market](#ununifi.derivatives.Market) | repeated |  |
+| `max_leverage` | [uint32](#uint32) |  |  |
 
 
 
@@ -2373,33 +2375,6 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.MsgBurnLiquidityProviderToken"></a>
-
-### MsgBurnLiquidityProviderToken
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  |  |
-| `amount` | [string](#string) |  |  |
-| `redeem_denom` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse"></a>
-
-### MsgBurnLiquidityProviderTokenResponse
-
-
-
-
-
-
-
 <a name="ununifi.derivatives.MsgClosePosition"></a>
 
 ### MsgClosePosition
@@ -2426,9 +2401,9 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.MsgMintLiquidityProviderToken"></a>
+<a name="ununifi.derivatives.MsgDepositToPool"></a>
 
-### MsgMintLiquidityProviderToken
+### MsgDepositToPool
 
 
 
@@ -2442,9 +2417,9 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.MsgMintLiquidityProviderTokenResponse"></a>
+<a name="ununifi.derivatives.MsgDepositToPoolResponse"></a>
 
-### MsgMintLiquidityProviderTokenResponse
+### MsgDepositToPoolResponse
 
 
 
@@ -2533,6 +2508,33 @@ Query defines the gRPC querier service.
 
 
 
+
+<a name="ununifi.derivatives.MsgWithdrawFromPool"></a>
+
+### MsgWithdrawFromPool
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `lpt_amount` | [string](#string) |  |  |
+| `redeem_denom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.MsgWithdrawFromPoolResponse"></a>
+
+### MsgWithdrawFromPoolResponse
+
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -2547,8 +2549,8 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `MintLiquidityProviderToken` | [MsgMintLiquidityProviderToken](#ununifi.derivatives.MsgMintLiquidityProviderToken) | [MsgMintLiquidityProviderTokenResponse](#ununifi.derivatives.MsgMintLiquidityProviderTokenResponse) |  | |
-| `BurnLiquidityProviderToken` | [MsgBurnLiquidityProviderToken](#ununifi.derivatives.MsgBurnLiquidityProviderToken) | [MsgBurnLiquidityProviderTokenResponse](#ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse) |  | |
+| `DepositToPool` | [MsgDepositToPool](#ununifi.derivatives.MsgDepositToPool) | [MsgDepositToPoolResponse](#ununifi.derivatives.MsgDepositToPoolResponse) |  | |
+| `WithdrawFromPool` | [MsgWithdrawFromPool](#ununifi.derivatives.MsgWithdrawFromPool) | [MsgWithdrawFromPoolResponse](#ununifi.derivatives.MsgWithdrawFromPoolResponse) |  | |
 | `OpenPosition` | [MsgOpenPosition](#ununifi.derivatives.MsgOpenPosition) | [MsgOpenPositionResponse](#ununifi.derivatives.MsgOpenPositionResponse) |  | |
 | `ClosePosition` | [MsgClosePosition](#ununifi.derivatives.MsgClosePosition) | [MsgClosePositionResponse](#ununifi.derivatives.MsgClosePositionResponse) |  | |
 | `ReportLiquidation` | [MsgReportLiquidation](#ununifi.derivatives.MsgReportLiquidation) | [MsgReportLiquidationResponse](#ununifi.derivatives.MsgReportLiquidationResponse) |  | |
@@ -3877,23 +3879,6 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.nftmarket.ListedNft"></a>
-
-### ListedNft
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  |  |
-| `uri` | [string](#string) |  |  |
-| `uri_hash` | [string](#string) |  |  |
-
-
-
-
-
-
 <a name="ununifi.nftmarket.Loan"></a>
 
 ### Loan
@@ -3952,6 +3937,23 @@ Query defines the gRPC querier service.
 
 
 
+<a name="ununifi.nftmarket.NftInfo"></a>
+
+### NftInfo
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  |  |
+| `uri` | [string](#string) |  |  |
+| `uri_hash` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="ununifi.nftmarket.NftListing"></a>
 
 ### NftListing
@@ -3973,6 +3975,7 @@ Query defines the gRPC querier service.
 | `successful_bid_end_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `auto_relisted_count` | [uint64](#uint64) |  |  |
 | `collected_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `minimum_bidding_period` | [google.protobuf.Duration](#google.protobuf.Duration) |  |  |
 
 
 
@@ -4129,6 +4132,22 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
+<a name="ununifi.nftmarket.NftListingDetail"></a>
+
+### NftListingDetail
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `listing` | [NftListing](#ununifi.nftmarket.NftListing) |  |  |
+| `nft_info` | [NftInfo](#ununifi.nftmarket.NftInfo) |  |  |
+
+
+
+
+
+
 <a name="ununifi.nftmarket.QueryBidderBidsRequest"></a>
 
 ### QueryBidderBidsRequest
@@ -4240,7 +4259,7 @@ GenesisState defines the nftmarket module's genesis state.
 | `symbol` | [string](#string) |  |  |
 | `uri` | [string](#string) |  |  |
 | `urihash` | [string](#string) |  |  |
-| `nfts` | [ListedNft](#ununifi.nftmarket.ListedNft) | repeated |  |
+| `nfts` | [NftInfo](#ununifi.nftmarket.NftInfo) | repeated |  |
 | `nft_count` | [uint64](#uint64) |  |  |
 
 
@@ -4301,7 +4320,7 @@ GenesisState defines the nftmarket module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `listings` | [NftListing](#ununifi.nftmarket.NftListing) | repeated |  |
+| `listings` | [NftListingDetail](#ununifi.nftmarket.NftListingDetail) | repeated |  |
 
 
 
@@ -4671,6 +4690,7 @@ Query defines the gRPC querier service.
 | `bid_token` | [string](#string) |  |  |
 | `minimum_deposit_rate` | [string](#string) |  | 1% = 0.01 |
 | `automatic_refinancing` | [bool](#bool) |  |  |
+| `minimum_bidding_period` | [google.protobuf.Duration](#google.protobuf.Duration) |  |  |
 
 
 

@@ -8,67 +8,67 @@ import (
 )
 
 // ensure Msg interface compliance at compile time
-var _ sdk.Msg = &MsgMintLiquidityProviderToken{}
+var _ sdk.Msg = &MsgDepositToPool{}
 
-func NewMsgMintLiquidityProviderToken(sender ununifiTypes.StringAccAddress, amount sdk.Coin) MsgMintLiquidityProviderToken {
-	return MsgMintLiquidityProviderToken{
+func NewMsgDepositToPool(sender ununifiTypes.StringAccAddress, amount sdk.Coin) MsgDepositToPool {
+	return MsgDepositToPool{
 		Sender: sender,
 		Amount: amount,
 	}
 }
 
 // Route return the message type used for routing the message.
-func (msg MsgMintLiquidityProviderToken) Route() string { return RouterKey }
+func (msg MsgDepositToPool) Route() string { return RouterKey }
 
 // Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgMintLiquidityProviderToken) Type() string { return "mint_lpt" }
+func (msg MsgDepositToPool) Type() string { return "deposit_to_pool" }
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
-func (msg MsgMintLiquidityProviderToken) ValidateBasic() error {
+func (msg MsgDepositToPool) ValidateBasic() error {
 	return nil
 }
 
 // GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgMintLiquidityProviderToken) GetSignBytes() []byte {
+func (msg MsgDepositToPool) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
-func (msg MsgMintLiquidityProviderToken) GetSigners() []sdk.AccAddress {
+func (msg MsgDepositToPool) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Sender.AccAddress()}
 }
 
 // ensure Msg interface compliance at compile time
-var _ sdk.Msg = &MsgBurnLiquidityProviderToken{}
+var _ sdk.Msg = &MsgWithdrawFromPool{}
 
-func NewMsgBurnLiquidityProviderToken(sender sdk.AccAddress, amount sdk.Int, denom string) MsgBurnLiquidityProviderToken {
-	return MsgBurnLiquidityProviderToken{
+func NewMsgWithdrawFromPool(sender sdk.AccAddress, lptAmount sdk.Int, denom string) MsgWithdrawFromPool {
+	return MsgWithdrawFromPool{
 		Sender:      sender.Bytes(),
-		Amount:      amount,
+		LptAmount:   lptAmount,
 		RedeemDenom: denom,
 	}
 }
 
 // Route return the message type used for routing the message.
-func (msg MsgBurnLiquidityProviderToken) Route() string { return RouterKey }
+func (msg MsgWithdrawFromPool) Route() string { return RouterKey }
 
 // Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgBurnLiquidityProviderToken) Type() string { return "burn_lpt" }
+func (msg MsgWithdrawFromPool) Type() string { return "withdraw_from_pool" }
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
-func (msg MsgBurnLiquidityProviderToken) ValidateBasic() error {
+func (msg MsgWithdrawFromPool) ValidateBasic() error {
 	return nil
 }
 
 // GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgBurnLiquidityProviderToken) GetSignBytes() []byte {
+func (msg MsgWithdrawFromPool) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
-func (msg MsgBurnLiquidityProviderToken) GetSigners() []sdk.AccAddress {
+func (msg MsgWithdrawFromPool) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Sender.AccAddress()}
 }
 

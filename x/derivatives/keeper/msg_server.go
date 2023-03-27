@@ -20,24 +20,24 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 
 var _ types.MsgServer = msgServer{}
 
-func (k msgServer) MintLiquidityProviderToken(c context.Context, msg *types.MsgMintLiquidityProviderToken) (*types.MsgMintLiquidityProviderTokenResponse, error) {
+func (k msgServer) DepositToPool(c context.Context, msg *types.MsgDepositToPool) (*types.MsgDepositToPoolResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
 	err := k.Keeper.MintLiquidityProviderToken(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
-	return &types.MsgMintLiquidityProviderTokenResponse{}, nil
+	return &types.MsgDepositToPoolResponse{}, nil
 }
 
-func (k msgServer) BurnLiquidityProviderToken(c context.Context, msg *types.MsgBurnLiquidityProviderToken) (*types.MsgBurnLiquidityProviderTokenResponse, error) {
+func (k msgServer) WithdrawFromPool(c context.Context, msg *types.MsgWithdrawFromPool) (*types.MsgWithdrawFromPoolResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
 	err := k.Keeper.BurnLiquidityProviderToken(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
-	return &types.MsgBurnLiquidityProviderTokenResponse{}, nil
+	return &types.MsgWithdrawFromPoolResponse{}, nil
 }
 
 func (k msgServer) OpenPosition(c context.Context, msg *types.MsgOpenPosition) (*types.MsgOpenPositionResponse, error) {

@@ -1243,3 +1243,31 @@ func TestFindKickOutBid(t *testing.T) {
 		})
 	}
 }
+
+func TestCalcPartInterest(t *testing.T) {
+	var result sdk.Int
+	result = types.CalcPartInterest(sdk.NewInt(100), sdk.NewInt(10), sdk.NewDecCoin("uguu", sdk.NewInt(50)))
+	if !sdk.NewInt(5).Equal(result) {
+		t.Error("not expect result")
+	}
+
+	result = types.CalcPartInterest(sdk.NewInt(100), sdk.NewInt(10), sdk.NewDecCoin("uguu", sdk.NewInt(0)))
+	if !sdk.NewInt(0).Equal(result) {
+		t.Error("not expect result")
+	}
+
+	result = types.CalcPartInterest(sdk.NewInt(100), sdk.NewInt(0), sdk.NewDecCoin("uguu", sdk.NewInt(10)))
+	if !sdk.NewInt(0).Equal(result) {
+		t.Error("not expect result")
+	}
+
+	result = types.CalcPartInterest(sdk.NewInt(100), sdk.NewInt(0), sdk.NewDecCoin("uguu", sdk.NewInt(0)))
+	if !sdk.NewInt(0).Equal(result) {
+		t.Error("not expect result")
+	}
+
+	result = types.CalcPartInterest(sdk.NewInt(0), sdk.NewInt(0), sdk.NewDecCoin("uguu", sdk.NewInt(0)))
+	if !sdk.NewInt(0).Equal(result) {
+		t.Error("not expect result")
+	}
+}
