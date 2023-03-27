@@ -6,10 +6,120 @@ import (
 	time "time"
 
 	"cosmossdk.io/math"
+	codecTypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
+
+// IsValid test. This is the general validation for the creation of a position (only perpetual futures position)
+func TestPosition_IsValid(t *testing.T) {
+	// make testCases
+	testCases := []struct {
+		name     string
+		position types.Position
+		instance types.PerpetualFuturesPositionInstance
+		exp      bool
+	}{
+		{
+			name: "Failure due to invalid margin asset",
+			position: types.Position{
+				Market: types.Market{
+					BaseDenom:  "uatom",
+					QuoteDenom: "uusdc",
+				},
+				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
+				// not market base or quote asset
+				RemainingMargin: sdk.NewCoin("ubtc", sdk.NewInt(1)),
+			},
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.MustNewDecFromStr("10"),
+				Leverage:     5,
+			},
+			exp: false,
+		},
+		{
+			name: "Failure due to lack of margin using BaseDenom token",
+			position: types.Position{
+				Market: types.Market{
+					BaseDenom:  "uatom",
+					QuoteDenom: "uusdc",
+				},
+				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
+				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(100000)),
+			},
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.MustNewDecFromStr("10"),
+				Leverage:     10,
+			},
+			exp: false,
+		},
+		// below test case fails now because the current implementation doesn't calculate
+		// the margin requirement in a proper way
+		{
+			name: "Failure due to lack of margin using QuoteDenom token",
+			position: types.Position{
+				Market: types.Market{
+					BaseDenom:  "uatom",
+					QuoteDenom: "uusdc",
+				},
+				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
+				RemainingMargin: sdk.NewCoin("uusdc", sdk.NewInt(1000)),
+			},
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.MustNewDecFromStr("10"),
+				Leverage:     1,
+			},
+			exp: false,
+		},
+		{
+			name: "Fauilure due to zero margin",
+			position: types.Position{
+				Market: types.Market{
+					BaseDenom:  "uatom",
+					QuoteDenom: "uusdc",
+				},
+				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
+				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(0)),
+			},
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.MustNewDecFromStr("10"),
+				Leverage:     10,
+			},
+			exp: false,
+		},
+	}
+
+	// run testCases
+	for _, tc := range testCases {
+		any, err := codecTypes.NewAnyWithValue(&tc.instance)
+		if err != nil {
+			t.Error(err)
+		}
+		tc.position.PositionInstance = *any
+
+		t.Run(tc.name, func(t *testing.T) {
+			err := tc.position.IsValid()
+			if tc.exp {
+				if err != nil {
+					t.Errorf("expected %v, got %v", tc.exp, err)
+				}
+			} else {
+				if err == nil {
+					t.Errorf("expected %v, got %v", tc.exp, err)
+				}
+			}
+		})
+	}
+}
 
 // make position.NeedLiquidationPerpetualFutures test
 func TestPosition_NeedLiquidationPerpetualFutures(t *testing.T) {

@@ -69,16 +69,10 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 		RemainingMargin:  margin,
 	}
 
-	if position.Validate() != nil {
-		return nil, types.ErrorMarginNotEnough
-	}
-
-	params := k.GetParams(ctx)
+	// General validation for the position creation
 	quoteTicker := k.GetPoolQuoteTicker(ctx)
-	baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, position.OpenedBaseRate)
-	quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, position.OpenedQuoteRate)
-	if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, baseMetricsRate, quoteMetricsRate) {
-		return nil, types.ErrorInvalidPositionParams
+	if err := position.IsValid(quoteTicker); err != nil {
+		return nil, err
 	}
 
 	switch positionInstance.PositionType {
