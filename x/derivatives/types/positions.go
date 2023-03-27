@@ -15,14 +15,39 @@ type PositionInstance interface {
 
 type Positions []Position
 
-func (m Position) Validate() error {
-	if m.RemainingMargin.Amount.IsZero() {
-		return fmt.Errorf("remaining margin cannot be zero")
+func (m Position) IsValid(quoteTicker string) error {
+	if !m.IsValidMarginAsset() {
+		return fmt.Errorf("margin asset is not valid")
 	}
-	if m.RemainingMargin.Amount.IsNegative() {
-		return fmt.Errorf("remaining margin cannot be negative")
+
+	// check the least requirement for the margin
+	if !m.RemainingMargin.Amount.IsPositive() {
+		return fmt.Errorf("remaining margin must be positive")
 	}
+
+	pfPosition, err := NewPerpetualFuturesPositionFromPosition(m)
+	if err != nil {
+		return err
+	}
+
+	if !pfPosition.IsValidPositionSize(quoteTicker) {
+		return fmt.Errorf("position size is not valid")
+	}
+
 	return nil
+}
+
+// Margin asset must be one of the market assets.
+func (m Position) IsValidMarginAsset() bool {
+	return (m.Market.BaseDenom == m.RemainingMargin.Denom || m.Market.QuoteDenom == m.RemainingMargin.Denom)
+}
+
+func (m PerpetualFuturesPosition) IsValidPositionSize(quoteTicker string) bool {
+	// check position size validity
+	baseMetricsRate := NewMetricsRateType(quoteTicker, m.Market.BaseDenom, m.OpenedBaseRate)
+	quoteMetricsRate := NewMetricsRateType(quoteTicker, m.Market.BaseDenom, m.OpenedQuoteRate)
+	marginMaintenanceRate := m.MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate)
+	return !marginMaintenanceRate.LT(sdk.OneDec())
 }
 
 func UnpackPositionInstance(positionAny types.Any) (PositionInstance, error) {

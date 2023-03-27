@@ -30,9 +30,9 @@ var (
 type KeeperTestSuite struct {
 	suite.Suite
 
-	ctx             sdk.Context
-	app             *simapp.App
-	addrs           []sdk.AccAddress
+	ctx sdk.Context
+	app *simapp.App
+	// addrs           []sdk.AccAddress
 	queryClient     types.QueryClient
 	keeper          keeper.Keeper
 	pricefeedKeeper pricefeedkeeper.Keeper
@@ -96,18 +96,15 @@ func (suite *KeeperTestSuite) SetupTest() {
 		Markets: []pricefeedtypes.Market{
 			{MarketId: "uusdc:usd", BaseAsset: TestQuoteTokenDenom, QuoteAsset: TestQuoteTokenDenom, Oracles: []ununifitypes.StringAccAddress{}, Active: true},
 			{MarketId: "uatom:usd", BaseAsset: TestBaseTokenDenom, QuoteAsset: TestQuoteTokenDenom, Oracles: []ununifitypes.StringAccAddress{}, Active: true},
-			{MarketId: "uatom:usdc", BaseAsset: TestBaseTokenDenom, QuoteAsset: TestQuoteTokenDenom, Oracles: []ununifitypes.StringAccAddress{}, Active: true},
 		},
 	}
 	pricefeedKeeper.SetParams(suite.ctx, pfParams)
 
-	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:usdc", sdk.MustNewDecFromStr("0.00001528"), suite.ctx.BlockTime().Add(1*time.Hour))
-	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:usd", sdk.MustNewDecFromStr("0.00001528"), suite.ctx.BlockTime().Add(1*time.Hour))
-	pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uusdc:usd", sdk.MustNewDecFromStr("0.000001"), suite.ctx.BlockTime().Add(1*time.Hour))
+	_, _ = pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:usd", sdk.MustNewDecFromStr("0.00001"), suite.ctx.BlockTime().Add(1*time.Hour))
+	_, _ = pricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uusdc:usd", sdk.MustNewDecFromStr("0.000001"), suite.ctx.BlockTime().Add(1*time.Hour))
 
-	pricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:usdc")
-	pricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:usd")
-	pricefeedKeeper.SetCurrentPrices(suite.ctx, "uusdc:usd")
+	_ = pricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:usd")
+	_ = pricefeedKeeper.SetCurrentPrices(suite.ctx, "uusdc:usd")
 
 	keeper := keeper.NewKeeper(appCodec, app.GetKey(types.StoreKey), app.GetKey(types.MemStoreKey), suite.app.GetSubspace(types.ModuleName), bankKeeper, pricefeedKeeper)
 
