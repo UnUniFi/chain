@@ -15,7 +15,7 @@ type PositionInstance interface {
 
 type Positions []Position
 
-func (m Position) IsValid() error {
+func (m Position) IsValid(quoteTicker string) error {
 	if !m.IsValidMarginAsset() {
 		return fmt.Errorf("margin asset is not valid")
 	}
@@ -30,7 +30,7 @@ func (m Position) IsValid() error {
 		return err
 	}
 
-	if !pfPosition.IsValidPositionSize() {
+	if !pfPosition.IsValidPositionSize(quoteTicker) {
 		return fmt.Errorf("position size is not valid")
 	}
 
@@ -42,9 +42,11 @@ func (m Position) IsValidMarginAsset() bool {
 	return (m.Market.BaseDenom == m.RemainingMargin.Denom || m.Market.QuoteDenom == m.RemainingMargin.Denom)
 }
 
-func (m PerpetualFuturesPosition) IsValidPositionSize() bool {
+func (m PerpetualFuturesPosition) IsValidPositionSize(quoteTicker string) bool {
 	// check position size validity
-	marginMaintenanceRate := m.MarginMaintenanceRate(m.OpenedBaseRate, m.OpenedQuoteRate)
+	baseMetricsRate := NewMetricsRateType(quoteTicker, m.Market.BaseDenom, m.OpenedBaseRate)
+	quoteMetricsRate := NewMetricsRateType(quoteTicker, m.Market.BaseDenom, m.OpenedQuoteRate)
+	marginMaintenanceRate := m.MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate)
 	return !marginMaintenanceRate.LT(sdk.OneDec())
 }
 
