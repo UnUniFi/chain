@@ -37,8 +37,9 @@ func (m Position) IsValid() error {
 	return nil
 }
 
+// Margin asset must be one of the market assets.
 func (m Position) IsValidMarginAsset() bool {
-	return !(m.Market.BaseDenom != m.RemainingMargin.Denom && m.Market.QuoteDenom != m.RemainingMargin.Denom)
+	return (m.Market.BaseDenom == m.RemainingMargin.Denom || m.Market.QuoteDenom == m.RemainingMargin.Denom)
 }
 
 func (m PerpetualFuturesPosition) IsValidPositionSize() bool {
