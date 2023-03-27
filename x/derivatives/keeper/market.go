@@ -8,6 +8,7 @@ import (
 	pftypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
+// Unit is same to the quote ticker of pool metrics (USD in default)
 func (k Keeper) GetAssetPrice(ctx sdk.Context, denom string) (*pftypes.CurrentPrice, error) {
 	ticker, err := k.pricefeedKeeper.GetTicker(ctx, denom)
 	if err != nil {

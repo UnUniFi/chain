@@ -500,6 +500,7 @@ func TestPerpetualFuturesPosition_CalcProfitAndLoss(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			resultDec := tc.position.ProfitAndLossInMetrics(tc.closedRates[0], tc.closedRates[1])
+			// TODO: use sdk.DecCoin
 			result := types.MicroToNormalDenom(resultDec)
 			fmt.Println(result)
 			if !tc.exp.Equal(result) {

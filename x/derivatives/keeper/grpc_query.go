@@ -215,6 +215,7 @@ func (k Keeper) MakeQueriedPositions(ctx sdk.Context, positions types.Positions)
 		quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, currentQuoteUsdRate)
 		profit := perpetualFuturesPosition.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)
 		// fixme do not use sdk.Coin directly
+		// TODO: use sdk.DecCoin
 		positiveOrNegativeProfitCoin := sdk.Coin{
 			Denom:  "uusd",
 			Amount: types.MicroToNormalDenom(profit),
@@ -264,9 +265,9 @@ func (k Keeper) Position(c context.Context, req *types.QueryPositionRequest) (*t
 	profit := perpetualFuturesPosition.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)
 	return &types.QueryPositionResponse{
 		Position:              position,
-		ValuationProfit:       sdk.NewCoin("uusd", types.MicroToNormalDenom(profit)),
+		ValuationProfit:       sdk.NewCoin("uusd", types.MicroToNormalDenom(profit)), // TODO: use sdk.DecCoin and then convert
 		MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate),
-		EffectiveMargin:       sdk.NewCoin("uusd", types.MicroToNormalDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate))),
+		EffectiveMargin:       sdk.NewCoin("uusd", types.MicroToNormalDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate))), // TODO: use sdk.DecCoin and then convert
 	}, nil
 }
 

@@ -121,16 +121,18 @@ func (m PerpetualFuturesPosition) OpenedPairRate() sdk.Dec {
 	return m.OpenedBaseRate.Quo(m.OpenedQuoteRate)
 }
 
-// todo make test
+// TODO: make test
+// TODO: rename to PositionValueInMetricsUnit
 func (m PerpetualFuturesPosition) EvaluatePosition(currentBaseMetricsRate MetricsRateType) sdk.Dec {
 	return currentBaseMetricsRate.Amount.Amount.Mul(m.PositionInstance.Size_)
 }
 
-// TODO: consider to use sdk.DecCoin
+// TODO: use sdk.DecCoin
 func MicroToNormalDenom(amount sdk.Dec) sdk.Int {
 	return amount.Mul(sdk.MustNewDecFromStr("1000000")).TruncateInt()
 }
 
+// TODO: use sdk.DecCoin
 func MicroToNormalDec(amount sdk.Dec) sdk.Dec {
 	return amount.Mul(sdk.MustNewDecFromStr("1000000"))
 }
