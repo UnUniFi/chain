@@ -62,6 +62,8 @@ func (k Keeper) IsAssetValid(ctx sdk.Context, iasset types.PoolParams_Asset) boo
 	return false
 }
 
+// TODO: The name GetAssetBalance is weird. We need to change the name like "GetAssetAmountInPool"
+// TODO: Furthermore, is this really needed? Can we just use the bankKeeper function of getBalance for pool module account?
 func (k Keeper) GetAssetBalance(ctx sdk.Context, denom string) sdk.Coin {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.AssetDepositKeyPrefix(denom))
@@ -111,6 +113,7 @@ func (k Keeper) GetUserDeposits(ctx sdk.Context, depositor sdk.AccAddress) []sdk
 	return deposits
 }
 
+// Is this really needed? Just managing pool module account balance is enough, and managing deposited asset of each user is not needed.
 func (k Keeper) GetUserDenomDepositAmount(ctx sdk.Context, depositer sdk.AccAddress, denom string) sdk.Int {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.AddressAssetPoolDepositKeyPrefix(depositer, denom))
@@ -123,6 +126,7 @@ func (k Keeper) GetUserDenomDepositAmount(ctx sdk.Context, depositer sdk.AccAddr
 	return coin.Amount
 }
 
+// Is this really needed? Just managing pool module account balance is enough, and managing deposited asset of each user is not needed.
 func (k Keeper) SetUserDenomDepositAmount(ctx sdk.Context, addr sdk.AccAddress, denom string, amount sdk.Int) {
 	store := ctx.KVStore(k.storeKey)
 	coin := sdk.Coin{
@@ -134,6 +138,7 @@ func (k Keeper) SetUserDenomDepositAmount(ctx sdk.Context, addr sdk.AccAddress, 
 }
 
 func (k Keeper) DepositPoolAsset(ctx sdk.Context, depositor sdk.AccAddress, asset sdk.Coin) {
+	// Is this really needed? Just managing pool module account balance is enough, and managing deposited asset of each user is not needed.
 	userDenomDepositAmount := k.GetUserDenomDepositAmount(ctx, depositor, asset.Denom)
 	userDenomDepositAmount = userDenomDepositAmount.Add(asset.Amount)
 	k.SetUserDenomDepositAmount(ctx, depositor, asset.Denom, userDenomDepositAmount)
@@ -202,6 +207,7 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 	}
 }
 
+// TODO: put comments to explain this function
 func (k Keeper) IsPriceReady(ctx sdk.Context) bool {
 	assets := k.GetPoolAssets(ctx)
 

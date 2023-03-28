@@ -52,18 +52,46 @@ func (k Keeper) ListedNfts(c context.Context, req *types.QueryListedNftsRequest)
 		return k.ListedNftsByOwner(c, acc)
 	} else {
 		listings := k.GetAllNftListings(ctx)
+		res, err := k.GetNftListingDetails(ctx, listings)
+		if err != nil {
+			panic(err)
+		}
 		return &types.QueryListedNftsResponse{
-			Listings: listings,
+			Listings: res,
 		}, nil
 	}
 
 }
 
+func (k Keeper) GetNftListingDetails(ctx sdk.Context, listings []types.NftListing) ([]types.NftListingDetail, error) {
+	res := []types.NftListingDetail{}
+	for _, v := range listings {
+		nftInfo, found := k.nftKeeper.GetNFT(ctx, v.NftId.ClassId, v.NftId.NftId)
+		if !found {
+			return []types.NftListingDetail{}, types.ErrNotExistsNft
+		}
+		detail := types.NftListingDetail{
+			Listing: v,
+			NftInfo: types.NftInfo{
+				Id:      nftInfo.GetId(),
+				Uri:     nftInfo.GetUri(),
+				UriHash: nftInfo.GetUriHash(),
+			},
+		}
+		res = append(res, detail)
+	}
+	return res, nil
+}
+
 func (k Keeper) ListedNftsByOwner(c context.Context, address sdk.AccAddress) (*types.QueryListedNftsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	listings := k.GetListingsByOwner(ctx, address)
+	res, err := k.GetNftListingDetails(ctx, listings)
+	if err != nil {
+		panic(err)
+	}
 	return &types.QueryListedNftsResponse{
-		Listings: listings,
+		Listings: res,
 	}, nil
 }
 
@@ -127,8 +155,8 @@ func (k Keeper) GetListedClass(ctx sdk.Context, classId string, limit int) (*typ
 		return nil, status.Error(codes.NotFound, "not found class")
 	}
 
-	var nfts []types.ListedNft
-	var pnfts []*types.ListedNft
+	var nfts []types.NftInfo
+	var pnfts []*types.NftInfo
 	for i, v := range class.NftIds {
 		if limit <= i {
 			break
@@ -137,7 +165,7 @@ func (k Keeper) GetListedClass(ctx sdk.Context, classId string, limit int) (*typ
 		if !hasNft {
 			return nil, status.Error(codes.NotFound, "not found nft")
 		}
-		nfts = append(nfts, types.ListedNft{Id: nftInfo.Id, Uri: nftInfo.Uri, UriHash: nftInfo.UriHash})
+		nfts = append(nfts, types.NftInfo{Id: nftInfo.Id, Uri: nftInfo.Uri, UriHash: nftInfo.UriHash})
 	}
 
 	for i, _ := range nfts {
