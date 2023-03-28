@@ -69,8 +69,8 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 		RemainingMargin:  margin,
 	}
 
-	params := k.GetParams(ctx)
 	// General validation for the position creation
+	params := k.GetParams(ctx)
 	if err := position.IsValid(params); err != nil {
 		return nil, err
 	}
