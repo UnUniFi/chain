@@ -160,17 +160,31 @@ func (m PerpetualFuturesPosition) EvaluatePosition(currentBaseMetricsRate Metric
 }
 
 // TODO: consider to use sdk.DecCoin
-func MicroToNormalDenom(amount sdk.Dec) sdk.Int {
+func NormalToMicroInt(amount sdk.Dec) sdk.Int {
 	return amount.Mul(sdk.MustNewDecFromStr("1000000")).TruncateInt()
 }
 
-func MicroToNormalDec(amount sdk.Dec) sdk.Dec {
+func NormalToMicroDec(amount sdk.Dec) sdk.Dec {
 	return amount.Mul(sdk.MustNewDecFromStr("1000000"))
 }
 
+// CalcReturningAmountAtClose calculates the amount of the principal and the profit/loss at the close of the position.
 func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(baseMetricsRate, quoteMetricsRate MetricsRateType) (returningAmount math.Int, lossToLP math.Int) {
 	principal := m.RemainingMargin.Amount
-	pnlAmount := m.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)
+	// pnlAmountInMetrics represents the profit/loss amount in the metrics asset of the market.
+	// In the most cases, it means it's in "usd".
+	// AND, MORE IMPORTANTLY,
+	// it's not calculated on a micro level. So, it has to be modified to micro level by multiplying
+	// one million to represent the returning amount.
+	pnlAmountInMetrics := m.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)
+	pnlAmount := NormalToMicroDec(pnlAmountInMetrics)
+
+	// Make it be calculated in the corresponding asset as the principal.
+	if m.RemainingMargin.Denom == m.Market.BaseDenom {
+		pnlAmount = pnlAmount.Quo(baseMetricsRate.Amount.Amount)
+	} else {
+		pnlAmount = pnlAmount.Quo(quoteMetricsRate.Amount.Amount)
+	}
 
 	returningAmount = principal.Add(pnlAmount.TruncateInt())
 
