@@ -31,9 +31,9 @@ func (k Keeper) ClassAttributes(c context.Context, req *types.QueryClassAttribut
 		return nil, status.Error(codes.InvalidArgument, "invalid argument")
 	}
 
-	if err := nfttypes.ValidateClassID(req.ClassId); err != nil {
-		return nil, err
-	}
+	// if err := nfttypes.ValidateClassID(req.ClassId); err != nil {
+	// 	return nil, err
+	// }
 
 	ctx := sdk.UnwrapSDKContext(c)
 	classAttributes, found := k.GetClassAttributes(ctx, req.ClassId)
@@ -50,12 +50,12 @@ func (k Keeper) NFTMinter(c context.Context, req *types.QueryNFTMinterRequest) (
 		return nil, status.Error(codes.InvalidArgument, "invalid argument")
 	}
 
-	if err := nfttypes.ValidateClassID(req.ClassId); err != nil {
-		return nil, err
-	}
-	if err := nfttypes.ValidateNFTID(req.NftId); err != nil {
-		return nil, err
-	}
+	// if err := nfttypes.ValidateClassID(req.ClassId); err != nil {
+	// 	return nil, err
+	// }
+	// if err := nfttypes.ValidateNFTID(req.NftId); err != nil {
+	// 	return nil, err
+	// }
 
 	ctx := sdk.UnwrapSDKContext(c)
 	nftMinter, exists := k.GetNFTMinter(ctx, req.ClassId, req.NftId)

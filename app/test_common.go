@@ -6,17 +6,14 @@ import (
 	"testing"
 	"time"
 
+	abci "github.com/cometbft/cometbft/abci/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	simcli "github.com/cosmos/cosmos-sdk/x/simulation/client/cli"
 	"github.com/stretchr/testify/require"
-
-	tmdb "github.com/tendermint/tm-db"
-
-	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
-	"github.com/tendermint/tendermint/libs/log"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	simapp "github.com/cosmos/cosmos-sdk/simapp"
+	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
@@ -44,41 +41,43 @@ import (
 	// "github.com/CosmWasm/wasmd/x/wasm"
 )
 
+// SimAppChainID hardcoded chainID for simulation
+const SimAppChainID = "simulation-app"
+
 // var emptyWasmOpts []wasm.Option = nil
 
 // TestApp is a simple wrapper around an App. It exposes internal keepers for use in integration tests.
 // This file also contains test helpers. Ideally they would be in separate package.
 // Basic Usage:
-// 	Create a test app with NewTestApp, then all keepers and their methods can be accessed for test setup and execution.
+//
+//	Create a test app with NewTestApp, then all keepers and their methods can be accessed for test setup and execution.
+//
 // Advanced Usage:
-// 	Some tests call for an app to be initialized with some state. This can be achieved through keeper method calls (ie keeper.SetParams(...)).
-// 	However this leads to a lot of duplicated logic similar to InitGenesis methods.
-// 	So TestApp.InitializeFromGenesisStates() will call InitGenesis with the default genesis state.
+//
+//	Some tests call for an app to be initialized with some state. This can be achieved through keeper method calls (ie keeper.SetParams(...)).
+//	However this leads to a lot of duplicated logic similar to InitGenesis methods.
+//	So TestApp.InitializeFromGenesisStates() will call InitGenesis with the default genesis state.
 //	and TestApp.InitializeFromGenesisStates(authState, cdpState) will do the same but overwrite the auth and cdp sections of the default genesis state
-// 	Creating the genesis states can be combersome, but helper methods can make it easier such as NewAuthGenStateFromAccounts below.
+//	Creating the genesis states can be combersome, but helper methods can make it easier such as NewAuthGenStateFromAccounts below.
 type TestApp struct {
 	App
 }
 
 func NewTestApp() TestApp {
-	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(AccountAddressPrefix, AccountPubKeyPrefix)
-	config.SetBech32PrefixForValidator(ValidatorAddressPrefix, ValidatorPubKeyPrefix)
-	config.SetBech32PrefixForConsensusNode(ConsNodeAddressPrefix, ConsNodePubKeyPrefix)
-	// config.Seal()
+	config := simcli.NewConfigFromFlags()
+	config.ChainID = SimAppChainID
 
-	db := tmdb.NewMemDB()
+	db, _, logger, _, err := simtestutil.SetupSimulation(config, "leveldb-app-sim", "Simulation", simcli.FlagVerboseValue, simcli.FlagEnabledValue)
+	if err != nil {
+		panic(err)
+	}
 	tApp := NewApp(
-		log.NewNopLogger(),
+		logger,
 		db,
 		nil,
 		true,
-		map[int64]bool{},
-		"", /* cast.ToString(appOpts.Get(flags.FlagHome)) */
-		0,
-		MakeEncodingConfig(), /* a.encCfg */
 		// wasm.EnableAllProposals,
-		simapp.EmptyAppOptions{},
+		simtestutil.EmptyAppOptions{},
 		// emptyWasmOpts,
 	)
 	return TestApp{App: *tApp}
@@ -89,13 +88,13 @@ func (tApp TestApp) GetAccountKeeper() authkeeper.AccountKeeper { return tApp.Ac
 func (tApp TestApp) GetBankKeeper() bankkeeper.Keeper           { return tApp.BankKeeper }
 
 // func (tApp TestApp) GetSupplyKeeper() supply.Keeper             { return tApp.SupplyKeeper }
-func (tApp TestApp) GetStakingKeeper() stakingkeeper.Keeper   { return tApp.StakingKeeper }
+func (tApp TestApp) GetStakingKeeper() stakingkeeper.Keeper   { return *tApp.StakingKeeper }
 func (tApp TestApp) GetSlashingKeeper() slashingkeeper.Keeper { return tApp.SlashingKeeper }
 func (tApp TestApp) GetMintKeeper() mintkeeper.Keeper         { return tApp.MintKeeper }
 func (tApp TestApp) GetDistrKeeper() distrkeeper.Keeper       { return tApp.DistrKeeper }
 func (tApp TestApp) GetGovKeeper() govkeeper.Keeper           { return tApp.GovKeeper }
-func (tApp TestApp) GetCrisisKeeper() crisiskeeper.Keeper     { return tApp.CrisisKeeper }
-func (tApp TestApp) GetUpgradeKeeper() upgradekeeper.Keeper   { return tApp.UpgradeKeeper }
+func (tApp TestApp) GetCrisisKeeper() crisiskeeper.Keeper     { return *tApp.CrisisKeeper }
+func (tApp TestApp) GetUpgradeKeeper() upgradekeeper.Keeper   { return *tApp.UpgradeKeeper }
 func (tApp TestApp) GetParamsKeeper() paramskeeper.Keeper     { return tApp.ParamsKeeper }
 
 // func (tApp TestApp) GetVVKeeper() validatorvesting.Keeper       { return tApp.vvKeeper }

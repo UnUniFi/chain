@@ -81,3 +81,7 @@ func (h Hooks) BeforeValidatorModified(ctx sdk.Context, valAddr sdk.ValAddress) 
 func (h Hooks) AfterValidatorRemoved(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) error {
 	return nil
 }
+
+func (h Hooks) AfterUnbondingInitiated(_ sdk.Context, _ uint64) error {
+	return nil
+}
