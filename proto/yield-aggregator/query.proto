@@ -16,31 +16,31 @@ option go_package = "github.com/UnUniFi/chain/x/yield-aggregator/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/params";
+    option (google.api.http).get = "/ununifi/yield-aggregator/params";
   }
   // this line is used by starport scaffolding # 2
   rpc VaultAll(QueryAllVaultRequest) returns (QueryAllVaultResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/vaults";
+    option (google.api.http).get = "/ununifi/yield-aggregator/vaults";
   }
 
   rpc Vault(QueryGetVaultRequest) returns (QueryGetVaultResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/vaults/{id}";
+    option (google.api.http).get = "/ununifi/yield-aggregator/vaults/{id}";
   }
 
   rpc StrategyAll(QueryAllStrategyRequest) returns (QueryAllStrategyResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/strategies/query-param";
+    option (google.api.http).get = "/ununifi/yield-aggregator/strategies/query-param";
   }
 
   rpc Strategy(QueryGetStrategyRequest) returns (QueryGetStrategyResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/strategies/{denom}/{id}";
+    option (google.api.http).get = "/ununifi/yield-aggregator/strategies/{id}";
   }
 
   rpc EstimateMintAmount(QueryEstimateMintAmountRequest) returns (QueryEstimateMintAmountResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/vaults/{id}/estimate-mint-amount";
+    option (google.api.http).get = "/ununifi/yield-aggregator/vaults/{id}/estimate-mint-amount";
   }
 
   rpc EstimateRedeemAmount(QueryEstimateRedeemAmountRequest) returns (QueryEstimateRedeemAmountResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/vaults/{id}/estimate-redeem-amount";
+    option (google.api.http).get = "/ununifi/yield-aggregator/vaults/{id}/estimate-redeem-amount";
   }
 }
 
