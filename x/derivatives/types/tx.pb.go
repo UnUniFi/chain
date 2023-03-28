@@ -33,23 +33,23 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type MsgMintLiquidityProviderToken struct {
+type MsgDepositToPool struct {
 	Sender github_com_UnUniFi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"sender" yaml:"sender"`
 	Amount types.Coin                                      `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount" yaml:"amount"`
 }
 
-func (m *MsgMintLiquidityProviderToken) Reset()         { *m = MsgMintLiquidityProviderToken{} }
-func (m *MsgMintLiquidityProviderToken) String() string { return proto.CompactTextString(m) }
-func (*MsgMintLiquidityProviderToken) ProtoMessage()    {}
-func (*MsgMintLiquidityProviderToken) Descriptor() ([]byte, []int) {
+func (m *MsgDepositToPool) Reset()         { *m = MsgDepositToPool{} }
+func (m *MsgDepositToPool) String() string { return proto.CompactTextString(m) }
+func (*MsgDepositToPool) ProtoMessage()    {}
+func (*MsgDepositToPool) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e55416141a735582, []int{0}
 }
-func (m *MsgMintLiquidityProviderToken) XXX_Unmarshal(b []byte) error {
+func (m *MsgDepositToPool) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgMintLiquidityProviderToken) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgDepositToPool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgMintLiquidityProviderToken.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgDepositToPool.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -59,40 +59,40 @@ func (m *MsgMintLiquidityProviderToken) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-func (m *MsgMintLiquidityProviderToken) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgMintLiquidityProviderToken.Merge(m, src)
+func (m *MsgDepositToPool) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDepositToPool.Merge(m, src)
 }
-func (m *MsgMintLiquidityProviderToken) XXX_Size() int {
+func (m *MsgDepositToPool) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgMintLiquidityProviderToken) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgMintLiquidityProviderToken.DiscardUnknown(m)
+func (m *MsgDepositToPool) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDepositToPool.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgMintLiquidityProviderToken proto.InternalMessageInfo
+var xxx_messageInfo_MsgDepositToPool proto.InternalMessageInfo
 
-func (m *MsgMintLiquidityProviderToken) GetAmount() types.Coin {
+func (m *MsgDepositToPool) GetAmount() types.Coin {
 	if m != nil {
 		return m.Amount
 	}
 	return types.Coin{}
 }
 
-type MsgMintLiquidityProviderTokenResponse struct {
+type MsgDepositToPoolResponse struct {
 }
 
-func (m *MsgMintLiquidityProviderTokenResponse) Reset()         { *m = MsgMintLiquidityProviderTokenResponse{} }
-func (m *MsgMintLiquidityProviderTokenResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgMintLiquidityProviderTokenResponse) ProtoMessage()    {}
-func (*MsgMintLiquidityProviderTokenResponse) Descriptor() ([]byte, []int) {
+func (m *MsgDepositToPoolResponse) Reset()         { *m = MsgDepositToPoolResponse{} }
+func (m *MsgDepositToPoolResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgDepositToPoolResponse) ProtoMessage()    {}
+func (*MsgDepositToPoolResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e55416141a735582, []int{1}
 }
-func (m *MsgMintLiquidityProviderTokenResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgDepositToPoolResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgMintLiquidityProviderTokenResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgDepositToPoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgMintLiquidityProviderTokenResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgDepositToPoolResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -102,36 +102,36 @@ func (m *MsgMintLiquidityProviderTokenResponse) XXX_Marshal(b []byte, determinis
 		return b[:n], nil
 	}
 }
-func (m *MsgMintLiquidityProviderTokenResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgMintLiquidityProviderTokenResponse.Merge(m, src)
+func (m *MsgDepositToPoolResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDepositToPoolResponse.Merge(m, src)
 }
-func (m *MsgMintLiquidityProviderTokenResponse) XXX_Size() int {
+func (m *MsgDepositToPoolResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgMintLiquidityProviderTokenResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgMintLiquidityProviderTokenResponse.DiscardUnknown(m)
+func (m *MsgDepositToPoolResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDepositToPoolResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgMintLiquidityProviderTokenResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgDepositToPoolResponse proto.InternalMessageInfo
 
-type MsgBurnLiquidityProviderToken struct {
+type MsgWithdrawFromPool struct {
 	Sender      github_com_UnUniFi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"sender" yaml:"sender"`
-	Amount      github_com_cosmos_cosmos_sdk_types.Int          `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount" yaml:"amount"`
+	LptAmount   github_com_cosmos_cosmos_sdk_types.Int          `protobuf:"bytes,2,opt,name=lpt_amount,json=lptAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"lpt_amount" yaml:"amount"`
 	RedeemDenom string                                          `protobuf:"bytes,3,opt,name=redeem_denom,json=redeemDenom,proto3" json:"redeem_denom,omitempty" yaml:"redeem_denom"`
 }
 
-func (m *MsgBurnLiquidityProviderToken) Reset()         { *m = MsgBurnLiquidityProviderToken{} }
-func (m *MsgBurnLiquidityProviderToken) String() string { return proto.CompactTextString(m) }
-func (*MsgBurnLiquidityProviderToken) ProtoMessage()    {}
-func (*MsgBurnLiquidityProviderToken) Descriptor() ([]byte, []int) {
+func (m *MsgWithdrawFromPool) Reset()         { *m = MsgWithdrawFromPool{} }
+func (m *MsgWithdrawFromPool) String() string { return proto.CompactTextString(m) }
+func (*MsgWithdrawFromPool) ProtoMessage()    {}
+func (*MsgWithdrawFromPool) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e55416141a735582, []int{2}
 }
-func (m *MsgBurnLiquidityProviderToken) XXX_Unmarshal(b []byte) error {
+func (m *MsgWithdrawFromPool) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgBurnLiquidityProviderToken) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgWithdrawFromPool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgBurnLiquidityProviderToken.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgWithdrawFromPool.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -141,40 +141,40 @@ func (m *MsgBurnLiquidityProviderToken) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-func (m *MsgBurnLiquidityProviderToken) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgBurnLiquidityProviderToken.Merge(m, src)
+func (m *MsgWithdrawFromPool) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgWithdrawFromPool.Merge(m, src)
 }
-func (m *MsgBurnLiquidityProviderToken) XXX_Size() int {
+func (m *MsgWithdrawFromPool) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgBurnLiquidityProviderToken) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgBurnLiquidityProviderToken.DiscardUnknown(m)
+func (m *MsgWithdrawFromPool) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgWithdrawFromPool.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgBurnLiquidityProviderToken proto.InternalMessageInfo
+var xxx_messageInfo_MsgWithdrawFromPool proto.InternalMessageInfo
 
-func (m *MsgBurnLiquidityProviderToken) GetRedeemDenom() string {
+func (m *MsgWithdrawFromPool) GetRedeemDenom() string {
 	if m != nil {
 		return m.RedeemDenom
 	}
 	return ""
 }
 
-type MsgBurnLiquidityProviderTokenResponse struct {
+type MsgWithdrawFromPoolResponse struct {
 }
 
-func (m *MsgBurnLiquidityProviderTokenResponse) Reset()         { *m = MsgBurnLiquidityProviderTokenResponse{} }
-func (m *MsgBurnLiquidityProviderTokenResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgBurnLiquidityProviderTokenResponse) ProtoMessage()    {}
-func (*MsgBurnLiquidityProviderTokenResponse) Descriptor() ([]byte, []int) {
+func (m *MsgWithdrawFromPoolResponse) Reset()         { *m = MsgWithdrawFromPoolResponse{} }
+func (m *MsgWithdrawFromPoolResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgWithdrawFromPoolResponse) ProtoMessage()    {}
+func (*MsgWithdrawFromPoolResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e55416141a735582, []int{3}
 }
-func (m *MsgBurnLiquidityProviderTokenResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgWithdrawFromPoolResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgBurnLiquidityProviderTokenResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgWithdrawFromPoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgBurnLiquidityProviderTokenResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgWithdrawFromPoolResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -184,17 +184,17 @@ func (m *MsgBurnLiquidityProviderTokenResponse) XXX_Marshal(b []byte, determinis
 		return b[:n], nil
 	}
 }
-func (m *MsgBurnLiquidityProviderTokenResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgBurnLiquidityProviderTokenResponse.Merge(m, src)
+func (m *MsgWithdrawFromPoolResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgWithdrawFromPoolResponse.Merge(m, src)
 }
-func (m *MsgBurnLiquidityProviderTokenResponse) XXX_Size() int {
+func (m *MsgWithdrawFromPoolResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgBurnLiquidityProviderTokenResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgBurnLiquidityProviderTokenResponse.DiscardUnknown(m)
+func (m *MsgWithdrawFromPoolResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgWithdrawFromPoolResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgBurnLiquidityProviderTokenResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgWithdrawFromPoolResponse proto.InternalMessageInfo
 
 type MsgOpenPosition struct {
 	Sender           github_com_UnUniFi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"sender" yaml:"sender"`
@@ -539,10 +539,10 @@ func (m *MsgReportLevyPeriodResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgReportLevyPeriodResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgMintLiquidityProviderToken)(nil), "ununifi.derivatives.MsgMintLiquidityProviderToken")
-	proto.RegisterType((*MsgMintLiquidityProviderTokenResponse)(nil), "ununifi.derivatives.MsgMintLiquidityProviderTokenResponse")
-	proto.RegisterType((*MsgBurnLiquidityProviderToken)(nil), "ununifi.derivatives.MsgBurnLiquidityProviderToken")
-	proto.RegisterType((*MsgBurnLiquidityProviderTokenResponse)(nil), "ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse")
+	proto.RegisterType((*MsgDepositToPool)(nil), "ununifi.derivatives.MsgDepositToPool")
+	proto.RegisterType((*MsgDepositToPoolResponse)(nil), "ununifi.derivatives.MsgDepositToPoolResponse")
+	proto.RegisterType((*MsgWithdrawFromPool)(nil), "ununifi.derivatives.MsgWithdrawFromPool")
+	proto.RegisterType((*MsgWithdrawFromPoolResponse)(nil), "ununifi.derivatives.MsgWithdrawFromPoolResponse")
 	proto.RegisterType((*MsgOpenPosition)(nil), "ununifi.derivatives.MsgOpenPosition")
 	proto.RegisterType((*MsgOpenPositionResponse)(nil), "ununifi.derivatives.MsgOpenPositionResponse")
 	proto.RegisterType((*MsgClosePosition)(nil), "ununifi.derivatives.MsgClosePosition")
@@ -556,56 +556,57 @@ func init() {
 func init() { proto.RegisterFile("derivatives/tx.proto", fileDescriptor_e55416141a735582) }
 
 var fileDescriptor_e55416141a735582 = []byte{
-	// 782 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x56, 0xcd, 0x4e, 0xdb, 0x58,
-	0x14, 0x8e, 0xc3, 0x0c, 0x12, 0x37, 0x20, 0x82, 0xc9, 0x0c, 0xc1, 0x0c, 0x0e, 0xb2, 0x86, 0x19,
-	0x46, 0x02, 0x7b, 0xc8, 0x2c, 0x46, 0x62, 0x53, 0x11, 0x2a, 0x04, 0x55, 0xa3, 0x22, 0xb7, 0xa8,
-	0x52, 0x37, 0xd4, 0xb1, 0x0f, 0xe6, 0x2a, 0xf8, 0x5e, 0xe3, 0x7b, 0x93, 0x92, 0x77, 0xe8, 0xa2,
-	0xab, 0xbe, 0x41, 0xbb, 0xeb, 0x7b, 0x20, 0x75, 0x43, 0x77, 0x55, 0x17, 0x51, 0x05, 0xfb, 0x2e,
-	0x78, 0x82, 0x2a, 0xf6, 0x8d, 0xc9, 0x9f, 0x43, 0x90, 0x2a, 0xda, 0x45, 0x57, 0xb1, 0x7d, 0xbe,
-	0xf3, 0x9d, 0xf3, 0x7d, 0xf6, 0xb9, 0x27, 0x28, 0xe7, 0x40, 0x80, 0xeb, 0x16, 0xc7, 0x75, 0x60,
-	0x06, 0x3f, 0xd5, 0xfd, 0x80, 0x72, 0x2a, 0xcf, 0xd6, 0x48, 0x8d, 0xe0, 0x43, 0xac, 0x77, 0x44,
-	0x95, 0x9c, 0x4b, 0x5d, 0x1a, 0xc6, 0x8d, 0xd6, 0x55, 0x04, 0x55, 0x0a, 0x2e, 0xa5, 0xee, 0x31,
-	0x18, 0xe1, 0x5d, 0xa5, 0x76, 0x68, 0x70, 0xec, 0x01, 0xe3, 0x96, 0xe7, 0x0b, 0xc0, 0x7c, 0x2f,
-	0xc0, 0x22, 0x0d, 0x11, 0x52, 0x6d, 0xca, 0x3c, 0xca, 0x8c, 0x8a, 0xc5, 0xc0, 0xa8, 0xaf, 0x57,
-	0x80, 0x5b, 0xeb, 0x86, 0x4d, 0x31, 0x11, 0xf1, 0xc5, 0xce, 0xe6, 0x3a, 0xae, 0xa3, 0xb0, 0xf6,
-	0x5e, 0x42, 0x8b, 0x65, 0xe6, 0x96, 0x31, 0xe1, 0x0f, 0xf1, 0x49, 0x0d, 0x3b, 0x98, 0x37, 0xf6,
-	0x02, 0x5a, 0xc7, 0x0e, 0x04, 0x4f, 0x68, 0x15, 0x88, 0xfc, 0x1c, 0x8d, 0x33, 0x20, 0x0e, 0x04,
-	0x79, 0x69, 0x49, 0x5a, 0x99, 0x28, 0xed, 0x9c, 0x35, 0x0b, 0xa9, 0x4f, 0xcd, 0x82, 0xe1, 0x62,
-	0x7e, 0x54, 0xab, 0xe8, 0x36, 0xf5, 0x8c, 0x7d, 0xb2, 0x4f, 0xf0, 0x36, 0x36, 0xec, 0x23, 0x0b,
-	0x13, 0x83, 0x37, 0x7c, 0x60, 0xfa, 0x63, 0x1e, 0x60, 0xe2, 0x6e, 0xda, 0xf6, 0xa6, 0xe3, 0x04,
-	0xc0, 0xd8, 0x55, 0xb3, 0x30, 0xd5, 0xb0, 0xbc, 0xe3, 0x0d, 0x2d, 0xa2, 0xd3, 0x4c, 0xc1, 0x2b,
-	0xef, 0xa0, 0x71, 0xcb, 0xa3, 0x35, 0xc2, 0xf3, 0xe9, 0x25, 0x69, 0x25, 0x53, 0x9c, 0xd7, 0x23,
-	0x4d, 0x7a, 0x4b, 0x93, 0x2e, 0x34, 0xe9, 0x5b, 0x14, 0x93, 0xd2, 0x6f, 0xad, 0xe2, 0xd7, 0x4c,
-	0x51, 0x9a, 0x66, 0x8a, 0x7c, 0xed, 0x6f, 0xb4, 0x3c, 0x54, 0x8c, 0x09, 0xcc, 0xa7, 0x84, 0x81,
-	0xf6, 0x3a, 0x1d, 0xca, 0x2e, 0xd5, 0x02, 0xf2, 0xdd, 0x64, 0x3f, 0xed, 0x92, 0x3d, 0x51, 0xba,
-	0x27, 0x2a, 0xfc, 0xd5, 0x51, 0x41, 0xbc, 0xdc, 0xe8, 0x67, 0x8d, 0x39, 0x55, 0x51, 0x65, 0x97,
-	0xf0, 0x44, 0x17, 0xe4, 0x0d, 0x34, 0x19, 0x80, 0x03, 0xe0, 0x1d, 0x38, 0x40, 0xa8, 0x97, 0x1f,
-	0x0b, 0xe9, 0xe7, 0xae, 0x9a, 0x85, 0xd9, 0x28, 0xa1, 0x33, 0xaa, 0x99, 0x99, 0xe8, 0xf6, 0x7e,
-	0x78, 0x17, 0x39, 0x98, 0xec, 0x4b, 0xec, 0xe0, 0x97, 0x34, 0x9a, 0x2e, 0x33, 0xf7, 0x91, 0x0f,
-	0x64, 0x8f, 0x32, 0xcc, 0x31, 0xbd, 0xa3, 0x4f, 0xc5, 0xb3, 0x02, 0x17, 0x93, 0x5b, 0x7f, 0x2a,
-	0x51, 0x9a, 0x66, 0x8a, 0x7c, 0xf9, 0x41, 0xc8, 0x54, 0x05, 0x1e, 0xda, 0x93, 0x29, 0x2e, 0xe8,
-	0x03, 0xe6, 0x55, 0x2f, 0x87, 0x90, 0x01, 0x5c, 0x55, 0xe0, 0x11, 0x57, 0x15, 0xb8, 0x6c, 0xa3,
-	0x19, 0x5f, 0x78, 0x70, 0x80, 0x09, 0xe3, 0x16, 0xb1, 0x21, 0xff, 0x4b, 0x48, 0x9b, 0xd3, 0xa3,
-	0xd1, 0xd5, 0xdb, 0xa3, 0xab, 0x6f, 0x92, 0x46, 0x69, 0x49, 0xf0, 0xe5, 0x23, 0xbe, 0xbe, 0x64,
-	0xcd, 0xcc, 0xb6, 0x9f, 0xed, 0xb6, 0x1f, 0xcd, 0xa3, 0xb9, 0x1e, 0xbf, 0xe3, 0x77, 0xf1, 0x4e,
-	0x42, 0xd9, 0x32, 0x73, 0xb7, 0x8e, 0x29, 0x83, 0x3b, 0x7c, 0x19, 0xff, 0xa3, 0xcc, 0x75, 0xe7,
-	0x8e, 0xf8, 0x8a, 0x7f, 0xbf, 0x6a, 0x16, 0xe4, 0x5e, 0x59, 0x8e, 0x66, 0xa2, 0x58, 0x90, 0xa3,
-	0x29, 0x28, 0xdf, 0xdb, 0x6e, 0xac, 0xe5, 0x6d, 0x1a, 0xe5, 0xca, 0xcc, 0x35, 0xc1, 0xa7, 0x81,
-	0x98, 0x62, 0xeb, 0x07, 0xd7, 0x23, 0x33, 0x94, 0x0d, 0xe0, 0x85, 0x15, 0x38, 0x07, 0x01, 0xd8,
-	0xd8, 0xc7, 0x40, 0xb8, 0x18, 0xba, 0x6f, 0xd7, 0xe4, 0x74, 0x54, 0xc1, 0x6c, 0x17, 0xd0, 0x54,
-	0xf4, 0xc7, 0x20, 0x9f, 0x62, 0x23, 0xdf, 0xa4, 0xd1, 0xec, 0x35, 0x00, 0xea, 0x8d, 0x3d, 0x08,
-	0x30, 0x75, 0x7e, 0xfa, 0xd8, 0xe3, 0xe3, 0x22, 0x5a, 0x18, 0x60, 0x53, 0xdb, 0xc6, 0xe2, 0x87,
-	0x5f, 0xd1, 0x58, 0x99, 0xb9, 0xf2, 0x4b, 0x09, 0x29, 0x43, 0xb6, 0x64, 0x71, 0xf0, 0xf1, 0x31,
-	0x6c, 0x19, 0x29, 0x1b, 0xb7, 0xcf, 0x69, 0xb7, 0x15, 0xb6, 0x33, 0x64, 0x7b, 0x25, 0xb6, 0x93,
-	0x9c, 0x93, 0xdc, 0xce, 0xcd, 0xdb, 0x40, 0xae, 0xa0, 0xc9, 0xae, 0x4d, 0xf0, 0x67, 0x12, 0x57,
-	0x27, 0x4a, 0x59, 0x1d, 0x05, 0x15, 0xd7, 0x00, 0x34, 0xd5, 0x7d, 0xc2, 0x2d, 0x27, 0xa5, 0x77,
-	0xc1, 0x94, 0xb5, 0x91, 0x60, 0x71, 0x99, 0x13, 0x34, 0xd3, 0x7f, 0xf8, 0xfc, 0x93, 0xc4, 0xd1,
-	0x07, 0x55, 0xd6, 0x47, 0x86, 0xc6, 0x25, 0x09, 0xca, 0xf6, 0x8d, 0xe9, 0xca, 0x0d, 0x34, 0x31,
-	0x52, 0xf9, 0x77, 0x54, 0x64, 0xbb, 0x5e, 0x69, 0xfb, 0xec, 0x42, 0x95, 0xce, 0x2f, 0x54, 0xe9,
-	0xf3, 0x85, 0x2a, 0xbd, 0xba, 0x54, 0x53, 0xe7, 0x97, 0x6a, 0xea, 0xe3, 0xa5, 0x9a, 0x7a, 0xb6,
-	0x9a, 0x38, 0x5f, 0xa7, 0x46, 0xd7, 0xbf, 0xdc, 0xd6, 0xb4, 0x55, 0xc6, 0xc3, 0xa5, 0xf6, 0xdf,
-	0xd7, 0x00, 0x00, 0x00, 0xff, 0xff, 0x14, 0xe2, 0x79, 0xcf, 0x01, 0x0b, 0x00, 0x00,
+	// 786 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x56, 0x41, 0x4f, 0xe3, 0x46,
+	0x14, 0x4e, 0x42, 0x8b, 0xc4, 0x04, 0x44, 0x30, 0x69, 0x09, 0xa1, 0x38, 0xc8, 0x6a, 0xab, 0x54,
+	0x02, 0xbb, 0xd0, 0x43, 0x25, 0x2e, 0x55, 0x02, 0x42, 0x50, 0x35, 0x2a, 0x72, 0x8b, 0x2a, 0xf5,
+	0xd0, 0xd4, 0xb1, 0x1f, 0x66, 0x94, 0x78, 0xc6, 0x78, 0x26, 0x81, 0xfc, 0x85, 0x9e, 0x2a, 0xf5,
+	0x37, 0x74, 0x6f, 0xfb, 0x17, 0xf6, 0xcc, 0x91, 0xe3, 0x6a, 0x0f, 0xd1, 0x0a, 0xee, 0x7b, 0xe0,
+	0x17, 0xac, 0xe2, 0x99, 0x18, 0xc7, 0x89, 0xb5, 0x59, 0x69, 0x85, 0xf6, 0xb0, 0xa7, 0xcc, 0xf8,
+	0x7d, 0xef, 0x7b, 0xf3, 0xbe, 0x37, 0xef, 0x4d, 0x50, 0xd1, 0x81, 0x00, 0xf7, 0x2c, 0x8e, 0x7b,
+	0xc0, 0x0c, 0x7e, 0xad, 0xfb, 0x01, 0xe5, 0x54, 0x59, 0xed, 0x92, 0x2e, 0xc1, 0xe7, 0x58, 0x8f,
+	0x59, 0xcb, 0x45, 0x97, 0xba, 0x34, 0xb4, 0x1b, 0xc3, 0x95, 0x80, 0x96, 0x2b, 0x2e, 0xa5, 0x6e,
+	0x07, 0x8c, 0x70, 0xd7, 0xea, 0x9e, 0x1b, 0x1c, 0x7b, 0xc0, 0xb8, 0xe5, 0xf9, 0x12, 0xb0, 0x9e,
+	0x04, 0x58, 0xa4, 0x2f, 0x4d, 0xaa, 0x4d, 0x99, 0x47, 0x99, 0xd1, 0xb2, 0x18, 0x18, 0xbd, 0xdd,
+	0x16, 0x70, 0x6b, 0xd7, 0xb0, 0x29, 0x26, 0xd2, 0xbe, 0x19, 0x3f, 0x5c, 0x6c, 0x2d, 0xcc, 0xda,
+	0x8b, 0x2c, 0x2a, 0x34, 0x98, 0x7b, 0x08, 0x3e, 0x65, 0x98, 0xff, 0x4e, 0x4f, 0x29, 0xed, 0x28,
+	0x7f, 0xa3, 0x79, 0x06, 0xc4, 0x81, 0xa0, 0x94, 0xdd, 0xca, 0x56, 0x17, 0xea, 0xc7, 0x37, 0x83,
+	0x4a, 0xe6, 0xd5, 0xa0, 0x62, 0xb8, 0x98, 0x5f, 0x74, 0x5b, 0xba, 0x4d, 0x3d, 0xe3, 0x8c, 0x9c,
+	0x11, 0x7c, 0x84, 0x0d, 0xfb, 0xc2, 0xc2, 0xc4, 0xe0, 0x7d, 0x1f, 0x98, 0xfe, 0x1b, 0x0f, 0x30,
+	0x71, 0x6b, 0xb6, 0x5d, 0x73, 0x9c, 0x00, 0x18, 0x7b, 0x18, 0x54, 0x96, 0xfa, 0x96, 0xd7, 0xd9,
+	0xd7, 0x04, 0x9d, 0x66, 0x4a, 0x5e, 0xe5, 0x18, 0xcd, 0x5b, 0x1e, 0xed, 0x12, 0x5e, 0xca, 0x6d,
+	0x65, 0xab, 0xf9, 0xbd, 0x75, 0x5d, 0xa4, 0xa1, 0x0f, 0xd3, 0xd0, 0x65, 0x1a, 0xfa, 0x01, 0xc5,
+	0xa4, 0xfe, 0xc5, 0x30, 0xf8, 0x23, 0x93, 0x70, 0xd3, 0x4c, 0xe9, 0xaf, 0x95, 0x51, 0x29, 0x79,
+	0x7e, 0x13, 0x98, 0x4f, 0x09, 0x03, 0xed, 0xbf, 0x1c, 0x5a, 0x6d, 0x30, 0xf7, 0x0f, 0xcc, 0x2f,
+	0x9c, 0xc0, 0xba, 0x3a, 0x0a, 0xa8, 0xf7, 0x44, 0xf9, 0xfd, 0x85, 0x50, 0xc7, 0xe7, 0xcd, 0x58,
+	0x8e, 0x0b, 0xf5, 0x9f, 0x64, 0x94, 0x6f, 0x63, 0x51, 0x64, 0xf1, 0xc4, 0xcf, 0x0e, 0x73, 0xda,
+	0x32, 0xd2, 0x09, 0xe1, 0x93, 0x29, 0x2f, 0x74, 0x7c, 0x5e, 0x0b, 0xd7, 0xca, 0x3e, 0x5a, 0x0c,
+	0xc0, 0x01, 0xf0, 0x9a, 0x0e, 0x10, 0xea, 0x95, 0xe6, 0xc2, 0x08, 0x6b, 0x0f, 0x83, 0xca, 0xaa,
+	0xf0, 0x89, 0x5b, 0x35, 0x33, 0x2f, 0xb6, 0x87, 0xe1, 0x6e, 0x13, 0x6d, 0x4c, 0x11, 0x25, 0x12,
+	0xed, 0x4d, 0x0e, 0x2d, 0x37, 0x98, 0xfb, 0xab, 0x0f, 0xe4, 0x74, 0xa8, 0x29, 0xa6, 0xe4, 0x69,
+	0x2e, 0x84, 0x67, 0x05, 0x2e, 0x26, 0xef, 0x7d, 0x21, 0x84, 0x9b, 0x66, 0x4a, 0x7f, 0xe5, 0xe7,
+	0x90, 0xa9, 0x0d, 0x3c, 0x14, 0x25, 0xbf, 0xb7, 0xa1, 0x4f, 0x69, 0x44, 0xbd, 0x11, 0x42, 0xa6,
+	0x70, 0xb5, 0x81, 0x0b, 0xae, 0x36, 0x70, 0xc5, 0x46, 0x2b, 0xbe, 0xd4, 0xa0, 0x89, 0x09, 0xe3,
+	0x16, 0xb1, 0xa1, 0xf4, 0x59, 0x48, 0x5b, 0xd4, 0x45, 0x4f, 0xea, 0xa3, 0x9e, 0xd4, 0x6b, 0xa4,
+	0x5f, 0xdf, 0x92, 0x7c, 0x25, 0xc1, 0x37, 0xe1, 0xac, 0x99, 0x85, 0xd1, 0xb7, 0x93, 0xd1, 0xa7,
+	0x75, 0xb4, 0x96, 0xd0, 0x3b, 0xaa, 0xc5, 0x73, 0xd1, 0x9d, 0x07, 0x1d, 0xca, 0xe0, 0x09, 0x8b,
+	0xf1, 0x23, 0xca, 0x3f, 0x9e, 0xdc, 0x91, 0xd7, 0xf7, 0xcb, 0x87, 0x41, 0x45, 0x49, 0xa6, 0xe5,
+	0x68, 0x26, 0x8a, 0x12, 0x72, 0x64, 0x33, 0x8e, 0x1d, 0x37, 0xca, 0xe5, 0x59, 0x0e, 0x15, 0x1b,
+	0xcc, 0x35, 0xc1, 0xa7, 0x01, 0xff, 0x05, 0x5f, 0x76, 0xb1, 0x63, 0x7d, 0xe4, 0xf9, 0x28, 0x0c,
+	0x15, 0x02, 0xb8, 0xb2, 0x02, 0xa7, 0x19, 0x80, 0x8d, 0x7d, 0x0c, 0x84, 0xcb, 0x56, 0xfb, 0x70,
+	0x87, 0x5c, 0x16, 0x11, 0xcc, 0x51, 0x00, 0x4d, 0x45, 0x5f, 0x4d, 0xd3, 0x29, 0x12, 0xf2, 0x7f,
+	0x31, 0xd5, 0x24, 0x00, 0x7a, 0xfd, 0x53, 0x08, 0x30, 0x75, 0x3e, 0xe9, 0x98, 0xd0, 0x51, 0xcc,
+	0xb9, 0xa4, 0x4c, 0x23, 0x19, 0xf7, 0xfe, 0xf9, 0x1c, 0xcd, 0x35, 0x98, 0xab, 0x00, 0x5a, 0x1a,
+	0x7f, 0xfd, 0xbe, 0x99, 0x3e, 0x30, 0x12, 0x8f, 0x4c, 0x79, 0x67, 0x26, 0xd8, 0x28, 0x9c, 0x42,
+	0x50, 0x61, 0xe2, 0x1d, 0xaa, 0xa6, 0x51, 0x24, 0x91, 0xe5, 0xef, 0x67, 0x45, 0x46, 0xf1, 0x5a,
+	0x68, 0x71, 0x6c, 0x84, 0x7f, 0x9d, 0xc6, 0x10, 0x47, 0x95, 0xb7, 0x67, 0x41, 0x45, 0x31, 0x00,
+	0x2d, 0x8d, 0x8f, 0xa6, 0x54, 0xe9, 0xc6, 0x60, 0xe9, 0xd2, 0x4d, 0x9d, 0x1c, 0xca, 0x25, 0x5a,
+	0x99, 0x9c, 0x1a, 0xdf, 0xa5, 0x71, 0x4c, 0x40, 0xcb, 0xbb, 0x33, 0x43, 0xe3, 0xd5, 0x9a, 0xe8,
+	0xaf, 0xea, 0x3b, 0x68, 0x22, 0x64, 0x7a, 0xb5, 0xd2, 0x2e, 0x63, 0xfd, 0xe8, 0xe6, 0x4e, 0xcd,
+	0xde, 0xde, 0xa9, 0xd9, 0xd7, 0x77, 0x6a, 0xf6, 0xdf, 0x7b, 0x35, 0x73, 0x7b, 0xaf, 0x66, 0x5e,
+	0xde, 0xab, 0x99, 0x3f, 0xb7, 0x53, 0x1b, 0xe3, 0xda, 0x18, 0xfb, 0xdf, 0x39, 0x6c, 0x93, 0xd6,
+	0x7c, 0xf8, 0x1a, 0xfd, 0xf0, 0x36, 0x00, 0x00, 0xff, 0xff, 0xdf, 0x43, 0xf2, 0x97, 0x93, 0x0a,
+	0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -620,8 +621,8 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	MintLiquidityProviderToken(ctx context.Context, in *MsgMintLiquidityProviderToken, opts ...grpc.CallOption) (*MsgMintLiquidityProviderTokenResponse, error)
-	BurnLiquidityProviderToken(ctx context.Context, in *MsgBurnLiquidityProviderToken, opts ...grpc.CallOption) (*MsgBurnLiquidityProviderTokenResponse, error)
+	DepositToPool(ctx context.Context, in *MsgDepositToPool, opts ...grpc.CallOption) (*MsgDepositToPoolResponse, error)
+	WithdrawFromPool(ctx context.Context, in *MsgWithdrawFromPool, opts ...grpc.CallOption) (*MsgWithdrawFromPoolResponse, error)
 	OpenPosition(ctx context.Context, in *MsgOpenPosition, opts ...grpc.CallOption) (*MsgOpenPositionResponse, error)
 	ClosePosition(ctx context.Context, in *MsgClosePosition, opts ...grpc.CallOption) (*MsgClosePositionResponse, error)
 	ReportLiquidation(ctx context.Context, in *MsgReportLiquidation, opts ...grpc.CallOption) (*MsgReportLiquidationResponse, error)
@@ -636,18 +637,18 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) MintLiquidityProviderToken(ctx context.Context, in *MsgMintLiquidityProviderToken, opts ...grpc.CallOption) (*MsgMintLiquidityProviderTokenResponse, error) {
-	out := new(MsgMintLiquidityProviderTokenResponse)
-	err := c.cc.Invoke(ctx, "/ununifi.derivatives.Msg/MintLiquidityProviderToken", in, out, opts...)
+func (c *msgClient) DepositToPool(ctx context.Context, in *MsgDepositToPool, opts ...grpc.CallOption) (*MsgDepositToPoolResponse, error) {
+	out := new(MsgDepositToPoolResponse)
+	err := c.cc.Invoke(ctx, "/ununifi.derivatives.Msg/DepositToPool", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) BurnLiquidityProviderToken(ctx context.Context, in *MsgBurnLiquidityProviderToken, opts ...grpc.CallOption) (*MsgBurnLiquidityProviderTokenResponse, error) {
-	out := new(MsgBurnLiquidityProviderTokenResponse)
-	err := c.cc.Invoke(ctx, "/ununifi.derivatives.Msg/BurnLiquidityProviderToken", in, out, opts...)
+func (c *msgClient) WithdrawFromPool(ctx context.Context, in *MsgWithdrawFromPool, opts ...grpc.CallOption) (*MsgWithdrawFromPoolResponse, error) {
+	out := new(MsgWithdrawFromPoolResponse)
+	err := c.cc.Invoke(ctx, "/ununifi.derivatives.Msg/WithdrawFromPool", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -692,8 +693,8 @@ func (c *msgClient) ReportLevyPeriod(ctx context.Context, in *MsgReportLevyPerio
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	MintLiquidityProviderToken(context.Context, *MsgMintLiquidityProviderToken) (*MsgMintLiquidityProviderTokenResponse, error)
-	BurnLiquidityProviderToken(context.Context, *MsgBurnLiquidityProviderToken) (*MsgBurnLiquidityProviderTokenResponse, error)
+	DepositToPool(context.Context, *MsgDepositToPool) (*MsgDepositToPoolResponse, error)
+	WithdrawFromPool(context.Context, *MsgWithdrawFromPool) (*MsgWithdrawFromPoolResponse, error)
 	OpenPosition(context.Context, *MsgOpenPosition) (*MsgOpenPositionResponse, error)
 	ClosePosition(context.Context, *MsgClosePosition) (*MsgClosePositionResponse, error)
 	ReportLiquidation(context.Context, *MsgReportLiquidation) (*MsgReportLiquidationResponse, error)
@@ -704,11 +705,11 @@ type MsgServer interface {
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) MintLiquidityProviderToken(ctx context.Context, req *MsgMintLiquidityProviderToken) (*MsgMintLiquidityProviderTokenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method MintLiquidityProviderToken not implemented")
+func (*UnimplementedMsgServer) DepositToPool(ctx context.Context, req *MsgDepositToPool) (*MsgDepositToPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DepositToPool not implemented")
 }
-func (*UnimplementedMsgServer) BurnLiquidityProviderToken(ctx context.Context, req *MsgBurnLiquidityProviderToken) (*MsgBurnLiquidityProviderTokenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BurnLiquidityProviderToken not implemented")
+func (*UnimplementedMsgServer) WithdrawFromPool(ctx context.Context, req *MsgWithdrawFromPool) (*MsgWithdrawFromPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WithdrawFromPool not implemented")
 }
 func (*UnimplementedMsgServer) OpenPosition(ctx context.Context, req *MsgOpenPosition) (*MsgOpenPositionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OpenPosition not implemented")
@@ -727,38 +728,38 @@ func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
-func _Msg_MintLiquidityProviderToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgMintLiquidityProviderToken)
+func _Msg_DepositToPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDepositToPool)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).MintLiquidityProviderToken(ctx, in)
+		return srv.(MsgServer).DepositToPool(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ununifi.derivatives.Msg/MintLiquidityProviderToken",
+		FullMethod: "/ununifi.derivatives.Msg/DepositToPool",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).MintLiquidityProviderToken(ctx, req.(*MsgMintLiquidityProviderToken))
+		return srv.(MsgServer).DepositToPool(ctx, req.(*MsgDepositToPool))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_BurnLiquidityProviderToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgBurnLiquidityProviderToken)
+func _Msg_WithdrawFromPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgWithdrawFromPool)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).BurnLiquidityProviderToken(ctx, in)
+		return srv.(MsgServer).WithdrawFromPool(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ununifi.derivatives.Msg/BurnLiquidityProviderToken",
+		FullMethod: "/ununifi.derivatives.Msg/WithdrawFromPool",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).BurnLiquidityProviderToken(ctx, req.(*MsgBurnLiquidityProviderToken))
+		return srv.(MsgServer).WithdrawFromPool(ctx, req.(*MsgWithdrawFromPool))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -840,12 +841,12 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "MintLiquidityProviderToken",
-			Handler:    _Msg_MintLiquidityProviderToken_Handler,
+			MethodName: "DepositToPool",
+			Handler:    _Msg_DepositToPool_Handler,
 		},
 		{
-			MethodName: "BurnLiquidityProviderToken",
-			Handler:    _Msg_BurnLiquidityProviderToken_Handler,
+			MethodName: "WithdrawFromPool",
+			Handler:    _Msg_WithdrawFromPool_Handler,
 		},
 		{
 			MethodName: "OpenPosition",
@@ -868,7 +869,7 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	Metadata: "derivatives/tx.proto",
 }
 
-func (m *MsgMintLiquidityProviderToken) Marshal() (dAtA []byte, err error) {
+func (m *MsgDepositToPool) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -878,12 +879,12 @@ func (m *MsgMintLiquidityProviderToken) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgMintLiquidityProviderToken) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgDepositToPool) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgMintLiquidityProviderToken) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgDepositToPool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -911,7 +912,7 @@ func (m *MsgMintLiquidityProviderToken) MarshalToSizedBuffer(dAtA []byte) (int, 
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgMintLiquidityProviderTokenResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgDepositToPoolResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -921,12 +922,12 @@ func (m *MsgMintLiquidityProviderTokenResponse) Marshal() (dAtA []byte, err erro
 	return dAtA[:n], nil
 }
 
-func (m *MsgMintLiquidityProviderTokenResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgDepositToPoolResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgMintLiquidityProviderTokenResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgDepositToPoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -934,7 +935,7 @@ func (m *MsgMintLiquidityProviderTokenResponse) MarshalToSizedBuffer(dAtA []byte
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgBurnLiquidityProviderToken) Marshal() (dAtA []byte, err error) {
+func (m *MsgWithdrawFromPool) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -944,12 +945,12 @@ func (m *MsgBurnLiquidityProviderToken) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgBurnLiquidityProviderToken) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgWithdrawFromPool) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgBurnLiquidityProviderToken) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgWithdrawFromPool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -962,9 +963,9 @@ func (m *MsgBurnLiquidityProviderToken) MarshalToSizedBuffer(dAtA []byte) (int, 
 		dAtA[i] = 0x1a
 	}
 	{
-		size := m.Amount.Size()
+		size := m.LptAmount.Size()
 		i -= size
-		if _, err := m.Amount.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.LptAmount.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintTx(dAtA, i, uint64(size))
@@ -984,7 +985,7 @@ func (m *MsgBurnLiquidityProviderToken) MarshalToSizedBuffer(dAtA []byte) (int, 
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgBurnLiquidityProviderTokenResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgWithdrawFromPoolResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -994,12 +995,12 @@ func (m *MsgBurnLiquidityProviderTokenResponse) Marshal() (dAtA []byte, err erro
 	return dAtA[:n], nil
 }
 
-func (m *MsgBurnLiquidityProviderTokenResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgWithdrawFromPoolResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgBurnLiquidityProviderTokenResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgWithdrawFromPoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1313,7 +1314,7 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgMintLiquidityProviderToken) Size() (n int) {
+func (m *MsgDepositToPool) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1326,7 +1327,7 @@ func (m *MsgMintLiquidityProviderToken) Size() (n int) {
 	return n
 }
 
-func (m *MsgMintLiquidityProviderTokenResponse) Size() (n int) {
+func (m *MsgDepositToPoolResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1335,7 +1336,7 @@ func (m *MsgMintLiquidityProviderTokenResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgBurnLiquidityProviderToken) Size() (n int) {
+func (m *MsgWithdrawFromPool) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1343,7 +1344,7 @@ func (m *MsgBurnLiquidityProviderToken) Size() (n int) {
 	_ = l
 	l = m.Sender.Size()
 	n += 1 + l + sovTx(uint64(l))
-	l = m.Amount.Size()
+	l = m.LptAmount.Size()
 	n += 1 + l + sovTx(uint64(l))
 	l = len(m.RedeemDenom)
 	if l > 0 {
@@ -1352,7 +1353,7 @@ func (m *MsgBurnLiquidityProviderToken) Size() (n int) {
 	return n
 }
 
-func (m *MsgBurnLiquidityProviderTokenResponse) Size() (n int) {
+func (m *MsgWithdrawFromPoolResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1469,7 +1470,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgMintLiquidityProviderToken) Unmarshal(dAtA []byte) error {
+func (m *MsgDepositToPool) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1492,10 +1493,10 @@ func (m *MsgMintLiquidityProviderToken) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgMintLiquidityProviderToken: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgDepositToPool: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgMintLiquidityProviderToken: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgDepositToPool: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1586,7 +1587,7 @@ func (m *MsgMintLiquidityProviderToken) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgMintLiquidityProviderTokenResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgDepositToPoolResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1609,10 +1610,10 @@ func (m *MsgMintLiquidityProviderTokenResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgMintLiquidityProviderTokenResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgDepositToPoolResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgMintLiquidityProviderTokenResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgDepositToPoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -1636,7 +1637,7 @@ func (m *MsgMintLiquidityProviderTokenResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgBurnLiquidityProviderToken) Unmarshal(dAtA []byte) error {
+func (m *MsgWithdrawFromPool) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1659,10 +1660,10 @@ func (m *MsgBurnLiquidityProviderToken) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgBurnLiquidityProviderToken: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgWithdrawFromPool: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgBurnLiquidityProviderToken: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgWithdrawFromPool: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1701,7 +1702,7 @@ func (m *MsgBurnLiquidityProviderToken) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LptAmount", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1729,7 +1730,7 @@ func (m *MsgBurnLiquidityProviderToken) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.LptAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1786,7 +1787,7 @@ func (m *MsgBurnLiquidityProviderToken) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgBurnLiquidityProviderTokenResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgWithdrawFromPoolResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1809,10 +1810,10 @@ func (m *MsgBurnLiquidityProviderTokenResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgBurnLiquidityProviderTokenResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgWithdrawFromPoolResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgBurnLiquidityProviderTokenResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgWithdrawFromPoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

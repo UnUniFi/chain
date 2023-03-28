@@ -208,7 +208,7 @@ func (suite *KeeperTestSuite) TestMintBurnLiquidityProviderToken() {
 	suite.Require().NoError(err)
 
 	// when no liquidity provider token's available
-	err = suite.keeper.MintLiquidityProviderToken(suite.ctx, &types.MsgMintLiquidityProviderToken{
+	err = suite.keeper.MintLiquidityProviderToken(suite.ctx, &types.MsgDepositToPool{
 		Sender: owner.Bytes(),
 		Amount: sdk.NewInt64Coin("uatom", 10000),
 	})
@@ -218,7 +218,7 @@ func (suite *KeeperTestSuite) TestMintBurnLiquidityProviderToken() {
 	suite.Require().Equal(balance.String(), "20000udlp")
 
 	// mint more lp tokens
-	err = suite.keeper.MintLiquidityProviderToken(suite.ctx, &types.MsgMintLiquidityProviderToken{
+	err = suite.keeper.MintLiquidityProviderToken(suite.ctx, &types.MsgDepositToPool{
 		Sender: owner.Bytes(),
 		Amount: sdk.NewInt64Coin("uatom", 10000),
 	})
@@ -231,9 +231,9 @@ func (suite *KeeperTestSuite) TestMintBurnLiquidityProviderToken() {
 	balance = suite.app.BankKeeper.GetBalance(suite.ctx, owner, "udlp")
 	suite.Require().Equal(balance.String(), "39960udlp")
 
-	err = suite.keeper.BurnLiquidityProviderToken(suite.ctx, &types.MsgBurnLiquidityProviderToken{
+	err = suite.keeper.BurnLiquidityProviderToken(suite.ctx, &types.MsgWithdrawFromPool{
 		Sender:      owner.Bytes(),
-		Amount:      sdk.NewInt(20000),
+		LptAmount:   sdk.NewInt(20000),
 		RedeemDenom: "uatom",
 	})
 	suite.Require().NoError(err)
