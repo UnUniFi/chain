@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
@@ -46,20 +48,18 @@ func (k Keeper) GetLPTokenPrice(ctx sdk.Context) sdk.Dec {
 	return k.GetPoolMarketCap(ctx).CalculateLPTokenPrice(k.GetLPTokenSupply(ctx))
 }
 
-func (k Keeper) DetermineMintingLPTokenAmount(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, sdk.Coin, error) {
+// amount: amount of asset that will go to pool
+// return1: amount of LP token that value is equal to the asset that will go to pool
+func (k Keeper) DetermineMintingLPTokenAmount(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, error) {
 	currentSupply := k.bankKeeper.GetSupply(ctx, types.LiquidityProviderTokenDenom)
 
+	// assetPrice is the price of the asset in metrics ticker (USD in default)
 	assetPrice, err := k.GetAssetPrice(ctx, amount.Denom)
 	if err != nil {
-		return sdk.Coin{}, sdk.Coin{}, err
-	}
-	actualAmount := k.GetAssetBalance(ctx, amount.Denom)
-
-	targetAmount, err := k.GetAssetTargetAmount(ctx, amount.Denom)
-	if err != nil {
-		return sdk.Coin{}, sdk.Coin{}, err
+		return sdk.Coin{}, err
 	}
 
+	// assetMc is the market cap of the asset that will go to the pool, in metrics ticker (USD in default)
 	assetMc := assetPrice.Price.Mul(sdk.NewDecFromInt(amount.Amount))
 	if currentSupply.Amount.IsZero() {
 		// TODO: we can eliminate unnecessary calculation -> assetPrice.Price
@@ -68,21 +68,15 @@ func (k Keeper) DetermineMintingLPTokenAmount(ctx sdk.Context, amount sdk.Coin) 
 
 	lptPrice := k.GetLPTokenPrice(ctx)
 	if lptPrice.IsZero() {
-		return sdk.Coin{}, sdk.Coin{}, types.ErrZeroLpTokenPrice
+		return sdk.Coin{}, types.ErrZeroLpTokenPrice
 	}
 
 	mintAmount := assetMc.Quo(lptPrice)
 
-	increaseRate := sdk.NewDecFromInt(actualAmount.Amount).Sub(sdk.NewDecFromInt(targetAmount.Amount)).Quo(sdk.NewDecFromInt(targetAmount.Amount))
-	if increaseRate.IsNegative() {
-		increaseRate = sdk.NewDec(0)
-	}
-
-	mintFeeRate := k.GetLPTokenBaseMintFee(ctx).Mul(increaseRate.Add(sdk.NewDecWithPrec(1, 0)))
-
-	return sdk.NewCoin(types.LiquidityProviderTokenDenom, mintAmount.TruncateInt()), sdk.NewCoin(types.LiquidityProviderTokenDenom, mintAmount.Mul(mintFeeRate).TruncateInt()), nil
+	return sdk.NewCoin(types.LiquidityProviderTokenDenom, mintAmount.TruncateInt()), nil
 }
 
+// Assume the ticker of LP token is DLP and redeemDenom is XXX, then this emits the rate of DLP/XXX
 func (k Keeper) LptDenomRate(ctx sdk.Context, redeemDenom string) (sdk.Dec, error) {
 	lptPrice := k.GetLPTokenPrice(ctx)
 	redeemAssetPrice, err := k.GetAssetPrice(ctx, redeemDenom)
@@ -92,6 +86,9 @@ func (k Keeper) LptDenomRate(ctx sdk.Context, redeemDenom string) (sdk.Dec, erro
 	return lptPrice.Quo(redeemAssetPrice.Price), nil
 }
 
+// amount: amount of TP token that will be burnt
+// return1: amount of redeemDenom that value is equal to the LP token that will be burnt
+// return2: redeem fee amount of redeemDenom
 func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemDenom string) (sdk.Coin, sdk.Coin, error) {
 	lptPrice := k.GetLPTokenPrice(ctx)
 	redeemAssetPrice, err := k.GetAssetPrice(ctx, redeemDenom)
@@ -100,17 +97,19 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 		return sdk.Coin{}, sdk.Coin{}, err
 	}
 
+	// totalSupply is the total supply of LP token
 	totalSupply := k.bankKeeper.GetSupply(ctx, types.LiquidityProviderTokenDenom)
 	if totalSupply.Amount.IsZero() {
 		return sdk.Coin{}, sdk.Coin{}, types.ErrNoLiquidityProviderToken
 	}
 
+	// redeemAssetBalance is the amount of redeemDenom in the pool. The variable name is little weird
 	redeemAssetBalance := k.GetAssetBalance(ctx, redeemDenom)
 
 	if redeemAssetPrice.Price.IsNil() || redeemAssetPrice.Price.IsZero() {
 		return sdk.Coin{}, sdk.Coin{}, types.ErrInvalidRedeemAmount
 	}
-	// redeem amount = lptPrice * lptAmount / redeemAssetPrice
+	// redeemAmount = lptPrice * lptAmount / redeemAssetPrice
 	totalRedeemAmount := lptPrice.Mul(sdk.NewDecFromInt(lptAmount)).Quo(redeemAssetPrice.Price)
 
 	if totalRedeemAmount.GT(sdk.NewDecFromInt(redeemAssetBalance.Amount)) {
@@ -122,11 +121,13 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 		return sdk.Coin{}, sdk.Coin{}, err
 	}
 
+	// increaseRate = (targetAmount - redeemAssetBalance) / targetAmount
 	increaseRate := sdk.NewDecFromInt(targetAmount.Amount).Sub(sdk.NewDecFromInt(redeemAssetBalance.Amount)).Quo(sdk.NewDecFromInt(targetAmount.Amount))
 	if increaseRate.IsNegative() {
 		increaseRate = sdk.NewDec(0)
 	}
 
+	// redeemFeeRate = baseRedeemFeeRate * (1 + increaseRate)
 	redeemFeeRate := k.GetLPTokenBaseRedeemFee(ctx).Mul(increaseRate.Add(sdk.NewDecWithPrec(1, 0)))
 
 	redeem := sdk.NewCoin(redeemDenom, totalRedeemAmount.TruncateInt())
@@ -138,6 +139,7 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 	return redeem, fee, nil
 }
 
+// Decrease is misleading. Subtract is correct.
 func (k Keeper) DecreaseRedeemDenomAmount(ctx sdk.Context, amount sdk.Coin) error {
 	redeemAssetBalance := k.GetAssetBalance(ctx, amount.Denom)
 	decreasedAmount, err := redeemAssetBalance.SafeSub(amount)
@@ -165,56 +167,67 @@ func (k Keeper) DecreaseRedeemDenomAmount(ctx sdk.Context, amount sdk.Coin) erro
 // initial_lp_token_price = Σ target_weight_of_ith_asset * price_of_ith_asset
 // pool_marketcap = price_of_ith_asset * amount_of_ith_deopsited_asset
 // initial_lp_supply = pool_marketcap / initial_lp_token_price
-func (k Keeper) InitialLiquidityProviderTokenSupply(ctx sdk.Context, assetPrice *pftypes.CurrentPrice, assetMarketCap sdk.Dec, depositDenom string) (sdk.Coin, sdk.Coin, error) {
+func (k Keeper) InitialLiquidityProviderTokenSupply(ctx sdk.Context, assetPrice *pftypes.CurrentPrice, assetMarketCap sdk.Dec, depositDenom string) (sdk.Coin, error) {
 	assetInfo := k.GetPoolAssetByDenom(ctx, depositDenom)
 	initialLPTokenPrice := assetPrice.Price.Mul(assetInfo.TargetWeight)
 	initialLPTokenSupply := assetMarketCap.Quo(initialLPTokenPrice)
 
 	return sdk.NewCoin(types.LiquidityProviderTokenDenom, initialLPTokenSupply.TruncateInt()),
-		sdk.NewCoin(types.LiquidityProviderTokenDenom, sdk.ZeroInt()),
 		nil
 }
 
 func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLiquidityProviderToken) error {
 	depositor := msg.Sender.AccAddress()
 
-	// TODO: check if deposit token is acceptable
+	params := k.GetParams(ctx)
+	// check if the deposit denom is valid and amount is positive
+	if !types.IsValidDepositForPool(msg.Amount, params.PoolParams.AcceptedAssets) {
+		return fmt.Errorf("invalid deposit token: %s", msg.Amount.Denom)
+	}
 
-	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, depositor, types.ModuleName, sdk.Coins{msg.Amount})
-	if err != nil {
+	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, depositor, types.ModuleName, sdk.Coins{msg.Amount}); err != nil {
 		return err
 	}
 
-	mintAmount, mintFee, err := k.DetermineMintingLPTokenAmount(ctx, msg.Amount)
+	currentBalance := k.GetAssetBalance(ctx, msg.Amount.Denom)
+	targetBalance, err := k.GetAssetTargetAmount(ctx, msg.Amount.Denom)
 	if err != nil {
 		return err
 	}
+	fee := types.CalculateMintFee(currentBalance, targetBalance, msg.Amount, params.PoolParams.BaseLptMintFee)
 
-	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{mintAmount})
-	if err != nil {
-		return err
-	}
-
-	if mintFee.IsPositive() {
-		// send mint fee to fee pool
-		err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, types.DerivativeFeeCollector, sdk.Coins{mintFee})
-		if err != nil {
+	// TODO: integrate into ecosystem-incentive module
+	// temporarily, send mint fee to fee pool of the derivatives module
+	if fee.IsPositive() {
+		if err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, types.DerivativeFeeCollector, sdk.Coins{fee}); err != nil {
 			return err
+		}
+	} else {
+		if fee.IsNegative() {
+			return fmt.Errorf("negative fee: %s", fee)
 		}
 	}
 
-	reductedMintAmount, err := mintAmount.SafeSub(mintFee)
+	deposit, err := msg.Amount.SafeSub(fee)
 	if err != nil {
+		return err
+	}
+
+	mintingDLP, err := k.DetermineMintingLPTokenAmount(ctx, deposit)
+	if err != nil {
+		return err
+	}
+
+	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{mintingDLP}); err != nil {
 		return err
 	}
 
 	// send to user
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, depositor, sdk.Coins{reductedMintAmount})
-	if err != nil {
+	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, depositor, sdk.Coins{mintingDLP}); err != nil {
 		return err
 	}
 
-	k.DepositPoolAsset(ctx, depositor, msg.Amount)
+	k.DepositPoolAsset(ctx, depositor, deposit)
 	return nil
 }
 

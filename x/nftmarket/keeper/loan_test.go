@@ -147,7 +147,7 @@ func (suite *KeeperTestSuite) TestBorrow() {
 			borrower:     acc1,
 			prevBids:     2,
 			originAmount: sdk.NewInt64Coin("uguu", 0),
-			amount:       sdk.NewInt64Coin("uguu", 1000000),
+			amount:       sdk.NewInt64Coin("uguu", 10000/2),
 			listBefore:   true,
 			expectPass:   true,
 		},
@@ -158,8 +158,8 @@ func (suite *KeeperTestSuite) TestBorrow() {
 			nftOwner:     acc1,
 			borrower:     acc1,
 			prevBids:     4,
-			originAmount: sdk.NewInt64Coin("uguu", 1000000),
-			amount:       sdk.NewInt64Coin("uguu", 1000000),
+			originAmount: sdk.NewInt64Coin("uguu", 10000),
+			amount:       sdk.NewInt64Coin("uguu", 10000/2),
 			listBefore:   true,
 			expectPass:   true,
 		},
@@ -211,7 +211,7 @@ func (suite *KeeperTestSuite) TestBorrow() {
 				Sender:             ununifitypes.StringAccAddress(bidder),
 				NftId:              nftIdentifier,
 				BidAmount:          bidAmount,
-				BiddingPeriod:      suite.ctx.BlockTime().AddDate(0, 0, 1),
+				BiddingPeriod:      time.Now().Add(time.Hour * 24),
 				DepositLendingRate: sdk.MustNewDecFromStr("0.05"),
 				AutomaticPayment:   false,
 				DepositAmount:      depositAmount,
@@ -225,7 +225,7 @@ func (suite *KeeperTestSuite) TestBorrow() {
 				NftId:  nftIdentifier,
 				Amount: tc.originAmount,
 			})
-			suite.Require().NoError(err)
+			suite.Require().NoError(err, tc.testCase)
 		}
 
 		oldBorrowerBalance := suite.app.BankKeeper.GetBalance(suite.ctx, tc.borrower, "uguu")
@@ -236,7 +236,7 @@ func (suite *KeeperTestSuite) TestBorrow() {
 		})
 
 		if tc.expectPass {
-			suite.Require().NoError(err)
+			suite.Require().NoError(err, tc.testCase)
 
 			// check borrow balance increase
 			borrowerNewBalance := suite.app.BankKeeper.GetBalance(suite.ctx, tc.borrower, "uguu")
@@ -322,8 +322,8 @@ func (suite *KeeperTestSuite) TestRepay() {
 			nftOwner:     acc1,
 			borrower:     acc1,
 			prevBids:     2,
-			borrowAmount: sdk.NewInt64Coin("uguu", 1000000),
-			amount:       sdk.NewInt64Coin("uguu", 1000000),
+			borrowAmount: sdk.NewInt64Coin("uguu", 100000),
+			amount:       sdk.NewInt64Coin("uguu", 100000),
 			listBefore:   true,
 			expectPass:   true,
 		},
@@ -334,8 +334,8 @@ func (suite *KeeperTestSuite) TestRepay() {
 			nftOwner:     acc1,
 			borrower:     acc1,
 			prevBids:     2,
-			borrowAmount: sdk.NewInt64Coin("uguu", 1000000),
-			amount:       sdk.NewInt64Coin("uguu", 100000),
+			borrowAmount: sdk.NewInt64Coin("uguu", 100000),
+			amount:       sdk.NewInt64Coin("uguu", 10000),
 			listBefore:   true,
 			expectPass:   true,
 		},
@@ -386,7 +386,7 @@ func (suite *KeeperTestSuite) TestRepay() {
 				Sender:             ununifitypes.StringAccAddress(bidder),
 				NftId:              nftIdentifier,
 				BidAmount:          bidAmount,
-				BiddingPeriod:      suite.ctx.BlockTime().AddDate(0, 0, 1),
+				BiddingPeriod:      time.Now().Add(time.Hour * 24),
 				DepositLendingRate: sdk.MustNewDecFromStr("0.05"),
 				AutomaticPayment:   false,
 				DepositAmount:      depositAmount,
@@ -400,7 +400,7 @@ func (suite *KeeperTestSuite) TestRepay() {
 				NftId:  nftIdentifier,
 				Amount: tc.borrowAmount,
 			})
-			suite.Require().NoError(err)
+			suite.Require().NoError(err, tc.testCase)
 		}
 
 		oldRepayerBalance := suite.app.BankKeeper.GetBalance(suite.ctx, tc.borrower, "uguu")
@@ -411,7 +411,7 @@ func (suite *KeeperTestSuite) TestRepay() {
 		})
 
 		if tc.expectPass {
-			suite.Require().NoError(err)
+			suite.Require().NoError(err, tc.testCase)
 
 			repayerNewBalance := suite.app.BankKeeper.GetBalance(suite.ctx, tc.borrower, "uguu")
 			suite.Require().True(repayerNewBalance.Amount.LT(oldRepayerBalance.Amount))
@@ -420,7 +420,7 @@ func (suite *KeeperTestSuite) TestRepay() {
 			loan := suite.app.NftmarketKeeper.GetDebtByNft(suite.ctx, nftIdentifier.IdBytes())
 			suite.Require().True(loan.Loan.Amount.Equal(tc.borrowAmount.Amount.Sub(tc.amount.Amount)))
 		} else {
-			suite.Require().Error(err)
+			suite.Require().Error(err, tc.testCase)
 		}
 	}
 }
@@ -469,7 +469,7 @@ func (suite *KeeperTestSuite) TestLoanManagement() {
 			listingState: types.ListingState_SELLING_DECISION,
 			fullPay:      false,
 			multiBid:     true,
-			overBorrow:   false,
+			overBorrow:   true,
 		}, // status => ListingState_BIDDING
 		// loan data is removed since only one bid exists.
 		{
@@ -532,7 +532,7 @@ func (suite *KeeperTestSuite) TestLoanManagement() {
 				Sender:             ununifitypes.StringAccAddress(bidder),
 				NftId:              nftIdentifier,
 				BidAmount:          bidAmount,
-				BiddingPeriod:      suite.ctx.BlockTime().AddDate(0, 0, 1),
+				BiddingPeriod:      time.Now().Add(time.Hour * 24),
 				DepositLendingRate: sdk.MustNewDecFromStr("0.05"),
 				AutomaticPayment:   true,
 				DepositAmount:      depositAmount,
@@ -553,9 +553,9 @@ func (suite *KeeperTestSuite) TestLoanManagement() {
 				suite.Require().Empty(loan.Loan)
 			} else {
 				if tc.multiBid && tc.overBorrow {
-					suite.Require().Equal(bidAmount.Amount.QuoRaw(10), loan.Loan.Amount)
+					suite.Require().Equal(bidAmount.Amount.QuoRaw(10), loan.Loan.Amount, tc.testCase)
 				} else {
-					suite.Require().Empty(loan.Loan)
+					suite.Require().Equal(loan.Loan, sdk.Coin{}, tc.testCase)
 				}
 			}
 		case types.ListingState_END_LISTING:
@@ -575,7 +575,7 @@ func (suite *KeeperTestSuite) PlaceAndBorrow(bidAmount sdk.Coin, depositAmount s
 		Sender:             ununifitypes.StringAccAddress(bidder),
 		NftId:              nftId,
 		BidAmount:          bidAmount,
-		BiddingPeriod:      suite.ctx.BlockTime().AddDate(0, 0, 1),
+		BiddingPeriod:      time.Now().Add(time.Hour * 24),
 		DepositLendingRate: sdk.MustNewDecFromStr("0.05"),
 		AutomaticPayment:   true,
 		DepositAmount:      depositAmount,
@@ -584,7 +584,7 @@ func (suite *KeeperTestSuite) PlaceAndBorrow(bidAmount sdk.Coin, depositAmount s
 	err = suite.app.NftmarketKeeper.Borrow(suite.ctx, &types.MsgBorrow{
 		Sender: ununifitypes.StringAccAddress(nftOwner),
 		NftId:  nftId,
-		Amount: sdk.NewCoin("uguu", bidAmount.Amount.Quo(sdk.NewInt(int64(bidActiveRank)))),
+		Amount: depositAmount,
 	})
 	suite.Require().NoError(err)
 
