@@ -70,8 +70,8 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 	}
 
 	// General validation for the position creation
-	quoteTicker := k.GetPoolQuoteTicker(ctx)
-	if err := position.IsValid(quoteTicker); err != nil {
+	params := k.GetParams(ctx)
+	if err := position.IsValid(params); err != nil {
 		return nil, err
 	}
 

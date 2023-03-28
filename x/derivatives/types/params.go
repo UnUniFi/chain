@@ -33,7 +33,8 @@ func DefaultPerpetualFuturesParams() PerpetualFuturesParams {
 		CommissionRate:        sdk.MustNewDecFromStr("0.001"),
 		MarginMaintenanceRate: sdk.MustNewDecFromStr("0.5"),
 		ImaginaryFundingRateProportionalCoefficient: sdk.MustNewDecFromStr("0.0005"),
-		Markets: []*Market{},
+		Markets:     []*Market{},
+		MaxLeverage: 30,
 	}
 }
 
@@ -135,6 +136,10 @@ func validatePerpetualFutures(i interface{}) error {
 
 	if !perpetualFuturesParams.MarginMaintenanceRate.LTE(sdk.OneDec()) {
 		return fmt.Errorf("invalid margin maintenance rate: %s", perpetualFuturesParams.MarginMaintenanceRate)
+	}
+
+	if perpetualFuturesParams.MaxLeverage == 0 {
+		return fmt.Errorf("max leverage must not be zero: %d", perpetualFuturesParams.MaxLeverage)
 	}
 
 	return nil

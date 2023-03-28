@@ -28,6 +28,9 @@ message PerpetualFuturesParams {
   repeated Market markets = 4 [
     (gogoproto.moretags) = "yaml:\"markets\""
   ];
+  uint32 max_leverage = 5 [
+    (gogoproto.moretags) = "yaml:\"max_leverage\""
+  ];
 }
 
 message PerpetualFuturesPosition {
