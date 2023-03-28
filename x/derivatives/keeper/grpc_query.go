@@ -49,8 +49,9 @@ func (k Keeper) PerpetualFutures(c context.Context, req *types.QueryPerpetualFut
 		}
 	}
 
-	longUUsd := positions.EvaluateLongPositions(getPriceFunc(ctx))
-	shortUUsd := positions.EvaluateShortPositions(getPriceFunc(ctx))
+	quoteTicker := k.GetPoolQuoteTicker(ctx)
+	longUUsd := positions.EvaluateLongPositions(quoteTicker, getPriceFunc(ctx))
+	shortUUsd := positions.EvaluateShortPositions(quoteTicker, getPriceFunc(ctx))
 	// TODO: implement the handler logic
 	ctx.BlockHeight()
 	metricsQuoteTicker := "USD"
@@ -209,7 +210,10 @@ func (k Keeper) MakeQueriedPositions(ctx sdk.Context, positions types.Positions)
 			return nil, status.Error(codes.Internal, err.Error())
 		}
 
-		profit := perpetualFuturesPosition.ProfitAndLossInMetrics(currentBaseUsdRate, currentQuoteUsdRate)
+		quoteTicker := k.GetPoolQuoteTicker(ctx)
+		baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, currentBaseUsdRate)
+		quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, currentQuoteUsdRate)
+		profit := perpetualFuturesPosition.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)
 		// fixme do not use sdk.Coin directly
 		positiveOrNegativeProfitCoin := sdk.Coin{
 			Denom:  "uusd",
@@ -217,12 +221,12 @@ func (k Keeper) MakeQueriedPositions(ctx sdk.Context, positions types.Positions)
 		}
 		positiveOrNegativeEffectiveMargin := sdk.Coin{
 			Denom:  "uusd",
-			Amount: types.MicroToNormalDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(currentBaseUsdRate, currentQuoteUsdRate)),
+			Amount: types.MicroToNormalDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate)),
 		}
 		queriedPosition := types.QueriedPosition{
 			Position:              position,
 			ValuationProfit:       positiveOrNegativeProfitCoin,
-			MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate),
+			MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate),
 			EffectiveMargin:       positiveOrNegativeEffectiveMargin,
 		}
 		queriedPositions = append(queriedPositions, queriedPosition)
@@ -253,13 +257,16 @@ func (k Keeper) Position(c context.Context, req *types.QueryPositionRequest) (*t
 	if err != nil {
 		panic(err)
 	}
+	quoteTicker := k.GetPoolQuoteTicker(ctx)
+	baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, currentBaseUsdRate)
+	quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, currentQuoteUsdRate)
 
-	profit := perpetualFuturesPosition.ProfitAndLossInMetrics(currentBaseUsdRate, currentQuoteUsdRate)
+	profit := perpetualFuturesPosition.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)
 	return &types.QueryPositionResponse{
 		Position:              position,
 		ValuationProfit:       sdk.NewCoin("uusd", types.MicroToNormalDenom(profit)),
-		MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(currentBaseUsdRate, currentQuoteUsdRate),
-		EffectiveMargin:       sdk.NewCoin("uusd", types.MicroToNormalDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(currentBaseUsdRate, currentQuoteUsdRate))),
+		MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate),
+		EffectiveMargin:       sdk.NewCoin("uusd", types.MicroToNormalDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate))),
 	}, nil
 }
 
@@ -280,10 +287,11 @@ func (k Keeper) PerpetualFuturesPositionSize(c context.Context, req *types.Query
 		}
 	}
 	var result sdk.Dec
+	quoteTicker := k.GetPoolQuoteTicker(ctx)
 	if req.PositionType == types.PositionType_LONG {
-		result = positions.EvaluateLongPositions(getPriceFunc(ctx))
+		result = positions.EvaluateLongPositions(quoteTicker, getPriceFunc(ctx))
 	} else if req.PositionType == types.PositionType_SHORT {
-		result = positions.EvaluateShortPositions(getPriceFunc(ctx))
+		result = positions.EvaluateShortPositions(quoteTicker, getPriceFunc(ctx))
 	} else {
 		return nil, status.Error(codes.InvalidArgument, "invalid position type")
 	}
@@ -334,14 +342,13 @@ func (k Keeper) EstimateDLPTokenAmount(c context.Context, req *types.QueryEstima
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	mintAmount, mintFee, err := k.DetermineMintingLPTokenAmount(ctx, validCoin)
+	mintAmount, err := k.DetermineMintingLPTokenAmount(ctx, validCoin)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	return &types.QueryEstimateDLPTokenAmountResponse{
 		Amount: mintAmount,
-		Fee:    mintFee,
 	}, nil
 }
 

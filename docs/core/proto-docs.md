@@ -2005,7 +2005,6 @@ GenesisState defines the derivatives module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-| `fee` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -3974,6 +3973,7 @@ Query defines the gRPC querier service.
 | `successful_bid_end_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `auto_relisted_count` | [uint64](#uint64) |  |  |
 | `collected_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `minimum_bidding_period` | [google.protobuf.Duration](#google.protobuf.Duration) |  |  |
 
 
 
@@ -4672,6 +4672,7 @@ Query defines the gRPC querier service.
 | `bid_token` | [string](#string) |  |  |
 | `minimum_deposit_rate` | [string](#string) |  | 1% = 0.01 |
 | `automatic_refinancing` | [bool](#bool) |  |  |
+| `minimum_bidding_period` | [google.protobuf.Duration](#google.protobuf.Duration) |  |  |
 
 
 
