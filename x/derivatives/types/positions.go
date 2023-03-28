@@ -15,7 +15,7 @@ type PositionInstance interface {
 
 type Positions []Position
 
-func (m Position) IsValid(quoteTicker string) error {
+func (m Position) IsValid(params Params) error {
 	if !m.IsValidMarginAsset() {
 		return fmt.Errorf("margin asset is not valid")
 	}
@@ -30,8 +30,12 @@ func (m Position) IsValid(quoteTicker string) error {
 		return err
 	}
 
-	if !pfPosition.IsValidPositionSize(quoteTicker) {
+	if !pfPosition.IsValidPositionSize(params.PoolParams.QuoteTicker) {
 		return fmt.Errorf("position size is not valid")
+	}
+
+	if !pfPosition.PositionInstance.IsValidLeverage(params.PerpetualFutures.MaxLeverage) {
+		return fmt.Errorf("leverage is not valid")
 	}
 
 	return nil
@@ -48,6 +52,10 @@ func (m PerpetualFuturesPosition) IsValidPositionSize(quoteTicker string) bool {
 	quoteMetricsRate := NewMetricsRateType(quoteTicker, m.Market.BaseDenom, m.OpenedQuoteRate)
 	marginMaintenanceRate := m.MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate)
 	return !marginMaintenanceRate.LT(sdk.OneDec())
+}
+
+func (m PerpetualFuturesPositionInstance) IsValidLeverage(maxLeverage uint32) bool {
+	return m.Leverage > 0 && m.Leverage <= maxLeverage
 }
 
 func UnpackPositionInstance(positionAny types.Any) (PositionInstance, error) {
