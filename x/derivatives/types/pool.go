@@ -53,3 +53,12 @@ func (p PoolParams) Validate() error {
 	}
 	return nil
 }
+
+func IsValidDepositForPool(deposit sdk.Coin, acceptableAssets []*PoolParams_Asset) bool {
+	for _, asset := range acceptableAssets {
+		if deposit.Denom == asset.Denom {
+			return deposit.Amount.IsPositive()
+		}
+	}
+	return false
+}
