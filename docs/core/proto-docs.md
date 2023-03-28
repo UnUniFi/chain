@@ -143,18 +143,18 @@
     - [Query](#ununifi.derivatives.Query)
   
 - [derivatives/tx.proto](#derivatives/tx.proto)
-    - [MsgBurnLiquidityProviderToken](#ununifi.derivatives.MsgBurnLiquidityProviderToken)
-    - [MsgBurnLiquidityProviderTokenResponse](#ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse)
     - [MsgClosePosition](#ununifi.derivatives.MsgClosePosition)
     - [MsgClosePositionResponse](#ununifi.derivatives.MsgClosePositionResponse)
-    - [MsgMintLiquidityProviderToken](#ununifi.derivatives.MsgMintLiquidityProviderToken)
-    - [MsgMintLiquidityProviderTokenResponse](#ununifi.derivatives.MsgMintLiquidityProviderTokenResponse)
+    - [MsgDepositToPool](#ununifi.derivatives.MsgDepositToPool)
+    - [MsgDepositToPoolResponse](#ununifi.derivatives.MsgDepositToPoolResponse)
     - [MsgOpenPosition](#ununifi.derivatives.MsgOpenPosition)
     - [MsgOpenPositionResponse](#ununifi.derivatives.MsgOpenPositionResponse)
     - [MsgReportLevyPeriod](#ununifi.derivatives.MsgReportLevyPeriod)
     - [MsgReportLevyPeriodResponse](#ununifi.derivatives.MsgReportLevyPeriodResponse)
     - [MsgReportLiquidation](#ununifi.derivatives.MsgReportLiquidation)
     - [MsgReportLiquidationResponse](#ununifi.derivatives.MsgReportLiquidationResponse)
+    - [MsgWithdrawFromPool](#ununifi.derivatives.MsgWithdrawFromPool)
+    - [MsgWithdrawFromPoolResponse](#ununifi.derivatives.MsgWithdrawFromPoolResponse)
   
     - [Msg](#ununifi.derivatives.Msg)
   
@@ -1695,6 +1695,7 @@ Query defines the gRPC querier service.
 | `margin_maintenance_rate` | [string](#string) |  |  |
 | `imaginary_funding_rate_proportional_coefficient` | [string](#string) |  |  |
 | `markets` | [Market](#ununifi.derivatives.Market) | repeated |  |
+| `max_leverage` | [uint32](#uint32) |  |  |
 
 
 
@@ -2373,33 +2374,6 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.MsgBurnLiquidityProviderToken"></a>
-
-### MsgBurnLiquidityProviderToken
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  |  |
-| `amount` | [string](#string) |  |  |
-| `redeem_denom` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse"></a>
-
-### MsgBurnLiquidityProviderTokenResponse
-
-
-
-
-
-
-
 <a name="ununifi.derivatives.MsgClosePosition"></a>
 
 ### MsgClosePosition
@@ -2426,9 +2400,9 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.MsgMintLiquidityProviderToken"></a>
+<a name="ununifi.derivatives.MsgDepositToPool"></a>
 
-### MsgMintLiquidityProviderToken
+### MsgDepositToPool
 
 
 
@@ -2442,9 +2416,9 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.MsgMintLiquidityProviderTokenResponse"></a>
+<a name="ununifi.derivatives.MsgDepositToPoolResponse"></a>
 
-### MsgMintLiquidityProviderTokenResponse
+### MsgDepositToPoolResponse
 
 
 
@@ -2533,6 +2507,33 @@ Query defines the gRPC querier service.
 
 
 
+
+<a name="ununifi.derivatives.MsgWithdrawFromPool"></a>
+
+### MsgWithdrawFromPool
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `lpt_amount` | [string](#string) |  |  |
+| `redeem_denom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.MsgWithdrawFromPoolResponse"></a>
+
+### MsgWithdrawFromPoolResponse
+
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -2547,8 +2548,8 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `MintLiquidityProviderToken` | [MsgMintLiquidityProviderToken](#ununifi.derivatives.MsgMintLiquidityProviderToken) | [MsgMintLiquidityProviderTokenResponse](#ununifi.derivatives.MsgMintLiquidityProviderTokenResponse) |  | |
-| `BurnLiquidityProviderToken` | [MsgBurnLiquidityProviderToken](#ununifi.derivatives.MsgBurnLiquidityProviderToken) | [MsgBurnLiquidityProviderTokenResponse](#ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse) |  | |
+| `DepositToPool` | [MsgDepositToPool](#ununifi.derivatives.MsgDepositToPool) | [MsgDepositToPoolResponse](#ununifi.derivatives.MsgDepositToPoolResponse) |  | |
+| `WithdrawFromPool` | [MsgWithdrawFromPool](#ununifi.derivatives.MsgWithdrawFromPool) | [MsgWithdrawFromPoolResponse](#ununifi.derivatives.MsgWithdrawFromPoolResponse) |  | |
 | `OpenPosition` | [MsgOpenPosition](#ununifi.derivatives.MsgOpenPosition) | [MsgOpenPositionResponse](#ununifi.derivatives.MsgOpenPositionResponse) |  | |
 | `ClosePosition` | [MsgClosePosition](#ununifi.derivatives.MsgClosePosition) | [MsgClosePositionResponse](#ununifi.derivatives.MsgClosePositionResponse) |  | |
 | `ReportLiquidation` | [MsgReportLiquidation](#ununifi.derivatives.MsgReportLiquidation) | [MsgReportLiquidationResponse](#ununifi.derivatives.MsgReportLiquidationResponse) |  | |
