@@ -15,7 +15,7 @@ type PositionInstance interface {
 
 type Positions []Position
 
-func (m Position) IsValid(quoteTicker string) error {
+func (m Position) IsValid(params Params) error {
 	if !m.IsValidMarginAsset() {
 		return fmt.Errorf("margin asset is not valid")
 	}
@@ -30,7 +30,7 @@ func (m Position) IsValid(quoteTicker string) error {
 		return err
 	}
 
-	if !pfPosition.IsValidPositionSize(quoteTicker) {
+	if !pfPosition.IsValidPositionSize(params.PoolParams.QuoteTicker) {
 		return fmt.Errorf("position size is not valid")
 	}
 
