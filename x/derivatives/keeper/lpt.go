@@ -58,16 +58,6 @@ func (k Keeper) DetermineMintingLPTokenAmount(ctx sdk.Context, amount sdk.Coin) 
 	if err != nil {
 		return sdk.Coin{}, err
 	}
-	// actualAmount means the amount of the asset that is in the pool
-	actualAmount := k.GetAssetBalance(ctx, amount.Denom)
-
-	// for asset "i",
-	// targetAmount[i] = targetWeight[i] * poolMarketCap / price[i]
-	// targetWeight is determined in params of pool
-	targetAmount, err := k.GetAssetTargetAmount(ctx, amount.Denom)
-	if err != nil {
-		return sdk.Coin{}, err
-	}
 
 	// assetMc is the market cap of the asset that will go to the pool, in metrics ticker (USD in default)
 	assetMc := assetPrice.Price.Mul(sdk.NewDecFromInt(amount.Amount))
