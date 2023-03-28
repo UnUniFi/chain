@@ -206,6 +206,12 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 		return types.ErrInvalidBidDenom
 	}
 
+	// todo add test case
+	minimumBiddingPeriodHour := time.Now().Add(listing.MinimumBiddingPeriod)
+	if msg.BiddingPeriod.Before(minimumBiddingPeriodHour) {
+		return types.ErrSmallBiddingPeriod
+	}
+
 	bids := types.NftBids(k.GetBidsByNft(ctx, listing.IdBytes()))
 	bidder := msg.Sender.AccAddress()
 	oldBid := bids.GetBidByBidder(bidder.String())

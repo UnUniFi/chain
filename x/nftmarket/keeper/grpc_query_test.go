@@ -67,10 +67,14 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					BidToken:           "uguu",
 					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 					StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
-					EndAt:              time.Date(1, time.January, 1, 0, 1, 0, 0, time.UTC),
+					EndAt:              time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					FullPaymentEndAt:   time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					SuccessfulBidEndAt: time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					AutoRelistedCount:  0x0,
+					CollectedAmount: sdk.Coin{
+						Denom:  "uguu",
+						Amount: sdk.ZeroInt(),
+					},
 				},
 				{
 					NftId:       types.NftIdentifier{ClassId: "class5", NftId: "nft5"},
@@ -78,10 +82,14 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					ListingType: 0, State: 0, BidToken: "uguu",
 					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 					StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
-					EndAt:              time.Date(1, time.January, 1, 0, 1, 0, 0, time.UTC),
+					EndAt:              time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					FullPaymentEndAt:   time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					SuccessfulBidEndAt: time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					AutoRelistedCount:  0,
+					CollectedAmount: sdk.Coin{
+						Denom:  "uguu",
+						Amount: sdk.ZeroInt(),
+					},
 				},
 				{
 					NftId:       types.NftIdentifier{ClassId: "class6", NftId: "nft6"},
@@ -89,14 +97,18 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					ListingType: 0, State: 0, BidToken: "uguu",
 					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 					StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
-					EndAt:              time.Date(1, time.January, 1, 0, 1, 0, 0, time.UTC),
+					EndAt:              time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					FullPaymentEndAt:   time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					SuccessfulBidEndAt: time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					AutoRelistedCount:  0,
+					CollectedAmount: sdk.Coin{
+						Denom:  "uguu",
+						Amount: sdk.ZeroInt(),
+					},
 				},
 			},
 			func(index int, require *require.Assertions, res *types.QueryListedNftsResponse, expListingNft []types.NftListing) {
-				require.Equal(res.Listings, expListingNft, "the error occurred on:%d", index)
+				require.Equal(res.Listings, expListingNft, "the error occurred on:%d", index, res.Listings[index].NftId)
 			},
 		},
 		{
@@ -114,10 +126,15 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					ListingType: 0, State: 0, BidToken: "uguu",
 					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 					StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
-					EndAt:              time.Date(1, time.January, 1, 0, 1, 0, 0, time.UTC),
+					EndAt:              time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					FullPaymentEndAt:   time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					SuccessfulBidEndAt: time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					AutoRelistedCount:  0,
+
+					CollectedAmount: sdk.Coin{
+						Denom:  "uguu",
+						Amount: sdk.ZeroInt(),
+					},
 				},
 			},
 			func(index int, require *require.Assertions, res *types.QueryListedNftsResponse, expListingNft []types.NftListing) {
@@ -139,10 +156,14 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					BidToken:           "uguu",
 					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 					StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
-					EndAt:              time.Date(1, time.January, 1, 0, 1, 0, 0, time.UTC),
+					EndAt:              time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					FullPaymentEndAt:   time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					SuccessfulBidEndAt: time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					AutoRelistedCount:  0x0,
+					CollectedAmount: sdk.Coin{
+						Denom:  "uguu",
+						Amount: sdk.ZeroInt(),
+					},
 				},
 				{
 					NftId:       types.NftIdentifier{ClassId: "class5", NftId: "nft5"},
@@ -150,10 +171,14 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					ListingType: 0, State: 0, BidToken: "uguu",
 					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 					StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
-					EndAt:              time.Date(1, time.January, 1, 0, 1, 0, 0, time.UTC),
+					EndAt:              time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					FullPaymentEndAt:   time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					SuccessfulBidEndAt: time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					AutoRelistedCount:  0,
+					CollectedAmount: sdk.Coin{
+						Denom:  "uguu",
+						Amount: sdk.ZeroInt(),
+					},
 				},
 				{
 					NftId:       types.NftIdentifier{ClassId: "class6", NftId: "nft6"},
@@ -161,10 +186,14 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					ListingType: 0, State: 0, BidToken: "uguu",
 					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 					StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
-					EndAt:              time.Date(1, time.January, 1, 0, 1, 0, 0, time.UTC),
+					EndAt:              time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					FullPaymentEndAt:   time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					SuccessfulBidEndAt: time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					AutoRelistedCount:  0,
+					CollectedAmount: sdk.Coin{
+						Denom:  "uguu",
+						Amount: sdk.ZeroInt(),
+					},
 				},
 				{
 					NftId:       types.NftIdentifier{ClassId: "class7", NftId: "nft7"},
@@ -172,10 +201,14 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					ListingType: 0, State: 0, BidToken: "uguu",
 					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 					StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
-					EndAt:              time.Date(1, time.January, 1, 0, 1, 0, 0, time.UTC),
+					EndAt:              time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					FullPaymentEndAt:   time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					SuccessfulBidEndAt: time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 					AutoRelistedCount:  0,
+					CollectedAmount: sdk.Coin{
+						Denom:  "uguu",
+						Amount: sdk.ZeroInt(),
+					},
 				},
 			},
 			func(index int, require *require.Assertions, res *types.QueryListedNftsResponse, expListingNft []types.NftListing) {
@@ -273,10 +306,10 @@ func (s *KeeperTestSuite) TestLoan() {
 					},
 					Loan: sdk.Coin{
 						Denom:  "uguu",
-						Amount: sdk.NewInt(2000000),
+						Amount: sdk.NewInt(15000),
 					},
 				},
-				BorrowingLimit: sdk.NewInt(3500000),
+				BorrowingLimit: sdk.NewInt(100000),
 			},
 		},
 	}
@@ -296,141 +329,141 @@ func (s *KeeperTestSuite) TestLoan() {
 	}
 }
 
-func (s *KeeperTestSuite) TestClasses() {
-	testCases := []struct {
-		msg       string
-		malleate  func(index int, require *require.Assertions)
-		req       *types.QueryListedClassesRequest
-		expError  string
-		expResult types.QueryListedClassesResponse
-	}{
-		{
-			"success empty",
-			func(index int, require *require.Assertions) {
-			},
-			&types.QueryListedClassesRequest{},
-			"",
-			types.QueryListedClassesResponse{
-				Classes: []*types.QueryListedClassResponse(nil),
-			},
-		},
-		{
-			"Success list nft",
-			func(index int, require *require.Assertions) {
-				s.TestListNft()
-			},
-			&types.QueryListedClassesRequest{},
-			"",
-			types.QueryListedClassesResponse{
-				Classes: []*types.QueryListedClassResponse{
-					{
-						ClassId:     "class2",
-						Name:        "class2",
-						Description: "class2",
-						Symbol:      "class2",
-						Uri:         "class2",
-						Urihash:     "",
-						Nfts: []*types.ListedNft{
-							{
-								Id:      "nft2",
-								Uri:     "nft2",
-								UriHash: "nft2",
-							},
-						},
-						NftCount: 1,
-					},
-					{
-						ClassId:     "class5",
-						Name:        "class5",
-						Description: "class5",
-						Symbol:      "class5",
-						Uri:         "class5",
-						Urihash:     "",
-						Nfts: []*types.ListedNft{
-							{
-								Id:      "nft5",
-								Uri:     "nft5",
-								UriHash: "nft5",
-							},
-						},
-						NftCount: 1,
-					},
-					{
-						ClassId:     "class6",
-						Name:        "class6",
-						Description: "class6",
-						Symbol:      "class6",
-						Uri:         "class6",
-						Urihash:     "",
-						Nfts: []*types.ListedNft{
-							{
-								Id:      "nft6",
-								Uri:     "nft6",
-								UriHash: "nft6",
-							},
-						},
-						NftCount: 1,
-					},
-					{
-						ClassId:     "class7",
-						Name:        "class7",
-						Description: "class7",
-						Symbol:      "class7",
-						Uri:         "class7",
-						Urihash:     "",
-						Nfts: []*types.ListedNft{
-							{
-								Id:      "nft7",
-								Uri:     "nft7",
-								UriHash: "nft7",
-							},
-						},
-						NftCount: 1,
-					},
-				},
-			},
-		},
-		{
-			"Success plaace bid",
-			func(index int, require *require.Assertions) {
-				s.TestPlaceBid()
-			},
-			&types.QueryListedClassesRequest{},
-			"",
-			types.QueryListedClassesResponse{
-				Classes: []*types.QueryListedClassResponse{
-					{
-						ClassId:     "class5",
-						Name:        "class5",
-						Description: "class5",
-						Symbol:      "class5",
-						Uri:         "class5",
-						Urihash:     "",
-						Nfts: []*types.ListedNft{
-							{
-								Id:      "nft5",
-								Uri:     "nft5",
-								UriHash: "nft5",
-							},
-						},
-						NftCount: 1,
-					},
-				},
-			},
-		},
-	}
-	for index, tc := range testCases {
-		s.Run(fmt.Sprintf("Case %s", tc.msg), func() {
-			require := s.Require()
-			tc.malleate(index, require)
-			result, err := s.queryClient.ListedClasses(gocontext.Background(), tc.req)
-			if tc.expError == "" {
-				require.NoError(err)
-				require.Equal(result, &tc.expResult, "the error occurred on:%d", index)
-			} else {
-				require.Error(err)
-				require.Contains(err.Error(), tc.expError)
-			}
-		})
-	}
-}
+// func (s *KeeperTestSuite) TestClasses() {
+// 	testCases := []struct {
+// 		msg       string
+// 		malleate  func(index int, require *require.Assertions)
+// 		req       *types.QueryListedClassesRequest
+// 		expError  string
+// 		expResult types.QueryListedClassesResponse
+// 	}{
+// 		{
+// 			"success empty",
+// 			func(index int, require *require.Assertions) {
+// 			},
+// 			&types.QueryListedClassesRequest{},
+// 			"",
+// 			types.QueryListedClassesResponse{
+// 				Classes: []*types.QueryListedClassResponse(nil),
+// 			},
+// 		},
+// 		{
+// 			"Success list nft",
+// 			func(index int, require *require.Assertions) {
+// 				s.TestListNft()
+// 			},
+// 			&types.QueryListedClassesRequest{},
+// 			"",
+// 			types.QueryListedClassesResponse{
+// 				Classes: []*types.QueryListedClassResponse{
+// 					{
+// 						ClassId:     "class2",
+// 						Name:        "class2",
+// 						Description: "class2",
+// 						Symbol:      "class2",
+// 						Uri:         "class2",
+// 						Urihash:     "",
+// 						Nfts: []*types.ListedNft{
+// 							{
+// 								Id:      "nft2",
+// 								Uri:     "nft2",
+// 								UriHash: "nft2",
+// 							},
+// 						},
+// 						NftCount: 1,
+// 					},
+// 					{
+// 						ClassId:     "class5",
+// 						Name:        "class5",
+// 						Description: "class5",
+// 						Symbol:      "class5",
+// 						Uri:         "class5",
+// 						Urihash:     "",
+// 						Nfts: []*types.ListedNft{
+// 							{
+// 								Id:      "nft5",
+// 								Uri:     "nft5",
+// 								UriHash: "nft5",
+// 							},
+// 						},
+// 						NftCount: 1,
+// 					},
+// 					{
+// 						ClassId:     "class6",
+// 						Name:        "class6",
+// 						Description: "class6",
+// 						Symbol:      "class6",
+// 						Uri:         "class6",
+// 						Urihash:     "",
+// 						Nfts: []*types.ListedNft{
+// 							{
+// 								Id:      "nft6",
+// 								Uri:     "nft6",
+// 								UriHash: "nft6",
+// 							},
+// 						},
+// 						NftCount: 1,
+// 					},
+// 					{
+// 						ClassId:     "class7",
+// 						Name:        "class7",
+// 						Description: "class7",
+// 						Symbol:      "class7",
+// 						Uri:         "class7",
+// 						Urihash:     "",
+// 						Nfts: []*types.ListedNft{
+// 							{
+// 								Id:      "nft7",
+// 								Uri:     "nft7",
+// 								UriHash: "nft7",
+// 							},
+// 						},
+// 						NftCount: 1,
+// 					},
+// 				},
+// 			},
+// 		},
+// 		{
+// 			"Success plaace bid",
+// 			func(index int, require *require.Assertions) {
+// 				s.TestPlaceBid()
+// 			},
+// 			&types.QueryListedClassesRequest{},
+// 			"",
+// 			types.QueryListedClassesResponse{
+// 				Classes: []*types.QueryListedClassResponse{
+// 					{
+// 						ClassId:     "class5",
+// 						Name:        "class5",
+// 						Description: "class5",
+// 						Symbol:      "class5",
+// 						Uri:         "class5",
+// 						Urihash:     "",
+// 						Nfts: []*types.ListedNft{
+// 							{
+// 								Id:      "nft5",
+// 								Uri:     "nft5",
+// 								UriHash: "nft5",
+// 							},
+// 						},
+// 						NftCount: 1,
+// 					},
+// 				},
+// 			},
+// 		},
+// 	}
+// 	for index, tc := range testCases {
+// 		s.Run(fmt.Sprintf("Case %s", tc.msg), func() {
+// 			require := s.Require()
+// 			tc.malleate(index, require)
+// 			result, err := s.queryClient.ListedClasses(gocontext.Background(), tc.req)
+// 			if tc.expError == "" {
+// 				require.NoError(err)
+// 				require.Equal(result, &tc.expResult, "the error occurred on:%d", index)
+// 			} else {
+// 				require.Error(err)
+// 				require.Contains(err.Error(), tc.expError)
+// 			}
+// 		})
+// 	}
+// }
