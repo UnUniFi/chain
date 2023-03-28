@@ -255,7 +255,7 @@ func (m NftBids) MakeBorrowedBidExcludeExpiredBids(borrowAmount sdk.Coin, start 
 	newBids.BorrowFromBids(borrowAmount, start)
 	return newBids
 }
-func (m NftBids) MakeCollectedBidsAndRefundBids() (NftBids, NftBids) {
+func (m NftBids) MakeCollectBidsAndRefundBids() (NftBids, NftBids) {
 	collectedBids := NftBids{}
 	refundBids := NftBids{}
 	existWinner := false
@@ -440,4 +440,14 @@ func (a Borrowing) Equal(b Borrowing) bool {
 	return a.Amount.Equal(b.Amount) &&
 		a.PaidInterestAmount.Equal(b.PaidInterestAmount) &&
 		a.StartAt.Location() == b.StartAt.Location()
+}
+
+func CalcPartInterest(total, surplus sdk.Int, interest sdk.DecCoin) sdk.Int {
+	if total.IsZero() {
+		return sdk.ZeroInt()
+	}
+	decTotalInterest := sdk.NewDecFromInt(total)
+	decSurplusAmount := sdk.NewDecFromInt(surplus)
+	rate := interest.Amount.Quo(decTotalInterest)
+	return decSurplusAmount.Mul(rate).TruncateInt()
 }
