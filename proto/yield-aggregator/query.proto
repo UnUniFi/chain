@@ -28,7 +28,7 @@ service Query {
   }
 
   rpc StrategyAll(QueryAllStrategyRequest) returns (QueryAllStrategyResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/strategies/{denom}";
+    option (google.api.http).get = "/UnUniFi/chain/yield-aggregator/strategies/query-param";
   }
 
   rpc Strategy(QueryGetStrategyRequest) returns (QueryGetStrategyResponse) {
