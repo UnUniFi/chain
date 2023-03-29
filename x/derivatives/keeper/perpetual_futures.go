@@ -52,6 +52,10 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 	if err != nil {
 		return nil, err
 	}
+
+	// To be consistent with the other numbers, we should use the micro unit for the size
+	pSizeMicro := types.NormalToMicroDec(positionInstance.Size_)
+	positionInstance.SizeInMicro = &pSizeMicro
 	any, err := codecTypes.NewAnyWithValue(&positionInstance)
 	if err != nil {
 		return nil, err
@@ -77,10 +81,10 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 
 	switch positionInstance.PositionType {
 	case types.PositionType_LONG:
-		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.Size_)
+		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, *positionInstance.SizeInMicro)
 		break
 	case types.PositionType_SHORT:
-		k.SubPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.Size_)
+		k.SubPerpetualFuturesNetPositionOfMarket(ctx, market, *positionInstance.SizeInMicro)
 		break
 	case types.PositionType_POSITION_UNKNOWN:
 		return nil, fmt.Errorf("unknown position type")
@@ -97,6 +101,8 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.PerpetualFuturesPosition) error {
 	params := k.GetParams(ctx)
 	commissionRate := params.PerpetualFutures.CommissionRate
+	// FIXME: Size_ cannot be used like this.
+	// It causes the inconsistency between the position and the token amount.
 	feeAmountDec := position.PositionInstance.Size_.Mul(commissionRate)
 	tradeAmount := position.PositionInstance.Size_.Sub(feeAmountDec)
 	feeAmount := feeAmountDec.RoundInt()
@@ -111,6 +117,7 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 	}
 
 	// TODO: this is wrong. refer to Issue#407
+	// maybe this todo is related to the above fixme content.
 	if !feeAmount.IsZero() {
 		err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, position.Address.AccAddress(), types.ModuleName, sdk.Coins{sdk.NewCoin(position.Market.BaseDenom, feeAmount)})
 		if err != nil {
