@@ -192,6 +192,8 @@ func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(baseMetricsRate, qu
 	if returningAmount.IsNegative() {
 		lossToLP = returningAmount
 		returningAmount = sdk.ZeroInt()
+	} else {
+		lossToLP = sdk.ZeroInt()
 	}
 
 	return returningAmount, lossToLP
