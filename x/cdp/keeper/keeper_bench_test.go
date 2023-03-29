@@ -9,10 +9,10 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
+	"cosmossdk.io/simapp"
 	"github.com/UnUniFi/chain/app"
 	"github.com/UnUniFi/chain/x/cdp/keeper"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
-	"github.com/cosmos/cosmos-sdk/simapp"
 )
 
 // saving the result to a module level variable ensures the compiler doesn't optimize the test away

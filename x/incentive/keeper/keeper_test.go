@@ -19,9 +19,9 @@ import (
 	"github.com/UnUniFi/chain/app"
 	// committeekeeper "github.com/UnUniFi/chain/x/committee/keeper"
 	// hardkeeper "github.com/UnUniFi/chain/x/hard/keeper"
+	"cosmossdk.io/simapp"
 	"github.com/UnUniFi/chain/x/incentive/keeper"
 	"github.com/UnUniFi/chain/x/incentive/types"
-	"github.com/cosmos/cosmos-sdk/simapp"
 )
 
 // Test suite used for all keeper tests

@@ -11,10 +11,10 @@ import (
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
+	"cosmossdk.io/simapp"
 	"github.com/UnUniFi/chain/app"
 	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
-	"github.com/cosmos/cosmos-sdk/simapp"
 )
 
 func TestSurplusAuctionBasic(t *testing.T) {

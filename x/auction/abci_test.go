@@ -10,11 +10,11 @@ import (
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
+	"cosmossdk.io/simapp"
 	"github.com/UnUniFi/chain/app"
 	"github.com/UnUniFi/chain/x/auction"
 	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
-	"github.com/cosmos/cosmos-sdk/simapp"
 )
 
 func TestKeeper_BeginBlocker(t *testing.T) {
@@ -30,7 +30,7 @@ func TestKeeper_BeginBlocker(t *testing.T) {
 	tApp := app.NewTestApp()
 	ctx := tApp.NewContext(true, tmproto.Header{})
 
-	require.NoError(t, simapp.FundModuleAccount(tApp.BankKeeper ,ctx, modAcc.Name, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
+	require.NoError(t, simapp.FundModuleAccount(tApp.BankKeeper, ctx, modAcc.Name, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
 	tApp.InitializeFromGenesisStates(
 		// NewAuthGenStateFromAccs(authtypes.GenesisAccounts{
 		// 	auth.NewBaseAccount(buyer, cs(c("token1", 100), c("token2", 100)), nil, 0, 0),

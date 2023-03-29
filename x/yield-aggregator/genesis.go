@@ -11,6 +11,12 @@ import (
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
+	k.SetStrategy(ctx, "ibc/DDDDDWWWWW", types.Strategy{
+		Denom:           "ibc/DDDDDWWWWW",
+		Id:              1,
+		ContractAddress: "x/stake-ibc",
+		Name:            "testStaking",
+	})
 }
 
 // ExportGenesis returns the module's exported genesis

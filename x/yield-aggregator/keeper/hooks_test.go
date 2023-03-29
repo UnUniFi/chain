@@ -5,7 +5,7 @@ import (
 	"github.com/UnUniFi/chain/x/yield-aggregator/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	transfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
+	transfertypes "github.com/cosmos/ibc-go/v5/modules/apps/transfer/types"
 	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
