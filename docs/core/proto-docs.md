@@ -1695,6 +1695,7 @@ Query defines the gRPC querier service.
 | `margin_maintenance_rate` | [string](#string) |  |  |
 | `imaginary_funding_rate_proportional_coefficient` | [string](#string) |  |  |
 | `markets` | [Market](#ununifi.derivatives.Market) | repeated |  |
+| `max_leverage` | [uint32](#uint32) |  |  |
 
 
 
@@ -1735,6 +1736,7 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `position_type` | [PositionType](#ununifi.derivatives.PositionType) |  |  |
 | `size` | [string](#string) |  |  |
+| `size_in_micro` | [string](#string) |  | Use micro level size in the backend logic to be consistent with the scale of the coin amount and price information. |
 | `leverage` | [uint32](#uint32) |  |  |
 
 
