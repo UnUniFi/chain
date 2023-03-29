@@ -51,5 +51,20 @@ func (k Keeper) Vault(c context.Context, req *types.QueryGetVaultRequest) (*type
 		return nil, sdkerrors.ErrKeyNotFound
 	}
 
-	return &types.QueryGetVaultResponse{Vault: vault}, nil
+	strategies := []types.Strategy{}
+	for _, strategyWeight := range vault.StrategyWeights {
+		strategy, found := k.GetStrategy(ctx, vault.Denom, strategyWeight.StrategyId)
+		if !found {
+			continue
+		}
+		strategies = append(strategies, strategy)
+	}
+
+	return &types.QueryGetVaultResponse{
+		Vault:                  vault,
+		Strategies:             strategies,
+		TotalBondedAmount:      k.VaultAmountInStrategies(ctx, vault),
+		TotalUnbondingAmount:   k.VaultUnbondingAmountInStrategies(ctx, vault),
+		TotalWithdrawalBalance: k.VaultWithdrawalAmount(ctx, vault),
+	}, nil
 }

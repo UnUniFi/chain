@@ -18,4 +18,5 @@ var (
 	ErrInvalidCommissionRate    = sdkerrors.Register(ModuleName, 8, "invalid commission rate")
 	ErrDuplicatedStrategy       = sdkerrors.Register(ModuleName, 9, "duplicated strategy")
 	ErrInvalidStrategyWeightSum = sdkerrors.Register(ModuleName, 10, "invalid strategy weight sum")
+	ErrInvalidStrategyInvolved  = sdkerrors.Register(ModuleName, 11, "invalid strategy id involved")
 )

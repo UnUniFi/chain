@@ -1,5 +1,5 @@
 syntax = "proto3";
-package ununifi.chain.yieldaggregator;
+package ununifi.yieldaggregator;
 
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
@@ -71,6 +71,21 @@ message QueryGetVaultRequest {
 message QueryGetVaultResponse {
   Vault vault = 1 [(gogoproto.nullable) = false];
   repeated Strategy strategies = 2 [(gogoproto.nullable) = false];
+  string total_bonded_amount = 3 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string total_unbonding_amount = 4 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string total_withdrawal_balance = 5 [
+    (cosmos_proto.scalar) = "cosmos.Int",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryAllStrategyRequest {
