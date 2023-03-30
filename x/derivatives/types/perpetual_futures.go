@@ -28,9 +28,9 @@ func (positionInstance PerpetualFuturesPositionInstance) CalculatePrincipal() sd
 }
 
 // Position Size is considered on a micro level in the backend
-func NewPerpetualFuturesNetPositionOfMarket(market Market, position_size sdk.Dec) PerpetualFuturesNetPositionOfMarket {
+func NewPerpetualFuturesNetPositionOfMarket(market Market, position_size_in_micro sdk.Int) PerpetualFuturesNetPositionOfMarket {
 	return PerpetualFuturesNetPositionOfMarket{
-		Market:       market,
-		PositionSize: position_size,
+		Market:              market,
+		PositionSizeInMicro: position_size_in_micro,
 	}
 }

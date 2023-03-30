@@ -92,7 +92,7 @@ message PerpetualFuturesPositionInstance {
   // and price information.
   string size_in_micro = 3 [
     (gogoproto.moretags) = "yaml:\"size_in_micro\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
   ];
   uint32 leverage = 4 [
     (gogoproto.moretags) = "yaml:\"leverage\""
@@ -104,9 +104,9 @@ message PerpetualFuturesNetPositionOfMarket {
     (gogoproto.moretags) = "yaml:\"market\"",
     (gogoproto.nullable) = false
   ];
-  string position_size = 2 [
+  string position_size_in_micro = 2 [
     (gogoproto.moretags) = "yaml:\"position_size\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
 }
