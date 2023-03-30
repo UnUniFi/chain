@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -60,9 +61,12 @@ func (k Keeper) Vault(c context.Context, req *types.QueryGetVaultRequest) (*type
 		strategies = append(strategies, strategy)
 	}
 
+	vaultModName := types.GetVaultModuleAccountName(req.Id)
+	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
 	return &types.QueryGetVaultResponse{
 		Vault:                  vault,
 		Strategies:             strategies,
+		VaultAddress:           vaultModAddr.String(),
 		TotalBondedAmount:      k.VaultAmountInStrategies(ctx, vault),
 		TotalUnbondingAmount:   k.VaultUnbondingAmountInStrategies(ctx, vault),
 		TotalWithdrawalBalance: k.VaultWithdrawalAmount(ctx, vault),

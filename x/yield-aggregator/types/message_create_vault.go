@@ -12,14 +12,15 @@ const TypeMsgCreateVault = "create-vault"
 
 var _ sdk.Msg = &MsgCreateVault{}
 
-func NewMsgCreateVault(sender string, denom string, commissionRate sdk.Dec, strategyWeights []StrategyWeight, fee types.Coin, deposit types.Coin) *MsgCreateVault {
+func NewMsgCreateVault(sender string, denom string, commissionRate sdk.Dec, withdrawReserveRate sdk.Dec, strategyWeights []StrategyWeight, fee types.Coin, deposit types.Coin) *MsgCreateVault {
 	return &MsgCreateVault{
-		Sender:          sender,
-		Denom:           denom,
-		CommissionRate:  commissionRate,
-		StrategyWeights: strategyWeights,
-		Fee:             fee,
-		Deposit:         deposit,
+		Sender:              sender,
+		Denom:               denom,
+		CommissionRate:      commissionRate,
+		StrategyWeights:     strategyWeights,
+		Fee:                 fee,
+		Deposit:             deposit,
+		WithdrawReserveRate: withdrawReserveRate,
 	}
 }
 
@@ -34,6 +35,10 @@ func (msg MsgCreateVault) ValidateBasic() error {
 
 	if msg.CommissionRate.IsNegative() || msg.CommissionRate.GTE(sdk.OneDec()) {
 		return ErrInvalidCommissionRate
+	}
+
+	if msg.WithdrawReserveRate.LTE(sdk.ZeroDec()) || msg.WithdrawReserveRate.GTE(sdk.OneDec()) {
+		return ErrInvalidWithdrawReserveRate
 	}
 
 	usedStrategy := make(map[uint64]bool)
