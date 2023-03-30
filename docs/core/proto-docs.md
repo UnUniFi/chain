@@ -87,6 +87,7 @@
     - [PositionType](#ununifi.derivatives.PositionType)
   
 - [derivatives/perpetual_futures.proto](#derivatives/perpetual_futures.proto)
+    - [EventLossToLP](#ununifi.derivatives.EventLossToLP)
     - [EventPerpetualFuturesPositionClosed](#ununifi.derivatives.EventPerpetualFuturesPositionClosed)
     - [EventPerpetualFuturesPositionLevied](#ununifi.derivatives.EventPerpetualFuturesPositionLevied)
     - [EventPerpetualFuturesPositionLiquidated](#ununifi.derivatives.EventPerpetualFuturesPositionLiquidated)
@@ -1597,6 +1598,22 @@ Query defines the gRPC querier service.
 
 
 
+<a name="ununifi.derivatives.EventLossToLP"></a>
+
+### EventLossToLP
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `position_id` | [string](#string) |  |  |
+| `loss_amount` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="ununifi.derivatives.EventPerpetualFuturesPositionClosed"></a>
 
 ### EventPerpetualFuturesPositionClosed
@@ -1609,6 +1626,7 @@ Query defines the gRPC querier service.
 | `position_id` | [string](#string) |  |  |
 | `fee_amount` | [string](#string) |  |  |
 | `trade_amount` | [string](#string) |  |  |
+| `returning_amount` | [string](#string) |  |  |
 
 
 
