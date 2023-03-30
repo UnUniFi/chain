@@ -74,7 +74,7 @@ message Position {
 - `opened_rate` is the price rate of the trading pair at the opening.
 - `remaining_margin` is the remaining margin for the position.
 - `last_levied_at` is the timestamp of the last levied time.
-- `position_instance` is the `Any` type which contains the actual position data. If it's about perpetual futures, it contains `PositionType`, `Size_` and `Leverage` fields.
+- `position_instance` is the `Any` type which contains the actual position data. If it's about perpetual futures, it contains `PositionType`, `Size_`, `SizeInMicro` and `Leverage` fields.
 
 ## PoolMarketCap
 
@@ -122,15 +122,23 @@ message PoolMarketCap {
 `PerpetualFuturesNetPositionOfMarket` is the data which contains the inclusive information regarding x/derivatives's PerpetualFutures market.
 
 ```protobuf
-message PerpetualFuturesNetPositionOfMarket {
-  Market market = 1 [
-    (gogoproto.moretags) = "yaml:\"market\"",
-    (gogoproto.nullable) = false
+message PerpetualFuturesPositionInstance {
+  PositionType position_type = 1 [
+    (gogoproto.moretags) = "yaml:\"position_type\""
   ];
-  string position_size = 2 [
-    (gogoproto.moretags) = "yaml:\"position_size\"",
+  string size = 2 [
+    (gogoproto.moretags) = "yaml:\"size\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
+  ];
+  // Use micro level size in the backend logic to be consistent with the scale of the coin amount
+  // and price information.
+  string size_in_micro = 3 [
+    (gogoproto.moretags) = "yaml:\"size_in_micro\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
+  ];
+  uint32 leverage = 4 [
+    (gogoproto.moretags) = "yaml:\"leverage\""
   ];
 }
 ```
