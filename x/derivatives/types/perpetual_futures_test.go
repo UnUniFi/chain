@@ -10,38 +10,47 @@ import (
 
 // test positionInstance.MarginRequirement
 func TestPositionInstance_MarginRequirement(t *testing.T) {
+	uusdcRate := sdk.MustNewDecFromStr("0.000001")
+
 	// make testCases
 	testCases := []struct {
 		name             string
 		positionInstance types.PerpetualFuturesPositionInstance
-		currencyRate     sdk.Dec
-		exp              sdk.Dec
+		baseRate         sdk.Dec
+		quoteRate        sdk.Dec
+		exp              sdk.Int
 	}{
 		{
 			name: "case1",
 			positionInstance: types.PerpetualFuturesPositionInstance{
 				PositionType: types.PositionType_LONG,
-				Size_:        sdk.MustNewDecFromStr("10000"),
-				Leverage:     25,
+				Size_:        sdk.MustNewDecFromStr("1"),
+				Leverage:     10,
 			},
-			currencyRate: sdk.MustNewDecFromStr("100"),
-			exp:          sdk.MustNewDecFromStr("40000"),
+			baseRate:  sdk.MustNewDecFromStr("0.00001"),
+			quoteRate: uusdcRate,
+			exp:       sdk.NewIntFromUint64(1000000),
 		},
 		{
-			name: "case2",
+			name: "Max Levarage",
 			positionInstance: types.PerpetualFuturesPositionInstance{
 				PositionType: types.PositionType_LONG,
-				Size_:        sdk.MustNewDecFromStr("10000"),
-				Leverage:     50,
+				Size_:        sdk.MustNewDecFromStr("1"),
+				Leverage:     30,
 			},
-			currencyRate: sdk.MustNewDecFromStr("100"),
-			exp:          sdk.MustNewDecFromStr("20000"),
+			baseRate:  sdk.MustNewDecFromStr("0.00001"),
+			quoteRate: uusdcRate,
+			exp:       sdk.NewIntFromUint64(333333),
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := tc.positionInstance.MarginRequirement(tc.currencyRate)
+			currencyRate := tc.baseRate.Quo(tc.quoteRate)
+			sizeInMicro := tc.positionInstance.Size_.MulInt64(1000000).TruncateInt()
+			tc.positionInstance.SizeInMicro = &sizeInMicro
+
+			result := tc.positionInstance.MarginRequirement(currencyRate)
 			if !tc.exp.Equal(result) {
 				t.Error(tc, "expected %v, got %v", tc.exp, result)
 			}

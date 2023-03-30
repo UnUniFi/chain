@@ -245,29 +245,29 @@ func (m Positions) EvaluateShortPositions(quoteTicker string, getCurrentPriceF f
 	return m.EvaluatePositions(PositionType_SHORT, quoteTicker, getCurrentPriceF)
 }
 
-func (positionInstance PerpetualFuturesPositionInstance) MarginRequirement(currencyRate sdk.Dec) sdk.Dec {
-	return sdk.NewDecFromInt(*positionInstance.SizeInMicro).Mul(currencyRate).Quo(sdk.NewDec(int64(positionInstance.Leverage)))
+func (positionInstance PerpetualFuturesPositionInstance) MarginRequirement(currencyRate sdk.Dec) sdk.Int {
+	return sdk.NewDecFromInt(*positionInstance.SizeInMicro).Mul(currencyRate).Quo(sdk.NewDec(int64(positionInstance.Leverage))).TruncateInt()
 }
 
-func (m PerpetualFuturesPosition) RequiredMarginInQuote(baseQuoteRate sdk.Dec) sdk.Dec {
+func (m PerpetualFuturesPosition) RequiredMarginInQuote(baseQuoteRate sdk.Dec) sdk.Int {
 	// 必要証拠金(quote単位) = 現在のbase/quoteレート * ポジションサイズ(base単位) ÷ レバレッジ
 	return m.PositionInstance.MarginRequirement(baseQuoteRate)
 }
 
-func (m PerpetualFuturesPosition) RequiredMarginInBase() sdk.Dec {
+func (m PerpetualFuturesPosition) RequiredMarginInBase() sdk.Int {
 	// 必要証拠金(base単位) = ポジションサイズ(base単位) ÷ レバレッジ // レートでの変動なし
 	return m.PositionInstance.MarginRequirement(sdk.MustNewDecFromStr("1"))
 }
 
 // func (m PerpetualFuturesPosition) RequiredMarginInMetrics(requiredMarginInQuote, quoteMetricsRate sdk.Dec) sdk.Dec {
-func (m PerpetualFuturesPosition) RequiredMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
+func (m PerpetualFuturesPosition) RequiredMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
 	// 必要証拠金(USD単位) = 必要証拠金(quote単位) * 現在のquote/USDレート
 	//                    = 必要証拠金(base単位) * 現在のbase/USDレート
 	if m.RemainingMargin.Denom == m.Market.QuoteDenom {
 		baseQuoteRate := baseMetricsRate.Amount.Amount.Quo(quoteMetricsRate.Amount.Amount)
-		return m.RequiredMarginInQuote(baseQuoteRate).Mul(quoteMetricsRate.Amount.Amount)
+		return sdk.NewDecFromInt(m.RequiredMarginInQuote(baseQuoteRate)).Mul(quoteMetricsRate.Amount.Amount).TruncateInt()
 	} else if m.RemainingMargin.Denom == m.Market.BaseDenom {
-		return m.RequiredMarginInBase().Mul(baseMetricsRate.Amount.Amount)
+		return sdk.NewDecFromInt(m.RequiredMarginInBase()).Mul(baseMetricsRate.Amount.Amount).TruncateInt()
 	} else {
 		panic("not supported denom")
 	}
@@ -293,7 +293,7 @@ func (m PerpetualFuturesPosition) ProfitAndLossInMetrics(baseMetricsRate, quoteM
 // position size takes 0 decimal although price takes 6 decimal (micro unit)
 func (m PerpetualFuturesPosition) MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
 	// 証拠金維持率 = 有効証拠金(USD単位) ÷ 必要証拠金(USD単位)
-	return m.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate).Quo(m.RequiredMarginInMetrics(baseMetricsRate, quoteMetricsRate))
+	return m.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate).Quo(sdk.NewDecFromInt(m.RequiredMarginInMetrics(baseMetricsRate, quoteMetricsRate)))
 }
 
 func (m PerpetualFuturesPosition) RemainingMarginInBase(baseMetricsRate MetricsRateType) sdk.Dec {
