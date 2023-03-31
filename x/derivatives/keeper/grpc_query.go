@@ -218,12 +218,12 @@ func (k Keeper) MakeQueriedPositions(ctx sdk.Context, positions types.Positions)
 		positiveOrNegativeProfitCoin := sdk.Coin{
 			Denom: "uusd",
 			// TODO: don't use NormalToMicroInt like this since it is hard to be consistent
-			Amount: types.NormalToMicroInt(profit),
+			Amount: profit,
 		}
 		positiveOrNegativeEffectiveMargin := sdk.Coin{
 			Denom: "uusd",
 			// TODO: don't use NormalToMicroInt like this since it is hard to be consistent
-			Amount: types.NormalToMicroInt(perpetualFuturesPosition.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate)),
+			Amount: perpetualFuturesPosition.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate),
 		}
 		queriedPosition := types.QueriedPosition{
 			Position:              position,
@@ -267,9 +267,9 @@ func (k Keeper) Position(c context.Context, req *types.QueryPositionRequest) (*t
 	return &types.QueryPositionResponse{
 		Position: position,
 		// TODO: don't use NormalToMicroInt like this since it is hard to be consistent
-		ValuationProfit:       sdk.NewCoin("uusd", types.NormalToMicroInt(profit)),
+		ValuationProfit:       sdk.NewCoin("uusd", profit),
 		MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate),
-		EffectiveMargin:       sdk.NewCoin("uusd", types.NormalToMicroInt(perpetualFuturesPosition.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate))),
+		EffectiveMargin:       sdk.NewCoin("uusd", perpetualFuturesPosition.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate)),
 	}, nil
 }
 
