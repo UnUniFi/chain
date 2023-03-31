@@ -24,10 +24,6 @@ func (msg MsgTransferVaultOwnership) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid sender address: %s", err)
 	}
 
-	if msg.VaultId == 0 {
-		return ErrInvalidVaultId
-	}
-
 	if _, err := sdk.AccAddressFromBech32(msg.Recipient); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid recipient address: %s", err)
 	}

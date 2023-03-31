@@ -19,11 +19,13 @@ func (k msgServer) DeleteVault(goCtx context.Context, msg *types.MsgDeleteVault)
 		return nil, types.ErrInvalidVaultId
 	}
 
-	// ensure no funds available on the vault
-	totalVaultAmount := k.VaultAmountTotal(ctx, vault)
-	if totalVaultAmount.IsPositive() {
-		return nil, types.ErrVaultHasPositiveBalance
-	}
+	// TODO: reenable positive fund check - just disabled to remove invalid vaults on testnet
+	// // ensure no funds available on the vault
+	// totalVaultAmount := k.VaultAmountTotal(ctx, vault)
+	// if totalVaultAmount.IsPositive() {
+	// 	return nil, types.ErrVaultHasPositiveBalance
+	// }
+	// TODO: add owner check
 
 	// transfer deposit
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, sdk.NewCoins(vault.OwnerDeposit))

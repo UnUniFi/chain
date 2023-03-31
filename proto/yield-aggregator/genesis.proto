@@ -1,5 +1,5 @@
 syntax = "proto3";
-package ununifi.chain.yieldaggregator;
+package ununifi.yieldaggregator;
 
 import "gogoproto/gogo.proto";
 import "yield-aggregator/params.proto";

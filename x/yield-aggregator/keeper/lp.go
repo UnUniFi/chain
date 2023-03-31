@@ -70,11 +70,11 @@ func (k Keeper) EstimateMintAmountInternal(ctx sdk.Context, vaultDenom string, v
 	}
 
 	totalVaultAmount := k.VaultAmountTotal(ctx, vault)
-	if totalVaultAmount.IsZero() {
+	lpSupply := k.bankKeeper.GetSupply(ctx, lpDenom).Amount
+	if totalVaultAmount.IsZero() || lpSupply.IsZero() {
 		return sdk.NewCoin(lpDenom, principalAmount)
 	}
 
-	lpSupply := k.bankKeeper.GetSupply(ctx, lpDenom).Amount
 	lpAmount := lpSupply.Mul(principalAmount).Quo(totalVaultAmount)
 
 	return sdk.NewCoin(lpDenom, lpAmount)
@@ -196,9 +196,21 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 
 	withdrawFee := principal.Amount.ToDec().Mul(withdrawFeeRate).RoundInt()
 	withdrawAmount := principal.Amount.Sub(withdrawFee)
-	withdrawCoin := sdk.NewCoin(principal.Denom, withdrawAmount)
 
-	err = k.bankKeeper.SendCoins(ctx, vaultModAddr, address, sdk.NewCoins(withdrawCoin))
+	withdrawCommissionFee := withdrawAmount.ToDec().Mul(vault.WithdrawCommissionRate).RoundInt()
+	withdrawAmountWithoutCommission := withdrawAmount.Sub(withdrawCommissionFee)
+
+	if withdrawCommissionFee.IsPositive() {
+		vaultOwner, err := sdk.AccAddressFromBech32(vault.Owner)
+		if err != nil {
+			return err
+		}
+		err = k.bankKeeper.SendCoins(ctx, vaultModAddr, vaultOwner, sdk.NewCoins(sdk.NewCoin(principal.Denom, withdrawCommissionFee)))
+		if err != nil {
+			return err
+		}
+	}
+	err = k.bankKeeper.SendCoins(ctx, vaultModAddr, address, sdk.NewCoins(sdk.NewCoin(principal.Denom, withdrawAmountWithoutCommission)))
 	if err != nil {
 		return err
 	}

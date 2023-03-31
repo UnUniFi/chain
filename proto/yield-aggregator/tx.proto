@@ -1,5 +1,5 @@
 syntax = "proto3";
-package ununifi.chain.yieldaggregator;
+package ununifi.yieldaggregator;
 
 // this line is used by starport scaffolding # proto/tx/import
 import "gogoproto/gogo.proto";
@@ -65,11 +65,16 @@ message MsgCreateVault {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  repeated StrategyWeight strategy_weights = 4 [
+  string withdraw_reserve_rate = 4 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  cosmos.base.v1beta1.Coin fee = 5 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin deposit = 6 [(gogoproto.nullable) = false];
+  repeated StrategyWeight strategy_weights = 5 [
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin fee = 6 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin deposit = 7 [(gogoproto.nullable) = false];
 }
 
 message MsgCreateVaultResponse {}

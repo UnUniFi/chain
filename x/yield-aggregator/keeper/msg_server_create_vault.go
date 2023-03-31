@@ -43,11 +43,19 @@ func (k msgServer) CreateVault(goCtx context.Context, msg *types.MsgCreateVault)
 		return nil, err
 	}
 
+	for _, strategyWeight := range msg.StrategyWeights {
+		_, found := k.Keeper.GetStrategy(ctx, msg.Denom, strategyWeight.StrategyId)
+		if !found {
+			return nil, types.ErrInvalidStrategyInvolved
+		}
+	}
+
 	vault := types.Vault{
 		Denom:                  msg.Denom,
 		Owner:                  msg.Sender,
 		OwnerDeposit:           msg.Deposit,
 		WithdrawCommissionRate: msg.CommissionRate,
+		WithdrawReserveRate:    msg.WithdrawReserveRate,
 		StrategyWeights:        msg.StrategyWeights,
 	}
 	k.Keeper.AppendVault(ctx, vault)
