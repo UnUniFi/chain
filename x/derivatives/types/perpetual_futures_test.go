@@ -47,7 +47,7 @@ func TestPositionInstance_MarginRequirement(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			currencyRate := tc.baseRate.Quo(tc.quoteRate)
-			sizeInMicro := tc.positionInstance.Size_.MulInt64(1000000).TruncateInt()
+			sizeInMicro := tc.positionInstance.Size_.MulInt64(types.OneMillionInt).TruncateInt()
 			tc.positionInstance.SizeInMicro = &sizeInMicro
 
 			result := tc.positionInstance.MarginRequirement(currencyRate)

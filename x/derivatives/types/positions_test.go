@@ -153,7 +153,7 @@ func TestPosition_IsValid(t *testing.T) {
 	params := types.DefaultParams()
 	// run testCases
 	for _, tc := range testCases {
-		sizeInMicro := tc.instance.Size_.MulInt64(1000000).TruncateInt()
+		sizeInMicro := tc.instance.Size_.MulInt64(types.OneMillionInt).TruncateInt()
 		tc.instance.SizeInMicro = &sizeInMicro
 		any, err := codecTypes.NewAnyWithValue(&tc.instance)
 		if err != nil {

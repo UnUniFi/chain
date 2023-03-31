@@ -162,11 +162,11 @@ func (m PerpetualFuturesPosition) EvaluatePosition(currentBaseMetricsRate Metric
 
 // TODO: consider to use sdk.DecCoin
 func NormalToMicroInt(amount sdk.Dec) sdk.Int {
-	return amount.Mul(sdk.MustNewDecFromStr("1000000")).TruncateInt()
+	return amount.Mul(sdk.MustNewDecFromStr(OneMillionString)).TruncateInt()
 }
 
 func NormalToMicroDec(amount sdk.Dec) sdk.Dec {
-	return amount.Mul(sdk.MustNewDecFromStr("1000000"))
+	return amount.Mul(sdk.MustNewDecFromStr(OneMillionString))
 }
 
 // CalcReturningAmountAtClose calculates the amount of the principal and the profit/loss at the close of the position.
