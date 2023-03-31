@@ -177,14 +177,14 @@ func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(baseMetricsRate, qu
 	// AND, MORE IMPORTANTLY,
 	// it's not calculated on a micro level. So, it has to be modified to micro level by multiplying
 	// one million to represent the returning amount.
-	pnlAmountInMetrics := m.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)
-	pnlAmount := NormalToMicroDec(pnlAmountInMetrics)
+	pnlAmountInMetrics := sdk.NewDecFromInt(m.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate))
 
 	// Make it be calculated in the corresponding asset as the principal.
+	var pnlAmount sdk.Dec
 	if m.RemainingMargin.Denom == m.Market.BaseDenom {
-		pnlAmount = pnlAmount.Quo(baseMetricsRate.Amount.Amount)
+		pnlAmount = pnlAmountInMetrics.Quo(baseMetricsRate.Amount.Amount)
 	} else {
-		pnlAmount = pnlAmount.Quo(quoteMetricsRate.Amount.Amount)
+		pnlAmount = pnlAmountInMetrics.Quo(quoteMetricsRate.Amount.Amount)
 	}
 
 	returningAmount = principal.Add(pnlAmount.TruncateInt())
@@ -271,10 +271,10 @@ func (m PerpetualFuturesPosition) RequiredMarginInMetrics(baseMetricsRate, quote
 	}
 }
 
-func (m PerpetualFuturesPosition) ProfitAndLossInQuote(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
+func (m PerpetualFuturesPosition) ProfitAndLossInQuote(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
 	// 損益(quote単位) = (longなら1,shortなら-1) * (現在のbase/quoteレート - ポジション開設時base/quoteレート) * ポジションサイズ(base単位)
 	baseQuoteRate := baseMetricsRate.Amount.Amount.Quo(quoteMetricsRate.Amount.Amount)
-	profitOrLoss := baseQuoteRate.Sub(m.OpenedPairRate()).Mul(sdk.NewDecFromInt(*m.PositionInstance.SizeInMicro))
+	profitOrLoss := baseQuoteRate.Sub(m.OpenedPairRate()).Mul(sdk.NewDecFromInt(*m.PositionInstance.SizeInMicro)).TruncateInt()
 	if m.PositionInstance.PositionType == PositionType_LONG {
 		return profitOrLoss
 	} else {
@@ -282,29 +282,29 @@ func (m PerpetualFuturesPosition) ProfitAndLossInQuote(baseMetricsRate, quoteMet
 	}
 }
 
-func (m PerpetualFuturesPosition) ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
+func (m PerpetualFuturesPosition) ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
 	// 損益(USD単位) = 損益(quote単位) * 現在のquote/USDレート
-	return m.ProfitAndLossInQuote(baseMetricsRate, quoteMetricsRate).Mul(quoteMetricsRate.Amount.Amount)
+	return sdk.NewDecFromInt(m.ProfitAndLossInQuote(baseMetricsRate, quoteMetricsRate)).Mul(quoteMetricsRate.Amount.Amount).TruncateInt()
 }
 
 // TODO: fix the difference between position and price unit scales
 // position size takes 0 decimal although price takes 6 decimal (micro unit)
 func (m PerpetualFuturesPosition) MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
 	// 証拠金維持率 = 有効証拠金(USD単位) ÷ 必要証拠金(USD単位)
-	return m.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate).Quo(sdk.NewDecFromInt(m.RequiredMarginInMetrics(baseMetricsRate, quoteMetricsRate)))
+	return sdk.NewDecFromInt(m.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate)).Quo(sdk.NewDecFromInt(m.RequiredMarginInMetrics(baseMetricsRate, quoteMetricsRate)))
 }
 
-func (m PerpetualFuturesPosition) RemainingMarginInBase(baseMetricsRate MetricsRateType) sdk.Dec {
+func (m PerpetualFuturesPosition) RemainingMarginInBase(baseMetricsRate MetricsRateType) sdk.Int {
 	// 残存証拠金(USD単位) = 残存証拠金(base単位) * 現在のbase/USDレート
-	return sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(baseMetricsRate.Amount.Amount)
+	return sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(baseMetricsRate.Amount.Amount).TruncateInt()
 }
 
-func (m PerpetualFuturesPosition) RemainingMarginInQuote(quoteMetricsRate MetricsRateType) sdk.Dec {
+func (m PerpetualFuturesPosition) RemainingMarginInQuote(quoteMetricsRate MetricsRateType) sdk.Int {
 	// 残存証拠金(USD単位) = 残存証拠金(quote単位) * 現在のquote/USDレート
-	return sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(quoteMetricsRate.Amount.Amount)
+	return sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(quoteMetricsRate.Amount.Amount).TruncateInt()
 }
 
-func (m PerpetualFuturesPosition) RemainingMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
+func (m PerpetualFuturesPosition) RemainingMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
 	// 残存証拠金(USD単位) = 残存証拠金(base単位) * 現在のbase/USDレート
 	//                    = 残存証拠金(quote単位) * 現在のquote/USDレート
 	if m.RemainingMargin.Denom == m.Market.BaseDenom {
@@ -316,7 +316,7 @@ func (m PerpetualFuturesPosition) RemainingMarginInMetrics(baseMetricsRate, quot
 	}
 }
 
-func (m PerpetualFuturesPosition) EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
+func (m PerpetualFuturesPosition) EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
 	// 有効証拠金(USD単位) = 残存証拠金(USD単位) + 損益(USD単位)
 	return m.RemainingMarginInMetrics(baseMetricsRate, quoteMetricsRate).Add(m.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate))
 }

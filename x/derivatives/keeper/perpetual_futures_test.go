@@ -80,6 +80,7 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 
 }
 
+// TODO: Implement this test
 func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 
 }

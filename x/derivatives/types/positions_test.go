@@ -504,6 +504,7 @@ func TestPosition_MarginMaintenanceRate(t *testing.T) {
 			quoteTicker := "usd"
 			baseMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.BaseDenom, tc.Rate[0].rate)
 			quoteMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.QuoteDenom, tc.Rate[1].rate)
+
 			result := tc.position.MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate)
 			if !tc.exp.Equal(result) {
 				t.Error(tc, "expected %v, got %v", tc.exp, result)
@@ -696,8 +697,8 @@ func TestPerpetualFuturesPosition_CalcProfitAndLoss(t *testing.T) {
 			quoteTicker := "usd"
 			baseMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.BaseDenom, tc.closedRates[0])
 			quoteMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.QuoteDenom, tc.closedRates[1])
-			resultDec := tc.position.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)
-			result := types.NormalToMicroInt(resultDec)
+
+			result := tc.position.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)
 			fmt.Println(result)
 			if !tc.exp.Equal(result) {
 				t.Error(tc, "expected %v, got %v", tc.exp, result)
@@ -796,7 +797,7 @@ func TestCalcReturningAmountAtClose(t *testing.T) {
 			},
 			closedBaseRate: sdk.MustNewDecFromStr("0.0000105"),
 			closeQuoteRate: uusdcRate,
-			expReturn:      sdk.NewInt(500000),
+			expReturn:      sdk.NewInt(1000000),
 		},
 		{
 			name: "Profit Long position in base denom margin",
@@ -906,6 +907,8 @@ func TestCalcReturningAmountAtClose(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			baseMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.BaseDenom, tc.closedBaseRate)
 			quoteMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.QuoteDenom, tc.closeQuoteRate)
+			sizeInMicro := types.NormalToMicroInt(tc.position.PositionInstance.Size_)
+			tc.position.PositionInstance.SizeInMicro = &sizeInMicro
 
 			returningAmount, lossToLP := tc.position.CalcReturningAmountAtClose(baseMetricsRate, quoteMetricsRate)
 			fmt.Println(returningAmount, lossToLP)
