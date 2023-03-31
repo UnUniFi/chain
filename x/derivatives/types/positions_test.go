@@ -178,7 +178,8 @@ func TestPosition_IsValid(t *testing.T) {
 
 // make position.NeedLiquidationPerpetualFutures test
 func TestPosition_NeedLiquidationPerpetualFutures(t *testing.T) {
-	owner, _ := sdk.AccAddressFromBech32("ununifi1a8jcsmla6heu99ldtazc27dna4qcd4jygsthx6")
+	uusdcRate := sdk.MustNewDecFromStr("0.000001")
+
 	testCases := []struct {
 		name          string
 		position      types.PerpetualFuturesPosition
@@ -187,56 +188,75 @@ func TestPosition_NeedLiquidationPerpetualFutures(t *testing.T) {
 		exp           bool
 	}{
 		{
-			name: "not_change_rate_is_not_need_liquidation",
+			name: "False: change from opened rate",
 			position: types.PerpetualFuturesPosition{
-				Id:      "0",
-				Address: owner.Bytes(),
 				Market: types.Market{
 					BaseDenom:  "uatom",
 					QuoteDenom: "uusdc",
 				},
-				OpenedAt:        time.Now().UTC(),
-				OpenedHeight:    1,
-				OpenedBaseRate:  sdk.MustNewDecFromStr("100"),
-				OpenedQuoteRate: sdk.MustNewDecFromStr("100"),
-				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1000)),
+				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate: uusdcRate,
+				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1000000)),
 				PositionInstance: types.PerpetualFuturesPositionInstance{
 					PositionType: types.PositionType_LONG,
 					Size_:        sdk.MustNewDecFromStr("10"),
-					Leverage:     5,
+					Leverage:     10,
 				},
 			},
 			minMarginRate: sdk.MustNewDecFromStr("0.5"),
 			closedRate: []sdk.Dec{
-				sdk.MustNewDecFromStr("100"),
-				sdk.MustNewDecFromStr("100"),
+				sdk.MustNewDecFromStr("0.00001"),
+				uusdcRate,
 			},
 			exp: false,
 		},
 		{
-			name: "down_rate_is_need_liquidation",
+			name: "True: Price down for long position",
 			position: types.PerpetualFuturesPosition{
-				Id:      "0",
-				Address: owner.Bytes(),
 				Market: types.Market{
 					BaseDenom:  "uatom",
 					QuoteDenom: "uusdc",
 				},
-				OpenedAt:        time.Now().UTC(),
-				OpenedHeight:    1,
-				OpenedBaseRate:  sdk.MustNewDecFromStr("100"),
-				OpenedQuoteRate: sdk.MustNewDecFromStr("100"),
-				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1)),
+				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate: uusdcRate,
+				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1000000)),
 				PositionInstance: types.PerpetualFuturesPositionInstance{
 					PositionType: types.PositionType_LONG,
-					Size_:        sdk.MustNewDecFromStr("1"),
-					Leverage:     1,
+					Size_:        sdk.MustNewDecFromStr("10"),
+					Leverage:     10,
 				},
 			},
 			minMarginRate: sdk.MustNewDecFromStr("0.5"),
+			// In this case, the margin maintanance rate is gonna be "0.5"
+			// Which is the defined rate of the liquidation criteria
 			closedRate: []sdk.Dec{
-				sdk.MustNewDecFromStr("1"),
-				sdk.MustNewDecFromStr("100"),
+				sdk.MustNewDecFromStr("0.0000095"),
+				uusdcRate,
+			},
+			exp: true,
+		},
+		{
+			name: "True: Price up for short position",
+			position: types.PerpetualFuturesPosition{
+				Market: types.Market{
+					BaseDenom:  "uatom",
+					QuoteDenom: "uusdc",
+				},
+				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate: uusdcRate,
+				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+				PositionInstance: types.PerpetualFuturesPositionInstance{
+					PositionType: types.PositionType_SHORT,
+					Size_:        sdk.MustNewDecFromStr("10"),
+					Leverage:     10,
+				},
+			},
+			minMarginRate: sdk.MustNewDecFromStr("0.5"),
+			// In this case, the margin maintanance rate is gonna be "0.5"
+			// Which is the defined rate of the liquidation criteria
+			closedRate: []sdk.Dec{
+				sdk.MustNewDecFromStr("0.0000106"),
+				uusdcRate,
 			},
 			exp: true,
 		},
@@ -247,6 +267,8 @@ func TestPosition_NeedLiquidationPerpetualFutures(t *testing.T) {
 			quoteTicker := "usd"
 			baseMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.BaseDenom, tc.closedRate[0])
 			quoteMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.QuoteDenom, tc.closedRate[1])
+			sizeInMicro := tc.position.PositionInstance.Size_.MulInt64(types.OneMillionInt).TruncateInt()
+			tc.position.PositionInstance.SizeInMicro = &sizeInMicro
 
 			result := tc.position.NeedLiquidation(tc.minMarginRate, baseMetricsRate, quoteMetricsRate)
 			if tc.exp != result {

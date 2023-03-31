@@ -144,7 +144,7 @@ func NewPerpetualFuturesPositionFromPosition(position Position) (PerpetualFuture
 
 func (m PerpetualFuturesPosition) NeedLiquidation(minMarginMaintenanceRate sdk.Dec, currentBaseMetricsRate, currentQuoteMetricsRate MetricsRateType) bool {
 	marginMaintenanceRate := m.MarginMaintenanceRate(currentBaseMetricsRate, currentQuoteMetricsRate)
-	if marginMaintenanceRate.LT(minMarginMaintenanceRate) {
+	if marginMaintenanceRate.LTE(minMarginMaintenanceRate) {
 		return true
 	} else {
 		return false
