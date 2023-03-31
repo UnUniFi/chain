@@ -30,12 +30,12 @@ func (m Position) IsValid(params Params) error {
 		return err
 	}
 
-	if !pfPosition.IsValidPositionSize(params.PoolParams.QuoteTicker) {
-		return fmt.Errorf("position size is not valid")
-	}
-
 	if !pfPosition.PositionInstance.IsValidLeverage(params.PerpetualFutures.MaxLeverage) {
 		return fmt.Errorf("leverage is not valid")
+	}
+
+	if !pfPosition.IsValidPositionSize(params.PoolParams.QuoteTicker) {
+		return fmt.Errorf("position size is not valid")
 	}
 
 	return nil
@@ -49,9 +49,10 @@ func (m Position) IsValidMarginAsset() bool {
 func (m PerpetualFuturesPosition) IsValidPositionSize(quoteTicker string) bool {
 	// check position size validity
 	baseMetricsRate := NewMetricsRateType(quoteTicker, m.Market.BaseDenom, m.OpenedBaseRate)
-	quoteMetricsRate := NewMetricsRateType(quoteTicker, m.Market.BaseDenom, m.OpenedQuoteRate)
+	quoteMetricsRate := NewMetricsRateType(quoteTicker, m.Market.QuoteDenom, m.OpenedQuoteRate)
 	marginMaintenanceRate := m.MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate)
-	return !marginMaintenanceRate.LT(sdk.OneDec())
+
+	return !marginMaintenanceRate.LTE(sdk.OneDec())
 }
 
 func (m PerpetualFuturesPositionInstance) IsValidLeverage(maxLeverage uint32) bool {
@@ -259,17 +260,14 @@ func (m PerpetualFuturesPosition) RequiredMarginInBase() sdk.Int {
 	return m.PositionInstance.MarginRequirement(sdk.MustNewDecFromStr("1"))
 }
 
-// func (m PerpetualFuturesPosition) RequiredMarginInMetrics(requiredMarginInQuote, quoteMetricsRate sdk.Dec) sdk.Dec {
 func (m PerpetualFuturesPosition) RequiredMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
 	// 必要証拠金(USD単位) = 必要証拠金(quote単位) * 現在のquote/USDレート
 	//                    = 必要証拠金(base単位) * 現在のbase/USDレート
 	if m.RemainingMargin.Denom == m.Market.QuoteDenom {
 		baseQuoteRate := baseMetricsRate.Amount.Amount.Quo(quoteMetricsRate.Amount.Amount)
 		return sdk.NewDecFromInt(m.RequiredMarginInQuote(baseQuoteRate)).Mul(quoteMetricsRate.Amount.Amount).TruncateInt()
-	} else if m.RemainingMargin.Denom == m.Market.BaseDenom {
-		return sdk.NewDecFromInt(m.RequiredMarginInBase()).Mul(baseMetricsRate.Amount.Amount).TruncateInt()
 	} else {
-		panic("not supported denom")
+		return sdk.NewDecFromInt(m.RequiredMarginInBase()).Mul(baseMetricsRate.Amount.Amount).TruncateInt()
 	}
 }
 

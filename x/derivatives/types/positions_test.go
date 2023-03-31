@@ -54,12 +54,10 @@ func TestPosition_IsValid(t *testing.T) {
 			instance: types.PerpetualFuturesPositionInstance{
 				PositionType: types.PositionType_LONG,
 				Size_:        sdk.MustNewDecFromStr("10"),
-				Leverage:     10,
+				Leverage:     1,
 			},
 			exp: false,
 		},
-		// below test case fails now because the current implementation doesn't calculate
-		// the margin requirement in a proper way
 		{
 			name: "Failure due to lack of margin using QuoteDenom token",
 			position: types.Position{
@@ -96,11 +94,67 @@ func TestPosition_IsValid(t *testing.T) {
 			},
 			exp: false,
 		},
+		{
+			name: "Fauilure due to invalid levarage",
+			position: types.Position{
+				Market: types.Market{
+					BaseDenom:  "uatom",
+					QuoteDenom: "uusdc",
+				},
+				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
+				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+			},
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.MustNewDecFromStr("10"),
+				Leverage:     31,
+			},
+			exp: false,
+		},
+		{
+			name: "Fauilure due to invalid levarage",
+			position: types.Position{
+				Market: types.Market{
+					BaseDenom:  "uatom",
+					QuoteDenom: "uusdc",
+				},
+				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
+				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+			},
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.MustNewDecFromStr("10"),
+				Leverage:     1,
+			},
+			exp: false,
+		},
+		{
+			name: "Success",
+			position: types.Position{
+				Market: types.Market{
+					BaseDenom:  "uatom",
+					QuoteDenom: "uusdc",
+				},
+				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
+				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+			},
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.MustNewDecFromStr("1"),
+				Leverage:     1,
+			},
+			exp: false,
+		},
 	}
 
 	params := types.DefaultParams()
 	// run testCases
 	for _, tc := range testCases {
+		sizeInMicro := tc.instance.Size_.MulInt64(1000000).TruncateInt()
+		tc.instance.SizeInMicro = &sizeInMicro
 		any, err := codecTypes.NewAnyWithValue(&tc.instance)
 		if err != nil {
 			t.Error(err)
