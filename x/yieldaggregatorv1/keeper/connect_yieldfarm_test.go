@@ -12,7 +12,7 @@ import (
 	stakeibctypes "github.com/UnUniFi/chain/x/stakeibc/types"
 	"github.com/UnUniFi/chain/x/yieldaggregatorv1/types"
 	yieldfarmtypes "github.com/UnUniFi/chain/x/yieldfarm/types"
-	transfertypes "github.com/cosmos/ibc-go/v5/modules/apps/transfer/types"
+	transfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 )
 
 func (suite *KeeperTestSuite) TestInvestOnTarget() {

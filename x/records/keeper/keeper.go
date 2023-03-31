@@ -3,8 +3,8 @@ package keeper
 import (
 	"fmt"
 
-	channeltypes "github.com/cosmos/ibc-go/v5/modules/core/04-channel/types"
-	ibckeeper "github.com/cosmos/ibc-go/v5/modules/core/keeper"
+	channeltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
+	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
 	"github.com/tendermint/tendermint/libs/log"
 
 	icacallbackstypes "github.com/UnUniFi/chain/x/icacallbacks/types"
@@ -15,8 +15,8 @@ import (
 	capabilitykeeper "github.com/cosmos/cosmos-sdk/x/capability/keeper"
 	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	ibctransferkeeper "github.com/cosmos/ibc-go/v5/modules/apps/transfer/keeper"
-	ibctypes "github.com/cosmos/ibc-go/v5/modules/apps/transfer/types"
+	ibctransferkeeper "github.com/cosmos/ibc-go/v7/modules/apps/transfer/keeper"
+	ibctypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 
 	icacallbackskeeper "github.com/UnUniFi/chain/x/icacallbacks/keeper"
 
