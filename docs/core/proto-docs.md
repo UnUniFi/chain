@@ -260,10 +260,10 @@
     - [Liquidation](#ununifi.nftmarket.Liquidation)
     - [Liquidations](#ununifi.nftmarket.Liquidations)
     - [ListedClass](#ununifi.nftmarket.ListedClass)
-    - [ListedNft](#ununifi.nftmarket.ListedNft)
     - [Loan](#ununifi.nftmarket.Loan)
     - [NftBid](#ununifi.nftmarket.NftBid)
     - [NftIdentifier](#ununifi.nftmarket.NftIdentifier)
+    - [NftInfo](#ununifi.nftmarket.NftInfo)
     - [NftListing](#ununifi.nftmarket.NftListing)
     - [Params](#ununifi.nftmarket.Params)
     - [PaymentStatus](#ununifi.nftmarket.PaymentStatus)
@@ -276,6 +276,7 @@
     - [GenesisState](#ununifi.nftmarket.GenesisState)
   
 - [nftmarket/query.proto](#nftmarket/query.proto)
+    - [NftListingDetail](#ununifi.nftmarket.NftListingDetail)
     - [QueryBidderBidsRequest](#ununifi.nftmarket.QueryBidderBidsRequest)
     - [QueryBidderBidsResponse](#ununifi.nftmarket.QueryBidderBidsResponse)
     - [QueryCDPsListRequest](#ununifi.nftmarket.QueryCDPsListRequest)
@@ -1695,6 +1696,7 @@ Query defines the gRPC querier service.
 | `margin_maintenance_rate` | [string](#string) |  |  |
 | `imaginary_funding_rate_proportional_coefficient` | [string](#string) |  |  |
 | `markets` | [Market](#ununifi.derivatives.Market) | repeated |  |
+| `max_leverage` | [uint32](#uint32) |  |  |
 
 
 
@@ -3878,23 +3880,6 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.nftmarket.ListedNft"></a>
-
-### ListedNft
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  |  |
-| `uri` | [string](#string) |  |  |
-| `uri_hash` | [string](#string) |  |  |
-
-
-
-
-
-
 <a name="ununifi.nftmarket.Loan"></a>
 
 ### Loan
@@ -3947,6 +3932,23 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `class_id` | [string](#string) |  |  |
 | `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.NftInfo"></a>
+
+### NftInfo
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  |  |
+| `uri` | [string](#string) |  |  |
+| `uri_hash` | [string](#string) |  |  |
 
 
 
@@ -4131,6 +4133,22 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
+<a name="ununifi.nftmarket.NftListingDetail"></a>
+
+### NftListingDetail
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `listing` | [NftListing](#ununifi.nftmarket.NftListing) |  |  |
+| `nft_info` | [NftInfo](#ununifi.nftmarket.NftInfo) |  |  |
+
+
+
+
+
+
 <a name="ununifi.nftmarket.QueryBidderBidsRequest"></a>
 
 ### QueryBidderBidsRequest
@@ -4242,7 +4260,7 @@ GenesisState defines the nftmarket module's genesis state.
 | `symbol` | [string](#string) |  |  |
 | `uri` | [string](#string) |  |  |
 | `urihash` | [string](#string) |  |  |
-| `nfts` | [ListedNft](#ununifi.nftmarket.ListedNft) | repeated |  |
+| `nfts` | [NftInfo](#ununifi.nftmarket.NftInfo) | repeated |  |
 | `nft_count` | [uint64](#uint64) |  |  |
 
 
@@ -4303,7 +4321,7 @@ GenesisState defines the nftmarket module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `listings` | [NftListing](#ununifi.nftmarket.NftListing) | repeated |  |
+| `listings` | [NftListingDetail](#ununifi.nftmarket.NftListingDetail) | repeated |  |
 
 
 

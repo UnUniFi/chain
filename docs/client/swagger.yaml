@@ -4065,67 +4065,82 @@ paths:
                 items:
                   type: object
                   properties:
-                    nft_id:
+                    listing:
                       type: object
                       properties:
-                        class_id:
-                          type: string
                         nft_id:
+                          type: object
+                          properties:
+                            class_id:
+                              type: string
+                            nft_id:
+                              type: string
+                        owner:
                           type: string
-                    owner:
-                      type: string
-                    listing_type:
-                      type: string
-                      enum:
-                        - DIRECT_ASSET_BORROW
-                        - SYNTHETIC_ASSET_CREATION
-                        - LATE_SHIPPING
-                      default: DIRECT_ASSET_BORROW
-                    state:
-                      type: string
-                      enum:
-                        - LISTING
-                        - BIDDING
-                        - SELLING_DECISION
-                        - END_LISTING
-                        - SUCCESSFUL_BID
-                      default: LISTING
-                    bid_token:
-                      type: string
-                    minimum_deposit_rate:
-                      type: string
-                    automatic_refinancing:
-                      type: boolean
-                    started_at:
-                      type: string
-                      format: date-time
-                    end_at:
-                      type: string
-                      format: date-time
-                    full_payment_end_at:
-                      type: string
-                      format: date-time
-                    successful_bid_end_at:
-                      type: string
-                      format: date-time
-                    auto_relisted_count:
-                      type: string
-                      format: uint64
-                    collected_amount:
+                        listing_type:
+                          type: string
+                          enum:
+                            - DIRECT_ASSET_BORROW
+                            - SYNTHETIC_ASSET_CREATION
+                            - LATE_SHIPPING
+                          default: DIRECT_ASSET_BORROW
+                        state:
+                          type: string
+                          enum:
+                            - LISTING
+                            - BIDDING
+                            - SELLING_DECISION
+                            - END_LISTING
+                            - SUCCESSFUL_BID
+                          default: LISTING
+                        bid_token:
+                          type: string
+                        minimum_deposit_rate:
+                          type: string
+                        automatic_refinancing:
+                          type: boolean
+                        started_at:
+                          type: string
+                          format: date-time
+                        end_at:
+                          type: string
+                          format: date-time
+                        full_payment_end_at:
+                          type: string
+                          format: date-time
+                        successful_bid_end_at:
+                          type: string
+                          format: date-time
+                        auto_relisted_count:
+                          type: string
+                          format: uint64
+                        collected_amount:
+                          type: object
+                          properties:
+                            denom:
+                              type: string
+                            amount:
+                              type: string
+                          description: >-
+                            Coin defines a token with a denomination and an
+                            amount.
+
+
+                            NOTE: The amount field is an Int which implements
+                            the custom method
+
+                            signatures required by gogoproto.
+                        minimum_bidding_period:
+                          type: string
+                    nft_info:
                       type: object
                       properties:
-                        denom:
+                        id:
                           type: string
-                        amount:
+                        uri:
                           type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
+                        uri_hash:
+                          type: string
         default:
           description: An unexpected error response.
           schema:
@@ -4537,6 +4552,8 @@ paths:
                       custom method
 
                       signatures required by gogoproto.
+                  minimum_bidding_period:
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -6124,6 +6141,9 @@ paths:
                               type: string
                             quote_denom:
                               type: string
+                      max_leverage:
+                        type: integer
+                        format: int64
                   perpetual_options:
                     type: object
                     properties:
@@ -11647,15 +11667,6 @@ definitions:
             liquidation_date:
               type: string
               format: date-time
-  ununifi.nftmarket.ListedNft:
-    type: object
-    properties:
-      id:
-        type: string
-      uri:
-        type: string
-      uri_hash:
-        type: string
   ununifi.nftmarket.ListingState:
     type: string
     enum:
@@ -11823,6 +11834,15 @@ definitions:
         type: string
       nft_id:
         type: string
+  ununifi.nftmarket.NftInfo:
+    type: object
+    properties:
+      id:
+        type: string
+      uri:
+        type: string
+      uri_hash:
+        type: string
   ununifi.nftmarket.NftListing:
     type: object
     properties:
@@ -11884,6 +11904,86 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
+      minimum_bidding_period:
+        type: string
+  ununifi.nftmarket.NftListingDetail:
+    type: object
+    properties:
+      listing:
+        type: object
+        properties:
+          nft_id:
+            type: object
+            properties:
+              class_id:
+                type: string
+              nft_id:
+                type: string
+          owner:
+            type: string
+          listing_type:
+            type: string
+            enum:
+              - DIRECT_ASSET_BORROW
+              - SYNTHETIC_ASSET_CREATION
+              - LATE_SHIPPING
+            default: DIRECT_ASSET_BORROW
+          state:
+            type: string
+            enum:
+              - LISTING
+              - BIDDING
+              - SELLING_DECISION
+              - END_LISTING
+              - SUCCESSFUL_BID
+            default: LISTING
+          bid_token:
+            type: string
+          minimum_deposit_rate:
+            type: string
+          automatic_refinancing:
+            type: boolean
+          started_at:
+            type: string
+            format: date-time
+          end_at:
+            type: string
+            format: date-time
+          full_payment_end_at:
+            type: string
+            format: date-time
+          successful_bid_end_at:
+            type: string
+            format: date-time
+          auto_relisted_count:
+            type: string
+            format: uint64
+          collected_amount:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          minimum_bidding_period:
+            type: string
+      nft_info:
+        type: object
+        properties:
+          id:
+            type: string
+          uri:
+            type: string
+          uri_hash:
+            type: string
   ununifi.nftmarket.Params:
     type: object
     properties:
@@ -12253,67 +12353,81 @@ definitions:
         items:
           type: object
           properties:
-            nft_id:
+            listing:
               type: object
               properties:
-                class_id:
-                  type: string
                 nft_id:
+                  type: object
+                  properties:
+                    class_id:
+                      type: string
+                    nft_id:
+                      type: string
+                owner:
                   type: string
-            owner:
-              type: string
-            listing_type:
-              type: string
-              enum:
-                - DIRECT_ASSET_BORROW
-                - SYNTHETIC_ASSET_CREATION
-                - LATE_SHIPPING
-              default: DIRECT_ASSET_BORROW
-            state:
-              type: string
-              enum:
-                - LISTING
-                - BIDDING
-                - SELLING_DECISION
-                - END_LISTING
-                - SUCCESSFUL_BID
-              default: LISTING
-            bid_token:
-              type: string
-            minimum_deposit_rate:
-              type: string
-            automatic_refinancing:
-              type: boolean
-            started_at:
-              type: string
-              format: date-time
-            end_at:
-              type: string
-              format: date-time
-            full_payment_end_at:
-              type: string
-              format: date-time
-            successful_bid_end_at:
-              type: string
-              format: date-time
-            auto_relisted_count:
-              type: string
-              format: uint64
-            collected_amount:
+                listing_type:
+                  type: string
+                  enum:
+                    - DIRECT_ASSET_BORROW
+                    - SYNTHETIC_ASSET_CREATION
+                    - LATE_SHIPPING
+                  default: DIRECT_ASSET_BORROW
+                state:
+                  type: string
+                  enum:
+                    - LISTING
+                    - BIDDING
+                    - SELLING_DECISION
+                    - END_LISTING
+                    - SUCCESSFUL_BID
+                  default: LISTING
+                bid_token:
+                  type: string
+                minimum_deposit_rate:
+                  type: string
+                automatic_refinancing:
+                  type: boolean
+                started_at:
+                  type: string
+                  format: date-time
+                end_at:
+                  type: string
+                  format: date-time
+                full_payment_end_at:
+                  type: string
+                  format: date-time
+                successful_bid_end_at:
+                  type: string
+                  format: date-time
+                auto_relisted_count:
+                  type: string
+                  format: uint64
+                collected_amount:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+                minimum_bidding_period:
+                  type: string
+            nft_info:
               type: object
               properties:
-                denom:
+                id:
                   type: string
-                amount:
+                uri:
                   type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
+                uri_hash:
+                  type: string
   ununifi.nftmarket.QueryLoanResponse:
     type: object
     properties:
@@ -12580,6 +12694,8 @@ definitions:
               method
 
               signatures required by gogoproto.
+          minimum_bidding_period:
+            type: string
   ununifi.nftmarket.QueryParamsResponse:
     type: object
     properties:
@@ -13082,6 +13198,9 @@ definitions:
                   type: string
                 quote_denom:
                   type: string
+          max_leverage:
+            type: integer
+            format: int64
       perpetual_options:
         type: object
         properties:
@@ -13120,6 +13239,9 @@ definitions:
               type: string
             quote_denom:
               type: string
+      max_leverage:
+        type: integer
+        format: int64
   ununifi.derivatives.PerpetualOptionsParams:
     type: object
     properties:
@@ -14341,6 +14463,9 @@ definitions:
                       type: string
                     quote_denom:
                       type: string
+              max_leverage:
+                type: integer
+                format: int64
           perpetual_options:
             type: object
             properties:
