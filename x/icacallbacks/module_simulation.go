@@ -1,9 +1,6 @@
 package icacallbacks
 
 import (
-	"math/rand"
-
-	simappparams "cosmossdk.io/simapp/params"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -12,12 +9,13 @@ import (
 
 	icacallbackssimulation "github.com/UnUniFi/chain/x/icacallbacks/simulation"
 	"github.com/UnUniFi/chain/x/icacallbacks/types"
+	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 )
 
 // avoid unused import issue
 var (
 	_ = icacallbackssimulation.FindAccount
-	_ = simappparams.StakePerAccount
+	_ = simtestutil.StakePerAccount
 	_ = simulation.MsgEntryKind
 	_ = baseapp.Paramspace
 )
@@ -43,11 +41,6 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 // ProposalContents doesn't return any content functions for governance proposals
 func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedProposalContent {
 	return nil
-}
-
-// RandomizedParams creates randomized  param changes for the simulator
-func (am AppModule) RandomizedParams(_ *rand.Rand) []simtypes.ParamChange {
-	return []simtypes.ParamChange{}
 }
 
 // RegisterStoreDecoder registers a decoder
