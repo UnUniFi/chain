@@ -130,14 +130,14 @@ func (k Keeper) DepositAndMintLPToken(ctx sdk.Context, address sdk.AccAddress, v
 	// Allocate funds through strategy
 	totalAmount := k.VaultAmountTotal(ctx, vault)
 	stratAmount := k.VaultAmountInStrategies(ctx, vault)
-	newStrategyAmount := totalAmount.ToDec().Mul(sdk.OneDec().Sub(vault.WithdrawReserveRate)).RoundInt()
+	newStrategyAmount := sdk.NewDecFromInt(totalAmount).Mul(sdk.OneDec().Sub(vault.WithdrawReserveRate)).RoundInt()
 	amountToInvest := newStrategyAmount.Sub(stratAmount)
 	for _, strategyWeight := range vault.StrategyWeights {
 		strategy, found := k.GetStrategy(ctx, vault.Denom, strategyWeight.StrategyId)
 		if !found {
 			continue
 		}
-		strategyAmount := amountToInvest.ToDec().Mul(strategyWeight.Weight).RoundInt()
+		strategyAmount := sdk.NewDecFromInt(amountToInvest).Mul(strategyWeight.Weight).RoundInt()
 		err = k.StakeToStrategy(ctx, vault, strategy, strategyAmount)
 		if err != nil {
 			return err
@@ -176,10 +176,10 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 	amountInVault := k.VaultWithdrawalAmount(ctx, vault)
 	amountUnbonding := k.VaultUnbondingAmountInStrategies(ctx, vault)
 
-	// reserveMaintenanceRate := amountInVault.ToDec().Quo(amountInVault.Add(amountUnbonding).ToDec())
+	// reserveMaintenanceRate := sdk.NewDecFromInt(amountInVault).Quo(sdk.NewDecFromInt(amountInVault.Add(amountUnbonding)))
 	reserveMaintenanceRate := sdk.ZeroDec()
 	if amountInVault.GT(amountToUnbond) {
-		reserveMaintenanceRate = amountInVault.Sub(amountToUnbond).ToDec().Quo(amountInVault.Add(amountUnbonding).ToDec())
+		reserveMaintenanceRate = sdk.NewDecFromInt(amountInVault.Sub(amountToUnbond)).Quo(sdk.NewDecFromInt(amountInVault.Add(amountUnbonding)))
 	}
 	// reserve_maintenance_rate = max(0, withdraw_reserve - amount_to_withdraw) / (withdraw_reserve + tokens_in_unbonding_period)
 
@@ -194,10 +194,10 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 	// withdraw_fee = withdraw_fee_rate * amount_to_withdraw
 	// If reserve_maintenance_rate is close to 1, withdraw_fee_rate will be close to 0 and vice versa
 
-	withdrawFee := principal.Amount.ToDec().Mul(withdrawFeeRate).RoundInt()
+	withdrawFee := sdk.NewDecFromInt(principal.Amount).Mul(withdrawFeeRate).RoundInt()
 	withdrawAmount := principal.Amount.Sub(withdrawFee)
 
-	withdrawCommissionFee := withdrawAmount.ToDec().Mul(vault.WithdrawCommissionRate).RoundInt()
+	withdrawCommissionFee := sdk.NewDecFromInt(withdrawAmount).Mul(vault.WithdrawCommissionRate).RoundInt()
 	withdrawAmountWithoutCommission := withdrawAmount.Sub(withdrawCommissionFee)
 
 	if withdrawCommissionFee.IsPositive() {

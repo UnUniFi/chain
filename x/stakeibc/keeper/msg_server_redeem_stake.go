@@ -26,7 +26,7 @@ func (k Keeper) GetUpdatedBalance(ctx sdk.Context, sender sdk.AccAddress, hzIbcD
 	// calculate updated amount
 	stDenom := types.StAssetDenomFromHostZoneDenom(hostZone.HostDenom)
 	balance := k.bankKeeper.GetBalance(ctx, sender, stDenom)
-	updatedAmount := balance.Amount.ToDec().Mul(hostZone.RedemptionRate).RoundInt()
+	updatedAmount := sdk.NewDecFromInt(balance.Amount).Mul(hostZone.RedemptionRate).RoundInt()
 	fmt.Println("Updated amount", updatedAmount.String())
 	return updatedAmount
 }
@@ -62,7 +62,7 @@ func (k Keeper) RedeemStake(ctx sdk.Context, sender sdk.AccAddress, amount sdk.C
 
 	// construct desired unstaking amount from host zone
 	coinDenom := types.StAssetDenomFromHostZoneDenom(hostZone.HostDenom)
-	nativeAmount := amount.Amount.ToDec().Mul(hostZone.RedemptionRate).RoundInt()
+	nativeAmount := sdk.NewDecFromInt(amount.Amount).Mul(hostZone.RedemptionRate).RoundInt()
 	// TODO(TEST-112) bigint safety
 	coinString := nativeAmount.String() + coinDenom
 	inCoin, err := sdk.ParseCoinNormalized(coinString)

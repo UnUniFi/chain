@@ -20,7 +20,7 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochInfo epochstypes.EpochInf
 			reserve := k.VaultWithdrawalAmount(ctx, vault)
 			unbonding := k.VaultUnbondingAmountInStrategies(ctx, vault)
 
-			targetUnbonded := totalAmount.ToDec().Mul(vault.WithdrawReserveRate).RoundInt()
+			targetUnbonded := sdk.NewDecFromInt(totalAmount).Mul(vault.WithdrawReserveRate).RoundInt()
 			if targetUnbonded.LT(reserve.Add(unbonding)) {
 				continue
 			}
@@ -30,7 +30,7 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochInfo epochstypes.EpochInf
 				if !found {
 					continue
 				}
-				strategyAmount := amountToUnbond.ToDec().Mul(strategyWeight.Weight).RoundInt()
+				strategyAmount := sdk.NewDecFromInt(amountToUnbond).Mul(strategyWeight.Weight).RoundInt()
 				cacheCtx, _ := ctx.CacheContext()
 				err := k.UnstakeFromStrategy(cacheCtx, vault, strategy, strategyAmount)
 				if err != nil {

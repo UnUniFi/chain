@@ -70,7 +70,7 @@ func (k Keeper) Withdraw(ctx sdk.Context, user sdk.AccAddress, coins sdk.Coins) 
 	}
 
 	deposit := k.GetFarmerInfo(ctx, user)
-	deposit.Amount = sdk.Coins(deposit.Amount).Sub(coins)
+	deposit.Amount = sdk.Coins(deposit.Amount).Sub(coins...)
 	k.SetFarmerInfo(ctx, deposit)
 	return nil
 }

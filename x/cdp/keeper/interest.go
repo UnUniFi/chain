@@ -50,7 +50,7 @@ func (k Keeper) AccumulateInterest(ctx sdk.Context, ctype string) error {
 		return nil
 	}
 	interestFactor := CalculateInterestFactor(borrowRateSpy, sdk.NewInt(timeElapsed))
-	interestAccumulated := (interestFactor.Mul(totalPrincipalPrior.ToDec())).RoundInt().Sub(totalPrincipalPrior)
+	interestAccumulated := (interestFactor.Mul(sdk.NewDecFromInt(totalPrincipalPrior))).RoundInt().Sub(totalPrincipalPrior)
 	if interestAccumulated.IsZero() {
 		// in the case accumulated interest rounds to zero, exit early without updating accrual time
 		return nil
@@ -152,7 +152,7 @@ func (k Keeper) CalculateNewInterest(ctx sdk.Context, cdp types.Cdp) sdk.Coin {
 	if cdpInterestFactor.Equal(sdk.OneDec()) {
 		return sdk.NewCoin(cdp.AccumulatedFees.Denom, sdk.ZeroInt())
 	}
-	accumulatedInterest := cdp.GetTotalPrincipal().Amount.ToDec().Mul(cdpInterestFactor).RoundInt().Sub(cdp.GetTotalPrincipal().Amount)
+	accumulatedInterest := sdk.NewDecFromInt(cdp.GetTotalPrincipal().Amount).Mul(cdpInterestFactor).RoundInt().Sub(cdp.GetTotalPrincipal().Amount)
 	return sdk.NewCoin(cdp.AccumulatedFees.Denom, accumulatedInterest)
 }
 
