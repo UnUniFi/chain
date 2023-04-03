@@ -351,14 +351,14 @@ func (k Keeper) SafeCloseBidCollectDeposit(ctx sdk.Context, bid types.NftBid) (s
 	return CollectedAmount, nil
 }
 
+// todo make unit test
 func (k Keeper) SafeCloseBidWithAllInterest(ctx sdk.Context, bid types.NftBid) error {
 	bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
 	if err != nil {
 		return err
 	}
 	interestAmount := bid.TotalInterestAmount(ctx.BlockTime())
-	// todo change GT to positive method
-	if interestAmount.Amount.GT(sdk.ZeroInt()) {
+	if interestAmount.Amount.IsPositive() {
 		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{sdk.NewCoin(interestAmount.Denom, interestAmount.Amount)})
 		if err != nil {
 			return err
