@@ -13,7 +13,7 @@ import (
 
 	// supplyexported "github.com/cosmos/cosmos-sdk/x/supply/exported"
 
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/UnUniFi/chain/app"

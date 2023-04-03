@@ -8,17 +8,17 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	tmdb "github.com/tendermint/tm-db"
-
-	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/secp256k1"
-	"github.com/tendermint/tendermint/libs/log"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
-	simapp "cosmossdk.io/simapp"
+	dbm "github.com/cometbft/cometbft-db"
+	abci "github.com/cometbft/cometbft/abci/types"
+	"github.com/cometbft/cometbft/libs/log"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/server"
+	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/tendermint/tendermint/crypto"
+	"github.com/tendermint/tendermint/crypto/secp256k1"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
@@ -67,7 +67,12 @@ func NewTestApp() TestApp {
 	config.SetBech32PrefixForConsensusNode(ConsNodeAddressPrefix, ConsNodePubKeyPrefix)
 	// config.Seal()
 
-	db := tmdb.NewMemDB()
+	invCheckPeriod := uint(5)
+	appOptions := make(simtestutil.AppOptionsMap, 0)
+	appOptions[flags.FlagHome] = DefaultNodeHome
+	appOptions[server.FlagInvCheckPeriod] = invCheckPeriod
+
+	db := dbm.NewMemDB()
 	tApp := NewApp(
 		log.NewNopLogger(),
 		db,
@@ -78,7 +83,7 @@ func NewTestApp() TestApp {
 		0,
 		MakeEncodingConfig(), /* a.encCfg */
 		wasm.EnableAllProposals,
-		simapp.EmptyAppOptions{},
+		appOptions,
 		emptyWasmOpts,
 	)
 	return TestApp{App: *tApp}
@@ -89,13 +94,13 @@ func (tApp TestApp) GetAccountKeeper() authkeeper.AccountKeeper { return tApp.Ac
 func (tApp TestApp) GetBankKeeper() bankkeeper.Keeper           { return tApp.BankKeeper }
 
 // func (tApp TestApp) GetSupplyKeeper() supply.Keeper             { return tApp.SupplyKeeper }
-func (tApp TestApp) GetStakingKeeper() stakingkeeper.Keeper   { return tApp.StakingKeeper }
+func (tApp TestApp) GetStakingKeeper() *stakingkeeper.Keeper  { return tApp.StakingKeeper }
 func (tApp TestApp) GetSlashingKeeper() slashingkeeper.Keeper { return tApp.SlashingKeeper }
 func (tApp TestApp) GetMintKeeper() mintkeeper.Keeper         { return tApp.MintKeeper }
 func (tApp TestApp) GetDistrKeeper() distrkeeper.Keeper       { return tApp.DistrKeeper }
 func (tApp TestApp) GetGovKeeper() govkeeper.Keeper           { return tApp.GovKeeper }
-func (tApp TestApp) GetCrisisKeeper() crisiskeeper.Keeper     { return tApp.CrisisKeeper }
-func (tApp TestApp) GetUpgradeKeeper() upgradekeeper.Keeper   { return tApp.UpgradeKeeper }
+func (tApp TestApp) GetCrisisKeeper() *crisiskeeper.Keeper    { return tApp.CrisisKeeper }
+func (tApp TestApp) GetUpgradeKeeper() *upgradekeeper.Keeper  { return tApp.UpgradeKeeper }
 func (tApp TestApp) GetParamsKeeper() paramskeeper.Keeper     { return tApp.ParamsKeeper }
 
 // func (tApp TestApp) GetVVKeeper() validatorvesting.Keeper       { return tApp.vvKeeper }

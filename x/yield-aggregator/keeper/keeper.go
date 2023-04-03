@@ -3,7 +3,7 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/tendermint/tendermint/libs/log"
+	"github.com/cometbft/cometbft/libs/log"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	stakeibckeeper "github.com/UnUniFi/chain/x/stakeibc/keeper"

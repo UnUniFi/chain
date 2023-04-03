@@ -3,9 +3,9 @@ package keeper
 import (
 	"fmt"
 
+	"github.com/cometbft/cometbft/libs/log"
 	channeltypes "github.com/cosmos/ibc-go/v7/modules/core/04-channel/types"
 	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
-	"github.com/tendermint/tendermint/libs/log"
 
 	icacallbackstypes "github.com/UnUniFi/chain/x/icacallbacks/types"
 
@@ -21,14 +21,15 @@ import (
 	icacallbackskeeper "github.com/UnUniFi/chain/x/icacallbacks/keeper"
 
 	"github.com/UnUniFi/chain/x/records/types"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 type (
 	Keeper struct {
 		// *cosmosibckeeper.Keeper
 		Cdc                codec.BinaryCodec
-		storeKey           sdk.StoreKey
-		memKey             sdk.StoreKey
+		storeKey           storetypes.StoreKey
+		memKey             storetypes.StoreKey
 		paramstore         paramtypes.Subspace
 		scopedKeeper       capabilitykeeper.ScopedKeeper
 		AccountKeeper      types.AccountKeeper
@@ -41,7 +42,7 @@ type (
 func NewKeeper(
 	Cdc codec.BinaryCodec,
 	storeKey,
-	memKey sdk.StoreKey,
+	memKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
 	scopedKeeper capabilitykeeper.ScopedKeeper,
 	AccountKeeper types.AccountKeeper,
