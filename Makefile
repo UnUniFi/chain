@@ -166,4 +166,4 @@ proto-gen:
 	# need buf and proto plugin
 	# cd docs/devtools
 	# make buf-tools
-	./proto/gen.sh
+	./proto/gen.sh &&  ./proto/gen-swagger.sh
