@@ -169,37 +169,6 @@ func NormalToMicroDec(amount sdk.Dec) sdk.Dec {
 	return amount.Mul(sdk.MustNewDecFromStr(OneMillionString))
 }
 
-// CalcReturningAmountAtClose calculates the amount of the principal and the profit/loss at the close of the position.
-func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(baseMetricsRate, quoteMetricsRate MetricsRateType) (returningAmount math.Int, lossToLP math.Int) {
-	principal := m.RemainingMargin.Amount
-	// pnlAmountInMetrics represents the profit/loss amount in the metrics asset of the market.
-	// In the most cases, it means it's in "usd".
-	// AND, MORE IMPORTANTLY,
-	// it's not calculated on a micro level. So, it has to be modified to micro level by multiplying
-	// one million to represent the returning amount.
-	pnlAmountInMetrics := sdk.NewDecFromInt(m.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate))
-
-	// Make it be calculated in the corresponding asset as the principal.
-	var pnlAmount sdk.Dec
-	if m.RemainingMargin.Denom == m.Market.BaseDenom {
-		pnlAmount = pnlAmountInMetrics.Quo(baseMetricsRate.Amount.Amount)
-	} else {
-		pnlAmount = pnlAmountInMetrics.Quo(quoteMetricsRate.Amount.Amount)
-	}
-
-	returningAmount = principal.Add(pnlAmount.TruncateInt())
-
-	// If loss is over the margin, it means liquidity provider takes the loss.
-	if returningAmount.IsNegative() {
-		lossToLP = returningAmount
-		returningAmount = sdk.ZeroInt()
-	} else {
-		lossToLP = sdk.ZeroInt()
-	}
-
-	return returningAmount, lossToLP
-}
-
 // todo make test
 func (m Positions) EvaluatePositions(posType PositionType, quoteTicker string, getCurrentPriceF func(denom string) (sdk.Dec, error)) sdk.Dec {
 	usdMap := map[string]sdk.Dec{}
@@ -271,23 +240,61 @@ func (m PerpetualFuturesPosition) RequiredMarginInMetrics(baseMetricsRate, quote
 	}
 }
 
-func (m PerpetualFuturesPosition) ProfitAndLossInQuote(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
-	// 損益(quote単位) = (longなら1,shortなら-1) * (現在のbase/quoteレート - ポジション開設時base/quoteレート) * ポジションサイズ(base単位)
-	baseQuoteRate := baseMetricsRate.Amount.Amount.Quo(quoteMetricsRate.Amount.Amount)
-	profitOrLoss := baseQuoteRate.Sub(m.OpenedPairRate()).Mul(sdk.NewDecFromInt(*m.PositionInstance.SizeInMicro)).TruncateInt()
-	if m.PositionInstance.PositionType == PositionType_LONG {
-		return profitOrLoss
+// CalcReturningAmountAtClose calculates the amount of the principal and the profit/loss at the close of the position.
+func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(baseMetricsRate, quoteMetricsRate MetricsRateType) (returningAmount math.Int, lossToLP math.Int) {
+	principal := m.RemainingMargin.Amount
+	// pnlAmountInMetrics represents the profit/loss amount in the metrics asset of the market.
+	// In the most cases, it means it's in "usd".
+	// AND, MORE IMPORTANTLY,
+	// it's not calculated on a micro level. So, it has to be modified to micro level by multiplying
+	// one million to represent the returning amount.
+	pnlAmount := m.ProfitAndLoss(baseMetricsRate, quoteMetricsRate)
+
+	returningAmount = principal.Add(pnlAmount)
+
+	// If loss is over the margin, it means liquidity provider takes the loss.
+	if returningAmount.IsNegative() {
+		lossToLP = returningAmount
+		returningAmount = sdk.ZeroInt()
 	} else {
-		return profitOrLoss.Neg()
+		lossToLP = sdk.ZeroInt()
+	}
+
+	return returningAmount, lossToLP
+}
+
+// ProfitAndLoss returns the profit/loss amount in the margin denom
+func (m PerpetualFuturesPosition) ProfitAndLoss(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
+	pnlAmountInMetrics := sdk.NewDecFromInt(m.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate))
+
+	// Make it be calculated in the corresponding asset as the principal.
+	var pnlAmount sdk.Dec
+	if m.RemainingMargin.Denom == m.Market.BaseDenom {
+		pnlAmount = pnlAmountInMetrics.Quo(baseMetricsRate.Amount.Amount)
+	} else {
+		pnlAmount = pnlAmountInMetrics.Quo(quoteMetricsRate.Amount.Amount)
+	}
+
+	return pnlAmount.TruncateInt()
+}
+
+func (m PerpetualFuturesPosition) ProfitAndLossInQuote(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
+	// 損益(quote単位) = (longなら*1,shortなら*-1) * (現在のbase/quoteレート - ポジション開設時base/quoteレート) * ポジションサイズ(base単位)
+	baseQuoteRate := baseMetricsRate.Amount.Amount.Quo(quoteMetricsRate.Amount.Amount)
+	profitAndLoss := baseQuoteRate.Sub(m.OpenedPairRate()).Mul(sdk.NewDecFromInt(*m.PositionInstance.SizeInMicro)).TruncateInt()
+	if m.PositionInstance.PositionType == PositionType_LONG {
+		return profitAndLoss
+	} else {
+		return profitAndLoss.Neg()
 	}
 }
 
 func (m PerpetualFuturesPosition) ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
 	// 損益(USD単位) = 損益(quote単位) * 現在のquote/USDレート
+	fmt.Println("pnlinmetrics", sdk.NewDecFromInt(m.ProfitAndLossInQuote(baseMetricsRate, quoteMetricsRate)).Mul(quoteMetricsRate.Amount.Amount).TruncateInt())
 	return sdk.NewDecFromInt(m.ProfitAndLossInQuote(baseMetricsRate, quoteMetricsRate)).Mul(quoteMetricsRate.Amount.Amount).TruncateInt()
 }
 
-// TODO: fix the difference between position and price unit scales
 // position size takes 0 decimal although price takes 6 decimal (micro unit)
 func (m PerpetualFuturesPosition) MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
 	// 証拠金維持率 = 有効証拠金(USD単位) ÷ 必要証拠金(USD単位)
