@@ -345,10 +345,10 @@ func (k Keeper) SafeCloseBid(ctx sdk.Context, bid types.NftBid) error {
 	return k.ManualSafeCloseBid(ctx, bid, bidder)
 }
 
-func (k Keeper) SafeCloseBidCollectDeposit(ctx sdk.Context, bid types.NftBid, listing types.NftListing) (types.NftListing, error) {
-	listing.CollectedAmount = listing.CollectedAmount.Add(bid.DepositAmount)
+func (k Keeper) SafeCloseBidCollectDeposit(ctx sdk.Context, bid types.NftBid) (sdk.Coin, error) {
+	CollectedAmount := bid.DepositAmount
 	k.DeleteBid(ctx, bid)
-	return listing, nil
+	return CollectedAmount, nil
 }
 
 func (k Keeper) SafeCloseBidWithAllInterest(ctx sdk.Context, bid types.NftBid) error {
@@ -357,6 +357,7 @@ func (k Keeper) SafeCloseBidWithAllInterest(ctx sdk.Context, bid types.NftBid) e
 		return err
 	}
 	interestAmount := bid.TotalInterestAmount(ctx.BlockTime())
+	// todo change GT to positive method
 	if interestAmount.Amount.GT(sdk.ZeroInt()) {
 		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{sdk.NewCoin(interestAmount.Denom, interestAmount.Amount)})
 		if err != nil {
