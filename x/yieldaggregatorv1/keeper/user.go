@@ -78,6 +78,6 @@ func (k Keeper) IncreaseUserDeposit(ctx sdk.Context, addr sdk.AccAddress, amount
 
 func (k Keeper) DecreaseUserDeposit(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coins) {
 	deposit := k.GetUserDeposit(ctx, addr)
-	deposit = deposit.Sub(amount)
+	deposit = deposit.Sub(amount...)
 	k.SetUserDeposit(ctx, addr, deposit)
 }
