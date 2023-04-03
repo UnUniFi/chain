@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"fmt"
+
 	"github.com/tendermint/tendermint/crypto/ed25519"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
@@ -61,6 +63,7 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 
 	expectNetPosition := sdk.ZeroInt()
 	for _, testPosition := range positions {
+		fmt.Println(testPosition.positionId)
 		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.Bytes(), testPosition.margin, market, testPosition.instance)
 		suite.Require().NoError(err)
 		suite.Require().NotNil(position)
@@ -81,13 +84,10 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 }
 
 // TODO: Implement this test
-func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
+func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {}
 
-}
-
-func (suite *KeeperTestSuite) TestReportLiquidationNeededPerpetualFuturesPosition() {
-
-}
+// TODO: Implement this test
+func (suite *KeeperTestSuite) TestReportLiquidationNeededPerpetualFuturesPosition() {}
 
 func (suite *KeeperTestSuite) TestSetPerpetualFuturesNetPositionOfMarket() {
 	market := types.Market{

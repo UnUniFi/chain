@@ -52,7 +52,7 @@ func (m PerpetualFuturesPosition) IsValidPositionSize(quoteTicker string) bool {
 	quoteMetricsRate := NewMetricsRateType(quoteTicker, m.Market.QuoteDenom, m.OpenedQuoteRate)
 	marginMaintenanceRate := m.MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate)
 
-	return !marginMaintenanceRate.LTE(sdk.OneDec())
+	return !marginMaintenanceRate.LT(sdk.OneDec())
 }
 
 func (m PerpetualFuturesPositionInstance) IsValidLeverage(maxLeverage uint32) bool {
@@ -291,7 +291,6 @@ func (m PerpetualFuturesPosition) ProfitAndLossInQuote(baseMetricsRate, quoteMet
 
 func (m PerpetualFuturesPosition) ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
 	// 損益(USD単位) = 損益(quote単位) * 現在のquote/USDレート
-	fmt.Println("pnlinmetrics", sdk.NewDecFromInt(m.ProfitAndLossInQuote(baseMetricsRate, quoteMetricsRate)).Mul(quoteMetricsRate.Amount.Amount).TruncateInt())
 	return sdk.NewDecFromInt(m.ProfitAndLossInQuote(baseMetricsRate, quoteMetricsRate)).Mul(quoteMetricsRate.Amount.Amount).TruncateInt()
 }
 
