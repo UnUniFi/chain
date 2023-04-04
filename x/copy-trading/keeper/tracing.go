@@ -66,8 +66,7 @@ func (k Keeper) GetAllTracing(ctx sdk.Context) (list []types.Tracing) {
 }
 
 func (k Keeper) GetExemplaryTraderTracing(ctx sdk.Context, exemplaryTrader string) (list []types.Tracing) {
-	// TODO: KeyPrefix
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.TracingKeyPrefix))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ExemplaryTraderTracingKeyPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()

@@ -22,7 +22,10 @@ func (k msgServer) CreateExemplaryTrader(goCtx context.Context, msg *types.MsgCr
 	}
 
 	var exemplaryTrader = types.ExemplaryTrader{
-		Address: msg.Sender,
+		Address:              msg.Sender,
+		Name:                 msg.Name,
+		Description:          msg.Description,
+		ProfitCommissionRate: msg.ProfitCommissionRate,
 	}
 
 	k.SetExemplaryTrader(
@@ -50,7 +53,10 @@ func (k msgServer) UpdateExemplaryTrader(goCtx context.Context, msg *types.MsgUp
 	}
 
 	var exemplaryTrader = types.ExemplaryTrader{
-		Address: msg.Sender,
+		Address:              msg.Sender,
+		Name:                 msg.Name,
+		Description:          msg.Description,
+		ProfitCommissionRate: msg.ProfitCommissionRate,
 	}
 
 	k.SetExemplaryTrader(ctx, exemplaryTrader)

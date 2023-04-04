@@ -1,6 +1,7 @@
 syntax = "proto3";
 package ununifi.chain.copytrading;
 
+import "gogoproto/gogo.proto";
 import "copy-trading/exemplary_trader.proto";
 import "copy-trading/tracing.proto";
 // this line is used by starport scaffolding # proto/tx/import
@@ -19,13 +20,23 @@ service Msg {
 
 message MsgCreateExemplaryTrader {
   string sender = 1;
-
+  string name = 2;
+  string description = 3;
+  string profit_commission_rate = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 message MsgCreateExemplaryTraderResponse {}
 
 message MsgUpdateExemplaryTrader {
   string sender = 1;
-
+  string name = 2;
+  string description = 3;
+  string profit_commission_rate = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 message MsgUpdateExemplaryTraderResponse {}
 
@@ -36,7 +47,16 @@ message MsgDeleteExemplaryTraderResponse {}
 
 message MsgCreateTracing {
   string sender = 1;
-
+  string exemplary_trader = 2;
+  string size_coefficient = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string leverage_coefficient = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  bool reverse = 5;
 }
 message MsgCreateTracingResponse {}
 

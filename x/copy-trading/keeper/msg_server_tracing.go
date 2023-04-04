@@ -22,7 +22,11 @@ func (k msgServer) CreateTracing(goCtx context.Context, msg *types.MsgCreateTrac
 	}
 
 	var tracing = types.Tracing{
-		Address: msg.Sender,
+		Address:             msg.Sender,
+		ExemplaryTrader:     msg.ExemplaryTrader,
+		SizeCoefficient:     msg.SizeCoefficient,
+		LeverageCoefficient: msg.LeverageCoefficient,
+		Reverse:             msg.Reverse,
 	}
 
 	k.SetTracing(

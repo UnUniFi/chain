@@ -1813,6 +1813,9 @@ Query defines the gRPC querier service.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  |  |
+| `name` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `profit_commission_rate` | [string](#string) |  |  |
 
 
 
@@ -1838,6 +1841,10 @@ Query defines the gRPC querier service.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  |  |
+| `exemplary_trader` | [string](#string) |  |  |
+| `size_coefficient` | [string](#string) |  |  |
+| `leverage_coefficient` | [string](#string) |  |  |
+| `reverse` | [bool](#bool) |  |  |
 
 
 
@@ -1913,6 +1920,9 @@ Query defines the gRPC querier service.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  |  |
+| `name` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `profit_commission_rate` | [string](#string) |  |  |
 
 
 
