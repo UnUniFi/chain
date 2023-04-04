@@ -333,23 +333,30 @@ func (k Keeper) EstimateDLPTokenAmount(c context.Context, req *types.QueryEstima
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	validCoin := sdk.Coin{
+	deposit := sdk.Coin{
 		Denom:  req.MintDenom,
 		Amount: validAmount,
 	}
-	if validCoin.Validate() != nil {
+	if deposit.Validate() != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	mintAmount, mintFee, err := k.DetermineMintingLPTokenAmount(ctx, validCoin)
+
+	depositFee, err := k.CalcDepositingFee(ctx, deposit, k.GetLPTokenBaseMintFee(ctx))
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	depositFeeDeducted := deposit.Sub(depositFee)
+	mintAmount, err := k.DetermineMintingLPTokenAmount(ctx, depositFeeDeducted)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	return &types.QueryEstimateDLPTokenAmountResponse{
-		Amount: mintAmount,
-		Fee:    mintFee,
+		EstimatedDlpAmount: mintAmount,
+		DepositFee:         depositFee,
 	}, nil
 }
 
