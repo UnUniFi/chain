@@ -34,6 +34,12 @@
       ],
     },
     {
+      "label": "prepare tx direct",
+      "type": "shell",
+      "cwd": "${workspaceFolder}",
+      "command": "scripts/commands/prepare.sh sleep",
+    },
+    {
       "label": "run pricefeed",
       "type": "shell",
       "cwd": "${workspaceFolder}",

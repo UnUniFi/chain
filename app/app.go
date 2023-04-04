@@ -246,10 +246,11 @@ var (
 		ecosystemincentivetypes.ModuleName: nil,
 		ununifidisttypes.ModuleName:        {authtypes.Minter},
 		// wasm.ModuleName:             {authtypes.Burner},
-		nft.ModuleName:              nil,
-		nftminttypes.ModuleName:     nil,
-		nftmarkettypes.ModuleName:   nil,
-		derivativestypes.ModuleName: {authtypes.Minter, authtypes.Burner},
+		nft.ModuleName:                          nil,
+		nftminttypes.ModuleName:                 nil,
+		nftmarkettypes.ModuleName:               nil,
+		derivativestypes.ModuleName:             {authtypes.Minter, authtypes.Burner},
+		derivativestypes.DerivativeFeeCollector: nil,
 		// nftmarkettypes.NftTradingFee: nil,
 	}
 

@@ -1,6 +1,8 @@
 package types
 
 import (
+	time "time"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -44,13 +46,15 @@ var _ sdk.Msg = &MsgListNft{}
 
 // todo: Implementation fields
 // BidToken, MinBid, BidHook, ListingType
-func NewMsgListNft(sender sdk.AccAddress, nftId NftIdentifier, bidToken string, bidActiveRank uint64, minBid sdk.Int) MsgListNft {
+func NewMsgListNft(sender sdk.AccAddress, nftId NftIdentifier, bidToken string, minimumDepositRate sdk.Dec, autoRefi bool, minBiddingPeriod time.Duration) MsgListNft {
 	return MsgListNft{
-		Sender:        sender.Bytes(),
-		NftId:         nftId,
-		BidToken:      bidToken,
-		MinBid:        minBid,
-		BidActiveRank: bidActiveRank,
+		Sender:               sender.Bytes(),
+		NftId:                nftId,
+		BidToken:             bidToken,
+		MinimumDepositRate:   minimumDepositRate,
+		ListingType:          ListingType_DIRECT_ASSET_BORROW,
+		AutomaticRefinancing: autoRefi,
+		MinimumBiddingPeriod: minBiddingPeriod,
 	}
 }
 
@@ -109,47 +113,19 @@ func (msg MsgCancelNftListing) GetSigners() []sdk.AccAddress {
 }
 
 // ensure Msg interface compliance at compile time
-var _ sdk.Msg = &MsgExpandListingPeriod{}
-
-func NewMsgExpandListingPeriod(sender sdk.AccAddress, nftId NftIdentifier) MsgExpandListingPeriod {
-	return MsgExpandListingPeriod{
-		Sender: sender.Bytes(),
-		NftId:  nftId,
-	}
-}
-
-// Route return the message type used for routing the message.
-func (msg MsgExpandListingPeriod) Route() string { return RouterKey }
-
-// Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgExpandListingPeriod) Type() string { return "expand_listing_period" }
-
-// ValidateBasic does a simple validation check that doesn't require access to state.
-func (msg MsgExpandListingPeriod) ValidateBasic() error {
-	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgExpandListingPeriod) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
-}
-
-// GetSigners returns the addresses of signers that must sign.
-func (msg MsgExpandListingPeriod) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Sender.AccAddress()}
-}
-
-// ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgPlaceBid{}
 
 // todo
-func NewMsgPlaceBid(sender sdk.AccAddress, nftId NftIdentifier, amount sdk.Coin, automaticPayment bool) MsgPlaceBid {
+func NewMsgPlaceBid(sender sdk.AccAddress, nftId NftIdentifier, bidAmount, depositAmount sdk.Coin,
+	deposit_lending_rate sdk.Dec, bidding_period time.Time, automaticPayment bool) MsgPlaceBid {
 	return MsgPlaceBid{
-		Sender:           sender.Bytes(),
-		NftId:            nftId,
-		Amount:           amount,
-		AutomaticPayment: automaticPayment,
+		Sender:             sender.Bytes(),
+		NftId:              nftId,
+		BidAmount:          bidAmount,
+		AutomaticPayment:   automaticPayment,
+		BiddingPeriod:      bidding_period,
+		DepositLendingRate: deposit_lending_rate,
+		DepositAmount:      depositAmount,
 	}
 }
 
@@ -366,98 +342,5 @@ func (msg MsgRepay) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgRepay) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Sender.AccAddress()}
-}
-
-// ensure Msg interface compliance at compile time
-var _ sdk.Msg = &MsgMintStableCoin{}
-
-func NewMsgMintStableCoin(sender sdk.AccAddress) MsgMintStableCoin {
-	return MsgMintStableCoin{
-		Sender: sender.Bytes(),
-	}
-}
-
-// Route return the message type used for routing the message.
-func (msg MsgMintStableCoin) Route() string { return RouterKey }
-
-// Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgMintStableCoin) Type() string { return "mint_stable_coin" }
-
-// ValidateBasic does a simple validation check that doesn't require access to state.
-func (msg MsgMintStableCoin) ValidateBasic() error {
-	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgMintStableCoin) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
-}
-
-// GetSigners returns the addresses of signers that must sign.
-func (msg MsgMintStableCoin) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Sender.AccAddress()}
-}
-
-// ensure Msg interface compliance at compile time
-var _ sdk.Msg = &MsgMintStableCoin{}
-
-func NewMsgBurnStableCoin(sender sdk.AccAddress) MsgBurnStableCoin {
-	return MsgBurnStableCoin{
-		Sender: sender.Bytes(),
-	}
-}
-
-// Route return the message type used for routing the message.
-func (msg MsgBurnStableCoin) Route() string { return RouterKey }
-
-// Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgBurnStableCoin) Type() string { return "burn_stable_coin" }
-
-// ValidateBasic does a simple validation check that doesn't require access to state.
-func (msg MsgBurnStableCoin) ValidateBasic() error {
-	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgBurnStableCoin) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
-}
-
-// GetSigners returns the addresses of signers that must sign.
-func (msg MsgBurnStableCoin) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Sender.AccAddress()}
-}
-
-// ensure Msg interface compliance at compile time
-var _ sdk.Msg = &MsgMintStableCoin{}
-
-func NewMsgLiquidate(sender sdk.AccAddress) MsgLiquidate {
-	return MsgLiquidate{
-		Sender: sender.Bytes(),
-	}
-}
-
-// Route return the message type used for routing the message.
-func (msg MsgLiquidate) Route() string { return RouterKey }
-
-// Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgLiquidate) Type() string { return "liquidate" }
-
-// ValidateBasic does a simple validation check that doesn't require access to state.
-func (msg MsgLiquidate) ValidateBasic() error {
-	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgLiquidate) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
-}
-
-// GetSigners returns the addresses of signers that must sign.
-func (msg MsgLiquidate) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Sender.AccAddress()}
 }

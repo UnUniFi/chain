@@ -69,6 +69,12 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 		RemainingMargin:  margin,
 	}
 
+	// General validation for the position creation
+	params := k.GetParams(ctx)
+	if err := position.IsValid(params); err != nil {
+		return nil, err
+	}
+
 	switch positionInstance.PositionType {
 	case types.PositionType_LONG:
 		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.Size_)
@@ -112,15 +118,20 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 		}
 	}
 
-	returningAmount, lossToLP := position.CalcReturningAmountAtClose(baseUsdPrice, quoteUsdPrice)
+	quoteTicker := k.GetPoolQuoteTicker(ctx)
+	baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, baseUsdPrice)
+	quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, quoteUsdPrice)
+	returningAmount, lossToLP := position.CalcReturningAmountAtClose(baseMetricsRate, quoteMetricsRate)
 
 	if !(lossToLP.IsNil()) {
 		// TODO: emit event to tell how much loss is taken by liquidity provider.
 	}
 
 	returningCoin := sdk.NewCoin(position.RemainingMargin.Denom, returningAmount)
-	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, position.Address.AccAddress(), sdk.Coins{returningCoin}); err != nil {
-		return err
+	if returningCoin.IsPositive() {
+		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, position.Address.AccAddress(), sdk.Coins{returningCoin}); err != nil {
+			return err
+		}
 	}
 
 	ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionClosed{
@@ -141,12 +152,18 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 		panic(err)
 	}
 
-	if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, currentBaseUsdRate, currentQuoteUsdRate) {
+	quoteTicker := k.GetPoolQuoteTicker(ctx)
+	baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, currentBaseUsdRate)
+	quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, currentQuoteUsdRate)
+	if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, baseMetricsRate, quoteMetricsRate) {
 		k.ClosePerpetualFuturesPosition(ctx, position)
 
 		rewardAmount := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PoolParams.ReportLiquidationRewardRate).RoundInt()
 		reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))
-		k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
+		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
+		if err != nil {
+			return err
+		}
 
 		ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionLiquidated{
 			RewardRecipient: rewardRecipient.AccAddress().String(),
@@ -186,7 +203,10 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 
 	rewardAmount := sdk.NewDecFromInt(commissionFee).Mul(params.PoolParams.ReportLevyPeriodRewardRate).RoundInt()
 	reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))
-	k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
+	err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
+	if err != nil {
+		return err
+	}
 
 	k.SetPosition(ctx, position)
 
@@ -214,7 +234,11 @@ func (k Keeper) GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market t
 }
 
 func (k Keeper) GetPositionSizeOfNetPositionOfMarket(ctx sdk.Context, market types.Market) sdk.Dec {
-	return k.GetPerpetualFuturesNetPositionOfMarket(ctx, market).PositionSize
+	position := k.GetPerpetualFuturesNetPositionOfMarket(ctx, market)
+	if position.PositionSize.IsNil() {
+		return sdk.ZeroDec()
+	}
+	return position.PositionSize
 }
 
 func (k Keeper) GetAllPerpetualFuturesNetPositionOfMarket(ctx sdk.Context) []types.PerpetualFuturesNetPositionOfMarket {

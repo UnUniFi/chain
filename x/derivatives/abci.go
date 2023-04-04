@@ -1,6 +1,8 @@
 package derivatives
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/keeper"
@@ -21,23 +23,28 @@ func saveBlockTime(ctx sdk.Context, k keeper.Keeper) {
 }
 
 // BeginBlocker
+// In mainnet, BeginBlocker will have no function.
 func BeginBlocker(ctx sdk.Context, k keeper.Keeper) {
-	// TODO: make this function calling every 8 hours.
-	// saving `last_levy_ifr_block_time` in store is one of ways to do so.
-	// levyImaginaryFundingRate(ctx, k)
 	CheckPosition(ctx, k)
 }
 
 // todo: fixme this function is temporary treatment.
+// In mainnet, this function will be executed by off chain bots.
 func CheckPosition(ctx sdk.Context, k keeper.Keeper) {
 	positions := k.GetAllPositions(ctx)
 	params := k.GetParams(ctx)
+	quoteTicker := k.GetPoolQuoteTicker(ctx)
 	for _, position := range positions {
 		currentBaseUsdRate, currentQuoteUsdRate, err := k.GetPairUsdPriceFromMarket(ctx, position.Market)
 		if err != nil {
-			panic(err)
+			// todo: user logger
+			fmt.Println("failed to get pair usd price from market")
+			fmt.Println(err)
+			continue
 		}
-		if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, currentBaseUsdRate, currentQuoteUsdRate) {
+		baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, currentBaseUsdRate)
+		quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, currentQuoteUsdRate)
+		if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, baseMetricsRate, quoteMetricsRate) {
 			msg := types.MsgReportLiquidation{
 				Sender:          position.Address,
 				PositionId:      position.Id,
@@ -55,6 +62,7 @@ func CheckPosition(ctx sdk.Context, k keeper.Keeper) {
 }
 
 // EndBlocker
+// In EndBlocker, the snapshot of pool market cap and block time are saved.
 func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 	setPoolMarketCapSnapshot(ctx, k)
 	saveBlockTime(ctx, k)
