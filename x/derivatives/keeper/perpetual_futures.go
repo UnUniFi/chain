@@ -102,10 +102,12 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.PerpetualFuturesPosition) error {
 	params := k.GetParams(ctx)
 	commissionRate := params.PerpetualFutures.CommissionRate
-	// FIXME: Size_ cannot be used like this.
-	// It causes the inconsistency between the position and the token amount.
-	feeAmountDec := position.PositionInstance.Size_.Mul(commissionRate)
-	tradeAmount := position.PositionInstance.Size_.Sub(feeAmountDec)
+
+	// At closing the position, the trading fee is deducted.
+	// fee = positionSize * commissionRate
+	positionSizeInMicroDec := sdk.NewDecFromInt(*position.PositionInstance.SizeInMicro)
+	feeAmountDec := positionSizeInMicroDec.Mul(commissionRate)
+	tradeAmount := positionSizeInMicroDec.Sub(feeAmountDec)
 	feeAmount := feeAmountDec.RoundInt()
 
 	baseUsdPrice, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
