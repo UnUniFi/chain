@@ -160,17 +160,31 @@ func (m PerpetualFuturesPosition) EvaluatePosition(currentBaseMetricsRate Metric
 }
 
 // TODO: consider to use sdk.DecCoin
-func MicroToNormalDenom(amount sdk.Dec) sdk.Int {
+func NormalToMicroInt(amount sdk.Dec) sdk.Int {
 	return amount.Mul(sdk.MustNewDecFromStr("1000000")).TruncateInt()
 }
 
-func MicroToNormalDec(amount sdk.Dec) sdk.Dec {
+func NormalToMicroDec(amount sdk.Dec) sdk.Dec {
 	return amount.Mul(sdk.MustNewDecFromStr("1000000"))
 }
 
+// CalcReturningAmountAtClose calculates the amount of the principal and the profit/loss at the close of the position.
 func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(baseMetricsRate, quoteMetricsRate MetricsRateType) (returningAmount math.Int, lossToLP math.Int) {
 	principal := m.RemainingMargin.Amount
-	pnlAmount := m.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)
+	// pnlAmountInMetrics represents the profit/loss amount in the metrics asset of the market.
+	// In the most cases, it means it's in "usd".
+	// AND, MORE IMPORTANTLY,
+	// it's not calculated on a micro level. So, it has to be modified to micro level by multiplying
+	// one million to represent the returning amount.
+	pnlAmountInMetrics := m.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)
+	pnlAmount := NormalToMicroDec(pnlAmountInMetrics)
+
+	// Make it be calculated in the corresponding asset as the principal.
+	if m.RemainingMargin.Denom == m.Market.BaseDenom {
+		pnlAmount = pnlAmount.Quo(baseMetricsRate.Amount.Amount)
+	} else {
+		pnlAmount = pnlAmount.Quo(quoteMetricsRate.Amount.Amount)
+	}
 
 	returningAmount = principal.Add(pnlAmount.TruncateInt())
 
@@ -178,6 +192,8 @@ func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(baseMetricsRate, qu
 	if returningAmount.IsNegative() {
 		lossToLP = returningAmount
 		returningAmount = sdk.ZeroInt()
+	} else {
+		lossToLP = sdk.ZeroInt()
 	}
 
 	return returningAmount, lossToLP
@@ -266,6 +282,9 @@ func (m PerpetualFuturesPosition) ProfitAndLossInMetrics(baseMetricsRate, quoteM
 	// 損益(USD単位) = 損益(quote単位) * 現在のquote/USDレート
 	return m.ProfitAndLossInQuote(baseMetricsRate, quoteMetricsRate).Mul(quoteMetricsRate.Amount.Amount)
 }
+
+// TODO: fix the difference between position  and price unit scales
+// position size takes 0 decimal although price takes 6 decimal (micro unit)
 func (m PerpetualFuturesPosition) MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
 	// 証拠金維持率 = 有効証拠金(USD単位) ÷ 必要証拠金(USD単位)
 	return m.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate).Quo(m.RequiredMarginInMetrics(baseMetricsRate, quoteMetricsRate))

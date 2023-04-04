@@ -216,12 +216,14 @@ func (k Keeper) MakeQueriedPositions(ctx sdk.Context, positions types.Positions)
 		profit := perpetualFuturesPosition.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)
 		// fixme do not use sdk.Coin directly
 		positiveOrNegativeProfitCoin := sdk.Coin{
-			Denom:  "uusd",
-			Amount: types.MicroToNormalDenom(profit),
+			Denom: "uusd",
+			// TODO: don't use NormalToMicroInt like this since it is hard to be consistent
+			Amount: types.NormalToMicroInt(profit),
 		}
 		positiveOrNegativeEffectiveMargin := sdk.Coin{
-			Denom:  "uusd",
-			Amount: types.MicroToNormalDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate)),
+			Denom: "uusd",
+			// TODO: don't use NormalToMicroInt like this since it is hard to be consistent
+			Amount: types.NormalToMicroInt(perpetualFuturesPosition.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate)),
 		}
 		queriedPosition := types.QueriedPosition{
 			Position:              position,
@@ -263,10 +265,11 @@ func (k Keeper) Position(c context.Context, req *types.QueryPositionRequest) (*t
 
 	profit := perpetualFuturesPosition.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)
 	return &types.QueryPositionResponse{
-		Position:              position,
-		ValuationProfit:       sdk.NewCoin("uusd", types.MicroToNormalDenom(profit)),
+		Position: position,
+		// TODO: don't use NormalToMicroInt like this since it is hard to be consistent
+		ValuationProfit:       sdk.NewCoin("uusd", types.NormalToMicroInt(profit)),
 		MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate),
-		EffectiveMargin:       sdk.NewCoin("uusd", types.MicroToNormalDenom(perpetualFuturesPosition.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate))),
+		EffectiveMargin:       sdk.NewCoin("uusd", types.NormalToMicroInt(perpetualFuturesPosition.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate))),
 	}, nil
 }
 
@@ -315,7 +318,8 @@ func (k Keeper) DLPTokenRates(c context.Context, req *types.QueryDLPTokenRateReq
 			// todo error handing
 			continue
 		}
-		rates = append(rates, sdk.NewCoin(asset.Denom, types.MicroToNormalDenom(ldpDenomRate)))
+		// TODO: don't use NormalToMicroInt like this since it is hard to be consistent
+		rates = append(rates, sdk.NewCoin(asset.Denom, types.NormalToMicroInt(ldpDenomRate)))
 	}
 
 	return &types.QueryDLPTokenRateResponse{
