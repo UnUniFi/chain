@@ -240,7 +240,7 @@ func (suite *KeeperTestSuite) TestMintLiquidityProviderToken() {
 		_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{tc.sendCoin})
 		_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, owner, sdk.Coins{tc.sendCoin})
 
-		err := suite.keeper.MintLiquidityProviderToken(suite.ctx, &types.MsgMintLiquidityProviderToken{
+		err := suite.keeper.MintLiquidityProviderToken(suite.ctx, &types.MsgDepositToPool{
 			Sender: owner.Bytes(),
 			Amount: tc.sendCoin,
 		})

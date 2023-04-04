@@ -189,12 +189,10 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgDeposi
 		return err
 	}
 
-	currentBalance := k.GetAssetBalance(ctx, msg.Amount.Denom)
-	targetBalance, err := k.GetAssetTargetAmount(ctx, msg.Amount.Denom)
+	fee, err := k.CalcDepositingFee(ctx, msg.Amount, params.PoolParams.BaseLptMintFee)
 	if err != nil {
 		return err
 	}
-	fee := types.CalculateMintFee(currentBalance, targetBalance, msg.Amount, params.PoolParams.BaseLptMintFee)
 
 	// TODO: integrate into ecosystem-incentive module
 	// temporarily, send mint fee to fee pool of the derivatives module
@@ -229,6 +227,17 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgDeposi
 
 	k.DepositPoolAsset(ctx, depositor, deposit)
 	return nil
+}
+
+func (k Keeper) CalcDepositingFee(ctx sdk.Context, depositingAmount sdk.Coin, baseLptMintFee sdk.Dec) (sdk.Coin, error) {
+	currentBalance := k.GetAssetBalance(ctx, depositingAmount.Denom)
+	targetBalance, err := k.GetAssetTargetAmount(ctx, depositingAmount.Denom)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+	fee := types.CalculateMintFee(currentBalance, targetBalance, depositingAmount, baseLptMintFee)
+
+	return fee, nil
 }
 
 func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgWithdrawFromPool) error {

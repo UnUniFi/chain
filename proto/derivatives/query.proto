@@ -301,8 +301,12 @@ message QueryEstimateDLPTokenAmountRequest {
 }
 
 message QueryEstimateDLPTokenAmountResponse {
-  cosmos.base.v1beta1.Coin amount = 1 [
+  cosmos.base.v1beta1.Coin estimated_dlp_amount = 1 [
     (gogoproto.moretags)  = "yaml:\"amount\"",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin deposit_fee = 2 [
+    (gogoproto.moretags)  = "yaml:\"deposit_fee\"",
     (gogoproto.nullable) = false
   ];
 }
