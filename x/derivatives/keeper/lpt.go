@@ -196,7 +196,7 @@ func (k Keeper) InitialLiquidityProviderTokenSupply(ctx sdk.Context, assetPrice 
 		nil
 }
 
-func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLiquidityProviderToken) error {
+func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgDepositToPool) error {
 	depositor := msg.Sender.AccAddress()
 
 	// TODO: check if deposit token is acceptable
@@ -239,11 +239,11 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgMintLi
 	return nil
 }
 
-func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgBurnLiquidityProviderToken) error {
+func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgWithdrawFromPool) error {
 	// todo:check validator address,amount,redeem denom
 	// todo: use CacheCtx
 	sender := msg.Sender.AccAddress()
-	amount := msg.Amount
+	amount := msg.LptAmount
 	redeemDenom := msg.RedeemDenom
 
 	userBalance := k.bankKeeper.GetBalance(ctx, sender, types.LiquidityProviderTokenDenom)
