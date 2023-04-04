@@ -20,6 +20,15 @@ func (k msgServer) RestoreInterchainAccount(goCtx context.Context, msg *types.Ms
 		return nil, types.ErrInvalidHostZone
 	}
 
+	// Get ConnectionEnd (for counterparty connection)
+	connectionEnd, found := k.IBCKeeper.ConnectionKeeper.GetConnection(ctx, hostZone.ConnectionId)
+	if !found {
+		errMsg := fmt.Sprintf("invalid connection id from host %s, %s not found", msg.ChainId, hostZone.ConnectionId)
+		k.Logger(ctx).Error(errMsg)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, errMsg)
+	}
+	counterpartyConnection := connectionEnd.Counterparty
+
 	owner := types.FormatICAAccountOwner(msg.ChainId, msg.AccountType)
 
 	// only allow restoring an account if it already exists
@@ -36,7 +45,15 @@ func (k msgServer) RestoreInterchainAccount(goCtx context.Context, msg *types.Ms
 		return nil, sdkerrors.Wrapf(types.ErrInvalidInterchainAccountAddress, errMsg)
 	}
 
-	if err := k.ICAControllerKeeper.RegisterInterchainAccount(ctx, hostZone.ConnectionId, owner); err != nil {
+	appVersion := string(icatypes.ModuleCdc.MustMarshalJSON(&icatypes.Metadata{
+		Version:                icatypes.Version,
+		ControllerConnectionId: hostZone.ConnectionId,
+		HostConnectionId:       counterpartyConnection.ConnectionId,
+		Encoding:               icatypes.EncodingProtobuf,
+		TxType:                 icatypes.TxTypeSDKMultiMsg,
+	}))
+
+	if err := k.ICAControllerKeeper.RegisterInterchainAccount(ctx, hostZone.ConnectionId, owner, appVersion); err != nil {
 		k.Logger(ctx).Error(fmt.Sprintf("unable to register %s account : %s", msg.AccountType.String(), err))
 		return nil, err
 	}

@@ -6,6 +6,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	proto "github.com/cosmos/gogoproto/proto"
 	"github.com/spf13/cast"
 
 	icacallbackstypes "github.com/UnUniFi/chain/x/icacallbacks/types"
@@ -271,7 +272,12 @@ func (k Keeper) SubmitTxs(
 		return 0, sdkerrors.Wrap(channeltypes.ErrChannelCapabilityNotFound, "module does not own channel capability")
 	}
 
-	data, err := icatypes.SerializeCosmosTx(k.cdc, msgs)
+	protoMsgs := []proto.Message{}
+	for _, msg := range msgs {
+		protoMsgs = append(protoMsgs, msg)
+	}
+
+	data, err := icatypes.SerializeCosmosTx(k.cdc, protoMsgs)
 	if err != nil {
 		return 0, err
 	}

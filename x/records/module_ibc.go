@@ -44,15 +44,13 @@ func (im IBCModule) OnChanOpenInit(
 	channelCap *capabilitytypes.Capability,
 	counterparty channeltypes.Counterparty,
 	version string,
-) error {
+) (string, error) {
 	// Note: The channel capability must be claimed by the authentication module in OnChanOpenInit otherwise the
 	// authentication module will not be able to send packets on the channel created for the associated interchain account.
 	// NOTE: unsure if we have to claim this here! CHECK ME
 	// if err := im.keeper.ClaimCapability(ctx, channelCap, host.ChannelCapabilityPath(portID, channelID)); err != nil {
 	// 	return err
 	// }
-	_, appVersion := channeltypes.SplitChannelVersion(version)
-	// doCustomLogic()
 	return im.app.OnChanOpenInit(
 		ctx,
 		order,
@@ -61,7 +59,7 @@ func (im IBCModule) OnChanOpenInit(
 		channelID,
 		channelCap,
 		counterparty,
-		appVersion, // note we only pass app version here
+		version, // note we only pass app version here
 	)
 }
 
@@ -76,10 +74,6 @@ func (im IBCModule) OnChanOpenTry(
 	counterparty channeltypes.Counterparty,
 	counterpartyVersion string,
 ) (string, error) {
-	// doCustomLogic()
-	// core/04-channel/types contains a helper function to split middleware and underlying app version
-	_, cpAppVersion := channeltypes.SplitChannelVersion(counterpartyVersion)
-
 	// call the underlying applications OnChanOpenTry callback
 	version, err := im.app.OnChanOpenTry(
 		ctx,
@@ -89,13 +83,13 @@ func (im IBCModule) OnChanOpenTry(
 		channelID,
 		chanCap,
 		counterparty,
-		cpAppVersion, // note we only pass counterparty app version here
+		counterpartyVersion, // note we only pass counterparty app version here
 	)
 	if err != nil {
 		return "", err
 	}
 	ctx.Logger().Info(fmt.Sprintf("IBC Chan Open Version %s: ", version))
-	ctx.Logger().Info(fmt.Sprintf("IBC Chan Open cpAppVersion %s: ", cpAppVersion))
+	ctx.Logger().Info(fmt.Sprintf("IBC Chan Open counterpartyVersion %s: ", counterpartyVersion))
 	return version, nil
 }
 

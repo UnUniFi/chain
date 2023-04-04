@@ -40,7 +40,7 @@ func (im IBCModule) OnChanOpenInit(
 	channelCap *capabilitytypes.Capability,
 	counterparty channeltypes.Counterparty,
 	version string,
-) error {
+) (string, error) {
 	// Note: The channel capability is claimed by the underlying app.
 	// call underlying app's OnChanOpenInit callback with the appVersion
 	return im.app.OnChanOpenInit(ctx, order, connectionHops, portID, channelID,
