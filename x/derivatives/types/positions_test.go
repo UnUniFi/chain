@@ -145,15 +145,13 @@ func TestPosition_IsValid(t *testing.T) {
 				Size_:        sdk.MustNewDecFromStr("1"),
 				Leverage:     1,
 			},
-			exp: false,
+			exp: true,
 		},
 	}
 
 	params := types.DefaultParams()
 	// run testCases
 	for _, tc := range testCases {
-		sizeInMicro := tc.instance.Size_.MulInt64(types.OneMillionInt).TruncateInt()
-		tc.instance.SizeInMicro = &sizeInMicro
 		any, err := codecTypes.NewAnyWithValue(&tc.instance)
 		if err != nil {
 			t.Error(err)
@@ -266,8 +264,6 @@ func TestPosition_NeedLiquidationPerpetualFutures(t *testing.T) {
 			quoteTicker := "usd"
 			baseMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.BaseDenom, tc.closedRate[0])
 			quoteMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.QuoteDenom, tc.closedRate[1])
-			sizeInMicro := tc.position.PositionInstance.Size_.MulInt64(types.OneMillionInt).TruncateInt()
-			tc.position.PositionInstance.SizeInMicro = &sizeInMicro
 
 			result := tc.position.NeedLiquidation(tc.minMarginRate, baseMetricsRate, quoteMetricsRate)
 			if tc.exp != result {
@@ -472,9 +468,6 @@ func TestPosition_MarginMaintenanceRate(t *testing.T) {
 			baseMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.BaseDenom, tc.Rate[0].rate)
 			quoteMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.QuoteDenom, tc.Rate[1].rate)
 
-			sizeInMicro := tc.position.PositionInstance.Size_.MulInt64(types.OneMillionInt).TruncateInt()
-			tc.position.PositionInstance.SizeInMicro = &sizeInMicro
-
 			result := tc.position.MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate)
 			if !tc.exp.Equal(result) {
 				t.Error(tc, "expected %v, got %v", tc.exp, result)
@@ -668,9 +661,6 @@ func TestPerpetualFuturesPosition_CalcProfitAndLoss(t *testing.T) {
 			quoteTicker := "usd"
 			baseMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.BaseDenom, tc.closedRates[0])
 			quoteMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.QuoteDenom, tc.closedRates[1])
-
-			sizeInMicro := tc.position.PositionInstance.Size_.MulInt64(types.OneMillionInt).TruncateInt()
-			tc.position.PositionInstance.SizeInMicro = &sizeInMicro
 
 			// ProfitAndLoss returns PnL in the Margin Denom
 			result := tc.position.ProfitAndLoss(baseMetricsRate, quoteMetricsRate)
@@ -882,8 +872,6 @@ func TestCalcReturningAmountAtClose(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			baseMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.BaseDenom, tc.closedBaseRate)
 			quoteMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.QuoteDenom, tc.closeQuoteRate)
-			sizeInMicro := types.NormalToMicroInt(tc.position.PositionInstance.Size_)
-			tc.position.PositionInstance.SizeInMicro = &sizeInMicro
 
 			returningAmount, lossToLP := tc.position.CalcReturningAmountAtClose(baseMetricsRate, quoteMetricsRate)
 			fmt.Println(returningAmount, lossToLP)

@@ -88,13 +88,7 @@ message PerpetualFuturesPositionInstance {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  // Use micro level size in the backend logic to be consistent with the scale of the coin amount
-  // and price information.
-  string size_in_micro = 3 [
-    (gogoproto.moretags) = "yaml:\"size_in_micro\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
-  ];
-  uint32 leverage = 4 [
+  uint32 leverage = 3 [
     (gogoproto.moretags) = "yaml:\"leverage\""
   ];
 }
