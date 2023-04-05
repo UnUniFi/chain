@@ -241,7 +241,7 @@ func (m PerpetualFuturesPosition) RequiredMarginInMetrics(baseMetricsRate, quote
 }
 
 // CalcReturningAmountAtClose calculates the amount of the principal and the profit/loss at the close of the position.
-func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(baseMetricsRate, quoteMetricsRate MetricsRateType) (returningAmount math.Int, lossToLP math.Int) {
+func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(baseMetricsRate, quoteMetricsRate MetricsRateType, tradingFee sdk.Int) (returningAmount math.Int, lossToLP math.Int) {
 	principal := m.RemainingMargin.Amount
 	// pnlAmountInMetrics represents the profit/loss amount in the metrics asset of the market.
 	// In the most cases, it means it's in "usd".
@@ -259,6 +259,14 @@ func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(baseMetricsRate, qu
 	} else {
 		lossToLP = sdk.ZeroInt()
 	}
+
+	// Subtract the trading fee.
+	if returningAmount.LT(tradingFee) {
+		// Return 0 returning amount and the trading fee subtracted by the returning amount as LossToLP
+		return sdk.ZeroInt(), tradingFee.Sub(returningAmount)
+	}
+
+	returningAmount = returningAmount.Sub(tradingFee)
 
 	return returningAmount, lossToLP
 }
