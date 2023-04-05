@@ -5190,7 +5190,7 @@ paths:
           schema:
             type: object
             properties:
-              amount:
+              estimated_dlp_amount:
                 type: object
                 properties:
                   denom:
@@ -5205,7 +5205,7 @@ paths:
                   method
 
                   signatures required by gogoproto.
-              fee:
+              deposit_fee:
                 type: object
                 properties:
                   denom:
@@ -14353,7 +14353,7 @@ definitions:
   ununifi.derivatives.QueryEstimateDLPTokenAmountResponse:
     type: object
     properties:
-      amount:
+      estimated_dlp_amount:
         type: object
         properties:
           denom:
@@ -14365,7 +14365,7 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-      fee:
+      deposit_fee:
         type: object
         properties:
           denom:
