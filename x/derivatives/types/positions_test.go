@@ -691,6 +691,7 @@ func TestCalcReturningAmountAtClose(t *testing.T) {
 		position       types.PerpetualFuturesPosition
 		closedBaseRate sdk.Dec
 		closeQuoteRate sdk.Dec
+		tradingFee     sdk.Int
 		expReturn      math.Int
 		expLoss        math.Int
 	}{
@@ -712,7 +713,8 @@ func TestCalcReturningAmountAtClose(t *testing.T) {
 			},
 			closedBaseRate: sdk.MustNewDecFromStr("0.00002"),
 			closeQuoteRate: uusdcRate,
-			expReturn:      sdk.NewInt(11000000),
+			tradingFee:     sdk.NewInt(1000000),
+			expReturn:      sdk.NewInt(10000000),
 		},
 		{
 			name: "Profit Short position in quote denom margin",
@@ -732,7 +734,8 @@ func TestCalcReturningAmountAtClose(t *testing.T) {
 			},
 			closedBaseRate: sdk.MustNewDecFromStr("0.00001"),
 			closeQuoteRate: uusdcRate,
-			expReturn:      sdk.NewInt(11000000),
+			tradingFee:     sdk.NewInt(1000000),
+			expReturn:      sdk.NewInt(10000000),
 		},
 		{
 			name: "Loss Long position in quote denom margin",
@@ -752,6 +755,7 @@ func TestCalcReturningAmountAtClose(t *testing.T) {
 			},
 			closedBaseRate: sdk.MustNewDecFromStr("0.000009"),
 			closeQuoteRate: uusdcRate,
+			tradingFee:     sdk.ZeroInt(),
 			expReturn:      sdk.NewInt(0),
 		},
 		{
@@ -772,7 +776,8 @@ func TestCalcReturningAmountAtClose(t *testing.T) {
 			},
 			closedBaseRate: sdk.MustNewDecFromStr("0.0000105"),
 			closeQuoteRate: uusdcRate,
-			expReturn:      sdk.NewInt(1000000),
+			tradingFee:     sdk.NewInt(500000),
+			expReturn:      sdk.NewInt(500000),
 		},
 		{
 			name: "Profit Long position in base denom margin",
@@ -792,7 +797,8 @@ func TestCalcReturningAmountAtClose(t *testing.T) {
 			},
 			closedBaseRate: sdk.MustNewDecFromStr("0.00002"),
 			closeQuoteRate: uusdcRate,
-			expReturn:      sdk.NewInt(1500000),
+			tradingFee:     sdk.NewInt(500000),
+			expReturn:      sdk.NewInt(1000000),
 		},
 		{
 			name: "Profit Short position in base denom margin",
@@ -812,7 +818,8 @@ func TestCalcReturningAmountAtClose(t *testing.T) {
 			},
 			closedBaseRate: sdk.MustNewDecFromStr("0.00001"),
 			closeQuoteRate: uusdcRate,
-			expReturn:      sdk.NewInt(2000000),
+			tradingFee:     sdk.NewInt(1000),
+			expReturn:      sdk.NewInt(1999000),
 		},
 		{
 			name: "Loss Long position in base denom margin",
@@ -832,7 +839,8 @@ func TestCalcReturningAmountAtClose(t *testing.T) {
 			},
 			closedBaseRate: sdk.MustNewDecFromStr("0.000009"),
 			closeQuoteRate: uusdcRate,
-			expReturn:      sdk.NewInt(888889),
+			tradingFee:     sdk.NewInt(100),
+			expReturn:      sdk.NewInt(888789),
 		},
 		{
 			name: "Loss Short position in base denom margin",
@@ -852,7 +860,8 @@ func TestCalcReturningAmountAtClose(t *testing.T) {
 			},
 			closedBaseRate: sdk.MustNewDecFromStr("0.000011"),
 			closeQuoteRate: uusdcRate,
-			expReturn:      sdk.NewInt(909091),
+			tradingFee:     sdk.NewInt(1000),
+			expReturn:      sdk.NewInt(908091),
 		},
 		{
 			name: "Loss Exceeds Margin: Long position in base denom margin",
@@ -872,6 +881,7 @@ func TestCalcReturningAmountAtClose(t *testing.T) {
 			},
 			closedBaseRate: sdk.MustNewDecFromStr("0.000009"),
 			closeQuoteRate: uusdcRate,
+			tradingFee:     sdk.ZeroInt(),
 			expReturn:      sdk.NewInt(0),
 			expLoss:        sdk.NewInt(-111111),
 		},
@@ -885,7 +895,7 @@ func TestCalcReturningAmountAtClose(t *testing.T) {
 			sizeInMicro := types.NormalToMicroInt(tc.position.PositionInstance.Size_)
 			tc.position.PositionInstance.SizeInMicro = &sizeInMicro
 
-			returningAmount, lossToLP := tc.position.CalcReturningAmountAtClose(baseMetricsRate, quoteMetricsRate)
+			returningAmount, lossToLP := tc.position.CalcReturningAmountAtClose(baseMetricsRate, quoteMetricsRate, tc.tradingFee)
 			fmt.Println(returningAmount, lossToLP)
 			if !tc.expReturn.Equal(returningAmount) {
 				t.Error(tc, "expected %v, got %v", tc.expReturn, returningAmount)
