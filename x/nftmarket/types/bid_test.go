@@ -6,6 +6,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
@@ -1269,5 +1270,188 @@ func TestCalcPartInterest(t *testing.T) {
 	result = types.CalcPartInterest(sdk.NewInt(0), sdk.NewInt(0), sdk.NewDecCoin("uguu", sdk.NewInt(0)))
 	if !sdk.NewInt(0).Equal(result) {
 		t.Error("not expect result")
+	}
+}
+
+// test bids MakeCollectBidsAndRefundBids
+
+func TestMakeCollectBidsAndRefundBids(t *testing.T) {
+	notPayBid1 := types.NftBid{
+		NftId: types.NftIdentifier{
+			ClassId: "class1",
+			NftId:   "nft1",
+		},
+		Bidder:             "not_pay_bidder1",
+		BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
+		DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(10)),
+		PaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(0)),
+		BiddingPeriod:      time.Date(2021, 8, 1, 0, 0, 0, 0, time.UTC),
+		DepositLendingRate: sdk.MustNewDecFromStr("0.5"),
+		AutomaticPayment:   true,
+		BidTime:            time.Date(2021, 7, 1, 0, 0, 0, 0, time.UTC),
+		InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
+		Borrowings: []types.Borrowing{
+			{
+				Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
+				PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+				StartAt:            time.Date(2021, 7, 1, 0, 0, 0, 0, time.UTC),
+			},
+		},
+	}
+	notPayBid2 := types.NftBid{
+		NftId: types.NftIdentifier{
+			ClassId: "class1",
+			NftId:   "nft1",
+		},
+		Bidder:             "not_pay_bidder2",
+		BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(90)),
+		DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(5)),
+		PaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(0)),
+		BiddingPeriod:      time.Date(2021, 8, 1, 0, 0, 0, 0, time.UTC),
+		DepositLendingRate: sdk.MustNewDecFromStr("0.5"),
+		AutomaticPayment:   true,
+		BidTime:            time.Date(2021, 7, 1, 0, 0, 0, 0, time.UTC),
+		InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
+		Borrowings: []types.Borrowing{
+			{
+				Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
+				PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+				StartAt:            time.Date(2021, 7, 1, 0, 0, 0, 0, time.UTC),
+			},
+		},
+	}
+
+	payBid1 := types.NftBid{
+		NftId: types.NftIdentifier{
+			ClassId: "class1",
+			NftId:   "nft1",
+		},
+		Bidder:             "cosmos1cfnz0520zttnqur686d72mzps5ghttgq776nfq",
+		BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
+		DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(10)),
+		PaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(90)),
+		BiddingPeriod:      time.Date(2021, 8, 1, 0, 0, 0, 0, time.UTC),
+		DepositLendingRate: sdk.MustNewDecFromStr("0.5"),
+		AutomaticPayment:   true,
+		BidTime:            time.Date(2021, 7, 1, 0, 0, 0, 0, time.UTC),
+		InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
+		Borrowings: []types.Borrowing{
+			{
+				Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
+				PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+				StartAt:            time.Date(2021, 7, 1, 0, 0, 0, 0, time.UTC),
+			},
+		},
+	}
+	payBid2 := types.NftBid{
+		NftId: types.NftIdentifier{
+			ClassId: "class1",
+			NftId:   "nft1",
+		},
+		Bidder:             "x1",
+		BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(90)),
+		DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(5)),
+		PaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(0)),
+		BiddingPeriod:      time.Date(2021, 8, 1, 0, 0, 0, 0, time.UTC),
+		DepositLendingRate: sdk.MustNewDecFromStr("0.5"),
+		AutomaticPayment:   true,
+		BidTime:            time.Date(2021, 7, 1, 0, 0, 0, 0, time.UTC),
+		InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
+		Borrowings: []types.Borrowing{
+			{
+				Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
+				PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+				StartAt:            time.Date(2021, 7, 1, 0, 0, 0, 0, time.UTC),
+			},
+		},
+	}
+
+	tcs := []struct {
+		name                string
+		bids                types.NftBids
+		expectCollectedBids types.NftBids
+		expectRefundBids    types.NftBids
+	}{
+		{
+			"only win bid",
+			types.NftBids{
+				payBid1,
+			},
+			types.NftBids{},
+			types.NftBids{},
+		},
+		{
+			"only refund",
+			types.NftBids{
+				payBid1,
+				payBid2,
+			},
+			types.NftBids{},
+			types.NftBids{
+				payBid2,
+			},
+		},
+		{
+			"only collected1",
+			types.NftBids{
+				notPayBid1,
+				notPayBid2,
+			},
+			types.NftBids{
+				notPayBid1,
+				notPayBid2,
+			},
+			types.NftBids{},
+		},
+		{
+			"only collected2",
+			types.NftBids{
+				notPayBid1,
+				notPayBid2,
+				payBid1,
+			},
+			types.NftBids{
+				notPayBid1,
+				notPayBid2,
+			},
+			types.NftBids{},
+		},
+		{
+			"rebund and collected",
+			types.NftBids{
+				notPayBid1,
+				notPayBid2,
+				payBid1,
+				payBid2,
+			},
+			types.NftBids{
+				notPayBid1,
+				notPayBid2,
+			},
+			types.NftBids{
+				payBid2,
+			},
+		},
+		{
+			"rebund and collected",
+			types.NftBids{
+				notPayBid1,
+				notPayBid2,
+				payBid1,
+				payBid2,
+			},
+			types.NftBids{
+				notPayBid1,
+				notPayBid2,
+			},
+			types.NftBids{
+				payBid2,
+			},
+		},
+	}
+	for _, tc := range tcs {
+		collected, refund := tc.bids.MakeCollectBidsAndRefundBids()
+		assert.Equal(t, tc.expectCollectedBids, collected)
+		assert.Equal(t, tc.expectRefundBids, refund)
 	}
 }

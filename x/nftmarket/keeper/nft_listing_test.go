@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"fmt"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -1678,7 +1679,8 @@ func (suite *KeeperTestSuite) TestProcessPaymentWithCommissionFee() {
 		suite.NoError(err)
 
 		var nftId types.NftIdentifier
-		keeper.ProcessPaymentWithCommissionFee(suite.ctx, owner, "uguu", amount, tc.loanAmount, nftId)
+		listingDenom := "uguu"
+		keeper.ProcessPaymentWithCommissionFee(suite.ctx, owner, sdk.NewCoin(listingDenom, amount), sdk.NewCoin(listingDenom, tc.loanAmount), nftId)
 
 		params := keeper.GetParamSet(suite.ctx)
 		fee := amount.Mul(sdk.NewInt(int64(params.NftListingCommissionFee))).Quo(sdk.NewInt(100))
@@ -1834,7 +1836,7 @@ func (suite *KeeperTestSuite) TestReListingDataManagement() {
 			testCase:     "selling decision listing when highest bid is not paid and no more bids",
 			numBids:      1,
 			listingState: types.ListingState_SELLING_DECISION,
-			borrow:       true,
+			borrow:       false,
 		}, // status => ListingState_LISTING
 		{
 			testCase:     "selling decision listing when highest bid is not paid, and more bids",
@@ -1890,7 +1892,7 @@ func (suite *KeeperTestSuite) TestReListingDataManagement() {
 
 		for i := 0; i < tc.numBids; i++ {
 			if tc.borrow {
-				suite.PlaceAndBorrow(bidAmount, depositAmount, nftIdentifier, nftOwner, tc.fullPay, 2)
+				suite.PlaceAndBorrow(bidAmount, depositAmount, nftIdentifier, nftOwner, tc.fullPay)
 			} else {
 				bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 				// init tokens to addr
@@ -1899,7 +1901,7 @@ func (suite *KeeperTestSuite) TestReListingDataManagement() {
 				_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{bidAmount})
 				_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{bidAmount})
 
-				_ = suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
+				err = suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
 					Sender:             ununifitypes.StringAccAddress(bidder),
 					NftId:              nftIdentifier,
 					BidAmount:          bidAmount,
@@ -1908,11 +1910,32 @@ func (suite *KeeperTestSuite) TestReListingDataManagement() {
 					AutomaticPayment:   false,
 					DepositAmount:      depositAmount,
 				})
+				suite.Require().NoError(err)
+				if tc.fullPay {
+					err = suite.app.NftmarketKeeper.PayFullBid(suite.ctx, &types.MsgPayFullBid{
+						Sender: ununifitypes.StringAccAddress(bidder),
+						NftId:  nftIdentifier,
+					})
+					suite.Require().NoError(err)
+				}
 			}
 		}
 
-		listing.State = tc.listingState
-		suite.app.NftmarketKeeper.SetNftListing(suite.ctx, listing)
+		if tc.listingState == types.ListingState_END_LISTING {
+			err := suite.app.NftmarketKeeper.EndNftListing(suite.ctx, &types.MsgEndNftListing{
+				Sender: ununifitypes.StringAccAddress(nftOwner),
+				NftId:  nftIdentifier,
+			})
+			suite.Require().NoError(err)
+		} else if tc.listingState == types.ListingState_SELLING_DECISION {
+			err := suite.app.NftmarketKeeper.SellingDecision(suite.ctx, &types.MsgSellingDecision{
+				Sender: ununifitypes.StringAccAddress(nftOwner),
+				NftId:  nftIdentifier,
+			})
+			suite.Require().NoError(err)
+		} else {
+			suite.Error(fmt.Errorf("not implement"))
+		}
 
 		suite.ctx = suite.ctx.WithBlockTime(now.Add(time.Second * time.Duration(params.NftListingPeriodInitial+1)))
 		suite.app.NftmarketKeeper.HandleFullPaymentsPeriodEndings(suite.ctx)
@@ -1935,14 +1958,16 @@ func (suite *KeeperTestSuite) TestReListingDataManagement() {
 				// a buyer and buyer lists it
 				listing, err = suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
 				suite.Require().NoError(err)
-				suite.Require().Equal(listing.State, types.ListingState_SUCCESSFUL_BID)
+				suite.Require().Equal(listing.State, types.ListingState_SUCCESSFUL_BID, tc.testCase)
 				suite.Require().Len(bids, 1)
 				suite.Require().Empty(loan)
 			} else {
 				// status => ListingState_LISTING
 				listing, err = suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
 				suite.Require().NoError(err)
-				suite.Require().Equal(listing.State, types.ListingState_LISTING)
+				fmt.Println("tc")
+				fmt.Println(tc)
+				suite.Require().Equal(listing.State, types.ListingState_LISTING, tc.testCase)
 				suite.Require().Empty(bids)
 				suite.Require().Empty(loan)
 			}
@@ -1960,7 +1985,7 @@ func (suite *KeeperTestSuite) TestReListingDataManagement() {
 				// all the bids closed, pay depositCollected, nft listing delete
 				// this simulates the state of re-listing from the situation the list was handed to buyer
 				_, err = suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
-				suite.Require().Error(err)
+				suite.Require().Error(err, tc.testCase)
 				suite.Require().Empty(bids)
 				suite.Require().Empty(loan)
 			}

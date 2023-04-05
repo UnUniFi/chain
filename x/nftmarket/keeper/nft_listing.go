@@ -694,7 +694,10 @@ func (k Keeper) LiquidationProcessNotExitsWinner(ctx sdk.Context, bids types.Nft
 	depositCollected := listing.CollectedAmount
 	// pay fee
 	loan := k.GetDebtByNft(ctx, listing.IdBytes())
-	k.ProcessPaymentWithCommissionFee(ctx, listingOwner, listing.BidToken, depositCollected.Amount, loan.Loan.Amount, listing.NftId)
+
+	// todo : set listing.settlementPrice
+	// use k.GetPayAmountToLister
+	k.ProcessPaymentWithCommissionFee(ctx, listingOwner, sdk.NewCoin(listing.BidToken, depositCollected.Amount), loan.Loan, listing.NftId)
 	// transfer nft to listing owner
 	err = k.nftKeeper.Transfer(ctx, listing.NftId.ClassId, listing.NftId.NftId, listingOwner)
 	if err != nil {
@@ -703,7 +706,6 @@ func (k Keeper) LiquidationProcessNotExitsWinner(ctx sdk.Context, bids types.Nft
 	return nil
 }
 
-// todo add test
 func (k Keeper) LiquidationProcessExitsWinner(
 	ctx sdk.Context, collectBids, refundBids types.NftBids,
 	listing types.NftListing, winnerBid types.NftBid,
@@ -718,12 +720,15 @@ func (k Keeper) LiquidationProcessExitsWinner(
 		listing.CollectedAmount = listing.CollectedAmount.Add(collectedDeposit)
 	}
 
+	// guarantee: total deposit amount
 	surplusAmount := k.GetSurplusAmount(refundBids, winnerBid).Add(listing.CollectedAmount)
 	totalInterest := refundBids.TotalInterestAmount(now)
 	if totalInterest.IsNil() {
 		totalInterest = sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
 	}
 	err = refundF(ctx, refundBids, totalInterest, surplusAmount, listing)
+	// todo : set listing.settlementPrice
+	// use k.GetPayAmountToLister
 	if err != nil {
 		return err
 	}
@@ -749,6 +754,24 @@ func (k Keeper) RefundBids(ctx sdk.Context, refundBids types.NftBids, totalInter
 		}
 	}
 	return nil
+}
+
+func (k Keeper) GetPayAmountToLister(listing types.NftListing, winBid types.NftBid, bids, refundBids types.NftBids, time time.Time) sdk.Coin {
+	if listing.State == types.ListingState_SELLING_DECISION {
+		return winBid.BidAmount
+	} else if listing.State == types.ListingState_END_LISTING {
+		// guarantee payment for lister: total deposit amount
+		minAmountToLister := bids.TotalDeposit()
+		surplusAmount := k.GetSurplusAmount(refundBids, winBid).Add(listing.CollectedAmount)
+		totalInterest := refundBids.TotalInterestAmount(time)
+		if surplusAmount.IsLTE(totalInterest) {
+			return minAmountToLister
+		} else {
+			return minAmountToLister.Add(surplusAmount.Sub(totalInterest))
+		}
+	} else {
+		return sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
+	}
 }
 
 // todo add test
@@ -807,49 +830,88 @@ func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 		}
 
 		loan := k.GetDebtByNft(ctx, listing.IdBytes())
+		if loan.Loan.IsNil() {
+			loan = types.Loan{
+				Loan: sdk.NewCoin(listing.BidToken, sdk.ZeroInt()),
+			}
+		}
+
 		totalPayAmount := listing.CollectedAmount.Add(bid.BidAmount)
-		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, totalPayAmount.Denom, totalPayAmount.Amount, loan.Loan.Amount, listing.NftId)
+		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, totalPayAmount, loan.Loan, listing.NftId)
 
 		k.DeleteBid(ctx, bid)
 		k.DeleteNftListings(ctx, listing)
 	}
 }
 
-func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, denom string, amount sdk.Int, loanAmount sdk.Int, nftId types.NftIdentifier) {
+// pay commission fees
+func (k Keeper) CalcCommissionFee(ctx sdk.Context, amountToPayLister, borrowedAmountByLister sdk.Coin) sdk.Coin {
 	params := k.GetParamSet(ctx)
 	commissionFee := params.NftListingCommissionFee
-	cacheCtx, write := ctx.CacheContext()
-	// pay commission fees for nft listing
-	fee := amount.Mul(sdk.NewInt(int64(commissionFee))).Quo(sdk.NewInt(100))
+	fee := amountToPayLister.Amount.Mul(sdk.NewInt(int64(commissionFee))).Quo(sdk.NewInt(100))
+	usableAmount, err := amountToPayLister.SafeSub(borrowedAmountByLister)
+	if err != nil {
+		panic(err)
+	}
 	if fee.IsPositive() {
-		feeCoins := sdk.Coins{sdk.NewCoin(denom, fee)}
-		err := k.bankKeeper.SendCoinsFromModuleToModule(cacheCtx, types.ModuleName, ecoincentivetypes.ModuleName, feeCoins)
+		if fee.LTE(usableAmount.Amount) {
+			return sdk.NewCoin(amountToPayLister.Denom, fee)
+		} else {
+			// Normally, you would not enter this if statement
+			// because actual_amount_available_borrow - fee is calculated as the amount borrowed.
+			// The fee will be this if statement in the following cases
+			// 1. Parameter values changed during the process.
+			//    When the value of NftListingCommissionFee changed due to a proposal, etc.
+			// 2. bug
+			return usableAmount
+		}
+	} else {
+		panic("commission fee is zero")
+		// return sdk.NewCoin(amountToPayLister.Denom, sdk.ZeroInt())
+	}
+}
+
+// pay commission fees
+func (k Keeper) PayCommissionFee(ctx sdk.Context, amount, loanAmount sdk.Coin) error {
+	// pay commission fees for nft listing
+	fee := k.CalcCommissionFee(ctx, amount, loanAmount)
+	if fee.IsPositive() {
+		feeCoins := sdk.Coins{fee}
+		err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, ecoincentivetypes.ModuleName, feeCoins)
 		if err != nil {
 			fmt.Println(err)
-			return
-		} else {
-			write()
+			return err
 		}
+	}
+	return nil
+}
+
+func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, payAmount, loanAmount sdk.Coin, nftId types.NftIdentifier) {
+	cacheCtx, write := ctx.CacheContext()
+	fee := k.CalcCommissionFee(cacheCtx, payAmount, loanAmount)
+	err := k.PayCommissionFee(cacheCtx, payAmount, loanAmount)
+	if err != nil {
+		fmt.Println(err)
+		panic(err)
 	}
 
-	if loanAmount.IsNil() {
-		loanAmount = sdk.ZeroInt()
-	}
-	listerPayment := amount.Sub(fee)
+	// if !loanAmount.IsPositive() {
+	// 	loanAmount = sdk.ZeroInt()
+	// }
+	listerPayment := payAmount.Sub(fee)
 	listerPayment = listerPayment.Sub(loanAmount)
 	if !listerPayment.IsZero() {
-		err := k.bankKeeper.SendCoinsFromModuleToAccount(cacheCtx, types.ModuleName, listingOwner, sdk.Coins{sdk.NewCoin(denom, listerPayment)})
+		err := k.bankKeeper.SendCoinsFromModuleToAccount(cacheCtx, types.ModuleName, listingOwner, sdk.Coins{listerPayment})
 		if err != nil {
 			fmt.Println(err)
 			return
-		} else {
-			write()
 		}
 	}
+	write()
 
 	// Call AfterNftPaymentWithCommission hook method to inform the payment is successfuly
 	// executed.
-	k.AfterNftPaymentWithCommission(ctx, nftId, sdk.NewCoin(denom, fee))
+	k.AfterNftPaymentWithCommission(ctx, nftId, fee)
 }
 
 // todo: delete

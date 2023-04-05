@@ -260,15 +260,16 @@ func (m NftBids) MakeCollectBidsAndRefundBids() (NftBids, NftBids) {
 	refundBids := NftBids{}
 	existWinner := false
 	for _, bid := range m {
-		if existWinner {
+		if !existWinner {
 			if bid.IsPaidBidAmount() {
 				existWinner = true
 				continue
 			} else {
 				collectedBids = append(collectedBids, bid)
 			}
+		} else {
+			refundBids = append(refundBids, bid)
 		}
-		refundBids = append(refundBids, bid)
 	}
 	return collectedBids, refundBids
 }
