@@ -32,11 +32,7 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
 	// "github.com/cosmos/cosmos-sdk/x/supply"
-	auctionkeeper "github.com/UnUniFi/chain/x/auction/keeper"
-	cdpkeeper "github.com/UnUniFi/chain/x/cdp/keeper"
-	incentivekeeper "github.com/UnUniFi/chain/x/incentive/keeper"
 	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
-	ununifidistkeeper "github.com/UnUniFi/chain/x/ununifidist/keeper"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 
 	// authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
@@ -104,13 +100,7 @@ func (tApp TestApp) GetUpgradeKeeper() *upgradekeeper.Keeper  { return tApp.Upgr
 func (tApp TestApp) GetParamsKeeper() paramskeeper.Keeper     { return tApp.ParamsKeeper }
 
 // func (tApp TestApp) GetVVKeeper() validatorvesting.Keeper       { return tApp.vvKeeper }
-func (tApp TestApp) GetAuctionKeeper() auctionkeeper.Keeper     { return tApp.auctionKeeper }
-func (tApp TestApp) GetCDPKeeper() cdpkeeper.Keeper             { return tApp.cdpKeeper }
 func (tApp TestApp) GetPriceFeedKeeper() pricefeedkeeper.Keeper { return tApp.pricefeedKeeper }
-
-// func (tApp TestApp) GetBep3Keeper() bep3.Keeper                 { return tApp.bep3Keeper }
-func (tApp TestApp) GetUnunifidistKeeper() ununifidistkeeper.Keeper { return tApp.ununifidistKeeper }
-func (tApp TestApp) GetIncentiveKeeper() incentivekeeper.Keeper     { return tApp.incentiveKeeper }
 
 // func (tApp TestApp) GetHarvestKeeper() harvest.Keeper           { return tApp.harvestKeeper }
 // func (tApp TestApp) GetCommitteeKeeper() committee.Keeper       { return tApp.committeeKeeper }

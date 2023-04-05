@@ -18,21 +18,12 @@ import (
 	"github.com/spf13/cast"
 	tmos "github.com/tendermint/tendermint/libs/os"
 
-	"github.com/UnUniFi/chain/x/auction"
-	auctionkeeper "github.com/UnUniFi/chain/x/auction/keeper"
-	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
-	"github.com/UnUniFi/chain/x/cdp"
-	cdpkeeper "github.com/UnUniFi/chain/x/cdp/keeper"
-	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 	epochsmodule "github.com/UnUniFi/chain/x/epochs"
 	epochsmodulekeeper "github.com/UnUniFi/chain/x/epochs/keeper"
 	epochsmoduletypes "github.com/UnUniFi/chain/x/epochs/types"
 	icacallbacksmodule "github.com/UnUniFi/chain/x/icacallbacks"
 	icacallbacksmodulekeeper "github.com/UnUniFi/chain/x/icacallbacks/keeper"
 	icacallbacksmoduletypes "github.com/UnUniFi/chain/x/icacallbacks/types"
-	"github.com/UnUniFi/chain/x/incentive"
-	incentivekeeper "github.com/UnUniFi/chain/x/incentive/keeper"
-	incentivetypes "github.com/UnUniFi/chain/x/incentive/types"
 	"github.com/UnUniFi/chain/x/interchainquery"
 	interchainquerykeeper "github.com/UnUniFi/chain/x/interchainquery/keeper"
 	interchainquerytypes "github.com/UnUniFi/chain/x/interchainquery/types"
@@ -45,9 +36,6 @@ import (
 	stakeibcmodule "github.com/UnUniFi/chain/x/stakeibc"
 	stakeibcmodulekeeper "github.com/UnUniFi/chain/x/stakeibc/keeper"
 	stakeibcmoduletypes "github.com/UnUniFi/chain/x/stakeibc/types"
-	"github.com/UnUniFi/chain/x/ununifidist"
-	ununifidistkeeper "github.com/UnUniFi/chain/x/ununifidist/keeper"
-	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
 	yieldaggregator "github.com/UnUniFi/chain/x/yield-aggregator"
 	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yield-aggregator/keeper"
 	yieldaggregatortypes "github.com/UnUniFi/chain/x/yield-aggregator/types"
@@ -243,11 +231,7 @@ var (
 		vesting.AppModuleBasic{},
 		// liquidity.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
-		auction.AppModuleBasic{},
-		cdp.AppModuleBasic{},
 		pricefeed.AppModuleBasic{},
-		ununifidist.AppModuleBasic{},
-		incentive.AppModuleBasic{},
 		wasm.AppModuleBasic{},
 		yieldfarm.AppModuleBasic{},
 		yieldaggregator.AppModuleBasic{},
@@ -273,10 +257,6 @@ var (
 		icatypes.ModuleName:             nil,
 		stakeibcmoduletypes.ModuleName:  {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		interchainquerytypes.ModuleName: nil,
-		auctiontypes.ModuleName:         nil,
-		cdptypes.ModuleName:             {authtypes.Minter, authtypes.Burner},
-		cdptypes.LiquidatorMacc:         {authtypes.Minter, authtypes.Burner},
-		ununifidisttypes.ModuleName:     {authtypes.Minter},
 		wasm.ModuleName:                 {authtypes.Burner},
 		yieldfarmtypes.ModuleName:       {authtypes.Minter},
 		yieldaggregatortypes.ModuleName: {authtypes.Minter, authtypes.Burner},
@@ -286,7 +266,6 @@ var (
 	// module accounts that are allowed to receive tokens
 	allowedReceivingModAcc = map[string]bool{
 		distrtypes.ModuleName:          true,
-		cdptypes.LiquidatorMacc:        true,
 		stakeibcmoduletypes.ModuleName: true,
 	}
 )
@@ -357,10 +336,6 @@ type App struct {
 	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
 
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
-	auctionKeeper         auctionkeeper.Keeper
-	cdpKeeper             cdpkeeper.Keeper
-	incentiveKeeper       incentivekeeper.Keeper
-	ununifidistKeeper     ununifidistkeeper.Keeper
 	pricefeedKeeper       pricefeedkeeper.Keeper
 	YieldfarmKeeper       yieldfarmkeeper.Keeper
 	YieldaggregatorKeeper yieldaggregatorkeeper.Keeper
@@ -419,8 +394,7 @@ func NewApp(
 		ibctransfertypes.StoreKey,
 		capabilitytypes.StoreKey, feegrant.StoreKey, authzkeeper.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
-		auctiontypes.StoreKey, cdptypes.StoreKey, incentivetypes.StoreKey,
-		ununifidisttypes.StoreKey, pricefeedtypes.StoreKey,
+		pricefeedtypes.StoreKey,
 		wasm.StoreKey,
 		yieldfarmtypes.StoreKey,
 		yieldaggregatortypes.StoreKey,
@@ -559,7 +533,6 @@ func NewApp(
 		stakingtypes.NewMultiStakingHooks(
 			app.DistrKeeper.Hooks(),
 			app.SlashingKeeper.Hooks(),
-			app.incentiveKeeper.Hooks(),
 		),
 	)
 
@@ -718,50 +691,12 @@ func NewApp(
 	)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
-	app.auctionKeeper = auctionkeeper.NewKeeper(
-		appCodec,
-		keys[auctiontypes.StoreKey],
-		keys[auctiontypes.MemStoreKey],
-		app.GetSubspace(auctiontypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-	)
 	app.pricefeedKeeper = pricefeedkeeper.NewKeeper(
 		appCodec,
 		keys[pricefeedtypes.StoreKey],
 		keys[pricefeedtypes.MemStoreKey],
 		app.GetSubspace(pricefeedtypes.ModuleName),
 	)
-	cdpKeeper := cdpkeeper.NewKeeper(
-		appCodec,
-		keys[cdptypes.StoreKey],
-		keys[cdptypes.MemStoreKey],
-		app.GetSubspace(cdptypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-		app.auctionKeeper,
-		app.pricefeedKeeper,
-		maccPerms,
-	)
-	app.incentiveKeeper = incentivekeeper.NewKeeper(
-		appCodec,
-		keys[incentivetypes.StoreKey],
-		keys[incentivetypes.MemStoreKey],
-		app.GetSubspace(incentivetypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-		&cdpKeeper,
-	)
-	app.ununifidistKeeper = ununifidistkeeper.NewKeeper(
-		appCodec,
-		keys[ununifidisttypes.StoreKey],
-		keys[ununifidisttypes.MemStoreKey],
-		app.GetSubspace(ununifidisttypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-	)
-
-	app.cdpKeeper = *cdpKeeper.SetHooks(cdptypes.NewMultiCdpHooks(app.incentiveKeeper.Hooks()))
 
 	app.YieldfarmKeeper = *yieldfarmkeeper.NewKeeper(
 		appCodec,
@@ -897,10 +832,6 @@ func NewApp(
 		icacallbacksModule,
 
 		// this line is used by starport scaffolding # stargate/app/appModule
-		auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
-		cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.pricefeedKeeper),
-		incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
-		ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
 		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
 		yieldfarm.NewAppModule(appCodec, app.YieldfarmKeeper, app.AccountKeeper, app.BankKeeper),
@@ -930,10 +861,6 @@ func NewApp(
 		vestingtypes.ModuleName,
 		// additional non simd modules
 		// liquiditytypes.ModuleName,
-		ununifidisttypes.ModuleName,
-		auctiontypes.ModuleName,
-		cdptypes.ModuleName,
-		incentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
 
 		ibcexported.ModuleName,
@@ -970,10 +897,6 @@ func NewApp(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		// additional non simd modules
-		ununifidisttypes.ModuleName,
-		auctiontypes.ModuleName,
-		cdptypes.ModuleName,
-		incentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
 
 		ibcexported.ModuleName,
@@ -1018,11 +941,7 @@ func NewApp(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
-		auctiontypes.ModuleName,
 		pricefeedtypes.ModuleName,
-		cdptypes.ModuleName,
-		incentivetypes.ModuleName,
-		ununifidisttypes.ModuleName,
 
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
@@ -1311,10 +1230,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icacallbacksmoduletypes.ModuleName)
 
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
-	paramsKeeper.Subspace(auctiontypes.ModuleName)
-	paramsKeeper.Subspace(cdptypes.ModuleName)
-	paramsKeeper.Subspace(incentivetypes.ModuleName)
-	paramsKeeper.Subspace(ununifidisttypes.ModuleName)
 	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
 	paramsKeeper.Subspace(wasm.ModuleName)
 	paramsKeeper.Subspace(yieldfarmtypes.ModuleName)
