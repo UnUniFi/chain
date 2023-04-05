@@ -198,6 +198,7 @@ func (suite *KeeperTestSuite) TestIncreaseLastPositionId() {
 	suite.Require().Equal(suite.keeper.GetLastPositionId(suite.ctx), uint64(2))
 }
 
+// FIXME: fix this test
 func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 

@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"fmt"
+
 	"github.com/tendermint/tendermint/crypto/ed25519"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
@@ -26,7 +28,7 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 			margin:     sdk.NewCoin("uatom", sdk.NewInt(500000)),
 			instance: types.PerpetualFuturesPositionInstance{
 				PositionType: types.PositionType_LONG,
-				Size_:        sdk.NewDecWithPrec(2, 0),
+				Size_:        sdk.MustNewDecFromStr("2"),
 				Leverage:     5,
 			},
 		},
@@ -35,7 +37,7 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 			margin:     sdk.NewCoin("uatom", sdk.NewInt(500000)),
 			instance: types.PerpetualFuturesPositionInstance{
 				PositionType: types.PositionType_SHORT,
-				Size_:        sdk.NewDecWithPrec(1, 0),
+				Size_:        sdk.MustNewDecFromStr("1"),
 				Leverage:     5,
 			},
 		},
@@ -44,7 +46,7 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 			margin:     sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
 			instance: types.PerpetualFuturesPositionInstance{
 				PositionType: types.PositionType_LONG,
-				Size_:        sdk.NewDecWithPrec(2, 0),
+				Size_:        sdk.MustNewDecFromStr("2"),
 				Leverage:     20,
 			},
 		},
@@ -53,14 +55,15 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 			margin:     sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
 			instance: types.PerpetualFuturesPositionInstance{
 				PositionType: types.PositionType_SHORT,
-				Size_:        sdk.NewDecWithPrec(1, 0),
+				Size_:        sdk.MustNewDecFromStr("1"),
 				Leverage:     10,
 			},
 		},
 	}
 
-	expectNetPosition := sdk.ZeroDec()
+	expectNetPosition := sdk.ZeroInt()
 	for _, testPosition := range positions {
+		fmt.Println(testPosition.positionId)
 		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.Bytes(), testPosition.margin, market, testPosition.instance)
 		suite.Require().NoError(err)
 		suite.Require().NotNil(position)
@@ -68,23 +71,23 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 		// Check if the position was added
 		netPosition := suite.keeper.GetPositionSizeOfNetPositionOfMarket(suite.ctx, market)
 
+		// any, _ := codecTypes.NewAnyWithValue(&testPosition.instance)
+		pfPosition, _ := types.NewPerpetualFuturesPositionFromPosition(*position)
 		if testPosition.instance.PositionType == types.PositionType_LONG {
-			expectNetPosition = expectNetPosition.Add(testPosition.instance.Size_)
+			expectNetPosition = expectNetPosition.Add(*pfPosition.PositionInstance.SizeInMicro)
 		} else {
-			expectNetPosition = expectNetPosition.Sub(testPosition.instance.Size_)
+			expectNetPosition = expectNetPosition.Sub(*pfPosition.PositionInstance.SizeInMicro)
 		}
 		suite.Require().Equal(expectNetPosition, netPosition)
 	}
 
 }
 
-func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
+// TODO: Implement this test
+func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {}
 
-}
-
-func (suite *KeeperTestSuite) TestReportLiquidationNeededPerpetualFuturesPosition() {
-
-}
+// TODO: Implement this test
+func (suite *KeeperTestSuite) TestReportLiquidationNeededPerpetualFuturesPosition() {}
 
 func (suite *KeeperTestSuite) TestSetPerpetualFuturesNetPositionOfMarket() {
 	market := types.Market{
@@ -92,7 +95,7 @@ func (suite *KeeperTestSuite) TestSetPerpetualFuturesNetPositionOfMarket() {
 		QuoteDenom: "uusdc",
 	}
 
-	netPosition := sdk.NewDec(100)
+	netPosition := sdk.NewInt(100)
 	netPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(market, netPosition)
 	suite.keeper.SetPerpetualFuturesNetPositionOfMarket(suite.ctx, netPositionOfMarket)
 
@@ -108,7 +111,7 @@ func (suite *KeeperTestSuite) TestAddPerpetualFuturesNetPositionOfMarket() {
 		QuoteDenom: "uusdc",
 	}
 
-	netPosition := sdk.NewDec(100)
+	netPosition := sdk.NewInt(100)
 
 	netPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(market, netPosition)
 	suite.keeper.SetPerpetualFuturesNetPositionOfMarket(suite.ctx, netPositionOfMarket)
@@ -119,7 +122,7 @@ func (suite *KeeperTestSuite) TestAddPerpetualFuturesNetPositionOfMarket() {
 	suite.Require().Equal(netPosition, gotNetPositionOfMarket)
 
 	// Add 50 more
-	netAddPosition := sdk.NewDec(50)
+	netAddPosition := sdk.NewInt(50)
 
 	suite.keeper.AddPerpetualFuturesNetPositionOfMarket(suite.ctx, market, netAddPosition)
 
@@ -135,7 +138,7 @@ func (suite *KeeperTestSuite) TestSubPerpetualFuturesNetPositionOfMarket() {
 		QuoteDenom: "uusdc",
 	}
 
-	netPosition := sdk.NewDec(100)
+	netPosition := sdk.NewInt(100)
 	netPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(market, netPosition)
 	suite.keeper.SetPerpetualFuturesNetPositionOfMarket(suite.ctx, netPositionOfMarket)
 
@@ -145,7 +148,7 @@ func (suite *KeeperTestSuite) TestSubPerpetualFuturesNetPositionOfMarket() {
 	suite.Require().Equal(positionSizeNetPositionOfMarket, netPosition)
 
 	// Sub 50 more
-	netSubPosition := sdk.NewDec(50)
+	netSubPosition := sdk.NewInt(50)
 
 	suite.keeper.SubPerpetualFuturesNetPositionOfMarket(suite.ctx, market, netSubPosition)
 

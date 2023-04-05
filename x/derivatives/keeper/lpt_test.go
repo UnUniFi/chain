@@ -86,6 +86,7 @@ func (suite *KeeperTestSuite) TestGetLPTokenSupply() {
 	suite.Require().Equal(supply, sdk.NewInt(1000000))
 }
 
+// FIXME: fix test case
 func (suite *KeeperTestSuite) TestGetLPTokenPrice() {
 	// set price for asset
 	_, err := suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:uusdc", sdk.NewDec(13), suite.ctx.BlockTime().Add(time.Hour*3))

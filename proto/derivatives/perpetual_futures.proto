@@ -88,7 +88,13 @@ message PerpetualFuturesPositionInstance {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  uint32 leverage = 3 [
+  // Use micro level size in the backend logic to be consistent with the scale of the coin amount
+  // and price information.
+  string size_in_micro = 3 [
+    (gogoproto.moretags) = "yaml:\"size_in_micro\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
+  ];
+  uint32 leverage = 4 [
     (gogoproto.moretags) = "yaml:\"leverage\""
   ];
 }
@@ -98,9 +104,9 @@ message PerpetualFuturesNetPositionOfMarket {
     (gogoproto.moretags) = "yaml:\"market\"",
     (gogoproto.nullable) = false
   ];
-  string position_size = 2 [
+  string position_size_in_micro = 2 [
     (gogoproto.moretags) = "yaml:\"position_size\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
 }
@@ -115,6 +121,7 @@ message EventPerpetualFuturesPositionClosed {
   string position_id = 2;
   string fee_amount = 3;
   string trade_amount = 4;
+  string returning_amount = 5;
 }
 
 message EventPerpetualFuturesPositionLiquidated {
@@ -129,4 +136,9 @@ message EventPerpetualFuturesPositionLevied {
   string position_id = 2;
   string remaining_margin = 3;
   string reward_amount = 4;
+}
+
+message EventLossToLP {
+  string position_id = 1;
+  string loss_amount = 2;
 }

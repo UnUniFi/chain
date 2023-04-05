@@ -28,7 +28,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, market := range genState.Params.PerpetualFutures.Markets {
 		// set initial net position
 		if !market.InMarketSet(initialPerpetualFuturesNetPositionOfMarkets) {
-			perpetualFuturesNetPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(*market, sdk.ZeroDec())
+			perpetualFuturesNetPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(*market, sdk.ZeroInt())
 			k.SetPerpetualFuturesNetPositionOfMarket(ctx, perpetualFuturesNetPositionOfMarket)
 		}
 	}

@@ -21,17 +21,10 @@ func UnpackPerpetualFuturesPositionInstance(positionAny types.Any) PositionInsta
 	return nil
 }
 
-func (positionInstance PerpetualFuturesPositionInstance) CalculatePrincipal() sdk.Dec {
-	return positionInstance.Size_.Quo(sdk.NewDec(int64(positionInstance.Leverage)))
-}
-
-func NewPerpetualFuturesNetPositionOfMarket(market Market, position_size sdk.Dec) PerpetualFuturesNetPositionOfMarket {
+// Position Size is considered on a micro level in the backend
+func NewPerpetualFuturesNetPositionOfMarket(market Market, position_size_in_micro sdk.Int) PerpetualFuturesNetPositionOfMarket {
 	return PerpetualFuturesNetPositionOfMarket{
-		Market:       market,
-		PositionSize: position_size,
+		Market:              market,
+		PositionSizeInMicro: position_size_in_micro,
 	}
-}
-
-func (positionInstance PerpetualFuturesPositionInstance) MarginRequirement(currencyRate sdk.Dec) sdk.Dec {
-	return positionInstance.Size_.Mul(currencyRate).Quo(sdk.NewDec(int64(positionInstance.Leverage)))
 }

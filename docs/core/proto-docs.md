@@ -87,6 +87,7 @@
     - [PositionType](#ununifi.derivatives.PositionType)
   
 - [derivatives/perpetual_futures.proto](#derivatives/perpetual_futures.proto)
+    - [EventLossToLP](#ununifi.derivatives.EventLossToLP)
     - [EventPerpetualFuturesPositionClosed](#ununifi.derivatives.EventPerpetualFuturesPositionClosed)
     - [EventPerpetualFuturesPositionLevied](#ununifi.derivatives.EventPerpetualFuturesPositionLevied)
     - [EventPerpetualFuturesPositionLiquidated](#ununifi.derivatives.EventPerpetualFuturesPositionLiquidated)
@@ -1598,6 +1599,22 @@ Query defines the gRPC querier service.
 
 
 
+<a name="ununifi.derivatives.EventLossToLP"></a>
+
+### EventLossToLP
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `position_id` | [string](#string) |  |  |
+| `loss_amount` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="ununifi.derivatives.EventPerpetualFuturesPositionClosed"></a>
 
 ### EventPerpetualFuturesPositionClosed
@@ -1610,6 +1627,7 @@ Query defines the gRPC querier service.
 | `position_id` | [string](#string) |  |  |
 | `fee_amount` | [string](#string) |  |  |
 | `trade_amount` | [string](#string) |  |  |
+| `returning_amount` | [string](#string) |  |  |
 
 
 
@@ -1677,7 +1695,7 @@ Query defines the gRPC querier service.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `market` | [Market](#ununifi.derivatives.Market) |  |  |
-| `position_size` | [string](#string) |  |  |
+| `position_size_in_micro` | [string](#string) |  |  |
 
 
 
@@ -1737,6 +1755,7 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `position_type` | [PositionType](#ununifi.derivatives.PositionType) |  |  |
 | `size` | [string](#string) |  |  |
+| `size_in_micro` | [string](#string) |  | Use micro level size in the backend logic to be consistent with the scale of the coin amount and price information. |
 | `leverage` | [uint32](#uint32) |  |  |
 
 

@@ -53,6 +53,8 @@ const (
 
 const (
 	LiquidityProviderTokenDenom = "udlp"
+	OneMillionInt               = 1000000
+	OneMillionString            = "1000000"
 )
 
 func GetPositionIdBytes(posId uint64) (posIdBz []byte) {
