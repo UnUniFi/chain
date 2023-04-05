@@ -9,13 +9,22 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-
-	"cosmossdk.io/simapp"
 	"github.com/UnUniFi/chain/app"
 	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
+
+func fundAccount(bk bankkeeper.Keeper, ctx sdk.Context, addr sdk.AccAddress, coins sdk.Coins) error {
+	err := bk.MintCoins(ctx, minttypes.ModuleName, coins)
+	if err != nil {
+		return err
+	}
+	err = bk.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr, coins)
+	return err
+}
 
 func TestSurplusAuctionBasic(t *testing.T) {
 	// Setup
@@ -36,7 +45,7 @@ func TestSurplusAuctionBasic(t *testing.T) {
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{sellerAcc}),
 	)
 	ctx := tApp.NewContext(false, tmproto.Header{})
-	require.NoError(t, simapp.FundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
+	require.NoError(t, fundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
 
 	keeper := tApp.GetAuctionKeeper()
 
@@ -83,7 +92,7 @@ func TestDebtAuctionBasic(t *testing.T) {
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{buyerAcc}),
 	)
 	ctx := tApp.NewContext(false, tmproto.Header{})
-	require.NoError(t, simapp.FundAccount(tApp.BankKeeper, ctx, buyerAddr, cs(c("debt", 100))))
+	require.NoError(t, fundAccount(tApp.BankKeeper, ctx, buyerAddr, cs(c("debt", 100))))
 
 	keeper := tApp.GetAuctionKeeper()
 
@@ -127,7 +136,7 @@ func TestDebtAuctionDebtRemaining(t *testing.T) {
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{buyerAcc}),
 	)
 	ctx := tApp.NewContext(false, tmproto.Header{})
-	require.NoError(t, simapp.FundAccount(tApp.BankKeeper, ctx, buyerAddr, cs(c("debt", 100))))
+	require.NoError(t, fundAccount(tApp.BankKeeper, ctx, buyerAddr, cs(c("debt", 100))))
 
 	keeper := tApp.GetAuctionKeeper()
 
@@ -187,7 +196,7 @@ func TestCollateralAuctionBasic(t *testing.T) {
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{sellerAcc}),
 	)
 	ctx := tApp.NewContext(false, tmproto.Header{})
-	require.NoError(t, simapp.FundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
+	require.NoError(t, fundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
 
 	keeper := tApp.GetAuctionKeeper()
 
@@ -261,7 +270,7 @@ func TestCollateralAuctionDebtRemaining(t *testing.T) {
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{sellerAcc}),
 	)
 	ctx := tApp.NewContext(false, tmproto.Header{})
-	require.NoError(t, simapp.FundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
+	require.NoError(t, fundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
 
 	keeper := tApp.GetAuctionKeeper()
 
@@ -346,7 +355,7 @@ func TestStartSurplusAuction(t *testing.T) {
 				NewAuthGenStateFromAccs(tApp, authtypes.GenesisAccounts{liqAcc}),
 			)
 			ctx := tApp.NewContext(false, tmproto.Header{}).WithBlockTime(tc.blockTime)
-			require.NoError(t, simapp.FundAccount(tApp.BankKeeper, ctx, liqAddr, initialLiquidatorCoins))
+			require.NoError(t, fundAccount(tApp.BankKeeper, ctx, liqAddr, initialLiquidatorCoins))
 			keeper := tApp.GetAuctionKeeper()
 
 			// run function under test
@@ -369,7 +378,7 @@ func TestStartSurplusAuction(t *testing.T) {
 			if tc.expectPass {
 				require.NoError(t, err, tc.name)
 				// check coins moved
-				require.Equal(t, initialLiquidatorCoins.Sub(cs(tc.args.lot)), liquidatorCoins, tc.name)
+				require.Equal(t, initialLiquidatorCoins.Sub(cs(tc.args.lot)...), liquidatorCoins, tc.name)
 				// check auction in store and is correct
 				require.True(t, found, tc.name)
 				expectedAuction := auctiontypes.SurplusAuction{BaseAuction: auctiontypes.BaseAuction{
@@ -414,7 +423,7 @@ func TestCloseAuction(t *testing.T) {
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{sellerAcc}),
 	)
 	ctx := tApp.NewContext(false, tmproto.Header{})
-	require.NoError(t, simapp.FundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
+	require.NoError(t, fundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
 
 	keeper := tApp.GetAuctionKeeper()
 
@@ -449,7 +458,7 @@ func TestCloseExpiredAuctions(t *testing.T) {
 		app.NewAuthGenStateModAcc(tApp, []*authtypes.ModuleAccount{sellerAcc}),
 	)
 	ctx := tApp.NewContext(false, tmproto.Header{})
-	require.NoError(t, simapp.FundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
+	require.NoError(t, fundAccount(tApp.BankKeeper, ctx, sellerAddr, cs(c("token1", 100), c("token2", 100))))
 
 	keeper := tApp.GetAuctionKeeper()
 

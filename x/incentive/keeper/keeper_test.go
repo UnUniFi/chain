@@ -19,9 +19,10 @@ import (
 	"github.com/UnUniFi/chain/app"
 	// committeekeeper "github.com/UnUniFi/chain/x/committee/keeper"
 	// hardkeeper "github.com/UnUniFi/chain/x/hard/keeper"
-	"cosmossdk.io/simapp"
+
 	"github.com/UnUniFi/chain/x/incentive/keeper"
 	"github.com/UnUniFi/chain/x/incentive/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
 
 // Test suite used for all keeper tests
@@ -30,7 +31,7 @@ type KeeperTestSuite struct {
 
 	keeper keeper.Keeper
 	// hardKeeper      hardkeeper.Keeper
-	stakingKeeper stakingkeeper.Keeper
+	stakingKeeper *stakingkeeper.Keeper
 	// committeeKeeper committeekeeper.Keeper
 	app            app.TestApp
 	ctx            sdk.Context
@@ -98,10 +99,19 @@ func (suite *KeeperTestSuite) TestIterateJPYXMintingClaims() {
 	suite.Require().Equal(len(suite.addrs), len(claims))
 }
 
+func (suite *KeeperTestSuite) fundAccount(ctx sdk.Context, addr sdk.AccAddress, coins sdk.Coins) error {
+	err := suite.app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, coins)
+	if err != nil {
+		return err
+	}
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr, coins)
+	return err
+}
+
 func (suite *KeeperTestSuite) createPeriodicVestingAccount(origVesting sdk.Coins, periods vestingtypes.Periods, startTime, endTime int64) (*vestingtypes.PeriodicVestingAccount, error) {
 	_, addr := app.GeneratePrivKeyAddressPairs(1)
 	bacc := authtypes.NewBaseAccountWithAddress(addr[0])
-	simapp.FundAccount(suite.app.BankKeeper, suite.ctx, bacc.GetAddress(), origVesting)
+	suite.fundAccount(suite.ctx, bacc.GetAddress(), origVesting)
 	bva := vestingtypes.NewBaseVestingAccount(bacc, origVesting, endTime)
 	err := bva.Validate()
 	if err != nil {

@@ -12,10 +12,11 @@ import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"cosmossdk.io/simapp"
 	"github.com/UnUniFi/chain/app"
 	"github.com/UnUniFi/chain/x/cdp/keeper"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
 
 type CdpTestSuite struct {
@@ -39,13 +40,22 @@ func (suite *CdpTestSuite) SetupTest() {
 	suite.keeper = keeper
 }
 
+func fundAccount(bk bankkeeper.Keeper, ctx sdk.Context, addr sdk.AccAddress, coins sdk.Coins) error {
+	err := bk.MintCoins(ctx, minttypes.ModuleName, coins)
+	if err != nil {
+		return err
+	}
+	err = bk.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr, coins)
+	return err
+}
+
 func (suite *CdpTestSuite) TestAddCdp() {
 	_, addrs := app.GeneratePrivKeyAddressPairs(2)
 	ak := suite.app.GetAccountKeeper()
 	sk := suite.app.GetBankKeeper()
 	acc := ak.NewAccountWithAddress(suite.ctx, addrs[0])
 	sk.GetAllBalances(suite.ctx, acc.GetAddress())
-	simapp.FundAccount(suite.app.BankKeeper, suite.ctx, acc.GetAddress(), cs(c("xrp", 200000000), c("btc", 500000000)))
+	fundAccount(suite.app.BankKeeper, suite.ctx, acc.GetAddress(), cs(c("xrp", 200000000), c("btc", 500000000)))
 	ak.SetAccount(suite.ctx, acc)
 	err := suite.keeper.AddCdp(suite.ctx, addrs[0], c("xrp", 200000000), c("jpu", 10000000), "btc-a")
 	suite.Require().True(errors.Is(err, cdptypes.ErrInvalidCollateral))
@@ -57,7 +67,7 @@ func (suite *CdpTestSuite) TestAddCdp() {
 	suite.Require().True(errors.Is(err, cdptypes.ErrDebtNotSupported))
 
 	acc2 := ak.NewAccountWithAddress(suite.ctx, addrs[1])
-	simapp.FundAccount(suite.app.BankKeeper, suite.ctx, acc2.GetAddress(), cs(c("btc", 500000000000)))
+	fundAccount(suite.app.BankKeeper, suite.ctx, acc2.GetAddress(), cs(c("btc", 500000000000)))
 	ak.SetAccount(suite.ctx, acc2)
 	err = suite.keeper.AddCdp(suite.ctx, addrs[1], c("btc", 500000000000), c("jpu", 500000000001), "btc-a")
 	suite.Require().True(errors.Is(err, cdptypes.ErrExceedsDebtLimit))
@@ -113,7 +123,7 @@ func (suite *CdpTestSuite) TestAddGetCdp() {
 	sk := suite.app.GetBankKeeper()
 	acc := ak.NewAccountWithAddress(suite.ctx, addrs[0])
 	sk.GetAllBalances(suite.ctx, acc.GetAddress())
-	simapp.FundAccount(suite.app.BankKeeper, suite.ctx, acc.GetAddress(), cs(c("xrp", 200000000), c("btc", 500000000)))
+	fundAccount(suite.app.BankKeeper, suite.ctx, acc.GetAddress(), cs(c("xrp", 200000000), c("btc", 500000000)))
 	ak.SetAccount(suite.ctx, acc)
 	err := suite.keeper.AddCdp(suite.ctx, addrs[0], c("btc", 100000000), c("jpu", 10000000), "btc-a")
 	suite.NoError(err)

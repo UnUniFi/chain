@@ -10,12 +10,22 @@ import (
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
-	"cosmossdk.io/simapp"
 	"github.com/UnUniFi/chain/app"
 	"github.com/UnUniFi/chain/x/auction"
 	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
+
+func fundModuleAccount(bk bankkeeper.Keeper, ctx sdk.Context, modName string, coins sdk.Coins) error {
+	err := bk.MintCoins(ctx, minttypes.ModuleName, coins)
+	if err != nil {
+		return err
+	}
+	err = bk.SendCoinsFromModuleToModule(ctx, minttypes.ModuleName, modName, coins)
+	return err
+}
 
 func TestKeeper_BeginBlocker(t *testing.T) {
 	// Setup
@@ -30,7 +40,7 @@ func TestKeeper_BeginBlocker(t *testing.T) {
 	tApp := app.NewTestApp()
 	ctx := tApp.NewContext(true, tmproto.Header{})
 
-	require.NoError(t, simapp.FundModuleAccount(tApp.BankKeeper, ctx, modAcc.Name, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
+	require.NoError(t, fundModuleAccount(tApp.BankKeeper, ctx, modAcc.Name, cs(c("token1", 100), c("token2", 100), c("debt", 100))))
 	tApp.InitializeFromGenesisStates(
 		// NewAuthGenStateFromAccs(authtypes.GenesisAccounts{
 		// 	auth.NewBaseAccount(buyer, cs(c("token1", 100), c("token2", 100)), nil, 0, 0),

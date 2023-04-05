@@ -9,7 +9,6 @@ import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"cosmossdk.io/simapp"
 	"github.com/UnUniFi/chain/app"
 	"github.com/UnUniFi/chain/x/cdp/keeper"
 	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
@@ -53,7 +52,7 @@ func BenchmarkAccountIteration(b *testing.B) {
 				addr := sdk.AccAddress(arr)
 				acc := ak.NewAccountWithAddress(ctx, addr)
 				if bm.coins {
-					simapp.FundAccount(tApp.BankKeeper, ctx, acc.GetAddress(), coins)
+					fundAccount(tApp.BankKeeper, ctx, acc.GetAddress(), coins)
 				}
 				ak.SetAccount(ctx, acc)
 			}
