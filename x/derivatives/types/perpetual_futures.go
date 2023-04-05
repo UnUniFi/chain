@@ -29,7 +29,7 @@ func NewPerpetualFuturesNetPositionOfMarket(market Market, position_size_in_micr
 	}
 }
 
-func (p PerpetualFuturesPositionInstance) SizeInDenomUnit(decimal uint32) sdk.Int {
+func (p PerpetualFuturesPositionInstance) SizeInDenomUnit(denomUnit uint32) sdk.Int {
 	// return position size in the decimal unit
-	return p.Size_.MulInt64(int64(decimal)).TruncateInt()
+	return p.Size_.MulInt64(int64(denomUnit)).TruncateInt()
 }
