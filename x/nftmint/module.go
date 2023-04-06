@@ -9,15 +9,16 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"github.com/UnUniFi/chain/x/nftmint/client/cli"
-	"github.com/UnUniFi/chain/x/nftmint/keeper"
-	"github.com/UnUniFi/chain/x/nftmint/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	abci "github.com/tendermint/tendermint/abci/types"
+
+	"github.com/UnUniFi/chain/x/nftmint/client/cli"
+	"github.com/UnUniFi/chain/x/nftmint/keeper"
+	"github.com/UnUniFi/chain/x/nftmint/types"
 )
 
 var (
@@ -99,15 +100,15 @@ func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 type AppModule struct {
 	AppModuleBasic
 
-	keeper        keeper.Keeper
-	accountKeeper types.AccountKeeper
+	keeper    keeper.Keeper
+	nftKeeper types.NftKeeper
 }
 
-func NewAppModule(cdc codec.Codec, keeper keeper.Keeper, accountKeeper types.AccountKeeper) AppModule {
+func NewAppModule(cdc codec.Codec, keeper keeper.Keeper, nftKeeper types.NftKeeper) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},
 		keeper:         keeper,
-		accountKeeper:  accountKeeper,
+		nftKeeper:      nftKeeper,
 	}
 }
 
@@ -146,7 +147,7 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, gs json.Ra
 	// Initialize global index to index in genesis state
 	cdc.MustUnmarshalJSON(gs, &genState)
 
-	InitGenesis(ctx, am.keeper, am.accountKeeper, genState)
+	InitGenesis(ctx, am.keeper, am.nftKeeper, genState)
 
 	return []abci.ValidatorUpdate{}
 }

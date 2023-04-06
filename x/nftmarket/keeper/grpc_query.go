@@ -49,21 +49,49 @@ func (k Keeper) ListedNfts(c context.Context, req *types.QueryListedNftsRequest)
 		if err != nil {
 			return nil, status.Error(codes.InvalidArgument, "invalid request. address wrong")
 		}
-		return k.ListedNftsByOwner(ctx, acc)
+		return k.ListedNftsByOwner(c, acc)
 	} else {
 		listings := k.GetAllNftListings(ctx)
+		res, err := k.GetNftListingDetails(ctx, listings)
+		if err != nil {
+			panic(err)
+		}
 		return &types.QueryListedNftsResponse{
-			Listings: listings,
+			Listings: res,
 		}, nil
 	}
 
 }
 
+func (k Keeper) GetNftListingDetails(ctx sdk.Context, listings []types.NftListing) ([]types.NftListingDetail, error) {
+	res := []types.NftListingDetail{}
+	for _, v := range listings {
+		nftInfo, found := k.nftKeeper.GetNFT(ctx, v.NftId.ClassId, v.NftId.NftId)
+		if !found {
+			return []types.NftListingDetail{}, types.ErrNotExistsNft
+		}
+		detail := types.NftListingDetail{
+			Listing: v,
+			NftInfo: types.NftInfo{
+				Id:      nftInfo.GetId(),
+				Uri:     nftInfo.GetUri(),
+				UriHash: nftInfo.GetUriHash(),
+			},
+		}
+		res = append(res, detail)
+	}
+	return res, nil
+}
+
 func (k Keeper) ListedNftsByOwner(c context.Context, address sdk.AccAddress) (*types.QueryListedNftsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	listings := k.GetListingsByOwner(ctx, address)
+	res, err := k.GetNftListingDetails(ctx, listings)
+	if err != nil {
+		panic(err)
+	}
 	return &types.QueryListedNftsResponse{
-		Listings: listings,
+		Listings: res,
 	}, nil
 }
 
@@ -127,8 +155,8 @@ func (k Keeper) GetListedClass(ctx sdk.Context, classId string, limit int) (*typ
 		return nil, status.Error(codes.NotFound, "not found class")
 	}
 
-	var nfts []types.ListedNft
-	var pnfts []*types.ListedNft
+	var nfts []types.NftInfo
+	var pnfts []*types.NftInfo
 	for i, v := range class.NftIds {
 		if limit <= i {
 			break
@@ -137,7 +165,7 @@ func (k Keeper) GetListedClass(ctx sdk.Context, classId string, limit int) (*typ
 		if !hasNft {
 			return nil, status.Error(codes.NotFound, "not found nft")
 		}
-		nfts = append(nfts, types.ListedNft{Id: nftInfo.Id, Uri: nftInfo.Uri, UriHash: nftInfo.UriHash})
+		nfts = append(nfts, types.NftInfo{Id: nftInfo.Id, Uri: nftInfo.Uri, UriHash: nftInfo.UriHash})
 	}
 
 	for i, _ := range nfts {
@@ -176,20 +204,20 @@ func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.Que
 		NftId:   req.NftId,
 	}
 	ctx := sdk.UnwrapSDKContext(c)
-	nft, err := k.GetNftListingByIdBytes(ctx, nftId.IdBytes())
-	if err != nil {
-		return &types.QueryLoanResponse{
-			Loan:           types.Loan{},
-			BorrowingLimit: sdk.ZeroInt(),
-		}, nil
-	}
+	// nft, err := k.GetNftListingByIdBytes(ctx, nftId.IdBytes())
+	// if err != nil {
+	// 	return &types.QueryLoanResponse{
+	// 		Loan:           types.Loan{},
+	// 		BorrowingLimit: sdk.ZeroInt(),
+	// 	}, nil
+	// }
 	bids := k.GetBidsByNft(ctx, nftId.IdBytes())
 	// Change the order of bids to  descending order
 	sort.SliceStable(bids, func(i, j int) bool {
-		if bids[i].Amount.Amount.LT(bids[j].Amount.Amount) {
+		if bids[i].BidAmount.Amount.LT(bids[j].BidAmount.Amount) {
 			return false
 		}
-		if bids[i].Amount.Amount.GT(bids[j].Amount.Amount) {
+		if bids[i].BidAmount.Amount.GT(bids[j].BidAmount.Amount) {
 			return true
 		}
 		if bids[i].BidTime.After(bids[j].BidTime) {
@@ -198,11 +226,9 @@ func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.Que
 		return false
 	})
 	max := sdk.ZeroInt()
-	for i, v := range bids {
-		if i+1 > int(nft.BidActiveRank) {
-			break
-		}
-		max = max.Add(v.PaidAmount)
+	// todo update for v2
+	for _, v := range bids {
+		max = max.Add(v.DepositAmount.Amount)
 	}
 
 	return &types.QueryLoanResponse{
@@ -280,21 +306,62 @@ func (k Keeper) PaymentStatus(c context.Context, req *types.QueryPaymentStatusRe
 			bidderBid = v
 		}
 	}
-	if (bidderBid == types.NftBid{}) {
+	if (bidderBid.Equal(types.NftBid{})) {
 		return nil, status.Error(codes.InvalidArgument, "does not match bidder")
 	}
 
-	allPaid := listing.State >= types.ListingState_END_LISTING && bidderBid.Amount.Amount.Equal(bidderBid.PaidAmount)
+	allPaid := listing.State >= types.ListingState_END_LISTING && bidderBid.BidAmount.Amount.Equal(bidderBid.DepositAmount.Amount)
 	return &types.QueryPaymentStatusResponse{
 		PaymentStatus: types.PaymentStatus{
 			NftId:            listing.NftId,
 			State:            listing.State,
 			Bidder:           bidderBid.Bidder,
-			Amount:           bidderBid.Amount,
+			Amount:           bidderBid.BidAmount,
 			AutomaticPayment: bidderBid.AutomaticPayment,
-			PaidAmount:       bidderBid.PaidAmount,
+			PaidAmount:       bidderBid.DepositAmount.Amount,
 			BidTime:          bidderBid.BidTime,
 			AllPaid:          allPaid,
 		},
+	}, nil
+}
+
+func (k Keeper) Liquidation(c context.Context, req *types.QueryLiquidationRequest) (*types.QueryLiquidationResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(c)
+	listing, err := k.GetNftListingByIdBytes(ctx, types.NftBytes(req.ClassId, req.NftId))
+	if err != nil {
+		return nil, err
+	}
+
+	bids := types.NftBids(k.GetBidsByNft(ctx, listing.NftId.IdBytes()))
+	bids = bids.SortLowerBiddingPeriod()
+	liqs := &types.Liquidations{}
+	bidsLen := len(bids)
+	for i := 0; i < bidsLen; i++ {
+		checkBid := bids[0]
+		if listing.CanRefinancing(bids, []types.NftBid{checkBid}, ctx.BlockTime()) {
+			require := checkBid.LiquidationAmount(checkBid.BiddingPeriod)
+			// we must use new bids because we need to exclude expired bids
+			bids = bids.MakeBorrowedBidExcludeExpiredBids(require, checkBid.BiddingPeriod, []types.NftBid{checkBid})
+			continue
+		} else {
+			liq := types.Liquidation{
+				Amount: sdk.NewCoin(listing.BidToken, sdk.ZeroInt()),
+			}
+			liq.Amount = checkBid.LiquidationAmount(checkBid.BiddingPeriod)
+			liq.LiquidationDate = checkBid.BiddingPeriod
+			if liqs.Liquidation == nil {
+				liqs.Liquidation = &liq
+			} else {
+				liqs.NextLiquidation = append(liqs.NextLiquidation, liq)
+			}
+			bids = bids.MakeBorrowedBidExcludeExpiredBids(liq.Amount, checkBid.BiddingPeriod, []types.NftBid{checkBid})
+		}
+	}
+
+	return &types.QueryLiquidationResponse{
+		Liquidations: liqs,
 	}, nil
 }

@@ -53,11 +53,28 @@
           "Params": "NftmintParams"
         }
       }
-    },    {
+    },
+    {
       "url": "./tmp-swagger-gen/nftmarket/query.swagger.json",
       "operationIds": {
         "rename": {
           "Params": "NftmarketParams"
+        }
+      }
+    },
+    {
+      "url": "./tmp-swagger-gen/ecosystem-incentive/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "EcosystemincentiveParams"
+        }
+      }
+    },
+    {
+      "url": "./tmp-swagger-gen/derivatives/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "DerivativesParams"
         }
       }
     }

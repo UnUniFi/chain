@@ -34,6 +34,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdQueryCDPsList(),
 		CmdQueryRewards(),
 		CmdQueryListedClass(),
+		CmdQueryLiquidation(),
 	)
 
 	return cmd
@@ -317,6 +318,36 @@ func CmdQueryListedClass() *cobra.Command {
 			}
 
 			res, err := queryClient.ListedClass(context.Background(), &req)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// liquidation query command
+func CmdQueryLiquidation() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "liquidation [class-id] [nft-id]",
+		Short: "shows liquidation date",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QueryLiquidationRequest{
+				ClassId: args[0],
+				NftId:   args[1],
+			}
+
+			res, err := queryClient.Liquidation(context.Background(), params)
 			if err != nil {
 				return err
 			}

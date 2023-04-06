@@ -4,6 +4,7 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
 type AccountKeeper interface {
@@ -36,4 +37,8 @@ type AccountKeeper interface {
 
 	GetModuleAddress(moduleName string) sdk.AccAddress
 	GetModuleAccount(ctx sdk.Context, moduleName string) authtypes.ModuleAccountI
+}
+
+type BankKeeper interface {
+	GetDenomMetaData(ctx sdk.Context, denom string) (banktypes.Metadata, bool)
 }
