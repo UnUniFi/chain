@@ -102,10 +102,12 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.PerpetualFuturesPosition) error {
 	params := k.GetParams(ctx)
 	commissionRate := params.PerpetualFutures.CommissionRate
-	// FIXME: Size_ cannot be used like this.
-	// It causes the inconsistency between the position and the token amount.
-	feeAmountDec := position.PositionInstance.Size_.Mul(commissionRate)
-	tradeAmount := position.PositionInstance.Size_.Sub(feeAmountDec)
+
+	// At closing the position, the trading fee is deducted.
+	// fee = positionSize * commissionRate
+	positionSizeInMicroDec := sdk.NewDecFromInt(*position.PositionInstance.SizeInMicro)
+	feeAmountDec := positionSizeInMicroDec.Mul(commissionRate)
+	tradeAmount := positionSizeInMicroDec.Sub(feeAmountDec)
 	feeAmount := feeAmountDec.RoundInt()
 
 	baseUsdPrice, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
@@ -117,19 +119,10 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 		return err
 	}
 
-	// TODO: this is wrong. refer to Issue#407
-	// maybe this todo is related to the above fixme content.
-	if !feeAmount.IsZero() {
-		err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, position.Address.AccAddress(), types.ModuleName, sdk.Coins{sdk.NewCoin(position.Market.BaseDenom, feeAmount)})
-		if err != nil {
-			return err
-		}
-	}
-
 	quoteTicker := k.GetPoolQuoteTicker(ctx)
 	baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, baseUsdPrice)
 	quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, quoteUsdPrice)
-	returningAmount, lossToLP := position.CalcReturningAmountAtClose(baseMetricsRate, quoteMetricsRate)
+	returningAmount, lossToLP := position.CalcReturningAmountAtClose(baseMetricsRate, quoteMetricsRate, feeAmount)
 
 	// Tell the loss to the LP happened by a trade
 	// This has to be restricted by the protocol behavior in the future
@@ -141,6 +134,7 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 	}
 
 	returningCoin := sdk.NewCoin(position.RemainingMargin.Denom, returningAmount)
+
 	if returningCoin.IsPositive() {
 		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, position.Address.AccAddress(), sdk.Coins{returningCoin}); err != nil {
 			return err
