@@ -69,7 +69,7 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 		suite.Require().NotNil(position)
 
 		// Check if the position was added
-		netPosition := suite.keeper.GetPositionSizeOfNetPositionOfMarket(suite.ctx, market)
+		netPosition := suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market, testPosition.instance.PositionType)
 
 		// any, _ := codecTypes.NewAnyWithValue(&testPosition.instance)
 		pfPosition, _ := types.NewPerpetualFuturesPositionFromPosition(*position)
@@ -78,7 +78,7 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 		} else {
 			expectNetPosition = expectNetPosition.Sub(*pfPosition.PositionInstance.SizeInMicro)
 		}
-		suite.Require().Equal(expectNetPosition, netPosition)
+		suite.Require().Equal(expectNetPosition, netPosition.PositionSizeInDenomUnit)
 	}
 
 }
@@ -96,13 +96,13 @@ func (suite *KeeperTestSuite) TestSetPerpetualFuturesNetPositionOfMarket() {
 	}
 
 	netPosition := sdk.NewInt(100)
-	netPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(market, netPosition)
+	netPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(market, types.PositionType_LONG, netPosition)
 	suite.keeper.SetPerpetualFuturesNetPositionOfMarket(suite.ctx, netPositionOfMarket)
 
 	// Check if the netPosition was set
-	gotNetPositionOfMarket := suite.keeper.GetPositionSizeOfNetPositionOfMarket(suite.ctx, market)
+	gotNetPositionOfMarket := suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market, types.PositionType_LONG)
 
-	suite.Require().Equal(netPosition, gotNetPositionOfMarket)
+	suite.Require().Equal(netPosition, gotNetPositionOfMarket.PositionSizeInDenomUnit)
 }
 
 func (suite *KeeperTestSuite) TestAddPerpetualFuturesNetPositionOfMarket() {
@@ -113,23 +113,23 @@ func (suite *KeeperTestSuite) TestAddPerpetualFuturesNetPositionOfMarket() {
 
 	netPosition := sdk.NewInt(100)
 
-	netPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(market, netPosition)
+	netPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(market, types.PositionType_LONG, netPosition)
 	suite.keeper.SetPerpetualFuturesNetPositionOfMarket(suite.ctx, netPositionOfMarket)
 
 	// Check if the netPosition was set
-	gotNetPositionOfMarket := suite.keeper.GetPositionSizeOfNetPositionOfMarket(suite.ctx, market)
+	gotNetPositionOfMarket := suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market, types.PositionType_LONG)
 
-	suite.Require().Equal(netPosition, gotNetPositionOfMarket)
+	suite.Require().Equal(netPosition, gotNetPositionOfMarket.PositionSizeInDenomUnit)
 
 	// Add 50 more
 	netAddPosition := sdk.NewInt(50)
 
-	suite.keeper.AddPerpetualFuturesNetPositionOfMarket(suite.ctx, market, netAddPosition)
+	suite.keeper.AddPerpetualFuturesNetPositionOfMarket(suite.ctx, market, types.PositionType_LONG, netAddPosition)
 
 	// Check if the netPosition was set
-	positionSizeNetPositionOfMarket := suite.keeper.GetPositionSizeOfNetPositionOfMarket(suite.ctx, market)
+	positionSizeNetPositionOfMarket := suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market, types.PositionType_LONG)
 
-	suite.Require().Equal(positionSizeNetPositionOfMarket, netPosition.Add(netAddPosition))
+	suite.Require().Equal(positionSizeNetPositionOfMarket.PositionSizeInDenomUnit, netPosition.Add(netAddPosition))
 }
 
 func (suite *KeeperTestSuite) TestSubPerpetualFuturesNetPositionOfMarket() {
@@ -139,21 +139,21 @@ func (suite *KeeperTestSuite) TestSubPerpetualFuturesNetPositionOfMarket() {
 	}
 
 	netPosition := sdk.NewInt(100)
-	netPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(market, netPosition)
+	netPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(market, types.PositionType_LONG, netPosition)
 	suite.keeper.SetPerpetualFuturesNetPositionOfMarket(suite.ctx, netPositionOfMarket)
 
 	// Check if the netPosition was set
-	positionSizeNetPositionOfMarket := suite.keeper.GetPositionSizeOfNetPositionOfMarket(suite.ctx, market)
+	positionSizeNetPositionOfMarket := suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market, types.PositionType_LONG)
 
-	suite.Require().Equal(positionSizeNetPositionOfMarket, netPosition)
+	suite.Require().Equal(positionSizeNetPositionOfMarket.PositionSizeInDenomUnit, netPosition)
 
 	// Sub 50 more
 	netSubPosition := sdk.NewInt(50)
 
-	suite.keeper.SubPerpetualFuturesNetPositionOfMarket(suite.ctx, market, netSubPosition)
+	suite.keeper.SubPerpetualFuturesNetPositionOfMarket(suite.ctx, market, types.PositionType_LONG, netSubPosition)
 
 	// Check if the netPosition was set
-	positionSizeNetPositionOfMarket = suite.keeper.GetPositionSizeOfNetPositionOfMarket(suite.ctx, market)
+	positionSizeNetPositionOfMarket = suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market, types.PositionType_LONG)
 
-	suite.Require().Equal(positionSizeNetPositionOfMarket, netPosition.Sub(netSubPosition))
+	suite.Require().Equal(positionSizeNetPositionOfMarket.PositionSizeInDenomUnit, netPosition.Sub(netSubPosition))
 }

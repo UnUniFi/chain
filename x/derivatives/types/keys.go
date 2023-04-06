@@ -114,8 +114,8 @@ func AddressPositionWithIdKeyPrefix(sender sdk.AccAddress, posId string) []byte 
 	return append(AddressPositionKeyPrefix(sender), GetPositionIdByteFromString(posId)...)
 }
 
-func DenomNetPositionPerpetualFuturesKeyPrefix(denom string, quoteDenom string) []byte {
-	return append(append([]byte(KeyPrefixPerpetualFutures), []byte(KeyPrefixNetPositionAmount)...), []byte(fmt.Sprintf("%s/%s", denom, quoteDenom))...)
+func DenomNetPositionPerpetualFuturesKeyPrefix(market Market, positionType PositionType) []byte {
+	return append(append([]byte(KeyPrefixPerpetualFutures), []byte(KeyPrefixNetPositionAmount)...), []byte(fmt.Sprintf("%s/%s/%s", market.BaseDenom, market.QuoteDenom, positionType))...)
 }
 
 func AddressPoolMarketCapSnapshotKeyPrefix(height int64) []byte {

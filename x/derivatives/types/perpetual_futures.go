@@ -21,10 +21,11 @@ func UnpackPerpetualFuturesPositionInstance(positionAny types.Any) PositionInsta
 	return nil
 }
 
-// Position Size is considered on a micro level in the backend
-func NewPerpetualFuturesNetPositionOfMarket(market Market, position_size_in_micro sdk.Int) PerpetualFuturesNetPositionOfMarket {
+// Position Size is considered in denom unit
+func NewPerpetualFuturesNetPositionOfMarket(market Market, positionType PositionType, position_size_in_denom_unit sdk.Int) PerpetualFuturesNetPositionOfMarket {
 	return PerpetualFuturesNetPositionOfMarket{
-		Market:              market,
-		PositionSizeInMicro: position_size_in_micro,
+		Market:                  market,
+		PositionType:            positionType,
+		PositionSizeInDenomUnit: position_size_in_denom_unit,
 	}
 }
