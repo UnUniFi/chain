@@ -40,7 +40,7 @@ func TestRandomizedGenState(t *testing.T) {
 	var derivativesGenesis types.GenesisState
 	simState.Cdc.MustUnmarshalJSON(simState.GenState[types.ModuleName], &derivativesGenesis)
 
-	assert.Equal(t, derivativesGenesis.Params.PoolParams.QuoteTicker, "uusd")
+	assert.Equal(t, derivativesGenesis.Params.PoolParams.QuoteTicker, "usd")
 	assert.Len(t, derivativesGenesis.Params.PoolParams.AcceptedAssets, 2)
 	assert.Equal(t, derivativesGenesis.Params.PoolParams.BaseLptMintFee, sdk.NewDecWithPrec(1, 2))
 	assert.Equal(t, derivativesGenesis.Params.PoolParams.BaseLptRedeemFee, sdk.NewDecWithPrec(1, 2))

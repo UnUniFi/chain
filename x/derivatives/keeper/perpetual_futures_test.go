@@ -80,7 +80,6 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 		}
 		suite.Require().Equal(expectNetPosition, netPosition.PositionSizeInDenomUnit)
 	}
-
 }
 
 // TODO: Implement this test
