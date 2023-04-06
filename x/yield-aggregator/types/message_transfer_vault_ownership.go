@@ -36,7 +36,7 @@ func (msg *MsgTransferVaultOwnership) Route() string {
 }
 
 func (msg *MsgTransferVaultOwnership) Type() string {
-	return TypeMsgDepositToVault
+	return TypeMsgTransferVaultOwnership
 }
 
 func (msg MsgTransferVaultOwnership) GetSignBytes() []byte {

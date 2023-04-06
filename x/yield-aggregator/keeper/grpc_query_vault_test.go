@@ -49,8 +49,8 @@ func (suite *KeeperTestSuite) TestVaultQuerySingle() {
 			} else {
 				suite.Require().NoError(err)
 				suite.Require().Equal(
-					nullify.Fill(tc.response),
-					nullify.Fill(response),
+					nullify.Fill(tc.response.Vault),
+					nullify.Fill(response.Vault),
 				)
 			}
 		})

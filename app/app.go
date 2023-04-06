@@ -7,13 +7,13 @@ import (
 	"path/filepath"
 	"strings"
 
-	appparams "github.com/UnUniFi/chain/app/params"
 	// Upgrades from earlier versions of Ununifi
 	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/server"
 	ibctestingtypes "github.com/cosmos/ibc-go/v7/testing/types"
 	"github.com/spf13/cast"
 	tmos "github.com/tendermint/tendermint/libs/os"
@@ -43,6 +43,7 @@ import (
 	yieldfarmkeeper "github.com/UnUniFi/chain/x/yieldfarm/keeper"
 	yieldfarmtypes "github.com/UnUniFi/chain/x/yieldfarm/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
@@ -133,6 +134,7 @@ import (
 
 	nodeservice "github.com/cosmos/cosmos-sdk/client/grpc/node"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+	"github.com/cosmos/cosmos-sdk/x/consensus"
 	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	ica "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts"
@@ -232,6 +234,7 @@ var (
 		// liquidity.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 		pricefeed.AppModuleBasic{},
+		consensus.AppModuleBasic{},
 		wasm.AppModuleBasic{},
 		yieldfarm.AppModuleBasic{},
 		yieldaggregator.AppModuleBasic{},
@@ -294,8 +297,6 @@ type App struct {
 	cdc               *codec.LegacyAmino
 	appCodec          codec.Codec
 	interfaceRegistry types.InterfaceRegistry
-
-	invCheckPeriod uint
 
 	// keys to access the substores
 	keys    map[string]*storetypes.KVStoreKey
@@ -365,16 +366,13 @@ func NewApp(
 	db dbm.DB,
 	traceStore io.Writer,
 	loadLatest bool,
-	skipUpgradeHeights map[int64]bool,
-	homePath string,
-	invCheckPeriod uint,
-	encodingConfig appparams.EncodingConfig,
 	enabledProposals []wasm.ProposalType,
 	appOpts servertypes.AppOptions,
 	wasmOpts []wasm.Option,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *App {
 
+	encodingConfig := MakeEncodingConfig()
 	appCodec := encodingConfig.Marshaler
 	cdc := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
@@ -385,9 +383,10 @@ func NewApp(
 	bApp.SetInterfaceRegistry(interfaceRegistry)
 
 	keys := sdk.NewKVStoreKeys(
-		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey,
+		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey, crisistypes.StoreKey,
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
-		govtypes.StoreKey, paramstypes.StoreKey, ibcexported.StoreKey, upgradetypes.StoreKey,
+		govtypes.StoreKey, paramstypes.StoreKey, consensusparamtypes.StoreKey,
+		ibcexported.StoreKey, upgradetypes.StoreKey,
 		icahosttypes.StoreKey,
 		evidencetypes.StoreKey,
 		// liquiditytypes.StoreKey,
@@ -415,7 +414,6 @@ func NewApp(
 		cdc:               cdc,
 		appCodec:          appCodec,
 		interfaceRegistry: interfaceRegistry,
-		invCheckPeriod:    invCheckPeriod,
 		keys:              keys,
 		tkeys:             tkeys,
 		memKeys:           memKeys,
@@ -499,6 +497,7 @@ func NewApp(
 		app.StakingKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
+	invCheckPeriod := cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod))
 	app.CrisisKeeper = crisiskeeper.NewKeeper(
 		appCodec,
 		keys[crisistypes.StoreKey],
@@ -507,6 +506,14 @@ func NewApp(
 		authtypes.FeeCollectorName,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
+
+	// get skipUpgradeHeights from the app options
+	skipUpgradeHeights := map[int64]bool{}
+	for _, h := range cast.ToIntSlice(appOpts.Get(server.FlagUnsafeSkipUpgrades)) {
+		skipUpgradeHeights[int64(h)] = true
+	}
+	homePath := cast.ToString(appOpts.Get(flags.FlagHome))
+	// set the governance module account as the authority for conducting upgrades
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(
 		skipUpgradeHeights,
 		keys[upgradetypes.StoreKey],
@@ -833,6 +840,7 @@ func NewApp(
 
 		// this line is used by starport scaffolding # stargate/app/appModule
 		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
+		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
 		yieldfarm.NewAppModule(appCodec, app.YieldfarmKeeper, app.AccountKeeper, app.BankKeeper),
 		yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
@@ -864,6 +872,7 @@ func NewApp(
 		pricefeedtypes.ModuleName,
 
 		ibcexported.ModuleName,
+		consensusparamtypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
 		stakeibcmoduletypes.ModuleName,
@@ -898,7 +907,7 @@ func NewApp(
 		vestingtypes.ModuleName,
 		// additional non simd modules
 		pricefeedtypes.ModuleName,
-
+		consensusparamtypes.ModuleName,
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
@@ -933,6 +942,7 @@ func NewApp(
 		crisistypes.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
+		consensusparamtypes.ModuleName,
 		// liquiditytypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		feegrant.ModuleName,

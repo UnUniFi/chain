@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/CosmWasm/wasmd/x/wasm"
 	simapp "github.com/UnUniFi/chain/app"
 )
 
@@ -19,8 +20,7 @@ type KeeperTestSuite struct {
 
 func (suite *KeeperTestSuite) SetupTest() {
 	isCheckTx := false
-	app := simapp.Setup(isCheckTx)
-
+	app := simapp.Setup(suite.T(), ([]wasm.Option{})...)
 	suite.ctx = app.BaseApp.NewContext(isCheckTx, tmproto.Header{})
 	suite.app = app
 }

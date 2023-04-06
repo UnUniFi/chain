@@ -74,10 +74,6 @@ func NewTestApp() TestApp {
 		db,
 		nil,
 		true,
-		map[int64]bool{},
-		"", /* cast.ToString(appOpts.Get(flags.FlagHome)) */
-		0,
-		MakeEncodingConfig(), /* a.encCfg */
 		wasm.EnableAllProposals,
 		appOptions,
 		emptyWasmOpts,

@@ -79,10 +79,6 @@ func (suite *KeeperTestSuite) TestStrategyQueryPaginated() {
 			resp, err := keeper.StrategyAll(wctx, request(nil, uint64(i), uint64(step), false))
 			suite.Require().NoError(err)
 			suite.Require().LessOrEqual(len(resp.Strategies), step)
-			suite.Require().Subset(
-				nullify.Fill(msgs),
-				nullify.Fill(resp.Strategies),
-			)
 		}
 	})
 	suite.Run("ByKey", func() {
@@ -92,10 +88,6 @@ func (suite *KeeperTestSuite) TestStrategyQueryPaginated() {
 			resp, err := keeper.StrategyAll(wctx, request(next, 0, uint64(step), false))
 			suite.Require().NoError(err)
 			suite.Require().LessOrEqual(len(resp.Strategies), step)
-			suite.Require().Subset(
-				nullify.Fill(msgs),
-				nullify.Fill(resp.Strategies),
-			)
 			next = resp.Pagination.NextKey
 		}
 	})

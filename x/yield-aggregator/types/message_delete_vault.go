@@ -31,7 +31,7 @@ func (msg *MsgDeleteVault) Route() string {
 }
 
 func (msg *MsgDeleteVault) Type() string {
-	return TypeMsgDepositToVault
+	return TypeMsgDeleteVault
 }
 
 func (msg MsgDeleteVault) GetSignBytes() []byte {
