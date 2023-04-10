@@ -104,9 +104,9 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 
 	// At closing the position, the trading fee is deducted.
 	// fee = positionSize * commissionRate
-	positionSizeInMicroDec := sdk.NewDecFromInt(*position.PositionInstance.SizeInMicro)
-	feeAmountDec := positionSizeInMicroDec.Mul(commissionRate)
-	tradeAmount := positionSizeInMicroDec.Sub(feeAmountDec)
+	positionSizeInDenomUnit := sdk.NewDecFromInt(position.PositionInstance.SizeInDenomUnit(types.OneMillionInt))
+	feeAmountDec := positionSizeInDenomUnit.Mul(commissionRate)
+	tradeAmount := positionSizeInDenomUnit.Sub(feeAmountDec)
 	feeAmount := feeAmountDec.RoundInt()
 
 	baseUsdPrice, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
