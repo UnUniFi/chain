@@ -84,7 +84,7 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.PositionType, positionInstance.SizeInDenomUnit(types.OneMillionInt))
 		// break
 	case types.PositionType_SHORT:
-		k.SubPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.PositionType, positionInstance.SizeInDenomUnit(types.OneMillionInt))
+		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.PositionType, positionInstance.SizeInDenomUnit(types.OneMillionInt))
 		// break
 	case types.PositionType_POSITION_UNKNOWN:
 		return nil, fmt.Errorf("unknown position type")
@@ -134,6 +134,7 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 
 	returningCoin := sdk.NewCoin(position.RemainingMargin.Denom, returningAmount)
 
+	fmt.Println(returningAmount)
 	if returningCoin.IsPositive() {
 		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, position.Address.AccAddress(), sdk.Coins{returningCoin}); err != nil {
 			return err
@@ -141,6 +142,17 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 	}
 
 	// TODO: Fix position size in total by removing the closing position
+	switch position.PositionInstance.PositionType {
+	// FIXME: Don't use OneMillionInt derectly to make it decimal unit. issue #476
+	case types.PositionType_LONG:
+		k.SubPerpetualFuturesNetPositionOfMarket(ctx, position.Market, position.PositionInstance.PositionType, position.PositionInstance.SizeInDenomUnit(types.OneMillionInt))
+		// break
+	case types.PositionType_SHORT:
+		k.SubPerpetualFuturesNetPositionOfMarket(ctx, position.Market, position.PositionInstance.PositionType, position.PositionInstance.SizeInDenomUnit(types.OneMillionInt))
+		// break
+	case types.PositionType_POSITION_UNKNOWN:
+		return fmt.Errorf("unknown position type")
+	}
 
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionClosed{
 		Sender:          position.Address.AccAddress().String(),
@@ -236,7 +248,11 @@ func (k Keeper) GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market t
 
 	bz := store.Get(types.DenomNetPositionPerpetualFuturesKeyPrefix(market, positionType))
 	if bz == nil {
-		return types.PerpetualFuturesNetPositionOfMarket{}
+		return types.NewPerpetualFuturesNetPositionOfMarket(
+			market,
+			positionType,
+			sdk.ZeroInt(),
+		)
 	}
 
 	netPositionOfMarket := types.PerpetualFuturesNetPositionOfMarket{}

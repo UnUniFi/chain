@@ -13,7 +13,7 @@ type Keeper interface {
   GetLPTokenPrice(ctx sdk.Context) sdk.Dec
   GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemDenom string) (sdk.Coin, sdk.Coin, error)
   GetPairUsdPriceFromMarket(ctx sdk.Context, market types.Market) (sdk.Dec, sdk.Dec, error)
-  GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market) types.PerpetualFuturesNetPositionOfMarket
+  GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market, positionType types.PositionType) types.PerpetualFuturesNetPositionOfMarket
   GetPositionSizeOfNetPositionOfMarket(ctx sdk.Context, market types.Market) sdk.Dec
   GetPoolAssets(ctx sdk.Context) []types.PoolParams_Asset
   GetPoolAssetByDenom(ctx sdk.Context, denom string) types.PoolParams_Asset
