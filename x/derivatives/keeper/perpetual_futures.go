@@ -203,7 +203,7 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient ununifiTypes.StringAccAddress, position types.Position, positionInstance types.PerpetualFuturesPositionInstance) error {
 	params := k.GetParams(ctx)
 
-	netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, position.Market, positionInstance.PositionType).PositionSizeInDenomUnit
+	netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, position.Market, positionInstance.PositionType).PositionSizeInDenomExponent
 
 	imaginaryFundingRate := sdk.NewDecFromInt(netPosition).Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
 	imaginaryFundingFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
@@ -299,7 +299,7 @@ func (k Keeper) SetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, netPosit
 // Call AddPerpetualFuturesNetPositionOfMarket when the position is created.
 func (k Keeper) AddPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market, positionType types.PositionType, rhs sdk.Int) {
 	perpFutureNetPositionOfMarket := k.GetPerpetualFuturesNetPositionOfMarket(ctx, market, positionType)
-	perpFutureNetPositionOfMarket.PositionSizeInDenomUnit = perpFutureNetPositionOfMarket.PositionSizeInDenomUnit.Add(rhs)
+	perpFutureNetPositionOfMarket.PositionSizeInDenomExponent = perpFutureNetPositionOfMarket.PositionSizeInDenomExponent.Add(rhs)
 
 	k.SetPerpetualFuturesNetPositionOfMarket(ctx, perpFutureNetPositionOfMarket)
 }
@@ -307,7 +307,7 @@ func (k Keeper) AddPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market t
 // Call AddPerpetualFuturesNetPositionOfMarket when the position is closed.
 func (k Keeper) SubPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market, positionType types.PositionType, rhs sdk.Int) {
 	perpFutureNetPositionOfMarket := k.GetPerpetualFuturesNetPositionOfMarket(ctx, market, positionType)
-	perpFutureNetPositionOfMarket.PositionSizeInDenomUnit = perpFutureNetPositionOfMarket.PositionSizeInDenomUnit.Sub(rhs)
+	perpFutureNetPositionOfMarket.PositionSizeInDenomExponent = perpFutureNetPositionOfMarket.PositionSizeInDenomExponent.Sub(rhs)
 
 	k.SetPerpetualFuturesNetPositionOfMarket(ctx, perpFutureNetPositionOfMarket)
 }

@@ -22,11 +22,11 @@ func UnpackPerpetualFuturesPositionInstance(positionAny types.Any) PositionInsta
 }
 
 // Position Size is considered in denom unit
-func NewPerpetualFuturesNetPositionOfMarket(market Market, positionType PositionType, position_size_in_denom_unit sdk.Int) PerpetualFuturesNetPositionOfMarket {
+func NewPerpetualFuturesNetPositionOfMarket(market Market, positionType PositionType, position_size_in_denom_exponent sdk.Int) PerpetualFuturesNetPositionOfMarket {
 	return PerpetualFuturesNetPositionOfMarket{
-		Market:                  market,
-		PositionType:            positionType,
-		PositionSizeInDenomUnit: position_size_in_denom_unit,
+		Market:                      market,
+		PositionType:                positionType,
+		PositionSizeInDenomExponent: position_size_in_denom_exponent,
 	}
 }
 

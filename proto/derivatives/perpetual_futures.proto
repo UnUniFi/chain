@@ -101,8 +101,8 @@ message PerpetualFuturesNetPositionOfMarket {
   PositionType position_type = 2 [
     (gogoproto.moretags) = "yaml:\"position_type\""
   ];
-  string position_size_in_denom_unit = 3 [
-    (gogoproto.moretags) = "yaml:\"position_size\"",
+  string position_size_in_denom_exponent = 3 [
+    (gogoproto.moretags) = "yaml:\"position_size_in_denom_exponent\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];
