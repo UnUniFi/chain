@@ -1695,7 +1695,8 @@ Query defines the gRPC querier service.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `market` | [Market](#ununifi.derivatives.Market) |  |  |
-| `position_size_in_micro` | [string](#string) |  |  |
+| `position_type` | [PositionType](#ununifi.derivatives.PositionType) |  |  |
+| `position_size_in_denom_exponent` | [string](#string) |  |  |
 
 
 

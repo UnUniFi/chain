@@ -23,7 +23,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 	derivativesGenesis := types.GenesisState{
 		Params: types.Params{
 			PoolParams: types.PoolParams{
-				QuoteTicker:                 "USD",
+				QuoteTicker:                 "usd",
 				BaseLptMintFee:              sdk.NewDecWithPrec(1, 2),
 				BaseLptRedeemFee:            sdk.NewDecWithPrec(1, 2),
 				BorrowingFeeRatePerHour:     sdk.NewDecWithPrec(1, 6),

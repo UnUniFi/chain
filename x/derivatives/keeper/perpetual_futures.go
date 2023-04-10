@@ -81,11 +81,11 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 	switch positionInstance.PositionType {
 	// FIXME: Don't use OneMillionInt derectly to make it decimal unit. issue #476
 	case types.PositionType_LONG:
-		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.SizeInDenomUnit(types.OneMillionInt))
-		break
+		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.PositionType, positionInstance.SizeInDenomUnit(types.OneMillionInt))
+		// break
 	case types.PositionType_SHORT:
-		k.SubPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.SizeInDenomUnit(types.OneMillionInt))
-		break
+		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.PositionType, positionInstance.SizeInDenomUnit(types.OneMillionInt))
+		// break
 	case types.PositionType_POSITION_UNKNOWN:
 		return nil, fmt.Errorf("unknown position type")
 	}
@@ -104,9 +104,9 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 
 	// At closing the position, the trading fee is deducted.
 	// fee = positionSize * commissionRate
-	positionSizeInMicroDec := sdk.NewDecFromInt(*position.PositionInstance.SizeInMicro)
-	feeAmountDec := positionSizeInMicroDec.Mul(commissionRate)
-	tradeAmount := positionSizeInMicroDec.Sub(feeAmountDec)
+	positionSizeInDenomUnit := sdk.NewDecFromInt(position.PositionInstance.SizeInDenomUnit(types.OneMillionInt))
+	feeAmountDec := positionSizeInDenomUnit.Mul(commissionRate)
+	tradeAmount := positionSizeInDenomUnit.Sub(feeAmountDec)
 	feeAmount := feeAmountDec.RoundInt()
 
 	baseUsdPrice, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
@@ -134,10 +134,24 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 
 	returningCoin := sdk.NewCoin(position.RemainingMargin.Denom, returningAmount)
 
+	fmt.Println(returningAmount)
 	if returningCoin.IsPositive() {
 		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, position.Address.AccAddress(), sdk.Coins{returningCoin}); err != nil {
 			return err
 		}
+	}
+
+	// TODO: Fix position size in total by removing the closing position
+	switch position.PositionInstance.PositionType {
+	// FIXME: Don't use OneMillionInt derectly to make it decimal unit. issue #476
+	case types.PositionType_LONG:
+		k.SubPerpetualFuturesNetPositionOfMarket(ctx, position.Market, position.PositionInstance.PositionType, position.PositionInstance.SizeInDenomUnit(types.OneMillionInt))
+		// break
+	case types.PositionType_SHORT:
+		k.SubPerpetualFuturesNetPositionOfMarket(ctx, position.Market, position.PositionInstance.PositionType, position.PositionInstance.SizeInDenomUnit(types.OneMillionInt))
+		// break
+	case types.PositionType_POSITION_UNKNOWN:
+		return fmt.Errorf("unknown position type")
 	}
 
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionClosed{
@@ -189,7 +203,7 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient ununifiTypes.StringAccAddress, position types.Position, positionInstance types.PerpetualFuturesPositionInstance) error {
 	params := k.GetParams(ctx)
 
-	netPosition := k.GetPositionSizeOfNetPositionOfMarket(ctx, position.Market)
+	netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, position.Market, positionInstance.PositionType).PositionSizeInDenomExponent
 
 	imaginaryFundingRate := sdk.NewDecFromInt(netPosition).Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
 	imaginaryFundingFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
@@ -229,12 +243,16 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 	return nil
 }
 
-func (k Keeper) GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market) types.PerpetualFuturesNetPositionOfMarket {
+func (k Keeper) GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market, positionType types.PositionType) types.PerpetualFuturesNetPositionOfMarket {
 	store := ctx.KVStore(k.storeKey)
 
-	bz := store.Get(types.DenomNetPositionPerpetualFuturesKeyPrefix(market.BaseDenom, market.QuoteDenom))
+	bz := store.Get(types.DenomNetPositionPerpetualFuturesKeyPrefix(market, positionType))
 	if bz == nil {
-		return types.PerpetualFuturesNetPositionOfMarket{}
+		return types.NewPerpetualFuturesNetPositionOfMarket(
+			market,
+			positionType,
+			sdk.ZeroInt(),
+		)
 	}
 
 	netPositionOfMarket := types.PerpetualFuturesNetPositionOfMarket{}
@@ -242,13 +260,15 @@ func (k Keeper) GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market t
 	return netPositionOfMarket
 }
 
-func (k Keeper) GetPositionSizeOfNetPositionOfMarket(ctx sdk.Context, market types.Market) sdk.Int {
-	position := k.GetPerpetualFuturesNetPositionOfMarket(ctx, market)
-	if position.PositionSizeInMicro.IsNil() {
-		return sdk.ZeroInt()
-	}
-	return position.PositionSizeInMicro
-}
+/// GetPositionSizeOfNetPositionOfMarket is not used anymore.
+/// This can be deleted.
+// func (k Keeper) GetPositionSizeOfNetPositionOfMarket(ctx sdk.Context, market types.Market) sdk.Int {
+// 	position := k.GetPerpetualFuturesNetPositionOfMarket(ctx, market, )
+// 	if position.PositionSizeInDenomUnit.IsNil() {
+// 		return sdk.ZeroInt()
+// 	}
+// 	return position.PositionSizeInDenomUnit
+// }
 
 func (k Keeper) GetAllPerpetualFuturesNetPositionOfMarket(ctx sdk.Context) []types.PerpetualFuturesNetPositionOfMarket {
 	store := ctx.KVStore(k.storeKey)
@@ -269,25 +289,25 @@ func (k Keeper) GetAllPerpetualFuturesNetPositionOfMarket(ctx sdk.Context) []typ
 	return perpetualFuturesNetPositionOfMarkets
 }
 
-func (k Keeper) SetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, NetPositionOfMarket types.PerpetualFuturesNetPositionOfMarket) {
+func (k Keeper) SetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, netPositionOfMarket types.PerpetualFuturesNetPositionOfMarket) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshal(&NetPositionOfMarket)
+	bz := k.cdc.MustMarshal(&netPositionOfMarket)
 
-	store.Set(types.DenomNetPositionPerpetualFuturesKeyPrefix(NetPositionOfMarket.Market.BaseDenom, NetPositionOfMarket.Market.QuoteDenom), bz)
+	store.Set(types.DenomNetPositionPerpetualFuturesKeyPrefix(netPositionOfMarket.Market, netPositionOfMarket.PositionType), bz)
 }
 
-func (k Keeper) AddPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market, rhs sdk.Int) {
-	lhs := k.GetPositionSizeOfNetPositionOfMarket(ctx, market)
-	result := lhs.Add(rhs)
+// Call AddPerpetualFuturesNetPositionOfMarket when the position is created.
+func (k Keeper) AddPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market, positionType types.PositionType, rhs sdk.Int) {
+	perpFutureNetPositionOfMarket := k.GetPerpetualFuturesNetPositionOfMarket(ctx, market, positionType)
+	perpFutureNetPositionOfMarket.PositionSizeInDenomExponent = perpFutureNetPositionOfMarket.PositionSizeInDenomExponent.Add(rhs)
 
-	perpetualFuturesNetPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(market, result)
-	k.SetPerpetualFuturesNetPositionOfMarket(ctx, perpetualFuturesNetPositionOfMarket)
+	k.SetPerpetualFuturesNetPositionOfMarket(ctx, perpFutureNetPositionOfMarket)
 }
 
-func (k Keeper) SubPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market, rhs sdk.Int) {
-	lhs := k.GetPositionSizeOfNetPositionOfMarket(ctx, market)
-	result := lhs.Sub(rhs)
+// Call AddPerpetualFuturesNetPositionOfMarket when the position is closed.
+func (k Keeper) SubPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market, positionType types.PositionType, rhs sdk.Int) {
+	perpFutureNetPositionOfMarket := k.GetPerpetualFuturesNetPositionOfMarket(ctx, market, positionType)
+	perpFutureNetPositionOfMarket.PositionSizeInDenomExponent = perpFutureNetPositionOfMarket.PositionSizeInDenomExponent.Sub(rhs)
 
-	perpetualFuturesNetPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(market, result)
-	k.SetPerpetualFuturesNetPositionOfMarket(ctx, perpetualFuturesNetPositionOfMarket)
+	k.SetPerpetualFuturesNetPositionOfMarket(ctx, perpFutureNetPositionOfMarket)
 }
