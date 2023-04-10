@@ -3,10 +3,10 @@ package keeper_test
 import (
 	epochstypes "github.com/UnUniFi/chain/x/epochs/types"
 	"github.com/UnUniFi/chain/x/yield-aggregator/types"
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	transfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
 func (suite *KeeperTestSuite) TestBeforeEpochStart() {
