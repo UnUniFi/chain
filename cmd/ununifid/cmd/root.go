@@ -259,7 +259,7 @@ func appExport(
 	appOpts servertypes.AppOptions,
 	modulesToExport []string,
 ) (servertypes.ExportedApp, error) {
-	var App *app.App
+	var wasmApp *app.App
 	homePath, ok := appOpts.Get(flags.FlagHome).(string)
 	if !ok || homePath == "" {
 		return servertypes.ExportedApp{}, errors.New("application home is not set")
@@ -275,7 +275,7 @@ func appExport(
 	appOpts = viperAppOpts
 
 	var emptyWasmOpts []wasm.Option
-	App = app.NewApp(
+	wasmApp = app.NewApp(
 		logger,
 		db,
 		traceStore,
@@ -286,10 +286,10 @@ func appExport(
 	)
 
 	if height != -1 {
-		if err := App.LoadHeight(height); err != nil {
+		if err := wasmApp.LoadHeight(height); err != nil {
 			return servertypes.ExportedApp{}, err
 		}
 	}
 
-	return App.ExportAppStateAndValidators(forZeroHeight, jailAllowedAddrs)
+	return wasmApp.ExportAppStateAndValidators(forZeroHeight, jailAllowedAddrs, modulesToExport)
 }
