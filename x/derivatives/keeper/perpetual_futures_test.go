@@ -1,8 +1,6 @@
 package keeper_test
 
 import (
-	"fmt"
-
 	"github.com/tendermint/tendermint/crypto/ed25519"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
@@ -63,7 +61,6 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 
 	expectNetPosition := sdk.ZeroInt()
 	for _, testPosition := range positions {
-		fmt.Println(testPosition.positionId)
 		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.Bytes(), testPosition.margin, market, testPosition.instance)
 		suite.Require().NoError(err)
 		suite.Require().NotNil(position)
@@ -74,9 +71,9 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 		// any, _ := codecTypes.NewAnyWithValue(&testPosition.instance)
 		pfPosition, _ := types.NewPerpetualFuturesPositionFromPosition(*position)
 		if testPosition.instance.PositionType == types.PositionType_LONG {
-			expectNetPosition = expectNetPosition.Add(*pfPosition.PositionInstance.SizeInMicro)
+			expectNetPosition = expectNetPosition.Add(pfPosition.PositionInstance.SizeInDenomUnit(types.OneMillionInt))
 		} else {
-			expectNetPosition = expectNetPosition.Sub(*pfPosition.PositionInstance.SizeInMicro)
+			expectNetPosition = expectNetPosition.Sub(pfPosition.PositionInstance.SizeInDenomUnit(types.OneMillionInt))
 		}
 		suite.Require().Equal(expectNetPosition, netPosition.PositionSizeInDenomUnit)
 	}

@@ -55,8 +55,6 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 	}
 
 	// NOTE: To be consistent with the other numbers, we should use the micro unit for the size
-	pSizeMicro := types.NormalToMicroInt(positionInstance.Size_)
-	positionInstance.SizeInMicro = &pSizeMicro
 	any, err := codecTypes.NewAnyWithValue(&positionInstance)
 	if err != nil {
 		return nil, err
@@ -81,11 +79,12 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 	}
 
 	switch positionInstance.PositionType {
+	// FIXME: Don't use OneMillionInt derectly to make it decimal unit. issue #476
 	case types.PositionType_LONG:
-		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.PositionType, *positionInstance.SizeInMicro)
+		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.PositionType, positionInstance.SizeInDenomUnit(types.OneMillionInt))
 		// break
 	case types.PositionType_SHORT:
-		k.SubPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.PositionType, *positionInstance.SizeInMicro)
+		k.SubPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.PositionType, positionInstance.SizeInDenomUnit(types.OneMillionInt))
 		// break
 	case types.PositionType_POSITION_UNKNOWN:
 		return nil, fmt.Errorf("unknown position type")

@@ -184,10 +184,7 @@ func (m *PerpetualFuturesPosition) GetPositionInstance() PerpetualFuturesPositio
 type PerpetualFuturesPositionInstance struct {
 	PositionType PositionType                           `protobuf:"varint,1,opt,name=position_type,json=positionType,proto3,enum=ununifi.derivatives.PositionType" json:"position_type,omitempty" yaml:"position_type"`
 	Size_        github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=size,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"size" yaml:"size"`
-	// Use micro level size in the backend logic to be consistent with the scale of the coin amount
-	// and price information.
-	SizeInMicro *github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=size_in_micro,json=sizeInMicro,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"size_in_micro,omitempty" yaml:"size_in_micro"`
-	Leverage    uint32                                  `protobuf:"varint,4,opt,name=leverage,proto3" json:"leverage,omitempty" yaml:"leverage"`
+	Leverage     uint32                                 `protobuf:"varint,3,opt,name=leverage,proto3" json:"leverage,omitempty" yaml:"leverage"`
 }
 
 func (m *PerpetualFuturesPositionInstance) Reset()         { *m = PerpetualFuturesPositionInstance{} }
@@ -910,19 +907,7 @@ func (m *PerpetualFuturesPositionInstance) MarshalToSizedBuffer(dAtA []byte) (in
 	if m.Leverage != 0 {
 		i = encodeVarintPerpetualFutures(dAtA, i, uint64(m.Leverage))
 		i--
-		dAtA[i] = 0x20
-	}
-	if m.SizeInMicro != nil {
-		{
-			size := m.SizeInMicro.Size()
-			i -= size
-			if _, err := m.SizeInMicro.MarshalTo(dAtA[i:]); err != nil {
-				return 0, err
-			}
-			i = encodeVarintPerpetualFutures(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x18
 	}
 	{
 		size := m.Size_.Size()
@@ -1302,10 +1287,6 @@ func (m *PerpetualFuturesPositionInstance) Size() (n int) {
 	}
 	l = m.Size_.Size()
 	n += 1 + l + sovPerpetualFutures(uint64(l))
-	if m.SizeInMicro != nil {
-		l = m.SizeInMicro.Size()
-		n += 1 + l + sovPerpetualFutures(uint64(l))
-	}
 	if m.Leverage != 0 {
 		n += 1 + sovPerpetualFutures(uint64(m.Leverage))
 	}
@@ -2103,42 +2084,6 @@ func (m *PerpetualFuturesPositionInstance) Unmarshal(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SizeInMicro", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowPerpetualFutures
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthPerpetualFutures
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthPerpetualFutures
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			var v github_com_cosmos_cosmos_sdk_types.Int
-			m.SizeInMicro = &v
-			if err := m.SizeInMicro.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 4:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Leverage", wireType)
 			}
