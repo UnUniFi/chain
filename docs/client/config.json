@@ -77,6 +77,14 @@
           "Params": "DerivativesParams"
         }
       }
+    },
+    {
+      "url": "./tmp-swagger-gen/copy-trading/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "CopyTradingParams"
+        }
+      }
     }
   ]
 }
