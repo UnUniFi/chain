@@ -1,5 +1,5 @@
 syntax = "proto3";
-package ununifi.chain.copytrading;
+package ununifi.copytrading;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
@@ -15,30 +15,30 @@ option go_package = "github.com/UnUniFi/chain/x/copy-trading/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/UnUniFi/chain/copy-trading/params";
+    option (google.api.http).get = "/UnUniFi/copy-trading/params";
   }
   // Queries a ExemplaryTrader by index.
 	rpc ExemplaryTrader(QueryGetExemplaryTraderRequest) returns (QueryGetExemplaryTraderResponse) {
-		option (google.api.http).get = "/UnUniFi/chain/copy-trading/exemplary_traders/{address}";
+		option (google.api.http).get = "/UnUniFi/copy-trading/exemplary_traders/{address}";
 	}
 
 	// Queries a list of ExemplaryTrader items.
 	rpc ExemplaryTraderAll(QueryAllExemplaryTraderRequest) returns (QueryAllExemplaryTraderResponse) {
-		option (google.api.http).get = "/UnUniFi/chain/copy-trading/exemplary_traders";
+		option (google.api.http).get = "/UnUniFi/copy-trading/exemplary_traders";
 	}
 
   rpc ExemplaryTraderTracing(QueryGetExemplaryTraderTracingRequest) returns (QueryGetExemplaryTraderTracingResponse) {
-		option (google.api.http).get = "/UnUniFi/chain/copy-trading/exemplary_traders/{address}/tracing";
+		option (google.api.http).get = "/UnUniFi/copy-trading/exemplary_traders/{address}/tracing";
 	}
 
 // Queries a Tracing by index.
 	rpc Tracing(QueryGetTracingRequest) returns (QueryGetTracingResponse) {
-		option (google.api.http).get = "/UnUniFi/chain/copy-trading/tracing/{address}";
+		option (google.api.http).get = "/UnUniFi/copy-trading/tracing/{address}";
 	}
 
 	// Queries a list of Tracing items.
 	rpc TracingAll(QueryAllTracingRequest) returns (QueryAllTracingResponse) {
-		option (google.api.http).get = "/UnUniFi/chain/copy-trading/tracing";
+		option (google.api.http).get = "/UnUniFi/copy-trading/tracing";
 	}
 
 // this line is used by starport scaffolding # 2

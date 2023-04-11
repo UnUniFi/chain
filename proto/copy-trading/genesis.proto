@@ -1,5 +1,5 @@
 syntax = "proto3";
-package ununifi.chain.copytrading;
+package ununifi.copytrading;
 
 import "gogoproto/gogo.proto";
 import "copy-trading/params.proto";
