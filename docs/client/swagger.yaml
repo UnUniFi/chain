@@ -9420,7 +9420,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /UnUniFi/chain/copy-trading/exemplary_traders:
+  /UnUniFi/copy-trading/exemplary_traders:
     get:
       summary: Queries a list of ExemplaryTrader items.
       operationId: ExemplaryTraderAll
@@ -9541,7 +9541,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /UnUniFi/chain/copy-trading/exemplary_traders/{address}:
+  /UnUniFi/copy-trading/exemplary_traders/{address}:
     get:
       summary: Queries a ExemplaryTrader by index.
       operationId: ExemplaryTrader
@@ -9591,7 +9591,7 @@ paths:
           type: string
       tags:
         - Query
-  /UnUniFi/chain/copy-trading/exemplary_traders/{address}/tracing:
+  /UnUniFi/copy-trading/exemplary_traders/{address}/tracing:
     get:
       operationId: ExemplaryTraderTracing
       responses:
@@ -9717,7 +9717,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /UnUniFi/chain/copy-trading/params:
+  /UnUniFi/copy-trading/params:
     get:
       summary: Parameters queries the parameters of the module.
       operationId: CopyTradingParams
@@ -9757,7 +9757,7 @@ paths:
                       format: byte
       tags:
         - Query
-  /UnUniFi/chain/copy-trading/tracing:
+  /UnUniFi/copy-trading/tracing:
     get:
       summary: Queries a list of Tracing items.
       operationId: TracingAll
@@ -9880,7 +9880,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /UnUniFi/chain/copy-trading/tracing/{address}:
+  /UnUniFi/copy-trading/tracing/{address}:
     get:
       summary: Queries a Tracing by index.
       operationId: Tracing
@@ -15329,7 +15329,7 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-  ununifi.chain.copytrading.ExemplaryTrader:
+  ununifi.copytrading.ExemplaryTrader:
     type: object
     properties:
       address:
@@ -15340,10 +15340,10 @@ definitions:
         type: string
       profit_commission_rate:
         type: string
-  ununifi.chain.copytrading.Params:
+  ununifi.copytrading.Params:
     type: object
     description: Params defines the parameters for the module.
-  ununifi.chain.copytrading.QueryAllExemplaryTraderResponse:
+  ununifi.copytrading.QueryAllExemplaryTraderResponse:
     type: object
     properties:
       exemplaryTrader:
@@ -15384,7 +15384,7 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
-  ununifi.chain.copytrading.QueryAllTracingResponse:
+  ununifi.copytrading.QueryAllTracingResponse:
     type: object
     properties:
       tracing:
@@ -15427,7 +15427,7 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
-  ununifi.chain.copytrading.QueryGetExemplaryTraderResponse:
+  ununifi.copytrading.QueryGetExemplaryTraderResponse:
     type: object
     properties:
       exemplaryTrader:
@@ -15441,7 +15441,7 @@ definitions:
             type: string
           profit_commission_rate:
             type: string
-  ununifi.chain.copytrading.QueryGetExemplaryTraderTracingResponse:
+  ununifi.copytrading.QueryGetExemplaryTraderTracingResponse:
     type: object
     properties:
       tracing:
@@ -15484,7 +15484,7 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
-  ununifi.chain.copytrading.QueryGetTracingResponse:
+  ununifi.copytrading.QueryGetTracingResponse:
     type: object
     properties:
       tracing:
@@ -15500,14 +15500,14 @@ definitions:
             type: string
           reverse:
             type: boolean
-  ununifi.chain.copytrading.QueryParamsResponse:
+  ununifi.copytrading.QueryParamsResponse:
     type: object
     properties:
       params:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  ununifi.chain.copytrading.Tracing:
+  ununifi.copytrading.Tracing:
     type: object
     properties:
       address:
