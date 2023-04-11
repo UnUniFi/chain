@@ -1,4 +1,4 @@
-swagger: "2.0"
+swagger: '2.0'
 info:
   title: UnUniFi - Legacy REST and gRPC Gateway docs
   description: A REST interface for state queries, legacy transactions
@@ -8,7 +8,7 @@ paths:
     get:
       operationId: AuctionAll
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -457,10 +457,10 @@ paths:
         - Query
   /ununifi/auction/auctions/{id}:
     get:
-      summary: "this line is used by starport scaffolding # 2"
+      summary: 'this line is used by starport scaffolding # 2'
       operationId: Auction
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -837,7 +837,7 @@ paths:
     get:
       operationId: AuctionParams
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -1050,7 +1050,7 @@ paths:
     get:
       operationId: AccountAll
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -1427,7 +1427,7 @@ paths:
     get:
       operationId: CdpAll
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -1784,10 +1784,10 @@ paths:
         - Query
   /ununifi/cdp/cdps/owners/{owner}/collateral-types/{collateral_type}/cdp:
     get:
-      summary: "this line is used by starport scaffolding # 2"
+      summary: 'this line is used by starport scaffolding # 2'
       operationId: Cdp
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -2079,7 +2079,7 @@ paths:
     get:
       operationId: DepositAll
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -2313,7 +2313,7 @@ paths:
     get:
       operationId: CdpParams
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -2603,7 +2603,7 @@ paths:
     get:
       operationId: IncentiveParams
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -2683,10 +2683,10 @@ paths:
         - Query
   /ununifi/ununifidist/balances:
     get:
-      summary: "this line is used by starport scaffolding # 2"
+      summary: 'this line is used by starport scaffolding # 2'
       operationId: Balances
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -2736,7 +2736,7 @@ paths:
     get:
       operationId: UnunifidistParams
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -2785,10 +2785,10 @@ paths:
         - Query
   /ununifi/pricefeed/markets:
     get:
-      summary: "this line is used by starport scaffolding # 2"
+      summary: 'this line is used by starport scaffolding # 2'
       operationId: MarketAll
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -2912,7 +2912,7 @@ paths:
     get:
       operationId: OracleAll
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -3027,7 +3027,7 @@ paths:
     get:
       operationId: Price
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -3072,7 +3072,7 @@ paths:
     get:
       operationId: RawPriceAll
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -3197,7 +3197,7 @@ paths:
     get:
       operationId: PricefeedParams
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -3250,7 +3250,7 @@ paths:
     get:
       operationId: PriceAll
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -3366,7 +3366,7 @@ paths:
     get:
       operationId: ClassIdsByName
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -3413,7 +3413,7 @@ paths:
     get:
       operationId: ClassIdsByOwner
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -3460,7 +3460,7 @@ paths:
     get:
       operationId: ClassAttributes
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -3516,7 +3516,7 @@ paths:
     get:
       operationId: NFTMinter
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -3560,7 +3560,7 @@ paths:
     get:
       operationId: NftmintParams
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -3617,7 +3617,7 @@ paths:
     get:
       operationId: BidderBids
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -3793,7 +3793,7 @@ paths:
     get:
       operationId: CDPsList
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -3825,7 +3825,7 @@ paths:
     get:
       operationId: Liquidation
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -3916,7 +3916,7 @@ paths:
     get:
       operationId: ListedClass
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -3985,7 +3985,7 @@ paths:
     get:
       operationId: ListedClasses
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -4055,7 +4055,7 @@ paths:
     get:
       operationId: ListedNfts
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -4174,7 +4174,7 @@ paths:
     get:
       operationId: Loans
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -4234,7 +4234,7 @@ paths:
     get:
       operationId: Loan
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -4303,7 +4303,7 @@ paths:
     get:
       operationId: NftBids
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -4483,7 +4483,7 @@ paths:
     get:
       operationId: NftListing
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -4591,7 +4591,7 @@ paths:
     get:
       operationId: NftmarketParams
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -4692,7 +4692,7 @@ paths:
     get:
       operationId: PaymentStatus
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -4783,7 +4783,7 @@ paths:
     get:
       operationId: Rewards
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -4839,7 +4839,7 @@ paths:
     get:
       operationId: AllRewards
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -4899,7 +4899,7 @@ paths:
     get:
       operationId: IncentiveUnit
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -4951,7 +4951,7 @@ paths:
     get:
       operationId: IncentiveUnitIdsByAddr
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -4999,7 +4999,7 @@ paths:
       summary: Parameters queries the parameters of the module.
       operationId: EcosystemincentiveParams
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -5084,7 +5084,7 @@ paths:
     get:
       operationId: RecordedIncentiveUnitId
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -5128,7 +5128,7 @@ paths:
     get:
       operationId: Reward
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -5185,7 +5185,7 @@ paths:
     get:
       operationId: EstimateDLPTokenAmount
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -5424,7 +5424,7 @@ paths:
     get:
       operationId: EstimateRedeemAmount
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -5663,7 +5663,7 @@ paths:
     get:
       operationId: LiquidityProviderTokenNominalAPY
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -5876,7 +5876,7 @@ paths:
     get:
       operationId: LiquidityProviderTokenRealAPY
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -6090,7 +6090,7 @@ paths:
       summary: Parameters queries the parameters of the module.
       operationId: DerivativesParams
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -6362,7 +6362,7 @@ paths:
     get:
       operationId: PerpetualFutures
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -6598,7 +6598,7 @@ paths:
     get:
       operationId: PerpetualFuturesMarket
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -6819,7 +6819,7 @@ paths:
     get:
       operationId: PerpetualOptions
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -7018,7 +7018,7 @@ paths:
     get:
       operationId: PerpetualOptionsMarket
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -7224,10 +7224,10 @@ paths:
         - Query
   /ununifi/derivatives/pool:
     get:
-      summary: "this line is used by starport scaffolding # 2"
+      summary: 'this line is used by starport scaffolding # 2'
       operationId: Pool
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -7451,7 +7451,7 @@ paths:
     get:
       operationId: DLPTokenRates
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -7670,7 +7670,7 @@ paths:
     get:
       operationId: AllPositions
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -8204,7 +8204,7 @@ paths:
     get:
       operationId: PerpetualFuturesPositionSize
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -8432,7 +8432,7 @@ paths:
     get:
       operationId: Position
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -8886,7 +8886,7 @@ paths:
     get:
       operationId: AddressPositions
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -9425,7 +9425,7 @@ paths:
       summary: Queries a list of ExemplaryTrader items.
       operationId: ExemplaryTraderAll
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -9546,7 +9546,7 @@ paths:
       summary: Queries a ExemplaryTrader by index.
       operationId: ExemplaryTrader
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -9595,7 +9595,7 @@ paths:
     get:
       operationId: ExemplaryTraderTracing
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -9722,7 +9722,7 @@ paths:
       summary: Parameters queries the parameters of the module.
       operationId: CopyTradingParams
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -9762,7 +9762,7 @@ paths:
       summary: Queries a list of Tracing items.
       operationId: TracingAll
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
@@ -9885,7 +9885,7 @@ paths:
       summary: Queries a Tracing by index.
       operationId: Tracing
       responses:
-        "200":
+        '200':
           description: A successful response.
           schema:
             type: object
