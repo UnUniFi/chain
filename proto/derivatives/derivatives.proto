@@ -87,18 +87,19 @@ message QueriedPosition {
 
 }
 
-message PoolParams {
-  message Asset {
-    string denom = 1 [
-      (gogoproto.moretags) = "yaml:\"denom\""
-    ];
-    string target_weight = 2 [
-      (gogoproto.moretags) = "yaml:\"target_weight\"",
-      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-      (gogoproto.nullable) = false
-    ];
-  }
+message PoolAssetConf {
+  string denom = 1 [
+    (gogoproto.moretags) = "yaml:\"denom\""
+  ];
+  string target_weight = 2 [
+    (gogoproto.moretags) = "yaml:\"target_weight\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
 
+
+message PoolParams {
   string quote_ticker = 1 [
     (gogoproto.moretags) = "yaml:\"quote_ticker\""
   ];
@@ -127,8 +128,9 @@ message PoolParams {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  repeated Asset accepted_assets = 7 [
-    (gogoproto.moretags) = "yaml:\"accepted_assets\""
+  repeated PoolAssetConf accepted_assets_conf = 7 [
+    (gogoproto.moretags) = "yaml:\"accepted_assets_conf\"",
+    (gogoproto.nullable) = false
   ];
 }
 
