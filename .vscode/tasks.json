@@ -45,5 +45,11 @@
       "cwd": "${workspaceFolder}",
       "command": "scripts/commands/derivatives/setup_pricefeed.sh",
     },
+    {
+      "label": "copy_alpha_node_data",
+      "type": "shell",
+      "cwd": "${workspaceFolder}",
+      "command": "scripts/utils/get-backup-data.sh",
+    },
   ]
 }
