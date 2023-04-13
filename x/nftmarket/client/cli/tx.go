@@ -131,8 +131,8 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 	}
 
 	cmd.Flags().String(FlagBidToken, "uguu", "bid token")
-	cmd.Flags().String(FlagMinimumDepositRate, "0.1", "min minimum deposit rate")
-	cmd.Flags().Uint64(FlagMinimumBiddingPeriodHours, 1, "min minimum deposit rate")
+	cmd.Flags().String(FlagMinimumDepositRate, "0.1", "minimum deposit rate")
+	cmd.Flags().Uint64(FlagMinimumBiddingPeriodHours, 1, "minimum bidding period")
 	cmd.Flags().BoolP(FlagAutomaticRefinancing, "r", false, "automatic refinancing")
 	flags.AddTxFlagsToCmd(cmd)
 
