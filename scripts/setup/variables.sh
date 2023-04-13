@@ -28,3 +28,6 @@ USER_ADDRESS_4=ununifi1pp2ruuhs0k7ayaxjupwj4k5qmgh0d72wrdyjyu
 PRICEFEED_ADDRESS=ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr
 
 conf="--home=$NODE_HOME --chain-id=$CHAINID_1 --keyring-backend=test -y --broadcast-mode=block"
+
+SSH_PREV_KEY_LOCATION=/your/ssh/key/location
+ALPHA_NODE_URL=ununifi-alpha-test.cauchye.net
