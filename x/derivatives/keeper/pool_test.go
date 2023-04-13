@@ -139,15 +139,3 @@ func (suite *KeeperTestSuite) TestIsPriceReady() {
 	isReady = suite.keeper.IsPriceReady(suite.ctx)
 	suite.Require().True(isReady)
 }
-
-func (suite *KeeperTestSuite) TestUserDeposits() {
-	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	suite.keeper.SetUserDenomDepositAmount(suite.ctx, owner, "uatom", sdk.NewInt(1000))
-	suite.keeper.SetUserDenomDepositAmount(suite.ctx, owner, "uusdc", sdk.NewInt(1000))
-	userDeposit := suite.keeper.GetUserDenomDepositAmount(suite.ctx, owner, "uatom")
-	suite.Require().Equal(userDeposit, sdk.NewInt(1000))
-	userDeposit = suite.keeper.GetUserDenomDepositAmount(suite.ctx, owner, "uusdc")
-	suite.Require().Equal(userDeposit, sdk.NewInt(1000))
-	userDeposits := suite.keeper.GetUserDeposits(suite.ctx, owner)
-	suite.Require().Equal(sdk.Coins(userDeposits).String(), "1000uatom,1000uusdc")
-}

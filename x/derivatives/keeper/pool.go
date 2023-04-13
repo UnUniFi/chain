@@ -42,6 +42,8 @@ func (k Keeper) GetAssetBalanceInPoolByDenom(ctx sdk.Context, denom string) sdk.
 	return k.bankKeeper.GetBalance(ctx, sdk.AccAddress(types.ModuleName), denom)
 }
 
+// FIXME: maybe separate this function into two functions, one for getting total asset balance in pool,
+// and second is the calculation of the target amount based on the target weight of that asset.
 func (k Keeper) GetAssetTargetAmount(ctx sdk.Context, denom string) (sdk.Coin, error) {
 	mc := k.GetPoolMarketCap(ctx)
 	asset := k.GetPoolAcceptedAssetConfByDenom(ctx, denom)
@@ -55,53 +57,12 @@ func (k Keeper) GetAssetTargetAmount(ctx sdk.Context, denom string) (sdk.Coin, e
 	return sdk.NewCoin(denom, targetAmount.TruncateInt()), nil
 }
 
-func (k Keeper) GetUserDeposits(ctx sdk.Context, depositor sdk.AccAddress) []sdk.Coin {
-	store := ctx.KVStore(k.storeKey)
-
-	deposits := []sdk.Coin{}
-	it := sdk.KVStorePrefixIterator(store, types.AddressPoolDepositKeyPrefix(depositor))
-	defer it.Close()
-
-	for ; it.Valid(); it.Next() {
-		deposit := sdk.Coin{}
-		k.cdc.Unmarshal(it.Value(), &deposit)
-
-		deposits = append(deposits, deposit)
-	}
-
-	return deposits
-}
-
-// Is this really needed? Just managing pool module account balance is enough, and managing deposited asset of each user is not needed.
-func (k Keeper) GetUserDenomDepositAmount(ctx sdk.Context, depositer sdk.AccAddress, denom string) sdk.Int {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.AddressAssetPoolDepositKeyPrefix(depositer, denom))
-	if bz == nil {
-		return sdk.ZeroInt()
-	}
-
-	coin := sdk.Coin{}
-	k.cdc.MustUnmarshal(bz, &coin)
-	return coin.Amount
-}
-
-// Is this really needed? Just managing pool module account balance is enough, and managing deposited asset of each user is not needed.
-func (k Keeper) SetUserDenomDepositAmount(ctx sdk.Context, addr sdk.AccAddress, denom string, amount sdk.Int) {
-	store := ctx.KVStore(k.storeKey)
-	coin := sdk.Coin{
-		Denom:  denom,
-		Amount: amount,
-	}
-	bz := k.cdc.MustMarshal(&coin)
-	store.Set(types.AddressAssetPoolDepositKeyPrefix(addr, denom), bz)
-}
-
 // TODO: remove this.
 func (k Keeper) DepositPoolAsset(ctx sdk.Context, depositor sdk.AccAddress, asset sdk.Coin) {
 	// Is this really needed? Just managing pool module account balance is enough, and managing deposited asset of each user is not needed.
-	userDenomDepositAmount := k.GetUserDenomDepositAmount(ctx, depositor, asset.Denom)
-	userDenomDepositAmount = userDenomDepositAmount.Add(asset.Amount)
-	k.SetUserDenomDepositAmount(ctx, depositor, asset.Denom, userDenomDepositAmount)
+	// userDenomDepositAmount := k.GetUserDenomDepositAmount(ctx, depositor, asset.Denom)
+	// userDenomDepositAmount = userDenomDepositAmount.Add(asset.Amount)
+	// k.SetUserDenomDepositAmount(ctx, depositor, asset.Denom, userDenomDepositAmount)
 
 	assetBalance := k.GetAssetBalanceInPoolByDenom(ctx, asset.Denom)
 	assetBalance.Amount = assetBalance.Amount.Add(asset.Amount)
