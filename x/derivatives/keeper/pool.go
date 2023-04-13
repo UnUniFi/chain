@@ -57,18 +57,6 @@ func (k Keeper) GetAssetTargetAmount(ctx sdk.Context, denom string) (sdk.Coin, e
 	return sdk.NewCoin(denom, targetAmount.TruncateInt()), nil
 }
 
-// TODO: remove this.
-func (k Keeper) DepositPoolAsset(ctx sdk.Context, depositor sdk.AccAddress, asset sdk.Coin) {
-	// Is this really needed? Just managing pool module account balance is enough, and managing deposited asset of each user is not needed.
-	// userDenomDepositAmount := k.GetUserDenomDepositAmount(ctx, depositor, asset.Denom)
-	// userDenomDepositAmount = userDenomDepositAmount.Add(asset.Amount)
-	// k.SetUserDenomDepositAmount(ctx, depositor, asset.Denom, userDenomDepositAmount)
-
-	assetBalance := k.GetAssetBalanceInPoolByDenom(ctx, asset.Denom)
-	assetBalance.Amount = assetBalance.Amount.Add(asset.Amount)
-	// k.SetAssetBalance(ctx, assetBalance)
-}
-
 func (k Keeper) GetPoolMarketCapSnapshot(ctx sdk.Context, height int64) types.PoolMarketCap {
 	store := ctx.KVStore(k.storeKey)
 
@@ -136,7 +124,7 @@ func (k Keeper) IsPriceReady(ctx sdk.Context) bool {
 	for _, asset := range assets {
 		_, err := k.GetAssetPrice(ctx, asset.Denom)
 		if err != nil {
-			ctx.EventManager().EmitTypedEvent(&types.EventPriceIsNotFeeded{
+			_ = ctx.EventManager().EmitTypedEvent(&types.EventPriceIsNotFeeded{
 				Asset: asset.String(),
 			})
 

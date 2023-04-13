@@ -226,7 +226,6 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgDeposi
 		return err
 	}
 
-	k.DepositPoolAsset(ctx, depositor, deposit)
 	return nil
 }
 
