@@ -139,15 +139,16 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 	return redeem, fee, nil
 }
 
+// TODO: remove this.
 // Decrease is misleading. Subtract is correct.
 func (k Keeper) DecreaseRedeemDenomAmount(ctx sdk.Context, amount sdk.Coin) error {
 	redeemAssetBalance := k.GetAssetBalanceInPoolByDenom(ctx, amount.Denom)
-	decreasedAmount, err := redeemAssetBalance.SafeSub(amount)
+	_, err := redeemAssetBalance.SafeSub(amount)
 	if err != nil {
 		return err
 	}
 
-	k.SetAssetBalance(ctx, decreasedAmount)
+	// k.SetAssetBalance(ctx, decreasedAmount)
 	return nil
 }
 

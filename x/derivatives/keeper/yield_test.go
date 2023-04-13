@@ -86,9 +86,6 @@ func (suite *KeeperTestSuite) TestGetLPNominalYieldRate() {
 	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:uusdc")
 	suite.Require().NoError(err)
 
-	// add pool asset and balance
-	suite.keeper.SetAssetBalance(suite.ctx, sdk.NewInt64Coin("uatom", 1000000))
-
 	// set lp token supply
 	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{sdk.NewInt64Coin(types.LiquidityProviderTokenDenom, 1000000)})
 	suite.Require().NoError(err)

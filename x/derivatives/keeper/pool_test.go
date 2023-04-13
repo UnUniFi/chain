@@ -36,7 +36,7 @@ func (suite *KeeperTestSuite) TestDepositPoolAsset() {
 	}
 
 	for _, asset := range assets {
-		amount := suite.keeper.GetAssetBalance(suite.ctx, asset.Denom)
+		amount := suite.keeper.GetAssetBalanceInPoolByDenom(suite.ctx, asset.Denom)
 		suite.Require().Equal(asset, amount)
 	}
 }
@@ -88,14 +88,6 @@ func (suite *KeeperTestSuite) TestIsAssetValid() {
 	suite.Require().False(isValid)
 }
 
-func (suite *KeeperTestSuite) TestSetGetAssetBalance() {
-	coin := sdk.NewInt64Coin("uatom", 1000000)
-	suite.keeper.SetAssetBalance(suite.ctx, coin)
-
-	amount := suite.keeper.GetAssetBalance(suite.ctx, "uatom")
-	suite.Require().Equal(amount, coin)
-}
-
 func (suite *KeeperTestSuite) TestGetAssetTargetAmount() {
 	// get target amount at initial
 	targetAmount, err := suite.keeper.GetAssetTargetAmount(suite.ctx, "uatom")
@@ -112,8 +104,6 @@ func (suite *KeeperTestSuite) TestGetAssetTargetAmount() {
 	suite.app.PricefeedKeeper.SetParams(suite.ctx, params)
 	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:uusdc")
 	suite.Require().NoError(err)
-
-	suite.keeper.SetAssetBalance(suite.ctx, sdk.NewInt64Coin("uatom", 1000000))
 
 	// set lp token supply
 	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{sdk.NewInt64Coin(types.LiquidityProviderTokenDenom, 1000000)})
