@@ -28,7 +28,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 				BaseLptRedeemFee:            sdk.NewDecWithPrec(1, 2),
 				BorrowingFeeRatePerHour:     sdk.NewDecWithPrec(1, 6),
 				ReportLiquidationRewardRate: sdk.NewDecWithPrec(1, 6),
-				AcceptedAssets: []*types.PoolParams_Asset{
+				AcceptedAssetsConf: []types.PoolAssetConf{
 					{
 						Denom:        "btc",
 						TargetWeight: sdk.NewDecWithPrec(1, 2),

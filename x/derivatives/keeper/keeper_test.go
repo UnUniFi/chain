@@ -109,7 +109,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	keeper := keeper.NewKeeper(appCodec, app.GetKey(types.StoreKey), app.GetKey(types.MemStoreKey), suite.app.GetSubspace(types.ModuleName), bankKeeper, pricefeedKeeper)
 
 	params := types.DefaultParams()
-	params.PoolParams.AcceptedAssets = []*types.PoolParams_Asset{
+	params.PoolParams.AcceptedAssetsConf = []types.PoolAssetConf{
 		{Denom: "uatom", TargetWeight: sdk.MustNewDecFromStr("0.5")},
 		{Denom: "uusdc", TargetWeight: sdk.MustNewDecFromStr("0.5")},
 	}
@@ -119,9 +119,6 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 	keeper.SetParams(suite.ctx, params)
 
-	for _, asset := range params.PoolParams.AcceptedAssets {
-		keeper.AddPoolAsset(suite.ctx, *asset)
-	}
 	suite.keeper = keeper
 	suite.pricefeedKeeper = pricefeedKeeper
 }

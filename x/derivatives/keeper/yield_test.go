@@ -87,10 +87,6 @@ func (suite *KeeperTestSuite) TestGetLPNominalYieldRate() {
 	suite.Require().NoError(err)
 
 	// add pool asset and balance
-	suite.keeper.AddPoolAsset(suite.ctx, types.PoolParams_Asset{
-		Denom:        "uatom",
-		TargetWeight: sdk.OneDec(),
-	})
 	suite.keeper.SetAssetBalance(suite.ctx, sdk.NewInt64Coin("uatom", 1000000))
 
 	// set lp token supply

@@ -48,10 +48,6 @@ func (suite *KeeperTestSuite) TestDetermineMintingLPTokenAmount() {
 	suite.Require().NoError(err)
 
 	// add pool asset and balance
-	suite.keeper.AddPoolAsset(suite.ctx, types.PoolParams_Asset{
-		Denom:        "uatom",
-		TargetWeight: sdk.OneDec(),
-	})
 	suite.keeper.SetAssetBalance(suite.ctx, sdk.NewInt64Coin("uatom", 1000000))
 
 	// set lp token supply
@@ -100,10 +96,6 @@ func (suite *KeeperTestSuite) TestGetLPTokenPrice() {
 	suite.Require().NoError(err)
 
 	// add pool asset and balance
-	suite.keeper.AddPoolAsset(suite.ctx, types.PoolParams_Asset{
-		Denom:        "uatom",
-		TargetWeight: sdk.OneDec(),
-	})
 	suite.keeper.SetAssetBalance(suite.ctx, sdk.NewInt64Coin("uatom", 1000000))
 
 	// set lp token supply
@@ -135,10 +127,6 @@ func (suite *KeeperTestSuite) TestGetRedeemDenomAmount() {
 	suite.Require().NoError(err)
 
 	// add pool asset and balance
-	suite.keeper.AddPoolAsset(suite.ctx, types.PoolParams_Asset{
-		Denom:        "uatom",
-		TargetWeight: sdk.OneDec(),
-	})
 	suite.keeper.SetAssetBalance(suite.ctx, sdk.NewInt64Coin("uatom", 1000000))
 
 	// set lp token supply
@@ -169,10 +157,6 @@ func (suite *KeeperTestSuite) TestDecreaseRedeemDenomAmount() {
 	suite.Require().NoError(err)
 
 	// add pool asset and balance
-	suite.keeper.AddPoolAsset(suite.ctx, types.PoolParams_Asset{
-		Denom:        "uatom",
-		TargetWeight: sdk.OneDec(),
-	})
 	suite.keeper.SetAssetBalance(suite.ctx, sdk.NewInt64Coin("uatom", 1000000))
 
 	// try after initialization
