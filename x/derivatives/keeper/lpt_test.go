@@ -162,7 +162,7 @@ func (suite *KeeperTestSuite) TestDecreaseRedeemDenomAmount() {
 	// try after initialization
 	err = suite.keeper.DecreaseRedeemDenomAmount(suite.ctx, sdk.NewInt64Coin("uatom", 10000))
 	suite.Require().NoError(err)
-	assetBalance := suite.keeper.GetAssetBalance(suite.ctx, "uatom")
+	assetBalance := suite.keeper.GetAssetBalanceInPoolByDenom(suite.ctx, "uatom")
 	suite.Require().Equal(assetBalance.String(), "990000uatom")
 }
 

@@ -37,20 +37,9 @@ func (k Keeper) IsAssetAcceptable(ctx sdk.Context, denom string) bool {
 	return false
 }
 
-// TODO: delete below fn and replace it with the bank query for the specific module account balance of the liquidity pool
-// TODO: The name GetAssetBalance is weird. We need to change the name like "GetAssetAmountInPool"
-// TODO: Furthermore, is this really needed? Can we just use the bankKeeper function of getBalance for pool module account?
-func (k Keeper) GetAssetBalance(ctx sdk.Context, denom string) sdk.Coin {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.AssetDepositKeyPrefix(denom))
-	if bz == nil {
-		return sdk.NewCoin(denom, sdk.ZeroInt())
-	}
-
-	coin := sdk.Coin{}
-	k.cdc.MustUnmarshal(bz, &coin)
-
-	return coin
+// GetAssetBalanceInPoolByDenom is used to get token balance of "derivatives" module account which is the liquidity pool.
+func (k Keeper) GetAssetBalanceInPoolByDenom(ctx sdk.Context, denom string) sdk.Coin {
+	return k.bankKeeper.GetBalance(ctx, sdk.AccAddress(types.ModuleName), denom)
 }
 
 func (k Keeper) SetAssetBalance(ctx sdk.Context, coin sdk.Coin) {
@@ -119,7 +108,7 @@ func (k Keeper) DepositPoolAsset(ctx sdk.Context, depositor sdk.AccAddress, asse
 	userDenomDepositAmount = userDenomDepositAmount.Add(asset.Amount)
 	k.SetUserDenomDepositAmount(ctx, depositor, asset.Denom, userDenomDepositAmount)
 
-	assetBalance := k.GetAssetBalance(ctx, asset.Denom)
+	assetBalance := k.GetAssetBalanceInPoolByDenom(ctx, asset.Denom)
 	assetBalance.Amount = assetBalance.Amount.Add(asset.Amount)
 	k.SetAssetBalance(ctx, assetBalance)
 }
@@ -160,7 +149,7 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 	quoteTicker := k.GetPoolQuoteTicker(ctx)
 
 	for _, asset := range assets {
-		balance := k.GetAssetBalance(ctx, asset.Denom)
+		balance := k.GetAssetBalanceInPoolByDenom(ctx, asset.Denom)
 		price, err := k.GetAssetPrice(ctx, asset.Denom)
 
 		if err != nil {

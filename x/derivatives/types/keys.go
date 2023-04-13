@@ -27,19 +27,22 @@ const (
 )
 
 const (
+	// TODO: KeyPrefixDerivativesSubpoolAssets is unused. Remove it if it won't be necesary.
 	// subpool assets
 	KeyPrefixDerivativesSubpoolAssets = "subpool_assets"
+	// TODO: KeyPrefixDerivativesUserDepositedAssets is unused. Remove it if it won't be necesary.
 	// user deposited real assets
 	KeyPrefixDerivativesUserDepositedAssets = "user_deposited_assets"
 	// User deposits by address
 	KeyPrefixPoolDeposit = "pool_deposit"
 	//
-	KeyPrefixPosition              = "position"
-	KeyPrefixUserPosition          = "user_position"
-	KeyPrefixPerpetualFutures      = "perpetual_futures"
-	KeyPrefixPerpetualOptions      = "perpetual_options"
-	KeyPrefixNetPositionAmount     = "net_position_amount"
-	KeyPrefixLastPositionId        = "last_position_id"
+	KeyPrefixPosition          = "position"
+	KeyPrefixUserPosition      = "user_position"
+	KeyPrefixPerpetualFutures  = "perpetual_futures"
+	KeyPrefixPerpetualOptions  = "perpetual_options"
+	KeyPrefixNetPositionAmount = "net_position_amount"
+	KeyPrefixLastPositionId    = "last_position_id"
+	// TODO: KeyPrefixAccumulatedFee is unused. Remove it if it won't be necesary.
 	KeyPrefixAccumulatedFee        = "accumulated_fee"
 	KeyPrefixPoolMarketCapSnapshot = "pool_market_cap_snapshot"
 	KeyPrefixLPTokenSupplySnapshot = "lpt_supply_snapshot"

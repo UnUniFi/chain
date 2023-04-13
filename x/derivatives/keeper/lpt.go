@@ -104,7 +104,7 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 	}
 
 	// redeemAssetBalance is the amount of redeemDenom in the pool. The variable name is little weird
-	redeemAssetBalance := k.GetAssetBalance(ctx, redeemDenom)
+	redeemAssetBalance := k.GetAssetBalanceInPoolByDenom(ctx, redeemDenom)
 
 	if redeemAssetPrice.Price.IsNil() || redeemAssetPrice.Price.IsZero() {
 		return sdk.Coin{}, sdk.Coin{}, types.ErrInvalidRedeemAmount
@@ -141,7 +141,7 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 
 // Decrease is misleading. Subtract is correct.
 func (k Keeper) DecreaseRedeemDenomAmount(ctx sdk.Context, amount sdk.Coin) error {
-	redeemAssetBalance := k.GetAssetBalance(ctx, amount.Denom)
+	redeemAssetBalance := k.GetAssetBalanceInPoolByDenom(ctx, amount.Denom)
 	decreasedAmount, err := redeemAssetBalance.SafeSub(amount)
 	if err != nil {
 		return err
@@ -230,7 +230,7 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgDeposi
 }
 
 func (k Keeper) CalcDepositingFee(ctx sdk.Context, depositingAmount sdk.Coin, baseLptMintFee sdk.Dec) (sdk.Coin, error) {
-	currentBalance := k.GetAssetBalance(ctx, depositingAmount.Denom)
+	currentBalance := k.GetAssetBalanceInPoolByDenom(ctx, depositingAmount.Denom)
 	targetBalance, err := k.GetAssetTargetAmount(ctx, depositingAmount.Denom)
 	if err != nil {
 		return sdk.Coin{}, err
