@@ -144,7 +144,10 @@ func (k Keeper) DeletePosition(ctx sdk.Context, address sdk.AccAddress, id strin
 }
 
 func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
-	// todo check sender amount for margin
+	// check sender amount for margin
+	if !k.IsAssetAcceptable(ctx, msg.Margin.Denom) {
+		return errors.New("margin denom is not acceptable")
+	}
 
 	newPositionId := strconv.FormatUint(k.GetLastPositionId(ctx)+1, 10)
 

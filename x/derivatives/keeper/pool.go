@@ -8,53 +8,28 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
-func (k Keeper) GetPoolAssets(ctx sdk.Context) []types.PoolParams_Asset {
-	store := ctx.KVStore(k.storeKey)
+func (k Keeper) GetPoolAcceptedAssetsConf(ctx sdk.Context) []types.PoolAssetConf {
+	params := k.GetParams(ctx)
+	return params.PoolParams.AcceptedAssetsConf
+}
 
-	assets := []types.PoolParams_Asset{}
-	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixDerivativesPoolAssets))
-	defer it.Close()
+func (k Keeper) GetPoolAcceptedAssetConfByDenom(ctx sdk.Context, denom string) types.PoolAssetConf {
+	params := k.GetParams(ctx)
 
-	for ; it.Valid(); it.Next() {
-		asset := types.PoolParams_Asset{}
-		k.cdc.Unmarshal(it.Value(), &asset)
-
-		assets = append(assets, asset)
+	for _, assetConf := range params.PoolParams.AcceptedAssetsConf {
+		if assetConf.Denom == denom {
+			return assetConf
+		}
 	}
 
-	return assets
+	panic(fmt.Sprintf("asset %s is not accepted", denom))
 }
 
-func (k Keeper) GetPoolAssetByDenom(ctx sdk.Context, denom string) types.PoolParams_Asset {
-	store := ctx.KVStore(k.storeKey)
-
-	asset := types.PoolParams_Asset{}
-	bz := store.Get(types.AssetKeyPrefix(denom))
-	k.cdc.MustUnmarshal(bz, &asset)
-
-	return asset
-}
-
-func (k Keeper) AddPoolAsset(ctx sdk.Context, asset types.PoolParams_Asset) {
-	store := ctx.KVStore(k.storeKey)
-
-	// TODO: remove below two lines as to change the way to handle PoolParams_Asset validation or reference
-	bz := k.cdc.MustMarshal(&asset)
-	store.Set(types.AssetKeyPrefix(asset.Denom), bz)
-
-	coin := sdk.Coin{
-		Denom:  asset.Denom,
-		Amount: sdk.ZeroInt(),
-	}
-	coinBz := k.cdc.MustMarshal(&coin)
-	store.Set(types.AssetDepositKeyPrefix(asset.Denom), coinBz)
-}
-
-func (k Keeper) IsAssetValid(ctx sdk.Context, iasset types.PoolParams_Asset) bool {
-	assets := k.GetPoolAssets(ctx)
+func (k Keeper) IsAssetAcceptable(ctx sdk.Context, denom string) bool {
+	assets := k.GetPoolAcceptedAssetsConf(ctx)
 
 	for _, asset := range assets {
-		if asset.Denom == iasset.Denom {
+		if asset.Denom == denom {
 			return true
 		}
 	}
@@ -62,6 +37,7 @@ func (k Keeper) IsAssetValid(ctx sdk.Context, iasset types.PoolParams_Asset) boo
 	return false
 }
 
+// TODO: delete below fn and replace it with the bank query for the specific module account balance of the liquidity pool
 // TODO: The name GetAssetBalance is weird. We need to change the name like "GetAssetAmountInPool"
 // TODO: Furthermore, is this really needed? Can we just use the bankKeeper function of getBalance for pool module account?
 func (k Keeper) GetAssetBalance(ctx sdk.Context, denom string) sdk.Coin {
@@ -85,7 +61,7 @@ func (k Keeper) SetAssetBalance(ctx sdk.Context, coin sdk.Coin) {
 
 func (k Keeper) GetAssetTargetAmount(ctx sdk.Context, denom string) (sdk.Coin, error) {
 	mc := k.GetPoolMarketCap(ctx)
-	asset := k.GetPoolAssetByDenom(ctx, denom)
+	asset := k.GetPoolAcceptedAssetConfByDenom(ctx, denom)
 
 	price, err := k.GetAssetPrice(ctx, denom)
 	if err != nil {
@@ -176,7 +152,7 @@ func (k Keeper) GetPoolQuoteTicker(ctx sdk.Context) string {
 }
 
 func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
-	assets := k.GetPoolAssets(ctx)
+	assets := k.GetPoolAcceptedAssetsConf(ctx)
 
 	breakdowns := []types.PoolMarketCap_Breakdown{}
 	mc := sdk.NewDec(0)
@@ -207,9 +183,10 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 	}
 }
 
-// TODO: put comments to explain this function
+// IsPriceReady returns true if all assets have price feeded.
+// This is used to decide to run setPoolMarketCapSnapshot to avoid unnecessary snapshot.
 func (k Keeper) IsPriceReady(ctx sdk.Context) bool {
-	assets := k.GetPoolAssets(ctx)
+	assets := k.GetPoolAcceptedAssetsConf(ctx)
 
 	for _, asset := range assets {
 		_, err := k.GetAssetPrice(ctx, asset.Denom)

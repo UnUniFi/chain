@@ -27,8 +27,6 @@ const (
 )
 
 const (
-	// pool assets
-	KeyPrefixDerivativesPoolAssets = "pool_assets"
 	// subpool assets
 	KeyPrefixDerivativesSubpoolAssets = "subpool_assets"
 	// user deposited real assets
@@ -92,10 +90,6 @@ func AddressPoolDepositKeyPrefix(depositor sdk.AccAddress) []byte {
 
 func AddressAssetPoolDepositKeyPrefix(depositor sdk.AccAddress, denom string) []byte {
 	return append(append([]byte(KeyPrefixPoolDeposit), address.MustLengthPrefix(depositor)...), []byte(denom)...)
-}
-
-func AssetKeyPrefix(denom string) []byte {
-	return append([]byte(KeyPrefixDerivativesPoolAssets), []byte(denom)...)
 }
 
 func AssetDepositKeyPrefix(denom string) []byte {

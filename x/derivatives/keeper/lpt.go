@@ -168,7 +168,7 @@ func (k Keeper) DecreaseRedeemDenomAmount(ctx sdk.Context, amount sdk.Coin) erro
 // pool_marketcap = price_of_ith_asset * amount_of_ith_deopsited_asset
 // initial_lp_supply = pool_marketcap / initial_lp_token_price
 func (k Keeper) InitialLiquidityProviderTokenSupply(ctx sdk.Context, assetPrice *pftypes.CurrentPrice, assetMarketCap sdk.Dec, depositDenom string) (sdk.Coin, error) {
-	assetInfo := k.GetPoolAssetByDenom(ctx, depositDenom)
+	assetInfo := k.GetPoolAcceptedAssetConfByDenom(ctx, depositDenom)
 	initialLPTokenPrice := assetPrice.Price.Mul(assetInfo.TargetWeight)
 	initialLPTokenSupply := assetMarketCap.Quo(initialLPTokenPrice)
 
@@ -181,7 +181,7 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgDeposi
 
 	params := k.GetParams(ctx)
 	// check if the deposit denom is valid and amount is positive
-	if !types.IsValidDepositForPool(msg.Amount, params.PoolParams.AcceptedAssets) {
+	if !types.IsValidDepositForPool(msg.Amount, params.PoolParams.AcceptedAssetsConf) {
 		return fmt.Errorf("invalid deposit token: %s", msg.Amount.Denom)
 	}
 
@@ -241,6 +241,11 @@ func (k Keeper) CalcDepositingFee(ctx sdk.Context, depositingAmount sdk.Coin, ba
 }
 
 func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgWithdrawFromPool) error {
+	// check if the withdraw denom is valid and amount is positive
+	if !k.IsAssetAcceptable(ctx, msg.RedeemDenom) {
+		return fmt.Errorf("invalid withdraw token: %s", msg.RedeemDenom)
+	}
+
 	// todo:check validator address,amount,redeem denom
 	// todo: use CacheCtx
 	sender := msg.Sender.AccAddress()

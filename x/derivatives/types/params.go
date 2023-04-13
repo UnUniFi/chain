@@ -24,7 +24,7 @@ func DefaultPoolParams() PoolParams {
 		BorrowingFeeRatePerHour:     sdk.ZeroDec(),
 		ReportLiquidationRewardRate: sdk.ZeroDec(),
 		ReportLevyPeriodRewardRate:  sdk.ZeroDec(),
-		AcceptedAssets:              []*PoolParams_Asset{},
+		AcceptedAssetsConf:          []PoolAssetConf{},
 	}
 }
 
