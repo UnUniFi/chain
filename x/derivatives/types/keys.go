@@ -30,18 +30,12 @@ const (
 	// TODO: KeyPrefixDerivativesSubpoolAssets is unused. Remove it if it won't be necesary.
 	// subpool assets
 	KeyPrefixDerivativesSubpoolAssets = "subpool_assets"
-	// TODO: KeyPrefixDerivativesUserDepositedAssets is unused. Remove it if it won't be necesary.
-	// user deposited real assets
-	KeyPrefixDerivativesUserDepositedAssets = "user_deposited_assets"
-	// User deposits by address
-	KeyPrefixPoolDeposit = "pool_deposit"
-	//
-	KeyPrefixPosition          = "position"
-	KeyPrefixUserPosition      = "user_position"
-	KeyPrefixPerpetualFutures  = "perpetual_futures"
-	KeyPrefixPerpetualOptions  = "perpetual_options"
-	KeyPrefixNetPositionAmount = "net_position_amount"
-	KeyPrefixLastPositionId    = "last_position_id"
+	KeyPrefixPosition                 = "position"
+	KeyPrefixUserPosition             = "user_position"
+	KeyPrefixPerpetualFutures         = "perpetual_futures"
+	KeyPrefixPerpetualOptions         = "perpetual_options"
+	KeyPrefixNetPositionAmount        = "net_position_amount"
+	KeyPrefixLastPositionId           = "last_position_id"
 	// TODO: KeyPrefixAccumulatedFee is unused. Remove it if it won't be necesary.
 	KeyPrefixAccumulatedFee        = "accumulated_fee"
 	KeyPrefixPoolMarketCapSnapshot = "pool_market_cap_snapshot"
@@ -85,18 +79,6 @@ func GetBlockTimestampBytes(timestamp int64) (timestampBz []byte) {
 
 func GetBlockTimestampFromBytes(bz []byte) int64 {
 	return int64(binary.BigEndian.Uint64(bz))
-}
-
-func AddressPoolDepositKeyPrefix(depositor sdk.AccAddress) []byte {
-	return append([]byte(KeyPrefixPoolDeposit), address.MustLengthPrefix(depositor)...)
-}
-
-func AddressAssetPoolDepositKeyPrefix(depositor sdk.AccAddress, denom string) []byte {
-	return append(append([]byte(KeyPrefixPoolDeposit), address.MustLengthPrefix(depositor)...), []byte(denom)...)
-}
-
-func AssetDepositKeyPrefix(denom string) []byte {
-	return append([]byte(KeyPrefixPoolDeposit), []byte(denom)...)
 }
 
 func PositionWithIdKeyPrefix(posId string) []byte {
