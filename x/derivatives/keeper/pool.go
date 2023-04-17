@@ -42,8 +42,7 @@ func (k Keeper) GetAssetBalanceInPoolByDenom(ctx sdk.Context, denom string) sdk.
 	return k.bankKeeper.GetBalance(ctx, sdk.AccAddress(types.ModuleName), denom)
 }
 
-// FIXME: maybe separate this function into two functions, one for getting total asset balance in pool,
-// and second is the calculation of the target amount based on the target weight of that asset.
+// Return the current target amount of the asset in the pool.
 func (k Keeper) GetAssetTargetAmount(ctx sdk.Context, denom string) (sdk.Coin, error) {
 	mc := k.GetPoolMarketCap(ctx)
 	asset := k.GetPoolAcceptedAssetConfByDenom(ctx, denom)
@@ -53,8 +52,8 @@ func (k Keeper) GetAssetTargetAmount(ctx sdk.Context, denom string) (sdk.Coin, e
 		return sdk.Coin{}, err
 	}
 
-	targetAmount := mc.Total.Mul(asset.TargetWeight).Quo(price.Price)
-	return sdk.NewCoin(denom, targetAmount.TruncateInt()), nil
+	targetAmount := types.CalcTargetAmountInPool(asset.TargetWeight, price.Price, mc.Total)
+	return sdk.NewCoin(denom, targetAmount), nil
 }
 
 func (k Keeper) GetPoolMarketCapSnapshot(ctx sdk.Context, height int64) types.PoolMarketCap {
