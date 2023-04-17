@@ -9,18 +9,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
-// FIXME: fix this test.
-func (suite *KeeperTestSuite) TestDepositPoolAsset() {
-	// suite.AddPoolAssets()
-
-	_ = []sdk.AccAddress{
-		sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes()),
-		sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes()),
-	}
-
+func (suite *KeeperTestSuite) TestGetAssetBalanceInPoolByDenom() {
 	assets := []sdk.Coin{
 		{
 			Denom:  "uusdc",
@@ -33,42 +24,45 @@ func (suite *KeeperTestSuite) TestDepositPoolAsset() {
 	}
 
 	for _, asset := range assets {
+		err := suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.NewCoins(asset))
+		suite.NoError(err)
+
 		amount := suite.keeper.GetAssetBalanceInPoolByDenom(suite.ctx, asset.Denom)
+
 		suite.Require().Equal(asset, amount)
 	}
 }
 
-// FIXME: fix this test.
 func (suite *KeeperTestSuite) TestSetPoolMarketCapSnapshot() {
-	// suite.AddPoolAssets()
-
-	_ = []sdk.AccAddress{
-		sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes()),
-		sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes()),
-	}
-
 	height := suite.ctx.BlockHeight()
 
-	_ = []sdk.Coin{
+	assets := []sdk.Coin{
 		{
 			Denom:  "uusdc",
-			Amount: sdk.NewInt(100),
+			Amount: sdk.NewInt(10000000),
 		},
 		{
 			Denom:  "uatom",
-			Amount: sdk.NewInt(10),
+			Amount: sdk.NewInt(1000000),
 		},
+	}
+
+	for _, asset := range assets {
+		err := suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.NewCoins(asset))
+		suite.NoError(err)
 	}
 
 	marketCap := suite.keeper.GetPoolMarketCap(suite.ctx)
 
-	// TODO: it's not working yet as we didn't add the ticker to price feed
-	_ = suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, height, marketCap)
+	err := suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, height, marketCap)
+	suite.Require().NoError(err)
 
 	// Check if the market cap was set
 	marketCapInStore := suite.keeper.GetPoolMarketCapSnapshot(suite.ctx, height)
 
 	suite.Require().Equal(marketCap, marketCapInStore)
+
+	suite.Require().Equal(sdk.MustNewDecFromStr("20"), marketCapInStore.Total)
 }
 
 func (suite *KeeperTestSuite) TestIsAssetValid() {

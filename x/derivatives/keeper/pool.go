@@ -39,7 +39,8 @@ func (k Keeper) IsAssetAcceptable(ctx sdk.Context, denom string) bool {
 
 // GetAssetBalanceInPoolByDenom is used to get token balance of "derivatives" module account which is the liquidity pool.
 func (k Keeper) GetAssetBalanceInPoolByDenom(ctx sdk.Context, denom string) sdk.Coin {
-	return k.bankKeeper.GetBalance(ctx, sdk.AccAddress(types.ModuleName), denom)
+	derivModAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
+	return k.bankKeeper.GetBalance(ctx, derivModAddr, denom)
 }
 
 // Return the current target amount of the asset in the pool.

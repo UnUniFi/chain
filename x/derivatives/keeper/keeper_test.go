@@ -106,7 +106,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	_ = pricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:usd")
 	_ = pricefeedKeeper.SetCurrentPrices(suite.ctx, "uusdc:usd")
 
-	keeper := keeper.NewKeeper(appCodec, app.GetKey(types.StoreKey), app.GetKey(types.MemStoreKey), suite.app.GetSubspace(types.ModuleName), bankKeeper, pricefeedKeeper)
+	keeper := keeper.NewKeeper(appCodec, app.GetKey(types.StoreKey), app.GetKey(types.MemStoreKey), suite.app.GetSubspace(types.ModuleName), suite.app.AccountKeeper, bankKeeper, pricefeedKeeper)
 
 	params := types.DefaultParams()
 	params.PoolParams.AcceptedAssetsConf = []types.PoolAssetConf{
