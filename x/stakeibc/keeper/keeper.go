@@ -27,6 +27,7 @@ import (
 	icacallbackskeeper "github.com/UnUniFi/chain/x/icacallbacks/keeper"
 	recordsmodulekeeper "github.com/UnUniFi/chain/x/records/keeper"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
 )
 
 type (
@@ -38,7 +39,7 @@ type (
 		paramstore            paramtypes.Subspace
 		ICAControllerKeeper   icacontrollerkeeper.Keeper
 		IBCKeeper             ibckeeper.Keeper
-		scopedKeeper          capabilitykeeper.ScopedKeeper
+		ScopedKeeper          capabilitykeeper.ScopedKeeper
 		bankKeeper            bankkeeper.Keeper
 		InterchainQueryKeeper icqkeeper.Keeper
 		RecordsKeeper         recordsmodulekeeper.Keeper
@@ -82,7 +83,7 @@ func NewKeeper(
 		bankKeeper:            bankKeeper,
 		ICAControllerKeeper:   icacontrollerkeeper,
 		IBCKeeper:             ibcKeeper,
-		scopedKeeper:          scopedKeeper,
+		ScopedKeeper:          scopedKeeper,
 		InterchainQueryKeeper: interchainQueryKeeper,
 		RecordsKeeper:         RecordsKeeper,
 		StakingKeeper:         StakingKeeper,
@@ -97,7 +98,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 
 // ClaimCapability claims the channel capability passed via the OnOpenChanInit callback
 func (k *Keeper) ClaimCapability(ctx sdk.Context, cap *capabilitytypes.Capability, name string) error {
-	return k.scopedKeeper.ClaimCapability(ctx, cap, name)
+	return k.ScopedKeeper.ClaimCapability(ctx, cap, name)
 }
 
 func (k Keeper) GetChainID(ctx sdk.Context, connectionID string) (string, error) {
@@ -263,4 +264,15 @@ func (k Keeper) IsRedemptionRateWithinSafetyBounds(ctx sdk.Context, zone types.H
 		return false, sdkerrors.Wrapf(types.ErrRedemptionRateOutsideSafetyBounds, errMsg)
 	}
 	return true, nil
+}
+
+func (k msgServer) RegisterInterchainAccount(ctx sdk.Context, connectionId string, owner string, appVersion string) error {
+	msgServer := icacontrollerkeeper.NewMsgServerImpl(&k.ICAControllerKeeper)
+	msgRegisterInterchainAccount := icacontrollertypes.NewMsgRegisterInterchainAccount(connectionId, owner, appVersion)
+
+	_, err := msgServer.RegisterInterchainAccount(sdk.WrapSDKContext(ctx), msgRegisterInterchainAccount)
+	if err != nil {
+		return err
+	}
+	return nil
 }
