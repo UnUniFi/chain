@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
@@ -39,7 +40,7 @@ func (k Keeper) IsAssetAcceptable(ctx sdk.Context, denom string) bool {
 
 // GetAssetBalanceInPoolByDenom is used to get token balance of "derivatives" module account which is the liquidity pool.
 func (k Keeper) GetAssetBalanceInPoolByDenom(ctx sdk.Context, denom string) sdk.Coin {
-	derivModAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
+	derivModAddr := authtypes.NewModuleAddress(types.ModuleName)
 	return k.bankKeeper.GetBalance(ctx, derivModAddr, denom)
 }
 

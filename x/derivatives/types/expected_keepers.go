@@ -2,7 +2,6 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	pftypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
@@ -29,9 +28,4 @@ type PricefeedKeeper interface {
 	GetMarketIdFromDenom(ctx sdk.Context, lhsDenom string, rhsDenom string) (string, error)
 	// These are used for testing TODO replace mockApp with keeper in tests to remove these
 	SetParams(sdk.Context, pftypes.Params)
-}
-
-type AccountKeeper interface {
-	GetModuleAddress(moduleName string) sdk.AccAddress
-	GetModuleAccount(ctx sdk.Context, moduleName string) authtypes.ModuleAccountI
 }
