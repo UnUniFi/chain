@@ -62,3 +62,10 @@ func IsValidDepositForPool(deposit sdk.Coin, acceptableAssets []PoolAssetConf) b
 	}
 	return false
 }
+
+// CalcTargetAmountInPool is used to calculate the target amount of the asset in the pool.
+// The target amount is calculated by the formula:
+// targetAmount = poolMarketCap * weight / price
+func CalcTargetAmountInPool(weight, price, poolMarketCap sdk.Dec) sdk.Int {
+	return poolMarketCap.Mul(weight).Quo(price).TruncateInt()
+}
