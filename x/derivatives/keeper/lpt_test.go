@@ -47,13 +47,6 @@ func (suite *KeeperTestSuite) TestDetermineMintingLPTokenAmount() {
 	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:uusdc")
 	suite.Require().NoError(err)
 
-	// add pool asset and balance
-	suite.keeper.AddPoolAsset(suite.ctx, types.PoolParams_Asset{
-		Denom:        "uatom",
-		TargetWeight: sdk.OneDec(),
-	})
-	suite.keeper.SetAssetBalance(suite.ctx, sdk.NewInt64Coin("uatom", 1000000))
-
 	// set lp token supply
 	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{sdk.NewInt64Coin(types.LiquidityProviderTokenDenom, 1000000)})
 	suite.Require().NoError(err)
@@ -99,13 +92,6 @@ func (suite *KeeperTestSuite) TestGetLPTokenPrice() {
 	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:uusdc")
 	suite.Require().NoError(err)
 
-	// add pool asset and balance
-	suite.keeper.AddPoolAsset(suite.ctx, types.PoolParams_Asset{
-		Denom:        "uatom",
-		TargetWeight: sdk.OneDec(),
-	})
-	suite.keeper.SetAssetBalance(suite.ctx, sdk.NewInt64Coin("uatom", 1000000))
-
 	// set lp token supply
 	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{sdk.NewInt64Coin(types.LiquidityProviderTokenDenom, 1000000)})
 	suite.Require().NoError(err)
@@ -134,13 +120,6 @@ func (suite *KeeperTestSuite) TestGetRedeemDenomAmount() {
 	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:uusdc")
 	suite.Require().NoError(err)
 
-	// add pool asset and balance
-	suite.keeper.AddPoolAsset(suite.ctx, types.PoolParams_Asset{
-		Denom:        "uatom",
-		TargetWeight: sdk.OneDec(),
-	})
-	suite.keeper.SetAssetBalance(suite.ctx, sdk.NewInt64Coin("uatom", 1000000))
-
 	// set lp token supply
 	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{sdk.NewInt64Coin(types.LiquidityProviderTokenDenom, 1000000)})
 	suite.Require().NoError(err)
@@ -168,17 +147,10 @@ func (suite *KeeperTestSuite) TestDecreaseRedeemDenomAmount() {
 	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:uusdc")
 	suite.Require().NoError(err)
 
-	// add pool asset and balance
-	suite.keeper.AddPoolAsset(suite.ctx, types.PoolParams_Asset{
-		Denom:        "uatom",
-		TargetWeight: sdk.OneDec(),
-	})
-	suite.keeper.SetAssetBalance(suite.ctx, sdk.NewInt64Coin("uatom", 1000000))
-
 	// try after initialization
 	err = suite.keeper.DecreaseRedeemDenomAmount(suite.ctx, sdk.NewInt64Coin("uatom", 10000))
 	suite.Require().NoError(err)
-	assetBalance := suite.keeper.GetAssetBalance(suite.ctx, "uatom")
+	assetBalance := suite.keeper.GetAssetBalanceInPoolByDenom(suite.ctx, "uatom")
 	suite.Require().Equal(assetBalance.String(), "990000uatom")
 }
 

@@ -104,7 +104,7 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 	}
 
 	// redeemAssetBalance is the amount of redeemDenom in the pool. The variable name is little weird
-	redeemAssetBalance := k.GetAssetBalance(ctx, redeemDenom)
+	redeemAssetBalance := k.GetAssetBalanceInPoolByDenom(ctx, redeemDenom)
 
 	if redeemAssetPrice.Price.IsNil() || redeemAssetPrice.Price.IsZero() {
 		return sdk.Coin{}, sdk.Coin{}, types.ErrInvalidRedeemAmount
@@ -139,15 +139,16 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 	return redeem, fee, nil
 }
 
+// TODO: remove this.
 // Decrease is misleading. Subtract is correct.
 func (k Keeper) DecreaseRedeemDenomAmount(ctx sdk.Context, amount sdk.Coin) error {
-	redeemAssetBalance := k.GetAssetBalance(ctx, amount.Denom)
-	decreasedAmount, err := redeemAssetBalance.SafeSub(amount)
+	redeemAssetBalance := k.GetAssetBalanceInPoolByDenom(ctx, amount.Denom)
+	_, err := redeemAssetBalance.SafeSub(amount)
 	if err != nil {
 		return err
 	}
 
-	k.SetAssetBalance(ctx, decreasedAmount)
+	// k.SetAssetBalance(ctx, decreasedAmount)
 	return nil
 }
 
@@ -168,7 +169,7 @@ func (k Keeper) DecreaseRedeemDenomAmount(ctx sdk.Context, amount sdk.Coin) erro
 // pool_marketcap = price_of_ith_asset * amount_of_ith_deopsited_asset
 // initial_lp_supply = pool_marketcap / initial_lp_token_price
 func (k Keeper) InitialLiquidityProviderTokenSupply(ctx sdk.Context, assetPrice *pftypes.CurrentPrice, assetMarketCap sdk.Dec, depositDenom string) (sdk.Coin, error) {
-	assetInfo := k.GetPoolAssetByDenom(ctx, depositDenom)
+	assetInfo := k.GetPoolAcceptedAssetConfByDenom(ctx, depositDenom)
 	initialLPTokenPrice := assetPrice.Price.Mul(assetInfo.TargetWeight)
 	initialLPTokenSupply := assetMarketCap.Quo(initialLPTokenPrice)
 
@@ -181,7 +182,7 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgDeposi
 
 	params := k.GetParams(ctx)
 	// check if the deposit denom is valid and amount is positive
-	if !types.IsValidDepositForPool(msg.Amount, params.PoolParams.AcceptedAssets) {
+	if !types.IsValidDepositForPool(msg.Amount, params.PoolParams.AcceptedAssetsConf) {
 		return fmt.Errorf("invalid deposit token: %s", msg.Amount.Denom)
 	}
 
@@ -225,12 +226,11 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgDeposi
 		return err
 	}
 
-	k.DepositPoolAsset(ctx, depositor, deposit)
 	return nil
 }
 
 func (k Keeper) CalcDepositingFee(ctx sdk.Context, depositingAmount sdk.Coin, baseLptMintFee sdk.Dec) (sdk.Coin, error) {
-	currentBalance := k.GetAssetBalance(ctx, depositingAmount.Denom)
+	currentBalance := k.GetAssetBalanceInPoolByDenom(ctx, depositingAmount.Denom)
 	targetBalance, err := k.GetAssetTargetAmount(ctx, depositingAmount.Denom)
 	if err != nil {
 		return sdk.Coin{}, err
@@ -241,6 +241,11 @@ func (k Keeper) CalcDepositingFee(ctx sdk.Context, depositingAmount sdk.Coin, ba
 }
 
 func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgWithdrawFromPool) error {
+	// check if the withdraw denom is valid and amount is positive
+	if !k.IsAssetAcceptable(ctx, msg.RedeemDenom) {
+		return fmt.Errorf("invalid withdraw token: %s", msg.RedeemDenom)
+	}
+
 	// todo:check validator address,amount,redeem denom
 	// todo: use CacheCtx
 	sender := msg.Sender.AccAddress()

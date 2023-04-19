@@ -10,10 +10,6 @@ import (
 // InitGenesis initializes the module's state from a provided genesis state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
 	k.SetParams(ctx, genState.Params)
-	// todo load genesis state when restart
-	for _, asset := range genState.Params.PoolParams.AcceptedAssets {
-		k.AddPoolAsset(ctx, *asset)
-	}
 
 	if err := k.SetPoolMarketCapSnapshot(ctx, ctx.BlockHeight(), genState.PoolMarketCap); err != nil {
 		panic(err)

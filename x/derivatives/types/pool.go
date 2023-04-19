@@ -31,13 +31,13 @@ func (p PoolParams) Validate() error {
 		return fmt.Errorf("ReportLevyPeriodRewardRate should be between 0-1")
 	}
 
-	if len(p.AcceptedAssets) == 0 {
+	if len(p.AcceptedAssetsConf) == 0 {
 		return fmt.Errorf("Empty AcceptedAssets")
 	}
 
 	usedDenom := make(map[string]bool)
 	sumWeight := sdk.ZeroDec()
-	for _, asset := range p.AcceptedAssets {
+	for _, asset := range p.AcceptedAssetsConf {
 		if usedDenom[asset.Denom] {
 			return fmt.Errorf("Duplication in accepted denom: %s", asset.Denom)
 		}
@@ -54,11 +54,18 @@ func (p PoolParams) Validate() error {
 	return nil
 }
 
-func IsValidDepositForPool(deposit sdk.Coin, acceptableAssets []*PoolParams_Asset) bool {
+func IsValidDepositForPool(deposit sdk.Coin, acceptableAssets []PoolAssetConf) bool {
 	for _, asset := range acceptableAssets {
 		if deposit.Denom == asset.Denom {
 			return deposit.Amount.IsPositive()
 		}
 	}
 	return false
+}
+
+// CalcTargetAmountInPool is used to calculate the target amount of the asset in the pool.
+// The target amount is calculated by the formula:
+// targetAmount = poolMarketCap * weight / price
+func CalcTargetAmountInPool(weight, price, poolMarketCap sdk.Dec) sdk.Int {
+	return poolMarketCap.Mul(weight).Quo(price).TruncateInt()
 }

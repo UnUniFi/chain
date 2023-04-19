@@ -6114,7 +6114,7 @@ paths:
                         type: string
                       report_levy_period_reward_rate:
                         type: string
-                      accepted_assets:
+                      accepted_assets_conf:
                         type: array
                         items:
                           type: object
@@ -13171,7 +13171,7 @@ definitions:
             type: string
           report_levy_period_reward_rate:
             type: string
-          accepted_assets:
+          accepted_assets_conf:
             type: array
             items:
               type: object
@@ -13262,6 +13262,13 @@ definitions:
               type: string
             quote_denom:
               type: string
+  ununifi.derivatives.PoolAssetConf:
+    type: object
+    properties:
+      denom:
+        type: string
+      target_weight:
+        type: string
   ununifi.derivatives.PoolMarketCap:
     type: object
     properties:
@@ -13304,7 +13311,7 @@ definitions:
         type: string
       report_levy_period_reward_rate:
         type: string
-      accepted_assets:
+      accepted_assets_conf:
         type: array
         items:
           type: object
@@ -13313,13 +13320,6 @@ definitions:
               type: string
             target_weight:
               type: string
-  ununifi.derivatives.PoolParams.Asset:
-    type: object
-    properties:
-      denom:
-        type: string
-      target_weight:
-        type: string
   ununifi.derivatives.Position:
     type: object
     properties:
@@ -14436,7 +14436,7 @@ definitions:
                 type: string
               report_levy_period_reward_rate:
                 type: string
-              accepted_assets:
+              accepted_assets_conf:
                 type: array
                 items:
                   type: object

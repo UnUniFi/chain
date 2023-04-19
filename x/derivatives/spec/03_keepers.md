@@ -15,12 +15,8 @@ type Keeper interface {
   GetPairUsdPriceFromMarket(ctx sdk.Context, market types.Market) (sdk.Dec, sdk.Dec, error)
   GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market, positionType types.PositionType) types.PerpetualFuturesNetPositionOfMarket
   GetPositionSizeOfNetPositionOfMarket(ctx sdk.Context, market types.Market) sdk.Dec
-  GetPoolAssets(ctx sdk.Context) []types.PoolParams_Asset
-  GetPoolAssetByDenom(ctx sdk.Context, denom string) types.PoolParams_Asset
-  GetAssetBalance(ctx sdk.Context, denom string) sdk.Coin
+  GetAssetBalanceInPoolByDenom(ctx sdk.Context, denom string) sdk.Coin
   GetAssetTargetAmount(ctx sdk.Context, denom string) (sdk.Coin, error)
-  GetUserDeposits(ctx sdk.Context, depositor sdk.AccAddress) []sdk.Coin
-  GetUserDenomDepositAmount(ctx sdk.Context, depositer sdk.AccAddress, denom string) sdk.Int
   GetPoolMarketCapSnapshot(ctx sdk.Context, height int64) types.PoolMarketCap
   GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap
   GetLastPositionId(ctx sdk.Context) string

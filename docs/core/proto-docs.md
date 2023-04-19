@@ -77,10 +77,10 @@
 - [derivatives/derivatives.proto](#derivatives/derivatives.proto)
     - [EventPriceIsNotFeeded](#ununifi.derivatives.EventPriceIsNotFeeded)
     - [Market](#ununifi.derivatives.Market)
+    - [PoolAssetConf](#ununifi.derivatives.PoolAssetConf)
     - [PoolMarketCap](#ununifi.derivatives.PoolMarketCap)
     - [PoolMarketCap.Breakdown](#ununifi.derivatives.PoolMarketCap.Breakdown)
     - [PoolParams](#ununifi.derivatives.PoolParams)
-    - [PoolParams.Asset](#ununifi.derivatives.PoolParams.Asset)
     - [Position](#ununifi.derivatives.Position)
     - [QueriedPosition](#ununifi.derivatives.QueriedPosition)
   
@@ -1456,6 +1456,22 @@ Query defines the gRPC querier service.
 
 
 
+<a name="ununifi.derivatives.PoolAssetConf"></a>
+
+### PoolAssetConf
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+| `target_weight` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="ununifi.derivatives.PoolMarketCap"></a>
 
 ### PoolMarketCap
@@ -1504,23 +1520,7 @@ Query defines the gRPC querier service.
 | `borrowing_fee_rate_per_hour` | [string](#string) |  |  |
 | `report_liquidation_reward_rate` | [string](#string) |  |  |
 | `report_levy_period_reward_rate` | [string](#string) |  |  |
-| `accepted_assets` | [PoolParams.Asset](#ununifi.derivatives.PoolParams.Asset) | repeated |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.PoolParams.Asset"></a>
-
-### PoolParams.Asset
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `denom` | [string](#string) |  |  |
-| `target_weight` | [string](#string) |  |  |
+| `accepted_assets_conf` | [PoolAssetConf](#ununifi.derivatives.PoolAssetConf) | repeated |  |
 
 
 
