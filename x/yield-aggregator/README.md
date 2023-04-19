@@ -51,23 +51,23 @@ Strategies can be developed using the **CosmWasm** smart contract.
 
 ### MsgDepositToVault
 
-[MsgDepositToVault]()
+[MsgDepositToVault](https://github.com/UnUniFi/chain/blob/feat/iya_v2_sdk_v047/proto/yield-aggregator/tx.proto#L25-L34)
 
 ### MsgWithdrawFromVault
 
-[MsgWithdrawFromVault]()
+[MsgWithdrawFromVault](https://github.com/UnUniFi/chain/blob/feat/iya_v2_sdk_v047/proto/yield-aggregator/tx.proto#L38-L51)
 
 ### MsgCreateVault
 
-[MsgCreateVault]()
+[MsgCreateVault](https://github.com/UnUniFi/chain/blob/feat/iya_v2_sdk_v047/proto/yield-aggregator/tx.proto#L55-L78)
 
 ### MsgDeleteVault
 
-[MsgDeleteVault]()
+[MsgDeleteVault](https://github.com/UnUniFi/chain/blob/feat/iya_v2_sdk_v047/proto/yield-aggregator/tx.proto#L82-L90)
 
 ### MsgTransferVaultOwnership
 
-[MsgTransferVaultOwnership]()
+[MsgTransferVaultOwnership](https://github.com/UnUniFi/chain/blob/feat/iya_v2_sdk_v047/proto/yield-aggregator/tx.proto#L94-L103)
 
 | Method Name              | Request Type                                                                     | Response Type                                                                                    | Description | HTTP Verb | Endpoint |
 | ------------------------ | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ----------- | --------- | -------- |
