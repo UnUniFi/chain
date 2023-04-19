@@ -164,3 +164,175 @@ ununifid tx yieldaggregator transfer-vault-ownership 1 ununifi155u042u8wk3al32h3
 ```
 
 ## Queries
+
+### list_vault
+
+Show all vaults
+
+```sh
+ununifid query yieldaggregator list-vault
+```
+
+```http
+ununifi/yield-aggregator/vaults
+```
+
+Response
+
+```json
+{
+  "vaults": [
+    {
+      "id": "string",
+      "denom": "string",
+      "owner": "string",
+      "owner_deposit": {
+        "denom": "string",
+        "amount": "string"
+      },
+      "withdraw_commission_rate": "string",
+      "withdraw_reserve_rate": "string",
+      "strategy_weights": [
+        {
+          "strategy_id": "string",
+          "weight": "string"
+        }
+      ]
+    }
+  ],
+  "pagination": {
+    "next_key": "string",
+    "total": "string"
+  }
+}
+```
+
+### show_vault
+
+Show a vault
+
+```sh
+ununifid query yieldaggregator show-vault [id]
+```
+
+```http
+ununifi/yield-aggregator/vaults/{id}
+```
+
+Response
+
+```json
+{
+  "vault": {
+    "id": "string",
+    "denom": "string",
+    "owner": "string",
+    "owner_deposit": {
+      "denom": "string",
+      "amount": "string"
+    },
+    "withdraw_commission_rate": "string",
+    "withdraw_reserve_rate": "string",
+    "strategy_weights": [
+      {
+        "strategy_id": "string",
+        "weight": "string"
+      }
+    ]
+  },
+  "strategies": [
+    {
+      "denom": "string",
+      "id": "string",
+      "contract_address": "string",
+      "name": "string"
+    }
+  ]
+}
+```
+
+### list_strategy
+
+Show all strategies
+
+```sh
+ununifid query yieldaggregator list-strategy [vault-denom]
+```
+
+```http
+ununifi/yield-aggregator/strategies/{denom}
+```
+
+Response
+
+```json
+{
+  "strategies": [
+    {
+      "denom": "string",
+      "id": "string",
+      "contract_address": "string",
+      "name": "string"
+    }
+  ],
+  "pagination": {
+    "next_key": "string",
+    "total": "string"
+  }
+}
+```
+
+### show_strategy
+
+Show a strategy
+
+```sh
+ununifid query yieldaggregator show-strategy [vault-denom] [id]
+```
+
+```http
+ununifi/yield-aggregator/strategies/{denom}/{id}
+```
+
+Response
+
+```json
+{
+  "strategy": {
+    "denom": "string",
+    "id": "string",
+    "contract_address": "string",
+    "name": "string"
+  }
+}
+```
+
+### params
+
+shows yield-aggregator params
+
+```sh
+ununifid query yieldaggregator params
+```
+
+```http
+ununifi/yield-aggregator/params
+```
+
+Response
+
+```json
+{
+  "params": {
+    "commission_rate": "string",
+    "vault_creation_fee": {
+      "denom": "string",
+      "amount": "string"
+    },
+    "vault_creation_deposit": {
+      "denom": "string",
+      "amount": "string"
+    }
+  }
+}
+```
