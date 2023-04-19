@@ -11,6 +11,7 @@ This module is the first yield aggregator that supports "interchain" yield aggre
 2. **[Parameters](#network-parameters)**
 3. **[Messages](#messages)**
 4. **[Transactions](#transactions)**
+5. **[Queries](#queries)**
 
 ## Concepts
 
@@ -38,6 +39,12 @@ The Strategy is a method of how the tokens will be managed to earn a yield.
 Developers can add available strategies through governance with proposals.
 
 ## Network-parameters
+
+| Field                    | Type                                                  | Label | Description                   |
+| ------------------------ | ----------------------------------------------------- | ----- | ----------------------------- |
+| `commission_rate`        | [cosmos.Dec](#cosmos.Dec)                             |       | Default commission rate       |
+| `vault_creation_fee`     | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       | The fee to create a vault     |
+| `vault_creation_deposit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       | The deposit to create a vault |
 
 ## Messages
 
@@ -70,3 +77,90 @@ Developers can add available strategies through governance with proposals.
 | `TransferVaultOwnership` | [MsgTransferVaultOwnership](#ununifi.yield-aggregator.MsgTransferVaultOwnership) | [MsgTransferVaultOwnershipResponse](#ununifi.yield-aggregator.MsgTransferVaultOwnershipResponse) |             |           |
 
 ## Transactions
+
+### Deposit to Vault
+
+deposit tokens to a vault.
+
+```sh
+ununifid tx yieldaggregator deposit-to-vault [id] [principal-amount] --from --chain-id
+```
+
+::: details Example
+
+Deposit `50uguu` to the vault `#1`.
+
+```sh
+ununifid tx yieldaggregator deposit-to-vault 1 50uguu --from user --chain-id test
+```
+
+### Withdraw from Vault
+
+withdraw tokens from a vault.
+
+```sh
+ununifid tx yieldaggregator withdraw-from-vault [id] [principal-amount] --from --chain-id
+```
+
+::: details Example
+
+Withdraw `50uguu` from the vault `#1`.
+
+```sh
+ununifid tx yieldaggregator withdraw-from-vault 1 50uguu --from user --chain-id test
+```
+
+### Create Vault
+
+Create a new vault.
+
+```sh
+ununifid tx yieldaggregator create-vault [denom] [commission-rate] [withdraw-reserve-rate] [fee] [deposit] [strategyWeights] --from --chain-id
+```
+
+::: details Example
+
+Create a `GUU` vault.
+
+- Its commission rate is `1%`.
+- Its reserve rate for withdrawing is `30%`.
+- Its fee is `10000uguu` & its deposit is `20000uguu`.
+- It contains strategies #1:`10%` & #2:`90%`.
+
+```sh
+ununifid tx yieldaggregator create-vault uguu 0.01 0.3 10000uguu 20000uguu 1:0.1,2:0.9 --from user --chain-id test
+```
+
+### Delete Vault
+
+Delete own vault.
+
+```sh
+ununifid tx yieldaggregator delete-vault [id] --from --chain-id
+```
+
+::: details Example
+
+Delete the vault `#1`.
+
+```sh
+ununifid tx yieldaggregator delete-vault 1 --from user --chain-id test
+```
+
+### Transfer Vault Ownership
+
+Transfer the own vault ownership to another address.
+
+```sh
+ununifid tx yieldaggregator transfer-vault-ownership [id] [recipient] --from --chain-id
+```
+
+::: details Example
+
+Transfer the ownership of the vault `#1` to the address `ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w`.
+
+```sh
+ununifid tx yieldaggregator transfer-vault-ownership 1 ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w --from user --chain-id test
+```
+
+## Queries
