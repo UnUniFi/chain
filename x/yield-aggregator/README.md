@@ -1,7 +1,7 @@
-# yield-aggregator
+# Yield-aggregator
 
 The `yield-aggregator` module provides the function for yield aggregation.
-Users deposit their funds to the **vault**, and then this module uses the funds to earn yield automatically.
+Users deposit their funds to the **Vault**, and then this module uses the funds to earn yield automatically.
 
 This module is the first yield aggregator that supports "interchain" yield aggregation. So this is also called as Interchain Yield Aggregator (IYA).
 
@@ -15,9 +15,8 @@ This module is the first yield aggregator that supports "interchain" yield aggre
 
 ## Concepts
 
-NFT backed loan in UnUniFi does not have an automatic earning function.
-Users borrowed assets in NFT backed loan seek the way to manage their assets.
-This yield aggregator module will serve such an opportunity to such users.
+This yield aggregator module provides an automatic earning function.
+This allows users to manage their own assets according to their preferences.
 
 ### Vault
 
@@ -25,8 +24,10 @@ This yield aggregator module will serve such an opportunity to such users.
   There can be multiple vaults for a single token. You can choose the Vault that best suits your preferences and manage your assets.
 
 - Users can create Vaults
-  Users can create Vaults without governance, but it needs a fee and deposit to prevent spam.
-  Vault creator can configure the commission rate. It makes the vault creation competitive and creates an incentive for creation.
+  Users can create Vaults without governance.
+  However, it needs a fee and deposit. The fee is to prevent spam and the deposit is to provide an incentive to remove unnecessary vaults.
+
+  The vault creator can configure the commission rate. It makes the vault creation competitive and creates an incentive for creation.
 
 - One Vault has a combination of many strategies
   The Vault can be created by combining the strategies described below.
@@ -35,8 +36,8 @@ This yield aggregator module will serve such an opportunity to such users.
 
 ### Strategy
 
-The Strategy is a method of how the tokens will be managed to earn a yield.
-Developers can add available strategies through governance with proposals.
+Strategies are methods of how the tokens will be managed to earn a yield. Users can add available strategies through governance with proposals.
+Strategies can be developed using the **CosmWasm** smart contract.
 
 ## Network-parameters
 
