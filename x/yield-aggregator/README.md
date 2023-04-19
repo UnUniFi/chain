@@ -174,7 +174,7 @@ Show all vaults
 ununifid query yieldaggregator list-vault
 ```
 
-```http
+```rest
 ununifi/yield-aggregator/vaults
 ```
 
@@ -216,7 +216,7 @@ Show a vault
 ununifid query yieldaggregator show-vault [id]
 ```
 
-```http
+```rest
 ununifi/yield-aggregator/vaults/{id}
 ```
 
@@ -260,7 +260,7 @@ Show all strategies
 ununifid query yieldaggregator list-strategy [vault-denom]
 ```
 
-```http
+```rest
 ununifi/yield-aggregator/strategies/{denom}
 ```
 
@@ -291,7 +291,7 @@ Show a strategy
 ununifid query yieldaggregator show-strategy [vault-denom] [id]
 ```
 
-```http
+```rest
 ununifi/yield-aggregator/strategies/{denom}/{id}
 ```
 
@@ -316,7 +316,7 @@ shows yield-aggregator params
 ununifid query yieldaggregator params
 ```
 
-```http
+```rest
 ununifi/yield-aggregator/params
 ```
 
