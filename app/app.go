@@ -590,7 +590,6 @@ func NewApp(
 	)
 	transferModule := transfer.NewAppModule(app.TransferKeeper)
 	transferIBCModule := transfer.NewIBCModule(app.TransferKeeper)
-	transferStack := ibcfee.NewIBCMiddleware(transferIBCModule, app.IBCFeeKeeper)
 
 	app.ICAControllerKeeper = icacontrollerkeeper.NewKeeper(
 		appCodec, keys[icacontrollertypes.StoreKey], app.GetSubspace(icacontrollertypes.SubModuleName),
@@ -685,22 +684,23 @@ func NewApp(
 	icaModule := ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper)
 	icaHostIBCModule := icahost.NewIBCModule(app.ICAHostKeeper)
 
-	// Stack one contains
+	// Stack two (Stakeibc Stack) contains
 	// - IBC
 	// - ICA
-	// - icacallbacks
 	// - stakeibc
 	// - base app
-	var icamiddlewareStack porttypes.IBCModule
-	icamiddlewareStack = icacallbacksmodule.NewIBCModule(app.IcacallbacksKeeper, stakeibcIBCModule)
-	icamiddlewareStack = icacontroller.NewIBCMiddleware(icamiddlewareStack, app.ICAControllerKeeper)
+	var stakeibcStack porttypes.IBCModule = stakeibcIBCModule
+	stakeibcStack = icacontroller.NewIBCMiddleware(stakeibcStack, app.ICAControllerKeeper)
 
-	// Stack two contains
+	// Stack three contains
 	// - IBC
+	// - autopilot
 	// - records
+	// - ratelimit
 	// - transfer
 	// - base app
-	recordsStack := recordsmodule.NewIBCModule(app.RecordsKeeper, transferStack)
+	// transferStack := ibcfee.NewIBCMiddleware(transferIBCModule, app.IBCFeeKeeper)
+	transferStack := recordsmodule.NewIBCModule(app.RecordsKeeper, transferIBCModule)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 	app.pricefeedKeeper = pricefeedkeeper.NewKeeper(
@@ -781,12 +781,13 @@ func NewApp(
 	// Create static IBC router, add transfer route, then set and seal it
 	ibcRouter := ibcporttypes.NewRouter()
 	ibcRouter.
-		AddRoute(ibctransfertypes.ModuleName, recordsStack).
-		AddRoute(icacontrollertypes.SubModuleName, icamiddlewareStack).
+		// ICAHost Stack
 		AddRoute(icahosttypes.SubModuleName, icaHostIBCModule).
-		// Note, authentication module packets are routed to the top level of the middleware stack
-		AddRoute(stakeibcmoduletypes.ModuleName, icamiddlewareStack).
-		AddRoute(icacallbacksmoduletypes.ModuleName, icamiddlewareStack)
+		// Stakeibc Stack
+		AddRoute(icacontrollertypes.SubModuleName, stakeibcStack).
+		AddRoute(stakeibcmoduletypes.ModuleName, stakeibcStack).
+		// Transfer stack
+		AddRoute(ibctransfertypes.ModuleName, transferStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
 	govConfig := govtypes.DefaultConfig()

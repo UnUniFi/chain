@@ -20,6 +20,7 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	icacontrollerkeeper "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/keeper"
+	icatypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/types"
 	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
 	ibctmtypes "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
 
@@ -274,5 +275,12 @@ func (k msgServer) RegisterInterchainAccount(ctx sdk.Context, connectionId strin
 	if err != nil {
 		return err
 	}
+
+	portID, err := icatypes.NewControllerPortID(owner)
+	if err != nil {
+		return err
+	}
+
+	k.ICAControllerKeeper.SetMiddlewareEnabled(ctx, portID, connectionId)
 	return nil
 }
