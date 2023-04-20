@@ -692,11 +692,9 @@ func NewApp(
 	var stakeibcStack porttypes.IBCModule = stakeibcIBCModule
 	stakeibcStack = icacontroller.NewIBCMiddleware(stakeibcStack, app.ICAControllerKeeper)
 
-	// Stack three contains
+	// Stack contains
 	// - IBC
-	// - autopilot
 	// - records
-	// - ratelimit
 	// - transfer
 	// - base app
 	// transferStack := ibcfee.NewIBCMiddleware(transferIBCModule, app.IBCFeeKeeper)
