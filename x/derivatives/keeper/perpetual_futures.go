@@ -81,11 +81,17 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 	switch positionInstance.PositionType {
 	// FIXME: Don't use OneMillionInt derectly to make it decimal unit. issue #476
 	case types.PositionType_LONG:
-		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.PositionType, positionInstance.SizeInDenomUnit(types.OneMillionInt))
-		// break
+		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.PositionType, positionInstance.SizeInDenomExponent(types.OneMillionInt))
+		// Reserve tokens to pay profit
+		if err := k.AddReserveTokensForPosition(ctx, positionInstance.SizeInDenomExponent(types.OneMillionInt), position.Market.BaseDenom); err != nil {
+			return nil, err
+		}
 	case types.PositionType_SHORT:
-		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.PositionType, positionInstance.SizeInDenomUnit(types.OneMillionInt))
-		// break
+		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.PositionType, positionInstance.SizeInDenomExponent(types.OneMillionInt))
+		// Reserve tokens to pay profit
+		if err := k.AddReserveTokensForPosition(ctx, positionInstance.SizeInDenomExponent(types.OneMillionInt), position.Market.QuoteDenom); err != nil {
+			return nil, err
+		}
 	case types.PositionType_POSITION_UNKNOWN:
 		return nil, fmt.Errorf("unknown position type")
 	}
@@ -98,13 +104,25 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 	return &position, nil
 }
 
+// AddReserveTokensForPosition adds the tokens o the amount of the popsition size to pay the maximum profit
+// in reserved property of the PoolMarketCap
+func (k Keeper) AddReserveTokensForPosition(ctx sdk.Context, positionSizeInDenomExponent sdk.Int, denom string) error {
+	return nil
+}
+
+// SubReserveTokensForPosition subtracts the tokens o the amount of the popsition size to pay the maximum profit
+// in reserved property of the PoolMarketCap
+func (k Keeper) SubReserveTokensForPosition(ctx sdk.Context, positionSizeInDenomExponent sdk.Int, denom string) error {
+	return nil
+}
+
 func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.PerpetualFuturesPosition) error {
 	params := k.GetParams(ctx)
 	commissionRate := params.PerpetualFutures.CommissionRate
 
 	// At closing the position, the trading fee is deducted.
 	// fee = positionSize * commissionRate
-	positionSizeInDenomUnit := sdk.NewDecFromInt(position.PositionInstance.SizeInDenomUnit(types.OneMillionInt))
+	positionSizeInDenomUnit := sdk.NewDecFromInt(position.PositionInstance.SizeInDenomExponent(types.OneMillionInt))
 	feeAmountDec := positionSizeInDenomUnit.Mul(commissionRate)
 	tradeAmount := positionSizeInDenomUnit.Sub(feeAmountDec)
 	feeAmount := feeAmountDec.RoundInt()
@@ -134,7 +152,6 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 
 	returningCoin := sdk.NewCoin(position.RemainingMargin.Denom, returningAmount)
 
-	fmt.Println(returningAmount)
 	if returningCoin.IsPositive() {
 		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, position.Address.AccAddress(), sdk.Coins{returningCoin}); err != nil {
 			return err
@@ -145,10 +162,10 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 	switch position.PositionInstance.PositionType {
 	// FIXME: Don't use OneMillionInt derectly to make it decimal unit. issue #476
 	case types.PositionType_LONG:
-		k.SubPerpetualFuturesNetPositionOfMarket(ctx, position.Market, position.PositionInstance.PositionType, position.PositionInstance.SizeInDenomUnit(types.OneMillionInt))
+		k.SubPerpetualFuturesNetPositionOfMarket(ctx, position.Market, position.PositionInstance.PositionType, position.PositionInstance.SizeInDenomExponent(types.OneMillionInt))
 		// break
 	case types.PositionType_SHORT:
-		k.SubPerpetualFuturesNetPositionOfMarket(ctx, position.Market, position.PositionInstance.PositionType, position.PositionInstance.SizeInDenomUnit(types.OneMillionInt))
+		k.SubPerpetualFuturesNetPositionOfMarket(ctx, position.Market, position.PositionInstance.PositionType, position.PositionInstance.SizeInDenomExponent(types.OneMillionInt))
 		// break
 	case types.PositionType_POSITION_UNKNOWN:
 		return fmt.Errorf("unknown position type")

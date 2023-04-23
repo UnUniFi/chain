@@ -7241,7 +7241,7 @@ paths:
                     type: string
                   total:
                     type: string
-                  breakdown:
+                  asset_info:
                     type: array
                     items:
                       type: object
@@ -7251,6 +7251,8 @@ paths:
                         amount:
                           type: string
                         price:
+                          type: string
+                        reserved:
                           type: string
               volume_24hours:
                 type: string
@@ -13276,7 +13278,7 @@ definitions:
         type: string
       total:
         type: string
-      breakdown:
+      asset_info:
         type: array
         items:
           type: object
@@ -13287,7 +13289,9 @@ definitions:
               type: string
             price:
               type: string
-  ununifi.derivatives.PoolMarketCap.Breakdown:
+            reserved:
+              type: string
+  ununifi.derivatives.PoolMarketCap.AssetInfo:
     type: object
     properties:
       denom:
@@ -13295,6 +13299,8 @@ definitions:
       amount:
         type: string
       price:
+        type: string
+      reserved:
         type: string
   ununifi.derivatives.PoolParams:
     type: object
@@ -14566,7 +14572,7 @@ definitions:
             type: string
           total:
             type: string
-          breakdown:
+          asset_info:
             type: array
             items:
               type: object
@@ -14576,6 +14582,8 @@ definitions:
                 amount:
                   type: string
                 price:
+                  type: string
+                reserved:
                   type: string
       volume_24hours:
         type: string

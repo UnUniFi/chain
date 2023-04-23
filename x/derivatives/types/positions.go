@@ -158,7 +158,7 @@ func (m PerpetualFuturesPosition) OpenedPairRate() sdk.Dec {
 // todo make test
 func (m PerpetualFuturesPosition) EvaluatePosition(currentBaseMetricsRate MetricsRateType) sdk.Dec {
 	// FIXME: Don't use OneMillionInt derectly. issue #476
-	return currentBaseMetricsRate.Amount.Amount.Mul(sdk.NewDecFromInt(m.PositionInstance.SizeInDenomUnit(OneMillionInt)))
+	return currentBaseMetricsRate.Amount.Amount.Mul(sdk.NewDecFromInt(m.PositionInstance.SizeInDenomExponent(OneMillionInt)))
 }
 
 // TODO: consider to use sdk.DecCoin
@@ -218,7 +218,7 @@ func (m Positions) EvaluateShortPositions(quoteTicker string, getCurrentPriceF f
 
 func (positionInstance PerpetualFuturesPositionInstance) MarginRequirement(currencyRate sdk.Dec) sdk.Int {
 	// FIXME: Don't use OneMillionInt derectly. issue #476
-	return sdk.NewDecFromInt(positionInstance.SizeInDenomUnit(OneMillionInt)).Mul(currencyRate).Quo(sdk.NewDec(int64(positionInstance.Leverage))).TruncateInt()
+	return sdk.NewDecFromInt(positionInstance.SizeInDenomExponent(OneMillionInt)).Mul(currencyRate).Quo(sdk.NewDec(int64(positionInstance.Leverage))).TruncateInt()
 }
 
 func (m PerpetualFuturesPosition) RequiredMarginInQuote(baseQuoteRate sdk.Dec) sdk.Int {
@@ -292,7 +292,7 @@ func (m PerpetualFuturesPosition) ProfitAndLossInQuote(baseMetricsRate, quoteMet
 	// 損益(quote単位) = (longなら*1,shortなら*-1) * (現在のbase/quoteレート - ポジション開設時base/quoteレート) * ポジションサイズ(base単位)
 	baseQuoteRate := baseMetricsRate.Amount.Amount.Quo(quoteMetricsRate.Amount.Amount)
 	// FIXME: Don't use OneMillionInt derectly. issue #476
-	profitAndLoss := baseQuoteRate.Sub(m.OpenedPairRate()).Mul(sdk.NewDecFromInt(m.PositionInstance.SizeInDenomUnit(OneMillionInt))).TruncateInt()
+	profitAndLoss := baseQuoteRate.Sub(m.OpenedPairRate()).Mul(sdk.NewDecFromInt(m.PositionInstance.SizeInDenomExponent(OneMillionInt))).TruncateInt()
 	if m.PositionInstance.PositionType == PositionType_LONG {
 		return profitAndLoss
 	} else {

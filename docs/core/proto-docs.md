@@ -79,7 +79,7 @@
     - [Market](#ununifi.derivatives.Market)
     - [PoolAssetConf](#ununifi.derivatives.PoolAssetConf)
     - [PoolMarketCap](#ununifi.derivatives.PoolMarketCap)
-    - [PoolMarketCap.Breakdown](#ununifi.derivatives.PoolMarketCap.Breakdown)
+    - [PoolMarketCap.AssetInfo](#ununifi.derivatives.PoolMarketCap.AssetInfo)
     - [PoolParams](#ununifi.derivatives.PoolParams)
     - [Position](#ununifi.derivatives.Position)
     - [QueriedPosition](#ununifi.derivatives.QueriedPosition)
@@ -1482,16 +1482,16 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `quote_ticker` | [string](#string) |  |  |
 | `total` | [string](#string) |  |  |
-| `breakdown` | [PoolMarketCap.Breakdown](#ununifi.derivatives.PoolMarketCap.Breakdown) | repeated |  |
+| `asset_info` | [PoolMarketCap.AssetInfo](#ununifi.derivatives.PoolMarketCap.AssetInfo) | repeated |  |
 
 
 
 
 
 
-<a name="ununifi.derivatives.PoolMarketCap.Breakdown"></a>
+<a name="ununifi.derivatives.PoolMarketCap.AssetInfo"></a>
 
-### PoolMarketCap.Breakdown
+### PoolMarketCap.AssetInfo
 
 
 
@@ -1500,6 +1500,7 @@ Query defines the gRPC querier service.
 | `denom` | [string](#string) |  |  |
 | `amount` | [string](#string) |  |  |
 | `price` | [string](#string) |  |  |
+| `reserved` | [string](#string) |  |  |
 
 
 

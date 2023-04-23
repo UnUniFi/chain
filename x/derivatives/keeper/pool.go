@@ -88,7 +88,7 @@ func (k Keeper) GetPoolQuoteTicker(ctx sdk.Context) string {
 func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 	assets := k.GetPoolAcceptedAssetsConf(ctx)
 
-	breakdowns := []types.PoolMarketCap_Breakdown{}
+	assetInfoList := []types.PoolMarketCap_AssetInfo{}
 	mc := sdk.NewDec(0)
 
 	quoteTicker := k.GetPoolQuoteTicker(ctx)
@@ -101,19 +101,19 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 			panic(fmt.Sprintf("not able to calculate market cap: %s", err.Error()))
 		}
 
-		breakdown := types.PoolMarketCap_Breakdown{
+		assetInfo := types.PoolMarketCap_AssetInfo{
 			Denom:  asset.Denom,
 			Amount: balance.Amount,
 			Price:  price.Price,
 		}
-		breakdowns = append(breakdowns, breakdown)
+		assetInfoList = append(assetInfoList, assetInfo)
 		mc = mc.Add(sdk.Dec(sdk.NewDecFromInt(balance.Amount)).Mul(price.Price))
 	}
 
 	return types.PoolMarketCap{
 		QuoteTicker: quoteTicker,
 		Total:       mc,
-		Breakdown:   breakdowns,
+		AssetInfo:   assetInfoList,
 	}
 }
 
@@ -134,4 +134,12 @@ func (k Keeper) IsPriceReady(ctx sdk.Context) bool {
 	}
 
 	return true
+}
+
+func (k Keeper) SetReservedCoin(ctx sdk.Context, reserve sdk.Coin) {
+
+}
+
+func (k Keeper) GetReservedCoin(ctx sdk.Context, denom string) sdk.Coin {
+	return sdk.Coin{}
 }
