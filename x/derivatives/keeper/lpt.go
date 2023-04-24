@@ -266,7 +266,7 @@ func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgWithdr
 	// If the total amount of asset in the pool is less than the reserved coin,
 	// the user cannot redeem the asset.
 	// Return error to tell the exact cause.
-	availableAsset, err := k.AvailableAssetInPool(ctx, redeemDenom)
+	availableAsset, err := k.AvailableAssetInPoolByDenom(ctx, redeemDenom)
 	if err != nil {
 		return err
 	}

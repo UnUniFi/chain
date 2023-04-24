@@ -15,7 +15,7 @@ type PositionInstance interface {
 
 type Positions []Position
 
-func (m Position) IsValid(params Params, availableAssetInPool sdk.Coin) error {
+func (m Position) IsValid(params Params, AvailableAssetInPoolByDenom sdk.Coin) error {
 	if !m.IsValidMarginAsset() {
 		return fmt.Errorf("margin asset is not valid")
 	}
@@ -38,7 +38,7 @@ func (m Position) IsValid(params Params, availableAssetInPool sdk.Coin) error {
 		return fmt.Errorf("position size is not valid")
 	}
 
-	if availableAssetInPool.Amount.LTE(pfPosition.PositionInstance.SizeInDenomExponent(OneMillionInt)) {
+	if AvailableAssetInPoolByDenom.Amount.LTE(pfPosition.PositionInstance.SizeInDenomExponent(OneMillionInt)) {
 		return ErrInsufficientAssetBalance
 	}
 

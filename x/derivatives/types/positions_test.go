@@ -159,7 +159,7 @@ func TestPosition_IsValid(t *testing.T) {
 		tc.position.PositionInstance = *any
 
 		t.Run(tc.name, func(t *testing.T) {
-			err := tc.position.IsValid(params)
+			err := tc.position.IsValid(params, sdk.Coin{})
 			if tc.exp {
 				if err != nil {
 					t.Errorf("expected %v, got %v", tc.exp, err)
