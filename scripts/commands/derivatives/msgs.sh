@@ -29,8 +29,8 @@ $BINARY tx derivatives withdraw-from-pool 1 ubtc --from=$USER1 $conf | jq .raw_l
 $BINARY tx derivatives withdraw-from-pool 1 ubtc --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g'
 
 # open-position perpetual-futures
-$BINARY tx derivatives open-position perpetual-futures 100ubtc ubtc uusdc long --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g'
-$BINARY tx derivatives open-position perpetual-futures 100uusdc ubtc uusdc short --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g'
+$BINARY tx derivatives open-position perpetual-futures 1000000ubtc ubtc uusdc long 1 1 --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g'
+$BINARY tx derivatives open-position perpetual-futures 30000000000uusdc ubtc uusdc short 0.5 2 --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g'
 
 # query positions
 $BINARY q derivatives positions $USER_ADDRESS_1
