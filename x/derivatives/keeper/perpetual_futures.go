@@ -82,7 +82,7 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 		reserveCoinDenom = market.QuoteDenom
 	}
 
-	availableAssetInPoolByDenom, err := k.AvailableAssetInPoolByDenom(ctx, reserveCoinDenom)
+	availableAssetInPoolByDenom, err := k.AvailableAssetInPool(ctx, reserveCoinDenom)
 	if err != nil {
 		return nil, err
 	}

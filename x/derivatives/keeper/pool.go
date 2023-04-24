@@ -159,7 +159,7 @@ func (k Keeper) GetReservedCoin(ctx sdk.Context, denom string) (sdk.Coin, error)
 	return reserve, nil
 }
 
-func (k Keeper) AvailableAssetInPoolByDenom(ctx sdk.Context, denom string) (sdk.Coin, error) {
+func (k Keeper) AvailableAssetInPool(ctx sdk.Context, denom string) (sdk.Coin, error) {
 	assetBalance := k.GetAssetBalanceInPoolByDenom(ctx, denom)
 	reserve, err := k.GetReservedCoin(ctx, denom)
 	if err != nil {
@@ -171,7 +171,7 @@ func (k Keeper) AvailableAssetInPoolByDenom(ctx sdk.Context, denom string) (sdk.
 }
 
 // AvailableAssetInPool returns the available amount of the all asset in the pool.
-func (k Keeper) AvailableAssetInPool(ctx sdk.Context) (sdk.Coins, error) {
+func (k Keeper) AllAvailableAssetsInPool(ctx sdk.Context) (sdk.Coins, error) {
 	assets := k.GetPoolAcceptedAssetsConf(ctx)
 
 	availableCoins := sdk.Coins{}
