@@ -70,6 +70,7 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 		OpenedQuoteRate:  openedQuoteRate,
 		PositionInstance: *any,
 		RemainingMargin:  margin,
+		LastLeviedAt:     ctx.BlockTime(),
 	}
 
 	// General validation for the position creation
