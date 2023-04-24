@@ -74,7 +74,20 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 
 	// General validation for the position creation
 	params := k.GetParams(ctx)
-	if err := position.IsValid(params); err != nil {
+
+	var reserveCoinDenom string
+	if positionInstance.PositionType == types.PositionType_LONG {
+		reserveCoinDenom = market.BaseDenom
+	} else {
+		reserveCoinDenom = market.QuoteDenom
+	}
+
+	availableAssetInPool, err := k.AvailableAssetInPool(ctx, reserveCoinDenom)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := position.IsValid(params, availableAssetInPool); err != nil {
 		return nil, err
 	}
 

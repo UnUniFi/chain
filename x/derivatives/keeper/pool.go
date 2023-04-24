@@ -158,3 +158,14 @@ func (k Keeper) GetReservedCoin(ctx sdk.Context, denom string) (sdk.Coin, error)
 
 	return reserve, nil
 }
+
+func (k Keeper) AvailableAssetInPool(ctx sdk.Context, denom string) (sdk.Coin, error) {
+	assetBalance := k.GetAssetBalanceInPoolByDenom(ctx, denom)
+	reserve, err := k.GetReservedCoin(ctx, denom)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+
+	available := assetBalance.Sub(reserve)
+	return available, nil
+}
