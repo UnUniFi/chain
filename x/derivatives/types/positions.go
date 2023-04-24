@@ -234,11 +234,14 @@ func (m PerpetualFuturesPosition) RequiredMarginInBase() sdk.Int {
 func (m PerpetualFuturesPosition) RequiredMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
 	// 必要証拠金(USD単位) = 必要証拠金(quote単位) * 現在のquote/USDレート
 	//                    = 必要証拠金(base単位) * 現在のbase/USDレート
+	// 必要証拠金(uusd単位) = 必要証拠金(USD単位) * 1000000
 	if m.RemainingMargin.Denom == m.Market.QuoteDenom {
 		baseQuoteRate := baseMetricsRate.Amount.Amount.Quo(quoteMetricsRate.Amount.Amount)
-		return sdk.NewDecFromInt(m.RequiredMarginInQuote(baseQuoteRate)).Mul(quoteMetricsRate.Amount.Amount).TruncateInt()
+		usdAmount := sdk.NewDecFromInt(m.RequiredMarginInQuote(baseQuoteRate)).Mul(quoteMetricsRate.Amount.Amount)
+		return NormalToMicroInt(usdAmount)
 	} else {
-		return sdk.NewDecFromInt(m.RequiredMarginInBase()).Mul(baseMetricsRate.Amount.Amount).TruncateInt()
+		usdAmount := sdk.NewDecFromInt(m.RequiredMarginInBase()).Mul(baseMetricsRate.Amount.Amount)
+		return NormalToMicroInt(usdAmount)
 	}
 }
 
@@ -302,28 +305,34 @@ func (m PerpetualFuturesPosition) ProfitAndLossInQuote(baseMetricsRate, quoteMet
 
 func (m PerpetualFuturesPosition) ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
 	// 損益(USD単位) = 損益(quote単位) * 現在のquote/USDレート
-	return sdk.NewDecFromInt(m.ProfitAndLossInQuote(baseMetricsRate, quoteMetricsRate)).Mul(quoteMetricsRate.Amount.Amount).TruncateInt()
+	result := sdk.NewDecFromInt(m.ProfitAndLossInQuote(baseMetricsRate, quoteMetricsRate)).Mul(quoteMetricsRate.Amount.Amount)
+	// uusd単位に変換
+	return NormalToMicroInt(result)
 }
 
 // position size takes 0 decimal although price takes 6 decimal (micro unit)
 func (m PerpetualFuturesPosition) MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
-	// 証拠金維持率 = 有効証拠金(USD単位) ÷ 必要証拠金(USD単位)
+	// 証拠金維持率 = 有効証拠金(uusd単位) ÷ 必要証拠金(uusd単位)
 	return sdk.NewDecFromInt(m.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate)).Quo(sdk.NewDecFromInt(m.RequiredMarginInMetrics(baseMetricsRate, quoteMetricsRate)))
 }
 
 func (m PerpetualFuturesPosition) RemainingMarginInBase(baseMetricsRate MetricsRateType) sdk.Int {
 	// 残存証拠金(USD単位) = 残存証拠金(base単位) * 現在のbase/USDレート
-	return sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(baseMetricsRate.Amount.Amount).TruncateInt()
+	result := sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(baseMetricsRate.Amount.Amount)
+	// uusd単位に変換
+	return NormalToMicroInt(result)
 }
 
 func (m PerpetualFuturesPosition) RemainingMarginInQuote(quoteMetricsRate MetricsRateType) sdk.Int {
 	// 残存証拠金(USD単位) = 残存証拠金(quote単位) * 現在のquote/USDレート
-	return sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(quoteMetricsRate.Amount.Amount).TruncateInt()
+	result := sdk.NewDecFromInt(m.RemainingMargin.Amount).Mul(quoteMetricsRate.Amount.Amount)
+	// uusd単位に変換
+	return NormalToMicroInt(result)
 }
 
 func (m PerpetualFuturesPosition) RemainingMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
-	// 残存証拠金(USD単位) = 残存証拠金(base単位) * 現在のbase/USDレート
-	//                    = 残存証拠金(quote単位) * 現在のquote/USDレート
+	// 残存証拠金(uusd単位) = 残存証拠金(base単位) * 現在のbase/USDレート * 1000000
+	//                    = 残存証拠金(quote単位) * 現在のquote/USDレート * 1000000
 	if m.RemainingMargin.Denom == m.Market.BaseDenom {
 		return m.RemainingMarginInBase(baseMetricsRate)
 	} else if m.RemainingMargin.Denom == m.Market.QuoteDenom {
@@ -334,7 +343,7 @@ func (m PerpetualFuturesPosition) RemainingMarginInMetrics(baseMetricsRate, quot
 }
 
 func (m PerpetualFuturesPosition) EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
-	// 有効証拠金(USD単位) = 残存証拠金(USD単位) + 損益(USD単位)
+	// 有効証拠金(uusd単位) = 残存証拠金(uusd単位) + 損益(uusd単位)
 	return m.RemainingMarginInMetrics(baseMetricsRate, quoteMetricsRate).Add(m.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate))
 }
 
