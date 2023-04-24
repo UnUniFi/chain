@@ -136,10 +136,25 @@ func (k Keeper) IsPriceReady(ctx sdk.Context) bool {
 	return true
 }
 
-func (k Keeper) SetReservedCoin(ctx sdk.Context, reserve sdk.Coin) {
+func (k Keeper) SetReservedCoin(ctx sdk.Context, reserve sdk.Coin) error {
+	bz, err := k.cdc.Marshal(&reserve)
+	if err != nil {
+		return err
+	}
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.ReservedCoinKeyPrefix(reserve.Denom), bz)
 
+	return nil
 }
 
-func (k Keeper) GetReservedCoin(ctx sdk.Context, denom string) sdk.Coin {
-	return sdk.Coin{}
+func (k Keeper) GetReservedCoin(ctx sdk.Context, denom string) (sdk.Coin, error) {
+	store := ctx.KVStore(k.storeKey)
+
+	bz := store.Get(types.ReservedCoinKeyPrefix(denom))
+	reserve := sdk.Coin{}
+	if err := k.cdc.Unmarshal(bz, &reserve); err != nil {
+		return sdk.Coin{}, err
+	}
+
+	return reserve, nil
 }

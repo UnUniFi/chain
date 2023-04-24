@@ -44,6 +44,7 @@ const (
 	KeyPrefixImaginaryFundingRate  = "imaginary_funding_rate"
 	KeyPrefixBlockTimestamp        = "block_timestamp"
 	KeyPrefixLPTBaseRedeemFee      = "lpt_base_redeem_fee"
+	KeyPrefixReservedCoin          = "reserved_coin"
 )
 
 const (
@@ -111,4 +112,8 @@ func RemainingMarginKeyPrefix(posId string) []byte {
 
 func BlockTimestampWithHeight(height int64) []byte {
 	return append([]byte(KeyPrefixBlockTimestamp), []byte(strconv.FormatInt(height, 10))...)
+}
+
+func ReservedCoinKeyPrefix(denom string) []byte {
+	return append([]byte(KeyPrefixReservedCoin), []byte(denom)...)
 }
