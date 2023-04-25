@@ -15,10 +15,11 @@ import (
 func TestPosition_IsValid(t *testing.T) {
 	// make testCases
 	testCases := []struct {
-		name     string
-		position types.Position
-		instance types.PerpetualFuturesPositionInstance
-		exp      bool
+		name           string
+		position       types.Position
+		instance       types.PerpetualFuturesPositionInstance
+		availableAsset sdk.Coin
+		exp            bool
 	}{
 		{
 			name: "Failure due to invalid margin asset",
@@ -37,7 +38,8 @@ func TestPosition_IsValid(t *testing.T) {
 				Size_:        sdk.MustNewDecFromStr("10"),
 				Leverage:     5,
 			},
-			exp: false,
+			availableAsset: sdk.NewCoin("uatom", sdk.NewInt(100000000)),
+			exp:            false,
 		},
 		{
 			name: "Failure due to lack of margin using BaseDenom token",
@@ -55,7 +57,8 @@ func TestPosition_IsValid(t *testing.T) {
 				Size_:        sdk.MustNewDecFromStr("10"),
 				Leverage:     1,
 			},
-			exp: false,
+			availableAsset: sdk.NewCoin("uatom", sdk.NewInt(100000000)),
+			exp:            false,
 		},
 		{
 			name: "Failure due to lack of margin using QuoteDenom token",
@@ -73,7 +76,8 @@ func TestPosition_IsValid(t *testing.T) {
 				Size_:        sdk.MustNewDecFromStr("10"),
 				Leverage:     1,
 			},
-			exp: false,
+			availableAsset: sdk.NewCoin("uatom", sdk.NewInt(100000000)),
+			exp:            false,
 		},
 		{
 			name: "Fauilure due to zero margin",
@@ -91,7 +95,8 @@ func TestPosition_IsValid(t *testing.T) {
 				Size_:        sdk.MustNewDecFromStr("10"),
 				Leverage:     10,
 			},
-			exp: false,
+			availableAsset: sdk.NewCoin("uatom", sdk.NewInt(100000000)),
+			exp:            false,
 		},
 		{
 			name: "Fauilure due to invalid levarage",
@@ -109,7 +114,8 @@ func TestPosition_IsValid(t *testing.T) {
 				Size_:        sdk.MustNewDecFromStr("10"),
 				Leverage:     31,
 			},
-			exp: false,
+			availableAsset: sdk.NewCoin("uatom", sdk.NewInt(100000000)),
+			exp:            false,
 		},
 		{
 			name: "Fauilure due to invalid levarage",
@@ -127,7 +133,27 @@ func TestPosition_IsValid(t *testing.T) {
 				Size_:        sdk.MustNewDecFromStr("10"),
 				Leverage:     1,
 			},
-			exp: false,
+			availableAsset: sdk.NewCoin("uatom", sdk.NewInt(100000000)),
+			exp:            false,
+		},
+		{
+			name: "Fauilure due to lack of the available asset in the pool",
+			position: types.Position{
+				Market: types.Market{
+					BaseDenom:  "uatom",
+					QuoteDenom: "uusdc",
+				},
+				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
+				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+			},
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.MustNewDecFromStr("10"),
+				Leverage:     10,
+			},
+			availableAsset: sdk.NewCoin("uatom", sdk.NewInt(10000)),
+			exp:            false,
 		},
 		{
 			name: "Success",
@@ -145,7 +171,8 @@ func TestPosition_IsValid(t *testing.T) {
 				Size_:        sdk.MustNewDecFromStr("1"),
 				Leverage:     1,
 			},
-			exp: true,
+			availableAsset: sdk.NewCoin("uatom", sdk.NewInt(100000000)),
+			exp:            true,
 		},
 	}
 
@@ -159,13 +186,13 @@ func TestPosition_IsValid(t *testing.T) {
 		tc.position.PositionInstance = *any
 
 		t.Run(tc.name, func(t *testing.T) {
-			err := tc.position.IsValid(params, sdk.Coin{})
+			err := tc.position.IsValid(params, tc.availableAsset)
 			if tc.exp {
 				if err != nil {
 					t.Errorf("expected %v, got %v", tc.exp, err)
 				}
 			} else {
-				if err == nil {
+				if err != nil {
 					t.Errorf("expected %v, got %v", tc.exp, err)
 				}
 			}

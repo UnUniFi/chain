@@ -121,15 +121,14 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 // in reserved property of the PoolMarketCap
 func (k Keeper) AddReserveTokensForPosition(ctx sdk.Context, positionSizeInDenomExponent sdk.Int, denom string) error {
 	reserveOld, err := k.GetReservedCoin(ctx, denom)
-	if err == nil {
+	if err != nil {
 		return err
 	}
 
 	reserveNew := reserveOld.AddAmount(positionSizeInDenomExponent)
-	if err := k.SetReservedCoin(ctx, reserveNew); err == nil {
+	if err := k.SetReservedCoin(ctx, reserveNew); err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -137,12 +136,12 @@ func (k Keeper) AddReserveTokensForPosition(ctx sdk.Context, positionSizeInDenom
 // in reserved property of the PoolMarketCap
 func (k Keeper) SubReserveTokensForPosition(ctx sdk.Context, positionSizeInDenomExponent sdk.Int, denom string) error {
 	reserveOld, err := k.GetReservedCoin(ctx, denom)
-	if err == nil {
+	if err != nil {
 		return err
 	}
 
 	reserveNew := reserveOld.SubAmount(positionSizeInDenomExponent)
-	if err := k.SetReservedCoin(ctx, reserveNew); err == nil {
+	if err := k.SetReservedCoin(ctx, reserveNew); err != nil {
 		return err
 	}
 

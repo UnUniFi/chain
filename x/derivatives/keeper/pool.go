@@ -137,10 +137,11 @@ func (k Keeper) IsPriceReady(ctx sdk.Context) bool {
 }
 
 func (k Keeper) SetReservedCoin(ctx sdk.Context, reserve sdk.Coin) error {
-	bz, err := k.cdc.Marshal(&reserve)
+	bz, err := reserve.Amount.Marshal()
 	if err != nil {
 		return err
 	}
+
 	store := ctx.KVStore(k.storeKey)
 	store.Set(types.ReservedCoinKeyPrefix(reserve.Denom), bz)
 
@@ -151,19 +152,28 @@ func (k Keeper) GetReservedCoin(ctx sdk.Context, denom string) (sdk.Coin, error)
 	store := ctx.KVStore(k.storeKey)
 
 	bz := store.Get(types.ReservedCoinKeyPrefix(denom))
-	reserve := sdk.Coin{}
-	if err := k.cdc.Unmarshal(bz, &reserve); err != nil {
+	reserveAmount := sdk.Int{}
+	if err := reserveAmount.Unmarshal(bz); err != nil {
 		return sdk.Coin{}, err
 	}
 
-	return reserve, nil
+	if reserveAmount.IsNil() {
+		reserveAmount = sdk.ZeroInt()
+	}
+
+	return sdk.NewCoin(denom, reserveAmount), nil
 }
 
 func (k Keeper) AvailableAssetInPool(ctx sdk.Context, denom string) (sdk.Coin, error) {
 	assetBalance := k.GetAssetBalanceInPoolByDenom(ctx, denom)
 	reserve, err := k.GetReservedCoin(ctx, denom)
+
 	if err != nil {
 		return sdk.Coin{}, err
+	}
+
+	if reserve.Amount.IsZero() {
+		reserve = sdk.NewCoin(denom, sdk.ZeroInt())
 	}
 
 	available := assetBalance.Sub(reserve)
@@ -176,7 +186,7 @@ func (k Keeper) AllAvailableAssetsInPool(ctx sdk.Context) (sdk.Coins, error) {
 
 	availableCoins := sdk.Coins{}
 	for _, asset := range assets {
-		available, err := k.AvailableAssetInPoolByDenom(ctx, asset.Denom)
+		available, err := k.AvailableAssetInPool(ctx, asset.Denom)
 		if err != nil {
 			return sdk.Coins{}, err
 		}
