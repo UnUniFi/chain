@@ -262,6 +262,18 @@ func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgWithdr
 		panic("failed to get redeemable amount")
 	}
 
+	// Check if the redeemo amount is available in the pool
+	// If the total amount of asset in the pool is less than the reserved coin,
+	// the user cannot redeem the asset.
+	// Return error to tell the exact cause.
+	availableAsset, err := k.AvailableAssetInPool(ctx, redeemDenom)
+	if err != nil {
+		return err
+	}
+	if availableAsset.IsLTE(redeemAmount) {
+		return types.ErrInsufficientAssetBalance
+	}
+
 	if redeemFee.IsPositive() {
 		// send redeem fee to fee pool
 		err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, types.DerivativeFeeCollector, sdk.Coins{redeemFee})

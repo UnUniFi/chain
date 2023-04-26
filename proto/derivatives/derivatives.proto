@@ -135,7 +135,7 @@ message PoolParams {
 }
 
 message PoolMarketCap {
-  message Breakdown {
+  message AssetInfo {
     string denom = 1 [
       (gogoproto.moretags) = "yaml:\"denom\""
     ];
@@ -149,6 +149,11 @@ message PoolMarketCap {
       (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
       (gogoproto.nullable) = false
     ];
+    string reserved = 4 [
+      (gogoproto.moretags) = "yaml:\"reserved\"",
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+      (gogoproto.nullable) = false
+    ];
   }
 
   string quote_ticker = 1 [
@@ -159,8 +164,8 @@ message PoolMarketCap {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  repeated Breakdown breakdown = 3 [
-    (gogoproto.moretags) = "yaml:\"breakdown\"",
+  repeated AssetInfo asset_info = 3 [
+    (gogoproto.moretags) = "yaml:\"asset_info\"",
     (gogoproto.nullable) = false
   ];
 }
