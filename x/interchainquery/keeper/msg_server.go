@@ -9,7 +9,6 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	clienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
 	commitmenttypes "github.com/cosmos/ibc-go/v7/modules/core/23-commitment/types"
 	"github.com/cosmos/ibc-go/v7/modules/core/exported"
@@ -75,8 +74,7 @@ func (k Keeper) VerifyKeyProof(ctx sdk.Context, msg *types.MsgSubmitQueryRespons
 	case exported.Tendermint:
 		tendermintConsensusState, ok := consensusState.(*tendermint.ConsensusState)
 		if !ok {
-			errMsg := fmt.Sprintf("[ICQ Resp] for query %s, error unmarshaling client state %v", query.Id, clientState)
-			return sdkerrors.Wrapf(types.ErrInvalidICQProof, errMsg)
+			return errorsmod.Wrapf(types.ErrInvalidConsensusState, "Error casting consensus state: %s", err.Error())
 		}
 		stateRoot = tendermintConsensusState.GetRoot()
 	// case exported.Wasm:
@@ -120,59 +118,37 @@ func (k Keeper) VerifyKeyProof(ctx sdk.Context, msg *types.MsgSubmitQueryRespons
 }
 
 // call the query's associated callback function
-func (k Keeper) InvokeCallback(ctx sdk.Context, msg *types.MsgSubmitQueryResponse, q types.Query) error {
-	// get all the stored queries and sort them for determinism
+func (k Keeper) InvokeCallback(ctx sdk.Context, msg *types.MsgSubmitQueryResponse, query types.Query) error {
+	// get all the callback handlers and sort them for determinism
+	// (each module has their own callback handler)
 	moduleNames := []string{}
 	for moduleName := range k.callbacks {
 		moduleNames = append(moduleNames, moduleName)
 	}
 	sort.Strings(moduleNames)
 
+	// Loop through each module until the callbackId is found in one of the module handlers
 	for _, moduleName := range moduleNames {
-		k.Logger(ctx).Info(fmt.Sprintf("[ICQ Resp] executing callback for queryId (%s), module (%s)", q.Id, moduleName))
 		moduleCallbackHandler := k.callbacks[moduleName]
 
-		if moduleCallbackHandler.Has(q.CallbackId) {
-			k.Logger(ctx).Info(fmt.Sprintf("[ICQ Resp] callback (%s) found for module (%s)", q.CallbackId, moduleName))
-			// call the correct callback function
-			err := moduleCallbackHandler.Call(ctx, q.CallbackId, msg.Result, q)
-			if err != nil {
-				k.Logger(ctx).Error(fmt.Sprintf("[ICQ Resp] error in ICQ callback, error: %s, msg: %s, result: %v, type: %s, params: %v", err.Error(), msg.QueryId, msg.Result, q.QueryType, q.Request))
-				return err
-			}
-		} else {
-			k.Logger(ctx).Info(fmt.Sprintf("[ICQ Resp] callback not found for module (%s)", moduleName))
+		// Once the callback is found, invoke the function
+		if moduleCallbackHandler.HasICQCallback(query.CallbackId) {
+			return moduleCallbackHandler.CallICQCallback(ctx, query.CallbackId, msg.Result, query)
 		}
 	}
-	return nil
+
+	// If no callback was found, return an error
+	return types.ErrICQCallbackNotFound
 }
 
-// verify the query has not exceeded its ttl
-func (k Keeper) HasQueryExceededTtl(ctx sdk.Context, msg *types.MsgSubmitQueryResponse, query types.Query) (bool, error) {
-	k.Logger(ctx).Info(fmt.Sprintf("[ICQ Resp] query %s with ttl: %d, resp time: %d.", msg.QueryId, query.Ttl, ctx.BlockHeader().Time.UnixNano()))
-	currBlockTime, err := cast.ToUint64E(ctx.BlockTime().UnixNano())
-	if err != nil {
-		return false, err
-	}
-
-	if query.Ttl < currBlockTime {
-		errMsg := fmt.Sprintf("[ICQ Resp] aborting query callback due to ttl expiry! ttl is %d, time now %d for query of type %s with id %s, on chain %s",
-			query.Ttl, ctx.BlockTime().UnixNano(), query.QueryType, query.ChainId, msg.QueryId)
-		fmt.Println(errMsg)
-		k.Logger(ctx).Error(errMsg)
-		return true, nil
-	}
-	return false, nil
-}
-
+// Handle ICQ query responses by validating the proof, and calling the query's corresponding callback
 func (k msgServer) SubmitQueryResponse(goCtx context.Context, msg *types.MsgSubmitQueryResponse) (*types.MsgSubmitQueryResponseResponse, error) {
-	fmt.Println("DEBUG SubmitQueryResponse", string(k.cdc.MustMarshalJSON(msg)))
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// check if the response has an associated query stored on stride
-	q, found := k.GetQuery(ctx, msg.QueryId)
+	query, found := k.GetQuery(ctx, msg.QueryId)
 	if !found {
-		k.Logger(ctx).Info("[ICQ Resp] ignoring non-existent query response (note: duplicate responses are nonexistent)")
+		k.Logger(ctx).Info("ICQ RESPONSE  | Ignoring non-existent query response (note: duplicate responses are nonexistent)")
 		return &types.MsgSubmitQueryResponseResponse{}, nil // technically this is an error, but will cause the entire tx to fail if we have one 'bad' message, so we can just no-op here.
 	}
 
@@ -180,42 +156,42 @@ func (k msgServer) SubmitQueryResponse(goCtx context.Context, msg *types.MsgSubm
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(types.AttributeKeyQueryId, q.Id),
+			sdk.NewAttribute(types.AttributeKeyQueryId, query.Id),
 		),
 		sdk.NewEvent(
 			"query_response",
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(types.AttributeKeyQueryId, q.Id),
-			sdk.NewAttribute(types.AttributeKeyChainId, q.ChainId),
+			sdk.NewAttribute(types.AttributeKeyQueryId, query.Id),
+			sdk.NewAttribute(types.AttributeKeyChainId, query.ChainId),
 		),
 	})
 
-	// 1. verify the response's proof, if one exists
-	err := k.VerifyKeyProof(ctx, msg, q)
+	// Verify the response's proof, if one exists
+	err := k.VerifyKeyProof(ctx, msg, query)
 	if err != nil {
 		return nil, err
 	}
-	// 2. immediately delete the query so it cannot process again
-	k.DeleteQuery(ctx, q.Id)
 
-	// 3. verify the query's ttl is unexpired
-	ttlExceeded, err := k.HasQueryExceededTtl(ctx, msg, q)
+	// Immediately delete the query so it cannot process again
+	k.DeleteQuery(ctx, query.Id)
+
+	// Verify the query hasn't expired (if the block time is greater than the TTL timestamp, the query is expired)
+	currBlockTime, err := cast.ToUint64E(ctx.BlockTime().UnixNano())
 	if err != nil {
 		return nil, err
 	}
-	if ttlExceeded {
-		k.Logger(ctx).Info(fmt.Sprintf("[ICQ Resp] %s's ttl exceeded: %d < %d.", msg.QueryId, q.Ttl, ctx.BlockHeader().Time.UnixNano()))
+	if query.Ttl < currBlockTime {
 		return &types.MsgSubmitQueryResponseResponse{}, nil
 	}
 
-	// 4. if the query is contentless, end
+	// If the query is contentless, end
 	if len(msg.Result) == 0 {
 		k.Logger(ctx).Info(fmt.Sprintf("[ICQ Resp] query %s is contentless, removing from store.", msg.QueryId))
 		return &types.MsgSubmitQueryResponseResponse{}, nil
 	}
 
-	// 5. call the query's associated callback function
-	err = k.InvokeCallback(ctx, msg, q)
+	// Call the query's associated callback function
+	err = k.InvokeCallback(ctx, msg, query)
 	if err != nil {
 		return nil, err
 	}
