@@ -231,7 +231,7 @@ func (m PerpetualFuturesPosition) RequiredMarginInBase() sdk.Int {
 	return m.PositionInstance.MarginRequirement(sdk.MustNewDecFromStr("1"))
 }
 
-func (m PerpetualFuturesPosition) RequiredMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
+func (m PerpetualFuturesPosition) RequiredMarginInMicroUSD(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
 	// 必要証拠金(USD単位) = 必要証拠金(quote単位) * 現在のquote/USDレート
 	//                    = 必要証拠金(base単位) * 現在のbase/USDレート
 	// 必要証拠金(uusd単位) = 必要証拠金(USD単位) * 1000000
@@ -278,14 +278,14 @@ func (m PerpetualFuturesPosition) CalcReturningAmountAtClose(baseMetricsRate, qu
 
 // ProfitAndLoss returns the profit/loss amount in the margin denom
 func (m PerpetualFuturesPosition) ProfitAndLoss(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
-	pnlAmountInMetrics := sdk.NewDecFromInt(m.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate))
+	pnlAmountInMicroUSD := sdk.NewDecFromInt(m.ProfitAndLossInMicroUSD(baseMetricsRate, quoteMetricsRate))
 
 	// Make it be calculated in the corresponding asset as the principal.
 	var pnlAmount sdk.Dec
 	if m.RemainingMargin.Denom == m.Market.BaseDenom {
-		pnlAmount = pnlAmountInMetrics.Quo(baseMetricsRate.Amount.Amount)
+		pnlAmount = pnlAmountInMicroUSD.Quo(baseMetricsRate.Amount.Amount).Quo(sdk.MustNewDecFromStr(OneMillionString))
 	} else {
-		pnlAmount = pnlAmountInMetrics.Quo(quoteMetricsRate.Amount.Amount)
+		pnlAmount = pnlAmountInMicroUSD.Quo(quoteMetricsRate.Amount.Amount).Quo(sdk.MustNewDecFromStr(OneMillionString))
 	}
 
 	return pnlAmount.TruncateInt()
@@ -303,7 +303,7 @@ func (m PerpetualFuturesPosition) ProfitAndLossInQuote(baseMetricsRate, quoteMet
 	}
 }
 
-func (m PerpetualFuturesPosition) ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
+func (m PerpetualFuturesPosition) ProfitAndLossInMicroUSD(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
 	// 損益(USD単位) = 損益(quote単位) * 現在のquote/USDレート
 	result := sdk.NewDecFromInt(m.ProfitAndLossInQuote(baseMetricsRate, quoteMetricsRate)).Mul(quoteMetricsRate.Amount.Amount)
 	// uusd単位に変換
@@ -313,7 +313,7 @@ func (m PerpetualFuturesPosition) ProfitAndLossInMetrics(baseMetricsRate, quoteM
 // position size takes 0 decimal although price takes 6 decimal (micro unit)
 func (m PerpetualFuturesPosition) MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
 	// 証拠金維持率 = 有効証拠金(uusd単位) ÷ 必要証拠金(uusd単位)
-	return sdk.NewDecFromInt(m.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate)).Quo(sdk.NewDecFromInt(m.RequiredMarginInMetrics(baseMetricsRate, quoteMetricsRate)))
+	return sdk.NewDecFromInt(m.EffectiveMarginInMicroUSD(baseMetricsRate, quoteMetricsRate)).Quo(sdk.NewDecFromInt(m.RequiredMarginInMicroUSD(baseMetricsRate, quoteMetricsRate)))
 }
 
 func (m PerpetualFuturesPosition) RemainingMarginInBase(baseMetricsRate MetricsRateType) sdk.Int {
@@ -330,7 +330,7 @@ func (m PerpetualFuturesPosition) RemainingMarginInQuote(quoteMetricsRate Metric
 	return NormalToMicroInt(result)
 }
 
-func (m PerpetualFuturesPosition) RemainingMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
+func (m PerpetualFuturesPosition) RemainingMarginInMicroUSD(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
 	// 残存証拠金(uusd単位) = 残存証拠金(base単位) * 現在のbase/USDレート * 1000000
 	//                    = 残存証拠金(quote単位) * 現在のquote/USDレート * 1000000
 	if m.RemainingMargin.Denom == m.Market.BaseDenom {
@@ -342,9 +342,9 @@ func (m PerpetualFuturesPosition) RemainingMarginInMetrics(baseMetricsRate, quot
 	}
 }
 
-func (m PerpetualFuturesPosition) EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
+func (m PerpetualFuturesPosition) EffectiveMarginInMicroUSD(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Int {
 	// 有効証拠金(uusd単位) = 残存証拠金(uusd単位) + 損益(uusd単位)
-	return m.RemainingMarginInMetrics(baseMetricsRate, quoteMetricsRate).Add(m.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate))
+	return m.RemainingMarginInMicroUSD(baseMetricsRate, quoteMetricsRate).Add(m.ProfitAndLossInMicroUSD(baseMetricsRate, quoteMetricsRate))
 }
 
 func NewMetricsRateType(unit string, denom string, amount sdk.Dec) MetricsRateType {

@@ -755,7 +755,7 @@ func TestCalcReturningAmountAtClose(t *testing.T) {
 					BaseDenom:  "uatom",
 					QuoteDenom: "uusdc",
 				},
-				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
+				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"), // 1uatom = 0.00001USD = 10USD
 				OpenedQuoteRate: uusdcRate,
 				RemainingMargin: sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
 				PositionInstance: types.PerpetualFuturesPositionInstance{
@@ -764,10 +764,10 @@ func TestCalcReturningAmountAtClose(t *testing.T) {
 					Leverage:     1,
 				},
 			},
-			closedBaseRate: sdk.MustNewDecFromStr("0.0000105"),
+			closedBaseRate: sdk.MustNewDecFromStr("0.0000105"), // 1uatom = 0.0000105USD = 10.5USD
 			closeQuoteRate: uusdcRate,
-			tradingFee:     sdk.NewInt(500000),
-			expReturn:      sdk.NewInt(500000),
+			tradingFee:     sdk.ZeroInt(),
+			expReturn:      sdk.NewInt(500000), // Margin(1000000uusd) - Loss(500000uusd)
 		},
 		{
 			name: "Profit Long position in base denom margin",
@@ -884,9 +884,9 @@ func TestCalcReturningAmountAtClose(t *testing.T) {
 			quoteMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.QuoteDenom, tc.closeQuoteRate)
 
 			returningAmount, lossToLP := tc.position.CalcReturningAmountAtClose(baseMetricsRate, quoteMetricsRate, tc.tradingFee)
-			fmt.Println(returningAmount, lossToLP)
+			fmt.Println(tc.name, returningAmount, lossToLP)
 			if !tc.expReturn.Equal(returningAmount) {
-				t.Error(tc, "expected %v, got %v", tc.expReturn, returningAmount)
+				t.Error(tc, "expected %v, got %v", tc.expReturn, returningAmount, tc.name)
 			}
 
 			if !tc.expLoss.IsNil() {
