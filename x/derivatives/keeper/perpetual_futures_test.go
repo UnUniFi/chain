@@ -153,6 +153,7 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 		QuoteDenom: "uusdc",
 	}
 
+	// TODO: Check the returning amount to the owner
 	positions := []struct {
 		positionId           string
 		margin               sdk.Coin

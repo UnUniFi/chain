@@ -1,3 +1,7 @@
+// InMetrics represents the profit/loss amount in the metrics asset of the market.
+// In the most cases, it means it's in "usd".
+// And IMPORTANTLY, it means it's not calcualted in micro case.
+
 package keeper
 
 import (
@@ -217,11 +221,11 @@ func (k Keeper) MakeQueriedPositions(ctx sdk.Context, positions types.Positions)
 		// fixme do not use sdk.Coin directly
 		positiveOrNegativeProfitCoin := sdk.Coin{
 			Denom:  "uusd",
-			Amount: profit,
+			Amount: types.NormalToMicroInt(profit),
 		}
 		positiveOrNegativeEffectiveMargin := sdk.Coin{
 			Denom:  "uusd",
-			Amount: perpetualFuturesPosition.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate),
+			Amount: types.NormalToMicroInt(perpetualFuturesPosition.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate)),
 		}
 		queriedPosition := types.QueriedPosition{
 			Position:              position,
@@ -264,9 +268,9 @@ func (k Keeper) Position(c context.Context, req *types.QueryPositionRequest) (*t
 	profit := perpetualFuturesPosition.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)
 	return &types.QueryPositionResponse{
 		Position:              position,
-		ValuationProfit:       sdk.NewCoin("uusd", profit),
+		ValuationProfit:       sdk.NewCoin("uusd", types.NormalToMicroInt(profit)),
 		MarginMaintenanceRate: perpetualFuturesPosition.MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate),
-		EffectiveMargin:       sdk.NewCoin("uusd", perpetualFuturesPosition.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate)),
+		EffectiveMargin:       sdk.NewCoin("uusd", types.NormalToMicroInt(perpetualFuturesPosition.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate))),
 	}, nil
 }
 

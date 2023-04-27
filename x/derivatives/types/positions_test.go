@@ -716,6 +716,55 @@ func TestPosition_MarginMaintenanceRate(t *testing.T) {
 	}
 }
 
+func TestProfitAndLossInMetrics(t *testing.T) {
+	uusdcRate := sdk.MustNewDecFromStr("0.000001")
+
+	testCases := []struct {
+		name        string
+		position    types.PerpetualFuturesPosition
+		closedRates []sdk.Dec
+		exp         sdk.Dec
+	}{
+		{
+			name: "Long position profit in Base Denom Margin",
+			position: types.PerpetualFuturesPosition{
+				Market: types.Market{
+					BaseDenom:  "uatom",
+					QuoteDenom: "uusdc",
+				},
+				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate: uusdcRate,
+				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+				PositionInstance: types.PerpetualFuturesPositionInstance{
+					PositionType: types.PositionType_LONG,
+					Size_:        sdk.MustNewDecFromStr("1"),
+				},
+			},
+			closedRates: []sdk.Dec{
+				sdk.MustNewDecFromStr("0.000011"),
+				uusdcRate,
+			},
+			exp: sdk.MustNewDecFromStr("1"),
+		},
+		// TODO: add more test cases like TestPerpetualFuturesPosition_CalcProfitAndLoss cases
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			quoteTicker := "usd"
+			baseMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.BaseDenom, tc.closedRates[0])
+			quoteMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.QuoteDenom, tc.closedRates[1])
+
+			// ProfitAndLoss returns PnL in the Margin Denom
+			result := tc.position.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)
+			fmt.Println(result)
+			if !tc.exp.Equal(result) {
+				t.Error(tc, "expected %v, got %v", tc.exp, result)
+			}
+		})
+	}
+}
+
 // make PerpetualFuturesPosition.CalcProfitAndLoss test
 func TestPerpetualFuturesPosition_CalcProfitAndLoss(t *testing.T) {
 	uusdcRate := sdk.MustNewDecFromStr("0.000001")
