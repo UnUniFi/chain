@@ -16,6 +16,7 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 		QuoteDenom: "uusdc",
 	}
 
+	// TODO: add failure case due to the lack of the available asset in the pool
 	positions := []struct {
 		positionId           string
 		margin               sdk.Coin
@@ -153,6 +154,7 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 		QuoteDenom: "uusdc",
 	}
 
+	// TODO: Check the returning amount to the owner
 	positions := []struct {
 		positionId           string
 		margin               sdk.Coin
