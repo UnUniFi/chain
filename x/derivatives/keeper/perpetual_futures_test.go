@@ -16,7 +16,6 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 		QuoteDenom: "uusdc",
 	}
 
-	// TODO: add failure case due to the lack of the available asset in the pool
 	positions := []struct {
 		positionId           string
 		margin               sdk.Coin
@@ -68,15 +67,37 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
 			expNetPosition:       sdk.MustNewDecFromStr("2").MulInt64(1000000).TruncateInt(),
 		},
+		// TODO: added failure case but it is not failed now
+		{
+			positionId: "4",
+			margin:     sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.MustNewDecFromStr("1"),
+				Leverage:     10,
+			},
+			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(0)),
+			expNetPosition:       sdk.MustNewDecFromStr("2").MulInt64(1000000).TruncateInt(),
+		},
 	}
 
 	for _, testPosition := range positions {
 		err := suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{testPosition.availableAssetInPool})
-		suite.Require().NoError(err)
+		if testPosition.positionId == "4" {
+			suite.Require().Error(err)
+		} else {
+			suite.Require().NoError(err)
+		}
 
 		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.Bytes(), testPosition.margin, market, testPosition.instance)
-		suite.Require().NoError(err)
-		suite.Require().NotNil(position)
+		if testPosition.positionId == "4" {
+			suite.Require().Nil(position)
+			suite.Require().Error(err)
+			continue
+		} else {
+			suite.Require().NoError(err)
+			suite.Require().NotNil(position)
+		}
 
 		// Check if the position was added
 		netPosition := suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market, testPosition.instance.PositionType)
