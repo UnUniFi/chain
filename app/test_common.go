@@ -35,10 +35,6 @@ import (
 	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 
-	auctionkeeper "github.com/UnUniFi/chain/x/auction/keeper"
-	cdpkeeper "github.com/UnUniFi/chain/x/cdp/keeper"
-	incentivekeeper "github.com/UnUniFi/chain/x/incentive/keeper"
-	ununifidistkeeper "github.com/UnUniFi/chain/x/ununifidist/keeper"
 	// authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
 	// "github.com/cosmos/cosmos-sdk/x/supply"
 	// "github.com/CosmWasm/wasmd/x/wasm"
@@ -100,8 +96,6 @@ func (tApp TestApp) GetUpgradeKeeper() *upgradekeeper.Keeper  { return tApp.Upgr
 func (tApp TestApp) GetParamsKeeper() paramskeeper.Keeper     { return tApp.ParamsKeeper }
 
 // func (tApp TestApp) GetVVKeeper() validatorvesting.Keeper       { return tApp.vvKeeper }
-func (tApp TestApp) GetAuctionKeeper() auctionkeeper.Keeper     { return tApp.auctionKeeper }
-func (tApp TestApp) GetCDPKeeper() cdpkeeper.Keeper             { return tApp.cdpKeeper }
 func (tApp TestApp) GetPriceFeedKeeper() pricefeedkeeper.Keeper { return tApp.pricefeedKeeper }
 
 // func (tApp TestApp) GetHarvestKeeper() harvest.Keeper           { return tApp.harvestKeeper }

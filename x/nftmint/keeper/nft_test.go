@@ -1,11 +1,12 @@
 package keeper_test
 
 import (
-	"github.com/UnUniFi/chain/x/nftmint/keeper"
-	"github.com/UnUniFi/chain/x/nftmint/types"
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
-	"github.com/tendermint/tendermint/crypto/ed25519"
+
+	"github.com/UnUniFi/chain/x/nftmint/keeper"
+	"github.com/UnUniFi/chain/x/nftmint/types"
 )
 
 const (

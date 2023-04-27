@@ -3,10 +3,11 @@ package cli
 import (
 	"context"
 
-	"github.com/UnUniFi/chain/x/cdp/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
+
+	"github.com/UnUniFi/chain/x/deprecated/cdp/types"
 )
 
 func CmdQueryParams() *cobra.Command {

@@ -1,8 +1,9 @@
 package keeper
 
 import (
-	"github.com/UnUniFi/chain/x/cdp/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/UnUniFi/chain/x/deprecated/cdp/types"
 )
 
 // Implements StakingHooks interface

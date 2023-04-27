@@ -12,15 +12,16 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
-	"github.com/UnUniFi/chain/x/auction/client/cli"
-	"github.com/UnUniFi/chain/x/auction/keeper"
-	"github.com/UnUniFi/chain/x/auction/types"
-	"github.com/UnUniFi/chain/x/cdp/client/rest"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+
+	"github.com/UnUniFi/chain/x/deprecated/auction/client/cli"
+	"github.com/UnUniFi/chain/x/deprecated/auction/keeper"
+	"github.com/UnUniFi/chain/x/deprecated/auction/types"
+	"github.com/UnUniFi/chain/x/deprecated/cdp/client/rest"
 )
 
 var (

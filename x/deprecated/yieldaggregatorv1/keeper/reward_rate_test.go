@@ -3,7 +3,7 @@ package keeper_test
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/x/yieldaggregatorv1/types"
+	"github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/types"
 )
 
 func (suite *KeeperTestSuite) TestDailyRewardPercentGetSet() {

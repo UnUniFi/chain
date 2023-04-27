@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/x/ununifidist/types"
+	"github.com/UnUniFi/chain/x/deprecated/ununifidist/types"
 )
 
 func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {

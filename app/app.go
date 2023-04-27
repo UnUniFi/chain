@@ -155,21 +155,12 @@ import (
 	"github.com/spf13/cast"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
-	"github.com/UnUniFi/chain/x/auction"
-	auctionkeeper "github.com/UnUniFi/chain/x/auction/keeper"
-	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
-	"github.com/UnUniFi/chain/x/cdp"
-	cdpkeeper "github.com/UnUniFi/chain/x/cdp/keeper"
-	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 	"github.com/UnUniFi/chain/x/derivatives"
 	derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
 	derivativestypes "github.com/UnUniFi/chain/x/derivatives/types"
 	ecosystemincentive "github.com/UnUniFi/chain/x/ecosystem-incentive"
 	ecosystemincentivekeeper "github.com/UnUniFi/chain/x/ecosystem-incentive/keeper"
 	ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystem-incentive/types"
-	"github.com/UnUniFi/chain/x/incentive"
-	incentivekeeper "github.com/UnUniFi/chain/x/incentive/keeper"
-	incentivetypes "github.com/UnUniFi/chain/x/incentive/types"
 	"github.com/UnUniFi/chain/x/nftmarket"
 	nftmarketkeeper "github.com/UnUniFi/chain/x/nftmarket/keeper"
 	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
@@ -179,9 +170,6 @@ import (
 	"github.com/UnUniFi/chain/x/pricefeed"
 	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
-	"github.com/UnUniFi/chain/x/ununifidist"
-	ununifidistkeeper "github.com/UnUniFi/chain/x/ununifidist/keeper"
-	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
 )
 
 const Name = "ununifi"
@@ -282,16 +270,11 @@ var (
 		recordsmodule.AppModuleBasic{},
 		icacallbacksmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
-		auction.AppModuleBasic{},
-		cdp.AppModuleBasic{},
 		ecosystemincentive.AppModuleBasic{},
 		pricefeed.AppModuleBasic{},
-		ununifidist.AppModuleBasic{},
-		incentive.AppModuleBasic{},
 		nftmint.AppModuleBasic{},
 		nftmarket.AppModuleBasic{},
 		derivatives.AppModuleBasic{},
-		// wasm.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -310,11 +293,7 @@ var (
 		yieldfarmtypes.ModuleName:       {authtypes.Minter},
 		yieldaggregatortypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 		ibcfeetypes.ModuleName:          nil,
-		auctiontypes.ModuleName:            nil,
-		cdptypes.ModuleName:                {authtypes.Minter, authtypes.Burner},
-		cdptypes.LiquidatorMacc:            {authtypes.Minter, authtypes.Burner},
 		ecosystemincentivetypes.ModuleName: nil,
-		ununifidisttypes.ModuleName:        {authtypes.Minter},
 		nft.ModuleName:                          nil,
 		nftminttypes.ModuleName:                 nil,
 		nftmarkettypes.ModuleName:               nil,
@@ -410,11 +389,7 @@ type App struct {
 	RecordsKeeper            recordsmodulekeeper.Keeper
 	ScopedIcacallbacksKeeper capabilitykeeper.ScopedKeeper
 	IcacallbacksKeeper       icacallbacksmodulekeeper.Keeper
-	auctionKeeper            auctionkeeper.Keeper
-	cdpKeeper                cdpkeeper.Keeper
 	EcosystemincentiveKeeper ecosystemincentivekeeper.Keeper
-	incentiveKeeper          incentivekeeper.Keeper
-	ununifidistKeeper        ununifidistkeeper.Keeper
 	PricefeedKeeper          pricefeedkeeper.Keeper
 	NftmintKeeper            nftmintkeeper.Keeper
 	NftmarketKeeper          nftmarketkeeper.Keeper
@@ -475,10 +450,8 @@ func NewApp(
 		recordsmoduletypes.StoreKey,
 		icacallbacksmoduletypes.StoreKey,
 		ibcfeetypes.StoreKey,
-		auctiontypes.StoreKey, cdptypes.StoreKey,
-		ecosystemincentivetypes.StoreKey, incentivetypes.StoreKey,
-		ununifidisttypes.StoreKey, pricefeedtypes.StoreKey,
-		// wasm.StoreKey,
+		ecosystemincentivetypes.StoreKey, 
+		pricefeedtypes.StoreKey,
 		nftkeeper.StoreKey,
 		nftminttypes.StoreKey,
 		nftmarkettypes.StoreKey,
@@ -814,23 +787,7 @@ func NewApp(
 		app.GetSubspace(ecosystemincentivetypes.ModuleName),
 		app.BankKeeper,
 	)
-	app.incentiveKeeper = incentivekeeper.NewKeeper(
-		appCodec,
-		keys[incentivetypes.StoreKey],
-		keys[incentivetypes.MemStoreKey],
-		app.GetSubspace(incentivetypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-		&cdpKeeper,
-	)
-	app.ununifidistKeeper = ununifidistkeeper.NewKeeper(
-		appCodec,
-		keys[ununifidisttypes.StoreKey],
-		keys[ununifidisttypes.MemStoreKey],
-		app.GetSubspace(ununifidisttypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-	)
+	
 	
 	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
 
@@ -918,7 +875,6 @@ func NewApp(
 	)
 
 	// create Keeper objects which have Hooks
-	app.cdpKeeper = *cdpKeeper.SetHooks(cdptypes.NewMultiCdpHooks(app.incentiveKeeper.Hooks()))
 	app.NftmarketKeeper = *nftmarketKeeper.SetHooks(nftmarkettypes.NewMultiNftmarketHooks(app.EcosystemincentiveKeeper.Hooks()))
 
 
@@ -989,12 +945,8 @@ func NewApp(
 		yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
 
 		
-		auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
-		cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.PricefeedKeeper),
 		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
 		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
-		incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
-		ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
 		pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
 		nftmint.NewAppModule(appCodec, app.NftmintKeeper, app.NFTKeeper),
 		nftmarket.NewAppModule(appCodec, app.NftmarketKeeper, app.AccountKeeper, app.BankKeeper),
@@ -1024,11 +976,7 @@ func NewApp(
 		vestingtypes.ModuleName,
 		// additional non simd modules
 		// liquiditytypes.ModuleName,
-		ununifidisttypes.ModuleName,
-		auctiontypes.ModuleName,
-		cdptypes.ModuleName,
 		ecosystemincentivetypes.ModuleName,
-		incentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
 		nftminttypes.ModuleName,
 		nftmarkettypes.ModuleName,
@@ -1121,9 +1069,6 @@ func NewApp(
 		vestingtypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 		pricefeedtypes.ModuleName,
-		cdptypes.ModuleName,
-		incentivetypes.ModuleName,
-		ununifidisttypes.ModuleName,
 		nftminttypes.ModuleName,
 		nftmarkettypes.ModuleName,
 		ecosystemincentivetypes.ModuleName,

@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 
-	"github.com/UnUniFi/chain/x/cdp/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,6 +10,8 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"github.com/UnUniFi/chain/x/deprecated/cdp/types"
 )
 
 func (k Keeper) CdpAll(c context.Context, req *types.QueryAllCdpRequest) (*types.QueryAllCdpResponse, error) {

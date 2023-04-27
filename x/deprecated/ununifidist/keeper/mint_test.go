@@ -8,11 +8,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	tmtime "github.com/tendermint/tendermint/types/time"
+	tmtime "github.com/cometbft/cometbft/types/time"
 
 	"github.com/UnUniFi/chain/app"
-	"github.com/UnUniFi/chain/x/ununifidist/keeper"
-	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
+	"github.com/UnUniFi/chain/x/deprecated/ununifidist/keeper"
+	ununifidisttypes "github.com/UnUniFi/chain/x/deprecated/ununifidist/types"
 )
 
 type KeeperTestSuite struct {

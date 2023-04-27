@@ -6,12 +6,13 @@ import (
 	"github.com/cometbft/cometbft/libs/log"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	stakeibckeeper "github.com/UnUniFi/chain/x/stakeibc/keeper"
-	"github.com/UnUniFi/chain/x/yieldaggregatorv1/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+
+	"github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/types"
+	stakeibckeeper "github.com/UnUniFi/chain/x/stakeibc/keeper"
 )
 
 type Keeper struct {

@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/UnUniFi/chain/x/yieldaggregatorv1/types"
+	"github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/types"
 )
 
 func TestGenesisState_Validate(t *testing.T) {

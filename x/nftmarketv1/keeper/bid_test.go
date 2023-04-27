@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"time"
 
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 
 	ununifitypes "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/nftmarketv1/types"

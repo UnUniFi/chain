@@ -7,7 +7,7 @@ import (
 
 	"github.com/UnUniFi/chain/x/nftmarketv1/types"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	abci "github.com/cometbft/cometbft/abci/types"
 )
 
 func NewQuerier(k Keeper, legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {

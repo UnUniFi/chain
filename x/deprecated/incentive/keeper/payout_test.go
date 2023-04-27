@@ -11,10 +11,10 @@ import (
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 
 	"github.com/UnUniFi/chain/app"
-	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	cdptypes "github.com/UnUniFi/chain/x/deprecated/cdp/types"
 
-	"github.com/UnUniFi/chain/x/incentive/types"
-	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
+	"github.com/UnUniFi/chain/x/deprecated/incentive/types"
+	ununifidisttypes "github.com/UnUniFi/chain/x/deprecated/ununifidist/types"
 )
 
 func (suite *KeeperTestSuite) TestPayoutCdpMintingClaim() {

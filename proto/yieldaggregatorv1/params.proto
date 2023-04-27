@@ -3,7 +3,7 @@ package ununifi.chain.yieldaggregator;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/UnUniFi/chain/x/yieldaggregatorv1/types";
+option go_package = "github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/types";
 
 // Params defines the parameters for the module.
 message Params {

@@ -3,16 +3,17 @@ package keeper_test
 import (
 	"time"
 
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 
+	transfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
+
+	"github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/types"
 	epochtypes "github.com/UnUniFi/chain/x/epochs/types"
 	recordstypes "github.com/UnUniFi/chain/x/records/types"
 	stakeibctypes "github.com/UnUniFi/chain/x/stakeibc/types"
-	"github.com/UnUniFi/chain/x/yieldaggregatorv1/types"
 	yieldfarmtypes "github.com/UnUniFi/chain/x/yieldfarm/types"
-	transfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 )
 
 func (suite *KeeperTestSuite) TestInvestOnTarget() {

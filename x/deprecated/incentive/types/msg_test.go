@@ -7,9 +7,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/tendermint/tendermint/crypto"
+	"github.com/cometbft/cometbft/crypto"
 
-	incentivetypes "github.com/UnUniFi/chain/x/incentive/types"
+	incentivetypes "github.com/UnUniFi/chain/x/deprecated/incentive/types"
 )
 
 type msgTest struct {

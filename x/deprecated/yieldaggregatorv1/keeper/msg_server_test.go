@@ -1,11 +1,11 @@
 package keeper_test
 
 import (
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 
-	"github.com/UnUniFi/chain/x/yieldaggregatorv1/keeper"
-	"github.com/UnUniFi/chain/x/yieldaggregatorv1/types"
+	"github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/keeper"
+	"github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/types"
 )
 
 func (suite *KeeperTestSuite) TestMsgServerSetDailyRewardPercent() {

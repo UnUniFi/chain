@@ -7,11 +7,11 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	tmtime "github.com/tendermint/tendermint/types/time"
+	tmtime "github.com/cometbft/cometbft/types/time"
 
 	"github.com/UnUniFi/chain/app"
-	"github.com/UnUniFi/chain/x/cdp/keeper"
-	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	"github.com/UnUniFi/chain/x/deprecated/cdp/keeper"
+	cdptypes "github.com/UnUniFi/chain/x/deprecated/cdp/types"
 )
 
 // saving the result to a module level variable ensures the compiler doesn't optimize the test away

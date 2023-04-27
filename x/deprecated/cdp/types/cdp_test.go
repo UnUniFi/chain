@@ -10,11 +10,11 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/tendermint/tendermint/crypto/secp256k1"
-	tmtime "github.com/tendermint/tendermint/types/time"
+	"github.com/cometbft/cometbft/crypto/secp256k1"
+	tmtime "github.com/cometbft/cometbft/types/time"
 
 	ununifitypes "github.com/UnUniFi/chain/types"
-	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	cdptypes "github.com/UnUniFi/chain/x/deprecated/cdp/types"
 )
 
 type CdpValidationSuite struct {

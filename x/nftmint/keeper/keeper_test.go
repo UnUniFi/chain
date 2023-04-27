@@ -3,10 +3,11 @@ package keeper_test
 import (
 	"testing"
 
-	simapp "github.com/UnUniFi/chain/app"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
+	simapp "github.com/UnUniFi/chain/app"
 )
 
 type KeeperTestSuite struct {

@@ -10,13 +10,14 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	tmtime "github.com/tendermint/tendermint/types/time"
+	tmtime "github.com/cometbft/cometbft/types/time"
 
-	"github.com/UnUniFi/chain/app"
-	"github.com/UnUniFi/chain/x/cdp/keeper"
-	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+
+	"github.com/UnUniFi/chain/app"
+	"github.com/UnUniFi/chain/x/deprecated/cdp/keeper"
+	cdptypes "github.com/UnUniFi/chain/x/deprecated/cdp/types"
 )
 
 type CdpTestSuite struct {

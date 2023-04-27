@@ -9,12 +9,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/UnUniFi/chain/app"
-	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
-	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+
+	"github.com/UnUniFi/chain/app"
+	auctiontypes "github.com/UnUniFi/chain/x/deprecated/auction/types"
+	cdptypes "github.com/UnUniFi/chain/x/deprecated/cdp/types"
 )
 
 func fundAccount(bk bankkeeper.Keeper, ctx sdk.Context, addr sdk.AccAddress, coins sdk.Coins) error {

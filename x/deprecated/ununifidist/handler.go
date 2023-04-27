@@ -3,10 +3,11 @@ package ununifidist
 import (
 	"fmt"
 
-	"github.com/UnUniFi/chain/x/ununifidist/keeper"
-	"github.com/UnUniFi/chain/x/ununifidist/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	"github.com/UnUniFi/chain/x/deprecated/ununifidist/keeper"
+	"github.com/UnUniFi/chain/x/deprecated/ununifidist/types"
 )
 
 // NewHandler ...

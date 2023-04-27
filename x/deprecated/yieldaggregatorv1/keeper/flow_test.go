@@ -3,11 +3,11 @@ package keeper_test
 import (
 	"time"
 
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 
-	"github.com/UnUniFi/chain/x/yieldaggregatorv1/types"
+	"github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/types"
 	"github.com/UnUniFi/chain/x/yieldfarm"
 	yieldfarmtypes "github.com/UnUniFi/chain/x/yieldfarm/types"
 )

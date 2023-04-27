@@ -7,9 +7,10 @@ import (
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
-	yieldaggregatorsimulation "github.com/UnUniFi/chain/x/yieldaggregatorv1/simulation"
-	"github.com/UnUniFi/chain/x/yieldaggregatorv1/types"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
+
+	yieldaggregatorsimulation "github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/simulation"
+	"github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/types"
 )
 
 // avoid unused import issue

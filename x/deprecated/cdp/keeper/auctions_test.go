@@ -4,16 +4,16 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/app"
-	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
+	auctiontypes "github.com/UnUniFi/chain/x/deprecated/auction/types"
 
-	cdpkeeper "github.com/UnUniFi/chain/x/cdp/keeper"
-	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	cdpkeeper "github.com/UnUniFi/chain/x/deprecated/cdp/keeper"
+	cdptypes "github.com/UnUniFi/chain/x/deprecated/cdp/types"
 
 	"github.com/stretchr/testify/suite"
 
+	"github.com/cometbft/cometbft/crypto"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	"github.com/tendermint/tendermint/crypto"
-	tmtime "github.com/tendermint/tendermint/types/time"
+	tmtime "github.com/cometbft/cometbft/types/time"
 )
 
 type AuctionTestSuite struct {

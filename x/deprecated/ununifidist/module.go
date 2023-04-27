@@ -14,14 +14,15 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
-	"github.com/UnUniFi/chain/x/ununifidist/client/cli"
-	"github.com/UnUniFi/chain/x/ununifidist/keeper"
-	"github.com/UnUniFi/chain/x/ununifidist/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+
+	"github.com/UnUniFi/chain/x/deprecated/ununifidist/client/cli"
+	"github.com/UnUniFi/chain/x/deprecated/ununifidist/keeper"
+	"github.com/UnUniFi/chain/x/deprecated/ununifidist/types"
 )
 
 var (

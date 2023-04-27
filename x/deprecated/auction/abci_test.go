@@ -10,12 +10,13 @@ import (
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
-	"github.com/UnUniFi/chain/app"
-	"github.com/UnUniFi/chain/x/auction"
-	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
-	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+
+	"github.com/UnUniFi/chain/app"
+	"github.com/UnUniFi/chain/x/deprecated/auction"
+	auctiontypes "github.com/UnUniFi/chain/x/deprecated/auction/types"
+	cdptypes "github.com/UnUniFi/chain/x/deprecated/cdp/types"
 )
 
 func fundModuleAccount(bk bankkeeper.Keeper, ctx sdk.Context, modName string, coins sdk.Coins) error {

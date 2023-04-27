@@ -2,12 +2,12 @@ package keeper_test
 
 import (
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	tmtime "github.com/cometbft/cometbft/types/time"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/suite"
-	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/UnUniFi/chain/app"
-	"github.com/UnUniFi/chain/x/cdp/keeper"
+	"github.com/UnUniFi/chain/x/deprecated/cdp/keeper"
 )
 
 type KeeperTestSuite struct {

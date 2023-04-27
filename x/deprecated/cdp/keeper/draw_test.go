@@ -9,11 +9,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	tmtime "github.com/tendermint/tendermint/types/time"
+	tmtime "github.com/cometbft/cometbft/types/time"
 
 	"github.com/UnUniFi/chain/app"
-	"github.com/UnUniFi/chain/x/cdp/keeper"
-	"github.com/UnUniFi/chain/x/cdp/types"
+	"github.com/UnUniFi/chain/x/deprecated/cdp/keeper"
+	"github.com/UnUniFi/chain/x/deprecated/cdp/types"
 )
 
 type DrawTestSuite struct {

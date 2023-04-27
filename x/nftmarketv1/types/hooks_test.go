@@ -6,8 +6,8 @@ import (
 	simapp "github.com/UnUniFi/chain/app"
 	"github.com/UnUniFi/chain/x/nftmarketv1/types"
 
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/stretchr/testify/suite"
 )

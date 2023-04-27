@@ -1,15 +1,16 @@
 package yieldfarm
 
 import (
-	"github.com/UnUniFi/chain/x/yieldfarm/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
-	// yieldaggregatorsimulation "github.com/UnUniFi/chain/x/yieldaggregatorv1/simulation"
-	// "github.com/UnUniFi/chain/x/yieldaggregatorv1/types"
+	"github.com/UnUniFi/chain/x/yieldfarm/types"
+
+	// yieldaggregatorsimulation "github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/simulation"
+	// "github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/types"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 )
 

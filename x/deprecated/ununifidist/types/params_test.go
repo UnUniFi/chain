@@ -7,7 +7,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
+	ununifidisttypes "github.com/UnUniFi/chain/x/deprecated/ununifidist/types"
 )
 
 type paramTest struct {

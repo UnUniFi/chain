@@ -11,12 +11,12 @@ import (
 	simulation "github.com/cosmos/cosmos-sdk/types/simulation"
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	tmtime "github.com/tendermint/tendermint/types/time"
+	tmtime "github.com/cometbft/cometbft/types/time"
 
 	"github.com/UnUniFi/chain/app"
-	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
-	"github.com/UnUniFi/chain/x/cdp/keeper"
-	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	auctiontypes "github.com/UnUniFi/chain/x/deprecated/auction/types"
+	"github.com/UnUniFi/chain/x/deprecated/cdp/keeper"
+	cdptypes "github.com/UnUniFi/chain/x/deprecated/cdp/types"
 )
 
 type SeizeTestSuite struct {

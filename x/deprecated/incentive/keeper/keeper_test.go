@@ -14,15 +14,16 @@ import (
 	// supplyexported "github.com/cosmos/cosmos-sdk/x/supply/exported"
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	tmtime "github.com/tendermint/tendermint/types/time"
+	tmtime "github.com/cometbft/cometbft/types/time"
 
 	"github.com/UnUniFi/chain/app"
 	// committeekeeper "github.com/UnUniFi/chain/x/committee/keeper"
 	// hardkeeper "github.com/UnUniFi/chain/x/hard/keeper"
 
-	"github.com/UnUniFi/chain/x/incentive/keeper"
-	"github.com/UnUniFi/chain/x/incentive/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+
+	"github.com/UnUniFi/chain/x/deprecated/incentive/keeper"
+	"github.com/UnUniFi/chain/x/deprecated/incentive/types"
 )
 
 // Test suite used for all keeper tests

@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/UnUniFi/chain/x/cdp/types"
+	"github.com/UnUniFi/chain/x/deprecated/cdp/types"
 )
 
 // DepositCollateral adds collateral to a cdp

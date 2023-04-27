@@ -11,13 +11,13 @@ import (
 
 	tmabcitypes "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	tmtime "github.com/tendermint/tendermint/types/time"
+	tmtime "github.com/cometbft/cometbft/types/time"
 
 	"github.com/UnUniFi/chain/app"
-	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
-	cdp "github.com/UnUniFi/chain/x/cdp"
-	cdpkeeper "github.com/UnUniFi/chain/x/cdp/keeper"
-	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	auctiontypes "github.com/UnUniFi/chain/x/deprecated/auction/types"
+	cdp "github.com/UnUniFi/chain/x/deprecated/cdp"
+	cdpkeeper "github.com/UnUniFi/chain/x/deprecated/cdp/keeper"
+	cdptypes "github.com/UnUniFi/chain/x/deprecated/cdp/types"
 )
 
 type ModuleTestSuite struct {

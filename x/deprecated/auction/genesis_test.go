@@ -13,8 +13,8 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/UnUniFi/chain/app"
-	"github.com/UnUniFi/chain/x/auction"
-	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
+	"github.com/UnUniFi/chain/x/deprecated/auction"
+	auctiontypes "github.com/UnUniFi/chain/x/deprecated/auction/types"
 )
 
 var _, testAddrs = app.GeneratePrivKeyAddressPairs(2)

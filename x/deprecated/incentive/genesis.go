@@ -3,9 +3,10 @@ package incentive
 import (
 	"fmt"
 
-	"github.com/UnUniFi/chain/x/incentive/keeper"
-	"github.com/UnUniFi/chain/x/incentive/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/UnUniFi/chain/x/deprecated/incentive/keeper"
+	"github.com/UnUniFi/chain/x/deprecated/incentive/types"
 )
 
 // InitGenesis initializes the store state from a genesis state.
