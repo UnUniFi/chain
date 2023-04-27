@@ -340,7 +340,8 @@ func TestEffectiveMarginInMetrics(t *testing.T) {
 		name                  string
 		position              types.Position
 		instance              types.PerpetualFuturesPositionInstance
-		closedPrices          []sdk.Dec
+		closedBaseRate        sdk.Dec
+		closedQuoteRate       sdk.Dec
 		expReqMarginInMetrics sdk.Dec
 	}{
 		{
@@ -359,10 +360,8 @@ func TestEffectiveMarginInMetrics(t *testing.T) {
 				Size_:        sdk.MustNewDecFromStr("1"),
 				Leverage:     10,
 			},
-			closedPrices: []sdk.Dec{
-				sdk.MustNewDecFromStr("0.00001"),
-				sdk.MustNewDecFromStr("0.000001"),
-			},
+			closedBaseRate:        sdk.MustNewDecFromStr("0.00001"),
+			closedQuoteRate:       sdk.MustNewDecFromStr("0.000001"),
 			expReqMarginInMetrics: sdk.MustNewDecFromStr("10"),
 		},
 		{
@@ -381,13 +380,50 @@ func TestEffectiveMarginInMetrics(t *testing.T) {
 				Size_:        sdk.MustNewDecFromStr("1"),
 				Leverage:     5,
 			},
-			closedPrices: []sdk.Dec{
-				sdk.MustNewDecFromStr("0.00001"),
-				sdk.MustNewDecFromStr("0.000001"),
-			},
+			closedBaseRate:        sdk.MustNewDecFromStr("0.00001"),
+			closedQuoteRate:       sdk.MustNewDecFromStr("0.000001"),
 			expReqMarginInMetrics: sdk.MustNewDecFromStr("10"),
 		},
-		// TODO: add the cases when the prices are changed
+		{
+			name: "In Long type, price changed",
+			position: types.Position{
+				Market: types.Market{
+					BaseDenom:  "uatom",
+					QuoteDenom: "uusdc",
+				},
+				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
+				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+			},
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.MustNewDecFromStr("1"),
+				Leverage:     10,
+			},
+			closedBaseRate:        sdk.MustNewDecFromStr("0.000012"),
+			closedQuoteRate:       sdk.MustNewDecFromStr("0.000001"),
+			expReqMarginInMetrics: sdk.MustNewDecFromStr("14"), // margin 1ATOM(=12USD) + profit 2USD
+		},
+		{
+			name: "In Short type, price changed",
+			position: types.Position{
+				Market: types.Market{
+					BaseDenom:  "uatom",
+					QuoteDenom: "uusdc",
+				},
+				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
+				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+			},
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_SHORT,
+				Size_:        sdk.MustNewDecFromStr("1"),
+				Leverage:     10,
+			},
+			closedBaseRate:        sdk.MustNewDecFromStr("0.000012"),
+			closedQuoteRate:       sdk.MustNewDecFromStr("0.000001"),
+			expReqMarginInMetrics: sdk.MustNewDecFromStr("10"), // margin 1ATOM(=12USD) - loss 2USD
+		},
 	}
 
 	// run testCases
@@ -400,13 +436,13 @@ func TestEffectiveMarginInMetrics(t *testing.T) {
 
 		pfPosition, _ := types.NewPerpetualFuturesPositionFromPosition(tc.position)
 		quoteTicker := "usd"
-		baseMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.BaseDenom, tc.position.OpenedBaseRate)
-		quoteMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.QuoteDenom, tc.position.OpenedQuoteRate)
+		baseMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.BaseDenom, tc.closedBaseRate)
+		quoteMetricsRate := types.NewMetricsRateType(quoteTicker, tc.position.Market.QuoteDenom, tc.closedQuoteRate)
 
 		t.Run(tc.name, func(t *testing.T) {
 			effMarginInMetrics := pfPosition.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate)
 			if !tc.expReqMarginInMetrics.Equal(effMarginInMetrics) {
-				t.Errorf("expected %v, got %v", tc.expReqMarginInMetrics, effMarginInMetrics)
+				t.Errorf(tc.name, "expected %v, got %v", tc.expReqMarginInMetrics, effMarginInMetrics)
 			}
 		})
 	}
