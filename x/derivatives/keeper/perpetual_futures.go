@@ -70,6 +70,7 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 		OpenedQuoteRate:  openedQuoteRate,
 		PositionInstance: *any,
 		RemainingMargin:  margin,
+		LastLeviedAt:     ctx.BlockTime(),
 	}
 
 	// General validation for the position creation
@@ -252,9 +253,10 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient ununifiTypes.StringAccAddress, position types.Position, positionInstance types.PerpetualFuturesPositionInstance) error {
 	params := k.GetParams(ctx)
 
-	netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, position.Market, positionInstance.PositionType).PositionSizeInDenomExponent
+	microPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, position.Market, positionInstance.PositionType).PositionSizeInDenomExponent
+	netPosition := sdk.NewDecFromInt(microPosition).Quo(sdk.MustNewDecFromStr(types.OneMillionString))
 
-	imaginaryFundingRate := sdk.NewDecFromInt(netPosition).Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
+	imaginaryFundingRate := netPosition.Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
 	imaginaryFundingFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
 	commissionFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
 
