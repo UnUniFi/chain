@@ -12,7 +12,7 @@ import (
 	"github.com/UnUniFi/chain/types"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 )
 
 // TestKeeper_SetGetMarket tests adding markets to the pricefeed, getting markets from the store
