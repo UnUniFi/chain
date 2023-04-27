@@ -746,6 +746,27 @@ func TestProfitAndLossInMetrics(t *testing.T) {
 			},
 			exp: sdk.MustNewDecFromStr("1"),
 		},
+		{
+			name: "Long position profit in Quote Denom Margin",
+			position: types.PerpetualFuturesPosition{
+				Market: types.Market{
+					BaseDenom:  "uatom",
+					QuoteDenom: "uusdc",
+				},
+				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate: uusdcRate,
+				RemainingMargin: sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
+				PositionInstance: types.PerpetualFuturesPositionInstance{
+					PositionType: types.PositionType_LONG,
+					Size_:        sdk.MustNewDecFromStr("1"),
+				},
+			},
+			closedRates: []sdk.Dec{
+				sdk.MustNewDecFromStr("0.000011"),
+				uusdcRate,
+			},
+			exp: sdk.MustNewDecFromStr("1"),
+		},
 		// TODO: add more test cases like TestPerpetualFuturesPosition_CalcProfitAndLoss cases
 	}
 
