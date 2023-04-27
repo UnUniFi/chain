@@ -295,8 +295,8 @@ type App struct {
 	memKeys map[string]*storetypes.MemoryStoreKey
 
 	// keepers
-	AccountKeeper    authkeeper.AccountKeeper
-	BankKeeper       bankkeeper.Keeper
+	AccountKeeper authkeeper.AccountKeeper
+	// BankKeeper       bankkeeper.Keeper
 	CapabilityKeeper *capabilitykeeper.Keeper
 	StakingKeeper    stakingkeeper.Keeper
 	SlashingKeeper   slashingkeeper.Keeper
@@ -427,7 +427,7 @@ func NewApp(
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
 		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms, sdk.Bech32MainPrefix,
 	)
-	app.BankKeeper = bankkeeper.NewBaseKeeper(
+	bankKeeper := bankkeeper.NewBaseKeeper(
 		appCodec,
 		keys[banktypes.StoreKey],
 		app.AccountKeeper,
@@ -444,7 +444,7 @@ func NewApp(
 		appCodec,
 		keys[stakingtypes.StoreKey],
 		app.AccountKeeper,
-		app.BankKeeper,
+		bankKeeper,
 		app.GetSubspace(stakingtypes.ModuleName),
 	)
 	app.MintKeeper = mintkeeper.NewKeeper(
@@ -453,11 +453,11 @@ func NewApp(
 		app.GetSubspace(minttypes.ModuleName),
 		&stakingKeeper,
 		app.AccountKeeper,
-		app.BankKeeper,
+		bankKeeper,
 		authtypes.FeeCollectorName,
 	)
 	app.DistrKeeper = distrkeeper.NewKeeper(
-		appCodec, keys[distrtypes.StoreKey], app.GetSubspace(distrtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
+		appCodec, keys[distrtypes.StoreKey], app.GetSubspace(distrtypes.ModuleName), app.AccountKeeper, bankKeeper,
 		&stakingKeeper, authtypes.FeeCollectorName,
 	)
 	app.SlashingKeeper = slashingkeeper.NewKeeper(
@@ -469,17 +469,17 @@ func NewApp(
 	app.CrisisKeeper = crisiskeeper.NewKeeper(
 		app.GetSubspace(crisistypes.ModuleName),
 		invCheckPeriod,
-		app.BankKeeper,
+		bankKeeper,
 		authtypes.FeeCollectorName,
 	)
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath, app.BaseApp, authtypes.NewModuleAddress(govtypes.ModuleName).String())
-	app.NFTKeeper = nftkeeper.NewKeeper(keys[nftkeeper.StoreKey], appCodec, app.AccountKeeper, app.BankKeeper)
+	app.NFTKeeper = nftkeeper.NewKeeper(keys[nftkeeper.StoreKey], appCodec, app.AccountKeeper, bankKeeper)
 
 	// app.LiquidityKeeper = liquiditykeeper.NewKeeper(
 	// 	appCodec,
 	// 	keys[liquiditytypes.StoreKey],
 	// 	app.GetSubspace(liquiditytypes.ModuleName),
-	// 	app.BankKeeper,
+	// 	bankKeeper,
 	// 	app.AccountKeeper,
 	// 	app.DistrKeeper,
 	// )
@@ -517,7 +517,7 @@ func NewApp(
 	// 	app.IBCKeeper.ChannelKeeper,
 	// 	&app.IBCKeeper.PortKeeper,
 	// 	app.AccountKeeper,
-	// 	app.BankKeeper,
+	// 	bankKeeper,
 	// 	scopedTransferKeeper,
 	// )
 	// transferModule := transfer.NewAppModule(app.TransferKeeper)
@@ -543,14 +543,14 @@ func NewApp(
 		keys[auctiontypes.MemStoreKey],
 		app.GetSubspace(auctiontypes.ModuleName),
 		app.AccountKeeper,
-		app.BankKeeper,
+		bankKeeper,
 	)
 	app.PricefeedKeeper = pricefeedkeeper.NewKeeper(
 		appCodec,
 		keys[pricefeedtypes.StoreKey],
 		keys[pricefeedtypes.MemStoreKey],
 		app.GetSubspace(pricefeedtypes.ModuleName),
-		app.BankKeeper,
+		bankKeeper,
 	)
 	cdpKeeper := cdpkeeper.NewKeeper(
 		appCodec,
@@ -558,7 +558,7 @@ func NewApp(
 		keys[cdptypes.MemStoreKey],
 		app.GetSubspace(cdptypes.ModuleName),
 		app.AccountKeeper,
-		app.BankKeeper,
+		bankKeeper,
 		app.auctionKeeper,
 		app.PricefeedKeeper,
 		maccPerms,
@@ -567,7 +567,7 @@ func NewApp(
 		appCodec,
 		keys[ecosystemincentivetypes.StoreKey],
 		app.GetSubspace(ecosystemincentivetypes.ModuleName),
-		app.BankKeeper,
+		bankKeeper,
 	)
 	app.incentiveKeeper = incentivekeeper.NewKeeper(
 		appCodec,
@@ -575,7 +575,7 @@ func NewApp(
 		keys[incentivetypes.MemStoreKey],
 		app.GetSubspace(incentivetypes.ModuleName),
 		app.AccountKeeper,
-		app.BankKeeper,
+		bankKeeper,
 		&cdpKeeper,
 	)
 	app.ununifidistKeeper = ununifidistkeeper.NewKeeper(
@@ -584,7 +584,7 @@ func NewApp(
 		keys[ununifidisttypes.MemStoreKey],
 		app.GetSubspace(ununifidisttypes.ModuleName),
 		app.AccountKeeper,
-		app.BankKeeper,
+		bankKeeper,
 	)
 
 	app.NftmintKeeper = nftmintkeeper.NewKeeper(
@@ -603,7 +603,7 @@ func NewApp(
 		keys[nftmarkettypes.MemStoreKey],
 		app.GetSubspace(nftmarkettypes.ModuleName),
 		app.AccountKeeper,
-		app.BankKeeper,
+		bankKeeper,
 		app.NFTKeeper,
 	)
 
@@ -612,7 +612,7 @@ func NewApp(
 		keys[derivativestypes.StoreKey],
 		keys[derivativestypes.MemStoreKey],
 		app.GetSubspace(derivativestypes.ModuleName),
-		app.BankKeeper,
+		bankKeeper,
 		app.PricefeedKeeper,
 	)
 
@@ -633,7 +633,7 @@ func NewApp(
 	// 	keys[wasm.StoreKey],
 	// 	app.GetSubspace(wasm.ModuleName),
 	// 	app.AccountKeeper,
-	// 	app.BankKeeper,
+	// 	bankKeeper,
 	// 	app.StakingKeeper,
 	// 	app.DistrKeeper,
 	// 	app.IBCKeeper.ChannelKeeper,
@@ -656,7 +656,7 @@ func NewApp(
 
 	govConfig := govtypes.DefaultConfig()
 	govKeeper := govkeeper.NewKeeper(
-		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
+		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, bankKeeper,
 		&stakingKeeper, govRouter, app.BaseApp.MsgServiceRouter(), govConfig,
 	)
 
@@ -676,6 +676,7 @@ func NewApp(
 	// must be passed by reference here.
 
 	// tbbbt
+	bank.NewAppModule(appCodec, bankKeeper, app.AccountKeeper)
 	app.mm = module.NewManager(
 		genutil.NewAppModule(
 			app.AccountKeeper,
@@ -684,34 +685,34 @@ func NewApp(
 			encodingConfig.TxConfig,
 		),
 		auth.NewAppModule(appCodec, app.AccountKeeper, nil),
-		vesting.NewAppModule(app.AccountKeeper, app.BankKeeper),
-		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
+		vesting.NewAppModule(app.AccountKeeper, bankKeeper),
+		bank.NewAppModule(appCodec, bankKeeper, app.AccountKeeper),
 		capability.NewAppModule(appCodec, *app.CapabilityKeeper),
 		crisis.NewAppModule(&app.CrisisKeeper, skipGenesisInvariants),
-		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper),
+		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, bankKeeper),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil),
-		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
-		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
-		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
+		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, bankKeeper, app.StakingKeeper),
+		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, bankKeeper, app.StakingKeeper),
+		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, bankKeeper),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
-		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
-		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		nftmodule.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
+		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, bankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
+		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, bankKeeper, app.interfaceRegistry),
+		nftmodule.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, bankKeeper, app.interfaceRegistry),
 		// ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
-		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
+		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, bankKeeper, app.DistrKeeper),
 		// transferModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
-		auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
-		cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.PricefeedKeeper),
-		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
-		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
-		incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
-		ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
+		auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, bankKeeper),
+		cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, bankKeeper, app.PricefeedKeeper),
+		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, bankKeeper),
+		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, bankKeeper),
+		incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, bankKeeper, app.cdpKeeper),
+		ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, bankKeeper),
 		pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
 		nftmint.NewAppModule(appCodec, app.NftmintKeeper, app.NFTKeeper),
-		nftmarket.NewAppModule(appCodec, app.NftmarketKeeper, app.AccountKeeper, app.BankKeeper),
+		nftmarket.NewAppModule(appCodec, app.NftmarketKeeper, app.AccountKeeper, bankKeeper),
 		// wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
 	)
 
@@ -841,27 +842,27 @@ func NewApp(
 	// transactions
 	app.sm = module.NewSimulationManager(
 		auth.NewAppModule(appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts),
-		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
+		// bank.NewAppModule(appCodec, bankKeeper, app.AccountKeeper),
 		capability.NewAppModule(appCodec, *app.CapabilityKeeper),
-		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
-		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		nftmodule.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper),
+		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, bankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
+		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, bankKeeper, app.interfaceRegistry),
+		nftmodule.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, bankKeeper, app.interfaceRegistry),
+		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, bankKeeper),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil),
-		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
-		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
-		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
+		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, bankKeeper),
+		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, bankKeeper, app.StakingKeeper),
+		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, bankKeeper, app.StakingKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
-		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
+		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, bankKeeper, app.DistrKeeper),
 		// wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
 		// ibc.NewAppModule(app.IBCKeeper),
 		// transferModule,
 		// TODO
-		// auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
-		// cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.PricefeedKeeper),
-		// incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
-		// ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
+		// auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, bankKeeper),
+		// cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, bankKeeper, app.PricefeedKeeper),
+		// incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, bankKeeper, app.cdpKeeper),
+		// ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, bankKeeper),
 		// pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
 	)
 
@@ -873,7 +874,7 @@ func NewApp(
 		appCodec,
 		ante.HandlerOptions{
 			AccountKeeper:   app.AccountKeeper,
-			BankKeeper:      app.BankKeeper,
+			BankKeeper:      bankKeeper,
 			FeegrantKeeper:  app.FeeGrantKeeper,
 			SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
 			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,

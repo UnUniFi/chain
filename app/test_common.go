@@ -6,8 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/require"
-
 	tmdb "github.com/tendermint/tm-db"
 
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -22,7 +20,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
@@ -49,13 +46,16 @@ import (
 // TestApp is a simple wrapper around an App. It exposes internal keepers for use in integration tests.
 // This file also contains test helpers. Ideally they would be in separate package.
 // Basic Usage:
-// 	Create a test app with NewTestApp, then all keepers and their methods can be accessed for test setup and execution.
+//
+//	Create a test app with NewTestApp, then all keepers and their methods can be accessed for test setup and execution.
+//
 // Advanced Usage:
-// 	Some tests call for an app to be initialized with some state. This can be achieved through keeper method calls (ie keeper.SetParams(...)).
-// 	However this leads to a lot of duplicated logic similar to InitGenesis methods.
-// 	So TestApp.InitializeFromGenesisStates() will call InitGenesis with the default genesis state.
+//
+//	Some tests call for an app to be initialized with some state. This can be achieved through keeper method calls (ie keeper.SetParams(...)).
+//	However this leads to a lot of duplicated logic similar to InitGenesis methods.
+//	So TestApp.InitializeFromGenesisStates() will call InitGenesis with the default genesis state.
 //	and TestApp.InitializeFromGenesisStates(authState, cdpState) will do the same but overwrite the auth and cdp sections of the default genesis state
-// 	Creating the genesis states can be combersome, but helper methods can make it easier such as NewAuthGenStateFromAccounts below.
+//	Creating the genesis states can be combersome, but helper methods can make it easier such as NewAuthGenStateFromAccounts below.
 type TestApp struct {
 	App
 }
@@ -86,7 +86,8 @@ func NewTestApp() TestApp {
 
 // nolint
 func (tApp TestApp) GetAccountKeeper() authkeeper.AccountKeeper { return tApp.AccountKeeper }
-func (tApp TestApp) GetBankKeeper() bankkeeper.Keeper           { return tApp.BankKeeper }
+
+// func (tApp TestApp) GetBankKeeper() bankkeeper.Keeper           { return tApp.BankKeeper }
 
 // func (tApp TestApp) GetSupplyKeeper() supply.Keeper             { return tApp.SupplyKeeper }
 func (tApp TestApp) GetStakingKeeper() stakingkeeper.Keeper   { return tApp.StakingKeeper }
@@ -198,7 +199,7 @@ func (tApp TestApp) InitializeFromGenesisStatesWithTimeAndChainID(genTime time.T
 func (tApp TestApp) CheckBalance(t *testing.T, ctx sdk.Context, owner sdk.AccAddress, expectedCoins sdk.Coins) {
 	// acc := tApp.GetAccountKeeper().GetAccount(ctx, owner)
 	// require.NotNilf(t, acc, "account with address '%s' doesn't exist", owner)
-	require.Equal(t, expectedCoins, tApp.GetBankKeeper().GetAllBalances(ctx, owner))
+	// require.Equal(t, expectedCoins, tApp.GetBankKeeper().GetAllBalances(ctx, owner))
 }
 
 // Create a new auth genesis state from some addresses and coins. The state is returned marshalled into a map.

@@ -517,6 +517,27 @@
   
     - [Query](#ununifi.ununifidist.Query)
   
+- [wrappedbank/amino.proto](#wrappedbank/amino.proto)
+    - [File-level Extensions](#wrappedbank/amino.proto-extensions)
+    - [File-level Extensions](#wrappedbank/amino.proto-extensions)
+    - [File-level Extensions](#wrappedbank/amino.proto-extensions)
+    - [File-level Extensions](#wrappedbank/amino.proto-extensions)
+    - [File-level Extensions](#wrappedbank/amino.proto-extensions)
+    - [File-level Extensions](#wrappedbank/amino.proto-extensions)
+  
+- [wrappedbank/genesis.proto](#wrappedbank/genesis.proto)
+    - [Balance](#cosmos.bank.v1beta1.Balance)
+    - [GenesisState](#cosmos.bank.v1beta1.GenesisState)
+  
+- [wrappedbank/query.proto](#wrappedbank/query.proto)
+    - [Query](#ununifi.wrappedbank.Query)
+  
+- [wrappedbank/tx.proto](#wrappedbank/tx.proto)
+    - [MsgSend](#ununifi.wrappedbank.MsgSend)
+    - [MsgSendResponse](#ununifi.wrappedbank.MsgSendResponse)
+  
+    - [Msg](#ununifi.wrappedbank.Msg)
+  
 - [Scalar Value Types](#scalar-value-types)
 
 
@@ -7358,6 +7379,201 @@ Query defines the gRPC querier service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Params` | [QueryParamsRequest](#ununifi.ununifidist.QueryParamsRequest) | [QueryParamsResponse](#ununifi.ununifidist.QueryParamsResponse) |  | GET|/ununifi/ununifidist/params|
 | `Balances` | [QueryGetBalancesRequest](#ununifi.ununifidist.QueryGetBalancesRequest) | [QueryGetBalancesResponse](#ununifi.ununifidist.QueryGetBalancesResponse) | this line is used by starport scaffolding # 2 | GET|/ununifi/ununifidist/balances|
+
+ <!-- end services -->
+
+
+
+<a name="wrappedbank/amino.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## wrappedbank/amino.proto
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+
+<a name="wrappedbank/amino.proto-extensions"></a>
+
+### File-level Extensions
+| Extension | Type | Base | Number | Description |
+| --------- | ---- | ---- | ------ | ----------- |
+| `dont_omitempty` | bool | .google.protobuf.FieldOptions | 11110005 | dont_omitempty sets the field in the JSON object even if its value is empty, i.e. equal to the Golang zero value. To learn what the zero values are, see https://go.dev/ref/spec#The_zero_value.
+
+Fields default to `omitempty`, which is the default behavior when this annotation is unset. When set to true, then the field value in the JSON object will be set, i.e. not `undefined`.
+
+Example:
+
+message Foo { string bar = 1; string baz = 2 [(amino.dont_omitempty) = true]; }
+
+f := Foo{}; out := AminoJSONEncoder(&f); out == {"baz":""} |
+| `encoding` | string | .google.protobuf.FieldOptions | 11110003 | encoding describes the encoding format used by Amino for the given field. The field type is chosen to be a string for flexibility, but it should ideally be short and expected to be machine-readable, for example "base64" or "utf8_json". We highly recommend to use underscores for word separation instead of spaces.
+
+If left empty, then the Amino encoding is expected to be the same as the Protobuf one.
+
+This annotation should not be confused with the `message_encoding` one which operates on the message level. |
+| `field_name` | string | .google.protobuf.FieldOptions | 11110004 | field_name sets a different field name (i.e. key name) in the amino JSON object for the given field.
+
+Example:
+
+message Foo { string bar = 1 [(amino.field_name) = "baz"]; }
+
+Then the Amino encoding of Foo will be: `{"baz":"some value"}` |
+| `oneof_name` | string | .google.protobuf.FieldOptions | 11110006 | oneof_name sets the type name for the given field oneof field. This is used by the Amino JSON encoder to encode the type of the oneof field, and must be the same string in the RegisterConcrete() method usage used to register the concrete type. |
+| `message_encoding` | string | .google.protobuf.MessageOptions | 11110002 | encoding describes the encoding format used by Amino for the given message. The field type is chosen to be a string for flexibility, but it should ideally be short and expected to be machine-readable, for example "base64" or "utf8_json". We highly recommend to use underscores for word separation instead of spaces.
+
+If left empty, then the Amino encoding is expected to be the same as the Protobuf one.
+
+This annotation should not be confused with the `encoding` one which operates on the field level. |
+| `name` | string | .google.protobuf.MessageOptions | 11110001 | name is the string used when registering a concrete type into the Amino type registry, via the Amino codec's `RegisterConcrete()` method. This string MUST be at most 39 characters long, or else the message will be rejected by the Ledger hardware device. |
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="wrappedbank/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## wrappedbank/genesis.proto
+
+
+
+<a name="cosmos.bank.v1beta1.Balance"></a>
+
+### Balance
+Balance defines an account address and balance pair used in the bank module's
+genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | address is the address of the balance holder. |
+| `coins` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | coins defines the different coins this balance holds. |
+
+
+
+
+
+
+<a name="cosmos.bank.v1beta1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the bank module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#cosmos.bank.v1beta1.Params) |  | params defines all the paramaters of the module. |
+| `balances` | [Balance](#cosmos.bank.v1beta1.Balance) | repeated | balances is an array containing the balances of all the accounts. |
+| `supply` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | supply represents the total supply. If it is left empty, then supply will be calculated based on the provided balances. Otherwise, it will be used to validate that the sum of the balances equals this amount. |
+| `denom_metadata` | [Metadata](#cosmos.bank.v1beta1.Metadata) | repeated | denom_metadata defines the metadata of the differents coins. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="wrappedbank/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## wrappedbank/query.proto
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.wrappedbank.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Balance` | [.cosmos.bank.v1beta1.QueryBalanceRequest](#cosmos.bank.v1beta1.QueryBalanceRequest) | [.cosmos.bank.v1beta1.QueryBalanceResponse](#cosmos.bank.v1beta1.QueryBalanceResponse) | Balance queries the balance of a single coin for a single account. | GET|/cosmos/bank/v1beta1/balances/{address}/by_denom|
+| `AllBalances` | [.cosmos.bank.v1beta1.QueryAllBalancesRequest](#cosmos.bank.v1beta1.QueryAllBalancesRequest) | [.cosmos.bank.v1beta1.QueryAllBalancesResponse](#cosmos.bank.v1beta1.QueryAllBalancesResponse) | When called from another module, this query might consume a high amount of gas if the pagination field is incorrectly set. | GET|/cosmos/bank/v1beta1/balances/{address}|
+| `TotalSupply` | [.cosmos.bank.v1beta1.QueryTotalSupplyRequest](#cosmos.bank.v1beta1.QueryTotalSupplyRequest) | [.cosmos.bank.v1beta1.QueryTotalSupplyResponse](#cosmos.bank.v1beta1.QueryTotalSupplyResponse) | TotalSupply queries the total supply of all coins.
+
+When called from another module, this query might consume a high amount of gas if the pagination field is incorrectly set. | GET|/cosmos/bank/v1beta1/supply|
+| `SupplyOf` | [.cosmos.bank.v1beta1.QuerySupplyOfRequest](#cosmos.bank.v1beta1.QuerySupplyOfRequest) | [.cosmos.bank.v1beta1.QuerySupplyOfResponse](#cosmos.bank.v1beta1.QuerySupplyOfResponse) | SupplyOf queries the supply of a single coin.
+
+When called from another module, this query might consume a high amount of gas if the pagination field is incorrectly set. | GET|/cosmos/bank/v1beta1/supply/by_denom|
+| `DenomMetadata` | [.cosmos.bank.v1beta1.QueryDenomMetadataRequest](#cosmos.bank.v1beta1.QueryDenomMetadataRequest) | [.cosmos.bank.v1beta1.QueryDenomMetadataResponse](#cosmos.bank.v1beta1.QueryDenomMetadataResponse) | DenomsMetadata queries the client metadata of a given coin denomination. | GET|/cosmos/bank/v1beta1/denoms_metadata/{denom}|
+| `DenomsMetadata` | [.cosmos.bank.v1beta1.QueryDenomsMetadataRequest](#cosmos.bank.v1beta1.QueryDenomsMetadataRequest) | [.cosmos.bank.v1beta1.QueryDenomsMetadataResponse](#cosmos.bank.v1beta1.QueryDenomsMetadataResponse) | DenomsMetadata queries the client metadata for all registered coin denominations. | GET|/cosmos/bank/v1beta1/denoms_metadata|
+| `DenomOwners` | [.cosmos.bank.v1beta1.QueryDenomOwnersRequest](#cosmos.bank.v1beta1.QueryDenomOwnersRequest) | [.cosmos.bank.v1beta1.QueryDenomOwnersResponse](#cosmos.bank.v1beta1.QueryDenomOwnersResponse) | DenomOwners queries for all account addresses that own a particular token denomination.
+
+When called from another module, this query might consume a high amount of gas if the pagination field is incorrectly set.
+
+Since: cosmos-sdk 0.46 | GET|/cosmos/bank/v1beta1/denom_owners/{denom}|
+
+ <!-- end services -->
+
+
+
+<a name="wrappedbank/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## wrappedbank/tx.proto
+
+
+
+<a name="ununifi.wrappedbank.MsgSend"></a>
+
+### MsgSend
+MsgSend represents a message to send coins from one account to another.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  |  |
+| `to_address` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.wrappedbank.MsgSendResponse"></a>
+
+### MsgSendResponse
+MsgSendResponse defines the Msg/Send response type.
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.wrappedbank.Msg"></a>
+
+### Msg
+Msg defines the bank Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Send` | [MsgSend](#ununifi.wrappedbank.MsgSend) | [MsgSendResponse](#ununifi.wrappedbank.MsgSendResponse) | Send defines a method for sending coins from one account to another account. | |
 
  <!-- end services -->
 
