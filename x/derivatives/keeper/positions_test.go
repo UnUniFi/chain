@@ -214,16 +214,21 @@ func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
 	suite.Require().NoError(err)
 
 	// initial atom balance
-	coins := sdk.Coins{sdk.NewInt64Coin("uatom", 1000000), sdk.NewInt64Coin("uusdc", 1000000)}
+	coins := sdk.Coins{sdk.NewInt64Coin("uatom", 1000000), sdk.NewInt64Coin("uusdc", 100000000)}
 	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
 	suite.Require().NoError(err)
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, owner, coins)
 	suite.Require().NoError(err)
 
+	// initial pool balance
+	availableAssetInPool := sdk.Coins{sdk.NewCoin("uatom", sdk.NewInt(10000000)), sdk.NewInt64Coin("uusdc", 10000000)}
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, availableAssetInPool)
+	suite.Require().NoError(err)
+
 	// open a new long future position when no previous position exists
 	positionInstVal := types.PerpetualFuturesPositionInstance{
 		PositionType: types.PositionType_LONG,
-		Size_:        sdk.NewDecWithPrec(100, 0),
+		Size_:        sdk.MustNewDecFromStr("1"),
 		Leverage:     5,
 	}
 
@@ -231,7 +236,7 @@ func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
 	suite.Require().Nil(err)
 	err = suite.keeper.OpenPosition(suite.ctx, &types.MsgOpenPosition{
 		Sender: owner.Bytes(),
-		Margin: sdk.NewInt64Coin("uatom", 1000), // long -> uatom, short -> uusdc
+		Margin: sdk.NewInt64Coin("uatom", 200000), // long -> uatom, short -> uusdc
 		Market: types.Market{
 			BaseDenom:  "uatom",
 			QuoteDenom: "uusdc",
@@ -245,7 +250,7 @@ func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
 	// open another position with same size
 	err = suite.keeper.OpenPosition(suite.ctx, &types.MsgOpenPosition{
 		Sender: owner.Bytes(),
-		Margin: sdk.NewInt64Coin("uatom", 1000), // long -> uatom, short -> uusdc
+		Margin: sdk.NewInt64Coin("uatom", 200000), // long -> uatom, short -> uusdc
 		Market: types.Market{
 			BaseDenom:  "uatom",
 			QuoteDenom: "uusdc",
@@ -259,7 +264,7 @@ func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
 	// open short future position
 	positionInstVal = types.PerpetualFuturesPositionInstance{
 		PositionType: types.PositionType_SHORT,
-		Size_:        sdk.NewDecWithPrec(100, 0),
+		Size_:        sdk.MustNewDecFromStr("1"),
 		Leverage:     5,
 	}
 
@@ -267,7 +272,7 @@ func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
 	suite.Require().Nil(err)
 	err = suite.keeper.OpenPosition(suite.ctx, &types.MsgOpenPosition{
 		Sender: owner.Bytes(),
-		Margin: sdk.NewInt64Coin("uusdc", 100), // long -> uatom, short -> uusdc
+		Margin: sdk.NewInt64Coin("uusdc", 20000000), // long -> uatom, short -> uusdc
 		Market: types.Market{
 			BaseDenom:  "uatom",
 			QuoteDenom: "uusdc",
@@ -287,8 +292,11 @@ func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
 	// }
 
 	balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
-	suite.Require().Equal(balances.String(), "998000uatom,999900uusdc")
+	// atom balance: 1000000 - 200000 - 200000 = 600000
+	// usdc balance: 100000000 - 20000000 = 80000000
+	suite.Require().Equal(balances.String(), "600000uatom,80000000uusdc")
 
+	// TODO: Fix Report Liquidation and Report Levy Period
 	// ReportLiquidation
 	cacheCtx, _ := suite.ctx.CacheContext()
 	err = suite.keeper.ReportLiquidation(cacheCtx, &types.MsgReportLiquidation{
@@ -313,7 +321,7 @@ func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
 	})
 	suite.Require().NoError(err)
 	balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
-	suite.Require().Equal(balances.String(), "999000uatom,999900uusdc")
+	suite.Require().Equal(balances.String(), "800000uatom,80000000uusdc")
 
 	err = suite.keeper.ClosePosition(suite.ctx, &types.MsgClosePosition{
 		Sender:     owner.Bytes(),
@@ -321,7 +329,7 @@ func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
 	})
 	suite.Require().NoError(err)
 	balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
-	suite.Require().Equal(balances.String(), "1000000uatom,999900uusdc")
+	suite.Require().Equal(balances.String(), "1000000uatom,80000000uusdc")
 
 	err = suite.keeper.ClosePosition(suite.ctx, &types.MsgClosePosition{
 		Sender:     owner.Bytes(),
@@ -329,5 +337,5 @@ func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
 	})
 	suite.Require().NoError(err)
 	balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
-	suite.Require().Equal(balances.String(), "1000000uatom,1000000uusdc")
+	suite.Require().Equal(balances.String(), "1000000uatom,100000000uusdc")
 }
