@@ -17,8 +17,7 @@ The ``DERIBATIVES`` module provides deriving functions
 The model of Perpetual Futures feature of this module totally follows GMX perpetual futures model.   
 (ref: https://gmxio.gitbook.io/gmx/)
 
-Briefly saying, the tradings on the perpetual futures market are supported by a unique multi-asset pool that earns liquidity prodicers fees from market making, swap fees and levrage trading.   
-Because pool asset will take the counter part of the arbitral trade by a user, users can trade with high leverage and no slippage to the price from oracle with low fee.
+Briefly saying, the tradings on the perpetual futures market are supported by a unique multi-asset pool that earns liquidity prodicers fees from market making, swap fees and levrage trading. Because pool assets will take the counterpart of the arbitral trade by a user, users can trade with high leverage and no slippage to the price from oracle with low fee.
 
 ## Pool
 
@@ -27,13 +26,11 @@ Because pool asset will take the counter part of the arbitral trade by a user, u
 Our liquidity provider token's ticker is `DLP`.   
 In the backend, it has `udlp` denom, which is the micro unit of `DLP`.   
 
-DLP consists of an index of assets used for leverage trading. It can be minted using the assets which the protocol supports and burnt to redeem any index asset. The price for minting and redemption is calculated based on the formulas in the WhitePaper in the section "3.1.1".   
+DLP consists of an index of assets used for leverage trading. It can be minted using the assets which the protocol supports and burnt to redeem any index asset. The price for minting and redemption is calculated based on the formulas in the WhitePaper in section "3.1.1".   
 WhitePaper: https://ununifi.io/assets/download/UnUniFi-Whitepaper.pdf
 
-Fees earned on the platform are directly added to the pool.　Therefore, DLP holders can benefit from them as a reward through the increasement of the DLP price.   
-
-There's dynamic change of the minting and redemption fee rate at this moment. There's the static rate which is defined in the protocol. And, the actual fee rate also consider the difference of asset proportion between target and actual proportion.  The static base fee rate can be modified through the governace voting.
-The potential range of those fee rate are below:
+Fees earned on the platform are directly added to the pool.　Therefore, DLP holders can benefit from them as a reward through the increment of the DLP price. There's a dynamic change of the minting and redemption fee rate at this moment. There's the static rate which is defined in the protocol. And, the actual fee rate also considers the difference in asset proportion between the target and actual proportion.  The static base fee rate can be modified through governance voting.
+The potential range of that fee rate is below:
 
 ```text
 mintFeeRate is proportion to max(0, (actualAmountInPool[i] - targetAmount[i]) / targetAmount[i])
@@ -240,6 +237,46 @@ message PerpetualFuturesPositionInstance {
 - `market` is the `Market` representive. `Market` itself is the information of the trading pair.
 - `position_size` is the total net position size of the market. It tries to define the total cap of the opening position of the market.
 
+## Reserve
+
+Reserve is to pay the profit in the result of the trade. It works as the counter-position of the trader's. It's separated from the deposit as the collateral (margin) from a trader. It's all from the pool assets.
+
+**The detail of the data structure, name and the related functions are not configured on code basis yet. So, note that the following description is not the final version.**
+
+```protobuf
+enum MarketType {
+  UNKNOWN = 0;
+  FUTURES = 1;
+  OPTIONS = 2;
+}
+
+message Reserve {
+  MarketType market_type = 1 [
+    (gogoproto.moretags) = "yaml:\"market_type\""
+  ];
+  cosmos.base.v1beta1.Coin amount = 2 [
+    (gogoproto.moretags) = "yaml:\"amount\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// The list of the `Reserve` will be contained in `GenesisState`.
+```
+
+And here's the important functions' interfaces relating `Reserve`.
+
+```go
+// In keeper package
+func (k Keeper) GetReserve(ctx sdk.Context, marketType types.MarketType, denom string) (types.Reserve, error)
+func (k Keeper) GetReservesByDenom(ctx sdk.Context, denom string) []types.Reserve
+func (k Keeper) GetAllReserves(ctx sdk.Context) []types.Reserve
+func (k Keeper) SetReserve(ctx sdk.Context, reserve types.Reserve) error
+
+// In types package
+func ReserveKeyPrefix(marketType MarketType, denom string) []byte
+func TotalReserveValueInMetrics(reserves []types.Reserve, metrics string) (sdk.Dec, error)
+func (m Reserve) ModifyReserveAmount(amount sdk.Int) (Reserve, error)
+```
 
 # Keepers
 
