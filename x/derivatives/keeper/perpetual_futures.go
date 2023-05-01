@@ -258,18 +258,10 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 	imaginaryFundingFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
 	commissionFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
 
-	if imaginaryFundingRate.IsNegative() {
-		if positionInstance.PositionType == types.PositionType_SHORT {
-			position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(imaginaryFundingFee)
-		} else {
-			position.RemainingMargin.Amount = position.RemainingMargin.Amount.Add(imaginaryFundingFee.Sub(commissionFee))
-		}
+	if positionInstance.PositionType == types.PositionType_LONG {
+		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(imaginaryFundingFee)
 	} else {
-		if positionInstance.PositionType == types.PositionType_LONG {
-			position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(imaginaryFundingFee)
-		} else {
-			position.RemainingMargin.Amount = position.RemainingMargin.Amount.Add(imaginaryFundingFee.Sub(commissionFee))
-		}
+		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Add(imaginaryFundingFee.Sub(commissionFee))
 	}
 	position.LastLeviedAt = ctx.BlockTime()
 
