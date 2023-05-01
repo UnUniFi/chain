@@ -22,10 +22,10 @@ func TestMsgPlaceBid_ValidateBasic(t *testing.T) {
 		msg        MsgPostPrice
 		expectPass bool
 	}{
-		{"normal", MsgPostPrice{addr, "xrp", types.NewDecFromSDKDec(price), expiry}, true},
-		{"emptyAddr", MsgPostPrice{types.StringAccAddress{}, "xrp", types.NewDecFromSDKDec(price), expiry}, false},
-		{"emptyAsset", MsgPostPrice{addr, "", types.NewDecFromSDKDec(price), expiry}, false},
-		{"negativePrice", MsgPostPrice{addr, "xrp", types.NewDecFromSDKDec(negativePrice), expiry}, false},
+		{"normal", MsgPostPrice{addr, "xrp", types.NewDecFromSDKDec(price), expiry, sdk.NewCoin("uguu", sdk.NewInt(1000))}, true},
+		{"emptyAddr", MsgPostPrice{types.StringAccAddress{}, "xrp", types.NewDecFromSDKDec(price), expiry, sdk.NewCoin("uguu", sdk.NewInt(1000))}, false},
+		{"emptyAsset", MsgPostPrice{addr, "", types.NewDecFromSDKDec(price), expiry, sdk.NewCoin("uguu", sdk.NewInt(1000))}, false},
+		{"negativePrice", MsgPostPrice{addr, "xrp", types.NewDecFromSDKDec(negativePrice), expiry, sdk.NewCoin("uguu", sdk.NewInt(1000))}, false},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {

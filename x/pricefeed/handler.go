@@ -30,8 +30,7 @@ func HandleMsgPostPrice(
 	ctx sdk.Context,
 	k keeper.Keeper,
 	msg *types.MsgPostPrice) (*sdk.Result, error) {
-
-	_, err := k.GetOracle(ctx, msg.MarketId, msg.From.AccAddress())
+	err := k.ValidateAuthorityAndDeposit(ctx, msg.MarketId, msg.From.AccAddress(), msg.Deposit)
 	if err != nil {
 		return nil, err
 	}
@@ -47,6 +46,9 @@ func HandleMsgPostPrice(
 			sdk.NewAttribute(sdk.AttributeKeySender, msg.From.AccAddress().String()),
 		),
 	)
+
+	// Gas-less
+	ctx.GasMeter().RefundGas(ctx.GasMeter().GasConsumed(), "pricefeed: PostPrice")
 
 	return &sdk.Result{Events: ctx.EventManager().ABCIEvents()}, nil
 }

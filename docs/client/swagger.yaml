@@ -3205,6 +3205,21 @@ paths:
               params:
                 type: object
                 properties:
+                  deposit_for_posting:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
+
+
+                      NOTE: The amount field is an Int which implements the
+                      custom method
+
+                      signatures required by gogoproto.
                   markets:
                     type: array
                     items:
@@ -11668,6 +11683,18 @@ definitions:
   ununifi.pricefeed.Params:
     type: object
     properties:
+      deposit_for_posting:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
       markets:
         type: array
         items:
@@ -11869,6 +11896,21 @@ definitions:
       params:
         type: object
         properties:
+          deposit_for_posting:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
           markets:
             type: array
             items:

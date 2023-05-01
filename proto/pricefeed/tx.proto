@@ -28,6 +28,7 @@ message MsgPostPrice {
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
+  cosmos.base.v1beta1.Coin deposit = 5 [(gogoproto.nullable) = false];
 }
 
 message MsgPostPriceResponse {}

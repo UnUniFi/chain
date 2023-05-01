@@ -6872,6 +6872,7 @@ GenesisState defines the nftmint module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `deposit_for_posting` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 | `markets` | [Market](#ununifi.pricefeed.Market) | repeated |  |
 
 
@@ -7169,6 +7170,7 @@ Query defines the gRPC querier service.
 | `market_id` | [string](#string) |  |  |
 | `price` | [string](#string) |  |  |
 | `expiry` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `deposit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
