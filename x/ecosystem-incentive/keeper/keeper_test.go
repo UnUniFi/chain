@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"testing"
 
+	"github.com/CosmWasm/wasmd/x/wasm"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -39,7 +40,7 @@ type KeeperTestSuite struct {
 func (suite *KeeperTestSuite) SetupTest() {
 	isCheckTx := false
 
-	app := simapp.Setup(suite.T(), isCheckTx)
+	app := simapp.Setup(suite.T(), ([]wasm.Option{})...)
 
 	suite.ctx = app.BaseApp.NewContext(isCheckTx, tmproto.Header{})
 	suite.app = app
