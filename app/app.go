@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	// Upgrades from earlier versions of Ununifi
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
@@ -15,31 +15,6 @@ import (
 	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
-	epochsmodule "github.com/UnUniFi/chain/x/epochs"
-	epochsmodulekeeper "github.com/UnUniFi/chain/x/epochs/keeper"
-	epochsmoduletypes "github.com/UnUniFi/chain/x/epochs/types"
-	icacallbacksmodule "github.com/UnUniFi/chain/x/icacallbacks"
-	icacallbacksmodulekeeper "github.com/UnUniFi/chain/x/icacallbacks/keeper"
-	icacallbacksmoduletypes "github.com/UnUniFi/chain/x/icacallbacks/types"
-	"github.com/UnUniFi/chain/x/interchainquery"
-	interchainquerykeeper "github.com/UnUniFi/chain/x/interchainquery/keeper"
-	interchainquerytypes "github.com/UnUniFi/chain/x/interchainquery/types"
-	"github.com/UnUniFi/chain/x/pricefeed"
-	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
-	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
-	recordsmodule "github.com/UnUniFi/chain/x/records"
-	recordsmodulekeeper "github.com/UnUniFi/chain/x/records/keeper"
-	recordsmoduletypes "github.com/UnUniFi/chain/x/records/types"
-	stakeibcmodule "github.com/UnUniFi/chain/x/stakeibc"
-	stakeibcmodulekeeper "github.com/UnUniFi/chain/x/stakeibc/keeper"
-	stakeibcmoduletypes "github.com/UnUniFi/chain/x/stakeibc/types"
-	yieldaggregator "github.com/UnUniFi/chain/x/yield-aggregator"
-	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yield-aggregator/keeper"
-	yieldaggregatortypes "github.com/UnUniFi/chain/x/yield-aggregator/types"
-	"github.com/UnUniFi/chain/x/yieldfarm"
-	yieldfarmkeeper "github.com/UnUniFi/chain/x/yieldfarm/keeper"
-	yieldfarmtypes "github.com/UnUniFi/chain/x/yieldfarm/types"
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/libs/log"
@@ -59,7 +34,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/server/config"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/store/streaming"
-	store "github.com/cosmos/cosmos-sdk/store/types"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -103,7 +77,6 @@ import (
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
@@ -154,6 +127,32 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
 
+	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
+	epochsmodule "github.com/UnUniFi/chain/x/epochs"
+	epochsmodulekeeper "github.com/UnUniFi/chain/x/epochs/keeper"
+	epochsmoduletypes "github.com/UnUniFi/chain/x/epochs/types"
+	icacallbacksmodule "github.com/UnUniFi/chain/x/icacallbacks"
+	icacallbacksmodulekeeper "github.com/UnUniFi/chain/x/icacallbacks/keeper"
+	icacallbacksmoduletypes "github.com/UnUniFi/chain/x/icacallbacks/types"
+	"github.com/UnUniFi/chain/x/interchainquery"
+	interchainquerykeeper "github.com/UnUniFi/chain/x/interchainquery/keeper"
+	interchainquerytypes "github.com/UnUniFi/chain/x/interchainquery/types"
+	"github.com/UnUniFi/chain/x/pricefeed"
+	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
+	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
+	recordsmodule "github.com/UnUniFi/chain/x/records"
+	recordsmodulekeeper "github.com/UnUniFi/chain/x/records/keeper"
+	recordsmoduletypes "github.com/UnUniFi/chain/x/records/types"
+	stakeibcmodule "github.com/UnUniFi/chain/x/stakeibc"
+	stakeibcmodulekeeper "github.com/UnUniFi/chain/x/stakeibc/keeper"
+	stakeibcmoduletypes "github.com/UnUniFi/chain/x/stakeibc/types"
+	yieldaggregator "github.com/UnUniFi/chain/x/yield-aggregator"
+	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yield-aggregator/keeper"
+	yieldaggregatortypes "github.com/UnUniFi/chain/x/yield-aggregator/types"
+	"github.com/UnUniFi/chain/x/yieldfarm"
+	yieldfarmkeeper "github.com/UnUniFi/chain/x/yieldfarm/keeper"
+	yieldfarmtypes "github.com/UnUniFi/chain/x/yieldfarm/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 	"github.com/UnUniFi/chain/x/derivatives"
 	derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
@@ -167,9 +166,6 @@ import (
 	"github.com/UnUniFi/chain/x/nftmint"
 	nftmintkeeper "github.com/UnUniFi/chain/x/nftmint/keeper"
 	nftminttypes "github.com/UnUniFi/chain/x/nftmint/types"
-	"github.com/UnUniFi/chain/x/pricefeed"
-	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
-	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
 const Name = "ununifi"
@@ -187,20 +183,20 @@ var (
 
 // GetEnabledProposals parses the ProposalsEnabled / EnableSpecificProposals values to
 // produce a list of enabled proposals to pass into wasmd app.
-// func GetEnabledProposals() []wasm.ProposalType {
-// 	if EnableSpecificProposals == "" {
-// 		if ProposalsEnabled == "true" {
-// 			return wasm.EnableAllProposals
-// 		}
-// 		return wasm.DisableAllProposals
-// 	}
-// 	chunks := strings.Split(EnableSpecificProposals, ",")
-// 	proposals, err := wasm.ConvertToProposals(chunks)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	return proposals
-// }
+func GetEnabledProposals() []wasm.ProposalType {
+	if EnableSpecificProposals == "" {
+		if ProposalsEnabled == "true" {
+			return wasm.EnableAllProposals
+		}
+		return wasm.DisableAllProposals
+	}
+	chunks := strings.Split(EnableSpecificProposals, ",")
+	proposals, err := wasm.ConvertToProposals(chunks)
+	if err != nil {
+		panic(err)
+	}
+	return proposals
+}
 
 func GetWasmOpts(appOpts servertypes.AppOptions) []wasm.Option {
 	var wasmOpts []wasm.Option
@@ -279,21 +275,21 @@ var (
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName:      nil,
-		distrtypes.ModuleName:           nil,
-		minttypes.ModuleName:            {authtypes.Minter},
-		stakingtypes.BondedPoolName:     {authtypes.Burner, authtypes.Staking},
-		stakingtypes.NotBondedPoolName:  {authtypes.Burner, authtypes.Staking},
-		govtypes.ModuleName:             {authtypes.Burner},
-		ibctransfertypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
-		icatypes.ModuleName:             nil,
-		stakeibcmoduletypes.ModuleName:  {authtypes.Minter, authtypes.Burner, authtypes.Staking},
-		interchainquerytypes.ModuleName: nil,
-		wasm.ModuleName:                 {authtypes.Burner},
-		yieldfarmtypes.ModuleName:       {authtypes.Minter},
-		yieldaggregatortypes.ModuleName: {authtypes.Minter, authtypes.Burner},
-		ibcfeetypes.ModuleName:          nil,
-		ecosystemincentivetypes.ModuleName: nil,
+		authtypes.FeeCollectorName:              nil,
+		distrtypes.ModuleName:                   nil,
+		minttypes.ModuleName:                    {authtypes.Minter},
+		stakingtypes.BondedPoolName:             {authtypes.Burner, authtypes.Staking},
+		stakingtypes.NotBondedPoolName:          {authtypes.Burner, authtypes.Staking},
+		govtypes.ModuleName:                     {authtypes.Burner},
+		ibctransfertypes.ModuleName:             {authtypes.Minter, authtypes.Burner},
+		icatypes.ModuleName:                     nil,
+		stakeibcmoduletypes.ModuleName:          {authtypes.Minter, authtypes.Burner, authtypes.Staking},
+		interchainquerytypes.ModuleName:         nil,
+		wasm.ModuleName:                         {authtypes.Burner},
+		yieldfarmtypes.ModuleName:               {authtypes.Minter},
+		yieldaggregatortypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
+		ibcfeetypes.ModuleName:                  nil,
+		ecosystemincentivetypes.ModuleName:      nil,
 		nft.ModuleName:                          nil,
 		nftminttypes.ModuleName:                 nil,
 		nftmarkettypes.ModuleName:               nil,
@@ -412,7 +408,7 @@ func NewApp(
 	loadLatest bool,
 	enabledProposals []wasm.ProposalType,
 	appOpts servertypes.AppOptions,
-	// wasmOpts []wasm.Option,
+	wasmOpts []wasm.Option,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *App {
 
@@ -450,7 +446,7 @@ func NewApp(
 		recordsmoduletypes.StoreKey,
 		icacallbacksmoduletypes.StoreKey,
 		ibcfeetypes.StoreKey,
-		ecosystemincentivetypes.StoreKey, 
+		ecosystemincentivetypes.StoreKey,
 		pricefeedtypes.StoreKey,
 		nftkeeper.StoreKey,
 		nftminttypes.StoreKey,
@@ -781,14 +777,14 @@ func NewApp(
 			app.YieldaggregatorKeeper.Hooks(),
 			app.StakeibcKeeper.Hooks(),
 		),
+	)
 	app.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
 		appCodec,
 		keys[ecosystemincentivetypes.StoreKey],
 		app.GetSubspace(ecosystemincentivetypes.ModuleName),
 		app.BankKeeper,
 	)
-	
-	
+
 	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
 
 	// register the proposal types
@@ -877,8 +873,6 @@ func NewApp(
 	// create Keeper objects which have Hooks
 	app.NftmarketKeeper = *nftmarketKeeper.SetHooks(nftmarkettypes.NewMultiNftmarketHooks(app.EcosystemincentiveKeeper.Hooks()))
 
-
-
 	govConfig := govtypes.DefaultConfig()
 	govKeeper := govkeeper.NewKeeper(
 		appCodec,
@@ -944,7 +938,6 @@ func NewApp(
 		yieldfarm.NewAppModule(appCodec, app.YieldfarmKeeper, app.AccountKeeper, app.BankKeeper),
 		yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
 
-		
 		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
 		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
 		pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),

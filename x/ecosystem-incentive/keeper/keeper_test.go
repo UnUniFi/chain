@@ -5,21 +5,13 @@ import (
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	"github.com/stretchr/testify/suite"
-
-	appparams "github.com/UnUniFi/chain/app/params"
-
-	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/cosmos/cosmos-sdk/x/nft"
-	nftkeeper "github.com/cosmos/cosmos-sdk/x/nft/keeper"
+	"github.com/stretchr/testify/suite"
 
 	simapp "github.com/UnUniFi/chain/app"
-	"github.com/UnUniFi/chain/x/ecosystem-incentive/keeper"
 	nftmarketkeeper "github.com/UnUniFi/chain/x/nftmarket/keeper"
 	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
 )
@@ -53,24 +45,6 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.app = app
 	suite.addrs = simapp.AddTestAddrsIncremental(app, suite.ctx, 3, sdk.NewInt(30000000))
 
-	encodingConfig := appparams.MakeEncodingConfig()
-	appCodec := encodingConfig.Marshaler
-
-	txCfg := encodingConfig.TxConfig
-	accountKeeper := authkeeper.NewAccountKeeper(
-		appCodec, app.GetKey(authtypes.StoreKey), app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms, sdk.Bech32MainPrefix,
-	)
-	bankKeeper := bankkeeper.NewBaseKeeper(
-		appCodec,
-		app.GetKey(banktypes.StoreKey),
-		app.AccountKeeper,
-		app.GetSubspace(banktypes.ModuleName),
-		app.BlockedAddrs(),
-	)
-	nftKeeper := nftkeeper.NewKeeper(app.GetKey(nft.StoreKey), appCodec, accountKeeper, bankKeeper)
-	nftmarketkeeper := nftmarketkeeper.NewKeeper(appCodec, txCfg, app.GetKey(nftmarkettypes.StoreKey), app.GetKey(nftmarkettypes.MemStoreKey), suite.app.GetSubspace(nftmarkettypes.ModuleName), accountKeeper, bankKeeper, nftKeeper)
-	hooks := keeper.Hooks{}
-	nftmarketkeeper.SetHooks(&hooks)
 }
 
 func TestKeeperSuite(t *testing.T) {

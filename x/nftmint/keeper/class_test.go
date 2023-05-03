@@ -76,7 +76,7 @@ func TestCreateId(t *testing.T) {
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	accAddr, _ := sdk.AccAddressFromBech32(addr.String())
 	classIdSeq0 := keeper.CreateClassId(seq, accAddr)
-	err := nfttypes.ValidateClassID(classIdSeq0)
+	err := types.ValidateClassID(classIdSeq0)
 	require.NoError(t, err)
 
 	// add one to imitate actual account sequence transition of the expected situation

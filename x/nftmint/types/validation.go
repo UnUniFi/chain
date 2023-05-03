@@ -5,7 +5,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 )
 
 func ValidateCreateClass(
@@ -51,7 +50,7 @@ func ValidateMintNFT(
 	if err := ValidateTokenSupply(currentTokenSupply, tokenSupplyCap); err != nil {
 		return err
 	}
-	if err := nfttypes.ValidateNFTID(nftID); err != nil {
+	if err := ValidateNFTID(nftID); err != nil {
 		return err
 	}
 	return nil

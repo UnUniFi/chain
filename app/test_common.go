@@ -8,6 +8,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/CosmWasm/wasmd/x/wasm"
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/crypto"
@@ -32,15 +33,15 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
 	// "github.com/cosmos/cosmos-sdk/x/supply"
-	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 
+	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
 	// authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
 	// "github.com/cosmos/cosmos-sdk/x/supply"
 	// "github.com/CosmWasm/wasmd/x/wasm"
 )
 
-// var emptyWasmOpts []wasm.Option = nil
+var emptyWasmOpts []wasm.Option = nil
 
 // TestApp is a simple wrapper around an App. It exposes internal keepers for use in integration tests.
 // This file also contains test helpers. Ideally they would be in separate package.

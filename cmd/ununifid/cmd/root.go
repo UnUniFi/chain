@@ -31,6 +31,7 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+
 	app "github.com/UnUniFi/chain/app"
 	"github.com/UnUniFi/chain/app/params"
 )
@@ -282,7 +283,7 @@ func appExport(
 		height == -1,
 		app.GetEnabledProposals(),
 		appOpts,
-		// emptyWasmOpts,
+		emptyWasmOpts,
 	)
 
 	if height != -1 {
