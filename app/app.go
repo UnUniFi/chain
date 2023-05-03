@@ -250,7 +250,7 @@ var (
 		ibctm.AppModuleBasic{},
 		upgrade.AppModuleBasic{},
 		evidence.AppModuleBasic{},
-		// transfer.AppModuleBasic{},
+		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		nftmodule.AppModuleBasic{},
 		pricefeed.AppModuleBasic{},
@@ -372,7 +372,6 @@ type App struct {
 	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
 
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
-	pricefeedKeeper       pricefeedkeeper.Keeper
 	YieldfarmKeeper       yieldfarmkeeper.Keeper
 	YieldaggregatorKeeper yieldaggregatorkeeper.Keeper
 
@@ -431,14 +430,13 @@ func NewApp(
 		icahosttypes.StoreKey,
 		evidencetypes.StoreKey,
 		// liquiditytypes.StoreKey,
-		// ibctransfertypes.StoreKey,
+		ibctransfertypes.StoreKey,
 		capabilitytypes.StoreKey, feegrant.StoreKey, authzkeeper.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 		pricefeedtypes.StoreKey,
 		wasm.StoreKey,
 		yieldfarmtypes.StoreKey,
 		yieldaggregatortypes.StoreKey,
-
 		stakeibcmoduletypes.StoreKey,
 		epochsmoduletypes.StoreKey,
 		interchainquerytypes.StoreKey,
@@ -447,7 +445,6 @@ func NewApp(
 		icacallbacksmoduletypes.StoreKey,
 		ibcfeetypes.StoreKey,
 		ecosystemincentivetypes.StoreKey,
-		pricefeedtypes.StoreKey,
 		nftkeeper.StoreKey,
 		nftminttypes.StoreKey,
 		nftmarkettypes.StoreKey,
@@ -746,7 +743,7 @@ func NewApp(
 	transferStack := recordsmodule.NewIBCModule(app.RecordsKeeper, transferIBCModule)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
-	app.pricefeedKeeper = pricefeedkeeper.NewKeeper(
+	app.PricefeedKeeper = pricefeedkeeper.NewKeeper(
 		appCodec,
 		keys[pricefeedtypes.StoreKey],
 		keys[pricefeedtypes.MemStoreKey],
@@ -932,15 +929,13 @@ func NewApp(
 		icacallbacksModule,
 
 		// this line is used by starport scaffolding # stargate/app/appModule
-		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
+		pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
 		yieldfarm.NewAppModule(appCodec, app.YieldfarmKeeper, app.AccountKeeper, app.BankKeeper),
 		yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
-
 		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
 		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
-		pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
 		nftmint.NewAppModule(appCodec, app.NftmintKeeper, app.NFTKeeper),
 		nftmarket.NewAppModule(appCodec, app.NftmarketKeeper, app.AccountKeeper, app.BankKeeper),
 	)
