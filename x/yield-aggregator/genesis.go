@@ -16,6 +16,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		Id:              1,
 		ContractAddress: "x/stake-ibc",
 		Name:            "testStaking",
+		GitUrl:          "",
 	})
 }
 
