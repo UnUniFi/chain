@@ -252,20 +252,26 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient ununifiTypes.StringAccAddress, position types.Position, positionInstance types.PerpetualFuturesPositionInstance) error {
 	params := k.GetParams(ctx)
 
-	netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, position.Market, positionInstance.PositionType).PositionSizeInDenomExponent
+	netPositionLong := k.GetPerpetualFuturesNetPositionOfMarket(ctx, position.Market, types.PositionType_LONG).PositionSizeInDenomExponent
+	netPositionShort := k.GetPerpetualFuturesNetPositionOfMarket(ctx, position.Market, types.PositionType_SHORT).PositionSizeInDenomExponent
+	netPosition := netPositionLong.Sub(netPositionShort)
 
 	imaginaryFundingRate := sdk.NewDecFromInt(netPosition).Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
 	imaginaryFundingFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
-	commissionFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
+	// Delete commission fee. It occurs only when closing.
 
 	if positionInstance.PositionType == types.PositionType_LONG {
 		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(imaginaryFundingFee)
 	} else {
-		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Add(imaginaryFundingFee.Sub(commissionFee))
+		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Add(imaginaryFundingFee)
 	}
 	position.LastLeviedAt = ctx.BlockTime()
 
-	rewardAmount := sdk.NewDecFromInt(commissionFee).Mul(params.PoolParams.ReportLevyPeriodRewardRate).RoundInt()
+	// Reward is part of the absolute value of the imaginary funding fee
+	rewardAmount := sdk.NewDecFromInt(imaginaryFundingFee.Abs()).Mul(params.PoolParams.ReportLevyPeriodRewardRate).RoundInt()
+	// Pay from the margin
+	position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(rewardAmount)
+
 	reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))
 	err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
 	if err != nil {
