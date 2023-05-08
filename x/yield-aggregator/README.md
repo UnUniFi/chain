@@ -39,6 +39,56 @@ This allows users to manage their own assets according to their preferences.
 Strategies are methods of how the tokens will be managed to earn a yield. Users can add available strategies through governance with proposals.
 Strategies can be developed using the **CosmWasm** smart contract.
 
+The following endpoints must be exposed in the strategy contract.
+
+#### Message
+
+```rs
+    pub enum ExecuteMsg {
+        Stake(StakeMsg),
+        Unstake(UnstakeMsg),
+    }
+
+    #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+    pub struct StakeMsg {}
+
+    #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+    pub struct UnstakeMsg {
+        pub amount: Uint128,
+    }
+```
+
+- Stake
+  The staking amount is configured on `info.funds`
+- Unstake
+  The unstaking amount is put Uint128 variable on `UnstakeMsg`
+
+#### Query
+
+```rs
+    pub enum QueryMsg {
+        Bonded { addr: String },
+        Unbonding { addr: String },
+        Fee {},
+    }
+```
+
+- Bonded
+  It returns the value of `addr`'s bonded tokens.
+  Here `addr` is the address of vault, or individual addresses that deposit funds to the strategy.
+- Unbonding
+  It returns the value of `addr`'s unbonding tokens.
+- Fee
+  It returns `FeeInfo` object that has configuration of fees.
+
+  ```rs
+  pub struct FeeInfo {
+    pub deposit_fee_rate: Uint128,
+    pub withdraw_fee_rate: Uint128,
+    pub interest_fee_rate: Uint128,
+  }
+  ```
+
 ## Network-parameters
 
 | Field                    | Type                                                  | Label | Description                   |
