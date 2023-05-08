@@ -83,9 +83,9 @@ The following endpoints must be exposed in the strategy contract.
 
   ```rs
   pub struct FeeInfo {
-    pub deposit_fee_rate: Uint128,
-    pub withdraw_fee_rate: Uint128,
-    pub interest_fee_rate: Uint128,
+    pub deposit_fee_rate: Decimal,
+    pub withdraw_fee_rate: Decimal,
+    pub interest_fee_rate: Decimal,
   }
   ```
 
