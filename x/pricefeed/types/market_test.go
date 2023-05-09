@@ -4,8 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/UnUniFi/chain/types"
 	"github.com/stretchr/testify/require"
+
+	"github.com/UnUniFi/chain/types"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"

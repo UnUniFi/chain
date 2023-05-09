@@ -6,7 +6,7 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
-option go_package = "github.com/UnUniFi/chain/x/auction/types";
+option go_package = "github.com/UnUniFi/chain/x/deprecated/auction/types";
 
 message BaseAuction {
   uint64 id = 1 [(gogoproto.moretags) = "yaml:\"id\""];
