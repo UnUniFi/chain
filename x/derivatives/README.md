@@ -307,8 +307,8 @@ Only the owner of the position can close it. If the position has profit, the pro
 
 [ReportLiquidation](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/tx.proto#L89-L103)
 
-This Msg reports a position that needs to be liquidated.  
-The report gets the reward based on the fee rate of the liquidation report reward rate in the params.  
+Report a position that needs to be liquidated.  
+The reporter gets the reward based on the fee rate of the liquidation report reward rate in the params.  
 This architecture make the chain avoidable to be aware of liquidation logic in EndBlock handler to enhance the scalability.
 
 ### ReportLevyPeriod
@@ -415,6 +415,7 @@ message PoolParams {
 - `BorrowingFeeRatePerHour` defines fee ratio for the borrowing token from the pool to the traders.
 - `ReportLiquidationRewardRate` defines reward ratio for the reporting the liquidation of the position for a reporter.
 - `ReportLevyPeriodRewardRate` defines reward ratio for the reporting the levy period for a reporter.
+  The default value is `0.3`.
 - `AcceptedAssets` defines the tokens which can be deposited into a pool to get DLP.  
   The tokens in `AcceptedAssets` have to have `DenomMetadata` in bank module in this current implementation (could be changed).
 
