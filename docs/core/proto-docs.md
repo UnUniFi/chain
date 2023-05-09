@@ -79,7 +79,7 @@
     - [Market](#ununifi.derivatives.Market)
     - [PoolAssetConf](#ununifi.derivatives.PoolAssetConf)
     - [PoolMarketCap](#ununifi.derivatives.PoolMarketCap)
-    - [PoolMarketCap.Breakdown](#ununifi.derivatives.PoolMarketCap.Breakdown)
+    - [PoolMarketCap.AssetInfo](#ununifi.derivatives.PoolMarketCap.AssetInfo)
     - [PoolParams](#ununifi.derivatives.PoolParams)
     - [Position](#ununifi.derivatives.Position)
     - [QueriedPosition](#ununifi.derivatives.QueriedPosition)
@@ -114,6 +114,10 @@
     - [QueryAddressPositionsResponse](#ununifi.derivatives.QueryAddressPositionsResponse)
     - [QueryAllPositionsRequest](#ununifi.derivatives.QueryAllPositionsRequest)
     - [QueryAllPositionsResponse](#ununifi.derivatives.QueryAllPositionsResponse)
+    - [QueryAvailableAssetInPoolByDenomRequest](#ununifi.derivatives.QueryAvailableAssetInPoolByDenomRequest)
+    - [QueryAvailableAssetInPoolByDenomResponse](#ununifi.derivatives.QueryAvailableAssetInPoolByDenomResponse)
+    - [QueryAvailableAssetsInPoolRequest](#ununifi.derivatives.QueryAvailableAssetsInPoolRequest)
+    - [QueryAvailableAssetsInPoolResponse](#ununifi.derivatives.QueryAvailableAssetsInPoolResponse)
     - [QueryDLPTokenRateRequest](#ununifi.derivatives.QueryDLPTokenRateRequest)
     - [QueryDLPTokenRateResponse](#ununifi.derivatives.QueryDLPTokenRateResponse)
     - [QueryEstimateDLPTokenAmountRequest](#ununifi.derivatives.QueryEstimateDLPTokenAmountRequest)
@@ -1610,16 +1614,16 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `quote_ticker` | [string](#string) |  |  |
 | `total` | [string](#string) |  |  |
-| `breakdown` | [PoolMarketCap.Breakdown](#ununifi.derivatives.PoolMarketCap.Breakdown) | repeated |  |
+| `asset_info` | [PoolMarketCap.AssetInfo](#ununifi.derivatives.PoolMarketCap.AssetInfo) | repeated |  |
 
 
 
 
 
 
-<a name="ununifi.derivatives.PoolMarketCap.Breakdown"></a>
+<a name="ununifi.derivatives.PoolMarketCap.AssetInfo"></a>
 
-### PoolMarketCap.Breakdown
+### PoolMarketCap.AssetInfo
 
 
 
@@ -1628,6 +1632,7 @@ Query defines the gRPC querier service.
 | `denom` | [string](#string) |  |  |
 | `amount` | [string](#string) |  |  |
 | `price` | [string](#string) |  |  |
+| `reserved` | [string](#string) |  |  |
 
 
 
@@ -2103,6 +2108,61 @@ GenesisState defines the derivatives module's genesis state.
 
 
 
+<a name="ununifi.derivatives.QueryAvailableAssetInPoolByDenomRequest"></a>
+
+### QueryAvailableAssetInPoolByDenomRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryAvailableAssetInPoolByDenomResponse"></a>
+
+### QueryAvailableAssetInPoolByDenomResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `available_asset` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryAvailableAssetsInPoolRequest"></a>
+
+### QueryAvailableAssetsInPoolRequest
+
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryAvailableAssetsInPoolResponse"></a>
+
+### QueryAvailableAssetsInPoolResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `available_assets` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
 <a name="ununifi.derivatives.QueryDLPTokenRateRequest"></a>
 
 ### QueryDLPTokenRateRequest
@@ -2511,6 +2571,8 @@ Query defines the gRPC querier service.
 | `DLPTokenRates` | [QueryDLPTokenRateRequest](#ununifi.derivatives.QueryDLPTokenRateRequest) | [QueryDLPTokenRateResponse](#ununifi.derivatives.QueryDLPTokenRateResponse) |  | GET|/ununifi/derivatives/pools/dlp|
 | `EstimateDLPTokenAmount` | [QueryEstimateDLPTokenAmountRequest](#ununifi.derivatives.QueryEstimateDLPTokenAmountRequest) | [QueryEstimateDLPTokenAmountResponse](#ununifi.derivatives.QueryEstimateDLPTokenAmountResponse) |  | GET|/ununifi/derivatives/estimate-dlp-token-amount/{mint_denom}/{amount}|
 | `EstimateRedeemAmount` | [QueryEstimateRedeemAmountRequest](#ununifi.derivatives.QueryEstimateRedeemAmountRequest) | [QueryEstimateRedeemAmountResponse](#ununifi.derivatives.QueryEstimateRedeemAmountResponse) |  | GET|/ununifi/derivatives/estimate-redeem-amount/{redeem_denom}/{lpt_amount}|
+| `AvailableAssetInPoolByDenom` | [QueryAvailableAssetInPoolByDenomRequest](#ununifi.derivatives.QueryAvailableAssetInPoolByDenomRequest) | [QueryAvailableAssetInPoolByDenomResponse](#ununifi.derivatives.QueryAvailableAssetInPoolByDenomResponse) |  | GET|/ununifi/derivatives/pools/available-asset/{denom}|
+| `AvailableAssetsInPool` | [QueryAvailableAssetsInPoolRequest](#ununifi.derivatives.QueryAvailableAssetsInPoolRequest) | [QueryAvailableAssetsInPoolResponse](#ununifi.derivatives.QueryAvailableAssetsInPoolResponse) |  | GET|/ununifi/derivatives/pools/available-assets|
 
  <!-- end services -->
 

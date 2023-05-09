@@ -22,11 +22,11 @@ fi
 $BINARY tx pricefeed postprice uusdc:ubtc 24528.185864015486004064 60 --from=$PRICEFEED $conf | jq .
 
 # mint lpt
-$BINARY tx derivatives mint-lpt 100000ubtc --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g';
-$BINARY tx derivatives mint-lpt 100000ubtc --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g';
+$BINARY tx derivatives deposit-to-pool 100000ubtc --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g';
+$BINARY tx derivatives deposit-to-pool 100000ubtc --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g';
 # burn lpt
-$BINARY tx derivatives burn-lpt 1 ubtc --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g'
-$BINARY tx derivatives burn-lpt 1 ubtc --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g'
+$BINARY tx derivatives withdraw-from-pool 1 ubtc --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g'
+$BINARY tx derivatives withdraw-from-pool 1 ubtc --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g'
 
 # open-position perpetual-futures
 $BINARY tx derivatives open-position perpetual-futures 100ubtc ubtc uusdc long --from=$USER1 $conf | jq .raw_log | sed 's/\\n/\n/g'

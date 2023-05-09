@@ -3,6 +3,7 @@ package cli
 import (
 	"context"
 	"fmt"
+
 	// "strings"
 
 	"github.com/spf13/cobra"
@@ -26,8 +27,9 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	}
 
 	cmd.AddCommand(CmdQueryParams())
-	// this line is used by starport scaffolding # 1
 	cmd.AddCommand(CmdQueryLiquidityProviderTokenRealAPY(), CmdQueryLiquidityProviderTokenNominalAPY(), CmdQueryAddressPositions())
+	cmd.AddCommand(CmdQueryAvailableAssetInPoolByDenom())
+	cmd.AddCommand(CmdQueryAvailableAssetsInPool())
 
 	return cmd
 }
@@ -107,4 +109,60 @@ func CmdQueryAddressPositions() *cobra.Command {
 	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd
+}
+
+func CmdQueryAvailableAssetInPoolByDenom() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "available-asset [denom]",
+		Short: "shows the available amount of the asset",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.AvailableAssetInPoolByDenom(
+				context.Background(),
+				&types.QueryAvailableAssetInPoolByDenomRequest{
+					Denom: args[0],
+				},
+			)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdQueryAvailableAssetsInPool() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "available-assets",
+		Short: "shows the available amount of all assets in the pool",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.AvailableAssetsInPool(
+				context.Background(),
+				&types.QueryAvailableAssetsInPoolRequest{},
+			)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+
 }

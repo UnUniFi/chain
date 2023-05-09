@@ -70,22 +70,42 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 		OpenedQuoteRate:  openedQuoteRate,
 		PositionInstance: *any,
 		RemainingMargin:  margin,
+		LastLeviedAt:     ctx.BlockTime(),
 	}
 
 	// General validation for the position creation
 	params := k.GetParams(ctx)
-	if err := position.IsValid(params); err != nil {
+
+	var reserveCoinDenom string
+	if positionInstance.PositionType == types.PositionType_LONG {
+		reserveCoinDenom = market.BaseDenom
+	} else {
+		reserveCoinDenom = market.QuoteDenom
+	}
+
+	availableAssetInPoolByDenom, err := k.AvailableAssetInPool(ctx, reserveCoinDenom)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := position.IsValid(params, availableAssetInPoolByDenom); err != nil {
 		return nil, err
 	}
 
 	switch positionInstance.PositionType {
 	// FIXME: Don't use OneMillionInt derectly to make it decimal unit. issue #476
 	case types.PositionType_LONG:
-		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.PositionType, positionInstance.SizeInDenomUnit(types.OneMillionInt))
-		// break
+		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.PositionType, positionInstance.SizeInDenomExponent(types.OneMillionInt))
+		// Reserve tokens to pay profit
+		if err := k.AddReserveTokensForPosition(ctx, positionInstance.SizeInDenomExponent(types.OneMillionInt), position.Market.BaseDenom); err != nil {
+			return nil, err
+		}
 	case types.PositionType_SHORT:
-		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.PositionType, positionInstance.SizeInDenomUnit(types.OneMillionInt))
-		// break
+		k.AddPerpetualFuturesNetPositionOfMarket(ctx, market, positionInstance.PositionType, positionInstance.SizeInDenomExponent(types.OneMillionInt))
+		// Reserve tokens to pay profit
+		if err := k.AddReserveTokensForPosition(ctx, positionInstance.SizeInDenomExponent(types.OneMillionInt), position.Market.QuoteDenom); err != nil {
+			return nil, err
+		}
 	case types.PositionType_POSITION_UNKNOWN:
 		return nil, fmt.Errorf("unknown position type")
 	}
@@ -98,13 +118,44 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 	return &position, nil
 }
 
+// AddReserveTokensForPosition adds the tokens o the amount of the popsition size to pay the maximum profit
+// in reserved property of the PoolMarketCap
+func (k Keeper) AddReserveTokensForPosition(ctx sdk.Context, positionSizeInDenomExponent sdk.Int, denom string) error {
+	reserveOld, err := k.GetReservedCoin(ctx, denom)
+	if err != nil {
+		return err
+	}
+
+	reserveNew := reserveOld.AddAmount(positionSizeInDenomExponent)
+	if err := k.SetReservedCoin(ctx, reserveNew); err != nil {
+		return err
+	}
+	return nil
+}
+
+// SubReserveTokensForPosition subtracts the tokens o the amount of the popsition size to pay the maximum profit
+// in reserved property of the PoolMarketCap
+func (k Keeper) SubReserveTokensForPosition(ctx sdk.Context, positionSizeInDenomExponent sdk.Int, denom string) error {
+	reserveOld, err := k.GetReservedCoin(ctx, denom)
+	if err != nil {
+		return err
+	}
+
+	reserveNew := reserveOld.SubAmount(positionSizeInDenomExponent)
+	if err := k.SetReservedCoin(ctx, reserveNew); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.PerpetualFuturesPosition) error {
 	params := k.GetParams(ctx)
 	commissionRate := params.PerpetualFutures.CommissionRate
 
 	// At closing the position, the trading fee is deducted.
 	// fee = positionSize * commissionRate
-	positionSizeInDenomUnit := sdk.NewDecFromInt(position.PositionInstance.SizeInDenomUnit(types.OneMillionInt))
+	positionSizeInDenomUnit := sdk.NewDecFromInt(position.PositionInstance.SizeInDenomExponent(types.OneMillionInt))
 	feeAmountDec := positionSizeInDenomUnit.Mul(commissionRate)
 	tradeAmount := positionSizeInDenomUnit.Sub(feeAmountDec)
 	feeAmount := feeAmountDec.RoundInt()
@@ -134,7 +185,6 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 
 	returningCoin := sdk.NewCoin(position.RemainingMargin.Denom, returningAmount)
 
-	fmt.Println(returningAmount)
 	if returningCoin.IsPositive() {
 		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, position.Address.AccAddress(), sdk.Coins{returningCoin}); err != nil {
 			return err
@@ -145,10 +195,10 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 	switch position.PositionInstance.PositionType {
 	// FIXME: Don't use OneMillionInt derectly to make it decimal unit. issue #476
 	case types.PositionType_LONG:
-		k.SubPerpetualFuturesNetPositionOfMarket(ctx, position.Market, position.PositionInstance.PositionType, position.PositionInstance.SizeInDenomUnit(types.OneMillionInt))
+		k.SubPerpetualFuturesNetPositionOfMarket(ctx, position.Market, position.PositionInstance.PositionType, position.PositionInstance.SizeInDenomExponent(types.OneMillionInt))
 		// break
 	case types.PositionType_SHORT:
-		k.SubPerpetualFuturesNetPositionOfMarket(ctx, position.Market, position.PositionInstance.PositionType, position.PositionInstance.SizeInDenomUnit(types.OneMillionInt))
+		k.SubPerpetualFuturesNetPositionOfMarket(ctx, position.Market, position.PositionInstance.PositionType, position.PositionInstance.SizeInDenomExponent(types.OneMillionInt))
 		// break
 	case types.PositionType_POSITION_UNKNOWN:
 		return fmt.Errorf("unknown position type")
@@ -203,9 +253,10 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient ununifiTypes.StringAccAddress, position types.Position, positionInstance types.PerpetualFuturesPositionInstance) error {
 	params := k.GetParams(ctx)
 
-	netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, position.Market, positionInstance.PositionType).PositionSizeInDenomExponent
+	microPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, position.Market, positionInstance.PositionType).PositionSizeInDenomExponent
+	netPosition := sdk.NewDecFromInt(microPosition).Quo(sdk.MustNewDecFromStr(types.OneMillionString))
 
-	imaginaryFundingRate := sdk.NewDecFromInt(netPosition).Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
+	imaginaryFundingRate := netPosition.Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
 	imaginaryFundingFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
 	commissionFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
 
