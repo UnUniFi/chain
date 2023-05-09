@@ -9,14 +9,19 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/cosmos/cosmos-sdk/x/nft"
 	nftkeeper "github.com/cosmos/cosmos-sdk/x/nft/keeper"
 
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+
 	simapp "github.com/UnUniFi/chain/app"
+	appparams "github.com/UnUniFi/chain/app/params"
 	"github.com/UnUniFi/chain/x/nftmarket/keeper"
 	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
@@ -55,10 +60,32 @@ func (suite *KeeperTestSuite) SetupTest() {
 	types.RegisterQueryServer(queryHelper, app.NftmarketKeeper)
 	suite.queryClient = types.NewQueryClient(queryHelper)
 
+	encodingConfig := appparams.MakeEncodingConfig()
+	appCodec := encodingConfig.Marshaler
+
+	txCfg := encodingConfig.TxConfig
+	accountKeeper := authkeeper.NewAccountKeeper(
+		appCodec,
+		app.GetKey(authtypes.StoreKey),
+		authtypes.ProtoBaseAccount,
+		maccPerms,
+		"ununifi",
+		authtypes.NewModuleAddress("gov").String(),
+	)
+
+	bankKeeper := bankkeeper.NewBaseKeeper(
+		appCodec,
+		app.GetKey(banktypes.StoreKey),
+		app.AccountKeeper,
+		app.BlockedAddrs(),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+	nftKeeper := nftkeeper.NewKeeper(app.GetKey(nft.StoreKey), appCodec, accountKeeper, bankKeeper)
+	keeper := keeper.NewKeeper(appCodec, txCfg, app.GetKey(types.StoreKey), app.GetKey(types.MemStoreKey), suite.app.GetSubspace(types.ModuleName), accountKeeper, bankKeeper, nftKeeper)
 	hooks := dummyNftmarketHook{}
-	app.NftmarketKeeper.SetHooks(&hooks)
-	suite.nftKeeper = app.NFTKeeper
-	suite.keeper = app.NftmarketKeeper
+	keeper.SetHooks(&hooks)
+	suite.nftKeeper = nftKeeper
+	suite.keeper = keeper
 }
 func TestKeeperSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))

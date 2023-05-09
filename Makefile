@@ -168,3 +168,7 @@ proto-gen:
 	# make buf-tools
 	./proto/gen.sh && \
 	./proto/gen-swagger.sh
+
+mocks: $(MOCKS_DIR)
+	docker run -v "$(CURDIR):/app"  -u `stat -c "%u:%g" $(CURDIR)` -w /app ekofr/gomock:go-1.17 /bin/sh scripts/utils/mockgen.sh
+.PHONY: mocks

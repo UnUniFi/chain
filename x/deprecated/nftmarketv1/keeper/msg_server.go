@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/x/nftmarketv1/types"
+	"github.com/UnUniFi/chain/x/deprecated/nftmarketv1/types"
 )
 
 type msgServer struct {

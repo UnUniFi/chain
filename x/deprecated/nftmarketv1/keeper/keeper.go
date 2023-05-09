@@ -11,7 +11,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/UnUniFi/chain/x/nftmarketv1/types"
+	"github.com/UnUniFi/chain/x/deprecated/nftmarketv1/types"
 )
 
 type Keeper struct {

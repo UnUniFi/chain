@@ -3,7 +3,7 @@ package nftmarketv1
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/x/nftmarketv1/keeper"
+	"github.com/UnUniFi/chain/x/deprecated/nftmarketv1/keeper"
 )
 
 // EndBlocker updates the current pricefeed

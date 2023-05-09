@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/nft"
 
-	"github.com/UnUniFi/chain/x/nftmarketv1/types"
+	"github.com/UnUniFi/chain/x/deprecated/nftmarketv1/types"
 )
 
 func (k Keeper) MintNft(ctx sdk.Context, msg *types.MsgMintNft) error {

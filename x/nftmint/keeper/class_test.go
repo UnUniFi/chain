@@ -24,7 +24,7 @@ const (
 // test basic functions of nftmint
 func (suite *KeeperTestSuite) TestNftMintClassBasics() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	owner_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, owner)
+	owner_seq, _ := suite.accountKeeper.GetSequence(suite.ctx, owner)
 
 	classId := keeper.CreateClassId(owner_seq, owner)
 
@@ -33,10 +33,10 @@ func (suite *KeeperTestSuite) TestNftMintClassBasics() {
 		ClassId: classId,
 	}
 	// check setting ClassAttributes function
-	err := suite.app.NftmintKeeper.SetClassAttributes(suite.ctx, classAttributes)
+	err := suite.nftmintKeeper.SetClassAttributes(suite.ctx, classAttributes)
 	suite.Require().NoError(err)
 	// check getting ClassAttributes function
-	gotClassAttributes, exists := suite.app.NftmintKeeper.GetClassAttributes(suite.ctx, classAttributes.ClassId)
+	gotClassAttributes, exists := suite.nftmintKeeper.GetClassAttributes(suite.ctx, classAttributes.ClassId)
 	suite.Require().True(exists)
 	suite.Require().Equal(classAttributes, gotClassAttributes)
 
@@ -48,10 +48,10 @@ func (suite *KeeperTestSuite) TestNftMintClassBasics() {
 		ClassId: classIdList,
 	}
 	// check setting OwningClassIdList function
-	err = suite.app.NftmintKeeper.SetOwningClassIdList(suite.ctx, owningClassIdList)
+	err = suite.nftmintKeeper.SetOwningClassIdList(suite.ctx, owningClassIdList)
 	suite.Require().NoError(err)
 	// check getting OwningClassIdList function
-	gotOwningClassIdList, exists := suite.app.NftmintKeeper.GetOwningClassIdList(suite.ctx, owner)
+	gotOwningClassIdList, exists := suite.nftmintKeeper.GetOwningClassIdList(suite.ctx, owner)
 	suite.Require().True(exists)
 	suite.Require().Equal(owningClassIdList, gotOwningClassIdList)
 
@@ -62,10 +62,10 @@ func (suite *KeeperTestSuite) TestNftMintClassBasics() {
 		ClassId:   classIdList,
 	}
 	// check setting ClassNameIdList function
-	err = suite.app.NftmintKeeper.SetClassNameIdList(suite.ctx, classNameIdList)
+	err = suite.nftmintKeeper.SetClassNameIdList(suite.ctx, classNameIdList)
 	suite.Require().NoError(err)
 	// check getting ClassNameIdList function
-	gotClassNameIdList, exists := suite.app.NftmintKeeper.GetClassNameIdList(suite.ctx, testClassName)
+	gotClassNameIdList, exists := suite.nftmintKeeper.GetClassNameIdList(suite.ctx, testClassName)
 	suite.Require().True(exists)
 	suite.Require().Equal(classNameIdList, gotClassNameIdList)
 }
@@ -88,14 +88,14 @@ func TestCreateId(t *testing.T) {
 
 // test for the CreateClass relating functions
 func (suite *KeeperTestSuite) TestCreateClass() {
-	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	sender_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, sender)
+	sender := suite.addrs[0]
+	sender_seq, _ := suite.accountKeeper.GetSequence(suite.ctx, sender)
 	classId := keeper.CreateClassId(sender_seq, sender)
 	err := suite.CreateClass(suite.ctx, classId, sender)
 	suite.Require().NoError(err)
 
 	// check if Class is set
-	class, exists := suite.app.NFTKeeper.GetClass(suite.ctx, classId)
+	class, exists := suite.nftKeeper.GetClass(suite.ctx, classId)
 	suite.Require().True(exists)
 	expectedClass := nfttypes.Class{
 		Id:   classId,
@@ -104,7 +104,7 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 	suite.Require().Equal(class, expectedClass)
 
 	// check if ClassAttributes is set
-	classAttributes, exists := suite.app.NftmintKeeper.GetClassAttributes(suite.ctx, classId)
+	classAttributes, exists := suite.nftmintKeeper.GetClassAttributes(suite.ctx, classId)
 	suite.Require().True(exists)
 	expectedClassAttributes := types.ClassAttributes{
 		ClassId:           classId,
@@ -116,7 +116,7 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 	suite.Require().Equal(classAttributes, expectedClassAttributes)
 
 	// check if OwningClassIdList is set
-	owningClassIdList, exists := suite.app.NftmintKeeper.GetOwningClassIdList(suite.ctx, sender.Bytes())
+	owningClassIdList, exists := suite.nftmintKeeper.GetOwningClassIdList(suite.ctx, sender.Bytes())
 	suite.Require().True(exists)
 	var classIdList []string
 	classIdList = append(classIdList, classId)
@@ -127,7 +127,7 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 	suite.Require().Equal(owningClassIdList, expectedOwningClassIdList)
 
 	// check if ClassNameIdList is set
-	classNameIdList, exists := suite.app.NftmintKeeper.GetClassNameIdList(suite.ctx, testName)
+	classNameIdList, exists := suite.nftmintKeeper.GetClassNameIdList(suite.ctx, testName)
 	suite.Require().True(exists)
 	expectedClassNameIdList := types.ClassNameIdList{
 		ClassName: testName,
@@ -136,7 +136,7 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 	suite.Require().Equal(classNameIdList, expectedClassNameIdList)
 
 	senderInInvalidCase := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	senderInInvalidCase_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, senderInInvalidCase)
+	senderInInvalidCase_seq, _ := suite.accountKeeper.GetSequence(suite.ctx, senderInInvalidCase)
 	classIdInInvalidCase := keeper.CreateClassId(senderInInvalidCase_seq, senderInInvalidCase)
 	// in case which contains the invalid name
 	testMsgCreateClassInvalidName := types.MsgCreateClass{
@@ -146,17 +146,17 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 		TokenSupplyCap:    testTokenSupplyCap,
 		MintingPermission: testMintingPermission,
 	}
-	err = suite.app.NftmintKeeper.CreateClass(suite.ctx, classIdInInvalidCase, &testMsgCreateClassInvalidName)
+	err = suite.nftmintKeeper.CreateClass(suite.ctx, classIdInInvalidCase, &testMsgCreateClassInvalidName)
 	suite.Require().Error(err)
 
 	// check if data objects aren't set
-	exists = suite.app.NFTKeeper.HasClass(suite.ctx, classIdInInvalidCase)
+	exists = suite.nftKeeper.HasClass(suite.ctx, classIdInInvalidCase)
 	suite.Require().False(exists)
-	_, exists = suite.app.NftmintKeeper.GetClassAttributes(suite.ctx, classIdInInvalidCase)
+	_, exists = suite.nftmintKeeper.GetClassAttributes(suite.ctx, classIdInInvalidCase)
 	suite.Require().False(exists)
-	_, exists = suite.app.NftmintKeeper.GetOwningClassIdList(suite.ctx, senderInInvalidCase.Bytes())
+	_, exists = suite.nftmintKeeper.GetOwningClassIdList(suite.ctx, senderInInvalidCase.Bytes())
 	suite.Require().False(exists)
-	_, exists = suite.app.NftmintKeeper.GetClassNameIdList(suite.ctx, testMsgCreateClassInvalidName.Name)
+	_, exists = suite.nftmintKeeper.GetClassNameIdList(suite.ctx, testMsgCreateClassInvalidName.Name)
 	suite.Require().False(exists)
 
 	// in case which contains the invalid uri
@@ -167,7 +167,7 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 		TokenSupplyCap:    testTokenSupplyCap,
 		MintingPermission: testMintingPermission,
 	}
-	err = suite.app.NftmintKeeper.CreateClass(suite.ctx, classIdInInvalidCase, &testMsgCreateClassInvalidUri)
+	err = suite.nftmintKeeper.CreateClass(suite.ctx, classIdInInvalidCase, &testMsgCreateClassInvalidUri)
 	suite.Require().Error(err)
 
 	// in case which contains the invalid token supply cap
@@ -178,7 +178,7 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 		TokenSupplyCap:    10000000, // bigger than the token supply cap
 		MintingPermission: 0,
 	}
-	err = suite.app.NftmintKeeper.CreateClass(suite.ctx, classIdInInvalidCase, &testMsgCreateClassInvalidTokenSupplyCap)
+	err = suite.nftmintKeeper.CreateClass(suite.ctx, classIdInInvalidCase, &testMsgCreateClassInvalidTokenSupplyCap)
 	suite.Require().Error(err)
 
 	// in case which contains the invalid minting permission
@@ -189,14 +189,14 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 		TokenSupplyCap:    10000,
 		MintingPermission: 10, // not allowed minting permission option
 	}
-	err = suite.app.NftmintKeeper.CreateClass(suite.ctx, classIdInInvalidCase, &testMsgCreateClassInvalidMintingPermission)
+	err = suite.nftmintKeeper.CreateClass(suite.ctx, classIdInInvalidCase, &testMsgCreateClassInvalidMintingPermission)
 	suite.Require().Error(err)
 }
 
 // test for the SendClassOwnership relating functions
 func (suite *KeeperTestSuite) TestSendClassOwnership() {
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	sender_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, sender)
+	sender_seq, _ := suite.accountKeeper.GetSequence(suite.ctx, sender)
 	classId := keeper.CreateClassId(sender_seq, sender)
 	_ = suite.CreateClass(suite.ctx, classId, sender)
 
@@ -207,10 +207,10 @@ func (suite *KeeperTestSuite) TestSendClassOwnership() {
 		ClassId:   classId,
 		Recipient: recipient.Bytes(),
 	}
-	err := suite.app.NftmintKeeper.SendClassOwnership(suite.ctx, &testMsgSendClassOwnership)
+	err := suite.nftmintKeeper.SendClassOwnership(suite.ctx, &testMsgSendClassOwnership)
 	suite.Require().NoError(err)
 	// check if recipient address becomes new owner of class
-	classAttributes, exists := suite.app.NftmintKeeper.GetClassAttributes(suite.ctx, classId)
+	classAttributes, exists := suite.nftmintKeeper.GetClassAttributes(suite.ctx, classId)
 	suite.Require().True(exists)
 	expectedOwner := recipient
 	suite.Require().Equal(expectedOwner, classAttributes.Owner.AccAddress())
@@ -223,7 +223,7 @@ func (suite *KeeperTestSuite) TestSendClassOwnership() {
 		ClassId:   classId,
 		Recipient: recipient.Bytes(),
 	}
-	err = suite.app.NftmintKeeper.SendClassOwnership(suite.ctx, &testMsgSendClassOwnershipInvalidSender)
+	err = suite.nftmintKeeper.SendClassOwnership(suite.ctx, &testMsgSendClassOwnershipInvalidSender)
 	suite.Require().Error(err)
 
 	// invalid class id specification
@@ -233,14 +233,14 @@ func (suite *KeeperTestSuite) TestSendClassOwnership() {
 		ClassId:   invalidClassId, // non-existant class
 		Recipient: recipient.Bytes(),
 	}
-	err = suite.app.NftmintKeeper.SendClassOwnership(suite.ctx, &testMsgCreateClassInvalidClassId)
+	err = suite.nftmintKeeper.SendClassOwnership(suite.ctx, &testMsgCreateClassInvalidClassId)
 	suite.Require().Error(err)
 }
 
 // test for the UpdateTokenSupplyCap relating functions
 func (suite *KeeperTestSuite) TestUpdateTokenSupplyCap() {
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	sender_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, sender)
+	sender_seq, _ := suite.accountKeeper.GetSequence(suite.ctx, sender)
 	classId := keeper.CreateClassId(sender_seq, sender)
 	_ = suite.CreateClass(suite.ctx, classId, sender)
 
@@ -250,9 +250,9 @@ func (suite *KeeperTestSuite) TestUpdateTokenSupplyCap() {
 		ClassId:        classId,
 		TokenSupplyCap: updatingTokenSupplyCap,
 	}
-	err := suite.app.NftmintKeeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCap)
+	err := suite.nftmintKeeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCap)
 	suite.Require().NoError(err)
-	classAttributes, exists := suite.app.NftmintKeeper.GetClassAttributes(suite.ctx, classId)
+	classAttributes, exists := suite.nftmintKeeper.GetClassAttributes(suite.ctx, classId)
 	suite.Require().True(exists)
 	expectedTokenSupplyCap := updatingTokenSupplyCap
 	suite.Require().Equal(expectedTokenSupplyCap, classAttributes.TokenSupplyCap)
@@ -265,7 +265,7 @@ func (suite *KeeperTestSuite) TestUpdateTokenSupplyCap() {
 		ClassId:        classId,
 		TokenSupplyCap: 100,
 	}
-	err = suite.app.NftmintKeeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCapInvalidSender)
+	err = suite.nftmintKeeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCapInvalidSender)
 	suite.Require().Error(err)
 
 	// invalid token supply cap specification
@@ -274,25 +274,25 @@ func (suite *KeeperTestSuite) TestUpdateTokenSupplyCap() {
 		ClassId:        classId,
 		TokenSupplyCap: 1000000, // bigger than the maximum token supply cap on UnUniFi
 	}
-	err = suite.app.NftmintKeeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCapInvalidCap)
+	err = suite.nftmintKeeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCapInvalidCap)
 	suite.Require().Error(err)
 
 	// invalid case which current token supply is bigger than the updating supply cap
-	_ = suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{ClassId: classId, Id: "a00"}, sender)
-	_ = suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{ClassId: classId, Id: "a01"}, sender)
+	_ = suite.nftKeeper.Mint(suite.ctx, nfttypes.NFT{ClassId: classId, Id: "a00"}, sender)
+	_ = suite.nftKeeper.Mint(suite.ctx, nfttypes.NFT{ClassId: classId, Id: "a01"}, sender)
 	testMsgUpdateTokenSupplyCapSmaller := types.MsgUpdateTokenSupplyCap{
 		Sender:         sender.Bytes(),
 		ClassId:        classId,
 		TokenSupplyCap: 1, // smaller than the current token supply 2 of the specified class
 	}
-	err = suite.app.NftmintKeeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCapSmaller)
+	err = suite.nftmintKeeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCapSmaller)
 	suite.Require().Error(err)
 }
 
 // test for the UpdateBaseTokenUri relating functions
 func (suite *KeeperTestSuite) TestUpdateBaseTokenUri() {
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	sender_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, sender)
+	sender_seq, _ := suite.accountKeeper.GetSequence(suite.ctx, sender)
 	classId := keeper.CreateClassId(sender_seq, sender)
 	_ = suite.CreateClass(suite.ctx, classId, sender)
 	_ = suite.MintNFT(suite.ctx, classId, testNftID, sender)
@@ -352,14 +352,14 @@ func (suite *KeeperTestSuite) TestUpdateBaseTokenUri() {
 	}
 
 	for _, tc := range tests {
-		err := suite.app.NftmintKeeper.UpdateBaseTokenUri(suite.ctx, &tc.msg)
+		err := suite.nftmintKeeper.UpdateBaseTokenUri(suite.ctx, &tc.msg)
 
 		// invalid cases
 		if !tc.validSender || !tc.validBaseTokenUir {
 			suite.Require().Error(err)
-			gotClassAttributes, _ := suite.app.NftmintKeeper.GetClassAttributes(suite.ctx, classId)
+			gotClassAttributes, _ := suite.nftmintKeeper.GetClassAttributes(suite.ctx, classId)
 			suite.Require().Equal(testBaseTokenUri, gotClassAttributes.BaseTokenUri)
-			nft, _ := suite.app.NFTKeeper.GetNFT(suite.ctx, classId, testNftID)
+			nft, _ := suite.nftKeeper.GetNFT(suite.ctx, classId, testNftID)
 			expectedNFTUri := testBaseTokenUri + testNFTId
 			suite.Require().Equal(expectedNFTUri, nft.Uri)
 		}
@@ -367,9 +367,9 @@ func (suite *KeeperTestSuite) TestUpdateBaseTokenUri() {
 		// valid case
 		if tc.validSender && tc.validBaseTokenUir {
 			suite.Require().NoError(err)
-			gotClassAttributes, _ := suite.app.NftmintKeeper.GetClassAttributes(suite.ctx, classId)
+			gotClassAttributes, _ := suite.nftmintKeeper.GetClassAttributes(suite.ctx, classId)
 			suite.Require().Equal(tc.msg.BaseTokenUri, gotClassAttributes.BaseTokenUri)
-			nft, _ := suite.app.NFTKeeper.GetNFT(suite.ctx, classId, testNftID)
+			nft, _ := suite.nftKeeper.GetNFT(suite.ctx, classId, testNftID)
 			expectedNFTUri := tc.msg.BaseTokenUri + testNftID
 			suite.Require().Equal(expectedNFTUri, nft.Uri)
 		}
@@ -386,14 +386,14 @@ func (suite *KeeperTestSuite) CreateClass(ctx sdk.Context, classID string, sende
 		MintingPermission: testMintingPermission,
 	}
 
-	err := suite.app.NftmintKeeper.CreateClass(ctx, classID, &testMsgCreateClass)
+	err := suite.nftmintKeeper.CreateClass(ctx, classID, &testMsgCreateClass)
 	return err
 }
 
 // test for the GetClassAttributes relating functions
 func (suite *KeeperTestSuite) TestGetClassAttributes() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	owner_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, owner)
+	owner_seq, _ := suite.accountKeeper.GetSequence(suite.ctx, owner)
 	classId := keeper.CreateClassId(owner_seq, owner)
 	_ = suite.CreateClass(suite.ctx, classId, owner)
 
@@ -414,7 +414,7 @@ func (suite *KeeperTestSuite) TestGetClassAttributes() {
 		},
 	}
 	for _, tc := range tests {
-		res, valid := suite.app.NftmintKeeper.GetClassAttributes(suite.ctx, tc.classId)
+		res, valid := suite.nftmintKeeper.GetClassAttributes(suite.ctx, tc.classId)
 
 		// invalid cases
 		if !tc.validClass {
@@ -434,7 +434,7 @@ func (suite *KeeperTestSuite) TestGetClassAttributes() {
 // test for the GetOwningClassIdList relating functions
 func (suite *KeeperTestSuite) TestGetOwningClassIdList() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	owner_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, owner)
+	owner_seq, _ := suite.accountKeeper.GetSequence(suite.ctx, owner)
 	classId := keeper.CreateClassId(owner_seq, owner)
 	_ = suite.CreateClass(suite.ctx, classId, owner)
 
@@ -457,7 +457,7 @@ func (suite *KeeperTestSuite) TestGetOwningClassIdList() {
 		},
 	}
 	for _, tc := range tests {
-		res, valid := suite.app.NftmintKeeper.GetOwningClassIdList(suite.ctx, tc.ownerAddress)
+		res, valid := suite.nftmintKeeper.GetOwningClassIdList(suite.ctx, tc.ownerAddress)
 
 		// invalid cases
 		if !tc.validOwner {
@@ -477,7 +477,7 @@ func (suite *KeeperTestSuite) TestGetOwningClassIdList() {
 // test for the GetClassNameIdList relating functions
 func (suite *KeeperTestSuite) TestGetClassNameIdList() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	owner_seq, _ := suite.app.AccountKeeper.GetSequence(suite.ctx, owner)
+	owner_seq, _ := suite.accountKeeper.GetSequence(suite.ctx, owner)
 	classId := keeper.CreateClassId(owner_seq, owner)
 	_ = suite.CreateClass(suite.ctx, classId, owner)
 
@@ -498,7 +498,7 @@ func (suite *KeeperTestSuite) TestGetClassNameIdList() {
 		},
 	}
 	for _, tc := range tests {
-		res, valid := suite.app.NftmintKeeper.GetClassNameIdList(suite.ctx, tc.className)
+		res, valid := suite.nftmintKeeper.GetClassNameIdList(suite.ctx, tc.className)
 
 		// invalid cases
 		if !tc.validClass {
