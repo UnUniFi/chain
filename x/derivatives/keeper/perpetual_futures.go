@@ -149,8 +149,10 @@ func (k Keeper) SubReserveTokensForPosition(ctx sdk.Context, positionSizeInDenom
 }
 
 func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.PerpetualFuturesPosition) error {
-	params := k.GetParams(ctx)
-	commissionRate := params.PerpetualFutures.CommissionRate
+	// params := k.GetParams(ctx)
+	// commissionRate := params.PerpetualFutures.CommissionRate
+	// Set the ClosePosition commission rate to 0. The commission will be deducted by Levy instead.
+	commissionRate := sdk.MustNewDecFromStr("0")
 
 	// At closing the position, the trading fee is deducted.
 	// fee = positionSize * commissionRate
