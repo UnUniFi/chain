@@ -69,3 +69,10 @@ func IsValidDepositForPool(deposit sdk.Coin, acceptableAssets []PoolAssetConf) b
 func CalcTargetAmountInPool(weight, price, poolMarketCap sdk.Dec) sdk.Int {
 	return poolMarketCap.Mul(weight).Quo(price).TruncateInt()
 }
+
+func NewReserve(marketType MarketType, reserveAmount sdk.Coin) Reserve {
+	return Reserve{
+		MarketType: marketType,
+		Amount:     reserveAmount,
+	}
+}

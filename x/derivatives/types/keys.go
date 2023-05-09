@@ -114,6 +114,6 @@ func BlockTimestampWithHeight(height int64) []byte {
 	return append([]byte(KeyPrefixBlockTimestamp), []byte(strconv.FormatInt(height, 10))...)
 }
 
-func ReservedCoinKeyPrefix(denom string) []byte {
-	return append([]byte(KeyPrefixReservedCoin), []byte(denom)...)
+func ReservedCoinKeyPrefix(marketType MarketType, denom string) []byte {
+	return append([]byte(KeyPrefixReservedCoin), []byte(fmt.Sprintf("%s/%s", marketType, denom))...)
 }
