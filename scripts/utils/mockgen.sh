@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 mockgen_cmd="mockgen"
 # $mockgen_cmd -source=client/account_retriever.go -package mock -destination testutil/mock/account_retriever.go
