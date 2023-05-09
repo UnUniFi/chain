@@ -301,7 +301,7 @@ The maximum position size is limited by the amount of the corresponding token in
 [ClosePosition](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/tx.proto#L76-L85)
 
 Close a whole position by defining a unique position id.  
-Only the owner of the position can close it. If the position has profit, the profit will be distributed in the same token of the position margin. The fee is taken at this time. The fee rate is the defined static number in the params.
+Only the owner of the position can close it. If the position has profit, the profit will be distributed in the same token of the position margin.
 
 ### ReportLiquidation
 
@@ -315,7 +315,9 @@ This architecture make the chain avoidable to be aware of liquidation logic in E
 
 [ReportLevyPeriod](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/tx.proto#L107-L121)
 
-Report a position that needs to be levied for [imaginary funding rate](todo). The reporter gets the reward based on the fee rate of the levy period report reward rate in the params.
+Report a position that have been in place for more than 8 hours since the last levy for correction of position bias.
+Adds or subtracts the margin of the reported position depending on the overall position bias. In addition, the commission fee is subtracted from the margin. The commission fee rate is the defined static number in the params.
+The reporter gets a portion of the fee as a reward.
 
 ## Queries
 
