@@ -27,6 +27,7 @@ sed -i -e 's/\bstake\b/'$BINARY_MAIN_TOKEN'/g' $NODE_HOME/config/genesis.json
 
 echo "Adding genesis accounts..."
 echo $VAL_MNEMONIC_1    | $BINARY keys add $VAL1 --home $NODE_HOME --recover --keyring-backend=test
+echo $FAUCET_MNEMONIC_1 | $BINARY keys add $FAUCET --home $NODE_HOME --recover --keyring-backend=test
 echo $USER_MNEMONIC_1 | $BINARY keys add $USER1 --home $NODE_HOME --recover --keyring-backend=test
 echo $USER_MNEMONIC_2 | $BINARY keys add $USER2 --home $NODE_HOME --recover --keyring-backend=test
 echo $USER_MNEMONIC_3 | $BINARY keys add $USER3 --home $NODE_HOME --recover --keyring-backend=test
@@ -34,6 +35,7 @@ echo $USER_MNEMONIC_4 | $BINARY keys add $USER4 --home $NODE_HOME --recover --ke
 echo $PRICEFEED_MNEMONIC | $BINARY keys add $PRICEFEED --home $NODE_HOME --recover --keyring-backend=test
 
 $BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $VAL1 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN --home $NODE_HOME
+$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $FAUCET --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
 $BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $USER1 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
 $BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $USER2 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
 $BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $USER3 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
@@ -64,6 +66,7 @@ $sed_i 's/stake/uguu/g' $NODE_HOME/config/genesis.json;
 
 
 # PRICEFEED=$(ununifid keys show pricefeed --address)
+# for derivativs
 jq '.app_state.pricefeed.params.markets = [
   { "market_id": "ubtc:usd", "base_asset": "ubtc", "quote_asset": "usd", "oracles": [ "'$PRICEFEED_ADDRESS'" ], "active": true },
   { "market_id": "ubtc:usd:30", "base_asset": "ubtc", "quote_asset": "usd", "oracles": [ "'$PRICEFEED_ADDRESS'" ], "active": true },
@@ -77,7 +80,7 @@ jq '.app_state.derivatives.params.pool_params.base_lpt_mint_fee = "0.001"' $NODE
 jq '.app_state.derivatives.params.pool_params.base_lpt_redeem_fee = "0.001"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.pool_params.report_liquidation_reward_rate = "0.001"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.pool_params.report_levy_period_reward_rate = "0.001"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
-jq '.app_state.derivatives.params.pool_params.accepted_assets = [{"denom":"ubtc", "target_weight": "0.6"}, {"denom":"uusdc", "target_weight":"0.4"}]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.derivatives.params.pool_params.accepted_assets_conf = [{"denom":"ubtc", "target_weight": "0.6"}, {"denom":"uusdc", "target_weight":"0.4"}]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.perpetual_futures.commission_rate = "0.001"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.perpetual_futures.margin_maintenance_rate = "0.5"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.perpetual_futures.imaginary_funding_rate_proportional_coefficient = "0.0005"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
@@ -96,3 +99,41 @@ jq '.app_state.pricefeed.posted_prices = [
 ]'  $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 
 # ununifid start --home=$NODE_HOME
+
+# for nftmint
+jq '.app_state.nftmint.class_attributes_list = [
+  {
+    "base_token_uri": "ipfs://testcid/",
+    "class_id": "ununifi-1AFC3C85B52311F13161F724B284EF900458E3B3",
+    "minting_permission": "Anyone",
+    "owner": "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
+    "token_supply_cap": "100000"
+  },
+  {
+    "base_token_uri": "ipfs://testcid/",
+    "class_id": "ununifi-D4AC8DBC54261BB1B6ACBBF721A60D131A048F83",
+    "minting_permission": "OnlyOwner",
+    "owner": "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
+    "token_supply_cap": "100000"
+  }
+]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.nft.classes = [
+  {
+    "data": null,
+    "description": "",
+    "id": "ununifi-1AFC3C85B52311F13161F724B284EF900458E3B3",
+    "name": "Test",
+    "symbol": "",
+    "uri": "",
+    "uri_hash": ""
+  },
+  {
+    "data": null,
+    "description": "",
+    "id": "ununifi-D4AC8DBC54261BB1B6ACBBF721A60D131A048F83",
+    "name": "Test",
+    "symbol": "",
+    "uri": "",
+    "uri_hash": ""
+  }
+]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;

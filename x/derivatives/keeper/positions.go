@@ -144,13 +144,12 @@ func (k Keeper) DeletePosition(ctx sdk.Context, address sdk.AccAddress, id strin
 }
 
 func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error {
-	// todo check sender amount for margin
+	// check sender amount for margin
+	if !k.IsAssetAcceptable(ctx, msg.Margin.Denom) {
+		return errors.New("margin denom is not acceptable")
+	}
 
 	newPositionId := strconv.FormatUint(k.GetLastPositionId(ctx)+1, 10)
-
-	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, msg.Sender.AccAddress(), types.ModuleName, sdk.NewCoins(msg.Margin)); err != nil {
-		return err
-	}
 
 	// fixme check first bank.send last
 	positionInstance, err := types.UnpackPositionInstance(msg.PositionInstance)
@@ -174,6 +173,10 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 
 	k.SetPosition(ctx, *position)
 	k.IncreaseLastPositionId(ctx)
+
+	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, msg.Sender.AccAddress(), types.ModuleName, sdk.NewCoins(msg.Margin)); err != nil {
+		return err
+	}
 
 	return nil
 }

@@ -87,18 +87,19 @@ message QueriedPosition {
 
 }
 
-message PoolParams {
-  message Asset {
-    string denom = 1 [
-      (gogoproto.moretags) = "yaml:\"denom\""
-    ];
-    string target_weight = 2 [
-      (gogoproto.moretags) = "yaml:\"target_weight\"",
-      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-      (gogoproto.nullable) = false
-    ];
-  }
+message PoolAssetConf {
+  string denom = 1 [
+    (gogoproto.moretags) = "yaml:\"denom\""
+  ];
+  string target_weight = 2 [
+    (gogoproto.moretags) = "yaml:\"target_weight\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
 
+
+message PoolParams {
   string quote_ticker = 1 [
     (gogoproto.moretags) = "yaml:\"quote_ticker\""
   ];
@@ -127,13 +128,14 @@ message PoolParams {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  repeated Asset accepted_assets = 7 [
-    (gogoproto.moretags) = "yaml:\"accepted_assets\""
+  repeated PoolAssetConf accepted_assets_conf = 7 [
+    (gogoproto.moretags) = "yaml:\"accepted_assets_conf\"",
+    (gogoproto.nullable) = false
   ];
 }
 
 message PoolMarketCap {
-  message Breakdown {
+  message AssetInfo {
     string denom = 1 [
       (gogoproto.moretags) = "yaml:\"denom\""
     ];
@@ -147,6 +149,11 @@ message PoolMarketCap {
       (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
       (gogoproto.nullable) = false
     ];
+    string reserved = 4 [
+      (gogoproto.moretags) = "yaml:\"reserved\"",
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+      (gogoproto.nullable) = false
+    ];
   }
 
   string quote_ticker = 1 [
@@ -157,8 +164,8 @@ message PoolMarketCap {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  repeated Breakdown breakdown = 3 [
-    (gogoproto.moretags) = "yaml:\"breakdown\"",
+  repeated AssetInfo asset_info = 3 [
+    (gogoproto.moretags) = "yaml:\"asset_info\"",
     (gogoproto.nullable) = false
   ];
 }

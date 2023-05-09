@@ -55,7 +55,7 @@ func (suite *KeeperTestSuite) TestGetLPNominalYieldRate() {
 	suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, 1, types.PoolMarketCap{
 		QuoteTicker: "uatom",
 		Total:       sdk.NewDec(100000000),
-		Breakdown:   []types.PoolMarketCap_Breakdown{},
+		AssetInfo:   []types.PoolMarketCap_AssetInfo{},
 	})
 
 	// setup snapshot for block height 11
@@ -63,7 +63,7 @@ func (suite *KeeperTestSuite) TestGetLPNominalYieldRate() {
 	suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, 11, types.PoolMarketCap{
 		QuoteTicker: "uatom",
 		Total:       sdk.NewDec(300000000),
-		Breakdown:   []types.PoolMarketCap_Breakdown{},
+		AssetInfo:   []types.PoolMarketCap_AssetInfo{},
 	})
 
 	// setup data for current block height
@@ -85,13 +85,6 @@ func (suite *KeeperTestSuite) TestGetLPNominalYieldRate() {
 	suite.app.PricefeedKeeper.SetParams(suite.ctx, params)
 	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:uusdc")
 	suite.Require().NoError(err)
-
-	// add pool asset and balance
-	suite.keeper.AddPoolAsset(suite.ctx, types.PoolParams_Asset{
-		Denom:        "uatom",
-		TargetWeight: sdk.OneDec(),
-	})
-	suite.keeper.SetAssetBalance(suite.ctx, sdk.NewInt64Coin("uatom", 1000000))
 
 	// set lp token supply
 	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{sdk.NewInt64Coin(types.LiquidityProviderTokenDenom, 1000000)})
@@ -116,7 +109,7 @@ func (suite *KeeperTestSuite) TestGetInflationRateOfAssetsInPool() {
 	suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, 1, types.PoolMarketCap{
 		QuoteTicker: "uatom",
 		Total:       sdk.NewDec(100000000),
-		Breakdown: []types.PoolMarketCap_Breakdown{
+		AssetInfo: []types.PoolMarketCap_AssetInfo{
 			{
 				Denom:  "uatom",
 				Amount: sdk.NewInt(10000000),
@@ -130,7 +123,7 @@ func (suite *KeeperTestSuite) TestGetInflationRateOfAssetsInPool() {
 	suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, 11, types.PoolMarketCap{
 		QuoteTicker: "uatom",
 		Total:       sdk.NewDec(300000000),
-		Breakdown: []types.PoolMarketCap_Breakdown{
+		AssetInfo: []types.PoolMarketCap_AssetInfo{
 			{
 				Denom:  "uatom",
 				Amount: sdk.NewInt(10000000),
@@ -154,7 +147,7 @@ func (suite *KeeperTestSuite) TestGetLPRealYieldRate() {
 	suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, 1, types.PoolMarketCap{
 		QuoteTicker: "uatom",
 		Total:       sdk.NewDec(100000000),
-		Breakdown: []types.PoolMarketCap_Breakdown{
+		AssetInfo: []types.PoolMarketCap_AssetInfo{
 			{
 				Denom:  "uatom",
 				Amount: sdk.NewInt(10000000),
@@ -168,7 +161,7 @@ func (suite *KeeperTestSuite) TestGetLPRealYieldRate() {
 	suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, 11, types.PoolMarketCap{
 		QuoteTicker: "uatom",
 		Total:       sdk.NewDec(200000000),
-		Breakdown: []types.PoolMarketCap_Breakdown{
+		AssetInfo: []types.PoolMarketCap_AssetInfo{
 			{
 				Denom:  "uatom",
 				Amount: sdk.NewInt(20000000),

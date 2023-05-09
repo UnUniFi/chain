@@ -54,12 +54,12 @@ func GetTxCmd() *cobra.Command {
 
 func CmdMintLiquidityProviderToken() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint-lpt [amount]",
-		Short: "mint liquidity provider token",
+		Use:   "deposit-to-pool [amount]",
+		Short: "deposit to pool",
 		Long: strings.TrimSpace(
-			fmt.Sprintf(`mint liquidity provider token.
+			fmt.Sprintf(`deposit to pool.
 Example:
-$ %s tx %s mint-lpt --from myKeyName --chain-id ununifi-x
+$ %s tx %s deposit-to-pool --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -75,7 +75,7 @@ $ %s tx %s mint-lpt --from myKeyName --chain-id ununifi-x
 				return err
 			}
 
-			msg := types.MsgMintLiquidityProviderToken{
+			msg := types.MsgDepositToPool{
 				Sender: ununifiType.StringAccAddress(sender),
 				Amount: amount,
 			}
@@ -93,12 +93,12 @@ $ %s tx %s mint-lpt --from myKeyName --chain-id ununifi-x
 
 func CmdBurnLiquidityProviderToken() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn-lpt [amount] [redeem-denom]",
-		Short: "burn liquidity provider token",
+		Use:   "withdraw-from-pool [amount] [redeem-denom]",
+		Short: "withdraw from pool",
 		Long: strings.TrimSpace(
-			fmt.Sprintf(`burn liquidity provider token.
+			fmt.Sprintf(`withdraw from pool.
 Example:
-$ %s tx %s burn-lpt 1 ubtc --from myKeyName --chain-id ununifi-x
+$ %s tx %s withdraw-from-pool 1 ubtc --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -114,7 +114,7 @@ $ %s tx %s burn-lpt 1 ubtc --from myKeyName --chain-id ununifi-x
 			}
 			denom := args[1]
 
-			msg := types.NewMsgBurnLiquidityProviderToken(sender, amount, denom)
+			msg := types.NewMsgWithdrawFromPool(sender, amount, denom)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err

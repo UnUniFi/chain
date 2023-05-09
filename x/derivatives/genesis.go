@@ -10,10 +10,6 @@ import (
 // InitGenesis initializes the module's state from a provided genesis state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
 	k.SetParams(ctx, genState.Params)
-	// todo load genesis state when restart
-	for _, asset := range genState.Params.PoolParams.AcceptedAssets {
-		k.AddPoolAsset(ctx, *asset)
-	}
 
 	if err := k.SetPoolMarketCapSnapshot(ctx, ctx.BlockHeight(), genState.PoolMarketCap); err != nil {
 		panic(err)
@@ -28,8 +24,13 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, market := range genState.Params.PerpetualFutures.Markets {
 		// set initial net position
 		if !market.InMarketSet(initialPerpetualFuturesNetPositionOfMarkets) {
-			perpetualFuturesNetPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(*market, sdk.ZeroDec())
-			k.SetPerpetualFuturesNetPositionOfMarket(ctx, perpetualFuturesNetPositionOfMarket)
+			// Position reference for Long
+			perpetualFuturesNetPositionOfMarketLong := types.NewPerpetualFuturesNetPositionOfMarket(*market, types.PositionType_LONG, sdk.ZeroInt())
+			k.SetPerpetualFuturesNetPositionOfMarket(ctx, perpetualFuturesNetPositionOfMarketLong)
+
+			// Position reference for Short
+			perpetualFuturesNetPositionOfMarketShort := types.NewPerpetualFuturesNetPositionOfMarket(*market, types.PositionType_SHORT, sdk.ZeroInt())
+			k.SetPerpetualFuturesNetPositionOfMarket(ctx, perpetualFuturesNetPositionOfMarketShort)
 		}
 	}
 

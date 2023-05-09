@@ -4,57 +4,33 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
-func (k Keeper) GetPoolAssets(ctx sdk.Context) []types.PoolParams_Asset {
-	store := ctx.KVStore(k.storeKey)
+func (k Keeper) GetPoolAcceptedAssetsConf(ctx sdk.Context) []types.PoolAssetConf {
+	params := k.GetParams(ctx)
+	return params.PoolParams.AcceptedAssetsConf
+}
 
-	assets := []types.PoolParams_Asset{}
-	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixDerivativesPoolAssets))
-	defer it.Close()
+func (k Keeper) GetPoolAcceptedAssetConfByDenom(ctx sdk.Context, denom string) types.PoolAssetConf {
+	params := k.GetParams(ctx)
 
-	for ; it.Valid(); it.Next() {
-		asset := types.PoolParams_Asset{}
-		k.cdc.Unmarshal(it.Value(), &asset)
-
-		assets = append(assets, asset)
+	for _, assetConf := range params.PoolParams.AcceptedAssetsConf {
+		if assetConf.Denom == denom {
+			return assetConf
+		}
 	}
 
-	return assets
+	panic(fmt.Sprintf("asset %s is not accepted", denom))
 }
 
-func (k Keeper) GetPoolAssetByDenom(ctx sdk.Context, denom string) types.PoolParams_Asset {
-	store := ctx.KVStore(k.storeKey)
-
-	asset := types.PoolParams_Asset{}
-	bz := store.Get(types.AssetKeyPrefix(denom))
-	k.cdc.MustUnmarshal(bz, &asset)
-
-	return asset
-}
-
-func (k Keeper) AddPoolAsset(ctx sdk.Context, asset types.PoolParams_Asset) {
-	store := ctx.KVStore(k.storeKey)
-
-	// TODO: remove below two lines as to change the way to handle PoolParams_Asset validation or reference
-	bz := k.cdc.MustMarshal(&asset)
-	store.Set(types.AssetKeyPrefix(asset.Denom), bz)
-
-	coin := sdk.Coin{
-		Denom:  asset.Denom,
-		Amount: sdk.ZeroInt(),
-	}
-	coinBz := k.cdc.MustMarshal(&coin)
-	store.Set(types.AssetDepositKeyPrefix(asset.Denom), coinBz)
-}
-
-func (k Keeper) IsAssetValid(ctx sdk.Context, iasset types.PoolParams_Asset) bool {
-	assets := k.GetPoolAssets(ctx)
+func (k Keeper) IsAssetAcceptable(ctx sdk.Context, denom string) bool {
+	assets := k.GetPoolAcceptedAssetsConf(ctx)
 
 	for _, asset := range assets {
-		if asset.Denom == iasset.Denom {
+		if asset.Denom == denom {
 			return true
 		}
 	}
@@ -62,85 +38,24 @@ func (k Keeper) IsAssetValid(ctx sdk.Context, iasset types.PoolParams_Asset) boo
 	return false
 }
 
-func (k Keeper) GetAssetBalance(ctx sdk.Context, denom string) sdk.Coin {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.AssetDepositKeyPrefix(denom))
-	if bz == nil {
-		return sdk.NewCoin(denom, sdk.ZeroInt())
-	}
-
-	coin := sdk.Coin{}
-	k.cdc.MustUnmarshal(bz, &coin)
-
-	return coin
+// GetAssetBalanceInPoolByDenom is used to get token balance of "derivatives" module account which is the liquidity pool.
+func (k Keeper) GetAssetBalanceInPoolByDenom(ctx sdk.Context, denom string) sdk.Coin {
+	derivModAddr := authtypes.NewModuleAddress(types.ModuleName)
+	return k.bankKeeper.GetBalance(ctx, derivModAddr, denom)
 }
 
-func (k Keeper) SetAssetBalance(ctx sdk.Context, coin sdk.Coin) {
-	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshal(&coin)
-	store.Set(types.AssetDepositKeyPrefix(coin.Denom), bz)
-}
-
+// Return the current target amount of the asset in the pool.
 func (k Keeper) GetAssetTargetAmount(ctx sdk.Context, denom string) (sdk.Coin, error) {
 	mc := k.GetPoolMarketCap(ctx)
-	asset := k.GetPoolAssetByDenom(ctx, denom)
+	asset := k.GetPoolAcceptedAssetConfByDenom(ctx, denom)
 
 	price, err := k.GetAssetPrice(ctx, denom)
 	if err != nil {
 		return sdk.Coin{}, err
 	}
 
-	targetAmount := mc.Total.Mul(asset.TargetWeight).Quo(price.Price)
-	return sdk.NewCoin(denom, targetAmount.TruncateInt()), nil
-}
-
-func (k Keeper) GetUserDeposits(ctx sdk.Context, depositor sdk.AccAddress) []sdk.Coin {
-	store := ctx.KVStore(k.storeKey)
-
-	deposits := []sdk.Coin{}
-	it := sdk.KVStorePrefixIterator(store, types.AddressPoolDepositKeyPrefix(depositor))
-	defer it.Close()
-
-	for ; it.Valid(); it.Next() {
-		deposit := sdk.Coin{}
-		k.cdc.Unmarshal(it.Value(), &deposit)
-
-		deposits = append(deposits, deposit)
-	}
-
-	return deposits
-}
-
-func (k Keeper) GetUserDenomDepositAmount(ctx sdk.Context, depositer sdk.AccAddress, denom string) sdk.Int {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.AddressAssetPoolDepositKeyPrefix(depositer, denom))
-	if bz == nil {
-		return sdk.ZeroInt()
-	}
-
-	coin := sdk.Coin{}
-	k.cdc.MustUnmarshal(bz, &coin)
-	return coin.Amount
-}
-
-func (k Keeper) SetUserDenomDepositAmount(ctx sdk.Context, addr sdk.AccAddress, denom string, amount sdk.Int) {
-	store := ctx.KVStore(k.storeKey)
-	coin := sdk.Coin{
-		Denom:  denom,
-		Amount: amount,
-	}
-	bz := k.cdc.MustMarshal(&coin)
-	store.Set(types.AddressAssetPoolDepositKeyPrefix(addr, denom), bz)
-}
-
-func (k Keeper) DepositPoolAsset(ctx sdk.Context, depositor sdk.AccAddress, asset sdk.Coin) {
-	userDenomDepositAmount := k.GetUserDenomDepositAmount(ctx, depositor, asset.Denom)
-	userDenomDepositAmount = userDenomDepositAmount.Add(asset.Amount)
-	k.SetUserDenomDepositAmount(ctx, depositor, asset.Denom, userDenomDepositAmount)
-
-	assetBalance := k.GetAssetBalance(ctx, asset.Denom)
-	assetBalance.Amount = assetBalance.Amount.Add(asset.Amount)
-	k.SetAssetBalance(ctx, assetBalance)
+	targetAmount := types.CalcTargetAmountInPool(asset.TargetWeight, price.Price, mc.Total)
+	return sdk.NewCoin(denom, targetAmount), nil
 }
 
 func (k Keeper) GetPoolMarketCapSnapshot(ctx sdk.Context, height int64) types.PoolMarketCap {
@@ -171,44 +86,46 @@ func (k Keeper) GetPoolQuoteTicker(ctx sdk.Context) string {
 }
 
 func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
-	assets := k.GetPoolAssets(ctx)
+	assets := k.GetPoolAcceptedAssetsConf(ctx)
 
-	breakdowns := []types.PoolMarketCap_Breakdown{}
+	assetInfoList := []types.PoolMarketCap_AssetInfo{}
 	mc := sdk.NewDec(0)
 
 	quoteTicker := k.GetPoolQuoteTicker(ctx)
 
 	for _, asset := range assets {
-		balance := k.GetAssetBalance(ctx, asset.Denom)
+		balance := k.GetAssetBalanceInPoolByDenom(ctx, asset.Denom)
 		price, err := k.GetAssetPrice(ctx, asset.Denom)
 
 		if err != nil {
 			panic(fmt.Sprintf("not able to calculate market cap: %s", err.Error()))
 		}
 
-		breakdown := types.PoolMarketCap_Breakdown{
+		assetInfo := types.PoolMarketCap_AssetInfo{
 			Denom:  asset.Denom,
 			Amount: balance.Amount,
 			Price:  price.Price,
 		}
-		breakdowns = append(breakdowns, breakdown)
+		assetInfoList = append(assetInfoList, assetInfo)
 		mc = mc.Add(sdk.Dec(sdk.NewDecFromInt(balance.Amount)).Mul(price.Price))
 	}
 
 	return types.PoolMarketCap{
 		QuoteTicker: quoteTicker,
 		Total:       mc,
-		Breakdown:   breakdowns,
+		AssetInfo:   assetInfoList,
 	}
 }
 
+// IsPriceReady returns true if all assets have price feeded.
+// This is used to decide to run setPoolMarketCapSnapshot to avoid unnecessary snapshot.
 func (k Keeper) IsPriceReady(ctx sdk.Context) bool {
-	assets := k.GetPoolAssets(ctx)
+	assets := k.GetPoolAcceptedAssetsConf(ctx)
 
 	for _, asset := range assets {
 		_, err := k.GetAssetPrice(ctx, asset.Denom)
 		if err != nil {
-			ctx.EventManager().EmitTypedEvent(&types.EventPriceIsNotFeeded{
+			_ = ctx.EventManager().EmitTypedEvent(&types.EventPriceIsNotFeeded{
 				Asset: asset.String(),
 			})
 
@@ -217,4 +134,64 @@ func (k Keeper) IsPriceReady(ctx sdk.Context) bool {
 	}
 
 	return true
+}
+
+func (k Keeper) SetReservedCoin(ctx sdk.Context, reserve sdk.Coin) error {
+	bz, err := reserve.Amount.Marshal()
+	if err != nil {
+		return err
+	}
+
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.ReservedCoinKeyPrefix(reserve.Denom), bz)
+
+	return nil
+}
+
+func (k Keeper) GetReservedCoin(ctx sdk.Context, denom string) (sdk.Coin, error) {
+	store := ctx.KVStore(k.storeKey)
+
+	bz := store.Get(types.ReservedCoinKeyPrefix(denom))
+	reserveAmount := sdk.Int{}
+	if err := reserveAmount.Unmarshal(bz); err != nil {
+		return sdk.Coin{}, err
+	}
+
+	if reserveAmount.IsNil() {
+		reserveAmount = sdk.ZeroInt()
+	}
+
+	return sdk.NewCoin(denom, reserveAmount), nil
+}
+
+func (k Keeper) AvailableAssetInPool(ctx sdk.Context, denom string) (sdk.Coin, error) {
+	assetBalance := k.GetAssetBalanceInPoolByDenom(ctx, denom)
+	reserve, err := k.GetReservedCoin(ctx, denom)
+
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+
+	if reserve.Amount.IsZero() {
+		reserve = sdk.NewCoin(denom, sdk.ZeroInt())
+	}
+
+	available := assetBalance.Sub(reserve)
+	return available, nil
+}
+
+// AvailableAssetInPool returns the available amount of the all asset in the pool.
+func (k Keeper) AllAvailableAssetsInPool(ctx sdk.Context) (sdk.Coins, error) {
+	assets := k.GetPoolAcceptedAssetsConf(ctx)
+
+	availableCoins := sdk.Coins{}
+	for _, asset := range assets {
+		available, err := k.AvailableAssetInPool(ctx, asset.Denom)
+		if err != nil {
+			return sdk.Coins{}, err
+		}
+		availableCoins = availableCoins.Add(available)
+	}
+
+	return availableCoins, nil
 }

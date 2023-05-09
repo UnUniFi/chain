@@ -70,3 +70,39 @@ $a_i$ must follow the constraint
 - Horizontal axis expresses the time.
 - Vertical axis expresses the borrowed amount.
 - The lower $i_r^{-1}$ of the deposit (the lower interest rate), the lower the deposit will be depicted in the graph as a rectangle.
+
+### Settlement with exhibitor’s decision
+
+The 1st highest bidder have to pay $p_1 - d_1$ during the period of payment.
+
+If he doesn’t do so, his deposit $d_1$ will be forfeited and he will be removed from bidders.
+
+### Liquidation
+
+//todo order highest deposit bidder
+the procedure below will be iterated for $n$ times. In the $i$th iteration,
+
+The $i$th highest bidder have to pay $p_i - d_i$ during the period of payment.
+
+If he does so, he will receive the NFT and the iteration will be stopped.
+
+If he doesn’t do so, his deposit $d_i$ will be forfeited and the iteration continues to the next $i$.
+
+### interest when liquidation occur
+The amount of interest to be distributed upon liquidation is determined by the following formula.
+
+It will be distributed to each bidder in proportion to its percentage of the interest amount.
+
+- $TI$ = total_interest - successful_bidder_interest
+- $FD$ = total forfeited deposit amount
+- $SBA$ = successful bidder bid amount
+- $TA$ = total deposit - successful_bidder_interest
+
+$$
+\begin{cases}
+TI& \ \text{if} \ TI \le FD \\
+SBA - TA + FD & \ \text{if} \ TI > FD
+\end{cases}
+$$
+
+※If all bidders do not exercise their winning bid rights, all forfeited deposits will become protocol proceeds
