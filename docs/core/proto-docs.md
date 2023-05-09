@@ -92,7 +92,7 @@
     - [EventPerpetualFuturesPositionLevied](#ununifi.derivatives.EventPerpetualFuturesPositionLevied)
     - [EventPerpetualFuturesPositionLiquidated](#ununifi.derivatives.EventPerpetualFuturesPositionLiquidated)
     - [EventPerpetualFuturesPositionOpened](#ununifi.derivatives.EventPerpetualFuturesPositionOpened)
-    - [PerpetualFuturesNetPositionOfMarket](#ununifi.derivatives.PerpetualFuturesNetPositionOfMarket)
+    - [PerpetualFuturesGrossPositionOfMarket](#ununifi.derivatives.PerpetualFuturesGrossPositionOfMarket)
     - [PerpetualFuturesParams](#ununifi.derivatives.PerpetualFuturesParams)
     - [PerpetualFuturesPosition](#ununifi.derivatives.PerpetualFuturesPosition)
     - [PerpetualFuturesPositionInstance](#ununifi.derivatives.PerpetualFuturesPositionInstance)
@@ -1691,9 +1691,9 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.PerpetualFuturesNetPositionOfMarket"></a>
+<a name="ununifi.derivatives.PerpetualFuturesGrossPositionOfMarket"></a>
 
-### PerpetualFuturesNetPositionOfMarket
+### PerpetualFuturesGrossPositionOfMarket
 
 
 
@@ -1894,7 +1894,7 @@ GenesisState defines the derivatives module's genesis state.
 | `params` | [Params](#ununifi.derivatives.Params) |  |  |
 | `positions` | [Position](#ununifi.derivatives.Position) | repeated |  |
 | `pool_market_cap` | [PoolMarketCap](#ununifi.derivatives.PoolMarketCap) |  |  |
-| `perpetual_futures_net_position_of_market` | [PerpetualFuturesNetPositionOfMarket](#ununifi.derivatives.PerpetualFuturesNetPositionOfMarket) | repeated |  |
+| `perpetual_futures_gross_position_of_market` | [PerpetualFuturesGrossPositionOfMarket](#ununifi.derivatives.PerpetualFuturesGrossPositionOfMarket) | repeated |  |
 
 
 

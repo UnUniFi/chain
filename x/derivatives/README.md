@@ -99,11 +99,11 @@ message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
   repeated Position positions = 2 [(gogoproto.nullable) = false];
   PoolMarketCap pool_market_cap = 3 [(gogoproto.nullable) = false];
-  repeated PerpetualFuturesNetPositionOfMarket perpetual_futures_net_position_of_market = 4 [(gogoproto.nullable) = false];
+  repeated PerpetualFuturesGrossPositionOfMarket perpetual_futures_gross_position_of_market = 4 [(gogoproto.nullable) = false];
 }
 ```
 
-`GenesisState` is the data structure of the genesis state of the derivatives module. It contains the following fields: `params`, `positions`, `pool_market_cap` and `perpetual_futures_net_position_of_market`.
+`GenesisState` is the data structure of the genesis state of the derivatives module. It contains the following fields: `params`, `positions`, `pool_market_cap` and `perpetual_futures_gross_position_of_market`.
 
 These fields are made to be able to start the network from aribitrary genesis state.
 
@@ -209,9 +209,9 @@ message PoolMarketCap {
 - `total` is the total value of the all pool assets combined.
 - `breakdown` is the list of the `Breakdown` which contains the information regarding the specific pool asset.
 
-## PerpetualFuturesNetPositionOfMarket
+## PerpetualFuturesGrossPositionOfMarket
 
-`PerpetualFuturesNetPositionOfMarket` is the data which contains the inclusive information regarding x/derivatives's PerpetualFutures market.
+`PerpetualFuturesGrossPositionOfMarket` is the data which contains the inclusive information regarding x/derivatives's PerpetualFutures market.
 
 ```protobuf
 message PerpetualFuturesPositionInstance {
@@ -253,8 +253,8 @@ type Keeper interface {
   GetLPTokenPrice(ctx sdk.Context) sdk.Dec
   GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemDenom string) (sdk.Coin, sdk.Coin, error)
   GetPairUsdPriceFromMarket(ctx sdk.Context, market types.Market) (sdk.Dec, sdk.Dec, error)
-  GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market, positionType types.PositionType) types.PerpetualFuturesNetPositionOfMarket
-  GetPositionSizeOfNetPositionOfMarket(ctx sdk.Context, market types.Market) sdk.Dec
+  GetPerpetualFuturesGrossPositionOfMarket(ctx sdk.Context, market types.Market, positionType types.PositionType) types.PerpetualFuturesGrossPositionOfMarket
+  GetPositionSizeOfGrossPositionOfMarket(ctx sdk.Context, market types.Market) sdk.Dec
   GetAssetBalanceInPoolByDenom(ctx sdk.Context, denom string) sdk.Coin
   GetAssetTargetAmount(ctx sdk.Context, denom string) (sdk.Coin, error)
   GetPoolMarketCapSnapshot(ctx sdk.Context, height int64) types.PoolMarketCap
