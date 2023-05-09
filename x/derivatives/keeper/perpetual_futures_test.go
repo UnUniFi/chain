@@ -1,7 +1,7 @@
 package keeper_test
 
 import (
-	"fmt"
+	// "fmt"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 
