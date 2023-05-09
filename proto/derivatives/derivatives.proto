@@ -184,3 +184,19 @@ message EventPriceIsNotFeeded {
     (gogoproto.moretags) = "yaml:\"asset\""
   ];
 }
+
+enum MarketType {
+  UNKNOWN = 0;
+  FUTURES = 1;
+  OPTIONS = 2;
+}
+
+message Reserve {
+  MarketType market_type = 1 [
+    (gogoproto.moretags)  = "yaml:\"market_type\""
+  ];
+  cosmos.base.v1beta1.Coin amount = 2 [
+    (gogoproto.moretags)  = "yaml:\"amount\"",
+    (gogoproto.nullable) = false
+  ];
+}
