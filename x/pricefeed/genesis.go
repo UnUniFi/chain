@@ -1,9 +1,10 @@
 package pricefeed
 
 import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/UnUniFi/chain/x/pricefeed/keeper"
 	"github.com/UnUniFi/chain/x/pricefeed/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // InitGenesis initializes the capability module's state from a provided genesis
@@ -21,7 +22,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 			}
 		}
 	}
-	params := k.GetParams(ctx)
+	params := genState.Params
 
 	// Set the current price (if any) based on what's now in the store
 	for _, market := range params.Markets {

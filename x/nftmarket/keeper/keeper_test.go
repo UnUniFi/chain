@@ -3,20 +3,22 @@ package keeper_test
 import (
 	"testing"
 
+	"github.com/CosmWasm/wasmd/x/wasm"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/cosmos/cosmos-sdk/x/nft"
 	nftkeeper "github.com/cosmos/cosmos-sdk/x/nft/keeper"
+
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	simapp "github.com/UnUniFi/chain/app"
 	appparams "github.com/UnUniFi/chain/app/params"
@@ -49,7 +51,7 @@ type KeeperTestSuite struct {
 func (suite *KeeperTestSuite) SetupTest() {
 	isCheckTx := false
 
-	app := simapp.Setup(suite.T(), isCheckTx)
+	app := simapp.Setup(suite.T(), ([]wasm.Option{})...)
 
 	suite.ctx = app.BaseApp.NewContext(isCheckTx, tmproto.Header{})
 	suite.addrs = simapp.AddTestAddrsIncremental(app, suite.ctx, 3, sdk.NewInt(30000000))
@@ -63,14 +65,20 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 	txCfg := encodingConfig.TxConfig
 	accountKeeper := authkeeper.NewAccountKeeper(
-		appCodec, app.GetKey(authtypes.StoreKey), app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms, sdk.Bech32MainPrefix,
+		appCodec,
+		app.GetKey(authtypes.StoreKey),
+		authtypes.ProtoBaseAccount,
+		maccPerms,
+		"ununifi",
+		authtypes.NewModuleAddress("gov").String(),
 	)
+
 	bankKeeper := bankkeeper.NewBaseKeeper(
 		appCodec,
 		app.GetKey(banktypes.StoreKey),
 		app.AccountKeeper,
-		app.GetSubspace(banktypes.ModuleName),
 		app.BlockedAddrs(),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	nftKeeper := nftkeeper.NewKeeper(app.GetKey(nft.StoreKey), appCodec, accountKeeper, bankKeeper)
 	keeper := keeper.NewKeeper(appCodec, txCfg, app.GetKey(types.StoreKey), app.GetKey(types.MemStoreKey), suite.app.GetSubspace(types.ModuleName), accountKeeper, bankKeeper, nftKeeper)

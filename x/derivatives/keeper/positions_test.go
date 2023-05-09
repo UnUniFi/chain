@@ -6,9 +6,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	codecTypes "github.com/cosmos/cosmos-sdk/codec/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
