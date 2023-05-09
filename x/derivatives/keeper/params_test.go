@@ -14,8 +14,8 @@ func (suite *KeeperTestSuite) TestParamsGetSet() {
 		BaseLptMintFee:              sdk.MustNewDecFromStr("0.001"),
 		BaseLptRedeemFee:            sdk.MustNewDecFromStr("0.001"),
 		BorrowingFeeRatePerHour:     sdk.MustNewDecFromStr("0.001"),
-		ReportLiquidationRewardRate: sdk.MustNewDecFromStr("0.001"),
-		ReportLevyPeriodRewardRate:  sdk.MustNewDecFromStr("0.001"),
+		ReportLiquidationRewardRate: sdk.MustNewDecFromStr("0.3"),
+		ReportLevyPeriodRewardRate:  sdk.MustNewDecFromStr("0.3"),
 		AcceptedAssetsConf: []types.PoolAssetConf{
 			{
 				Denom:        "uatom",
