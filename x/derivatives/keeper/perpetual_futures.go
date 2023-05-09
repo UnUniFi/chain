@@ -252,25 +252,21 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient ununifiTypes.StringAccAddress, position types.Position, positionInstance types.PerpetualFuturesPositionInstance) error {
 	params := k.GetParams(ctx)
 
-	grossPositionLong := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, position.Market, types.PositionType_LONG).PositionSizeInDenomExponent
-	grossPositionShort := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, position.Market, types.PositionType_SHORT).PositionSizeInDenomExponent
-	netPosition := grossPositionLong.Sub(grossPositionShort)
+	netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, position.Market).PositionSizeInDenomExponent
 
 	imaginaryFundingRate := sdk.NewDecFromInt(netPosition).Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
 	imaginaryFundingFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
-	// Delete commission fee. It occurs only when closing.
+	commissionFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
 
 	if positionInstance.PositionType == types.PositionType_LONG {
-		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(imaginaryFundingFee)
+		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(imaginaryFundingFee).Sub(commissionFee)
 	} else {
-		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Add(imaginaryFundingFee)
+		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Add(imaginaryFundingFee).Sub(commissionFee)
 	}
 	position.LastLeviedAt = ctx.BlockTime()
 
-	// Reward is part of the absolute value of the imaginary funding fee
-	rewardAmount := sdk.NewDecFromInt(imaginaryFundingFee.Abs()).Mul(params.PoolParams.ReportLevyPeriodRewardRate).RoundInt()
-	// Pay from the margin
-	position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(rewardAmount)
+	// Reward is part of the commission fee
+	rewardAmount := sdk.NewDecFromInt(commissionFee).Mul(params.PoolParams.ReportLevyPeriodRewardRate).RoundInt()
 
 	reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))
 	err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
@@ -357,4 +353,14 @@ func (k Keeper) SubPerpetualFuturesGrossPositionOfMarket(ctx sdk.Context, market
 	perpFutureGrossPositionOfMarket.PositionSizeInDenomExponent = perpFutureGrossPositionOfMarket.PositionSizeInDenomExponent.Sub(rhs)
 
 	k.SetPerpetualFuturesGrossPositionOfMarket(ctx, perpFutureGrossPositionOfMarket)
+}
+
+func (k Keeper) GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market) types.PerpetualFuturesGrossPositionOfMarket {
+	grossPositionLong := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, types.PositionType_LONG).PositionSizeInDenomExponent
+	grossPositionShort := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, types.PositionType_SHORT).PositionSizeInDenomExponent
+	return types.NewPerpetualFuturesGrossPositionOfMarket(
+		market,
+		types.PositionType_POSITION_UNKNOWN,
+		grossPositionLong.Sub(grossPositionShort),
+	)
 }
