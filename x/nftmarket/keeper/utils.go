@@ -1,9 +1,9 @@
 package keeper
 
 import (
-	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
 func Contains(a []string, x string) bool {
@@ -15,23 +15,31 @@ func Contains(a []string, x string) bool {
 	return false
 }
 
-func GetMemo(txBytes []byte, txCfg client.TxConfig) string {
-	/// NOTE: this way requires txConfig by importing it into keeper struct
-	txData, err := txCfg.TxDecoder()(txBytes)
-	if err != nil {
-		fmt.Printf("err: %v\n", err)
+func validateListNftMsg(k Keeper, ctx sdk.Context, msg *types.MsgListNft) error {
+	return checkListNft(k, ctx, msg.Sender.AccAddress(), msg.NftId, msg.BidToken)
+}
 
-		txData, err = txCfg.TxJSONDecoder()(txBytes)
-		if err != nil {
-			fmt.Printf("err: %v\n", err)
-		}
+func checkListNft(k Keeper, ctx sdk.Context, sender sdk.AccAddress, nftId types.NftIdentifier, bidToken string) error {
+	// check listing already exists
+	_, err := k.GetNftListingByIdBytes(ctx, nftId.IdBytes())
+	if err == nil {
+		return types.ErrNftListingAlreadyExists
 	}
 
-	txBldr, err := txCfg.WrapTxBuilder(txData)
-	if err != nil {
-		return ""
+	// Check nft exists
+	_, found := k.nftKeeper.GetNFT(ctx, nftId.ClassId, nftId.NftId)
+	if !found {
+		return types.ErrNftDoesNotExists
 	}
-	memo := txBldr.GetTx().GetMemo()
 
-	return memo
+	// check ownership of nft
+	owner := k.nftKeeper.GetOwner(ctx, nftId.ClassId, nftId.NftId)
+	if owner.String() != sender.String() {
+		return types.ErrNotNftOwner
+	}
+	params := k.GetParamSet(ctx)
+	for !Contains(params.BidTokens, bidToken) {
+		return types.ErrNotSupportedBidToken
+	}
+	return nil
 }

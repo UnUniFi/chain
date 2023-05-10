@@ -2,16 +2,19 @@ package cli
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 
-	"github.com/UnUniFi/chain/x/nftmarket/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
+
+	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -28,7 +31,6 @@ func GetTxCmd() *cobra.Command {
 		CmdMintNft(),
 		CmdCreateListing(),
 		CmdCancelNftListing(),
-		CmdExpandListingPeriod(),
 		CmdSellingDecision(),
 		CmdCreatePlaceBid(),
 		CmdCancelBid(),
@@ -36,9 +38,6 @@ func GetTxCmd() *cobra.Command {
 		CmdEndListing(),
 		CmdBorrow(),
 		CmdRepay(),
-		CmdMintStableCoin(),
-		CmdBurnStableCoin(),
-		CmdLiquidate(),
 	)
 
 	return cmd
@@ -98,12 +97,15 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 				NftId:   nftId,
 			}
 
-			bidActiveRank, err := cmd.Flags().GetUint64(FlagBidActiveRank)
+			minDepositRate, err := cmd.Flags().GetString(FlagMinimumDepositRate)
 			if err != nil {
 				return err
 			}
-
-			minBid, err := cmd.Flags().GetUint64(FlagMinBid)
+			minDepositRateDec, err := sdk.NewDecFromStr(minDepositRate)
+			if err != nil {
+				return err
+			}
+			automaticRef, err := cmd.Flags().GetBool(FlagAutomaticRefinancing)
 			if err != nil {
 				return err
 			}
@@ -113,7 +115,14 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 				return err
 			}
 
-			msg := types.NewMsgListNft(clientCtx.GetFromAddress(), nftIde, bidToken, bidActiveRank, sdk.NewInt(int64(minBid)))
+			minBiddingPeriodHour, err := cmd.Flags().GetUint64(FlagMinimumBiddingPeriodHours)
+			if err != nil {
+				return err
+			}
+			// convert uint64 to time.Duration
+			minBiddingPeriod := time.Duration(minBiddingPeriodHour) * time.Hour
+
+			msg := types.NewMsgListNft(clientCtx.GetFromAddress(), nftIde, bidToken, minDepositRateDec, automaticRef, minBiddingPeriod)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -121,9 +130,10 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 		},
 	}
 
-	cmd.Flags().Uint64(FlagBidActiveRank, 1, "bid active rank")
 	cmd.Flags().String(FlagBidToken, "uguu", "bid token")
-	cmd.Flags().Uint64(FlagMinBid, 1, "min bid amount")
+	cmd.Flags().String(FlagMinimumDepositRate, "0.1", "minimum deposit rate")
+	cmd.Flags().Uint64(FlagMinimumBiddingPeriodHours, 1, "minimum bidding period")
+	cmd.Flags().BoolP(FlagAutomaticRefinancing, "r", false, "automatic refinancing")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -131,36 +141,63 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 
 func CmdCreatePlaceBid() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "placebid [class-id] [nft-id] [amount]",
+		Use:   "placebid [class-id] [nft-id] [bid-amount] [deposit-amount] [deposit-interest-rate] [bidding_hour_time]",
 		Short: "Creates a new place bid",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Creates a new place bid.
 Example:
 $ %s tx %s placebid 1 1 100uguu --automatic-payment --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(3),
+		Args: cobra.ExactArgs(6),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			classId := args[0]
-			nftId := args[1]
+			classIdArg := 0
+			nftIdArg := 1
+			bidArgs := 2
+			depositArg := 3
+			depositRateArg := 4
+			bidEndArg := 5
+
+			classId := args[classIdArg]
+			nftId := args[nftIdArg]
 			nftIde := types.NftIdentifier{
 				ClassId: classId,
 				NftId:   nftId,
 			}
-			bidCoin, err := sdk.ParseCoinNormalized(args[2])
-			if err != nil {
-				return err
-			}
-			automaticPayment, err := cmd.Flags().GetBool(FlagAutomaticPayment)
+			bidCoin, err := sdk.ParseCoinNormalized(args[bidArgs])
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgPlaceBid(clientCtx.GetFromAddress(), nftIde, bidCoin, automaticPayment)
+			depositCoin, err := sdk.ParseCoinNormalized(args[depositArg])
+			if err != nil {
+				return err
+			}
+
+			depositInterestRate, err := sdk.NewDecFromStr(args[depositRateArg])
+			if err != nil {
+				return err
+			}
+
+			bidding_duration_hour, err := strconv.Atoi(args[bidEndArg])
+			if err != nil {
+				return err
+			}
+
+			automaticPayment, err := cmd.Flags().GetBool(FlagAutomaticPayment)
+			if err != nil {
+				return err
+			}
+			now := time.Now()
+			// todo fix me
+			// bid_end_at := now.Add(time.Hour * time.Duration(bidding_duration_hour))
+			bid_end_at := now.Add(time.Second * time.Duration(bidding_duration_hour))
+
+			msg := types.NewMsgPlaceBid(clientCtx.GetFromAddress(), nftIde, bidCoin, depositCoin, depositInterestRate, bid_end_at, automaticPayment)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -329,129 +366,6 @@ $ %s tx %s repay 1 1 100uguu --from myKeyName --chain-id ununifi-x
 	return cmd
 }
 
-func CmdMintStableCoin() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "mint_stablecoin [class-id] [nft-id] [amount]",
-		Short: "mint stablecoin",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`mint stablecoin.
-Example:
-$ %s tx %s mint_stablecoin 1 1 100usd --from myKeyName --chain-id ununifi-x
-`, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(3),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			// classId := args[0]
-			// nftId := args[1]
-			// nftIde := types.NftIdentifier{
-			// 	ClassId: classId,
-			// 	NftId:   nftId,
-			// }
-
-			// borrowCoin, err := sdk.ParseCoinNormalized(args[2])
-			// if err != nil {
-			// 	return err
-			// }
-
-			msg := types.NewMsgMintStableCoin(clientCtx.GetFromAddress())
-
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-	return cmd
-}
-
-func CmdBurnStableCoin() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "burn_stablecoin [class-id] [nft-id] [amount]",
-		Short: "burn stablecoin",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`burn stablecoin.
-Example:
-$ %s tx %s burn_stablecoin 1 1 100usd --from myKeyName --chain-id ununifi-x
-`, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(3),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			// classId := args[0]
-			// nftId := args[1]
-			// nftIde := types.NftIdentifier{
-			// 	ClassId: classId,
-			// 	NftId:   nftId,
-			// }
-
-			// borrowCoin, err := sdk.ParseCoinNormalized(args[2])
-			// if err != nil {
-			// 	return err
-			// }
-
-			msg := types.NewMsgBurnStableCoin(clientCtx.GetFromAddress())
-
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-	return cmd
-}
-
-func CmdLiquidate() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "liquidate [class-id] [nft-id]",
-		Short: "liquidate",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`liquidate.
-Example:
-$ %s tx %s liquidate 1 1 --from myKeyName --chain-id ununifi-x
-`, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(2),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			// classId := args[0]
-			// nftId := args[1]
-			// nftIde := types.NftIdentifier{
-			// 	ClassId: classId,
-			// 	NftId:   nftId,
-			// }
-
-			// borrowCoin, err := sdk.ParseCoinNormalized(args[2])
-			// if err != nil {
-			// 	return err
-			// }
-
-			msg := types.NewMsgLiquidate(clientCtx.GetFromAddress())
-
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-	return cmd
-}
-
 func CmdCancelNftListing() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "cancel_listing [class-id] [nft-id]",
@@ -476,42 +390,6 @@ $ %s tx %s cancel_listing 1 1 --from myKeyName --chain-id ununifi-x
 			}
 
 			msg := types.NewMsgCancelNftListing(clientCtx.GetFromAddress(), nftIde)
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-
-	return cmd
-}
-
-func CmdExpandListingPeriod() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "expand_nft_listing [class-id] [nft-id]",
-		Short: "Expand nft listing",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`Expand nft listing.
-Example:
-$ %s tx %s expand_nft_listing 1 1 --from myKeyName --chain-id ununifi-x
-`, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(2),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			classId := args[0]
-			nftId := args[1]
-			nftIde := types.NftIdentifier{
-				ClassId: classId,
-				NftId:   nftId,
-			}
-
-			msg := types.NewMsgExpandListingPeriod(clientCtx.GetFromAddress(), nftIde)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

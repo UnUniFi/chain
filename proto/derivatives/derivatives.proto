@@ -1,0 +1,186 @@
+syntax = "proto3";
+package ununifi.derivatives;
+
+import "google/protobuf/any.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/derivatives/types";
+
+enum PositionType {
+  POSITION_UNKNOWN = 0;
+  LONG = 1;
+  SHORT = 2;
+}
+
+message Position {
+  string id = 1 [
+    (gogoproto.moretags) = "yaml:\"id\""
+  ];
+  Market market = 2 [
+    (gogoproto.moretags) = "yaml:\"market\"",
+    (gogoproto.nullable) = false
+  ];
+  string address = 3 [
+    (gogoproto.moretags) = "yaml:\"address\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Timestamp opened_at = 4 [
+    (gogoproto.moretags) = "yaml:\"opened_at\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  uint64 opened_height = 5 [
+    (gogoproto.moretags) = "yaml:\"opened_height\""
+  ];
+  string opened_base_rate = 6 [
+    (gogoproto.moretags) = "yaml:\"opened_base_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string opened_quote_rate = 7 [
+    (gogoproto.moretags) = "yaml:\"opened_quote_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin remaining_margin = 8 [
+    (gogoproto.moretags) = "yaml:\"remaining_margin\"",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Timestamp last_levied_at = 9 [
+    (gogoproto.moretags) = "yaml:\"last_levied_at\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  google.protobuf.Any position_instance = 10 [
+    (gogoproto.moretags) = "yaml:\"position_instance\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueriedPosition {
+  Position position = 1 [
+    (gogoproto.moretags) = "yaml:\"position\"",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin valuation_profit = 2 [
+    (gogoproto.moretags) = "yaml:\"valuation_profit\"",
+    (gogoproto.nullable) = false
+  ];
+  string remaining_margin_value = 3 [
+    (gogoproto.moretags) = "yaml:\"remaining_margin_value\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin effective_margin = 4 [
+    (gogoproto.moretags) = "yaml:\"effective_margin\"",
+    (gogoproto.nullable) = false
+  ];
+  string margin_maintenance_rate = 5 [
+    (gogoproto.moretags) = "yaml:\"margin_maintenance_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+
+}
+
+message PoolAssetConf {
+  string denom = 1 [
+    (gogoproto.moretags) = "yaml:\"denom\""
+  ];
+  string target_weight = 2 [
+    (gogoproto.moretags) = "yaml:\"target_weight\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+
+message PoolParams {
+  string quote_ticker = 1 [
+    (gogoproto.moretags) = "yaml:\"quote_ticker\""
+  ];
+  string base_lpt_mint_fee = 2 [
+    (gogoproto.moretags) = "yaml:\"base_lpt_mint_fee\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string base_lpt_redeem_fee = 3 [
+    (gogoproto.moretags) = "yaml:\"base_lpt_redeem_fee\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string borrowing_fee_rate_per_hour = 4 [
+    (gogoproto.moretags) = "yaml:\"borrowing_fee_rate_per_hour\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string report_liquidation_reward_rate = 5 [
+    (gogoproto.moretags) = "yaml:\"report_liquidation_reward_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string report_levy_period_reward_rate = 6 [
+    (gogoproto.moretags) = "yaml:\"report_levy_period_reward_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  repeated PoolAssetConf accepted_assets_conf = 7 [
+    (gogoproto.moretags) = "yaml:\"accepted_assets_conf\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message PoolMarketCap {
+  message AssetInfo {
+    string denom = 1 [
+      (gogoproto.moretags) = "yaml:\"denom\""
+    ];
+    string amount = 2 [
+      (gogoproto.moretags) = "yaml:\"amount\"",
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+      (gogoproto.nullable) = false
+    ];
+    string price = 3 [
+      (gogoproto.moretags) = "yaml:\"price\"",
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ];
+    string reserved = 4 [
+      (gogoproto.moretags) = "yaml:\"reserved\"",
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+      (gogoproto.nullable) = false
+    ];
+  }
+
+  string quote_ticker = 1 [
+    (gogoproto.moretags) = "yaml:\"quote_ticker\""
+  ];
+  string total = 2 [
+    (gogoproto.moretags) = "yaml:\"total\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  repeated AssetInfo asset_info = 3 [
+    (gogoproto.moretags) = "yaml:\"asset_info\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message Market {
+  string base_denom = 1 [
+    (gogoproto.moretags)  = "yaml:\"base_denom\""
+  ];
+  string quote_denom = 2 [
+    (gogoproto.moretags)  = "yaml:\"quote_denom\""
+  ];
+}
+
+message EventPriceIsNotFeeded {
+  string asset = 1 [
+    (gogoproto.moretags) = "yaml:\"asset\""
+  ];
+}

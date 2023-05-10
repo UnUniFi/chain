@@ -84,15 +84,23 @@ protoc:
 
 buf-tools:buf buf-plugin
 
-buf-plugin: protoc-gen-doc protoc-gen-gocosmos
+buf-plugin: protoc-gen-doc protoc-gen-gocosmos protoc-gen-grpc
 
 protoc-gen-gocosmos:
 	@echo "Installing protoc-gen-gocosmos..."
 	@go install github.com/regen-network/cosmos-proto/protoc-gen-gocosmos
 
+protoc-gen-grpc:
+	@echo "Installing protoc-gen-grpc..."
+	@go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
+    github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
+    github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger \
+    google.golang.org/protobuf/cmd/protoc-gen-go \
+    google.golang.org/grpc/cmd/protoc-gen-go-grpc
+
 protoc-gen-doc:
 	@echo "Installing protoc-gen-gen..."
-	@go get github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc
+	@go install github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc
 
 buf: protoc-gen-buf-check-breaking protoc-gen-buf-check-lint
 	@echo "Installing buf..."

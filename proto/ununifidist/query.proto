@@ -8,7 +8,7 @@ import "cosmos/base/v1beta1/coin.proto";
 // this line is used by starport scaffolding # 1
 import "ununifidist/ununifidist.proto";
 
-option go_package = "github.com/UnUniFi/chain/x/ununifidist/types";
+option go_package = "github.com/UnUniFi/chain/x/deprecated/ununifidist/types";
 
 // Query defines the gRPC querier service.
 service Query {

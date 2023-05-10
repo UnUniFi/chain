@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
-option go_package = "github.com/UnUniFi/chain/x/incentive/types";
+option go_package = "github.com/UnUniFi/chain/x/deprecated/incentive/types";
 
 message BaseClaim {
   string owner = 1 [

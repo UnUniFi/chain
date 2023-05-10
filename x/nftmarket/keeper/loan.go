@@ -72,48 +72,103 @@ func (k Keeper) DecreaseDebt(ctx sdk.Context, nftId types.NftIdentifier, amount 
 }
 
 func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
-	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
+	return k.ManualBorrow(ctx, msg.NftId, msg.Amount, msg.Sender.AccAddress().String(), msg.Sender.AccAddress().String())
+}
+
+func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, require sdk.Coin, borrower, receiver string) error {
+	listing, err := k.GetNftListingByIdBytes(ctx, nft.IdBytes())
 	if err != nil {
 		return err
 	}
 
 	// check listing token == msg.Amount.Denom
-	if listing.BidToken != msg.Amount.Denom {
+	if listing.BidToken != require.Denom {
 		return types.ErrInvalidBorrowDenom
 	}
 
-	if listing.Owner != msg.Sender.AccAddress().String() {
+	if listing.Owner != borrower {
 		return types.ErrNotNftListingOwner
 	}
 
 	// calculate maximum borrow amount for the listing
-	maxDebt := k.TotalActiveRankDeposit(ctx, msg.NftId.IdBytes())
+	// bids := k.GetBidsByNft(ctx, nft.IdBytes())
 
-	currDebt := k.GetDebtByNft(ctx, msg.NftId.IdBytes())
-	if !sdk.Coin.IsNil(currDebt.Loan) && msg.Amount.Add(currDebt.Loan).Amount.GT(maxDebt) {
+	bids := types.NftBids(k.GetBidsByNft(ctx, nft.IdBytes()))
+
+	maxDebt := listing.MaxPossibleBorrowAmount(bids, []types.NftBid{})
+
+	if require.Amount.GT(maxDebt) {
 		return types.ErrDebtExceedsMaxDebt
 	}
+	// todo same deposit re-borrow logic
+	requireAmount := sdk.NewCoin(require.Denom, require.Amount)
+	borrowingOrderBids := bids.SortBorrowing()
+	// todo use BorrowFromBids
+	for _, bid := range borrowingOrderBids {
+		if requireAmount.IsZero() {
+			break
+		}
 
-	k.IncreaseDebt(ctx, msg.NftId, msg.Amount)
+		usableAmount := bid.BorrowableAmount()
+		// bigger msg Amount
+		if requireAmount.IsGTE(usableAmount) {
+			borrow := types.Borrowing{
+				Amount:             sdk.NewCoin(usableAmount.Denom, usableAmount.Amount),
+				StartAt:            ctx.BlockTime(),
+				PaidInterestAmount: sdk.NewCoin(usableAmount.Denom, sdk.ZeroInt()),
+			}
+			bid.Borrowings = append(bid.Borrowings, borrow)
+			requireAmount = requireAmount.Sub(borrow.Amount)
+		} else {
+			borrow := types.Borrowing{
+				Amount:             sdk.NewCoin(requireAmount.Denom, requireAmount.Amount),
+				StartAt:            ctx.BlockTime(),
+				PaidInterestAmount: sdk.NewCoin(requireAmount.Denom, sdk.ZeroInt()),
+			}
+			bid.Borrowings = append(bid.Borrowings, borrow)
+			requireAmount.Amount = sdk.ZeroInt()
+		}
+		k.SetBid(ctx, bid)
+	}
 
-	sender := msg.Sender.AccAddress()
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, sdk.Coins{msg.Amount})
+	k.IncreaseDebt(ctx, nft, require)
+
+	receiverAddress, err := sdk.AccAddressFromBech32(receiver)
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, receiverAddress, sdk.Coins{require})
 	if err != nil {
 		return err
 	}
 
 	// Emit event for paying full bid
 	ctx.EventManager().EmitTypedEvent(&types.EventBorrow{
-		Borrower: msg.Sender.AccAddress().String(),
-		ClassId:  msg.NftId.ClassId,
-		NftId:    msg.NftId.NftId,
-		Amount:   msg.Amount.String(),
+		Borrower: borrower,
+		ClassId:  nft.ClassId,
+		NftId:    nft.NftId,
+		Amount:   require.String(),
 	})
 
 	return nil
 }
 
+func (k Keeper) Refinancings(ctx sdk.Context, listing types.NftListing, liquidationBids []types.NftBid) {
+	for _, v := range liquidationBids {
+		k.Refinancing(ctx, listing, v)
+	}
+}
+
+func (k Keeper) Refinancing(ctx sdk.Context, listing types.NftListing, bid types.NftBid) {
+	k.DeleteBid(ctx, bid)
+	// todo delete not depend on Debt
+	k.DecreaseDebt(ctx, listing.NftId, bid.BorrowingAmount())
+	liquidationAmount := bid.LiquidationAmount(ctx.BlockTime())
+	err := k.ManualBorrow(ctx, listing.NftId, liquidationAmount, listing.Owner, bid.Bidder)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
+	// todo set interest amount in bid info
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
 		return err
@@ -128,6 +183,11 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 		return types.ErrInvalidRepayDenom
 	}
 
+	listerAmount := k.bankKeeper.GetBalance(ctx, msg.Sender.AccAddress(), msg.Amount.Denom)
+	if listerAmount.Amount.LT(msg.Amount.Amount) {
+		return types.ErrInsufficientBalance
+	}
+
 	currDebt := k.GetDebtByNft(ctx, msg.NftId.IdBytes())
 
 	// return err if borrowing didn't happen once before
@@ -135,14 +195,39 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 		return types.ErrNotBorrowed
 	}
 
-	if msg.Amount.Amount.GT(currDebt.Loan.Amount) {
-		return types.ErrRepayAmountExceedsLoanAmount
+	bids := types.NftBids(k.GetBidsByNft(ctx, msg.NftId.IdBytes())).SortRepay()
+	repaidAmount := sdk.NewCoin(msg.Amount.Denom, msg.Amount.Amount)
+	for _, bid := range bids {
+		if repaidAmount.IsZero() {
+			break
+		}
+		if len(bid.Borrowings) == 0 {
+			continue
+		}
+
+		borrowings := []types.Borrowing{}
+		for _, borrow := range bid.Borrowings {
+			if repaidAmount.IsZero() {
+				break
+			}
+
+			receipt := borrow.RepayThenGetReceipt(repaidAmount, ctx.BlockTime(), bid.CalcInterestF())
+			repaidAmount.Amount = receipt.Charge.Amount
+			bid.InterestAmount = bid.InterestAmount.Add(receipt.PaidInterestAmount)
+
+			if !borrow.IsAllRepaid() {
+				borrowings = append(borrowings, borrow)
+			}
+		}
+		// clean up Borrowings
+		bid.Borrowings = borrowings
+		k.SetBid(ctx, bid)
 	}
 
-	k.DecreaseDebt(ctx, msg.NftId, msg.Amount)
-
 	sender := msg.Sender.AccAddress()
-	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{msg.Amount})
+	debitAmount := msg.Amount.Sub(repaidAmount)
+	k.DecreaseDebt(ctx, msg.NftId, debitAmount)
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{debitAmount})
 	if err != nil {
 		return err
 	}
@@ -158,25 +243,10 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 	return nil
 }
 
-func (k Keeper) Liquidate(ctx sdk.Context, msg *types.MsgLiquidate) error {
-	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
-	if err != nil {
-		return err
+func MaxPossibleBorrowAmount(bids []types.NftBid) sdk.Int {
+	maxPossibleBorrowAmount := sdk.ZeroInt()
+	for _, bid := range bids {
+		maxPossibleBorrowAmount = maxPossibleBorrowAmount.Add(bid.DepositAmount.Amount)
 	}
-
-	if listing.State != types.ListingState_LIQUIDATION {
-		return types.ErrNftListingNotInLiquidation
-	}
-
-	// TODO: handle nft sending
-	// TODO: handle token flow
-
-	// Emit event for liquidation
-	ctx.EventManager().EmitTypedEvent(&types.EventLiquidate{
-		Liquidator: msg.Sender.AccAddress().String(),
-		ClassId:    msg.NftId.ClassId,
-		NftId:      msg.NftId.NftId,
-	})
-
-	return nil
+	return maxPossibleBorrowAmount
 }
