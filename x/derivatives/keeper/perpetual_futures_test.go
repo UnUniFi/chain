@@ -1,8 +1,6 @@
 package keeper_test
 
 import (
-	"fmt"
-
 	"github.com/cometbft/cometbft/crypto/ed25519"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
@@ -244,6 +242,34 @@ func (suite *KeeperTestSuite) TestReportLiquidationNeededPerpetualFuturesPositio
 
 // TODO: Fix param & work on this test
 func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
+	params := suite.app.DerivativesKeeper.GetParams(suite.ctx)
+	params.PoolParams = types.PoolParams{
+		QuoteTicker:                 "usd",
+		BaseLptMintFee:              sdk.MustNewDecFromStr("0.001"),
+		BaseLptRedeemFee:            sdk.MustNewDecFromStr("0.001"),
+		BorrowingFeeRatePerHour:     sdk.MustNewDecFromStr("0.000001"),
+		ReportLiquidationRewardRate: sdk.MustNewDecFromStr("0.3"),
+		ReportLevyPeriodRewardRate:  sdk.MustNewDecFromStr("0.3"),
+		AcceptedAssetsConf: []types.PoolAssetConf{
+			{
+				Denom:        "uatom",
+				TargetWeight: sdk.OneDec(),
+			},
+		},
+	}
+	params.PerpetualFutures = types.PerpetualFuturesParams{
+		CommissionRate:        sdk.MustNewDecFromStr("0.001"),
+		MarginMaintenanceRate: sdk.MustNewDecFromStr("0.5"),
+		ImaginaryFundingRateProportionalCoefficient: sdk.MustNewDecFromStr("0.0005"),
+		Markets: []*types.Market{
+			{
+				BaseDenom:  "uatom",
+				QuoteDenom: "uusdc",
+			},
+		},
+		MaxLeverage: 30,
+	}
+	suite.app.DerivativesKeeper.SetParams(suite.ctx, params)
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	market := types.Market{
 		BaseDenom:  "uatom",
