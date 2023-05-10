@@ -15,22 +15,22 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		panic(err)
 	}
 
-	if len(genState.PerpetualFuturesNetPositionOfMarket) > 0 {
-		for _, perpetualFuturesNetPositionOfMarket := range genState.PerpetualFuturesNetPositionOfMarket {
-			k.SetPerpetualFuturesNetPositionOfMarket(ctx, perpetualFuturesNetPositionOfMarket)
+	if len(genState.PerpetualFuturesGrossPositionOfMarket) > 0 {
+		for _, perpetualFuturesGrossPositionOfMarket := range genState.PerpetualFuturesGrossPositionOfMarket {
+			k.SetPerpetualFuturesGrossPositionOfMarket(ctx, perpetualFuturesGrossPositionOfMarket)
 		}
 	}
-	initialPerpetualFuturesNetPositionOfMarkets := types.GetMarketsOutOfPerpetualFuturesNetPositionOfMarket(genState.PerpetualFuturesNetPositionOfMarket)
+	initialPerpetualFuturesGrossPositionOfMarkets := types.GetMarketsOutOfPerpetualFuturesGrossPositionOfMarket(genState.PerpetualFuturesGrossPositionOfMarket)
 	for _, market := range genState.Params.PerpetualFutures.Markets {
 		// set initial net position
-		if !market.InMarketSet(initialPerpetualFuturesNetPositionOfMarkets) {
+		if !market.InMarketSet(initialPerpetualFuturesGrossPositionOfMarkets) {
 			// Position reference for Long
-			perpetualFuturesNetPositionOfMarketLong := types.NewPerpetualFuturesNetPositionOfMarket(*market, types.PositionType_LONG, sdk.ZeroInt())
-			k.SetPerpetualFuturesNetPositionOfMarket(ctx, perpetualFuturesNetPositionOfMarketLong)
+			perpetualFuturesGrossPositionOfMarketLong := types.NewPerpetualFuturesGrossPositionOfMarket(*market, types.PositionType_LONG, sdk.ZeroInt())
+			k.SetPerpetualFuturesGrossPositionOfMarket(ctx, perpetualFuturesGrossPositionOfMarketLong)
 
 			// Position reference for Short
-			perpetualFuturesNetPositionOfMarketShort := types.NewPerpetualFuturesNetPositionOfMarket(*market, types.PositionType_SHORT, sdk.ZeroInt())
-			k.SetPerpetualFuturesNetPositionOfMarket(ctx, perpetualFuturesNetPositionOfMarketShort)
+			perpetualFuturesGrossPositionOfMarketShort := types.NewPerpetualFuturesGrossPositionOfMarket(*market, types.PositionType_SHORT, sdk.ZeroInt())
+			k.SetPerpetualFuturesGrossPositionOfMarket(ctx, perpetualFuturesGrossPositionOfMarketShort)
 		}
 	}
 
@@ -45,7 +45,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.Params = k.GetParams(ctx)
 	genesis.Positions = k.GetAllPositions(ctx)
 	genesis.PoolMarketCap = k.GetPoolMarketCapSnapshot(ctx, ctx.BlockHeight())
-	genesis.PerpetualFuturesNetPositionOfMarket = k.GetAllPerpetualFuturesNetPositionOfMarket(ctx)
+	genesis.PerpetualFuturesGrossPositionOfMarket = k.GetAllPerpetualFuturesGrossPositionOfMarket(ctx)
 
 	return genesis
 }

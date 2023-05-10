@@ -11,7 +11,7 @@ The `DERIBATIVES` module provides deriving functions
 1. **[Params](#params)**
 1. **[Events](#events)**
 
-# Concepts
+## Concepts
 
 The model of Perpetual Futures feature of this module totally follows GMX perpetual futures model.  
 (ref: https://gmxio.gitbook.io/gmx/)
@@ -99,11 +99,11 @@ message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
   repeated Position positions = 2 [(gogoproto.nullable) = false];
   PoolMarketCap pool_market_cap = 3 [(gogoproto.nullable) = false];
-  repeated PerpetualFuturesNetPositionOfMarket perpetual_futures_net_position_of_market = 4 [(gogoproto.nullable) = false];
+  repeated PerpetualFuturesGrossPositionOfMarket perpetual_futures_gross_position_of_market = 4 [(gogoproto.nullable) = false];
 }
 ```
 
-`GenesisState` is the data structure of the genesis state of the derivatives module. It contains the following fields: `params`, `positions`, `pool_market_cap` and `perpetual_futures_net_position_of_market`.
+`GenesisState` is the data structure of the genesis state of the derivatives module. It contains the following fields: `params`, `positions`, `pool_market_cap` and `perpetual_futures_gross_position_of_market`.
 
 These fields are made to be able to start the network from aribitrary genesis state.
 
@@ -209,9 +209,9 @@ message PoolMarketCap {
 - `total` is the total value of the all pool assets combined.
 - `breakdown` is the list of the `Breakdown` which contains the information regarding the specific pool asset.
 
-## PerpetualFuturesNetPositionOfMarket
+## PerpetualFuturesGrossPositionOfMarket
 
-`PerpetualFuturesNetPositionOfMarket` is the data which contains the inclusive information regarding x/derivatives's PerpetualFutures market.
+`PerpetualFuturesGrossPositionOfMarket` is the data which contains the inclusive information regarding x/derivatives's PerpetualFutures market.
 
 ```protobuf
 message PerpetualFuturesPositionInstance {
@@ -253,8 +253,8 @@ type Keeper interface {
   GetLPTokenPrice(ctx sdk.Context) sdk.Dec
   GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemDenom string) (sdk.Coin, sdk.Coin, error)
   GetPairUsdPriceFromMarket(ctx sdk.Context, market types.Market) (sdk.Dec, sdk.Dec, error)
-  GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market, positionType types.PositionType) types.PerpetualFuturesNetPositionOfMarket
-  GetPositionSizeOfNetPositionOfMarket(ctx sdk.Context, market types.Market) sdk.Dec
+  GetPerpetualFuturesGrossPositionOfMarket(ctx sdk.Context, market types.Market, positionType types.PositionType) types.PerpetualFuturesGrossPositionOfMarket
+  GetPositionSizeOfGrossPositionOfMarket(ctx sdk.Context, market types.Market) sdk.Dec
   GetAssetBalanceInPoolByDenom(ctx sdk.Context, denom string) sdk.Coin
   GetAssetTargetAmount(ctx sdk.Context, denom string) (sdk.Coin, error)
   GetPoolMarketCapSnapshot(ctx sdk.Context, height int64) types.PoolMarketCap
@@ -301,21 +301,23 @@ The maximum position size is limited by the amount of the corresponding token in
 [ClosePosition](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/tx.proto#L76-L85)
 
 Close a whole position by defining a unique position id.  
-Only the owner of the position can close it. If the position has profit, the profit will be distributed in the same token of the position margin. The fee is taken at this time. The fee rate is the defined static number in the params.
+Only the owner of the position can close it. If the position has profit, the profit will be distributed in the same token of the position margin.
 
 ### ReportLiquidation
 
 [ReportLiquidation](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/tx.proto#L89-L103)
 
-This Msg reports a position that needs to be liquidated.  
-The report gets the reward based on the fee rate of the liquidation report reward rate in the params.  
-This architecture make the chain avoidable to be aware of liquidation logic in EndBlock handler to enhance the scalability.
+Report a position for which the margin maintenance ratio is below a certain level and need to be liquidated.
+If a liquidation is made, the reporter gets a portion of the commission fee as a reward.
+This architecture makes the chain avoidable to be aware of liquidation logic in the EndBlock handler to enhance the scalability.
 
 ### ReportLevyPeriod
 
 [ReportLevyPeriod](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/tx.proto#L107-L121)
 
-Report a position that needs to be levied for [imaginary funding rate](todo). The reporter gets the reward based on the fee rate of the levy period report reward rate in the params.
+Report a position that have been in place for more than 8 hours since the last levy for correction of position bias.
+Adds or subtracts the margin of the reported position depending on the overall position bias. In addition, the commission fee is subtracted from the margin. The commission fee rate is the defined static number in the params.
+The reporter gets a portion of the commission fee as a reward.
 
 ## Queries
 
@@ -411,8 +413,11 @@ message PoolParams {
 - `BaseLptRedeemFee` defines fee ratio in parcentage for the redeeming DLP token by burning some token.  
   The default value is `0.001`.
 - `BorrowingFeeRatePerHour` defines fee ratio for the borrowing token from the pool to the traders.
-- `ReportLiquidationRewardRate` defines reward ratio for the reporting the liquidation of the position for a reporter.
-- `ReportLevyPeriodRewardRate` defines reward ratio for the reporting the levy period for a reporter.
+  The default value is `0.000001`.
+- `ReportLiquidationRewardRate` defines reward ratio for the reporting the liquidation of the position for a reporter. The reward is the commission fee multiplied by this rate.
+  The default value is `0.3`.
+- `ReportLevyPeriodRewardRate` defines reward ratio for the reporting the levy period for a reporter. The reward is the commission fee multiplied by this rate.
+  The default value is `0.3`.
 - `AcceptedAssets` defines the tokens which can be deposited into a pool to get DLP.  
   The tokens in `AcceptedAssets` have to have `DenomMetadata` in bank module in this current implementation (could be changed).
 
@@ -446,7 +451,7 @@ message PerpetualFuturesParams {
 - `ImaginaryFundingRateProportionalCoefficient` is the fee ratio for the imaginary funding. The default value is `0.0005`.
 - `Markets` defines the available trading pair on the perpetual futures market.
 
-## PerpetualOptioins
+## PerpetualOptions
 
 nothing is defined yet.
 
