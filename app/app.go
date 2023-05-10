@@ -149,9 +149,6 @@ import (
 	yieldaggregator "github.com/UnUniFi/chain/x/yield-aggregator"
 	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yield-aggregator/keeper"
 	yieldaggregatortypes "github.com/UnUniFi/chain/x/yield-aggregator/types"
-	"github.com/UnUniFi/chain/x/yieldfarm"
-	yieldfarmkeeper "github.com/UnUniFi/chain/x/yieldfarm/keeper"
-	yieldfarmtypes "github.com/UnUniFi/chain/x/yieldfarm/types"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 	"github.com/UnUniFi/chain/x/derivatives"
@@ -256,7 +253,6 @@ var (
 		pricefeed.AppModuleBasic{},
 		consensus.AppModuleBasic{},
 		wasm.AppModuleBasic{},
-		yieldfarm.AppModuleBasic{},
 		yieldaggregator.AppModuleBasic{},
 		stakeibcmodule.AppModuleBasic{},
 		epochsmodule.AppModuleBasic{},
@@ -286,7 +282,6 @@ var (
 		stakeibcmoduletypes.ModuleName:          {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		interchainquerytypes.ModuleName:         nil,
 		wasm.ModuleName:                         {authtypes.Burner},
-		yieldfarmtypes.ModuleName:               {authtypes.Minter},
 		yieldaggregatortypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
 		ibcfeetypes.ModuleName:                  nil,
 		ecosystemincentivetypes.ModuleName:      nil,
@@ -372,7 +367,6 @@ type App struct {
 	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
 
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
-	YieldfarmKeeper       yieldfarmkeeper.Keeper
 	YieldaggregatorKeeper yieldaggregatorkeeper.Keeper
 
 	ScopedStakeibcKeeper capabilitykeeper.ScopedKeeper
@@ -435,7 +429,6 @@ func NewApp(
 		// this line is used by starport scaffolding # stargate/app/storeKey
 		pricefeedtypes.StoreKey,
 		wasm.StoreKey,
-		yieldfarmtypes.StoreKey,
 		yieldaggregatortypes.StoreKey,
 		stakeibcmoduletypes.StoreKey,
 		epochsmoduletypes.StoreKey,
@@ -751,13 +744,6 @@ func NewApp(
 		app.BankKeeper,
 	)
 
-	app.YieldfarmKeeper = *yieldfarmkeeper.NewKeeper(
-		appCodec,
-		keys[yieldfarmtypes.StoreKey],
-		app.GetSubspace(yieldfarmtypes.ModuleName),
-		app.BankKeeper,
-	)
-
 	app.YieldaggregatorKeeper = yieldaggregatorkeeper.NewKeeper(
 		appCodec,
 		keys[yieldaggregatortypes.StoreKey],
@@ -932,7 +918,6 @@ func NewApp(
 		pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
-		yieldfarm.NewAppModule(appCodec, app.YieldfarmKeeper, app.AccountKeeper, app.BankKeeper),
 		yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
 		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
 		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
@@ -982,7 +967,6 @@ func NewApp(
 
 		ibcfeetypes.ModuleName,
 		wasm.ModuleName,
-		yieldfarmtypes.ModuleName,
 		yieldaggregatortypes.ModuleName,
 	)
 
@@ -1023,7 +1007,6 @@ func NewApp(
 
 		ibcfeetypes.ModuleName,
 		wasm.ModuleName,
-		yieldfarmtypes.ModuleName,
 		yieldaggregatortypes.ModuleName,
 	)
 
@@ -1073,7 +1056,6 @@ func NewApp(
 
 		ibcfeetypes.ModuleName,
 		wasm.ModuleName,
-		yieldfarmtypes.ModuleName,
 		yieldaggregatortypes.ModuleName,
 	)
 
@@ -1414,7 +1396,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
 	paramsKeeper.Subspace(wasm.ModuleName)
-	paramsKeeper.Subspace(yieldfarmtypes.ModuleName)
 	paramsKeeper.Subspace(yieldaggregatortypes.ModuleName)
 	paramsKeeper.Subspace(nftmarkettypes.ModuleName)
 	paramsKeeper.Subspace(nftminttypes.ModuleName)
