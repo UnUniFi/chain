@@ -413,6 +413,7 @@ message PoolParams {
 - `BaseLptRedeemFee` defines fee ratio in parcentage for the redeeming DLP token by burning some token.  
   The default value is `0.001`.
 - `BorrowingFeeRatePerHour` defines fee ratio for the borrowing token from the pool to the traders.
+  The default value is `0.000001`.
 - `ReportLiquidationRewardRate` defines reward ratio for the reporting the liquidation of the position for a reporter. The reward is the commission fee multiplied by this rate.
   The default value is `0.3`.
 - `ReportLevyPeriodRewardRate` defines reward ratio for the reporting the levy period for a reporter. The reward is the commission fee multiplied by this rate.
