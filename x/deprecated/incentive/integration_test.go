@@ -7,8 +7,8 @@ import (
 
 	"github.com/UnUniFi/chain/app"
 	ununifitypes "github.com/UnUniFi/chain/types"
-	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
-	incentivetypes "github.com/UnUniFi/chain/x/incentive/types"
+	cdptypes "github.com/UnUniFi/chain/x/deprecated/cdp/types"
+	incentivetypes "github.com/UnUniFi/chain/x/deprecated/incentive/types"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 

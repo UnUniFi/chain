@@ -14,15 +14,16 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
-	"github.com/UnUniFi/chain/x/incentive/client/cli"
-	"github.com/UnUniFi/chain/x/incentive/client/rest"
-	"github.com/UnUniFi/chain/x/incentive/keeper"
-	"github.com/UnUniFi/chain/x/incentive/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+
+	"github.com/UnUniFi/chain/x/deprecated/incentive/client/cli"
+	"github.com/UnUniFi/chain/x/deprecated/incentive/client/rest"
+	"github.com/UnUniFi/chain/x/deprecated/incentive/keeper"
+	"github.com/UnUniFi/chain/x/deprecated/incentive/types"
 )
 
 var (

@@ -3,9 +3,10 @@ package ununifidist
 import (
 	"fmt"
 
-	"github.com/UnUniFi/chain/x/ununifidist/keeper"
-	"github.com/UnUniFi/chain/x/ununifidist/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/UnUniFi/chain/x/deprecated/ununifidist/keeper"
+	"github.com/UnUniFi/chain/x/deprecated/ununifidist/types"
 )
 
 // InitGenesis initializes the store state from a genesis state.

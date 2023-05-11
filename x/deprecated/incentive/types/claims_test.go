@@ -5,10 +5,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/tendermint/tendermint/crypto"
+	"github.com/cometbft/cometbft/crypto"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	ununifitypes "github.com/UnUniFi/chain/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func TestClaimsValidate(t *testing.T) {

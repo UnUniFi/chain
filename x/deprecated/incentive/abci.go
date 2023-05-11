@@ -3,7 +3,7 @@ package incentive
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/x/incentive/keeper"
+	"github.com/UnUniFi/chain/x/deprecated/incentive/keeper"
 )
 
 // BeginBlocker runs at the start of every block

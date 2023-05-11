@@ -15,31 +15,6 @@ import (
 	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
-	epochsmodule "github.com/UnUniFi/chain/x/epochs"
-	epochsmodulekeeper "github.com/UnUniFi/chain/x/epochs/keeper"
-	epochsmoduletypes "github.com/UnUniFi/chain/x/epochs/types"
-	icacallbacksmodule "github.com/UnUniFi/chain/x/icacallbacks"
-	icacallbacksmodulekeeper "github.com/UnUniFi/chain/x/icacallbacks/keeper"
-	icacallbacksmoduletypes "github.com/UnUniFi/chain/x/icacallbacks/types"
-	"github.com/UnUniFi/chain/x/interchainquery"
-	interchainquerykeeper "github.com/UnUniFi/chain/x/interchainquery/keeper"
-	interchainquerytypes "github.com/UnUniFi/chain/x/interchainquery/types"
-	"github.com/UnUniFi/chain/x/pricefeed"
-	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
-	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
-	recordsmodule "github.com/UnUniFi/chain/x/records"
-	recordsmodulekeeper "github.com/UnUniFi/chain/x/records/keeper"
-	recordsmoduletypes "github.com/UnUniFi/chain/x/records/types"
-	stakeibcmodule "github.com/UnUniFi/chain/x/stakeibc"
-	stakeibcmodulekeeper "github.com/UnUniFi/chain/x/stakeibc/keeper"
-	stakeibcmoduletypes "github.com/UnUniFi/chain/x/stakeibc/types"
-	yieldaggregator "github.com/UnUniFi/chain/x/yield-aggregator"
-	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yield-aggregator/keeper"
-	yieldaggregatortypes "github.com/UnUniFi/chain/x/yield-aggregator/types"
-	"github.com/UnUniFi/chain/x/yieldfarm"
-	yieldfarmkeeper "github.com/UnUniFi/chain/x/yieldfarm/keeper"
-	yieldfarmtypes "github.com/UnUniFi/chain/x/yieldfarm/types"
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/libs/log"
@@ -106,6 +81,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	"github.com/cosmos/cosmos-sdk/x/nft"
+	nftkeeper "github.com/cosmos/cosmos-sdk/x/nft/keeper"
+	nftmodule "github.com/cosmos/cosmos-sdk/x/nft/module"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
@@ -148,6 +126,46 @@ import (
 	ibctestingtypes "github.com/cosmos/ibc-go/v7/testing/types"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
+
+	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
+	epochsmodule "github.com/UnUniFi/chain/x/epochs"
+	epochsmodulekeeper "github.com/UnUniFi/chain/x/epochs/keeper"
+	epochsmoduletypes "github.com/UnUniFi/chain/x/epochs/types"
+	icacallbacksmodule "github.com/UnUniFi/chain/x/icacallbacks"
+	icacallbacksmodulekeeper "github.com/UnUniFi/chain/x/icacallbacks/keeper"
+	icacallbacksmoduletypes "github.com/UnUniFi/chain/x/icacallbacks/types"
+	"github.com/UnUniFi/chain/x/interchainquery"
+	interchainquerykeeper "github.com/UnUniFi/chain/x/interchainquery/keeper"
+	interchainquerytypes "github.com/UnUniFi/chain/x/interchainquery/types"
+	"github.com/UnUniFi/chain/x/pricefeed"
+	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
+	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
+	recordsmodule "github.com/UnUniFi/chain/x/records"
+	recordsmodulekeeper "github.com/UnUniFi/chain/x/records/keeper"
+	recordsmoduletypes "github.com/UnUniFi/chain/x/records/types"
+	stakeibcmodule "github.com/UnUniFi/chain/x/stakeibc"
+	stakeibcmodulekeeper "github.com/UnUniFi/chain/x/stakeibc/keeper"
+	stakeibcmoduletypes "github.com/UnUniFi/chain/x/stakeibc/types"
+	yieldaggregator "github.com/UnUniFi/chain/x/yield-aggregator"
+	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yield-aggregator/keeper"
+	yieldaggregatortypes "github.com/UnUniFi/chain/x/yield-aggregator/types"
+	"github.com/UnUniFi/chain/x/yieldfarm"
+	yieldfarmkeeper "github.com/UnUniFi/chain/x/yieldfarm/keeper"
+	yieldfarmtypes "github.com/UnUniFi/chain/x/yieldfarm/types"
+
+	// this line is used by starport scaffolding # stargate/app/moduleImport
+	"github.com/UnUniFi/chain/x/derivatives"
+	derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
+	derivativestypes "github.com/UnUniFi/chain/x/derivatives/types"
+	ecosystemincentive "github.com/UnUniFi/chain/x/ecosystem-incentive"
+	ecosystemincentivekeeper "github.com/UnUniFi/chain/x/ecosystem-incentive/keeper"
+	ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystem-incentive/types"
+	"github.com/UnUniFi/chain/x/nftmarket"
+	nftmarketkeeper "github.com/UnUniFi/chain/x/nftmarket/keeper"
+	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
+	"github.com/UnUniFi/chain/x/nftmint"
+	nftmintkeeper "github.com/UnUniFi/chain/x/nftmint/keeper"
+	nftminttypes "github.com/UnUniFi/chain/x/nftmint/types"
 )
 
 const Name = "ununifi"
@@ -234,6 +252,7 @@ var (
 		evidence.AppModuleBasic{},
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
+		nftmodule.AppModuleBasic{},
 		pricefeed.AppModuleBasic{},
 		consensus.AppModuleBasic{},
 		wasm.AppModuleBasic{},
@@ -247,24 +266,36 @@ var (
 		recordsmodule.AppModuleBasic{},
 		icacallbacksmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
+		ecosystemincentive.AppModuleBasic{},
+		pricefeed.AppModuleBasic{},
+		nftmint.AppModuleBasic{},
+		nftmarket.AppModuleBasic{},
+		derivatives.AppModuleBasic{},
 	)
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName:      nil,
-		distrtypes.ModuleName:           nil,
-		minttypes.ModuleName:            {authtypes.Minter},
-		stakingtypes.BondedPoolName:     {authtypes.Burner, authtypes.Staking},
-		stakingtypes.NotBondedPoolName:  {authtypes.Burner, authtypes.Staking},
-		govtypes.ModuleName:             {authtypes.Burner},
-		ibctransfertypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
-		icatypes.ModuleName:             nil,
-		stakeibcmoduletypes.ModuleName:  {authtypes.Minter, authtypes.Burner, authtypes.Staking},
-		interchainquerytypes.ModuleName: nil,
-		wasm.ModuleName:                 {authtypes.Burner},
-		yieldfarmtypes.ModuleName:       {authtypes.Minter},
-		yieldaggregatortypes.ModuleName: {authtypes.Minter, authtypes.Burner},
-		ibcfeetypes.ModuleName:          nil,
+		authtypes.FeeCollectorName:              nil,
+		distrtypes.ModuleName:                   nil,
+		minttypes.ModuleName:                    {authtypes.Minter},
+		stakingtypes.BondedPoolName:             {authtypes.Burner, authtypes.Staking},
+		stakingtypes.NotBondedPoolName:          {authtypes.Burner, authtypes.Staking},
+		govtypes.ModuleName:                     {authtypes.Burner},
+		ibctransfertypes.ModuleName:             {authtypes.Minter, authtypes.Burner},
+		icatypes.ModuleName:                     nil,
+		stakeibcmoduletypes.ModuleName:          {authtypes.Minter, authtypes.Burner, authtypes.Staking},
+		interchainquerytypes.ModuleName:         nil,
+		wasm.ModuleName:                         {authtypes.Burner},
+		yieldfarmtypes.ModuleName:               {authtypes.Minter},
+		yieldaggregatortypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
+		ibcfeetypes.ModuleName:                  nil,
+		ecosystemincentivetypes.ModuleName:      nil,
+		nft.ModuleName:                          nil,
+		nftminttypes.ModuleName:                 nil,
+		nftmarkettypes.ModuleName:               nil,
+		derivativestypes.ModuleName:             {authtypes.Minter, authtypes.Burner},
+		derivativestypes.DerivativeFeeCollector: nil,
+		// nftmarkettypes.NftTradingFee: nil,
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -298,6 +329,8 @@ type App struct {
 	legacyAmino       *codec.LegacyAmino
 	appCodec          codec.Codec
 	interfaceRegistry types.InterfaceRegistry
+	// msgSvcRouter      *authmiddleware.MsgServiceRouter
+	// legacyRouter      sdk.Router
 
 	// keys to access the substores
 	keys    map[string]*storetypes.KVStoreKey
@@ -322,6 +355,7 @@ type App struct {
 	TransferKeeper   ibctransferkeeper.Keeper
 	FeeGrantKeeper   feegrantkeeper.Keeper
 	AuthzKeeper      authzkeeper.Keeper
+	NFTKeeper        nftkeeper.Keeper
 	// LiquidityKeeper  liquiditykeeper.Keeper
 	WasmKeeper            wasm.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
@@ -338,7 +372,6 @@ type App struct {
 	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
 
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
-	pricefeedKeeper       pricefeedkeeper.Keeper
 	YieldfarmKeeper       yieldfarmkeeper.Keeper
 	YieldaggregatorKeeper yieldaggregatorkeeper.Keeper
 
@@ -351,6 +384,11 @@ type App struct {
 	RecordsKeeper            recordsmodulekeeper.Keeper
 	ScopedIcacallbacksKeeper capabilitykeeper.ScopedKeeper
 	IcacallbacksKeeper       icacallbacksmodulekeeper.Keeper
+	EcosystemincentiveKeeper ecosystemincentivekeeper.Keeper
+	PricefeedKeeper          pricefeedkeeper.Keeper
+	NftmintKeeper            nftmintkeeper.Keeper
+	NftmarketKeeper          nftmarketkeeper.Keeper
+	DerivativesKeeper        derivativeskeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -399,7 +437,6 @@ func NewApp(
 		wasm.StoreKey,
 		yieldfarmtypes.StoreKey,
 		yieldaggregatortypes.StoreKey,
-
 		stakeibcmoduletypes.StoreKey,
 		epochsmoduletypes.StoreKey,
 		interchainquerytypes.StoreKey,
@@ -407,6 +444,11 @@ func NewApp(
 		recordsmoduletypes.StoreKey,
 		icacallbacksmoduletypes.StoreKey,
 		ibcfeetypes.StoreKey,
+		ecosystemincentivetypes.StoreKey,
+		nftkeeper.StoreKey,
+		nftminttypes.StoreKey,
+		nftmarkettypes.StoreKey,
+		derivativestypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -702,11 +744,12 @@ func NewApp(
 	transferStack := recordsmodule.NewIBCModule(app.RecordsKeeper, transferIBCModule)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
-	app.pricefeedKeeper = pricefeedkeeper.NewKeeper(
+	app.PricefeedKeeper = pricefeedkeeper.NewKeeper(
 		appCodec,
 		keys[pricefeedtypes.StoreKey],
 		keys[pricefeedtypes.MemStoreKey],
 		app.GetSubspace(pricefeedtypes.ModuleName),
+		app.BankKeeper,
 	)
 
 	app.YieldfarmKeeper = *yieldfarmkeeper.NewKeeper(
@@ -791,6 +834,38 @@ func NewApp(
 		AddRoute(ibctransfertypes.ModuleName, transferStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
+	app.NftmintKeeper = nftmintkeeper.NewKeeper(
+		appCodec,
+		keys[nftminttypes.StoreKey],
+		keys[nftminttypes.MemStoreKey],
+		app.GetSubspace(nftminttypes.ModuleName),
+		app.AccountKeeper,
+		app.NFTKeeper,
+	)
+
+	nftmarketKeeper := nftmarketkeeper.NewKeeper(
+		appCodec,
+		encodingConfig.TxConfig,
+		keys[nftmarkettypes.StoreKey],
+		keys[nftmarkettypes.MemStoreKey],
+		app.GetSubspace(nftmarkettypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.NFTKeeper,
+	)
+
+	app.DerivativesKeeper = derivativeskeeper.NewKeeper(
+		appCodec,
+		keys[derivativestypes.StoreKey],
+		keys[derivativestypes.MemStoreKey],
+		app.GetSubspace(derivativestypes.ModuleName),
+		app.BankKeeper,
+		app.PricefeedKeeper,
+	)
+
+	// create Keeper objects which have Hooks
+	app.NftmarketKeeper = *nftmarketKeeper.SetHooks(nftmarkettypes.NewMultiNftmarketHooks(app.EcosystemincentiveKeeper.Hooks()))
+
 	govConfig := govtypes.DefaultConfig()
 	govKeeper := govkeeper.NewKeeper(
 		appCodec,
@@ -814,6 +889,7 @@ func NewApp(
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 
+	// tbbbt
 	app.mm = module.NewManager(
 		genutil.NewAppModule(
 			app.AccountKeeper,
@@ -835,7 +911,8 @@ func NewApp(
 		evidence.NewAppModule(app.EvidenceKeeper),
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		ibc.NewAppModule(app.IBCKeeper),
+		nftmodule.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
+		// ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
 		transferModule,
@@ -848,11 +925,15 @@ func NewApp(
 		icacallbacksModule,
 
 		// this line is used by starport scaffolding # stargate/app/appModule
-		pricefeed.NewAppModule(appCodec, app.pricefeedKeeper, app.AccountKeeper),
+		pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
 		yieldfarm.NewAppModule(appCodec, app.YieldfarmKeeper, app.AccountKeeper, app.BankKeeper),
 		yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
+		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
+		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
+		nftmint.NewAppModule(appCodec, app.NftmintKeeper, app.NFTKeeper),
+		nftmarket.NewAppModule(appCodec, app.NftmarketKeeper, app.AccountKeeper, app.BankKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -874,11 +955,16 @@ func NewApp(
 		genutiltypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
+		nft.ModuleName,
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		// additional non simd modules
 		// liquiditytypes.ModuleName,
+		ecosystemincentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
+		nftminttypes.ModuleName,
+		nftmarkettypes.ModuleName,
+		derivativestypes.ModuleName,
 
 		ibcexported.ModuleName,
 		consensusparamtypes.ModuleName,
@@ -911,11 +997,16 @@ func NewApp(
 		evidencetypes.ModuleName,
 		authz.ModuleName,
 		feegrant.ModuleName,
+		nft.ModuleName,
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		// additional non simd modules
 		pricefeedtypes.ModuleName,
+		nftminttypes.ModuleName,
+		nftmarkettypes.ModuleName,
+		ecosystemincentivetypes.ModuleName,
+		derivativestypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
@@ -953,14 +1044,19 @@ func NewApp(
 		evidencetypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		// liquiditytypes.ModuleName,
-		ibctransfertypes.ModuleName,
+		// ibctransfertypes.ModuleName,
 		feegrant.ModuleName,
 		authz.ModuleName,
+		nft.ModuleName,
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 		pricefeedtypes.ModuleName,
+		nftminttypes.ModuleName,
+		nftmarkettypes.ModuleName,
+		ecosystemincentivetypes.ModuleName,
+		derivativestypes.ModuleName,
 
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
@@ -1316,7 +1412,10 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(wasm.ModuleName)
 	paramsKeeper.Subspace(yieldfarmtypes.ModuleName)
 	paramsKeeper.Subspace(yieldaggregatortypes.ModuleName)
-
+	paramsKeeper.Subspace(nftmarkettypes.ModuleName)
+	paramsKeeper.Subspace(nftminttypes.ModuleName)
+	paramsKeeper.Subspace(ecosystemincentivetypes.ModuleName)
+	paramsKeeper.Subspace(derivativestypes.ModuleName)
 	return paramsKeeper
 }
 

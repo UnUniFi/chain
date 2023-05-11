@@ -3,10 +3,11 @@ package types_test
 import (
 	"testing"
 
-	types "github.com/UnUniFi/chain/x/cdp/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
+
+	types "github.com/UnUniFi/chain/x/deprecated/cdp/types"
 )
 
 type TypeTestSuite struct {

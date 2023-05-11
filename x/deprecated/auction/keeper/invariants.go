@@ -6,7 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/x/auction/types"
+	"github.com/UnUniFi/chain/x/deprecated/auction/types"
 )
 
 // RegisterInvariants registers all staking invariants

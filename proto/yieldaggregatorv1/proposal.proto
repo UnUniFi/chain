@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "yieldaggregatorv1/params.proto";
 import "yieldaggregatorv1/asset.proto";
 
-option go_package = "github.com/UnUniFi/chain/x/yieldaggregatorv1/types";
+option go_package = "github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/types";
 
 // proposal to add new yield farm.
 message ProposalAddYieldFarm {

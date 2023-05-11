@@ -3,12 +3,12 @@ package keeper_test
 import (
 	"time"
 
+	tmtime "github.com/cometbft/cometbft/types/time"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/UnUniFi/chain/app"
 	ununifitypes "github.com/UnUniFi/chain/types"
-	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	cdptypes "github.com/UnUniFi/chain/x/deprecated/cdp/types"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 

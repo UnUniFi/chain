@@ -12,15 +12,16 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
-	"github.com/UnUniFi/chain/x/cdp/client/cli"
-	"github.com/UnUniFi/chain/x/cdp/client/rest"
-	"github.com/UnUniFi/chain/x/cdp/keeper"
-	"github.com/UnUniFi/chain/x/cdp/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+
+	"github.com/UnUniFi/chain/x/deprecated/cdp/client/cli"
+	"github.com/UnUniFi/chain/x/deprecated/cdp/client/rest"
+	"github.com/UnUniFi/chain/x/deprecated/cdp/keeper"
+	"github.com/UnUniFi/chain/x/deprecated/cdp/types"
 )
 
 var (
@@ -104,18 +105,18 @@ type AppModule struct {
 	keeper          keeper.Keeper
 	accountKeeper   types.AccountKeeper
 	bankKeeper      types.BankKeeper
-	pricefeedKeeper types.PricefeedKeeper
+	PricefeedKeeper types.PricefeedKeeper
 }
 
 func NewAppModule(cdc codec.Codec, keeper keeper.Keeper, accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	pricefeedKeeper types.PricefeedKeeper) AppModule {
+	PricefeedKeeper types.PricefeedKeeper) AppModule {
 	return AppModule{
 		AppModuleBasic:  NewAppModuleBasic(cdc),
 		keeper:          keeper,
 		accountKeeper:   accountKeeper,
 		bankKeeper:      bankKeeper,
-		pricefeedKeeper: pricefeedKeeper,
+		PricefeedKeeper: PricefeedKeeper,
 	}
 }
 
@@ -143,7 +144,7 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, gs json.Ra
 	// Initialize global index to index in genesis state
 	cdc.MustUnmarshalJSON(gs, &genState)
 
-	InitGenesis(ctx, am.keeper, am.accountKeeper, am.pricefeedKeeper, genState)
+	InitGenesis(ctx, am.keeper, am.accountKeeper, am.PricefeedKeeper, genState)
 
 	return []abci.ValidatorUpdate{}
 }

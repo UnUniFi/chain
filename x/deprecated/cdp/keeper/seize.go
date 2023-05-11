@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/UnUniFi/chain/x/cdp/types"
+	"github.com/UnUniFi/chain/x/deprecated/cdp/types"
 )
 
 // AttemptKeeperLiquidation liquidates the cdp with the input collateral type and owner if it is below the required collateralization ratio
@@ -89,7 +89,7 @@ func (k Keeper) SeizeCollateral(ctx sdk.Context, cdp types.Cdp) error {
 
 // LiquidateCdps seizes collateral from all Cdps below the input liquidation ratio
 func (k Keeper) LiquidateCdps(ctx sdk.Context, marketID string, collateralType string, liquidationRatio sdk.Dec, count sdk.Int) error {
-	price, err := k.pricefeedKeeper.GetCurrentPrice(ctx, marketID)
+	price, err := k.PricefeedKeeper.GetCurrentPrice(ctx, marketID)
 	if err != nil {
 		return err
 	}

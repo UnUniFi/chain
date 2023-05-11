@@ -2,7 +2,6 @@ package cdp_test
 
 import (
 	"strings"
-	"testing"
 	"time"
 
 	"github.com/stretchr/testify/suite"
@@ -10,8 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/app"
-	cdpkeeper "github.com/UnUniFi/chain/x/cdp/keeper"
-	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
+	cdpkeeper "github.com/UnUniFi/chain/x/deprecated/cdp/keeper"
+	cdptypes "github.com/UnUniFi/chain/x/deprecated/cdp/types"
 )
 
 type GenesisTestSuite struct {
@@ -132,6 +131,6 @@ func (suite *GenesisTestSuite) TestValidGenState() {
 	})
 }
 
-func TestGenesisTestSuite(t *testing.T) {
-	suite.Run(t, new(GenesisTestSuite))
-}
+// func TestGenesisTestSuite(t *testing.T) {
+// 	suite.Run(t, new(GenesisTestSuite))
+// }

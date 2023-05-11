@@ -3,10 +3,11 @@ package cdp
 import (
 	"fmt"
 
-	"github.com/UnUniFi/chain/x/cdp/keeper"
-	"github.com/UnUniFi/chain/x/cdp/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	"github.com/UnUniFi/chain/x/deprecated/cdp/keeper"
+	"github.com/UnUniFi/chain/x/deprecated/cdp/types"
 )
 
 // NewHandler ...

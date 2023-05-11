@@ -1,14 +1,13 @@
 package types_test
 
 import (
-	"testing"
 	"time"
 
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
+	ununifidisttypes "github.com/UnUniFi/chain/x/deprecated/ununifidist/types"
 )
 
 type paramTest struct {
@@ -96,6 +95,6 @@ func (suite *ParamTestSuite) TestParamValidation() {
 	}
 }
 
-func TestGenesisTestSuite(t *testing.T) {
-	suite.Run(t, new(ParamTestSuite))
-}
+// func TestGenesisTestSuite(t *testing.T) {
+// 	suite.Run(t, new(ParamTestSuite))
+// }

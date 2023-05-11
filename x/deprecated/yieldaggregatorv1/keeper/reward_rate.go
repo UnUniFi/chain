@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/x/yieldaggregatorv1/types"
+	"github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/types"
 )
 
 func (k Keeper) SetDailyRewardPercent(ctx sdk.Context, obj types.DailyPercent) {

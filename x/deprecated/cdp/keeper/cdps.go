@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/UnUniFi/chain/x/cdp/types"
+	"github.com/UnUniFi/chain/x/deprecated/cdp/types"
 )
 
 // AddCdp adds a cdp for a specific owner and collateral type
@@ -536,7 +536,7 @@ func (k Keeper) CalculateCollateralizationRatio(ctx sdk.Context, collateral sdk.
 		return sdk.Dec{}, pfType.IsValid()
 	}
 
-	price, err := k.pricefeedKeeper.GetCurrentPrice(ctx, marketID)
+	price, err := k.PricefeedKeeper.GetCurrentPrice(ctx, marketID)
 	if err != nil {
 		return sdk.Dec{}, err
 	}
@@ -565,7 +565,7 @@ func (k Keeper) CalculateCollateralizationRatioFromAbsoluteRatio(ctx sdk.Context
 		return sdk.Dec{}, pfType.IsValid()
 	}
 
-	price, err := k.pricefeedKeeper.GetCurrentPrice(ctx, marketID)
+	price, err := k.PricefeedKeeper.GetCurrentPrice(ctx, marketID)
 	if err != nil {
 		return sdk.Dec{}, err
 	}
@@ -592,7 +592,7 @@ func (k Keeper) GetMarketStatus(ctx sdk.Context, marketID string) (up bool) {
 
 // UpdatePricefeedStatus determines if the price of an asset is available and updates the global status of the market
 func (k Keeper) UpdatePricefeedStatus(ctx sdk.Context, marketID string) (ok bool) {
-	_, err := k.pricefeedKeeper.GetCurrentPrice(ctx, marketID)
+	_, err := k.PricefeedKeeper.GetCurrentPrice(ctx, marketID)
 	if err != nil {
 		k.SetMarketStatus(ctx, marketID, false)
 		return false

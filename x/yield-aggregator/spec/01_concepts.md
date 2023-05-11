@@ -1,26 +1,60 @@
 # Concepts
 
-- One token many vaults
-- One token many strategies in db
-- One vault has a combination of many strategy ids (weight can't be changed via voting)
-- If user want to change the weight, abolish the vault and let them go to other vault of same token (edited)
-  - this make the rebalancing process very easy
-- Users can create vault without governance, but it needs fee and deposit to prevent spams.
-- Vault creator can configure the commission rate. It makes the vault creation competitive and creates an incentive for creation.
+## introduction  
 
-## Introduction  
+UnUniFi's NFTFi feature does not have an automatic earning function.
 
-NFT backed loan in UnUniFi does not have an automatic earning function.
-Users borrowed assets in NFT backed loan seek the way to manage their assets.
-This yield aggregator module will serve such an opportunity to such users.
+Users have to use NFTi's functionality to Borrow and invest on their own.
 
-## about Yield Aggregator (YA)
+## about yield-aggregator (YA)
 
 `yield-aggregator` module provides the function for yield aggregation.
-Users deposit their funds to the **vault**, and then this module uses the funds to earn yield automatically.
 
-This module is the first yield aggregator that support "interchain" yield aggregation. So this is also called as Interchain Yield Aggregator (IYA).
+It find the optimal target of funds for asset management (e.g. the highest interest rate pool).
 
-## Yield Farming Contract
+`nft-marketmaker` module and CosmWasm contracts will call the keeper of this module.
 
-The funds from users that is deposited to the **vault** will be allocated to the yield farming contract, in proportion to the weight that is determined in governance.
+NFTFi will be able to use this feature and automatically earning
+
+## yield-aggregator abstract work flow
+
+```mermaid
+graph TD;
+
+  User[User];
+  YA[yield-aggregator];
+  YF[selected-yield-farming];
+
+  User--1_deposit_denom-->YA;
+  YA--2_deposit_denom-->YF;
+  YF--3_earning_denom-->YA;
+  YA--4_withdraw_denom-->User;
+
+```
+
+## Yield Farming(YF)
+
+Yield farming is the process of using decentralized finance (DeFi) to maximize returns.
+
+Users lend or borrow crypto on a DeFi platform and earn cryptocurrency in return for their services.
+
+## DailyPercent
+
+`yield-aggregator` computes the amount deposited with YF and the amount returned from YF
+Let it be DailyPercent.
+
+Annual percent rate (APR) and annual percent yield (APY) can be calculated with recent `n` (you can choose) days' `DailyPercent` data.
+
+## Farming Order(FO)
+
+YA can create complex investment strategies by combining multiple FOs.
+
+Each FO operates on an event and determines the amount invested from a percentage of the balance
+
+## Farming Order Event
+
+Events that make the FO work
+
+1. deposit msg with execute_orders flag thrown.
+1. ExecuteOrders msg thrown.
+1. When received the Denom from YF.
