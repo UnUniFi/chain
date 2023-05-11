@@ -1,0 +1,104 @@
+syntax = "proto3";
+package ununifi.chain.yieldaggregator;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/any.proto";
+import "yieldaggregatorv1/params.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/types";
+
+enum IntegrateType {
+  GOLANG_MOD = 0;
+  COSMWASM   = 1;
+}
+message IntegrateInfo {
+  IntegrateType type = 1;
+  // for cosmwasm contract
+  string contract_ibc_port_id = 2;
+  // for golang module
+  string mod_name = 3;
+}
+message AssetCondition {
+  string denom = 1;
+  string min   = 2;
+  uint32 ratio = 3;
+}
+message AssetManagementTarget {
+  string                   id                          = 1;
+  string                   asset_management_account_id = 2;
+  string                   account_address             = 4;
+  repeated AssetCondition  asset_conditions            = 5 [(gogoproto.nullable) = false];
+  google.protobuf.Duration unbonding_time = 6 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+  IntegrateInfo            integrate_info = 7 [(gogoproto.nullable) = false];
+  bool                     enabled        = 8;
+}
+
+message AssetManagementAccount {
+  string id      = 1;
+  string name    = 2;
+  bool   enabled = 3;
+}
+
+message FarmingOrder {
+  string                    id                 = 1;
+  string                    from_address       = 2;
+  Strategy                  strategy           = 3 [(gogoproto.nullable) = false];
+  google.protobuf.Duration  max_unbonding_time = 4 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+  uint32                    overall_ratio      = 5;
+  string                    min                = 6;
+  string                    max                = 7;
+  google.protobuf.Timestamp date               = 8 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  bool                      active             = 9;
+}
+
+message UserInfo {
+  string   user                                    = 1;
+  repeated cosmos.base.v1beta1.Coin amount         = 2 [(gogoproto.nullable) = false];
+  repeated FarmingOrder             farming_orders = 3;
+  uint64                            farmed_counter = 4;
+}
+
+message UserDeposit {
+  string   user                            = 1;
+  repeated cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
+}
+
+// FarmingUnit is managing users' investment on a yield farm target
+// Here, amount field is the amount withdrawable instantly, staked amount on yield farms are not calculated here
+// since the value of staked amount could change after deposit - it's only determined at the time of withdrawal
+// from the farm
+message FarmingUnit {
+  string   account_id                                   = 1;
+  string   target_id                                    = 2;
+  repeated cosmos.base.v1beta1.Coin amount              = 3 [(gogoproto.nullable) = false];
+  string                            farming_start_time  = 4;
+  google.protobuf.Timestamp         unbonding_starttime = 5 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  string                            owner               = 6;
+}
+
+// Strategy types
+// recent30DaysHighDPRStrategy -	Invest in the best DPR destination in the last 30 days on average
+// recent1DayHighDPRStrategy	- Invest in the best DPR destination in the last average day
+// notHaveDPRStrategy - Invest in something that does not have a DPR.
+// ManualStrategy - Manual investment, whiteTargetIdlist required.
+message Strategy {
+  string          strategy_type          = 1;
+  repeated string whitelisted_target_ids = 2;
+  repeated string blacklisted_target_ids = 3;
+}
+
+message DailyPercent {
+  string account_id = 1;
+  string target_id  = 2;
+  string rate = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+  google.protobuf.Timestamp date = 4 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+}
+
+message DepositAllocation {
+  string                   id       = 1;
+  string                   order_id = 2;
+  cosmos.base.v1beta1.Coin amount   = 3 [(gogoproto.nullable) = false];
+}

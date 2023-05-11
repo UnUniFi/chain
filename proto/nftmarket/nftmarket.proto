@@ -42,7 +42,7 @@ message ListedClass {
   repeated string nft_ids  = 2;
 }
 
-message ListedNft {
+message NftInfo {
   string id       = 1;
   string uri      = 2;
   string uri_hash = 3;

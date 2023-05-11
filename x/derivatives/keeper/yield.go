@@ -63,11 +63,11 @@ func (k Keeper) GetInflationRateOfAssetsInPool(ctx sdk.Context, beforeHeight int
 	poolMarketCapAfterWithBeforeAmount := sdk.NewDec(0)
 
 	afterPrices := make(map[string]sdk.Dec)
-	for _, breakdown := range poolMarketCapAfter.Breakdown {
+	for _, breakdown := range poolMarketCapAfter.AssetInfo {
 		afterPrices[breakdown.Denom] = breakdown.Price
 	}
 
-	for _, breakdown := range poolMarketCapBefore.Breakdown {
+	for _, breakdown := range poolMarketCapBefore.AssetInfo {
 		amountBefore := breakdown.Amount
 		priceAfter, ok := afterPrices[breakdown.Denom]
 		if !ok {

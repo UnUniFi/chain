@@ -8,7 +8,7 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 // this line is used by starport scaffolding # 1
 import "cdp/cdp.proto";
 
-option go_package = "github.com/UnUniFi/chain/x/cdp/types";
+option go_package = "github.com/UnUniFi/chain/x/deprecated/cdp/types";
 
 // Query defines the gRPC querier service.
 service Query {

@@ -27,4 +27,8 @@ USER_ADDRESS_3=ununifi1y3t7sp0nfe2nfda7r9gf628g6ym6e7d44evfv6
 USER_ADDRESS_4=ununifi1pp2ruuhs0k7ayaxjupwj4k5qmgh0d72wrdyjyu
 PRICEFEED_ADDRESS=ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr
 
-conf="--home=$NODE_HOME --chain-id=$CHAINID_1 --keyring-backend=test -y --broadcast-mode=block"
+conf="--home=$NODE_HOME --chain-id=$CHAINID_1 --keyring-backend=test -y --broadcast-mode=sync"
+# conf="--home=$NODE_HOME --chain-id=$CHAINID_1 --keyring-backend=test -y --broadcast-mode=sync | grep txhash | awk '{ print $2 }'| xargs -I {} sh -c 'sleep 5; $0 q tx {}' $BINARY"
+
+SSH_PREV_KEY_LOCATION=/your/ssh/key/location
+ALPHA_NODE_URL=ununifi-alpha-test.cauchye.net

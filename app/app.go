@@ -1,27 +1,47 @@
 package app
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
+	// Upgrades from earlier versions of Ununifi
+	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
+	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
+	"github.com/CosmWasm/wasmd/x/wasm"
+	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	dbm "github.com/cometbft/cometbft-db"
+	abci "github.com/cometbft/cometbft/abci/types"
+	"github.com/cometbft/cometbft/libs/log"
+	tmos "github.com/cometbft/cometbft/libs/os"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	nodeservice "github.com/cosmos/cosmos-sdk/client/grpc/node"
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/runtime"
+	runtimeservices "github.com/cosmos/cosmos-sdk/runtime/services"
+	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/server/api"
 	"github.com/cosmos/cosmos-sdk/server/config"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-	store "github.com/cosmos/cosmos-sdk/store/types"
+	"github.com/cosmos/cosmos-sdk/store/streaming"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	"github.com/cosmos/cosmos-sdk/x/auth/posthandler"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -36,11 +56,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/capability"
 	capabilitykeeper "github.com/cosmos/cosmos-sdk/x/capability/keeper"
 	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
+	"github.com/cosmos/cosmos-sdk/x/consensus"
+	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
+	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
-	distrclient "github.com/cosmos/cosmos-sdk/x/distribution/client"
 	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	"github.com/cosmos/cosmos-sdk/x/evidence"
@@ -55,7 +77,6 @@ import (
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	govv1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
@@ -78,68 +99,47 @@ import (
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	"github.com/gorilla/mux"
-	"github.com/rakyll/statik/fs"
-
-	ante "github.com/UnUniFi/chain/app/ante"
-	appparams "github.com/UnUniFi/chain/app/params"
-
-	// "github.com/cosmos/ibc-go/v3/modules/apps/transfer"
-	// ibctransferkeeper "github.com/cosmos/ibc-go/v3/modules/apps/transfer/keeper"
-	// ibctransfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
-	// ibc "github.com/cosmos/ibc-go/v3/modules/core"
-	// ibcclient "github.com/cosmos/ibc-go/v3/modules/core/02-client"
-	// ibcclientclient "github.com/cosmos/ibc-go/v3/modules/core/02-client/client"
-	// ibcclienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
-	// porttypes "github.com/cosmos/ibc-go/v3/modules/core/05-port/types"
-	// ibchost "github.com/cosmos/ibc-go/v3/modules/core/24-host"
-	// ibckeeper "github.com/cosmos/ibc-go/v3/modules/core/keeper"
-
-	// "github.com/gravity-devs/liquidity/x/liquidity"
-	// liquiditykeeper "github.com/gravity-devs/liquidity/x/liquidity/keeper"
-	// liquiditytypes "github.com/gravity-devs/liquidity/x/liquidity/types"
-
+	icacontrollerkeeper "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/keeper"
+	icahost "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host"
+	icahostkeeper "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host/keeper"
+	icahosttypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host/types"
+	ibcfeekeeper "github.com/cosmos/ibc-go/v7/modules/apps/29-fee/keeper"
+	ibcfeetypes "github.com/cosmos/ibc-go/v7/modules/apps/29-fee/types"
+	transfer "github.com/cosmos/ibc-go/v7/modules/apps/transfer"
+	ibctransferkeeper "github.com/cosmos/ibc-go/v7/modules/apps/transfer/keeper"
+	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
+	ibc "github.com/cosmos/ibc-go/v7/modules/core"
+	ibcclientclient "github.com/cosmos/ibc-go/v7/modules/core/02-client/client"
+	ibcporttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
+	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
+	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
+	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
+	ibctesting "github.com/cosmos/ibc-go/v7/testing"
+	ibctestingtypes "github.com/cosmos/ibc-go/v7/testing/types"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmjson "github.com/tendermint/tendermint/libs/json"
-	"github.com/tendermint/tendermint/libs/log"
-	tmos "github.com/tendermint/tendermint/libs/os"
-	dbm "github.com/tendermint/tm-db"
 
+	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
+	// "github.com/UnUniFi/chain/x/derivatives"
+	// epochsmodule "github.com/UnUniFi/chain/x/epochs"
+	// "github.com/UnUniFi/chain/x/nftmint"
+	// "github.com/UnUniFi/chain/x/yieldfarm"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
-	"github.com/UnUniFi/chain/x/auction"
-	auctionkeeper "github.com/UnUniFi/chain/x/auction/keeper"
-	auctiontypes "github.com/UnUniFi/chain/x/auction/types"
-	"github.com/UnUniFi/chain/x/cdp"
-	cdpkeeper "github.com/UnUniFi/chain/x/cdp/keeper"
-	cdptypes "github.com/UnUniFi/chain/x/cdp/types"
-	"github.com/UnUniFi/chain/x/derivatives"
-	derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
-	derivativestypes "github.com/UnUniFi/chain/x/derivatives/types"
-	ecosystemincentive "github.com/UnUniFi/chain/x/ecosystem-incentive"
-	ecosystemincentivekeeper "github.com/UnUniFi/chain/x/ecosystem-incentive/keeper"
-	ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystem-incentive/types"
-	"github.com/UnUniFi/chain/x/incentive"
-	incentivekeeper "github.com/UnUniFi/chain/x/incentive/keeper"
-	incentivetypes "github.com/UnUniFi/chain/x/incentive/types"
-	"github.com/UnUniFi/chain/x/nftmarket"
-	nftmarketkeeper "github.com/UnUniFi/chain/x/nftmarket/keeper"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
-	"github.com/UnUniFi/chain/x/nftmint"
-	nftmintkeeper "github.com/UnUniFi/chain/x/nftmint/keeper"
-	nftminttypes "github.com/UnUniFi/chain/x/nftmint/types"
-	"github.com/UnUniFi/chain/x/pricefeed"
-	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
-	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
-	"github.com/UnUniFi/chain/x/ununifidist"
-	ununifidistkeeper "github.com/UnUniFi/chain/x/ununifidist/keeper"
-	ununifidisttypes "github.com/UnUniFi/chain/x/ununifidist/types"
-	// "github.com/CosmWasm/wasmd/x/wasm"
-	// wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
+	// "github.com/UnUniFi/chain/x/derivatives"
+	// derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
+	// derivativestypes "github.com/UnUniFi/chain/x/derivatives/types"
+	// ecosystemincentive "github.com/UnUniFi/chain/x/ecosystem-incentive"
+	// ecosystemincentivekeeper "github.com/UnUniFi/chain/x/ecosystem-incentive/keeper"
+	// ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystem-incentive/types"
+	// "github.com/UnUniFi/chain/x/nftmarket"
+	// nftmarketkeeper "github.com/UnUniFi/chain/x/nftmarket/keeper"
+	// nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
+	// "github.com/UnUniFi/chain/x/nftmint"
+	// nftmintkeeper "github.com/UnUniFi/chain/x/nftmint/keeper"
+	// nftminttypes "github.com/UnUniFi/chain/x/nftmint/types"
 )
 
 const Name = "ununifi"
-const upgradeName = "Alpha"
 
 // We pull these out so we can set them with LDFLAGS in the Makefile
 var (
@@ -154,37 +154,44 @@ var (
 
 // GetEnabledProposals parses the ProposalsEnabled / EnableSpecificProposals values to
 // produce a list of enabled proposals to pass into wasmd app.
-// func GetEnabledProposals() []wasm.ProposalType {
-// 	if EnableSpecificProposals == "" {
-// 		if ProposalsEnabled == "true" {
-// 			return wasm.EnableAllProposals
-// 		}
-// 		return wasm.DisableAllProposals
-// 	}
-// 	chunks := strings.Split(EnableSpecificProposals, ",")
-// 	proposals, err := wasm.ConvertToProposals(chunks)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	return proposals
-// }
+func GetEnabledProposals() []wasm.ProposalType {
+	if EnableSpecificProposals == "" {
+		if ProposalsEnabled == "true" {
+			return wasm.EnableAllProposals
+		}
+		return wasm.DisableAllProposals
+	}
+	chunks := strings.Split(EnableSpecificProposals, ",")
+	proposals, err := wasm.ConvertToProposals(chunks)
+	if err != nil {
+		panic(err)
+	}
+	return proposals
+}
 
-// this line is used by starport scaffolding # stargate/wasm/app/enabledProposals
+func GetWasmOpts(appOpts servertypes.AppOptions) []wasm.Option {
+	var wasmOpts []wasm.Option
+	if cast.ToBool(appOpts.Get("telemetry.enabled")) {
+		wasmOpts = append(wasmOpts, wasmkeeper.WithVMCacheMetrics(prometheus.DefaultRegisterer))
+	}
+
+	return wasmOpts
+}
 
 func getGovProposalHandlers() []govclient.ProposalHandler {
 	var govProposalHandlers []govclient.ProposalHandler
 	// this line is used by starport scaffolding # stargate/app/govProposalHandlers
+	govProposalHandlers = wasmclient.ProposalHandlers
 
 	govProposalHandlers = append(govProposalHandlers,
 		paramsclient.ProposalHandler,
-		distrclient.ProposalHandler,
+		// distrclient.ProposalHandler,
 		upgradeclient.LegacyProposalHandler,
 		upgradeclient.LegacyCancelProposalHandler,
-		// ibcclientclient.UpdateClientProposalHandler,
-		// ibcclientclient.UpgradeProposalHandler,
+		ibcclientclient.UpdateClientProposalHandler,
+		ibcclientclient.UpgradeProposalHandler,
 		// this line is used by starport scaffolding # stargate/app/govProposalHandler
 	)
-	// govProposalHandlers = append(govProposalHandlers, wasmclient.ProposalHandlers...)
 
 	return govProposalHandlers
 }
@@ -198,7 +205,7 @@ var (
 	// and genesis verification.
 	ModuleBasics = module.NewBasicManager(
 		auth.AppModuleBasic{},
-		genutil.AppModuleBasic{},
+		genutil.NewAppModuleBasic(genutiltypes.DefaultMessageValidator),
 		bank.AppModuleBasic{},
 		capability.AppModuleBasic{},
 		staking.AppModuleBasic{},
@@ -210,24 +217,30 @@ var (
 		slashing.AppModuleBasic{},
 		feegrantmodule.AppModuleBasic{},
 		authzmodule.AppModuleBasic{},
-		// ibc.AppModuleBasic{},
+		ibc.AppModuleBasic{},
+		ibctm.AppModuleBasic{},
 		upgrade.AppModuleBasic{},
 		evidence.AppModuleBasic{},
-		// transfer.AppModuleBasic{},
+		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		nftmodule.AppModuleBasic{},
-		// liquidity.AppModuleBasic{},
+		consensus.AppModuleBasic{},
+		wasm.AppModuleBasic{},
+		// yieldfarm.AppModuleBasic{},
+		// yieldaggregator.AppModuleBasic{},
+		// stakeibcmodule.AppModuleBasic{},
+		// epochsmodule.AppModuleBasic{},
+		// interchainquery.AppModuleBasic{},
+		// ica.AppModuleBasic{},
+		// ibcfee.AppModuleBasic{},
+		// recordsmodule.AppModuleBasic{},
+		// icacallbacksmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
-		auction.AppModuleBasic{},
-		cdp.AppModuleBasic{},
-		ecosystemincentive.AppModuleBasic{},
-		pricefeed.AppModuleBasic{},
-		ununifidist.AppModuleBasic{},
-		incentive.AppModuleBasic{},
-		nftmint.AppModuleBasic{},
-		nftmarket.AppModuleBasic{},
-		derivatives.AppModuleBasic{},
-		// wasm.AppModuleBasic{},
+		// ecosystemincentive.AppModuleBasic{},
+		// pricefeed.AppModuleBasic{},
+		// nftmint.AppModuleBasic{},
+		// nftmarket.AppModuleBasic{},
+		// derivatives.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -238,32 +251,34 @@ var (
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
-		// liquiditytypes.ModuleName:      {authtypes.Minter, authtypes.Burner},
-		// ibctransfertypes.ModuleName: {authtypes.Minter, authtypes.Burner},
-		auctiontypes.ModuleName:            nil,
-		cdptypes.ModuleName:                {authtypes.Minter, authtypes.Burner},
-		cdptypes.LiquidatorMacc:            {authtypes.Minter, authtypes.Burner},
-		ecosystemincentivetypes.ModuleName: nil,
-		ununifidisttypes.ModuleName:        {authtypes.Minter},
-		// wasm.ModuleName:             {authtypes.Burner},
-		nft.ModuleName:                          nil,
-		nftminttypes.ModuleName:                 nil,
-		nftmarkettypes.ModuleName:               nil,
-		derivativestypes.ModuleName:             {authtypes.Minter, authtypes.Burner},
-		derivativestypes.DerivativeFeeCollector: nil,
+		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
+		// icatypes.ModuleName:                     nil,
+		// stakeibcmoduletypes.ModuleName:          {authtypes.Minter, authtypes.Burner, authtypes.Staking},
+		// interchainquerytypes.ModuleName:         nil,
+		wasm.ModuleName: {authtypes.Burner},
+		// yieldfarmtypes.ModuleName:               {authtypes.Minter},
+		// yieldaggregatortypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
+		// ibcfeetypes.ModuleName:                  nil,
+		// ecosystemincentivetypes.ModuleName:      nil,
+		nft.ModuleName: nil,
+		// nftminttypes.ModuleName:                 nil,
+		// nftmarkettypes.ModuleName:               nil,
+		// derivativestypes.ModuleName:             {authtypes.Minter, authtypes.Burner},
+		// derivativestypes.DerivativeFeeCollector: nil,
 		// nftmarkettypes.NftTradingFee: nil,
 	}
 
 	// module accounts that are allowed to receive tokens
 	allowedReceivingModAcc = map[string]bool{
-		distrtypes.ModuleName:   true,
-		cdptypes.LiquidatorMacc: true,
+		distrtypes.ModuleName: true,
+		// stakeibcmoduletypes.ModuleName: true,
 	}
 )
 
 var (
-	_ CosmosApp               = (*App)(nil)
+	_ runtime.AppI            = (*App)(nil)
 	_ servertypes.Application = (*App)(nil)
+	_ ibctesting.TestingApp   = (*App)(nil)
 )
 
 func init() {
@@ -281,13 +296,11 @@ func init() {
 type App struct {
 	*baseapp.BaseApp
 
-	cdc               *codec.LegacyAmino
+	legacyAmino       *codec.LegacyAmino
 	appCodec          codec.Codec
 	interfaceRegistry types.InterfaceRegistry
 	// msgSvcRouter      *authmiddleware.MsgServiceRouter
 	// legacyRouter      sdk.Router
-
-	invCheckPeriod uint
 
 	// keys to access the substores
 	keys    map[string]*storetypes.KVStoreKey
@@ -298,38 +311,54 @@ type App struct {
 	AccountKeeper    authkeeper.AccountKeeper
 	BankKeeper       bankkeeper.Keeper
 	CapabilityKeeper *capabilitykeeper.Keeper
-	StakingKeeper    stakingkeeper.Keeper
+	StakingKeeper    *stakingkeeper.Keeper
 	SlashingKeeper   slashingkeeper.Keeper
 	MintKeeper       mintkeeper.Keeper
 	DistrKeeper      distrkeeper.Keeper
 	GovKeeper        govkeeper.Keeper
-	CrisisKeeper     crisiskeeper.Keeper
-	UpgradeKeeper    upgradekeeper.Keeper
+	CrisisKeeper     *crisiskeeper.Keeper
+	UpgradeKeeper    *upgradekeeper.Keeper
 	ParamsKeeper     paramskeeper.Keeper
-	// IBCKeeper        *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
-	EvidenceKeeper evidencekeeper.Keeper
-	// TransferKeeper   ibctransferkeeper.Keeper
-	FeeGrantKeeper feegrantkeeper.Keeper
-	AuthzKeeper    authzkeeper.Keeper
-	NFTKeeper      nftkeeper.Keeper
+	IBCKeeper        *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
+	IBCFeeKeeper     ibcfeekeeper.Keeper
+	EvidenceKeeper   evidencekeeper.Keeper
+	TransferKeeper   ibctransferkeeper.Keeper
+	FeeGrantKeeper   feegrantkeeper.Keeper
+	AuthzKeeper      authzkeeper.Keeper
+	NFTKeeper        nftkeeper.Keeper
 	// LiquidityKeeper  liquiditykeeper.Keeper
-	// WasmKeeper wasm.Keeper
+	WasmKeeper            wasm.Keeper
+	ConsensusParamsKeeper consensusparamkeeper.Keeper
+
+	ICAHostKeeper       icahostkeeper.Keeper
+	ICAControllerKeeper icacontrollerkeeper.Keeper
 
 	// make scoped keepers public for test purposes
-	// ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
+	ScopedIBCKeeper capabilitykeeper.ScopedKeeper
+	// ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
+	// ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
-	// ScopedWasmKeeper     capabilitykeeper.ScopedKeeper
+	// ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
+	ScopedWasmKeeper capabilitykeeper.ScopedKeeper
 
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
-	auctionKeeper            auctionkeeper.Keeper
-	cdpKeeper                cdpkeeper.Keeper
-	EcosystemincentiveKeeper ecosystemincentivekeeper.Keeper
-	incentiveKeeper          incentivekeeper.Keeper
-	ununifidistKeeper        ununifidistkeeper.Keeper
-	PricefeedKeeper          pricefeedkeeper.Keeper
-	NftmintKeeper            nftmintkeeper.Keeper
-	NftmarketKeeper          nftmarketkeeper.Keeper
-	DerivativesKeeper        derivativeskeeper.Keeper
+	// YieldfarmKeeper       yieldfarmkeeper.Keeper
+	// YieldaggregatorKeeper yieldaggregatorkeeper.Keeper
+
+	// ScopedStakeibcKeeper capabilitykeeper.ScopedKeeper
+	// StakeibcKeeper       stakeibcmodulekeeper.Keeper
+
+	// EpochsKeeper             epochsmodulekeeper.Keeper
+	// InterchainqueryKeeper    interchainquerykeeper.Keeper
+	// ScopedRecordsKeeper      capabilitykeeper.ScopedKeeper
+	// RecordsKeeper            recordsmodulekeeper.Keeper
+	// ScopedIcacallbacksKeeper capabilitykeeper.ScopedKeeper
+	// IcacallbacksKeeper       icacallbacksmodulekeeper.Keeper
+	// EcosystemincentiveKeeper ecosystemincentivekeeper.Keeper
+	// PricefeedKeeper          pricefeedkeeper.Keeper
+	// NftmintKeeper     nftmintkeeper.Keeper
+	// NftmarketKeeper   nftmarketkeeper.Keeper
+	// DerivativesKeeper derivativeskeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -346,135 +375,173 @@ func NewApp(
 	db dbm.DB,
 	traceStore io.Writer,
 	loadLatest bool,
-	skipUpgradeHeights map[int64]bool,
-	homePath string,
-	invCheckPeriod uint,
-	encodingConfig appparams.EncodingConfig,
-	// enabledProposals []wasm.ProposalType,
-	// this line is used by starport scaffolding # stargate/app/newArgument
+	enabledProposals []wasm.ProposalType,
 	appOpts servertypes.AppOptions,
-	// wasmOpts []wasm.Option,
+	wasmOpts []wasm.Option,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *App {
 
-	appCodec := encodingConfig.Marshaler
-	cdc := encodingConfig.Amino
+	encodingConfig := MakeEncodingConfig()
+	appCodec, legacyAmino := encodingConfig.Marshaler, encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
+	txConfig := encodingConfig.TxConfig
 
-	bApp := baseapp.NewBaseApp(Name, logger, db, encodingConfig.TxConfig.TxDecoder(), baseAppOptions...)
+	bApp := baseapp.NewBaseApp(Name, logger, db, txConfig.TxDecoder(), baseAppOptions...)
 	bApp.SetCommitMultiStoreTracer(traceStore)
 	bApp.SetVersion(version.Version)
 	bApp.SetInterfaceRegistry(interfaceRegistry)
+	bApp.SetTxEncoder(txConfig.TxEncoder())
 
 	keys := sdk.NewKVStoreKeys(
-		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey,
+		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey, crisistypes.StoreKey,
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
-		govtypes.StoreKey, paramstypes.StoreKey,
-		// ibchost.StoreKey,
-		upgradetypes.StoreKey,
+		govtypes.StoreKey, paramstypes.StoreKey, consensusparamtypes.StoreKey,
+		ibcexported.StoreKey, upgradetypes.StoreKey,
+		// icahosttypes.StoreKey,
 		evidencetypes.StoreKey,
 		// liquiditytypes.StoreKey,
-		// ibctransfertypes.StoreKey,
+		ibctransfertypes.StoreKey,
 		capabilitytypes.StoreKey, feegrant.StoreKey, authzkeeper.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
-		auctiontypes.StoreKey, cdptypes.StoreKey,
-		ecosystemincentivetypes.StoreKey, incentivetypes.StoreKey,
-		ununifidisttypes.StoreKey, pricefeedtypes.StoreKey,
-		// wasm.StoreKey,
+		wasm.StoreKey,
 		nftkeeper.StoreKey,
-		nftminttypes.StoreKey,
-		nftmarkettypes.StoreKey,
-		derivativestypes.StoreKey,
+		// pricefeedtypes.StoreKey,
+		// yieldfarmtypes.StoreKey,
+		// yieldaggregatortypes.StoreKey,
+		// stakeibcmoduletypes.StoreKey,
+		// epochsmoduletypes.StoreKey,
+		// interchainquerytypes.StoreKey,
+		// icacontrollertypes.StoreKey,
+		// recordsmoduletypes.StoreKey,
+		// icacallbacksmoduletypes.StoreKey,
+		// ibcfeetypes.StoreKey,
+		// ecosystemincentivetypes.StoreKey,
+		// nftminttypes.StoreKey,
+		// nftmarkettypes.StoreKey,
+		// derivativestypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
 
+	// load state streaming if enabled
+	if _, _, err := streaming.LoadStreamingServices(bApp, appOpts, appCodec, logger, keys); err != nil {
+		logger.Error("failed to load state streaming", "err", err)
+		os.Exit(1)
+	}
+
 	app := &App{
 		BaseApp:           bApp,
-		cdc:               cdc,
+		legacyAmino:       legacyAmino,
 		appCodec:          appCodec,
 		interfaceRegistry: interfaceRegistry,
-		// legacyRouter:      authmiddleware.NewLegacyRouter(),
-		// msgSvcRouter:      authmiddleware.NewMsgServiceRouter(interfaceRegistry),
-		invCheckPeriod: invCheckPeriod,
-		keys:           keys,
-		tkeys:          tkeys,
-		memKeys:        memKeys,
+		keys:              keys,
+		tkeys:             tkeys,
+		memKeys:           memKeys,
 	}
 
 	app.ParamsKeeper = initParamsKeeper(
 		appCodec,
-		cdc,
+		legacyAmino,
 		keys[paramstypes.StoreKey],
 		tkeys[paramstypes.TStoreKey],
 	)
 
 	// set the BaseApp's parameter store
-	bApp.SetParamStore(
-		app.ParamsKeeper.Subspace(baseapp.Paramspace).WithKeyTable(paramstypes.ConsensusParamsKeyTable()),
-	)
+	app.ConsensusParamsKeeper = consensusparamkeeper.NewKeeper(appCodec, keys[consensusparamtypes.StoreKey], authtypes.NewModuleAddress(govtypes.ModuleName).String())
+	bApp.SetParamStore(&app.ConsensusParamsKeeper)
 
 	// add capability keeper and ScopeToModule for ibc module
 	app.CapabilityKeeper = capabilitykeeper.NewKeeper(appCodec, keys[capabilitytypes.StoreKey], memKeys[capabilitytypes.MemStoreKey])
 
 	// grant capabilities for the ibc and ibc-transfer modules
-	// scopedIBCKeeper := app.CapabilityKeeper.ScopeToModule(ibchost.ModuleName)
-	// scopedTransferKeeper := app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
-	// scopedWasmKeeper := app.CapabilityKeeper.ScopeToModule(wasm.ModuleName)
-	app.CapabilityKeeper.Seal()
+	scopedIBCKeeper := app.CapabilityKeeper.ScopeToModule(ibcexported.ModuleName)
+	// scopedICAHostKeeper := app.CapabilityKeeper.ScopeToModule(icahosttypes.SubModuleName)
+	scopedTransferKeeper := app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
+	// scopedICAControllerKeeper := app.CapabilityKeeper.ScopeToModule(icacontrollertypes.SubModuleName)
+
+	scopedWasmKeeper := app.CapabilityKeeper.ScopeToModule(wasm.ModuleName)
 
 	// add keepers
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
-		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms, sdk.Bech32MainPrefix,
+		appCodec,
+		keys[authtypes.StoreKey],
+		authtypes.ProtoBaseAccount,
+		maccPerms,
+		AccountAddressPrefix,
+		authtypes.NewModuleAddress("gov").String(),
 	)
+
 	app.BankKeeper = bankkeeper.NewBaseKeeper(
 		appCodec,
 		keys[banktypes.StoreKey],
 		app.AccountKeeper,
-		app.GetSubspace(banktypes.ModuleName),
 		app.BlockedAddrs(),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
-	app.AuthzKeeper = authzkeeper.NewKeeper(keys[authzkeeper.StoreKey], appCodec, app.BaseApp.MsgServiceRouter(), app.AccountKeeper)
+	app.AuthzKeeper = authzkeeper.NewKeeper(keys[authzkeeper.StoreKey], appCodec, app.MsgServiceRouter(), app.AccountKeeper)
+
 	app.FeeGrantKeeper = feegrantkeeper.NewKeeper(
 		appCodec,
 		keys[feegrant.StoreKey],
 		app.AccountKeeper,
 	)
-	stakingKeeper := stakingkeeper.NewKeeper(
+	app.StakingKeeper = stakingkeeper.NewKeeper(
 		appCodec,
 		keys[stakingtypes.StoreKey],
 		app.AccountKeeper,
 		app.BankKeeper,
-		app.GetSubspace(stakingtypes.ModuleName),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	app.MintKeeper = mintkeeper.NewKeeper(
 		appCodec,
 		keys[minttypes.StoreKey],
-		app.GetSubspace(minttypes.ModuleName),
-		&stakingKeeper,
+		app.StakingKeeper,
 		app.AccountKeeper,
 		app.BankKeeper,
 		authtypes.FeeCollectorName,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	app.DistrKeeper = distrkeeper.NewKeeper(
-		appCodec, keys[distrtypes.StoreKey], app.GetSubspace(distrtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
-		&stakingKeeper, authtypes.FeeCollectorName,
+		appCodec,
+		keys[distrtypes.StoreKey],
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.StakingKeeper,
+		authtypes.FeeCollectorName,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	app.SlashingKeeper = slashingkeeper.NewKeeper(
 		appCodec,
+		legacyAmino,
 		keys[slashingtypes.StoreKey],
-		&stakingKeeper,
-		app.GetSubspace(slashingtypes.ModuleName),
+		app.StakingKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
+	invCheckPeriod := cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod))
 	app.CrisisKeeper = crisiskeeper.NewKeeper(
-		app.GetSubspace(crisistypes.ModuleName),
+		appCodec,
+		keys[crisistypes.StoreKey],
 		invCheckPeriod,
 		app.BankKeeper,
 		authtypes.FeeCollectorName,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
-	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath, app.BaseApp, authtypes.NewModuleAddress(govtypes.ModuleName).String())
-	app.NFTKeeper = nftkeeper.NewKeeper(keys[nftkeeper.StoreKey], appCodec, app.AccountKeeper, app.BankKeeper)
 
+	// get skipUpgradeHeights from the app options
+	skipUpgradeHeights := map[int64]bool{}
+	for _, h := range cast.ToIntSlice(appOpts.Get(server.FlagUnsafeSkipUpgrades)) {
+		skipUpgradeHeights[int64(h)] = true
+	}
+	homePath := cast.ToString(appOpts.Get(flags.FlagHome))
+	// set the governance module account as the authority for conducting upgrades
+	app.UpgradeKeeper = upgradekeeper.NewKeeper(
+		skipUpgradeHeights,
+		keys[upgradetypes.StoreKey],
+		appCodec,
+		homePath,
+		app.BaseApp,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
 	// app.LiquidityKeeper = liquiditykeeper.NewKeeper(
 	// 	appCodec,
 	// 	keys[liquiditytypes.StoreKey],
@@ -486,185 +553,308 @@ func NewApp(
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
-	app.StakingKeeper = *stakingKeeper.SetHooks(
-		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks(), app.incentiveKeeper.Hooks()),
+	app.StakingKeeper.SetHooks(
+		stakingtypes.NewMultiStakingHooks(
+			app.DistrKeeper.Hooks(),
+			app.SlashingKeeper.Hooks(),
+		),
 	)
-
-	// Create IBC Keeper
-	// app.IBCKeeper = ibckeeper.NewKeeper(
-	// 	appCodec,
-	// 	keys[ibchost.StoreKey],
-	// 	app.GetSubspace(ibchost.ModuleName),
-	// 	app.StakingKeeper,
-	// 	app.UpgradeKeeper,
-	// 	scopedIBCKeeper,
-	// )
-
-	// register the proposal types
-	govRouter := govv1beta1.NewRouter()
-	govRouter.
-		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
-		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
-		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
-		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)) //.
-		// AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
-
-	// Create Transfer Keepers
-	// app.TransferKeeper = ibctransferkeeper.NewKeeper(
-	// 	appCodec,
-	// 	keys[ibctransfertypes.StoreKey],
-	// 	app.GetSubspace(ibctransfertypes.ModuleName),
-	// 	app.IBCKeeper.ChannelKeeper,
-	// 	&app.IBCKeeper.PortKeeper,
-	// 	app.AccountKeeper,
-	// 	app.BankKeeper,
-	// 	scopedTransferKeeper,
-	// )
-	// transferModule := transfer.NewAppModule(app.TransferKeeper)
-
-	// create static IBC router, add transfer route, then set and seal it
-	// ibcRouter := porttypes.NewRouter()
-	// ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferModule)
 
 	// Create evidence Keeper for to register the IBC light client misbehaviour evidence route
 	evidenceKeeper := evidencekeeper.NewKeeper(
 		appCodec,
 		keys[evidencetypes.StoreKey],
-		&app.StakingKeeper,
+		app.StakingKeeper,
 		app.SlashingKeeper,
 	)
 
 	app.EvidenceKeeper = *evidenceKeeper
 
-	// this line is used by starport scaffolding # stargate/app/keeperDefinition
-	app.auctionKeeper = auctionkeeper.NewKeeper(
+	app.NFTKeeper = nftkeeper.NewKeeper(keys[nftkeeper.StoreKey], appCodec, app.AccountKeeper, app.BankKeeper)
+
+	// Create IBC Keeper
+	app.IBCKeeper = ibckeeper.NewKeeper(
 		appCodec,
-		keys[auctiontypes.StoreKey],
-		keys[auctiontypes.MemStoreKey],
-		app.GetSubspace(auctiontypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-	)
-	app.PricefeedKeeper = pricefeedkeeper.NewKeeper(
-		appCodec,
-		keys[pricefeedtypes.StoreKey],
-		keys[pricefeedtypes.MemStoreKey],
-		app.GetSubspace(pricefeedtypes.ModuleName),
-		app.BankKeeper,
-	)
-	cdpKeeper := cdpkeeper.NewKeeper(
-		appCodec,
-		keys[cdptypes.StoreKey],
-		keys[cdptypes.MemStoreKey],
-		app.GetSubspace(cdptypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-		app.auctionKeeper,
-		app.PricefeedKeeper,
-		maccPerms,
-	)
-	app.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
-		appCodec,
-		keys[ecosystemincentivetypes.StoreKey],
-		app.GetSubspace(ecosystemincentivetypes.ModuleName),
-		app.BankKeeper,
-	)
-	app.incentiveKeeper = incentivekeeper.NewKeeper(
-		appCodec,
-		keys[incentivetypes.StoreKey],
-		keys[incentivetypes.MemStoreKey],
-		app.GetSubspace(incentivetypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-		&cdpKeeper,
-	)
-	app.ununifidistKeeper = ununifidistkeeper.NewKeeper(
-		appCodec,
-		keys[ununifidisttypes.StoreKey],
-		keys[ununifidisttypes.MemStoreKey],
-		app.GetSubspace(ununifidisttypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
+		keys[ibcexported.StoreKey],
+		app.GetSubspace(ibcexported.ModuleName),
+		app.StakingKeeper,
+		app.UpgradeKeeper,
+		scopedIBCKeeper,
 	)
 
-	app.NftmintKeeper = nftmintkeeper.NewKeeper(
-		appCodec,
-		keys[nftminttypes.StoreKey],
-		keys[nftminttypes.MemStoreKey],
-		app.GetSubspace(nftminttypes.ModuleName),
-		app.AccountKeeper,
-		app.NFTKeeper,
+	// IBC Fee Module keeper
+	app.IBCFeeKeeper = ibcfeekeeper.NewKeeper(
+		appCodec, keys[ibcfeetypes.StoreKey],
+		app.IBCKeeper.ChannelKeeper, // may be replaced with IBC middleware
+		app.IBCKeeper.ChannelKeeper,
+		&app.IBCKeeper.PortKeeper, app.AccountKeeper, app.BankKeeper,
 	)
 
-	nftmarketKeeper := nftmarketkeeper.NewKeeper(
+	// Create Transfer Keepers
+	app.TransferKeeper = ibctransferkeeper.NewKeeper(
 		appCodec,
-		encodingConfig.TxConfig,
-		keys[nftmarkettypes.StoreKey],
-		keys[nftmarkettypes.MemStoreKey],
-		app.GetSubspace(nftmarkettypes.ModuleName),
+		keys[ibctransfertypes.StoreKey],
+		app.GetSubspace(ibctransfertypes.ModuleName),
+		app.IBCFeeKeeper,
+		app.IBCKeeper.ChannelKeeper,
+		&app.IBCKeeper.PortKeeper,
 		app.AccountKeeper,
 		app.BankKeeper,
-		app.NFTKeeper,
+		scopedTransferKeeper,
 	)
+	transferModule := transfer.NewAppModule(app.TransferKeeper)
+	// transferIBCModule := transfer.NewIBCModule(app.TransferKeeper)
 
-	app.DerivativesKeeper = derivativeskeeper.NewKeeper(
-		appCodec,
-		keys[derivativestypes.StoreKey],
-		keys[derivativestypes.MemStoreKey],
-		app.GetSubspace(derivativestypes.ModuleName),
-		app.BankKeeper,
-		app.PricefeedKeeper,
-	)
+	// app.ICAControllerKeeper = icacontrollerkeeper.NewKeeper(
+	// 	appCodec, keys[icacontrollertypes.StoreKey], app.GetSubspace(icacontrollertypes.SubModuleName),
+	// 	app.IBCFeeKeeper, // may be replaced with middleware such as ics29 fee
+	// 	app.IBCKeeper.ChannelKeeper, &app.IBCKeeper.PortKeeper,
+	// 	scopedICAControllerKeeper, app.MsgServiceRouter(),
+	// )
 
-	// create Keeper objects which have Hooks
-	app.cdpKeeper = *cdpKeeper.SetHooks(cdptypes.NewMultiCdpHooks(app.incentiveKeeper.Hooks()))
-	app.NftmarketKeeper = *nftmarketKeeper.SetHooks(nftmarkettypes.NewMultiNftmarketHooks(app.EcosystemincentiveKeeper.Hooks()))
-
-	// wasmDir := filepath.Join(homePath, "wasm")
-	// wasmConfig, err := wasm.ReadWasmConfig(appOpts)
-	// if err != nil {
-	// 	panic(fmt.Sprintf("error while reading wasm config: %s", err))
-	// }
-	// The last arguments can contain custom message handlers, and custom query handlers,
-	// if we want to allow any custom callbacks
-	// supportedFeatures := "iterator,staking,stargate"
-	// app.WasmKeeper = wasm.NewKeeper(
+	// scopedIcacallbacksKeeper := app.CapabilityKeeper.ScopeToModule(icacallbacksmoduletypes.ModuleName)
+	// app.ScopedIcacallbacksKeeper = scopedIcacallbacksKeeper
+	// app.IcacallbacksKeeper = *icacallbacksmodulekeeper.NewKeeper(
 	// 	appCodec,
-	// 	keys[wasm.StoreKey],
-	// 	app.GetSubspace(wasm.ModuleName),
+	// 	keys[icacallbacksmoduletypes.StoreKey],
+	// 	keys[icacallbacksmoduletypes.MemStoreKey],
+	// 	app.GetSubspace(icacallbacksmoduletypes.ModuleName),
+	// 	scopedIcacallbacksKeeper,
+	// 	*app.IBCKeeper,
+	// 	app.ICAControllerKeeper,
+	// )
+
+	// app.InterchainqueryKeeper = interchainquerykeeper.NewKeeper(appCodec, keys[interchainquerytypes.StoreKey], app.IBCKeeper)
+	// interchainQueryModule := interchainquery.NewAppModule(appCodec, app.InterchainqueryKeeper)
+
+	// scopedRecordsKeeper := app.CapabilityKeeper.ScopeToModule(recordsmoduletypes.ModuleName)
+	// app.ScopedRecordsKeeper = scopedRecordsKeeper
+	// app.RecordsKeeper = *recordsmodulekeeper.NewKeeper(
+	// 	appCodec,
+	// 	keys[recordsmoduletypes.StoreKey],
+	// 	keys[recordsmoduletypes.MemStoreKey],
+	// 	app.GetSubspace(recordsmoduletypes.ModuleName),
+	// 	scopedRecordsKeeper,
+	// 	app.AccountKeeper,
+	// 	app.TransferKeeper,
+	// 	*app.IBCKeeper,
+	// 	app.IcacallbacksKeeper,
+	// )
+	// recordsModule := recordsmodule.NewAppModule(appCodec, app.RecordsKeeper, app.AccountKeeper, app.BankKeeper)
+
+	// scopedStakeibcKeeper := app.CapabilityKeeper.ScopeToModule(stakeibcmoduletypes.ModuleName)
+	// app.ScopedStakeibcKeeper = scopedStakeibcKeeper
+	// app.StakeibcKeeper = stakeibcmodulekeeper.NewKeeper(
+	// 	appCodec,
+	// 	keys[stakeibcmoduletypes.StoreKey],
+	// 	keys[stakeibcmoduletypes.MemStoreKey],
+	// 	app.GetSubspace(stakeibcmoduletypes.ModuleName),
+	// 	app.IBCKeeper.ChannelKeeper,
+	// 	// &app.IBCKeeper.PortKeeper,
 	// 	app.AccountKeeper,
 	// 	app.BankKeeper,
-	// 	app.StakingKeeper,
-	// 	app.DistrKeeper,
+	// 	app.ICAControllerKeeper,
+	// 	*app.IBCKeeper,
+	// 	scopedStakeibcKeeper,
+	// 	app.InterchainqueryKeeper,
+	// 	app.RecordsKeeper,
+	// 	*app.StakingKeeper,
+	// 	app.IcacallbacksKeeper,
+	// )
+
+	// stakeibcModule := stakeibcmodule.NewAppModule(appCodec, app.StakeibcKeeper, app.AccountKeeper, app.BankKeeper)
+	// stakeibcIBCModule := stakeibcmodule.NewIBCModule(app.StakeibcKeeper)
+
+	// Register ICQ callbacks
+	// err := app.InterchainqueryKeeper.SetCallbackHandler(stakeibcmoduletypes.ModuleName, app.StakeibcKeeper.CallbackHandler())
+	// if err != nil {
+	// 	return nil
+	// }
+
+	// icacallbacksModule := icacallbacksmodule.NewAppModule(appCodec, app.IcacallbacksKeeper, app.AccountKeeper, app.BankKeeper)
+	// Register ICA calllbacks
+	// stakeibc
+	// err = app.IcacallbacksKeeper.SetICACallbackHandler(stakeibcmoduletypes.ModuleName, app.StakeibcKeeper.ICACallbackHandler())
+	// if err != nil {
+	// 	return nil
+	// }
+	// // records
+	// err = app.IcacallbacksKeeper.SetICACallbackHandler(recordsmoduletypes.ModuleName, app.RecordsKeeper.ICACallbackHandler())
+	// if err != nil {
+	// 	return nil
+	// }
+
+	// app.ICAHostKeeper = icahostkeeper.NewKeeper(
+	// 	appCodec,
+	// 	keys[icahosttypes.StoreKey],
+	// 	app.GetSubspace(icahosttypes.SubModuleName),
+	// 	app.IBCFeeKeeper, // use ics29 fee as ics4Wrapper in middleware stack
 	// 	app.IBCKeeper.ChannelKeeper,
 	// 	&app.IBCKeeper.PortKeeper,
-	// 	scopedWasmKeeper,
-	// 	app.TransferKeeper,
+	// 	app.AccountKeeper,
+	// 	scopedICAHostKeeper,
 	// 	app.MsgServiceRouter(),
-	// 	app.GRPCQueryRouter(),
-	// 	wasmDir,
-	// 	wasmConfig,
-	// 	supportedFeatures,
-	// 	wasmOpts...,
 	// )
-	// // The gov proposal types can be individually enabled
-	// if len(enabledProposals) != 0 {
-	// 	govRouter.AddRoute(wasm.RouterKey, wasm.NewWasmProposalHandler(app.WasmKeeper, enabledProposals))
-	// }
-	// ibcRouter.AddRoute(wasm.ModuleName, wasm.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper))
-	// app.IBCKeeper.SetRouter(ibcRouter)
+	// icaModule := ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper)
+	icaHostIBCModule := icahost.NewIBCModule(app.ICAHostKeeper)
+
+	// Stack two (Stakeibc Stack) contains
+	// - IBC
+	// - ICA
+	// - stakeibc
+	// - base app
+	// var stakeibcStack porttypes.IBCModule = stakeibcIBCModule
+	// stakeibcStack = icacontroller.NewIBCMiddleware(stakeibcStack, app.ICAControllerKeeper)
+
+	// Stack contains
+	// - IBC
+	// - records
+	// - transfer
+	// - base app
+	// transferStack := ibcfee.NewIBCMiddleware(transferIBCModule, app.IBCFeeKeeper)
+	// transferStack := recordsmodule.NewIBCModule(app.RecordsKeeper, transferIBCModule)
+
+	// this line is used by starport scaffolding # stargate/app/keeperDefinition
+	// app.PricefeedKeeper = pricefeedkeeper.NewKeeper(
+	// 	appCodec,
+	// 	keys[pricefeedtypes.StoreKey],
+	// 	keys[pricefeedtypes.MemStoreKey],
+	// 	app.GetSubspace(pricefeedtypes.ModuleName),
+	// 	app.BankKeeper,
+	// )
+
+	// app.YieldfarmKeeper = *yieldfarmkeeper.NewKeeper(
+	// 	appCodec,
+	// 	keys[yieldfarmtypes.StoreKey],
+	// 	app.GetSubspace(yieldfarmtypes.ModuleName),
+	// 	app.BankKeeper,
+	// )
+
+	// app.YieldaggregatorKeeper = yieldaggregatorkeeper.NewKeeper(
+	// 	appCodec,
+	// 	keys[yieldaggregatortypes.StoreKey],
+	// 	app.GetSubspace(yieldaggregatortypes.ModuleName),
+	// 	app.BankKeeper,
+	// 	wasmkeeper.NewDefaultPermissionKeeper(app.WasmKeeper),
+	// 	app.StakeibcKeeper,
+	// 	app.RecordsKeeper,
+	// )
+
+	// epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
+	// app.EpochsKeeper = *epochsKeeper.SetHooks(
+	// 	epochsmoduletypes.NewMultiEpochHooks(
+	// 		app.YieldaggregatorKeeper.Hooks(),
+	// 		app.StakeibcKeeper.Hooks(),
+	// 	),
+	// )
+	// app.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
+	// 	appCodec,
+	// 	keys[ecosystemincentivetypes.StoreKey],
+	// 	app.GetSubspace(ecosystemincentivetypes.ModuleName),
+	// 	app.BankKeeper,
+	// )
+	//
+	// epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
+
+	// register the proposal types
+	govRouter := govv1beta1.NewRouter()
+	govRouter.
+		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
+		// AddRoute(yieldaggregatortypes.RouterKey, yieldaggregator.NewYieldAggregatorProposalHandler(app.YieldaggregatorKeeper)).
+		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
+		// AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
+		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper))
+		// AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
+
+	wasmDir := filepath.Join(homePath, "wasm")
+	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
+	if err != nil {
+		panic(fmt.Sprintf("error while reading wasm config: %s", err))
+	}
+
+	// The last arguments can contain custom message handlers, and custom query handlers,
+	// if we want to allow any custom callbacks
+	availableCapabilities := "iterator,staking,stargate,cosmwasm_1_1,cosmwasm_1_2"
+	app.WasmKeeper = wasm.NewKeeper(
+		appCodec,
+		keys[wasm.StoreKey],
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.StakingKeeper,
+		distrkeeper.NewQuerier(app.DistrKeeper),
+		app.IBCKeeper.ChannelKeeper,
+		&app.IBCKeeper.PortKeeper,
+		scopedWasmKeeper,
+		app.TransferKeeper,
+		app.MsgServiceRouter(),
+		app.GRPCQueryRouter(),
+		wasmDir,
+		wasmConfig,
+		availableCapabilities,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		wasmOpts...,
+	)
+	// The gov proposal types can be individually enabled
+	if len(enabledProposals) != 0 {
+		govRouter.AddRoute(wasm.RouterKey, wasm.NewWasmProposalHandler(app.WasmKeeper, enabledProposals))
+	}
+	// Create static IBC router, add transfer route, then set and seal it
+	ibcRouter := ibcporttypes.NewRouter()
+	ibcRouter.
+		// ICAHost Stack
+		AddRoute(icahosttypes.SubModuleName, icaHostIBCModule)
+		// Stakeibc Stack
+		// AddRoute(icacontrollertypes.SubModuleName, stakeibcStack).
+		// AddRoute(stakeibcmoduletypes.ModuleName, stakeibcStack).
+		// Transfer stack
+		// AddRoute(ibctransfertypes.ModuleName, transferStack)
+	app.IBCKeeper.SetRouter(ibcRouter)
+
+	// app.NftmintKeeper = nftmintkeeper.NewKeeper(
+	// 	appCodec,
+	// 	keys[nftminttypes.StoreKey],
+	// 	keys[nftminttypes.MemStoreKey],
+	// 	app.GetSubspace(nftminttypes.ModuleName),
+	// 	app.AccountKeeper,
+	// 	app.NFTKeeper,
+	// )
+
+	// nftmarketKeeper := nftmarketkeeper.NewKeeper(
+	// 	appCodec,
+	// 	encodingConfig.TxConfig,
+	// 	keys[nftmarkettypes.StoreKey],
+	// 	keys[nftmarkettypes.MemStoreKey],
+	// 	app.GetSubspace(nftmarkettypes.ModuleName),
+	// 	app.AccountKeeper,
+	// 	app.BankKeeper,
+	// 	app.NFTKeeper,
+	// )
+
+	// app.DerivativesKeeper = derivativeskeeper.NewKeeper(
+	// 	appCodec,
+	// 	keys[derivativestypes.StoreKey],
+	// 	keys[derivativestypes.MemStoreKey],
+	// 	app.GetSubspace(derivativestypes.ModuleName),
+	// 	app.BankKeeper,
+	// 	app.PricefeedKeeper,
+	// )
+
+	// create Keeper objects which have Hooks
+	// app.NftmarketKeeper = *nftmarketKeeper.SetHooks(nftmarkettypes.NewMultiNftmarketHooks(app.EcosystemincentiveKeeper.Hooks()))
 
 	govConfig := govtypes.DefaultConfig()
 	govKeeper := govkeeper.NewKeeper(
-		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
-		&stakingKeeper, govRouter, app.BaseApp.MsgServiceRouter(), govConfig,
+		appCodec,
+		keys[govtypes.StoreKey],
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.StakingKeeper,
+		app.MsgServiceRouter(),
+		govConfig,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
-
-	app.GovKeeper = *govKeeper.SetHooks(
-		govtypes.NewMultiGovHooks(
-		// register the governance hooks
-		),
-	)
+	govKeeper.SetLegacyRouter(govRouter)
+	app.GovKeeper = *govKeeper
 
 	/****  Module Options ****/
 
@@ -683,16 +873,16 @@ func NewApp(
 			app.BaseApp.DeliverTx,
 			encodingConfig.TxConfig,
 		),
-		auth.NewAppModule(appCodec, app.AccountKeeper, nil),
+		auth.NewAppModule(appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts, app.GetSubspace(authtypes.ModuleName)),
 		vesting.NewAppModule(app.AccountKeeper, app.BankKeeper),
-		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
-		capability.NewAppModule(appCodec, *app.CapabilityKeeper),
-		crisis.NewAppModule(&app.CrisisKeeper, skipGenesisInvariants),
-		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper),
-		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil),
-		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
-		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
-		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
+		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper, app.GetSubspace(banktypes.ModuleName)),
+		capability.NewAppModule(appCodec, *app.CapabilityKeeper, false),
+		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
+		gov.NewAppModule(appCodec, &app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
+		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, app.GetSubspace(minttypes.ModuleName)),
+		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(slashingtypes.ModuleName)),
+		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
+		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
@@ -701,18 +891,25 @@ func NewApp(
 		// ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
-		// transferModule,
+		transferModule,
+		// ibcfee.NewAppModule(app.IBCFeeKeeper),
+		// stakeibcModule,
+		// epochsModule,
+		// interchainQueryModule,
+		// icaModule,
+		// recordsModule,
+		// icacallbacksModule,
+
 		// this line is used by starport scaffolding # stargate/app/appModule
-		auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
-		cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.PricefeedKeeper),
-		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
-		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
-		incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
-		ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
-		pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
-		nftmint.NewAppModule(appCodec, app.NftmintKeeper, app.NFTKeeper),
-		nftmarket.NewAppModule(appCodec, app.NftmarketKeeper, app.AccountKeeper, app.BankKeeper),
-		// wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
+		// pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
+		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
+		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
+		// yieldfarm.NewAppModule(appCodec, app.YieldfarmKeeper, app.AccountKeeper, app.BankKeeper),
+		// yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
+		// ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
+		// derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
+		// nftmint.NewAppModule(appCodec, app.NftmintKeeper, app.NFTKeeper),
+		// nftmarket.NewAppModule(appCodec, app.NftmarketKeeper, app.AccountKeeper, app.BankKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -737,20 +934,28 @@ func NewApp(
 		nft.ModuleName,
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
+		consensusparamtypes.ModuleName,
+		wasm.ModuleName,
 		// additional non simd modules
 		// liquiditytypes.ModuleName,
-		ununifidisttypes.ModuleName,
-		auctiontypes.ModuleName,
-		cdptypes.ModuleName,
-		ecosystemincentivetypes.ModuleName,
-		incentivetypes.ModuleName,
-		pricefeedtypes.ModuleName,
-		nftminttypes.ModuleName,
-		nftmarkettypes.ModuleName,
-		derivativestypes.ModuleName,
-		// ibchost.ModuleName,
-		// ibctransfertypes.ModuleName,
-		// wasm.ModuleName,
+		// ecosystemincentivetypes.ModuleName,
+		// pricefeedtypes.ModuleName,
+		// nftminttypes.ModuleName,
+		// nftmarkettypes.ModuleName,
+		// derivativestypes.ModuleName,
+
+		ibcexported.ModuleName,
+		ibctransfertypes.ModuleName,
+		// icatypes.ModuleName,
+		// stakeibcmoduletypes.ModuleName,
+		// epochsmoduletypes.ModuleName,
+		// interchainquerytypes.ModuleName,
+		// recordsmoduletypes.ModuleName,
+		// icacallbacksmoduletypes.ModuleName,
+
+		// ibcfeetypes.ModuleName,
+		// yieldfarmtypes.ModuleName,
+		// yieldaggregatortypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -772,19 +977,26 @@ func NewApp(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
+		consensusparamtypes.ModuleName,
+		wasm.ModuleName,
 		// additional non simd modules
-		ununifidisttypes.ModuleName,
-		auctiontypes.ModuleName,
-		cdptypes.ModuleName,
-		incentivetypes.ModuleName,
-		pricefeedtypes.ModuleName,
-		nftminttypes.ModuleName,
-		nftmarkettypes.ModuleName,
-		ecosystemincentivetypes.ModuleName,
-		derivativestypes.ModuleName,
-		// ibchost.ModuleName,
-		// ibctransfertypes.ModuleName,
-		// wasm.ModuleName,
+		// pricefeedtypes.ModuleName,
+		// nftminttypes.ModuleName,
+		// nftmarkettypes.ModuleName,
+		// ecosystemincentivetypes.ModuleName,
+		// derivativestypes.ModuleName,
+		// ibcexported.ModuleName,
+		ibctransfertypes.ModuleName,
+		// icatypes.ModuleName,
+		// stakeibcmoduletypes.ModuleName,
+		// epochsmoduletypes.ModuleName,
+		// interchainquerytypes.ModuleName,
+		// recordsmoduletypes.ModuleName,
+		// icacallbacksmoduletypes.ModuleName,
+
+		// ibcfeetypes.ModuleName,
+		// yieldfarmtypes.ModuleName,
+		// yieldaggregatortypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -806,136 +1018,192 @@ func NewApp(
 		crisistypes.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
+		consensusparamtypes.ModuleName,
 		// liquiditytypes.ModuleName,
-		// ibctransfertypes.ModuleName,
+		ibctransfertypes.ModuleName,
 		feegrant.ModuleName,
 		authz.ModuleName,
 		nft.ModuleName,
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
+		wasm.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
-		auctiontypes.ModuleName,
-		pricefeedtypes.ModuleName,
-		cdptypes.ModuleName,
-		incentivetypes.ModuleName,
-		ununifidisttypes.ModuleName,
-		nftminttypes.ModuleName,
-		nftmarkettypes.ModuleName,
-		ecosystemincentivetypes.ModuleName,
-		derivativestypes.ModuleName,
-		// ibchost.ModuleName,
-		// ibctransfertypes.ModuleName,
-		// wasm after ibc transfer
-		// wasm.ModuleName,
+		// pricefeedtypes.ModuleName,
+		// nftminttypes.ModuleName,
+		// nftmarkettypes.ModuleName,
+		// ecosystemincentivetypes.ModuleName,
+		// derivativestypes.ModuleName,
+
+		// ibcexported.ModuleName,
+		ibctransfertypes.ModuleName,
+		// icatypes.ModuleName,
+		// stakeibcmoduletypes.ModuleName,
+		// epochsmoduletypes.ModuleName,
+		// interchainquerytypes.ModuleName,
+		// recordsmoduletypes.ModuleName,
+		// icacallbacksmoduletypes.ModuleName,
+
+		// ibcfeetypes.ModuleName,
+		// yieldfarmtypes.ModuleName,
+		// yieldaggregatortypes.ModuleName,
 	)
 
-	app.mm.RegisterInvariants(&app.CrisisKeeper)
-	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
-	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
+	app.mm.RegisterInvariants(app.CrisisKeeper)
+	app.configurator = module.NewConfigurator(appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
 	app.mm.RegisterServices(app.configurator)
 
-	// create the simulation manager and define the order of the modules for deterministic simulations
-	//
-	// NOTE: this is not required apps that don't use the simulator for fuzz testing
-	// transactions
-	app.sm = module.NewSimulationManager(
-		auth.NewAppModule(appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts),
-		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
-		capability.NewAppModule(appCodec, *app.CapabilityKeeper),
-		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
-		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		nftmodule.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper),
-		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil),
-		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
-		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
-		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
-		params.NewAppModule(app.ParamsKeeper),
-		evidence.NewAppModule(app.EvidenceKeeper),
-		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
-		// wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
-		// ibc.NewAppModule(app.IBCKeeper),
-		// transferModule,
-		// TODO
-		// auction.NewAppModule(appCodec, app.auctionKeeper, app.AccountKeeper, app.BankKeeper),
-		// cdp.NewAppModule(appCodec, app.cdpKeeper, app.AccountKeeper, app.BankKeeper, app.PricefeedKeeper),
-		// incentive.NewAppModule(appCodec, app.incentiveKeeper, app.AccountKeeper, app.BankKeeper, app.cdpKeeper),
-		// ununifidist.NewAppModule(appCodec, app.ununifidistKeeper, app.AccountKeeper, app.BankKeeper),
-		// pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
-	)
+	autocliv1.RegisterQueryServer(app.GRPCQueryRouter(), runtimeservices.NewAutoCLIQueryService(app.mm.Modules))
+
+	reflectionSvc, err := runtimeservices.NewReflectionService()
+	if err != nil {
+		panic(err)
+	}
+	reflectionv1.RegisterReflectionServiceServer(app.GRPCQueryRouter(), reflectionSvc)
+
+	overrideModules := map[string]module.AppModuleSimulation{
+		authtypes.ModuleName: auth.NewAppModule(app.appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts, app.GetSubspace(authtypes.ModuleName)),
+	}
+	app.sm = module.NewSimulationManagerFromAppModules(app.mm.Modules, overrideModules)
+	app.sm.RegisterStoreDecoders()
 
 	// initialize stores
 	app.MountKVStores(keys)
 	app.MountTransientStores(tkeys)
 	app.MountMemoryStores(memKeys)
-	anteHandler, err := ante.NewAnteHandler(
-		appCodec,
-		ante.HandlerOptions{
-			AccountKeeper:   app.AccountKeeper,
-			BankKeeper:      app.BankKeeper,
-			FeegrantKeeper:  app.FeeGrantKeeper,
-			SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
-			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
-		},
-	)
 
-	if err != nil {
-		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
-	}
-
-	app.SetAnteHandler(anteHandler)
-
-	// initialize BaseApp
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
+	app.setAnteHandler(encodingConfig.TxConfig, wasmConfig, keys[wasm.StoreKey])
 
-	app.UpgradeKeeper.SetUpgradeHandler(
-		upgradeName,
-		func(ctx sdk.Context, _ upgradetypes.Plan, _ module.VersionMap) (module.VersionMap, error) {
-			// app.IBCKeeper.ConnectionKeeper.SetParams(ctx, ibcconnectiontypes.DefaultParams())
-
-			fromVM := make(map[string]uint64)
-			for moduleName := range app.mm.Modules {
-				fromVM[moduleName] = 1
-			}
-			// override versions for _new_ modules as to not skip InitGenesis
-			fromVM[authz.ModuleName] = 0
-			fromVM[feegrant.ModuleName] = 0
-
-			return app.mm.RunMigrations(ctx, app.configurator, fromVM)
-		},
-	)
+	app.setupUpgradeHandlers()
 
 	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
 	if err != nil {
 		panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
 	}
 
-	if upgradeInfo.Name == upgradeName && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
-		storeUpgrades := store.StoreUpgrades{
-			Added: []string{authz.ModuleName, feegrant.ModuleName},
+	if upgradeInfo.Name == v1_beta3.UpgradeName && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
+		storeUpgrades := storetypes.StoreUpgrades{
+			Added: []string{},
 		}
 
 		// configure store loader that checks if version == upgradeHeight and applies store upgrades
 		app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades))
 	}
 
-	if loadLatest {
-		if err := app.LoadLatestVersion(); err != nil {
-			tmos.Exit(fmt.Sprintf("failed to load latest version: %s", err))
+	// must be before Loading version
+	// requires the snapshot store to be created and registered as a BaseAppOption
+	// see cmd/wasmd/root.go: 206 - 214 approx
+	if manager := app.SnapshotManager(); manager != nil {
+		err := manager.RegisterExtensions(
+			wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.WasmKeeper),
+		)
+		if err != nil {
+			panic(fmt.Errorf("failed to register snapshot extension: %s", err))
 		}
 	}
 
-	// app.ScopedIBCKeeper = scopedIBCKeeper
-	// app.ScopedTransferKeeper = scopedTransferKeeper
-	// app.ScopedWasmKeeper = scopedWasmKeeper
+	app.ScopedIBCKeeper = scopedIBCKeeper
+	app.ScopedTransferKeeper = scopedTransferKeeper
+	app.ScopedWasmKeeper = scopedWasmKeeper
+	// app.ScopedICAHostKeeper = scopedICAHostKeeper
+	// app.ScopedICAControllerKeeper = scopedICAControllerKeeper
+	// app.ScopedStakeibcKeeper = scopedStakeibcKeeper
+
+	// In v0.46, the SDK introduces _postHandlers_. PostHandlers are like
+	// antehandlers, but are run _after_ the `runMsgs` execution. They are also
+	// defined as a chain, and have the same signature as antehandlers.
+	//
+	// In baseapp, postHandlers are run in the same store branch as `runMsgs`,
+	// meaning that both `runMsgs` and `postHandler` state will be committed if
+	// both are successful, and both will be reverted if any of the two fails.
+	//
+	// The SDK exposes a default postHandlers chain, which comprises of only
+	// one decorator: the Transaction Tips decorator. However, some chains do
+	// not need it by default, so feel free to comment the next line if you do
+	// not need tips.
+	// To read more about tips:
+	// https://docs.cosmos.network/main/core/tips.html
+	//
+	// Please note that changing any of the anteHandler or postHandler chain is
+	// likely to be a state-machine breaking change, which needs a coordinated
+	// upgrade.
+	app.setPostHandler()
+
+	if loadLatest {
+		if err := app.LoadLatestVersion(); err != nil {
+			logger.Error("error on loading last version", "err", err)
+			os.Exit(1)
+		}
+		ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
+		// Initialize pinned codes in wasmvm as they are not persisted there
+		if err := app.WasmKeeper.InitializePinnedCodes(ctx); err != nil {
+			tmos.Exit(fmt.Sprintf("failed initialize pinned codes %s", err))
+		}
+	}
+
 	return app
+}
+
+func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.WasmConfig, txCounterStoreKey storetypes.StoreKey) {
+	anteHandler, err := ante.NewAnteHandler(
+		ante.HandlerOptions{
+			AccountKeeper:   app.AccountKeeper,
+			BankKeeper:      app.BankKeeper,
+			FeegrantKeeper:  app.FeeGrantKeeper,
+			SignModeHandler: txConfig.SignModeHandler(),
+			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+		},
+	)
+	if err != nil {
+		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
+	}
+	app.SetAnteHandler(anteHandler)
+}
+
+func (app *App) setPostHandler() {
+	postHandler, err := posthandler.NewPostHandler(
+		posthandler.HandlerOptions{},
+	)
+	if err != nil {
+		panic(err)
+	}
+	app.SetPostHandler(postHandler)
 }
 
 // Name returns the name of the App
 func (app *App) Name() string { return app.BaseApp.Name() }
+
+// GetBaseApp returns the base app of the application
+func (app *App) GetBaseApp() *baseapp.BaseApp { return app.BaseApp }
+
+// GetStakingKeeper implements the TestingApp interface.
+func (app *App) GetStakingKeeper() ibctestingtypes.StakingKeeper {
+	return app.StakingKeeper
+}
+
+// GetTransferKeeper implements the TestingApp interface.
+func (app *App) GetTransferKeeper() *ibctransferkeeper.Keeper {
+	return &app.TransferKeeper
+}
+
+// GetIBCKeeper implements the TestingApp interface.
+func (app *App) GetIBCKeeper() *ibckeeper.Keeper {
+	return app.IBCKeeper
+}
+
+// GetScopedIBCKeeper implements the TestingApp interface.
+func (app *App) GetScopedIBCKeeper() capabilitykeeper.ScopedKeeper {
+	return app.ScopedIBCKeeper
+}
+
+// GetTxConfig implements the TestingApp interface.
+func (app *App) GetTxConfig() client.TxConfig {
+	cfg := MakeEncodingConfig()
+	return cfg.TxConfig
+}
 
 // BeginBlocker application updates every begin block
 func (app *App) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
@@ -947,10 +1215,14 @@ func (app *App) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.Respo
 	return app.mm.EndBlock(ctx, req)
 }
 
+func (app *App) Configurator() module.Configurator {
+	return app.configurator
+}
+
 // InitChainer application update at chain initialization
 func (app *App) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 	var genesisState GenesisState
-	if err := tmjson.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
+	if err := json.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
 	}
 	app.UpgradeKeeper.SetModuleVersionMap(ctx, app.mm.GetVersionMap())
@@ -988,7 +1260,7 @@ func (app *App) BlockedAddrs() map[string]bool {
 // NOTE: This is solely to be used for testing purposes as it may be desirable
 // for modules to register their own custom testing types.
 func (app *App) LegacyAmino() *codec.LegacyAmino {
-	return app.cdc
+	return app.legacyAmino
 }
 
 // AppCodec returns Gaia's app codec.
@@ -1033,6 +1305,11 @@ func (app *App) GetSubspace(moduleName string) paramstypes.Subspace {
 	return subspace
 }
 
+// SimulationManager implements the SimulationApp interface
+func (app *App) SimulationManager() *module.SimulationManager {
+	return app.sm
+}
+
 // RegisterAPIRoutes registers all application module routes with the provided
 // API server.
 func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
@@ -1042,12 +1319,15 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 	// Register new tendermint queries routes from grpc-gateway.
 	tmservice.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 
+	// Register node gRPC service for grpc-gateway.
+	nodeservice.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
+
 	// Register grpc-gateway routes for all modules.
 	ModuleBasics.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 
 	// register swagger API from root so that other applications can override easily
-	if apiConfig.Swagger {
-		RegisterSwaggerAPI(clientCtx, apiSvr.Router)
+	if err := server.RegisterSwaggerAPI(apiSvr.ClientCtx, apiSvr.Router, apiConfig.Swagger); err != nil {
+		panic(err)
 	}
 }
 
@@ -1066,15 +1346,9 @@ func (app *App) RegisterTendermintService(clientCtx client.Context) {
 	)
 }
 
-// RegisterSwaggerAPI registers swagger route with API Server
-func RegisterSwaggerAPI(ctx client.Context, rtr *mux.Router) {
-	statikFS, err := fs.New()
-	if err != nil {
-		panic(err)
-	}
-
-	staticServer := http.FileServer(statikFS)
-	rtr.PathPrefix("/swagger/").Handler(http.StripPrefix("/swagger/", staticServer))
+// RegisterNodeService registers the node gRPC service on the app gRPC router.
+func (app *App) RegisterNodeService(clientCtx client.Context) {
+	nodeservice.RegisterNodeService(clientCtx, app.GRPCQueryRouter())
 }
 
 // GetMaccPerms returns a copy of the module account permissions
@@ -1096,21 +1370,37 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(minttypes.ModuleName)
 	paramsKeeper.Subspace(distrtypes.ModuleName)
 	paramsKeeper.Subspace(slashingtypes.ModuleName)
-	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govv1.ParamKeyTable())
+	paramsKeeper.Subspace(govtypes.ModuleName)
 	paramsKeeper.Subspace(crisistypes.ModuleName)
 	// paramsKeeper.Subspace(liquiditytypes.ModuleName)
-	// paramsKeeper.Subspace(ibctransfertypes.ModuleName)
-	// paramsKeeper.Subspace(ibchost.ModuleName)
+	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
+	paramsKeeper.Subspace(ibcexported.ModuleName)
+	paramsKeeper.Subspace(icahosttypes.SubModuleName)
+	paramsKeeper.Subspace(wasm.ModuleName)
+	// paramsKeeper.Subspace(stakeibcmoduletypes.ModuleName)
+	// paramsKeeper.Subspace(epochsmoduletypes.ModuleName)
+	// paramsKeeper.Subspace(interchainquerytypes.ModuleName)
+	// paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
+	// paramsKeeper.Subspace(recordsmoduletypes.ModuleName)
+	// paramsKeeper.Subspace(icacallbacksmoduletypes.ModuleName)
+
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
-	paramsKeeper.Subspace(auctiontypes.ModuleName)
-	paramsKeeper.Subspace(cdptypes.ModuleName)
-	paramsKeeper.Subspace(incentivetypes.ModuleName)
-	paramsKeeper.Subspace(ununifidisttypes.ModuleName)
-	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
-	paramsKeeper.Subspace(nftmarkettypes.ModuleName)
-	// paramsKeeper.Subspace(wasm.ModuleName)
-	paramsKeeper.Subspace(nftminttypes.ModuleName)
-	paramsKeeper.Subspace(ecosystemincentivetypes.ModuleName)
-	paramsKeeper.Subspace(derivativestypes.ModuleName)
+	// paramsKeeper.Subspace(pricefeedtypes.ModuleName)
+	// paramsKeeper.Subspace(yieldfarmtypes.ModuleName)
+	// paramsKeeper.Subspace(yieldaggregatortypes.ModuleName)
+	// paramsKeeper.Subspace(nftmarkettypes.ModuleName)
+	// paramsKeeper.Subspace(nftminttypes.ModuleName)
+	// paramsKeeper.Subspace(ecosystemincentivetypes.ModuleName)
+	// paramsKeeper.Subspace(derivativestypes.ModuleName)
 	return paramsKeeper
+}
+
+func (app *App) setupUpgradeHandlers() {
+	app.UpgradeKeeper.SetUpgradeHandler(
+		v1_beta3.UpgradeName,
+		v1_beta3.CreateUpgradeHandler(
+			app.mm,
+			app.configurator,
+			app.AccountKeeper,
+			app.BankKeeper))
 }

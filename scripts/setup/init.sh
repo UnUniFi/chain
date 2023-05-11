@@ -34,17 +34,17 @@ echo $USER_MNEMONIC_3 | $BINARY keys add $USER3 --home $NODE_HOME --recover --ke
 echo $USER_MNEMONIC_4 | $BINARY keys add $USER4 --home $NODE_HOME --recover --keyring-backend=test
 echo $PRICEFEED_MNEMONIC | $BINARY keys add $PRICEFEED --home $NODE_HOME --recover --keyring-backend=test
 
-$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $VAL1 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN --home $NODE_HOME
-$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $FAUCET --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
-$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $USER1 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
-$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $USER2 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
-$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $USER3 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
-$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $USER4 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc  --home $NODE_HOME
-$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $PRICEFEED --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc  --home $NODE_HOME
+$BINARY genesis add-genesis-account $($BINARY --home $NODE_HOME keys show $VAL1 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN --home $NODE_HOME
+$BINARY genesis add-genesis-account $($BINARY --home $NODE_HOME keys show $FAUCET --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
+$BINARY genesis add-genesis-account $($BINARY --home $NODE_HOME keys show $USER1 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
+$BINARY genesis add-genesis-account $($BINARY --home $NODE_HOME keys show $USER2 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
+$BINARY genesis add-genesis-account $($BINARY --home $NODE_HOME keys show $USER3 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
+$BINARY genesis add-genesis-account $($BINARY --home $NODE_HOME keys show $USER4 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc  --home $NODE_HOME
+$BINARY genesis add-genesis-account $($BINARY --home $NODE_HOME keys show $PRICEFEED --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc  --home $NODE_HOME
 
 echo "Creating and collecting gentx..."
-$BINARY gentx $VAL1 7000000000$BINARY_MAIN_TOKEN --home $NODE_HOME --chain-id $CHAINID_1 --keyring-backend test
-$BINARY collect-gentxs --home $NODE_HOME
+$BINARY genesis gentx $VAL1 7000000000$BINARY_MAIN_TOKEN --home $NODE_HOME --chain-id $CHAINID_1 --keyring-backend test
+$BINARY genesis collect-gentxs --home $NODE_HOME
 
 echo "Changing defaults config files..."
 OS=$(uname -s)
@@ -80,7 +80,7 @@ jq '.app_state.derivatives.params.pool_params.base_lpt_mint_fee = "0.001"' $NODE
 jq '.app_state.derivatives.params.pool_params.base_lpt_redeem_fee = "0.001"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.pool_params.report_liquidation_reward_rate = "0.001"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.pool_params.report_levy_period_reward_rate = "0.001"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
-jq '.app_state.derivatives.params.pool_params.accepted_assets = [{"denom":"ubtc", "target_weight": "0.6"}, {"denom":"uusdc", "target_weight":"0.4"}]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.derivatives.params.pool_params.accepted_assets_conf = [{"denom":"ubtc", "target_weight": "0.6"}, {"denom":"uusdc", "target_weight":"0.4"}]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.perpetual_futures.commission_rate = "0.001"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.perpetual_futures.margin_maintenance_rate = "0.5"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.perpetual_futures.imaginary_funding_rate_proportional_coefficient = "0.0005"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
@@ -137,3 +137,5 @@ jq '.app_state.nft.classes = [
     "uri_hash": ""
   }
 ]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+
+jq '.app_state.bank.params.default_send_enabled = false' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;

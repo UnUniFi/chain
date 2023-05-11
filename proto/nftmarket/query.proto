@@ -82,8 +82,13 @@ message QueryListedClassRequest {
   string class_id  = 1;
   int32  nft_limit = 2;
 }
+
+message NftListingDetail {
+  NftListing listing = 1 [(gogoproto.nullable) = false];
+  NftInfo nft_info = 2 [(gogoproto.nullable) = false];
+}
 message QueryListedNftsResponse {
-  repeated NftListing listings = 1 [(gogoproto.nullable) = false];
+  repeated NftListingDetail listings = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryListedClassesResponse {
@@ -96,7 +101,7 @@ message QueryListedClassResponse {
   string             symbol      = 4;
   string             uri         = 5;
   string             urihash     = 6;
-  repeated ListedNft nfts        = 7;
+  repeated NftInfo   nfts        = 7;
   uint64             nft_count   = 8;
 }
 

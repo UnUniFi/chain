@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"time"
 
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 
 	ununifitypes "github.com/UnUniFi/chain/types"
 	ecoincentivetypes "github.com/UnUniFi/chain/x/ecosystem-incentive/types"
@@ -1964,6 +1964,417 @@ func (suite *KeeperTestSuite) TestReListingDataManagement() {
 				suite.Require().Empty(bids)
 				suite.Require().Empty(loan)
 			}
+		}
+	}
+}
+
+// test LiquidationProcessExitsWinner
+func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
+	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	bidder1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	now := time.Now()
+	refundFCheckerGen := func(testCase string, expRefundBids types.NftBids, expTotalInterest, expSurplusAmount sdk.Coin, expListing types.NftListing) func(ctx sdk.Context, refundBids types.NftBids, totalInterest, surplusAmount sdk.Coin, listing types.NftListing) error {
+		return func(ctx sdk.Context, refundBids types.NftBids, totalInterest, surplusAmount sdk.Coin, listing types.NftListing) error {
+			suite.Equal(expRefundBids, refundBids, testCase)
+			suite.Equal(expTotalInterest, totalInterest, testCase)
+			suite.Equal(expSurplusAmount, surplusAmount, testCase)
+			suite.Equal(expListing, listing, testCase)
+			return nil
+		}
+	}
+	type funcArg struct {
+		collectBid types.NftBids
+		refundBid  types.NftBids
+		listing    types.NftListing
+		winnerBid  types.NftBid
+		blockTime  time.Time
+	}
+	type funcFExp struct {
+		expRefundBid                       types.NftBids
+		expTotalInterest, expSurplusAmount sdk.Coin
+		expListing                         types.NftListing
+	}
+	tcs := []struct {
+		testCase  string
+		funcArg   funcArg
+		funcFExp  funcFExp
+		expResult error
+	}{
+		{
+			"no refund bid and no collect bid",
+			funcArg{
+				collectBid: types.NftBids{},
+				refundBid:  types.NftBids{},
+				listing: types.NftListing{
+					NftId: types.NftIdentifier{
+						ClassId: "1",
+						NftId:   "1",
+					},
+					Owner:              owner.String(),
+					ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
+					State:              types.ListingState_LISTING,
+					BidToken:           "uguu",
+					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
+					StartedAt:          now,
+					EndAt:              now,
+					FullPaymentEndAt:   time.Time{},
+					SuccessfulBidEndAt: time.Time{},
+					AutoRelistedCount:  0,
+					CollectedAmount: sdk.Coin{
+						Denom:  "uguu",
+						Amount: sdk.ZeroInt(),
+					},
+				},
+				winnerBid: types.NftBid{
+					NftId: types.NftIdentifier{
+						ClassId: "a10",
+						NftId:   "a10",
+					},
+					Bidder:             "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
+					BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
+					DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
+					PaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(0)),
+					BiddingPeriod:      time.Now(),
+					DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
+					AutomaticPayment:   true,
+					BidTime:            time.Now(),
+					InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
+					Borrowings:         []types.Borrowing{},
+					Id: types.BidId{
+						NftId: &types.NftIdentifier{
+							ClassId: "a10",
+							NftId:   "a10",
+						},
+						Bidder: bidder1.String(),
+					},
+				},
+				blockTime: time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
+			},
+			funcFExp{
+				expRefundBid:     types.NftBids{},
+				expTotalInterest: sdk.Coin{"uguu", sdk.NewInt(0)},
+				expSurplusAmount: sdk.Coin{"uguu", sdk.NewInt(0)},
+				expListing: types.NftListing{
+					NftId: types.NftIdentifier{
+						ClassId: "1",
+						NftId:   "1",
+					},
+					Owner:              owner.String(),
+					ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
+					State:              types.ListingState_LISTING,
+					BidToken:           "uguu",
+					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
+					StartedAt:          now,
+					EndAt:              now,
+					FullPaymentEndAt:   time.Time{},
+					SuccessfulBidEndAt: time.Time{},
+					AutoRelistedCount:  0,
+					CollectedAmount: sdk.Coin{
+						Denom:  "uguu",
+						Amount: sdk.ZeroInt(),
+					},
+				},
+			},
+			nil,
+		},
+		{
+			"refund bid and no collect bid",
+			funcArg{
+				collectBid: types.NftBids{},
+				refundBid: types.NftBids{
+					{
+						BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
+						DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
+						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
+						Borrowings: []types.Borrowing{
+							{
+								Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
+								PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+								StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							},
+						},
+						InterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+					},
+					{
+						BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(99)),
+						DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(45)),
+						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
+						InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(10)),
+						Borrowings: []types.Borrowing{
+							{
+								Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
+								PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+								StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							},
+						},
+						PaidAmount: sdk.NewCoin("uguu", sdk.NewInt(55)),
+					},
+				},
+				listing: types.NftListing{
+					NftId: types.NftIdentifier{
+						ClassId: "1",
+						NftId:   "1",
+					},
+					Owner:              owner.String(),
+					ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
+					State:              types.ListingState_LISTING,
+					BidToken:           "uguu",
+					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
+					StartedAt:          now,
+					EndAt:              now,
+					FullPaymentEndAt:   time.Time{},
+					SuccessfulBidEndAt: time.Time{},
+					AutoRelistedCount:  0,
+					CollectedAmount: sdk.Coin{
+						Denom:  "uguu",
+						Amount: sdk.ZeroInt(),
+					},
+				},
+				winnerBid: types.NftBid{
+					NftId: types.NftIdentifier{
+						ClassId: "a10",
+						NftId:   "a10",
+					},
+					Bidder:             "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
+					BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
+					DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
+					PaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(0)),
+					BiddingPeriod:      time.Now(),
+					DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
+					AutomaticPayment:   true,
+					BidTime:            time.Now(),
+					InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
+					Borrowings:         []types.Borrowing{},
+					Id: types.BidId{
+						NftId: &types.NftIdentifier{
+							ClassId: "a10",
+							NftId:   "a10",
+						},
+						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
+					},
+				},
+				blockTime: time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
+			},
+			funcFExp{
+				expRefundBid: types.NftBids{
+					{
+						BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
+						DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
+						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
+						Borrowings: []types.Borrowing{
+							{
+								Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
+								PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+								StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							},
+						},
+						InterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+					},
+					{
+						BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(99)),
+						DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(45)),
+						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
+						InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(10)),
+						Borrowings: []types.Borrowing{
+							{
+								Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
+								PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+								StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							},
+						},
+						PaidAmount: sdk.NewCoin("uguu", sdk.NewInt(55)),
+					},
+				},
+				expTotalInterest: sdk.Coin{"uguu", sdk.NewInt(12)},
+				expSurplusAmount: sdk.Coin{"uguu", sdk.NewInt(5)},
+				expListing: types.NftListing{
+					NftId: types.NftIdentifier{
+						ClassId: "1",
+						NftId:   "1",
+					},
+					Owner:              owner.String(),
+					ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
+					State:              types.ListingState_LISTING,
+					BidToken:           "uguu",
+					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
+					StartedAt:          now,
+					EndAt:              now,
+					FullPaymentEndAt:   time.Time{},
+					SuccessfulBidEndAt: time.Time{},
+					AutoRelistedCount:  0,
+					CollectedAmount: sdk.Coin{
+						Denom:  "uguu",
+						Amount: sdk.ZeroInt(),
+					},
+				},
+			},
+			nil,
+		},
+		{
+			"refund bid and collect bid",
+			funcArg{
+				collectBid: types.NftBids{
+					{
+						BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
+						DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
+						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
+						Borrowings: []types.Borrowing{
+							{
+								Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
+								PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+								StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							},
+						},
+						InterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+						Bidder:         bidder1.String(),
+						NftId: types.NftIdentifier{
+							ClassId: "1",
+							NftId:   "1",
+						},
+					},
+				},
+				refundBid: types.NftBids{
+					{
+						BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
+						DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
+						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
+						Borrowings: []types.Borrowing{
+							{
+								Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
+								PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+								StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							},
+						},
+						InterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+					},
+					{
+						BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(99)),
+						DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(45)),
+						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
+						InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(10)),
+						Borrowings: []types.Borrowing{
+							{
+								Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
+								PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+								StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							},
+						},
+						PaidAmount: sdk.NewCoin("uguu", sdk.NewInt(55)),
+					},
+				},
+				listing: types.NftListing{
+					NftId: types.NftIdentifier{
+						ClassId: "1",
+						NftId:   "1",
+					},
+					Owner:              owner.String(),
+					ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
+					State:              types.ListingState_LISTING,
+					BidToken:           "uguu",
+					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
+					StartedAt:          now,
+					EndAt:              now,
+					FullPaymentEndAt:   time.Time{},
+					SuccessfulBidEndAt: time.Time{},
+					AutoRelistedCount:  0,
+					CollectedAmount: sdk.Coin{
+						Denom:  "uguu",
+						Amount: sdk.ZeroInt(),
+					},
+				},
+				winnerBid: types.NftBid{
+					NftId: types.NftIdentifier{
+						ClassId: "a10",
+						NftId:   "a10",
+					},
+					Bidder:             "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
+					BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
+					DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
+					PaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(0)),
+					BiddingPeriod:      time.Now(),
+					DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
+					AutomaticPayment:   true,
+					BidTime:            time.Now(),
+					InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
+					Borrowings:         []types.Borrowing{},
+					Id: types.BidId{
+						NftId: &types.NftIdentifier{
+							ClassId: "a10",
+							NftId:   "a10",
+						},
+						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
+					},
+				},
+				blockTime: time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
+			},
+			funcFExp{
+				expRefundBid: types.NftBids{
+					{
+						BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
+						DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
+						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
+						Borrowings: []types.Borrowing{
+							{
+								Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
+								PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+								StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							},
+						},
+						InterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+					},
+					{
+						BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(99)),
+						DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(45)),
+						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
+						InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(10)),
+						Borrowings: []types.Borrowing{
+							{
+								Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
+								PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+								StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							},
+						},
+						PaidAmount: sdk.NewCoin("uguu", sdk.NewInt(55)),
+					},
+				},
+				expTotalInterest: sdk.Coin{"uguu", sdk.NewInt(12)},
+				expSurplusAmount: sdk.Coin{"uguu", sdk.NewInt(55)},
+				expListing: types.NftListing{
+					NftId: types.NftIdentifier{
+						ClassId: "1",
+						NftId:   "1",
+					},
+					Owner:              owner.String(),
+					ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
+					State:              types.ListingState_LISTING,
+					BidToken:           "uguu",
+					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
+					StartedAt:          now,
+					EndAt:              now,
+					FullPaymentEndAt:   time.Time{},
+					SuccessfulBidEndAt: time.Time{},
+					AutoRelistedCount:  0,
+					CollectedAmount: sdk.Coin{
+						Denom:  "uguu",
+						Amount: sdk.NewInt(50),
+					},
+				},
+			},
+			nil,
+		},
+	}
+	suite.SetupTest()
+	for _, tc := range tcs {
+		err := suite.keeper.LiquidationProcessExitsWinner(suite.ctx,
+			tc.funcArg.collectBid, tc.funcArg.refundBid,
+			tc.funcArg.listing, tc.funcArg.winnerBid,
+			tc.funcArg.blockTime,
+			refundFCheckerGen(tc.testCase, tc.funcFExp.expRefundBid, tc.funcFExp.expTotalInterest, tc.funcFExp.expSurplusAmount, tc.funcFExp.expListing),
+		)
+		if tc.expResult != nil {
+			suite.Equal(tc.expResult, err)
+		} else {
+			suite.NoError(err)
 		}
 	}
 }

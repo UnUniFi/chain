@@ -4065,67 +4065,82 @@ paths:
                 items:
                   type: object
                   properties:
-                    nft_id:
+                    listing:
                       type: object
                       properties:
-                        class_id:
-                          type: string
                         nft_id:
+                          type: object
+                          properties:
+                            class_id:
+                              type: string
+                            nft_id:
+                              type: string
+                        owner:
                           type: string
-                    owner:
-                      type: string
-                    listing_type:
-                      type: string
-                      enum:
-                        - DIRECT_ASSET_BORROW
-                        - SYNTHETIC_ASSET_CREATION
-                        - LATE_SHIPPING
-                      default: DIRECT_ASSET_BORROW
-                    state:
-                      type: string
-                      enum:
-                        - LISTING
-                        - BIDDING
-                        - SELLING_DECISION
-                        - END_LISTING
-                        - SUCCESSFUL_BID
-                      default: LISTING
-                    bid_token:
-                      type: string
-                    minimum_deposit_rate:
-                      type: string
-                    automatic_refinancing:
-                      type: boolean
-                    started_at:
-                      type: string
-                      format: date-time
-                    end_at:
-                      type: string
-                      format: date-time
-                    full_payment_end_at:
-                      type: string
-                      format: date-time
-                    successful_bid_end_at:
-                      type: string
-                      format: date-time
-                    auto_relisted_count:
-                      type: string
-                      format: uint64
-                    collected_amount:
+                        listing_type:
+                          type: string
+                          enum:
+                            - DIRECT_ASSET_BORROW
+                            - SYNTHETIC_ASSET_CREATION
+                            - LATE_SHIPPING
+                          default: DIRECT_ASSET_BORROW
+                        state:
+                          type: string
+                          enum:
+                            - LISTING
+                            - BIDDING
+                            - SELLING_DECISION
+                            - END_LISTING
+                            - SUCCESSFUL_BID
+                          default: LISTING
+                        bid_token:
+                          type: string
+                        minimum_deposit_rate:
+                          type: string
+                        automatic_refinancing:
+                          type: boolean
+                        started_at:
+                          type: string
+                          format: date-time
+                        end_at:
+                          type: string
+                          format: date-time
+                        full_payment_end_at:
+                          type: string
+                          format: date-time
+                        successful_bid_end_at:
+                          type: string
+                          format: date-time
+                        auto_relisted_count:
+                          type: string
+                          format: uint64
+                        collected_amount:
+                          type: object
+                          properties:
+                            denom:
+                              type: string
+                            amount:
+                              type: string
+                          description: >-
+                            Coin defines a token with a denomination and an
+                            amount.
+
+
+                            NOTE: The amount field is an Int which implements
+                            the custom method
+
+                            signatures required by gogoproto.
+                        minimum_bidding_period:
+                          type: string
+                    nft_info:
                       type: object
                       properties:
-                        denom:
+                        id:
                           type: string
-                        amount:
+                        uri:
                           type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
+                        uri_hash:
+                          type: string
         default:
           description: An unexpected error response.
           schema:
@@ -4537,6 +4552,8 @@ paths:
                       custom method
 
                       signatures required by gogoproto.
+                  minimum_bidding_period:
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -5173,7 +5190,7 @@ paths:
           schema:
             type: object
             properties:
-              amount:
+              estimated_dlp_amount:
                 type: object
                 properties:
                   denom:
@@ -5188,7 +5205,7 @@ paths:
                   method
 
                   signatures required by gogoproto.
-              fee:
+              deposit_fee:
                 type: object
                 properties:
                   denom:
@@ -6097,7 +6114,7 @@ paths:
                         type: string
                       report_levy_period_reward_rate:
                         type: string
-                      accepted_assets:
+                      accepted_assets_conf:
                         type: array
                         items:
                           type: object
@@ -6124,6 +6141,9 @@ paths:
                               type: string
                             quote_denom:
                               type: string
+                      max_leverage:
+                        type: integer
+                        format: int64
                   perpetual_options:
                     type: object
                     properties:
@@ -7221,7 +7241,7 @@ paths:
                     type: string
                   total:
                     type: string
-                  breakdown:
+                  asset_info:
                     type: array
                     items:
                       type: object
@@ -7232,10 +7252,449 @@ paths:
                           type: string
                         price:
                           type: string
+                        reserved:
+                          type: string
               volume_24hours:
                 type: string
               fees_24hours:
                 type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                    value:
+                      type: string
+                      format: byte
+                      description: >-
+                        Must be a valid serialized protocol buffer of the above
+                        specified type.
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := ptypes.MarshalAny(foo)
+                         ...
+                         foo := &pb.Foo{}
+                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      tags:
+        - Query
+  /ununifi/derivatives/pools/available-asset/{denom}:
+    get:
+      operationId: AvailableAssetInPoolByDenom
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              available_asset:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                    value:
+                      type: string
+                      format: byte
+                      description: >-
+                        Must be a valid serialized protocol buffer of the above
+                        specified type.
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := ptypes.MarshalAny(foo)
+                         ...
+                         foo := &pb.Foo{}
+                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      parameters:
+        - name: denom
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /ununifi/derivatives/pools/available-assets:
+    get:
+      operationId: AvailableAssetsInPool
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              available_assets:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
         default:
           description: An unexpected error response.
           schema:
@@ -11647,15 +12106,6 @@ definitions:
             liquidation_date:
               type: string
               format: date-time
-  ununifi.nftmarket.ListedNft:
-    type: object
-    properties:
-      id:
-        type: string
-      uri:
-        type: string
-      uri_hash:
-        type: string
   ununifi.nftmarket.ListingState:
     type: string
     enum:
@@ -11823,6 +12273,15 @@ definitions:
         type: string
       nft_id:
         type: string
+  ununifi.nftmarket.NftInfo:
+    type: object
+    properties:
+      id:
+        type: string
+      uri:
+        type: string
+      uri_hash:
+        type: string
   ununifi.nftmarket.NftListing:
     type: object
     properties:
@@ -11884,6 +12343,86 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
+      minimum_bidding_period:
+        type: string
+  ununifi.nftmarket.NftListingDetail:
+    type: object
+    properties:
+      listing:
+        type: object
+        properties:
+          nft_id:
+            type: object
+            properties:
+              class_id:
+                type: string
+              nft_id:
+                type: string
+          owner:
+            type: string
+          listing_type:
+            type: string
+            enum:
+              - DIRECT_ASSET_BORROW
+              - SYNTHETIC_ASSET_CREATION
+              - LATE_SHIPPING
+            default: DIRECT_ASSET_BORROW
+          state:
+            type: string
+            enum:
+              - LISTING
+              - BIDDING
+              - SELLING_DECISION
+              - END_LISTING
+              - SUCCESSFUL_BID
+            default: LISTING
+          bid_token:
+            type: string
+          minimum_deposit_rate:
+            type: string
+          automatic_refinancing:
+            type: boolean
+          started_at:
+            type: string
+            format: date-time
+          end_at:
+            type: string
+            format: date-time
+          full_payment_end_at:
+            type: string
+            format: date-time
+          successful_bid_end_at:
+            type: string
+            format: date-time
+          auto_relisted_count:
+            type: string
+            format: uint64
+          collected_amount:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          minimum_bidding_period:
+            type: string
+      nft_info:
+        type: object
+        properties:
+          id:
+            type: string
+          uri:
+            type: string
+          uri_hash:
+            type: string
   ununifi.nftmarket.Params:
     type: object
     properties:
@@ -12253,67 +12792,81 @@ definitions:
         items:
           type: object
           properties:
-            nft_id:
+            listing:
               type: object
               properties:
-                class_id:
-                  type: string
                 nft_id:
+                  type: object
+                  properties:
+                    class_id:
+                      type: string
+                    nft_id:
+                      type: string
+                owner:
                   type: string
-            owner:
-              type: string
-            listing_type:
-              type: string
-              enum:
-                - DIRECT_ASSET_BORROW
-                - SYNTHETIC_ASSET_CREATION
-                - LATE_SHIPPING
-              default: DIRECT_ASSET_BORROW
-            state:
-              type: string
-              enum:
-                - LISTING
-                - BIDDING
-                - SELLING_DECISION
-                - END_LISTING
-                - SUCCESSFUL_BID
-              default: LISTING
-            bid_token:
-              type: string
-            minimum_deposit_rate:
-              type: string
-            automatic_refinancing:
-              type: boolean
-            started_at:
-              type: string
-              format: date-time
-            end_at:
-              type: string
-              format: date-time
-            full_payment_end_at:
-              type: string
-              format: date-time
-            successful_bid_end_at:
-              type: string
-              format: date-time
-            auto_relisted_count:
-              type: string
-              format: uint64
-            collected_amount:
+                listing_type:
+                  type: string
+                  enum:
+                    - DIRECT_ASSET_BORROW
+                    - SYNTHETIC_ASSET_CREATION
+                    - LATE_SHIPPING
+                  default: DIRECT_ASSET_BORROW
+                state:
+                  type: string
+                  enum:
+                    - LISTING
+                    - BIDDING
+                    - SELLING_DECISION
+                    - END_LISTING
+                    - SUCCESSFUL_BID
+                  default: LISTING
+                bid_token:
+                  type: string
+                minimum_deposit_rate:
+                  type: string
+                automatic_refinancing:
+                  type: boolean
+                started_at:
+                  type: string
+                  format: date-time
+                end_at:
+                  type: string
+                  format: date-time
+                full_payment_end_at:
+                  type: string
+                  format: date-time
+                successful_bid_end_at:
+                  type: string
+                  format: date-time
+                auto_relisted_count:
+                  type: string
+                  format: uint64
+                collected_amount:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+                minimum_bidding_period:
+                  type: string
+            nft_info:
               type: object
               properties:
-                denom:
+                id:
                   type: string
-                amount:
+                uri:
                   type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
+                uri_hash:
+                  type: string
   ununifi.nftmarket.QueryLoanResponse:
     type: object
     properties:
@@ -12580,6 +13133,8 @@ definitions:
               method
 
               signatures required by gogoproto.
+          minimum_bidding_period:
+            type: string
   ununifi.nftmarket.QueryParamsResponse:
     type: object
     properties:
@@ -13055,7 +13610,7 @@ definitions:
             type: string
           report_levy_period_reward_rate:
             type: string
-          accepted_assets:
+          accepted_assets_conf:
             type: array
             items:
               type: object
@@ -13082,6 +13637,9 @@ definitions:
                   type: string
                 quote_denom:
                   type: string
+          max_leverage:
+            type: integer
+            format: int64
       perpetual_options:
         type: object
         properties:
@@ -13120,6 +13678,9 @@ definitions:
               type: string
             quote_denom:
               type: string
+      max_leverage:
+        type: integer
+        format: int64
   ununifi.derivatives.PerpetualOptionsParams:
     type: object
     properties:
@@ -13140,6 +13701,13 @@ definitions:
               type: string
             quote_denom:
               type: string
+  ununifi.derivatives.PoolAssetConf:
+    type: object
+    properties:
+      denom:
+        type: string
+      target_weight:
+        type: string
   ununifi.derivatives.PoolMarketCap:
     type: object
     properties:
@@ -13147,7 +13715,7 @@ definitions:
         type: string
       total:
         type: string
-      breakdown:
+      asset_info:
         type: array
         items:
           type: object
@@ -13158,7 +13726,9 @@ definitions:
               type: string
             price:
               type: string
-  ununifi.derivatives.PoolMarketCap.Breakdown:
+            reserved:
+              type: string
+  ununifi.derivatives.PoolMarketCap.AssetInfo:
     type: object
     properties:
       denom:
@@ -13166,6 +13736,8 @@ definitions:
       amount:
         type: string
       price:
+        type: string
+      reserved:
         type: string
   ununifi.derivatives.PoolParams:
     type: object
@@ -13182,7 +13754,7 @@ definitions:
         type: string
       report_levy_period_reward_rate:
         type: string
-      accepted_assets:
+      accepted_assets_conf:
         type: array
         items:
           type: object
@@ -13191,13 +13763,6 @@ definitions:
               type: string
             target_weight:
               type: string
-  ununifi.derivatives.PoolParams.Asset:
-    type: object
-    properties:
-      denom:
-        type: string
-      target_weight:
-        type: string
   ununifi.derivatives.Position:
     type: object
     properties:
@@ -14209,6 +14774,38 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  ununifi.derivatives.QueryAvailableAssetInPoolByDenomResponse:
+    type: object
+    properties:
+      available_asset:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+  ununifi.derivatives.QueryAvailableAssetsInPoolResponse:
+    type: object
+    properties:
+      available_assets:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+          description: |-
+            Coin defines a token with a denomination and an amount.
+
+            NOTE: The amount field is an Int which implements the custom method
+            signatures required by gogoproto.
   ununifi.derivatives.QueryDLPTokenRateResponse:
     type: object
     properties:
@@ -14231,7 +14828,7 @@ definitions:
   ununifi.derivatives.QueryEstimateDLPTokenAmountResponse:
     type: object
     properties:
-      amount:
+      estimated_dlp_amount:
         type: object
         properties:
           denom:
@@ -14243,7 +14840,7 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-      fee:
+      deposit_fee:
         type: object
         properties:
           denom:
@@ -14314,7 +14911,7 @@ definitions:
                 type: string
               report_levy_period_reward_rate:
                 type: string
-              accepted_assets:
+              accepted_assets_conf:
                 type: array
                 items:
                   type: object
@@ -14341,6 +14938,9 @@ definitions:
                       type: string
                     quote_denom:
                       type: string
+              max_leverage:
+                type: integer
+                format: int64
           perpetual_options:
             type: object
             properties:
@@ -14441,7 +15041,7 @@ definitions:
             type: string
           total:
             type: string
-          breakdown:
+          asset_info:
             type: array
             items:
               type: object
@@ -14451,6 +15051,8 @@ definitions:
                 amount:
                   type: string
                 price:
+                  type: string
+                reserved:
                   type: string
       volume_24hours:
         type: string

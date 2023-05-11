@@ -6,16 +6,17 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
+// FIXME: This test is not working
 func (suite *KeeperTestSuite) TestParamsGetSet() {
 	params := suite.app.DerivativesKeeper.GetParams(suite.ctx)
 	params.PoolParams = types.PoolParams{
 		QuoteTicker:                 "usd",
 		BaseLptMintFee:              sdk.MustNewDecFromStr("0.001"),
 		BaseLptRedeemFee:            sdk.MustNewDecFromStr("0.001"),
-		BorrowingFeeRatePerHour:     sdk.MustNewDecFromStr("0.001"),
-		ReportLiquidationRewardRate: sdk.MustNewDecFromStr("0.001"),
-		ReportLevyPeriodRewardRate:  sdk.MustNewDecFromStr("0.001"),
-		AcceptedAssets: []*types.PoolParams_Asset{
+		BorrowingFeeRatePerHour:     sdk.MustNewDecFromStr("0.000001"),
+		ReportLiquidationRewardRate: sdk.MustNewDecFromStr("0.3"),
+		ReportLevyPeriodRewardRate:  sdk.MustNewDecFromStr("0.3"),
+		AcceptedAssetsConf: []types.PoolAssetConf{
 			{
 				Denom:        "uatom",
 				TargetWeight: sdk.OneDec(),

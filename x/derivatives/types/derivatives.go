@@ -9,10 +9,10 @@ func (m Market) InMarketSet(marketSet []Market) bool {
 	return false
 }
 
-func GetMarketsOutOfPerpetualFuturesNetPositionOfMarket(netPositionOfMarket []PerpetualFuturesNetPositionOfMarket) []Market {
+func GetMarketsOutOfPerpetualFuturesGrossPositionOfMarket(grossPositionOfMarket []PerpetualFuturesGrossPositionOfMarket) []Market {
 	markets := []Market{}
-	for _, netPosition := range netPositionOfMarket {
-		markets = append(markets, netPosition.Market)
+	for _, grossPosition := range grossPositionOfMarket {
+		markets = append(markets, grossPosition.Market)
 	}
 	return markets
 }

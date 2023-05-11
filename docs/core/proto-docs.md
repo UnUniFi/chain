@@ -77,21 +77,22 @@
 - [derivatives/derivatives.proto](#derivatives/derivatives.proto)
     - [EventPriceIsNotFeeded](#ununifi.derivatives.EventPriceIsNotFeeded)
     - [Market](#ununifi.derivatives.Market)
+    - [PoolAssetConf](#ununifi.derivatives.PoolAssetConf)
     - [PoolMarketCap](#ununifi.derivatives.PoolMarketCap)
-    - [PoolMarketCap.Breakdown](#ununifi.derivatives.PoolMarketCap.Breakdown)
+    - [PoolMarketCap.AssetInfo](#ununifi.derivatives.PoolMarketCap.AssetInfo)
     - [PoolParams](#ununifi.derivatives.PoolParams)
-    - [PoolParams.Asset](#ununifi.derivatives.PoolParams.Asset)
     - [Position](#ununifi.derivatives.Position)
     - [QueriedPosition](#ununifi.derivatives.QueriedPosition)
   
     - [PositionType](#ununifi.derivatives.PositionType)
   
 - [derivatives/perpetual_futures.proto](#derivatives/perpetual_futures.proto)
+    - [EventLossToLP](#ununifi.derivatives.EventLossToLP)
     - [EventPerpetualFuturesPositionClosed](#ununifi.derivatives.EventPerpetualFuturesPositionClosed)
     - [EventPerpetualFuturesPositionLevied](#ununifi.derivatives.EventPerpetualFuturesPositionLevied)
     - [EventPerpetualFuturesPositionLiquidated](#ununifi.derivatives.EventPerpetualFuturesPositionLiquidated)
     - [EventPerpetualFuturesPositionOpened](#ununifi.derivatives.EventPerpetualFuturesPositionOpened)
-    - [PerpetualFuturesNetPositionOfMarket](#ununifi.derivatives.PerpetualFuturesNetPositionOfMarket)
+    - [PerpetualFuturesGrossPositionOfMarket](#ununifi.derivatives.PerpetualFuturesGrossPositionOfMarket)
     - [PerpetualFuturesParams](#ununifi.derivatives.PerpetualFuturesParams)
     - [PerpetualFuturesPosition](#ununifi.derivatives.PerpetualFuturesPosition)
     - [PerpetualFuturesPositionInstance](#ununifi.derivatives.PerpetualFuturesPositionInstance)
@@ -113,6 +114,10 @@
     - [QueryAddressPositionsResponse](#ununifi.derivatives.QueryAddressPositionsResponse)
     - [QueryAllPositionsRequest](#ununifi.derivatives.QueryAllPositionsRequest)
     - [QueryAllPositionsResponse](#ununifi.derivatives.QueryAllPositionsResponse)
+    - [QueryAvailableAssetInPoolByDenomRequest](#ununifi.derivatives.QueryAvailableAssetInPoolByDenomRequest)
+    - [QueryAvailableAssetInPoolByDenomResponse](#ununifi.derivatives.QueryAvailableAssetInPoolByDenomResponse)
+    - [QueryAvailableAssetsInPoolRequest](#ununifi.derivatives.QueryAvailableAssetsInPoolRequest)
+    - [QueryAvailableAssetsInPoolResponse](#ununifi.derivatives.QueryAvailableAssetsInPoolResponse)
     - [QueryDLPTokenRateRequest](#ununifi.derivatives.QueryDLPTokenRateRequest)
     - [QueryDLPTokenRateResponse](#ununifi.derivatives.QueryDLPTokenRateResponse)
     - [QueryEstimateDLPTokenAmountRequest](#ununifi.derivatives.QueryEstimateDLPTokenAmountRequest)
@@ -143,18 +148,18 @@
     - [Query](#ununifi.derivatives.Query)
   
 - [derivatives/tx.proto](#derivatives/tx.proto)
-    - [MsgBurnLiquidityProviderToken](#ununifi.derivatives.MsgBurnLiquidityProviderToken)
-    - [MsgBurnLiquidityProviderTokenResponse](#ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse)
     - [MsgClosePosition](#ununifi.derivatives.MsgClosePosition)
     - [MsgClosePositionResponse](#ununifi.derivatives.MsgClosePositionResponse)
-    - [MsgMintLiquidityProviderToken](#ununifi.derivatives.MsgMintLiquidityProviderToken)
-    - [MsgMintLiquidityProviderTokenResponse](#ununifi.derivatives.MsgMintLiquidityProviderTokenResponse)
+    - [MsgDepositToPool](#ununifi.derivatives.MsgDepositToPool)
+    - [MsgDepositToPoolResponse](#ununifi.derivatives.MsgDepositToPoolResponse)
     - [MsgOpenPosition](#ununifi.derivatives.MsgOpenPosition)
     - [MsgOpenPositionResponse](#ununifi.derivatives.MsgOpenPositionResponse)
     - [MsgReportLevyPeriod](#ununifi.derivatives.MsgReportLevyPeriod)
     - [MsgReportLevyPeriodResponse](#ununifi.derivatives.MsgReportLevyPeriodResponse)
     - [MsgReportLiquidation](#ununifi.derivatives.MsgReportLiquidation)
     - [MsgReportLiquidationResponse](#ununifi.derivatives.MsgReportLiquidationResponse)
+    - [MsgWithdrawFromPool](#ununifi.derivatives.MsgWithdrawFromPool)
+    - [MsgWithdrawFromPoolResponse](#ununifi.derivatives.MsgWithdrawFromPoolResponse)
   
     - [Msg](#ununifi.derivatives.Msg)
   
@@ -260,10 +265,10 @@
     - [Liquidation](#ununifi.nftmarket.Liquidation)
     - [Liquidations](#ununifi.nftmarket.Liquidations)
     - [ListedClass](#ununifi.nftmarket.ListedClass)
-    - [ListedNft](#ununifi.nftmarket.ListedNft)
     - [Loan](#ununifi.nftmarket.Loan)
     - [NftBid](#ununifi.nftmarket.NftBid)
     - [NftIdentifier](#ununifi.nftmarket.NftIdentifier)
+    - [NftInfo](#ununifi.nftmarket.NftInfo)
     - [NftListing](#ununifi.nftmarket.NftListing)
     - [Params](#ununifi.nftmarket.Params)
     - [PaymentStatus](#ununifi.nftmarket.PaymentStatus)
@@ -276,6 +281,7 @@
     - [GenesisState](#ununifi.nftmarket.GenesisState)
   
 - [nftmarket/query.proto](#nftmarket/query.proto)
+    - [NftListingDetail](#ununifi.nftmarket.NftListingDetail)
     - [QueryBidderBidsRequest](#ununifi.nftmarket.QueryBidderBidsRequest)
     - [QueryBidderBidsResponse](#ununifi.nftmarket.QueryBidderBidsResponse)
     - [QueryCDPsListRequest](#ununifi.nftmarket.QueryCDPsListRequest)
@@ -510,6 +516,134 @@
     - [QueryParamsResponse](#ununifi.ununifidist.QueryParamsResponse)
   
     - [Query](#ununifi.ununifidist.Query)
+  
+- [yield-aggregator/params.proto](#yield-aggregator/params.proto)
+    - [Params](#ununifi.yieldaggregator.Params)
+  
+- [yield-aggregator/yield-aggregator.proto](#yield-aggregator/yield-aggregator.proto)
+    - [Strategy](#ununifi.yieldaggregator.Strategy)
+    - [StrategyMetrics](#ununifi.yieldaggregator.StrategyMetrics)
+    - [StrategyWeight](#ununifi.yieldaggregator.StrategyWeight)
+    - [Vault](#ununifi.yieldaggregator.Vault)
+    - [VaultMetrics](#ununifi.yieldaggregator.VaultMetrics)
+  
+- [yield-aggregator/genesis.proto](#yield-aggregator/genesis.proto)
+    - [GenesisState](#ununifi.yieldaggregator.GenesisState)
+  
+- [yield-aggregator/proposal.proto](#yield-aggregator/proposal.proto)
+    - [ProposalAddStrategy](#ununifi.yieldaggregator.ProposalAddStrategy)
+  
+- [yield-aggregator/query.proto](#yield-aggregator/query.proto)
+    - [QueryAllStrategyRequest](#ununifi.yieldaggregator.QueryAllStrategyRequest)
+    - [QueryAllStrategyResponse](#ununifi.yieldaggregator.QueryAllStrategyResponse)
+    - [QueryAllVaultRequest](#ununifi.yieldaggregator.QueryAllVaultRequest)
+    - [QueryAllVaultResponse](#ununifi.yieldaggregator.QueryAllVaultResponse)
+    - [QueryEstimateMintAmountRequest](#ununifi.yieldaggregator.QueryEstimateMintAmountRequest)
+    - [QueryEstimateMintAmountResponse](#ununifi.yieldaggregator.QueryEstimateMintAmountResponse)
+    - [QueryEstimateRedeemAmountRequest](#ununifi.yieldaggregator.QueryEstimateRedeemAmountRequest)
+    - [QueryEstimateRedeemAmountResponse](#ununifi.yieldaggregator.QueryEstimateRedeemAmountResponse)
+    - [QueryGetStrategyRequest](#ununifi.yieldaggregator.QueryGetStrategyRequest)
+    - [QueryGetStrategyResponse](#ununifi.yieldaggregator.QueryGetStrategyResponse)
+    - [QueryGetVaultRequest](#ununifi.yieldaggregator.QueryGetVaultRequest)
+    - [QueryGetVaultResponse](#ununifi.yieldaggregator.QueryGetVaultResponse)
+    - [QueryParamsRequest](#ununifi.yieldaggregator.QueryParamsRequest)
+    - [QueryParamsResponse](#ununifi.yieldaggregator.QueryParamsResponse)
+  
+    - [Query](#ununifi.yieldaggregator.Query)
+  
+- [yield-aggregator/tx.proto](#yield-aggregator/tx.proto)
+    - [MsgCreateVault](#ununifi.yieldaggregator.MsgCreateVault)
+    - [MsgCreateVaultResponse](#ununifi.yieldaggregator.MsgCreateVaultResponse)
+    - [MsgDeleteVault](#ununifi.yieldaggregator.MsgDeleteVault)
+    - [MsgDeleteVaultResponse](#ununifi.yieldaggregator.MsgDeleteVaultResponse)
+    - [MsgDepositToVault](#ununifi.yieldaggregator.MsgDepositToVault)
+    - [MsgDepositToVaultResponse](#ununifi.yieldaggregator.MsgDepositToVaultResponse)
+    - [MsgTransferVaultOwnership](#ununifi.yieldaggregator.MsgTransferVaultOwnership)
+    - [MsgTransferVaultOwnershipResponse](#ununifi.yieldaggregator.MsgTransferVaultOwnershipResponse)
+    - [MsgWithdrawFromVault](#ununifi.yieldaggregator.MsgWithdrawFromVault)
+    - [MsgWithdrawFromVaultResponse](#ununifi.yieldaggregator.MsgWithdrawFromVaultResponse)
+  
+    - [Msg](#ununifi.yieldaggregator.Msg)
+  
+- [yieldaggregatorv1/params.proto](#yieldaggregatorv1/params.proto)
+    - [Params](#ununifi.chain.yieldaggregator.Params)
+  
+- [yieldaggregatorv1/asset.proto](#yieldaggregatorv1/asset.proto)
+    - [AssetCondition](#ununifi.chain.yieldaggregator.AssetCondition)
+    - [AssetManagementAccount](#ununifi.chain.yieldaggregator.AssetManagementAccount)
+    - [AssetManagementTarget](#ununifi.chain.yieldaggregator.AssetManagementTarget)
+    - [DailyPercent](#ununifi.chain.yieldaggregator.DailyPercent)
+    - [DepositAllocation](#ununifi.chain.yieldaggregator.DepositAllocation)
+    - [FarmingOrder](#ununifi.chain.yieldaggregator.FarmingOrder)
+    - [FarmingUnit](#ununifi.chain.yieldaggregator.FarmingUnit)
+    - [IntegrateInfo](#ununifi.chain.yieldaggregator.IntegrateInfo)
+    - [Strategy](#ununifi.chain.yieldaggregator.Strategy)
+    - [UserDeposit](#ununifi.chain.yieldaggregator.UserDeposit)
+    - [UserInfo](#ununifi.chain.yieldaggregator.UserInfo)
+  
+    - [IntegrateType](#ununifi.chain.yieldaggregator.IntegrateType)
+  
+- [yieldaggregatorv1/genesis.proto](#yieldaggregatorv1/genesis.proto)
+    - [GenesisState](#ununifi.chain.yieldaggregator.GenesisState)
+  
+- [yieldaggregatorv1/proposal.proto](#yieldaggregatorv1/proposal.proto)
+    - [ProposalAddYieldFarm](#ununifi.chain.yieldaggregator.ProposalAddYieldFarm)
+    - [ProposalAddYieldFarmTarget](#ununifi.chain.yieldaggregator.ProposalAddYieldFarmTarget)
+    - [ProposalRemoveYieldFarm](#ununifi.chain.yieldaggregator.ProposalRemoveYieldFarm)
+    - [ProposalRemoveYieldFarmTarget](#ununifi.chain.yieldaggregator.ProposalRemoveYieldFarmTarget)
+    - [ProposalStopYieldFarm](#ununifi.chain.yieldaggregator.ProposalStopYieldFarm)
+    - [ProposalStopYieldFarmTarget](#ununifi.chain.yieldaggregator.ProposalStopYieldFarmTarget)
+    - [ProposalUpdateYieldFarm](#ununifi.chain.yieldaggregator.ProposalUpdateYieldFarm)
+    - [ProposalUpdateYieldFarmTarget](#ununifi.chain.yieldaggregator.ProposalUpdateYieldFarmTarget)
+  
+- [yieldaggregatorv1/query.proto](#yieldaggregatorv1/query.proto)
+    - [AssetManagementAccountInfo](#ununifi.chain.yieldaggregator.AssetManagementAccountInfo)
+    - [QueryAllAssetManagementAccountsRequest](#ununifi.chain.yieldaggregator.QueryAllAssetManagementAccountsRequest)
+    - [QueryAllAssetManagementAccountsResponse](#ununifi.chain.yieldaggregator.QueryAllAssetManagementAccountsResponse)
+    - [QueryAllFarmingUnitsRequest](#ununifi.chain.yieldaggregator.QueryAllFarmingUnitsRequest)
+    - [QueryAllFarmingUnitsResponse](#ununifi.chain.yieldaggregator.QueryAllFarmingUnitsResponse)
+    - [QueryAssetManagementAccountRequest](#ununifi.chain.yieldaggregator.QueryAssetManagementAccountRequest)
+    - [QueryAssetManagementAccountResponse](#ununifi.chain.yieldaggregator.QueryAssetManagementAccountResponse)
+    - [QueryDailyRewardPercentsRequest](#ununifi.chain.yieldaggregator.QueryDailyRewardPercentsRequest)
+    - [QueryDailyRewardPercentsResponse](#ununifi.chain.yieldaggregator.QueryDailyRewardPercentsResponse)
+    - [QueryParamsRequest](#ununifi.chain.yieldaggregator.QueryParamsRequest)
+    - [QueryParamsResponse](#ununifi.chain.yieldaggregator.QueryParamsResponse)
+    - [QueryUserInfo](#ununifi.chain.yieldaggregator.QueryUserInfo)
+    - [QueryUserInfoRequest](#ununifi.chain.yieldaggregator.QueryUserInfoRequest)
+    - [QueryUserInfoResponse](#ununifi.chain.yieldaggregator.QueryUserInfoResponse)
+  
+    - [Query](#ununifi.chain.yieldaggregator.Query)
+  
+- [yieldaggregatorv1/tx.proto](#yieldaggregatorv1/tx.proto)
+    - [MsgActivateFarmingOrder](#ununifi.chain.yieldaggregator.MsgActivateFarmingOrder)
+    - [MsgActivateFarmingOrderResponse](#ununifi.chain.yieldaggregator.MsgActivateFarmingOrderResponse)
+    - [MsgAddFarmingOrder](#ununifi.chain.yieldaggregator.MsgAddFarmingOrder)
+    - [MsgAddFarmingOrderResponse](#ununifi.chain.yieldaggregator.MsgAddFarmingOrderResponse)
+    - [MsgBeginWithdrawAll](#ununifi.chain.yieldaggregator.MsgBeginWithdrawAll)
+    - [MsgBeginWithdrawAllResponse](#ununifi.chain.yieldaggregator.MsgBeginWithdrawAllResponse)
+    - [MsgDeleteFarmingOrder](#ununifi.chain.yieldaggregator.MsgDeleteFarmingOrder)
+    - [MsgDeleteFarmingOrderResponse](#ununifi.chain.yieldaggregator.MsgDeleteFarmingOrderResponse)
+    - [MsgDeposit](#ununifi.chain.yieldaggregator.MsgDeposit)
+    - [MsgDepositResponse](#ununifi.chain.yieldaggregator.MsgDepositResponse)
+    - [MsgExecuteFarmingOrders](#ununifi.chain.yieldaggregator.MsgExecuteFarmingOrders)
+    - [MsgExecuteFarmingOrdersResponse](#ununifi.chain.yieldaggregator.MsgExecuteFarmingOrdersResponse)
+    - [MsgInactivateFarmingOrder](#ununifi.chain.yieldaggregator.MsgInactivateFarmingOrder)
+    - [MsgInactivateFarmingOrderResponse](#ununifi.chain.yieldaggregator.MsgInactivateFarmingOrderResponse)
+    - [MsgSetDailyRewardPercent](#ununifi.chain.yieldaggregator.MsgSetDailyRewardPercent)
+    - [MsgSetDailyRewardPercentResponse](#ununifi.chain.yieldaggregator.MsgSetDailyRewardPercentResponse)
+    - [MsgWithdraw](#ununifi.chain.yieldaggregator.MsgWithdraw)
+    - [MsgWithdrawResponse](#ununifi.chain.yieldaggregator.MsgWithdrawResponse)
+  
+    - [Msg](#ununifi.chain.yieldaggregator.Msg)
+  
+- [yieldfarm/params.proto](#yieldfarm/params.proto)
+    - [Params](#ununifi.chain.yieldfarm.Params)
+  
+- [yieldfarm/yieldfarm.proto](#yieldfarm/yieldfarm.proto)
+    - [FarmerInfo](#ununifi.chain.yieldfarm.FarmerInfo)
+  
+- [yieldfarm/genesis.proto](#yieldfarm/genesis.proto)
+    - [GenesisState](#ununifi.chain.yieldfarm.GenesisState)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -1454,6 +1588,22 @@ Query defines the gRPC querier service.
 
 
 
+<a name="ununifi.derivatives.PoolAssetConf"></a>
+
+### PoolAssetConf
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+| `target_weight` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="ununifi.derivatives.PoolMarketCap"></a>
 
 ### PoolMarketCap
@@ -1464,16 +1614,16 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `quote_ticker` | [string](#string) |  |  |
 | `total` | [string](#string) |  |  |
-| `breakdown` | [PoolMarketCap.Breakdown](#ununifi.derivatives.PoolMarketCap.Breakdown) | repeated |  |
+| `asset_info` | [PoolMarketCap.AssetInfo](#ununifi.derivatives.PoolMarketCap.AssetInfo) | repeated |  |
 
 
 
 
 
 
-<a name="ununifi.derivatives.PoolMarketCap.Breakdown"></a>
+<a name="ununifi.derivatives.PoolMarketCap.AssetInfo"></a>
 
-### PoolMarketCap.Breakdown
+### PoolMarketCap.AssetInfo
 
 
 
@@ -1482,6 +1632,7 @@ Query defines the gRPC querier service.
 | `denom` | [string](#string) |  |  |
 | `amount` | [string](#string) |  |  |
 | `price` | [string](#string) |  |  |
+| `reserved` | [string](#string) |  |  |
 
 
 
@@ -1502,23 +1653,7 @@ Query defines the gRPC querier service.
 | `borrowing_fee_rate_per_hour` | [string](#string) |  |  |
 | `report_liquidation_reward_rate` | [string](#string) |  |  |
 | `report_levy_period_reward_rate` | [string](#string) |  |  |
-| `accepted_assets` | [PoolParams.Asset](#ununifi.derivatives.PoolParams.Asset) | repeated |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.PoolParams.Asset"></a>
-
-### PoolParams.Asset
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `denom` | [string](#string) |  |  |
-| `target_weight` | [string](#string) |  |  |
+| `accepted_assets_conf` | [PoolAssetConf](#ununifi.derivatives.PoolAssetConf) | repeated |  |
 
 
 
@@ -1597,6 +1732,22 @@ Query defines the gRPC querier service.
 
 
 
+<a name="ununifi.derivatives.EventLossToLP"></a>
+
+### EventLossToLP
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `position_id` | [string](#string) |  |  |
+| `loss_amount` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="ununifi.derivatives.EventPerpetualFuturesPositionClosed"></a>
 
 ### EventPerpetualFuturesPositionClosed
@@ -1609,6 +1760,7 @@ Query defines the gRPC querier service.
 | `position_id` | [string](#string) |  |  |
 | `fee_amount` | [string](#string) |  |  |
 | `trade_amount` | [string](#string) |  |  |
+| `returning_amount` | [string](#string) |  |  |
 
 
 
@@ -1667,16 +1819,17 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.PerpetualFuturesNetPositionOfMarket"></a>
+<a name="ununifi.derivatives.PerpetualFuturesGrossPositionOfMarket"></a>
 
-### PerpetualFuturesNetPositionOfMarket
+### PerpetualFuturesGrossPositionOfMarket
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `market` | [Market](#ununifi.derivatives.Market) |  |  |
-| `position_size` | [string](#string) |  |  |
+| `position_type` | [PositionType](#ununifi.derivatives.PositionType) |  |  |
+| `position_size_in_denom_exponent` | [string](#string) |  |  |
 
 
 
@@ -1695,6 +1848,7 @@ Query defines the gRPC querier service.
 | `margin_maintenance_rate` | [string](#string) |  |  |
 | `imaginary_funding_rate_proportional_coefficient` | [string](#string) |  |  |
 | `markets` | [Market](#ununifi.derivatives.Market) | repeated |  |
+| `max_leverage` | [uint32](#uint32) |  |  |
 
 
 
@@ -1868,7 +2022,7 @@ GenesisState defines the derivatives module's genesis state.
 | `params` | [Params](#ununifi.derivatives.Params) |  |  |
 | `positions` | [Position](#ununifi.derivatives.Position) | repeated |  |
 | `pool_market_cap` | [PoolMarketCap](#ununifi.derivatives.PoolMarketCap) |  |  |
-| `perpetual_futures_net_position_of_market` | [PerpetualFuturesNetPositionOfMarket](#ununifi.derivatives.PerpetualFuturesNetPositionOfMarket) | repeated |  |
+| `perpetual_futures_gross_position_of_market` | [PerpetualFuturesGrossPositionOfMarket](#ununifi.derivatives.PerpetualFuturesGrossPositionOfMarket) | repeated |  |
 
 
 
@@ -1954,6 +2108,61 @@ GenesisState defines the derivatives module's genesis state.
 
 
 
+<a name="ununifi.derivatives.QueryAvailableAssetInPoolByDenomRequest"></a>
+
+### QueryAvailableAssetInPoolByDenomRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryAvailableAssetInPoolByDenomResponse"></a>
+
+### QueryAvailableAssetInPoolByDenomResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `available_asset` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryAvailableAssetsInPoolRequest"></a>
+
+### QueryAvailableAssetsInPoolRequest
+
+
+
+
+
+
+
+<a name="ununifi.derivatives.QueryAvailableAssetsInPoolResponse"></a>
+
+### QueryAvailableAssetsInPoolResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `available_assets` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
 <a name="ununifi.derivatives.QueryDLPTokenRateRequest"></a>
 
 ### QueryDLPTokenRateRequest
@@ -2004,8 +2213,8 @@ GenesisState defines the derivatives module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
-| `fee` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `estimated_dlp_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `deposit_fee` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
 
 
 
@@ -2362,6 +2571,8 @@ Query defines the gRPC querier service.
 | `DLPTokenRates` | [QueryDLPTokenRateRequest](#ununifi.derivatives.QueryDLPTokenRateRequest) | [QueryDLPTokenRateResponse](#ununifi.derivatives.QueryDLPTokenRateResponse) |  | GET|/ununifi/derivatives/pools/dlp|
 | `EstimateDLPTokenAmount` | [QueryEstimateDLPTokenAmountRequest](#ununifi.derivatives.QueryEstimateDLPTokenAmountRequest) | [QueryEstimateDLPTokenAmountResponse](#ununifi.derivatives.QueryEstimateDLPTokenAmountResponse) |  | GET|/ununifi/derivatives/estimate-dlp-token-amount/{mint_denom}/{amount}|
 | `EstimateRedeemAmount` | [QueryEstimateRedeemAmountRequest](#ununifi.derivatives.QueryEstimateRedeemAmountRequest) | [QueryEstimateRedeemAmountResponse](#ununifi.derivatives.QueryEstimateRedeemAmountResponse) |  | GET|/ununifi/derivatives/estimate-redeem-amount/{redeem_denom}/{lpt_amount}|
+| `AvailableAssetInPoolByDenom` | [QueryAvailableAssetInPoolByDenomRequest](#ununifi.derivatives.QueryAvailableAssetInPoolByDenomRequest) | [QueryAvailableAssetInPoolByDenomResponse](#ununifi.derivatives.QueryAvailableAssetInPoolByDenomResponse) |  | GET|/ununifi/derivatives/pools/available-asset/{denom}|
+| `AvailableAssetsInPool` | [QueryAvailableAssetsInPoolRequest](#ununifi.derivatives.QueryAvailableAssetsInPoolRequest) | [QueryAvailableAssetsInPoolResponse](#ununifi.derivatives.QueryAvailableAssetsInPoolResponse) |  | GET|/ununifi/derivatives/pools/available-assets|
 
  <!-- end services -->
 
@@ -2371,33 +2582,6 @@ Query defines the gRPC querier service.
 <p align="right"><a href="#top">Top</a></p>
 
 ## derivatives/tx.proto
-
-
-
-<a name="ununifi.derivatives.MsgBurnLiquidityProviderToken"></a>
-
-### MsgBurnLiquidityProviderToken
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  |  |
-| `amount` | [string](#string) |  |  |
-| `redeem_denom` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse"></a>
-
-### MsgBurnLiquidityProviderTokenResponse
-
-
-
-
 
 
 
@@ -2427,9 +2611,9 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.MsgMintLiquidityProviderToken"></a>
+<a name="ununifi.derivatives.MsgDepositToPool"></a>
 
-### MsgMintLiquidityProviderToken
+### MsgDepositToPool
 
 
 
@@ -2443,9 +2627,9 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.derivatives.MsgMintLiquidityProviderTokenResponse"></a>
+<a name="ununifi.derivatives.MsgDepositToPoolResponse"></a>
 
-### MsgMintLiquidityProviderTokenResponse
+### MsgDepositToPoolResponse
 
 
 
@@ -2534,6 +2718,33 @@ Query defines the gRPC querier service.
 
 
 
+
+<a name="ununifi.derivatives.MsgWithdrawFromPool"></a>
+
+### MsgWithdrawFromPool
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `lpt_amount` | [string](#string) |  |  |
+| `redeem_denom` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.derivatives.MsgWithdrawFromPoolResponse"></a>
+
+### MsgWithdrawFromPoolResponse
+
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -2548,8 +2759,8 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `MintLiquidityProviderToken` | [MsgMintLiquidityProviderToken](#ununifi.derivatives.MsgMintLiquidityProviderToken) | [MsgMintLiquidityProviderTokenResponse](#ununifi.derivatives.MsgMintLiquidityProviderTokenResponse) |  | |
-| `BurnLiquidityProviderToken` | [MsgBurnLiquidityProviderToken](#ununifi.derivatives.MsgBurnLiquidityProviderToken) | [MsgBurnLiquidityProviderTokenResponse](#ununifi.derivatives.MsgBurnLiquidityProviderTokenResponse) |  | |
+| `DepositToPool` | [MsgDepositToPool](#ununifi.derivatives.MsgDepositToPool) | [MsgDepositToPoolResponse](#ununifi.derivatives.MsgDepositToPoolResponse) |  | |
+| `WithdrawFromPool` | [MsgWithdrawFromPool](#ununifi.derivatives.MsgWithdrawFromPool) | [MsgWithdrawFromPoolResponse](#ununifi.derivatives.MsgWithdrawFromPoolResponse) |  | |
 | `OpenPosition` | [MsgOpenPosition](#ununifi.derivatives.MsgOpenPosition) | [MsgOpenPositionResponse](#ununifi.derivatives.MsgOpenPositionResponse) |  | |
 | `ClosePosition` | [MsgClosePosition](#ununifi.derivatives.MsgClosePosition) | [MsgClosePositionResponse](#ununifi.derivatives.MsgClosePositionResponse) |  | |
 | `ReportLiquidation` | [MsgReportLiquidation](#ununifi.derivatives.MsgReportLiquidation) | [MsgReportLiquidationResponse](#ununifi.derivatives.MsgReportLiquidationResponse) |  | |
@@ -3878,23 +4089,6 @@ Query defines the gRPC querier service.
 
 
 
-<a name="ununifi.nftmarket.ListedNft"></a>
-
-### ListedNft
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  |  |
-| `uri` | [string](#string) |  |  |
-| `uri_hash` | [string](#string) |  |  |
-
-
-
-
-
-
 <a name="ununifi.nftmarket.Loan"></a>
 
 ### Loan
@@ -3947,6 +4141,23 @@ Query defines the gRPC querier service.
 | ----- | ---- | ----- | ----------- |
 | `class_id` | [string](#string) |  |  |
 | `nft_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.nftmarket.NftInfo"></a>
+
+### NftInfo
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  |  |
+| `uri` | [string](#string) |  |  |
+| `uri_hash` | [string](#string) |  |  |
 
 
 
@@ -4131,6 +4342,22 @@ GenesisState defines the nftmarket module's genesis state.
 
 
 
+<a name="ununifi.nftmarket.NftListingDetail"></a>
+
+### NftListingDetail
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `listing` | [NftListing](#ununifi.nftmarket.NftListing) |  |  |
+| `nft_info` | [NftInfo](#ununifi.nftmarket.NftInfo) |  |  |
+
+
+
+
+
+
 <a name="ununifi.nftmarket.QueryBidderBidsRequest"></a>
 
 ### QueryBidderBidsRequest
@@ -4242,7 +4469,7 @@ GenesisState defines the nftmarket module's genesis state.
 | `symbol` | [string](#string) |  |  |
 | `uri` | [string](#string) |  |  |
 | `urihash` | [string](#string) |  |  |
-| `nfts` | [ListedNft](#ununifi.nftmarket.ListedNft) | repeated |  |
+| `nfts` | [NftInfo](#ununifi.nftmarket.NftInfo) | repeated |  |
 | `nft_count` | [uint64](#uint64) |  |  |
 
 
@@ -4303,7 +4530,7 @@ GenesisState defines the nftmarket module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `listings` | [NftListing](#ununifi.nftmarket.NftListing) | repeated |  |
+| `listings` | [NftListingDetail](#ununifi.nftmarket.NftListingDetail) | repeated |  |
 
 
 
@@ -7259,6 +7486,1676 @@ Query defines the gRPC querier service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Params` | [QueryParamsRequest](#ununifi.ununifidist.QueryParamsRequest) | [QueryParamsResponse](#ununifi.ununifidist.QueryParamsResponse) |  | GET|/ununifi/ununifidist/params|
 | `Balances` | [QueryGetBalancesRequest](#ununifi.ununifidist.QueryGetBalancesRequest) | [QueryGetBalancesResponse](#ununifi.ununifidist.QueryGetBalancesResponse) | this line is used by starport scaffolding # 2 | GET|/ununifi/ununifidist/balances|
+
+ <!-- end services -->
+
+
+
+<a name="yield-aggregator/params.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yield-aggregator/params.proto
+
+
+
+<a name="ununifi.yieldaggregator.Params"></a>
+
+### Params
+Params defines the parameters for the module.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `commission_rate` | [string](#string) |  |  |
+| `vault_creation_fee` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `vault_creation_deposit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="yield-aggregator/yield-aggregator.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yield-aggregator/yield-aggregator.proto
+
+
+
+<a name="ununifi.yieldaggregator.Strategy"></a>
+
+### Strategy
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+| `id` | [uint64](#uint64) |  |  |
+| `contract_address` | [string](#string) |  |  |
+| `name` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.StrategyMetrics"></a>
+
+### StrategyMetrics
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `allocation` | [string](#string) |  |  |
+| `apr` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.StrategyWeight"></a>
+
+### StrategyWeight
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `strategy_id` | [uint64](#uint64) |  |  |
+| `weight` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.Vault"></a>
+
+### Vault
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [uint64](#uint64) |  |  |
+| `denom` | [string](#string) |  |  |
+| `owner` | [string](#string) |  |  |
+| `owner_deposit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `withdraw_commission_rate` | [string](#string) |  |  |
+| `withdraw_reserve_rate` | [string](#string) |  |  |
+| `strategy_weights` | [StrategyWeight](#ununifi.yieldaggregator.StrategyWeight) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.VaultMetrics"></a>
+
+### VaultMetrics
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `allocation` | [string](#string) |  |  |
+| `apy` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="yield-aggregator/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yield-aggregator/genesis.proto
+
+
+
+<a name="ununifi.yieldaggregator.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the yieldaggregator module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.yieldaggregator.Params) |  |  |
+| `vaults` | [Vault](#ununifi.yieldaggregator.Vault) | repeated | this line is used by starport scaffolding # genesis/proto/state |
+| `strategies` | [Strategy](#ununifi.yieldaggregator.Strategy) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="yield-aggregator/proposal.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yield-aggregator/proposal.proto
+
+
+
+<a name="ununifi.yieldaggregator.ProposalAddStrategy"></a>
+
+### ProposalAddStrategy
+proposal to add new strategy.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `denom` | [string](#string) |  |  |
+| `contract_address` | [string](#string) |  |  |
+| `name` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="yield-aggregator/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yield-aggregator/query.proto
+
+
+
+<a name="ununifi.yieldaggregator.QueryAllStrategyRequest"></a>
+
+### QueryAllStrategyRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.QueryAllStrategyResponse"></a>
+
+### QueryAllStrategyResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `strategies` | [Strategy](#ununifi.yieldaggregator.Strategy) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.QueryAllVaultRequest"></a>
+
+### QueryAllVaultRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.QueryAllVaultResponse"></a>
+
+### QueryAllVaultResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `vaults` | [Vault](#ununifi.yieldaggregator.Vault) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.QueryEstimateMintAmountRequest"></a>
+
+### QueryEstimateMintAmountRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [uint64](#uint64) |  |  |
+| `deposit_amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.QueryEstimateMintAmountResponse"></a>
+
+### QueryEstimateMintAmountResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `mint_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.QueryEstimateRedeemAmountRequest"></a>
+
+### QueryEstimateRedeemAmountRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [uint64](#uint64) |  |  |
+| `burn_amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.QueryEstimateRedeemAmountResponse"></a>
+
+### QueryEstimateRedeemAmountResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `redeem_amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.QueryGetStrategyRequest"></a>
+
+### QueryGetStrategyRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+| `id` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.QueryGetStrategyResponse"></a>
+
+### QueryGetStrategyResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `strategy` | [Strategy](#ununifi.yieldaggregator.Strategy) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.QueryGetVaultRequest"></a>
+
+### QueryGetVaultRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.QueryGetVaultResponse"></a>
+
+### QueryGetVaultResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `vault` | [Vault](#ununifi.yieldaggregator.Vault) |  |  |
+| `strategies` | [Strategy](#ununifi.yieldaggregator.Strategy) | repeated |  |
+| `vault_address` | [string](#string) |  |  |
+| `total_bonded_amount` | [string](#string) |  |  |
+| `total_unbonding_amount` | [string](#string) |  |  |
+| `total_withdrawal_balance` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+QueryParamsRequest is request type for the Query/Params RPC method.
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+QueryParamsResponse is response type for the Query/Params RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.yieldaggregator.Params) |  | params holds all the parameters of this module. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.yieldaggregator.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#ununifi.yieldaggregator.QueryParamsRequest) | [QueryParamsResponse](#ununifi.yieldaggregator.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/ununifi/yield-aggregator/params|
+| `VaultAll` | [QueryAllVaultRequest](#ununifi.yieldaggregator.QueryAllVaultRequest) | [QueryAllVaultResponse](#ununifi.yieldaggregator.QueryAllVaultResponse) | this line is used by starport scaffolding # 2 | GET|/ununifi/yield-aggregator/vaults|
+| `Vault` | [QueryGetVaultRequest](#ununifi.yieldaggregator.QueryGetVaultRequest) | [QueryGetVaultResponse](#ununifi.yieldaggregator.QueryGetVaultResponse) |  | GET|/ununifi/yield-aggregator/vaults/{id}|
+| `StrategyAll` | [QueryAllStrategyRequest](#ununifi.yieldaggregator.QueryAllStrategyRequest) | [QueryAllStrategyResponse](#ununifi.yieldaggregator.QueryAllStrategyResponse) |  | GET|/ununifi/yield-aggregator/strategies/query-param|
+| `Strategy` | [QueryGetStrategyRequest](#ununifi.yieldaggregator.QueryGetStrategyRequest) | [QueryGetStrategyResponse](#ununifi.yieldaggregator.QueryGetStrategyResponse) |  | GET|/ununifi/yield-aggregator/strategies/{id}|
+| `EstimateMintAmount` | [QueryEstimateMintAmountRequest](#ununifi.yieldaggregator.QueryEstimateMintAmountRequest) | [QueryEstimateMintAmountResponse](#ununifi.yieldaggregator.QueryEstimateMintAmountResponse) |  | GET|/ununifi/yield-aggregator/vaults/{id}/estimate-mint-amount|
+| `EstimateRedeemAmount` | [QueryEstimateRedeemAmountRequest](#ununifi.yieldaggregator.QueryEstimateRedeemAmountRequest) | [QueryEstimateRedeemAmountResponse](#ununifi.yieldaggregator.QueryEstimateRedeemAmountResponse) |  | GET|/ununifi/yield-aggregator/vaults/{id}/estimate-redeem-amount|
+
+ <!-- end services -->
+
+
+
+<a name="yield-aggregator/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yield-aggregator/tx.proto
+
+
+
+<a name="ununifi.yieldaggregator.MsgCreateVault"></a>
+
+### MsgCreateVault
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `denom` | [string](#string) |  |  |
+| `commission_rate` | [string](#string) |  |  |
+| `withdraw_reserve_rate` | [string](#string) |  |  |
+| `strategy_weights` | [StrategyWeight](#ununifi.yieldaggregator.StrategyWeight) | repeated |  |
+| `fee` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| `deposit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.MsgCreateVaultResponse"></a>
+
+### MsgCreateVaultResponse
+
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.MsgDeleteVault"></a>
+
+### MsgDeleteVault
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `vault_id` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.MsgDeleteVaultResponse"></a>
+
+### MsgDeleteVaultResponse
+
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.MsgDepositToVault"></a>
+
+### MsgDepositToVault
+this line is used by starport scaffolding # proto/tx/message
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `vault_id` | [uint64](#uint64) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.MsgDepositToVaultResponse"></a>
+
+### MsgDepositToVaultResponse
+
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.MsgTransferVaultOwnership"></a>
+
+### MsgTransferVaultOwnership
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `vault_id` | [uint64](#uint64) |  |  |
+| `recipient` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.MsgTransferVaultOwnershipResponse"></a>
+
+### MsgTransferVaultOwnershipResponse
+
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.MsgWithdrawFromVault"></a>
+
+### MsgWithdrawFromVault
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `vault_id` | [uint64](#uint64) |  |  |
+| `lp_token_amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.yieldaggregator.MsgWithdrawFromVaultResponse"></a>
+
+### MsgWithdrawFromVaultResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.yieldaggregator.Msg"></a>
+
+### Msg
+Msg defines the Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `DepositToVault` | [MsgDepositToVault](#ununifi.yieldaggregator.MsgDepositToVault) | [MsgDepositToVaultResponse](#ununifi.yieldaggregator.MsgDepositToVaultResponse) | this line is used by starport scaffolding # proto/tx/rpc | |
+| `WithdrawFromVault` | [MsgWithdrawFromVault](#ununifi.yieldaggregator.MsgWithdrawFromVault) | [MsgWithdrawFromVaultResponse](#ununifi.yieldaggregator.MsgWithdrawFromVaultResponse) |  | |
+| `CreateVault` | [MsgCreateVault](#ununifi.yieldaggregator.MsgCreateVault) | [MsgCreateVaultResponse](#ununifi.yieldaggregator.MsgCreateVaultResponse) |  | |
+| `DeleteVault` | [MsgDeleteVault](#ununifi.yieldaggregator.MsgDeleteVault) | [MsgDeleteVaultResponse](#ununifi.yieldaggregator.MsgDeleteVaultResponse) |  | |
+| `TransferVaultOwnership` | [MsgTransferVaultOwnership](#ununifi.yieldaggregator.MsgTransferVaultOwnership) | [MsgTransferVaultOwnershipResponse](#ununifi.yieldaggregator.MsgTransferVaultOwnershipResponse) |  | |
+
+ <!-- end services -->
+
+
+
+<a name="yieldaggregatorv1/params.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yieldaggregatorv1/params.proto
+
+
+
+<a name="ununifi.chain.yieldaggregator.Params"></a>
+
+### Params
+Params defines the parameters for the module.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `reward_rate_feeders` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="yieldaggregatorv1/asset.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yieldaggregatorv1/asset.proto
+
+
+
+<a name="ununifi.chain.yieldaggregator.AssetCondition"></a>
+
+### AssetCondition
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+| `min` | [string](#string) |  |  |
+| `ratio` | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.AssetManagementAccount"></a>
+
+### AssetManagementAccount
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  |  |
+| `name` | [string](#string) |  |  |
+| `enabled` | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.AssetManagementTarget"></a>
+
+### AssetManagementTarget
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  |  |
+| `asset_management_account_id` | [string](#string) |  |  |
+| `account_address` | [string](#string) |  |  |
+| `asset_conditions` | [AssetCondition](#ununifi.chain.yieldaggregator.AssetCondition) | repeated |  |
+| `unbonding_time` | [google.protobuf.Duration](#google.protobuf.Duration) |  |  |
+| `integrate_info` | [IntegrateInfo](#ununifi.chain.yieldaggregator.IntegrateInfo) |  |  |
+| `enabled` | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.DailyPercent"></a>
+
+### DailyPercent
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `account_id` | [string](#string) |  |  |
+| `target_id` | [string](#string) |  |  |
+| `rate` | [string](#string) |  |  |
+| `date` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.DepositAllocation"></a>
+
+### DepositAllocation
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  |  |
+| `order_id` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.FarmingOrder"></a>
+
+### FarmingOrder
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  |  |
+| `from_address` | [string](#string) |  |  |
+| `strategy` | [Strategy](#ununifi.chain.yieldaggregator.Strategy) |  |  |
+| `max_unbonding_time` | [google.protobuf.Duration](#google.protobuf.Duration) |  |  |
+| `overall_ratio` | [uint32](#uint32) |  |  |
+| `min` | [string](#string) |  |  |
+| `max` | [string](#string) |  |  |
+| `date` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `active` | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.FarmingUnit"></a>
+
+### FarmingUnit
+FarmingUnit is managing users' investment on a yield farm target
+Here, amount field is the amount withdrawable instantly, staked amount on yield farms are not calculated here
+since the value of staked amount could change after deposit - it's only determined at the time of withdrawal
+from the farm
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `account_id` | [string](#string) |  |  |
+| `target_id` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+| `farming_start_time` | [string](#string) |  |  |
+| `unbonding_starttime` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `owner` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.IntegrateInfo"></a>
+
+### IntegrateInfo
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `type` | [IntegrateType](#ununifi.chain.yieldaggregator.IntegrateType) |  |  |
+| `contract_ibc_port_id` | [string](#string) |  | for cosmwasm contract |
+| `mod_name` | [string](#string) |  | for golang module |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.Strategy"></a>
+
+### Strategy
+Strategy types
+recent30DaysHighDPRStrategy -	Invest in the best DPR destination in the last 30 days on average
+recent1DayHighDPRStrategy	- Invest in the best DPR destination in the last average day
+notHaveDPRStrategy - Invest in something that does not have a DPR.
+ManualStrategy - Manual investment, whiteTargetIdlist required.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `strategy_type` | [string](#string) |  |  |
+| `whitelisted_target_ids` | [string](#string) | repeated |  |
+| `blacklisted_target_ids` | [string](#string) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.UserDeposit"></a>
+
+### UserDeposit
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `user` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.UserInfo"></a>
+
+### UserInfo
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `user` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+| `farming_orders` | [FarmingOrder](#ununifi.chain.yieldaggregator.FarmingOrder) | repeated |  |
+| `farmed_counter` | [uint64](#uint64) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="ununifi.chain.yieldaggregator.IntegrateType"></a>
+
+### IntegrateType
+
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| GOLANG_MOD | 0 |  |
+| COSMWASM | 1 |  |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="yieldaggregatorv1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yieldaggregatorv1/genesis.proto
+
+
+
+<a name="ununifi.chain.yieldaggregator.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the yieldaggregator module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.chain.yieldaggregator.Params) |  |  |
+| `asset_management_accounts` | [AssetManagementAccount](#ununifi.chain.yieldaggregator.AssetManagementAccount) | repeated |  |
+| `asset_management_targets` | [AssetManagementTarget](#ununifi.chain.yieldaggregator.AssetManagementTarget) | repeated |  |
+| `farming_orders` | [FarmingOrder](#ununifi.chain.yieldaggregator.FarmingOrder) | repeated |  |
+| `farming_units` | [FarmingUnit](#ununifi.chain.yieldaggregator.FarmingUnit) | repeated |  |
+| `user_deposits` | [UserDeposit](#ununifi.chain.yieldaggregator.UserDeposit) | repeated |  |
+| `daily_percents` | [DailyPercent](#ununifi.chain.yieldaggregator.DailyPercent) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="yieldaggregatorv1/proposal.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yieldaggregatorv1/proposal.proto
+
+
+
+<a name="ununifi.chain.yieldaggregator.ProposalAddYieldFarm"></a>
+
+### ProposalAddYieldFarm
+proposal to add new yield farm.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `account` | [AssetManagementAccount](#ununifi.chain.yieldaggregator.AssetManagementAccount) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.ProposalAddYieldFarmTarget"></a>
+
+### ProposalAddYieldFarmTarget
+proposal to add new yield farm target
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `target` | [AssetManagementTarget](#ununifi.chain.yieldaggregator.AssetManagementTarget) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.ProposalRemoveYieldFarm"></a>
+
+### ProposalRemoveYieldFarm
+proposal to remove yield farm
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.ProposalRemoveYieldFarmTarget"></a>
+
+### ProposalRemoveYieldFarmTarget
+proposal to delete yield farm target
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `id` | [string](#string) |  |  |
+| `asset_management_account_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.ProposalStopYieldFarm"></a>
+
+### ProposalStopYieldFarm
+proposal to remove yield farm
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.ProposalStopYieldFarmTarget"></a>
+
+### ProposalStopYieldFarmTarget
+proposal to stop yield farm target
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `id` | [string](#string) |  |  |
+| `asset_management_account_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.ProposalUpdateYieldFarm"></a>
+
+### ProposalUpdateYieldFarm
+proposal to update yield farm info
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `account` | [AssetManagementAccount](#ununifi.chain.yieldaggregator.AssetManagementAccount) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.ProposalUpdateYieldFarmTarget"></a>
+
+### ProposalUpdateYieldFarmTarget
+proposal to update yield farm target
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `target` | [AssetManagementTarget](#ununifi.chain.yieldaggregator.AssetManagementTarget) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="yieldaggregatorv1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yieldaggregatorv1/query.proto
+
+
+
+<a name="ununifi.chain.yieldaggregator.AssetManagementAccountInfo"></a>
+
+### AssetManagementAccountInfo
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  |  |
+| `name` | [string](#string) |  |  |
+| `asset_management_targets` | [AssetManagementTarget](#ununifi.chain.yieldaggregator.AssetManagementTarget) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryAllAssetManagementAccountsRequest"></a>
+
+### QueryAllAssetManagementAccountsRequest
+
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryAllAssetManagementAccountsResponse"></a>
+
+### QueryAllAssetManagementAccountsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `accounts` | [AssetManagementAccountInfo](#ununifi.chain.yieldaggregator.AssetManagementAccountInfo) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryAllFarmingUnitsRequest"></a>
+
+### QueryAllFarmingUnitsRequest
+
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryAllFarmingUnitsResponse"></a>
+
+### QueryAllFarmingUnitsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `units` | [FarmingUnit](#ununifi.chain.yieldaggregator.FarmingUnit) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryAssetManagementAccountRequest"></a>
+
+### QueryAssetManagementAccountRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryAssetManagementAccountResponse"></a>
+
+### QueryAssetManagementAccountResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `account` | [AssetManagementAccountInfo](#ununifi.chain.yieldaggregator.AssetManagementAccountInfo) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryDailyRewardPercentsRequest"></a>
+
+### QueryDailyRewardPercentsRequest
+
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryDailyRewardPercentsResponse"></a>
+
+### QueryDailyRewardPercentsResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `daily_percents` | [DailyPercent](#ununifi.chain.yieldaggregator.DailyPercent) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+QueryParamsRequest is request type for the Query/Params RPC method.
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+QueryParamsResponse is response type for the Query/Params RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.chain.yieldaggregator.Params) |  | params holds all the parameters of this module. |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryUserInfo"></a>
+
+### QueryUserInfo
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+| `farming_orders` | [FarmingOrder](#ununifi.chain.yieldaggregator.FarmingOrder) | repeated |  |
+| `farmed_counter` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryUserInfoRequest"></a>
+
+### QueryUserInfoRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.QueryUserInfoResponse"></a>
+
+### QueryUserInfoResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `user_info` | [QueryUserInfo](#ununifi.chain.yieldaggregator.QueryUserInfo) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.chain.yieldaggregator.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#ununifi.chain.yieldaggregator.QueryParamsRequest) | [QueryParamsResponse](#ununifi.chain.yieldaggregator.QueryParamsResponse) | Parameters queries the parameters of the module. | GET|/UnUniFi/chain/yieldaggregatorv1/params|
+| `AssetManagementAccount` | [QueryAssetManagementAccountRequest](#ununifi.chain.yieldaggregator.QueryAssetManagementAccountRequest) | [QueryAssetManagementAccountResponse](#ununifi.chain.yieldaggregator.QueryAssetManagementAccountResponse) |  | GET|/UnUniFi/chain/yieldaggregatorv1/asset_management_account/{id}|
+| `AllAssetManagementAccounts` | [QueryAllAssetManagementAccountsRequest](#ununifi.chain.yieldaggregator.QueryAllAssetManagementAccountsRequest) | [QueryAllAssetManagementAccountsResponse](#ununifi.chain.yieldaggregator.QueryAllAssetManagementAccountsResponse) |  | GET|/UnUniFi/chain/yieldaggregatorv1/all_asset_management_accounts|
+| `UserInfo` | [QueryUserInfoRequest](#ununifi.chain.yieldaggregator.QueryUserInfoRequest) | [QueryUserInfoResponse](#ununifi.chain.yieldaggregator.QueryUserInfoResponse) |  | GET|/UnUniFi/chain/yieldaggregatorv1/user_info/{address}|
+| `AllFarmingUnits` | [QueryAllFarmingUnitsRequest](#ununifi.chain.yieldaggregator.QueryAllFarmingUnitsRequest) | [QueryAllFarmingUnitsResponse](#ununifi.chain.yieldaggregator.QueryAllFarmingUnitsResponse) |  | GET|/UnUniFi/chain/yieldaggregatorv1/all_user_infos|
+| `DailyRewardPercents` | [QueryDailyRewardPercentsRequest](#ununifi.chain.yieldaggregator.QueryDailyRewardPercentsRequest) | [QueryDailyRewardPercentsResponse](#ununifi.chain.yieldaggregator.QueryDailyRewardPercentsResponse) |  | GET|/UnUniFi/chain/yieldaggregatorv1/daily_reward_percents|
+
+ <!-- end services -->
+
+
+
+<a name="yieldaggregatorv1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yieldaggregatorv1/tx.proto
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgActivateFarmingOrder"></a>
+
+### MsgActivateFarmingOrder
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  |  |
+| `order_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgActivateFarmingOrderResponse"></a>
+
+### MsgActivateFarmingOrderResponse
+
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgAddFarmingOrder"></a>
+
+### MsgAddFarmingOrder
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  |  |
+| `order` | [FarmingOrder](#ununifi.chain.yieldaggregator.FarmingOrder) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgAddFarmingOrderResponse"></a>
+
+### MsgAddFarmingOrderResponse
+
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgBeginWithdrawAll"></a>
+
+### MsgBeginWithdrawAll
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgBeginWithdrawAllResponse"></a>
+
+### MsgBeginWithdrawAllResponse
+
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgDeleteFarmingOrder"></a>
+
+### MsgDeleteFarmingOrder
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  |  |
+| `order_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgDeleteFarmingOrderResponse"></a>
+
+### MsgDeleteFarmingOrderResponse
+
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgDeposit"></a>
+
+### MsgDeposit
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+| `execute_orders` | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgDepositResponse"></a>
+
+### MsgDepositResponse
+
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgExecuteFarmingOrders"></a>
+
+### MsgExecuteFarmingOrders
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  |  |
+| `order_ids` | [string](#string) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgExecuteFarmingOrdersResponse"></a>
+
+### MsgExecuteFarmingOrdersResponse
+
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgInactivateFarmingOrder"></a>
+
+### MsgInactivateFarmingOrder
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  |  |
+| `order_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgInactivateFarmingOrderResponse"></a>
+
+### MsgInactivateFarmingOrderResponse
+
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgSetDailyRewardPercent"></a>
+
+### MsgSetDailyRewardPercent
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  |  |
+| `account_id` | [string](#string) |  |  |
+| `target_id` | [string](#string) |  |  |
+| `rate` | [string](#string) |  |  |
+| `date` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgSetDailyRewardPercentResponse"></a>
+
+### MsgSetDailyRewardPercentResponse
+
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgWithdraw"></a>
+
+### MsgWithdraw
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="ununifi.chain.yieldaggregator.MsgWithdrawResponse"></a>
+
+### MsgWithdrawResponse
+
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="ununifi.chain.yieldaggregator.Msg"></a>
+
+### Msg
+Msg defines the Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Deposit` | [MsgDeposit](#ununifi.chain.yieldaggregator.MsgDeposit) | [MsgDepositResponse](#ununifi.chain.yieldaggregator.MsgDepositResponse) |  | |
+| `Withdraw` | [MsgWithdraw](#ununifi.chain.yieldaggregator.MsgWithdraw) | [MsgWithdrawResponse](#ununifi.chain.yieldaggregator.MsgWithdrawResponse) |  | |
+| `BeginWithdrawAll` | [MsgBeginWithdrawAll](#ununifi.chain.yieldaggregator.MsgBeginWithdrawAll) | [MsgBeginWithdrawAllResponse](#ununifi.chain.yieldaggregator.MsgBeginWithdrawAllResponse) |  | |
+| `AddFarmingOrder` | [MsgAddFarmingOrder](#ununifi.chain.yieldaggregator.MsgAddFarmingOrder) | [MsgAddFarmingOrderResponse](#ununifi.chain.yieldaggregator.MsgAddFarmingOrderResponse) |  | |
+| `DeleteFarmingOrder` | [MsgDeleteFarmingOrder](#ununifi.chain.yieldaggregator.MsgDeleteFarmingOrder) | [MsgDeleteFarmingOrderResponse](#ununifi.chain.yieldaggregator.MsgDeleteFarmingOrderResponse) |  | |
+| `ActivateFarmingOrder` | [MsgActivateFarmingOrder](#ununifi.chain.yieldaggregator.MsgActivateFarmingOrder) | [MsgActivateFarmingOrderResponse](#ununifi.chain.yieldaggregator.MsgActivateFarmingOrderResponse) |  | |
+| `InactivateFarmingOrder` | [MsgInactivateFarmingOrder](#ununifi.chain.yieldaggregator.MsgInactivateFarmingOrder) | [MsgInactivateFarmingOrderResponse](#ununifi.chain.yieldaggregator.MsgInactivateFarmingOrderResponse) |  | |
+| `ExecuteFarmingOrders` | [MsgExecuteFarmingOrders](#ununifi.chain.yieldaggregator.MsgExecuteFarmingOrders) | [MsgExecuteFarmingOrdersResponse](#ununifi.chain.yieldaggregator.MsgExecuteFarmingOrdersResponse) |  | |
+| `SetDailyRewardPercent` | [MsgSetDailyRewardPercent](#ununifi.chain.yieldaggregator.MsgSetDailyRewardPercent) | [MsgSetDailyRewardPercentResponse](#ununifi.chain.yieldaggregator.MsgSetDailyRewardPercentResponse) |  | |
+
+ <!-- end services -->
+
+
+
+<a name="yieldfarm/params.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yieldfarm/params.proto
+
+
+
+<a name="ununifi.chain.yieldfarm.Params"></a>
+
+### Params
+Params defines the parameters for the module.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `daily_reward` | [uint64](#uint64) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="yieldfarm/yieldfarm.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yieldfarm/yieldfarm.proto
+
+
+
+<a name="ununifi.chain.yieldfarm.FarmerInfo"></a>
+
+### FarmerInfo
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `account` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+| `rewards` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="yieldfarm/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## yieldfarm/genesis.proto
+
+
+
+<a name="ununifi.chain.yieldfarm.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the yieldfarm module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#ununifi.chain.yieldfarm.Params) |  |  |
+| `farmer_infos` | [FarmerInfo](#ununifi.chain.yieldfarm.FarmerInfo) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
 
  <!-- end services -->
 

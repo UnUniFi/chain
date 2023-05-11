@@ -9,16 +9,17 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	abci "github.com/cometbft/cometbft/abci/types"
 
-	"github.com/UnUniFi/chain/x/nftmarket/client/cli"
-	"github.com/UnUniFi/chain/x/nftmarket/keeper"
-	"github.com/UnUniFi/chain/x/nftmarket/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+
+	"github.com/UnUniFi/chain/x/nftmarket/client/cli"
+	"github.com/UnUniFi/chain/x/nftmarket/keeper"
+	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
 var (
@@ -118,16 +119,8 @@ func (am AppModule) Name() string {
 	return am.AppModuleBasic.Name()
 }
 
-// Deprecated: use RegisterServices
-func (am AppModule) Route() sdk.Route { return sdk.Route{} }
-
-// Deprecated: use RegisterServices
-func (AppModule) QuerierRoute() string { return types.RouterKey }
-
-// Deprecated: use RegisterServices
-func (am AppModule) LegacyQuerierHandler(_ *codec.LegacyAmino) sdk.Querier {
-	return nil
-}
+// QuerierRoute returns the capability module's query routing key.
+func (AppModule) QuerierRoute() string { return types.QuerierRoute }
 
 // RegisterServices registers a GRPC query service to respond to the
 // module-specific GRPC queries.
