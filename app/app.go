@@ -806,6 +806,14 @@ func NewApp(
 			app.StakeibcKeeper.Hooks(),
 		),
 	)
+
+	app.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
+		appCodec,
+		keys[ecosystemincentivetypes.StoreKey],
+		app.GetSubspace(ecosystemincentivetypes.ModuleName),
+		app.BankKeeper,
+	)
+
 	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
 
 	// register the proposal types
