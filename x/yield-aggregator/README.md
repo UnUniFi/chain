@@ -1,4 +1,4 @@
-# Yield-aggregator
+# Yield Aggregator
 
 The `yield-aggregator` module provides the function for yield aggregation.
 Users deposit their funds to the **Vault**, and then this module uses the funds to earn yield automatically.
