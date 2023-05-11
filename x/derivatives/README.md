@@ -335,7 +335,7 @@ The derivatives module primarily provides the following queries:
 - [AddressPositions](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L267-L280)
 - [DLPTokenRates](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L283-L292)
 - [EstimateDLPTokenAmount](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L294-L312)
-- [EstimateRedeemAmount](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L314-L332)
+- [EstimateRedeemTokenAmount](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L314-L332)
 
 # Params
 
