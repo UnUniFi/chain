@@ -642,6 +642,7 @@ func NewApp(
 		app.ICAControllerKeeper,
 		*app.IBCKeeper,
 		scopedStakeibcKeeper,
+		scopedIBCKeeper,
 		app.InterchainqueryKeeper,
 		app.RecordsKeeper,
 		*app.StakingKeeper,
