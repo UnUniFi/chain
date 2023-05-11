@@ -237,7 +237,6 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 	}
 }
 
-// TODO: prices are not updated
 func (suite *KeeperTestSuite) TestReportLiquidationNeededPerpetualFuturesPosition() {
 	suite.SetParams()
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
