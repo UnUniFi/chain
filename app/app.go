@@ -119,7 +119,11 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
 
+	"github.com/UnUniFi/chain/app/upgrades"
 	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
+	v2 "github.com/UnUniFi/chain/app/upgrades/v2"
+
+	"github.com/UnUniFi/chain/app/keepers"
 	// "github.com/UnUniFi/chain/x/derivatives"
 	// epochsmodule "github.com/UnUniFi/chain/x/epochs"
 	// "github.com/UnUniFi/chain/x/nftmint"
@@ -273,6 +277,8 @@ var (
 		distrtypes.ModuleName: true,
 		// stakeibcmoduletypes.ModuleName: true,
 	}
+
+	Upgrades = []upgrades.Upgrade{v1_beta3.Upgrade, v2.Upgrade}
 )
 
 var (
@@ -309,7 +315,7 @@ type App struct {
 
 	// keepers
 	AccountKeeper    authkeeper.AccountKeeper
-	BankKeeper       bankkeeper.Keeper
+	BankKeeper       bankkeeper.BaseKeeper
 	CapabilityKeeper *capabilitykeeper.Keeper
 	StakingKeeper    *stakingkeeper.Keeper
 	SlashingKeeper   slashingkeeper.Keeper
@@ -366,6 +372,7 @@ type App struct {
 	// simulation manager
 	sm           *module.SimulationManager
 	configurator module.Configurator
+	keepers.AppKeepers
 }
 
 // NewApp returns a reference to an initialized Gaia.
@@ -437,6 +444,7 @@ func NewApp(
 		keys:              keys,
 		tkeys:             tkeys,
 		memKeys:           memKeys,
+		AppKeepers:        keepers.AppKeepers{},
 	}
 
 	app.ParamsKeeper = initParamsKeeper(
@@ -861,6 +869,8 @@ func NewApp(
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
 	// we prefer to be more strict in what arguments the modules expect.
 	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
+
+	app.setupAppkeeper()
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
@@ -1395,12 +1405,39 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	return paramsKeeper
 }
 
+func (app *App) setupUpgradeStoreLoaders() {
+	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
+	if err != nil {
+		panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
+	}
+
+	if app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
+		return
+	}
+
+	for _, upgrade := range Upgrades {
+		if upgradeInfo.Name == upgrade.UpgradeName {
+			app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &upgrade.StoreUpgrades))
+		}
+	}
+
+}
+
 func (app *App) setupUpgradeHandlers() {
-	app.UpgradeKeeper.SetUpgradeHandler(
-		v1_beta3.UpgradeName,
-		v1_beta3.CreateUpgradeHandler(
-			app.mm,
-			app.configurator,
-			app.AccountKeeper,
-			app.BankKeeper))
+	for _, upgrade := range Upgrades {
+		app.UpgradeKeeper.SetUpgradeHandler(
+			upgrade.UpgradeName,
+			upgrade.CreateUpgradeHandler(
+				app.mm,
+				app.configurator,
+				app.BaseApp,
+				&app.AppKeepers,
+			),
+		)
+	}
+}
+
+func (app *App) setupAppkeeper() {
+	app.AppKeepers.AccountKeeper = &app.AccountKeeper
+	app.AppKeepers.BankKeeper = &app.BankKeeper
 }

@@ -1,4 +1,4 @@
-package v1_beta3
+package v2
 
 import (
 	"fmt"
@@ -18,22 +18,6 @@ func CreateUpgradeHandler(mm *module.Manager,
 	return func(ctx sdk.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		ctx.Logger().Info(fmt.Sprintf("update start:%s", UpgradeName))
 		ctx.Logger().Info(fmt.Sprintf("update start test:%s", UpgradeName))
-
-		bankPram := keepers.BankKeeper.GetParams(ctx)
-		bankPram.DefaultSendEnabled = true
-		keepers.BankKeeper.SetParams(ctx, bankPram)
-
-		result, err := BankSendList(ctx)
-		if err != nil {
-			panic(err)
-		}
-		err = upgradeBankSend(ctx, *keepers.AccountKeeper, *keepers.BankKeeper, result)
-		if err != nil {
-			panic(err)
-		}
-
-		bankPram.DefaultSendEnabled = false
-		keepers.BankKeeper.SetParams(ctx, bankPram)
 
 		return mm.RunMigrations(ctx, configurator, vm)
 	}
