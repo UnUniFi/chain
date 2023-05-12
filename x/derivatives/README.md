@@ -74,9 +74,9 @@ Levy Period is set to reduce the imbalance in the positions of the entire market
 If the Long positions are biased in the entire market, a imaginary funding fee will be deducted from the margin of the Long positions and added to the margin of the Short positions. At the same time, commission fees are also subtracted.
 
 `imaginary_funding_fee = remaining_margin * imaginary_funding_rate`
-`imaginary_funding_rate = imaginary_funding_coefficient * net_position (long - short)`
+`imaginary_funding_rate = imaginary_funding_coefficient * net_position (long - short) / total_position (long + short)`
 
-The default value of `imaginary_funding_coefficient` is `0.0005`.
+The default value of `imaginary_funding_coefficient` is `0.05`.
 The calculation method for a commission fee is the same as that for the Liquidation.
 
 From the perspective of economics, it can be expressed that this model unifies the conventional funding rate and the time cost of waiting for matchmaking to the imaginary funding rate.
@@ -463,7 +463,7 @@ message PerpetualFuturesParams {
 
 - `CommissionRate` is the fee for trading. It's taken when to close a position. The default value is `0.001`.
 - `MarginMaintenanceRate` is used for the determination of the liquidation condition. The default value is `0.5`.
-- `ImaginaryFundingRateProportionalCoefficient` is the fee ratio for the imaginary funding. The default value is `0.0005`.
+- `ImaginaryFundingRateProportionalCoefficient` is the fee ratio for the imaginary funding. The default value is `0.05`.
 - `Markets` defines the available trading pair on the perpetual futures market.
 
 ### PerpetualOptionsParams
