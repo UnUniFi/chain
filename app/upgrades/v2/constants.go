@@ -4,6 +4,8 @@ import (
 	store "github.com/cosmos/cosmos-sdk/store/types"
 	"github.com/cosmos/cosmos-sdk/x/nft"
 
+	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
+
 	"github.com/UnUniFi/chain/app/upgrades"
 )
 
@@ -13,7 +15,7 @@ var Upgrade = upgrades.Upgrade{
 	UpgradeName:          UpgradeName,
 	CreateUpgradeHandler: CreateUpgradeHandler,
 	StoreUpgrades: store.StoreUpgrades{
-		Added:   []string{nft.StoreKey},
+		Added:   []string{nft.StoreKey, consensusparamtypes.StoreKey},
 		Deleted: []string{},
 	},
 }
