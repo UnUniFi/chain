@@ -129,9 +129,9 @@ import (
 
 	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
 	// "github.com/UnUniFi/chain/deprecated/yieldfarm"
-	// epochsmodule "github.com/UnUniFi/chain/x/epochs"
-	// epochsmodulekeeper "github.com/UnUniFi/chain/x/epochs/keeper"
-	// epochsmoduletypes "github.com/UnUniFi/chain/x/epochs/types"
+	epochsmodule "github.com/UnUniFi/chain/x/epochs"
+	epochsmodulekeeper "github.com/UnUniFi/chain/x/epochs/keeper"
+	epochsmoduletypes "github.com/UnUniFi/chain/x/epochs/types"
 	icacallbacksmodule "github.com/UnUniFi/chain/x/icacallbacks"
 	icacallbacksmodulekeeper "github.com/UnUniFi/chain/x/icacallbacks/keeper"
 	icacallbacksmoduletypes "github.com/UnUniFi/chain/x/icacallbacks/types"
@@ -261,7 +261,7 @@ var (
 		// yieldfarm.AppModuleBasic{},
 		yieldaggregator.AppModuleBasic{},
 		stakeibcmodule.AppModuleBasic{},
-		// epochsmodule.AppModuleBasic{},
+		epochsmodule.AppModuleBasic{},
 		interchainquery.AppModuleBasic{},
 		ica.AppModuleBasic{},
 		ibcfee.AppModuleBasic{},
@@ -380,7 +380,7 @@ type App struct {
 	ScopedStakeibcKeeper capabilitykeeper.ScopedKeeper
 	StakeibcKeeper       stakeibcmodulekeeper.Keeper
 
-	// EpochsKeeper             epochsmodulekeeper.Keeper
+	EpochsKeeper             epochsmodulekeeper.Keeper
 	InterchainqueryKeeper    interchainquerykeeper.Keeper
 	ScopedRecordsKeeper      capabilitykeeper.ScopedKeeper
 	RecordsKeeper            recordsmodulekeeper.Keeper
@@ -440,7 +440,7 @@ func NewApp(
 		// yieldfarmtypes.StoreKey,
 		yieldaggregatortypes.StoreKey,
 		stakeibcmoduletypes.StoreKey,
-		// epochsmoduletypes.StoreKey,
+		epochsmoduletypes.StoreKey,
 		interchainquerytypes.StoreKey,
 		icacontrollertypes.StoreKey,
 		recordsmoduletypes.StoreKey,
@@ -772,13 +772,13 @@ func NewApp(
 		app.RecordsKeeper,
 	)
 
-	// epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
-	// app.EpochsKeeper = *epochsKeeper.SetHooks(
-	// 	epochsmoduletypes.NewMultiEpochHooks(
-	// 		app.YieldaggregatorKeeper.Hooks(),
-	// 		app.StakeibcKeeper.Hooks(),
-	// 	),
-	// )
+	epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
+	app.EpochsKeeper = *epochsKeeper.SetHooks(
+		epochsmoduletypes.NewMultiEpochHooks(
+			app.YieldaggregatorKeeper.Hooks(),
+			app.StakeibcKeeper.Hooks(),
+		),
+	)
 	app.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
 		appCodec,
 		keys[ecosystemincentivetypes.StoreKey],
@@ -786,7 +786,7 @@ func NewApp(
 		app.BankKeeper,
 	)
 
-	// epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
+	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
 
 	// register the proposal types
 	govRouter := govv1beta1.NewRouter()
@@ -926,7 +926,7 @@ func NewApp(
 		transferModule,
 		ibcfee.NewAppModule(app.IBCFeeKeeper),
 		stakeibcModule,
-		// epochsModule,
+		epochsModule,
 		interchainQueryModule,
 		icaModule,
 		recordsModule,
@@ -979,7 +979,7 @@ func NewApp(
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
 		stakeibcmoduletypes.ModuleName,
-		// epochsmoduletypes.ModuleName,
+		epochsmoduletypes.ModuleName,
 		interchainquerytypes.ModuleName,
 		recordsmoduletypes.ModuleName,
 		icacallbacksmoduletypes.ModuleName,
@@ -1020,7 +1020,7 @@ func NewApp(
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
 		stakeibcmoduletypes.ModuleName,
-		// epochsmoduletypes.ModuleName,
+		epochsmoduletypes.ModuleName,
 		interchainquerytypes.ModuleName,
 		recordsmoduletypes.ModuleName,
 		icacallbacksmoduletypes.ModuleName,
@@ -1070,7 +1070,7 @@ func NewApp(
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
 		stakeibcmoduletypes.ModuleName,
-		// epochsmoduletypes.ModuleName,
+		epochsmoduletypes.ModuleName,
 		interchainquerytypes.ModuleName,
 		recordsmoduletypes.ModuleName,
 		icacallbacksmoduletypes.ModuleName,
@@ -1409,7 +1409,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibcexported.ModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(stakeibcmoduletypes.ModuleName)
-	// paramsKeeper.Subspace(epochsmoduletypes.ModuleName)
+	paramsKeeper.Subspace(epochsmoduletypes.ModuleName)
 	paramsKeeper.Subspace(interchainquerytypes.ModuleName)
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(recordsmoduletypes.ModuleName)
