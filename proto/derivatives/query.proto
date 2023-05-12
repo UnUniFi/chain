@@ -70,7 +70,7 @@ service Query {
     option (google.api.http).get = "/ununifi/derivatives/estimate-dlp-token-amount/{mint_denom}/{amount}";
   }
 
-  rpc EstimateRedeemAmount(QueryEstimateRedeemAmountRequest) returns (QueryEstimateRedeemAmountResponse) {
+  rpc EstimateRedeemTokenAmount(QueryEstimateRedeemTokenAmountRequest) returns (QueryEstimateRedeemTokenAmountResponse) {
     option (google.api.http).get = "/ununifi/derivatives/estimate-redeem-amount/{redeem_denom}/{lpt_amount}";
   }
 
@@ -319,7 +319,7 @@ message QueryEstimateDLPTokenAmountResponse {
   ];
 }
 
-message QueryEstimateRedeemAmountRequest {
+message QueryEstimateRedeemTokenAmountRequest {
   string redeem_denom = 1 [
     (gogoproto.moretags)  = "yaml:\"redeem_denom\""
   ];
@@ -328,7 +328,7 @@ message QueryEstimateRedeemAmountRequest {
   ];
 }
 
-message QueryEstimateRedeemAmountResponse {
+message QueryEstimateRedeemTokenAmountResponse {
   cosmos.base.v1beta1.Coin amount = 1 [
     (gogoproto.moretags)  = "yaml:\"amount\"",
     (gogoproto.nullable) = false

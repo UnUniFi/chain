@@ -21,3 +21,10 @@ build
 node_modules
 docs/node_modules
 docs/.vuepress/dist
+*.sh
+*.txt
+*.zip
+*.pem
+
+proto/gen.sh
+iya-v2

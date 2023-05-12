@@ -3362,6 +3362,624 @@ paths:
           type: boolean
       tags:
         - Query
+  /ununifi/yield-aggregator/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: YieldAggregatorParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+                properties:
+                  commission_rate:
+                    type: string
+                  vault_creation_fee:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
+
+
+                      NOTE: The amount field is an Int which implements the
+                      custom method
+
+                      signatures required by gogoproto.
+                  vault_creation_deposit:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
+
+
+                      NOTE: The amount field is an Int which implements the
+                      custom method
+
+                      signatures required by gogoproto.
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /ununifi/yield-aggregator/strategies/query-param:
+    get:
+      operationId: StrategyAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              strategies:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    id:
+                      type: string
+                      format: uint64
+                    contract_address:
+                      type: string
+                    name:
+                      type: string
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: denom
+          in: query
+          required: false
+          type: string
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /ununifi/yield-aggregator/strategies/{id}:
+    get:
+      operationId: Strategy
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              strategy:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  id:
+                    type: string
+                    format: uint64
+                  contract_address:
+                    type: string
+                  name:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: denom
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /ununifi/yield-aggregator/vaults:
+    get:
+      summary: 'this line is used by starport scaffolding # 2'
+      operationId: VaultAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              vaults:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uint64
+                    denom:
+                      type: string
+                    owner:
+                      type: string
+                    owner_deposit:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                    withdraw_commission_rate:
+                      type: string
+                    withdraw_reserve_rate:
+                      type: string
+                    strategy_weights:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          strategy_id:
+                            type: string
+                            format: uint64
+                          weight:
+                            type: string
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /ununifi/yield-aggregator/vaults/{id}:
+    get:
+      operationId: Vault
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              vault:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uint64
+                  denom:
+                    type: string
+                  owner:
+                    type: string
+                  owner_deposit:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
+
+
+                      NOTE: The amount field is an Int which implements the
+                      custom method
+
+                      signatures required by gogoproto.
+                  withdraw_commission_rate:
+                    type: string
+                  withdraw_reserve_rate:
+                    type: string
+                  strategy_weights:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        strategy_id:
+                          type: string
+                          format: uint64
+                        weight:
+                          type: string
+              strategies:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    id:
+                      type: string
+                      format: uint64
+                    contract_address:
+                      type: string
+                    name:
+                      type: string
+              vault_address:
+                type: string
+              total_bonded_amount:
+                type: string
+              total_unbonding_amount:
+                type: string
+              total_withdrawal_balance:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /ununifi/yield-aggregator/vaults/{id}/estimate-mint-amount:
+    get:
+      operationId: EstimateMintAmount
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              mint_amount:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: deposit_amount
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /ununifi/yield-aggregator/vaults/{id}/estimate-redeem-amount:
+    get:
+      operationId: EstimateRedeemAmount
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              redeem_amount:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: burn_amount
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
   /ununifi/nftmint/class_ids_by_name/{class_name}:
     get:
       operationId: ClassIdsByName
@@ -5422,7 +6040,7 @@ paths:
         - Query
   /ununifi/derivatives/estimate-redeem-amount/{redeem_denom}/{lpt_amount}:
     get:
-      operationId: EstimateRedeemAmount
+      operationId: EstimateRedeemTokenAmount
       responses:
         '200':
           description: A successful response.
@@ -11886,6 +12504,352 @@ definitions:
                     type: string
                 active:
                   type: boolean
+  ununifi.yieldaggregator.Params:
+    type: object
+    properties:
+      commission_rate:
+        type: string
+      vault_creation_fee:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      vault_creation_deposit:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+    description: Params defines the parameters for the module.
+  ununifi.yieldaggregator.QueryAllStrategyResponse:
+    type: object
+    properties:
+      strategies:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            id:
+              type: string
+              format: uint64
+            contract_address:
+              type: string
+            name:
+              type: string
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  ununifi.yieldaggregator.QueryAllVaultResponse:
+    type: object
+    properties:
+      vaults:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uint64
+            denom:
+              type: string
+            owner:
+              type: string
+            owner_deposit:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+            withdraw_commission_rate:
+              type: string
+            withdraw_reserve_rate:
+              type: string
+            strategy_weights:
+              type: array
+              items:
+                type: object
+                properties:
+                  strategy_id:
+                    type: string
+                    format: uint64
+                  weight:
+                    type: string
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  ununifi.yieldaggregator.QueryEstimateMintAmountResponse:
+    type: object
+    properties:
+      mint_amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+  ununifi.yieldaggregator.QueryEstimateRedeemAmountResponse:
+    type: object
+    properties:
+      redeem_amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+  ununifi.yieldaggregator.QueryGetStrategyResponse:
+    type: object
+    properties:
+      strategy:
+        type: object
+        properties:
+          denom:
+            type: string
+          id:
+            type: string
+            format: uint64
+          contract_address:
+            type: string
+          name:
+            type: string
+  ununifi.yieldaggregator.QueryGetVaultResponse:
+    type: object
+    properties:
+      vault:
+        type: object
+        properties:
+          id:
+            type: string
+            format: uint64
+          denom:
+            type: string
+          owner:
+            type: string
+          owner_deposit:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          withdraw_commission_rate:
+            type: string
+          withdraw_reserve_rate:
+            type: string
+          strategy_weights:
+            type: array
+            items:
+              type: object
+              properties:
+                strategy_id:
+                  type: string
+                  format: uint64
+                weight:
+                  type: string
+      strategies:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            id:
+              type: string
+              format: uint64
+            contract_address:
+              type: string
+            name:
+              type: string
+      vault_address:
+        type: string
+      total_bonded_amount:
+        type: string
+      total_unbonding_amount:
+        type: string
+      total_withdrawal_balance:
+        type: string
+  ununifi.yieldaggregator.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+        properties:
+          commission_rate:
+            type: string
+          vault_creation_fee:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          vault_creation_deposit:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  ununifi.yieldaggregator.Strategy:
+    type: object
+    properties:
+      denom:
+        type: string
+      id:
+        type: string
+        format: uint64
+      contract_address:
+        type: string
+      name:
+        type: string
+  ununifi.yieldaggregator.StrategyWeight:
+    type: object
+    properties:
+      strategy_id:
+        type: string
+        format: uint64
+      weight:
+        type: string
+  ununifi.yieldaggregator.Vault:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uint64
+      denom:
+        type: string
+      owner:
+        type: string
+      owner_deposit:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      withdraw_commission_rate:
+        type: string
+      withdraw_reserve_rate:
+        type: string
+      strategy_weights:
+        type: array
+        items:
+          type: object
+          properties:
+            strategy_id:
+              type: string
+              format: uint64
+            weight:
+              type: string
   ununifi.nftmint.ClassAttributes:
     type: object
     properties:
@@ -14852,7 +15816,7 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-  ununifi.derivatives.QueryEstimateRedeemAmountResponse:
+  ununifi.derivatives.QueryEstimateRedeemTokenAmountResponse:
     type: object
     properties:
       amount:
