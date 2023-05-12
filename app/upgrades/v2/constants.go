@@ -2,6 +2,7 @@ package v2
 
 import (
 	store "github.com/cosmos/cosmos-sdk/store/types"
+	"github.com/cosmos/cosmos-sdk/x/nft"
 
 	"github.com/UnUniFi/chain/app/upgrades"
 )
@@ -12,7 +13,7 @@ var Upgrade = upgrades.Upgrade{
 	UpgradeName:          UpgradeName,
 	CreateUpgradeHandler: CreateUpgradeHandler,
 	StoreUpgrades: store.StoreUpgrades{
-		Added:   []string{},
+		Added:   []string{nft.StoreKey},
 		Deleted: []string{},
 	},
 }
