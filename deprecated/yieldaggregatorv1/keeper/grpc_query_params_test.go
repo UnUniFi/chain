@@ -6,7 +6,7 @@ package keeper_test
 // 	sdk "github.com/cosmos/cosmos-sdk/types"
 // 	"github.com/stretchr/testify/require"
 // 	testkeeper 	"github.com/UnUniFi/chain/testutil/keeper"
-// 	"github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/types"
+// 	"github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/types"
 // )
 
 // func TestParamsQuery(t *testing.T) {

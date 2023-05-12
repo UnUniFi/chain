@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "nftmarketv1/nftmarket.proto";
 
-option go_package = "github.com/UnUniFi/chain/x/deprecated/nftmarketv1/types";
+option go_package = "github.com/UnUniFi/chain/deprecated/nftmarketv1/types";
 
 // GenesisState defines the nftmarket module's genesis state.
 message GenesisState {

@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
-option go_package = "github.com/UnUniFi/chain/x/deprecated/ununifidist/types";
+option go_package = "github.com/UnUniFi/chain/deprecated/ununifidist/types";
 
 message Params {
   bool active = 1 [(gogoproto.moretags) = "yaml:\"active\""];
