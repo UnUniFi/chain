@@ -294,9 +294,16 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 
 	if positionInstance.PositionType == types.PositionType_LONG {
 		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(imaginaryFundingFee).Sub(commissionFee)
+
 	} else {
 		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Add(imaginaryFundingFee).Sub(commissionFee)
 	}
+	// Tranfer the fees from pool to manager or manager to pool appropriately
+	// to keep the remaining margin of the position match the actual number to the balance
+	if err := k.HandleImaginaryFundingFeeTransfer(ctx, imaginaryFundingFee, commissionFee, positionInstance.PositionType, position.RemainingMargin.Denom); err != nil {
+		return err
+	}
+
 	position.LastLeviedAt = ctx.BlockTime()
 
 	// Reward is part of the commission fee
@@ -316,6 +323,27 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 		RemainingMargin: position.RemainingMargin.String(),
 		RewardAmount:    rewardAmount.String(),
 	})
+
+	return nil
+}
+
+func (k Keeper) HandleImaginaryFundingFeeTransfer(ctx sdk.Context, imarginaryFundingFee, commissionFee sdk.Int, positionType types.PositionType, denom string) error {
+	var totalFee sdk.Int
+	if positionType == types.PositionType_LONG {
+		totalFee = imarginaryFundingFee.Add(commissionFee)
+	} else {
+		totalFee = imarginaryFundingFee.Sub(commissionFee)
+	}
+
+	if totalFee.IsPositive() {
+		if err := k.SendCoinFromMarginManagerToPool(ctx, sdk.NewCoins(sdk.NewCoin(denom, totalFee))); err != nil {
+			return err
+		}
+	} else {
+		if err := k.SendCoinFromPoolToMarginManager(ctx, sdk.NewCoins(sdk.NewCoin(denom, totalFee.Abs()))); err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
