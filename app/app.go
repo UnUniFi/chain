@@ -871,6 +871,7 @@ func NewApp(
 	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
 
 	app.setupAppkeeper()
+	app.setupUpgradeStoreLoaders()
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
