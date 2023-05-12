@@ -6,6 +6,8 @@ import (
 
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 
+	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
+
 	"github.com/UnUniFi/chain/app/upgrades"
 )
 
@@ -15,7 +17,7 @@ var Upgrade = upgrades.Upgrade{
 	UpgradeName:          UpgradeName,
 	CreateUpgradeHandler: CreateUpgradeHandler,
 	StoreUpgrades: store.StoreUpgrades{
-		Added:   []string{nft.StoreKey, consensusparamtypes.StoreKey},
+		Added:   []string{nft.StoreKey, consensusparamtypes.StoreKey, crisistypes.StoreKey},
 		Deleted: []string{},
 	},
 }
