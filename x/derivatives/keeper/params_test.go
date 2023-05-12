@@ -26,7 +26,7 @@ func (suite *KeeperTestSuite) TestParamsGetSet() {
 	params.PerpetualFutures = types.PerpetualFuturesParams{
 		CommissionRate:        sdk.MustNewDecFromStr("0.001"),
 		MarginMaintenanceRate: sdk.MustNewDecFromStr("0.5"),
-		ImaginaryFundingRateProportionalCoefficient: sdk.MustNewDecFromStr("0.0005"),
+		ImaginaryFundingRateProportionalCoefficient: sdk.MustNewDecFromStr("0.05"),
 		Markets: []*types.Market{
 			{
 				BaseDenom:  "uatom",
