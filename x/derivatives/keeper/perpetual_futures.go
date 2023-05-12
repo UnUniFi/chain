@@ -259,8 +259,9 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 	params := k.GetParams(ctx)
 
 	netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, position.Market).PositionSizeInDenomExponent
+	totalPosition := k.GetPerpetualFuturesTotalPositionOfMarket(ctx, position.Market).PositionSizeInDenomExponent
 
-	imaginaryFundingRate := sdk.NewDecFromInt(netPosition).Quo(sdk.MustNewDecFromStr(types.OneMillionString)).Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
+	imaginaryFundingRate := sdk.NewDecFromInt(netPosition).Quo(sdk.NewDecFromInt(totalPosition)).Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
 	imaginaryFundingFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
 	commissionFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
 
@@ -368,5 +369,15 @@ func (k Keeper) GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market t
 		market,
 		types.PositionType_POSITION_UNKNOWN,
 		grossPositionLong.Sub(grossPositionShort),
+	)
+}
+
+func (k Keeper) GetPerpetualFuturesTotalPositionOfMarket(ctx sdk.Context, market types.Market) types.PerpetualFuturesGrossPositionOfMarket {
+	grossPositionLong := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, types.PositionType_LONG).PositionSizeInDenomExponent
+	grossPositionShort := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, types.PositionType_SHORT).PositionSizeInDenomExponent
+	return types.NewPerpetualFuturesGrossPositionOfMarket(
+		market,
+		types.PositionType_POSITION_UNKNOWN,
+		grossPositionLong.Add(grossPositionShort),
 	)
 }
