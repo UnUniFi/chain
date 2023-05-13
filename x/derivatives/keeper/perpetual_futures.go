@@ -332,7 +332,7 @@ func (k Keeper) HandleImaginaryFundingFeeTransfer(ctx sdk.Context, imarginaryFun
 	if positionType == types.PositionType_LONG {
 		totalFee = imarginaryFundingFee.Add(commissionFee)
 	} else {
-		totalFee = imarginaryFundingFee.Sub(commissionFee)
+		totalFee = commissionFee.Sub(imarginaryFundingFee)
 	}
 
 	if totalFee.IsPositive() {
