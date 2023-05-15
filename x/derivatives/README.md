@@ -77,6 +77,7 @@ If the Long positions are biased in the entire market, a imaginary funding fee w
 `imaginary_funding_rate = imaginary_funding_coefficient * net_position (long - short) / total_position (long + short)`
 
 The default value of `imaginary_funding_coefficient` is `0.05`.
+
 The calculation method for a commission fee is the same as that for the Liquidation.
 
 From the perspective of economics, it can be expressed that this model unifies the conventional funding rate and the time cost of waiting for matchmaking to the imaginary funding rate.
