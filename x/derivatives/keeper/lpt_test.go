@@ -63,7 +63,8 @@ func (suite *KeeperTestSuite) TestDetermineMintingLPTokenAmount() {
 func (suite *KeeperTestSuite) TestLPTokenSupplySnapshotGetSet() {
 	supply := suite.keeper.GetLPTokenSupplySnapshot(suite.ctx, 1)
 	suite.Require().Equal(supply, sdk.ZeroInt())
-	suite.keeper.SetLPTokenSupplySnapshot(suite.ctx, 1, sdk.NewInt(1000000))
+	err := suite.keeper.SetLPTokenSupplySnapshot(suite.ctx, 1, sdk.NewInt(1000000))
+	suite.Require().NoError(err)
 	supply = suite.keeper.GetLPTokenSupplySnapshot(suite.ctx, 1)
 	suite.Require().Equal(supply, sdk.NewInt(1000000))
 }
@@ -82,7 +83,7 @@ func (suite *KeeperTestSuite) TestGetLPTokenSupply() {
 	suite.Require().Equal(supply, sdk.NewInt(1000000))
 }
 
-// FIXME: fix test case
+// TODO: fix test
 func (suite *KeeperTestSuite) TestGetLPTokenPrice() {
 	// set price for asset
 	_, err := suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:uusdc", sdk.NewDec(13), suite.ctx.BlockTime().Add(time.Hour*3))
@@ -104,6 +105,7 @@ func (suite *KeeperTestSuite) TestGetLPTokenPrice() {
 	suite.Require().Equal(currLptPrice.String(), "0.000010000000000000")
 }
 
+// TODO: fix test
 func (suite *KeeperTestSuite) TestGetRedeemDenomAmount() {
 	// get uninitialized redeem amount
 	lptAmount := sdk.NewInt(1000000)
@@ -134,6 +136,7 @@ func (suite *KeeperTestSuite) TestGetRedeemDenomAmount() {
 	suite.Require().Equal(redeemFee.String(), "1000uatom")
 }
 
+// TODO: fix test
 func (suite *KeeperTestSuite) TestDecreaseRedeemDenomAmount() {
 	// try operation on uninitialized environment
 	err := suite.keeper.DecreaseRedeemDenomAmount(suite.ctx, sdk.NewInt64Coin("uatom", 10000))
@@ -174,6 +177,7 @@ func (suite *KeeperTestSuite) TestBurnCoin() {
 	suite.Require().Equal(balance.String(), "990000uatom")
 }
 
+// TODO: fix test
 func (suite *KeeperTestSuite) TestMintLiquidityProviderToken() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
