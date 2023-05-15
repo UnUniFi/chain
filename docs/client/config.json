@@ -51,7 +51,9 @@
       "operationIds": {
         "rename": {
           "Params": "YieldAggregatorParams"
-    }, 
+        }
+      }
+    },
     {
       "url": "./tmp-swagger-gen/nftmint/query.swagger.json",
       "operationIds": {
