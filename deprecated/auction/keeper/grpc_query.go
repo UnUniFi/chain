@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/UnUniFi/chain/x/deprecated/auction/types"
+	"github.com/UnUniFi/chain/deprecated/auction/types"
 )
 
 var _ types.QueryServer = Keeper{}

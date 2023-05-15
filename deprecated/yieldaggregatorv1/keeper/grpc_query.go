@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/types"
+	"github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/types"
 )
 
 var _ types.QueryServer = Keeper{}

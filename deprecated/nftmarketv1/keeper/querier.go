@@ -5,7 +5,7 @@ package keeper
 // 	sdk "github.com/cosmos/cosmos-sdk/types"
 // 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-// 	"github.com/UnUniFi/chain/x/deprecated/nftmarketv1/types"
+// 	"github.com/UnUniFi/chain/deprecated/nftmarketv1/types"
 
 // 	abci "github.com/cometbft/cometbft/abci/types"
 // )

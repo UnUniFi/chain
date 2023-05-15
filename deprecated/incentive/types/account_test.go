@@ -8,7 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 
-	incentivetypes "github.com/UnUniFi/chain/x/deprecated/incentive/types"
+	incentivetypes "github.com/UnUniFi/chain/deprecated/incentive/types"
 )
 
 type accountTest struct {

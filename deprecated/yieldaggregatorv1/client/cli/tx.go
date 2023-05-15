@@ -15,7 +15,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	govv1beta1 "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 
-	"github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/types"
+	"github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/types"
 )
 
 var (

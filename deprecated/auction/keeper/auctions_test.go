@@ -14,8 +14,8 @@ package keeper_test
 // 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
 // 	"github.com/UnUniFi/chain/app"
-// 	auctiontypes "github.com/UnUniFi/chain/x/deprecated/auction/types"
-// 	cdptypes "github.com/UnUniFi/chain/x/deprecated/cdp/types"
+// 	auctiontypes "github.com/UnUniFi/chain/deprecated/auction/types"
+// 	cdptypes "github.com/UnUniFi/chain/deprecated/cdp/types"
 // )
 
 // func fundAccount(bk bankkeeper.Keeper, ctx sdk.Context, addr sdk.AccAddress, coins sdk.Coins) error {
