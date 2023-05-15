@@ -8,9 +8,9 @@ import (
 	_ "github.com/cosmos/cosmos-proto"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types"
+	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
-	_ "github.com/gogo/protobuf/gogoproto"
-	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
+	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
 	_ "google.golang.org/protobuf/types/known/durationpb"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
 	io "io"
@@ -2131,7 +2131,7 @@ func (m *NftListing) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	n4, err4 := github_com_gogo_protobuf_types.StdDurationMarshalTo(m.MinimumBiddingPeriod, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdDuration(m.MinimumBiddingPeriod):])
+	n4, err4 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(m.MinimumBiddingPeriod, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(m.MinimumBiddingPeriod):])
 	if err4 != nil {
 		return 0, err4
 	}
@@ -2154,7 +2154,7 @@ func (m *NftListing) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x60
 	}
-	n6, err6 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.SuccessfulBidEndAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.SuccessfulBidEndAt):])
+	n6, err6 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.SuccessfulBidEndAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.SuccessfulBidEndAt):])
 	if err6 != nil {
 		return 0, err6
 	}
@@ -2162,7 +2162,7 @@ func (m *NftListing) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i = encodeVarintNftmarket(dAtA, i, uint64(n6))
 	i--
 	dAtA[i] = 0x5a
-	n7, err7 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.FullPaymentEndAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.FullPaymentEndAt):])
+	n7, err7 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.FullPaymentEndAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.FullPaymentEndAt):])
 	if err7 != nil {
 		return 0, err7
 	}
@@ -2170,7 +2170,7 @@ func (m *NftListing) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i = encodeVarintNftmarket(dAtA, i, uint64(n7))
 	i--
 	dAtA[i] = 0x52
-	n8, err8 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.EndAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.EndAt):])
+	n8, err8 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.EndAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.EndAt):])
 	if err8 != nil {
 		return 0, err8
 	}
@@ -2178,7 +2178,7 @@ func (m *NftListing) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i = encodeVarintNftmarket(dAtA, i, uint64(n8))
 	i--
 	dAtA[i] = 0x4a
-	n9, err9 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.StartedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.StartedAt):])
+	n9, err9 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.StartedAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.StartedAt):])
 	if err9 != nil {
 		return 0, err9
 	}
@@ -2263,7 +2263,7 @@ func (m *Borrowing) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	n11, err11 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.StartAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.StartAt):])
+	n11, err11 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.StartAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.StartAt):])
 	if err11 != nil {
 		return 0, err11
 	}
@@ -2348,7 +2348,7 @@ func (m *NftBid) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	i--
 	dAtA[i] = 0x52
-	n16, err16 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.BidTime, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.BidTime):])
+	n16, err16 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.BidTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.BidTime):])
 	if err16 != nil {
 		return 0, err16
 	}
@@ -2376,7 +2376,7 @@ func (m *NftBid) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	i--
 	dAtA[i] = 0x3a
-	n17, err17 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.BiddingPeriod, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.BiddingPeriod):])
+	n17, err17 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.BiddingPeriod, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.BiddingPeriod):])
 	if err17 != nil {
 		return 0, err17
 	}
@@ -3109,7 +3109,7 @@ func (m *PaymentStatus) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x38
 	}
-	n23, err23 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.BidTime, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.BidTime):])
+	n23, err23 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.BidTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.BidTime):])
 	if err23 != nil {
 		return 0, err23
 	}
@@ -3187,7 +3187,7 @@ func (m *Liquidation) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	n26, err26 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.LiquidationDate, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.LiquidationDate):])
+	n26, err26 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.LiquidationDate, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.LiquidationDate):])
 	if err26 != nil {
 		return 0, err26
 	}
@@ -3382,20 +3382,20 @@ func (m *NftListing) Size() (n int) {
 	if m.AutomaticRefinancing {
 		n += 2
 	}
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.StartedAt)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.StartedAt)
 	n += 1 + l + sovNftmarket(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.EndAt)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.EndAt)
 	n += 1 + l + sovNftmarket(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.FullPaymentEndAt)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.FullPaymentEndAt)
 	n += 1 + l + sovNftmarket(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.SuccessfulBidEndAt)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.SuccessfulBidEndAt)
 	n += 1 + l + sovNftmarket(uint64(l))
 	if m.AutoRelistedCount != 0 {
 		n += 1 + sovNftmarket(uint64(m.AutoRelistedCount))
 	}
 	l = m.CollectedAmount.Size()
 	n += 1 + l + sovNftmarket(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdDuration(m.MinimumBiddingPeriod)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdDuration(m.MinimumBiddingPeriod)
 	n += 1 + l + sovNftmarket(uint64(l))
 	return n
 }
@@ -3410,7 +3410,7 @@ func (m *Borrowing) Size() (n int) {
 	n += 1 + l + sovNftmarket(uint64(l))
 	l = m.PaidInterestAmount.Size()
 	n += 1 + l + sovNftmarket(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.StartAt)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.StartAt)
 	n += 1 + l + sovNftmarket(uint64(l))
 	return n
 }
@@ -3433,14 +3433,14 @@ func (m *NftBid) Size() (n int) {
 	n += 1 + l + sovNftmarket(uint64(l))
 	l = m.PaidAmount.Size()
 	n += 1 + l + sovNftmarket(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.BiddingPeriod)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.BiddingPeriod)
 	n += 1 + l + sovNftmarket(uint64(l))
 	l = m.DepositLendingRate.Size()
 	n += 1 + l + sovNftmarket(uint64(l))
 	if m.AutomaticPayment {
 		n += 2
 	}
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.BidTime)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.BidTime)
 	n += 1 + l + sovNftmarket(uint64(l))
 	l = m.InterestAmount.Size()
 	n += 1 + l + sovNftmarket(uint64(l))
@@ -3782,7 +3782,7 @@ func (m *PaymentStatus) Size() (n int) {
 	}
 	l = m.PaidAmount.Size()
 	n += 1 + l + sovNftmarket(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.BidTime)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.BidTime)
 	n += 1 + l + sovNftmarket(uint64(l))
 	if m.State != 0 {
 		n += 1 + sovNftmarket(uint64(m.State))
@@ -3801,7 +3801,7 @@ func (m *Liquidation) Size() (n int) {
 	_ = l
 	l = m.Amount.Size()
 	n += 1 + l + sovNftmarket(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.LiquidationDate)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.LiquidationDate)
 	n += 1 + l + sovNftmarket(uint64(l))
 	return n
 }
@@ -4686,7 +4686,7 @@ func (m *NftListing) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.StartedAt, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.StartedAt, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -4719,7 +4719,7 @@ func (m *NftListing) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.EndAt, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.EndAt, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -4752,7 +4752,7 @@ func (m *NftListing) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.FullPaymentEndAt, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.FullPaymentEndAt, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -4785,7 +4785,7 @@ func (m *NftListing) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.SuccessfulBidEndAt, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.SuccessfulBidEndAt, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -4870,7 +4870,7 @@ func (m *NftListing) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_gogo_protobuf_types.StdDurationUnmarshal(&m.MinimumBiddingPeriod, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdDurationUnmarshal(&m.MinimumBiddingPeriod, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5019,7 +5019,7 @@ func (m *Borrowing) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.StartAt, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.StartAt, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5266,7 +5266,7 @@ func (m *NftBid) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.BiddingPeriod, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.BiddingPeriod, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5353,7 +5353,7 @@ func (m *NftBid) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.BidTime, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.BidTime, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -7837,7 +7837,7 @@ func (m *PaymentStatus) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.BidTime, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.BidTime, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -7992,7 +7992,7 @@ func (m *Liquidation) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.LiquidationDate, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.LiquidationDate, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
