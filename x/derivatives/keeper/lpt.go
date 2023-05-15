@@ -259,7 +259,7 @@ func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgWithdr
 
 	redeemAmount, redeemFee, err := k.GetRedeemDenomAmount(ctx, amount, redeemDenom)
 	if err != nil {
-		panic("failed to get redeemable amount")
+		return err
 	}
 
 	// Check if the redeemo amount is available in the pool

@@ -43,7 +43,7 @@ func (m Position) IsValid(params Params, AvailableAssetInPoolByDenom sdk.Coin) e
 	}
 
 	if AvailableAssetInPoolByDenom.Amount.LT(pfPosition.PositionInstance.SizeInDenomExponent(OneMillionInt)) {
-		return ErrInsufficientAssetBalance
+		return fmt.Errorf("insufficient fund in pool")
 	}
 
 	return nil
