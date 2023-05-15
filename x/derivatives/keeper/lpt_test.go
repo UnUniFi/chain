@@ -50,11 +50,14 @@ func (suite *KeeperTestSuite) TestDetermineMintingLPTokenAmount() {
 	// set lp token supply
 	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{sdk.NewInt64Coin(types.LiquidityProviderTokenDenom, 1000000)})
 	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{sdk.NewInt64Coin("uatom", 500000)})
+	suite.Require().NoError(err)
 
 	// when liquidity provider token's available
 	mintAmount, err = suite.keeper.DetermineMintingLPTokenAmount(suite.ctx, sdk.NewInt64Coin("uatom", 10000))
 	suite.Require().NoError(err)
-	suite.Require().Equal(mintAmount.String(), "10000udlp")
+	// Rate udlp:uatom = 2:1
+	suite.Require().Equal(mintAmount.String(), "20000udlp")
 }
 
 func (suite *KeeperTestSuite) TestLPTokenSupplySnapshotGetSet() {
