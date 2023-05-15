@@ -49,28 +49,24 @@ func (k Keeper) PerpetualFutures(c context.Context, req *types.QueryPerpetualFut
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	positions := types.Positions(k.GetAllPositions(ctx))
-	getPriceFunc := func(ctx sdk.Context) func(denom string) (sdk.Dec, error) {
-		return func(denom string) (sdk.Dec, error) {
-			return k.GetCurrentPrice(ctx, denom)
-		}
+
+	markets := k.GetParams(ctx).PerpetualFutures.Markets
+	var longPositions []sdk.Coin
+	var shortPositions []sdk.Coin
+	for _, market := range markets {
+		totalLongPositionSize := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, *market, types.PositionType_LONG)
+		totalShortPositionSize := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, *market, types.PositionType_SHORT)
+
+		longPositions = append(longPositions, sdk.NewCoin(market.BaseDenom, totalLongPositionSize.PositionSizeInDenomExponent))
+		shortPositions = append(shortPositions, sdk.NewCoin(market.BaseDenom, totalShortPositionSize.PositionSizeInDenomExponent))
 	}
 
-	quoteTicker := k.GetPoolQuoteTicker(ctx)
-	longUUsd := positions.EvaluateLongPositions(quoteTicker, getPriceFunc(ctx))
-	shortUUsd := positions.EvaluateShortPositions(quoteTicker, getPriceFunc(ctx))
-	// TODO: implement the handler logic
-	ctx.BlockHeight()
-	metricsQuoteTicker := "USD"
-	volume24Hours := sdk.NewDec(0)
-	fees24Hours := sdk.NewDec(0)
+	metricsQuoteTicker := k.GetParams(ctx).PoolParams.QuoteTicker
 
 	return &types.QueryPerpetualFuturesResponse{
 		MetricsQuoteTicker: metricsQuoteTicker,
-		Volume_24Hours:     &volume24Hours,
-		Fees_24Hours:       &fees24Hours,
-		LongPositions:      sdk.NewCoin("uusd", longUUsd.TruncateInt()),
-		ShortPositions:     sdk.NewCoin("uusd", shortUUsd.TruncateInt()),
+		LongPositions:      longPositions,
+		ShortPositions:     shortPositions,
 	}, nil
 }
 
@@ -80,22 +76,21 @@ func (k Keeper) PerpetualFuturesMarket(c context.Context, req *types.QueryPerpet
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	// TODO: implement the handler logic
-	ctx.BlockHeight()
+
 	price := sdk.NewDec(0)
-	metricsQuoteTicker := ""
-	volume24Hours := sdk.NewDec(0)
-	fees24Hours := sdk.NewDec(0)
-	longPositions := sdk.NewDec(0)
-	shortPositions := sdk.NewDec(0)
+	metricsQuoteTicker := k.GetParams(ctx).PoolParams.QuoteTicker
+	market := types.Market{
+		BaseDenom:  req.BaseDenom,
+		QuoteDenom: req.QuoteDenom,
+	}
+	grossPositionLong := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, types.PositionType_LONG).PositionSizeInDenomExponent
+	grossPositionShort := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, types.PositionType_SHORT).PositionSizeInDenomExponent
 
 	return &types.QueryPerpetualFuturesMarketResponse{
 		Price:              &price,
 		MetricsQuoteTicker: metricsQuoteTicker,
-		Volume_24Hours:     &volume24Hours,
-		Fees_24Hours:       &fees24Hours,
-		LongPositions:      &longPositions,
-		ShortPositions:     &shortPositions,
+		LongPositions:      &grossPositionLong,
+		ShortPositions:     &grossPositionShort,
 	}, nil
 }
 
@@ -129,17 +124,13 @@ func (k Keeper) Pool(c context.Context, req *types.QueryPoolRequest) (*types.Que
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	// TODO: implement the handler logic
-	metricsQuoteTicker := ""
+
+	metricsQuoteTicker := k.GetPoolQuoteTicker(ctx)
 	poolMarketCap := k.GetPoolMarketCap(ctx)
-	volume24Hours := sdk.NewDec(0)
-	fees24Hours := sdk.NewDec(0)
 
 	return &types.QueryPoolResponse{
 		MetricsQuoteTicker: metricsQuoteTicker,
 		PoolMarketCap:      &poolMarketCap,
-		Volume_24Hours:     &volume24Hours,
-		Fees_24Hours:       &fees24Hours,
 	}, nil
 }
 
@@ -330,6 +321,7 @@ func (k Keeper) DLPTokenRates(c context.Context, req *types.QueryDLPTokenRateReq
 			// todo error handing
 			continue
 		}
+		// TODO: Is microzation necessary?
 		// TODO: don't use NormalToMicroInt like this since it is hard to be consistent
 		rates = append(rates, sdk.NewCoin(asset.Denom, types.NormalToMicroInt(ldpDenomRate)))
 	}
