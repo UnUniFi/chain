@@ -164,7 +164,7 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 	case *types.PerpetualOptionsPositionInstance:
 		position, err = k.OpenPerpetualOptionsPosition(ctx, newPositionId, msg.Sender, msg.Margin, msg.Market, *positionInstance)
 	default:
-		panic("")
+		err = errors.New("unknown position instance")
 	}
 
 	if err != nil {
