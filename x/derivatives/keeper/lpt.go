@@ -62,7 +62,6 @@ func (k Keeper) DetermineMintingLPTokenAmount(ctx sdk.Context, amount sdk.Coin) 
 	// assetMc is the market cap of the asset that will go to the pool, in metrics ticker (USD in default)
 	assetMc := assetPrice.Price.Mul(sdk.NewDecFromInt(amount.Amount))
 	if currentSupply.Amount.IsZero() {
-		// TODO: we can eliminate unnecessary calculation -> assetPrice.Price
 		return k.InitialLiquidityProviderTokenSupply(ctx, assetPrice, assetMc, amount.Denom)
 	}
 
@@ -70,7 +69,6 @@ func (k Keeper) DetermineMintingLPTokenAmount(ctx sdk.Context, amount sdk.Coin) 
 	if lptPrice.IsZero() {
 		return sdk.Coin{}, types.ErrZeroLpTokenPrice
 	}
-
 	mintAmount := assetMc.Quo(lptPrice)
 
 	return sdk.NewCoin(types.LiquidityProviderTokenDenom, mintAmount.TruncateInt()), nil
@@ -138,31 +136,6 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 	}
 	return redeem, fee, nil
 }
-
-// TODO: remove this.
-// Decrease is misleading. Subtract is correct.
-func (k Keeper) DecreaseRedeemDenomAmount(ctx sdk.Context, amount sdk.Coin) error {
-	redeemAssetBalance := k.GetAssetBalanceInPoolByDenom(ctx, amount.Denom)
-	_, err := redeemAssetBalance.SafeSub(amount)
-	if err != nil {
-		return err
-	}
-
-	// k.SetAssetBalance(ctx, decreasedAmount)
-	return nil
-}
-
-// TODO: implement
-// func (k Keeper) IncreaseRedeemDenomAmount(ctx sdk.Context, amount sdk.Coin) error {
-// 	redeemAssetBalance := k.GetAssetBalance(ctx, amount.Denom)
-// 	increasedAmount := redeemAssetBalance.Add(amount)
-
-// 	err := k.SetAssetBalance(ctx, increasedAmount)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	return nil
-// }
 
 // Initial Liquidity Provider Token Supply is determined in following formulas
 // initial_lp_token_price = Σ target_weight_of_ith_asset * price_of_ith_asset
@@ -236,7 +209,6 @@ func (k Keeper) CalcDepositingFee(ctx sdk.Context, depositingAmount sdk.Coin, ba
 		return sdk.Coin{}, err
 	}
 	fee := types.CalculateMintFee(currentBalance, targetBalance, depositingAmount, baseLptMintFee)
-
 	return fee, nil
 }
 
@@ -262,7 +234,7 @@ func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgWithdr
 		return err
 	}
 
-	// Check if the redeemo amount is available in the pool
+	// Check if the redeem amount is available in the pool
 	// If the total amount of asset in the pool is less than the reserved coin,
 	// the user cannot redeem the asset.
 	// Return error to tell the exact cause.
@@ -270,8 +242,8 @@ func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgWithdr
 	if err != nil {
 		return err
 	}
-	if availableAsset.IsLTE(redeemAmount) {
-		return types.ErrInsufficientAssetBalance
+	if availableAsset.Amount.LT(redeemAmount.Amount) {
+		return types.ErrInsufficientPoolFund
 	}
 
 	if redeemFee.IsPositive() {
@@ -294,11 +266,6 @@ func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgWithdr
 	}
 
 	err = k.CollectedFee(ctx, redeemFee)
-	if err != nil {
-		return err
-	}
-
-	err = k.DecreaseRedeemDenomAmount(ctx, redeemAmount.Add(redeemFee))
 	if err != nil {
 		return err
 	}
