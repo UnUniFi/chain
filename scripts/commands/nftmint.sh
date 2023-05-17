@@ -12,10 +12,10 @@ SCRIPT_DIR=$(cd $(dirname $0); pwd)
 # ununifid keys mnemonic >& debug.txt
 # ununifid keys add validator --recover < validator.txt
 # ununifid keys add debug --recover < debug.txt
-# ununifid genesis add-genesis-account $(ununifid keys show validator --address) 100000000000000uguu,100000000000000stake
-# ununifid genesis add-genesis-account $(ununifid keys show debug --address) 100000000000000uguu,100000000000000stake
-# ununifid genesis gentx validator 100000000stake --chain-id=test
-# ununifid genesis collect-gentxs
+# ununifid add-genesis-account $(ununifid keys show validator --address) 100000000000000uguu,100000000000000stake
+# ununifid add-genesis-account $(ununifid keys show debug --address) 100000000000000uguu,100000000000000stake
+# ununifid gentx validator 100000000stake --chain-id=test
+# ununifid collect-gentxs
 
 ## Start 
 # ununifid start --pruning=nothing --mode=validator --minimum-gas-prices=0stake

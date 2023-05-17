@@ -9,11 +9,11 @@ sed -i 's/stake/uguu/g' ~/.ununifi/config/genesis.json;
 ununifid keys add my_validator --keyring-backend test
 ununifid keys add my_receiver --keyring-backend test
 ununifid keys add faucet --keyring-backend test
-ununifid genesis add-genesis-account my_validator 100000000000uguu,100000000000ubtc;
-ununifid genesis add-genesis-account my_receiver 100000000000uguu,100000000000ubtc;
-ununifid genesis add-genesis-account faucet 100000000000uguu,100000000000ubtc,100000000000jpu;
-ununifid genesis gentx my_validator 100000000uguu --chain-id ununifi-test-private-m1 --keyring-backend test;
-ununifid genesis collect-gentxs;
+ununifid add-genesis-account my_validator 100000000000uguu,100000000000ubtc;
+ununifid add-genesis-account my_receiver 100000000000uguu,100000000000ubtc;
+ununifid add-genesis-account faucet 100000000000uguu,100000000000ubtc,100000000000jpu;
+ununifid gentx my_validator 100000000uguu --chain-id ununifi-test-private-m1 --keyring-backend test;
+ununifid collect-gentxs;
 
 # query nft
 ununifid query nft nft a10 a10
