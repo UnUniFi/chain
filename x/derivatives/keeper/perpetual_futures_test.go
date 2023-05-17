@@ -360,9 +360,9 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 				Leverage:     5,
 			},
 			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(2000000)),
-			// Levy 500000 * 0.05 * 2 / 6 = 8333
-			// 500000 - 8333 (funding) - 500(commission) = 491167
-			expMargin: sdk.MustNewDecFromStr("491167").TruncateInt(),
+			// -funding 2000000 * 0.0005 * 2 / 6 = 333uatom
+			// 500000 - 333 - 500(commission) = 499167
+			expMargin: sdk.MustNewDecFromStr("499167").TruncateInt(),
 		},
 		{
 			positionId: "1",
@@ -373,8 +373,9 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 				Leverage:     5,
 			},
 			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
-			// 500000 + 8333(funding) - 500(commission) = 507833
-			expMargin: sdk.MustNewDecFromStr("507833").TruncateInt(),
+			// +funding 1000000 * 0.0005 * 2 / 6 = 167uatom
+			// 500000 + 167 - 500(commission) = 499667
+			expMargin: sdk.MustNewDecFromStr("499667").TruncateInt(),
 		},
 		{
 			positionId: "2",
@@ -385,8 +386,9 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 				Leverage:     20,
 			},
 			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(20000000)),
-			// 1000000 - 16667(funding) - 1000(commission) = 982334
-			expMargin: sdk.MustNewDecFromStr("982333").TruncateInt(),
+			// -funding 2000000 * 0.0005 * 2 / 6 = 333uatom
+			// 1000000 - 33(funding) - 1000(commission) = 998967
+			expMargin: sdk.MustNewDecFromStr("998967").TruncateInt(),
 		},
 		{
 			positionId: "3",
@@ -397,8 +399,9 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 				Leverage:     10,
 			},
 			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
-			// 1000000 + 16667(funding) - 1000(commission) = 1015666
-			expMargin: sdk.MustNewDecFromStr("1015667").TruncateInt(),
+			// +funding 1000000 * 0.0005 * 2 / 6 = 167uatom
+			// 1000000 + 17(funding) - 1000(commission) = 999017
+			expMargin: sdk.MustNewDecFromStr("999017").TruncateInt(),
 		},
 	}
 
@@ -518,7 +521,7 @@ func (suite *KeeperTestSuite) SetParams() {
 	params.PerpetualFutures = types.PerpetualFuturesParams{
 		CommissionRate:        sdk.MustNewDecFromStr("0.001"),
 		MarginMaintenanceRate: sdk.MustNewDecFromStr("0.5"),
-		ImaginaryFundingRateProportionalCoefficient: sdk.MustNewDecFromStr("0.05"),
+		ImaginaryFundingRateProportionalCoefficient: sdk.MustNewDecFromStr("0.0005"),
 		Markets: []*types.Market{
 			{
 				BaseDenom:  "uatom",
