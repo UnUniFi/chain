@@ -43,7 +43,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 			PerpetualFutures: types.PerpetualFuturesParams{
 				CommissionRate:        sdk.NewDecWithPrec(1, 3),
 				MarginMaintenanceRate: sdk.NewDecWithPrec(5, 1),
-				ImaginaryFundingRateProportionalCoefficient: sdk.NewDecWithPrec(5, 2),
+				ImaginaryFundingRateProportionalCoefficient: sdk.NewDecWithPrec(5, 4),
 				Markets: []*types.Market{
 					{
 						BaseDenom:  "ubtc",

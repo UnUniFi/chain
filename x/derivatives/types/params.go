@@ -32,7 +32,7 @@ func DefaultPerpetualFuturesParams() PerpetualFuturesParams {
 	return PerpetualFuturesParams{
 		CommissionRate:        sdk.MustNewDecFromStr("0.001"),
 		MarginMaintenanceRate: sdk.MustNewDecFromStr("0.5"),
-		ImaginaryFundingRateProportionalCoefficient: sdk.MustNewDecFromStr("0.05"),
+		ImaginaryFundingRateProportionalCoefficient: sdk.MustNewDecFromStr("0.0005"),
 		Markets:     []*Market{},
 		MaxLeverage: 30,
 	}
