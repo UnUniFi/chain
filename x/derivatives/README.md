@@ -494,6 +494,8 @@ message EventPerpetualFuturesTradingFee {
 ### EventPerpetualFuturesImaginaryFundingFee
 
 This event is emitted when the protocol earns the imaginary funding fee from the traders when  it's levied.
+The imaginary funding fee can be minus if the protocol funds the position.
+In that case, the `fee` property has the minus value.
 
 ```protobuf
 message EventPerpetualFuturesImaginaryFundingFee {
