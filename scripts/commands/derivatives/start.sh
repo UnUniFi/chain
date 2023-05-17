@@ -15,11 +15,11 @@ ununifid keys mnemonic 2> debug.txt
 ununifid keys add validator --recover < validator.txt
 ununifid keys add debug --recover < debug.txt
 ununifid keys add pricefeed --recover < $SCRIPT_DIR/pricefeed.txt
-ununifid add-genesis-account $(ununifid keys show validator --address) 100000000000000uguu,100000000000000ubtc,100000000000000uusd
-ununifid add-genesis-account $(ununifid keys show debug --address) 100000000000000uguu,100000000000000ubtc,100000000000000uusd
-ununifid add-genesis-account $(ununifid keys show pricefeed --address) 100000000000000uguu,100000000000000ubtc,100000000000000uusd
-ununifid gentx validator 100000000uguu --chain-id=test
-ununifid collect-gentxs
+ununifid genesis add-genesis-account $(ununifid keys show validator --address) 100000000000000uguu,100000000000000ubtc,100000000000000uusd
+ununifid genesis add-genesis-account $(ununifid keys show debug --address) 100000000000000uguu,100000000000000ubtc,100000000000000uusd
+ununifid genesis add-genesis-account $(ununifid keys show pricefeed --address) 100000000000000uguu,100000000000000ubtc,100000000000000uusd
+ununifid genesis gentx validator 100000000uguu --chain-id=test
+ununifid genesis collect-gentxs
 
 # Edit app.toml to enable unsafe-cors and set pruning everything to reduce disk usage.
 OS=$(uname -s)

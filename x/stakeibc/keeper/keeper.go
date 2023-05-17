@@ -24,11 +24,12 @@ import (
 	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
 	ibctmtypes "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
 
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
+
 	epochstypes "github.com/UnUniFi/chain/x/epochs/types"
 	icacallbackskeeper "github.com/UnUniFi/chain/x/icacallbacks/keeper"
 	recordsmodulekeeper "github.com/UnUniFi/chain/x/records/keeper"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
-	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
 )
 
 type (
@@ -212,7 +213,7 @@ func (k Keeper) IsWithinBufferWindow(ctx sdk.Context) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	bufferSize, err := cast.ToInt64E(k.GetParam(ctx, types.KeyBufferSize))
+	bufferSize, err := cast.ToInt64E(k.GetParams(ctx).BufferSize)
 	if err != nil {
 		return false, err
 	}
@@ -232,7 +233,7 @@ func (k Keeper) GetICATimeoutNanos(ctx sdk.Context, epochType string) (uint64, e
 		return 0, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Failed to get epoch tracker for %s", epochType)
 	}
 	// BUFFER by 5% of the epoch length
-	bufferSizeParam := k.GetParam(ctx, types.KeyBufferSize)
+	bufferSizeParam := k.GetParams(ctx).BufferSize
 	bufferSize := epochTracker.Duration / bufferSizeParam
 	// buffer size should not be negative or longer than the epoch duration
 	if bufferSize > epochTracker.Duration {
@@ -251,10 +252,10 @@ func (k Keeper) GetICATimeoutNanos(ctx sdk.Context, epochType string) (uint64, e
 
 // safety check: ensure the redemption rate is NOT below our min safety threshold && NOT above our max safety threshold on host zone
 func (k Keeper) IsRedemptionRateWithinSafetyBounds(ctx sdk.Context, zone types.HostZone) (bool, error) {
-	minSafetyThresholdInt := k.GetParam(ctx, types.KeySafetyMinRedemptionRateThreshold)
+	minSafetyThresholdInt := k.GetParams(ctx).SafetyMinRedemptionRateThreshold
 	minSafetyThreshold := sdk.NewDec(int64(minSafetyThresholdInt)).Quo(sdk.NewDec(100))
 
-	maxSafetyThresholdInt := k.GetParam(ctx, types.KeySafetyMaxRedemptionRateThreshold)
+	maxSafetyThresholdInt := k.GetParams(ctx).SafetyMaxRedemptionRateThreshold
 	maxSafetyThreshold := sdk.NewDec(int64(maxSafetyThresholdInt)).Quo(sdk.NewDec(100))
 
 	redemptionRate := zone.RedemptionRate
