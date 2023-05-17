@@ -36,7 +36,7 @@ func (k msgServer) ClearBalance(goCtx context.Context, msg *types.MsgClearBalanc
 	}
 	sender := feeAccount.GetAddress()
 	// KeyICATimeoutNanos are for our Stride ICA calls, KeyFeeTransferTimeoutNanos is for the IBC transfer
-	feeTransferTimeoutNanos := k.GetParams(ctx).FeeTransferTimeoutNanos
+	feeTransferTimeoutNanos := k.GetParam(ctx, types.KeyFeeTransferTimeoutNanos)
 	timeoutTimestamp := cast.ToUint64(ctx.BlockTime().UnixNano()) + feeTransferTimeoutNanos
 	msgs := []sdk.Msg{
 		&ibctransfertypes.MsgTransfer{
@@ -51,7 +51,7 @@ func (k msgServer) ClearBalance(goCtx context.Context, msg *types.MsgClearBalanc
 
 	connectionId := zone.GetConnectionId()
 
-	icaTimeoutNanos := k.GetParams(ctx).IcaTimeoutNanos
+	icaTimeoutNanos := k.GetParam(ctx, types.KeyICATimeoutNanos)
 	icaTimeoutNanos = cast.ToUint64(ctx.BlockTime().UnixNano()) + icaTimeoutNanos
 
 	_, err = k.SubmitTxs(ctx, connectionId, msgs, *feeAccount, icaTimeoutNanos, "", nil)

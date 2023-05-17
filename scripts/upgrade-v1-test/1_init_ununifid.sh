@@ -16,9 +16,9 @@ sed -i 's/stake/uguu/g' ~/.ununifi/config/genesis.json;
 # jq '.app_state.bank.params.default_send_enabled = false'  ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
 # jq '.app_state.gov.voting_params.voting_period = "20s"'  ~/.ununifi/config/genesis.json > temp.json ; mv temp.json ~/.ununifi/config/genesis.json;
 ununifid keys add validator-a --recover < ~/backup-validator-a-mnemonic.txt;
-ununifid genesis add-genesis-account validator-a 125000000000000uguu;
-ununifid genesis gentx validator-a 120000000000000uguu --chain-id ununifi-upgrade-test-v1 --keyring-backend test;
-ununifid genesis collect-gentxs;
+ununifid add-genesis-account validator-a 125000000000000uguu;
+ununifid gentx validator-a 120000000000000uguu --chain-id ununifi-upgrade-test-v1 --keyring-backend test;
+ununifid collect-gentxs;
 
 go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@v1.0.0
 mkdir -p $DAEMON_HOME/cosmovisor

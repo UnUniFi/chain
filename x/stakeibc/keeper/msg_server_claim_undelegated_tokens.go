@@ -166,7 +166,7 @@ func (k Keeper) GetRedemptionTransferMsg(ctx sdk.Context, userRedemptionRecord *
 		k.Logger(ctx).Error(errMsg)
 		return nil, sdkerrors.Wrap(types.ErrEpochNotFound, errMsg)
 	}
-	icaTimeOutNanos := k.GetParams(ctx).IcaTimeoutNanos
+	icaTimeOutNanos := k.GetParam(ctx, types.KeyICATimeoutNanos)
 	nextEpochStarttime := epochTracker.NextEpochStartTime
 	timeout := nextEpochStarttime + icaTimeOutNanos
 
@@ -201,7 +201,7 @@ func (k Keeper) GetRedemptionIBCTransferMsg(ctx sdk.Context, userRedemptionRecor
 		return nil, sdkerrors.Wrap(types.ErrInvalidUserRedemptionRecord, err.Error())
 	}
 
-	ibcTransferTimeoutNanos := k.GetParams(ctx).IbcTransferTimeoutNanos
+	ibcTransferTimeoutNanos := k.GetParam(ctx, types.KeyIBCTransferTimeoutNanos)
 	timeoutTimestamp := uint64(ctx.BlockTime().UnixNano()) + ibcTransferTimeoutNanos
 
 	sourceChannelEnd, found := k.ChannelKeeper.GetChannel(ctx, ibctransfertypes.PortID, hostZone.TransferChannelId)
@@ -226,7 +226,7 @@ func (k Keeper) GetRedemptionIBCTransferMsg(ctx sdk.Context, userRedemptionRecor
 		k.Logger(ctx).Error(errMsg)
 		return nil, sdkerrors.Wrap(types.ErrEpochNotFound, errMsg)
 	}
-	icaTimeOutNanos := k.GetParams(ctx).IcaTimeoutNanos
+	icaTimeOutNanos := k.GetParam(ctx, types.KeyICATimeoutNanos)
 	nextEpochStarttime := epochTracker.NextEpochStartTime
 	timeout := nextEpochStarttime + icaTimeOutNanos
 
@@ -258,7 +258,7 @@ func (k Keeper) GetRedemptionIBCTransferMsg2(ctx sdk.Context, msg *types.MsgClai
 	var msgs []sdk.Msg
 	rrAmt := int64(111)
 
-	ibcTransferTimeoutNanos := k.GetParams(ctx).IbcTransferTimeoutNanos
+	ibcTransferTimeoutNanos := k.GetParam(ctx, types.KeyIBCTransferTimeoutNanos)
 	timeoutTimestamp := uint64(ctx.BlockTime().UnixNano()) + ibcTransferTimeoutNanos
 
 	sourceChannelEnd, found := k.ChannelKeeper.GetChannel(ctx, ibctransfertypes.PortID, hostZone.TransferChannelId)
@@ -283,7 +283,7 @@ func (k Keeper) GetRedemptionIBCTransferMsg2(ctx sdk.Context, msg *types.MsgClai
 		k.Logger(ctx).Error(errMsg)
 		return nil, sdkerrors.Wrap(types.ErrEpochNotFound, errMsg)
 	}
-	icaTimeOutNanos := k.GetParams(ctx).IcaTimeoutNanos
+	icaTimeOutNanos := k.GetParam(ctx, types.KeyICATimeoutNanos)
 	nextEpochStarttime := epochTracker.NextEpochStartTime
 	timeout := nextEpochStarttime + icaTimeOutNanos
 
