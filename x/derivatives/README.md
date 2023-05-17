@@ -464,7 +464,7 @@ message PerpetualFuturesParams {
 
 - `CommissionRate` is the fee for trading. It's taken when to close a position. The default value is `0.001`.
 - `MarginMaintenanceRate` is used for the determination of the liquidation condition. The default value is `0.5`.
-- `ImaginaryFundingRateProportionalCoefficient` is the fee ratio for the imaginary funding. The default value is `0.05`.
+- `ImaginaryFundingRateProportionalCoefficient` is the fee ratio for the imaginary funding. The default value is `0.0005`.
 - `Markets` defines the available trading pair on the perpetual futures market.
 
 ### PerpetualOptionsParams
