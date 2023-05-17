@@ -99,10 +99,18 @@ import (
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+
+	ica "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts"
+	icatypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/types"
+
+	// icacontroller "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller"
 	icacontrollerkeeper "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/keeper"
+	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
+
 	icahost "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host"
 	icahostkeeper "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host/keeper"
 	icahosttypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host/types"
+	ibcfee "github.com/cosmos/ibc-go/v7/modules/apps/29-fee"
 	ibcfeekeeper "github.com/cosmos/ibc-go/v7/modules/apps/29-fee/keeper"
 	ibcfeetypes "github.com/cosmos/ibc-go/v7/modules/apps/29-fee/types"
 	transfer "github.com/cosmos/ibc-go/v7/modules/apps/transfer"
@@ -235,8 +243,8 @@ var (
 		// stakeibcmodule.AppModuleBasic{},
 		// epochsmodule.AppModuleBasic{},
 		// interchainquery.AppModuleBasic{},
-		// ica.AppModuleBasic{},
-		// ibcfee.AppModuleBasic{},
+		ica.AppModuleBasic{},
+		ibcfee.AppModuleBasic{},
 		// recordsmodule.AppModuleBasic{},
 		// icacallbacksmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
@@ -256,13 +264,13 @@ var (
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
-		// icatypes.ModuleName:                     nil,
+		icatypes.ModuleName:            nil,
 		// stakeibcmoduletypes.ModuleName:          {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		// interchainquerytypes.ModuleName:         nil,
 		wasm.ModuleName: {authtypes.Burner},
 		// yieldfarmtypes.ModuleName:               {authtypes.Minter},
 		// yieldaggregatortypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
-		// ibcfeetypes.ModuleName:                  nil,
+		ibcfeetypes.ModuleName: nil,
 		// ecosystemincentivetypes.ModuleName:      nil,
 		nft.ModuleName: nil,
 		// nftminttypes.ModuleName:                 nil,
@@ -342,8 +350,8 @@ type App struct {
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper capabilitykeeper.ScopedKeeper
 	// ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
-	// ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
-	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
+	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
+	ScopedTransferKeeper      capabilitykeeper.ScopedKeeper
 	// ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
 	ScopedWasmKeeper capabilitykeeper.ScopedKeeper
 
@@ -404,7 +412,7 @@ func NewApp(
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, consensusparamtypes.StoreKey,
 		ibcexported.StoreKey, upgradetypes.StoreKey,
-		// icahosttypes.StoreKey,
+		icahosttypes.StoreKey,
 		evidencetypes.StoreKey,
 		// liquiditytypes.StoreKey,
 		ibctransfertypes.StoreKey,
@@ -421,7 +429,7 @@ func NewApp(
 		// icacontrollertypes.StoreKey,
 		// recordsmoduletypes.StoreKey,
 		// icacallbacksmoduletypes.StoreKey,
-		// ibcfeetypes.StoreKey,
+		ibcfeetypes.StoreKey,
 		// ecosystemincentivetypes.StoreKey,
 		// nftminttypes.StoreKey,
 		// nftmarkettypes.StoreKey,
@@ -463,9 +471,9 @@ func NewApp(
 
 	// grant capabilities for the ibc and ibc-transfer modules
 	scopedIBCKeeper := app.CapabilityKeeper.ScopeToModule(ibcexported.ModuleName)
-	// scopedICAHostKeeper := app.CapabilityKeeper.ScopeToModule(icahosttypes.SubModuleName)
+	scopedICAHostKeeper := app.CapabilityKeeper.ScopeToModule(icahosttypes.SubModuleName)
 	scopedTransferKeeper := app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
-	// scopedICAControllerKeeper := app.CapabilityKeeper.ScopeToModule(icacontrollertypes.SubModuleName)
+	scopedICAControllerKeeper := app.CapabilityKeeper.ScopeToModule(icacontrollertypes.SubModuleName)
 
 	scopedWasmKeeper := app.CapabilityKeeper.ScopeToModule(wasm.ModuleName)
 
@@ -613,12 +621,12 @@ func NewApp(
 	transferModule := transfer.NewAppModule(app.TransferKeeper)
 	// transferIBCModule := transfer.NewIBCModule(app.TransferKeeper)
 
-	// app.ICAControllerKeeper = icacontrollerkeeper.NewKeeper(
-	// 	appCodec, keys[icacontrollertypes.StoreKey], app.GetSubspace(icacontrollertypes.SubModuleName),
-	// 	app.IBCFeeKeeper, // may be replaced with middleware such as ics29 fee
-	// 	app.IBCKeeper.ChannelKeeper, &app.IBCKeeper.PortKeeper,
-	// 	scopedICAControllerKeeper, app.MsgServiceRouter(),
-	// )
+	app.ICAControllerKeeper = icacontrollerkeeper.NewKeeper(
+		appCodec, keys[icacontrollertypes.StoreKey], app.GetSubspace(icacontrollertypes.SubModuleName),
+		app.IBCFeeKeeper, // may be replaced with middleware such as ics29 fee
+		app.IBCKeeper.ChannelKeeper, &app.IBCKeeper.PortKeeper,
+		scopedICAControllerKeeper, app.MsgServiceRouter(),
+	)
 
 	// scopedIcacallbacksKeeper := app.CapabilityKeeper.ScopeToModule(icacallbacksmoduletypes.ModuleName)
 	// app.ScopedIcacallbacksKeeper = scopedIcacallbacksKeeper
@@ -692,18 +700,18 @@ func NewApp(
 	// 	return nil
 	// }
 
-	// app.ICAHostKeeper = icahostkeeper.NewKeeper(
-	// 	appCodec,
-	// 	keys[icahosttypes.StoreKey],
-	// 	app.GetSubspace(icahosttypes.SubModuleName),
-	// 	app.IBCFeeKeeper, // use ics29 fee as ics4Wrapper in middleware stack
-	// 	app.IBCKeeper.ChannelKeeper,
-	// 	&app.IBCKeeper.PortKeeper,
-	// 	app.AccountKeeper,
-	// 	scopedICAHostKeeper,
-	// 	app.MsgServiceRouter(),
-	// )
-	// icaModule := ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper)
+	app.ICAHostKeeper = icahostkeeper.NewKeeper(
+		appCodec,
+		keys[icahosttypes.StoreKey],
+		app.GetSubspace(icahosttypes.SubModuleName),
+		app.IBCFeeKeeper, // use ics29 fee as ics4Wrapper in middleware stack
+		app.IBCKeeper.ChannelKeeper,
+		&app.IBCKeeper.PortKeeper,
+		app.AccountKeeper,
+		scopedICAHostKeeper,
+		app.MsgServiceRouter(),
+	)
+	icaModule := ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper)
 	icaHostIBCModule := icahost.NewIBCModule(app.ICAHostKeeper)
 
 	// Stack two (Stakeibc Stack) contains
@@ -871,7 +879,6 @@ func NewApp(
 	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
 
 	app.setupAppkeeper()
-	app.setupUpgradeStoreLoaders()
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
@@ -899,15 +906,16 @@ func NewApp(
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		nftmodule.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		// ibc.NewAppModule(app.IBCKeeper),
+		ibc.NewAppModule(app.IBCKeeper),
+		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
 		transferModule,
-		// ibcfee.NewAppModule(app.IBCFeeKeeper),
+		ibcfee.NewAppModule(app.IBCFeeKeeper),
 		// stakeibcModule,
 		// epochsModule,
 		// interchainQueryModule,
-		// icaModule,
+		icaModule,
 		// recordsModule,
 		// icacallbacksModule,
 
@@ -957,14 +965,14 @@ func NewApp(
 
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
-		// icatypes.ModuleName,
+		icatypes.ModuleName,
 		// stakeibcmoduletypes.ModuleName,
 		// epochsmoduletypes.ModuleName,
 		// interchainquerytypes.ModuleName,
 		// recordsmoduletypes.ModuleName,
 		// icacallbacksmoduletypes.ModuleName,
 
-		// ibcfeetypes.ModuleName,
+		ibcfeetypes.ModuleName,
 		// yieldfarmtypes.ModuleName,
 		// yieldaggregatortypes.ModuleName,
 	)
@@ -996,16 +1004,16 @@ func NewApp(
 		// nftmarkettypes.ModuleName,
 		// ecosystemincentivetypes.ModuleName,
 		// derivativestypes.ModuleName,
-		// ibcexported.ModuleName,
+		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
-		// icatypes.ModuleName,
+		icatypes.ModuleName,
 		// stakeibcmoduletypes.ModuleName,
 		// epochsmoduletypes.ModuleName,
 		// interchainquerytypes.ModuleName,
 		// recordsmoduletypes.ModuleName,
 		// icacallbacksmoduletypes.ModuleName,
 
-		// ibcfeetypes.ModuleName,
+		ibcfeetypes.ModuleName,
 		// yieldfarmtypes.ModuleName,
 		// yieldaggregatortypes.ModuleName,
 	)
@@ -1046,16 +1054,16 @@ func NewApp(
 		// ecosystemincentivetypes.ModuleName,
 		// derivativestypes.ModuleName,
 
-		// ibcexported.ModuleName,
+		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
-		// icatypes.ModuleName,
+		icatypes.ModuleName,
 		// stakeibcmoduletypes.ModuleName,
 		// epochsmoduletypes.ModuleName,
 		// interchainquerytypes.ModuleName,
 		// recordsmoduletypes.ModuleName,
 		// icacallbacksmoduletypes.ModuleName,
 
-		// ibcfeetypes.ModuleName,
+		ibcfeetypes.ModuleName,
 		// yieldfarmtypes.ModuleName,
 		// yieldaggregatortypes.ModuleName,
 	)
@@ -1089,20 +1097,7 @@ func NewApp(
 	app.setAnteHandler(encodingConfig.TxConfig, wasmConfig, keys[wasm.StoreKey])
 
 	app.setupUpgradeHandlers()
-
-	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
-	if err != nil {
-		panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
-	}
-
-	if upgradeInfo.Name == v1_beta3.UpgradeName && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
-		storeUpgrades := storetypes.StoreUpgrades{
-			Added: []string{},
-		}
-
-		// configure store loader that checks if version == upgradeHeight and applies store upgrades
-		app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades))
-	}
+	app.setupUpgradeStoreLoaders()
 
 	// must be before Loading version
 	// requires the snapshot store to be created and registered as a BaseAppOption
@@ -1120,7 +1115,7 @@ func NewApp(
 	app.ScopedTransferKeeper = scopedTransferKeeper
 	app.ScopedWasmKeeper = scopedWasmKeeper
 	// app.ScopedICAHostKeeper = scopedICAHostKeeper
-	// app.ScopedICAControllerKeeper = scopedICAControllerKeeper
+	app.ScopedICAControllerKeeper = scopedICAControllerKeeper
 	// app.ScopedStakeibcKeeper = scopedStakeibcKeeper
 
 	// In v0.46, the SDK introduces _postHandlers_. PostHandlers are like
@@ -1391,7 +1386,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	// paramsKeeper.Subspace(stakeibcmoduletypes.ModuleName)
 	// paramsKeeper.Subspace(epochsmoduletypes.ModuleName)
 	// paramsKeeper.Subspace(interchainquerytypes.ModuleName)
-	// paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
+	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	// paramsKeeper.Subspace(recordsmoduletypes.ModuleName)
 	// paramsKeeper.Subspace(icacallbacksmoduletypes.ModuleName)
 
@@ -1441,4 +1436,7 @@ func (app *App) setupUpgradeHandlers() {
 func (app *App) setupAppkeeper() {
 	app.AppKeepers.AccountKeeper = &app.AccountKeeper
 	app.AppKeepers.BankKeeper = &app.BankKeeper
+	app.AppKeepers.ConsensusParamsKeeper = &app.ConsensusParamsKeeper
+	app.AppKeepers.ParamsKeeper = &app.ParamsKeeper
+	app.AppKeepers.WasmKeeper = &app.WasmKeeper
 }
