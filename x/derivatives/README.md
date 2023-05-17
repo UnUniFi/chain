@@ -462,7 +462,63 @@ nothing is defined yet.
 - [EventPerpetualFuturesPositionClosed](https://github.com/UnUniFi/chain/blob/0dc4f717a4ef3e4b32731069d1dba503babe5998/proto/derivatives/perpetual_futures.proto#L110-L115)
 - [EventPerpetualFuturesPositionLiquidated](https://github.com/UnUniFi/chain/blob/0dc4f717a4ef3e4b32731069d1dba503babe5998/proto/derivatives/perpetual_futures.proto#L117-L122)
 - [EventPerpetualFuturesPositionLevied](https://github.com/UnUniFi/chain/blob/0dc4f717a4ef3e4b32731069d1dba503babe5998/proto/derivatives/perpetual_futures.proto#L124-L129)
+- [EventPerpetualFuturesTradingFee]
+- [EventPerpetualFuturesImaginaryFundingFee]
+- [EventPerpetualFuturesLiquidationFee]
 
-## EventPriceIsNotFeeded
+
+### EventPriceIsNotFeeded
 
 This event is emitted when at least one necessary price is not feeded in the pricefeed module to be referenced in the derivatives module.
+
+## Events for the fee earned by the protocol
+
+The following events are emitted when the protocol earns the fee from the traders.
+
+### EventPerpetualFuturesTradingFee
+
+This event is emitted when the protocol earns the trading fee from the traders when to be closed.
+
+```protobuf
+message EventPerpetualFuturesTradingFee {
+  cosmos.base.v1beta1.Coin fee = 1 [
+    (gogoproto.moretags) = "yaml:\"fee\"",
+    (gogoproto.nullable) = false
+  ];
+  string position_id = 2 [
+    (gogoproto.moretags) = "yaml:\"position_id\""
+  ];
+}
+```
+
+### EventPerpetualFuturesImaginaryFundingFee
+
+This event is emitted when the protocol earns the imaginary funding fee from the traders when  it's levied.
+
+```protobuf
+message EventPerpetualFuturesImaginaryFundingFee {
+  cosmos.base.v1beta1.Coin fee = 1 [
+    (gogoproto.moretags) = "yaml:\"fee\"",
+    (gogoproto.nullable) = false
+  ];
+  string position_id = 2 [
+    (gogoproto.moretags) = "yaml:\"position_id\""
+  ];
+}
+```
+
+### EventPerpetualFuturesLiquidationFee
+
+This event is emitted when the protocol earns the liquidation fee from the traders when the position is liquidated.
+
+```protobuf
+message EventPerpetualFuturesLiquidationFee {
+  cosmos.base.v1beta1.Coin fee = 1 [
+    (gogoproto.moretags) = "yaml:\"fee\"",
+    (gogoproto.nullable) = false
+  ];
+  string position_id = 2 [
+    (gogoproto.moretags) = "yaml:\"position_id\""
+  ];
+}
+```
