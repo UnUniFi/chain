@@ -6,7 +6,7 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
-option go_package = "github.com/UnUniFi/chain/x/auction/types";
+option go_package = "github.com/UnUniFi/chain/x/deprecated/auction/types";
 
 message BaseAuction {
   uint64 id = 1 [(gogoproto.moretags) = "yaml:\"id\""];
@@ -24,7 +24,7 @@ message BaseAuction {
     (gogoproto.moretags) = "yaml:\"bid\"",
     (gogoproto.nullable) = false
   ];
-  bool has_received_bids = 6 [(gogoproto.moretags) = "yaml:\"has_reeceived_bids\""];
+  bool has_received_bids = 6 [(gogoproto.moretags) = "yaml:\"has_received_bids\""];
   google.protobuf.Timestamp end_time = 7 [
     (gogoproto.moretags) = "yaml:\"end_time\"",
     (gogoproto.nullable) = false,

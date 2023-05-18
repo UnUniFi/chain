@@ -157,7 +157,7 @@ func changeVestingAmount(
 		modifiedAmount := cont_acc.OriginalVesting.Add(amount)
 		cont_acc.OriginalVesting = modifiedAmount
 	} else {
-		modifiedAmount := cont_acc.OriginalVesting.Sub(sdk.NewCoins(amount))
+		modifiedAmount := cont_acc.OriginalVesting.Sub(sdk.NewCoins(amount)...)
 		cont_acc.OriginalVesting = modifiedAmount
 	}
 

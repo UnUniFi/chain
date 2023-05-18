@@ -5,6 +5,10 @@
     "docsmsft.docs-markdown",
     "docsmsft.docs-yaml",
     "ms-vsliveshare.vsliveshare",
-    "golang.go"
+    "golang.go",
+    "zxh404.vscode-proto3",
+    "eamodio.gitlens",
+    "TabNine.tabnine-vscode",
+    "streetsidesoftware.code-spell-checker",
   ]
 }

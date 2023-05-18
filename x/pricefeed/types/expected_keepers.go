@@ -4,6 +4,7 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
 type AccountKeeper interface {
@@ -31,9 +32,10 @@ type AccountKeeper interface {
 	// Fetch the sequence of an account at a specified address.
 	GetSequence(sdk.Context, sdk.AccAddress) (uint64, error)
 
-	// Fetch the next account number, and increment the internal counter.
-	GetNextAccountNumber(sdk.Context) uint64
-
 	GetModuleAddress(moduleName string) sdk.AccAddress
 	GetModuleAccount(ctx sdk.Context, moduleName string) authtypes.ModuleAccountI
+}
+
+type BankKeeper interface {
+	GetDenomMetaData(ctx sdk.Context, denom string) (banktypes.Metadata, bool)
 }

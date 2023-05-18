@@ -1,0 +1,21 @@
+syntax = "proto3";
+package ununifi.yieldaggregator;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/yield-aggregator/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+
+  string commission_rate = 1 [
+    (cosmos_proto.scalar) = "cosmos.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin vault_creation_fee = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin vault_creation_deposit = 3 [(gogoproto.nullable) = false];
+}
