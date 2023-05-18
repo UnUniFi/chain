@@ -37,10 +37,5 @@ type AppKeepers struct {
 	StakingKeeper *stakingkeeper.Keeper
 	DistrKeeper   *distrkeeper.Keeper
 
-	// // keys to access the substores
-	// keys    map[string]*sdk.KVStoreKey
-	// tkeys   map[string]*sdk.TransientStoreKey
-	// memKeys map[string]*sdk.MemoryStoreKey
-
 	WasmKeeper *wasmkeeper.Keeper
 }
