@@ -33,7 +33,7 @@ RUN apk add --update util-linux
 RUN whereis ununifid
 
 # Final image
-FROM alpine:edge
+FROM alpine:3.15
 
 # Install ca-certificates
 RUN apk add --update ca-certificates
