@@ -12,7 +12,7 @@ sudo apt update -y; sudo apt upgrade -y
 sudo apt install -y jq git build-essential
 ```
 
-Install Go. Use the 18.x series version.
+Install Go. Use the 19.x series version.
 
 ```bash
 $ wget https://go.dev/dl/go1.18.linux-amd64.tar.gz
