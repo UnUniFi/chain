@@ -9,9 +9,9 @@ This upgrade will upgrade you to cosmos sdk v47 and allow you to use the nft, wa
 
 ### The following text will be updated soon.
 
-~~ All validators nodes should upgrades to `v2.0.0`. The `v2.0.0` binary is state machine compatible with `v1.0.0-beta.4` until **block 3452990. At 01:00 UTC on January 10th, 2023**, we will have a coordinated re-start of the network.  ~~ 
-~~ All validator(full) nodes have to do is set the binary of `v3.0.0` in the appropriate location before 3452990 block height.   ~~
-~~ At 3452990, if you use cosmovisor, the system automatically upgrades the binary and block 3452990 will be mined with over 67% voting power.   ~~
+~~All validators nodes should upgrades to `v2.0.0`. The `v2.0.0` binary is state machine compatible with `v1.0.0-beta.4` until **block 3452990. At 01:00 UTC on January 10th, 2023**, we will have a coordinated re-start of the network.~~
+~~All validator(full) nodes have to do is set the binary of `v3.0.0` in the appropriate location before 3452990 block height.~~  
+~~At 3452990, if you use cosmovisor, the system automatically upgrades the binary and block 3452990 will be mined with over 67% voting power.~~  
 
 ## Go Requirement
 
