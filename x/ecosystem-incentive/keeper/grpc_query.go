@@ -51,17 +51,17 @@ func (k Keeper) Reward(c context.Context, req *types.QueryRewardRequest) (*types
 
 	accAddr, err := sdk.AccAddressFromBech32(req.SubjectAddr)
 	if err != nil {
-		return nil, err
+		return &types.QueryRewardResponse{Reward: sdk.Coin{}}, err
 	}
 
 	allRewards, exists := k.GetRewardStore(ctx, accAddr)
 	if !exists {
-		return nil, types.ErrAddressNotHaveReward
+		return &types.QueryRewardResponse{Reward: sdk.Coin{}}, types.ErrAddressNotHaveReward
 	}
 
 	exists, reward := allRewards.Rewards.Find(req.Denom)
 	if !exists {
-		return nil, types.ErrDenomRewardNotExists
+		return &types.QueryRewardResponse{Reward: sdk.Coin{}}, types.ErrDenomRewardNotExists
 	}
 
 	return &types.QueryRewardResponse{Reward: reward}, nil
@@ -107,12 +107,12 @@ func (k Keeper) IncentiveUnitIdsByAddr(c context.Context, req *types.QueryIncent
 
 	addr, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
-		return nil, err
+		return &types.QueryIncentiveUnitIdsByAddrResponse{IncentiveUnitIdsByAddr: types.IncentiveUnitIdsByAddr{}}, err
 	}
 	incentiveUnitIdsByAddr := k.GetIncentiveUnitIdsByAddr(ctx, addr)
 
 	if incentiveUnitIdsByAddr.Address.AccAddress().Empty() {
-		return nil, types.ErrAddressNotHasIncentiveUnitId
+		return &types.QueryIncentiveUnitIdsByAddrResponse{IncentiveUnitIdsByAddr: types.IncentiveUnitIdsByAddr{Address: req.Address}}, err
 	}
 
 	return &types.QueryIncentiveUnitIdsByAddrResponse{IncentiveUnitIdsByAddr: incentiveUnitIdsByAddr}, nil
