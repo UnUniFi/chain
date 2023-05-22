@@ -11,8 +11,8 @@ package keeper_test
 // 	tmtime "github.com/cometbft/cometbft/types/time"
 
 // 	"github.com/UnUniFi/chain/app"
-// 	"github.com/UnUniFi/chain/x/deprecated/ununifidist/keeper"
-// 	ununifidisttypes "github.com/UnUniFi/chain/x/deprecated/ununifidist/types"
+// 	"github.com/UnUniFi/chain/deprecated/ununifidist/keeper"
+// 	ununifidisttypes "github.com/UnUniFi/chain/deprecated/ununifidist/types"
 // )
 
 // type KeeperTestSuite struct {

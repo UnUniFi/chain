@@ -12,7 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
 
-	"github.com/UnUniFi/chain/x/deprecated/nftmarketv1/types"
+	"github.com/UnUniFi/chain/deprecated/nftmarketv1/types"
 )
 
 // GetTxCmd returns the transaction commands for this module

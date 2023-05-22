@@ -11,8 +11,8 @@ import (
 
 	tmtime "github.com/cometbft/cometbft/types/time"
 
-	cdptypes "github.com/UnUniFi/chain/x/deprecated/cdp/types"
-	ununifidistTypes "github.com/UnUniFi/chain/x/deprecated/ununifidist/types"
+	cdptypes "github.com/UnUniFi/chain/deprecated/cdp/types"
+	ununifidistTypes "github.com/UnUniFi/chain/deprecated/ununifidist/types"
 )
 
 // Valid reward multipliers

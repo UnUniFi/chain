@@ -7,9 +7,9 @@ package keeper_test
 // 	sdk "github.com/cosmos/cosmos-sdk/types"
 // 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
-// 	"github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/types"
-// 	"github.com/UnUniFi/chain/x/yieldfarm"
-// 	yieldfarmtypes "github.com/UnUniFi/chain/x/yieldfarm/types"
+// 	"github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/types"
+// 	"github.com/UnUniFi/chain/deprecated/yieldfarm"
+// 	yieldfarmtypes "github.com/UnUniFi/chain/deprecated/yieldfarm/types"
 // )
 
 // func (suite *KeeperTestSuite) TestInvestmentFlow() {

@@ -3,7 +3,7 @@ package yieldfarm
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/x/yieldfarm/keeper"
+	"github.com/UnUniFi/chain/deprecated/yieldfarm/keeper"
 )
 
 func EndBlocker(ctx sdk.Context, k keeper.Keeper) {

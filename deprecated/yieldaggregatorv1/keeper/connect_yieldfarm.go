@@ -6,7 +6,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/types"
+	"github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/types"
 )
 
 func (k Keeper) InvestOnTarget(ctx sdk.Context, addr sdk.AccAddress, target types.AssetManagementTarget, amount sdk.Coins) error {

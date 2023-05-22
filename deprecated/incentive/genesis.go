@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/x/deprecated/incentive/keeper"
-	"github.com/UnUniFi/chain/x/deprecated/incentive/types"
+	"github.com/UnUniFi/chain/deprecated/incentive/keeper"
+	"github.com/UnUniFi/chain/deprecated/incentive/types"
 )
 
 // InitGenesis initializes the store state from a genesis state.

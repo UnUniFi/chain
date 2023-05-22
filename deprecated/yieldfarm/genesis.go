@@ -3,8 +3,8 @@ package yieldfarm
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/x/yieldfarm/keeper"
-	"github.com/UnUniFi/chain/x/yieldfarm/types"
+	"github.com/UnUniFi/chain/deprecated/yieldfarm/keeper"
+	"github.com/UnUniFi/chain/deprecated/yieldfarm/types"
 )
 
 // InitGenesis initializes the capability module's state from a provided genesis

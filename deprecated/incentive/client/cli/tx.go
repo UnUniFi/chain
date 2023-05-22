@@ -7,7 +7,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	// "github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/UnUniFi/chain/x/deprecated/incentive/types"
+	"github.com/UnUniFi/chain/deprecated/incentive/types"
 )
 
 // GetTxCmd returns the transaction commands for this module

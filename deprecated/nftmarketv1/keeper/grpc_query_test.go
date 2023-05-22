@@ -10,7 +10,7 @@ package keeper_test
 // 	"github.com/stretchr/testify/require"
 // 	"github.com/stretchr/testify/suite"
 
-// 	"github.com/UnUniFi/chain/x/deprecated/nftmarketv1/types"
+// 	"github.com/UnUniFi/chain/deprecated/nftmarketv1/types"
 // )
 
 // func TestGRPCQuery(t *testing.T) {
