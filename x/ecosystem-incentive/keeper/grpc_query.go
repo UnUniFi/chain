@@ -111,7 +111,7 @@ func (k Keeper) IncentiveUnitIdsByAddr(c context.Context, req *types.QueryIncent
 	}
 	incentiveUnitIdsByAddr := k.GetIncentiveUnitIdsByAddr(ctx, addr)
 
-	if incentiveUnitIdsByAddr.Address.AccAddress().Empty() {
+	if len(incentiveUnitIdsByAddr.IncentiveUnitIds) == 0 {
 		return &types.QueryIncentiveUnitIdsByAddrResponse{IncentiveUnitIdsByAddr: types.IncentiveUnitIdsByAddr{Address: req.Address}}, err
 	}
 
