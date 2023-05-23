@@ -752,17 +752,6 @@ func NewApp(
 		app.BankKeeper,
 	)
 
-	app.YieldaggregatorKeeper = yieldaggregatorkeeper.NewKeeper(
-		appCodec,
-		keys[yieldaggregatortypes.StoreKey],
-		app.GetSubspace(yieldaggregatortypes.ModuleName),
-		app.BankKeeper,
-		wasmkeeper.NewDefaultPermissionKeeper(app.WasmKeeper),
-		app.WasmKeeper,
-		app.StakeibcKeeper,
-		app.RecordsKeeper,
-	)
-
 	wasmDir := filepath.Join(homePath, "wasm")
 	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
 	if err != nil {
