@@ -9,7 +9,7 @@ import (
 
 	tmtime "github.com/cometbft/cometbft/types/time"
 
-	cdptypes "github.com/UnUniFi/chain/x/deprecated/cdp/types"
+	cdptypes "github.com/UnUniFi/chain/deprecated/cdp/types"
 )
 
 // Parameter keys and default values

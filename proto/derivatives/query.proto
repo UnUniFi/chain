@@ -3,6 +3,7 @@ package ununifi.derivatives;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+import "google/protobuf/any.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
@@ -224,9 +225,8 @@ message QueryAllPositionsRequest {
 }
 
 message QueryAllPositionsResponse {
-  repeated QueriedPosition positions = 1 [
-    (gogoproto.moretags)  = "yaml:\"positions\"",
-    (gogoproto.nullable) = false
+  repeated google.protobuf.Any positions = 1 [
+    (gogoproto.moretags)  = "yaml:\"positions\""
   ];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
@@ -276,7 +276,6 @@ message QueryAddressPositionsRequest {
   string address = 1 [
     (gogoproto.moretags)  = "yaml:\"address\""
   ];
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 message QueryAddressPositionsResponse {
@@ -284,9 +283,7 @@ message QueryAddressPositionsResponse {
     (gogoproto.moretags)  = "yaml:\"positions\"",
     (gogoproto.nullable) = false
   ];
-	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
-
 
 message QueryDLPTokenRateRequest {
 }

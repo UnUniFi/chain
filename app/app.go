@@ -123,7 +123,7 @@ import (
 	// "github.com/UnUniFi/chain/x/derivatives"
 	// epochsmodule "github.com/UnUniFi/chain/x/epochs"
 	// "github.com/UnUniFi/chain/x/nftmint"
-	// "github.com/UnUniFi/chain/x/yieldfarm"
+	// "github.com/UnUniFi/chain/deprecated/yieldfarm"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 	// "github.com/UnUniFi/chain/x/derivatives"
 	// derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"

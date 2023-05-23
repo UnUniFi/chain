@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/x/yieldfarm/types"
+	"github.com/UnUniFi/chain/deprecated/yieldfarm/types"
 )
 
 // GetParams get all parameters as types.Params

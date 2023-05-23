@@ -7,7 +7,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	cdptypes "github.com/UnUniFi/chain/x/deprecated/cdp/types"
+	cdptypes "github.com/UnUniFi/chain/deprecated/cdp/types"
 )
 
 // AccountKeeper expected interface for the account keeper (noalias)

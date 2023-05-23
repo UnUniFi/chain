@@ -8,7 +8,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/x/deprecated/cdp/types"
+	"github.com/UnUniFi/chain/deprecated/cdp/types"
 )
 
 var (

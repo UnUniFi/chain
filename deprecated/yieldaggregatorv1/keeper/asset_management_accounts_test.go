@@ -1,7 +1,7 @@
 package keeper_test
 
 // import (
-// 	"github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/types"
+// 	"github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/types"
 // )
 
 // func (suite *KeeperTestSuite) TestAssetManagementAccountGetSet() {

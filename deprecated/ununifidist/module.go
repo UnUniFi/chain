@@ -20,9 +20,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/UnUniFi/chain/x/deprecated/ununifidist/client/cli"
-	"github.com/UnUniFi/chain/x/deprecated/ununifidist/keeper"
-	"github.com/UnUniFi/chain/x/deprecated/ununifidist/types"
+	"github.com/UnUniFi/chain/deprecated/ununifidist/client/cli"
+	"github.com/UnUniFi/chain/deprecated/ununifidist/keeper"
+	"github.com/UnUniFi/chain/deprecated/ununifidist/types"
 )
 
 var (

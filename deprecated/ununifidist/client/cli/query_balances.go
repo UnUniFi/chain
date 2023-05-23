@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	"github.com/UnUniFi/chain/x/deprecated/ununifidist/types"
+	"github.com/UnUniFi/chain/deprecated/ununifidist/types"
 )
 
 func CmdListReward() *cobra.Command {
