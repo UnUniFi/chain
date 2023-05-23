@@ -41,7 +41,7 @@ func (k Keeper) Register(ctx sdk.Context, msg *types.MsgRegister) (*[]types.Subj
 	// if exists already, add incentuve unit id in msg into data
 	// if not, newly create and set
 	for _, addr := range msg.SubjectAddrs {
-		incentiveUnitIdsByAddr := k.GetIncentiveUnitIdsByAddr(ctx, addr.AccAddress())
+		incentiveUnitIdsByAddr := k.GetIncentiveUnitIdsByAddr(ctx, sdk.MustAccAddressFromBech32(addr))
 		incentiveUnitIdsByAddr = incentiveUnitIdsByAddr.CreateOrUpdate(addr, msg.IncentiveUnitId)
 
 		if err := k.SetIncentiveUnitIdsByAddr(ctx, incentiveUnitIdsByAddr); err != nil {
@@ -73,7 +73,9 @@ func (k Keeper) SetIncentiveUnitIdsByAddr(ctx sdk.Context, incentiveUnitIdsByAdd
 
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnitIdsByAddr))
-	prefixStore.Set(incentiveUnitIdsByAddr.Address.AccAddress().Bytes(), bz)
+	// Use byte array of accAddress as key
+	addressKeyBytes := sdk.MustAccAddressFromBech32(incentiveUnitIdsByAddr.Address).Bytes()
+	prefixStore.Set(addressKeyBytes, bz)
 
 	return nil
 }

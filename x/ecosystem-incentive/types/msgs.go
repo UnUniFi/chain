@@ -3,8 +3,6 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-
-	"github.com/UnUniFi/chain/types"
 )
 
 const (
@@ -20,18 +18,13 @@ var (
 )
 
 func NewMsgRegister(
-	sender sdk.AccAddress,
+	sender string,
 	incentiveUnitId string,
-	subjectAccAddrs []sdk.AccAddress,
+	subjectAddrs []string,
 	weights []sdk.Dec,
 ) *MsgRegister {
-	var subjectAddrs []types.StringAccAddress
-	for _, accAddr := range subjectAccAddrs {
-		subjectAddrs = append(subjectAddrs, accAddr.Bytes())
-	}
-
 	return &MsgRegister{
-		Sender:          sender.Bytes(),
+		Sender:          sender,
 		IncentiveUnitId: incentiveUnitId,
 		SubjectAddrs:    subjectAddrs,
 		Weights:         weights,
@@ -43,8 +36,15 @@ func (msg MsgRegister) Route() string { return RouterKey }
 func (msg MsgRegister) Type() string { return TypeMsgRegister }
 
 func (msg MsgRegister) ValidateBasic() error {
-	if msg.Sender.AccAddress().Empty() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
+	// check if addresses are valid
+	if _, err := sdk.AccAddressFromBech32(msg.Sender); err != nil {
+		panic(err)
+	}
+
+	for _, addr := range msg.SubjectAddrs {
+		if _, err := sdk.AccAddressFromBech32(addr); err != nil {
+			panic(err)
+		}
 	}
 
 	// return err if the number of elements in subjects and weights aren't same
@@ -72,14 +72,19 @@ func (msg MsgRegister) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgRegister) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Sender.AccAddress()}
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		panic(err)
+	}
+
+	return []sdk.AccAddress{sender}
 }
 
 func NewMsgWithdrawAllRewards(
-	sender sdk.AccAddress,
+	sender string,
 ) *MsgWithdrawAllRewards {
 	return &MsgWithdrawAllRewards{
-		Sender: sender.Bytes(),
+		Sender: sender,
 	}
 }
 
@@ -88,8 +93,9 @@ func (msg MsgWithdrawAllRewards) Route() string { return RouterKey }
 func (msg MsgWithdrawAllRewards) Type() string { return TypeMsgWithdrawAllRewards }
 
 func (msg MsgWithdrawAllRewards) ValidateBasic() error {
-	if msg.Sender.AccAddress().Empty() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
+	// check if addresses are valid
+	if _, err := sdk.AccAddressFromBech32(msg.Sender); err != nil {
+		panic(err)
 	}
 
 	return nil
@@ -103,15 +109,20 @@ func (msg MsgWithdrawAllRewards) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgWithdrawAllRewards) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Sender.AccAddress()}
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		panic(err)
+	}
+
+	return []sdk.AccAddress{sender}
 }
 
 func NewMsgWithdrawReward(
-	sender sdk.AccAddress,
+	sender string,
 	denom string,
 ) *MsgWithdrawReward {
 	return &MsgWithdrawReward{
-		Sender: sender.Bytes(),
+		Sender: sender,
 		Denom:  denom,
 	}
 }
@@ -121,8 +132,9 @@ func (msg MsgWithdrawReward) Route() string { return RouterKey }
 func (msg MsgWithdrawReward) Type() string { return TypeMsgWithdrawReward }
 
 func (msg MsgWithdrawReward) ValidateBasic() error {
-	if msg.Sender.AccAddress().Empty() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
+	// check if addresses are valid
+	if _, err := sdk.AccAddressFromBech32(msg.Sender); err != nil {
+		panic(err)
 	}
 
 	return nil
@@ -136,5 +148,10 @@ func (msg MsgWithdrawReward) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgWithdrawReward) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Sender.AccAddress()}
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		panic(err)
+	}
+
+	return []sdk.AccAddress{sender}
 }

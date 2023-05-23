@@ -64,7 +64,7 @@ func CmdRegister() *cobra.Command {
 			}
 
 			msg := types.NewMsgRegister(
-				clientCtx.GetFromAddress(),
+				clientCtx.GetFromAddress().String(),
 				incentiveId,
 				subjectAddrs,
 				weights,
@@ -83,20 +83,16 @@ func CmdRegister() *cobra.Command {
 	return cmd
 }
 
-func BuildRegisterInputs(fs *pflag.FlagSet) (string, []sdk.AccAddress, []sdk.Dec, error) {
+func BuildRegisterInputs(fs *pflag.FlagSet) (string, []string, []sdk.Dec, error) {
 	registerInputs, err := parseRegisterFlags(fs)
 	if err != nil {
 		return "", nil, nil, err
 	}
 	incentiveId := registerInputs.IncentiveUnitId
 
-	var subjectAddrs []sdk.AccAddress
+	var subjectAddrs []string
 	for _, addr := range registerInputs.SubjectAddrs {
-		accAddr, err := sdk.AccAddressFromBech32(addr)
-		if err != nil {
-			return "", nil, nil, err
-		}
-		subjectAddrs = append(subjectAddrs, accAddr)
+		subjectAddrs = append(subjectAddrs, addr)
 	}
 
 	var weights []sdk.Dec
@@ -123,7 +119,7 @@ func CmdWithdrawAllRewards() *cobra.Command {
 			}
 
 			msg := types.NewMsgWithdrawAllRewards(
-				clientCtx.GetFromAddress(),
+				clientCtx.GetFromAddress().String(),
 			)
 
 			if err := msg.ValidateBasic(); err != nil {
@@ -150,7 +146,7 @@ func CmdWithdrawReward() *cobra.Command {
 			}
 
 			msg := types.NewMsgWithdrawReward(
-				clientCtx.GetFromAddress(),
+				clientCtx.GetFromAddress().String(),
 				args[0],
 			)
 
