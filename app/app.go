@@ -255,10 +255,8 @@ var (
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		nftmodule.AppModuleBasic{},
-		pricefeed.AppModuleBasic{},
 		consensus.AppModuleBasic{},
 		wasm.AppModuleBasic{},
-		// yieldfarm.AppModuleBasic{},
 		yieldaggregator.AppModuleBasic{},
 		stakeibcmodule.AppModuleBasic{},
 		epochsmodule.AppModuleBasic{},
@@ -277,18 +275,17 @@ var (
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName:      nil,
-		distrtypes.ModuleName:           nil,
-		minttypes.ModuleName:            {authtypes.Minter},
-		stakingtypes.BondedPoolName:     {authtypes.Burner, authtypes.Staking},
-		stakingtypes.NotBondedPoolName:  {authtypes.Burner, authtypes.Staking},
-		govtypes.ModuleName:             {authtypes.Burner},
-		ibctransfertypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
-		icatypes.ModuleName:             nil,
-		stakeibcmoduletypes.ModuleName:  {authtypes.Minter, authtypes.Burner, authtypes.Staking},
-		interchainquerytypes.ModuleName: nil,
-		wasm.ModuleName:                 {authtypes.Burner},
-		// yieldfarmtypes.ModuleName:               {authtypes.Minter},
+		authtypes.FeeCollectorName:              nil,
+		distrtypes.ModuleName:                   nil,
+		minttypes.ModuleName:                    {authtypes.Minter},
+		stakingtypes.BondedPoolName:             {authtypes.Burner, authtypes.Staking},
+		stakingtypes.NotBondedPoolName:          {authtypes.Burner, authtypes.Staking},
+		govtypes.ModuleName:                     {authtypes.Burner},
+		ibctransfertypes.ModuleName:             {authtypes.Minter, authtypes.Burner},
+		icatypes.ModuleName:                     nil,
+		stakeibcmoduletypes.ModuleName:          {authtypes.Minter, authtypes.Burner, authtypes.Staking},
+		interchainquerytypes.ModuleName:         nil,
+		wasm.ModuleName:                         {authtypes.Burner},
 		yieldaggregatortypes.ModuleName:         {authtypes.Minter, authtypes.Burner},
 		ibcfeetypes.ModuleName:                  nil,
 		ecosystemincentivetypes.ModuleName:      nil,
@@ -374,7 +371,6 @@ type App struct {
 	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
 
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
-	// YieldfarmKeeper       yieldfarmkeeper.Keeper
 	YieldaggregatorKeeper yieldaggregatorkeeper.Keeper
 
 	ScopedStakeibcKeeper capabilitykeeper.ScopedKeeper
@@ -435,8 +431,9 @@ func NewApp(
 		ibctransfertypes.StoreKey,
 		capabilitytypes.StoreKey, feegrant.StoreKey, authzkeeper.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
-		pricefeedtypes.StoreKey,
 		wasm.StoreKey,
+		nftkeeper.StoreKey,
+		pricefeedtypes.StoreKey,
 		// yieldfarmtypes.StoreKey,
 		yieldaggregatortypes.StoreKey,
 		stakeibcmoduletypes.StoreKey,
@@ -447,7 +444,6 @@ func NewApp(
 		icacallbacksmoduletypes.StoreKey,
 		ibcfeetypes.StoreKey,
 		ecosystemincentivetypes.StoreKey,
-		nftkeeper.StoreKey,
 		nftminttypes.StoreKey,
 		nftmarkettypes.StoreKey,
 		derivativestypes.StoreKey,
@@ -688,6 +684,7 @@ func NewApp(
 		app.ICAControllerKeeper,
 		*app.IBCKeeper,
 		scopedStakeibcKeeper,
+		scopedIBCKeeper,
 		app.InterchainqueryKeeper,
 		app.RecordsKeeper,
 		*app.StakingKeeper,
@@ -755,48 +752,16 @@ func NewApp(
 		app.BankKeeper,
 	)
 
-	// app.YieldfarmKeeper = *yieldfarmkeeper.NewKeeper(
-	// 	appCodec,
-	// 	keys[yieldfarmtypes.StoreKey],
-	// 	app.GetSubspace(yieldfarmtypes.ModuleName),
-	// 	app.BankKeeper,
-	// )
-
 	app.YieldaggregatorKeeper = yieldaggregatorkeeper.NewKeeper(
 		appCodec,
 		keys[yieldaggregatortypes.StoreKey],
 		app.GetSubspace(yieldaggregatortypes.ModuleName),
 		app.BankKeeper,
 		wasmkeeper.NewDefaultPermissionKeeper(app.WasmKeeper),
+		app.WasmKeeper,
 		app.StakeibcKeeper,
 		app.RecordsKeeper,
 	)
-
-	epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
-	app.EpochsKeeper = *epochsKeeper.SetHooks(
-		epochsmoduletypes.NewMultiEpochHooks(
-			app.YieldaggregatorKeeper.Hooks(),
-			app.StakeibcKeeper.Hooks(),
-		),
-	)
-	app.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
-		appCodec,
-		keys[ecosystemincentivetypes.StoreKey],
-		app.GetSubspace(ecosystemincentivetypes.ModuleName),
-		app.BankKeeper,
-	)
-
-	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
-
-	// register the proposal types
-	govRouter := govv1beta1.NewRouter()
-	govRouter.
-		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
-		AddRoute(yieldaggregatortypes.RouterKey, yieldaggregator.NewYieldAggregatorProposalHandler(app.YieldaggregatorKeeper)).
-		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
-		// AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
-		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
-		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
 
 	wasmDir := filepath.Join(homePath, "wasm")
 	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
@@ -827,43 +792,43 @@ func NewApp(
 		wasmOpts...,
 	)
 
-	// app.YieldaggregatorKeeper = yieldaggregatorkeeper.NewKeeper(
-	// 	appCodec,
-	// 	keys[yieldaggregatortypes.StoreKey],
-	// 	app.GetSubspace(yieldaggregatortypes.ModuleName),
-	// 	app.BankKeeper,
-	// 	wasmkeeper.NewDefaultPermissionKeeper(app.WasmKeeper),
-	// 	app.WasmKeeper,
-	// 	app.StakeibcKeeper,
-	// 	app.RecordsKeeper,
-	// )
+	app.YieldaggregatorKeeper = yieldaggregatorkeeper.NewKeeper(
+		appCodec,
+		keys[yieldaggregatortypes.StoreKey],
+		app.GetSubspace(yieldaggregatortypes.ModuleName),
+		app.BankKeeper,
+		wasmkeeper.NewDefaultPermissionKeeper(app.WasmKeeper),
+		app.WasmKeeper,
+		app.StakeibcKeeper,
+		app.RecordsKeeper,
+	)
 
-	// epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
-	// app.EpochsKeeper = *epochsKeeper.SetHooks(
-	// 	epochsmoduletypes.NewMultiEpochHooks(
-	// 		app.YieldaggregatorKeeper.Hooks(),
-	// 		app.StakeibcKeeper.Hooks(),
-	// 	),
-	// )
+	epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
+	app.EpochsKeeper = *epochsKeeper.SetHooks(
+		epochsmoduletypes.NewMultiEpochHooks(
+			app.YieldaggregatorKeeper.Hooks(),
+			app.StakeibcKeeper.Hooks(),
+		),
+	)
 
-	// app.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
-	// 	appCodec,
-	// 	keys[ecosystemincentivetypes.StoreKey],
-	// 	app.GetSubspace(ecosystemincentivetypes.ModuleName),
-	// 	app.BankKeeper,
-	// )
+	app.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
+		appCodec,
+		keys[ecosystemincentivetypes.StoreKey],
+		app.GetSubspace(ecosystemincentivetypes.ModuleName),
+		app.BankKeeper,
+	)
 
-	// epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
+	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
 
 	// register the proposal types
 	govRouter := govv1beta1.NewRouter()
 	govRouter.
 		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
-		// AddRoute(yieldaggregatortypes.RouterKey, yieldaggregator.NewYieldAggregatorProposalHandler(app.YieldaggregatorKeeper)).
+		AddRoute(yieldaggregatortypes.RouterKey, yieldaggregator.NewYieldAggregatorProposalHandler(app.YieldaggregatorKeeper)).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
 		// AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
-		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper))
-		// AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
+		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
+		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
 
 	// The gov proposal types can be individually enabled
 	if len(enabledProposals) != 0 {
@@ -975,7 +940,6 @@ func NewApp(
 		pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
-		// yieldfarm.NewAppModule(appCodec, app.YieldfarmKeeper, app.AccountKeeper, app.BankKeeper),
 		yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
 		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
 		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
@@ -1005,6 +969,8 @@ func NewApp(
 		nft.ModuleName,
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
+		consensusparamtypes.ModuleName,
+		wasm.ModuleName,
 		// additional non simd modules
 		// liquiditytypes.ModuleName,
 		ecosystemincentivetypes.ModuleName,
@@ -1014,7 +980,6 @@ func NewApp(
 		derivativestypes.ModuleName,
 
 		ibcexported.ModuleName,
-		consensusparamtypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
 		stakeibcmoduletypes.ModuleName,
@@ -1024,7 +989,6 @@ func NewApp(
 		icacallbacksmoduletypes.ModuleName,
 
 		ibcfeetypes.ModuleName,
-		wasm.ModuleName,
 		// yieldfarmtypes.ModuleName,
 		yieldaggregatortypes.ModuleName,
 	)
@@ -1048,13 +1012,14 @@ func NewApp(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
+		consensusparamtypes.ModuleName,
+		wasm.ModuleName,
 		// additional non simd modules
 		pricefeedtypes.ModuleName,
 		nftminttypes.ModuleName,
 		nftmarkettypes.ModuleName,
 		ecosystemincentivetypes.ModuleName,
 		derivativestypes.ModuleName,
-		consensusparamtypes.ModuleName,
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
@@ -1065,7 +1030,6 @@ func NewApp(
 		icacallbacksmoduletypes.ModuleName,
 
 		ibcfeetypes.ModuleName,
-		wasm.ModuleName,
 		// yieldfarmtypes.ModuleName,
 		yieldaggregatortypes.ModuleName,
 	)
@@ -1091,13 +1055,13 @@ func NewApp(
 		evidencetypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		// liquiditytypes.ModuleName,
-		// ibctransfertypes.ModuleName,
 		feegrant.ModuleName,
 		authz.ModuleName,
 		nft.ModuleName,
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
+		wasm.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 		pricefeedtypes.ModuleName,
 		nftminttypes.ModuleName,
@@ -1115,8 +1079,6 @@ func NewApp(
 		icacallbacksmoduletypes.ModuleName,
 
 		ibcfeetypes.ModuleName,
-		wasm.ModuleName,
-		// yieldfarmtypes.ModuleName,
 		yieldaggregatortypes.ModuleName,
 	)
 
@@ -1447,6 +1409,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibcexported.ModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
+	paramsKeeper.Subspace(wasm.ModuleName)
 	paramsKeeper.Subspace(stakeibcmoduletypes.ModuleName)
 	paramsKeeper.Subspace(epochsmoduletypes.ModuleName)
 	paramsKeeper.Subspace(interchainquerytypes.ModuleName)
@@ -1456,7 +1419,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
-	paramsKeeper.Subspace(wasm.ModuleName)
 	// paramsKeeper.Subspace(yieldfarmtypes.ModuleName)
 	paramsKeeper.Subspace(yieldaggregatortypes.ModuleName)
 	paramsKeeper.Subspace(nftmarkettypes.ModuleName)
