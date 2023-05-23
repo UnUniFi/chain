@@ -27,6 +27,7 @@ func handleProposalAddStrategy(ctx sdk.Context, k keeper.Keeper, p *types.Propos
 		Denom:           p.Denom,
 		ContractAddress: p.ContractAddress,
 		Name:            p.Name,
+		GitUrl:          p.GitUrl,
 	})
 	return nil
 }
