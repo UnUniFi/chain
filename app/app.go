@@ -128,7 +128,6 @@ import (
 	"github.com/spf13/cast"
 
 	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
-	// "github.com/UnUniFi/chain/deprecated/yieldfarm"
 	epochsmodule "github.com/UnUniFi/chain/x/epochs"
 	epochsmodulekeeper "github.com/UnUniFi/chain/x/epochs/keeper"
 	epochsmoduletypes "github.com/UnUniFi/chain/x/epochs/types"
@@ -150,10 +149,6 @@ import (
 	yieldaggregator "github.com/UnUniFi/chain/x/yield-aggregator"
 	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yield-aggregator/keeper"
 	yieldaggregatortypes "github.com/UnUniFi/chain/x/yield-aggregator/types"
-
-	// "github.com/UnUniFi/chain/x/yieldfarm"
-	// yieldfarmkeeper "github.com/UnUniFi/chain/x/yieldfarm/keeper"
-	// yieldfarmtypes "github.com/UnUniFi/chain/x/yieldfarm/types"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 	"github.com/UnUniFi/chain/x/derivatives"
@@ -434,7 +429,6 @@ func NewApp(
 		wasm.StoreKey,
 		nftkeeper.StoreKey,
 		pricefeedtypes.StoreKey,
-		// yieldfarmtypes.StoreKey,
 		yieldaggregatortypes.StoreKey,
 		stakeibcmoduletypes.StoreKey,
 		epochsmoduletypes.StoreKey,
@@ -978,7 +972,6 @@ func NewApp(
 		icacallbacksmoduletypes.ModuleName,
 
 		ibcfeetypes.ModuleName,
-		// yieldfarmtypes.ModuleName,
 		yieldaggregatortypes.ModuleName,
 	)
 
@@ -1019,7 +1012,6 @@ func NewApp(
 		icacallbacksmoduletypes.ModuleName,
 
 		ibcfeetypes.ModuleName,
-		// yieldfarmtypes.ModuleName,
 		yieldaggregatortypes.ModuleName,
 	)
 
@@ -1408,7 +1400,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
-	// paramsKeeper.Subspace(yieldfarmtypes.ModuleName)
 	paramsKeeper.Subspace(yieldaggregatortypes.ModuleName)
 	paramsKeeper.Subspace(nftmarkettypes.ModuleName)
 	paramsKeeper.Subspace(nftminttypes.ModuleName)
