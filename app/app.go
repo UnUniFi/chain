@@ -653,6 +653,7 @@ func NewApp(
 	// 	app.ICAControllerKeeper,
 	// 	*app.IBCKeeper,
 	// 	scopedStakeibcKeeper,
+	// 	scopedIBCKeeper,
 	// 	app.InterchainqueryKeeper,
 	// 	app.RecordsKeeper,
 	// 	*app.StakingKeeper,
@@ -730,32 +731,6 @@ func NewApp(
 	// 	app.RecordsKeeper,
 	// )
 
-	// epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
-	// app.EpochsKeeper = *epochsKeeper.SetHooks(
-	// 	epochsmoduletypes.NewMultiEpochHooks(
-	// 		app.YieldaggregatorKeeper.Hooks(),
-	// 		app.StakeibcKeeper.Hooks(),
-	// 	),
-	// )
-	// app.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
-	// 	appCodec,
-	// 	keys[ecosystemincentivetypes.StoreKey],
-	// 	app.GetSubspace(ecosystemincentivetypes.ModuleName),
-	// 	app.BankKeeper,
-	// )
-	//
-	// epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
-
-	// register the proposal types
-	govRouter := govv1beta1.NewRouter()
-	govRouter.
-		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
-		// AddRoute(yieldaggregatortypes.RouterKey, yieldaggregator.NewYieldAggregatorProposalHandler(app.YieldaggregatorKeeper)).
-		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
-		// AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
-		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper))
-		// AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
-
 	wasmDir := filepath.Join(homePath, "wasm")
 	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
 	if err != nil {
@@ -784,6 +759,45 @@ func NewApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		wasmOpts...,
 	)
+
+	// app.YieldaggregatorKeeper = yieldaggregatorkeeper.NewKeeper(
+	// 	appCodec,
+	// 	keys[yieldaggregatortypes.StoreKey],
+	// 	app.GetSubspace(yieldaggregatortypes.ModuleName),
+	// 	app.BankKeeper,
+	// 	wasmkeeper.NewDefaultPermissionKeeper(app.WasmKeeper),
+	// 	app.WasmKeeper,
+	// 	app.StakeibcKeeper,
+	// 	app.RecordsKeeper,
+	// )
+
+	// epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
+	// app.EpochsKeeper = *epochsKeeper.SetHooks(
+	// 	epochsmoduletypes.NewMultiEpochHooks(
+	// 		app.YieldaggregatorKeeper.Hooks(),
+	// 		app.StakeibcKeeper.Hooks(),
+	// 	),
+	// )
+
+	// app.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
+	// 	appCodec,
+	// 	keys[ecosystemincentivetypes.StoreKey],
+	// 	app.GetSubspace(ecosystemincentivetypes.ModuleName),
+	// 	app.BankKeeper,
+	// )
+
+	// epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
+
+	// register the proposal types
+	govRouter := govv1beta1.NewRouter()
+	govRouter.
+		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
+		// AddRoute(yieldaggregatortypes.RouterKey, yieldaggregator.NewYieldAggregatorProposalHandler(app.YieldaggregatorKeeper)).
+		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
+		// AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
+		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper))
+		// AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
+
 	// The gov proposal types can be individually enabled
 	if len(enabledProposals) != 0 {
 		govRouter.AddRoute(wasm.RouterKey, wasm.NewWasmProposalHandler(app.WasmKeeper, enabledProposals))
@@ -878,7 +892,7 @@ func NewApp(
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		nftmodule.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		// ibc.NewAppModule(app.IBCKeeper),
+		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
 		transferModule,
@@ -974,7 +988,7 @@ func NewApp(
 		// nftmarkettypes.ModuleName,
 		// ecosystemincentivetypes.ModuleName,
 		// derivativestypes.ModuleName,
-		// ibcexported.ModuleName,
+		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		// icatypes.ModuleName,
 		// stakeibcmoduletypes.ModuleName,
@@ -1009,7 +1023,6 @@ func NewApp(
 		evidencetypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		// liquiditytypes.ModuleName,
-		ibctransfertypes.ModuleName,
 		feegrant.ModuleName,
 		authz.ModuleName,
 		nft.ModuleName,
@@ -1024,7 +1037,7 @@ func NewApp(
 		// ecosystemincentivetypes.ModuleName,
 		// derivativestypes.ModuleName,
 
-		// ibcexported.ModuleName,
+		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		// icatypes.ModuleName,
 		// stakeibcmoduletypes.ModuleName,
