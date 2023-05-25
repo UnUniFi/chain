@@ -18,6 +18,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		Name:            "testStaking",
 		GitUrl:          "",
 	})
+
+	for _, Strategies := range genState.Strategies {
+		k.SetStrategy(ctx, Strategies.Denom, Strategies)
+	}
 }
 
 // ExportGenesis returns the module's exported genesis
