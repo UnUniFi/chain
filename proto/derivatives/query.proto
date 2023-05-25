@@ -225,7 +225,7 @@ message QueryAllPositionsRequest {
 }
 
 message QueryAllPositionsResponse {
-  repeated google.protobuf.Any positions = 1 [
+  repeated Position positions = 1 [
     (gogoproto.moretags)  = "yaml:\"positions\""
   ];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
