@@ -1,5 +1,11 @@
 package v1_beta3
 
+import (
+	store "github.com/cosmos/cosmos-sdk/store/types"
+
+	"github.com/UnUniFi/chain/app/upgrades"
+)
+
 const UpgradeName string = "v1-beta.3"
 
 const TotalAmountValidator int64 = 9949510918111
@@ -30,4 +36,10 @@ type BankSendTarget struct {
 type SpecialBankSendTarget struct {
 	FromAddress    string         `json:"fromAddress,omitempty"`
 	BankSendTarget BankSendTarget `json:"bankSendTarget,omitempty"`
+}
+
+var Upgrade = upgrades.Upgrade{
+	UpgradeName:          UpgradeName,
+	CreateUpgradeHandler: CreateUpgradeHandler,
+	StoreUpgrades:        store.StoreUpgrades{},
 }

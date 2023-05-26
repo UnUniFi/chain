@@ -1,4 +1,4 @@
-package v1_beta3
+package v1_beta4
 
 import (
 	"fmt"
@@ -17,7 +17,6 @@ func CreateUpgradeHandler(mm *module.Manager,
 	keepers *keepers.AppKeepers) upgradetypes.UpgradeHandler {
 	return func(ctx sdk.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		ctx.Logger().Info(fmt.Sprintf("update start:%s", UpgradeName))
-		ctx.Logger().Info(fmt.Sprintf("update start test:%s", UpgradeName))
 
 		bankPram := keepers.BankKeeper.GetParams(ctx)
 		bankPram.DefaultSendEnabled = true
