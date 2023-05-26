@@ -465,6 +465,7 @@ func NewApp(
 		keys:              keys,
 		tkeys:             tkeys,
 		memKeys:           memKeys,
+		AppKeepers:        keepers.AppKeepers{},
 	}
 
 	app.ParamsKeeper = initParamsKeeper(
@@ -887,6 +888,8 @@ func NewApp(
 	// we prefer to be more strict in what arguments the modules expect.
 	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
 
+	app.setupAppkeeper()
+
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 
@@ -1098,20 +1101,7 @@ func NewApp(
 	app.setAnteHandler(encodingConfig.TxConfig, wasmConfig, keys[wasm.StoreKey])
 
 	app.setupUpgradeHandlers()
-
-	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
-	if err != nil {
-		panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
-	}
-
-	if upgradeInfo.Name == v1_beta3.UpgradeName && !app.UpgradeKeeper.IsSkipHeight(upgradeInfo.Height) {
-		storeUpgrades := storetypes.StoreUpgrades{
-			Added: []string{},
-		}
-
-		// configure store loader that checks if version == upgradeHeight and applies store upgrades
-		app.SetStoreLoader(upgradetypes.UpgradeStoreLoader(upgradeInfo.Height, &storeUpgrades))
-	}
+	app.setupUpgradeStoreLoaders()
 
 	// must be before Loading version
 	// requires the snapshot store to be created and registered as a BaseAppOption
