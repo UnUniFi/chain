@@ -47,6 +47,14 @@
       }
     },
     {
+      "url": "./tmp-swagger-gen/yield-aggregator/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "YieldAggregatorParams"
+        }
+      }
+    },
+    {
       "url": "./tmp-swagger-gen/nftmint/query.swagger.json",
       "operationIds": {
         "rename": {

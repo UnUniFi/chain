@@ -6,7 +6,7 @@ import (
 
 	// nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 
-	"github.com/tendermint/tendermint/crypto/ed25519"
+	"github.com/cometbft/cometbft/crypto/ed25519"
 
 	ununifitypes "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"

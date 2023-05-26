@@ -89,12 +89,12 @@ func (msg MsgMintNFT) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
 
-	if err := nfttypes.ValidateClassID(msg.ClassId); err != nil {
-		return sdkerrors.Wrapf(nfttypes.ErrInvalidClassID, "Invalid class id (%s)", msg.ClassId)
+	if err := ValidateClassID(msg.ClassId); err != nil {
+		return sdkerrors.Wrapf(nfttypes.ErrEmptyClassID, "Invalid class id (%s)", msg.ClassId)
 	}
 
-	if err := nfttypes.ValidateNFTID(msg.NftId); err != nil {
-		return sdkerrors.Wrapf(nfttypes.ErrInvalidID, "Invalid nft id (%s)", msg.NftId)
+	if err := ValidateNFTID(msg.NftId); err != nil {
+		return sdkerrors.Wrapf(nfttypes.ErrEmptyNFTID, "Invalid nft id (%s)", msg.NftId)
 	}
 
 	return nil
@@ -128,8 +128,8 @@ func (msg MsgSendClassOwnership) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
 
-	if err := nfttypes.ValidateClassID(msg.ClassId); err != nil {
-		return sdkerrors.Wrapf(nfttypes.ErrInvalidClassID, "Invalid class id (%s)", msg.ClassId)
+	if err := ValidateClassID(msg.ClassId); err != nil {
+		return sdkerrors.Wrapf(nfttypes.ErrEmptyClassID, "Invalid class id (%s)", msg.ClassId)
 	}
 
 	return nil
@@ -163,8 +163,8 @@ func (msg MsgUpdateBaseTokenUri) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
 
-	if err := nfttypes.ValidateClassID(msg.ClassId); err != nil {
-		return sdkerrors.Wrapf(nfttypes.ErrInvalidClassID, "Invalid class id (%s)", msg.ClassId)
+	if err := ValidateClassID(msg.ClassId); err != nil {
+		return sdkerrors.Wrapf(nfttypes.ErrEmptyClassID, "Invalid class id (%s)", msg.ClassId)
 	}
 	return nil
 }
@@ -197,8 +197,8 @@ func (msg MsgUpdateTokenSupplyCap) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
 
-	if err := nfttypes.ValidateClassID(msg.ClassId); err != nil {
-		return sdkerrors.Wrapf(nfttypes.ErrInvalidClassID, "Invalid class id (%s)", msg.ClassId)
+	if err := ValidateClassID(msg.ClassId); err != nil {
+		return sdkerrors.Wrapf(nfttypes.ErrEmptyClassID, "Invalid class id (%s)", msg.ClassId)
 	}
 
 	return nil
@@ -235,12 +235,12 @@ func (msg MsgBurnNFT) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address cannot be empty")
 	}
 
-	if err := nfttypes.ValidateClassID(msg.ClassId); err != nil {
-		return sdkerrors.Wrapf(nfttypes.ErrInvalidClassID, "Invalid class id (%s)", msg.ClassId)
+	if err := ValidateClassID(msg.ClassId); err != nil {
+		return sdkerrors.Wrapf(nfttypes.ErrEmptyClassID, "Invalid class id (%s)", msg.ClassId)
 	}
 
-	if err := nfttypes.ValidateNFTID(msg.NftId); err != nil {
-		return sdkerrors.Wrapf(nfttypes.ErrInvalidID, "Invalid nft id (%s)", msg.NftId)
+	if err := ValidateNFTID(msg.NftId); err != nil {
+		return sdkerrors.Wrapf(nfttypes.ErrEmptyNFTID, "Invalid nft id (%s)", msg.NftId)
 	}
 
 	return nil

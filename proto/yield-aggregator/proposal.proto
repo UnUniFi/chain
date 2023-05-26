@@ -1,0 +1,17 @@
+syntax = "proto3";
+package ununifi.yieldaggregator;
+
+import "gogoproto/gogo.proto";
+import "yield-aggregator/params.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/yield-aggregator/types";
+
+// proposal to add new strategy.
+message ProposalAddStrategy {
+  string title = 1;
+  string description = 2;
+  string denom = 3;
+  string contract_address = 4;
+  string name = 5;
+  string git_url = 6;
+}

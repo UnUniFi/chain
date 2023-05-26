@@ -8,15 +8,16 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	tmdb "github.com/tendermint/tm-db"
-
-	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/secp256k1"
-	"github.com/tendermint/tendermint/libs/log"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
-	simapp "github.com/cosmos/cosmos-sdk/simapp"
+	"github.com/CosmWasm/wasmd/x/wasm"
+	dbm "github.com/cometbft/cometbft-db"
+	abci "github.com/cometbft/cometbft/abci/types"
+	"github.com/cometbft/cometbft/crypto"
+	"github.com/cometbft/cometbft/crypto/secp256k1"
+	"github.com/cometbft/cometbft/libs/log"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/server"
+	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
@@ -33,29 +34,26 @@ import (
 
 	// "github.com/cosmos/cosmos-sdk/x/supply"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
-
-	auctionkeeper "github.com/UnUniFi/chain/x/auction/keeper"
-	cdpkeeper "github.com/UnUniFi/chain/x/cdp/keeper"
-	incentivekeeper "github.com/UnUniFi/chain/x/incentive/keeper"
-	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
-	ununifidistkeeper "github.com/UnUniFi/chain/x/ununifidist/keeper"
 	// authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
 	// "github.com/cosmos/cosmos-sdk/x/supply"
 	// "github.com/CosmWasm/wasmd/x/wasm"
 )
 
-// var emptyWasmOpts []wasm.Option = nil
+var emptyWasmOpts []wasm.Option = nil
 
 // TestApp is a simple wrapper around an App. It exposes internal keepers for use in integration tests.
 // This file also contains test helpers. Ideally they would be in separate package.
 // Basic Usage:
-// 	Create a test app with NewTestApp, then all keepers and their methods can be accessed for test setup and execution.
+//
+//	Create a test app with NewTestApp, then all keepers and their methods can be accessed for test setup and execution.
+//
 // Advanced Usage:
-// 	Some tests call for an app to be initialized with some state. This can be achieved through keeper method calls (ie keeper.SetParams(...)).
-// 	However this leads to a lot of duplicated logic similar to InitGenesis methods.
-// 	So TestApp.InitializeFromGenesisStates() will call InitGenesis with the default genesis state.
+//
+//	Some tests call for an app to be initialized with some state. This can be achieved through keeper method calls (ie keeper.SetParams(...)).
+//	However this leads to a lot of duplicated logic similar to InitGenesis methods.
+//	So TestApp.InitializeFromGenesisStates() will call InitGenesis with the default genesis state.
 //	and TestApp.InitializeFromGenesisStates(authState, cdpState) will do the same but overwrite the auth and cdp sections of the default genesis state
-// 	Creating the genesis states can be combersome, but helper methods can make it easier such as NewAuthGenStateFromAccounts below.
+//	Creating the genesis states can be combersome, but helper methods can make it easier such as NewAuthGenStateFromAccounts below.
 type TestApp struct {
 	App
 }
@@ -67,19 +65,20 @@ func NewTestApp() TestApp {
 	config.SetBech32PrefixForConsensusNode(ConsNodeAddressPrefix, ConsNodePubKeyPrefix)
 	// config.Seal()
 
-	db := tmdb.NewMemDB()
+	invCheckPeriod := uint(5)
+	appOptions := make(simtestutil.AppOptionsMap, 0)
+	appOptions[flags.FlagHome] = DefaultNodeHome
+	appOptions[server.FlagInvCheckPeriod] = invCheckPeriod
+
+	db := dbm.NewMemDB()
 	tApp := NewApp(
 		log.NewNopLogger(),
 		db,
 		nil,
 		true,
-		map[int64]bool{},
-		"", /* cast.ToString(appOpts.Get(flags.FlagHome)) */
-		0,
-		MakeEncodingConfig(), /* a.encCfg */
-		// wasm.EnableAllProposals,
-		simapp.EmptyAppOptions{},
-		// emptyWasmOpts,
+		wasm.EnableAllProposals,
+		appOptions,
+		emptyWasmOpts,
 	)
 	return TestApp{App: *tApp}
 }
@@ -89,23 +88,17 @@ func (tApp TestApp) GetAccountKeeper() authkeeper.AccountKeeper { return tApp.Ac
 func (tApp TestApp) GetBankKeeper() bankkeeper.Keeper           { return tApp.BankKeeper }
 
 // func (tApp TestApp) GetSupplyKeeper() supply.Keeper             { return tApp.SupplyKeeper }
-func (tApp TestApp) GetStakingKeeper() stakingkeeper.Keeper   { return tApp.StakingKeeper }
+func (tApp TestApp) GetStakingKeeper() *stakingkeeper.Keeper  { return tApp.StakingKeeper }
 func (tApp TestApp) GetSlashingKeeper() slashingkeeper.Keeper { return tApp.SlashingKeeper }
 func (tApp TestApp) GetMintKeeper() mintkeeper.Keeper         { return tApp.MintKeeper }
 func (tApp TestApp) GetDistrKeeper() distrkeeper.Keeper       { return tApp.DistrKeeper }
 func (tApp TestApp) GetGovKeeper() govkeeper.Keeper           { return tApp.GovKeeper }
-func (tApp TestApp) GetCrisisKeeper() crisiskeeper.Keeper     { return tApp.CrisisKeeper }
-func (tApp TestApp) GetUpgradeKeeper() upgradekeeper.Keeper   { return tApp.UpgradeKeeper }
+func (tApp TestApp) GetCrisisKeeper() *crisiskeeper.Keeper    { return tApp.CrisisKeeper }
+func (tApp TestApp) GetUpgradeKeeper() *upgradekeeper.Keeper  { return tApp.UpgradeKeeper }
 func (tApp TestApp) GetParamsKeeper() paramskeeper.Keeper     { return tApp.ParamsKeeper }
 
 // func (tApp TestApp) GetVVKeeper() validatorvesting.Keeper       { return tApp.vvKeeper }
-func (tApp TestApp) GetAuctionKeeper() auctionkeeper.Keeper     { return tApp.auctionKeeper }
-func (tApp TestApp) GetCDPKeeper() cdpkeeper.Keeper             { return tApp.cdpKeeper }
-func (tApp TestApp) GetPriceFeedKeeper() pricefeedkeeper.Keeper { return tApp.PricefeedKeeper }
-
-// func (tApp TestApp) GetBep3Keeper() bep3.Keeper                 { return tApp.bep3Keeper }
-func (tApp TestApp) GetUnunifidistKeeper() ununifidistkeeper.Keeper { return tApp.ununifidistKeeper }
-func (tApp TestApp) GetIncentiveKeeper() incentivekeeper.Keeper     { return tApp.incentiveKeeper }
+// func (tApp TestApp) GetPriceFeedKeeper() pricefeedkeeper.Keeper { return tApp.PricefeedKeeper }
 
 // func (tApp TestApp) GetHarvestKeeper() harvest.Keeper           { return tApp.harvestKeeper }
 // func (tApp TestApp) GetCommitteeKeeper() committee.Keeper       { return tApp.committeeKeeper }

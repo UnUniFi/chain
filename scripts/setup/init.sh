@@ -34,17 +34,17 @@ echo $USER_MNEMONIC_3 | $BINARY keys add $USER3 --home $NODE_HOME --recover --ke
 echo $USER_MNEMONIC_4 | $BINARY keys add $USER4 --home $NODE_HOME --recover --keyring-backend=test
 echo $PRICEFEED_MNEMONIC | $BINARY keys add $PRICEFEED --home $NODE_HOME --recover --keyring-backend=test
 
-$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $VAL1 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN --home $NODE_HOME
-$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $FAUCET --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
-$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $USER1 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
-$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $USER2 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
-$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $USER3 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
-$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $USER4 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc  --home $NODE_HOME
-$BINARY add-genesis-account $($BINARY --home $NODE_HOME keys show $PRICEFEED --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc  --home $NODE_HOME
+$BINARY genesis add-genesis-account $($BINARY --home $NODE_HOME keys show $VAL1 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN --home $NODE_HOME
+$BINARY genesis add-genesis-account $($BINARY --home $NODE_HOME keys show $FAUCET --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
+$BINARY genesis add-genesis-account $($BINARY --home $NODE_HOME keys show $USER1 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
+$BINARY genesis add-genesis-account $($BINARY --home $NODE_HOME keys show $USER2 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
+$BINARY genesis add-genesis-account $($BINARY --home $NODE_HOME keys show $USER3 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc --home $NODE_HOME
+$BINARY genesis add-genesis-account $($BINARY --home $NODE_HOME keys show $USER4 --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc  --home $NODE_HOME
+$BINARY genesis add-genesis-account $($BINARY --home $NODE_HOME keys show $PRICEFEED --keyring-backend test -a) 100000000000$BINARY_MAIN_TOKEN,100000000000000ubtc,100000000000000uusdc  --home $NODE_HOME
 
 echo "Creating and collecting gentx..."
-$BINARY gentx $VAL1 7000000000$BINARY_MAIN_TOKEN --home $NODE_HOME --chain-id $CHAINID_1 --keyring-backend test
-$BINARY collect-gentxs --home $NODE_HOME
+$BINARY genesis gentx $VAL1 7000000000$BINARY_MAIN_TOKEN --home $NODE_HOME --chain-id $CHAINID_1 --keyring-backend test
+$BINARY genesis collect-gentxs --home $NODE_HOME
 
 echo "Changing defaults config files..."
 OS=$(uname -s)
@@ -137,3 +137,23 @@ jq '.app_state.nft.classes = [
     "uri_hash": ""
   }
 ]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+
+# for stakeibc
+jq '.app_state.stakeibc.params.deposit_interval = "1"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.stakeibc.params.delegate_interval = "1"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.stakeibc.params.rewards_interval = "1"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.stakeibc.params.redemption_rate_interval = "1"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.stakeibc.params.stride_commission = "10"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.stakeibc.params.reinvest_interval = "1"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.stakeibc.params.validator_rebalancing_threshold = "100"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.stakeibc.params.ica_timeout_nanos = "600000000000"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.stakeibc.params.buffer_size = "5"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.stakeibc.params.ibc_timeout_blocks = "300"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.stakeibc.params.fee_transfer_timeout_nanos = "1800000000000"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.stakeibc.params.max_stake_ica_calls_per_epoch = "100"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.stakeibc.params.safety_min_redemption_rate_threshold = "90"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.stakeibc.params.safety_max_redemption_rate_threshold = "150"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.stakeibc.params.ibc_transfer_timeout_nanos = "1800000000000"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+
+# for disable bank
+jq '.app_state.bank.params.default_send_enabled = false' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;

@@ -3,11 +3,13 @@ package types_test
 import (
 	"testing"
 
+	"github.com/CosmWasm/wasmd/x/wasm"
+
 	simapp "github.com/UnUniFi/chain/app"
 	"github.com/UnUniFi/chain/x/nftmarket/types"
 
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/stretchr/testify/suite"
 )
@@ -23,7 +25,7 @@ type KeeperTestSuite struct {
 func (suite *KeeperTestSuite) SetupTest(hooks types.NftmarketHooks) {
 	isCheckTx := false
 
-	app := simapp.Setup(suite.T(), isCheckTx)
+	app := simapp.Setup(suite.T(), ([]wasm.Option{})...)
 
 	suite.ctx = app.BaseApp.NewContext(isCheckTx, tmproto.Header{})
 	suite.addrs = simapp.AddTestAddrsIncremental(app, suite.ctx, 1, sdk.NewInt(30000000))
