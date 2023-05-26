@@ -84,7 +84,7 @@ func (k msgServer) RebalanceValidators(goCtx context.Context, msg *types.MsgReba
 	overweight_delta := floatabs(float64(valDeltaList[overWeightIndex].deltaAmt) / total_delegation)
 	underweight_delta := floatabs(float64(valDeltaList[underWeightIndex].deltaAmt) / total_delegation)
 	max_delta := floatmax(overweight_delta, underweight_delta)
-	rebalanceThreshold := float64(k.GetParam(ctx, types.KeyValidatorRebalancingThreshold)) / float64(10000)
+	rebalanceThreshold := float64(k.GetParams(ctx).ValidatorRebalancingThreshold) / float64(10000)
 	if max_delta < rebalanceThreshold {
 		k.Logger(ctx).Error("Not enough validator disruption to rebalance")
 		return nil, types.ErrNoValidatorWeights

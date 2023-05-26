@@ -24,10 +24,11 @@ func RandomizedGenState(simState *module.SimulationState) {
 		Params: types.Params{
 			PoolParams: types.PoolParams{
 				QuoteTicker:                 "usd",
-				BaseLptMintFee:              sdk.NewDecWithPrec(1, 2),
-				BaseLptRedeemFee:            sdk.NewDecWithPrec(1, 2),
+				BaseLptMintFee:              sdk.NewDecWithPrec(1, 3),
+				BaseLptRedeemFee:            sdk.NewDecWithPrec(1, 3),
 				BorrowingFeeRatePerHour:     sdk.NewDecWithPrec(1, 6),
-				ReportLiquidationRewardRate: sdk.NewDecWithPrec(1, 6),
+				ReportLiquidationRewardRate: sdk.NewDecWithPrec(3, 1),
+				ReportLevyPeriodRewardRate:  sdk.NewDecWithPrec(3, 1),
 				AcceptedAssetsConf: []types.PoolAssetConf{
 					{
 						Denom:        "btc",
@@ -40,17 +41,17 @@ func RandomizedGenState(simState *module.SimulationState) {
 				},
 			},
 			PerpetualFutures: types.PerpetualFuturesParams{
-				CommissionRate:        sdk.NewDecWithPrec(1, 6),
+				CommissionRate:        sdk.NewDecWithPrec(1, 3),
 				MarginMaintenanceRate: sdk.NewDecWithPrec(5, 1),
-				ImaginaryFundingRateProportionalCoefficient: sdk.NewDecWithPrec(1, 4),
+				ImaginaryFundingRateProportionalCoefficient: sdk.NewDecWithPrec(5, 4),
 				Markets: []*types.Market{
 					{
-						BaseDenom:  "btc",
-						QuoteDenom: "usd",
+						BaseDenom:  "ubtc",
+						QuoteDenom: "uusdc",
 					},
 					{
-						BaseDenom:  "eth",
-						QuoteDenom: "usd",
+						BaseDenom:  "ueth",
+						QuoteDenom: "uusdc",
 					},
 				},
 			},

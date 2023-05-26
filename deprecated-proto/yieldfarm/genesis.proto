@@ -1,0 +1,14 @@
+syntax = "proto3";
+package ununifi.chain.yieldfarm;
+
+import "gogoproto/gogo.proto";
+import "yieldfarm/params.proto";
+import "yieldfarm/yieldfarm.proto";
+
+option go_package = "github.com/UnUniFi/chain/deprecated/yieldfarm/types";
+
+// GenesisState defines the yieldfarm module's genesis state.
+message GenesisState {
+  Params              params       = 1 [(gogoproto.nullable) = false];
+  repeated FarmerInfo farmer_infos = 2 [(gogoproto.nullable) = false];
+}
