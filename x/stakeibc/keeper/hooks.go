@@ -91,7 +91,7 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochInfo epochstypes.EpochInf
 		depositRecords := k.RecordsKeeper.GetAllDepositRecord(ctx)
 
 		// Update the redemption rate
-		redemptionRateInterval, err := cast.ToUint64E(k.GetParam(ctx, types.KeyRedemptionRateInterval))
+		redemptionRateInterval, err := cast.ToUint64E(k.GetParams(ctx).RedemptionRateInterval)
 		if err != nil {
 			k.Logger(ctx).Error(fmt.Sprintf("Could not convert redemptionRateInterval to uint64: %v", err))
 			return
@@ -101,7 +101,7 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochInfo epochstypes.EpochInf
 			k.UpdateRedemptionRates(ctx, depositRecords)
 		}
 
-		depositInterval, err := cast.ToUint64E(k.GetParam(ctx, types.KeyDepositInterval))
+		depositInterval, err := cast.ToUint64E(k.GetParams(ctx).DepositInterval)
 		if err != nil {
 			k.Logger(ctx).Error(fmt.Sprintf("Could not convert depositInterval to int64: %v", err))
 			return
@@ -123,7 +123,7 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochInfo epochstypes.EpochInf
 		// records always accurately reflect the state of the controller / host chain by the next epoch.
 		// Put another way, all outstanding ICA calls / IBC transfers must be settled on the controller
 		// chain before the next epoch begins.
-		delegationInterval, err := cast.ToUint64E(k.GetParam(ctx, types.KeyDelegateInterval))
+		delegationInterval, err := cast.ToUint64E(k.GetParams(ctx).DelegateInterval)
 		if err != nil {
 			k.Logger(ctx).Error(fmt.Sprintf("Could not convert delegationInterval to int64: %v", err))
 			return
@@ -133,7 +133,7 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochInfo epochstypes.EpochInf
 			k.StakeExistingDepositsOnHostZones(ctx, epochNumber, depositRecords)
 		}
 
-		reinvestInterval, err := cast.ToUint64E(k.GetParam(ctx, types.KeyReinvestInterval))
+		reinvestInterval, err := cast.ToUint64E(k.GetParams(ctx).ReinvestInterval)
 		if err != nil {
 			k.Logger(ctx).Error(fmt.Sprintf("Could not convert reinvestInterval to int64: %v", err))
 			return

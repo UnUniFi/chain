@@ -41,7 +41,7 @@ func (k Keeper) TransferExistingDepositsToHostZones(ctx sdk.Context, epochNumber
 		return isTransferRecord && isBeforeCurrentEpoch
 	})
 
-	ibcTransferTimeoutNanos := k.GetParam(ctx, types.KeyIBCTransferTimeoutNanos)
+	ibcTransferTimeoutNanos := k.GetParams(ctx).IbcTransferTimeoutNanos
 
 	for _, depositRecord := range transferDepositRecords {
 		pstr := fmt.Sprintf("\t[TransferExistingDepositsToHostZones] Processing deposits {%d} {%s} {%d}", depositRecord.Id, depositRecord.Denom, depositRecord.Amount)
@@ -96,7 +96,7 @@ func (k Keeper) StakeExistingDepositsOnHostZones(ctx sdk.Context, epochNumber ui
 	})
 
 	// limit the number of staking deposits to process per epoch
-	maxDepositRecordsToStake := utils.Min(len(stakeDepositRecords), cast.ToInt(k.GetParam(ctx, types.KeyMaxStakeICACallsPerEpoch)))
+	maxDepositRecordsToStake := utils.Min(len(stakeDepositRecords), cast.ToInt(k.GetParams(ctx).MaxStakeIcaCallsPerEpoch))
 	k.Logger(ctx).Info(fmt.Sprintf("Staking %d out of %d deposit records", maxDepositRecordsToStake, len(stakeDepositRecords)))
 
 	for _, depositRecord := range stakeDepositRecords[:maxDepositRecordsToStake] {

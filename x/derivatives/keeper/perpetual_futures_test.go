@@ -8,6 +8,8 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	ununifitypes "github.com/UnUniFi/chain/types"
 )
 
 func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
@@ -24,7 +26,7 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 		margin               sdk.Coin
 		instance             types.PerpetualFuturesPositionInstance
 		availableAssetInPool sdk.Coin
-		expNetPosition       sdk.Int
+		expGrossPosition     sdk.Int
 	}{
 		{
 			positionId: "0",
@@ -35,7 +37,7 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 				Leverage:     5,
 			},
 			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(2000000)),
-			expNetPosition:       sdk.MustNewDecFromStr("2").MulInt64(1000000).TruncateInt(),
+			expGrossPosition:     sdk.MustNewDecFromStr("2").MulInt64(1000000).TruncateInt(),
 		},
 		{
 			positionId: "1",
@@ -46,7 +48,7 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 				Leverage:     5,
 			},
 			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
-			expNetPosition:       sdk.MustNewDecFromStr("1").MulInt64(1000000).TruncateInt(),
+			expGrossPosition:     sdk.MustNewDecFromStr("1").MulInt64(1000000).TruncateInt(),
 		},
 		{
 			positionId: "2",
@@ -57,7 +59,7 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 				Leverage:     20,
 			},
 			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(20000000)),
-			expNetPosition:       sdk.MustNewDecFromStr("4").MulInt64(1000000).TruncateInt(),
+			expGrossPosition:     sdk.MustNewDecFromStr("4").MulInt64(1000000).TruncateInt(),
 		},
 		{
 			positionId: "3",
@@ -68,7 +70,7 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 				Leverage:     10,
 			},
 			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
-			expNetPosition:       sdk.MustNewDecFromStr("2").MulInt64(1000000).TruncateInt(),
+			expGrossPosition:     sdk.MustNewDecFromStr("2").MulInt64(1000000).TruncateInt(),
 		},
 	}
 
@@ -81,9 +83,9 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 		suite.Require().NotNil(position)
 
 		// Check if the position was added
-		netPosition := suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market, testPosition.instance.PositionType)
+		grossPosition := suite.keeper.GetPerpetualFuturesGrossPositionOfMarket(suite.ctx, market, testPosition.instance.PositionType)
 
-		suite.Require().Equal(testPosition.expNetPosition, netPosition.PositionSizeInDenomExponent)
+		suite.Require().Equal(testPosition.expGrossPosition, grossPosition.PositionSizeInDenomExponent)
 	}
 }
 
@@ -162,7 +164,7 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 		margin               sdk.Coin
 		instance             types.PerpetualFuturesPositionInstance
 		availableAssetInPool sdk.Coin
-		expNetPosition       sdk.Int
+		expGrossPosition     sdk.Int
 	}{
 		{
 			positionId: "0",
@@ -173,18 +175,20 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 				Leverage:     5,
 			},
 			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(10000000)),
-			expNetPosition:       sdk.MustNewDecFromStr("2").MulInt64(1000000).TruncateInt(),
+			// 2+2-2 = 2
+			expGrossPosition: sdk.MustNewDecFromStr("2").MulInt64(1000000).TruncateInt(),
 		},
 		{
 			positionId: "1",
 			margin:     sdk.NewCoin("uatom", sdk.NewInt(500000)),
 			instance: types.PerpetualFuturesPositionInstance{
 				PositionType: types.PositionType_SHORT,
-				Size_:        sdk.MustNewDecFromStr("1"),
+				Size_:        sdk.MustNewDecFromStr("2"),
 				Leverage:     5,
 			},
 			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
-			expNetPosition:       sdk.MustNewDecFromStr("1").MulInt64(1000000).TruncateInt(),
+			// 2+1-2 = 1
+			expGrossPosition: sdk.MustNewDecFromStr("1").MulInt64(1000000).TruncateInt(),
 		},
 		{
 			positionId: "2",
@@ -195,7 +199,7 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 				Leverage:     20,
 			},
 			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(10000000)),
-			expNetPosition:       sdk.MustNewDecFromStr("0").MulInt64(1000000).TruncateInt(),
+			expGrossPosition:     sdk.MustNewDecFromStr("0").MulInt64(1000000).TruncateInt(),
 		},
 		{
 			positionId: "3",
@@ -206,7 +210,7 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 				Leverage:     10,
 			},
 			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
-			expNetPosition:       sdk.MustNewDecFromStr("0").MulInt64(1000000).TruncateInt(),
+			expGrossPosition:     sdk.MustNewDecFromStr("0").MulInt64(1000000).TruncateInt(),
 		},
 	}
 
@@ -229,80 +233,161 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 		suite.Require().NoError(err)
 
 		// Check if the position was added
-		netPosition := suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market, testPosition.instance.PositionType)
+		grossPosition := suite.keeper.GetPerpetualFuturesGrossPositionOfMarket(suite.ctx, market, testPosition.instance.PositionType)
 
-		suite.Require().Equal(testPosition.expNetPosition, netPosition.PositionSizeInDenomExponent)
+		suite.Require().Equal(testPosition.expGrossPosition, grossPosition.PositionSizeInDenomExponent)
 	}
 }
 
 // TODO: Implement this test
 func (suite *KeeperTestSuite) TestReportLiquidationNeededPerpetualFuturesPosition() {}
 
-func (suite *KeeperTestSuite) TestSetPerpetualFuturesNetPositionOfMarket() {
+// TODO: Fix param & work on this test
+func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
+	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	market := types.Market{
 		BaseDenom:  "uatom",
 		QuoteDenom: "uusdc",
 	}
+	positions := []struct {
+		positionId           string
+		margin               sdk.Coin
+		instance             types.PerpetualFuturesPositionInstance
+		availableAssetInPool sdk.Coin
+		expMargin            sdk.Int
+	}{
+		{
+			positionId: "0",
+			margin:     sdk.NewCoin("uatom", sdk.NewInt(500000)),
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.MustNewDecFromStr("2"),
+				Leverage:     5,
+			},
+			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(2000000)),
+			expMargin:            sdk.MustNewDecFromStr("500000").TruncateInt(),
+		},
+		{
+			positionId: "1",
+			margin:     sdk.NewCoin("uatom", sdk.NewInt(500000)),
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_SHORT,
+				Size_:        sdk.MustNewDecFromStr("1"),
+				Leverage:     5,
+			},
+			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
+			expMargin:            sdk.MustNewDecFromStr("500000").TruncateInt(),
+		},
+		{
+			positionId: "2",
+			margin:     sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.MustNewDecFromStr("2"),
+				Leverage:     20,
+			},
+			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(20000000)),
+			expMargin:            sdk.MustNewDecFromStr("500000").TruncateInt(),
+		},
+		{
+			positionId: "3",
+			margin:     sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_SHORT,
+				Size_:        sdk.MustNewDecFromStr("1"),
+				Leverage:     10,
+			},
+			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
+			expMargin:            sdk.MustNewDecFromStr("500000").TruncateInt(),
+		},
+	}
 
-	netPosition := sdk.NewInt(100)
-	netPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(market, types.PositionType_LONG, netPosition)
-	suite.keeper.SetPerpetualFuturesNetPositionOfMarket(suite.ctx, netPositionOfMarket)
+	for _, testPosition := range positions {
+		err := suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{testPosition.availableAssetInPool})
+		suite.Require().NoError(err)
 
-	// Check if the netPosition was set
-	gotNetPositionOfMarket := suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market, types.PositionType_LONG)
+		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.Bytes(), testPosition.margin, market, testPosition.instance)
+		suite.Require().NoError(err)
+		suite.Require().NotNil(position)
+	}
 
-	suite.Require().Equal(netPosition, gotNetPositionOfMarket.PositionSizeInDenomExponent)
+	for _, testPosition := range positions {
+		position := suite.keeper.GetPositionWithId(suite.ctx, testPosition.positionId)
+		err := suite.keeper.ReportLevyPeriodPerpetualFuturesPosition(suite.ctx, ununifitypes.StringAccAddress(owner), *position, testPosition.instance)
+		suite.Require().NoError(err)
+
+		// Check if the position was changed
+		updatedPosition := suite.keeper.GetPositionWithId(suite.ctx, testPosition.positionId)
+
+		suite.Require().Equal(testPosition.expMargin, updatedPosition.RemainingMargin.Amount)
+	}
 }
 
-func (suite *KeeperTestSuite) TestAddPerpetualFuturesNetPositionOfMarket() {
+func (suite *KeeperTestSuite) TestSetPerpetualFuturesGrossPositionOfMarket() {
 	market := types.Market{
 		BaseDenom:  "uatom",
 		QuoteDenom: "uusdc",
 	}
 
-	netPosition := sdk.NewInt(100)
+	grossPosition := sdk.NewInt(100)
+	grossPositionOfMarket := types.NewPerpetualFuturesGrossPositionOfMarket(market, types.PositionType_LONG, grossPosition)
+	suite.keeper.SetPerpetualFuturesGrossPositionOfMarket(suite.ctx, grossPositionOfMarket)
 
-	netPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(market, types.PositionType_LONG, netPosition)
-	suite.keeper.SetPerpetualFuturesNetPositionOfMarket(suite.ctx, netPositionOfMarket)
+	// Check if the grossPosition was set
+	gotGrossPositionOfMarket := suite.keeper.GetPerpetualFuturesGrossPositionOfMarket(suite.ctx, market, types.PositionType_LONG)
 
-	// Check if the netPosition was set
-	gotNetPositionOfMarket := suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market, types.PositionType_LONG)
+	suite.Require().Equal(grossPosition, gotGrossPositionOfMarket.PositionSizeInDenomExponent)
+}
 
-	suite.Require().Equal(netPosition, gotNetPositionOfMarket.PositionSizeInDenomExponent)
+func (suite *KeeperTestSuite) TestAddPerpetualFuturesGrossPositionOfMarket() {
+	market := types.Market{
+		BaseDenom:  "uatom",
+		QuoteDenom: "uusdc",
+	}
+
+	grossPosition := sdk.NewInt(100)
+
+	grossPositionOfMarket := types.NewPerpetualFuturesGrossPositionOfMarket(market, types.PositionType_LONG, grossPosition)
+	suite.keeper.SetPerpetualFuturesGrossPositionOfMarket(suite.ctx, grossPositionOfMarket)
+
+	// Check if the grossPosition was set
+	gotGrossPositionOfMarket := suite.keeper.GetPerpetualFuturesGrossPositionOfMarket(suite.ctx, market, types.PositionType_LONG)
+
+	suite.Require().Equal(grossPosition, gotGrossPositionOfMarket.PositionSizeInDenomExponent)
 
 	// Add 50 more
 	netAddPosition := sdk.NewInt(50)
 
-	suite.keeper.AddPerpetualFuturesNetPositionOfMarket(suite.ctx, market, types.PositionType_LONG, netAddPosition)
+	suite.keeper.AddPerpetualFuturesGrossPositionOfMarket(suite.ctx, market, types.PositionType_LONG, netAddPosition)
 
-	// Check if the netPosition was set
-	positionSizeNetPositionOfMarket := suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market, types.PositionType_LONG)
+	// Check if the grossPosition was set
+	positionSizeGrossPositionOfMarket := suite.keeper.GetPerpetualFuturesGrossPositionOfMarket(suite.ctx, market, types.PositionType_LONG)
 
-	suite.Require().Equal(positionSizeNetPositionOfMarket.PositionSizeInDenomExponent, netPosition.Add(netAddPosition))
+	suite.Require().Equal(positionSizeGrossPositionOfMarket.PositionSizeInDenomExponent, grossPosition.Add(netAddPosition))
 }
 
-func (suite *KeeperTestSuite) TestSubPerpetualFuturesNetPositionOfMarket() {
+func (suite *KeeperTestSuite) TestSubPerpetualFuturesGrossPositionOfMarket() {
 	market := types.Market{
 		BaseDenom:  "uatom",
 		QuoteDenom: "uusdc",
 	}
 
-	netPosition := sdk.NewInt(100)
-	netPositionOfMarket := types.NewPerpetualFuturesNetPositionOfMarket(market, types.PositionType_LONG, netPosition)
-	suite.keeper.SetPerpetualFuturesNetPositionOfMarket(suite.ctx, netPositionOfMarket)
+	grossPosition := sdk.NewInt(100)
+	grossPositionOfMarket := types.NewPerpetualFuturesGrossPositionOfMarket(market, types.PositionType_LONG, grossPosition)
+	suite.keeper.SetPerpetualFuturesGrossPositionOfMarket(suite.ctx, grossPositionOfMarket)
 
-	// Check if the netPosition was set
-	positionSizeNetPositionOfMarket := suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market, types.PositionType_LONG)
+	// Check if the grossPosition was set
+	positionSizeGrossPositionOfMarket := suite.keeper.GetPerpetualFuturesGrossPositionOfMarket(suite.ctx, market, types.PositionType_LONG)
 
-	suite.Require().Equal(positionSizeNetPositionOfMarket.PositionSizeInDenomExponent, netPosition)
+	suite.Require().Equal(positionSizeGrossPositionOfMarket.PositionSizeInDenomExponent, grossPosition)
 
 	// Sub 50 more
 	netSubPosition := sdk.NewInt(50)
 
-	suite.keeper.SubPerpetualFuturesNetPositionOfMarket(suite.ctx, market, types.PositionType_LONG, netSubPosition)
+	suite.keeper.SubPerpetualFuturesGrossPositionOfMarket(suite.ctx, market, types.PositionType_LONG, netSubPosition)
 
-	// Check if the netPosition was set
-	positionSizeNetPositionOfMarket = suite.keeper.GetPerpetualFuturesNetPositionOfMarket(suite.ctx, market, types.PositionType_LONG)
+	// Check if the grossPosition was set
+	positionSizeGrossPositionOfMarket = suite.keeper.GetPerpetualFuturesGrossPositionOfMarket(suite.ctx, market, types.PositionType_LONG)
 
-	suite.Require().Equal(positionSizeNetPositionOfMarket.PositionSizeInDenomExponent, netPosition.Sub(netSubPosition))
+	suite.Require().Equal(positionSizeGrossPositionOfMarket.PositionSizeInDenomExponent, grossPosition.Sub(netSubPosition))
 }

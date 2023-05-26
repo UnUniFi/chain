@@ -7,7 +7,10 @@ package keeper
 import (
 	"context"
 
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -144,19 +147,29 @@ func (k Keeper) AllPositions(c context.Context, req *types.QueryAllPositionsRequ
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
-
-	// TODO: pagination
-
 	ctx := sdk.UnwrapSDKContext(c)
-	positions := k.GetAllPositions(ctx)
 
-	queriedPositions, err := k.MakeQueriedPositions(ctx, positions)
+	var positions []*codectypes.Any
+
+	store := ctx.KVStore(k.storeKey)
+	positionStore := prefix.NewStore(store, []byte(types.KeyPrefixPosition))
+	pageRes, err := query.Paginate(positionStore, req.Pagination, func(key []byte, value []byte) error {
+		var position codectypes.Any
+		if err := k.cdc.Unmarshal(value, &position); err != nil {
+			return err
+		}
+
+		positions = append(positions, &position)
+		return nil
+	})
+
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	return &types.QueryAllPositionsResponse{
-		Positions: queriedPositions,
+		Positions:  positions,
+		Pagination: pageRes,
 	}, nil
 }
 
@@ -164,8 +177,6 @@ func (k Keeper) AddressPositions(c context.Context, req *types.QueryAddressPosit
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
-
-	// TODO: pagination
 
 	ctx := sdk.UnwrapSDKContext(c)
 	address, err := sdk.AccAddressFromBech32(req.Address)
@@ -365,7 +376,7 @@ func (k Keeper) EstimateDLPTokenAmount(c context.Context, req *types.QueryEstima
 	}, nil
 }
 
-func (k Keeper) EstimateRedeemAmount(c context.Context, req *types.QueryEstimateRedeemAmountRequest) (*types.QueryEstimateRedeemAmountResponse, error) {
+func (k Keeper) EstimateRedeemTokenAmount(c context.Context, req *types.QueryEstimateRedeemTokenAmountRequest) (*types.QueryEstimateRedeemTokenAmountResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -389,7 +400,7 @@ func (k Keeper) EstimateRedeemAmount(c context.Context, req *types.QueryEstimate
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	return &types.QueryEstimateRedeemAmountResponse{
+	return &types.QueryEstimateRedeemTokenAmountResponse{
 		Amount: redeemAmount,
 		Fee:    redeemFee,
 	}, nil
