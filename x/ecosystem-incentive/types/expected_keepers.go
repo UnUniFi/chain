@@ -10,6 +10,7 @@ import (
 // BankKeeper defines the expected interface needed to retrieve account balances.
 type BankKeeper interface {
 	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
+	SendCoinsFromModuleToModule(ctx sdk.Context, senderModule string, recipientModule string, amt sdk.Coins) error
 }
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)

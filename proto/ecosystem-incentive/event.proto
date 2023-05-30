@@ -80,3 +80,14 @@ message EventVersionUnmatched {
   string class_id = 2 [ (gogoproto.moretags) = "yaml:\"class_id\"" ];
   string nft_id = 3 [ (gogoproto.moretags) = "yaml:\"nft_id\"" ];
 }
+
+message EventDistributionForStakers {
+  cosmos.base.v1beta1.Coin distributed_amount = 1 [ 
+  (gogoproto.moretags) = "yaml:\"distributed_amount\"",
+  (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin",
+  (gogoproto.nullable) = false
+  ];
+  int64 block_height = 2 [
+    (gogoproto.moretags) = "yaml:\"block_height\""
+  ];
+}
