@@ -800,7 +800,6 @@ func NewApp(
 		app.GetSubspace(ecosystemincentivetypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper,
-		app.StakingKeeper,
 	)
 
 	epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
