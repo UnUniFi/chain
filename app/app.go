@@ -130,7 +130,6 @@ import (
 	"github.com/UnUniFi/chain/app/keepers"
 	"github.com/UnUniFi/chain/app/upgrades"
 	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
-	v2 "github.com/UnUniFi/chain/app/upgrades/v2"
 	epochsmodule "github.com/UnUniFi/chain/x/epochs"
 	epochsmodulekeeper "github.com/UnUniFi/chain/x/epochs/keeper"
 	epochsmoduletypes "github.com/UnUniFi/chain/x/epochs/types"
@@ -301,7 +300,7 @@ var (
 		stakeibcmoduletypes.ModuleName: true,
 	}
 
-	Upgrades = []upgrades.Upgrade{v1_beta3.Upgrade, v2.Upgrade}
+	Upgrades = []upgrades.Upgrade{v1_beta3.Upgrade}
 )
 
 var (
