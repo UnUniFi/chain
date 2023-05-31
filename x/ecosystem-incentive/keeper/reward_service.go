@@ -11,7 +11,7 @@ import (
 	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
-func (k Keeper) DistributionForNftmarket(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, fee sdk.Coin) error {
+func (k Keeper) RewardDistributionOfNftmarket(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, fee sdk.Coin) error {
 	nftmarketFrontendRewardRate := k.GetNftmarketFrontendRewardRate(ctx)
 	// if the reward rate was not found or set as zero, just return
 	if nftmarketFrontendRewardRate == sdk.ZeroDec() {

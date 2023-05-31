@@ -61,9 +61,9 @@ func (h Hooks) AfterNftListed(ctx sdk.Context, nftIdentifier nftmarkettypes.NftI
 func (h Hooks) AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier nftmarkettypes.NftIdentifier, fee sdk.Coin) {
 	// if there's no fee, return
 	if !fee.IsZero() {
-		// call DistributionForNftmarket method to update reward information
+		// call RewardDistributionOfNftmarket method to update reward information
 		// for all the subjects of the nftmarke reward
-		h.k.DistributionForNftmarket(ctx, nftIdentifier, fee)
+		h.k.RewardDistributionOfNftmarket(ctx, nftIdentifier, fee)
 	}
 
 	// delete the recorded nft-id with incetive-unit-id
