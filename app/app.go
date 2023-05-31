@@ -792,6 +792,11 @@ func NewApp(
 		app.RecordsKeeper,
 	)
 
+	// Create fee enabled wasm ibc Stack
+	var wasmStack porttypes.IBCModule
+	wasmStack = wasm.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper, app.IBCFeeKeeper)
+	wasmStack = ibcfee.NewIBCMiddleware(wasmStack, app.IBCFeeKeeper)
+
 	epochsKeeper := epochsmodulekeeper.NewKeeper(appCodec, keys[epochsmoduletypes.StoreKey])
 	app.EpochsKeeper = *epochsKeeper.SetHooks(
 		epochsmoduletypes.NewMultiEpochHooks(
@@ -828,6 +833,8 @@ func NewApp(
 	ibcRouter.
 		// ICAHost Stack
 		AddRoute(icahosttypes.SubModuleName, icaHostIBCModule).
+		// Wasm Stack
+		AddRoute(wasm.ModuleName, wasmStack).
 		// Stakeibc Stack
 		AddRoute(icacontrollertypes.SubModuleName, stakeibcStack).
 		AddRoute(stakeibcmoduletypes.ModuleName, stakeibcStack).
