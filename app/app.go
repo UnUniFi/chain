@@ -363,30 +363,30 @@ type App struct {
 	ICAControllerKeeper icacontrollerkeeper.Keeper
 
 	// make scoped keepers public for test purposes
-	ScopedIBCKeeper           capabilitykeeper.ScopedKeeper
-	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
+	ScopedIBCKeeper capabilitykeeper.ScopedKeeper
+	// ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper      capabilitykeeper.ScopedKeeper
-	ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
-	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
+	// ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
+	ScopedWasmKeeper capabilitykeeper.ScopedKeeper
 
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
-	YieldaggregatorKeeper yieldaggregatorkeeper.Keeper
+	// YieldaggregatorKeeper yieldaggregatorkeeper.Keeper
 
-	ScopedStakeibcKeeper capabilitykeeper.ScopedKeeper
-	StakeibcKeeper       stakeibcmodulekeeper.Keeper
+	// ScopedStakeibcKeeper capabilitykeeper.ScopedKeeper
+	// StakeibcKeeper       stakeibcmodulekeeper.Keeper
 
-	EpochsKeeper             epochsmodulekeeper.Keeper
-	InterchainqueryKeeper    interchainquerykeeper.Keeper
-	ScopedRecordsKeeper      capabilitykeeper.ScopedKeeper
-	RecordsKeeper            recordsmodulekeeper.Keeper
-	ScopedIcacallbacksKeeper capabilitykeeper.ScopedKeeper
-	IcacallbacksKeeper       icacallbacksmodulekeeper.Keeper
-	EcosystemincentiveKeeper ecosystemincentivekeeper.Keeper
-	PricefeedKeeper          pricefeedkeeper.Keeper
-	NftmintKeeper            nftmintkeeper.Keeper
-	NftmarketKeeper          nftmarketkeeper.Keeper
-	DerivativesKeeper        derivativeskeeper.Keeper
+	// EpochsKeeper             epochsmodulekeeper.Keeper
+	// InterchainqueryKeeper    interchainquerykeeper.Keeper
+	// ScopedRecordsKeeper      capabilitykeeper.ScopedKeeper
+	// RecordsKeeper            recordsmodulekeeper.Keeper
+	// ScopedIcacallbacksKeeper capabilitykeeper.ScopedKeeper
+	// IcacallbacksKeeper       icacallbacksmodulekeeper.Keeper
+	// EcosystemincentiveKeeper ecosystemincentivekeeper.Keeper
+	// PricefeedKeeper          pricefeedkeeper.Keeper
+	// NftmintKeeper            nftmintkeeper.Keeper
+	// NftmarketKeeper          nftmarketkeeper.Keeper
+	// DerivativesKeeper        derivativeskeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
