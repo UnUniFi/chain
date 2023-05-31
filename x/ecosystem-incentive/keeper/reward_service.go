@@ -1,12 +1,51 @@
 package keeper
 
 import (
+	"fmt"
+
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
+	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
 )
+
+func (k Keeper) DistributionForNftmarket(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, fee sdk.Coin) error {
+	nftmarketFrontendRewardRate := k.GetNftmarketFrontendRewardRate(ctx)
+	// if the reward rate was not found or set as zero, just return
+	if nftmarketFrontendRewardRate == sdk.ZeroDec() {
+		err := fmt.Errorf(sdkerrors.Wrap(types.ErrRewardRateNotFound, "nftmarket frontend").Error())
+		return err
+	}
+	rewardForIncentiveUnit := nftmarketFrontendRewardRate.MulInt(fee.Amount).TruncateInt()
+
+	stakersRewardRate := k.GetStakersRewardRate(ctx)
+	// if the reward rate was not found or set as zero, just return
+	if stakersRewardRate == sdk.ZeroDec() {
+		err := fmt.Errorf(sdkerrors.Wrap(types.ErrRewardRateNotFound, "stakers").Error())
+		return err
+	}
+
+	rewardForStakers := stakersRewardRate.MulInt(fee.Amount).TruncateInt()
+
+	// Emit panic if the reward for incentive unit exceeds the fee amount
+	if rewardForIncentiveUnit.Add(rewardForStakers).GT(fee.Amount) {
+		panic(types.ErrRewardExceedsFee)
+	}
+
+	// Distribute the reward to the incentive unit
+	if err := k.AccumulateRewardForFrontend(ctx, nftId, sdk.NewCoin(fee.Denom, rewardForIncentiveUnit)); err != nil {
+		return err
+	}
+
+	// Distribute the reward to the stakers
+	if err := k.AllocateTokensToStakers(ctx, sdk.NewCoin(fee.Denom, rewardForStakers)); err != nil {
+		return err
+	}
+
+	return nil
+}
 
 // WithdrawReward is called to execute the actuall operation for MsgWithdrawReward
 func (k Keeper) WithdrawReward(ctx sdk.Context, msg *types.MsgWithdrawReward) (sdk.Coin, error) {

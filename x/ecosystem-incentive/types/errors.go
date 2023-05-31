@@ -20,4 +20,5 @@ var (
 	ErrInvalidIncentiveUnitIdLen         = sdkerrors.Register(ModuleName, 13, "the length of incentive unit id is invalid")
 	ErrInvalidSubjectInfoNumInUnit       = sdkerrors.Register(ModuleName, 14, "the number of subject info in a incentive unit is invalid")
 	ErrAddressNotHasIncentiveUnitId      = sdkerrors.Register(ModuleName, 15, "the address deosn't have any incentive unit id")
+	ErrRewardExceedsFee                  = sdkerrors.Register(ModuleName, 16, "the total reward exceeds the fee")
 )

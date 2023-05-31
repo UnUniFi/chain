@@ -222,7 +222,8 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 		suite.app.EcosystemincentiveKeeper.Hooks().AfterNftPaymentWithCommission(suite.ctx, tc.nftId, tc.reward)
 
 		if tc.expectPass {
-			_, rewardsForEach := keeper.CalculateRewardsForEachSubject(tc.weights, tc.reward, suite.app.EcosystemincentiveKeeper.GetNftmarketFrontendRewardRate(suite.ctx))
+			rewardForIncentiveUnit := suite.app.EcosystemincentiveKeeper.GetNftmarketFrontendRewardRate(suite.ctx).MulInt(tc.reward.Amount).TruncateInt()
+			rewardsForEach := keeper.CalculateRewardsForEachSubject(tc.weights, sdk.NewCoin(tc.reward.Denom, rewardForIncentiveUnit))
 			for i, subject := range tc.subjectAddrs {
 				rewardStore, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, sdk.AccAddress(subject))
 				suite.Require().True(exists)
