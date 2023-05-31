@@ -32,6 +32,7 @@ const (
 	FlagDenom           = "denom"
 	FlagContractAddress = "contract-addr"
 	FlagName            = "name"
+	FlagGitUrl          = "git-url"
 )
 
 func FlagProposalAddStrategyTx() *flag.FlagSet {
@@ -43,6 +44,7 @@ func FlagProposalAddStrategyTx() *flag.FlagSet {
 	fs.String(FlagDenom, "", "denom of the strategy")
 	fs.String(FlagContractAddress, "", "contract address of the strategy")
 	fs.String(FlagName, "", "name of the strategy")
+	fs.String(FlagGitUrl, "", "git url of the strategy")
 
 	return fs
 }
@@ -109,7 +111,12 @@ func NewSubmitProposalAddStrategyTxCmd() *cobra.Command {
 				return err
 			}
 
-			content := types.NewProposalAddStrategy(title, description, denom, contractAddr, name)
+			gitUrl, err := cmd.Flags().GetString(FlagGitUrl)
+			if err != nil {
+				return err
+			}
+
+			content := types.NewProposalAddStrategy(title, description, denom, contractAddr, name, gitUrl)
 
 			depositStr, err := cmd.Flags().GetString(govcli.FlagDeposit)
 			if err != nil {

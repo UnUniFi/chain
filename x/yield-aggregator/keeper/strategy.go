@@ -2,6 +2,8 @@ package keeper
 
 import (
 	"encoding/binary"
+	"fmt"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -110,38 +112,31 @@ func GetStrategyIDFromBytes(bz []byte) uint64 {
 
 // stake into strategy
 func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy types.Strategy, amount sdk.Int) error {
+	vaultModName := types.GetVaultModuleAccountName(vault.Id)
+	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+	stakeCoin := sdk.NewCoin(vault.Denom, amount)
 	switch strategy.ContractAddress {
 	case "x/ibc-staking":
-		vaultModName := types.GetVaultModuleAccountName(vault.Id)
-		vaultModAddr := authtypes.NewModuleAddress(vaultModName)
-
 		return k.stakeibcKeeper.LiquidStake(
 			ctx,
 			vaultModAddr,
-			sdk.NewCoin(vault.Denom, amount),
+			stakeCoin,
 		)
 	default:
-		panic("not implemented")
+		wasmMsg := `{"stake":{}}`
+		contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
+		_, err := k.wasmKeeper.Execute(ctx, contractAddr, vaultModAddr, []byte(wasmMsg), sdk.Coins{stakeCoin})
+		return err
 	}
-
-	// TODO: call `stake` function of the strategy contract
-	// 		wasmMsg := `{"stake":{}}`
-	// 		contractAddr := sdk.MustAccAddressFromBech32(target.AccountAddress)
-	// 		_, err := k.wasmKeeper.Execute(ctx, contractAddr, farmingUnit.GetAddress(), []byte(wasmMsg), amount)
-	// 		if err != nil {
-	// 			return err
-	// 		}
-
-	return nil
 }
 
 // unstake worth of withdrawal amount from the strategy
 func (k Keeper) UnstakeFromStrategy(ctx sdk.Context, vault types.Vault, strategy types.Strategy, amount sdk.Int) error {
+	vaultModName := types.GetVaultModuleAccountName(vault.Id)
+	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
 	switch strategy.ContractAddress {
 	case "x/ibc-staking":
 		{
-			vaultModName := types.GetVaultModuleAccountName(vault.Id)
-			vaultModAddr := authtypes.NewModuleAddress(vaultModName)
 			err := k.stakeibcKeeper.RedeemStake(
 				ctx,
 				vaultModAddr,
@@ -154,59 +149,62 @@ func (k Keeper) UnstakeFromStrategy(ctx sdk.Context, vault types.Vault, strategy
 
 			return nil
 		}
+	default:
+		wasmMsg := fmt.Sprintf(`{"unstake":{"amount":"%s"}}`, amount.String())
+		contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
+		_, err := k.wasmKeeper.Execute(ctx, contractAddr, vaultModAddr, []byte(wasmMsg), sdk.Coins{})
+		return err
 	}
-	panic("not implemented")
-	// TODO: call `unstake` function of the strategy contract
-	// 		wasmMsg := `{"unstake":{}}`
-	// 		contractAddr := sdk.MustAccAddressFromBech32(target.AccountAddress)
-	// 		_, err := k.wasmKeeper.Execute(ctx, contractAddr, farmingUnit.GetAddress(), []byte(wasmMsg), sdk.Coins{})
-	// 		if err != nil {
-	// 			return err
-	// 		}
-
-	return nil
 }
 
 func (k Keeper) GetAmountFromStrategy(ctx sdk.Context, vault types.Vault, strategy types.Strategy) (sdk.Coin, error) {
+	vaultModName := types.GetVaultModuleAccountName(vault.Id)
+	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
 	switch strategy.ContractAddress {
 	case "x/ibc-staking":
-		{
-			vaultModName := types.GetVaultModuleAccountName(vault.Id)
-			vaultModAddr := authtypes.NewModuleAddress(vaultModName)
-			updatedAmount := k.stakeibcKeeper.GetUpdatedBalance(ctx, vaultModAddr, vault.Denom)
-			return sdk.NewCoin(vault.Denom, updatedAmount), nil
+		updatedAmount := k.stakeibcKeeper.GetUpdatedBalance(ctx, vaultModAddr, vault.Denom)
+		return sdk.NewCoin(vault.Denom, updatedAmount), nil
+	default:
+		wasmQuery := fmt.Sprintf(`{"bonded":{"addr": "%s"}}`, vaultModAddr.String())
+		contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
+		resp, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
+		if err != nil {
+			return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), err
 		}
+		amountStr := strings.ReplaceAll(string(resp), "\"", "")
+		amount, ok := sdk.NewIntFromString(amountStr)
+		if !ok {
+			return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), nil
+		}
+		return sdk.NewCoin(strategy.Denom, amount), err
 	}
-	// call `amount` function of the strategy contract
-	panic("not implemented")
-
-	return sdk.Coin{}, nil
 }
 
 func (k Keeper) GetUnbondingAmountFromStrategy(ctx sdk.Context, vault types.Vault, strategy types.Strategy) (sdk.Coin, error) {
+	vaultModName := types.GetVaultModuleAccountName(vault.Id)
+	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
 	switch strategy.ContractAddress {
 	case "x/ibc-staking":
-		{
-			vaultModName := types.GetVaultModuleAccountName(vault.Id)
-			vaultModAddr := authtypes.NewModuleAddress(vaultModName)
-			zone, err := k.stakeibcKeeper.GetHostZoneFromIBCDenom(ctx, vault.Denom)
-			if err != nil {
-				return sdk.Coin{}, err
-			}
-			unbondingAmount := k.recordsKeeper.GetUserRedemptionRecordBySenderAndHostZone(ctx, vaultModAddr, zone.ChainId)
-			return sdk.NewCoin(vault.Denom, unbondingAmount), nil
+		zone, err := k.stakeibcKeeper.GetHostZoneFromIBCDenom(ctx, vault.Denom)
+		if err != nil {
+			return sdk.Coin{}, err
 		}
+		unbondingAmount := k.recordsKeeper.GetUserRedemptionRecordBySenderAndHostZone(ctx, vaultModAddr, zone.ChainId)
+		return sdk.NewCoin(vault.Denom, unbondingAmount), nil
+	default:
+		wasmQuery := fmt.Sprintf(`{"unbonding":{"addr": "%s"}}`, vaultModAddr.String())
+		contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
+		resp, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
+		if err != nil {
+			return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), err
+		}
+		amountStr := strings.ReplaceAll(string(resp), "\"", "")
+		amount, ok := sdk.NewIntFromString(amountStr)
+		if !ok {
+			return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), nil
+		}
+		return sdk.NewCoin(strategy.Denom, amount), err
 	}
-	// call `amount` function of the strategy contract
-	panic("not implemented")
-	// 		wasmQuery := `{"amount":{}}`
-	// 		contractAddr := sdk.MustAccAddressFromBech32(target.AccountAddress)
-	// 		_, err := k.wasmKeeper.Execute(ctx, contractAddr, farmingUnit.GetAddress(), []byte(wasmQuery), sdk.Coins{})
-	// 		if err != nil {
-	// 			return err
-	// 		}
-
-	return sdk.Coin{}, nil
 }
 
 func (k Keeper) GetAPRFromStrategy(ctx sdk.Context, strategy types.Strategy) (*sdk.Dec, error) {

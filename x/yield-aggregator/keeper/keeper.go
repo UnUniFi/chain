@@ -5,6 +5,7 @@ import (
 
 	"github.com/cometbft/cometbft/libs/log"
 
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	stakeibckeeper "github.com/UnUniFi/chain/x/stakeibc/keeper"
 	"github.com/UnUniFi/chain/x/yield-aggregator/types"
@@ -20,6 +21,7 @@ type Keeper struct {
 	paramstore     paramtypes.Subspace
 	bankKeeper     types.BankKeeper
 	wasmKeeper     wasmtypes.ContractOpsKeeper
+	wasmReader     wasmkeeper.Keeper
 	stakeibcKeeper stakeibckeeper.Keeper
 	recordsKeeper  types.RecordsKeeper
 }
@@ -30,6 +32,7 @@ func NewKeeper(
 	paramSpace paramtypes.Subspace,
 	bk types.BankKeeper,
 	wasmKeeper wasmtypes.ContractOpsKeeper,
+	wasmReader wasmkeeper.Keeper,
 	stakeibcKeeper stakeibckeeper.Keeper,
 	recordsKeeper types.RecordsKeeper,
 ) Keeper {
@@ -44,6 +47,7 @@ func NewKeeper(
 		paramstore:     paramSpace,
 		bankKeeper:     bk,
 		wasmKeeper:     wasmKeeper,
+		wasmReader:     wasmReader,
 		stakeibcKeeper: stakeibcKeeper,
 		recordsKeeper:  recordsKeeper,
 	}

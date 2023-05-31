@@ -16,13 +16,14 @@ func init() {
 // Assert ProposalAddStrategy implements govtypes.Content at compile-time
 var _ govtypes.Content = &ProposalAddStrategy{}
 
-func NewProposalAddStrategy(title, description string, denom, contractAddr, name string) *ProposalAddStrategy {
+func NewProposalAddStrategy(title, description string, denom, contractAddr, name, gitUrl string) *ProposalAddStrategy {
 	return &ProposalAddStrategy{
 		Title:           title,
 		Description:     description,
 		Denom:           denom,
 		ContractAddress: contractAddr,
 		Name:            name,
+		GitUrl:          gitUrl,
 	}
 }
 
