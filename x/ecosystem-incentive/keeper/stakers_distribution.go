@@ -11,7 +11,6 @@ import (
 // AllocateTokens performs reward and fee distribution to all validators based
 // on the F1 fee distribution specification.
 func (k Keeper) AllocateTokensToStakers(ctx sdk.Context, rewardAmount sdk.Coin) error {
-
 	// transfer collected fees to the fee_collector module account eventually for the distribution module account
 	// NOTE: But, it's worth considering when to actually send tokens to the target module account in this case
 	// Because in this style that we send tokens every time the hook method is called, there's the possibility that the sending numbers gets too high to affects the perfomance of the
