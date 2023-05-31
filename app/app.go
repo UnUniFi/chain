@@ -917,22 +917,22 @@ func NewApp(
 		// liquidity.NewAppModule(appCodec, app.LiquidityKeeper, app.AccountKeeper, app.BankKeeper, app.DistrKeeper),
 		transferModule,
 		ibcfee.NewAppModule(app.IBCFeeKeeper),
-		stakeibcModule,
-		epochsModule,
-		interchainQueryModule,
+		// stakeibcModule,
+		// epochsModule,
+		// interchainQueryModule,
 		icaModule,
-		recordsModule,
-		icacallbacksModule,
+		// recordsModule,
+		// icacallbacksModule,
 
 		// this line is used by starport scaffolding # stargate/app/appModule
-		pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
+		// pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
-		yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
-		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
-		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
-		nftmint.NewAppModule(appCodec, app.NftmintKeeper, app.NFTKeeper),
-		nftmarket.NewAppModule(appCodec, app.NftmarketKeeper, app.AccountKeeper, app.BankKeeper),
+		// yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
+		// ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
+		// derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
+		// nftmint.NewAppModule(appCodec, app.NftmintKeeper, app.NFTKeeper),
+		// nftmarket.NewAppModule(appCodec, app.NftmarketKeeper, app.AccountKeeper, app.BankKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -961,23 +961,23 @@ func NewApp(
 		wasm.ModuleName,
 		// additional non simd modules
 		// liquiditytypes.ModuleName,
-		ecosystemincentivetypes.ModuleName,
-		pricefeedtypes.ModuleName,
-		nftminttypes.ModuleName,
-		nftmarkettypes.ModuleName,
-		derivativestypes.ModuleName,
+		// ecosystemincentivetypes.ModuleName,
+		// pricefeedtypes.ModuleName,
+		// nftminttypes.ModuleName,
+		// nftmarkettypes.ModuleName,
+		// derivativestypes.ModuleName,
 
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
-		stakeibcmoduletypes.ModuleName,
-		epochsmoduletypes.ModuleName,
-		interchainquerytypes.ModuleName,
-		recordsmoduletypes.ModuleName,
-		icacallbacksmoduletypes.ModuleName,
+		// stakeibcmoduletypes.ModuleName,
+		// epochsmoduletypes.ModuleName,
+		// interchainquerytypes.ModuleName,
+		// recordsmoduletypes.ModuleName,
+		// icacallbacksmoduletypes.ModuleName,
 
 		ibcfeetypes.ModuleName,
-		yieldaggregatortypes.ModuleName,
+		// yieldaggregatortypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -1002,22 +1002,22 @@ func NewApp(
 		consensusparamtypes.ModuleName,
 		wasm.ModuleName,
 		// additional non simd modules
-		pricefeedtypes.ModuleName,
-		nftminttypes.ModuleName,
-		nftmarkettypes.ModuleName,
-		ecosystemincentivetypes.ModuleName,
-		derivativestypes.ModuleName,
+		// pricefeedtypes.ModuleName,
+		// nftminttypes.ModuleName,
+		// nftmarkettypes.ModuleName,
+		// ecosystemincentivetypes.ModuleName,
+		// derivativestypes.ModuleName,
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
-		stakeibcmoduletypes.ModuleName,
-		epochsmoduletypes.ModuleName,
-		interchainquerytypes.ModuleName,
-		recordsmoduletypes.ModuleName,
-		icacallbacksmoduletypes.ModuleName,
+		// stakeibcmoduletypes.ModuleName,
+		// epochsmoduletypes.ModuleName,
+		// interchainquerytypes.ModuleName,
+		// recordsmoduletypes.ModuleName,
+		// icacallbacksmoduletypes.ModuleName,
 
 		ibcfeetypes.ModuleName,
-		yieldaggregatortypes.ModuleName,
+		// yieldaggregatortypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -1049,23 +1049,23 @@ func NewApp(
 		vestingtypes.ModuleName,
 		wasm.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
-		pricefeedtypes.ModuleName,
-		nftminttypes.ModuleName,
-		nftmarkettypes.ModuleName,
-		ecosystemincentivetypes.ModuleName,
-		derivativestypes.ModuleName,
+		// pricefeedtypes.ModuleName,
+		// nftminttypes.ModuleName,
+		// nftmarkettypes.ModuleName,
+		// ecosystemincentivetypes.ModuleName,
+		// derivativestypes.ModuleName,
 
 		ibcexported.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
-		stakeibcmoduletypes.ModuleName,
-		epochsmoduletypes.ModuleName,
-		interchainquerytypes.ModuleName,
-		recordsmoduletypes.ModuleName,
-		icacallbacksmoduletypes.ModuleName,
+		// stakeibcmoduletypes.ModuleName,
+		// epochsmoduletypes.ModuleName,
+		// interchainquerytypes.ModuleName,
+		// recordsmoduletypes.ModuleName,
+		// icacallbacksmoduletypes.ModuleName,
 
 		ibcfeetypes.ModuleName,
-		yieldaggregatortypes.ModuleName,
+		// yieldaggregatortypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(app.CrisisKeeper)
@@ -1114,9 +1114,9 @@ func NewApp(
 	app.ScopedIBCKeeper = scopedIBCKeeper
 	app.ScopedTransferKeeper = scopedTransferKeeper
 	app.ScopedWasmKeeper = scopedWasmKeeper
-	app.ScopedICAHostKeeper = scopedICAHostKeeper
+	// app.ScopedICAHostKeeper = scopedICAHostKeeper
 	app.ScopedICAControllerKeeper = scopedICAControllerKeeper
-	app.ScopedStakeibcKeeper = scopedStakeibcKeeper
+	// app.ScopedStakeibcKeeper = scopedStakeibcKeeper
 
 	// In v0.46, the SDK introduces _postHandlers_. PostHandlers are like
 	// antehandlers, but are run _after_ the `runMsgs` execution. They are also
