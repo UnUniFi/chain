@@ -128,28 +128,33 @@ import (
 	"github.com/UnUniFi/chain/app/upgrades"
 	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
 	v2_1 "github.com/UnUniFi/chain/app/upgrades/v2.1"
-	epochsmoduletypes "github.com/UnUniFi/chain/x/epochs/types"
-	icacallbacksmoduletypes "github.com/UnUniFi/chain/x/icacallbacks/types"
-	interchainquerytypes "github.com/UnUniFi/chain/x/interchainquery/types"
-	"github.com/UnUniFi/chain/x/pricefeed"
-	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
-	recordsmoduletypes "github.com/UnUniFi/chain/x/records/types"
-	stakeibcmoduletypes "github.com/UnUniFi/chain/x/stakeibc/types"
-	yieldaggregator "github.com/UnUniFi/chain/x/yield-aggregator"
-	yieldaggregatortypes "github.com/UnUniFi/chain/x/yield-aggregator/types"
-
-	// this line is used by starport scaffolding # stargate/app/moduleImport
+	yieldaggregator "github.com/UnUniFi/chain/deprecated/yieldaggregatorv1"
 	"github.com/UnUniFi/chain/x/derivatives"
-	derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
-	derivativestypes "github.com/UnUniFi/chain/x/derivatives/types"
 	ecosystemincentive "github.com/UnUniFi/chain/x/ecosystem-incentive"
-	ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystem-incentive/types"
 	"github.com/UnUniFi/chain/x/nftmarket"
-	nftmarketkeeper "github.com/UnUniFi/chain/x/nftmarket/keeper"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
 	"github.com/UnUniFi/chain/x/nftmint"
-	nftmintkeeper "github.com/UnUniFi/chain/x/nftmint/keeper"
-	nftminttypes "github.com/UnUniFi/chain/x/nftmint/types"
+	"github.com/UnUniFi/chain/x/pricefeed"
+	// epochsmoduletypes "github.com/UnUniFi/chain/x/epochs/types"
+	// icacallbacksmoduletypes "github.com/UnUniFi/chain/x/icacallbacks/types"
+	// interchainquerytypes "github.com/UnUniFi/chain/x/interchainquery/types"
+	// "github.com/UnUniFi/chain/x/pricefeed"
+	// pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
+	// recordsmoduletypes "github.com/UnUniFi/chain/x/records/types"
+	// stakeibcmoduletypes "github.com/UnUniFi/chain/x/stakeibc/types"
+	// yieldaggregator "github.com/UnUniFi/chain/x/yield-aggregator"
+	// yieldaggregatortypes "github.com/UnUniFi/chain/x/yield-aggregator/types"
+	// this line is used by starport scaffolding # stargate/app/moduleImport
+	// "github.com/UnUniFi/chain/x/derivatives"
+	// derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
+	// derivativestypes "github.com/UnUniFi/chain/x/derivatives/types"
+	// ecosystemincentive "github.com/UnUniFi/chain/x/ecosystem-incentive"
+	// ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystem-incentive/types"
+	// "github.com/UnUniFi/chain/x/nftmarket"
+	// nftmarketkeeper "github.com/UnUniFi/chain/x/nftmarket/keeper"
+	// nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
+	// "github.com/UnUniFi/chain/x/nftmint"
+	// nftmintkeeper "github.com/UnUniFi/chain/x/nftmint/keeper"
+	// nftminttypes "github.com/UnUniFi/chain/x/nftmint/types"
 )
 
 const Name = "ununifi"
@@ -806,7 +811,7 @@ func NewApp(
 		// AddRoute(yieldaggregatortypes.RouterKey, yieldaggregator.NewYieldAggregatorProposalHandler(app.YieldaggregatorKeeper)).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
 		// AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
-		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
+		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper))
 		// AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
 
 	// The gov proposal types can be individually enabled
