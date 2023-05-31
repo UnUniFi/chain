@@ -128,12 +128,6 @@ import (
 	"github.com/UnUniFi/chain/app/upgrades"
 	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
 	v2_1 "github.com/UnUniFi/chain/app/upgrades/v2.1"
-	yieldaggregator "github.com/UnUniFi/chain/deprecated/yieldaggregatorv1"
-	"github.com/UnUniFi/chain/x/derivatives"
-	ecosystemincentive "github.com/UnUniFi/chain/x/ecosystem-incentive"
-	"github.com/UnUniFi/chain/x/nftmarket"
-	"github.com/UnUniFi/chain/x/nftmint"
-	"github.com/UnUniFi/chain/x/pricefeed"
 	// epochsmoduletypes "github.com/UnUniFi/chain/x/epochs/types"
 	// icacallbacksmoduletypes "github.com/UnUniFi/chain/x/icacallbacks/types"
 	// interchainquerytypes "github.com/UnUniFi/chain/x/interchainquery/types"
@@ -1388,20 +1382,20 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibcexported.ModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(wasm.ModuleName)
-	paramsKeeper.Subspace(stakeibcmoduletypes.ModuleName)
-	paramsKeeper.Subspace(epochsmoduletypes.ModuleName)
-	paramsKeeper.Subspace(interchainquerytypes.ModuleName)
+	// paramsKeeper.Subspace(stakeibcmoduletypes.ModuleName)
+	// paramsKeeper.Subspace(epochsmoduletypes.ModuleName)
+	// paramsKeeper.Subspace(interchainquerytypes.ModuleName)
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
-	paramsKeeper.Subspace(recordsmoduletypes.ModuleName)
-	paramsKeeper.Subspace(icacallbacksmoduletypes.ModuleName)
+	// paramsKeeper.Subspace(recordsmoduletypes.ModuleName)
+	// paramsKeeper.Subspace(icacallbacksmoduletypes.ModuleName)
 
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
-	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
-	paramsKeeper.Subspace(yieldaggregatortypes.ModuleName)
-	paramsKeeper.Subspace(nftmarkettypes.ModuleName)
-	paramsKeeper.Subspace(nftminttypes.ModuleName)
-	paramsKeeper.Subspace(ecosystemincentivetypes.ModuleName)
-	paramsKeeper.Subspace(derivativestypes.ModuleName)
+	// paramsKeeper.Subspace(pricefeedtypes.ModuleName)
+	// paramsKeeper.Subspace(yieldaggregatortypes.ModuleName)
+	// paramsKeeper.Subspace(nftmarkettypes.ModuleName)
+	// paramsKeeper.Subspace(nftminttypes.ModuleName)
+	// paramsKeeper.Subspace(ecosystemincentivetypes.ModuleName)
+	// paramsKeeper.Subspace(derivativestypes.ModuleName)
 	return paramsKeeper
 }
 
