@@ -252,7 +252,7 @@ var (
 		ibcfee.AppModuleBasic{},
 		// recordsmodule.AppModuleBasic{},
 		// icacallbacksmodule.AppModuleBasic{},
-		// // this line is used by starport scaffolding # stargate/app/moduleBasic
+		// this line is used by starport scaffolding # stargate/app/moduleBasic
 		// ecosystemincentive.AppModuleBasic{},
 		// pricefeed.AppModuleBasic{},
 		// nftmint.AppModuleBasic{},
@@ -801,7 +801,7 @@ func NewApp(
 	// 	app.GetSubspace(ecosystemincentivetypes.ModuleName),
 	// 	app.BankKeeper,
 	// )
-
+	//
 	// epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)
 
 	// register the proposal types
@@ -824,45 +824,45 @@ func NewApp(
 		// ICAHost Stack
 		AddRoute(icahosttypes.SubModuleName, icaHostIBCModule).
 		// Wasm Stack
-		AddRoute(wasm.ModuleName, wasmStack).
+		AddRoute(wasm.ModuleName, wasmStack)
 		// Stakeibc Stack
-		AddRoute(icacontrollertypes.SubModuleName, stakeibcStack).
-		AddRoute(stakeibcmoduletypes.ModuleName, stakeibcStack).
+		// AddRoute(icacontrollertypes.SubModuleName, stakeibcStack).
+		// AddRoute(stakeibcmoduletypes.ModuleName, stakeibcStack).
 		// Transfer stack
-		AddRoute(ibctransfertypes.ModuleName, transferStack)
+		// AddRoute(ibctransfertypes.ModuleName, transferStack)
 	app.IBCKeeper.SetRouter(ibcRouter)
 
-	app.NftmintKeeper = nftmintkeeper.NewKeeper(
-		appCodec,
-		keys[nftminttypes.StoreKey],
-		keys[nftminttypes.MemStoreKey],
-		app.GetSubspace(nftminttypes.ModuleName),
-		app.AccountKeeper,
-		app.NFTKeeper,
-	)
+	// app.NftmintKeeper = nftmintkeeper.NewKeeper(
+	// 	appCodec,
+	// 	keys[nftminttypes.StoreKey],
+	// 	keys[nftminttypes.MemStoreKey],
+	// 	app.GetSubspace(nftminttypes.ModuleName),
+	// 	app.AccountKeeper,
+	// 	app.NFTKeeper,
+	// )
 
-	nftmarketKeeper := nftmarketkeeper.NewKeeper(
-		appCodec,
-		encodingConfig.TxConfig,
-		keys[nftmarkettypes.StoreKey],
-		keys[nftmarkettypes.MemStoreKey],
-		app.GetSubspace(nftmarkettypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-		app.NFTKeeper,
-	)
+	// nftmarketKeeper := nftmarketkeeper.NewKeeper(
+	// 	appCodec,
+	// 	encodingConfig.TxConfig,
+	// 	keys[nftmarkettypes.StoreKey],
+	// 	keys[nftmarkettypes.MemStoreKey],
+	// 	app.GetSubspace(nftmarkettypes.ModuleName),
+	// 	app.AccountKeeper,
+	// 	app.BankKeeper,
+	// 	app.NFTKeeper,
+	// )
 
-	app.DerivativesKeeper = derivativeskeeper.NewKeeper(
-		appCodec,
-		keys[derivativestypes.StoreKey],
-		keys[derivativestypes.MemStoreKey],
-		app.GetSubspace(derivativestypes.ModuleName),
-		app.BankKeeper,
-		app.PricefeedKeeper,
-	)
+	// app.DerivativesKeeper = derivativeskeeper.NewKeeper(
+	// 	appCodec,
+	// 	keys[derivativestypes.StoreKey],
+	// 	keys[derivativestypes.MemStoreKey],
+	// 	app.GetSubspace(derivativestypes.ModuleName),
+	// 	app.BankKeeper,
+	// 	app.PricefeedKeeper,
+	// )
 
 	// create Keeper objects which have Hooks
-	app.NftmarketKeeper = *nftmarketKeeper.SetHooks(nftmarkettypes.NewMultiNftmarketHooks(app.EcosystemincentiveKeeper.Hooks()))
+	// app.NftmarketKeeper = *nftmarketKeeper.SetHooks(nftmarkettypes.NewMultiNftmarketHooks(app.EcosystemincentiveKeeper.Hooks()))
 
 	govConfig := govtypes.DefaultConfig()
 	govKeeper := govkeeper.NewKeeper(
