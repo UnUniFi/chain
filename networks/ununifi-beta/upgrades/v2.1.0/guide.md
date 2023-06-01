@@ -1,4 +1,4 @@
-# v2.0 to v2.1 Upgrade Guide
+# v2.0.0 to v2.1.0 Upgrade Guide
 
 ## Purpose of this upgrade
 
@@ -23,7 +23,7 @@ go version
 ## Setup
 
 If the cosmovisor's `DAEMON_ALLOW_DOWNLOAD_BINARIES` variable is set `true`, no need to do the following steps, it will be downloaded automatically.
-But, if `$DAEMON_HOME/cosmovisor/upgrades/v2/bin` already exists, the cosmovisor uses it.
+But, if `$DAEMON_HOME/cosmovisor/upgrades/v2_1/bin` already exists, the cosmovisor uses it.
 
 If you use cosmovisor which we highly recommend, create the required folder, make the build, and copy the daemon over to that folder with the appropriate name.
 
