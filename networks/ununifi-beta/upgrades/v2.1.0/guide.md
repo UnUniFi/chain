@@ -14,7 +14,7 @@ About June 4, 2023, 7:30 AM UTC.
 
 ## Go Requirement
 
-You will need to be running go1.19 for this, same as the previsou version. You can check with this command:
+You will need to be running go1.19 for this, same as the previous version. You can check with this command:
 
 ```shell
 go version
@@ -53,7 +53,7 @@ NOTE: Don't forget check the file owner of v2 binary.
 chmod 755 $DAEMON_HOME/cosmovisor/upgrades/v2_1/bin/ununifid
 ```
 
-And you don't have to reboot cosmovisor when to do upgrade. So, after locating the binary into the appropriate place, you don't need to anything.
+And you don't have to reboot cosmovisor when to do upgrade. So, after locating the binary into the appropriate place, you don't need to do anything.
 
 ## Futher Help
 
