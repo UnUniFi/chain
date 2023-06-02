@@ -58,8 +58,8 @@ Example JSON file for CLI tx command:
 
 ```Json
 {
-	"incentive-id": "incentive-unit1",
-	"subject-addrs": [
+	"incentive_id": "incentive-unit1",
+	"subject_addrs": [
 		"ununifi17gs6kgph4657epky2ctl9sf66ucyua939nexgl",
 		"ununifi1w9s3wpkh0kfk0t40m4lwjsx6h2v6gktsvfrgux"
 	],

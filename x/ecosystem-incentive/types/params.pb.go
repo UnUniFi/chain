@@ -24,13 +24,14 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// At first, we go with this one type.
 // NFTMARKET_FRONTEND type reward will be disributed for the creators of frontend of UnUniFi's services.
 type RewardType int32
 
 const (
+	// NFTMARKET_FRONTEND type reward will be disributed for the creators of frontend of UnUniFi's services.
 	RewardType_NFTMARKET_FRONTEND RewardType = 0
-	RewardType_STAKERS            RewardType = 1
+	// STAKERS type reward is the lavel of reward for the stakers of the ecosystem incentive module.
+	RewardType_STAKERS RewardType = 1
 )
 
 var RewardType_name = map[int32]string{

@@ -13,7 +13,7 @@ var (
 	ErrCoinAmount                        = sdkerrors.Register(ModuleName, 6, "must be 0 amount after sending token")
 	ErrRecordedNftId                     = sdkerrors.Register(ModuleName, 7, "the nft_id is already recorded")
 	ErrNotRegisteredIncentiveUnitId      = sdkerrors.Register(ModuleName, 8, "the incentive_unit_id is not registered")
-	ErrIncentiveUnitIdByNftIdDoesntExist = sdkerrors.Register(ModuleName, 9, "the nft_id is not recorded")
+	ErrIncentiveUnitIdByNftIdDoesntExist = sdkerrors.Register(ModuleName, 9, "the nft_id is not recorded with any incentive-unit")
 	ErrRewardRateNotFound                = sdkerrors.Register(ModuleName, 10, "the reward rate in the params was not found")
 	ErrAddressNotHaveReward              = sdkerrors.Register(ModuleName, 11, "the address doesn't have any rewards")
 	ErrUnknownMemoVersion                = sdkerrors.Register(ModuleName, 12, "the version in the memo inputs is unknown")
