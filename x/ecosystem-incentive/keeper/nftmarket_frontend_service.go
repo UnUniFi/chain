@@ -99,18 +99,7 @@ func (k Keeper) DeleteIncentiveUnitIdByNftId(ctx sdk.Context, nftId nftmarkettyp
 
 // AccumulateReward is called in AfterNftPaymentWithCommission hook method
 // This method updates the reward information for the subject who is associated with the nftId
-func (k Keeper) AccumulateRewardForFrontend(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, reward sdk.Coin) error {
-	// get incentiveUnitId by nftId from IncentiveUnitIdByNftId KVStore
-	incentiveUnitId, exists := k.GetIncentiveUnitIdByNftId(ctx, nftId)
-	if !exists {
-		// emit event to inform the nftId is not associated with incentiveUnitId and return
-		_ = ctx.EventManager().EmitTypedEvent(&types.EventNotRecordedNftId{
-			ClassId: nftId.ClassId,
-			NftId:   nftId.NftId,
-		})
-		return types.ErrIncentiveUnitIdByNftIdDoesntExist
-	}
-
+func (k Keeper) AccumulateRewardForFrontend(ctx sdk.Context, incentiveUnitId string, reward sdk.Coin) error {
 	incentiveUnit, _ := k.GetIncentiveUnit(ctx, incentiveUnitId)
 
 	// rewardAmountForAll = fee * rewardRate

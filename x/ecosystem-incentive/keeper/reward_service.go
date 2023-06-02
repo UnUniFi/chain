@@ -12,13 +12,34 @@ import (
 )
 
 func (k Keeper) RewardDistributionOfNftmarket(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, fee sdk.Coin) error {
-	nftmarketFrontendRewardRate := k.GetNftmarketFrontendRewardRate(ctx)
-	// if the reward rate was not found or set as zero, just return
-	if nftmarketFrontendRewardRate == sdk.ZeroDec() {
-		err := fmt.Errorf(sdkerrors.Wrap(types.ErrRewardRateNotFound, "nftmarket frontend").Error())
-		return err
+	totalReward := sdk.ZeroInt()
+	// First, get incentiveUnitId by nftId from IncentiveUnitIdByNftId KVStore
+	// If the incentiveUnitId doesn't exist, return nil and distribute the reward for the frontend
+	// to the treasury.
+	incentiveUnitId, exists := k.GetIncentiveUnitIdByNftId(ctx, nftId)
+	if !exists {
+		// emit event to inform the nftId is not associated with incentiveUnitId and return
+		_ = ctx.EventManager().EmitTypedEvent(&types.EventNotRecordedNftId{
+			ClassId: nftId.ClassId,
+			NftId:   nftId.NftId,
+		})
+
+		// TODO: impl the logic to distribute the reward for the frontend to the treasury
+	} else {
+		nftmarketFrontendRewardRate := k.GetNftmarketFrontendRewardRate(ctx)
+		// if the reward rate was not found or set as zero, just return
+		if nftmarketFrontendRewardRate == sdk.ZeroDec() {
+			err := fmt.Errorf(sdkerrors.Wrap(types.ErrRewardRateNotFound, "nftmarket frontend").Error())
+			return err
+		}
+		rewardForIncentiveUnit := nftmarketFrontendRewardRate.MulInt(fee.Amount).TruncateInt()
+		totalReward = totalReward.Add(rewardForIncentiveUnit)
+
+		// Distribute the reward to the incentive unit
+		if err := k.AccumulateRewardForFrontend(ctx, incentiveUnitId, sdk.NewCoin(fee.Denom, rewardForIncentiveUnit)); err != nil {
+			return err
+		}
 	}
-	rewardForIncentiveUnit := nftmarketFrontendRewardRate.MulInt(fee.Amount).TruncateInt()
 
 	stakersRewardRate := k.GetStakersRewardRate(ctx)
 	// if the reward rate was not found or set as zero, just return
@@ -28,15 +49,11 @@ func (k Keeper) RewardDistributionOfNftmarket(ctx sdk.Context, nftId nftmarketty
 	}
 
 	rewardForStakers := stakersRewardRate.MulInt(fee.Amount).TruncateInt()
+	totalReward = totalReward.Add(rewardForStakers)
 
 	// Emit panic if the reward for incentive unit exceeds the fee amount
-	if rewardForIncentiveUnit.Add(rewardForStakers).GT(fee.Amount) {
+	if totalReward.GT(fee.Amount) {
 		panic(types.ErrRewardExceedsFee)
-	}
-
-	// Distribute the reward to the incentive unit
-	if err := k.AccumulateRewardForFrontend(ctx, nftId, sdk.NewCoin(fee.Denom, rewardForIncentiveUnit)); err != nil {
-		return err
 	}
 
 	// Distribute the reward to the stakers
