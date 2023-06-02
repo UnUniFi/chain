@@ -128,6 +128,7 @@ import (
 	"github.com/UnUniFi/chain/app/upgrades"
 	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
 	v2_1 "github.com/UnUniFi/chain/app/upgrades/v2.1"
+	v2_2 "github.com/UnUniFi/chain/app/upgrades/v2.2"
 	// epochsmoduletypes "github.com/UnUniFi/chain/x/epochs/types"
 	// icacallbacksmoduletypes "github.com/UnUniFi/chain/x/icacallbacks/types"
 	// interchainquerytypes "github.com/UnUniFi/chain/x/interchainquery/types"
@@ -284,7 +285,7 @@ var (
 		// stakeibcmoduletypes.ModuleName: true,
 	}
 
-	Upgrades = []upgrades.Upgrade{v1_beta3.Upgrade, v2_1.Upgrade}
+	Upgrades = []upgrades.Upgrade{v1_beta3.Upgrade, v2_1.Upgrade, v2_2.Upgrade}
 )
 
 var (
