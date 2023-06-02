@@ -1,15 +1,13 @@
 package keeper_test
 
 import (
-	"fmt"
+	"time"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	ununifitypes "github.com/UnUniFi/chain/types"
 )
 
 func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
@@ -239,11 +237,108 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 	}
 }
 
-// TODO: Implement this test
-func (suite *KeeperTestSuite) TestReportLiquidationNeededPerpetualFuturesPosition() {}
+func (suite *KeeperTestSuite) TestReportLiquidationNeededPerpetualFuturesPosition() {
+	suite.SetParams()
+	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	market := types.Market{
+		BaseDenom:  "uatom",
+		QuoteDenom: "uusdc",
+	}
+	_, err := suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:usd", sdk.MustNewDecFromStr("0.00002"), suite.ctx.BlockTime().Add(time.Hour*3))
+	suite.Require().NoError(err)
+	_, err = suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uusdc:usd", sdk.MustNewDecFromStr("0.000001"), suite.ctx.BlockTime().Add(time.Hour*3))
+	suite.Require().NoError(err)
+	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:usd")
+	suite.Require().NoError(err)
+	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uusdc:usd")
+	suite.Require().NoError(err)
 
-// TODO: Fix param & work on this test
+	positions := []struct {
+		positionId           string
+		margin               sdk.Coin
+		instance             types.PerpetualFuturesPositionInstance
+		availableAssetInPool sdk.Coin
+		expGrossPosition     sdk.Int
+	}{
+		{
+			positionId: "0",
+			margin:     sdk.NewCoin("uatom", sdk.NewInt(500000)),
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.MustNewDecFromStr("2"),
+				Leverage:     5,
+			},
+			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(2000000)),
+			// margin rate 125% = margin 10usd / require 8usd
+			// => 69% = (margin 9usd + loss 4usd = 5usd) / require 7.2 usd
+			expGrossPosition: sdk.MustNewDecFromStr("4").MulInt64(1000000).TruncateInt(),
+		},
+		{
+			positionId: "1",
+			margin:     sdk.NewCoin("uatom", sdk.NewInt(500000)),
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_SHORT,
+				Size_:        sdk.MustNewDecFromStr("2"),
+				Leverage:     5,
+			},
+			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
+			// margin rate 125%
+			// => 180% = (margin 9usd + profit 4usd = 13usd) / require 7.2 usd
+			expGrossPosition: sdk.MustNewDecFromStr("2").MulInt64(1000000).TruncateInt(),
+		},
+		{
+			positionId: "2",
+			margin:     sdk.NewCoin("uusdc", sdk.NewInt(5000000)),
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.MustNewDecFromStr("2"),
+				Leverage:     10,
+			},
+			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(20000000)),
+			// margin rate 125% = margin 5usd / require 4usd
+			// => 27% = (margin 5usd - loss 4usd = 1usd) / require 3.6 usd
+			// Close position#2
+			expGrossPosition: sdk.MustNewDecFromStr("2").MulInt64(1000000).TruncateInt(),
+		},
+	}
+
+	for _, testPosition := range positions {
+		err := suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{testPosition.availableAssetInPool})
+		suite.Require().NoError(err)
+
+		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.Bytes(), testPosition.margin, market, testPosition.instance)
+		suite.Require().NoError(err)
+		suite.Require().NotNil(position)
+
+		suite.keeper.SetPosition(suite.ctx, *position)
+		_ = suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{testPosition.margin})
+	}
+
+	// 10% price down
+	_, err = suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:usd", sdk.MustNewDecFromStr("0.000018"), suite.ctx.BlockTime().Add(time.Hour*3))
+	suite.Require().NoError(err)
+	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:usd")
+	suite.Require().NoError(err)
+
+	for _, testPosition := range positions {
+		position := suite.keeper.GetPositionWithId(suite.ctx, testPosition.positionId)
+		positionInstance, err := types.UnpackPositionInstance(position.PositionInstance)
+		suite.Require().NoError(err)
+		switch positionInstance := positionInstance.(type) {
+		case *types.PerpetualFuturesPositionInstance:
+			perpetualFuturesPosition := types.NewPerpetualFuturesPosition(*position, *positionInstance)
+			err = suite.keeper.ReportLiquidationNeededPerpetualFuturesPosition(suite.ctx, owner.Bytes(), perpetualFuturesPosition)
+		}
+		suite.Require().NoError(err)
+
+		// Check if the position was closed
+		grossPosition := suite.keeper.GetPerpetualFuturesGrossPositionOfMarket(suite.ctx, market, testPosition.instance.PositionType)
+		suite.Require().Equal(testPosition.expGrossPosition, grossPosition.PositionSizeInDenomExponent)
+	}
+}
+
 func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
+	suite.SetParams()
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	market := types.Market{
 		BaseDenom:  "uatom",
@@ -265,7 +360,8 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 				Leverage:     5,
 			},
 			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(2000000)),
-			expMargin:            sdk.MustNewDecFromStr("500000").TruncateInt(),
+			// 500000 - 500(funding) - 500(commission) = 499000
+			expMargin: sdk.MustNewDecFromStr("499000").TruncateInt(),
 		},
 		{
 			positionId: "1",
@@ -276,7 +372,8 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 				Leverage:     5,
 			},
 			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
-			expMargin:            sdk.MustNewDecFromStr("500000").TruncateInt(),
+			// 500000 + 500(funding) - 500(commission) = 500000
+			expMargin: sdk.MustNewDecFromStr("500000").TruncateInt(),
 		},
 		{
 			positionId: "2",
@@ -287,7 +384,8 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 				Leverage:     20,
 			},
 			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(20000000)),
-			expMargin:            sdk.MustNewDecFromStr("500000").TruncateInt(),
+			// 1000000 - 1000(funding) - 1000(commission) = 998000
+			expMargin: sdk.MustNewDecFromStr("998000").TruncateInt(),
 		},
 		{
 			positionId: "3",
@@ -298,7 +396,8 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 				Leverage:     10,
 			},
 			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
-			expMargin:            sdk.MustNewDecFromStr("500000").TruncateInt(),
+			// 1000000 + 1000(funding) - 1000(commission) = 10000000
+			expMargin: sdk.MustNewDecFromStr("1000000").TruncateInt(),
 		},
 	}
 
@@ -309,16 +408,23 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.Bytes(), testPosition.margin, market, testPosition.instance)
 		suite.Require().NoError(err)
 		suite.Require().NotNil(position)
+
+		suite.keeper.SetPosition(suite.ctx, *position)
+		_ = suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{testPosition.margin})
 	}
 
 	for _, testPosition := range positions {
 		position := suite.keeper.GetPositionWithId(suite.ctx, testPosition.positionId)
-		err := suite.keeper.ReportLevyPeriodPerpetualFuturesPosition(suite.ctx, ununifitypes.StringAccAddress(owner), *position, testPosition.instance)
+		positionInstance, err := types.UnpackPositionInstance(position.PositionInstance)
+		suite.Require().NoError(err)
+		switch positionInstance := positionInstance.(type) {
+		case *types.PerpetualFuturesPositionInstance:
+			err = suite.keeper.ReportLevyPeriodPerpetualFuturesPosition(suite.ctx, owner.Bytes(), *position, *positionInstance)
+		}
 		suite.Require().NoError(err)
 
 		// Check if the position was changed
 		updatedPosition := suite.keeper.GetPositionWithId(suite.ctx, testPosition.positionId)
-
 		suite.Require().Equal(testPosition.expMargin, updatedPosition.RemainingMargin.Amount)
 	}
 }
@@ -390,4 +496,35 @@ func (suite *KeeperTestSuite) TestSubPerpetualFuturesGrossPositionOfMarket() {
 	positionSizeGrossPositionOfMarket = suite.keeper.GetPerpetualFuturesGrossPositionOfMarket(suite.ctx, market, types.PositionType_LONG)
 
 	suite.Require().Equal(positionSizeGrossPositionOfMarket.PositionSizeInDenomExponent, grossPosition.Sub(netSubPosition))
+}
+
+func (suite *KeeperTestSuite) SetParams() {
+	params := suite.app.DerivativesKeeper.GetParams(suite.ctx)
+	params.PoolParams = types.PoolParams{
+		QuoteTicker:                 "usd",
+		BaseLptMintFee:              sdk.MustNewDecFromStr("0.001"),
+		BaseLptRedeemFee:            sdk.MustNewDecFromStr("0.001"),
+		BorrowingFeeRatePerHour:     sdk.MustNewDecFromStr("0.000001"),
+		ReportLiquidationRewardRate: sdk.MustNewDecFromStr("0.3"),
+		ReportLevyPeriodRewardRate:  sdk.MustNewDecFromStr("0.3"),
+		AcceptedAssetsConf: []types.PoolAssetConf{
+			{
+				Denom:        "uatom",
+				TargetWeight: sdk.OneDec(),
+			},
+		},
+	}
+	params.PerpetualFutures = types.PerpetualFuturesParams{
+		CommissionRate:        sdk.MustNewDecFromStr("0.001"),
+		MarginMaintenanceRate: sdk.MustNewDecFromStr("0.5"),
+		ImaginaryFundingRateProportionalCoefficient: sdk.MustNewDecFromStr("0.0005"),
+		Markets: []*types.Market{
+			{
+				BaseDenom:  "uatom",
+				QuoteDenom: "uusdc",
+			},
+		},
+		MaxLeverage: 30,
+	}
+	suite.app.DerivativesKeeper.SetParams(suite.ctx, params)
 }
