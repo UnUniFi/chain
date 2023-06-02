@@ -259,11 +259,18 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 	params := k.GetParams(ctx)
 
 	netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, position.Market).PositionSizeInDenomExponent
-
-	imaginaryFundingRate := sdk.NewDecFromInt(netPosition).Quo(sdk.MustNewDecFromStr(types.OneMillionString)).Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
-	imaginaryFundingFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
+	totalPosition := k.GetPerpetualFuturesTotalPositionOfMarket(ctx, position.Market).PositionSizeInDenomExponent
 	commissionFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
 
+	// NetPosition / TotalPosition * LevyCoefficient
+	imaginaryFundingRate := sdk.NewDecFromInt(netPosition).Quo(sdk.NewDecFromInt(totalPosition)).Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
+	imaginaryFundingBaseFee := sdk.NewDecFromInt(positionInstance.SizeInDenomExponent(types.OneMillionInt)).Mul(imaginaryFundingRate).RoundInt()
+	var imaginaryFundingFee sdk.Int
+	if position.Market.BaseDenom == position.RemainingMargin.Denom {
+		imaginaryFundingFee = imaginaryFundingBaseFee
+	} else {
+		imaginaryFundingFee = k.ConvertBaseAmountToQuoteAmount(ctx, position.Market, imaginaryFundingBaseFee)
+	}
 	if positionInstance.PositionType == types.PositionType_LONG {
 		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(imaginaryFundingFee).Sub(commissionFee)
 	} else {
@@ -369,4 +376,23 @@ func (k Keeper) GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market t
 		types.PositionType_POSITION_UNKNOWN,
 		grossPositionLong.Sub(grossPositionShort),
 	)
+}
+
+func (k Keeper) GetPerpetualFuturesTotalPositionOfMarket(ctx sdk.Context, market types.Market) types.PerpetualFuturesGrossPositionOfMarket {
+	grossPositionLong := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, types.PositionType_LONG).PositionSizeInDenomExponent
+	grossPositionShort := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, types.PositionType_SHORT).PositionSizeInDenomExponent
+	return types.NewPerpetualFuturesGrossPositionOfMarket(
+		market,
+		types.PositionType_POSITION_UNKNOWN,
+		grossPositionLong.Add(grossPositionShort),
+	)
+}
+
+func (k Keeper) ConvertBaseAmountToQuoteAmount(ctx sdk.Context, market types.Market, amount sdk.Int) sdk.Int {
+	currentBaseUsdRate, currentQuoteUsdRate, _ := k.GetPairUsdPriceFromMarket(ctx, market)
+	quoteTicker := k.GetPoolQuoteTicker(ctx)
+	baseMetricsRate := types.NewMetricsRateType(quoteTicker, market.BaseDenom, currentBaseUsdRate)
+	quoteMetricsRate := types.NewMetricsRateType(quoteTicker, market.QuoteDenom, currentQuoteUsdRate)
+
+	return sdk.NewDecFromInt(amount).Mul(quoteMetricsRate.Amount.Amount).Quo(baseMetricsRate.Amount.Amount).RoundInt()
 }
