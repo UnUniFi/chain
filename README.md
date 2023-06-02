@@ -16,7 +16,7 @@ Install Go. Use the 19.x series version.
 
 ```bash
 $ wget https://go.dev/dl/go1.19.2.linux-amd64.tar.gz
-$ rm -rf /usr/local/go && tar -C /usr/local -xzf go1.18.linux-amd64.tar.gz
+$ rm -rf /usr/local/go && tar -C /usr/local -xzf go1.19.2.linux-amd64.tar.gz
 $ vim ~/.bashrc
 export PATH=$PATH:/usr/local/go/bin
 $ source ~/.bashrc
@@ -29,7 +29,7 @@ Clone the UnUniFi blockchain repository, check out the given branch, and build i
 ```bash
 git clone https://github.com/UnUniFi/chain chain_repo
 cd chain_repo
-git checkout v1.0.0
+git checkout v2.0.0
 git pull
 make install
 ```
