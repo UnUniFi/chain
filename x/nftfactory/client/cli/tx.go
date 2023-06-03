@@ -20,7 +20,7 @@ import (
 func GetTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                        types.ModuleName,
-		Short:                      "nftmint transactions subcommands",
+		Short:                      "nftfactory transactions subcommands",
 		Long:                       "Provides the most common nft minting applications, compatible with Ethereum's erc721 contract",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
