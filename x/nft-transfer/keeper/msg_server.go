@@ -62,17 +62,3 @@ func (k Keeper) Transfer(goCtx context.Context, msg *types.MsgTransfer) (*types.
 
 	return &types.MsgTransferResponse{Sequence: sequence}, nil
 }
-
-// UpdateParams defines a governance operation for updating the nft-transfer module parameters.
-// The authority is defined in the keeper.
-func (k Keeper) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
-	if k.GetAuthority() != msg.Authority {
-		return nil, errorsmod.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
-	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	if err := k.SetParams(ctx, msg.Params); err != nil {
-		return nil, err
-	}
-	return &types.MsgUpdateParamsResponse{}, nil
-}
