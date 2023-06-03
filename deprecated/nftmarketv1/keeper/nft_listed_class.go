@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/deprecated/nftmarketv1/types"
-	"github.com/UnUniFi/chain/x/nftmint/keeper"
+	"github.com/UnUniFi/chain/x/nftfactory/keeper"
 )
 
 func (k Keeper) UpdateListedClass(ctx sdk.Context, listing types.NftListing) {

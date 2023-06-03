@@ -146,9 +146,9 @@ import (
 	// "github.com/UnUniFi/chain/x/nftmarket"
 	// nftmarketkeeper "github.com/UnUniFi/chain/x/nftmarket/keeper"
 	// nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
-	// "github.com/UnUniFi/chain/x/nftmint"
-	// nftmintkeeper "github.com/UnUniFi/chain/x/nftmint/keeper"
-	// nftminttypes "github.com/UnUniFi/chain/x/nftmint/types"
+	// "github.com/UnUniFi/chain/x/nftfactory"
+	// nftmintkeeper "github.com/UnUniFi/chain/x/nftfactory/keeper"
+	// nftminttypes "github.com/UnUniFi/chain/x/nftfactory/types"
 )
 
 const Name = "ununifi"
