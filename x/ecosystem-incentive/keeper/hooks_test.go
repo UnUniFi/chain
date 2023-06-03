@@ -6,7 +6,7 @@ import (
 	ununifitypes "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/ecosystem-incentive/keeper"
 	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
+	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
 func (suite *KeeperTestSuite) TestAfterNftListed() {

@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
+	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
 var _ types.QueryServer = Keeper{}
