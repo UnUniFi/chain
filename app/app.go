@@ -135,8 +135,8 @@ import (
 	// pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 	// recordsmoduletypes "github.com/UnUniFi/chain/x/records/types"
 	// stakeibcmoduletypes "github.com/UnUniFi/chain/x/stakeibc/types"
-	// yieldaggregator "github.com/UnUniFi/chain/x/yield-aggregator"
-	// yieldaggregatortypes "github.com/UnUniFi/chain/x/yield-aggregator/types"
+	// yieldaggregator "github.com/UnUniFi/chain/x/yieldaggregator"
+	// yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 	// "github.com/UnUniFi/chain/x/derivatives"
 	// derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
