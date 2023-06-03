@@ -68,7 +68,7 @@ func CmdQueryParams() *cobra.Command {
 
 func CmdQueryNftListing() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "nft_listing [class_id] [nft_id]",
+		Use:   "nft-listing [class-id] [nft-id]",
 		Short: "shows nft listing",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -97,7 +97,7 @@ func CmdQueryNftListing() *cobra.Command {
 
 func CmdQueryListedNfts() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "listed_nfts",
+		Use:   "listed-nfts",
 		Short: "shows listed nfts on the market",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -192,7 +192,7 @@ func CmdQueryLoan() *cobra.Command {
 
 func CmdQueryNftBids() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "nft_bids [class_id] [nft_id]",
+		Use:   "nft-bids [class-id] [nft-id]",
 		Short: "shows nft bids",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -221,7 +221,7 @@ func CmdQueryNftBids() *cobra.Command {
 
 func CmdQueryBidderBids() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "bidder_bids [bidder]",
+		Use:   "bidder-bids [bidder]",
 		Short: "shows bids by bidder",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -249,7 +249,7 @@ func CmdQueryBidderBids() *cobra.Command {
 
 func CmdQueryCDPsList() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "cdp_list",
+		Use:   "cdp-list",
 		Short: "shows cdps",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -301,7 +301,7 @@ func CmdQueryRewards() *cobra.Command {
 
 func CmdQueryListedClass() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "listed_class [class-id] [nft-limit]",
+		Use:   "listed-class [class-id] [nft-limit]",
 		Short: "shows listed nft ids and uris in defined class-id",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {

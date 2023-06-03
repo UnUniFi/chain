@@ -141,12 +141,12 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 
 func CmdCreatePlaceBid() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "placebid [class-id] [nft-id] [bid-amount] [deposit-amount] [deposit-interest-rate] [bidding_hour_time]",
+		Use:   "place-bid [class-id] [nft-id] [bid-amount] [deposit-amount] [deposit-interest-rate] [bidding-hour-time]",
 		Short: "Creates a new place bid",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Creates a new place bid.
 Example:
-$ %s tx %s placebid 1 1 100uguu --automatic-payment --from myKeyName --chain-id ununifi-x
+$ %s tx %s place-bid 1 1 100uguu --automatic-payment --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(6),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -214,12 +214,12 @@ $ %s tx %s placebid 1 1 100uguu --automatic-payment --from myKeyName --chain-id 
 
 func CmdEndListing() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "endlisting [class-id] [nft-id]",
+		Use:   "end-listing [class-id] [nft-id]",
 		Short: "end listing",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`end listing.
 Example:
-$ %s tx %s endlisting 1 1 --from myKeyName --chain-id ununifi-x
+$ %s tx %s end-listing 1 1 --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -250,12 +250,12 @@ $ %s tx %s endlisting 1 1 --from myKeyName --chain-id ununifi-x
 
 func CmdSellingDecision() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "selling_decision [class-id] [nft-id]",
+		Use:   "selling-decision [class-id] [nft-id]",
 		Short: "broadcast selling decision message",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`broadcast selling decision message.
 Example:
-$ %s tx %s selling_decision 1 1 --from myKeyName --chain-id ununifi-x
+$ %s tx %s selling-decision 1 1 --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -368,7 +368,7 @@ $ %s tx %s repay 1 1 100uguu --from myKeyName --chain-id ununifi-x
 
 func CmdCancelNftListing() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "cancel_listing [class-id] [nft-id]",
+		Use:   "cancel-listing [class-id] [nft-id]",
 		Short: "Cancel nft listing",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Cancel nft listing.
@@ -404,12 +404,12 @@ $ %s tx %s cancel_listing 1 1 --from myKeyName --chain-id ununifi-x
 
 func CmdCancelBid() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "cancelbid [class-id] [nft-id]",
+		Use:   "cancel-bid [class-id] [nft-id]",
 		Short: "Cancel bid on nft",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Cancel bid on nft.
 Example:
-$ %s tx %s cancelbid 1 1 --from myKeyName --chain-id ununifi-x
+$ %s tx %s cancel-bid 1 1 --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -441,12 +441,12 @@ $ %s tx %s cancelbid 1 1 --from myKeyName --chain-id ununifi-x
 
 func CmdPayFullBid() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "pay_fullbid [class-id] [nft-id]",
+		Use:   "pay-full-bid [class-id] [nft-id]",
 		Short: "Pay full bid on nft",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Pay full bid on nft.
 Example:
-$ %s tx %s pay_fullbid 1 1 --from myKeyName --chain-id ununifi-x
+$ %s tx %s pay-full-bid 1 1 --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
