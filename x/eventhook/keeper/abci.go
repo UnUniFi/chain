@@ -36,7 +36,7 @@ func (k Keeper) CallHook(ctx sdk.Context, event sdk.Event, hook Hook) {
 
 }
 
-func (k Keeper) BeginBlock(ctx sdk.Context, _ abci.RequestBeginBlock) {
+func (k Keeper) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
 	for _, event := range ctx.EventManager().Events() {
 		hooks := []Hook{} // event.Type -> []Hook
 		for _, hook := range hooks {
@@ -45,4 +45,6 @@ func (k Keeper) BeginBlock(ctx sdk.Context, _ abci.RequestBeginBlock) {
 			}
 		}
 	}
+
+	return []abci.ValidatorUpdate{}
 }
