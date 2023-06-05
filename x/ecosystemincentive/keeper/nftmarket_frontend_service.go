@@ -14,37 +14,37 @@ import (
 	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
-// RecordIncentiveIdWithNftId is for recording incentiveUnitId with nftId
+// RecordIncentiveIdWithNftId is for recording recipientContainerId with nftId
 // to know of the receriver of the incentive reward for the frontend creator
 // of Nftmarket in AfterNftPaymentWithCommission method.
-func (k Keeper) RecordIncentiveUnitIdWithNftId(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, incentiveUnitId string) {
+func (k Keeper) RecordRecipientContainerIdWithNftId(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, recipientContainerId string) {
 	// panic if the nftId is already recorded in the store.
-	if _, exists := k.GetIncentiveUnitIdByNftId(ctx, nftId); exists {
+	if _, exists := k.GetRecipientContainerIdByNftId(ctx, nftId); exists {
 		panic(sdkerrors.Wrap(types.ErrRecordedNftId, nftId.String()))
 	}
 
-	// check incentiveUnitId is already registered
-	if _, exists := k.GetIncentiveUnit(ctx, incentiveUnitId); !exists {
-		k.Logger(ctx).Error(types.ErrNotRegisteredIncentiveUnitId.Error())
+	// check recipientContainerId is already registered
+	if _, exists := k.GetRecipientContainer(ctx, recipientContainerId); !exists {
+		k.Logger(ctx).Error(types.ErrNotRegisteredRecipientContainerId.Error())
 
-		// emit event to inform that recording nftid failed because the incentiveUnitId is not registered yet.
-		_ = ctx.EventManager().EmitTypedEvent(&types.EventNotRegisteredIncentiveUnitId{
-			IncentiveUnitId: incentiveUnitId,
-			ClassId:         nftId.ClassId,
-			NftId:           nftId.NftId,
+		// emit event to inform that recording nftid failed because the recipientContainerId is not registered yet.
+		_ = ctx.EventManager().EmitTypedEvent(&types.EventNotRegisteredRecipientContainerId{
+			RecipientContainerId: recipientContainerId,
+			ClassId:              nftId.ClassId,
+			NftId:                nftId.NftId,
 		})
 		return
 	}
 
-	if err := k.SetIncentiveUnitIdByNftId(ctx, nftId, incentiveUnitId); err != nil {
+	if err := k.SetRecipientContainerIdByNftId(ctx, nftId, recipientContainerId); err != nil {
 		panic(err)
 	}
 
 	// emit event to tell it succeeded.
-	_ = ctx.EventManager().EmitTypedEvent(&types.EventRecordedIncentiveUnitId{
-		IncentiveUnitId: incentiveUnitId,
-		ClassId:         nftId.ClassId,
-		NftId:           nftId.NftId,
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventRecordedRecipientContainerId{
+		RecipientContainerId: recipientContainerId,
+		ClassId:              nftId.ClassId,
+		NftId:                nftId.NftId,
 	})
 }
 
@@ -52,33 +52,33 @@ func (k Keeper) RecordIncentiveUnitIdWithNftId(ctx sdk.Context, nftId nftmarkett
 func (k Keeper) DeleteFrontendRecord(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier) {
 	// If the passed NftId doesn't exist in the KVStore, emit the error message
 	//  but not panic and just return
-	incentiveUnitId, exists := k.GetIncentiveUnitIdByNftId(ctx, nftId)
+	recipientContainerId, exists := k.GetRecipientContainerIdByNftId(ctx, nftId)
 	if !exists {
-		_ = fmt.Errorf(sdkerrors.Wrap(types.ErrIncentiveUnitIdByNftIdDoesntExist, nftId.String()).Error())
+		_ = fmt.Errorf(sdkerrors.Wrap(types.ErrRecipientContainerIdByNftIdDoesntExist, nftId.String()).Error())
 		return
 	}
 
-	k.DeleteIncentiveUnitIdByNftId(ctx, nftId)
+	k.DeleteRecipientContainerIdByNftId(ctx, nftId)
 
 	// emit event for telling the nftId is deleted from the KVStore
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventDeletedNftIdRecordedForFrontendReward{
-		IncentiveUnitId: incentiveUnitId,
-		ClassId:         nftId.ClassId,
-		NftId:           nftId.NftId,
+		RecipientContainerId: recipientContainerId,
+		ClassId:              nftId.ClassId,
+		NftId:                nftId.NftId,
 	})
 }
 
-func (k Keeper) SetIncentiveUnitIdByNftId(ctx sdk.Context, nftIdByte nftmarkettypes.NftIdentifier, incentiveUnitId string) error {
+func (k Keeper) SetRecipientContainerIdByNftId(ctx sdk.Context, nftIdByte nftmarkettypes.NftIdentifier, recipientContainerId string) error {
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnitIdByNftId))
-	prefixStore.Set(nftIdByte.IdBytes(), []byte(incentiveUnitId))
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientContainerIdByNftId))
+	prefixStore.Set(nftIdByte.IdBytes(), []byte(recipientContainerId))
 
 	return nil
 }
 
-func (k Keeper) GetIncentiveUnitIdByNftId(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier) (string, bool) {
+func (k Keeper) GetRecipientContainerIdByNftId(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier) (string, bool) {
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnitIdByNftId))
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientContainerIdByNftId))
 
 	bz := prefixStore.Get(nftId.IdBytes())
 	if bz == nil {
@@ -88,30 +88,30 @@ func (k Keeper) GetIncentiveUnitIdByNftId(ctx sdk.Context, nftId nftmarkettypes.
 	return string(bz), true
 }
 
-// DeleteIncentiveUnitIdByNftId deletes nftId and incentiveUnitId from IncentiveUnitIdByNftId KVStore to clean the record.
-func (k Keeper) DeleteIncentiveUnitIdByNftId(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier) {
+// DeleteRecipientContainerIdByNftId deletes nftId and recipientContainerId from RecipientContainerIdByNftId KVStore to clean the record.
+func (k Keeper) DeleteRecipientContainerIdByNftId(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier) {
 	// Delete incentive unit id by nft id
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnitIdByNftId))
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientContainerIdByNftId))
 
 	prefixStore.Delete(nftId.IdBytes())
 }
 
 // AccumulateReward is called in AfterNftPaymentWithCommission hook method
 // This method updates the reward information for the subject who is associated with the nftId
-func (k Keeper) AccumulateRewardForFrontend(ctx sdk.Context, incentiveUnitId string, reward sdk.Coin) error {
-	incentiveUnit, _ := k.GetIncentiveUnit(ctx, incentiveUnitId)
+func (k Keeper) AccumulateRewardForFrontend(ctx sdk.Context, recipientContainerId string, reward sdk.Coin) error {
+	recipientContainer, _ := k.GetRecipientContainer(ctx, recipientContainerId)
 
 	// rewardAmountForAll = fee * rewardRate
 	rewardsForEach := CalculateRewardsForEachSubject(
-		extractWeightsFromSliceOfSubjectInfo(incentiveUnit.SubjectInfoLists),
+		extractWeightsFromSliceOfSubjectInfo(recipientContainer.WeightedAddresses),
 		reward,
 	)
 
-	for i, subjectInfo := range incentiveUnit.SubjectInfoLists {
-		rewardStore, exists := k.GetRewardStore(ctx, sdk.MustAccAddressFromBech32(subjectInfo.SubjectAddr))
+	for i, subjectInfo := range recipientContainer.WeightedAddresses {
+		rewardStore, exists := k.GetRewardStore(ctx, sdk.MustAccAddressFromBech32(subjectInfo.Address))
 		if !exists {
-			rewardStore = types.NewRewardStore(subjectInfo.SubjectAddr, nil)
+			rewardStore = types.NewRewardStore(subjectInfo.Address, nil)
 		}
 
 		rewardStore.Rewards = rewardStore.Rewards.Add(sdk.NewCoins(rewardsForEach[i])...)
@@ -120,11 +120,11 @@ func (k Keeper) AccumulateRewardForFrontend(ctx sdk.Context, incentiveUnitId str
 		}
 	}
 
-	// emit event to inform that the incentiveUnit defined by incentiveUnitId
+	// emit event to inform that the recipientContainer defined by recipientContainerId
 	// received new reward
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventUpdatedReward{
-		IncentiveUnitId: incentiveUnitId,
-		EarnedReward:    reward,
+		RecipientContainerId: recipientContainerId,
+		EarnedReward:         reward,
 	})
 	return nil
 }
@@ -144,7 +144,7 @@ func CalculateRewardsForEachSubject(weights []sdk.Dec, reward sdk.Coin) []sdk.Co
 	return rewardsForEach
 }
 
-func extractWeightsFromSliceOfSubjectInfo(subjectsInfo []types.SubjectInfo) []sdk.Dec {
+func extractWeightsFromSliceOfSubjectInfo(subjectsInfo []types.WeightedAddress) []sdk.Dec {
 	var weights []sdk.Dec
 	for _, subject := range subjectsInfo {
 		weights = append(weights, subject.Weight)
@@ -159,7 +159,7 @@ func (k Keeper) GetNftmarketFrontendRewardRate(ctx sdk.Context) sdk.Dec {
 	for _, rewardParam := range rewardParams {
 		if rewardParam.ModuleName == nftmarkettypes.ModuleName {
 			for _, rewardRate := range rewardParam.RewardRate {
-				if rewardRate.RewardType == types.RewardType_NFTMARKET_FRONTEND {
+				if rewardRate.RewardType == types.RewardType_FRONTEND_DEVELOPERS {
 					return rewardRate.Rate
 				}
 			}

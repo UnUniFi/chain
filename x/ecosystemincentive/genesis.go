@@ -19,9 +19,9 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		}
 
 		if _, err := k.Register(ctx, &types.MsgRegister{
-			IncentiveUnitId: container.Id,
-			SubjectAddrs:    subjectAddrs,
-			Weights:         weights,
+			RecipientContainerId: container.Id,
+			Addresses:            subjectAddrs,
+			Weights:              weights,
 		}); err != nil {
 			panic(err)
 		}
@@ -38,7 +38,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis := types.DefaultGenesis()
 	genesis.Params = k.GetParams(ctx)
-	genesis.RecipientContainers = k.GetAllIncentiveUnits(ctx)
+	genesis.RecipientContainers = k.GetAllRecipientContainers(ctx)
 	genesis.RewardStores = k.GetAllRewardStores(ctx)
 
 	return genesis

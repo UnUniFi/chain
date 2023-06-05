@@ -10,28 +10,28 @@ import (
 func (suite *KeeperTestSuite) TestRegister() {
 
 	tests := []struct {
-		testCase        string
-		incentiveUnitId string
-		subjectAddrs    []ununifitypes.StringAccAddress
-		weights         []sdk.Dec
-		success         bool
+		testCase             string
+		recipientContainerId string
+		subjectAddrs         []string
+		weights              []sdk.Dec
+		success              bool
 	}{
 		{
-			testCase:        "ordinal success case",
-			incentiveUnitId: "test1",
-			subjectAddrs: []ununifitypes.StringAccAddress{
-				ununifitypes.StringAccAddress(suite.addrs[0]),
+			testCase:             "ordinal success case",
+			recipientContainerId: "test1",
+			subjectAddrs: []string{
+				suite.addrs[0].String(),
 			},
 			weights: []sdk.Dec{sdk.MustNewDecFromStr("1")},
 			success: true,
 		},
 		{
-			testCase:        "multiple subjects success case",
-			incentiveUnitId: "test2",
-			subjectAddrs: []ununifitypes.StringAccAddress{
-				ununifitypes.StringAccAddress(suite.addrs[0]),
-				ununifitypes.StringAccAddress(suite.addrs[1]),
-				ununifitypes.StringAccAddress(suite.addrs[2]),
+			testCase:             "multiple subjects success case",
+			recipientContainerId: "test2",
+			subjectAddrs: []string{
+				suite.addrs[0].String(),
+				suite.addrs[1].String(),
+				suite.addrs[2].String(),
 			},
 			weights: []sdk.Dec{
 				sdk.MustNewDecFromStr("0.33"),
@@ -41,19 +41,19 @@ func (suite *KeeperTestSuite) TestRegister() {
 			success: true,
 		},
 		{
-			testCase:        "failure due to the duplicated inentiveUnitId",
-			incentiveUnitId: "test1",
-			subjectAddrs: []ununifitypes.StringAccAddress{
-				ununifitypes.StringAccAddress(suite.addrs[0]),
+			testCase:             "failure due to the duplicated inentiveUnitId",
+			recipientContainerId: "test1",
+			subjectAddrs: []string{
+				suite.addrs[0].String(),
 			},
 			weights: []sdk.Dec{sdk.MustNewDecFromStr("1")},
 			success: false,
 		},
 		{
-			testCase:        "failure due to invalid incentiveUnitId",
-			incentiveUnitId: "",
-			subjectAddrs: []ununifitypes.StringAccAddress{
-				ununifitypes.StringAccAddress(suite.addrs[0]),
+			testCase:             "failure due to invalid recipientContainerId",
+			recipientContainerId: "",
+			subjectAddrs: []string{
+				suite.addrs[0].String(),
 			},
 			weights: []sdk.Dec{
 				sdk.MustNewDecFromStr("1"),
@@ -64,10 +64,10 @@ func (suite *KeeperTestSuite) TestRegister() {
 
 	for _, tc := range tests {
 		subjectInfo, err := suite.app.EcosystemincentiveKeeper.Register(suite.ctx, &types.MsgRegister{
-			Sender:          ununifitypes.StringAccAddress(suite.addrs[0]),
-			IncentiveUnitId: tc.incentiveUnitId,
-			SubjectAddrs:    tc.subjectAddrs,
-			Weights:         tc.weights,
+			Sender:               suite.addrs[0].String(),
+			RecipientContainerId: tc.recipientContainerId,
+			Addresses:            tc.subjectAddrs,
+			Weights:              tc.weights,
 		})
 		if tc.success {
 			suite.Require().NoError(err)
@@ -75,8 +75,8 @@ func (suite *KeeperTestSuite) TestRegister() {
 				suite.Require().Equal(subject.SubjectAddr, tc.subjectAddrs[i])
 				suite.Require().Equal(subject.Weight, tc.weights[i])
 
-				incentiveUnitIdsByAddr := suite.app.EcosystemincentiveKeeper.GetIncentiveUnitIdsByAddr(suite.ctx, subject.SubjectAddr.AccAddress())
-				suite.Require().Contains(incentiveUnitIdsByAddr.IncentiveUnitIds, tc.incentiveUnitId)
+				recipientContainerIdsByAddr := suite.app.EcosystemincentiveKeeper.GetRecipientContainerIdsByAddr(suite.ctx, subject.SubjectAddr.AccAddress())
+				suite.Require().Contains(recipientContainerIdsByAddr.RecipientContainerIds, tc.recipientContainerId)
 			}
 		} else {
 			suite.Require().Error(err)

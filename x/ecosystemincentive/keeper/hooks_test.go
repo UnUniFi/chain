@@ -11,16 +11,16 @@ import (
 
 func (suite *KeeperTestSuite) TestAfterNftListed() {
 	tests := []struct {
-		testCase        string
-		nftId           nftmarkettypes.NftIdentifier
-		incentiveUnitId string
-		subjectAddrs    []ununifitypes.StringAccAddress
-		weights         []sdk.Dec
-		txMemo          string
-		registerBefore  bool
-		expectPass      bool
-		expectPanic     bool
-		memoFormat      bool
+		testCase             string
+		nftId                nftmarkettypes.NftIdentifier
+		recipientContainerId string
+		subjectAddrs         []string
+		weights              []sdk.Dec
+		txMemo               string
+		registerBefore       bool
+		expectPass           bool
+		expectPanic          bool
+		memoFormat           bool
 	}{
 		{
 			testCase: "ordinal success case",
@@ -28,12 +28,12 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 				ClassId: "class1",
 				NftId:   "nft1",
 			},
-			incentiveUnitId: "incentiveUnitId1",
-			subjectAddrs: []ununifitypes.StringAccAddress{
-				ununifitypes.StringAccAddress(suite.addrs[0]),
+			recipientContainerId: "recipientContainerId1",
+			subjectAddrs: []string{
+				suite.addrs[0].String(),
 			},
 			weights:        []sdk.Dec{sdk.MustNewDecFromStr("1")},
-			txMemo:         `{"version":"v1","incentive_unit_id":"incentiveUnitId1"}`,
+			txMemo:         `{"version":"v1","incentive_unit_id":"recipientContainerId1"}`,
 			registerBefore: true,
 			expectPass:     true,
 			expectPanic:    false,
@@ -45,7 +45,7 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 				ClassId: "class2",
 				NftId:   "nft2",
 			},
-			txMemo:         `{"version":"v1","incentive_unit_id":"incentiveUnitId2"}`,
+			txMemo:         `{"version":"v1","incentive_unit_id":"recipientContainerId2"}`,
 			registerBefore: false,
 			expectPass:     false,
 			expectPanic:    false,
@@ -57,7 +57,7 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 				ClassId: "class1",
 				NftId:   "nft1",
 			},
-			txMemo:         `{"version":"v1","incentive_unit_id":"incentiveUnitId2"}`,
+			txMemo:         `{"version":"v1","incentive_unit_id":"recipientContainerId2"}`,
 			registerBefore: false,
 			expectPass:     false,
 			expectPanic:    true,
@@ -69,12 +69,12 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 				ClassId: "class3",
 				NftId:   "nft3",
 			},
-			incentiveUnitId: "incentiveUnitId3",
-			subjectAddrs: []ununifitypes.StringAccAddress{
-				ununifitypes.StringAccAddress(suite.addrs[0]),
+			recipientContainerId: "recipientContainerId3",
+			subjectAddrs: []string{
+				suite.addrs[0].String(),
 			},
 			weights:        []sdk.Dec{sdk.MustNewDecFromStr("1")},
-			txMemo:         `{"error":true,"version":"v1","incentive_unit_id":"incentiveUnitId3"}`,
+			txMemo:         `{"error":true,"version":"v1","incentive_unit_id":"recipientContainerId3"}`,
 			registerBefore: true,
 			expectPass:     false,
 			expectPanic:    false,
@@ -86,12 +86,12 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 				ClassId: "class4",
 				NftId:   "nft4",
 			},
-			incentiveUnitId: "incentiveUnitId4",
-			subjectAddrs: []ununifitypes.StringAccAddress{
-				ununifitypes.StringAccAddress(suite.addrs[0]),
+			recipientContainerId: "recipientContainerId4",
+			subjectAddrs: []string{
+				suite.addrs[0].String(),
 			},
 			weights:        []sdk.Dec{sdk.MustNewDecFromStr("1")},
-			txMemo:         `{"version":"v0","incentive_unit_id":"incentiveUnitId4"}`,
+			txMemo:         `{"version":"v0","incentive_unit_id":"recipientContainerId4"}`,
 			registerBefore: true,
 			expectPass:     false,
 			expectPanic:    false,
@@ -102,10 +102,10 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 	for _, tc := range tests {
 		if tc.registerBefore {
 			_, err := suite.app.EcosystemincentiveKeeper.Register(suite.ctx, &types.MsgRegister{
-				Sender:          tc.subjectAddrs[0],
-				IncentiveUnitId: tc.incentiveUnitId,
-				SubjectAddrs:    tc.subjectAddrs,
-				Weights:         tc.weights,
+				Sender:               tc.subjectAddrs[0],
+				RecipientContainerId: tc.recipientContainerId,
+				Addresses:            tc.subjectAddrs,
+				Weights:              tc.weights,
 			})
 			suite.Require().NoError(err)
 		}
@@ -120,13 +120,13 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 			})
 		}
 
-		incentiveUnitId, exists := suite.app.EcosystemincentiveKeeper.GetIncentiveUnitIdByNftId(suite.ctx, tc.nftId)
+		recipientContainerId, exists := suite.app.EcosystemincentiveKeeper.GetRecipientContainerIdByNftId(suite.ctx, tc.nftId)
 		if tc.expectPass {
 			suite.Require().True(exists)
-			suite.Require().Equal(tc.incentiveUnitId, incentiveUnitId)
+			suite.Require().Equal(tc.recipientContainerId, recipientContainerId)
 		} else if tc.expectPanic {
 			suite.Require().True(exists)
-			suite.Require().NotEqual(tc.incentiveUnitId, incentiveUnitId)
+			suite.Require().NotEqual(tc.recipientContainerId, recipientContainerId)
 		} else {
 			suite.Require().False(exists)
 		}
@@ -135,16 +135,16 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 
 func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 	tests := []struct {
-		testCase        string
-		nftId           nftmarkettypes.NftIdentifier
-		reward          sdk.Coin
-		incentiveUnitId string
-		subjectAddrs    []ununifitypes.StringAccAddress
-		weights         []sdk.Dec
-		recordedBefore  bool
-		expectPass      bool
-		// calculate the reward for incentiveUnit using the default rate
-		expRewardForIncentiveUnit sdk.Int
+		testCase             string
+		nftId                nftmarkettypes.NftIdentifier
+		reward               sdk.Coin
+		recipientContainerId string
+		subjectAddrs         []ununifitypes.StringAccAddress
+		weights              []sdk.Dec
+		recordedBefore       bool
+		expectPass           bool
+		// calculate the reward for recipientContainer using the default rate
+		expRewardForRecipientContainer sdk.Int
 		// calculate the reward for stakers using the default rate
 		expRewardForStakers sdk.Coin
 	}{
@@ -154,8 +154,8 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 				ClassId: "class1",
 				NftId:   "nft1",
 			},
-			reward:          sdk.Coin{"uguu", sdk.NewInt(100)},
-			incentiveUnitId: "incentiveUnitId1",
+			reward:               sdk.Coin{"uguu", sdk.NewInt(100)},
+			recipientContainerId: "recipientContainerId1",
 			subjectAddrs: []ununifitypes.StringAccAddress{
 				ununifitypes.StringAccAddress(suite.addrs[0]),
 			},
@@ -169,8 +169,8 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 				ClassId: "class2",
 				NftId:   "nft2",
 			},
-			reward:          sdk.Coin{"uguu", sdk.NewInt(0)},
-			incentiveUnitId: "incentiveUnitId1",
+			reward:               sdk.Coin{"uguu", sdk.NewInt(0)},
+			recipientContainerId: "recipientContainerId1",
 			subjectAddrs: []ununifitypes.StringAccAddress{
 				ununifitypes.StringAccAddress(suite.addrs[0]),
 			},
@@ -184,16 +184,16 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 				ClassId: "class3",
 				NftId:   "nft3",
 			},
-			reward:          sdk.Coin{"uguu", sdk.NewInt(100)},
-			incentiveUnitId: "incentiveUnitId3",
+			reward:               sdk.Coin{"uguu", sdk.NewInt(100)},
+			recipientContainerId: "recipientContainerId3",
 			subjectAddrs: []ununifitypes.StringAccAddress{
 				ununifitypes.StringAccAddress(suite.addrs[0]),
 			},
-			weights:                   []sdk.Dec{sdk.MustNewDecFromStr("1")},
-			recordedBefore:            true,
-			expectPass:                true,
-			expRewardForIncentiveUnit: sdk.MustNewDecFromStr("0.5").MulInt(sdk.NewInt(100)).TruncateInt(),
-			expRewardForStakers:       sdk.NewCoin("uguu", sdk.MustNewDecFromStr("0.5").MulInt(sdk.NewInt(100)).TruncateInt()),
+			weights:                        []sdk.Dec{sdk.MustNewDecFromStr("1")},
+			recordedBefore:                 true,
+			expectPass:                     true,
+			expRewardForRecipientContainer: sdk.MustNewDecFromStr("0.5").MulInt(sdk.NewInt(100)).TruncateInt(),
+			expRewardForStakers:            sdk.NewCoin("uguu", sdk.MustNewDecFromStr("0.5").MulInt(sdk.NewInt(100)).TruncateInt()),
 		},
 		{
 			testCase: "ordinal case",
@@ -201,30 +201,30 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 				ClassId: "class4",
 				NftId:   "nft4",
 			},
-			reward:          sdk.Coin{"uguu", sdk.NewInt(100)},
-			incentiveUnitId: "incentiveUnitId4",
+			reward:               sdk.Coin{"uguu", sdk.NewInt(100)},
+			recipientContainerId: "recipientContainerId4",
 			subjectAddrs: []ununifitypes.StringAccAddress{
 				ununifitypes.StringAccAddress(suite.addrs[0]),
 			},
-			weights:                   []sdk.Dec{sdk.MustNewDecFromStr("1")},
-			recordedBefore:            true,
-			expectPass:                true,
-			expRewardForIncentiveUnit: sdk.MustNewDecFromStr("0.5").MulInt(sdk.NewInt(100)).TruncateInt(),
-			expRewardForStakers:       sdk.NewCoin("uguu", sdk.MustNewDecFromStr("0.5").MulInt(sdk.NewInt(100)).TruncateInt()),
+			weights:                        []sdk.Dec{sdk.MustNewDecFromStr("1")},
+			recordedBefore:                 true,
+			expectPass:                     true,
+			expRewardForRecipientContainer: sdk.MustNewDecFromStr("0.5").MulInt(sdk.NewInt(100)).TruncateInt(),
+			expRewardForStakers:            sdk.NewCoin("uguu", sdk.MustNewDecFromStr("0.5").MulInt(sdk.NewInt(100)).TruncateInt()),
 		},
 	}
 
 	for _, tc := range tests {
 		suite.SetupTest()
 		_, err := suite.app.EcosystemincentiveKeeper.Register(suite.ctx, &types.MsgRegister{
-			Sender:          tc.subjectAddrs[0],
-			IncentiveUnitId: tc.incentiveUnitId,
-			SubjectAddrs:    tc.subjectAddrs,
-			Weights:         tc.weights,
+			Sender:               tc.subjectAddrs[0],
+			RecipientContainerId: tc.recipientContainerId,
+			Addresses:            tc.subjectAddrs,
+			Weights:              tc.weights,
 		})
 		suite.Require().NoError(err)
 		if tc.recordedBefore {
-			suite.app.EcosystemincentiveKeeper.RecordIncentiveUnitIdWithNftId(suite.ctx, tc.nftId, tc.incentiveUnitId)
+			suite.app.EcosystemincentiveKeeper.RecordRecipientContainerIdWithNftId(suite.ctx, tc.nftId, tc.recipientContainerId)
 		}
 
 		_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{tc.reward})
@@ -233,13 +233,13 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 		suite.app.EcosystemincentiveKeeper.Hooks().AfterNftPaymentWithCommission(suite.ctx, tc.nftId, tc.reward)
 
 		if tc.expectPass {
-			totalRewardForIncentiveUnit := sdk.ZeroInt()
+			totalRewardForRecipientContainer := sdk.ZeroInt()
 			for _, subject := range tc.subjectAddrs {
 				rewardStore, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, sdk.AccAddress(subject))
-				totalRewardForIncentiveUnit = totalRewardForIncentiveUnit.Add(rewardStore.Rewards.AmountOf(tc.reward.Denom))
+				totalRewardForRecipientContainer = totalRewardForRecipientContainer.Add(rewardStore.Rewards.AmountOf(tc.reward.Denom))
 				suite.Require().True(exists)
 			}
-			suite.Require().Equal(tc.expRewardForIncentiveUnit, totalRewardForIncentiveUnit)
+			suite.Require().Equal(tc.expRewardForRecipientContainer, totalRewardForRecipientContainer)
 
 			// check the reward distribution for stakers by checking the balance of the fee_collector module account
 			feeCollectorAcc := suite.app.AccountKeeper.GetModuleAddress(types.ModuleName)
@@ -252,20 +252,20 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 			}
 		}
 
-		_, exists := suite.app.EcosystemincentiveKeeper.GetIncentiveUnitIdByNftId(suite.ctx, tc.nftId)
+		_, exists := suite.app.EcosystemincentiveKeeper.GetRecipientContainerIdByNftId(suite.ctx, tc.nftId)
 		suite.Require().False(exists)
 	}
 }
 
 func (suite *KeeperTestSuite) TestAfterNftUnlistedWithoutPayment() {
 	tests := []struct {
-		testCase        string
-		nftId           nftmarkettypes.NftIdentifier
-		incentiveUnitId string
-		subjectAddrs    []ununifitypes.StringAccAddress
-		weights         []sdk.Dec
-		registerBefore  bool
-		expectPass      bool
+		testCase             string
+		nftId                nftmarkettypes.NftIdentifier
+		recipientContainerId string
+		subjectAddrs         []ununifitypes.StringAccAddress
+		weights              []sdk.Dec
+		registerBefore       bool
+		expectPass           bool
 	}{
 		{
 			testCase: "ordinal case",
@@ -273,7 +273,7 @@ func (suite *KeeperTestSuite) TestAfterNftUnlistedWithoutPayment() {
 				ClassId: "class1",
 				NftId:   "nft1",
 			},
-			incentiveUnitId: "incentiveUnitId1",
+			recipientContainerId: "recipientContainerId1",
 			subjectAddrs: []ununifitypes.StringAccAddress{
 				ununifitypes.StringAccAddress(suite.addrs[0]),
 			},
@@ -286,7 +286,7 @@ func (suite *KeeperTestSuite) TestAfterNftUnlistedWithoutPayment() {
 				ClassId: "class2",
 				NftId:   "nft2",
 			},
-			incentiveUnitId: "incentiveUnitId2",
+			recipientContainerId: "recipientContainerId2",
 			subjectAddrs: []ununifitypes.StringAccAddress{
 				ununifitypes.StringAccAddress(suite.addrs[0]),
 			},
@@ -297,21 +297,21 @@ func (suite *KeeperTestSuite) TestAfterNftUnlistedWithoutPayment() {
 
 	for _, tc := range tests {
 		_, err := suite.app.EcosystemincentiveKeeper.Register(suite.ctx, &types.MsgRegister{
-			Sender:          tc.subjectAddrs[0],
-			IncentiveUnitId: tc.incentiveUnitId,
-			SubjectAddrs:    tc.subjectAddrs,
-			Weights:         tc.weights,
+			Sender:               tc.subjectAddrs[0],
+			RecipientContainerId: tc.recipientContainerId,
+			Addresses:            tc.subjectAddrs,
+			Weights:              tc.weights,
 		})
 		suite.Require().NoError(err)
 		if tc.registerBefore {
-			suite.app.EcosystemincentiveKeeper.RecordIncentiveUnitIdWithNftId(suite.ctx, tc.nftId, tc.incentiveUnitId)
+			suite.app.EcosystemincentiveKeeper.RecordRecipientContainerIdWithNftId(suite.ctx, tc.nftId, tc.recipientContainerId)
 		}
 
 		suite.NotPanics(func() {
 			suite.app.EcosystemincentiveKeeper.Hooks().AfterNftUnlistedWithoutPayment(suite.ctx, tc.nftId)
 		})
 
-		_, exists := suite.app.EcosystemincentiveKeeper.GetIncentiveUnitIdByNftId(suite.ctx, tc.nftId)
+		_, exists := suite.app.EcosystemincentiveKeeper.GetRecipientContainerIdByNftId(suite.ctx, tc.nftId)
 		suite.Require().False(exists)
 	}
 }

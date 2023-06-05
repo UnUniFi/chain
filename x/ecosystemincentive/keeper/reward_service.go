@@ -96,7 +96,7 @@ func (k Keeper) WithdrawReward(ctx sdk.Context, msg *types.MsgWithdrawReward) (s
 	// the RewardStore data for the subject.
 	// Otherwise, delete the data by key
 	if reward.Rewards.Empty() {
-		k.DeleteRewardStore(ctx, sdk.MustAccAddressFromBech32(reward.SubjectAddr))
+		k.DeleteRewardStore(ctx, sdk.MustAccAddressFromBech32(reward.Address))
 	} else {
 		if err := k.SetRewardStore(ctx, reward); err != nil {
 			return sdk.Coin{}, err
@@ -135,7 +135,7 @@ func (k Keeper) SetRewardStore(ctx sdk.Context, rewardStore types.RewardStore) e
 
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRewardStore))
-	addressKeyBytes := sdk.MustAccAddressFromBech32(rewardStore.SubjectAddr).Bytes()
+	addressKeyBytes := sdk.MustAccAddressFromBech32(rewardStore.Address).Bytes()
 	prefixStore.Set(addressKeyBytes, bz)
 
 	return nil

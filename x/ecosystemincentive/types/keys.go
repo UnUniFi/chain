@@ -29,4 +29,6 @@ var (
 
 	// KeyPrefixRecipientContainerIdByAddr defines prefix key for recipientContainerIdsByAddr with address
 	KeyPrefixRecipientContainerIdsByAddr = []byte{0x04}
+
+	RecipientContainerIdPattern = `^[a-z][a-z0-9_]*$`
 )

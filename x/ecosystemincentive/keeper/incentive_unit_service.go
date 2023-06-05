@@ -16,7 +16,7 @@ func (k Keeper) Register(ctx sdk.Context, msg *types.MsgRegister) (*[]types.Weig
 	}
 
 	// check the length of the RecipientContainerId by referring MaxInentiveUnitIdLen in the Params
-	if err := types.ValidateRecipientContainerIdLen(k.GetMaxRecipientContainerIdLen(ctx), msg.RecipientContainerId); err != nil {
+	if err := types.ValidateRecipientContainerId(msg.RecipientContainerId); err != nil {
 		return nil, err
 	}
 
@@ -27,11 +27,6 @@ func (k Keeper) Register(ctx sdk.Context, msg *types.MsgRegister) (*[]types.Weig
 	}
 
 	recipientContainer := types.NewRecipientContainer(msg.RecipientContainerId, subjectInfoList)
-
-	// checks if the number of the subject info is vaid
-	if err := types.ValidateSubjectInfoNumInUnit(k.GetMaxSubjectInfoNumInUnitParam(ctx), recipientContainer); err != nil {
-		return nil, err
-	}
 
 	if err := k.SetRecipientContainer(ctx, recipientContainer); err != nil {
 		return nil, err
@@ -65,7 +60,7 @@ func (k Keeper) SetRecipientContainer(ctx sdk.Context, recipientContainer types.
 	return nil
 }
 
-func (k Keeper) SetRecipientContainerIdsByAddr(ctx sdk.Context, recipientContainerIdsByAddr types.RecipientContainerIdsByAddr) error {
+func (k Keeper) SetRecipientContainerIdsByAddr(ctx sdk.Context, recipientContainerIdsByAddr types.BelongingRecipientContainers) error {
 	bz, err := k.cdc.Marshal(&recipientContainerIdsByAddr)
 	if err != nil {
 		return err
@@ -94,16 +89,16 @@ func (k Keeper) GetRecipientContainer(ctx sdk.Context, id string) (types.Recipie
 	return recipientContainer, true
 }
 
-func (k Keeper) GetRecipientContainerIdsByAddr(ctx sdk.Context, address sdk.AccAddress) types.BelongingRecipientContainer {
+func (k Keeper) GetRecipientContainerIdsByAddr(ctx sdk.Context, address sdk.AccAddress) types.BelongingRecipientContainers {
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientContainerIdsByAddr))
 
 	bz := prefixStore.Get(address)
 	if bz == nil {
-		return types.RecipientContainerIdsByAddr{}
+		return types.BelongingRecipientContainers{}
 	}
 
-	var recipientContainerIdsByAddr types.RecipientContainerIdsByAddr
+	var recipientContainerIdsByAddr types.BelongingRecipientContainers
 	k.cdc.MustUnmarshal(bz, &recipientContainerIdsByAddr)
 	return recipientContainerIdsByAddr
 }
@@ -124,14 +119,14 @@ func (k Keeper) GetAllRecipientContainers(ctx sdk.Context) []types.RecipientCont
 	return allRecipientContainers
 }
 
-func (k Keeper) GetAllRecipientContainerIdsByAddrs(ctx sdk.Context) []types.RecipientContainerIdsByAddr {
+func (k Keeper) GetAllRecipientContainerIdsByAddrs(ctx sdk.Context) []types.BelongingRecipientContainers {
 	store := ctx.KVStore(k.storeKey)
 	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixRecipientContainerIdsByAddr))
 	defer it.Close()
 
-	allRecipientContainerIdsByAddrs := []types.RecipientContainerIdsByAddr{}
+	allRecipientContainerIdsByAddrs := []types.BelongingRecipientContainers{}
 	for ; it.Valid(); it.Next() {
-		var recipientContainerIdsByAddr types.RecipientContainerIdsByAddr
+		var recipientContainerIdsByAddr types.BelongingRecipientContainers
 		k.cdc.MustUnmarshal(it.Value(), &recipientContainerIdsByAddr)
 
 		allRecipientContainerIdsByAddrs = append(allRecipientContainerIdsByAddrs, recipientContainerIdsByAddr)

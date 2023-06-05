@@ -84,49 +84,49 @@ func (suite *KeeperTestSuite) TestWithdrawReward() {
 
 		if tc.success {
 			err := suite.app.EcosystemincentiveKeeper.SetRewardStore(suite.ctx, types.RewardStore{
-				SubjectAddr: tc.withdrawer.Bytes(),
-				Rewards:     sdk.NewCoins(tc.reward),
+				Address: tc.withdrawer.String(),
+				Rewards: sdk.NewCoins(tc.reward),
 			})
 			suite.Require().NoError(err)
 
 			withdrewReward, err := suite.app.EcosystemincentiveKeeper.WithdrawReward(suite.ctx, &types.MsgWithdrawReward{
-				Sender: tc.withdrawer.Bytes(),
+				Sender: tc.withdrawer.String(),
 				Denom:  tc.reward.Denom,
 			})
 			suite.Require().NoError(err)
 			suite.Require().Equal(withdrewReward, tc.reward)
 
-			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.Bytes())
+			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.String())
 			suite.Require().False(exists)
 		} else if !tc.rewardExist {
 			_, err := suite.app.EcosystemincentiveKeeper.WithdrawReward(suite.ctx, &types.MsgWithdrawReward{
-				Sender: tc.withdrawer.Bytes(),
+				Sender: tc.withdrawer.String(),
 				Denom:  tc.reward.Denom,
 			})
 			suite.Require().Error(err)
 			suite.Require().EqualError(err, sdkerrors.Wrap(types.ErrRewardNotExists, tc.withdrawer.String()).Error())
 
-			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.Bytes())
+			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.String())
 			suite.Require().False(exists)
 		} else if !tc.validDenom {
 			err := suite.app.EcosystemincentiveKeeper.SetRewardStore(suite.ctx, types.RewardStore{
-				SubjectAddr: tc.withdrawer.Bytes(),
-				Rewards:     sdk.NewCoins(tc.reward),
+				Address: tc.withdrawer.String(),
+				Rewards: sdk.NewCoins(tc.reward),
 			})
 			suite.Require().NoError(err)
 
 			_, err = suite.app.EcosystemincentiveKeeper.WithdrawReward(suite.ctx, &types.MsgWithdrawReward{
-				Sender: tc.withdrawer.Bytes(),
+				Sender: tc.withdrawer.String(),
 				Denom:  "invalid",
 			})
 			suite.Require().Error(err)
 			suite.Require().EqualError(err, sdkerrors.Wrap(types.ErrDenomRewardNotExists, "invalid").Error())
 
-			rewardStore, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.Bytes())
+			rewardStore, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.String())
 			suite.Require().True(exists)
 			rightRewardStore := types.RewardStore{
-				SubjectAddr: tc.withdrawer.Bytes(),
-				Rewards:     sdk.NewCoins(tc.reward),
+				Address: tc.withdrawer.String(),
+				Rewards: sdk.NewCoins(tc.reward),
 			}
 			suite.Require().Equal(rewardStore, rightRewardStore)
 		}
@@ -166,27 +166,27 @@ func (suite *KeeperTestSuite) TestWithdrawAllRewards() {
 
 		if tc.success {
 			err := suite.app.EcosystemincentiveKeeper.SetRewardStore(suite.ctx, types.RewardStore{
-				SubjectAddr: tc.withdrawer.Bytes(),
-				Rewards:     tc.rewards,
+				Address: tc.withdrawer.String(),
+				Rewards: tc.rewards,
 			})
 			suite.Require().NoError(err)
 
 			withdrewRewards, err := suite.app.EcosystemincentiveKeeper.WithdrawAllRewards(suite.ctx, &types.MsgWithdrawAllRewards{
-				Sender: tc.withdrawer.Bytes(),
+				Sender: tc.withdrawer.String(),
 			})
 			suite.Require().NoError(err)
 			suite.Require().Equal(withdrewRewards, tc.rewards)
 
-			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.Bytes())
+			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.String())
 			suite.Require().False(exists)
 		} else {
 			_, err := suite.app.EcosystemincentiveKeeper.WithdrawAllRewards(suite.ctx, &types.MsgWithdrawAllRewards{
-				Sender: tc.withdrawer.Bytes(),
+				Sender: tc.withdrawer.String(),
 			})
 			suite.Require().Error(err)
 			suite.Require().EqualError(err, sdkerrors.Wrap(types.ErrRewardNotExists, tc.withdrawer.String()).Error())
 
-			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.Bytes())
+			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.String())
 			suite.Require().False(exists)
 		}
 	}

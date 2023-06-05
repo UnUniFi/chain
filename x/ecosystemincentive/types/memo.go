@@ -5,35 +5,35 @@ import (
 	"encoding/json"
 )
 
-type XMemoInputs MemoInputs
+type XTxMemoData TxMemoData
 
-type XMemoInputsExceptions struct {
-	XMemoInputs
+type XTxMemoDataExceptions struct {
+	XTxMemoData
 	Other *string // other won't raise an error
 }
 
-func ParseMemo(memoContent []byte) (*MemoInputs, error) {
-	memoInputs := &MemoInputs{}
+func ParseMemo(memoContent []byte) (*TxMemoData, error) {
+	txMemoData := &TxMemoData{}
 
-	if err := memoInputs.UnmarshalJSON(memoContent); err != nil {
+	if err := txMemoData.UnmarshalJSON(memoContent); err != nil {
 		return nil, err
 	}
 
 	// make exception if unknown fields exists
-	return memoInputs, nil
+	return txMemoData, nil
 }
 
 // UnmarshalJSON should error if there are fields unexpected.
-func (memo *MemoInputs) UnmarshalJSON(data []byte) error {
-	var memoInputsE XMemoInputsExceptions
+func (memo *TxMemoData) UnmarshalJSON(data []byte) error {
+	var txMemoDataE XTxMemoDataExceptions
 	dec := json.NewDecoder(bytes.NewReader(data))
 	dec.DisallowUnknownFields() // Force
 
-	if err := dec.Decode(&memoInputsE); err != nil {
+	if err := dec.Decode(&txMemoDataE); err != nil {
 		return err
 	}
 
-	*memo = MemoInputs(memoInputsE.XMemoInputs)
+	*memo = TxMemoData(txMemoDataE.XTxMemoData)
 	return nil
 }
 

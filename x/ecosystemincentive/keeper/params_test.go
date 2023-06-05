@@ -16,8 +16,7 @@ func (suite *KeeperTestSuite) TestParams() {
 		{
 			name: "ordinal success case",
 			input: types.Params{
-				RewardParams:          types.DefaultParams().RewardParams,
-				MaxIncentiveUnitIdLen: types.DefaultMaxIncentiveUnitIdLen,
+				RewardParams: types.DefaultParams().RewardParams,
 			},
 			expErr: false,
 		},
@@ -35,7 +34,6 @@ func (suite *KeeperTestSuite) TestParams() {
 						},
 					},
 				},
-				MaxIncentiveUnitIdLen: types.DefaultMaxIncentiveUnitIdLen,
 			},
 			expErr: true,
 		},
@@ -53,7 +51,6 @@ func (suite *KeeperTestSuite) TestParams() {
 						},
 					},
 				},
-				MaxIncentiveUnitIdLen: types.DefaultMaxIncentiveUnitIdLen,
 			},
 			expErr: true,
 		},

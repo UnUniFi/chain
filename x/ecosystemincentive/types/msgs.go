@@ -19,15 +19,15 @@ var (
 
 func NewMsgRegister(
 	sender string,
-	incentiveUnitId string,
+	recipientContainerId string,
 	subjectAddrs []string,
 	weights []sdk.Dec,
 ) *MsgRegister {
 	return &MsgRegister{
-		Sender:          sender,
-		IncentiveUnitId: incentiveUnitId,
-		SubjectAddrs:    subjectAddrs,
-		Weights:         weights,
+		Sender:               sender,
+		RecipientContainerId: recipientContainerId,
+		Addresses:            subjectAddrs,
+		Weights:              weights,
 	}
 }
 
@@ -41,15 +41,15 @@ func (msg MsgRegister) ValidateBasic() error {
 		panic(err)
 	}
 
-	for _, addr := range msg.SubjectAddrs {
+	for _, addr := range msg.Addresses {
 		if _, err := sdk.AccAddressFromBech32(addr); err != nil {
 			panic(err)
 		}
 	}
 
 	// return err if the number of elements in subjects and weights aren't same
-	if len(msg.SubjectAddrs) != len(msg.Weights) {
-		return sdkerrors.Wrapf(ErrSubjectsWeightsNumUnmatched, "subjects element num: %d, weights element num: %d", len(msg.SubjectAddrs), len(msg.Weights))
+	if len(msg.Addresses) != len(msg.Weights) {
+		return sdkerrors.Wrapf(ErrSubjectsWeightsNumUnmatched, "subjects element num: %d, weights element num: %d", len(msg.Addresses), len(msg.Weights))
 	}
 
 	// the summed number of all weights must be 1

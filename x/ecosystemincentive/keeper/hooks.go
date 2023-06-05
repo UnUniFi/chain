@@ -46,7 +46,7 @@ func (h Hooks) AfterNftListed(ctx sdk.Context, nftIdentifier nftmarkettypes.NftI
 	// types.AvailableVersions[0] = "v1"
 	case types.AvailableVersions[0]:
 		// Store the incentive-unit-id in NftIdForFrontend KVStore with nft-id as key
-		h.k.RecordIncentiveUnitIdWithNftId(ctx, nftIdentifier, memoInputs.IncentiveUnitId)
+		h.k.RecordRecipientContainerIdWithNftId(ctx, nftIdentifier, memoInputs.RecipientContainerId)
 
 	// If the value doesn't match any cases, emit event and don't do anything
 	default:

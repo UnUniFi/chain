@@ -30,7 +30,7 @@ func (k Keeper) AllRewards(c context.Context, req *types.QueryAllRewardsRequest)
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 
-	accAddr, err := sdk.AccAddressFromBech32(req.SubjectAddr)
+	accAddr, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (k Keeper) Reward(c context.Context, req *types.QueryRewardRequest) (*types
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 
-	accAddr, err := sdk.AccAddressFromBech32(req.SubjectAddr)
+	accAddr, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
 		return &types.QueryRewardResponse{Reward: sdk.Coin{}}, err
 	}
@@ -73,7 +73,7 @@ func (k Keeper) RecipientContainer(c context.Context, req *types.QueryRecipientC
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 
-	recipientContainer, exists := k.GetRecipientContainer(ctx, req.RecipientContainerId)
+	recipientContainer, exists := k.GetRecipientContainer(ctx, req.Id)
 	if !exists {
 		return nil, types.ErrNotRegisteredRecipientContainerId
 	}
@@ -99,7 +99,7 @@ func (k Keeper) RecordedRecipientContainerId(c context.Context, req *types.Query
 	return &types.QueryRecordedRecipientContainerIdResponse{RecipientContainerId: recipientContainerid}, nil
 }
 
-func (k Keeper) RecipientContainerIdsByAddr(c context.Context, req *types.QueryBelongingRecipientContainerIdsByAddrRequest) (*types.QueryBelongingRecipientContainerIdsByAddrResponse, error) {
+func (k Keeper) BelongingRecipientContainerIdsByAddr(c context.Context, req *types.QueryBelongingRecipientContainerIdsByAddrRequest) (*types.QueryBelongingRecipientContainerIdsByAddrResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid argument")
 	}
@@ -115,5 +115,5 @@ func (k Keeper) RecipientContainerIdsByAddr(c context.Context, req *types.QueryB
 		return &types.QueryBelongingRecipientContainerIdsByAddrResponse{}, err
 	}
 
-	return &types.QueryBelongingRecipientContainerIdsByAddrResponse{RecipientContainerIdsByAddr: recipientContainerIdsByAddr}, nil
+	return &types.QueryBelongingRecipientContainerIdsByAddrResponse{RecipientContainerIds: recipientContainerIdsByAddr.RecipientContainerIds}, nil
 }
