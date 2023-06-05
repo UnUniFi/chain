@@ -2,7 +2,7 @@ syntax = "proto3";
 package nftvault.eventhook;
 
 import "gogoproto/gogo.proto";
-import "eventhook/params.proto";
+import "eventhook/eventhook.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/eventhook/types";
 
@@ -15,9 +15,4 @@ message ProposalAddHook {
   string name = 5;
   string git_url = 6;
   repeated KeyValuePair event_attributes = 7;
-}
-
-message KeyValuePair {
-  string key = 1;
-  string value = 2;
 }
