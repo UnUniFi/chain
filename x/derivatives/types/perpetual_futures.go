@@ -3,7 +3,7 @@ package types
 import (
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/gogo/protobuf/proto"
+	proto "github.com/cosmos/gogoproto/proto"
 )
 
 var _ PositionInstance = (*PerpetualFuturesPositionInstance)(nil)
@@ -22,8 +22,8 @@ func UnpackPerpetualFuturesPositionInstance(positionAny types.Any) PositionInsta
 }
 
 // Position Size is considered in denom unit
-func NewPerpetualFuturesNetPositionOfMarket(market Market, positionType PositionType, position_size_in_denom_exponent sdk.Int) PerpetualFuturesNetPositionOfMarket {
-	return PerpetualFuturesNetPositionOfMarket{
+func NewPerpetualFuturesGrossPositionOfMarket(market Market, positionType PositionType, position_size_in_denom_exponent sdk.Int) PerpetualFuturesGrossPositionOfMarket {
+	return PerpetualFuturesGrossPositionOfMarket{
 		Market:                      market,
 		PositionType:                positionType,
 		PositionSizeInDenomExponent: position_size_in_denom_exponent,

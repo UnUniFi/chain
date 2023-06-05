@@ -2,7 +2,7 @@
 # > docker build -t ununifid .
 # > docker run -it -p 26656:26656 -p 26657:26657 -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid ununifid init
 # > docker run -it -p 26656:26656 -p 26657:26657 -v ~/.ununifi:/root/.ununifi ghcr.io/ununifi/ununifid ununifid start
-FROM golang:1.18-alpine AS build-env
+FROM golang:1.19-alpine AS build-env
 
 # Set up dependencies
 ENV PACKAGES curl make git libc-dev bash gcc linux-headers eudev-dev python3
@@ -16,20 +16,24 @@ COPY . .
 RUN go version
 
 # Install minimum necessary dependencies, build Cosmos SDK, remove packages
-RUN apk add --no-cache $PACKAGES
+RUN apk add $PACKAGES
 
 # install and setup glibc
-# RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
-# RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-2.25-r0.apk
-# RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-bin-2.25-r0.apk
-# RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-i18n-2.25-r0.apk
-# RUN apk add --no-cache glibc-2.25-r0.apk glibc-bin-2.25-r0.apk glibc-i18n-2.25-r0.apk
-# ENV LD_LIBRARY_PATH /usr/glibc-compat/lib
-# RUN /usr/glibc-compat/bin/localedef -i en_US -f UTF-8 en_US.UTF-8
-RUN make install
+ADD https://github.com/CosmWasm/wasmvm/releases/download/v1.2.1/libwasmvm_muslc.aarch64.a /lib/libwasmvm_muslc.aarch64.a
+ADD https://github.com/CosmWasm/wasmvm/releases/download/v1.2.1/libwasmvm_muslc.x86_64.a /lib/libwasmvm_muslc.x86_64.a
+RUN sha256sum /lib/libwasmvm_muslc.aarch64.a | grep 86bc5fdc0f01201481c36e17cd3dfed6e9650d22e1c5c8983a5b78c231789ee0
+RUN sha256sum /lib/libwasmvm_muslc.x86_64.a | grep a00700aa19f5bfe0f46290ddf69bf51eb03a6dfcd88b905e1081af2e42dbbafc
+ARG arch=x86_64
+RUN cp /lib/libwasmvm_muslc.${arch}.a /lib/libwasmvm_muslc.a
+
+# for cosmwasm build option
+RUN BUILD_TAGS=muslc LINK_STATICALLY=true make install
+
+RUN apk add --update util-linux
+RUN whereis ununifid
 
 # Final image
-FROM alpine:edge
+FROM alpine:3.15
 
 # Install ca-certificates
 RUN apk add --update ca-certificates
@@ -38,10 +42,6 @@ WORKDIR /root
 
 # Copy over binaries from the build-env
 COPY --from=build-env /go/bin/ununifid /usr/bin/ununifid
-# COPY --from=build-env /go/pkg/mod/github.com/!cosm!wasm/wasmvm@v1.0.0-beta10/api/libwasmvm.so /usr/lib/libwasmvm.so
-COPY --from=build-env /lib/ld-musl-x86_64.so.1 /usr/lib/ld-musl-x86_64.so.1
-COPY --from=build-env /usr/lib/libgcc_s.so.1 /usr/lib/libgcc_s.so.1
-# COPY --from=build-env /usr/glibc-compat/lib/ld-linux-x86-64.so.2 /usr/lib/ld-linux-x86-64.so.2
 
 # Run ununifid by default, omit entrypoint to ease using container with ununificli
 CMD ["ununifid"]

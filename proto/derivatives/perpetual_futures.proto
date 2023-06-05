@@ -93,7 +93,7 @@ message PerpetualFuturesPositionInstance {
   ];
 }
 
-message PerpetualFuturesNetPositionOfMarket {
+message PerpetualFuturesGrossPositionOfMarket {
   Market market = 1 [
     (gogoproto.moretags) = "yaml:\"market\"",
     (gogoproto.nullable) = false

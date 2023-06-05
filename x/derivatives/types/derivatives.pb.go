@@ -6,13 +6,13 @@ package types
 import (
 	fmt "fmt"
 	github_com_UnUniFi_chain_types "github.com/UnUniFi/chain/types"
+	_ "github.com/cosmos/cosmos-proto"
 	types1 "github.com/cosmos/cosmos-sdk/codec/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types"
-	_ "github.com/gogo/protobuf/gogoproto"
-	proto "github.com/gogo/protobuf/proto"
-	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
-	_ "github.com/regen-network/cosmos-proto"
+	_ "github.com/cosmos/gogoproto/gogoproto"
+	proto "github.com/cosmos/gogoproto/proto"
+	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
 	io "io"
 	math "math"
@@ -649,7 +649,7 @@ func (m *Position) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	i--
 	dAtA[i] = 0x52
-	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.LastLeviedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.LastLeviedAt):])
+	n2, err2 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.LastLeviedAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.LastLeviedAt):])
 	if err2 != nil {
 		return 0, err2
 	}
@@ -692,7 +692,7 @@ func (m *Position) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x28
 	}
-	n4, err4 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.OpenedAt, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.OpenedAt):])
+	n4, err4 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.OpenedAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.OpenedAt):])
 	if err4 != nil {
 		return 0, err4
 	}
@@ -1143,7 +1143,7 @@ func (m *Position) Size() (n int) {
 	n += 1 + l + sovDerivatives(uint64(l))
 	l = m.Address.Size()
 	n += 1 + l + sovDerivatives(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.OpenedAt)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.OpenedAt)
 	n += 1 + l + sovDerivatives(uint64(l))
 	if m.OpenedHeight != 0 {
 		n += 1 + sovDerivatives(uint64(m.OpenedHeight))
@@ -1154,7 +1154,7 @@ func (m *Position) Size() (n int) {
 	n += 1 + l + sovDerivatives(uint64(l))
 	l = m.RemainingMargin.Size()
 	n += 1 + l + sovDerivatives(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.LastLeviedAt)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.LastLeviedAt)
 	n += 1 + l + sovDerivatives(uint64(l))
 	l = m.PositionInstance.Size()
 	n += 1 + l + sovDerivatives(uint64(l))
@@ -1457,7 +1457,7 @@ func (m *Position) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.OpenedAt, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.OpenedAt, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1610,7 +1610,7 @@ func (m *Position) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.LastLeviedAt, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.LastLeviedAt, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

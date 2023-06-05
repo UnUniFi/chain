@@ -1,6 +1,6 @@
 # DERIBATIVES
 
-The ``DERIBATIVES`` module provides deriving functions
+The `DERIBATIVES` module provides deriving functions
 
 ## Contents
 
@@ -11,26 +11,28 @@ The ``DERIBATIVES`` module provides deriving functions
 1. **[Params](#params)**
 1. **[Events](#events)**
 
+## Concepts
 
-# Concepts
-
-The model of Perpetual Futures feature of this module totally follows GMX perpetual futures model.   
+The model of Perpetual Futures feature of this module totally follows GMX perpetual futures model.  
 (ref: https://gmxio.gitbook.io/gmx/)
 
-Briefly saying, the tradings on the perpetual futures market are supported by a unique multi-asset pool that earns liquidity prodicers fees from market making, swap fees and levrage trading. Because pool assets will take the counterpart of the arbitral trade by a user, users can trade with high leverage and no slippage to the price from oracle with low fee.
+Briefly saying, the tradings on the perpetual futures market are supported by a unique multi-asset pool that earns liquidity prodicers fees from market making, swap fees and levrage trading.  
+Because pool asset will take the counter part of the arbitral trade by a user, users can trade with high leverage and no slippage to the price from oracle with low fee.
 
 ## Pool
 
 ### Liquidity Provider Token
 
-Our liquidity provider token's ticker is `DLP`.   
-In the backend, it has `udlp` denom, which is the micro unit of `DLP`.   
+Our liquidity provider token's ticker is `DLP`.  
+In the backend, it has `udlp` denom, which is the micro unit of `DLP`.
 
-DLP consists of an index of assets used for leverage trading. It can be minted using the assets which the protocol supports and burnt to redeem any index asset. The price for minting and redemption is calculated based on the formulas in the WhitePaper in section "3.1.1".   
-WhitePaper: https://ununifi.io/assets/download/UnUniFi-Whitepaper.pdf
+DLP consists of an index of assets used for leverage trading. It can be minted using the assets which the protocol supports and burnt to redeem any index asset. The price for minting and redemption is calculated based on the formulas in the WhitePaper in the section "3.1.1".  
+WhitePaper: <https://ununifi.io/assets/download/UnUniFi-Whitepaper.pdf>
 
-Fees earned on the platform are directly added to the pool.　Therefore, DLP holders can benefit from them as a reward through the increment of the DLP price. There's a dynamic change of the minting and redemption fee rate at this moment. There's the static rate which is defined in the protocol. And, the actual fee rate also considers the difference in asset proportion between the target and actual proportion.  The static base fee rate can be modified through governance voting.
-The potential range of that fee rate is below:
+Fees earned on the platform are directly added to the pool.　 Therefore, DLP holders can benefit from them as a reward through the increasement of the DLP price.
+
+There's dynamic change of the minting and redemption fee rate at this moment. There's the static rate which is defined in the protocol. And, the actual fee rate also consider the difference of asset proportion between target and actual proportion. The static base fee rate can be modified through the governace voting.
+The potential range of those fee rate are below:
 
 ```text
 mintFeeRate is proportion to max(0, (actualAmountInPool[i] - targetAmount[i]) / targetAmount[i])
@@ -41,43 +43,59 @@ One thing to be noted is that the Liquidity Pool will take the counterpart posit
 
 ## Perpetual Futures
 
-### Position
+### Position (Perpetual Future)
 
-User can open a perpetual futures position by sending `MsgOpenPosition` tx. There's no fee for opening a position.   
-The position can be covered by two types of asset as margin, which are the tokens of the trading pair. If you trade 'BTC/USDC' pair, you can deposit BTC or USDC as margin. The profit will be distributed in the same token as the margin if there's some.    
-The created position cannot be modified except for closing a whole in the current implementation.    
-And, the liquidation is triggered against each position. The margin of the position cannot be added afterward now. But, this will be supported in the near future.   
-The max leverage rate is defined in the params  of the protocol for all trading pairs equially. This can be modified through the governance voting.
+Users can open a perpetual futures position by sending `MsgOpenPosition` tx. There's no fee for opening a position.  
+The position can be covered by two types of assets as margin, which are the tokens of the trading pair. If you trade 'BTC/USDC' pair, you can deposit BTC or USDC as a margin. The profit will be distributed in the same token as the margin if there's some.  
+The created position cannot be modified except for closing a whole in the current implementation.  
+And, the liquidation is triggered against each position. The margin of the position cannot be added afterward now. But, this will be supported in the near future.  
+The max leverage rate is defined in the params of the protocol for all trading pairs equally. This can be modified through governance voting.
 
-When a position is created, the corresponding amount of token in the pool will be allocated to the position to assure the distribution of the profit for the position. (This could be considered as lending)    
-There's no fee as the default settings for borrowing at this moment. But, it can be modified through the governance voting.
+When a position is created, the corresponding amount of token in the pool will be allocated to the position to assure the distribution of the profit for the position. (This could be considered as lending)  
+There's no fee as the default settings for borrowing at this moment. But, it can be modified through governance voting.
 
 ### Liquidation
 
-A position can be liquidated if the losses and fees reduces the margin to the point where:    
-`remaining_margin / (position_size / leverage) <= MarginMaintenanceRate`
-MaintenanceMarginRate is defined as a parameter in the protocol. The default value of it is `0.5`.   
-The values are all based on `QuoteTicker` of the protocol, which the default value is `USD`.
+A position will be liquidated if the losses and fees reduce the margin to the point where:  
+`remaining_margin / (price * position_size / leverage) <= MarginMaintenanceRate`
+MaintenanceMarginRate is defined as a parameter in the protocol. The default value of it is `0.5`.  
+The values are all based on `QuoteTicker` of the protocol, in which the default value is `USD`.
 
-This is achieved through any user seding a `MsgReportLiquidation` tx. The reporter gets the fee based on the remaining margin and ReportLiquidationRewardRate by the protocol. And the remaining amount of token will be sent back the position owner.   
-There's no penalty for reporting the position that is not needed to be liquidated.
+This is achieved through any user sending a `MsgReportLiquidation` tx. If the liquidation is needed, The reporter gets a portion of the commission fee based on the remaining margin. The remaining margin is then returned to the position owner after deducting a commission fee.
 
-### Imaginary Funding Rates
+`commission_fee = remaining_margin * commission_rate`
+The default value of `commission_rate` is `0.001`.
 
-To mitigate the effect of the feature of our perpetual futures model which the liquidity provider takes the counterpart of the trader, Imaginary Funding rate exists.   
-If the net position of traders lean to one side, the imaginary funding rate work to make the net position of traders neutral. The neutral net position of traders means the neutral position of the pool an at the same time liquidity providers. In the perspective of economics, it can be expressed that this model unifies the conventional funding rate and the time cost of waiting for matchmaking to the imaginary funding rate.
+There's no penalty for reporting a position that is not needed to be liquidated.
 
-Imaginary Funding are levied at every 8 hours by a reporter who send the `MsgReportLevyPeriod`. The reporter gets the reward based on the imaginary funding and ReportLevyPeriodRewardRate.
+### Levy Period
+
+Levy Period is set to reduce the imbalance in the positions of the entire market.
+If the Long positions are biased in the entire market, a imaginary funding fee will be deducted from the margin of the Long positions and added to the margin of the Short positions. At the same time, commission fees are also subtracted.
+
+`imaginary_funding_fee = position_size * imaginary_funding_rate`
+`imaginary_funding_rate = imaginary_funding_coefficient * net_position (long - short) / total_position (long + short)`
+
+The default value of `imaginary_funding_coefficient` is `0.0005`.
+
+The calculation method for a commission fee is the same as that for the Liquidation.
+
+From the perspective of economics, it can be expressed that this model unifies the conventional funding rate and the time cost of waiting for matchmaking to the imaginary funding rate.
+
+This is achieved through any user sending a `MsgReportLevyPeriod` tx.
+If more than 8 hours have passed since the last levy period, this process occurs and the reporter gets a portion of the commission fee based on the remaining margin.
+
+There's no penalty for reporting a position that is not needed to be levied.
 
 ## Price Feed
 
-Prices for the accepting token are provided through our pricefeed module.   
-Our pricefeed module takes the price data from the restricted addresses which are defined in the protocol in advance.   
+Prices for the accepting token are provided through our pricefeed module.  
+Our pricefeed module takes the price data from the restricted addresses which are defined in the protocol in advance.  
 The token price is calculated like below:
-  The price of BTC in the pair of USDC,   
-  `price_BTC = price_BTC_USD / price_USDC_USD`   
-So, the pricefeed module has the data of BTC price based on USD and USDC price based on USD in this case.   
-Price is calculated the meadian price of major exchanges for each token. Price will ideally be updated at every block. USDC or other stablecoins are not hard-coded in the protocol.
+The price of BTC in the pair of USDC,  
+ `price_BTC = price_BTC_USD / price_USDC_USD`  
+So, the pricefeed module has the data of BTC price based on USD and USDC price based on USD in this case.  
+Price is calculated as the median price of major exchanges for each token. Price will ideally be updated at every block. USDC or other stablecoins are not hard-coded in the protocol.
 
 Price data is treated in this form:
 
@@ -88,21 +106,20 @@ type CurrentPrice struct {
 }
 ```
 
+## State
 
-# State
-
-## GenesisState
+### GenesisState
 
 ```protobuf
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
   repeated Position positions = 2 [(gogoproto.nullable) = false];
   PoolMarketCap pool_market_cap = 3 [(gogoproto.nullable) = false];
-  repeated PerpetualFuturesNetPositionOfMarket perpetual_futures_net_position_of_market = 4 [(gogoproto.nullable) = false];
+  repeated PerpetualFuturesGrossPositionOfMarket perpetual_futures_gross_position_of_market = 4 [(gogoproto.nullable) = false];
 }
 ```
 
-`GenesisState` is the data structure of the genesis state of the derivatives module. It contains the following fields: `params`, `positions`, `pool_market_cap` and `perpetual_futures_net_position_of_market`.
+`GenesisState` is the data structure of the genesis state of the derivatives module. It contains the following fields: `params`, `positions`, `pool_market_cap` and `perpetual_futures_gross_position_of_market`.
 
 These fields are made to be able to start the network from aribitrary genesis state.
 
@@ -208,9 +225,9 @@ message PoolMarketCap {
 - `total` is the total value of the all pool assets combined.
 - `breakdown` is the list of the `Breakdown` which contains the information regarding the specific pool asset.
 
-## PerpetualFuturesNetPositionOfMarket
+## PerpetualFuturesGrossPositionOfMarket
 
-`PerpetualFuturesNetPositionOfMarket` is the data which contains the inclusive information regarding x/derivatives's PerpetualFutures market.
+`PerpetualFuturesGrossPositionOfMarket` is the data which contains the inclusive information regarding x/derivatives's PerpetualFutures market.
 
 ```protobuf
 message PerpetualFuturesPositionInstance {
@@ -278,9 +295,9 @@ func TotalReserveValueInMetrics(reserves []types.Reserve, metrics string) (sdk.D
 func (m Reserve) ModifyReserveAmount(amount sdk.Int) (Reserve, error)
 ```
 
-# Keepers
+## Keepers
 
-## DerivativesKeeper
+### DerivativesKeeper
 
 The important functions of the `DerivativesKeeper` are described below.
 
@@ -293,8 +310,8 @@ type Keeper interface {
   GetLPTokenPrice(ctx sdk.Context) sdk.Dec
   GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemDenom string) (sdk.Coin, sdk.Coin, error)
   GetPairUsdPriceFromMarket(ctx sdk.Context, market types.Market) (sdk.Dec, sdk.Dec, error)
-  GetPerpetualFuturesNetPositionOfMarket(ctx sdk.Context, market types.Market, positionType types.PositionType) types.PerpetualFuturesNetPositionOfMarket
-  GetPositionSizeOfNetPositionOfMarket(ctx sdk.Context, market types.Market) sdk.Dec
+  GetPerpetualFuturesGrossPositionOfMarket(ctx sdk.Context, market types.Market, positionType types.PositionType) types.PerpetualFuturesGrossPositionOfMarket
+  GetPositionSizeOfGrossPositionOfMarket(ctx sdk.Context, market types.Market) sdk.Dec
   GetAssetBalanceInPoolByDenom(ctx sdk.Context, denom string) sdk.Coin
   GetAssetTargetAmount(ctx sdk.Context, denom string) (sdk.Coin, error)
   GetPoolMarketCapSnapshot(ctx sdk.Context, height int64) types.PoolMarketCap
@@ -308,58 +325,58 @@ type Keeper interface {
 }
 ```
 
+## Messages_And_Queries
 
+### Messages
 
-# Messages_And_Queries
-
-## Messages
-
-### MintLiquidityProviderToken
+#### MintLiquidityProviderToken
 
 [MintLiquidityProviderToken](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/tx.proto#L22-L32)
 
-Mint liquidity provider token `DLP` by providing the acceptable asset into the pool.    
-The token's price is determined by the worth of all tokens within the pool and factoring in the profits and losses of all currently opened positions.    
-Hence, the `DLP` amount of being minted is determined at the time of minting.   
+Mint liquidity provider token `DLP` by providing the acceptable asset into the pool.  
+The token's price is determined by the worth of all tokens within the pool and factoring in the profits and losses of all currently opened positions.  
+Hence, the `DLP` amount of being minted is determined at the time of minting.  
 Fee is charged based on the defined static param.
 
-### BurnLiquidityProviderToken
+#### BurnLiquidityProviderToken
 
 [BurnLiquidityProviderToken](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/tx.proto#L36-L50)
 
-Burn liquidity provider token `DLP` to the arbitrary acceptable token.    
+Burn liquidity provider token `DLP` to the arbitrary acceptable token.  
 Fee is charged based on the defined static param.
 
-### OpenPosition
+#### OpenPosition
 
 [OpenPosition](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/tx.proto#L54-L72)
 
-Open a perpetual futures position.    
-User defines the trading pair, long/short, position size and levarage rate.   
+Open a perpetual futures position.  
+User defines the trading pair, long/short, position size and levarage rate.  
 The maximum position size is limited by the amount of the corresponding token in the pool. User cannot take a position that is larger than the pool size.
 
-### ClosePosition
+#### ClosePosition
 
 [ClosePosition](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/tx.proto#L76-L85)
 
-Close a whole position by defining a unique position id.   
-Only the owner of the position can close it. If the position has profit, the profit will be distributed in the same token of the position margin. The fee is taken at this time. The fee rate is the defined static number in the params.
+Close a whole position by defining a unique position id.  
+Only the owner of the position can close it. If the position has profit, the profit will be distributed in the same token of the position margin.
 
-### ReportLiquidation
+#### ReportLiquidation
 
 [ReportLiquidation](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/tx.proto#L89-L103)
 
-This Msg reports a position that needs to be liquidated.   
-The report gets the reward based on the fee rate of the liquidation report reward rate in the params.   
-This architecture make the chain avoidable to be aware of liquidation logic in EndBlock handler to enhance the scalability.
+Report a position for which the margin maintenance ratio is below a certain level and need to be liquidated.
+If a liquidation is made, the reporter gets a portion of the commission fee as a reward.
+This architecture makes the chain avoidable to be aware of liquidation logic in the EndBlock handler to enhance the scalability.
 
-### ReportLevyPeriod
+#### ReportLevyPeriod
 
 [ReportLevyPeriod](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/tx.proto#L107-L121)
 
-Report a position that needs to be levied for [imaginary funding rate](todo). The reporter gets the reward based on the fee rate of the levy period report reward rate in the params.
+Report a position that have been in place for more than 8 hours since the last levy for correction of position bias.
+Adds or subtracts the margin of the reported position depending on the overall position bias. In addition, the commission fee is subtracted from the margin. The commission fee rate is the defined static number in the params.
+The reporter gets a portion of the commission fee as a reward.
 
-## Queries
+### Queries
 
 The derivatives module primarily provides the following queries:
 
@@ -375,11 +392,9 @@ The derivatives module primarily provides the following queries:
 - [AddressPositions](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L267-L280)
 - [DLPTokenRates](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L283-L292)
 - [EstimateDLPTokenAmount](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L294-L312)
-- [EstimateRedeemAmount](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L314-L332)
+- [EstimateRedeemTokenAmount](https://github.com/UnUniFi/chain/blob/caf28770588ef1370f5ca8d58e9b17e2b131064b/proto/derivatives/query.proto#L314-L332)
 
-
-
-# Params
+## Parameters
 
 `Params` is included in `GenesisState`. It has below three properties which will be explaned in each section.
 
@@ -400,7 +415,7 @@ message Params {
 }
 ```
 
-## PoolParams
+### PoolParams
 
 ```proto
 message PoolParams {
@@ -450,17 +465,20 @@ message PoolParams {
 ```
 
 - `QuoteTicker` defines the ticker of the currency for the market cap to be calculated. The default value is `usd`.
-- `BaseLptMintFee` defines fee ratio in parcentage for the minting DLP token by depositing some token.   
-The default value is `0.001`.
-- `BaseLptRedeemFee` defines fee ratio in parcentage for the redeeming DLP token by burning some token.   
-The default value is `0.001`.
+- `BaseLptMintFee` defines fee ratio in parcentage for the minting DLP token by depositing some token.  
+  The default value is `0.001`.
+- `BaseLptRedeemFee` defines fee ratio in parcentage for the redeeming DLP token by burning some token.  
+  The default value is `0.001`.
 - `BorrowingFeeRatePerHour` defines fee ratio for the borrowing token from the pool to the traders.
-- `ReportLiquidationRewardRate` defines reward ratio for the reporting the liquidation of the position for a reporter.
-- `ReportLevyPeriodRewardRate` defines reward ratio for the reporting the levy period for a reporter.
-- `AcceptedAssets` defines the tokens which can be deposited into a pool to get DLP.   
+  The default value is `0.000001`.
+- `ReportLiquidationRewardRate` defines reward ratio for the reporting the liquidation of the position for a reporter. The reward is the commission fee multiplied by this rate.
+  The default value is `0.3`.
+- `ReportLevyPeriodRewardRate` defines reward ratio for the reporting the levy period for a reporter. The reward is the commission fee multiplied by this rate.
+  The default value is `0.3`.
+- `AcceptedAssets` defines the tokens which can be deposited into a pool to get DLP.  
   The tokens in `AcceptedAssets` have to have `DenomMetadata` in bank module in this current implementation (could be changed).
 
-## PerpetualFutures
+### PerpetualFuturesParams
 
 ```proto
 message PerpetualFuturesParams {
@@ -490,12 +508,11 @@ message PerpetualFuturesParams {
 - `ImaginaryFundingRateProportionalCoefficient` is the fee ratio for the imaginary funding. The default value is `0.0005`.
 - `Markets` defines the available trading pair on the perpetual futures market.
 
-## PerpetualOptioins
+### PerpetualOptionsParams
 
 nothing is defined yet.
 
-
-# Events
+## Events
 
 - [EventPriceIsNotFeeded](https://github.com/UnUniFi/chain/blob/0dc4f717a4ef3e4b32731069d1dba503babe5998/proto/derivatives/derivatives.proto#L175-L179)
 - [EventPerpetualFuturesPositionOpened](https://github.com/UnUniFi/chain/blob/0dc4f717a4ef3e4b32731069d1dba503babe5998/proto/derivatives/perpetual_futures.proto#L105-L108)
@@ -503,6 +520,6 @@ nothing is defined yet.
 - [EventPerpetualFuturesPositionLiquidated](https://github.com/UnUniFi/chain/blob/0dc4f717a4ef3e4b32731069d1dba503babe5998/proto/derivatives/perpetual_futures.proto#L117-L122)
 - [EventPerpetualFuturesPositionLevied](https://github.com/UnUniFi/chain/blob/0dc4f717a4ef3e4b32731069d1dba503babe5998/proto/derivatives/perpetual_futures.proto#L124-L129)
 
-## EventPriceIsNotFeeded
+### EventPriceIsNotFed
 
-This event is emitted when at least one necessary price is not feeded in the pricefeed module to be referenced in the derivatives module.
+This event is emitted when at least one necessary price is not fed in the pricefeed module to be referenced in the derivatives module.

@@ -1,18 +1,75 @@
 package keeper
 
 import (
+	"fmt"
+
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
+	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
+
+func (k Keeper) RewardDistributionOfNftmarket(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, fee sdk.Coin) error {
+	totalReward := sdk.ZeroInt()
+	// First, get incentiveUnitId by nftId from IncentiveUnitIdByNftId KVStore
+	// If the incentiveUnitId doesn't exist, return nil and distribute the reward for the frontend
+	// to the treasury.
+	incentiveUnitId, exists := k.GetIncentiveUnitIdByNftId(ctx, nftId)
+	if !exists {
+		// emit event to inform the nftId is not associated with incentiveUnitId and return
+		_ = ctx.EventManager().EmitTypedEvent(&types.EventNotRecordedNftId{
+			ClassId: nftId.ClassId,
+			NftId:   nftId.NftId,
+		})
+
+		// TODO: impl the logic to distribute the reward for the frontend to the treasury
+	} else {
+		nftmarketFrontendRewardRate := k.GetNftmarketFrontendRewardRate(ctx)
+		// if the reward rate was not found or set as zero, just return
+		if nftmarketFrontendRewardRate == sdk.ZeroDec() {
+			err := fmt.Errorf(sdkerrors.Wrap(types.ErrRewardRateNotFound, "nftmarket frontend").Error())
+			return err
+		}
+		rewardForIncentiveUnit := nftmarketFrontendRewardRate.MulInt(fee.Amount).TruncateInt()
+		totalReward = totalReward.Add(rewardForIncentiveUnit)
+
+		// Distribute the reward to the incentive unit
+		if err := k.AccumulateRewardForFrontend(ctx, incentiveUnitId, sdk.NewCoin(fee.Denom, rewardForIncentiveUnit)); err != nil {
+			return err
+		}
+	}
+
+	stakersRewardRate := k.GetStakersRewardRate(ctx)
+	// if the reward rate was not found or set as zero, just return
+	if stakersRewardRate == sdk.ZeroDec() {
+		err := fmt.Errorf(sdkerrors.Wrap(types.ErrRewardRateNotFound, "stakers").Error())
+		return err
+	}
+
+	rewardForStakers := stakersRewardRate.MulInt(fee.Amount).TruncateInt()
+	totalReward = totalReward.Add(rewardForStakers)
+
+	// Emit panic if the reward for incentive unit exceeds the fee amount
+	if totalReward.GT(fee.Amount) {
+		panic(types.ErrRewardExceedsFee)
+	}
+
+	// Distribute the reward to the stakers
+	if err := k.AllocateTokensToStakers(ctx, sdk.NewCoin(fee.Denom, rewardForStakers)); err != nil {
+		return err
+	}
+
+	return nil
+}
 
 // WithdrawReward is called to execute the actuall operation for MsgWithdrawReward
 func (k Keeper) WithdrawReward(ctx sdk.Context, msg *types.MsgWithdrawReward) (sdk.Coin, error) {
-	reward, exists := k.GetRewardStore(ctx, msg.Sender.AccAddress())
+	senderAccAddr := sdk.MustAccAddressFromBech32(msg.Sender)
+	reward, exists := k.GetRewardStore(ctx, senderAccAddr)
 	if !(exists) {
-		return sdk.Coin{}, sdkerrors.Wrap(types.ErrRewardNotExists, msg.Sender.AccAddress().String())
+		return sdk.Coin{}, sdkerrors.Wrap(types.ErrRewardNotExists, msg.Sender)
 	}
 
 	rewardAmount := reward.Rewards.AmountOf(msg.Denom)
@@ -25,7 +82,7 @@ func (k Keeper) WithdrawReward(ctx sdk.Context, msg *types.MsgWithdrawReward) (s
 	// send coin from the specific module account which accumulate all fees on UnUniFi(?)
 	rewardCoin := sdk.NewCoin(msg.Denom, rewardAmount)
 	if err := k.bankKeeper.SendCoinsFromModuleToAccount(
-		ctx, types.ModuleName, msg.Sender.AccAddress(),
+		ctx, types.ModuleName, senderAccAddr,
 		sdk.NewCoins(rewardCoin)); err != nil {
 		return sdk.Coin{}, err
 	}
@@ -39,7 +96,7 @@ func (k Keeper) WithdrawReward(ctx sdk.Context, msg *types.MsgWithdrawReward) (s
 	// the RewardStore data for the subject.
 	// Otherwise, delete the data by key
 	if reward.Rewards.Empty() {
-		k.DeleteRewardStore(ctx, reward.SubjectAddr.AccAddress())
+		k.DeleteRewardStore(ctx, sdk.MustAccAddressFromBech32(reward.SubjectAddr))
 	} else {
 		if err := k.SetRewardStore(ctx, reward); err != nil {
 			return sdk.Coin{}, err
@@ -52,20 +109,21 @@ func (k Keeper) WithdrawReward(ctx sdk.Context, msg *types.MsgWithdrawReward) (s
 // WithdrawAllRewards is called to execute the actuall operation for MsgWithdrawAllRewards
 // After sending the all accumulated rewards, delete types.Reward data from KVStore for the subject
 func (k Keeper) WithdrawAllRewards(ctx sdk.Context, msg *types.MsgWithdrawAllRewards) (sdk.Coins, error) {
-	reward, exists := k.GetRewardStore(ctx, msg.Sender.AccAddress())
+	senderAccAddr := sdk.MustAccAddressFromBech32(msg.Sender)
+	reward, exists := k.GetRewardStore(ctx, senderAccAddr)
 	if !(exists) {
-		return sdk.Coins{}, sdkerrors.Wrap(types.ErrRewardNotExists, msg.Sender.AccAddress().String())
+		return sdk.Coins{}, sdkerrors.Wrap(types.ErrRewardNotExists, msg.Sender)
 	}
 
 	// TODO: decide how to define module accout to send token
 	// send coin from the specific module account which accumulate all fees on UnUniFi(?)
 	if err := k.bankKeeper.SendCoinsFromModuleToAccount(
-		ctx, types.ModuleName, msg.Sender.AccAddress(), reward.Rewards); err != nil {
+		ctx, types.ModuleName, senderAccAddr, reward.Rewards); err != nil {
 		return sdk.Coins{}, err
 	}
 
 	// delete types.Reward data from KVStore since it became none
-	k.DeleteRewardStore(ctx, msg.Sender.AccAddress())
+	k.DeleteRewardStore(ctx, senderAccAddr)
 	return reward.Rewards, nil
 }
 
@@ -77,7 +135,8 @@ func (k Keeper) SetRewardStore(ctx sdk.Context, rewardStore types.RewardStore) e
 
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRewardStore))
-	prefixStore.Set(rewardStore.SubjectAddr.AccAddress().Bytes(), bz)
+	addressKeyBytes := sdk.MustAccAddressFromBech32(rewardStore.SubjectAddr).Bytes()
+	prefixStore.Set(addressKeyBytes, bz)
 
 	return nil
 }

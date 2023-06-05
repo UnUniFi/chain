@@ -12,6 +12,6 @@ message MemoInputs {
   ];
   string incentive_unit_id = 2 [
     (gogoproto.moretags) = "yaml:\"incentive_unit_id\"",
-    (gogoproto.jsontag) = "incentive-unit-id"
+    (gogoproto.jsontag) = "incentive_unit_id"
   ];
 }

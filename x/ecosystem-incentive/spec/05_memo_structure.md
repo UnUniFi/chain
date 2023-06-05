@@ -7,7 +7,7 @@ The v1's formal data archtecture is:
 ```json
 {
   "version": "v1",
-  "incentive-unit-id": "incentive_unit-1"
+  "incentive_unit_id": "incentive_unit-1"
 }
 ```
 

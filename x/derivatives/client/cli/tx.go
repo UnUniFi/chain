@@ -195,20 +195,26 @@ $ %s tx %s open-position perpetual-futures --from myKeyName --chain-id ununifi-x
 				Leverage:     uint32(leverage),
 			}
 
-			positionInstBz, err := positionInstVal.Marshal()
+			// positionInstBz, err := positionInstVal.Marshal()
+			// if err != nil {
+			// 	return err
+			// }
+			// positionInstI, err :=
+			piAny, err := codecType.NewAnyWithValue(&positionInstVal)
 			if err != nil {
 				return err
 			}
-			positionInstance := codecType.Any{
-				TypeUrl: "/ununifi.derivatives.PerpetualFuturesPositionInstance",
-				Value:   positionInstBz,
-			}
+
+			// positionInstance := codecType.Any{
+			// 	TypeUrl: "/ununifi.derivatives.PerpetualFuturesPositionInstance",
+			// 	Value:   positionInstBz,
+			// }
 
 			market := types.Market{
 				BaseDenom:  baseDenom,
 				QuoteDenom: quoteDenom,
 			}
-			msg := types.NewMsgOpenPosition(sender, margin, market, positionInstance)
+			msg := types.NewMsgOpenPosition(sender, margin, market, *piAny)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -241,8 +247,8 @@ $ %s tx %s open-position perpetual-futures --from myKeyName --chain-id ununifi-x
 
 func CmdClosePosition() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "close-position",
-		Short: "report liquidation needed position",
+		Use:   "close-position [position-id]",
+		Short: fmt.Sprintf("%s close position subcommands", types.ModuleName),
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`close position.
 Example:

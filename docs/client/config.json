@@ -7,42 +7,18 @@
   },
   "apis": [
     {
-      "url": "./tmp-swagger-gen/auction/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "AuctionParams"
-        }
-      }
-    },
-    {
-      "url": "./tmp-swagger-gen/cdp/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "CdpParams"
-        }
-      }
-    },
-    {
-      "url": "./tmp-swagger-gen/incentive/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "IncentiveParams"
-        }
-      }
-    },
-    {
-      "url": "./tmp-swagger-gen/ununifidist/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "UnunifidistParams"
-        }
-      }
-    },
-    {
       "url": "./tmp-swagger-gen/pricefeed/query.swagger.json",
       "operationIds": {
         "rename": {
           "Params": "PricefeedParams"
+        }
+      }
+    },
+    {
+      "url": "./tmp-swagger-gen/yield-aggregator/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "YieldAggregatorParams"
         }
       }
     },

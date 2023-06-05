@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
+	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
 type Hooks struct {
@@ -61,9 +61,11 @@ func (h Hooks) AfterNftListed(ctx sdk.Context, nftIdentifier nftmarkettypes.NftI
 func (h Hooks) AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier nftmarkettypes.NftIdentifier, fee sdk.Coin) {
 	// if there's no fee, return
 	if !fee.IsZero() {
-		// call AccumulateRewardForFrontend method to update reward information
-		// for the subjects defined by incentiveUnitId associated with nftIdentifier
-		h.k.AccumulateRewardForFrontend(ctx, nftIdentifier, fee)
+		// call RewardDistributionOfNftmarket method to update reward information
+		// for all the subjects of the nftmarke reward
+		if err := h.k.RewardDistributionOfNftmarket(ctx, nftIdentifier, fee); err != nil {
+			panic(err)
+		}
 	}
 
 	// delete the recorded nft-id with incetive-unit-id
