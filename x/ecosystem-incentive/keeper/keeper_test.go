@@ -45,7 +45,6 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.ctx = app.BaseApp.NewContext(isCheckTx, tmproto.Header{})
 	suite.app = app
 	suite.addrs = simapp.AddTestAddrsIncremental(app, suite.ctx, 3, sdk.NewInt(30000000))
-
 }
 
 func TestKeeperSuite(t *testing.T) {

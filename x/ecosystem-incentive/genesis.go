@@ -3,7 +3,6 @@ package ecosystemincentive
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	ununifitypes "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/ecosystem-incentive/keeper"
 	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
 )
@@ -12,7 +11,7 @@ import (
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
 	k.SetParams(ctx, genState.Params)
 	for _, incentiveUnit := range genState.IncentiveUnits {
-		var subjectAddrs []ununifitypes.StringAccAddress
+		var subjectAddrs []string
 		var weights []sdk.Dec
 		for i := 0; i < len(incentiveUnit.SubjectInfoLists); i++ {
 			subjectAddrs = append(subjectAddrs, incentiveUnit.SubjectInfoLists[i].SubjectAddr)

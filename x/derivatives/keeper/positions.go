@@ -164,7 +164,7 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 	case *types.PerpetualOptionsPositionInstance:
 		position, err = k.OpenPerpetualOptionsPosition(ctx, newPositionId, msg.Sender, msg.Margin, msg.Market, *positionInstance)
 	default:
-		panic("")
+		err = errors.New("unknown position instance")
 	}
 
 	if err != nil {
@@ -174,7 +174,7 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 	k.SetPosition(ctx, *position)
 	k.IncreaseLastPositionId(ctx)
 
-	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, msg.Sender.AccAddress(), types.ModuleName, sdk.NewCoins(msg.Margin)); err != nil {
+	if err := k.SendMarginToMarginManager(ctx, msg.Sender.AccAddress(), sdk.NewCoins(msg.Margin)); err != nil {
 		return err
 	}
 
