@@ -275,6 +275,7 @@ var (
 		// nftmarkettypes.ModuleName:               nil,
 		// derivativestypes.ModuleName:             {authtypes.Minter, authtypes.Burner},
 		// derivativestypes.DerivativeFeeCollector: nil,
+		// derivativestypes.MarginManager:          nil,
 		// nftmarkettypes.NftTradingFee: nil,
 	}
 
