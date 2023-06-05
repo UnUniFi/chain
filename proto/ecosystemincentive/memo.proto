@@ -1,0 +1,17 @@
+syntax = "proto3";
+package ununifi.ecosystemincentive;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/ecosystemincentive/types";
+
+message MemoInputs {
+  string version = 1 [
+    (gogoproto.moretags) = "yaml:\"version\"",
+    (gogoproto.jsontag) = "version"
+  ];
+  string incentive_unit_id = 2 [
+    (gogoproto.moretags) = "yaml:\"incentive_unit_id\"",
+    (gogoproto.jsontag) = "incentive_unit_id"
+  ];
+}

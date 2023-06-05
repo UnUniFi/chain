@@ -10,7 +10,7 @@ package keeper_test
 
 // 	ununifitypes "github.com/UnUniFi/chain/types"
 // 	"github.com/UnUniFi/chain/deprecated/nftmarketv1/types"
-// 	ecoincentivetypes "github.com/UnUniFi/chain/x/ecosystem-incentive/types"
+// 	ecoincentivetypes "github.com/UnUniFi/chain/x/ecosystemincentive/types"
 // )
 
 // // test basic functions of nft listing
