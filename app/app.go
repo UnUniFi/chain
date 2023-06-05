@@ -141,8 +141,8 @@ import (
 	// "github.com/UnUniFi/chain/x/derivatives"
 	// derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
 	// derivativestypes "github.com/UnUniFi/chain/x/derivatives/types"
-	// ecosystemincentive "github.com/UnUniFi/chain/x/ecosystem-incentive"
-	// ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystem-incentive/types"
+	// ecosystemincentive "github.com/UnUniFi/chain/x/ecosystemincentive"
+	// ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystemincentive/types"
 	// "github.com/UnUniFi/chain/x/nftbackedloan"
 	// nftmarketkeeper "github.com/UnUniFi/chain/x/nftbackedloan/keeper"
 	// nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
@@ -794,7 +794,7 @@ func NewApp(
 	// 	appCodec,
 	// 	keys[ecosystemincentivetypes.StoreKey],
 	// 	app.GetSubspace(ecosystemincentivetypes.ModuleName),
-  // 	app.AccountKeeper,
+	// 	app.AccountKeeper,
 	// 	app.BankKeeper,
 	// 	// same as the feeCollectorName in the distribution module
 	// 	authtypes.FeeCollectorName,
