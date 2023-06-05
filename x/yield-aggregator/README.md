@@ -43,7 +43,7 @@ The following endpoints must be exposed in the strategy contract.
 
 #### Message
 
-```rs
+```rust
     pub enum ExecuteMsg {
         Stake(StakeMsg),
         Unstake(UnstakeMsg),
@@ -65,7 +65,7 @@ The following endpoints must be exposed in the strategy contract.
 
 #### Query
 
-```rs
+```rust
     pub enum QueryMsg {
         Bonded { addr: String },
         Unbonding { addr: String },
@@ -81,7 +81,7 @@ The following endpoints must be exposed in the strategy contract.
 - Fee
   It returns `FeeInfo` object that has configuration of fees.
 
-  ```rs
+  ```rust
   pub struct FeeInfo {
     pub deposit_fee_rate: Decimal,
     pub withdraw_fee_rate: Decimal,

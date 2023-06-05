@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	"github.com/UnUniFi/chain/x/deprecated/yieldaggregatorv1/types"
+	"github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/types"
 )
 
 func CmdQueryParams() *cobra.Command {

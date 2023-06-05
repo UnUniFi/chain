@@ -13,4 +13,5 @@ message ProposalAddStrategy {
   string denom = 3;
   string contract_address = 4;
   string name = 5;
+  string git_url = 6;
 }

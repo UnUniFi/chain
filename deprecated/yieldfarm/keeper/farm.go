@@ -5,7 +5,7 @@ import (
 
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
-	"github.com/UnUniFi/chain/x/yieldfarm/types"
+	"github.com/UnUniFi/chain/deprecated/yieldfarm/types"
 )
 
 func (k Keeper) SetFarmerInfo(ctx sdk.Context, obj types.FarmerInfo) {

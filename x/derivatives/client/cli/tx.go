@@ -241,8 +241,8 @@ $ %s tx %s open-position perpetual-futures --from myKeyName --chain-id ununifi-x
 
 func CmdClosePosition() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "close-position",
-		Short: "report liquidation needed position",
+		Use:   "close-position [position-id]",
+		Short: fmt.Sprintf("%s close position subcommands", types.ModuleName),
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`close position.
 Example:

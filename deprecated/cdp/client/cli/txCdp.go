@@ -12,7 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
 
-	"github.com/UnUniFi/chain/x/deprecated/cdp/types"
+	"github.com/UnUniFi/chain/deprecated/cdp/types"
 )
 
 func CmdCreateCdp() *cobra.Command {

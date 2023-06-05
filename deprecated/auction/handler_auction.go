@@ -3,8 +3,8 @@ package auction
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/x/deprecated/auction/keeper"
-	"github.com/UnUniFi/chain/x/deprecated/auction/types"
+	"github.com/UnUniFi/chain/deprecated/auction/keeper"
+	"github.com/UnUniFi/chain/deprecated/auction/types"
 )
 
 func handleMsgPlaceBid(ctx sdk.Context, k keeper.Keeper, msg types.MsgPlaceBid) (*sdk.Result, error) {

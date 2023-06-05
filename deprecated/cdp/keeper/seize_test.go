@@ -14,9 +14,9 @@ package keeper_test
 // 	tmtime "github.com/cometbft/cometbft/types/time"
 
 // 	"github.com/UnUniFi/chain/app"
-// 	auctiontypes "github.com/UnUniFi/chain/x/deprecated/auction/types"
-// 	"github.com/UnUniFi/chain/x/deprecated/cdp/keeper"
-// 	cdptypes "github.com/UnUniFi/chain/x/deprecated/cdp/types"
+// 	auctiontypes "github.com/UnUniFi/chain/deprecated/auction/types"
+// 	"github.com/UnUniFi/chain/deprecated/cdp/keeper"
+// 	cdptypes "github.com/UnUniFi/chain/deprecated/cdp/types"
 // )
 
 // type SeizeTestSuite struct {

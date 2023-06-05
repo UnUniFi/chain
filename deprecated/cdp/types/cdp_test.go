@@ -13,8 +13,8 @@ import (
 	"github.com/cometbft/cometbft/crypto/secp256k1"
 	tmtime "github.com/cometbft/cometbft/types/time"
 
+	cdptypes "github.com/UnUniFi/chain/deprecated/cdp/types"
 	ununifitypes "github.com/UnUniFi/chain/types"
-	cdptypes "github.com/UnUniFi/chain/x/deprecated/cdp/types"
 )
 
 type CdpValidationSuite struct {
