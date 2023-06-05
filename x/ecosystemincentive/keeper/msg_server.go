@@ -31,8 +31,8 @@ func (k msgServer) Register(c context.Context, msg *types.MsgRegister) (*types.M
 	}
 
 	if err := ctx.EventManager().EmitTypedEvent(&types.EventRegister{
-		IncentiveUnitId:  msg.IncentiveUnitId,
-		SubjectInfoLists: *subjectInfoList,
+		RecipientContainerId: msg.RecipientContainerId,
+		WeightedAddresses:    *subjectInfoList,
 	}); err != nil {
 		return nil, err
 	}

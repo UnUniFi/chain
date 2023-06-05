@@ -6,19 +6,19 @@ import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/ecosystemincentive/types";
 
-message IncentiveUnit {
+message RecipientContainer {
   string id = 1 [
     (gogoproto.moretags) = "yaml:\"id\""
   ];
-  repeated SubjectInfo subject_info_lists = 2 [
-    (gogoproto.moretags) = "yaml:\"subject_info_lists\"",
+  repeated WeightedAddress weighted_addresses = 2 [
+    (gogoproto.moretags) = "yaml:\"weighted_addresses\"",
     (gogoproto.nullable) = false
   ];
 }
 
-message SubjectInfo {
-  string subject_addr = 1 [
-    (gogoproto.moretags) = "yaml:\"subject_addr\""
+message WeightedAddress {
+  string address = 1 [
+    (gogoproto.moretags) = "yaml:\"address\""
   ];
   string weight = 2 [
     (gogoproto.moretags) = "yaml:\"weight\"",
@@ -28,8 +28,8 @@ message SubjectInfo {
 }
 
 message RewardStore {
-  string subject_addr = 1 [
-    (gogoproto.moretags) = "yaml:\"subject_addr\""
+  string address = 1 [
+    (gogoproto.moretags) = "yaml:\"address\""
   ];
   repeated cosmos.base.v1beta1.Coin rewards = 2 [
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
@@ -38,9 +38,9 @@ message RewardStore {
   ];
 }
 
-message IncentiveUnitIdsByAddr {
+message BelongingRecipientContainers {
   string address = 1 [
     (gogoproto.moretags) = "yaml:\"address\""
   ];
-  repeated string incentive_unit_ids = 2 [ (gogoproto.moretags) = "yaml:\"incentive_unit_ids\"" ];
+  repeated string recipient_container_ids = 2 [ (gogoproto.moretags) = "yaml:\"recipient_container_ids\"" ];
 }

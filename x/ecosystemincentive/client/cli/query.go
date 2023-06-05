@@ -25,16 +25,16 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 
 	cmd.AddCommand(
 		CmdQueryParams(),
-		CmdQueryRecordedIncentiveUnitId(),
+		CmdQueryRecordedRecipientContainerId(),
 		CmdQueryAllRewards(),
-		CmdQueryIncentiveUnit(),
-		CmdQueryIncentiveUnitIdsByAddr(),
+		CmdQueryRecipientContainer(),
+		CmdQueryRecipientContainerIdsByAddr(),
 	)
 
 	return cmd
 }
 
-func CmdQueryRecordedIncentiveUnitId() *cobra.Command {
+func CmdQueryRecordedRecipientContainerId() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "recorded-incentive-unit-id [class-id] [nft-id]",
 		Short: "shows incentive-unit-id recorded with the class and nft ids",
@@ -44,12 +44,12 @@ func CmdQueryRecordedIncentiveUnitId() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			req := &types.QueryRecordedIncentiveUnitIdRequest{
+			req := &types.QueryRecordedRecipientContainerIdRequest{
 				ClassId: args[0],
 				NftId:   args[1],
 			}
 
-			res, err := queryClient.RecordedIncentiveUnitId(context.Background(), req)
+			res, err := queryClient.RecordedRecipientContainerId(context.Background(), req)
 			if err != nil {
 				return err
 			}
@@ -72,7 +72,7 @@ func CmdQueryAllRewards() *cobra.Command {
 			queryClient := types.NewQueryClient(clientCtx)
 
 			req := &types.QueryAllRewardsRequest{
-				SubjectAddr: args[0],
+				Address: args[0],
 			}
 
 			res, err := queryClient.AllRewards(context.Background(), req)
@@ -87,7 +87,7 @@ func CmdQueryAllRewards() *cobra.Command {
 	return cmd
 }
 
-func CmdQueryIncentiveUnit() *cobra.Command {
+func CmdQueryRecipientContainer() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "incentive-unit [incentive-unit-id]",
 		Short: "shows incentive-unit data",
@@ -97,11 +97,11 @@ func CmdQueryIncentiveUnit() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			req := &types.QueryIncentiveUnitRequest{
-				IncentiveUnitId: args[0],
+			req := &types.QueryRecipientContainerRequest{
+				Id: args[0],
 			}
 
-			res, err := queryClient.IncentiveUnit(context.Background(), req)
+			res, err := queryClient.RecipientContainer(context.Background(), req)
 			if err != nil {
 				return err
 			}
@@ -113,7 +113,7 @@ func CmdQueryIncentiveUnit() *cobra.Command {
 	return cmd
 }
 
-func CmdQueryIncentiveUnitIdsByAddr() *cobra.Command {
+func CmdQueryRecipientContainerIdsByAddr() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "incentive-unit-ids-by-addr [address]",
 		Short: "shows incentive-unit-ids to which the address belongs",
@@ -123,11 +123,11 @@ func CmdQueryIncentiveUnitIdsByAddr() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			req := &types.QueryIncentiveUnitIdsByAddrRequest{
+			req := &types.QueryBelongingRecipientContainerIdsByAddrRequest{
 				Address: args[0],
 			}
 
-			res, err := queryClient.IncentiveUnitIdsByAddr(context.Background(), req)
+			res, err := queryClient.BelongingRecipientContainerIdsByAddr(context.Background(), req)
 			if err != nil {
 				return err
 			}

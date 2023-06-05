@@ -8,8 +8,8 @@ func ValidateIncentiveUnitIdLen(maxIncentiveUnitIdLen uint64, incentiveUnitId st
 	return nil
 }
 
-func ValidateSubjectInfoNumInUnit(maxSubjectInfoNumInUnit uint64, incentiveUnit IncentiveUnit) error {
-	if len(incentiveUnit.SubjectInfoLists) > int(maxSubjectInfoNumInUnit) || len(incentiveUnit.SubjectInfoLists) == 0 {
+func ValidateSubjectInfoNumInUnit(maxSubjectInfoNumInUnit uint64, incentiveUnit RecipientContainer) error {
+	if len(incentiveUnit.WeightedAddresses) > int(maxSubjectInfoNumInUnit) || len(incentiveUnit.WeightedAddresses) == 0 {
 		return ErrInvalidSubjectInfoNumInUnit
 	}
 

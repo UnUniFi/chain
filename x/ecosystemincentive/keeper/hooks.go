@@ -29,7 +29,7 @@ func (h Hooks) AfterNftListed(ctx sdk.Context, nftIdentifier nftmarkettypes.NftI
 	// if memo data cannot be decoded properly
 	// this doesn't mean MsgListNft fail. It succeeds anyway.
 	if err != nil {
-		_ = ctx.EventManager().EmitTypedEvent(&types.EventFailedParsingMemoInputs{
+		_ = ctx.EventManager().EmitTypedEvent(&types.EventFailedParsingTxMemoData{
 			ClassId: nftIdentifier.ClassId,
 			NftId:   nftIdentifier.NftId,
 			Memo:    txMemo,

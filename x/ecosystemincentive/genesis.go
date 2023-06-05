@@ -10,16 +10,16 @@ import (
 // InitGenesis initializes the capability module's state from a provided genesis state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
 	k.SetParams(ctx, genState.Params)
-	for _, incentiveUnit := range genState.IncentiveUnits {
+	for _, container := range genState.RecipientContainers {
 		var subjectAddrs []string
 		var weights []sdk.Dec
-		for i := 0; i < len(incentiveUnit.SubjectInfoLists); i++ {
-			subjectAddrs = append(subjectAddrs, incentiveUnit.SubjectInfoLists[i].SubjectAddr)
-			weights = append(weights, incentiveUnit.SubjectInfoLists[i].Weight)
+		for i := 0; i < len(container.WeightedAddresses); i++ {
+			subjectAddrs = append(subjectAddrs, container.WeightedAddresses[i].Address)
+			weights = append(weights, container.WeightedAddresses[i].Weight)
 		}
 
 		if _, err := k.Register(ctx, &types.MsgRegister{
-			IncentiveUnitId: incentiveUnit.Id,
+			IncentiveUnitId: container.Id,
 			SubjectAddrs:    subjectAddrs,
 			Weights:         weights,
 		}); err != nil {
@@ -38,7 +38,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis := types.DefaultGenesis()
 	genesis.Params = k.GetParams(ctx)
-	genesis.IncentiveUnits = k.GetAllIncentiveUnits(ctx)
+	genesis.RecipientContainers = k.GetAllIncentiveUnits(ctx)
 	genesis.RewardStores = k.GetAllRewardStores(ctx)
 
 	return genesis

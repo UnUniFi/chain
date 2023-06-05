@@ -13,12 +13,12 @@ import (
 
 func (k Keeper) RewardDistributionOfNftmarket(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, fee sdk.Coin) error {
 	totalReward := sdk.ZeroInt()
-	// First, get incentiveUnitId by nftId from IncentiveUnitIdByNftId KVStore
-	// If the incentiveUnitId doesn't exist, return nil and distribute the reward for the frontend
+	// First, get recipientContainerId by nftId from RecipientContainerIdByNftId KVStore
+	// If the recipientContainerId doesn't exist, return nil and distribute the reward for the frontend
 	// to the treasury.
-	incentiveUnitId, exists := k.GetIncentiveUnitIdByNftId(ctx, nftId)
+	recipientContainerId, exists := k.GetRecipientContainerIdByNftId(ctx, nftId)
 	if !exists {
-		// emit event to inform the nftId is not associated with incentiveUnitId and return
+		// emit event to inform the nftId is not associated with recipientContainerId and return
 		_ = ctx.EventManager().EmitTypedEvent(&types.EventNotRecordedNftId{
 			ClassId: nftId.ClassId,
 			NftId:   nftId.NftId,
@@ -32,11 +32,11 @@ func (k Keeper) RewardDistributionOfNftmarket(ctx sdk.Context, nftId nftmarketty
 			err := fmt.Errorf(sdkerrors.Wrap(types.ErrRewardRateNotFound, "nftmarket frontend").Error())
 			return err
 		}
-		rewardForIncentiveUnit := nftmarketFrontendRewardRate.MulInt(fee.Amount).TruncateInt()
-		totalReward = totalReward.Add(rewardForIncentiveUnit)
+		rewardForRecipientContainer := nftmarketFrontendRewardRate.MulInt(fee.Amount).TruncateInt()
+		totalReward = totalReward.Add(rewardForRecipientContainer)
 
 		// Distribute the reward to the incentive unit
-		if err := k.AccumulateRewardForFrontend(ctx, incentiveUnitId, sdk.NewCoin(fee.Denom, rewardForIncentiveUnit)); err != nil {
+		if err := k.AccumulateRewardForFrontend(ctx, recipientContainerId, sdk.NewCoin(fee.Denom, rewardForRecipientContainer)); err != nil {
 			return err
 		}
 	}

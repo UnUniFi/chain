@@ -26,8 +26,8 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type EventRegister struct {
-	IncentiveUnitId  string        `protobuf:"bytes,1,opt,name=incentive_unit_id,json=incentiveUnitId,proto3" json:"incentive_unit_id,omitempty" yaml:"incentive_unit_id"`
-	SubjectInfoLists []SubjectInfo `protobuf:"bytes,2,rep,name=subject_info_lists,json=subjectInfoLists,proto3" json:"subject_info_lists" yaml:"subject_info_lists"`
+	RecipientContainerId string            `protobuf:"bytes,1,opt,name=recipient_container_id,json=recipientContainerId,proto3" json:"recipient_container_id,omitempty" yaml:"recipient_container_id"`
+	WeightedAddresses    []WeightedAddress `protobuf:"bytes,2,rep,name=weighted_addresses,json=weightedAddresses,proto3" json:"weighted_addresses" yaml:"weighted_addresses"`
 }
 
 func (m *EventRegister) Reset()         { *m = EventRegister{} }
@@ -63,16 +63,16 @@ func (m *EventRegister) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_EventRegister proto.InternalMessageInfo
 
-func (m *EventRegister) GetIncentiveUnitId() string {
+func (m *EventRegister) GetRecipientContainerId() string {
 	if m != nil {
-		return m.IncentiveUnitId
+		return m.RecipientContainerId
 	}
 	return ""
 }
 
-func (m *EventRegister) GetSubjectInfoLists() []SubjectInfo {
+func (m *EventRegister) GetWeightedAddresses() []WeightedAddress {
 	if m != nil {
-		return m.SubjectInfoLists
+		return m.WeightedAddresses
 	}
 	return nil
 }
@@ -181,24 +181,24 @@ func (m *EventWithdrawReward) GetWithdrawnReward() types.Coin {
 	return types.Coin{}
 }
 
-type EventFailedParsingMemoInputs struct {
+type EventFailedParsingTxMemoData struct {
 	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty" yaml:"class_id"`
 	NftId   string `protobuf:"bytes,2,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty" yaml:"nft_id"`
 	Memo    string `protobuf:"bytes,3,opt,name=memo,proto3" json:"memo,omitempty" yaml:"memo"`
 }
 
-func (m *EventFailedParsingMemoInputs) Reset()         { *m = EventFailedParsingMemoInputs{} }
-func (m *EventFailedParsingMemoInputs) String() string { return proto.CompactTextString(m) }
-func (*EventFailedParsingMemoInputs) ProtoMessage()    {}
-func (*EventFailedParsingMemoInputs) Descriptor() ([]byte, []int) {
+func (m *EventFailedParsingTxMemoData) Reset()         { *m = EventFailedParsingTxMemoData{} }
+func (m *EventFailedParsingTxMemoData) String() string { return proto.CompactTextString(m) }
+func (*EventFailedParsingTxMemoData) ProtoMessage()    {}
+func (*EventFailedParsingTxMemoData) Descriptor() ([]byte, []int) {
 	return fileDescriptor_2ecf05760ad4e04d, []int{3}
 }
-func (m *EventFailedParsingMemoInputs) XXX_Unmarshal(b []byte) error {
+func (m *EventFailedParsingTxMemoData) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *EventFailedParsingMemoInputs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *EventFailedParsingTxMemoData) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_EventFailedParsingMemoInputs.Marshal(b, m, deterministic)
+		return xxx_messageInfo_EventFailedParsingTxMemoData.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -208,57 +208,57 @@ func (m *EventFailedParsingMemoInputs) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
-func (m *EventFailedParsingMemoInputs) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventFailedParsingMemoInputs.Merge(m, src)
+func (m *EventFailedParsingTxMemoData) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventFailedParsingTxMemoData.Merge(m, src)
 }
-func (m *EventFailedParsingMemoInputs) XXX_Size() int {
+func (m *EventFailedParsingTxMemoData) XXX_Size() int {
 	return m.Size()
 }
-func (m *EventFailedParsingMemoInputs) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventFailedParsingMemoInputs.DiscardUnknown(m)
+func (m *EventFailedParsingTxMemoData) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventFailedParsingTxMemoData.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_EventFailedParsingMemoInputs proto.InternalMessageInfo
+var xxx_messageInfo_EventFailedParsingTxMemoData proto.InternalMessageInfo
 
-func (m *EventFailedParsingMemoInputs) GetClassId() string {
+func (m *EventFailedParsingTxMemoData) GetClassId() string {
 	if m != nil {
 		return m.ClassId
 	}
 	return ""
 }
 
-func (m *EventFailedParsingMemoInputs) GetNftId() string {
+func (m *EventFailedParsingTxMemoData) GetNftId() string {
 	if m != nil {
 		return m.NftId
 	}
 	return ""
 }
 
-func (m *EventFailedParsingMemoInputs) GetMemo() string {
+func (m *EventFailedParsingTxMemoData) GetMemo() string {
 	if m != nil {
 		return m.Memo
 	}
 	return ""
 }
 
-type EventRecordedIncentiveUnitId struct {
-	IncentiveUnitId string `protobuf:"bytes,1,opt,name=incentive_unit_id,json=incentiveUnitId,proto3" json:"incentive_unit_id,omitempty" yaml:"incentive_unit_id"`
-	ClassId         string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty" yaml:"class_id"`
-	NftId           string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty" yaml:"nft_id"`
+type EventRecordedRecipientContainerId struct {
+	RecipientContainerId string `protobuf:"bytes,1,opt,name=recipient_container_id,json=recipientContainerId,proto3" json:"recipient_container_id,omitempty" yaml:"recipient_container_id"`
+	ClassId              string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty" yaml:"class_id"`
+	NftId                string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty" yaml:"nft_id"`
 }
 
-func (m *EventRecordedIncentiveUnitId) Reset()         { *m = EventRecordedIncentiveUnitId{} }
-func (m *EventRecordedIncentiveUnitId) String() string { return proto.CompactTextString(m) }
-func (*EventRecordedIncentiveUnitId) ProtoMessage()    {}
-func (*EventRecordedIncentiveUnitId) Descriptor() ([]byte, []int) {
+func (m *EventRecordedRecipientContainerId) Reset()         { *m = EventRecordedRecipientContainerId{} }
+func (m *EventRecordedRecipientContainerId) String() string { return proto.CompactTextString(m) }
+func (*EventRecordedRecipientContainerId) ProtoMessage()    {}
+func (*EventRecordedRecipientContainerId) Descriptor() ([]byte, []int) {
 	return fileDescriptor_2ecf05760ad4e04d, []int{4}
 }
-func (m *EventRecordedIncentiveUnitId) XXX_Unmarshal(b []byte) error {
+func (m *EventRecordedRecipientContainerId) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *EventRecordedIncentiveUnitId) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *EventRecordedRecipientContainerId) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_EventRecordedIncentiveUnitId.Marshal(b, m, deterministic)
+		return xxx_messageInfo_EventRecordedRecipientContainerId.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -268,33 +268,33 @@ func (m *EventRecordedIncentiveUnitId) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
-func (m *EventRecordedIncentiveUnitId) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventRecordedIncentiveUnitId.Merge(m, src)
+func (m *EventRecordedRecipientContainerId) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventRecordedRecipientContainerId.Merge(m, src)
 }
-func (m *EventRecordedIncentiveUnitId) XXX_Size() int {
+func (m *EventRecordedRecipientContainerId) XXX_Size() int {
 	return m.Size()
 }
-func (m *EventRecordedIncentiveUnitId) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventRecordedIncentiveUnitId.DiscardUnknown(m)
+func (m *EventRecordedRecipientContainerId) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventRecordedRecipientContainerId.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_EventRecordedIncentiveUnitId proto.InternalMessageInfo
+var xxx_messageInfo_EventRecordedRecipientContainerId proto.InternalMessageInfo
 
-func (m *EventRecordedIncentiveUnitId) GetIncentiveUnitId() string {
+func (m *EventRecordedRecipientContainerId) GetRecipientContainerId() string {
 	if m != nil {
-		return m.IncentiveUnitId
+		return m.RecipientContainerId
 	}
 	return ""
 }
 
-func (m *EventRecordedIncentiveUnitId) GetClassId() string {
+func (m *EventRecordedRecipientContainerId) GetClassId() string {
 	if m != nil {
 		return m.ClassId
 	}
 	return ""
 }
 
-func (m *EventRecordedIncentiveUnitId) GetNftId() string {
+func (m *EventRecordedRecipientContainerId) GetNftId() string {
 	if m != nil {
 		return m.NftId
 	}
@@ -302,9 +302,9 @@ func (m *EventRecordedIncentiveUnitId) GetNftId() string {
 }
 
 type EventDeletedNftIdRecordedForFrontendReward struct {
-	IncentiveUnitId string `protobuf:"bytes,1,opt,name=incentive_unit_id,json=incentiveUnitId,proto3" json:"incentive_unit_id,omitempty" yaml:"incentive_unit_id"`
-	ClassId         string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty" yaml:"class_id"`
-	NftId           string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty" yaml:"nft_id"`
+	RecipientContainerId string `protobuf:"bytes,1,opt,name=recipient_container_id,json=recipientContainerId,proto3" json:"recipient_container_id,omitempty" yaml:"recipient_container_id"`
+	ClassId              string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty" yaml:"class_id"`
+	NftId                string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty" yaml:"nft_id"`
 }
 
 func (m *EventDeletedNftIdRecordedForFrontendReward) Reset() {
@@ -344,9 +344,9 @@ func (m *EventDeletedNftIdRecordedForFrontendReward) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_EventDeletedNftIdRecordedForFrontendReward proto.InternalMessageInfo
 
-func (m *EventDeletedNftIdRecordedForFrontendReward) GetIncentiveUnitId() string {
+func (m *EventDeletedNftIdRecordedForFrontendReward) GetRecipientContainerId() string {
 	if m != nil {
-		return m.IncentiveUnitId
+		return m.RecipientContainerId
 	}
 	return ""
 }
@@ -365,24 +365,26 @@ func (m *EventDeletedNftIdRecordedForFrontendReward) GetNftId() string {
 	return ""
 }
 
-type EventNotRegisteredIncentiveUnitId struct {
-	IncentiveUnitId string `protobuf:"bytes,1,opt,name=incentive_unit_id,json=incentiveUnitId,proto3" json:"incentive_unit_id,omitempty" yaml:"incentive_unit_id"`
-	ClassId         string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty" yaml:"class_id"`
-	NftId           string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty" yaml:"nft_id"`
+type EventNotRegisteredRecipientContainerId struct {
+	RecipientContainerId string `protobuf:"bytes,1,opt,name=recipient_container_id,json=recipientContainerId,proto3" json:"recipient_container_id,omitempty" yaml:"recipient_container_id"`
+	ClassId              string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty" yaml:"class_id"`
+	NftId                string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty" yaml:"nft_id"`
 }
 
-func (m *EventNotRegisteredIncentiveUnitId) Reset()         { *m = EventNotRegisteredIncentiveUnitId{} }
-func (m *EventNotRegisteredIncentiveUnitId) String() string { return proto.CompactTextString(m) }
-func (*EventNotRegisteredIncentiveUnitId) ProtoMessage()    {}
-func (*EventNotRegisteredIncentiveUnitId) Descriptor() ([]byte, []int) {
+func (m *EventNotRegisteredRecipientContainerId) Reset() {
+	*m = EventNotRegisteredRecipientContainerId{}
+}
+func (m *EventNotRegisteredRecipientContainerId) String() string { return proto.CompactTextString(m) }
+func (*EventNotRegisteredRecipientContainerId) ProtoMessage()    {}
+func (*EventNotRegisteredRecipientContainerId) Descriptor() ([]byte, []int) {
 	return fileDescriptor_2ecf05760ad4e04d, []int{6}
 }
-func (m *EventNotRegisteredIncentiveUnitId) XXX_Unmarshal(b []byte) error {
+func (m *EventNotRegisteredRecipientContainerId) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *EventNotRegisteredIncentiveUnitId) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *EventNotRegisteredRecipientContainerId) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_EventNotRegisteredIncentiveUnitId.Marshal(b, m, deterministic)
+		return xxx_messageInfo_EventNotRegisteredRecipientContainerId.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -392,33 +394,33 @@ func (m *EventNotRegisteredIncentiveUnitId) XXX_Marshal(b []byte, deterministic 
 		return b[:n], nil
 	}
 }
-func (m *EventNotRegisteredIncentiveUnitId) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventNotRegisteredIncentiveUnitId.Merge(m, src)
+func (m *EventNotRegisteredRecipientContainerId) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventNotRegisteredRecipientContainerId.Merge(m, src)
 }
-func (m *EventNotRegisteredIncentiveUnitId) XXX_Size() int {
+func (m *EventNotRegisteredRecipientContainerId) XXX_Size() int {
 	return m.Size()
 }
-func (m *EventNotRegisteredIncentiveUnitId) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventNotRegisteredIncentiveUnitId.DiscardUnknown(m)
+func (m *EventNotRegisteredRecipientContainerId) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventNotRegisteredRecipientContainerId.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_EventNotRegisteredIncentiveUnitId proto.InternalMessageInfo
+var xxx_messageInfo_EventNotRegisteredRecipientContainerId proto.InternalMessageInfo
 
-func (m *EventNotRegisteredIncentiveUnitId) GetIncentiveUnitId() string {
+func (m *EventNotRegisteredRecipientContainerId) GetRecipientContainerId() string {
 	if m != nil {
-		return m.IncentiveUnitId
+		return m.RecipientContainerId
 	}
 	return ""
 }
 
-func (m *EventNotRegisteredIncentiveUnitId) GetClassId() string {
+func (m *EventNotRegisteredRecipientContainerId) GetClassId() string {
 	if m != nil {
 		return m.ClassId
 	}
 	return ""
 }
 
-func (m *EventNotRegisteredIncentiveUnitId) GetNftId() string {
+func (m *EventNotRegisteredRecipientContainerId) GetNftId() string {
 	if m != nil {
 		return m.NftId
 	}
@@ -478,8 +480,8 @@ func (m *EventNotRecordedNftId) GetNftId() string {
 }
 
 type EventUpdatedReward struct {
-	IncentiveUnitId string     `protobuf:"bytes,1,opt,name=incentive_unit_id,json=incentiveUnitId,proto3" json:"incentive_unit_id,omitempty" yaml:"incentive_unit_id"`
-	EarnedReward    types.Coin `protobuf:"bytes,2,opt,name=earned_reward,json=earnedReward,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coin" json:"earned_reward" yaml:"earned_reward"`
+	RecipientContainerId string     `protobuf:"bytes,1,opt,name=recipient_container_id,json=recipientContainerId,proto3" json:"recipient_container_id,omitempty" yaml:"recipient_container_id"`
+	EarnedReward         types.Coin `protobuf:"bytes,2,opt,name=earned_reward,json=earnedReward,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coin" json:"earned_reward" yaml:"earned_reward"`
 }
 
 func (m *EventUpdatedReward) Reset()         { *m = EventUpdatedReward{} }
@@ -515,9 +517,9 @@ func (m *EventUpdatedReward) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_EventUpdatedReward proto.InternalMessageInfo
 
-func (m *EventUpdatedReward) GetIncentiveUnitId() string {
+func (m *EventUpdatedReward) GetRecipientContainerId() string {
 	if m != nil {
-		return m.IncentiveUnitId
+		return m.RecipientContainerId
 	}
 	return ""
 }
@@ -645,10 +647,10 @@ func init() {
 	proto.RegisterType((*EventRegister)(nil), "ununifi.ecosystemincentive.EventRegister")
 	proto.RegisterType((*EventWithdrawAllRewards)(nil), "ununifi.ecosystemincentive.EventWithdrawAllRewards")
 	proto.RegisterType((*EventWithdrawReward)(nil), "ununifi.ecosystemincentive.EventWithdrawReward")
-	proto.RegisterType((*EventFailedParsingMemoInputs)(nil), "ununifi.ecosystemincentive.EventFailedParsingMemoInputs")
-	proto.RegisterType((*EventRecordedIncentiveUnitId)(nil), "ununifi.ecosystemincentive.EventRecordedIncentiveUnitId")
+	proto.RegisterType((*EventFailedParsingTxMemoData)(nil), "ununifi.ecosystemincentive.EventFailedParsingTxMemoData")
+	proto.RegisterType((*EventRecordedRecipientContainerId)(nil), "ununifi.ecosystemincentive.EventRecordedRecipientContainerId")
 	proto.RegisterType((*EventDeletedNftIdRecordedForFrontendReward)(nil), "ununifi.ecosystemincentive.EventDeletedNftIdRecordedForFrontendReward")
-	proto.RegisterType((*EventNotRegisteredIncentiveUnitId)(nil), "ununifi.ecosystemincentive.EventNotRegisteredIncentiveUnitId")
+	proto.RegisterType((*EventNotRegisteredRecipientContainerId)(nil), "ununifi.ecosystemincentive.EventNotRegisteredRecipientContainerId")
 	proto.RegisterType((*EventNotRecordedNftId)(nil), "ununifi.ecosystemincentive.EventNotRecordedNftId")
 	proto.RegisterType((*EventUpdatedReward)(nil), "ununifi.ecosystemincentive.EventUpdatedReward")
 	proto.RegisterType((*EventVersionUnmatched)(nil), "ununifi.ecosystemincentive.EventVersionUnmatched")
@@ -658,58 +660,59 @@ func init() {
 func init() { proto.RegisterFile("ecosystemincentive/event.proto", fileDescriptor_2ecf05760ad4e04d) }
 
 var fileDescriptor_2ecf05760ad4e04d = []byte{
-	// 813 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x96, 0xcf, 0x6f, 0x1b, 0x45,
-	0x14, 0xc7, 0x33, 0x09, 0x04, 0x98, 0x34, 0x4a, 0xb2, 0x6e, 0x15, 0x37, 0x44, 0xbb, 0xe9, 0x72,
-	0xa8, 0x01, 0xb1, 0xab, 0xd2, 0x5b, 0x6f, 0x35, 0x60, 0x6a, 0xd4, 0x56, 0xd5, 0x56, 0x06, 0x89,
-	0xcb, 0x6a, 0xbc, 0xf3, 0x6c, 0x0f, 0xd9, 0x9d, 0x31, 0x3b, 0xb3, 0x76, 0xf3, 0x17, 0x70, 0xed,
-	0x89, 0x1b, 0xe2, 0xce, 0xdf, 0xc0, 0x89, 0x0b, 0x3d, 0x46, 0xe2, 0xc2, 0xc9, 0xa0, 0x44, 0x42,
-	0x9c, 0xfd, 0x17, 0xa0, 0x9d, 0x19, 0x3b, 0xfe, 0x11, 0xa2, 0x5a, 0x6a, 0x0f, 0x3d, 0x79, 0xe7,
-	0xbd, 0x37, 0xdf, 0x79, 0x9f, 0xf7, 0xde, 0x8e, 0x17, 0xbb, 0x90, 0x08, 0x79, 0x22, 0x15, 0x64,
-	0x8c, 0x27, 0xc0, 0x15, 0x1b, 0x40, 0x08, 0x03, 0xe0, 0x2a, 0xe8, 0xe7, 0x42, 0x09, 0xe7, 0xa0,
-	0xe0, 0x05, 0x67, 0x1d, 0x16, 0x2c, 0xc7, 0x1d, 0x7c, 0x7c, 0xd9, 0xde, 0x25, 0x93, 0x11, 0x3a,
-	0xb8, 0xde, 0x15, 0x5d, 0xa1, 0x1f, 0xc3, 0xf2, 0xc9, 0x5a, 0xdd, 0x44, 0xc8, 0x4c, 0xc8, 0xb0,
-	0x4d, 0x24, 0x84, 0x83, 0x3b, 0x6d, 0x50, 0xe4, 0x4e, 0x98, 0x08, 0xc6, 0x8d, 0xdf, 0xff, 0x03,
-	0xe1, 0xed, 0x2f, 0xca, 0x74, 0x22, 0xe8, 0x32, 0xa9, 0x20, 0x77, 0x1e, 0xe0, 0xbd, 0xa9, 0x74,
-	0x5c, 0x70, 0xa6, 0x62, 0x46, 0xab, 0xe8, 0x08, 0xd5, 0xde, 0xab, 0x1f, 0x8e, 0x47, 0x5e, 0xf5,
-	0x84, 0x64, 0xe9, 0x3d, 0x7f, 0x29, 0xc4, 0x8f, 0x76, 0xa6, 0xb6, 0x16, 0x67, 0xaa, 0x49, 0x9d,
-	0x67, 0xd8, 0x91, 0x45, 0xfb, 0x3b, 0x48, 0x54, 0xcc, 0x78, 0x47, 0xc4, 0x29, 0x93, 0x4a, 0x56,
-	0xd7, 0x8f, 0x36, 0x6a, 0x5b, 0x9f, 0xde, 0x0e, 0xfe, 0x9f, 0x3b, 0x78, 0x6a, 0x76, 0x35, 0x79,
-	0x47, 0xd4, 0x6f, 0xbd, 0x18, 0x79, 0x6b, 0xe3, 0x91, 0x77, 0xd3, 0x9c, 0xbb, 0x2c, 0xe8, 0x47,
-	0xbb, 0xf2, 0x22, 0xfe, 0xa1, 0x36, 0xfd, 0x83, 0xf0, 0xbe, 0xa6, 0xfa, 0x86, 0xa9, 0x1e, 0xcd,
-	0xc9, 0xf0, 0x7e, 0x9a, 0x46, 0x30, 0x24, 0x39, 0x95, 0xce, 0x87, 0x78, 0x53, 0x02, 0xa7, 0x90,
-	0x5b, 0xa8, 0xbd, 0xf1, 0xc8, 0xdb, 0xb6, 0xe2, 0xda, 0xee, 0x47, 0x36, 0xc0, 0xf9, 0x19, 0xe1,
-	0x1b, 0x24, 0x4d, 0xe3, 0xa1, 0x55, 0xe1, 0x71, 0x6e, 0x44, 0x2c, 0xc4, 0xcd, 0xc0, 0x54, 0x37,
-	0x28, 0xab, 0x1b, 0xd8, 0xea, 0x06, 0x9f, 0x09, 0xc6, 0xeb, 0x4f, 0x6c, 0xda, 0x87, 0x46, 0xf9,
-	0x52, 0x15, 0xff, 0x97, 0xbf, 0xbc, 0x5a, 0x97, 0xa9, 0x5e, 0xd1, 0x0e, 0x12, 0x91, 0x85, 0xb6,
-	0x55, 0xe6, 0xe7, 0x13, 0x49, 0x8f, 0x43, 0x75, 0xd2, 0x07, 0xa9, 0x05, 0x65, 0x54, 0x21, 0x69,
-	0x3a, 0xc1, 0xe1, 0x16, 0xa6, 0x6c, 0x5f, 0x65, 0x0e, 0xd4, 0x38, 0x56, 0x81, 0x7c, 0x8e, 0xf0,
-	0xee, 0x62, 0x6a, 0xd5, 0xf5, 0x23, 0x74, 0x35, 0xdf, 0x57, 0x96, 0x6f, 0xdf, 0x88, 0x2e, 0x0a,
-	0x94, 0x68, 0xb7, 0x5f, 0x12, 0x2d, 0xda, 0x19, 0xce, 0x63, 0xf9, 0x3f, 0x21, 0x7c, 0xa8, 0xa9,
-	0x1a, 0x84, 0xa5, 0x40, 0x9f, 0x90, 0x5c, 0x32, 0xde, 0x7d, 0x04, 0x99, 0x68, 0xf2, 0x7e, 0xa1,
-	0xa4, 0x13, 0xe0, 0x77, 0x93, 0x94, 0x48, 0x79, 0x31, 0x9a, 0x95, 0xf1, 0xc8, 0xdb, 0x31, 0xb9,
-	0x4c, 0x3c, 0x7e, 0xf4, 0x8e, 0x7e, 0x6c, 0x52, 0xa7, 0x86, 0x37, 0x79, 0x47, 0x0f, 0xf2, 0xfa,
-	0x62, 0x39, 0x8c, 0xdd, 0x8f, 0xde, 0xe6, 0x9d, 0x72, 0x66, 0x3f, 0xc0, 0x6f, 0x65, 0x90, 0x89,
-	0xea, 0x86, 0x8e, 0xdb, 0x19, 0x8f, 0xbc, 0x2d, 0x13, 0x57, 0x5a, 0xfd, 0x48, 0x3b, 0xfd, 0xdf,
-	0x26, 0xf9, 0x45, 0x90, 0x88, 0x9c, 0x02, 0x6d, 0x2e, 0x4c, 0xfe, 0xab, 0x7b, 0x87, 0x66, 0x49,
-	0xd7, 0x57, 0x22, 0xdd, 0xb8, 0x9a, 0xd4, 0x3f, 0x45, 0xf8, 0x23, 0x0d, 0xf1, 0x39, 0xa4, 0xa0,
-	0x80, 0x3e, 0x2e, 0xad, 0x13, 0xa0, 0x86, 0xc8, 0x1b, 0xb9, 0xe0, 0x0a, 0x38, 0xb5, 0x13, 0xf5,
-	0x26, 0x20, 0xfd, 0x8e, 0xf0, 0x2d, 0x8d, 0xf4, 0x58, 0x4c, 0xef, 0xb3, 0x37, 0xb3, 0x39, 0xdf,
-	0xe3, 0x1b, 0x17, 0x20, 0xa6, 0x25, 0xba, 0x3f, 0xaf, 0x6f, 0xf2, 0xfd, 0x7f, 0x11, 0x76, 0xf4,
-	0x99, 0xad, 0x3e, 0x25, 0x0a, 0x5e, 0x7d, 0xdf, 0x7f, 0x40, 0x78, 0x1b, 0x48, 0xce, 0x81, 0xbe,
-	0xf4, 0x2d, 0xf3, 0xa5, 0xbd, 0x65, 0xae, 0x9b, 0x53, 0xe6, 0x76, 0xaf, 0x74, 0xc5, 0x5c, 0x33,
-	0x5b, 0xed, 0xfd, 0xf2, 0x2b, 0xb2, 0xe5, 0xfd, 0x1a, 0x72, 0xc9, 0x04, 0x6f, 0xf1, 0x8c, 0xa8,
-	0xa4, 0x07, 0xd4, 0x69, 0xe2, 0xbd, 0x62, 0xb2, 0x88, 0x07, 0xc6, 0xbb, 0x4c, 0xbb, 0x14, 0xe2,
-	0x47, 0xbb, 0x53, 0x9b, 0xd5, 0x7c, 0x8d, 0xc3, 0x31, 0x46, 0xf8, 0x7d, 0xf3, 0xe6, 0x32, 0xa9,
-	0x72, 0xd6, 0x2e, 0x14, 0x13, 0xbc, 0x21, 0xf2, 0xa7, 0x8a, 0x1c, 0x43, 0x2e, 0x9d, 0x1f, 0x11,
-	0x76, 0xe8, 0xc4, 0x05, 0x34, 0x26, 0x99, 0x28, 0xb8, 0xd2, 0x18, 0x57, 0x56, 0xfb, 0xe1, 0xfc,
-	0x5f, 0xed, 0xb2, 0xc4, 0x4a, 0x25, 0xdf, 0x9b, 0xd9, 0x7f, 0x5f, 0x6f, 0x77, 0xee, 0xe1, 0x6b,
-	0xed, 0x54, 0x24, 0xc7, 0x71, 0x0f, 0x58, 0xb7, 0xa7, 0x74, 0x59, 0x36, 0xea, 0xfb, 0xe3, 0x91,
-	0x57, 0x31, 0x47, 0xce, 0x7a, 0xfd, 0x68, 0x4b, 0x2f, 0x1f, 0xe8, 0x55, 0xfd, 0xd1, 0x8b, 0x33,
-	0x17, 0x9d, 0x9e, 0xb9, 0xe8, 0xef, 0x33, 0x17, 0x3d, 0x3f, 0x77, 0xd7, 0x4e, 0xcf, 0xdd, 0xb5,
-	0x3f, 0xcf, 0xdd, 0xb5, 0x6f, 0xef, 0xce, 0x64, 0xd4, 0xe2, 0x2d, 0xce, 0x1a, 0x2c, 0x4c, 0x7a,
-	0x84, 0xf1, 0xf0, 0xd9, 0x25, 0x5f, 0x4b, 0x26, 0xc5, 0xf6, 0xa6, 0xfe, 0xfc, 0xb9, 0xfb, 0x5f,
-	0x00, 0x00, 0x00, 0xff, 0xff, 0x8b, 0x57, 0x27, 0x80, 0x9f, 0x09, 0x00, 0x00,
+	// 827 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x96, 0xcf, 0x6f, 0x1c, 0x35,
+	0x14, 0xc7, 0xe3, 0x04, 0x02, 0x38, 0x8d, 0xd2, 0x4c, 0x52, 0xb2, 0x0d, 0x61, 0x26, 0x31, 0x12,
+	0x04, 0x2a, 0x66, 0x54, 0x7a, 0xeb, 0x2d, 0xdb, 0xb2, 0x10, 0x44, 0xab, 0x6a, 0x20, 0x44, 0xe2,
+	0xb2, 0xf2, 0x8e, 0x5f, 0x76, 0xad, 0xcc, 0xd8, 0xc1, 0xf6, 0x66, 0x9b, 0x03, 0x67, 0xae, 0x3d,
+	0x71, 0x43, 0xdc, 0xf9, 0x1b, 0xf8, 0x03, 0x7a, 0xac, 0x84, 0x84, 0x90, 0x90, 0xa6, 0x28, 0x91,
+	0xe0, 0x3e, 0x17, 0xae, 0x68, 0x6c, 0x6f, 0x9a, 0xcd, 0x2e, 0x51, 0x73, 0xc8, 0x01, 0x4e, 0x3b,
+	0x7e, 0x3f, 0xbe, 0x7e, 0x9f, 0xe7, 0x5f, 0x8b, 0x43, 0xc8, 0xa4, 0x3e, 0xd2, 0x06, 0x0a, 0x2e,
+	0x32, 0x10, 0x86, 0x1f, 0x42, 0x02, 0x87, 0x20, 0x4c, 0x7c, 0xa0, 0xa4, 0x91, 0xc1, 0x6a, 0x5f,
+	0xf4, 0x05, 0xdf, 0xe3, 0xf1, 0x78, 0xdc, 0xea, 0xad, 0x49, 0xb9, 0x63, 0x26, 0x27, 0xb4, 0xba,
+	0xdc, 0x95, 0x5d, 0x69, 0x3f, 0x93, 0xfa, 0xcb, 0x5b, 0xc3, 0x4c, 0xea, 0x42, 0xea, 0xa4, 0x43,
+	0x35, 0x24, 0x87, 0xb7, 0x3b, 0x60, 0xe8, 0xed, 0x24, 0x93, 0x5c, 0x38, 0x3f, 0xf9, 0x0b, 0xe1,
+	0xf9, 0x8f, 0xeb, 0x72, 0x52, 0xe8, 0x72, 0x6d, 0x40, 0x05, 0xbb, 0xf8, 0x4d, 0x05, 0x19, 0x3f,
+	0xe0, 0x20, 0x4c, 0x3b, 0x93, 0xc2, 0x50, 0x2e, 0x40, 0xb5, 0x39, 0x6b, 0xa0, 0x75, 0xb4, 0xf9,
+	0x46, 0x73, 0xa3, 0x2a, 0xa3, 0xb7, 0x8f, 0x68, 0x91, 0xdf, 0x25, 0x93, 0xe3, 0x48, 0xba, 0x7c,
+	0xea, 0xb8, 0x37, 0xb4, 0x6f, 0xb3, 0xe0, 0x5b, 0x1c, 0x0c, 0x80, 0x77, 0x7b, 0x06, 0x58, 0x9b,
+	0x32, 0xa6, 0x40, 0x6b, 0xd0, 0x8d, 0xe9, 0xf5, 0x99, 0xcd, 0xb9, 0x8f, 0x6e, 0xc5, 0xff, 0xde,
+	0x86, 0x78, 0xd7, 0x67, 0x6d, 0xb9, 0xa4, 0xe6, 0xc6, 0xd3, 0x32, 0x9a, 0xaa, 0xca, 0xe8, 0xa6,
+	0xab, 0x62, 0x5c, 0x94, 0xa4, 0x8b, 0x83, 0xd1, 0x1c, 0xd0, 0xe4, 0x4f, 0x84, 0x57, 0x2c, 0xe9,
+	0x2e, 0x37, 0x3d, 0xa6, 0xe8, 0x60, 0x2b, 0xcf, 0x53, 0x18, 0x50, 0xc5, 0x74, 0xf0, 0x3e, 0x9e,
+	0xd5, 0x20, 0x18, 0x28, 0xcf, 0xb8, 0x58, 0x95, 0xd1, 0xbc, 0x53, 0x77, 0x76, 0x92, 0xfa, 0x80,
+	0xe0, 0x47, 0x84, 0x6f, 0xd0, 0x3c, 0x6f, 0x0f, 0xbc, 0x8a, 0x68, 0x2b, 0x27, 0xe2, 0x49, 0x6e,
+	0xc6, 0xae, 0xe3, 0x71, 0xdd, 0xf1, 0xd8, 0x77, 0x3c, 0xbe, 0x27, 0xb9, 0x68, 0x3e, 0xf2, 0x75,
+	0xaf, 0x39, 0xe5, 0x89, 0x2a, 0xe4, 0xa7, 0xe7, 0xd1, 0x66, 0x97, 0x9b, 0x5e, 0xbf, 0x13, 0x67,
+	0xb2, 0x48, 0xfc, 0xf2, 0xb9, 0x9f, 0x0f, 0x35, 0xdb, 0x4f, 0xcc, 0xd1, 0x01, 0x68, 0x2b, 0xa8,
+	0xd3, 0x25, 0x9a, 0xe7, 0x43, 0x1c, 0xe1, 0x61, 0xc8, 0x2f, 0x08, 0x2f, 0x8d, 0x80, 0x3a, 0xc7,
+	0x65, 0x20, 0x9f, 0x20, 0x7c, 0xfd, 0x7c, 0x69, 0x8d, 0xe9, 0x75, 0x74, 0x31, 0xdf, 0x67, 0x9e,
+	0x6f, 0xc5, 0xaf, 0xcb, 0x39, 0x81, 0x1a, 0xed, 0xbd, 0x97, 0x44, 0x4b, 0x17, 0x06, 0xa3, 0x58,
+	0xe4, 0x07, 0x84, 0xd7, 0x2c, 0x55, 0x8b, 0xf2, 0x1c, 0xd8, 0x23, 0xaa, 0x34, 0x17, 0xdd, 0x2f,
+	0x1f, 0x3f, 0x80, 0x42, 0xde, 0xa7, 0x86, 0x06, 0x31, 0x7e, 0x3d, 0xcb, 0xa9, 0xd6, 0x2f, 0x76,
+	0xea, 0x52, 0x55, 0x46, 0x0b, 0xae, 0x96, 0xa1, 0x87, 0xa4, 0xaf, 0xd9, 0xcf, 0x6d, 0x16, 0x6c,
+	0xe2, 0x59, 0xb1, 0x67, 0xea, 0xe8, 0xe9, 0xf3, 0xed, 0x70, 0x76, 0x92, 0xbe, 0x2a, 0xf6, 0xcc,
+	0x36, 0x0b, 0xde, 0xc1, 0xaf, 0x14, 0x50, 0xc8, 0xc6, 0x8c, 0x8d, 0x5b, 0xa8, 0xca, 0x68, 0xce,
+	0xc5, 0xd5, 0x56, 0x92, 0x5a, 0x27, 0xf9, 0x15, 0xe1, 0x0d, 0x7f, 0x90, 0x32, 0xa9, 0x18, 0xb0,
+	0x74, 0xd2, 0x19, 0xb8, 0xb2, 0xc3, 0x75, 0x96, 0x7e, 0xfa, 0x52, 0xf4, 0x33, 0x17, 0xd3, 0x93,
+	0xe7, 0x08, 0x7f, 0x60, 0xc1, 0xee, 0x43, 0x0e, 0x06, 0xd8, 0xc3, 0xda, 0x3a, 0x84, 0x6c, 0x49,
+	0xd5, 0x52, 0x52, 0x18, 0x10, 0xcc, 0xef, 0xb2, 0xff, 0x20, 0xe1, 0xef, 0x08, 0xbf, 0x6b, 0x09,
+	0x1f, 0xca, 0xd3, 0x6b, 0xf0, 0xff, 0xb3, 0x7e, 0xdf, 0xe0, 0x1b, 0x2f, 0xe0, 0xdc, 0xaa, 0xd9,
+	0x25, 0xbc, 0xba, 0x03, 0x43, 0xfe, 0x46, 0x38, 0xb0, 0x73, 0xee, 0x1c, 0x30, 0x6a, 0xe0, 0xca,
+	0xb7, 0xc6, 0x77, 0x08, 0xcf, 0x03, 0x55, 0x02, 0xd8, 0x4b, 0xdf, 0x55, 0x9f, 0xf8, 0xbb, 0x6a,
+	0xd9, 0xcd, 0x37, 0x92, 0x7d, 0xa9, 0x8b, 0xea, 0x9a, 0x4b, 0xf5, 0xb7, 0xd4, 0xcf, 0xc8, 0x77,
+	0xfb, 0x2b, 0x50, 0x9a, 0x4b, 0xb1, 0x23, 0x0a, 0x6a, 0xb2, 0x1e, 0xb0, 0x60, 0x1b, 0x2f, 0xf6,
+	0x87, 0x83, 0xf6, 0xa1, 0xf3, 0x7a, 0xee, 0xb5, 0xaa, 0x8c, 0x1a, 0xae, 0x8e, 0xb1, 0x10, 0x92,
+	0x5e, 0x3f, 0xb5, 0x79, 0xcd, 0x2b, 0xdc, 0x2b, 0x15, 0xc2, 0x6f, 0xb9, 0xb3, 0xce, 0xb5, 0x51,
+	0xbc, 0xd3, 0x37, 0x5c, 0x8a, 0x96, 0x54, 0x5f, 0x18, 0xba, 0x0f, 0x4a, 0x07, 0xdf, 0x23, 0x1c,
+	0xb0, 0xa1, 0xab, 0x7e, 0x71, 0x0b, 0xd9, 0x17, 0xc6, 0x62, 0x5c, 0xd8, 0xed, 0xcf, 0x47, 0x5f,
+	0xec, 0x71, 0x89, 0x4b, 0xb5, 0x7c, 0xf1, 0x4c, 0xfe, 0x96, 0x4d, 0x0f, 0xee, 0xe2, 0x6b, 0x9d,
+	0x5c, 0x66, 0xfb, 0xed, 0x9e, 0x7d, 0xf7, 0x6d, 0x5b, 0x66, 0x9a, 0x2b, 0x55, 0x19, 0x2d, 0xb9,
+	0x29, 0xcf, 0x7a, 0x49, 0x3a, 0x67, 0x87, 0x9f, 0xda, 0x51, 0xf3, 0xc1, 0xd3, 0xe3, 0x10, 0x3d,
+	0x3b, 0x0e, 0xd1, 0x1f, 0xc7, 0x21, 0x7a, 0x72, 0x12, 0x4e, 0x3d, 0x3b, 0x09, 0xa7, 0x7e, 0x3b,
+	0x09, 0xa7, 0xbe, 0xbe, 0x73, 0xa6, 0xa2, 0x1d, 0xb1, 0x23, 0x78, 0x8b, 0x27, 0x59, 0x8f, 0x72,
+	0x91, 0x3c, 0x9e, 0xf0, 0x3f, 0xcc, 0x95, 0xd8, 0x99, 0xb5, 0x7f, 0xac, 0xee, 0xfc, 0x13, 0x00,
+	0x00, 0xff, 0xff, 0x2c, 0xe2, 0x8f, 0xa0, 0xf9, 0x09, 0x00, 0x00,
 }
 
 func (m *EventRegister) Marshal() (dAtA []byte, err error) {
@@ -732,10 +735,10 @@ func (m *EventRegister) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.SubjectInfoLists) > 0 {
-		for iNdEx := len(m.SubjectInfoLists) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.WeightedAddresses) > 0 {
+		for iNdEx := len(m.WeightedAddresses) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.SubjectInfoLists[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.WeightedAddresses[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -746,10 +749,10 @@ func (m *EventRegister) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0x12
 		}
 	}
-	if len(m.IncentiveUnitId) > 0 {
-		i -= len(m.IncentiveUnitId)
-		copy(dAtA[i:], m.IncentiveUnitId)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.IncentiveUnitId)))
+	if len(m.RecipientContainerId) > 0 {
+		i -= len(m.RecipientContainerId)
+		copy(dAtA[i:], m.RecipientContainerId)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.RecipientContainerId)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -840,7 +843,7 @@ func (m *EventWithdrawReward) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *EventFailedParsingMemoInputs) Marshal() (dAtA []byte, err error) {
+func (m *EventFailedParsingTxMemoData) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -850,12 +853,12 @@ func (m *EventFailedParsingMemoInputs) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *EventFailedParsingMemoInputs) MarshalTo(dAtA []byte) (int, error) {
+func (m *EventFailedParsingTxMemoData) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *EventFailedParsingMemoInputs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *EventFailedParsingTxMemoData) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -884,7 +887,7 @@ func (m *EventFailedParsingMemoInputs) MarshalToSizedBuffer(dAtA []byte) (int, e
 	return len(dAtA) - i, nil
 }
 
-func (m *EventRecordedIncentiveUnitId) Marshal() (dAtA []byte, err error) {
+func (m *EventRecordedRecipientContainerId) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -894,12 +897,12 @@ func (m *EventRecordedIncentiveUnitId) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *EventRecordedIncentiveUnitId) MarshalTo(dAtA []byte) (int, error) {
+func (m *EventRecordedRecipientContainerId) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *EventRecordedIncentiveUnitId) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *EventRecordedRecipientContainerId) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -918,10 +921,10 @@ func (m *EventRecordedIncentiveUnitId) MarshalToSizedBuffer(dAtA []byte) (int, e
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.IncentiveUnitId) > 0 {
-		i -= len(m.IncentiveUnitId)
-		copy(dAtA[i:], m.IncentiveUnitId)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.IncentiveUnitId)))
+	if len(m.RecipientContainerId) > 0 {
+		i -= len(m.RecipientContainerId)
+		copy(dAtA[i:], m.RecipientContainerId)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.RecipientContainerId)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -962,17 +965,17 @@ func (m *EventDeletedNftIdRecordedForFrontendReward) MarshalToSizedBuffer(dAtA [
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.IncentiveUnitId) > 0 {
-		i -= len(m.IncentiveUnitId)
-		copy(dAtA[i:], m.IncentiveUnitId)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.IncentiveUnitId)))
+	if len(m.RecipientContainerId) > 0 {
+		i -= len(m.RecipientContainerId)
+		copy(dAtA[i:], m.RecipientContainerId)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.RecipientContainerId)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *EventNotRegisteredIncentiveUnitId) Marshal() (dAtA []byte, err error) {
+func (m *EventNotRegisteredRecipientContainerId) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -982,12 +985,12 @@ func (m *EventNotRegisteredIncentiveUnitId) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *EventNotRegisteredIncentiveUnitId) MarshalTo(dAtA []byte) (int, error) {
+func (m *EventNotRegisteredRecipientContainerId) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *EventNotRegisteredIncentiveUnitId) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *EventNotRegisteredRecipientContainerId) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1006,10 +1009,10 @@ func (m *EventNotRegisteredIncentiveUnitId) MarshalToSizedBuffer(dAtA []byte) (i
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.IncentiveUnitId) > 0 {
-		i -= len(m.IncentiveUnitId)
-		copy(dAtA[i:], m.IncentiveUnitId)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.IncentiveUnitId)))
+	if len(m.RecipientContainerId) > 0 {
+		i -= len(m.RecipientContainerId)
+		copy(dAtA[i:], m.RecipientContainerId)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.RecipientContainerId)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1083,10 +1086,10 @@ func (m *EventUpdatedReward) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	i--
 	dAtA[i] = 0x12
-	if len(m.IncentiveUnitId) > 0 {
-		i -= len(m.IncentiveUnitId)
-		copy(dAtA[i:], m.IncentiveUnitId)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.IncentiveUnitId)))
+	if len(m.RecipientContainerId) > 0 {
+		i -= len(m.RecipientContainerId)
+		copy(dAtA[i:], m.RecipientContainerId)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.RecipientContainerId)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1192,12 +1195,12 @@ func (m *EventRegister) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.IncentiveUnitId)
+	l = len(m.RecipientContainerId)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
-	if len(m.SubjectInfoLists) > 0 {
-		for _, e := range m.SubjectInfoLists {
+	if len(m.WeightedAddresses) > 0 {
+		for _, e := range m.WeightedAddresses {
 			l = e.Size()
 			n += 1 + l + sovEvent(uint64(l))
 		}
@@ -1239,7 +1242,7 @@ func (m *EventWithdrawReward) Size() (n int) {
 	return n
 }
 
-func (m *EventFailedParsingMemoInputs) Size() (n int) {
+func (m *EventFailedParsingTxMemoData) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1260,13 +1263,13 @@ func (m *EventFailedParsingMemoInputs) Size() (n int) {
 	return n
 }
 
-func (m *EventRecordedIncentiveUnitId) Size() (n int) {
+func (m *EventRecordedRecipientContainerId) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.IncentiveUnitId)
+	l = len(m.RecipientContainerId)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
@@ -1287,7 +1290,7 @@ func (m *EventDeletedNftIdRecordedForFrontendReward) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.IncentiveUnitId)
+	l = len(m.RecipientContainerId)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
@@ -1302,13 +1305,13 @@ func (m *EventDeletedNftIdRecordedForFrontendReward) Size() (n int) {
 	return n
 }
 
-func (m *EventNotRegisteredIncentiveUnitId) Size() (n int) {
+func (m *EventNotRegisteredRecipientContainerId) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.IncentiveUnitId)
+	l = len(m.RecipientContainerId)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
@@ -1346,7 +1349,7 @@ func (m *EventUpdatedReward) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.IncentiveUnitId)
+	l = len(m.RecipientContainerId)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
@@ -1427,7 +1430,7 @@ func (m *EventRegister) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field IncentiveUnitId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field RecipientContainerId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1455,11 +1458,11 @@ func (m *EventRegister) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.IncentiveUnitId = string(dAtA[iNdEx:postIndex])
+			m.RecipientContainerId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SubjectInfoLists", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field WeightedAddresses", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1486,8 +1489,8 @@ func (m *EventRegister) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.SubjectInfoLists = append(m.SubjectInfoLists, SubjectInfo{})
-			if err := m.SubjectInfoLists[len(m.SubjectInfoLists)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.WeightedAddresses = append(m.WeightedAddresses, WeightedAddress{})
+			if err := m.WeightedAddresses[len(m.WeightedAddresses)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1743,7 +1746,7 @@ func (m *EventWithdrawReward) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *EventFailedParsingMemoInputs) Unmarshal(dAtA []byte) error {
+func (m *EventFailedParsingTxMemoData) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1766,10 +1769,10 @@ func (m *EventFailedParsingMemoInputs) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: EventFailedParsingMemoInputs: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventFailedParsingTxMemoData: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventFailedParsingMemoInputs: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventFailedParsingTxMemoData: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1889,7 +1892,7 @@ func (m *EventFailedParsingMemoInputs) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *EventRecordedIncentiveUnitId) Unmarshal(dAtA []byte) error {
+func (m *EventRecordedRecipientContainerId) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1912,15 +1915,15 @@ func (m *EventRecordedIncentiveUnitId) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: EventRecordedIncentiveUnitId: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventRecordedRecipientContainerId: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventRecordedIncentiveUnitId: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventRecordedRecipientContainerId: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field IncentiveUnitId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field RecipientContainerId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1948,7 +1951,7 @@ func (m *EventRecordedIncentiveUnitId) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.IncentiveUnitId = string(dAtA[iNdEx:postIndex])
+			m.RecipientContainerId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -2066,7 +2069,7 @@ func (m *EventDeletedNftIdRecordedForFrontendReward) Unmarshal(dAtA []byte) erro
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field IncentiveUnitId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field RecipientContainerId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2094,7 +2097,7 @@ func (m *EventDeletedNftIdRecordedForFrontendReward) Unmarshal(dAtA []byte) erro
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.IncentiveUnitId = string(dAtA[iNdEx:postIndex])
+			m.RecipientContainerId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -2181,7 +2184,7 @@ func (m *EventDeletedNftIdRecordedForFrontendReward) Unmarshal(dAtA []byte) erro
 	}
 	return nil
 }
-func (m *EventNotRegisteredIncentiveUnitId) Unmarshal(dAtA []byte) error {
+func (m *EventNotRegisteredRecipientContainerId) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2204,15 +2207,15 @@ func (m *EventNotRegisteredIncentiveUnitId) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: EventNotRegisteredIncentiveUnitId: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventNotRegisteredRecipientContainerId: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventNotRegisteredIncentiveUnitId: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventNotRegisteredRecipientContainerId: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field IncentiveUnitId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field RecipientContainerId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2240,7 +2243,7 @@ func (m *EventNotRegisteredIncentiveUnitId) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.IncentiveUnitId = string(dAtA[iNdEx:postIndex])
+			m.RecipientContainerId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -2472,7 +2475,7 @@ func (m *EventUpdatedReward) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field IncentiveUnitId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field RecipientContainerId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2500,7 +2503,7 @@ func (m *EventUpdatedReward) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.IncentiveUnitId = string(dAtA[iNdEx:postIndex])
+			m.RecipientContainerId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {

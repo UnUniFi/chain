@@ -17,8 +17,8 @@ message MsgRegister {
   string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\""
   ];
-  string incentive_unit_id = 2 [ (gogoproto.moretags) = "yaml:\"incentive_unit_id\"" ];
-  repeated string subject_addrs = 3 [
+  string recipient_container_id = 2 [ (gogoproto.moretags) = "yaml:\"recipient_container_id\"" ];
+  repeated string addresses = 3 [
     (gogoproto.moretags) = "yaml:\"subject_addrs\""
   ];
   repeated string weights = 4 [

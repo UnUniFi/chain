@@ -8,43 +8,43 @@ import (
 	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
 )
 
-// Register method record subjects info in IncentiveUnit type
-func (k Keeper) Register(ctx sdk.Context, msg *types.MsgRegister) (*[]types.SubjectInfo, error) {
-	// check if the IncentiveUnitId is already registered
-	if _, exists := k.GetIncentiveUnit(ctx, msg.IncentiveUnitId); exists {
-		return nil, sdkerrors.Wrap(types.ErrRegisteredIncentiveId, msg.IncentiveUnitId)
+// Register method record subjects info in RecipientContainer type
+func (k Keeper) Register(ctx sdk.Context, msg *types.MsgRegister) (*[]types.WeightedAddress, error) {
+	// check if the RecipientContainerId is already registered
+	if _, exists := k.GetRecipientContainer(ctx, msg.RecipientContainerId); exists {
+		return nil, sdkerrors.Wrap(types.ErrRegisteredIncentiveId, msg.RecipientContainerId)
 	}
 
-	// check the length of the IncentiveUnitId by referring MaxInentiveUnitIdLen in the Params
-	if err := types.ValidateIncentiveUnitIdLen(k.GetMaxIncentiveUnitIdLen(ctx), msg.IncentiveUnitId); err != nil {
+	// check the length of the RecipientContainerId by referring MaxInentiveUnitIdLen in the Params
+	if err := types.ValidateRecipientContainerIdLen(k.GetMaxRecipientContainerIdLen(ctx), msg.RecipientContainerId); err != nil {
 		return nil, err
 	}
 
-	var subjectInfoList []types.SubjectInfo
-	for i := 0; i < len(msg.SubjectAddrs); i++ {
-		subjectInfo := types.NewSubjectInfo(msg.SubjectAddrs[i], msg.Weights[i])
+	var subjectInfoList []types.WeightedAddress
+	for i := 0; i < len(msg.Addresses); i++ {
+		subjectInfo := types.NewSubjectInfo(msg.Addresses[i], msg.Weights[i])
 		subjectInfoList = append(subjectInfoList, subjectInfo)
 	}
 
-	incentiveUnit := types.NewIncentiveUnit(msg.IncentiveUnitId, subjectInfoList)
+	recipientContainer := types.NewRecipientContainer(msg.RecipientContainerId, subjectInfoList)
 
 	// checks if the number of the subject info is vaid
-	if err := types.ValidateSubjectInfoNumInUnit(k.GetMaxSubjectInfoNumInUnitParam(ctx), incentiveUnit); err != nil {
+	if err := types.ValidateSubjectInfoNumInUnit(k.GetMaxSubjectInfoNumInUnitParam(ctx), recipientContainer); err != nil {
 		return nil, err
 	}
 
-	if err := k.SetIncentiveUnit(ctx, incentiveUnit); err != nil {
+	if err := k.SetRecipientContainer(ctx, recipientContainer); err != nil {
 		return nil, err
 	}
 
-	// operation related to IncentiveUnitIdsByAddr
+	// operation related to RecipientContainerIdsByAddr
 	// if exists already, add incentuve unit id in msg into data
 	// if not, newly create and set
-	for _, addr := range msg.SubjectAddrs {
-		incentiveUnitIdsByAddr := k.GetIncentiveUnitIdsByAddr(ctx, sdk.MustAccAddressFromBech32(addr))
-		incentiveUnitIdsByAddr = incentiveUnitIdsByAddr.CreateOrUpdate(addr, msg.IncentiveUnitId)
+	for _, addr := range msg.Addresses {
+		recipientContainerIdsByAddr := k.GetRecipientContainerIdsByAddr(ctx, sdk.MustAccAddressFromBech32(addr))
+		recipientContainerIdsByAddr = recipientContainerIdsByAddr.CreateOrUpdate(addr, msg.RecipientContainerId)
 
-		if err := k.SetIncentiveUnitIdsByAddr(ctx, incentiveUnitIdsByAddr); err != nil {
+		if err := k.SetRecipientContainerIdsByAddr(ctx, recipientContainerIdsByAddr); err != nil {
 			return nil, err
 		}
 	}
@@ -52,104 +52,104 @@ func (k Keeper) Register(ctx sdk.Context, msg *types.MsgRegister) (*[]types.Subj
 	return &subjectInfoList, nil
 }
 
-func (k Keeper) SetIncentiveUnit(ctx sdk.Context, incentiveUnit types.IncentiveUnit) error {
-	bz, err := k.cdc.Marshal(&incentiveUnit)
+func (k Keeper) SetRecipientContainer(ctx sdk.Context, recipientContainer types.RecipientContainer) error {
+	bz, err := k.cdc.Marshal(&recipientContainer)
 	if err != nil {
 		return err
 	}
 
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnit))
-	prefixStore.Set([]byte(incentiveUnit.Id), bz)
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientContainer))
+	prefixStore.Set([]byte(recipientContainer.Id), bz)
 
 	return nil
 }
 
-func (k Keeper) SetIncentiveUnitIdsByAddr(ctx sdk.Context, incentiveUnitIdsByAddr types.IncentiveUnitIdsByAddr) error {
-	bz, err := k.cdc.Marshal(&incentiveUnitIdsByAddr)
+func (k Keeper) SetRecipientContainerIdsByAddr(ctx sdk.Context, recipientContainerIdsByAddr types.RecipientContainerIdsByAddr) error {
+	bz, err := k.cdc.Marshal(&recipientContainerIdsByAddr)
 	if err != nil {
 		return err
 	}
 
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnitIdsByAddr))
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientContainerIdsByAddr))
 	// Use byte array of accAddress as key
-	addressKeyBytes := sdk.MustAccAddressFromBech32(incentiveUnitIdsByAddr.Address).Bytes()
+	addressKeyBytes := sdk.MustAccAddressFromBech32(recipientContainerIdsByAddr.Address).Bytes()
 	prefixStore.Set(addressKeyBytes, bz)
 
 	return nil
 }
 
-func (k Keeper) GetIncentiveUnit(ctx sdk.Context, id string) (types.IncentiveUnit, bool) {
+func (k Keeper) GetRecipientContainer(ctx sdk.Context, id string) (types.RecipientContainer, bool) {
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnit))
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientContainer))
 
 	bz := prefixStore.Get([]byte(id))
 	if bz == nil {
-		return types.IncentiveUnit{}, false
+		return types.RecipientContainer{}, false
 	}
 
-	var incentiveUnit types.IncentiveUnit
-	k.cdc.MustUnmarshal(bz, &incentiveUnit)
-	return incentiveUnit, true
+	var recipientContainer types.RecipientContainer
+	k.cdc.MustUnmarshal(bz, &recipientContainer)
+	return recipientContainer, true
 }
 
-func (k Keeper) GetIncentiveUnitIdsByAddr(ctx sdk.Context, address sdk.AccAddress) types.IncentiveUnitIdsByAddr {
+func (k Keeper) GetRecipientContainerIdsByAddr(ctx sdk.Context, address sdk.AccAddress) types.BelongingRecipientContainer {
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnitIdsByAddr))
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientContainerIdsByAddr))
 
 	bz := prefixStore.Get(address)
 	if bz == nil {
-		return types.IncentiveUnitIdsByAddr{}
+		return types.RecipientContainerIdsByAddr{}
 	}
 
-	var incentiveUnitIdsByAddr types.IncentiveUnitIdsByAddr
-	k.cdc.MustUnmarshal(bz, &incentiveUnitIdsByAddr)
-	return incentiveUnitIdsByAddr
+	var recipientContainerIdsByAddr types.RecipientContainerIdsByAddr
+	k.cdc.MustUnmarshal(bz, &recipientContainerIdsByAddr)
+	return recipientContainerIdsByAddr
 }
 
-func (k Keeper) GetAllIncentiveUnits(ctx sdk.Context) []types.IncentiveUnit {
+func (k Keeper) GetAllRecipientContainers(ctx sdk.Context) []types.RecipientContainer {
 	store := ctx.KVStore(k.storeKey)
-	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixIncentiveUnit))
+	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixRecipientContainer))
 	defer it.Close()
 
-	allIncentiveUnits := []types.IncentiveUnit{}
+	allRecipientContainers := []types.RecipientContainer{}
 	for ; it.Valid(); it.Next() {
-		var incentiveUnit types.IncentiveUnit
-		k.cdc.MustUnmarshal(it.Value(), &incentiveUnit)
+		var recipientContainer types.RecipientContainer
+		k.cdc.MustUnmarshal(it.Value(), &recipientContainer)
 
-		allIncentiveUnits = append(allIncentiveUnits, incentiveUnit)
+		allRecipientContainers = append(allRecipientContainers, recipientContainer)
 	}
 
-	return allIncentiveUnits
+	return allRecipientContainers
 }
 
-func (k Keeper) GetAllIncentiveUnitIdsByAddrs(ctx sdk.Context) []types.IncentiveUnitIdsByAddr {
+func (k Keeper) GetAllRecipientContainerIdsByAddrs(ctx sdk.Context) []types.RecipientContainerIdsByAddr {
 	store := ctx.KVStore(k.storeKey)
-	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixIncentiveUnitIdsByAddr))
+	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixRecipientContainerIdsByAddr))
 	defer it.Close()
 
-	allIncentiveUnitIdsByAddrs := []types.IncentiveUnitIdsByAddr{}
+	allRecipientContainerIdsByAddrs := []types.RecipientContainerIdsByAddr{}
 	for ; it.Valid(); it.Next() {
-		var incentiveUnitIdsByAddr types.IncentiveUnitIdsByAddr
-		k.cdc.MustUnmarshal(it.Value(), &incentiveUnitIdsByAddr)
+		var recipientContainerIdsByAddr types.RecipientContainerIdsByAddr
+		k.cdc.MustUnmarshal(it.Value(), &recipientContainerIdsByAddr)
 
-		allIncentiveUnitIdsByAddrs = append(allIncentiveUnitIdsByAddrs, incentiveUnitIdsByAddr)
+		allRecipientContainerIdsByAddrs = append(allRecipientContainerIdsByAddrs, recipientContainerIdsByAddr)
 	}
 
-	return allIncentiveUnitIdsByAddrs
+	return allRecipientContainerIdsByAddrs
 }
 
-func (k Keeper) DeleteIncentiveUnit(ctx sdk.Context, id string) {
+func (k Keeper) DeleteRecipientContainer(ctx sdk.Context, id string) {
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnit))
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientContainer))
 
 	prefixStore.Delete([]byte(id))
 }
 
-func (k Keeper) DeleteIncentiveUnitIdsByAddr(ctx sdk.Context, address sdk.AccAddress) {
+func (k Keeper) DeleteRecipientContainerIdsByAddr(ctx sdk.Context, address sdk.AccAddress) {
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixIncentiveUnitIdsByAddr))
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientContainerIdsByAddr))
 
 	prefixStore.Delete(address)
 }

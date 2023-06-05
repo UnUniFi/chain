@@ -67,21 +67,21 @@ func (k Keeper) Reward(c context.Context, req *types.QueryRewardRequest) (*types
 	return &types.QueryRewardResponse{Reward: reward}, nil
 }
 
-func (k Keeper) IncentiveUnit(c context.Context, req *types.QueryIncentiveUnitRequest) (*types.QueryIncentiveUnitResponse, error) {
+func (k Keeper) RecipientContainer(c context.Context, req *types.QueryRecipientContainerRequest) (*types.QueryRecipientContainerResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid argument")
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 
-	incentiveUnit, exists := k.GetIncentiveUnit(ctx, req.IncentiveUnitId)
+	recipientContainer, exists := k.GetRecipientContainer(ctx, req.RecipientContainerId)
 	if !exists {
-		return nil, types.ErrNotRegisteredIncentiveUnitId
+		return nil, types.ErrNotRegisteredRecipientContainerId
 	}
 
-	return &types.QueryIncentiveUnitResponse{IncentiveUnit: &incentiveUnit}, nil
+	return &types.QueryRecipientContainerResponse{RecipientContainer: &recipientContainer}, nil
 }
 
-func (k Keeper) RecordedIncentiveUnitId(c context.Context, req *types.QueryRecordedIncentiveUnitIdRequest) (*types.QueryRecordedIncentiveUnitIdResponse, error) {
+func (k Keeper) RecordedRecipientContainerId(c context.Context, req *types.QueryRecordedRecipientContainerIdRequest) (*types.QueryRecordedRecipientContainerIdResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid argument")
 	}
@@ -92,14 +92,14 @@ func (k Keeper) RecordedIncentiveUnitId(c context.Context, req *types.QueryRecor
 		NftId:   req.NftId,
 	}
 
-	incentiveUnitid, exists := k.GetIncentiveUnitIdByNftId(ctx, nftIdentifier)
+	recipientContainerid, exists := k.GetRecipientContainerIdByNftId(ctx, nftIdentifier)
 	if !exists {
-		return nil, sdkerrors.Wrapf(types.ErrIncentiveUnitIdByNftIdDoesntExist, "class id: %s\nnft id: %s", req.ClassId, req.NftId)
+		return nil, sdkerrors.Wrapf(types.ErrRecipientContainerIdByNftIdDoesntExist, "class id: %s\nnft id: %s", req.ClassId, req.NftId)
 	}
-	return &types.QueryRecordedIncentiveUnitIdResponse{IncentiveUnitId: incentiveUnitid}, nil
+	return &types.QueryRecordedRecipientContainerIdResponse{RecipientContainerId: recipientContainerid}, nil
 }
 
-func (k Keeper) IncentiveUnitIdsByAddr(c context.Context, req *types.QueryIncentiveUnitIdsByAddrRequest) (*types.QueryIncentiveUnitIdsByAddrResponse, error) {
+func (k Keeper) RecipientContainerIdsByAddr(c context.Context, req *types.QueryBelongingRecipientContainerIdsByAddrRequest) (*types.QueryBelongingRecipientContainerIdsByAddrResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid argument")
 	}
@@ -107,13 +107,13 @@ func (k Keeper) IncentiveUnitIdsByAddr(c context.Context, req *types.QueryIncent
 
 	addr, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
-		return &types.QueryIncentiveUnitIdsByAddrResponse{IncentiveUnitIdsByAddr: types.IncentiveUnitIdsByAddr{}}, err
+		return &types.QueryBelongingRecipientContainerIdsByAddrResponse{}, err
 	}
-	incentiveUnitIdsByAddr := k.GetIncentiveUnitIdsByAddr(ctx, addr)
+	recipientContainerIdsByAddr := k.GetRecipientContainerIdsByAddr(ctx, addr)
 
-	if len(incentiveUnitIdsByAddr.IncentiveUnitIds) == 0 {
-		return &types.QueryIncentiveUnitIdsByAddrResponse{IncentiveUnitIdsByAddr: types.IncentiveUnitIdsByAddr{Address: req.Address}}, err
+	if len(recipientContainerIdsByAddr.RecipientContainerIds) == 0 {
+		return &types.QueryBelongingRecipientContainerIdsByAddrResponse{}, err
 	}
 
-	return &types.QueryIncentiveUnitIdsByAddrResponse{IncentiveUnitIdsByAddr: incentiveUnitIdsByAddr}, nil
+	return &types.QueryBelongingRecipientContainerIdsByAddrResponse{RecipientContainerIdsByAddr: recipientContainerIdsByAddr}, nil
 }

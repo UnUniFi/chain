@@ -4,61 +4,61 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func NewIncentiveUnit(id string, subjectsInfos []SubjectInfo) IncentiveUnit {
+func NewRecipientContainer(id string, subjectsInfos []WeightedAddress) RecipientContainer {
 	// check if the addresses in subjectInfo are valid AccAddress
 	for _, subjectInfo := range subjectsInfos {
-		if _, err := sdk.AccAddressFromBech32(subjectInfo.SubjectAddr); err != nil {
+		if _, err := sdk.AccAddressFromBech32(subjectInfo.Address); err != nil {
 			panic(err)
 		}
 	}
 
-	return IncentiveUnit{
-		Id:               id,
-		SubjectInfoLists: subjectsInfos,
+	return RecipientContainer{
+		Id:                id,
+		WeightedAddresses: subjectsInfos,
 	}
 }
 
-func NewSubjectInfo(subjectAddr string, weight sdk.Dec) SubjectInfo {
+func NewSubjectInfo(subjectAddr string, weight sdk.Dec) WeightedAddress {
 	// check if the address in subjectInfo are valid AccAddress
 	if _, err := sdk.AccAddressFromBech32(subjectAddr); err != nil {
 		panic(err)
 	}
 
-	return SubjectInfo{
-		SubjectAddr: subjectAddr,
-		Weight:      weight,
+	return WeightedAddress{
+		Address: subjectAddr,
+		Weight:  weight,
 	}
 }
 
-func NewIncentiveUnitIdsByAddr(address string, incentiveUnitId string) IncentiveUnitIdsByAddr {
+func NewRecipientContainerIdsByAddr(address string, recipientContainerId string) BelongingRecipientContainers {
 	// check if the address are valid AccAddress
 	if _, err := sdk.AccAddressFromBech32(address); err != nil {
 		panic(err)
 	}
 
-	var incentiveUnitIds []string
-	incentiveUnitIds = append(incentiveUnitIds, incentiveUnitId)
+	var recipientContainerIds []string
+	recipientContainerIds = append(recipientContainerIds, recipientContainerId)
 
-	return IncentiveUnitIdsByAddr{
-		Address:          address,
-		IncentiveUnitIds: incentiveUnitIds,
+	return BelongingRecipientContainers{
+		Address:               address,
+		RecipientContainerIds: recipientContainerIds,
 	}
 }
 
-func (m IncentiveUnitIdsByAddr) AddIncentiveUnitId(incentiveUnitId string) []string {
-	return append(m.IncentiveUnitIds, incentiveUnitId)
+func (m BelongingRecipientContainers) AddRecipientContainerId(recipientContainerId string) []string {
+	return append(m.RecipientContainerIds, recipientContainerId)
 }
 
-func (m IncentiveUnitIdsByAddr) CreateOrUpdate(address string, incentiveUnitId string) IncentiveUnitIdsByAddr {
+func (m BelongingRecipientContainers) CreateOrUpdate(address string, recipientContainerId string) BelongingRecipientContainers {
 	// check if the address are valid AccAddress
 	if _, err := sdk.AccAddressFromBech32(address); err != nil {
 		panic(err)
 	}
 
 	if len(m.Address) == 0 {
-		m = NewIncentiveUnitIdsByAddr(address, incentiveUnitId)
+		m = NewRecipientContainerIdsByAddr(address, recipientContainerId)
 	} else {
-		m.IncentiveUnitIds = m.AddIncentiveUnitId(incentiveUnitId)
+		m.RecipientContainerIds = m.AddRecipientContainerId(recipientContainerId)
 	}
 
 	return m

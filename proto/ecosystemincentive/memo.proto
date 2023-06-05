@@ -5,13 +5,11 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/ecosystemincentive/types";
 
-message MemoInputs {
+message TxMemoData {
   string version = 1 [
-    (gogoproto.moretags) = "yaml:\"version\"",
-    (gogoproto.jsontag) = "version"
+    (gogoproto.moretags) = "yaml:\"version\""
   ];
-  string incentive_unit_id = 2 [
-    (gogoproto.moretags) = "yaml:\"incentive_unit_id\"",
-    (gogoproto.jsontag) = "incentive_unit_id"
+  string recipient_container_id = 2 [
+    (gogoproto.moretags) = "yaml:\"recipient_container_id\""
   ];
 }
