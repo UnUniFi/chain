@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
+	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
 var (

@@ -8,7 +8,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
+	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
 func (k Keeper) RewardDistributionOfNftmarket(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, fee sdk.Coin) error {
