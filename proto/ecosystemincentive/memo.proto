@@ -3,7 +3,7 @@ package ununifi.ecosystemincentive;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/UnUniFi/chain/x/ecosystem-incentive/types";
+option go_package = "github.com/UnUniFi/chain/x/ecosystemincentive/types";
 
 message MemoInputs {
   string version = 1 [

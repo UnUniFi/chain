@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "ecosystem-incentive/params.proto";
 import "ecosystem-incentive/ecosystem_incentive.proto";
 
-option go_package = "github.com/UnUniFi/chain/x/ecosystem-incentive/types";
+option go_package = "github.com/UnUniFi/chain/x/ecosystemincentive/types";
 
 // GenesisState defines the ecosystemincentive module's genesis state.
 message GenesisState {
