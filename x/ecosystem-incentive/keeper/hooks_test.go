@@ -2,9 +2,9 @@ package keeper_test
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
 	ununifitypes "github.com/UnUniFi/chain/types"
-	"github.com/UnUniFi/chain/x/ecosystem-incentive/keeper"
 	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
 	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
 )
@@ -33,7 +33,7 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 				ununifitypes.StringAccAddress(suite.addrs[0]),
 			},
 			weights:        []sdk.Dec{sdk.MustNewDecFromStr("1")},
-			txMemo:         `{"version":"v1","incentive-unit-id":"incentiveUnitId1"}`,
+			txMemo:         `{"version":"v1","incentive_unit_id":"incentiveUnitId1"}`,
 			registerBefore: true,
 			expectPass:     true,
 			expectPanic:    false,
@@ -45,7 +45,7 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 				ClassId: "class2",
 				NftId:   "nft2",
 			},
-			txMemo:         `{"version":"v1","incentive-unit-id":"incentiveUnitId2"}`,
+			txMemo:         `{"version":"v1","incentive_unit_id":"incentiveUnitId2"}`,
 			registerBefore: false,
 			expectPass:     false,
 			expectPanic:    false,
@@ -57,7 +57,7 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 				ClassId: "class1",
 				NftId:   "nft1",
 			},
-			txMemo:         `{"version":"v1","incentive-unit-id":"incentiveUnitId2"}`,
+			txMemo:         `{"version":"v1","incentive_unit_id":"incentiveUnitId2"}`,
 			registerBefore: false,
 			expectPass:     false,
 			expectPanic:    true,
@@ -74,7 +74,7 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 				ununifitypes.StringAccAddress(suite.addrs[0]),
 			},
 			weights:        []sdk.Dec{sdk.MustNewDecFromStr("1")},
-			txMemo:         `{"error":true,"version":"v1","incentive-unit-id":"incentiveUnitId3"}`,
+			txMemo:         `{"error":true,"version":"v1","incentive_unit_id":"incentiveUnitId3"}`,
 			registerBefore: true,
 			expectPass:     false,
 			expectPanic:    false,
@@ -91,7 +91,7 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 				ununifitypes.StringAccAddress(suite.addrs[0]),
 			},
 			weights:        []sdk.Dec{sdk.MustNewDecFromStr("1")},
-			txMemo:         `{"version":"v0","incentive-unit-id":"incentiveUnitId4"}`,
+			txMemo:         `{"version":"v0","incentive_unit_id":"incentiveUnitId4"}`,
 			registerBefore: true,
 			expectPass:     false,
 			expectPanic:    false,
@@ -143,6 +143,10 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 		weights         []sdk.Dec
 		recordedBefore  bool
 		expectPass      bool
+		// calculate the reward for incentiveUnit using the default rate
+		expRewardForIncentiveUnit sdk.Int
+		// calculate the reward for stakers using the default rate
+		expRewardForStakers sdk.Coin
 	}{
 		{
 			testCase: "failure case since incentive unit id was not recorded with nft id",
@@ -185,9 +189,11 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 			subjectAddrs: []ununifitypes.StringAccAddress{
 				ununifitypes.StringAccAddress(suite.addrs[0]),
 			},
-			weights:        []sdk.Dec{sdk.MustNewDecFromStr("1")},
-			recordedBefore: true,
-			expectPass:     true,
+			weights:                   []sdk.Dec{sdk.MustNewDecFromStr("1")},
+			recordedBefore:            true,
+			expectPass:                true,
+			expRewardForIncentiveUnit: sdk.MustNewDecFromStr("0.5").MulInt(sdk.NewInt(100)).TruncateInt(),
+			expRewardForStakers:       sdk.NewCoin("uguu", sdk.MustNewDecFromStr("0.5").MulInt(sdk.NewInt(100)).TruncateInt()),
 		},
 		{
 			testCase: "ordinal case",
@@ -200,9 +206,11 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 			subjectAddrs: []ununifitypes.StringAccAddress{
 				ununifitypes.StringAccAddress(suite.addrs[0]),
 			},
-			weights:        []sdk.Dec{sdk.MustNewDecFromStr("1")},
-			recordedBefore: true,
-			expectPass:     true,
+			weights:                   []sdk.Dec{sdk.MustNewDecFromStr("1")},
+			recordedBefore:            true,
+			expectPass:                true,
+			expRewardForIncentiveUnit: sdk.MustNewDecFromStr("0.5").MulInt(sdk.NewInt(100)).TruncateInt(),
+			expRewardForStakers:       sdk.NewCoin("uguu", sdk.MustNewDecFromStr("0.5").MulInt(sdk.NewInt(100)).TruncateInt()),
 		},
 	}
 
@@ -219,16 +227,24 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 			suite.app.EcosystemincentiveKeeper.RecordIncentiveUnitIdWithNftId(suite.ctx, tc.nftId, tc.incentiveUnitId)
 		}
 
+		_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{tc.reward})
+		_ = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.ModuleName, sdk.Coins{tc.reward})
+
 		suite.app.EcosystemincentiveKeeper.Hooks().AfterNftPaymentWithCommission(suite.ctx, tc.nftId, tc.reward)
 
 		if tc.expectPass {
-			rewardForIncentiveUnit := suite.app.EcosystemincentiveKeeper.GetNftmarketFrontendRewardRate(suite.ctx).MulInt(tc.reward.Amount).TruncateInt()
-			rewardsForEach := keeper.CalculateRewardsForEachSubject(tc.weights, sdk.NewCoin(tc.reward.Denom, rewardForIncentiveUnit))
-			for i, subject := range tc.subjectAddrs {
+			totalRewardForIncentiveUnit := sdk.ZeroInt()
+			for _, subject := range tc.subjectAddrs {
 				rewardStore, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, sdk.AccAddress(subject))
+				totalRewardForIncentiveUnit = totalRewardForIncentiveUnit.Add(rewardStore.Rewards.AmountOf(tc.reward.Denom))
 				suite.Require().True(exists)
-				suite.Require().Equal(sdk.NewCoins(sdk.NewCoins(rewardsForEach[i])...), rewardStore.Rewards)
 			}
+			suite.Require().Equal(tc.expRewardForIncentiveUnit, totalRewardForIncentiveUnit)
+
+			// check the reward distribution for stakers by checking the balance of the fee_collector module account
+			feeCollectorAcc := suite.app.AccountKeeper.GetModuleAddress(types.ModuleName)
+			feeCollectorAccBalance := suite.app.BankKeeper.GetBalance(suite.ctx, feeCollectorAcc, tc.reward.Denom)
+			suite.Require().Equal(tc.expRewardForStakers, feeCollectorAccBalance)
 		} else {
 			for _, subject := range tc.subjectAddrs {
 				_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, sdk.AccAddress(subject))
