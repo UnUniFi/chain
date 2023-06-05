@@ -22,7 +22,6 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 		QuoteDenom: "uusdc",
 	}
 
-	// TODO: add failure case due to the lack of the available asset in the pool
 	positions := []struct {
 		positionId           string
 		margin               sdk.Coin
@@ -30,6 +29,17 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 		availableAssetInPool sdk.Coin
 		expGrossPosition     sdk.Int
 	}{
+		{
+			positionId: "-1",
+			margin:     sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.MustNewDecFromStr("1"),
+				Leverage:     1,
+			},
+			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(1)),
+			expGrossPosition:     sdk.MustNewDecFromStr("0").MulInt64(1000000).TruncateInt(),
+		},
 		{
 			positionId: "0",
 			margin:     sdk.NewCoin("uatom", sdk.NewInt(500000)),
@@ -81,8 +91,13 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 		suite.Require().NoError(err)
 
 		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.Bytes(), testPosition.margin, market, testPosition.instance)
-		suite.Require().NoError(err)
-		suite.Require().NotNil(position)
+		if testPosition.positionId == "-1" {
+			suite.Require().Error(err)
+			suite.Require().Nil(position)
+		} else {
+			suite.Require().NoError(err)
+			suite.Require().NotNil(position)
+		}
 
 		// Check if the position was added
 		grossPosition := suite.keeper.GetPerpetualFuturesGrossPositionOfMarket(suite.ctx, market, testPosition.instance.PositionType)

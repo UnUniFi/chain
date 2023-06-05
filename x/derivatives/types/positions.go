@@ -5,8 +5,6 @@
 package types
 
 import (
-	"fmt"
-
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -21,12 +19,12 @@ type Positions []Position
 
 func (m Position) IsValid(params Params, AvailableAssetInPoolByDenom sdk.Coin) error {
 	if !m.IsValidMarginAsset() {
-		return fmt.Errorf("margin asset is not valid")
+		return ErrMarginAssetNotValid
 	}
 
 	// check the least requirement for the margin
 	if !m.RemainingMargin.Amount.IsPositive() {
-		return fmt.Errorf("remaining margin must be positive")
+		return ErrNegativeMargin
 	}
 
 	pfPosition, err := NewPerpetualFuturesPositionFromPosition(m)
@@ -35,15 +33,15 @@ func (m Position) IsValid(params Params, AvailableAssetInPoolByDenom sdk.Coin) e
 	}
 
 	if !pfPosition.PositionInstance.IsValidLeverage(params.PerpetualFutures.MaxLeverage) {
-		return fmt.Errorf("leverage is not valid")
+		return ErrInvalidLeverage
 	}
 
 	if !pfPosition.IsValidPositionSize(params.PoolParams.QuoteTicker) {
-		return fmt.Errorf("position size is not valid")
+		return ErrInvalidPositionSize
 	}
 
 	if AvailableAssetInPoolByDenom.Amount.LT(pfPosition.PositionInstance.SizeInDenomExponent(OneMillionInt)) {
-		return ErrInsufficientAssetBalance
+		return ErrInsufficientPoolFund
 	}
 
 	return nil
@@ -78,7 +76,7 @@ func UnpackPositionInstance(positionAny types.Any) (PositionInstance, error) {
 		return position, nil
 	}
 
-	return nil, fmt.Errorf("this Any doesn't have PositionInstance value")
+	return nil, ErrInvalidPositionInstance
 }
 
 func MustUnpackPositionInstance(positionAny types.Any) PositionInstance {
@@ -99,14 +97,11 @@ func (m Position) NeedLiquidation(MarginMaintenanceRate sdk.Dec, currentBaseMetr
 	case *PerpetualFuturesPositionInstance:
 		perpetualFuturesPosition := NewPerpetualFuturesPosition(m, *positionInstance)
 		return perpetualFuturesPosition.NeedLiquidation(MarginMaintenanceRate, currentBaseMetricsRate, currentQuoteMetricsRate)
-		break
 	case *PerpetualOptionsPositionInstance:
 		panic("not implemented")
-		break
 	default:
 		panic("not implemented")
 	}
-	return false
 }
 
 func NewPerpetualFuturesPosition(position Position, ins PerpetualFuturesPositionInstance) PerpetualFuturesPosition {
@@ -144,10 +139,8 @@ func NewPerpetualFuturesPositionFromPosition(position Position) (PerpetualFuture
 			PositionInstance: *positionInstance,
 		}, nil
 	default:
-		return PerpetualFuturesPosition{}, fmt.Errorf("this Any doesn't have PerpetualFuturesPositionInstance value")
-		break
+		return PerpetualFuturesPosition{}, ErrInvalidPositionInstance
 	}
-	return PerpetualFuturesPosition{}, fmt.Errorf("this Any doesn't have PerpetualFuturesPositionInstance value")
 }
 
 func (m PerpetualFuturesPosition) NeedLiquidation(minMarginMaintenanceRate sdk.Dec, currentBaseMetricsRate, currentQuoteMetricsRate MetricsRateType) bool {
@@ -165,11 +158,10 @@ func (m PerpetualFuturesPosition) OpenedPairRate() sdk.Dec {
 
 // todo make test
 func (m PerpetualFuturesPosition) EvaluatePosition(currentBaseMetricsRate MetricsRateType) sdk.Dec {
-	// FIXME: Don't use OneMillionInt derectly. issue #476
+	// FIXME: Don't use OneMillionInt directly. issue #476
 	return currentBaseMetricsRate.Amount.Amount.Mul(sdk.NewDecFromInt(m.PositionInstance.SizeInDenomExponent(OneMillionInt)))
 }
 
-// TODO: consider to use sdk.DecCoin
 func NormalToMicroInt(amount sdk.Dec) sdk.Int {
 	return amount.Mul(sdk.MustNewDecFromStr(OneMillionString)).TruncateInt()
 }
@@ -206,7 +198,6 @@ func (m Positions) EvaluatePositions(posType PositionType, quoteTicker string, g
 			metricsRate := NewMetricsRateType(quoteTicker, position.Market.BaseDenom, usdMap[position.Market.BaseDenom])
 
 			result = result.Add(perpetualFuturesPosition.EvaluatePosition(metricsRate))
-			break
 		case *PerpetualOptionsPositionInstance:
 			panic("not implemented")
 		default:
@@ -225,7 +216,7 @@ func (m Positions) EvaluateShortPositions(quoteTicker string, getCurrentPriceF f
 }
 
 func (positionInstance PerpetualFuturesPositionInstance) MarginRequirement(currencyRate sdk.Dec) sdk.Int {
-	// FIXME: Don't use OneMillionInt derectly. issue #476
+	// FIXME: Don't use OneMillionInt directly. issue #476
 	return sdk.NewDecFromInt(positionInstance.SizeInDenomExponent(OneMillionInt)).Mul(currencyRate).Quo(sdk.NewDec(int64(positionInstance.Leverage))).TruncateInt()
 }
 
