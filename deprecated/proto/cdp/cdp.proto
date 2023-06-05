@@ -1,0 +1,169 @@
+syntax = "proto3";
+package ununifi.cdp;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/UnUniFi/chain/deprecated/x/cdp/types";
+
+message Cdp {
+  uint64 id = 1 [(gogoproto.moretags) = "yaml:\"id\""];
+  string owner = 2 [
+    (gogoproto.moretags) = "yaml:\"owner\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  string type = 3 [(gogoproto.moretags) = "yaml:\"type\""];
+  cosmos.base.v1beta1.Coin collateral = 4 [
+    (gogoproto.moretags) = "yaml:\"collateral\"",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin principal = 5 [
+    (gogoproto.moretags) = "yaml:\"principal\"",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin accumulated_fees = 6 [
+    (gogoproto.moretags) = "yaml:\"accumulated_fees\"",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Timestamp fees_updated = 7 [
+    (gogoproto.moretags) = "yaml:\"fees_updated\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  string interest_factor = 8 [
+    (gogoproto.moretags) = "yaml:\"interest_factor\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message Deposit {
+  uint64 cdp_id = 1 [(gogoproto.moretags) = "yaml:\"cdp_id\""];
+  string depositor = 2 [
+    (gogoproto.moretags) = "yaml:\"depositor\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin amount = 3 [
+    (gogoproto.moretags) = "yaml:\"amount\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message AugmentedCdp {
+  Cdp cdp = 1 [
+    (gogoproto.moretags) = "yaml:\"cdp\"",
+    (gogoproto.embed) = true,
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin collateral_value = 2 [
+    (gogoproto.moretags) = "yaml:\"collateral_value\"",
+    (gogoproto.nullable) = false
+  ];
+  string collateralization_ratio = 3 [
+    (gogoproto.moretags) = "yaml:\"collateralization_ratio\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message Params {
+  repeated CollateralParam collateral_params = 1 [
+    (gogoproto.moretags) = "yaml:\"collateral_params\"",
+    (gogoproto.nullable) = false
+  ];
+  repeated DebtParam debt_params = 2 [
+    (gogoproto.moretags) = "yaml:\"debt_param\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message CollateralParam {
+  string denom = 1 [(gogoproto.moretags) = "yaml:\"denom\""];
+  string type = 2 [(gogoproto.moretags) = "yaml:\"type\""];
+  string liquidation_ratio = 3 [
+    (gogoproto.moretags) = "yaml:\"liquidation_ratio\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin debt_limit = 4 [
+    (gogoproto.moretags) = "yaml:\"debt_limit\"",
+    (gogoproto.nullable) = false
+  ];
+  string stability_fee = 5 [
+    (gogoproto.moretags) = "yaml:\"stability_fee\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string auction_size = 6 [
+    (gogoproto.moretags) = "yaml:\"auction_size\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string liquidation_penalty = 7 [
+    (gogoproto.moretags) = "yaml:\"liquidation_penalty\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  uint32 prefix = 8 [(gogoproto.moretags) = "yaml:\"prefix\""];
+  string spot_market_id = 9 [(gogoproto.moretags) = "yaml:\"spot_market_id\""];
+  string liquidation_market_id = 10 [(gogoproto.moretags) = "yaml:\"liquidation_market_id\""];
+  string keeper_reward_percentage = 11 [
+    (gogoproto.moretags) = "yaml:\"keeper_reward_percentage\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string check_collateralization_index_count = 12 [
+    (gogoproto.moretags) = "yaml:\"check_collateralization_index_count\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string conversion_factor = 13 [
+    (gogoproto.moretags) = "yaml:\"conversion_factor\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message DebtParam {
+  string denom = 1 [(gogoproto.moretags) = "yaml:\"denom\""];
+  string reference_asset = 2 [(gogoproto.moretags) = "yaml:\"reference_asset\""];
+  string conversion_factor = 3 [
+    (gogoproto.moretags) = "yaml:\"conversion_factor\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string debt_floor = 4 [
+    (gogoproto.moretags) = "yaml:\"debt_floor\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin global_debt_limit = 5 [
+    (gogoproto.moretags) = "yaml:\"global_debt_limit\"",
+    (gogoproto.nullable) = false
+  ];
+  string debt_denom = 6 [(gogoproto.moretags) = "yaml:\"debt_denom\""];
+  string surplus_auction_threshold = 7 [
+    (gogoproto.moretags) = "yaml:\"surplus_auction_threshold\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string surplus_auction_lot = 8 [
+    (gogoproto.moretags) = "yaml:\"surplus_auction_lot\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string debt_auction_threshold = 9 [
+    (gogoproto.moretags) = "yaml:\"debt_auction_threshold\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string debt_auction_lot = 10 [
+    (gogoproto.moretags) = "yaml:\"debt_auction_lot\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  bool circuit_breaker = 11 [(gogoproto.moretags) = "yaml:\"circuit_breaker\""];
+}
