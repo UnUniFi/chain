@@ -160,6 +160,10 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 	feeAmountDec := positionSizeInDenomUnit.Mul(commissionRate)
 	tradeAmount := positionSizeInDenomUnit.Sub(feeAmountDec)
 	feeAmount := feeAmountDec.RoundInt()
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesTradingFee{
+		Fee:        sdk.NewCoin(position.RemainingMargin.Denom, feeAmount),
+		PositionId: position.Id,
+	})
 
 	baseUsdPrice, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
 	if err != nil {
@@ -173,7 +177,7 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 	quoteTicker := k.GetPoolQuoteTicker(ctx)
 	baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, baseUsdPrice)
 	quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, quoteUsdPrice)
-	returningAmount, lossToLP := position.CalcReturningAmountAtClose(baseMetricsRate, quoteMetricsRate, feeAmount)
+	returningAmount, lossToLP := position.CalcReturningAmountAtClose(baseMetricsRate, quoteMetricsRate, tradeAmount.RoundInt())
 
 	// Tell the loss to the LP happened by a trade
 	// This has to be restricted by the protocol behavior in the future
@@ -231,6 +235,11 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 		// In case of closing position by Liquidation, a commission fee is charged.
 		commissionFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
 		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(commissionFee)
+		_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesLiquidationFee{
+			Fee:        sdk.NewCoin(position.RemainingMargin.Denom, commissionFee),
+			PositionId: position.Id,
+		})
+
 		rewardAmount := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PoolParams.ReportLiquidationRewardRate).RoundInt()
 		reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))
 
@@ -264,11 +273,23 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 	imaginaryFundingRate := sdk.NewDecFromInt(netPosition).Quo(sdk.MustNewDecFromStr(types.OneMillionString)).Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
 	imaginaryFundingFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(imaginaryFundingRate).RoundInt()
 	commissionFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesImaginaryFundingFee{
+		Fee:        sdk.NewCoin(position.RemainingMargin.Denom, commissionFee),
+		PositionId: position.Id,
+	})
 
 	if positionInstance.PositionType == types.PositionType_LONG {
 		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(imaginaryFundingFee).Sub(commissionFee)
+		_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesImaginaryFundingFee{
+			Fee:        sdk.NewCoin(position.RemainingMargin.Denom, imaginaryFundingFee),
+			PositionId: position.Id,
+		})
 	} else {
 		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Add(imaginaryFundingFee).Sub(commissionFee)
+		_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesImaginaryFundingFee{
+			Fee:        sdk.NewCoin(position.RemainingMargin.Denom, imaginaryFundingFee.Neg()),
+			PositionId: position.Id,
+		})
 	}
 	position.LastLeviedAt = ctx.BlockTime()
 
