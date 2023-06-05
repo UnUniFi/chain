@@ -13,8 +13,8 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	simapp "github.com/UnUniFi/chain/app"
-	nftmarketkeeper "github.com/UnUniFi/chain/x/nftmarket/keeper"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
+	nftmarketkeeper "github.com/UnUniFi/chain/x/nftbackedloan/keeper"
+	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
 var (

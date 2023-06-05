@@ -11,7 +11,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
+	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
 // RecordIncentiveIdWithNftId is for recording incentiveUnitId with nftId
