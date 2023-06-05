@@ -49,7 +49,7 @@ func (k msgServer) WithdrawAllRewards(c context.Context, msg *types.MsgWithdrawA
 	}
 
 	if err := ctx.EventManager().EmitTypedEvent(&types.EventWithdrawAllRewards{
-		Sender:              msg.Sender.AccAddress().String(),
+		Sender:              msg.Sender,
 		AllWithdrawnRewards: rewards,
 	}); err != nil {
 		return nil, err
@@ -67,7 +67,7 @@ func (k msgServer) WithdrawReward(c context.Context, msg *types.MsgWithdrawRewar
 	}
 
 	if err := ctx.EventManager().EmitTypedEvent(&types.EventWithdrawReward{
-		Sender:          msg.Sender.AccAddress().String(),
+		Sender:          msg.Sender,
 		WithdrawnReward: reward,
 	}); err != nil {
 		return nil, err

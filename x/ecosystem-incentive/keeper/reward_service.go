@@ -10,9 +10,10 @@ import (
 
 // WithdrawReward is called to execute the actuall operation for MsgWithdrawReward
 func (k Keeper) WithdrawReward(ctx sdk.Context, msg *types.MsgWithdrawReward) (sdk.Coin, error) {
-	reward, exists := k.GetRewardStore(ctx, msg.Sender.AccAddress())
+	senderAccAddr := sdk.MustAccAddressFromBech32(msg.Sender)
+	reward, exists := k.GetRewardStore(ctx, senderAccAddr)
 	if !(exists) {
-		return sdk.Coin{}, sdkerrors.Wrap(types.ErrRewardNotExists, msg.Sender.AccAddress().String())
+		return sdk.Coin{}, sdkerrors.Wrap(types.ErrRewardNotExists, msg.Sender)
 	}
 
 	rewardAmount := reward.Rewards.AmountOf(msg.Denom)
@@ -25,7 +26,7 @@ func (k Keeper) WithdrawReward(ctx sdk.Context, msg *types.MsgWithdrawReward) (s
 	// send coin from the specific module account which accumulate all fees on UnUniFi(?)
 	rewardCoin := sdk.NewCoin(msg.Denom, rewardAmount)
 	if err := k.bankKeeper.SendCoinsFromModuleToAccount(
-		ctx, types.ModuleName, msg.Sender.AccAddress(),
+		ctx, types.ModuleName, senderAccAddr,
 		sdk.NewCoins(rewardCoin)); err != nil {
 		return sdk.Coin{}, err
 	}
@@ -39,7 +40,7 @@ func (k Keeper) WithdrawReward(ctx sdk.Context, msg *types.MsgWithdrawReward) (s
 	// the RewardStore data for the subject.
 	// Otherwise, delete the data by key
 	if reward.Rewards.Empty() {
-		k.DeleteRewardStore(ctx, reward.SubjectAddr.AccAddress())
+		k.DeleteRewardStore(ctx, sdk.MustAccAddressFromBech32(reward.SubjectAddr))
 	} else {
 		if err := k.SetRewardStore(ctx, reward); err != nil {
 			return sdk.Coin{}, err
@@ -52,20 +53,21 @@ func (k Keeper) WithdrawReward(ctx sdk.Context, msg *types.MsgWithdrawReward) (s
 // WithdrawAllRewards is called to execute the actuall operation for MsgWithdrawAllRewards
 // After sending the all accumulated rewards, delete types.Reward data from KVStore for the subject
 func (k Keeper) WithdrawAllRewards(ctx sdk.Context, msg *types.MsgWithdrawAllRewards) (sdk.Coins, error) {
-	reward, exists := k.GetRewardStore(ctx, msg.Sender.AccAddress())
+	senderAccAddr := sdk.MustAccAddressFromBech32(msg.Sender)
+	reward, exists := k.GetRewardStore(ctx, senderAccAddr)
 	if !(exists) {
-		return sdk.Coins{}, sdkerrors.Wrap(types.ErrRewardNotExists, msg.Sender.AccAddress().String())
+		return sdk.Coins{}, sdkerrors.Wrap(types.ErrRewardNotExists, msg.Sender)
 	}
 
 	// TODO: decide how to define module accout to send token
 	// send coin from the specific module account which accumulate all fees on UnUniFi(?)
 	if err := k.bankKeeper.SendCoinsFromModuleToAccount(
-		ctx, types.ModuleName, msg.Sender.AccAddress(), reward.Rewards); err != nil {
+		ctx, types.ModuleName, senderAccAddr, reward.Rewards); err != nil {
 		return sdk.Coins{}, err
 	}
 
 	// delete types.Reward data from KVStore since it became none
-	k.DeleteRewardStore(ctx, msg.Sender.AccAddress())
+	k.DeleteRewardStore(ctx, senderAccAddr)
 	return reward.Rewards, nil
 }
 
@@ -77,7 +79,8 @@ func (k Keeper) SetRewardStore(ctx sdk.Context, rewardStore types.RewardStore) e
 
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRewardStore))
-	prefixStore.Set(rewardStore.SubjectAddr.AccAddress().Bytes(), bz)
+	addressKeyBytes := sdk.MustAccAddressFromBech32(rewardStore.SubjectAddr).Bytes()
+	prefixStore.Set(addressKeyBytes, bz)
 
 	return nil
 }

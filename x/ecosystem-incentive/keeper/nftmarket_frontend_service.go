@@ -126,7 +126,7 @@ func (k Keeper) AccumulateRewardForFrontend(ctx sdk.Context, nftId nftmarkettype
 	)
 
 	for i, subjectInfo := range incentiveUnit.SubjectInfoLists {
-		rewardStore, exists := k.GetRewardStore(ctx, subjectInfo.SubjectAddr.AccAddress())
+		rewardStore, exists := k.GetRewardStore(ctx, sdk.MustAccAddressFromBech32(subjectInfo.SubjectAddr))
 		if !exists {
 			rewardStore = types.NewRewardStore(subjectInfo.SubjectAddr, nil)
 		}
