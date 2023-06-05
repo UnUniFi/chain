@@ -10,7 +10,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
+	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
 	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
 )
 

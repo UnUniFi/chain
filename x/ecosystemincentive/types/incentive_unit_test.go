@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
+	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
 )
 
 func TestAddIncentiveUnitid(t *testing.T) {

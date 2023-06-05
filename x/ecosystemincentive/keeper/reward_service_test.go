@@ -5,7 +5,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
-	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
+	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
 	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
 )
 

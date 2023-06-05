@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
+	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
 )
 
 func TestGenesisState_Validate(t *testing.T) {

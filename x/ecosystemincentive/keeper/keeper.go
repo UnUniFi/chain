@@ -10,7 +10,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
+	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
 )
 
 type (

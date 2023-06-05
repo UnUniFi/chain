@@ -9,8 +9,7 @@ import (
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 
-	ecoincentivetypes "github.com/UnUniFi/chain/x/ecosystem-incentive/types"
-
+	ecoincentivetypes "github.com/UnUniFi/chain/x/ecosystemincentive/types"
 	"github.com/UnUniFi/chain/x/nftmarket/types"
 )
 

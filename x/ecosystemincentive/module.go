@@ -16,9 +16,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/UnUniFi/chain/x/ecosystem-incentive/client/cli"
-	"github.com/UnUniFi/chain/x/ecosystem-incentive/keeper"
-	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
+	"github.com/UnUniFi/chain/x/ecosystemincentive/client/cli"
+	"github.com/UnUniFi/chain/x/ecosystemincentive/keeper"
+	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
 )
 
 var (

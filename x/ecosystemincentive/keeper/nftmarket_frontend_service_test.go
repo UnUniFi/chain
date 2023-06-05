@@ -9,7 +9,7 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 
 	ununifitypes "github.com/UnUniFi/chain/types"
-	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
+	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
 	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
 )
 

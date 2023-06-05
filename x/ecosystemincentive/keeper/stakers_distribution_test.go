@@ -6,7 +6,7 @@ import (
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
+	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
 )
 
 func (suite *KeeperTestSuite) TestAllocateTokensToStakers() {

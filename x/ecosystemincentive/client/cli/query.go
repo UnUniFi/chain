@@ -9,14 +9,14 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 
-	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
+	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module
 func GetQueryCmd(queryRoute string) *cobra.Command {
 	// Group ecosystemincentive queries under a subcommand
 	cmd := &cobra.Command{
-		Use:                        "ecosystem-incentive",
+		Use:                        "ecosystemincentive",
 		Short:                      fmt.Sprintf("Querying commands for the %s module", types.ModuleName),
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
