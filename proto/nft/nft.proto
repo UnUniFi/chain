@@ -1,0 +1,11 @@
+syntax = "proto3";
+package ununifi.nft;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/nft/types";
+
+message NftData {
+  bool send_disabled = 1;
+}
