@@ -2,8 +2,8 @@ syntax = "proto3";
 package ununifi.ecosystemincentive;
 
 import "gogoproto/gogo.proto";
-import "ecosystem-incentive/params.proto";
-import "ecosystem-incentive/ecosystemincentive.proto";
+import "ecosystemincentive/params.proto";
+import "ecosystemincentive/ecosystemincentive.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/ecosystemincentive/types";
 
