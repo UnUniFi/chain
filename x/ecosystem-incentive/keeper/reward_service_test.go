@@ -6,7 +6,42 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
 	"github.com/UnUniFi/chain/x/ecosystem-incentive/types"
+	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
 )
+
+func (suite *KeeperTestSuite) TestRewardDistributionOfNftmarket() {
+	testCases := []struct {
+		testCase   string
+		nftId      nftmarkettypes.NftIdentifier
+		reward     sdk.Coin
+		validDenom bool
+		success    bool
+	}{
+		{
+			testCase:   "success case",
+			nftId:      nftmarkettypes.NftIdentifier{ClassId: "test1", NftId: "test1"},
+			reward:     sdk.NewCoin("uguu", sdk.NewInt(10)),
+			validDenom: true,
+			success:    true,
+		},
+	}
+
+	for _, tc := range testCases {
+		_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{tc.reward})
+		_ = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.ModuleName, sdk.Coins{tc.reward})
+
+		if tc.success {
+			err := suite.app.EcosystemincentiveKeeper.RewardDistributionOfNftmarket(suite.ctx, tc.nftId, tc.reward)
+			suite.Require().NoError(err)
+
+			// reward := suite.app.BankKeeper.GetBalance(suite.ctx, suite.app.EcosystemincentiveKeeper.GetNftMarketAddress(suite.ctx), tc.reward.Denom)
+			// suite.Require().Equal(tc.reward, reward)
+		} else {
+			err := suite.app.EcosystemincentiveKeeper.RewardDistributionOfNftmarket(suite.ctx, tc.nftId, tc.reward)
+			suite.Require().Error(err)
+		}
+	}
+}
 
 func (suite *KeeperTestSuite) TestWithdrawReward() {
 	testCases := []struct {

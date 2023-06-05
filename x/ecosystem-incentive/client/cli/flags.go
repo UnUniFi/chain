@@ -9,14 +9,14 @@ const (
 	FlagRegisterFile = "register-file"
 
 	// Names of fields in incentive-unit json file
-	IncentiveUnitId           = "incentive-unit-id"
-	IncentiveUnitSubjectAddrs = "subject-addrs"
+	IncentiveUnitId           = "incentive_unit_id"
+	IncentiveUnitSubjectAddrs = "subject_addrs"
 	IncentiveUnitWeights      = "weights"
 )
 
 type registerInputs struct {
-	IncentiveUnitId string   `json:"incentive-unit-id"`
-	SubjectAddrs    []string `json:"subject-addrs"`
+	IncentiveUnitId string   `json:"incentive_unit_id"`
+	SubjectAddrs    []string `json:"subject_addrs"`
 	Weights         []string `json:"weights"`
 }
 

@@ -35,8 +35,10 @@ message RewardRate {
   ];
 }
 
-// At first, we go with this one type.
 // NFTMARKET_FRONTEND type reward will be disributed for the creators of frontend of UnUniFi's services.
 enum RewardType {
+  // NFTMARKET_FRONTEND type reward will be disributed for the creators of frontend of UnUniFi's services.
   NFTMARKET_FRONTEND = 0;
+  // STAKERS type reward is the lavel of reward for the stakers of the ecosystem incentive module.
+  STAKERS = 1;
 }

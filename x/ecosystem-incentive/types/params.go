@@ -5,15 +5,26 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+
+	nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
 )
 
 var (
 	DafaultRewardParams = []*RewardParams{
 		{
-			ModuleName: "nftmarket",
+			ModuleName: nftmarkettypes.ModuleName,
 			RewardRate: []RewardRate{
 				{
 					RewardType: RewardType_NFTMARKET_FRONTEND,
+					Rate:       sdk.MustNewDecFromStr("0.5"),
+				},
+			},
+		},
+		{
+			ModuleName: nftmarkettypes.ModuleName,
+			RewardRate: []RewardRate{
+				{
+					RewardType: RewardType_STAKERS,
 					Rate:       sdk.MustNewDecFromStr("0.5"),
 				},
 			},
