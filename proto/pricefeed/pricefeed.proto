@@ -12,9 +12,7 @@ message Market {
   string base_asset = 2 [(gogoproto.moretags) = "yaml:\"base_asset\""];
   string quote_asset = 3 [(gogoproto.moretags) = "yaml:\"quote_asset\""];
   repeated string oracles = 4 [
-    (gogoproto.moretags) = "yaml:\"oracles\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.moretags) = "yaml:\"oracles\""
   ];
   bool active = 5 [(gogoproto.moretags) = "yaml:\"active\""];
 }
@@ -31,9 +29,7 @@ message CurrentPrice {
 message PostedPrice {
   string market_id = 1 [(gogoproto.moretags) = "yaml:\"market_id\""];
   string oracle_address = 2 [
-    (gogoproto.moretags) = "yaml:\"oracle_address\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.moretags) = "yaml:\"oracle_address\""
   ];
   string price = 3 [
     (gogoproto.moretags) = "yaml:\"price\"",

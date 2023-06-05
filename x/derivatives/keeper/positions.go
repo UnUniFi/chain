@@ -81,7 +81,7 @@ func (k Keeper) GetPositionWithId(ctx sdk.Context, id string) *types.Position {
 	return &position
 }
 
-func (k Keeper) GetAddressPositions(ctx sdk.Context, user sdk.AccAddress) []*types.Position {
+func (k Keeper) GetAddressPositions(ctx sdk.Context, user string) []*types.Position {
 	store := ctx.KVStore(k.storeKey)
 
 	positions := []*types.Position{}
@@ -98,7 +98,7 @@ func (k Keeper) GetAddressPositions(ctx sdk.Context, user sdk.AccAddress) []*typ
 	return positions
 }
 
-func (k Keeper) GetAddressPositionsVal(ctx sdk.Context, user sdk.AccAddress) []types.Position {
+func (k Keeper) GetAddressPositionsVal(ctx sdk.Context, user string) []types.Position {
 	store := ctx.KVStore(k.storeKey)
 
 	positions := []types.Position{}
@@ -115,7 +115,7 @@ func (k Keeper) GetAddressPositionsVal(ctx sdk.Context, user sdk.AccAddress) []t
 	return positions
 }
 
-func (k Keeper) GetAddressPositionWithId(ctx sdk.Context, address sdk.AccAddress, id string) *types.Position {
+func (k Keeper) GetAddressPositionWithId(ctx sdk.Context, address string, id string) *types.Position {
 	store := ctx.KVStore(k.storeKey)
 
 	bz := store.Get(types.AddressPositionWithIdKeyPrefix(address, id))
@@ -133,10 +133,10 @@ func (k Keeper) SetPosition(ctx sdk.Context, position types.Position) {
 
 	bz := k.cdc.MustMarshal(&position)
 	store.Set(types.PositionWithIdKeyPrefix(position.Id), bz)
-	store.Set(types.AddressPositionWithIdKeyPrefix(position.Address.AccAddress(), position.Id), bz)
+	store.Set(types.AddressPositionWithIdKeyPrefix(position.Address, position.Id), bz)
 }
 
-func (k Keeper) DeletePosition(ctx sdk.Context, address sdk.AccAddress, id string) {
+func (k Keeper) DeletePosition(ctx sdk.Context, address string, id string) {
 	store := ctx.KVStore(k.storeKey)
 
 	store.Delete(types.PositionWithIdKeyPrefix(id))
@@ -183,13 +183,13 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 
 func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) error {
 	positionId := msg.PositionId
-	position := k.GetAddressPositionWithId(ctx, msg.Sender.AccAddress(), positionId)
+	position := k.GetAddressPositionWithId(ctx, msg.Sender, positionId)
 
 	if position == nil {
 		return errors.New("position not found")
 	}
 
-	if msg.Sender.AccAddress().String() != position.Address.AccAddress().String() {
+	if msg.Sender != position.Address {
 		return errors.New("not owner")
 	}
 
@@ -214,7 +214,7 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 		return err
 	}
 
-	k.DeletePosition(ctx, msg.Sender.AccAddress(), positionId)
+	k.DeletePosition(ctx, msg.Sender, positionId)
 
 	return nil
 }

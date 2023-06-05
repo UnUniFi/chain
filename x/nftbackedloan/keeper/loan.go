@@ -72,7 +72,7 @@ func (k Keeper) DecreaseDebt(ctx sdk.Context, nftId types.NftIdentifier, amount 
 }
 
 func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
-	return k.ManualBorrow(ctx, msg.NftId, msg.Amount, msg.Sender.AccAddress().String(), msg.Sender.AccAddress().String())
+	return k.ManualBorrow(ctx, msg.NftId, msg.Amount, msg.Sender, msg.Sender)
 }
 
 func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, require sdk.Coin, borrower, receiver string) error {
@@ -174,7 +174,7 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 		return err
 	}
 
-	if listing.Owner != msg.Sender.AccAddress().String() {
+	if listing.Owner != msg.Sender {
 		return types.ErrNotNftListingOwner
 	}
 
@@ -183,7 +183,12 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 		return types.ErrInvalidRepayDenom
 	}
 
-	listerAmount := k.bankKeeper.GetBalance(ctx, msg.Sender.AccAddress(), msg.Amount.Denom)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return err
+	}
+
+	listerAmount := k.bankKeeper.GetBalance(ctx, sender, msg.Amount.Denom)
 	if listerAmount.Amount.LT(msg.Amount.Amount) {
 		return types.ErrInsufficientBalance
 	}
@@ -224,7 +229,6 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 		k.SetBid(ctx, bid)
 	}
 
-	sender := msg.Sender.AccAddress()
 	debitAmount := msg.Amount.Sub(repaidAmount)
 	k.DecreaseDebt(ctx, msg.NftId, debitAmount)
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{debitAmount})
@@ -234,7 +238,7 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 
 	// Emit event for paying full bid
 	ctx.EventManager().EmitTypedEvent(&types.EventRepay{
-		Repayer: msg.Sender.AccAddress().String(),
+		Repayer: msg.Sender,
 		ClassId: msg.NftId.ClassId,
 		NftId:   msg.NftId.NftId,
 		Amount:  msg.Amount.String(),

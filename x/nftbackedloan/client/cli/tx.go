@@ -59,7 +59,7 @@ $ %s tx %s mint a10 a10 uri 888838  --from myKeyName --chain-id ununifi-x
 				return err
 			}
 
-			msg := types.NewMsgMintNft(clientCtx.GetFromAddress(), args[0], args[1], args[2], args[3])
+			msg := types.NewMsgMintNft(clientCtx.GetFromAddress().String(), args[0], args[1], args[2], args[3])
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -122,7 +122,7 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 			// convert uint64 to time.Duration
 			minBiddingPeriod := time.Duration(minBiddingPeriodHour) * time.Hour
 
-			msg := types.NewMsgListNft(clientCtx.GetFromAddress(), nftIde, bidToken, minDepositRateDec, automaticRef, minBiddingPeriod)
+			msg := types.NewMsgListNft(clientCtx.GetFromAddress().String(), nftIde, bidToken, minDepositRateDec, automaticRef, minBiddingPeriod)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -197,7 +197,7 @@ $ %s tx %s place-bid 1 1 100uguu --automatic-payment --from myKeyName --chain-id
 			// bid_end_at := now.Add(time.Hour * time.Duration(bidding_duration_hour))
 			bid_end_at := now.Add(time.Second * time.Duration(bidding_duration_hour))
 
-			msg := types.NewMsgPlaceBid(clientCtx.GetFromAddress(), nftIde, bidCoin, depositCoin, depositInterestRate, bid_end_at, automaticPayment)
+			msg := types.NewMsgPlaceBid(clientCtx.GetFromAddress().String(), nftIde, bidCoin, depositCoin, depositInterestRate, bid_end_at, automaticPayment)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -235,7 +235,7 @@ $ %s tx %s end-listing 1 1 --from myKeyName --chain-id ununifi-x
 				NftId:   nftId,
 			}
 
-			msg := types.NewMsgEndNftListing(clientCtx.GetFromAddress(), nftIde)
+			msg := types.NewMsgEndNftListing(clientCtx.GetFromAddress().String(), nftIde)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -271,7 +271,7 @@ $ %s tx %s selling-decision 1 1 --from myKeyName --chain-id ununifi-x
 				NftId:   nftId,
 			}
 
-			msg := types.NewMsgSellingDecision(clientCtx.GetFromAddress(), nftIde)
+			msg := types.NewMsgSellingDecision(clientCtx.GetFromAddress().String(), nftIde)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -312,7 +312,7 @@ $ %s tx %s borrow 1 1 100uguu --from myKeyName --chain-id ununifi-x
 				return err
 			}
 
-			msg := types.NewMsgBorrow(clientCtx.GetFromAddress(), nftIde, borrowCoin)
+			msg := types.NewMsgBorrow(clientCtx.GetFromAddress().String(), nftIde, borrowCoin)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -353,7 +353,7 @@ $ %s tx %s repay 1 1 100uguu --from myKeyName --chain-id ununifi-x
 				return err
 			}
 
-			msg := types.NewMsgRepay(clientCtx.GetFromAddress(), nftIde, borrowCoin)
+			msg := types.NewMsgRepay(clientCtx.GetFromAddress().String(), nftIde, borrowCoin)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -389,7 +389,7 @@ $ %s tx %s cancel_listing 1 1 --from myKeyName --chain-id ununifi-x
 				NftId:   nftId,
 			}
 
-			msg := types.NewMsgCancelNftListing(clientCtx.GetFromAddress(), nftIde)
+			msg := types.NewMsgCancelNftListing(clientCtx.GetFromAddress().String(), nftIde)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -425,7 +425,7 @@ $ %s tx %s cancel-bid 1 1 --from myKeyName --chain-id ununifi-x
 				NftId:   nftId,
 			}
 
-			msg := types.NewMsgCancelBid(clientCtx.GetFromAddress(), nftIde)
+			msg := types.NewMsgCancelBid(clientCtx.GetFromAddress().String(), nftIde)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -462,7 +462,7 @@ $ %s tx %s pay-full-bid 1 1 --from myKeyName --chain-id ununifi-x
 				NftId:   nftId,
 			}
 
-			msg := types.NewMsgPayFullBid(clientCtx.GetFromAddress(), nftIde)
+			msg := types.NewMsgPayFullBid(clientCtx.GetFromAddress().String(), nftIde)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err

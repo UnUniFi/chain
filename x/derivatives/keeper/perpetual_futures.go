@@ -6,8 +6,6 @@ import (
 	codecTypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	ununifiTypes "github.com/UnUniFi/chain/types"
-
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
@@ -41,7 +39,7 @@ func (k Keeper) GetPairUsdPriceFromMarket(ctx sdk.Context, market types.Market) 
 	return k.GetPairUsdPrice(ctx, market.BaseDenom, market.QuoteDenom)
 }
 
-func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string, sender ununifiTypes.StringAccAddress, margin sdk.Coin, market types.Market, positionInstance types.PerpetualFuturesPositionInstance) (*types.Position, error) {
+func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string, sender string, margin sdk.Coin, market types.Market, positionInstance types.PerpetualFuturesPositionInstance) (*types.Position, error) {
 	// Get base and quote price in quote ticker of the pool, which is "usd"
 	openedBaseRate, err := k.GetCurrentPrice(ctx, market.BaseDenom)
 	if err != nil {
@@ -109,7 +107,7 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 	}
 
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionOpened{
-		Sender:     sender.AccAddress().String(),
+		Sender:     sender,
 		PositionId: positionId,
 	})
 
@@ -193,7 +191,7 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 	}
 
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionClosed{
-		Sender:          position.Address.AccAddress().String(),
+		Sender:          position.Address,
 		PositionId:      position.Id,
 		FeeAmount:       feeAmount.String(),
 		TradeAmount:     tradeAmount.String(),
@@ -242,7 +240,7 @@ func (k Keeper) HandleReturnAmount(ctx sdk.Context, pnlAmount sdk.Int, position 
 	return returningAmount, nil
 }
 
-func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient ununifiTypes.StringAccAddress, position types.PerpetualFuturesPosition) error {
+func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient string, position types.PerpetualFuturesPosition) error {
 	params := k.GetParams(ctx)
 
 	currentBaseUsdRate, currentQuoteUsdRate, err := k.GetPairUsdPriceFromMarket(ctx, position.Market)
@@ -264,14 +262,14 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 			return err
 		}
 		// Delete Position
-		k.DeletePosition(ctx, position.Address.AccAddress(), position.Id)
+		k.DeletePosition(ctx, position.Address, position.Id)
 		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
 		if err != nil {
 			return err
 		}
 
 		_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionLiquidated{
-			RewardRecipient: rewardRecipient.AccAddress().String(),
+			RewardRecipient: rewardRecipient,
 			PositionId:      position.Id,
 			RemainingMargin: position.RemainingMargin.String(),
 			RewardAmount:    rewardAmount.String(),
@@ -282,7 +280,7 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 	return nil
 }
 
-func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient ununifiTypes.StringAccAddress, position types.Position, positionInstance types.PerpetualFuturesPositionInstance) error {
+func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient string, position types.Position, positionInstance types.PerpetualFuturesPositionInstance) error {
 	params := k.GetParams(ctx)
 
 	netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, position.Market).PositionSizeInDenomExponent

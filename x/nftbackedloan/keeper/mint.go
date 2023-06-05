@@ -34,6 +34,14 @@ func (k Keeper) MintNft(ctx sdk.Context, msg *types.MsgMintNft) error {
 		Uri:     msg.NftUri,
 		UriHash: msg.NftUriHash,
 	}
-	err := k.nftKeeper.Mint(ctx, expNFT, msg.Sender.AccAddress())
-	return err
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return err
+	}
+	err = k.nftKeeper.Mint(ctx, expNFT, sender)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

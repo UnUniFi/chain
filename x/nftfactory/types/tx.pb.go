@@ -6,7 +6,6 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	github_com_UnUniFi_chain_types "github.com/UnUniFi/chain/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
@@ -30,14 +29,14 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type MsgCreateClass struct {
-	Sender            github_com_UnUniFi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"sender" yaml:"sender"`
-	Name              string                                          `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	BaseTokenUri      string                                          `protobuf:"bytes,3,opt,name=base_token_uri,json=baseTokenUri,proto3" json:"base_token_uri,omitempty"`
-	TokenSupplyCap    uint64                                          `protobuf:"varint,4,opt,name=token_supply_cap,json=tokenSupplyCap,proto3" json:"token_supply_cap,omitempty"`
-	MintingPermission MintingPermission                               `protobuf:"varint,5,opt,name=minting_permission,json=mintingPermission,proto3,enum=ununifi.nftfactory.MintingPermission" json:"minting_permission,omitempty"`
-	Symbol            string                                          `protobuf:"bytes,7,opt,name=symbol,proto3" json:"symbol,omitempty"`
-	Description       string                                          `protobuf:"bytes,8,opt,name=description,proto3" json:"description,omitempty"`
-	ClassUri          string                                          `protobuf:"bytes,9,opt,name=class_uri,json=classUri,proto3" json:"class_uri,omitempty"`
+	Sender            string            `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Name              string            `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	BaseTokenUri      string            `protobuf:"bytes,3,opt,name=base_token_uri,json=baseTokenUri,proto3" json:"base_token_uri,omitempty"`
+	TokenSupplyCap    uint64            `protobuf:"varint,4,opt,name=token_supply_cap,json=tokenSupplyCap,proto3" json:"token_supply_cap,omitempty"`
+	MintingPermission MintingPermission `protobuf:"varint,5,opt,name=minting_permission,json=mintingPermission,proto3,enum=ununifi.nftfactory.MintingPermission" json:"minting_permission,omitempty"`
+	Symbol            string            `protobuf:"bytes,7,opt,name=symbol,proto3" json:"symbol,omitempty"`
+	Description       string            `protobuf:"bytes,8,opt,name=description,proto3" json:"description,omitempty"`
+	ClassUri          string            `protobuf:"bytes,9,opt,name=class_uri,json=classUri,proto3" json:"class_uri,omitempty"`
 }
 
 func (m *MsgCreateClass) Reset()         { *m = MsgCreateClass{} }
@@ -72,6 +71,13 @@ func (m *MsgCreateClass) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_MsgCreateClass proto.InternalMessageInfo
+
+func (m *MsgCreateClass) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
 
 func (m *MsgCreateClass) GetName() string {
 	if m != nil {
@@ -159,9 +165,9 @@ func (m *MsgCreateClassResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgCreateClassResponse proto.InternalMessageInfo
 
 type MsgSendClassOwnership struct {
-	Sender    github_com_UnUniFi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"sender" yaml:"sender"`
-	ClassId   string                                          `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	Recipient github_com_UnUniFi_chain_types.StringAccAddress `protobuf:"bytes,3,opt,name=recipient,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"recipient" yaml:"recipient"`
+	Sender    string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	ClassId   string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
+	Recipient string `protobuf:"bytes,3,opt,name=recipient,proto3" json:"recipient,omitempty"`
 }
 
 func (m *MsgSendClassOwnership) Reset()         { *m = MsgSendClassOwnership{} }
@@ -197,9 +203,23 @@ func (m *MsgSendClassOwnership) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgSendClassOwnership proto.InternalMessageInfo
 
+func (m *MsgSendClassOwnership) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
+
 func (m *MsgSendClassOwnership) GetClassId() string {
 	if m != nil {
 		return m.ClassId
+	}
+	return ""
+}
+
+func (m *MsgSendClassOwnership) GetRecipient() string {
+	if m != nil {
+		return m.Recipient
 	}
 	return ""
 }
@@ -241,9 +261,9 @@ func (m *MsgSendClassOwnershipResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgSendClassOwnershipResponse proto.InternalMessageInfo
 
 type MsgUpdateBaseTokenUri struct {
-	Sender       github_com_UnUniFi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"sender" yaml:"sender"`
-	ClassId      string                                          `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	BaseTokenUri string                                          `protobuf:"bytes,3,opt,name=base_token_uri,json=baseTokenUri,proto3" json:"base_token_uri,omitempty"`
+	Sender       string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	ClassId      string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
+	BaseTokenUri string `protobuf:"bytes,3,opt,name=base_token_uri,json=baseTokenUri,proto3" json:"base_token_uri,omitempty"`
 }
 
 func (m *MsgUpdateBaseTokenUri) Reset()         { *m = MsgUpdateBaseTokenUri{} }
@@ -278,6 +298,13 @@ func (m *MsgUpdateBaseTokenUri) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_MsgUpdateBaseTokenUri proto.InternalMessageInfo
+
+func (m *MsgUpdateBaseTokenUri) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
 
 func (m *MsgUpdateBaseTokenUri) GetClassId() string {
 	if m != nil {
@@ -330,9 +357,9 @@ func (m *MsgUpdateBaseTokenUriResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgUpdateBaseTokenUriResponse proto.InternalMessageInfo
 
 type MsgUpdateTokenSupplyCap struct {
-	Sender         github_com_UnUniFi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"sender" yaml:"sender"`
-	ClassId        string                                          `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	TokenSupplyCap uint64                                          `protobuf:"varint,3,opt,name=token_supply_cap,json=tokenSupplyCap,proto3" json:"token_supply_cap,omitempty"`
+	Sender         string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	ClassId        string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
+	TokenSupplyCap uint64 `protobuf:"varint,3,opt,name=token_supply_cap,json=tokenSupplyCap,proto3" json:"token_supply_cap,omitempty"`
 }
 
 func (m *MsgUpdateTokenSupplyCap) Reset()         { *m = MsgUpdateTokenSupplyCap{} }
@@ -367,6 +394,13 @@ func (m *MsgUpdateTokenSupplyCap) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_MsgUpdateTokenSupplyCap proto.InternalMessageInfo
+
+func (m *MsgUpdateTokenSupplyCap) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
 
 func (m *MsgUpdateTokenSupplyCap) GetClassId() string {
 	if m != nil {
@@ -419,10 +453,10 @@ func (m *MsgUpdateTokenSupplyCapResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgUpdateTokenSupplyCapResponse proto.InternalMessageInfo
 
 type MsgMintNFT struct {
-	Sender    github_com_UnUniFi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"sender" yaml:"sender"`
-	ClassId   string                                          `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	NftId     string                                          `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
-	Recipient github_com_UnUniFi_chain_types.StringAccAddress `protobuf:"bytes,4,opt,name=recipient,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"recipient" yaml:"recipient"`
+	Sender    string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	ClassId   string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
+	NftId     string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	Recipient string `protobuf:"bytes,4,opt,name=recipient,proto3" json:"recipient,omitempty"`
 }
 
 func (m *MsgMintNFT) Reset()         { *m = MsgMintNFT{} }
@@ -458,6 +492,13 @@ func (m *MsgMintNFT) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgMintNFT proto.InternalMessageInfo
 
+func (m *MsgMintNFT) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
+
 func (m *MsgMintNFT) GetClassId() string {
 	if m != nil {
 		return m.ClassId
@@ -468,6 +509,13 @@ func (m *MsgMintNFT) GetClassId() string {
 func (m *MsgMintNFT) GetNftId() string {
 	if m != nil {
 		return m.NftId
+	}
+	return ""
+}
+
+func (m *MsgMintNFT) GetRecipient() string {
+	if m != nil {
+		return m.Recipient
 	}
 	return ""
 }
@@ -509,9 +557,9 @@ func (m *MsgMintNFTResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgMintNFTResponse proto.InternalMessageInfo
 
 type MsgBurnNFT struct {
-	Sender  github_com_UnUniFi_chain_types.StringAccAddress `protobuf:"bytes,1,opt,name=sender,proto3,customtype=github.com/UnUniFi/chain/types.StringAccAddress" json:"sender" yaml:"sender"`
-	ClassId string                                          `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	NftId   string                                          `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	Sender  string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	ClassId string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
+	NftId   string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
 }
 
 func (m *MsgBurnNFT) Reset()         { *m = MsgBurnNFT{} }
@@ -546,6 +594,13 @@ func (m *MsgBurnNFT) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_MsgBurnNFT proto.InternalMessageInfo
+
+func (m *MsgBurnNFT) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
 
 func (m *MsgBurnNFT) GetClassId() string {
 	if m != nil {
@@ -615,51 +670,46 @@ func init() {
 func init() { proto.RegisterFile("nftfactory/tx.proto", fileDescriptor_d0c402e6a7124039) }
 
 var fileDescriptor_d0c402e6a7124039 = []byte{
-	// 694 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x56, 0xcd, 0x6e, 0xd3, 0x4a,
-	0x14, 0x8e, 0x9b, 0x34, 0x6d, 0x4e, 0xef, 0x8d, 0x7a, 0xe7, 0xb6, 0xbd, 0xb9, 0xa9, 0x70, 0x82,
-	0x05, 0x28, 0x50, 0x29, 0x16, 0xed, 0x8e, 0x5d, 0x53, 0x51, 0x81, 0x50, 0xf8, 0x49, 0x93, 0x0d,
-	0x12, 0x0a, 0x8e, 0x3d, 0x71, 0x47, 0xc4, 0x63, 0x6b, 0x66, 0x22, 0x9a, 0x35, 0x4b, 0x36, 0x3c,
-	0x02, 0xcf, 0xc1, 0x8a, 0x65, 0x97, 0x5d, 0x22, 0x16, 0x15, 0x6a, 0xb7, 0xac, 0x78, 0x01, 0x90,
-	0xc7, 0x8e, 0xe3, 0x34, 0x76, 0x29, 0x48, 0x50, 0x76, 0xe3, 0xf3, 0x7d, 0x3e, 0x3f, 0xdf, 0x9c,
-	0x73, 0x6c, 0xf8, 0x97, 0xf6, 0x45, 0xdf, 0x30, 0x85, 0xcb, 0x46, 0xba, 0x38, 0xa8, 0x7b, 0xcc,
-	0x15, 0x2e, 0x42, 0x43, 0x3a, 0xa4, 0xa4, 0x4f, 0xea, 0x13, 0xb0, 0xbc, 0x62, 0xbb, 0xb6, 0x2b,
-	0x61, 0xdd, 0x3f, 0x05, 0xcc, 0xf2, 0x7a, 0xec, 0xf5, 0xc9, 0x31, 0x00, 0xb5, 0x57, 0x59, 0x28,
-	0x36, 0xb9, 0xbd, 0xc3, 0xb0, 0x21, 0xf0, 0xce, 0xc0, 0xe0, 0x1c, 0x3d, 0x87, 0x3c, 0xc7, 0xd4,
-	0xc2, 0xac, 0xa4, 0x54, 0x95, 0x5a, 0xa1, 0x71, 0xef, 0xf0, 0xb8, 0x92, 0xf9, 0x78, 0x5c, 0xd1,
-	0x6d, 0x22, 0xf6, 0x87, 0xbd, 0xba, 0xe9, 0x3a, 0x7a, 0x87, 0x76, 0x28, 0xd9, 0x25, 0xba, 0xb9,
-	0x6f, 0x10, 0xaa, 0x8b, 0x91, 0x87, 0x79, 0x7d, 0x4f, 0x30, 0x42, 0xed, 0x6d, 0xd3, 0xdc, 0xb6,
-	0x2c, 0x86, 0x39, 0xff, 0x72, 0x5c, 0xf9, 0x7b, 0x64, 0x38, 0x83, 0x3b, 0x5a, 0xe0, 0x4e, 0x6b,
-	0x85, 0x7e, 0x11, 0x82, 0x1c, 0x35, 0x1c, 0x5c, 0x9a, 0xf3, 0xfd, 0xb7, 0xe4, 0x19, 0x5d, 0x83,
-	0x62, 0xcf, 0xe0, 0xb8, 0x2b, 0xdc, 0x17, 0x98, 0x76, 0x87, 0x8c, 0x94, 0xb2, 0x12, 0xfd, 0xcb,
-	0xb7, 0xb6, 0x7d, 0x63, 0x87, 0x11, 0x54, 0x83, 0xe5, 0x80, 0xc0, 0x87, 0x9e, 0x37, 0x18, 0x75,
-	0x4d, 0xc3, 0x2b, 0xe5, 0xaa, 0x4a, 0x2d, 0xd7, 0x2a, 0x4a, 0xfb, 0x9e, 0x34, 0xef, 0x18, 0x1e,
-	0x6a, 0x03, 0x72, 0x08, 0x15, 0x84, 0xda, 0x5d, 0x0f, 0x33, 0x87, 0x70, 0x4e, 0x5c, 0x5a, 0x9a,
-	0xaf, 0x2a, 0xb5, 0xe2, 0xe6, 0xf5, 0xfa, 0xac, 0x78, 0xf5, 0x66, 0xc0, 0x7e, 0x1c, 0x91, 0x5b,
-	0xff, 0x38, 0x67, 0x4d, 0x68, 0x0d, 0xf2, 0x7c, 0xe4, 0xf4, 0xdc, 0x41, 0x69, 0x41, 0x66, 0x17,
-	0x3e, 0xa1, 0x2a, 0x2c, 0x59, 0x98, 0x9b, 0x8c, 0x78, 0xc2, 0x0f, 0xb3, 0x28, 0xc1, 0xb8, 0x09,
-	0xad, 0x43, 0xc1, 0xf4, 0xe5, 0x95, 0xa5, 0x15, 0x24, 0xbe, 0x28, 0x0d, 0x1d, 0x46, 0xb4, 0x12,
-	0xac, 0x4d, 0x5f, 0x42, 0x0b, 0x73, 0xcf, 0xa5, 0x1c, 0x6b, 0x5f, 0x15, 0x58, 0x6d, 0x72, 0x7b,
-	0x0f, 0x53, 0x4b, 0x02, 0x8f, 0x5e, 0x52, 0xcc, 0xf8, 0x3e, 0xf1, 0x7e, 0xc3, 0x35, 0xfd, 0x0f,
-	0x41, 0x86, 0x5d, 0x62, 0x85, 0x57, 0xb5, 0x20, 0x9f, 0xef, 0x5b, 0x88, 0x40, 0x81, 0x61, 0x93,
-	0x78, 0x04, 0x53, 0x11, 0x5c, 0x54, 0xe3, 0xc1, 0xcf, 0xc7, 0x5f, 0x0e, 0xe2, 0x47, 0x1e, 0xb5,
-	0xd6, 0xc4, 0xbb, 0x56, 0x81, 0x2b, 0x89, 0x02, 0x44, 0x12, 0xbd, 0x0b, 0x24, 0xea, 0x78, 0x96,
-	0x21, 0x70, 0x23, 0xde, 0x2d, 0x97, 0x2a, 0xd1, 0x85, 0x1a, 0x3a, 0xac, 0x6e, 0x36, 0xf7, 0xa8,
-	0xba, 0xf7, 0x0a, 0xfc, 0x17, 0x31, 0xda, 0xd3, 0x3d, 0x7e, 0xa9, 0xf5, 0x25, 0x8d, 0x62, 0x36,
-	0x69, 0x14, 0xb5, 0xab, 0x50, 0x49, 0xa9, 0x20, 0xaa, 0xf2, 0xf5, 0x1c, 0x40, 0x93, 0xdb, 0xfe,
-	0x0c, 0x3e, 0xdc, 0x6d, 0x5f, 0x6e, 0x61, 0xab, 0x90, 0xa7, 0x7d, 0xe1, 0x03, 0xc1, 0x85, 0xcd,
-	0xd3, 0xbe, 0x38, 0xdb, 0xf2, 0xb9, 0x5f, 0xda, 0xf2, 0x2b, 0x80, 0x26, 0x62, 0x44, 0x1a, 0xbd,
-	0x55, 0xa4, 0x46, 0x8d, 0x21, 0xa3, 0x7f, 0xa8, 0x46, 0x61, 0xe2, 0x61, 0x86, 0xe3, 0xc4, 0x37,
-	0x3f, 0xe7, 0x20, 0xdb, 0xe4, 0x36, 0x7a, 0x06, 0x4b, 0xf1, 0xef, 0x8c, 0x96, 0xb8, 0x85, 0xa7,
-	0xd6, 0x60, 0xf9, 0xd6, 0xf7, 0x39, 0xe3, 0x30, 0x88, 0x01, 0x4a, 0x58, 0x93, 0x37, 0x53, 0x3c,
-	0xcc, 0x52, 0xcb, 0xb7, 0x2f, 0x4c, 0x8d, 0xc7, 0x4c, 0xd8, 0x3b, 0x69, 0x31, 0x67, 0xa9, 0xa9,
-	0x31, 0xd3, 0x37, 0x02, 0x3a, 0x80, 0x95, 0xc4, 0x6d, 0xb0, 0x71, 0xae, 0xab, 0x69, 0x72, 0x79,
-	0xeb, 0x07, 0xc8, 0x51, 0xe4, 0x27, 0xb0, 0x30, 0x9e, 0x50, 0x35, 0xe5, 0xfd, 0x10, 0x2f, 0xdf,
-	0x38, 0x1f, 0x8f, 0xbb, 0x1c, 0x37, 0x74, 0x9a, 0xcb, 0x10, 0x4f, 0x75, 0x79, 0xa6, 0xdd, 0x1a,
-	0x77, 0x0f, 0x4f, 0x54, 0xe5, 0xe8, 0x44, 0x55, 0x3e, 0x9d, 0xa8, 0xca, 0x9b, 0x53, 0x35, 0x73,
-	0x74, 0xaa, 0x66, 0x3e, 0x9c, 0xaa, 0x99, 0xa7, 0x1b, 0xa9, 0xa3, 0x71, 0xa0, 0xc7, 0xff, 0xb1,
-	0xfc, 0x39, 0xe9, 0xe5, 0xe5, 0x0f, 0xd2, 0xd6, 0xb7, 0x00, 0x00, 0x00, 0xff, 0xff, 0x80, 0xc5,
-	0xf5, 0x9f, 0x7e, 0x09, 0x00, 0x00,
+	// 614 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x55, 0xcd, 0x6e, 0xd3, 0x4c,
+	0x14, 0xad, 0xdb, 0xf4, 0x27, 0xb7, 0x9f, 0xa2, 0x8f, 0xa1, 0x2d, 0xc6, 0x05, 0x37, 0x58, 0x80,
+	0x02, 0x95, 0x62, 0xd1, 0xbe, 0x41, 0x2b, 0x2a, 0xb1, 0x08, 0x3f, 0x69, 0xc2, 0x02, 0x09, 0x45,
+	0x8e, 0x3d, 0x71, 0x46, 0xd4, 0xe3, 0xd1, 0xcc, 0x18, 0x9a, 0xb7, 0xe0, 0x75, 0x78, 0x03, 0x96,
+	0x5d, 0xb2, 0x44, 0xcd, 0x96, 0x87, 0x40, 0x1e, 0x3b, 0x8e, 0x93, 0xd8, 0xa5, 0x44, 0xec, 0x66,
+	0xee, 0x39, 0xbe, 0xe7, 0xcc, 0x9d, 0x63, 0x1b, 0xee, 0xd2, 0x81, 0x1c, 0x38, 0xae, 0x0c, 0xf9,
+	0xc8, 0x96, 0x97, 0x4d, 0xc6, 0x43, 0x19, 0x22, 0x14, 0xd1, 0x88, 0x92, 0x01, 0x69, 0x4e, 0x41,
+	0x63, 0xc7, 0x0f, 0xfd, 0x50, 0xc1, 0x76, 0xbc, 0x4a, 0x98, 0xc6, 0x7e, 0xee, 0xf1, 0xe9, 0x32,
+	0x01, 0xad, 0x6f, 0xab, 0x50, 0x6b, 0x09, 0xff, 0x94, 0x63, 0x47, 0xe2, 0xd3, 0x0b, 0x47, 0x08,
+	0xb4, 0x07, 0x1b, 0x02, 0x53, 0x0f, 0x73, 0x5d, 0xab, 0x6b, 0x8d, 0x6a, 0x3b, 0xdd, 0x21, 0x04,
+	0x15, 0xea, 0x04, 0x58, 0x5f, 0x55, 0x55, 0xb5, 0x46, 0x8f, 0xa1, 0xd6, 0x77, 0x04, 0xee, 0xc9,
+	0xf0, 0x13, 0xa6, 0xbd, 0x88, 0x13, 0x7d, 0x4d, 0xa1, 0xff, 0xc5, 0xd5, 0x4e, 0x5c, 0xec, 0x72,
+	0x82, 0x1a, 0xf0, 0x7f, 0x42, 0x10, 0x11, 0x63, 0x17, 0xa3, 0x9e, 0xeb, 0x30, 0xbd, 0x52, 0xd7,
+	0x1a, 0x95, 0x76, 0x4d, 0xd5, 0xcf, 0x55, 0xf9, 0xd4, 0x61, 0xa8, 0x03, 0x28, 0x20, 0x54, 0x12,
+	0xea, 0xf7, 0x18, 0xe6, 0x01, 0x11, 0x82, 0x84, 0x54, 0x5f, 0xaf, 0x6b, 0x8d, 0xda, 0xd1, 0x93,
+	0xe6, 0xe2, 0x91, 0x9b, 0xad, 0x84, 0xfd, 0x36, 0x23, 0xb7, 0xef, 0x04, 0xf3, 0x25, 0x75, 0xa2,
+	0x51, 0xd0, 0x0f, 0x2f, 0xf4, 0xcd, 0xf4, 0x44, 0x6a, 0x87, 0xea, 0xb0, 0xed, 0x61, 0xe1, 0x72,
+	0xc2, 0x64, 0x2c, 0xb3, 0xa5, 0xc0, 0x7c, 0x09, 0xed, 0x43, 0xd5, 0x8d, 0x87, 0xa2, 0x8e, 0x56,
+	0x55, 0xf8, 0x96, 0x2a, 0x74, 0x39, 0xb1, 0x74, 0xd8, 0x9b, 0x1d, 0x5d, 0x1b, 0x0b, 0x16, 0x52,
+	0x81, 0xad, 0x21, 0xec, 0xb6, 0x84, 0x7f, 0x8e, 0xa9, 0xa7, 0xea, 0x6f, 0xbe, 0x50, 0xcc, 0xc5,
+	0x90, 0xb0, 0xd2, 0xd9, 0xde, 0x87, 0xa4, 0x6d, 0x8f, 0x78, 0xe9, 0x7c, 0x37, 0xd5, 0xfe, 0x95,
+	0x87, 0x1e, 0x40, 0x95, 0x63, 0x97, 0x30, 0x82, 0xa9, 0x4c, 0xa7, 0x3b, 0x2d, 0x58, 0x07, 0xf0,
+	0xb0, 0x50, 0x29, 0xb3, 0xc2, 0x94, 0x95, 0x2e, 0xf3, 0x1c, 0x89, 0x4f, 0xf2, 0x97, 0xb2, 0x84,
+	0x95, 0x5b, 0xdd, 0x76, 0x6a, 0x69, 0x51, 0x31, 0xb3, 0xf4, 0x19, 0xee, 0x65, 0x84, 0xce, 0xec,
+	0xfd, 0x2f, 0x61, 0xaa, 0x28, 0x5c, 0x6b, 0x45, 0xe1, 0xb2, 0x1e, 0xc1, 0x41, 0x89, 0x6e, 0x66,
+	0x4d, 0x02, 0xb4, 0x84, 0x1f, 0x87, 0xea, 0xf5, 0x59, 0x67, 0x19, 0x37, 0xbb, 0xb0, 0x41, 0x07,
+	0x32, 0x06, 0x92, 0xd1, 0xac, 0xd3, 0x81, 0x9c, 0xbf, 0xc4, 0xca, 0xfc, 0x25, 0xee, 0x00, 0x9a,
+	0xaa, 0x66, 0x5e, 0xde, 0x2b, 0x2f, 0x27, 0x11, 0xa7, 0xff, 0xd4, 0x4b, 0xaa, 0x96, 0xf6, 0x9d,
+	0xa8, 0x1d, 0xfd, 0xaa, 0xc0, 0x5a, 0x4b, 0xf8, 0xe8, 0x23, 0x6c, 0xe7, 0x3f, 0x06, 0x56, 0xe1,
+	0x4b, 0x37, 0x93, 0x7a, 0xe3, 0xf9, 0x9f, 0x39, 0x13, 0x19, 0xc4, 0x01, 0x15, 0xbc, 0x16, 0xcf,
+	0x4a, 0x3a, 0x2c, 0x52, 0x8d, 0x17, 0xb7, 0xa6, 0xe6, 0x35, 0x0b, 0xf2, 0x5f, 0xa6, 0xb9, 0x48,
+	0x2d, 0xd5, 0x2c, 0xcf, 0x38, 0xba, 0x84, 0x9d, 0xc2, 0x80, 0x1f, 0xde, 0xd8, 0x6a, 0x96, 0x6c,
+	0x1c, 0xff, 0x05, 0x39, 0x53, 0x7e, 0x07, 0x9b, 0x93, 0xfc, 0x9a, 0x25, 0xcf, 0xa7, 0xb8, 0xf1,
+	0xf4, 0x66, 0x3c, 0xdf, 0x72, 0x12, 0xc3, 0xb2, 0x96, 0x29, 0x5e, 0xda, 0x72, 0x2e, 0x6e, 0x27,
+	0x2f, 0xbf, 0x5f, 0x9b, 0xda, 0xd5, 0xb5, 0xa9, 0xfd, 0xbc, 0x36, 0xb5, 0xaf, 0x63, 0x73, 0xe5,
+	0x6a, 0x6c, 0xae, 0xfc, 0x18, 0x9b, 0x2b, 0x1f, 0x0e, 0x7d, 0x22, 0x87, 0x51, 0xbf, 0xe9, 0x86,
+	0x81, 0xdd, 0xa5, 0x5d, 0x4a, 0xce, 0x88, 0xed, 0x0e, 0x1d, 0x42, 0xed, 0x4b, 0x3b, 0xff, 0x23,
+	0x1c, 0x31, 0x2c, 0xfa, 0x1b, 0xea, 0x2f, 0x76, 0xfc, 0x3b, 0x00, 0x00, 0xff, 0xff, 0x3f, 0x6f,
+	0xf5, 0xc5, 0x23, 0x07, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -987,16 +1037,13 @@ func (m *MsgCreateClass) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	{
-		size := m.Sender.Size()
-		i -= size
-		if _, err := m.Sender.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintTx(dAtA, i, uint64(size))
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
 	}
-	i--
-	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -1043,16 +1090,13 @@ func (m *MsgSendClassOwnership) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	{
-		size := m.Recipient.Size()
-		i -= size
-		if _, err := m.Recipient.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintTx(dAtA, i, uint64(size))
+	if len(m.Recipient) > 0 {
+		i -= len(m.Recipient)
+		copy(dAtA[i:], m.Recipient)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Recipient)))
+		i--
+		dAtA[i] = 0x1a
 	}
-	i--
-	dAtA[i] = 0x1a
 	if len(m.ClassId) > 0 {
 		i -= len(m.ClassId)
 		copy(dAtA[i:], m.ClassId)
@@ -1060,16 +1104,13 @@ func (m *MsgSendClassOwnership) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	{
-		size := m.Sender.Size()
-		i -= size
-		if _, err := m.Sender.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintTx(dAtA, i, uint64(size))
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
 	}
-	i--
-	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -1130,16 +1171,13 @@ func (m *MsgUpdateBaseTokenUri) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	{
-		size := m.Sender.Size()
-		i -= size
-		if _, err := m.Sender.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintTx(dAtA, i, uint64(size))
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
 	}
-	i--
-	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -1198,16 +1236,13 @@ func (m *MsgUpdateTokenSupplyCap) MarshalToSizedBuffer(dAtA []byte) (int, error)
 		i--
 		dAtA[i] = 0x12
 	}
-	{
-		size := m.Sender.Size()
-		i -= size
-		if _, err := m.Sender.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintTx(dAtA, i, uint64(size))
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
 	}
-	i--
-	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -1254,16 +1289,13 @@ func (m *MsgMintNFT) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	{
-		size := m.Recipient.Size()
-		i -= size
-		if _, err := m.Recipient.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintTx(dAtA, i, uint64(size))
+	if len(m.Recipient) > 0 {
+		i -= len(m.Recipient)
+		copy(dAtA[i:], m.Recipient)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Recipient)))
+		i--
+		dAtA[i] = 0x22
 	}
-	i--
-	dAtA[i] = 0x22
 	if len(m.NftId) > 0 {
 		i -= len(m.NftId)
 		copy(dAtA[i:], m.NftId)
@@ -1278,16 +1310,13 @@ func (m *MsgMintNFT) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	{
-		size := m.Sender.Size()
-		i -= size
-		if _, err := m.Sender.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintTx(dAtA, i, uint64(size))
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
 	}
-	i--
-	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -1348,16 +1377,13 @@ func (m *MsgBurnNFT) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	{
-		size := m.Sender.Size()
-		i -= size
-		if _, err := m.Sender.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintTx(dAtA, i, uint64(size))
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
 	}
-	i--
-	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -1401,8 +1427,10 @@ func (m *MsgCreateClass) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = m.Sender.Size()
-	n += 1 + l + sovTx(uint64(l))
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.Name)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -1447,14 +1475,18 @@ func (m *MsgSendClassOwnership) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = m.Sender.Size()
-	n += 1 + l + sovTx(uint64(l))
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.ClassId)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = m.Recipient.Size()
-	n += 1 + l + sovTx(uint64(l))
+	l = len(m.Recipient)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -1473,8 +1505,10 @@ func (m *MsgUpdateBaseTokenUri) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = m.Sender.Size()
-	n += 1 + l + sovTx(uint64(l))
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.ClassId)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -1501,8 +1535,10 @@ func (m *MsgUpdateTokenSupplyCap) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = m.Sender.Size()
-	n += 1 + l + sovTx(uint64(l))
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.ClassId)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -1528,8 +1564,10 @@ func (m *MsgMintNFT) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = m.Sender.Size()
-	n += 1 + l + sovTx(uint64(l))
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.ClassId)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -1538,8 +1576,10 @@ func (m *MsgMintNFT) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = m.Recipient.Size()
-	n += 1 + l + sovTx(uint64(l))
+	l = len(m.Recipient)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -1558,8 +1598,10 @@ func (m *MsgBurnNFT) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = m.Sender.Size()
-	n += 1 + l + sovTx(uint64(l))
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	l = len(m.ClassId)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -1645,9 +1687,7 @@ func (m *MsgCreateClass) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Sender.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -1977,9 +2017,7 @@ func (m *MsgSendClassOwnership) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Sender.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -2043,9 +2081,7 @@ func (m *MsgSendClassOwnership) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Recipient.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
+			m.Recipient = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2177,9 +2213,7 @@ func (m *MsgUpdateBaseTokenUri) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Sender.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -2375,9 +2409,7 @@ func (m *MsgUpdateTokenSupplyCap) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Sender.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -2560,9 +2592,7 @@ func (m *MsgMintNFT) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Sender.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -2658,9 +2688,7 @@ func (m *MsgMintNFT) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Recipient.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
+			m.Recipient = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2792,9 +2820,7 @@ func (m *MsgBurnNFT) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Sender.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {

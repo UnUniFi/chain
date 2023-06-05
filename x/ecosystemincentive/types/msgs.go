@@ -36,14 +36,14 @@ func (msg MsgRegister) Route() string { return RouterKey }
 func (msg MsgRegister) Type() string { return TypeMsgRegister }
 
 func (msg MsgRegister) ValidateBasic() error {
-	// check if addresses are valid
-	if _, err := sdk.AccAddressFromBech32(msg.Sender); err != nil {
-		panic(err)
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address is not valid")
 	}
 
 	for _, addr := range msg.Addresses {
 		if _, err := sdk.AccAddressFromBech32(addr); err != nil {
-			panic(err)
+			return err
 		}
 	}
 
@@ -72,12 +72,8 @@ func (msg MsgRegister) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgRegister) GetSigners() []sdk.AccAddress {
-	sender, err := sdk.AccAddressFromBech32(msg.Sender)
-	if err != nil {
-		panic(err)
-	}
-
-	return []sdk.AccAddress{sender}
+	addr, _ := sdk.AccAddressFromBech32(msg.Sender)
+	return []sdk.AccAddress{addr}
 }
 
 func NewMsgWithdrawAllRewards(
@@ -109,12 +105,9 @@ func (msg MsgWithdrawAllRewards) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgWithdrawAllRewards) GetSigners() []sdk.AccAddress {
-	sender, err := sdk.AccAddressFromBech32(msg.Sender)
-	if err != nil {
-		panic(err)
-	}
+	addr, _ := sdk.AccAddressFromBech32(msg.Sender)
 
-	return []sdk.AccAddress{sender}
+	return []sdk.AccAddress{addr}
 }
 
 func NewMsgWithdrawReward(
@@ -132,9 +125,9 @@ func (msg MsgWithdrawReward) Route() string { return RouterKey }
 func (msg MsgWithdrawReward) Type() string { return TypeMsgWithdrawReward }
 
 func (msg MsgWithdrawReward) ValidateBasic() error {
-	// check if addresses are valid
-	if _, err := sdk.AccAddressFromBech32(msg.Sender); err != nil {
-		panic(err)
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address is not valid")
 	}
 
 	return nil
@@ -148,10 +141,6 @@ func (msg MsgWithdrawReward) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgWithdrawReward) GetSigners() []sdk.AccAddress {
-	sender, err := sdk.AccAddressFromBech32(msg.Sender)
-	if err != nil {
-		panic(err)
-	}
-
-	return []sdk.AccAddress{sender}
+	addr, _ := sdk.AccAddressFromBech32(msg.Sender)
+	return []sdk.AccAddress{addr}
 }

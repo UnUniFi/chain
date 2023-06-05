@@ -213,11 +213,11 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 	}
 
 	bids := types.NftBids(k.GetBidsByNft(ctx, listing.IdBytes()))
-	bidder := msg.Sender.AccAddress()
-	oldBid := bids.GetBidByBidder(bidder.String())
+	bidder := msg.Sender
+	oldBid := bids.GetBidByBidder(bidder)
 	newBid := types.NftBid{
 		NftId:            msg.NftId,
-		Bidder:           msg.Sender.AccAddress().String(),
+		Bidder:           bidder,
 		BidAmount:        msg.BidAmount,
 		AutomaticPayment: msg.AutomaticPayment,
 		DepositAmount:    msg.DepositAmount,
@@ -225,7 +225,7 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 		BiddingPeriod:    msg.BiddingPeriod,
 		Id: types.BidId{
 			NftId:  &msg.NftId,
-			Bidder: msg.Sender.AccAddress().String(),
+			Bidder: bidder,
 		},
 		PaidAmount:         sdk.NewCoin(listing.BidToken, sdk.ZeroInt()),
 		DepositLendingRate: msg.DepositLendingRate,
@@ -396,7 +396,10 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 		return types.ErrCannotCancelBid
 	}
 
-	bidder := msg.Sender.AccAddress()
+	bidder, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return err
+	}
 
 	// check if bid exists by bidder on nft
 	bid, err := k.GetBid(ctx, msg.NftId.IdBytes(), bidder)
@@ -429,7 +432,7 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 
 	// Emit event for cancelling bid
 	ctx.EventManager().EmitTypedEvent(&types.EventCancelBid{
-		Bidder:  msg.Sender.AccAddress().String(),
+		Bidder:  msg.Sender,
 		ClassId: msg.NftId.ClassId,
 		NftId:   msg.NftId.NftId,
 	})
@@ -445,7 +448,10 @@ func (k Keeper) PayFullBid(ctx sdk.Context, msg *types.MsgPayFullBid) error {
 		return err
 	}
 
-	bidder := msg.Sender.AccAddress()
+	bidder, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return err
+	}
 
 	// check if bid exists by bidder on nft
 	bid, err := k.GetBid(ctx, msg.NftId.IdBytes(), bidder)
@@ -466,7 +472,7 @@ func (k Keeper) PayFullBid(ctx sdk.Context, msg *types.MsgPayFullBid) error {
 	}
 	// Emit event for paying full bid
 	ctx.EventManager().EmitTypedEvent(&types.EventPayFullBid{
-		Bidder:  msg.Sender.AccAddress().String(),
+		Bidder:  msg.Sender,
 		ClassId: msg.NftId.ClassId,
 		NftId:   msg.NftId.NftId,
 	})

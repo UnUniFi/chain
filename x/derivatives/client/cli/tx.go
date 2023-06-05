@@ -16,7 +16,6 @@ import (
 
 	codecType "github.com/cosmos/cosmos-sdk/codec/types"
 
-	ununifiType "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
@@ -76,7 +75,7 @@ $ %s tx %s deposit-to-pool --from myKeyName --chain-id ununifi-x
 			}
 
 			msg := types.MsgDepositToPool{
-				Sender: ununifiType.StringAccAddress(sender),
+				Sender: sender.String(),
 				Amount: amount,
 			}
 
@@ -300,9 +299,9 @@ $ %s tx %s report-liquidation --from myKeyName --chain-id ununifi-x
 			}
 
 			msg := types.MsgReportLiquidation{
-				Sender:          ununifiType.StringAccAddress(sender),
+				Sender:          sender.String(),
 				PositionId:      args[0],
-				RewardRecipient: ununifiType.StringAccAddress(recipient),
+				RewardRecipient: recipient.String(),
 			}
 
 			if err := msg.ValidateBasic(); err != nil {
@@ -339,9 +338,9 @@ $ %s tx %s report-levy-period --from myKeyName --chain-id ununifi-x
 			}
 
 			msg := types.MsgReportLevyPeriod{
-				Sender:          ununifiType.StringAccAddress(sender),
+				Sender:          sender.String(),
 				PositionId:      args[0],
-				RewardRecipient: ununifiType.StringAccAddress(recipient),
+				RewardRecipient: recipient.String(),
 			}
 
 			if err := msg.ValidateBasic(); err != nil {

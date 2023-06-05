@@ -24,24 +24,16 @@ service Msg {
 }
 
 message MsgMintNft {
-  string sender = 1 [
-    (gogoproto.moretags)   = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable)   = false
-  ];
-  string classId    = 2;
-  string nftId      = 3;
-  string nftUri     = 4;
-  string nftUriHash = 5;
+  string sender       = 1;
+  string class_id     = 2;
+  string nft_id       = 3;
+  string nft_uri      = 4;
+  string nft_uri_hash = 5;
 }
 message MsgMintNftResponse {}
 
 message MsgListNft {
-  string sender = 1 [
-    (gogoproto.moretags)   = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable)   = false
-  ];
+  string sender = 1;
   NftIdentifier nft_id       = 2 [(gogoproto.nullable) = false];
   ListingType   listing_type = 3;
   string        bid_token    = 4;
@@ -60,21 +52,13 @@ message MsgListNft {
 message MsgListNftResponse {}
 
 message MsgCancelNftListing {
-  string sender = 1 [
-    (gogoproto.moretags)   = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable)   = false
-  ];
+  string sender = 1;
   NftIdentifier nft_id = 2 [(gogoproto.nullable) = false];
 }
 message MsgCancelNftListingResponse {}
 
 message MsgPlaceBid {
-  string sender = 1 [
-    (gogoproto.moretags)   = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable)   = false
-  ];
+  string sender = 1;
   NftIdentifier             nft_id               = 2 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin  bid_amount           = 3 [(gogoproto.nullable) = false];
   google.protobuf.Timestamp bidding_period       = 4 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
@@ -89,62 +73,38 @@ message MsgPlaceBid {
 message MsgPlaceBidResponse {}
 
 message MsgCancelBid {
-  string sender = 1 [
-    (gogoproto.moretags)   = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable)   = false
-  ];
+  string sender = 1;
   NftIdentifier nft_id = 2 [(gogoproto.nullable) = false];
 }
 message MsgCancelBidResponse {}
 
 message MsgEndNftListing {
-  string sender = 1 [
-    (gogoproto.moretags)   = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable)   = false
-  ];
+  string sender = 1;
   NftIdentifier nft_id = 2 [(gogoproto.nullable) = false];
 }
 message MsgEndNftListingResponse {}
 
 message MsgSellingDecision {
-  string sender = 1 [
-    (gogoproto.moretags)   = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable)   = false
-  ];
+  string sender = 1;
   NftIdentifier nft_id = 2 [(gogoproto.nullable) = false];
 }
 message MsgSellingDecisionResponse {}
 
 message MsgPayFullBid {
-  string sender = 1 [
-    (gogoproto.moretags)   = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable)   = false
-  ];
+  string sender = 1;
   NftIdentifier nft_id = 2 [(gogoproto.nullable) = false];
 }
 message MsgPayFullBidResponse {}
 
 message MsgBorrow {
-  string sender = 1 [
-    (gogoproto.moretags)   = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable)   = false
-  ];
+  string sender = 1;
   NftIdentifier            nft_id = 2 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false];
 }
 message MsgBorrowResponse {}
 
 message MsgRepay {
-  string sender = 1 [
-    (gogoproto.moretags)   = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable)   = false
-  ];
+  string sender = 1;
   NftIdentifier            nft_id = 2 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false];
 }
