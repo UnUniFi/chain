@@ -8,8 +8,10 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
+// TODO: Add checks to ensure the margin is handed to MarginManager module account appropriately.
 func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
@@ -18,7 +20,6 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 		QuoteDenom: "uusdc",
 	}
 
-	// TODO: add failure case due to the lack of the available asset in the pool
 	positions := []struct {
 		positionId           string
 		margin               sdk.Coin
@@ -26,6 +27,17 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 		availableAssetInPool sdk.Coin
 		expGrossPosition     sdk.Int
 	}{
+		{
+			positionId: "-1",
+			margin:     sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.MustNewDecFromStr("1"),
+				Leverage:     1,
+			},
+			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(1)),
+			expGrossPosition:     sdk.MustNewDecFromStr("0").MulInt64(1000000).TruncateInt(),
+		},
 		{
 			positionId: "0",
 			margin:     sdk.NewCoin("uatom", sdk.NewInt(500000)),
@@ -76,9 +88,14 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 		err := suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{testPosition.availableAssetInPool})
 		suite.Require().NoError(err)
 
-		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.Bytes(), testPosition.margin, market, testPosition.instance)
-		suite.Require().NoError(err)
-		suite.Require().NotNil(position)
+		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.String(), testPosition.margin, market, testPosition.instance)
+		if testPosition.positionId == "-1" {
+			suite.Require().Error(err)
+			suite.Require().Nil(position)
+		} else {
+			suite.Require().NoError(err)
+			suite.Require().NotNil(position)
+		}
 
 		// Check if the position was added
 		grossPosition := suite.keeper.GetPerpetualFuturesGrossPositionOfMarket(suite.ctx, market, testPosition.instance.PositionType)
@@ -148,6 +165,9 @@ func (suite *KeeperTestSuite) TestSubReserveTokensForPosition() {
 	}
 }
 
+// TODO: Add chekcs for the proper token transfer from MarginManager and Pool(derivatives) module accounts
+// You can refer how the token should be distributed from those two.
+// Actually, many cases could be happened. All of them have to be checked.
 func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
@@ -216,7 +236,7 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 		err := suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{testPosition.availableAssetInPool})
 		suite.Require().NoError(err)
 
-		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.Bytes(), testPosition.margin, market, testPosition.instance)
+		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.String(), testPosition.margin, market, testPosition.instance)
 		suite.Require().NoError(err)
 		suite.Require().NotNil(position)
 
@@ -327,7 +347,7 @@ func (suite *KeeperTestSuite) TestReportLiquidationNeededPerpetualFuturesPositio
 		switch positionInstance := positionInstance.(type) {
 		case *types.PerpetualFuturesPositionInstance:
 			perpetualFuturesPosition := types.NewPerpetualFuturesPosition(*position, *positionInstance)
-			err = suite.keeper.ReportLiquidationNeededPerpetualFuturesPosition(suite.ctx, owner.Bytes(), perpetualFuturesPosition)
+			err = suite.keeper.ReportLiquidationNeededPerpetualFuturesPosition(suite.ctx, owner.String(), perpetualFuturesPosition)
 		}
 		suite.Require().NoError(err)
 
@@ -409,7 +429,7 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 		err := suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{testPosition.availableAssetInPool})
 		suite.Require().NoError(err)
 
-		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.Bytes(), testPosition.margin, market, testPosition.instance)
+		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.String(), testPosition.margin, market, testPosition.instance)
 		suite.Require().NoError(err)
 		suite.Require().NotNil(position)
 
@@ -423,13 +443,92 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 		suite.Require().NoError(err)
 		switch positionInstance := positionInstance.(type) {
 		case *types.PerpetualFuturesPositionInstance:
-			err = suite.keeper.ReportLevyPeriodPerpetualFuturesPosition(suite.ctx, owner.Bytes(), *position, *positionInstance)
+			err = suite.keeper.ReportLevyPeriodPerpetualFuturesPosition(suite.ctx, owner.String(), *position, *positionInstance)
 		}
 		suite.Require().NoError(err)
 
 		// Check if the position was changed
 		updatedPosition := suite.keeper.GetPositionWithId(suite.ctx, testPosition.positionId)
 		suite.Require().Equal(testPosition.expMargin, updatedPosition.RemainingMargin.Amount)
+	}
+}
+
+// TestHandleImaginaryFundingFeeTransfer tests the HandleImaginaryFundingFeeTransfer function
+// HandleImaginaryFundingFeeTransfer requires the following:
+// positionType: PositionType
+// imaginaryFundingFee: sdk.Int
+// commissionFee: sdk.Int
+// denom: string
+// We can test the functionaly with above params and the balance of the MarginManager and Pool(derivatives) Module account
+// By checking those two balance after the function
+func (suite *KeeperTestSuite) TestHandleImaginaryFundingFeeTransfer() {
+	testcases := []struct {
+		name                    string
+		positionType            types.PositionType
+		imaginaryFundingFee     sdk.Int
+		commissionFee           sdk.Int
+		denom                   string
+		beforeMarginManagerPool sdk.Int
+		beforePool              sdk.Int
+		expMarginManagerPool    sdk.Int
+		expPool                 sdk.Int
+	}{
+		{
+			name:                    "long position with positive imaginary funding fee",
+			positionType:            types.PositionType_LONG,
+			imaginaryFundingFee:     sdk.NewInt(1000000),
+			commissionFee:           sdk.NewInt(100),
+			denom:                   "uatom",
+			beforeMarginManagerPool: sdk.NewInt(1000100),
+			beforePool:              sdk.NewInt(0),
+			expMarginManagerPool:    sdk.NewInt(0),
+			expPool:                 sdk.NewInt(1000100),
+		},
+		{
+			name:                    "long position with negative imaginary funding fee",
+			positionType:            types.PositionType_LONG,
+			imaginaryFundingFee:     sdk.NewInt(-1000200),
+			commissionFee:           sdk.NewInt(100),
+			denom:                   "uatom",
+			beforeMarginManagerPool: sdk.NewInt(0),
+			beforePool:              sdk.NewInt(1000100),
+			expMarginManagerPool:    sdk.NewInt(1000100),
+			expPool:                 sdk.NewInt(0),
+		},
+		{
+			name:                    "short position with negative imaginary funding fee",
+			positionType:            types.PositionType_SHORT,
+			imaginaryFundingFee:     sdk.NewInt(-1000200),
+			commissionFee:           sdk.NewInt(100),
+			denom:                   "uatom",
+			beforeMarginManagerPool: sdk.NewInt(1000100),
+			beforePool:              sdk.NewInt(0),
+			expMarginManagerPool:    sdk.NewInt(0),
+			expPool:                 sdk.NewInt(1000100),
+		},
+		{
+			name:                    "short position with positive imaginary funding fee",
+			positionType:            types.PositionType_SHORT,
+			imaginaryFundingFee:     sdk.NewInt(1000200),
+			commissionFee:           sdk.NewInt(100),
+			denom:                   "uatom",
+			beforeMarginManagerPool: sdk.NewInt(0),
+			beforePool:              sdk.NewInt(1000100),
+			expMarginManagerPool:    sdk.NewInt(1000100),
+			expPool:                 sdk.NewInt(0),
+		},
+	}
+
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, types.MarginManager, sdk.Coins{sdk.NewCoin("uatom", sdk.NewInt(1000100))})
+	suite.Require().NoError(err)
+	for _, tc := range testcases {
+		suite.Run(tc.name, func() {
+			suite.keeper.HandleImaginaryFundingFeeTransfer(suite.ctx, tc.imaginaryFundingFee, tc.commissionFee, tc.positionType, tc.denom)
+
+			// Check if the balance of the MarginManager and Pool(derivatives) Module account was changed
+			suite.Require().Equal(tc.expMarginManagerPool, suite.app.BankKeeper.GetBalance(suite.ctx, authtypes.NewModuleAddress(types.MarginManager), tc.denom).Amount)
+			suite.Require().Equal(tc.expPool, suite.app.BankKeeper.GetBalance(suite.ctx, authtypes.NewModuleAddress(types.ModuleName), tc.denom).Amount)
+		})
 	}
 }
 

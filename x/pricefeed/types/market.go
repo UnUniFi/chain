@@ -7,17 +7,15 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	ununifitypes "github.com/UnUniFi/chain/types"
 )
 
 // NewMarket returns a new Market
-func NewMarket(id, base, quote string, oracles []sdk.AccAddress, active bool) Market {
+func NewMarket(id, base, quote string, oracles []string, active bool) Market {
 	return Market{
 		MarketId:   id,
 		BaseAsset:  base,
 		QuoteAsset: quote,
-		Oracles:    ununifitypes.StringAccAddresses(oracles),
+		Oracles:    oracles,
 		Active:     active,
 	}
 }
@@ -34,14 +32,16 @@ func (m Market) Validate() error {
 		return fmt.Errorf("invalid quote asset: %w", err)
 	}
 	seenOracles := make(map[string]bool)
-	for i, oracle := range m.Oracles {
-		if oracle.AccAddress().Empty() {
-			return fmt.Errorf("oracle %d is empty", i)
+	for _, oracle := range m.Oracles {
+		_, err := sdk.AccAddressFromBech32(oracle)
+		if err != nil {
+			return fmt.Errorf("invalid oracle address: %w", err)
 		}
-		if seenOracles[oracle.AccAddress().String()] {
+
+		if seenOracles[oracle] {
 			return fmt.Errorf("duplicated oracle %s", oracle)
 		}
-		seenOracles[oracle.AccAddress().String()] = true
+		seenOracles[oracle] = true
 	}
 	return nil
 }
@@ -83,10 +83,10 @@ func NewCurrentPrice(marketID string, price sdk.Dec) CurrentPrice {
 type CurrentPrices []CurrentPrice
 
 // NewPostedPrice returns a new PostedPrice
-func NewPostedPrice(marketID string, oracle sdk.AccAddress, price sdk.Dec, expiry time.Time) PostedPrice {
+func NewPostedPrice(marketID string, oracle string, price sdk.Dec, expiry time.Time) PostedPrice {
 	return PostedPrice{
 		MarketId:      marketID,
-		OracleAddress: oracle.Bytes(),
+		OracleAddress: oracle,
 		Price:         price,
 		Expiry:        expiry,
 	}
@@ -97,9 +97,11 @@ func (pp PostedPrice) Validate() error {
 	if strings.TrimSpace(pp.MarketId) == "" {
 		return errors.New("market id cannot be blank")
 	}
-	if pp.OracleAddress.AccAddress().Empty() {
-		return errors.New("oracle address cannot be empty")
+	_, err := sdk.AccAddressFromBech32(pp.OracleAddress)
+	if err != nil {
+		return fmt.Errorf("invalid oracle address: %w", err)
 	}
+
 	if pp.Price.IsNegative() {
 		return fmt.Errorf("posted price cannot be negative %s", pp.Price)
 	}
@@ -117,14 +119,18 @@ type PostedPrices []PostedPrice
 func (pps PostedPrices) Validate() error {
 	seenPrices := make(map[string]bool)
 	for _, pp := range pps {
-		if pp.OracleAddress != nil && seenPrices[pp.MarketId+pp.OracleAddress.AccAddress().String()] {
+		_, err := sdk.AccAddressFromBech32(pp.OracleAddress)
+		if err != nil {
+			return fmt.Errorf("invalid oracle address: %w", err)
+		}
+		if seenPrices[pp.MarketId+pp.OracleAddress] {
 			return fmt.Errorf("duplicated posted price for marked id %s and oracle address %s", pp.MarketId, pp.OracleAddress)
 		}
 
 		if err := pp.Validate(); err != nil {
 			return err
 		}
-		seenPrices[pp.MarketId+pp.OracleAddress.AccAddress().String()] = true
+		seenPrices[pp.MarketId+pp.OracleAddress] = true
 	}
 
 	return nil
