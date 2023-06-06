@@ -278,8 +278,13 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 			return err
 		}
 
+		positionAddress, err := sdk.AccAddressFromBech32(position.Address)
+		if err != nil {
+			return err
+		}
+
 		// Delete Position
-		k.DeletePosition(ctx, position.Address, position.Id)
+		k.DeletePosition(ctx, positionAddress, position.Id)
 		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipient, reward)
 		if err != nil {
 			return err
