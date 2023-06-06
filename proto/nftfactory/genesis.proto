@@ -12,5 +12,8 @@ message GenesisState {
     (gogoproto.moretags) = "yaml:\"params\"",
     (gogoproto.nullable) = false
   ];
-  repeated ClassAttributes class_attributes_list = 2 [ (gogoproto.moretags) = "yaml:\"class_attributes_list\"" ];  
+  repeated ClassAttributes class_attributes_list = 2 [
+    (gogoproto.moretags) = "yaml:\"class_attributes_list\"",
+    (gogoproto.nullable) = false
+  ];  
 }

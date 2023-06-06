@@ -14,7 +14,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, nftKeeper types.NftKeeper, gs
 	k.SetParamSet(ctx, gs.Params)
 
 	for _, classAttributes := range gs.ClassAttributesList {
-		if err := InitClassRelatingData(ctx, k, nftKeeper, *classAttributes); err != nil {
+		if err := InitClassRelatingData(ctx, k, nftKeeper, classAttributes); err != nil {
 			panic(err)
 		}
 	}
