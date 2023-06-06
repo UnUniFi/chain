@@ -74,6 +74,11 @@ endif
 ifeq (,$(findstring nostrip,$(JPYX_BUILD_OPTIONS)))
   ldflags += -w -s
 endif
+
+ifeq ($(LINK_STATICALLY),true)
+	ldflags += -linkmode=external -extldflags "-Wl,-z,muldefs -static"
+endif
+
 ldflags += $(LDFLAGS)
 ldflags := $(strip $(ldflags))
 
@@ -174,11 +179,6 @@ mocks: $(MOCKS_DIR)
 protoVer=0.11.6
 protoImageName=ghcr.io/cosmos/proto-builder:$(protoVer)
 protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
-
-proto-gen:
-	@echo "Generating Protobuf files"
-	@$(protoImage) sh ./scripts/protocgen.sh
-
 
 proto-all: proto-format proto-lint proto-gen
 

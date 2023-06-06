@@ -24,6 +24,9 @@ const (
 
 	// DerivativeFeeCollector defines the fee collector for derivatives module
 	DerivativeFeeCollector = "derivatives_fee_collector"
+
+	// MarginManager defines the margin manager for derivatives module
+	MarginManager = "margin_manager"
 )
 
 const (

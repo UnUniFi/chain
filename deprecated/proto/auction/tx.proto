@@ -1,0 +1,28 @@
+syntax = "proto3";
+package ununifi.auction;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/UnUniFi/chain/deprecated/x/auction/types";
+
+service Msg {
+  rpc PlaceBid(MsgPlaceBid) returns (MsgPlaceBidResponse);
+}
+
+message MsgPlaceBid {
+  uint64 auction_id = 1 [(gogoproto.moretags) = "yaml:\"auction_id\""];
+  string bidder = 2 [
+    (gogoproto.moretags) = "yaml:\"bidder\"",
+    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin amount = 3 [
+    (gogoproto.moretags) = "yaml:\"amount\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message MsgPlaceBidResponse {}

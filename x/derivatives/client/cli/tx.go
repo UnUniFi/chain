@@ -16,7 +16,6 @@ import (
 
 	codecType "github.com/cosmos/cosmos-sdk/codec/types"
 
-	ununifiType "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
@@ -76,7 +75,7 @@ $ %s tx %s deposit-to-pool --from myKeyName --chain-id ununifi-x
 			}
 
 			msg := types.MsgDepositToPool{
-				Sender: ununifiType.StringAccAddress(sender),
+				Sender: sender.String(),
 				Amount: amount,
 			}
 
@@ -114,7 +113,7 @@ $ %s tx %s withdraw-from-pool 1 ubtc --from myKeyName --chain-id ununifi-x
 			}
 			denom := args[1]
 
-			msg := types.NewMsgWithdrawFromPool(sender, amount, denom)
+			msg := types.NewMsgWithdrawFromPool(sender.String(), amount, denom)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -195,20 +194,26 @@ $ %s tx %s open-position perpetual-futures --from myKeyName --chain-id ununifi-x
 				Leverage:     uint32(leverage),
 			}
 
-			positionInstBz, err := positionInstVal.Marshal()
+			// positionInstBz, err := positionInstVal.Marshal()
+			// if err != nil {
+			// 	return err
+			// }
+			// positionInstI, err :=
+			piAny, err := codecType.NewAnyWithValue(&positionInstVal)
 			if err != nil {
 				return err
 			}
-			positionInstance := codecType.Any{
-				TypeUrl: "/ununifi.derivatives.PerpetualFuturesPositionInstance",
-				Value:   positionInstBz,
-			}
+
+			// positionInstance := codecType.Any{
+			// 	TypeUrl: "/ununifi.derivatives.PerpetualFuturesPositionInstance",
+			// 	Value:   positionInstBz,
+			// }
 
 			market := types.Market{
 				BaseDenom:  baseDenom,
 				QuoteDenom: quoteDenom,
 			}
-			msg := types.NewMsgOpenPosition(sender, margin, market, positionInstance)
+			msg := types.NewMsgOpenPosition(sender.String(), margin, market, *piAny)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -258,7 +263,7 @@ $ %s tx %s close-position --from myKeyName --chain-id ununifi-x
 			sender := clientCtx.GetFromAddress()
 			potisionId := args[0]
 
-			msg := types.NewMsgClosePosition(sender, potisionId)
+			msg := types.NewMsgClosePosition(sender.String(), potisionId)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -294,9 +299,9 @@ $ %s tx %s report-liquidation --from myKeyName --chain-id ununifi-x
 			}
 
 			msg := types.MsgReportLiquidation{
-				Sender:          ununifiType.StringAccAddress(sender),
+				Sender:          sender.String(),
 				PositionId:      args[0],
-				RewardRecipient: ununifiType.StringAccAddress(recipient),
+				RewardRecipient: recipient.String(),
 			}
 
 			if err := msg.ValidateBasic(); err != nil {
@@ -333,9 +338,9 @@ $ %s tx %s report-levy-period --from myKeyName --chain-id ununifi-x
 			}
 
 			msg := types.MsgReportLevyPeriod{
-				Sender:          ununifiType.StringAccAddress(sender),
+				Sender:          sender.String(),
 				PositionId:      args[0],
-				RewardRecipient: ununifiType.StringAccAddress(recipient),
+				RewardRecipient: recipient.String(),
 			}
 
 			if err := msg.ValidateBasic(); err != nil {

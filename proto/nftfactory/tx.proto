@@ -1,0 +1,64 @@
+syntax = "proto3";
+package ununifi.nftfactory;
+
+import "gogoproto/gogo.proto";
+import "nftfactory/nftfactory.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/nftfactory/types";
+
+service Msg {
+  rpc CreateClass(MsgCreateClass) returns (MsgCreateClassResponse);
+  rpc SendClassOwnership(MsgSendClassOwnership) returns (MsgSendClassOwnershipResponse);
+  rpc UpdateBaseTokenUri(MsgUpdateBaseTokenUri) returns (MsgUpdateBaseTokenUriResponse);
+  rpc UpdateTokenSupplyCap(MsgUpdateTokenSupplyCap) returns (MsgUpdateTokenSupplyCapResponse);
+  rpc MintNFT(MsgMintNFT) returns (MsgMintNFTResponse);
+  rpc BurnNFT(MsgBurnNFT) returns (MsgBurnNFTResponse);
+}
+
+message MsgCreateClass {
+  string sender = 1;
+  string name = 2;
+  string base_token_uri = 3;
+  uint64 token_supply_cap = 4;
+  MintingPermission minting_permission = 5;
+  string symbol = 7;
+  string description = 8;
+  string class_uri = 9;
+}
+message MsgCreateClassResponse {}
+
+message MsgSendClassOwnership {
+  string sender = 1;
+  string class_id = 2;
+  string recipient = 3;
+}
+message MsgSendClassOwnershipResponse {}
+
+message MsgUpdateBaseTokenUri {
+  string sender = 1;
+  string class_id = 2; 
+  string base_token_uri = 3;
+}
+message MsgUpdateBaseTokenUriResponse {}
+
+message MsgUpdateTokenSupplyCap {
+  string sender = 1;
+  string class_id = 2; 
+  uint64 token_supply_cap = 3;
+}
+message MsgUpdateTokenSupplyCapResponse {}
+
+message MsgMintNFT {
+  string sender = 1;
+  string class_id = 2;
+  string nft_id = 3;
+  string recipient = 4;
+}
+message MsgMintNFTResponse {}
+
+message MsgBurnNFT {
+  string sender = 1;
+  string class_id = 2;
+  string nft_id = 3;
+}
+message MsgBurnNFTResponse {}
