@@ -79,12 +79,12 @@ func UnpackPositionInstance(positionAny types.Any) (PositionInstance, error) {
 	return nil, ErrInvalidPositionInstance
 }
 
-func MustUnpackPositionInstance(positionAny types.Any) PositionInstance {
+func MustUnpackPositionInstance(positionAny types.Any) (PositionInstance, error) {
 	position, err := UnpackPositionInstance(positionAny)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return position
+	return position, nil
 }
 
 func (m Position) NeedLiquidation(MarginMaintenanceRate sdk.Dec, currentBaseMetricsRate, currentQuoteMetricsRate MetricsRateType) bool {
@@ -98,9 +98,10 @@ func (m Position) NeedLiquidation(MarginMaintenanceRate sdk.Dec, currentBaseMetr
 		perpetualFuturesPosition := NewPerpetualFuturesPosition(m, *positionInstance)
 		return perpetualFuturesPosition.NeedLiquidation(MarginMaintenanceRate, currentBaseMetricsRate, currentQuoteMetricsRate)
 	case *PerpetualOptionsPositionInstance:
-		panic("not implemented")
+		// todo implement
+		return false
 	default:
-		panic("not implemented")
+		return false
 	}
 }
 
@@ -171,19 +172,19 @@ func NormalToMicroDec(amount sdk.Dec) sdk.Dec {
 }
 
 // todo make test
-func (m Positions) EvaluatePositions(posType PositionType, quoteTicker string, getCurrentPriceF func(denom string) (sdk.Dec, error)) sdk.Dec {
+func (m Positions) EvaluatePositions(posType PositionType, quoteTicker string, getCurrentPriceF func(denom string) (sdk.Dec, error)) (sdk.Dec, error) {
 	usdMap := map[string]sdk.Dec{}
 	result := sdk.ZeroDec()
 	for _, position := range m {
 		ins, err := UnpackPositionInstance(position.PositionInstance)
 		if err != nil {
-			panic(err)
+			return sdk.ZeroDec(), err
 		}
 
 		if _, ok := usdMap[position.Market.BaseDenom]; !ok {
 			price, err := getCurrentPriceF(position.Market.BaseDenom)
 			if err != nil {
-				panic(err)
+				return sdk.ZeroDec(), err
 			}
 			usdMap[position.Market.BaseDenom] = price
 		}
@@ -199,20 +200,28 @@ func (m Positions) EvaluatePositions(posType PositionType, quoteTicker string, g
 
 			result = result.Add(perpetualFuturesPosition.EvaluatePosition(metricsRate))
 		case *PerpetualOptionsPositionInstance:
-			panic("not implemented")
+			return sdk.ZeroDec(), ErrNotImplemented
 		default:
 			continue
 		}
 	}
-	return result
+	return result, nil
 }
 
-func (m Positions) EvaluateLongPositions(quoteTicker string, getCurrentPriceF func(denom string) (sdk.Dec, error)) sdk.Dec {
-	return m.EvaluatePositions(PositionType_LONG, quoteTicker, getCurrentPriceF)
+func (m Positions) EvaluateLongPositions(quoteTicker string, getCurrentPriceF func(denom string) (sdk.Dec, error)) (sdk.Dec, error) {
+	value, err := m.EvaluatePositions(PositionType_LONG, quoteTicker, getCurrentPriceF)
+	if err != nil {
+		return sdk.ZeroDec(), err
+	}
+	return value, nil
 }
 
-func (m Positions) EvaluateShortPositions(quoteTicker string, getCurrentPriceF func(denom string) (sdk.Dec, error)) sdk.Dec {
-	return m.EvaluatePositions(PositionType_SHORT, quoteTicker, getCurrentPriceF)
+func (m Positions) EvaluateShortPositions(quoteTicker string, getCurrentPriceF func(denom string) (sdk.Dec, error)) (sdk.Dec, error) {
+	value, err := m.EvaluatePositions(PositionType_SHORT, quoteTicker, getCurrentPriceF)
+	if err != nil {
+		return sdk.ZeroDec(), err
+	}
+	return value, nil
 }
 
 func (positionInstance PerpetualFuturesPositionInstance) MarginRequirement(currencyRate sdk.Dec) sdk.Int {
@@ -319,7 +328,8 @@ func (m PerpetualFuturesPosition) RemainingMarginInMetrics(baseMetricsRate, quot
 	} else if m.RemainingMargin.Denom == m.Market.QuoteDenom {
 		return remainingMarginAmountInDec.Mul(quoteMetricsRate.Amount.Amount)
 	} else {
-		panic("not supported denom")
+		// not supported denom
+		return sdk.ZeroDec()
 	}
 }
 
