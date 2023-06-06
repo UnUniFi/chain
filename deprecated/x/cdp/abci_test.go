@@ -14,10 +14,10 @@ package cdp_test
 // 	tmtime "github.com/cometbft/cometbft/types/time"
 
 // 	"github.com/UnUniFi/chain/app"
-// 	auctiontypes "github.com/UnUniFi/chain/deprecated/auction/types"
-// 	cdp "github.com/UnUniFi/chain/deprecated/cdp"
-// 	cdpkeeper "github.com/UnUniFi/chain/deprecated/cdp/keeper"
-// 	cdptypes "github.com/UnUniFi/chain/deprecated/cdp/types"
+// 	auctiontypes "github.com/UnUniFi/chain/deprecated/x/auction/types"
+// 	cdp "github.com/UnUniFi/chain/deprecated/x/cdp"
+// 	cdpkeeper "github.com/UnUniFi/chain/deprecated/x/cdp/keeper"
+// 	cdptypes "github.com/UnUniFi/chain/deprecated/x/cdp/types"
 // )
 
 // type ModuleTestSuite struct {

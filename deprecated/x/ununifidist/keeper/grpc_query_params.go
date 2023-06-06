@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/UnUniFi/chain/deprecated/ununifidist/types"
+	"github.com/UnUniFi/chain/deprecated/x/ununifidist/types"
 )
 
 func (k Keeper) Params(c context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {

@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/types"
+	"github.com/UnUniFi/chain/deprecated/x/yieldaggregatorv1/types"
 )
 
 // InitGenesis initializes the capability module's state from a provided genesis

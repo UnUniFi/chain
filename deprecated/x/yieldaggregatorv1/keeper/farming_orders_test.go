@@ -7,8 +7,8 @@ package keeper_test
 // 	sdk "github.com/cosmos/cosmos-sdk/types"
 // 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
-// 	"github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/types"
-// 	yieldfarmtypes "github.com/UnUniFi/chain/deprecated/yieldfarm/types"
+// 	"github.com/UnUniFi/chain/deprecated/x/yieldaggregatorv1/types"
+// 	yieldfarmtypes "github.com/UnUniFi/chain/deprecated/x/yieldfarm/types"
 // )
 
 // // TODO:

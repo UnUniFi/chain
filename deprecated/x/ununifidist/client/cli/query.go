@@ -10,7 +10,7 @@ import (
 	// "github.com/cosmos/cosmos-sdk/client/flags"
 	// sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/deprecated/ununifidist/types"
+	"github.com/UnUniFi/chain/deprecated/x/ununifidist/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

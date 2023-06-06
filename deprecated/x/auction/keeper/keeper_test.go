@@ -9,7 +9,7 @@ package keeper_test
 // 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 // 	"github.com/UnUniFi/chain/app"
-// 	"github.com/UnUniFi/chain/deprecated/auction/types"
+// 	"github.com/UnUniFi/chain/deprecated/x/auction/types"
 // )
 
 // func SetGetDeleteAuction(t *testing.T) {

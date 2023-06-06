@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/UnUniFi/chain/deprecated/cdp/types"
+	"github.com/UnUniFi/chain/deprecated/x/cdp/types"
 )
 
 var _ types.QueryServer = Keeper{}

@@ -6,8 +6,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/UnUniFi/chain/deprecated/incentive/keeper"
-	"github.com/UnUniFi/chain/deprecated/incentive/types"
+	"github.com/UnUniFi/chain/deprecated/x/incentive/keeper"
+	"github.com/UnUniFi/chain/deprecated/x/incentive/types"
 )
 
 // NewHandler ...

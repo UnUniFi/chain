@@ -13,8 +13,8 @@ package auction_test
 // 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 // 	"github.com/UnUniFi/chain/app"
-// 	"github.com/UnUniFi/chain/deprecated/auction"
-// 	auctiontypes "github.com/UnUniFi/chain/deprecated/auction/types"
+// 	"github.com/UnUniFi/chain/deprecated/x/auction"
+// 	auctiontypes "github.com/UnUniFi/chain/deprecated/x/auction/types"
 // )
 
 // var _, testAddrs = app.GeneratePrivKeyAddressPairs(2)

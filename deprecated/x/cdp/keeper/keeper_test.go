@@ -7,7 +7,7 @@ package keeper_test
 // 	"github.com/stretchr/testify/suite"
 
 // 	"github.com/UnUniFi/chain/app"
-// 	"github.com/UnUniFi/chain/deprecated/cdp/keeper"
+// 	"github.com/UnUniFi/chain/deprecated/x/cdp/keeper"
 // )
 
 // type KeeperTestSuite struct {

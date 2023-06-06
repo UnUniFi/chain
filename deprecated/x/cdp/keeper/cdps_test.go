@@ -16,8 +16,8 @@ package keeper_test
 // 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
 // 	"github.com/UnUniFi/chain/app"
-// 	"github.com/UnUniFi/chain/deprecated/cdp/keeper"
-// 	cdptypes "github.com/UnUniFi/chain/deprecated/cdp/types"
+// 	"github.com/UnUniFi/chain/deprecated/x/cdp/keeper"
+// 	cdptypes "github.com/UnUniFi/chain/deprecated/x/cdp/types"
 // )
 
 // type CdpTestSuite struct {

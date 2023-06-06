@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	yieldfarmtypes "github.com/UnUniFi/chain/deprecated/yieldfarm/types"
+	yieldfarmtypes "github.com/UnUniFi/chain/deprecated/x/yieldfarm/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)

@@ -11,10 +11,10 @@ package keeper_test
 // 	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 
 // 	"github.com/UnUniFi/chain/app"
-// 	cdptypes "github.com/UnUniFi/chain/deprecated/cdp/types"
+// 	cdptypes "github.com/UnUniFi/chain/deprecated/x/cdp/types"
 
-// 	"github.com/UnUniFi/chain/deprecated/incentive/types"
-// 	ununifidisttypes "github.com/UnUniFi/chain/deprecated/ununifidist/types"
+// 	"github.com/UnUniFi/chain/deprecated/x/incentive/types"
+// 	ununifidisttypes "github.com/UnUniFi/chain/deprecated/x/ununifidist/types"
 // )
 
 // func (suite *KeeperTestSuite) TestPayoutCdpMintingClaim() {

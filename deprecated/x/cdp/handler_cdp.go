@@ -3,8 +3,8 @@ package cdp
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/deprecated/cdp/keeper"
-	"github.com/UnUniFi/chain/deprecated/cdp/types"
+	"github.com/UnUniFi/chain/deprecated/x/cdp/keeper"
+	"github.com/UnUniFi/chain/deprecated/x/cdp/types"
 )
 
 func handleMsgCreateCdp(ctx sdk.Context, k keeper.Keeper, msg *types.MsgCreateCdp) (*sdk.Result, error) {

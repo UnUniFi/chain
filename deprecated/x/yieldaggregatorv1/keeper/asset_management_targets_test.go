@@ -1,6 +1,6 @@
 package keeper_test
 
-// import "github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/types"
+// import "github.com/UnUniFi/chain/deprecated/x/yieldaggregatorv1/types"
 
 // func (suite *KeeperTestSuite) TestAssetManagementTargetGetSet() {
 // 	// get not available target

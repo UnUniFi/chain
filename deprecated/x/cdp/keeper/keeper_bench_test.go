@@ -10,8 +10,8 @@ package keeper_test
 // 	tmtime "github.com/cometbft/cometbft/types/time"
 
 // 	"github.com/UnUniFi/chain/app"
-// 	"github.com/UnUniFi/chain/deprecated/cdp/keeper"
-// 	cdptypes "github.com/UnUniFi/chain/deprecated/cdp/types"
+// 	"github.com/UnUniFi/chain/deprecated/x/cdp/keeper"
+// 	cdptypes "github.com/UnUniFi/chain/deprecated/x/cdp/types"
 // )
 
 // // saving the result to a module level variable ensures the compiler doesn't optimize the test away

@@ -6,8 +6,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/UnUniFi/chain/deprecated/yieldfarm/keeper"
-	"github.com/UnUniFi/chain/deprecated/yieldfarm/types"
+	"github.com/UnUniFi/chain/deprecated/x/yieldfarm/keeper"
+	"github.com/UnUniFi/chain/deprecated/x/yieldfarm/types"
 )
 
 // NewHandler ...

@@ -3,7 +3,7 @@ package ununifidist
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/deprecated/ununifidist/keeper"
+	"github.com/UnUniFi/chain/deprecated/x/ununifidist/keeper"
 )
 
 func BeginBlocker(ctx sdk.Context, k keeper.Keeper) {

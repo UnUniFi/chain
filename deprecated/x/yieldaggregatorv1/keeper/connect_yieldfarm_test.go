@@ -9,11 +9,11 @@ package keeper_test
 
 // 	transfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 
-// 	"github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/types"
+// 	"github.com/UnUniFi/chain/deprecated/x/yieldaggregatorv1/types"
 // 	epochtypes "github.com/UnUniFi/chain/x/epochs/types"
 // 	recordstypes "github.com/UnUniFi/chain/x/records/types"
 // 	stakeibctypes "github.com/UnUniFi/chain/x/stakeibc/types"
-// 	yieldfarmtypes "github.com/UnUniFi/chain/deprecated/yieldfarm/types"
+// 	yieldfarmtypes "github.com/UnUniFi/chain/deprecated/x/yieldfarm/types"
 // )
 
 // func (suite *KeeperTestSuite) TestInvestOnTarget() {

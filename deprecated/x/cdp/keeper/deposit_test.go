@@ -11,8 +11,8 @@ package keeper_test
 // 	tmtime "github.com/cometbft/cometbft/types/time"
 
 // 	"github.com/UnUniFi/chain/app"
-// 	"github.com/UnUniFi/chain/deprecated/cdp/keeper"
-// 	cdptypes "github.com/UnUniFi/chain/deprecated/cdp/types"
+// 	"github.com/UnUniFi/chain/deprecated/x/cdp/keeper"
+// 	cdptypes "github.com/UnUniFi/chain/deprecated/x/cdp/types"
 // )
 
 // type DepositTestSuite struct {

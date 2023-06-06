@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/UnUniFi/chain/deprecated/cdp/types"
+	"github.com/UnUniFi/chain/deprecated/x/cdp/types"
 )
 
 func (k Keeper) CdpAll(c context.Context, req *types.QueryAllCdpRequest) (*types.QueryAllCdpResponse, error) {

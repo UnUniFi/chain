@@ -9,7 +9,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	cdptypes "github.com/UnUniFi/chain/deprecated/cdp/types"
+	cdptypes "github.com/UnUniFi/chain/deprecated/x/cdp/types"
 )
 
 type ParamsTestSuite struct {

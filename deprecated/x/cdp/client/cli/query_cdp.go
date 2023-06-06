@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	"github.com/UnUniFi/chain/deprecated/cdp/types"
+	"github.com/UnUniFi/chain/deprecated/x/cdp/types"
 )
 
 func CmdListCdp() *cobra.Command {

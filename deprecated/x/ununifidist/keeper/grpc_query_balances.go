@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/UnUniFi/chain/deprecated/ununifidist/types"
+	"github.com/UnUniFi/chain/deprecated/x/ununifidist/types"
 )
 
 func (k Keeper) Balances(c context.Context, req *types.QueryGetBalancesRequest) (*types.QueryGetBalancesResponse, error) {

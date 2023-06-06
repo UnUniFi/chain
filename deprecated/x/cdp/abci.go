@@ -7,7 +7,7 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
-	"github.com/UnUniFi/chain/deprecated/cdp/keeper"
+	"github.com/UnUniFi/chain/deprecated/x/cdp/keeper"
 	"github.com/UnUniFi/chain/x/pricefeed/types"
 )
 

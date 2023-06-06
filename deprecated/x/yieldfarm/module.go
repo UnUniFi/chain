@@ -15,8 +15,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/UnUniFi/chain/deprecated/yieldfarm/keeper"
-	"github.com/UnUniFi/chain/deprecated/yieldfarm/types"
+	"github.com/UnUniFi/chain/deprecated/x/yieldfarm/keeper"
+	"github.com/UnUniFi/chain/deprecated/x/yieldfarm/types"
 )
 
 var (

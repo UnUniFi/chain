@@ -9,8 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/app"
-	cdpkeeper "github.com/UnUniFi/chain/deprecated/cdp/keeper"
-	cdptypes "github.com/UnUniFi/chain/deprecated/cdp/types"
+	cdpkeeper "github.com/UnUniFi/chain/deprecated/x/cdp/keeper"
+	cdptypes "github.com/UnUniFi/chain/deprecated/x/cdp/types"
 )
 
 type GenesisTestSuite struct {

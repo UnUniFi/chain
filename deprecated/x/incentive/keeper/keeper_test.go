@@ -22,8 +22,8 @@ package keeper_test
 
 // 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
-// 	"github.com/UnUniFi/chain/deprecated/incentive/keeper"
-// 	"github.com/UnUniFi/chain/deprecated/incentive/types"
+// 	"github.com/UnUniFi/chain/deprecated/x/incentive/keeper"
+// 	"github.com/UnUniFi/chain/deprecated/x/incentive/types"
 // )
 
 // // Test suite used for all keeper tests

@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/deprecated/incentive/types"
+	"github.com/UnUniFi/chain/deprecated/x/incentive/types"
 )
 
 func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {

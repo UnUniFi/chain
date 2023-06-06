@@ -4,10 +4,10 @@ package keeper_test
 // 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 // 	"github.com/UnUniFi/chain/app"
-// 	auctiontypes "github.com/UnUniFi/chain/deprecated/auction/types"
+// 	auctiontypes "github.com/UnUniFi/chain/deprecated/x/auction/types"
 
-// 	cdpkeeper "github.com/UnUniFi/chain/deprecated/cdp/keeper"
-// 	cdptypes "github.com/UnUniFi/chain/deprecated/cdp/types"
+// 	cdpkeeper "github.com/UnUniFi/chain/deprecated/x/cdp/keeper"
+// 	cdptypes "github.com/UnUniFi/chain/deprecated/x/cdp/types"
 
 // 	"github.com/stretchr/testify/suite"
 

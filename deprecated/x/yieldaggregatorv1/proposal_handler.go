@@ -5,9 +5,9 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 
-	"github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/keeper"
+	"github.com/UnUniFi/chain/deprecated/x/yieldaggregatorv1/keeper"
 
-	"github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/types"
+	"github.com/UnUniFi/chain/deprecated/x/yieldaggregatorv1/types"
 )
 
 // NewYieldAggregatorProposalHandler creates a new governance Handler

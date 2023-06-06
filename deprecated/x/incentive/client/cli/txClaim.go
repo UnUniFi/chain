@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 
-	"github.com/UnUniFi/chain/deprecated/incentive/types"
+	"github.com/UnUniFi/chain/deprecated/x/incentive/types"
 )
 
 func CmdClaimCdpMintingReward() *cobra.Command {

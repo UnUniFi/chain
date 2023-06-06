@@ -11,7 +11,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/types"
+	"github.com/UnUniFi/chain/deprecated/x/yieldaggregatorv1/types"
 	stakeibckeeper "github.com/UnUniFi/chain/x/stakeibc/keeper"
 )
 

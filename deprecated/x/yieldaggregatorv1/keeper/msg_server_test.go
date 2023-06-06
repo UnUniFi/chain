@@ -4,8 +4,8 @@ package keeper_test
 // 	"github.com/cometbft/cometbft/crypto/ed25519"
 // 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-// 	"github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/keeper"
-// 	"github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/types"
+// 	"github.com/UnUniFi/chain/deprecated/x/yieldaggregatorv1/keeper"
+// 	"github.com/UnUniFi/chain/deprecated/x/yieldaggregatorv1/types"
 // )
 
 // func (suite *KeeperTestSuite) TestMsgServerSetDailyRewardPercent() {

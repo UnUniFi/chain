@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	"github.com/UnUniFi/chain/deprecated/auction/types"
+	"github.com/UnUniFi/chain/deprecated/x/auction/types"
 )
 
 func CmdQueryParams() *cobra.Command {

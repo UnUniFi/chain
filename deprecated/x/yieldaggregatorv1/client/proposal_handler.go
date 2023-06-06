@@ -3,7 +3,7 @@ package client
 import (
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 
-	"github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/client/cli"
+	"github.com/UnUniFi/chain/deprecated/x/yieldaggregatorv1/client/cli"
 )
 
 var ProposalAddYieldFarmHandler = govclient.NewProposalHandler(cli.NewSubmitProposalAddYieldFarmTxCmd)

@@ -11,7 +11,7 @@ package keeper_test
 
 // 	"github.com/UnUniFi/chain/app"
 // 	ununifitypes "github.com/UnUniFi/chain/types"
-// 	cdptypes "github.com/UnUniFi/chain/deprecated/cdp/types"
+// 	cdptypes "github.com/UnUniFi/chain/deprecated/x/cdp/types"
 // 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 // )
 

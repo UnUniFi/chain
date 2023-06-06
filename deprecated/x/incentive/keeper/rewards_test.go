@@ -7,12 +7,12 @@ package keeper_test
 // 	sdk "github.com/cosmos/cosmos-sdk/types"
 // 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-// 	cdptypes "github.com/UnUniFi/chain/deprecated/cdp/types"
+// 	cdptypes "github.com/UnUniFi/chain/deprecated/x/cdp/types"
 // 	// "github.com/UnUniFi/chain/x/committee"
 // 	// "github.com/UnUniFi/chain/x/hard"
 // 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
-// 	incentivetypes "github.com/UnUniFi/chain/deprecated/incentive/types"
+// 	incentivetypes "github.com/UnUniFi/chain/deprecated/x/incentive/types"
 // )
 
 // func (suite *KeeperTestSuite) TestAccumulateCdpMintingRewards() {

@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/deprecated/cdp/keeper"
-	"github.com/UnUniFi/chain/deprecated/cdp/types"
+	"github.com/UnUniFi/chain/deprecated/x/cdp/keeper"
+	"github.com/UnUniFi/chain/deprecated/x/cdp/types"
 )
 
 // InitGenesis initializes the capability module's state from a provided genesis
