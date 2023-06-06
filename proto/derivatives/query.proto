@@ -102,16 +102,7 @@ message QueryPoolResponse {
   ];
   PoolMarketCap pool_market_cap = 2 [
     (gogoproto.moretags)  = "yaml:\"pool_market_cap\""
-  ];
-  string volume_24hours = 3 [
-    (gogoproto.moretags)  = "yaml:\"volume_24hours\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
-  ];
-  string fees_24hours = 4 [
-    (gogoproto.moretags)  = "yaml:\"fees_24hours\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
-  ];
-  
+  ];  
 }
 
 message QueryLiquidityProviderTokenRealAPYRequest {
@@ -149,22 +140,14 @@ message QueryLiquidityProviderTokenNominalAPYResponse {
 message QueryPerpetualFuturesRequest {}
 
 message QueryPerpetualFuturesResponse {
-  string metrics_quote_ticker = 2 [
+  string metrics_quote_ticker = 1 [
     (gogoproto.moretags)  = "yaml:\"metrics_quote_ticker\""
   ];
-  string volume_24hours = 3 [
-    (gogoproto.moretags)  = "yaml:\"volume_24hours\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
-  ];
-  string fees_24hours = 4 [
-    (gogoproto.moretags)  = "yaml:\"fees_24hours\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
-  ];
-  cosmos.base.v1beta1.Coin long_positions = 5 [
+  repeated cosmos.base.v1beta1.Coin long_positions = 2 [
     (gogoproto.moretags)  = "yaml:\"long_positions\"",
     (gogoproto.nullable) = false
   ];
-  cosmos.base.v1beta1.Coin short_positions = 6 [
+  repeated cosmos.base.v1beta1.Coin short_positions = 3 [
     (gogoproto.moretags)  = "yaml:\"short_positions\"",
     (gogoproto.nullable) = false
   ];
@@ -187,19 +170,11 @@ message QueryPerpetualFuturesMarketResponse {
   string metrics_quote_ticker = 2 [
     (gogoproto.moretags)  = "yaml:\"metrics_quote_ticker\""
   ];
-  string volume_24hours = 3 [
-    (gogoproto.moretags)  = "yaml:\"volume_24hours\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
-  ];
-  string fees_24hours = 4 [
-    (gogoproto.moretags)  = "yaml:\"fees_24hours\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
-  ];
-  string long_positions = 5 [
+  string long_positions = 3 [
     (gogoproto.moretags)  = "yaml:\"long_positions\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
   ];
-  string short_positions = 6 [
+  string short_positions = 4 [
     (gogoproto.moretags)  = "yaml:\"short_positions\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
   ];
