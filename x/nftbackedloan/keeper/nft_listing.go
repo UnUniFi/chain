@@ -227,7 +227,7 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 
 	// Emit event for nft listing
 	ctx.EventManager().EmitTypedEvent(&types.EventListNft{
-		Owner:   msg.Sender.AccAddress().String(),
+		Owner:   msg.Sender,
 		ClassId: msg.NftId.ClassId,
 		NftId:   msg.NftId.NftId,
 	})
@@ -249,7 +249,7 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 	}
 
 	// check ownership of listing
-	if listing.Owner != msg.Sender.AccAddress().String() {
+	if listing.Owner != msg.Sender {
 		return types.ErrNotNftListingOwner
 	}
 
@@ -308,8 +308,13 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 	// 	k.DeleteBid(ctx, bid)
 	// }
 
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return err
+	}
+
 	// Send ownership to original owner
-	err = k.nftKeeper.Transfer(ctx, msg.NftId.ClassId, msg.NftId.NftId, msg.Sender.AccAddress())
+	err = k.nftKeeper.Transfer(ctx, msg.NftId.ClassId, msg.NftId.NftId, sender)
 	if err != nil {
 		return err
 	}
@@ -319,7 +324,7 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 
 	// // Emit event for nft listing cancel
 	ctx.EventManager().EmitTypedEvent(&types.EventCancelListNfting{
-		Owner:   msg.Sender.AccAddress().String(),
+		Owner:   msg.Sender,
 		ClassId: msg.NftId.ClassId,
 		NftId:   msg.NftId.NftId,
 	})
@@ -412,7 +417,7 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 	}
 
 	// check ownership of listing
-	if listing.Owner != msg.Sender.AccAddress().String() {
+	if listing.Owner != msg.Sender {
 		return types.ErrNotNftListingOwner
 	}
 
@@ -445,7 +450,7 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 
 			cacheCtx, write := ctx.CacheContext()
 			err = k.PayFullBid(cacheCtx, &types.MsgPayFullBid{
-				Sender: bidder.Bytes(),
+				Sender: bidder.String(),
 				NftId:  listing.NftId,
 			})
 			if err == nil {
@@ -458,7 +463,7 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 
 	// Emit event for nft listing end
 	ctx.EventManager().EmitTypedEvent(&types.EventSellingDecision{
-		Owner:   msg.Sender.AccAddress().String(),
+		Owner:   msg.Sender,
 		ClassId: msg.NftId.ClassId,
 		NftId:   msg.NftId.NftId,
 	})
@@ -480,7 +485,7 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 	}
 
 	// check ownership of listing
-	if listing.Owner != msg.Sender.AccAddress().String() {
+	if listing.Owner != msg.Sender {
 		return types.ErrNotNftListingOwner
 	}
 
@@ -491,7 +496,11 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 
 	bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
 	if len(bids) == 0 {
-		err = k.nftKeeper.Transfer(ctx, listing.NftId.ClassId, listing.NftId.NftId, msg.Sender.AccAddress())
+		sender, err := sdk.AccAddressFromBech32(msg.Sender)
+		if err != nil {
+			return err
+		}
+		err = k.nftKeeper.Transfer(ctx, listing.NftId.ClassId, listing.NftId.NftId, sender)
 		if err != nil {
 			panic(err)
 		}
@@ -513,7 +522,7 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 
 				cacheCtx, write := ctx.CacheContext()
 				err = k.PayFullBid(cacheCtx, &types.MsgPayFullBid{
-					Sender: bidder.Bytes(),
+					Sender: bidder.String(),
 					NftId:  listing.NftId,
 				})
 				if err == nil {
@@ -528,7 +537,7 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 
 	// Emit event for nft listing end
 	ctx.EventManager().EmitTypedEvent(&types.EventEndListNfting{
-		Owner:   msg.Sender.AccAddress().String(),
+		Owner:   msg.Sender,
 		ClassId: msg.NftId.ClassId,
 		NftId:   msg.NftId.NftId,
 	})
@@ -582,7 +591,7 @@ func (k Keeper) ProcessEndingNftListings(ctx sdk.Context) {
 				continue
 			}
 			err = k.EndNftListing(ctx, &types.MsgEndNftListing{
-				Sender: listingOwner.Bytes(),
+				Sender: listingOwner.String(),
 				NftId:  listing.NftId,
 			})
 			if err != nil {

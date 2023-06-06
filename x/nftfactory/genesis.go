@@ -46,9 +46,14 @@ func InitClassRelatingData(ctx sdk.Context, k keeper.Keeper, nftKeeper types.Nft
 		return err
 	}
 
+	owner, err := sdk.AccAddressFromBech32(classAttributes.Owner)
+	if err != nil {
+		return err
+	}
+
 	if err := k.SetClassAttributes(ctx, types.NewClassAttributes(
 		class.Id,
-		classAttributes.Owner.AccAddress(),
+		owner,
 		classAttributes.BaseTokenUri,
 		classAttributes.MintingPermission,
 		classAttributes.TokenSupplyCap,
@@ -56,7 +61,7 @@ func InitClassRelatingData(ctx sdk.Context, k keeper.Keeper, nftKeeper types.Nft
 		return err
 	}
 
-	owningClassIdList := k.AddClassIDToOwningClassIdList(ctx, classAttributes.Owner.AccAddress(), class.Id)
+	owningClassIdList := k.AddClassIDToOwningClassIdList(ctx, owner, class.Id)
 	if err := k.SetOwningClassIdList(ctx, owningClassIdList); err != nil {
 		return err
 	}

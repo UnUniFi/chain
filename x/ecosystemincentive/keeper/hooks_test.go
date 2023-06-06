@@ -4,7 +4,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
-	ununifitypes "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
 	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
@@ -139,7 +138,7 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 		nftId                nftmarkettypes.NftIdentifier
 		reward               sdk.Coin
 		recipientContainerId string
-		subjectAddrs         []ununifitypes.StringAccAddress
+		subjectAddrs         []string
 		weights              []sdk.Dec
 		recordedBefore       bool
 		expectPass           bool
@@ -156,8 +155,8 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 			},
 			reward:               sdk.Coin{"uguu", sdk.NewInt(100)},
 			recipientContainerId: "recipientContainerId1",
-			subjectAddrs: []ununifitypes.StringAccAddress{
-				ununifitypes.StringAccAddress(suite.addrs[0]),
+			subjectAddrs: []string{
+				suite.addrs[0].String(),
 			},
 			weights:        []sdk.Dec{sdk.MustNewDecFromStr("1")},
 			recordedBefore: false,
@@ -171,8 +170,8 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 			},
 			reward:               sdk.Coin{"uguu", sdk.NewInt(0)},
 			recipientContainerId: "recipientContainerId1",
-			subjectAddrs: []ununifitypes.StringAccAddress{
-				ununifitypes.StringAccAddress(suite.addrs[0]),
+			subjectAddrs: []string{
+				suite.addrs[0].String(),
 			},
 			weights:        []sdk.Dec{sdk.MustNewDecFromStr("1")},
 			recordedBefore: true,
@@ -186,8 +185,8 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 			},
 			reward:               sdk.Coin{"uguu", sdk.NewInt(100)},
 			recipientContainerId: "recipientContainerId3",
-			subjectAddrs: []ununifitypes.StringAccAddress{
-				ununifitypes.StringAccAddress(suite.addrs[0]),
+			subjectAddrs: []string{
+				suite.addrs[0].String(),
 			},
 			weights:                        []sdk.Dec{sdk.MustNewDecFromStr("1")},
 			recordedBefore:                 true,
@@ -203,8 +202,8 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 			},
 			reward:               sdk.Coin{"uguu", sdk.NewInt(100)},
 			recipientContainerId: "recipientContainerId4",
-			subjectAddrs: []ununifitypes.StringAccAddress{
-				ununifitypes.StringAccAddress(suite.addrs[0]),
+			subjectAddrs: []string{
+				suite.addrs[0].String(),
 			},
 			weights:                        []sdk.Dec{sdk.MustNewDecFromStr("1")},
 			recordedBefore:                 true,
@@ -262,7 +261,7 @@ func (suite *KeeperTestSuite) TestAfterNftUnlistedWithoutPayment() {
 		testCase             string
 		nftId                nftmarkettypes.NftIdentifier
 		recipientContainerId string
-		subjectAddrs         []ununifitypes.StringAccAddress
+		subjectAddrs         []string
 		weights              []sdk.Dec
 		registerBefore       bool
 		expectPass           bool
@@ -274,8 +273,8 @@ func (suite *KeeperTestSuite) TestAfterNftUnlistedWithoutPayment() {
 				NftId:   "nft1",
 			},
 			recipientContainerId: "recipientContainerId1",
-			subjectAddrs: []ununifitypes.StringAccAddress{
-				ununifitypes.StringAccAddress(suite.addrs[0]),
+			subjectAddrs: []string{
+				suite.addrs[0].String(),
 			},
 			weights:        []sdk.Dec{sdk.MustNewDecFromStr("1")},
 			registerBefore: true,
@@ -287,8 +286,8 @@ func (suite *KeeperTestSuite) TestAfterNftUnlistedWithoutPayment() {
 				NftId:   "nft2",
 			},
 			recipientContainerId: "recipientContainerId2",
-			subjectAddrs: []ununifitypes.StringAccAddress{
-				ununifitypes.StringAccAddress(suite.addrs[0]),
+			subjectAddrs: []string{
+				suite.addrs[0].String(),
 			},
 			weights:        []sdk.Dec{sdk.MustNewDecFromStr("1")},
 			registerBefore: true,

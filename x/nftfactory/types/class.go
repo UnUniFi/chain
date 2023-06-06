@@ -24,7 +24,7 @@ func NewClassAttributes(
 ) ClassAttributes {
 	return ClassAttributes{
 		ClassId:           classID,
-		Owner:             owner.Bytes(),
+		Owner:             owner.String(),
 		BaseTokenUri:      baseTokenUri,
 		MintingPermission: mintingpermission,
 		TokenSupplyCap:    tokenSupplyCap,
@@ -33,7 +33,7 @@ func NewClassAttributes(
 
 func NewOwningClassIdList(owner sdk.AccAddress) OwningClassIdList {
 	var classIDList []string
-	return OwningClassIdList{Owner: owner.Bytes(), ClassId: classIDList}
+	return OwningClassIdList{Owner: owner.String(), ClassId: classIDList}
 }
 
 func NewClassNameIdList(className string) ClassNameIdList {

@@ -14,22 +14,14 @@ enum MintingPermission {
 
 message ClassAttributes {
   string class_id = 1;
-  string owner = 2 [
-    (gogoproto.moretags) = "yaml:\"owner\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
+  string owner = 2;
   string base_token_uri = 3;
   MintingPermission minting_permission = 4;
   uint64 token_supply_cap = 5;
 }
 
 message OwningClassIdList {
-  string owner = 1 [
-    (gogoproto.moretags) = "yaml:\"owner\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
+  string owner = 1;
   repeated string class_id = 2;
 }
 

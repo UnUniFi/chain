@@ -151,7 +151,10 @@ func (k Keeper) InitialLiquidityProviderTokenSupply(ctx sdk.Context, assetPrice 
 }
 
 func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgDepositToPool) error {
-	depositor := msg.Sender.AccAddress()
+	depositor, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return err
+	}
 
 	params := k.GetParams(ctx)
 	// check if the deposit denom is valid and amount is positive
@@ -220,7 +223,10 @@ func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgWithdr
 
 	// todo:check validator address,amount,redeem denom
 	// todo: use CacheCtx
-	sender := msg.Sender.AccAddress()
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return err
+	}
 	amount := msg.LptAmount
 	redeemDenom := msg.RedeemDenom
 

@@ -3,14 +3,13 @@ package types
 import (
 	codecTypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	ununifiTypes "github.com/UnUniFi/chain/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgDepositToPool{}
 
-func NewMsgDepositToPool(sender ununifiTypes.StringAccAddress, amount sdk.Coin) MsgDepositToPool {
+func NewMsgDepositToPool(sender string, amount sdk.Coin) MsgDepositToPool {
 	return MsgDepositToPool{
 		Sender: sender,
 		Amount: amount,
@@ -36,15 +35,16 @@ func (msg MsgDepositToPool) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgDepositToPool) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Sender.AccAddress()}
+	addr, _ := sdk.AccAddressFromBech32(msg.Sender)
+	return []sdk.AccAddress{addr}
 }
 
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgWithdrawFromPool{}
 
-func NewMsgWithdrawFromPool(sender sdk.AccAddress, lptAmount sdk.Int, denom string) MsgWithdrawFromPool {
+func NewMsgWithdrawFromPool(sender string, lptAmount sdk.Int, denom string) MsgWithdrawFromPool {
 	return MsgWithdrawFromPool{
-		Sender:      sender.Bytes(),
+		Sender:      sender,
 		LptAmount:   lptAmount,
 		RedeemDenom: denom,
 	}
@@ -58,6 +58,11 @@ func (msg MsgWithdrawFromPool) Type() string { return "withdraw_from_pool" }
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
 func (msg MsgWithdrawFromPool) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address is not valid")
+	}
+
 	return nil
 }
 
@@ -69,15 +74,16 @@ func (msg MsgWithdrawFromPool) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgWithdrawFromPool) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Sender.AccAddress()}
+	addr, _ := sdk.AccAddressFromBech32(msg.Sender)
+	return []sdk.AccAddress{addr}
 }
 
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgOpenPosition{}
 
-func NewMsgOpenPosition(sender sdk.AccAddress, margin sdk.Coin, market Market, positionInstance codecTypes.Any) MsgOpenPosition {
+func NewMsgOpenPosition(sender string, margin sdk.Coin, market Market, positionInstance codecTypes.Any) MsgOpenPosition {
 	return MsgOpenPosition{
-		Sender:           sender.Bytes(),
+		Sender:           sender,
 		Margin:           margin,
 		Market:           market,
 		PositionInstance: positionInstance,
@@ -92,6 +98,11 @@ func (msg MsgOpenPosition) Type() string { return "open_position" }
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
 func (msg MsgOpenPosition) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address is not valid")
+	}
+
 	return nil
 }
 
@@ -103,15 +114,16 @@ func (msg MsgOpenPosition) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgOpenPosition) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Sender.AccAddress()}
+	addr, _ := sdk.AccAddressFromBech32(msg.Sender)
+	return []sdk.AccAddress{addr}
 }
 
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgClosePosition{}
 
-func NewMsgClosePosition(sender sdk.AccAddress, positionId string) MsgClosePosition {
+func NewMsgClosePosition(sender string, positionId string) MsgClosePosition {
 	return MsgClosePosition{
-		Sender:     sender.Bytes(),
+		Sender:     sender,
 		PositionId: positionId,
 	}
 }
@@ -124,6 +136,11 @@ func (msg MsgClosePosition) Type() string { return "close_position" }
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
 func (msg MsgClosePosition) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address is not valid")
+	}
+
 	return nil
 }
 
@@ -135,13 +152,14 @@ func (msg MsgClosePosition) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgClosePosition) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Sender.AccAddress()}
+	addr, _ := sdk.AccAddressFromBech32(msg.Sender)
+	return []sdk.AccAddress{addr}
 }
 
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgReportLiquidation{}
 
-func NewMsgReportLiquidation(sender ununifiTypes.StringAccAddress, positionId string, rewardRecipient ununifiTypes.StringAccAddress) MsgReportLiquidation {
+func NewMsgReportLiquidation(sender string, positionId string, rewardRecipient string) MsgReportLiquidation {
 	return MsgReportLiquidation{
 		Sender:          sender,
 		PositionId:      positionId,
@@ -170,7 +188,8 @@ func (msg MsgReportLiquidation) GetSignBytes() []byte {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgReportLiquidation) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Sender.AccAddress()}
+	addr, _ := sdk.AccAddressFromBech32(msg.Sender)
+	return []sdk.AccAddress{addr}
 }
 
 var _ sdk.Msg = &MsgReportLevyPeriod{}
@@ -189,6 +208,11 @@ func (msg MsgReportLevyPeriod) Type() string {
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
 func (msg MsgReportLevyPeriod) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address is not valid")
+	}
+
 	return nil
 }
 

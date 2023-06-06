@@ -81,7 +81,7 @@ func CmdCreateClass() *cobra.Command {
 			}
 
 			msg := types.NewMsgCreateClass(
-				clientCtx.GetFromAddress(),
+				clientCtx.GetFromAddress().String(),
 				args[0],
 				args[1],
 				tokenSupplyCap,
@@ -130,10 +130,10 @@ func CmdMintNFT() *cobra.Command {
 			}
 
 			msg := types.NewMsgMintNFT(
-				sender,
+				sender.String(),
 				args[0],
 				args[1],
-				recipientAddr,
+				recipientAddr.String(),
 			)
 
 			if err := msg.ValidateBasic(); err != nil {
@@ -162,7 +162,7 @@ func CmdBurnNFT() *cobra.Command {
 			sender := clientCtx.GetFromAddress()
 
 			msg := types.NewMsgBurnNFT(
-				sender,
+				sender.String(),
 				args[0],
 				args[1],
 			)
@@ -198,9 +198,9 @@ func CmdSendClassOwnership() *cobra.Command {
 			}
 
 			msg := types.NewMsgSendClassOwnership(
-				sender,
+				sender.String(),
 				args[0],
-				recipientAddr,
+				recipientAddr.String(),
 			)
 
 			if err := msg.ValidateBasic(); err != nil {
@@ -234,7 +234,7 @@ func CmdUpdateTokenSupplyCap() *cobra.Command {
 			}
 
 			msg := types.NewMsgUpdateTokenSupplyCap(
-				sender,
+				sender.String(),
 				args[0],
 				tokenSupplyCap,
 			)
@@ -265,7 +265,7 @@ func CmdUpdateBaseTokenUri() *cobra.Command {
 			sender := clientCtx.GetFromAddress()
 
 			msg := types.NewMsgUpdateBaseTokenUri(
-				sender,
+				sender.String(),
 				args[0],
 				args[1],
 			)

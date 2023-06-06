@@ -9,8 +9,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-
-	ununifitypes "github.com/UnUniFi/chain/types"
 )
 
 // TODO: Add checks to ensure the margin is handed to MarginManager module account appropriately.
@@ -90,7 +88,7 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 		err := suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{testPosition.availableAssetInPool})
 		suite.Require().NoError(err)
 
-		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.Bytes(), testPosition.margin, market, testPosition.instance)
+		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.String(), testPosition.margin, market, testPosition.instance)
 		if testPosition.positionId == "-1" {
 			suite.Require().Error(err)
 			suite.Require().Nil(position)
@@ -238,7 +236,7 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 		err := suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{testPosition.availableAssetInPool})
 		suite.Require().NoError(err)
 
-		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.Bytes(), testPosition.margin, market, testPosition.instance)
+		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.String(), testPosition.margin, market, testPosition.instance)
 		suite.Require().NoError(err)
 		suite.Require().NotNil(position)
 
@@ -349,7 +347,7 @@ func (suite *KeeperTestSuite) TestReportLiquidationNeededPerpetualFuturesPositio
 		switch positionInstance := positionInstance.(type) {
 		case *types.PerpetualFuturesPositionInstance:
 			perpetualFuturesPosition := types.NewPerpetualFuturesPosition(*position, *positionInstance)
-			err = suite.keeper.ReportLiquidationNeededPerpetualFuturesPosition(suite.ctx, owner.Bytes(), perpetualFuturesPosition)
+			err = suite.keeper.ReportLiquidationNeededPerpetualFuturesPosition(suite.ctx, owner.String(), perpetualFuturesPosition)
 		}
 		suite.Require().NoError(err)
 
@@ -431,7 +429,7 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 		err := suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{testPosition.availableAssetInPool})
 		suite.Require().NoError(err)
 
-		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.Bytes(), testPosition.margin, market, testPosition.instance)
+		position, err := suite.keeper.OpenPerpetualFuturesPosition(suite.ctx, testPosition.positionId, owner.String(), testPosition.margin, market, testPosition.instance)
 		suite.Require().NoError(err)
 		suite.Require().NotNil(position)
 
@@ -445,7 +443,7 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 		suite.Require().NoError(err)
 		switch positionInstance := positionInstance.(type) {
 		case *types.PerpetualFuturesPositionInstance:
-			err = suite.keeper.ReportLevyPeriodPerpetualFuturesPosition(suite.ctx, owner.Bytes(), *position, *positionInstance)
+			err = suite.keeper.ReportLevyPeriodPerpetualFuturesPosition(suite.ctx, owner.String(), *position, *positionInstance)
 		}
 		suite.Require().NoError(err)
 

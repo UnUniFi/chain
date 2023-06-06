@@ -83,7 +83,7 @@ func (k Keeper) SetPrice(
 	var index int
 	found := false
 	for i := range prices {
-		if prices[i].OracleAddress.AccAddress().Equals(oracle) {
+		if prices[i].OracleAddress == oracle.String() {
 			index = i
 			found = true
 			break
@@ -92,9 +92,9 @@ func (k Keeper) SetPrice(
 
 	// set the price for that particular oracle
 	if found {
-		prices[index] = types.NewPostedPrice(marketID, oracle, price, expiry)
+		prices[index] = types.NewPostedPrice(marketID, oracle.String(), price, expiry)
 	} else {
-		prices = append(prices, types.NewPostedPrice(marketID, oracle, price, expiry))
+		prices = append(prices, types.NewPostedPrice(marketID, oracle.String(), price, expiry))
 		index = len(prices) - 1
 	}
 

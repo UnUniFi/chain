@@ -24,13 +24,17 @@ var _ types.MsgServer = msgServer{}
 
 func (k msgServer) PostPrice(c context.Context, msg *types.MsgPostPrice) (*types.MsgPostPriceResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	err := k.keeper.ValidateAuthorityAndDeposit(ctx, msg.MarketId, msg.From.AccAddress(), msg.Deposit)
+	from, err := sdk.AccAddressFromBech32(msg.From)
+	if err != nil {
+		return nil, err
+	}
+	err = k.keeper.ValidateAuthorityAndDeposit(ctx, msg.MarketId, from, msg.Deposit)
 	if err != nil {
 		return nil, err
 	}
 
 	// TODO: slash deposit if the oracle is malicious
-	_, err = k.keeper.SetPrice(ctx, msg.From.AccAddress(), msg.MarketId, msg.Price.ToSDKDec(), msg.Expiry)
+	_, err = k.keeper.SetPrice(ctx, from, msg.MarketId, msg.Price, msg.Expiry)
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +42,7 @@ func (k msgServer) PostPrice(c context.Context, msg *types.MsgPostPrice) (*types
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.From.AccAddress().String()),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.From),
 		),
 	)
 
