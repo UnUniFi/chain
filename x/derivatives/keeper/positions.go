@@ -7,6 +7,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
@@ -81,7 +82,7 @@ func (k Keeper) GetPositionWithId(ctx sdk.Context, id string) *types.Position {
 	return &position
 }
 
-func (k Keeper) GetAddressPositions(ctx sdk.Context, user string) []*types.Position {
+func (k Keeper) GetAddressPositions(ctx sdk.Context, user sdk.AccAddress) []*types.Position {
 	store := ctx.KVStore(k.storeKey)
 
 	positions := []*types.Position{}
@@ -98,7 +99,7 @@ func (k Keeper) GetAddressPositions(ctx sdk.Context, user string) []*types.Posit
 	return positions
 }
 
-func (k Keeper) GetAddressPositionsVal(ctx sdk.Context, user string) []types.Position {
+func (k Keeper) GetAddressPositionsVal(ctx sdk.Context, user sdk.AccAddress) []types.Position {
 	store := ctx.KVStore(k.storeKey)
 
 	positions := []types.Position{}
@@ -115,7 +116,7 @@ func (k Keeper) GetAddressPositionsVal(ctx sdk.Context, user string) []types.Pos
 	return positions
 }
 
-func (k Keeper) GetAddressPositionWithId(ctx sdk.Context, address string, id string) *types.Position {
+func (k Keeper) GetAddressPositionWithId(ctx sdk.Context, address sdk.AccAddress, id string) *types.Position {
 	store := ctx.KVStore(k.storeKey)
 
 	bz := store.Get(types.AddressPositionWithIdKeyPrefix(address, id))
@@ -128,15 +129,21 @@ func (k Keeper) GetAddressPositionWithId(ctx sdk.Context, address string, id str
 	return &position
 }
 
-func (k Keeper) SetPosition(ctx sdk.Context, position types.Position) {
+func (k Keeper) SetPosition(ctx sdk.Context, position types.Position) error {
+	addr, err := sdk.AccAddressFromBech32(position.Address)
+	if err != nil {
+		return err
+	}
 	store := ctx.KVStore(k.storeKey)
 
 	bz := k.cdc.MustMarshal(&position)
 	store.Set(types.PositionWithIdKeyPrefix(position.Id), bz)
-	store.Set(types.AddressPositionWithIdKeyPrefix(position.Address, position.Id), bz)
+	store.Set(types.AddressPositionWithIdKeyPrefix(addr, position.Id), bz)
+
+	return nil
 }
 
-func (k Keeper) DeletePosition(ctx sdk.Context, address string, id string) {
+func (k Keeper) DeletePosition(ctx sdk.Context, address sdk.AccAddress, id string) {
 	store := ctx.KVStore(k.storeKey)
 
 	store.Delete(types.PositionWithIdKeyPrefix(id))
@@ -157,6 +164,11 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 		return err
 	}
 
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return err
+	}
+
 	var position *types.Position
 	switch positionInstance := positionInstance.(type) {
 	case *types.PerpetualFuturesPositionInstance:
@@ -164,7 +176,7 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 	case *types.PerpetualOptionsPositionInstance:
 		position, err = k.OpenPerpetualOptionsPosition(ctx, newPositionId, msg.Sender, msg.Margin, msg.Market, *positionInstance)
 	default:
-		err = errors.New("unknown position instance")
+		err = sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "position instance: %s", positionInstance)
 	}
 
 	if err != nil {
@@ -174,7 +186,7 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 	k.SetPosition(ctx, *position)
 	k.IncreaseLastPositionId(ctx)
 
-	if err := k.SendMarginToMarginManager(ctx, msg.Sender.AccAddress(), sdk.NewCoins(msg.Margin)); err != nil {
+	if err := k.SendMarginToMarginManager(ctx, sender, sdk.NewCoins(msg.Margin)); err != nil {
 		return err
 	}
 
@@ -182,8 +194,13 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 }
 
 func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) error {
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return err
+	}
+
 	positionId := msg.PositionId
-	position := k.GetAddressPositionWithId(ctx, msg.Sender, positionId)
+	position := k.GetAddressPositionWithId(ctx, sender, positionId)
 
 	if position == nil {
 		return errors.New("position not found")
@@ -207,14 +224,14 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 		err = k.ClosePerpetualOptionsPosition(ctx, *position, *positionInstance)
 		break
 	default:
-		panic("")
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "position instance: %s", positionInstance)
 	}
 
 	if err != nil {
 		return err
 	}
 
-	k.DeletePosition(ctx, msg.Sender, positionId)
+	k.DeletePosition(ctx, sender, positionId)
 
 	return nil
 }
@@ -240,7 +257,7 @@ func (k Keeper) ReportLiquidation(ctx sdk.Context, msg *types.MsgReportLiquidati
 		err = k.ReportLiquidationNeededPerpetualOptionsPosition(ctx, msg.RewardRecipient, *position, *positionInstance)
 		break
 	default:
-		panic("")
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "position instance: %s", positionInstance)
 	}
 
 	if err != nil {
@@ -274,7 +291,7 @@ func (k Keeper) ReportLevyPeriod(ctx sdk.Context, msg *types.MsgReportLevyPeriod
 		// err = k.ReportLevyPeriodPerpetualOptionsPosition(ctx, msg.RewardRecipient, *position, *positionInstance)
 		break
 	default:
-		panic("")
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "position instance: %s", positionInstance)
 	}
 
 	if err != nil {

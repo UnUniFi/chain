@@ -113,7 +113,7 @@ $ %s tx %s withdraw-from-pool 1 ubtc --from myKeyName --chain-id ununifi-x
 			}
 			denom := args[1]
 
-			msg := types.NewMsgWithdrawFromPool(sender, amount, denom)
+			msg := types.NewMsgWithdrawFromPool(sender.String(), amount, denom)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -213,7 +213,7 @@ $ %s tx %s open-position perpetual-futures --from myKeyName --chain-id ununifi-x
 				BaseDenom:  baseDenom,
 				QuoteDenom: quoteDenom,
 			}
-			msg := types.NewMsgOpenPosition(sender, margin, market, *piAny)
+			msg := types.NewMsgOpenPosition(sender.String(), margin, market, *piAny)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -263,7 +263,7 @@ $ %s tx %s close-position --from myKeyName --chain-id ununifi-x
 			sender := clientCtx.GetFromAddress()
 			potisionId := args[0]
 
-			msg := types.NewMsgClosePosition(sender, potisionId)
+			msg := types.NewMsgClosePosition(sender.String(), potisionId)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err

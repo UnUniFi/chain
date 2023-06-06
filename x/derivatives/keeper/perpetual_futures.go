@@ -204,6 +204,11 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 // If the profit exists, the profit always comes from the pool.
 // If the loss exists, the loss always goes to the pool from the users' margin.
 func (k Keeper) HandleReturnAmount(ctx sdk.Context, pnlAmount sdk.Int, position types.PerpetualFuturesPosition) (returningAmount sdk.Int, err error) {
+	addr, err := sdk.AccAddressFromBech32(position.Address)
+	if err != nil {
+		return sdk.ZeroInt(), err
+	}
+
 	if pnlAmount.IsNegative() {
 		returningAmount = position.RemainingMargin.Amount.Sub(pnlAmount.Abs())
 		// Tell the loss to the LP happened by a trade
@@ -216,7 +221,7 @@ func (k Keeper) HandleReturnAmount(ctx sdk.Context, pnlAmount sdk.Int, position 
 		} else {
 			returningCoin := sdk.NewCoin(position.RemainingMargin.Denom, returningAmount)
 			// Send coin including margin
-			if err := k.SendBackMargin(ctx, position.Address.AccAddress(), sdk.NewCoins(returningCoin)); err != nil {
+			if err := k.SendBackMargin(ctx, addr, sdk.NewCoins(returningCoin)); err != nil {
 				return sdk.ZeroInt(), err
 			}
 
@@ -228,11 +233,11 @@ func (k Keeper) HandleReturnAmount(ctx sdk.Context, pnlAmount sdk.Int, position 
 	} else {
 		returningAmount = position.RemainingMargin.Amount.Add(pnlAmount)
 		fromMarginManagerAmount := position.RemainingMargin
-		if err := k.SendBackMargin(ctx, position.Address.AccAddress(), sdk.NewCoins(fromMarginManagerAmount)); err != nil {
+		if err := k.SendBackMargin(ctx, addr, sdk.NewCoins(fromMarginManagerAmount)); err != nil {
 			return sdk.ZeroInt(), err
 		}
 
-		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, position.Address.AccAddress(), sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, pnlAmount))); err != nil {
+		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, pnlAmount))); err != nil {
 			return sdk.ZeroInt(), err
 		}
 	}
@@ -245,7 +250,7 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 
 	currentBaseUsdRate, currentQuoteUsdRate, err := k.GetPairUsdPriceFromMarket(ctx, position.Market)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	quoteTicker := k.GetPoolQuoteTicker(ctx)
@@ -261,9 +266,14 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 		if err := k.ClosePerpetualFuturesPosition(ctx, position); err != nil {
 			return err
 		}
+		recipient, err := sdk.AccAddressFromBech32(rewardRecipient)
+		if err != nil {
+			return err
+		}
+
 		// Delete Position
 		k.DeletePosition(ctx, position.Address, position.Id)
-		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
+		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipient, reward)
 		if err != nil {
 			return err
 		}
@@ -313,8 +323,13 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 	// Reward is part of the commission fee
 	rewardAmount := sdk.NewDecFromInt(commissionFee).Mul(params.PoolParams.ReportLevyPeriodRewardRate).RoundInt()
 
+	recipient, err := sdk.AccAddressFromBech32(rewardRecipient)
+	if err != nil {
+		return err
+	}
+
 	reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))
-	err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, rewardRecipient.AccAddress(), reward)
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipient, reward)
 	if err != nil {
 		return err
 	}
@@ -322,7 +337,7 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 	k.SetPosition(ctx, position)
 
 	ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionLevied{
-		RewardRecipient: rewardRecipient.AccAddress().String(),
+		RewardRecipient: rewardRecipient,
 		PositionId:      position.Id,
 		RemainingMargin: position.RemainingMargin.String(),
 		RewardAmount:    rewardAmount.String(),
