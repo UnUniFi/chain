@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"time"
 
-	ununifitypes "github.com/UnUniFi/chain/types"
+	ununifitypes "github.com/UnUniFi/chain/deprecated/types"
 	"github.com/UnUniFi/chain/x/derivatives/types"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 

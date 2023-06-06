@@ -9,7 +9,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	ununifitypes "github.com/UnUniFi/chain/types"
+	ununifitypes "github.com/UnUniFi/chain/deprecated/types"
 )
 
 func TestClaimsValidate(t *testing.T) {

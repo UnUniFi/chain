@@ -8,7 +8,7 @@ package keeper_test
 // 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 // 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 
-// 	ununifitypes "github.com/UnUniFi/chain/types"
+// 	ununifitypes "github.com/UnUniFi/chain/deprecated/types"
 // 	"github.com/UnUniFi/chain/deprecated/x/nftmarketv1/types"
 // 	ecoincentivetypes "github.com/UnUniFi/chain/x/ecosystemincentive/types"
 // )

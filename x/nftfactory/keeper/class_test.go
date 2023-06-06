@@ -8,7 +8,7 @@ import (
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 	"github.com/stretchr/testify/require"
 
-	ununifitypes "github.com/UnUniFi/chain/types"
+	ununifitypes "github.com/UnUniFi/chain/deprecated/types"
 	"github.com/UnUniFi/chain/x/nftfactory/keeper"
 	"github.com/UnUniFi/chain/x/nftfactory/types"
 )

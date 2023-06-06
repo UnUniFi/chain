@@ -11,7 +11,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/gogo/protobuf/proto"
 
-	ununifitypes "github.com/UnUniFi/chain/types"
+	ununifitypes "github.com/UnUniFi/chain/deprecated/types"
 )
 
 const (

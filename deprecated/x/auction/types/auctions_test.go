@@ -6,8 +6,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	ununifitypes "github.com/UnUniFi/chain/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	ununifitypes "github.com/UnUniFi/chain/deprecated/types"
 )
 
 const (

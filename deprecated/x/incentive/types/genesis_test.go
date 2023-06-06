@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	ununifitypes "github.com/UnUniFi/chain/types"
+	ununifitypes "github.com/UnUniFi/chain/deprecated/types"
 )
 
 func TestGenesisStateValidate(t *testing.T) {

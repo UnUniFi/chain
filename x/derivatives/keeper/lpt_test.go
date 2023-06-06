@@ -8,7 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
-	ununifitypes "github.com/UnUniFi/chain/types"
+	ununifitypes "github.com/UnUniFi/chain/deprecated/types"
 	"github.com/UnUniFi/chain/x/derivatives/types"
 	pftypes "github.com/UnUniFi/chain/x/pricefeed/types"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"

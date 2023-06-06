@@ -10,7 +10,7 @@ package keeper_test
 // 	tmtime "github.com/cometbft/cometbft/types/time"
 
 // 	"github.com/UnUniFi/chain/app"
-// 	ununifitypes "github.com/UnUniFi/chain/types"
+// 	ununifitypes "github.com/UnUniFi/chain/deprecated/types"
 // 	cdptypes "github.com/UnUniFi/chain/deprecated/x/cdp/types"
 // 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 // )

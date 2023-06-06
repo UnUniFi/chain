@@ -8,7 +8,7 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 
-	ununifitypes "github.com/UnUniFi/chain/types"
+	ununifitypes "github.com/UnUniFi/chain/deprecated/types"
 	ecoincentivetypes "github.com/UnUniFi/chain/x/ecosystemincentive/types"
 	"github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
