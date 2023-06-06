@@ -258,7 +258,14 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 	quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, currentQuoteUsdRate)
 	if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, baseMetricsRate, quoteMetricsRate) {
 		// In case of closing position by Liquidation, a commission fee is charged.
-		commissionFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
+		commissionBaseFee := sdk.NewDecFromInt(position.PositionInstance.SizeInDenomExponent(types.OneMillionInt)).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
+		var commissionFee sdk.Int
+		if position.Market.BaseDenom == position.RemainingMargin.Denom {
+			commissionFee = commissionBaseFee
+		} else {
+			commissionFee = k.ConvertBaseAmountToQuoteAmount(ctx, position.Market, commissionBaseFee)
+		}
+
 		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(commissionFee)
 		rewardAmount := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PoolParams.ReportLiquidationRewardRate).RoundInt()
 		reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))
@@ -295,15 +302,18 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 
 	netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, position.Market).PositionSizeInDenomExponent
 	totalPosition := k.GetPerpetualFuturesTotalPositionOfMarket(ctx, position.Market).PositionSizeInDenomExponent
-	commissionFee := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
+	commissionBaseFee := sdk.NewDecFromInt(positionInstance.SizeInDenomExponent(types.OneMillionInt)).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
 
 	// NetPosition / TotalPosition * LevyCoefficient
 	imaginaryFundingRate := sdk.NewDecFromInt(netPosition).Quo(sdk.NewDecFromInt(totalPosition)).Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
 	imaginaryFundingBaseFee := sdk.NewDecFromInt(positionInstance.SizeInDenomExponent(types.OneMillionInt)).Mul(imaginaryFundingRate).RoundInt()
+	var commissionFee sdk.Int
 	var imaginaryFundingFee sdk.Int
 	if position.Market.BaseDenom == position.RemainingMargin.Denom {
+		commissionFee = commissionBaseFee
 		imaginaryFundingFee = imaginaryFundingBaseFee
 	} else {
+		commissionFee = k.ConvertBaseAmountToQuoteAmount(ctx, position.Market, commissionBaseFee)
 		imaginaryFundingFee = k.ConvertBaseAmountToQuoteAmount(ctx, position.Market, imaginaryFundingBaseFee)
 	}
 	if positionInstance.PositionType == types.PositionType_LONG {
