@@ -6,7 +6,7 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	github_com_UnUniFi_chain_types "github.com/UnUniFi/chain/types"
+	github_com_UnUniFi_chain_types "github.com/UnUniFi/chain/deprecated/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types"
 	proto "github.com/cosmos/gogoproto/proto"
