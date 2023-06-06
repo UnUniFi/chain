@@ -16,11 +16,7 @@ service Msg {
 }
 
 message MsgCreateClass {
-  string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
+  string sender = 1;
   string name = 2;
   string base_token_uri = 3;
   uint64 token_supply_cap = 4;
@@ -32,64 +28,36 @@ message MsgCreateClass {
 message MsgCreateClassResponse {}
 
 message MsgSendClassOwnership {
-  string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
+  string sender = 1;
   string class_id = 2;
-  string recipient = 3 [
-    (gogoproto.moretags) = "yaml:\"recipient\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
+  string recipient = 3;
 }
 message MsgSendClassOwnershipResponse {}
 
 message MsgUpdateBaseTokenUri {
-  string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
+  string sender = 1;
   string class_id = 2; 
   string base_token_uri = 3;
 }
 message MsgUpdateBaseTokenUriResponse {}
 
 message MsgUpdateTokenSupplyCap {
-  string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
+  string sender = 1;
   string class_id = 2; 
   uint64 token_supply_cap = 3;
 }
 message MsgUpdateTokenSupplyCapResponse {}
 
 message MsgMintNFT {
-    string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
+  string sender = 1;
   string class_id = 2;
   string nft_id = 3;
-  string recipient = 4 [
-    (gogoproto.moretags) = "yaml:\"recipient\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
+  string recipient = 4;
 }
 message MsgMintNFTResponse {}
 
 message MsgBurnNFT {
-  string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
+  string sender = 1;
   string class_id = 2;
   string nft_id = 3;
 }

@@ -41,11 +41,16 @@ func (k Keeper) CreateClass(ctx sdk.Context, classID string, msg *types.MsgCreat
 		return err
 	}
 
-	if err = k.SetClassAttributes(ctx, types.NewClassAttributes(classID, msg.Sender.AccAddress(), msg.BaseTokenUri, msg.MintingPermission, msg.TokenSupplyCap)); err != nil {
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
 		return err
 	}
 
-	owningClassIdList := k.AddClassIDToOwningClassIdList(ctx, msg.Sender.AccAddress(), classID)
+	if err = k.SetClassAttributes(ctx, types.NewClassAttributes(classID, sender, msg.BaseTokenUri, msg.MintingPermission, msg.TokenSupplyCap)); err != nil {
+		return err
+	}
+
+	owningClassIdList := k.AddClassIDToOwningClassIdList(ctx, sender, classID)
 	if err = k.SetOwningClassIdList(ctx, owningClassIdList); err != nil {
 		return err
 	}
@@ -82,8 +87,8 @@ func (k Keeper) SendClassOwnership(ctx sdk.Context, msg *types.MsgSendClassOwner
 		return sdkerrors.Wrap(types.ErrClassAttributesNotExists, msg.ClassId)
 	}
 
-	if !msg.Sender.AccAddress().Equals(classAttirbutes.Owner.AccAddress()) {
-		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not the owner of the class", msg.Sender.AccAddress().String())
+	if msg.Sender != classAttirbutes.Owner {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not the owner of the class", msg.Sender)
 	}
 
 	classAttirbutes.Owner = msg.Recipient
@@ -101,7 +106,12 @@ func (k Keeper) UpdateTokenSupplyCap(ctx sdk.Context, msg *types.MsgUpdateTokenS
 		return sdkerrors.Wrap(types.ErrClassAttributesNotExists, msg.ClassId)
 	}
 
-	if err := k.IsUpgradable(ctx, msg.Sender.AccAddress(), classAttributes); err != nil {
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return err
+	}
+
+	if err := k.IsUpgradable(ctx, sender, classAttributes); err != nil {
 		return err
 	}
 
@@ -129,7 +139,12 @@ func (k Keeper) UpdateBaseTokenUri(ctx sdk.Context, msg *types.MsgUpdateBaseToke
 		return sdkerrors.Wrap(types.ErrClassAttributesNotExists, msg.ClassId)
 	}
 
-	if err := k.IsUpgradable(ctx, msg.Sender.AccAddress(), classAttributes); err != nil {
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return err
+	}
+
+	if err := k.IsUpgradable(ctx, sender, classAttributes); err != nil {
 		return err
 	}
 
@@ -156,7 +171,7 @@ func (k Keeper) IsUpgradable(ctx sdk.Context, sender sdk.AccAddress, classAttrib
 		return sdkerrors.Wrap(nfttypes.ErrClassNotExists, classAttributes.ClassId)
 	}
 
-	if !sender.Equals(classAttributes.Owner.AccAddress()) {
+	if sender.String() != classAttributes.Owner {
 		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not the owner of the class", sender.String())
 	}
 
@@ -182,7 +197,13 @@ func (k Keeper) SetOwningClassIdList(ctx sdk.Context, owningClassIdList types.Ow
 	if err != nil {
 		return sdkerrors.Wrap(err, "Marshal nftmint.OwningClassIdList failed")
 	}
-	owningClassIdListKey := types.OwningClassIdListKey(owningClassIdList.Owner.AccAddress())
+
+	owner, err := sdk.AccAddressFromBech32(owningClassIdList.Owner)
+	if err != nil {
+		return err
+	}
+
+	owningClassIdListKey := types.OwningClassIdListKey(owner)
 	prefixStore.Set(owningClassIdListKey, bz)
 	return nil
 }

@@ -54,10 +54,7 @@ message QueryAllOracleRequest {
 }
 
 message QueryAllOracleResponse {
-  repeated string oracles = 1 [
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
-  ];
+  repeated string oracles = 1;
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

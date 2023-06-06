@@ -16,7 +16,11 @@ func Contains(a []string, x string) bool {
 }
 
 func validateListNftMsg(k Keeper, ctx sdk.Context, msg *types.MsgListNft) error {
-	return checkListNft(k, ctx, msg.Sender.AccAddress(), msg.NftId, msg.BidToken)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return err
+	}
+	return checkListNft(k, ctx, sender, msg.NftId, msg.BidToken)
 }
 
 func checkListNft(k Keeper, ctx sdk.Context, sender sdk.AccAddress, nftId types.NftIdentifier, bidToken string) error {

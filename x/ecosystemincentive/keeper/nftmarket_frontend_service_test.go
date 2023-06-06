@@ -8,7 +8,6 @@ import (
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 
-	ununifitypes "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
 	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
@@ -21,7 +20,7 @@ func (suite *KeeperTestSuite) TestRecordIncentiveUnitIdWithNftId() {
 		classId         string
 		nftId           string
 		incentiveUnitId string
-		subjectAddrs    []ununifitypes.StringAccAddress
+		subjectAddrs    []string
 		weights         []sdk.Dec
 		registerBefore  bool
 		expectPass      bool
@@ -31,7 +30,7 @@ func (suite *KeeperTestSuite) TestRecordIncentiveUnitIdWithNftId() {
 			classId:         "class1",
 			nftId:           "nft1",
 			incentiveUnitId: "id1",
-			subjectAddrs:    []ununifitypes.StringAccAddress{sender.Bytes()},
+			subjectAddrs:    []string{sender.String()},
 			weights:         []sdk.Dec{sdk.MustNewDecFromStr("1.0")},
 			registerBefore:  false,
 			expectPass:      false,
@@ -41,7 +40,7 @@ func (suite *KeeperTestSuite) TestRecordIncentiveUnitIdWithNftId() {
 			classId:         "class2",
 			nftId:           "nft2",
 			incentiveUnitId: "id2",
-			subjectAddrs:    []ununifitypes.StringAccAddress{sender.Bytes()},
+			subjectAddrs:    []string{sender.String()},
 			weights:         []sdk.Dec{sdk.MustNewDecFromStr("1.0")},
 			registerBefore:  true,
 			expectPass:      true,
@@ -51,7 +50,7 @@ func (suite *KeeperTestSuite) TestRecordIncentiveUnitIdWithNftId() {
 			classId:         "class2",
 			nftId:           "nft2",
 			incentiveUnitId: "id3",
-			subjectAddrs:    []ununifitypes.StringAccAddress{sender.Bytes()},
+			subjectAddrs:    []string{sender.String()},
 			weights:         []sdk.Dec{sdk.MustNewDecFromStr("1.0")},
 			registerBefore:  true,
 			expectPass:      false,
@@ -67,10 +66,10 @@ func (suite *KeeperTestSuite) TestRecordIncentiveUnitIdWithNftId() {
 			_, _ = suite.app.EcosystemincentiveKeeper.Register(
 				suite.ctx,
 				&types.MsgRegister{
-					Sender:          sender.Bytes(),
-					IncentiveUnitId: test.incentiveUnitId,
-					SubjectAddrs:    test.subjectAddrs,
-					Weights:         test.weights,
+					Sender:               sender.String(),
+					RecipientContainerId: test.incentiveUnitId,
+					Addresses:            test.subjectAddrs,
+					Weights:              test.weights,
 				},
 			)
 

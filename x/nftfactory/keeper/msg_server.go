@@ -24,19 +24,24 @@ var _ types.MsgServer = msgServer{}
 func (k msgServer) CreateClass(c context.Context, msg *types.MsgCreateClass) (*types.MsgCreateClassResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	seq, err := k.keeper.accountKeeper.GetSequence(ctx, msg.Sender.AccAddress())
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return nil, err
 	}
 
-	classID := CreateClassId(seq, msg.Sender.AccAddress())
+	seq, err := k.keeper.accountKeeper.GetSequence(ctx, sender)
+	if err != nil {
+		return nil, err
+	}
+
+	classID := CreateClassId(seq, sender)
 	err = k.keeper.CreateClass(ctx, classID, msg)
 	if err != nil {
 		return nil, err
 	}
 
 	ctx.EventManager().EmitTypedEvent(&types.EventCreateClass{
-		Owner:             msg.Sender.AccAddress().String(),
+		Owner:             msg.Sender,
 		ClassId:           classID,
 		BaseTokenUri:      msg.BaseTokenUri,
 		TokenSupplyCap:    strconv.FormatUint(msg.TokenSupplyCap, 10),
@@ -54,9 +59,9 @@ func (k msgServer) SendClassOwnership(c context.Context, msg *types.MsgSendClass
 	}
 
 	ctx.EventManager().EmitTypedEvent(&types.EventSendClassOwnership{
-		Sender:   msg.Sender.AccAddress().String(),
+		Sender:   msg.Sender,
 		ClassId:  msg.ClassId,
-		Receiver: msg.Recipient.AccAddress().String(),
+		Receiver: msg.Recipient,
 	})
 	return &types.MsgSendClassOwnershipResponse{}, nil
 }
@@ -69,7 +74,7 @@ func (k msgServer) UpdateBaseTokenUri(c context.Context, msg *types.MsgUpdateBas
 	}
 
 	ctx.EventManager().EmitTypedEvent(&types.EventUpdateBaseTokenUri{
-		Owner:        msg.Sender.AccAddress().String(),
+		Owner:        msg.Sender,
 		ClassId:      msg.ClassId,
 		BaseTokenUri: msg.BaseTokenUri,
 	})
@@ -84,7 +89,7 @@ func (k msgServer) UpdateTokenSupplyCap(c context.Context, msg *types.MsgUpdateT
 	}
 
 	ctx.EventManager().EmitTypedEvent(&types.EventUpdateTokenSupplyCap{
-		Owner:          msg.Sender.AccAddress().String(),
+		Owner:          msg.Sender,
 		ClassId:        msg.ClassId,
 		TokenSupplyCap: strconv.FormatUint(msg.TokenSupplyCap, 10),
 	})
@@ -101,8 +106,8 @@ func (k msgServer) MintNFT(c context.Context, msg *types.MsgMintNFT) (*types.Msg
 	ctx.EventManager().EmitTypedEvent(&types.EventMintNFT{
 		ClassId: msg.ClassId,
 		NftId:   msg.NftId,
-		Owner:   msg.Recipient.AccAddress().String(),
-		Minter:  msg.Sender.AccAddress().String(),
+		Owner:   msg.Recipient,
+		Minter:  msg.Sender,
 	})
 	return &types.MsgMintNFTResponse{}, nil
 }
@@ -115,7 +120,7 @@ func (k msgServer) BurnNFT(c context.Context, msg *types.MsgBurnNFT) (*types.Msg
 	}
 
 	ctx.EventManager().EmitTypedEvent(&types.EventBurnNFT{
-		Burner:  msg.Sender.AccAddress().String(),
+		Burner:  msg.Sender,
 		ClassId: msg.ClassId,
 		NftId:   msg.NftId,
 	})

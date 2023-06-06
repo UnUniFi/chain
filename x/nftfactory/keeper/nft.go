@@ -23,10 +23,20 @@ func (k Keeper) MintNFT(ctx sdk.Context, msg *types.MsgMintNFT) error {
 	nftUri := classAttributes.BaseTokenUri + msg.NftId
 	params := k.GetParamSet(ctx)
 	currentTokenSupply := k.nftKeeper.GetTotalSupply(ctx, msg.ClassId)
-	err := types.ValidateMintNFT(
+
+	owner, err := sdk.AccAddressFromBech32(classAttributes.Owner)
+	if err != nil {
+		return err
+	}
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return err
+	}
+
+	err = types.ValidateMintNFT(
 		params,
 		classAttributes.MintingPermission,
-		classAttributes.Owner.AccAddress(), msg.Sender.AccAddress(),
+		owner, sender,
 		nftUri, msg.NftId,
 		currentTokenSupply, classAttributes.TokenSupplyCap,
 	)
@@ -34,11 +44,16 @@ func (k Keeper) MintNFT(ctx sdk.Context, msg *types.MsgMintNFT) error {
 		return err
 	}
 
-	if err := k.nftKeeper.Mint(ctx, types.NewNFT(msg.ClassId, msg.NftId, nftUri), msg.Recipient.AccAddress()); err != nil {
+	recipient, err := sdk.AccAddressFromBech32(msg.Recipient)
+	if err != nil {
 		return err
 	}
 
-	if err := k.SetNFTMinter(ctx, msg.ClassId, msg.NftId, msg.Sender.AccAddress()); err != nil {
+	if err := k.nftKeeper.Mint(ctx, types.NewNFT(msg.ClassId, msg.NftId, nftUri), recipient); err != nil {
+		return err
+	}
+
+	if err := k.SetNFTMinter(ctx, msg.ClassId, msg.NftId, sender); err != nil {
 		return err
 	}
 
@@ -56,8 +71,8 @@ func (k Keeper) BurnNFT(ctx sdk.Context, msg *types.MsgBurnNFT) error {
 	}
 
 	owner := k.nftKeeper.GetOwner(ctx, msg.ClassId, msg.NftId)
-	if !owner.Equals(msg.Sender.AccAddress()) {
-		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not the owner of nft %s", msg.Sender.AccAddress().String(), msg.NftId)
+	if owner.String() != msg.Sender {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not the owner of nft %s", msg.Sender, msg.NftId)
 	}
 
 	if err := k.nftKeeper.Burn(ctx, msg.ClassId, msg.NftId); err != nil {
