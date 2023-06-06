@@ -142,7 +142,10 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 // pool_marketcap = price_of_ith_asset * amount_of_ith_deopsited_asset
 // initial_lp_supply = pool_marketcap / initial_lp_token_price
 func (k Keeper) InitialLiquidityProviderTokenSupply(ctx sdk.Context, assetPrice *pftypes.CurrentPrice, assetMarketCap sdk.Dec, depositDenom string) (sdk.Coin, error) {
-	assetInfo := k.GetPoolAcceptedAssetConfByDenom(ctx, depositDenom)
+	assetInfo, err := k.GetPoolAcceptedAssetConfByDenom(ctx, depositDenom)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
 	initialLPTokenPrice := assetPrice.Price.Mul(assetInfo.TargetWeight)
 	initialLPTokenSupply := assetMarketCap.Quo(initialLPTokenPrice)
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
@@ -14,16 +15,16 @@ func (k Keeper) GetPoolAcceptedAssetsConf(ctx sdk.Context) []types.PoolAssetConf
 	return params.PoolParams.AcceptedAssetsConf
 }
 
-func (k Keeper) GetPoolAcceptedAssetConfByDenom(ctx sdk.Context, denom string) types.PoolAssetConf {
+func (k Keeper) GetPoolAcceptedAssetConfByDenom(ctx sdk.Context, denom string) (types.PoolAssetConf, error) {
 	params := k.GetParams(ctx)
 
 	for _, assetConf := range params.PoolParams.AcceptedAssetsConf {
 		if assetConf.Denom == denom {
-			return assetConf
+			return assetConf, nil
 		}
 	}
-
-	panic(fmt.Sprintf("asset %s is not accepted", denom))
+	err := sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "asset %s is not accepted", denom)
+	return types.PoolAssetConf{}, err
 }
 
 func (k Keeper) IsAssetAcceptable(ctx sdk.Context, denom string) bool {
@@ -47,7 +48,10 @@ func (k Keeper) GetAssetBalanceInPoolByDenom(ctx sdk.Context, denom string) sdk.
 // Return the current target amount of the asset in the pool.
 func (k Keeper) GetAssetTargetAmount(ctx sdk.Context, denom string) (sdk.Coin, error) {
 	mc := k.GetPoolMarketCap(ctx)
-	asset := k.GetPoolAcceptedAssetConfByDenom(ctx, denom)
+	asset, err := k.GetPoolAcceptedAssetConfByDenom(ctx, denom)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
 
 	price, err := k.GetAssetPrice(ctx, denom)
 	if err != nil {
