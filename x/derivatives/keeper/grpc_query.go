@@ -131,7 +131,10 @@ func (k Keeper) Pool(c context.Context, req *types.QueryPoolRequest) (*types.Que
 	ctx := sdk.UnwrapSDKContext(c)
 	// TODO: implement the handler logic
 	metricsQuoteTicker := ""
-	poolMarketCap := k.GetPoolMarketCap(ctx)
+	poolMarketCap, err := k.GetPoolMarketCap(ctx)
+	if err != nil {
+		return nil, err
+	}
 	volume24Hours := sdk.NewDec(0)
 	fees24Hours := sdk.NewDec(0)
 

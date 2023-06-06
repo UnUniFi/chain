@@ -45,7 +45,12 @@ func (k Keeper) GetLPTokenSupply(ctx sdk.Context) sdk.Int {
 }
 
 func (k Keeper) GetLPTokenPrice(ctx sdk.Context) sdk.Dec {
-	return k.GetPoolMarketCap(ctx).CalculateLPTokenPrice(k.GetLPTokenSupply(ctx))
+	poolMarketCap, err := k.GetPoolMarketCap(ctx)
+	// if no pool market cap, return zero
+	if err != nil {
+		return sdk.ZeroDec()
+	}
+	return poolMarketCap.CalculateLPTokenPrice(k.GetLPTokenSupply(ctx))
 }
 
 // amount: amount of asset that will go to pool

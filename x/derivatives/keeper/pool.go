@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -47,7 +45,10 @@ func (k Keeper) GetAssetBalanceInPoolByDenom(ctx sdk.Context, denom string) sdk.
 
 // Return the current target amount of the asset in the pool.
 func (k Keeper) GetAssetTargetAmount(ctx sdk.Context, denom string) (sdk.Coin, error) {
-	mc := k.GetPoolMarketCap(ctx)
+	mc, err := k.GetPoolMarketCap(ctx)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
 	asset, err := k.GetPoolAcceptedAssetConfByDenom(ctx, denom)
 	if err != nil {
 		return sdk.Coin{}, err
@@ -89,7 +90,7 @@ func (k Keeper) GetPoolQuoteTicker(ctx sdk.Context) string {
 	return k.GetParams(ctx).PoolParams.QuoteTicker
 }
 
-func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
+func (k Keeper) GetPoolMarketCap(ctx sdk.Context) (types.PoolMarketCap, error) {
 	assets := k.GetPoolAcceptedAssetsConf(ctx)
 
 	assetInfoList := []types.PoolMarketCap_AssetInfo{}
@@ -102,7 +103,8 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 		price, err := k.GetAssetPrice(ctx, asset.Denom)
 
 		if err != nil {
-			panic(fmt.Sprintf("not able to calculate market cap: %s", err.Error()))
+			err = sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "not able to calculate market cap: %s", err.Error())
+			return types.PoolMarketCap{}, err
 		}
 
 		assetInfo := types.PoolMarketCap_AssetInfo{
@@ -118,7 +120,7 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 		QuoteTicker: quoteTicker,
 		Total:       mc,
 		AssetInfo:   assetInfoList,
-	}
+	}, nil
 }
 
 // IsPriceReady returns true if all assets have price feeded.
