@@ -17,9 +17,9 @@ package nftmarketv1
 // 	sdk "github.com/cosmos/cosmos-sdk/types"
 // 	"github.com/cosmos/cosmos-sdk/types/module"
 
-// 	"github.com/UnUniFi/chain/deprecated/nftmarketv1/client/cli"
-// 	"github.com/UnUniFi/chain/deprecated/nftmarketv1/keeper"
-// 	"github.com/UnUniFi/chain/deprecated/nftmarketv1/types"
+// 	"github.com/UnUniFi/chain/deprecated/x/nftmarketv1/client/cli"
+// 	"github.com/UnUniFi/chain/deprecated/x/nftmarketv1/keeper"
+// 	"github.com/UnUniFi/chain/deprecated/x/nftmarketv1/types"
 // )
 
 // var (

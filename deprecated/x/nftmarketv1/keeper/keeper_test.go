@@ -20,8 +20,8 @@ package keeper_test
 
 // 	simapp "github.com/UnUniFi/chain/app"
 // 	appparams "github.com/UnUniFi/chain/app/params"
-// 	"github.com/UnUniFi/chain/deprecated/nftmarketv1/keeper"
-// 	"github.com/UnUniFi/chain/deprecated/nftmarketv1/types"
+// 	"github.com/UnUniFi/chain/deprecated/x/nftmarketv1/keeper"
+// 	"github.com/UnUniFi/chain/deprecated/x/nftmarketv1/types"
 // )
 
 // var (

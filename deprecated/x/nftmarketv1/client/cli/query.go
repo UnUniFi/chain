@@ -9,7 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	"github.com/UnUniFi/chain/deprecated/nftmarketv1/types"
+	"github.com/UnUniFi/chain/deprecated/x/nftmarketv1/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

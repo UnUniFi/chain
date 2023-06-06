@@ -9,7 +9,7 @@ package keeper_test
 // 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 
 // 	ununifitypes "github.com/UnUniFi/chain/types"
-// 	"github.com/UnUniFi/chain/deprecated/nftmarketv1/types"
+// 	"github.com/UnUniFi/chain/deprecated/x/nftmarketv1/types"
 // )
 
 // func (suite *KeeperTestSuite) TestDebtBasics() {

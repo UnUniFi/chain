@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/UnUniFi/chain/deprecated/nftmarketv1/types"
+	"github.com/UnUniFi/chain/deprecated/x/nftmarketv1/types"
 )
 
 func (k Keeper) Params(c context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {

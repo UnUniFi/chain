@@ -11,7 +11,7 @@ import (
 
 	ecoincentivetypes "github.com/UnUniFi/chain/x/ecosystemincentive/types"
 
-	"github.com/UnUniFi/chain/deprecated/nftmarketv1/types"
+	"github.com/UnUniFi/chain/deprecated/x/nftmarketv1/types"
 )
 
 func (k Keeper) GetNftListingByIdBytes(ctx sdk.Context, nftIdBytes []byte) (types.NftListing, error) {

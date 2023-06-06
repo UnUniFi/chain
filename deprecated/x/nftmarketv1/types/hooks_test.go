@@ -4,7 +4,7 @@ package types_test
 // 	"testing"
 
 // 	simapp "github.com/UnUniFi/chain/app"
-// 	"github.com/UnUniFi/chain/deprecated/nftmarketv1/types"
+// 	"github.com/UnUniFi/chain/deprecated/x/nftmarketv1/types"
 
 // 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 // 	sdk "github.com/cosmos/cosmos-sdk/types"

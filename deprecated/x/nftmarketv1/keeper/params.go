@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/UnUniFi/chain/deprecated/nftmarketv1/types"
+	"github.com/UnUniFi/chain/deprecated/x/nftmarketv1/types"
 )
 
 // GetParamSet returns token params from the global param store
