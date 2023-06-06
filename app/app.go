@@ -12,7 +12,6 @@ import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 	"github.com/CosmWasm/wasmd/x/wasm"
-	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	dbm "github.com/cometbft/cometbft-db"
@@ -135,20 +134,20 @@ import (
 	// pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 	// recordsmoduletypes "github.com/UnUniFi/chain/x/records/types"
 	// stakeibcmoduletypes "github.com/UnUniFi/chain/x/stakeibc/types"
-	// yieldaggregator "github.com/UnUniFi/chain/x/yield-aggregator"
-	// yieldaggregatortypes "github.com/UnUniFi/chain/x/yield-aggregator/types"
+	// yieldaggregator "github.com/UnUniFi/chain/x/yieldaggregator"
+	// yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 	// "github.com/UnUniFi/chain/x/derivatives"
 	// derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
 	// derivativestypes "github.com/UnUniFi/chain/x/derivatives/types"
-	// ecosystemincentive "github.com/UnUniFi/chain/x/ecosystem-incentive"
-	// ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystem-incentive/types"
-	// "github.com/UnUniFi/chain/x/nftmarket"
-	// nftmarketkeeper "github.com/UnUniFi/chain/x/nftmarket/keeper"
-	// nftmarkettypes "github.com/UnUniFi/chain/x/nftmarket/types"
-	// "github.com/UnUniFi/chain/x/nftmint"
-	// nftmintkeeper "github.com/UnUniFi/chain/x/nftmint/keeper"
-	// nftminttypes "github.com/UnUniFi/chain/x/nftmint/types"
+	// ecosystemincentive "github.com/UnUniFi/chain/x/ecosystemincentive"
+	// ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystemincentive/types"
+	// "github.com/UnUniFi/chain/x/nftbackedloan"
+	// nftmarketkeeper "github.com/UnUniFi/chain/x/nftbackedloan/keeper"
+	// nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
+	// "github.com/UnUniFi/chain/x/nftfactory"
+	// nftmintkeeper "github.com/UnUniFi/chain/x/nftfactory/keeper"
+	// nftminttypes "github.com/UnUniFi/chain/x/nftfactory/types"
 )
 
 const Name = "ununifi"
@@ -193,7 +192,6 @@ func GetWasmOpts(appOpts servertypes.AppOptions) []wasm.Option {
 func getGovProposalHandlers() []govclient.ProposalHandler {
 	var govProposalHandlers []govclient.ProposalHandler
 	// this line is used by starport scaffolding # stargate/app/govProposalHandlers
-	govProposalHandlers = wasmclient.ProposalHandlers
 
 	govProposalHandlers = append(govProposalHandlers,
 		paramsclient.ProposalHandler,
@@ -275,6 +273,7 @@ var (
 		// nftmarkettypes.ModuleName:               nil,
 		// derivativestypes.ModuleName:             {authtypes.Minter, authtypes.Burner},
 		// derivativestypes.DerivativeFeeCollector: nil,
+		// derivativestypes.MarginManager:          nil,
 		// nftmarkettypes.NftTradingFee: nil,
 	}
 
@@ -752,6 +751,7 @@ func NewApp(
 		app.BankKeeper,
 		app.StakingKeeper,
 		distrkeeper.NewQuerier(app.DistrKeeper),
+		app.IBCFeeKeeper, // ISC4 Wrapper: fee IBC middleware
 		app.IBCKeeper.ChannelKeeper,
 		&app.IBCKeeper.PortKeeper,
 		scopedWasmKeeper,
@@ -793,7 +793,10 @@ func NewApp(
 	// 	appCodec,
 	// 	keys[ecosystemincentivetypes.StoreKey],
 	// 	app.GetSubspace(ecosystemincentivetypes.ModuleName),
+	// 	app.AccountKeeper,
 	// 	app.BankKeeper,
+	// 	// same as the feeCollectorName in the distribution module
+	// 	authtypes.FeeCollectorName,
 	// )
 	//
 	// epochsModule := epochsmodule.NewAppModule(appCodec, app.EpochsKeeper)

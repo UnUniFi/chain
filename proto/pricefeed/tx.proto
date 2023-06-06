@@ -13,14 +13,12 @@ service Msg {
 
 message MsgPostPrice {
   string from = 1 [
-    (gogoproto.moretags) = "yaml:\"from\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.moretags) = "yaml:\"from\""
   ];
   string market_id = 2 [(gogoproto.moretags) = "yaml:\"market_id\""];
   string price = 3 [
     (gogoproto.moretags) = "yaml:\"price\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
   google.protobuf.Timestamp expiry = 4 [
@@ -28,6 +26,7 @@ message MsgPostPrice {
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
+  cosmos.base.v1beta1.Coin deposit = 5 [(gogoproto.nullable) = false];
 }
 
 message MsgPostPriceResponse {}

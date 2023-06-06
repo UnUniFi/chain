@@ -7,6 +7,38 @@
   },
   "apis": [
     {
+      "url": "./tmp-swagger-gen/derivatives/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "DerivativesParams"
+        }
+      }
+    },
+    {
+      "url": "./tmp-swagger-gen/ecosystemincentive/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "EcosystemIncentiveParams"
+        }
+      }
+    },
+    {
+      "url": "./tmp-swagger-gen/nftbackedloan/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "NftBackedLoanParams"
+        }
+      }
+    },
+    {
+      "url": "./tmp-swagger-gen/nftfactory/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "NftFactoryParams"
+        }
+      }
+    },
+    {
       "url": "./tmp-swagger-gen/pricefeed/query.swagger.json",
       "operationIds": {
         "rename": {
@@ -15,42 +47,10 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/yield-aggregator/query.swagger.json",
+      "url": "./tmp-swagger-gen/yieldaggregator/query.swagger.json",
       "operationIds": {
         "rename": {
           "Params": "YieldAggregatorParams"
-        }
-      }
-    },
-    {
-      "url": "./tmp-swagger-gen/nftmint/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "NftmintParams"
-        }
-      }
-    },
-    {
-      "url": "./tmp-swagger-gen/nftmarket/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "NftmarketParams"
-        }
-      }
-    },
-    {
-      "url": "./tmp-swagger-gen/ecosystem-incentive/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "EcosystemincentiveParams"
-        }
-      }
-    },
-    {
-      "url": "./tmp-swagger-gen/derivatives/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "DerivativesParams"
         }
       }
     }

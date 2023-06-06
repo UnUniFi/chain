@@ -46,13 +46,30 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
+func (k Keeper) ValidateAuthorityAndDeposit(ctx sdk.Context, marketId string, address sdk.AccAddress, deposit sdk.Coin) error {
+	params := k.GetParams(ctx)
+	if deposit.IsLT(params.DepositForPosting) {
+		k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.NewCoins(deposit))
+		return sdkerrors.Wrapf(types.ErrInvalidOracle, "price deposit %s is less than minimum price deposit %s", deposit, params.DepositForPosting)
+	}
+
+	_, err := k.GetOracle(ctx, marketId, address)
+	if err != nil {
+		k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.NewCoins(deposit))
+		return err
+	}
+
+	return nil
+}
+
 // SetPrice updates the posted price for a specific oracle
 func (k Keeper) SetPrice(
 	ctx sdk.Context,
 	oracle sdk.AccAddress,
 	marketID string,
 	price sdk.Dec,
-	expiry time.Time) (types.PostedPrice, error) {
+	expiry time.Time,
+) (types.PostedPrice, error) {
 	// If the expiry is less than or equal to the current blockheight, we consider the price valid
 	if !expiry.After(ctx.BlockTime()) {
 		return types.PostedPrice{}, types.ErrExpired
@@ -66,7 +83,7 @@ func (k Keeper) SetPrice(
 	var index int
 	found := false
 	for i := range prices {
-		if prices[i].OracleAddress.AccAddress().Equals(oracle) {
+		if prices[i].OracleAddress == oracle.String() {
 			index = i
 			found = true
 			break
@@ -75,9 +92,9 @@ func (k Keeper) SetPrice(
 
 	// set the price for that particular oracle
 	if found {
-		prices[index] = types.NewPostedPrice(marketID, oracle, price, expiry)
+		prices[index] = types.NewPostedPrice(marketID, oracle.String(), price, expiry)
 	} else {
-		prices = append(prices, types.NewPostedPrice(marketID, oracle, price, expiry))
+		prices = append(prices, types.NewPostedPrice(marketID, oracle.String(), price, expiry))
 		index = len(prices) - 1
 	}
 
