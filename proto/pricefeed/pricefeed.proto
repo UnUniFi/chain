@@ -48,7 +48,8 @@ message PostedPrice {
 }
 
 message Params {
-  repeated Market markets = 1 [
+  cosmos.base.v1beta1.Coin deposit_for_posting = 1 [(gogoproto.nullable) = false];
+  repeated Market markets = 2 [
     (gogoproto.moretags) = "yaml:\"markets\"",
     (gogoproto.nullable) = false
   ];

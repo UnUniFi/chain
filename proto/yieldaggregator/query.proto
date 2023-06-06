@@ -28,7 +28,7 @@ service Query {
   }
 
   rpc StrategyAll(QueryAllStrategyRequest) returns (QueryAllStrategyResponse) {
-    option (google.api.http).get = "/ununifi/yieldaggregator/strategies/query-param";
+    option (google.api.http).get = "/ununifi/yieldaggregator/strategies";
   }
 
   rpc Strategy(QueryGetStrategyRequest) returns (QueryGetStrategyResponse) {
@@ -60,7 +60,7 @@ message QueryAllVaultRequest {
 }
 
 message QueryAllVaultResponse {
-  repeated Vault vaults = 1 [(gogoproto.nullable) = false];
+  repeated Vault                         vaults     = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -69,39 +69,39 @@ message QueryGetVaultRequest {
 }
 
 message QueryGetVaultResponse {
-  Vault vault = 1 [(gogoproto.nullable) = false];
-  repeated Strategy strategies = 2 [(gogoproto.nullable) = false];
-  string vault_address = 3;
-  string total_bonded_amount = 4 [
-    (cosmos_proto.scalar) = "cosmos.Int",
+  Vault             vault               = 1 [(gogoproto.nullable) = false];
+  repeated Strategy strategies          = 2 [(gogoproto.nullable) = false];
+  string            vault_address       = 3;
+  string            total_bonded_amount = 4 [
+    (cosmos_proto.scalar)  = "cosmos.Int",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
   string total_unbonding_amount = 5 [
-    (cosmos_proto.scalar) = "cosmos.Int",
+    (cosmos_proto.scalar)  = "cosmos.Int",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
   string total_withdrawal_balance = 6 [
-    (cosmos_proto.scalar) = "cosmos.Int",
+    (cosmos_proto.scalar)  = "cosmos.Int",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
 }
 
 message QueryAllStrategyRequest {
-  string denom = 1;
+  string                                denom      = 1;
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 message QueryAllStrategyResponse {
-  repeated Strategy strategies = 1 [(gogoproto.nullable) = false];
+  repeated Strategy                      strategies = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryGetStrategyRequest {
   string denom = 1;
-  uint64 id = 2;
+  uint64 id    = 2;
 }
 
 message QueryGetStrategyResponse {
@@ -109,11 +109,11 @@ message QueryGetStrategyResponse {
 }
 
 message QueryEstimateMintAmountRequest {
-  uint64 id = 1;
+  uint64 id             = 1;
   string deposit_amount = 2 [
-    (cosmos_proto.scalar) = "cosmos.Int",
+    (cosmos_proto.scalar)  = "cosmos.Int",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
 }
 
@@ -122,11 +122,11 @@ message QueryEstimateMintAmountResponse {
 }
 
 message QueryEstimateRedeemAmountRequest {
-  uint64 id = 1;
+  uint64 id          = 1;
   string burn_amount = 2 [
-    (cosmos_proto.scalar) = "cosmos.Int",
+    (cosmos_proto.scalar)  = "cosmos.Int",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
 }
 
