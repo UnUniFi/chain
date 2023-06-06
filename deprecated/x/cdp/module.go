@@ -18,10 +18,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/UnUniFi/chain/deprecated/cdp/client/cli"
-	"github.com/UnUniFi/chain/deprecated/cdp/client/rest"
-	"github.com/UnUniFi/chain/deprecated/cdp/keeper"
-	"github.com/UnUniFi/chain/deprecated/cdp/types"
+	"github.com/UnUniFi/chain/deprecated/x/cdp/client/cli"
+	"github.com/UnUniFi/chain/deprecated/x/cdp/client/rest"
+	"github.com/UnUniFi/chain/deprecated/x/cdp/keeper"
+	"github.com/UnUniFi/chain/deprecated/x/cdp/types"
 )
 
 var (

@@ -20,10 +20,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/UnUniFi/chain/deprecated/incentive/client/cli"
-	"github.com/UnUniFi/chain/deprecated/incentive/client/rest"
-	"github.com/UnUniFi/chain/deprecated/incentive/keeper"
-	"github.com/UnUniFi/chain/deprecated/incentive/types"
+	"github.com/UnUniFi/chain/deprecated/x/incentive/client/cli"
+	"github.com/UnUniFi/chain/deprecated/x/incentive/client/rest"
+	"github.com/UnUniFi/chain/deprecated/x/incentive/keeper"
+	"github.com/UnUniFi/chain/deprecated/x/incentive/types"
 )
 
 var (

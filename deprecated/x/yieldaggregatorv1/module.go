@@ -16,9 +16,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/client/cli"
-	"github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/keeper"
-	"github.com/UnUniFi/chain/deprecated/yieldaggregatorv1/types"
+	"github.com/UnUniFi/chain/deprecated/x/yieldaggregatorv1/client/cli"
+	"github.com/UnUniFi/chain/deprecated/x/yieldaggregatorv1/keeper"
+	"github.com/UnUniFi/chain/deprecated/x/yieldaggregatorv1/types"
 )
 
 var (
