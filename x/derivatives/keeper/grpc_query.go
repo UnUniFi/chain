@@ -7,7 +7,6 @@ package keeper
 import (
 	"context"
 
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -149,13 +148,13 @@ func (k Keeper) AllPositions(c context.Context, req *types.QueryAllPositionsRequ
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 
-	var positions []*codectypes.Any
+	var positions []*types.Position
 
 	store := ctx.KVStore(k.storeKey)
 	positionStore := prefix.NewStore(store, []byte(types.KeyPrefixPosition))
 	pageRes, err := query.Paginate(positionStore, req.Pagination, func(key []byte, value []byte) error {
-		var position codectypes.Any
-		if err := k.cdc.Unmarshal(value, &position); err != nil {
+		position, err := k.UnmarshalPosition(value)
+		if err != nil {
 			return err
 		}
 
