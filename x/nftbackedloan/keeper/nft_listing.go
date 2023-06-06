@@ -625,7 +625,11 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 			HighestBid := bids.GetHighestBid()
 			// if winner bidder did not pay full bid, nft is listed again after deleting winner bidder
 			if !HighestBid.IsPaidBidAmount() {
-				k.DeleteBid(ctx, HighestBid)
+				err := k.DeleteBid(ctx, HighestBid)
+				if err != nil {
+					fmt.Println(err)
+					continue
+				}
 				if len(bids) == 1 {
 					listing.State = types.ListingState_LISTING
 				} else {
@@ -827,7 +831,11 @@ func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 		totalPayAmount := listing.CollectedAmount.Add(bid.BidAmount)
 		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, totalPayAmount.Denom, totalPayAmount.Amount, loan.Loan.Amount, listing.NftId)
 
-		k.DeleteBid(ctx, bid)
+		err = k.DeleteBid(ctx, bid)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
 		k.DeleteNftListings(ctx, listing)
 	}
 }

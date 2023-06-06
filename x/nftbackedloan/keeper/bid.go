@@ -85,13 +85,16 @@ func (k Keeper) GetBidsByBidder(ctx sdk.Context, bidder sdk.AccAddress) []types.
 	return bids
 }
 
-func (k Keeper) SetBid(ctx sdk.Context, bid types.NftBid) {
+func (k Keeper) SetBid(ctx sdk.Context, bid types.NftBid) error {
 	bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	if bid, err := k.GetBid(ctx, bid.IdBytes(), bidder); err == nil {
-		k.DeleteBid(ctx, bid)
+		err = k.DeleteBid(ctx, bid)
+		if err != nil {
+			return err
+		}
 	}
 
 	bz := k.cdc.MustMarshal(&bid)
@@ -99,17 +102,19 @@ func (k Keeper) SetBid(ctx sdk.Context, bid types.NftBid) {
 	store.Set(types.NftBidKey(bid.IdBytes(), bidder), bz)
 	store.Set(types.AddressBidKey(bid.IdBytes(), bidder), bz)
 	store.Set(append(getTimeKey(types.KeyPrefixEndTimeNftBid, bid.BiddingPeriod), bid.GetIdToByte()...), bid.GetIdToByte())
+	return nil
 }
 
-func (k Keeper) DeleteBid(ctx sdk.Context, bid types.NftBid) {
+func (k Keeper) DeleteBid(ctx sdk.Context, bid types.NftBid) error {
 	bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.NftBidKey(bid.IdBytes(), bidder))
 	store.Delete(types.AddressBidKey(bid.IdBytes(), bidder))
 	store.Delete(append(getTimeKey(types.KeyPrefixEndTimeNftBid, bid.BiddingPeriod), bid.GetIdToByte()...))
+	return nil
 }
 
 func getCancelledBidTimeKey(timestamp time.Time) []byte {
@@ -266,7 +271,10 @@ func (k Keeper) ManualBid(ctx sdk.Context, listing types.NftListing, newBid type
 	}
 
 	// Add new bid on the listing
-	k.SetBid(ctx, newBid)
+	err = k.SetBid(ctx, newBid)
+	if err != nil {
+		return err
+	}
 
 	// extend bid if there's bid within gap time
 	params := k.GetParamSet(ctx)
@@ -327,7 +335,10 @@ func (k Keeper) ReBid(ctx sdk.Context, listing types.NftListing, oldBid, newBid 
 }
 
 func (k Keeper) ManualSafeCloseBid(ctx sdk.Context, bid types.NftBid, bidder sdk.AccAddress) error {
-	k.DeleteBid(ctx, bid)
+	err := k.DeleteBid(ctx, bid)
+	if err != nil {
+		return err
+	}
 	if bid.PaidAmount.Amount.GT(sdk.ZeroInt()) {
 		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{sdk.NewCoin(bid.PaidAmount.Denom, bid.PaidAmount.Amount)})
 		if err != nil {
@@ -347,7 +358,10 @@ func (k Keeper) SafeCloseBid(ctx sdk.Context, bid types.NftBid) error {
 
 func (k Keeper) SafeCloseBidCollectDeposit(ctx sdk.Context, bid types.NftBid) (sdk.Coin, error) {
 	CollectedAmount := bid.DepositAmount
-	k.DeleteBid(ctx, bid)
+	err := k.DeleteBid(ctx, bid)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
 	return CollectedAmount, nil
 }
 
@@ -422,7 +436,10 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 		return types.ErrCannotCancelListingSingleBid
 	}
 
-	k.DeleteBid(ctx, bid)
+	err = k.DeleteBid(ctx, bid)
+	if err != nil {
+		return err
+	}
 
 	// tokens will be reimbursed X days after the bid cancellation is approved
 	bid.BidTime = ctx.BlockTime().Add(time.Duration(params.BidTokenDisburseSecondsAfterCancel) * time.Second)
@@ -468,7 +485,10 @@ func (k Keeper) PayFullBid(ctx sdk.Context, msg *types.MsgPayFullBid) error {
 		}
 
 		bid.PaidAmount = bid.PaidAmount.Add(unpaidAmount)
-		k.SetBid(ctx, bid)
+		err = k.SetBid(ctx, bid)
+		if err != nil {
+			return err
+		}
 	}
 	// Emit event for paying full bid
 	ctx.EventManager().EmitTypedEvent(&types.EventPayFullBid{
@@ -552,7 +572,8 @@ func (k Keeper) GetActiveNftBiddingsEndingAt(ctx sdk.Context, endTime time.Time)
 		bidder, _ := sdk.AccAddressFromBech32(bidId.Bidder)
 		bid, err := k.GetBid(ctx, bidId.NftId.IdBytes(), bidder)
 		if err != nil {
-			panic(err)
+			fmt.Println(err)
+			continue
 		}
 		bids = append(bids, bid)
 	}
@@ -562,7 +583,11 @@ func (k Keeper) GetActiveNftBiddingsEndingAt(ctx sdk.Context, endTime time.Time)
 func (k Keeper) DeleteBidsWithoutBorrowing(ctx sdk.Context, bids []types.NftBid) {
 	for _, bid := range bids {
 		if !bid.IsBorrowing() {
-			k.SafeCloseBid(ctx, bid)
+			err := k.SafeCloseBid(ctx, bid)
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
 		}
 	}
 }
