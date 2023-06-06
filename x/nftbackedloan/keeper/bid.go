@@ -170,27 +170,6 @@ func (k Keeper) GetMaturedCancelledBids(ctx sdk.Context, endTime time.Time) []ty
 	return bids
 }
 
-// todo: implement for all bidder
-func (k Keeper) TotalActiveRankDeposit(ctx sdk.Context, nftIdBytes []byte) sdk.Int {
-	// listing, err := k.GetNftListingByIdBytes(ctx, nftIdBytes)
-	// if err != nil {
-	// 	return sdk.ZeroInt()
-	// }
-
-	// bids := k.GetBidsByNft(ctx, nftIdBytes)
-	// totalActiveRankDeposit := sdk.ZeroInt()
-
-	// winnerCandidateStartIndex := len(bids) - int(listing.BidActiveRank)
-	// if winnerCandidateStartIndex < 0 {
-	// 	winnerCandidateStartIndex = 0
-	// }
-	// for _, bid := range bids[winnerCandidateStartIndex:] {
-	// 	totalActiveRankDeposit = totalActiveRankDeposit.Add(bid.PaidAmount)
-	// }
-	// return totalActiveRankDeposit
-	return sdk.NewInt(1)
-}
-
 func (k Keeper) DeleteCancelledBid(ctx sdk.Context, bid types.NftBid) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(append(append(getCancelledBidTimeKey(bid.BidTime), bid.IdBytes()...), []byte(bid.Bidder)...))
