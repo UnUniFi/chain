@@ -259,14 +259,14 @@ func (k Keeper) GetClassNameIdList(ctx sdk.Context, className string) (types.Cla
 	return classNameIdList, true
 }
 
-func (k Keeper) GetClassAttributesList(ctx sdk.Context) (classAttributesList []*types.ClassAttributes) {
+func (k Keeper) GetClassAttributesList(ctx sdk.Context) (classAttributesList []types.ClassAttributes) {
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefixClassAttributes)
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		var classAttributes types.ClassAttributes
 		k.cdc.MustUnmarshal(iterator.Value(), &classAttributes)
-		classAttributesList = append(classAttributesList, &classAttributes)
+		classAttributesList = append(classAttributesList, classAttributes)
 	}
 
 	return
