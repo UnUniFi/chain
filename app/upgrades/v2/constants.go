@@ -14,10 +14,10 @@ import (
 	icahosttypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host/types"
 	ibcfeetypes "github.com/cosmos/ibc-go/v7/modules/apps/29-fee/types"
 
-	auctiontypes "github.com/UnUniFi/chain/deprecated/auction/types"
-	cdptypes "github.com/UnUniFi/chain/deprecated/cdp/types"
-	incentivetypes "github.com/UnUniFi/chain/deprecated/incentive/types"
-	ununifidisttypes "github.com/UnUniFi/chain/deprecated/ununifidist/types"
+	auctiontypes "github.com/UnUniFi/chain/deprecated/x/auction/types"
+	cdptypes "github.com/UnUniFi/chain/deprecated/x/cdp/types"
+	incentivetypes "github.com/UnUniFi/chain/deprecated/x/incentive/types"
+	ununifidisttypes "github.com/UnUniFi/chain/deprecated/x/ununifidist/types"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
