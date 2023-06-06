@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/nftbackedloan/types"
@@ -128,12 +130,18 @@ func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, require s
 			bid.Borrowings = append(bid.Borrowings, borrow)
 			requireAmount.Amount = sdk.ZeroInt()
 		}
-		k.SetBid(ctx, bid)
+		err = k.SetBid(ctx, bid)
+		if err != nil {
+			return err
+		}
 	}
 
 	k.IncreaseDebt(ctx, nft, require)
 
 	receiverAddress, err := sdk.AccAddressFromBech32(receiver)
+	if err != nil {
+		return err
+	}
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, receiverAddress, sdk.Coins{require})
 	if err != nil {
 		return err
@@ -152,19 +160,27 @@ func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, require s
 
 func (k Keeper) Refinancings(ctx sdk.Context, listing types.NftListing, liquidationBids []types.NftBid) {
 	for _, v := range liquidationBids {
-		k.Refinancing(ctx, listing, v)
+		err := k.Refinancing(ctx, listing, v)
+		if err != nil {
+			fmt.Println("Refinancing error: %w", err)
+			continue
+		}
 	}
 }
 
-func (k Keeper) Refinancing(ctx sdk.Context, listing types.NftListing, bid types.NftBid) {
-	k.DeleteBid(ctx, bid)
+func (k Keeper) Refinancing(ctx sdk.Context, listing types.NftListing, bid types.NftBid) error {
+	err := k.DeleteBid(ctx, bid)
+	if err != nil {
+		return err
+	}
 	// todo delete not depend on Debt
 	k.DecreaseDebt(ctx, listing.NftId, bid.BorrowingAmount())
 	liquidationAmount := bid.LiquidationAmount(ctx.BlockTime())
-	err := k.ManualBorrow(ctx, listing.NftId, liquidationAmount, listing.Owner, bid.Bidder)
+	err = k.ManualBorrow(ctx, listing.NftId, liquidationAmount, listing.Owner, bid.Bidder)
 	if err != nil {
-		panic(err)
+		return err
 	}
+	return nil
 }
 
 func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
@@ -226,7 +242,10 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 		}
 		// clean up Borrowings
 		bid.Borrowings = borrowings
-		k.SetBid(ctx, bid)
+		err = k.SetBid(ctx, bid)
+		if err != nil {
+			return err
+		}
 	}
 
 	debitAmount := msg.Amount.Sub(repaidAmount)
