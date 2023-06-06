@@ -21,4 +21,5 @@ var (
 	ErrInvalidPositionSize      = sdkerrors.Register(ModuleName, 11, "invalid position size")
 	ErrInsufficientPoolFund     = sdkerrors.Register(ModuleName, 12, "insufficient pool fund")
 	ErrInvalidPositionInstance  = sdkerrors.Register(ModuleName, 13, "invalid position instance")
+	ErrNotImplemented           = sdkerrors.Register(ModuleName, 14, "not implemented")
 )

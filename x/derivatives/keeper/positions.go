@@ -300,3 +300,9 @@ func (k Keeper) ReportLevyPeriod(ctx sdk.Context, msg *types.MsgReportLevyPeriod
 
 	return nil
 }
+
+// UnmarshalPosition unmarshals a position from a store value
+func (k Keeper) UnmarshalPosition(bz []byte) (position types.Position, err error) {
+	err = k.cdc.UnmarshalInterface(bz, &position)
+	return position, err
+}

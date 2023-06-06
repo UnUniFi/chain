@@ -1,9 +1,8 @@
 package keeper
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
@@ -14,16 +13,16 @@ func (k Keeper) GetPoolAcceptedAssetsConf(ctx sdk.Context) []types.PoolAssetConf
 	return params.PoolParams.AcceptedAssetsConf
 }
 
-func (k Keeper) GetPoolAcceptedAssetConfByDenom(ctx sdk.Context, denom string) types.PoolAssetConf {
+func (k Keeper) GetPoolAcceptedAssetConfByDenom(ctx sdk.Context, denom string) (types.PoolAssetConf, error) {
 	params := k.GetParams(ctx)
 
 	for _, assetConf := range params.PoolParams.AcceptedAssetsConf {
 		if assetConf.Denom == denom {
-			return assetConf
+			return assetConf, nil
 		}
 	}
-
-	panic(fmt.Sprintf("asset %s is not accepted", denom))
+	err := sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "asset %s is not accepted", denom)
+	return types.PoolAssetConf{}, err
 }
 
 func (k Keeper) IsAssetAcceptable(ctx sdk.Context, denom string) bool {
@@ -46,8 +45,14 @@ func (k Keeper) GetAssetBalanceInPoolByDenom(ctx sdk.Context, denom string) sdk.
 
 // Return the current target amount of the asset in the pool.
 func (k Keeper) GetAssetTargetAmount(ctx sdk.Context, denom string) (sdk.Coin, error) {
-	mc := k.GetPoolMarketCap(ctx)
-	asset := k.GetPoolAcceptedAssetConfByDenom(ctx, denom)
+	mc, err := k.GetPoolMarketCap(ctx)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+	asset, err := k.GetPoolAcceptedAssetConfByDenom(ctx, denom)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
 
 	price, err := k.GetAssetPrice(ctx, denom)
 	if err != nil {
@@ -85,7 +90,7 @@ func (k Keeper) GetPoolQuoteTicker(ctx sdk.Context) string {
 	return k.GetParams(ctx).PoolParams.QuoteTicker
 }
 
-func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
+func (k Keeper) GetPoolMarketCap(ctx sdk.Context) (types.PoolMarketCap, error) {
 	assets := k.GetPoolAcceptedAssetsConf(ctx)
 
 	assetInfoList := []types.PoolMarketCap_AssetInfo{}
@@ -98,7 +103,8 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 		price, err := k.GetAssetPrice(ctx, asset.Denom)
 
 		if err != nil {
-			panic(fmt.Sprintf("not able to calculate market cap: %s", err.Error()))
+			err = sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "not able to calculate market cap: %s", err.Error())
+			return types.PoolMarketCap{}, err
 		}
 
 		assetInfo := types.PoolMarketCap_AssetInfo{
@@ -114,7 +120,7 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) types.PoolMarketCap {
 		QuoteTicker: quoteTicker,
 		Total:       mc,
 		AssetInfo:   assetInfoList,
-	}
+	}, nil
 }
 
 // IsPriceReady returns true if all assets have price feeded.

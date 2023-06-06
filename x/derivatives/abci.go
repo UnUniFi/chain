@@ -14,8 +14,12 @@ func setPoolMarketCapSnapshot(ctx sdk.Context, k keeper.Keeper) {
 	if !k.IsPriceReady(ctx) {
 		return
 	}
+	poolMarketCap, err := k.GetPoolMarketCap(ctx)
+	if err != nil {
+		return
+	}
 
-	k.SetPoolMarketCapSnapshot(ctx, ctx.BlockHeight(), k.GetPoolMarketCap(ctx))
+	k.SetPoolMarketCapSnapshot(ctx, ctx.BlockHeight(), poolMarketCap)
 }
 
 func saveBlockTime(ctx sdk.Context, k keeper.Keeper) {
