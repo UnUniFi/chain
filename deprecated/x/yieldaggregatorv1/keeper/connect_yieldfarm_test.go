@@ -11,8 +11,8 @@ package keeper_test
 
 // 	"github.com/UnUniFi/chain/deprecated/x/yieldaggregatorv1/types"
 // 	epochtypes "github.com/UnUniFi/chain/x/epochs/types"
-// 	recordstypes "github.com/UnUniFi/chain/x/records/types"
-// 	stakeibctypes "github.com/UnUniFi/chain/x/stakeibc/types"
+// 	recordstypes "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/records/types"
+// 	stakeibctypes "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/stakeibc/types"
 // 	yieldfarmtypes "github.com/UnUniFi/chain/deprecated/x/yieldfarm/types"
 // )
 
