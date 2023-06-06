@@ -11,16 +11,11 @@ import (
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
-	k.SetStrategy(ctx, "ibc/DDDDDWWWWW", types.Strategy{
-		Denom:           "ibc/DDDDDWWWWW",
-		Id:              1,
-		ContractAddress: "x/stake-ibc",
-		Name:            "testStaking",
-		GitUrl:          "",
-	})
-
 	for _, Strategies := range genState.Strategies {
 		k.SetStrategy(ctx, Strategies.Denom, Strategies)
+	}
+	for _, vault := range genState.Vaults {
+		k.SetVault(ctx, vault)
 	}
 }
 
@@ -28,8 +23,8 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis := types.DefaultGenesis()
 	genesis.Params = k.GetParams(ctx)
-
-	// this line is used by starport scaffolding # genesis/module/export
+	genesis.Strategies = k.GetAllStrategy(ctx, "")
+	genesis.Vaults = k.GetAllVault(ctx)
 
 	return genesis
 }
