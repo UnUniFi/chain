@@ -1,0 +1,2137 @@
+Dec 21 02:04:17 upgrade-v2-test systemd[1]: Started Cosmovisor daemon.
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]: 2:04AM INF Configuration is valid:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]: Configurable Values:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]:   DAEMON_HOME: /root/.ununifi
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]:   DAEMON_NAME: ununifid
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]:   DAEMON_ALLOW_DOWNLOAD_BINARIES: false
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]:   DAEMON_RESTART_AFTER_UPGRADE: true
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]:   DAEMON_POLL_INTERVAL: 300ms
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]:   UNSAFE_SKIP_BACKUP: true
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]:   DAEMON_PREUPGRADE_MAX_RETRIES: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]: Derived Values:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]:         Root Dir: /root/.ununifi/cosmovisor
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]:      Upgrade Dir: /root/.ununifi/cosmovisor/upgrades
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]:      Genesis Bin: /root/.ununifi/cosmovisor/genesis/bin/ununifid
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]:   Monitored File: /root/.ununifi/data/upgrade-info.json
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]:  module=cosmovisor
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]: 2:04AM INF running app args=["start"] module=cosmovisor path=/root/.ununifi/cosmovisor/genesis/bin/ununifid
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]: 2:04AM ERR failed to read error="lstat /root/.ununifi/cosmovisor/current/upgrade-info.json: no such file or directory" filename=/root/.ununifi/cosmovisor/current/upgrade-info.json module=cosmovisor
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: 2:04AM INF starting ABCI with Tendermint
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: 2:04AM INF Starting multiAppConn service impl=multiAppConn module=proxy
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: 2:04AM INF Starting localClient service connection=query impl=localClient module=abci-client
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: 2:04AM INF Starting localClient service connection=snapshot impl=localClient module=abci-client
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: 2:04AM INF Starting localClient service connection=mempool impl=localClient module=abci-client
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: 2:04AM INF Starting localClient service connection=consensus impl=localClient module=abci-client
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: 2:04AM INF Starting EventBus service impl=EventBus module=events
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: 2:04AM INF Starting PubSub service impl=PubSub module=pubsub
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: 2:04AM INF Starting IndexerService service impl=IndexerService module=txindex
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: 2:04AM INF ABCI Handshake App Info hash="��3\b��E/��ш�H\u0098�;͞7\x0f���b\\[\x17|-�" height=19 module=consensus protocol-version=0 software-version=main-6bd26e8594b9d084caaceb00e769cdd468fb598e
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: 2:04AM INF ABCI Replay Blocks appHeight=19 module=consensus stateHeight=19 storeHeight=20
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: 2:04AM INF Replay last block using real app module=consensus
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: 2:04AM ERR UPGRADE "v1-beta.4" NEEDED at height: 20:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: panic: UPGRADE "v1-beta.4" NEEDED at height: 20:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: goroutine 1 [running]:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/cosmos/cosmos-sdk/x/upgrade.BeginBlocker({{0xc000cdd6a0, 0xe}, 0xc000dad980, {0x218d620, 0xc0001412c0}, {0x21ad130, 0xc000d6f740}, 0xc000e252f0, {0x2187b60, 0xc0000be000}, ...}, ...)
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/cosmos/cosmos-sdk@v0.45.1/x/upgrade/abci.go:71 +0xf9f
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/cosmos/cosmos-sdk/x/upgrade.AppModule.BeginBlock(...)
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/cosmos/cosmos-sdk@v0.45.1/x/upgrade/module.go:130
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/cosmos/cosmos-sdk/types/module.(*Manager).BeginBlock(_, {{0x21a1708, 0xc0000521a0}, {0x21aebe0, 0xc00041c440}, {{0xb, 0x0}, {0xc000b2c2b8, 0x17}, 0x14, ...}, ...}, ...)
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/cosmos/cosmos-sdk@v0.45.1/types/module/module.go:479 +0x3a2
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/UnUniFi/chain/app.(*App).BeginBlocker(_, {{0x21a1708, 0xc0000521a0}, {0x21aebe0, 0xc00041c440}, {{0xb, 0x0}, {0xc000b2c2b8, 0x17}, 0x14, ...}, ...}, ...)
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/UnUniFi/chain/app/app.go:840 +0x85
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/cosmos/cosmos-sdk/baseapp.(*BaseApp).BeginBlock(_, {{0xc000b35da0, 0x20, 0x20}, {{0xb, 0x0}, {0xc000b2c2b8, 0x17}, 0x14, {0x3b37118d, ...}, ...}, ...})
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/cosmos/cosmos-sdk@v0.45.1/baseapp/abci.go:194 +0x97c
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/tendermint/tendermint/abci/client.(*localClient).BeginBlockSync(_, {{0xc000b35da0, 0x20, 0x20}, {{0xb, 0x0}, {0xc000b2c2b8, 0x17}, 0x14, {0x3b37118d, ...}, ...}, ...})
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/tendermint/tendermint@v0.34.16/abci/client/local_client.go:280 +0x118
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/tendermint/tendermint/proxy.(*appConnConsensus).BeginBlockSync(_, {{0xc000b35da0, 0x20, 0x20}, {{0xb, 0x0}, {0xc000b2c2b8, 0x17}, 0x14, {0x3b37118d, ...}, ...}, ...})
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/tendermint/tendermint@v0.34.16/proxy/app_conn.go:81 +0x55
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/tendermint/tendermint/state.execBlockOnProxyApp({0x21a27a8?, 0xc000c61200}, {0x21a7e58, 0xc000c23270}, 0xc0000005a0, {0x21add00, 0xc000c22ea0}, 0x13?)
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/tendermint/tendermint@v0.34.16/state/execution.go:307 +0x3dd
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/tendermint/tendermint/state.(*BlockExecutor).ApplyBlock(_, {{{0xb, 0x0}, {0xc00013a408, 0x8}}, {0xc000b2c0c0, 0x17}, 0x1, 0x13, {{0xc000b340e0, ...}, ...}, ...}, ...)
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/tendermint/tendermint@v0.34.16/state/execution.go:140 +0x171
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/tendermint/tendermint/consensus.(*Handshaker).replayBlock(_, {{{0xb, 0x0}, {0xc00013a408, 0x8}}, {0xc000b2c0c0, 0x17}, 0x1, 0x13, {{0xc000b340e0, ...}, ...}, ...}, ...)
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/tendermint/tendermint@v0.34.16/consensus/replay.go:503 +0x23c
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/tendermint/tendermint/consensus.(*Handshaker).ReplayBlocks(_, {{{0xb, 0x0}, {0xc00013a408, 0x8}}, {0xc000b2c0c0, 0x17}, 0x1, 0x13, {{0xc000b340e0, ...}, ...}, ...}, ...)
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/tendermint/tendermint@v0.34.16/consensus/replay.go:416 +0x7ae
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/tendermint/tendermint/consensus.(*Handshaker).Handshake(0xc000e05e48, {0x21af4c8, 0xc00100c1a0})
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/tendermint/tendermint@v0.34.16/consensus/replay.go:268 +0x3c8
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/tendermint/tendermint/node.doHandshake({_, _}, {{{0xb, 0x0}, {0xc00013a408, 0x8}}, {0xc000b2c0c0, 0x17}, 0x1, 0x13, ...}, ...)
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/tendermint/tendermint@v0.34.16/node/node.go:325 +0x1b8
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/tendermint/tendermint/node.NewNode(0xc000f29400, {0x219e570, 0xc00107d7c0}, 0xc000bafc30, {0x2188a60, 0xc000f51710}, 0x0?, 0x0?, 0xc000baff30, {0x21a27a8, ...}, ...)
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/tendermint/tendermint@v0.34.16/node/node.go:733 +0x577
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/cosmos/cosmos-sdk/server.startInProcess(_, {{0x0, 0x0, 0x0}, {0x0, 0x0}, {0x0, 0x0}, {0x21a5d70, 0xc000d6f740}, ...}, ...)
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/cosmos/cosmos-sdk@v0.45.1/server/start.go:263 +0x79b
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/cosmos/cosmos-sdk/server.StartCmd.func2(0xc000f62500?, {0x2ff4028?, 0x0?, 0x0?})
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/cosmos/cosmos-sdk@v0.45.1/server/start.go:129 +0x193
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/spf13/cobra.(*Command).execute(0xc000f62500, {0x2ff4028, 0x0, 0x0})
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/spf13/cobra@v1.3.0/command.go:856 +0x67c
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/spf13/cobra.(*Command).ExecuteC(0xc000ce9680)
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/spf13/cobra@v1.3.0/command.go:974 +0x3b4
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/spf13/cobra.(*Command).Execute(...)
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/spf13/cobra@v1.3.0/command.go:902
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/spf13/cobra.(*Command).ExecuteContext(...)
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/spf13/cobra@v1.3.0/command.go:895
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: github.com/cosmos/cosmos-sdk/server/cmd.Execute(0x0?, {0xc000cdd6a0, 0xe})
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/cosmos/cosmos-sdk@v0.45.1/server/cmd/execute.go:36 +0x1eb
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]: main.main()
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106350]:         github.com/UnUniFi/chain/cmd/ununifid/main.go:13 +0x2c
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]: 2:04AM INF pre-upgrade command does not exist. continuing the upgrade. module=cosmovisor
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]: 2:04AM INF upgrade detected, relaunching app=ununifid module=cosmovisor
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106346]: 2:04AM INF running app args=["start"] module=cosmovisor path=/root/.ununifi/cosmovisor/upgrades/v1-beta.4/bin/ununifid
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF starting ABCI with Tendermint
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting multiAppConn service impl=multiAppConn module=proxy
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting localClient service connection=query impl=localClient module=abci-client
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting localClient service connection=snapshot impl=localClient module=abci-client
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting localClient service connection=mempool impl=localClient module=abci-client
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting localClient service connection=consensus impl=localClient module=abci-client
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting EventBus service impl=EventBus module=events
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting PubSub service impl=PubSub module=pubsub
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting IndexerService service impl=IndexerService module=txindex
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF ABCI Handshake App Info hash="��3\b��E/��ш�H\u0098�;͞7\x0f���b\\[\x17|-�" height=19 module=consensus protocol-version=0 software-version=upgrade/upgrade_v2-62ff4cb85afc3cd512aeb8eb592d8ca8c14efea7
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF ABCI Replay Blocks appHeight=19 module=consensus stateHeight=19 storeHeight=20
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Replay last block using real app module=consensus
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF applying upgrade "v1-beta.4" at height: 20
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF update start:v1-beta.4
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send list:v1-beta.4
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF upgrade :v1-beta.4
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send : total supply[{824646482688}]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :1
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send validator :0[ununifi1jzr5ux9ydjmrch54c04rjt3fr5pdlrx08ng6p8]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[0] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[0] : NewContinuousVestingAccount [address: ununifi1jzr5ux9ydjmrch54c04rjt3fr5pdlrx08ng6p8
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17637
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "20000000"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1734620400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1703084400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send validator :1[ununifi1uny0f22uj5mn93sgg5d80nhnl7608fd9ap4ld6]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[1] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[1] : NewContinuousVestingAccount [address: ununifi1uny0f22uj5mn93sgg5d80nhnl7608fd9ap4ld6
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17638
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "3000000000000"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1734620400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1703084400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send validator :2[ununifi1llr0q0ggvnyu7fxh57wxkuvmlpyf6ygmknga26]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[2] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[2] : NewContinuousVestingAccount [address: ununifi1llr0q0ggvnyu7fxh57wxkuvmlpyf6ygmknga26
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17639
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "3000000000000"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1734620400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1703084400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send validator :0[ununifi1n92vgzkyn32n4wgk0wetq5xw5j5v8zwseetg8f]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[0] : ContinuousVestingAccount is exits [address: ununifi1n92vgzkyn32n4wgk0wetq5xw5j5v8zwseetg8f
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 104
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "20000000"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1716508800
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1684972800
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[0] : ContinuousVestingAccount [address: ununifi1n92vgzkyn32n4wgk0wetq5xw5j5v8zwseetg8f
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 104
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "511165986071"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1734620400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1684972800
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send validator :1[ununifi1zqt3snrfpq7zlqvwzvm4v926w26pcmrutklsl9]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[1] : ContinuousVestingAccount is exits [address: ununifi1zqt3snrfpq7zlqvwzvm4v926w26pcmrutklsl9
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 107
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "20000000"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1716508800
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1684972800
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[1] : ContinuousVestingAccount [address: ununifi1zqt3snrfpq7zlqvwzvm4v926w26pcmrutklsl9
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 107
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "511446337194"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1734620400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1684972800
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send validator :2[ununifi1p705f2vfnqx6t0k68my4ah6w4gdcujs3yvcwua]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[2] : ContinuousVestingAccount is exits [address: ununifi1p705f2vfnqx6t0k68my4ah6w4gdcujs3yvcwua
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 111
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "20000000"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1716508800
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1684972800
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[2] : ContinuousVestingAccount [address: ununifi1p705f2vfnqx6t0k68my4ah6w4gdcujs3yvcwua
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 111
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "464916876114"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1734620400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1684972800
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send validator :3[ununifi1gwcrz4cnzfurdxfcz7k4uklcrqd6prrme8m66s]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[3] : ContinuousVestingAccount is exits [address: ununifi1gwcrz4cnzfurdxfcz7k4uklcrqd6prrme8m66s
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 112
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "20000000"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1716508800
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1684972800
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[3] : ContinuousVestingAccount [address: ununifi1gwcrz4cnzfurdxfcz7k4uklcrqd6prrme8m66s
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 112
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "441675905328"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1734620400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1684972800
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send validator :4[ununifi13ua8cusfmx3lwta4n76vjuf6rarr5m90hggnvq]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[4] : ContinuousVestingAccount is exits [address: ununifi13ua8cusfmx3lwta4n76vjuf6rarr5m90hggnvq
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 113
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "20000000"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1716508800
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1684972800
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[4] : ContinuousVestingAccount [address: ununifi13ua8cusfmx3lwta4n76vjuf6rarr5m90hggnvq
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 113
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "441611206812"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1734620400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1684972800
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send validator :5[ununifi1ca3k5gk7elrpej8rd74hruu2pm8dn5jzny2qqe]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[5] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[5] : NewContinuousVestingAccount [address: ununifi1ca3k5gk7elrpej8rd74hruu2pm8dn5jzny2qqe
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17640
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "288264021643"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1734620400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1703084400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send validator :6[ununifi1w92q2r53jgvyvcuuwmlggrvum7c6j72y403puk]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[6] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[6] : NewContinuousVestingAccount [address: ununifi1w92q2r53jgvyvcuuwmlggrvum7c6j72y403puk
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17641
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "309526695085"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1734620400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1703084400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send validator :7[ununifi19f0w9svr905fhefusyx4z8sf83j6et0gkfnrpz]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[7] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[7] : NewContinuousVestingAccount [address: ununifi19f0w9svr905fhefusyx4z8sf83j6et0gkfnrpz
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17642
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "302587573611"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1734620400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1703084400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[0] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[0] : NewContinuousVestingAccount [address: ununifi1ydk5djlj53p84gq9c3fhxe7mt3urhk0g5sq0vr
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17643
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "15652505410"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :1
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[1] : ContinuousVestingAccount is exits [address: ununifi1k8f9hre2szp7p7mjwp70kaydz5hl2lunuzvp78
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 5296
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[1] : ContinuousVestingAccount [address: ununifi1k8f9hre2szp7p7mjwp70kaydz5hl2lunuzvp78
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 5296
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "10154885423"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :2
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[2] : ContinuousVestingAccount is exits [address: ununifi1t3syzcj74az3kzta8u5jpkxn6ft7qdumwdyqc0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 6244
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[2] : ContinuousVestingAccount [address: ununifi1t3syzcj74az3kzta8u5jpkxn6ft7qdumwdyqc0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 6244
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "8087935993"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :3
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[3] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[3] : NewContinuousVestingAccount [address: ununifi1d5csc65hy3l8yk9s8rges7zxl9fwka88f6waec
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17644
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "4359974259"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :4
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[4] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[4] : NewContinuousVestingAccount [address: ununifi12x2trndk9p5umj64jjvn2j9kgguxfrujfzks9u
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17645
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "3537503493"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :5
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[5] : ContinuousVestingAccount is exits [address: ununifi1qxfymvcz8h2ahnapezz2ed4awh29qswygt2prx
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 10252
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[5] : ContinuousVestingAccount [address: ununifi1qxfymvcz8h2ahnapezz2ed4awh29qswygt2prx
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 10252
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "3850334802"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :6
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[6] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[6] : NewContinuousVestingAccount [address: ununifi182tul2dksmwur370ks4ghel0yr8mmgrf9g45ay
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17646
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "2003170316"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :7
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[7] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[7] : NewContinuousVestingAccount [address: ununifi1aakg8cq30w03xn3gldaf9mh04sr6wume8ytgfc
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17647
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "13024479227"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :8
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[8] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[8] : NewContinuousVestingAccount [address: ununifi13kaqr9vzfxxpmerplda2me9eg3y8jyhgnc2f9n
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17648
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1737803088"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :9
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[9] : ContinuousVestingAccount is exits [address: ununifi1j4ng55e6snak7gyvzwx9xtsjfph752pez22cj6
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17293
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[9] : ContinuousVestingAccount [address: ununifi1j4ng55e6snak7gyvzwx9xtsjfph752pez22cj6
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17293
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "3282026225"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :10
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[10] : ContinuousVestingAccount is exits [address: ununifi1mcvgt3306fw8zx95hyacem932jusvu5epqalqy
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 12095
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[10] : ContinuousVestingAccount [address: ununifi1mcvgt3306fw8zx95hyacem932jusvu5epqalqy
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 12095
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "4183805125"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :11
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[11] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[11] : NewContinuousVestingAccount [address: ununifi1e34uc97tty95r70jx7ek7gkzf8aat84m3u6w5d
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17649
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1343274819"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :12
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[12] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[12] : NewContinuousVestingAccount [address: ununifi1ed2wt0dgnfrntns3gwsjzfkqhtprr3krjku4l8
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17650
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1324487759"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :13
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[13] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[13] : NewContinuousVestingAccount [address: ununifi1pvzssder5a5md4wdhjyzdhtxmcrpvp9ctd02jj
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17651
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1293958785"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :14
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[14] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[14] : NewContinuousVestingAccount [address: ununifi1jj9dysvjwyqvjv86gr8467sr3hjqc3why5vkga
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17652
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1997755953"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :15
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[15] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[15] : NewContinuousVestingAccount [address: ununifi1ug5x6ldl9xfqkwl70qn0tuxkudwu5jk83tz0fq
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17653
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1056772148"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :16
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[16] : ContinuousVestingAccount is exits [address: ununifi1nl4v9kcumsuc6uejqhmqrqsa9a2ju0jmf7gwur
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 11621
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[16] : ContinuousVestingAccount [address: ununifi1nl4v9kcumsuc6uejqhmqrqsa9a2ju0jmf7gwur
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 11621
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "2770078829"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :17
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[17] : ContinuousVestingAccount is exits [address: ununifi1zkcuchahmc0n4mrqfzyhyaalypdzsw2gqrqxr3
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 3895
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[17] : ContinuousVestingAccount [address: ununifi1zkcuchahmc0n4mrqfzyhyaalypdzsw2gqrqxr3
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 3895
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "2732504708"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :18
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[18] : ContinuousVestingAccount is exits [address: ununifi1fsg8xkl0vyhz2ha2kjzzk9ardpa27uczx5kws4
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 4615
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[18] : ContinuousVestingAccount [address: ununifi1fsg8xkl0vyhz2ha2kjzzk9ardpa27uczx5kws4
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 4615
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "2652659701"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :19
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[19] : ContinuousVestingAccount is exits [address: ununifi1qdyn7rss0ad6g85wj2ad28a52cvsqr56nrqe5g
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 4996
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[19] : ContinuousVestingAccount [address: ununifi1qdyn7rss0ad6g85wj2ad28a52cvsqr56nrqe5g
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 4996
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "3216271513"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :20
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[20] : ContinuousVestingAccount is exits [address: ununifi18g8870c64sr3t4v6802rj2h4m2xwj6udeuuj6h
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 3960
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[20] : ContinuousVestingAccount [address: ununifi18g8870c64sr3t4v6802rj2h4m2xwj6udeuuj6h
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 3960
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "2615085580"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :21
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[21] : ContinuousVestingAccount is exits [address: ununifi1vxg66xlzymyc5fd9hwk602xa0tg09dms8dg509
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 12231
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[21] : ContinuousVestingAccount [address: ununifi1vxg66xlzymyc5fd9hwk602xa0tg09dms8dg509
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 12231
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "29190065707"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :22
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[22] : ContinuousVestingAccount is exits [address: ununifi1y4uqc6tf435saqlqmdeswz5w8chtxhrhp6w6x7
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 10033
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[22] : ContinuousVestingAccount [address: ununifi1y4uqc6tf435saqlqmdeswz5w8chtxhrhp6w6x7
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 10033
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "2500014835"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :23
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[23] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[23] : NewContinuousVestingAccount [address: ununifi1lul6f99rxw0d9j5rn39mx3djndldu8yt0sstff
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17654
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "2428006775"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :24
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[24] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[24] : NewContinuousVestingAccount [address: ununifi1xgw4zsxtm7mx0zav83an7pcrschkr8rxr5r7j9
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17655
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "3274054771"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :25
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[25] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[25] : NewContinuousVestingAccount [address: ununifi1qzy40tuamwfdf320le6cnfkntfrn63j72quc43
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17656
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1773009599"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :26
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[26] : ContinuousVestingAccount is exits [address: ununifi1874lfx44c2gu47k6hh2nx8jpyh7n570pdcdcuv
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 6058
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[26] : ContinuousVestingAccount [address: ununifi1874lfx44c2gu47k6hh2nx8jpyh7n570pdcdcuv
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 6058
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "4509501626"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :27
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[27] : ContinuousVestingAccount is exits [address: ununifi1xekcjker8npq28qcp5nxr8y0pddlap0x4jgaze
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 1558
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[27] : ContinuousVestingAccount [address: ununifi1xekcjker8npq28qcp5nxr8y0pddlap0x4jgaze
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 1558
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "3305627403"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :28
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[28] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[28] : NewContinuousVestingAccount [address: ununifi1dn4tsvhuqpcksj4tdnrnkvmhylnzydcvyclf0y
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17657
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1581027667"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :29
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[29] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[29] : NewContinuousVestingAccount [address: ununifi1ecgmgzttrq52g6gp4d4f687g2xymnjxvdfqsqc
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17658
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "9719130344"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :30
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[30] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[30] : NewContinuousVestingAccount [address: ununifi15acyslq77wylle9kc3cueme5ml42aacsyz79z2
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17659
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "2997306289"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :31
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[31] : ContinuousVestingAccount is exits [address: ununifi1c3dxnlqwfvjfgcyzqhdhtp7h348e78erj6a8lt
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 15580
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[31] : ContinuousVestingAccount [address: ununifi1c3dxnlqwfvjfgcyzqhdhtp7h348e78erj6a8lt
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 15580
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "2925427893"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :32
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[32] : ContinuousVestingAccount is exits [address: ununifi179xh34gna498hdtglq7mv2hwrxqwzw8tfg43ec
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 5933
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[32] : ContinuousVestingAccount [address: ununifi179xh34gna498hdtglq7mv2hwrxqwzw8tfg43ec
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 5933
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "2823790400"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :33
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[33] : ContinuousVestingAccount is exits [address: ununifi1j5dtezz2e7mpvqj42x2c5p0qy7glsac7mqfrcl
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 14975
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[33] : ContinuousVestingAccount [address: ununifi1j5dtezz2e7mpvqj42x2c5p0qy7glsac7mqfrcl
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 14975
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "2789911235"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :34
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[34] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[34] : NewContinuousVestingAccount [address: ununifi12evsxkfkq59v9s88zfx0cl9tn4zlavs9zuueuj
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17660
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1057782796"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :35
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[35] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[35] : NewContinuousVestingAccount [address: ununifi1kuhp2ywypwg2ekuz05zw4dlvtm40zswfawf32v
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17661
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1054018445"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :36
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[36] : ContinuousVestingAccount is exits [address: ununifi1j027zxk5wqp8ek2x490mf2awkyfcnztxc3e6zx
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 2257
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[36] : ContinuousVestingAccount [address: ununifi1j027zxk5wqp8ek2x490mf2awkyfcnztxc3e6zx
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 2257
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "2466176999"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :37
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[37] : ContinuousVestingAccount is exits [address: ununifi1nhgprhqn3sl84wqvh2j6raezkach9gyrgvanf6
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 4280
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[37] : ContinuousVestingAccount [address: ununifi1nhgprhqn3sl84wqvh2j6raezkach9gyrgvanf6
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 4280
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "5470612943"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :38
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[38] : ContinuousVestingAccount is exits [address: ununifi1pfkuyknmfhp4uhhd7tqr4yeqvs9qdttvfgfsfm
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 2838
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[38] : ContinuousVestingAccount [address: ununifi1pfkuyknmfhp4uhhd7tqr4yeqvs9qdttvfgfsfm
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 2838
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "27875587426"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :39
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[39] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[39] : NewContinuousVestingAccount [address: ununifi1l832mnjzn24hfqkvjr6se2r00at9p6el9w6rvq
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 17662
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "2347518820"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :40
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[40] : ContinuousVestingAccount is exits [address: ununifi1ydtts8a9r5jr0qmls9cy60p2j9ewvg6mrnkh4z
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 6867
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[40] : ContinuousVestingAccount [address: ununifi1ydtts8a9r5jr0qmls9cy60p2j9ewvg6mrnkh4z
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 6867
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "41205650179"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :41
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[41] : ContinuousVestingAccount is exits [address: ununifi19xek9465etmvshl5vhet2s7c8uc2lrjvte65ec
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: account_number: 16595
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:17 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[41] : ContinuousVestingAccount [address: ununifi19xek9465etmvshl5vhet2s7c8uc2lrjvte65ec
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 16595
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "3360257057"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :42
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[42] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[42] : NewContinuousVestingAccount [address: ununifi1n7d0pd3jj0r4wq764vth26radlnvcljele0cd4
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17663
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "737440467"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :43
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[43] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[43] : NewContinuousVestingAccount [address: ununifi18hpy9dlnf9wcmwu9mu778rwezuxnfmjjj3pvwl
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17664
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1542479643"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :44
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[44] : ContinuousVestingAccount is exits [address: ununifi1zvsl6u04wgxd8j9qek6nucycynu856pxcftq0f
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 13258
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[44] : ContinuousVestingAccount [address: ununifi1zvsl6u04wgxd8j9qek6nucycynu856pxcftq0f
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 13258
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "2985391486"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :45
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[45] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[45] : NewContinuousVestingAccount [address: ununifi1jz76pjr0zt997c07efpuq9n0g7zpjz64udnrgg
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17665
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "2393506942"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :46
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[46] : ContinuousVestingAccount is exits [address: ununifi132srs0hmcwcvl5xee7xmmsnsfu8gjf32kkt7rm
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 15682
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[46] : ContinuousVestingAccount [address: ununifi132srs0hmcwcvl5xee7xmmsnsfu8gjf32kkt7rm
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 15682
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "3679898892"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :47
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[47] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[47] : NewContinuousVestingAccount [address: ununifi1p6naal89l93mlvwnjp4gzjuhm9jrlp06ag26lw
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17666
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "4000694565"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :48
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[48] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[48] : NewContinuousVestingAccount [address: ununifi1aj9y7y4ngaqp7w9t56mr8cw5lrtsu9q0f0f5ce
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17667
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "2569890606"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :49
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[49] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[49] : NewContinuousVestingAccount [address: ununifi1vchphhj9ykdt8sre4a2xwyzmmg4j2xd6zrgydd
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17668
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1896162528"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :50
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[50] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[50] : NewContinuousVestingAccount [address: ununifi163j85dudtqpt40wwuzhn2r3kd5n3hufuacw3pu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17669
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1764195172"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :51
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[51] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[51] : NewContinuousVestingAccount [address: ununifi1s8tgzyc3tws66a9lpu6hlj0s4th9r3nlx2qkk6
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17670
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1666956068"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :52
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[52] : ContinuousVestingAccount is exits [address: ununifi1awlrha5r7e5jzcceqgsle0vva2d8qrtmskg83t
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 4045
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[52] : ContinuousVestingAccount [address: ununifi1awlrha5r7e5jzcceqgsle0vva2d8qrtmskg83t
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 4045
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "3158001940"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :53
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[53] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[53] : NewContinuousVestingAccount [address: ununifi1pzjzaftghc7m8k67qxs0p3nl7kkdvlghg28k8r
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17671
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1284945303"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :54
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[54] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[54] : NewContinuousVestingAccount [address: ununifi1453sp8gyfje8y8kuux9rhald6yzcjk03ylkmxj
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17672
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1048793193"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :55
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[55] : ContinuousVestingAccount is exits [address: ununifi1395u5yh5sx67hx3krhxa2w9gut479m2y2tz76d
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 12851
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[55] : ContinuousVestingAccount [address: ununifi1395u5yh5sx67hx3krhxa2w9gut479m2y2tz76d
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 12851
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "2734317273"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :56
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[56] : ContinuousVestingAccount is exits [address: ununifi1s82uxe4h3077temj7plxe0ydmhc84g70xkp2fe
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 12608
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[56] : ContinuousVestingAccount [address: ununifi1s82uxe4h3077temj7plxe0ydmhc84g70xkp2fe
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 12608
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "2713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :57
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[57] : ContinuousVestingAccount is exits [address: ununifi1az7k4r6qcyw54e5ltvfdva0lz9k7kqhy6a9num
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 12785
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[57] : ContinuousVestingAccount [address: ununifi1az7k4r6qcyw54e5ltvfdva0lz9k7kqhy6a9num
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 12785
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "2713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :58
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[58] : ContinuousVestingAccount is exits [address: ununifi1ces9q4hsgn6x7j040z7a8jg5tnudrwtsps2vfa
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 15651
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[58] : ContinuousVestingAccount [address: ununifi1ces9q4hsgn6x7j040z7a8jg5tnudrwtsps2vfa
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 15651
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "2713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :59
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[59] : ContinuousVestingAccount is exits [address: ununifi16g2reacq384f8uqfkehdnt5q6wu6lgpc0xgk8v
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 11006
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[59] : ContinuousVestingAccount [address: ununifi16g2reacq384f8uqfkehdnt5q6wu6lgpc0xgk8v
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 11006
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "2713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :60
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[60] : ContinuousVestingAccount is exits [address: ununifi15ur7aylv5tu5q4y5zkzmrwdwuxx0rajctgmmkz
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 14606
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[60] : ContinuousVestingAccount [address: ununifi15ur7aylv5tu5q4y5zkzmrwdwuxx0rajctgmmkz
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 14606
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "5713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :61
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[61] : ContinuousVestingAccount is exits [address: ununifi14v2jryt8828p0mjqy4jqx29s9wj7n7gus87sdx
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 4645
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[61] : ContinuousVestingAccount [address: ununifi14v2jryt8828p0mjqy4jqx29s9wj7n7gus87sdx
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 4645
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "2713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :62
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[62] : ContinuousVestingAccount is exits [address: ununifi1qrpd96dapnd87ff92k6hxgl7zvjqlykc8pffh5
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 10428
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[62] : ContinuousVestingAccount [address: ununifi1qrpd96dapnd87ff92k6hxgl7zvjqlykc8pffh5
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 10428
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "2713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :63
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[63] : ContinuousVestingAccount is exits [address: ununifi1rvge28l7le97e6qtzlnzrj9vp7v77pcujq0938
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 1361
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[63] : ContinuousVestingAccount [address: ununifi1rvge28l7le97e6qtzlnzrj9vp7v77pcujq0938
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 1361
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "2713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :64
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[64] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[64] : NewContinuousVestingAccount [address: ununifi1epc2vczt28nud03jk049wpjcrtn4gregr779h4
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17673
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1000000000"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :65
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[65] : ContinuousVestingAccount is exits [address: ununifi183hfvu0hnju50s32kqcf8nk6f5d70p54mc82w5
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 12776
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[65] : ContinuousVestingAccount [address: ununifi183hfvu0hnju50s32kqcf8nk6f5d70p54mc82w5
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 12776
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "11713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :66
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[66] : ContinuousVestingAccount is exits [address: ununifi1c5w9gv4x0cp3wnxnhk4vr08h4552u0fqe525d0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17356
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[66] : ContinuousVestingAccount [address: ununifi1c5w9gv4x0cp3wnxnhk4vr08h4552u0fqe525d0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17356
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "2713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :67
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[67] : ContinuousVestingAccount is exits [address: ununifi10eln7ccy0vth6r6hr7xgxfyg6yhfc3g9ck55vc
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17487
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[67] : ContinuousVestingAccount [address: ununifi10eln7ccy0vth6r6hr7xgxfyg6yhfc3g9ck55vc
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17487
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "2713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :68
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[68] : ContinuousVestingAccount is exits [address: ununifi1wuxggfh5verzhsyfjavtn5c4grd8k3jjlqsmxy
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 1368
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[68] : ContinuousVestingAccount [address: ununifi1wuxggfh5verzhsyfjavtn5c4grd8k3jjlqsmxy
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 1368
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "2713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :69
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[69] : ContinuousVestingAccount is exits [address: ununifi1gwuu4xe3c759atkwk6uhryj6jwgyth5tde8m5d
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 2352
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[69] : ContinuousVestingAccount [address: ununifi1gwuu4xe3c759atkwk6uhryj6jwgyth5tde8m5d
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 2352
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "2713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :70
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[70] : ContinuousVestingAccount is exits [address: ununifi1cpu56kjrnhj8x04rxmdst4ztu77wz8ncflajd5
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 10486
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[70] : ContinuousVestingAccount [address: ununifi1cpu56kjrnhj8x04rxmdst4ztu77wz8ncflajd5
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 10486
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "5713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :71
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[71] : ContinuousVestingAccount is exits [address: ununifi129ax5ctrjd0ddstm8pge52kwkvjvtvqjpmfjp2
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 4691
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[71] : ContinuousVestingAccount [address: ununifi129ax5ctrjd0ddstm8pge52kwkvjvtvqjpmfjp2
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 4691
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "2713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :72
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[72] : ContinuousVestingAccount is exits [address: ununifi1uc68tmfc40yurpw8xqk30sxggvd5javt9xvny5
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 1001
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[72] : ContinuousVestingAccount [address: ununifi1uc68tmfc40yurpw8xqk30sxggvd5javt9xvny5
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 1001
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "5713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :73
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[73] : ContinuousVestingAccount is exits [address: ununifi1dsqsrgt5xkt6pj3nuht375jrt0xfl8p8ev336s
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 16134
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[73] : ContinuousVestingAccount [address: ununifi1dsqsrgt5xkt6pj3nuht375jrt0xfl8p8ev336s
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 16134
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "5713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :74
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[74] : ContinuousVestingAccount is exits [address: ununifi1v45254hgxun3vnydjcl6dhw6sz82ulftu6t53s
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 2119
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[74] : ContinuousVestingAccount [address: ununifi1v45254hgxun3vnydjcl6dhw6sz82ulftu6t53s
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 2119
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "27610335198"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :75
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[75] : ContinuousVestingAccount is exits [address: ununifi1pnndh4ge5svw86myh3ng9cd0s729y4x3eh5gn8
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 2812
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[75] : ContinuousVestingAccount [address: ununifi1pnndh4ge5svw86myh3ng9cd0s729y4x3eh5gn8
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 2812
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "6713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :76
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[76] : ContinuousVestingAccount is exits [address: ununifi1pq9e4epludy78a96y0j89uqt0uq5k4z3205lka
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 15409
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[76] : ContinuousVestingAccount [address: ununifi1pq9e4epludy78a96y0j89uqt0uq5k4z3205lka
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 15409
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "54470073394"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :77
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[77] : ContinuousVestingAccount is exits [address: ununifi1a5yqx4xa5v7ggs5xc5mnk4qzgrylqxd9xy46zy
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17329
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[77] : ContinuousVestingAccount [address: ununifi1a5yqx4xa5v7ggs5xc5mnk4qzgrylqxd9xy46zy
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17329
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "3048804441"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :78
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[78] : ContinuousVestingAccount is exits [address: ununifi17c7l66wgut2trha0qv996tqtg4scwusp4wm649
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 11005
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[78] : ContinuousVestingAccount [address: ununifi17c7l66wgut2trha0qv996tqtg4scwusp4wm649
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 11005
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "26765402606"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :79
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[79] : ContinuousVestingAccount is exits [address: ununifi1avd4jplu89t6ds66udfspsv9nlkwn2ru03jy9j
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 16164
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[79] : ContinuousVestingAccount [address: ununifi1avd4jplu89t6ds66udfspsv9nlkwn2ru03jy9j
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 16164
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "17002453459"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :80
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[80] : ContinuousVestingAccount is exits [address: ununifi1paj00usj7k69f9vvpknazcppr48pwnyqxg4lqj
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 5332
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "1713306681"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1696032000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[80] : ContinuousVestingAccount [address: ununifi1paj00usj7k69f9vvpknazcppr48pwnyqxg4lqj
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 5332
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "7141874820"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1664582400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[0] : ContinuousVestingAccount is exits [address: ununifi1llr0q0ggvnyu7fxh57wxkuvmlpyf6ygmknga26
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17639
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "3000000000000"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1734620400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1703084400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[0] : ContinuousVestingAccount [address: ununifi1llr0q0ggvnyu7fxh57wxkuvmlpyf6ygmknga26
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17639
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "3241720000000"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1734620400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :1
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[1] : ContinuousVestingAccount is exits [address: ununifi1uny0f22uj5mn93sgg5d80nhnl7608fd9ap4ld6
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17638
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "3000000000000"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1734620400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1703084400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[1] : ContinuousVestingAccount [address: ununifi1uny0f22uj5mn93sgg5d80nhnl7608fd9ap4ld6
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17638
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "3241720000000"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1734620400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :2
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[2] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[2] : NewContinuousVestingAccount [address: ununifi1yf5cv54mclv84y2gufafh9cm2yzdne64zasfnk
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17674
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "181720000000"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :3
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[3] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[3] : NewContinuousVestingAccount [address: ununifi172rcust8rcuf5ef2j4ywrfccf9lre70dmv8k8v
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17675
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "241720000000"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[0] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[0] : NewContinuousVestingAccount [address: ununifi1g94dh4vzqflc4xrjerza9t7ydc5gfpc4zhtal2
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17676
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "100000000000"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send :1
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[1] : ContinuousVestingAccount / DelayedVestingAccount not exits
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send[1] : NewContinuousVestingAccount [address: ununifi1dn7ta3u4zxlug5npfcy3ue6stjlfw7kscynwtp
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: public_key: ""
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: account_number: 17677
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: sequence: 0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: original_vesting:
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: - denom: uguu
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]:   amount: "2000000000000"
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_free: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: delegated_vesting: []
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: end_time: 1702998000
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: start_time: 1671548400
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: ]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF bank send : total supply[{824681803808}]
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF minted coins from module account amount=16042141uguu from=mint module=x/bank
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF executed block height=20 module=consensus num_invalid_txs=0 num_valid_txs=0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF commit synced commit=436F6D6D697449447B5B323220343920313433203133392033332038332031363320313620343120373820383320313339203132392031343220333620393720313032203138203231382032333620353520383220313433203633203330203132322036332039332031333920333320323339203137345D3A31347D
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF committed state app_hash=16318F8B2153A310294E538B818E24616612DAEC37528F3F1E7A3F5D8B21EFAE height=20 module=consensus num_txs=0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Completed ABCI Handshake - Tendermint and App are synced appHash="��3\b��E/��ш�H\u0098�;͞7\x0f���b\\[\x17|-�" appHeight=19 module=consensus
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Version info block=11 p2p=8 tendermint_version=v0.34.16
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF This node is a validator addr=4E576E92CEFB292E28825495DEA53FBBEF5794EB module=consensus pubKey=/b5O9EUCBZpuTFQ8g0H2r3uWfUWJ2c4Ri36P5+/9DIY=
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF indexed block height=20 module=txindex
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF P2P Node ID ID=f74cf039d09bfe4728cfb51ce0b2cd7d93357b02 file=/root/.ununifi/config/node_key.json module=p2p
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Adding persistent peers addrs=[] module=p2p
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Adding unconditional peer ids ids=[] module=p2p
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Add our address to book addr={"id":"f74cf039d09bfe4728cfb51ce0b2cd7d93357b02","ip":"0.0.0.0","port":26656} book=/root/.ununifi/config/addrbook.json module=p2p
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting Node service impl=Node
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting pprof server laddr=localhost:6060
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting P2P Switch service impl="P2P Switch" module=p2p
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting Evidence service impl=Evidence module=evidence
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting StateSync service impl=StateSync module=statesync
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting PEX service impl=PEX module=pex
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting AddrBook service book=/root/.ununifi/config/addrbook.json impl=AddrBook module=p2p
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting Mempool service impl=Mempool module=mempool
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting BlockchainReactor service impl=BlockchainReactor module=blockchain
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting Consensus service impl=ConsensusReactor module=consensus
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Reactor  module=consensus waitSync=false
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting State service impl=ConsensusState module=consensus
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting baseWAL service impl=baseWAL module=consensus wal=/root/.ununifi/data/cs.wal/wal
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting Group service impl=Group module=consensus wal=/root/.ununifi/data/cs.wal/wal
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Searching for height height=21 max=0 min=0 module=consensus wal=/root/.ununifi/data/cs.wal/wal
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Searching for height height=20 max=0 min=0 module=consensus wal=/root/.ununifi/data/cs.wal/wal
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Found height=20 index=0 module=consensus wal=/root/.ununifi/data/cs.wal/wal
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Catchup by replaying consensus messages height=21 module=consensus
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Replay: Done module=consensus
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting TimeoutTicker service impl=TimeoutTicker module=consensus
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Saving AddrBook to file book=/root/.ununifi/config/addrbook.json module=p2p size=0
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting RPC HTTP server on 127.0.0.1:26657 module=rpc-server
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Ensure peers module=pex numDialing=0 numInPeers=0 numOutPeers=0 numToDial=10
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF No addresses to dial. Falling back to seeds module=pex
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF starting API server... module=api-server
+Dec 21 02:04:18 upgrade-v2-test cosmovisor[106363]: 2:04AM INF Starting RPC HTTP server on [::]:1317 module=api-server

@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"time"
 
-	ununifitypes "github.com/UnUniFi/chain/types"
+	ununifitypes "github.com/UnUniFi/chain/deprecated/types"
 	"github.com/UnUniFi/chain/x/derivatives/types"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 
@@ -51,9 +51,10 @@ func (suite *KeeperTestSuite) TestSetPoolMarketCapSnapshot() {
 		suite.NoError(err)
 	}
 
-	marketCap := suite.keeper.GetPoolMarketCap(suite.ctx)
+	marketCap, err := suite.keeper.GetPoolMarketCap(suite.ctx)
+	suite.Require().NoError(err)
 
-	err := suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, height, marketCap)
+	err = suite.keeper.SetPoolMarketCapSnapshot(suite.ctx, height, marketCap)
 	suite.Require().NoError(err)
 
 	// Check if the market cap was set

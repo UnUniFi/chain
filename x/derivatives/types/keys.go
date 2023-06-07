@@ -24,6 +24,9 @@ const (
 
 	// DerivativeFeeCollector defines the fee collector for derivatives module
 	DerivativeFeeCollector = "derivatives_fee_collector"
+
+	// MarginManager defines the margin manager for derivatives module
+	MarginManager = "margin_manager"
 )
 
 const (
@@ -34,7 +37,7 @@ const (
 	KeyPrefixUserPosition             = "user_position"
 	KeyPrefixPerpetualFutures         = "perpetual_futures"
 	KeyPrefixPerpetualOptions         = "perpetual_options"
-	KeyPrefixNetPositionAmount        = "net_position_amount"
+	KeyPrefixGrossPositionAmount      = "gross_position_amount"
 	KeyPrefixLastPositionId           = "last_position_id"
 	// TODO: KeyPrefixAccumulatedFee is unused. Remove it if it won't be necesary.
 	KeyPrefixAccumulatedFee        = "accumulated_fee"
@@ -94,8 +97,8 @@ func AddressPositionWithIdKeyPrefix(sender sdk.AccAddress, posId string) []byte 
 	return append(AddressPositionKeyPrefix(sender), GetPositionIdByteFromString(posId)...)
 }
 
-func DenomNetPositionPerpetualFuturesKeyPrefix(market Market, positionType PositionType) []byte {
-	return append(append([]byte(KeyPrefixPerpetualFutures), []byte(KeyPrefixNetPositionAmount)...), []byte(fmt.Sprintf("%s/%s/%s", market.BaseDenom, market.QuoteDenom, positionType))...)
+func DenomGrossPositionPerpetualFuturesKeyPrefix(market Market, positionType PositionType) []byte {
+	return append(append([]byte(KeyPrefixPerpetualFutures), []byte(KeyPrefixGrossPositionAmount)...), []byte(fmt.Sprintf("%s/%s/%s", market.BaseDenom, market.QuoteDenom, positionType))...)
 }
 
 func AddressPoolMarketCapSnapshotKeyPrefix(height int64) []byte {

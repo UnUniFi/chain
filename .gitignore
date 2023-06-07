@@ -21,3 +21,5 @@ build
 node_modules
 docs/node_modules
 docs/.vuepress/dist
+data
+docker-build/*
