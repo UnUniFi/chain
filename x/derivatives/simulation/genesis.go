@@ -54,6 +54,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 						QuoteDenom: "uusdc",
 					},
 				},
+				MaxLeverage: 30,
 			},
 		},
 	}

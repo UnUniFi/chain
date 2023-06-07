@@ -6,7 +6,6 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
-// FIXME: This test is not working
 func (suite *KeeperTestSuite) TestParamsGetSet() {
 	params := suite.app.DerivativesKeeper.GetParams(suite.ctx)
 	params.PoolParams = types.PoolParams{
@@ -34,6 +33,7 @@ func (suite *KeeperTestSuite) TestParamsGetSet() {
 				QuoteDenom: "uusdc",
 			},
 		},
+		MaxLeverage: 30,
 	}
 
 	params.PerpetualOptions = types.PerpetualOptionsParams{

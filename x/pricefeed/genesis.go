@@ -16,7 +16,11 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	// Iterate through the posted prices and set them in the store if they are not expired
 	for _, pp := range genState.PostedPrices {
 		if pp.Expiry.After(ctx.BlockTime()) {
-			_, err := k.SetPrice(ctx, pp.OracleAddress.AccAddress(), pp.MarketId, pp.Price, pp.Expiry)
+			oracleAddress, err := sdk.AccAddressFromBech32(pp.OracleAddress)
+			if err != nil {
+				panic(err)
+			}
+			_, err = k.SetPrice(ctx, oracleAddress, pp.MarketId, pp.Price, pp.Expiry)
 			if err != nil {
 				panic(err)
 			}

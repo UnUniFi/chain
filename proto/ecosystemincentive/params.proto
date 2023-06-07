@@ -1,0 +1,41 @@
+syntax = "proto3";
+package ununifi.ecosystemincentive;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/ecosystemincentive/types";
+
+// Params defines the parameters for the module.
+message Params {
+  repeated RewardParams reward_params = 1 [ (gogoproto.moretags) = "yaml:\"reward_params\"" ];
+}
+
+// RewardParams defines which module have which rewards type and rate 
+// to maintain the correctness of the fee rate in a module
+// e.g. if nftmarket module have "Frontend" and "Collection" incentive, 
+// the combined those rates for the incentive cannot be exceed 1
+message RewardParams {
+  string module_name = 1 [ (gogoproto.moretags) = "yaml:\"module_name\"" ];
+  repeated RewardRate reward_rate = 2 [
+    (gogoproto.moretags) = "yaml:\"reward_rate\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// RewardRate defines the ratio to take reward for a specific reward_type.
+// The total sum of reward_rate in a module cannot be exceed 1
+message RewardRate {
+  RewardType reward_type = 1 [ (gogoproto.moretags) = "yaml:\"reward_type\"" ];
+  string rate = 2 [
+    (gogoproto.moretags) = "yaml:\"rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// NFTMARKET_FRONTEND type reward will be disributed for the creators of frontend of UnUniFi's services.
+enum RewardType {
+  UNKNOWN = 0;
+  STAKERS = 1;
+  FRONTEND_DEVELOPERS = 2;
+}
