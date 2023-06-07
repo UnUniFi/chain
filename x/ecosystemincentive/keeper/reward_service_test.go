@@ -96,7 +96,7 @@ func (suite *KeeperTestSuite) TestWithdrawReward() {
 			suite.Require().NoError(err)
 			suite.Require().Equal(withdrewReward, tc.reward)
 
-			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.String())
+			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer)
 			suite.Require().False(exists)
 		} else if !tc.rewardExist {
 			_, err := suite.app.EcosystemincentiveKeeper.WithdrawReward(suite.ctx, &types.MsgWithdrawReward{
@@ -106,7 +106,7 @@ func (suite *KeeperTestSuite) TestWithdrawReward() {
 			suite.Require().Error(err)
 			suite.Require().EqualError(err, sdkerrors.Wrap(types.ErrRewardNotExists, tc.withdrawer.String()).Error())
 
-			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.String())
+			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer)
 			suite.Require().False(exists)
 		} else if !tc.validDenom {
 			err := suite.app.EcosystemincentiveKeeper.SetRewardStore(suite.ctx, types.RewardStore{
@@ -122,7 +122,7 @@ func (suite *KeeperTestSuite) TestWithdrawReward() {
 			suite.Require().Error(err)
 			suite.Require().EqualError(err, sdkerrors.Wrap(types.ErrDenomRewardNotExists, "invalid").Error())
 
-			rewardStore, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.String())
+			rewardStore, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer)
 			suite.Require().True(exists)
 			rightRewardStore := types.RewardStore{
 				Address: tc.withdrawer.String(),
@@ -177,7 +177,7 @@ func (suite *KeeperTestSuite) TestWithdrawAllRewards() {
 			suite.Require().NoError(err)
 			suite.Require().Equal(withdrewRewards, tc.rewards)
 
-			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.String())
+			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer)
 			suite.Require().False(exists)
 		} else {
 			_, err := suite.app.EcosystemincentiveKeeper.WithdrawAllRewards(suite.ctx, &types.MsgWithdrawAllRewards{
@@ -186,7 +186,7 @@ func (suite *KeeperTestSuite) TestWithdrawAllRewards() {
 			suite.Require().Error(err)
 			suite.Require().EqualError(err, sdkerrors.Wrap(types.ErrRewardNotExists, tc.withdrawer.String()).Error())
 
-			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.String())
+			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer)
 			suite.Require().False(exists)
 		}
 	}

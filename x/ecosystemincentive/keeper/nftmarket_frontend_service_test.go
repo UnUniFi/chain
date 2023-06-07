@@ -16,44 +16,44 @@ func (suite *KeeperTestSuite) TestRecordIncentiveUnitIdWithNftId() {
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 	tests := []struct {
-		testCase        string
-		classId         string
-		nftId           string
-		incentiveUnitId string
-		subjectAddrs    []string
-		weights         []sdk.Dec
-		registerBefore  bool
-		expectPass      bool
+		testCase             string
+		classId              string
+		nftId                string
+		recipientContainerId string
+		subjectAddrs         []string
+		weights              []sdk.Dec
+		registerBefore       bool
+		expectPass           bool
 	}{
 		{
-			testCase:        "not registered",
-			classId:         "class1",
-			nftId:           "nft1",
-			incentiveUnitId: "id1",
-			subjectAddrs:    []string{sender.String()},
-			weights:         []sdk.Dec{sdk.MustNewDecFromStr("1.0")},
-			registerBefore:  false,
-			expectPass:      false,
+			testCase:             "not registered",
+			classId:              "class1",
+			nftId:                "nft1",
+			recipientContainerId: "id1",
+			subjectAddrs:         []string{sender.String()},
+			weights:              []sdk.Dec{sdk.MustNewDecFromStr("1.0")},
+			registerBefore:       false,
+			expectPass:           false,
 		},
 		{
-			testCase:        "registered",
-			classId:         "class2",
-			nftId:           "nft2",
-			incentiveUnitId: "id2",
-			subjectAddrs:    []string{sender.String()},
-			weights:         []sdk.Dec{sdk.MustNewDecFromStr("1.0")},
-			registerBefore:  true,
-			expectPass:      true,
+			testCase:             "registered",
+			classId:              "class2",
+			nftId:                "nft2",
+			recipientContainerId: "id2",
+			subjectAddrs:         []string{sender.String()},
+			weights:              []sdk.Dec{sdk.MustNewDecFromStr("1.0")},
+			registerBefore:       true,
+			expectPass:           true,
 		},
 		{
-			testCase:        "already recorded",
-			classId:         "class2",
-			nftId:           "nft2",
-			incentiveUnitId: "id3",
-			subjectAddrs:    []string{sender.String()},
-			weights:         []sdk.Dec{sdk.MustNewDecFromStr("1.0")},
-			registerBefore:  true,
-			expectPass:      false,
+			testCase:             "already recorded",
+			classId:              "class2",
+			nftId:                "nft2",
+			recipientContainerId: "id3",
+			subjectAddrs:         []string{sender.String()},
+			weights:              []sdk.Dec{sdk.MustNewDecFromStr("1.0")},
+			registerBefore:       true,
+			expectPass:           false,
 		},
 	}
 	for _, test := range tests {
@@ -67,13 +67,13 @@ func (suite *KeeperTestSuite) TestRecordIncentiveUnitIdWithNftId() {
 				suite.ctx,
 				&types.MsgRegister{
 					Sender:               sender.String(),
-					RecipientContainerId: test.incentiveUnitId,
+					RecipientContainerId: test.recipientContainerId,
 					Addresses:            test.subjectAddrs,
 					Weights:              test.weights,
 				},
 			)
 
-			err := suite.RecordIncentiveUnitIdWithNftIdTest(suite.ctx, nftId, test.incentiveUnitId)
+			err := suite.RecordIncentiveUnitIdWithNftIdTest(suite.ctx, nftId, test.recipientContainerId)
 
 			if test.expectPass {
 				suite.Require().NoError(err)
@@ -81,7 +81,7 @@ func (suite *KeeperTestSuite) TestRecordIncentiveUnitIdWithNftId() {
 				suite.Require().Error(err)
 			}
 		} else {
-			err := suite.RecordIncentiveUnitIdWithNftIdTest(suite.ctx, nftId, test.incentiveUnitId)
+			err := suite.RecordIncentiveUnitIdWithNftIdTest(suite.ctx, nftId, test.recipientContainerId)
 			suite.Require().Error(err)
 		}
 	}
@@ -91,24 +91,24 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 	tests := []struct {
-		testCase        string
-		incentiveUnitId string
-		subjectAddrs    []ununifitypes.StringAccAddress
-		weights         []sdk.Dec
-		fee             sdk.Coin
-		nftId           nftmarkettypes.NftIdentifier
-		rewardAmount    math.Int
-		expect          bool
-		record          bool
-		multipleSubject bool
-		amplify         bool
+		testCase             string
+		recipientContainerId string
+		subjectAddrs         []string
+		weights              []sdk.Dec
+		fee                  sdk.Coin
+		nftId                nftmarkettypes.NftIdentifier
+		rewardAmount         math.Int
+		expect               bool
+		record               bool
+		multipleSubject      bool
+		amplify              bool
 	}{
 		{
-			testCase:        "not recorded",
-			incentiveUnitId: "failure",
-			subjectAddrs:    []ununifitypes.StringAccAddress{sender.Bytes()},
-			weights:         []sdk.Dec{sdk.OneDec()},
-			fee:             sdk.Coin{},
+			testCase:             "not recorded",
+			recipientContainerId: "failure",
+			subjectAddrs:         []string{sender.String()},
+			weights:              []sdk.Dec{sdk.OneDec()},
+			fee:                  sdk.Coin{},
 			nftId: nftmarkettypes.NftIdentifier{
 				ClassId: "class2",
 				NftId:   "nft2",
@@ -119,10 +119,10 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 			amplify:         false,
 		},
 		{
-			testCase:        "single success case",
-			incentiveUnitId: "id1",
-			subjectAddrs:    []ununifitypes.StringAccAddress{sender.Bytes()},
-			weights:         []sdk.Dec{sdk.OneDec()},
+			testCase:             "single success case",
+			recipientContainerId: "id1",
+			subjectAddrs:         []string{sender.String()},
+			weights:              []sdk.Dec{sdk.OneDec()},
 			fee: sdk.Coin{
 				Denom:  "uguu",
 				Amount: sdk.NewInt(1000),
@@ -137,11 +137,11 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 			amplify:         false,
 		},
 		{
-			testCase:        "multiple subject case",
-			incentiveUnitId: "id2",
-			subjectAddrs: []ununifitypes.StringAccAddress{
-				sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes()).Bytes(),
-				sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes()).Bytes(),
+			testCase:             "multiple subject case",
+			recipientContainerId: "id2",
+			subjectAddrs: []string{
+				sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes()).String(),
+				sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes()).String(),
 			},
 			weights: []sdk.Dec{
 				sdk.MustNewDecFromStr("0.5"),
@@ -158,10 +158,10 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 			amplify:         false,
 		},
 		{
-			testCase:        "amplify case",
-			incentiveUnitId: "id1",
-			subjectAddrs:    []ununifitypes.StringAccAddress{sender.Bytes()},
-			weights:         []sdk.Dec{sdk.OneDec()},
+			testCase:             "amplify case",
+			recipientContainerId: "id1",
+			subjectAddrs:         []string{sender.String()},
+			weights:              []sdk.Dec{sdk.OneDec()},
 			fee: sdk.Coin{
 				Denom:  "uguu",
 				Amount: sdk.NewInt(1000),
@@ -182,14 +182,14 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 		_, _ = suite.app.EcosystemincentiveKeeper.Register(
 			suite.ctx,
 			&types.MsgRegister{
-				Sender:          sender.Bytes(),
-				IncentiveUnitId: test.incentiveUnitId,
-				SubjectAddrs:    test.subjectAddrs,
-				Weights:         test.weights,
+				Sender:               sender.String(),
+				RecipientContainerId: test.recipientContainerId,
+				Addresses:            test.subjectAddrs,
+				Weights:              test.weights,
 			})
 
 		if test.record {
-			suite.app.EcosystemincentiveKeeper.RecordIncentiveUnitIdWithNftId(suite.ctx, test.nftId, test.incentiveUnitId)
+			suite.app.EcosystemincentiveKeeper.RecordRecipientContainerIdWithNftId(suite.ctx, test.nftId, test.recipientContainerId)
 		}
 
 		if test.expect {
@@ -224,18 +224,18 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 // RecordIncentiveUnitIdWithNftIdTest is a mehtod to have the exact same logic
 // for being used in test cases to return error as return value
 // since the normal RecordIncentiveUnitIdWithNftId doesn't return any value by intention
-func (suite *KeeperTestSuite) RecordIncentiveUnitIdWithNftIdTest(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, incentiveUnitId string) error {
+func (suite *KeeperTestSuite) RecordIncentiveUnitIdWithNftIdTest(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, recipientContainerId string) error {
 	// panic if the nftId is already recorded in the store.
-	if _, exists := suite.app.EcosystemincentiveKeeper.GetIncentiveUnitIdByNftId(ctx, nftId); exists {
+	if _, exists := suite.app.EcosystemincentiveKeeper.GetRecipientContainerIdByNftId(ctx, nftId); exists {
 		return types.ErrRecordedNftId
 	}
 
-	// check incentiveUnitId is already registered
-	if _, exists := suite.app.EcosystemincentiveKeeper.GetIncentiveUnit(ctx, incentiveUnitId); !exists {
-		return types.ErrNotRegisteredIncentiveUnitId
+	// check recipientContainerId is already registered
+	if _, exists := suite.app.EcosystemincentiveKeeper.GetRecipientContainer(ctx, recipientContainerId); !exists {
+		return types.ErrNotRegisteredRecipientContainerId
 	}
 
-	if err := suite.app.EcosystemincentiveKeeper.SetIncentiveUnitIdByNftId(ctx, nftId, incentiveUnitId); err != nil {
+	if err := suite.app.EcosystemincentiveKeeper.SetRecipientContainerIdByNftId(ctx, nftId, recipientContainerId); err != nil {
 		return err
 	}
 
@@ -244,15 +244,15 @@ func (suite *KeeperTestSuite) RecordIncentiveUnitIdWithNftIdTest(ctx sdk.Context
 
 // Just mock method to use in only test
 func (suite *KeeperTestSuite) AccumulateRewardForFrontendTest(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, fee sdk.Coin) error {
-	// get incentiveUnitId by nftId from IncentiveUnitIdByNftId KVStore
-	incentiveUnitId, exists := suite.app.EcosystemincentiveKeeper.GetIncentiveUnitIdByNftId(ctx, nftId)
+	// get recipientContainerId by nftId from IncentiveUnitIdByNftId KVStore
+	recipientContainerId, exists := suite.app.EcosystemincentiveKeeper.GetRecipientContainerIdByNftId(ctx, nftId)
 	if !exists {
-		return types.ErrIncentiveUnitIdByNftIdDoesntExist
+		return types.ErrRegisteredIncentiveId
 	}
 
-	incentiveUnit, exists := suite.app.EcosystemincentiveKeeper.GetIncentiveUnit(ctx, incentiveUnitId)
+	incentiveUnit, exists := suite.app.EcosystemincentiveKeeper.GetRecipientContainer(ctx, recipientContainerId)
 	if !exists {
-		return types.ErrNotRegisteredIncentiveUnitId
+		return types.ErrNotRegisteredRecipientContainerId
 	}
 
 	nftmarketFrontendRewardRate := suite.app.EcosystemincentiveKeeper.GetNftmarketFrontendRewardRate(ctx)
@@ -265,10 +265,10 @@ func (suite *KeeperTestSuite) AccumulateRewardForFrontendTest(ctx sdk.Context, n
 	// rewardAmountForAll = fee * rewardRate
 	rewardAmountForAll := nftmarketFrontendRewardRate.MulInt(fee.Amount).RoundInt()
 
-	for _, subjectInfo := range incentiveUnit.SubjectInfoLists {
-		rewardStore, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(ctx, subjectInfo.SubjectAddr.AccAddress())
+	for _, subjectInfo := range incentiveUnit.WeightedAddresses {
+		rewardStore, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(ctx, sdk.AccAddress(subjectInfo.Address))
 		if !exists {
-			rewardStore = types.NewRewardStore(subjectInfo.SubjectAddr, nil)
+			rewardStore = types.NewRewardStore(subjectInfo.Address, nil)
 		}
 
 		weight := subjectInfo.Weight

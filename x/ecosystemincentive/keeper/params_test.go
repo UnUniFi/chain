@@ -28,7 +28,7 @@ func (suite *KeeperTestSuite) TestParams() {
 						ModuleName: "nftmarket",
 						RewardRate: []types.RewardRate{
 							{
-								RewardType: types.RewardType_NFTMARKET_FRONTEND,
+								RewardType: types.RewardType_FRONTEND_DEVELOPERS,
 								Rate:       sdk.MustNewDecFromStr("-0.5"),
 							},
 						},
@@ -45,7 +45,7 @@ func (suite *KeeperTestSuite) TestParams() {
 						ModuleName: "nftmarket",
 						RewardRate: []types.RewardRate{
 							{
-								RewardType: types.RewardType_NFTMARKET_FRONTEND,
+								RewardType: types.RewardType_FRONTEND_DEVELOPERS,
 								Rate:       sdk.MustNewDecFromStr("10"),
 							},
 						},
