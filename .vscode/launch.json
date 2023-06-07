@@ -59,5 +59,18 @@
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "copy_alpha_node_data",
     },
+    {
+      "name": "debug debudata",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "./cmd/ununifid/main.go",
+      "args": [
+        "start",
+        "--home",
+        "./debug_data"
+      ],
+      "cwd": "${workspaceFolder}",
+    },
   ]
 }

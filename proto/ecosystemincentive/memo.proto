@@ -1,0 +1,15 @@
+syntax = "proto3";
+package ununifi.ecosystemincentive;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/ecosystemincentive/types";
+
+message TxMemoData {
+  string version = 1 [
+    (gogoproto.moretags) = "yaml:\"version\""
+  ];
+  string recipient_container_id = 2 [
+    (gogoproto.moretags) = "yaml:\"recipient_container_id\""
+  ];
+}

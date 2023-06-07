@@ -21,9 +21,7 @@ service Msg {
 
 message MsgDepositToPool {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.moretags) = "yaml:\"sender\""
   ];
   cosmos.base.v1beta1.Coin amount = 2 [
     (gogoproto.moretags) = "yaml:\"amount\"",
@@ -35,9 +33,7 @@ message MsgDepositToPoolResponse {}
 
 message MsgWithdrawFromPool {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.moretags) = "yaml:\"sender\""
   ];
   string lpt_amount = 2 [
     (gogoproto.moretags) = "yaml:\"amount\"",
@@ -53,9 +49,7 @@ message MsgWithdrawFromPoolResponse {}
 
 message MsgOpenPosition {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.moretags) = "yaml:\"sender\""
   ];
   cosmos.base.v1beta1.Coin margin = 2 [
     (gogoproto.moretags) = "yaml:\"margin\"",
@@ -75,9 +69,7 @@ message MsgOpenPositionResponse {}
 
 message MsgClosePosition {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.moretags) = "yaml:\"sender\""
   ];
   string position_id = 2 [
     (gogoproto.moretags) = "yaml:\"position_id\""
@@ -88,17 +80,13 @@ message MsgClosePositionResponse {}
 
 message MsgReportLiquidation {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.moretags) = "yaml:\"sender\""
   ];
   string position_id = 2 [
     (gogoproto.moretags) = "yaml:\"position_id\""
   ];
   string reward_recipient = 3 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.moretags) = "yaml:\"sender\""
   ];
 }
 
@@ -106,17 +94,13 @@ message MsgReportLiquidationResponse {}
 
 message MsgReportLevyPeriod {
   string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.moretags) = "yaml:\"sender\""
   ];
   string position_id = 2 [
     (gogoproto.moretags) = "yaml:\"position_id\""
   ];
   string reward_recipient = 3 [
-    (gogoproto.moretags) = "yaml:\"sender\"",
-    (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",
-    (gogoproto.nullable) = false
+    (gogoproto.moretags) = "yaml:\"sender\""
   ];
 }
 
