@@ -1,0 +1,71 @@
+syntax = "proto3";
+package ununifi.cdp;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/any.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+// this line is used by starport scaffolding # 1
+import "cdp/cdp.proto";
+
+option go_package = "github.com/UnUniFi/chain/deprecated/x/cdp/types";
+
+// Query defines the gRPC querier service.
+service Query {
+	rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+		option (google.api.http).get = "/ununifi/cdp/params";
+	}
+  // this line is used by starport scaffolding # 2
+	rpc Cdp(QueryGetCdpRequest) returns (QueryGetCdpResponse) {
+		option (google.api.http).get = "/ununifi/cdp/cdps/owners/{owner}/collateral-types/{collateral_type}/cdp";
+	}
+	rpc CdpAll(QueryAllCdpRequest) returns (QueryAllCdpResponse) {
+		option (google.api.http).get = "/ununifi/cdp/cdps";
+	}
+	rpc AccountAll(QueryAllAccountRequest) returns (QueryAllAccountResponse) {
+		option (google.api.http).get = "/ununifi/cdp/accounts";
+	}
+  rpc DepositAll(QueryAllDepositRequest) returns (QueryAllDepositResponse) {
+		option (google.api.http).get = "/ununifi/cdp/deposits/owners/{owner}/collateral-types/{collateral_type}";
+	}
+}
+
+message QueryParamsRequest {}
+
+message QueryParamsResponse {
+  Params params = 1;
+}
+
+// this line is used by starport scaffolding # 3
+message QueryGetCdpRequest {
+  string owner = 1;
+  string collateral_type = 2;
+}
+
+message QueryGetCdpResponse {
+	AugmentedCdp cdp = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllCdpRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllCdpResponse {
+	repeated AugmentedCdp cdp = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryAllAccountRequest {}
+
+message QueryAllAccountResponse {
+  repeated google.protobuf.Any accounts = 1;
+}
+
+message QueryAllDepositRequest {
+  string owner = 1;
+  string collateral_type = 2;
+}
+
+message QueryAllDepositResponse {
+  repeated Deposit deposits = 1 [(gogoproto.nullable) = false];
+}

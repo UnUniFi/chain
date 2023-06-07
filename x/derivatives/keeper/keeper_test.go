@@ -15,7 +15,7 @@ import (
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 
 	simapp "github.com/UnUniFi/chain/app"
-	ununifitypes "github.com/UnUniFi/chain/types"
+	ununifitypes "github.com/UnUniFi/chain/deprecated/types"
 	"github.com/UnUniFi/chain/x/derivatives/keeper"
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )

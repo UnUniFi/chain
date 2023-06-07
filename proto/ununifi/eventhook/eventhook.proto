@@ -1,0 +1,21 @@
+syntax = "proto3";
+package nftvault.eventhook;
+
+import "gogoproto/gogo.proto";
+import "ununifi/eventhook/params.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/eventhook/types";
+
+message Hook {
+  uint64                id               = 1;
+  string                event_type       = 2;
+  string                contract_address = 3;
+  string                name             = 4;
+  string                git_url          = 5;
+  repeated KeyValuePair event_attributes = 6;
+}
+
+message KeyValuePair {
+  string key   = 1;
+  string value = 2;
+}

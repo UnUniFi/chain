@@ -7,7 +7,6 @@ package keeper
 import (
 	"context"
 
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -83,8 +82,10 @@ func (k Keeper) PerpetualFuturesMarket(c context.Context, req *types.QueryPerpet
 		BaseDenom:  req.BaseDenom,
 		QuoteDenom: req.QuoteDenom,
 	}
-	grossPositionLong := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, types.PositionType_LONG).PositionSizeInDenomExponent
-	grossPositionShort := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, types.PositionType_SHORT).PositionSizeInDenomExponent
+	grossPositionLongInDenomExponent := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, types.PositionType_LONG).PositionSizeInDenomExponent
+	grossPositionLong := types.MicroToNormalDec(grossPositionLongInDenomExponent)
+	grossPositionShortInDenomExponent := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, types.PositionType_SHORT).PositionSizeInDenomExponent
+	grossPositionShort := types.MicroToNormalDec(grossPositionShortInDenomExponent)
 
 	return &types.QueryPerpetualFuturesMarketResponse{
 		Price:              &price,
@@ -126,7 +127,10 @@ func (k Keeper) Pool(c context.Context, req *types.QueryPoolRequest) (*types.Que
 	ctx := sdk.UnwrapSDKContext(c)
 
 	metricsQuoteTicker := k.GetPoolQuoteTicker(ctx)
-	poolMarketCap := k.GetPoolMarketCap(ctx)
+	poolMarketCap, err := k.GetPoolMarketCap(ctx)
+	if err != nil {
+		return nil, err
+	}
 
 	return &types.QueryPoolResponse{
 		MetricsQuoteTicker: metricsQuoteTicker,
@@ -140,13 +144,13 @@ func (k Keeper) AllPositions(c context.Context, req *types.QueryAllPositionsRequ
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 
-	var positions []*codectypes.Any
+	var positions []*types.Position
 
 	store := ctx.KVStore(k.storeKey)
 	positionStore := prefix.NewStore(store, []byte(types.KeyPrefixPosition))
 	pageRes, err := query.Paginate(positionStore, req.Pagination, func(key []byte, value []byte) error {
-		var position codectypes.Any
-		if err := k.cdc.Unmarshal(value, &position); err != nil {
+		position, err := k.UnmarshalPosition(value)
+		if err != nil {
 			return err
 		}
 
@@ -295,9 +299,15 @@ func (k Keeper) PerpetualFuturesPositionSize(c context.Context, req *types.Query
 	var result sdk.Dec
 	quoteTicker := k.GetPoolQuoteTicker(ctx)
 	if req.PositionType == types.PositionType_LONG {
-		result = positions.EvaluateLongPositions(quoteTicker, getPriceFunc(ctx))
+		result, err = positions.EvaluateLongPositions(quoteTicker, getPriceFunc(ctx))
+		if err != nil {
+			return nil, status.Error(codes.Internal, err.Error())
+		}
 	} else if req.PositionType == types.PositionType_SHORT {
-		result = positions.EvaluateShortPositions(quoteTicker, getPriceFunc(ctx))
+		result, err = positions.EvaluateShortPositions(quoteTicker, getPriceFunc(ctx))
+		if err != nil {
+			return nil, status.Error(codes.Internal, err.Error())
+		}
 	} else {
 		return nil, status.Error(codes.InvalidArgument, "invalid position type")
 	}

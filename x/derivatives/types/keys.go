@@ -24,6 +24,9 @@ const (
 
 	// DerivativeFeeCollector defines the fee collector for derivatives module
 	DerivativeFeeCollector = "derivatives_fee_collector"
+
+	// MarginManager defines the margin manager for derivatives module
+	MarginManager = "margin_manager"
 )
 
 const (
@@ -114,6 +117,6 @@ func BlockTimestampWithHeight(height int64) []byte {
 	return append([]byte(KeyPrefixBlockTimestamp), []byte(strconv.FormatInt(height, 10))...)
 }
 
-func ReservedCoinKeyPrefix(denom string) []byte {
-	return append([]byte(KeyPrefixReservedCoin), []byte(denom)...)
+func ReservedCoinKeyPrefix(marketType MarketType, denom string) []byte {
+	return append([]byte(KeyPrefixReservedCoin), []byte(fmt.Sprintf("%s/%s", marketType, denom))...)
 }

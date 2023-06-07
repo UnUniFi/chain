@@ -7,39 +7,39 @@
   },
   "apis": [
     {
-      "url": "./tmp-swagger-gen/auction/query.swagger.json",
+      "url": "./tmp-swagger-gen/ununifi/derivatives/query.swagger.json",
       "operationIds": {
         "rename": {
-          "Params": "AuctionParams"
+          "Params": "DerivativesParams"
         }
       }
     },
     {
-      "url": "./tmp-swagger-gen/cdp/query.swagger.json",
+      "url": "./tmp-swagger-gen/ununifi/ecosystemincentive/query.swagger.json",
       "operationIds": {
         "rename": {
-          "Params": "CdpParams"
+          "Params": "EcosystemIncentiveParams"
         }
       }
     },
     {
-      "url": "./tmp-swagger-gen/incentive/query.swagger.json",
+      "url": "./tmp-swagger-gen/ununifi/nftbackedloan/query.swagger.json",
       "operationIds": {
         "rename": {
-          "Params": "IncentiveParams"
+          "Params": "NftBackedLoanParams"
         }
       }
     },
     {
-      "url": "./tmp-swagger-gen/ununifidist/query.swagger.json",
+      "url": "./tmp-swagger-gen/ununifi/nftfactory/query.swagger.json",
       "operationIds": {
         "rename": {
-          "Params": "UnunifidistParams"
+          "Params": "NftFactoryParams"
         }
       }
     },
     {
-      "url": "./tmp-swagger-gen/pricefeed/query.swagger.json",
+      "url": "./tmp-swagger-gen/ununifi/pricefeed/query.swagger.json",
       "operationIds": {
         "rename": {
           "Params": "PricefeedParams"
@@ -47,42 +47,10 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/yield-aggregator/query.swagger.json",
+      "url": "./tmp-swagger-gen/ununifi/yieldaggregator/query.swagger.json",
       "operationIds": {
         "rename": {
           "Params": "YieldAggregatorParams"
-        }
-      }
-    },
-    {
-      "url": "./tmp-swagger-gen/nftmint/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "NftmintParams"
-        }
-      }
-    },
-    {
-      "url": "./tmp-swagger-gen/nftmarket/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "NftmarketParams"
-        }
-      }
-    },
-    {
-      "url": "./tmp-swagger-gen/ecosystem-incentive/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "EcosystemincentiveParams"
-        }
-      }
-    },
-    {
-      "url": "./tmp-swagger-gen/derivatives/query.swagger.json",
-      "operationIds": {
-        "rename": {
-          "Params": "DerivativesParams"
         }
       }
     }

@@ -9,7 +9,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/app"
-	"github.com/UnUniFi/chain/types"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
@@ -23,7 +22,7 @@ func TestKeeper_SetGetMarket(t *testing.T) {
 
 	mp := pricefeedtypes.Params{
 		Markets: pricefeedtypes.Markets{
-			pricefeedtypes.Market{MarketId: "tstusd", BaseAsset: "tst", QuoteAsset: "usd", Oracles: types.StringAccAddresses([]sdk.AccAddress{}), Active: true},
+			pricefeedtypes.Market{MarketId: "tstusd", BaseAsset: "tst", QuoteAsset: "usd", Oracles: []string{}, Active: true},
 		},
 	}
 	keeper.SetParams(ctx, mp)
@@ -36,8 +35,8 @@ func TestKeeper_SetGetMarket(t *testing.T) {
 
 	mp = pricefeedtypes.Params{
 		Markets: pricefeedtypes.Markets{
-			pricefeedtypes.Market{MarketId: "tstusd", BaseAsset: "tst", QuoteAsset: "usd", Oracles: types.StringAccAddresses([]sdk.AccAddress{}), Active: true},
-			pricefeedtypes.Market{MarketId: "tst2usd", BaseAsset: "tst2", QuoteAsset: "usd", Oracles: types.StringAccAddresses([]sdk.AccAddress{}), Active: true},
+			pricefeedtypes.Market{MarketId: "tstusd", BaseAsset: "tst", QuoteAsset: "usd", Oracles: []string{}, Active: true},
+			pricefeedtypes.Market{MarketId: "tst2usd", BaseAsset: "tst2", QuoteAsset: "usd", Oracles: []string{}, Active: true},
 		},
 	}
 	keeper.SetParams(ctx, mp)
@@ -59,7 +58,7 @@ func TestKeeper_GetSetPrice(t *testing.T) {
 
 	mp := pricefeedtypes.Params{
 		Markets: pricefeedtypes.Markets{
-			pricefeedtypes.Market{MarketId: "tstusd", BaseAsset: "tst", QuoteAsset: "usd", Oracles: types.StringAccAddresses([]sdk.AccAddress{}), Active: true},
+			pricefeedtypes.Market{MarketId: "tstusd", BaseAsset: "tst", QuoteAsset: "usd", Oracles: []string{}, Active: true},
 		},
 	}
 	keeper.SetParams(ctx, mp)
@@ -106,7 +105,7 @@ func TestKeeper_GetSetCurrentPrice(t *testing.T) {
 
 	mp := pricefeedtypes.Params{
 		Markets: pricefeedtypes.Markets{
-			pricefeedtypes.Market{MarketId: "tstusd", BaseAsset: "tst", QuoteAsset: "usd", Oracles: types.StringAccAddresses([]sdk.AccAddress{}), Active: true},
+			pricefeedtypes.Market{MarketId: "tstusd", BaseAsset: "tst", QuoteAsset: "usd", Oracles: []string{}, Active: true},
 		},
 	}
 	keeper.SetParams(ctx, mp)
