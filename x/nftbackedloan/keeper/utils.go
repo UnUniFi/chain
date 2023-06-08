@@ -20,10 +20,10 @@ func validateListNftMsg(k Keeper, ctx sdk.Context, msg *types.MsgListNft) error 
 	if err != nil {
 		return err
 	}
-	return checkListNft(k, ctx, sender, msg.NftId, msg.BidToken)
+	return checkListNft(k, ctx, sender, msg.NftId, msg.BidToken, msg.MinimumDepositRate)
 }
 
-func checkListNft(k Keeper, ctx sdk.Context, sender sdk.AccAddress, nftId types.NftIdentifier, bidToken string) error {
+func checkListNft(k Keeper, ctx sdk.Context, sender sdk.AccAddress, nftId types.NftIdentifier, bidToken string, minimumDepositRate sdk.Dec) error {
 	// check listing already exists
 	_, err := k.GetNftListingByIdBytes(ctx, nftId.IdBytes())
 	if err == nil {
@@ -45,5 +45,10 @@ func checkListNft(k Keeper, ctx sdk.Context, sender sdk.AccAddress, nftId types.
 	for !Contains(params.BidTokens, bidToken) {
 		return types.ErrNotSupportedBidToken
 	}
+
+	if minimumDepositRate.GTE(sdk.MustNewDecFromStr("0.5")) {
+		return types.ErrMinimumDepositRateTooHigh
+	}
+
 	return nil
 }
