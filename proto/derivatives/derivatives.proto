@@ -183,32 +183,18 @@ message EventPriceIsNotFeeded {
   ];
 }
 
-message EventPerpetualFuturesTradingFee {
-  cosmos.base.v1beta1.Coin fee = 1 [
-    (gogoproto.moretags) = "yaml:\"fee\"",
-    (gogoproto.nullable) = false
-  ];
-  string position_id = 2 [
-    (gogoproto.moretags) = "yaml:\"position_id\""
-  ];
+enum MarketType {
+  UNKNOWN = 0;
+  FUTURES = 1;
+  OPTIONS = 2;
 }
 
-message EventPerpetualFuturesImaginaryFundingFee {
-  cosmos.base.v1beta1.Coin fee = 1 [
-    (gogoproto.moretags) = "yaml:\"fee\"",
+message Reserve {
+  MarketType market_type = 1 [
+    (gogoproto.moretags)  = "yaml:\"market_type\""
+  ];
+  cosmos.base.v1beta1.Coin amount = 2 [
+    (gogoproto.moretags)  = "yaml:\"amount\"",
     (gogoproto.nullable) = false
-  ];
-  string position_id = 2 [
-    (gogoproto.moretags) = "yaml:\"position_id\""
-  ];
-}
-
-message EventPerpetualFuturesLiquidationFee {
-  cosmos.base.v1beta1.Coin fee = 1 [
-    (gogoproto.moretags) = "yaml:\"fee\"",
-    (gogoproto.nullable) = false
-  ];
-  string position_id = 2 [
-    (gogoproto.moretags) = "yaml:\"position_id\""
   ];
 }
