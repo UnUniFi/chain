@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	// "fmt"
 	"time"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
@@ -123,10 +124,10 @@ func (suite *KeeperTestSuite) TestAddReserveTokensForPosition() {
 	}
 
 	for _, tc := range testCases {
-		err := suite.keeper.AddReserveTokensForPosition(suite.ctx, tc.reserveCoin.Amount, tc.reserveCoin.Denom)
+		err := suite.keeper.AddReserveTokensForPosition(suite.ctx, types.MarketType_FUTURES, tc.reserveCoin.Amount, tc.reserveCoin.Denom)
 		suite.Require().NoError(err)
 
-		reserve, err := suite.keeper.GetReservedCoin(suite.ctx, tc.reserveCoin.Denom)
+		reserve, err := suite.keeper.GetReservedCoin(suite.ctx, types.MarketType_FUTURES, tc.reserveCoin.Denom)
 		suite.Require().NoError(err)
 		suite.Require().Equal(tc.expReserve, reserve)
 	}
@@ -154,12 +155,12 @@ func (suite *KeeperTestSuite) TestSubReserveTokensForPosition() {
 	}
 
 	for _, tc := range testCases {
-		err := suite.keeper.SetReservedCoin(suite.ctx, tc.reserveCoin)
+		err := suite.keeper.SetReservedCoin(suite.ctx, types.NewReserve(types.MarketType_FUTURES, tc.reserveCoin))
 		suite.Require().NoError(err)
-		err = suite.keeper.SubReserveTokensForPosition(suite.ctx, tc.subReserve.Amount, tc.subReserve.Denom)
+		err = suite.keeper.SubReserveTokensForPosition(suite.ctx, types.MarketType_FUTURES, tc.subReserve.Amount, tc.subReserve.Denom)
 		suite.Require().NoError(err)
 
-		reserve, err := suite.keeper.GetReservedCoin(suite.ctx, tc.reserveCoin.Denom)
+		reserve, err := suite.keeper.GetReservedCoin(suite.ctx, types.MarketType_FUTURES, tc.reserveCoin.Denom)
 		suite.Require().NoError(err)
 		suite.Require().Equal(tc.expReserve, reserve)
 	}
