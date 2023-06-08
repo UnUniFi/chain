@@ -93,13 +93,13 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 	case types.PositionType_LONG:
 		k.AddPerpetualFuturesGrossPositionOfMarket(ctx, market, positionInstance.PositionType, positionInstance.SizeInDenomExponent(types.OneMillionInt))
 		// Reserve tokens to pay profit
-		if err := k.AddReserveTokensForPosition(ctx, positionInstance.SizeInDenomExponent(types.OneMillionInt), position.Market.BaseDenom); err != nil {
+		if err := k.AddReserveTokensForPosition(ctx, types.MarketType_FUTURES, positionInstance.SizeInDenomExponent(types.OneMillionInt), position.Market.BaseDenom); err != nil {
 			return nil, err
 		}
 	case types.PositionType_SHORT:
 		k.AddPerpetualFuturesGrossPositionOfMarket(ctx, market, positionInstance.PositionType, positionInstance.SizeInDenomExponent(types.OneMillionInt))
 		// Reserve tokens to pay profit
-		if err := k.AddReserveTokensForPosition(ctx, positionInstance.SizeInDenomExponent(types.OneMillionInt), position.Market.QuoteDenom); err != nil {
+		if err := k.AddReserveTokensForPosition(ctx, types.MarketType_FUTURES, positionInstance.SizeInDenomExponent(types.OneMillionInt), position.Market.QuoteDenom); err != nil {
 			return nil, err
 		}
 	case types.PositionType_POSITION_UNKNOWN:
@@ -116,14 +116,15 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 
 // AddReserveTokensForPosition adds the tokens o the amount of the popsition size to pay the maximum profit
 // in reserved property of the PoolMarketCap
-func (k Keeper) AddReserveTokensForPosition(ctx sdk.Context, positionSizeInDenomExponent sdk.Int, denom string) error {
-	reserveOld, err := k.GetReservedCoin(ctx, denom)
+func (k Keeper) AddReserveTokensForPosition(ctx sdk.Context, marketType types.MarketType, positionSizeInDenomExponent sdk.Int, denom string) error {
+	reserveOld, err := k.GetReservedCoin(ctx, marketType, denom)
 	if err != nil {
 		return err
 	}
 
-	reserveNew := reserveOld.AddAmount(positionSizeInDenomExponent)
-	if err := k.SetReservedCoin(ctx, reserveNew); err != nil {
+	reserveNew := reserveOld.Amount.AddAmount(positionSizeInDenomExponent)
+
+	if err := k.SetReservedCoin(ctx, types.NewReserve(marketType, reserveNew)); err != nil {
 		return err
 	}
 	return nil
@@ -131,14 +132,15 @@ func (k Keeper) AddReserveTokensForPosition(ctx sdk.Context, positionSizeInDenom
 
 // SubReserveTokensForPosition subtracts the tokens o the amount of the popsition size to pay the maximum profit
 // in reserved property of the PoolMarketCap
-func (k Keeper) SubReserveTokensForPosition(ctx sdk.Context, positionSizeInDenomExponent sdk.Int, denom string) error {
-	reserveOld, err := k.GetReservedCoin(ctx, denom)
+func (k Keeper) SubReserveTokensForPosition(ctx sdk.Context, marketType types.MarketType, positionSizeInDenomExponent sdk.Int, denom string) error {
+	reserveOld, err := k.GetReservedCoin(ctx, marketType, denom)
 	if err != nil {
 		return err
 	}
 
-	reserveNew := reserveOld.SubAmount(positionSizeInDenomExponent)
-	if err := k.SetReservedCoin(ctx, reserveNew); err != nil {
+	reserveNew := reserveOld.Amount.SubAmount(positionSizeInDenomExponent)
+
+	if err := k.SetReservedCoin(ctx, types.NewReserve(marketType, reserveNew)); err != nil {
 		return err
 	}
 
