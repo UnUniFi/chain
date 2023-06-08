@@ -272,6 +272,11 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 			commissionFee = k.ConvertBaseAmountToQuoteAmount(ctx, position.Market, commissionBaseFee)
 		}
 
+		// If the margin is lower than the fee, the fee is equal to the margin.
+		if position.RemainingMargin.Amount.LT(commissionFee) {
+			commissionFee = position.RemainingMargin.Amount
+		}
+
 		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(commissionFee)
 		_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesLiquidationFee{
 			Fee:        sdk.NewCoin(position.RemainingMargin.Denom, commissionFee),
@@ -339,12 +344,22 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 	})
 
 	if positionInstance.PositionType == types.PositionType_LONG {
+		// If the margin is lower than the fee, the fee is equal to the margin.
+		if position.RemainingMargin.Amount.LT(imaginaryFundingFee) {
+			imaginaryFundingFee = position.RemainingMargin.Amount
+		}
+		if position.RemainingMargin.Amount.Sub(imaginaryFundingFee).LT(commissionFee) {
+			commissionFee = position.RemainingMargin.Amount.Sub(imaginaryFundingFee)
+		}
 		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(imaginaryFundingFee).Sub(commissionFee)
 		_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesImaginaryFundingFee{
 			Fee:        sdk.NewCoin(position.RemainingMargin.Denom, imaginaryFundingFee),
 			PositionId: position.Id,
 		})
 	} else {
+		if position.RemainingMargin.Amount.Add(imaginaryFundingFee).LT(commissionFee) {
+			commissionFee = position.RemainingMargin.Amount.Add(imaginaryFundingFee)
+		}
 		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Add(imaginaryFundingFee).Sub(commissionFee)
 		_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesImaginaryFundingFee{
 			Fee:        sdk.NewCoin(position.RemainingMargin.Denom, imaginaryFundingFee.Neg()),
@@ -373,9 +388,12 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 		return err
 	}
 
-	k.SetPosition(ctx, position)
+	err = k.SetPosition(ctx, position)
+	if err != nil {
+		return err
+	}
 
-	ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionLevied{
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionLevied{
 		RewardRecipient: rewardRecipient,
 		PositionId:      position.Id,
 		RemainingMargin: position.RemainingMargin.String(),
@@ -385,12 +403,12 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 	return nil
 }
 
-func (k Keeper) HandleImaginaryFundingFeeTransfer(ctx sdk.Context, imarginaryFundingFee, commissionFee sdk.Int, positionType types.PositionType, denom string) error {
+func (k Keeper) HandleImaginaryFundingFeeTransfer(ctx sdk.Context, imaginaryFundingFee, commissionFee sdk.Int, positionType types.PositionType, denom string) error {
 	var totalFee sdk.Int
 	if positionType == types.PositionType_LONG {
-		totalFee = imarginaryFundingFee.Add(commissionFee)
+		totalFee = imaginaryFundingFee.Add(commissionFee)
 	} else {
-		totalFee = commissionFee.Sub(imarginaryFundingFee)
+		totalFee = commissionFee.Sub(imaginaryFundingFee)
 	}
 
 	if totalFee.IsPositive() {
