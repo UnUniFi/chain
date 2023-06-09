@@ -8,7 +8,7 @@ import (
 	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
-// AllocateTokens performs reward and fee distribution to all validators based
+// AllocateTokensToStakers performs reward and fee distribution to all validators based
 // on the F1 fee distribution specification.
 func (k Keeper) AllocateTokensToStakers(ctx sdk.Context, rewardAmount sdk.Coin) error {
 	// transfer collected fees to the fee_collector module account eventually for the distribution module account
