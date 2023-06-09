@@ -16,11 +16,22 @@ func (suite *KeeperTestSuite) TestRewardDistributionOfNftmarket() {
 		reward     sdk.Coin
 		validDenom bool
 		success    bool
+		// use default reward rates for the calculation of each reward
+		expRewardForNftmarketFrontend sdk.Coin
+		expRewardForStakers           sdk.Coin
+		expRewardForCommunityPool     sdk.Coin
 	}{
 		{
 			testCase:   "success case",
 			nftId:      nftmarkettypes.NftIdentifier{ClassId: "test1", NftId: "test1"},
-			reward:     sdk.NewCoin("uguu", sdk.NewInt(10)),
+			reward:     sdk.NewCoin("uguu", sdk.NewInt(100)),
+			validDenom: true,
+			success:    true,
+		},
+		{
+			testCase:   "too small amount of reward to not distribute reward",
+			nftId:      nftmarkettypes.NftIdentifier{ClassId: "test2", NftId: "test2"},
+			reward:     sdk.NewCoin("uguu", sdk.NewInt(1)),
 			validDenom: true,
 			success:    true,
 		},
@@ -33,6 +44,8 @@ func (suite *KeeperTestSuite) TestRewardDistributionOfNftmarket() {
 		if tc.success {
 			err := suite.app.EcosystemincentiveKeeper.RewardDistributionOfNftmarket(suite.ctx, tc.nftId, tc.reward)
 			suite.Require().NoError(err)
+
+			// TODO: check the reward distribution by seeing the balance of the approriate accounts
 
 			// reward := suite.app.BankKeeper.GetBalance(suite.ctx, suite.app.EcosystemincentiveKeeper.GetNftMarketAddress(suite.ctx), tc.reward.Denom)
 			// suite.Require().Equal(tc.reward, reward)
