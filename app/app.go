@@ -995,9 +995,9 @@ func NewApp(
 		// original modules
 		// ecosystemincentivetypes.ModuleName,
 		// pricefeedtypes.ModuleName,
+
 		// nftminttypes.ModuleName,
 		// nftmarkettypes.ModuleName,
-		// derivativestypes.ModuleName,
 
 		stakeibctypes.ModuleName,
 		epochstypes.ModuleName,
@@ -1006,6 +1006,7 @@ func NewApp(
 		icacallbackstypes.ModuleName,
 
 		yieldaggregatortypes.ModuleName,
+		// derivativestypes.ModuleName,
 
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
@@ -1036,11 +1037,11 @@ func NewApp(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		// original modules
+		// ecosystemincentivetypes.ModuleName,
 		// pricefeedtypes.ModuleName,
+
 		// nftminttypes.ModuleName,
 		// nftmarkettypes.ModuleName,
-		// ecosystemincentivetypes.ModuleName,
-		// derivativestypes.ModuleName,
 		stakeibctypes.ModuleName,
 		epochstypes.ModuleName,
 		interchainquerytypes.ModuleName,
@@ -1048,6 +1049,7 @@ func NewApp(
 		icacallbackstypes.ModuleName,
 
 		yieldaggregatortypes.ModuleName,
+		// derivativestypes.ModuleName,
 
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
@@ -1090,7 +1092,6 @@ func NewApp(
 		// nftminttypes.ModuleName,
 		// nftmarkettypes.ModuleName,
 		// ecosystemincentivetypes.ModuleName,
-		// derivativestypes.ModuleName,
 
 		stakeibctypes.ModuleName,
 		epochstypes.ModuleName,
@@ -1099,6 +1100,7 @@ func NewApp(
 		icacallbackstypes.ModuleName,
 
 		yieldaggregatortypes.ModuleName,
+		// derivativestypes.ModuleName,
 
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
