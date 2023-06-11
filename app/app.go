@@ -113,7 +113,6 @@ import (
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v7/modules/core"
 	ibcclientclient "github.com/cosmos/ibc-go/v7/modules/core/02-client/client"
-	ibcporttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
 	porttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
@@ -152,8 +151,6 @@ import (
 	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
 	v2_1 "github.com/UnUniFi/chain/app/upgrades/v2.1"
 	v2_2 "github.com/UnUniFi/chain/app/upgrades/v2.2"
-
-	"github.com/prometheus/client_golang/prometheus"
 )
 
 const Name = "ununifi"
@@ -186,32 +183,6 @@ func GetEnabledProposals() []wasm.ProposalType {
 	return proposals
 }
 
-func GetWasmOpts(appOpts servertypes.AppOptions) []wasm.Option {
-	var wasmOpts []wasm.Option
-	if cast.ToBool(appOpts.Get("telemetry.enabled")) {
-		wasmOpts = append(wasmOpts, wasmkeeper.WithVMCacheMetrics(prometheus.DefaultRegisterer))
-	}
-
-	return wasmOpts
-}
-
-func getGovProposalHandlers() []govclient.ProposalHandler {
-	var govProposalHandlers []govclient.ProposalHandler
-	// this line is used by starport scaffolding # stargate/app/govProposalHandlers
-
-	govProposalHandlers = append(govProposalHandlers,
-		paramsclient.ProposalHandler,
-		// distrclient.ProposalHandler,
-		upgradeclient.LegacyProposalHandler,
-		upgradeclient.LegacyCancelProposalHandler,
-		ibcclientclient.UpdateClientProposalHandler,
-		ibcclientclient.UpgradeProposalHandler,
-		// this line is used by starport scaffolding # stargate/app/govProposalHandler
-	)
-
-	return govProposalHandlers
-}
-
 var (
 	// DefaultNodeHome default home directories for the application daemon
 	DefaultNodeHome string
@@ -227,7 +198,15 @@ var (
 		staking.AppModuleBasic{},
 		mint.AppModuleBasic{},
 		distr.AppModuleBasic{},
-		gov.NewAppModuleBasic(getGovProposalHandlers()),
+		gov.NewAppModuleBasic(
+			[]govclient.ProposalHandler{
+				paramsclient.ProposalHandler,
+				upgradeclient.LegacyProposalHandler,
+				upgradeclient.LegacyCancelProposalHandler,
+				ibcclientclient.UpdateClientProposalHandler,
+				ibcclientclient.UpgradeProposalHandler,
+			},
+		),
 		params.AppModuleBasic{},
 		crisis.AppModuleBasic{},
 		slashing.AppModuleBasic{},
@@ -278,6 +257,7 @@ var (
 		icatypes.ModuleName:            nil,
 		wasm.ModuleName:                {authtypes.Burner},
 
+		// original modules
 		// nftmarkettypes.ModuleName:               nil,
 		// nftmarkettypes.NftTradingFee: nil,
 		// nftminttypes.ModuleName:                 nil,
@@ -396,7 +376,6 @@ type App struct {
 
 	// msgSvcRouter      *authmiddleware.MsgServiceRouter
 	// legacyRouter      sdk.Router
-
 }
 
 // NewApp returns a reference to an initialized Gaia.
@@ -434,6 +413,7 @@ func NewApp(
 		wasm.StoreKey, icahosttypes.StoreKey,
 		icacontrollertypes.StoreKey,
 
+		// original modules
 		// nftmarkettypes.StoreKey,
 		// nftminttypes.StoreKey,
 
@@ -916,7 +896,7 @@ func NewApp(
 	wasmStack = ibcfee.NewIBCMiddleware(wasmStack, app.IBCFeeKeeper)
 
 	// Create static IBC router, add transfer route, then set and seal it
-	ibcRouter := ibcporttypes.NewRouter()
+	ibcRouter := porttypes.NewRouter()
 	ibcRouter.
 		// ICAHost Stack
 		AddRoute(icahosttypes.SubModuleName, icaHostIBCModule).
