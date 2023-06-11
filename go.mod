@@ -183,7 +183,7 @@ require (
 replace (
 	// patch bech32 decoding to enable larger string lengths
 	github.com/btcsuite/btcutil => github.com/kava-labs/btcutil v0.0.0-20200522184203-886d33430f06
-	github.com/cosmos/cosmos-sdk => github.com/ununifi/cosmos-sdk v0.47.1-bank-rc2
+	github.com/cosmos/cosmos-sdk => github.com/ununifi/cosmos-sdk v0.47.1-bank-rc3
 
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 
