@@ -99,6 +99,7 @@ import (
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	ica "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts"
+	icacontroller "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller"
 	icacontrollerkeeper "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/keeper"
 	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
 	icahost "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host"
@@ -763,8 +764,6 @@ func NewApp(
 
 	// transferIBCModule := transfer.NewIBCModule(app.TransferKeeper)
 
-	icaHostIBCModule := icahost.NewIBCModule(app.ICAHostKeeper)
-
 	// Stack two (Stakeibc Stack) contains
 	// - IBC
 	// - ICA
@@ -869,26 +868,26 @@ func NewApp(
 	// See: https://docs.cosmos.network/main/modules/gov#proposal-messages
 	app.GovKeeper.SetLegacyRouter(govRouter)
 
-	// // Create Transfer Stack
-	// var transferStack porttypes.IBCModule
-	// transferStack = transfer.NewIBCModule(app.TransferKeeper)
-	// transferStack = ibcfee.NewIBCMiddleware(transferStack, app.IBCFeeKeeper)
+	// Create Transfer Stack
+	var transferStack porttypes.IBCModule
+	transferStack = transfer.NewIBCModule(app.TransferKeeper)
+	transferStack = ibcfee.NewIBCMiddleware(transferStack, app.IBCFeeKeeper)
 
-	// // Create Interchain Accounts Stack
-	// // SendPacket, since it is originating from the application to core IBC:
-	// // icaAuthModuleKeeper.SendTx -> icaController.SendPacket -> fee.SendPacket -> channel.SendPacket
-	// var icaControllerStack porttypes.IBCModule
-	// // integration point for custom authentication modules
-	// // see https://medium.com/the-interchain-foundation/ibc-go-v6-changes-to-interchain-accounts-and-how-it-impacts-your-chain-806c185300d7
-	// var noAuthzModule porttypes.IBCModule
-	// icaControllerStack = icacontroller.NewIBCMiddleware(noAuthzModule, app.ICAControllerKeeper)
-	// icaControllerStack = ibcfee.NewIBCMiddleware(icaControllerStack, app.IBCFeeKeeper)
+	// Create Interchain Accounts Stack
+	// SendPacket, since it is originating from the application to core IBC:
+	// icaAuthModuleKeeper.SendTx -> icaController.SendPacket -> fee.SendPacket -> channel.SendPacket
+	var icaControllerStack porttypes.IBCModule
+	// integration point for custom authentication modules
+	// see https://medium.com/the-interchain-foundation/ibc-go-v6-changes-to-interchain-accounts-and-how-it-impacts-your-chain-806c185300d7
+	var noAuthzModule porttypes.IBCModule
+	icaControllerStack = icacontroller.NewIBCMiddleware(noAuthzModule, app.ICAControllerKeeper)
+	icaControllerStack = ibcfee.NewIBCMiddleware(icaControllerStack, app.IBCFeeKeeper)
 
-	// // RecvPacket, message that originates from core IBC and goes down to app, the flow is:
-	// // channel.RecvPacket -> fee.OnRecvPacket -> icaHost.OnRecvPacket
-	// var icaHostStack porttypes.IBCModule
-	// icaHostStack = icahost.NewIBCModule(app.ICAHostKeeper)
-	// icaHostStack = ibcfee.NewIBCMiddleware(icaHostStack, app.IBCFeeKeeper)
+	// RecvPacket, message that originates from core IBC and goes down to app, the flow is:
+	// channel.RecvPacket -> fee.OnRecvPacket -> icaHost.OnRecvPacket
+	var icaHostStack porttypes.IBCModule
+	icaHostStack = icahost.NewIBCModule(app.ICAHostKeeper)
+	icaHostStack = ibcfee.NewIBCMiddleware(icaHostStack, app.IBCFeeKeeper)
 
 	// Create fee enabled wasm ibc Stack
 	var wasmStack porttypes.IBCModule
@@ -898,15 +897,14 @@ func NewApp(
 	// Create static IBC router, add transfer route, then set and seal it
 	ibcRouter := porttypes.NewRouter()
 	ibcRouter.
-		// ICAHost Stack
-		AddRoute(icahosttypes.SubModuleName, icaHostIBCModule).
-		// Wasm Stack
-		AddRoute(wasm.ModuleName, wasmStack)
+		AddRoute(ibctransfertypes.ModuleName, transferStack).
+		AddRoute(wasm.ModuleName, wasmStack).
+		AddRoute(icacontrollertypes.SubModuleName, icaControllerStack).
+		AddRoute(icahosttypes.SubModuleName, icaHostStack)
 		// Stakeibc Stack
 		// AddRoute(icacontrollertypes.SubModuleName, stakeibcStack).
 		// AddRoute(stakeibcmoduletypes.ModuleName, stakeibcStack).
-		// Transfer stack
-		// AddRoute(ibctransfertypes.ModuleName, transferStack)
+
 	app.IBCKeeper.SetRouter(ibcRouter)
 
 	/****  Module Options ****/
@@ -953,13 +951,13 @@ func NewApp(
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
 
+		// original modules
 		// stakeibcModule,
 		// epochsModule,
 		// interchainQueryModule,
 		// recordsModule,
 		// icacallbacksModule,
 
-		// this line is used by starport scaffolding # stargate/app/appModule
 		// pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
 		// yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
 		// ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
