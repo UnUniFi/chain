@@ -900,7 +900,7 @@ func NewApp(
 	ibcRouter.
 		AddRoute(ibctransfertypes.ModuleName, transferStack).
 		AddRoute(wasm.ModuleName, wasmStack).
-		AddRoute(icacontrollertypes.SubModuleName, icaControllerStack).
+		// AddRoute(icacontrollertypes.SubModuleName, icaControllerStack). // This is copied from wasmd. Is this needed?
 		AddRoute(icahosttypes.SubModuleName, icaHostStack).
 		// Stakeibc Stack
 		AddRoute(icacontrollertypes.SubModuleName, stakeibcStack).
