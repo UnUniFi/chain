@@ -1,5 +1,5 @@
 package utils
 
 var Admins = map[string]bool{
-	"ununifi1a8jcsmla6heu99ldtazc27dna4qcd4jygsthx6": true,
+	"ununifi1r500cehqg5u6fhsaysmhu4cnw5pz3lxcqhgaq7": true,
 }
