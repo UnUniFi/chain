@@ -37,7 +37,7 @@ func NewParams(
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
-	return NewParams(sdk.ZeroDec(), sdk.NewInt64Coin("stake", 1000), sdk.NewInt64Coin("stake", 1000))
+	return NewParams(sdk.MustNewDecFromStr("0.001"), sdk.NewInt64Coin("uguu", 10000000), sdk.NewInt64Coin("uguu", 1000000))
 }
 
 // ParamSetPairs get the params.ParamSet
