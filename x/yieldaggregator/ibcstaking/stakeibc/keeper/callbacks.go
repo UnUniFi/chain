@@ -117,19 +117,19 @@ func WithdrawalBalanceCallback(k Keeper, ctx sdk.Context, args []byte, query icq
 	}
 
 	params := k.GetParams(ctx)
-	strideCommissionInt, err := cast.ToInt64E(params.GetStrideCommission())
+	ununifiCommissionInt, err := cast.ToInt64E(params.GetUnunifiCommission())
 	if err != nil {
 		return err
 	}
 
 	// check that stride commission is between 0 and 1
-	strideCommission := sdk.NewDec(strideCommissionInt).Quo(sdk.NewDec(100))
-	if strideCommission.LT(sdk.ZeroDec()) || strideCommission.GT(sdk.OneDec()) {
+	ununifiCommission := sdk.NewDec(ununifiCommissionInt).Quo(sdk.NewDec(100))
+	if ununifiCommission.LT(sdk.ZeroDec()) || ununifiCommission.GT(sdk.OneDec()) {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Aborting reinvestment callback -- Stride commission must be between 0 and 1!")
 	}
 
 	withdrawalBalanceAmount := withdrawalBalanceCoin.Amount
-	strideClaim := strideCommission.Mul(sdk.NewDecFromInt(withdrawalBalanceAmount))
+	strideClaim := ununifiCommission.Mul(sdk.NewDecFromInt(withdrawalBalanceAmount))
 	strideClaimFloored := strideClaim.TruncateInt()
 
 	// back the reinvestment amount out of the total less the commission
@@ -140,15 +140,15 @@ func WithdrawalBalanceCallback(k Keeper, ctx sdk.Context, args []byte, query icq
 		ctx.Logger().Error(fmt.Sprintf("Error with withdraw logic: %d, Fee portion: %d, reinvestPortion %d", withdrawalBalanceAmount.Int64(), strideClaimFloored.Int64(), reinvestAmountCeil.Int64()))
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Failed to subdivide rewards to feeAccount and delegationAccount")
 	}
-	strideCoin := sdk.NewCoin(withdrawalBalanceCoin.Denom, strideClaimFloored)
+	ununifiCoin := sdk.NewCoin(withdrawalBalanceCoin.Denom, strideClaimFloored)
 	reinvestCoin := sdk.NewCoin(withdrawalBalanceCoin.Denom, reinvestAmountCeil)
 
 	var msgs []sdk.Msg
-	if strideCoin.Amount.Int64() > 0 {
+	if ununifiCoin.Amount.Int64() > 0 {
 		msgs = append(msgs, &banktypes.MsgSend{
 			FromAddress: withdrawalAccount.GetAddress(),
 			ToAddress:   feeAccount.GetAddress(),
-			Amount:      sdk.NewCoins(strideCoin),
+			Amount:      sdk.NewCoins(ununifiCoin),
 		})
 	}
 	if reinvestCoin.Amount.Int64() > 0 {
