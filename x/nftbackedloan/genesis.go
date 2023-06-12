@@ -16,9 +16,6 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKe
 	for _, bid := range gs.Bids {
 		k.SetBid(ctx, bid)
 	}
-	for _, bid := range gs.CancelledBids {
-		k.SetCancelledBid(ctx, bid)
-	}
 	for _, loan := range gs.Loans {
 		k.SetDebt(ctx, loan)
 	}
@@ -27,10 +24,9 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKe
 // ExportGenesis export genesis state for nftmarket module
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 	return types.GenesisState{
-		Params:        k.GetParamSet(ctx),
-		Listings:      k.GetAllNftListings(ctx),
-		Bids:          k.GetAllBids(ctx),
-		CancelledBids: k.GetAllCancelledBids(ctx),
-		Loans:         k.GetAllDebts(ctx),
+		Params:   k.GetParamSet(ctx),
+		Listings: k.GetAllNftListings(ctx),
+		Bids:     k.GetAllBids(ctx),
+		Loans:    k.GetAllDebts(ctx),
 	}
 }

@@ -27,7 +27,6 @@ func (suite *KeeperTestSuite) TestNftListingBasics() {
 				NftId:   "1",
 			},
 			Owner:              owner.String(),
-			ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 			State:              types.ListingState_LISTING,
 			BidToken:           "uguu",
 			MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
@@ -47,7 +46,6 @@ func (suite *KeeperTestSuite) TestNftListingBasics() {
 				NftId:   "2",
 			},
 			Owner:              owner.String(),
-			ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 			State:              types.ListingState_BIDDING,
 			BidToken:           "uguu",
 			MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
@@ -67,7 +65,6 @@ func (suite *KeeperTestSuite) TestNftListingBasics() {
 				NftId:   "3",
 			},
 			Owner:              owner.String(),
-			ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 			State:              types.ListingState_END_LISTING,
 			BidToken:           "uguu",
 			MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
@@ -87,8 +84,7 @@ func (suite *KeeperTestSuite) TestNftListingBasics() {
 				NftId:   "4",
 			},
 			Owner:              owner.String(),
-			ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
-			State:              types.ListingState_SELLING_DECISION,
+			State:              types.ListingState_DECIDED_SELLING,
 			BidToken:           "uguu",
 			MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 			StartedAt:          time.Time{},
@@ -107,7 +103,6 @@ func (suite *KeeperTestSuite) TestNftListingBasics() {
 				NftId:   "1",
 			},
 			Owner:              owner2.String(),
-			ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 			State:              types.ListingState_SUCCESSFUL_BID,
 			BidToken:           "uguu",
 			MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
@@ -328,7 +323,6 @@ func (suite *KeeperTestSuite) TestListNft() {
 			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
 				Sender:             ununifitypes.StringAccAddress(tc.lister),
 				NftId:              types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId},
-				ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 				BidToken:           tc.bidToken,
 				MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 			})
@@ -337,7 +331,6 @@ func (suite *KeeperTestSuite) TestListNft() {
 		err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
 			Sender:             ununifitypes.StringAccAddress(tc.lister),
 			NftId:              types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId},
-			ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 			BidToken:           tc.bidToken,
 			MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 		})
@@ -492,7 +485,6 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
 				Sender:             ununifitypes.StringAccAddress(tc.nftOwner),
 				NftId:              nftIdentifier,
-				ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 				BidToken:           "uguu",
 				MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 			})
@@ -850,7 +842,6 @@ func (suite *KeeperTestSuite) TestSellingDecision() {
 			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
 				Sender:             ununifitypes.StringAccAddress(tc.nftOwner),
 				NftId:              nftIdentifier,
-				ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 				BidToken:           "uguu",
 				MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 			})
@@ -916,7 +907,7 @@ func (suite *KeeperTestSuite) TestSellingDecision() {
 			// check full payment end time update
 			listing, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
 			suite.Require().NoError(err)
-			suite.Require().Equal(listing.State, types.ListingState_SELLING_DECISION)
+			suite.Require().Equal(listing.State, types.ListingState_DECIDED_SELLING)
 			suite.Require().Equal(suite.ctx.BlockTime().Add(time.Second*time.Duration(params.NftListingFullPaymentPeriod)), listing.FullPaymentEndAt)
 		} else {
 			suite.Require().Error(err)
@@ -1062,7 +1053,6 @@ func (suite *KeeperTestSuite) TestEndNftListing() {
 			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
 				Sender:             ununifitypes.StringAccAddress(tc.nftOwner),
 				NftId:              nftIdentifier,
-				ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 				BidToken:           "uguu",
 				MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 			})
@@ -1244,7 +1234,6 @@ func (suite *KeeperTestSuite) TestProcessEndingNftListings() {
 		err = suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
 			Sender:             ununifitypes.StringAccAddress(tc.nftOwner),
 			NftId:              nftIdentifier,
-			ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 			BidToken:           "uguu",
 			MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 		})
@@ -1331,7 +1320,6 @@ func (suite *KeeperTestSuite) TestActiveNftListingsEndingAtQueueRemovalOnNftList
 	err = suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
 		Sender:             ununifitypes.StringAccAddress(nftOwner),
 		NftId:              nftIdentifier,
-		ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 		BidToken:           "uguu",
 		MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 	})
@@ -1379,7 +1367,7 @@ func (suite *KeeperTestSuite) TestHandleFullPaymentPeriodEndings() {
 			nftId:              "nft1",
 			nftOwner:           acc1,
 			numBids:            2,
-			listingState:       types.ListingState_SELLING_DECISION,
+			listingState:       types.ListingState_DECIDED_SELLING,
 			fullPay:            true,
 			statusUnlistedHook: false,
 		}, // add successful listing state with SuccessfulBidEndAt field + types.ListingState_SUCCESSFUL_BID status
@@ -1389,7 +1377,7 @@ func (suite *KeeperTestSuite) TestHandleFullPaymentPeriodEndings() {
 			nftId:              "nft2",
 			nftOwner:           acc1,
 			numBids:            1,
-			listingState:       types.ListingState_SELLING_DECISION,
+			listingState:       types.ListingState_DECIDED_SELLING,
 			fullPay:            false,
 			statusUnlistedHook: false,
 		}, // status => ListingState_LISTING
@@ -1399,7 +1387,7 @@ func (suite *KeeperTestSuite) TestHandleFullPaymentPeriodEndings() {
 			nftId:              "nft2",
 			nftOwner:           acc1,
 			numBids:            2,
-			listingState:       types.ListingState_SELLING_DECISION,
+			listingState:       types.ListingState_DECIDED_SELLING,
 			fullPay:            false,
 			statusUnlistedHook: false,
 		}, // status => ListingState_BIDDING
@@ -1459,7 +1447,6 @@ func (suite *KeeperTestSuite) TestHandleFullPaymentPeriodEndings() {
 		err = suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
 			Sender:             ununifitypes.StringAccAddress(tc.nftOwner),
 			NftId:              nftIdentifier,
-			ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 			BidToken:           "uguu",
 			MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 		})
@@ -1506,7 +1493,7 @@ func (suite *KeeperTestSuite) TestHandleFullPaymentPeriodEndings() {
 		keeper.HandleFullPaymentsPeriodEndings(suite.ctx)
 
 		switch tc.listingState {
-		case types.ListingState_SELLING_DECISION:
+		case types.ListingState_DECIDED_SELLING:
 			if tc.fullPay {
 				// add successful listing state with SuccessfulBidEndAt field + types.ListingState_SUCCESSFUL_BID status
 				listing, err = keeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
@@ -1587,7 +1574,6 @@ func (suite *KeeperTestSuite) TestDelieverSuccessfulBids() {
 	err = suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
 		Sender:             ununifitypes.StringAccAddress(nftOwner),
 		NftId:              nftIdentifier,
-		ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 		BidToken:           "uguu",
 		MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 	})
@@ -1734,7 +1720,6 @@ func (suite *KeeperTestSuite) TestDelieverSuccessfulBidForPositiveLoan() {
 	err = suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
 		Sender:             ununifitypes.StringAccAddress(nftOwner),
 		NftId:              nftIdentifier,
-		ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 		BidToken:           "uguu",
 		MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 	})
@@ -1826,20 +1811,20 @@ func (suite *KeeperTestSuite) TestReListingDataManagement() {
 		{
 			testCase:     "selling decision listing when highest bid is  paid and no more bids",
 			numBids:      1,
-			listingState: types.ListingState_SELLING_DECISION,
+			listingState: types.ListingState_DECIDED_SELLING,
 			fullPay:      true,
 			borrow:       true,
 		}, // status => ListingState_LISTING
 		{
 			testCase:     "selling decision listing when highest bid is not paid and no more bids",
 			numBids:      1,
-			listingState: types.ListingState_SELLING_DECISION,
+			listingState: types.ListingState_DECIDED_SELLING,
 			borrow:       true,
 		}, // status => ListingState_LISTING
 		{
 			testCase:     "selling decision listing when highest bid is not paid, and more bids",
 			numBids:      2,
-			listingState: types.ListingState_SELLING_DECISION,
+			listingState: types.ListingState_DECIDED_SELLING,
 			borrow:       true,
 		}, // status => ListingState_BIDDING
 		{
@@ -1881,7 +1866,6 @@ func (suite *KeeperTestSuite) TestReListingDataManagement() {
 		_ = suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
 			Sender:             ununifitypes.StringAccAddress(nftOwner),
 			NftId:              nftIdentifier,
-			ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 			BidToken:           "uguu",
 			MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 		})
@@ -1921,7 +1905,7 @@ func (suite *KeeperTestSuite) TestReListingDataManagement() {
 
 		// check bids and loan data specifically
 		switch tc.listingState {
-		case types.ListingState_SELLING_DECISION:
+		case types.ListingState_DECIDED_SELLING:
 			if tc.numBids > 1 {
 				// status => ListingState_BIDDING
 				listing, err = suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
@@ -2011,7 +1995,6 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						NftId:   "1",
 					},
 					Owner:              owner.String(),
-					ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 					State:              types.ListingState_LISTING,
 					BidToken:           "uguu",
 					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
@@ -2026,11 +2009,13 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 					},
 				},
 				winnerBid: types.NftBid{
-					NftId: types.NftIdentifier{
-						ClassId: "a10",
-						NftId:   "a10",
+					Id: types.BidId{
+						NftId: &types.NftIdentifier{
+							ClassId: "a10",
+							NftId:   "a10",
+						},
+						Bidder: bidder1.String(),
 					},
-					Bidder:             "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 					DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 					PaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(0)),
@@ -2040,13 +2025,6 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 					BidTime:            time.Now(),
 					InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 					Borrowings:         []types.Borrowing{},
-					Id: types.BidId{
-						NftId: &types.NftIdentifier{
-							ClassId: "a10",
-							NftId:   "a10",
-						},
-						Bidder: bidder1.String(),
-					},
 				},
 				blockTime: time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
 			},
@@ -2060,7 +2038,6 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						NftId:   "1",
 					},
 					Owner:              owner.String(),
-					ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 					State:              types.ListingState_LISTING,
 					BidToken:           "uguu",
 					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
@@ -2116,7 +2093,6 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						NftId:   "1",
 					},
 					Owner:              owner.String(),
-					ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 					State:              types.ListingState_LISTING,
 					BidToken:           "uguu",
 					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
@@ -2131,11 +2107,13 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 					},
 				},
 				winnerBid: types.NftBid{
-					NftId: types.NftIdentifier{
-						ClassId: "a10",
-						NftId:   "a10",
+					Id: types.BidId{
+						NftId: &types.NftIdentifier{
+							ClassId: "a10",
+							NftId:   "a10",
+						},
+						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
-					Bidder:             "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 					DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 					PaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(0)),
@@ -2145,13 +2123,6 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 					BidTime:            time.Now(),
 					InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 					Borrowings:         []types.Borrowing{},
-					Id: types.BidId{
-						NftId: &types.NftIdentifier{
-							ClassId: "a10",
-							NftId:   "a10",
-						},
-						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
-					},
 				},
 				blockTime: time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
 			},
@@ -2193,7 +2164,6 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						NftId:   "1",
 					},
 					Owner:              owner.String(),
-					ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 					State:              types.ListingState_LISTING,
 					BidToken:           "uguu",
 					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
@@ -2215,6 +2185,13 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 			funcArg{
 				collectBid: types.NftBids{
 					{
+						Id: types.BidId{
+							NftId: &types.NftIdentifier{
+								ClassId: "1",
+								NftId:   "1",
+							},
+							Bidder: bidder1.String(),
+						},
 						BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 						DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -2226,11 +2203,6 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 							},
 						},
 						InterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-						Bidder:         bidder1.String(),
-						NftId: types.NftIdentifier{
-							ClassId: "1",
-							NftId:   "1",
-						},
 					},
 				},
 				refundBid: types.NftBids{
@@ -2268,7 +2240,6 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						NftId:   "1",
 					},
 					Owner:              owner.String(),
-					ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 					State:              types.ListingState_LISTING,
 					BidToken:           "uguu",
 					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
@@ -2283,11 +2254,13 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 					},
 				},
 				winnerBid: types.NftBid{
-					NftId: types.NftIdentifier{
-						ClassId: "a10",
-						NftId:   "a10",
+					Id: types.BidId{
+						NftId: &types.NftIdentifier{
+							ClassId: "a10",
+							NftId:   "a10",
+						},
+						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
-					Bidder:             "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 					DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 					PaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(0)),
@@ -2297,13 +2270,6 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 					BidTime:            time.Now(),
 					InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 					Borrowings:         []types.Borrowing{},
-					Id: types.BidId{
-						NftId: &types.NftIdentifier{
-							ClassId: "a10",
-							NftId:   "a10",
-						},
-						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
-					},
 				},
 				blockTime: time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
 			},
@@ -2345,7 +2311,6 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						NftId:   "1",
 					},
 					Owner:              owner.String(),
-					ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 					State:              types.ListingState_LISTING,
 					BidToken:           "uguu",
 					MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),

@@ -86,7 +86,7 @@ func (k Keeper) GetBidsByBidder(ctx sdk.Context, bidder sdk.AccAddress) []types.
 }
 
 func (k Keeper) SetBid(ctx sdk.Context, bid types.NftBid) error {
-	bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+	bidder, err := sdk.AccAddressFromBech32(bid.Id.Bidder)
 	if err != nil {
 		return err
 	}
@@ -106,7 +106,7 @@ func (k Keeper) SetBid(ctx sdk.Context, bid types.NftBid) error {
 }
 
 func (k Keeper) DeleteBid(ctx sdk.Context, bid types.NftBid) error {
-	bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+	bidder, err := sdk.AccAddressFromBech32(bid.Id.Bidder)
 	if err != nil {
 		return err
 	}
@@ -138,7 +138,7 @@ func getCancelledBidTimeKey(timestamp time.Time) []byte {
 func (k Keeper) SetCancelledBid(ctx sdk.Context, bid types.NftBid) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(&bid)
-	store.Set(append(append(getCancelledBidTimeKey(bid.BidTime), bid.IdBytes()...), []byte(bid.Bidder)...), bz)
+	store.Set(append(append(getCancelledBidTimeKey(bid.BidTime), bid.IdBytes()...), []byte(bid.Id.Bidder)...), bz)
 }
 
 func (k Keeper) GetAllCancelledBids(ctx sdk.Context) []types.NftBid {
@@ -172,7 +172,7 @@ func (k Keeper) GetMaturedCancelledBids(ctx sdk.Context, endTime time.Time) []ty
 
 func (k Keeper) DeleteCancelledBid(ctx sdk.Context, bid types.NftBid) {
 	store := ctx.KVStore(k.storeKey)
-	store.Delete(append(append(getCancelledBidTimeKey(bid.BidTime), bid.IdBytes()...), []byte(bid.Bidder)...))
+	store.Delete(append(append(getCancelledBidTimeKey(bid.BidTime), bid.IdBytes()...), []byte(bid.Id.Bidder)...))
 }
 
 func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
@@ -200,17 +200,16 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 	bidder := msg.Sender
 	oldBid := bids.GetBidByBidder(bidder)
 	newBid := types.NftBid{
-		NftId:            msg.NftId,
-		Bidder:           bidder,
+		Id: types.BidId{
+			NftId:  &msg.NftId,
+			Bidder: bidder,
+		},
 		BidAmount:        msg.BidAmount,
 		AutomaticPayment: msg.AutomaticPayment,
 		DepositAmount:    msg.DepositAmount,
 		BidTime:          ctx.BlockTime(),
 		BiddingPeriod:    msg.BiddingPeriod,
-		Id: types.BidId{
-			NftId:  &msg.NftId,
-			Bidder: bidder,
-		},
+
 		PaidAmount:         sdk.NewCoin(listing.BidToken, sdk.ZeroInt()),
 		DepositLendingRate: msg.DepositLendingRate,
 		InterestAmount:     sdk.NewCoin(listing.BidToken, sdk.ZeroInt()),
@@ -244,7 +243,7 @@ func (k Keeper) ManualBid(ctx sdk.Context, listing types.NftListing, newBid type
 		}
 	}
 
-	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sdk.MustAccAddressFromBech32(newBid.Bidder), types.ModuleName, sdk.Coins{newBid.DepositAmount})
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sdk.MustAccAddressFromBech32(newBid.Id.Bidder), types.ModuleName, sdk.Coins{newBid.DepositAmount})
 	if err != nil {
 		return err
 	}
@@ -277,9 +276,9 @@ func (k Keeper) FirstBid(ctx sdk.Context, listing types.NftListing, newBid types
 	}
 
 	ctx.EventManager().EmitTypedEvent(&types.EventPlaceBid{
-		Bidder:  newBid.Bidder,
-		ClassId: newBid.NftId.ClassId,
-		NftId:   newBid.NftId.NftId,
+		Bidder:  newBid.Id.Bidder,
+		ClassId: newBid.Id.NftId.ClassId,
+		NftId:   newBid.Id.NftId.NftId,
 		Amount:  newBid.BidAmount.String(),
 	})
 	return nil
@@ -305,9 +304,9 @@ func (k Keeper) ReBid(ctx sdk.Context, listing types.NftListing, oldBid, newBid 
 	}
 
 	ctx.EventManager().EmitTypedEvent(&types.EventPlaceBid{
-		Bidder:  newBid.Bidder,
-		ClassId: newBid.NftId.ClassId,
-		NftId:   newBid.NftId.NftId,
+		Bidder:  newBid.Id.Bidder,
+		ClassId: newBid.Id.NftId.ClassId,
+		NftId:   newBid.Id.NftId.NftId,
 		Amount:  newBid.BidAmount.String(),
 	})
 	return nil
@@ -328,7 +327,7 @@ func (k Keeper) ManualSafeCloseBid(ctx sdk.Context, bid types.NftBid, bidder sdk
 }
 
 func (k Keeper) SafeCloseBid(ctx sdk.Context, bid types.NftBid) error {
-	bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+	bidder, err := sdk.AccAddressFromBech32(bid.Id.Bidder)
 	if err != nil {
 		return err
 	}
@@ -346,7 +345,7 @@ func (k Keeper) SafeCloseBidCollectDeposit(ctx sdk.Context, bid types.NftBid) (s
 
 // todo make unit test
 func (k Keeper) SafeCloseBidWithAllInterest(ctx sdk.Context, bid types.NftBid) error {
-	bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+	bidder, err := sdk.AccAddressFromBech32(bid.Id.Bidder)
 	if err != nil {
 		return err
 	}
@@ -362,7 +361,7 @@ func (k Keeper) SafeCloseBidWithAllInterest(ctx sdk.Context, bid types.NftBid) e
 
 // implement SafeCloseBidWithPartInterest
 func (k Keeper) SafeCloseBidWithPartInterest(ctx sdk.Context, bid types.NftBid, interest sdk.Coin) error {
-	bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+	bidder, err := sdk.AccAddressFromBech32(bid.Id.Bidder)
 	if err != nil {
 		return err
 	}
@@ -483,7 +482,7 @@ func (k Keeper) HandleMaturedCancelledBids(ctx sdk.Context) error {
 	bids := k.GetMaturedCancelledBids(ctx, ctx.BlockTime())
 	for _, bid := range bids {
 		// transfer amount of token except fee to bid account
-		bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+		bidder, err := sdk.AccAddressFromBech32(bid.Id.Bidder)
 		if err != nil {
 			return err
 		}
