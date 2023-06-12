@@ -18,12 +18,6 @@ func CreateUpgradeHandler(mm *module.Manager,
 	return func(ctx sdk.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		ctx.Logger().Info(fmt.Sprintf("update start:%s", UpgradeName))
 
-		iyaParam := keepers.YieldaggregatorKeeper.GetParams(ctx)
-		iyaParam.CommissionRate = sdk.NewDecWithPrec(1, 3)
-		iyaParam.VaultCreationFee = sdk.NewCoin("uguu", sdk.NewInt(10000000))
-		iyaParam.VaultCreationDeposit = sdk.NewCoin("uguu", sdk.NewInt(1000000))
-
-		keepers.YieldaggregatorKeeper.SetParams(ctx, iyaParam)
 		return mm.RunMigrations(ctx, configurator, vm)
 	}
 }
