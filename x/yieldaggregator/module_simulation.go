@@ -1,4 +1,4 @@
-package yield_aggregator
+package yieldaggregator
 
 import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
