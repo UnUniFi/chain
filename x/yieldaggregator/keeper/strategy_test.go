@@ -134,7 +134,7 @@ func (suite *KeeperTestSuite) SetupZoneAndEpoch(hostDenom, ibcDenom string) stak
 		HostZoneId:         "hub-1",
 		Status:             recordstypes.DepositRecord_STAKE,
 		DepositEpochNumber: 1,
-		Source:             recordstypes.DepositRecord_STRIDE,
+		Source:             recordstypes.DepositRecord_UNUNIFI,
 	})
 	suite.app.StakeibcKeeper.SetHostZone(suite.ctx, zone)
 	return zone
