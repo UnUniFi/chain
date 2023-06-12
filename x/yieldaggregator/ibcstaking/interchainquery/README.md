@@ -9,7 +9,7 @@ parent:
 
 ## Abstract
 
-Stride uses interchain queries and interchain accounts to perform multichain liquid staking. The `interchainquery` module creates a framework that allows other modules to query other appchains using IBC. The `interchainquery` module is used to make bank balance ICQ queries to withdrawal account every N. The callback triggers ICA bank sends for 90% of the rewards to the delegation account and 10% to the stride hostzone revenue account. The ICA bank send logic is in x/stakeibc/keeper/callbacks.go.
+Ununifi uses interchain queries and interchain accounts to perform multichain liquid staking. The `interchainquery` module creates a framework that allows other modules to query other appchains using IBC. The `interchainquery` module is used to make bank balance ICQ queries to withdrawal account every N. The callback triggers ICA bank sends for 90% of the rewards to the delegation account and 10% to the ununifi hostzone revenue account. The ICA bank send logic is in x/stakeibc/keeper/callbacks.go.
 
 ## Contents
 
@@ -21,7 +21,7 @@ Stride uses interchain queries and interchain accounts to perform multichain liq
 
 ## Concepts
 
-Nearly all of Stride's functionality is built using interchain accounts (ICAs), which are a new functionality in Cosmos, and a critical component of IBC. ICAs allow accounts on Zone A to be controlled by Zone B. ICAs communicate with one another using Interchain Queries (ICQs), which involve Zone A querying Zone B for relevant information.
+Nearly all of Ununifi's functionality is built using interchain accounts (ICAs), which are a new functionality in Cosmos, and a critical component of IBC. ICAs allow accounts on Zone A to be controlled by Zone B. ICAs communicate with one another using Interchain Queries (ICQs), which involve Zone A querying Zone B for relevant information.
 
 Two Zones communicate via a connection and channel. All communications between the Controller Zone (the chain that is querying) and the Host Zone (the chain that is being queried) is done through a dedicated IBC channel between the two chains, which is opened the first time the two chains interact.
 
@@ -57,7 +57,7 @@ The `interchainquery` module keeps `Query` objects and modifies the information 
 
 The `interchainquery` module emits an event at the end of every 3 `base_epoch`s (e.g. 15 minutes on local testnet).
 
-The purpose of this event is to send interchainqueries that query data about staking rewards, which Stride uses to reinvest (aka autocompound) staking rewards.
+The purpose of this event is to send interchainqueries that query data about staking rewards, which Ununifi uses to reinvest (aka autocompound) staking rewards.
 
 ```go
 			event := sdk.NewEvent(
