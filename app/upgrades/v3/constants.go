@@ -3,6 +3,7 @@ package v3
 import (
 	store "github.com/cosmos/cosmos-sdk/store/types"
 	"github.com/cosmos/cosmos-sdk/x/group"
+	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
 
 	"github.com/UnUniFi/chain/app/upgrades"
 
@@ -12,7 +13,6 @@ import (
 	recordstypes "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/records/types"
 	stakeibctypes "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/stakeibc/types"
 	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
-	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
 )
 
 const UpgradeName string = "v3"
