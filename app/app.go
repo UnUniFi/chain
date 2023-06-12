@@ -1479,4 +1479,5 @@ func (app *App) setupAppkeeper() {
 	app.AppKeepers.ConsensusParamsKeeper = &app.ConsensusParamsKeeper
 	app.AppKeepers.ParamsKeeper = &app.ParamsKeeper
 	app.AppKeepers.WasmKeeper = &app.WasmKeeper
+	app.AppKeepers.YieldaggregatorKeeper = &app.YieldaggregatorKeeper
 }
