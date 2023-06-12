@@ -35,16 +35,15 @@ message MsgMintNftResponse {}
 message MsgListNft {
   string sender = 1;
   NftIdentifier nft_id       = 2 [(gogoproto.nullable) = false];
-  ListingType   listing_type = 3;
-  string        bid_token    = 4;
+  string        bid_token    = 3;
   // 1% = 0.01
-  string minimum_deposit_rate  = 5 [
+  string minimum_deposit_rate  = 4 [
     (cosmos_proto.scalar) = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  bool   automatic_refinancing = 6;
-  google.protobuf.Duration minimum_bidding_period = 7 [
+  bool   automatic_refinancing = 5;
+  google.protobuf.Duration minimum_bidding_period = 6 [
     (gogoproto.stdduration) = true,
     (gogoproto.nullable) = false
   ];
