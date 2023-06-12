@@ -16,7 +16,7 @@ var (
 	DefaultRewardsInterval        uint64 = 1
 	DefaultRedemptionRateInterval uint64 = 1
 	// you apparantly cannot safely encode floats, so we make commission / 100
-	DefaultStrideCommission                 uint64 = 10
+	DefaultUnunifiCommission                uint64 = 1
 	DefaultValidatorRebalancingThreshold    uint64 = 100 // divide by 10,000, so 100 = 1%
 	DefaultICATimeoutNanos                  uint64 = 600000000000
 	DefaultBufferSize                       uint64 = 5             // 1/5=20% of the epoch
@@ -33,7 +33,7 @@ var (
 	KeyReinvestInterval                 = []byte("ReinvestInterval")
 	KeyRewardsInterval                  = []byte("RewardsInterval")
 	KeyRedemptionRateInterval           = []byte("RedemptionRateInterval")
-	KeyStrideCommission                 = []byte("StrideCommission")
+	KeyUnunifiCommission                = []byte("UnunifiCommission")
 	KeyValidatorRebalancingThreshold    = []byte("ValidatorRebalancingThreshold")
 	KeyICATimeoutNanos                  = []byte("ICATimeoutNanos")
 	KeyFeeTransferTimeoutNanos          = []byte("FeeTransferTimeoutNanos")
@@ -58,7 +58,7 @@ func NewParams(
 	delegate_interval uint64,
 	rewards_interval uint64,
 	redemption_rate_interval uint64,
-	stride_commission uint64,
+	ununifi_commission uint64,
 	reinvest_interval uint64,
 	validator_rebalancing_threshold uint64,
 	ica_timeout_nanos uint64,
@@ -75,7 +75,7 @@ func NewParams(
 		DelegateInterval:                 delegate_interval,
 		RewardsInterval:                  rewards_interval,
 		RedemptionRateInterval:           redemption_rate_interval,
-		StrideCommission:                 stride_commission,
+		UnunifiCommission:                ununifi_commission,
 		ReinvestInterval:                 reinvest_interval,
 		ValidatorRebalancingThreshold:    validator_rebalancing_threshold,
 		IcaTimeoutNanos:                  ica_timeout_nanos,
@@ -96,7 +96,7 @@ func DefaultParams() Params {
 		DefaultDelegateInterval,
 		DefaultRewardsInterval,
 		DefaultRedemptionRateInterval,
-		DefaultStrideCommission,
+		DefaultUnunifiCommission,
 		DefaultReinvestInterval,
 		DefaultValidatorRebalancingThreshold,
 		DefaultICATimeoutNanos,
@@ -117,7 +117,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyDelegateInterval, &p.DelegateInterval, isPositive),
 		paramtypes.NewParamSetPair(KeyRewardsInterval, &p.RewardsInterval, isPositive),
 		paramtypes.NewParamSetPair(KeyRedemptionRateInterval, &p.RedemptionRateInterval, isPositive),
-		paramtypes.NewParamSetPair(KeyStrideCommission, &p.StrideCommission, isCommission),
+		paramtypes.NewParamSetPair(KeyUnunifiCommission, &p.UnunifiCommission, isCommission),
 		paramtypes.NewParamSetPair(KeyReinvestInterval, &p.ReinvestInterval, isPositive),
 		paramtypes.NewParamSetPair(KeyValidatorRebalancingThreshold, &p.ValidatorRebalancingThreshold, isThreshold),
 		paramtypes.NewParamSetPair(KeyICATimeoutNanos, &p.IcaTimeoutNanos, isPositive),

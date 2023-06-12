@@ -29,6 +29,6 @@ func CreateUpgradeHandler(mm *module.Manager,
 		iyaParam.VaultCreationDeposit = sdk.NewCoin("uguu", sdk.NewInt(1000000))
 
 		keepers.YieldaggregatorKeeper.SetParams(ctx, iyaParam)
-		return mm.RunMigrations(ctx, configurator, vm)
+		return vm, nil
 	}
 }

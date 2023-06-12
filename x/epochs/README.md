@@ -28,10 +28,10 @@ Epochs are on-chain timers that have timer ticks at specific time intervals, tri
 Every epoch has a unique identifier. Every epoch will have a start time, and an end time, where `end_time = start_time + duration`.
 When an epoch triggers the execution of code, that code is executed at the first block whose blocktime is greater than `end_time`. It follows that the `start_time` of the following epoch will be the `end_time` of the previous epoch.
 
-Stride uses three epoch identifiers as found in `x/epochs/genesis.go`
+Ununifi uses three epoch identifiers as found in `x/epochs/genesis.go`
 
 1. `DAY_EPOCH`: this identifies an epoch that lasts 24 hours.
-2. `BASE_EPOCH`: this identifies an epoch that lasts 5 minutes on local mode tesnet (although this may be changed) and longer on public testnet and mainnet, and is used in the `x/stakeibc/` module as a time interval in accordance with which the Stride app chain performs certain functions, such as autocompound stakig rewards.
+2. `BASE_EPOCH`: this identifies an epoch that lasts 5 minutes on local mode tesnet (although this may be changed) and longer on public testnet and mainnet, and is used in the `x/stakeibc/` module as a time interval in accordance with which the Ununifi app chain performs certain functions, such as autocompound stakig rewards.
 
 ## State
 
