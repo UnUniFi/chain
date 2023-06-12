@@ -146,6 +146,7 @@ import (
 	stakeibctypes "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/stakeibc/types"
 	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
 	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
+
 	// "github.com/UnUniFi/chain/x/nftbackedloan"
 	// nftmarketkeeper "github.com/UnUniFi/chain/x/nftbackedloan/keeper"
 	// nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
@@ -165,6 +166,7 @@ import (
 	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
 	v2_1 "github.com/UnUniFi/chain/app/upgrades/v2.1"
 	v2_2 "github.com/UnUniFi/chain/app/upgrades/v2.2"
+	v3 "github.com/UnUniFi/chain/app/upgrades/v3"
 )
 
 const Name = "ununifi"
@@ -293,7 +295,7 @@ var (
 		stakeibctypes.ModuleName: true,
 	}
 
-	Upgrades = []upgrades.Upgrade{v1_beta3.Upgrade, v2_1.Upgrade, v2_2.Upgrade}
+	Upgrades = []upgrades.Upgrade{v1_beta3.Upgrade, v2_1.Upgrade, v2_2.Upgrade, v3.Upgrade}
 )
 
 var (
@@ -866,16 +868,6 @@ func NewApp(
 	transferStack = transfer.NewIBCModule(app.TransferKeeper)
 	transferStack = ibcfee.NewIBCMiddleware(transferStack, app.IBCFeeKeeper)
 
-	// Create Interchain Accounts Stack
-	// SendPacket, since it is originating from the application to core IBC:
-	// icaAuthModuleKeeper.SendTx -> icaController.SendPacket -> fee.SendPacket -> channel.SendPacket
-	var icaControllerStack porttypes.IBCModule
-	// integration point for custom authentication modules
-	// see https://medium.com/the-interchain-foundation/ibc-go-v6-changes-to-interchain-accounts-and-how-it-impacts-your-chain-806c185300d7
-	var noAuthzModule porttypes.IBCModule
-	icaControllerStack = icacontroller.NewIBCMiddleware(noAuthzModule, app.ICAControllerKeeper)
-	icaControllerStack = ibcfee.NewIBCMiddleware(icaControllerStack, app.IBCFeeKeeper)
-
 	// RecvPacket, message that originates from core IBC and goes down to app, the flow is:
 	// channel.RecvPacket -> fee.OnRecvPacket -> icaHost.OnRecvPacket
 	var icaHostStack porttypes.IBCModule
@@ -900,7 +892,6 @@ func NewApp(
 	ibcRouter.
 		AddRoute(ibctransfertypes.ModuleName, transferStack).
 		AddRoute(wasm.ModuleName, wasmStack).
-		AddRoute(icacontrollertypes.SubModuleName, icaControllerStack).
 		AddRoute(icahosttypes.SubModuleName, icaHostStack).
 		// Stakeibc Stack
 		AddRoute(icacontrollertypes.SubModuleName, stakeibcStack).
