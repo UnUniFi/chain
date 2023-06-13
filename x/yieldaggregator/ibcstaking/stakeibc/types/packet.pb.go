@@ -135,7 +135,9 @@ func init() {
 	proto.RegisterType((*NoData)(nil), "Stridelabs.stride.stakeibc.NoData")
 }
 
-func init() { proto.RegisterFile("stakeibc/packet.proto", fileDescriptor_4905c44cd02153ea) }
+func init() {
+	// proto.RegisterFile("stakeibc/packet.proto", fileDescriptor_4905c44cd02153ea)
+}
 
 var fileDescriptor_4905c44cd02153ea = []byte{
 	// 186 bytes of a gzipped FileDescriptorProto

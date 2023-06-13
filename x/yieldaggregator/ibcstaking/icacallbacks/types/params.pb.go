@@ -63,7 +63,9 @@ func init() {
 	proto.RegisterType((*Params)(nil), "stridelabs.stride.icacallbacks.Params")
 }
 
-func init() { proto.RegisterFile("icacallbacks/params.proto", fileDescriptor_087fed9a38a92fde) }
+func init() {
+	// proto.RegisterFile("icacallbacks/params.proto", fileDescriptor_087fed9a38a92fde)
+}
 
 var fileDescriptor_087fed9a38a92fde = []byte{
 	// 162 bytes of a gzipped FileDescriptorProto

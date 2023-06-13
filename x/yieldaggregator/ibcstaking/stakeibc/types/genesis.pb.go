@@ -123,7 +123,9 @@ func init() {
 	proto.RegisterMapType((map[string]string)(nil), "Stridelabs.stride.stakeibc.GenesisState.DenomToHostZoneEntry")
 }
 
-func init() { proto.RegisterFile("stakeibc/genesis.proto", fileDescriptor_b132bbaf7441a735) }
+func init() {
+	// proto.RegisterFile("stakeibc/genesis.proto", fileDescriptor_b132bbaf7441a735)
+}
 
 var fileDescriptor_b132bbaf7441a735 = []byte{
 	// 444 bytes of a gzipped FileDescriptorProto
