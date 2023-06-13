@@ -23,7 +23,9 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-func init() { proto.RegisterFile("icacallbacks/tx.proto", fileDescriptor_f5a228a41108d056) }
+func init() {
+	// proto.RegisterFile("icacallbacks/tx.proto", fileDescriptor_f5a228a41108d056)
+}
 
 var fileDescriptor_f5a228a41108d056 = []byte{
 	// 138 bytes of a gzipped FileDescriptorProto

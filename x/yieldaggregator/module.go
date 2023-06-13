@@ -1,4 +1,4 @@
-package yield_aggregator
+package yieldaggregator
 
 import (
 	"context"

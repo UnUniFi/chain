@@ -88,7 +88,9 @@ func init() {
 	proto.RegisterType((*GenesisState)(nil), "stridelabs.stride.icacallbacks.GenesisState")
 }
 
-func init() { proto.RegisterFile("icacallbacks/genesis.proto", fileDescriptor_3f2a4f344ad2af69) }
+func init() {
+	// proto.RegisterFile("icacallbacks/genesis.proto", fileDescriptor_3f2a4f344ad2af69)
+}
 
 var fileDescriptor_3f2a4f344ad2af69 = []byte{
 	// 273 bytes of a gzipped FileDescriptorProto

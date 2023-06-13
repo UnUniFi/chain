@@ -373,7 +373,9 @@ func init() {
 	proto.RegisterType((*RedemptionCallback)(nil), "Stridelabs.stride.stakeibc.RedemptionCallback")
 }
 
-func init() { proto.RegisterFile("stakeibc/callbacks.proto", fileDescriptor_73c938d1f08de4bf) }
+func init() {
+	// proto.RegisterFile("stakeibc/callbacks.proto", fileDescriptor_73c938d1f08de4bf)
+}
 
 var fileDescriptor_73c938d1f08de4bf = []byte{
 	// 497 bytes of a gzipped FileDescriptorProto

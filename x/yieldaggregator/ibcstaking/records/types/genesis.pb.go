@@ -57,17 +57,17 @@ func (DepositRecord_Status) EnumDescriptor() ([]byte, []int) {
 type DepositRecord_Source int32
 
 const (
-	DepositRecord_STRIDE         DepositRecord_Source = 0
+	DepositRecord_UNUNIFI        DepositRecord_Source = 0
 	DepositRecord_WITHDRAWAL_ICA DepositRecord_Source = 1
 )
 
 var DepositRecord_Source_name = map[int32]string{
-	0: "STRIDE",
+	0: "UNUNIFI",
 	1: "WITHDRAWAL_ICA",
 }
 
 var DepositRecord_Source_value = map[string]int32{
-	"STRIDE":         0,
+	"UNUNIFI":        0,
 	"WITHDRAWAL_ICA": 1,
 }
 
@@ -443,7 +443,7 @@ func (m *DepositRecord) GetSource() DepositRecord_Source {
 	if m != nil {
 		return m.Source
 	}
-	return DepositRecord_STRIDE
+	return DepositRecord_UNUNIFI
 }
 
 type HostZoneUnbonding struct {
@@ -698,7 +698,9 @@ func init() {
 	proto.RegisterType((*GenesisState)(nil), "Stridelabs.stride.records.GenesisState")
 }
 
-func init() { proto.RegisterFile("records/genesis.proto", fileDescriptor_03dd178cbf8084c6) }
+func init() {
+	// proto.RegisterFile("records/genesis.proto", fileDescriptor_03dd178cbf8084c6)
+}
 
 var fileDescriptor_03dd178cbf8084c6 = []byte{
 	// 835 bytes of a gzipped FileDescriptorProto

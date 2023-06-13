@@ -94,7 +94,9 @@ func init() {
 	proto.RegisterType((*EpochTracker)(nil), "Stridelabs.stride.stakeibc.EpochTracker")
 }
 
-func init() { proto.RegisterFile("stakeibc/epoch_tracker.proto", fileDescriptor_cb60348ee619708f) }
+func init() {
+	// proto.RegisterFile("stakeibc/epoch_tracker.proto", fileDescriptor_cb60348ee619708f)
+}
 
 var fileDescriptor_cb60348ee619708f = []byte{
 	// 240 bytes of a gzipped FileDescriptorProto
