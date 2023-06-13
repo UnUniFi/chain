@@ -1156,7 +1156,9 @@ func init() {
 	proto.RegisterType((*MsgUpdateValidatorSharesExchRateResponse)(nil), "Stridelabs.stride.stakeibc.MsgUpdateValidatorSharesExchRateResponse")
 }
 
-func init() { proto.RegisterFile("stakeibc/tx.proto", fileDescriptor_e80cdc2de072d1f1) }
+func init() {
+	// proto.RegisterFile("stakeibc/tx.proto", fileDescriptor_e80cdc2de072d1f1)
+}
 
 var fileDescriptor_e80cdc2de072d1f1 = []byte{
 	// 1149 bytes of a gzipped FileDescriptorProto

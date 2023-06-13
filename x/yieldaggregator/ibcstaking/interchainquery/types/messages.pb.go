@@ -117,7 +117,9 @@ func init() {
 	proto.RegisterType((*MsgSubmitQueryResponseResponse)(nil), "stride.interchainquery.MsgSubmitQueryResponseResponse")
 }
 
-func init() { proto.RegisterFile("interchainquery/v1/messages.proto", fileDescriptor_9add76d337d1a013) }
+func init() {
+	// proto.RegisterFile("interchainquery/v1/messages.proto", fileDescriptor_9add76d337d1a013)
+}
 
 var fileDescriptor_9add76d337d1a013 = []byte{
 	// 503 bytes of a gzipped FileDescriptorProto
