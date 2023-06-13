@@ -7,7 +7,7 @@
   },
   "apis": [
     {
-      "url": "./tmp-swagger-gen/derivatives/query.swagger.json",
+      "url": "./tmp-swagger-gen/ununifi/derivatives/query.swagger.json",
       "operationIds": {
         "rename": {
           "Params": "DerivativesParams"
@@ -15,7 +15,7 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/ecosystemincentive/query.swagger.json",
+      "url": "./tmp-swagger-gen/ununifi/ecosystemincentive/query.swagger.json",
       "operationIds": {
         "rename": {
           "Params": "EcosystemIncentiveParams"
@@ -23,7 +23,7 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/nftbackedloan/query.swagger.json",
+      "url": "./tmp-swagger-gen/ununifi/nftbackedloan/query.swagger.json",
       "operationIds": {
         "rename": {
           "Params": "NftBackedLoanParams"
@@ -31,7 +31,7 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/nftfactory/query.swagger.json",
+      "url": "./tmp-swagger-gen/ununifi/nftfactory/query.swagger.json",
       "operationIds": {
         "rename": {
           "Params": "NftFactoryParams"
@@ -39,7 +39,7 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/pricefeed/query.swagger.json",
+      "url": "./tmp-swagger-gen/ununifi/pricefeed/query.swagger.json",
       "operationIds": {
         "rename": {
           "Params": "PricefeedParams"
@@ -47,7 +47,7 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/yieldaggregator/query.swagger.json",
+      "url": "./tmp-swagger-gen/ununifi/yieldaggregator/query.swagger.json",
       "operationIds": {
         "rename": {
           "Params": "YieldAggregatorParams"
