@@ -193,7 +193,9 @@ func init() {
 	proto.RegisterType((*Validator)(nil), "Stridelabs.stride.stakeibc.Validator")
 }
 
-func init() { proto.RegisterFile("stakeibc/validator.proto", fileDescriptor_135ed83653830bac) }
+func init() {
+	// proto.RegisterFile("stakeibc/validator.proto", fileDescriptor_135ed83653830bac)
+}
 
 var fileDescriptor_135ed83653830bac = []byte{
 	// 462 bytes of a gzipped FileDescriptorProto
