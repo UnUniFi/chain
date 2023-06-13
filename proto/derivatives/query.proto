@@ -172,11 +172,11 @@ message QueryPerpetualFuturesMarketResponse {
   ];
   string long_positions = 3 [
     (gogoproto.moretags)  = "yaml:\"long_positions\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
   ];
   string short_positions = 4 [
     (gogoproto.moretags)  = "yaml:\"short_positions\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int"
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
   ];
 }
 

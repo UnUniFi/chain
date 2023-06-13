@@ -82,8 +82,10 @@ func (k Keeper) PerpetualFuturesMarket(c context.Context, req *types.QueryPerpet
 		BaseDenom:  req.BaseDenom,
 		QuoteDenom: req.QuoteDenom,
 	}
-	grossPositionLong := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, types.PositionType_LONG).PositionSizeInDenomExponent
-	grossPositionShort := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, types.PositionType_SHORT).PositionSizeInDenomExponent
+	grossPositionLongInDenomExponent := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, types.PositionType_LONG).PositionSizeInDenomExponent
+	grossPositionLong := types.MicroToNormalDec(grossPositionLongInDenomExponent)
+	grossPositionShortInDenomExponent := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, types.PositionType_SHORT).PositionSizeInDenomExponent
+	grossPositionShort := types.MicroToNormalDec(grossPositionShortInDenomExponent)
 
 	return &types.QueryPerpetualFuturesMarketResponse{
 		Price:              &price,
