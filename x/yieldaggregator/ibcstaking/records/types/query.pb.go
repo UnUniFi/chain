@@ -821,7 +821,9 @@ func init() {
 	proto.RegisterType((*QueryAllEpochUnbondingRecordResponse)(nil), "Stridelabs.stride.records.QueryAllEpochUnbondingRecordResponse")
 }
 
-func init() { proto.RegisterFile("records/query.proto", fileDescriptor_f871b183106cf451) }
+func init() {
+	// proto.RegisterFile("records/query.proto", fileDescriptor_f871b183106cf451)
+}
 
 var fileDescriptor_f871b183106cf451 = []byte{
 	// 905 bytes of a gzipped FileDescriptorProto

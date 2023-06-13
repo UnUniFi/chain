@@ -232,7 +232,9 @@ func init() {
 	proto.RegisterType((*GenesisState)(nil), "stride.interchainquery.GenesisState")
 }
 
-func init() { proto.RegisterFile("interchainquery/v1/genesis.proto", fileDescriptor_78d192af57b24e05) }
+func init() {
+	// proto.RegisterFile("interchainquery/v1/genesis.proto", fileDescriptor_78d192af57b24e05)
+}
 
 var fileDescriptor_78d192af57b24e05 = []byte{
 	// 508 bytes of a gzipped FileDescriptorProto
