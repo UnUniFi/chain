@@ -1,0 +1,107 @@
+syntax = "proto3";
+package ununifi.derivatives;
+
+import "google/protobuf/any.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "ununifi/derivatives/derivatives.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/derivatives/types";
+
+message PerpetualFuturesParams {
+  string commission_rate = 1 [
+    (gogoproto.moretags)   = "yaml:\"commission_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable)   = false
+  ];
+  string margin_maintenance_rate = 2 [
+    (gogoproto.moretags)   = "yaml:\"margin_maintenance_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable)   = false
+  ];
+  string imaginary_funding_rate_proportional_coefficient = 3 [
+    (gogoproto.moretags)   = "yaml:\"imaginary_funding_rate_proportonal_coefficient\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable)   = false
+  ];
+  repeated Market markets      = 4 [(gogoproto.moretags) = "yaml:\"markets\""];
+  uint32          max_leverage = 5 [(gogoproto.moretags) = "yaml:\"max_leverage\""];
+}
+
+message PerpetualFuturesPosition {
+  string                    id        = 1 [(gogoproto.moretags) = "yaml:\"id\""];
+  Market                    market    = 2 [(gogoproto.moretags) = "yaml:\"market\"", (gogoproto.nullable) = false];
+  string                    address   = 3 [(gogoproto.moretags) = "yaml:\"address\""];
+  google.protobuf.Timestamp opened_at = 4
+      [(gogoproto.moretags) = "yaml:\"opened_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  uint64 opened_height    = 5 [(gogoproto.moretags) = "yaml:\"opened_height\""];
+  string opened_base_rate = 6 [
+    (gogoproto.moretags)   = "yaml:\"opened_base_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable)   = false
+  ];
+  string opened_quote_rate = 7 [
+    (gogoproto.moretags)   = "yaml:\"opened_quote_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable)   = false
+  ];
+  cosmos.base.v1beta1.Coin remaining_margin = 8
+      [(gogoproto.moretags) = "yaml:\"remaining_margin\"", (gogoproto.nullable) = false];
+  google.protobuf.Timestamp last_levied_at = 9
+      [(gogoproto.moretags) = "yaml:\"last_levied_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  PerpetualFuturesPositionInstance position_instance = 10
+      [(gogoproto.moretags) = "yaml:\"position_instance\"", (gogoproto.nullable) = false];
+}
+
+message PerpetualFuturesPositionInstance {
+  PositionType position_type = 1 [(gogoproto.moretags) = "yaml:\"position_type\""];
+  string       size          = 2 [
+    (gogoproto.moretags)   = "yaml:\"size\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable)   = false
+  ];
+  uint32 leverage = 3 [(gogoproto.moretags) = "yaml:\"leverage\""];
+}
+
+message PerpetualFuturesGrossPositionOfMarket {
+  Market       market        = 1 [(gogoproto.moretags) = "yaml:\"market\"", (gogoproto.nullable) = false];
+  PositionType position_type = 2 [(gogoproto.moretags) = "yaml:\"position_type\""];
+  string       position_size_in_denom_exponent = 3 [
+    (gogoproto.moretags)   = "yaml:\"position_size_in_denom_exponent\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable)   = false
+  ];
+}
+
+message EventPerpetualFuturesPositionOpened {
+  string sender      = 1;
+  string position_id = 2;
+}
+
+message EventPerpetualFuturesPositionClosed {
+  string sender           = 1;
+  string position_id      = 2;
+  string fee_amount       = 3;
+  string trade_amount     = 4;
+  string returning_amount = 5;
+}
+
+message EventPerpetualFuturesPositionLiquidated {
+  string reward_recipient = 1;
+  string position_id      = 2;
+  string remaining_margin = 3;
+  string reward_amount    = 4;
+}
+
+message EventPerpetualFuturesPositionLevied {
+  string reward_recipient = 1;
+  string position_id      = 2;
+  string remaining_margin = 3;
+  string reward_amount    = 4;
+}
+
+message EventLossToLP {
+  string position_id = 1;
+  string loss_amount = 2;
+}
