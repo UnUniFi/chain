@@ -170,7 +170,9 @@ func init() {
 	proto.RegisterType((*GenesisState)(nil), "Stridelabs.stride.epochs.GenesisState")
 }
 
-func init() { proto.RegisterFile("epochs/genesis.proto", fileDescriptor_b167152c9528ab6c) }
+func init() {
+	// proto.RegisterFile("epochs/genesis.proto", fileDescriptor_b167152c9528ab6c)
+}
 
 var fileDescriptor_b167152c9528ab6c = []byte{
 	// 466 bytes of a gzipped FileDescriptorProto

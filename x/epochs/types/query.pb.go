@@ -311,7 +311,9 @@ func init() {
 	proto.RegisterType((*QueryEpochInfoResponse)(nil), "Stridelabs.stride.epochs.QueryEpochInfoResponse")
 }
 
-func init() { proto.RegisterFile("epochs/query.proto", fileDescriptor_2e760c2f82b90e24) }
+func init() {
+	// proto.RegisterFile("epochs/query.proto", fileDescriptor_2e760c2f82b90e24)
+}
 
 var fileDescriptor_2e760c2f82b90e24 = []byte{
 	// 512 bytes of a gzipped FileDescriptorProto
