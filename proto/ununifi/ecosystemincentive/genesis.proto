@@ -1,0 +1,15 @@
+syntax = "proto3";
+package ununifi.ecosystemincentive;
+
+import "gogoproto/gogo.proto";
+import "ununifi/ecosystemincentive/params.proto";
+import "ununifi/ecosystemincentive/ecosystemincentive.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/ecosystemincentive/types";
+
+// GenesisState defines the ecosystemincentive module's genesis state.
+message GenesisState {
+  Params                      params               = 1 [(gogoproto.nullable) = false];
+  repeated RecipientContainer recipient_containers = 2 [(gogoproto.nullable) = false];
+  repeated RewardStore        reward_stores        = 3 [(gogoproto.nullable) = false];
+}
