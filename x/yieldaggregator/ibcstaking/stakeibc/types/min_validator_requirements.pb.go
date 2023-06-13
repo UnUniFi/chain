@@ -79,7 +79,7 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("stakeibc/min_validator_requirements.proto", fileDescriptor_e9310c10994d4a9b)
+	// proto.RegisterFile("stakeibc/min_validator_requirements.proto", fileDescriptor_e9310c10994d4a9b)
 }
 
 var fileDescriptor_e9310c10994d4a9b = []byte{
