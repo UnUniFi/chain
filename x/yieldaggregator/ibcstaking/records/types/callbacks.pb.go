@@ -71,7 +71,9 @@ func init() {
 	proto.RegisterType((*TransferCallback)(nil), "Stridelabs.stride.records.TransferCallback")
 }
 
-func init() { proto.RegisterFile("records/callbacks.proto", fileDescriptor_b54f911f44fb63f4) }
+func init() {
+	// proto.RegisterFile("records/callbacks.proto", fileDescriptor_b54f911f44fb63f4)
+}
 
 var fileDescriptor_b54f911f44fb63f4 = []byte{
 	// 174 bytes of a gzipped FileDescriptorProto

@@ -195,7 +195,9 @@ func init() {
 	proto.RegisterType((*HostZone)(nil), "Stridelabs.stride.stakeibc.HostZone")
 }
 
-func init() { proto.RegisterFile("stakeibc/host_zone.proto", fileDescriptor_a1d300c62c2b2d54) }
+func init() {
+	// proto.RegisterFile("stakeibc/host_zone.proto", fileDescriptor_a1d300c62c2b2d54)
+}
 
 var fileDescriptor_a1d300c62c2b2d54 = []byte{
 	// 590 bytes of a gzipped FileDescriptorProto

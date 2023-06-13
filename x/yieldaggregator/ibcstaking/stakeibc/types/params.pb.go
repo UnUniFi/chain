@@ -198,7 +198,9 @@ func init() {
 	proto.RegisterMapType((map[string]string)(nil), "Stridelabs.stride.stakeibc.Params.ZoneComAddressEntry")
 }
 
-func init() { proto.RegisterFile("stakeibc/params.proto", fileDescriptor_41f5fe1d2f7ac763) }
+func init() {
+	// proto.RegisterFile("stakeibc/params.proto", fileDescriptor_41f5fe1d2f7ac763)
+}
 
 var fileDescriptor_41f5fe1d2f7ac763 = []byte{
 	// 615 bytes of a gzipped FileDescriptorProto
