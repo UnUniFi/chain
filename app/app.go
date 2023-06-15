@@ -159,6 +159,7 @@ import (
 	"github.com/UnUniFi/chain/x/pricefeed"
 	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
+
 	// ecosystemincentive "github.com/UnUniFi/chain/x/ecosystemincentive"
 	// ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystemincentive/types"
 
@@ -810,6 +811,13 @@ func NewApp(
 			app.StakeibcKeeper.Hooks(),
 		),
 	)
+	app.PricefeedKeeper = pricefeedkeeper.NewKeeper(
+		appCodec,
+		keys[pricefeedtypes.StoreKey],
+		keys[pricefeedtypes.MemStoreKey],
+		app.GetSubspace(pricefeedtypes.ModuleName),
+		app.BankKeeper,
+	)
 
 	app.DerivativesKeeper = derivativeskeeper.NewKeeper(
 		appCodec,
@@ -818,14 +826,6 @@ func NewApp(
 		app.GetSubspace(derivativestypes.ModuleName),
 		app.BankKeeper,
 		app.PricefeedKeeper,
-	)
-
-	app.PricefeedKeeper = pricefeedkeeper.NewKeeper(
-		appCodec,
-		keys[pricefeedtypes.StoreKey],
-		keys[pricefeedtypes.MemStoreKey],
-		app.GetSubspace(pricefeedtypes.ModuleName),
-		app.BankKeeper,
 	)
 
 	// app.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
@@ -1481,4 +1481,6 @@ func (app *App) setupAppkeeper() {
 	app.AppKeepers.ParamsKeeper = &app.ParamsKeeper
 	app.AppKeepers.WasmKeeper = &app.WasmKeeper
 	app.AppKeepers.YieldaggregatorKeeper = &app.YieldaggregatorKeeper
+	app.AppKeepers.PricefeedKeeper = &app.PricefeedKeeper
+	app.AppKeepers.DerivativesKeeper = &app.DerivativesKeeper
 }
