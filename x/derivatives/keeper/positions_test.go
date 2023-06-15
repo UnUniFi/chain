@@ -48,7 +48,7 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 	positions := []types.Position{
 		{
 			Id:      "0",
-			Address: owner.Bytes(),
+			Address: owner.String(),
 			Market: types.Market{
 				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
@@ -63,7 +63,7 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 		},
 		{
 			Id:      "1",
-			Address: owner.Bytes(),
+			Address: owner.String(),
 			Market: types.Market{
 				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
@@ -132,7 +132,7 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 	positions := []types.Position{
 		{
 			Id:      "0",
-			Address: owner.Bytes(),
+			Address: owner.String(),
 			Market: types.Market{
 				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
@@ -143,7 +143,7 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 		},
 		{
 			Id:      "1",
-			Address: owner2.Bytes(),
+			Address: owner2.String(),
 			Market: types.Market{
 				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
@@ -164,7 +164,9 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 
 	// check per id
 	for _, position := range positions {
-		p := suite.keeper.GetAddressPositionWithId(suite.ctx, position.Address.AccAddress(), position.Id)
+		address, err := sdk.AccAddressFromBech32(position.Address)
+		suite.Require().NoError(err)
+		p := suite.keeper.GetAddressPositionWithId(suite.ctx, address, position.Id)
 		suite.Require().NotNil(p)
 		suite.Require().Equal(p.Id, position.Id)
 		suite.Require().Equal(p.Market, position.Market)

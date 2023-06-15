@@ -3,7 +3,6 @@ package keeper_test
 import (
 	"time"
 
-	ununifitypes "github.com/UnUniFi/chain/deprecated/types"
 	"github.com/UnUniFi/chain/x/derivatives/types"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 
@@ -108,7 +107,7 @@ func (suite *KeeperTestSuite) TestIsPriceReady() {
 	suite.Require().NoError(err)
 	params := suite.app.PricefeedKeeper.GetParams(suite.ctx)
 	params.Markets = []pricefeedtypes.Market{
-		{MarketId: "uatom:uusdc", BaseAsset: "uatom", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+		{MarketId: "uatom:uusdc", BaseAsset: "uatom", QuoteAsset: "uusdc", Oracles: []string{}, Active: true},
 	}
 	suite.app.PricefeedKeeper.SetParams(suite.ctx, params)
 	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:uusdc")
