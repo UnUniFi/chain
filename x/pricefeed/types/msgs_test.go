@@ -3,15 +3,15 @@ package types
 import (
 	"testing"
 
+	tmtime "github.com/cometbft/cometbft/types/time"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	tmtime "github.com/cometbft/cometbft/types/time"
+	"github.com/UnUniFi/chain/testutil/sample"
 )
 
-func TestMsgPlaceBid_ValidateBasic(t *testing.T) {
-	addr := "someName"
+func TestMsgPostPrice_ValidateBasic(t *testing.T) {
+	addr := sample.AccAddress()
 	price, _ := sdk.NewDecFromStr("0.3005")
 	expiry := tmtime.Now()
 	negativePrice, _ := sdk.NewDecFromStr("-3.05")
