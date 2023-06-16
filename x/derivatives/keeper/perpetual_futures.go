@@ -106,6 +106,15 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 		return nil, fmt.Errorf("unknown position type")
 	}
 
+	senderAccAddr, err := sdk.AccAddressFromBech32(sender)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := k.SendMarginToMarginManager(ctx, senderAccAddr, sdk.NewCoins(margin)); err != nil {
+		return nil, err
+	}
+
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionOpened{
 		Sender:     sender,
 		PositionId: positionId,
