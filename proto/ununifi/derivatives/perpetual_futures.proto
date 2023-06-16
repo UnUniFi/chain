@@ -46,13 +46,27 @@ message PerpetualFuturesPosition {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable)   = false
   ];
-  cosmos.base.v1beta1.Coin remaining_margin = 8
-      [(gogoproto.moretags) = "yaml:\"remaining_margin\"", (gogoproto.nullable) = false];
-  google.protobuf.Timestamp last_levied_at = 9
-      [(gogoproto.moretags) = "yaml:\"last_levied_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
-  PerpetualFuturesPositionInstance position_instance = 10
-      [(gogoproto.moretags) = "yaml:\"position_instance\"", (gogoproto.nullable) = false];
-}
+  cosmos.base.v1beta1.Coin remaining_margin = 8 [
+    (gogoproto.moretags) = "yaml:\"remaining_margin\"",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin levied_amount = 9 [
+    (gogoproto.moretags) = "yaml:\"levied_amount\"",
+    (gogoproto.nullable) = false
+  ];
+  bool levied_amount_negative = 10 [
+    (gogoproto.moretags) = "yaml:\"levied_amount_nagative\"",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Timestamp last_levied_at = 11 [
+    (gogoproto.moretags) = "yaml:\"last_levied_at\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  PerpetualFuturesPositionInstance position_instance = 12 [
+    (gogoproto.moretags) = "yaml:\"position_instance\"",
+    (gogoproto.nullable) = false
+  ];
 
 message PerpetualFuturesPositionInstance {
   PositionType position_type = 1 [(gogoproto.moretags) = "yaml:\"position_type\""];
