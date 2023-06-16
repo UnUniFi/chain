@@ -1,6 +1,6 @@
 // InMetrics represents the profit/loss amount in the metrics asset of the market.
 // In the most cases, it means it's in "usd".
-// And IMPORTANTLY, it means it's not calcualted in micro case.
+// And IMPORTANTLY, it means it's not calculated in micro case.
 
 package types
 
@@ -335,9 +335,27 @@ func (m PerpetualFuturesPosition) RemainingMarginInMetrics(baseMetricsRate, quot
 	}
 }
 
+func (m PerpetualFuturesPosition) LeviedAmountInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
+	// Levy手数料(USD単位) = Levy手数料(base単位) * 現在のbase/USDレート
+	//                    = Levy手数料(quote単位) * 現在のquote/USDレート
+	leviedAmountInDec := sdk.NewDecFromInt(m.LeviedAmount.Amount)
+	if m.LeviedAmount.Denom == m.Market.BaseDenom {
+		return leviedAmountInDec.Mul(baseMetricsRate.Amount.Amount)
+	} else if m.LeviedAmount.Denom == m.Market.QuoteDenom {
+		return leviedAmountInDec.Mul(quoteMetricsRate.Amount.Amount)
+	} else {
+		// not supported denom
+		return sdk.ZeroDec()
+	}
+}
+
 func (m PerpetualFuturesPosition) EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
-	// 有効証拠金(USD単位) = 残存証拠金(USD単位) + 損益(USD単位)
-	return m.RemainingMarginInMetrics(baseMetricsRate, quoteMetricsRate).Add(m.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate))
+	// 有効証拠金(USD単位) = 残存証拠金(USD単位) + 損益(USD単位) - Levy手数料(USD単位)
+	if m.LeviedAmountNegative {
+		return m.RemainingMarginInMetrics(baseMetricsRate, quoteMetricsRate).Add(m.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)).Sub(m.LeviedAmountInMetrics(baseMetricsRate, quoteMetricsRate))
+	} else {
+		return m.RemainingMarginInMetrics(baseMetricsRate, quoteMetricsRate).Add(m.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)).Add(m.LeviedAmountInMetrics(baseMetricsRate, quoteMetricsRate))
+	}
 }
 
 func NewMetricsRateType(unit string, denom string, amount sdk.Dec) MetricsRateType {
