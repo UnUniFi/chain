@@ -493,7 +493,7 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 // imaginaryFundingFee: sdk.Int
 // commissionFee: sdk.Int
 // denom: string
-// We can test the functionaly with above params and the balance of the MarginManager and Pool(derivatives) Module account
+// We can test the functionally with above params and the balance of the MarginManager and Pool(derivatives) Module account
 // By checking those two balance after the function
 func (suite *KeeperTestSuite) TestHandleImaginaryFundingFeeTransfer() {
 	testcases := []struct {
@@ -553,12 +553,14 @@ func (suite *KeeperTestSuite) TestHandleImaginaryFundingFeeTransfer() {
 		},
 	}
 
-	err := suite.app.BankKeeper.MintCoins(suite.ctx, types.MarginManager, sdk.Coins{sdk.NewCoin("uatom", sdk.NewInt(1000100))})
-	suite.Require().NoError(err)
+	coins := sdk.Coins{sdk.NewCoin("uatom", sdk.NewInt(1000100))}
+	_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, authtypes.NewModuleAddress(types.MarginManager), coins)
+
 	for _, tc := range testcases {
 		suite.Run(tc.name, func() {
-			suite.keeper.HandleImaginaryFundingFeeTransfer(suite.ctx, tc.imaginaryFundingFee, tc.commissionFee, tc.positionType, tc.denom)
-
+			err := suite.keeper.HandleImaginaryFundingFeeTransfer(suite.ctx, tc.imaginaryFundingFee, tc.commissionFee, tc.positionType, tc.denom)
+			suite.Require().NoError(err)
 			// Check if the balance of the MarginManager and Pool(derivatives) Module account was changed
 			suite.Require().Equal(tc.expMarginManagerPool, suite.app.BankKeeper.GetBalance(suite.ctx, authtypes.NewModuleAddress(types.MarginManager), tc.denom).Amount)
 			suite.Require().Equal(tc.expPool, suite.app.BankKeeper.GetBalance(suite.ctx, authtypes.NewModuleAddress(types.ModuleName), tc.denom).Amount)
