@@ -107,16 +107,18 @@ func (m Position) NeedLiquidation(MarginMaintenanceRate sdk.Dec, currentBaseMetr
 
 func NewPerpetualFuturesPosition(position Position, ins PerpetualFuturesPositionInstance) PerpetualFuturesPosition {
 	return PerpetualFuturesPosition{
-		Id:               position.Id,
-		Market:           position.Market,
-		Address:          position.Address,
-		OpenedAt:         position.OpenedAt,
-		OpenedBaseRate:   position.OpenedBaseRate,
-		OpenedQuoteRate:  position.OpenedQuoteRate,
-		OpenedHeight:     position.OpenedHeight,
-		RemainingMargin:  position.RemainingMargin,
-		LastLeviedAt:     position.LastLeviedAt,
-		PositionInstance: ins,
+		Id:                   position.Id,
+		Market:               position.Market,
+		Address:              position.Address,
+		OpenedAt:             position.OpenedAt,
+		OpenedBaseRate:       position.OpenedBaseRate,
+		OpenedQuoteRate:      position.OpenedQuoteRate,
+		OpenedHeight:         position.OpenedHeight,
+		RemainingMargin:      position.RemainingMargin,
+		LeviedAmount:         position.LeviedAmount,
+		LeviedAmountNegative: position.LeviedAmountNegative,
+		LastLeviedAt:         position.LastLeviedAt,
+		PositionInstance:     ins,
 	}
 }
 
