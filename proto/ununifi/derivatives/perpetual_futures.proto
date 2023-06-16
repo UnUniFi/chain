@@ -55,7 +55,7 @@ message PerpetualFuturesPosition {
     (gogoproto.nullable) = false
   ];
   bool levied_amount_negative = 10 [
-    (gogoproto.moretags) = "yaml:\"levied_amount_nagative\""
+    (gogoproto.moretags) = "yaml:\"levied_amount_negative\""
   ];
   google.protobuf.Timestamp last_levied_at = 11 [
     (gogoproto.moretags) = "yaml:\"last_levied_at\"",

@@ -176,7 +176,7 @@ message Position {
     (gogoproto.nullable) = false
   ];
   bool levied_amount_negative = 10 [
-    (gogoproto.moretags) = "yaml:\"levied_amount_nagative\"",
+    (gogoproto.moretags) = "yaml:\"levied_amount_negative\"",
     (gogoproto.nullable) = false
   ];
   google.protobuf.Timestamp last_levied_at = 11 [
