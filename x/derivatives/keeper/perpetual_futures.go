@@ -58,15 +58,18 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 	}
 
 	position := types.Position{
-		Id:               positionId,
-		Market:           market,
-		Address:          sender,
-		OpenedAt:         ctx.BlockTime(),
-		OpenedHeight:     uint64(ctx.BlockHeight()),
-		OpenedBaseRate:   openedBaseRate,
-		OpenedQuoteRate:  openedQuoteRate,
-		PositionInstance: *any,
-		RemainingMargin:  margin,
+		Id:                   positionId,
+		Market:               market,
+		Address:              sender,
+		OpenedAt:             ctx.BlockTime(),
+		OpenedHeight:         uint64(ctx.BlockHeight()),
+		OpenedBaseRate:       openedBaseRate,
+		OpenedQuoteRate:      openedQuoteRate,
+		RemainingMargin:      margin,
+		LeviedAmount:         sdk.NewInt64Coin(margin.Denom, 0),
+		LeviedAmountNegative: true,
+		LastLeviedAt:         ctx.BlockTime(),
+		PositionInstance:     *any,
 	}
 
 	// General validation for the position creation
@@ -157,18 +160,6 @@ func (k Keeper) SubReserveTokensForPosition(ctx sdk.Context, marketType types.Ma
 }
 
 func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.PerpetualFuturesPosition) error {
-	// params := k.GetParams(ctx)
-	// commissionRate := params.PerpetualFutures.CommissionRate
-	// Set the ClosePosition commission rate to 0. The commission will be deducted by Levy instead.
-	commissionRate := sdk.MustNewDecFromStr("0")
-
-	// At closing the position, the trading fee is deducted.
-	// fee = positionSize * commissionRate
-	positionSizeInDenomUnit := sdk.NewDecFromInt(position.PositionInstance.SizeInDenomExponent(types.OneMillionInt))
-	feeAmountDec := positionSizeInDenomUnit.Mul(commissionRate)
-	tradeAmount := positionSizeInDenomUnit.Sub(feeAmountDec)
-	feeAmount := feeAmountDec.RoundInt()
-
 	baseUsdPrice, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
 	if err != nil {
 		return err
@@ -181,8 +172,14 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 	quoteTicker := k.GetPoolQuoteTicker(ctx)
 	baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, baseUsdPrice)
 	quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, quoteUsdPrice)
+
 	// profit or loss amount in margin denom
 	pnlAmount := position.ProfitAndLoss(baseMetricsRate, quoteMetricsRate)
+	if position.LeviedAmountNegative {
+		pnlAmount = pnlAmount.Sub(position.LeviedAmount.Amount)
+	} else {
+		pnlAmount = pnlAmount.Add(position.LeviedAmount.Amount)
+	}
 
 	returningAmount, err := k.HandleReturnAmount(ctx, pnlAmount, position)
 	if err != nil {
@@ -202,8 +199,8 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionClosed{
 		Sender:          position.Address,
 		PositionId:      position.Id,
-		FeeAmount:       feeAmount.String(),
-		TradeAmount:     tradeAmount.String(),
+		PositionSize:    position.PositionInstance.SizeInDenomExponent(types.OneMillionInt).String(),
+		PnlAmount:       pnlAmount.String(),
 		ReturningAmount: returningAmount.String(),
 	})
 
@@ -221,14 +218,14 @@ func (k Keeper) HandleReturnAmount(ctx sdk.Context, pnlAmount sdk.Int, position 
 	if pnlAmount.IsNegative() {
 		loss := pnlAmount.Abs()
 		returningAmount = position.RemainingMargin.Amount.Sub(loss)
-		// Tell the loss to the LP happened by a trade
-		// This has to be restricted by the protocol behavior in the future
+
 		if returningAmount.IsNegative() {
 			_ = ctx.EventManager().EmitTypedEvent(&types.EventLossToLP{
 				PositionId: position.Id,
 				LossAmount: returningAmount.String(),
 			})
-			// send margin to the pool from MarginManager
+			// Send margin to the pool from MarginManager
+			// The loss is taken by the pool
 			if err := k.SendCoinFromMarginManagerToPool(ctx, sdk.NewCoins(position.RemainingMargin)); err != nil {
 				return sdk.ZeroInt(), err
 			}
@@ -277,32 +274,32 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 		} else {
 			commissionFee = k.ConvertBaseAmountToQuoteAmount(ctx, position.Market, commissionBaseFee)
 		}
-
-		// If the margin is lower than the fee, the fee is equal to the margin.
-		if position.RemainingMargin.Amount.LT(commissionFee) {
-			commissionFee = position.RemainingMargin.Amount
+		if position.LeviedAmountNegative {
+			position.LeviedAmount.Amount = position.LeviedAmount.Amount.Add(commissionFee)
+		} else {
+			rest := position.LeviedAmount.Amount.Sub(commissionFee)
+			if rest.IsNegative() {
+				position.LeviedAmountNegative = true
+				position.LeviedAmount.Amount = rest.Abs()
+			} else {
+				position.LeviedAmount.Amount = rest
+			}
 		}
-
-		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(commissionFee)
-		rewardAmount := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PoolParams.ReportLiquidationRewardRate).RoundInt()
-		reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))
 
 		if err := k.ClosePerpetualFuturesPosition(ctx, position); err != nil {
 			return err
 		}
-		recipient, err := sdk.AccAddressFromBech32(rewardRecipient)
-		if err != nil {
-			return err
-		}
 
+		// Delete Position
 		positionAddress, err := sdk.AccAddressFromBech32(position.Address)
 		if err != nil {
 			return err
 		}
-
-		// Delete Position
 		k.DeletePosition(ctx, positionAddress, position.Id)
-		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipient, reward)
+
+		// Send Reward
+		rewardAmount := sdk.NewDecFromInt(commissionFee).Mul(params.PoolParams.ReportLiquidationRewardRate).RoundInt()
+		err = k.SendRewardFromCommission(ctx, rewardAmount, position.RemainingMargin.Denom, rewardRecipient)
 		if err != nil {
 			return err
 		}
@@ -312,8 +309,8 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 			PositionId:      position.Id,
 			RemainingMargin: position.RemainingMargin.String(),
 			RewardAmount:    rewardAmount.String(),
+			LeviedAmount:    position.LeviedAmount.String(),
 		})
-		return nil
 	}
 
 	return nil
@@ -338,45 +335,34 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 		commissionFee = k.ConvertBaseAmountToQuoteAmount(ctx, position.Market, commissionBaseFee)
 		imaginaryFundingFee = k.ConvertBaseAmountToQuoteAmount(ctx, position.Market, imaginaryFundingBaseFee)
 	}
+	var totalFee sdk.Int
 	if positionInstance.PositionType == types.PositionType_LONG {
-		// If the margin is lower than the fee, the fee is equal to the margin.
-		if position.RemainingMargin.Amount.LT(imaginaryFundingFee) {
-			imaginaryFundingFee = position.RemainingMargin.Amount
-		}
-		if position.RemainingMargin.Amount.Sub(imaginaryFundingFee).LT(commissionFee) {
-			commissionFee = position.RemainingMargin.Amount.Sub(imaginaryFundingFee)
-		}
-		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(imaginaryFundingFee).Sub(commissionFee)
-
+		totalFee = commissionFee.Add(imaginaryFundingFee)
 	} else {
-		if position.RemainingMargin.Amount.Add(imaginaryFundingFee).LT(commissionFee) {
-			commissionFee = position.RemainingMargin.Amount.Add(imaginaryFundingFee)
-		}
-		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Add(imaginaryFundingFee).Sub(commissionFee)
+		totalFee = commissionFee.Sub(imaginaryFundingFee)
 	}
-	// Transfer the fees from pool to manager or manager to pool appropriately
-	// to keep the remaining margin of the position match the actual number to the balance
-	if err := k.HandleImaginaryFundingFeeTransfer(ctx, imaginaryFundingFee, commissionFee, positionInstance.PositionType, position.RemainingMargin.Denom); err != nil {
-		return err
+	if position.LeviedAmountNegative {
+		position.LeviedAmount.Amount = position.LeviedAmount.Amount.Add(totalFee)
+	} else {
+		rest := position.LeviedAmount.Amount.Sub(totalFee)
+		if rest.IsNegative() {
+			position.LeviedAmountNegative = true
+			position.LeviedAmount.Amount = rest.Abs()
+		} else {
+			position.LeviedAmount.Amount = rest
+		}
 	}
 
 	position.LastLeviedAt = ctx.BlockTime()
 
-	// Reward is part of the commission fee
+	err := k.SetPosition(ctx, position)
+	if err != nil {
+		return err
+	}
+
+	// Send Reward
 	rewardAmount := sdk.NewDecFromInt(commissionFee).Mul(params.PoolParams.ReportLevyPeriodRewardRate).RoundInt()
-
-	recipient, err := sdk.AccAddressFromBech32(rewardRecipient)
-	if err != nil {
-		return err
-	}
-
-	reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipient, reward)
-	if err != nil {
-		return err
-	}
-
-	err = k.SetPosition(ctx, position)
+	err = k.SendRewardFromCommission(ctx, rewardAmount, position.RemainingMargin.Denom, rewardRecipient)
 	if err != nil {
 		return err
 	}
@@ -386,8 +372,23 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 		PositionId:      position.Id,
 		RemainingMargin: position.RemainingMargin.String(),
 		RewardAmount:    rewardAmount.String(),
+		LeviedAmount:    position.LeviedAmount.String(),
 	})
 
+	return nil
+}
+
+func (k Keeper) SendRewardFromCommission(ctx sdk.Context, rewardAmount sdk.Int, denom string, recipientAddr string) error {
+	recipient, err := sdk.AccAddressFromBech32(recipientAddr)
+	if err != nil {
+		return err
+	}
+
+	reward := sdk.NewCoins(sdk.NewCoin(denom, rewardAmount))
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipient, reward)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
