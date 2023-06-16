@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
 
@@ -11,7 +12,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
-// TODO: Add checks to ensure the margin is handed to MarginManager module account appropriately.
 func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
@@ -21,11 +21,12 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 	}
 
 	positions := []struct {
-		positionId           string
-		margin               sdk.Coin
-		instance             types.PerpetualFuturesPositionInstance
-		availableAssetInPool sdk.Coin
-		expGrossPosition     sdk.Int
+		positionId              string
+		margin                  sdk.Coin
+		instance                types.PerpetualFuturesPositionInstance
+		availableAssetInPool    sdk.Coin
+		expGrossPosition        sdk.Int
+		expMarginManagerBalance sdk.Coin
 	}{
 		{
 			positionId: "-1",
@@ -35,8 +36,9 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 				Size_:        sdk.MustNewDecFromStr("1"),
 				Leverage:     1,
 			},
-			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(1)),
-			expGrossPosition:     sdk.MustNewDecFromStr("0").MulInt64(1000000).TruncateInt(),
+			availableAssetInPool:    sdk.NewCoin("uatom", sdk.NewInt(1)),
+			expGrossPosition:        sdk.MustNewDecFromStr("0").MulInt64(1000000).TruncateInt(),
+			expMarginManagerBalance: sdk.NewCoin("uatom", sdk.NewInt(0)),
 		},
 		{
 			positionId: "0",
@@ -46,8 +48,9 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 				Size_:        sdk.MustNewDecFromStr("2"),
 				Leverage:     5,
 			},
-			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(2000000)),
-			expGrossPosition:     sdk.MustNewDecFromStr("2").MulInt64(1000000).TruncateInt(),
+			availableAssetInPool:    sdk.NewCoin("uatom", sdk.NewInt(2000000)),
+			expGrossPosition:        sdk.MustNewDecFromStr("2").MulInt64(1000000).TruncateInt(),
+			expMarginManagerBalance: sdk.NewCoin("uatom", sdk.NewInt(500000)),
 		},
 		{
 			positionId: "1",
@@ -57,8 +60,9 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 				Size_:        sdk.MustNewDecFromStr("1"),
 				Leverage:     5,
 			},
-			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
-			expGrossPosition:     sdk.MustNewDecFromStr("1").MulInt64(1000000).TruncateInt(),
+			availableAssetInPool:    sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
+			expGrossPosition:        sdk.MustNewDecFromStr("1").MulInt64(1000000).TruncateInt(),
+			expMarginManagerBalance: sdk.NewCoin("uatom", sdk.NewInt(1000000)),
 		},
 		{
 			positionId: "2",
@@ -68,8 +72,9 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 				Size_:        sdk.MustNewDecFromStr("2"),
 				Leverage:     20,
 			},
-			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(20000000)),
-			expGrossPosition:     sdk.MustNewDecFromStr("4").MulInt64(1000000).TruncateInt(),
+			availableAssetInPool:    sdk.NewCoin("uatom", sdk.NewInt(20000000)),
+			expGrossPosition:        sdk.MustNewDecFromStr("4").MulInt64(1000000).TruncateInt(),
+			expMarginManagerBalance: sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
 		},
 		{
 			positionId: "3",
@@ -79,10 +84,17 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 				Size_:        sdk.MustNewDecFromStr("1"),
 				Leverage:     10,
 			},
-			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
-			expGrossPosition:     sdk.MustNewDecFromStr("2").MulInt64(1000000).TruncateInt(),
+			availableAssetInPool:    sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
+			expGrossPosition:        sdk.MustNewDecFromStr("2").MulInt64(1000000).TruncateInt(),
+			expMarginManagerBalance: sdk.NewCoin("uusdc", sdk.NewInt(2000000)),
 		},
 	}
+
+	coins := sdk.Coins{sdk.NewCoin("uatom", sdk.NewInt(5000000)), sdk.NewCoin("uusdc", sdk.NewInt(50000000))}
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, owner, coins)
+	suite.Require().NoError(err)
 
 	for _, testPosition := range positions {
 		err := suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{testPosition.availableAssetInPool})
@@ -99,8 +111,11 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 
 		// Check if the position was added
 		grossPosition := suite.keeper.GetPerpetualFuturesGrossPositionOfMarket(suite.ctx, market, testPosition.instance.PositionType)
-
 		suite.Require().Equal(testPosition.expGrossPosition, grossPosition.PositionSizeInDenomExponent)
+
+		// Check if the margin manager module account has the margin
+		balance := suite.app.BankKeeper.GetBalance(suite.ctx, authtypes.NewModuleAddress(types.MarginManager), testPosition.margin.Denom)
+		suite.Require().Equal(testPosition.expMarginManagerBalance, balance)
 	}
 }
 
@@ -161,13 +176,11 @@ func (suite *KeeperTestSuite) TestSubReserveTokensForPosition() {
 
 		reserve, err := suite.keeper.GetReservedCoin(suite.ctx, types.MarketType_FUTURES, tc.reserveCoin.Denom)
 		suite.Require().NoError(err)
-		suite.Require().Equal(tc.expReserve, reserve)
+		suite.Require().Equal(tc.expReserve, reserve.Amount)
 	}
 }
 
-// TODO: Add chekcs for the proper token transfer from MarginManager and Pool(derivatives) module accounts
-// You can refer how the token should be distributed from those two.
-// Actually, many cases could be happened. All of them have to be checked.
+// TODO: Add check for profit and loss
 func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
@@ -176,13 +189,14 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 		QuoteDenom: "uusdc",
 	}
 
-	// TODO: Check the returning amount to the owner
 	positions := []struct {
-		positionId           string
-		margin               sdk.Coin
-		instance             types.PerpetualFuturesPositionInstance
-		availableAssetInPool sdk.Coin
-		expGrossPosition     sdk.Int
+		positionId              string
+		margin                  sdk.Coin
+		instance                types.PerpetualFuturesPositionInstance
+		availableAssetInPool    sdk.Coin
+		expGrossPosition        sdk.Int
+		expMarginManagerBalance sdk.Coin
+		expOwnerBalance         sdk.Coin
 	}{
 		{
 			positionId: "0",
@@ -194,7 +208,9 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 			},
 			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(10000000)),
 			// 2+2-2 = 2
-			expGrossPosition: sdk.MustNewDecFromStr("2").MulInt64(1000000).TruncateInt(),
+			expGrossPosition:        sdk.MustNewDecFromStr("2").MulInt64(1000000).TruncateInt(),
+			expMarginManagerBalance: sdk.NewCoin("uatom", sdk.NewInt(500000)),
+			expOwnerBalance:         sdk.NewCoin("uatom", sdk.NewInt(4500000)),
 		},
 		{
 			positionId: "1",
@@ -206,7 +222,9 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 			},
 			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
 			// 2+1-2 = 1
-			expGrossPosition: sdk.MustNewDecFromStr("1").MulInt64(1000000).TruncateInt(),
+			expGrossPosition:        sdk.MustNewDecFromStr("1").MulInt64(1000000).TruncateInt(),
+			expMarginManagerBalance: sdk.NewCoin("uatom", sdk.NewInt(0)),
+			expOwnerBalance:         sdk.NewCoin("uatom", sdk.NewInt(5000000)),
 		},
 		{
 			positionId: "2",
@@ -216,8 +234,10 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 				Size_:        sdk.MustNewDecFromStr("2"),
 				Leverage:     20,
 			},
-			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(10000000)),
-			expGrossPosition:     sdk.MustNewDecFromStr("0").MulInt64(1000000).TruncateInt(),
+			availableAssetInPool:    sdk.NewCoin("uatom", sdk.NewInt(10000000)),
+			expGrossPosition:        sdk.MustNewDecFromStr("0").MulInt64(1000000).TruncateInt(),
+			expMarginManagerBalance: sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
+			expOwnerBalance:         sdk.NewCoin("uusdc", sdk.NewInt(49000000)),
 		},
 		{
 			positionId: "3",
@@ -227,10 +247,18 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 				Size_:        sdk.MustNewDecFromStr("1"),
 				Leverage:     10,
 			},
-			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
-			expGrossPosition:     sdk.MustNewDecFromStr("0").MulInt64(1000000).TruncateInt(),
+			availableAssetInPool:    sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
+			expGrossPosition:        sdk.MustNewDecFromStr("0").MulInt64(1000000).TruncateInt(),
+			expMarginManagerBalance: sdk.NewCoin("uusdc", sdk.NewInt(0)),
+			expOwnerBalance:         sdk.NewCoin("uusdc", sdk.NewInt(50000000)),
 		},
 	}
+
+	coins := sdk.Coins{sdk.NewCoin("uatom", sdk.NewInt(5000000)), sdk.NewCoin("uusdc", sdk.NewInt(50000000))}
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, owner, coins)
+	suite.Require().NoError(err)
 
 	for _, testPosition := range positions {
 		err := suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{testPosition.availableAssetInPool})
@@ -240,9 +268,7 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 		suite.Require().NoError(err)
 		suite.Require().NotNil(position)
 
-		suite.keeper.SetPosition(suite.ctx, *position)
-
-		_ = suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{testPosition.margin})
+		_ = suite.keeper.SetPosition(suite.ctx, *position)
 	}
 
 	for _, testPosition := range positions {
@@ -252,8 +278,13 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 
 		// Check if the position was added
 		grossPosition := suite.keeper.GetPerpetualFuturesGrossPositionOfMarket(suite.ctx, market, testPosition.instance.PositionType)
-
 		suite.Require().Equal(testPosition.expGrossPosition, grossPosition.PositionSizeInDenomExponent)
+
+		// Check if the margin manager module account has the margin
+		balance := suite.app.BankKeeper.GetBalance(suite.ctx, authtypes.NewModuleAddress(types.MarginManager), testPosition.margin.Denom)
+		suite.Require().Equal(testPosition.expMarginManagerBalance, balance)
+		ownerBalance := suite.app.BankKeeper.GetBalance(suite.ctx, owner, testPosition.margin.Denom)
+		suite.Require().Equal(testPosition.expOwnerBalance, ownerBalance)
 	}
 }
 
@@ -330,7 +361,7 @@ func (suite *KeeperTestSuite) TestReportLiquidationNeededPerpetualFuturesPositio
 		suite.Require().NoError(err)
 		suite.Require().NotNil(position)
 
-		suite.keeper.SetPosition(suite.ctx, *position)
+		_ = suite.keeper.SetPosition(suite.ctx, *position)
 		_ = suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{testPosition.margin})
 	}
 
@@ -433,7 +464,7 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 		suite.Require().NoError(err)
 		suite.Require().NotNil(position)
 
-		suite.keeper.SetPosition(suite.ctx, *position)
+		_ = suite.keeper.SetPosition(suite.ctx, *position)
 		_ = suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{testPosition.margin})
 	}
 

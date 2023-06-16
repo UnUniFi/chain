@@ -116,3 +116,10 @@ func (suite *KeeperTestSuite) TestIsPriceReady() {
 	isReady = suite.keeper.IsPriceReady(suite.ctx)
 	suite.Require().True(isReady)
 }
+
+func (suite *KeeperTestSuite) TestAvailableAssetInPool() {
+	// get the value when nothing is set
+	availableAssets, err := suite.keeper.AvailableAssetInPool(suite.ctx, "uatom")
+	suite.Require().NoError(err)
+	suite.Require().Equal(availableAssets, sdk.NewCoin("uatom", sdk.ZeroInt()))
+}
