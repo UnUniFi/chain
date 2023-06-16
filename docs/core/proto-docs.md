@@ -1306,7 +1306,7 @@ Query defines the gRPC querier service.
 | `opened_quote_rate`      | [string](#string)                                       |       |             |
 | `remaining_margin`       | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |       |             |
 | `levied_amount`          | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |       |             |
-| `levied_amount_negative` | [bool](#bool)                                     |       |             |
+| `levied_amount_negative` | [bool](#bool)                                           |       |             |
 | `last_levied_at`         | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
 | `position_instance`      | [google.protobuf.Any](#google.protobuf.Any)             |       |             |
 
@@ -1363,8 +1363,8 @@ Query defines the gRPC querier service.
 | ------------------ | ----------------- | ----- | ----------- |
 | `sender`           | [string](#string) |       |             |
 | `position_id`      | [string](#string) |       |             |
-| `fee_amount`       | [string](#string) |       |             |
-| `trade_amount`     | [string](#string) |       |             |
+| `position_size`    | [string](#string) |       |             |
+| `pnl_amount`       | [string](#string) |       |             |
 | `returning_amount` | [string](#string) |       |             |
 
 <a name="ununifi.derivatives.EventPerpetualFuturesPositionLevied"></a>
@@ -1435,7 +1435,7 @@ Query defines the gRPC querier service.
 | `opened_quote_rate`      | [string](#string)                                                                         |       |             |
 | `remaining_margin`       | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)                                     |       |             |
 | `levied_amount`          | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)                                     |       |             |
-| `levied_amount_negative` | [bool](#bool)                                                                       |       |             |
+| `levied_amount_negative` | [bool](#bool)                                                                             |       |             |
 | `last_levied_at`         | [google.protobuf.Timestamp](#google.protobuf.Timestamp)                                   |       |             |
 | `position_instance`      | [PerpetualFuturesPositionInstance](#ununifi.derivatives.PerpetualFuturesPositionInstance) |       |             |
 

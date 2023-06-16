@@ -96,8 +96,8 @@ message EventPerpetualFuturesPositionOpened {
 message EventPerpetualFuturesPositionClosed {
   string sender           = 1;
   string position_id      = 2;
-  string fee_amount       = 3;
-  string trade_amount     = 4;
+  string position_size       = 3;
+  string pnl_amount     = 4;
   string returning_amount = 5;
 }
 
@@ -106,6 +106,7 @@ message EventPerpetualFuturesPositionLiquidated {
   string position_id      = 2;
   string remaining_margin = 3;
   string reward_amount    = 4;
+  string levied_amount      = 5;
 }
 
 message EventPerpetualFuturesPositionLevied {
@@ -113,6 +114,7 @@ message EventPerpetualFuturesPositionLevied {
   string position_id      = 2;
   string remaining_margin = 3;
   string reward_amount    = 4;
+  string levied_amount      = 5;
 }
 
 message EventLossToLP {
