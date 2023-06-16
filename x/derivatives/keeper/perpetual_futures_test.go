@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	// "fmt"
 	"time"
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
@@ -129,7 +128,7 @@ func (suite *KeeperTestSuite) TestAddReserveTokensForPosition() {
 
 		reserve, err := suite.keeper.GetReservedCoin(suite.ctx, types.MarketType_FUTURES, tc.reserveCoin.Denom)
 		suite.Require().NoError(err)
-		suite.Require().Equal(tc.expReserve, reserve)
+		suite.Require().Equal(tc.expReserve, reserve.Amount)
 	}
 }
 
