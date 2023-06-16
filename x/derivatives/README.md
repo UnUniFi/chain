@@ -1,6 +1,6 @@
-# DERIBATIVES
+# DERIVATIVES
 
-The `DERIBATIVES` module provides deriving functions
+The `DERIVATIVES` module provides deriving functions
 
 ## Contents
 
