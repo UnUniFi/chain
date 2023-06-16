@@ -181,6 +181,7 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 	quoteTicker := k.GetPoolQuoteTicker(ctx)
 	baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, baseUsdPrice)
 	quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, quoteUsdPrice)
+	// profit or loss amount in margin denom
 	pnlAmount := position.ProfitAndLoss(baseMetricsRate, quoteMetricsRate)
 
 	returningAmount, err := k.HandleReturnAmount(ctx, pnlAmount, position)
@@ -188,15 +189,12 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 		return err
 	}
 
-	// TODO: Fix position size in total by removing the closing position
 	switch position.PositionInstance.PositionType {
-	// FIXME: Don't use OneMillionInt derectly to make it decimal unit. issue #476
+	// FIXME: Don't use OneMillionInt directly to make it decimal unit. issue #476
 	case types.PositionType_LONG:
 		k.SubPerpetualFuturesGrossPositionOfMarket(ctx, position.Market, position.PositionInstance.PositionType, position.PositionInstance.SizeInDenomExponent(types.OneMillionInt))
-		// break
 	case types.PositionType_SHORT:
 		k.SubPerpetualFuturesGrossPositionOfMarket(ctx, position.Market, position.PositionInstance.PositionType, position.PositionInstance.SizeInDenomExponent(types.OneMillionInt))
-		// break
 	case types.PositionType_POSITION_UNKNOWN:
 		return fmt.Errorf("unknown position type")
 	}
@@ -221,33 +219,36 @@ func (k Keeper) HandleReturnAmount(ctx sdk.Context, pnlAmount sdk.Int, position 
 	}
 
 	if pnlAmount.IsNegative() {
-		returningAmount = position.RemainingMargin.Amount.Sub(pnlAmount.Abs())
+		loss := pnlAmount.Abs()
+		returningAmount = position.RemainingMargin.Amount.Sub(loss)
 		// Tell the loss to the LP happened by a trade
 		// This has to be restricted by the protocol behavior in the future
-		if !(returningAmount.IsNegative()) {
+		if returningAmount.IsNegative() {
 			_ = ctx.EventManager().EmitTypedEvent(&types.EventLossToLP{
 				PositionId: position.Id,
 				LossAmount: returningAmount.String(),
 			})
+			// send margin to the pool from MarginManager
+			if err := k.SendCoinFromMarginManagerToPool(ctx, sdk.NewCoins(position.RemainingMargin)); err != nil {
+				return sdk.ZeroInt(), err
+			}
 		} else {
 			returningCoin := sdk.NewCoin(position.RemainingMargin.Denom, returningAmount)
-			// Send coin including margin
+			// return margin-loss from MarginManager
 			if err := k.SendBackMargin(ctx, addr, sdk.NewCoins(returningCoin)); err != nil {
 				return sdk.ZeroInt(), err
 			}
-
-			// Send Loss of the position to the pool
-			if err := k.SendCoinFromMarginManagerToPool(ctx, sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, pnlAmount))); err != nil {
+			// send loss to the pool
+			if err := k.SendCoinFromMarginManagerToPool(ctx, sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, loss))); err != nil {
 				return sdk.ZeroInt(), err
 			}
 		}
 	} else {
 		returningAmount = position.RemainingMargin.Amount.Add(pnlAmount)
-		fromMarginManagerAmount := position.RemainingMargin
-		if err := k.SendBackMargin(ctx, addr, sdk.NewCoins(fromMarginManagerAmount)); err != nil {
+		// return margin from MarginManager & profit from the pool
+		if err := k.SendBackMargin(ctx, addr, sdk.NewCoins(position.RemainingMargin)); err != nil {
 			return sdk.ZeroInt(), err
 		}
-
 		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, pnlAmount))); err != nil {
 			return sdk.ZeroInt(), err
 		}
