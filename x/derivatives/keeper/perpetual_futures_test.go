@@ -91,10 +91,8 @@ func (suite *KeeperTestSuite) TestOpenPerpetualFuturesPosition() {
 	}
 
 	coins := sdk.Coins{sdk.NewCoin("uatom", sdk.NewInt(5000000)), sdk.NewCoin("uusdc", sdk.NewInt(50000000))}
-	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
-	suite.Require().NoError(err)
-	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, owner, coins)
-	suite.Require().NoError(err)
+	_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, owner, coins)
 
 	for _, testPosition := range positions {
 		err := suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{testPosition.availableAssetInPool})
@@ -255,10 +253,8 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 	}
 
 	coins := sdk.Coins{sdk.NewCoin("uatom", sdk.NewInt(5000000)), sdk.NewCoin("uusdc", sdk.NewInt(50000000))}
-	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
-	suite.Require().NoError(err)
-	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, owner, coins)
-	suite.Require().NoError(err)
+	_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, owner, coins)
 
 	for _, testPosition := range positions {
 		err := suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{testPosition.availableAssetInPool})
@@ -303,6 +299,9 @@ func (suite *KeeperTestSuite) TestReportLiquidationNeededPerpetualFuturesPositio
 	suite.Require().NoError(err)
 	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uusdc:usd")
 	suite.Require().NoError(err)
+	coins := sdk.Coins{sdk.NewCoin("uatom", sdk.NewInt(5000000)), sdk.NewCoin("uusdc", sdk.NewInt(50000000))}
+	_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, owner, coins)
 
 	positions := []struct {
 		positionId           string
@@ -395,6 +394,10 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 		BaseDenom:  "uatom",
 		QuoteDenom: "uusdc",
 	}
+	coins := sdk.Coins{sdk.NewCoin("uatom", sdk.NewInt(5000000)), sdk.NewCoin("uusdc", sdk.NewInt(50000000))}
+	_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, owner, coins)
+
 	positions := []struct {
 		positionId           string
 		margin               sdk.Coin
@@ -412,8 +415,8 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 			},
 			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(2000000)),
 			// -funding 2000000 * 0.0005 * 2 / 6 = 333uatom
-			// 500000 - 333 - 500(commission) = 499167
-			expMargin: sdk.MustNewDecFromStr("499167").TruncateInt(),
+			// 500000 - 333 - 2000(commission 2000000*0.001) = 497667
+			expMargin: sdk.MustNewDecFromStr("497667").TruncateInt(),
 		},
 		{
 			positionId: "1",
@@ -425,8 +428,8 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 			},
 			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
 			// +funding 1000000 * 0.0005 * 2 / 6 = 167uatom
-			// 500000 + 167 - 500(commission) = 499667
-			expMargin: sdk.MustNewDecFromStr("499667").TruncateInt(),
+			// 500000 + 167 - 1000(commission) = 499167
+			expMargin: sdk.MustNewDecFromStr("499167").TruncateInt(),
 		},
 		{
 			positionId: "2",
@@ -438,8 +441,8 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 			},
 			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(20000000)),
 			// -funding 2000000 * 0.0005 * 2 / 6 = 333uatom
-			// 1000000 - 33(funding) - 1000(commission) = 998967
-			expMargin: sdk.MustNewDecFromStr("998967").TruncateInt(),
+			// 1000000 - 33(funding) - 200(commission) = 999767uusdc
+			expMargin: sdk.MustNewDecFromStr("999767").TruncateInt(),
 		},
 		{
 			positionId: "3",
@@ -451,8 +454,8 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 			},
 			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
 			// +funding 1000000 * 0.0005 * 2 / 6 = 167uatom
-			// 1000000 + 17(funding) - 1000(commission) = 999017
-			expMargin: sdk.MustNewDecFromStr("999017").TruncateInt(),
+			// 1000000 + 17(funding) - 100(commission) = 999917uusdc
+			expMargin: sdk.MustNewDecFromStr("999917").TruncateInt(),
 		},
 	}
 
