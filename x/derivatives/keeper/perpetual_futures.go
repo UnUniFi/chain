@@ -231,18 +231,18 @@ func (k Keeper) HandleReturnAmount(ctx sdk.Context, pnlAmount sdk.Int, position 
 			}
 		} else {
 			returningCoin := sdk.NewCoin(position.RemainingMargin.Denom, returningAmount)
-			// return margin-loss from MarginManager
+			// Send margin-loss from MarginManager
 			if err := k.SendBackMargin(ctx, addr, sdk.NewCoins(returningCoin)); err != nil {
 				return sdk.ZeroInt(), err
 			}
-			// send loss to the pool
+			// Send loss to the pool
 			if err := k.SendCoinFromMarginManagerToPool(ctx, sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, loss))); err != nil {
 				return sdk.ZeroInt(), err
 			}
 		}
 	} else {
 		returningAmount = position.RemainingMargin.Amount.Add(pnlAmount)
-		// return margin from MarginManager & profit from the pool
+		// Send margin from MarginManager & profit from the pool
 		if err := k.SendBackMargin(ctx, addr, sdk.NewCoins(position.RemainingMargin)); err != nil {
 			return sdk.ZeroInt(), err
 		}
