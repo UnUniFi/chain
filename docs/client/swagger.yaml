@@ -3004,6 +3004,23 @@ paths:
                         custom method
 
                         signatures required by gogoproto.
+                    levied_amount:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                    levied_amount_negative:
+                      type: boolean
                     last_levied_at:
                       type: string
                       format: date-time
@@ -3731,6 +3748,23 @@ paths:
                       custom method
 
                       signatures required by gogoproto.
+                  levied_amount:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
+
+
+                      NOTE: The amount field is an Int which implements the
+                      custom method
+
+                      signatures required by gogoproto.
+                  levied_amount_negative:
+                    type: boolean
                   last_levied_at:
                     type: string
                     format: date-time
@@ -4195,6 +4229,24 @@ paths:
                             the custom method
 
                             signatures required by gogoproto.
+                        levied_amount:
+                          type: object
+                          properties:
+                            denom:
+                              type: string
+                            amount:
+                              type: string
+                          description: >-
+                            Coin defines a token with a denomination and an
+                            amount.
+
+
+                            NOTE: The amount field is an Int which implements
+                            the custom method
+
+                            signatures required by gogoproto.
+                        levied_amount_negative:
+                          type: boolean
                         last_levied_at:
                           type: string
                           format: date-time
@@ -8264,6 +8316,20 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
+      levied_amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      levied_amount_negative:
+        type: boolean
       last_levied_at:
         type: string
         format: date-time
@@ -8477,6 +8543,23 @@ definitions:
               method
 
               signatures required by gogoproto.
+          levied_amount:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          levied_amount_negative:
+            type: boolean
           last_levied_at:
             type: string
             format: date-time
@@ -8722,6 +8805,23 @@ definitions:
                     method
 
                     signatures required by gogoproto.
+                levied_amount:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+                levied_amount_negative:
+                  type: boolean
                 last_levied_at:
                   type: string
                   format: date-time
@@ -8980,6 +9080,23 @@ definitions:
                 method
 
                 signatures required by gogoproto.
+            levied_amount:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+            levied_amount_negative:
+              type: boolean
             last_levied_at:
               type: string
               format: date-time
@@ -9505,6 +9622,23 @@ definitions:
               method
 
               signatures required by gogoproto.
+          levied_amount:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          levied_amount_negative:
+            type: boolean
           last_levied_at:
             type: string
             format: date-time
