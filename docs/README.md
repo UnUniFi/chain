@@ -6,7 +6,7 @@ This is an example for Ubuntu.
 
 ```shell
 apt update
-apt install build-essential
+apt install build-essential unzip
 cd ~
 wget https://dl.google.com/go/go1.14.linux-amd64.tar.gz
 tar -C /usr/local -xzf go1.14.linux-amd64.tar.gz
