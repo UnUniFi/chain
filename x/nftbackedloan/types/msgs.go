@@ -19,21 +19,9 @@ func NewMsgMintNft(sender string, classId, nftId, uri, uriHash string) MsgMintNf
 	}
 }
 
-// Route return the message type used for routing the message.
-func (msg MsgMintNft) Route() string { return RouterKey }
-
-// Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgMintNft) Type() string { return "mint_nft" }
-
 // ValidateBasic does a simple validation check that doesn't require access to state.
 func (msg MsgMintNft) ValidateBasic() error {
 	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgMintNft) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
@@ -59,21 +47,9 @@ func NewMsgListNft(sender string, nftId NftIdentifier, bidToken string, minimumD
 	}
 }
 
-// Route return the message type used for routing the message.
-func (msg MsgListNft) Route() string { return RouterKey }
-
-// Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgListNft) Type() string { return "list_nft" }
-
 // ValidateBasic does a simple validation check that doesn't require access to state.
 func (msg MsgListNft) ValidateBasic() error {
 	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgListNft) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
@@ -92,21 +68,9 @@ func NewMsgCancelNftListing(sender string, nftId NftIdentifier) MsgCancelNftList
 	}
 }
 
-// Route return the message type used for routing the message.
-func (msg MsgCancelNftListing) Route() string { return RouterKey }
-
-// Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgCancelNftListing) Type() string { return "cancel_nft_listing" }
-
 // ValidateBasic does a simple validation check that doesn't require access to state.
 func (msg MsgCancelNftListing) ValidateBasic() error {
 	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgCancelNftListing) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
@@ -132,21 +96,9 @@ func NewMsgPlaceBid(sender string, nftId NftIdentifier, bidAmount, depositAmount
 	}
 }
 
-// Route return the message type used for routing the message.
-func (msg MsgPlaceBid) Route() string { return RouterKey }
-
-// Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgPlaceBid) Type() string { return "place_bid" }
-
 // ValidateBasic does a simple validation check that doesn't require access to state.
 func (msg MsgPlaceBid) ValidateBasic() error {
 	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgPlaceBid) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
@@ -165,21 +117,9 @@ func NewMsgCancelBid(sender string, nftId NftIdentifier) MsgCancelBid {
 	}
 }
 
-// Route return the message type used for routing the message.
-func (msg MsgCancelBid) Route() string { return RouterKey }
-
-// Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgCancelBid) Type() string { return "cancel_bid" }
-
 // ValidateBasic does a simple validation check that doesn't require access to state.
 func (msg MsgCancelBid) ValidateBasic() error {
 	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgCancelBid) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
@@ -198,21 +138,9 @@ func NewMsgSellingDecision(sender string, nftId NftIdentifier) MsgSellingDecisio
 	}
 }
 
-// Route return the message type used for routing the message.
-func (msg MsgSellingDecision) Route() string { return RouterKey }
-
-// Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgSellingDecision) Type() string { return "nft_selling_decision" }
-
 // ValidateBasic does a simple validation check that doesn't require access to state.
 func (msg MsgSellingDecision) ValidateBasic() error {
 	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgSellingDecision) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
@@ -231,21 +159,9 @@ func NewMsgEndNftListing(sender string, nftId NftIdentifier) MsgEndNftListing {
 	}
 }
 
-// Route return the message type used for routing the message.
-func (msg MsgEndNftListing) Route() string { return RouterKey }
-
-// Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgEndNftListing) Type() string { return "end_nft_listing" }
-
 // ValidateBasic does a simple validation check that doesn't require access to state.
 func (msg MsgEndNftListing) ValidateBasic() error {
 	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgEndNftListing) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
@@ -264,21 +180,9 @@ func NewMsgPayFullBid(sender string, nftId NftIdentifier) MsgPayFullBid {
 	}
 }
 
-// Route return the message type used for routing the message.
-func (msg MsgPayFullBid) Route() string { return RouterKey }
-
-// Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgPayFullBid) Type() string { return "pay_full_bid" }
-
 // ValidateBasic does a simple validation check that doesn't require access to state.
 func (msg MsgPayFullBid) ValidateBasic() error {
 	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgPayFullBid) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
@@ -298,21 +202,9 @@ func NewMsgBorrow(sender string, nftId NftIdentifier, amount sdk.Coin) MsgBorrow
 	}
 }
 
-// Route return the message type used for routing the message.
-func (msg MsgBorrow) Route() string { return RouterKey }
-
-// Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgBorrow) Type() string { return "borrow" }
-
 // ValidateBasic does a simple validation check that doesn't require access to state.
 func (msg MsgBorrow) ValidateBasic() error {
 	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgBorrow) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
@@ -332,21 +224,9 @@ func NewMsgRepay(sender string, nftId NftIdentifier, amount sdk.Coin) MsgRepay {
 	}
 }
 
-// Route return the message type used for routing the message.
-func (msg MsgRepay) Route() string { return RouterKey }
-
-// Type returns a human-readable string for the message, intended for utilization within tags.
-func (msg MsgRepay) Type() string { return "repay" }
-
 // ValidateBasic does a simple validation check that doesn't require access to state.
 func (msg MsgRepay) ValidateBasic() error {
 	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgRepay) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
