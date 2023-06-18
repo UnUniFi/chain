@@ -159,10 +159,6 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 	feeAmountDec := positionSizeInDenomUnit.Mul(commissionRate)
 	tradeAmount := positionSizeInDenomUnit.Sub(feeAmountDec)
 	feeAmount := feeAmountDec.RoundInt()
-	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesTradingFee{
-		Fee:        sdk.NewCoin(position.RemainingMargin.Denom, feeAmount),
-		PositionId: position.Id,
-	})
 
 	baseUsdPrice, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
 	if err != nil {
@@ -278,11 +274,6 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 		}
 
 		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(commissionFee)
-		_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesLiquidationFee{
-			Fee:        sdk.NewCoin(position.RemainingMargin.Denom, commissionFee),
-			PositionId: position.Id,
-		})
-
 		rewardAmount := sdk.NewDecFromInt(position.RemainingMargin.Amount).Mul(params.PoolParams.ReportLiquidationRewardRate).RoundInt()
 		reward := sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, rewardAmount))
 
@@ -337,12 +328,6 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 		commissionFee = k.ConvertBaseAmountToQuoteAmount(ctx, position.Market, commissionBaseFee)
 		imaginaryFundingFee = k.ConvertBaseAmountToQuoteAmount(ctx, position.Market, imaginaryFundingBaseFee)
 	}
-
-	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesImaginaryFundingFee{
-		Fee:        sdk.NewCoin(position.RemainingMargin.Denom, commissionFee),
-		PositionId: position.Id,
-	})
-
 	if positionInstance.PositionType == types.PositionType_LONG {
 		// If the margin is lower than the fee, the fee is equal to the margin.
 		if position.RemainingMargin.Amount.LT(imaginaryFundingFee) {
@@ -352,19 +337,12 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 			commissionFee = position.RemainingMargin.Amount.Sub(imaginaryFundingFee)
 		}
 		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Sub(imaginaryFundingFee).Sub(commissionFee)
-		_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesImaginaryFundingFee{
-			Fee:        sdk.NewCoin(position.RemainingMargin.Denom, imaginaryFundingFee),
-			PositionId: position.Id,
-		})
+
 	} else {
 		if position.RemainingMargin.Amount.Add(imaginaryFundingFee).LT(commissionFee) {
 			commissionFee = position.RemainingMargin.Amount.Add(imaginaryFundingFee)
 		}
 		position.RemainingMargin.Amount = position.RemainingMargin.Amount.Add(imaginaryFundingFee).Sub(commissionFee)
-		_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesImaginaryFundingFee{
-			Fee:        sdk.NewCoin(position.RemainingMargin.Denom, imaginaryFundingFee.Neg()),
-			PositionId: position.Id,
-		})
 	}
 	// Transfer the fees from pool to manager or manager to pool appropriately
 	// to keep the remaining margin of the position match the actual number to the balance

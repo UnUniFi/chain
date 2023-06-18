@@ -155,8 +155,10 @@ func (m *QueryPoolRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_QueryPoolRequest proto.InternalMessageInfo
 
 type QueryPoolResponse struct {
-	MetricsQuoteTicker string         `protobuf:"bytes,1,opt,name=metrics_quote_ticker,json=metricsQuoteTicker,proto3" json:"metrics_quote_ticker,omitempty" yaml:"metrics_quote_ticker"`
-	PoolMarketCap      *PoolMarketCap `protobuf:"bytes,2,opt,name=pool_market_cap,json=poolMarketCap,proto3" json:"pool_market_cap,omitempty" yaml:"pool_market_cap"`
+	MetricsQuoteTicker string                                  `protobuf:"bytes,1,opt,name=metrics_quote_ticker,json=metricsQuoteTicker,proto3" json:"metrics_quote_ticker,omitempty" yaml:"metrics_quote_ticker"`
+	PoolMarketCap      *PoolMarketCap                          `protobuf:"bytes,2,opt,name=pool_market_cap,json=poolMarketCap,proto3" json:"pool_market_cap,omitempty" yaml:"pool_market_cap"`
+	Volume_24Hours     *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=volume_24hours,json=volume24hours,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"volume_24hours,omitempty" yaml:"volume_24hours"`
+	Fees_24Hours       *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=fees_24hours,json=fees24hours,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"fees_24hours,omitempty" yaml:"fees_24hours"`
 }
 
 func (m *QueryPoolResponse) Reset()         { *m = QueryPoolResponse{} }
@@ -437,9 +439,11 @@ func (m *QueryPerpetualFuturesRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_QueryPerpetualFuturesRequest proto.InternalMessageInfo
 
 type QueryPerpetualFuturesResponse struct {
-	MetricsQuoteTicker string       `protobuf:"bytes,1,opt,name=metrics_quote_ticker,json=metricsQuoteTicker,proto3" json:"metrics_quote_ticker,omitempty" yaml:"metrics_quote_ticker"`
-	LongPositions      []types.Coin `protobuf:"bytes,2,rep,name=long_positions,json=longPositions,proto3" json:"long_positions" yaml:"long_positions"`
-	ShortPositions     []types.Coin `protobuf:"bytes,3,rep,name=short_positions,json=shortPositions,proto3" json:"short_positions" yaml:"short_positions"`
+	MetricsQuoteTicker string                                  `protobuf:"bytes,2,opt,name=metrics_quote_ticker,json=metricsQuoteTicker,proto3" json:"metrics_quote_ticker,omitempty" yaml:"metrics_quote_ticker"`
+	Volume_24Hours     *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=volume_24hours,json=volume24hours,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"volume_24hours,omitempty" yaml:"volume_24hours"`
+	Fees_24Hours       *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=fees_24hours,json=fees24hours,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"fees_24hours,omitempty" yaml:"fees_24hours"`
+	LongPositions      types.Coin                              `protobuf:"bytes,5,opt,name=long_positions,json=longPositions,proto3" json:"long_positions" yaml:"long_positions"`
+	ShortPositions     types.Coin                              `protobuf:"bytes,6,opt,name=short_positions,json=shortPositions,proto3" json:"short_positions" yaml:"short_positions"`
 }
 
 func (m *QueryPerpetualFuturesResponse) Reset()         { *m = QueryPerpetualFuturesResponse{} }
@@ -482,18 +486,18 @@ func (m *QueryPerpetualFuturesResponse) GetMetricsQuoteTicker() string {
 	return ""
 }
 
-func (m *QueryPerpetualFuturesResponse) GetLongPositions() []types.Coin {
+func (m *QueryPerpetualFuturesResponse) GetLongPositions() types.Coin {
 	if m != nil {
 		return m.LongPositions
 	}
-	return nil
+	return types.Coin{}
 }
 
-func (m *QueryPerpetualFuturesResponse) GetShortPositions() []types.Coin {
+func (m *QueryPerpetualFuturesResponse) GetShortPositions() types.Coin {
 	if m != nil {
 		return m.ShortPositions
 	}
-	return nil
+	return types.Coin{}
 }
 
 type QueryPerpetualFuturesMarketRequest struct {
@@ -551,8 +555,10 @@ func (m *QueryPerpetualFuturesMarketRequest) GetQuoteDenom() string {
 type QueryPerpetualFuturesMarketResponse struct {
 	Price              *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,1,opt,name=price,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"price,omitempty" yaml:"price"`
 	MetricsQuoteTicker string                                  `protobuf:"bytes,2,opt,name=metrics_quote_ticker,json=metricsQuoteTicker,proto3" json:"metrics_quote_ticker,omitempty" yaml:"metrics_quote_ticker"`
-	LongPositions      *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=long_positions,json=longPositions,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"long_positions,omitempty" yaml:"long_positions"`
-	ShortPositions     *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=short_positions,json=shortPositions,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"short_positions,omitempty" yaml:"short_positions"`
+	Volume_24Hours     *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=volume_24hours,json=volume24hours,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"volume_24hours,omitempty" yaml:"volume_24hours"`
+	Fees_24Hours       *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=fees_24hours,json=fees24hours,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"fees_24hours,omitempty" yaml:"fees_24hours"`
+	LongPositions      *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=long_positions,json=longPositions,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"long_positions,omitempty" yaml:"long_positions"`
+	ShortPositions     *github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,6,opt,name=short_positions,json=shortPositions,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"short_positions,omitempty" yaml:"short_positions"`
 }
 
 func (m *QueryPerpetualFuturesMarketResponse) Reset()         { *m = QueryPerpetualFuturesMarketResponse{} }
@@ -2559,6 +2565,30 @@ func (m *QueryPoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.Fees_24Hours != nil {
+		{
+			size := m.Fees_24Hours.Size()
+			i -= size
+			if _, err := m.Fees_24Hours.MarshalTo(dAtA[i:]); err != nil {
+				return 0, err
+			}
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.Volume_24Hours != nil {
+		{
+			size := m.Volume_24Hours.Size()
+			i -= size
+			if _, err := m.Volume_24Hours.MarshalTo(dAtA[i:]); err != nil {
+				return 0, err
+			}
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
 	if m.PoolMarketCap != nil {
 		{
 			size, err := m.PoolMarketCap.MarshalToSizedBuffer(dAtA[:i])
@@ -2760,40 +2790,56 @@ func (m *QueryPerpetualFuturesResponse) MarshalToSizedBuffer(dAtA []byte) (int, 
 	_ = i
 	var l int
 	_ = l
-	if len(m.ShortPositions) > 0 {
-		for iNdEx := len(m.ShortPositions) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.ShortPositions[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintQuery(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x1a
+	{
+		size, err := m.ShortPositions.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
+		i -= size
+		i = encodeVarintQuery(dAtA, i, uint64(size))
 	}
-	if len(m.LongPositions) > 0 {
-		for iNdEx := len(m.LongPositions) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.LongPositions[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintQuery(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x12
+	i--
+	dAtA[i] = 0x32
+	{
+		size, err := m.LongPositions.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
 		}
+		i -= size
+		i = encodeVarintQuery(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x2a
+	if m.Fees_24Hours != nil {
+		{
+			size := m.Fees_24Hours.Size()
+			i -= size
+			if _, err := m.Fees_24Hours.MarshalTo(dAtA[i:]); err != nil {
+				return 0, err
+			}
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.Volume_24Hours != nil {
+		{
+			size := m.Volume_24Hours.Size()
+			i -= size
+			if _, err := m.Volume_24Hours.MarshalTo(dAtA[i:]); err != nil {
+				return 0, err
+			}
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
 	}
 	if len(m.MetricsQuoteTicker) > 0 {
 		i -= len(m.MetricsQuoteTicker)
 		copy(dAtA[i:], m.MetricsQuoteTicker)
 		i = encodeVarintQuery(dAtA, i, uint64(len(m.MetricsQuoteTicker)))
 		i--
-		dAtA[i] = 0xa
+		dAtA[i] = 0x12
 	}
 	return len(dAtA) - i, nil
 }
@@ -2865,13 +2911,37 @@ func (m *QueryPerpetualFuturesMarketResponse) MarshalToSizedBuffer(dAtA []byte) 
 			i = encodeVarintQuery(dAtA, i, uint64(size))
 		}
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x32
 	}
 	if m.LongPositions != nil {
 		{
 			size := m.LongPositions.Size()
 			i -= size
 			if _, err := m.LongPositions.MarshalTo(dAtA[i:]); err != nil {
+				return 0, err
+			}
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.Fees_24Hours != nil {
+		{
+			size := m.Fees_24Hours.Size()
+			i -= size
+			if _, err := m.Fees_24Hours.MarshalTo(dAtA[i:]); err != nil {
+				return 0, err
+			}
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.Volume_24Hours != nil {
+		{
+			size := m.Volume_24Hours.Size()
+			i -= size
+			if _, err := m.Volume_24Hours.MarshalTo(dAtA[i:]); err != nil {
 				return 0, err
 			}
 			i = encodeVarintQuery(dAtA, i, uint64(size))
@@ -3725,6 +3795,14 @@ func (m *QueryPoolResponse) Size() (n int) {
 		l = m.PoolMarketCap.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
+	if m.Volume_24Hours != nil {
+		l = m.Volume_24Hours.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Fees_24Hours != nil {
+		l = m.Fees_24Hours.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
 	return n
 }
 
@@ -3803,18 +3881,18 @@ func (m *QueryPerpetualFuturesResponse) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	if len(m.LongPositions) > 0 {
-		for _, e := range m.LongPositions {
-			l = e.Size()
-			n += 1 + l + sovQuery(uint64(l))
-		}
+	if m.Volume_24Hours != nil {
+		l = m.Volume_24Hours.Size()
+		n += 1 + l + sovQuery(uint64(l))
 	}
-	if len(m.ShortPositions) > 0 {
-		for _, e := range m.ShortPositions {
-			l = e.Size()
-			n += 1 + l + sovQuery(uint64(l))
-		}
+	if m.Fees_24Hours != nil {
+		l = m.Fees_24Hours.Size()
+		n += 1 + l + sovQuery(uint64(l))
 	}
+	l = m.LongPositions.Size()
+	n += 1 + l + sovQuery(uint64(l))
+	l = m.ShortPositions.Size()
+	n += 1 + l + sovQuery(uint64(l))
 	return n
 }
 
@@ -3847,6 +3925,14 @@ func (m *QueryPerpetualFuturesMarketResponse) Size() (n int) {
 	}
 	l = len(m.MetricsQuoteTicker)
 	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Volume_24Hours != nil {
+		l = m.Volume_24Hours.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Fees_24Hours != nil {
+		l = m.Fees_24Hours.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
 	if m.LongPositions != nil {
@@ -4445,6 +4531,78 @@ func (m *QueryPoolResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Volume_24Hours", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			var v github_com_cosmos_cosmos_sdk_types.Dec
+			m.Volume_24Hours = &v
+			if err := m.Volume_24Hours.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Fees_24Hours", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			var v github_com_cosmos_cosmos_sdk_types.Dec
+			m.Fees_24Hours = &v
+			if err := m.Fees_24Hours.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
@@ -4893,7 +5051,7 @@ func (m *QueryPerpetualFuturesResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: QueryPerpetualFuturesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
-		case 1:
+		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MetricsQuoteTicker", wireType)
 			}
@@ -4925,7 +5083,79 @@ func (m *QueryPerpetualFuturesResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.MetricsQuoteTicker = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Volume_24Hours", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			var v github_com_cosmos_cosmos_sdk_types.Dec
+			m.Volume_24Hours = &v
+			if err := m.Volume_24Hours.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Fees_24Hours", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			var v github_com_cosmos_cosmos_sdk_types.Dec
+			m.Fees_24Hours = &v
+			if err := m.Fees_24Hours.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field LongPositions", wireType)
 			}
@@ -4954,12 +5184,11 @@ func (m *QueryPerpetualFuturesResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.LongPositions = append(m.LongPositions, types.Coin{})
-			if err := m.LongPositions[len(m.LongPositions)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.LongPositions.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
-		case 3:
+		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ShortPositions", wireType)
 			}
@@ -4988,8 +5217,7 @@ func (m *QueryPerpetualFuturesResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ShortPositions = append(m.ShortPositions, types.Coin{})
-			if err := m.ShortPositions[len(m.ShortPositions)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.ShortPositions.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5227,6 +5455,78 @@ func (m *QueryPerpetualFuturesMarketResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Volume_24Hours", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			var v github_com_cosmos_cosmos_sdk_types.Dec
+			m.Volume_24Hours = &v
+			if err := m.Volume_24Hours.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Fees_24Hours", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			var v github_com_cosmos_cosmos_sdk_types.Dec
+			m.Fees_24Hours = &v
+			if err := m.Fees_24Hours.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field LongPositions", wireType)
 			}
 			var stringLen uint64
@@ -5261,7 +5561,7 @@ func (m *QueryPerpetualFuturesMarketResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 4:
+		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ShortPositions", wireType)
 			}
