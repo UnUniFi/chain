@@ -6,6 +6,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -50,14 +51,20 @@ func (k Keeper) PerpetualFutures(c context.Context, req *types.QueryPerpetualFut
 	ctx := sdk.UnwrapSDKContext(c)
 
 	markets := k.GetParams(ctx).PerpetualFutures.Markets
-	var longPositions []sdk.Coin
-	var shortPositions []sdk.Coin
+	longPositions := sdk.ZeroDec()
+	shortPositions := sdk.ZeroDec()
 	for _, market := range markets {
-		totalLongPositionSize := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, *market, types.PositionType_LONG)
-		totalShortPositionSize := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, *market, types.PositionType_SHORT)
+		totalLongPositionSize := k.GetPerpetualFuturesPositionSizeInMetrics(ctx, *market, types.PositionType_LONG)
+		if totalLongPositionSize.IsZero() {
+			return nil, fmt.Errorf("long position size is zero")
+		}
+		totalShortPositionSize := k.GetPerpetualFuturesPositionSizeInMetrics(ctx, *market, types.PositionType_SHORT)
+		if totalShortPositionSize.IsZero() {
+			return nil, fmt.Errorf("short position size is zero")
+		}
 
-		longPositions = append(longPositions, sdk.NewCoin(market.BaseDenom, totalLongPositionSize.PositionSizeInDenomExponent))
-		shortPositions = append(shortPositions, sdk.NewCoin(market.BaseDenom, totalShortPositionSize.PositionSizeInDenomExponent))
+		longPositions.Add(totalLongPositionSize)
+		shortPositions.Add(totalShortPositionSize)
 	}
 
 	metricsQuoteTicker := k.GetParams(ctx).PoolParams.QuoteTicker
@@ -82,16 +89,20 @@ func (k Keeper) PerpetualFuturesMarket(c context.Context, req *types.QueryPerpet
 		BaseDenom:  req.BaseDenom,
 		QuoteDenom: req.QuoteDenom,
 	}
-	grossPositionLongInDenomExponent := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, types.PositionType_LONG).PositionSizeInDenomExponent
-	grossPositionLong := types.MicroToNormalDec(grossPositionLongInDenomExponent)
-	grossPositionShortInDenomExponent := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, types.PositionType_SHORT).PositionSizeInDenomExponent
-	grossPositionShort := types.MicroToNormalDec(grossPositionShortInDenomExponent)
+	totalLongPositionSize := k.GetPerpetualFuturesPositionSizeInMetrics(ctx, market, types.PositionType_LONG)
+	if totalLongPositionSize.IsZero() {
+		return nil, fmt.Errorf("long position size is zero")
+	}
+	totalShortPositionSize := k.GetPerpetualFuturesPositionSizeInMetrics(ctx, market, types.PositionType_SHORT)
+	if totalShortPositionSize.IsZero() {
+		return nil, fmt.Errorf("short position size is zero")
+	}
 
 	return &types.QueryPerpetualFuturesMarketResponse{
 		Price:              &price,
 		MetricsQuoteTicker: metricsQuoteTicker,
-		LongPositions:      &grossPositionLong,
-		ShortPositions:     &grossPositionShort,
+		LongPositions:      &totalLongPositionSize,
+		ShortPositions:     &totalShortPositionSize,
 	}, nil
 }
 

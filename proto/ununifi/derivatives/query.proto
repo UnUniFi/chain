@@ -148,12 +148,14 @@ message QueryPerpetualFuturesResponse {
   string metrics_quote_ticker = 1 [
     (gogoproto.moretags)  = "yaml:\"metrics_quote_ticker\""
   ];
-  repeated cosmos.base.v1beta1.Coin long_positions = 2 [
+  string long_positions = 2 [
     (gogoproto.moretags)  = "yaml:\"long_positions\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  repeated cosmos.base.v1beta1.Coin short_positions = 3 [
+  string short_positions = 3 [
     (gogoproto.moretags)  = "yaml:\"short_positions\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
 }
