@@ -171,6 +171,10 @@ func NormalToMicroDec(amount sdk.Dec) sdk.Dec {
 	return amount.Mul(sdk.MustNewDecFromStr(OneMillionString))
 }
 
+func MicroToNormalDec(amount sdk.Int) sdk.Dec {
+	return sdk.NewDecFromInt(amount).Quo(sdk.MustNewDecFromStr(OneMillionString))
+}
+
 // todo make test
 func (m Positions) EvaluatePositions(posType PositionType, quoteTicker string, getCurrentPriceF func(denom string) (sdk.Dec, error)) (sdk.Dec, error) {
 	usdMap := map[string]sdk.Dec{}
