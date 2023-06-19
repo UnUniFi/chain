@@ -6,16 +6,6 @@ import (
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 )
 
-// nftmint message types
-const (
-	TypeMsgCreateClass          = "create-class"
-	TypeMsgMintNFT              = "mint-nft"
-	TypeMsgSendClassOwnership   = "send-class"
-	TypeMsgUpdateBaseTokenUri   = "update-base-token-uri"
-	TypeMsgUpdateTokenSupplyCap = "update-token-supply-cap"
-	TypeMsgBurnNFT              = "burn-nft"
-)
-
 var (
 	_ sdk.Msg = &MsgCreateClass{}
 	_ sdk.Msg = &MsgMintNFT{}
@@ -44,10 +34,6 @@ func NewMsgCreateClass(
 	}
 }
 
-func (msg MsgCreateClass) Route() string { return RouterKey }
-
-func (msg MsgCreateClass) Type() string { return TypeMsgCreateClass }
-
 func (msg MsgCreateClass) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
@@ -55,12 +41,6 @@ func (msg MsgCreateClass) ValidateBasic() error {
 	}
 
 	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgCreateClass) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
@@ -82,10 +62,6 @@ func NewMsgMintNFT(
 	}
 }
 
-func (msg MsgMintNFT) Route() string { return RouterKey }
-
-func (msg MsgMintNFT) Type() string { return TypeMsgMintNFT }
-
 func (msg MsgMintNFT) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
@@ -103,12 +79,6 @@ func (msg MsgMintNFT) ValidateBasic() error {
 	return nil
 }
 
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgMintNFT) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
-}
-
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgMintNFT) GetSigners() []sdk.AccAddress {
 	addr, _ := sdk.AccAddressFromBech32(msg.Sender)
@@ -123,10 +93,6 @@ func NewMsgSendClassOwnership(sender string, classID string, recipient string) *
 	}
 }
 
-func (msg MsgSendClassOwnership) Route() string { return RouterKey }
-
-func (msg MsgSendClassOwnership) Type() string { return TypeMsgSendClassOwnership }
-
 func (msg MsgSendClassOwnership) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
@@ -138,12 +104,6 @@ func (msg MsgSendClassOwnership) ValidateBasic() error {
 	}
 
 	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgSendClassOwnership) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
@@ -160,10 +120,6 @@ func NewMsgUpdateBaseTokenUri(sender string, classID, baseTokenUri string) *MsgU
 	}
 }
 
-func (msg MsgUpdateBaseTokenUri) Route() string { return RouterKey }
-
-func (msg MsgUpdateBaseTokenUri) Type() string { return TypeMsgUpdateBaseTokenUri }
-
 func (msg MsgUpdateBaseTokenUri) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
@@ -174,12 +130,6 @@ func (msg MsgUpdateBaseTokenUri) ValidateBasic() error {
 		return sdkerrors.Wrapf(nfttypes.ErrEmptyClassID, "Invalid class id (%s)", msg.ClassId)
 	}
 	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgUpdateBaseTokenUri) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
@@ -196,10 +146,6 @@ func NewMsgUpdateTokenSupplyCap(sender string, classID string, tokenSupplyCap ui
 	}
 }
 
-func (msg MsgUpdateTokenSupplyCap) Route() string { return RouterKey }
-
-func (msg MsgUpdateTokenSupplyCap) Type() string { return TypeMsgUpdateTokenSupplyCap }
-
 func (msg MsgUpdateTokenSupplyCap) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
@@ -211,12 +157,6 @@ func (msg MsgUpdateTokenSupplyCap) ValidateBasic() error {
 	}
 
 	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgUpdateTokenSupplyCap) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
@@ -236,10 +176,6 @@ func NewMsgBurnNFT(
 	}
 }
 
-func (msg MsgBurnNFT) Route() string { return RouterKey }
-
-func (msg MsgBurnNFT) Type() string { return TypeMsgBurnNFT }
-
 func (msg MsgBurnNFT) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
@@ -255,12 +191,6 @@ func (msg MsgBurnNFT) ValidateBasic() error {
 	}
 
 	return nil
-}
-
-// GetSignBytes gets the canonical byte representation of the Msg.
-func (msg MsgBurnNFT) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
-	return sdk.MustSortJSON(bz)
 }
 
 // GetSigners returns the addresses of signers that must sign.
