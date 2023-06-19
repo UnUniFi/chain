@@ -5,6 +5,8 @@
 package types
 
 import (
+	fmt "fmt"
+
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -130,16 +132,18 @@ func NewPerpetualFuturesPositionFromPosition(position Position) (PerpetualFuture
 	switch positionInstance := ins.(type) {
 	case *PerpetualFuturesPositionInstance:
 		return PerpetualFuturesPosition{
-			Id:               position.Id,
-			Market:           position.Market,
-			Address:          position.Address,
-			OpenedAt:         position.OpenedAt,
-			OpenedBaseRate:   position.OpenedBaseRate,
-			OpenedQuoteRate:  position.OpenedQuoteRate,
-			OpenedHeight:     position.OpenedHeight,
-			RemainingMargin:  position.RemainingMargin,
-			LastLeviedAt:     position.LastLeviedAt,
-			PositionInstance: *positionInstance,
+			Id:                   position.Id,
+			Market:               position.Market,
+			Address:              position.Address,
+			OpenedAt:             position.OpenedAt,
+			OpenedBaseRate:       position.OpenedBaseRate,
+			OpenedQuoteRate:      position.OpenedQuoteRate,
+			OpenedHeight:         position.OpenedHeight,
+			RemainingMargin:      position.RemainingMargin,
+			LeviedAmount:         position.LeviedAmount,
+			LeviedAmountNegative: position.LeviedAmountNegative,
+			LastLeviedAt:         position.LastLeviedAt,
+			PositionInstance:     *positionInstance,
 		}, nil
 	default:
 		return PerpetualFuturesPosition{}, ErrInvalidPositionInstance
@@ -342,6 +346,8 @@ func (m PerpetualFuturesPosition) RemainingMarginInMetrics(baseMetricsRate, quot
 func (m PerpetualFuturesPosition) LeviedAmountInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
 	// Levy Fee (in USD units) = Levy Fee (in base units) * Current base/USD rate
 	// = Levy Fee (in quote units) * Current quote/USD rate
+	fmt.Println("position", m)
+	fmt.Println("levy_amount", m.LeviedAmount.Amount)
 	leviedAmountInDec := sdk.NewDecFromInt(m.LeviedAmount.Amount)
 	if m.LeviedAmount.Denom == m.Market.BaseDenom {
 		return leviedAmountInDec.Mul(baseMetricsRate.Amount.Amount)
