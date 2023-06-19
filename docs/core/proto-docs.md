@@ -78,7 +78,7 @@
 
 - [derivatives/derivatives.proto](#derivatives/derivatives.proto)
 
-  - [EventPriceIsNotFeeded](#ununifi.derivatives.EventPriceIsNotFeeded)
+  - [EventPriceIsNotFed](#ununifi.derivatives.EventPriceIsNotFed)
   - [Market](#ununifi.derivatives.Market)
   - [PoolAssetConf](#ununifi.derivatives.PoolAssetConf)
   - [PoolMarketCap](#ununifi.derivatives.PoolMarketCap)
@@ -1230,9 +1230,9 @@ Query defines the gRPC querier service.
 
 ## derivatives/derivatives.proto
 
-<a name="ununifi.derivatives.EventPriceIsNotFeeded"></a>
+<a name="ununifi.derivatives.EventPriceIsNotFed"></a>
 
-### EventPriceIsNotFeeded
+### EventPriceIsNotFed
 
 | Field   | Type              | Label | Description |
 | ------- | ----------------- | ----- | ----------- |
