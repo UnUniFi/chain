@@ -235,6 +235,11 @@ func (k Keeper) MakeQueriedPositions(ctx sdk.Context, positions types.Positions)
 		baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, currentBaseUsdRate)
 		quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, currentQuoteUsdRate)
 		profit := perpetualFuturesPosition.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)
+		if perpetualFuturesPosition.LeviedAmountNegative {
+			profit = profit.Sub(perpetualFuturesPosition.LeviedAmountInMetrics(baseMetricsRate, quoteMetricsRate))
+		} else {
+			profit = profit.Add(perpetualFuturesPosition.LeviedAmountInMetrics(baseMetricsRate, quoteMetricsRate))
+		}
 		// fixme do not use sdk.Coin directly
 		positiveOrNegativeProfitCoin := sdk.Coin{
 			Denom:  "uusd",
