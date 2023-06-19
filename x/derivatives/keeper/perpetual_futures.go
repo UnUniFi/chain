@@ -430,16 +430,6 @@ func (k Keeper) GetPerpetualFuturesGrossPositionOfMarket(ctx sdk.Context, market
 	return grossPositionOfMarket
 }
 
-/// GetPositionSizeOfGrossPositionOfMarket is not used anymore.
-/// This can be deleted.
-// func (k Keeper) GetPositionSizeOfGrossPositionOfMarket(ctx sdk.Context, market types.Market) sdk.Int {
-// 	position := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, )
-// 	if position.PositionSizeInDenomUnit.IsNil() {
-// 		return sdk.ZeroInt()
-// 	}
-// 	return position.PositionSizeInDenomUnit
-// }
-
 func (k Keeper) GetAllPerpetualFuturesGrossPositionOfMarket(ctx sdk.Context) []types.PerpetualFuturesGrossPositionOfMarket {
 	store := ctx.KVStore(k.storeKey)
 

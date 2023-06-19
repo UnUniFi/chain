@@ -232,18 +232,18 @@ func (positionInstance PerpetualFuturesPositionInstance) MarginRequirement(curre
 }
 
 func (m PerpetualFuturesPosition) RequiredMarginInQuote(baseQuoteRate sdk.Dec) sdk.Int {
-	// 必要証拠金(quote単位) = 現在のbase/quoteレート * ポジションサイズ(base単位) ÷ レバレッジ
+	// Required Margin (in quote units) = Current base/quote rate * Position size (in base units) ÷ Leverage
 	return m.PositionInstance.MarginRequirement(baseQuoteRate)
 }
 
 func (m PerpetualFuturesPosition) RequiredMarginInBase() sdk.Int {
-	// 必要証拠金(base単位) = ポジションサイズ(base単位) ÷ レバレッジ // レートでの変動なし
+	// Required Margin (in base units) = Position size (in base units) ÷ Leverage // No change in rate
 	return m.PositionInstance.MarginRequirement(sdk.MustNewDecFromStr("1"))
 }
 
 func (m PerpetualFuturesPosition) RequiredMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
-	// 必要証拠金(USD単位) = 必要証拠金(quote単位) * 現在のquote/USDレート
-	//                    = 必要証拠金(base単位) * 現在のbase/USDレート
+	// Required Margin (in USD units) = Required Margin (in quote units) * Current quote/USD rate
+	// = Required Margin (in base units) * Current base/USD rate
 	if m.RemainingMargin.Denom == m.Market.QuoteDenom {
 		baseQuoteRate := baseMetricsRate.Amount.Amount.Quo(quoteMetricsRate.Amount.Amount)
 		return sdk.NewDecFromInt(m.RequiredMarginInQuote(baseQuoteRate)).Mul(quoteMetricsRate.Amount.Amount)
@@ -299,9 +299,9 @@ func (m PerpetualFuturesPosition) ProfitAndLoss(baseMetricsRate, quoteMetricsRat
 }
 
 func (m PerpetualFuturesPosition) ProfitAndLossInQuote(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
-	// 損益(quote単位) = (longなら*1,shortなら*-1) * (現在のbase/quoteレート - ポジション開設時base/quoteレート) * ポジションサイズ(base単位)
+	// Profit/Loss (in quote units) = (1 for long, -1 for short) * (Current base/quote rate - Base/quote rate at position opening) * Position size (in base units)
 	baseQuoteRate := baseMetricsRate.Amount.Amount.Quo(quoteMetricsRate.Amount.Amount)
-	// FIXME: Don't use OneMillionInt derectly. issue #476
+	// FIXME: Don't use OneMillionInt directly. issue #476
 	profitAndLoss := baseQuoteRate.Sub(m.OpenedPairRate()).Mul(sdk.NewDecFromInt(m.PositionInstance.SizeInDenomExponent(OneMillionInt)))
 	if m.PositionInstance.PositionType == PositionType_LONG {
 		return profitAndLoss
@@ -311,19 +311,19 @@ func (m PerpetualFuturesPosition) ProfitAndLossInQuote(baseMetricsRate, quoteMet
 }
 
 func (m PerpetualFuturesPosition) ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
-	// 損益(USD単位) = 損益(quote単位) * 現在のquote/USDレート
+	// Profit/Loss (in USD units) = Profit/Loss (in quote units) * Current quote/USD rate
 	return m.ProfitAndLossInQuote(baseMetricsRate, quoteMetricsRate).Mul(quoteMetricsRate.Amount.Amount)
 }
 
 // position size takes 0 decimal although price takes 6 decimal (micro unit)
 func (m PerpetualFuturesPosition) MarginMaintenanceRate(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
-	// 証拠金維持率 = 有効証拠金(USD単位) ÷ 必要証拠金(USD単位)
+	// Maintenance Margin Ratio = Account Equity (in USD units) / Required Margin (in USD units)
 	return m.EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate).Quo(m.RequiredMarginInMetrics(baseMetricsRate, quoteMetricsRate))
 }
 
 func (m PerpetualFuturesPosition) RemainingMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
-	// 残存証拠金(USD単位) = 残存証拠金(base単位) * 現在のbase/USDレート
-	//                    = 残存証拠金(quote単位) * 現在のquote/USDレート
+	// Remaining Margin (in USD units) = Remaining Margin (in base units) * Current base/USD rate
+	// = Remaining Margin (in quote units) * Current quote/USD rate
 	remainingMarginAmountInDec := sdk.NewDecFromInt(m.RemainingMargin.Amount)
 	if m.RemainingMargin.Denom == m.Market.BaseDenom {
 		return remainingMarginAmountInDec.Mul(baseMetricsRate.Amount.Amount)
@@ -336,8 +336,8 @@ func (m PerpetualFuturesPosition) RemainingMarginInMetrics(baseMetricsRate, quot
 }
 
 func (m PerpetualFuturesPosition) LeviedAmountInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
-	// Levy手数料(USD単位) = Levy手数料(base単位) * 現在のbase/USDレート
-	//                    = Levy手数料(quote単位) * 現在のquote/USDレート
+	// Levy Fee (in USD units) = Levy Fee (in base units) * Current base/USD rate
+	// = Levy Fee (in quote units) * Current quote/USD rate
 	leviedAmountInDec := sdk.NewDecFromInt(m.LeviedAmount.Amount)
 	if m.LeviedAmount.Denom == m.Market.BaseDenom {
 		return leviedAmountInDec.Mul(baseMetricsRate.Amount.Amount)
@@ -350,7 +350,7 @@ func (m PerpetualFuturesPosition) LeviedAmountInMetrics(baseMetricsRate, quoteMe
 }
 
 func (m PerpetualFuturesPosition) EffectiveMarginInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
-	// 有効証拠金(USD単位) = 残存証拠金(USD単位) + 損益(USD単位) - Levy手数料(USD単位)
+	// Effective Margin (in USD units) = Remaining Margin (in USD units) + Profit/Loss (in USD units) - Levy Fee (in USD units)
 	if m.LeviedAmountNegative {
 		return m.RemainingMarginInMetrics(baseMetricsRate, quoteMetricsRate).Add(m.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)).Sub(m.LeviedAmountInMetrics(baseMetricsRate, quoteMetricsRate))
 	} else {
