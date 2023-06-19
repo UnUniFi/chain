@@ -36,8 +36,7 @@ func NextSettlementRightBidId(bidsSortedByDeposit []Bid, skip map[BidId]bool, fo
 }
 
 func AdjustAnnualRateWithDuration(annualInterestRate uint64, duration time.Duration) uint64 {
-	// TODO
-	return annualInterestRate
+	return annualInterestRate * uint64(duration.Seconds()) / 31536000
 }
 
 // Do not consider refinancing
