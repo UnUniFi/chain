@@ -25,6 +25,6 @@ func SimulateMsgWithdrawFromVault(
 
 		// TODO: Handling the WithdrawFromVault simulation
 
-		return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "WithdrawFromVault simulation not implemented"), nil, nil
+		return simtypes.NoOpMsg(types.ModuleName, msg.String(), "WithdrawFromVault simulation not implemented"), nil, nil
 	}
 }

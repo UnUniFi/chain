@@ -9,10 +9,6 @@ order: 1
 `NftListing` is created when a nft is listed for sell by owner.
 
 ```protobuf
-enum ListingType {
-  DIRECT_ASSET_BORROW = 0;
-  SYNTHETIC_ASSET_CREATION = 1;
-}
 enum ListingState {
   SELLING = 0;
   BIDDING = 1;

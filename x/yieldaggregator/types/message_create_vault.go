@@ -8,8 +8,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgCreateVault = "create-vault"
-
 var _ sdk.Msg = &MsgCreateVault{}
 
 func NewMsgCreateVault(sender string, denom string, commissionRate sdk.Dec, withdrawReserveRate sdk.Dec, strategyWeights []StrategyWeight, fee types.Coin, deposit types.Coin) *MsgCreateVault {
@@ -56,18 +54,6 @@ func (msg MsgCreateVault) ValidateBasic() error {
 	}
 
 	return nil
-}
-
-func (msg *MsgCreateVault) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgCreateVault) Type() string {
-	return TypeMsgDepositToVault
-}
-
-func (msg MsgCreateVault) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 func (msg MsgCreateVault) GetSigners() []sdk.AccAddress {

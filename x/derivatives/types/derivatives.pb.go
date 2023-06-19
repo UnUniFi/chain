@@ -521,50 +521,6 @@ func (m *Market) GetQuoteDenom() string {
 	return ""
 }
 
-type EventPriceIsNotFeeded struct {
-	Asset string `protobuf:"bytes,1,opt,name=asset,proto3" json:"asset,omitempty" yaml:"asset"`
-}
-
-func (m *EventPriceIsNotFeeded) Reset()         { *m = EventPriceIsNotFeeded{} }
-func (m *EventPriceIsNotFeeded) String() string { return proto.CompactTextString(m) }
-func (*EventPriceIsNotFeeded) ProtoMessage()    {}
-func (*EventPriceIsNotFeeded) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5a25a5cf1b44b970, []int{6}
-}
-func (m *EventPriceIsNotFeeded) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *EventPriceIsNotFeeded) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_EventPriceIsNotFeeded.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *EventPriceIsNotFeeded) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventPriceIsNotFeeded.Merge(m, src)
-}
-func (m *EventPriceIsNotFeeded) XXX_Size() int {
-	return m.Size()
-}
-func (m *EventPriceIsNotFeeded) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventPriceIsNotFeeded.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_EventPriceIsNotFeeded proto.InternalMessageInfo
-
-func (m *EventPriceIsNotFeeded) GetAsset() string {
-	if m != nil {
-		return m.Asset
-	}
-	return ""
-}
-
 type Reserve struct {
 	MarketType MarketType `protobuf:"varint,1,opt,name=market_type,json=marketType,proto3,enum=ununifi.derivatives.MarketType" json:"market_type,omitempty" yaml:"market_type"`
 	Amount     types.Coin `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount" yaml:"amount"`
@@ -574,7 +530,7 @@ func (m *Reserve) Reset()         { *m = Reserve{} }
 func (m *Reserve) String() string { return proto.CompactTextString(m) }
 func (*Reserve) ProtoMessage()    {}
 func (*Reserve) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5a25a5cf1b44b970, []int{7}
+	return fileDescriptor_5a25a5cf1b44b970, []int{6}
 }
 func (m *Reserve) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -617,6 +573,208 @@ func (m *Reserve) GetAmount() types.Coin {
 	return types.Coin{}
 }
 
+type EventPriceIsNotFeeded struct {
+	Asset string `protobuf:"bytes,1,opt,name=asset,proto3" json:"asset,omitempty" yaml:"asset"`
+}
+
+func (m *EventPriceIsNotFeeded) Reset()         { *m = EventPriceIsNotFeeded{} }
+func (m *EventPriceIsNotFeeded) String() string { return proto.CompactTextString(m) }
+func (*EventPriceIsNotFeeded) ProtoMessage()    {}
+func (*EventPriceIsNotFeeded) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5a25a5cf1b44b970, []int{7}
+}
+func (m *EventPriceIsNotFeeded) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventPriceIsNotFeeded) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventPriceIsNotFeeded.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventPriceIsNotFeeded) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventPriceIsNotFeeded.Merge(m, src)
+}
+func (m *EventPriceIsNotFeeded) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventPriceIsNotFeeded) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventPriceIsNotFeeded.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventPriceIsNotFeeded proto.InternalMessageInfo
+
+func (m *EventPriceIsNotFeeded) GetAsset() string {
+	if m != nil {
+		return m.Asset
+	}
+	return ""
+}
+
+type EventPerpetualFuturesTradingFee struct {
+	Fee        types.Coin `protobuf:"bytes,1,opt,name=fee,proto3" json:"fee" yaml:"fee"`
+	PositionId string     `protobuf:"bytes,2,opt,name=position_id,json=positionId,proto3" json:"position_id,omitempty" yaml:"position_id"`
+}
+
+func (m *EventPerpetualFuturesTradingFee) Reset()         { *m = EventPerpetualFuturesTradingFee{} }
+func (m *EventPerpetualFuturesTradingFee) String() string { return proto.CompactTextString(m) }
+func (*EventPerpetualFuturesTradingFee) ProtoMessage()    {}
+func (*EventPerpetualFuturesTradingFee) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5a25a5cf1b44b970, []int{8}
+}
+func (m *EventPerpetualFuturesTradingFee) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventPerpetualFuturesTradingFee) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventPerpetualFuturesTradingFee.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventPerpetualFuturesTradingFee) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventPerpetualFuturesTradingFee.Merge(m, src)
+}
+func (m *EventPerpetualFuturesTradingFee) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventPerpetualFuturesTradingFee) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventPerpetualFuturesTradingFee.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventPerpetualFuturesTradingFee proto.InternalMessageInfo
+
+func (m *EventPerpetualFuturesTradingFee) GetFee() types.Coin {
+	if m != nil {
+		return m.Fee
+	}
+	return types.Coin{}
+}
+
+func (m *EventPerpetualFuturesTradingFee) GetPositionId() string {
+	if m != nil {
+		return m.PositionId
+	}
+	return ""
+}
+
+type EventPerpetualFuturesImaginaryFundingFee struct {
+	Fee        types.Coin `protobuf:"bytes,1,opt,name=fee,proto3" json:"fee" yaml:"fee"`
+	PositionId string     `protobuf:"bytes,2,opt,name=position_id,json=positionId,proto3" json:"position_id,omitempty" yaml:"position_id"`
+}
+
+func (m *EventPerpetualFuturesImaginaryFundingFee) Reset() {
+	*m = EventPerpetualFuturesImaginaryFundingFee{}
+}
+func (m *EventPerpetualFuturesImaginaryFundingFee) String() string { return proto.CompactTextString(m) }
+func (*EventPerpetualFuturesImaginaryFundingFee) ProtoMessage()    {}
+func (*EventPerpetualFuturesImaginaryFundingFee) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5a25a5cf1b44b970, []int{9}
+}
+func (m *EventPerpetualFuturesImaginaryFundingFee) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventPerpetualFuturesImaginaryFundingFee) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventPerpetualFuturesImaginaryFundingFee.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventPerpetualFuturesImaginaryFundingFee) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventPerpetualFuturesImaginaryFundingFee.Merge(m, src)
+}
+func (m *EventPerpetualFuturesImaginaryFundingFee) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventPerpetualFuturesImaginaryFundingFee) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventPerpetualFuturesImaginaryFundingFee.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventPerpetualFuturesImaginaryFundingFee proto.InternalMessageInfo
+
+func (m *EventPerpetualFuturesImaginaryFundingFee) GetFee() types.Coin {
+	if m != nil {
+		return m.Fee
+	}
+	return types.Coin{}
+}
+
+func (m *EventPerpetualFuturesImaginaryFundingFee) GetPositionId() string {
+	if m != nil {
+		return m.PositionId
+	}
+	return ""
+}
+
+type EventPerpetualFuturesLiquidationFee struct {
+	Fee        types.Coin `protobuf:"bytes,1,opt,name=fee,proto3" json:"fee" yaml:"fee"`
+	PositionId string     `protobuf:"bytes,2,opt,name=position_id,json=positionId,proto3" json:"position_id,omitempty" yaml:"position_id"`
+}
+
+func (m *EventPerpetualFuturesLiquidationFee) Reset()         { *m = EventPerpetualFuturesLiquidationFee{} }
+func (m *EventPerpetualFuturesLiquidationFee) String() string { return proto.CompactTextString(m) }
+func (*EventPerpetualFuturesLiquidationFee) ProtoMessage()    {}
+func (*EventPerpetualFuturesLiquidationFee) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5a25a5cf1b44b970, []int{10}
+}
+func (m *EventPerpetualFuturesLiquidationFee) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventPerpetualFuturesLiquidationFee) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventPerpetualFuturesLiquidationFee.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventPerpetualFuturesLiquidationFee) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventPerpetualFuturesLiquidationFee.Merge(m, src)
+}
+func (m *EventPerpetualFuturesLiquidationFee) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventPerpetualFuturesLiquidationFee) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventPerpetualFuturesLiquidationFee.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventPerpetualFuturesLiquidationFee proto.InternalMessageInfo
+
+func (m *EventPerpetualFuturesLiquidationFee) GetFee() types.Coin {
+	if m != nil {
+		return m.Fee
+	}
+	return types.Coin{}
+}
+
+func (m *EventPerpetualFuturesLiquidationFee) GetPositionId() string {
+	if m != nil {
+		return m.PositionId
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterEnum("ununifi.derivatives.PositionType", PositionType_name, PositionType_value)
 	proto.RegisterEnum("ununifi.derivatives.MarketType", MarketType_name, MarketType_value)
@@ -627,8 +785,11 @@ func init() {
 	proto.RegisterType((*PoolMarketCap)(nil), "ununifi.derivatives.PoolMarketCap")
 	proto.RegisterType((*PoolMarketCap_AssetInfo)(nil), "ununifi.derivatives.PoolMarketCap.AssetInfo")
 	proto.RegisterType((*Market)(nil), "ununifi.derivatives.Market")
-	proto.RegisterType((*EventPriceIsNotFeeded)(nil), "ununifi.derivatives.EventPriceIsNotFeeded")
 	proto.RegisterType((*Reserve)(nil), "ununifi.derivatives.Reserve")
+	proto.RegisterType((*EventPriceIsNotFeeded)(nil), "ununifi.derivatives.EventPriceIsNotFeeded")
+	proto.RegisterType((*EventPerpetualFuturesTradingFee)(nil), "ununifi.derivatives.EventPerpetualFuturesTradingFee")
+	proto.RegisterType((*EventPerpetualFuturesImaginaryFundingFee)(nil), "ununifi.derivatives.EventPerpetualFuturesImaginaryFundingFee")
+	proto.RegisterType((*EventPerpetualFuturesLiquidationFee)(nil), "ununifi.derivatives.EventPerpetualFuturesLiquidationFee")
 }
 
 func init() {
@@ -1219,36 +1380,6 @@ func (m *Market) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *EventPriceIsNotFeeded) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *EventPriceIsNotFeeded) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *EventPriceIsNotFeeded) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Asset) > 0 {
-		i -= len(m.Asset)
-		copy(dAtA[i:], m.Asset)
-		i = encodeVarintDerivatives(dAtA, i, uint64(len(m.Asset)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
 func (m *Reserve) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1284,6 +1415,156 @@ func (m *Reserve) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x8
 	}
+	return len(dAtA) - i, nil
+}
+
+func (m *EventPriceIsNotFeeded) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventPriceIsNotFeeded) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventPriceIsNotFeeded) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Asset) > 0 {
+		i -= len(m.Asset)
+		copy(dAtA[i:], m.Asset)
+		i = encodeVarintDerivatives(dAtA, i, uint64(len(m.Asset)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *EventPerpetualFuturesTradingFee) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventPerpetualFuturesTradingFee) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventPerpetualFuturesTradingFee) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.PositionId) > 0 {
+		i -= len(m.PositionId)
+		copy(dAtA[i:], m.PositionId)
+		i = encodeVarintDerivatives(dAtA, i, uint64(len(m.PositionId)))
+		i--
+		dAtA[i] = 0x12
+	}
+	{
+		size, err := m.Fee.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintDerivatives(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *EventPerpetualFuturesImaginaryFundingFee) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventPerpetualFuturesImaginaryFundingFee) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventPerpetualFuturesImaginaryFundingFee) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.PositionId) > 0 {
+		i -= len(m.PositionId)
+		copy(dAtA[i:], m.PositionId)
+		i = encodeVarintDerivatives(dAtA, i, uint64(len(m.PositionId)))
+		i--
+		dAtA[i] = 0x12
+	}
+	{
+		size, err := m.Fee.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintDerivatives(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *EventPerpetualFuturesLiquidationFee) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventPerpetualFuturesLiquidationFee) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventPerpetualFuturesLiquidationFee) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.PositionId) > 0 {
+		i -= len(m.PositionId)
+		copy(dAtA[i:], m.PositionId)
+		i = encodeVarintDerivatives(dAtA, i, uint64(len(m.PositionId)))
+		i--
+		dAtA[i] = 0x12
+	}
+	{
+		size, err := m.Fee.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintDerivatives(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -1457,6 +1738,20 @@ func (m *Market) Size() (n int) {
 	return n
 }
 
+func (m *Reserve) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.MarketType != 0 {
+		n += 1 + sovDerivatives(uint64(m.MarketType))
+	}
+	l = m.Amount.Size()
+	n += 1 + l + sovDerivatives(uint64(l))
+	return n
+}
+
 func (m *EventPriceIsNotFeeded) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1470,17 +1765,48 @@ func (m *EventPriceIsNotFeeded) Size() (n int) {
 	return n
 }
 
-func (m *Reserve) Size() (n int) {
+func (m *EventPerpetualFuturesTradingFee) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.MarketType != 0 {
-		n += 1 + sovDerivatives(uint64(m.MarketType))
-	}
-	l = m.Amount.Size()
+	l = m.Fee.Size()
 	n += 1 + l + sovDerivatives(uint64(l))
+	l = len(m.PositionId)
+	if l > 0 {
+		n += 1 + l + sovDerivatives(uint64(l))
+	}
+	return n
+}
+
+func (m *EventPerpetualFuturesImaginaryFundingFee) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.Fee.Size()
+	n += 1 + l + sovDerivatives(uint64(l))
+	l = len(m.PositionId)
+	if l > 0 {
+		n += 1 + l + sovDerivatives(uint64(l))
+	}
+	return n
+}
+
+func (m *EventPerpetualFuturesLiquidationFee) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.Fee.Size()
+	n += 1 + l + sovDerivatives(uint64(l))
+	l = len(m.PositionId)
+	if l > 0 {
+		n += 1 + l + sovDerivatives(uint64(l))
+	}
 	return n
 }
 
@@ -2976,6 +3302,108 @@ func (m *Market) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *Reserve) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowDerivatives
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Reserve: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Reserve: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MarketType", wireType)
+			}
+			m.MarketType = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDerivatives
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MarketType |= MarketType(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDerivatives
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthDerivatives
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthDerivatives
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipDerivatives(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthDerivatives
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *EventPriceIsNotFeeded) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3058,7 +3486,7 @@ func (m *EventPriceIsNotFeeded) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *Reserve) Unmarshal(dAtA []byte) error {
+func (m *EventPerpetualFuturesTradingFee) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3081,34 +3509,15 @@ func (m *Reserve) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Reserve: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventPerpetualFuturesTradingFee: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Reserve: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventPerpetualFuturesTradingFee: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MarketType", wireType)
-			}
-			m.MarketType = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowDerivatives
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.MarketType |= MarketType(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Fee", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -3135,9 +3544,271 @@ func (m *Reserve) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Fee.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PositionId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDerivatives
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDerivatives
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDerivatives
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PositionId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipDerivatives(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthDerivatives
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EventPerpetualFuturesImaginaryFundingFee) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowDerivatives
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EventPerpetualFuturesImaginaryFundingFee: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EventPerpetualFuturesImaginaryFundingFee: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Fee", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDerivatives
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthDerivatives
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthDerivatives
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Fee.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PositionId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDerivatives
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDerivatives
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDerivatives
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PositionId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipDerivatives(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthDerivatives
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EventPerpetualFuturesLiquidationFee) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowDerivatives
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EventPerpetualFuturesLiquidationFee: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EventPerpetualFuturesLiquidationFee: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Fee", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDerivatives
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthDerivatives
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthDerivatives
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Fee.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PositionId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDerivatives
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDerivatives
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDerivatives
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PositionId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

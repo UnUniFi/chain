@@ -7,14 +7,14 @@ import (
 
 const (
 	// ModuleName defines the module name
-	ModuleName = "nftmarket"
+	ModuleName = "nftbackedloan"
 
 	// Module account for nft trading fee collection
 	// use ecosystem-incentive module account for now
 	// [unused] NftTradingFee = "nfttradingfee"
 
 	// StoreKey defines the primary module store key
-	StoreKey = "ununifinftmarket"
+	StoreKey = "nftbackedloan"
 
 	// RouterKey is the message route for nftmarket
 	RouterKey = ModuleName

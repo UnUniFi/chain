@@ -254,11 +254,13 @@ func (suite *KeeperTestSuite) TestSafeCloseBid() {
 	now := time.Now().UTC()
 	bids := []types.NftBid{
 		{
-			NftId: types.NftIdentifier{
-				ClassId: "1",
-				NftId:   "1",
+			Id: types.BidId{
+				NftId: &types.NftIdentifier{
+					ClassId: "1",
+					NftId:   "1",
+				},
+				Bidder: owner.String(),
 			},
-			Bidder:           owner.String(),
 			BidAmount:        sdk.NewInt64Coin("uguu", 1000000),
 			AutomaticPayment: true,
 			DepositAmount:    sdk.NewInt64Coin("uguu", 1000000),
@@ -450,7 +452,6 @@ func (suite *KeeperTestSuite) TestCancelBid() {
 			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
 				Sender:             ununifitypes.StringAccAddress(tc.nftOwner),
 				NftId:              nftIdentifier,
-				ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 				BidToken:           "uguu",
 				MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 			})
@@ -623,7 +624,6 @@ func (suite *KeeperTestSuite) TestPayFullBid() {
 			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
 				Sender:             ununifitypes.StringAccAddress(tc.nftOwner),
 				NftId:              nftIdentifier,
-				ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 				BidToken:           "uguu",
 				MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 			})
@@ -691,11 +691,13 @@ func (suite *KeeperTestSuite) TestHandleMaturedCancelledBids() {
 	cancelledBids := []types.NftBid{
 		// TODO: check again
 		{
-			NftId: types.NftIdentifier{
-				ClassId: "1",
-				NftId:   "1",
+			Id: types.BidId{
+				NftId: &types.NftIdentifier{
+					ClassId: "1",
+					NftId:   "1",
+				},
+				Bidder: owner.String(),
 			},
-			Bidder:             owner.String(),
 			BidAmount:          sdk.NewInt64Coin("uguu", 1000000),
 			DepositAmount:      sdk.NewInt64Coin("uguu", 100000),
 			PaidAmount:         sdk.NewInt64Coin("uguu", 0),
@@ -707,11 +709,13 @@ func (suite *KeeperTestSuite) TestHandleMaturedCancelledBids() {
 			Borrowings:         []types.Borrowing{},
 		},
 		{
-			NftId: types.NftIdentifier{
-				ClassId: "1",
-				NftId:   "1",
+			Id: types.BidId{
+				NftId: &types.NftIdentifier{
+					ClassId: "1",
+					NftId:   "1",
+				},
+				Bidder: owner2.String(),
 			},
-			Bidder:             owner2.String(),
 			BidAmount:          sdk.NewInt64Coin("uguu", 1000000),
 			DepositAmount:      sdk.NewInt64Coin("uguu", 100000),
 			PaidAmount:         sdk.NewInt64Coin("uguu", 0),
@@ -723,11 +727,13 @@ func (suite *KeeperTestSuite) TestHandleMaturedCancelledBids() {
 			Borrowings:         []types.Borrowing{},
 		},
 		{
-			NftId: types.NftIdentifier{
-				ClassId: "1",
-				NftId:   "2",
+			Id: types.BidId{
+				NftId: &types.NftIdentifier{
+					ClassId: "1",
+					NftId:   "2",
+				},
+				Bidder: owner.String(),
 			},
-			Bidder:             owner.String(),
 			BidAmount:          sdk.NewInt64Coin("uguu", 1000000),
 			DepositAmount:      sdk.NewInt64Coin("uguu", 100000),
 			PaidAmount:         sdk.NewInt64Coin("uguu", 0),

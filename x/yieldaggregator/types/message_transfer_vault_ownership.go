@@ -7,8 +7,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgTransferVaultOwnership = "transfer-vault-ownership"
-
 var _ sdk.Msg = &MsgCreateVault{}
 
 func NewMsgTransferVaultOwnership(sender string, vaultId uint64, recipient string) *MsgTransferVaultOwnership {
@@ -29,18 +27,6 @@ func (msg MsgTransferVaultOwnership) ValidateBasic() error {
 	}
 
 	return nil
-}
-
-func (msg *MsgTransferVaultOwnership) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgTransferVaultOwnership) Type() string {
-	return TypeMsgTransferVaultOwnership
-}
-
-func (msg MsgTransferVaultOwnership) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 func (msg MsgTransferVaultOwnership) GetSigners() []sdk.AccAddress {

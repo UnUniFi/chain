@@ -19,7 +19,7 @@ func (m NftListing) IsActive() bool {
 }
 
 func (m NftListing) IsFullPayment() bool {
-	return m.State == ListingState_SELLING_DECISION || m.State == ListingState_END_LISTING
+	return m.State == ListingState_DECIDED_SELLING || m.State == ListingState_END_LISTING
 }
 
 func (m NftListing) IsSuccessfulBid() bool {
@@ -35,7 +35,7 @@ func (ni NftIdentifier) ClassIdBytes() []byte {
 }
 
 func (b NftBid) IdBytes() []byte {
-	return b.NftId.IdBytes()
+	return b.Id.NftId.IdBytes()
 }
 
 func (m NftListing) CanRefinancing(allBids, expiredBids []NftBid, now time.Time) bool {
