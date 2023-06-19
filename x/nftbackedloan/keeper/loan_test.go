@@ -188,7 +188,6 @@ func (suite *KeeperTestSuite) TestBorrow() {
 			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
 				Sender:               ununifitypes.StringAccAddress(tc.nftOwner),
 				NftId:                nftIdentifier,
-				ListingType:          types.ListingType_DIRECT_ASSET_BORROW,
 				BidToken:             "uguu",
 				MinimumDepositRate:   sdk.MustNewDecFromStr("0.01"),
 				AutomaticRefinancing: false,
@@ -364,7 +363,6 @@ func (suite *KeeperTestSuite) TestRepay() {
 			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
 				Sender:             ununifitypes.StringAccAddress(tc.nftOwner),
 				NftId:              nftIdentifier,
-				ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 				BidToken:           "uguu",
 				MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 			})
@@ -445,20 +443,20 @@ func (suite *KeeperTestSuite) TestLoanManagement() {
 	}{
 		{
 			testCase:     "unit borrow in selling decision listing when highest bid is paid",
-			listingState: types.ListingState_SELLING_DECISION,
+			listingState: types.ListingState_DECIDED_SELLING,
 			fullPay:      true,
 			multiBid:     false,
 		}, // add successful listing state with SuccessfulBidEndAt field + types.ListingState_SUCCESSFUL_BID status
 		{
 			testCase:     "unit borrow in selling decision listing when highest bid is not paid and no more bids",
-			listingState: types.ListingState_SELLING_DECISION,
+			listingState: types.ListingState_DECIDED_SELLING,
 			fullPay:      false,
 			multiBid:     false,
 		}, // status => ListingState_LISTING
 		//
 		{
 			testCase:     "multi borrow in selling decision listing when highest bid is not paid, and more bids",
-			listingState: types.ListingState_SELLING_DECISION,
+			listingState: types.ListingState_DECIDED_SELLING,
 			fullPay:      false,
 			multiBid:     true,
 			overBorrow:   true,
@@ -466,7 +464,7 @@ func (suite *KeeperTestSuite) TestLoanManagement() {
 		// loan data is removed since only one bid exists.
 		{
 			testCase:     "multi borrow in selling decision listing when highest bid is not paid, and more bids",
-			listingState: types.ListingState_SELLING_DECISION,
+			listingState: types.ListingState_DECIDED_SELLING,
 			fullPay:      false,
 			multiBid:     true,
 			overBorrow:   true,
@@ -510,7 +508,6 @@ func (suite *KeeperTestSuite) TestLoanManagement() {
 		_ = suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
 			Sender:             ununifitypes.StringAccAddress(nftOwner),
 			NftId:              nftIdentifier,
-			ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
 			BidToken:           "uguu",
 			MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 		})
@@ -547,7 +544,7 @@ func (suite *KeeperTestSuite) TestLoanManagement() {
 		loan := suite.app.NftmarketKeeper.GetDebtByNft(suite.ctx, nftIdentifier.IdBytes())
 
 		switch tc.listingState {
-		case types.ListingState_SELLING_DECISION:
+		case types.ListingState_DECIDED_SELLING:
 			if tc.fullPay {
 				// afte the fullpay, every loan must be removed
 				suite.Require().Empty(loan.Loan)

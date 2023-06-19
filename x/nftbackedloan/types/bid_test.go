@@ -20,11 +20,13 @@ func TestBidEqual(t *testing.T) {
 		{
 			"equal pattern 1",
 			types.NftBid{
-				NftId: types.NftIdentifier{
-					ClassId: "a10",
-					NftId:   "a10",
+				Id: types.BidId{
+					NftId: &types.NftIdentifier{
+						ClassId: "a10",
+						NftId:   "a10",
+					},
+					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
-				Bidder:             "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 				DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 				PaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(0)),
@@ -34,20 +36,15 @@ func TestBidEqual(t *testing.T) {
 				BidTime:            time.Now(),
 				InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 				Borrowings:         []types.Borrowing{},
-				Id: types.BidId{
-					NftId: &types.NftIdentifier{
-						ClassId: "a10",
-						NftId:   "a10",
-					},
-					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
-				},
 			},
 			types.NftBid{
-				NftId: types.NftIdentifier{
-					ClassId: "a10",
-					NftId:   "a10",
+				Id: types.BidId{
+					NftId: &types.NftIdentifier{
+						ClassId: "a10",
+						NftId:   "a10",
+					},
+					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
-				Bidder:             "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 				DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 				PaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(0)),
@@ -57,24 +54,19 @@ func TestBidEqual(t *testing.T) {
 				BidTime:            time.Now(),
 				InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 				Borrowings:         []types.Borrowing{},
-				Id: types.BidId{
-					NftId: &types.NftIdentifier{
-						ClassId: "a10",
-						NftId:   "a10",
-					},
-					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
-				},
 			},
 			true,
 		},
 		{
 			"equal pattern 2 difference deposit amount",
 			types.NftBid{
-				NftId: types.NftIdentifier{
-					ClassId: "a10",
-					NftId:   "a10",
+				Id: types.BidId{
+					NftId: &types.NftIdentifier{
+						ClassId: "a10",
+						NftId:   "a10",
+					},
+					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
-				Bidder:             "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 				DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 				PaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(0)),
@@ -84,6 +76,8 @@ func TestBidEqual(t *testing.T) {
 				BidTime:            time.Now(),
 				InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 				Borrowings:         []types.Borrowing{},
+			},
+			types.NftBid{
 				Id: types.BidId{
 					NftId: &types.NftIdentifier{
 						ClassId: "a10",
@@ -91,13 +85,6 @@ func TestBidEqual(t *testing.T) {
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
-			},
-			types.NftBid{
-				NftId: types.NftIdentifier{
-					ClassId: "a10",
-					NftId:   "a10",
-				},
-				Bidder:             "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 				DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(52)),
 				PaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(0)),
@@ -107,24 +94,19 @@ func TestBidEqual(t *testing.T) {
 				BidTime:            time.Now(),
 				InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 				Borrowings:         []types.Borrowing{},
-				Id: types.BidId{
-					NftId: &types.NftIdentifier{
-						ClassId: "a10",
-						NftId:   "a10",
-					},
-					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
-				},
 			},
 			true,
 		},
 		{
 			"difference bidder",
 			types.NftBid{
-				NftId: types.NftIdentifier{
-					ClassId: "a10",
-					NftId:   "a10",
+				Id: types.BidId{
+					NftId: &types.NftIdentifier{
+						ClassId: "a10",
+						NftId:   "a10",
+					},
+					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
-				Bidder:             "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 				DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 				PaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(0)),
@@ -134,6 +116,8 @@ func TestBidEqual(t *testing.T) {
 				BidTime:            time.Now(),
 				InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 				Borrowings:         []types.Borrowing{},
+			},
+			types.NftBid{
 				Id: types.BidId{
 					NftId: &types.NftIdentifier{
 						ClassId: "a10",
@@ -141,13 +125,6 @@ func TestBidEqual(t *testing.T) {
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
-			},
-			types.NftBid{
-				NftId: types.NftIdentifier{
-					ClassId: "a10",
-					NftId:   "a10",
-				},
-				Bidder:             "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 				BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 				DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(52)),
 				PaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(0)),
@@ -157,13 +134,6 @@ func TestBidEqual(t *testing.T) {
 				BidTime:            time.Now(),
 				InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 				Borrowings:         []types.Borrowing{},
-				Id: types.BidId{
-					NftId: &types.NftIdentifier{
-						ClassId: "a10",
-						NftId:   "a10",
-					},
-					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
-				},
 			},
 			false,
 		},
@@ -193,11 +163,13 @@ func TestCalcInterest(t *testing.T) {
 		{
 			"one year interest",
 			types.NftBid{
-				NftId: types.NftIdentifier{
-					ClassId: "a10",
-					NftId:   "a10",
+				Id: types.BidId{
+					NftId: &types.NftIdentifier{
+						ClassId: "a10",
+						NftId:   "a10",
+					},
+					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
-				Bidder:             "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 				DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 				PaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(0)),
@@ -207,13 +179,6 @@ func TestCalcInterest(t *testing.T) {
 				BidTime:            time.Now(),
 				InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 				Borrowings:         []types.Borrowing{},
-				Id: types.BidId{
-					NftId: &types.NftIdentifier{
-						ClassId: "a10",
-						NftId:   "a10",
-					},
-					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
-				},
 			},
 			sdk.NewCoin("uguu", sdk.NewInt(100)),
 			sdk.MustNewDecFromStr("0.1"),
@@ -224,11 +189,13 @@ func TestCalcInterest(t *testing.T) {
 		{
 			"one day interest",
 			types.NftBid{
-				NftId: types.NftIdentifier{
-					ClassId: "a10",
-					NftId:   "a10",
+				Id: types.BidId{
+					NftId: &types.NftIdentifier{
+						ClassId: "a10",
+						NftId:   "a10",
+					},
+					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
-				Bidder:             "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 				DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 				PaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(0)),
@@ -238,13 +205,6 @@ func TestCalcInterest(t *testing.T) {
 				BidTime:            time.Now(),
 				InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 				Borrowings:         []types.Borrowing{},
-				Id: types.BidId{
-					NftId: &types.NftIdentifier{
-						ClassId: "a10",
-						NftId:   "a10",
-					},
-					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
-				},
 			},
 			sdk.NewCoin("uguu", sdk.NewInt(100000)),
 			sdk.MustNewDecFromStr("0.1"),
@@ -255,11 +215,13 @@ func TestCalcInterest(t *testing.T) {
 		{
 			"check round off",
 			types.NftBid{
-				NftId: types.NftIdentifier{
-					ClassId: "a10",
-					NftId:   "a10",
+				Id: types.BidId{
+					NftId: &types.NftIdentifier{
+						ClassId: "a10",
+						NftId:   "a10",
+					},
+					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
-				Bidder:             "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 				DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 				PaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(0)),
@@ -269,13 +231,6 @@ func TestCalcInterest(t *testing.T) {
 				BidTime:            time.Now(),
 				InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 				Borrowings:         []types.Borrowing{},
-				Id: types.BidId{
-					NftId: &types.NftIdentifier{
-						ClassId: "a10",
-						NftId:   "a10",
-					},
-					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
-				},
 			},
 			sdk.NewCoin("uguu", sdk.NewInt(100032)),
 			sdk.MustNewDecFromStr("0.1"),

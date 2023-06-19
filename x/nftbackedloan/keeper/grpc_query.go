@@ -237,16 +237,6 @@ func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.Que
 	}, nil
 }
 
-func (k Keeper) CDPsList(c context.Context, req *types.QueryCDPsListRequest) (*types.QueryCDPsListResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
-	return &types.QueryCDPsListResponse{}, nil
-}
-
 func (k Keeper) NftBids(c context.Context, req *types.QueryNftBidsRequest) (*types.QueryNftBidsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -302,7 +292,7 @@ func (k Keeper) PaymentStatus(c context.Context, req *types.QueryPaymentStatusRe
 
 	var bidderBid types.NftBid
 	for _, v := range bids {
-		if v.Bidder == req.Bidder {
+		if v.Id.Bidder == req.Bidder {
 			bidderBid = v
 		}
 	}
@@ -315,7 +305,7 @@ func (k Keeper) PaymentStatus(c context.Context, req *types.QueryPaymentStatusRe
 		PaymentStatus: types.PaymentStatus{
 			NftId:            listing.NftId,
 			State:            listing.State,
-			Bidder:           bidderBid.Bidder,
+			Bidder:           bidderBid.Id.Bidder,
 			Amount:           bidderBid.BidAmount,
 			AutomaticPayment: bidderBid.AutomaticPayment,
 			PaidAmount:       bidderBid.DepositAmount.Amount,

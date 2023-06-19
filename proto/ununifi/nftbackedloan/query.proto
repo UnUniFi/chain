@@ -7,6 +7,7 @@ import "google/protobuf/timestamp.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
+import "ununifi/nftbackedloan/params.proto";
 import "ununifi/nftbackedloan/nftbackedloan.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/nftbackedloan/types";
@@ -17,16 +18,16 @@ service Query {
     option (google.api.http).get = "/ununifi/nftbackedloan/params";
   }
   rpc NftListing(QueryNftListingRequest) returns (QueryNftListingResponse) {
-    option (google.api.http).get = "/ununifi/nftbackedloan/nft_listing/{class_id}/{nft_id}";
+    option (google.api.http).get = "/ununifi/nftbackedloan/nft-listing/{class_id}/{nft_id}";
   }
   rpc ListedNfts(QueryListedNftsRequest) returns (QueryListedNftsResponse) {
-    option (google.api.http).get = "/ununifi/nftbackedloan/listed_nfts";
+    option (google.api.http).get = "/ununifi/nftbackedloan/listed-nfts";
   }
   rpc ListedClasses(QueryListedClassesRequest) returns (QueryListedClassesResponse) {
-    option (google.api.http).get = "/ununifi/nftbackedloan/listed_classes";
+    option (google.api.http).get = "/ununifi/nftbackedloan/listed-classes";
   }
   rpc ListedClass(QueryListedClassRequest) returns (QueryListedClassResponse) {
-    option (google.api.http).get = "/ununifi/nftbackedloan/listed_class/{class_id}/{nft_limit}";
+    option (google.api.http).get = "/ununifi/nftbackedloan/listed-class/{class_id}/{nft_limit}";
   }
 
   rpc Loans(QueryLoansRequest) returns (QueryLoansResponse) {
@@ -36,17 +37,14 @@ service Query {
   rpc Loan(QueryLoanRequest) returns (QueryLoanResponse) {
     option (google.api.http).get = "/ununifi/nftbackedloan/loans/{class_id}/{nft_id}";
   }
-  rpc CDPsList(QueryCDPsListRequest) returns (QueryCDPsListResponse) {
-    option (google.api.http).get = "/ununifi/nftbackedloan/cdps_list";
-  }
   rpc NftBids(QueryNftBidsRequest) returns (QueryNftBidsResponse) {
-    option (google.api.http).get = "/ununifi/nftbackedloan/nft_bids/{class_id}/{nft_id}";
+    option (google.api.http).get = "/ununifi/nftbackedloan/nft-bids/{class_id}/{nft_id}";
   }
   rpc BidderBids(QueryBidderBidsRequest) returns (QueryBidderBidsResponse) {
-    option (google.api.http).get = "/ununifi/nftbackedloan/bidder_bids/{bidder}";
+    option (google.api.http).get = "/ununifi/nftbackedloan/bidder-bids/{bidder}";
   }
   rpc PaymentStatus(QueryPaymentStatusRequest) returns (QueryPaymentStatusResponse) {
-    option (google.api.http).get = "/ununifi/nftbackedloan/payment_status/{class_id}/{nft_id}/{bidder}";
+    option (google.api.http).get = "/ununifi/nftbackedloan/payment-status/{class_id}/{nft_id}/{bidder}";
   }
   rpc Rewards(QueryRewardsRequest) returns (QueryRewardsResponse) {
     option (google.api.http).get = "/ununifi/nftbackedloan/rewards/{address}";
@@ -122,12 +120,6 @@ message QueryLoanResponse {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable)   = false
   ];
-}
-
-message QueryCDPsListRequest {}
-message QueryCDPsListResponse {
-  // List of collateral rates for each NFT secured
-  // Issuing stable tokens Balance list
 }
 
 message QueryNftBidsRequest {

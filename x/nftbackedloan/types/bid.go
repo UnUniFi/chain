@@ -8,7 +8,7 @@ import (
 )
 
 func (m NftBid) Equal(b NftBid) bool {
-	return m.Bidder == b.Bidder && m.NftId == b.NftId && m.BidAmount.Equal(b.BidAmount)
+	return m.Id.Bidder == b.Id.Bidder && m.Id.NftId == b.Id.NftId && m.BidAmount.Equal(b.BidAmount)
 }
 func (m NftBid) IsLT(b NftBid) bool {
 	if b.BidAmount.IsLTE(m.BidAmount) {
@@ -25,12 +25,12 @@ func (m NftBid) IsLT(b NftBid) bool {
 }
 
 func (m NftBid) GetIdToByte() []byte {
-	return NftBidBytes(m.NftId.ClassId, m.NftId.NftId, m.Bidder)
+	return NftBidBytes(m.Id.NftId.ClassId, m.Id.NftId.NftId, m.Id.Bidder)
 }
 
 // todo check test
 func (m NftBid) GetIdToString() string {
-	return string(NftBidBytes(m.NftId.ClassId, m.NftId.NftId, m.Bidder))
+	return string(NftBidBytes(m.Id.NftId.ClassId, m.Id.NftId.NftId, m.Id.Bidder))
 }
 
 func (m NftBid) IsBorrowing() bool {
@@ -122,7 +122,7 @@ func (m NftBid) CanReBid() bool {
 }
 
 func (m NftBid) IsNil() bool {
-	return m.Bidder == ""
+	return m.Id.Bidder == ""
 }
 
 type NftBids []NftBid
@@ -221,7 +221,7 @@ func (m NftBids) GetHighestBid() NftBid {
 
 func (m NftBids) GetBidByBidder(bidder string) NftBid {
 	for _, bid := range m {
-		if bid.Bidder == bidder {
+		if bid.Id.Bidder == bidder {
 			return bid
 		}
 	}
@@ -235,11 +235,11 @@ func (m NftBids) RemoveBid(targetBid NftBid) NftBids {
 func (m NftBids) RemoveBids(excludeBids NftBids) NftBids {
 	excludeList := make(map[string]bool)
 	for _, s := range excludeBids {
-		excludeList[s.Bidder] = true
+		excludeList[s.Id.Bidder] = true
 	}
 	var newArr NftBids
 	for _, s := range m {
-		if !excludeList[s.Bidder] {
+		if !excludeList[s.Id.Bidder] {
 			newArr = append(newArr, s)
 		}
 	}

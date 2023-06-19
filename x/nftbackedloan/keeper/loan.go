@@ -176,7 +176,7 @@ func (k Keeper) Refinancing(ctx sdk.Context, listing types.NftListing, bid types
 	// todo delete not depend on Debt
 	k.DecreaseDebt(ctx, listing.NftId, bid.BorrowingAmount())
 	liquidationAmount := bid.LiquidationAmount(ctx.BlockTime())
-	err = k.ManualBorrow(ctx, listing.NftId, liquidationAmount, listing.Owner, bid.Bidder)
+	err = k.ManualBorrow(ctx, listing.NftId, liquidationAmount, listing.Owner, bid.Id.Bidder)
 	if err != nil {
 		return err
 	}

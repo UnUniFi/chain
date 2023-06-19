@@ -210,7 +210,6 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 	listing := types.NftListing{
 		NftId:                msg.NftId,
 		Owner:                owner.String(),
-		ListingType:          msg.ListingType,
 		State:                types.ListingState_LISTING,
 		BidToken:             msg.BidToken,
 		MinimumDepositRate:   msg.MinimumDepositRate,
@@ -232,7 +231,7 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 	}
 
 	// Emit event for nft listing
-	ctx.EventManager().EmitTypedEvent(&types.EventListNft{
+	ctx.EventManager().EmitTypedEvent(&types.EventListingNft{
 		Owner:   msg.Sender,
 		ClassId: msg.NftId.ClassId,
 		NftId:   msg.NftId.NftId,
@@ -329,7 +328,7 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 	k.DeleteNftListings(ctx, listing)
 
 	// // Emit event for nft listing cancel
-	ctx.EventManager().EmitTypedEvent(&types.EventCancelListNfting{
+	ctx.EventManager().EmitTypedEvent(&types.EventCancelListingNft{
 		Owner:   msg.Sender,
 		ClassId: msg.NftId.ClassId,
 		NftId:   msg.NftId.NftId,
@@ -440,7 +439,7 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 
 	params := k.GetParamSet(ctx)
 	listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
-	listing.State = types.ListingState_SELLING_DECISION
+	listing.State = types.ListingState_DECIDED_SELLING
 	k.SaveNftListing(ctx, listing)
 
 	// automatic payment if enabled
@@ -448,7 +447,7 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 		winnerIndex := len(bids) - 1
 		bid := bids[winnerIndex]
 		if bid.AutomaticPayment {
-			bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+			bidder, err := sdk.AccAddressFromBech32(bid.Id.Bidder)
 			if err != nil {
 				fmt.Println(err)
 				return err
@@ -496,7 +495,7 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 	}
 
 	// check if listing is already ended
-	if listing.State == types.ListingState_END_LISTING || listing.State == types.ListingState_SELLING_DECISION {
+	if listing.State == types.ListingState_END_LISTING || listing.State == types.ListingState_DECIDED_SELLING {
 		return types.ErrListingAlreadyEnded
 	}
 
@@ -520,7 +519,7 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 		// automatic payment after listing ends
 		for _, bid := range bids {
 			if bid.AutomaticPayment {
-				bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+				bidder, err := sdk.AccAddressFromBech32(bid.Id.Bidder)
 				if err != nil {
 					fmt.Println(err)
 					continue
@@ -542,7 +541,7 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 	}
 
 	// Emit event for nft listing end
-	ctx.EventManager().EmitTypedEvent(&types.EventEndListNfting{
+	ctx.EventManager().EmitTypedEvent(&types.EventEndListingNft{
 		Owner:   msg.Sender,
 		ClassId: msg.NftId.ClassId,
 		NftId:   msg.NftId.NftId,
@@ -572,7 +571,7 @@ func (k Keeper) ProcessEndingNftListings(ctx sdk.Context) {
 			continue
 		}
 
-		listing, err := k.GetNftListingByIdBytes(ctx, bid.NftId.IdBytes())
+		listing, err := k.GetNftListingByIdBytes(ctx, bid.Id.NftId.IdBytes())
 		if err != nil {
 			fmt.Println("failed to get listing by id bytes: %w", err)
 			continue
@@ -620,7 +619,7 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 	for _, listing := range listings {
 		// todo change bids order which bids order should be ordered first
 		bids := types.NftBids(k.GetBidsByNft(ctx, listing.NftId.IdBytes()))
-		if listing.State == types.ListingState_SELLING_DECISION {
+		if listing.State == types.ListingState_DECIDED_SELLING {
 			// todo get higher bidding price Bid
 			HighestBid := bids.GetHighestBid()
 			// if winner bidder did not pay full bid, nft is listed again after deleting winner bidder
@@ -808,7 +807,7 @@ func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 			continue
 		}
 		bid := bids[0]
-		bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
+		bidder, err := sdk.AccAddressFromBech32(bid.Id.Bidder)
 		if err != nil {
 			continue
 		}

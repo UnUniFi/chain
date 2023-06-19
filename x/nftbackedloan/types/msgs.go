@@ -41,7 +41,6 @@ func NewMsgListNft(sender string, nftId NftIdentifier, bidToken string, minimumD
 		NftId:                nftId,
 		BidToken:             bidToken,
 		MinimumDepositRate:   minimumDepositRate,
-		ListingType:          ListingType_DIRECT_ASSET_BORROW,
 		AutomaticRefinancing: autoRefi,
 		MinimumBiddingPeriod: minBiddingPeriod,
 	}
