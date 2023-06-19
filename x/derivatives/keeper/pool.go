@@ -123,7 +123,7 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) (types.PoolMarketCap, error) {
 	}, nil
 }
 
-// IsPriceReady returns true if all assets have price feeded.
+// IsPriceReady returns true if all assets have price fed.
 // This is used to decide to run setPoolMarketCapSnapshot to avoid unnecessary snapshot.
 func (k Keeper) IsPriceReady(ctx sdk.Context) bool {
 	assets := k.GetPoolAcceptedAssetsConf(ctx)
@@ -131,7 +131,7 @@ func (k Keeper) IsPriceReady(ctx sdk.Context) bool {
 	for _, asset := range assets {
 		_, err := k.GetAssetPrice(ctx, asset.Denom)
 		if err != nil {
-			_ = ctx.EventManager().EmitTypedEvent(&types.EventPriceIsNotFeeded{
+			_ = ctx.EventManager().EmitTypedEvent(&types.EventPriceIsNotFed{
 				Asset: asset.String(),
 			})
 

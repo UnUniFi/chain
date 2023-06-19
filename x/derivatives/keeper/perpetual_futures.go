@@ -311,6 +311,11 @@ func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context,
 			RewardAmount:    rewardAmount.String(),
 			LeviedAmount:    position.LeviedAmount.String(),
 		})
+
+		_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesLiquidationFee{
+			Fee:        sdk.NewCoin(position.RemainingMargin.Denom, commissionFee),
+			PositionId: position.Id,
+		})
 	}
 
 	return nil
@@ -373,6 +378,17 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 		RemainingMargin: position.RemainingMargin.String(),
 		RewardAmount:    rewardAmount.String(),
 		LeviedAmount:    position.LeviedAmount.String(),
+	})
+
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesLevyFee{
+		Fee:        sdk.NewCoin(position.RemainingMargin.Denom, commissionFee),
+		PositionId: position.Id,
+	})
+
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesImaginaryFundingFee{
+		Fee:         sdk.NewCoin(position.RemainingMargin.Denom, imaginaryFundingFee.Abs()),
+		FeeNegative: imaginaryFundingFee.IsNegative(),
+		PositionId:  position.Id,
 	})
 
 	return nil
