@@ -200,13 +200,13 @@ message Reserve {
   ];
 }
 
-message EventPriceIsNotFeeded {
+message EventPriceIsNotFed {
   string asset = 1 [
     (gogoproto.moretags) = "yaml:\"asset\""
   ];
 }
 
-message EventPerpetualFuturesTradingFee {
+message EventPerpetualFuturesLevyFee {
   cosmos.base.v1beta1.Coin fee = 1 [
     (gogoproto.moretags) = "yaml:\"fee\"",
     (gogoproto.nullable) = false
@@ -220,6 +220,9 @@ message EventPerpetualFuturesImaginaryFundingFee {
   cosmos.base.v1beta1.Coin fee = 1 [
     (gogoproto.moretags) = "yaml:\"fee\"",
     (gogoproto.nullable) = false
+  ];
+  bool fee_negative = 3 [
+    (gogoproto.moretags) = "yaml:\"fee_negative\""
   ];
   string position_id = 2 [
     (gogoproto.moretags) = "yaml:\"position_id\""
