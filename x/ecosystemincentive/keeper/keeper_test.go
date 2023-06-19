@@ -13,28 +13,28 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	simapp "github.com/UnUniFi/chain/app"
-	nftmarketkeeper "github.com/UnUniFi/chain/x/nftbackedloan/keeper"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
+	nftbackedloankeeper "github.com/UnUniFi/chain/x/nftbackedloan/keeper"
+	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
 var (
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName: nil,
-		distrtypes.ModuleName:      nil,
-		minttypes.ModuleName:       {authtypes.Minter},
-		nft.ModuleName:             nil,
-		nftmarkettypes.ModuleName:  nil,
-		// nftmarkettypes.NftTradingFee: nil,
+		authtypes.FeeCollectorName:    nil,
+		distrtypes.ModuleName:         nil,
+		minttypes.ModuleName:          {authtypes.Minter},
+		nft.ModuleName:                nil,
+		nftbackedloantypes.ModuleName: nil,
+		// nftbackedloantypes.NftTradingFee: nil,
 	}
 )
 
 type KeeperTestSuite struct {
 	suite.Suite
 
-	ctx             sdk.Context
-	app             *simapp.App
-	addrs           []sdk.AccAddress
-	nftmarketKeeper nftmarketkeeper.Keeper
+	ctx                 sdk.Context
+	app                 *simapp.App
+	addrs               []sdk.AccAddress
+	nftbackedloanKeeper nftbackedloankeeper.Keeper
 }
 
 func (suite *KeeperTestSuite) SetupTest() {

@@ -13,9 +13,9 @@ import (
 func TestAddIncentiveUnitid(t *testing.T) {
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 
-	incentiveUnitIdsByAddr := types.NewIncentiveUnitIdsByAddr(addr.String(), "test")
+	incentiveUnitIdsByAddr := types.NewRecipientContainerIdsByAddr(addr.String(), "test")
 	addingId := "added_id"
-	newIncentiveUnitIdsByAddr := incentiveUnitIdsByAddr.AddIncentiveUnitId(addingId)
+	newIncentiveUnitIdsByAddr := incentiveUnitIdsByAddr.AddRecipientContainerId(addingId)
 	require.Equal(t, 2, len(newIncentiveUnitIdsByAddr))
 	require.Contains(t, newIncentiveUnitIdsByAddr, addingId)
 }
@@ -24,13 +24,13 @@ func TestCreateOrUpdate(t *testing.T) {
 	addr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 
 	// in case for creating new one
-	incentiveUnitIdsByAddr := types.IncentiveUnitIdsByAddr{}
+	incentiveUnitIdsByAddr := types.BelongingRecipientContainers{}
 	incentiveUnitIdsByAddr = incentiveUnitIdsByAddr.CreateOrUpdate(addr.String(), "test")
-	require.Equal(t, 1, len(incentiveUnitIdsByAddr.IncentiveUnitIds))
+	require.Equal(t, 1, len(incentiveUnitIdsByAddr.RecipientContainerIds))
 
 	// in case for the update by adding new id
 	addingId := "added_id"
 	incentiveUnitIdsByAddr = incentiveUnitIdsByAddr.CreateOrUpdate(addr.String(), addingId)
-	require.Equal(t, 2, len(incentiveUnitIdsByAddr.IncentiveUnitIds))
-	require.Contains(t, incentiveUnitIdsByAddr.IncentiveUnitIds, addingId)
+	require.Equal(t, 2, len(incentiveUnitIdsByAddr.RecipientContainerIds))
+	require.Contains(t, incentiveUnitIdsByAddr.RecipientContainerIds, addingId)
 }

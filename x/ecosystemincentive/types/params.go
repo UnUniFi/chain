@@ -6,26 +6,25 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
+	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
 var (
 	DafaultRewardParams = []*RewardParams{
 		{
-			ModuleName: nftmarkettypes.ModuleName,
-			RewardRate: []RewardRate{
-				{
-					RewardType: RewardType_FRONTEND_DEVELOPERS,
-					Rate:       sdk.MustNewDecFromStr("0.5"),
-				},
-			},
-		},
-		{
-			ModuleName: nftmarkettypes.ModuleName,
+			ModuleName: nftbackedloantypes.ModuleName,
 			RewardRate: []RewardRate{
 				{
 					RewardType: RewardType_STAKERS,
-					Rate:       sdk.MustNewDecFromStr("0.5"),
+					Rate:       sdk.MustNewDecFromStr("0.25"),
+				},
+				{
+					RewardType: RewardType_FRONTEND_DEVELOPERS,
+					Rate:       sdk.MustNewDecFromStr("0.2"),
+				},
+				{
+					RewardType: RewardType_COMMUNITY_POOL,
+					Rate:       sdk.MustNewDecFromStr("0.3"),
 				},
 			},
 		},
@@ -74,6 +73,7 @@ func validateRewardParams(i interface{}) error {
 	}
 
 	for _, rewardParam := range rewardParams {
+		totalRate := sdk.ZeroDec()
 		for _, rate := range rewardParam.RewardRate {
 			if rate.Rate.GT(sdk.OneDec()) {
 				return fmt.Errorf("each reward rate must be less than 1 dec")
@@ -82,6 +82,11 @@ func validateRewardParams(i interface{}) error {
 			if rate.Rate.IsNegative() {
 				return fmt.Errorf("each reward rate must be positive")
 			}
+
+			totalRate = totalRate.Add(rate.Rate)
+		}
+		if totalRate.GT(sdk.OneDec()) {
+			return fmt.Errorf("total reward rate must be less than 1 dec")
 		}
 	}
 

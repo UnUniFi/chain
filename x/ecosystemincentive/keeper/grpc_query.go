@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
+	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
 var _ types.QueryServer = Keeper{}
@@ -87,7 +87,7 @@ func (k Keeper) RecordedRecipientContainerId(c context.Context, req *types.Query
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 
-	nftIdentifier := nftmarkettypes.NftIdentifier{
+	nftIdentifier := nftbackedloantypes.NftIdentifier{
 		ClassId: req.ClassId,
 		NftId:   req.NftId,
 	}

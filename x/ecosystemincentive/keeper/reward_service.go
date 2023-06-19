@@ -1,21 +1,26 @@
 package keeper
 
 import (
-	"fmt"
-
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
+	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
-func (k Keeper) RewardDistributionOfNftmarket(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, fee sdk.Coin) error {
+func (k Keeper) RewardDistributionOfnftbackedloan(ctx sdk.Context, nftId nftbackedloantypes.NftIdentifier, fee sdk.Coin) error {
 	totalReward := sdk.ZeroInt()
+	rewardForCommunityPool := sdk.ZeroInt()
 	// First, get recipientContainerId by nftId from RecipientContainerIdByNftId KVStore
 	// If the recipientContainerId doesn't exist, return nil and distribute the reward for the frontend
 	// to the treasury.
+	nftbackedloanFrontendRewardRate := k.GetnftbackedloanFrontendRewardRate(ctx)
+	if nftbackedloanFrontendRewardRate == sdk.ZeroDec() {
+		return sdkerrors.Wrap(types.ErrRewardRateIsZero, "nftbackedloan frontend")
+	}
+	rewardForRecipientContainer := nftbackedloanFrontendRewardRate.MulInt(fee.Amount).TruncateInt()
+	totalReward = totalReward.Add(rewardForRecipientContainer)
 	recipientContainerId, exists := k.GetRecipientContainerIdByNftId(ctx, nftId)
 	if !exists {
 		// emit event to inform the nftId is not associated with recipientContainerId and return
@@ -24,41 +29,52 @@ func (k Keeper) RewardDistributionOfNftmarket(ctx sdk.Context, nftId nftmarketty
 			NftId:   nftId.NftId,
 		})
 
-		// TODO: impl the logic to distribute the reward for the frontend to the treasury
+		// Distribute the reward to the community pool if there's no recipientContainerId associated with the nftId
+		rewardForCommunityPool = rewardForCommunityPool.Add(rewardForRecipientContainer)
 	} else {
-		nftmarketFrontendRewardRate := k.GetNftmarketFrontendRewardRate(ctx)
-		// if the reward rate was not found or set as zero, just return
-		if nftmarketFrontendRewardRate == sdk.ZeroDec() {
-			err := fmt.Errorf(sdkerrors.Wrap(types.ErrRewardRateNotFound, "nftmarket frontend").Error())
-			return err
-		}
-		rewardForRecipientContainer := nftmarketFrontendRewardRate.MulInt(fee.Amount).TruncateInt()
-		totalReward = totalReward.Add(rewardForRecipientContainer)
-
-		// Distribute the reward to the incentive unit
-		if err := k.AccumulateRewardForFrontend(ctx, recipientContainerId, sdk.NewCoin(fee.Denom, rewardForRecipientContainer)); err != nil {
-			return err
-		}
+		rewardForRecipientContainer = sdk.ZeroInt()
 	}
 
 	stakersRewardRate := k.GetStakersRewardRate(ctx)
 	// if the reward rate was not found or set as zero, just return
 	if stakersRewardRate == sdk.ZeroDec() {
-		err := fmt.Errorf(sdkerrors.Wrap(types.ErrRewardRateNotFound, "stakers").Error())
-		return err
+		return sdkerrors.Wrap(types.ErrRewardRateNotFound, "stakers")
 	}
-
 	rewardForStakers := stakersRewardRate.MulInt(fee.Amount).TruncateInt()
 	totalReward = totalReward.Add(rewardForStakers)
 
+	communityPoolRate := k.GetCommunityPoolRewardRate(ctx)
+	if communityPoolRate == sdk.ZeroDec() {
+		return sdkerrors.Wrap(types.ErrRewardRateIsZero, communityPoolRate.String())
+	}
+	rewardForCommunityPool = rewardForCommunityPool.Add(communityPoolRate.MulInt(fee.Amount).TruncateInt())
+	totalReward = totalReward.Add(rewardForCommunityPool)
+
+	// TODO: we need better panic handling
 	// Emit panic if the reward for incentive unit exceeds the fee amount
 	if totalReward.GT(fee.Amount) {
 		panic(types.ErrRewardExceedsFee)
 	}
 
-	// Distribute the reward to the stakers
-	if err := k.AllocateTokensToStakers(ctx, sdk.NewCoin(fee.Denom, rewardForStakers)); err != nil {
-		return err
+	// Distribute the reward to the recipients if the reward exists
+	if !rewardForRecipientContainer.IsZero() {
+		if err := k.AccumulateRewardForFrontend(ctx, recipientContainerId, sdk.NewCoin(fee.Denom, rewardForRecipientContainer)); err != nil {
+			return err
+		}
+	}
+
+	// Distribute the reward to the stakers if the reward exists
+	if !rewardForStakers.IsZero() {
+		if err := k.AllocateTokensToStakers(ctx, sdk.NewCoin(fee.Denom, rewardForStakers)); err != nil {
+			return err
+		}
+	}
+
+	// Distribute the reward to the community pool if the reward exists
+	if !rewardForCommunityPool.IsZero() {
+		if err := k.AllocateTokensToCommunityPool(ctx, sdk.NewCoin(fee.Denom, rewardForCommunityPool)); err != nil {
+			return err
+		}
 	}
 
 	return nil

@@ -1,8 +1,9 @@
 package keeper_test
 
 import (
-	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
 )
 
 func (suite *KeeperTestSuite) TestRegister() {
@@ -70,10 +71,10 @@ func (suite *KeeperTestSuite) TestRegister() {
 		if tc.success {
 			suite.Require().NoError(err)
 			for i, subject := range *subjectInfo {
-				suite.Require().Equal(subject.SubjectAddr, tc.subjectAddrs[i])
+				suite.Require().Equal(subject.Address, tc.subjectAddrs[i])
 				suite.Require().Equal(subject.Weight, tc.weights[i])
 
-				recipientContainerIdsByAddr := suite.app.EcosystemincentiveKeeper.GetRecipientContainerIdsByAddr(suite.ctx, subject.SubjectAddr.AccAddress())
+				recipientContainerIdsByAddr := suite.app.EcosystemincentiveKeeper.GetRecipientContainerIdsByAddr(suite.ctx, sdk.AccAddress(subject.Address))
 				suite.Require().Contains(recipientContainerIdsByAddr.RecipientContainerIds, tc.recipientContainerId)
 			}
 		} else {
