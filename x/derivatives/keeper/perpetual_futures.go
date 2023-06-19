@@ -499,3 +499,13 @@ func (k Keeper) ConvertBaseAmountToQuoteAmount(ctx sdk.Context, market types.Mar
 
 	return sdk.NewDecFromInt(amount).Mul(quoteMetricsRate.Amount.Amount).Quo(baseMetricsRate.Amount.Amount).RoundInt()
 }
+
+func (k Keeper) GetPerpetualFuturesPositionSizeInMetrics(ctx sdk.Context, market types.Market, pType types.PositionType) sdk.Dec {
+	perpFuturesLongPositionNum := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, pType)
+	baseDenomPrice, err := k.GetPrice(ctx, market.BaseDenom, market.QuoteDenom)
+	if err != nil {
+		return sdk.ZeroDec()
+	}
+
+	return sdk.NewDecFromInt(perpFuturesLongPositionNum.PositionSizeInDenomExponent).Mul(baseDenomPrice.Price)
+}
