@@ -153,11 +153,13 @@ import (
 	// "github.com/UnUniFi/chain/x/nftfactory"
 	// nftmintkeeper "github.com/UnUniFi/chain/x/nftfactory/keeper"
 	// nftminttypes "github.com/UnUniFi/chain/x/nftfactory/types"
-	// "github.com/UnUniFi/chain/x/derivatives"
-	// derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
-	// derivativestypes "github.com/UnUniFi/chain/x/derivatives/types"
-	// "github.com/UnUniFi/chain/x/pricefeed"
-	// pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
+	"github.com/UnUniFi/chain/x/derivatives"
+	derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
+	derivativestypes "github.com/UnUniFi/chain/x/derivatives/types"
+	"github.com/UnUniFi/chain/x/pricefeed"
+	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
+	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
+
 	// ecosystemincentive "github.com/UnUniFi/chain/x/ecosystemincentive"
 	// ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystemincentive/types"
 
@@ -253,8 +255,8 @@ var (
 		records.AppModuleBasic{},
 		icacallbacks.AppModuleBasic{},
 
-		// pricefeed.AppModuleBasic{},
-		// derivatives.AppModuleBasic{},
+		pricefeed.AppModuleBasic{},
+		derivatives.AppModuleBasic{},
 
 		// ecosystemincentive.AppModuleBasic{},
 	)
@@ -282,9 +284,9 @@ var (
 		stakeibctypes.ModuleName:        {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		interchainquerytypes.ModuleName: nil,
 
-		// derivativestypes.ModuleName:             {authtypes.Minter, authtypes.Burner},
-		// derivativestypes.DerivativeFeeCollector: nil,
-		// derivativestypes.MarginManager:          nil,
+		derivativestypes.ModuleName:             {authtypes.Minter, authtypes.Burner},
+		derivativestypes.DerivativeFeeCollector: nil,
+		derivativestypes.MarginManager:          nil,
 
 		// ecosystemincentivetypes.ModuleName:      nil,
 	}
@@ -374,8 +376,8 @@ type App struct {
 	ScopedIcacallbacksKeeper capabilitykeeper.ScopedKeeper
 	IcacallbacksKeeper       icacallbackskeeper.Keeper
 
-	// DerivativesKeeper        derivativeskeeper.Keeper
-	// PricefeedKeeper          pricefeedkeeper.Keeper
+	DerivativesKeeper derivativeskeeper.Keeper
+	PricefeedKeeper   pricefeedkeeper.Keeper
 
 	// EcosystemincentiveKeeper ecosystemincentivekeeper.Keeper
 
@@ -440,8 +442,8 @@ func NewApp(
 		recordstypes.StoreKey,
 		icacallbackstypes.StoreKey,
 
-		// derivativestypes.StoreKey,
-		// pricefeedtypes.StoreKey,
+		derivativestypes.StoreKey,
+		pricefeedtypes.StoreKey,
 
 		// ecosystemincentivetypes.StoreKey,
 	)
@@ -809,23 +811,22 @@ func NewApp(
 			app.StakeibcKeeper.Hooks(),
 		),
 	)
+	app.PricefeedKeeper = pricefeedkeeper.NewKeeper(
+		appCodec,
+		keys[pricefeedtypes.StoreKey],
+		keys[pricefeedtypes.MemStoreKey],
+		app.GetSubspace(pricefeedtypes.ModuleName),
+		app.BankKeeper,
+	)
 
-	// app.DerivativesKeeper = derivativeskeeper.NewKeeper(
-	// 	appCodec,
-	// 	keys[derivativestypes.StoreKey],
-	// 	keys[derivativestypes.MemStoreKey],
-	// 	app.GetSubspace(derivativestypes.ModuleName),
-	// 	app.BankKeeper,
-	// 	app.PricefeedKeeper,
-	// )
-
-	// app.PricefeedKeeper = pricefeedkeeper.NewKeeper(
-	// 	appCodec,
-	// 	keys[pricefeedtypes.StoreKey],
-	// 	keys[pricefeedtypes.MemStoreKey],
-	// 	app.GetSubspace(pricefeedtypes.ModuleName),
-	// 	app.BankKeeper,
-	// )
+	app.DerivativesKeeper = derivativeskeeper.NewKeeper(
+		appCodec,
+		keys[derivativestypes.StoreKey],
+		keys[derivativestypes.MemStoreKey],
+		app.GetSubspace(derivativestypes.ModuleName),
+		app.BankKeeper,
+		app.PricefeedKeeper,
+	)
 
 	// app.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
 	// 	appCodec,
@@ -954,8 +955,8 @@ func NewApp(
 		records.NewAppModule(appCodec, app.RecordsKeeper, app.AccountKeeper, app.BankKeeper),
 		icacallbacks.NewAppModule(appCodec, app.IcacallbacksKeeper, app.AccountKeeper, app.BankKeeper),
 
-		// derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
-		// pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
+		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
+		pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
 		// ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
 	)
 
@@ -985,7 +986,7 @@ func NewApp(
 		consensusparamtypes.ModuleName,
 		// original modules
 		// ecosystemincentivetypes.ModuleName,
-		// pricefeedtypes.ModuleName,
+		pricefeedtypes.ModuleName,
 
 		// nftminttypes.ModuleName,
 		// nftmarkettypes.ModuleName,
@@ -997,7 +998,7 @@ func NewApp(
 		icacallbackstypes.ModuleName,
 
 		yieldaggregatortypes.ModuleName,
-		// derivativestypes.ModuleName,
+		derivativestypes.ModuleName,
 
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
@@ -1029,7 +1030,7 @@ func NewApp(
 		consensusparamtypes.ModuleName,
 		// original modules
 		// ecosystemincentivetypes.ModuleName,
-		// pricefeedtypes.ModuleName,
+		pricefeedtypes.ModuleName,
 
 		// nftminttypes.ModuleName,
 		// nftmarkettypes.ModuleName,
@@ -1040,7 +1041,7 @@ func NewApp(
 		icacallbackstypes.ModuleName,
 
 		yieldaggregatortypes.ModuleName,
-		// derivativestypes.ModuleName,
+		derivativestypes.ModuleName,
 
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
@@ -1079,7 +1080,7 @@ func NewApp(
 		consensusparamtypes.ModuleName,
 
 		// original modules
-		// pricefeedtypes.ModuleName,
+		pricefeedtypes.ModuleName,
 		// nftminttypes.ModuleName,
 		// nftmarkettypes.ModuleName,
 		// ecosystemincentivetypes.ModuleName,
@@ -1091,7 +1092,7 @@ func NewApp(
 		icacallbackstypes.ModuleName,
 
 		yieldaggregatortypes.ModuleName,
-		// derivativestypes.ModuleName,
+		derivativestypes.ModuleName,
 
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
@@ -1434,8 +1435,8 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icacallbackstypes.ModuleName)
 	paramsKeeper.Subspace(yieldaggregatortypes.ModuleName)
 
-	// paramsKeeper.Subspace(pricefeedtypes.ModuleName)
-	// paramsKeeper.Subspace(derivativestypes.ModuleName)
+	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
+	paramsKeeper.Subspace(derivativestypes.ModuleName)
 	// paramsKeeper.Subspace(ecosystemincentivetypes.ModuleName)
 
 	return paramsKeeper
@@ -1480,4 +1481,6 @@ func (app *App) setupAppkeeper() {
 	app.AppKeepers.ParamsKeeper = &app.ParamsKeeper
 	app.AppKeepers.WasmKeeper = &app.WasmKeeper
 	app.AppKeepers.YieldaggregatorKeeper = &app.YieldaggregatorKeeper
+	app.AppKeepers.PricefeedKeeper = &app.PricefeedKeeper
+	app.AppKeepers.DerivativesKeeper = &app.DerivativesKeeper
 }

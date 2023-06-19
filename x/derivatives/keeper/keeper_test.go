@@ -15,7 +15,6 @@ import (
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 
 	simapp "github.com/UnUniFi/chain/app"
-	ununifitypes "github.com/UnUniFi/chain/deprecated/types"
 	"github.com/UnUniFi/chain/x/derivatives/keeper"
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
@@ -71,8 +70,8 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 	pfParams := pricefeedtypes.Params{
 		Markets: []pricefeedtypes.Market{
-			{MarketId: "uusdc:usd", BaseAsset: TestQuoteTokenDenom, QuoteAsset: TestQuoteTokenDenom, Oracles: []ununifitypes.StringAccAddress{}, Active: true},
-			{MarketId: "uatom:usd", BaseAsset: TestBaseTokenDenom, QuoteAsset: TestQuoteTokenDenom, Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+			{MarketId: "uusdc:usd", BaseAsset: TestQuoteTokenDenom, QuoteAsset: TestQuoteTokenDenom, Oracles: []string{}, Active: true},
+			{MarketId: "uatom:usd", BaseAsset: TestBaseTokenDenom, QuoteAsset: TestQuoteTokenDenom, Oracles: []string{}, Active: true},
 		},
 	}
 	app.PricefeedKeeper.SetParams(suite.ctx, pfParams)

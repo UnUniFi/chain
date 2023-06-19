@@ -5,7 +5,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	ununifitypes "github.com/UnUniFi/chain/deprecated/types"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
@@ -21,7 +20,7 @@ func (suite *KeeperTestSuite) TestGetAssetPrice() {
 	suite.Require().NoError(err)
 	params := suite.app.PricefeedKeeper.GetParams(suite.ctx)
 	params.Markets = []pricefeedtypes.Market{
-		{MarketId: "uatom:usd", BaseAsset: "uatom", QuoteAsset: "usd", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+		{MarketId: "uatom:usd", BaseAsset: "uatom", QuoteAsset: "usd", Oracles: []string{}, Active: true},
 	}
 	suite.app.PricefeedKeeper.SetParams(suite.ctx, params)
 	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:usd")
@@ -45,7 +44,7 @@ func (suite *KeeperTestSuite) TestGetPrice() {
 	suite.Require().NoError(err)
 	params := suite.app.PricefeedKeeper.GetParams(suite.ctx)
 	params.Markets = []pricefeedtypes.Market{
-		{MarketId: "uusdc:usd", BaseAsset: "uusdc", QuoteAsset: "usd", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+		{MarketId: "uusdc:usd", BaseAsset: "uusdc", QuoteAsset: "usd", Oracles: []string{}, Active: true},
 	}
 	suite.app.PricefeedKeeper.SetParams(suite.ctx, params)
 	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uusdc:usd")
