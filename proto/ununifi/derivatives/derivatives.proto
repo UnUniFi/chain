@@ -48,12 +48,19 @@ message Position {
     (gogoproto.moretags) = "yaml:\"remaining_margin\"",
     (gogoproto.nullable) = false
   ];
-  google.protobuf.Timestamp last_levied_at = 9 [
+  cosmos.base.v1beta1.Coin levied_amount = 9 [
+    (gogoproto.moretags) = "yaml:\"levied_amount\"",
+    (gogoproto.nullable) = false
+  ];
+  bool levied_amount_negative = 10 [
+    (gogoproto.moretags) = "yaml:\"levied_amount_negative\""
+  ];
+  google.protobuf.Timestamp last_levied_at = 11 [
     (gogoproto.moretags) = "yaml:\"last_levied_at\"",
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
-  google.protobuf.Any position_instance = 10 [
+  google.protobuf.Any position_instance = 12 [
     (gogoproto.moretags) = "yaml:\"position_instance\"",
     (gogoproto.nullable) = false
   ];
