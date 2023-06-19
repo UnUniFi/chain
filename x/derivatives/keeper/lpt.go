@@ -229,8 +229,6 @@ func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgWithdr
 		return fmt.Errorf("invalid withdraw token: %s", msg.RedeemDenom)
 	}
 
-	// todo:check validator address,amount,redeem denom
-	// todo: use CacheCtx
 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return err
@@ -260,8 +258,16 @@ func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgWithdr
 		return types.ErrInsufficientPoolFund
 	}
 
+	// First, Get the correct amount of udlp and burn it
+	err = k.BurnCoin(ctx, sender, sdk.NewCoin(types.LiquidityProviderTokenDenom, amount))
+	if err != nil {
+		return err
+	}
+
 	if redeemFee.IsPositive() {
 		// send redeem fee to fee pool
+		// TODO: integrate into ecosystem-incentive module
+		// temporarily, send mint fee to fee pool of the derivatives module
 		err = k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, types.DerivativeFeeCollector, sdk.Coins{redeemFee})
 		if err != nil {
 			return err
@@ -274,20 +280,12 @@ func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgWithdr
 		return err
 	}
 
-	err = k.BurnCoin(ctx, sender, sdk.NewCoin(types.LiquidityProviderTokenDenom, amount))
-	if err != nil {
-		return err
-	}
-
-	err = k.CollectedFee(ctx, redeemFee)
-	if err != nil {
-		return err
-	}
-
 	// todo emit event
 	return nil
 }
 
+// BurnCoin is used especially for the process of burning udlp.
+// It executes retrieving udlp from the user's account and burning it.
 func (k Keeper) BurnCoin(ctx sdk.Context, burner sdk.AccAddress, amount sdk.Coin) error {
 	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, burner, types.ModuleName, sdk.Coins{amount})
 	if err != nil {
@@ -297,15 +295,5 @@ func (k Keeper) BurnCoin(ctx sdk.Context, burner sdk.AccAddress, amount sdk.Coin
 	if err != nil {
 		return err
 	}
-	return nil
-}
-
-// collect fee
-func (k Keeper) CollectedFee(ctx sdk.Context, fee sdk.Coin) error {
-	// todo: implement
-	// LP fee = 70%
-	// Protocol fee = 30%
-	// fee.Amount.Mul(sdk.NewInt(0.7))
-	// k.IncreaseRedeemDenomAmount(ctx, fee)
 	return nil
 }
