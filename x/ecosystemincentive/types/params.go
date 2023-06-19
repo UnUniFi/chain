@@ -6,13 +6,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
+	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
 var (
 	DafaultRewardParams = []*RewardParams{
 		{
-			ModuleName: nftmarkettypes.ModuleName,
+			ModuleName: nftbackedloantypes.ModuleName,
 			RewardRate: []RewardRate{
 				{
 					RewardType: RewardType_STAKERS,

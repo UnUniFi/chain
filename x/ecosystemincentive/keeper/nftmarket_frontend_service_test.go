@@ -9,7 +9,7 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 
 	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
+	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
 func (suite *KeeperTestSuite) TestRecordIncentiveUnitIdWithNftId() {
@@ -57,7 +57,7 @@ func (suite *KeeperTestSuite) TestRecordIncentiveUnitIdWithNftId() {
 		},
 	}
 	for _, test := range tests {
-		nftId := nftmarkettypes.NftIdentifier{
+		nftId := nftbackedloantypes.NftIdentifier{
 			ClassId: test.classId,
 			NftId:   test.nftId,
 		}
@@ -96,7 +96,7 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 		subjectAddrs         []string
 		weights              []sdk.Dec
 		fee                  sdk.Coin
-		nftId                nftmarkettypes.NftIdentifier
+		nftId                nftbackedloantypes.NftIdentifier
 		rewardAmount         math.Int
 		expect               bool
 		record               bool
@@ -109,7 +109,7 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 			subjectAddrs:         []string{sender.String()},
 			weights:              []sdk.Dec{sdk.OneDec()},
 			fee:                  sdk.Coin{},
-			nftId: nftmarkettypes.NftIdentifier{
+			nftId: nftbackedloantypes.NftIdentifier{
 				ClassId: "class2",
 				NftId:   "nft2",
 			},
@@ -127,7 +127,7 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 				Denom:  "uguu",
 				Amount: sdk.NewInt(1000),
 			},
-			nftId: nftmarkettypes.NftIdentifier{
+			nftId: nftbackedloantypes.NftIdentifier{
 				ClassId: "class1",
 				NftId:   "nft1",
 			},
@@ -148,7 +148,7 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 				sdk.MustNewDecFromStr("0.5"),
 			},
 			fee: sdk.Coin{Denom: "uguu", Amount: math.NewInt(1000)},
-			nftId: nftmarkettypes.NftIdentifier{
+			nftId: nftbackedloantypes.NftIdentifier{
 				ClassId: "class2",
 				NftId:   "nft2",
 			},
@@ -166,7 +166,7 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 				Denom:  "uguu",
 				Amount: sdk.NewInt(1000),
 			},
-			nftId: nftmarkettypes.NftIdentifier{
+			nftId: nftbackedloantypes.NftIdentifier{
 				ClassId: "class3",
 				NftId:   "nft3",
 			},
@@ -197,7 +197,7 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 			suite.Require().NoError(err)
 
 			// check the actual accumalted reward amount
-			feeRate := suite.app.EcosystemincentiveKeeper.GetNftmarketFrontendRewardRate(suite.ctx)
+			feeRate := suite.app.EcosystemincentiveKeeper.GetnftbackedloanFrontendRewardRate(suite.ctx)
 			rewardAmount := feeRate.MulInt(test.fee.Amount).RoundInt()
 			if test.multipleSubject {
 				for index := range test.weights {
@@ -224,7 +224,7 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 // RecordIncentiveUnitIdWithNftIdTest is a mehtod to have the exact same logic
 // for being used in test cases to return error as return value
 // since the normal RecordIncentiveUnitIdWithNftId doesn't return any value by intention
-func (suite *KeeperTestSuite) RecordIncentiveUnitIdWithNftIdTest(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, recipientContainerId string) error {
+func (suite *KeeperTestSuite) RecordIncentiveUnitIdWithNftIdTest(ctx sdk.Context, nftId nftbackedloantypes.NftIdentifier, recipientContainerId string) error {
 	// panic if the nftId is already recorded in the store.
 	if _, exists := suite.app.EcosystemincentiveKeeper.GetRecipientContainerIdByNftId(ctx, nftId); exists {
 		return types.ErrRecordedNftId
@@ -243,7 +243,7 @@ func (suite *KeeperTestSuite) RecordIncentiveUnitIdWithNftIdTest(ctx sdk.Context
 }
 
 // Just mock method to use in only test
-func (suite *KeeperTestSuite) AccumulateRewardForFrontendTest(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, fee sdk.Coin) error {
+func (suite *KeeperTestSuite) AccumulateRewardForFrontendTest(ctx sdk.Context, nftId nftbackedloantypes.NftIdentifier, fee sdk.Coin) error {
 	// get recipientContainerId by nftId from IncentiveUnitIdByNftId KVStore
 	recipientContainerId, exists := suite.app.EcosystemincentiveKeeper.GetRecipientContainerIdByNftId(ctx, nftId)
 	if !exists {
@@ -255,15 +255,15 @@ func (suite *KeeperTestSuite) AccumulateRewardForFrontendTest(ctx sdk.Context, n
 		return types.ErrNotRegisteredRecipientContainerId
 	}
 
-	nftmarketFrontendRewardRate := suite.app.EcosystemincentiveKeeper.GetNftmarketFrontendRewardRate(ctx)
+	nftbackedloanFrontendRewardRate := suite.app.EcosystemincentiveKeeper.GetnftbackedloanFrontendRewardRate(ctx)
 
 	// if the reward rate was not found, emit panic
-	if nftmarketFrontendRewardRate == sdk.ZeroDec() {
+	if nftbackedloanFrontendRewardRate == sdk.ZeroDec() {
 		return types.ErrRewardRateNotFound
 	}
 
 	// rewardAmountForAll = fee * rewardRate
-	rewardAmountForAll := nftmarketFrontendRewardRate.MulInt(fee.Amount).RoundInt()
+	rewardAmountForAll := nftbackedloanFrontendRewardRate.MulInt(fee.Amount).RoundInt()
 
 	for _, subjectInfo := range incentiveUnit.WeightedAddresses {
 		rewardStore, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(ctx, sdk.AccAddress(subjectInfo.Address))

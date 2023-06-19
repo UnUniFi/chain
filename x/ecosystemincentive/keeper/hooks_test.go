@@ -5,13 +5,13 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
 	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
+	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
 func (suite *KeeperTestSuite) TestAfterNftListed() {
 	tests := []struct {
 		testCase             string
-		nftId                nftmarkettypes.NftIdentifier
+		nftId                nftbackedloantypes.NftIdentifier
 		recipientContainerId string
 		subjectAddrs         []string
 		weights              []sdk.Dec
@@ -23,7 +23,7 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 	}{
 		{
 			testCase: "ordinal success case",
-			nftId: nftmarkettypes.NftIdentifier{
+			nftId: nftbackedloantypes.NftIdentifier{
 				ClassId: "class1",
 				NftId:   "nft1",
 			},
@@ -40,7 +40,7 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 		},
 		{
 			testCase: "incentive unit id is not registered",
-			nftId: nftmarkettypes.NftIdentifier{
+			nftId: nftbackedloantypes.NftIdentifier{
 				ClassId: "class2",
 				NftId:   "nft2",
 			},
@@ -52,7 +52,7 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 		},
 		{
 			testCase: "panic since incentive unit id is already recorded with nft id",
-			nftId: nftmarkettypes.NftIdentifier{
+			nftId: nftbackedloantypes.NftIdentifier{
 				ClassId: "class1",
 				NftId:   "nft1",
 			},
@@ -64,7 +64,7 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 		},
 		{
 			testCase: "invalid memo format",
-			nftId: nftmarkettypes.NftIdentifier{
+			nftId: nftbackedloantypes.NftIdentifier{
 				ClassId: "class3",
 				NftId:   "nft3",
 			},
@@ -81,7 +81,7 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 		},
 		{
 			testCase: "invalid memo format version",
-			nftId: nftmarkettypes.NftIdentifier{
+			nftId: nftbackedloantypes.NftIdentifier{
 				ClassId: "class4",
 				NftId:   "nft4",
 			},
@@ -135,7 +135,7 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 	tests := []struct {
 		testCase             string
-		nftId                nftmarkettypes.NftIdentifier
+		nftId                nftbackedloantypes.NftIdentifier
 		reward               sdk.Coin
 		recipientContainerId string
 		subjectAddrs         []string
@@ -149,7 +149,7 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 	}{
 		{
 			testCase: "failure case since incentive unit id was not recorded with nft id",
-			nftId: nftmarkettypes.NftIdentifier{
+			nftId: nftbackedloantypes.NftIdentifier{
 				ClassId: "class1",
 				NftId:   "nft1",
 			},
@@ -164,7 +164,7 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 		},
 		{
 			testCase: "failure case since there's no fee to distribute",
-			nftId: nftmarkettypes.NftIdentifier{
+			nftId: nftbackedloantypes.NftIdentifier{
 				ClassId: "class2",
 				NftId:   "nft2",
 			},
@@ -179,7 +179,7 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 		},
 		{
 			testCase: "ordinal case",
-			nftId: nftmarkettypes.NftIdentifier{
+			nftId: nftbackedloantypes.NftIdentifier{
 				ClassId: "class3",
 				NftId:   "nft3",
 			},
@@ -196,7 +196,7 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 		},
 		{
 			testCase: "ordinal case",
-			nftId: nftmarkettypes.NftIdentifier{
+			nftId: nftbackedloantypes.NftIdentifier{
 				ClassId: "class4",
 				NftId:   "nft4",
 			},
@@ -259,7 +259,7 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 func (suite *KeeperTestSuite) TestAfterNftUnlistedWithoutPayment() {
 	tests := []struct {
 		testCase             string
-		nftId                nftmarkettypes.NftIdentifier
+		nftId                nftbackedloantypes.NftIdentifier
 		recipientContainerId string
 		subjectAddrs         []string
 		weights              []sdk.Dec
@@ -268,7 +268,7 @@ func (suite *KeeperTestSuite) TestAfterNftUnlistedWithoutPayment() {
 	}{
 		{
 			testCase: "ordinal case",
-			nftId: nftmarkettypes.NftIdentifier{
+			nftId: nftbackedloantypes.NftIdentifier{
 				ClassId: "class1",
 				NftId:   "nft1",
 			},
@@ -281,7 +281,7 @@ func (suite *KeeperTestSuite) TestAfterNftUnlistedWithoutPayment() {
 		},
 		{
 			testCase: "not recorded case",
-			nftId: nftmarkettypes.NftIdentifier{
+			nftId: nftbackedloantypes.NftIdentifier{
 				ClassId: "class2",
 				NftId:   "nft2",
 			},

@@ -25,7 +25,7 @@ func (suite *KeeperTestSuite) TestParams() {
 			input: types.Params{
 				RewardParams: []*types.RewardParams{
 					{
-						ModuleName: "nftmarket",
+						ModuleName: "nftbackedloan",
 						RewardRate: []types.RewardRate{
 							{
 								RewardType: types.RewardType_FRONTEND_DEVELOPERS,
@@ -42,7 +42,7 @@ func (suite *KeeperTestSuite) TestParams() {
 			input: types.Params{
 				RewardParams: []*types.RewardParams{
 					{
-						ModuleName: "nftmarket",
+						ModuleName: "nftbackedloan",
 						RewardRate: []types.RewardRate{
 							{
 								RewardType: types.RewardType_FRONTEND_DEVELOPERS,

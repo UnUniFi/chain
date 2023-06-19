@@ -5,7 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
+	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
 // AllocateTokensToStakers performs reward and fee distribution to all validators based
@@ -33,7 +33,7 @@ func (k Keeper) GetStakersRewardRate(ctx sdk.Context) sdk.Dec {
 	rewardParams := params.RewardParams
 
 	for _, rewardParam := range rewardParams {
-		if rewardParam.ModuleName == nftmarkettypes.ModuleName {
+		if rewardParam.ModuleName == nftbackedloantypes.ModuleName {
 			for _, rewardRate := range rewardParam.RewardRate {
 				if rewardRate.RewardType == types.RewardType_STAKERS {
 					return rewardRate.Rate

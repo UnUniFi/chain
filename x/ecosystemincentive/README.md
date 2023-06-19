@@ -32,9 +32,9 @@ Any subjects can send a register message `MsgIncentiveRegister` with the `incent
 
 ## Getting Ecosystem Incentive Reward
 
-This model of distribution reward could be applied to many use-cases. But, we write down only about the case for Nftmarket Frontend model here for better explanation of the sense of this module.   
+This model of distribution reward could be applied to many use-cases. But, we write down only about the case for nftbackedloan Frontend model here for better explanation of the sense of this module.   
 First, the subjects must register to get incentive by sending `MsgIncentiveRegister`.   
-Once the `incentive_id` is registered, they insert that `incentive_id` in the target message which is `MsgListNft` memo field precisely to get the reward for the Nftmarket Frontend incentive mode.
+Once the `incentive_id` is registered, they insert that `incentive_id` in the target message which is `MsgListNft` memo field precisely to get the reward for the nftbackedloan Frontend incentive mode.
 Once the `NftIdentifer` on the market is connected with `incentive_id`, `AfterNftPaymentWithCommission` hook function triggers methods to reflect the reward amount for according addresses in `incentive_id`.
 
 ## Withdrawing Ecosystem Incentive Reward
@@ -93,9 +93,9 @@ The ratio of the reward distribution in a `incentive_store` unit.
 `incentive_store` can contain several `subject`s and ratio for each.   
 
 
-## NftmarketFrontendIncentiveIdTable
+## nftbackedloanFrontendIncentiveIdTable
 
-- nftmarket_frontend_incentive_id_table: `format(nft_id) -> format(incentive_id)`
+- nftbackedloan_frontend_incentive_id_table: `format(nft_id) -> format(incentive_id)`
 
 This KVStore manages what NFT is connected to which `incentive_id`.
 
@@ -147,7 +147,7 @@ message RewardRate {
   ];
 }
 
-// NFTMARKET_FRONTEND type reward will be disributed for the creators of frontend of UnUniFi's services.
+// nftbackedloan_FRONTEND type reward will be disributed for the creators of frontend of UnUniFi's services.
 enum RewardType {
   UNKNOWN = 0;
   STAKERS = 1;
@@ -361,10 +361,10 @@ message QueryIncentiveUnitIdsByAddrResponse {
 
 All rewards accumulation are executed when the according hooks function is called.   
 
-The example hooks functions interfaces in x/nftmarket module:
+The example hooks functions interfaces in x/nftbackedloan module:
 
 ```go
-type NftmarketHooks interface {
+type nftbackedloanHooks interface {
 	AfterNftListed(ctx sdk.Context, nftIdentifier NftIdentifier, txMemo string)
 	AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier NftIdentifier, fee sdk.Coin)
 	AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier NftIdentifier)
@@ -374,11 +374,11 @@ type NftmarketHooks interface {
 ## AfterNftListed
 
 This hook function is called for the resistration for the `ecosystem-incentive` with the `txMemo` and `nftIdentifiler`.   
-To pass the `txMemo` from the memo data of `MsgListNft` requires a method to get memo data in the process of `MsgListNft` in `x/nftmarket` module.
+To pass the `txMemo` from the memo data of `MsgListNft` requires a method to get memo data in the process of `MsgListNft` in `x/nftbackedloan` module.
 
 ### Location to be inserted
 
-- `ListNft(ctx sdk.Context, msg *types.MsgListNft)` from x/nftmarket in nft_listing.go
+- `ListNft(ctx sdk.Context, msg *types.MsgListNft)` from x/nftbackedloan in nft_listing.go
 
 ## AfterNftPaymentWithCommission
 
@@ -387,17 +387,17 @@ The calculation of the actual reward amount is executed in methods which this ho
 
 ### Location to be inserted
 
-- `ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, denom string, amount sdk.Int)`  from x/nftmarket in nft_listing.go
+- `ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, denom string, amount sdk.Int)`  from x/nftbackedloan in nft_listing.go
 
 ## AfterNftUnlistedWituoutPayment
 
 This hook function is called when a nft is unlisted for some reason like liquidation.   
-The purpose is to remove the unlisted nft information from `NftmarketFrontendIncentiveIdTable` KVStore to keep the data consystent.
+The purpose is to remove the unlisted nft information from `nftbackedloanFrontendIncentiveIdTable` KVStore to keep the data consystent.
 
 ### Location to be inserted
 
-- `CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing)` from x/nftmarket in nft_listing.go
-- Case which bid's length for the listing is 0 in `EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing)` from x/nftmarket in nft_listing.go
+- `CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing)` from x/nftbackedloan in nft_listing.go
+- Case which bid's length for the listing is 0 in `EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing)` from x/nftbackedloan in nft_listing.go
 
 # Data structure for the memo field
 

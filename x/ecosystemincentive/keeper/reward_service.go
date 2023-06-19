@@ -6,20 +6,20 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
+	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
-func (k Keeper) RewardDistributionOfNftmarket(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, fee sdk.Coin) error {
+func (k Keeper) RewardDistributionOfnftbackedloan(ctx sdk.Context, nftId nftbackedloantypes.NftIdentifier, fee sdk.Coin) error {
 	totalReward := sdk.ZeroInt()
 	rewardForCommunityPool := sdk.ZeroInt()
 	// First, get recipientContainerId by nftId from RecipientContainerIdByNftId KVStore
 	// If the recipientContainerId doesn't exist, return nil and distribute the reward for the frontend
 	// to the treasury.
-	nftmarketFrontendRewardRate := k.GetNftmarketFrontendRewardRate(ctx)
-	if nftmarketFrontendRewardRate == sdk.ZeroDec() {
-		return sdkerrors.Wrap(types.ErrRewardRateIsZero, "nftmarket frontend")
+	nftbackedloanFrontendRewardRate := k.GetnftbackedloanFrontendRewardRate(ctx)
+	if nftbackedloanFrontendRewardRate == sdk.ZeroDec() {
+		return sdkerrors.Wrap(types.ErrRewardRateIsZero, "nftbackedloan frontend")
 	}
-	rewardForRecipientContainer := nftmarketFrontendRewardRate.MulInt(fee.Amount).TruncateInt()
+	rewardForRecipientContainer := nftbackedloanFrontendRewardRate.MulInt(fee.Amount).TruncateInt()
 	totalReward = totalReward.Add(rewardForRecipientContainer)
 	recipientContainerId, exists := k.GetRecipientContainerIdByNftId(ctx, nftId)
 	if !exists {

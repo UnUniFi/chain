@@ -6,7 +6,7 @@ import (
 	"github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
-var _ types.NftmarketHooks = Keeper{}
+var _ types.NftbackedloanHooks = Keeper{}
 
 func (k Keeper) AfterNftListed(ctx sdk.Context, nftIdentifier types.NftIdentifier, txMemo string) {
 	if k.hooks != nil {

@@ -6,7 +6,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
+	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
 // AllocateTokensToCommunityPool performs reward and fee distribution to the community pool
@@ -35,7 +35,7 @@ func (k Keeper) GetCommunityPoolRewardRate(ctx sdk.Context) sdk.Dec {
 	rewardParams := params.RewardParams
 
 	for _, rewardParam := range rewardParams {
-		if rewardParam.ModuleName == nftmarkettypes.ModuleName {
+		if rewardParam.ModuleName == nftbackedloantypes.ModuleName {
 			for _, rewardRate := range rewardParam.RewardRate {
 				if rewardRate.RewardType == types.RewardType_COMMUNITY_POOL {
 					return rewardRate.Rate
