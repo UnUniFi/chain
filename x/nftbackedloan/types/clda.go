@@ -66,6 +66,19 @@ func BorrowableAmount(bidsSortedByPrice []Bid, bidsSortedByInterestRate []Bid, d
 	return borrowableAmount
 }
 
+func AdditionallyBorrowableAmount(bidsSortedByPrice []Bid, bidsSortedByInterestRate []Bid, duration time.Duration, borrowed []struct {
+	BorrowedAmount     uint64
+	AnnualInterestRate uint64
+}) uint64 {
+	var repayAmount uint64
+
+	for i, _ := range borrowed {
+		repayAmount += (1 + AdjustAnnualRateWithDuration(borrowed[i].AnnualInterestRate, duration)) * borrowed[i].BorrowedAmount
+	}
+
+	return BorrowableAmount(bidsSortedByPrice, bidsSortedByInterestRate, duration) - repayAmount
+}
+
 func FilterBidsById(bids []Bid, excludeId BidId) []Bid {
 	var ret []Bid
 	for _, bid := range bids {
