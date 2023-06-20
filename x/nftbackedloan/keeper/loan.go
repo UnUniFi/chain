@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/nftbackedloan/types"
@@ -221,30 +223,30 @@ func (k Keeper) AutoBorrow(ctx sdk.Context, nft types.NftIdentifier, require sdk
 	return nil
 }
 
-// func (k Keeper) Refinancings(ctx sdk.Context, listing types.NftListing, liquidationBids []types.NftBid) {
-// 	for _, v := range liquidationBids {
-// 		err := k.Refinancing(ctx, listing, v)
-// 		if err != nil {
-// 			fmt.Println("Refinancing error: %w", err)
-// 			continue
-// 		}
-// 	}
-// }
+func (k Keeper) Refinancings(ctx sdk.Context, listing types.NftListing, liquidationBids []types.NftBid) {
+	for _, v := range liquidationBids {
+		err := k.Refinancing(ctx, listing, v)
+		if err != nil {
+			fmt.Println("Refinancing error: %w", err)
+			continue
+		}
+	}
+}
 
-// func (k Keeper) Refinancing(ctx sdk.Context, listing types.NftListing, bid types.NftBid) error {
-// 	err := k.DeleteBid(ctx, bid)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	// todo delete not depend on Debt
-// 	k.DecreaseDebt(ctx, listing.NftId, bid.BorrowingAmount())
-// 	liquidationAmount := bid.LiquidationAmount(ctx.BlockTime())
-// 	err = k.ManualBorrow(ctx, listing.NftId, liquidationAmount, listing.Owner, bid.Id.Bidder)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	return nil
-// }
+func (k Keeper) Refinancing(ctx sdk.Context, listing types.NftListing, bid types.NftBid) error {
+	err := k.DeleteBid(ctx, bid)
+	if err != nil {
+		return err
+	}
+	// todo delete not depend on Debt
+	k.DecreaseDebt(ctx, listing.NftId, bid.BorrowingAmount())
+	liquidationAmount := bid.LiquidationAmount(ctx.BlockTime())
+	err = k.AutoBorrow(ctx, listing.NftId, liquidationAmount, listing.Owner, bid.Id.Bidder)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
 func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 	return k.ManualRepay(ctx, msg.NftId, msg.RepayBids, msg.Sender, msg.Sender)
