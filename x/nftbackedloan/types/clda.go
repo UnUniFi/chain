@@ -59,25 +59,6 @@ func IsBidAbleToCancel(cancellingBidId BidId, bidsSortedByPrice []Bid, repayAmou
 	) >= repayAmount
 }
 
-// Do not consider refinancing
-func BorrowableAmountInMinimumInterestCombination(bidsSortedByPrice []Bid, bidsSortedByInterestRate []Bid, duration time.Duration) uint64 {
-	minimumSettlementAmount := MinimumSettlementAmount(bidsSortedByPrice)
-
-	var repayAmount uint64
-	var borrowableAmount uint64
-
-	for _, bid := range bidsSortedByInterestRate {
-		repayAmount += (1 + AdjustAnnualRateWithDuration(bid.AnnualInterestRate, duration)) * bid.Deposit
-
-		if repayAmount > minimumSettlementAmount {
-			break
-		}
-		borrowableAmount += bid.Deposit
-	}
-
-	return borrowableAmount
-}
-
 func AdditionallyAcceptableRepayAmount(bidsSortedByPrice []Bid, bidsSortedByInterestRate []Bid, duration time.Duration, borrowed []struct {
 	BorrowedAmount     uint64
 	AnnualInterestRate uint64
@@ -92,12 +73,33 @@ func AdditionallyAcceptableRepayAmount(bidsSortedByPrice []Bid, bidsSortedByInte
 	return MinimumSettlementAmount(bidsSortedByPrice) - repayAmount
 }
 
-func AdditionallyAcceptableBorrowAmount(additionallyAcceptableRepayAmount uint64, notBorrowedBid []struct {
-	NotBorrowedAmount  uint64
-	AnnualInterestRate uint64
+func AdditionallyAcceptableBorrowAmount(additionallyAcceptableRepayAmount uint64, duration time.Duration, bidsSortedByInterestRate []struct {
+	Bid
+	NotBorrowedAmount uint64
 }) uint64 {
-	// TODO
-	return additionallyAcceptableRepayAmount
+	var repayAmount uint64
+	var borrowableAmount uint64
+
+	for _, bid := range bidsSortedByInterestRate {
+		repayAmount += (1 + AdjustAnnualRateWithDuration(bid.AnnualInterestRate, duration)) * bid.Deposit
+
+		if repayAmount > additionallyAcceptableRepayAmount {
+			break
+		}
+		borrowableAmount += bid.Deposit
+	}
+
+	return borrowableAmount
+}
+
+// Do not consider refinancing
+func BorrowableAmountInMinimumInterestCombination(bidsSortedByPrice []Bid, bidsSortedByInterestRate []struct {
+	Bid
+	NotBorrowedAmount uint64
+}, duration time.Duration) uint64 {
+	minimumSettlementAmount := MinimumSettlementAmount(bidsSortedByPrice)
+
+	return AdditionallyAcceptableBorrowAmount(minimumSettlementAmount, duration, bidsSortedByInterestRate)
 }
 
 func FilterBidsById(bids []Bid, excludeId BidId) []Bid {
