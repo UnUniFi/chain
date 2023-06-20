@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/nftbackedloan/types"
@@ -74,10 +72,75 @@ func (k Keeper) DecreaseDebt(ctx sdk.Context, nftId types.NftIdentifier, amount 
 }
 
 func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
-	return k.ManualBorrow(ctx, msg.NftId, msg.Amount, msg.Sender, msg.Sender)
+	return k.ManualBorrow(ctx, msg.NftId, msg.BorrowBids, msg.Sender, msg.Sender)
 }
 
-func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, require sdk.Coin, borrower, receiver string) error {
+func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, borrows []types.BorrowBid, borrower, receiver string) error {
+	listing, err := k.GetNftListingByIdBytes(ctx, nft.IdBytes())
+	if err != nil {
+		return err
+	}
+	if listing.Owner != borrower {
+		return types.ErrNotNftListingOwner
+	}
+
+	borrowedAmount := sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
+	for _, borrow := range borrows {
+		bidderAddress, err := sdk.AccAddressFromBech32(borrow.Bidder)
+		if err != nil {
+			return err
+		}
+		bid, err := k.GetBid(ctx, nft.IdBytes(), bidderAddress)
+		if err != nil {
+			return err
+		}
+		usableAmount := bid.BorrowableAmount()
+		if borrow.Amount.IsGTE(usableAmount) {
+			borrowing := types.Borrowing{
+				Amount:             usableAmount,
+				StartAt:            ctx.BlockTime(),
+				PaidInterestAmount: sdk.NewCoin(borrow.Amount.Denom, sdk.ZeroInt()),
+			}
+			borrowedAmount = borrowedAmount.Add(usableAmount)
+			bid.Borrowings = append(bid.Borrowings, borrowing)
+		} else {
+			borrowing := types.Borrowing{
+				Amount:             borrow.Amount,
+				StartAt:            ctx.BlockTime(),
+				PaidInterestAmount: sdk.NewCoin(borrow.Amount.Denom, sdk.ZeroInt()),
+			}
+			borrowedAmount = borrowedAmount.Add(borrow.Amount)
+			bid.Borrowings = append(bid.Borrowings, borrowing)
+		}
+		err = k.SetBid(ctx, bid)
+		if err != nil {
+			return err
+		}
+	}
+
+	k.IncreaseDebt(ctx, nft, borrowedAmount)
+
+	receiverAddress, err := sdk.AccAddressFromBech32(receiver)
+	if err != nil {
+		return err
+	}
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, receiverAddress, sdk.Coins{borrowedAmount})
+	if err != nil {
+		return err
+	}
+
+	// Emit event for borrow from bids
+	ctx.EventManager().EmitTypedEvent(&types.EventBorrow{
+		Borrower: borrower,
+		ClassId:  nft.ClassId,
+		NftId:    nft.NftId,
+		Amount:   borrowedAmount.String(),
+	})
+
+	return nil
+}
+
+func (k Keeper) AutoBorrow(ctx sdk.Context, nft types.NftIdentifier, require sdk.Coin, borrower, receiver string) error {
 	listing, err := k.GetNftListingByIdBytes(ctx, nft.IdBytes())
 	if err != nil {
 		return err
@@ -158,30 +221,30 @@ func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, require s
 	return nil
 }
 
-func (k Keeper) Refinancings(ctx sdk.Context, listing types.NftListing, liquidationBids []types.NftBid) {
-	for _, v := range liquidationBids {
-		err := k.Refinancing(ctx, listing, v)
-		if err != nil {
-			fmt.Println("Refinancing error: %w", err)
-			continue
-		}
-	}
-}
+// func (k Keeper) Refinancings(ctx sdk.Context, listing types.NftListing, liquidationBids []types.NftBid) {
+// 	for _, v := range liquidationBids {
+// 		err := k.Refinancing(ctx, listing, v)
+// 		if err != nil {
+// 			fmt.Println("Refinancing error: %w", err)
+// 			continue
+// 		}
+// 	}
+// }
 
-func (k Keeper) Refinancing(ctx sdk.Context, listing types.NftListing, bid types.NftBid) error {
-	err := k.DeleteBid(ctx, bid)
-	if err != nil {
-		return err
-	}
-	// todo delete not depend on Debt
-	k.DecreaseDebt(ctx, listing.NftId, bid.BorrowingAmount())
-	liquidationAmount := bid.LiquidationAmount(ctx.BlockTime())
-	err = k.ManualBorrow(ctx, listing.NftId, liquidationAmount, listing.Owner, bid.Id.Bidder)
-	if err != nil {
-		return err
-	}
-	return nil
-}
+// func (k Keeper) Refinancing(ctx sdk.Context, listing types.NftListing, bid types.NftBid) error {
+// 	err := k.DeleteBid(ctx, bid)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	// todo delete not depend on Debt
+// 	k.DecreaseDebt(ctx, listing.NftId, bid.BorrowingAmount())
+// 	liquidationAmount := bid.LiquidationAmount(ctx.BlockTime())
+// 	err = k.ManualBorrow(ctx, listing.NftId, liquidationAmount, listing.Owner, bid.Id.Bidder)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
 
 func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 	// todo set interest amount in bid info
