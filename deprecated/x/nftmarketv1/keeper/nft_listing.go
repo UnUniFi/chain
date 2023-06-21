@@ -713,7 +713,7 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 	}
 }
 
-func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
+func (k Keeper) DeliverSuccessfulBids(ctx sdk.Context) {
 	params := k.GetParamSet(ctx)
 	// get listings ended earlier
 	listings := k.GetSuccessfulBidNftListingsEndingAt(ctx, ctx.BlockTime())

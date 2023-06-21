@@ -1538,7 +1538,7 @@ func (suite *KeeperTestSuite) TestHandleFullPaymentPeriodEndings() {
 	}
 }
 
-func (suite *KeeperTestSuite) TestDelieverSuccessfulBids() {
+func (suite *KeeperTestSuite) TestDeliverSuccessfulBids() {
 	suite.SetupTest()
 	keeper := suite.keeper
 
@@ -1612,7 +1612,7 @@ func (suite *KeeperTestSuite) TestDelieverSuccessfulBids() {
 	suite.ctx = suite.ctx.WithBlockTime(now.Add(time.Second))
 	oldNftOwnerBalance := suite.app.BankKeeper.GetBalance(suite.ctx, nftOwner, "uguu")
 
-	keeper.DelieverSuccessfulBids(suite.ctx)
+	keeper.DeliverSuccessfulBids(suite.ctx)
 
 	// check nft transfer
 	newNftOwner := suite.app.NFTKeeper.GetOwner(suite.ctx, classId, nftId)
@@ -1770,7 +1770,7 @@ func (suite *KeeperTestSuite) TestDelieverSuccessfulBidForPositiveLoan() {
 
 	oldNftOwnerBalance := suite.app.BankKeeper.GetBalance(suite.ctx, nftOwner, "uguu")
 	suite.NotPanics(func() {
-		keeper.DelieverSuccessfulBids(suite.ctx)
+		keeper.DeliverSuccessfulBids(suite.ctx)
 	})
 
 	// check nft transfer
