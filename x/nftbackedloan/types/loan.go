@@ -71,3 +71,16 @@ func IsAbleToCancelBid(cancellingBidId BidId, bids []NftBid) bool {
 	existRepayAmount := ExistRepayAmount(bids)
 	return existRepayAmount.IsLTE(minimumSettlementAmount)
 }
+
+func IsAbleToReBid(bids []NftBid, oldBidId BidId, newBid NftBid) bool {
+	var afterUpdatedBids []NftBid
+	for _, bid := range bids {
+		if bid.Id != oldBidId {
+			afterUpdatedBids = append(afterUpdatedBids, bid)
+		}
+	}
+	afterUpdatedBids = append(afterUpdatedBids, newBid)
+	minimumSettlementAmount := MinSettlementAmount(afterUpdatedBids)
+	existRepayAmount := ExistRepayAmount(bids)
+	return existRepayAmount.IsLTE(minimumSettlementAmount)
+}
