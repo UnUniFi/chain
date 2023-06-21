@@ -413,6 +413,10 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 	if len(bids) == 1 {
 		return types.ErrCannotCancelListingSingleBid
 	}
+	// for liquidation validation
+	if !types.IsAbleToCancelBid(types.BidId{Bidder: msg.Sender, NftId: bid.Id.NftId}, bids) {
+		return types.ErrCannotCancelBid
+	}
 
 	err = k.DeleteBid(ctx, bid)
 	if err != nil {
