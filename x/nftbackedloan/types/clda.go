@@ -39,8 +39,7 @@ func AdjustAnnualRateWithDuration(annualInterestRate uint64, duration time.Durat
 	return annualInterestRate * uint64(duration.Seconds()) / 31536000
 }
 
-// Do not consider refinancing
-func BorrowableAmount(bidsSortedByPrice []Bid, bidsSortedByInterestRate []Bid, duration time.Duration) uint64 {
+func MinimumSettlementAmount(bidsSortedByPrice []Bid) uint64 {
 	var minimumSettlementAmount uint64
 	var forfeitedDeposit uint64
 
@@ -51,19 +50,59 @@ func BorrowableAmount(bidsSortedByPrice []Bid, bidsSortedByInterestRate []Bid, d
 		forfeitedDeposit += bid.Deposit
 	}
 
+	return minimumSettlementAmount
+}
+
+func IsBidAbleToCancel(cancellingBidId BidId, bidsSortedByPrice []Bid, repayAmount uint64) bool {
+	return MinimumSettlementAmount(
+		FilterBidsById(bidsSortedByPrice, cancellingBidId),
+	) >= repayAmount
+}
+
+func AdditionallyAcceptableRepayAmount(bidsSortedByPrice []Bid, bidsSortedByInterestRate []Bid, borrowed []struct {
+	BorrowedAmount     uint64
+	AnnualInterestRate uint64
+	InterestAmount     uint64
+	additionalDuration time.Duration
+}) uint64 {
+	var repayAmount uint64
+
+	for i, _ := range borrowed {
+		repayAmount += (1+AdjustAnnualRateWithDuration(borrowed[i].AnnualInterestRate, borrowed[i].additionalDuration))*borrowed[i].BorrowedAmount + borrowed[i].InterestAmount
+	}
+
+	return MinimumSettlementAmount(bidsSortedByPrice) - repayAmount
+}
+
+func AdditionallyAcceptableBorrowAmount(additionallyAcceptableRepayAmount uint64, bidsSortedByInterestRate []struct {
+	Bid
+	NotBorrowedAmount  uint64
+	additionalDuration time.Duration
+}) uint64 {
 	var repayAmount uint64
 	var borrowableAmount uint64
 
 	for _, bid := range bidsSortedByInterestRate {
-		repayAmount += (1 + AdjustAnnualRateWithDuration(bid.AnnualInterestRate, duration)) * bid.Deposit
+		repayAmount += (1 + AdjustAnnualRateWithDuration(bid.AnnualInterestRate, bid.additionalDuration)) * bid.NotBorrowedAmount
 
-		if repayAmount > minimumSettlementAmount {
+		if repayAmount > additionallyAcceptableRepayAmount {
 			break
 		}
-		borrowableAmount += bid.Deposit
+		borrowableAmount += bid.NotBorrowedAmount
 	}
 
 	return borrowableAmount
+}
+
+// Do not consider refinancing
+func BorrowableAmountInMinimumInterestCombination(bidsSortedByPrice []Bid, bidsSortedByInterestRate []struct {
+	Bid
+	NotBorrowedAmount  uint64
+	additionalDuration time.Duration
+}) uint64 {
+	minimumSettlementAmount := MinimumSettlementAmount(bidsSortedByPrice)
+
+	return AdditionallyAcceptableBorrowAmount(minimumSettlementAmount, bidsSortedByInterestRate)
 }
 
 func FilterBidsById(bids []Bid, excludeId BidId) []Bid {
@@ -75,12 +114,4 @@ func FilterBidsById(bids []Bid, excludeId BidId) []Bid {
 		ret = append(ret, bid)
 	}
 	return ret
-}
-
-func IsBidAbleToCancel(cancellingBidId BidId, bidsSortedByPrice []Bid, bidsSortedByInterestRate []Bid, durationToClosestExpiry time.Duration, borrowedAmount uint64) bool {
-	return BorrowableAmount(
-		FilterBidsById(bidsSortedByPrice, cancellingBidId),
-		FilterBidsById(bidsSortedByInterestRate, cancellingBidId),
-		durationToClosestExpiry,
-	) >= borrowedAmount
 }
