@@ -194,6 +194,15 @@ func (m NftBids) SortHigherDeposit() NftBids {
 	return dest
 }
 
+func (m NftBids) SortHigherPrice() NftBids {
+	dest := NftBids{}
+	dest = append(NftBids{}, m...)
+	sort.SliceStable(dest, func(i, j int) bool {
+		return dest[i].BidAmount.IsGTE(dest[j].DepositAmount)
+	})
+	return dest
+}
+
 func (m NftBids) GetAverageBidAmount() sdk.Coin {
 	if len(m) == 0 {
 		return sdk.Coin{}
