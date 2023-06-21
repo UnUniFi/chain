@@ -22,6 +22,27 @@ func MinSettlementAmount(bids []NftBid) types.Coin {
 	return minimumSettlementAmount
 }
 
+func LiquidationBid(bids []NftBid) NftBid {
+	bidsSortedByPrice := NftBids(bids).SortHigherPrice()
+	// todo: change the interest to the current value.
+	settlementAmount := ExistRepayAmount(bidsSortedByPrice)
+	forfeitedDeposit := types.NewCoin(bidsSortedByPrice[0].DepositAmount.Denom, sdk.NewInt(0))
+	var ret NftBid
+
+	for _, bid := range bidsSortedByPrice {
+		if !bid.IsPaidBidAmount() {
+			forfeitedDeposit = forfeitedDeposit.Add(bid.DepositAmount)
+			continue
+		}
+		if bid.BidAmount.Add(forfeitedDeposit).IsLT(settlementAmount) {
+			continue
+		}
+		ret = bid
+		break
+	}
+	return ret
+}
+
 func ExpectedRepayAmount(bids []NftBid, borrowBids []BorrowBid, time time.Time) sdk.Coin {
 	expectedRepayAmount := types.NewCoin(bids[0].BidAmount.Denom, sdk.NewInt(0))
 	for _, borrowBid := range borrowBids {
