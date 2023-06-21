@@ -429,10 +429,10 @@ func (k Keeper) ManualRepay(ctx sdk.Context, nft types.NftIdentifier, repays []t
 // 	return nil
 // }
 
-func MaxPossibleBorrowAmount(bids []types.NftBid) sdk.Int {
-	maxPossibleBorrowAmount := sdk.ZeroInt()
-	for _, bid := range bids {
-		maxPossibleBorrowAmount = maxPossibleBorrowAmount.Add(bid.DepositAmount.Amount)
-	}
-	return maxPossibleBorrowAmount
-}
+// func MaxPossibleBorrowAmount(bids []types.NftBid) sdk.Int {
+// 	maxPossibleBorrowAmount := sdk.ZeroInt()
+// 	for _, bid := range bids {
+// 		maxPossibleBorrowAmount = maxPossibleBorrowAmount.Add(bid.DepositAmount.Amount)
+// 	}
+// 	return maxPossibleBorrowAmount
+// }
