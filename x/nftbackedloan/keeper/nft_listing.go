@@ -557,8 +557,6 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 }
 
 func (k Keeper) ProcessEndingNftListings(ctx sdk.Context) {
-	// params := k.GetParamSet(ctx)
-	// listings := k.GetActiveNftListingsEndingAt(ctx, ctx.BlockTime())
 	fmt.Println("---Block time---")
 	fmt.Println(ctx.BlockTime())
 	bids := k.GetActiveNftBiddingsEndingAt(ctx, ctx.BlockTime())
@@ -582,12 +580,8 @@ func (k Keeper) ProcessEndingNftListings(ctx sdk.Context) {
 		checkListingsWithBorrowedBids[listing] = append(checkListingsWithBorrowedBids[listing], bid)
 	}
 
-	for listing, expiredBorrowedBids := range checkListingsWithBorrowedBids {
-		bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
-		if listing.CanRefinancing(bids, expiredBorrowedBids, ctx.BlockTime()) {
-			fmt.Println("---occur refinaing---")
-			k.Refinancings(ctx, listing, expiredBorrowedBids)
-		} else if listing.State == types.ListingState_END_LISTING {
+	for listing := range checkListingsWithBorrowedBids {
+		if listing.State == types.ListingState_END_LISTING {
 			continue
 		} else {
 			fmt.Println("---occur endlisting---")
@@ -795,7 +789,7 @@ func (k Keeper) CollectedDepositFromBids(ctx sdk.Context, bids types.NftBids) (s
 	return result, nil
 }
 
-func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
+func (k Keeper) DeliverSuccessfulBids(ctx sdk.Context) {
 	params := k.GetParamSet(ctx)
 	// get listings ended earlier
 	listings := k.GetSuccessfulBidNftListingsEndingAt(ctx, ctx.BlockTime())

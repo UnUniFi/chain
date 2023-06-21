@@ -1,8 +1,6 @@
 package types
 
 import (
-	time "time"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -38,17 +36,17 @@ func (b NftBid) IdBytes() []byte {
 	return b.Id.NftId.IdBytes()
 }
 
-func (m NftListing) CanRefinancing(allBids, expiredBids []NftBid, now time.Time) bool {
-	if !m.AutomaticRefinancing {
-		return false
-	}
-	usableAmount := m.MaxPossibleBorrowAmount(allBids, expiredBids)
-	liquidationAmount := NftBids(expiredBids).LiquidationAmount(m.BidToken, now)
-	if liquidationAmount.Amount.GT(usableAmount) {
-		return false
-	}
-	return true
-}
+// func (m NftListing) CanRefinancing(allBids, expiredBids []NftBid, now time.Time) bool {
+// 	if !m.AutomaticRefinancing {
+// 		return false
+// 	}
+// 	usableAmount := m.MaxPossibleBorrowAmount(allBids, expiredBids)
+// 	liquidationAmount := NftBids(expiredBids).LiquidationAmount(m.BidToken, now)
+// 	if liquidationAmount.Amount.GT(usableAmount) {
+// 		return false
+// 	}
+// 	return true
+// }
 
 func (m NftListing) CalcAmount(bids []NftBid) sdk.Int {
 	return m.CalcAmountF(bids, func(NftBid) bool { return false })
