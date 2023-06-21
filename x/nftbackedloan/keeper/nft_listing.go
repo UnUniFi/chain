@@ -5,7 +5,6 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/nft"
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 
@@ -231,7 +230,7 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 	}
 
 	// Emit event for nft listing
-	ctx.EventManager().EmitTypedEvent(&types.EventListingNft{
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventListingNft{
 		Owner:   msg.Sender,
 		ClassId: msg.NftId.ClassId,
 		NftId:   msg.NftId.NftId,
@@ -868,47 +867,6 @@ func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sd
 	// Call AfterNftPaymentWithCommission hook method to inform the payment is successfuly
 	// executed.
 	k.AfterNftPaymentWithCommission(ctx, nftId, sdk.NewCoin(denom, fee))
-}
-
-// todo: delete
-func (k Keeper) TestMint(ctx sdk.Context, addr sdk.AccAddress, classId, nftId string) {
-	_, exists := k.nftKeeper.GetNFT(ctx, classId, nftId)
-	if exists {
-		return
-	}
-	const (
-		testClassName        = "Crypto Kitty"
-		testClassSymbol      = "kitty"
-		testClassDescription = "Crypto Kitty"
-		testClassURI         = "class uri"
-		testClassURIHash     = "ae702cefd6b6a65fe2f991ad6d9969ed"
-		testURI              = "kitty uri"
-		testURIHash          = "229bfd3c1b431c14a526497873897108"
-	)
-
-	_, hasId := k.nftKeeper.GetClass(ctx, classId)
-	if !hasId {
-		class := nft.Class{
-			Id:          classId,
-			Name:        testClassName,
-			Symbol:      testClassSymbol,
-			Description: testClassDescription,
-			Uri:         testClassURI,
-			UriHash:     testClassURIHash,
-		}
-		k.nftKeeper.SaveClass(ctx, class)
-		fmt.Println("save class")
-	}
-
-	expNFT := nft.NFT{
-		ClassId: classId,
-		Id:      nftId,
-		Uri:     testURI,
-	}
-	err := k.nftKeeper.Mint(ctx, expNFT, addr)
-	if err != nil {
-		fmt.Println("err occur")
-	}
 }
 
 // get surplus amount
