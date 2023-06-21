@@ -74,7 +74,12 @@ func (k Keeper) DecreaseDebt(ctx sdk.Context, nftId types.NftIdentifier, amount 
 }
 
 func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
-	return k.ManualBorrow(ctx, msg.NftId, msg.BorrowBids, msg.Sender, msg.Sender)
+	bids := types.NftBids(k.GetBidsByNft(ctx, msg.NftId.IdBytes()))
+	if types.IsAbleToBorrow(bids, msg.BorrowBids, ctx.BlockTime()) {
+		return k.ManualBorrow(ctx, msg.NftId, msg.BorrowBids, msg.Sender, msg.Sender)
+	} else {
+		return types.ErrCannotBorrow
+	}
 }
 
 func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, borrows []types.BorrowBid, borrower, receiver string) error {
