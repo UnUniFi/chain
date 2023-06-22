@@ -593,7 +593,7 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 func (k Keeper) LiquidationProcess(ctx sdk.Context, bids types.NftBids, listing types.NftListing, params types.Params) error {
 	// PayFullBid has been finished at this point
 	// loop to find winner bid (collect deposits + bid amount > repay amount)
-	winnerBid := types.LiquidationBid(bids)
+	winnerBid := types.LiquidationBid(bids, ctx.BlockTime())
 
 	cacheCtx, write := ctx.CacheContext()
 	if winnerBid.IsNil() {
@@ -603,8 +603,8 @@ func (k Keeper) LiquidationProcess(ctx sdk.Context, bids types.NftBids, listing 
 		}
 		k.DeleteNftListings(ctx, listing)
 	} else {
-		collectBids, refundBids := bids.MakeCollectBidsAndRefundBids()
-		err := k.LiquidationProcessExitsWinner(cacheCtx, collectBids, refundBids, listing, winnerBid, ctx.BlockTime(), k.RefundBids)
+		collectBids, refundBids := types.ForfeitedBidsAndRefundBids(bids, winnerBid)
+		err := k.LiquidationProcessExitsWinner(cacheCtx, collectBids, refundBids, listing, winnerBid, ctx.BlockTime())
 		if err != nil {
 			return err
 		}
@@ -645,12 +645,9 @@ func (k Keeper) LiquidationProcessNotExitsWinner(ctx sdk.Context, bids types.Nft
 }
 
 // todo add test
-func (k Keeper) LiquidationProcessExitsWinner(
-	ctx sdk.Context, collectBids, refundBids types.NftBids,
-	listing types.NftListing, winnerBid types.NftBid,
-	now time.Time,
-	refundF func(ctx sdk.Context, refundBids types.NftBids, totalInterest, surplusAmount sdk.Coin, listing types.NftListing) error) error {
-
+func (k Keeper) LiquidationProcessExitsWinner(ctx sdk.Context, collectBids,
+	refundBids types.NftBids, listing types.NftListing, winnerBid types.NftBid,
+	now time.Time) error {
 	collectedDeposit, err := k.CollectedDepositFromBids(ctx, collectBids)
 	if err != nil {
 		return err
@@ -659,21 +656,22 @@ func (k Keeper) LiquidationProcessExitsWinner(
 		listing.CollectedAmount = listing.CollectedAmount.Add(collectedDeposit)
 	}
 
+	// win price + forfeited deposits - refund bids' deposits
 	surplusAmount := k.GetSurplusAmount(refundBids, winnerBid).Add(listing.CollectedAmount)
-	totalInterest := refundBids.TotalInterestAmount(now)
-	if totalInterest.IsNil() {
-		totalInterest = sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
+	totalInterests := refundBids.TotalInterestAmount(now)
+	if totalInterests.IsNil() {
+		totalInterests = sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
 	}
-	err = refundF(ctx, refundBids, totalInterest, surplusAmount, listing)
+	err = k.RefundBids(ctx, refundBids, totalInterests, surplusAmount, listing)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (k Keeper) RefundBids(ctx sdk.Context, refundBids types.NftBids, totalInterest, surplusAmount sdk.Coin, listing types.NftListing) error {
-	if totalInterest.IsLTE(surplusAmount) {
-		listing.CollectedAmount = listing.CollectedAmount.Sub(totalInterest)
+func (k Keeper) RefundBids(ctx sdk.Context, refundBids types.NftBids, totalInterests, surplusAmount sdk.Coin, listing types.NftListing) error {
+	if totalInterests.IsLTE(surplusAmount) {
+		listing.CollectedAmount = listing.CollectedAmount.Sub(totalInterests)
 		for _, bid := range refundBids {
 			err := k.SafeCloseBidWithAllInterest(ctx, bid)
 			if err != nil {
@@ -682,8 +680,10 @@ func (k Keeper) RefundBids(ctx sdk.Context, refundBids types.NftBids, totalInter
 		}
 	} else {
 		for _, bid := range refundBids {
-			bidderGetInterest := types.CalcPartInterest(totalInterest.Amount, surplusAmount.Amount, bid.TotalInterestAmountDec(ctx.BlockTime()))
-			err := k.SafeCloseBidWithPartInterest(ctx, bid, sdk.NewCoin(bid.DepositAmount.Denom, bidderGetInterest))
+			listing.CollectedAmount = listing.CollectedAmount.Sub(surplusAmount)
+			// discounted interest = expected interest * (surplus amount / total interests)
+			discountedInterest := types.CalcPartInterest(totalInterests, surplusAmount, bid.TotalInterestAmountDec(ctx.BlockTime()))
+			err := k.SafeCloseBidWithPartInterest(ctx, bid, discountedInterest)
 			if err != nil {
 				return err
 			}
@@ -697,12 +697,12 @@ func (k Keeper) CollectedDepositFromBids(ctx sdk.Context, bids types.NftBids) (s
 	result := sdk.NewCoin(bids[0].DepositAmount.Denom, sdk.ZeroInt())
 	for _, bid := range bids {
 		// not pay bidder amount, collected deposit
-		CollectedAmount, err := k.SafeCloseBidCollectDeposit(ctx, bid)
+		collectedAmount, err := k.SafeCloseBidCollectDeposit(ctx, bid)
 		if err != nil {
 			return result, err
 		}
-		if CollectedAmount.IsPositive() {
-			result = result.Add(CollectedAmount)
+		if collectedAmount.IsPositive() {
+			result = result.Add(collectedAmount)
 		}
 	}
 	return result, nil
