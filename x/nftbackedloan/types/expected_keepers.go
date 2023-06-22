@@ -46,7 +46,7 @@ type NftKeeper interface {
 	HasNFT(ctx sdk.Context, classID, id string) bool
 }
 
-type NftmarketHooks interface {
+type NftbackedloanHooks interface {
 	AfterNftListed(ctx sdk.Context, nftIdentifier NftIdentifier, txMemo string)
 	AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier NftIdentifier, fee sdk.Coin)
 	AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier NftIdentifier)

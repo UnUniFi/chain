@@ -1,4 +1,4 @@
-// The implementations especially for the services about the Nftmarket Frontend reward.
+// The implementations especially for the services about the nftbackedloan Frontend reward.
 // The reason why it's separated is for achieving the explicity and extensibility of this module.
 
 package keeper
@@ -11,13 +11,13 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
+	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
 // RecordIncentiveIdWithNftId is for recording recipientContainerId with nftId
 // to know of the receriver of the incentive reward for the frontend creator
-// of Nftmarket in AfterNftPaymentWithCommission method.
-func (k Keeper) RecordRecipientContainerIdWithNftId(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier, recipientContainerId string) {
+// of nftbackedloan in AfterNftPaymentWithCommission method.
+func (k Keeper) RecordRecipientContainerIdWithNftId(ctx sdk.Context, nftId nftbackedloantypes.NftIdentifier, recipientContainerId string) {
 	// panic if the nftId is already recorded in the store.
 	if _, exists := k.GetRecipientContainerIdByNftId(ctx, nftId); exists {
 		panic(sdkerrors.Wrap(types.ErrRecordedNftId, nftId.String()))
@@ -49,7 +49,7 @@ func (k Keeper) RecordRecipientContainerIdWithNftId(ctx sdk.Context, nftId nftma
 }
 
 // DeleteFrontendRecord is called in case to clean the record related for frontend incentive
-func (k Keeper) DeleteFrontendRecord(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier) {
+func (k Keeper) DeleteFrontendRecord(ctx sdk.Context, nftId nftbackedloantypes.NftIdentifier) {
 	// If the passed NftId doesn't exist in the KVStore, emit the error message
 	//  but not panic and just return
 	recipientContainerId, exists := k.GetRecipientContainerIdByNftId(ctx, nftId)
@@ -68,7 +68,7 @@ func (k Keeper) DeleteFrontendRecord(ctx sdk.Context, nftId nftmarkettypes.NftId
 	})
 }
 
-func (k Keeper) SetRecipientContainerIdByNftId(ctx sdk.Context, nftIdByte nftmarkettypes.NftIdentifier, recipientContainerId string) error {
+func (k Keeper) SetRecipientContainerIdByNftId(ctx sdk.Context, nftIdByte nftbackedloantypes.NftIdentifier, recipientContainerId string) error {
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientContainerIdByNftId))
 	prefixStore.Set(nftIdByte.IdBytes(), []byte(recipientContainerId))
@@ -76,7 +76,7 @@ func (k Keeper) SetRecipientContainerIdByNftId(ctx sdk.Context, nftIdByte nftmar
 	return nil
 }
 
-func (k Keeper) GetRecipientContainerIdByNftId(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier) (string, bool) {
+func (k Keeper) GetRecipientContainerIdByNftId(ctx sdk.Context, nftId nftbackedloantypes.NftIdentifier) (string, bool) {
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientContainerIdByNftId))
 
@@ -89,7 +89,7 @@ func (k Keeper) GetRecipientContainerIdByNftId(ctx sdk.Context, nftId nftmarkett
 }
 
 // DeleteRecipientContainerIdByNftId deletes nftId and recipientContainerId from RecipientContainerIdByNftId KVStore to clean the record.
-func (k Keeper) DeleteRecipientContainerIdByNftId(ctx sdk.Context, nftId nftmarkettypes.NftIdentifier) {
+func (k Keeper) DeleteRecipientContainerIdByNftId(ctx sdk.Context, nftId nftbackedloantypes.NftIdentifier) {
 	// Delete incentive unit id by nft id
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientContainerIdByNftId))
@@ -152,12 +152,12 @@ func extractWeightsFromSliceOfSubjectInfo(subjectsInfo []types.WeightedAddress) 
 	return weights
 }
 
-func (k Keeper) GetNftmarketFrontendRewardRate(ctx sdk.Context) sdk.Dec {
+func (k Keeper) GetnftbackedloanFrontendRewardRate(ctx sdk.Context) sdk.Dec {
 	params := k.GetParams(ctx)
 	rewardParams := params.RewardParams
 
 	for _, rewardParam := range rewardParams {
-		if rewardParam.ModuleName == nftmarkettypes.ModuleName {
+		if rewardParam.ModuleName == nftbackedloantypes.ModuleName {
 			for _, rewardRate := range rewardParam.RewardRate {
 				if rewardRate.RewardType == types.RewardType_FRONTEND_DEVELOPERS {
 					return rewardRate.Rate

@@ -20,4 +20,5 @@ var (
 	ErrInvalidRecipientContainerId            = sdkerrors.Register(ModuleName, 13, "recipient container id includes invalid characteres")
 	ErrAddressNotHasRecipientContainerId      = sdkerrors.Register(ModuleName, 14, "the address deosn't have any incentive unit id")
 	ErrRewardExceedsFee                       = sdkerrors.Register(ModuleName, 15, "the total reward exceeds the fee")
+	ErrRewardRateIsZero                       = sdkerrors.Register(ModuleName, 16, "the reward rate is set zero for")
 )

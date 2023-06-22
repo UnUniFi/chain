@@ -164,11 +164,6 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 		return err
 	}
 
-	sender, err := sdk.AccAddressFromBech32(msg.Sender)
-	if err != nil {
-		return err
-	}
-
 	var position *types.Position
 	switch positionInstance := positionInstance.(type) {
 	case *types.PerpetualFuturesPositionInstance:
@@ -183,12 +178,11 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 		return err
 	}
 
-	k.SetPosition(ctx, *position)
-	k.IncreaseLastPositionId(ctx)
-
-	if err := k.SendMarginToMarginManager(ctx, sender, sdk.NewCoins(msg.Margin)); err != nil {
+	err = k.SetPosition(ctx, *position)
+	if err != nil {
 		return err
 	}
+	k.IncreaseLastPositionId(ctx)
 
 	return nil
 }
@@ -219,10 +213,8 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 	case *types.PerpetualFuturesPositionInstance:
 		perpetualFuturesPosition := types.NewPerpetualFuturesPosition(*position, *positionInstance)
 		err = k.ClosePerpetualFuturesPosition(ctx, perpetualFuturesPosition)
-		break
 	case *types.PerpetualOptionsPositionInstance:
 		err = k.ClosePerpetualOptionsPosition(ctx, *position, *positionInstance)
-		break
 	default:
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "position instance: %s", positionInstance)
 	}

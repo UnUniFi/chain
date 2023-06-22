@@ -20,3 +20,9 @@ type AccountKeeper interface {
 	GetModuleAddress(name string) sdk.AccAddress
 	GetModuleAccount(ctx sdk.Context, name string) authtypes.ModuleAccountI
 }
+
+// CommunityPoolKeeper defines the expected interface needed to retrieve community pool balances.
+// It originally derives from the distribution module keeper.
+type CommunityPoolKeeper interface {
+	FundCommunityPool(ctx sdk.Context, amount sdk.Coins, sender sdk.AccAddress) error
+}

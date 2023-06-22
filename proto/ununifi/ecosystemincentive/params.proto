@@ -12,7 +12,7 @@ message Params {
 
 // RewardParams defines which module have which rewards type and rate 
 // to maintain the correctness of the fee rate in a module
-// e.g. if nftmarket module have "Frontend" and "Collection" incentive, 
+// e.g. if nftbackedloan module have "Frontend" and "Collection" incentive, 
 // the combined those rates for the incentive cannot be exceed 1
 message RewardParams {
   string module_name = 1 [ (gogoproto.moretags) = "yaml:\"module_name\"" ];
@@ -33,9 +33,12 @@ message RewardRate {
   ];
 }
 
-// NFTMARKET_FRONTEND type reward will be disributed for the creators of frontend of UnUniFi's services.
+// STAKERS type reward will be distributed for the stakers of GUU token.
+// FRONTEND_DEVELOPERS type reward will be disributed for the creators of frontend of UnUniFi's services.
+// COMMUNITY_POOL type reward will be distributed for the community pool.
 enum RewardType {
   UNKNOWN = 0;
   STAKERS = 1;
   FRONTEND_DEVELOPERS = 2;
+  COMMUNITY_POOL = 3;
 }

@@ -13,6 +13,8 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 
+	derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
+	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
 	yieldaggregatorKeeper "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
 )
 
@@ -43,4 +45,6 @@ type AppKeepers struct {
 
 	// ununifi original keepers
 	YieldaggregatorKeeper *yieldaggregatorKeeper.Keeper
+	PricefeedKeeper       *pricefeedkeeper.Keeper
+	DerivativesKeeper     *derivativeskeeper.Keeper
 }

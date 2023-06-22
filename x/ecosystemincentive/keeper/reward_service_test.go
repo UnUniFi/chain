@@ -6,21 +6,32 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
 	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
+	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
-func (suite *KeeperTestSuite) TestRewardDistributionOfNftmarket() {
+func (suite *KeeperTestSuite) TestRewardDistributionOfnftbackedloan() {
 	testCases := []struct {
 		testCase   string
-		nftId      nftmarkettypes.NftIdentifier
+		nftId      nftbackedloantypes.NftIdentifier
 		reward     sdk.Coin
 		validDenom bool
 		success    bool
+		// use default reward rates for the calculation of each reward
+		expRewardFornftbackedloanFrontend sdk.Coin
+		expRewardForStakers               sdk.Coin
+		expRewardForCommunityPool         sdk.Coin
 	}{
 		{
 			testCase:   "success case",
-			nftId:      nftmarkettypes.NftIdentifier{ClassId: "test1", NftId: "test1"},
-			reward:     sdk.NewCoin("uguu", sdk.NewInt(10)),
+			nftId:      nftbackedloantypes.NftIdentifier{ClassId: "test1", NftId: "test1"},
+			reward:     sdk.NewCoin("uguu", sdk.NewInt(100)),
+			validDenom: true,
+			success:    true,
+		},
+		{
+			testCase:   "too small amount of reward to not distribute reward",
+			nftId:      nftbackedloantypes.NftIdentifier{ClassId: "test2", NftId: "test2"},
+			reward:     sdk.NewCoin("uguu", sdk.NewInt(1)),
 			validDenom: true,
 			success:    true,
 		},
@@ -31,13 +42,15 @@ func (suite *KeeperTestSuite) TestRewardDistributionOfNftmarket() {
 		_ = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.ModuleName, sdk.Coins{tc.reward})
 
 		if tc.success {
-			err := suite.app.EcosystemincentiveKeeper.RewardDistributionOfNftmarket(suite.ctx, tc.nftId, tc.reward)
+			err := suite.app.EcosystemincentiveKeeper.RewardDistributionOfnftbackedloan(suite.ctx, tc.nftId, tc.reward)
 			suite.Require().NoError(err)
 
-			// reward := suite.app.BankKeeper.GetBalance(suite.ctx, suite.app.EcosystemincentiveKeeper.GetNftMarketAddress(suite.ctx), tc.reward.Denom)
+			// TODO: check the reward distribution by seeing the balance of the approriate accounts
+
+			// reward := suite.app.BankKeeper.GetBalance(suite.ctx, suite.app.EcosystemincentiveKeeper.GetnftbackedloanAddress(suite.ctx), tc.reward.Denom)
 			// suite.Require().Equal(tc.reward, reward)
 		} else {
-			err := suite.app.EcosystemincentiveKeeper.RewardDistributionOfNftmarket(suite.ctx, tc.nftId, tc.reward)
+			err := suite.app.EcosystemincentiveKeeper.RewardDistributionOfnftbackedloan(suite.ctx, tc.nftId, tc.reward)
 			suite.Require().Error(err)
 		}
 	}
@@ -96,7 +109,7 @@ func (suite *KeeperTestSuite) TestWithdrawReward() {
 			suite.Require().NoError(err)
 			suite.Require().Equal(withdrewReward, tc.reward)
 
-			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.String())
+			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer)
 			suite.Require().False(exists)
 		} else if !tc.rewardExist {
 			_, err := suite.app.EcosystemincentiveKeeper.WithdrawReward(suite.ctx, &types.MsgWithdrawReward{
@@ -106,7 +119,7 @@ func (suite *KeeperTestSuite) TestWithdrawReward() {
 			suite.Require().Error(err)
 			suite.Require().EqualError(err, sdkerrors.Wrap(types.ErrRewardNotExists, tc.withdrawer.String()).Error())
 
-			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.String())
+			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer)
 			suite.Require().False(exists)
 		} else if !tc.validDenom {
 			err := suite.app.EcosystemincentiveKeeper.SetRewardStore(suite.ctx, types.RewardStore{
@@ -122,7 +135,7 @@ func (suite *KeeperTestSuite) TestWithdrawReward() {
 			suite.Require().Error(err)
 			suite.Require().EqualError(err, sdkerrors.Wrap(types.ErrDenomRewardNotExists, "invalid").Error())
 
-			rewardStore, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.String())
+			rewardStore, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer)
 			suite.Require().True(exists)
 			rightRewardStore := types.RewardStore{
 				Address: tc.withdrawer.String(),
@@ -177,7 +190,7 @@ func (suite *KeeperTestSuite) TestWithdrawAllRewards() {
 			suite.Require().NoError(err)
 			suite.Require().Equal(withdrewRewards, tc.rewards)
 
-			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.String())
+			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer)
 			suite.Require().False(exists)
 		} else {
 			_, err := suite.app.EcosystemincentiveKeeper.WithdrawAllRewards(suite.ctx, &types.MsgWithdrawAllRewards{
@@ -186,7 +199,7 @@ func (suite *KeeperTestSuite) TestWithdrawAllRewards() {
 			suite.Require().Error(err)
 			suite.Require().EqualError(err, sdkerrors.Wrap(types.ErrRewardNotExists, tc.withdrawer.String()).Error())
 
-			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer.String())
+			_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, tc.withdrawer)
 			suite.Require().False(exists)
 		}
 	}

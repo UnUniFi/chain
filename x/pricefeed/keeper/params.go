@@ -28,7 +28,7 @@ func (k Keeper) GetTicker(ctx sdk.Context, denom string) (string, error) {
 	if !exists {
 		return "", sdkerrors.Wrap(types.ErrInternalDenomNotFound, denom)
 	}
-	return metadata.Symbol, nil
+	return metadata.Base, nil
 }
 
 func (k Keeper) GetMarketId(ctx sdk.Context, lhsTicker string, rhsTicker string) string {

@@ -55,5 +55,5 @@ func (k Keeper) SendCoinFromPoolToMarginManager(ctx sdk.Context, amount sdk.Coin
 }
 
 func (k Keeper) SendBackMargin(ctx sdk.Context, recipient sdk.AccAddress, amount sdk.Coins) error {
-	return k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, recipient, amount)
+	return k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.MarginManager, recipient, amount)
 }

@@ -23,7 +23,7 @@ type Keeper struct {
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
 	nftKeeper     types.NftKeeper
-	hooks         types.NftmarketHooks
+	hooks         types.NftbackedloanHooks
 }
 
 func NewKeeper(cdc codec.Codec, txCfg client.TxConfig, storeKey,
@@ -52,7 +52,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 // SetHooks sets the nftmarket keeper hooks
-func (k *Keeper) SetHooks(hooks types.NftmarketHooks) *Keeper {
+func (k *Keeper) SetHooks(hooks types.NftbackedloanHooks) *Keeper {
 	if k.hooks != nil {
 		panic("cannot set validator hooks twice")
 	}
