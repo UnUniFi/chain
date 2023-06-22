@@ -8,6 +8,9 @@ import (
 )
 
 func MinSettlementAmount(bids []NftBid) types.Coin {
+	if len(bids) == 0 {
+		return types.Coin{}
+	}
 	bidsSortedByPrice := NftBids(bids).SortHigherPrice()
 	minimumSettlementAmount := types.NewCoin(bidsSortedByPrice[0].BidAmount.Denom, sdk.NewInt(0))
 	forfeitedDeposit := types.NewCoin(bidsSortedByPrice[0].DepositAmount.Denom, sdk.NewInt(0))
