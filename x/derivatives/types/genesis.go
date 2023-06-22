@@ -1,6 +1,7 @@
 package types
 
 import (
+	"fmt"
 // this line is used by starport scaffolding # genesis/types/import
 )
 
@@ -19,6 +20,12 @@ func DefaultGenesis() *GenesisState {
 // failure.
 func (gs GenesisState) Validate() error {
     // this line is used by starport scaffolding # genesis/types/validate
-
+	positionIdMap := make(map[string]bool)
+	for _, elem := range gs.Positions {
+		if _, ok := positionIdMap[elem.Id]; ok {
+			return fmt.Errorf("duplicated id for position")
+		}
+		positionIdMap[elem.Id] = true
+	}
 	return gs.Params.Validate()
 }
