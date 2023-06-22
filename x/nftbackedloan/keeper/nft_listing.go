@@ -635,7 +635,7 @@ func (k Keeper) LiquidationProcessNotExitsWinner(ctx sdk.Context, bids types.Nft
 	depositCollected := listing.CollectedAmount
 	// pay fee
 	loan := k.GetDebtByNft(ctx, listing.IdBytes())
-	k.ProcessPaymentWithCommissionFee(ctx, listingOwner, listing.BidToken, depositCollected.Amount, loan.Loan.Amount, listing.NftId)
+	k.ProcessPaymentWithCommissionFee(ctx, listingOwner, depositCollected, loan.Loan, listing.NftId)
 	// transfer nft to listing owner
 	err = k.nftKeeper.Transfer(ctx, listing.NftId.ClassId, listing.NftId.NftId, listingOwner)
 	if err != nil {
@@ -741,7 +741,7 @@ func (k Keeper) DeliverSuccessfulBids(ctx sdk.Context) {
 
 		loan := k.GetDebtByNft(ctx, listing.IdBytes())
 		totalPayAmount := listing.CollectedAmount.Add(bid.BidAmount)
-		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, totalPayAmount.Denom, totalPayAmount.Amount, loan.Loan.Amount, listing.NftId)
+		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, totalPayAmount, loan.Loan, listing.NftId)
 
 		err = k.DeleteBid(ctx, bid)
 		if err != nil {
@@ -752,14 +752,14 @@ func (k Keeper) DeliverSuccessfulBids(ctx sdk.Context) {
 	}
 }
 
-func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, denom string, amount sdk.Int, loanAmount sdk.Int, nftId types.NftIdentifier) {
+func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, amount sdk.Coin, loanAmount sdk.Coin, nftId types.NftIdentifier) {
 	params := k.GetParamSet(ctx)
 	commissionFee := params.NftListingCommissionFee
 	cacheCtx, write := ctx.CacheContext()
 	// pay commission fees for nft listing
-	fee := amount.Mul(sdk.NewInt(int64(commissionFee))).Quo(sdk.NewInt(100))
+	fee := amount.Amount.Mul(sdk.NewInt(int64(commissionFee))).Quo(sdk.NewInt(100))
 	if fee.IsPositive() {
-		feeCoins := sdk.Coins{sdk.NewCoin(denom, fee)}
+		feeCoins := sdk.Coins{sdk.NewCoin(amount.Denom, fee)}
 		err := k.bankKeeper.SendCoinsFromModuleToModule(cacheCtx, types.ModuleName, ecoincentivetypes.ModuleName, feeCoins)
 		if err != nil {
 			fmt.Println(err)
@@ -770,12 +770,11 @@ func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sd
 	}
 
 	if loanAmount.IsNil() {
-		loanAmount = sdk.ZeroInt()
+		loanAmount = sdk.NewCoin(amount.Denom, sdk.ZeroInt())
 	}
-	listerPayment := amount.Sub(fee)
-	listerPayment = listerPayment.Sub(loanAmount)
+	listerPayment := amount.Amount.Sub(fee).Sub(loanAmount.Amount)
 	if !listerPayment.IsZero() {
-		err := k.bankKeeper.SendCoinsFromModuleToAccount(cacheCtx, types.ModuleName, listingOwner, sdk.Coins{sdk.NewCoin(denom, listerPayment)})
+		err := k.bankKeeper.SendCoinsFromModuleToAccount(cacheCtx, types.ModuleName, listingOwner, sdk.Coins{sdk.NewCoin(amount.Denom, listerPayment)})
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -784,9 +783,9 @@ func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sd
 		}
 	}
 
-	// Call AfterNftPaymentWithCommission hook method to inform the payment is successfuly
+	// Call AfterNftPaymentWithCommission hook method to inform the payment is successfully
 	// executed.
-	k.AfterNftPaymentWithCommission(ctx, nftId, sdk.NewCoin(denom, fee))
+	k.AfterNftPaymentWithCommission(ctx, nftId, sdk.NewCoin(amount.Denom, fee))
 }
 
 // get surplus amount
