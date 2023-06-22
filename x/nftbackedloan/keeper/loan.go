@@ -141,7 +141,7 @@ func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, borrows [
 	}
 
 	// Emit event for borrow from bids
-	ctx.EventManager().EmitTypedEvent(&types.EventBorrow{
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventBorrow{
 		Borrower: borrower,
 		ClassId:  nft.ClassId,
 		NftId:    nft.NftId,
@@ -337,7 +337,7 @@ func (k Keeper) ManualRepay(ctx sdk.Context, nft types.NftIdentifier, repays []t
 	}
 
 	// Emit event for paying full bid
-	ctx.EventManager().EmitTypedEvent(&types.EventRepay{
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventRepay{
 		Repayer: borrower,
 		ClassId: nft.ClassId,
 		NftId:   nft.NftId,

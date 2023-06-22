@@ -168,7 +168,7 @@ func (k Keeper) GetListedClass(ctx sdk.Context, classId string, limit int) (*typ
 		nfts = append(nfts, types.NftInfo{Id: nftInfo.Id, Uri: nftInfo.Uri, UriHash: nftInfo.UriHash})
 	}
 
-	for i, _ := range nfts {
+	for i := range nfts {
 		pnfts = append(pnfts, &nfts[i])
 	}
 
