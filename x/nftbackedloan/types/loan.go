@@ -22,14 +22,13 @@ func MinSettlementAmount(bids []NftBid) types.Coin {
 	return minimumSettlementAmount
 }
 
-func LiquidationBid(bids []NftBid) NftBid {
-	bidsSortedByPrice := NftBids(bids).SortHigherPrice()
-	// todo: change the interest to the current value.
-	settlementAmount := ExistRepayAmount(bidsSortedByPrice)
-	forfeitedDeposit := types.NewCoin(bidsSortedByPrice[0].DepositAmount.Denom, sdk.NewInt(0))
+func LiquidationBid(bids []NftBid, time time.Time) NftBid {
+	bidsSortedByDeposit := NftBids(bids).SortHigherDeposit()
+	settlementAmount := ExistRepayAmountAtTime(bidsSortedByDeposit, time)
+	forfeitedDeposit := types.NewCoin(bidsSortedByDeposit[0].DepositAmount.Denom, sdk.NewInt(0))
 	var ret NftBid
 
-	for _, bid := range bidsSortedByPrice {
+	for _, bid := range bidsSortedByDeposit {
 		if !bid.IsPaidBidAmount() {
 			forfeitedDeposit = forfeitedDeposit.Add(bid.DepositAmount)
 			continue
@@ -41,6 +40,29 @@ func LiquidationBid(bids []NftBid) NftBid {
 		break
 	}
 	return ret
+}
+
+func ForfeitedBidsAndRefundBids(bids []NftBid, winBid NftBid) ([]NftBid, []NftBid) {
+	bidsSortedByDeposit := NftBids(bids).SortHigherDeposit()
+	isDecidedWinningBid := false
+	forfeitedBids := []NftBid{}
+	refundBids := []NftBid{}
+	for _, bid := range bidsSortedByDeposit {
+		if isDecidedWinningBid {
+			refundBids = append(refundBids, bid)
+			continue
+		}
+		if bid.Id == winBid.Id {
+			isDecidedWinningBid = true
+			continue
+		}
+		if bid.IsPaidBidAmount() {
+			refundBids = append(refundBids, bid)
+		} else {
+			forfeitedBids = append(forfeitedBids, bid)
+		}
+	}
+	return forfeitedBids, refundBids
 }
 
 func ExpectedRepayAmount(bids []NftBid, borrowBids []BorrowBid, time time.Time) sdk.Coin {
@@ -67,6 +89,17 @@ func ExistRepayAmount(bids []NftBid) sdk.Coin {
 	for _, nftBid := range bids {
 		for _, borrowing := range nftBid.Borrowings {
 			existInterest := nftBid.CalcInterest(borrowing.Amount, nftBid.DepositLendingRate, borrowing.StartAt, nftBid.BiddingPeriod)
+			existRepayAmount = existRepayAmount.Add(borrowing.Amount).Add(existInterest)
+		}
+	}
+	return existRepayAmount
+}
+
+func ExistRepayAmountAtTime(bids []NftBid, time time.Time) sdk.Coin {
+	existRepayAmount := types.NewCoin(bids[0].BidAmount.Denom, sdk.NewInt(0))
+	for _, nftBid := range bids {
+		for _, borrowing := range nftBid.Borrowings {
+			existInterest := nftBid.CalcInterest(borrowing.Amount, nftBid.DepositLendingRate, borrowing.StartAt, time)
 			existRepayAmount = existRepayAmount.Add(borrowing.Amount).Add(existInterest)
 		}
 	}
