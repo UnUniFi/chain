@@ -19,6 +19,11 @@ func MinSettlementAmount(bids []NftBid) types.Coin {
 		forfeitedDeposit = forfeitedDeposit.Add(bid.DepositAmount)
 	}
 
+	// If higher than the total deposits, the minimum settlement amount is the total deposits.
+	if minimumSettlementAmount.Amount.LT(forfeitedDeposit.Amount) {
+		minimumSettlementAmount = forfeitedDeposit
+	}
+
 	return minimumSettlementAmount
 }
 
