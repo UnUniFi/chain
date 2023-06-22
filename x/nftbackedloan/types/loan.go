@@ -74,6 +74,9 @@ func ForfeitedBidsAndRefundBids(bids []NftBid, winBid NftBid) ([]NftBid, []NftBi
 }
 
 func ExpectedRepayAmount(bids []NftBid, borrowBids []BorrowBid, time time.Time) sdk.Coin {
+	if len(bids) == 0 {
+		return types.Coin{}
+	}
 	expectedRepayAmount := types.NewCoin(bids[0].BidAmount.Denom, sdk.NewInt(0))
 	for _, borrowBid := range borrowBids {
 		for _, nftBid := range bids {
@@ -93,6 +96,9 @@ func ExpectedRepayAmount(bids []NftBid, borrowBids []BorrowBid, time time.Time) 
 }
 
 func ExistRepayAmount(bids []NftBid) sdk.Coin {
+	if len(bids) == 0 {
+		return types.Coin{}
+	}
 	existRepayAmount := types.NewCoin(bids[0].BidAmount.Denom, sdk.NewInt(0))
 	for _, nftBid := range bids {
 		for _, borrowing := range nftBid.Borrowings {
@@ -104,6 +110,9 @@ func ExistRepayAmount(bids []NftBid) sdk.Coin {
 }
 
 func ExistRepayAmountAtTime(bids []NftBid, time time.Time) sdk.Coin {
+	if len(bids) == 0 {
+		return types.Coin{}
+	}
 	existRepayAmount := types.NewCoin(bids[0].BidAmount.Denom, sdk.NewInt(0))
 	for _, nftBid := range bids {
 		for _, borrowing := range nftBid.Borrowings {
@@ -117,7 +126,7 @@ func ExistRepayAmountAtTime(bids []NftBid, time time.Time) sdk.Coin {
 func IsAbleToBorrow(bids []NftBid, borrowBids []BorrowBid, time time.Time) bool {
 	minimumSettlementAmount := MinSettlementAmount(bids)
 	expectedRepayAmount := ExpectedRepayAmount(bids, borrowBids, time)
-	// todo : include existRepayAmount
+	// todo : if enable re-borrow, include existRepayAmount
 	return expectedRepayAmount.IsLTE(minimumSettlementAmount)
 
 }
