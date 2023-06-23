@@ -7,32 +7,41 @@ import (
 	types "github.com/cosmos/cosmos-sdk/types"
 )
 
-func MinSettlementAmount(bids []NftBid) types.Coin {
+func MinSettlementAmount(bids []NftBid) (types.Coin, error) {
 	if len(bids) == 0 {
-		return types.Coin{}
+		return types.Coin{}, ErrNotExistsBid
 	}
 	bidsSortedByPrice := NftBids(bids).SortHigherPrice()
+	return FindMinSettlementAmount(bidsSortedByPrice)
+}
+
+func FindMinSettlementAmount(bidsSortedByPrice []NftBid) (types.Coin, error) {
+	if len(bidsSortedByPrice) == 0 {
+		return types.Coin{}, ErrNotExistsBid
+	}
 	minimumSettlementAmount := types.NewCoin(bidsSortedByPrice[0].BidAmount.Denom, sdk.NewInt(0))
 	forfeitedDeposit := types.NewCoin(bidsSortedByPrice[0].DepositAmount.Denom, sdk.NewInt(0))
 
 	for _, bid := range bidsSortedByPrice {
-		if minimumSettlementAmount.Size() == 0 || bid.BidAmount.Add(forfeitedDeposit).IsLT(minimumSettlementAmount) {
+		if minimumSettlementAmount.IsZero() || bid.BidAmount.Add(forfeitedDeposit).IsLT(minimumSettlementAmount) {
 			minimumSettlementAmount = bid.BidAmount.Add(forfeitedDeposit)
 		}
 		forfeitedDeposit = forfeitedDeposit.Add(bid.DepositAmount)
 	}
 
 	// If higher than the total deposits, the minimum settlement amount is the total deposits.
-	if minimumSettlementAmount.Amount.LT(forfeitedDeposit.Amount) {
+	if forfeitedDeposit.IsLT(minimumSettlementAmount) {
 		minimumSettlementAmount = forfeitedDeposit
 	}
 
-	return minimumSettlementAmount
+	return minimumSettlementAmount, nil
 }
 
-func LiquidationBid(bids []NftBid, time time.Time) NftBid {
-	bidsSortedByDeposit := NftBids(bids).SortHigherDeposit()
-	settlementAmount := ExistRepayAmountAtTime(bidsSortedByDeposit, time)
+func LiquidationBid(bidsSortedByDeposit []NftBid, time time.Time) (NftBid, error) {
+	if len(bidsSortedByDeposit) == 0 {
+		return NftBid{}, ErrNotExistsBid
+	}
+	settlementAmount, _ := ExistRepayAmountAtTime(bidsSortedByDeposit, time)
 	forfeitedDeposit := types.NewCoin(bidsSortedByDeposit[0].DepositAmount.Denom, sdk.NewInt(0))
 	var ret NftBid
 
@@ -47,21 +56,25 @@ func LiquidationBid(bids []NftBid, time time.Time) NftBid {
 		ret = bid
 		break
 	}
-	return ret
+
+	if ret.IsNil() {
+		return NftBid{}, nil
+	}
+
+	return ret, nil
 }
 
-func ForfeitedBidsAndRefundBids(bids []NftBid, winBid NftBid) ([]NftBid, []NftBid) {
-	bidsSortedByDeposit := NftBids(bids).SortHigherDeposit()
+func ForfeitedBidsAndRefundBids(bidsSortedByDeposit []NftBid, winBid NftBid) ([]NftBid, []NftBid) {
 	isDecidedWinningBid := false
 	forfeitedBids := []NftBid{}
 	refundBids := []NftBid{}
 	for _, bid := range bidsSortedByDeposit {
-		if isDecidedWinningBid {
-			refundBids = append(refundBids, bid)
+		if bid.Id.Bidder == winBid.Id.Bidder {
+			isDecidedWinningBid = true
 			continue
 		}
-		if bid.Id == winBid.Id {
-			isDecidedWinningBid = true
+		if isDecidedWinningBid {
+			refundBids = append(refundBids, bid)
 			continue
 		}
 		if bid.IsPaidBidAmount() {
@@ -73,9 +86,9 @@ func ForfeitedBidsAndRefundBids(bids []NftBid, winBid NftBid) ([]NftBid, []NftBi
 	return forfeitedBids, refundBids
 }
 
-func ExpectedRepayAmount(bids []NftBid, borrowBids []BorrowBid, time time.Time) sdk.Coin {
+func ExpectedRepayAmount(bids []NftBid, borrowBids []BorrowBid, time time.Time) (sdk.Coin, error) {
 	if len(bids) == 0 {
-		return types.Coin{}
+		return types.Coin{}, ErrNotExistsBid
 	}
 	expectedRepayAmount := types.NewCoin(bids[0].BidAmount.Denom, sdk.NewInt(0))
 	for _, borrowBid := range borrowBids {
@@ -92,12 +105,12 @@ func ExpectedRepayAmount(bids []NftBid, borrowBids []BorrowBid, time time.Time) 
 			}
 		}
 	}
-	return expectedRepayAmount
+	return expectedRepayAmount, nil
 }
 
-func ExistRepayAmount(bids []NftBid) sdk.Coin {
+func ExistRepayAmount(bids []NftBid) (sdk.Coin, error) {
 	if len(bids) == 0 {
-		return types.Coin{}
+		return types.Coin{}, ErrBidDoesNotExists
 	}
 	existRepayAmount := types.NewCoin(bids[0].BidAmount.Denom, sdk.NewInt(0))
 	for _, nftBid := range bids {
@@ -106,12 +119,12 @@ func ExistRepayAmount(bids []NftBid) sdk.Coin {
 			existRepayAmount = existRepayAmount.Add(borrowing.Amount).Add(existInterest)
 		}
 	}
-	return existRepayAmount
+	return existRepayAmount, nil
 }
 
-func ExistRepayAmountAtTime(bids []NftBid, time time.Time) sdk.Coin {
+func ExistRepayAmountAtTime(bids []NftBid, time time.Time) (sdk.Coin, error) {
 	if len(bids) == 0 {
-		return types.Coin{}
+		return types.Coin{}, ErrBidDoesNotExists
 	}
 	existRepayAmount := types.NewCoin(bids[0].BidAmount.Denom, sdk.NewInt(0))
 	for _, nftBid := range bids {
@@ -120,38 +133,55 @@ func ExistRepayAmountAtTime(bids []NftBid, time time.Time) sdk.Coin {
 			existRepayAmount = existRepayAmount.Add(borrowing.Amount).Add(existInterest)
 		}
 	}
-	return existRepayAmount
+	return existRepayAmount, nil
 }
 
 func IsAbleToBorrow(bids []NftBid, borrowBids []BorrowBid, time time.Time) bool {
-	minimumSettlementAmount := MinSettlementAmount(bids)
-	expectedRepayAmount := ExpectedRepayAmount(bids, borrowBids, time)
+	minimumSettlementAmount, err := MinSettlementAmount(bids)
+	if err != nil {
+		return false
+	}
+	expectedRepayAmount, err := ExpectedRepayAmount(bids, borrowBids, time)
+	if err != nil {
+		return false
+	}
 	// todo : if enable re-borrow, include existRepayAmount
 	return expectedRepayAmount.IsLTE(minimumSettlementAmount)
-
 }
 
 func IsAbleToCancelBid(cancellingBidId BidId, bids []NftBid) bool {
 	var afterCanceledBids []NftBid
 	for _, bid := range bids {
-		if bid.Id != cancellingBidId {
+		if bid.Id.Bidder != cancellingBidId.Bidder {
 			afterCanceledBids = append(afterCanceledBids, bid)
 		}
 	}
-	minimumSettlementAmount := MinSettlementAmount(afterCanceledBids)
-	existRepayAmount := ExistRepayAmount(bids)
+	minimumSettlementAmount, err := MinSettlementAmount(afterCanceledBids)
+	if err != nil {
+		return false
+	}
+	existRepayAmount, err := ExistRepayAmount(bids)
+	if err != nil {
+		return false
+	}
 	return existRepayAmount.IsLTE(minimumSettlementAmount)
 }
 
 func IsAbleToReBid(bids []NftBid, oldBidId BidId, newBid NftBid) bool {
 	var afterUpdatedBids []NftBid
 	for _, bid := range bids {
-		if bid.Id != oldBidId {
+		if bid.Id.Bidder != oldBidId.Bidder {
 			afterUpdatedBids = append(afterUpdatedBids, bid)
 		}
 	}
 	afterUpdatedBids = append(afterUpdatedBids, newBid)
-	minimumSettlementAmount := MinSettlementAmount(afterUpdatedBids)
-	existRepayAmount := ExistRepayAmount(bids)
+	minimumSettlementAmount, err := MinSettlementAmount(afterUpdatedBids)
+	if err != nil {
+		return false
+	}
+	existRepayAmount, err := ExistRepayAmount(bids)
+	if err != nil {
+		return false
+	}
 	return existRepayAmount.IsLTE(minimumSettlementAmount)
 }

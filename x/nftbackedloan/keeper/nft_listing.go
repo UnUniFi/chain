@@ -593,17 +593,21 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 func (k Keeper) LiquidationProcess(ctx sdk.Context, bids types.NftBids, listing types.NftListing, params types.Params) error {
 	// PayFullBid has been finished at this point
 	// loop to find winner bid (collect deposits + bid amount > repay amount)
-	winnerBid := types.LiquidationBid(bids, ctx.BlockTime())
+	bidsSortedByDeposit := bids.SortHigherDeposit()
+	winnerBid, err := types.LiquidationBid(bidsSortedByDeposit, ctx.BlockTime())
+	if err != nil {
+		return err
+	}
 
 	cacheCtx, write := ctx.CacheContext()
 	if winnerBid.IsNil() {
-		err := k.LiquidationProcessNotExitsWinner(cacheCtx, bids, listing)
+		err := k.LiquidationProcessNotExitsWinner(cacheCtx, bidsSortedByDeposit, listing)
 		if err != nil {
 			return err
 		}
 		k.DeleteNftListings(ctx, listing)
 	} else {
-		collectBids, refundBids := types.ForfeitedBidsAndRefundBids(bids, winnerBid)
+		collectBids, refundBids := types.ForfeitedBidsAndRefundBids(bidsSortedByDeposit, winnerBid)
 		err := k.LiquidationProcessExitsWinner(cacheCtx, collectBids, refundBids, listing, winnerBid, ctx.BlockTime())
 		if err != nil {
 			return err
