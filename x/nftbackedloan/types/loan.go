@@ -150,6 +150,7 @@ func IsAbleToBorrow(bids []NftBid, borrowBids []BorrowBid, time time.Time) bool 
 }
 
 func IsAbleToCancelBid(cancellingBidId BidId, bids []NftBid) bool {
+	// check if not borrowed before this func
 	var afterCanceledBids []NftBid
 	for _, bid := range bids {
 		if bid.Id.Bidder != cancellingBidId.Bidder {
@@ -168,6 +169,11 @@ func IsAbleToCancelBid(cancellingBidId BidId, bids []NftBid) bool {
 }
 
 func IsAbleToReBid(bids []NftBid, oldBidId BidId, newBid NftBid) bool {
+	// check if not borrowed before this func
+	if oldBidId.Bidder != newBid.Id.Bidder {
+		return false
+	}
+
 	var afterUpdatedBids []NftBid
 	for _, bid := range bids {
 		if bid.Id.Bidder != oldBidId.Bidder {
