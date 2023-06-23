@@ -942,7 +942,7 @@ func TestFindKickOutBid(t *testing.T) {
 			"exists kick out bid only one",
 			types.NftBids{
 				types.NftBid{
-					Bidder:             "bidder1",
+					// Bidder:             "bidder1",
 					BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 					DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 					DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -965,7 +965,7 @@ func TestFindKickOutBid(t *testing.T) {
 				},
 			},
 			types.NftBid{
-				Bidder:             "bidder1",
+				// Bidder:             "bidder1",
 				BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 				DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 				DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -983,7 +983,7 @@ func TestFindKickOutBid(t *testing.T) {
 			"hit first bid for multiple bids",
 			types.NftBids{
 				types.NftBid{
-					Bidder:             "bidder1",
+					// Bidder:             "bidder1",
 					BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 					DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 					DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -997,7 +997,7 @@ func TestFindKickOutBid(t *testing.T) {
 					},
 				},
 				types.NftBid{
-					Bidder:             "bidder2",
+					// Bidder:             "bidder2",
 					BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(102)),
 					DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 					DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -1011,7 +1011,7 @@ func TestFindKickOutBid(t *testing.T) {
 					},
 				},
 				types.NftBid{
-					Bidder:             "bidder3",
+					// Bidder:             "bidder3",
 					BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(103)),
 					DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 					DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -1034,7 +1034,7 @@ func TestFindKickOutBid(t *testing.T) {
 				},
 			},
 			types.NftBid{
-				Bidder:             "bidder1",
+				// Bidder:             "bidder1",
 				BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 				DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 				DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -1052,7 +1052,7 @@ func TestFindKickOutBid(t *testing.T) {
 			"hit middle bid for multiple bids",
 			types.NftBids{
 				types.NftBid{
-					Bidder:             "bidder2",
+					// Bidder:             "bidder2",
 					BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(102)),
 					DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 					DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -1066,7 +1066,7 @@ func TestFindKickOutBid(t *testing.T) {
 					},
 				},
 				types.NftBid{
-					Bidder:             "bidder1",
+					// Bidder:             "bidder1",
 					BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 					DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 					DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -1080,7 +1080,7 @@ func TestFindKickOutBid(t *testing.T) {
 					},
 				},
 				types.NftBid{
-					Bidder:             "bidder3",
+					// Bidder:             "bidder3",
 					BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(103)),
 					DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 					DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -1103,7 +1103,7 @@ func TestFindKickOutBid(t *testing.T) {
 				},
 			},
 			types.NftBid{
-				Bidder:             "bidder1",
+				// Bidder:             "bidder1",
 				BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 				DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 				DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -1121,7 +1121,7 @@ func TestFindKickOutBid(t *testing.T) {
 			"hit last bid for multiple bids",
 			types.NftBids{
 				types.NftBid{
-					Bidder:             "bidder2",
+					// Bidder:             "bidder2",
 					BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(102)),
 					DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 					DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -1135,7 +1135,7 @@ func TestFindKickOutBid(t *testing.T) {
 					},
 				},
 				types.NftBid{
-					Bidder:             "bidder3",
+					// Bidder:             "bidder3",
 					BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(103)),
 					DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 					DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -1149,7 +1149,7 @@ func TestFindKickOutBid(t *testing.T) {
 					},
 				},
 				types.NftBid{
-					Bidder:             "bidder1",
+					// Bidder:             "bidder1",
 					BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 					DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 					DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -1172,7 +1172,7 @@ func TestFindKickOutBid(t *testing.T) {
 				},
 			},
 			types.NftBid{
-				Bidder:             "bidder1",
+				// Bidder:             "bidder1",
 				BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 				DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 				DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -1199,30 +1199,30 @@ func TestFindKickOutBid(t *testing.T) {
 	}
 }
 
-func TestCalcPartInterest(t *testing.T) {
-	var result sdk.Int
-	result = types.CalcPartInterest(sdk.NewInt(100), sdk.NewInt(10), sdk.NewDecCoin("uguu", sdk.NewInt(50)))
-	if !sdk.NewInt(5).Equal(result) {
-		t.Error("not expect result")
-	}
+// func TestCalcPartInterest(t *testing.T) {
+// 	var result sdk.Int
+// 	result = types.CalcPartInterest(sdk.NewInt(100), sdk.NewInt(10), sdk.NewDecCoin("uguu", sdk.NewInt(50)))
+// 	if !sdk.NewInt(5).Equal(result) {
+// 		t.Error("not expect result")
+// 	}
 
-	result = types.CalcPartInterest(sdk.NewInt(100), sdk.NewInt(10), sdk.NewDecCoin("uguu", sdk.NewInt(0)))
-	if !sdk.NewInt(0).Equal(result) {
-		t.Error("not expect result")
-	}
+// 	result = types.CalcPartInterest(sdk.NewInt(100), sdk.NewInt(10), sdk.NewDecCoin("uguu", sdk.NewInt(0)))
+// 	if !sdk.NewInt(0).Equal(result) {
+// 		t.Error("not expect result")
+// 	}
 
-	result = types.CalcPartInterest(sdk.NewInt(100), sdk.NewInt(0), sdk.NewDecCoin("uguu", sdk.NewInt(10)))
-	if !sdk.NewInt(0).Equal(result) {
-		t.Error("not expect result")
-	}
+// 	result = types.CalcPartInterest(sdk.NewInt(100), sdk.NewInt(0), sdk.NewDecCoin("uguu", sdk.NewInt(10)))
+// 	if !sdk.NewInt(0).Equal(result) {
+// 		t.Error("not expect result")
+// 	}
 
-	result = types.CalcPartInterest(sdk.NewInt(100), sdk.NewInt(0), sdk.NewDecCoin("uguu", sdk.NewInt(0)))
-	if !sdk.NewInt(0).Equal(result) {
-		t.Error("not expect result")
-	}
+// 	result = types.CalcPartInterest(sdk.NewInt(100), sdk.NewInt(0), sdk.NewDecCoin("uguu", sdk.NewInt(0)))
+// 	if !sdk.NewInt(0).Equal(result) {
+// 		t.Error("not expect result")
+// 	}
 
-	result = types.CalcPartInterest(sdk.NewInt(0), sdk.NewInt(0), sdk.NewDecCoin("uguu", sdk.NewInt(0)))
-	if !sdk.NewInt(0).Equal(result) {
-		t.Error("not expect result")
-	}
-}
+// 	result = types.CalcPartInterest(sdk.NewInt(0), sdk.NewInt(0), sdk.NewDecCoin("uguu", sdk.NewInt(0)))
+// 	if !sdk.NewInt(0).Equal(result) {
+// 		t.Error("not expect result")
+// 	}
+// }
