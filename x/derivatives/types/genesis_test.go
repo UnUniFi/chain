@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
+	"github.com/UnUniFi/chain/testutil/sample"
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
@@ -71,7 +72,7 @@ func TestGenesisState_Validate(t *testing.T) {
 							BaseDenom:  "uatom",
 							QuoteDenom: "uusdc",
 						},
-						Address:         "123",
+						Address:         sample.AccAddress(),
 						OpenedAt:        time.Now().UTC(),
 						OpenedHeight:    10,
 						OpenedBaseRate:  sdk.MustNewDecFromStr("0.001"),
@@ -84,7 +85,7 @@ func TestGenesisState_Validate(t *testing.T) {
 							BaseDenom:  "uatom",
 							QuoteDenom: "uusdc",
 						},
-						Address:         "123",
+						Address:         sample.AccAddress(),
 						OpenedAt:        time.Now().UTC(),
 						OpenedHeight:    10,
 						OpenedBaseRate:  sdk.MustNewDecFromStr("0.001"),

@@ -24,7 +24,7 @@ func DefaultPoolParams() PoolParams {
 		BorrowingFeeRatePerHour:     sdk.MustNewDecFromStr("0.000001"),
 		ReportLiquidationRewardRate: sdk.MustNewDecFromStr("0.3"),
 		ReportLevyPeriodRewardRate:  sdk.MustNewDecFromStr("0.3"),
-		AcceptedAssetsConf:          []PoolAssetConf{},
+		AcceptedAssetsConf:          []PoolAssetConf(nil),
 	}
 }
 
@@ -33,7 +33,7 @@ func DefaultPerpetualFuturesParams() PerpetualFuturesParams {
 		CommissionRate:        sdk.MustNewDecFromStr("0.001"),
 		MarginMaintenanceRate: sdk.MustNewDecFromStr("0.5"),
 		ImaginaryFundingRateProportionalCoefficient: sdk.MustNewDecFromStr("0.0005"),
-		Markets:     []*Market{},
+		Markets:     []*Market(nil),
 		MaxLeverage: 30,
 	}
 }
@@ -44,7 +44,7 @@ func DefaultPerpetualOptionsParams() PerpetualOptionsParams {
 		StrikeCommissionRate:                        sdk.MustNewDecFromStr("0.001"),
 		MarginMaintenanceRate:                       sdk.ZeroDec(),
 		ImaginaryFundingRateProportionalCoefficient: sdk.ZeroDec(),
-		Markets: []*Market{},
+		Markets: []*Market(nil),
 	}
 }
 
@@ -151,6 +151,5 @@ func validatePerpetualOptions(i interface{}) error {
 	if !ok {
 		return fmt.Errorf("invalid paramter type: %T", i)
 	}
-
 	return nil
 }
