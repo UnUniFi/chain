@@ -346,6 +346,79 @@ func (k Keeper) ManualRepay(ctx sdk.Context, nft types.NftIdentifier, repays []t
 	return nil
 }
 
+func (k Keeper) AutoRepay(ctx sdk.Context, nft types.NftIdentifier, bids types.NftBids, borrower, receiver string) error {
+	// todo set interest amount in bid info
+	listing, err := k.GetNftListingByIdBytes(ctx, nft.IdBytes())
+	if err != nil {
+		return err
+	}
+	if listing.Owner != borrower {
+		return types.ErrNotNftListingOwner
+	}
+
+	sender, err := sdk.AccAddressFromBech32(borrower)
+	if err != nil {
+		return err
+	}
+
+	listerAmount := k.bankKeeper.GetBalance(ctx, sender, listing.BidToken)
+	repayAmount, err := types.ExistRepayAmountAtTime(bids, ctx.BlockTime())
+	if err != nil {
+		return err
+	}
+	if listerAmount.Amount.LT(repayAmount.Amount) {
+		return types.ErrInsufficientBalance
+	}
+
+	currDebt := k.GetDebtByNft(ctx, nft.IdBytes())
+
+	// return err if borrowing didn't happen once before
+	if currDebt.Loan.IsNil() {
+		return types.ErrNotBorrowed
+	}
+
+	repaidAmount := sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
+	for _, bid := range bids {
+		if len(bid.Borrowings) == 0 {
+			continue
+		}
+
+		for _, borrowing := range bid.Borrowings {
+			interest := bid.CalcInterest(borrowing.Amount, bid.DepositLendingRate, borrowing.StartAt, ctx.BlockTime())
+			repayAmount := borrowing.Amount.Add(interest)
+			if repayAmount.IsZero() {
+				break
+			}
+			repaidAmount = repaidAmount.Add(repayAmount)
+			receipt := borrowing.RepayThenGetReceipt(repayAmount, ctx.BlockTime(), bid.CalcInterestF())
+			// Subtract when surplus repay amount exists
+			repaidAmount = repaidAmount.Sub(receipt.Charge)
+			bid.InterestAmount = bid.InterestAmount.Add(receipt.PaidInterestAmount)
+		}
+		// clean up Borrowings
+		bid.Borrowings = []types.Borrowing{}
+		err = k.SetBid(ctx, bid)
+		if err != nil {
+			return err
+		}
+	}
+
+	k.DecreaseDebt(ctx, nft, repaidAmount)
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{repaidAmount})
+	if err != nil {
+		return err
+	}
+
+	// Emit event for paying full bid
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventRepay{
+		Repayer: borrower,
+		ClassId: nft.ClassId,
+		NftId:   nft.NftId,
+		Amount:  repaidAmount.String(),
+	})
+	return nil
+}
+
 // func (k Keeper) AutoRepay(ctx sdk.Context, nft types.NftIdentifier, require sdk.Coin, borrower, receiver string) error {
 // 	// todo set interest amount in bid info
 // 	listing, err := k.GetNftListingByIdBytes(ctx, nft.IdBytes())
