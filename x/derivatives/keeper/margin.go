@@ -21,23 +21,31 @@ func (k Keeper) AddMargin(ctx sdk.Context, sender sdk.AccAddress, positionId str
 	position.RemainingMargin = position.RemainingMargin.Add(amount)
 
 	// Make sure if the position is not under the liquidation condition
-	// If the position is under the liquidation condition, the position should be liquidated
-	err := k.ReportLiquidation(
-		ctx,
-		&types.MsgReportLiquidation{
-			Sender:          sender.String(),
-			PositionId:      positionId,
-			RewardRecipient: sender.String(),
-		})
-	if err != nil && err != types.ErrLiquidationNotNeeded {
-		return err
-	} else if err == nil {
-		// If the position is liquidated, the position should've been deleted already
-		return nil
-	} else {
-		// If the position is not liquidated, the position should be updated
-		k.SetPosition(ctx, *position)
+	if position.RemainingMargin.IsNegative() {
+		return types.ErrNegativeMargin
 	}
+
+	// Check if the updated margin is not under liquidation
+	params := k.GetParams(ctx)
+	currentBaseUsdRate, currentQuoteUsdRate, err := k.GetPairUsdPriceFromMarket(ctx, position.Market)
+	if err != nil {
+		return err
+	}
+	quoteTicker := k.GetPoolQuoteTicker(ctx)
+	baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, currentBaseUsdRate)
+	quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, currentQuoteUsdRate)
+
+	if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, baseMetricsRate, quoteMetricsRate) {
+		// Emit event that the position is needed to be liquidated
+		_ = ctx.EventManager().EmitTypedEvent(&types.EventLiquidationNeeded{
+			PositionId: positionId,
+		})
+
+		// Return err as the result of this tx
+		return types.ErrLiquidationNeeded
+	}
+
+	k.SetPosition(ctx, *position)
 
 	return nil
 }
