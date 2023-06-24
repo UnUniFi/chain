@@ -25,4 +25,5 @@ var (
 	ErrPositionDoesNotExist     = sdkerrors.Register(ModuleName, 15, "position does not exist")
 	ErrLiquidationNotNeeded     = sdkerrors.Register(ModuleName, 16, "liquidation is not needed")
 	ErrLiquidationNeeded        = sdkerrors.Register(ModuleName, 17, "liquidation is needed")
+	ErrUnauthorized             = sdkerrors.Register(ModuleName, 18, "unauthorized")
 )
