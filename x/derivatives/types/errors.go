@@ -26,4 +26,5 @@ var (
 	ErrLiquidationNotNeeded     = sdkerrors.Register(ModuleName, 16, "liquidation is not needed")
 	ErrLiquidationNeeded        = sdkerrors.Register(ModuleName, 17, "liquidation is needed")
 	ErrUnauthorized             = sdkerrors.Register(ModuleName, 18, "unauthorized")
+	ErrTooMuchMarginToWithdraw  = sdkerrors.Register(ModuleName, 19, "too much margin to withdraw")
 )

@@ -80,13 +80,8 @@ func (k Keeper) WithdrawMargin(ctx sdk.Context, withdrawer sdk.AccAddress, posit
 	quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, currentQuoteUsdRate)
 
 	if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, baseMetricsRate, quoteMetricsRate) {
-		// Emit event that the position is needed to be liquidated
-		_ = ctx.EventManager().EmitTypedEvent(&types.EventLiquidationNeeded{
-			PositionId: positionId,
-		})
-
 		// Return err as the result of this tx
-		return types.ErrLiquidationNeeded
+		return types.ErrTooMuchMarginToWithdraw
 	}
 
 	// Send margin from the margin manager module account to the withdrawer
