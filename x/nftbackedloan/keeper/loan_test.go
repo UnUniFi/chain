@@ -77,6 +77,7 @@ func (suite *KeeperTestSuite) TestIncreaseDecreaseDebt() {
 func (suite *KeeperTestSuite) TestBorrow() {
 	acc1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	acc2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 	tests := []struct {
 		testCase     string
@@ -194,8 +195,6 @@ func (suite *KeeperTestSuite) TestBorrow() {
 			suite.Require().NoError(err)
 		}
 
-		bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-
 		for i := 0; i < tc.prevBids; i++ {
 			// init tokens to addr
 			bidAmount := sdk.NewInt64Coin("uguu", int64(1000000*(i+1)))
@@ -219,7 +218,7 @@ func (suite *KeeperTestSuite) TestBorrow() {
 
 		if tc.originAmount.IsPositive() {
 			err := suite.app.NftmarketKeeper.Borrow(suite.ctx, &types.MsgBorrow{
-				Sender: bidder.String(),
+				Sender: tc.nftOwner.String(),
 				NftId:  nftIdentifier,
 				BorrowBids: []types.BorrowBid{
 					{
@@ -233,7 +232,7 @@ func (suite *KeeperTestSuite) TestBorrow() {
 
 		oldBorrowerBalance := suite.app.BankKeeper.GetBalance(suite.ctx, tc.borrower, "uguu")
 		err = suite.app.NftmarketKeeper.Borrow(suite.ctx, &types.MsgBorrow{
-			Sender: bidder.String(),
+			Sender: tc.nftOwner.String(),
 			NftId:  nftIdentifier,
 			BorrowBids: []types.BorrowBid{
 				{
