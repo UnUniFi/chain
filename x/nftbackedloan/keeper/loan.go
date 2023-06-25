@@ -73,17 +73,27 @@ func (k Keeper) DecreaseDebt(ctx sdk.Context, nftId types.NftIdentifier, amount 
 
 func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
 	bids := types.NftBids(k.GetBidsByNft(ctx, msg.NftId.IdBytes()))
-	// todo impl re-borrow
+	// if re-born, repay all borrowed bids
+	borrowedBid := types.NftBids{}
 	for _, bid := range bids {
 		if len(bid.Borrowings) != 0 {
-			return types.ErrAlreadyBorrowed
+			borrowedBid = append(borrowedBid, bid)
 		}
 	}
-	if types.IsAbleToBorrow(bids, msg.BorrowBids, ctx.BlockTime()) {
-		return k.ManualBorrow(ctx, msg.NftId, msg.BorrowBids, msg.Sender, msg.Sender)
-	} else {
+	if len(borrowedBid) != 0 {
+		err := k.AutoRepay(ctx, msg.NftId, borrowedBid, msg.Sender, msg.Sender)
+		if err != nil {
+			return err
+		}
+	}
+	if !types.IsAbleToBorrow(bids, msg.BorrowBids, ctx.BlockTime()) {
 		return types.ErrCannotBorrow
 	}
+	err := k.ManualBorrow(ctx, msg.NftId, msg.BorrowBids, msg.Sender, msg.Sender)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, borrows []types.BorrowBid, borrower, receiver string) error {
@@ -336,7 +346,7 @@ func (k Keeper) ManualRepay(ctx sdk.Context, nft types.NftIdentifier, repays []t
 		return err
 	}
 
-	// Emit event for paying full bid
+	// Emit event for repay
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventRepay{
 		Repayer: borrower,
 		ClassId: nft.ClassId,
@@ -409,7 +419,7 @@ func (k Keeper) AutoRepay(ctx sdk.Context, nft types.NftIdentifier, bids types.N
 		return err
 	}
 
-	// Emit event for paying full bid
+	// Emit event for repay
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventRepay{
 		Repayer: borrower,
 		ClassId: nft.ClassId,
