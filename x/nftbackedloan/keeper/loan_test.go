@@ -236,7 +236,7 @@ func (suite *KeeperTestSuite) TestBorrow() {
 			NftId:  nftIdentifier,
 			BorrowBids: []types.BorrowBid{
 				{
-					Bidder: tc.borrower.String(),
+					Bidder: bidder.String(),
 					Amount: tc.originAmount,
 				},
 			},
