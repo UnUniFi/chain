@@ -303,7 +303,7 @@ func (suite *KeeperTestSuite) TestListNft() {
 	for _, tc := range tests {
 		statusAfterNftListed = false
 		if tc.mintBefore {
-			nftKeeper.SaveClass(suite.ctx, nfttypes.Class{
+			_ = nftKeeper.SaveClass(suite.ctx, nfttypes.Class{
 				Id:          tc.classId,
 				Name:        tc.classId,
 				Symbol:      tc.classId,
@@ -464,7 +464,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 	for _, tc := range tests {
 		statusAfterNftUnlistedWithoutPayment = false
 
-		nftKeeper.SaveClass(suite.ctx, nfttypes.Class{
+		_ = nftKeeper.SaveClass(suite.ctx, nfttypes.Class{
 			Id:          tc.classId,
 			Name:        tc.classId,
 			Symbol:      tc.classId,
@@ -664,7 +664,7 @@ func (suite *KeeperTestSuite) TestSellingDecision() {
 		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, tc.executor, sdk.Coins{coin})
 		suite.NoError(err)
 
-		suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+		_ = suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
 			Id:          tc.classId,
 			Name:        tc.classId,
 			Symbol:      tc.classId,
@@ -875,7 +875,7 @@ func (suite *KeeperTestSuite) TestEndNftListing() {
 		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, tc.executor, sdk.Coins{coin})
 		suite.NoError(err)
 
-		nftKeeper.SaveClass(suite.ctx, nfttypes.Class{
+		_ = nftKeeper.SaveClass(suite.ctx, nfttypes.Class{
 			Id:          tc.classId,
 			Name:        tc.classId,
 			Symbol:      tc.classId,
@@ -1057,7 +1057,7 @@ func (suite *KeeperTestSuite) TestProcessEndingNftListings() {
 		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, tc.nftOwner, sdk.Coins{coin})
 		suite.NoError(err)
 
-		nftKeeper.SaveClass(suite.ctx, nfttypes.Class{
+		_ = nftKeeper.SaveClass(suite.ctx, nfttypes.Class{
 			Id:          tc.classId,
 			Name:        tc.classId,
 			Symbol:      tc.classId,
@@ -1143,7 +1143,7 @@ func (suite *KeeperTestSuite) TestActiveNftListingsEndingAtQueueRemovalOnNftList
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, nftOwner, sdk.Coins{coin})
 	suite.NoError(err)
 
-	suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+	_ = suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
 		Id:          classId,
 		Name:        classId,
 		Symbol:      classId,
@@ -1270,7 +1270,7 @@ func (suite *KeeperTestSuite) TestHandleFullPaymentPeriodEndings() {
 		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, tc.nftOwner, sdk.Coins{coin})
 		suite.NoError(err)
 
-		nftKeeper.SaveClass(suite.ctx, nfttypes.Class{
+		_ = nftKeeper.SaveClass(suite.ctx, nfttypes.Class{
 			Id:          tc.classId,
 			Name:        tc.classId,
 			Symbol:      tc.classId,
@@ -1397,7 +1397,7 @@ func (suite *KeeperTestSuite) TestDeliverSuccessfulBids() {
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, nftOwner, sdk.Coins{bidAmount})
 	suite.NoError(err)
 
-	suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+	_ = suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
 		Id:          classId,
 		Name:        classId,
 		Symbol:      classId,
@@ -1478,17 +1478,18 @@ func (suite *KeeperTestSuite) TestDeliverSuccessfulBids() {
 }
 
 func (suite *KeeperTestSuite) TestProcessPaymentWithCommissionFee() {
+	denom := "uguu"
 	tests := []struct {
 		testCase   string
-		loanAmount sdk.Int
+		loanAmount sdk.Coin
 	}{
 		{
 			testCase:   "zero loan",
-			loanAmount: sdk.ZeroInt(),
+			loanAmount: sdk.NewCoin(denom, sdk.ZeroInt()),
 		},
 		{
 			testCase:   "positive loan",
-			loanAmount: sdk.NewInt(10),
+			loanAmount: sdk.NewCoin(denom, sdk.NewInt(10)),
 		},
 	}
 
@@ -1497,20 +1498,20 @@ func (suite *KeeperTestSuite) TestProcessPaymentWithCommissionFee() {
 		keeper := suite.keeper
 		statusAfterNftPaymentWithCommission = false
 
-		amount := sdk.NewInt(1000000)
+		amount := sdk.NewCoin(denom, sdk.NewInt(1000000))
 		owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
-		err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{sdk.NewCoin("uguu", amount)})
+		err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{amount})
 		suite.NoError(err)
-		err = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.ModuleName, sdk.Coins{sdk.NewCoin("uguu", amount)})
+		err = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.ModuleName, sdk.Coins{amount})
 		suite.NoError(err)
 
 		var nftId types.NftIdentifier
-		keeper.ProcessPaymentWithCommissionFee(suite.ctx, owner, sdk.NewCoin("uguu", amount), sdk.NewCoin("uguu", tc.loanAmount), nftId)
+		keeper.ProcessPaymentWithCommissionFee(suite.ctx, owner, amount, tc.loanAmount, nftId)
 
 		params := keeper.GetParamSet(suite.ctx)
-		fee := amount.Mul(sdk.NewInt(int64(params.NftListingCommissionFee))).Quo(sdk.NewInt(100))
-		listingPayment := amount.Sub(fee).Sub(tc.loanAmount)
+		fee := amount.Amount.Mul(sdk.NewInt(int64(params.NftListingCommissionFee))).Quo(sdk.NewInt(100))
+		listingPayment := amount.Amount.Sub(fee).Sub(tc.loanAmount.Amount)
 
 		// check fee paid to NftTradingFee
 		tradingFeeModuleAcc := suite.app.AccountKeeper.GetModuleAddress(ecoincentivetypes.ModuleName)
@@ -1543,7 +1544,7 @@ func (suite *KeeperTestSuite) TestDelieverSuccessfulBidForPositiveLoan() {
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, nftOwner, sdk.Coins{bidAmount})
 	suite.NoError(err)
 
-	suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+	_ = suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
 		Id:          classId,
 		Name:        classId,
 		Symbol:      classId,
@@ -1804,15 +1805,7 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	bidder1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	now := time.Now()
-	refundFCheckerGen := func(testCase string, expRefundBids types.NftBids, expTotalInterest, expSurplusAmount sdk.Coin, expListing types.NftListing) func(ctx sdk.Context, refundBids types.NftBids, totalInterest, surplusAmount sdk.Coin, listing types.NftListing) error {
-		return func(ctx sdk.Context, refundBids types.NftBids, totalInterest, surplusAmount sdk.Coin, listing types.NftListing) error {
-			suite.Equal(expRefundBids, refundBids, testCase)
-			suite.Equal(expTotalInterest, totalInterest, testCase)
-			suite.Equal(expSurplusAmount, surplusAmount, testCase)
-			suite.Equal(expListing, listing, testCase)
-			return nil
-		}
-	}
+
 	type funcArg struct {
 		collectBid types.NftBids
 		refundBid  types.NftBids
@@ -1877,8 +1870,8 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 			},
 			funcFExp{
 				expRefundBid:     types.NftBids{},
-				expTotalInterest: sdk.Coin{"uguu", sdk.NewInt(0)},
-				expSurplusAmount: sdk.Coin{"uguu", sdk.NewInt(0)},
+				expTotalInterest: sdk.NewCoin("uguu", sdk.NewInt(0)),
+				expSurplusAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
 				expListing: types.NftListing{
 					NftId: types.NftIdentifier{
 						ClassId: "1",
@@ -2003,8 +1996,8 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						PaidAmount: sdk.NewCoin("uguu", sdk.NewInt(55)),
 					},
 				},
-				expTotalInterest: sdk.Coin{"uguu", sdk.NewInt(12)},
-				expSurplusAmount: sdk.Coin{"uguu", sdk.NewInt(5)},
+				expTotalInterest: sdk.NewCoin("uguu", sdk.NewInt(12)),
+				expSurplusAmount: sdk.NewCoin("uguu", sdk.NewInt(5)),
 				expListing: types.NftListing{
 					NftId: types.NftIdentifier{
 						ClassId: "1",
@@ -2150,8 +2143,8 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						PaidAmount: sdk.NewCoin("uguu", sdk.NewInt(55)),
 					},
 				},
-				expTotalInterest: sdk.Coin{"uguu", sdk.NewInt(12)},
-				expSurplusAmount: sdk.Coin{"uguu", sdk.NewInt(55)},
+				expTotalInterest: sdk.NewCoin("uguu", sdk.NewInt(12)),
+				expSurplusAmount: sdk.NewCoin("uguu", sdk.NewInt(55)),
 				expListing: types.NftListing{
 					NftId: types.NftIdentifier{
 						ClassId: "1",
@@ -2181,7 +2174,6 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 			tc.funcArg.collectBid, tc.funcArg.refundBid,
 			tc.funcArg.listing, tc.funcArg.winnerBid,
 			tc.funcArg.blockTime,
-			refundFCheckerGen(tc.testCase, tc.funcFExp.expRefundBid, tc.funcFExp.expTotalInterest, tc.funcFExp.expSurplusAmount, tc.funcFExp.expListing),
 		)
 		if tc.expResult != nil {
 			suite.Equal(tc.expResult, err)

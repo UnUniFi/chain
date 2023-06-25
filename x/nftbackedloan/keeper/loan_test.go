@@ -8,7 +8,6 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 
-	ununifitypes "github.com/UnUniFi/chain/deprecated/types"
 	"github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
@@ -168,7 +167,7 @@ func (suite *KeeperTestSuite) TestBorrow() {
 	for _, tc := range tests {
 		suite.SetupTest()
 
-		suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+		_ = suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
 			Id:          tc.classId,
 			Name:        tc.classId,
 			Symbol:      tc.classId,
@@ -186,7 +185,7 @@ func (suite *KeeperTestSuite) TestBorrow() {
 		nftIdentifier := types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId}
 		if tc.listBefore {
 			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
-				Sender:               ununifitypes.StringAccAddress(tc.nftOwner),
+				Sender:               tc.nftOwner.String(),
 				NftId:                nftIdentifier,
 				BidToken:             "uguu",
 				MinimumDepositRate:   sdk.MustNewDecFromStr("0.01"),
@@ -195,9 +194,9 @@ func (suite *KeeperTestSuite) TestBorrow() {
 			suite.Require().NoError(err)
 		}
 
-		for i := 0; i < tc.prevBids; i++ {
-			bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+		bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
+		for i := 0; i < tc.prevBids; i++ {
 			// init tokens to addr
 			bidAmount := sdk.NewInt64Coin("uguu", int64(1000000*(i+1)))
 			depositAmount := sdk.NewInt64Coin("uguu", int64(10000*(i+1)))
@@ -207,7 +206,7 @@ func (suite *KeeperTestSuite) TestBorrow() {
 			suite.NoError(err)
 
 			err := suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
-				Sender:             ununifitypes.StringAccAddress(bidder),
+				Sender:             bidder.String(),
 				NftId:              nftIdentifier,
 				BidAmount:          bidAmount,
 				BiddingPeriod:      time.Now().Add(time.Hour * 24),
@@ -220,18 +219,28 @@ func (suite *KeeperTestSuite) TestBorrow() {
 
 		if tc.originAmount.IsPositive() {
 			err := suite.app.NftmarketKeeper.Borrow(suite.ctx, &types.MsgBorrow{
-				Sender: ununifitypes.StringAccAddress(tc.borrower),
+				Sender: bidder.String(),
 				NftId:  nftIdentifier,
-				Amount: tc.originAmount,
+				BorrowBids: []types.BorrowBid{
+					{
+						Bidder: tc.borrower.String(),
+						Amount: tc.originAmount,
+					},
+				},
 			})
 			suite.Require().NoError(err, tc.testCase)
 		}
 
 		oldBorrowerBalance := suite.app.BankKeeper.GetBalance(suite.ctx, tc.borrower, "uguu")
 		err = suite.app.NftmarketKeeper.Borrow(suite.ctx, &types.MsgBorrow{
-			Sender: ununifitypes.StringAccAddress(tc.borrower),
+			Sender: bidder.String(),
 			NftId:  nftIdentifier,
-			Amount: tc.amount,
+			BorrowBids: []types.BorrowBid{
+				{
+					Bidder: tc.borrower.String(),
+					Amount: tc.originAmount,
+				},
+			},
 		})
 
 		if tc.expectPass {
@@ -343,7 +352,7 @@ func (suite *KeeperTestSuite) TestRepay() {
 	for _, tc := range tests {
 		suite.SetupTest()
 
-		suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+		_ = suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
 			Id:          tc.classId,
 			Name:        tc.classId,
 			Symbol:      tc.classId,
@@ -361,7 +370,7 @@ func (suite *KeeperTestSuite) TestRepay() {
 		nftIdentifier := types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId}
 		if tc.listBefore {
 			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
-				Sender:             ununifitypes.StringAccAddress(tc.nftOwner),
+				Sender:             tc.nftOwner.String(),
 				NftId:              nftIdentifier,
 				BidToken:           "uguu",
 				MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
@@ -381,7 +390,7 @@ func (suite *KeeperTestSuite) TestRepay() {
 			suite.NoError(err)
 
 			err := suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
-				Sender:             ununifitypes.StringAccAddress(bidder),
+				Sender:             bidder.String(),
 				NftId:              nftIdentifier,
 				BidAmount:          bidAmount,
 				BiddingPeriod:      time.Now().Add(time.Hour * 24),
@@ -394,18 +403,28 @@ func (suite *KeeperTestSuite) TestRepay() {
 
 		if tc.borrowAmount.IsPositive() {
 			err := suite.app.NftmarketKeeper.Borrow(suite.ctx, &types.MsgBorrow{
-				Sender: ununifitypes.StringAccAddress(tc.borrower),
+				Sender: tc.borrower.String(),
 				NftId:  nftIdentifier,
-				Amount: tc.borrowAmount,
+				BorrowBids: []types.BorrowBid{
+					{
+						Bidder: tc.borrower.String(),
+						Amount: tc.borrowAmount,
+					},
+				},
 			})
 			suite.Require().NoError(err, tc.testCase)
 		}
 
 		oldRepayerBalance := suite.app.BankKeeper.GetBalance(suite.ctx, tc.borrower, "uguu")
 		err = suite.app.NftmarketKeeper.Repay(suite.ctx, &types.MsgRepay{
-			Sender: ununifitypes.StringAccAddress(tc.borrower),
+			Sender: tc.borrower.String(),
 			NftId:  nftIdentifier,
-			Amount: tc.amount,
+			RepayBids: []types.BorrowBid{
+				{
+					Bidder: tc.borrower.String(),
+					Amount: tc.amount,
+				},
+			},
 		})
 
 		if tc.expectPass {
@@ -495,7 +514,7 @@ func (suite *KeeperTestSuite) TestLoanManagement() {
 		_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{bidAmount})
 		_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, nftOwner, sdk.Coins{bidAmount})
 
-		suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+		_ = suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
 			Id:     nftIdentifier.ClassId,
 			Name:   nftIdentifier.ClassId,
 			Symbol: nftIdentifier.ClassId,
@@ -506,7 +525,7 @@ func (suite *KeeperTestSuite) TestLoanManagement() {
 		}, nftOwner)
 
 		_ = suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
-			Sender:             ununifitypes.StringAccAddress(nftOwner),
+			Sender:             nftOwner.String(),
 			NftId:              nftIdentifier,
 			BidToken:           "uguu",
 			MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
@@ -526,7 +545,7 @@ func (suite *KeeperTestSuite) TestLoanManagement() {
 			_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{bidAmount})
 
 			_ = suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
-				Sender:             ununifitypes.StringAccAddress(bidder),
+				Sender:             bidder.String(),
 				NftId:              nftIdentifier,
 				BidAmount:          bidAmount,
 				BiddingPeriod:      time.Now().Add(time.Hour * 24),
@@ -569,7 +588,7 @@ func (suite *KeeperTestSuite) PlaceAndBorrow(bidAmount sdk.Coin, depositAmount s
 	_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{bidAmount})
 
 	err := suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
-		Sender:             ununifitypes.StringAccAddress(bidder),
+		Sender:             bidder.String(),
 		NftId:              nftId,
 		BidAmount:          bidAmount,
 		BiddingPeriod:      time.Now().Add(time.Hour * 24),
@@ -579,15 +598,20 @@ func (suite *KeeperTestSuite) PlaceAndBorrow(bidAmount sdk.Coin, depositAmount s
 	})
 	suite.Require().NoError(err)
 	err = suite.app.NftmarketKeeper.Borrow(suite.ctx, &types.MsgBorrow{
-		Sender: ununifitypes.StringAccAddress(nftOwner),
+		Sender: nftOwner.String(),
 		NftId:  nftId,
-		Amount: depositAmount,
+		BorrowBids: []types.BorrowBid{
+			{
+				Bidder: bidder.String(),
+				Amount: depositAmount,
+			},
+		},
 	})
 	suite.Require().NoError(err)
 
 	if fullPay {
 		err := suite.app.NftmarketKeeper.PayFullBid(suite.ctx, &types.MsgPayFullBid{
-			Sender: ununifitypes.StringAccAddress(bidder),
+			Sender: bidder.String(),
 			NftId:  nftId,
 		})
 		suite.Require().NoError(err)

@@ -272,7 +272,7 @@ func (suite *KeeperTestSuite) TestSafeCloseBid() {
 	}
 
 	for _, bid := range bids {
-		suite.app.NftmarketKeeper.SetBid(suite.ctx, bid)
+		_ = suite.app.NftmarketKeeper.SetBid(suite.ctx, bid)
 	}
 
 	// try safe close of bids when module account does not have enough balance
@@ -434,7 +434,7 @@ func (suite *KeeperTestSuite) TestCancelBid() {
 		now := time.Now().UTC()
 		suite.ctx = suite.ctx.WithBlockTime(now)
 
-		suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+		_ = suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
 			Id:          tc.classId,
 			Name:        tc.classId,
 			Symbol:      tc.classId,
@@ -606,7 +606,7 @@ func (suite *KeeperTestSuite) TestPayFullBid() {
 		now := time.Now().UTC()
 		suite.ctx = suite.ctx.WithBlockTime(now)
 
-		suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+		_ = suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
 			Id:          tc.classId,
 			Name:        tc.classId,
 			Symbol:      tc.classId,
