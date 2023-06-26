@@ -362,6 +362,7 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 	// check bid exists
 	bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
 	if len(bids) == 0 {
+		fmt.Println("bid not exists in selling")
 		return types.ErrNotExistsBid
 	}
 
@@ -603,6 +604,7 @@ func (k Keeper) LiquidationProcess(ctx sdk.Context, bids types.NftBids, listing 
 	if winnerBid.IsNil() {
 		err := k.LiquidationProcessNotExitsWinner(cacheCtx, bidsSortedByDeposit, listing)
 		if err != nil {
+			fmt.Println("failed to liquidation process not exits winner: %w", err)
 			return err
 		}
 		k.DeleteNftListings(ctx, listing)
@@ -610,6 +612,7 @@ func (k Keeper) LiquidationProcess(ctx sdk.Context, bids types.NftBids, listing 
 		collectBids, refundBids := types.ForfeitedBidsAndRefundBids(bidsSortedByDeposit, winnerBid)
 		err := k.LiquidationProcessExitsWinner(cacheCtx, collectBids, refundBids, listing, winnerBid, ctx.BlockTime())
 		if err != nil {
+			fmt.Println("failed to liquidation process exits winner: %w", err)
 			return err
 		}
 		listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
@@ -632,7 +635,7 @@ func (k Keeper) LiquidationProcessNotExitsWinner(ctx sdk.Context, bids types.Nft
 
 	collectedDeposit, err := k.CollectedDepositFromBids(ctx, bids)
 	if err != nil {
-		return nil
+		return err
 	}
 	listing.CollectedAmount = listing.CollectedAmount.Add(collectedDeposit)
 
@@ -654,6 +657,7 @@ func (k Keeper) LiquidationProcessExitsWinner(ctx sdk.Context, collectBids,
 	now time.Time) error {
 	collectedDeposit, err := k.CollectedDepositFromBids(ctx, collectBids)
 	if err != nil {
+		fmt.Println("failed to collect deposit from bids: %w", err)
 		return err
 	}
 	if collectedDeposit.IsPositive() {
@@ -698,6 +702,9 @@ func (k Keeper) RefundBids(ctx sdk.Context, refundBids types.NftBids, totalInter
 
 // todo add test
 func (k Keeper) CollectedDepositFromBids(ctx sdk.Context, bids types.NftBids) (sdk.Coin, error) {
+	if len(bids) == 0 {
+		return sdk.Coin{}, nil
+	}
 	result := sdk.NewCoin(bids[0].DepositAmount.Denom, sdk.ZeroInt())
 	for _, bid := range bids {
 		// not pay bidder amount, collected deposit
