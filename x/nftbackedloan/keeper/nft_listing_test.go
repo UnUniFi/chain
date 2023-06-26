@@ -38,6 +38,7 @@ func (suite *KeeperTestSuite) TestNftListingBasics() {
 				Denom:  "uguu",
 				Amount: sdk.ZeroInt(),
 			},
+			CollectedAmountNegative: false,
 		},
 		{
 			NftId: types.NftIdentifier{
@@ -57,6 +58,7 @@ func (suite *KeeperTestSuite) TestNftListingBasics() {
 				Denom:  "uguu",
 				Amount: sdk.ZeroInt(),
 			},
+			CollectedAmountNegative: false,
 		},
 		{
 			NftId: types.NftIdentifier{
@@ -76,6 +78,7 @@ func (suite *KeeperTestSuite) TestNftListingBasics() {
 				Denom:  "uguu",
 				Amount: sdk.ZeroInt(),
 			},
+			CollectedAmountNegative: false,
 		},
 		{
 			NftId: types.NftIdentifier{
@@ -95,6 +98,7 @@ func (suite *KeeperTestSuite) TestNftListingBasics() {
 				Denom:  "uguu",
 				Amount: sdk.ZeroInt(),
 			},
+			CollectedAmountNegative: false,
 		},
 		{
 			NftId: types.NftIdentifier{
@@ -114,6 +118,7 @@ func (suite *KeeperTestSuite) TestNftListingBasics() {
 				Denom:  "uguu",
 				Amount: sdk.ZeroInt(),
 			},
+			CollectedAmountNegative: false,
 		},
 	}
 
@@ -1674,6 +1679,7 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						Denom:  "uguu",
 						Amount: sdk.ZeroInt(),
 					},
+					CollectedAmountNegative: false,
 				},
 				winnerBid: types.NftBid{
 					Id: types.BidId{
@@ -1717,6 +1723,7 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						Denom:  "uguu",
 						Amount: sdk.ZeroInt(),
 					},
+					CollectedAmountNegative: false,
 				},
 			},
 			nil,
@@ -1787,6 +1794,7 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						Denom:  "uguu",
 						Amount: sdk.ZeroInt(),
 					},
+					CollectedAmountNegative: false,
 				},
 				winnerBid: types.NftBid{
 					Id: types.BidId{
@@ -1873,6 +1881,7 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						Denom:  "uguu",
 						Amount: sdk.ZeroInt(),
 					},
+					CollectedAmountNegative: false,
 				},
 			},
 			nil,
@@ -1965,6 +1974,7 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						Denom:  "uguu",
 						Amount: sdk.ZeroInt(),
 					},
+					CollectedAmountNegative: false,
 				},
 				winnerBid: types.NftBid{
 					Id: types.BidId{
@@ -2051,6 +2061,7 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						Denom:  "uguu",
 						Amount: sdk.NewInt(50),
 					},
+					CollectedAmountNegative: false,
 				},
 			},
 			nil,

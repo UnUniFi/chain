@@ -76,6 +76,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 							Denom:  "uguu",
 							Amount: sdk.ZeroInt(),
 						},
+						CollectedAmountNegative: false,
 					},
 					NftInfo: types.NftInfo{
 						Id:      "nft2",
@@ -98,6 +99,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 							Denom:  "uguu",
 							Amount: sdk.ZeroInt(),
 						},
+						CollectedAmountNegative: false,
 					},
 					NftInfo: types.NftInfo{
 						Id:      "nft5",
@@ -120,6 +122,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 							Denom:  "uguu",
 							Amount: sdk.ZeroInt(),
 						},
+						CollectedAmountNegative: false,
 					},
 					NftInfo: types.NftInfo{
 						Id:      "nft6",
@@ -157,6 +160,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 							Denom:  "uguu",
 							Amount: sdk.ZeroInt(),
 						},
+						CollectedAmountNegative: false,
 					},
 					NftInfo: types.NftInfo{
 						Id:      "nft7",
@@ -192,6 +196,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 							Denom:  "uguu",
 							Amount: sdk.ZeroInt(),
 						},
+						CollectedAmountNegative: false,
 					},
 					NftInfo: types.NftInfo{
 						Id:      "nft2",
@@ -214,6 +219,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 							Denom:  "uguu",
 							Amount: sdk.ZeroInt(),
 						},
+						CollectedAmountNegative: false,
 					},
 					NftInfo: types.NftInfo{
 						Id:      "nft5",
@@ -236,6 +242,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 							Denom:  "uguu",
 							Amount: sdk.ZeroInt(),
 						},
+						CollectedAmountNegative: false,
 					},
 					NftInfo: types.NftInfo{
 						Id:      "nft6",
@@ -258,6 +265,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 							Denom:  "uguu",
 							Amount: sdk.ZeroInt(),
 						},
+						CollectedAmountNegative: false,
 					},
 					NftInfo: types.NftInfo{
 						Id:      "nft7",
