@@ -207,14 +207,15 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 	// todo: make test
 	owner := k.nftKeeper.GetOwner(ctx, msg.NftId.ClassId, msg.NftId.NftId)
 	listing := types.NftListing{
-		NftId:                msg.NftId,
-		Owner:                owner.String(),
-		State:                types.ListingState_LISTING,
-		BidToken:             msg.BidToken,
-		MinimumDepositRate:   msg.MinimumDepositRate,
-		AutomaticRefinancing: msg.AutomaticRefinancing,
-		StartedAt:            ctx.BlockTime(),
-		CollectedAmount:      sdk.NewCoin(msg.BidToken, sdk.ZeroInt()),
+		NftId:                   msg.NftId,
+		Owner:                   owner.String(),
+		State:                   types.ListingState_LISTING,
+		BidToken:                msg.BidToken,
+		MinimumDepositRate:      msg.MinimumDepositRate,
+		AutomaticRefinancing:    msg.AutomaticRefinancing,
+		StartedAt:               ctx.BlockTime(),
+		CollectedAmount:         sdk.NewCoin(msg.BidToken, sdk.ZeroInt()),
+		CollectedAmountNegative: false,
 		// todo: add validation.
 		// we should to determine maximum bidding period.
 		MinimumBiddingPeriod: msg.MinimumBiddingPeriod,
@@ -644,7 +645,12 @@ func (k Keeper) LiquidationProcessExitsWinner(ctx sdk.Context, collectBids,
 		totalInterests = sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
 	}
 	// Sub total interests from lister's profit
-	listing.CollectedAmount = listing.CollectedAmount.Sub(totalInterests)
+	if listing.CollectedAmount.IsLT(totalInterests) {
+		listing.CollectedAmountNegative = true
+		listing.CollectedAmount = totalInterests.Sub(listing.CollectedAmount)
+	} else {
+		listing.CollectedAmount = listing.CollectedAmount.Sub(totalInterests)
+	}
 	err = k.RefundBids(ctx, refundBids, totalInterests, listing)
 	if err != nil {
 		return err
@@ -711,7 +717,12 @@ func (k Keeper) DeliverSuccessfulBids(ctx sdk.Context) {
 		}
 
 		loan := k.GetDebtByNft(ctx, listing.IdBytes())
-		totalPayAmount := listing.CollectedAmount.Add(bid.BidAmount)
+		totalPayAmount := bid.BidAmount
+		if listing.CollectedAmountNegative {
+			totalPayAmount = totalPayAmount.Sub(listing.CollectedAmount)
+		} else {
+			totalPayAmount = totalPayAmount.Add(listing.CollectedAmount)
+		}
 		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, totalPayAmount, loan.Loan, listing.NftId)
 
 		err = k.DeleteBid(ctx, bid)
