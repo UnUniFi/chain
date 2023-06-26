@@ -12,19 +12,6 @@ func (k Keeper) AddMargin(ctx sdk.Context, sender sdk.AccAddress, positionId str
 		return types.ErrPositionDoesNotExist
 	}
 
-	// Send additional margin by sender to the margin manager module account
-	if err := k.SendMarginToMarginManager(ctx, sender, sdk.NewCoins(amount)); err != nil {
-		return err
-	}
-
-	// Add margin to the position
-	position.RemainingMargin = position.RemainingMargin.Add(amount)
-
-	// Make sure if the position is not under the liquidation condition
-	if position.RemainingMargin.IsNegative() {
-		return types.ErrNegativeMargin
-	}
-
 	// Check if the updated margin is not under liquidation
 	params := k.GetParams(ctx)
 	currentBaseUsdRate, currentQuoteUsdRate, err := k.GetPairUsdPriceFromMarket(ctx, position.Market)
@@ -35,6 +22,9 @@ func (k Keeper) AddMargin(ctx sdk.Context, sender sdk.AccAddress, positionId str
 	baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, currentBaseUsdRate)
 	quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, currentQuoteUsdRate)
 
+	// Add margin to the position
+	position.RemainingMargin = position.RemainingMargin.Add(amount)
+
 	if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, baseMetricsRate, quoteMetricsRate) {
 		// Emit event that the position is needed to be liquidated
 		_ = ctx.EventManager().EmitTypedEvent(&types.EventLiquidationNeeded{
@@ -43,6 +33,11 @@ func (k Keeper) AddMargin(ctx sdk.Context, sender sdk.AccAddress, positionId str
 
 		// Return err as the result of this tx
 		return types.ErrLiquidationNeeded
+	}
+
+	// Send additional margin by sender to the margin manager module account
+	if err := k.SendMarginToMarginManager(ctx, sender, sdk.NewCoins(amount)); err != nil {
+		return err
 	}
 
 	k.SetPosition(ctx, *position)
