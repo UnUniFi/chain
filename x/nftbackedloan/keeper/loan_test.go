@@ -261,6 +261,7 @@ func (suite *KeeperTestSuite) TestBorrow() {
 func (suite *KeeperTestSuite) TestRepay() {
 	acc1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	acc2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 	tests := []struct {
 		testCase     string
@@ -317,7 +318,7 @@ func (suite *KeeperTestSuite) TestRepay() {
 			nftOwner:     acc1,
 			borrower:     acc1,
 			prevBids:     1,
-			borrowAmount: sdk.NewInt64Coin("uguu", 100),
+			borrowAmount: sdk.NewInt64Coin("uguu", 1000),
 			amount:       sdk.NewInt64Coin("uguu", 10000),
 			listBefore:   true,
 			expectPass:   false,
@@ -329,8 +330,8 @@ func (suite *KeeperTestSuite) TestRepay() {
 			nftOwner:     acc1,
 			borrower:     acc1,
 			prevBids:     2,
-			borrowAmount: sdk.NewInt64Coin("uguu", 100000),
-			amount:       sdk.NewInt64Coin("uguu", 100000),
+			borrowAmount: sdk.NewInt64Coin("uguu", 10000),
+			amount:       sdk.NewInt64Coin("uguu", 10000),
 			listBefore:   true,
 			expectPass:   true,
 		},
@@ -341,8 +342,8 @@ func (suite *KeeperTestSuite) TestRepay() {
 			nftOwner:     acc1,
 			borrower:     acc1,
 			prevBids:     2,
-			borrowAmount: sdk.NewInt64Coin("uguu", 100000),
-			amount:       sdk.NewInt64Coin("uguu", 10000),
+			borrowAmount: sdk.NewInt64Coin("uguu", 10000),
+			amount:       sdk.NewInt64Coin("uguu", 1000),
 			listBefore:   true,
 			expectPass:   true,
 		},
@@ -378,8 +379,6 @@ func (suite *KeeperTestSuite) TestRepay() {
 		}
 
 		for i := 0; i < tc.prevBids; i++ {
-			bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-
 			// init tokens to addr
 			bidAmount := sdk.NewInt64Coin("uguu", int64(1000000*(i+1)))
 			depositAmount := sdk.NewInt64Coin("uguu", int64(100000*(i+1)))
@@ -406,7 +405,7 @@ func (suite *KeeperTestSuite) TestRepay() {
 				NftId:  nftIdentifier,
 				BorrowBids: []types.BorrowBid{
 					{
-						Bidder: tc.borrower.String(),
+						Bidder: bidder.String(),
 						Amount: tc.borrowAmount,
 					},
 				},
@@ -420,7 +419,7 @@ func (suite *KeeperTestSuite) TestRepay() {
 			NftId:  nftIdentifier,
 			RepayBids: []types.BorrowBid{
 				{
-					Bidder: tc.borrower.String(),
+					Bidder: bidder.String(),
 					Amount: tc.amount,
 				},
 			},

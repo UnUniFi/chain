@@ -107,6 +107,9 @@ func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, borrows [
 
 	borrowedAmount := sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
 	for _, borrow := range borrows {
+		if borrow.Amount.Denom != listing.BidToken {
+			return types.ErrInvalidBorrowDenom
+		}
 		bidderAddress, err := sdk.AccAddressFromBech32(borrow.Bidder)
 		if err != nil {
 			return err
@@ -166,6 +169,7 @@ func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, borrows [
 	return nil
 }
 
+// old function
 // func (k Keeper) AutoBorrow(ctx sdk.Context, nft types.NftIdentifier, require sdk.Coin, borrower, receiver string) error {
 // 	listing, err := k.GetNftListingByIdBytes(ctx, nft.IdBytes())
 // 	if err != nil {
@@ -294,6 +298,9 @@ func (k Keeper) ManualRepay(ctx sdk.Context, nft types.NftIdentifier, repays []t
 	listerAmount := k.bankKeeper.GetBalance(ctx, sender, listing.BidToken)
 	repayAmount := sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
 	for _, repay := range repays {
+		if repay.Amount.Denom != listing.BidToken {
+			return types.ErrInvalidRepayDenom
+		}
 		repayAmount = repayAmount.Add(repay.Amount)
 	}
 	if listerAmount.Amount.LT(repayAmount.Amount) {
