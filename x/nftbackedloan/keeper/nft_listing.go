@@ -610,7 +610,9 @@ func (k Keeper) LiquidationProcessNotExitsWinner(ctx sdk.Context, bids types.Nft
 	if err != nil {
 		return err
 	}
-	listing.CollectedAmount = listing.CollectedAmount.Add(collectedDeposit)
+	if collectedDeposit.IsPositive() {
+		listing.CollectedAmount = listing.CollectedAmount.Add(collectedDeposit)
+	}
 
 	depositCollected := listing.CollectedAmount
 	// pay fee
@@ -638,38 +640,27 @@ func (k Keeper) LiquidationProcessExitsWinner(ctx sdk.Context, collectBids,
 	}
 
 	// win price + forfeited deposits - refund bids' deposits
-	surplusAmount := k.GetSurplusAmount(refundBids, winnerBid).Add(listing.CollectedAmount)
+	// surplusAmount := k.GetSurplusAmount(refundBids, winnerBid, listing.CollectedAmount)
 	totalInterests := refundBids.TotalInterestAmount(now)
 	if totalInterests.IsNil() {
 		totalInterests = sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
 	}
-	err = k.RefundBids(ctx, refundBids, totalInterests, surplusAmount, listing)
+	// todo: sub total interests from lister's profit
+	err = k.RefundBids(ctx, refundBids, totalInterests, listing)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (k Keeper) RefundBids(ctx sdk.Context, refundBids types.NftBids, totalInterests, surplusAmount sdk.Coin, listing types.NftListing) error {
-	if totalInterests.IsLTE(surplusAmount) {
-		listing.CollectedAmount = listing.CollectedAmount.Sub(totalInterests)
-		for _, bid := range refundBids {
-			err := k.SafeCloseBidWithAllInterest(ctx, bid)
-			if err != nil {
-				return err
-			}
-		}
-	} else {
-		for _, bid := range refundBids {
-			listing.CollectedAmount = listing.CollectedAmount.Sub(surplusAmount)
-			// discounted interest = expected interest * (surplus amount / total interests)
-			discountedInterest := types.CalcPartInterest(totalInterests, surplusAmount, bid.TotalInterestAmountDec(ctx.BlockTime()))
-			err := k.SafeCloseBidWithPartInterest(ctx, bid, discountedInterest)
-			if err != nil {
-				return err
-			}
+func (k Keeper) RefundBids(ctx sdk.Context, refundBids types.NftBids, totalInterests sdk.Coin, listing types.NftListing) error {
+	for _, bid := range refundBids {
+		err := k.SafeCloseBidWithAllInterest(ctx, bid)
+		if err != nil {
+			return err
 		}
 	}
+
 	return nil
 }
 
@@ -770,9 +761,9 @@ func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sd
 }
 
 // get surplus amount
-func (k Keeper) GetSurplusAmount(bids types.NftBids, winBid types.NftBid) sdk.Coin {
+func (k Keeper) GetSurplusAmount(bids types.NftBids, winBid types.NftBid, collectedAmount sdk.Coin) sdk.Coin {
 	if len(bids) == 0 {
-		return sdk.NewCoin(winBid.BidAmount.Denom, sdk.ZeroInt())
+		return winBid.BidAmount.Add(collectedAmount)
 	}
-	return winBid.BidAmount.Sub(bids.TotalDeposit())
+	return winBid.BidAmount.Add(collectedAmount).Sub(bids.TotalDeposit())
 }
