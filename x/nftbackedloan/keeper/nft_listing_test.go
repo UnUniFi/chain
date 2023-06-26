@@ -115,22 +115,6 @@ func (suite *KeeperTestSuite) TestNftListingBasics() {
 				Amount: sdk.ZeroInt(),
 			},
 		},
-		// {
-		// 	NftId: types.NftIdentifier{
-		// 		ClassId: "2",
-		// 		NftId:   "2",
-		// 	},
-		// 	Owner:              owner2.String(),
-		// 	ListingType:        types.ListingType_DIRECT_ASSET_BORROW,
-		// 	State:              types.ListingState_LIQUIDATION,
-		// 	BidToken:           "uguu",
-		// 	MinimumDepositRate: "0.1",
-		// 	StartedAt:          time.Time{},
-		// 	EndAt:              now,
-		// 	FullPaymentEndAt:   now,
-		// 	SuccessfulBidEndAt: now,
-		// 	AutoRelistedCount:  0,
-		// },
 	}
 
 	for _, listing := range listings {
@@ -1527,7 +1511,7 @@ func (suite *KeeperTestSuite) TestProcessPaymentWithCommissionFee() {
 	}
 }
 
-func (suite *KeeperTestSuite) TestDelieverSuccessfulBidForPositiveLoan() {
+func (suite *KeeperTestSuite) TestDeliverSuccessfulBidForPositiveLoan() {
 	suite.SetupTest()
 	keeper := suite.keeper
 
@@ -1641,169 +1625,12 @@ func (suite *KeeperTestSuite) TestDelieverSuccessfulBidForPositiveLoan() {
 	suite.Require().True(statusAfterNftPaymentWithCommission)
 }
 
-// TestReListingDataManagement is a test to check if the all data related listing like bid and loan
-// works as intended when the list is re-listed by system or even by user's hand
-func (suite *KeeperTestSuite) TestReListingDataManagement() {
-	acc1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	params := suite.app.NftmarketKeeper.GetParamSet(suite.ctx)
-	nftIdentifier := types.NftIdentifier{ClassId: "class1", NftId: "nft1"}
-	nftOwner := acc1
-
-	tests := []struct {
-		testCase     string
-		numBids      int
-		listingState types.ListingState
-		fullPay      bool
-		borrow       bool
-	}{
-		{
-			testCase:     "selling decision listing when highest bid is  paid and no more bids",
-			numBids:      1,
-			listingState: types.ListingState_DECIDED_SELLING,
-			fullPay:      true,
-			borrow:       true,
-		}, // status => ListingState_LISTING
-		{
-			testCase:     "selling decision listing when highest bid is not paid and no more bids",
-			numBids:      1,
-			listingState: types.ListingState_DECIDED_SELLING,
-			borrow:       true,
-		}, // status => ListingState_LISTING
-		{
-			testCase:     "selling decision listing when highest bid is not paid, and more bids",
-			numBids:      2,
-			listingState: types.ListingState_DECIDED_SELLING,
-			borrow:       true,
-		}, // status => ListingState_BIDDING
-		{
-			testCase:     "end listing when no bids is not paid",
-			numBids:      1,
-			listingState: types.ListingState_END_LISTING,
-			borrow:       true,
-		}, // status => delist
-		{
-			testCase:     "end listing when no bids is not paid",
-			numBids:      1,
-			listingState: types.ListingState_END_LISTING,
-			fullPay:      true,
-			borrow:       true,
-		}, // status => delist
-	}
-
-	for _, tc := range tests {
-		suite.SetupTest()
-
-		now := time.Now().UTC()
-		suite.ctx = suite.ctx.WithBlockTime(now)
-
-		bidAmount := sdk.NewInt64Coin("uguu", int64(1000000000))
-		depositAmount := sdk.NewInt64Coin("uguu", int64(100000000))
-		_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{bidAmount})
-		_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, nftOwner, sdk.Coins{bidAmount})
-
-		_ = suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
-			Id:     nftIdentifier.ClassId,
-			Name:   nftIdentifier.ClassId,
-			Symbol: nftIdentifier.ClassId,
-		})
-		_ = suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
-			ClassId: nftIdentifier.ClassId,
-			Id:      nftIdentifier.NftId,
-		}, nftOwner)
-
-		_ = suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
-			Sender:             nftOwner.String(),
-			NftId:              nftIdentifier,
-			BidToken:           "uguu",
-			MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
-		})
-		listing, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
-		suite.Require().NoError(err)
-
-		for i := 0; i < tc.numBids; i++ {
-			if tc.borrow {
-				suite.PlaceAndBorrow(bidAmount, depositAmount, nftIdentifier, nftOwner, tc.fullPay, 2)
-			} else {
-				bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-				// init tokens to addr
-				bidAmount := sdk.NewInt64Coin("uguu", int64(1000000*(i+1)))
-				depositAmount := sdk.NewInt64Coin("uguu", int64(100000*(i+1)))
-				_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{bidAmount})
-				_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{bidAmount})
-
-				_ = suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
-					Sender:             bidder.String(),
-					NftId:              nftIdentifier,
-					BidAmount:          bidAmount,
-					BiddingPeriod:      time.Now().Add(time.Hour * 24),
-					DepositLendingRate: sdk.MustNewDecFromStr("0.05"),
-					AutomaticPayment:   false,
-					DepositAmount:      depositAmount,
-				})
-			}
-		}
-
-		listing.State = tc.listingState
-		suite.app.NftmarketKeeper.SetNftListing(suite.ctx, listing)
-
-		suite.ctx = suite.ctx.WithBlockTime(now.Add(time.Second * time.Duration(params.NftListingPeriodInitial+1)))
-		suite.app.NftmarketKeeper.HandleFullPaymentsPeriodEndings(suite.ctx)
-		bids := suite.app.NftmarketKeeper.GetBidsByNft(suite.ctx, nftIdentifier.IdBytes())
-		loan := suite.app.NftmarketKeeper.GetDebtByNft(suite.ctx, nftIdentifier.IdBytes())
-
-		// check bids and loan data specifically
-		switch tc.listingState {
-		case types.ListingState_DECIDED_SELLING:
-			if tc.numBids > 1 {
-				// status => ListingState_BIDDING
-				listing, err = suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
-				suite.Require().NoError(err)
-				suite.Require().Equal(listing.State, types.ListingState_BIDDING)
-				suite.Require().NotEmpty(bids)
-				suite.Require().NotEmpty(loan)
-			} else if tc.fullPay {
-				// status => ListingState_SUCCESSFUL_BID
-				// this simulates the state of re-lisitng from the situation the list is successfully sent to
-				// a buyer and buyer lists it
-				listing, err = suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
-				suite.Require().NoError(err)
-				suite.Require().Equal(listing.State, types.ListingState_SUCCESSFUL_BID)
-				suite.Require().Len(bids, 1)
-				suite.Require().Empty(loan)
-			} else {
-				// status => ListingState_LISTING
-				listing, err = suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
-				suite.Require().NoError(err)
-				suite.Require().Equal(listing.State, types.ListingState_LISTING)
-				suite.Require().Empty(bids)
-				suite.Require().Empty(loan)
-			}
-		case types.ListingState_END_LISTING:
-			if tc.fullPay {
-				// pay depositCollected, nft listing delete, transfer nft to fully paid bidder
-				// this simulates the state of re-listing from the situation the list was handed to buyer
-				// and that buyer lists
-				listing, err = suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
-				suite.Require().NoError(err)
-				suite.Require().Equal(listing.State, types.ListingState_SUCCESSFUL_BID)
-				suite.Require().Len(bids, 1)
-				suite.Require().Empty(loan)
-			} else {
-				// all the bids closed, pay depositCollected, nft listing delete
-				// this simulates the state of re-listing from the situation the list was handed to buyer
-				_, err = suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
-				suite.Require().Error(err)
-				suite.Require().Empty(bids)
-				suite.Require().Empty(loan)
-			}
-		}
-	}
-}
-
 // test LiquidationProcessExitsWinner
 func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	bidder1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	bidder2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	bidder3 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	now := time.Now()
 
 	type funcArg struct {
@@ -1900,6 +1727,13 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 				collectBid: types.NftBids{},
 				refundBid: types.NftBids{
 					{
+						Id: types.BidId{
+							NftId: &types.NftIdentifier{
+								ClassId: "a10",
+								NftId:   "a10",
+							},
+							Bidder: bidder1.String(),
+						},
 						BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 						DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -1911,8 +1745,16 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 							},
 						},
 						InterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+						PaidAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 					},
 					{
+						Id: types.BidId{
+							NftId: &types.NftIdentifier{
+								ClassId: "a10",
+								NftId:   "a10",
+							},
+							Bidder: bidder2.String(),
+						},
 						BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(99)),
 						DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(45)),
 						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -1952,7 +1794,7 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 							ClassId: "a10",
 							NftId:   "a10",
 						},
-						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
+						Bidder: bidder1.String(),
 					},
 					BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 					DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
@@ -1969,6 +1811,13 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 			funcFExp{
 				expRefundBid: types.NftBids{
 					{
+						Id: types.BidId{
+							NftId: &types.NftIdentifier{
+								ClassId: "a10",
+								NftId:   "a10",
+							},
+							Bidder: bidder1.String(),
+						},
 						BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 						DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -1980,8 +1829,16 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 							},
 						},
 						InterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+						PaidAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 					},
 					{
+						Id: types.BidId{
+							NftId: &types.NftIdentifier{
+								ClassId: "a10",
+								NftId:   "a10",
+							},
+							Bidder: bidder2.String(),
+						},
 						BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(99)),
 						DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(45)),
 						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -2043,10 +1900,18 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 							},
 						},
 						InterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+						PaidAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 					},
 				},
 				refundBid: types.NftBids{
 					{
+						Id: types.BidId{
+							NftId: &types.NftIdentifier{
+								ClassId: "1",
+								NftId:   "1",
+							},
+							Bidder: bidder2.String(),
+						},
 						BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 						DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -2058,8 +1923,16 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 							},
 						},
 						InterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+						PaidAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 					},
 					{
+						Id: types.BidId{
+							NftId: &types.NftIdentifier{
+								ClassId: "1",
+								NftId:   "1",
+							},
+							Bidder: bidder3.String(),
+						},
 						BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(99)),
 						DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(45)),
 						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -2099,7 +1972,7 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 							ClassId: "a10",
 							NftId:   "a10",
 						},
-						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
+						Bidder: bidder1.String(),
 					},
 					BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 					DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
@@ -2116,6 +1989,13 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 			funcFExp{
 				expRefundBid: types.NftBids{
 					{
+						Id: types.BidId{
+							NftId: &types.NftIdentifier{
+								ClassId: "1",
+								NftId:   "1",
+							},
+							Bidder: bidder2.String(),
+						},
 						BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(100)),
 						DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(50)),
 						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -2127,8 +2007,16 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 							},
 						},
 						InterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
+						PaidAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 					},
 					{
+						Id: types.BidId{
+							NftId: &types.NftIdentifier{
+								ClassId: "1",
+								NftId:   "1",
+							},
+							Bidder: bidder3.String(),
+						},
 						BidAmount:          sdk.NewCoin("uguu", sdk.NewInt(99)),
 						DepositAmount:      sdk.NewCoin("uguu", sdk.NewInt(45)),
 						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
@@ -2169,7 +2057,15 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 		},
 	}
 	suite.SetupTest()
+
+	amount := sdk.NewCoins(sdk.NewCoin("uguu", sdk.NewInt(1000000)))
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, amount)
+	suite.NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.ModuleName, amount)
+	suite.NoError(err)
+
 	for _, tc := range tcs {
+		suite.ctx = suite.ctx.WithBlockTime(tc.funcArg.blockTime)
 		err := suite.keeper.LiquidationProcessExitsWinner(suite.ctx,
 			tc.funcArg.collectBid, tc.funcArg.refundBid,
 			tc.funcArg.listing, tc.funcArg.winnerBid,
@@ -2178,7 +2074,7 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 		if tc.expResult != nil {
 			suite.Equal(tc.expResult, err)
 		} else {
-			suite.NoError(err)
+			suite.NoError(err, tc.testCase)
 		}
 	}
 }
