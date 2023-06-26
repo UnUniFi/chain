@@ -95,16 +95,21 @@ message MsgPayFullBid {
 }
 message MsgPayFullBidResponse {}
 
+message BorrowBid{
+  string                   bidder = 1;
+  cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
+}
+
 message MsgBorrow {
   string                   sender = 1;
   NftIdentifier            nft_id = 2 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false];
+  repeated BorrowBid       borrow_bids = 3 [(gogoproto.nullable) = false];
 }
 message MsgBorrowResponse {}
 
 message MsgRepay {
   string                   sender = 1;
   NftIdentifier            nft_id = 2 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin amount = 3 [(gogoproto.nullable) = false];
+  repeated BorrowBid       repay_bids = 3 [(gogoproto.nullable) = false];
 }
 message MsgRepayResponse {}
