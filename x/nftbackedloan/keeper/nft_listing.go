@@ -639,13 +639,12 @@ func (k Keeper) LiquidationProcessExitsWinner(ctx sdk.Context, collectBids,
 		listing.CollectedAmount = listing.CollectedAmount.Add(collectedDeposit)
 	}
 
-	// win price + forfeited deposits - refund bids' deposits
-	// surplusAmount := k.GetSurplusAmount(refundBids, winnerBid, listing.CollectedAmount)
 	totalInterests := refundBids.TotalInterestAmount(now)
 	if totalInterests.IsNil() {
 		totalInterests = sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
 	}
-	// todo: sub total interests from lister's profit
+	// Sub total interests from lister's profit
+	listing.CollectedAmount = listing.CollectedAmount.Sub(totalInterests)
 	err = k.RefundBids(ctx, refundBids, totalInterests, listing)
 	if err != nil {
 		return err
