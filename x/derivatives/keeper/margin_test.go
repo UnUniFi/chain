@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"time"
+
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	codecTypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -18,13 +20,64 @@ func (suite *KeeperTestSuite) TestAddMargin() {
 		margin       sdk.Coin
 		instance     types.PerpetualFuturesPositionInstance
 		basedRate    sdk.Dec
-		quoteRate    sdk.Dec
 		addingMargin sdk.Coin
 		expPass      bool
 		expMargin    sdk.Coin
 	}{
 		{
-			name: "success",
+			name:       "success in quote denom",
+			positionId: "1",
+			margin:     sdk.NewCoin("uusdc", sdk.NewInt(100000000)),
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.NewDec(1),
+				Leverage:     1,
+			},
+			basedRate:    sdk.MustNewDecFromStr("0.000009"),
+			addingMargin: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
+			expPass:      true,
+			expMargin:    sdk.NewCoin("uusdc", sdk.NewInt(100000000).Add(sdk.NewInt(10000000))),
+		},
+		{
+			name:       "success in base denom",
+			positionId: "2",
+			margin:     sdk.NewCoin("uatom", sdk.NewInt(10000000)),
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.NewDec(1),
+				Leverage:     1,
+			},
+			basedRate:    sdk.MustNewDecFromStr("0.000009"),
+			addingMargin: sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+			expPass:      true,
+			expMargin:    sdk.NewCoin("uatom", sdk.NewInt(10000000).Add(sdk.NewInt(1000000))),
+		},
+		{
+			name:       "success in short position",
+			positionId: "3",
+			margin:     sdk.NewCoin("uusdc", sdk.NewInt(100000000)),
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_SHORT,
+				Size_:        sdk.NewDec(1),
+				Leverage:     1,
+			},
+			basedRate:    sdk.MustNewDecFromStr("0.000011"),
+			addingMargin: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
+			expPass:      true,
+			expMargin:    sdk.NewCoin("uusdc", sdk.NewInt(100000000).Add(sdk.NewInt(10000000))),
+		},
+		{
+			name:       "fail in liquidation condition",
+			positionId: "4",
+			margin:     sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.NewDec(1),
+				Leverage:     10,
+			},
+			basedRate:    sdk.MustNewDecFromStr("0.000009"),
+			addingMargin: sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
+			expPass:      false,
 		},
 	}
 
@@ -48,6 +101,9 @@ func (suite *KeeperTestSuite) TestAddMargin() {
 		_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.NewCoins(tc.addingMargin))
 		_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, owner, sdk.NewCoins(tc.addingMargin))
 
+		_, _ = suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:usd", tc.basedRate, suite.ctx.BlockTime().Add(time.Hour*3))
+		_ = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:usd")
+
 		err := suite.keeper.AddMargin(suite.ctx, owner, tc.positionId, tc.addingMargin)
 		if tc.expPass {
 			suite.Require().NoError(err)
@@ -68,7 +124,6 @@ func (suite *KeeperTestSuite) TestWithdrawMargin() {
 		margin          sdk.Coin
 		instance        types.PerpetualFuturesPositionInstance
 		basedRate       sdk.Dec
-		quoteRate       sdk.Dec
 		withdrawMargin  sdk.Coin
 		expPass         bool
 		expMargin       sdk.Coin
@@ -84,7 +139,6 @@ func (suite *KeeperTestSuite) TestWithdrawMargin() {
 				Leverage:     1,
 			},
 			basedRate:       sdk.MustNewDecFromStr("0.00002"),
-			quoteRate:       sdk.MustNewDecFromStr("0.000001"),
 			withdrawMargin:  sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
 			expPass:         true,
 			expMargin:       sdk.NewCoin("uusdc", sdk.NewInt(10000000).Sub(sdk.NewInt(1000000))),
@@ -100,7 +154,6 @@ func (suite *KeeperTestSuite) TestWithdrawMargin() {
 				Leverage:     1,
 			},
 			basedRate:       sdk.MustNewDecFromStr("0.00002"),
-			quoteRate:       sdk.MustNewDecFromStr("0.000001"),
 			withdrawMargin:  sdk.NewCoin("uatom", sdk.NewInt(100000)),
 			expPass:         true,
 			expMargin:       sdk.NewCoin("uatom", sdk.NewInt(1000000).Sub(sdk.NewInt(100000))),
@@ -116,7 +169,6 @@ func (suite *KeeperTestSuite) TestWithdrawMargin() {
 				Leverage:     1,
 			},
 			basedRate:       sdk.MustNewDecFromStr("0.000001"),
-			quoteRate:       sdk.MustNewDecFromStr("0.000001"),
 			withdrawMargin:  sdk.NewCoin("uatom", sdk.NewInt(100000)),
 			expPass:         true,
 			expMargin:       sdk.NewCoin("uatom", sdk.NewInt(1000000).Sub(sdk.NewInt(100000))),
@@ -132,7 +184,6 @@ func (suite *KeeperTestSuite) TestWithdrawMargin() {
 				Leverage:     1,
 			},
 			basedRate:      sdk.MustNewDecFromStr("0.00001"),
-			quoteRate:      sdk.MustNewDecFromStr("0.000001"),
 			withdrawMargin: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
 			expPass:        false,
 		},
@@ -146,7 +197,6 @@ func (suite *KeeperTestSuite) TestWithdrawMargin() {
 				Leverage:     1,
 			},
 			basedRate:      sdk.MustNewDecFromStr("0.00001"),
-			quoteRate:      sdk.MustNewDecFromStr("0.000001"),
 			withdrawMargin: sdk.NewCoin("uatom", sdk.NewInt(500000)),
 			expPass:        false,
 		},
@@ -160,7 +210,6 @@ func (suite *KeeperTestSuite) TestWithdrawMargin() {
 				Leverage:     1,
 			},
 			basedRate:      sdk.MustNewDecFromStr("0.00001"),
-			quoteRate:      sdk.MustNewDecFromStr("0.000001"),
 			withdrawMargin: sdk.NewCoin("uatom", sdk.NewInt(100000)),
 			expPass:        false,
 		},
@@ -185,6 +234,9 @@ func (suite *KeeperTestSuite) TestWithdrawMargin() {
 
 		_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.NewCoins(tc.withdrawMargin))
 		_ = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.MarginManager, sdk.NewCoins(tc.withdrawMargin))
+
+		_, _ = suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:usd", tc.basedRate, suite.ctx.BlockTime().Add(time.Hour*3))
+		_ = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:usd")
 
 		err := suite.keeper.WithdrawMargin(suite.ctx, owner, tc.positionId, tc.withdrawMargin)
 		if tc.expPass {
