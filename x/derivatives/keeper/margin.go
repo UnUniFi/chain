@@ -57,12 +57,12 @@ func (k Keeper) WithdrawMargin(ctx sdk.Context, withdrawer sdk.AccAddress, posit
 	}
 
 	// Update RemainingMargin
-	position.RemainingMargin = position.RemainingMargin.Sub(amount)
-
+	updatedRemainingMargin, err := position.RemainingMargin.SafeSub(amount)
 	// Check if the updated margin is positive
-	if position.RemainingMargin.IsNegative() {
-		return types.ErrNegativeMargin
+	if err != nil {
+		return err
 	}
+	position.RemainingMargin = updatedRemainingMargin
 
 	// Check if the updated margin is not under liquidation
 	params := k.GetParams(ctx)
