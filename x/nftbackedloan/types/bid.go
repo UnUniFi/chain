@@ -194,6 +194,15 @@ func (m NftBids) SortHigherDeposit() NftBids {
 	return dest
 }
 
+func (m NftBids) SortHigherPrice() NftBids {
+	dest := NftBids{}
+	dest = append(NftBids{}, m...)
+	sort.SliceStable(dest, func(i, j int) bool {
+		return dest[i].BidAmount.IsGTE(dest[j].DepositAmount)
+	})
+	return dest
+}
+
 func (m NftBids) GetAverageBidAmount() sdk.Coin {
 	if len(m) == 0 {
 		return sdk.Coin{}
@@ -442,12 +451,13 @@ func (a Borrowing) Equal(b Borrowing) bool {
 		a.StartAt.Location() == b.StartAt.Location()
 }
 
-func CalcPartInterest(total, surplus sdk.Int, interest sdk.DecCoin) sdk.Int {
+func CalcPartInterest(total, surplus sdk.Coin, interest sdk.DecCoin) sdk.Coin {
+	// interest = expected interest * (surplus amount / total interests)
 	if total.IsZero() {
-		return sdk.ZeroInt()
+		return sdk.Coin{Denom: interest.Denom, Amount: sdk.ZeroInt()}
 	}
-	decTotalInterest := sdk.NewDecFromInt(total)
-	decSurplusAmount := sdk.NewDecFromInt(surplus)
-	rate := interest.Amount.Quo(decTotalInterest)
-	return decSurplusAmount.Mul(rate).TruncateInt()
+	decTotalInterest := sdk.NewDecFromInt(total.Amount)
+	decSurplusAmount := sdk.NewDecFromInt(surplus.Amount)
+	discountedInterest := interest.Amount.Mul(decSurplusAmount).Quo(decTotalInterest)
+	return sdk.NewCoin(interest.Denom, discountedInterest.TruncateInt())
 }

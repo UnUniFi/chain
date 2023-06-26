@@ -22,7 +22,7 @@ type KeeperTestSuite struct {
 	addrs []sdk.AccAddress
 }
 
-func (suite *KeeperTestSuite) SetupTest(hooks types.NftmarketHooks) {
+func (suite *KeeperTestSuite) SetupTest(hooks types.NftbackedloanHooks) {
 	isCheckTx := false
 
 	app := simapp.Setup(suite.T(), ([]wasm.Option{})...)
@@ -101,7 +101,7 @@ func (hook *dummyNftmarketHook) Clone() *dummyNftmarketHook {
 	return &newHook
 }
 
-var _ types.NftmarketHooks = &dummyNftmarketHook{}
+var _ types.NftbackedloanHooks = &dummyNftmarketHook{}
 
 func (suite *KeeperTestSuite) TestHooksPanicRecovery() {
 	panicHook := dummyNftmarketHook{shouldPanic: true}
@@ -122,14 +122,14 @@ func (suite *KeeperTestSuite) TestHooksPanicRecovery() {
 
 	for tcIndex, tc := range tests {
 		suite.SetupTest(nil)
-		hookRefs := []types.NftmarketHooks{}
+		hookRefs := []types.NftbackedloanHooks{}
 
 		for _, hook := range tc.hooks {
 			hookRefs = append(hookRefs, hook.Clone())
 		}
 
-		// insert dummy hook struct as part of NftmarketHooks
-		hooks := types.NewMultiNftmarketHooks(hookRefs...)
+		// insert dummy hook struct as part of NftbackedloanHooks
+		hooks := types.NewMultiNftbackedloanHooks(hookRefs...)
 		// suite.app.NftmarketKeeper.SetHooks(hooks)
 
 		if tc.lenEvents == 0 {

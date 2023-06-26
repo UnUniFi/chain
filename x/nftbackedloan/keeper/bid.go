@@ -51,21 +51,6 @@ func (k Keeper) GetBidsByNft(ctx sdk.Context, nftIdBytes []byte) []types.NftBid 
 
 		bids = append(bids, bid)
 	}
-
-	// sort bids by rank
-	// todo: sord by lower deposit interest rate
-	// sort.SliceStable(bids, func(i, j int) bool {
-	// 	if bids[i].Amount.Amount.LT(bids[j].Amount.Amount) {
-	// 		return true
-	// 	}
-	// 	if bids[i].Amount.Amount.GT(bids[j].Amount.Amount) {
-	// 		return false
-	// 	}
-	// 	if bids[i].BidTime.After(bids[j].BidTime) {
-	// 		return true
-	// 	}
-	// 	return false
-	// })
 	return bids
 }
 
@@ -275,7 +260,7 @@ func (k Keeper) FirstBid(ctx sdk.Context, listing types.NftListing, newBid types
 		return err
 	}
 
-	ctx.EventManager().EmitTypedEvent(&types.EventPlaceBid{
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventPlaceBid{
 		Bidder:  newBid.Id.Bidder,
 		ClassId: newBid.Id.NftId.ClassId,
 		NftId:   newBid.Id.NftId.NftId,
@@ -285,13 +270,13 @@ func (k Keeper) FirstBid(ctx sdk.Context, listing types.NftListing, newBid types
 }
 
 func (k Keeper) ReBid(ctx sdk.Context, listing types.NftListing, oldBid, newBid types.NftBid, bids types.NftBids) error {
-	// TODO: decide specification more in detail
-	// re-bidのとき
-	// 自動借り換えを行う
-	// 自動借り換えは
-	// 以前の利息を計算して引き継ぐ
+	// check no borrow
 	if !oldBid.CanReBid() {
 		return types.ErrBorrowedDeposit
+	}
+	// check for liquidation
+	if !types.IsAbleToReBid(bids, oldBid.Id, newBid) {
+		return types.ErrCannotRebid
 	}
 	bids = bids.RemoveBid(oldBid)
 	err := k.SafeCloseBid(ctx, oldBid)
@@ -303,7 +288,7 @@ func (k Keeper) ReBid(ctx sdk.Context, listing types.NftListing, oldBid, newBid 
 		return err
 	}
 
-	ctx.EventManager().EmitTypedEvent(&types.EventPlaceBid{
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventPlaceBid{
 		Bidder:  newBid.Id.Bidder,
 		ClassId: newBid.Id.NftId.ClassId,
 		NftId:   newBid.Id.NftId.NftId,
@@ -413,6 +398,10 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 	if len(bids) == 1 {
 		return types.ErrCannotCancelListingSingleBid
 	}
+	// for liquidation validation
+	if !types.IsAbleToCancelBid(types.BidId{Bidder: msg.Sender, NftId: bid.Id.NftId}, bids) {
+		return types.ErrCannotCancelBid
+	}
 
 	err = k.DeleteBid(ctx, bid)
 	if err != nil {
@@ -423,10 +412,8 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 	bid.BidTime = ctx.BlockTime().Add(time.Duration(params.BidTokenDisburseSecondsAfterCancel) * time.Second)
 	k.SetCancelledBid(ctx, bid)
 
-	// TODO: Liquidation may occur for sellers whose bids are cancelled.
-
 	// Emit event for cancelling bid
-	ctx.EventManager().EmitTypedEvent(&types.EventCancelBid{
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventCancelBid{
 		Bidder:  msg.Sender,
 		ClassId: msg.NftId.ClassId,
 		NftId:   msg.NftId.NftId,
@@ -469,7 +456,7 @@ func (k Keeper) PayFullBid(ctx sdk.Context, msg *types.MsgPayFullBid) error {
 		}
 	}
 	// Emit event for paying full bid
-	ctx.EventManager().EmitTypedEvent(&types.EventPayFullBid{
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventPayFullBid{
 		Bidder:  msg.Sender,
 		ClassId: msg.NftId.ClassId,
 		NftId:   msg.NftId.NftId,

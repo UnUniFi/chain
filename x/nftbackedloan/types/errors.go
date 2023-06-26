@@ -45,4 +45,7 @@ var (
 	ErrSmallBiddingPeriod                = sdkerrors.Register(ModuleName, 38, "bidding period is too short")
 	ErrNotExistsNft                      = sdkerrors.Register(ModuleName, 39, "not exists nft")
 	ErrMinimumDepositRateTooHigh         = sdkerrors.Register(ModuleName, 40, "minimum deposit rate too high")
+	ErrCannotBorrow                      = sdkerrors.Register(ModuleName, 41, "cannot borrow from bids")
+	ErrAlreadyBorrowed                   = sdkerrors.Register(ModuleName, 42, "already borrowed")
+	ErrCannotRebid                       = sdkerrors.Register(ModuleName, 43, "cannot rebid with the deposit, rate and period")
 )
