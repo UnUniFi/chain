@@ -204,12 +204,21 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 		return errorMsg
 	}
 
+	// Send ownership to market module
+	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
+
+	// TODO: change collateralization way to disable transfer, not transferring to module account
+	// k.nftKeeper.SetNftData()
+	err := k.nftKeeper.Transfer(ctx, msg.NftId.ClassId, msg.NftId.NftId, moduleAddr)
+	if err != nil {
+		return err
+	}
+
 	// create listing
 	// todo: make test
-	owner := k.nftKeeper.GetOwner(ctx, msg.NftId.ClassId, msg.NftId.NftId)
 	listing := types.NftListing{
 		NftId:                msg.NftId,
-		Owner:                owner.String(),
+		Owner:                msg.Sender,
 		State:                types.ListingState_LISTING,
 		BidToken:             msg.BidToken,
 		MinimumDepositRate:   msg.MinimumDepositRate,
@@ -221,14 +230,6 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 		MinimumBiddingPeriod: msg.MinimumBiddingPeriod,
 	}
 	k.SaveNftListing(ctx, listing)
-
-	// Send ownership to market module
-	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
-	err := k.nftKeeper.Transfer(ctx, msg.NftId.ClassId, msg.NftId.NftId, moduleAddr)
-	if err != nil {
-		k.DeleteNftListing(ctx, listing)
-		return err
-	}
 
 	// Emit event for nft listing
 	ctx.EventManager().EmitTypedEvent(&types.EventListingNft{
@@ -319,6 +320,8 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 	}
 
 	// Send ownership to original owner
+	// TODO: change collateralization way to disable transfer, not transferring to module account
+	// k.nftKeeper.SetNftData()
 	err = k.nftKeeper.Transfer(ctx, msg.NftId.ClassId, msg.NftId.NftId, sender)
 	if err != nil {
 		return err
@@ -505,6 +508,8 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 		if err != nil {
 			return err
 		}
+		// TODO: unlock nft transfer and remove tranfer logic
+		// k.nftKeeper.SaveNftData()
 		err = k.nftKeeper.Transfer(ctx, listing.NftId.ClassId, listing.NftId.NftId, sender)
 		if err != nil {
 			return err
@@ -818,6 +823,8 @@ func (k Keeper) DelieverSuccessfulBids(ctx sdk.Context) {
 		}
 
 		cacheCtx, write := ctx.CacheContext()
+		// TODO: unlock NFT transfer
+		// k.nftKeeper.SetNftData()
 		err = k.nftKeeper.Transfer(cacheCtx, listing.NftId.ClassId, listing.NftId.NftId, bidder)
 		if err != nil {
 			fmt.Println(err)
