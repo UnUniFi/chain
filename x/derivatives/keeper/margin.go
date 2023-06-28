@@ -24,7 +24,7 @@ func (k Keeper) AddMargin(ctx sdk.Context, sender sdk.AccAddress, positionId str
 	return nil
 }
 
-func (k Keeper) WithdrawMargin(ctx sdk.Context, withdrawer sdk.AccAddress, positionId string, amount sdk.Coin) error {
+func (k Keeper) RemoveMargin(ctx sdk.Context, withdrawer sdk.AccAddress, positionId string, amount sdk.Coin) error {
 	position := k.GetPositionWithId(ctx, positionId)
 	if position == nil {
 		return types.ErrPositionDoesNotExist

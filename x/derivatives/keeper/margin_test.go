@@ -115,7 +115,7 @@ func (suite *KeeperTestSuite) TestAddMargin() {
 	}
 }
 
-func (suite *KeeperTestSuite) TestWithdrawMargin() {
+func (suite *KeeperTestSuite) TestRemoveMargin() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 	testCases := []struct {
@@ -124,7 +124,7 @@ func (suite *KeeperTestSuite) TestWithdrawMargin() {
 		margin          sdk.Coin
 		instance        types.PerpetualFuturesPositionInstance
 		basedRate       sdk.Dec
-		withdrawMargin  sdk.Coin
+		removeMargin    sdk.Coin
 		expPass         bool
 		expMargin       sdk.Coin
 		expOwnerBalance sdk.Coin
@@ -139,7 +139,7 @@ func (suite *KeeperTestSuite) TestWithdrawMargin() {
 				Leverage:     1,
 			},
 			basedRate:       sdk.MustNewDecFromStr("0.00002"),
-			withdrawMargin:  sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
+			removeMargin:    sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
 			expPass:         true,
 			expMargin:       sdk.NewCoin("uusdc", sdk.NewInt(10000000).Sub(sdk.NewInt(1000000))),
 			expOwnerBalance: sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
@@ -154,7 +154,7 @@ func (suite *KeeperTestSuite) TestWithdrawMargin() {
 				Leverage:     1,
 			},
 			basedRate:       sdk.MustNewDecFromStr("0.00002"),
-			withdrawMargin:  sdk.NewCoin("uatom", sdk.NewInt(100000)),
+			removeMargin:    sdk.NewCoin("uatom", sdk.NewInt(100000)),
 			expPass:         true,
 			expMargin:       sdk.NewCoin("uatom", sdk.NewInt(1000000).Sub(sdk.NewInt(100000))),
 			expOwnerBalance: sdk.NewCoin("uatom", sdk.NewInt(100000)),
@@ -169,7 +169,7 @@ func (suite *KeeperTestSuite) TestWithdrawMargin() {
 				Leverage:     1,
 			},
 			basedRate:       sdk.MustNewDecFromStr("0.000001"),
-			withdrawMargin:  sdk.NewCoin("uatom", sdk.NewInt(100000)),
+			removeMargin:    sdk.NewCoin("uatom", sdk.NewInt(100000)),
 			expPass:         true,
 			expMargin:       sdk.NewCoin("uatom", sdk.NewInt(1000000).Sub(sdk.NewInt(100000))),
 			expOwnerBalance: sdk.NewCoin("uatom", sdk.NewInt(100000)).AddAmount(sdk.NewInt(100000)),
@@ -183,9 +183,9 @@ func (suite *KeeperTestSuite) TestWithdrawMargin() {
 				Size_:        sdk.NewDec(1),
 				Leverage:     1,
 			},
-			basedRate:      sdk.MustNewDecFromStr("0.00001"),
-			withdrawMargin: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
-			expPass:        false,
+			basedRate:    sdk.MustNewDecFromStr("0.00001"),
+			removeMargin: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
+			expPass:      false,
 		},
 		{
 			name:       "fail in insufficient margin",
@@ -196,9 +196,9 @@ func (suite *KeeperTestSuite) TestWithdrawMargin() {
 				Size_:        sdk.NewDec(1),
 				Leverage:     1,
 			},
-			basedRate:      sdk.MustNewDecFromStr("0.00001"),
-			withdrawMargin: sdk.NewCoin("uatom", sdk.NewInt(500000)),
-			expPass:        false,
+			basedRate:    sdk.MustNewDecFromStr("0.00001"),
+			removeMargin: sdk.NewCoin("uatom", sdk.NewInt(500000)),
+			expPass:      false,
 		},
 		{
 			name:       "fail in withdrawing margin in different denom",
@@ -209,9 +209,9 @@ func (suite *KeeperTestSuite) TestWithdrawMargin() {
 				Size_:        sdk.NewDec(1),
 				Leverage:     1,
 			},
-			basedRate:      sdk.MustNewDecFromStr("0.00001"),
-			withdrawMargin: sdk.NewCoin("uatom", sdk.NewInt(100000)),
-			expPass:        false,
+			basedRate:    sdk.MustNewDecFromStr("0.00001"),
+			removeMargin: sdk.NewCoin("uatom", sdk.NewInt(100000)),
+			expPass:      false,
 		},
 	}
 
@@ -232,18 +232,18 @@ func (suite *KeeperTestSuite) TestWithdrawMargin() {
 		}
 		suite.keeper.SetPosition(suite.ctx, position)
 
-		_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.NewCoins(tc.withdrawMargin))
-		_ = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.MarginManager, sdk.NewCoins(tc.withdrawMargin))
+		_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.NewCoins(tc.removeMargin))
+		_ = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.MarginManager, sdk.NewCoins(tc.removeMargin))
 
 		_, _ = suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:usd", tc.basedRate, suite.ctx.BlockTime().Add(time.Hour*3))
 		_ = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:usd")
 
-		err := suite.keeper.WithdrawMargin(suite.ctx, owner, tc.positionId, tc.withdrawMargin)
+		err := suite.keeper.RemoveMargin(suite.ctx, owner, tc.positionId, tc.removeMargin)
 		if tc.expPass {
 			suite.Require().NoError(err)
 			position := suite.keeper.GetPositionWithId(suite.ctx, tc.positionId)
 			suite.Require().Equal(tc.expMargin, position.RemainingMargin)
-			ownerBalance := suite.app.BankKeeper.GetBalance(suite.ctx, owner, tc.withdrawMargin.Denom)
+			ownerBalance := suite.app.BankKeeper.GetBalance(suite.ctx, owner, tc.removeMargin.Denom)
 			suite.Require().Equal(tc.expOwnerBalance, ownerBalance)
 		} else {
 			suite.Require().Error(err)

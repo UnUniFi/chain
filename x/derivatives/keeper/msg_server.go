@@ -92,13 +92,13 @@ func (k msgServer) AddMargin(c context.Context, msg *types.MsgAddMargin) (*types
 	return &types.MsgAddMarginResponse{}, nil
 }
 
-func (k msgServer) WithdrawMargin(c context.Context, msg *types.MsgWithdrawMargin) (*types.MsgWithdrawMarginResponse, error) {
+func (k msgServer) RemoveMargin(c context.Context, msg *types.MsgRemoveMargin) (*types.MsgRemoveMarginResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	err := k.Keeper.WithdrawMargin(ctx, sdk.AccAddress(msg.Sender), msg.PositionId, msg.Amount)
+	err := k.Keeper.RemoveMargin(ctx, sdk.AccAddress(msg.Sender), msg.PositionId, msg.Amount)
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.MsgWithdrawMarginResponse{}, nil
+	return &types.MsgRemoveMarginResponse{}, nil
 }

@@ -18,7 +18,7 @@ service Msg {
   rpc ReportLiquidation(MsgReportLiquidation) returns (MsgReportLiquidationResponse);
   rpc ReportLevyPeriod(MsgReportLevyPeriod) returns (MsgReportLevyPeriodResponse);
   rpc AddMargin(MsgAddMargin) returns (MsgAddMarginResponse);
-  rpc WithdrawMargin(MsgWithdrawMargin) returns (MsgWithdrawMarginResponse);
+  rpc RemoveMargin(MsgRemoveMargin) returns (MsgRemoveMarginResponse);
 }
 
 message MsgDepositToPool {
@@ -81,10 +81,10 @@ message MsgAddMargin {
 
 message MsgAddMarginResponse {}
 
-message MsgWithdrawMargin {
+message MsgRemoveMargin {
   string                   sender = 1 [(gogoproto.moretags) = "yaml:\"sender\""];
   cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.moretags) = "yaml:\"amount\"", (gogoproto.nullable) = false];
   string                   position_id = 3 [(gogoproto.moretags) = "yaml:\"position_id\""];
 }
 
-message MsgWithdrawMarginResponse {}
+message MsgRemoveMarginResponse {}

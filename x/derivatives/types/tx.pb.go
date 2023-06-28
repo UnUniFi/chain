@@ -689,24 +689,24 @@ func (m *MsgAddMarginResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgAddMarginResponse proto.InternalMessageInfo
 
-type MsgWithdrawMargin struct {
+type MsgRemoveMargin struct {
 	Sender     string     `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty" yaml:"sender"`
 	Amount     types.Coin `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount" yaml:"amount"`
 	PositionId string     `protobuf:"bytes,3,opt,name=position_id,json=positionId,proto3" json:"position_id,omitempty" yaml:"position_id"`
 }
 
-func (m *MsgWithdrawMargin) Reset()         { *m = MsgWithdrawMargin{} }
-func (m *MsgWithdrawMargin) String() string { return proto.CompactTextString(m) }
-func (*MsgWithdrawMargin) ProtoMessage()    {}
-func (*MsgWithdrawMargin) Descriptor() ([]byte, []int) {
+func (m *MsgRemoveMargin) Reset()         { *m = MsgRemoveMargin{} }
+func (m *MsgRemoveMargin) String() string { return proto.CompactTextString(m) }
+func (*MsgRemoveMargin) ProtoMessage()    {}
+func (*MsgRemoveMargin) Descriptor() ([]byte, []int) {
 	return fileDescriptor_0ece79e09138dc54, []int{14}
 }
-func (m *MsgWithdrawMargin) XXX_Unmarshal(b []byte) error {
+func (m *MsgRemoveMargin) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgWithdrawMargin) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgRemoveMargin) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgWithdrawMargin.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgRemoveMargin.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -716,54 +716,54 @@ func (m *MsgWithdrawMargin) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *MsgWithdrawMargin) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgWithdrawMargin.Merge(m, src)
+func (m *MsgRemoveMargin) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemoveMargin.Merge(m, src)
 }
-func (m *MsgWithdrawMargin) XXX_Size() int {
+func (m *MsgRemoveMargin) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgWithdrawMargin) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgWithdrawMargin.DiscardUnknown(m)
+func (m *MsgRemoveMargin) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemoveMargin.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgWithdrawMargin proto.InternalMessageInfo
+var xxx_messageInfo_MsgRemoveMargin proto.InternalMessageInfo
 
-func (m *MsgWithdrawMargin) GetSender() string {
+func (m *MsgRemoveMargin) GetSender() string {
 	if m != nil {
 		return m.Sender
 	}
 	return ""
 }
 
-func (m *MsgWithdrawMargin) GetAmount() types.Coin {
+func (m *MsgRemoveMargin) GetAmount() types.Coin {
 	if m != nil {
 		return m.Amount
 	}
 	return types.Coin{}
 }
 
-func (m *MsgWithdrawMargin) GetPositionId() string {
+func (m *MsgRemoveMargin) GetPositionId() string {
 	if m != nil {
 		return m.PositionId
 	}
 	return ""
 }
 
-type MsgWithdrawMarginResponse struct {
+type MsgRemoveMarginResponse struct {
 }
 
-func (m *MsgWithdrawMarginResponse) Reset()         { *m = MsgWithdrawMarginResponse{} }
-func (m *MsgWithdrawMarginResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgWithdrawMarginResponse) ProtoMessage()    {}
-func (*MsgWithdrawMarginResponse) Descriptor() ([]byte, []int) {
+func (m *MsgRemoveMarginResponse) Reset()         { *m = MsgRemoveMarginResponse{} }
+func (m *MsgRemoveMarginResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgRemoveMarginResponse) ProtoMessage()    {}
+func (*MsgRemoveMarginResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_0ece79e09138dc54, []int{15}
 }
-func (m *MsgWithdrawMarginResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgRemoveMarginResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgWithdrawMarginResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgRemoveMarginResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgWithdrawMarginResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgRemoveMarginResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -773,17 +773,17 @@ func (m *MsgWithdrawMarginResponse) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-func (m *MsgWithdrawMarginResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgWithdrawMarginResponse.Merge(m, src)
+func (m *MsgRemoveMarginResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemoveMarginResponse.Merge(m, src)
 }
-func (m *MsgWithdrawMarginResponse) XXX_Size() int {
+func (m *MsgRemoveMarginResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgWithdrawMarginResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgWithdrawMarginResponse.DiscardUnknown(m)
+func (m *MsgRemoveMarginResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemoveMarginResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgWithdrawMarginResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgRemoveMarginResponse proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterType((*MsgDepositToPool)(nil), "ununifi.derivatives.MsgDepositToPool")
@@ -800,8 +800,8 @@ func init() {
 	proto.RegisterType((*MsgReportLevyPeriodResponse)(nil), "ununifi.derivatives.MsgReportLevyPeriodResponse")
 	proto.RegisterType((*MsgAddMargin)(nil), "ununifi.derivatives.MsgAddMargin")
 	proto.RegisterType((*MsgAddMarginResponse)(nil), "ununifi.derivatives.MsgAddMarginResponse")
-	proto.RegisterType((*MsgWithdrawMargin)(nil), "ununifi.derivatives.MsgWithdrawMargin")
-	proto.RegisterType((*MsgWithdrawMarginResponse)(nil), "ununifi.derivatives.MsgWithdrawMarginResponse")
+	proto.RegisterType((*MsgRemoveMargin)(nil), "ununifi.derivatives.MsgRemoveMargin")
+	proto.RegisterType((*MsgRemoveMarginResponse)(nil), "ununifi.derivatives.MsgRemoveMarginResponse")
 }
 
 func init() { proto.RegisterFile("ununifi/derivatives/tx.proto", fileDescriptor_0ece79e09138dc54) }
@@ -882,7 +882,7 @@ type MsgClient interface {
 	ReportLiquidation(ctx context.Context, in *MsgReportLiquidation, opts ...grpc.CallOption) (*MsgReportLiquidationResponse, error)
 	ReportLevyPeriod(ctx context.Context, in *MsgReportLevyPeriod, opts ...grpc.CallOption) (*MsgReportLevyPeriodResponse, error)
 	AddMargin(ctx context.Context, in *MsgAddMargin, opts ...grpc.CallOption) (*MsgAddMarginResponse, error)
-	WithdrawMargin(ctx context.Context, in *MsgWithdrawMargin, opts ...grpc.CallOption) (*MsgWithdrawMarginResponse, error)
+	RemoveMargin(ctx context.Context, in *MsgRemoveMargin, opts ...grpc.CallOption) (*MsgRemoveMarginResponse, error)
 }
 
 type msgClient struct {
@@ -956,9 +956,9 @@ func (c *msgClient) AddMargin(ctx context.Context, in *MsgAddMargin, opts ...grp
 	return out, nil
 }
 
-func (c *msgClient) WithdrawMargin(ctx context.Context, in *MsgWithdrawMargin, opts ...grpc.CallOption) (*MsgWithdrawMarginResponse, error) {
-	out := new(MsgWithdrawMarginResponse)
-	err := c.cc.Invoke(ctx, "/ununifi.derivatives.Msg/WithdrawMargin", in, out, opts...)
+func (c *msgClient) RemoveMargin(ctx context.Context, in *MsgRemoveMargin, opts ...grpc.CallOption) (*MsgRemoveMarginResponse, error) {
+	out := new(MsgRemoveMarginResponse)
+	err := c.cc.Invoke(ctx, "/ununifi.derivatives.Msg/RemoveMargin", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -974,7 +974,7 @@ type MsgServer interface {
 	ReportLiquidation(context.Context, *MsgReportLiquidation) (*MsgReportLiquidationResponse, error)
 	ReportLevyPeriod(context.Context, *MsgReportLevyPeriod) (*MsgReportLevyPeriodResponse, error)
 	AddMargin(context.Context, *MsgAddMargin) (*MsgAddMarginResponse, error)
-	WithdrawMargin(context.Context, *MsgWithdrawMargin) (*MsgWithdrawMarginResponse, error)
+	RemoveMargin(context.Context, *MsgRemoveMargin) (*MsgRemoveMarginResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -1002,8 +1002,8 @@ func (*UnimplementedMsgServer) ReportLevyPeriod(ctx context.Context, req *MsgRep
 func (*UnimplementedMsgServer) AddMargin(ctx context.Context, req *MsgAddMargin) (*MsgAddMarginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddMargin not implemented")
 }
-func (*UnimplementedMsgServer) WithdrawMargin(ctx context.Context, req *MsgWithdrawMargin) (*MsgWithdrawMarginResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WithdrawMargin not implemented")
+func (*UnimplementedMsgServer) RemoveMargin(ctx context.Context, req *MsgRemoveMargin) (*MsgRemoveMarginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveMargin not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -1136,20 +1136,20 @@ func _Msg_AddMargin_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_WithdrawMargin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgWithdrawMargin)
+func _Msg_RemoveMargin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRemoveMargin)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).WithdrawMargin(ctx, in)
+		return srv.(MsgServer).RemoveMargin(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ununifi.derivatives.Msg/WithdrawMargin",
+		FullMethod: "/ununifi.derivatives.Msg/RemoveMargin",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).WithdrawMargin(ctx, req.(*MsgWithdrawMargin))
+		return srv.(MsgServer).RemoveMargin(ctx, req.(*MsgRemoveMargin))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1187,8 +1187,8 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_AddMargin_Handler,
 		},
 		{
-			MethodName: "WithdrawMargin",
-			Handler:    _Msg_WithdrawMargin_Handler,
+			MethodName: "RemoveMargin",
+			Handler:    _Msg_RemoveMargin_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1675,7 +1675,7 @@ func (m *MsgAddMarginResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgWithdrawMargin) Marshal() (dAtA []byte, err error) {
+func (m *MsgRemoveMargin) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1685,12 +1685,12 @@ func (m *MsgWithdrawMargin) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgWithdrawMargin) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgRemoveMargin) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgWithdrawMargin) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgRemoveMargin) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1722,7 +1722,7 @@ func (m *MsgWithdrawMargin) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgWithdrawMarginResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgRemoveMarginResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1732,12 +1732,12 @@ func (m *MsgWithdrawMarginResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgWithdrawMarginResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgRemoveMarginResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgWithdrawMarginResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgRemoveMarginResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1950,7 +1950,7 @@ func (m *MsgAddMarginResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgWithdrawMargin) Size() (n int) {
+func (m *MsgRemoveMargin) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1969,7 +1969,7 @@ func (m *MsgWithdrawMargin) Size() (n int) {
 	return n
 }
 
-func (m *MsgWithdrawMarginResponse) Size() (n int) {
+func (m *MsgRemoveMarginResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -3331,7 +3331,7 @@ func (m *MsgAddMarginResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgWithdrawMargin) Unmarshal(dAtA []byte) error {
+func (m *MsgRemoveMargin) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3354,10 +3354,10 @@ func (m *MsgWithdrawMargin) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgWithdrawMargin: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgRemoveMargin: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgWithdrawMargin: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgRemoveMargin: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3478,7 +3478,7 @@ func (m *MsgWithdrawMargin) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgWithdrawMarginResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgRemoveMarginResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3501,10 +3501,10 @@ func (m *MsgWithdrawMarginResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgWithdrawMarginResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgRemoveMarginResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgWithdrawMarginResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgRemoveMarginResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

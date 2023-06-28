@@ -177,10 +177,10 @@ func (msg MsgAddMargin) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr}
 }
 
-var _ sdk.Msg = &MsgWithdrawMargin{}
+var _ sdk.Msg = &MsgRemoveMargin{}
 
-func NewMsgWithdrawMargin(sender string, positionId string, amount sdk.Coin) MsgWithdrawMargin {
-	return MsgWithdrawMargin{
+func NewMsgRemoveMargin(sender string, positionId string, amount sdk.Coin) MsgRemoveMargin {
+	return MsgRemoveMargin{
 		Sender:     sender,
 		PositionId: positionId,
 		Amount:     amount,
@@ -188,7 +188,7 @@ func NewMsgWithdrawMargin(sender string, positionId string, amount sdk.Coin) Msg
 }
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
-func (msg MsgWithdrawMargin) ValidateBasic() error {
+func (msg MsgRemoveMargin) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address is not valid")
@@ -198,7 +198,7 @@ func (msg MsgWithdrawMargin) ValidateBasic() error {
 }
 
 // GetSigners returns the addresses of signers that must sign.
-func (msg MsgWithdrawMargin) GetSigners() []sdk.AccAddress {
+func (msg MsgRemoveMargin) GetSigners() []sdk.AccAddress {
 	addr, _ := sdk.AccAddressFromBech32(msg.Sender)
 	return []sdk.AccAddress{addr}
 }
