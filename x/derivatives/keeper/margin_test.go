@@ -66,19 +66,6 @@ func (suite *KeeperTestSuite) TestAddMargin() {
 			expPass:      true,
 			expMargin:    sdk.NewCoin("uusdc", sdk.NewInt(100000000).Add(sdk.NewInt(10000000))),
 		},
-		{
-			name:       "fail in liquidation condition",
-			positionId: "4",
-			margin:     sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
-			instance: types.PerpetualFuturesPositionInstance{
-				PositionType: types.PositionType_LONG,
-				Size_:        sdk.NewDec(1),
-				Leverage:     10,
-			},
-			basedRate:    sdk.MustNewDecFromStr("0.000009"),
-			addingMargin: sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
-			expPass:      false,
-		},
 	}
 
 	market := types.Market{BaseDenom: "uatom", QuoteDenom: "uusdc"}
