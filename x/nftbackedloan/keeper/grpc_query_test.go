@@ -64,7 +64,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					Listing: types.NftListing{
 						NftId:              types.NftIdentifier{ClassId: "class2", NftId: "nft2"},
 						Owner:              s.addrs[0].String(),
-						State:              0,
+						State:              1,
 						BidToken:           "uguu",
 						MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 						StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -87,7 +87,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					Listing: types.NftListing{
 						NftId: types.NftIdentifier{ClassId: "class5", NftId: "nft5"},
 						Owner: s.addrs[0].String(),
-						State: 0, BidToken: "uguu",
+						State: 1, BidToken: "uguu",
 						MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 						StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						EndAt:              time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -109,7 +109,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					Listing: types.NftListing{
 						NftId: types.NftIdentifier{ClassId: "class6", NftId: "nft6"},
 						Owner: s.addrs[0].String(),
-						State: 0, BidToken: "uguu",
+						State: 1, BidToken: "uguu",
 						MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 						StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						EndAt:              time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -129,7 +129,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 				},
 			},
 			func(index int, msg string, require *require.Assertions, res *types.QueryListedNftsResponse, expListingNft []types.NftListingDetail) {
-				require.Equal(res.Listings, expListingNft, "the error occurred on:%d", msg, res.Listings[index].Listing.NftId)
+				require.Equal(expListingNft, res.Listings, "the error occurred on:%d", msg, res.Listings[index].Listing.NftId)
 			},
 		},
 		{
@@ -145,7 +145,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					Listing: types.NftListing{
 						NftId: types.NftIdentifier{ClassId: "class7", NftId: "nft7"},
 						Owner: s.addrs[1].String(),
-						State: 0, BidToken: "uguu",
+						State: 1, BidToken: "uguu",
 						MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 						StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						EndAt:              time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -180,7 +180,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					Listing: types.NftListing{
 						NftId:              types.NftIdentifier{ClassId: "class2", NftId: "nft2"},
 						Owner:              s.addrs[0].String(),
-						State:              0,
+						State:              1,
 						BidToken:           "uguu",
 						MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 						StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -203,7 +203,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					Listing: types.NftListing{
 						NftId: types.NftIdentifier{ClassId: "class5", NftId: "nft5"},
 						Owner: s.addrs[0].String(),
-						State: 0, BidToken: "uguu",
+						State: 1, BidToken: "uguu",
 						MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 						StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						EndAt:              time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -225,7 +225,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					Listing: types.NftListing{
 						NftId: types.NftIdentifier{ClassId: "class6", NftId: "nft6"},
 						Owner: s.addrs[0].String(),
-						State: 0, BidToken: "uguu",
+						State: 1, BidToken: "uguu",
 						MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 						StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						EndAt:              time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -247,7 +247,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					Listing: types.NftListing{
 						NftId: types.NftIdentifier{ClassId: "class7", NftId: "nft7"},
 						Owner: s.addrs[1].String(),
-						State: 0, BidToken: "uguu",
+						State: 1, BidToken: "uguu",
 						MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 						StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						EndAt:              time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -361,10 +361,10 @@ func (s *KeeperTestSuite) TestLoan() {
 					},
 					Loan: sdk.Coin{
 						Denom:  "uguu",
-						Amount: sdk.NewInt(15000),
+						Amount: sdk.NewInt(2000),
 					},
 				},
-				BorrowingLimit: sdk.NewInt(100000),
+				BorrowingLimit: sdk.NewInt(40000),
 			},
 		},
 	}
@@ -375,7 +375,7 @@ func (s *KeeperTestSuite) TestLoan() {
 			result, err := s.queryClient.Loan(gocontext.Background(), tc.req)
 			if tc.expError == "" {
 				require.NoError(err)
-				require.Equal(result, &tc.expResult, "the error occurred on:%d", index)
+				require.Equal(&tc.expResult, result, "the error occurred on:%d", index)
 			} else {
 				require.Error(err)
 				require.Contains(err.Error(), tc.expError)
