@@ -17,7 +17,6 @@ service Msg {
   rpc PlaceBid(MsgPlaceBid) returns (MsgPlaceBidResponse);
   rpc CancelBid(MsgCancelBid) returns (MsgCancelBidResponse);
   rpc SellingDecision(MsgSellingDecision) returns (MsgSellingDecisionResponse);
-  rpc EndNftListing(MsgEndNftListing) returns (MsgEndNftListingResponse);
   rpc PayFullBid(MsgPayFullBid) returns (MsgPayFullBidResponse);
   rpc Borrow(MsgBorrow) returns (MsgBorrowResponse);
   rpc Repay(MsgRepay) returns (MsgRepayResponse);
