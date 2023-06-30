@@ -35,7 +35,7 @@ func GetTxCmd() *cobra.Command {
 		CmdCreatePlaceBid(),
 		CmdCancelBid(),
 		CmdPayFullBid(),
-		CmdEndListing(),
+		// CmdEndListing(),
 		CmdBorrow(),
 		CmdRepay(),
 	)
@@ -212,41 +212,41 @@ $ %s tx %s place-bid 1 1 100uguu --automatic-payment --from myKeyName --chain-id
 	return cmd
 }
 
-func CmdEndListing() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "end-listing [class-id] [nft-id]",
-		Short: "end listing",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`end listing.
-Example:
-$ %s tx %s end-listing 1 1 --from myKeyName --chain-id ununifi-x
-`, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(2),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
+// func CmdEndListing() *cobra.Command {
+// 	cmd := &cobra.Command{
+// 		Use:   "end-listing [class-id] [nft-id]",
+// 		Short: "end listing",
+// 		Long: strings.TrimSpace(
+// 			fmt.Sprintf(`end listing.
+// Example:
+// $ %s tx %s end-listing 1 1 --from myKeyName --chain-id ununifi-x
+// `, version.AppName, types.ModuleName)),
+// 		Args: cobra.ExactArgs(2),
+// 		RunE: func(cmd *cobra.Command, args []string) error {
+// 			clientCtx, err := client.GetClientTxContext(cmd)
+// 			if err != nil {
+// 				return err
+// 			}
 
-			classId := args[0]
-			nftId := args[1]
-			nftIde := types.NftIdentifier{
-				ClassId: classId,
-				NftId:   nftId,
-			}
+// 			classId := args[0]
+// 			nftId := args[1]
+// 			nftIde := types.NftIdentifier{
+// 				ClassId: classId,
+// 				NftId:   nftId,
+// 			}
 
-			msg := types.NewMsgEndNftListing(clientCtx.GetFromAddress().String(), nftIde)
+// 			msg := types.NewMsgEndNftListing(clientCtx.GetFromAddress().String(), nftIde)
 
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
-		},
-	}
+// 			if err := msg.ValidateBasic(); err != nil {
+// 				return err
+// 			}
+// 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+// 		},
+// 	}
 
-	flags.AddTxFlagsToCmd(cmd)
-	return cmd
-}
+// 	flags.AddTxFlagsToCmd(cmd)
+// 	return cmd
+// }
 
 func CmdSellingDecision() *cobra.Command {
 	cmd := &cobra.Command{
