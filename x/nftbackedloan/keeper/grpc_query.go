@@ -300,7 +300,7 @@ func (k Keeper) PaymentStatus(c context.Context, req *types.QueryPaymentStatusRe
 		return nil, status.Error(codes.InvalidArgument, "does not match bidder")
 	}
 
-	allPaid := listing.State >= types.ListingState_END_LISTING && bidderBid.BidAmount.Amount.Equal(bidderBid.DepositAmount.Amount)
+	allPaid := listing.State >= types.ListingState_LIQUIDATION && bidderBid.BidAmount.Amount.Equal(bidderBid.DepositAmount.Amount)
 	return &types.QueryPaymentStatusResponse{
 		PaymentStatus: types.PaymentStatus{
 			NftId:            listing.NftId,

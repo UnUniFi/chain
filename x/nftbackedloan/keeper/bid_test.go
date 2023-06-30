@@ -37,7 +37,7 @@ func (suite *KeeperTestSuite) TestNftBidBasics() {
 		MinimumDepositRate:   sdk.MustNewDecFromStr("0.1"),
 		AutomaticRefinancing: true,
 		MinimumBiddingPeriod: time.Hour * 1,
-		State:                types.ListingState_END_LISTING,
+		State:                types.ListingState_LIQUIDATION,
 	}
 	biddingListing := types.NftListing{
 		NftId: types.NftIdentifier{

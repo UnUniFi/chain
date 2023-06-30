@@ -2944,11 +2944,12 @@ Query defines the gRPC querier service.
 
 | Name             | Number | Description |
 | ---------------- | ------ | ----------- |
-| LISTING          | 0      |             |
-| BIDDING          | 1      |             |
-| SELLING_DECISION | 2      |             |
-| END_LISTING      | 3      |             |
-| SUCCESSFUL_BID   | 4      |             |
+| UNKNOWN          | 0      |             |
+| LISTING          | 1      |             |
+| BIDDING          | 2      |             |
+| SALE_DECISION    | 3      |             |
+| LIQUIDATION      | 4      |             |
+| SUCCESSFUL_BID   | 5      |             |
 
 <a name="ununifi.nftmarket.ListingType"></a>
 
@@ -3658,11 +3659,11 @@ Query defines the gRPC querier service.
 
 | Name             | Number | Description |
 | ---------------- | ------ | ----------- |
-| LISTING          | 0      |             |
-| BIDDING          | 1      |             |
-| SELLING_DECISION | 2      |             |
-| LIQUIDATION      | 3      |             |
-| END_LISTING      | 4      |             |
+| UNKNOWN          | 0      |             |
+| LISTING          | 1      |             |
+| BIDDING          | 2      |             |
+| SELLING_DECISION | 3      |             |
+| LIQUIDATION      | 4      |             |
 | SUCCESSFUL_BID   | 5      |             |
 
 <a name="ununifi.nftmarketv1.ListingType"></a>
