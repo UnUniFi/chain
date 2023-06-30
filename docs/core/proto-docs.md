@@ -2883,6 +2883,7 @@ Query defines the gRPC querier service.
 | `successful_bid_end_at`  | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
 | `auto_relisted_count`    | [uint64](#uint64)                                       |       |             |
 | `collected_amount`       | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |       |             |
+| `collected_amount_negative`       | [bool]   |       |             |
 | `minimum_bidding_period` | [google.protobuf.Duration](#google.protobuf.Duration)   |       |             |
 
 <a name="ununifi.nftmarket.Params"></a>
