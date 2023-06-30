@@ -38,14 +38,12 @@ type KeeperTestSuite struct {
 
 func (suite *KeeperTestSuite) SetupTest() {
 	isCheckTx := false
-
 	app := simapp.Setup(suite.T(), ([]wasm.Option{})...)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
 	queryHelper := baseapp.NewQueryServerTestHelper(ctx, app.InterfaceRegistry())
 	types.RegisterQueryServer(queryHelper, app.DerivativesKeeper)
 	queryClient := types.NewQueryClient(queryHelper)
-
 	suite.ctx = app.BaseApp.NewContext(isCheckTx, tmproto.Header{})
 	suite.app = app
 	suite.queryClient = queryClient
@@ -102,6 +100,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 	suite.keeper = app.DerivativesKeeper
 	suite.pricefeedKeeper = app.PricefeedKeeper
+
 }
 
 func TestKeeperSuite(t *testing.T) {

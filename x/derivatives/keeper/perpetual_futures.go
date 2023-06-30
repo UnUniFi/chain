@@ -327,7 +327,6 @@ func (k Keeper) ReportLevyPeriodPerpetualFuturesPosition(ctx sdk.Context, reward
 	netPosition := k.GetPerpetualFuturesNetPositionOfMarket(ctx, position.Market).PositionSizeInDenomExponent
 	totalPosition := k.GetPerpetualFuturesTotalPositionOfMarket(ctx, position.Market).PositionSizeInDenomExponent
 	commissionBaseFee := sdk.NewDecFromInt(positionInstance.SizeInDenomExponent(types.OneMillionInt)).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
-
 	// NetPosition / TotalPosition * LevyCoefficient
 	imaginaryFundingRate := sdk.NewDecFromInt(netPosition).Quo(sdk.NewDecFromInt(totalPosition)).Mul(params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient)
 	imaginaryFundingBaseFee := sdk.NewDecFromInt(positionInstance.SizeInDenomExponent(types.OneMillionInt)).Mul(imaginaryFundingRate).RoundInt()
@@ -519,10 +518,14 @@ func (k Keeper) ConvertBaseAmountToQuoteAmount(ctx sdk.Context, market types.Mar
 
 func (k Keeper) GetPerpetualFuturesPositionSizeInMetrics(ctx sdk.Context, market types.Market, pType types.PositionType) sdk.Dec {
 	perpFuturesLongPositionNum := k.GetPerpetualFuturesGrossPositionOfMarket(ctx, market, pType)
-	baseDenomPrice, err := k.GetPrice(ctx, market.BaseDenom, market.QuoteDenom)
+	currentBaseUsdRate, currentQuoteUsdRate, err := k.GetPairUsdPriceFromMarket(ctx, market)
 	if err != nil {
 		return sdk.ZeroDec()
 	}
-
-	return sdk.NewDecFromInt(perpFuturesLongPositionNum.PositionSizeInDenomExponent).Mul(baseDenomPrice.Price)
+	baseDenomPrice := currentBaseUsdRate.Quo(currentQuoteUsdRate)
+	// baseDenomPrice, err := k.GetPrice(ctx, market.BaseDenom, market.QuoteDenom)
+	if err != nil {
+		return sdk.ZeroDec()
+	}
+	return sdk.NewDecFromInt(perpFuturesLongPositionNum.PositionSizeInDenomExponent).Mul(baseDenomPrice)
 }

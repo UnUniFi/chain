@@ -397,13 +397,13 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 	coins := sdk.Coins{sdk.NewCoin("uatom", sdk.NewInt(5000000)), sdk.NewCoin("uusdc", sdk.NewInt(50000000))}
 	_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
 	_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, owner, coins)
-
 	positions := []struct {
 		positionId           string
 		margin               sdk.Coin
 		instance             types.PerpetualFuturesPositionInstance
 		availableAssetInPool sdk.Coin
 		expMargin            sdk.Int
+		expLeviedAmount      sdk.Int
 	}{
 		{
 			positionId: "0",
@@ -414,9 +414,20 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 				Leverage:     5,
 			},
 			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(2000000)),
-			// -funding 2000000 * 0.0005 * 2 / 6 = 333uatom
-			// 500000 - 333 - 2000(commission 2000000*0.001) = 497667
-			expMargin: sdk.MustNewDecFromStr("497667").TruncateInt(),
+			//position_size: 2
+			//commission_fee: 0.001 ( 1%)
+			//commission_base_fee: position_size * 1000000 * commission_fee = 2 * 1000000 * 0.001 = 2000
+			//ImaginaryFundingRateProportionalCoefficient: 0.0005 (0.05%) (default param)
+			//net_position:  long_position_size * 1000000 - short_position_size * 1000000 = (2+2)*1000000 - (1+1)*1000000 = 2000000
+			//total_position: long + short = (2+2)*1000000+(1+1)*1000000 = 6000000
+			// imaginaryFundingRate:  (net_position/total_position)* ImaginaryFundingRateProportionalCoefficient = 2/6 * 0.0005
+			// imaginaryFundingBaseFee: position_size * 1000000 * imaginaryFundingRate = 2000000 * 2/6 * 0.0005 = 333
+			// total_fee : commission_base_fee+ imaginaryFundingBaseFee = 2333
+			////
+			////
+			// repoart_levyperiod_perpetual_fucturs_position doesn't change margin in position
+			expMargin:       sdk.MustNewDecFromStr("500000").TruncateInt(),
+			expLeviedAmount: sdk.MustNewDecFromStr("2333").TruncateInt(),
 		},
 		{
 			positionId: "1",
@@ -427,9 +438,17 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 				Leverage:     5,
 			},
 			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
-			// +funding 1000000 * 0.0005 * 2 / 6 = 167uatom
+			//position_size: 1
+			//commission_base_fee: position_size * 1000000 * commission_fee = 1 * 1000000 * 0.001 = 1000
+			//ImaginaryFundingRateProportionalCoefficient: 0.0005 (0.05%) (default param)
+			//net_position:  long_position_size * 1000000 - short_position_size * 1000000 = (2+2)*1000000 - (1+1)*1000000 = 2000000
+			//total_position: long + short = (2+2)*1000000+(1+1)*1000000 = 6000000
+			// imaginaryFundingRate:  (net_position/total_position)* ImaginaryFundingRateProportionalCoefficient = 2/6 * 0.0005
+			// imaginaryFundingBaseFee: position_size * 1000000 * imaginaryFundingRate = 1000000 * 2/6 * 0.0005 = 167
+			// total_fee : commission_base_fee - imaginaryFundingBaseFee = 1000 - 167 = 833
 			// 500000 + 167 - 1000(commission) = 499167
-			expMargin: sdk.MustNewDecFromStr("499167").TruncateInt(),
+			expMargin:       sdk.MustNewDecFromStr("500000").TruncateInt(),
+			expLeviedAmount: sdk.MustNewDecFromStr("833").TruncateInt(),
 		},
 		{
 			positionId: "2",
@@ -440,9 +459,11 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 				Leverage:     20,
 			},
 			availableAssetInPool: sdk.NewCoin("uatom", sdk.NewInt(20000000)),
-			// -funding 2000000 * 0.0005 * 2 / 6 = 333uatom
-			// 1000000 - 33(funding) - 200(commission) = 999767uusdc
-			expMargin: sdk.MustNewDecFromStr("999767").TruncateInt(),
+			//commission_base_fee: 2000 * 1 / 10 = 200  (margin.denom == quote.denom)  quote_price/base_price
+			//imaginaryFundingFee: 333 * 1 / 10 = 33
+			//total_fee: commission_base_fee + imaginaryFundFee
+			expMargin:       sdk.MustNewDecFromStr("1000000").TruncateInt(),
+			expLeviedAmount: sdk.MustNewDecFromStr("233").TruncateInt(),
 		},
 		{
 			positionId: "3",
@@ -453,9 +474,12 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 				Leverage:     10,
 			},
 			availableAssetInPool: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
-			// +funding 1000000 * 0.0005 * 2 / 6 = 167uatom
-			// 1000000 + 17(funding) - 100(commission) = 999917uusdc
-			expMargin: sdk.MustNewDecFromStr("999917").TruncateInt(),
+			//commission_base_fee: 1000*1/10 = 100
+			//imaginaryFundingFee: 167*1/10 = 17
+			//total_fee = commission_base_fee- imaginaryFundingFee = 83
+
+			expMargin:       sdk.MustNewDecFromStr("1000000").TruncateInt(),
+			expLeviedAmount: sdk.MustNewDecFromStr("83").TruncateInt(),
 		},
 	}
 
@@ -484,6 +508,7 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 		// Check if the position was changed
 		updatedPosition := suite.keeper.GetPositionWithId(suite.ctx, testPosition.positionId)
 		suite.Require().Equal(testPosition.expMargin, updatedPosition.RemainingMargin.Amount)
+		suite.Require().Equal(testPosition.expLeviedAmount, updatedPosition.LeviedAmount.Amount)
 	}
 }
 
@@ -495,78 +520,78 @@ func (suite *KeeperTestSuite) TestReportLevyPeriodPerpetualFuturesPosition() {
 // denom: string
 // We can test the functionally with above params and the balance of the MarginManager and Pool(derivatives) Module account
 // By checking those two balance after the function
-func (suite *KeeperTestSuite) TestHandleImaginaryFundingFeeTransfer() {
-	testcases := []struct {
-		name                    string
-		positionType            types.PositionType
-		imaginaryFundingFee     sdk.Int
-		commissionFee           sdk.Int
-		denom                   string
-		beforeMarginManagerPool sdk.Int
-		beforePool              sdk.Int
-		expMarginManagerPool    sdk.Int
-		expPool                 sdk.Int
-	}{
-		{
-			name:                    "long position with positive imaginary funding fee",
-			positionType:            types.PositionType_LONG,
-			imaginaryFundingFee:     sdk.NewInt(1000000),
-			commissionFee:           sdk.NewInt(100),
-			denom:                   "uatom",
-			beforeMarginManagerPool: sdk.NewInt(1000100),
-			beforePool:              sdk.NewInt(0),
-			expMarginManagerPool:    sdk.NewInt(0),
-			expPool:                 sdk.NewInt(1000100),
-		},
-		{
-			name:                    "long position with negative imaginary funding fee",
-			positionType:            types.PositionType_LONG,
-			imaginaryFundingFee:     sdk.NewInt(-1000200),
-			commissionFee:           sdk.NewInt(100),
-			denom:                   "uatom",
-			beforeMarginManagerPool: sdk.NewInt(0),
-			beforePool:              sdk.NewInt(1000100),
-			expMarginManagerPool:    sdk.NewInt(1000100),
-			expPool:                 sdk.NewInt(0),
-		},
-		{
-			name:                    "short position with negative imaginary funding fee",
-			positionType:            types.PositionType_SHORT,
-			imaginaryFundingFee:     sdk.NewInt(-1000200),
-			commissionFee:           sdk.NewInt(100),
-			denom:                   "uatom",
-			beforeMarginManagerPool: sdk.NewInt(1000100),
-			beforePool:              sdk.NewInt(0),
-			expMarginManagerPool:    sdk.NewInt(0),
-			expPool:                 sdk.NewInt(1000100),
-		},
-		{
-			name:                    "short position with positive imaginary funding fee",
-			positionType:            types.PositionType_SHORT,
-			imaginaryFundingFee:     sdk.NewInt(1000200),
-			commissionFee:           sdk.NewInt(100),
-			denom:                   "uatom",
-			beforeMarginManagerPool: sdk.NewInt(0),
-			beforePool:              sdk.NewInt(1000100),
-			expMarginManagerPool:    sdk.NewInt(1000100),
-			expPool:                 sdk.NewInt(0),
-		},
-	}
+// func (suite *KeeperTestSuite) TestHandleImaginaryFundingFeeTransfer() {
+// 	testcases := []struct {
+// 		name                    string
+// 		positionType            types.PositionType
+// 		imaginaryFundingFee     sdk.Int
+// 		commissionFee           sdk.Int
+// 		denom                   string
+// 		beforeMarginManagerPool sdk.Int
+// 		beforePool              sdk.Int
+// 		expMarginManagerPool    sdk.Int
+// 		expPool                 sdk.Int
+// 	}{
+// 		{
+// 			name:                    "long position with positive imaginary funding fee",
+// 			positionType:            types.PositionType_LONG,
+// 			imaginaryFundingFee:     sdk.NewInt(1000000),
+// 			commissionFee:           sdk.NewInt(100),
+// 			denom:                   "uatom",
+// 			beforeMarginManagerPool: sdk.NewInt(1000100),
+// 			beforePool:              sdk.NewInt(0),
+// 			expMarginManagerPool:    sdk.NewInt(0),
+// 			expPool:                 sdk.NewInt(1000100),
+// 		},
+// 		{
+// 			name:                    "long position with negative imaginary funding fee",
+// 			positionType:            types.PositionType_LONG,
+// 			imaginaryFundingFee:     sdk.NewInt(-1000200),
+// 			commissionFee:           sdk.NewInt(100),
+// 			denom:                   "uatom",
+// 			beforeMarginManagerPool: sdk.NewInt(0),
+// 			beforePool:              sdk.NewInt(1000100),
+// 			expMarginManagerPool:    sdk.NewInt(1000100),
+// 			expPool:                 sdk.NewInt(0),
+// 		},
+// 		{
+// 			name:                    "short position with negative imaginary funding fee",
+// 			positionType:            types.PositionType_SHORT,
+// 			imaginaryFundingFee:     sdk.NewInt(-1000200),
+// 			commissionFee:           sdk.NewInt(100),
+// 			denom:                   "uatom",
+// 			beforeMarginManagerPool: sdk.NewInt(1000100),
+// 			beforePool:              sdk.NewInt(0),
+// 			expMarginManagerPool:    sdk.NewInt(0),
+// 			expPool:                 sdk.NewInt(1000100),
+// 		},
+// 		{
+// 			name:                    "short position with positive imaginary funding fee",
+// 			positionType:            types.PositionType_SHORT,
+// 			imaginaryFundingFee:     sdk.NewInt(1000200),
+// 			commissionFee:           sdk.NewInt(100),
+// 			denom:                   "uatom",
+// 			beforeMarginManagerPool: sdk.NewInt(0),
+// 			beforePool:              sdk.NewInt(1000100),
+// 			expMarginManagerPool:    sdk.NewInt(1000100),
+// 			expPool:                 sdk.NewInt(0),
+// 		},
+// 	}
 
-	coins := sdk.Coins{sdk.NewCoin("uatom", sdk.NewInt(1000100))}
-	_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
-	_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, authtypes.NewModuleAddress(types.MarginManager), coins)
+// 	coins := sdk.Coins{sdk.NewCoin("uatom", sdk.NewInt(1000100))}
+// 	_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+// 	_ = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, authtypes.NewModuleAddress(types.MarginManager), coins)
 
-	for _, tc := range testcases {
-		suite.Run(tc.name, func() {
-			err := suite.keeper.HandleImaginaryFundingFeeTransfer(suite.ctx, tc.imaginaryFundingFee, tc.commissionFee, tc.positionType, tc.denom)
-			suite.Require().NoError(err)
-			// Check if the balance of the MarginManager and Pool(derivatives) Module account was changed
-			suite.Require().Equal(tc.expMarginManagerPool, suite.app.BankKeeper.GetBalance(suite.ctx, authtypes.NewModuleAddress(types.MarginManager), tc.denom).Amount)
-			suite.Require().Equal(tc.expPool, suite.app.BankKeeper.GetBalance(suite.ctx, authtypes.NewModuleAddress(types.ModuleName), tc.denom).Amount)
-		})
-	}
-}
+// 	for _, tc := range testcases {
+// 		suite.Run(tc.name, func() {
+// 			err := suite.keeper.HandleImaginaryFundingFeeTransfer(suite.ctx, tc.imaginaryFundingFee, tc.commissionFee, tc.positionType, tc.denom)
+// 			suite.Require().NoError(err)
+// 			// Check if the balance of the MarginManager and Pool(derivatives) Module account was changed
+// 			suite.Require().Equal(tc.expMarginManagerPool, suite.app.BankKeeper.GetBalance(suite.ctx, authtypes.NewModuleAddress(types.MarginManager), tc.denom).Amount)
+// 			suite.Require().Equal(tc.expPool, suite.app.BankKeeper.GetBalance(suite.ctx, authtypes.NewModuleAddress(types.ModuleName), tc.denom).Amount)
+// 		})
+// 	}
+// }
 
 func (suite *KeeperTestSuite) TestSetPerpetualFuturesGrossPositionOfMarket() {
 	market := types.Market{

@@ -26,8 +26,8 @@ func (k Keeper) LiquidityProviderTokenRealAPY(c context.Context, req *types.Quer
 	ctx := sdk.UnwrapSDKContext(c)
 
 	rate := k.GetLPNominalYieldRate(ctx, req.BeforeHeight, req.AfterHeight)
-	annualized := k.AnnualizeYieldRate(ctx, rate, req.BeforeHeight, req.AfterHeight)
 
+	annualized := k.AnnualizeYieldRate(ctx, rate, req.BeforeHeight, req.AfterHeight)
 	return &types.QueryLiquidityProviderTokenRealAPYResponse{Apy: &annualized}, nil
 }
 
@@ -39,7 +39,6 @@ func (k Keeper) LiquidityProviderTokenNominalAPY(c context.Context, req *types.Q
 
 	rate := k.GetLPNominalYieldRate(ctx, req.BeforeHeight, req.AfterHeight)
 	annualized := k.AnnualizeYieldRate(ctx, rate, req.BeforeHeight, req.AfterHeight)
-
 	return &types.QueryLiquidityProviderTokenNominalAPYResponse{Apy: &annualized}, nil
 }
 
@@ -55,6 +54,7 @@ func (k Keeper) PerpetualFutures(c context.Context, req *types.QueryPerpetualFut
 	shortPositions := sdk.ZeroDec()
 	for _, market := range markets {
 		totalLongPositionSize := k.GetPerpetualFuturesPositionSizeInMetrics(ctx, *market, types.PositionType_LONG)
+
 		if totalLongPositionSize.IsZero() {
 			return nil, fmt.Errorf("long position size is zero")
 		}
@@ -62,13 +62,11 @@ func (k Keeper) PerpetualFutures(c context.Context, req *types.QueryPerpetualFut
 		if totalShortPositionSize.IsZero() {
 			return nil, fmt.Errorf("short position size is zero")
 		}
-
-		longPositions.Add(totalLongPositionSize)
-		shortPositions.Add(totalShortPositionSize)
+		longPositions.AddMut(totalLongPositionSize)
+		shortPositions.AddMut(totalShortPositionSize)
 	}
 
 	metricsQuoteTicker := k.GetParams(ctx).PoolParams.QuoteTicker
-
 	return &types.QueryPerpetualFuturesResponse{
 		MetricsQuoteTicker: metricsQuoteTicker,
 		LongPositions:      longPositions,
