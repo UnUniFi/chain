@@ -10,11 +10,11 @@ import "cosmos_proto/cosmos.proto";
 option go_package = "github.com/UnUniFi/chain/x/nftbackedloan/types";
 
 enum ListingState {
-  UNKNOWN = 0;
+  UNKNOWN          = 0;
   LISTING          = 1;
   BIDDING          = 2;
-  DECIDED_SELLING = 3;
-  END_LISTING      = 4;
+  SELLING_DECISION = 3;
+  LIQUIDATION      = 4;
   SUCCESSFUL_BID   = 5;
 }
 
