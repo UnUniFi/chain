@@ -345,23 +345,23 @@ func (k Keeper) SafeCloseBidWithAllInterest(ctx sdk.Context, bid types.NftBid) e
 }
 
 // implement SafeCloseBidWithPartInterest
-func (k Keeper) SafeCloseBidWithPartInterest(ctx sdk.Context, bid types.NftBid, interest sdk.Coin) error {
-	bidder, err := sdk.AccAddressFromBech32(bid.Id.Bidder)
-	if err != nil {
-		return err
-	}
-	// check total interest amount is greater than interest
-	if bid.TotalInterestAmount(ctx.BlockTime()).Amount.LT(interest.Amount) {
-		return types.ErrInterestAmountTooLarge
-	}
-	if interest.Amount.GT(sdk.ZeroInt()) {
-		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{sdk.NewCoin(interest.Denom, interest.Amount)})
-		if err != nil {
-			return err
-		}
-	}
-	return k.ManualSafeCloseBid(ctx, bid, bidder)
-}
+// func (k Keeper) SafeCloseBidWithPartInterest(ctx sdk.Context, bid types.NftBid, interest sdk.Coin) error {
+// 	bidder, err := sdk.AccAddressFromBech32(bid.Id.Bidder)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	// check total interest amount is greater than interest
+// 	if bid.TotalInterestAmount(ctx.BlockTime()).Amount.LT(interest.Amount) {
+// 		return types.ErrInterestAmountTooLarge
+// 	}
+// 	if interest.Amount.GT(sdk.ZeroInt()) {
+// 		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{sdk.NewCoin(interest.Denom, interest.Amount)})
+// 		if err != nil {
+// 			return err
+// 		}
+// 	}
+// 	return k.ManualSafeCloseBid(ctx, bid, bidder)
+// }
 
 func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())

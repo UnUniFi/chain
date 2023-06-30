@@ -446,7 +446,7 @@ $ %s tx %s cancel-bid 1 1 --from myKeyName --chain-id ununifi-x
 func CmdPayFullBid() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "pay-full-bid [class-id] [nft-id]",
-		Short: "Pay full bid on nft",
+		Short: "Pay full bid price on nft",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Pay full bid on nft.
 Example:
