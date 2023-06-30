@@ -1,9 +1,5 @@
 package types
 
-import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-)
-
 func (m NftListing) IdBytes() []byte {
 	return m.NftId.IdBytes()
 }
@@ -48,26 +44,26 @@ func (b NftBid) IdBytes() []byte {
 // 	return true
 // }
 
-func (m NftListing) CalcAmount(bids []NftBid) sdk.Int {
-	return m.CalcAmountF(bids, func(NftBid) bool { return false })
-}
+// func (m NftListing) CalcAmount(bids []NftBid) sdk.Int {
+// 	return m.CalcAmountF(bids, func(NftBid) bool { return false })
+// }
 
-func (m NftListing) CalcAmountF(bids []NftBid, conditionF func(bid NftBid) bool) sdk.Int {
-	DepositAmount := sdk.ZeroInt()
-	for _, bid := range bids {
-		if conditionF(bid) {
-			continue
-		}
-		DepositAmount = DepositAmount.Add(bid.DepositAmount.Amount)
-	}
-	return DepositAmount
-}
+// func (m NftListing) CalcAmountF(bids []NftBid, conditionF func(bid NftBid) bool) sdk.Int {
+// 	DepositAmount := sdk.ZeroInt()
+// 	for _, bid := range bids {
+// 		if conditionF(bid) {
+// 			continue
+// 		}
+// 		DepositAmount = DepositAmount.Add(bid.DepositAmount.Amount)
+// 	}
+// 	return DepositAmount
+// }
 
-func (m NftListing) MaxPossibleBorrowAmount(bids, expiredBids []NftBid) sdk.Int {
-	newBids := NftBids(bids).MakeExcludeExpiredBids(expiredBids)
-	borrowableAmount := newBids.BorrowableAmount(m.BidToken)
-	return borrowableAmount.Amount
-}
+// func (m NftListing) MaxPossibleBorrowAmount(bids, expiredBids []NftBid) sdk.Int {
+// 	newBids := NftBids(bids).MakeExcludeExpiredBids(expiredBids)
+// 	borrowableAmount := newBids.BorrowableAmount(m.BidToken)
+// 	return borrowableAmount.Amount
+// }
 
 func (m NftListing) IsSelling() bool {
 	return m.State == ListingState_LISTING || m.State == ListingState_BIDDING

@@ -216,9 +216,7 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 		StartedAt:               ctx.BlockTime(),
 		CollectedAmount:         sdk.NewCoin(msg.BidToken, sdk.ZeroInt()),
 		CollectedAmountNegative: false,
-		// todo: add validation.
-		// we should to determine maximum bidding period.
-		MinimumBiddingPeriod: msg.MinimumBiddingPeriod,
+		MinimumBiddingPeriod:    msg.MinimumBiddingPeriod,
 	}
 	k.SaveNftListing(ctx, listing)
 
@@ -768,12 +766,4 @@ func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sd
 	// Call AfterNftPaymentWithCommission hook method to inform the payment is successfully
 	// executed.
 	k.AfterNftPaymentWithCommission(ctx, nftId, sdk.NewCoin(amount.Denom, fee))
-}
-
-// get surplus amount
-func (k Keeper) GetSurplusAmount(bids types.NftBids, winBid types.NftBid, collectedAmount sdk.Coin) sdk.Coin {
-	if len(bids) == 0 {
-		return winBid.BidAmount.Add(collectedAmount)
-	}
-	return winBid.BidAmount.Add(collectedAmount).Sub(bids.TotalDeposit())
 }

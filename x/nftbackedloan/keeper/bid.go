@@ -422,9 +422,7 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 	return nil
 }
 
-// todo test for pay part amount and full amount
 func (k Keeper) PayFullBid(ctx sdk.Context, msg *types.MsgPayFullBid) error {
-	// todo update for v2
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
 		return err
