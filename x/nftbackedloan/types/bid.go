@@ -8,7 +8,14 @@ import (
 )
 
 func (m NftBid) Equal(b NftBid) bool {
-	return m.Id.Bidder == b.Id.Bidder && m.Id.NftId == b.Id.NftId && m.BidAmount.Equal(b.BidAmount)
+	if m.IsNil() || b.IsNil() {
+		if m.IsNil() && b.IsNil() {
+			return true
+		} else {
+			return false
+		}
+	}
+	return m.Id.Bidder == b.Id.Bidder && m.Id.NftId.ClassId == b.Id.NftId.ClassId && m.Id.NftId.NftId == b.Id.NftId.NftId && m.BidAmount.Equal(b.BidAmount)
 }
 func (m NftBid) IsLT(b NftBid) bool {
 	if b.BidAmount.IsLTE(m.BidAmount) {
