@@ -60,7 +60,7 @@ func (suite *KeeperTestSuite) TestQueryClassIdsByOwner() {
 	var classIds []string
 	classIds = append(classIds, classId)
 	expectedRes := types.OwningClassIdList{
-		Owner:   sender.Bytes(),
+		Owner:   sender.String(),
 		ClassId: classIds[:],
 	}
 	suite.Require().Equal(&expectedRes, res.OwningClassIdList)

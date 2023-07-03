@@ -26,10 +26,10 @@ func (suite *KeeperTestSuite) TestMintNFT() {
 	recipient := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 	testMsgMintNFT := types.MsgMintNFT{
-		Sender:    sender.Bytes(),
+		Sender:    sender.String(),
 		ClassId:   classId,
 		NftId:     testNFTId,
-		Recipient: recipient.Bytes(),
+		Recipient: recipient.String(),
 	}
 	err := suite.nftmintKeeper.MintNFT(suite.ctx, &testMsgMintNFT)
 	suite.Require().NoError(err)
@@ -49,10 +49,10 @@ func (suite *KeeperTestSuite) TestMintNFT() {
 		invalidNFTIdUri += "a"
 	}
 	testMsgMintNFTInvalidNftIdUri := types.MsgMintNFT{
-		Sender:    sender.Bytes(),
+		Sender:    sender.String(),
 		ClassId:   classId,
 		NftId:     invalidNFTIdUri,
-		Recipient: recipient.Bytes(),
+		Recipient: recipient.String(),
 	}
 	err = suite.nftmintKeeper.MintNFT(suite.ctx, &testMsgMintNFTInvalidNftIdUri)
 	suite.Require().Error(err)
@@ -62,10 +62,10 @@ func (suite *KeeperTestSuite) TestMintNFT() {
 	// invalid nft id by sdk's x/nft validation in case for not being called through message
 	invalidNFTId := "a" // shorter than the defined minimum length by sdk's x/nft module
 	testMsgMintNFTInvalidNftId := types.MsgMintNFT{
-		Sender:    sender.Bytes(),
+		Sender:    sender.String(),
 		ClassId:   classId,
 		NftId:     invalidNFTId,
-		Recipient: recipient.Bytes(),
+		Recipient: recipient.String(),
 	}
 	err = suite.nftmintKeeper.MintNFT(suite.ctx, &testMsgMintNFTInvalidNftId)
 	suite.Require().Error(err)
@@ -77,10 +77,10 @@ func (suite *KeeperTestSuite) TestMintNFT() {
 	notOwnerOfClass := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	testNFTId2 := testNFTId + "2"
 	testMsgMintNFTInvalidMinter := types.MsgMintNFT{
-		Sender:    notOwnerOfClass.Bytes(),
+		Sender:    notOwnerOfClass.String(),
 		ClassId:   classId,
 		NftId:     testNFTId2,
-		Recipient: recipient.Bytes(),
+		Recipient: recipient.String(),
 	}
 	err = suite.nftmintKeeper.MintNFT(suite.ctx, &testMsgMintNFTInvalidMinter)
 	suite.Require().Error(err)
@@ -90,7 +90,7 @@ func (suite *KeeperTestSuite) TestMintNFT() {
 	// invalid case which is over the defined token supply cap
 	classId = "test"
 	testMsgCreateClass := types.MsgCreateClass{
-		Sender:            sender.Bytes(),
+		Sender:            sender.String(),
 		Name:              "test",
 		BaseTokenUri:      "ipfs://testuri/",
 		TokenSupplyCap:    1,
@@ -99,10 +99,10 @@ func (suite *KeeperTestSuite) TestMintNFT() {
 	_ = suite.nftmintKeeper.CreateClass(suite.ctx, classId, &testMsgCreateClass)
 	_ = suite.nftKeeper.Mint(suite.ctx, nfttypes.NFT{ClassId: classId, Id: testNFTId}, sender)
 	testMsgMintNFTOverCap := types.MsgMintNFT{
-		Sender:    sender.Bytes(),
+		Sender:    sender.String(),
 		ClassId:   classId,
 		NftId:     testNFTId2,
-		Recipient: sender.Bytes(),
+		Recipient: sender.String(),
 	}
 	err = suite.nftmintKeeper.MintNFT(suite.ctx, &testMsgMintNFTOverCap)
 	suite.Require().Error(err)
@@ -125,7 +125,7 @@ func (suite *KeeperTestSuite) TestBurnNFT() {
 	_ = suite.MintNFT(suite.ctx, classId, testNFTId, sender)
 
 	testMsgBurnNFT := types.MsgBurnNFT{
-		Sender:  sender.Bytes(),
+		Sender:  sender.String(),
 		ClassId: classId,
 		NftId:   testNFTId,
 	}
@@ -139,7 +139,7 @@ func (suite *KeeperTestSuite) TestBurnNFT() {
 	invalidSender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	_ = suite.MintNFT(suite.ctx, classId, testNFTId, sender)
 	testMsgBurnNFTInvalidSender := types.MsgBurnNFT{
-		Sender:  invalidSender.Bytes(),
+		Sender:  invalidSender.String(),
 		ClassId: classId,
 		NftId:   testNFTId,
 	}
@@ -183,10 +183,10 @@ func (suite *KeeperTestSuite) MintNFT(ctx sdk.Context, classID, nftID string, se
 	_ = suite.CreateClass(suite.ctx, classID, sender)
 
 	testMsgMintNFT := types.MsgMintNFT{
-		Sender:    sender.Bytes(),
+		Sender:    sender.String(),
 		ClassId:   classID,
 		NftId:     nftID,
-		Recipient: sender.Bytes(),
+		Recipient: sender.String(),
 	}
 	err := suite.nftmintKeeper.MintNFT(suite.ctx, &testMsgMintNFT)
 	return err
