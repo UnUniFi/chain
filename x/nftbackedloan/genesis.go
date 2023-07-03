@@ -1,4 +1,4 @@
-package nftmarket
+package nftbackedloan
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"

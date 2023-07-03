@@ -147,16 +147,16 @@ import (
 	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
 	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
 
-	nftmarket "github.com/UnUniFi/chain/x/nftbackedloan"
-	nftmarketkeeper "github.com/UnUniFi/chain/x/nftbackedloan/keeper"
-	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
+	nftbackedloan "github.com/UnUniFi/chain/x/nftbackedloan"
+	nftbackedloankeeper "github.com/UnUniFi/chain/x/nftbackedloan/keeper"
+	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 
-	// "github.com/UnUniFi/chain/x/nftfactory"
-	// nftmintkeeper "github.com/UnUniFi/chain/x/nftfactory/keeper"
-	// nftminttypes "github.com/UnUniFi/chain/x/nftfactory/types"
 	"github.com/UnUniFi/chain/x/derivatives"
 	derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
 	derivativestypes "github.com/UnUniFi/chain/x/derivatives/types"
+	nftfactory "github.com/UnUniFi/chain/x/nftfactory"
+	nftfactorykeeper "github.com/UnUniFi/chain/x/nftfactory/keeper"
+	nftfactorytypes "github.com/UnUniFi/chain/x/nftfactory/types"
 	"github.com/UnUniFi/chain/x/pricefeed"
 	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
@@ -247,8 +247,8 @@ var (
 		ibcfee.AppModuleBasic{},
 
 		// original modules
-		nftmarket.AppModuleBasic{},
-		// nftmint.AppModuleBasic{},
+		nftbackedloan.AppModuleBasic{},
+		nftfactory.AppModuleBasic{},
 
 		yieldaggregator.AppModuleBasic{},
 		stakeibc.AppModuleBasic{},
@@ -278,9 +278,9 @@ var (
 		wasm.ModuleName:                {authtypes.Burner},
 
 		// original modules
-		nftmarkettypes.ModuleName: nil,
-		// nftmarkettypes.NftTradingFee: nil,
-		// nftminttypes.ModuleName:                 nil,
+		nftbackedloantypes.ModuleName: nil,
+		// nftbackedloantypes.NftTradingFee: nil,
+		nftfactorytypes.ModuleName: nil,
 
 		yieldaggregatortypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 		stakeibctypes.ModuleName:        {authtypes.Minter, authtypes.Burner, authtypes.Staking},
@@ -365,8 +365,8 @@ type App struct {
 	ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
 	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
 
-	NftmarketKeeper nftmarketkeeper.Keeper
-	// NftmintKeeper            nftmintkeeper.Keeper
+	NftbackedloanKeeper nftbackedloankeeper.Keeper
+	NftfactoryKeeper    nftfactorykeeper.Keeper
 
 	YieldaggregatorKeeper    yieldaggregatorkeeper.Keeper
 	StakeibcKeeper           stakeibckeeper.Keeper
@@ -434,8 +434,8 @@ func NewApp(
 		icacontrollertypes.StoreKey,
 
 		// original modules
-		nftmarkettypes.StoreKey,
-		// nftminttypes.StoreKey,
+		nftbackedloantypes.StoreKey,
+		nftfactorytypes.StoreKey,
 
 		yieldaggregatortypes.StoreKey,
 		stakeibctypes.StoreKey,
@@ -708,21 +708,21 @@ func NewApp(
 		wasmOpts...,
 	)
 
-	// app.NftmintKeeper = nftmintkeeper.NewKeeper(
-	// 	appCodec,
-	// 	keys[nftminttypes.StoreKey],
-	// 	keys[nftminttypes.MemStoreKey],
-	// 	app.GetSubspace(nftminttypes.ModuleName),
-	// 	app.AccountKeeper,
-	// 	app.NFTKeeper,
-	// )
+	app.NftfactoryKeeper = nftfactorykeeper.NewKeeper(
+		appCodec,
+		keys[nftfactorytypes.StoreKey],
+		keys[nftfactorytypes.MemStoreKey],
+		app.GetSubspace(nftfactorytypes.ModuleName),
+		app.AccountKeeper,
+		app.NFTKeeper,
+	)
 
-	nftmarketKeeper := nftmarketkeeper.NewKeeper(
+	nftbackedloanKeeper := nftbackedloankeeper.NewKeeper(
 		appCodec,
 		encodingConfig.TxConfig,
-		keys[nftmarkettypes.StoreKey],
-		keys[nftmarkettypes.MemStoreKey],
-		app.GetSubspace(nftmarkettypes.ModuleName),
+		keys[nftbackedloantypes.StoreKey],
+		keys[nftbackedloantypes.MemStoreKey],
+		app.GetSubspace(nftbackedloantypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.NFTKeeper,
@@ -842,7 +842,7 @@ func NewApp(
 	)
 
 	// create Keeper objects which have Hooks
-	app.NftmarketKeeper = *nftmarketKeeper.SetHooks(nftmarkettypes.NewMultiNftbackedloanHooks(app.EcosystemincentiveKeeper.Hooks()))
+	app.NftbackedloanKeeper = *nftbackedloanKeeper.SetHooks(nftbackedloantypes.NewMultiNftbackedloanHooks(app.EcosystemincentiveKeeper.Hooks()))
 
 	// Register the proposal types
 	// Deprecated: Avoid adding new handlers, instead use the new proposal flow
@@ -948,8 +948,8 @@ func NewApp(
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
 
 		// original modules
-		// nftmint.NewAppModule(appCodec, app.NftmintKeeper, app.NFTKeeper),
-		nftmarket.NewAppModule(appCodec, app.NftmarketKeeper, app.AccountKeeper, app.BankKeeper),
+		nftfactory.NewAppModule(appCodec, app.NftfactoryKeeper, app.NFTKeeper),
+		nftbackedloan.NewAppModule(appCodec, app.NftbackedloanKeeper, app.AccountKeeper, app.BankKeeper),
 
 		yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
 		stakeibc.NewAppModule(appCodec, app.StakeibcKeeper, app.AccountKeeper, app.BankKeeper),
@@ -991,8 +991,8 @@ func NewApp(
 		ecosystemincentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
 
-		// nftminttypes.ModuleName,
-		nftmarkettypes.ModuleName,
+		nftfactorytypes.ModuleName,
+		nftbackedloantypes.ModuleName,
 
 		stakeibctypes.ModuleName,
 		epochstypes.ModuleName,
@@ -1035,8 +1035,8 @@ func NewApp(
 		ecosystemincentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
 
-		// nftminttypes.ModuleName,
-		nftmarkettypes.ModuleName,
+		nftfactorytypes.ModuleName,
+		nftbackedloantypes.ModuleName,
 		stakeibctypes.ModuleName,
 		epochstypes.ModuleName,
 		interchainquerytypes.ModuleName,
@@ -1084,8 +1084,8 @@ func NewApp(
 
 		// original modules
 		pricefeedtypes.ModuleName,
-		// nftminttypes.ModuleName,
-		nftmarkettypes.ModuleName,
+		nftfactorytypes.ModuleName,
+		nftbackedloantypes.ModuleName,
 		ecosystemincentivetypes.ModuleName,
 
 		stakeibctypes.ModuleName,
@@ -1428,8 +1428,8 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(wasm.ModuleName)
 
 	// original modules
-	paramsKeeper.Subspace(nftmarkettypes.ModuleName)
-	// paramsKeeper.Subspace(nftminttypes.ModuleName)
+	paramsKeeper.Subspace(nftbackedloantypes.ModuleName)
+	paramsKeeper.Subspace(nftfactorytypes.ModuleName)
 
 	paramsKeeper.Subspace(stakeibctypes.ModuleName)
 	paramsKeeper.Subspace(epochstypes.ModuleName)
