@@ -10,11 +10,11 @@ import "cosmos_proto/cosmos.proto";
 option go_package = "github.com/UnUniFi/chain/x/nftbackedloan/types";
 
 enum ListingState {
-  UNKNOWN = 0;
+  UNKNOWN          = 0;
   LISTING          = 1;
   BIDDING          = 2;
-  DECIDED_SELLING = 3;
-  END_LISTING      = 4;
+  SELLING_DECISION = 3;
+  LIQUIDATION      = 4;
   SUCCESSFUL_BID   = 5;
 }
 
@@ -68,7 +68,8 @@ message NftListing {
   ];
   uint64 auto_relisted_count = 11;
   cosmos.base.v1beta1.Coin collected_amount = 12 [(gogoproto.nullable) = false];
-  google.protobuf.Duration minimum_bidding_period = 13 [
+  bool collected_amount_negative = 13;
+  google.protobuf.Duration minimum_bidding_period = 14 [
     (gogoproto.stdduration) = true,
     (gogoproto.nullable) = false
   ];

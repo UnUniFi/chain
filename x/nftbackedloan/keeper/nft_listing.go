@@ -207,17 +207,16 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 	// todo: make test
 	owner := k.nftKeeper.GetOwner(ctx, msg.NftId.ClassId, msg.NftId.NftId)
 	listing := types.NftListing{
-		NftId:                msg.NftId,
-		Owner:                owner.String(),
-		State:                types.ListingState_LISTING,
-		BidToken:             msg.BidToken,
-		MinimumDepositRate:   msg.MinimumDepositRate,
-		AutomaticRefinancing: msg.AutomaticRefinancing,
-		StartedAt:            ctx.BlockTime(),
-		CollectedAmount:      sdk.NewCoin(msg.BidToken, sdk.ZeroInt()),
-		// todo: add validation.
-		// we should to determine maximum bidding period.
-		MinimumBiddingPeriod: msg.MinimumBiddingPeriod,
+		NftId:                   msg.NftId,
+		Owner:                   owner.String(),
+		State:                   types.ListingState_LISTING,
+		BidToken:                msg.BidToken,
+		MinimumDepositRate:      msg.MinimumDepositRate,
+		AutomaticRefinancing:    msg.AutomaticRefinancing,
+		StartedAt:               ctx.BlockTime(),
+		CollectedAmount:         sdk.NewCoin(msg.BidToken, sdk.ZeroInt()),
+		CollectedAmountNegative: false,
+		MinimumBiddingPeriod:    msg.MinimumBiddingPeriod,
 	}
 	k.SaveNftListing(ctx, listing)
 
@@ -274,43 +273,10 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 		return types.ErrCannotCancelListingWithDebt
 	}
 
-	// todo implement bid exist cancel listing
 	bids := k.GetBidsByNft(ctx, msg.NftId.IdBytes())
 	if len(bids) > 0 {
 		return types.ErrCannotCancelListingWithBids
 	}
-
-	// winnerCandidateStartIndex := len(bids) - int(listing.BidActiveRank)
-	// if winnerCandidateStartIndex < 0 {
-	// 	winnerCandidateStartIndex = 0
-	// }
-	// // distribute cancellation fee to winner bidders
-	// for _, bid := range bids[winnerCandidateStartIndex:] {
-	// 	bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// 	cancelFee := bid.Amount.Amount.Mul(sdk.NewInt(int64(params.NftListingCancelFeePercentage))).Quo(sdk.NewInt(100))
-	// 	if cancelFee.IsPositive() {
-	// 		err = k.bankKeeper.SendCoins(ctx, msg.Sender.AccAddress(), bidder, sdk.Coins{sdk.NewCoin(listing.BidToken, cancelFee)})
-	// 		if err != nil {
-	// 			return err
-	// 		}
-	// 	}
-	// }
-
-	// // delete all bids and return funds back
-	// for _, bid := range bids {
-	// 	bidder, err := sdk.AccAddressFromBech32(bid.Bidder)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{bid.Amount})
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// 	k.DeleteBid(ctx, bid)
-	// }
 
 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
@@ -362,12 +328,13 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 	// check bid exists
 	bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
 	if len(bids) == 0 {
+		fmt.Println("bid not exists in selling")
 		return types.ErrNotExistsBid
 	}
 
 	params := k.GetParamSet(ctx)
 	listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
-	listing.State = types.ListingState_DECIDED_SELLING
+	listing.State = types.ListingState_SELLING_DECISION
 	k.SaveNftListing(ctx, listing)
 
 	// automatic payment if enabled
@@ -423,7 +390,7 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 	}
 
 	// check if listing is already ended
-	if listing.State == types.ListingState_END_LISTING || listing.State == types.ListingState_DECIDED_SELLING {
+	if listing.State == types.ListingState_LIQUIDATION || listing.State == types.ListingState_SELLING_DECISION {
 		return types.ErrListingAlreadyEnded
 	}
 
@@ -441,7 +408,7 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 	} else {
 		params := k.GetParamSet(ctx)
 		listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
-		listing.State = types.ListingState_END_LISTING
+		listing.State = types.ListingState_LIQUIDATION
 		k.SaveNftListing(ctx, listing)
 
 		// automatic payment after listing ends
@@ -510,7 +477,7 @@ func (k Keeper) ProcessEndingNftListings(ctx sdk.Context) {
 
 	for listing := range checkListingsWithBorrowedBids {
 		// check if listing is already ended
-		if listing.State == types.ListingState_END_LISTING {
+		if listing.State == types.ListingState_LIQUIDATION {
 			continue
 		} else {
 			fmt.Println("---occur end listing---")
@@ -532,7 +499,6 @@ func (k Keeper) ProcessEndingNftListings(ctx sdk.Context) {
 }
 
 func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
-	// todo update for v2
 	params := k.GetParamSet(ctx)
 	// get listings at the end of the payment period
 	listings := k.GetFullPaymentNftListingsEndingAt(ctx, ctx.BlockTime())
@@ -540,47 +506,13 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 	// handle not fully paid bids
 	for _, listing := range listings {
 		bids := types.NftBids(k.GetBidsByNft(ctx, listing.NftId.IdBytes()))
-		if listing.State == types.ListingState_DECIDED_SELLING {
-			HighestBid := bids.GetHighestBid()
-			// if winner bidder did not pay full bid, nft is listed again after deleting winner bidder
-			if !HighestBid.IsPaidBidAmount() {
-				err := k.DeleteBid(ctx, HighestBid)
-				if err != nil {
-					fmt.Println(err)
-					continue
-				}
-				if len(bids) == 1 {
-					listing.State = types.ListingState_LISTING
-				} else {
-					listing.State = types.ListingState_BIDDING
-				}
-				listing.EndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingExtendSeconds))
-
-				// Reset the loan data for a lister
-				// If the bid.PaidAmount is more than loan.Coin.Amount, then just delete the loan data for lister.
-				// Otherwise, subtract bid.PaidAmount from loaning amount
-
-				// todo change logic
-				// deposit - borrowings amount to lister and interest amount to lister
-				if HighestBid.IsBorrowing() {
-					loan := k.GetDebtByNft(ctx, listing.IdBytes())
-					if loan.Loan.Equal(HighestBid.BorrowingAmount()) {
-						k.DeleteDebt(ctx, listing.IdBytes())
-					} else {
-						renewedLoanAmount := loan.Loan.Sub(HighestBid.BorrowingAmount())
-						loan.Loan.Amount = renewedLoanAmount.Amount
-						k.SetDebt(ctx, loan)
-					}
-				}
-			} else {
-				// schedule NFT & token send after X days
-				listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
-				listing.State = types.ListingState_SUCCESSFUL_BID
-				// delete the loan data for the nftId which is deleted from the market
-				k.RemoveDebt(ctx, listing.IdBytes())
+		if listing.State == types.ListingState_SELLING_DECISION {
+			err := k.SellingDecisionProcessLiquidationProcess(ctx, bids, listing, params)
+			if err != nil {
+				fmt.Println("failed to selling decision process: %w", err)
+				continue
 			}
-			k.SaveNftListing(ctx, listing)
-		} else if listing.State == types.ListingState_END_LISTING {
+		} else if listing.State == types.ListingState_LIQUIDATION {
 			err := k.LiquidationProcess(ctx, bids, listing, params)
 			if err != nil {
 				fmt.Println("failed to liquidation process: %w", err)
@@ -588,6 +520,47 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 			}
 		}
 	}
+}
+
+func (k Keeper) SellingDecisionProcessLiquidationProcess(ctx sdk.Context, bids types.NftBids, listing types.NftListing, params types.Params) error {
+	highestBid := bids.GetHighestBid()
+	// if winner bidder did not pay full bid, nft is listed again after deleting winner bidder
+	if !highestBid.IsPaidBidAmount() {
+		err := k.DeleteBid(ctx, highestBid)
+		if err != nil {
+			return err
+		}
+		if len(bids) == 1 {
+			listing.State = types.ListingState_LISTING
+		} else {
+			listing.State = types.ListingState_BIDDING
+		}
+		listing.EndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingExtendSeconds))
+
+		// Reset the loan data for a lister
+		// If the bid.PaidAmount is more than loan.Coin.Amount, then just delete the loan data for lister.
+		// Otherwise, subtract bid.PaidAmount from loaning amount
+		if highestBid.IsBorrowing() {
+			loan := k.GetDebtByNft(ctx, listing.IdBytes())
+			if loan.Loan.Equal(highestBid.BorrowingAmount()) {
+				k.DeleteDebt(ctx, listing.IdBytes())
+			} else {
+				renewedLoanAmount := loan.Loan.Sub(highestBid.BorrowingAmount())
+				loan.Loan.Amount = renewedLoanAmount.Amount
+				k.SetDebt(ctx, loan)
+			}
+		}
+
+		// todo: deposit - borrowings amount to lister or fund module
+	} else {
+		// schedule NFT & token send after X days
+		listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
+		listing.State = types.ListingState_SUCCESSFUL_BID
+		// delete the loan data for the nftId which is deleted from the market
+		k.RemoveDebt(ctx, listing.IdBytes())
+	}
+	k.SaveNftListing(ctx, listing)
+	return nil
 }
 
 func (k Keeper) LiquidationProcess(ctx sdk.Context, bids types.NftBids, listing types.NftListing, params types.Params) error {
@@ -603,6 +576,7 @@ func (k Keeper) LiquidationProcess(ctx sdk.Context, bids types.NftBids, listing 
 	if winnerBid.IsNil() {
 		err := k.LiquidationProcessNotExitsWinner(cacheCtx, bidsSortedByDeposit, listing)
 		if err != nil {
+			fmt.Println("failed to liquidation process not exits winner: %w", err)
 			return err
 		}
 		k.DeleteNftListings(ctx, listing)
@@ -610,6 +584,7 @@ func (k Keeper) LiquidationProcess(ctx sdk.Context, bids types.NftBids, listing 
 		collectBids, refundBids := types.ForfeitedBidsAndRefundBids(bidsSortedByDeposit, winnerBid)
 		err := k.LiquidationProcessExitsWinner(cacheCtx, collectBids, refundBids, listing, winnerBid, ctx.BlockTime())
 		if err != nil {
+			fmt.Println("failed to liquidation process exits winner: %w", err)
 			return err
 		}
 		listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
@@ -630,11 +605,13 @@ func (k Keeper) LiquidationProcessNotExitsWinner(ctx sdk.Context, bids types.Nft
 		return err
 	}
 
-	collectedDeposit, err := k.CollectedDepositFromBids(ctx, bids)
+	collectedDeposit, err := k.CollectedDepositFromBids(ctx, bids, listing)
 	if err != nil {
-		return nil
+		return err
 	}
-	listing.CollectedAmount = listing.CollectedAmount.Add(collectedDeposit)
+	if collectedDeposit.IsPositive() {
+		listing.CollectedAmount = listing.CollectedAmount.Add(collectedDeposit)
+	}
 
 	depositCollected := listing.CollectedAmount
 	// pay fee
@@ -652,53 +629,47 @@ func (k Keeper) LiquidationProcessNotExitsWinner(ctx sdk.Context, bids types.Nft
 func (k Keeper) LiquidationProcessExitsWinner(ctx sdk.Context, collectBids,
 	refundBids types.NftBids, listing types.NftListing, winnerBid types.NftBid,
 	now time.Time) error {
-	collectedDeposit, err := k.CollectedDepositFromBids(ctx, collectBids)
+	collectedDeposit, err := k.CollectedDepositFromBids(ctx, collectBids, listing)
 	if err != nil {
+		fmt.Println("failed to collect deposit from bids: %w", err)
 		return err
 	}
 	if collectedDeposit.IsPositive() {
 		listing.CollectedAmount = listing.CollectedAmount.Add(collectedDeposit)
 	}
 
-	// win price + forfeited deposits - refund bids' deposits
-	surplusAmount := k.GetSurplusAmount(refundBids, winnerBid).Add(listing.CollectedAmount)
 	totalInterests := refundBids.TotalInterestAmount(now)
 	if totalInterests.IsNil() {
 		totalInterests = sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
 	}
-	err = k.RefundBids(ctx, refundBids, totalInterests, surplusAmount, listing)
+	// Sub total interests from lister's profit
+	if listing.CollectedAmount.IsLT(totalInterests) {
+		listing.CollectedAmountNegative = true
+		listing.CollectedAmount = totalInterests.Sub(listing.CollectedAmount)
+	} else {
+		listing.CollectedAmount = listing.CollectedAmount.Sub(totalInterests)
+	}
+	err = k.RefundBids(ctx, refundBids, totalInterests, listing)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (k Keeper) RefundBids(ctx sdk.Context, refundBids types.NftBids, totalInterests, surplusAmount sdk.Coin, listing types.NftListing) error {
-	if totalInterests.IsLTE(surplusAmount) {
-		listing.CollectedAmount = listing.CollectedAmount.Sub(totalInterests)
-		for _, bid := range refundBids {
-			err := k.SafeCloseBidWithAllInterest(ctx, bid)
-			if err != nil {
-				return err
-			}
-		}
-	} else {
-		for _, bid := range refundBids {
-			listing.CollectedAmount = listing.CollectedAmount.Sub(surplusAmount)
-			// discounted interest = expected interest * (surplus amount / total interests)
-			discountedInterest := types.CalcPartInterest(totalInterests, surplusAmount, bid.TotalInterestAmountDec(ctx.BlockTime()))
-			err := k.SafeCloseBidWithPartInterest(ctx, bid, discountedInterest)
-			if err != nil {
-				return err
-			}
+func (k Keeper) RefundBids(ctx sdk.Context, refundBids types.NftBids, totalInterests sdk.Coin, listing types.NftListing) error {
+	for _, bid := range refundBids {
+		err := k.SafeCloseBidWithAllInterest(ctx, bid)
+		if err != nil {
+			return err
 		}
 	}
+
 	return nil
 }
 
 // todo add test
-func (k Keeper) CollectedDepositFromBids(ctx sdk.Context, bids types.NftBids) (sdk.Coin, error) {
-	result := sdk.NewCoin(bids[0].DepositAmount.Denom, sdk.ZeroInt())
+func (k Keeper) CollectedDepositFromBids(ctx sdk.Context, bids types.NftBids, listing types.NftListing) (sdk.Coin, error) {
+	result := sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
 	for _, bid := range bids {
 		// not pay bidder amount, collected deposit
 		collectedAmount, err := k.SafeCloseBidCollectDeposit(ctx, bid)
@@ -744,7 +715,12 @@ func (k Keeper) DeliverSuccessfulBids(ctx sdk.Context) {
 		}
 
 		loan := k.GetDebtByNft(ctx, listing.IdBytes())
-		totalPayAmount := listing.CollectedAmount.Add(bid.BidAmount)
+		totalPayAmount := bid.BidAmount
+		if listing.CollectedAmountNegative {
+			totalPayAmount = totalPayAmount.Sub(listing.CollectedAmount)
+		} else {
+			totalPayAmount = totalPayAmount.Add(listing.CollectedAmount)
+		}
 		k.ProcessPaymentWithCommissionFee(ctx, listingOwner, totalPayAmount, loan.Loan, listing.NftId)
 
 		err = k.DeleteBid(ctx, bid)
@@ -790,12 +766,4 @@ func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sd
 	// Call AfterNftPaymentWithCommission hook method to inform the payment is successfully
 	// executed.
 	k.AfterNftPaymentWithCommission(ctx, nftId, sdk.NewCoin(amount.Denom, fee))
-}
-
-// get surplus amount
-func (k Keeper) GetSurplusAmount(bids types.NftBids, winBid types.NftBid) sdk.Coin {
-	if len(bids) == 0 {
-		return sdk.NewCoin(winBid.BidAmount.Denom, sdk.ZeroInt())
-	}
-	return winBid.BidAmount.Sub(bids.TotalDeposit())
 }

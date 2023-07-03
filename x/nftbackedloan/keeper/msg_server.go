@@ -78,14 +78,14 @@ func (k msgServer) SellingDecision(c context.Context, msg *types.MsgSellingDecis
 	return &types.MsgSellingDecisionResponse{}, nil
 }
 
-func (k msgServer) EndNftListing(c context.Context, msg *types.MsgEndNftListing) (*types.MsgEndNftListingResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-	err := k.keeper.EndNftListing(ctx, msg)
-	if err != nil {
-		return nil, err
-	}
-	return &types.MsgEndNftListingResponse{}, nil
-}
+// func (k msgServer) EndNftListing(c context.Context, msg *types.MsgEndNftListing) (*types.MsgEndNftListingResponse, error) {
+// 	ctx := sdk.UnwrapSDKContext(c)
+// 	err := k.keeper.EndNftListing(ctx, msg)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return &types.MsgEndNftListingResponse{}, nil
+// }
 
 func (k msgServer) PayFullBid(c context.Context, msg *types.MsgPayFullBid) (*types.MsgPayFullBidResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)

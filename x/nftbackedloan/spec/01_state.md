@@ -10,11 +10,12 @@ order: 1
 
 ```protobuf
 enum ListingState {
-  SELLING = 0;
-  BIDDING = 1;
-  LIQUIDATION = 2;
-  END_LISTING = 3;
-  SUCCESSFUL_BID = 4;
+  UNKNOWN          = 0;
+  LISTING          = 1;
+  BIDDING          = 2;
+  SELLING_DECISION = 3;
+  LIQUIDATION      = 4;
+  SUCCESSFUL_BID   = 5;
 }
 
 message NftIdentifier {

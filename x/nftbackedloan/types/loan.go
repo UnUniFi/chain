@@ -93,6 +93,9 @@ func ExpectedRepayAmount(bids []NftBid, borrowBids []BorrowBid, time time.Time) 
 	expectedRepayAmount := types.NewCoin(bids[0].BidAmount.Denom, sdk.NewInt(0))
 	for _, borrowBid := range borrowBids {
 		for _, nftBid := range bids {
+			if nftBid.DepositAmount.Denom != borrowBid.Amount.Denom {
+				return types.Coin{}, ErrInvalidBidDenom
+			}
 			if borrowBid.Bidder == nftBid.Id.Bidder {
 				if borrowBid.Amount.IsLTE(nftBid.DepositAmount) {
 					expectedInterest := nftBid.CalcInterest(borrowBid.Amount, nftBid.DepositLendingRate, time, nftBid.BiddingPeriod)
@@ -104,6 +107,9 @@ func ExpectedRepayAmount(bids []NftBid, borrowBids []BorrowBid, time time.Time) 
 				}
 			}
 		}
+	}
+	if expectedRepayAmount.IsZero() {
+		return types.Coin{}, ErrInvalidRepayAmount
 	}
 	return expectedRepayAmount, nil
 }
@@ -145,7 +151,6 @@ func IsAbleToBorrow(bids []NftBid, borrowBids []BorrowBid, time time.Time) bool 
 	if err != nil {
 		return false
 	}
-	// todo : if enable re-borrow, include existRepayAmount
 	return expectedRepayAmount.IsLTE(minimumSettlementAmount)
 }
 
