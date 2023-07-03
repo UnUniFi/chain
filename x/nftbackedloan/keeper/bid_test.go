@@ -37,7 +37,7 @@ func (suite *KeeperTestSuite) TestNftBidBasics() {
 		MinimumDepositRate:   sdk.MustNewDecFromStr("0.1"),
 		AutomaticRefinancing: true,
 		MinimumBiddingPeriod: time.Hour * 1,
-		State:                types.ListingState_END_LISTING,
+		State:                types.ListingState_LIQUIDATION,
 	}
 	biddingListing := types.NftListing{
 		NftId: types.NftIdentifier{
@@ -173,82 +173,82 @@ func (suite *KeeperTestSuite) TestNftBidBasics() {
 //todo make FirstBid tests
 //todo make ManualBid tests
 
-func (suite *KeeperTestSuite) TestCancelledBid() {
-	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	owner2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+// func (suite *KeeperTestSuite) TestCancelledBid() {
+// 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+// 	owner2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
-	now := time.Now().UTC()
-	cancelledBids := []types.NftBid{
-		{
-			Id: types.BidId{
-				NftId: &types.NftIdentifier{
-					ClassId: "1",
-					NftId:   "1",
-				},
-				Bidder: owner.String(),
-			},
-			BidAmount:        sdk.NewInt64Coin("uguu", 1000000),
-			AutomaticPayment: true,
-			DepositAmount:    sdk.NewInt64Coin("uguu", 1000000),
-			BidTime:          now,
-		},
-		{
-			Id: types.BidId{
-				NftId: &types.NftIdentifier{
-					ClassId: "1",
-					NftId:   "1",
-				},
-				Bidder: owner2.String(),
-			},
-			BidAmount:        sdk.NewInt64Coin("uguu", 1000000),
-			AutomaticPayment: true,
-			DepositAmount:    sdk.NewInt64Coin("uguu", 1000000),
-			BidTime:          now,
-		},
-		{
-			Id: types.BidId{
-				NftId: &types.NftIdentifier{
-					ClassId: "1",
-					NftId:   "2",
-				},
-				Bidder: owner.String(),
-			},
-			BidAmount:        sdk.NewInt64Coin("uguu", 1000000),
-			AutomaticPayment: true,
-			DepositAmount:    sdk.NewInt64Coin("uguu", 1000000),
-			BidTime:          now.Add(time.Second),
-		},
-	}
+// 	now := time.Now().UTC()
+// 	cancelledBids := []types.NftBid{
+// 		{
+// 			Id: types.BidId{
+// 				NftId: &types.NftIdentifier{
+// 					ClassId: "1",
+// 					NftId:   "1",
+// 				},
+// 				Bidder: owner.String(),
+// 			},
+// 			BidAmount:        sdk.NewInt64Coin("uguu", 1000000),
+// 			AutomaticPayment: true,
+// 			DepositAmount:    sdk.NewInt64Coin("uguu", 1000000),
+// 			BidTime:          now,
+// 		},
+// 		{
+// 			Id: types.BidId{
+// 				NftId: &types.NftIdentifier{
+// 					ClassId: "1",
+// 					NftId:   "1",
+// 				},
+// 				Bidder: owner2.String(),
+// 			},
+// 			BidAmount:        sdk.NewInt64Coin("uguu", 1000000),
+// 			AutomaticPayment: true,
+// 			DepositAmount:    sdk.NewInt64Coin("uguu", 1000000),
+// 			BidTime:          now,
+// 		},
+// 		{
+// 			Id: types.BidId{
+// 				NftId: &types.NftIdentifier{
+// 					ClassId: "1",
+// 					NftId:   "2",
+// 				},
+// 				Bidder: owner.String(),
+// 			},
+// 			BidAmount:        sdk.NewInt64Coin("uguu", 1000000),
+// 			AutomaticPayment: true,
+// 			DepositAmount:    sdk.NewInt64Coin("uguu", 1000000),
+// 			BidTime:          now.Add(time.Second),
+// 		},
+// 	}
 
-	for _, bid := range cancelledBids {
-		suite.app.NftmarketKeeper.SetCancelledBid(suite.ctx, bid)
-	}
+// 	for _, bid := range cancelledBids {
+// 		suite.app.NftmarketKeeper.SetCancelledBid(suite.ctx, bid)
+// 	}
 
-	// check all cancelled bids
-	allCancelledBids := suite.app.NftmarketKeeper.GetAllCancelledBids(suite.ctx)
-	suite.Require().Len(allCancelledBids, len(cancelledBids))
+// 	// check all cancelled bids
+// 	allCancelledBids := suite.app.NftmarketKeeper.GetAllCancelledBids(suite.ctx)
+// 	suite.Require().Len(allCancelledBids, len(cancelledBids))
 
-	// check matured cancelled bids
-	maturedCancelledBids := suite.app.NftmarketKeeper.GetMaturedCancelledBids(suite.ctx, now.Add(time.Second))
-	suite.Require().Len(maturedCancelledBids, 2)
+// 	// check matured cancelled bids
+// 	maturedCancelledBids := suite.app.NftmarketKeeper.GetMaturedCancelledBids(suite.ctx, now.Add(time.Second))
+// 	suite.Require().Len(maturedCancelledBids, 2)
 
-	// check normal bids
-	allBids := suite.app.NftmarketKeeper.GetAllBids(suite.ctx)
-	suite.Require().Len(allBids, 0)
+// 	// check normal bids
+// 	allBids := suite.app.NftmarketKeeper.GetAllBids(suite.ctx)
+// 	suite.Require().Len(allBids, 0)
 
-	// delete all cancelled bids
-	for _, bid := range cancelledBids {
-		suite.app.NftmarketKeeper.DeleteCancelledBid(suite.ctx, bid)
-	}
+// 	// delete all cancelled bids
+// 	for _, bid := range cancelledBids {
+// 		suite.app.NftmarketKeeper.DeleteCancelledBid(suite.ctx, bid)
+// 	}
 
-	// check all cancelled bids
-	allCancelledBids = suite.app.NftmarketKeeper.GetAllCancelledBids(suite.ctx)
-	suite.Require().Len(allCancelledBids, 0)
+// 	// check all cancelled bids
+// 	allCancelledBids = suite.app.NftmarketKeeper.GetAllCancelledBids(suite.ctx)
+// 	suite.Require().Len(allCancelledBids, 0)
 
-	// check matured cancelled bids
-	maturedCancelledBids = suite.app.NftmarketKeeper.GetMaturedCancelledBids(suite.ctx, now)
-	suite.Require().Len(maturedCancelledBids, 0)
-}
+// 	// check matured cancelled bids
+// 	maturedCancelledBids = suite.app.NftmarketKeeper.GetMaturedCancelledBids(suite.ctx, now)
+// 	suite.Require().Len(maturedCancelledBids, 0)
+// }
 
 func (suite *KeeperTestSuite) TestSafeCloseBid() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
@@ -524,11 +524,11 @@ func (suite *KeeperTestSuite) TestCancelBid() {
 			suite.Require().Error(err)
 
 			// cancelled bid creation check
-			cancelledBids := suite.app.NftmarketKeeper.GetAllCancelledBids(suite.ctx)
-			suite.Require().Len(cancelledBids, 1)
+			// cancelledBids := suite.app.NftmarketKeeper.GetAllCancelledBids(suite.ctx)
+			// suite.Require().Len(cancelledBids, 1)
 
 			// cancelled bid delievery time check
-			suite.Require().Equal(cancelledBids[0].BidTime, suite.ctx.BlockTime().Add(time.Duration(params.BidTokenDisburseSecondsAfterCancel)*time.Second))
+			// suite.Require().Equal(cancelledBids[0].BidTime, suite.ctx.BlockTime().Add(time.Duration(params.BidTokenDisburseSecondsAfterCancel)*time.Second))
 
 			// cancel fee check if in active rank
 			// if tc.expectCancelFee {
@@ -685,90 +685,90 @@ func (suite *KeeperTestSuite) TestPayFullBid() {
 	}
 }
 
-func (suite *KeeperTestSuite) TestHandleMaturedCancelledBids() {
-	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	owner2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+// func (suite *KeeperTestSuite) TestHandleMaturedCancelledBids() {
+// 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+// 	owner2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
-	now := time.Now().UTC()
-	cancelledBids := []types.NftBid{
-		// TODO: check again
-		{
-			Id: types.BidId{
-				NftId: &types.NftIdentifier{
-					ClassId: "1",
-					NftId:   "1",
-				},
-				Bidder: owner.String(),
-			},
-			BidAmount:          sdk.NewInt64Coin("uguu", 1000000),
-			DepositAmount:      sdk.NewInt64Coin("uguu", 100000),
-			PaidAmount:         sdk.NewInt64Coin("uguu", 0),
-			BiddingPeriod:      time.Now().Add(time.Hour * 24),
-			DepositLendingRate: sdk.MustNewDecFromStr("0.05"),
-			AutomaticPayment:   true,
-			BidTime:            now,
-			InterestAmount:     sdk.NewInt64Coin("uguu", 0),
-			Borrowings:         []types.Borrowing{},
-		},
-		{
-			Id: types.BidId{
-				NftId: &types.NftIdentifier{
-					ClassId: "1",
-					NftId:   "1",
-				},
-				Bidder: owner2.String(),
-			},
-			BidAmount:          sdk.NewInt64Coin("uguu", 1000000),
-			DepositAmount:      sdk.NewInt64Coin("uguu", 100000),
-			PaidAmount:         sdk.NewInt64Coin("uguu", 0),
-			BiddingPeriod:      time.Now().Add(time.Hour * 24),
-			DepositLendingRate: sdk.MustNewDecFromStr("0.05"),
-			AutomaticPayment:   true,
-			BidTime:            now,
-			InterestAmount:     sdk.NewInt64Coin("uguu", 0),
-			Borrowings:         []types.Borrowing{},
-		},
-		{
-			Id: types.BidId{
-				NftId: &types.NftIdentifier{
-					ClassId: "1",
-					NftId:   "2",
-				},
-				Bidder: owner.String(),
-			},
-			BidAmount:          sdk.NewInt64Coin("uguu", 1000000),
-			DepositAmount:      sdk.NewInt64Coin("uguu", 100000),
-			PaidAmount:         sdk.NewInt64Coin("uguu", 0),
-			BiddingPeriod:      time.Now().Add(time.Hour * 24),
-			DepositLendingRate: sdk.MustNewDecFromStr("0.05"),
-			AutomaticPayment:   true,
-			BidTime:            now.Add(time.Second),
-			InterestAmount:     sdk.NewInt64Coin("uguu", 0),
-			Borrowings:         []types.Borrowing{},
-		},
-	}
+// 	now := time.Now().UTC()
+// 	cancelledBids := []types.NftBid{
+// 		// TODO: check again
+// 		{
+// 			Id: types.BidId{
+// 				NftId: &types.NftIdentifier{
+// 					ClassId: "1",
+// 					NftId:   "1",
+// 				},
+// 				Bidder: owner.String(),
+// 			},
+// 			BidAmount:          sdk.NewInt64Coin("uguu", 1000000),
+// 			DepositAmount:      sdk.NewInt64Coin("uguu", 100000),
+// 			PaidAmount:         sdk.NewInt64Coin("uguu", 0),
+// 			BiddingPeriod:      time.Now().Add(time.Hour * 24),
+// 			DepositLendingRate: sdk.MustNewDecFromStr("0.05"),
+// 			AutomaticPayment:   true,
+// 			BidTime:            now,
+// 			InterestAmount:     sdk.NewInt64Coin("uguu", 0),
+// 			Borrowings:         []types.Borrowing{},
+// 		},
+// 		{
+// 			Id: types.BidId{
+// 				NftId: &types.NftIdentifier{
+// 					ClassId: "1",
+// 					NftId:   "1",
+// 				},
+// 				Bidder: owner2.String(),
+// 			},
+// 			BidAmount:          sdk.NewInt64Coin("uguu", 1000000),
+// 			DepositAmount:      sdk.NewInt64Coin("uguu", 100000),
+// 			PaidAmount:         sdk.NewInt64Coin("uguu", 0),
+// 			BiddingPeriod:      time.Now().Add(time.Hour * 24),
+// 			DepositLendingRate: sdk.MustNewDecFromStr("0.05"),
+// 			AutomaticPayment:   true,
+// 			BidTime:            now,
+// 			InterestAmount:     sdk.NewInt64Coin("uguu", 0),
+// 			Borrowings:         []types.Borrowing{},
+// 		},
+// 		{
+// 			Id: types.BidId{
+// 				NftId: &types.NftIdentifier{
+// 					ClassId: "1",
+// 					NftId:   "2",
+// 				},
+// 				Bidder: owner.String(),
+// 			},
+// 			BidAmount:          sdk.NewInt64Coin("uguu", 1000000),
+// 			DepositAmount:      sdk.NewInt64Coin("uguu", 100000),
+// 			PaidAmount:         sdk.NewInt64Coin("uguu", 0),
+// 			BiddingPeriod:      time.Now().Add(time.Hour * 24),
+// 			DepositLendingRate: sdk.MustNewDecFromStr("0.05"),
+// 			AutomaticPayment:   true,
+// 			BidTime:            now.Add(time.Second),
+// 			InterestAmount:     sdk.NewInt64Coin("uguu", 0),
+// 			Borrowings:         []types.Borrowing{},
+// 		},
+// 	}
 
-	for _, bid := range cancelledBids {
-		suite.app.NftmarketKeeper.SetCancelledBid(suite.ctx, bid)
-	}
+// 	for _, bid := range cancelledBids {
+// 		suite.app.NftmarketKeeper.SetCancelledBid(suite.ctx, bid)
+// 	}
 
-	// check matured cancelled bids
-	maturedCancelledBids := suite.app.NftmarketKeeper.GetMaturedCancelledBids(suite.ctx, now.Add(time.Second))
-	suite.Require().Len(maturedCancelledBids, 2)
+// 	// check matured cancelled bids
+// 	maturedCancelledBids := suite.app.NftmarketKeeper.GetMaturedCancelledBids(suite.ctx, now.Add(time.Second))
+// 	suite.Require().Len(maturedCancelledBids, 2)
 
-	// allocate tokens to the module
-	suite.ctx = suite.ctx.WithBlockTime(now.Add(time.Second))
-	coin := sdk.NewInt64Coin("uguu", int64(1000000000))
-	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{coin})
-	suite.NoError(err)
-	err = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.ModuleName, sdk.Coins{coin})
-	suite.NoError(err)
+// 	// allocate tokens to the module
+// 	suite.ctx = suite.ctx.WithBlockTime(now.Add(time.Second))
+// 	coin := sdk.NewInt64Coin("uguu", int64(1000000000))
+// 	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{coin})
+// 	suite.NoError(err)
+// 	err = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.ModuleName, sdk.Coins{coin})
+// 	suite.NoError(err)
 
-	// execute matured cancelled bids
-	err = suite.app.NftmarketKeeper.HandleMaturedCancelledBids(suite.ctx)
-	suite.Require().NoError(err)
+// 	// execute matured cancelled bids
+// 	err = suite.app.NftmarketKeeper.HandleMaturedCancelledBids(suite.ctx)
+// 	suite.Require().NoError(err)
 
-	// check matured cancelled bids after handle
-	maturedCancelledBids = suite.app.NftmarketKeeper.GetMaturedCancelledBids(suite.ctx, now.Add(time.Second))
-	suite.Require().Len(maturedCancelledBids, 0)
-}
+// 	// check matured cancelled bids after handle
+// 	maturedCancelledBids = suite.app.NftmarketKeeper.GetMaturedCancelledBids(suite.ctx, now.Add(time.Second))
+// 	suite.Require().Len(maturedCancelledBids, 0)
+// }

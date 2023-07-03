@@ -334,7 +334,7 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 
 	params := k.GetParamSet(ctx)
 	listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
-	listing.State = types.ListingState_DECIDED_SELLING
+	listing.State = types.ListingState_SELLING_DECISION
 	k.SaveNftListing(ctx, listing)
 
 	// automatic payment if enabled
@@ -390,7 +390,7 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 	}
 
 	// check if listing is already ended
-	if listing.State == types.ListingState_END_LISTING || listing.State == types.ListingState_DECIDED_SELLING {
+	if listing.State == types.ListingState_LIQUIDATION || listing.State == types.ListingState_SELLING_DECISION {
 		return types.ErrListingAlreadyEnded
 	}
 
@@ -408,7 +408,7 @@ func (k Keeper) EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing) erro
 	} else {
 		params := k.GetParamSet(ctx)
 		listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
-		listing.State = types.ListingState_END_LISTING
+		listing.State = types.ListingState_LIQUIDATION
 		k.SaveNftListing(ctx, listing)
 
 		// automatic payment after listing ends
@@ -477,7 +477,7 @@ func (k Keeper) ProcessEndingNftListings(ctx sdk.Context) {
 
 	for listing := range checkListingsWithBorrowedBids {
 		// check if listing is already ended
-		if listing.State == types.ListingState_END_LISTING {
+		if listing.State == types.ListingState_LIQUIDATION {
 			continue
 		} else {
 			fmt.Println("---occur end listing---")
@@ -506,13 +506,13 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 	// handle not fully paid bids
 	for _, listing := range listings {
 		bids := types.NftBids(k.GetBidsByNft(ctx, listing.NftId.IdBytes()))
-		if listing.State == types.ListingState_DECIDED_SELLING {
+		if listing.State == types.ListingState_SELLING_DECISION {
 			err := k.SellingDecisionProcessLiquidationProcess(ctx, bids, listing, params)
 			if err != nil {
 				fmt.Println("failed to selling decision process: %w", err)
 				continue
 			}
-		} else if listing.State == types.ListingState_END_LISTING {
+		} else if listing.State == types.ListingState_LIQUIDATION {
 			err := k.LiquidationProcess(ctx, bids, listing, params)
 			if err != nil {
 				fmt.Println("failed to liquidation process: %w", err)

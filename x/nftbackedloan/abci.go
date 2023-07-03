@@ -19,8 +19,8 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 	k.DeliverSuccessfulBids(ctx)
 
 	// process matured nft bids cancel
-	err := k.HandleMaturedCancelledBids(ctx)
-	if err != nil {
-		panic(err)
-	}
+	// err := k.HandleMaturedCancelledBids(ctx)
+	// if err != nil {
+	// 	panic(err)
+	// }
 }

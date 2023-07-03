@@ -66,7 +66,7 @@ func (suite *KeeperTestSuite) TestNftListingBasics() {
 				NftId:   "3",
 			},
 			Owner:              owner.String(),
-			State:              types.ListingState_END_LISTING,
+			State:              types.ListingState_LIQUIDATION,
 			BidToken:           "uguu",
 			MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 			StartedAt:          now,
@@ -86,7 +86,7 @@ func (suite *KeeperTestSuite) TestNftListingBasics() {
 				NftId:   "4",
 			},
 			Owner:              owner.String(),
-			State:              types.ListingState_DECIDED_SELLING,
+			State:              types.ListingState_SELLING_DECISION,
 			BidToken:           "uguu",
 			MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 			StartedAt:          time.Time{},
@@ -738,7 +738,7 @@ func (suite *KeeperTestSuite) TestSellingDecision() {
 			// check full payment end time update
 			listing, err := suite.app.NftmarketKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
 			suite.Require().NoError(err)
-			suite.Require().Equal(listing.State, types.ListingState_DECIDED_SELLING)
+			suite.Require().Equal(listing.State, types.ListingState_SELLING_DECISION)
 			suite.Require().Equal(suite.ctx.BlockTime().Add(time.Second*time.Duration(params.NftListingFullPaymentPeriod)), listing.FullPaymentEndAt)
 		} else {
 			suite.Require().Error(err)
@@ -954,7 +954,7 @@ func (suite *KeeperTestSuite) TestEndNftListing() {
 				// check full payment end time update
 				listing, err := keeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
 				suite.Require().NoError(err)
-				suite.Require().Equal(listing.State, types.ListingState_END_LISTING)
+				suite.Require().Equal(listing.State, types.ListingState_LIQUIDATION)
 				suite.Require().Equal(suite.ctx.BlockTime().Add(time.Second*time.Duration(params.NftListingFullPaymentPeriod)), listing.FullPaymentEndAt)
 
 				// // check non-active bids are cancelled automatically
@@ -1108,9 +1108,9 @@ func (suite *KeeperTestSuite) TestProcessEndingNftListings() {
 			suite.Require().NoError(err)
 
 			if tc.expectedToEnd {
-				suite.Require().Equal(listing.State, types.ListingState_END_LISTING, tc.testCase)
+				suite.Require().Equal(listing.State, types.ListingState_LIQUIDATION, tc.testCase)
 			} else {
-				suite.Require().NotEqual(listing.State, types.ListingState_END_LISTING)
+				suite.Require().NotEqual(listing.State, types.ListingState_LIQUIDATION)
 			}
 		}
 		suite.Require().Equal(tc.statusUnlistedHook, statusAfterNftUnlistedWithoutPayment)
@@ -1198,7 +1198,7 @@ func (suite *KeeperTestSuite) TestHandleFullPaymentPeriodEndings() {
 			nftId:              "nft1",
 			nftOwner:           acc1,
 			numBids:            2,
-			listingState:       types.ListingState_DECIDED_SELLING,
+			listingState:       types.ListingState_SELLING_DECISION,
 			fullPay:            true,
 			statusUnlistedHook: false,
 		}, // add successful listing state with SuccessfulBidEndAt field + types.ListingState_SUCCESSFUL_BID status
@@ -1208,7 +1208,7 @@ func (suite *KeeperTestSuite) TestHandleFullPaymentPeriodEndings() {
 			nftId:              "nft2",
 			nftOwner:           acc1,
 			numBids:            1,
-			listingState:       types.ListingState_DECIDED_SELLING,
+			listingState:       types.ListingState_SELLING_DECISION,
 			fullPay:            false,
 			statusUnlistedHook: false,
 		}, // status => ListingState_LISTING
@@ -1218,7 +1218,7 @@ func (suite *KeeperTestSuite) TestHandleFullPaymentPeriodEndings() {
 			nftId:              "nft2",
 			nftOwner:           acc1,
 			numBids:            2,
-			listingState:       types.ListingState_DECIDED_SELLING,
+			listingState:       types.ListingState_SELLING_DECISION,
 			fullPay:            false,
 			statusUnlistedHook: false,
 		}, // status => ListingState_BIDDING
@@ -1228,7 +1228,7 @@ func (suite *KeeperTestSuite) TestHandleFullPaymentPeriodEndings() {
 			nftId:              "nft2",
 			nftOwner:           acc1,
 			numBids:            2,
-			listingState:       types.ListingState_END_LISTING,
+			listingState:       types.ListingState_LIQUIDATION,
 			fullPay:            true,
 			statusUnlistedHook: false,
 		}, // add successful bid state with SuccessfulBidEndAt field + types.ListingState_SUCCESSFUL_BID status, close all the other bids
@@ -1238,7 +1238,7 @@ func (suite *KeeperTestSuite) TestHandleFullPaymentPeriodEndings() {
 			nftId:              "nft2",
 			nftOwner:           acc1,
 			numBids:            2,
-			listingState:       types.ListingState_END_LISTING,
+			listingState:       types.ListingState_LIQUIDATION,
 			fullPay:            true,
 			statusUnlistedHook: false,
 		}, // all the bids closed, pay depositCollected, nft listing delete, transfer nft to fully paid bidder
@@ -1324,7 +1324,7 @@ func (suite *KeeperTestSuite) TestHandleFullPaymentPeriodEndings() {
 		keeper.HandleFullPaymentsPeriodEndings(suite.ctx)
 
 		switch tc.listingState {
-		case types.ListingState_DECIDED_SELLING:
+		case types.ListingState_SELLING_DECISION:
 			if tc.fullPay {
 				// add successful listing state with SuccessfulBidEndAt field + types.ListingState_SUCCESSFUL_BID status
 				listing, err = keeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
@@ -1342,7 +1342,7 @@ func (suite *KeeperTestSuite) TestHandleFullPaymentPeriodEndings() {
 				suite.Require().NoError(err)
 				suite.Require().Equal(listing.State, types.ListingState_LISTING)
 			}
-		case types.ListingState_END_LISTING:
+		case types.ListingState_LIQUIDATION:
 			if tc.fullPay {
 				// add successful bid state with SuccessfulBidEndAt field + types.ListingState_SUCCESSFUL_BID status, close all the other bids
 				listing, err = keeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
