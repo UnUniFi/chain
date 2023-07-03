@@ -46,9 +46,5 @@ func checkListNft(k Keeper, ctx sdk.Context, sender sdk.AccAddress, nftId types.
 		return types.ErrNotSupportedBidToken
 	}
 
-	if minimumDepositRate.GTE(sdk.MustNewDecFromStr("0.5")) {
-		return types.ErrMinimumDepositRateTooHigh
-	}
-
 	return nil
 }
