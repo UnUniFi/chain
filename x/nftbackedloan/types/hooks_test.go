@@ -32,7 +32,7 @@ func (suite *KeeperTestSuite) SetupTest(hooks types.NftbackedloanHooks) {
 	suite.app = app
 
 	if hooks != nil {
-		suite.app.NftmarketKeeper.SetHooks(hooks)
+		suite.app.NftbackedloanKeeper.SetHooks(hooks)
 	}
 }
 
@@ -130,7 +130,7 @@ func (suite *KeeperTestSuite) TestHooksPanicRecovery() {
 
 		// insert dummy hook struct as part of NftbackedloanHooks
 		hooks := types.NewMultiNftbackedloanHooks(hookRefs...)
-		// suite.app.NftmarketKeeper.SetHooks(hooks)
+		// suite.app.NftbackedloanKeeper.SetHooks(hooks)
 
 		if tc.lenEvents == 0 {
 			suite.Panics(func() {
