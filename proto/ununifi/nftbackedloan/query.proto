@@ -115,11 +115,8 @@ message QueryLoanRequest {
 
 message QueryLoanResponse {
   Loan   loan            = 1 [(gogoproto.nullable) = false];
-  string borrowing_limit = 2 [
-    (gogoproto.moretags)   = "yaml:\"borrowing_limit\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable)   = false
-  ];
+  cosmos.base.v1beta1.Coin borrowing_limit = 2 [(gogoproto.nullable)   = false];
+  cosmos.base.v1beta1.Coin total_deposit = 3 [(gogoproto.nullable)   = false];
 }
 
 message QueryNftBidsRequest {
