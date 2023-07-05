@@ -142,6 +142,32 @@ func ExistRepayAmountAtTime(bids []NftBid, time time.Time) (sdk.Coin, error) {
 	return existRepayAmount, nil
 }
 
+func MaxBorrowAmount(bids []NftBid, time time.Time) (types.Coin, error) {
+	if len(bids) == 0 {
+		return types.Coin{}, ErrNotExistsBid
+	}
+	minSettlement, err := MinSettlementAmount(bids)
+	if err != nil {
+		return types.Coin{}, err
+	}
+	bidsSortedByRate := NftBids(bids).SortLowerLendingRate()
+	borrowAmount := types.NewCoin(bids[0].BidAmount.Denom, sdk.NewInt(0))
+
+	for _, bid := range bidsSortedByRate {
+		expectedInterest := bid.CalcInterest(bid.DepositAmount, bid.DepositLendingRate, time, bid.BiddingPeriod)
+		repayAmount := bid.DepositAmount.Add(expectedInterest)
+		if repayAmount.IsLT(minSettlement) {
+			minSettlement = minSettlement.Sub(repayAmount)
+			borrowAmount = borrowAmount.Add(bid.DepositAmount)
+		} else {
+			discountAmount := minSettlement.Amount.Mul(bid.DepositAmount.Amount).Quo(repayAmount.Amount)
+			borrowAmount = borrowAmount.Add(types.NewCoin(borrowAmount.Denom, discountAmount))
+			break
+		}
+	}
+	return borrowAmount, nil
+}
+
 func IsAbleToBorrow(bids []NftBid, borrowBids []BorrowBid, time time.Time) bool {
 	minimumSettlementAmount, err := MinSettlementAmount(bids)
 	if err != nil {
