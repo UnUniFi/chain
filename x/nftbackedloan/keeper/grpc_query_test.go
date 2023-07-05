@@ -321,15 +321,13 @@ func (s *KeeperTestSuite) TestLoan() {
 			func(index int, require *require.Assertions) {
 			},
 			&types.QueryLoanRequest{},
-			"",
+			"not exists bid",
 			types.QueryLoanResponse{
 				Loan: types.Loan{
 					NftId: types.NftIdentifier{},
-					Loan: sdk.Coin{
-						Amount: sdk.NewInt(0),
-					},
+					Loan:  sdk.NewCoin("uguu", sdk.ZeroInt()),
 				},
-				BorrowingLimit: sdk.ZeroInt(),
+				BorrowingLimit: sdk.NewCoin("uguu", sdk.ZeroInt()),
 			},
 		},
 		{
@@ -340,15 +338,13 @@ func (s *KeeperTestSuite) TestLoan() {
 				ClassId: "ddfdifd",
 				NftId:   "a10",
 			},
-			"",
+			"not exists bid",
 			types.QueryLoanResponse{
 				Loan: types.Loan{
 					NftId: types.NftIdentifier{},
-					Loan: sdk.Coin{
-						Amount: sdk.NewInt(0),
-					},
+					Loan:  sdk.NewCoin("uguu", sdk.ZeroInt()),
 				},
-				BorrowingLimit: sdk.ZeroInt(),
+				BorrowingLimit: sdk.NewCoin("uguu", sdk.ZeroInt()),
 			},
 		},
 		{
@@ -367,12 +363,10 @@ func (s *KeeperTestSuite) TestLoan() {
 						ClassId: "class5",
 						NftId:   "nft5",
 					},
-					Loan: sdk.Coin{
-						Denom:  "uguu",
-						Amount: sdk.NewInt(2000),
-					},
+					Loan: sdk.NewCoin("uguu", sdk.NewInt(2000)),
 				},
-				BorrowingLimit: sdk.NewInt(40000),
+				BorrowingLimit: sdk.NewCoin("uguu", sdk.NewInt(2560)),
+				TotalDeposit:   sdk.NewCoin("uguu", sdk.NewInt(40000)),
 			},
 		},
 	}
