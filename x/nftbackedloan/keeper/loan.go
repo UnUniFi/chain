@@ -142,15 +142,15 @@ func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, borrows [
 		}
 	}
 
+	if !borrowedAmount.IsPositive() {
+		return types.ErrInvalidBorrowAmount
+	}
+
 	k.IncreaseDebt(ctx, nft, borrowedAmount)
 
 	receiverAddress, err := sdk.AccAddressFromBech32(receiver)
 	if err != nil {
 		return err
-	}
-
-	if !borrowedAmount.IsPositive() {
-		return types.ErrInvalidBorrowAmount
 	}
 
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, receiverAddress, sdk.Coins{borrowedAmount})

@@ -537,9 +537,7 @@ func (k Keeper) SellingDecisionProcessLiquidationProcess(ctx sdk.Context, bids t
 		}
 		listing.EndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingExtendSeconds))
 
-		// Reset the loan data for a lister
-		// If the bid.PaidAmount is more than loan.Coin.Amount, then just delete the loan data for lister.
-		// Otherwise, subtract bid.PaidAmount from loaning amount
+		// Delete Loan of the deleted Bid
 		if highestBid.IsBorrowing() {
 			loan := k.GetDebtByNft(ctx, listing.IdBytes())
 			if loan.Loan.Equal(highestBid.BorrowingAmount()) {
@@ -550,14 +548,12 @@ func (k Keeper) SellingDecisionProcessLiquidationProcess(ctx sdk.Context, bids t
 				k.SetDebt(ctx, loan)
 			}
 		}
-
-		// todo: deposit - borrowings amount to lister or fund module
 	} else {
 		// schedule NFT & token send after X days
 		listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
 		listing.State = types.ListingState_SUCCESSFUL_BID
 		// delete the loan data for the nftId which is deleted from the market
-		k.RemoveDebt(ctx, listing.IdBytes())
+		// k.RemoveDebt(ctx, listing.IdBytes())
 	}
 	k.SaveNftListing(ctx, listing)
 	return nil
