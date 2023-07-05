@@ -254,69 +254,60 @@ func (k Keeper) HandleReturnAmount(ctx sdk.Context, pnlAmount sdk.Int, position 
 	return returningAmount, nil
 }
 
-func (k Keeper) ReportLiquidationNeededPerpetualFuturesPosition(ctx sdk.Context, rewardRecipient string, position types.PerpetualFuturesPosition) error {
-	params := k.GetParams(ctx)
+// LiquidateFuturesPosition is called if a position is needed to be liquidated.
+// In fact, this function executes the liquidation operation, which closes the position,
+// sends the liquidation reward to the rewardRecipient, and sends the rest of the margin back to the position owner.
+func (k Keeper) LiquidateFuturesPosition(ctx sdk.Context, rewardRecipient string, position types.PerpetualFuturesPosition, commissionRate, rewardRate sdk.Dec) error {
+	// In case of closing position by Liquidation, a commission fee is charged.
+	commissionBaseFee := sdk.NewDecFromInt(position.PositionInstance.SizeInDenomExponent(types.OneMillionInt)).Mul(commissionRate).RoundInt()
+	var commissionFee sdk.Int
+	if position.Market.BaseDenom == position.RemainingMargin.Denom {
+		commissionFee = commissionBaseFee
+	} else {
+		commissionFee = k.ConvertBaseAmountToQuoteAmount(ctx, position.Market, commissionBaseFee)
+	}
+	if position.LeviedAmountNegative {
+		position.LeviedAmount.Amount = position.LeviedAmount.Amount.Add(commissionFee)
+	} else {
+		rest := position.LeviedAmount.Amount.Sub(commissionFee)
+		if rest.IsNegative() {
+			position.LeviedAmountNegative = true
+			position.LeviedAmount.Amount = rest.Abs()
+		} else {
+			position.LeviedAmount.Amount = rest
+		}
+	}
 
-	currentBaseUsdRate, currentQuoteUsdRate, err := k.GetPairUsdPriceFromMarket(ctx, position.Market)
+	if err := k.ClosePerpetualFuturesPosition(ctx, position); err != nil {
+		return err
+	}
+
+	// Delete Position
+	positionAddress, err := sdk.AccAddressFromBech32(position.Address)
+	if err != nil {
+		return err
+	}
+	k.DeletePosition(ctx, positionAddress, position.Id)
+
+	// Send Reward
+	rewardAmount := sdk.NewDecFromInt(commissionFee).Mul(rewardRate).RoundInt()
+	err = k.SendRewardFromCommission(ctx, rewardAmount, position.RemainingMargin.Denom, rewardRecipient)
 	if err != nil {
 		return err
 	}
 
-	quoteTicker := k.GetPoolQuoteTicker(ctx)
-	baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, currentBaseUsdRate)
-	quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, currentQuoteUsdRate)
-	if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, baseMetricsRate, quoteMetricsRate) {
-		// In case of closing position by Liquidation, a commission fee is charged.
-		commissionBaseFee := sdk.NewDecFromInt(position.PositionInstance.SizeInDenomExponent(types.OneMillionInt)).Mul(params.PerpetualFutures.CommissionRate).RoundInt()
-		var commissionFee sdk.Int
-		if position.Market.BaseDenom == position.RemainingMargin.Denom {
-			commissionFee = commissionBaseFee
-		} else {
-			commissionFee = k.ConvertBaseAmountToQuoteAmount(ctx, position.Market, commissionBaseFee)
-		}
-		if position.LeviedAmountNegative {
-			position.LeviedAmount.Amount = position.LeviedAmount.Amount.Add(commissionFee)
-		} else {
-			rest := position.LeviedAmount.Amount.Sub(commissionFee)
-			if rest.IsNegative() {
-				position.LeviedAmountNegative = true
-				position.LeviedAmount.Amount = rest.Abs()
-			} else {
-				position.LeviedAmount.Amount = rest
-			}
-		}
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionLiquidated{
+		RewardRecipient: rewardRecipient,
+		PositionId:      position.Id,
+		RemainingMargin: position.RemainingMargin.String(),
+		RewardAmount:    rewardAmount.String(),
+		LeviedAmount:    position.LeviedAmount.String(),
+	})
 
-		if err := k.ClosePerpetualFuturesPosition(ctx, position); err != nil {
-			return err
-		}
-
-		// Delete Position
-		positionAddress, err := sdk.AccAddressFromBech32(position.Address)
-		if err != nil {
-			return err
-		}
-		k.DeletePosition(ctx, positionAddress, position.Id)
-
-		// Send Reward
-		rewardAmount := sdk.NewDecFromInt(commissionFee).Mul(params.PoolParams.ReportLiquidationRewardRate).RoundInt()
-		err = k.SendRewardFromCommission(ctx, rewardAmount, position.RemainingMargin.Denom, rewardRecipient)
-		if err != nil {
-			return err
-		}
-
-		_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionLiquidated{
-			RewardRecipient: rewardRecipient,
-			PositionId:      position.Id,
-			RemainingMargin: position.RemainingMargin.String(),
-			RewardAmount:    rewardAmount.String(),
-			LeviedAmount:    position.LeviedAmount.String(),
-		})
-
-		_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesLiquidationFee{
-			Fee:        sdk.NewCoin(position.RemainingMargin.Denom, commissionFee),
-			PositionId: position.Id,
-		})
-	}
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesLiquidationFee{
+		Fee:        sdk.NewCoin(position.RemainingMargin.Denom, commissionFee),
+		PositionId: position.Id,
+	})
 
 	return nil
 }

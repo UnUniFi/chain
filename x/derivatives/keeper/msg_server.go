@@ -80,3 +80,25 @@ func (k msgServer) ReportLevyPeriod(c context.Context, msg *types.MsgReportLevyP
 
 	return &types.MsgReportLevyPeriodResponse{}, nil
 }
+
+func (k msgServer) AddMargin(c context.Context, msg *types.MsgAddMargin) (*types.MsgAddMarginResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	err := k.Keeper.AddMargin(ctx, sdk.AccAddress(msg.Sender), msg.PositionId, msg.Amount)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgAddMarginResponse{}, nil
+}
+
+func (k msgServer) RemoveMargin(c context.Context, msg *types.MsgRemoveMargin) (*types.MsgRemoveMarginResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	err := k.Keeper.RemoveMargin(ctx, sdk.AccAddress(msg.Sender), msg.PositionId, msg.Amount)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgRemoveMarginResponse{}, nil
+}
