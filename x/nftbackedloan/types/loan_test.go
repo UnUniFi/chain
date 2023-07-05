@@ -453,9 +453,8 @@ func TestExistRepayAmount(t *testing.T) {
 					BiddingPeriod: time.Now().Add(time.Hour).Add(time.Minute),
 					Borrowings: []backedloantypes.Borrowing{
 						{
-							Amount:             types.NewInt64Coin("uatom", 20000000),
-							PaidInterestAmount: types.NewInt64Coin("uatom", 0),
-							StartAt:            time.Now(),
+							Amount:  types.NewInt64Coin("uatom", 20000000),
+							StartAt: time.Now(),
 						},
 					},
 				},
@@ -481,9 +480,8 @@ func TestExistRepayAmount(t *testing.T) {
 					BiddingPeriod: time.Now().Add(time.Hour).Add(time.Minute),
 					Borrowings: []backedloantypes.Borrowing{
 						{
-							Amount:             types.NewInt64Coin("uatom", 20000000),
-							PaidInterestAmount: types.NewInt64Coin("uatom", 0),
-							StartAt:            time.Now(),
+							Amount:  types.NewInt64Coin("uatom", 20000000),
+							StartAt: time.Now(),
 						},
 					},
 				},
@@ -502,9 +500,8 @@ func TestExistRepayAmount(t *testing.T) {
 					BiddingPeriod: time.Now().Add(time.Hour).Add(time.Minute),
 					Borrowings: []backedloantypes.Borrowing{
 						{
-							Amount:             types.NewInt64Coin("uatom", 40000000),
-							PaidInterestAmount: types.NewInt64Coin("uatom", 0),
-							StartAt:            time.Now(),
+							Amount:  types.NewInt64Coin("uatom", 40000000),
+							StartAt: time.Now(),
 						},
 					},
 				},
@@ -683,9 +680,8 @@ func TestIsAbleToCancelBid(t *testing.T) {
 					Borrowings: []backedloantypes.Borrowing{
 						{
 							// borrow 100% of deposit
-							Amount:             types.NewInt64Coin("uatom", 80000000),
-							PaidInterestAmount: types.NewInt64Coin("uatom", 0),
-							StartAt:            time.Now(),
+							Amount:  types.NewInt64Coin("uatom", 80000000),
+							StartAt: time.Now(),
 						},
 					},
 				},
@@ -741,9 +737,8 @@ func TestIsAbleToReBid(t *testing.T) {
 			Borrowings: []backedloantypes.Borrowing{
 				{
 					// borrow 100% of deposit
-					Amount:             types.NewInt64Coin("uatom", 70000000),
-					PaidInterestAmount: types.NewInt64Coin("uatom", 0),
-					StartAt:            time.Now(),
+					Amount:  types.NewInt64Coin("uatom", 70000000),
+					StartAt: time.Now(),
 				},
 			},
 		},
@@ -762,9 +757,8 @@ func TestIsAbleToReBid(t *testing.T) {
 			Borrowings: []backedloantypes.Borrowing{
 				{
 					// borrow 100% of deposit
-					Amount:             types.NewInt64Coin("uatom", 80000000),
-					PaidInterestAmount: types.NewInt64Coin("uatom", 0),
-					StartAt:            time.Now(),
+					Amount:  types.NewInt64Coin("uatom", 80000000),
+					StartAt: time.Now(),
 				},
 			},
 		},

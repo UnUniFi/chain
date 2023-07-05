@@ -121,17 +121,15 @@ func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, borrows [
 		usableAmount := bid.BorrowableAmount()
 		if borrow.Amount.IsGTE(usableAmount) {
 			borrowing := types.Borrowing{
-				Amount:             usableAmount,
-				StartAt:            ctx.BlockTime(),
-				PaidInterestAmount: sdk.NewCoin(borrow.Amount.Denom, sdk.ZeroInt()),
+				Amount:  usableAmount,
+				StartAt: ctx.BlockTime(),
 			}
 			borrowedAmount = borrowedAmount.Add(usableAmount)
 			bid.Borrowings = append(bid.Borrowings, borrowing)
 		} else {
 			borrowing := types.Borrowing{
-				Amount:             borrow.Amount,
-				StartAt:            ctx.BlockTime(),
-				PaidInterestAmount: sdk.NewCoin(borrow.Amount.Denom, sdk.ZeroInt()),
+				Amount:  borrow.Amount,
+				StartAt: ctx.BlockTime(),
 			}
 			borrowedAmount = borrowedAmount.Add(borrow.Amount)
 			bid.Borrowings = append(bid.Borrowings, borrowing)

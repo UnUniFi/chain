@@ -1746,9 +1746,8 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
 						Borrowings: []types.Borrowing{
 							{
-								Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-								PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-								StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+								Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+								StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 							},
 						},
 						InterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
@@ -1768,9 +1767,8 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(10)),
 						Borrowings: []types.Borrowing{
 							{
-								Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-								PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-								StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+								Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+								StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 							},
 						},
 						PaidAmount: sdk.NewCoin("uguu", sdk.NewInt(55)),
@@ -1831,9 +1829,8 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
 						Borrowings: []types.Borrowing{
 							{
-								Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-								PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-								StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+								Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+								StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 							},
 						},
 						InterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
@@ -1853,9 +1850,8 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(10)),
 						Borrowings: []types.Borrowing{
 							{
-								Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-								PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-								StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+								Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+								StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 							},
 						},
 						PaidAmount: sdk.NewCoin("uguu", sdk.NewInt(55)),
@@ -1903,9 +1899,8 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
 						Borrowings: []types.Borrowing{
 							{
-								Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-								PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-								StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+								Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+								StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 							},
 						},
 						InterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
@@ -1926,9 +1921,8 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
 						Borrowings: []types.Borrowing{
 							{
-								Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-								PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-								StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+								Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+								StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 							},
 						},
 						InterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
@@ -1948,9 +1942,8 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(10)),
 						Borrowings: []types.Borrowing{
 							{
-								Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-								PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-								StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+								Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+								StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 							},
 						},
 						PaidAmount: sdk.NewCoin("uguu", sdk.NewInt(55)),
@@ -2011,9 +2004,8 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
 						Borrowings: []types.Borrowing{
 							{
-								Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-								PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-								StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+								Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+								StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 							},
 						},
 						InterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
@@ -2033,9 +2025,8 @@ func (suite *KeeperTestSuite) TestLiquidationProcessExitsWinner() {
 						InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(10)),
 						Borrowings: []types.Borrowing{
 							{
-								Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-								PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-								StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+								Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+								StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 							},
 						},
 						PaidAmount: sdk.NewCoin("uguu", sdk.NewInt(55)),

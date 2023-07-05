@@ -336,6 +336,7 @@ func (k Keeper) Liquidation(c context.Context, req *types.QueryLiquidationReques
 		liq := types.Liquidation{
 			Amount: sdk.NewCoin(listing.BidToken, sdk.ZeroInt()),
 		}
+		// todo:
 		liq.Amount = bid.LiquidationAmount(now, bid.BiddingPeriod)
 		liq.LiquidationDate = bid.BiddingPeriod
 		if liquidations.Liquidation == nil {

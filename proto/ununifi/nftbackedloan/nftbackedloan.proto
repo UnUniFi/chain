@@ -77,8 +77,7 @@ message NftListing {
 
 message Borrowing {
   cosmos.base.v1beta1.Coin  amount               = 1 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin  paid_interest_amount = 2 [(gogoproto.nullable) = false];
-  google.protobuf.Timestamp start_at             = 3 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Timestamp start_at             = 2 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
 }
 
 message NftBid {

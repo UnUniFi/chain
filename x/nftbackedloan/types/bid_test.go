@@ -267,9 +267,8 @@ func TestRepayThenGetReceipt(t *testing.T) {
 		{
 			"pay all principal and interest",
 			types.Borrowing{
-				Amount:             sdk.NewCoin("uguu", sdk.NewInt(100)),
-				PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(1)),
-				StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+				Amount:  sdk.NewCoin("uguu", sdk.NewInt(100)),
+				StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 			},
 			sdk.NewCoin("uguu", sdk.NewInt(201)),
 			time.Now(),
@@ -279,17 +278,15 @@ func TestRepayThenGetReceipt(t *testing.T) {
 				PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(1)),
 			},
 			types.Borrowing{
-				Amount:             sdk.NewCoin("uguu", sdk.NewInt(0)),
-				PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(2)),
-				StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+				Amount:  sdk.NewCoin("uguu", sdk.NewInt(0)),
+				StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 			},
 		},
 		{
 			"pay all interest and pay part of principal",
 			types.Borrowing{
-				Amount:             sdk.NewCoin("uguu", sdk.NewInt(100)),
-				PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(1)),
-				StartAt:            time.Date(1999, 1, 1, 0, 0, 0, 0, time.UTC),
+				Amount:  sdk.NewCoin("uguu", sdk.NewInt(100)),
+				StartAt: time.Date(1999, 1, 1, 0, 0, 0, 0, time.UTC),
 			},
 			sdk.NewCoin("uguu", sdk.NewInt(20)),
 			time.Date(2001, 1, 1, 0, 0, 0, 0, time.UTC),
@@ -299,17 +296,15 @@ func TestRepayThenGetReceipt(t *testing.T) {
 				PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(11)),
 			},
 			types.Borrowing{
-				Amount:             sdk.NewCoin("uguu", sdk.NewInt(91)),
-				PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-				StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+				Amount:  sdk.NewCoin("uguu", sdk.NewInt(91)),
+				StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 			},
 		},
 		{
 			"pay all interest",
 			types.Borrowing{
-				Amount:             sdk.NewCoin("uguu", sdk.NewInt(100)),
-				PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(1)),
-				StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+				Amount:  sdk.NewCoin("uguu", sdk.NewInt(100)),
+				StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 			},
 			sdk.NewCoin("uguu", sdk.NewInt(10)),
 			time.Now(),
@@ -319,17 +314,15 @@ func TestRepayThenGetReceipt(t *testing.T) {
 				PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(10)),
 			},
 			types.Borrowing{
-				Amount:             sdk.NewCoin("uguu", sdk.NewInt(100)),
-				PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(11)),
-				StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+				Amount:  sdk.NewCoin("uguu", sdk.NewInt(100)),
+				StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 			},
 		},
 		{
 			"pay part of the interest",
 			types.Borrowing{
-				Amount:             sdk.NewCoin("uguu", sdk.NewInt(100)),
-				PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-				StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+				Amount:  sdk.NewCoin("uguu", sdk.NewInt(100)),
+				StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 			},
 			sdk.NewCoin("uguu", sdk.NewInt(5)),
 			time.Now(),
@@ -339,9 +332,8 @@ func TestRepayThenGetReceipt(t *testing.T) {
 				PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(5)),
 			},
 			types.Borrowing{
-				Amount:             sdk.NewCoin("uguu", sdk.NewInt(100)),
-				PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(5)),
-				StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+				Amount:  sdk.NewCoin("uguu", sdk.NewInt(100)),
+				StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 			},
 		},
 	}
@@ -890,9 +882,8 @@ func TestFindKickOutBid(t *testing.T) {
 					DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
 					Borrowings: []types.Borrowing{
 						{
-							Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-							PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-							StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+							StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 						},
 					},
 				},
@@ -923,9 +914,8 @@ func TestFindKickOutBid(t *testing.T) {
 					DepositLendingRate: sdk.MustNewDecFromStr("0.1"),
 					Borrowings: []types.Borrowing{
 						{
-							Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-							PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-							StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+							StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 						},
 					},
 				},
@@ -943,9 +933,8 @@ func TestFindKickOutBid(t *testing.T) {
 					InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(10)),
 					Borrowings: []types.Borrowing{
 						{
-							Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-							PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-							StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+							StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 						},
 					},
 				},
@@ -977,9 +966,8 @@ func TestFindKickOutBid(t *testing.T) {
 					InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 					Borrowings: []types.Borrowing{
 						{
-							Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-							PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-							StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+							StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 						},
 					},
 				},
@@ -1006,9 +994,8 @@ func TestFindKickOutBid(t *testing.T) {
 				InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 				Borrowings: []types.Borrowing{
 					{
-						Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-						PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-						StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+						Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+						StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 					},
 				},
 			},
@@ -1030,9 +1017,8 @@ func TestFindKickOutBid(t *testing.T) {
 					InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 					Borrowings: []types.Borrowing{
 						{
-							Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-							PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-							StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+							StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 						},
 					},
 				},
@@ -1050,9 +1036,8 @@ func TestFindKickOutBid(t *testing.T) {
 					InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 					Borrowings: []types.Borrowing{
 						{
-							Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-							PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-							StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+							StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 						},
 					},
 				},
@@ -1070,9 +1055,8 @@ func TestFindKickOutBid(t *testing.T) {
 					InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 					Borrowings: []types.Borrowing{
 						{
-							Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-							PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-							StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+							StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 						},
 					},
 				},
@@ -1099,9 +1083,8 @@ func TestFindKickOutBid(t *testing.T) {
 				InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 				Borrowings: []types.Borrowing{
 					{
-						Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-						PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-						StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+						Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+						StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 					},
 				},
 			},
@@ -1123,9 +1106,8 @@ func TestFindKickOutBid(t *testing.T) {
 					InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 					Borrowings: []types.Borrowing{
 						{
-							Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-							PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-							StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+							StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 						},
 					},
 				},
@@ -1143,9 +1125,8 @@ func TestFindKickOutBid(t *testing.T) {
 					InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 					Borrowings: []types.Borrowing{
 						{
-							Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-							PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-							StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+							StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 						},
 					},
 				},
@@ -1163,9 +1144,8 @@ func TestFindKickOutBid(t *testing.T) {
 					InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 					Borrowings: []types.Borrowing{
 						{
-							Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-							PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-							StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+							StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 						},
 					},
 				},
@@ -1192,9 +1172,8 @@ func TestFindKickOutBid(t *testing.T) {
 				InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 				Borrowings: []types.Borrowing{
 					{
-						Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-						PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-						StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+						Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+						StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 					},
 				},
 			},
@@ -1216,9 +1195,8 @@ func TestFindKickOutBid(t *testing.T) {
 					InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 					Borrowings: []types.Borrowing{
 						{
-							Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-							PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-							StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+							StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 						},
 					},
 				},
@@ -1236,9 +1214,8 @@ func TestFindKickOutBid(t *testing.T) {
 					InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 					Borrowings: []types.Borrowing{
 						{
-							Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-							PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-							StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+							StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 						},
 					},
 				},
@@ -1256,9 +1233,8 @@ func TestFindKickOutBid(t *testing.T) {
 					InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 					Borrowings: []types.Borrowing{
 						{
-							Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-							PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-							StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+							Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+							StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 						},
 					},
 				},
@@ -1285,9 +1261,8 @@ func TestFindKickOutBid(t *testing.T) {
 				InterestAmount:     sdk.NewCoin("uguu", sdk.NewInt(0)),
 				Borrowings: []types.Borrowing{
 					{
-						Amount:             sdk.NewCoin("uguu", sdk.NewInt(10)),
-						PaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-						StartAt:            time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+						Amount:  sdk.NewCoin("uguu", sdk.NewInt(10)),
+						StartAt: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 					},
 				},
 			},
