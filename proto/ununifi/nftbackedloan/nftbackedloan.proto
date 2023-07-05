@@ -28,6 +28,7 @@ message BidId {
   string        bidder = 2;
 }
 
+// todo: delete
 message Loan {
   NftIdentifier            nft_id = 1 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin loan   = 2 [(gogoproto.nullable) = false];
@@ -45,60 +46,51 @@ message NftInfo {
 }
 
 message NftListing {
-  NftIdentifier             nft_id                = 1 [(gogoproto.nullable) = false];
-  string                    owner                 = 2;
-  ListingState              state                 = 3;
-  string                    bid_token             = 4;
-  string                    minimum_deposit_rate  = 5 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
+  NftIdentifier nft_id               = 1 [(gogoproto.nullable) = false];
+  string        owner                = 2;
+  ListingState  state                = 3;
+  string        bid_denom            = 4;
+  string        minimum_deposit_rate = 5 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable)   = false
   ];
-  bool                      automatic_refinancing = 6;
-  google.protobuf.Timestamp started_at            = 7
+  google.protobuf.Timestamp start_at = 6
       [(gogoproto.moretags) = "yaml:\"started_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
-  google.protobuf.Timestamp end_at = 8
+  google.protobuf.Timestamp end_at = 7
       [(gogoproto.moretags) = "yaml:\"end_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
-  google.protobuf.Timestamp full_payment_end_at = 9
+  google.protobuf.Timestamp full_payment_end_at = 8
       [(gogoproto.moretags) = "yaml:\"full_payment_end_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
-  google.protobuf.Timestamp successful_bid_end_at = 10 [
+  google.protobuf.Timestamp successful_bid_end_at = 9 [
     (gogoproto.moretags) = "yaml:\"successful_bid_end_at\"",
     (gogoproto.nullable) = false,
     (gogoproto.stdtime)  = true
   ];
-  uint64 auto_relisted_count = 11;
-  cosmos.base.v1beta1.Coin collected_amount = 12 [(gogoproto.nullable) = false];
-  bool collected_amount_negative = 13;
-  google.protobuf.Duration minimum_bidding_period = 14 [
-    (gogoproto.stdduration) = true,
-    (gogoproto.nullable) = false
-  ];
-}
-
-message Borrowing {
-  cosmos.base.v1beta1.Coin  amount               = 1 [(gogoproto.nullable) = false];
-  google.protobuf.Timestamp start_at             = 2 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  cosmos.base.v1beta1.Coin collected_amount          = 10 [(gogoproto.nullable) = false];
+  bool                     collected_amount_negative = 11;
+  google.protobuf.Duration minimum_bidding_period = 12 [(gogoproto.stdduration) = true, (gogoproto.nullable) = false];
 }
 
 message NftBid {
-  BidId id = 1 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin  bid_amount           = 2 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin  deposit_amount       = 3 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin  paid_amount          = 4 [(gogoproto.nullable) = false];
-  google.protobuf.Timestamp bidding_period       = 5 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
-  string                    deposit_lending_rate = 6 [
+  BidId                     id             = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin  bid_amount     = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin  deposit_amount = 3 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin  paid_amount    = 4 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp expiry_at      = 5 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  string                    interest_rate  = 6 [
     (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable)   = false
   ];
   bool                      automatic_payment = 7;
-  google.protobuf.Timestamp bid_time          = 8
+  google.protobuf.Timestamp create_at         = 8
       [(gogoproto.moretags) = "yaml:\"bid_time\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
-  cosmos.base.v1beta1.Coin interest_amount = 9 [(gogoproto.nullable) = false];
-  // lister borrowing bidder info
-  repeated Borrowing borrowings = 10 [(gogoproto.nullable) = false];
+  // borrow info
+  cosmos.base.v1beta1.Coin  borrow_amount  = 9 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp last_repaid_at = 10 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
 }
 
+// todo: delete
 message PaymentStatus {
   NftIdentifier            nft_id            = 1 [(gogoproto.nullable) = false];
   string                   bidder            = 2;
@@ -114,13 +106,12 @@ message PaymentStatus {
   ListingState state    = 7;
   bool         all_paid = 8;
 }
-
 message Liquidation {
-  cosmos.base.v1beta1.Coin amount = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin  amount           = 1 [(gogoproto.nullable) = false];
   google.protobuf.Timestamp liquidation_date = 2 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
 }
 
 message Liquidations {
-  Liquidation liquidation = 1 [(gogoproto.nullable) = true];
+  Liquidation          liquidation      = 1 [(gogoproto.nullable) = true];
   repeated Liquidation next_liquidation = 2 [(gogoproto.nullable) = false];
 }
