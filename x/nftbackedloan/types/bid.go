@@ -59,7 +59,8 @@ func (m NftBid) CalcCompoundInterest(lendCoin sdk.Coin, startTime time.Time, end
 	e := osmomath.NewDecWithPrec(2718281, 6) // 2.718281
 	interestRateBidDec := osmomath.BigDecFromSDKDec(m.InterestRate)
 	durationBigDec := osmomath.BigDecFromSDKDec(durationUnitsYear)
-	compoundRate := e.Power(interestRateBidDec.Mul(durationBigDec)).SDKDec()
+	// compoundInterestRate = exp ^ (interestRate * duration) - 1
+	compoundRate := e.Power(interestRateBidDec.Mul(durationBigDec)).Sub(osmomath.OneDec()).SDKDec()
 	result := sdk.NewDecFromInt(lendCoin.Amount).Mul(compoundRate)
 	return sdk.NewCoin(lendCoin.Denom, result.RoundInt())
 }
