@@ -311,7 +311,7 @@ func (suite *KeeperTestSuite) TestListNft() {
 			err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
 				Sender:             tc.lister.String(),
 				NftId:              types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId},
-				BidToken:           tc.bidToken,
+				BidToken:           tc.BidDenom,
 				MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 			})
 			suite.Require().NoError(err)
@@ -319,7 +319,7 @@ func (suite *KeeperTestSuite) TestListNft() {
 		err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
 			Sender:             tc.lister.String(),
 			NftId:              types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId},
-			BidToken:           tc.bidToken,
+			BidToken:           tc.BidDenom,
 			MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 		})
 

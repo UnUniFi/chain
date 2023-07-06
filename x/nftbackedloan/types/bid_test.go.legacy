@@ -838,8 +838,8 @@ func TestBidIsLT(t *testing.T) {
 			if result != tc.expect {
 				t.Error(tc.name, "not expect result")
 				t.Log(result, tc.expect)
-				t.Log(tc.bid1.BidAmount, tc.bid1.DepositAmount, tc.bid1.DepositLendingRate)
-				t.Log(tc.bid2.BidAmount, tc.bid2.DepositAmount, tc.bid2.DepositLendingRate)
+				t.Log(tc.bid1.BidAmount, tc.bid1.DepositAmount, tc.bid1.InterestRate)
+				t.Log(tc.bid2.BidAmount, tc.bid2.DepositAmount, tc.bid2.InterestRate)
 			}
 		})
 	}

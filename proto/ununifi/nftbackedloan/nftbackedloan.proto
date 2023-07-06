@@ -55,7 +55,7 @@ message NftListing {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable)   = false
   ];
-  google.protobuf.Timestamp start_at = 6
+  google.protobuf.Timestamp started_at = 6
       [(gogoproto.moretags) = "yaml:\"started_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
   google.protobuf.Timestamp end_at = 7
       [(gogoproto.moretags) = "yaml:\"end_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
@@ -88,8 +88,8 @@ message NftBid {
     (gogoproto.nullable)   = false
   ];
   bool                      automatic_payment = 7;
-  google.protobuf.Timestamp create_at         = 8
-      [(gogoproto.moretags) = "yaml:\"bid_time\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Timestamp created_at        = 8
+      [(gogoproto.moretags) = "yaml:\"create_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
   // borrow info
   repeated Borrowing borrowings = 9 [(gogoproto.nullable) = false];
 }
@@ -105,8 +105,8 @@ message PaymentStatus {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable)   = false
   ];
-  google.protobuf.Timestamp bid_time = 6
-      [(gogoproto.moretags) = "yaml:\"bid_time\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Timestamp created_at = 6
+      [(gogoproto.moretags) = "yaml:\"create_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
   ListingState state    = 7;
   bool         all_paid = 8;
 }

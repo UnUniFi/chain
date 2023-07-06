@@ -105,9 +105,9 @@ func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, borrows [
 		return types.ErrNotNftListingOwner
 	}
 
-	borrowedAmount := sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
+	borrowedAmount := sdk.NewCoin(listing.BidDenom, sdk.ZeroInt())
 	for _, borrow := range borrows {
-		if borrow.Amount.Denom != listing.BidToken {
+		if borrow.Amount.Denom != listing.BidDenom {
 			return types.ErrInvalidBorrowDenom
 		}
 		bidderAddress, err := sdk.AccAddressFromBech32(borrow.Bidder)
@@ -121,15 +121,15 @@ func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, borrows [
 		usableAmount := bid.BorrowableAmount()
 		if borrow.Amount.IsGTE(usableAmount) {
 			borrowing := types.Borrowing{
-				Amount:  usableAmount,
-				StartAt: ctx.BlockTime(),
+				Amount:       usableAmount,
+				LastRepaidAt: ctx.BlockTime(),
 			}
 			borrowedAmount = borrowedAmount.Add(usableAmount)
 			bid.Borrowings = append(bid.Borrowings, borrowing)
 		} else {
 			borrowing := types.Borrowing{
-				Amount:  borrow.Amount,
-				StartAt: ctx.BlockTime(),
+				Amount:       borrow.Amount,
+				LastRepaidAt: ctx.BlockTime(),
 			}
 			borrowedAmount = borrowedAmount.Add(borrow.Amount)
 			bid.Borrowings = append(bid.Borrowings, borrowing)
@@ -185,10 +185,10 @@ func (k Keeper) ManualRepay(ctx sdk.Context, nft types.NftIdentifier, repays []t
 		return err
 	}
 
-	listerAmount := k.bankKeeper.GetBalance(ctx, sender, listing.BidToken)
-	repayAmount := sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
+	listerAmount := k.bankKeeper.GetBalance(ctx, sender, listing.BidDenom)
+	repayAmount := sdk.NewCoin(listing.BidDenom, sdk.ZeroInt())
 	for _, repay := range repays {
-		if repay.Amount.Denom != listing.BidToken {
+		if repay.Amount.Denom != listing.BidDenom {
 			return types.ErrInvalidRepayDenom
 		}
 		repayAmount = repayAmount.Add(repay.Amount)
@@ -204,8 +204,8 @@ func (k Keeper) ManualRepay(ctx sdk.Context, nft types.NftIdentifier, repays []t
 		return types.ErrNotBorrowed
 	}
 
-	repaidAmount := sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
-	repaidInterestAmount := sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
+	repaidAmount := sdk.NewCoin(listing.BidDenom, sdk.ZeroInt())
+	repaidInterestAmount := sdk.NewCoin(listing.BidDenom, sdk.ZeroInt())
 	for _, repay := range repays {
 		bidderAddress, err := sdk.AccAddressFromBech32(repay.Bidder)
 		if err != nil {
@@ -227,7 +227,7 @@ func (k Keeper) ManualRepay(ctx sdk.Context, nft types.NftIdentifier, repays []t
 			}
 			receipt := borrowing.RepayThenGetReceipt(repay.Amount, ctx.BlockTime(), bid.CalcInterestF())
 			repay.Amount = receipt.Charge
-			bid.InterestAmount = bid.InterestAmount.Add(receipt.PaidInterestAmount)
+			// bid.InterestAmount = bid.InterestAmount.Add(receipt.PaidInterestAmount)
 			repaidInterestAmount = repaidInterestAmount.Add(receipt.PaidInterestAmount)
 
 			if !borrowing.IsAllRepaid() {
@@ -275,7 +275,7 @@ func (k Keeper) AutoRepay(ctx sdk.Context, nft types.NftIdentifier, bids types.N
 		return err
 	}
 
-	listerAmount := k.bankKeeper.GetBalance(ctx, sender, listing.BidToken)
+	listerAmount := k.bankKeeper.GetBalance(ctx, sender, listing.BidDenom)
 	repayAmount, err := types.ExistRepayAmountAtTime(bids, ctx.BlockTime())
 	if err != nil {
 		return err
@@ -291,15 +291,15 @@ func (k Keeper) AutoRepay(ctx sdk.Context, nft types.NftIdentifier, bids types.N
 		return types.ErrNotBorrowed
 	}
 
-	repaidAmount := sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
-	repaidInterestAmount := sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
+	repaidAmount := sdk.NewCoin(listing.BidDenom, sdk.ZeroInt())
+	repaidInterestAmount := sdk.NewCoin(listing.BidDenom, sdk.ZeroInt())
 	for _, bid := range bids {
 		if len(bid.Borrowings) == 0 {
 			continue
 		}
 
 		for _, borrowing := range bid.Borrowings {
-			interest := bid.CalcInterest(borrowing.Amount, bid.DepositLendingRate, borrowing.StartAt, ctx.BlockTime())
+			interest := bid.CalcInterest(borrowing.Amount, bid.InterestRate, borrowing.LastRepaidAt, ctx.BlockTime())
 			repayAmount := borrowing.Amount.Add(interest)
 			if repayAmount.IsZero() {
 				break
@@ -308,7 +308,7 @@ func (k Keeper) AutoRepay(ctx sdk.Context, nft types.NftIdentifier, bids types.N
 			receipt := borrowing.RepayThenGetReceipt(repayAmount, ctx.BlockTime(), bid.CalcInterestF())
 			// Subtract when surplus repay amount exists
 			repaidAmount = repaidAmount.Sub(receipt.Charge)
-			bid.InterestAmount = bid.InterestAmount.Add(receipt.PaidInterestAmount)
+			// bid.InterestAmount = bid.InterestAmount.Add(receipt.PaidInterestAmount)
 			repaidInterestAmount = repaidInterestAmount.Add(receipt.PaidInterestAmount)
 		}
 		// clean up Borrowings

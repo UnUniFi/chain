@@ -213,7 +213,7 @@ func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.Que
 		if bids[i].BidAmount.Amount.GT(bids[j].BidAmount.Amount) {
 			return true
 		}
-		if bids[i].BidTime.After(bids[j].BidTime) {
+		if bids[i].CreatedAt.After(bids[j].CreatedAt) {
 			return true
 		}
 		return false
@@ -307,7 +307,7 @@ func (k Keeper) PaymentStatus(c context.Context, req *types.QueryPaymentStatusRe
 			Amount:           bidderBid.BidAmount,
 			AutomaticPayment: bidderBid.AutomaticPayment,
 			PaidAmount:       bidderBid.DepositAmount.Amount,
-			BidTime:          bidderBid.BidTime,
+			CreatedAt:        bidderBid.CreatedAt,
 			AllPaid:          allPaid,
 		},
 	}, nil
@@ -334,11 +334,11 @@ func (k Keeper) Liquidation(c context.Context, req *types.QueryLiquidationReques
 		}
 
 		liq := types.Liquidation{
-			Amount: sdk.NewCoin(listing.BidToken, sdk.ZeroInt()),
+			Amount: sdk.NewCoin(listing.BidDenom, sdk.ZeroInt()),
 		}
 		// todo:
-		liq.Amount = bid.LiquidationAmount(now, bid.BiddingPeriod)
-		liq.LiquidationDate = bid.BiddingPeriod
+		liq.Amount = bid.LiquidationAmount(now, bid.ExpiryAt)
+		liq.LiquidationDate = bid.ExpiryAt
 		if liquidations.Liquidation == nil {
 			liquidations.Liquidation = &liq
 		} else {

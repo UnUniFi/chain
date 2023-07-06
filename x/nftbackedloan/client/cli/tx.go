@@ -105,10 +105,10 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 			if err != nil {
 				return err
 			}
-			automaticRef, err := cmd.Flags().GetBool(FlagAutomaticRefinancing)
-			if err != nil {
-				return err
-			}
+			// automaticRef, err := cmd.Flags().GetBool(FlagAutomaticRefinancing)
+			// if err != nil {
+			// 	return err
+			// }
 
 			bidToken, err := cmd.Flags().GetString(FlagBidToken)
 			if err != nil {
@@ -122,7 +122,7 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 			// convert uint64 to time.Duration
 			minBiddingPeriod := time.Duration(minBiddingPeriodHour) * time.Hour
 
-			msg := types.NewMsgListNft(clientCtx.GetFromAddress().String(), nftIde, bidToken, minDepositRateDec, automaticRef, minBiddingPeriod)
+			msg := types.NewMsgListNft(clientCtx.GetFromAddress().String(), nftIde, bidToken, minDepositRateDec, minBiddingPeriod)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -133,7 +133,7 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 	cmd.Flags().String(FlagBidToken, "uguu", "bid token")
 	cmd.Flags().String(FlagMinimumDepositRate, "0.1", "minimum deposit rate")
 	cmd.Flags().Uint64(FlagMinimumBiddingPeriodHours, 1, "minimum bidding period")
-	cmd.Flags().BoolP(FlagAutomaticRefinancing, "r", false, "automatic refinancing")
+	// cmd.Flags().BoolP(FlagAutomaticRefinancing, "r", false, "automatic refinancing")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd

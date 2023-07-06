@@ -37,7 +37,7 @@ func (b NftBid) IdBytes() []byte {
 // 		return false
 // 	}
 // 	usableAmount := m.MaxPossibleBorrowAmount(allBids, expiredBids)
-// 	liquidationAmount := NftBids(expiredBids).LiquidationAmount(m.BidToken, now)
+// 	liquidationAmount := NftBids(expiredBids).LiquidationAmount(m.BidDenom, now)
 // 	if liquidationAmount.Amount.GT(usableAmount) {
 // 		return false
 // 	}
@@ -61,7 +61,7 @@ func (b NftBid) IdBytes() []byte {
 
 // func (m NftListing) MaxPossibleBorrowAmount(bids, expiredBids []NftBid) sdk.Int {
 // 	newBids := NftBids(bids).MakeExcludeExpiredBids(expiredBids)
-// 	borrowableAmount := newBids.BorrowableAmount(m.BidToken)
+// 	borrowableAmount := newBids.BorrowableAmount(m.BidDenom)
 // 	return borrowableAmount.Amount
 // }
 

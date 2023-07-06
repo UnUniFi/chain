@@ -35,13 +35,12 @@ var _ sdk.Msg = &MsgListNft{}
 
 // todo: Implementation fields
 // BidToken, MinBid, BidHook, ListingType
-func NewMsgListNft(sender string, nftId NftIdentifier, bidToken string, minimumDepositRate sdk.Dec, autoRefi bool, minBiddingPeriod time.Duration) MsgListNft {
+func NewMsgListNft(sender string, nftId NftIdentifier, bidDenom string, minimumDepositRate sdk.Dec, minBiddingPeriod time.Duration) MsgListNft {
 	return MsgListNft{
 		Sender:               sender,
 		NftId:                nftId,
-		BidToken:             bidToken,
+		BidDenom:             bidDenom,
 		MinimumDepositRate:   minimumDepositRate,
-		AutomaticRefinancing: autoRefi,
 		MinimumBiddingPeriod: minBiddingPeriod,
 	}
 }
@@ -83,15 +82,15 @@ var _ sdk.Msg = &MsgPlaceBid{}
 
 // todo
 func NewMsgPlaceBid(sender string, nftId NftIdentifier, bidAmount, depositAmount sdk.Coin,
-	deposit_lending_rate sdk.Dec, bidding_period time.Time, automaticPayment bool) MsgPlaceBid {
+	interestRate sdk.Dec, expiryAt time.Time, automaticPayment bool) MsgPlaceBid {
 	return MsgPlaceBid{
-		Sender:             sender,
-		NftId:              nftId,
-		BidAmount:          bidAmount,
-		AutomaticPayment:   automaticPayment,
-		BiddingPeriod:      bidding_period,
-		DepositLendingRate: deposit_lending_rate,
-		DepositAmount:      depositAmount,
+		Sender:           sender,
+		NftId:            nftId,
+		BidAmount:        bidAmount,
+		AutomaticPayment: automaticPayment,
+		ExpiryAt:         expiryAt,
+		InterestRate:     interestRate,
+		DepositAmount:    depositAmount,
 	}
 }
 

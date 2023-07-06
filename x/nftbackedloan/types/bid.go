@@ -5,6 +5,8 @@ import (
 	time "time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	osmomath "github.com/UnUniFi/chain/osmomath"
 )
 
 func (m NftBid) Equal(b NftBid) bool {
@@ -24,7 +26,7 @@ func (m NftBid) IsLT(b NftBid) bool {
 	if b.DepositAmount.IsLTE(m.DepositAmount) {
 		return false
 	}
-	if b.DepositLendingRate.GTE(m.DepositLendingRate) {
+	if b.InterestRate.GTE(m.InterestRate) {
 		return false
 	}
 
@@ -43,7 +45,7 @@ func (m NftBid) LiquidationAmount(startTime time.Time, endTime time.Time) sdk.Co
 	liquidationAmount := sdk.NewCoin(m.DepositAmount.Denom, sdk.ZeroInt())
 	for _, v := range m.Borrowings {
 		liquidationAmount = liquidationAmount.Add(v.Amount)
-		liquidationAmount = liquidationAmount.Add(m.CalcInterest(v.Amount, m.DepositLendingRate, startTime, endTime))
+		liquidationAmount = liquidationAmount.Add(m.CalcInterest(v.Amount, m.InterestRate, startTime, endTime))
 	}
 	return liquidationAmount
 }
@@ -77,31 +79,46 @@ func (m NftBid) CalcInterest(lendCoin sdk.Coin, lendingRate sdk.Dec, start, end 
 	return sdk.NewCoin(lendCoin.Denom, result.RoundInt())
 }
 
+func (m NftBid) CalcCompoundInterest(time time.Time) sdk.Coin {
+	lendingDuration := m.ExpiryAt.Sub(time)
+	oneYearDays := sdk.NewInt(365)
+	oneDayHours := sdk.NewInt(24)
+	durationUnitsYear := sdk.NewDecFromInt(sdk.NewInt(int64(lendingDuration.Hours()))).QuoInt(oneDayHours).QuoInt(oneYearDays)
+	borrowAmount := m.BorrowingAmount()
+
+	e := osmomath.NewDecWithPrec(2718281, 6) // 2.718281
+	interestRateBidDec := osmomath.BigDecFromSDKDec(m.InterestRate)
+	durationBigDec := osmomath.BigDecFromSDKDec(durationUnitsYear)
+	compoundRate := e.Power(interestRateBidDec.Mul(durationBigDec)).SDKDec()
+	result := sdk.NewDecFromInt(borrowAmount.Amount).Mul(compoundRate)
+	return sdk.NewCoin(borrowAmount.Denom, result.RoundInt())
+}
+
 func (m NftBid) CalcInterestF() func(lendCoin sdk.Coin, start, end time.Time) sdk.Coin {
 	f := func(rate sdk.Dec) func(lendCoin sdk.Coin, start, end time.Time) sdk.Coin {
 		return func(lendCoin sdk.Coin, start, end time.Time) sdk.Coin {
 			return m.CalcInterest(lendCoin, rate, start, end)
 		}
 	}
-	return f(m.DepositLendingRate)
+	return f(m.InterestRate)
 }
 
 func (m NftBid) TotalInterestAmount(endTime time.Time) sdk.Coin {
-	totalInterestAmount := sdk.NewCoin(m.InterestAmount.Denom, m.InterestAmount.Amount)
+	totalInterestAmount := sdk.NewCoin(m.DepositAmount.Denom, sdk.ZeroInt())
 	for _, v := range m.Borrowings {
-		totalInterestAmount = totalInterestAmount.Add(m.CalcInterest(v.Amount, m.DepositLendingRate, v.StartAt, endTime))
+		totalInterestAmount = totalInterestAmount.Add(m.CalcInterest(v.Amount, m.InterestRate, v.LastRepaidAt, endTime))
 	}
 	return totalInterestAmount
 }
 
-func (m NftBid) TotalInterestAmountDec(endTime time.Time) sdk.DecCoin {
-	totalInterestAmount := sdk.NewDecCoin(m.InterestAmount.Denom, m.InterestAmount.Amount)
-	for _, v := range m.Borrowings {
-		interest := m.CalcInterest(v.Amount, m.DepositLendingRate, v.StartAt, endTime)
-		totalInterestAmount = totalInterestAmount.Add(sdk.NewDecCoin(interest.Denom, interest.Amount))
-	}
-	return totalInterestAmount
-}
+// func (m NftBid) TotalInterestAmountDec(endTime time.Time) sdk.DecCoin {
+// 	totalInterestAmount := sdk.NewDecCoin(m.InterestAmount.Denom, m.InterestAmount.Amount)
+// 	for _, v := range m.Borrowings {
+// 		interest := m.CalcInterest(v.Amount, m.InterestRate, v.StartAt, endTime)
+// 		totalInterestAmount = totalInterestAmount.Add(sdk.NewDecCoin(interest.Denom, interest.Amount))
+// 	}
+// 	return totalInterestAmount
+// }
 
 func (m NftBid) FullPaidAmount() sdk.Coin {
 	return m.PaidAmount.Add(m.DepositAmount)
@@ -141,7 +158,7 @@ func (m NftBids) SortRepay() NftBids {
 func (m NftBids) SortLowerLendingRate() NftBids {
 	dest := append(NftBids{}, m...)
 	sort.SliceStable(dest, func(i, j int) bool {
-		return dest[i].DepositLendingRate.LT(dest[j].DepositLendingRate)
+		return dest[i].InterestRate.LT(dest[j].InterestRate)
 	})
 	return dest
 }
@@ -149,7 +166,7 @@ func (m NftBids) SortLowerLendingRate() NftBids {
 func (m NftBids) SortHigherLendingRate() NftBids {
 	dest := append(NftBids{}, m...)
 	sort.SliceStable(dest, func(i, j int) bool {
-		return dest[i].DepositLendingRate.GT(dest[j].DepositLendingRate)
+		return dest[i].InterestRate.GT(dest[j].InterestRate)
 	})
 	return dest
 }
@@ -176,7 +193,7 @@ func (m NftBids) SortHigherLendingRate() NftBids {
 func (m NftBids) SortLowerBiddingPeriod() NftBids {
 	dest := append(NftBids{}, m...)
 	sort.SliceStable(dest, func(i, j int) bool {
-		return dest[i].BiddingPeriod.Before(dest[j].BiddingPeriod)
+		return dest[i].ExpiryAt.Before(dest[j].ExpiryAt)
 	})
 	return dest
 }
@@ -382,7 +399,7 @@ type RepayReceipt struct {
 
 func (m *Borrowing) RepayThenGetReceipt(payAmount sdk.Coin, payTime time.Time, calcInterestF func(lendCoin sdk.Coin, start, end time.Time) sdk.Coin) RepayReceipt {
 	principal := m.Amount
-	interest := calcInterestF(principal, m.StartAt, payTime)
+	interest := calcInterestF(principal, m.LastRepaidAt, payTime)
 	paidInterestAmount := sdk.NewCoin(principal.Denom, sdk.ZeroInt())
 	total := sdk.NewCoin(principal.Denom, sdk.ZeroInt())
 	total = total.Add(principal).Add(interest)
@@ -400,7 +417,7 @@ func (m *Borrowing) RepayThenGetReceipt(payAmount sdk.Coin, payTime time.Time, c
 
 				payAmount = payAmount.Sub(interest)
 				m.Amount = principal.Sub(payAmount)
-				m.StartAt = payTime
+				m.LastRepaidAt = payTime
 
 				payAmount.Amount = sdk.ZeroInt()
 				paidInterestAmount = interest
@@ -428,7 +445,7 @@ func (m Borrowing) IsAllRepaid() bool {
 
 func (a Borrowing) Equal(b Borrowing) bool {
 	return a.Amount.Equal(b.Amount) &&
-		a.StartAt.Location() == b.StartAt.Location()
+		a.LastRepaidAt.Location() == b.LastRepaidAt.Location()
 }
 
 // func CalcPartInterest(total, surplus sdk.Coin, interest sdk.DecCoin) sdk.Coin {

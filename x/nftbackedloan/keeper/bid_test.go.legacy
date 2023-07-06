@@ -528,7 +528,7 @@ func (suite *KeeperTestSuite) TestCancelBid() {
 			// suite.Require().Len(cancelledBids, 1)
 
 			// cancelled bid delievery time check
-			// suite.Require().Equal(cancelledBids[0].BidTime, suite.ctx.BlockTime().Add(time.Duration(params.BidTokenDisburseSecondsAfterCancel)*time.Second))
+			// suite.Require().Equal(cancelledBids[0].CreateAt, suite.ctx.BlockTime().Add(time.Duration(params.BidTokenDisburseSecondsAfterCancel)*time.Second))
 
 			// cancel fee check if in active rank
 			// if tc.expectCancelFee {

@@ -210,11 +210,10 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 		NftId:                   msg.NftId,
 		Owner:                   owner.String(),
 		State:                   types.ListingState_LISTING,
-		BidToken:                msg.BidToken,
+		BidDenom:                msg.BidDenom,
 		MinimumDepositRate:      msg.MinimumDepositRate,
-		AutomaticRefinancing:    msg.AutomaticRefinancing,
 		StartedAt:               ctx.BlockTime(),
-		CollectedAmount:         sdk.NewCoin(msg.BidToken, sdk.ZeroInt()),
+		CollectedAmount:         sdk.NewCoin(msg.BidDenom, sdk.ZeroInt()),
 		CollectedAmountNegative: false,
 		MinimumBiddingPeriod:    msg.MinimumBiddingPeriod,
 	}
@@ -636,7 +635,7 @@ func (k Keeper) LiquidationProcessExitsWinner(ctx sdk.Context, collectBids,
 
 	totalInterests := refundBids.TotalInterestAmount(now)
 	if totalInterests.IsNil() {
-		totalInterests = sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
+		totalInterests = sdk.NewCoin(listing.BidDenom, sdk.ZeroInt())
 	}
 	// Sub total interests from lister's profit
 	if listing.CollectedAmount.IsLT(totalInterests) {
@@ -665,7 +664,7 @@ func (k Keeper) RefundBids(ctx sdk.Context, refundBids types.NftBids, totalInter
 
 // todo add test
 func (k Keeper) CollectedDepositFromBids(ctx sdk.Context, bids types.NftBids, listing types.NftListing) (sdk.Coin, error) {
-	result := sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
+	result := sdk.NewCoin(listing.BidDenom, sdk.ZeroInt())
 	for _, bid := range bids {
 		// not pay bidder amount, collected deposit
 		collectedAmount, err := k.SafeCloseBidCollectDeposit(ctx, bid)
