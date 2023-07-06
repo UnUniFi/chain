@@ -91,7 +91,7 @@ message NftBid {
   google.protobuf.Timestamp created_at        = 8
       [(gogoproto.moretags) = "yaml:\"create_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
   // borrow info
-  repeated Borrowing borrowings = 9 [(gogoproto.nullable) = false];
+  Borrowing borrow = 9 [(gogoproto.nullable) = false];
 }
 
 // todo: delete
