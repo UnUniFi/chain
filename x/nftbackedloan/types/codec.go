@@ -16,7 +16,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgCancelNftListing{},
 		&MsgPlaceBid{},
 		&MsgCancelBid{},
-		&MsgEndNftListing{},
+		// &MsgEndNftListing{},
 		&MsgPayFullBid{},
 		&MsgBorrow{},
 		&MsgRepay{},

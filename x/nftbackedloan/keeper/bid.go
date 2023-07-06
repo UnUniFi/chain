@@ -102,64 +102,6 @@ func (k Keeper) DeleteBid(ctx sdk.Context, bid types.NftBid) error {
 	return nil
 }
 
-// func getCancelledBidTimeKey(timestamp time.Time) []byte {
-// 	timeBz := sdk.FormatTimeBytes(timestamp)
-// 	timeBzL := len(timeBz)
-// 	prefixL := len(types.KeyPrefixNftBidCancelled)
-
-// 	bz := make([]byte, prefixL+8+timeBzL)
-
-// 	// copy the prefix
-// 	copy(bz[:prefixL], types.KeyPrefixNftBidCancelled)
-
-// 	// copy the encoded time bytes length
-// 	copy(bz[prefixL:prefixL+8], sdk.Uint64ToBigEndian(uint64(timeBzL)))
-
-// 	// copy the encoded time bytes
-// 	copy(bz[prefixL+8:prefixL+8+timeBzL], timeBz)
-// 	return bz
-// }
-
-// func (k Keeper) SetCancelledBid(ctx sdk.Context, bid types.NftBid) {
-// 	store := ctx.KVStore(k.storeKey)
-// 	bz := k.cdc.MustMarshal(&bid)
-// 	store.Set(append(append(getCancelledBidTimeKey(bid.CreateAt), bid.IdBytes()...), []byte(bid.Id.Bidder)...), bz)
-// }
-
-// func (k Keeper) GetAllCancelledBids(ctx sdk.Context) []types.NftBid {
-// 	store := ctx.KVStore(k.storeKey)
-// 	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixNftBidCancelled))
-// 	defer it.Close()
-
-// 	bids := []types.NftBid{}
-// 	for ; it.Valid(); it.Next() {
-// 		bid := types.NftBid{}
-// 		k.cdc.MustUnmarshal(it.Value(), &bid)
-// 		bids = append(bids, bid)
-// 	}
-// 	return bids
-// }
-
-// func (k Keeper) GetMaturedCancelledBids(ctx sdk.Context, endTime time.Time) []types.NftBid {
-// 	store := ctx.KVStore(k.storeKey)
-// 	timeKey := getCancelledBidTimeKey(endTime)
-// 	it := store.Iterator([]byte(types.KeyPrefixNftBidCancelled), storetypes.InclusiveEndBytes(timeKey))
-// 	defer it.Close()
-
-// 	bids := []types.NftBid{}
-// 	for ; it.Valid(); it.Next() {
-// 		bid := types.NftBid{}
-// 		k.cdc.MustUnmarshal(it.Value(), &bid)
-// 		bids = append(bids, bid)
-// 	}
-// 	return bids
-// }
-
-// func (k Keeper) DeleteCancelledBid(ctx sdk.Context, bid types.NftBid) {
-// 	store := ctx.KVStore(k.storeKey)
-// 	store.Delete(append(append(getCancelledBidTimeKey(bid.CreateAt), bid.IdBytes()...), []byte(bid.Id.Bidder)...))
-// }
-
 func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 	// Verify listing is in BIDDING state
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
@@ -207,6 +149,7 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 }
 
 func (k Keeper) ManualBid(ctx sdk.Context, listing types.NftListing, newBid types.NftBid, bids types.NftBids) error {
+	// delete check bid params
 	// err := CheckBidParams(listing, newBid.BidAmount, newBid.DepositAmount, bids)
 	// if err != nil {
 	// 	kickOutBid := bids.FindKickOutBid(newBid, ctx.BlockTime())
@@ -468,24 +411,6 @@ func (k Keeper) PayFullBid(ctx sdk.Context, msg *types.MsgPayFullBid) error {
 	return nil
 }
 
-// func (k Keeper) HandleMaturedCancelledBids(ctx sdk.Context) error {
-// 	bids := k.GetMaturedCancelledBids(ctx, ctx.BlockTime())
-// 	for _, bid := range bids {
-// 		// transfer amount of token except fee to bid account
-// 		bidder, err := sdk.AccAddressFromBech32(bid.Id.Bidder)
-// 		if err != nil {
-// 			return err
-// 		}
-// 		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{sdk.NewCoin(bid.BidAmount.Denom, bid.DepositAmount.Amount)})
-// 		if err != nil {
-// 			return err
-// 		}
-// 		k.DeleteCancelledBid(ctx, bid)
-// 	}
-
-// 	return nil
-// }
-
 // todo add unit test
 func CheckBidParams(listing types.NftListing, bid, deposit sdk.Coin, bids []types.NftBid) error {
 	c := listing.MinimumDepositRate
@@ -526,7 +451,7 @@ func CheckBidParams(listing types.NftListing, bid, deposit sdk.Coin, bids []type
 	return nil
 }
 
-func (k Keeper) GetActiveNftBiddingsEndingAt(ctx sdk.Context, endTime time.Time) []types.NftBid {
+func (k Keeper) GetActiveNftBiddingsExpired(ctx sdk.Context, endTime time.Time) []types.NftBid {
 	store := ctx.KVStore(k.storeKey)
 	timeKey := getTimeKey(types.KeyPrefixEndTimeNftBid, endTime)
 	it := store.Iterator([]byte(types.KeyPrefixEndTimeNftBid), storetypes.InclusiveEndBytes(timeKey))
@@ -535,7 +460,7 @@ func (k Keeper) GetActiveNftBiddingsEndingAt(ctx sdk.Context, endTime time.Time)
 	bids := []types.NftBid{}
 	for ; it.Valid(); it.Next() {
 		bidId := types.NftBidBytesToBidId(it.Value())
-		fmt.Println("GetActiveNftBiddingsEndingAt")
+		fmt.Println("GetActiveNftBiddingsExpired")
 		fmt.Println(bidId)
 		bidder, _ := sdk.AccAddressFromBech32(bidId.Bidder)
 		bid, err := k.GetBid(ctx, bidId.NftId.IdBytes(), bidder)

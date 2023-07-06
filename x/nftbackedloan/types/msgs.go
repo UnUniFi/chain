@@ -147,26 +147,26 @@ func (msg MsgSellingDecision) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr}
 }
 
-// ensure Msg interface compliance at compile time
-var _ sdk.Msg = &MsgEndNftListing{}
+// // ensure Msg interface compliance at compile time
+// var _ sdk.Msg = &MsgEndNftListing{}
 
-func NewMsgEndNftListing(sender string, nftId NftIdentifier) MsgEndNftListing {
-	return MsgEndNftListing{
-		Sender: sender,
-		NftId:  nftId,
-	}
-}
+// func NewMsgEndNftListing(sender string, nftId NftIdentifier) MsgEndNftListing {
+// 	return MsgEndNftListing{
+// 		Sender: sender,
+// 		NftId:  nftId,
+// 	}
+// }
 
-// ValidateBasic does a simple validation check that doesn't require access to state.
-func (msg MsgEndNftListing) ValidateBasic() error {
-	return nil
-}
+// // ValidateBasic does a simple validation check that doesn't require access to state.
+// func (msg MsgEndNftListing) ValidateBasic() error {
+// 	return nil
+// }
 
-// GetSigners returns the addresses of signers that must sign.
-func (msg MsgEndNftListing) GetSigners() []sdk.AccAddress {
-	addr, _ := sdk.AccAddressFromBech32(msg.Sender)
-	return []sdk.AccAddress{addr}
-}
+// // GetSigners returns the addresses of signers that must sign.
+// func (msg MsgEndNftListing) GetSigners() []sdk.AccAddress {
+// 	addr, _ := sdk.AccAddressFromBech32(msg.Sender)
+// 	return []sdk.AccAddress{addr}
+// }
 
 // ensure Msg interface compliance at compile time
 var _ sdk.Msg = &MsgPayFullBid{}
