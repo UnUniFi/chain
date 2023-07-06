@@ -132,13 +132,13 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 			Bidder: bidder,
 		},
 		BidAmount:        msg.BidAmount,
-		AutomaticPayment: msg.AutomaticPayment,
 		DepositAmount:    msg.DepositAmount,
-		CreatedAt:        ctx.BlockTime(),
+		PaidAmount:       sdk.NewCoin(listing.BidDenom, sdk.ZeroInt()),
 		ExpiryAt:         msg.ExpiryAt,
-
-		PaidAmount:   sdk.NewCoin(listing.BidDenom, sdk.ZeroInt()),
-		InterestRate: msg.InterestRate,
+		InterestRate:     msg.InterestRate,
+		AutomaticPayment: msg.AutomaticPayment,
+		CreatedAt:        ctx.BlockTime(),
+		Borrow:           types.Borrowing{Amount: sdk.NewCoin(listing.BidDenom, sdk.ZeroInt()), LastRepaidAt: ctx.BlockTime()},
 	}
 
 	if !oldBid.IsNil() {
