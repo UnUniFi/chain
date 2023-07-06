@@ -192,7 +192,7 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 		BidAmount:        msg.BidAmount,
 		AutomaticPayment: msg.AutomaticPayment,
 		DepositAmount:    msg.DepositAmount,
-		CreatedAt:         ctx.BlockTime(),
+		CreatedAt:        ctx.BlockTime(),
 		ExpiryAt:         msg.ExpiryAt,
 
 		PaidAmount:   sdk.NewCoin(listing.BidDenom, sdk.ZeroInt()),
@@ -207,27 +207,27 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 }
 
 func (k Keeper) ManualBid(ctx sdk.Context, listing types.NftListing, newBid types.NftBid, bids types.NftBids) error {
-	err := CheckBidParams(listing, newBid.BidAmount, newBid.DepositAmount, bids)
-	if err != nil {
-		kickOutBid := bids.FindKickOutBid(newBid, ctx.BlockTime())
-		if kickOutBid.IsNil() {
-			// cannot kick out bid
-			return err
-		} else {
-			bids = bids.RemoveBids(types.NftBids{kickOutBid})
-			err = CheckBidParams(listing, newBid.BidAmount, newBid.DepositAmount, bids)
-			if err != nil {
-				return err
-			} else {
-				err = k.SafeCloseBidWithAllInterest(ctx, kickOutBid)
-				if err != nil {
-					return err
-				}
-			}
-		}
-	}
+	// err := CheckBidParams(listing, newBid.BidAmount, newBid.DepositAmount, bids)
+	// if err != nil {
+	// 	kickOutBid := bids.FindKickOutBid(newBid, ctx.BlockTime())
+	// 	if kickOutBid.IsNil() {
+	// 		// cannot kick out bid
+	// 		return err
+	// 	} else {
+	// 		bids = bids.RemoveBids(types.NftBids{kickOutBid})
+	// 		err = CheckBidParams(listing, newBid.BidAmount, newBid.DepositAmount, bids)
+	// 		if err != nil {
+	// 			return err
+	// 		} else {
+	// 			err = k.SafeCloseBidWithAllInterest(ctx, kickOutBid)
+	// 			if err != nil {
+	// 				return err
+	// 			}
+	// 		}
+	// 	}
+	// }
 
-	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sdk.MustAccAddressFromBech32(newBid.Id.Bidder), types.ModuleName, sdk.Coins{newBid.DepositAmount})
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sdk.MustAccAddressFromBech32(newBid.Id.Bidder), types.ModuleName, sdk.Coins{newBid.DepositAmount})
 	if err != nil {
 		return err
 	}
@@ -333,7 +333,7 @@ func (k Keeper) SafeCloseBidWithAllInterest(ctx sdk.Context, bid types.NftBid) e
 	if err != nil {
 		return err
 	}
-	interestAmount := bid.TotalInterestAmount(ctx.BlockTime())
+	interestAmount := bid.CompoundInterest(ctx.BlockTime())
 	if interestAmount.Amount.IsPositive() {
 		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{sdk.NewCoin(interestAmount.Denom, interestAmount.Amount)})
 		if err != nil {

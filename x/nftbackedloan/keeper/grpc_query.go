@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"sort"
+	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
@@ -189,9 +190,10 @@ func (k Keeper) Loans(c context.Context, req *types.QueryLoansRequest) (*types.Q
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	ctx := sdk.UnwrapSDKContext(c)
+	// ctx := sdk.UnwrapSDKContext(c)
 	return &types.QueryLoansResponse{
-		Loans: k.GetAllDebts(ctx),
+		// todo impl
+		Loans: []types.Loan{},
 	}, nil
 }
 
@@ -223,13 +225,15 @@ func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.Que
 		return nil, err
 	}
 	deposits := sdk.NewCoin(max.Denom, sdk.NewInt(0))
+	loan := types.Loan{NftId: nftId, Loan: sdk.NewCoin(max.Denom, sdk.NewInt(0))}
 
 	for _, v := range bids {
 		deposits = deposits.Add(v.DepositAmount)
+		loan.Loan = loan.Loan.Add(v.Borrow.Amount)
 	}
 
 	return &types.QueryLoanResponse{
-		Loan:           k.GetDebtByNft(ctx, nftId.IdBytes()),
+		Loan:           loan,
 		BorrowingLimit: max,
 		TotalDeposit:   deposits,
 	}, nil
@@ -326,18 +330,18 @@ func (k Keeper) Liquidation(c context.Context, req *types.QueryLiquidationReques
 	bids := types.NftBids(k.GetBidsByNft(ctx, listing.NftId.IdBytes()))
 	bids = bids.SortLowerBiddingPeriod()
 	liquidations := &types.Liquidations{}
-	now := ctx.BlockTime()
+	// after 1 hour
+	afterAnHour := ctx.BlockTime().Add(time.Hour)
 
 	for _, bid := range bids {
-		if bid.BorrowingAmount().Amount.Equal(sdk.ZeroInt()) {
+		if bid.Borrow.Amount.Amount.Equal(sdk.ZeroInt()) {
 			continue
 		}
 
 		liq := types.Liquidation{
 			Amount: sdk.NewCoin(listing.BidDenom, sdk.ZeroInt()),
 		}
-		// todo:
-		liq.Amount = bid.LiquidationAmount(now, bid.ExpiryAt)
+		liq.Amount = bid.LiquidationAmount(afterAnHour)
 		liq.LiquidationDate = bid.ExpiryAt
 		if liquidations.Liquidation == nil {
 			liquidations.Liquidation = &liq
