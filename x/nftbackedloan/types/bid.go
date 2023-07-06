@@ -65,28 +65,43 @@ func (m NftBid) CalcCompoundInterest(lendCoin sdk.Coin, startTime time.Time, end
 	return sdk.NewCoin(lendCoin.Denom, result.RoundInt())
 }
 
-func (m NftBid) RepaidResult(repayAmount sdk.Coin, payTime time.Time) sdk.Coin {
+type RepayResult struct {
+	RepaidAmount          sdk.Coin
+	RemainingBorrowAmount sdk.Coin
+	LastRepaidAt          time.Time
+}
+
+func (m NftBid) RepaidResult(repayAmount sdk.Coin, payTime time.Time) RepayResult {
 	interest := m.CalcCompoundInterest(m.Borrow.Amount, m.Borrow.LastRepaidAt, payTime)
 	total := m.Borrow.Amount.Add(interest)
 
 	if repayAmount.IsGTE(total) {
-		m.Borrow.Amount = sdk.NewCoin(m.Borrow.Amount.Denom, sdk.ZeroInt())
-		m.Borrow.LastRepaidAt = payTime
-		return total
+		remainingAmount := sdk.NewCoin(m.Borrow.Amount.Denom, sdk.ZeroInt())
+		return RepayResult{
+			RepaidAmount:          total,
+			RemainingBorrowAmount: remainingAmount,
+			LastRepaidAt:          payTime,
+		}
 	} else {
-		m.Borrow.Amount = total.Sub(repayAmount)
-		m.Borrow.LastRepaidAt = payTime
-		return repayAmount
+		remainingAmount := total.Sub(repayAmount)
+		return RepayResult{
+			RepaidAmount:          repayAmount,
+			RemainingBorrowAmount: remainingAmount,
+			LastRepaidAt:          payTime,
+		}
 	}
 }
 
-func (m NftBid) FullRepaidResult(payTime time.Time) sdk.Coin {
+func (m NftBid) FullRepaidResult(payTime time.Time) RepayResult {
 	interest := m.CalcCompoundInterest(m.Borrow.Amount, m.Borrow.LastRepaidAt, payTime)
 	total := m.Borrow.Amount.Add(interest)
 
-	m.Borrow.Amount = sdk.NewCoin(m.Borrow.Amount.Denom, sdk.ZeroInt())
-	m.Borrow.LastRepaidAt = payTime
-	return total
+	remainingAmount := sdk.NewCoin(m.Borrow.Amount.Denom, sdk.ZeroInt())
+	return RepayResult{
+		RepaidAmount:          total,
+		RemainingBorrowAmount: remainingAmount,
+		LastRepaidAt:          payTime,
+	}
 }
 
 func (m NftBid) FullPaidAmount() sdk.Coin {

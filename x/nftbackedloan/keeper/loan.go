@@ -141,7 +141,10 @@ func (k Keeper) ManualRepay(ctx sdk.Context, nft types.NftIdentifier, repays []t
 		}
 
 		repaidResult := bid.RepaidResult(repay.Amount, ctx.BlockTime())
-		repaidAmount = repaidAmount.Add(repaidResult)
+		bid.Borrow.Amount = repaidResult.RemainingBorrowAmount
+		bid.Borrow.LastRepaidAt = repaidResult.LastRepaidAt
+		repaidAmount = repaidAmount.Add(repaidResult.RepaidAmount)
+
 		err = k.SetBid(ctx, bid)
 		if err != nil {
 			return err
@@ -193,7 +196,9 @@ func (k Keeper) AutoRepay(ctx sdk.Context, nft types.NftIdentifier, bids types.N
 		}
 
 		repaidResult := bid.FullRepaidResult(ctx.BlockTime())
-		repaidAmount = repaidAmount.Add(repaidResult)
+		bid.Borrow.Amount = repaidResult.RemainingBorrowAmount
+		bid.Borrow.LastRepaidAt = repaidResult.LastRepaidAt
+		repaidAmount = repaidAmount.Add(repaidResult.RepaidAmount)
 
 		err = k.SetBid(ctx, bid)
 		if err != nil {
