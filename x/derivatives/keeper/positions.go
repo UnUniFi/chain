@@ -240,10 +240,24 @@ func (k Keeper) ReportLiquidation(ctx sdk.Context, msg *types.MsgReportLiquidati
 		return err
 	}
 
+	params := k.GetParams(ctx)
+
+	currentBaseUsdRate, currentQuoteUsdRate, err := k.GetPairUsdPriceFromMarket(ctx, position.Market)
+	if err != nil {
+		return err
+	}
+	quoteTicker := k.GetPoolQuoteTicker(ctx)
+	baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, currentBaseUsdRate)
+	quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, currentQuoteUsdRate)
+
 	switch positionInstance := positionInstance.(type) {
 	case *types.PerpetualFuturesPositionInstance:
 		perpetualFuturesPosition := types.NewPerpetualFuturesPosition(*position, *positionInstance)
-		err = k.ReportLiquidationNeededPerpetualFuturesPosition(ctx, msg.RewardRecipient, perpetualFuturesPosition)
+		if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, baseMetricsRate, quoteMetricsRate) {
+			err = k.LiquidateFuturesPosition(ctx, msg.RewardRecipient, perpetualFuturesPosition, params.PerpetualFutures.CommissionRate, params.PoolParams.ReportLiquidationRewardRate)
+		} else {
+			return types.ErrLiquidationNotNeeded
+		}
 		break
 	case *types.PerpetualOptionsPositionInstance:
 		err = k.ReportLiquidationNeededPerpetualOptionsPosition(ctx, msg.RewardRecipient, *position, *positionInstance)

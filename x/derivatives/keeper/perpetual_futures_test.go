@@ -377,7 +377,8 @@ func (suite *KeeperTestSuite) TestReportLiquidationNeededPerpetualFuturesPositio
 		switch positionInstance := positionInstance.(type) {
 		case *types.PerpetualFuturesPositionInstance:
 			perpetualFuturesPosition := types.NewPerpetualFuturesPosition(*position, *positionInstance)
-			err = suite.keeper.ReportLiquidationNeededPerpetualFuturesPosition(suite.ctx, owner.String(), perpetualFuturesPosition)
+			params := suite.keeper.GetParams(suite.ctx)
+			err = suite.keeper.LiquidateFuturesPosition(suite.ctx, owner.String(), perpetualFuturesPosition, params.PerpetualFutures.CommissionRate, params.PoolParams.ReportLiquidationRewardRate)
 		}
 		suite.Require().NoError(err)
 

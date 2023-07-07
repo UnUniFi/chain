@@ -46,6 +46,7 @@ func GetTxCmd() *cobra.Command {
 		CmdClosePosition(),
 		CmdReportLiquidation(),
 		CmdReportLevyPeriod(),
+		CmdAddMargin(),
 	)
 
 	return cmd
@@ -326,6 +327,42 @@ $ %s tx %s report-levy-period --from myKeyName --chain-id ununifi-x
 			msg := types.NewMsgReportLevyPeriod(
 				clientCtx.GetFromAddress().String(), args[0], args[1],
 			)
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdAddMargin() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "add-margin [position-id] [amount]",
+		Short: fmt.Sprintf("%s add margin into a position", types.ModuleName),
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`add margin.
+Example:
+$ %s tx %s add-margin [position-id] [amount] --from myKeyName --chain-id ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			sender := clientCtx.GetFromAddress()
+			potisionId := args[0]
+			amount, err := sdk.ParseCoinNormalized(args[1])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgAddMargin(sender.String(), potisionId, amount)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err

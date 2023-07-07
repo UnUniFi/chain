@@ -25,7 +25,10 @@ func (k Keeper) MintNft(ctx sdk.Context, msg *types.MsgMintNft) error {
 			Uri:         classId,
 			UriHash:     classId,
 		}
-		k.nftKeeper.SaveClass(ctx, class)
+		err := k.nftKeeper.SaveClass(ctx, class)
+		if err != nil {
+			return err
+		}
 	}
 
 	expNFT := nft.NFT{

@@ -35,7 +35,7 @@ func GetTxCmd() *cobra.Command {
 		CmdCreatePlaceBid(),
 		CmdCancelBid(),
 		CmdPayFullBid(),
-		CmdEndListing(),
+		// CmdEndListing(),
 		CmdBorrow(),
 		CmdRepay(),
 	)
@@ -212,41 +212,41 @@ $ %s tx %s place-bid 1 1 100uguu --automatic-payment --from myKeyName --chain-id
 	return cmd
 }
 
-func CmdEndListing() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "end-listing [class-id] [nft-id]",
-		Short: "end listing",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`end listing.
-Example:
-$ %s tx %s end-listing 1 1 --from myKeyName --chain-id ununifi-x
-`, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(2),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
+// func CmdEndListing() *cobra.Command {
+// 	cmd := &cobra.Command{
+// 		Use:   "end-listing [class-id] [nft-id]",
+// 		Short: "end listing",
+// 		Long: strings.TrimSpace(
+// 			fmt.Sprintf(`end listing.
+// Example:
+// $ %s tx %s end-listing 1 1 --from myKeyName --chain-id ununifi-x
+// `, version.AppName, types.ModuleName)),
+// 		Args: cobra.ExactArgs(2),
+// 		RunE: func(cmd *cobra.Command, args []string) error {
+// 			clientCtx, err := client.GetClientTxContext(cmd)
+// 			if err != nil {
+// 				return err
+// 			}
 
-			classId := args[0]
-			nftId := args[1]
-			nftIde := types.NftIdentifier{
-				ClassId: classId,
-				NftId:   nftId,
-			}
+// 			classId := args[0]
+// 			nftId := args[1]
+// 			nftIde := types.NftIdentifier{
+// 				ClassId: classId,
+// 				NftId:   nftId,
+// 			}
 
-			msg := types.NewMsgEndNftListing(clientCtx.GetFromAddress().String(), nftIde)
+// 			msg := types.NewMsgEndNftListing(clientCtx.GetFromAddress().String(), nftIde)
 
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
-		},
-	}
+// 			if err := msg.ValidateBasic(); err != nil {
+// 				return err
+// 			}
+// 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+// 		},
+// 	}
 
-	flags.AddTxFlagsToCmd(cmd)
-	return cmd
-}
+// 	flags.AddTxFlagsToCmd(cmd)
+// 	return cmd
+// }
 
 func CmdSellingDecision() *cobra.Command {
 	cmd := &cobra.Command{
@@ -286,14 +286,14 @@ $ %s tx %s selling-decision 1 1 --from myKeyName --chain-id ununifi-x
 
 func CmdBorrow() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "borrow [class-id] [nft-id] [amount]",
+		Use:   "borrow [class-id] [nft-id] [bidder] [amount]",
 		Short: "borrow denom",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`borrow denom.
 Example:
 $ %s tx %s borrow 1 1 100uguu --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(3),
+		Args: cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -307,12 +307,14 @@ $ %s tx %s borrow 1 1 100uguu --from myKeyName --chain-id ununifi-x
 				NftId:   nftId,
 			}
 
-			borrowCoin, err := sdk.ParseCoinNormalized(args[2])
+			bidder := args[2]
+			borrowCoin, err := sdk.ParseCoinNormalized(args[3])
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgBorrow(clientCtx.GetFromAddress().String(), nftIde, borrowCoin)
+			borrowBid := types.BorrowBid{Bidder: bidder, Amount: borrowCoin}
+			msg := types.NewMsgBorrow(clientCtx.GetFromAddress().String(), nftIde, []types.BorrowBid{borrowBid})
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -327,14 +329,14 @@ $ %s tx %s borrow 1 1 100uguu --from myKeyName --chain-id ununifi-x
 
 func CmdRepay() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "repay [class-id] [nft-id] [amount]",
+		Use:   "repay [class-id] [nft-id] [bidder] [amount]",
 		Short: "repay loan on nft",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`repay loan on nft.
 Example:
 $ %s tx %s repay 1 1 100uguu --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(3),
+		Args: cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -348,12 +350,14 @@ $ %s tx %s repay 1 1 100uguu --from myKeyName --chain-id ununifi-x
 				NftId:   nftId,
 			}
 
-			borrowCoin, err := sdk.ParseCoinNormalized(args[2])
+			bidder := args[2]
+			borrowCoin, err := sdk.ParseCoinNormalized(args[3])
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgRepay(clientCtx.GetFromAddress().String(), nftIde, borrowCoin)
+			borrowBid := types.BorrowBid{Bidder: bidder, Amount: borrowCoin}
+			msg := types.NewMsgRepay(clientCtx.GetFromAddress().String(), nftIde, []types.BorrowBid{borrowBid})
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -442,7 +446,7 @@ $ %s tx %s cancel-bid 1 1 --from myKeyName --chain-id ununifi-x
 func CmdPayFullBid() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "pay-full-bid [class-id] [nft-id]",
-		Short: "Pay full bid on nft",
+		Short: "Pay full bid price on nft",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Pay full bid on nft.
 Example:

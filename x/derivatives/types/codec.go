@@ -22,6 +22,8 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgClosePosition{},
 		&MsgReportLiquidation{},
 		&MsgReportLevyPeriod{},
+		&MsgAddMargin{},
+		&MsgRemoveMargin{},
 	)
 	registry.RegisterImplementations((*PositionInstance)(nil),
 		&PerpetualFuturesPositionInstance{},

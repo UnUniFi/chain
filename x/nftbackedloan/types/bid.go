@@ -8,7 +8,14 @@ import (
 )
 
 func (m NftBid) Equal(b NftBid) bool {
-	return m.Id.Bidder == b.Id.Bidder && m.Id.NftId == b.Id.NftId && m.BidAmount.Equal(b.BidAmount)
+	if m.IsNil() || b.IsNil() {
+		if m.IsNil() && b.IsNil() {
+			return true
+		} else {
+			return false
+		}
+	}
+	return m.Id.Bidder == b.Id.Bidder && m.Id.NftId.ClassId == b.Id.NftId.ClassId && m.Id.NftId.NftId == b.Id.NftId.NftId && m.BidAmount.Equal(b.BidAmount)
 }
 func (m NftBid) IsLT(b NftBid) bool {
 	if b.BidAmount.IsLTE(m.BidAmount) {
@@ -26,11 +33,6 @@ func (m NftBid) IsLT(b NftBid) bool {
 
 func (m NftBid) GetIdToByte() []byte {
 	return NftBidBytes(m.Id.NftId.ClassId, m.Id.NftId.NftId, m.Id.Bidder)
-}
-
-// todo check test
-func (m NftBid) GetIdToString() string {
-	return string(NftBidBytes(m.Id.NftId.ClassId, m.Id.NftId.NftId, m.Id.Bidder))
 }
 
 func (m NftBid) IsBorrowing() bool {
@@ -58,12 +60,12 @@ func (m NftBid) BorrowingAmount() sdk.Coin {
 
 func (m NftBid) BorrowableAmount() sdk.Coin {
 	borrowableAmount := m.DepositAmount
-	borrowabingAmount := sdk.NewCoin(m.DepositAmount.Denom, sdk.ZeroInt())
+	borrowingAmount := sdk.NewCoin(m.DepositAmount.Denom, sdk.ZeroInt())
 	for _, v := range m.Borrowings {
-		borrowabingAmount = borrowabingAmount.Add(v.Amount)
-		borrowabingAmount = borrowabingAmount.Sub(v.PaidInterestAmount)
+		borrowingAmount = borrowingAmount.Add(v.Amount)
+		borrowingAmount = borrowingAmount.Sub(v.PaidInterestAmount)
 	}
-	return borrowableAmount.Sub(borrowabingAmount)
+	return borrowableAmount.Sub(borrowingAmount)
 }
 
 func (m NftBid) CalcInterest(lendCoin sdk.Coin, lendingRate sdk.Dec, start, end time.Time) sdk.Coin {
@@ -135,13 +137,12 @@ func (m NftBids) SortRepay() NftBids {
 	return m.SortHigherLendingRate()
 }
 
-func (m NftBids) SortLiquidation() NftBids {
-	return m.SortDepositAboveAvgBid()
-}
+// func (m NftBids) SortLiquidation() NftBids {
+// 	return m.SortDepositAboveAvgBid()
+// }
 
 func (m NftBids) SortLowerLendingRate() NftBids {
-	dest := NftBids{}
-	dest = append(NftBids{}, m...)
+	dest := append(NftBids{}, m...)
 	sort.SliceStable(dest, func(i, j int) bool {
 		return dest[i].DepositLendingRate.LT(dest[j].DepositLendingRate)
 	})
@@ -149,36 +150,34 @@ func (m NftBids) SortLowerLendingRate() NftBids {
 }
 
 func (m NftBids) SortHigherLendingRate() NftBids {
-	dest := NftBids{}
-	dest = append(NftBids{}, m...)
+	dest := append(NftBids{}, m...)
 	sort.SliceStable(dest, func(i, j int) bool {
 		return dest[i].DepositLendingRate.GT(dest[j].DepositLendingRate)
 	})
 	return dest
 }
 
-func (m NftBids) SortDepositAboveAvgBid() NftBids {
-	dest := NftBids{}
-	if len(m) == 0 {
-		return dest
-	}
-	qDash := m.GetAverageBidAmount()
-	dest = append(NftBids{}, m...)
-	sort.SliceStable(dest, func(i, j int) bool {
-		if dest[i].BidAmount.IsLT(qDash) {
-			return false
-		}
-		if dest[j].BidAmount.IsLT(qDash) {
-			return true
-		}
-		return dest[i].DepositAmount.IsGTE(dest[j].DepositAmount)
-	})
-	return dest
-}
+// func (m NftBids) SortDepositAboveAvgBid() NftBids {
+// 	dest := NftBids{}
+// 	if len(m) == 0 {
+// 		return dest
+// 	}
+// 	qDash := m.GetAverageBidAmount()
+// 	dest = append(NftBids{}, m...)
+// 	sort.SliceStable(dest, func(i, j int) bool {
+// 		if dest[i].BidAmount.IsLT(qDash) {
+// 			return false
+// 		}
+// 		if dest[j].BidAmount.IsLT(qDash) {
+// 			return true
+// 		}
+// 		return dest[i].DepositAmount.IsGTE(dest[j].DepositAmount)
+// 	})
+// 	return dest
+// }
 
 func (m NftBids) SortLowerBiddingPeriod() NftBids {
-	dest := NftBids{}
-	dest = append(NftBids{}, m...)
+	dest := append(NftBids{}, m...)
 	sort.SliceStable(dest, func(i, j int) bool {
 		return dest[i].BiddingPeriod.Before(dest[j].BiddingPeriod)
 	})
@@ -186,25 +185,32 @@ func (m NftBids) SortLowerBiddingPeriod() NftBids {
 }
 
 func (m NftBids) SortHigherDeposit() NftBids {
-	dest := NftBids{}
-	dest = append(NftBids{}, m...)
+	dest := append(NftBids{}, m...)
 	sort.SliceStable(dest, func(i, j int) bool {
 		return dest[i].DepositAmount.IsGTE(dest[j].DepositAmount)
 	})
 	return dest
 }
 
-func (m NftBids) GetAverageBidAmount() sdk.Coin {
-	if len(m) == 0 {
-		return sdk.Coin{}
-	}
-	denom := m[0].BidAmount.Denom
-	totalAmount := sdk.NewCoin(denom, sdk.ZeroInt())
-	for _, bid := range m {
-		totalAmount = totalAmount.Add(bid.BidAmount)
-	}
-	return sdk.NewCoin(denom, totalAmount.Amount.Quo(sdk.NewInt(int64(len(m)))))
+func (m NftBids) SortHigherPrice() NftBids {
+	dest := append(NftBids{}, m...)
+	sort.SliceStable(dest, func(i, j int) bool {
+		return dest[i].BidAmount.IsGTE(dest[j].DepositAmount)
+	})
+	return dest
 }
+
+// func (m NftBids) GetAverageBidAmount() sdk.Coin {
+// 	if len(m) == 0 {
+// 		return sdk.Coin{}
+// 	}
+// 	denom := m[0].BidAmount.Denom
+// 	totalAmount := sdk.NewCoin(denom, sdk.ZeroInt())
+// 	for _, bid := range m {
+// 		totalAmount = totalAmount.Add(bid.BidAmount)
+// 	}
+// 	return sdk.NewCoin(denom, totalAmount.Amount.Quo(sdk.NewInt(int64(len(m)))))
+// }
 
 func (m NftBids) GetHighestBid() NftBid {
 	highestBidder := NftBid{
@@ -314,30 +320,27 @@ func (m *NftBids) BorrowFromBids(borrowAmount sdk.Coin, start time.Time) {
 			bid.Borrowings = append(bid.Borrowings, borrow)
 			borrowAmount.Amount = sdk.ZeroInt()
 		}
-		// todo: execute func
-		// k.SetBid(ctx, bid)
-
 	}
 }
 
-func (m NftBids) BorrowableAmount(denom string) sdk.Coin {
-	coin := sdk.NewCoin(denom, sdk.ZeroInt())
-	for _, s := range m {
-		coin = coin.Add(s.BorrowableAmount())
-	}
-	return coin
-}
+// func (m NftBids) BorrowableAmount(denom string) sdk.Coin {
+// 	coin := sdk.NewCoin(denom, sdk.ZeroInt())
+// 	for _, s := range m {
+// 		coin = coin.Add(s.BorrowableAmount())
+// 	}
+// 	return coin
+// }
 
-func (m NftBids) TotalDeposit() sdk.Coin {
-	if len(m) == 0 {
-		return sdk.Coin{}
-	}
-	coin := sdk.NewCoin(m[0].DepositAmount.Denom, sdk.ZeroInt())
-	for _, s := range m {
-		coin = coin.Add(s.DepositAmount)
-	}
-	return coin
-}
+// func (m NftBids) TotalDeposit() sdk.Coin {
+// 	if len(m) == 0 {
+// 		return sdk.Coin{}
+// 	}
+// 	coin := sdk.NewCoin(m[0].DepositAmount.Denom, sdk.ZeroInt())
+// 	for _, s := range m {
+// 		coin = coin.Add(s.DepositAmount)
+// 	}
+// 	return coin
+// }
 
 func (m NftBids) TotalInterestAmount(end time.Time) sdk.Coin {
 	if len(m) == 0 {
@@ -350,13 +353,13 @@ func (m NftBids) TotalInterestAmount(end time.Time) sdk.Coin {
 	return coin
 }
 
-func (m NftBids) LiquidationAmount(denom string, end time.Time) sdk.Coin {
-	coin := sdk.NewCoin(denom, sdk.ZeroInt())
-	for _, s := range m {
-		coin = coin.Add(s.LiquidationAmount(end))
-	}
-	return coin
-}
+// func (m NftBids) LiquidationAmount(denom string, end time.Time) sdk.Coin {
+// 	coin := sdk.NewCoin(denom, sdk.ZeroInt())
+// 	for _, s := range m {
+// 		coin = coin.Add(s.LiquidationAmount(end))
+// 	}
+// 	return coin
+// }
 
 func (m NftBids) FindKickOutBid(newBid NftBid, end time.Time) NftBid {
 	HigherDepositBids := m.SortHigherDeposit()
@@ -389,7 +392,6 @@ func (m *Borrowing) RepayThenGetReceipt(payAmount sdk.Coin, payTime time.Time, c
 	total = total.Add(principal).Add(interest)
 	// bigger msg Amount
 	if payAmount.IsGTE(total) {
-		// bid.InterestAmount = bid.InterestAmount.Add(interest)
 		payAmount = payAmount.Sub(total)
 		paidInterestAmount = paidInterestAmount.Add(interest)
 		m.Amount.Amount = sdk.ZeroInt()
@@ -401,7 +403,6 @@ func (m *Borrowing) RepayThenGetReceipt(payAmount sdk.Coin, payTime time.Time, c
 			if payAmount.Amount.GT(interest.Amount) {
 				// all paid interest and part paid principal
 
-				// bid.InterestAmount = bid.InterestAmount.Add(interest)
 				payAmount = payAmount.Sub(interest)
 				m.Amount = principal.Sub(payAmount)
 				m.PaidInterestAmount.Amount = sdk.ZeroInt()
@@ -411,15 +412,12 @@ func (m *Borrowing) RepayThenGetReceipt(payAmount sdk.Coin, payTime time.Time, c
 				paidInterestAmount = interest
 			} else {
 				// all paid interest
-				// bid.InterestAmount = bid.InterestAmount.Add(interest)
-				// m.PaidInterestAmount = m.PaidInterestAmount.Add(interest)
 				m.PaidInterestAmount = m.PaidInterestAmount.Add(interest)
 				paidInterestAmount = paidInterestAmount.Add(interest)
 				payAmount = payAmount.Sub(interest)
 			}
 		} else {
 			// can not paid interest
-			// bid.InterestAmount.Add(payAmount)
 			paidInterestAmount = payAmount
 			m.PaidInterestAmount = m.PaidInterestAmount.Add(payAmount)
 			payAmount.Amount = sdk.ZeroInt()
@@ -442,12 +440,13 @@ func (a Borrowing) Equal(b Borrowing) bool {
 		a.StartAt.Location() == b.StartAt.Location()
 }
 
-func CalcPartInterest(total, surplus sdk.Int, interest sdk.DecCoin) sdk.Int {
-	if total.IsZero() {
-		return sdk.ZeroInt()
-	}
-	decTotalInterest := sdk.NewDecFromInt(total)
-	decSurplusAmount := sdk.NewDecFromInt(surplus)
-	rate := interest.Amount.Quo(decTotalInterest)
-	return decSurplusAmount.Mul(rate).TruncateInt()
-}
+// func CalcPartInterest(total, surplus sdk.Coin, interest sdk.DecCoin) sdk.Coin {
+// 	// interest = expected interest * (surplus amount / total interests)
+// 	if total.IsZero() {
+// 		return sdk.Coin{Denom: interest.Denom, Amount: sdk.ZeroInt()}
+// 	}
+// 	decTotalInterest := sdk.NewDecFromInt(total.Amount)
+// 	decSurplusAmount := sdk.NewDecFromInt(surplus.Amount)
+// 	discountedInterest := interest.Amount.Mul(decSurplusAmount).Quo(decTotalInterest)
+// 	return sdk.NewCoin(interest.Denom, discountedInterest.TruncateInt())
+// }

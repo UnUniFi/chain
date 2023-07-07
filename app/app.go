@@ -147,9 +147,10 @@ import (
 	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
 	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
 
-	// "github.com/UnUniFi/chain/x/nftbackedloan"
-	// nftmarketkeeper "github.com/UnUniFi/chain/x/nftbackedloan/keeper"
-	// nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
+	nftmarket "github.com/UnUniFi/chain/x/nftbackedloan"
+	nftmarketkeeper "github.com/UnUniFi/chain/x/nftbackedloan/keeper"
+	nftmarkettypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
+
 	// "github.com/UnUniFi/chain/x/nftfactory"
 	// nftmintkeeper "github.com/UnUniFi/chain/x/nftfactory/keeper"
 	// nftminttypes "github.com/UnUniFi/chain/x/nftfactory/types"
@@ -160,8 +161,9 @@ import (
 	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 
-	// ecosystemincentive "github.com/UnUniFi/chain/x/ecosystemincentive"
-	// ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystemincentive/types"
+	ecosystemincentive "github.com/UnUniFi/chain/x/ecosystemincentive"
+	ecosystemincentivekeeper "github.com/UnUniFi/chain/x/ecosystemincentive/keeper"
+	ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystemincentive/types"
 
 	"github.com/UnUniFi/chain/app/keepers"
 	"github.com/UnUniFi/chain/app/upgrades"
@@ -245,7 +247,7 @@ var (
 		ibcfee.AppModuleBasic{},
 
 		// original modules
-		// nftmarket.AppModuleBasic{},
+		nftmarket.AppModuleBasic{},
 		// nftmint.AppModuleBasic{},
 
 		yieldaggregator.AppModuleBasic{},
@@ -258,7 +260,7 @@ var (
 		pricefeed.AppModuleBasic{},
 		derivatives.AppModuleBasic{},
 
-		// ecosystemincentive.AppModuleBasic{},
+		ecosystemincentive.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -276,7 +278,7 @@ var (
 		wasm.ModuleName:                {authtypes.Burner},
 
 		// original modules
-		// nftmarkettypes.ModuleName:               nil,
+		nftmarkettypes.ModuleName: nil,
 		// nftmarkettypes.NftTradingFee: nil,
 		// nftminttypes.ModuleName:                 nil,
 
@@ -288,7 +290,7 @@ var (
 		derivativestypes.DerivativeFeeCollector: nil,
 		derivativestypes.MarginManager:          nil,
 
-		// ecosystemincentivetypes.ModuleName:      nil,
+		ecosystemincentivetypes.ModuleName: nil,
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -363,7 +365,7 @@ type App struct {
 	ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
 	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
 
-	// NftmarketKeeper          nftmarketkeeper.Keeper
+	NftmarketKeeper nftmarketkeeper.Keeper
 	// NftmintKeeper            nftmintkeeper.Keeper
 
 	YieldaggregatorKeeper    yieldaggregatorkeeper.Keeper
@@ -379,7 +381,7 @@ type App struct {
 	DerivativesKeeper derivativeskeeper.Keeper
 	PricefeedKeeper   pricefeedkeeper.Keeper
 
-	// EcosystemincentiveKeeper ecosystemincentivekeeper.Keeper
+	EcosystemincentiveKeeper ecosystemincentivekeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -432,7 +434,7 @@ func NewApp(
 		icacontrollertypes.StoreKey,
 
 		// original modules
-		// nftmarkettypes.StoreKey,
+		nftmarkettypes.StoreKey,
 		// nftminttypes.StoreKey,
 
 		yieldaggregatortypes.StoreKey,
@@ -445,7 +447,7 @@ func NewApp(
 		derivativestypes.StoreKey,
 		pricefeedtypes.StoreKey,
 
-		// ecosystemincentivetypes.StoreKey,
+		ecosystemincentivetypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -715,16 +717,16 @@ func NewApp(
 	// 	app.NFTKeeper,
 	// )
 
-	// nftmarketKeeper := nftmarketkeeper.NewKeeper(
-	// 	appCodec,
-	// 	encodingConfig.TxConfig,
-	// 	keys[nftmarkettypes.StoreKey],
-	// 	keys[nftmarkettypes.MemStoreKey],
-	// 	app.GetSubspace(nftmarkettypes.ModuleName),
-	// 	app.AccountKeeper,
-	// 	app.BankKeeper,
-	// 	app.NFTKeeper,
-	// )
+	nftmarketKeeper := nftmarketkeeper.NewKeeper(
+		appCodec,
+		encodingConfig.TxConfig,
+		keys[nftmarkettypes.StoreKey],
+		keys[nftmarkettypes.MemStoreKey],
+		app.GetSubspace(nftmarkettypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.NFTKeeper,
+	)
 
 	scopedIcacallbacksKeeper := app.CapabilityKeeper.ScopeToModule(icacallbackstypes.ModuleName)
 	app.ScopedIcacallbacksKeeper = scopedIcacallbacksKeeper
@@ -828,18 +830,19 @@ func NewApp(
 		app.PricefeedKeeper,
 	)
 
-	// app.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
-	// 	appCodec,
-	// 	keys[ecosystemincentivetypes.StoreKey],
-	// 	app.GetSubspace(ecosystemincentivetypes.ModuleName),
-	// 	app.AccountKeeper,
-	// 	app.BankKeeper,
-	// 	// same as the feeCollectorName in the distribution module
-	// 	authtypes.FeeCollectorName,
-	// )
+	app.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
+		appCodec,
+		keys[ecosystemincentivetypes.StoreKey],
+		app.GetSubspace(ecosystemincentivetypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.DistrKeeper,
+		// same as the feeCollectorName in the distribution module
+		authtypes.FeeCollectorName,
+	)
 
 	// create Keeper objects which have Hooks
-	// app.NftmarketKeeper = *nftmarketKeeper.SetHooks(nftmarkettypes.NewMultiNftmarketHooks(app.EcosystemincentiveKeeper.Hooks()))
+	app.NftmarketKeeper = *nftmarketKeeper.SetHooks(nftmarkettypes.NewMultiNftbackedloanHooks(app.EcosystemincentiveKeeper.Hooks()))
 
 	// Register the proposal types
 	// Deprecated: Avoid adding new handlers, instead use the new proposal flow
@@ -946,7 +949,7 @@ func NewApp(
 
 		// original modules
 		// nftmint.NewAppModule(appCodec, app.NftmintKeeper, app.NFTKeeper),
-		// nftmarket.NewAppModule(appCodec, app.NftmarketKeeper, app.AccountKeeper, app.BankKeeper),
+		nftmarket.NewAppModule(appCodec, app.NftmarketKeeper, app.AccountKeeper, app.BankKeeper),
 
 		yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
 		stakeibc.NewAppModule(appCodec, app.StakeibcKeeper, app.AccountKeeper, app.BankKeeper),
@@ -957,7 +960,7 @@ func NewApp(
 
 		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
 		pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
-		// ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
+		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -985,11 +988,11 @@ func NewApp(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		// original modules
-		// ecosystemincentivetypes.ModuleName,
+		ecosystemincentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
 
 		// nftminttypes.ModuleName,
-		// nftmarkettypes.ModuleName,
+		nftmarkettypes.ModuleName,
 
 		stakeibctypes.ModuleName,
 		epochstypes.ModuleName,
@@ -1029,11 +1032,11 @@ func NewApp(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		// original modules
-		// ecosystemincentivetypes.ModuleName,
+		ecosystemincentivetypes.ModuleName,
 		pricefeedtypes.ModuleName,
 
 		// nftminttypes.ModuleName,
-		// nftmarkettypes.ModuleName,
+		nftmarkettypes.ModuleName,
 		stakeibctypes.ModuleName,
 		epochstypes.ModuleName,
 		interchainquerytypes.ModuleName,
@@ -1082,8 +1085,8 @@ func NewApp(
 		// original modules
 		pricefeedtypes.ModuleName,
 		// nftminttypes.ModuleName,
-		// nftmarkettypes.ModuleName,
-		// ecosystemincentivetypes.ModuleName,
+		nftmarkettypes.ModuleName,
+		ecosystemincentivetypes.ModuleName,
 
 		stakeibctypes.ModuleName,
 		epochstypes.ModuleName,
@@ -1425,7 +1428,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(wasm.ModuleName)
 
 	// original modules
-	// paramsKeeper.Subspace(nftmarkettypes.ModuleName)
+	paramsKeeper.Subspace(nftmarkettypes.ModuleName)
 	// paramsKeeper.Subspace(nftminttypes.ModuleName)
 
 	paramsKeeper.Subspace(stakeibctypes.ModuleName)
@@ -1437,7 +1440,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 
 	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
 	paramsKeeper.Subspace(derivativestypes.ModuleName)
-	// paramsKeeper.Subspace(ecosystemincentivetypes.ModuleName)
+	paramsKeeper.Subspace(ecosystemincentivetypes.ModuleName)
 
 	return paramsKeeper
 }

@@ -238,3 +238,9 @@ message EventPerpetualFuturesLiquidationFee {
     (gogoproto.moretags) = "yaml:\"position_id\""
   ];
 }
+
+message EventLiquidationNeeded {
+  string position_id = 1 [
+    (gogoproto.moretags) = "yaml:\"position_id\""
+  ];
+}

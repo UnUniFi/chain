@@ -95,7 +95,7 @@ func (k Keeper) ListedNftsByOwner(c context.Context, address sdk.AccAddress) (*t
 	}, nil
 }
 
-// todo add pagenation
+// todo add pagination
 func (k Keeper) ListedClasses(c context.Context, req *types.QueryListedClassesRequest) (*types.QueryListedClassesResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
@@ -168,7 +168,7 @@ func (k Keeper) GetListedClass(ctx sdk.Context, classId string, limit int) (*typ
 		nfts = append(nfts, types.NftInfo{Id: nftInfo.Id, Uri: nftInfo.Uri, UriHash: nftInfo.UriHash})
 	}
 
-	for i, _ := range nfts {
+	for i := range nfts {
 		pnfts = append(pnfts, &nfts[i])
 	}
 
@@ -300,7 +300,7 @@ func (k Keeper) PaymentStatus(c context.Context, req *types.QueryPaymentStatusRe
 		return nil, status.Error(codes.InvalidArgument, "does not match bidder")
 	}
 
-	allPaid := listing.State >= types.ListingState_END_LISTING && bidderBid.BidAmount.Amount.Equal(bidderBid.DepositAmount.Amount)
+	allPaid := listing.State >= types.ListingState_LIQUIDATION && bidderBid.BidAmount.Amount.Equal(bidderBid.DepositAmount.Amount)
 	return &types.QueryPaymentStatusResponse{
 		PaymentStatus: types.PaymentStatus{
 			NftId:            listing.NftId,
@@ -331,24 +331,18 @@ func (k Keeper) Liquidation(c context.Context, req *types.QueryLiquidationReques
 	bidsLen := len(bids)
 	for i := 0; i < bidsLen; i++ {
 		checkBid := bids[0]
-		if listing.CanRefinancing(bids, []types.NftBid{checkBid}, ctx.BlockTime()) {
-			require := checkBid.LiquidationAmount(checkBid.BiddingPeriod)
-			// we must use new bids because we need to exclude expired bids
-			bids = bids.MakeBorrowedBidExcludeExpiredBids(require, checkBid.BiddingPeriod, []types.NftBid{checkBid})
-			continue
-		} else {
-			liq := types.Liquidation{
-				Amount: sdk.NewCoin(listing.BidToken, sdk.ZeroInt()),
-			}
-			liq.Amount = checkBid.LiquidationAmount(checkBid.BiddingPeriod)
-			liq.LiquidationDate = checkBid.BiddingPeriod
-			if liqs.Liquidation == nil {
-				liqs.Liquidation = &liq
-			} else {
-				liqs.NextLiquidation = append(liqs.NextLiquidation, liq)
-			}
-			bids = bids.MakeBorrowedBidExcludeExpiredBids(liq.Amount, checkBid.BiddingPeriod, []types.NftBid{checkBid})
+		liq := types.Liquidation{
+			Amount: sdk.NewCoin(listing.BidToken, sdk.ZeroInt()),
 		}
+		liq.Amount = checkBid.LiquidationAmount(checkBid.BiddingPeriod)
+		liq.LiquidationDate = checkBid.BiddingPeriod
+		if liqs.Liquidation == nil {
+			liqs.Liquidation = &liq
+		} else {
+			liqs.NextLiquidation = append(liqs.NextLiquidation, liq)
+		}
+		bids = bids.MakeBorrowedBidExcludeExpiredBids(liq.Amount, checkBid.BiddingPeriod, []types.NftBid{checkBid})
+
 	}
 
 	return &types.QueryLiquidationResponse{
