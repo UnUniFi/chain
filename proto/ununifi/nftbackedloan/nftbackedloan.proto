@@ -51,8 +51,8 @@ message NftListing {
   ];
   google.protobuf.Timestamp started_at = 6
       [(gogoproto.moretags) = "yaml:\"started_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
-  google.protobuf.Timestamp end_at = 7
-      [(gogoproto.moretags) = "yaml:\"end_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Timestamp liquidated_at = 7
+      [(gogoproto.moretags) = "yaml:\"liquidated_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
   google.protobuf.Timestamp full_payment_end_at = 8
       [(gogoproto.moretags) = "yaml:\"full_payment_end_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
   google.protobuf.Timestamp successful_bid_end_at = 9 [
