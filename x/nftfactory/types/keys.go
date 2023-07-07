@@ -12,7 +12,7 @@ const (
 	ChainName = "ununifi"
 
 	// StoreKey defines the primary module store key
-	StoreKey = ChainName + ModuleName
+	StoreKey = "_" + ModuleName
 
 	// RouterKey is the message route for nftfactory
 	RouterKey = ModuleName
