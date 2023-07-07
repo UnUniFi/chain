@@ -32,6 +32,14 @@ func (b NftBid) IdBytes() []byte {
 	return b.Id.NftId.IdBytes()
 }
 
+func (m NftListing) IsBidding() bool {
+	return m.State == ListingState_BIDDING
+}
+
+func (m NftListing) IsEnded() bool {
+	return m.State == ListingState_SELLING_DECISION || m.State == ListingState_LIQUIDATION || m.State == ListingState_SUCCESSFUL_BID
+}
+
 func (m NftListing) IsSelling() bool {
 	return m.State == ListingState_LISTING || m.State == ListingState_BIDDING
 }

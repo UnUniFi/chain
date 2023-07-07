@@ -51,4 +51,5 @@ var (
 	ErrInvalidBorrowAmount               = sdkerrors.Register(ModuleName, 44, "invalid borrow amount")
 	ErrInvalidRepayAmount                = sdkerrors.Register(ModuleName, 45, "invalid repay amount")
 	ErrCannotLiquidation                 = sdkerrors.Register(ModuleName, 46, "cannot liquidation")
+	ErrCannotSellingDecisionWithDebt     = sdkerrors.Register(ModuleName, 47, "cannot selling decision with debt")
 )
