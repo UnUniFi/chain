@@ -92,10 +92,26 @@ func (suite *KeeperTestSuite) TestGetLPNominalYieldRate() {
 	// check current height rate
 	pastLptPrice := suite.keeper.GetLPTPriceFromSnapshot(suite.ctx, 1)
 	suite.Require().Equal(pastLptPrice.String(), "100.000000000000000000")
+
+	//set market cap - uatom_balance: 1000000
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, sdk.Coins{sdk.NewInt64Coin("uatom", 1000000)})
+	suite.Require().NoError(err)
+
+	//lptoken supply 1000000
+	//uatom_balance: 1000000
+	//set uatom:usd price: 0.00001 in keeper_test.go
+	//total in marketcap =  uatom_balance * price = 10
+	//lpTokenPrice = total/lptoken_supply = 10/1000000 = 0.00001
 	currLptPrice := suite.keeper.GetLPTokenPrice(suite.ctx)
-	suite.Require().Equal(currLptPrice.String(), "0.000015280000000000")
+	suite.Require().Equal(currLptPrice.String(), "0.000010000000000000")
+
+	//blockHeight: 20
+	//lptoken_price in height 1 is 100
+	//current lptoken_price is 0.00001
+	//diff = current_lptoken_price - old_lptoken_price_in_snapshot
+	//currentRate = diff/before_price   (  (0.00001 - 100)/ 100 )
 	currentRate := suite.keeper.GetLPNominalYieldRate(suite.ctx, 1, suite.ctx.BlockHeight())
-	suite.Require().Equal(currentRate.String(), "-0.999999847200000000")
+	suite.Require().Equal(currentRate.String(), "-0.999999900000000000")
 }
 
 func (suite *KeeperTestSuite) TestGetInflationRateOfAssetsInPool() {

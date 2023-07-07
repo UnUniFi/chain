@@ -28,7 +28,6 @@ func (k Keeper) GetBlockTimestamp(ctx sdk.Context, height int64) time.Time {
 func (k Keeper) GetLPTPriceFromSnapshot(ctx sdk.Context, height int64) sdk.Dec {
 	poolMarketCap := k.GetPoolMarketCapSnapshot(ctx, height)
 	lptSupply := k.GetLPTokenSupplySnapshot(ctx, height)
-
 	lptPrice := poolMarketCap.CalculateLPTokenPrice(lptSupply)
 	return lptPrice
 }
@@ -38,7 +37,6 @@ func (k Keeper) GetLPNominalYieldRate(ctx sdk.Context, beforeHeight int64, after
 	if lptPriceBefore.IsZero() {
 		return sdk.ZeroDec()
 	}
-
 	lptPriceAfter := sdk.ZeroDec()
 	if afterHeight > ctx.BlockHeight() {
 		return sdk.ZeroDec()
@@ -49,7 +47,6 @@ func (k Keeper) GetLPNominalYieldRate(ctx sdk.Context, beforeHeight int64, after
 	}
 
 	diff := lptPriceAfter.Sub(lptPriceBefore)
-
 	return diff.Quo(lptPriceBefore)
 }
 
@@ -103,7 +100,6 @@ func (k Keeper) GetLPRealYieldRate(ctx sdk.Context, beforeHeight int64, afterHei
 func (k Keeper) AnnualizeYieldRate(ctx sdk.Context, yieldRate sdk.Dec, beforeHeight int64, afterHeight int64) sdk.Dec {
 	beforeBlockTimestamp := k.GetBlockTimestamp(ctx, beforeHeight).Unix()
 	afterBlockTimestamp := k.GetBlockTimestamp(ctx, afterHeight).Unix()
-
 	if beforeBlockTimestamp == afterBlockTimestamp {
 		return sdk.ZeroDec()
 	}

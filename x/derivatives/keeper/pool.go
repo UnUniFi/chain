@@ -92,7 +92,6 @@ func (k Keeper) GetPoolQuoteTicker(ctx sdk.Context) string {
 
 func (k Keeper) GetPoolMarketCap(ctx sdk.Context) (types.PoolMarketCap, error) {
 	assets := k.GetPoolAcceptedAssetsConf(ctx)
-
 	assetInfoList := []types.PoolMarketCap_AssetInfo{}
 	mc := sdk.NewDec(0)
 

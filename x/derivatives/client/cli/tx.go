@@ -75,10 +75,7 @@ $ %s tx %s deposit-to-pool --from myKeyName --chain-id ununifi-x
 				return err
 			}
 
-			msg := types.MsgDepositToPool{
-				Sender: sender.String(),
-				Amount: amount,
-			}
+			msg := types.NewMsgDepositToPool(sender.String(), amount)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -294,16 +291,11 @@ $ %s tx %s report-liquidation --from myKeyName --chain-id ununifi-x
 			}
 
 			sender := clientCtx.GetFromAddress()
-			recipient, err := sdk.AccAddressFromBech32(args[1])
-			if err != nil {
-				return err
-			}
-
-			msg := types.MsgReportLiquidation{
-				Sender:          sender.String(),
-				PositionId:      args[0],
-				RewardRecipient: recipient.String(),
-			}
+			msg := types.NewMsgReportLiquidation(
+				sender.String(),
+				args[0],
+				args[1],
+			)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -332,17 +324,9 @@ $ %s tx %s report-levy-period --from myKeyName --chain-id ununifi-x
 				return err
 			}
 
-			sender := clientCtx.GetFromAddress()
-			recipient, err := sdk.AccAddressFromBech32(args[1])
-			if err != nil {
-				return err
-			}
-
-			msg := types.MsgReportLevyPeriod{
-				Sender:          sender.String(),
-				PositionId:      args[0],
-				RewardRecipient: recipient.String(),
-			}
+			msg := types.NewMsgReportLevyPeriod(
+				clientCtx.GetFromAddress().String(), args[0], args[1],
+			)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err

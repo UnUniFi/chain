@@ -17,6 +17,7 @@ import (
 	simapp "github.com/UnUniFi/chain/app"
 	"github.com/UnUniFi/chain/x/derivatives/keeper"
 	"github.com/UnUniFi/chain/x/derivatives/types"
+	"github.com/cosmos/cosmos-sdk/baseapp"
 )
 
 var (
@@ -30,18 +31,22 @@ type KeeperTestSuite struct {
 	ctx sdk.Context
 	app *simapp.App
 	// addrs           []sdk.AccAddress
-	// queryClient     types.QueryClient
+	queryClient     types.QueryClient
 	keeper          keeper.Keeper
 	pricefeedKeeper pricefeedkeeper.Keeper
 }
 
 func (suite *KeeperTestSuite) SetupTest() {
 	isCheckTx := false
-
 	app := simapp.Setup(suite.T(), ([]wasm.Option{})...)
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
+	queryHelper := baseapp.NewQueryServerTestHelper(ctx, app.InterfaceRegistry())
+	types.RegisterQueryServer(queryHelper, app.DerivativesKeeper)
+	queryClient := types.NewQueryClient(queryHelper)
 	suite.ctx = app.BaseApp.NewContext(isCheckTx, tmproto.Header{})
 	suite.app = app
+	suite.queryClient = queryClient
 
 	metadataAtom := banktypes.Metadata{
 		DenomUnits: []*banktypes.DenomUnit{
@@ -95,6 +100,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 	suite.keeper = app.DerivativesKeeper
 	suite.pricefeedKeeper = app.PricefeedKeeper
+
 }
 
 func TestKeeperSuite(t *testing.T) {

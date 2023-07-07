@@ -18,6 +18,14 @@ func NewMsgDepositToPool(sender string, amount sdk.Coin) MsgDepositToPool {
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
 func (msg MsgDepositToPool) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
+	}
+
+	if msg.Amount.Amount.LT(sdk.NewInt(1)) {
+		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, "insufficient funds", "")
+	}
 	return nil
 }
 
@@ -44,8 +52,11 @@ func (msg MsgWithdrawFromPool) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address is not valid")
 	}
-
+	if msg.LptAmount.LT(sdk.NewInt(1)) {
+		return sdkerrors.Wrapf(ErrInsufficientAmount, "insufficient funds")
+	}
 	return nil
+
 }
 
 // GetSigners returns the addresses of signers that must sign.
@@ -72,7 +83,10 @@ func (msg MsgOpenPosition) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address is not valid")
 	}
-
+	_, err1 := UnpackPositionInstance(msg.PositionInstance)
+	if err1 != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "positionInstance is not valid")
+	}
 	return nil
 }
 
@@ -121,6 +135,15 @@ func NewMsgReportLiquidation(sender string, positionId string, rewardRecipient s
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
 func (msg MsgReportLiquidation) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address is not valid")
+	}
+
+	_, err1 := sdk.AccAddressFromBech32(msg.RewardRecipient)
+	if err1 != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address is not valid")
+	}
 	return nil
 }
 
@@ -132,8 +155,12 @@ func (msg MsgReportLiquidation) GetSigners() []sdk.AccAddress {
 
 var _ sdk.Msg = &MsgReportLevyPeriod{}
 
-func NewMsgReportLevyPeriod() MsgReportLevyPeriod {
-	return MsgReportLevyPeriod{}
+func NewMsgReportLevyPeriod(sender string, positionId string, rewardRecipient string) MsgReportLevyPeriod {
+	return MsgReportLevyPeriod{
+		Sender:          sender,
+		PositionId:      positionId,
+		RewardRecipient: rewardRecipient,
+	}
 }
 
 // ValidateBasic does a simple validation check that doesn't require access to state.

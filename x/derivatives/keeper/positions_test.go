@@ -60,6 +60,7 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 			PositionInstance: *position0Inst,
 			RemainingMargin:  sdk.NewCoin("uusdc", sdk.NewInt(1000)),
 			LastLeviedAt:     time.Now().UTC(),
+			LeviedAmount:     sdk.NewCoin("uusdc", sdk.NewInt(100)),
 		},
 		{
 			Id:      "1",
@@ -75,6 +76,7 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 			PositionInstance: *position1Inst,
 			RemainingMargin:  sdk.NewCoin("uatom", sdk.NewInt(1000)),
 			LastLeviedAt:     time.Now().UTC(),
+			LeviedAmount:     sdk.NewCoin("uatom", sdk.NewInt(100)),
 		},
 	}
 
