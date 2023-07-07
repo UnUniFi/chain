@@ -9,7 +9,7 @@ import (
 // EndBlocker updates the current pricefeed
 func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 
-	// process ending nft listings
+	// process liquidation of expired bids
 	k.ProcessLiquidateExpiredBids(ctx)
 
 	// handle full payment period endings

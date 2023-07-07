@@ -146,7 +146,7 @@ func MaxBorrowAmount(bids []NftBid, time time.Time) (types.Coin, error) {
 	if err != nil {
 		return types.Coin{}, err
 	}
-	bidsSortedByRate := NftBids(bids).SortLowerLendingRate()
+	bidsSortedByRate := NftBids(bids).SortLowerInterestRate()
 	borrowAmount := types.NewCoin(bids[0].BidAmount.Denom, sdk.NewInt(0))
 
 	for _, bid := range bidsSortedByRate {

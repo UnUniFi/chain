@@ -518,7 +518,10 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 }
 
 func (k Keeper) SellingDecisionProcessLiquidationProcess(ctx sdk.Context, bids types.NftBids, listing types.NftListing, params types.Params) error {
-	highestBid := bids.GetHighestBid()
+	highestBid, err := bids.GetHighestBid()
+	if err != nil {
+		return err
+	}
 	// if winner bidder did not pay full bid, nft is listed again after deleting winner bidder
 	if !highestBid.IsPaidBidAmount() {
 		err := k.DeleteBid(ctx, highestBid)

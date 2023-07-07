@@ -329,7 +329,7 @@ func (k Keeper) Liquidation(c context.Context, req *types.QueryLiquidationReques
 	}
 
 	bids := types.NftBids(k.GetBidsByNft(ctx, listing.NftId.IdBytes()))
-	bids = bids.SortLowerBiddingPeriod()
+	bids = bids.SortLowerExpiryDate()
 	liquidations := &types.Liquidations{}
 	// after 1 hour
 	afterAnHour := ctx.BlockTime().Add(time.Hour)
