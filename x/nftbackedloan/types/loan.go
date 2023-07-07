@@ -46,10 +46,12 @@ func LiquidationBid(bidsSortedByDeposit []NftBid, time time.Time) (NftBid, error
 	var ret NftBid
 
 	for _, bid := range bidsSortedByDeposit {
+		// if the bid is not paid, the deposit is forfeited.
 		if !bid.IsPaidBidAmount() {
 			forfeitedDeposit = forfeitedDeposit.Add(bid.DepositAmount)
 			continue
 		}
+		// if the bid is paid, the bid amount + forfeited deposit < settlement amount
 		if bid.BidAmount.Add(forfeitedDeposit).IsLT(settlementAmount) {
 			continue
 		}
@@ -58,7 +60,12 @@ func LiquidationBid(bidsSortedByDeposit []NftBid, time time.Time) (NftBid, error
 	}
 
 	if ret.IsNil() {
-		return NftBid{}, nil
+		// No error, if liquidation is available
+		if settlementAmount.IsLTE(forfeitedDeposit) {
+			return NftBid{}, nil
+		}
+		// With Error, if liquidation is not available
+		return NftBid{}, ErrCannotLiquidation
 	}
 
 	return ret, nil

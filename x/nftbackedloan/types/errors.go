@@ -50,4 +50,5 @@ var (
 	ErrCannotRebid                       = sdkerrors.Register(ModuleName, 43, "cannot rebid with the deposit, rate and period")
 	ErrInvalidBorrowAmount               = sdkerrors.Register(ModuleName, 44, "invalid borrow amount")
 	ErrInvalidRepayAmount                = sdkerrors.Register(ModuleName, 45, "invalid repay amount")
+	ErrCannotLiquidation                 = sdkerrors.Register(ModuleName, 46, "cannot liquidation")
 )

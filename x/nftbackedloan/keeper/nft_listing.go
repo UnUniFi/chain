@@ -547,6 +547,7 @@ func (k Keeper) LiquidationProcess(ctx sdk.Context, bids types.NftBids, listing 
 	// PayFullBid has been finished at this point
 	// loop to find winner bid (collect deposits + bid amount > repay amount)
 	bidsSortedByDeposit := bids.SortHigherDeposit()
+	// todo: add liquidation error
 	winnerBid, err := types.LiquidationBid(bidsSortedByDeposit, ctx.BlockTime())
 	if err != nil {
 		return err
