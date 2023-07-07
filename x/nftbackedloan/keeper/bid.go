@@ -125,10 +125,7 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 
 	bids := types.NftBids(k.GetBidsByNft(ctx, listing.IdBytes()))
 	bidder := msg.Sender
-	oldBid, err := bids.GetBidByBidder(bidder)
-	if err != nil {
-		return err
-	}
+	oldBid := bids.GetBidByBidder(bidder)
 	newBid := types.NftBid{
 		Id: types.BidId{
 			NftId:  &msg.NftId,

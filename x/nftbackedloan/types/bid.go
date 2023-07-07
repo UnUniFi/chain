@@ -171,9 +171,7 @@ func (m NftBids) GetHighestBid() (NftBid, error) {
 	if len(m) == 0 {
 		return NftBid{}, ErrNftBidDoesNotExists
 	}
-	highestBidder := NftBid{
-		BidAmount: sdk.NewCoin(m[0].BidAmount.Denom, sdk.ZeroInt()),
-	}
+	highestBidder := m[0]
 	for _, bid := range m {
 		if highestBidder.BidAmount.IsLT(bid.BidAmount) {
 			highestBidder = bid
@@ -183,13 +181,13 @@ func (m NftBids) GetHighestBid() (NftBid, error) {
 	return highestBidder, nil
 }
 
-func (m NftBids) GetBidByBidder(bidder string) (NftBid, error) {
+func (m NftBids) GetBidByBidder(bidder string) NftBid {
 	for _, bid := range m {
 		if bid.Id.Bidder == bidder {
-			return bid, nil
+			return bid
 		}
 	}
-	return NftBid{}, ErrNftBidDoesNotExists
+	return NftBid{}
 }
 
 func (m NftBids) RemoveBid(targetBid NftBid) NftBids {
