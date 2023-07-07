@@ -85,9 +85,7 @@ func (k Keeper) SetNftListing(ctx sdk.Context, listing types.NftListing) {
 	}
 	store.Set(types.NftAddressNftListingKey(owner, nftIdBytes), nftIdBytes)
 
-	if listing.IsActive() {
-		store.Set(append(getTimeKey(types.KeyPrefixEndTimeNftListing, listing.EndAt), nftIdBytes...), nftIdBytes)
-	} else if listing.IsFullPayment() {
+	if listing.IsFullPayment() {
 		store.Set(append(getTimeKey(types.KeyPrefixFullPaymentPeriodListing, listing.FullPaymentEndAt), nftIdBytes...), nftIdBytes)
 	} else if listing.IsSuccessfulBid() {
 		store.Set(append(getTimeKey(types.KeyPrefixSuccessfulBidListing, listing.SuccessfulBidEndAt), nftIdBytes...), nftIdBytes)
@@ -112,9 +110,7 @@ func (k Keeper) DeleteNftListing(ctx sdk.Context, listing types.NftListing) {
 	}
 	store.Delete(types.NftAddressNftListingKey(owner, nftIdBytes))
 
-	if listing.IsActive() {
-		store.Delete(append(getTimeKey(types.KeyPrefixEndTimeNftListing, listing.EndAt), nftIdBytes...))
-	} else if listing.IsFullPayment() {
+	if listing.IsFullPayment() {
 		store.Delete(append(getTimeKey(types.KeyPrefixFullPaymentPeriodListing, listing.FullPaymentEndAt), nftIdBytes...))
 	} else if listing.IsSuccessfulBid() {
 		store.Delete(append(getTimeKey(types.KeyPrefixSuccessfulBidListing, listing.SuccessfulBidEndAt), nftIdBytes...))
