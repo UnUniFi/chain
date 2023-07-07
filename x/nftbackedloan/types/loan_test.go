@@ -81,15 +81,18 @@ func TestMinSettlementAmount(t *testing.T) {
 
 func TestLiquidationBid(t *testing.T) {
 	now := time.Now()
+	nextYear := now.Add(time.Hour * 24 * 365)
 	testCases := []struct {
 		name      string
 		bids      []types.NftBid
 		expResult types.NftBid
+		expError  bool
 	}{
 		{
 			name:      "empty bid",
 			bids:      []types.NftBid{},
 			expResult: types.NftBid{},
+			expError:  true,
 		},
 		{
 			name: "one bid, paid",
@@ -106,7 +109,10 @@ func TestLiquidationBid(t *testing.T) {
 					DepositAmount: sdk.NewInt64Coin("uatom", 30),
 					PaidAmount:    sdk.NewInt64Coin("uatom", 70),
 					InterestRate:  sdk.NewDecWithPrec(1, 1),
-					Borrow:        types.Borrowing{},
+					Borrow: types.Borrowing{
+						Amount:       sdk.NewInt64Coin("uatom", 20),
+						LastRepaidAt: now,
+					},
 				},
 			},
 			expResult: types.NftBid{
@@ -118,9 +124,10 @@ func TestLiquidationBid(t *testing.T) {
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
 			},
+			expError: false,
 		},
 		{
-			name: "one bid, paid",
+			name: "one bid, no paid",
 			bids: []types.NftBid{
 				{
 					Id: types.BidId{
@@ -134,9 +141,14 @@ func TestLiquidationBid(t *testing.T) {
 					DepositAmount: sdk.NewInt64Coin("uatom", 30),
 					PaidAmount:    sdk.NewInt64Coin("uatom", 0),
 					InterestRate:  sdk.NewDecWithPrec(1, 1),
+					Borrow: types.Borrowing{
+						Amount:       sdk.NewInt64Coin("uatom", 20),
+						LastRepaidAt: now,
+					},
 				},
 			},
 			expResult: types.NftBid{},
+			expError:  false,
 		},
 		{
 			name: "two bids, paid",
@@ -153,6 +165,10 @@ func TestLiquidationBid(t *testing.T) {
 					DepositAmount: sdk.NewInt64Coin("uatom", 30),
 					PaidAmount:    sdk.NewInt64Coin("uatom", 70),
 					InterestRate:  sdk.NewDecWithPrec(1, 1),
+					Borrow: types.Borrowing{
+						Amount:       sdk.NewInt64Coin("uatom", 20),
+						LastRepaidAt: now,
+					},
 				},
 				{
 					Id: types.BidId{
@@ -166,6 +182,10 @@ func TestLiquidationBid(t *testing.T) {
 					DepositAmount: sdk.NewInt64Coin("uatom", 50),
 					PaidAmount:    sdk.NewInt64Coin("uatom", 150),
 					InterestRate:  sdk.NewDecWithPrec(1, 1),
+					Borrow: types.Borrowing{
+						Amount:       sdk.NewInt64Coin("uatom", 30),
+						LastRepaidAt: now,
+					},
 				},
 			},
 			expResult: types.NftBid{
@@ -177,6 +197,7 @@ func TestLiquidationBid(t *testing.T) {
 					Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 				},
 			},
+			expError: false,
 		},
 		{
 			name: "two bids, unpaid top bid",
@@ -193,6 +214,10 @@ func TestLiquidationBid(t *testing.T) {
 					DepositAmount: sdk.NewInt64Coin("uatom", 30),
 					PaidAmount:    sdk.NewInt64Coin("uatom", 70),
 					InterestRate:  sdk.NewDecWithPrec(1, 1),
+					Borrow: types.Borrowing{
+						Amount:       sdk.NewInt64Coin("uatom", 20),
+						LastRepaidAt: now,
+					},
 				},
 				{
 					Id: types.BidId{
@@ -206,6 +231,10 @@ func TestLiquidationBid(t *testing.T) {
 					DepositAmount: sdk.NewInt64Coin("uatom", 50),
 					PaidAmount:    sdk.NewInt64Coin("uatom", 0),
 					InterestRate:  sdk.NewDecWithPrec(1, 1),
+					Borrow: types.Borrowing{
+						Amount:       sdk.NewInt64Coin("uatom", 30),
+						LastRepaidAt: now,
+					},
 				},
 			},
 			expResult: types.NftBid{
@@ -217,14 +246,59 @@ func TestLiquidationBid(t *testing.T) {
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
 			},
+			expError: false,
+		},
+		{
+			name: "cannot liquidate",
+			bids: []types.NftBid{
+				{
+					Id: types.BidId{
+						NftId: &types.NftIdentifier{
+							ClassId: "a10",
+							NftId:   "a10",
+						},
+						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
+					},
+					BidAmount:     sdk.NewInt64Coin("uatom", 100),
+					DepositAmount: sdk.NewInt64Coin("uatom", 30),
+					PaidAmount:    sdk.NewInt64Coin("uatom", 0),
+					InterestRate:  sdk.NewDecWithPrec(1, 1),
+					Borrow: types.Borrowing{
+						Amount:       sdk.NewInt64Coin("uatom", 30),
+						LastRepaidAt: now,
+					},
+				},
+				{
+					Id: types.BidId{
+						NftId: &types.NftIdentifier{
+							ClassId: "a10",
+							NftId:   "a10",
+						},
+						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
+					},
+					BidAmount:     sdk.NewInt64Coin("uatom", 200),
+					DepositAmount: sdk.NewInt64Coin("uatom", 50),
+					PaidAmount:    sdk.NewInt64Coin("uatom", 0),
+					InterestRate:  sdk.NewDecWithPrec(1, 1),
+					Borrow: types.Borrowing{
+						Amount:       sdk.NewInt64Coin("uatom", 50),
+						LastRepaidAt: now,
+					},
+				},
+			},
+			expResult: types.NftBid{},
+			expError:  true,
 		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			bidsSortedByDeposit := types.NftBids(tc.bids).SortHigherDeposit()
-			result, err := types.LiquidationBid(bidsSortedByDeposit, now)
-			if err != nil {
-				if tc.name != "empty bid" {
+			result, err := types.LiquidationBid(bidsSortedByDeposit, nextYear)
+			if tc.expError {
+				require.Error(t, err)
+			}
+			if !tc.expError {
+				if err != nil {
 					t.Errorf("unexpected error: %v", err)
 				}
 			}
@@ -360,18 +434,17 @@ func TestExpectedRepayAmount(t *testing.T) {
 					BidAmount:     sdk.NewInt64Coin("uatom", 100000000),
 					DepositAmount: sdk.NewInt64Coin("uatom", 30000000),
 					InterestRate:  sdk.NewDecWithPrec(1, 1),
-					// Additional 1 minute for time error correction
-					ExpiryAt: nextMonth,
+					ExpiryAt:      nextMonth,
 				},
 			},
 			borrowBids: []types.BorrowBid{
 				{
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
-					Amount: sdk.NewInt64Coin("uatom", 200000000),
+					Amount: sdk.NewInt64Coin("uatom", 20000000),
 				},
 			},
-			// 30000000 * 0.1 / 365 / 24 = 342.46
-			expResult: sdk.NewInt64Coin("uatom", 30000342),
+			// 20000000 * e^(0.1 * 30/365) = 20165061
+			expResult: sdk.NewInt64Coin("uatom", 20165061),
 		},
 		{
 			name: "2 bid & over borrow",
@@ -414,8 +487,8 @@ func TestExpectedRepayAmount(t *testing.T) {
 				},
 			},
 			// if over borrow, borrow amount is deposit amount
-			// 50000000 * 0.1 / 365 / 24 = 570.7762
-			expResult: sdk.NewInt64Coin("uatom", 50000570),
+			// 50000000 * e^(0.1 * 30/365) = 50412652
+			expResult: sdk.NewInt64Coin("uatom", 50412652),
 		},
 	}
 
@@ -469,8 +542,8 @@ func TestExistRepayAmount(t *testing.T) {
 					},
 				},
 			},
-			// 20000000 * 0.1 / 365 / 24 = 228.31
-			expResult: sdk.NewInt64Coin("uatom", 20000228),
+			// 20000000 * e^(0.1 * 30/365) = 20165061
+			expResult: sdk.NewInt64Coin("uatom", 20165061),
 		},
 		{
 			name: "2 bid",
@@ -512,14 +585,96 @@ func TestExistRepayAmount(t *testing.T) {
 					},
 				},
 			},
-			// 60000000 * 0.1 / 365 / 24 = 685.89
-			expResult: sdk.NewInt64Coin("uatom", 60000685),
+			// 60000000 * e^(0.1 * 30/365) = 60495183
+			expResult: sdk.NewInt64Coin("uatom", 60495183),
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := types.ExistRepayAmount(tc.bids)
+			if err != nil {
+				if tc.name != "empty bid" {
+					t.Errorf("unexpected error: %v", err)
+				}
+			}
+			if !result.IsEqual(tc.expResult) {
+				t.Errorf("expected %s, got %s", tc.expResult, result)
+			}
+		})
+	}
+}
+
+func TestMaxBorrowAmount(t *testing.T) {
+	now := time.Now()
+	testCases := []struct {
+		name      string
+		bids      []types.NftBid
+		expResult sdk.Coin
+	}{
+		{
+			name:      "empty bid",
+			bids:      []types.NftBid{},
+			expResult: sdk.Coin{},
+		},
+		{
+			name: "one bid",
+			bids: []types.NftBid{
+				{
+					Id: types.BidId{
+						NftId: &types.NftIdentifier{
+							ClassId: "a10",
+							NftId:   "a10",
+						},
+						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
+					},
+					BidAmount:     sdk.NewInt64Coin("uatom", 100000000),
+					DepositAmount: sdk.NewInt64Coin("uatom", 30000000),
+					InterestRate:  sdk.NewDecWithPrec(5, 2), // 5%
+					ExpiryAt:      now.Add(time.Hour * 24 * 30),
+				},
+			},
+			// 30000000 / e^(0.05 * 30/365) = 29876965
+			expResult: sdk.NewInt64Coin("uatom", 29876965),
+		},
+		{
+			name: "2 bid",
+			bids: []types.NftBid{
+				{
+					Id: types.BidId{
+						NftId: &types.NftIdentifier{
+							ClassId: "a10",
+							NftId:   "a10",
+						},
+						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
+					},
+					BidAmount:     sdk.NewInt64Coin("uatom", 100000000),
+					DepositAmount: sdk.NewInt64Coin("uatom", 30000000),
+					InterestRate:  sdk.NewDecWithPrec(5, 2), // 5%
+					ExpiryAt:      now.Add(time.Hour * 24 * 30),
+				},
+				{
+					Id: types.BidId{
+						NftId: &types.NftIdentifier{
+							ClassId: "a10",
+							NftId:   "a10",
+						},
+						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
+					},
+					BidAmount:     sdk.NewInt64Coin("uatom", 200000000),
+					DepositAmount: sdk.NewInt64Coin("uatom", 80000000),
+					InterestRate:  sdk.NewDecWithPrec(1, 1), // 10%
+					ExpiryAt:      now.Add(time.Hour * 24 * 10),
+				},
+			},
+			// 30000000 + (110000000 - 30123541) / e^(0.1 * 10/365) =
+			expResult: sdk.NewInt64Coin("uatom", 109657918),
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			result, err := types.MaxBorrowAmount(tc.bids, now)
 			if err != nil {
 				if tc.name != "empty bid" {
 					t.Errorf("unexpected error: %v", err)
@@ -737,6 +892,10 @@ func TestIsAbleToReBid(t *testing.T) {
 			DepositAmount: sdk.NewInt64Coin("uatom", 30000000),
 			InterestRate:  sdk.NewDecWithPrec(5, 2), // 5%
 			ExpiryAt:      now.Add(time.Hour * 72),
+			Borrow: types.Borrowing{
+				Amount:       sdk.NewInt64Coin("uatom", 0),
+				LastRepaidAt: now,
+			},
 		},
 		{
 			Id: types.BidId{
@@ -802,6 +961,10 @@ func TestIsAbleToReBid(t *testing.T) {
 				DepositAmount: sdk.NewInt64Coin("uatom", 50000000),
 				InterestRate:  sdk.NewDecWithPrec(5, 2), // 5%
 				ExpiryAt:      now.Add(time.Hour * 72),
+				Borrow: types.Borrowing{
+					Amount:       sdk.NewInt64Coin("uatom", 0),
+					LastRepaidAt: now,
+				},
 			},
 			expResult: true,
 		},
@@ -826,6 +989,10 @@ func TestIsAbleToReBid(t *testing.T) {
 				DepositAmount: sdk.NewInt64Coin("uatom", 50),
 				InterestRate:  sdk.NewDecWithPrec(5, 3), // 0.5%
 				ExpiryAt:      now.Add(time.Hour * 72),
+				Borrow: types.Borrowing{
+					Amount:       sdk.NewInt64Coin("uatom", 0),
+					LastRepaidAt: now,
+				},
 			},
 			expResult: false,
 		},
