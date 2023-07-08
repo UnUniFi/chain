@@ -21,10 +21,10 @@ func TestMsgPostPrice_ValidateBasic(t *testing.T) {
 		msg        MsgPostPrice
 		expectPass bool
 	}{
-		{"normal", MsgPostPrice{addr, "xrp", price, expiry, sdk.NewCoin("uguu", sdk.NewInt(1000))}, true},
-		{"emptyAddr", MsgPostPrice{"", "xrp", price, expiry, sdk.NewCoin("uguu", sdk.NewInt(1000))}, false},
-		{"emptyAsset", MsgPostPrice{addr, "", price, expiry, sdk.NewCoin("uguu", sdk.NewInt(1000))}, false},
-		{"negativePrice", MsgPostPrice{addr, "xrp", negativePrice, expiry, sdk.NewCoin("uguu", sdk.NewInt(1000))}, false},
+		{"normal", MsgPostPrice{addr, "xrp", price, expiry}, true},
+		{"emptyAddr", MsgPostPrice{"", "xrp", price, expiry}, false},
+		{"emptyAsset", MsgPostPrice{addr, "", price, expiry}, false},
+		{"negativePrice", MsgPostPrice{addr, "xrp", negativePrice, expiry}, false},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
