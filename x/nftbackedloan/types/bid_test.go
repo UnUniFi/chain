@@ -155,7 +155,8 @@ func TestRepaidResult(t *testing.T) {
 			sdk.NewCoin("uguu", sdk.NewInt(200000)),
 			nextYear,
 			types.RepayResult{
-				RepaidAmount: sdk.NewCoin("uguu", sdk.NewInt(200000)),
+				RepaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(200000)),
+				RepaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(105171)),
 				// 1105171 - 200000 = 905171
 				RemainingBorrowAmount: sdk.NewCoin("uguu", sdk.NewInt(905171)),
 				LastRepaidAt:          nextYear,
@@ -181,6 +182,7 @@ func TestRepaidResult(t *testing.T) {
 			nextYear,
 			types.RepayResult{
 				RepaidAmount:          sdk.NewCoin("uguu", sdk.NewInt(1105171)),
+				RepaidInterestAmount:  sdk.NewCoin("uguu", sdk.NewInt(105171)),
 				RemainingBorrowAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
 				LastRepaidAt:          nextYear,
 			},
