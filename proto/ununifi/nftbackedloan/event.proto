@@ -66,7 +66,7 @@ message EventBorrow {
 }
 
 message EventRepay {
-  string repayer  = 1;
+  string borrower = 1;
   string class_id = 2;
   string nft_id   = 3;
   string amount   = 4;

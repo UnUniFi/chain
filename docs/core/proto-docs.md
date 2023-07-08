@@ -2775,7 +2775,7 @@ Query defines the gRPC querier service.
 
 | Field      | Type              | Label | Description |
 | ---------- | ----------------- | ----- | ----------- |
-| `repayer`  | [string](#string) |       |             |
+| `borrower`  | [string](#string) |       |             |
 | `class_id` | [string](#string) |       |             |
 | `nft_id`   | [string](#string) |       |             |
 | `amount`   | [string](#string) |       |             |
@@ -3528,7 +3528,7 @@ Query defines the gRPC querier service.
 
 | Field      | Type              | Label | Description |
 | ---------- | ----------------- | ----- | ----------- |
-| `repayer`  | [string](#string) |       |             |
+| `borrower`  | [string](#string) |       |             |
 | `class_id` | [string](#string) |       |             |
 | `nft_id`   | [string](#string) |       |             |
 | `amount`   | [string](#string) |       |             |
