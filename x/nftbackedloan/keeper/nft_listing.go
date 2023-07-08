@@ -637,9 +637,6 @@ func (k Keeper) LiquidationProcessWithWinner(ctx sdk.Context, collectBids, refun
 		return types.ErrNegativeCollectedAmount
 	}
 
-	// winnerInterestAmount := winnerBid.CompoundInterest(listing.LiquidatedAt)
-	// winnerBorrowedAmount := winnerBid.Borrow.Amount
-	// totalSubAmount := winnerInterestAmount.Add(winnerBorrowedAmount)
 	totalSubAmount := sdk.NewCoin(listing.BidDenom, sdk.ZeroInt())
 
 	// refund bids
