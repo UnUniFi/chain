@@ -116,6 +116,9 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 	if listing.BidDenom != msg.BidAmount.Denom {
 		return types.ErrInvalidBidDenom
 	}
+	if listing.BidDenom != msg.DepositAmount.Denom {
+		return types.ErrInvalidBidDenom
+	}
 
 	// todo add test case
 	minimumBiddingPeriodHour := time.Now().Add(listing.MinimumBiddingPeriod)
@@ -144,11 +147,11 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 	if !oldBid.IsNil() {
 		return k.ReBid(ctx, listing, oldBid, newBid, bids)
 	} else {
-		return k.FirstBid(ctx, listing, newBid, bids)
+		return k.FirstBid(ctx, listing, newBid)
 	}
 }
 
-func (k Keeper) ManualBid(ctx sdk.Context, listing types.NftListing, newBid types.NftBid, bids types.NftBids) error {
+func (k Keeper) ManualBid(ctx sdk.Context, listing types.NftListing, newBid types.NftBid) error {
 	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sdk.MustAccAddressFromBech32(newBid.Id.Bidder), types.ModuleName, sdk.Coins{newBid.DepositAmount})
 	if err != nil {
 		return err
@@ -168,8 +171,8 @@ func (k Keeper) ManualBid(ctx sdk.Context, listing types.NftListing, newBid type
 	return nil
 }
 
-func (k Keeper) FirstBid(ctx sdk.Context, listing types.NftListing, newBid types.NftBid, bids types.NftBids) error {
-	err := k.ManualBid(ctx, listing, newBid, bids)
+func (k Keeper) FirstBid(ctx sdk.Context, listing types.NftListing, newBid types.NftBid) error {
+	err := k.ManualBid(ctx, listing, newBid)
 	if err != nil {
 		return err
 	}
@@ -192,12 +195,17 @@ func (k Keeper) ReBid(ctx sdk.Context, listing types.NftListing, oldBid, newBid 
 	if !types.IsAbleToReBid(bids, oldBid.Id, newBid) {
 		return types.ErrCannotRebid
 	}
-	bids = bids.RemoveBid(oldBid)
+	// bids can only be updated X days after bidding
+	params := k.GetParamSet(ctx)
+	if oldBid.CreatedAt.Add(time.Duration(params.BidCancelRequiredSeconds) * time.Second).After(ctx.BlockTime()) {
+		return types.ErrBidCancelIsAllowedAfterSomeTime
+	}
+
 	err := k.SafeCloseBid(ctx, oldBid)
 	if err != nil {
 		return err
 	}
-	err = k.ManualBid(ctx, listing, newBid, bids)
+	err = k.ManualBid(ctx, listing, newBid)
 	if err != nil {
 		return err
 	}
@@ -299,13 +307,7 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 		return types.ErrCannotCancelBid
 	}
 
-	err = k.DeleteBid(ctx, bid)
-	if err != nil {
-		return err
-	}
-
-	// return deposit amount to bidder
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{bid.DepositAmount})
+	err = k.SafeCloseBid(ctx, bid)
 	if err != nil {
 		return err
 	}
