@@ -1,5 +1,7 @@
 package types
 
+import sdk "github.com/cosmos/cosmos-sdk/types"
+
 func (m NftListing) IdBytes() []byte {
 	return m.NftId.IdBytes()
 }
@@ -46,4 +48,36 @@ func (m NftListing) CanCancelBid() bool {
 
 func (m NftListing) CanBid() bool {
 	return m.State == ListingState_LISTING || m.State == ListingState_BIDDING
+}
+
+func (m NftListing) IsNegativeCollectedAmount() bool {
+	return m.CollectedAmountNegative
+}
+
+func (m NftListing) AddCollectedAmount(amount sdk.Coin) NftListing {
+	if m.CollectedAmountNegative {
+		if m.CollectedAmount.IsLTE(amount) {
+			m.CollectedAmount = amount.Sub(m.CollectedAmount)
+			m.CollectedAmountNegative = false
+		} else {
+			m.CollectedAmount = m.CollectedAmount.Sub(amount)
+		}
+	} else {
+		m.CollectedAmount = m.CollectedAmount.Add(amount)
+	}
+	return m
+}
+
+func (m NftListing) SubCollectedAmount(amount sdk.Coin) NftListing {
+	if m.CollectedAmountNegative {
+		m.CollectedAmount = m.CollectedAmount.Add(amount)
+	} else {
+		if m.CollectedAmount.IsLTE(amount) {
+			m.CollectedAmount = amount.Sub(m.CollectedAmount)
+			m.CollectedAmountNegative = false
+		} else {
+			m.CollectedAmount = m.CollectedAmount.Sub(amount)
+		}
+	}
+	return m
 }

@@ -151,6 +151,7 @@ func (k Keeper) ManualRepay(ctx sdk.Context, nft types.NftIdentifier, repays []t
 		}
 	}
 
+	// todo: pay interest to bidder
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{repaidAmount})
 	if err != nil {
 		return err

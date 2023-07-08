@@ -243,12 +243,12 @@ func (k Keeper) SafeCloseBidCollectDeposit(ctx sdk.Context, bid types.NftBid) (s
 }
 
 // todo make unit test
-func (k Keeper) SafeCloseBidWithAllInterest(ctx sdk.Context, bid types.NftBid) error {
+func (k Keeper) SafeCloseBidWithAllInterest(ctx sdk.Context, bid types.NftBid, time time.Time) error {
 	bidder, err := sdk.AccAddressFromBech32(bid.Id.Bidder)
 	if err != nil {
 		return err
 	}
-	interestAmount := bid.CompoundInterest(ctx.BlockTime())
+	interestAmount := bid.CompoundInterest(time)
 	if interestAmount.Amount.IsPositive() {
 		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{sdk.NewCoin(interestAmount.Denom, interestAmount.Amount)})
 		if err != nil {
@@ -258,24 +258,19 @@ func (k Keeper) SafeCloseBidWithAllInterest(ctx sdk.Context, bid types.NftBid) e
 	return k.ManualSafeCloseBid(ctx, bid, bidder)
 }
 
-// implement SafeCloseBidWithPartInterest
-// func (k Keeper) SafeCloseBidWithPartInterest(ctx sdk.Context, bid types.NftBid, interest sdk.Coin) error {
-// 	bidder, err := sdk.AccAddressFromBech32(bid.Id.Bidder)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	// check total interest amount is greater than interest
-// 	if bid.TotalInterestAmount(ctx.BlockTime()).Amount.LT(interest.Amount) {
-// 		return types.ErrInterestAmountTooLarge
-// 	}
-// 	if interest.Amount.GT(sdk.ZeroInt()) {
-// 		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{sdk.NewCoin(interest.Denom, interest.Amount)})
-// 		if err != nil {
-// 			return err
-// 		}
-// 	}
-// 	return k.ManualSafeCloseBid(ctx, bid, bidder)
-// }
+func (k Keeper) payInterestBid(ctx sdk.Context, bid types.NftBid, interestAmount sdk.Coin) error {
+	bidder, err := sdk.AccAddressFromBech32(bid.Id.Bidder)
+	if err != nil {
+		return err
+	}
+	if interestAmount.Amount.IsPositive() {
+		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{sdk.NewCoin(interestAmount.Denom, interestAmount.Amount)})
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
 func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
