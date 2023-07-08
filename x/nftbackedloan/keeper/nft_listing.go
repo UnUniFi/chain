@@ -317,7 +317,7 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 	}
 
 	// check bid exists
-	bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
+	bids := types.NftBids(k.GetBidsByNft(ctx, listing.NftId.IdBytes()))
 	if len(bids) == 0 {
 		return types.ErrNotExistsBid
 	}
@@ -336,10 +336,12 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 
 	// automatic payment if enabled
 	if len(bids) > 0 {
-		bidsSortedByPrice := types.NftBids(bids).SortHigherPrice()
-		winnerBid := bidsSortedByPrice[0]
-		if winnerBid.AutomaticPayment {
-			bidder, err := sdk.AccAddressFromBech32(winnerBid.Id.Bidder)
+		highestBid, err := bids.GetHighestBid()
+		if err != nil {
+			return err
+		}
+		if highestBid.AutomaticPayment {
+			bidder, err := sdk.AccAddressFromBech32(highestBid.Id.Bidder)
 			if err != nil {
 				return err
 			}
@@ -367,7 +369,8 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 	return nil
 }
 
-func (k Keeper) LiquidationListing(ctx sdk.Context, msg *types.MsgEndNftListing) error {
+// Status update Liquidation to pay full bid
+func (k Keeper) SetLiquidation(ctx sdk.Context, msg *types.MsgEndNftListing) error {
 	// check listing already exists
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
@@ -480,7 +483,7 @@ func (k Keeper) ProcessLiquidateExpiredBids(ctx sdk.Context) {
 			fmt.Println(err)
 			continue
 		}
-		err = k.LiquidationListing(ctx, &types.MsgEndNftListing{
+		err = k.SetLiquidation(ctx, &types.MsgEndNftListing{
 			Sender: listingOwner.String(),
 			NftId:  listing.NftId,
 		})
@@ -532,6 +535,14 @@ func (k Keeper) SellingDecisionProcess(ctx sdk.Context, bids types.NftBids, list
 			listing.State = types.ListingState_BIDDING
 		}
 	} else {
+		// close other bids
+		otherBids := bids.RemoveBid(highestBid)
+		for _, bid := range otherBids {
+			err := k.SafeCloseBid(ctx, bid)
+			if err != nil {
+				return err
+			}
+		}
 		// schedule NFT & token send after X days
 		listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
 		listing.State = types.ListingState_SUCCESSFUL_BID

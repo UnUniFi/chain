@@ -171,14 +171,14 @@ func (m NftBids) GetHighestBid() (NftBid, error) {
 	if len(m) == 0 {
 		return NftBid{}, ErrNftBidDoesNotExists
 	}
-	highestBidder := m[0]
+	highestBid := m[0]
 	for _, bid := range m {
-		if highestBidder.BidAmount.IsLT(bid.BidAmount) {
-			highestBidder = bid
+		if highestBid.BidAmount.IsLT(bid.BidAmount) {
+			highestBid = bid
 		}
 	}
 
-	return highestBidder, nil
+	return highestBid, nil
 }
 
 func (m NftBids) GetBidByBidder(bidder string) NftBid {
