@@ -149,9 +149,14 @@ func (k Keeper) ManualRepay(ctx sdk.Context, nft types.NftIdentifier, repays []t
 		if err != nil {
 			return err
 		}
+
+		// send interest to bidder
+		err = k.SendInterestToBidder(ctx, bid, repaidResult.RepaidInterestAmount)
+		if err != nil {
+			return err
+		}
 	}
 
-	// todo: pay interest to bidder
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{repaidAmount})
 	if err != nil {
 		return err
@@ -159,10 +164,10 @@ func (k Keeper) ManualRepay(ctx sdk.Context, nft types.NftIdentifier, repays []t
 
 	// Emit event for repay
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventRepay{
-		Repayer: borrower,
-		ClassId: nft.ClassId,
-		NftId:   nft.NftId,
-		Amount:  repaidAmount.String(),
+		Borrower: borrower,
+		ClassId:  nft.ClassId,
+		NftId:    nft.NftId,
+		Amount:   repaidAmount.String(),
 	})
 	return nil
 }
@@ -205,6 +210,12 @@ func (k Keeper) AutoRepay(ctx sdk.Context, nft types.NftIdentifier, bids types.N
 		if err != nil {
 			return err
 		}
+
+		// send interest to bidder
+		err = k.SendInterestToBidder(ctx, bid, repaidResult.RepaidInterestAmount)
+		if err != nil {
+			return err
+		}
 	}
 
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{repaidAmount})
@@ -214,10 +225,24 @@ func (k Keeper) AutoRepay(ctx sdk.Context, nft types.NftIdentifier, bids types.N
 
 	// Emit event for repay
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventRepay{
-		Repayer: borrower,
-		ClassId: nft.ClassId,
-		NftId:   nft.NftId,
-		Amount:  repaidAmount.String(),
+		Borrower: borrower,
+		ClassId:  nft.ClassId,
+		NftId:    nft.NftId,
+		Amount:   repaidAmount.String(),
 	})
+	return nil
+}
+
+func (k Keeper) SendInterestToBidder(ctx sdk.Context, bid types.NftBid, interestAmount sdk.Coin) error {
+	bidder, err := sdk.AccAddressFromBech32(bid.Id.Bidder)
+	if err != nil {
+		return err
+	}
+	if interestAmount.Amount.IsPositive() {
+		err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{sdk.NewCoin(interestAmount.Denom, interestAmount.Amount)})
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }

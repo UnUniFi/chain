@@ -67,6 +67,7 @@ func (m NftBid) CalcCompoundInterest(lendCoin sdk.Coin, startTime time.Time, end
 
 type RepayResult struct {
 	RepaidAmount          sdk.Coin
+	RepaidInterestAmount  sdk.Coin
 	RemainingBorrowAmount sdk.Coin
 	LastRepaidAt          time.Time
 }
@@ -79,6 +80,7 @@ func (m NftBid) RepaidResult(repayAmount sdk.Coin, payTime time.Time) RepayResul
 		remainingAmount := sdk.NewCoin(m.Borrow.Amount.Denom, sdk.ZeroInt())
 		return RepayResult{
 			RepaidAmount:          total,
+			RepaidInterestAmount:  interest,
 			RemainingBorrowAmount: remainingAmount,
 			LastRepaidAt:          payTime,
 		}
@@ -86,6 +88,7 @@ func (m NftBid) RepaidResult(repayAmount sdk.Coin, payTime time.Time) RepayResul
 		remainingAmount := total.Sub(repayAmount)
 		return RepayResult{
 			RepaidAmount:          repayAmount,
+			RepaidInterestAmount:  interest,
 			RemainingBorrowAmount: remainingAmount,
 			LastRepaidAt:          payTime,
 		}
@@ -99,6 +102,7 @@ func (m NftBid) FullRepaidResult(payTime time.Time) RepayResult {
 	remainingAmount := sdk.NewCoin(m.Borrow.Amount.Denom, sdk.ZeroInt())
 	return RepayResult{
 		RepaidAmount:          total,
+		RepaidInterestAmount:  interest,
 		RemainingBorrowAmount: remainingAmount,
 		LastRepaidAt:          payTime,
 	}
