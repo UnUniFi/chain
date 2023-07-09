@@ -52,6 +52,9 @@ func (m NftBid) CompoundInterest(end time.Time) sdk.Coin {
 
 func (m NftBid) CalcCompoundInterest(lendCoin sdk.Coin, startTime time.Time, endTime time.Time) sdk.Coin {
 	lendingDuration := endTime.Sub(startTime)
+	if lendingDuration <= 0 {
+		return sdk.NewCoin(lendCoin.Denom, sdk.ZeroInt())
+	}
 	oneYearDays := sdk.NewInt(365)
 	oneDayHours := sdk.NewInt(24)
 	durationUnitsYear := sdk.NewDecFromInt(sdk.NewInt(int64(lendingDuration.Hours()))).QuoInt(oneDayHours).QuoInt(oneYearDays)
