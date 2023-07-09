@@ -118,6 +118,7 @@ func (suite *KeeperTestSuite) TestPlaceBid() {
 	}
 }
 
+// CloseBid Test
 func (suite *KeeperTestSuite) TestSafeCloseBid() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
@@ -188,8 +189,8 @@ func (suite *KeeperTestSuite) TestSafeCloseBid() {
 
 		err = suite.app.NftbackedloanKeeper.PlaceBid(suite.ctx, &tc.msgBid)
 		suite.NoError(err)
-		bids := types.NftBids(suite.app.NftbackedloanKeeper.GetBidsByNft(suite.ctx, listing.IdBytes()))
-		bid := bids.GetBidByBidder(bidder.String())
+		bid, err := suite.app.NftbackedloanKeeper.GetBid(suite.ctx, tc.msgBid.NftId.IdBytes(), bidder)
+		suite.NoError(err)
 		balance := suite.app.BankKeeper.GetBalance(suite.ctx, bidder, "uguu")
 		suite.Equal(tc.expectBidAmount, balance)
 
@@ -197,5 +198,90 @@ func (suite *KeeperTestSuite) TestSafeCloseBid() {
 		suite.NoError(err)
 		balance = suite.app.BankKeeper.GetBalance(suite.ctx, bidder, "uguu")
 		suite.Equal(tc.expectClosedAmount, balance)
+	}
+}
+
+func (suite *KeeperTestSuite) TestPayFullBid() {
+	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+
+	listing := types.NftListing{
+		NftId:              types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
+		Owner:              owner.String(),
+		State:              types.ListingState_LISTING,
+		BidDenom:           "uguu",
+		MinimumDepositRate: sdk.NewDecWithPrec(1, 1),
+		StartedAt:          time.Now(),
+	}
+
+	tests := []struct {
+		testCase               string
+		msgBid                 types.MsgPlaceBid
+		initAmount             sdk.Coin
+		expectBidAmount        sdk.Coin
+		expectPayFullBidAmount sdk.Coin
+	}{
+		{
+			testCase: "pass first bid",
+			msgBid: types.MsgPlaceBid{
+				Sender:           bidder.String(),
+				NftId:            types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
+				BidAmount:        sdk.NewInt64Coin("uguu", 10000000),
+				ExpiryAt:         time.Now().Add(time.Hour * 24),
+				InterestRate:     sdk.NewDecWithPrec(1, 1),
+				AutomaticPayment: true,
+				DepositAmount:    sdk.NewInt64Coin("uguu", 1000000),
+			},
+			initAmount:             sdk.NewInt64Coin("uguu", 20000000),
+			expectBidAmount:        sdk.NewInt64Coin("uguu", 19000000),
+			expectPayFullBidAmount: sdk.NewInt64Coin("uguu", 10000000),
+		},
+	}
+
+	for _, tc := range tests {
+		suite.SetupTest()
+
+		now := time.Now()
+		suite.ctx = suite.ctx.WithBlockTime(now)
+
+		_ = suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+			Id:          listing.NftId.ClassId,
+			Name:        listing.NftId.ClassId,
+			Symbol:      listing.NftId.ClassId,
+			Description: listing.NftId.ClassId,
+			Uri:         listing.NftId.ClassId,
+		})
+		_ = suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
+			ClassId: listing.NftId.ClassId,
+			Id:      listing.NftId.NftId,
+			Uri:     listing.NftId.NftId,
+			UriHash: listing.NftId.NftId,
+		}, owner)
+
+		err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
+			Sender:             listing.Owner,
+			NftId:              listing.NftId,
+			BidDenom:           listing.BidDenom,
+			MinimumDepositRate: listing.MinimumDepositRate,
+		})
+		suite.Require().NoError(err)
+
+		err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{tc.initAmount})
+		suite.NoError(err)
+		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{tc.initAmount})
+		suite.NoError(err)
+
+		err = suite.app.NftbackedloanKeeper.PlaceBid(suite.ctx, &tc.msgBid)
+		suite.NoError(err)
+		balance := suite.app.BankKeeper.GetBalance(suite.ctx, bidder, "uguu")
+		suite.Equal(tc.expectBidAmount, balance)
+
+		err = suite.app.NftbackedloanKeeper.PayFullBid(suite.ctx, &types.MsgPayFullBid{
+			Sender: bidder.String(),
+			NftId:  tc.msgBid.NftId,
+		})
+		suite.NoError(err)
+		balance = suite.app.BankKeeper.GetBalance(suite.ctx, bidder, "uguu")
+		suite.Equal(tc.expectPayFullBidAmount, balance)
 	}
 }
