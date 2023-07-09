@@ -254,7 +254,7 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 	// The listing of items can only be cancelled after N seconds have elapsed from the time it was placed on the marketplace
 	params := k.GetParamSet(ctx)
 	if listing.StartedAt.Add(time.Duration(params.NftListingCancelRequiredSeconds) * time.Second).After(ctx.BlockTime()) {
-		return types.ErrNotTimeForCancel
+		return types.ErrCancelAfterSomeTime
 	}
 
 	// check bidding status
@@ -265,7 +265,7 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 	bids := k.GetBidsByNft(ctx, msg.NftId.IdBytes())
 	for _, bid := range bids {
 		if bid.IsBorrowing() {
-			return types.ErrCannotCancelListingWithDebt
+			return types.ErrCannotCancelBorrowedListing
 		}
 	}
 
@@ -313,19 +313,19 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 
 	// check if listing is already ended or on selling decision status
 	if !listing.IsBidding() {
-		return types.ErrListingNeedsToBeBiddingStatus
+		return types.ErrStatusCannotSelling
 	}
 
 	// check bid exists
 	bids := types.NftBids(k.GetBidsByNft(ctx, listing.NftId.IdBytes()))
 	if len(bids) == 0 {
-		return types.ErrNotExistsBid
+		return types.ErrBidDoesNotExists
 	}
 
 	// check no borrowing bid
 	for _, bid := range bids {
 		if bid.IsBorrowing() {
-			return types.ErrCannotSellingDecisionWithDebt
+			return types.ErrCannotSellingBorrowedListing
 		}
 	}
 
@@ -391,7 +391,7 @@ func (k Keeper) SetLiquidation(ctx sdk.Context, msg *types.MsgEndNftListing) err
 
 	// check if listing is already ended
 	if listing.IsEnded() {
-		return types.ErrListingAlreadyEnded
+		return types.ErrStatusEndedListing
 	}
 
 	bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())

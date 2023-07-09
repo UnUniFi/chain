@@ -9,7 +9,7 @@ import (
 func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
 	bids := types.NftBids(k.GetBidsByNft(ctx, msg.NftId.IdBytes()))
 	if len(bids) == 0 {
-		return types.ErrNotExistsBid
+		return types.ErrBidDoesNotExists
 	}
 	// if re-borrow, repay all borrowed bids
 	borrowedBid := types.NftBids{}
@@ -25,7 +25,7 @@ func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
 		}
 	}
 	if !types.IsAbleToBorrow(bids, msg.BorrowBids, ctx.BlockTime()) {
-		return types.ErrCannotBorrow
+		return types.ErrCannotBorrowForLiquidation
 	}
 	err := k.ManualBorrow(ctx, msg.NftId, msg.BorrowBids, msg.Sender)
 	if err != nil {

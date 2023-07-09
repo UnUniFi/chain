@@ -69,7 +69,7 @@ func (k Keeper) GetNftListingDetails(ctx sdk.Context, listings []types.NftListin
 	for _, v := range listings {
 		nftInfo, found := k.nftKeeper.GetNFT(ctx, v.NftId.ClassId, v.NftId.NftId)
 		if !found {
-			return []types.NftListingDetail{}, types.ErrNotExistsNft
+			return []types.NftListingDetail{}, types.ErrNftDoesNotExists
 		}
 		detail := types.NftListingDetail{
 			Listing: v,

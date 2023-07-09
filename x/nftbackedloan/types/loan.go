@@ -9,7 +9,7 @@ import (
 
 func MinSettlementAmount(bids []NftBid) (types.Coin, error) {
 	if len(bids) == 0 {
-		return types.Coin{}, ErrNotExistsBid
+		return types.Coin{}, ErrBidDoesNotExists
 	}
 	bidsSortedByPrice := NftBids(bids).SortHigherPrice()
 	return FindMinSettlementAmount(bidsSortedByPrice)
@@ -17,7 +17,7 @@ func MinSettlementAmount(bids []NftBid) (types.Coin, error) {
 
 func FindMinSettlementAmount(bidsSortedByPrice []NftBid) (types.Coin, error) {
 	if len(bidsSortedByPrice) == 0 {
-		return types.Coin{}, ErrNotExistsBid
+		return types.Coin{}, ErrBidDoesNotExists
 	}
 	minimumSettlementAmount := types.NewCoin(bidsSortedByPrice[0].DepositAmount.Denom, sdk.NewInt(0))
 	forfeitedDeposit := types.NewCoin(bidsSortedByPrice[0].DepositAmount.Denom, sdk.NewInt(0))
@@ -39,7 +39,7 @@ func FindMinSettlementAmount(bidsSortedByPrice []NftBid) (types.Coin, error) {
 
 func LiquidationBid(bidsSortedByDeposit []NftBid, time time.Time) (NftBid, error) {
 	if len(bidsSortedByDeposit) == 0 {
-		return NftBid{}, ErrNotExistsBid
+		return NftBid{}, ErrBidDoesNotExists
 	}
 	settlementAmount, _ := ExistRepayAmountAtTime(bidsSortedByDeposit, time)
 	forfeitedDeposit := types.NewCoin(bidsSortedByDeposit[0].DepositAmount.Denom, sdk.NewInt(0))
@@ -95,14 +95,14 @@ func ForfeitedBidsAndRefundBids(bidsSortedByDeposit []NftBid, winBid NftBid) ([]
 
 func ExpectedRepayAmount(bids []NftBid, borrowBids []BorrowBid, time time.Time) (sdk.Coin, error) {
 	if len(bids) == 0 {
-		return types.Coin{}, ErrNotExistsBid
+		return types.Coin{}, ErrBidDoesNotExists
 	}
 	expectedRepayAmount := types.NewCoin(bids[0].DepositAmount.Denom, sdk.NewInt(0))
 	for _, borrowBid := range borrowBids {
 		for _, nftBid := range bids {
 			if borrowBid.Bidder == nftBid.Id.Bidder {
 				if nftBid.DepositAmount.Denom != borrowBid.Amount.Denom {
-					return types.Coin{}, ErrInvalidBidDenom
+					return types.Coin{}, ErrInvalidBorrowDenom
 				}
 
 				if borrowBid.Amount.IsLTE(nftBid.DepositAmount) {
@@ -148,7 +148,7 @@ func ExistRepayAmountAtTime(bids []NftBid, time time.Time) (sdk.Coin, error) {
 
 func MaxBorrowAmount(bids []NftBid, time time.Time) (types.Coin, error) {
 	if len(bids) == 0 {
-		return types.Coin{}, ErrNotExistsBid
+		return types.Coin{}, ErrBidDoesNotExists
 	}
 	minSettlement, err := MinSettlementAmount(bids)
 	if err != nil {

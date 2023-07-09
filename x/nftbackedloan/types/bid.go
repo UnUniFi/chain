@@ -173,7 +173,7 @@ func (m NftBids) SortHigherPrice() NftBids {
 
 func (m NftBids) GetHighestBid() (NftBid, error) {
 	if len(m) == 0 {
-		return NftBid{}, ErrNftBidDoesNotExists
+		return NftBid{}, ErrBidDoesNotExists
 	}
 	highestBid := m[0]
 	for _, bid := range m {
