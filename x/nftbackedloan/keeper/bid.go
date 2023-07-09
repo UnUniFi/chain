@@ -110,20 +110,29 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 	}
 
 	if !listing.CanBid() {
-		return types.ErrNftListingNotInBidState
+		return types.ErrStatusCannotPlaceBid
 	}
 
 	if listing.BidDenom != msg.BidAmount.Denom {
 		return types.ErrInvalidBidDenom
 	}
+	if !msg.BidAmount.IsPositive() {
+		return types.ErrInvalidBidAmount
+	}
 	if listing.BidDenom != msg.DepositAmount.Denom {
-		return types.ErrInvalidBidDenom
+		return types.ErrInvalidDepositDenom
+	}
+
+	// check over min_deposit_rate
+	minDeposit := listing.MinimumDepositRate.Mul(sdk.NewDecFromInt(msg.BidAmount.Amount)).TruncateInt()
+	if msg.DepositAmount.Amount.LT(minDeposit) {
+		return types.ErrInvalidDepositAmount
 	}
 
 	// todo add test case
 	minimumBiddingPeriodHour := time.Now().Add(listing.MinimumBiddingPeriod)
 	if msg.ExpiryAt.Before(minimumBiddingPeriodHour) {
-		return types.ErrSmallBiddingPeriod
+		return types.ErrSmallExpiryPeriod
 	}
 
 	bids := types.NftBids(k.GetBidsByNft(ctx, listing.IdBytes()))
@@ -189,16 +198,16 @@ func (k Keeper) FirstBid(ctx sdk.Context, listing types.NftListing, newBid types
 func (k Keeper) ReBid(ctx sdk.Context, listing types.NftListing, oldBid, newBid types.NftBid, bids types.NftBids) error {
 	// check no borrow
 	if !oldBid.CanReBid() {
-		return types.ErrBorrowedDeposit
+		return types.ErrCannotChangeBidBorrowed
 	}
 	// check for liquidation
 	if !types.IsAbleToReBid(bids, oldBid.Id, newBid) {
-		return types.ErrCannotRebid
+		return types.ErrCannotReBidForLiquidation
 	}
 	// bids can only be updated X days after bidding
 	params := k.GetParamSet(ctx)
 	if oldBid.CreatedAt.Add(time.Duration(params.BidCancelRequiredSeconds) * time.Second).After(ctx.BlockTime()) {
-		return types.ErrBidCancelIsAllowedAfterSomeTime
+		return types.ErrRebidAfterSomeTime
 	}
 
 	err := k.SafeCloseBid(ctx, oldBid)
@@ -274,7 +283,7 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 
 	// check status
 	if !listing.CanCancelBid() {
-		return types.ErrCannotCancelBid
+		return types.ErrStatusCannotCancelBid
 	}
 
 	bidder, err := sdk.AccAddressFromBech32(msg.Sender)
@@ -290,13 +299,13 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 
 	// check borrow
 	if !bid.CanCancel() {
-		return types.ErrBorrowedDeposit
+		return types.ErrCannotChangeBidBorrowed
 	}
 
 	// bids can only be cancelled X days after bidding
 	params := k.GetParamSet(ctx)
 	if bid.CreatedAt.Add(time.Duration(params.BidCancelRequiredSeconds) * time.Second).After(ctx.BlockTime()) {
-		return types.ErrBidCancelIsAllowedAfterSomeTime
+		return types.ErrCancelAfterSomeTime
 	}
 
 	bids := k.GetBidsByNft(ctx, msg.NftId.IdBytes())
@@ -305,7 +314,7 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 	}
 	// for liquidation validation
 	if !types.IsAbleToCancelBid(types.BidId{Bidder: msg.Sender, NftId: bid.Id.NftId}, bids) {
-		return types.ErrCannotCancelBid
+		return types.ErrCannotCancelBidForLiquidation
 	}
 
 	err = k.SafeCloseBid(ctx, bid)
