@@ -54,4 +54,5 @@ var (
 	ErrCannotSellingDecisionWithDebt     = sdkerrors.Register(ModuleName, 47, "cannot selling decision with debt")
 	ErrNegativeCollectedAmount           = sdkerrors.Register(ModuleName, 48, "negative collected amount")
 	ErrNegativeProfit                    = sdkerrors.Register(ModuleName, 49, "negative profit")
+	ErrInvalidInterestAmount             = sdkerrors.Register(ModuleName, 50, "invalid interest amount")
 )
