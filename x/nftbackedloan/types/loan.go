@@ -37,38 +37,54 @@ func FindMinSettlementAmount(bidsSortedByPrice []NftBid) (types.Coin, error) {
 	return minimumSettlementAmount, nil
 }
 
-func LiquidationBid(bidsSortedByDeposit []NftBid, time time.Time) (NftBid, error) {
+func LiquidationBid(bidsSortedByDeposit []NftBid, time time.Time) (NftBid, []NftBid, []NftBid, error) {
 	if len(bidsSortedByDeposit) == 0 {
-		return NftBid{}, ErrBidDoesNotExists
+		return NftBid{}, []NftBid{}, []NftBid{}, ErrBidDoesNotExists
 	}
 	settlementAmount, _ := ExistRepayAmountAtTime(bidsSortedByDeposit, time)
 	forfeitedDeposit := types.NewCoin(bidsSortedByDeposit[0].DepositAmount.Denom, sdk.NewInt(0))
-	var ret NftBid
+	var winBid NftBid
+	collectBids := []NftBid{}
+	refundBids := []NftBid{}
 
 	for _, bid := range bidsSortedByDeposit {
-		// if the bid is not paid, the deposit is forfeited.
+		if !winBid.IsNil() {
+			refundBids = append(refundBids, bid)
+			continue
+		}
+		// the deposit is forfeited, if the bid is not paid.
 		if !bid.IsPaidBidAmount() {
 			forfeitedDeposit = forfeitedDeposit.Add(bid.DepositAmount)
+			collectBids = append(collectBids, bid)
 			continue
 		}
-		// if the bid is paid, the bid amount + forfeited deposit < settlement amount
+		// skip, if the bid is paid & the bid amount + forfeited deposit < settlement amount
 		if bid.BidAmount.Add(forfeitedDeposit).IsLT(settlementAmount) {
+			refundBids = append(refundBids, bid)
 			continue
 		}
-		ret = bid
-		break
+		winBid = bid
+	}
+	// if the win bid is not found, try to find the bid from the skipped bids.
+	if winBid.IsNil() {
+		for _, bid := range refundBids {
+			if bid.BidAmount.Add(forfeitedDeposit).IsLT(settlementAmount) {
+				continue
+			}
+			winBid = bid
+			break
+		}
 	}
 
-	if ret.IsNil() {
+	if winBid.IsNil() {
 		// No error, if liquidation is available
 		if settlementAmount.IsLTE(forfeitedDeposit) {
-			return NftBid{}, nil
+			return NftBid{}, collectBids, refundBids, nil
 		}
 		// With Error, if liquidation is not available
-		return NftBid{}, ErrCannotLiquidation
+		return NftBid{}, collectBids, refundBids, ErrCannotLiquidation
 	}
-
-	return ret, nil
+	return winBid, collectBids, refundBids, nil
 }
 
 func ForfeitedBidsAndRefundBids(bidsSortedByDeposit []NftBid, winBid NftBid) ([]NftBid, []NftBid) {

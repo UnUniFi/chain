@@ -293,7 +293,7 @@ func TestLiquidationBid(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			bidsSortedByDeposit := types.NftBids(tc.bids).SortHigherDeposit()
-			result, err := types.LiquidationBid(bidsSortedByDeposit, nextYear)
+			result, _, _, err := types.LiquidationBid(bidsSortedByDeposit, nextYear)
 			if tc.expError {
 				require.Error(t, err)
 			}
