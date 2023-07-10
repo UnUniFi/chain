@@ -113,6 +113,10 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 		return types.ErrStatusCannotPlaceBid
 	}
 
+	if listing.Owner == msg.Sender {
+		return types.ErrOwnerCannotPlaceBid
+	}
+
 	if listing.BidDenom != msg.Price.Denom {
 		return types.ErrInvalidPriceDenom
 	}

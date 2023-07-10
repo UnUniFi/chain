@@ -40,4 +40,5 @@ var (
 	ErrCannotLiquidation             = sdkerrors.Register(ModuleName, 33, "cannot liquidation")
 	ErrNegativeCollectedAmount       = sdkerrors.Register(ModuleName, 34, "negative collected amount")
 	ErrNegativeProfit                = sdkerrors.Register(ModuleName, 35, "negative profit")
+	ErrOwnerCannotPlaceBid           = sdkerrors.Register(ModuleName, 36, "owner cannot place bid")
 )
