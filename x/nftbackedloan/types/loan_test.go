@@ -311,7 +311,7 @@ func TestForForfeitedBidsAndRefundBids(t *testing.T) {
 	testCases := []struct {
 		name      string
 		bids      []types.NftBid
-		winBid    types.NftBid
+		winnerBid types.NftBid
 		expResult []int
 	}{
 		{
@@ -342,7 +342,7 @@ func TestForForfeitedBidsAndRefundBids(t *testing.T) {
 					PaidAmount:    sdk.NewInt64Coin("uatom", 150),
 				},
 			},
-			winBid: types.NftBid{
+			winnerBid: types.NftBid{
 				Id: types.BidId{
 					NftId: &types.NftIdentifier{
 						ClassId: "a10",
@@ -381,7 +381,7 @@ func TestForForfeitedBidsAndRefundBids(t *testing.T) {
 					PaidAmount:    sdk.NewInt64Coin("uatom", 0),
 				},
 			},
-			winBid: types.NftBid{
+			winnerBid: types.NftBid{
 				Id: types.BidId{
 					NftId: &types.NftIdentifier{
 						ClassId: "a10",
@@ -395,7 +395,7 @@ func TestForForfeitedBidsAndRefundBids(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		bidsSortedByDeposit := types.NftBids(tc.bids).SortHigherDeposit()
-		forfeitedBids, refundBids := types.ForfeitedBidsAndRefundBids(bidsSortedByDeposit, tc.winBid)
+		forfeitedBids, refundBids := types.ForfeitedBidsAndRefundBids(bidsSortedByDeposit, tc.winnerBid)
 		if tc.expResult[0] != len(forfeitedBids) {
 			t.Errorf("forfeitedBids expected length %d, got %d", tc.expResult[0], len(forfeitedBids))
 		}

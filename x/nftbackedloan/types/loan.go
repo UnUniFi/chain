@@ -45,16 +45,16 @@ func LiquidationBid(bidsSortedByDeposit []NftBid, time time.Time) (NftBid, []Nft
 	}
 	settlementAmount, _ := ExistRepayAmountAtTime(bidsSortedByDeposit, time)
 	forfeitedDeposit := types.NewCoin(bidsSortedByDeposit[0].DepositAmount.Denom, sdk.NewInt(0))
-	var winBid NftBid
+	var winnerBid NftBid
 	notInspectedBids := NftBids(bidsSortedByDeposit)
-	collectBids := []NftBid{}
+	forfeitedBids := []NftBid{}
 	refundBids := []NftBid{}
 
 	// loop until all bids are handled
 	for len(notInspectedBids) > 0 {
 		for _, bid := range notInspectedBids {
 			// if the win bid is found, other bids are refunded.
-			if !winBid.IsNil() {
+			if !winnerBid.IsNil() {
 				refundBids = append(refundBids, bid)
 				notInspectedBids = notInspectedBids.RemoveBid(bid)
 				continue
@@ -65,33 +65,33 @@ func LiquidationBid(bidsSortedByDeposit []NftBid, time time.Time) (NftBid, []Nft
 			}
 			// if liquidation is available, the bid is win or collect
 			if bid.IsPaidBidAmount() {
-				winBid = bid
+				winnerBid = bid
 			} else {
 				forfeitedDeposit = forfeitedDeposit.Add(bid.DepositAmount)
-				collectBids = append(collectBids, bid)
+				forfeitedBids = append(forfeitedBids, bid)
 			}
 			notInspectedBids = notInspectedBids.RemoveBid(bid)
 		}
 	}
 
 	// if the win bid is not found (no one paid case)
-	if winBid.IsNil() {
+	if winnerBid.IsNil() {
 		// No error, if liquidation is available
 		if settlementAmount.IsLTE(forfeitedDeposit) {
-			return NftBid{}, collectBids, nil, nil
+			return NftBid{}, forfeitedBids, nil, nil
 		}
 		// With Error, if liquidation is not available
-		return NftBid{}, collectBids, refundBids, ErrCannotLiquidation
+		return NftBid{}, forfeitedBids, refundBids, ErrCannotLiquidation
 	}
-	return winBid, collectBids, refundBids, nil
+	return winnerBid, forfeitedBids, refundBids, nil
 }
 
-func ForfeitedBidsAndRefundBids(bidsSortedByDeposit []NftBid, winBid NftBid) ([]NftBid, []NftBid) {
+func ForfeitedBidsAndRefundBids(bidsSortedByDeposit []NftBid, winnerBid NftBid) ([]NftBid, []NftBid) {
 	isDecidedWinningBid := false
 	forfeitedBids := []NftBid{}
 	refundBids := []NftBid{}
 	for _, bid := range bidsSortedByDeposit {
-		if bid.Id.Bidder == winBid.Id.Bidder {
+		if bid.Id.Bidder == winnerBid.Id.Bidder {
 			isDecidedWinningBid = true
 			continue
 		}
