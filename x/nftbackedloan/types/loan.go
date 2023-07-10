@@ -50,6 +50,15 @@ func LiquidationBid(bidsSortedByDeposit []NftBid, listing NftListing, time time.
 	forfeitedBids := []NftBid{}
 	refundBids := []NftBid{}
 
+	// prevention of infinite loops
+	highestBid, err := notInspectedBidsSortedByDeposit.GetHighestBid()
+	if err != nil {
+		return NftBid{}, nil, nil, err
+	}
+	if highestBid.Price.IsLT(settlementAmount) {
+		return NftBid{}, nil, nil, ErrCannotLiquidation
+	}
+
 	// loop until all bids are handled
 	for len(notInspectedBidsSortedByDeposit) > 0 {
 		for _, bid := range notInspectedBidsSortedByDeposit {
