@@ -206,6 +206,10 @@ func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.Que
 		NftId:   req.NftId,
 	}
 	ctx := sdk.UnwrapSDKContext(c)
+	listing, err := k.GetNftListingByIdBytes(ctx, nftId.IdBytes())
+	if err != nil {
+		return &types.QueryLoanResponse{}, err
+	}
 	bids := k.GetBidsByNft(ctx, nftId.IdBytes())
 	// Change the order of bids to  descending order
 	sort.SliceStable(bids, func(i, j int) bool {
@@ -220,7 +224,7 @@ func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.Que
 		}
 		return false
 	})
-	max, err := types.MaxBorrowAmount(bids, ctx.BlockTime())
+	max, err := types.MaxBorrowAmount(bids, listing, ctx.BlockTime())
 	if err != nil {
 		return nil, err
 	}

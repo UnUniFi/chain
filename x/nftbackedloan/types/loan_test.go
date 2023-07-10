@@ -11,6 +11,9 @@ import (
 )
 
 func TestMinSettlementAmount(t *testing.T) {
+	listing := types.NftListing{
+		BidDenom: "uatom",
+	}
 	testCases := []struct {
 		name      string
 		bids      []types.NftBid
@@ -66,7 +69,7 @@ func TestMinSettlementAmount(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result, err := types.MinSettlementAmount(tc.bids)
+			result, err := types.MinSettlementAmount(tc.bids, listing)
 			if err != nil {
 				if tc.name != "empty bid" {
 					t.Errorf("unexpected error: %v", err)
@@ -82,6 +85,9 @@ func TestMinSettlementAmount(t *testing.T) {
 func TestLiquidationBid(t *testing.T) {
 	now := time.Now()
 	nextYear := now.Add(time.Hour * 24 * 365)
+	listing := types.NftListing{
+		BidDenom: "uatom",
+	}
 	testCases := []struct {
 		name      string
 		bids      []types.NftBid
@@ -293,7 +299,7 @@ func TestLiquidationBid(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			bidsSortedByDeposit := types.NftBids(tc.bids).SortHigherDeposit()
-			result, _, _, err := types.LiquidationBid(bidsSortedByDeposit, nextYear)
+			result, _, _, err := types.LiquidationBid(bidsSortedByDeposit, listing, nextYear)
 			if tc.expError {
 				require.Error(t, err)
 			}
@@ -408,6 +414,9 @@ func TestForForfeitedBidsAndRefundBids(t *testing.T) {
 func TestExpectedRepayAmount(t *testing.T) {
 	now := time.Now()
 	nextMonth := now.Add(time.Hour * 24 * 30)
+	listing := types.NftListing{
+		BidDenom: "uatom",
+	}
 	testCases := []struct {
 		name       string
 		bids       []types.NftBid
@@ -494,7 +503,7 @@ func TestExpectedRepayAmount(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result, err := types.ExpectedRepayAmount(tc.bids, tc.borrowBids, now)
+			result, err := types.ExpectedRepayAmount(tc.bids, tc.borrowBids, listing, now)
 			if err != nil {
 				if tc.name != "empty bid" {
 					t.Errorf("unexpected error: %v", err)
@@ -510,6 +519,9 @@ func TestExpectedRepayAmount(t *testing.T) {
 func TestExistRepayAmount(t *testing.T) {
 	now := time.Now()
 	nextMonth := now.Add(time.Hour * 24 * 30)
+	listing := types.NftListing{
+		BidDenom: "uatom",
+	}
 	testCases := []struct {
 		name      string
 		bids      []types.NftBid
@@ -592,7 +604,7 @@ func TestExistRepayAmount(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result, err := types.ExistRepayAmount(tc.bids)
+			result, err := types.ExistRepayAmount(tc.bids, listing)
 			if err != nil {
 				if tc.name != "empty bid" {
 					t.Errorf("unexpected error: %v", err)
@@ -607,6 +619,9 @@ func TestExistRepayAmount(t *testing.T) {
 
 func TestMaxBorrowAmount(t *testing.T) {
 	now := time.Now()
+	listing := types.NftListing{
+		BidDenom: "uatom",
+	}
 	testCases := []struct {
 		name      string
 		bids      []types.NftBid
@@ -674,7 +689,7 @@ func TestMaxBorrowAmount(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result, err := types.MaxBorrowAmount(tc.bids, now)
+			result, err := types.MaxBorrowAmount(tc.bids, listing, now)
 			if err != nil {
 				if tc.name != "empty bid" {
 					t.Errorf("unexpected error: %v", err)
@@ -689,6 +704,9 @@ func TestMaxBorrowAmount(t *testing.T) {
 
 func TestIsAbleToBorrow(t *testing.T) {
 	now := time.Now()
+	listing := types.NftListing{
+		BidDenom: "uatom",
+	}
 	bids := []types.NftBid{
 		{
 			Id: types.BidId{
@@ -754,7 +772,7 @@ func TestIsAbleToBorrow(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := types.IsAbleToBorrow(bids, tc.borrowBids, now)
+			result := types.IsAbleToBorrow(bids, tc.borrowBids, listing, now)
 			if result != tc.expResult {
 				t.Errorf("expected %v, got %v", tc.expResult, result)
 			}
@@ -764,6 +782,9 @@ func TestIsAbleToBorrow(t *testing.T) {
 
 func TestIsAbleToCancelBid(t *testing.T) {
 	now := time.Now()
+	listing := types.NftListing{
+		BidDenom: "uatom",
+	}
 	testCases := []struct {
 		name      string
 		bids      []types.NftBid
@@ -869,7 +890,7 @@ func TestIsAbleToCancelBid(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := types.IsAbleToCancelBid(tc.cancelBid, tc.bids)
+			result := types.IsAbleToCancelBid(tc.cancelBid, tc.bids, listing)
 			if result != tc.expResult {
 				t.Errorf("expected %v, got %v", tc.expResult, result)
 			}
@@ -879,6 +900,9 @@ func TestIsAbleToCancelBid(t *testing.T) {
 
 func TestIsAbleToReBid(t *testing.T) {
 	now := time.Now()
+	listing := types.NftListing{
+		BidDenom: "uatom",
+	}
 	bids := []types.NftBid{
 		{
 			Id: types.BidId{
@@ -1000,7 +1024,7 @@ func TestIsAbleToReBid(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := types.IsAbleToReBid(bids, tc.oldBidId, tc.newBid)
+			result := types.IsAbleToReBid(bids, tc.oldBidId, tc.newBid, listing)
 			if result != tc.expResult {
 				t.Errorf("expected %v, got %v", tc.expResult, result)
 			}

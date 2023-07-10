@@ -559,7 +559,7 @@ func (k Keeper) SellingDecisionProcess(ctx sdk.Context, bids types.NftBids, list
 func (k Keeper) LiquidationProcess(ctx sdk.Context, bids types.NftBids, listing types.NftListing, params types.Params) error {
 	// loop to find winner bid (collect deposits + bid amount > repay amount)
 	bidsSortedByDeposit := bids.SortHigherDeposit()
-	winnerBid, forfeitedBids, refundBids, err := types.LiquidationBid(bidsSortedByDeposit, listing.LiquidatedAt)
+	winnerBid, forfeitedBids, refundBids, err := types.LiquidationBid(bidsSortedByDeposit, listing, listing.LiquidatedAt)
 	if err != nil {
 		return err
 	}

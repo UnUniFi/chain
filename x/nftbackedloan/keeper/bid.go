@@ -201,7 +201,7 @@ func (k Keeper) ReBid(ctx sdk.Context, listing types.NftListing, oldBid, newBid 
 		return types.ErrCannotChangeBidBorrowed
 	}
 	// check for liquidation
-	if !types.IsAbleToReBid(bids, oldBid.Id, newBid) {
+	if !types.IsAbleToReBid(bids, oldBid.Id, newBid, listing) {
 		return types.ErrCannotReBidForLiquidation
 	}
 	// bids can only be updated X days after bidding
@@ -313,7 +313,7 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 		return types.ErrCannotCancelListingSingleBid
 	}
 	// for liquidation validation
-	if !types.IsAbleToCancelBid(types.BidId{Bidder: msg.Sender, NftId: bid.Id.NftId}, bids) {
+	if !types.IsAbleToCancelBid(types.BidId{Bidder: msg.Sender, NftId: bid.Id.NftId}, bids, listing) {
 		return types.ErrCannotCancelBidForLiquidation
 	}
 

@@ -7,6 +7,10 @@ import (
 )
 
 func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
+	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
+	if err != nil {
+		return err
+	}
 	bids := types.NftBids(k.GetBidsByNft(ctx, msg.NftId.IdBytes()))
 	if len(bids) == 0 {
 		return types.ErrBidDoesNotExists
@@ -24,10 +28,10 @@ func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
 			return err
 		}
 	}
-	if !types.IsAbleToBorrow(bids, msg.BorrowBids, ctx.BlockTime()) {
+	if !types.IsAbleToBorrow(bids, msg.BorrowBids, listing, ctx.BlockTime()) {
 		return types.ErrCannotBorrowForLiquidation
 	}
-	err := k.ManualBorrow(ctx, msg.NftId, msg.BorrowBids, msg.Sender)
+	err = k.ManualBorrow(ctx, msg.NftId, msg.BorrowBids, msg.Sender)
 	if err != nil {
 		return err
 	}
@@ -190,7 +194,7 @@ func (k Keeper) AutoRepay(ctx sdk.Context, nft types.NftIdentifier, bids types.N
 	}
 
 	listerAmount := k.bankKeeper.GetBalance(ctx, sender, listing.BidDenom)
-	repayAmount, err := types.ExistRepayAmountAtTime(bids, ctx.BlockTime())
+	repayAmount, err := types.ExistRepayAmountAtTime(bids, listing, ctx.BlockTime())
 	if err != nil {
 		return err
 	}
