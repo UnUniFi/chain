@@ -2775,7 +2775,7 @@ Query defines the gRPC querier service.
 
 | Field      | Type              | Label | Description |
 | ---------- | ----------------- | ----- | ----------- |
-| `borrower`  | [string](#string) |       |             |
+| `borrower` | [string](#string) |       |             |
 | `class_id` | [string](#string) |       |             |
 | `nft_id`   | [string](#string) |       |             |
 | `amount`   | [string](#string) |       |             |
@@ -2834,8 +2834,8 @@ Query defines the gRPC querier service.
 | ---------------------- | ------------------------------------------------------- | -------- | ------------------------------------- |
 | `nft_id`               | [NftIdentifier](#ununifi.nftmarket.NftIdentifier)       |          |                                       |
 | `bidder`               | [string](#string)                                       |          |                                       |
-| `bid_amount`           | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |          |                                       |
-| `deposit_amount`       | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |          |                                       |
+| `price`                | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |          |                                       |
+| `deposit`              | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |          |                                       |
 | `paid_amount`          | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |          |                                       |
 | `bidding_period`       | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |          |                                       |
 | `deposit_lending_rate` | [string](#string)                                       |          |                                       |
@@ -3358,15 +3358,15 @@ Query defines the gRPC querier service.
 
 ### MsgPlaceBid
 
-| Field                  | Type                                                    | Label | Description |
-| ---------------------- | ------------------------------------------------------- | ----- | ----------- |
-| `sender`               | [string](#string)                                       |       |             |
-| `nft_id`               | [NftIdentifier](#ununifi.nftmarket.NftIdentifier)       |       |             |
-| `bid_amount`           | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |       |             |
-| `bidding_period`       | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
-| `deposit_lending_rate` | [string](#string)                                       |       |             |
-| `automatic_payment`    | [bool](#bool)                                           |       |             |
-| `deposit_amount`       | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |       |             |
+| Field               | Type                                                    | Label | Description |
+| ------------------- | ------------------------------------------------------- | ----- | ----------- |
+| `sender`            | [string](#string)                                       |       |             |
+| `nft_id`            | [NftIdentifier](#ununifi.nftmarket.NftIdentifier)       |       |             |
+| `price`             | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |       |             |
+| `expiry`            | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |       |             |
+| `interest_rate`     | [string](#string)                                       |       |             |
+| `automatic_payment` | [bool](#bool)                                           |       |             |
+| `deposit`           | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin)   |       |             |
 
 <a name="ununifi.nftmarket.MsgPlaceBidResponse"></a>
 
@@ -3528,7 +3528,7 @@ Query defines the gRPC querier service.
 
 | Field      | Type              | Label | Description |
 | ---------- | ----------------- | ----- | ----------- |
-| `borrower`  | [string](#string) |       |             |
+| `borrower` | [string](#string) |       |             |
 | `class_id` | [string](#string) |       |             |
 | `nft_id`   | [string](#string) |       |             |
 | `amount`   | [string](#string) |       |             |
@@ -3810,9 +3810,9 @@ GenesisState defines the nftmarket module's genesis state.
 
 ### QueryLoanResponse
 
-| Field             | Type                              | Label | Description |
-| ----------------- | --------------------------------- | ----- | ----------- |
-| `loan`            | [Loan](#ununifi.nftmarketv1.Loan) |       |             |
+| Field             | Type                                                  | Label | Description |
+| ----------------- | ----------------------------------------------------- | ----- | ----------- |
+| `loan`            | [Loan](#ununifi.nftmarketv1.Loan)                     |       |             |
 | `borrowing_limit` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
 | `total_deposit`   | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |       |             |
 
@@ -5096,10 +5096,10 @@ proposal to add new strategy.
 
 ### QueryEstimateMintAmountRequest
 
-| Field            | Type              | Label | Description |
-| ---------------- | ----------------- | ----- | ----------- |
-| `id`             | [uint64](#uint64) |       |             |
-| `deposit_amount` | [string](#string) |       |             |
+| Field     | Type              | Label | Description |
+| --------- | ----------------- | ----- | ----------- |
+| `id`      | [uint64](#uint64) |       |             |
+| `deposit` | [string](#string) |       |             |
 
 <a name="ununifi.yieldaggregator.QueryEstimateMintAmountResponse"></a>
 

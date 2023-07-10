@@ -54,15 +54,15 @@ message MsgCancelNftListingResponse {}
 message MsgPlaceBid {
   string                    sender        = 1;
   NftIdentifier             nft_id        = 2 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin  bid_amount    = 3 [(gogoproto.nullable) = false];
-  google.protobuf.Timestamp expiry_at     = 4 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  cosmos.base.v1beta1.Coin  price         = 3 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp expiry        = 4 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
   string                    interest_rate = 5 [
     (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable)   = false
   ];
   bool                     automatic_payment = 6;
-  cosmos.base.v1beta1.Coin deposit_amount    = 7 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin deposit           = 7 [(gogoproto.nullable) = false];
 }
 message MsgPlaceBidResponse {}
 

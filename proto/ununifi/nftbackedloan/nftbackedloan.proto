@@ -71,12 +71,12 @@ message Borrowing {
 }
 
 message NftBid {
-  BidId                     id             = 1 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin  bid_amount     = 2 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin  deposit_amount = 3 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin  paid_amount    = 4 [(gogoproto.nullable) = false];
-  google.protobuf.Timestamp expiry_at      = 5 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
-  string                    interest_rate  = 6 [
+  BidId                     id            = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin  price         = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin  deposit       = 3 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin  paid_amount   = 4 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp expiry        = 5 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  string                    interest_rate = 6 [
     (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable)   = false
