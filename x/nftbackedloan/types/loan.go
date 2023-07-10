@@ -38,6 +38,8 @@ func FindMinSettlementAmount(bidsSortedByPrice []NftBid) (types.Coin, error) {
 }
 
 func LiquidationBid(bidsSortedByDeposit []NftBid, time time.Time) (NftBid, []NftBid, []NftBid, error) {
+	// arg: bids sorted by higher deposit & liquidation time
+	// return: win bid, deposit collect bids, refund bids, error
 	if len(bidsSortedByDeposit) == 0 {
 		return NftBid{}, []NftBid{}, []NftBid{}, ErrBidDoesNotExists
 	}
@@ -48,24 +50,25 @@ func LiquidationBid(bidsSortedByDeposit []NftBid, time time.Time) (NftBid, []Nft
 	refundBids := []NftBid{}
 
 	for _, bid := range bidsSortedByDeposit {
+		// if the win bid is found, other bids are refunded.
 		if !winBid.IsNil() {
 			refundBids = append(refundBids, bid)
 			continue
 		}
-		// the deposit is forfeited, if the bid is not paid.
+		// if the bid is not paid, the deposit will be forfeited.
 		if !bid.IsPaidBidAmount() {
 			forfeitedDeposit = forfeitedDeposit.Add(bid.DepositAmount)
 			collectBids = append(collectBids, bid)
 			continue
 		}
-		// skip, if the bid is paid & the bid amount + forfeited deposit < settlement amount
+		// refund, if the bid is paid & the bid amount + forfeited deposit < settlement amount
 		if bid.BidAmount.Add(forfeitedDeposit).IsLT(settlementAmount) {
 			refundBids = append(refundBids, bid)
 			continue
 		}
 		winBid = bid
 	}
-	// if the win bid is not found, try to find the bid from the skipped bids.
+	// if the win bid is not found, try to find the bid from the refund bids.
 	if winBid.IsNil() {
 		for _, bid := range refundBids {
 			if bid.BidAmount.Add(forfeitedDeposit).IsLT(settlementAmount) {
@@ -76,6 +79,7 @@ func LiquidationBid(bidsSortedByDeposit []NftBid, time time.Time) (NftBid, []Nft
 		}
 	}
 
+	// if the win bid is not found
 	if winBid.IsNil() {
 		// No error, if liquidation is available
 		if settlementAmount.IsLTE(forfeitedDeposit) {
