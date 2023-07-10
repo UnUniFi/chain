@@ -86,7 +86,7 @@ func (k Keeper) SetBid(ctx sdk.Context, bid types.NftBid) error {
 	store := ctx.KVStore(k.storeKey)
 	store.Set(types.NftBidKey(bid.IdBytes(), bidder), bz)
 	store.Set(types.AddressBidKey(bid.IdBytes(), bidder), bz)
-	store.Set(append(getTimeKey(types.KeyPrefixEndTimeNftBid, bid.ExpiryAt), bid.GetIdToByte()...), bid.GetIdToByte())
+	store.Set(append(getTimeKey(types.KeyPrefixEndTimeNftBid, bid.Expiry), bid.GetIdToByte()...), bid.GetIdToByte())
 	return nil
 }
 
@@ -98,7 +98,7 @@ func (k Keeper) DeleteBid(ctx sdk.Context, bid types.NftBid) error {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.NftBidKey(bid.IdBytes(), bidder))
 	store.Delete(types.AddressBidKey(bid.IdBytes(), bidder))
-	store.Delete(append(getTimeKey(types.KeyPrefixEndTimeNftBid, bid.ExpiryAt), bid.GetIdToByte()...))
+	store.Delete(append(getTimeKey(types.KeyPrefixEndTimeNftBid, bid.Expiry), bid.GetIdToByte()...))
 	return nil
 }
 
@@ -113,25 +113,25 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 		return types.ErrStatusCannotPlaceBid
 	}
 
-	if listing.BidDenom != msg.BidAmount.Denom {
-		return types.ErrInvalidBidDenom
+	if listing.BidDenom != msg.Price.Denom {
+		return types.ErrInvalidPriceDenom
 	}
-	if !msg.BidAmount.IsPositive() {
-		return types.ErrInvalidBidAmount
+	if !msg.Price.IsPositive() {
+		return types.ErrInvalidPriceAmount
 	}
-	if listing.BidDenom != msg.DepositAmount.Denom {
+	if listing.BidDenom != msg.Deposit.Denom {
 		return types.ErrInvalidDepositDenom
 	}
 
 	// check over min_deposit_rate
-	minDeposit := listing.MinimumDepositRate.Mul(sdk.NewDecFromInt(msg.BidAmount.Amount)).TruncateInt()
-	if msg.DepositAmount.Amount.LT(minDeposit) {
+	minDeposit := listing.MinimumDepositRate.Mul(sdk.NewDecFromInt(msg.Price.Amount)).TruncateInt()
+	if msg.Deposit.Amount.LT(minDeposit) {
 		return types.ErrInvalidDepositAmount
 	}
 
 	// todo add test case
 	minimumBiddingPeriodHour := time.Now().Add(listing.MinimumBiddingPeriod)
-	if msg.ExpiryAt.Before(minimumBiddingPeriodHour) {
+	if msg.Expiry.Before(minimumBiddingPeriodHour) {
 		return types.ErrSmallExpiryPeriod
 	}
 
@@ -143,10 +143,10 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 			NftId:  &msg.NftId,
 			Bidder: bidder,
 		},
-		BidAmount:        msg.BidAmount,
-		DepositAmount:    msg.DepositAmount,
+		Price:            msg.Price,
+		Deposit:          msg.Deposit,
 		PaidAmount:       sdk.NewCoin(listing.BidDenom, sdk.ZeroInt()),
-		ExpiryAt:         msg.ExpiryAt,
+		Expiry:           msg.Expiry,
 		InterestRate:     msg.InterestRate,
 		AutomaticPayment: msg.AutomaticPayment,
 		CreatedAt:        ctx.BlockTime(),
@@ -161,7 +161,7 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 }
 
 func (k Keeper) ManualBid(ctx sdk.Context, listing types.NftListing, newBid types.NftBid) error {
-	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sdk.MustAccAddressFromBech32(newBid.Id.Bidder), types.ModuleName, sdk.Coins{newBid.DepositAmount})
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, sdk.MustAccAddressFromBech32(newBid.Id.Bidder), types.ModuleName, sdk.Coins{newBid.Deposit})
 	if err != nil {
 		return err
 	}
@@ -190,7 +190,7 @@ func (k Keeper) FirstBid(ctx sdk.Context, listing types.NftListing, newBid types
 		Bidder:  newBid.Id.Bidder,
 		ClassId: newBid.Id.NftId.ClassId,
 		NftId:   newBid.Id.NftId.NftId,
-		Amount:  newBid.BidAmount.String(),
+		Amount:  newBid.Price.String(),
 	})
 	return nil
 }
@@ -223,7 +223,7 @@ func (k Keeper) ReBid(ctx sdk.Context, listing types.NftListing, oldBid, newBid 
 		Bidder:  newBid.Id.Bidder,
 		ClassId: newBid.Id.NftId.ClassId,
 		NftId:   newBid.Id.NftId.NftId,
-		Amount:  newBid.BidAmount.String(),
+		Amount:  newBid.Price.String(),
 	})
 	return nil
 }
@@ -239,7 +239,7 @@ func (k Keeper) ManualSafeCloseBid(ctx sdk.Context, bid types.NftBid, bidder sdk
 			return err
 		}
 	}
-	return k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{sdk.NewCoin(bid.DepositAmount.Denom, bid.DepositAmount.Amount)})
+	return k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, bidder, sdk.Coins{sdk.NewCoin(bid.Deposit.Denom, bid.Deposit.Amount)})
 }
 
 func (k Keeper) SafeCloseBid(ctx sdk.Context, bid types.NftBid) error {
@@ -251,7 +251,7 @@ func (k Keeper) SafeCloseBid(ctx sdk.Context, bid types.NftBid) error {
 }
 
 func (k Keeper) SafeCloseBidCollectDeposit(ctx sdk.Context, bid types.NftBid) (sdk.Coin, error) {
-	CollectedAmount := bid.DepositAmount
+	CollectedAmount := bid.Deposit
 	err := k.DeleteBid(ctx, bid)
 	if err != nil {
 		return sdk.Coin{}, err
@@ -350,7 +350,7 @@ func (k Keeper) PayFullBid(ctx sdk.Context, msg *types.MsgPayFullBid) error {
 	}
 
 	// Transfer unpaid amount of token from bid account
-	unpaidAmount := bid.BidAmount.Sub(bid.DepositAmount).Sub(bid.PaidAmount)
+	unpaidAmount := bid.Price.Sub(bid.Deposit).Sub(bid.PaidAmount)
 	if unpaidAmount.IsPositive() {
 		err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, bidder, types.ModuleName, sdk.Coins{sdk.NewCoin(listing.BidDenom, unpaidAmount.Amount)})
 		if err != nil {
@@ -384,8 +384,8 @@ func (k Keeper) PayFullBid(ctx sdk.Context, msg *types.MsgPayFullBid) error {
 // 	q := bid
 // 	s := deposit
 // 	for _, bid := range bids {
-// 		q = q.Add(bid.BidAmount)
-// 		s = s.Add(bid.DepositAmount)
+// 		q = q.Add(bid.Price)
+// 		s = s.Add(bid.Deposit)
 // 	}
 
 // 	bidLen := 1

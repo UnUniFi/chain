@@ -25,40 +25,40 @@ func TestMinSettlementAmount(t *testing.T) {
 			name: "one bid",
 			bids: []types.NftBid{
 				{
-					BidAmount:     sdk.NewInt64Coin("uatom", 100),
-					DepositAmount: sdk.NewInt64Coin("uatom", 30),
+					Price:   sdk.NewInt64Coin("uatom", 100),
+					Deposit: sdk.NewInt64Coin("uatom", 30),
 				},
 			},
 			expResult: sdk.NewInt64Coin("uatom", 30),
 		},
 		{
-			name: "two bids, totalDepositAmount < bidAmount",
+			name: "two bids, totalDeposit < price",
 			bids: []types.NftBid{
 				{
-					BidAmount:     sdk.NewInt64Coin("uatom", 100),
-					DepositAmount: sdk.NewInt64Coin("uatom", 30),
+					Price:   sdk.NewInt64Coin("uatom", 100),
+					Deposit: sdk.NewInt64Coin("uatom", 30),
 				},
 				{
-					BidAmount:     sdk.NewInt64Coin("uatom", 200),
-					DepositAmount: sdk.NewInt64Coin("uatom", 50),
+					Price:   sdk.NewInt64Coin("uatom", 200),
+					Deposit: sdk.NewInt64Coin("uatom", 50),
 				},
 			},
 			expResult: sdk.NewInt64Coin("uatom", 80),
 		},
 		{
-			name: "three bids & bidAmount < totalDepositAmount",
+			name: "three bids & price < totalDeposit",
 			bids: []types.NftBid{
 				{
-					BidAmount:     sdk.NewInt64Coin("uatom", 100),
-					DepositAmount: sdk.NewInt64Coin("uatom", 30),
+					Price:   sdk.NewInt64Coin("uatom", 100),
+					Deposit: sdk.NewInt64Coin("uatom", 30),
 				},
 				{
-					BidAmount:     sdk.NewInt64Coin("uatom", 100),
-					DepositAmount: sdk.NewInt64Coin("uatom", 40),
+					Price:   sdk.NewInt64Coin("uatom", 100),
+					Deposit: sdk.NewInt64Coin("uatom", 40),
 				},
 				{
-					BidAmount:     sdk.NewInt64Coin("uatom", 105),
-					DepositAmount: sdk.NewInt64Coin("uatom", 45),
+					Price:   sdk.NewInt64Coin("uatom", 105),
+					Deposit: sdk.NewInt64Coin("uatom", 45),
 				},
 			},
 			expResult: sdk.NewInt64Coin("uatom", 105),
@@ -105,10 +105,10 @@ func TestLiquidationBid(t *testing.T) {
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 100),
-					DepositAmount: sdk.NewInt64Coin("uatom", 30),
-					PaidAmount:    sdk.NewInt64Coin("uatom", 70),
-					InterestRate:  sdk.NewDecWithPrec(1, 1),
+					Price:        sdk.NewInt64Coin("uatom", 100),
+					Deposit:      sdk.NewInt64Coin("uatom", 30),
+					PaidAmount:   sdk.NewInt64Coin("uatom", 70),
+					InterestRate: sdk.NewDecWithPrec(1, 1),
 					Borrow: types.Borrowing{
 						Amount:       sdk.NewInt64Coin("uatom", 20),
 						LastRepaidAt: now,
@@ -137,10 +137,10 @@ func TestLiquidationBid(t *testing.T) {
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 100),
-					DepositAmount: sdk.NewInt64Coin("uatom", 30),
-					PaidAmount:    sdk.NewInt64Coin("uatom", 0),
-					InterestRate:  sdk.NewDecWithPrec(1, 1),
+					Price:        sdk.NewInt64Coin("uatom", 100),
+					Deposit:      sdk.NewInt64Coin("uatom", 30),
+					PaidAmount:   sdk.NewInt64Coin("uatom", 0),
+					InterestRate: sdk.NewDecWithPrec(1, 1),
 					Borrow: types.Borrowing{
 						Amount:       sdk.NewInt64Coin("uatom", 20),
 						LastRepaidAt: now,
@@ -161,10 +161,10 @@ func TestLiquidationBid(t *testing.T) {
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 100),
-					DepositAmount: sdk.NewInt64Coin("uatom", 30),
-					PaidAmount:    sdk.NewInt64Coin("uatom", 70),
-					InterestRate:  sdk.NewDecWithPrec(1, 1),
+					Price:        sdk.NewInt64Coin("uatom", 100),
+					Deposit:      sdk.NewInt64Coin("uatom", 30),
+					PaidAmount:   sdk.NewInt64Coin("uatom", 70),
+					InterestRate: sdk.NewDecWithPrec(1, 1),
 					Borrow: types.Borrowing{
 						Amount:       sdk.NewInt64Coin("uatom", 20),
 						LastRepaidAt: now,
@@ -178,10 +178,10 @@ func TestLiquidationBid(t *testing.T) {
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 200),
-					DepositAmount: sdk.NewInt64Coin("uatom", 50),
-					PaidAmount:    sdk.NewInt64Coin("uatom", 150),
-					InterestRate:  sdk.NewDecWithPrec(1, 1),
+					Price:        sdk.NewInt64Coin("uatom", 200),
+					Deposit:      sdk.NewInt64Coin("uatom", 50),
+					PaidAmount:   sdk.NewInt64Coin("uatom", 150),
+					InterestRate: sdk.NewDecWithPrec(1, 1),
 					Borrow: types.Borrowing{
 						Amount:       sdk.NewInt64Coin("uatom", 30),
 						LastRepaidAt: now,
@@ -210,10 +210,10 @@ func TestLiquidationBid(t *testing.T) {
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 100),
-					DepositAmount: sdk.NewInt64Coin("uatom", 30),
-					PaidAmount:    sdk.NewInt64Coin("uatom", 70),
-					InterestRate:  sdk.NewDecWithPrec(1, 1),
+					Price:        sdk.NewInt64Coin("uatom", 100),
+					Deposit:      sdk.NewInt64Coin("uatom", 30),
+					PaidAmount:   sdk.NewInt64Coin("uatom", 70),
+					InterestRate: sdk.NewDecWithPrec(1, 1),
 					Borrow: types.Borrowing{
 						Amount:       sdk.NewInt64Coin("uatom", 20),
 						LastRepaidAt: now,
@@ -227,10 +227,10 @@ func TestLiquidationBid(t *testing.T) {
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 200),
-					DepositAmount: sdk.NewInt64Coin("uatom", 50),
-					PaidAmount:    sdk.NewInt64Coin("uatom", 0),
-					InterestRate:  sdk.NewDecWithPrec(1, 1),
+					Price:        sdk.NewInt64Coin("uatom", 200),
+					Deposit:      sdk.NewInt64Coin("uatom", 50),
+					PaidAmount:   sdk.NewInt64Coin("uatom", 0),
+					InterestRate: sdk.NewDecWithPrec(1, 1),
 					Borrow: types.Borrowing{
 						Amount:       sdk.NewInt64Coin("uatom", 30),
 						LastRepaidAt: now,
@@ -259,10 +259,10 @@ func TestLiquidationBid(t *testing.T) {
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 100),
-					DepositAmount: sdk.NewInt64Coin("uatom", 30),
-					PaidAmount:    sdk.NewInt64Coin("uatom", 0),
-					InterestRate:  sdk.NewDecWithPrec(1, 1),
+					Price:        sdk.NewInt64Coin("uatom", 100),
+					Deposit:      sdk.NewInt64Coin("uatom", 30),
+					PaidAmount:   sdk.NewInt64Coin("uatom", 0),
+					InterestRate: sdk.NewDecWithPrec(1, 1),
 					Borrow: types.Borrowing{
 						Amount:       sdk.NewInt64Coin("uatom", 30),
 						LastRepaidAt: now,
@@ -276,10 +276,10 @@ func TestLiquidationBid(t *testing.T) {
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 200),
-					DepositAmount: sdk.NewInt64Coin("uatom", 50),
-					PaidAmount:    sdk.NewInt64Coin("uatom", 0),
-					InterestRate:  sdk.NewDecWithPrec(1, 1),
+					Price:        sdk.NewInt64Coin("uatom", 200),
+					Deposit:      sdk.NewInt64Coin("uatom", 50),
+					PaidAmount:   sdk.NewInt64Coin("uatom", 0),
+					InterestRate: sdk.NewDecWithPrec(1, 1),
 					Borrow: types.Borrowing{
 						Amount:       sdk.NewInt64Coin("uatom", 50),
 						LastRepaidAt: now,
@@ -325,9 +325,9 @@ func TestForForfeitedBidsAndRefundBids(t *testing.T) {
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 100),
-					DepositAmount: sdk.NewInt64Coin("uatom", 30),
-					PaidAmount:    sdk.NewInt64Coin("uatom", 70),
+					Price:      sdk.NewInt64Coin("uatom", 100),
+					Deposit:    sdk.NewInt64Coin("uatom", 30),
+					PaidAmount: sdk.NewInt64Coin("uatom", 70),
 				},
 				{
 					Id: types.BidId{
@@ -337,9 +337,9 @@ func TestForForfeitedBidsAndRefundBids(t *testing.T) {
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 200),
-					DepositAmount: sdk.NewInt64Coin("uatom", 50),
-					PaidAmount:    sdk.NewInt64Coin("uatom", 150),
+					Price:      sdk.NewInt64Coin("uatom", 200),
+					Deposit:    sdk.NewInt64Coin("uatom", 50),
+					PaidAmount: sdk.NewInt64Coin("uatom", 150),
 				},
 			},
 			winnerBid: types.NftBid{
@@ -364,9 +364,9 @@ func TestForForfeitedBidsAndRefundBids(t *testing.T) {
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 100),
-					DepositAmount: sdk.NewInt64Coin("uatom", 30),
-					PaidAmount:    sdk.NewInt64Coin("uatom", 70),
+					Price:      sdk.NewInt64Coin("uatom", 100),
+					Deposit:    sdk.NewInt64Coin("uatom", 30),
+					PaidAmount: sdk.NewInt64Coin("uatom", 70),
 				},
 				{
 					Id: types.BidId{
@@ -376,9 +376,9 @@ func TestForForfeitedBidsAndRefundBids(t *testing.T) {
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 200),
-					DepositAmount: sdk.NewInt64Coin("uatom", 50),
-					PaidAmount:    sdk.NewInt64Coin("uatom", 0),
+					Price:      sdk.NewInt64Coin("uatom", 200),
+					Deposit:    sdk.NewInt64Coin("uatom", 50),
+					PaidAmount: sdk.NewInt64Coin("uatom", 0),
 				},
 			},
 			winnerBid: types.NftBid{
@@ -431,10 +431,10 @@ func TestExpectedRepayAmount(t *testing.T) {
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 100000000),
-					DepositAmount: sdk.NewInt64Coin("uatom", 30000000),
-					InterestRate:  sdk.NewDecWithPrec(1, 1),
-					ExpiryAt:      nextMonth,
+					Price:        sdk.NewInt64Coin("uatom", 100000000),
+					Deposit:      sdk.NewInt64Coin("uatom", 30000000),
+					InterestRate: sdk.NewDecWithPrec(1, 1),
+					Expiry:       nextMonth,
 				},
 			},
 			borrowBids: []types.BorrowBid{
@@ -457,10 +457,10 @@ func TestExpectedRepayAmount(t *testing.T) {
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 100000000),
-					DepositAmount: sdk.NewInt64Coin("uatom", 30000000),
-					InterestRate:  sdk.NewDecWithPrec(1, 1),
-					ExpiryAt:      nextMonth,
+					Price:        sdk.NewInt64Coin("uatom", 100000000),
+					Deposit:      sdk.NewInt64Coin("uatom", 30000000),
+					InterestRate: sdk.NewDecWithPrec(1, 1),
+					Expiry:       nextMonth,
 				},
 				{
 					Id: types.BidId{
@@ -470,10 +470,10 @@ func TestExpectedRepayAmount(t *testing.T) {
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 200000000),
-					DepositAmount: sdk.NewInt64Coin("uatom", 30000000),
-					InterestRate:  sdk.NewDecWithPrec(1, 1),
-					ExpiryAt:      nextMonth,
+					Price:        sdk.NewInt64Coin("uatom", 200000000),
+					Deposit:      sdk.NewInt64Coin("uatom", 30000000),
+					InterestRate: sdk.NewDecWithPrec(1, 1),
+					Expiry:       nextMonth,
 				},
 			},
 			borrowBids: []types.BorrowBid{
@@ -531,11 +531,11 @@ func TestExistRepayAmount(t *testing.T) {
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 100000000),
-					DepositAmount: sdk.NewInt64Coin("uatom", 30000000),
-					InterestRate:  sdk.NewDecWithPrec(1, 1),
+					Price:        sdk.NewInt64Coin("uatom", 100000000),
+					Deposit:      sdk.NewInt64Coin("uatom", 30000000),
+					InterestRate: sdk.NewDecWithPrec(1, 1),
 					// Additional 1 minute for time error correction
-					ExpiryAt: nextMonth,
+					Expiry: nextMonth,
 					Borrow: types.Borrowing{
 						Amount:       sdk.NewInt64Coin("uatom", 20000000),
 						LastRepaidAt: now,
@@ -556,11 +556,11 @@ func TestExistRepayAmount(t *testing.T) {
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 100000000),
-					DepositAmount: sdk.NewInt64Coin("uatom", 30000000),
-					InterestRate:  sdk.NewDecWithPrec(1, 1),
+					Price:        sdk.NewInt64Coin("uatom", 100000000),
+					Deposit:      sdk.NewInt64Coin("uatom", 30000000),
+					InterestRate: sdk.NewDecWithPrec(1, 1),
 					// Additional 1 minute for time error correction
-					ExpiryAt: nextMonth,
+					Expiry: nextMonth,
 					Borrow: types.Borrowing{
 						Amount:       sdk.NewInt64Coin("uatom", 20000000),
 						LastRepaidAt: now,
@@ -574,11 +574,11 @@ func TestExistRepayAmount(t *testing.T) {
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 200000000),
-					DepositAmount: sdk.NewInt64Coin("uatom", 40000000),
-					InterestRate:  sdk.NewDecWithPrec(1, 1),
+					Price:        sdk.NewInt64Coin("uatom", 200000000),
+					Deposit:      sdk.NewInt64Coin("uatom", 40000000),
+					InterestRate: sdk.NewDecWithPrec(1, 1),
 					// Additional 1 minute for time error correction
-					ExpiryAt: nextMonth,
+					Expiry: nextMonth,
 					Borrow: types.Borrowing{
 						Amount:       sdk.NewInt64Coin("uatom", 40000000),
 						LastRepaidAt: now,
@@ -628,10 +628,10 @@ func TestMaxBorrowAmount(t *testing.T) {
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 100000000),
-					DepositAmount: sdk.NewInt64Coin("uatom", 30000000),
-					InterestRate:  sdk.NewDecWithPrec(5, 2), // 5%
-					ExpiryAt:      now.Add(time.Hour * 24 * 30),
+					Price:        sdk.NewInt64Coin("uatom", 100000000),
+					Deposit:      sdk.NewInt64Coin("uatom", 30000000),
+					InterestRate: sdk.NewDecWithPrec(5, 2), // 5%
+					Expiry:       now.Add(time.Hour * 24 * 30),
 				},
 			},
 			// 30000000 / e^(0.05 * 30/365) = 29876965
@@ -648,10 +648,10 @@ func TestMaxBorrowAmount(t *testing.T) {
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 100000000),
-					DepositAmount: sdk.NewInt64Coin("uatom", 30000000),
-					InterestRate:  sdk.NewDecWithPrec(5, 2), // 5%
-					ExpiryAt:      now.Add(time.Hour * 24 * 30),
+					Price:        sdk.NewInt64Coin("uatom", 100000000),
+					Deposit:      sdk.NewInt64Coin("uatom", 30000000),
+					InterestRate: sdk.NewDecWithPrec(5, 2), // 5%
+					Expiry:       now.Add(time.Hour * 24 * 30),
 				},
 				{
 					Id: types.BidId{
@@ -661,10 +661,10 @@ func TestMaxBorrowAmount(t *testing.T) {
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 200000000),
-					DepositAmount: sdk.NewInt64Coin("uatom", 80000000),
-					InterestRate:  sdk.NewDecWithPrec(1, 1), // 10%
-					ExpiryAt:      now.Add(time.Hour * 24 * 10),
+					Price:        sdk.NewInt64Coin("uatom", 200000000),
+					Deposit:      sdk.NewInt64Coin("uatom", 80000000),
+					InterestRate: sdk.NewDecWithPrec(1, 1), // 10%
+					Expiry:       now.Add(time.Hour * 24 * 10),
 				},
 			},
 			// 30000000 + (110000000 - 30123541) / e^(0.1 * 10/365) =
@@ -698,10 +698,10 @@ func TestIsAbleToBorrow(t *testing.T) {
 				},
 				Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 			},
-			BidAmount:     sdk.NewInt64Coin("uatom", 100000000),
-			DepositAmount: sdk.NewInt64Coin("uatom", 30000000),
-			InterestRate:  sdk.NewDecWithPrec(5, 2), // 5%
-			ExpiryAt:      now.Add(time.Hour * 72),
+			Price:        sdk.NewInt64Coin("uatom", 100000000),
+			Deposit:      sdk.NewInt64Coin("uatom", 30000000),
+			InterestRate: sdk.NewDecWithPrec(5, 2), // 5%
+			Expiry:       now.Add(time.Hour * 72),
 		},
 		{
 			Id: types.BidId{
@@ -711,10 +711,10 @@ func TestIsAbleToBorrow(t *testing.T) {
 				},
 				Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 			},
-			BidAmount:     sdk.NewInt64Coin("uatom", 200000000),
-			DepositAmount: sdk.NewInt64Coin("uatom", 80000000),
-			InterestRate:  sdk.NewDecWithPrec(1, 1), // 10%
-			ExpiryAt:      now.Add(time.Hour * 24),
+			Price:        sdk.NewInt64Coin("uatom", 200000000),
+			Deposit:      sdk.NewInt64Coin("uatom", 80000000),
+			InterestRate: sdk.NewDecWithPrec(1, 1), // 10%
+			Expiry:       now.Add(time.Hour * 24),
 		},
 	}
 	testCases := []struct {
@@ -781,10 +781,10 @@ func TestIsAbleToCancelBid(t *testing.T) {
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 100000000),
-					DepositAmount: sdk.NewInt64Coin("uatom", 30000000),
-					InterestRate:  sdk.NewDecWithPrec(5, 2), // 5%
-					ExpiryAt:      now.Add(time.Hour * 72),
+					Price:        sdk.NewInt64Coin("uatom", 100000000),
+					Deposit:      sdk.NewInt64Coin("uatom", 30000000),
+					InterestRate: sdk.NewDecWithPrec(5, 2), // 5%
+					Expiry:       now.Add(time.Hour * 72),
 					Borrow: types.Borrowing{
 						Amount:       sdk.NewInt64Coin("uatom", 0),
 						LastRepaidAt: now,
@@ -798,10 +798,10 @@ func TestIsAbleToCancelBid(t *testing.T) {
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 200000000),
-					DepositAmount: sdk.NewInt64Coin("uatom", 80000000),
-					InterestRate:  sdk.NewDecWithPrec(1, 1), // 10%
-					ExpiryAt:      now.Add(time.Hour * 24),
+					Price:        sdk.NewInt64Coin("uatom", 200000000),
+					Deposit:      sdk.NewInt64Coin("uatom", 80000000),
+					InterestRate: sdk.NewDecWithPrec(1, 1), // 10%
+					Expiry:       now.Add(time.Hour * 24),
 					Borrow: types.Borrowing{
 						Amount:       sdk.NewInt64Coin("uatom", 0),
 						LastRepaidAt: now,
@@ -828,10 +828,10 @@ func TestIsAbleToCancelBid(t *testing.T) {
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 100000000),
-					DepositAmount: sdk.NewInt64Coin("uatom", 30000000),
-					InterestRate:  sdk.NewDecWithPrec(5, 2), // 5%
-					ExpiryAt:      now.Add(time.Hour * 72),
+					Price:        sdk.NewInt64Coin("uatom", 100000000),
+					Deposit:      sdk.NewInt64Coin("uatom", 30000000),
+					InterestRate: sdk.NewDecWithPrec(5, 2), // 5%
+					Expiry:       now.Add(time.Hour * 72),
 					Borrow: types.Borrowing{
 						Amount:       sdk.NewInt64Coin("uatom", 0),
 						LastRepaidAt: now,
@@ -845,10 +845,10 @@ func TestIsAbleToCancelBid(t *testing.T) {
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
-					BidAmount:     sdk.NewInt64Coin("uatom", 200000000),
-					DepositAmount: sdk.NewInt64Coin("uatom", 80000000),
-					InterestRate:  sdk.NewDecWithPrec(1, 1), // 10%
-					ExpiryAt:      now.Add(time.Hour * 24),
+					Price:        sdk.NewInt64Coin("uatom", 200000000),
+					Deposit:      sdk.NewInt64Coin("uatom", 80000000),
+					InterestRate: sdk.NewDecWithPrec(1, 1), // 10%
+					Expiry:       now.Add(time.Hour * 24),
 					Borrow: types.Borrowing{
 						// borrow 100% of deposit
 						Amount:       sdk.NewInt64Coin("uatom", 80000000),
@@ -888,10 +888,10 @@ func TestIsAbleToReBid(t *testing.T) {
 				},
 				Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 			},
-			BidAmount:     sdk.NewInt64Coin("uatom", 100000000),
-			DepositAmount: sdk.NewInt64Coin("uatom", 30000000),
-			InterestRate:  sdk.NewDecWithPrec(5, 2), // 5%
-			ExpiryAt:      now.Add(time.Hour * 72),
+			Price:        sdk.NewInt64Coin("uatom", 100000000),
+			Deposit:      sdk.NewInt64Coin("uatom", 30000000),
+			InterestRate: sdk.NewDecWithPrec(5, 2), // 5%
+			Expiry:       now.Add(time.Hour * 72),
 			Borrow: types.Borrowing{
 				Amount:       sdk.NewInt64Coin("uatom", 0),
 				LastRepaidAt: now,
@@ -905,10 +905,10 @@ func TestIsAbleToReBid(t *testing.T) {
 				},
 				Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 			},
-			BidAmount:     sdk.NewInt64Coin("uatom", 200000000),
-			DepositAmount: sdk.NewInt64Coin("uatom", 70000000),
-			InterestRate:  sdk.NewDecWithPrec(1, 1), // 10%
-			ExpiryAt:      now.Add(time.Hour * 24),
+			Price:        sdk.NewInt64Coin("uatom", 200000000),
+			Deposit:      sdk.NewInt64Coin("uatom", 70000000),
+			InterestRate: sdk.NewDecWithPrec(1, 1), // 10%
+			Expiry:       now.Add(time.Hour * 24),
 			Borrow: types.Borrowing{
 				Amount:       sdk.NewInt64Coin("uatom", 70000000),
 				LastRepaidAt: now,
@@ -922,10 +922,10 @@ func TestIsAbleToReBid(t *testing.T) {
 				},
 				Bidder: "ununifi1y3t7sp0nfe2nfda7r9gf628g6ym6e7d44evfv6",
 			},
-			BidAmount:     sdk.NewInt64Coin("uatom", 200000000),
-			DepositAmount: sdk.NewInt64Coin("uatom", 80000000),
-			InterestRate:  sdk.NewDecWithPrec(1, 1), // 10%
-			ExpiryAt:      now.Add(time.Hour * 24),
+			Price:        sdk.NewInt64Coin("uatom", 200000000),
+			Deposit:      sdk.NewInt64Coin("uatom", 80000000),
+			InterestRate: sdk.NewDecWithPrec(1, 1), // 10%
+			Expiry:       now.Add(time.Hour * 24),
 			Borrow: types.Borrowing{
 				// borrow 100% of deposit
 				Amount:       sdk.NewInt64Coin("uatom", 80000000),
@@ -957,10 +957,10 @@ func TestIsAbleToReBid(t *testing.T) {
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
-				BidAmount:     sdk.NewInt64Coin("uatom", 200000000),
-				DepositAmount: sdk.NewInt64Coin("uatom", 50000000),
-				InterestRate:  sdk.NewDecWithPrec(5, 2), // 5%
-				ExpiryAt:      now.Add(time.Hour * 72),
+				Price:        sdk.NewInt64Coin("uatom", 200000000),
+				Deposit:      sdk.NewInt64Coin("uatom", 50000000),
+				InterestRate: sdk.NewDecWithPrec(5, 2), // 5%
+				Expiry:       now.Add(time.Hour * 72),
 				Borrow: types.Borrowing{
 					Amount:       sdk.NewInt64Coin("uatom", 0),
 					LastRepaidAt: now,
@@ -985,10 +985,10 @@ func TestIsAbleToReBid(t *testing.T) {
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
-				BidAmount:     sdk.NewInt64Coin("uatom", 200),
-				DepositAmount: sdk.NewInt64Coin("uatom", 50),
-				InterestRate:  sdk.NewDecWithPrec(5, 3), // 0.5%
-				ExpiryAt:      now.Add(time.Hour * 72),
+				Price:        sdk.NewInt64Coin("uatom", 200),
+				Deposit:      sdk.NewInt64Coin("uatom", 50),
+				InterestRate: sdk.NewDecWithPrec(5, 3), // 0.5%
+				Expiry:       now.Add(time.Hour * 72),
 				Borrow: types.Borrowing{
 					Amount:       sdk.NewInt64Coin("uatom", 0),
 					LastRepaidAt: now,

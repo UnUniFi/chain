@@ -56,11 +56,11 @@ func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftIdentifier, borrows [
 		if err != nil {
 			return err
 		}
-		depositAmount := bid.DepositAmount
-		if borrow.Amount.IsGTE(depositAmount) {
-			bid.Borrow.Amount = depositAmount
+		deposit := bid.Deposit
+		if borrow.Amount.IsGTE(deposit) {
+			bid.Borrow.Amount = deposit
 			bid.Borrow.LastRepaidAt = ctx.BlockTime()
-			borrowedAmount = borrowedAmount.Add(depositAmount)
+			borrowedAmount = borrowedAmount.Add(deposit)
 		} else {
 			bid.Borrow.Amount = borrow.Amount
 			bid.Borrow.LastRepaidAt = ctx.BlockTime()

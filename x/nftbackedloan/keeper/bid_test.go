@@ -35,11 +35,11 @@ func (suite *KeeperTestSuite) TestPlaceBid() {
 			msgBid: types.MsgPlaceBid{
 				Sender:           bidder.String(),
 				NftId:            types.NftIdentifier{ClassId: "class999", NftId: "nft99"},
-				BidAmount:        sdk.NewInt64Coin("uatom", 10000000),
-				ExpiryAt:         time.Now().Add(time.Hour * 24),
+				Price:            sdk.NewInt64Coin("uatom", 10000000),
+				Expiry:           time.Now().Add(time.Hour * 24),
 				InterestRate:     sdk.NewDecWithPrec(1, 1),
 				AutomaticPayment: true,
-				DepositAmount:    sdk.NewInt64Coin("uatom", 1000000),
+				Deposit:          sdk.NewInt64Coin("uatom", 1000000),
 			},
 			expectError: types.ErrNftListingDoesNotExist,
 			expectPass:  false,
@@ -49,13 +49,13 @@ func (suite *KeeperTestSuite) TestPlaceBid() {
 			msgBid: types.MsgPlaceBid{
 				Sender:           bidder.String(),
 				NftId:            types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
-				BidAmount:        sdk.NewInt64Coin("uatom", 10000000),
-				ExpiryAt:         time.Now().Add(time.Hour * 24),
+				Price:            sdk.NewInt64Coin("uatom", 10000000),
+				Expiry:           time.Now().Add(time.Hour * 24),
 				InterestRate:     sdk.NewDecWithPrec(1, 1),
 				AutomaticPayment: true,
-				DepositAmount:    sdk.NewInt64Coin("uatom", 1000000),
+				Deposit:          sdk.NewInt64Coin("uatom", 1000000),
 			},
-			expectError: types.ErrInvalidBidDenom,
+			expectError: types.ErrInvalidPriceDenom,
 			expectPass:  false,
 		},
 		{
@@ -63,11 +63,11 @@ func (suite *KeeperTestSuite) TestPlaceBid() {
 			msgBid: types.MsgPlaceBid{
 				Sender:           bidder.String(),
 				NftId:            types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
-				BidAmount:        sdk.NewInt64Coin("uguu", 10000000),
-				ExpiryAt:         time.Now().Add(time.Hour * 24),
+				Price:            sdk.NewInt64Coin("uguu", 10000000),
+				Expiry:           time.Now().Add(time.Hour * 24),
 				InterestRate:     sdk.NewDecWithPrec(1, 1),
 				AutomaticPayment: true,
-				DepositAmount:    sdk.NewInt64Coin("uguu", 1000000),
+				Deposit:          sdk.NewInt64Coin("uguu", 1000000),
 			},
 			expectError: nil,
 			expectPass:  true,
@@ -104,9 +104,9 @@ func (suite *KeeperTestSuite) TestPlaceBid() {
 		})
 		suite.Require().NoError(err)
 
-		err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{tc.msgBid.BidAmount})
+		err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{tc.msgBid.Price})
 		suite.NoError(err)
-		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{tc.msgBid.BidAmount})
+		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{tc.msgBid.Price})
 		suite.NoError(err)
 
 		err = suite.app.NftbackedloanKeeper.PlaceBid(suite.ctx, &tc.msgBid)
@@ -135,7 +135,7 @@ func (suite *KeeperTestSuite) TestSafeCloseBid() {
 	tests := []struct {
 		testCase           string
 		msgBid             types.MsgPlaceBid
-		expectBidAmount    sdk.Coin
+		expectPrice        sdk.Coin
 		expectClosedAmount sdk.Coin
 	}{
 		{
@@ -143,13 +143,13 @@ func (suite *KeeperTestSuite) TestSafeCloseBid() {
 			msgBid: types.MsgPlaceBid{
 				Sender:           bidder.String(),
 				NftId:            types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
-				BidAmount:        sdk.NewInt64Coin("uguu", 10000000),
-				ExpiryAt:         time.Now().Add(time.Hour * 24),
+				Price:            sdk.NewInt64Coin("uguu", 10000000),
+				Expiry:           time.Now().Add(time.Hour * 24),
 				InterestRate:     sdk.NewDecWithPrec(1, 1),
 				AutomaticPayment: true,
-				DepositAmount:    sdk.NewInt64Coin("uguu", 1000000),
+				Deposit:          sdk.NewInt64Coin("uguu", 1000000),
 			},
-			expectBidAmount:    sdk.NewInt64Coin("uguu", 9000000),
+			expectPrice:        sdk.NewInt64Coin("uguu", 9000000),
 			expectClosedAmount: sdk.NewInt64Coin("uguu", 10000000),
 		},
 	}
@@ -182,9 +182,9 @@ func (suite *KeeperTestSuite) TestSafeCloseBid() {
 		})
 		suite.Require().NoError(err)
 
-		err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{tc.msgBid.BidAmount})
+		err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{tc.msgBid.Price})
 		suite.NoError(err)
-		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{tc.msgBid.BidAmount})
+		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{tc.msgBid.Price})
 		suite.NoError(err)
 
 		err = suite.app.NftbackedloanKeeper.PlaceBid(suite.ctx, &tc.msgBid)
@@ -192,7 +192,7 @@ func (suite *KeeperTestSuite) TestSafeCloseBid() {
 		bid, err := suite.app.NftbackedloanKeeper.GetBid(suite.ctx, tc.msgBid.NftId.IdBytes(), bidder)
 		suite.NoError(err)
 		balance := suite.app.BankKeeper.GetBalance(suite.ctx, bidder, "uguu")
-		suite.Equal(tc.expectBidAmount, balance)
+		suite.Equal(tc.expectPrice, balance)
 
 		err = suite.app.NftbackedloanKeeper.SafeCloseBid(suite.ctx, bid)
 		suite.NoError(err)
@@ -215,26 +215,26 @@ func (suite *KeeperTestSuite) TestPayFullBid() {
 	}
 
 	tests := []struct {
-		testCase               string
-		msgBid                 types.MsgPlaceBid
-		initAmount             sdk.Coin
-		expectBidAmount        sdk.Coin
-		expectPayFullBidAmount sdk.Coin
+		testCase           string
+		msgBid             types.MsgPlaceBid
+		initAmount         sdk.Coin
+		expectPrice        sdk.Coin
+		expectPayFullPrice sdk.Coin
 	}{
 		{
 			testCase: "pass first bid",
 			msgBid: types.MsgPlaceBid{
 				Sender:           bidder.String(),
 				NftId:            types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
-				BidAmount:        sdk.NewInt64Coin("uguu", 10000000),
-				ExpiryAt:         time.Now().Add(time.Hour * 24),
+				Price:            sdk.NewInt64Coin("uguu", 10000000),
+				Expiry:           time.Now().Add(time.Hour * 24),
 				InterestRate:     sdk.NewDecWithPrec(1, 1),
 				AutomaticPayment: true,
-				DepositAmount:    sdk.NewInt64Coin("uguu", 1000000),
+				Deposit:          sdk.NewInt64Coin("uguu", 1000000),
 			},
-			initAmount:             sdk.NewInt64Coin("uguu", 20000000),
-			expectBidAmount:        sdk.NewInt64Coin("uguu", 19000000),
-			expectPayFullBidAmount: sdk.NewInt64Coin("uguu", 10000000),
+			initAmount:         sdk.NewInt64Coin("uguu", 20000000),
+			expectPrice:        sdk.NewInt64Coin("uguu", 19000000),
+			expectPayFullPrice: sdk.NewInt64Coin("uguu", 10000000),
 		},
 	}
 
@@ -274,7 +274,7 @@ func (suite *KeeperTestSuite) TestPayFullBid() {
 		err = suite.app.NftbackedloanKeeper.PlaceBid(suite.ctx, &tc.msgBid)
 		suite.NoError(err)
 		balance := suite.app.BankKeeper.GetBalance(suite.ctx, bidder, "uguu")
-		suite.Equal(tc.expectBidAmount, balance)
+		suite.Equal(tc.expectPrice, balance)
 
 		err = suite.app.NftbackedloanKeeper.PayFullBid(suite.ctx, &types.MsgPayFullBid{
 			Sender: bidder.String(),
@@ -282,6 +282,6 @@ func (suite *KeeperTestSuite) TestPayFullBid() {
 		})
 		suite.NoError(err)
 		balance = suite.app.BankKeeper.GetBalance(suite.ctx, bidder, "uguu")
-		suite.Equal(tc.expectPayFullBidAmount, balance)
+		suite.Equal(tc.expectPayFullPrice, balance)
 	}
 }

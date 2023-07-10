@@ -197,7 +197,7 @@ func TestRepaidResult(t *testing.T) {
 	}
 }
 
-func TestIsPaidBidAmount(t *testing.T) {
+func TestIsPaidPrice(t *testing.T) {
 	testCases := []struct {
 		name      string
 		bid       types.NftBid
@@ -213,9 +213,9 @@ func TestIsPaidBidAmount(t *testing.T) {
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
-				BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(1000000)),
-				DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(200000)),
-				PaidAmount:    sdk.NewCoin("uguu", sdk.NewInt(800000)),
+				Price:      sdk.NewCoin("uguu", sdk.NewInt(1000000)),
+				Deposit:    sdk.NewCoin("uguu", sdk.NewInt(200000)),
+				PaidAmount: sdk.NewCoin("uguu", sdk.NewInt(800000)),
 			},
 			true,
 		},
@@ -229,9 +229,9 @@ func TestIsPaidBidAmount(t *testing.T) {
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
-				BidAmount:     sdk.NewCoin("uguu", sdk.NewInt(1000000)),
-				DepositAmount: sdk.NewCoin("uguu", sdk.NewInt(200000)),
-				PaidAmount:    sdk.NewCoin("uguu", sdk.NewInt(0)),
+				Price:      sdk.NewCoin("uguu", sdk.NewInt(1000000)),
+				Deposit:    sdk.NewCoin("uguu", sdk.NewInt(200000)),
+				PaidAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
 			},
 			false,
 		},
@@ -239,7 +239,7 @@ func TestIsPaidBidAmount(t *testing.T) {
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
-			result := tc.bid.IsPaidBidAmount()
+			result := tc.bid.IsPaidPrice()
 			require.Equal(t, tc.expResult, result)
 		})
 	}

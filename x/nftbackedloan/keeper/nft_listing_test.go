@@ -286,21 +286,21 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 			bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 			// init tokens to addr
-			bidAmount := sdk.NewInt64Coin("uguu", int64(1000000*(i+1)))
-			depositAmount := sdk.NewInt64Coin("uguu", int64(100000*(i+1)))
-			err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{bidAmount})
+			price := sdk.NewInt64Coin("uguu", int64(1000000*(i+1)))
+			deposit := sdk.NewInt64Coin("uguu", int64(100000*(i+1)))
+			err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{price})
 			suite.NoError(err)
-			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{bidAmount})
+			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{price})
 			suite.NoError(err)
 
 			err := suite.app.NftbackedloanKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
 				Sender:           bidder.String(),
 				NftId:            nftIdentifier,
-				BidAmount:        bidAmount,
-				ExpiryAt:         time.Now().Add(time.Hour * 24),
+				Price:            price,
+				Expiry:           time.Now().Add(time.Hour * 24),
 				InterestRate:     sdk.MustNewDecFromStr("0.05"),
 				AutomaticPayment: false,
-				DepositAmount:    depositAmount,
+				Deposit:          deposit,
 			})
 			suite.Require().NoError(err)
 		}
@@ -475,11 +475,11 @@ func (suite *KeeperTestSuite) TestSellingDecision() {
 			err := suite.app.NftbackedloanKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
 				Sender:           bidder.String(),
 				NftId:            nftIdentifier,
-				BidAmount:        coin,
-				DepositAmount:    halfCoin,
+				Price:            coin,
+				Deposit:          halfCoin,
 				AutomaticPayment: tc.autoPayment,
 				InterestRate:     sdk.MustNewDecFromStr("0.1"),
-				ExpiryAt:         time.Now().Add(time.Hour * 24),
+				Expiry:           time.Now().Add(time.Hour * 24),
 			})
 			suite.Require().NoError(err)
 		}
@@ -496,10 +496,10 @@ func (suite *KeeperTestSuite) TestSellingDecision() {
 				suite.Require().NoError(err)
 				if tc.enoughAutoPay {
 					// check automatic payment execution when user has enough balance
-					suite.Require().Equal(bid.PaidAmount.Amount.Add(bid.DepositAmount.Amount), bid.BidAmount.Amount, tc.testCase)
+					suite.Require().Equal(bid.PaidAmount.Amount.Add(bid.Deposit.Amount), bid.Price.Amount, tc.testCase)
 				} else {
 					// check automatic payment when the user does not have enough balance
-					suite.Require().NotEqual(bid.PaidAmount, bid.BidAmount.Amount)
+					suite.Require().NotEqual(bid.PaidAmount, bid.Price.Amount)
 				}
 			}
 
@@ -524,11 +524,11 @@ func (suite *KeeperTestSuite) TestDeliverSuccessfulBids() {
 	now := time.Now().UTC()
 
 	suite.ctx = suite.ctx.WithBlockTime(now)
-	bidAmount := sdk.NewInt64Coin("uguu", int64(1000000000))
-	depositAmount := sdk.NewInt64Coin("uguu", int64(100000000))
-	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{bidAmount})
+	price := sdk.NewInt64Coin("uguu", int64(1000000000))
+	deposit := sdk.NewInt64Coin("uguu", int64(100000000))
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{price})
 	suite.NoError(err)
-	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, nftOwner, sdk.Coins{bidAmount})
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, nftOwner, sdk.Coins{price})
 	suite.NoError(err)
 
 	_ = suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
@@ -558,19 +558,19 @@ func (suite *KeeperTestSuite) TestDeliverSuccessfulBids() {
 	bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 	// init tokens to addr
-	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{bidAmount})
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{price})
 	suite.NoError(err)
-	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{bidAmount})
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{price})
 	suite.NoError(err)
 
 	err = suite.app.NftbackedloanKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
 		Sender:           bidder.String(),
 		NftId:            nftIdentifier,
-		BidAmount:        bidAmount,
-		ExpiryAt:         time.Now().Add(time.Hour * 24),
+		Price:            price,
+		Expiry:           time.Now().Add(time.Hour * 24),
 		InterestRate:     sdk.MustNewDecFromStr("0.05"),
 		AutomaticPayment: true,
-		DepositAmount:    depositAmount,
+		Deposit:          deposit,
 	})
 	suite.Require().NoError(err)
 	err = keeper.PayFullBid(suite.ctx, &types.MsgPayFullBid{

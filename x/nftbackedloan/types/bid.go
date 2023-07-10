@@ -17,13 +17,13 @@ func (m NftBid) Equal(b NftBid) bool {
 			return false
 		}
 	}
-	return m.Id.Bidder == b.Id.Bidder && m.Id.NftId.ClassId == b.Id.NftId.ClassId && m.Id.NftId.NftId == b.Id.NftId.NftId && m.BidAmount.Equal(b.BidAmount)
+	return m.Id.Bidder == b.Id.Bidder && m.Id.NftId.ClassId == b.Id.NftId.ClassId && m.Id.NftId.NftId == b.Id.NftId.NftId && m.Price.Equal(b.Price)
 }
 func (m NftBid) IsLT(b NftBid) bool {
-	if b.BidAmount.IsLTE(m.BidAmount) {
+	if b.Price.IsLTE(m.Price) {
 		return false
 	}
-	if b.DepositAmount.IsLTE(m.DepositAmount) {
+	if b.Deposit.IsLTE(m.Deposit) {
 		return false
 	}
 	if b.InterestRate.GTE(m.InterestRate) {
@@ -112,12 +112,12 @@ func (m NftBid) FullRepaidResult(payTime time.Time) RepayResult {
 }
 
 func (m NftBid) FullPaidAmount() sdk.Coin {
-	return m.PaidAmount.Add(m.DepositAmount)
+	return m.PaidAmount.Add(m.Deposit)
 }
 
-func (m NftBid) IsPaidBidAmount() bool {
+func (m NftBid) IsPaidPrice() bool {
 	fullPaidAmount := m.FullPaidAmount()
-	return fullPaidAmount.Equal(m.BidAmount)
+	return fullPaidAmount.Equal(m.Price)
 }
 
 func (m NftBid) CanCancel() bool {
@@ -153,7 +153,7 @@ func (m NftBids) SortHigherInterestRate() NftBids {
 func (m NftBids) SortLowerExpiryDate() NftBids {
 	dest := append(NftBids{}, m...)
 	sort.SliceStable(dest, func(i, j int) bool {
-		return dest[i].ExpiryAt.Before(dest[j].ExpiryAt)
+		return dest[i].Expiry.Before(dest[j].Expiry)
 	})
 	return dest
 }
@@ -161,7 +161,7 @@ func (m NftBids) SortLowerExpiryDate() NftBids {
 func (m NftBids) SortHigherDeposit() NftBids {
 	dest := append(NftBids{}, m...)
 	sort.SliceStable(dest, func(i, j int) bool {
-		return dest[i].DepositAmount.IsGTE(dest[j].DepositAmount)
+		return dest[i].Deposit.IsGTE(dest[j].Deposit)
 	})
 	return dest
 }
@@ -169,7 +169,7 @@ func (m NftBids) SortHigherDeposit() NftBids {
 func (m NftBids) SortHigherPrice() NftBids {
 	dest := append(NftBids{}, m...)
 	sort.SliceStable(dest, func(i, j int) bool {
-		return dest[i].BidAmount.IsGTE(dest[j].DepositAmount)
+		return dest[i].Price.IsGTE(dest[j].Deposit)
 	})
 	return dest
 }
@@ -180,7 +180,7 @@ func (m NftBids) GetHighestBid() (NftBid, error) {
 	}
 	highestBid := m[0]
 	for _, bid := range m {
-		if highestBid.BidAmount.IsLT(bid.BidAmount) {
+		if highestBid.Price.IsLT(bid.Price) {
 			highestBid = bid
 		}
 	}

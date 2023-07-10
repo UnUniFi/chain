@@ -81,16 +81,16 @@ func (msg MsgCancelNftListing) GetSigners() []sdk.AccAddress {
 var _ sdk.Msg = &MsgPlaceBid{}
 
 // todo
-func NewMsgPlaceBid(sender string, nftId NftIdentifier, bidAmount, depositAmount sdk.Coin,
-	interestRate sdk.Dec, expiryAt time.Time, automaticPayment bool) MsgPlaceBid {
+func NewMsgPlaceBid(sender string, nftId NftIdentifier, price, deposit sdk.Coin,
+	interestRate sdk.Dec, expiry time.Time, automaticPayment bool) MsgPlaceBid {
 	return MsgPlaceBid{
 		Sender:           sender,
 		NftId:            nftId,
-		BidAmount:        bidAmount,
+		Price:            price,
 		AutomaticPayment: automaticPayment,
-		ExpiryAt:         expiryAt,
+		Expiry:           expiry,
 		InterestRate:     interestRate,
-		DepositAmount:    depositAmount,
+		Deposit:          deposit,
 	}
 }
 

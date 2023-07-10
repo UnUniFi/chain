@@ -525,7 +525,7 @@ func (k Keeper) SellingDecisionProcess(ctx sdk.Context, bids types.NftBids, list
 		return err
 	}
 	// if winner bidder did not pay full bid, nft is listed again after deleting winner bidder
-	if !highestBid.IsPaidBidAmount() {
+	if !highestBid.IsPaidPrice() {
 		borrowedAmount := highestBid.Borrow.Amount
 		collectedDeposit, err := k.SafeCloseBidCollectDeposit(ctx, highestBid)
 		if err != nil {
@@ -709,7 +709,7 @@ func (k Keeper) DeliverSuccessfulBids(ctx sdk.Context) {
 		// borrowedAmount := k.GetDebtByNft(ctx, listing.IdBytes())
 		listerProfit := sdk.ZeroInt()
 		repayAmount := bid.Borrow.Amount.Add(bid.CompoundInterest(listing.LiquidatedAt))
-		bidderPaidAmount := bid.BidAmount
+		bidderPaidAmount := bid.Price
 		listerProfit = listerProfit.Add(bidderPaidAmount.Amount).Sub(repayAmount.Amount)
 		if listing.CollectedAmountNegative {
 			listerProfit = listerProfit.Sub(listing.CollectedAmount.Amount)

@@ -209,10 +209,10 @@ func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.Que
 	bids := k.GetBidsByNft(ctx, nftId.IdBytes())
 	// Change the order of bids to  descending order
 	sort.SliceStable(bids, func(i, j int) bool {
-		if bids[i].BidAmount.Amount.LT(bids[j].BidAmount.Amount) {
+		if bids[i].Price.Amount.LT(bids[j].Price.Amount) {
 			return false
 		}
-		if bids[i].BidAmount.Amount.GT(bids[j].BidAmount.Amount) {
+		if bids[i].Price.Amount.GT(bids[j].Price.Amount) {
 			return true
 		}
 		if bids[i].CreatedAt.After(bids[j].CreatedAt) {
@@ -228,7 +228,7 @@ func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.Que
 	borrows := sdk.NewCoin(max.Denom, sdk.NewInt(0))
 
 	for _, v := range bids {
-		deposits = deposits.Add(v.DepositAmount)
+		deposits = deposits.Add(v.Deposit)
 		borrows = borrows.Add(v.Borrow.Amount)
 	}
 
@@ -303,15 +303,15 @@ func (k Keeper) Rewards(c context.Context, req *types.QueryRewardsRequest) (*typ
 // 		return nil, status.Error(codes.InvalidArgument, "does not match bidder")
 // 	}
 
-// 	allPaid := listing.State >= types.ListingState_LIQUIDATION && bidderBid.BidAmount.Amount.Equal(bidderBid.DepositAmount.Amount)
+// 	allPaid := listing.State >= types.ListingState_LIQUIDATION && bidderBid.Price.Amount.Equal(bidderBid.Deposit.Amount)
 // 	return &types.QueryPaymentStatusResponse{
 // 		PaymentStatus: types.PaymentStatus{
 // 			NftId:            listing.NftId,
 // 			State:            listing.State,
 // 			Bidder:           bidderBid.Id.Bidder,
-// 			Amount:           bidderBid.BidAmount,
+// 			Amount:           bidderBid.Price,
 // 			AutomaticPayment: bidderBid.AutomaticPayment,
-// 			PaidAmount:       bidderBid.DepositAmount.Amount,
+// 			PaidAmount:       bidderBid.Deposit.Amount,
 // 			CreatedAt:        bidderBid.CreatedAt,
 // 			AllPaid:          allPaid,
 // 		},
@@ -343,7 +343,7 @@ func (k Keeper) Liquidation(c context.Context, req *types.QueryLiquidationReques
 			Amount: sdk.NewCoin(listing.BidDenom, sdk.ZeroInt()),
 		}
 		liq.Amount = bid.LiquidationAmount(afterAnHour)
-		liq.LiquidationDate = bid.ExpiryAt
+		liq.LiquidationDate = bid.Expiry
 		if liquidations.Liquidation == nil {
 			liquidations.Liquidation = &liq
 		} else {

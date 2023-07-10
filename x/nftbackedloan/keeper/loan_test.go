@@ -26,11 +26,11 @@ func (suite *KeeperTestSuite) TestManualBorrow() {
 	msgBid := types.MsgPlaceBid{
 		Sender:           bidder.String(),
 		NftId:            types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
-		BidAmount:        sdk.NewInt64Coin("uguu", 10000000),
-		ExpiryAt:         time.Now().Add(time.Hour * 24),
+		Price:            sdk.NewInt64Coin("uguu", 10000000),
+		Expiry:           time.Now().Add(time.Hour * 24),
 		InterestRate:     sdk.NewDecWithPrec(1, 1),
 		AutomaticPayment: true,
-		DepositAmount:    sdk.NewInt64Coin("uguu", 1000000),
+		Deposit:          sdk.NewInt64Coin("uguu", 1000000),
 	}
 
 	tests := []struct {
@@ -146,9 +146,9 @@ func (suite *KeeperTestSuite) TestManualBorrow() {
 		})
 		suite.Require().NoError(err)
 
-		err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{msgBid.BidAmount})
+		err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{msgBid.Price})
 		suite.NoError(err)
-		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{msgBid.BidAmount})
+		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{msgBid.Price})
 		suite.NoError(err)
 
 		err = suite.app.NftbackedloanKeeper.PlaceBid(suite.ctx, &msgBid)
@@ -180,11 +180,11 @@ func (suite *KeeperTestSuite) TestManualRepay() {
 	msgBid := types.MsgPlaceBid{
 		Sender:           bidder.String(),
 		NftId:            types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
-		BidAmount:        sdk.NewInt64Coin("uguu", 10000000),
-		ExpiryAt:         time.Now().Add(time.Hour * 24),
+		Price:            sdk.NewInt64Coin("uguu", 10000000),
+		Expiry:           time.Now().Add(time.Hour * 24),
 		InterestRate:     sdk.NewDecWithPrec(1, 1),
 		AutomaticPayment: true,
-		DepositAmount:    sdk.NewInt64Coin("uguu", 1000000),
+		Deposit:          sdk.NewInt64Coin("uguu", 1000000),
 	}
 	msgBorrow := types.MsgBorrow{
 		Sender: owner.String(),
@@ -310,11 +310,11 @@ func (suite *KeeperTestSuite) TestManualRepay() {
 		})
 		suite.Require().NoError(err)
 
-		err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{msgBid.BidAmount})
+		err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{msgBid.Price})
 		suite.NoError(err)
-		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{msgBid.DepositAmount})
+		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{msgBid.Deposit})
 		suite.NoError(err)
-		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, owner, sdk.Coins{msgBid.DepositAmount})
+		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, owner, sdk.Coins{msgBid.Deposit})
 		suite.NoError(err)
 
 		err = suite.app.NftbackedloanKeeper.PlaceBid(suite.ctx, &msgBid)
