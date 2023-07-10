@@ -46,17 +46,17 @@ func LiquidationBid(bidsSortedByDeposit []NftBid, time time.Time) (NftBid, []Nft
 	settlementAmount, _ := ExistRepayAmountAtTime(bidsSortedByDeposit, time)
 	forfeitedDeposit := types.NewCoin(bidsSortedByDeposit[0].DepositAmount.Denom, sdk.NewInt(0))
 	var winnerBid NftBid
-	notInspectedBids := NftBids(bidsSortedByDeposit)
+	notInspectedBidsSortedByDeposit := NftBids(bidsSortedByDeposit)
 	forfeitedBids := []NftBid{}
 	refundBids := []NftBid{}
 
 	// loop until all bids are handled
-	for len(notInspectedBids) > 0 {
-		for _, bid := range notInspectedBids {
+	for len(notInspectedBidsSortedByDeposit) > 0 {
+		for _, bid := range notInspectedBidsSortedByDeposit {
 			// if the win bid is found, other bids are refunded.
 			if !winnerBid.IsNil() {
 				refundBids = append(refundBids, bid)
-				notInspectedBids = notInspectedBids.RemoveBid(bid)
+				notInspectedBidsSortedByDeposit = notInspectedBidsSortedByDeposit.RemoveBid(bid)
 				continue
 			}
 			// skip, if the bid is paid & the bid amount + forfeited deposit < settlement amount
@@ -70,7 +70,7 @@ func LiquidationBid(bidsSortedByDeposit []NftBid, time time.Time) (NftBid, []Nft
 				forfeitedDeposit = forfeitedDeposit.Add(bid.DepositAmount)
 				forfeitedBids = append(forfeitedBids, bid)
 			}
-			notInspectedBids = notInspectedBids.RemoveBid(bid)
+			notInspectedBidsSortedByDeposit = notInspectedBidsSortedByDeposit.RemoveBid(bid)
 		}
 	}
 
