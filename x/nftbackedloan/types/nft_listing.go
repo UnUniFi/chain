@@ -74,7 +74,7 @@ func (m NftListing) SubCollectedAmount(amount sdk.Coin) NftListing {
 	} else {
 		if m.CollectedAmount.IsLTE(amount) {
 			m.CollectedAmount = amount.Sub(m.CollectedAmount)
-			m.CollectedAmountNegative = false
+			m.CollectedAmountNegative = true
 		} else {
 			m.CollectedAmount = m.CollectedAmount.Sub(amount)
 		}
