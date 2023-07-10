@@ -41,49 +41,44 @@ func LiquidationBid(bidsSortedByDeposit []NftBid, time time.Time) (NftBid, []Nft
 	// arg: bids sorted by higher deposit & liquidation time
 	// return: win bid, deposit collect bids, refund bids, error
 	if len(bidsSortedByDeposit) == 0 {
-		return NftBid{}, []NftBid{}, []NftBid{}, ErrBidDoesNotExists
+		return NftBid{}, nil, nil, ErrBidDoesNotExists
 	}
 	settlementAmount, _ := ExistRepayAmountAtTime(bidsSortedByDeposit, time)
 	forfeitedDeposit := types.NewCoin(bidsSortedByDeposit[0].DepositAmount.Denom, sdk.NewInt(0))
 	var winBid NftBid
+	notInspectedBids := NftBids(bidsSortedByDeposit)
 	collectBids := []NftBid{}
 	refundBids := []NftBid{}
 
-	for _, bid := range bidsSortedByDeposit {
-		// if the win bid is found, other bids are refunded.
-		if !winBid.IsNil() {
-			refundBids = append(refundBids, bid)
-			continue
-		}
-		// if the bid is not paid, the deposit will be forfeited.
-		if !bid.IsPaidBidAmount() {
-			forfeitedDeposit = forfeitedDeposit.Add(bid.DepositAmount)
-			collectBids = append(collectBids, bid)
-			continue
-		}
-		// refund, if the bid is paid & the bid amount + forfeited deposit < settlement amount
-		if bid.BidAmount.Add(forfeitedDeposit).IsLT(settlementAmount) {
-			refundBids = append(refundBids, bid)
-			continue
-		}
-		winBid = bid
-	}
-	// if the win bid is not found, try to find the bid from the refund bids.
-	if winBid.IsNil() {
-		for _, bid := range refundBids {
+	// loop until all bids are handled
+	for len(notInspectedBids) > 0 {
+		for _, bid := range notInspectedBids {
+			// if the win bid is found, other bids are refunded.
+			if !winBid.IsNil() {
+				refundBids = append(refundBids, bid)
+				notInspectedBids = notInspectedBids.RemoveBid(bid)
+				continue
+			}
+			// skip, if the bid is paid & the bid amount + forfeited deposit < settlement amount
 			if bid.BidAmount.Add(forfeitedDeposit).IsLT(settlementAmount) {
 				continue
 			}
-			winBid = bid
-			break
+			// if liquidation is available, the bid is win or collect
+			if bid.IsPaidBidAmount() {
+				winBid = bid
+			} else {
+				forfeitedDeposit = forfeitedDeposit.Add(bid.DepositAmount)
+				collectBids = append(collectBids, bid)
+			}
+			notInspectedBids = notInspectedBids.RemoveBid(bid)
 		}
 	}
 
-	// if the win bid is not found
+	// if the win bid is not found (no one paid case)
 	if winBid.IsNil() {
 		// No error, if liquidation is available
 		if settlementAmount.IsLTE(forfeitedDeposit) {
-			return NftBid{}, collectBids, refundBids, nil
+			return NftBid{}, collectBids, nil, nil
 		}
 		// With Error, if liquidation is not available
 		return NftBid{}, collectBids, refundBids, ErrCannotLiquidation
