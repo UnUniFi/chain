@@ -18,11 +18,13 @@ func TestMinSettlementAmount(t *testing.T) {
 		name      string
 		bids      []types.NftBid
 		expResult sdk.Coin
+		expError  bool
 	}{
 		{
 			name:      "empty bid error",
 			bids:      []types.NftBid{},
 			expResult: sdk.Coin{},
+			expError:  true,
 		},
 		{
 			name: "one bid",
@@ -33,6 +35,7 @@ func TestMinSettlementAmount(t *testing.T) {
 				},
 			},
 			expResult: sdk.NewInt64Coin("uatom", 30),
+			expError:  false,
 		},
 		{
 			name: "two bids, totalDeposit < price",
@@ -47,6 +50,7 @@ func TestMinSettlementAmount(t *testing.T) {
 				},
 			},
 			expResult: sdk.NewInt64Coin("uatom", 80),
+			expError:  false,
 		},
 		{
 			name: "three bids & price < totalDeposit",
@@ -65,19 +69,21 @@ func TestMinSettlementAmount(t *testing.T) {
 				},
 			},
 			expResult: sdk.NewInt64Coin("uatom", 105),
+			expError:  false,
 		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			result, err := types.MinSettlementAmount(tc.bids, listing)
-			if err != nil {
-				if tc.name != "empty bid" {
+			if tc.expError {
+				require.Error(t, err)
+			}
+			if !tc.expError {
+				if err != nil {
 					t.Errorf("unexpected error: %v", err)
 				}
 			}
-			if !result.IsEqual(tc.expResult) {
-				t.Errorf("expected %s, got %s", tc.expResult, result)
-			}
+			require.Equal(t, tc.expResult, result)
 		})
 	}
 }
