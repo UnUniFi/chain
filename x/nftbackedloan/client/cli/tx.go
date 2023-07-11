@@ -213,7 +213,7 @@ $ %s tx %s place-bid ununifi-1 a1 100uguu 20uguu 0.05 240 --from myKeyName --cha
 		},
 	}
 
-	cmd.Flags().BoolP(FlagAutomaticPayment, "p", false, "automation payment")
+	cmd.Flags().BoolP(FlagAutomaticPayment, "p", true, "automation payment")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
