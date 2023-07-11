@@ -573,7 +573,7 @@ func (suite *KeeperTestSuite) TestDeliverSuccessfulBids() {
 		Deposit:          deposit,
 	})
 	suite.Require().NoError(err)
-	err = keeper.PayFullBid(suite.ctx, &types.MsgPayFullBid{
+	err = keeper.PayRemainder(suite.ctx, &types.MsgPayRemainder{
 		Sender: bidder.String(),
 		NftId:  nftIdentifier,
 	})

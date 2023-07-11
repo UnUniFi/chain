@@ -336,7 +336,7 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 	return nil
 }
 
-func (k Keeper) PayFullBid(ctx sdk.Context, msg *types.MsgPayFullBid) error {
+func (k Keeper) PayRemainder(ctx sdk.Context, msg *types.MsgPayRemainder) error {
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
 		return err
@@ -368,7 +368,7 @@ func (k Keeper) PayFullBid(ctx sdk.Context, msg *types.MsgPayFullBid) error {
 		}
 	}
 	// Emit event for paying full bid
-	_ = ctx.EventManager().EmitTypedEvent(&types.EventPayFullBid{
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventPayRemainder{
 		Bidder:  msg.Sender,
 		ClassId: msg.NftId.ClassId,
 		NftId:   msg.NftId.NftId,

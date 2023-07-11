@@ -201,7 +201,7 @@ func (suite *KeeperTestSuite) TestSafeCloseBid() {
 	}
 }
 
-func (suite *KeeperTestSuite) TestPayFullBid() {
+func (suite *KeeperTestSuite) TestPayRemainder() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
@@ -218,8 +218,8 @@ func (suite *KeeperTestSuite) TestPayFullBid() {
 		testCase           string
 		msgBid             types.MsgPlaceBid
 		initAmount         sdk.Coin
-		expectPrice        sdk.Coin
-		expectPayFullPrice sdk.Coin
+		expectAfterDeposit sdk.Coin
+		expectAfterPayment sdk.Coin
 	}{
 		{
 			testCase: "pass first bid",
@@ -233,8 +233,8 @@ func (suite *KeeperTestSuite) TestPayFullBid() {
 				Deposit:          sdk.NewInt64Coin("uguu", 1000000),
 			},
 			initAmount:         sdk.NewInt64Coin("uguu", 20000000),
-			expectPrice:        sdk.NewInt64Coin("uguu", 19000000),
-			expectPayFullPrice: sdk.NewInt64Coin("uguu", 10000000),
+			expectAfterDeposit: sdk.NewInt64Coin("uguu", 19000000),
+			expectAfterPayment: sdk.NewInt64Coin("uguu", 10000000),
 		},
 	}
 
@@ -274,14 +274,14 @@ func (suite *KeeperTestSuite) TestPayFullBid() {
 		err = suite.app.NftbackedloanKeeper.PlaceBid(suite.ctx, &tc.msgBid)
 		suite.NoError(err)
 		balance := suite.app.BankKeeper.GetBalance(suite.ctx, bidder, "uguu")
-		suite.Equal(tc.expectPrice, balance)
+		suite.Equal(tc.expectAfterDeposit, balance)
 
-		err = suite.app.NftbackedloanKeeper.PayFullBid(suite.ctx, &types.MsgPayFullBid{
+		err = suite.app.NftbackedloanKeeper.PayRemainder(suite.ctx, &types.MsgPayRemainder{
 			Sender: bidder.String(),
 			NftId:  tc.msgBid.NftId,
 		})
 		suite.NoError(err)
 		balance = suite.app.BankKeeper.GetBalance(suite.ctx, bidder, "uguu")
-		suite.Equal(tc.expectPayFullPrice, balance)
+		suite.Equal(tc.expectAfterPayment, balance)
 	}
 }

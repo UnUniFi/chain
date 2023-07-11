@@ -107,10 +107,10 @@ message MsgEndNftListing {
 
 ```
 
-## MsgPayFullBid
+## MsgPayRemainder
 
 ```protobuf
-message MsgPayFullBid {
+message MsgPayRemainder {
   string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",

@@ -169,22 +169,22 @@ func (msg MsgSellingDecision) GetSigners() []sdk.AccAddress {
 // }
 
 // ensure Msg interface compliance at compile time
-var _ sdk.Msg = &MsgPayFullBid{}
+var _ sdk.Msg = &MsgPayRemainder{}
 
-func NewMsgPayFullBid(sender string, nftId NftIdentifier) MsgPayFullBid {
-	return MsgPayFullBid{
+func NewMsgPayRemainder(sender string, nftId NftIdentifier) MsgPayRemainder {
+	return MsgPayRemainder{
 		Sender: sender,
 		NftId:  nftId,
 	}
 }
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
-func (msg MsgPayFullBid) ValidateBasic() error {
+func (msg MsgPayRemainder) ValidateBasic() error {
 	return nil
 }
 
 // GetSigners returns the addresses of signers that must sign.
-func (msg MsgPayFullBid) GetSigners() []sdk.AccAddress {
+func (msg MsgPayRemainder) GetSigners() []sdk.AccAddress {
 	addr, _ := sdk.AccAddressFromBech32(msg.Sender)
 	return []sdk.AccAddress{addr}
 }

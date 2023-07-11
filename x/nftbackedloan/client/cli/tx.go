@@ -34,7 +34,7 @@ func GetTxCmd() *cobra.Command {
 		CmdSellingDecision(),
 		CmdCreatePlaceBid(),
 		CmdCancelBid(),
-		CmdPayFullBid(),
+		CmdPayRemainder(),
 		// CmdEndListing(),
 		CmdBorrow(),
 		CmdRepay(),
@@ -450,14 +450,14 @@ $ %s tx %s cancel-bid 1 1 --from myKeyName --chain-id ununifi-x
 	return cmd
 }
 
-func CmdPayFullBid() *cobra.Command {
+func CmdPayRemainder() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "pay-full-bid [class-id] [nft-id]",
+		Use:   "pay-remainder [class-id] [nft-id]",
 		Short: "Pay full bid price on nft",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Pay full bid on nft.
 Example:
-$ %s tx %s pay-full-bid 1 1 --from myKeyName --chain-id ununifi-x
+$ %s tx %s pay-remainder 1 1 --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -473,7 +473,7 @@ $ %s tx %s pay-full-bid 1 1 --from myKeyName --chain-id ununifi-x
 				NftId:   nftId,
 			}
 
-			msg := types.NewMsgPayFullBid(clientCtx.GetFromAddress().String(), nftIde)
+			msg := types.NewMsgPayRemainder(clientCtx.GetFromAddress().String(), nftIde)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err

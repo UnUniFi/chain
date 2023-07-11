@@ -348,7 +348,7 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 			}
 
 			cacheCtx, write := ctx.CacheContext()
-			err = k.PayFullBid(cacheCtx, &types.MsgPayFullBid{
+			err = k.PayRemainder(cacheCtx, &types.MsgPayRemainder{
 				Sender: bidder.String(),
 				NftId:  listing.NftId,
 			})
@@ -422,7 +422,7 @@ func (k Keeper) SetLiquidation(ctx sdk.Context, msg *types.MsgEndNftListing) err
 				}
 
 				cacheCtx, write := ctx.CacheContext()
-				err = k.PayFullBid(cacheCtx, &types.MsgPayFullBid{
+				err = k.PayRemainder(cacheCtx, &types.MsgPayRemainder{
 					Sender: bidder.String(),
 					NftId:  listing.NftId,
 				})
@@ -566,7 +566,7 @@ func (k Keeper) LiquidationProcess(ctx sdk.Context, bids types.NftBids, listing 
 
 	cacheCtx, write := ctx.CacheContext()
 	if winnerBid.IsNil() {
-		// No one has PayFullBid.
+		// No one has PayRemainder.
 		err := k.LiquidationProcessNoWinner(cacheCtx, bidsSortedByDeposit, listing)
 		if err != nil {
 			fmt.Println("failed to liquidation process with no winner: %w", err)

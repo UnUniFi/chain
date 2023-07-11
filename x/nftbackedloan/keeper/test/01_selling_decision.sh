@@ -35,7 +35,7 @@ ununifid q nftbackedloan nft-listing ununifi-1AFC3C85B52311F13161F724B284EF90045
 
 # pay full bid
 echo "------------pay full bid------------"
-ununifid tx nftbackedloan pay-full-bid \
+ununifid tx nftbackedloan pay-remainder \
 ununifi-1AFC3C85B52311F13161F724B284EF900458E3B3 a01 \
 --from user2 --keyring-backend test --chain-id test --yes
 

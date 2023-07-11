@@ -214,9 +214,9 @@ The bidder can set when bidding.
 
 [MsgSellingDecision](https://github.com/UnUniFi/chain/blob/newDevelop/proto/ununifi/nftbackedloan/tx.proto#L85-L88)
 
-### MsgPayFullBid
+### MsgPayRemainder
 
-[MsgPayFullBid](https://github.com/UnUniFi/chain/blob/newDevelop/proto/ununifi/nftbackedloan/tx.proto#L91-L94)
+[MsgPayRemainder](https://github.com/UnUniFi/chain/blob/newDevelop/proto/ununifi/nftbackedloan/tx.proto#L91-L94)
 
 | Method Name        | Request Type                                | Response Type                                               | Description | HTTP Verb | Endpoint |
 | ------------------ | ------------------------------------------- | ----------------------------------------------------------- | ----------- | --------- | -------- |
@@ -227,7 +227,7 @@ The bidder can set when bidding.
 | `Borrow`           | [MsgBorrow](#MsgBorrow)                     | [MsgBorrowResponse](#MsgBorrowResponse)                     |             |           |
 | `Repay`            | [MsgRepay](#MsgRepay)                       | [MsgRepayResponse](#MsgRepayResponse)                       |             |           |
 | `SellingDecision`  | [MsgSellingDecision](#MsgSellingDecision)   | [MsgSellingDecisionResponse](#MsgSellingDecisionResponse)   |             |           |
-| `PayFullBid`       | [MsgPayFullBid](#MsgPayFullBid)             | [MsgPayFullBidResponse](#MsgPayFullBidResponse)             |             |           |
+| `PayRemainder`     | [MsgPayRemainder](#MsgPayRemainder)         | [MsgPayRemainderResponse](#MsgPayRemainderResponse)         |             |           |
 
 ## transactions
 
@@ -353,7 +353,7 @@ ununifid tx nftbackedloan selling-decision a10 a10 --from user --chain-id test
 Pay the difference between the bid price and the deposit amount.
 
 ```sh
-ununifid tx nftbackedloan pay-full-bid [nft-class-id] [nft-id] --from --chain-id test
+ununifid tx nftbackedloan pay-remainder [nft-class-id] [nft-id] --from --chain-id test
 ```
 
 ::: details Example
@@ -361,7 +361,7 @@ ununifid tx nftbackedloan pay-full-bid [nft-class-id] [nft-id] --from --chain-id
 Pay full bid price for the a10/a10 auction
 
 ```sh
-ununifid tx nftbackedloan pay-full-bid a10 a10 --from user --chain-id test
+ununifid tx nftbackedloan pay-remainder a10 a10 --from user --chain-id test
 ```
 
 ## queries
