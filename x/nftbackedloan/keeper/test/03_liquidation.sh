@@ -41,8 +41,8 @@ sleep 20
 echo "============check nft status liquidation ============"
 ununifid q nftbackedloan nft-listing ununifi-1AFC3C85B52311F13161F724B284EF900458E3B3 a03
 
-# pay full bid
-echo "------------pay full bid------------"
+# pay remainder
+echo "------------pay remainder------------"
 ununifid tx nftbackedloan pay-remainder \
 ununifi-1AFC3C85B52311F13161F724B284EF900458E3B3 a03 \
 --from user2 --keyring-backend test --chain-id test --yes

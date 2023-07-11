@@ -40,7 +40,7 @@ sleep $sleep
 echo "============check nft status selling_decision ============"
 ununifid q nftbackedloan nft-listing ununifi-1AFC3C85B52311F13161F724B284EF900458E3B3 a02
 
-# no pay full bid
+# not pay remainder
 
 echo "wait.......... NftListingFullPaymentPeriod: 30s"
 sleep 30
@@ -88,8 +88,8 @@ sleep $sleep
 echo "============check nft status selling_decision ============"
 ununifid q nftbackedloan nft-listing ununifi-1AFC3C85B52311F13161F724B284EF900458E3B3 a02
 
-# pay full bid
-echo "------------pay full bid------------"
+# pay remainder
+echo "------------pay remainder------------"
 ununifid tx nftbackedloan pay-remainder \
 ununifi-1AFC3C85B52311F13161F724B284EF900458E3B3 a02 \
 --from user3 --keyring-backend test --chain-id test --yes

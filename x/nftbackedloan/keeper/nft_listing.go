@@ -370,7 +370,7 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 	return nil
 }
 
-// Status update Liquidation to pay full bid
+// Status update to Liquidation
 func (k Keeper) SetLiquidation(ctx sdk.Context, msg *types.MsgEndNftListing) error {
 	// check listing already exists
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
@@ -524,7 +524,7 @@ func (k Keeper) SellingDecisionProcess(ctx sdk.Context, bids types.NftBids, list
 	if err != nil {
 		return err
 	}
-	// if winner bidder did not pay full bid, nft is listed again after deleting winner bidder
+	// if winner bidder did not pay remainder, nft is listed again after deleting winner bidder
 	if !highestBid.IsPaidPrice() {
 		borrowedAmount := highestBid.Borrow.Amount
 		forfeitedDeposit, err := k.SafeCloseBidCollectDeposit(ctx, highestBid)
