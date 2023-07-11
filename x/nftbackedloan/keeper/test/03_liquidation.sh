@@ -12,8 +12,9 @@ ununifi-1AFC3C85B52311F13161F724B284EF900458E3B3 a03 ununifi155u042u8wk3al32h3vz
 sleep $sleep
 # list nft
 echo "------------list nft------------"
-ununifid tx nftbackedloan listing \
+ununifid tx nftbackedloan list \
 ununifi-1AFC3C85B52311F13161F724B284EF900458E3B3 a03 \
+--bid-token uguu --min-deposit-rate 0.1 --min-bidding-period-hours 0.005 \
 --from user1 --keyring-backend test --chain-id test --yes
 
 sleep $sleep
@@ -68,8 +69,8 @@ else
 fi
 
 amount=$(ununifid q bank balances ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w --denom uguu -o json | jq .amount | tr -d '"')
-# + 200 - 10 (5% fee)
-expected_amount="100000000190"
+# + 40 (borrow) + 160 - 8(fee) = 192
+expected_amount="100000000192"
 
 if [ "$amount" = "$expected_amount" ]; then
   echo "pass: owner amount is correct: $amount"
