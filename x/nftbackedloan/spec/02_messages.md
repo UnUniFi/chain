@@ -4,7 +4,7 @@ order: 2
 
 # Messages
 
-In this section we describe the processing of the nftmarket messages.
+In this section we describe the processing of the nftbackedloan messages.
 
 ## MsgListNft
 

@@ -2162,7 +2162,7 @@ Params defines the parameters for the module.
 
 RewardParams defines which module have which rewards type and rate
 to maintain the correctness of the fee rate in a module
-e.g. if nftmarket module have "Frontend" and "Collection" incentive,
+e.g. if nftbackedloan module have "Frontend" and "Collection" incentive,
 the combined those rates for the incentive cannot be exceed 1
 
 | Field         | Type                                                 | Label    | Description |
@@ -2977,7 +2977,7 @@ Query defines the gRPC querier service.
 
 ### GenesisState
 
-GenesisState defines the nftmarket module's genesis state.
+GenesisState defines the nftbackedloan module's genesis state.
 
 | Field            | Type                                        | Label    | Description |
 | ---------------- | ------------------------------------------- | -------- | ----------- |
@@ -3693,7 +3693,7 @@ Query defines the gRPC querier service.
 
 ### GenesisState
 
-GenesisState defines the nftmarket module's genesis state.
+GenesisState defines the nftbackedloan module's genesis state.
 
 | Field            | Type                                          | Label    | Description |
 | ---------------- | --------------------------------------------- | -------- | ----------- |

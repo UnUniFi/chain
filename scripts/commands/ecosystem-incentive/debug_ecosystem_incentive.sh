@@ -18,19 +18,19 @@ sleep 5;
 ./ununifid tx ecosystem-incentive register --register-file ../scripts/commands/ecosystem-incentive/register.json --from validator --chain-id test -y --keyring-backend=test;
 sleep 5;
 # # to see if AfterNftUnlistedWithoutPayment hook method will be trigger
-# ./ununifid tx nftmarket listing $CLASS_ID a10 --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block \
+# ./ununifid tx nftbackedloan listing $CLASS_ID a10 --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block \
 # --note="";
 # sleep 15;
-# ./ununifid tx nftmarket cancel_listing $CLASS_ID a10 --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block;
+# ./ununifid tx nftbackedloan cancel_listing $CLASS_ID a10 --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block;
 
 # to see if AfterNftPaymentWithCommission hook method will be triggered
-./ununifid tx nftmarket listing $CLASS_ID a10 --min-minimum-deposit-rate=0.001 --bid-token=uguu --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y \
+./ununifid tx nftbackedloan listing $CLASS_ID a10 --min-deposit-rate=0.001 --bid-token=uguu --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y \
 --note='{"version":"v1","incentive_unit_id":"incentive-unit-1"}';
 sleep 5;
-./ununifid tx nftmarket placebid $CLASS_ID a10 100000000uguu 100000uguu 0.01 100000 --automatic-payment=true --chain-id=test --from=debug --keyring-backend=test --gas=300000 -y;
+./ununifid tx nftbackedloan placebid $CLASS_ID a10 100000000uguu 100000uguu 0.01 100000 --automatic-payment=true --chain-id=test --from=debug --keyring-backend=test --gas=300000 -y;
 sleep 5;
 
-./ununifid tx nftmarket selling_decision $CLASS_ID a10 --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y;
+./ununifid tx nftbackedloan selling_decision $CLASS_ID a10 --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y;
 sleep 5;
 
 # expect accumulating rewards
