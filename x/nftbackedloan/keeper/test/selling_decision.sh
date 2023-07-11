@@ -46,6 +46,7 @@ ununifid q nftbackedloan nft-listing ununifi-1AFC3C85B52311F13161F724B284EF90045
 # Check nft transfer & balance
 balance=$(ununifid q bank balances ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla --denom uguu)
 amount=$(echo "$balance" | awk -F': ' '/amount/ { print $2 }' | tr -d '"')
+# -200
 expected_amount="99999999800"
 
 if [ "$amount" = "$expected_amount" ]; then
@@ -64,6 +65,7 @@ sleep 30
 
 balance=$(ununifid q bank balances ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w --denom uguu)
 amount=$(echo "$balance" | awk -F': ' '/amount/ { print $2 }' | tr -d '"')
+# + 200 - 10 (5% fee)
 expected_amount="100000000190"
 
 if [ "$amount" = "$expected_amount" ]; then
@@ -74,6 +76,7 @@ fi
 
 response=$(ununifid q nft owner ununifi-1AFC3C85B52311F13161F724B284EF900458E3B3 a01)
 owner=$(echo "$response" | awk -F': ' '/owner/ { print $2 }' | tr -d '"')
+# user2
 expected_owner="ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla"
 
 if [ "$owner" = "$expected_owner" ]; then
