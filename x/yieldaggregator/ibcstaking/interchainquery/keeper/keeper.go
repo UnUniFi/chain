@@ -18,19 +18,21 @@ import (
 
 // Keeper of this module maintains collections of registered zones.
 type Keeper struct {
-	cdc       codec.Codec
-	storeKey  storetypes.StoreKey
-	callbacks map[string]types.QueryCallbacks
-	IBCKeeper *ibckeeper.Keeper
+	cdc        codec.Codec
+	storeKey   storetypes.StoreKey
+	callbacks  map[string]types.QueryCallbacks
+	IBCKeeper  *ibckeeper.Keeper
+	wasmKeeper types.WasmKeeper
 }
 
 // NewKeeper returns a new instance of zones Keeper
-func NewKeeper(cdc codec.Codec, storeKey storetypes.StoreKey, ibckeeper *ibckeeper.Keeper) Keeper {
+func NewKeeper(cdc codec.Codec, storeKey storetypes.StoreKey, ibckeeper *ibckeeper.Keeper, wasmKeeper types.WasmKeeper) Keeper {
 	return Keeper{
-		cdc:       cdc,
-		storeKey:  storeKey,
-		callbacks: make(map[string]types.QueryCallbacks),
-		IBCKeeper: ibckeeper,
+		cdc:        cdc,
+		storeKey:   storeKey,
+		callbacks:  make(map[string]types.QueryCallbacks),
+		IBCKeeper:  ibckeeper,
+		wasmKeeper: wasmKeeper,
 	}
 }
 

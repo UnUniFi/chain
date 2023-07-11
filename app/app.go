@@ -124,6 +124,8 @@ import (
 	ibctestingtypes "github.com/cosmos/ibc-go/v7/testing/types"
 	"github.com/spf13/cast"
 
+	"github.com/UnUniFi/chain/wasmbinding"
+
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
@@ -687,6 +689,9 @@ func NewApp(
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
 	availableCapabilities := "iterator,staking,stargate,cosmwasm_1_1,cosmwasm_1_2"
+
+	wasmOpts = append(wasmbinding.RegisterCustomPlugins(&app.BankKeeper, &app.InterchainqueryKeeper), wasmOpts...)
+
 	app.WasmKeeper = wasm.NewKeeper(
 		appCodec,
 		keys[wasm.StoreKey],
@@ -740,7 +745,12 @@ func NewApp(
 		app.ICAControllerKeeper,
 	)
 
-	app.InterchainqueryKeeper = interchainquerykeeper.NewKeeper(appCodec, keys[interchainquerytypes.StoreKey], app.IBCKeeper)
+	app.InterchainqueryKeeper = interchainquerykeeper.NewKeeper(
+		appCodec,
+		keys[interchainquerytypes.StoreKey],
+		app.IBCKeeper,
+		&app.WasmKeeper,
+	)
 
 	scopedRecordsKeeper := app.CapabilityKeeper.ScopeToModule(recordstypes.ModuleName)
 	app.ScopedRecordsKeeper = scopedRecordsKeeper

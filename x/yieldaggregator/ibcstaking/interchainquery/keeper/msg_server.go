@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"sort"
@@ -132,7 +133,44 @@ func (k Keeper) InvokeCallback(ctx sdk.Context, msg *types.MsgSubmitQueryRespons
 		k.Logger(ctx).Info(fmt.Sprintf("[ICQ Resp] executing callback for queryId (%s), module (%s)", q.Id, moduleName))
 		moduleCallbackHandler := k.callbacks[moduleName]
 
-		if moduleCallbackHandler.Has(q.CallbackId) {
+		if moduleName == types.ModuleName { // if callback module is icq module, call contract
+
+			// Id           string                                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+			// ConnectionId string                                 `protobuf:"bytes,2,opt,name=connection_id,json=connectionId,proto3" json:"connection_id,omitempty"`
+			// ChainId      string                                 `protobuf:"bytes,3,opt,name=chain_id,json=chainId,proto3" json:"chain_id,omitempty"`
+			// QueryType    string                                 `protobuf:"bytes,4,opt,name=query_type,json=queryType,proto3" json:"query_type,omitempty"`
+			// Request      []byte                                 `protobuf:"bytes,5,opt,name=request,proto3" json:"request,omitempty"`
+			// Period       github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,6,opt,name=period,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"period"`
+			// LastHeight   github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,7,opt,name=last_height,json=lastHeight,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"last_height"`
+			// CallbackId   string                                 `protobuf:"bytes,8,opt,name=callback_id,json=callbackId,proto3" json:"callback_id,omitempty"`
+			// Ttl          uint64                                 `protobuf:"varint,9,opt,name=ttl,proto3" json:"ttl,omitempty"`
+			// Height       int64
+
+			//   submitICQRequest.ConnectionId,
+			// submitICQRequest.ChainId,
+			// // use "bank" store to access acct balances which live in the bank module
+			// // use "key" suffix to retrieve a proof alongside the query result
+			// submitICQRequest.QueryPrefix,
+			// submitICQRequest.QueryKey,
+			contractAddress := sdk.MustAccAddressFromBech32(q.CallbackId)
+
+			x := types.MessageKVQueryResult{}
+			x.KVQueryResult.QueryType = q.QueryType
+			x.KVQueryResult.Request = q.Request
+			x.KVQueryResult.Data = msg.Result
+
+			m, err := json.Marshal(x)
+			if err != nil {
+				return fmt.Errorf("failed to marshal MessageKVQueryResult: %v", err)
+			}
+
+			_, err = k.wasmKeeper.Sudo(ctx, contractAddress, m)
+			if err != nil {
+				k.Logger(ctx).Debug("SudoTxQueryResult: failed to Sudo",
+					"error", err, "contract_address", contractAddress)
+				return fmt.Errorf("failed to Sudo: %v", err)
+			}
+		} else if moduleCallbackHandler.Has(q.CallbackId) {
 			k.Logger(ctx).Info(fmt.Sprintf("[ICQ Resp] callback (%s) found for module (%s)", q.CallbackId, moduleName))
 			// call the correct callback function
 			err := moduleCallbackHandler.Call(ctx, q.CallbackId, msg.Result, q)
