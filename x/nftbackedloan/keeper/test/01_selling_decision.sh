@@ -44,8 +44,8 @@ sleep $sleep
 ununifid q nftbackedloan nft-listing ununifi-1AFC3C85B52311F13161F724B284EF900458E3B3 a01
 
 # Check nft transfer & balance
-balance=$(ununifid q bank balances ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla --denom uguu)
-amount=$(echo "$balance" | awk -F': ' '/amount/ { print $2 }' | tr -d '"')
+amount=$(ununifid q bank balances ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla --denom uguu -o json | jq .amount | tr -d '"')
+
 # -200
 expected_amount="99999999800"
 
@@ -63,8 +63,7 @@ ununifid q nftbackedloan nft-listing ununifi-1AFC3C85B52311F13161F724B284EF90045
 # NftListingNftDeliveryPeriod: 30
 sleep 30
 
-balance=$(ununifid q bank balances ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w --denom uguu)
-amount=$(echo "$balance" | awk -F': ' '/amount/ { print $2 }' | tr -d '"')
+amount=$(ununifid q bank balances ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w --denom uguu -o json | jq .amount | tr -d '"')
 # + 200 - 10 (5% fee)
 expected_amount="100000000190"
 
@@ -74,8 +73,7 @@ else
   echo "error: owner amount is incorrect: $amount"
 fi
 
-response=$(ununifid q nft owner ununifi-1AFC3C85B52311F13161F724B284EF900458E3B3 a01)
-owner=$(echo "$response" | awk -F': ' '/owner/ { print $2 }' | tr -d '"')
+owner=$(ununifid q nft owner ununifi-1AFC3C85B52311F13161F724B284EF900458E3B3 a01 -o json | jq .owner | tr -d '"')
 # user2
 expected_owner="ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla"
 
