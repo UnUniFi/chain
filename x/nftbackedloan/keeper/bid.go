@@ -440,11 +440,18 @@ func (k Keeper) GetActiveNftBiddingsExpired(ctx sdk.Context, endTime time.Time) 
 
 func (k Keeper) DeleteBidsWithoutBorrowing(ctx sdk.Context, bids []types.NftBid) {
 	for _, bid := range bids {
-		if !bid.IsBorrowing() {
-			err := k.SafeCloseBid(ctx, bid)
-			if err != nil {
-				fmt.Println(err)
-				continue
+		listing, err := k.GetNftListingByIdBytes(ctx, bid.Id.NftId.IdBytes())
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		if listing.IsBidding() {
+			if !bid.IsBorrowing() {
+				err := k.SafeCloseBid(ctx, bid)
+				if err != nil {
+					fmt.Println(err)
+					continue
+				}
 			}
 		}
 	}
