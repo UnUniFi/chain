@@ -137,8 +137,10 @@ func (k Keeper) InvokeCallback(ctx sdk.Context, msg *types.MsgSubmitQueryRespons
 			contractAddress := sdk.MustAccAddressFromBech32(q.CallbackId)
 
 			x := types.MessageKVQueryResult{}
-			x.KVQueryResult.QueryType = q.QueryType
-			x.KVQueryResult.Request = q.Request
+			x.KVQueryResult.ConnectionId = q.ConnectionId
+			x.KVQueryResult.ChainId = q.ChainId
+			x.KVQueryResult.QueryPrefix = q.QueryType
+			x.KVQueryResult.QueryKey = q.Request
 			x.KVQueryResult.Data = msg.Result
 
 			m, err := json.Marshal(x)
