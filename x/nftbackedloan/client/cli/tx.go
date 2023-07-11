@@ -76,7 +76,7 @@ $ %s tx %s mint a10 a10 uri 888838  --from myKeyName --chain-id ununifi-x
 // BidToken, MinBid, BidHook, ListingType
 func CmdCreateListing() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "listing [class-id] [nft-id]",
+		Use:   "listing [class-id] [nft-id] [denom] [deposit-rate] [min-bidding-period-hour]",
 		Short: "Creates a new listing",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Create a new listing, depositing nft.
