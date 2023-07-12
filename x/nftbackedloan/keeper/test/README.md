@@ -35,3 +35,15 @@ Decided to sell, but the bidder did not pay.
 - The bidder lose deposit
 - The Lister get (forfeited deposit - borrow)
 - The NFT return to lister
+
+### 05_liquidation_deposit_forfeiture
+
+- The bidder(user2) lose deposit.
+- The bidder(user3) pay bid price & get NFT.
+- The owner get price & forfeited deposit.
+
+### 06_liquidation_deposit_refund
+
+- The bidder(user2) get refund.
+- The bidder(user3) pay bid price & get NFT.
+- The owner get price.
