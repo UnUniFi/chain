@@ -3,7 +3,7 @@ package bindings
 type UnunifiMsg struct {
 	/// Contracts can create denoms, namespaced under the contract's address.
 	/// A contract may create any number of independent sub-denoms.
-	SubmitICQRequest *SubmitICQRequest `json:"create_denom,omitempty"`
+	SubmitICQRequest *SubmitICQRequest `json:"submit_i_c_q_request,omitempty"`
 }
 
 // CreateDenom creates a new factory denom, of denomination:

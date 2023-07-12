@@ -41,7 +41,7 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 		// leave everything else for the wrapped version
 		var contractMsg bindings.UnunifiMsg
 		if err := json.Unmarshal(msg.Custom, &contractMsg); err != nil {
-			return nil, nil, sdkerrors.Wrap(err, "osmosis msg")
+			return nil, nil, sdkerrors.Wrap(err, "ununifi msg")
 		}
 		if contractMsg.SubmitICQRequest != nil {
 			return m.submitICQRequest(ctx, contractAddr, contractMsg.SubmitICQRequest)
@@ -53,14 +53,14 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 func (m *CustomMessenger) submitICQRequest(ctx sdk.Context, contractAddr sdk.AccAddress, submitICQRequest *bindings.SubmitICQRequest) ([]sdk.Event, [][]byte, error) {
 	err := PerformSubmitICQRequest(m.icqKeeper, m.bank, ctx, contractAddr, submitICQRequest)
 	if err != nil {
-		return nil, nil, sdkerrors.Wrap(err, "perform create denom")
+		return nil, nil, sdkerrors.Wrap(err, "perform icq request submission")
 	}
 	return nil, nil, nil
 }
 
 func PerformSubmitICQRequest(f *icqkeeper.Keeper, b *bankkeeper.BaseKeeper, ctx sdk.Context, contractAddr sdk.AccAddress, submitICQRequest *bindings.SubmitICQRequest) error {
 	if submitICQRequest == nil {
-		return wasmvmtypes.InvalidRequest{Err: "create denom null create denom"}
+		return wasmvmtypes.InvalidRequest{Err: "icq request empty"}
 	}
 
 	ttl := ctx.BlockTime().Add(time.Hour * 504).Nanosecond() // 3 weeks
