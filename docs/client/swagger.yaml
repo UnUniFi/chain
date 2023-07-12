@@ -4992,7 +4992,7 @@ paths:
                               type: string
                         bidder:
                           type: string
-                    bid_amount:
+                    price:
                       type: object
                       properties:
                         denom:
@@ -5007,7 +5007,7 @@ paths:
                         custom method
 
                         signatures required by gogoproto.
-                    deposit_amount:
+                    deposit:
                       type: object
                       properties:
                         denom:
@@ -5037,7 +5037,7 @@ paths:
                         custom method
 
                         signatures required by gogoproto.
-                    expiry_at:
+                    expiry:
                       type: string
                       format: date-time
                     interest_rate:
@@ -5372,7 +5372,7 @@ paths:
                         started_at:
                           type: string
                           format: date-time
-                        end_at:
+                        liquidated_at:
                           type: string
                           format: date-time
                         full_payment_end_at:
@@ -5559,7 +5559,7 @@ paths:
                               type: string
                         bidder:
                           type: string
-                    bid_amount:
+                    price:
                       type: object
                       properties:
                         denom:
@@ -5574,7 +5574,7 @@ paths:
                         custom method
 
                         signatures required by gogoproto.
-                    deposit_amount:
+                    deposit:
                       type: object
                       properties:
                         denom:
@@ -5604,7 +5604,7 @@ paths:
                         custom method
 
                         signatures required by gogoproto.
-                    expiry_at:
+                    expiry:
                       type: string
                       format: date-time
                     interest_rate:
@@ -5708,7 +5708,7 @@ paths:
                   started_at:
                     type: string
                     format: date-time
-                  end_at:
+                  liquidated_at:
                     type: string
                     format: date-time
                   full_payment_end_at:
@@ -5783,35 +5783,14 @@ paths:
                 properties:
                   min_staking_for_listing:
                     type: string
-                  default_bid_active_rank:
-                    type: string
-                    format: uint64
                   bid_tokens:
                     type: array
                     items:
                       type: string
-                  auto_relisting_count_if_no_bid:
-                    type: string
-                    format: uint64
-                  nft_listing_delay_seconds:
-                    type: string
-                    format: uint64
-                  nft_listing_period_initial:
-                    type: string
-                    format: uint64
                   nft_listing_cancel_required_seconds:
                     type: string
                     format: uint64
-                  nft_listing_cancel_fee_percentage:
-                    type: string
-                    format: uint64
-                  nft_listing_gap_time:
-                    type: string
-                    format: uint64
                   bid_cancel_required_seconds:
-                    type: string
-                    format: uint64
-                  bid_token_disburse_seconds_after_cancel:
                     type: string
                     format: uint64
                   nft_listing_full_payment_period:
@@ -5820,32 +5799,9 @@ paths:
                   nft_listing_nft_delivery_period:
                     type: string
                     format: uint64
-                  nft_creator_share_percentage:
-                    type: string
-                    format: uint64
-                  market_administrator:
-                    type: string
                   nft_listing_commission_fee:
                     type: string
                     format: uint64
-                  nft_listing_extend_seconds:
-                    type: string
-                    format: uint64
-                  nft_listing_period_extend_fee_per_hour:
-                    type: object
-                    properties:
-                      denom:
-                        type: string
-                      amount:
-                        type: string
-                    description: >-
-                      Coin defines a token with a denomination and an amount.
-
-
-                      NOTE: The amount field is an Int which implements the
-                      custom method
-
-                      signatures required by gogoproto.
         default:
           description: An unexpected error response.
           schema:
@@ -9919,7 +9875,7 @@ definitions:
                 type: string
           bidder:
             type: string
-      bid_amount:
+      price:
         type: object
         properties:
           denom:
@@ -9931,7 +9887,7 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-      deposit_amount:
+      deposit:
         type: object
         properties:
           denom:
@@ -9955,7 +9911,7 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-      expiry_at:
+      expiry:
         type: string
         format: date-time
       interest_rate:
@@ -10032,7 +9988,7 @@ definitions:
       started_at:
         type: string
         format: date-time
-      end_at:
+      liquidated_at:
         type: string
         format: date-time
       full_payment_end_at:
@@ -10089,7 +10045,7 @@ definitions:
           started_at:
             type: string
             format: date-time
-          end_at:
+          liquidated_at:
             type: string
             format: date-time
           full_payment_end_at:
@@ -10131,35 +10087,14 @@ definitions:
     properties:
       min_staking_for_listing:
         type: string
-      default_bid_active_rank:
-        type: string
-        format: uint64
       bid_tokens:
         type: array
         items:
           type: string
-      auto_relisting_count_if_no_bid:
-        type: string
-        format: uint64
-      nft_listing_delay_seconds:
-        type: string
-        format: uint64
-      nft_listing_period_initial:
-        type: string
-        format: uint64
       nft_listing_cancel_required_seconds:
         type: string
         format: uint64
-      nft_listing_cancel_fee_percentage:
-        type: string
-        format: uint64
-      nft_listing_gap_time:
-        type: string
-        format: uint64
       bid_cancel_required_seconds:
-        type: string
-        format: uint64
-      bid_token_disburse_seconds_after_cancel:
         type: string
         format: uint64
       nft_listing_full_payment_period:
@@ -10168,29 +10103,9 @@ definitions:
       nft_listing_nft_delivery_period:
         type: string
         format: uint64
-      nft_creator_share_percentage:
-        type: string
-        format: uint64
-      market_administrator:
-        type: string
       nft_listing_commission_fee:
         type: string
         format: uint64
-      nft_listing_extend_seconds:
-        type: string
-        format: uint64
-      nft_listing_period_extend_fee_per_hour:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
   ununifi.nftbackedloan.QueryBidderBidsResponse:
     type: object
     properties:
@@ -10211,7 +10126,7 @@ definitions:
                       type: string
                 bidder:
                   type: string
-            bid_amount:
+            price:
               type: object
               properties:
                 denom:
@@ -10226,7 +10141,7 @@ definitions:
                 method
 
                 signatures required by gogoproto.
-            deposit_amount:
+            deposit:
               type: object
               properties:
                 denom:
@@ -10256,7 +10171,7 @@ definitions:
                 method
 
                 signatures required by gogoproto.
-            expiry_at:
+            expiry:
               type: string
               format: date-time
             interest_rate:
@@ -10438,7 +10353,7 @@ definitions:
                 started_at:
                   type: string
                   format: date-time
-                end_at:
+                liquidated_at:
                   type: string
                   format: date-time
                 full_payment_end_at:
@@ -10541,7 +10456,7 @@ definitions:
                       type: string
                 bidder:
                   type: string
-            bid_amount:
+            price:
               type: object
               properties:
                 denom:
@@ -10556,7 +10471,7 @@ definitions:
                 method
 
                 signatures required by gogoproto.
-            deposit_amount:
+            deposit:
               type: object
               properties:
                 denom:
@@ -10586,7 +10501,7 @@ definitions:
                 method
 
                 signatures required by gogoproto.
-            expiry_at:
+            expiry:
               type: string
               format: date-time
             interest_rate:
@@ -10650,7 +10565,7 @@ definitions:
           started_at:
             type: string
             format: date-time
-          end_at:
+          liquidated_at:
             type: string
             format: date-time
           full_payment_end_at:
@@ -10686,35 +10601,14 @@ definitions:
         properties:
           min_staking_for_listing:
             type: string
-          default_bid_active_rank:
-            type: string
-            format: uint64
           bid_tokens:
             type: array
             items:
               type: string
-          auto_relisting_count_if_no_bid:
-            type: string
-            format: uint64
-          nft_listing_delay_seconds:
-            type: string
-            format: uint64
-          nft_listing_period_initial:
-            type: string
-            format: uint64
           nft_listing_cancel_required_seconds:
             type: string
             format: uint64
-          nft_listing_cancel_fee_percentage:
-            type: string
-            format: uint64
-          nft_listing_gap_time:
-            type: string
-            format: uint64
           bid_cancel_required_seconds:
-            type: string
-            format: uint64
-          bid_token_disburse_seconds_after_cancel:
             type: string
             format: uint64
           nft_listing_full_payment_period:
@@ -10723,32 +10617,9 @@ definitions:
           nft_listing_nft_delivery_period:
             type: string
             format: uint64
-          nft_creator_share_percentage:
-            type: string
-            format: uint64
-          market_administrator:
-            type: string
           nft_listing_commission_fee:
             type: string
             format: uint64
-          nft_listing_extend_seconds:
-            type: string
-            format: uint64
-          nft_listing_period_extend_fee_per_hour:
-            type: object
-            properties:
-              denom:
-                type: string
-              amount:
-                type: string
-            description: >-
-              Coin defines a token with a denomination and an amount.
-
-
-              NOTE: The amount field is an Int which implements the custom
-              method
-
-              signatures required by gogoproto.
   ununifi.nftbackedloan.QueryRewardsResponse:
     type: object
     properties:
