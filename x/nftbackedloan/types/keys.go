@@ -14,7 +14,7 @@ const (
 	// [unused] NftTradingFee = "nfttradingfee"
 
 	// StoreKey defines the primary module store key
-	StoreKey = "backedloan"
+	StoreKey = "_" + ModuleName
 
 	// RouterKey is the message route for nftmarket
 	RouterKey = ModuleName

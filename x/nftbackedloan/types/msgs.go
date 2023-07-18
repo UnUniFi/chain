@@ -35,13 +35,12 @@ var _ sdk.Msg = &MsgListNft{}
 
 // todo: Implementation fields
 // BidToken, MinBid, BidHook, ListingType
-func NewMsgListNft(sender string, nftId NftIdentifier, bidToken string, minimumDepositRate sdk.Dec, autoRefi bool, minBiddingPeriod time.Duration) MsgListNft {
+func NewMsgListNft(sender string, nftId NftIdentifier, bidDenom string, minimumDepositRate sdk.Dec, minBiddingPeriod time.Duration) MsgListNft {
 	return MsgListNft{
 		Sender:               sender,
 		NftId:                nftId,
-		BidToken:             bidToken,
+		BidDenom:             bidDenom,
 		MinimumDepositRate:   minimumDepositRate,
-		AutomaticRefinancing: autoRefi,
 		MinimumBiddingPeriod: minBiddingPeriod,
 	}
 }
@@ -82,16 +81,16 @@ func (msg MsgCancelNftListing) GetSigners() []sdk.AccAddress {
 var _ sdk.Msg = &MsgPlaceBid{}
 
 // todo
-func NewMsgPlaceBid(sender string, nftId NftIdentifier, bidAmount, depositAmount sdk.Coin,
-	deposit_lending_rate sdk.Dec, bidding_period time.Time, automaticPayment bool) MsgPlaceBid {
+func NewMsgPlaceBid(sender string, nftId NftIdentifier, price, deposit sdk.Coin,
+	interestRate sdk.Dec, expiry time.Time, automaticPayment bool) MsgPlaceBid {
 	return MsgPlaceBid{
-		Sender:             sender,
-		NftId:              nftId,
-		BidAmount:          bidAmount,
-		AutomaticPayment:   automaticPayment,
-		BiddingPeriod:      bidding_period,
-		DepositLendingRate: deposit_lending_rate,
-		DepositAmount:      depositAmount,
+		Sender:           sender,
+		NftId:            nftId,
+		Price:            price,
+		AutomaticPayment: automaticPayment,
+		Expiry:           expiry,
+		InterestRate:     interestRate,
+		Deposit:          deposit,
 	}
 }
 
@@ -148,44 +147,44 @@ func (msg MsgSellingDecision) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{addr}
 }
 
-// ensure Msg interface compliance at compile time
-var _ sdk.Msg = &MsgEndNftListing{}
+// // ensure Msg interface compliance at compile time
+// var _ sdk.Msg = &MsgEndNftListing{}
 
-func NewMsgEndNftListing(sender string, nftId NftIdentifier) MsgEndNftListing {
-	return MsgEndNftListing{
+// func NewMsgEndNftListing(sender string, nftId NftIdentifier) MsgEndNftListing {
+// 	return MsgEndNftListing{
+// 		Sender: sender,
+// 		NftId:  nftId,
+// 	}
+// }
+
+// // ValidateBasic does a simple validation check that doesn't require access to state.
+// func (msg MsgEndNftListing) ValidateBasic() error {
+// 	return nil
+// }
+
+// // GetSigners returns the addresses of signers that must sign.
+// func (msg MsgEndNftListing) GetSigners() []sdk.AccAddress {
+// 	addr, _ := sdk.AccAddressFromBech32(msg.Sender)
+// 	return []sdk.AccAddress{addr}
+// }
+
+// ensure Msg interface compliance at compile time
+var _ sdk.Msg = &MsgPayRemainder{}
+
+func NewMsgPayRemainder(sender string, nftId NftIdentifier) MsgPayRemainder {
+	return MsgPayRemainder{
 		Sender: sender,
 		NftId:  nftId,
 	}
 }
 
 // ValidateBasic does a simple validation check that doesn't require access to state.
-func (msg MsgEndNftListing) ValidateBasic() error {
+func (msg MsgPayRemainder) ValidateBasic() error {
 	return nil
 }
 
 // GetSigners returns the addresses of signers that must sign.
-func (msg MsgEndNftListing) GetSigners() []sdk.AccAddress {
-	addr, _ := sdk.AccAddressFromBech32(msg.Sender)
-	return []sdk.AccAddress{addr}
-}
-
-// ensure Msg interface compliance at compile time
-var _ sdk.Msg = &MsgPayFullBid{}
-
-func NewMsgPayFullBid(sender string, nftId NftIdentifier) MsgPayFullBid {
-	return MsgPayFullBid{
-		Sender: sender,
-		NftId:  nftId,
-	}
-}
-
-// ValidateBasic does a simple validation check that doesn't require access to state.
-func (msg MsgPayFullBid) ValidateBasic() error {
-	return nil
-}
-
-// GetSigners returns the addresses of signers that must sign.
-func (msg MsgPayFullBid) GetSigners() []sdk.AccAddress {
+func (msg MsgPayRemainder) GetSigners() []sdk.AccAddress {
 	addr, _ := sdk.AccAddressFromBech32(msg.Sender)
 	return []sdk.AccAddress{addr}
 }

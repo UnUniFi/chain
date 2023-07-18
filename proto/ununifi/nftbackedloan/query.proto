@@ -30,9 +30,9 @@ service Query {
     option (google.api.http).get = "/ununifi/nftbackedloan/listed-class/{class_id}/{nft_limit}";
   }
 
-  rpc Loans(QueryLoansRequest) returns (QueryLoansResponse) {
-    option (google.api.http).get = "/ununifi/nftbackedloan/loans";
-  }
+  // rpc Loans(QueryLoansRequest) returns (QueryLoansResponse) {
+  //   option (google.api.http).get = "/ununifi/nftbackedloan/loans";
+  // }
 
   rpc Loan(QueryLoanRequest) returns (QueryLoanResponse) {
     option (google.api.http).get = "/ununifi/nftbackedloan/loans/{class_id}/{nft_id}";
@@ -43,9 +43,11 @@ service Query {
   rpc BidderBids(QueryBidderBidsRequest) returns (QueryBidderBidsResponse) {
     option (google.api.http).get = "/ununifi/nftbackedloan/bidder-bids/{bidder}";
   }
-  rpc PaymentStatus(QueryPaymentStatusRequest) returns (QueryPaymentStatusResponse) {
-    option (google.api.http).get = "/ununifi/nftbackedloan/payment-status/{class_id}/{nft_id}/{bidder}";
-  }
+
+  // rpc PaymentStatus(QueryPaymentStatusRequest) returns (QueryPaymentStatusResponse) {
+  //   option (google.api.http).get = "/ununifi/nftbackedloan/payment-status/{class_id}/{nft_id}/{bidder}";
+  // }
+
   rpc Rewards(QueryRewardsRequest) returns (QueryRewardsResponse) {
     option (google.api.http).get = "/ununifi/nftbackedloan/rewards/{address}";
   }
@@ -103,10 +105,10 @@ message QueryListedClassResponse {
   uint64           nft_count   = 8;
 }
 
-message QueryLoansRequest {}
-message QueryLoansResponse {
-  repeated Loan loans = 1 [(gogoproto.nullable) = false];
-}
+// message QueryLoansRequest {}
+// message QueryLoansResponse {
+//   repeated QueryLoanResponse loans = 1 [(gogoproto.nullable) = false];
+// }
 
 message QueryLoanRequest {
   string class_id = 1;
@@ -114,9 +116,10 @@ message QueryLoanRequest {
 }
 
 message QueryLoanResponse {
-  Loan   loan            = 1 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin borrowing_limit = 2 [(gogoproto.nullable)   = false];
-  cosmos.base.v1beta1.Coin total_deposit = 3 [(gogoproto.nullable)   = false];
+  NftIdentifier            nft_id           = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin borrowing_amount = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin borrowing_limit  = 3 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin total_deposit    = 4 [(gogoproto.nullable) = false];
 }
 
 message QueryNftBidsRequest {
@@ -126,18 +129,18 @@ message QueryNftBidsRequest {
 message QueryNftBidsResponse {
   repeated NftBid bids = 1 [(gogoproto.nullable) = false];
 }
-message QueryPaymentStatusRequest {
-  string class_id = 1;
-  string nft_id   = 2;
-  string bidder   = 3 [
-    (gogoproto.moretags)  = "yaml:\"bidder\"",
-    (cosmos_proto.scalar) = "github.com/UnUniFi/chain/types.StringAccAddress"
-  ];
-}
 
-message QueryPaymentStatusResponse {
-  PaymentStatus paymentStatus = 1 [(gogoproto.nullable) = false];
-}
+// message QueryPaymentStatusRequest {
+//   string class_id = 1;
+//   string nft_id   = 2;
+//   string bidder   = 3 [
+//     (gogoproto.moretags)  = "yaml:\"bidder\"",
+//     (cosmos_proto.scalar) = "github.com/UnUniFi/chain/types.StringAccAddress"
+//   ];
+// }
+// message QueryPaymentStatusResponse {
+//   PaymentStatus paymentStatus = 1 [(gogoproto.nullable) = false];
+// }
 
 message QueryBidderBidsRequest {
   string bidder = 1 [

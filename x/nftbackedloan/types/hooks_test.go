@@ -61,8 +61,8 @@ func dummyAfterNftUnlistedWithoutPaymentEvent(nftId types.NftIdentifier) sdk.Eve
 	)
 }
 
-// dummyNftmarketHook is a struct satisfying the nftmarket hook interface,
-// that maintains a counter for how many times its been succesfully called,
+// dummyNftmarketHook is a struct satisfying the nftbackedloan hook interface,
+// that maintains a counter for how many times its been successfully called,
 // and a boolean for whether it should panic during its execution.
 type dummyNftmarketHook struct {
 	successCounter int

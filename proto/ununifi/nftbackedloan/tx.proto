@@ -17,7 +17,7 @@ service Msg {
   rpc PlaceBid(MsgPlaceBid) returns (MsgPlaceBidResponse);
   rpc CancelBid(MsgCancelBid) returns (MsgCancelBidResponse);
   rpc SellingDecision(MsgSellingDecision) returns (MsgSellingDecisionResponse);
-  rpc PayFullBid(MsgPayFullBid) returns (MsgPayFullBidResponse);
+  rpc PayRemainder(MsgPayRemainder) returns (MsgPayRemainderResponse);
   rpc Borrow(MsgBorrow) returns (MsgBorrowResponse);
   rpc Repay(MsgRepay) returns (MsgRepayResponse);
 }
@@ -32,20 +32,16 @@ message MsgMintNft {
 message MsgMintNftResponse {}
 
 message MsgListNft {
-  string        sender       = 1;
-  NftIdentifier nft_id       = 2 [(gogoproto.nullable) = false];
-  string        bid_token    = 3;
+  string        sender    = 1;
+  NftIdentifier nft_id    = 2 [(gogoproto.nullable) = false];
+  string        bid_denom = 3;
   // 1% = 0.01
-  string minimum_deposit_rate  = 4 [
-    (cosmos_proto.scalar) = "cosmos.Dec",
+  string minimum_deposit_rate = 4 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
+    (gogoproto.nullable)   = false
   ];
-  bool   automatic_refinancing = 5;
-  google.protobuf.Duration minimum_bidding_period = 6 [
-    (gogoproto.stdduration) = true,
-    (gogoproto.nullable) = false
-  ];
+  google.protobuf.Duration minimum_bidding_period = 5 [(gogoproto.stdduration) = true, (gogoproto.nullable) = false];
 }
 message MsgListNftResponse {}
 
@@ -56,17 +52,17 @@ message MsgCancelNftListing {
 message MsgCancelNftListingResponse {}
 
 message MsgPlaceBid {
-  string                    sender               = 1;
-  NftIdentifier             nft_id               = 2 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin  bid_amount           = 3 [(gogoproto.nullable) = false];
-  google.protobuf.Timestamp bidding_period       = 4 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
-  string                    deposit_lending_rate = 5 [
+  string                    sender        = 1;
+  NftIdentifier             nft_id        = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin  price         = 3 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp expiry        = 4 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  string                    interest_rate = 5 [
     (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable)   = false
   ];
   bool                     automatic_payment = 6;
-  cosmos.base.v1beta1.Coin deposit_amount    = 7 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin deposit           = 7 [(gogoproto.nullable) = false];
 }
 message MsgPlaceBidResponse {}
 
@@ -88,27 +84,27 @@ message MsgSellingDecision {
 }
 message MsgSellingDecisionResponse {}
 
-message MsgPayFullBid {
+message MsgPayRemainder {
   string        sender = 1;
   NftIdentifier nft_id = 2 [(gogoproto.nullable) = false];
 }
-message MsgPayFullBidResponse {}
+message MsgPayRemainderResponse {}
 
-message BorrowBid{
+message BorrowBid {
   string                   bidder = 1;
   cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false];
 }
 
 message MsgBorrow {
-  string                   sender = 1;
-  NftIdentifier            nft_id = 2 [(gogoproto.nullable) = false];
-  repeated BorrowBid       borrow_bids = 3 [(gogoproto.nullable) = false];
+  string             sender      = 1;
+  NftIdentifier      nft_id      = 2 [(gogoproto.nullable) = false];
+  repeated BorrowBid borrow_bids = 3 [(gogoproto.nullable) = false];
 }
 message MsgBorrowResponse {}
 
 message MsgRepay {
-  string                   sender = 1;
-  NftIdentifier            nft_id = 2 [(gogoproto.nullable) = false];
-  repeated BorrowBid       repay_bids = 3 [(gogoproto.nullable) = false];
+  string             sender     = 1;
+  NftIdentifier      nft_id     = 2 [(gogoproto.nullable) = false];
+  repeated BorrowBid repay_bids = 3 [(gogoproto.nullable) = false];
 }
 message MsgRepayResponse {}

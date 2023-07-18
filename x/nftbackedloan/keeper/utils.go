@@ -20,7 +20,7 @@ func validateListNftMsg(k Keeper, ctx sdk.Context, msg *types.MsgListNft) error 
 	if err != nil {
 		return err
 	}
-	return checkListNft(k, ctx, sender, msg.NftId, msg.BidToken, msg.MinimumDepositRate)
+	return checkListNft(k, ctx, sender, msg.NftId, msg.BidDenom, msg.MinimumDepositRate)
 }
 
 func checkListNft(k Keeper, ctx sdk.Context, sender sdk.AccAddress, nftId types.NftIdentifier, bidToken string, minimumDepositRate sdk.Dec) error {

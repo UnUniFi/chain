@@ -4,7 +4,7 @@ order: 2
 
 # Messages
 
-In this section we describe the processing of the nftmarket messages.
+In this section we describe the processing of the nftbackedloan messages.
 
 ## MsgListNft
 
@@ -107,10 +107,10 @@ message MsgEndNftListing {
 
 ```
 
-## MsgPayFullBid
+## MsgPayRemainder
 
 ```protobuf
-message MsgPayFullBid {
+message MsgPayRemainder {
   string sender = 1 [
     (gogoproto.moretags) = "yaml:\"sender\"",
     (gogoproto.customtype) = "github.com/UnUniFi/chain/types.StringAccAddress",

@@ -6,8 +6,8 @@ package types
 import (
 	fmt "fmt"
 	_ "github.com/cosmos/cosmos-proto"
+	_ "github.com/cosmos/cosmos-sdk/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
-	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
 	_ "google.golang.org/protobuf/types/known/durationpb"
@@ -29,24 +29,13 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type Params struct {
-	MinStakingForListing               github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,1,opt,name=min_staking_for_listing,json=minStakingForListing,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"min_staking_for_listing" yaml:"min_staking_for_listing"`
-	DefaultBidActiveRank               uint64                                 `protobuf:"varint,2,opt,name=default_bid_active_rank,json=defaultBidActiveRank,proto3" json:"default_bid_active_rank,omitempty"`
-	BidTokens                          []string                               `protobuf:"bytes,3,rep,name=bid_tokens,json=bidTokens,proto3" json:"bid_tokens,omitempty"`
-	AutoRelistingCountIfNoBid          uint64                                 `protobuf:"varint,4,opt,name=auto_relisting_count_if_no_bid,json=autoRelistingCountIfNoBid,proto3" json:"auto_relisting_count_if_no_bid,omitempty"`
-	NftListingDelaySeconds             uint64                                 `protobuf:"varint,5,opt,name=nft_listing_delay_seconds,json=nftListingDelaySeconds,proto3" json:"nft_listing_delay_seconds,omitempty"`
-	NftListingPeriodInitial            uint64                                 `protobuf:"varint,6,opt,name=nft_listing_period_initial,json=nftListingPeriodInitial,proto3" json:"nft_listing_period_initial,omitempty"`
-	NftListingCancelRequiredSeconds    uint64                                 `protobuf:"varint,7,opt,name=nft_listing_cancel_required_seconds,json=nftListingCancelRequiredSeconds,proto3" json:"nft_listing_cancel_required_seconds,omitempty"`
-	NftListingCancelFeePercentage      uint64                                 `protobuf:"varint,8,opt,name=nft_listing_cancel_fee_percentage,json=nftListingCancelFeePercentage,proto3" json:"nft_listing_cancel_fee_percentage,omitempty"`
-	NftListingGapTime                  uint64                                 `protobuf:"varint,9,opt,name=nft_listing_gap_time,json=nftListingGapTime,proto3" json:"nft_listing_gap_time,omitempty"`
-	BidCancelRequiredSeconds           uint64                                 `protobuf:"varint,10,opt,name=bid_cancel_required_seconds,json=bidCancelRequiredSeconds,proto3" json:"bid_cancel_required_seconds,omitempty"`
-	BidTokenDisburseSecondsAfterCancel uint64                                 `protobuf:"varint,11,opt,name=bid_token_disburse_seconds_after_cancel,json=bidTokenDisburseSecondsAfterCancel,proto3" json:"bid_token_disburse_seconds_after_cancel,omitempty"`
-	NftListingFullPaymentPeriod        uint64                                 `protobuf:"varint,12,opt,name=nft_listing_full_payment_period,json=nftListingFullPaymentPeriod,proto3" json:"nft_listing_full_payment_period,omitempty"`
-	NftListingNftDeliveryPeriod        uint64                                 `protobuf:"varint,13,opt,name=nft_listing_nft_delivery_period,json=nftListingNftDeliveryPeriod,proto3" json:"nft_listing_nft_delivery_period,omitempty"`
-	NftCreatorSharePercentage          uint64                                 `protobuf:"varint,14,opt,name=nft_creator_share_percentage,json=nftCreatorSharePercentage,proto3" json:"nft_creator_share_percentage,omitempty"`
-	MarketAdministrator                string                                 `protobuf:"bytes,15,opt,name=market_administrator,json=marketAdministrator,proto3" json:"market_administrator,omitempty"`
-	NftListingCommissionFee            uint64                                 `protobuf:"varint,16,opt,name=nft_listing_commission_fee,json=nftListingCommissionFee,proto3" json:"nft_listing_commission_fee,omitempty"`
-	NftListingExtendSeconds            uint64                                 `protobuf:"varint,17,opt,name=nft_listing_extend_seconds,json=nftListingExtendSeconds,proto3" json:"nft_listing_extend_seconds,omitempty"`
-	NftListingPeriodExtendFeePerHour   types.Coin                             `protobuf:"bytes,18,opt,name=nft_listing_period_extend_fee_per_hour,json=nftListingPeriodExtendFeePerHour,proto3" json:"nft_listing_period_extend_fee_per_hour"`
+	MinStakingForListing            github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,1,opt,name=min_staking_for_listing,json=minStakingForListing,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"min_staking_for_listing" yaml:"min_staking_for_listing"`
+	BidTokens                       []string                               `protobuf:"bytes,2,rep,name=bid_tokens,json=bidTokens,proto3" json:"bid_tokens,omitempty"`
+	NftListingCancelRequiredSeconds uint64                                 `protobuf:"varint,3,opt,name=nft_listing_cancel_required_seconds,json=nftListingCancelRequiredSeconds,proto3" json:"nft_listing_cancel_required_seconds,omitempty"`
+	BidCancelRequiredSeconds        uint64                                 `protobuf:"varint,4,opt,name=bid_cancel_required_seconds,json=bidCancelRequiredSeconds,proto3" json:"bid_cancel_required_seconds,omitempty"`
+	NftListingFullPaymentPeriod     uint64                                 `protobuf:"varint,5,opt,name=nft_listing_full_payment_period,json=nftListingFullPaymentPeriod,proto3" json:"nft_listing_full_payment_period,omitempty"`
+	NftListingNftDeliveryPeriod     uint64                                 `protobuf:"varint,6,opt,name=nft_listing_nft_delivery_period,json=nftListingNftDeliveryPeriod,proto3" json:"nft_listing_nft_delivery_period,omitempty"`
+	NftListingCommissionFee         uint64                                 `protobuf:"varint,7,opt,name=nft_listing_commission_fee,json=nftListingCommissionFee,proto3" json:"nft_listing_commission_fee,omitempty"`
 }
 
 func (m *Params) Reset()         { *m = Params{} }
@@ -82,39 +71,11 @@ func (m *Params) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Params proto.InternalMessageInfo
 
-func (m *Params) GetDefaultBidActiveRank() uint64 {
-	if m != nil {
-		return m.DefaultBidActiveRank
-	}
-	return 0
-}
-
 func (m *Params) GetBidTokens() []string {
 	if m != nil {
 		return m.BidTokens
 	}
 	return nil
-}
-
-func (m *Params) GetAutoRelistingCountIfNoBid() uint64 {
-	if m != nil {
-		return m.AutoRelistingCountIfNoBid
-	}
-	return 0
-}
-
-func (m *Params) GetNftListingDelaySeconds() uint64 {
-	if m != nil {
-		return m.NftListingDelaySeconds
-	}
-	return 0
-}
-
-func (m *Params) GetNftListingPeriodInitial() uint64 {
-	if m != nil {
-		return m.NftListingPeriodInitial
-	}
-	return 0
 }
 
 func (m *Params) GetNftListingCancelRequiredSeconds() uint64 {
@@ -124,30 +85,9 @@ func (m *Params) GetNftListingCancelRequiredSeconds() uint64 {
 	return 0
 }
 
-func (m *Params) GetNftListingCancelFeePercentage() uint64 {
-	if m != nil {
-		return m.NftListingCancelFeePercentage
-	}
-	return 0
-}
-
-func (m *Params) GetNftListingGapTime() uint64 {
-	if m != nil {
-		return m.NftListingGapTime
-	}
-	return 0
-}
-
 func (m *Params) GetBidCancelRequiredSeconds() uint64 {
 	if m != nil {
 		return m.BidCancelRequiredSeconds
-	}
-	return 0
-}
-
-func (m *Params) GetBidTokenDisburseSecondsAfterCancel() uint64 {
-	if m != nil {
-		return m.BidTokenDisburseSecondsAfterCancel
 	}
 	return 0
 }
@@ -166,39 +106,11 @@ func (m *Params) GetNftListingNftDeliveryPeriod() uint64 {
 	return 0
 }
 
-func (m *Params) GetNftCreatorSharePercentage() uint64 {
-	if m != nil {
-		return m.NftCreatorSharePercentage
-	}
-	return 0
-}
-
-func (m *Params) GetMarketAdministrator() string {
-	if m != nil {
-		return m.MarketAdministrator
-	}
-	return ""
-}
-
 func (m *Params) GetNftListingCommissionFee() uint64 {
 	if m != nil {
 		return m.NftListingCommissionFee
 	}
 	return 0
-}
-
-func (m *Params) GetNftListingExtendSeconds() uint64 {
-	if m != nil {
-		return m.NftListingExtendSeconds
-	}
-	return 0
-}
-
-func (m *Params) GetNftListingPeriodExtendFeePerHour() types.Coin {
-	if m != nil {
-		return m.NftListingPeriodExtendFeePerHour
-	}
-	return types.Coin{}
 }
 
 func init() {
@@ -210,57 +122,37 @@ func init() {
 }
 
 var fileDescriptor_09867a85e3b187de = []byte{
-	// 795 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x94, 0xcf, 0x6f, 0xe3, 0x44,
-	0x14, 0xc7, 0x1b, 0xb6, 0x14, 0x32, 0xcb, 0xaf, 0x35, 0x81, 0xba, 0x5d, 0xd6, 0x09, 0x41, 0x5a,
-	0x7a, 0x21, 0x56, 0x41, 0x1c, 0x00, 0x21, 0xd4, 0xa4, 0x84, 0x56, 0x5a, 0xad, 0xa2, 0x74, 0xf7,
-	0xc2, 0x65, 0x34, 0xb6, 0x9f, 0xdd, 0xa7, 0xd8, 0x33, 0xd9, 0x99, 0x71, 0xb5, 0xf9, 0x0b, 0xb8,
-	0xf2, 0x67, 0xed, 0x71, 0x8f, 0x88, 0x43, 0x85, 0xda, 0x33, 0x17, 0xfe, 0x02, 0x34, 0x3f, 0x9c,
-	0x64, 0xad, 0xee, 0x29, 0xb1, 0xbf, 0x9f, 0xef, 0x77, 0xde, 0xe8, 0x3d, 0x3f, 0x32, 0xac, 0x79,
-	0xcd, 0x31, 0xc7, 0x98, 0xe7, 0x3a, 0x61, 0xe9, 0x02, 0xb2, 0x52, 0x30, 0x1e, 0x2f, 0x99, 0x64,
-	0x95, 0x1a, 0x2d, 0xa5, 0xd0, 0x22, 0xf8, 0xcc, 0x33, 0xa3, 0x37, 0x98, 0xc3, 0x5e, 0x21, 0x0a,
-	0x61, 0x89, 0xd8, 0xfc, 0x73, 0xf0, 0x61, 0xbf, 0x10, 0xa2, 0x28, 0x21, 0xb6, 0x4f, 0x49, 0x9d,
-	0xc7, 0x1a, 0x2b, 0x50, 0x9a, 0x55, 0x4b, 0x0f, 0x44, 0x6d, 0x20, 0xab, 0x25, 0xd3, 0x28, 0x78,
-	0xa3, 0xa7, 0x42, 0x55, 0x42, 0xc5, 0x09, 0x53, 0x10, 0x5f, 0x1d, 0x27, 0xa0, 0xd9, 0x71, 0x9c,
-	0x0a, 0x6c, 0xf4, 0x03, 0xa7, 0x53, 0x77, 0xb2, 0x7b, 0x70, 0xd2, 0xf0, 0xdf, 0x2e, 0xd9, 0x9b,
-	0xd9, 0xca, 0x83, 0x3f, 0x3a, 0x64, 0xbf, 0x42, 0x4e, 0x95, 0x66, 0x0b, 0xe4, 0x05, 0xcd, 0x85,
-	0xa4, 0x25, 0x2a, 0x8d, 0xbc, 0x08, 0x3b, 0x83, 0xce, 0x51, 0x77, 0x3c, 0x7b, 0x75, 0xdd, 0xdf,
-	0xf9, 0xfb, 0xba, 0xff, 0xb8, 0x40, 0x7d, 0x59, 0x27, 0xa3, 0x54, 0x54, 0x3e, 0xcd, 0xff, 0x7c,
-	0xa3, 0xb2, 0x45, 0xac, 0x57, 0x4b, 0x50, 0xa3, 0x73, 0xae, 0xff, 0xbb, 0xee, 0x47, 0x2b, 0x56,
-	0x95, 0x3f, 0x0e, 0xdf, 0x12, 0x3b, 0x9c, 0xf7, 0x2a, 0xe4, 0x17, 0x4e, 0x98, 0x0a, 0xf9, 0xc4,
-	0xbd, 0x0e, 0xbe, 0x27, 0xfb, 0x19, 0xe4, 0xac, 0x2e, 0x35, 0x4d, 0x30, 0xa3, 0x2c, 0xd5, 0x78,
-	0x05, 0x54, 0x32, 0xbe, 0x08, 0xdf, 0x19, 0x74, 0x8e, 0x76, 0xe7, 0x3d, 0x2f, 0x8f, 0x31, 0x3b,
-	0xb1, 0xe2, 0x9c, 0xf1, 0x45, 0xf0, 0x88, 0x10, 0x83, 0x6b, 0xb1, 0x00, 0xae, 0xc2, 0x7b, 0x83,
-	0x7b, 0x47, 0xdd, 0x79, 0x37, 0xc1, 0xec, 0x99, 0x7d, 0x11, 0x9c, 0x90, 0x88, 0xd5, 0x5a, 0x50,
-	0x09, 0xfe, 0x78, 0x9a, 0x8a, 0x9a, 0x6b, 0x8a, 0x39, 0xe5, 0xc2, 0x1c, 0x14, 0xee, 0xda, 0xf0,
-	0x03, 0x43, 0xcd, 0x1b, 0x68, 0x62, 0x98, 0xf3, 0xfc, 0xa9, 0x18, 0x63, 0x16, 0xfc, 0x40, 0x0e,
-	0x78, 0xae, 0x9b, 0xf2, 0x69, 0x06, 0x25, 0x5b, 0x51, 0x05, 0xa9, 0xe0, 0x99, 0x0a, 0xdf, 0xb5,
-	0xee, 0xcf, 0x79, 0xae, 0xfd, 0x3d, 0x4e, 0x8d, 0x7c, 0xe1, 0xd4, 0xe0, 0x27, 0x72, 0xb8, 0x6d,
-	0x5d, 0x82, 0x44, 0x91, 0x51, 0xe4, 0xa8, 0x91, 0x95, 0xe1, 0x9e, 0xf5, 0xee, 0x6f, 0xbc, 0x33,
-	0xab, 0x9f, 0x3b, 0x39, 0x78, 0x42, 0xbe, 0xda, 0x36, 0xa7, 0x8c, 0xa7, 0x50, 0x52, 0x09, 0x2f,
-	0x6a, 0x94, 0x90, 0xad, 0x2b, 0x78, 0xcf, 0xa6, 0xf4, 0x37, 0x29, 0x13, 0x0b, 0xce, 0x3d, 0xd7,
-	0x94, 0x72, 0x46, 0xbe, 0xbc, 0x23, 0x2d, 0x07, 0x30, 0x55, 0xa5, 0xc0, 0x35, 0x2b, 0x20, 0x7c,
-	0xdf, 0x66, 0x3d, 0x6a, 0x67, 0x4d, 0x01, 0x66, 0x6b, 0x28, 0x88, 0x49, 0x6f, 0x3b, 0xa9, 0x60,
-	0x4b, 0x6a, 0x66, 0x37, 0xec, 0x5a, 0xf3, 0x83, 0x8d, 0xf9, 0x37, 0xb6, 0x7c, 0x86, 0x15, 0x04,
-	0x3f, 0x93, 0x87, 0xa6, 0x45, 0x6f, 0xbb, 0x00, 0xb1, 0xbe, 0x30, 0xc1, 0xec, 0xee, 0xca, 0x2f,
-	0xc8, 0xd7, 0xeb, 0x0e, 0xd3, 0x0c, 0x55, 0x52, 0x4b, 0x05, 0x8d, 0x9b, 0xb2, 0x5c, 0x83, 0xf4,
-	0xd9, 0xe1, 0x7d, 0x1b, 0x35, 0x6c, 0xda, 0x7f, 0xea, 0x61, 0x9f, 0x74, 0x62, 0x50, 0x77, 0x46,
-	0x70, 0x4a, 0xfa, 0xdb, 0x97, 0xc8, 0xeb, 0xb2, 0xa4, 0x4b, 0xb6, 0xaa, 0x80, 0x6b, 0xdf, 0xa6,
-	0xf0, 0x03, 0x1b, 0xf6, 0x70, 0x73, 0x9f, 0x69, 0x5d, 0x96, 0x33, 0xc7, 0xb8, 0x4e, 0xb5, 0x53,
-	0xcc, 0xff, 0x0c, 0x4a, 0xbc, 0x02, 0xb9, 0x6a, 0x52, 0x3e, 0x6c, 0xa7, 0x3c, 0xcd, 0xf5, 0xa9,
-	0x67, 0x7c, 0xca, 0x2f, 0xe4, 0x0b, 0xe3, 0x4c, 0x25, 0x30, 0x2d, 0x24, 0x55, 0x97, 0x4c, 0xbe,
-	0xd1, 0x95, 0x8f, 0xdc, 0x84, 0xf2, 0x5c, 0x4f, 0x1c, 0x72, 0x61, 0x88, 0xad, 0x8e, 0x1c, 0x93,
-	0x5e, 0xc5, 0xe4, 0x02, 0x34, 0x65, 0x59, 0x85, 0x1c, 0x95, 0x96, 0x06, 0x0b, 0x3f, 0x36, 0x1f,
-	0xf0, 0xfc, 0x53, 0xa7, 0x9d, 0x6c, 0x4b, 0xed, 0xc9, 0x4c, 0x45, 0x55, 0xa1, 0x52, 0x28, 0xb8,
-	0x19, 0x89, 0xf0, 0x93, 0xf6, 0x64, 0x4e, 0xd6, 0xfa, 0x14, 0xa0, 0x6d, 0x86, 0x97, 0x1a, 0xf8,
-	0xa6, 0x9f, 0x0f, 0xda, 0xe6, 0x5f, 0xad, 0xde, 0xb4, 0xf3, 0x05, 0x79, 0x7c, 0xc7, 0x37, 0xe1,
-	0x33, 0xfc, 0x3c, 0xd2, 0x4b, 0x51, 0xcb, 0x30, 0x18, 0x74, 0x8e, 0xee, 0x7f, 0x7b, 0x30, 0xf2,
-	0xbb, 0xcb, 0x2c, 0xba, 0x91, 0x5f, 0x74, 0xa3, 0x89, 0x40, 0x3e, 0xde, 0x35, 0xab, 0x69, 0x3e,
-	0x68, 0x7f, 0x40, 0xee, 0x3c, 0x37, 0xb4, 0x67, 0xa2, 0x96, 0xe3, 0xb3, 0x57, 0x37, 0x51, 0xe7,
-	0xf5, 0x4d, 0xd4, 0xf9, 0xe7, 0x26, 0xea, 0xfc, 0x79, 0x1b, 0xed, 0xbc, 0xbe, 0x8d, 0x76, 0xfe,
-	0xba, 0x8d, 0x76, 0x7e, 0x1f, 0x6d, 0x2d, 0xb5, 0xe7, 0xfc, 0x39, 0xc7, 0x29, 0xc6, 0xe9, 0x25,
-	0x43, 0x1e, 0xbf, 0x6c, 0x6d, 0x7a, 0xbb, 0xe0, 0x92, 0x3d, 0xbb, 0x40, 0xbf, 0xfb, 0x3f, 0x00,
-	0x00, 0xff, 0xff, 0x87, 0xe3, 0x78, 0xa0, 0x0f, 0x06, 0x00, 0x00,
+	// 475 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x93, 0x41, 0x6f, 0xd3, 0x30,
+	0x14, 0xc7, 0x1b, 0x56, 0x8a, 0x9a, 0x63, 0x34, 0xb4, 0xd0, 0x89, 0xa4, 0x2a, 0x12, 0xea, 0x85,
+	0x58, 0x13, 0x37, 0x10, 0x97, 0x31, 0x55, 0x20, 0x4d, 0xa8, 0xea, 0xd8, 0x85, 0x8b, 0xe5, 0xc4,
+	0x4e, 0xf6, 0x54, 0xfb, 0x39, 0xc4, 0xce, 0x44, 0x3f, 0xc1, 0xae, 0x7c, 0xac, 0x1d, 0x77, 0x44,
+	0x1c, 0x2a, 0xd4, 0x7e, 0x03, 0x3e, 0x01, 0xaa, 0x93, 0x42, 0x57, 0xb1, 0x53, 0x6c, 0xff, 0x7f,
+	0xf9, 0xf9, 0xe9, 0xbd, 0xc4, 0x1f, 0xd5, 0x58, 0x23, 0xe4, 0x40, 0x30, 0xb7, 0x29, 0xcb, 0xe6,
+	0x82, 0x4b, 0xcd, 0x90, 0x94, 0xac, 0x62, 0xca, 0x24, 0x65, 0xa5, 0xad, 0x0e, 0x9e, 0xb6, 0x4c,
+	0x72, 0x8f, 0x19, 0x1c, 0x16, 0xba, 0xd0, 0x8e, 0x20, 0x9b, 0x55, 0x03, 0x0f, 0xe2, 0x42, 0xeb,
+	0x42, 0x0a, 0xe2, 0x76, 0x69, 0x9d, 0x13, 0x0b, 0x4a, 0x18, 0xcb, 0x54, 0xd9, 0x02, 0xd1, 0x3e,
+	0xc0, 0xeb, 0x8a, 0x59, 0xd0, 0xb8, 0xcd, 0x33, 0x6d, 0x94, 0x36, 0x24, 0x65, 0x46, 0x90, 0xeb,
+	0x93, 0x54, 0x58, 0x76, 0x42, 0x32, 0x0d, 0xdb, 0xfc, 0x59, 0x93, 0xd3, 0xe6, 0xe6, 0x66, 0xd3,
+	0x44, 0xa3, 0x9b, 0xae, 0xdf, 0x9b, 0xba, 0xca, 0x83, 0x1b, 0xcf, 0x3f, 0x52, 0x80, 0xd4, 0x58,
+	0x36, 0x07, 0x2c, 0x68, 0xae, 0x2b, 0x2a, 0xc1, 0x58, 0xc0, 0x22, 0xf4, 0x86, 0xde, 0xb8, 0x7f,
+	0x3a, 0xbd, 0x5d, 0xc6, 0x9d, 0x9f, 0xcb, 0xf8, 0x65, 0x01, 0xf6, 0xaa, 0x4e, 0x93, 0x4c, 0xab,
+	0xd6, 0xd6, 0x3e, 0x5e, 0x19, 0x3e, 0x27, 0x76, 0x51, 0x0a, 0x93, 0x7c, 0x44, 0xfb, 0x7b, 0x19,
+	0x47, 0x0b, 0xa6, 0xe4, 0x9b, 0xd1, 0x03, 0xda, 0xd1, 0xec, 0x50, 0x01, 0x5e, 0x34, 0xc1, 0x44,
+	0x57, 0xe7, 0xcd, 0x71, 0xf0, 0xdc, 0xf7, 0x53, 0xe0, 0xd4, 0xea, 0xb9, 0x40, 0x13, 0x3e, 0x1a,
+	0x1e, 0x8c, 0xfb, 0xb3, 0x7e, 0x0a, 0xfc, 0xb3, 0x3b, 0x08, 0xce, 0xfd, 0x17, 0x98, 0xdb, 0xad,
+	0x84, 0x66, 0x0c, 0x33, 0x21, 0x69, 0x25, 0xbe, 0xd6, 0x50, 0x09, 0x4e, 0x8d, 0xc8, 0x34, 0x72,
+	0x13, 0x1e, 0x0c, 0xbd, 0x71, 0x77, 0x16, 0x63, 0x6e, 0x5b, 0xef, 0x7b, 0x07, 0xce, 0x5a, 0xee,
+	0xa2, 0xc1, 0x82, 0x77, 0xfe, 0xf1, 0xe6, 0xb2, 0x87, 0x2c, 0x5d, 0x67, 0x09, 0x53, 0xe0, 0xff,
+	0x7f, 0xfd, 0xcc, 0x8f, 0x77, 0x8b, 0xc9, 0x6b, 0x29, 0x69, 0xc9, 0x16, 0x4a, 0xa0, 0xa5, 0xa5,
+	0xa8, 0x40, 0xf3, 0xf0, 0xb1, 0x53, 0x1c, 0xff, 0x2b, 0x64, 0x52, 0x4b, 0x39, 0x6d, 0x98, 0xa9,
+	0x43, 0xf6, 0x2d, 0x9b, 0x35, 0x17, 0x12, 0xae, 0x45, 0xb5, 0xd8, 0x5a, 0x7a, 0xfb, 0x96, 0x4f,
+	0xb9, 0x3d, 0x6b, 0x99, 0xd6, 0xf2, 0xd6, 0x1f, 0xdc, 0x6b, 0x8c, 0x56, 0x0a, 0x8c, 0x01, 0x8d,
+	0x34, 0x17, 0x22, 0x7c, 0xe2, 0x04, 0x47, 0x3b, 0xfd, 0xf8, 0x9b, 0x4f, 0x84, 0x38, 0xfd, 0x70,
+	0xbb, 0x8a, 0xbc, 0xbb, 0x55, 0xe4, 0xfd, 0x5a, 0x45, 0xde, 0xf7, 0x75, 0xd4, 0xb9, 0x5b, 0x47,
+	0x9d, 0x1f, 0xeb, 0xa8, 0xf3, 0x25, 0xd9, 0x19, 0xf7, 0x25, 0x5e, 0x22, 0x4c, 0x80, 0x64, 0x57,
+	0x0c, 0x90, 0x7c, 0xdb, 0xfb, 0x07, 0xdc, 0xe8, 0xd3, 0x9e, 0xfb, 0xb4, 0x5e, 0xff, 0x09, 0x00,
+	0x00, 0xff, 0xff, 0x93, 0x04, 0xc2, 0xce, 0x29, 0x03, 0x00, 0x00,
 }
 
 func (m *Params) Marshal() (dAtA []byte, err error) {
@@ -283,93 +175,30 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	{
-		size, err := m.NftListingPeriodExtendFeePerHour.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintParams(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x1
-	i--
-	dAtA[i] = 0x92
-	if m.NftListingExtendSeconds != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.NftListingExtendSeconds))
-		i--
-		dAtA[i] = 0x1
-		i--
-		dAtA[i] = 0x88
-	}
 	if m.NftListingCommissionFee != 0 {
 		i = encodeVarintParams(dAtA, i, uint64(m.NftListingCommissionFee))
 		i--
-		dAtA[i] = 0x1
-		i--
-		dAtA[i] = 0x80
-	}
-	if len(m.MarketAdministrator) > 0 {
-		i -= len(m.MarketAdministrator)
-		copy(dAtA[i:], m.MarketAdministrator)
-		i = encodeVarintParams(dAtA, i, uint64(len(m.MarketAdministrator)))
-		i--
-		dAtA[i] = 0x7a
-	}
-	if m.NftCreatorSharePercentage != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.NftCreatorSharePercentage))
-		i--
-		dAtA[i] = 0x70
+		dAtA[i] = 0x38
 	}
 	if m.NftListingNftDeliveryPeriod != 0 {
 		i = encodeVarintParams(dAtA, i, uint64(m.NftListingNftDeliveryPeriod))
 		i--
-		dAtA[i] = 0x68
+		dAtA[i] = 0x30
 	}
 	if m.NftListingFullPaymentPeriod != 0 {
 		i = encodeVarintParams(dAtA, i, uint64(m.NftListingFullPaymentPeriod))
 		i--
-		dAtA[i] = 0x60
-	}
-	if m.BidTokenDisburseSecondsAfterCancel != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.BidTokenDisburseSecondsAfterCancel))
-		i--
-		dAtA[i] = 0x58
+		dAtA[i] = 0x28
 	}
 	if m.BidCancelRequiredSeconds != 0 {
 		i = encodeVarintParams(dAtA, i, uint64(m.BidCancelRequiredSeconds))
 		i--
-		dAtA[i] = 0x50
-	}
-	if m.NftListingGapTime != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.NftListingGapTime))
-		i--
-		dAtA[i] = 0x48
-	}
-	if m.NftListingCancelFeePercentage != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.NftListingCancelFeePercentage))
-		i--
-		dAtA[i] = 0x40
+		dAtA[i] = 0x20
 	}
 	if m.NftListingCancelRequiredSeconds != 0 {
 		i = encodeVarintParams(dAtA, i, uint64(m.NftListingCancelRequiredSeconds))
 		i--
-		dAtA[i] = 0x38
-	}
-	if m.NftListingPeriodInitial != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.NftListingPeriodInitial))
-		i--
-		dAtA[i] = 0x30
-	}
-	if m.NftListingDelaySeconds != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.NftListingDelaySeconds))
-		i--
-		dAtA[i] = 0x28
-	}
-	if m.AutoRelistingCountIfNoBid != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.AutoRelistingCountIfNoBid))
-		i--
-		dAtA[i] = 0x20
+		dAtA[i] = 0x18
 	}
 	if len(m.BidTokens) > 0 {
 		for iNdEx := len(m.BidTokens) - 1; iNdEx >= 0; iNdEx-- {
@@ -377,13 +206,8 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			copy(dAtA[i:], m.BidTokens[iNdEx])
 			i = encodeVarintParams(dAtA, i, uint64(len(m.BidTokens[iNdEx])))
 			i--
-			dAtA[i] = 0x1a
+			dAtA[i] = 0x12
 		}
-	}
-	if m.DefaultBidActiveRank != 0 {
-		i = encodeVarintParams(dAtA, i, uint64(m.DefaultBidActiveRank))
-		i--
-		dAtA[i] = 0x10
 	}
 	{
 		size := m.MinStakingForListing.Size()
@@ -417,38 +241,17 @@ func (m *Params) Size() (n int) {
 	_ = l
 	l = m.MinStakingForListing.Size()
 	n += 1 + l + sovParams(uint64(l))
-	if m.DefaultBidActiveRank != 0 {
-		n += 1 + sovParams(uint64(m.DefaultBidActiveRank))
-	}
 	if len(m.BidTokens) > 0 {
 		for _, s := range m.BidTokens {
 			l = len(s)
 			n += 1 + l + sovParams(uint64(l))
 		}
 	}
-	if m.AutoRelistingCountIfNoBid != 0 {
-		n += 1 + sovParams(uint64(m.AutoRelistingCountIfNoBid))
-	}
-	if m.NftListingDelaySeconds != 0 {
-		n += 1 + sovParams(uint64(m.NftListingDelaySeconds))
-	}
-	if m.NftListingPeriodInitial != 0 {
-		n += 1 + sovParams(uint64(m.NftListingPeriodInitial))
-	}
 	if m.NftListingCancelRequiredSeconds != 0 {
 		n += 1 + sovParams(uint64(m.NftListingCancelRequiredSeconds))
 	}
-	if m.NftListingCancelFeePercentage != 0 {
-		n += 1 + sovParams(uint64(m.NftListingCancelFeePercentage))
-	}
-	if m.NftListingGapTime != 0 {
-		n += 1 + sovParams(uint64(m.NftListingGapTime))
-	}
 	if m.BidCancelRequiredSeconds != 0 {
 		n += 1 + sovParams(uint64(m.BidCancelRequiredSeconds))
-	}
-	if m.BidTokenDisburseSecondsAfterCancel != 0 {
-		n += 1 + sovParams(uint64(m.BidTokenDisburseSecondsAfterCancel))
 	}
 	if m.NftListingFullPaymentPeriod != 0 {
 		n += 1 + sovParams(uint64(m.NftListingFullPaymentPeriod))
@@ -456,21 +259,9 @@ func (m *Params) Size() (n int) {
 	if m.NftListingNftDeliveryPeriod != 0 {
 		n += 1 + sovParams(uint64(m.NftListingNftDeliveryPeriod))
 	}
-	if m.NftCreatorSharePercentage != 0 {
-		n += 1 + sovParams(uint64(m.NftCreatorSharePercentage))
-	}
-	l = len(m.MarketAdministrator)
-	if l > 0 {
-		n += 1 + l + sovParams(uint64(l))
-	}
 	if m.NftListingCommissionFee != 0 {
-		n += 2 + sovParams(uint64(m.NftListingCommissionFee))
+		n += 1 + sovParams(uint64(m.NftListingCommissionFee))
 	}
-	if m.NftListingExtendSeconds != 0 {
-		n += 2 + sovParams(uint64(m.NftListingExtendSeconds))
-	}
-	l = m.NftListingPeriodExtendFeePerHour.Size()
-	n += 2 + l + sovParams(uint64(l))
 	return n
 }
 
@@ -544,25 +335,6 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DefaultBidActiveRank", wireType)
-			}
-			m.DefaultBidActiveRank = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.DefaultBidActiveRank |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field BidTokens", wireType)
 			}
@@ -594,64 +366,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			}
 			m.BidTokens = append(m.BidTokens, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AutoRelistingCountIfNoBid", wireType)
-			}
-			m.AutoRelistingCountIfNoBid = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.AutoRelistingCountIfNoBid |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 5:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftListingDelaySeconds", wireType)
-			}
-			m.NftListingDelaySeconds = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.NftListingDelaySeconds |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 6:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftListingPeriodInitial", wireType)
-			}
-			m.NftListingPeriodInitial = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.NftListingPeriodInitial |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 7:
+		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field NftListingCancelRequiredSeconds", wireType)
 			}
@@ -670,45 +385,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 8:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftListingCancelFeePercentage", wireType)
-			}
-			m.NftListingCancelFeePercentage = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.NftListingCancelFeePercentage |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 9:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftListingGapTime", wireType)
-			}
-			m.NftListingGapTime = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.NftListingGapTime |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 10:
+		case 4:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field BidCancelRequiredSeconds", wireType)
 			}
@@ -727,26 +404,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 11:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BidTokenDisburseSecondsAfterCancel", wireType)
-			}
-			m.BidTokenDisburseSecondsAfterCancel = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.BidTokenDisburseSecondsAfterCancel |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 12:
+		case 5:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field NftListingFullPaymentPeriod", wireType)
 			}
@@ -765,7 +423,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 13:
+		case 6:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field NftListingNftDeliveryPeriod", wireType)
 			}
@@ -784,58 +442,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 14:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftCreatorSharePercentage", wireType)
-			}
-			m.NftCreatorSharePercentage = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.NftCreatorSharePercentage |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 15:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MarketAdministrator", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthParams
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthParams
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.MarketAdministrator = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 16:
+		case 7:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field NftListingCommissionFee", wireType)
 			}
@@ -854,58 +461,6 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 17:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftListingExtendSeconds", wireType)
-			}
-			m.NftListingExtendSeconds = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.NftListingExtendSeconds |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 18:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftListingPeriodExtendFeePerHour", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowParams
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthParams
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthParams
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.NftListingPeriodExtendFeePerHour.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipParams(dAtA[iNdEx:])

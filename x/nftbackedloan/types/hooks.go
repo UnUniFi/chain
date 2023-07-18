@@ -2,7 +2,7 @@ package types
 
 import sdk "github.com/cosmos/cosmos-sdk/types"
 
-// MultiNftmarketHooks combine multiple nftmarket hooks, all hook functions are run in array sequence
+// MultiNftmarketHooks combine multiple nftbackedloan hooks, all hook functions are run in array sequence
 type MultiNftbackedloanHooks []NftbackedloanHooks
 
 // NewMultiNftmarketHooks returns a new MultiNftmarketHooks

@@ -41,7 +41,7 @@ The `nftmarket` module emits the following events:
 | Type | Attribute Key | Attribute Value |
 | ---- | ------------- | --------------- |
 
-## MsgPayFullBid
+## MsgPayRemainder
 
 | Type | Attribute Key | Attribute Value |
 | ---- | ------------- | --------------- |

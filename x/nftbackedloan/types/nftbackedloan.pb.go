@@ -172,58 +172,6 @@ func (m *BidId) GetBidder() string {
 	return ""
 }
 
-type Loan struct {
-	NftId NftIdentifier `protobuf:"bytes,1,opt,name=nft_id,json=nftId,proto3" json:"nft_id"`
-	Loan  types.Coin    `protobuf:"bytes,2,opt,name=loan,proto3" json:"loan"`
-}
-
-func (m *Loan) Reset()         { *m = Loan{} }
-func (m *Loan) String() string { return proto.CompactTextString(m) }
-func (*Loan) ProtoMessage()    {}
-func (*Loan) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9e729891a263bcae, []int{2}
-}
-func (m *Loan) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *Loan) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_Loan.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *Loan) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Loan.Merge(m, src)
-}
-func (m *Loan) XXX_Size() int {
-	return m.Size()
-}
-func (m *Loan) XXX_DiscardUnknown() {
-	xxx_messageInfo_Loan.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Loan proto.InternalMessageInfo
-
-func (m *Loan) GetNftId() NftIdentifier {
-	if m != nil {
-		return m.NftId
-	}
-	return NftIdentifier{}
-}
-
-func (m *Loan) GetLoan() types.Coin {
-	if m != nil {
-		return m.Loan
-	}
-	return types.Coin{}
-}
-
 type ListedClass struct {
 	ClassId string   `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	NftIds  []string `protobuf:"bytes,2,rep,name=nft_ids,json=nftIds,proto3" json:"nft_ids,omitempty"`
@@ -233,7 +181,7 @@ func (m *ListedClass) Reset()         { *m = ListedClass{} }
 func (m *ListedClass) String() string { return proto.CompactTextString(m) }
 func (*ListedClass) ProtoMessage()    {}
 func (*ListedClass) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9e729891a263bcae, []int{3}
+	return fileDescriptor_9e729891a263bcae, []int{2}
 }
 func (m *ListedClass) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -286,7 +234,7 @@ func (m *NftInfo) Reset()         { *m = NftInfo{} }
 func (m *NftInfo) String() string { return proto.CompactTextString(m) }
 func (*NftInfo) ProtoMessage()    {}
 func (*NftInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9e729891a263bcae, []int{4}
+	return fileDescriptor_9e729891a263bcae, []int{3}
 }
 func (m *NftInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -340,24 +288,22 @@ type NftListing struct {
 	NftId                   NftIdentifier                          `protobuf:"bytes,1,opt,name=nft_id,json=nftId,proto3" json:"nft_id"`
 	Owner                   string                                 `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
 	State                   ListingState                           `protobuf:"varint,3,opt,name=state,proto3,enum=ununifi.nftbackedloan.ListingState" json:"state,omitempty"`
-	BidToken                string                                 `protobuf:"bytes,4,opt,name=bid_token,json=bidToken,proto3" json:"bid_token,omitempty"`
+	BidDenom                string                                 `protobuf:"bytes,4,opt,name=bid_denom,json=bidDenom,proto3" json:"bid_denom,omitempty"`
 	MinimumDepositRate      github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=minimum_deposit_rate,json=minimumDepositRate,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"minimum_deposit_rate"`
-	AutomaticRefinancing    bool                                   `protobuf:"varint,6,opt,name=automatic_refinancing,json=automaticRefinancing,proto3" json:"automatic_refinancing,omitempty"`
-	StartedAt               time.Time                              `protobuf:"bytes,7,opt,name=started_at,json=startedAt,proto3,stdtime" json:"started_at" yaml:"started_at"`
-	EndAt                   time.Time                              `protobuf:"bytes,8,opt,name=end_at,json=endAt,proto3,stdtime" json:"end_at" yaml:"end_at"`
-	FullPaymentEndAt        time.Time                              `protobuf:"bytes,9,opt,name=full_payment_end_at,json=fullPaymentEndAt,proto3,stdtime" json:"full_payment_end_at" yaml:"full_payment_end_at"`
-	SuccessfulBidEndAt      time.Time                              `protobuf:"bytes,10,opt,name=successful_bid_end_at,json=successfulBidEndAt,proto3,stdtime" json:"successful_bid_end_at" yaml:"successful_bid_end_at"`
-	AutoRelistedCount       uint64                                 `protobuf:"varint,11,opt,name=auto_relisted_count,json=autoRelistedCount,proto3" json:"auto_relisted_count,omitempty"`
-	CollectedAmount         types.Coin                             `protobuf:"bytes,12,opt,name=collected_amount,json=collectedAmount,proto3" json:"collected_amount"`
-	CollectedAmountNegative bool                                   `protobuf:"varint,13,opt,name=collected_amount_negative,json=collectedAmountNegative,proto3" json:"collected_amount_negative,omitempty"`
-	MinimumBiddingPeriod    time.Duration                          `protobuf:"bytes,14,opt,name=minimum_bidding_period,json=minimumBiddingPeriod,proto3,stdduration" json:"minimum_bidding_period"`
+	StartedAt               time.Time                              `protobuf:"bytes,6,opt,name=started_at,json=startedAt,proto3,stdtime" json:"started_at" yaml:"started_at"`
+	LiquidatedAt            time.Time                              `protobuf:"bytes,7,opt,name=liquidated_at,json=liquidatedAt,proto3,stdtime" json:"liquidated_at" yaml:"liquidated_at"`
+	FullPaymentEndAt        time.Time                              `protobuf:"bytes,8,opt,name=full_payment_end_at,json=fullPaymentEndAt,proto3,stdtime" json:"full_payment_end_at" yaml:"full_payment_end_at"`
+	SuccessfulBidEndAt      time.Time                              `protobuf:"bytes,9,opt,name=successful_bid_end_at,json=successfulBidEndAt,proto3,stdtime" json:"successful_bid_end_at" yaml:"successful_bid_end_at"`
+	CollectedAmount         types.Coin                             `protobuf:"bytes,10,opt,name=collected_amount,json=collectedAmount,proto3" json:"collected_amount"`
+	CollectedAmountNegative bool                                   `protobuf:"varint,11,opt,name=collected_amount_negative,json=collectedAmountNegative,proto3" json:"collected_amount_negative,omitempty"`
+	MinimumBiddingPeriod    time.Duration                          `protobuf:"bytes,12,opt,name=minimum_bidding_period,json=minimumBiddingPeriod,proto3,stdduration" json:"minimum_bidding_period"`
 }
 
 func (m *NftListing) Reset()         { *m = NftListing{} }
 func (m *NftListing) String() string { return proto.CompactTextString(m) }
 func (*NftListing) ProtoMessage()    {}
 func (*NftListing) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9e729891a263bcae, []int{5}
+	return fileDescriptor_9e729891a263bcae, []int{4}
 }
 func (m *NftListing) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -407,18 +353,11 @@ func (m *NftListing) GetState() ListingState {
 	return ListingState_UNKNOWN
 }
 
-func (m *NftListing) GetBidToken() string {
+func (m *NftListing) GetBidDenom() string {
 	if m != nil {
-		return m.BidToken
+		return m.BidDenom
 	}
 	return ""
-}
-
-func (m *NftListing) GetAutomaticRefinancing() bool {
-	if m != nil {
-		return m.AutomaticRefinancing
-	}
-	return false
 }
 
 func (m *NftListing) GetStartedAt() time.Time {
@@ -428,9 +367,9 @@ func (m *NftListing) GetStartedAt() time.Time {
 	return time.Time{}
 }
 
-func (m *NftListing) GetEndAt() time.Time {
+func (m *NftListing) GetLiquidatedAt() time.Time {
 	if m != nil {
-		return m.EndAt
+		return m.LiquidatedAt
 	}
 	return time.Time{}
 }
@@ -447,13 +386,6 @@ func (m *NftListing) GetSuccessfulBidEndAt() time.Time {
 		return m.SuccessfulBidEndAt
 	}
 	return time.Time{}
-}
-
-func (m *NftListing) GetAutoRelistedCount() uint64 {
-	if m != nil {
-		return m.AutoRelistedCount
-	}
-	return 0
 }
 
 func (m *NftListing) GetCollectedAmount() types.Coin {
@@ -478,16 +410,15 @@ func (m *NftListing) GetMinimumBiddingPeriod() time.Duration {
 }
 
 type Borrowing struct {
-	Amount             types.Coin `protobuf:"bytes,1,opt,name=amount,proto3" json:"amount"`
-	PaidInterestAmount types.Coin `protobuf:"bytes,2,opt,name=paid_interest_amount,json=paidInterestAmount,proto3" json:"paid_interest_amount"`
-	StartAt            time.Time  `protobuf:"bytes,3,opt,name=start_at,json=startAt,proto3,stdtime" json:"start_at"`
+	Amount       types.Coin `protobuf:"bytes,1,opt,name=amount,proto3" json:"amount"`
+	LastRepaidAt time.Time  `protobuf:"bytes,2,opt,name=last_repaid_at,json=lastRepaidAt,proto3,stdtime" json:"last_repaid_at"`
 }
 
 func (m *Borrowing) Reset()         { *m = Borrowing{} }
 func (m *Borrowing) String() string { return proto.CompactTextString(m) }
 func (*Borrowing) ProtoMessage()    {}
 func (*Borrowing) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9e729891a263bcae, []int{6}
+	return fileDescriptor_9e729891a263bcae, []int{5}
 }
 func (m *Borrowing) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -523,39 +454,31 @@ func (m *Borrowing) GetAmount() types.Coin {
 	return types.Coin{}
 }
 
-func (m *Borrowing) GetPaidInterestAmount() types.Coin {
+func (m *Borrowing) GetLastRepaidAt() time.Time {
 	if m != nil {
-		return m.PaidInterestAmount
-	}
-	return types.Coin{}
-}
-
-func (m *Borrowing) GetStartAt() time.Time {
-	if m != nil {
-		return m.StartAt
+		return m.LastRepaidAt
 	}
 	return time.Time{}
 }
 
 type NftBid struct {
-	Id                 BidId                                  `protobuf:"bytes,1,opt,name=id,proto3" json:"id"`
-	BidAmount          types.Coin                             `protobuf:"bytes,2,opt,name=bid_amount,json=bidAmount,proto3" json:"bid_amount"`
-	DepositAmount      types.Coin                             `protobuf:"bytes,3,opt,name=deposit_amount,json=depositAmount,proto3" json:"deposit_amount"`
-	PaidAmount         types.Coin                             `protobuf:"bytes,4,opt,name=paid_amount,json=paidAmount,proto3" json:"paid_amount"`
-	BiddingPeriod      time.Time                              `protobuf:"bytes,5,opt,name=bidding_period,json=biddingPeriod,proto3,stdtime" json:"bidding_period"`
-	DepositLendingRate github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,6,opt,name=deposit_lending_rate,json=depositLendingRate,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"deposit_lending_rate"`
-	AutomaticPayment   bool                                   `protobuf:"varint,7,opt,name=automatic_payment,json=automaticPayment,proto3" json:"automatic_payment,omitempty"`
-	BidTime            time.Time                              `protobuf:"bytes,8,opt,name=bid_time,json=bidTime,proto3,stdtime" json:"bid_time" yaml:"bid_time"`
-	InterestAmount     types.Coin                             `protobuf:"bytes,9,opt,name=interest_amount,json=interestAmount,proto3" json:"interest_amount"`
-	// lister borrowing bidder info
-	Borrowings []Borrowing `protobuf:"bytes,10,rep,name=borrowings,proto3" json:"borrowings"`
+	Id               BidId                                  `protobuf:"bytes,1,opt,name=id,proto3" json:"id"`
+	Price            types.Coin                             `protobuf:"bytes,2,opt,name=price,proto3" json:"price"`
+	Deposit          types.Coin                             `protobuf:"bytes,3,opt,name=deposit,proto3" json:"deposit"`
+	PaidAmount       types.Coin                             `protobuf:"bytes,4,opt,name=paid_amount,json=paidAmount,proto3" json:"paid_amount"`
+	Expiry           time.Time                              `protobuf:"bytes,5,opt,name=expiry,proto3,stdtime" json:"expiry"`
+	InterestRate     github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,6,opt,name=interest_rate,json=interestRate,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"interest_rate"`
+	AutomaticPayment bool                                   `protobuf:"varint,7,opt,name=automatic_payment,json=automaticPayment,proto3" json:"automatic_payment,omitempty"`
+	CreatedAt        time.Time                              `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3,stdtime" json:"created_at" yaml:"create_at"`
+	// borrow info
+	Borrow Borrowing `protobuf:"bytes,9,opt,name=borrow,proto3" json:"borrow"`
 }
 
 func (m *NftBid) Reset()         { *m = NftBid{} }
 func (m *NftBid) String() string { return proto.CompactTextString(m) }
 func (*NftBid) ProtoMessage()    {}
 func (*NftBid) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9e729891a263bcae, []int{7}
+	return fileDescriptor_9e729891a263bcae, []int{6}
 }
 func (m *NftBid) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -591,16 +514,16 @@ func (m *NftBid) GetId() BidId {
 	return BidId{}
 }
 
-func (m *NftBid) GetBidAmount() types.Coin {
+func (m *NftBid) GetPrice() types.Coin {
 	if m != nil {
-		return m.BidAmount
+		return m.Price
 	}
 	return types.Coin{}
 }
 
-func (m *NftBid) GetDepositAmount() types.Coin {
+func (m *NftBid) GetDeposit() types.Coin {
 	if m != nil {
-		return m.DepositAmount
+		return m.Deposit
 	}
 	return types.Coin{}
 }
@@ -612,9 +535,9 @@ func (m *NftBid) GetPaidAmount() types.Coin {
 	return types.Coin{}
 }
 
-func (m *NftBid) GetBiddingPeriod() time.Time {
+func (m *NftBid) GetExpiry() time.Time {
 	if m != nil {
-		return m.BiddingPeriod
+		return m.Expiry
 	}
 	return time.Time{}
 }
@@ -626,118 +549,18 @@ func (m *NftBid) GetAutomaticPayment() bool {
 	return false
 }
 
-func (m *NftBid) GetBidTime() time.Time {
+func (m *NftBid) GetCreatedAt() time.Time {
 	if m != nil {
-		return m.BidTime
+		return m.CreatedAt
 	}
 	return time.Time{}
 }
 
-func (m *NftBid) GetInterestAmount() types.Coin {
+func (m *NftBid) GetBorrow() Borrowing {
 	if m != nil {
-		return m.InterestAmount
+		return m.Borrow
 	}
-	return types.Coin{}
-}
-
-func (m *NftBid) GetBorrowings() []Borrowing {
-	if m != nil {
-		return m.Borrowings
-	}
-	return nil
-}
-
-type PaymentStatus struct {
-	NftId            NftIdentifier                          `protobuf:"bytes,1,opt,name=nft_id,json=nftId,proto3" json:"nft_id"`
-	Bidder           string                                 `protobuf:"bytes,2,opt,name=bidder,proto3" json:"bidder,omitempty"`
-	Amount           types.Coin                             `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount"`
-	AutomaticPayment bool                                   `protobuf:"varint,4,opt,name=automatic_payment,json=automaticPayment,proto3" json:"automatic_payment,omitempty"`
-	PaidAmount       github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,5,opt,name=paid_amount,json=paidAmount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"paid_amount" yaml:"paid_amount"`
-	BidTime          time.Time                              `protobuf:"bytes,6,opt,name=bid_time,json=bidTime,proto3,stdtime" json:"bid_time" yaml:"bid_time"`
-	State            ListingState                           `protobuf:"varint,7,opt,name=state,proto3,enum=ununifi.nftbackedloan.ListingState" json:"state,omitempty"`
-	AllPaid          bool                                   `protobuf:"varint,8,opt,name=all_paid,json=allPaid,proto3" json:"all_paid,omitempty"`
-}
-
-func (m *PaymentStatus) Reset()         { *m = PaymentStatus{} }
-func (m *PaymentStatus) String() string { return proto.CompactTextString(m) }
-func (*PaymentStatus) ProtoMessage()    {}
-func (*PaymentStatus) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9e729891a263bcae, []int{8}
-}
-func (m *PaymentStatus) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *PaymentStatus) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_PaymentStatus.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *PaymentStatus) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_PaymentStatus.Merge(m, src)
-}
-func (m *PaymentStatus) XXX_Size() int {
-	return m.Size()
-}
-func (m *PaymentStatus) XXX_DiscardUnknown() {
-	xxx_messageInfo_PaymentStatus.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_PaymentStatus proto.InternalMessageInfo
-
-func (m *PaymentStatus) GetNftId() NftIdentifier {
-	if m != nil {
-		return m.NftId
-	}
-	return NftIdentifier{}
-}
-
-func (m *PaymentStatus) GetBidder() string {
-	if m != nil {
-		return m.Bidder
-	}
-	return ""
-}
-
-func (m *PaymentStatus) GetAmount() types.Coin {
-	if m != nil {
-		return m.Amount
-	}
-	return types.Coin{}
-}
-
-func (m *PaymentStatus) GetAutomaticPayment() bool {
-	if m != nil {
-		return m.AutomaticPayment
-	}
-	return false
-}
-
-func (m *PaymentStatus) GetBidTime() time.Time {
-	if m != nil {
-		return m.BidTime
-	}
-	return time.Time{}
-}
-
-func (m *PaymentStatus) GetState() ListingState {
-	if m != nil {
-		return m.State
-	}
-	return ListingState_UNKNOWN
-}
-
-func (m *PaymentStatus) GetAllPaid() bool {
-	if m != nil {
-		return m.AllPaid
-	}
-	return false
+	return Borrowing{}
 }
 
 type Liquidation struct {
@@ -749,7 +572,7 @@ func (m *Liquidation) Reset()         { *m = Liquidation{} }
 func (m *Liquidation) String() string { return proto.CompactTextString(m) }
 func (*Liquidation) ProtoMessage()    {}
 func (*Liquidation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9e729891a263bcae, []int{9}
+	return fileDescriptor_9e729891a263bcae, []int{7}
 }
 func (m *Liquidation) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -801,7 +624,7 @@ func (m *Liquidations) Reset()         { *m = Liquidations{} }
 func (m *Liquidations) String() string { return proto.CompactTextString(m) }
 func (*Liquidations) ProtoMessage()    {}
 func (*Liquidations) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9e729891a263bcae, []int{10}
+	return fileDescriptor_9e729891a263bcae, []int{8}
 }
 func (m *Liquidations) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -848,13 +671,11 @@ func init() {
 	proto.RegisterEnum("ununifi.nftbackedloan.ListingState", ListingState_name, ListingState_value)
 	proto.RegisterType((*NftIdentifier)(nil), "ununifi.nftbackedloan.NftIdentifier")
 	proto.RegisterType((*BidId)(nil), "ununifi.nftbackedloan.BidId")
-	proto.RegisterType((*Loan)(nil), "ununifi.nftbackedloan.Loan")
 	proto.RegisterType((*ListedClass)(nil), "ununifi.nftbackedloan.ListedClass")
 	proto.RegisterType((*NftInfo)(nil), "ununifi.nftbackedloan.NftInfo")
 	proto.RegisterType((*NftListing)(nil), "ununifi.nftbackedloan.NftListing")
 	proto.RegisterType((*Borrowing)(nil), "ununifi.nftbackedloan.Borrowing")
 	proto.RegisterType((*NftBid)(nil), "ununifi.nftbackedloan.NftBid")
-	proto.RegisterType((*PaymentStatus)(nil), "ununifi.nftbackedloan.PaymentStatus")
 	proto.RegisterType((*Liquidation)(nil), "ununifi.nftbackedloan.Liquidation")
 	proto.RegisterType((*Liquidations)(nil), "ununifi.nftbackedloan.Liquidations")
 }
@@ -864,91 +685,80 @@ func init() {
 }
 
 var fileDescriptor_9e729891a263bcae = []byte{
-	// 1337 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x57, 0xcd, 0x6e, 0xdb, 0x46,
-	0x10, 0x36, 0xf5, 0xef, 0x51, 0x2c, 0x2b, 0x1b, 0x3b, 0x91, 0x9d, 0x54, 0x36, 0xd8, 0x22, 0x70,
-	0x5b, 0x84, 0x42, 0x9c, 0x43, 0xd1, 0xb4, 0x68, 0x2b, 0x59, 0x76, 0xc2, 0x44, 0x50, 0x12, 0xca,
-	0x46, 0x7f, 0x50, 0x80, 0xa0, 0xc8, 0x95, 0xbc, 0x88, 0xb8, 0x54, 0xc8, 0x65, 0x7e, 0x2e, 0xbd,
-	0xf7, 0x96, 0x5b, 0xfb, 0x16, 0xbd, 0xf4, 0x21, 0x72, 0x0c, 0x7a, 0x28, 0x82, 0x1e, 0xdc, 0x36,
-	0x7e, 0x83, 0x3c, 0x41, 0xb1, 0x3f, 0x94, 0x64, 0xc1, 0xae, 0xe5, 0xc0, 0x27, 0x6b, 0x39, 0x33,
-	0xdf, 0xcc, 0xce, 0x7c, 0xfb, 0xed, 0x1a, 0x3e, 0x8e, 0x69, 0x4c, 0x49, 0x8f, 0xd4, 0x68, 0x8f,
-	0x75, 0x1d, 0xf7, 0x31, 0xf6, 0x06, 0x81, 0x43, 0x8f, 0xae, 0x8c, 0x61, 0x18, 0xb0, 0x00, 0x2d,
-	0x2b, 0x57, 0xe3, 0x88, 0x71, 0x75, 0xa9, 0x1f, 0xf4, 0x03, 0xe1, 0x51, 0xe3, 0xbf, 0xa4, 0xf3,
-	0xea, 0x5a, 0x3f, 0x08, 0xfa, 0x03, 0x5c, 0x13, 0xab, 0x6e, 0xdc, 0xab, 0x31, 0xe2, 0xe3, 0x88,
-	0x39, 0xfe, 0x50, 0x39, 0x54, 0xa7, 0x1d, 0xbc, 0x38, 0x74, 0x18, 0x09, 0x68, 0x62, 0x77, 0x83,
-	0xc8, 0x0f, 0xa2, 0x5a, 0xd7, 0x89, 0x70, 0xed, 0xe9, 0xcd, 0x2e, 0x66, 0xce, 0xcd, 0x9a, 0x1b,
-	0x90, 0xc4, 0xbe, 0x22, 0xed, 0xb6, 0xcc, 0x2c, 0x17, 0xd2, 0xa4, 0xd7, 0x61, 0xa1, 0xdd, 0x63,
-	0xa6, 0x87, 0x29, 0x23, 0x3d, 0x82, 0x43, 0xb4, 0x02, 0x05, 0x77, 0xe0, 0x44, 0x91, 0x4d, 0xbc,
-	0x8a, 0xb6, 0xae, 0x6d, 0xcc, 0x5b, 0x79, 0xb1, 0x36, 0x3d, 0xb4, 0x0c, 0x39, 0xda, 0x63, 0xdc,
-	0x90, 0x12, 0x86, 0x2c, 0xe5, 0x91, 0xfa, 0x8f, 0x90, 0x6d, 0x10, 0xcf, 0xf4, 0xd0, 0x17, 0x23,
-	0x3b, 0x0f, 0x2c, 0x6e, 0x7e, 0x64, 0x1c, 0xdb, 0x05, 0xe3, 0x48, 0x42, 0x85, 0x82, 0x2e, 0x43,
-	0xae, 0x4b, 0x3c, 0x0f, 0x87, 0x0a, 0x5c, 0xad, 0xf4, 0x9f, 0x20, 0xd3, 0x0a, 0x1c, 0x8a, 0xea,
-	0xef, 0x03, 0xde, 0xc8, 0xbc, 0x3a, 0x58, 0x9b, 0x4b, 0x52, 0xdc, 0x82, 0x0c, 0x77, 0x11, 0x09,
-	0x8a, 0x9b, 0x2b, 0x86, 0x6a, 0x04, 0xef, 0x9a, 0xa1, 0xba, 0x66, 0x6c, 0x05, 0x84, 0xaa, 0x28,
-	0xe1, 0xac, 0xd7, 0xa1, 0xd8, 0x22, 0x11, 0xc3, 0xde, 0x16, 0xef, 0xc2, 0xff, 0xb5, 0xe7, 0x0a,
-	0xe4, 0x65, 0x85, 0x51, 0x25, 0xb5, 0x9e, 0xe6, 0x5b, 0x10, 0x69, 0x23, 0x7d, 0x07, 0xf2, 0xbc,
-	0x2a, 0xda, 0x0b, 0x50, 0x09, 0x52, 0xa3, 0xc0, 0x14, 0xf1, 0x50, 0x19, 0xd2, 0x71, 0x48, 0xd4,
-	0x96, 0xf9, 0x4f, 0x9e, 0x20, 0x0e, 0x89, 0xbd, 0xef, 0x44, 0xfb, 0x95, 0xb4, 0x4c, 0x10, 0x87,
-	0xe4, 0xae, 0x13, 0xed, 0xeb, 0x3f, 0x17, 0x00, 0xda, 0x3d, 0xc6, 0xcb, 0x21, 0xb4, 0x7f, 0x1e,
-	0x1d, 0x59, 0x82, 0x6c, 0xf0, 0x8c, 0x8e, 0x7a, 0x2e, 0x17, 0xe8, 0x73, 0xc8, 0x46, 0xcc, 0x61,
-	0x58, 0xe4, 0x2f, 0x6d, 0x7e, 0x78, 0x02, 0xae, 0xaa, 0xa3, 0xc3, 0x5d, 0x2d, 0x19, 0x81, 0xae,
-	0xc2, 0x7c, 0x97, 0x78, 0x36, 0x0b, 0x1e, 0x63, 0x5a, 0xc9, 0x08, 0xd0, 0x42, 0x97, 0x78, 0xbb,
-	0x7c, 0x8d, 0x28, 0x2c, 0xf9, 0x84, 0x12, 0x3f, 0xf6, 0x6d, 0x0f, 0x0f, 0x83, 0x88, 0x30, 0x3b,
-	0xe4, 0x69, 0xb2, 0xdc, 0xaf, 0xf1, 0x25, 0x2f, 0xec, 0xaf, 0x83, 0xb5, 0xeb, 0x7d, 0xc2, 0xf6,
-	0xe3, 0xae, 0xe1, 0x06, 0xbe, 0xa2, 0xaa, 0xfa, 0x73, 0x23, 0xf2, 0x1e, 0xd7, 0xd8, 0x8b, 0x21,
-	0x8e, 0x8c, 0x26, 0x76, 0xff, 0xf8, 0xfd, 0x06, 0xa8, 0x01, 0x36, 0xb1, 0x6b, 0x21, 0x85, 0xdc,
-	0x94, 0xc0, 0x16, 0x2f, 0xe6, 0x16, 0x2c, 0x3b, 0x31, 0x0b, 0x7c, 0x87, 0x11, 0xd7, 0x0e, 0x71,
-	0x8f, 0x50, 0x87, 0xba, 0x84, 0xf6, 0x2b, 0xb9, 0x75, 0x6d, 0xa3, 0x60, 0x2d, 0x8d, 0x8c, 0xd6,
-	0xd8, 0x86, 0xbe, 0x03, 0x88, 0x98, 0x13, 0x32, 0xec, 0xd9, 0x0e, 0xab, 0xe4, 0x45, 0x67, 0x57,
-	0x0d, 0x79, 0x00, 0x8d, 0xe4, 0x00, 0x1a, 0xbb, 0xc9, 0x09, 0x6d, 0x7c, 0xc0, 0xcb, 0x7e, 0x77,
-	0xb0, 0x76, 0xf1, 0x85, 0xe3, 0x0f, 0x6e, 0xeb, 0xe3, 0x58, 0xfd, 0xe5, 0xdf, 0x6b, 0x9a, 0x35,
-	0xaf, 0x3e, 0xd4, 0x19, 0x6a, 0x41, 0x0e, 0x53, 0x81, 0x5a, 0x38, 0x15, 0x75, 0x45, 0xa1, 0x2e,
-	0x48, 0x54, 0x19, 0x27, 0x11, 0xb3, 0x98, 0x72, 0xb4, 0x27, 0x70, 0xa9, 0x17, 0x0f, 0x06, 0xf6,
-	0xd0, 0x79, 0xe1, 0x63, 0xca, 0x6c, 0x05, 0x3d, 0x7f, 0x2a, 0xf4, 0x75, 0x05, 0xbd, 0x2a, 0xa1,
-	0x8f, 0x01, 0x91, 0x79, 0xca, 0xdc, 0xf2, 0x50, 0x1a, 0xb6, 0x45, 0xca, 0x67, 0xb0, 0x1c, 0xc5,
-	0xae, 0x8b, 0xa3, 0xa8, 0x17, 0x0f, 0x6c, 0x3e, 0x67, 0x95, 0x14, 0x4e, 0x4d, 0xba, 0xa1, 0x92,
-	0x5e, 0x53, 0x5d, 0x3a, 0x0e, 0x46, 0xa6, 0x45, 0x63, 0x5b, 0x83, 0x78, 0x32, 0xb1, 0x01, 0x97,
-	0xf8, 0xac, 0xec, 0x10, 0x0f, 0xc4, 0x51, 0xb4, 0xdd, 0x20, 0xa6, 0xac, 0x52, 0x5c, 0xd7, 0x36,
-	0x32, 0xd6, 0x45, 0x6e, 0xb2, 0x94, 0x65, 0x8b, 0x1b, 0xd0, 0x3d, 0x28, 0xbb, 0xc1, 0x60, 0x80,
-	0x5d, 0x31, 0x09, 0x5f, 0x38, 0x5f, 0x98, 0xed, 0xd0, 0x2f, 0x8e, 0x02, 0xeb, 0x22, 0x0e, 0xdd,
-	0x86, 0x95, 0x69, 0x2c, 0x9b, 0xe2, 0xbe, 0xc3, 0xc8, 0x53, 0x5c, 0x59, 0x10, 0x44, 0xba, 0x32,
-	0x15, 0xd3, 0x56, 0x66, 0xf4, 0x3d, 0x5c, 0x4e, 0x08, 0xcf, 0xd5, 0x8c, 0xd0, 0xbe, 0x3d, 0xc4,
-	0x21, 0x09, 0xbc, 0x4a, 0x49, 0x55, 0x33, 0xdd, 0xb1, 0xa6, 0x12, 0xf6, 0x46, 0x81, 0x57, 0xf3,
-	0x2b, 0x6f, 0x48, 0x72, 0x66, 0x1a, 0x12, 0xe1, 0xa1, 0x00, 0xd0, 0xdf, 0x68, 0x30, 0xdf, 0x08,
-	0xc2, 0x30, 0x78, 0xc6, 0x49, 0xfb, 0x19, 0xe4, 0xd4, 0x36, 0xb5, 0xd9, 0xb6, 0xa9, 0xdc, 0xd1,
-	0x23, 0x58, 0x1a, 0x3a, 0xc4, 0xb3, 0x09, 0x65, 0x38, 0xc4, 0x11, 0x4b, 0xba, 0x35, 0xa3, 0x44,
-	0x22, 0x1e, 0x6c, 0xaa, 0x58, 0xd5, 0xb0, 0xaf, 0xa1, 0x20, 0x38, 0xcf, 0x89, 0x91, 0x3e, 0x95,
-	0x18, 0x62, 0x9f, 0x62, 0xf0, 0x79, 0x11, 0x55, 0x67, 0xfa, 0x9f, 0x59, 0xc8, 0xb5, 0x7b, 0xac,
-	0x41, 0x3c, 0xb4, 0x39, 0x92, 0xcb, 0xe2, 0xe6, 0xb5, 0x13, 0x64, 0x48, 0xdc, 0x3d, 0xaa, 0x1e,
-	0x2e, 0xa9, 0x5f, 0x01, 0x70, 0x4e, 0x9d, 0x6d, 0x23, 0x5c, 0xb5, 0x54, 0xfd, 0x3b, 0x50, 0x4a,
-	0xd4, 0x49, 0x61, 0xa4, 0x67, 0xc3, 0x58, 0x50, 0x61, 0x0a, 0xe7, 0x1b, 0x28, 0x8a, 0xd6, 0x2a,
-	0x90, 0xcc, 0x6c, 0x20, 0xc0, 0x63, 0x14, 0xc2, 0x7d, 0x28, 0x4d, 0xd1, 0x26, 0x7b, 0x86, 0x7e,
-	0x2e, 0x74, 0x27, 0x09, 0xc3, 0xc5, 0x37, 0xd9, 0xd6, 0x00, 0x53, 0x01, 0x2a, 0xc4, 0x37, 0x77,
-	0x1e, 0xe2, 0xab, 0x90, 0x5b, 0x12, 0x58, 0x88, 0xef, 0xa7, 0x70, 0x71, 0x2c, 0xbe, 0x4a, 0x5f,
-	0x84, 0x9c, 0x16, 0xac, 0xf2, 0xc8, 0xa0, 0xe4, 0x05, 0x59, 0x50, 0x10, 0xd7, 0x06, 0xf1, 0xf1,
-	0x0c, 0xe2, 0x78, 0x55, 0x89, 0xc9, 0xa2, 0x14, 0x93, 0x24, 0x52, 0xea, 0x47, 0x9e, 0x5f, 0x37,
-	0xc4, 0xc7, 0xe8, 0x2e, 0x2c, 0x4e, 0xb3, 0x7a, 0x7e, 0xb6, 0x19, 0x94, 0xc8, 0x51, 0x46, 0xef,
-	0x00, 0x74, 0x93, 0xa3, 0x16, 0x55, 0x60, 0x3d, 0xbd, 0x51, 0xdc, 0x5c, 0x3f, 0x89, 0x8d, 0x89,
-	0x63, 0x32, 0xcf, 0x71, 0xa4, 0xfe, 0x6f, 0x1a, 0x16, 0xd4, 0x8e, 0xf9, 0xa5, 0x19, 0x47, 0xe7,
-	0x71, 0x85, 0x9f, 0xf0, 0x6e, 0x9a, 0x90, 0x84, 0xf4, 0xd9, 0x24, 0xe1, 0xd8, 0xc1, 0x65, 0x4e,
-	0x18, 0x1c, 0x3e, 0x4a, 0x72, 0x79, 0x93, 0x37, 0xcf, 0x40, 0x26, 0x93, 0xb2, 0x77, 0x07, 0x6b,
-	0x48, 0x4e, 0x72, 0x02, 0x4a, 0x3f, 0x72, 0x12, 0x26, 0xf9, 0x91, 0x3b, 0x27, 0x7e, 0x8c, 0x5e,
-	0x39, 0xf9, 0x33, 0xbf, 0x72, 0x56, 0xa0, 0xe0, 0x88, 0x5b, 0x93, 0x78, 0x82, 0xae, 0x05, 0x2b,
-	0xef, 0xf0, 0xbb, 0x92, 0x78, 0xfa, 0x2f, 0x1a, 0x7f, 0x2f, 0x3e, 0x89, 0x89, 0x27, 0x74, 0xfc,
-	0xfd, 0x95, 0xf9, 0x01, 0x94, 0x07, 0x63, 0x1c, 0xdb, 0xe3, 0x95, 0xa6, 0xce, 0x70, 0xfc, 0x17,
-	0x27, 0xa2, 0x9b, 0x0e, 0xc3, 0xfa, 0x6f, 0x1a, 0x5c, 0x98, 0xa8, 0x2c, 0x42, 0xf7, 0xa0, 0x38,
-	0xe1, 0xa3, 0xea, 0xd3, 0x4f, 0x6c, 0xc3, 0xc8, 0x53, 0x14, 0xaa, 0x59, 0x93, 0xc1, 0xa8, 0x03,
-	0x65, 0x8a, 0x9f, 0x33, 0x7b, 0x12, 0x30, 0x25, 0x0e, 0xca, 0xac, 0x80, 0x73, 0xd6, 0x22, 0x47,
-	0x98, 0xf8, 0xfc, 0xc9, 0x90, 0x17, 0x3c, 0xee, 0x3e, 0x2a, 0x42, 0x7e, 0xaf, 0x7d, 0xbf, 0xfd,
-	0xe0, 0xdb, 0x76, 0x79, 0x8e, 0x2f, 0x5a, 0x66, 0x67, 0xd7, 0x6c, 0xdf, 0x29, 0x6b, 0x7c, 0xd1,
-	0x30, 0x9b, 0x4d, 0xbe, 0x48, 0xa1, 0x25, 0x28, 0x77, 0xb6, 0x5b, 0x2d, 0xb3, 0x7d, 0xc7, 0x6e,
-	0x6e, 0x6f, 0x99, 0x1d, 0xf3, 0x41, 0xbb, 0x9c, 0x46, 0x8b, 0x50, 0x6c, 0x99, 0x8f, 0xf6, 0xcc,
-	0x66, 0x7d, 0x97, 0x7f, 0xc8, 0x20, 0x04, 0xa5, 0xce, 0xde, 0xd6, 0xd6, 0x76, 0xa7, 0xb3, 0xb3,
-	0xd7, 0xb2, 0x1b, 0x66, 0xb3, 0x9c, 0x6d, 0xdc, 0x7d, 0xf5, 0xb6, 0xaa, 0xbd, 0x7e, 0x5b, 0xd5,
-	0xfe, 0x79, 0x5b, 0xd5, 0x5e, 0x1e, 0x56, 0xe7, 0x5e, 0x1f, 0x56, 0xe7, 0xde, 0x1c, 0x56, 0xe7,
-	0x7e, 0x30, 0x26, 0xb8, 0xbc, 0x47, 0xf7, 0x28, 0xd9, 0x21, 0x35, 0x77, 0xdf, 0x21, 0xb4, 0xf6,
-	0x7c, 0xea, 0xdf, 0x41, 0xc1, 0xeb, 0x6e, 0x4e, 0x0c, 0xe7, 0xd6, 0x7f, 0x01, 0x00, 0x00, 0xff,
-	0xff, 0xc0, 0x9c, 0x50, 0xd7, 0x34, 0x0e, 0x00, 0x00,
+	// 1153 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x56, 0x5f, 0x6f, 0x1b, 0x45,
+	0x10, 0xcf, 0x25, 0xb1, 0x9d, 0x8c, 0xd3, 0xe4, 0xba, 0xa4, 0xad, 0x13, 0x8a, 0x13, 0x1d, 0xa8,
+	0x2a, 0xa0, 0x9e, 0xd5, 0x20, 0x84, 0x5a, 0x2a, 0x84, 0x2f, 0x4e, 0xdb, 0x2b, 0x91, 0x5b, 0xec,
+	0x5a, 0x05, 0x84, 0x74, 0x5a, 0xdf, 0xad, 0x9d, 0x55, 0xef, 0x76, 0xdd, 0xbb, 0xbd, 0xb6, 0xf9,
+	0x16, 0x7d, 0x83, 0x6f, 0xc1, 0x0b, 0x2f, 0x7c, 0x83, 0x3e, 0x56, 0xbc, 0x80, 0x78, 0x28, 0xa8,
+	0xfd, 0x06, 0x7c, 0x02, 0xb4, 0x7f, 0xce, 0x76, 0xa2, 0x06, 0x87, 0x8a, 0x27, 0x7b, 0x6e, 0x66,
+	0x7e, 0xbf, 0x99, 0xdd, 0x99, 0xdf, 0x1d, 0x7c, 0x98, 0xb3, 0x9c, 0xd1, 0x01, 0x6d, 0xb0, 0x81,
+	0xe8, 0xe3, 0xf0, 0x21, 0x89, 0x62, 0x8e, 0xd9, 0x51, 0xcb, 0x1d, 0xa5, 0x5c, 0x70, 0x74, 0xce,
+	0x84, 0xba, 0x47, 0x9c, 0x9b, 0xeb, 0x43, 0x3e, 0xe4, 0x2a, 0xa2, 0x21, 0xff, 0xe9, 0xe0, 0xcd,
+	0xad, 0x21, 0xe7, 0xc3, 0x98, 0x34, 0x94, 0xd5, 0xcf, 0x07, 0x0d, 0x41, 0x13, 0x92, 0x09, 0x9c,
+	0x8c, 0x4c, 0x40, 0xfd, 0x78, 0x40, 0x94, 0xa7, 0x58, 0x50, 0xce, 0x0a, 0x7f, 0xc8, 0xb3, 0x84,
+	0x67, 0x8d, 0x3e, 0xce, 0x48, 0xe3, 0xf1, 0xd5, 0x3e, 0x11, 0xf8, 0x6a, 0x23, 0xe4, 0xb4, 0xf0,
+	0x6f, 0x68, 0x7f, 0xa0, 0x99, 0xb5, 0xa1, 0x5d, 0x4e, 0x13, 0xce, 0xb4, 0x07, 0xc2, 0x8f, 0x08,
+	0x13, 0x74, 0x40, 0x49, 0x8a, 0x36, 0x60, 0x29, 0x8c, 0x71, 0x96, 0x05, 0x34, 0xaa, 0x59, 0xdb,
+	0xd6, 0xe5, 0xe5, 0x4e, 0x45, 0xd9, 0x7e, 0x84, 0xce, 0x41, 0x99, 0x0d, 0x84, 0x74, 0xcc, 0x2b,
+	0x47, 0x89, 0xc9, 0x4c, 0xe7, 0x7b, 0x28, 0x79, 0x34, 0xf2, 0x23, 0xf4, 0xf9, 0xd8, 0x2f, 0x13,
+	0xab, 0x3b, 0x1f, 0xb8, 0x6f, 0x3c, 0x05, 0xf7, 0x08, 0xa1, 0x41, 0x41, 0xe7, 0xa1, 0xdc, 0xa7,
+	0x51, 0x44, 0x52, 0x03, 0x6e, 0x2c, 0xa7, 0x09, 0xd5, 0x7d, 0x9a, 0x09, 0x12, 0xed, 0xca, 0x2a,
+	0xfe, 0xad, 0xbc, 0x0b, 0x50, 0xd1, 0xf4, 0x59, 0x6d, 0x7e, 0x7b, 0x41, 0x42, 0x28, 0xe4, 0xcc,
+	0xb9, 0x09, 0x15, 0x49, 0xc9, 0x06, 0x1c, 0xad, 0xc2, 0xfc, 0x38, 0x71, 0x9e, 0x46, 0xc8, 0x86,
+	0x85, 0x3c, 0xa5, 0x86, 0x52, 0xfe, 0x95, 0x04, 0x79, 0x4a, 0x83, 0x03, 0x9c, 0x1d, 0xd4, 0x16,
+	0x34, 0x41, 0x9e, 0xd2, 0xdb, 0x38, 0x3b, 0x70, 0x7e, 0xa9, 0x00, 0xb4, 0x07, 0x42, 0x96, 0x43,
+	0xd9, 0x10, 0x35, 0xdf, 0xa6, 0x5d, 0x6f, 0xf1, 0xf9, 0xcb, 0xad, 0xb9, 0xa2, 0xe9, 0x75, 0x28,
+	0xf1, 0x27, 0x6c, 0xdc, 0xb3, 0x36, 0xd0, 0x35, 0x28, 0x65, 0x02, 0x0b, 0xa2, 0xf8, 0x57, 0x77,
+	0xde, 0x3f, 0x01, 0xd7, 0xd4, 0xd1, 0x95, 0xa1, 0x1d, 0x9d, 0x81, 0xde, 0x85, 0xe5, 0x3e, 0x8d,
+	0x82, 0x88, 0x30, 0x9e, 0xd4, 0x16, 0x15, 0xe8, 0x52, 0x9f, 0x46, 0x2d, 0x69, 0x23, 0x06, 0xeb,
+	0x09, 0x65, 0x34, 0xc9, 0x93, 0x20, 0x22, 0x23, 0x9e, 0x51, 0x11, 0xa4, 0x92, 0xa6, 0x24, 0xe3,
+	0xbc, 0x1b, 0xb2, 0xb0, 0x3f, 0x5e, 0x6e, 0x5d, 0x1a, 0x52, 0x71, 0x90, 0xf7, 0xdd, 0x90, 0x27,
+	0x66, 0x54, 0xcc, 0xcf, 0x95, 0x2c, 0x7a, 0xd8, 0x10, 0x87, 0x23, 0x92, 0xb9, 0x2d, 0x12, 0xfe,
+	0xfa, 0xf3, 0x15, 0x30, 0x93, 0xd4, 0x22, 0x61, 0x07, 0x19, 0xe4, 0x96, 0x06, 0xee, 0xc8, 0x62,
+	0xbe, 0x01, 0xc8, 0x04, 0x4e, 0x05, 0x89, 0x02, 0x2c, 0x6a, 0x65, 0x75, 0x48, 0x9b, 0xae, 0x9e,
+	0x65, 0xb7, 0x98, 0x65, 0xf7, 0x7e, 0x31, 0xec, 0xde, 0x7b, 0xb2, 0x82, 0xbf, 0x5f, 0x6e, 0x9d,
+	0x3d, 0xc4, 0x49, 0x7c, 0xdd, 0x99, 0xe4, 0x3a, 0xcf, 0xfe, 0xdc, 0xb2, 0x3a, 0xcb, 0xe6, 0x41,
+	0x53, 0x20, 0x0c, 0x67, 0x62, 0xfa, 0x28, 0xa7, 0x11, 0x36, 0xe0, 0x95, 0x99, 0xe0, 0xdb, 0x06,
+	0x7c, 0x5d, 0x83, 0x1f, 0x49, 0xd7, 0xf8, 0x2b, 0x93, 0x67, 0x4d, 0x81, 0x1e, 0xc1, 0x3b, 0x83,
+	0x3c, 0x8e, 0x83, 0x11, 0x3e, 0x4c, 0x08, 0x13, 0x01, 0x61, 0x8a, 0x68, 0x69, 0x26, 0xd1, 0x25,
+	0x43, 0xb4, 0xa9, 0x89, 0xde, 0x00, 0xa2, 0xe9, 0x6c, 0xe9, 0xb9, 0xa7, 0x1d, 0x7b, 0x4c, 0x52,
+	0x3e, 0x81, 0x73, 0x59, 0x1e, 0x86, 0x24, 0xcb, 0x06, 0x79, 0x1c, 0xc8, 0x7b, 0x34, 0xa4, 0xcb,
+	0x33, 0x49, 0x2f, 0x1b, 0xd2, 0x8b, 0xe6, 0xe8, 0xde, 0x04, 0xa3, 0x69, 0xd1, 0xc4, 0xe7, 0xd1,
+	0x48, 0x13, 0xdf, 0x01, 0x3b, 0xe4, 0x71, 0x4c, 0x42, 0x75, 0x1c, 0x09, 0xcf, 0x99, 0xa8, 0x81,
+	0xe2, 0xdc, 0x70, 0xcd, 0x1d, 0x4b, 0x69, 0x71, 0x8d, 0xb4, 0xb8, 0xbb, 0x9c, 0x32, 0x33, 0xc8,
+	0x6b, 0xe3, 0xc4, 0xa6, 0xca, 0x43, 0xd7, 0x61, 0xe3, 0x38, 0x56, 0xc0, 0xc8, 0x10, 0x0b, 0xfa,
+	0x98, 0xd4, 0xaa, 0xdb, 0xd6, 0xe5, 0xa5, 0xce, 0x85, 0x63, 0x39, 0x6d, 0xe3, 0x46, 0xdf, 0xc2,
+	0xf9, 0x62, 0x40, 0xe5, 0xf6, 0x53, 0x36, 0x0c, 0x46, 0x24, 0xa5, 0x3c, 0xaa, 0xad, 0x98, 0x6a,
+	0x8e, 0x9f, 0x40, 0xcb, 0x08, 0xa1, 0xb7, 0x24, 0xab, 0xf9, 0x51, 0x36, 0x58, 0xcc, 0xb8, 0xa7,
+	0x11, 0xee, 0x29, 0x00, 0xe7, 0x99, 0x05, 0xcb, 0x1e, 0x4f, 0x53, 0xfe, 0x44, 0xae, 0xee, 0x67,
+	0x50, 0x36, 0x6d, 0x5a, 0xa7, 0x6b, 0xd3, 0x84, 0xa3, 0x3b, 0xb0, 0x1a, 0xe3, 0x4c, 0x04, 0x29,
+	0x19, 0x61, 0xaa, 0xee, 0x66, 0x7e, 0xe6, 0xdd, 0xa8, 0xd2, 0xcc, 0x84, 0xe1, 0x4c, 0x74, 0x54,
+	0x6a, 0x53, 0x38, 0xbf, 0x2d, 0x42, 0xb9, 0x3d, 0x10, 0x1e, 0x8d, 0xd0, 0xce, 0x58, 0x96, 0xaa,
+	0x3b, 0x17, 0x4f, 0x58, 0x77, 0xa5, 0xb1, 0xa6, 0x1c, 0x29, 0x5d, 0x9f, 0x42, 0x69, 0x94, 0xd2,
+	0x90, 0x98, 0x0a, 0x66, 0xb6, 0xa0, 0xa3, 0xd1, 0x35, 0xa8, 0x98, 0xe5, 0x57, 0xf2, 0x72, 0x8a,
+	0xc4, 0x22, 0x1e, 0x7d, 0x09, 0x55, 0xdd, 0xb5, 0x3e, 0xba, 0xc5, 0xd3, 0xa5, 0x83, 0x6a, 0x57,
+	0x1f, 0xdf, 0x0d, 0x28, 0x93, 0xa7, 0x23, 0x9a, 0x1e, 0x2a, 0xcd, 0x39, 0xed, 0xb1, 0x99, 0x1c,
+	0xb9, 0xf5, 0x94, 0x09, 0x92, 0x92, 0xcc, 0x08, 0x57, 0xf9, 0x7f, 0x10, 0xae, 0x95, 0x02, 0x52,
+	0x49, 0xd6, 0xc7, 0x70, 0x16, 0xe7, 0x82, 0x27, 0x58, 0xd0, 0xb0, 0xd8, 0x5a, 0x25, 0x2e, 0x4b,
+	0x1d, 0x7b, 0xec, 0x30, 0x4b, 0x8b, 0x1e, 0x00, 0x84, 0x29, 0x29, 0x24, 0x68, 0xb6, 0x32, 0x5c,
+	0x34, 0x4b, 0x6a, 0xeb, 0x25, 0xd5, 0xb9, 0x13, 0x79, 0x33, 0x58, 0x4d, 0x81, 0xbe, 0x80, 0x72,
+	0x5f, 0xcd, 0xaa, 0xd9, 0xfc, 0xed, 0x93, 0x46, 0xa2, 0x18, 0xe8, 0x62, 0x4a, 0x75, 0x96, 0xf3,
+	0x83, 0x25, 0x5f, 0x9a, 0x5a, 0xcc, 0x28, 0x67, 0x6f, 0x3f, 0xee, 0x77, 0xc1, 0x8e, 0x27, 0x38,
+	0x81, 0xd4, 0xc6, 0xff, 0x34, 0xf0, 0x6b, 0x53, 0xd9, 0x2d, 0x2c, 0x88, 0xf3, 0x93, 0x05, 0x2b,
+	0x53, 0x95, 0x65, 0xe8, 0x0e, 0x54, 0xa7, 0x62, 0x4c, 0x7d, 0xce, 0x89, 0x6f, 0xbc, 0x71, 0xa4,
+	0x2a, 0xd4, 0xea, 0x4c, 0x27, 0xa3, 0x2e, 0xd8, 0x8c, 0x3c, 0x15, 0xc1, 0x34, 0xa0, 0xfc, 0x12,
+	0x38, 0x3d, 0xe0, 0x5c, 0x67, 0x4d, 0x22, 0x4c, 0x3d, 0xfe, 0x68, 0x24, 0x0b, 0x9e, 0xbc, 0x68,
+	0x51, 0x15, 0x2a, 0xbd, 0xf6, 0x57, 0xed, 0xbb, 0x0f, 0xda, 0xf6, 0x9c, 0x34, 0xf6, 0xfd, 0xee,
+	0x7d, 0xbf, 0x7d, 0xcb, 0xb6, 0xa4, 0xe1, 0xf9, 0xad, 0x96, 0x34, 0xe6, 0xd1, 0x3a, 0xd8, 0xdd,
+	0xbd, 0xfd, 0x7d, 0xbf, 0x7d, 0x2b, 0x68, 0xed, 0xed, 0xfa, 0x5d, 0xff, 0x6e, 0xdb, 0x5e, 0x40,
+	0x6b, 0x50, 0xdd, 0xf7, 0xbf, 0xee, 0xf9, 0xad, 0xe6, 0x7d, 0xf9, 0x60, 0x11, 0x21, 0x58, 0xed,
+	0xf6, 0x76, 0x77, 0xf7, 0xba, 0xdd, 0x9b, 0xbd, 0xfd, 0xc0, 0xf3, 0x5b, 0x76, 0xc9, 0xbb, 0xfd,
+	0xfc, 0x55, 0xdd, 0x7a, 0xf1, 0xaa, 0x6e, 0xfd, 0xf5, 0xaa, 0x6e, 0x3d, 0x7b, 0x5d, 0x9f, 0x7b,
+	0xf1, 0xba, 0x3e, 0xf7, 0xfb, 0xeb, 0xfa, 0xdc, 0x77, 0xee, 0xd4, 0x84, 0xf7, 0x58, 0x8f, 0xd1,
+	0x9b, 0xb4, 0x11, 0x1e, 0x60, 0xca, 0x1a, 0x4f, 0x8f, 0x7d, 0x93, 0xaa, 0x69, 0xef, 0x97, 0xd5,
+	0xe5, 0x7c, 0xf2, 0x4f, 0x00, 0x00, 0x00, 0xff, 0xff, 0xe2, 0x26, 0xa5, 0x54, 0xb9, 0x0a, 0x00,
+	0x00,
 }
 
 func (m *NftIdentifier) Marshal() (dAtA []byte, err error) {
@@ -1027,49 +837,6 @@ func (m *BidId) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0xa
 	}
-	return len(dAtA) - i, nil
-}
-
-func (m *Loan) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *Loan) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *Loan) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	{
-		size, err := m.Loan.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintNftbackedloan(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x12
-	{
-		size, err := m.NftId.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintNftbackedloan(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -1176,14 +943,14 @@ func (m *NftListing) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	n4, err4 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(m.MinimumBiddingPeriod, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(m.MinimumBiddingPeriod):])
-	if err4 != nil {
-		return 0, err4
+	n2, err2 := github_com_cosmos_gogoproto_types.StdDurationMarshalTo(m.MinimumBiddingPeriod, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdDuration(m.MinimumBiddingPeriod):])
+	if err2 != nil {
+		return 0, err2
 	}
-	i -= n4
-	i = encodeVarintNftbackedloan(dAtA, i, uint64(n4))
+	i -= n2
+	i = encodeVarintNftbackedloan(dAtA, i, uint64(n2))
 	i--
-	dAtA[i] = 0x72
+	dAtA[i] = 0x62
 	if m.CollectedAmountNegative {
 		i--
 		if m.CollectedAmountNegative {
@@ -1192,7 +959,7 @@ func (m *NftListing) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x68
+		dAtA[i] = 0x58
 	}
 	{
 		size, err := m.CollectedAmount.MarshalToSizedBuffer(dAtA[:i])
@@ -1203,54 +970,39 @@ func (m *NftListing) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintNftbackedloan(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x62
-	if m.AutoRelistedCount != 0 {
-		i = encodeVarintNftbackedloan(dAtA, i, uint64(m.AutoRelistedCount))
-		i--
-		dAtA[i] = 0x58
+	dAtA[i] = 0x52
+	n4, err4 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.SuccessfulBidEndAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.SuccessfulBidEndAt):])
+	if err4 != nil {
+		return 0, err4
 	}
-	n6, err6 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.SuccessfulBidEndAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.SuccessfulBidEndAt):])
+	i -= n4
+	i = encodeVarintNftbackedloan(dAtA, i, uint64(n4))
+	i--
+	dAtA[i] = 0x4a
+	n5, err5 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.FullPaymentEndAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.FullPaymentEndAt):])
+	if err5 != nil {
+		return 0, err5
+	}
+	i -= n5
+	i = encodeVarintNftbackedloan(dAtA, i, uint64(n5))
+	i--
+	dAtA[i] = 0x42
+	n6, err6 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.LiquidatedAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.LiquidatedAt):])
 	if err6 != nil {
 		return 0, err6
 	}
 	i -= n6
 	i = encodeVarintNftbackedloan(dAtA, i, uint64(n6))
 	i--
-	dAtA[i] = 0x52
-	n7, err7 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.FullPaymentEndAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.FullPaymentEndAt):])
+	dAtA[i] = 0x3a
+	n7, err7 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.StartedAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.StartedAt):])
 	if err7 != nil {
 		return 0, err7
 	}
 	i -= n7
 	i = encodeVarintNftbackedloan(dAtA, i, uint64(n7))
 	i--
-	dAtA[i] = 0x4a
-	n8, err8 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.EndAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.EndAt):])
-	if err8 != nil {
-		return 0, err8
-	}
-	i -= n8
-	i = encodeVarintNftbackedloan(dAtA, i, uint64(n8))
-	i--
-	dAtA[i] = 0x42
-	n9, err9 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.StartedAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.StartedAt):])
-	if err9 != nil {
-		return 0, err9
-	}
-	i -= n9
-	i = encodeVarintNftbackedloan(dAtA, i, uint64(n9))
-	i--
-	dAtA[i] = 0x3a
-	if m.AutomaticRefinancing {
-		i--
-		if m.AutomaticRefinancing {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x30
-	}
+	dAtA[i] = 0x32
 	{
 		size := m.MinimumDepositRate.Size()
 		i -= size
@@ -1261,10 +1013,10 @@ func (m *NftListing) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	i--
 	dAtA[i] = 0x2a
-	if len(m.BidToken) > 0 {
-		i -= len(m.BidToken)
-		copy(dAtA[i:], m.BidToken)
-		i = encodeVarintNftbackedloan(dAtA, i, uint64(len(m.BidToken)))
+	if len(m.BidDenom) > 0 {
+		i -= len(m.BidDenom)
+		copy(dAtA[i:], m.BidDenom)
+		i = encodeVarintNftbackedloan(dAtA, i, uint64(len(m.BidDenom)))
 		i--
 		dAtA[i] = 0x22
 	}
@@ -1313,22 +1065,12 @@ func (m *Borrowing) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	n11, err11 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.StartAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.StartAt):])
-	if err11 != nil {
-		return 0, err11
+	n9, err9 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.LastRepaidAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.LastRepaidAt):])
+	if err9 != nil {
+		return 0, err9
 	}
-	i -= n11
-	i = encodeVarintNftbackedloan(dAtA, i, uint64(n11))
-	i--
-	dAtA[i] = 0x1a
-	{
-		size, err := m.PaidInterestAmount.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintNftbackedloan(dAtA, i, uint64(size))
-	}
+	i -= n9
+	i = encodeVarintNftbackedloan(dAtA, i, uint64(n9))
 	i--
 	dAtA[i] = 0x12
 	{
@@ -1364,22 +1106,8 @@ func (m *NftBid) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Borrowings) > 0 {
-		for iNdEx := len(m.Borrowings) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Borrowings[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintNftbackedloan(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x52
-		}
-	}
 	{
-		size, err := m.InterestAmount.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.Borrow.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -1388,12 +1116,12 @@ func (m *NftBid) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	i--
 	dAtA[i] = 0x4a
-	n15, err15 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.BidTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.BidTime):])
-	if err15 != nil {
-		return 0, err15
+	n12, err12 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.CreatedAt):])
+	if err12 != nil {
+		return 0, err12
 	}
-	i -= n15
-	i = encodeVarintNftbackedloan(dAtA, i, uint64(n15))
+	i -= n12
+	i = encodeVarintNftbackedloan(dAtA, i, uint64(n12))
 	i--
 	dAtA[i] = 0x42
 	if m.AutomaticPayment {
@@ -1407,21 +1135,21 @@ func (m *NftBid) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		dAtA[i] = 0x38
 	}
 	{
-		size := m.DepositLendingRate.Size()
+		size := m.InterestRate.Size()
 		i -= size
-		if _, err := m.DepositLendingRate.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.InterestRate.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintNftbackedloan(dAtA, i, uint64(size))
 	}
 	i--
 	dAtA[i] = 0x32
-	n16, err16 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.BiddingPeriod, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.BiddingPeriod):])
-	if err16 != nil {
-		return 0, err16
+	n13, err13 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.Expiry, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.Expiry):])
+	if err13 != nil {
+		return 0, err13
 	}
-	i -= n16
-	i = encodeVarintNftbackedloan(dAtA, i, uint64(n16))
+	i -= n13
+	i = encodeVarintNftbackedloan(dAtA, i, uint64(n13))
 	i--
 	dAtA[i] = 0x2a
 	{
@@ -1435,7 +1163,7 @@ func (m *NftBid) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x22
 	{
-		size, err := m.DepositAmount.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.Deposit.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -1445,7 +1173,7 @@ func (m *NftBid) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x1a
 	{
-		size, err := m.BidAmount.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.Price.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -1456,99 +1184,6 @@ func (m *NftBid) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	dAtA[i] = 0x12
 	{
 		size, err := m.Id.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintNftbackedloan(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0xa
-	return len(dAtA) - i, nil
-}
-
-func (m *PaymentStatus) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *PaymentStatus) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *PaymentStatus) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.AllPaid {
-		i--
-		if m.AllPaid {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x40
-	}
-	if m.State != 0 {
-		i = encodeVarintNftbackedloan(dAtA, i, uint64(m.State))
-		i--
-		dAtA[i] = 0x38
-	}
-	n21, err21 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.BidTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.BidTime):])
-	if err21 != nil {
-		return 0, err21
-	}
-	i -= n21
-	i = encodeVarintNftbackedloan(dAtA, i, uint64(n21))
-	i--
-	dAtA[i] = 0x32
-	{
-		size := m.PaidAmount.Size()
-		i -= size
-		if _, err := m.PaidAmount.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintNftbackedloan(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x2a
-	if m.AutomaticPayment {
-		i--
-		if m.AutomaticPayment {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x20
-	}
-	{
-		size, err := m.Amount.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintNftbackedloan(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x1a
-	if len(m.Bidder) > 0 {
-		i -= len(m.Bidder)
-		copy(dAtA[i:], m.Bidder)
-		i = encodeVarintNftbackedloan(dAtA, i, uint64(len(m.Bidder)))
-		i--
-		dAtA[i] = 0x12
-	}
-	{
-		size, err := m.NftId.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -1580,12 +1215,12 @@ func (m *Liquidation) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	n24, err24 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.LiquidationDate, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.LiquidationDate):])
-	if err24 != nil {
-		return 0, err24
+	n18, err18 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.LiquidationDate, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.LiquidationDate):])
+	if err18 != nil {
+		return 0, err18
 	}
-	i -= n24
-	i = encodeVarintNftbackedloan(dAtA, i, uint64(n24))
+	i -= n18
+	i = encodeVarintNftbackedloan(dAtA, i, uint64(n18))
 	i--
 	dAtA[i] = 0x12
 	{
@@ -1695,19 +1330,6 @@ func (m *BidId) Size() (n int) {
 	return n
 }
 
-func (m *Loan) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = m.NftId.Size()
-	n += 1 + l + sovNftbackedloan(uint64(l))
-	l = m.Loan.Size()
-	n += 1 + l + sovNftbackedloan(uint64(l))
-	return n
-}
-
 func (m *ListedClass) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1763,26 +1385,20 @@ func (m *NftListing) Size() (n int) {
 	if m.State != 0 {
 		n += 1 + sovNftbackedloan(uint64(m.State))
 	}
-	l = len(m.BidToken)
+	l = len(m.BidDenom)
 	if l > 0 {
 		n += 1 + l + sovNftbackedloan(uint64(l))
 	}
 	l = m.MinimumDepositRate.Size()
 	n += 1 + l + sovNftbackedloan(uint64(l))
-	if m.AutomaticRefinancing {
-		n += 2
-	}
 	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.StartedAt)
 	n += 1 + l + sovNftbackedloan(uint64(l))
-	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.EndAt)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.LiquidatedAt)
 	n += 1 + l + sovNftbackedloan(uint64(l))
 	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.FullPaymentEndAt)
 	n += 1 + l + sovNftbackedloan(uint64(l))
 	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.SuccessfulBidEndAt)
 	n += 1 + l + sovNftbackedloan(uint64(l))
-	if m.AutoRelistedCount != 0 {
-		n += 1 + sovNftbackedloan(uint64(m.AutoRelistedCount))
-	}
 	l = m.CollectedAmount.Size()
 	n += 1 + l + sovNftbackedloan(uint64(l))
 	if m.CollectedAmountNegative {
@@ -1801,9 +1417,7 @@ func (m *Borrowing) Size() (n int) {
 	_ = l
 	l = m.Amount.Size()
 	n += 1 + l + sovNftbackedloan(uint64(l))
-	l = m.PaidInterestAmount.Size()
-	n += 1 + l + sovNftbackedloan(uint64(l))
-	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.StartAt)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.LastRepaidAt)
 	n += 1 + l + sovNftbackedloan(uint64(l))
 	return n
 }
@@ -1816,59 +1430,23 @@ func (m *NftBid) Size() (n int) {
 	_ = l
 	l = m.Id.Size()
 	n += 1 + l + sovNftbackedloan(uint64(l))
-	l = m.BidAmount.Size()
+	l = m.Price.Size()
 	n += 1 + l + sovNftbackedloan(uint64(l))
-	l = m.DepositAmount.Size()
+	l = m.Deposit.Size()
 	n += 1 + l + sovNftbackedloan(uint64(l))
 	l = m.PaidAmount.Size()
 	n += 1 + l + sovNftbackedloan(uint64(l))
-	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.BiddingPeriod)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.Expiry)
 	n += 1 + l + sovNftbackedloan(uint64(l))
-	l = m.DepositLendingRate.Size()
+	l = m.InterestRate.Size()
 	n += 1 + l + sovNftbackedloan(uint64(l))
 	if m.AutomaticPayment {
 		n += 2
 	}
-	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.BidTime)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.CreatedAt)
 	n += 1 + l + sovNftbackedloan(uint64(l))
-	l = m.InterestAmount.Size()
+	l = m.Borrow.Size()
 	n += 1 + l + sovNftbackedloan(uint64(l))
-	if len(m.Borrowings) > 0 {
-		for _, e := range m.Borrowings {
-			l = e.Size()
-			n += 1 + l + sovNftbackedloan(uint64(l))
-		}
-	}
-	return n
-}
-
-func (m *PaymentStatus) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = m.NftId.Size()
-	n += 1 + l + sovNftbackedloan(uint64(l))
-	l = len(m.Bidder)
-	if l > 0 {
-		n += 1 + l + sovNftbackedloan(uint64(l))
-	}
-	l = m.Amount.Size()
-	n += 1 + l + sovNftbackedloan(uint64(l))
-	if m.AutomaticPayment {
-		n += 2
-	}
-	l = m.PaidAmount.Size()
-	n += 1 + l + sovNftbackedloan(uint64(l))
-	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.BidTime)
-	n += 1 + l + sovNftbackedloan(uint64(l))
-	if m.State != 0 {
-		n += 1 + sovNftbackedloan(uint64(m.State))
-	}
-	if m.AllPaid {
-		n += 2
-	}
 	return n
 }
 
@@ -2120,122 +1698,6 @@ func (m *BidId) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Bidder = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipNftbackedloan(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *Loan) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowNftbackedloan
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Loan: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Loan: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftbackedloan
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.NftId.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Loan", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftbackedloan
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.Loan.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2633,7 +2095,7 @@ func (m *NftListing) Unmarshal(dAtA []byte) error {
 			}
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BidToken", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field BidDenom", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2661,7 +2123,7 @@ func (m *NftListing) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.BidToken = string(dAtA[iNdEx:postIndex])
+			m.BidDenom = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 5:
 			if wireType != 2 {
@@ -2698,26 +2160,6 @@ func (m *NftListing) Unmarshal(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 6:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AutomaticRefinancing", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftbackedloan
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.AutomaticRefinancing = bool(v != 0)
-		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field StartedAt", wireType)
 			}
@@ -2750,9 +2192,9 @@ func (m *NftListing) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 8:
+		case 7:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field EndAt", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LiquidatedAt", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -2779,11 +2221,11 @@ func (m *NftListing) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.EndAt, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.LiquidatedAt, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
-		case 9:
+		case 8:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field FullPaymentEndAt", wireType)
 			}
@@ -2816,7 +2258,7 @@ func (m *NftListing) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 10:
+		case 9:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field SuccessfulBidEndAt", wireType)
 			}
@@ -2849,26 +2291,7 @@ func (m *NftListing) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 11:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AutoRelistedCount", wireType)
-			}
-			m.AutoRelistedCount = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftbackedloan
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.AutoRelistedCount |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 12:
+		case 10:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field CollectedAmount", wireType)
 			}
@@ -2901,7 +2324,7 @@ func (m *NftListing) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 13:
+		case 11:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field CollectedAmountNegative", wireType)
 			}
@@ -2921,7 +2344,7 @@ func (m *NftListing) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.CollectedAmountNegative = bool(v != 0)
-		case 14:
+		case 12:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MinimumBiddingPeriod", wireType)
 			}
@@ -3039,7 +2462,7 @@ func (m *Borrowing) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PaidInterestAmount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LastRepaidAt", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -3066,40 +2489,7 @@ func (m *Borrowing) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.PaidInterestAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field StartAt", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftbackedloan
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.StartAt, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.LastRepaidAt, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -3188,7 +2578,7 @@ func (m *NftBid) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BidAmount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Price", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -3215,13 +2605,13 @@ func (m *NftBid) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.BidAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Price.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DepositAmount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Deposit", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -3248,7 +2638,7 @@ func (m *NftBid) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.DepositAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Deposit.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -3287,7 +2677,7 @@ func (m *NftBid) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 5:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BiddingPeriod", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Expiry", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -3314,13 +2704,13 @@ func (m *NftBid) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.BiddingPeriod, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.Expiry, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 6:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DepositLendingRate", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field InterestRate", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3348,7 +2738,7 @@ func (m *NftBid) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.DepositLendingRate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.InterestRate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -3374,7 +2764,7 @@ func (m *NftBid) Unmarshal(dAtA []byte) error {
 			m.AutomaticPayment = bool(v != 0)
 		case 8:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BidTime", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -3401,13 +2791,13 @@ func (m *NftBid) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.BidTime, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.CreatedAt, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 9:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InterestAmount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Borrow", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -3434,318 +2824,10 @@ func (m *NftBid) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.InterestAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Borrow.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
-		case 10:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Borrowings", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftbackedloan
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Borrowings = append(m.Borrowings, Borrowing{})
-			if err := m.Borrowings[len(m.Borrowings)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipNftbackedloan(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *PaymentStatus) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowNftbackedloan
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: PaymentStatus: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: PaymentStatus: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftbackedloan
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.NftId.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Bidder", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftbackedloan
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Bidder = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftbackedloan
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AutomaticPayment", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftbackedloan
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.AutomaticPayment = bool(v != 0)
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PaidAmount", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftbackedloan
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.PaidAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BidTime", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftbackedloan
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthNftbackedloan
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.BidTime, dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 7:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field State", wireType)
-			}
-			m.State = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftbackedloan
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.State |= ListingState(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 8:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AllPaid", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftbackedloan
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.AllPaid = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipNftbackedloan(dAtA[iNdEx:])
