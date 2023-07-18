@@ -30,25 +30,25 @@ func (suite *KeeperTestSuite) TestDebtBasics() {
 	}
 
 	for _, debt := range debts {
-		suite.app.NftmarketKeeper.SetDebt(suite.ctx, debt)
+		suite.app.NftbackedloanKeeper.SetDebt(suite.ctx, debt)
 	}
 
 	for _, debt := range debts {
-		loan := suite.app.NftmarketKeeper.GetDebtByNft(suite.ctx, debt.NftId.IdBytes())
+		loan := suite.app.NftbackedloanKeeper.GetDebtByNft(suite.ctx, debt.NftId.IdBytes())
 		suite.Require().Equal(loan, debt)
 	}
 
 	// check all debts
-	allDebts := suite.app.NftmarketKeeper.GetAllDebts(suite.ctx)
+	allDebts := suite.app.NftbackedloanKeeper.GetAllDebts(suite.ctx)
 	suite.Require().Len(allDebts, len(debts))
 
 	// delete all the debts
 	for _, debt := range debts {
-		suite.app.NftmarketKeeper.DeleteDebt(suite.ctx, debt.NftId.IdBytes())
+		suite.app.NftbackedloanKeeper.DeleteDebt(suite.ctx, debt.NftId.IdBytes())
 	}
 
 	// check all debts
-	allDebts = suite.app.NftmarketKeeper.GetAllDebts(suite.ctx)
+	allDebts = suite.app.NftbackedloanKeeper.GetAllDebts(suite.ctx)
 	suite.Require().Len(allDebts, 0)
 }
 
@@ -58,19 +58,19 @@ func (suite *KeeperTestSuite) TestIncreaseDecreaseDebt() {
 		NftId:   "1",
 	}
 
-	loan := suite.app.NftmarketKeeper.GetDebtByNft(suite.ctx, nftIdentifier.IdBytes())
+	loan := suite.app.NftbackedloanKeeper.GetDebtByNft(suite.ctx, nftIdentifier.IdBytes())
 	suite.Require().Equal(loan.Loan, sdk.Coin{})
 
-	suite.app.NftmarketKeeper.IncreaseDebt(suite.ctx, nftIdentifier, sdk.NewInt64Coin("uguu", 1000000))
-	loan = suite.app.NftmarketKeeper.GetDebtByNft(suite.ctx, nftIdentifier.IdBytes())
+	suite.app.NftbackedloanKeeper.IncreaseDebt(suite.ctx, nftIdentifier, sdk.NewInt64Coin("uguu", 1000000))
+	loan = suite.app.NftbackedloanKeeper.GetDebtByNft(suite.ctx, nftIdentifier.IdBytes())
 	suite.Require().Equal(loan.Loan, sdk.NewInt64Coin("uguu", 1000000))
 
-	suite.app.NftmarketKeeper.DecreaseDebt(suite.ctx, nftIdentifier, sdk.NewInt64Coin("uguu", 500000))
-	loan = suite.app.NftmarketKeeper.GetDebtByNft(suite.ctx, nftIdentifier.IdBytes())
+	suite.app.NftbackedloanKeeper.DecreaseDebt(suite.ctx, nftIdentifier, sdk.NewInt64Coin("uguu", 500000))
+	loan = suite.app.NftbackedloanKeeper.GetDebtByNft(suite.ctx, nftIdentifier.IdBytes())
 	suite.Require().Equal(loan.Loan, sdk.NewInt64Coin("uguu", 500000))
 
-	suite.app.NftmarketKeeper.DecreaseDebt(suite.ctx, nftIdentifier, sdk.NewInt64Coin("uguu", 500000))
-	loan = suite.app.NftmarketKeeper.GetDebtByNft(suite.ctx, nftIdentifier.IdBytes())
+	suite.app.NftbackedloanKeeper.DecreaseDebt(suite.ctx, nftIdentifier, sdk.NewInt64Coin("uguu", 500000))
+	loan = suite.app.NftbackedloanKeeper.GetDebtByNft(suite.ctx, nftIdentifier.IdBytes())
 	suite.Require().Equal(loan.Loan, sdk.NewInt64Coin("uguu", 0))
 }
 
@@ -185,7 +185,7 @@ func (suite *KeeperTestSuite) TestBorrow() {
 
 		nftIdentifier := types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId}
 		if tc.listBefore {
-			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
+			err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
 				Sender:               tc.nftOwner.String(),
 				NftId:                nftIdentifier,
 				BidToken:             "uguu",
@@ -204,7 +204,7 @@ func (suite *KeeperTestSuite) TestBorrow() {
 			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{bidAmount})
 			suite.NoError(err)
 
-			err := suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
+			err := suite.app.NftbackedloanKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
 				Sender:             bidder.String(),
 				NftId:              nftIdentifier,
 				BidAmount:          bidAmount,
@@ -217,7 +217,7 @@ func (suite *KeeperTestSuite) TestBorrow() {
 		}
 
 		if tc.originAmount.IsPositive() {
-			err := suite.app.NftmarketKeeper.Borrow(suite.ctx, &types.MsgBorrow{
+			err := suite.app.NftbackedloanKeeper.Borrow(suite.ctx, &types.MsgBorrow{
 				Sender: tc.borrower.String(),
 				NftId:  nftIdentifier,
 				BorrowBids: []types.BorrowBid{
@@ -231,7 +231,7 @@ func (suite *KeeperTestSuite) TestBorrow() {
 		}
 
 		oldBorrowerBalance := suite.app.BankKeeper.GetBalance(suite.ctx, tc.borrower, "uguu")
-		err = suite.app.NftmarketKeeper.Borrow(suite.ctx, &types.MsgBorrow{
+		err = suite.app.NftbackedloanKeeper.Borrow(suite.ctx, &types.MsgBorrow{
 			Sender: tc.borrower.String(),
 			NftId:  nftIdentifier,
 			BorrowBids: []types.BorrowBid{
@@ -250,7 +250,7 @@ func (suite *KeeperTestSuite) TestBorrow() {
 			suite.Require().True(borrowerNewBalance.Amount.GT(oldBorrowerBalance.Amount))
 
 			// check debt increase
-			loan := suite.app.NftmarketKeeper.GetDebtByNft(suite.ctx, nftIdentifier.IdBytes())
+			loan := suite.app.NftbackedloanKeeper.GetDebtByNft(suite.ctx, nftIdentifier.IdBytes())
 			suite.Require().True(loan.Loan.Amount.IsPositive())
 		} else {
 			suite.Require().Error(err, tc.testCase)
@@ -369,7 +369,7 @@ func (suite *KeeperTestSuite) TestRepay() {
 
 		nftIdentifier := types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId}
 		if tc.listBefore {
-			err := suite.app.NftmarketKeeper.ListNft(suite.ctx, &types.MsgListNft{
+			err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
 				Sender:             tc.nftOwner.String(),
 				NftId:              nftIdentifier,
 				BidToken:           "uguu",
@@ -387,7 +387,7 @@ func (suite *KeeperTestSuite) TestRepay() {
 			err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, bidder, sdk.Coins{bidAmount})
 			suite.NoError(err)
 
-			err := suite.app.NftmarketKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
+			err := suite.app.NftbackedloanKeeper.PlaceBid(suite.ctx, &types.MsgPlaceBid{
 				Sender:             bidder.String(),
 				NftId:              nftIdentifier,
 				BidAmount:          bidAmount,
@@ -400,7 +400,7 @@ func (suite *KeeperTestSuite) TestRepay() {
 		}
 
 		if tc.borrowAmount.IsPositive() {
-			err := suite.app.NftmarketKeeper.Borrow(suite.ctx, &types.MsgBorrow{
+			err := suite.app.NftbackedloanKeeper.Borrow(suite.ctx, &types.MsgBorrow{
 				Sender: tc.borrower.String(),
 				NftId:  nftIdentifier,
 				BorrowBids: []types.BorrowBid{
@@ -414,7 +414,7 @@ func (suite *KeeperTestSuite) TestRepay() {
 		}
 
 		oldRepayerBalance := suite.app.BankKeeper.GetBalance(suite.ctx, tc.borrower, "uguu")
-		err = suite.app.NftmarketKeeper.Repay(suite.ctx, &types.MsgRepay{
+		err = suite.app.NftbackedloanKeeper.Repay(suite.ctx, &types.MsgRepay{
 			Sender: tc.borrower.String(),
 			NftId:  nftIdentifier,
 			RepayBids: []types.BorrowBid{
@@ -432,7 +432,7 @@ func (suite *KeeperTestSuite) TestRepay() {
 			suite.Require().True(repayerNewBalance.Amount.LT(oldRepayerBalance.Amount))
 
 			// check debt decrease
-			loan := suite.app.NftmarketKeeper.GetDebtByNft(suite.ctx, nftIdentifier.IdBytes())
+			loan := suite.app.NftbackedloanKeeper.GetDebtByNft(suite.ctx, nftIdentifier.IdBytes())
 			suite.Require().True(loan.Loan.Amount.Equal(tc.borrowAmount.Amount.Sub(tc.amount.Amount)))
 		} else {
 			suite.Require().Error(err, tc.testCase)

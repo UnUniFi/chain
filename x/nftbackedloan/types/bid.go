@@ -39,11 +39,11 @@ func (m NftBid) IsBorrowing() bool {
 	return len(m.Borrowings) != 0
 }
 
-func (m NftBid) LiquidationAmount(endTime time.Time) sdk.Coin {
+func (m NftBid) LiquidationAmount(startTime time.Time, endTime time.Time) sdk.Coin {
 	liquidationAmount := sdk.NewCoin(m.DepositAmount.Denom, sdk.ZeroInt())
 	for _, v := range m.Borrowings {
 		liquidationAmount = liquidationAmount.Add(v.Amount)
-		liquidationAmount = liquidationAmount.Add(m.CalcInterest(v.Amount, m.DepositLendingRate, v.StartAt, endTime))
+		liquidationAmount = liquidationAmount.Add(m.CalcInterest(v.Amount, m.DepositLendingRate, startTime, endTime))
 		liquidationAmount = liquidationAmount.Sub(v.PaidInterestAmount)
 	}
 	return liquidationAmount

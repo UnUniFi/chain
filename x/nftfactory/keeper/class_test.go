@@ -23,7 +23,7 @@ const (
 
 // test basic functions of nftmint
 func (suite *KeeperTestSuite) TestNftMintClassBasics() {
-	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().String())
 	owner_seq, _ := suite.accountKeeper.GetSequence(suite.ctx, owner)
 
 	classId := keeper.CreateClassId(owner_seq, owner)
@@ -44,7 +44,7 @@ func (suite *KeeperTestSuite) TestNftMintClassBasics() {
 	var classIdList []string
 	classIdList = append(classIdList, classId)
 	owningClassIdList := types.OwningClassIdList{
-		Owner:   owner.Bytes(),
+		Owner:   owner.String(),
 		ClassId: classIdList,
 	}
 	// check setting OwningClassIdList function
@@ -108,7 +108,7 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 	suite.Require().True(exists)
 	expectedClassAttributes := types.ClassAttributes{
 		ClassId:           classId,
-		Owner:             sender.Bytes(),
+		Owner:             sender.String(),
 		BaseTokenUri:      testBaseTokenUri,
 		MintingPermission: testMintingPermission,
 		TokenSupplyCap:    testTokenSupplyCap,
@@ -116,12 +116,12 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 	suite.Require().Equal(classAttributes, expectedClassAttributes)
 
 	// check if OwningClassIdList is set
-	owningClassIdList, exists := suite.nftmintKeeper.GetOwningClassIdList(suite.ctx, sender.Bytes())
+	owningClassIdList, exists := suite.nftmintKeeper.GetOwningClassIdList(suite.ctx, sender)
 	suite.Require().True(exists)
 	var classIdList []string
 	classIdList = append(classIdList, classId)
 	expectedOwningClassIdList := types.OwningClassIdList{
-		Owner:   sender.Bytes(),
+		Owner:   sender.String(),
 		ClassId: classIdList,
 	}
 	suite.Require().Equal(owningClassIdList, expectedOwningClassIdList)
@@ -135,12 +135,12 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 	}
 	suite.Require().Equal(classNameIdList, expectedClassNameIdList)
 
-	senderInInvalidCase := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	senderInInvalidCase := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().String())
 	senderInInvalidCase_seq, _ := suite.accountKeeper.GetSequence(suite.ctx, senderInInvalidCase)
 	classIdInInvalidCase := keeper.CreateClassId(senderInInvalidCase_seq, senderInInvalidCase)
 	// in case which contains the invalid name
 	testMsgCreateClassInvalidName := types.MsgCreateClass{
-		Sender:            senderInInvalidCase.Bytes(),
+		Sender:            senderInInvalidCase.String(),
 		Name:              "t", // shorter than the minimum length defined on UnUniFi
 		BaseTokenUri:      testBaseTokenUri,
 		TokenSupplyCap:    testTokenSupplyCap,
@@ -154,14 +154,14 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 	suite.Require().False(exists)
 	_, exists = suite.nftmintKeeper.GetClassAttributes(suite.ctx, classIdInInvalidCase)
 	suite.Require().False(exists)
-	_, exists = suite.nftmintKeeper.GetOwningClassIdList(suite.ctx, senderInInvalidCase.Bytes())
+	_, exists = suite.nftmintKeeper.GetOwningClassIdList(suite.ctx, senderInInvalidCase)
 	suite.Require().False(exists)
 	_, exists = suite.nftmintKeeper.GetClassNameIdList(suite.ctx, testMsgCreateClassInvalidName.Name)
 	suite.Require().False(exists)
 
 	// in case which contains the invalid uri
 	testMsgCreateClassInvalidUri := types.MsgCreateClass{
-		Sender:            sender.Bytes(),
+		Sender:            sender.String(),
 		Name:              testName,
 		BaseTokenUri:      "ipfs", // shorter than the minimum length defined on UnUniFi
 		TokenSupplyCap:    testTokenSupplyCap,
@@ -172,7 +172,7 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 
 	// in case which contains the invalid token supply cap
 	testMsgCreateClassInvalidTokenSupplyCap := types.MsgCreateClass{
-		Sender:            sender.Bytes(),
+		Sender:            sender.String(),
 		Name:              testName,
 		BaseTokenUri:      testBaseTokenUri,
 		TokenSupplyCap:    10000000, // bigger than the token supply cap
@@ -183,7 +183,7 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 
 	// in case which contains the invalid minting permission
 	testMsgCreateClassInvalidMintingPermission := types.MsgCreateClass{
-		Sender:            sender.Bytes(),
+		Sender:            sender.String(),
 		Name:              testName,
 		BaseTokenUri:      testBaseTokenUri,
 		TokenSupplyCap:    10000,
@@ -195,17 +195,17 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 
 // test for the SendClassOwnership relating functions
 func (suite *KeeperTestSuite) TestSendClassOwnership() {
-	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().String())
 	sender_seq, _ := suite.accountKeeper.GetSequence(suite.ctx, sender)
 	classId := keeper.CreateClassId(sender_seq, sender)
 	_ = suite.CreateClass(suite.ctx, classId, sender)
 
-	recipient := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	recipient := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().String())
 
 	testMsgSendClassOwnership := types.MsgSendClassOwnership{
-		Sender:    sender.Bytes(),
+		Sender:    sender.String(),
 		ClassId:   classId,
-		Recipient: recipient.Bytes(),
+		Recipient: recipient.String(),
 	}
 	err := suite.nftmintKeeper.SendClassOwnership(suite.ctx, &testMsgSendClassOwnership)
 	suite.Require().NoError(err)
@@ -213,15 +213,15 @@ func (suite *KeeperTestSuite) TestSendClassOwnership() {
 	classAttributes, exists := suite.nftmintKeeper.GetClassAttributes(suite.ctx, classId)
 	suite.Require().True(exists)
 	expectedOwner := recipient
-	suite.Require().Equal(expectedOwner, classAttributes.Owner.AccAddress())
+	suite.Require().Equal(expectedOwner, classAttributes.Owner)
 
 	// invalid sender of MsgSendClassOwnership
-	invalidSender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	invalidSender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().String())
 
 	testMsgSendClassOwnershipInvalidSender := types.MsgSendClassOwnership{
-		Sender:    invalidSender.Bytes(), // not the owner of class
+		Sender:    invalidSender.String(), // not the owner of class
 		ClassId:   classId,
-		Recipient: recipient.Bytes(),
+		Recipient: recipient.String(),
 	}
 	err = suite.nftmintKeeper.SendClassOwnership(suite.ctx, &testMsgSendClassOwnershipInvalidSender)
 	suite.Require().Error(err)
@@ -229,9 +229,9 @@ func (suite *KeeperTestSuite) TestSendClassOwnership() {
 	// invalid class id specification
 	invalidClassId := "nonexistance"
 	testMsgCreateClassInvalidClassId := types.MsgSendClassOwnership{
-		Sender:    sender.Bytes(),
+		Sender:    sender.String(),
 		ClassId:   invalidClassId, // non-existant class
-		Recipient: recipient.Bytes(),
+		Recipient: recipient.String(),
 	}
 	err = suite.nftmintKeeper.SendClassOwnership(suite.ctx, &testMsgCreateClassInvalidClassId)
 	suite.Require().Error(err)
@@ -239,14 +239,14 @@ func (suite *KeeperTestSuite) TestSendClassOwnership() {
 
 // test for the UpdateTokenSupplyCap relating functions
 func (suite *KeeperTestSuite) TestUpdateTokenSupplyCap() {
-	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().String())
 	sender_seq, _ := suite.accountKeeper.GetSequence(suite.ctx, sender)
 	classId := keeper.CreateClassId(sender_seq, sender)
 	_ = suite.CreateClass(suite.ctx, classId, sender)
 
 	var updatingTokenSupplyCap uint64 = 100
 	testMsgUpdateTokenSupplyCap := types.MsgUpdateTokenSupplyCap{
-		Sender:         sender.Bytes(),
+		Sender:         sender.String(),
 		ClassId:        classId,
 		TokenSupplyCap: updatingTokenSupplyCap,
 	}
@@ -258,10 +258,10 @@ func (suite *KeeperTestSuite) TestUpdateTokenSupplyCap() {
 	suite.Require().Equal(expectedTokenSupplyCap, classAttributes.TokenSupplyCap)
 
 	// invalid sender of MsgUpdateTokenSupplyCap
-	invalidSender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	invalidSender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().String())
 
 	testMsgUpdateTokenSupplyCapInvalidSender := types.MsgUpdateTokenSupplyCap{
-		Sender:         invalidSender.Bytes(), // not the owner of class
+		Sender:         invalidSender.String(), // not the owner of class
 		ClassId:        classId,
 		TokenSupplyCap: 100,
 	}
@@ -270,7 +270,7 @@ func (suite *KeeperTestSuite) TestUpdateTokenSupplyCap() {
 
 	// invalid token supply cap specification
 	testMsgUpdateTokenSupplyCapInvalidCap := types.MsgUpdateTokenSupplyCap{
-		Sender:         sender.Bytes(),
+		Sender:         sender.String(),
 		ClassId:        classId,
 		TokenSupplyCap: 1000000, // bigger than the maximum token supply cap on UnUniFi
 	}
@@ -281,7 +281,7 @@ func (suite *KeeperTestSuite) TestUpdateTokenSupplyCap() {
 	_ = suite.nftKeeper.Mint(suite.ctx, nfttypes.NFT{ClassId: classId, Id: "a00"}, sender)
 	_ = suite.nftKeeper.Mint(suite.ctx, nfttypes.NFT{ClassId: classId, Id: "a01"}, sender)
 	testMsgUpdateTokenSupplyCapSmaller := types.MsgUpdateTokenSupplyCap{
-		Sender:         sender.Bytes(),
+		Sender:         sender.String(),
 		ClassId:        classId,
 		TokenSupplyCap: 1, // smaller than the current token supply 2 of the specified class
 	}
@@ -291,13 +291,13 @@ func (suite *KeeperTestSuite) TestUpdateTokenSupplyCap() {
 
 // test for the UpdateBaseTokenUri relating functions
 func (suite *KeeperTestSuite) TestUpdateBaseTokenUri() {
-	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	sender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().String())
 	sender_seq, _ := suite.accountKeeper.GetSequence(suite.ctx, sender)
 	classId := keeper.CreateClassId(sender_seq, sender)
 	_ = suite.CreateClass(suite.ctx, classId, sender)
 	_ = suite.MintNFT(suite.ctx, classId, testNftID, sender)
 
-	invalidSender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	invalidSender := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().String())
 	var baseTokenUriInvalidLonger string
 	for i := 0; i <= types.DefaultMaxUriLen; i++ {
 		baseTokenUriInvalidLonger += "a"
@@ -312,7 +312,7 @@ func (suite *KeeperTestSuite) TestUpdateBaseTokenUri() {
 		{
 			testCase: "invalid sender",
 			msg: types.MsgUpdateBaseTokenUri{
-				Sender:       invalidSender.Bytes(), // not the owner of class
+				Sender:       invalidSender.String(), // not the owner of class
 				ClassId:      classId,
 				BaseTokenUri: "ipfs://testcid-sample-latest/",
 			},
@@ -322,7 +322,7 @@ func (suite *KeeperTestSuite) TestUpdateBaseTokenUri() {
 		{
 			testCase: "updating BaseTokenUri is longer than the maximum length on UnUniFi",
 			msg: types.MsgUpdateBaseTokenUri{
-				Sender:       sender.Bytes(),
+				Sender:       sender.String(),
 				ClassId:      classId,
 				BaseTokenUri: baseTokenUriInvalidLonger,
 			},
@@ -332,7 +332,7 @@ func (suite *KeeperTestSuite) TestUpdateBaseTokenUri() {
 		{
 			testCase: "updating BaseTokenUri is longer than the maximum length on UnUniFi",
 			msg: types.MsgUpdateBaseTokenUri{
-				Sender:       sender.Bytes(),
+				Sender:       sender.String(),
 				ClassId:      classId,
 				BaseTokenUri: "t",
 			},
@@ -342,7 +342,7 @@ func (suite *KeeperTestSuite) TestUpdateBaseTokenUri() {
 		{
 			testCase: "successful case",
 			msg: types.MsgUpdateBaseTokenUri{
-				Sender:       sender.Bytes(),
+				Sender:       sender.String(),
 				ClassId:      classId,
 				BaseTokenUri: "ipfs://testcid-sample-latest/",
 			},
@@ -379,7 +379,7 @@ func (suite *KeeperTestSuite) TestUpdateBaseTokenUri() {
 // execute CreateClass as the common function
 func (suite *KeeperTestSuite) CreateClass(ctx sdk.Context, classID string, sender sdk.AccAddress) error {
 	testMsgCreateClass := types.MsgCreateClass{
-		Sender:            sender.Bytes(),
+		Sender:            sender.String(),
 		Name:              testName,
 		BaseTokenUri:      testBaseTokenUri,
 		TokenSupplyCap:    testTokenSupplyCap,
@@ -392,7 +392,7 @@ func (suite *KeeperTestSuite) CreateClass(ctx sdk.Context, classID string, sende
 
 // test for the GetClassAttributes relating functions
 func (suite *KeeperTestSuite) TestGetClassAttributes() {
-	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().String())
 	owner_seq, _ := suite.accountKeeper.GetSequence(suite.ctx, owner)
 	classId := keeper.CreateClassId(owner_seq, owner)
 	_ = suite.CreateClass(suite.ctx, classId, owner)
@@ -426,19 +426,19 @@ func (suite *KeeperTestSuite) TestGetClassAttributes() {
 		if tc.validClass {
 			suite.Require().True(valid)
 			suite.Require().Equal(res.ClassId, classId)
-			suite.Require().Equal(res.Owner.AccAddress(), owner)
+			suite.Require().Equal(res.Owner, owner)
 		}
 	}
 }
 
 // test for the GetOwningClassIdList relating functions
 func (suite *KeeperTestSuite) TestGetOwningClassIdList() {
-	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().String())
 	owner_seq, _ := suite.accountKeeper.GetSequence(suite.ctx, owner)
 	classId := keeper.CreateClassId(owner_seq, owner)
 	_ = suite.CreateClass(suite.ctx, classId, owner)
 
-	invalidOwner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	invalidOwner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().String())
 
 	tests := []struct {
 		testCase     string
@@ -476,7 +476,7 @@ func (suite *KeeperTestSuite) TestGetOwningClassIdList() {
 
 // test for the GetClassNameIdList relating functions
 func (suite *KeeperTestSuite) TestGetClassNameIdList() {
-	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().String())
 	owner_seq, _ := suite.accountKeeper.GetSequence(suite.ctx, owner)
 	classId := keeper.CreateClassId(owner_seq, owner)
 	_ = suite.CreateClass(suite.ctx, classId, owner)

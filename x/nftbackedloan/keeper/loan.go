@@ -207,6 +207,7 @@ func (k Keeper) ManualRepay(ctx sdk.Context, nft types.NftIdentifier, repays []t
 	}
 
 	repaidAmount := sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
+	repaidInterestAmount := sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
 	for _, repay := range repays {
 		bidderAddress, err := sdk.AccAddressFromBech32(repay.Bidder)
 		if err != nil {
@@ -229,6 +230,7 @@ func (k Keeper) ManualRepay(ctx sdk.Context, nft types.NftIdentifier, repays []t
 			receipt := borrowing.RepayThenGetReceipt(repay.Amount, ctx.BlockTime(), bid.CalcInterestF())
 			repay.Amount = receipt.Charge
 			bid.InterestAmount = bid.InterestAmount.Add(receipt.PaidInterestAmount)
+			repaidInterestAmount = repaidInterestAmount.Add(receipt.PaidInterestAmount)
 
 			if !borrowing.IsAllRepaid() {
 				borrowings = append(borrowings, borrowing)
@@ -244,7 +246,8 @@ func (k Keeper) ManualRepay(ctx sdk.Context, nft types.NftIdentifier, repays []t
 		repaidAmount = repaidAmount.Sub(repay.Amount)
 	}
 
-	k.DecreaseDebt(ctx, nft, repaidAmount)
+	repaidLoanAmount := repaidAmount.Sub(repaidInterestAmount)
+	k.DecreaseDebt(ctx, nft, repaidLoanAmount)
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{repaidAmount})
 	if err != nil {
 		return err
@@ -291,6 +294,7 @@ func (k Keeper) AutoRepay(ctx sdk.Context, nft types.NftIdentifier, bids types.N
 	}
 
 	repaidAmount := sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
+	repaidInterestAmount := sdk.NewCoin(listing.BidToken, sdk.ZeroInt())
 	for _, bid := range bids {
 		if len(bid.Borrowings) == 0 {
 			continue
@@ -307,6 +311,7 @@ func (k Keeper) AutoRepay(ctx sdk.Context, nft types.NftIdentifier, bids types.N
 			// Subtract when surplus repay amount exists
 			repaidAmount = repaidAmount.Sub(receipt.Charge)
 			bid.InterestAmount = bid.InterestAmount.Add(receipt.PaidInterestAmount)
+			repaidInterestAmount = repaidInterestAmount.Add(receipt.PaidInterestAmount)
 		}
 		// clean up Borrowings
 		bid.Borrowings = []types.Borrowing{}
@@ -316,7 +321,8 @@ func (k Keeper) AutoRepay(ctx sdk.Context, nft types.NftIdentifier, bids types.N
 		}
 	}
 
-	k.DecreaseDebt(ctx, nft, repaidAmount)
+	repaidLoanAmount := repaidAmount.Sub(repaidInterestAmount)
+	k.DecreaseDebt(ctx, nft, repaidLoanAmount)
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{repaidAmount})
 	if err != nil {
 		return err

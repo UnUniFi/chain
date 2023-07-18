@@ -204,13 +204,6 @@ func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.Que
 		NftId:   req.NftId,
 	}
 	ctx := sdk.UnwrapSDKContext(c)
-	// nft, err := k.GetNftListingByIdBytes(ctx, nftId.IdBytes())
-	// if err != nil {
-	// 	return &types.QueryLoanResponse{
-	// 		Loan:           types.Loan{},
-	// 		BorrowingLimit: sdk.ZeroInt(),
-	// 	}, nil
-	// }
 	bids := k.GetBidsByNft(ctx, nftId.IdBytes())
 	// Change the order of bids to  descending order
 	sort.SliceStable(bids, func(i, j int) bool {
@@ -225,15 +218,20 @@ func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.Que
 		}
 		return false
 	})
-	max := sdk.ZeroInt()
-	// todo update for v2
+	max, err := types.MaxBorrowAmount(bids, ctx.BlockTime())
+	if err != nil {
+		return nil, err
+	}
+	deposits := sdk.NewCoin(max.Denom, sdk.NewInt(0))
+
 	for _, v := range bids {
-		max = max.Add(v.DepositAmount.Amount)
+		deposits = deposits.Add(v.DepositAmount)
 	}
 
 	return &types.QueryLoanResponse{
 		Loan:           k.GetDebtByNft(ctx, nftId.IdBytes()),
 		BorrowingLimit: max,
+		TotalDeposit:   deposits,
 	}, nil
 }
 
@@ -327,25 +325,27 @@ func (k Keeper) Liquidation(c context.Context, req *types.QueryLiquidationReques
 
 	bids := types.NftBids(k.GetBidsByNft(ctx, listing.NftId.IdBytes()))
 	bids = bids.SortLowerBiddingPeriod()
-	liqs := &types.Liquidations{}
-	bidsLen := len(bids)
-	for i := 0; i < bidsLen; i++ {
-		checkBid := bids[0]
+	liquidations := &types.Liquidations{}
+	now := ctx.BlockTime()
+
+	for _, bid := range bids {
+		if bid.BorrowingAmount().Amount.Equal(sdk.ZeroInt()) {
+			continue
+		}
+
 		liq := types.Liquidation{
 			Amount: sdk.NewCoin(listing.BidToken, sdk.ZeroInt()),
 		}
-		liq.Amount = checkBid.LiquidationAmount(checkBid.BiddingPeriod)
-		liq.LiquidationDate = checkBid.BiddingPeriod
-		if liqs.Liquidation == nil {
-			liqs.Liquidation = &liq
+		liq.Amount = bid.LiquidationAmount(now, bid.BiddingPeriod)
+		liq.LiquidationDate = bid.BiddingPeriod
+		if liquidations.Liquidation == nil {
+			liquidations.Liquidation = &liq
 		} else {
-			liqs.NextLiquidation = append(liqs.NextLiquidation, liq)
+			liquidations.NextLiquidation = append(liquidations.NextLiquidation, liq)
 		}
-		bids = bids.MakeBorrowedBidExcludeExpiredBids(liq.Amount, checkBid.BiddingPeriod, []types.NftBid{checkBid})
-
 	}
 
 	return &types.QueryLiquidationResponse{
-		Liquidations: liqs,
+		Liquidations: liquidations,
 	}, nil
 }
