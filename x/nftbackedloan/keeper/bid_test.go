@@ -82,14 +82,14 @@ func (suite *KeeperTestSuite) TestPlaceBid() {
 		now := time.Now()
 		suite.ctx = suite.ctx.WithBlockTime(now)
 
-		_ = suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+		_ = suite.app.NewNFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
 			Id:          listing.NftId.ClassId,
 			Name:        listing.NftId.ClassId,
 			Symbol:      listing.NftId.ClassId,
 			Description: listing.NftId.ClassId,
 			Uri:         listing.NftId.ClassId,
 		})
-		_ = suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
+		_ = suite.app.NewNFTKeeper.Mint(suite.ctx, nfttypes.NFT{
 			ClassId: listing.NftId.ClassId,
 			Id:      listing.NftId.NftId,
 			Uri:     listing.NftId.NftId,
@@ -160,14 +160,14 @@ func (suite *KeeperTestSuite) TestSafeCloseBid() {
 		now := time.Now()
 		suite.ctx = suite.ctx.WithBlockTime(now)
 
-		_ = suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+		_ = suite.app.NewNFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
 			Id:          listing.NftId.ClassId,
 			Name:        listing.NftId.ClassId,
 			Symbol:      listing.NftId.ClassId,
 			Description: listing.NftId.ClassId,
 			Uri:         listing.NftId.ClassId,
 		})
-		_ = suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
+		_ = suite.app.NewNFTKeeper.Mint(suite.ctx, nfttypes.NFT{
 			ClassId: listing.NftId.ClassId,
 			Id:      listing.NftId.NftId,
 			Uri:     listing.NftId.NftId,
@@ -244,14 +244,14 @@ func (suite *KeeperTestSuite) TestPayRemainder() {
 		now := time.Now()
 		suite.ctx = suite.ctx.WithBlockTime(now)
 
-		_ = suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+		_ = suite.app.NewNFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
 			Id:          listing.NftId.ClassId,
 			Name:        listing.NftId.ClassId,
 			Symbol:      listing.NftId.ClassId,
 			Description: listing.NftId.ClassId,
 			Uri:         listing.NftId.ClassId,
 		})
-		_ = suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
+		_ = suite.app.NewNFTKeeper.Mint(suite.ctx, nfttypes.NFT{
 			ClassId: listing.NftId.ClassId,
 			Id:      listing.NftId.NftId,
 			Uri:     listing.NftId.NftId,

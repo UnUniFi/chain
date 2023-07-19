@@ -357,14 +357,14 @@ func (suite *KeeperTestSuite) TestDeliverSuccessfulBids() {
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, nftOwner, sdk.Coins{price})
 	suite.NoError(err)
 
-	_ = suite.app.NFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+	_ = suite.app.NewNFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
 		Id:          classId,
 		Name:        classId,
 		Symbol:      classId,
 		Description: classId,
 		Uri:         classId,
 	})
-	err = suite.app.NFTKeeper.Mint(suite.ctx, nfttypes.NFT{
+	err = suite.app.NewNFTKeeper.Mint(suite.ctx, nfttypes.NFT{
 		ClassId: classId,
 		Id:      nftId,
 		Uri:     nftId,
@@ -418,7 +418,7 @@ func (suite *KeeperTestSuite) TestDeliverSuccessfulBids() {
 	keeper.DeliverSuccessfulBids(suite.ctx)
 
 	// check nft transfer
-	newNftOwner := suite.app.NFTKeeper.GetOwner(suite.ctx, classId, nftId)
+	newNftOwner := suite.app.NewNFTKeeper.GetOwner(suite.ctx, classId, nftId)
 	suite.Require().NoError(err)
 	suite.Require().Equal(newNftOwner.String(), bidder.String())
 
