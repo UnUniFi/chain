@@ -1,13 +1,25 @@
 package module
 
 import (
+	"github.com/cosmos/cosmos-sdk/codec"
+	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
 	"github.com/cosmos/cosmos-sdk/x/nft"
 	nftmodule "github.com/cosmos/cosmos-sdk/x/nft/module"
 
 	newkeeper "github.com/UnUniFi/chain/x/nft/keeper"
+	"github.com/UnUniFi/chain/x/nft/types"
 )
+
+type AppModuleBasic struct {
+	cdc codec.BinaryCodec
+}
+
+// RegisterInterfaces registers a module's interface types and their concrete implementations as proto.Message
+func (a AppModuleBasic) RegisterInterfaces(reg cdctypes.InterfaceRegistry) {
+	types.RegisterInterfaces(reg)
+}
 
 // AppModule implements the sdk.AppModule interface
 type AppModule struct {
