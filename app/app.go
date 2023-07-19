@@ -622,13 +622,13 @@ func NewApp(
 		),
 	)
 
-	app.NewNFTKeeper = newNftkeeper.NewKeeper(
-		nftkeeper.NewKeeper(keys[nftkeeper.StoreKey],
-			appCodec,
-			app.AccountKeeper,
-			app.BankKeeper),
+	app.NFTKeeper = nftkeeper.NewKeeper(keys[nftkeeper.StoreKey],
 		appCodec,
+		app.AccountKeeper,
+		app.BankKeeper,
 	)
+
+	app.NewNFTKeeper = newNftkeeper.NewKeeper(app.NFTKeeper, appCodec)
 
 	// Create evidence Keeper for to register the IBC light client misbehaviour evidence route
 	evidenceKeeper := evidencekeeper.NewKeeper(
