@@ -4,6 +4,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
+
+	"github.com/UnUniFi/chain/x/nft/types"
 )
 
 // AccountKeeper expected interface for the account keeper (noalias)
@@ -44,6 +46,8 @@ type NftKeeper interface {
 	GetBalance(ctx sdk.Context, classID string, owner sdk.AccAddress) uint64
 	GetTotalSupply(ctx sdk.Context, classID string) uint64
 	HasNFT(ctx sdk.Context, classID, id string) bool
+	GetNftData(ctx sdk.Context, classId string, id string) (types.NftData, bool)
+	SetNftData(ctx sdk.Context, classId string, id string, data types.NftData) error
 }
 
 type NftbackedloanHooks interface {
