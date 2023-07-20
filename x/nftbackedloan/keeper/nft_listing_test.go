@@ -157,9 +157,9 @@ func (suite *KeeperTestSuite) TestListNft() {
 			suite.Require().NoError(err)
 
 			// check ownership is transferred
-			moduleAddr := suite.app.AccountKeeper.GetModuleAddress(types.ModuleName)
+			// moduleAddr := suite.app.AccountKeeper.GetModuleAddress(types.ModuleName)
 			nftOwner := nftKeeper.GetOwner(suite.ctx, tc.classId, tc.nftId)
-			suite.Require().Equal(nftOwner.String(), moduleAddr.String())
+			suite.Require().Equal(nftOwner.String(), tc.nftOwner.String())
 
 			// check startedAt is set as current time
 			suite.Require().Equal(suite.ctx.BlockTime(), listing.StartedAt)
