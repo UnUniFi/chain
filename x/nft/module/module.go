@@ -1,7 +1,6 @@
 package module
 
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
@@ -11,15 +10,6 @@ import (
 	newkeeper "github.com/UnUniFi/chain/x/nft/keeper"
 	"github.com/UnUniFi/chain/x/nft/types"
 )
-
-type AppModuleBasic struct {
-	cdc codec.BinaryCodec
-}
-
-// RegisterInterfaces registers a module's interface types and their concrete implementations as proto.Message
-func (a AppModuleBasic) RegisterInterfaces(reg cdctypes.InterfaceRegistry) {
-	types.RegisterInterfaces(reg)
-}
 
 // AppModule implements the sdk.AppModule interface
 type AppModule struct {
@@ -33,6 +23,11 @@ func NewAppModule(am nftmodule.AppModule, k newkeeper.Keeper) AppModule {
 		AppModule: am,
 		keeper:    k,
 	}
+}
+
+// RegisterInterfaces registers a module's interface types and their concrete implementations as proto.Message
+func (am AppModule) RegisterInterfaces(reg cdctypes.InterfaceRegistry) {
+	types.RegisterInterfaces(reg)
 }
 
 // RegisterServices registers a gRPC query service to respond to the

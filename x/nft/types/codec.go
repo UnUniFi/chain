@@ -12,7 +12,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	// this line is used by starport scaffolding # 3
-	registry.RegisterImplementations((*Data)(nil),
+	registry.RegisterImplementations((*NftDataI)(nil),
 		&NftData{},
 	)
 }
