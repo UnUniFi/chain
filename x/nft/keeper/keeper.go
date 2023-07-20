@@ -27,12 +27,17 @@ func (k Keeper) GetNftData(ctx sdk.Context, classId string, id string) (types.Nf
 		return types.NftData{}, false
 	}
 
-	var nftData types.NftData
-	if err := k.cdc.UnpackAny(token.Data, &nftData); err != nil {
+	var nftDataI types.NftDataI
+	if err := k.cdc.UnpackAny(token.Data, &nftDataI); err != nil {
 		return types.NftData{}, false
 	}
 
-	return nftData, true
+	switch nftData := nftDataI.(type) {
+	case *types.NftData:
+		return *nftData, true
+	default:
+		return types.NftData{}, false
+	}
 }
 
 func (k Keeper) SetNftData(ctx sdk.Context, classId string, id string, data types.NftData) error {
