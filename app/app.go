@@ -129,7 +129,7 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
 	proposalhandler "github.com/skip-mev/pob/abci"
-	"github.com/skip-mev/pob/mempool"
+	// "github.com/skip-mev/pob/mempool"
 	"github.com/skip-mev/pob/x/builder"
 	builderkeeper "github.com/skip-mev/pob/x/builder/keeper"
 	buildertypes "github.com/skip-mev/pob/x/builder/types"
@@ -1262,12 +1262,12 @@ func (app *App) setPostHandler() {
 // handler so that we can verify bid transactions before they are inserted into the mempool.
 // With the POB CheckTx, we can verify the bid transaction and all of the bundled transactions
 // before inserting the bid transaction into the mempool.
-func (app *TestApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
+func (app *App) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
 	return app.checkTxHandler(req)
 }
 
 // SetCheckTx sets the checkTxHandler for the app.
-func (app *TestApp) SetCheckTx(handler proposalhandler.CheckTx) {
+func (app *App) SetCheckTx(handler proposalhandler.CheckTx) {
 	app.checkTxHandler = handler
 }
 
