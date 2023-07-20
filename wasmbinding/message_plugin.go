@@ -42,8 +42,6 @@ var _ wasmkeeper.Messenger = (*CustomMessenger)(nil)
 // DispatchMsg executes on the contractMsg.
 func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddress, contractIBCPortID string, msg wasmvmtypes.CosmosMsg) ([]sdk.Event, [][]byte, error) {
 	if msg.Custom != nil {
-		// only handle the happy path where this is really creating / minting / swapping ...
-		// leave everything else for the wrapped version
 		var contractMsg bindings.UnunifiMsg
 		if err := json.Unmarshal(msg.Custom, &contractMsg); err != nil {
 			return nil, nil, sdkerrors.Wrap(err, "ununifi msg")
@@ -76,8 +74,6 @@ func PerformSubmitICQRequest(f *icqkeeper.Keeper, b *bankkeeper.BaseKeeper, ctx 
 		ctx,
 		submitICQRequest.ConnectionId,
 		submitICQRequest.ChainId,
-		// use "bank" store to access acct balances which live in the bank module
-		// use "key" suffix to retrieve a proof alongside the query result
 		submitICQRequest.QueryPrefix,
 		submitICQRequest.QueryKey,
 		sdk.NewInt(-1),

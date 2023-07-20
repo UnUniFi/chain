@@ -128,11 +128,6 @@ func (k Keeper) Transfer(ctx sdk.Context, msg *ibctypes.MsgTransfer, depositReco
 
 func (k Keeper) ContractTransfer(ctx sdk.Context, msg *ibctypes.MsgTransfer) error {
 	goCtx := sdk.WrapSDKContext(ctx)
-
-	// because TransferKeeper.Transfer doesn't return a sequence number, we need to fetch it manually
-	// the sequence number isn't actually incremented here, that happens in `SendPacket`, which is triggered
-	// by calling `Transfer`
-	// see: https://github.com/cosmos/ibc-go/blob/48a6ae512b4ea42c29fdf6c6f5363f50645591a2/modules/core/04-channel/keeper/packet.go#L125
 	sequence, found := k.IBCKeeper.ChannelKeeper.GetNextSequenceSend(ctx, msg.SourcePort, msg.SourceChannel)
 	if !found {
 		return sdkerrors.Wrapf(
