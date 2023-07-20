@@ -7,11 +7,13 @@ import (
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
 	interchainquerykeeper "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/interchainquery/keeper"
+	recordskeeper "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/records/keeper"
 )
 
 func RegisterCustomPlugins(
 	bank *bankkeeper.BaseKeeper,
 	icqKeeper *interchainquerykeeper.Keeper,
+	recordsKeeper *recordskeeper.Keeper,
 ) []wasmkeeper.Option {
 	wasmQueryPlugin := NewQueryPlugin()
 
@@ -19,7 +21,7 @@ func RegisterCustomPlugins(
 		Custom: CustomQuerier(wasmQueryPlugin),
 	})
 	messengerDecoratorOpt := wasmkeeper.WithMessageHandlerDecorator(
-		CustomMessageDecorator(bank, icqKeeper),
+		CustomMessageDecorator(bank, icqKeeper, recordsKeeper),
 	)
 
 	return []wasm.Option{

@@ -7,7 +7,7 @@ type MessageKVQueryResult struct {
 		ConnectionId string `json:"connection_id"`
 		ChainId      string `json:"chain_id"`
 		QueryPrefix  string `json:"query_prefix"`
-		QueryKey     []byte `json:"request"`
+		QueryKey     []byte `json:"query_key"`
 		Data         []byte `json:"data"`
 	} `json:"kv_query_result"`
 }

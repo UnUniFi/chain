@@ -690,7 +690,7 @@ func NewApp(
 	// if we want to allow any custom callbacks
 	availableCapabilities := "iterator,staking,stargate,cosmwasm_1_1,cosmwasm_1_2"
 
-	wasmOpts = append(wasmbinding.RegisterCustomPlugins(&app.BankKeeper, &app.InterchainqueryKeeper), wasmOpts...)
+	wasmOpts = append(wasmbinding.RegisterCustomPlugins(&app.BankKeeper, &app.InterchainqueryKeeper, &app.RecordsKeeper), wasmOpts...)
 
 	app.WasmKeeper = wasm.NewKeeper(
 		appCodec,
@@ -764,6 +764,7 @@ func NewApp(
 		app.TransferKeeper,
 		*app.IBCKeeper,
 		app.IcacallbacksKeeper,
+		&app.WasmKeeper,
 	)
 
 	scopedStakeibcKeeper := app.CapabilityKeeper.ScopeToModule(stakeibctypes.ModuleName)
@@ -795,7 +796,7 @@ func NewApp(
 
 	// Register ICA calllbacks
 	// stakeibc
-	err = app.IcacallbacksKeeper.SetICACallbackHandler(stakeibctypes.ModuleName, app.StakeibcKeeper.ICACallbackHandler())
+	err = app.IcacallbacksKeeper.SetICACallbackHandler(icacontrollertypes.SubModuleName, app.StakeibcKeeper.ICACallbackHandler())
 	if err != nil {
 		return nil
 	}
@@ -880,6 +881,7 @@ func NewApp(
 	// Create Transfer Stack
 	var transferStack porttypes.IBCModule
 	transferStack = transfer.NewIBCModule(app.TransferKeeper)
+	transferStack = records.NewIBCModule(app.RecordsKeeper, transferStack)
 	transferStack = ibcfee.NewIBCMiddleware(transferStack, app.IBCFeeKeeper)
 
 	// RecvPacket, message that originates from core IBC and goes down to app, the flow is:

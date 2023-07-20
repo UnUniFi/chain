@@ -10,26 +10,31 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
+	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
+
 	"github.com/UnUniFi/chain/wasmbinding/bindings"
 	icqkeeper "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/interchainquery/keeper"
 	interchainquerytypes "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/interchainquery/types"
+	recordskeeper "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/records/keeper"
 )
 
 // CustomMessageDecorator returns decorator for custom CosmWasm bindings messages
-func CustomMessageDecorator(bank *bankkeeper.BaseKeeper, icqKeeper *icqkeeper.Keeper) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
+func CustomMessageDecorator(bank *bankkeeper.BaseKeeper, icqKeeper *icqkeeper.Keeper, recordsKeeper *recordskeeper.Keeper) func(wasmkeeper.Messenger) wasmkeeper.Messenger {
 	return func(old wasmkeeper.Messenger) wasmkeeper.Messenger {
 		return &CustomMessenger{
-			wrapped:   old,
-			bank:      bank,
-			icqKeeper: icqKeeper,
+			wrapped:       old,
+			bank:          bank,
+			icqKeeper:     icqKeeper,
+			recordsKeeper: recordsKeeper,
 		}
 	}
 }
 
 type CustomMessenger struct {
-	wrapped   wasmkeeper.Messenger
-	bank      *bankkeeper.BaseKeeper
-	icqKeeper *icqkeeper.Keeper
+	wrapped       wasmkeeper.Messenger
+	bank          *bankkeeper.BaseKeeper
+	icqKeeper     *icqkeeper.Keeper
+	recordsKeeper *recordskeeper.Keeper
 }
 
 var _ wasmkeeper.Messenger = (*CustomMessenger)(nil)
@@ -45,6 +50,9 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 		}
 		if contractMsg.SubmitICQRequest != nil {
 			return m.submitICQRequest(ctx, contractAddr, contractMsg.SubmitICQRequest)
+		}
+		if contractMsg.IBCTransfer != nil {
+			return m.ibcTransfer(ctx, contractAddr, contractMsg.IBCTransfer)
 		}
 	}
 	return m.wrapped.DispatchMsg(ctx, contractAddr, contractIBCPortID, msg)
@@ -63,7 +71,7 @@ func PerformSubmitICQRequest(f *icqkeeper.Keeper, b *bankkeeper.BaseKeeper, ctx 
 		return wasmvmtypes.InvalidRequest{Err: "icq request empty"}
 	}
 
-	ttl := ctx.BlockTime().Add(time.Hour * 504).Nanosecond() // 3 weeks
+	ttl := ctx.BlockTime().Add(time.Hour*504).Unix() * time.Second.Nanoseconds() // 3 weeks
 	err := f.MakeRequest(
 		ctx,
 		submitICQRequest.ConnectionId,
@@ -84,15 +92,37 @@ func PerformSubmitICQRequest(f *icqkeeper.Keeper, b *bankkeeper.BaseKeeper, ctx 
 	return nil
 }
 
-// parseAddress parses address from bech32 string and verifies its format.
-func parseAddress(addr string) (sdk.AccAddress, error) {
-	parsed, err := sdk.AccAddressFromBech32(addr)
+func (m *CustomMessenger) ibcTransfer(ctx sdk.Context, contractAddr sdk.AccAddress, ibcTransfer *wasmvmtypes.TransferMsg) ([]sdk.Event, [][]byte, error) {
+	err := PerformIBCTransfer(m.recordsKeeper, ctx, contractAddr, ibcTransfer)
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "address from bech32")
+		return nil, nil, sdkerrors.Wrap(err, "perform ibc transfer")
 	}
-	err = sdk.VerifyAddressFormat(parsed)
+	return nil, nil, nil
+}
+
+func PerformIBCTransfer(f *recordskeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, ibcTransfer *wasmvmtypes.TransferMsg) error {
+	if ibcTransfer == nil {
+		return wasmvmtypes.InvalidRequest{Err: "icq request empty"}
+	}
+
+	amount, err := wasmkeeper.ConvertWasmCoinToSdkCoin(ibcTransfer.Amount)
 	if err != nil {
-		return nil, sdkerrors.Wrap(err, "verify address format")
+		return err
 	}
-	return parsed, nil
+
+	err = f.ContractTransfer(
+		ctx,
+		&ibctransfertypes.MsgTransfer{
+			SourcePort:       "transfer",
+			SourceChannel:    ibcTransfer.ChannelID,
+			Token:            amount,
+			Sender:           contractAddr.String(),
+			Receiver:         ibcTransfer.ToAddress,
+			TimeoutHeight:    wasmkeeper.ConvertWasmIBCTimeoutHeightToCosmosHeight(ibcTransfer.Timeout.Block),
+			TimeoutTimestamp: ibcTransfer.Timeout.Timestamp,
+		})
+	if err != nil {
+		return sdkerrors.Wrap(err, "sending ibc transfer")
+	}
+	return nil
 }
