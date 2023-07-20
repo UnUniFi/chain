@@ -28,7 +28,7 @@ func (k Keeper) GetNftData(ctx sdk.Context, classId string, id string) (types.Nf
 	}
 
 	var nftDataI types.NftDataI
-	if err := k.cdc.UnpackAny(token.Data, &nftDataI); err != nil {
+	if err := k.cdc.UnpackAny(token.Data, nftDataI); err != nil {
 		return types.NftData{}, false
 	}
 
