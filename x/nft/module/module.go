@@ -27,6 +27,7 @@ func NewAppModule(am nftmodule.AppModule, k newkeeper.Keeper) AppModule {
 
 // RegisterInterfaces registers a module's interface types and their concrete implementations as proto.Message
 func (am AppModule) RegisterInterfaces(reg cdctypes.InterfaceRegistry) {
+	nft.RegisterInterfaces(reg)
 	types.RegisterInterfaces(reg)
 }
 

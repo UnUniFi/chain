@@ -16,8 +16,3 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&NftData{},
 	)
 }
-
-var (
-	Amino     = codec.NewLegacyAmino()
-	ModuleCdc = codec.NewProtoCodec(cdctypes.NewInterfaceRegistry())
-)
