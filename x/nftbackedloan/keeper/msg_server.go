@@ -87,13 +87,13 @@ func (k msgServer) SellingDecision(c context.Context, msg *types.MsgSellingDecis
 // 	return &types.MsgEndNftListingResponse{}, nil
 // }
 
-func (k msgServer) PayFullBid(c context.Context, msg *types.MsgPayFullBid) (*types.MsgPayFullBidResponse, error) {
+func (k msgServer) PayRemainder(c context.Context, msg *types.MsgPayRemainder) (*types.MsgPayRemainderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	err := k.keeper.PayFullBid(ctx, msg)
+	err := k.keeper.PayRemainder(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
-	return &types.MsgPayFullBidResponse{}, nil
+	return &types.MsgPayRemainderResponse{}, nil
 }
 
 func (k msgServer) Borrow(c context.Context, msg *types.MsgBorrow) (*types.MsgBorrowResponse, error) {

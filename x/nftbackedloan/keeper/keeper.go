@@ -51,7 +51,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-// SetHooks sets the nftmarket keeper hooks
+// SetHooks sets the nftbackedloan keeper hooks
 func (k *Keeper) SetHooks(hooks types.NftbackedloanHooks) *Keeper {
 	if k.hooks != nil {
 		panic("cannot set validator hooks twice")

@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"sort"
+	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
@@ -68,7 +69,7 @@ func (k Keeper) GetNftListingDetails(ctx sdk.Context, listings []types.NftListin
 	for _, v := range listings {
 		nftInfo, found := k.nftKeeper.GetNFT(ctx, v.NftId.ClassId, v.NftId.NftId)
 		if !found {
-			return []types.NftListingDetail{}, types.ErrNotExistsNft
+			return []types.NftListingDetail{}, types.ErrNftDoesNotExists
 		}
 		detail := types.NftListingDetail{
 			Listing: v,
@@ -184,16 +185,17 @@ func (k Keeper) GetListedClass(ctx sdk.Context, classId string, limit int) (*typ
 	}, nil
 }
 
-func (k Keeper) Loans(c context.Context, req *types.QueryLoansRequest) (*types.QueryLoansResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
+// func (k Keeper) Loans(c context.Context, req *types.QueryLoansRequest) (*types.QueryLoansResponse, error) {
+// 	if req == nil {
+// 		return nil, status.Error(codes.InvalidArgument, "invalid request")
+// 	}
 
-	ctx := sdk.UnwrapSDKContext(c)
-	return &types.QueryLoansResponse{
-		Loans: k.GetAllDebts(ctx),
-	}, nil
-}
+// 	// ctx := sdk.UnwrapSDKContext(c)
+// 	return &types.QueryLoansResponse{
+// 		// todo impl
+// 		Loans: []types.Loan{},
+// 	}, nil
+// }
 
 func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.QueryLoanResponse, error) {
 	if req == nil {
@@ -204,36 +206,41 @@ func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.Que
 		NftId:   req.NftId,
 	}
 	ctx := sdk.UnwrapSDKContext(c)
-	// nft, err := k.GetNftListingByIdBytes(ctx, nftId.IdBytes())
-	// if err != nil {
-	// 	return &types.QueryLoanResponse{
-	// 		Loan:           types.Loan{},
-	// 		BorrowingLimit: sdk.ZeroInt(),
-	// 	}, nil
-	// }
+	listing, err := k.GetNftListingByIdBytes(ctx, nftId.IdBytes())
+	if err != nil {
+		return &types.QueryLoanResponse{}, err
+	}
 	bids := k.GetBidsByNft(ctx, nftId.IdBytes())
 	// Change the order of bids to  descending order
 	sort.SliceStable(bids, func(i, j int) bool {
-		if bids[i].BidAmount.Amount.LT(bids[j].BidAmount.Amount) {
+		if bids[i].Price.Amount.LT(bids[j].Price.Amount) {
 			return false
 		}
-		if bids[i].BidAmount.Amount.GT(bids[j].BidAmount.Amount) {
+		if bids[i].Price.Amount.GT(bids[j].Price.Amount) {
 			return true
 		}
-		if bids[i].BidTime.After(bids[j].BidTime) {
+		if bids[i].CreatedAt.After(bids[j].CreatedAt) {
 			return true
 		}
 		return false
 	})
-	max := sdk.ZeroInt()
-	// todo update for v2
+	max, err := types.MaxBorrowAmount(bids, listing, ctx.BlockTime())
+	if err != nil {
+		return nil, err
+	}
+	deposits := sdk.NewCoin(max.Denom, sdk.NewInt(0))
+	borrows := sdk.NewCoin(max.Denom, sdk.NewInt(0))
+
 	for _, v := range bids {
-		max = max.Add(v.DepositAmount.Amount)
+		deposits = deposits.Add(v.Deposit)
+		borrows = borrows.Add(v.Borrow.Amount)
 	}
 
 	return &types.QueryLoanResponse{
-		Loan:           k.GetDebtByNft(ctx, nftId.IdBytes()),
-		BorrowingLimit: max,
+		NftId:           nftId,
+		BorrowingAmount: borrows,
+		BorrowingLimit:  max,
+		TotalDeposit:    deposits,
 	}, nil
 }
 
@@ -271,49 +278,49 @@ func (k Keeper) Rewards(c context.Context, req *types.QueryRewardsRequest) (*typ
 	return &types.QueryRewardsResponse{}, nil
 }
 
-func (k Keeper) PaymentStatus(c context.Context, req *types.QueryPaymentStatusRequest) (*types.QueryPaymentStatusResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
+// func (k Keeper) PaymentStatus(c context.Context, req *types.QueryPaymentStatusRequest) (*types.QueryPaymentStatusResponse, error) {
+// 	if req == nil {
+// 		return nil, status.Error(codes.InvalidArgument, "invalid request")
+// 	}
 
-	ctx := sdk.UnwrapSDKContext(c)
-	nft := types.NftIdentifier{
-		ClassId: req.ClassId,
-		NftId:   req.NftId,
-	}
-	listing, err := k.GetNftListingByIdBytes(ctx, nft.IdBytes())
-	if err != nil {
-		return &types.QueryPaymentStatusResponse{}, err
-	}
-	bids := k.GetBidsByNft(ctx, nft.IdBytes())
-	if len(bids) == 0 {
-		return nil, status.Error(codes.InvalidArgument, "not existing bidder")
-	}
+// 	ctx := sdk.UnwrapSDKContext(c)
+// 	nft := types.NftIdentifier{
+// 		ClassId: req.ClassId,
+// 		NftId:   req.NftId,
+// 	}
+// 	listing, err := k.GetNftListingByIdBytes(ctx, nft.IdBytes())
+// 	if err != nil {
+// 		return &types.QueryPaymentStatusResponse{}, err
+// 	}
+// 	bids := k.GetBidsByNft(ctx, nft.IdBytes())
+// 	if len(bids) == 0 {
+// 		return nil, status.Error(codes.InvalidArgument, "not existing bidder")
+// 	}
 
-	var bidderBid types.NftBid
-	for _, v := range bids {
-		if v.Id.Bidder == req.Bidder {
-			bidderBid = v
-		}
-	}
-	if (bidderBid.Equal(types.NftBid{})) {
-		return nil, status.Error(codes.InvalidArgument, "does not match bidder")
-	}
+// 	var bidderBid types.NftBid
+// 	for _, v := range bids {
+// 		if v.Id.Bidder == req.Bidder {
+// 			bidderBid = v
+// 		}
+// 	}
+// 	if (bidderBid.Equal(types.NftBid{})) {
+// 		return nil, status.Error(codes.InvalidArgument, "does not match bidder")
+// 	}
 
-	allPaid := listing.State >= types.ListingState_LIQUIDATION && bidderBid.BidAmount.Amount.Equal(bidderBid.DepositAmount.Amount)
-	return &types.QueryPaymentStatusResponse{
-		PaymentStatus: types.PaymentStatus{
-			NftId:            listing.NftId,
-			State:            listing.State,
-			Bidder:           bidderBid.Id.Bidder,
-			Amount:           bidderBid.BidAmount,
-			AutomaticPayment: bidderBid.AutomaticPayment,
-			PaidAmount:       bidderBid.DepositAmount.Amount,
-			BidTime:          bidderBid.BidTime,
-			AllPaid:          allPaid,
-		},
-	}, nil
-}
+// 	allPaid := listing.State >= types.ListingState_LIQUIDATION && bidderBid.Price.Amount.Equal(bidderBid.Deposit.Amount)
+// 	return &types.QueryPaymentStatusResponse{
+// 		PaymentStatus: types.PaymentStatus{
+// 			NftId:            listing.NftId,
+// 			State:            listing.State,
+// 			Bidder:           bidderBid.Id.Bidder,
+// 			Amount:           bidderBid.Price,
+// 			AutomaticPayment: bidderBid.AutomaticPayment,
+// 			PaidAmount:       bidderBid.Deposit.Amount,
+// 			CreatedAt:        bidderBid.CreatedAt,
+// 			AllPaid:          allPaid,
+// 		},
+// 	}, nil
+// }
 
 func (k Keeper) Liquidation(c context.Context, req *types.QueryLiquidationRequest) (*types.QueryLiquidationResponse, error) {
 	if req == nil {
@@ -326,26 +333,29 @@ func (k Keeper) Liquidation(c context.Context, req *types.QueryLiquidationReques
 	}
 
 	bids := types.NftBids(k.GetBidsByNft(ctx, listing.NftId.IdBytes()))
-	bids = bids.SortLowerBiddingPeriod()
-	liqs := &types.Liquidations{}
-	bidsLen := len(bids)
-	for i := 0; i < bidsLen; i++ {
-		checkBid := bids[0]
-		liq := types.Liquidation{
-			Amount: sdk.NewCoin(listing.BidToken, sdk.ZeroInt()),
-		}
-		liq.Amount = checkBid.LiquidationAmount(checkBid.BiddingPeriod)
-		liq.LiquidationDate = checkBid.BiddingPeriod
-		if liqs.Liquidation == nil {
-			liqs.Liquidation = &liq
-		} else {
-			liqs.NextLiquidation = append(liqs.NextLiquidation, liq)
-		}
-		bids = bids.MakeBorrowedBidExcludeExpiredBids(liq.Amount, checkBid.BiddingPeriod, []types.NftBid{checkBid})
+	bids = bids.SortLowerExpiryDate()
+	liquidations := &types.Liquidations{}
+	// after 1 hour
+	afterAnHour := ctx.BlockTime().Add(time.Hour)
 
+	for _, bid := range bids {
+		if bid.Borrow.Amount.Amount.Equal(sdk.ZeroInt()) {
+			continue
+		}
+
+		liq := types.Liquidation{
+			Amount: sdk.NewCoin(listing.BidDenom, sdk.ZeroInt()),
+		}
+		liq.Amount = bid.LiquidationAmount(afterAnHour)
+		liq.LiquidationDate = bid.Expiry
+		if liquidations.Liquidation == nil {
+			liquidations.Liquidation = &liq
+		} else {
+			liquidations.NextLiquidation = append(liquidations.NextLiquidation, liq)
+		}
 	}
 
 	return &types.QueryLiquidationResponse{
-		Liquidations: liqs,
+		Liquidations: liquidations,
 	}, nil
 }

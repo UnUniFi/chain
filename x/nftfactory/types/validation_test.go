@@ -26,7 +26,7 @@ func TestValidateMintingPermission(t *testing.T) {
 	// OnlyOwner case
 	owner, _ := sdk.AccAddressFromBech32(testAddr)
 	classAttirbutes := types.ClassAttributes{
-		Owner:             owner.Bytes(),
+		Owner:             owner.String(),
 		MintingPermission: 0,
 	}
 	err := types.ValidateMintingPermission(classAttirbutes.MintingPermission, owner, owner)

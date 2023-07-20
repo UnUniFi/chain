@@ -29,12 +29,12 @@ func GetTxCmd() *cobra.Command {
 
 	cmd.AddCommand(
 		CmdMintNft(),
-		CmdCreateListing(),
+		CmdCreateList(),
 		CmdCancelNftListing(),
 		CmdSellingDecision(),
 		CmdCreatePlaceBid(),
 		CmdCancelBid(),
-		CmdPayFullBid(),
+		CmdPayRemainder(),
 		// CmdEndListing(),
 		CmdBorrow(),
 		CmdRepay(),
@@ -74,14 +74,14 @@ $ %s tx %s mint a10 a10 uri 888838  --from myKeyName --chain-id ununifi-x
 
 // todo: Implementation fields
 // BidToken, MinBid, BidHook, ListingType
-func CmdCreateListing() *cobra.Command {
+func CmdCreateList() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "listing [class-id] [nft-id]",
+		Use:   "list [class-id] [nft-id]",
 		Short: "Creates a new listing",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Create a new listing, depositing nft.
 Example:
-$ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
+$ %s tx %s list ununifi-1 a1 --bid-token uguu --min-deposit-rate 0.1 --min-bidding-period-hours 168 --from myKeyName  --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -105,24 +105,31 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 			if err != nil {
 				return err
 			}
-			automaticRef, err := cmd.Flags().GetBool(FlagAutomaticRefinancing)
-			if err != nil {
-				return err
-			}
+			// automaticRef, err := cmd.Flags().GetBool(FlagAutomaticRefinancing)
+			// if err != nil {
+			// 	return err
+			// }
 
 			bidToken, err := cmd.Flags().GetString(FlagBidToken)
 			if err != nil {
 				return err
 			}
 
-			minBiddingPeriodHour, err := cmd.Flags().GetUint64(FlagMinimumBiddingPeriodHours)
+			minBiddingPeriodHour, err := cmd.Flags().GetString(FlagMinimumBiddingPeriodHours)
 			if err != nil {
 				return err
 			}
+			minBiddingPeriodHourDec, err := sdk.NewDecFromStr(minBiddingPeriodHour)
+			if err != nil {
+				return err
+			}
+			minBiddingPeriodMinute := minBiddingPeriodHourDec.Mul(sdk.NewDecFromInt(sdk.NewInt(60))).TruncateInt()
+			minBiddingPeriodSecond := minBiddingPeriodHourDec.Mul(sdk.NewDecFromInt(sdk.NewInt(60))).Sub(sdk.NewDecFromInt(minBiddingPeriodMinute)).Mul(sdk.NewDecFromInt(sdk.NewInt(60))).TruncateInt()
 			// convert uint64 to time.Duration
-			minBiddingPeriod := time.Duration(minBiddingPeriodHour) * time.Hour
+			minBiddingPeriod := time.Duration(minBiddingPeriodMinute.Int64())*time.Minute +
+				time.Duration(minBiddingPeriodSecond.Int64())*time.Second
 
-			msg := types.NewMsgListNft(clientCtx.GetFromAddress().String(), nftIde, bidToken, minDepositRateDec, automaticRef, minBiddingPeriod)
+			msg := types.NewMsgListNft(clientCtx.GetFromAddress().String(), nftIde, bidToken, minDepositRateDec, minBiddingPeriod)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -132,8 +139,8 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 
 	cmd.Flags().String(FlagBidToken, "uguu", "bid token")
 	cmd.Flags().String(FlagMinimumDepositRate, "0.1", "minimum deposit rate")
-	cmd.Flags().Uint64(FlagMinimumBiddingPeriodHours, 1, "minimum bidding period")
-	cmd.Flags().BoolP(FlagAutomaticRefinancing, "r", false, "automatic refinancing")
+	cmd.Flags().String(FlagMinimumBiddingPeriodHours, "1", "minimum bidding period")
+	// cmd.Flags().BoolP(FlagAutomaticRefinancing, "r", false, "automatic refinancing")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -141,12 +148,12 @@ $ %s tx %s listing 1 1 --from myKeyName --chain-id ununifi-x
 
 func CmdCreatePlaceBid() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "place-bid [class-id] [nft-id] [bid-amount] [deposit-amount] [deposit-interest-rate] [bidding-hour-time]",
+		Use:   "place-bid [class-id] [nft-id] [bid-amount] [deposit-amount] [deposit-interest-rate] [expire-after-hour]",
 		Short: "Creates a new place bid",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Creates a new place bid.
 Example:
-$ %s tx %s place-bid 1 1 100uguu --automatic-payment --from myKeyName --chain-id ununifi-x
+$ %s tx %s place-bid ununifi-1 a1 100uguu 20uguu 0.05 240 --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(6),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -159,7 +166,7 @@ $ %s tx %s place-bid 1 1 100uguu --automatic-payment --from myKeyName --chain-id
 			nftIdArg := 1
 			bidArgs := 2
 			depositArg := 3
-			depositRateArg := 4
+			interestRateArg := 4
 			bidEndArg := 5
 
 			classId := args[classIdArg]
@@ -178,7 +185,7 @@ $ %s tx %s place-bid 1 1 100uguu --automatic-payment --from myKeyName --chain-id
 				return err
 			}
 
-			depositInterestRate, err := sdk.NewDecFromStr(args[depositRateArg])
+			depositInterestRate, err := sdk.NewDecFromStr(args[interestRateArg])
 			if err != nil {
 				return err
 			}
@@ -206,7 +213,7 @@ $ %s tx %s place-bid 1 1 100uguu --automatic-payment --from myKeyName --chain-id
 		},
 	}
 
-	cmd.Flags().BoolP(FlagAutomaticPayment, "p", false, "automation payment")
+	cmd.Flags().BoolP(FlagAutomaticPayment, "p", true, "automation payment")
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -443,14 +450,14 @@ $ %s tx %s cancel-bid 1 1 --from myKeyName --chain-id ununifi-x
 	return cmd
 }
 
-func CmdPayFullBid() *cobra.Command {
+func CmdPayRemainder() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "pay-full-bid [class-id] [nft-id]",
+		Use:   "pay-remainder [class-id] [nft-id]",
 		Short: "Pay full bid price on nft",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Pay full bid on nft.
 Example:
-$ %s tx %s pay-full-bid 1 1 --from myKeyName --chain-id ununifi-x
+$ %s tx %s pay-remainder 1 1 --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -466,7 +473,7 @@ $ %s tx %s pay-full-bid 1 1 --from myKeyName --chain-id ununifi-x
 				NftId:   nftId,
 			}
 
-			msg := types.NewMsgPayFullBid(clientCtx.GetFromAddress().String(), nftIde)
+			msg := types.NewMsgPayRemainder(clientCtx.GetFromAddress().String(), nftIde)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err

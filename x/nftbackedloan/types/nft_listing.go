@@ -1,5 +1,7 @@
 package types
 
+import sdk "github.com/cosmos/cosmos-sdk/types"
+
 func (m NftListing) IdBytes() []byte {
 	return m.NftId.IdBytes()
 }
@@ -32,41 +34,12 @@ func (b NftBid) IdBytes() []byte {
 	return b.Id.NftId.IdBytes()
 }
 
-// func (m NftListing) CanRefinancing(allBids, expiredBids []NftBid, now time.Time) bool {
-// 	if !m.AutomaticRefinancing {
-// 		return false
-// 	}
-// 	usableAmount := m.MaxPossibleBorrowAmount(allBids, expiredBids)
-// 	liquidationAmount := NftBids(expiredBids).LiquidationAmount(m.BidToken, now)
-// 	if liquidationAmount.Amount.GT(usableAmount) {
-// 		return false
-// 	}
-// 	return true
-// }
+func (m NftListing) IsBidding() bool {
+	return m.State == ListingState_BIDDING
+}
 
-// func (m NftListing) CalcAmount(bids []NftBid) sdk.Int {
-// 	return m.CalcAmountF(bids, func(NftBid) bool { return false })
-// }
-
-// func (m NftListing) CalcAmountF(bids []NftBid, conditionF func(bid NftBid) bool) sdk.Int {
-// 	DepositAmount := sdk.ZeroInt()
-// 	for _, bid := range bids {
-// 		if conditionF(bid) {
-// 			continue
-// 		}
-// 		DepositAmount = DepositAmount.Add(bid.DepositAmount.Amount)
-// 	}
-// 	return DepositAmount
-// }
-
-// func (m NftListing) MaxPossibleBorrowAmount(bids, expiredBids []NftBid) sdk.Int {
-// 	newBids := NftBids(bids).MakeExcludeExpiredBids(expiredBids)
-// 	borrowableAmount := newBids.BorrowableAmount(m.BidToken)
-// 	return borrowableAmount.Amount
-// }
-
-func (m NftListing) IsSelling() bool {
-	return m.State == ListingState_LISTING || m.State == ListingState_BIDDING
+func (m NftListing) IsEnded() bool {
+	return m.State == ListingState_SELLING_DECISION || m.State == ListingState_LIQUIDATION || m.State == ListingState_SUCCESSFUL_BID
 }
 
 func (m NftListing) CanCancelBid() bool {
@@ -75,4 +48,36 @@ func (m NftListing) CanCancelBid() bool {
 
 func (m NftListing) CanBid() bool {
 	return m.State == ListingState_LISTING || m.State == ListingState_BIDDING
+}
+
+func (m NftListing) IsNegativeCollectedAmount() bool {
+	return m.CollectedAmountNegative
+}
+
+func (m NftListing) AddCollectedAmount(amount sdk.Coin) NftListing {
+	if m.CollectedAmountNegative {
+		if m.CollectedAmount.IsLTE(amount) {
+			m.CollectedAmount = amount.Sub(m.CollectedAmount)
+			m.CollectedAmountNegative = false
+		} else {
+			m.CollectedAmount = m.CollectedAmount.Sub(amount)
+		}
+	} else {
+		m.CollectedAmount = m.CollectedAmount.Add(amount)
+	}
+	return m
+}
+
+func (m NftListing) SubCollectedAmount(amount sdk.Coin) NftListing {
+	if m.CollectedAmountNegative {
+		m.CollectedAmount = m.CollectedAmount.Add(amount)
+	} else {
+		if m.CollectedAmount.IsLTE(amount) {
+			m.CollectedAmount = amount.Sub(m.CollectedAmount)
+			m.CollectedAmountNegative = true
+		} else {
+			m.CollectedAmount = m.CollectedAmount.Sub(amount)
+		}
+	}
+	return m
 }

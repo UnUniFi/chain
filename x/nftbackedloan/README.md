@@ -1,6 +1,6 @@
 # NFT BACKED LOAN
 
-The ``NFTBACKEDLOAN`` module provides NFT-Fi services that allow borrowers to borrow tokens by putting NFTs as collateral.
+The `NFTBACKEDLOAN` module provides NFT-Fi services that allow borrowers to borrow tokens by putting NFTs as collateral.
 
 ## Contents
 
@@ -39,34 +39,34 @@ New bids must meet the following criteria
 
 ##### New Bid Definition
 
- $i \in I$: index of bids
- $n = |I|$: number of bids
- $\{p_i\}_{i \in I}$: the price of $i$ th bid
- $\{d_i\}_{i \in I}$: the deposit amount of $i$ th bid
- $\{r_i\}_{i \in I}$: the interest rate of $i$ th bid
- $\{t_i\}_{i \in I}$: the expiration date of $i$ th bid
- $q = \frac{1}{n} \sum_{i \in I} p_i$
- $s = \sum_{i \in I} d_i$: means the amount which lister can borrow with NFT as collateral
- $\{a_i\}_{i \in I}$: means the amount borrowed from $i$ th bid deposit
- $b = \sum_{i \in I} a_i$
- $i_p(j)$: means the index of the $j$ th highest price bid
- $i_d(j)$: means the index of the $j$ th highest deposit amount bid
- $i_r(j)$: means the index of the $j$ th lowest interest rate bid
- $i_t(j)$: means the index of the $j$ th farthest expiration date bid
- $c$: minimum deposit rate
+$i \in I$: index of bids
+$n = |I|$: number of bids
+$\{p_i\}_{i \in I}$: the price of $i$ th bid
+$\{d_i\}_{i \in I}$: the deposit amount of $i$ th bid
+$\{r_i\}_{i \in I}$: the interest rate of $i$ th bid
+$\{t_i\}_{i \in I}$: the expiration date of $i$ th bid
+$q = \frac{1}{n} \sum_{i \in I} p_i$
+$s = \sum_{i \in I} d_i$: means the amount which lister can borrow with NFT as collateral
+$\{a_i\}_{i \in I}$: means the amount borrowed from $i$ th bid deposit
+$b = \sum_{i \in I} a_i$
+$i_p(j)$: means the index of the $j$ th highest price bid
+$i_d(j)$: means the index of the $j$ th highest deposit amount bid
+$i_r(j)$: means the index of the $j$ th lowest interest rate bid
+$i_t(j)$: means the index of the $j$ th farthest expiration date bid
+$c$: minimum deposit rate
 
 ##### New bid formulation
 
 When $(p_{\text{new}}, d_{\text{new}}, r_{\text{new}}, t_{\text{new}})$ will be added to the set of bids, the new bids sequence will be
 
- $I' = I \cup \{n+1\}$
- $n' = n + 1$
- $\{p_i'\}_{i \in I'} = \{p_i\}_{i \in I} \cup \{p_{\text{new}}\}$
- $\{d_i'\}_{i \in I'} = \{d_i\}_{i \in I} \cup \{d_{\text{new}}\}$
- $\{r_i'\}_{i \in I'} = \{r_i\}_{i \in I} \cup \{r_{\text{new}}\}$
- $\{t_i'\}_{i \in I'} = \{t_i\}_{i \in I} \cup \{t_{\text{new}}\}$
- $q' = \frac{1}{n'} \sum_{i \in I'} p_i'$
- $s' = \sum_{i \in I'} d_i'$
+$I' = I \cup \{n+1\}$
+$n' = n + 1$
+$\{p_i'\}_{i \in I'} = \{p_i\}_{i \in I} \cup \{p_{\text{new}}\}$
+$\{d_i'\}_{i \in I'} = \{d_i\}_{i \in I} \cup \{d_{\text{new}}\}$
+$\{r_i'\}_{i \in I'} = \{r_i\}_{i \in I} \cup \{r_{\text{new}}\}$
+$\{t_i'\}_{i \in I'} = \{t_i\}_{i \in I} \cup \{t_{\text{new}}\}$
+$q' = \frac{1}{n'} \sum_{i \in I'} p_i'$
+$s' = \sum_{i \in I'} d_i'$
 
 where the prime means the next state.
 
@@ -92,12 +92,12 @@ However, it is limited to the extent that NFT can liquidate and may not be cance
 
 lister can sell the NFT to the highest bidder.  
 When the bidder accepts the offer and pays the price, the sale is completed.  
-If the bidder does not pay the `bidder price - deposit price` while the sell offer is being made, the bidder's deposit will be collected by the PROTOCOL.  
+If the bidder does not pay the `bidder price - deposit price` while the sell offer is being made, the bidder's deposit will be collected by the PROTOCOL.
 
 #### Borrow
 
 The lister can borrow a token when there is a bid for an auction that he/she has listed.  
-Failure to return borrowed tokens before the bid expires will result in liquidation.  
+Failure to return borrowed tokens before the bid expires will result in liquidation.
 
 Borrows must meet the following criteria
 
@@ -129,7 +129,7 @@ In the scenario where "after several consecutive deposit forfeitures, the bidder
 
 ### Liquidation
 
-If the borrowed tokens are not returned by the bid's expiration date, a liquidation of the auction occurs.  
+If the borrowed tokens are not returned by the bid's expiration date, a liquidation of the auction occurs.
 
 When liquidation occurs, the following will happen:
 
@@ -146,25 +146,25 @@ The bidder can set when bidding.
 
 ## network-parameters
 
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `min_staking_for_listing` | [string](#string) |  |  |
-| `bid_tokens` | [string](#string) | repeated |  |
-| `auto_relisting_count_if_no_bid` | [uint64](#uint64) |  |  |
-| `nft_listing_delay_seconds` | [uint64](#uint64) |  |  |
-| `nft_listing_period_initial` | [uint64](#uint64) |  |  |
-| `nft_listing_cancel_required_seconds` | [uint64](#uint64) |  |  |
-| `nft_listing_cancel_fee_percentage` | [uint64](#uint64) |  |  |
-| `nft_listing_gap_time` | [uint64](#uint64) |  |  |
-| `bid_cancel_required_seconds` | [uint64](#uint64) |  |  |
-| `bid_token_disburse_seconds_after_cancel` | [uint64](#uint64) |  |  |
-| `nft_listing_full_payment_period` | [uint64](#uint64) |  |  |
-| `nft_listing_nft_delivery_period` | [uint64](#uint64) |  |  |
-| `nft_creator_share_percentage` | [uint64](#uint64) |  |  |
-| `market_administrator` | [string](#string) |  |  |
-| `nft_listing_commission_fee` | [uint64](#uint64) |  |  |
-| `nft_listing_extend_seconds` | [uint64](#uint64) |  |  |
-| `nft_listing_period_extend_fee_per_hour` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  |  |
+| Field                                     | Type                                                  | Label    | Description |
+| ----------------------------------------- | ----------------------------------------------------- | -------- | ----------- |
+| `min_staking_for_listing`                 | [string](#string)                                     |          |             |
+| `bid_tokens`                              | [string](#string)                                     | repeated |             |
+| `auto_relisting_count_if_no_bid`          | [uint64](#uint64)                                     |          |             |
+| `nft_listing_delay_seconds`               | [uint64](#uint64)                                     |          |             |
+| `nft_listing_period_initial`              | [uint64](#uint64)                                     |          |             |
+| `nft_listing_cancel_required_seconds`     | [uint64](#uint64)                                     |          |             |
+| `nft_listing_cancel_fee_percentage`       | [uint64](#uint64)                                     |          |             |
+| `nft_listing_gap_time`                    | [uint64](#uint64)                                     |          |             |
+| `bid_cancel_required_seconds`             | [uint64](#uint64)                                     |          |             |
+| `bid_token_disburse_seconds_after_cancel` | [uint64](#uint64)                                     |          |             |
+| `nft_listing_full_payment_period`         | [uint64](#uint64)                                     |          |             |
+| `nft_listing_nft_delivery_period`         | [uint64](#uint64)                                     |          |             |
+| `nft_creator_share_percentage`            | [uint64](#uint64)                                     |          |             |
+| `market_administrator`                    | [string](#string)                                     |          |             |
+| `nft_listing_commission_fee`              | [uint64](#uint64)                                     |          |             |
+| `nft_listing_extend_seconds`              | [uint64](#uint64)                                     |          |             |
+| `nft_listing_period_extend_fee_per_hour`  | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |          |             |
 
 1. min_staking_for_listing - not use
 1. bid_tokens - Types of tokens available for auction
@@ -214,20 +214,20 @@ The bidder can set when bidding.
 
 [MsgSellingDecision](https://github.com/UnUniFi/chain/blob/newDevelop/proto/ununifi/nftbackedloan/tx.proto#L85-L88)
 
-### MsgPayFullBid
+### MsgPayRemainder
 
-[MsgPayFullBid](https://github.com/UnUniFi/chain/blob/newDevelop/proto/ununifi/nftbackedloan/tx.proto#L91-L94)
+[MsgPayRemainder](https://github.com/UnUniFi/chain/blob/newDevelop/proto/ununifi/nftbackedloan/tx.proto#L91-L94)
 
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `ListNft` | [MsgListNft](#MsgListNft) | [MsgListNftResponse](#MsgListNftResponse) |  | |
-| `CancelNftListing` | [MsgCancelNftListing](#MsgCancelNftListing) | [MsgCancelNftListingResponse](#MsgCancelNftListingResponse) |  | |
-| `PlaceBid` | [MsgPlaceBid](#MsgPlaceBid) | [MsgPlaceBidResponse](#MsgPlaceBidResponse) |  | |
-| `CancelBid` | [MsgCancelBid](#MsgCancelBid) | [MsgCancelBidResponse](#MsgCancelBidResponse) |  | |
-| `Borrow` | [MsgBorrow](#MsgBorrow) | [MsgBorrowResponse](#MsgBorrowResponse) |  | |
-| `Repay` | [MsgRepay](#MsgRepay) | [MsgRepayResponse](#MsgRepayResponse) |  | |
-| `SellingDecision` | [MsgSellingDecision](#MsgSellingDecision) | [MsgSellingDecisionResponse](#MsgSellingDecisionResponse) |  | |
-| `PayFullBid` | [MsgPayFullBid](#MsgPayFullBid) | [MsgPayFullBidResponse](#MsgPayFullBidResponse) |  | |
+| Method Name        | Request Type                                | Response Type                                               | Description | HTTP Verb | Endpoint |
+| ------------------ | ------------------------------------------- | ----------------------------------------------------------- | ----------- | --------- | -------- |
+| `ListNft`          | [MsgListNft](#MsgListNft)                   | [MsgListNftResponse](#MsgListNftResponse)                   |             |           |
+| `CancelNftListing` | [MsgCancelNftListing](#MsgCancelNftListing) | [MsgCancelNftListingResponse](#MsgCancelNftListingResponse) |             |           |
+| `PlaceBid`         | [MsgPlaceBid](#MsgPlaceBid)                 | [MsgPlaceBidResponse](#MsgPlaceBidResponse)                 |             |           |
+| `CancelBid`        | [MsgCancelBid](#MsgCancelBid)               | [MsgCancelBidResponse](#MsgCancelBidResponse)               |             |           |
+| `Borrow`           | [MsgBorrow](#MsgBorrow)                     | [MsgBorrowResponse](#MsgBorrowResponse)                     |             |           |
+| `Repay`            | [MsgRepay](#MsgRepay)                       | [MsgRepayResponse](#MsgRepayResponse)                       |             |           |
+| `SellingDecision`  | [MsgSellingDecision](#MsgSellingDecision)   | [MsgSellingDecisionResponse](#MsgSellingDecisionResponse)   |             |           |
+| `PayRemainder`     | [MsgPayRemainder](#MsgPayRemainder)         | [MsgPayRemainderResponse](#MsgPayRemainderResponse)         |             |           |
 
 ## transactions
 
@@ -236,7 +236,7 @@ The bidder can set when bidding.
 Put the NFT up for auction.
 
 ```sh
-ununifid tx nftbackedloan listing [nft-class-id] [nft-id] --min-minimum-deposit-rate [dec] --bid-token [token] --automatic-refinancing --min-bidding-period-hours [num]  --from --chain-id
+ununifid tx nftbackedloan list [nft-class-id] [nft-id] --min-deposit-rate [dec] --bid-token [token] --automatic-refinancing --min-bidding-period-hours [dec]  --from --chain-id
 ```
 
 ::: details Example
@@ -246,7 +246,7 @@ The token used for bidding is `uguu` and the minimum bid deposit is `0.1%`.
 Enable the automatic-refinancing function
 
 ```sh
-ununifid tx nftbackedloan listing a10 a10 --min-minimum-deposit-rate 0.01 --bid-token uguu --automatic-refinancing --from user --chain-id test
+ununifid tx nftbackedloan list a10 a10 --min-deposit-rate 0.01 --bid-token uguu --automatic-refinancing --from user --chain-id test
 ```
 
 ### Cancel Listing
@@ -254,7 +254,7 @@ ununifid tx nftbackedloan listing a10 a10 --min-minimum-deposit-rate 0.01 --bid-
 Cancel NFT listing.
 
 ```sh
-ununifid tx nftbackedloan cancel-listing [nft-class-id] [nft-id] --from --chain-id  
+ununifid tx nftbackedloan cancel-listing [nft-class-id] [nft-id] --from --chain-id
 ```
 
 ::: details Example
@@ -262,7 +262,7 @@ ununifid tx nftbackedloan cancel-listing [nft-class-id] [nft-id] --from --chain-
 The List of `a10/a10` will be cancel.
 
 ```sh
-ununifid tx nftbackedloan cancel-listing a10 a10 --chain-id test --from user --gas=300000 -y 
+ununifid tx nftbackedloan cancel-listing a10 a10 --chain-id test --from user --gas=300000 -y
 ```
 
 ### Place bid
@@ -294,7 +294,7 @@ ununifid tx nftbackedloan cancel-bid [nft-class-id] [nft-id] --from --chain-id
 
 ::: details Example
 
-Cancel Bid on `a10/a10` auction.  
+Cancel Bid on `a10/a10` auction.
 
 ```sh
 ununifid tx nftbackedloan cancel-bid a10 a10 --from user2 --chain-id test
@@ -353,7 +353,7 @@ ununifid tx nftbackedloan selling-decision a10 a10 --from user --chain-id test
 Pay the difference between the bid price and the deposit amount.
 
 ```sh
-ununifid tx nftbackedloan pay-full-bid [nft-class-id] [nft-id] --from --chain-id test
+ununifid tx nftbackedloan pay-remainder [nft-class-id] [nft-id] --from --chain-id test
 ```
 
 ::: details Example
@@ -361,7 +361,7 @@ ununifid tx nftbackedloan pay-full-bid [nft-class-id] [nft-id] --from --chain-id
 Pay full bid price for the a10/a10 auction
 
 ```sh
-ununifid tx nftbackedloan pay-full-bid a10 a10 --from user --chain-id test
+ununifid tx nftbackedloan pay-remainder a10 a10 --from user --chain-id test
 ```
 
 ## queries

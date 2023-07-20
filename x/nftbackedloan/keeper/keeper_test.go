@@ -57,7 +57,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.addrs = simapp.AddTestAddrsIncremental(app, suite.ctx, 3, sdk.NewInt(30000000))
 	suite.app = app
 	queryHelper := baseapp.NewQueryServerTestHelper(suite.ctx, app.InterfaceRegistry())
-	types.RegisterQueryServer(queryHelper, app.NftmarketKeeper)
+	types.RegisterQueryServer(queryHelper, app.NftbackedloanKeeper)
 	suite.queryClient = types.NewQueryClient(queryHelper)
 
 	encodingConfig := appparams.MakeEncodingConfig()
