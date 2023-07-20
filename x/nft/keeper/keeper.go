@@ -1,12 +1,13 @@
 package keeper
 
 import (
-	"github.com/UnUniFi/chain/x/nft/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/nft/keeper"
+
+	"github.com/UnUniFi/chain/x/nft/types"
 )
 
 type Keeper struct {
@@ -36,7 +37,8 @@ func (k Keeper) GetNftData(ctx sdk.Context, classId string, id string) (types.Nf
 	case *types.NftData:
 		return *nftData, true
 	default:
-		return types.NftData{}, false
+		// if the type is not *types.NftData, return an empty NftData
+		return types.NftData{}, true
 	}
 }
 
