@@ -128,6 +128,12 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
+	proposalhandler "github.com/skip-mev/pob/abci"
+	"github.com/skip-mev/pob/mempool"
+	"github.com/skip-mev/pob/x/builder"
+	builderkeeper "github.com/skip-mev/pob/x/builder/keeper"
+	buildertypes "github.com/skip-mev/pob/x/builder/types"
+
 	newNftkeeper "github.com/UnUniFi/chain/x/nft/keeper"
 	newNftModule "github.com/UnUniFi/chain/x/nft/module"
 
@@ -248,6 +254,7 @@ var (
 		transfer.AppModuleBasic{},
 		ica.AppModuleBasic{},
 		ibcfee.AppModuleBasic{},
+		builder.AppModuleBasic{},
 
 		// original modules
 		nftbackedloan.AppModuleBasic{},
@@ -279,6 +286,7 @@ var (
 		ibcfeetypes.ModuleName:         nil,
 		icatypes.ModuleName:            nil,
 		wasm.ModuleName:                {authtypes.Burner},
+		buildertypes.ModuleName:        nil,
 
 		// original modules
 		nftbackedloantypes.ModuleName: nil,
@@ -361,6 +369,10 @@ type App struct {
 	ICAHostKeeper       icahostkeeper.Keeper
 	TransferKeeper      ibctransferkeeper.Keeper
 	WasmKeeper          wasm.Keeper
+	// BuilderKeeper is the keeper that handles processing auction transactions
+	BuilderKeeper builderkeeper.Keeper
+	// Custom checkTx handler
+	checkTxHandler proposalhandler.CheckTx
 
 	ScopedIBCKeeper           capabilitykeeper.ScopedKeeper
 	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
@@ -426,6 +438,11 @@ func NewApp(
 	bApp.SetInterfaceRegistry(interfaceRegistry)
 	bApp.SetTxEncoder(txConfig.TxEncoder())
 
+	// for original AuctionFactory
+	// config := mempool.NewDefaultAuctionFactory(TxDecoder)
+	// mempool := mempool.NewAuctionMempool(TxDecoder, TxEncoder, maxTx, config)
+	// bApp.SetMempool(mempool)
+
 	keys := sdk.NewKVStoreKeys(
 		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey, crisistypes.StoreKey,
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
@@ -436,6 +453,7 @@ func NewApp(
 		ibcexported.StoreKey, ibctransfertypes.StoreKey, ibcfeetypes.StoreKey,
 		wasm.StoreKey, icahosttypes.StoreKey,
 		icacontrollertypes.StoreKey,
+		buildertypes.StoreKey,
 
 		// original modules
 		nftbackedloantypes.StoreKey,
@@ -713,6 +731,17 @@ func NewApp(
 		wasmOpts...,
 	)
 
+	// Instantiate the builder keeper, store keys, and module manager
+	app.BuilderKeeper = builderkeeper.NewKeeper(
+		appCodec,
+		keys[buildertypes.StoreKey],
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.DistrKeeper,
+		app.StakingKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
 	app.NftfactoryKeeper = nftfactorykeeper.NewKeeper(
 		appCodec,
 		keys[nftfactorytypes.StoreKey],
@@ -951,6 +980,7 @@ func NewApp(
 		ibcfee.NewAppModule(app.IBCFeeKeeper),
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
+		builder.NewAppModule(appCodec, app.BuilderKeeper),
 
 		// original modules
 		nftfactory.NewAppModule(appCodec, app.NftfactoryKeeper, app.NewNFTKeeper),
@@ -1109,6 +1139,7 @@ func NewApp(
 		ibcfeetypes.ModuleName,
 		// wasm after ibc transfer
 		wasm.ModuleName,
+		buildertypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(app.CrisisKeeper)
@@ -1225,6 +1256,19 @@ func (app *App) setPostHandler() {
 		panic(err)
 	}
 	app.SetPostHandler(postHandler)
+}
+
+// CheckTx will check the transaction with the provided checkTxHandler. We override the default
+// handler so that we can verify bid transactions before they are inserted into the mempool.
+// With the POB CheckTx, we can verify the bid transaction and all of the bundled transactions
+// before inserting the bid transaction into the mempool.
+func (app *TestApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
+	return app.checkTxHandler(req)
+}
+
+// SetCheckTx sets the checkTxHandler for the app.
+func (app *TestApp) SetCheckTx(handler proposalhandler.CheckTx) {
+	app.checkTxHandler = handler
 }
 
 // Name returns the name of the App
