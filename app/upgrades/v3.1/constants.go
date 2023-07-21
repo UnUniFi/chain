@@ -6,7 +6,7 @@ import (
 	"github.com/UnUniFi/chain/app/upgrades"
 )
 
-const UpgradeName string = "v3.1"
+const UpgradeName string = "v3_1"
 
 var Upgrade = upgrades.Upgrade{
 	UpgradeName:          UpgradeName,
