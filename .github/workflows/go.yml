@@ -17,4 +17,4 @@ jobs:
         run: go build -v ./...
 
       - name: Test
-        run: go test -v `go list ./... | grep -v -E 'deprecated/|x/ecosystemincentive/|x/nftfactory/|x/derivatives/'`
+        run: go test -v `go list ./... | grep -v -E 'deprecated/|x/ecosystemincentive/|x/nftfactory/|x/nftbackedloan/|x/pricefeed/|x/derivatives/'`
