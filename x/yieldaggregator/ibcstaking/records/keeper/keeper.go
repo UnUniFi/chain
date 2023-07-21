@@ -22,6 +22,7 @@ import (
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 
+	icqtypes "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/interchainquery/types"
 	"github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/records/types"
 )
 
@@ -37,6 +38,7 @@ type (
 		TransferKeeper     ibctransferkeeper.Keeper
 		IBCKeeper          ibckeeper.Keeper
 		ICACallbacksKeeper icacallbackskeeper.Keeper
+		wasmKeeper         icqtypes.WasmKeeper
 	}
 )
 
@@ -50,6 +52,7 @@ func NewKeeper(
 	TransferKeeper ibctransferkeeper.Keeper,
 	ibcKeeper ibckeeper.Keeper,
 	ICACallbacksKeeper icacallbackskeeper.Keeper,
+	WasmKeeper icqtypes.WasmKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -66,6 +69,7 @@ func NewKeeper(
 		TransferKeeper:     TransferKeeper,
 		IBCKeeper:          ibcKeeper,
 		ICACallbacksKeeper: ICACallbacksKeeper,
+		wasmKeeper:         WasmKeeper,
 	}
 }
 
@@ -116,6 +120,36 @@ func (k Keeper) Transfer(ctx sdk.Context, msg *ibctypes.MsgTransfer, depositReco
 		Sequence:     sequence,
 		CallbackId:   TRANSFER,
 		CallbackArgs: marshalledCallbackArgs,
+	}
+	k.Logger(ctx).Info(fmt.Sprintf("Storing callback data: %v", callback))
+	k.ICACallbacksKeeper.SetCallbackData(ctx, callback)
+	return nil
+}
+
+func (k Keeper) ContractTransfer(ctx sdk.Context, msg *ibctypes.MsgTransfer) error {
+	goCtx := sdk.WrapSDKContext(ctx)
+	sequence, found := k.IBCKeeper.ChannelKeeper.GetNextSequenceSend(ctx, msg.SourcePort, msg.SourceChannel)
+	if !found {
+		return sdkerrors.Wrapf(
+			channeltypes.ErrSequenceSendNotFound,
+			"source port: %s, source channel: %s", msg.SourcePort, msg.SourceChannel,
+		)
+	}
+
+	// trigger transfer
+	_, err := k.TransferKeeper.Transfer(goCtx, msg)
+	if err != nil {
+		return err
+	}
+
+	// Store the callback data
+	callback := icacallbackstypes.CallbackData{
+		CallbackKey:  icacallbackstypes.PacketID(msg.SourcePort, msg.SourceChannel, sequence),
+		PortId:       msg.SourcePort,
+		ChannelId:    msg.SourceChannel,
+		Sequence:     sequence,
+		CallbackId:   CONTRACT_TRANSFER,
+		CallbackArgs: []byte{},
 	}
 	k.Logger(ctx).Info(fmt.Sprintf("Storing callback data: %v", callback))
 	k.ICACallbacksKeeper.SetCallbackData(ctx, callback)

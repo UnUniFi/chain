@@ -124,6 +124,8 @@ import (
 	ibctestingtypes "github.com/cosmos/ibc-go/v7/testing/types"
 	"github.com/spf13/cast"
 
+	"github.com/UnUniFi/chain/wasmbinding"
+
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
@@ -171,6 +173,7 @@ import (
 	v2_1 "github.com/UnUniFi/chain/app/upgrades/v2.1"
 	v2_2 "github.com/UnUniFi/chain/app/upgrades/v2.2"
 	v3 "github.com/UnUniFi/chain/app/upgrades/v3"
+	v3_1_rc0 "github.com/UnUniFi/chain/app/upgrades/v3.1-rc0"
 )
 
 const Name = "ununifi"
@@ -298,7 +301,7 @@ var (
 		stakeibctypes.ModuleName: true,
 	}
 
-	Upgrades = []upgrades.Upgrade{v1_beta3.Upgrade, v2_1.Upgrade, v2_2.Upgrade, v3.Upgrade}
+	Upgrades = []upgrades.Upgrade{v1_beta3.Upgrade, v2_1.Upgrade, v2_2.Upgrade, v3.Upgrade, v3_1_rc0.Upgrade}
 )
 
 var (
@@ -685,6 +688,9 @@ func NewApp(
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
 	availableCapabilities := "iterator,staking,stargate,cosmwasm_1_1,cosmwasm_1_2"
+
+	wasmOpts = append(wasmbinding.RegisterCustomPlugins(&app.BankKeeper, &app.InterchainqueryKeeper, &app.RecordsKeeper), wasmOpts...)
+
 	app.WasmKeeper = wasm.NewKeeper(
 		appCodec,
 		keys[wasm.StoreKey],
@@ -769,7 +775,12 @@ func NewApp(
 		app.ICAControllerKeeper,
 	)
 
-	app.InterchainqueryKeeper = interchainquerykeeper.NewKeeper(appCodec, keys[interchainquerytypes.StoreKey], app.IBCKeeper)
+	app.InterchainqueryKeeper = interchainquerykeeper.NewKeeper(
+		appCodec,
+		keys[interchainquerytypes.StoreKey],
+		app.IBCKeeper,
+		&app.WasmKeeper,
+	)
 
 	scopedRecordsKeeper := app.CapabilityKeeper.ScopeToModule(recordstypes.ModuleName)
 	app.ScopedRecordsKeeper = scopedRecordsKeeper
@@ -783,6 +794,7 @@ func NewApp(
 		app.TransferKeeper,
 		*app.IBCKeeper,
 		app.IcacallbacksKeeper,
+		&app.WasmKeeper,
 	)
 
 	scopedStakeibcKeeper := app.CapabilityKeeper.ScopeToModule(stakeibctypes.ModuleName)
@@ -814,7 +826,7 @@ func NewApp(
 
 	// Register ICA calllbacks
 	// stakeibc
-	err = app.IcacallbacksKeeper.SetICACallbackHandler(stakeibctypes.ModuleName, app.StakeibcKeeper.ICACallbackHandler())
+	err = app.IcacallbacksKeeper.SetICACallbackHandler(icacontrollertypes.SubModuleName, app.StakeibcKeeper.ICACallbackHandler())
 	if err != nil {
 		return nil
 	}
@@ -869,6 +881,7 @@ func NewApp(
 	// Create Transfer Stack
 	var transferStack porttypes.IBCModule
 	transferStack = transfer.NewIBCModule(app.TransferKeeper)
+	transferStack = records.NewIBCModule(app.RecordsKeeper, transferStack)
 	transferStack = ibcfee.NewIBCMiddleware(transferStack, app.IBCFeeKeeper)
 
 	// RecvPacket, message that originates from core IBC and goes down to app, the flow is:
@@ -1483,6 +1496,7 @@ func (app *App) setupAppkeeper() {
 	app.AppKeepers.ConsensusParamsKeeper = &app.ConsensusParamsKeeper
 	app.AppKeepers.ParamsKeeper = &app.ParamsKeeper
 	app.AppKeepers.WasmKeeper = &app.WasmKeeper
+	app.AppKeepers.EpochsKeeper = &app.EpochsKeeper
 	app.AppKeepers.YieldaggregatorKeeper = &app.YieldaggregatorKeeper
 	// app.AppKeepers.PricefeedKeeper = &app.PricefeedKeeper
 	// app.AppKeepers.DerivativesKeeper = &app.DerivativesKeeper

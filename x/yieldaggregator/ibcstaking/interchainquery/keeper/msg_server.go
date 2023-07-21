@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"sort"
@@ -9,7 +10,6 @@ import (
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	clienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
 	commitmenttypes "github.com/cosmos/ibc-go/v7/modules/core/23-commitment/types"
 	"github.com/cosmos/ibc-go/v7/modules/core/exported"
@@ -58,41 +58,28 @@ func (k Keeper) VerifyKeyProof(ctx sdk.Context, msg *types.MsgSubmitQueryRespons
 	if !found {
 		return errorsmod.Wrapf(types.ErrInvalidICQProof, "ConnectionId %s does not exist", query.ConnectionId)
 	}
-
+	consensusState, found := k.IBCKeeper.ClientKeeper.GetClientConsensusState(ctx, connection.ClientId, height)
+	if !found {
+		return errorsmod.Wrapf(types.ErrInvalidICQProof, "Consensus state not found for client %s and height %d", connection.ClientId, height)
+	}
 	clientState, found := k.IBCKeeper.ClientKeeper.GetClientState(ctx, connection.ClientId)
 	if !found {
 		return errorsmod.Wrapf(types.ErrInvalidICQProof, "Unable to fetch client state for client %s", connection.ClientId)
 	}
 
-	consensusState, found := k.IBCKeeper.ClientKeeper.GetClientConsensusState(ctx, connection.ClientId, height)
-	if !found {
-		return errorsmod.Wrapf(types.ErrInvalidICQProof, "Consensus state not found for client %s and height %d", connection.ClientId, height)
+	// Cast the client and consensus state to tendermint type
+	tendermintConsensusState, ok := consensusState.(*tendermint.ConsensusState)
+	if !ok {
+		return errorsmod.Wrapf(types.ErrInvalidICQProof,
+			"Only tendermint consensus state is supported (%s provided)", consensusState.ClientType())
 	}
-	var stateRoot exported.Root
-	var clientStateProof []*ics23.ProofSpec
-
-	switch clientState.ClientType() {
-	case exported.Tendermint:
-		tendermintConsensusState, ok := consensusState.(*tendermint.ConsensusState)
-		if !ok {
-			errMsg := fmt.Sprintf("[ICQ Resp] for query %s, error unmarshaling client state %v", query.Id, clientState)
-			return sdkerrors.Wrapf(types.ErrInvalidICQProof, errMsg)
-		}
-		stateRoot = tendermintConsensusState.GetRoot()
-	// case exported.Wasm:
-	// 	wasmConsensusState, ok := consensusState.(*wasm.ConsensusState)
-	// 	if !ok {
-	// 		return errorsmod.Wrapf(types.ErrInvalidConsensusState, "Error casting consensus state: %s", err.Error())
-	// 	}
-	// 	tmClientState, ok := clientState.(*tmclienttypes.ClientState)
-	// 	if !ok {
-	// 		return errorsmod.Wrapf(types.ErrInvalidICQProof, "Client state is not tendermint")
-	// 	}
-	// 	clientStateProof = tmClientState.ProofSpecs
-	// 	stateRoot = wasmConsensusState.GetRoot()
-	default:
-		panic("not implemented")
+	tendermintClientState, ok := clientState.(*tendermint.ClientState)
+	if !ok {
+		return errorsmod.Wrapf(types.ErrInvalidICQProof,
+			"Only tendermint client state is supported (%s provided)", clientState.ClientType())
 	}
+	var stateRoot exported.Root = tendermintConsensusState.Root
+	var clientStateProof []*ics23.ProofSpec = tendermintClientState.ProofSpecs
 
 	// Get the merkle path and merkle proof
 	path := commitmenttypes.NewMerklePath([]string{pathParts[1], url.PathEscape(string(query.Request))}...)
@@ -128,10 +115,37 @@ func (k Keeper) InvokeCallback(ctx sdk.Context, msg *types.MsgSubmitQueryRespons
 	}
 	sort.Strings(moduleNames)
 
+	// if callback is an contract address execute contract call
+	contractAddress, err := sdk.AccAddressFromBech32(q.CallbackId)
+	if err == nil {
+		k.Logger(ctx).Info(fmt.Sprintf("ICQ debug: Q: %+v, result: %+v", q, msg.Result))
+
+		x := types.MessageKVQueryResult{}
+		x.KVQueryResult.ConnectionId = q.ConnectionId
+		x.KVQueryResult.ChainId = q.ChainId
+		x.KVQueryResult.QueryPrefix = q.QueryType
+		x.KVQueryResult.QueryKey = q.Request
+		x.KVQueryResult.Data = msg.Result
+		if x.KVQueryResult.Data == nil {
+			x.KVQueryResult.Data = []byte{}
+		}
+
+		m, err := json.Marshal(x)
+		if err != nil {
+			return fmt.Errorf("failed to marshal MessageKVQueryResult: %v", err)
+		}
+
+		_, err = k.wasmKeeper.Sudo(ctx, contractAddress, m)
+		if err != nil {
+			k.Logger(ctx).Info("SudoTxQueryResult: failed to Sudo", string(m), "error", err, "contract_address", contractAddress)
+			return fmt.Errorf("failed to Sudo: %v", err)
+		}
+		return nil
+	}
+
 	for _, moduleName := range moduleNames {
 		k.Logger(ctx).Info(fmt.Sprintf("[ICQ Resp] executing callback for queryId (%s), module (%s)", q.Id, moduleName))
 		moduleCallbackHandler := k.callbacks[moduleName]
-
 		if moduleCallbackHandler.Has(q.CallbackId) {
 			k.Logger(ctx).Info(fmt.Sprintf("[ICQ Resp] callback (%s) found for module (%s)", q.CallbackId, moduleName))
 			// call the correct callback function
@@ -165,14 +179,14 @@ func (k Keeper) HasQueryExceededTtl(ctx sdk.Context, msg *types.MsgSubmitQueryRe
 	return false, nil
 }
 
+// Handle ICQ query responses by validating the proof, and calling the query's corresponding callback
 func (k msgServer) SubmitQueryResponse(goCtx context.Context, msg *types.MsgSubmitQueryResponse) (*types.MsgSubmitQueryResponseResponse, error) {
-	fmt.Println("DEBUG SubmitQueryResponse", string(k.cdc.MustMarshalJSON(msg)))
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// check if the response has an associated query stored on stride
-	q, found := k.GetQuery(ctx, msg.QueryId)
+	query, found := k.GetQuery(ctx, msg.QueryId)
 	if !found {
-		k.Logger(ctx).Info("[ICQ Resp] ignoring non-existent query response (note: duplicate responses are nonexistent)")
+		k.Logger(ctx).Info("ICQ RESPONSE  | Ignoring non-existent query response (note: duplicate responses are nonexistent)")
 		return &types.MsgSubmitQueryResponseResponse{}, nil // technically this is an error, but will cause the entire tx to fail if we have one 'bad' message, so we can just no-op here.
 	}
 
@@ -180,42 +194,45 @@ func (k msgServer) SubmitQueryResponse(goCtx context.Context, msg *types.MsgSubm
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(types.AttributeKeyQueryId, q.Id),
+			sdk.NewAttribute(types.AttributeKeyQueryId, query.Id),
 		),
 		sdk.NewEvent(
 			"query_response",
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(types.AttributeKeyQueryId, q.Id),
-			sdk.NewAttribute(types.AttributeKeyChainId, q.ChainId),
+			sdk.NewAttribute(types.AttributeKeyQueryId, query.Id),
+			sdk.NewAttribute(types.AttributeKeyChainId, query.ChainId),
 		),
 	})
 
-	// 1. verify the response's proof, if one exists
-	err := k.VerifyKeyProof(ctx, msg, q)
+	// Verify the response's proof, if one exists
+	err := k.VerifyKeyProof(ctx, msg, query)
 	if err != nil {
+		k.Logger(ctx).Error(fmt.Sprintf("QUERY PROOF VERIFICATION FAILED - QueryId: %s, Error: %s", query.Id, err.Error()))
 		return nil, err
 	}
-	// 2. immediately delete the query so it cannot process again
-	k.DeleteQuery(ctx, q.Id)
 
-	// 3. verify the query's ttl is unexpired
-	ttlExceeded, err := k.HasQueryExceededTtl(ctx, msg, q)
+	// Immediately delete the query so it cannot process again
+	k.DeleteQuery(ctx, query.Id)
+
+	// Verify the query hasn't expired (if the block time is greater than the TTL timestamp, the query is expired)
+	currBlockTime, err := cast.ToUint64E(ctx.BlockTime().UnixNano())
 	if err != nil {
 		return nil, err
 	}
-	if ttlExceeded {
-		k.Logger(ctx).Info(fmt.Sprintf("[ICQ Resp] %s's ttl exceeded: %d < %d.", msg.QueryId, q.Ttl, ctx.BlockHeader().Time.UnixNano()))
+	if query.Ttl < currBlockTime {
+		k.Logger(ctx).Info(fmt.Sprintf("[ICQ Resp] %s's ttl exceeded: %d < %d.", msg.QueryId, query.Ttl, ctx.BlockHeader().Time.UnixNano()))
 		return &types.MsgSubmitQueryResponseResponse{}, nil
 	}
 
-	// 4. if the query is contentless, end
-	if len(msg.Result) == 0 {
+	// If the query is contentless while it's not sent from contract, end
+	_, err = sdk.AccAddressFromBech32(query.CallbackId)
+	if len(msg.Result) == 0 && err != nil {
 		k.Logger(ctx).Info(fmt.Sprintf("[ICQ Resp] query %s is contentless, removing from store.", msg.QueryId))
 		return &types.MsgSubmitQueryResponseResponse{}, nil
 	}
 
-	// 5. call the query's associated callback function
-	err = k.InvokeCallback(ctx, msg, q)
+	// Call the query's associated callback function
+	err = k.InvokeCallback(ctx, msg, query)
 	if err != nil {
 		return nil, err
 	}
