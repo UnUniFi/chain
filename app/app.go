@@ -173,7 +173,7 @@ import (
 	v2_1 "github.com/UnUniFi/chain/app/upgrades/v2.1"
 	v2_2 "github.com/UnUniFi/chain/app/upgrades/v2.2"
 	v3 "github.com/UnUniFi/chain/app/upgrades/v3"
-	v3_1_rc0 "github.com/UnUniFi/chain/app/upgrades/v3.1-rc0"
+	v3_1 "github.com/UnUniFi/chain/app/upgrades/v3.1"
 )
 
 const Name = "ununifi"
@@ -301,7 +301,7 @@ var (
 		stakeibctypes.ModuleName: true,
 	}
 
-	Upgrades = []upgrades.Upgrade{v1_beta3.Upgrade, v2_1.Upgrade, v2_2.Upgrade, v3.Upgrade, v3_1_rc0.Upgrade}
+	Upgrades = []upgrades.Upgrade{v1_beta3.Upgrade, v2_1.Upgrade, v2_2.Upgrade, v3.Upgrade, v3_1.Upgrade}
 )
 
 var (

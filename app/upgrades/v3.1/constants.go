@@ -1,4 +1,4 @@
-package v3_1_rc0
+package v3_1
 
 import (
 	store "github.com/cosmos/cosmos-sdk/store/types"
@@ -6,7 +6,7 @@ import (
 	"github.com/UnUniFi/chain/app/upgrades"
 )
 
-const UpgradeName string = "v3.1-rc0"
+const UpgradeName string = "v3.1"
 
 var Upgrade = upgrades.Upgrade{
 	UpgradeName:          UpgradeName,
