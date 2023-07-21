@@ -129,7 +129,7 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
 	proposalhandler "github.com/skip-mev/pob/abci"
-	// "github.com/skip-mev/pob/mempool"
+	"github.com/skip-mev/pob/mempool"
 	"github.com/skip-mev/pob/x/builder"
 	builderkeeper "github.com/skip-mev/pob/x/builder/keeper"
 	buildertypes "github.com/skip-mev/pob/x/builder/types"
@@ -439,9 +439,9 @@ func NewApp(
 	bApp.SetTxEncoder(txConfig.TxEncoder())
 
 	// for original AuctionFactory
-	// config := mempool.NewDefaultAuctionFactory(TxDecoder)
-	// mempool := mempool.NewAuctionMempool(TxDecoder, TxEncoder, maxTx, config)
-	// bApp.SetMempool(mempool)
+	config := mempool.NewDefaultAuctionFactory(txConfig.TxDecoder())
+	mempool := mempool.NewAuctionMempool(txConfig.TxDecoder(), txConfig.TxEncoder(), 0, config)
+	bApp.SetMempool(mempool)
 
 	keys := sdk.NewKVStoreKeys(
 		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey, crisistypes.StoreKey,
@@ -1044,6 +1044,7 @@ func NewApp(
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		wasm.ModuleName,
+		buildertypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -1087,6 +1088,7 @@ func NewApp(
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		wasm.ModuleName,
+		buildertypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
