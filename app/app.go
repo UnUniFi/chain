@@ -948,8 +948,12 @@ func NewApp(
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
 
 		// original modules
-		nftfactory.NewAppModule(appCodec, app.NftfactoryKeeper, app.NFTKeeper),
-		nftbackedloan.NewAppModule(appCodec, app.NftbackedloanKeeper, app.AccountKeeper, app.BankKeeper),
+		// pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
+		// derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
+
+		// nftfactory.NewAppModule(appCodec, app.NftfactoryKeeper, app.NFTKeeper),
+		// nftbackedloan.NewAppModule(appCodec, app.NftbackedloanKeeper, app.AccountKeeper, app.BankKeeper),
+		// ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
 
 		yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
 		stakeibc.NewAppModule(appCodec, app.StakeibcKeeper, app.AccountKeeper, app.BankKeeper),
@@ -957,10 +961,6 @@ func NewApp(
 		interchainquery.NewAppModule(appCodec, app.InterchainqueryKeeper),
 		records.NewAppModule(appCodec, app.RecordsKeeper, app.AccountKeeper, app.BankKeeper),
 		icacallbacks.NewAppModule(appCodec, app.IcacallbacksKeeper, app.AccountKeeper, app.BankKeeper),
-
-		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
-		pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
-		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -988,11 +988,12 @@ func NewApp(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		// original modules
-		ecosystemincentivetypes.ModuleName,
-		pricefeedtypes.ModuleName,
+		// pricefeedtypes.ModuleName,
+		// derivativestypes.ModuleName,
 
-		nftfactorytypes.ModuleName,
-		nftbackedloantypes.ModuleName,
+		// nftfactorytypes.ModuleName,
+		// nftbackedloantypes.ModuleName,
+		// ecosystemincentivetypes.ModuleName,
 
 		stakeibctypes.ModuleName,
 		epochstypes.ModuleName,
@@ -1001,7 +1002,6 @@ func NewApp(
 		icacallbackstypes.ModuleName,
 
 		yieldaggregatortypes.ModuleName,
-		derivativestypes.ModuleName,
 
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
@@ -1032,11 +1032,13 @@ func NewApp(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		// original modules
-		ecosystemincentivetypes.ModuleName,
-		pricefeedtypes.ModuleName,
+		// pricefeedtypes.ModuleName,
+		// derivativestypes.ModuleName,
 
-		nftfactorytypes.ModuleName,
-		nftbackedloantypes.ModuleName,
+		// nftfactorytypes.ModuleName,
+		// nftbackedloantypes.ModuleName,
+		// ecosystemincentivetypes.ModuleName,
+
 		stakeibctypes.ModuleName,
 		epochstypes.ModuleName,
 		interchainquerytypes.ModuleName,
@@ -1044,7 +1046,6 @@ func NewApp(
 		icacallbackstypes.ModuleName,
 
 		yieldaggregatortypes.ModuleName,
-		derivativestypes.ModuleName,
 
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
@@ -1083,10 +1084,11 @@ func NewApp(
 		consensusparamtypes.ModuleName,
 
 		// original modules
-		pricefeedtypes.ModuleName,
-		nftfactorytypes.ModuleName,
-		nftbackedloantypes.ModuleName,
-		ecosystemincentivetypes.ModuleName,
+		// pricefeedtypes.ModuleName,
+		// derivativestypes.ModuleName,
+		// nftfactorytypes.ModuleName,
+		// nftbackedloantypes.ModuleName,
+		// ecosystemincentivetypes.ModuleName,
 
 		stakeibctypes.ModuleName,
 		epochstypes.ModuleName,
@@ -1095,7 +1097,6 @@ func NewApp(
 		icacallbackstypes.ModuleName,
 
 		yieldaggregatortypes.ModuleName,
-		derivativestypes.ModuleName,
 
 		// additional non simd modules
 		ibctransfertypes.ModuleName,
@@ -1428,8 +1429,12 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(wasm.ModuleName)
 
 	// original modules
-	paramsKeeper.Subspace(nftbackedloantypes.ModuleName)
-	paramsKeeper.Subspace(nftfactorytypes.ModuleName)
+	// paramsKeeper.Subspace(pricefeedtypes.ModuleName)
+	// paramsKeeper.Subspace(derivativestypes.ModuleName)
+
+	// paramsKeeper.Subspace(nftfactorytypes.ModuleName)
+	// paramsKeeper.Subspace(nftbackedloantypes.ModuleName)
+	// paramsKeeper.Subspace(ecosystemincentivetypes.ModuleName)
 
 	paramsKeeper.Subspace(stakeibctypes.ModuleName)
 	paramsKeeper.Subspace(epochstypes.ModuleName)
@@ -1437,10 +1442,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(recordstypes.ModuleName)
 	paramsKeeper.Subspace(icacallbackstypes.ModuleName)
 	paramsKeeper.Subspace(yieldaggregatortypes.ModuleName)
-
-	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
-	paramsKeeper.Subspace(derivativestypes.ModuleName)
-	paramsKeeper.Subspace(ecosystemincentivetypes.ModuleName)
 
 	return paramsKeeper
 }
@@ -1484,6 +1485,6 @@ func (app *App) setupAppkeeper() {
 	app.AppKeepers.ParamsKeeper = &app.ParamsKeeper
 	app.AppKeepers.WasmKeeper = &app.WasmKeeper
 	app.AppKeepers.YieldaggregatorKeeper = &app.YieldaggregatorKeeper
-	app.AppKeepers.PricefeedKeeper = &app.PricefeedKeeper
-	app.AppKeepers.DerivativesKeeper = &app.DerivativesKeeper
+	// app.AppKeepers.PricefeedKeeper = &app.PricefeedKeeper
+	// app.AppKeepers.DerivativesKeeper = &app.DerivativesKeeper
 }
