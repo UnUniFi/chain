@@ -161,7 +161,6 @@ import (
 	nftfactorytypes "github.com/UnUniFi/chain/x/nftfactory/types"
 	"github.com/UnUniFi/chain/x/pricefeed"
 	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
-	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 
 	ecosystemincentive "github.com/UnUniFi/chain/x/ecosystemincentive"
 	ecosystemincentivekeeper "github.com/UnUniFi/chain/x/ecosystemincentive/keeper"
@@ -436,12 +435,12 @@ func NewApp(
 		icacontrollertypes.StoreKey,
 
 		// original modules
-		derivativestypes.StoreKey,
-		pricefeedtypes.StoreKey,
+		// derivativestypes.StoreKey,
+		// pricefeedtypes.StoreKey,
 
-		nftbackedloantypes.StoreKey,
-		nftfactorytypes.StoreKey,
-		ecosystemincentivetypes.StoreKey,
+		// nftbackedloantypes.StoreKey,
+		// nftfactorytypes.StoreKey,
+		// ecosystemincentivetypes.StoreKey,
 
 		yieldaggregatortypes.StoreKey,
 		stakeibctypes.StoreKey,
