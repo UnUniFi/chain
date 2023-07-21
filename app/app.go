@@ -248,12 +248,12 @@ var (
 		nftmodule.AppModuleBasic{},
 		consensus.AppModuleBasic{},
 		// non sdk modules
-		wasm.AppModuleBasic{},
 		ibc.AppModuleBasic{},
 		ibctm.AppModuleBasic{},
 		transfer.AppModuleBasic{},
 		ica.AppModuleBasic{},
 		ibcfee.AppModuleBasic{},
+		wasm.AppModuleBasic{},
 		builder.AppModuleBasic{},
 
 		// original modules
@@ -1003,6 +1003,7 @@ func NewApp(
 	// CanWithdrawInvariant invariant.
 	// NOTE: staking module is required if HistoricalEntries param > 0
 	app.mm.SetOrderBeginBlockers(
+		buildertypes.ModuleName,
 		upgradetypes.ModuleName,
 		capabilitytypes.ModuleName,
 		minttypes.ModuleName,
@@ -1044,7 +1045,6 @@ func NewApp(
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		wasm.ModuleName,
-		buildertypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -1099,6 +1099,7 @@ func NewApp(
 	// NOTE: wasm module should be at the end as it can call other module functionality direct or via message dispatching during
 	// genesis phase. For example bank transfer, auth account check, staking, ...
 	app.mm.SetOrderInitGenesis(
+		buildertypes.ModuleName,
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
@@ -1141,7 +1142,6 @@ func NewApp(
 		ibcfeetypes.ModuleName,
 		// wasm after ibc transfer
 		wasm.ModuleName,
-		buildertypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(app.CrisisKeeper)
