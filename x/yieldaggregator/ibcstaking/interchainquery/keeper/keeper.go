@@ -18,19 +18,21 @@ import (
 
 // Keeper of this module maintains collections of registered zones.
 type Keeper struct {
-	cdc       codec.Codec
-	storeKey  storetypes.StoreKey
-	callbacks map[string]types.QueryCallbacks
-	IBCKeeper *ibckeeper.Keeper
+	cdc        codec.Codec
+	storeKey   storetypes.StoreKey
+	callbacks  map[string]types.QueryCallbacks
+	IBCKeeper  *ibckeeper.Keeper
+	wasmKeeper types.WasmKeeper
 }
 
 // NewKeeper returns a new instance of zones Keeper
-func NewKeeper(cdc codec.Codec, storeKey storetypes.StoreKey, ibckeeper *ibckeeper.Keeper) Keeper {
+func NewKeeper(cdc codec.Codec, storeKey storetypes.StoreKey, ibckeeper *ibckeeper.Keeper, wasmKeeper types.WasmKeeper) Keeper {
 	return Keeper{
-		cdc:       cdc,
-		storeKey:  storeKey,
-		callbacks: make(map[string]types.QueryCallbacks),
-		IBCKeeper: ibckeeper,
+		cdc:        cdc,
+		storeKey:   storeKey,
+		callbacks:  make(map[string]types.QueryCallbacks),
+		IBCKeeper:  ibckeeper,
+		wasmKeeper: wasmKeeper,
 	}
 }
 
@@ -91,7 +93,7 @@ func (k *Keeper) MakeRequest(ctx sdk.Context, connection_id string, chain_id str
 	key := GenerateQueryHash(connection_id, chain_id, query_type, request, module, height)
 	existingQuery, found := k.GetQuery(ctx, key)
 	if !found {
-		if module != "" {
+		if module != "" && module != types.ModuleName {
 			if _, exists := k.callbacks[module]; !exists {
 				err := fmt.Errorf("no callback handler registered for module %s", module)
 				k.Logger(ctx).Error(err.Error())
@@ -101,7 +103,6 @@ func (k *Keeper) MakeRequest(ctx sdk.Context, connection_id string, chain_id str
 				err := fmt.Errorf("no callback %s registered for module %s", callback_id, module)
 				k.Logger(ctx).Error(err.Error())
 				return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "no callback handler registered for module")
-
 			}
 		}
 		newQuery := k.NewQuery(ctx, module, connection_id, chain_id, query_type, request, period, callback_id, ttl, height)
