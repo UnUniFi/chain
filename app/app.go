@@ -161,6 +161,7 @@ import (
 	nftfactorytypes "github.com/UnUniFi/chain/x/nftfactory/types"
 	"github.com/UnUniFi/chain/x/pricefeed"
 	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
+	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 
 	ecosystemincentive "github.com/UnUniFi/chain/x/ecosystemincentive"
 	ecosystemincentivekeeper "github.com/UnUniFi/chain/x/ecosystemincentive/keeper"
@@ -435,8 +436,8 @@ func NewApp(
 		icacontrollertypes.StoreKey,
 
 		// original modules
-		// derivativestypes.StoreKey,
-		// pricefeedtypes.StoreKey,
+		derivativestypes.StoreKey,
+		pricefeedtypes.StoreKey,
 
 		// nftbackedloantypes.StoreKey,
 		// nftfactorytypes.StoreKey,
@@ -711,22 +712,22 @@ func NewApp(
 		wasmOpts...,
 	)
 
-	// app.PricefeedKeeper = pricefeedkeeper.NewKeeper(
-	// 	appCodec,
-	// 	keys[pricefeedtypes.StoreKey],
-	// 	keys[pricefeedtypes.MemStoreKey],
-	// 	app.GetSubspace(pricefeedtypes.ModuleName),
-	// 	app.BankKeeper,
-	// )
+	app.PricefeedKeeper = pricefeedkeeper.NewKeeper(
+		appCodec,
+		keys[pricefeedtypes.StoreKey],
+		keys[pricefeedtypes.MemStoreKey],
+		app.GetSubspace(pricefeedtypes.ModuleName),
+		app.BankKeeper,
+	)
 
-	// app.DerivativesKeeper = derivativeskeeper.NewKeeper(
-	// 	appCodec,
-	// 	keys[derivativestypes.StoreKey],
-	// 	keys[derivativestypes.MemStoreKey],
-	// 	app.GetSubspace(derivativestypes.ModuleName),
-	// 	app.BankKeeper,
-	// 	app.PricefeedKeeper,
-	// )
+	app.DerivativesKeeper = derivativeskeeper.NewKeeper(
+		appCodec,
+		keys[derivativestypes.StoreKey],
+		keys[derivativestypes.MemStoreKey],
+		app.GetSubspace(derivativestypes.ModuleName),
+		app.BankKeeper,
+		app.PricefeedKeeper,
+	)
 
 	// app.NftfactoryKeeper = nftfactorykeeper.NewKeeper(
 	// 	appCodec,
@@ -959,8 +960,8 @@ func NewApp(
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
 
 		// original modules
-		// pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
-		// derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
+		pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
+		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
 
 		// nftfactory.NewAppModule(appCodec, app.NftfactoryKeeper, app.NFTKeeper),
 		// nftbackedloan.NewAppModule(appCodec, app.NftbackedloanKeeper, app.AccountKeeper, app.BankKeeper),
@@ -999,8 +1000,8 @@ func NewApp(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		// original modules
-		// pricefeedtypes.ModuleName,
-		// derivativestypes.ModuleName,
+		pricefeedtypes.ModuleName,
+		derivativestypes.ModuleName,
 
 		// nftfactorytypes.ModuleName,
 		// nftbackedloantypes.ModuleName,
@@ -1043,8 +1044,8 @@ func NewApp(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		// original modules
-		// pricefeedtypes.ModuleName,
-		// derivativestypes.ModuleName,
+		pricefeedtypes.ModuleName,
+		derivativestypes.ModuleName,
 
 		// nftfactorytypes.ModuleName,
 		// nftbackedloantypes.ModuleName,
@@ -1095,8 +1096,8 @@ func NewApp(
 		consensusparamtypes.ModuleName,
 
 		// original modules
-		// pricefeedtypes.ModuleName,
-		// derivativestypes.ModuleName,
+		pricefeedtypes.ModuleName,
+		derivativestypes.ModuleName,
 		// nftfactorytypes.ModuleName,
 		// nftbackedloantypes.ModuleName,
 		// ecosystemincentivetypes.ModuleName,
@@ -1440,8 +1441,8 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(wasm.ModuleName)
 
 	// original modules
-	// paramsKeeper.Subspace(pricefeedtypes.ModuleName)
-	// paramsKeeper.Subspace(derivativestypes.ModuleName)
+	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
+	paramsKeeper.Subspace(derivativestypes.ModuleName)
 
 	// paramsKeeper.Subspace(nftfactorytypes.ModuleName)
 	// paramsKeeper.Subspace(nftbackedloantypes.ModuleName)
@@ -1497,6 +1498,6 @@ func (app *App) setupAppkeeper() {
 	app.AppKeepers.WasmKeeper = &app.WasmKeeper
 	app.AppKeepers.EpochsKeeper = &app.EpochsKeeper
 	app.AppKeepers.YieldaggregatorKeeper = &app.YieldaggregatorKeeper
-	// app.AppKeepers.PricefeedKeeper = &app.PricefeedKeeper
-	// app.AppKeepers.DerivativesKeeper = &app.DerivativesKeeper
+	app.AppKeepers.PricefeedKeeper = &app.PricefeedKeeper
+	app.AppKeepers.DerivativesKeeper = &app.DerivativesKeeper
 }
