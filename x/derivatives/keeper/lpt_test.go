@@ -210,28 +210,25 @@ func (suite *KeeperTestSuite) TestMintLiquidityProviderToken() {
 			if i == 0 {
 				balance := suite.app.BankKeeper.GetBalance(suite.ctx, owner, "udlp")
 				// Initial atom:lpt=1:2
-				// (1000000 - 2000) * 2 = 1996000
-				suite.Require().Equal("1996000udlp", balance.String())
+				// 1000000 - 0fee) * 2 = 2000000
+				suite.Require().Equal("2000000udlp", balance.String())
+
+				suite.CheckLptPrice(poolAddress)
+			} else if i == 1 {
+				balance := suite.app.BankKeeper.GetBalance(suite.ctx, owner, "udlp")
+				// atom:lpt=1:2
+				// (1000000 - 2000fee) * 2  = 1996000
+				suite.Require().Equal("3996000udlp", balance.String())
 
 				feeBalance := suite.app.BankKeeper.GetAllBalances(suite.ctx, derivativeFeeCollector)
 				suite.Require().Equal("2000uatom", feeBalance.String())
 
 				suite.CheckLptPrice(poolAddress)
-			} else if i == 1 {
-				balance := suite.app.BankKeeper.GetBalance(suite.ctx, owner, "udlp")
-				// LPT 10USD (19.96usd / supply 1996000udlp)
-				// (1000000 - 2000) / 1 = 998000
-				suite.Require().Equal("2994000udlp", balance.String())
-
-				feeBalance := suite.app.BankKeeper.GetAllBalances(suite.ctx, derivativeFeeCollector)
-				suite.Require().Equal("4000uatom", feeBalance.String())
-
-				suite.CheckLptPrice(poolAddress)
 			} else if i == 2 {
 				balance := suite.app.BankKeeper.GetBalance(suite.ctx, owner, "udlp")
-				// LPT 10.003340013360USD  (29.95usd / supply 2994000udlp)
-				// (10000000 - 10000) * 10.003340013360 = 998666
-				suite.Require().Equal("3992666udlp", balance.String())
+				// usdc:lpt=10:2
+				// (10000000 - 10000) * 2 / 10  = 1998000
+				suite.Require().Equal("5994000udlp", balance.String())
 
 				feeBalance := suite.app.BankKeeper.GetBalance(suite.ctx, derivativeFeeCollector, tc.sendCoin.Denom)
 				suite.Require().Equal("10000uusdc", feeBalance.String())
@@ -239,9 +236,9 @@ func (suite *KeeperTestSuite) TestMintLiquidityProviderToken() {
 				suite.CheckLptPrice(poolAddress)
 			} else if i == 3 {
 				balance := suite.app.BankKeeper.GetBalance(suite.ctx, owner, "udlp")
-				// LPT 7.751462306138USD  (30.949usd / supply 3992666udlp)
-				// (1000000 - 1000) / 7.751462306138 = 128878
-				suite.Require().Equal("4121544udlp", balance.String())
+				// usdc:lpt=10:2
+				// (1000000 - 1000) * 2 / 10  = 199800
+				suite.Require().Equal("6193800udlp", balance.String())
 
 				feeBalance := suite.app.BankKeeper.GetBalance(suite.ctx, derivativeFeeCollector, tc.sendCoin.Denom)
 				suite.Require().Equal("11000uusdc", feeBalance.String())
