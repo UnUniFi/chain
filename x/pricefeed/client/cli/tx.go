@@ -59,7 +59,7 @@ $ %s tx %s postprice uusdc:ubtc 24528.185864015486004064 60  --from myKeyName --
 				return err
 			}
 			expiry := now.Add(time.Second * time.Duration(expirySec))
-			msg := types.NewMsgPostPrice(clientCtx.GetFromAddress(), marketId, price, expiry)
+			msg := types.NewMsgPostPrice(clientCtx.GetFromAddress().String(), marketId, price, expiry)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

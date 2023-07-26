@@ -3,16 +3,15 @@ package types
 import (
 	"testing"
 
-	"github.com/UnUniFi/chain/types"
+	tmtime "github.com/cometbft/cometbft/types/time"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	tmtime "github.com/cometbft/cometbft/types/time"
+	"github.com/UnUniFi/chain/testutil/sample"
 )
 
-func TestMsgPlaceBid_ValidateBasic(t *testing.T) {
-	addr := types.StringAccAddress([]byte("someName"))
+func TestMsgPostPrice_ValidateBasic(t *testing.T) {
+	addr := sample.AccAddress()
 	price, _ := sdk.NewDecFromStr("0.3005")
 	expiry := tmtime.Now()
 	negativePrice, _ := sdk.NewDecFromStr("-3.05")
@@ -22,10 +21,10 @@ func TestMsgPlaceBid_ValidateBasic(t *testing.T) {
 		msg        MsgPostPrice
 		expectPass bool
 	}{
-		{"normal", MsgPostPrice{addr, "xrp", types.NewDecFromSDKDec(price), expiry}, true},
-		{"emptyAddr", MsgPostPrice{types.StringAccAddress{}, "xrp", types.NewDecFromSDKDec(price), expiry}, false},
-		{"emptyAsset", MsgPostPrice{addr, "", types.NewDecFromSDKDec(price), expiry}, false},
-		{"negativePrice", MsgPostPrice{addr, "xrp", types.NewDecFromSDKDec(negativePrice), expiry}, false},
+		{"normal", MsgPostPrice{addr, "xrp", price, expiry}, true},
+		{"emptyAddr", MsgPostPrice{"", "xrp", price, expiry}, false},
+		{"emptyAsset", MsgPostPrice{addr, "", price, expiry}, false},
+		{"negativePrice", MsgPostPrice{addr, "xrp", negativePrice, expiry}, false},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {

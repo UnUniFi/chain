@@ -6,8 +6,6 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/UnUniFi/chain/types"
-
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -15,7 +13,7 @@ import (
 func TestMarketValidate(t *testing.T) {
 	mockPrivKey := ed25519.GenPrivKey()
 	pubkey := mockPrivKey.PubKey()
-	addr := sdk.AccAddress(pubkey.Address())
+	addr := sdk.AccAddress(pubkey.Address()).String()
 
 	testCases := []struct {
 		msg     string
@@ -28,7 +26,7 @@ func TestMarketValidate(t *testing.T) {
 				MarketId:   "market",
 				BaseAsset:  "xrp",
 				QuoteAsset: "bnb",
-				Oracles:    types.StringAccAddresses([]sdk.AccAddress{addr}),
+				Oracles:    []string{addr},
 				Active:     true,
 			},
 			true,
@@ -63,7 +61,7 @@ func TestMarketValidate(t *testing.T) {
 				MarketId:   "market",
 				BaseAsset:  "xrp",
 				QuoteAsset: "bnb",
-				Oracles:    types.StringAccAddresses([]sdk.AccAddress{nil}),
+				Oracles:    []string{""},
 			},
 			false,
 		},
@@ -73,7 +71,7 @@ func TestMarketValidate(t *testing.T) {
 				MarketId:   "market",
 				BaseAsset:  "xrp",
 				QuoteAsset: "bnb",
-				Oracles:    types.StringAccAddresses([]sdk.AccAddress{addr, addr}),
+				Oracles:    []string{addr, addr},
 			},
 			false,
 		},
@@ -93,7 +91,7 @@ func TestPostedPriceValidate(t *testing.T) {
 	now := time.Now()
 	mockPrivKey := ed25519.GenPrivKey()
 	pubkey := mockPrivKey.PubKey()
-	addr := sdk.AccAddress(pubkey.Address())
+	addr := sdk.AccAddress(pubkey.Address()).String()
 
 	testCases := []struct {
 		msg         string
@@ -104,7 +102,7 @@ func TestPostedPriceValidate(t *testing.T) {
 			"valid posted price",
 			PostedPrice{
 				MarketId:      "market",
-				OracleAddress: types.StringAccAddress(addr),
+				OracleAddress: addr,
 				Price:         sdk.OneDec(),
 				Expiry:        now,
 			},
@@ -121,7 +119,7 @@ func TestPostedPriceValidate(t *testing.T) {
 			"invalid oracle",
 			PostedPrice{
 				MarketId:      "market",
-				OracleAddress: nil,
+				OracleAddress: "",
 			},
 			false,
 		},
@@ -129,7 +127,7 @@ func TestPostedPriceValidate(t *testing.T) {
 			"invalid price",
 			PostedPrice{
 				MarketId:      "market",
-				OracleAddress: types.StringAccAddress(addr),
+				OracleAddress: addr,
 				Price:         sdk.NewDec(-1),
 			},
 			false,
@@ -138,7 +136,7 @@ func TestPostedPriceValidate(t *testing.T) {
 			"zero expiry time ",
 			PostedPrice{
 				MarketId:      "market",
-				OracleAddress: types.StringAccAddress(addr),
+				OracleAddress: addr,
 				Price:         sdk.OneDec(),
 				Expiry:        time.Time{},
 			},

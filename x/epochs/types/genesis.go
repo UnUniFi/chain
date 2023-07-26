@@ -12,7 +12,6 @@ func NewGenesisState(epochs []EpochInfo) *GenesisState {
 var (
 	BASE_EPOCH = "base_epoch"
 	DAY_EPOCH  = "day"
-	MINT_EPOCH = "mint"
 )
 
 // DefaultGenesis returns the default Capability genesis state
@@ -40,15 +39,6 @@ func DefaultGenesis() *GenesisState {
 			Identifier:              BASE_EPOCH,
 			StartTime:               time.Time{},
 			Duration:                time.Hour * 6,
-			CurrentEpoch:            0,
-			CurrentEpochStartHeight: 0,
-			CurrentEpochStartTime:   time.Time{},
-			EpochCountingStarted:    false,
-		},
-		{
-			Identifier:              MINT_EPOCH,
-			StartTime:               time.Time{},
-			Duration:                time.Minute * 60,
 			CurrentEpoch:            0,
 			CurrentEpochStartHeight: 0,
 			CurrentEpochStartTime:   time.Time{},

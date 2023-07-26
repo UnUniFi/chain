@@ -1,0 +1,342 @@
+syntax = "proto3";
+package ununifi.derivatives;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/any.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+import "ununifi/derivatives/derivatives.proto";
+import "ununifi/derivatives/params.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/derivatives/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/params";
+  }
+  // this line is used by starport scaffolding # 2
+  rpc Pool(QueryPoolRequest) returns (QueryPoolResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/pool";
+  }
+
+   rpc LiquidityProviderTokenRealAPY(QueryLiquidityProviderTokenRealAPYRequest)
+      returns (QueryLiquidityProviderTokenRealAPYResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/liquidity-providers/real-apy";
+  }
+
+ rpc LiquidityProviderTokenNominalAPY(QueryLiquidityProviderTokenNominalAPYRequest)
+      returns (QueryLiquidityProviderTokenNominalAPYResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/liquidity-providers/nominal-apy";
+  }
+
+  rpc PerpetualFutures(QueryPerpetualFuturesRequest) returns (QueryPerpetualFuturesResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/perpetual-futures";
+  }
+
+  rpc PerpetualFuturesMarket(QueryPerpetualFuturesMarketRequest) returns (QueryPerpetualFuturesMarketResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/perpetual-futures/{base_denom}/{quote_denom}";
+  }
+
+  rpc PerpetualOptions(QueryPerpetualOptionsRequest) returns (QueryPerpetualOptionsResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/perpetual-options";
+  }
+
+  rpc PerpetualOptionsMarket(QueryPerpetualOptionsMarketRequest) returns (QueryPerpetualOptionsMarketResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/perpetual-options/{base_denom}/{quote_denom}";
+  }
+
+  rpc AllPositions(QueryAllPositionsRequest) returns (QueryAllPositionsResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/positions";
+  }
+
+  rpc Position(QueryPositionRequest) returns (QueryPositionResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/positions/{position_id}";
+  }
+
+  rpc PerpetualFuturesPositionSize(QueryPerpetualFuturesPositionSizeRequest)
+      returns (QueryPerpetualFuturesPositionSizeResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/positions/perpetual-futures/{position_type}/{address}";
+  }
+
+  rpc AddressPositions(QueryAddressPositionsRequest) returns (QueryAddressPositionsResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/{address}/positions";
+  }
+
+  rpc DLPTokenRates(QueryDLPTokenRateRequest) returns (QueryDLPTokenRateResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/pools/dlp";
+  }
+
+   rpc EstimateDLPTokenAmount(QueryEstimateDLPTokenAmountRequest) returns (QueryEstimateDLPTokenAmountResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/estimate-dlp-token-amount/{mint_denom}/{amount}";
+  }
+
+  rpc EstimateRedeemTokenAmount(QueryEstimateRedeemTokenAmountRequest)
+      returns (QueryEstimateRedeemTokenAmountResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/estimate-redeem-amount/{redeem_denom}/{lpt_amount}";
+  }
+
+  rpc AvailableAssetInPoolByDenom(QueryAvailableAssetInPoolByDenomRequest)
+      returns (QueryAvailableAssetInPoolByDenomResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/pools/available-asset/{denom}";
+  }
+
+  rpc AvailableAssetsInPool(QueryAvailableAssetsInPoolRequest) returns (QueryAvailableAssetsInPoolResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/pools/available-assets";
+  }
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// this line is used by starport scaffolding # 3
+message QueryPoolRequest {}
+
+message QueryPoolResponse {
+  string metrics_quote_ticker = 1 [
+    (gogoproto.moretags)  = "yaml:\"metrics_quote_ticker\""
+  ];
+  PoolMarketCap pool_market_cap = 2 [
+    (gogoproto.moretags)  = "yaml:\"pool_market_cap\""
+  ];  
+}
+
+message QueryLiquidityProviderTokenRealAPYRequest {
+  int64 before_height = 1 [
+    (gogoproto.moretags)  = "yaml:\"before_height\""
+  ];
+  int64 after_height = 2 [
+    (gogoproto.moretags)  = "yaml:\"after_height\""
+  ];
+}
+
+message QueryLiquidityProviderTokenRealAPYResponse {
+  string apy = 1 [
+    (gogoproto.moretags)  = "yaml:\"apy\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+}
+
+message QueryLiquidityProviderTokenNominalAPYRequest {
+  int64 before_height = 1 [
+    (gogoproto.moretags)  = "yaml:\"before_height\""
+  ];
+  int64 after_height = 2 [
+    (gogoproto.moretags)  = "yaml:\"after_height\""
+  ];
+}
+
+message QueryLiquidityProviderTokenNominalAPYResponse {
+  string apy = 1 [
+    (gogoproto.moretags)  = "yaml:\"apy\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+}
+
+message QueryPerpetualFuturesRequest {}
+
+message QueryPerpetualFuturesResponse {
+  string metrics_quote_ticker = 1 [
+    (gogoproto.moretags)  = "yaml:\"metrics_quote_ticker\""
+  ];
+  string long_positions = 2 [
+    (gogoproto.moretags)  = "yaml:\"long_positions\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string short_positions = 3 [
+    (gogoproto.moretags)  = "yaml:\"short_positions\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryPerpetualFuturesMarketRequest {
+  string base_denom = 1 [
+    (gogoproto.moretags)  = "yaml:\"base_denom\""
+  ];
+  string quote_denom = 2 [
+    (gogoproto.moretags)  = "yaml:\"quote_denom\""
+  ];
+}
+
+message QueryPerpetualFuturesMarketResponse {
+  string price = 1 [
+    (gogoproto.moretags)  = "yaml:\"price\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+  string metrics_quote_ticker = 2 [
+    (gogoproto.moretags)  = "yaml:\"metrics_quote_ticker\""
+  ];
+  string long_positions = 3 [
+    (gogoproto.moretags)  = "yaml:\"long_positions\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+  string short_positions = 4 [
+    (gogoproto.moretags)  = "yaml:\"short_positions\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec"
+  ];
+}
+
+message QueryPerpetualOptionsRequest {}
+
+message QueryPerpetualOptionsResponse {}
+
+message QueryPerpetualOptionsMarketRequest {
+  string base_denom = 1 [
+    (gogoproto.moretags)  = "yaml:\"base_denom\""
+  ];
+  string quote_denom = 2 [
+    (gogoproto.moretags)  = "yaml:\"quote_denom\""
+  ];
+}
+
+message QueryPerpetualOptionsMarketResponse {}
+
+message QueryAllPositionsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllPositionsResponse {
+  repeated Position positions = 1 [
+    (gogoproto.moretags)  = "yaml:\"positions\""
+  ];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryPositionRequest {
+  string position_id = 1;
+}
+
+message QueryPositionResponse {
+  Position position = 1 [
+    (gogoproto.moretags)  = "yaml:\"position\"",
+    (gogoproto.nullable) = true
+  ];
+  cosmos.base.v1beta1.Coin valuation_profit = 2 [
+    (gogoproto.moretags) = "yaml:\"valuation_profit\"",
+    (gogoproto.nullable) = false
+  ];
+  string margin_maintenance_rate = 3 [
+    (gogoproto.moretags) = "yaml:\"margin_maintenance_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+
+  cosmos.base.v1beta1.Coin effective_margin = 4 [
+    (gogoproto.moretags) = "yaml:\"effective_margin\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryPerpetualFuturesPositionSizeRequest {
+  PositionType position_type = 1 [
+    (gogoproto.moretags) = "yaml:\"position_type\""
+  ];
+  string address = 2 [
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+}
+
+message QueryPerpetualFuturesPositionSizeResponse {
+  cosmos.base.v1beta1.Coin total_position_size_usd = 1 [
+    (gogoproto.moretags) = "yaml:\"total_position_usd_size\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryAddressPositionsRequest {
+  string address = 1 [
+    (gogoproto.moretags)  = "yaml:\"address\""
+  ];
+}
+
+message QueryAddressPositionsResponse {
+  repeated QueriedPosition positions = 1 [
+    (gogoproto.moretags)  = "yaml:\"positions\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryDLPTokenRateRequest {
+}
+
+message QueryDLPTokenRateResponse {
+  string symbol = 1;
+  repeated cosmos.base.v1beta1.Coin rates = 2 [
+    (gogoproto.moretags)  = "yaml:\"dlp_rates\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryEstimateDLPTokenAmountRequest {
+  string mint_denom = 1 [
+    (gogoproto.moretags)  = "yaml:\"mint_denom\""
+  ];
+  string amount = 2 [
+    (gogoproto.moretags)  = "yaml:\"amount\""
+  ];
+}
+
+message QueryEstimateDLPTokenAmountResponse {
+  cosmos.base.v1beta1.Coin estimated_dlp_amount = 1 [
+    (gogoproto.moretags)  = "yaml:\"amount\"",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin deposit_fee = 2 [
+    (gogoproto.moretags)  = "yaml:\"deposit_fee\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryEstimateRedeemTokenAmountRequest {
+  string redeem_denom = 1 [
+    (gogoproto.moretags)  = "yaml:\"redeem_denom\""
+  ];
+  string lpt_amount = 2 [
+    (gogoproto.moretags)  = "yaml:\"lpt_amount\""
+  ];
+}
+
+message QueryEstimateRedeemTokenAmountResponse {
+  cosmos.base.v1beta1.Coin amount = 1 [
+    (gogoproto.moretags)  = "yaml:\"amount\"",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin fee = 2 [
+    (gogoproto.moretags)  = "yaml:\"fee\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryAvailableAssetInPoolByDenomRequest {
+  string denom = 1 [
+    (gogoproto.moretags)  = "yaml:\"denom\""
+  ];
+}
+
+message QueryAvailableAssetInPoolByDenomResponse {
+  cosmos.base.v1beta1.Coin available_asset = 1 [
+    (gogoproto.moretags)  = "yaml:\"available_asset\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryAvailableAssetsInPoolRequest {
+}
+
+message QueryAvailableAssetsInPoolResponse {
+  repeated cosmos.base.v1beta1.Coin available_assets = 1 [
+    (gogoproto.moretags)  = "yaml:\"available_assets\"",
+    (gogoproto.nullable) = false
+  ];
+}

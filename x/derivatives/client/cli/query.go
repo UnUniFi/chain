@@ -368,7 +368,7 @@ func CmdQueryEstimateDLPTokenAmount() *cobra.Command {
 
 func CmdQueryEstimateRedeemTokenAmount() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "estimate-delp-token-amount [redeem-denom] [amount]",
+		Use:  "estimate-redeem-token-amount [redeem-denom] [amount]",
 		Long: "shows the estimated redeem token amount for the specified amount of the asset",
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {

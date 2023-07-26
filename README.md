@@ -16,9 +16,9 @@ Install Go. Use the 19.x series version.
 
 ```bash
 $ wget https://go.dev/dl/go1.19.2.linux-amd64.tar.gz
-$ rm -rf /usr/local/go && tar -C /usr/local -xzf go1.18.linux-amd64.tar.gz
+$ sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.19.2.linux-amd64.tar.gz
 $ vim ~/.bashrc
-export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
 $ source ~/.bashrc
 $ go version
 go version go1.19.2 linux/amd64
@@ -29,7 +29,7 @@ Clone the UnUniFi blockchain repository, check out the given branch, and build i
 ```bash
 git clone https://github.com/UnUniFi/chain chain_repo
 cd chain_repo
-git checkout v1.0.0
+git checkout v2.2.0
 git pull
 make install
 ```
@@ -141,7 +141,7 @@ After=network-online.target
 Environment="DAEMON_NAME=ununifid"
 Environment="DAEMON_HOME=/home/<your-user>/.ununifi"
 Environment="DAEMON_RESTART_AFTER_UPGRADE=true"
-Environment="DAEMON_ALLOW_DOWNLOAD_BINARIES=false"
+Environment="DAEMON_ALLOW_DOWNLOAD_BINARIES=true"
 Environment="DAEMON_LOG_BUFFER_SIZE=512"
 Environment="UNSAFE_SKIP_BACKUP=true"
 User=<your-user>

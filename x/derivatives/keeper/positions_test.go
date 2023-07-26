@@ -8,14 +8,19 @@ import (
 
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	codecTypes "github.com/cosmos/cosmos-sdk/codec/types"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 
-	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-
-	ununifitypes "github.com/UnUniFi/chain/types"
 	"github.com/UnUniFi/chain/x/derivatives/types"
-	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
+
+func (suite *KeeperTestSuite) TestIncreaseLastPositionId() {
+	suite.keeper.IncreaseLastPositionId(suite.ctx)
+
+	suite.Require().Equal(suite.keeper.GetLastPositionId(suite.ctx), uint64(1))
+
+	suite.keeper.IncreaseLastPositionId(suite.ctx)
+
+	suite.Require().Equal(suite.keeper.GetLastPositionId(suite.ctx), uint64(2))
+}
 
 func (suite *KeeperTestSuite) TestGetAllPositions() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
@@ -43,7 +48,7 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 	positions := []types.Position{
 		{
 			Id:      "0",
-			Address: owner.Bytes(),
+			Address: owner.String(),
 			Market: types.Market{
 				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
@@ -55,10 +60,11 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 			PositionInstance: *position0Inst,
 			RemainingMargin:  sdk.NewCoin("uusdc", sdk.NewInt(1000)),
 			LastLeviedAt:     time.Now().UTC(),
+			LeviedAmount:     sdk.NewCoin("uusdc", sdk.NewInt(100)),
 		},
 		{
 			Id:      "1",
-			Address: owner.Bytes(),
+			Address: owner.String(),
 			Market: types.Market{
 				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
@@ -70,6 +76,7 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 			PositionInstance: *position1Inst,
 			RemainingMargin:  sdk.NewCoin("uatom", sdk.NewInt(1000)),
 			LastLeviedAt:     time.Now().UTC(),
+			LeviedAmount:     sdk.NewCoin("uatom", sdk.NewInt(100)),
 		},
 	}
 
@@ -127,7 +134,7 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 	positions := []types.Position{
 		{
 			Id:      "0",
-			Address: owner.Bytes(),
+			Address: owner.String(),
 			Market: types.Market{
 				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
@@ -138,7 +145,7 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 		},
 		{
 			Id:      "1",
-			Address: owner2.Bytes(),
+			Address: owner2.String(),
 			Market: types.Market{
 				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
@@ -159,7 +166,9 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 
 	// check per id
 	for _, position := range positions {
-		p := suite.keeper.GetAddressPositionWithId(suite.ctx, position.Address.AccAddress(), position.Id)
+		address, err := sdk.AccAddressFromBech32(position.Address)
+		suite.Require().NoError(err)
+		p := suite.keeper.GetAddressPositionWithId(suite.ctx, address, position.Id)
 		suite.Require().NotNil(p)
 		suite.Require().Equal(p.Id, position.Id)
 		suite.Require().Equal(p.Market, position.Market)
@@ -188,146 +197,4 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 	suite.Require().Equal(lastPosition, types.Position{})
 }
 
-func (suite *KeeperTestSuite) TestIncreaseLastPositionId() {
-	suite.keeper.IncreaseLastPositionId(suite.ctx)
-
-	suite.Require().Equal(suite.keeper.GetLastPositionId(suite.ctx), uint64(1))
-
-	suite.keeper.IncreaseLastPositionId(suite.ctx)
-
-	suite.Require().Equal(suite.keeper.GetLastPositionId(suite.ctx), uint64(2))
-}
-
-// FIXME: fix this test
-func (suite *KeeperTestSuite) TestOpenCloseLiquidatePosition() {
-	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-
-	// set price for asset
-	_, err := suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:uusdc", sdk.NewDec(13), suite.ctx.BlockTime().Add(time.Hour*3))
-	suite.Require().NoError(err)
-	params := suite.app.PricefeedKeeper.GetParams(suite.ctx)
-	params.Markets = []pricefeedtypes.Market{
-		{MarketId: "uatom:uusdc", BaseAsset: "uatom", QuoteAsset: "uusdc", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
-	}
-	suite.app.PricefeedKeeper.SetParams(suite.ctx, params)
-	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:uusdc")
-	suite.Require().NoError(err)
-
-	// initial atom balance
-	coins := sdk.Coins{sdk.NewInt64Coin("uatom", 1000000), sdk.NewInt64Coin("uusdc", 1000000)}
-	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
-	suite.Require().NoError(err)
-	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, owner, coins)
-	suite.Require().NoError(err)
-
-	// open a new long future position when no previous position exists
-	positionInstVal := types.PerpetualFuturesPositionInstance{
-		PositionType: types.PositionType_LONG,
-		Size_:        sdk.NewDecWithPrec(100, 0),
-		Leverage:     5,
-	}
-
-	positionAny, err := codectypes.NewAnyWithValue(&positionInstVal)
-	suite.Require().Nil(err)
-	err = suite.keeper.OpenPosition(suite.ctx, &types.MsgOpenPosition{
-		Sender: owner.Bytes(),
-		Margin: sdk.NewInt64Coin("uatom", 1000), // long -> uatom, short -> uusdc
-		Market: types.Market{
-			BaseDenom:  "uatom",
-			QuoteDenom: "uusdc",
-		},
-		PositionInstance: *positionAny,
-	})
-	suite.Require().NoError(err)
-	allPositions := suite.keeper.GetAllPositions(suite.ctx)
-	suite.Require().Len(allPositions, 1)
-
-	// open another position with same size
-	err = suite.keeper.OpenPosition(suite.ctx, &types.MsgOpenPosition{
-		Sender: owner.Bytes(),
-		Margin: sdk.NewInt64Coin("uatom", 1000), // long -> uatom, short -> uusdc
-		Market: types.Market{
-			BaseDenom:  "uatom",
-			QuoteDenom: "uusdc",
-		},
-		PositionInstance: *positionAny,
-	})
-	suite.Require().NoError(err)
-	allPositions = suite.keeper.GetAllPositions(suite.ctx)
-	suite.Require().Len(allPositions, 2)
-
-	// open short future position
-	positionInstVal = types.PerpetualFuturesPositionInstance{
-		PositionType: types.PositionType_SHORT,
-		Size_:        sdk.NewDecWithPrec(100, 0),
-		Leverage:     5,
-	}
-
-	positionAny, err = codectypes.NewAnyWithValue(&positionInstVal)
-	suite.Require().Nil(err)
-	err = suite.keeper.OpenPosition(suite.ctx, &types.MsgOpenPosition{
-		Sender: owner.Bytes(),
-		Margin: sdk.NewInt64Coin("uusdc", 100), // long -> uatom, short -> uusdc
-		Market: types.Market{
-			BaseDenom:  "uatom",
-			QuoteDenom: "uusdc",
-		},
-		PositionInstance: *positionAny,
-	})
-	suite.Require().NoError(err)
-	allPositions = suite.keeper.GetAllPositions(suite.ctx)
-	suite.Require().Len(allPositions, 3)
-
-	// TODO: open long options position after implementation
-	// positionIns := types.PerpetualOptionsPositionInstance{
-	// 		OptionType   OptionType
-	// 		PositionType PositionType
-	// 		StrikePrice  sdk.Dec
-	// 		Premium      sdk.Dec
-	// }
-
-	balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
-	suite.Require().Equal(balances.String(), "998000uatom,999900uusdc")
-
-	// ReportLiquidation
-	cacheCtx, _ := suite.ctx.CacheContext()
-	err = suite.keeper.ReportLiquidation(cacheCtx, &types.MsgReportLiquidation{
-		Sender:          owner.Bytes(),
-		PositionId:      allPositions[0].Id,
-		RewardRecipient: owner.Bytes(),
-	})
-	suite.Require().Error(err)
-
-	// ReportLevyPeriod
-	cacheCtx, _ = suite.ctx.CacheContext()
-	err = suite.keeper.ReportLevyPeriod(cacheCtx, &types.MsgReportLevyPeriod{
-		Sender:          owner.Bytes(),
-		PositionId:      allPositions[0].Id,
-		RewardRecipient: owner.Bytes(),
-	})
-	suite.Require().Error(err)
-
-	err = suite.keeper.ClosePosition(suite.ctx, &types.MsgClosePosition{
-		Sender:     owner.Bytes(),
-		PositionId: allPositions[0].Id,
-	})
-	suite.Require().NoError(err)
-	balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
-	suite.Require().Equal(balances.String(), "999000uatom,999900uusdc")
-
-	err = suite.keeper.ClosePosition(suite.ctx, &types.MsgClosePosition{
-		Sender:     owner.Bytes(),
-		PositionId: allPositions[1].Id,
-	})
-	suite.Require().NoError(err)
-	balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
-	suite.Require().Equal(balances.String(), "1000000uatom,999900uusdc")
-
-	err = suite.keeper.ClosePosition(suite.ctx, &types.MsgClosePosition{
-		Sender:     owner.Bytes(),
-		PositionId: allPositions[2].Id,
-	})
-	suite.Require().NoError(err)
-	balances = suite.app.BankKeeper.GetAllBalances(suite.ctx, owner)
-	suite.Require().Equal(balances.String(), "1000000uatom,1000000uusdc")
-}
+// close, liquidate, and levy test implemented in perpetual_futures_test.go

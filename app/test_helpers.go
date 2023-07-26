@@ -133,7 +133,6 @@ func Setup(t *testing.T, opts ...wasm.Option) *App {
 	}
 	chainID := "testing"
 	app := SetupWithGenesisValSet(t, valSet, []authtypes.GenesisAccount{acc}, chainID, opts, balance)
-
 	return app
 }
 

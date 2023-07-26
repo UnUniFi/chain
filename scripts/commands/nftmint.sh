@@ -23,17 +23,17 @@ SCRIPT_DIR=$(cd $(dirname $0); pwd)
 # create class and get the class id
 # ununifid tx nftmint create-class Test[ClassName] ipfs://testcid/[BaseTokenUri] 1000[TokenSupplyCap] 0[MintingPermission]  --from debug --chain-id test"
 # onlyOwner can create nft
-$BINARY tx nftmint create-class Test ipfs://testcid/ 100000 0 --from $USER1 $conf 
+$BINARY tx nftfactory create-class Test-onlyOwner ipfs://testcid/ 100000 0 --from $USER1 $conf 
 # everyone can create nft
-$BINARY tx nftmint create-class Test ipfs://testcid/ 100000 1 --from $USER1 $conf 
+$BINARY tx nftfactory create-class Test-everyone ipfs://testcid/ 100000 1 --from $USER1 $conf 
 CLASS_ID_ONLYOWNER=$(ununifid q nftmint class-ids-by-owner $USER_ADDRESS_1 --output json |jq .owning_class_id_list.class_id[0] |sed -e 's/\"//g')
 CLASS_ID_EVERYONE=$(ununifid q nftmint class-ids-by-owner $USER_ADDRESS_1 --output json |jq .owning_class_id_list.class_id[1] |sed -e 's/\"//g')
 ## NOTE: $CLASS_ID returns "class_id" that returns error against below messages. 
 ##       Just try redefine CLASS_ID with simple text or just replace once you get the class_id.
 ##       If you know the solution for this, please let me know or just commit and push.
 # mint nft
-$BINARY tx nftmint mint-nft $CLASS_ID_ONLYOWNER a00 $USER_ADDRESS_1  --from $USER1 --chain-id test -y
-$BINARY tx nftmint mint-nft $CLASS_ID_EVERYONE a00 $USER_ADDRESS_1  --from $USER1 --chain-id test -y
+$BINARY tx nftfactory mint-nft $CLASS_ID_ONLYOWNER a00 $USER_ADDRESS_1  --from $USER1 --chain-id test -y
+$BINARY tx nftfactory mint-nft $CLASS_ID_EVERYONE a00 $USER_ADDRESS_1  --from $USER1 --chain-id test -y
 
 # # burn nft
 # $BINARY tx nftmint burn-nft $CLASS_ID a00 --from debug --chain-id test -y

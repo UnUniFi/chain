@@ -41,3 +41,27 @@ ununifid tx yieldaggregator proposal-stop-yieldfarmtarget --title="title" --desc
 
 ununifid query gov proposals
 ununifid tx gov vote 2 yes  --chain-id=test --from=validator --keyring-backend=test --gas=300000 -y --broadcast-mode=block
+
+
+# STRATEGY_DENOM="uguu"
+
+# STRATEGY_DENOM="stake"
+# STRATEGY_DENOM="uguu"
+# DEPOSIT_DENOM="uguu"
+# $BINARY tx yieldaggregator proposal-add-strategy --title="title" --description="description" --deposit=10000000$DEPOSIT_DENOM --denom=$STRATEGY_DENOM --contract-addr=$CONTRACT_ADDRESS1 --name="Contract Staking" --git-url="" --from $VAL1 --gas=9223372036854775807 $conf | grep txhash | awk '{ print $2 }'| xargs -I {} sh -c 'sleep 5; $0 q tx {}' $BINARY
+
+# $BINARY query gov proposals
+# $BINARY tx gov vote 1 yes --from=$VAL1 --gas=9223372036854775807 $conf | grep txhash | awk '{ print $2 }'| xargs -I {} sh -c 'sleep 5; $0 q tx {}' $BINARY
+
+# $BINARY tx wasm execute $CONTRACT '{"add_rewards":{}}' --amount=1000uguu --from $VAL1 --gas=9223372036854775807 $conf | grep txhash | awk '{ print $2 }'| xargs -I {} sh -c 'sleep 5; $0 q tx {}' $BINARY
+
+# $BINARY query gov proposals
+# $BINARY q yieldaggregator list-strategy stake
+# $BINARY q yieldaggregator list-strategy uguu
+
+# $BINARY q yieldaggregator show-strategy stake
+
+
+# $BINARY tx yieldaggregator create-vault $STRATEGY_DENOM \
+# "0.01" "0.3" 1000000$STRATEGY_DENOM 1000000$STRATEGY_DENOM "0:1" \
+# --from=$VAL1 --gas=auto --gas-adjustment=1.3 $conf 

@@ -5,7 +5,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	ununifitypes "github.com/UnUniFi/chain/types"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
@@ -14,45 +13,45 @@ func (suite *KeeperTestSuite) TestGetAssetPrice() {
 	price, err := suite.keeper.GetAssetPrice(suite.ctx, "uatom")
 	suite.Require().NoError(err)
 	suite.Require().Equal(price.MarketId, "uatom:usd")
-	suite.Require().Equal(price.Price.String(), "0.000015280000000000")
+	suite.Require().Equal(price.Price, sdk.MustNewDecFromStr("0.00001"))
 
 	// initialize price keeper
-	_, err = suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:usd", sdk.NewDec(12), suite.ctx.BlockTime().Add(time.Hour*3))
+	_, err = suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:usd", sdk.MustNewDecFromStr("0.000015"), suite.ctx.BlockTime().Add(time.Hour*3))
 	suite.Require().NoError(err)
 	params := suite.app.PricefeedKeeper.GetParams(suite.ctx)
 	params.Markets = []pricefeedtypes.Market{
-		{MarketId: "uatom:usd", BaseAsset: "uatom", QuoteAsset: "usd", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+		{MarketId: "uatom:usd", BaseAsset: "uatom", QuoteAsset: "usd", Oracles: []string{}, Active: true},
 	}
 	suite.app.PricefeedKeeper.SetParams(suite.ctx, params)
 	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:usd")
 	suite.Require().NoError(err)
 
 	// get initialized value
-	price, err = suite.keeper.GetAssetPrice(suite.ctx, "uatom")
+	price, _ = suite.keeper.GetAssetPrice(suite.ctx, "uatom")
 	suite.Require().Equal(price.MarketId, "uatom:usd")
-	suite.Require().Equal(price.Price.String(), "12.000000000000000000")
+	suite.Require().Equal(price.Price, sdk.MustNewDecFromStr("0.000015"))
 }
 
 func (suite *KeeperTestSuite) TestGetPrice() {
 	// get uninitialized value
-	price, err := suite.keeper.GetPrice(suite.ctx, "uatom", "usd")
+	price, err := suite.keeper.GetPrice(suite.ctx, "uusdc", "usd")
 	suite.Require().NoError(err)
-	suite.Require().Equal(price.MarketId, "uatom:usd")
-	suite.Require().Equal(price.Price.String(), "0.000015280000000000")
+	suite.Require().Equal(price.MarketId, "uusdc:usd")
+	suite.Require().Equal(price.Price, sdk.MustNewDecFromStr("0.000001"))
 
 	// initialize price keeper
-	_, err = suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:usd", sdk.NewDec(12), suite.ctx.BlockTime().Add(time.Hour*3))
+	_, err = suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uusdc:usd", sdk.MustNewDecFromStr("0.0000009"), suite.ctx.BlockTime().Add(time.Hour*3))
 	suite.Require().NoError(err)
 	params := suite.app.PricefeedKeeper.GetParams(suite.ctx)
 	params.Markets = []pricefeedtypes.Market{
-		{MarketId: "uatom:usd", BaseAsset: "uatom", QuoteAsset: "usd", Oracles: []ununifitypes.StringAccAddress{}, Active: true},
+		{MarketId: "uusdc:usd", BaseAsset: "uusdc", QuoteAsset: "usd", Oracles: []string{}, Active: true},
 	}
 	suite.app.PricefeedKeeper.SetParams(suite.ctx, params)
-	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uatom:usd")
+	err = suite.app.PricefeedKeeper.SetCurrentPrices(suite.ctx, "uusdc:usd")
 	suite.Require().NoError(err)
 
 	// get initialized value
-	price, err = suite.keeper.GetPrice(suite.ctx, "uatom", "usd")
-	suite.Require().Equal(price.MarketId, "uatom:usd")
-	suite.Require().Equal(price.Price.String(), "12.000000000000000000")
+	price, _ = suite.keeper.GetPrice(suite.ctx, "uusdc", "usd")
+	suite.Require().Equal(price.MarketId, "uusdc:usd")
+	suite.Require().Equal(price.Price, sdk.MustNewDecFromStr("0.0000009"))
 }
