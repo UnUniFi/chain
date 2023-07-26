@@ -113,9 +113,9 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 		return sdk.Coin{}, sdk.Coin{}, types.ErrInvalidRedeemAmount
 	}
 	// redeemAmount = lptPrice * lptAmount / redeemAssetPrice
-	totalRedeemAmount := lptPrice.Mul(sdk.NewDecFromInt(lptAmount)).Quo(redeemAssetPrice.Price)
+	totalRedeemAmount := lptPrice.Mul(sdk.NewDecFromInt(lptAmount)).Quo(redeemAssetPrice.Price).TruncateInt()
 
-	if totalRedeemAmount.GT(sdk.NewDecFromInt(redeemAssetBalance.Amount)) {
+	if redeemAssetBalance.Amount.LT(totalRedeemAmount) {
 		return sdk.Coin{}, sdk.Coin{}, types.ErrInvalidRedeemAmount
 	}
 
@@ -133,8 +133,8 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 	// redeemFeeRate = baseRedeemFeeRate * (1 + increaseRate)
 	redeemFeeRate := k.GetLPTokenBaseRedeemFee(ctx).Mul(increaseRate.Add(sdk.NewDecWithPrec(1, 0)))
 
-	redeem := sdk.NewCoin(redeemDenom, totalRedeemAmount.TruncateInt())
-	fee := sdk.NewCoin(redeemDenom, totalRedeemAmount.Mul(redeemFeeRate).TruncateInt())
+	redeem := sdk.NewCoin(redeemDenom, totalRedeemAmount)
+	fee := sdk.NewCoin(redeemDenom, sdk.NewDecFromInt(totalRedeemAmount).Mul(redeemFeeRate).TruncateInt())
 	redeem, err = redeem.SafeSub(fee)
 	if err != nil {
 		return sdk.Coin{}, sdk.Coin{}, err
@@ -170,12 +170,22 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgDeposi
 		return fmt.Errorf("invalid deposit token: %s", msg.Amount.Denom)
 	}
 
-	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, depositor, types.ModuleName, sdk.Coins{msg.Amount}); err != nil {
+	fee, err := k.CalcDepositingFee(ctx, msg.Amount, params.PoolParams.BaseLptMintFee)
+	if err != nil {
 		return err
 	}
 
-	fee, err := k.CalcDepositingFee(ctx, msg.Amount, params.PoolParams.BaseLptMintFee)
+	deposit, err := msg.Amount.SafeSub(fee)
 	if err != nil {
+		return err
+	}
+
+	mintingDLP, err := k.DetermineMintingLPTokenAmount(ctx, deposit)
+	if err != nil {
+		return err
+	}
+
+	if err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, depositor, types.ModuleName, sdk.Coins{msg.Amount}); err != nil {
 		return err
 	}
 
@@ -189,16 +199,6 @@ func (k Keeper) MintLiquidityProviderToken(ctx sdk.Context, msg *types.MsgDeposi
 		if fee.IsNegative() {
 			return fmt.Errorf("negative fee: %s", fee)
 		}
-	}
-
-	deposit, err := msg.Amount.SafeSub(fee)
-	if err != nil {
-		return err
-	}
-
-	mintingDLP, err := k.DetermineMintingLPTokenAmount(ctx, deposit)
-	if err != nil {
-		return err
 	}
 
 	if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.Coins{mintingDLP}); err != nil {
