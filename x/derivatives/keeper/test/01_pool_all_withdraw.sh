@@ -41,7 +41,7 @@ ununifid tx derivatives deposit-to-pool 100000000ubtc \
 sleep $sleep
 
 user1_udlp_balance=$(ununifid q bank balances ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w --denom udlp -o json | jq .amount | tr -d '"')
-expected_user1_udlp_balance=$(($expected_user1_udlp_balance + 83194445))
+expected_user1_udlp_balance=$(($expected_user1_udlp_balance + 166666665))
 
 if [ "$user1_udlp_balance" = "$expected_user1_udlp_balance" ]; then
   echo "pass: udlp balance is correct: $user1_udlp_balance"
@@ -51,7 +51,7 @@ else
 fi
 
 echo "------------withdraw from pool------------"
-ununifid tx derivatives withdraw-from-pool 249583334 ubtc \
+ununifid tx derivatives withdraw-from-pool $user1_udlp_balance ubtc \
 --from user1 --keyring-backend test --chain-id test --yes
 
 sleep $sleep
@@ -64,3 +64,7 @@ else
   echo "error: ubtc balance is incorrect:"
   echo "initial: $init_ubtc_balance actual: $user1_ubtc_balance"
 fi
+
+# 0udlp supply
+ununifid q derivatives delp-token-rate
+ununifid q derivatives pool
