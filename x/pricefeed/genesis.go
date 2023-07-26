@@ -26,21 +26,19 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 			}
 		}
 	}
-	params := genState.Params
+	params := k.GetParams(ctx)
 
 	// Set the current price (if any) based on what's now in the store
 	for _, market := range params.Markets {
 		if !market.Active {
 			continue
 		}
-		rps, err := k.GetRawPrices(ctx, market.MarketId)
-		if err != nil {
-			panic(err)
-		}
+		rps := k.GetRawPrices(ctx, market.MarketId)
+
 		if len(rps) == 0 {
 			continue
 		}
-		err = k.SetCurrentPrices(ctx, market.MarketId)
+		err := k.SetCurrentPrices(ctx, market.MarketId)
 		if err != nil {
 			panic(err)
 		}
@@ -49,14 +47,12 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 
 // ExportGenesis returns the capability module's exported genesis.
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
+	// Get the params for markets and oracles
 	params := k.GetParams(ctx)
 
 	var postedPrices []types.PostedPrice
 	for _, market := range k.GetMarkets(ctx) {
-		pp, err := k.GetRawPrices(ctx, market.MarketId)
-		if err != nil {
-			panic(err)
-		}
+		pp := k.GetRawPrices(ctx, market.MarketId)
 		postedPrices = append(postedPrices, pp...)
 	}
 	return types.NewGenesisState(params, postedPrices)

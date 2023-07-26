@@ -14,13 +14,9 @@ func (k Keeper) RawPriceAll(c context.Context, req *types.QueryAllRawPriceReques
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var prices types.PostedPrices
 	ctx := sdk.UnwrapSDKContext(c)
 
-	prices, err := k.GetRawPrices(ctx, req.MarketId)
-	if err != nil {
-		return nil, status.Error(codes.NotFound, "not found")
-	}
+	prices := k.GetRawPrices(ctx, req.MarketId)
 
 	return &types.QueryAllRawPriceResponse{Prices: prices}, nil
 }
