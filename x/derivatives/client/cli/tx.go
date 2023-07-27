@@ -317,7 +317,7 @@ func CmdReportLevyPeriod() *cobra.Command {
 Example:
 $ %s tx %s report-levy-period --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(1),
+		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
