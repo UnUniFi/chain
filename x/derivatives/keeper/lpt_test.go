@@ -9,23 +9,23 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
-	pftypes "github.com/UnUniFi/chain/x/pricefeed/types"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
 // TODO: impl more various situations for the test cases
 func (suite *KeeperTestSuite) TestInitialLiquidityProviderTokenSupply() {
-	mockPrice := sdk.OneDec()
-	mockAssetPrice := &pftypes.CurrentPrice{
-		MarketId: "uatom:usd",
-		Price:    mockPrice,
-	}
+	mockAmount := sdk.NewInt64Coin("uatom", 1000000)
+	// mockPrice := sdk.OneDec()
+	// mockAssetPrice := &pftypes.CurrentPrice{
+	// 	MarketId: "uatom:usd",
+	// 	Price:    mockPrice,
+	// }
 
-	mockDepositingTokenAmount := sdk.OneDec()
-	mockAssetMarketCap := mockPrice.Mul(mockDepositingTokenAmount)
+	//mockDepositingTokenAmount := sdk.OneDec()
+	//mockAssetMarketCap := mockPrice.Mul(mockDepositingTokenAmount)
 
-	initialLPTSupply, err := suite.app.DerivativesKeeper.InitialLiquidityProviderTokenSupply(suite.ctx, mockAssetPrice, mockAssetMarketCap, TestBaseTokenDenom)
-	suite.Require().Equal(sdk.NewInt(2), initialLPTSupply.Amount)
+	initialLPTSupply, err := suite.app.DerivativesKeeper.InitialLiquidityProviderTokenSupply(suite.ctx, mockAmount)
+	suite.Require().Equal(mockAmount.Amount, initialLPTSupply.Amount)
 	suite.Require().Nil(err)
 }
 
@@ -209,16 +209,15 @@ func (suite *KeeperTestSuite) TestMintLiquidityProviderToken() {
 
 			if i == 0 {
 				balance := suite.app.BankKeeper.GetBalance(suite.ctx, owner, "udlp")
-				// Initial atom:lpt=1:2
-				// 1000000 - 0fee) * 2 = 2000000
-				suite.Require().Equal("2000000udlp", balance.String())
+				// Initial supply
+				// 1000000 - 0fee= 1000000
+				suite.Require().Equal("1000000udlp", balance.String())
 
 				suite.CheckLptPrice(poolAddress)
 			} else if i == 1 {
 				balance := suite.app.BankKeeper.GetBalance(suite.ctx, owner, "udlp")
-				// atom:lpt=1:2
-				// (1000000 - 2000fee) * 2  = 1996000
-				suite.Require().Equal("3996000udlp", balance.String())
+				// 1000000 - 2000fee = 998000
+				suite.Require().Equal("1998000udlp", balance.String())
 
 				feeBalance := suite.app.BankKeeper.GetAllBalances(suite.ctx, derivativeFeeCollector)
 				suite.Require().Equal("2000uatom", feeBalance.String())
@@ -227,8 +226,8 @@ func (suite *KeeperTestSuite) TestMintLiquidityProviderToken() {
 			} else if i == 2 {
 				balance := suite.app.BankKeeper.GetBalance(suite.ctx, owner, "udlp")
 				// usdc:lpt=10:2
-				// (10000000 - 10000) * 2 / 10  = 1998000
-				suite.Require().Equal("5994000udlp", balance.String())
+				// (10000000 - 10000) / 10  = 999000
+				suite.Require().Equal("2997000udlp", balance.String())
 
 				feeBalance := suite.app.BankKeeper.GetBalance(suite.ctx, derivativeFeeCollector, tc.sendCoin.Denom)
 				suite.Require().Equal("10000uusdc", feeBalance.String())
@@ -237,8 +236,8 @@ func (suite *KeeperTestSuite) TestMintLiquidityProviderToken() {
 			} else if i == 3 {
 				balance := suite.app.BankKeeper.GetBalance(suite.ctx, owner, "udlp")
 				// usdc:lpt=10:2
-				// (1000000 - 1000) * 2 / 10  = 199800
-				suite.Require().Equal("6193800udlp", balance.String())
+				// 1000000 - 1000 / 10 = 99900
+				suite.Require().Equal("3096900udlp", balance.String())
 
 				feeBalance := suite.app.BankKeeper.GetBalance(suite.ctx, derivativeFeeCollector, tc.sendCoin.Denom)
 				suite.Require().Equal("11000uusdc", feeBalance.String())

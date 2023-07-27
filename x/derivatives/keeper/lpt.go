@@ -6,7 +6,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
-	pftypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
 func (k Keeper) GetLPTokenBaseMintFee(ctx sdk.Context) sdk.Dec {
@@ -67,7 +66,7 @@ func (k Keeper) DetermineMintingLPTokenAmount(ctx sdk.Context, amount sdk.Coin) 
 	// assetMc is the market cap of the asset that will go to the pool, in metrics ticker (USD in default)
 	assetMc := assetPrice.Price.Mul(sdk.NewDecFromInt(amount.Amount))
 	if currentSupply.Amount.IsZero() {
-		return k.InitialLiquidityProviderTokenSupply(ctx, assetPrice, assetMc, amount.Denom)
+		return k.InitialLiquidityProviderTokenSupply(ctx, amount)
 	}
 
 	lptPrice := k.GetLPTokenPrice(ctx)
@@ -146,15 +145,17 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 // initial_lp_token_price = Σ target_weight_of_ith_asset * price_of_ith_asset
 // pool_marketcap = price_of_ith_asset * amount_of_ith_deopsited_asset
 // initial_lp_supply = pool_marketcap / initial_lp_token_price
-func (k Keeper) InitialLiquidityProviderTokenSupply(ctx sdk.Context, assetPrice *pftypes.CurrentPrice, assetMarketCap sdk.Dec, depositDenom string) (sdk.Coin, error) {
-	assetInfo, err := k.GetPoolAcceptedAssetConfByDenom(ctx, depositDenom)
-	if err != nil {
-		return sdk.Coin{}, err
-	}
-	initialLPTokenPrice := assetPrice.Price.Mul(assetInfo.TargetWeight)
-	initialLPTokenSupply := assetMarketCap.Quo(initialLPTokenPrice)
+// Fix: This is just the number of deposit tokens divided by TargetWeight
+// so, Initial supply amount equals the number of tokens deposited
+func (k Keeper) InitialLiquidityProviderTokenSupply(ctx sdk.Context, amount sdk.Coin) (sdk.Coin, error) {
+	// assetInfo, err := k.GetPoolAcceptedAssetConfByDenom(ctx, depositDenom)
+	// if err != nil {
+	// 	return sdk.Coin{}, err
+	// }
+	// initialLPTokenPrice := assetPrice.Price.Mul(assetInfo.TargetWeight)
+	// initialLPTokenSupply := assetMarketCap.Quo(initialLPTokenPrice)
 
-	return sdk.NewCoin(types.LiquidityProviderTokenDenom, initialLPTokenSupply.TruncateInt()),
+	return sdk.NewCoin(types.LiquidityProviderTokenDenom, amount.Amount),
 		nil
 }
 
