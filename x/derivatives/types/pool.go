@@ -31,6 +31,10 @@ func (p PoolParams) Validate() error {
 		return fmt.Errorf("ReportLevyPeriodRewardRate should be between 0-1")
 	}
 
+	if p.LevyPeriodRequiredSeconds <= 0 {
+		return fmt.Errorf("LevyPeriodRequiredSeconds should be positive")
+	}
+
 	if len(p.AcceptedAssetsConf) == 0 {
 		return fmt.Errorf("Empty AcceptedAssets")
 	}

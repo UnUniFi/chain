@@ -39,6 +39,7 @@ func TestGenesisState_Validate(t *testing.T) {
 								TargetWeight: sdk.MustNewDecFromStr("0.001"),
 							},
 						},
+						LevyPeriodRequiredSeconds: 3600,
 					},
 					PerpetualFutures: types.PerpetualFuturesParams{
 						CommissionRate:        sdk.MustNewDecFromStr("0.001"),

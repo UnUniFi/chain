@@ -25,6 +25,7 @@ func DefaultPoolParams() PoolParams {
 		ReportLiquidationRewardRate: sdk.MustNewDecFromStr("0.3"),
 		ReportLevyPeriodRewardRate:  sdk.MustNewDecFromStr("0.3"),
 		AcceptedAssetsConf:          []PoolAssetConf(nil),
+		LevyPeriodRequiredSeconds:   28800,
 	}
 }
 
@@ -118,6 +119,10 @@ func validatePoolParams(i interface{}) error {
 
 	if !pool.ReportLevyPeriodRewardRate.LTE(sdk.OneDec()) {
 		return fmt.Errorf("invalid liquidation needed report reward rate: %s", pool.ReportLevyPeriodRewardRate)
+	}
+
+	if pool.LevyPeriodRequiredSeconds <= 0 {
+		return fmt.Errorf("invalid levy period required seconds: %d", pool.LevyPeriodRequiredSeconds)
 	}
 
 	return nil
