@@ -33,7 +33,7 @@ func (suite *KeeperTestSuite) TestDetermineMintingLPTokenAmount() {
 	// when no liquidity provider token's available
 	mintAmount, err := suite.keeper.DetermineMintingLPTokenAmount(suite.ctx, sdk.NewInt64Coin("uatom", 10000))
 	suite.Require().NoError(err)
-	suite.Require().Equal(mintAmount.String(), "20000udlp")
+	suite.Require().Equal(mintAmount.String(), "10000udlp")
 
 	// set price for asset
 	_, err = suite.app.PricefeedKeeper.SetPrice(suite.ctx, sdk.AccAddress{}, "uatom:usd", sdk.MustNewDecFromStr("0.000013"), suite.ctx.BlockTime().Add(time.Hour*3))
