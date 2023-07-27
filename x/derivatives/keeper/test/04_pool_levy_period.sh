@@ -40,17 +40,22 @@ sleep $sleep
 echo "------------levied position------------"
 ununifid q derivatives positions $user2_address
 
+echo "------------udlp rate check------------"
 rate=$(ununifid q derivatives delp-token-rate -o json | jq .rates[0].amount | tr -d '"')
 
-if [ "$rate" -gt "1000000" ]; then
+if [ "$rate" -lt "1000000" ]; then
   echo "pass: delp token rate is correct: $rate"
 else
   echo "error: delp token rate is incorrect:"
   echo "expected: 0 actual: $rate"
 fi
 
-# echo "------------withdraw from pool------------"
-# ununifid tx derivatives withdraw-from-pool $user1_udlp_balance ubtc \
-# --from user1 --keyring-backend test --chain-id test --yes
+echo "------------pool amount check------------"
+pool_amount=$(ununifid q derivatives pool -o json | jq .pool_market_cap.asset_info[0].amount | tr -d '"')
 
-# sleep $sleep
+if [ "$pool_amount" -lt "100000000" ]; then
+  echo "pass: pool amount is correct: $pool_amount"
+else
+  echo "error: pool market cap is incorrect:"
+  echo "expected: lower 100000000, actual: $pool_amount"
+fi

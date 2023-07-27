@@ -47,6 +47,7 @@ ununifid tx derivatives withdraw-from-pool $user1_udlp_balance ubtc \
 
 sleep $sleep
 
+echo "------------ubtc balance check------------"
 user1_ubtc_balance=$(ununifid q bank balances $user1_address --denom ubtc -o json | jq .amount | tr -d '"')
 user2_ubtc_balance=$(ununifid q bank balances $user2_address --denom ubtc -o json | jq .amount | tr -d '"')
 user1_profit=$(($user1_ubtc_balance - $init_ubtc_balance))

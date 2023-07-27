@@ -60,6 +60,7 @@ ununifid tx derivatives withdraw-from-pool $withdraw_amount ubtc \
 
 sleep $sleep
 
+echo "------------ubtc balance check------------"
 user1_ubtc_balance=$(ununifid q bank balances ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w --denom ubtc -o json | jq .amount | tr -d '"')
 
 if [ "$user1_ubtc_balance" > "$init_ubtc_balance" ]; then
@@ -69,6 +70,7 @@ else
   echo "initial: $init_ubtc_balance actual: $user1_ubtc_balance"
 fi
 
+echo "------------udlp rate check------------"
 # 1udlp supply & price 1udlp=1ubtc
 # 0udlp supply
 rate=$(ununifid q derivatives delp-token-rate -o json | jq .rates[0].amount | tr -d '"')
