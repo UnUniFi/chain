@@ -324,10 +324,12 @@ $ %s tx %s report-levy-period --from myKeyName --chain-id ununifi-x
 				return err
 			}
 
+			sender := clientCtx.GetFromAddress()
 			msg := types.NewMsgReportLevyPeriod(
-				clientCtx.GetFromAddress().String(), args[0], args[1],
+				sender.String(),
+				args[0],
+				args[1],
 			)
-
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
