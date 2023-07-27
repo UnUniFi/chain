@@ -32,11 +32,7 @@ ununifid tx pricefeed postprice ubtc:usd 0.012508410211260500 1200 \
 
 sleep $sleep
 
-ununifid tx derivatives report-liquidation 1 $user1_address \
---from user1 --keyring-backend test --chain-id test --yes
-
-sleep $sleep
-
+echo "------------report liquidation------------"
 ununifid tx derivatives report-liquidation 1 $user1_address \
 --from user1 --keyring-backend test --chain-id test --yes
 
@@ -56,7 +52,7 @@ user2_ubtc_balance=$(ununifid q bank balances $user2_address --denom ubtc -o jso
 user1_profit=$(($user1_ubtc_balance - $init_ubtc_balance))
 user2_loss=$(($init_user2_ubtc_balance - $user2_ubtc_balance))
 
-if [ "$user1_ubtc_balance" > "$init_ubtc_balance" ]; then
+if [ "$user1_ubtc_balance" -gt "$init_ubtc_balance" ]; then
   echo "pass: ubtc balance is correct: $user1_ubtc_balance"
   echo "profit $user1_profit trader's loss $user2_loss"
 else
