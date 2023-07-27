@@ -17,7 +17,8 @@ sleep $sleep
 user1_udlp_balance=$(ununifid q bank balances ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w --denom udlp -o json | jq .amount | tr -d '"')
 user1_ubtc_balance=$(ununifid q bank balances ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w --denom ubtc -o json | jq .amount | tr -d '"')
 
-expected_user1_udlp_balance=$(($init_udlp_balance + 166388890))
+# initial same amounts
+expected_user1_udlp_balance=$(($init_udlp_balance + 100000000))
 expected_user1_ubtc_balance=$(($init_ubtc_balance - 100000000))
 
 if [ "$user1_udlp_balance" = "$expected_user1_udlp_balance" ]; then
@@ -41,7 +42,7 @@ ununifid tx derivatives deposit-to-pool 100000000ubtc \
 sleep $sleep
 
 user1_udlp_balance=$(ununifid q bank balances ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w --denom udlp -o json | jq .amount | tr -d '"')
-expected_user1_udlp_balance=$(($expected_user1_udlp_balance + 166666665))
+expected_user1_udlp_balance=$(($expected_user1_udlp_balance + 99833334))
 
 if [ "$user1_udlp_balance" = "$expected_user1_udlp_balance" ]; then
   echo "pass: udlp balance is correct: $user1_udlp_balance"
@@ -50,6 +51,7 @@ else
   echo "expected: $expected_user1_udlp_balance actual: $user1_udlp_balance"
 fi
 
+# left 1udlp
 withdraw_amount=$(($user1_udlp_balance - 1))
 
 echo "------------withdraw from pool------------"
@@ -68,5 +70,19 @@ else
 fi
 
 # 1udlp supply & price 1udlp=1ubtc
-ununifid q derivatives delp-token-rate
-ununifid q derivatives pool
+# 0udlp supply
+rate=$(ununifid q derivatives delp-token-rate -o json | jq .rates[0].amount | tr -d '"')
+if [ "$rate" = "1000000" ]; then
+  echo "pass: delp token rate is correct: $rate"
+else
+  echo "error: delp token rate is incorrect:"
+  echo "expected: 1000000 actual: $rate"
+fi
+
+pool_mc=$(ununifid q derivatives pool -o json | jq .pool_market_cap.total | tr -d '"')
+if [ "$pool_mc" = "0.024508410211260500" ]; then
+  echo "pass: pool market cap is correct: $pool_mc"
+else
+  echo "error: pool market cap is incorrect:"
+  echo "expected: 0.024508410211260500 actual: $pool_mc"
+fi
