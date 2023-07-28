@@ -126,7 +126,7 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 	return &position, nil
 }
 
-// AddReserveTokensForPosition adds the tokens o the amount of the popsition size to pay the maximum profit
+// AddReserveTokensForPosition adds the tokens o the amount of the position size to pay the maximum profit
 // in reserved property of the PoolMarketCap
 func (k Keeper) AddReserveTokensForPosition(ctx sdk.Context, marketType types.MarketType, positionSizeInDenomExponent sdk.Int, denom string) error {
 	reserveOld, err := k.GetReservedCoin(ctx, marketType, denom)
@@ -142,7 +142,7 @@ func (k Keeper) AddReserveTokensForPosition(ctx sdk.Context, marketType types.Ma
 	return nil
 }
 
-// SubReserveTokensForPosition subtracts the tokens o the amount of the popsition size to pay the maximum profit
+// SubReserveTokensForPosition subtracts the tokens o the amount of the position size to pay the maximum profit
 // in reserved property of the PoolMarketCap
 func (k Keeper) SubReserveTokensForPosition(ctx sdk.Context, marketType types.MarketType, positionSizeInDenomExponent sdk.Int, denom string) error {
 	reserveOld, err := k.GetReservedCoin(ctx, marketType, denom)
@@ -398,26 +398,26 @@ func (k Keeper) SendRewardFromCommission(ctx sdk.Context, rewardAmount sdk.Int, 
 	return nil
 }
 
-func (k Keeper) HandleImaginaryFundingFeeTransfer(ctx sdk.Context, imaginaryFundingFee, commissionFee sdk.Int, positionType types.PositionType, denom string) error {
-	var totalFee sdk.Int
-	if positionType == types.PositionType_LONG {
-		totalFee = imaginaryFundingFee.Add(commissionFee)
-	} else {
-		totalFee = commissionFee.Sub(imaginaryFundingFee)
-	}
+// func (k Keeper) HandleImaginaryFundingFeeTransfer(ctx sdk.Context, imaginaryFundingFee, commissionFee sdk.Int, positionType types.PositionType, denom string) error {
+// 	var totalFee sdk.Int
+// 	if positionType == types.PositionType_LONG {
+// 		totalFee = imaginaryFundingFee.Add(commissionFee)
+// 	} else {
+// 		totalFee = commissionFee.Sub(imaginaryFundingFee)
+// 	}
 
-	if totalFee.IsPositive() {
-		if err := k.SendCoinFromMarginManagerToPool(ctx, sdk.NewCoins(sdk.NewCoin(denom, totalFee))); err != nil {
-			return err
-		}
-	} else {
-		if err := k.SendCoinFromPoolToMarginManager(ctx, sdk.NewCoins(sdk.NewCoin(denom, totalFee.Abs()))); err != nil {
-			return err
-		}
-	}
+// 	if totalFee.IsPositive() {
+// 		if err := k.SendCoinFromMarginManagerToPool(ctx, sdk.NewCoins(sdk.NewCoin(denom, totalFee))); err != nil {
+// 			return err
+// 		}
+// 	} else {
+// 		if err := k.SendCoinFromPoolToMarginManager(ctx, sdk.NewCoins(sdk.NewCoin(denom, totalFee.Abs()))); err != nil {
+// 			return err
+// 		}
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
 
 func (k Keeper) GetPerpetualFuturesGrossPositionOfMarket(ctx sdk.Context, market types.Market, positionType types.PositionType) types.PerpetualFuturesGrossPositionOfMarket {
 	store := ctx.KVStore(k.storeKey)
