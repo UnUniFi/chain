@@ -109,13 +109,13 @@ func (k Keeper) GetRedeemDenomAmount(ctx sdk.Context, lptAmount sdk.Int, redeemD
 	redeemAssetBalance := k.GetAssetBalanceInPoolByDenom(ctx, redeemDenom)
 
 	if redeemAssetPrice.Price.IsNil() || redeemAssetPrice.Price.IsZero() {
-		return sdk.Coin{}, sdk.Coin{}, types.ErrInvalidRedeemAmount
+		return sdk.Coin{}, sdk.Coin{}, types.ErrZeroLpTokenPrice
 	}
 	// redeemAmount = lptPrice * lptAmount / redeemAssetPrice
 	totalRedeemAmount := lptPrice.Mul(sdk.NewDecFromInt(lptAmount)).Quo(redeemAssetPrice.Price).TruncateInt()
 
 	if redeemAssetBalance.Amount.LT(totalRedeemAmount) {
-		return sdk.Coin{}, sdk.Coin{}, types.ErrInvalidRedeemAmount
+		return sdk.Coin{}, sdk.Coin{}, types.ErrInsufficientPoolFund
 	}
 
 	targetAmount, err := k.GetAssetTargetAmount(ctx, redeemDenom)
@@ -256,7 +256,7 @@ func (k Keeper) BurnLiquidityProviderToken(ctx sdk.Context, msg *types.MsgWithdr
 		return err
 	}
 	if availableAsset.Amount.LT(redeemAmount.Amount) {
-		return types.ErrInsufficientPoolFund
+		return types.ErrInsufficientAvailablePoolBalance
 	}
 
 	// First, Get the correct amount of udlp and burn it
