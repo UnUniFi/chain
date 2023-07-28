@@ -190,8 +190,16 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 	// FIXME: Don't use OneMillionInt directly to make it decimal unit. issue #476
 	case types.PositionType_LONG:
 		k.SubPerpetualFuturesGrossPositionOfMarket(ctx, position.Market, position.PositionInstance.PositionType, position.PositionInstance.SizeInDenomExponent(types.OneMillionInt))
+		// Sub reserve tokens of pool
+		if err := k.SubReserveTokensForPosition(ctx, types.MarketType_FUTURES, position.PositionInstance.SizeInDenomExponent(types.OneMillionInt), position.Market.BaseDenom); err != nil {
+			return err
+		}
 	case types.PositionType_SHORT:
 		k.SubPerpetualFuturesGrossPositionOfMarket(ctx, position.Market, position.PositionInstance.PositionType, position.PositionInstance.SizeInDenomExponent(types.OneMillionInt))
+		// Sub reserve tokens of pool
+		if err := k.SubReserveTokensForPosition(ctx, types.MarketType_FUTURES, position.PositionInstance.SizeInDenomExponent(types.OneMillionInt), position.Market.QuoteDenom); err != nil {
+			return err
+		}
 	case types.PositionType_POSITION_UNKNOWN:
 		return fmt.Errorf("unknown position type")
 	}
