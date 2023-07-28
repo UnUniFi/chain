@@ -31,6 +31,8 @@ Test token transfers when position is happened Levy Period.
 
 ### 04_pool_levy_period
 
+Test token transfers when Levy Period occurs and swap fees are taken from positions.
+
 - Traders lose swap fees.
 - The reporter gets a portion of the fee. Under the current spec, the module account (Pool).
 - The NFT return to lister
