@@ -43,19 +43,19 @@ ununifid q derivatives positions $user2_address
 echo "------------udlp rate check------------"
 rate=$(ununifid q derivatives delp-token-rate -o json | jq .rates[0].amount | tr -d '"')
 
-if [ "$rate" -lt "1000000" ]; then
+if [ "$rate" = "1000000" ]; then
   echo "pass: delp token rate is correct: $rate"
 else
   echo "error: delp token rate is incorrect:"
-  echo "expected: 0 actual: $rate"
+  echo "expected: 1000000 actual: $rate"
 fi
 
 echo "------------pool amount check------------"
 pool_amount=$(ununifid q derivatives pool -o json | jq .pool_market_cap.asset_info[0].amount | tr -d '"')
 
-if [ "$pool_amount" -lt "100000000" ]; then
+if [ "$pool_amount" = "100000000" ]; then
   echo "pass: pool amount is correct: $pool_amount"
 else
   echo "error: pool market cap is incorrect:"
-  echo "expected: lower 100000000, actual: $pool_amount"
+  echo "expected: 100000000, actual: $pool_amount"
 fi
