@@ -44,6 +44,13 @@ func (k Keeper) SetLiquidation(ctx sdk.Context, msg *types.MsgEndNftListing) err
 			return err
 		}
 		k.DeleteNftListings(ctx, listing)
+
+		// Call AfterNftUnlistedWithoutPayment to delete NFT ID from the ecosystem-incentive KVStore
+		// since it's unlisted.
+		if _, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes()); err != nil {
+			k.AfterNftUnlistedWithoutPayment(ctx, listing.NftId)
+		}
+
 	} else {
 		params := k.GetParamSet(ctx)
 		listing.State = types.ListingState_LIQUIDATION
@@ -81,12 +88,6 @@ func (k Keeper) SetLiquidation(ctx sdk.Context, msg *types.MsgEndNftListing) err
 		ClassId: msg.NftId.ClassId,
 		NftId:   msg.NftId.NftId,
 	})
-
-	// Call AfterNftUnlistedWithoutPayment to delete NFT ID from the ecosystem-incentive KVStore
-	// since it's unlisted.
-	if _, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes()); err != nil {
-		k.AfterNftUnlistedWithoutPayment(ctx, listing.NftId)
-	}
 
 	return nil
 }
