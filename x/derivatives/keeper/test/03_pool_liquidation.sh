@@ -57,8 +57,8 @@ user1_profit=$(($user1_ubtc_balance - $init_ubtc_balance))
 user2_loss=$(($init_user2_ubtc_balance - $user2_ubtc_balance))
 
 if [ "$user1_ubtc_balance" > "$init_ubtc_balance" ]; then
-  echo "pass: ubtc balance is correct: profit $user1_profit"
-  echo "trader's loss $user2_loss"
+  echo "pass: ubtc balance is correct: $user1_ubtc_balance"
+  echo "profit $user1_profit trader's loss $user2_loss"
 else
   echo "error: ubtc balance is incorrect:"
   echo "initial: $init_ubtc_balance actual: $user1_ubtc_balance"

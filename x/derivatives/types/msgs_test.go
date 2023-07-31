@@ -3,11 +3,12 @@ package types
 import (
 	"testing"
 
-	"github.com/UnUniFi/chain/testutil/sample"
 	codecType "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
+
+	"github.com/UnUniFi/chain/testutil/sample"
 )
 
 func TestMsgDepositToPool_ValidateBasic(t *testing.T) {

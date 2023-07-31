@@ -170,6 +170,11 @@ func (msg MsgReportLevyPeriod) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address is not valid")
 	}
 
+	_, err = sdk.AccAddressFromBech32(msg.RewardRecipient)
+	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "recipient address is not valid")
+	}
+
 	return nil
 }
 
