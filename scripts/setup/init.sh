@@ -115,6 +115,13 @@ jq '.app_state.nftfactory.class_attributes_list = [
     "minting_permission": "OnlyOwner",
     "owner": "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
     "token_supply_cap": "100000"
+  },
+  {
+    "base_token_uri": "ipfs://testcid/",
+    "class_id": "derivatives/perpetual_futures/positions",
+    "minting_permission": "OnlyOwner",
+    "owner": "ununifi1j0ugkvzyjdlyhkeje27fexlwurv6xezdmpxm68",
+    "token_supply_cap": "100000"
   }
 ]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.nft.classes = [
