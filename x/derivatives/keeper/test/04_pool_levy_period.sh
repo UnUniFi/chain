@@ -1,5 +1,8 @@
 #!/bin/sh
 
+## before run this script, change params scripts/setup/init.sh
+## Line 88 levy_period_required_seconds under block speed
+
 # block speed
 sleep=5
 
@@ -26,37 +29,33 @@ sleep $sleep
 echo "------------opened position------------"
 ununifid q derivatives positions $user2_address
 
-echo "------------price change------------"
-ununifid tx pricefeed postprice ubtc:usd 0.012508410211260500 1200 \
---from=pricefeed --keyring-backend test --chain-id test --yes
-
 sleep $sleep
 
-echo "------------report liquidation------------"
-ununifid tx derivatives report-liquidation 1 $user1_address \
+echo "------------levy tx------------"
+ununifid tx derivatives report-levy-period 1 $user1_address \
 --from user1 --keyring-backend test --chain-id test --yes
 
 sleep $sleep
 
-echo "------------liquidated position------------"
+echo "------------levied position------------"
 ununifid q derivatives positions $user2_address
 
-echo "------------withdraw from pool------------"
-ununifid tx derivatives withdraw-from-pool $user1_udlp_balance ubtc \
---from user1 --keyring-backend test --chain-id test --yes
+echo "------------udlp rate check------------"
+rate=$(ununifid q derivatives delp-token-rate -o json | jq .rates[0].amount | tr -d '"')
 
-sleep $sleep
-
-echo "------------ubtc balance check------------"
-user1_ubtc_balance=$(ununifid q bank balances $user1_address --denom ubtc -o json | jq .amount | tr -d '"')
-user2_ubtc_balance=$(ununifid q bank balances $user2_address --denom ubtc -o json | jq .amount | tr -d '"')
-user1_profit=$(($user1_ubtc_balance - $init_ubtc_balance))
-user2_loss=$(($init_user2_ubtc_balance - $user2_ubtc_balance))
-
-if [ "$user1_ubtc_balance" -gt "$init_ubtc_balance" ]; then
-  echo "pass: ubtc balance is correct: $user1_ubtc_balance"
-  echo "profit $user1_profit trader's loss $user2_loss"
+if [ "$rate" = "1000000" ]; then
+  echo "pass: delp token rate is correct: $rate"
 else
-  echo "error: ubtc balance is incorrect:"
-  echo "initial: $init_ubtc_balance actual: $user1_ubtc_balance"
+  echo "error: delp token rate is incorrect:"
+  echo "expected: 1000000 actual: $rate"
+fi
+
+echo "------------pool amount check------------"
+pool_amount=$(ununifid q derivatives pool -o json | jq .pool_market_cap.asset_info[0].amount | tr -d '"')
+
+if [ "$pool_amount" = "100000000" ]; then
+  echo "pass: pool amount is correct: $pool_amount"
+else
+  echo "error: pool market cap is incorrect:"
+  echo "expected: 100000000, actual: $pool_amount"
 fi

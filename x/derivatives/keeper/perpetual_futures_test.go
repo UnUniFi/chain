@@ -685,6 +685,7 @@ func (suite *KeeperTestSuite) SetParams() {
 				TargetWeight: sdk.OneDec(),
 			},
 		},
+		LevyPeriodRequiredSeconds: 28800,
 	}
 	params.PerpetualFutures = types.PerpetualFuturesParams{
 		CommissionRate:        sdk.MustNewDecFromStr("0.001"),

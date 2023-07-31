@@ -521,6 +521,7 @@ message PoolParams {
   The default value is `0.3`.
 - `AcceptedAssetsConf` defines the tokens which can be deposited into a pool to get DLP.  
   The tokens in `AcceptedAssets` have to have `DenomMetadata` in bank module in this current implementation (could be changed).
+- `LevyPeriodRequiredSeconds` defines the required time for the next Levy Period. the default value is `28800`(8 hours)
 
 ### PerpetualFuturesParams
 

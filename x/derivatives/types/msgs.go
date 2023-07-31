@@ -142,7 +142,7 @@ func (msg MsgReportLiquidation) ValidateBasic() error {
 
 	_, err1 := sdk.AccAddressFromBech32(msg.RewardRecipient)
 	if err1 != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "sender address is not valid")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "recipient address is not valid")
 	}
 	return nil
 }
@@ -180,7 +180,8 @@ func (msg MsgReportLevyPeriod) ValidateBasic() error {
 
 // GetSigners returns the addresses of signers that must sign.
 func (msg MsgReportLevyPeriod) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{}
+	addr, _ := sdk.AccAddressFromBech32(msg.Sender)
+	return []sdk.AccAddress{addr}
 }
 
 var _ sdk.Msg = &MsgAddMargin{}

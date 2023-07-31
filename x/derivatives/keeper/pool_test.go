@@ -117,6 +117,7 @@ func (suite *KeeperTestSuite) TestIsPriceReady() {
 	suite.Require().True(isReady)
 }
 
+// check in integration test
 func (suite *KeeperTestSuite) TestAvailableAssetInPool() {
 	// get the value when nothing is set
 	availableAssets, err := suite.keeper.AvailableAssetInPool(suite.ctx, "uatom")

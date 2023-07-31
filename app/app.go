@@ -725,6 +725,7 @@ func NewApp(
 		keys[derivativestypes.StoreKey],
 		keys[derivativestypes.MemStoreKey],
 		app.GetSubspace(derivativestypes.ModuleName),
+		app.AccountKeeper,
 		app.BankKeeper,
 		app.PricefeedKeeper,
 	)
