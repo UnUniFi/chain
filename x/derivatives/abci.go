@@ -53,14 +53,14 @@ func CheckPosition(ctx sdk.Context, k keeper.Keeper) {
 			msg := types.MsgReportLiquidation{
 				Sender:          moduleAddr.String(),
 				PositionId:      position.Id,
-				RewardRecipient: position.Address,
+				RewardRecipient: moduleAddr.String(),
 			}
 			k.ReportLiquidation(ctx, &msg)
 		}
 		msg := types.MsgReportLevyPeriod{
 			Sender:          moduleAddr.String(),
 			PositionId:      position.Id,
-			RewardRecipient: position.Address,
+			RewardRecipient: moduleAddr.String(),
 		}
 		k.ReportLevyPeriod(ctx, &msg)
 	}
