@@ -21,6 +21,7 @@ type (
 		accountKeeper    types.AccountKeeper
 		bankKeeper       types.BankKeeper
 		pricefeedKeeper  types.PricefeedKeeper
+		nftKeeper        types.NftKeeper
 		nftfactoryKeeper types.NftfactoryKeeper
 	}
 )
@@ -33,6 +34,7 @@ func NewKeeper(
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	pricefeedKeeper types.PricefeedKeeper,
+	nftKeeper types.NftKeeper,
 	nftfactoryKeeper types.NftfactoryKeeper,
 ) Keeper {
 	// set KeyTable if it has not already been set
@@ -48,6 +50,7 @@ func NewKeeper(
 		accountKeeper:    accountKeeper,
 		bankKeeper:       bankKeeper,
 		pricefeedKeeper:  pricefeedKeeper,
+		nftKeeper:        nftKeeper,
 		nftfactoryKeeper: nftfactoryKeeper,
 	}
 }

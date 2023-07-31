@@ -728,6 +728,7 @@ func NewApp(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.PricefeedKeeper,
+		app.NFTKeeper,
 		app.NftfactoryKeeper,
 	)
 
