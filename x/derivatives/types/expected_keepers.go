@@ -4,6 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
+	nftfactorytypes "github.com/UnUniFi/chain/x/nftfactory/types"
 	pftypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
@@ -35,4 +36,9 @@ type PricefeedKeeper interface {
 	GetMarketIdFromDenom(ctx sdk.Context, lhsDenom string, rhsDenom string) (string, error)
 	// These are used for testing TODO replace mockApp with keeper in tests to remove these
 	SetParams(sdk.Context, pftypes.Params)
+}
+
+type NftfactoryKeeper interface {
+	MintNFT(ctx sdk.Context, msg *nftfactorytypes.MsgMintNFT) error
+	BurnNFT(ctx sdk.Context, msg *nftfactorytypes.MsgBurnNFT) error
 }
