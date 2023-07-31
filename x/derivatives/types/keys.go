@@ -27,6 +27,9 @@ const (
 
 	// MarginManager defines the margin manager for derivatives module
 	MarginManager = "margin_manager"
+
+	// position nft class id
+	PositionNFTClassId = "derivatives/perpetual_futures/positions"
 )
 
 const (

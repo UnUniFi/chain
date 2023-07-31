@@ -29,4 +29,5 @@ var (
 	ErrUnauthorized                     = sdkerrors.Register(ModuleName, 19, "unauthorized")
 	ErrTooMuchMarginToWithdraw          = sdkerrors.Register(ModuleName, 20, "too much margin to withdraw")
 	ErrInsufficientAvailablePoolBalance = sdkerrors.Register(ModuleName, 21, "insufficient available pool balance")
+	ErrPositionNFTNotFound              = sdkerrors.Register(ModuleName, 22, "position NFT not found")
 )
