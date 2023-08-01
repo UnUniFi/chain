@@ -200,7 +200,7 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 	}
 
 	positionId := msg.PositionId
-	position := k.GetAddressPositionWithId(ctx, sender, positionId)
+	position := k.GetPositionWithId(ctx, positionId)
 
 	if position == nil {
 		return types.ErrPositionDoesNotExist
