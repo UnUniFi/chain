@@ -249,12 +249,12 @@ var (
 		nftmodule.AppModuleBasic{},
 		consensus.AppModuleBasic{},
 		// non sdk modules
+		wasm.AppModuleBasic{},
 		ibc.AppModuleBasic{},
 		ibctm.AppModuleBasic{},
 		transfer.AppModuleBasic{},
 		ica.AppModuleBasic{},
 		ibcfee.AppModuleBasic{},
-		wasm.AppModuleBasic{},
 
 		// original modules
 		nftbackedloan.AppModuleBasic{},
