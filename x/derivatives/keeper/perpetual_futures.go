@@ -218,9 +218,22 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 // If the profit exists, the profit always comes from the pool.
 // If the loss exists, the loss always goes to the pool from the users' margin.
 func (k Keeper) HandleReturnAmount(ctx sdk.Context, pnlAmount sdk.Int, position types.PerpetualFuturesPosition) (returningAmount sdk.Int, err error) {
-	addr, err := sdk.AccAddressFromBech32(position.Address)
+	pending, err := k.GetPositionNFTSendDisabled(ctx, position.Id)
 	if err != nil {
 		return sdk.ZeroInt(), err
+	}
+
+	var addr sdk.AccAddress
+	if pending {
+		addr = k.GetPendingPaymentManagerAddress()
+		if addr == nil {
+			return sdk.ZeroInt(), types.ErrNoPendingPaymentManager
+		}
+	} else {
+		addr = k.GetPositionNFTOwner(ctx, position.Id)
+		if addr == nil {
+			return sdk.ZeroInt(), types.ErrNotPositionNFTOwner
+		}
 	}
 
 	if pnlAmount.IsNegative() {
@@ -256,6 +269,15 @@ func (k Keeper) HandleReturnAmount(ctx sdk.Context, pnlAmount sdk.Int, position 
 		}
 		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, pnlAmount))); err != nil {
 			return sdk.ZeroInt(), err
+		}
+	}
+
+	// create pending payment position
+	if pending {
+		if returningAmount.IsNegative() {
+			k.SetPendingPaymentPosition(ctx, position.Id, sdk.NewCoin(position.RemainingMargin.Denom, sdk.NewInt(0)))
+		} else {
+			k.SetPendingPaymentPosition(ctx, position.Id, sdk.NewCoin(position.RemainingMargin.Denom, returningAmount))
 		}
 	}
 
