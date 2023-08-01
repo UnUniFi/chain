@@ -258,7 +258,7 @@ var (
 		transfer.AppModuleBasic{},
 		ica.AppModuleBasic{},
 		ibcfee.AppModuleBasic{},
-    builder.AppModuleBasic{},
+		builder.AppModuleBasic{},
 
 		// original modules
 		pricefeed.AppModuleBasic{},
@@ -747,7 +747,7 @@ func NewApp(
 		app.DistrKeeper,
 		app.StakingKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-  )
+	)
 
 	app.PricefeedKeeper = pricefeedkeeper.NewKeeper(
 		appCodec,
