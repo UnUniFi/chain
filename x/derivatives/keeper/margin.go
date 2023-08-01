@@ -19,7 +19,10 @@ func (k Keeper) AddMargin(ctx sdk.Context, sender sdk.AccAddress, positionId str
 		return err
 	}
 
-	k.SetPosition(ctx, *position)
+	err := k.SetPosition(ctx, *position)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -30,8 +33,14 @@ func (k Keeper) RemoveMargin(ctx sdk.Context, withdrawer sdk.AccAddress, positio
 		return types.ErrPositionDoesNotExist
 	}
 
-	// Check withdrawer (sender) matches the owner of the position
-	if position.Address != withdrawer.String() {
+	// // Check withdrawer (sender) matches the owner of the position
+	// if position.Address != withdrawer.String() {
+	// 	return types.ErrUnauthorized
+	// }
+
+	// check withdrawer has owner nft
+	owner := k.GetNFTOwner(ctx, positionId)
+	if owner.String() != withdrawer.String() {
 		return types.ErrUnauthorized
 	}
 
@@ -63,7 +72,10 @@ func (k Keeper) RemoveMargin(ctx sdk.Context, withdrawer sdk.AccAddress, positio
 		return err
 	}
 
-	k.SetPosition(ctx, *position)
+	err = k.SetPosition(ctx, *position)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
