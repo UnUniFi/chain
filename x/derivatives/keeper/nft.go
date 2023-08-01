@@ -38,6 +38,19 @@ func (k Keeper) MintPositionNFT(ctx sdk.Context, position types.Position) error 
 	return nil
 }
 
+func (k Keeper) ClosePositionNFT(ctx sdk.Context, position types.Position) error {
+	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
+	err := k.nftKeeper.Transfer(ctx, types.PositionNFTClassId, position.Id, moduleAddr)
+	if err != nil {
+		return err
+	}
+	err = k.BurnPositionNFT(ctx, position)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (k Keeper) BurnPositionNFT(ctx sdk.Context, position types.Position) error {
 	moduleAddr := k.GetModuleAddress()
 	msgBurnNFT := nftfactorytypes.MsgBurnNFT{
