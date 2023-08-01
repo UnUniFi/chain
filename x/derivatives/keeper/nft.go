@@ -23,7 +23,7 @@ func (k Keeper) GetAddressNftPositions(ctx sdk.Context, address sdk.AccAddress) 
 	return positions
 }
 
-func (k Keeper) MintPositionNFT(ctx sdk.Context, position types.Position) {
+func (k Keeper) MintPositionNFT(ctx sdk.Context, position types.Position) error {
 	moduleAddr := k.GetModuleAddress()
 	msgMintNFT := nftfactorytypes.MsgMintNFT{
 		Sender:    moduleAddr.String(),
@@ -31,5 +31,23 @@ func (k Keeper) MintPositionNFT(ctx sdk.Context, position types.Position) {
 		NftId:     position.Id,
 		Recipient: position.Address,
 	}
-	k.nftfactoryKeeper.MintNFT(ctx, &msgMintNFT)
+	err := k.nftfactoryKeeper.MintNFT(ctx, &msgMintNFT)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (k Keeper) BurnPositionNFT(ctx sdk.Context, position types.Position) error {
+	moduleAddr := k.GetModuleAddress()
+	msgBurnNFT := nftfactorytypes.MsgBurnNFT{
+		Sender:  moduleAddr.String(),
+		ClassId: types.PositionNFTClassId,
+		NftId:   position.Id,
+	}
+	err := k.nftfactoryKeeper.BurnNFT(ctx, &msgBurnNFT)
+	if err != nil {
+		return err
+	}
+	return nil
 }
