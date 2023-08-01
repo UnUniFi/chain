@@ -74,16 +74,12 @@ message PendingPaymentPosition {
     (gogoproto.moretags) = "yaml:\"refundable_amount\"",
     (gogoproto.nullable) = false
   ];
-  cosmos.base.v1beta1.Coin remaining_margin = 3 [
-    (gogoproto.moretags) = "yaml:\"remaining_margin\"",
-    (gogoproto.nullable) = false
-  ];
-  google.protobuf.Timestamp created_at = 4 [
+  google.protobuf.Timestamp created_at = 3 [
     (gogoproto.moretags) = "yaml:\"created_at\"",
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
-  uint64 created_height = 5 [
+  uint64 created_height = 4 [
     (gogoproto.moretags) = "yaml:\"created_height\""
   ];
 }

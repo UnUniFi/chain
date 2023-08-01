@@ -39,24 +39,9 @@ func (k Keeper) ClosePendingPaymentPosition(ctx sdk.Context, pendingPosition typ
 	if err != nil {
 		return err
 	}
-	if pendingPosition.RefundableAmount.IsLT(pendingPosition.RemainingMargin) {
-		loss := pendingPosition.RemainingMargin.Sub(pendingPosition.RefundableAmount)
-		// Send margin-loss from MarginManager
-		if err := k.SendBackMargin(ctx, addr, sdk.NewCoins(pendingPosition.RefundableAmount)); err != nil {
-			return err
-		}
-		// Send loss to the pool
-		if err := k.SendCoinFromMarginManagerToPool(ctx, sdk.NewCoins(loss)); err != nil {
-			return err
-		}
-	} else {
-		profit := pendingPosition.RefundableAmount.Sub(pendingPosition.RemainingMargin)
-		// Send margin from MarginManager
-		if err := k.SendBackMargin(ctx, addr, sdk.NewCoins(pendingPosition.RemainingMargin)); err != nil {
-			return err
-		}
-		// Send profit from the pool
-		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(profit)); err != nil {
+	if pendingPosition.RefundableAmount.IsPositive() {
+		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.PendingPaymentManager, addr, sdk.NewCoins(pendingPosition.RefundableAmount))
+		if err != nil {
 			return err
 		}
 	}
