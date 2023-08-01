@@ -206,14 +206,23 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 		return types.ErrPositionDoesNotExist
 	}
 
+	// todo:  add pending position
+
 	// if msg.Sender != position.Address {
 	// 	return errors.New("not owner")
 	// }
 
 	// check withdrawer has owner nft
-	owner := k.GetNFTOwner(ctx, positionId)
+	owner := k.GetPositionNFTOwner(ctx, positionId)
 	if owner.String() != msg.Sender {
-		return types.ErrUnauthorized
+		return types.ErrNotPositionNFTOwner
+	}
+	sendDisabled, err := k.GetPositionNFTSendDisabled(ctx, positionId)
+	if err != nil {
+		return err
+	}
+	if sendDisabled {
+		return types.ErrPositionNFTSendDisabled
 	}
 
 	positionInstance, err := types.UnpackPositionInstance(position.PositionInstance)
