@@ -127,3 +127,6 @@ else
   echo "error: Owner is not changed from $owner"
   echo "expected: $expected_owner actual: $owner"
 fi
+
+echo "------------check nft------------"
+ununifid q nft nft ununifi-1AFC3C85B52311F13161F724B284EF900458E3B3 a01
