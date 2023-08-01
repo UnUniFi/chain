@@ -9,7 +9,9 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
-	registry.RegisterImplementations((*NftDataI)(nil),
+	registry.RegisterInterface(
+		"ununifi.nft.NftDataI",
+		(*NftDataI)(nil),
 		&NftData{},
 	)
 }
