@@ -239,7 +239,7 @@ var (
 		authzmodule.AppModuleBasic{},
 		groupmodule.AppModuleBasic{},
 		vesting.AppModuleBasic{},
-		nftmodule.AppModuleBasic{},
+		newNftModule.AppModuleBasic{},
 		consensus.AppModuleBasic{},
 		// non sdk modules
 		wasm.AppModuleBasic{},

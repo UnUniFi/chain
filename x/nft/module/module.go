@@ -11,6 +11,17 @@ import (
 	"github.com/UnUniFi/chain/x/nft/types"
 )
 
+// AppModuleBasic defines the basic application module used by the nft module.
+type AppModuleBasic struct {
+	nftmodule.AppModuleBasic
+}
+
+// RegisterInterfaces registers a module's interface types and their concrete implementations as proto.Message
+func (a AppModuleBasic) RegisterInterfaces(reg cdctypes.InterfaceRegistry) {
+	a.AppModuleBasic.RegisterInterfaces(reg)
+	types.RegisterInterfaces(reg)
+}
+
 // AppModule implements the sdk.AppModule interface
 type AppModule struct {
 	nftmodule.AppModule
@@ -23,12 +34,6 @@ func NewAppModule(am nftmodule.AppModule, k newkeeper.Keeper) AppModule {
 		AppModule: am,
 		keeper:    k,
 	}
-}
-
-// RegisterInterfaces registers a module's interface types and their concrete implementations as proto.Message
-func (am AppModule) RegisterInterfaces(reg cdctypes.InterfaceRegistry) {
-	am.AppModuleBasic.RegisterInterfaces(reg)
-	types.RegisterInterfaces(reg)
 }
 
 // RegisterServices registers a gRPC query service to respond to the
