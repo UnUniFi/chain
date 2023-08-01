@@ -8,12 +8,12 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
-func (k Keeper) GetNftOwner(ctx sdk.Context, positionId string) sdk.AccAddress {
+func (k Keeper) GetNFTOwner(ctx sdk.Context, positionId string) sdk.AccAddress {
 	owner := k.nftKeeper.GetOwner(ctx, types.PositionNFTClassId, positionId)
 	return owner
 }
 
-func (k Keeper) GetAddressNftPositions(ctx sdk.Context, address sdk.AccAddress) []types.Position {
+func (k Keeper) GetAddressNFTPositions(ctx sdk.Context, address sdk.AccAddress) []types.Position {
 	nfts := k.nftKeeper.GetNFTsOfClassByOwner(ctx, types.PositionNFTClassId, address)
 	positions := []types.Position{}
 	for _, nft := range nfts {
