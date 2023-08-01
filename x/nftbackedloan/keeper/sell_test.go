@@ -100,14 +100,14 @@ func (suite *KeeperTestSuite) TestSellingDecision() {
 		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, tc.executor, sdk.Coins{coin})
 		suite.NoError(err)
 
-		_ = suite.app.NewNFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
+		_ = suite.app.UnUniFiNFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
 			Id:          tc.classId,
 			Name:        tc.classId,
 			Symbol:      tc.classId,
 			Description: tc.classId,
 			Uri:         tc.classId,
 		})
-		err = suite.app.NewNFTKeeper.Mint(suite.ctx, nfttypes.NFT{
+		err = suite.app.UnUniFiNFTKeeper.Mint(suite.ctx, nfttypes.NFT{
 			ClassId: tc.classId,
 			Id:      tc.nftId,
 			Uri:     tc.nftId,

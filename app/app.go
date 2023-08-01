@@ -130,8 +130,8 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
-	newNftkeeper "github.com/UnUniFi/chain/x/nft/keeper"
-	newNftModule "github.com/UnUniFi/chain/x/nft/module"
+	ununifinftkeeper "github.com/UnUniFi/chain/x/nft/keeper"
+	ununifinftmodule "github.com/UnUniFi/chain/x/nft/module"
 
 	epochs "github.com/UnUniFi/chain/x/epochs"
 	epochskeeper "github.com/UnUniFi/chain/x/epochs/keeper"
@@ -242,7 +242,7 @@ var (
 		authzmodule.AppModuleBasic{},
 		groupmodule.AppModuleBasic{},
 		vesting.AppModuleBasic{},
-		newNftModule.AppModuleBasic{},
+		ununifinftmodule.AppModuleBasic{},
 		consensus.AppModuleBasic{},
 		// non sdk modules
 		wasm.AppModuleBasic{},
@@ -354,7 +354,7 @@ type App struct {
 	FeeGrantKeeper        feegrantkeeper.Keeper
 	GroupKeeper           groupkeeper.Keeper
 	NFTKeeper             nftkeeper.Keeper
-	NewNFTKeeper          newNftkeeper.Keeper
+	UnUniFiNFTKeeper      ununifinftkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 
 	IBCKeeper           *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
@@ -629,7 +629,7 @@ func NewApp(
 		app.BankKeeper,
 	)
 
-	app.NewNFTKeeper = newNftkeeper.NewKeeper(app.NFTKeeper, appCodec)
+	app.UnUniFiNFTKeeper = ununifinftkeeper.NewKeeper(app.NFTKeeper, appCodec)
 
 	// Create evidence Keeper for to register the IBC light client misbehaviour evidence route
 	evidenceKeeper := evidencekeeper.NewKeeper(
@@ -741,7 +741,7 @@ func NewApp(
 		keys[nftfactorytypes.MemStoreKey],
 		app.GetSubspace(nftfactorytypes.ModuleName),
 		app.AccountKeeper,
-		app.NewNFTKeeper,
+		app.UnUniFiNFTKeeper,
 	)
 
 	nftbackedloanKeeper := nftbackedloankeeper.NewKeeper(
@@ -752,7 +752,7 @@ func NewApp(
 		app.GetSubspace(nftbackedloantypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper,
-		app.NewNFTKeeper,
+		app.UnUniFiNFTKeeper,
 	)
 
 	app.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
@@ -955,7 +955,7 @@ func NewApp(
 		params.NewAppModule(app.ParamsKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		groupmodule.NewAppModule(appCodec, app.GroupKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		newNftModule.NewAppModule(nftmodule.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry), app.NewNFTKeeper),
+		ununifinftmodule.NewAppModule(nftmodule.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry), app.UnUniFiNFTKeeper),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 
 		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
@@ -969,7 +969,7 @@ func NewApp(
 		pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
 		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
 
-		nftfactory.NewAppModule(appCodec, app.NftfactoryKeeper, app.NewNFTKeeper),
+		nftfactory.NewAppModule(appCodec, app.NftfactoryKeeper, app.UnUniFiNFTKeeper),
 		nftbackedloan.NewAppModule(appCodec, app.NftbackedloanKeeper, app.AccountKeeper, app.BankKeeper),
 		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
 
