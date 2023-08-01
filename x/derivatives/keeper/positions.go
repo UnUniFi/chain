@@ -206,7 +206,7 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 		return types.ErrPositionDoesNotExist
 	}
 
-	// todo:  add pending position
+	// todo:  add pending position close
 
 	// if msg.Sender != position.Address {
 	// 	return errors.New("not owner")
