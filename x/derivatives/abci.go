@@ -48,18 +48,19 @@ func CheckPosition(ctx sdk.Context, k keeper.Keeper) {
 		}
 		baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, currentBaseUsdRate)
 		quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, currentQuoteUsdRate)
+		moduleAddr := k.GetModuleAddress()
 		if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, baseMetricsRate, quoteMetricsRate) {
 			msg := types.MsgReportLiquidation{
-				Sender:          position.Address,
+				Sender:          moduleAddr.String(),
 				PositionId:      position.Id,
-				RewardRecipient: position.Address,
+				RewardRecipient: moduleAddr.String(),
 			}
 			k.ReportLiquidation(ctx, &msg)
 		}
 		msg := types.MsgReportLevyPeriod{
-			Sender:          position.Address,
+			Sender:          moduleAddr.String(),
 			PositionId:      position.Id,
-			RewardRecipient: position.Address,
+			RewardRecipient: moduleAddr.String(),
 		}
 		k.ReportLevyPeriod(ctx, &msg)
 	}

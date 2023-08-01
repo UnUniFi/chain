@@ -51,7 +51,7 @@ func (suite *KeeperTestSuite) TestListNft() {
 			mintBefore:       true,
 			listBefore:       true,
 			expectPass:       false,
-			statusListedHook: false,
+			statusListedHook: true,
 		},
 		{
 			testCase:         "not owned nft",
@@ -87,7 +87,7 @@ func (suite *KeeperTestSuite) TestListNft() {
 			mintBefore:       true,
 			listBefore:       false,
 			expectPass:       true,
-			statusListedHook: false,
+			statusListedHook: true,
 		},
 		{
 			testCase:         "successful listing with non-default active rank",
@@ -99,7 +99,7 @@ func (suite *KeeperTestSuite) TestListNft() {
 			mintBefore:       true,
 			listBefore:       false,
 			expectPass:       true,
-			statusListedHook: false,
+			statusListedHook: true,
 		},
 		{
 			testCase:         "successful anther owner",
@@ -111,7 +111,7 @@ func (suite *KeeperTestSuite) TestListNft() {
 			mintBefore:       true,
 			listBefore:       false,
 			expectPass:       true,
-			statusListedHook: false,
+			statusListedHook: true,
 		},
 	}
 
@@ -134,7 +134,8 @@ func (suite *KeeperTestSuite) TestListNft() {
 			suite.Require().NoError(err)
 		}
 		if tc.listBefore {
-			err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
+			// use keeper directly to be executed with hooks structs
+			err := keeper.ListNft(suite.ctx, &types.MsgListNft{
 				Sender:             tc.lister.String(),
 				NftId:              types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId},
 				BidDenom:           tc.BidDenom,
@@ -142,7 +143,7 @@ func (suite *KeeperTestSuite) TestListNft() {
 			})
 			suite.Require().NoError(err)
 		}
-		err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
+		err := keeper.ListNft(suite.ctx, &types.MsgListNft{
 			Sender:             tc.lister.String(),
 			NftId:              types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId},
 			BidDenom:           tc.BidDenom,
@@ -237,7 +238,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 			numBids:            0,
 			listBefore:         true,
 			expectPass:         true,
-			statusUnlistedHook: false,
+			statusUnlistedHook: true,
 		},
 		{
 			testCase:           "successful cancel with cancel fee",
@@ -249,7 +250,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 			numBids:            0,
 			listBefore:         true,
 			expectPass:         true,
-			statusUnlistedHook: false,
+			statusUnlistedHook: true,
 		},
 	}
 

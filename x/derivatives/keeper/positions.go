@@ -280,8 +280,9 @@ func (k Keeper) ReportLevyPeriod(ctx sdk.Context, msg *types.MsgReportLevyPeriod
 		return errors.New("position not found")
 	}
 
-	if ctx.BlockTime().Sub(position.LastLeviedAt) < time.Duration(8)*time.Hour {
-		return errors.New("It hasn't passed 8 hours since last levy")
+	params := k.GetParams(ctx)
+	if position.LastLeviedAt.Add(time.Duration(params.PoolParams.LevyPeriodRequiredSeconds) * time.Second).After(ctx.BlockTime()) {
+		return errors.New("levy period is allowed after the time set by params")
 	}
 
 	positionInstance, err := types.UnpackPositionInstance(position.PositionInstance)

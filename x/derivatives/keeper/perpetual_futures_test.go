@@ -378,9 +378,16 @@ func (suite *KeeperTestSuite) TestReportLiquidationNeededPerpetualFuturesPositio
 		case *types.PerpetualFuturesPositionInstance:
 			perpetualFuturesPosition := types.NewPerpetualFuturesPosition(*position, *positionInstance)
 			params := suite.keeper.GetParams(suite.ctx)
-			err = suite.keeper.LiquidateFuturesPosition(suite.ctx, owner.String(), perpetualFuturesPosition, params.PerpetualFutures.CommissionRate, params.PoolParams.ReportLiquidationRewardRate)
+			currentBaseUsdRate, currentQuoteUsdRate, err := suite.keeper.GetPairUsdPriceFromMarket(suite.ctx, position.Market)
+			suite.Require().NoError(err)
+			quoteTicker := suite.keeper.GetPoolQuoteTicker(suite.ctx)
+			baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, currentBaseUsdRate)
+			quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, currentQuoteUsdRate)
+			if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, baseMetricsRate, quoteMetricsRate) {
+				err = suite.keeper.LiquidateFuturesPosition(suite.ctx, owner.String(), perpetualFuturesPosition, params.PerpetualFutures.CommissionRate, params.PoolParams.ReportLiquidationRewardRate)
+				suite.Require().NoError(err)
+			}
 		}
-		suite.Require().NoError(err)
 
 		// Check if the position was closed
 		grossPosition := suite.keeper.GetPerpetualFuturesGrossPositionOfMarket(suite.ctx, market, testPosition.instance.PositionType)
@@ -678,6 +685,7 @@ func (suite *KeeperTestSuite) SetParams() {
 				TargetWeight: sdk.OneDec(),
 			},
 		},
+		LevyPeriodRequiredSeconds: 28800,
 	}
 	params.PerpetualFutures = types.PerpetualFuturesParams{
 		CommissionRate:        sdk.MustNewDecFromStr("0.001"),

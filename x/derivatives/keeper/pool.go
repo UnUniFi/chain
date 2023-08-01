@@ -183,19 +183,19 @@ func (k Keeper) AvailableAssetInPoolWithMarketType(ctx sdk.Context, marketType t
 }
 
 func (k Keeper) AvailableAssetInPool(ctx sdk.Context, denom string) (sdk.Coin, error) {
-	availableInFutures, err := k.AvailableAssetInPoolWithMarketType(ctx, types.MarketType_FUTURES, denom)
+	// Pool Balance - Reserved Balance (Future + Options)
+	assetBalance := k.GetAssetBalanceInPoolByDenom(ctx, denom)
+	reserveFuture, err := k.GetReservedCoin(ctx, types.MarketType_FUTURES, denom)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+	reserveOptions, err := k.GetReservedCoin(ctx, types.MarketType_OPTIONS, denom)
 	if err != nil {
 		return sdk.Coin{}, err
 	}
 
-	availableInOptions, err := k.AvailableAssetInPoolWithMarketType(ctx, types.MarketType_OPTIONS, denom)
-	if err != nil {
-		return sdk.Coin{}, err
-	}
-
-	availableInTotal := availableInFutures.Add(availableInOptions)
-
-	return availableInTotal, nil
+	available := assetBalance.Sub(reserveFuture.Amount).Sub(reserveOptions.Amount)
+	return available, nil
 }
 
 // AvailableAssetInPool returns the available amount of the all asset in the pool.

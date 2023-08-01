@@ -39,6 +39,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 						TargetWeight: sdk.NewDecWithPrec(1, 3),
 					},
 				},
+				LevyPeriodRequiredSeconds: 28800,
 			},
 			PerpetualFutures: types.PerpetualFuturesParams{
 				CommissionRate:        sdk.NewDecWithPrec(1, 3),

@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -23,31 +21,6 @@ func (k Keeper) GetMarkets(ctx sdk.Context) []types.Market {
 	return k.GetParams(ctx).Markets
 }
 
-func (k Keeper) GetTicker(ctx sdk.Context, denom string) (string, error) {
-	metadata, exists := k.bankKeeper.GetDenomMetaData(ctx, denom)
-	if !exists {
-		return "", sdkerrors.Wrap(types.ErrInternalDenomNotFound, denom)
-	}
-	return metadata.Base, nil
-}
-
-func (k Keeper) GetMarketId(ctx sdk.Context, lhsTicker string, rhsTicker string) string {
-	return fmt.Sprintf("%s:%s", lhsTicker, rhsTicker)
-}
-
-func (k Keeper) GetMarketIdFromDenom(ctx sdk.Context, lhsDenom string, rhsDenom string) (string, error) {
-	lhsTicker, err := k.GetTicker(ctx, lhsDenom)
-	if err != nil {
-		return "", err
-	}
-	rhsTicker, err := k.GetTicker(ctx, rhsDenom)
-	if err != nil {
-		return "", err
-	}
-
-	return k.GetMarketId(ctx, lhsTicker, rhsTicker), nil
-}
-
 // GetOracles returns the oracles in the pricefeed store
 func (k Keeper) GetOracles(ctx sdk.Context, marketID string) ([]string, error) {
 	for _, m := range k.GetMarkets(ctx) {
@@ -62,7 +35,7 @@ func (k Keeper) GetOracles(ctx sdk.Context, marketID string) ([]string, error) {
 func (k Keeper) GetOracle(ctx sdk.Context, marketID string, address sdk.AccAddress) (sdk.AccAddress, error) {
 	oracles, err := k.GetOracles(ctx, marketID)
 	if err != nil {
-		return sdk.AccAddress{}, sdkerrors.Wrap(types.ErrInvalidMarket, marketID)
+		return nil, err
 	}
 	for _, oracle := range oracles {
 		addr, err := sdk.AccAddressFromBech32(oracle)
@@ -73,7 +46,7 @@ func (k Keeper) GetOracle(ctx sdk.Context, marketID string, address sdk.AccAddre
 			return addr, nil
 		}
 	}
-	return sdk.AccAddress{}, sdkerrors.Wrap(types.ErrInvalidOracle, address.String())
+	return nil, sdkerrors.Wrap(types.ErrInvalidOracle, address.String())
 }
 
 // GetMarket returns the market if it is in the pricefeed system

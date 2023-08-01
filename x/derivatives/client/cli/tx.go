@@ -283,7 +283,7 @@ func CmdReportLiquidation() *cobra.Command {
 Example:
 $ %s tx %s report-liquidation --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(1),
+		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -317,17 +317,19 @@ func CmdReportLevyPeriod() *cobra.Command {
 Example:
 $ %s tx %s report-levy-period --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(1),
+		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
+			sender := clientCtx.GetFromAddress()
 			msg := types.NewMsgReportLevyPeriod(
-				clientCtx.GetFromAddress().String(), args[0], args[1],
+				sender.String(),
+				args[0],
+				args[1],
 			)
-
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
