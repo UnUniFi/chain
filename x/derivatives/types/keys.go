@@ -30,6 +30,9 @@ const (
 
 	// position nft class id
 	PositionNFTClassId = "derivatives/perpetual_futures/positions"
+
+	// PendingPaymentManager defines the pending payment manager for derivatives module
+	PendingPaymentManager = "pending_payment_manager"
 )
 
 const (

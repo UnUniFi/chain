@@ -294,6 +294,7 @@ var (
 		derivativestypes.ModuleName:             {authtypes.Minter, authtypes.Burner},
 		derivativestypes.DerivativeFeeCollector: nil,
 		derivativestypes.MarginManager:          nil,
+		derivativestypes.PendingPaymentManager:  nil,
 
 		ecosystemincentivetypes.ModuleName: nil,
 	}
@@ -733,7 +734,7 @@ func NewApp(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.PricefeedKeeper,
-		app.NFTKeeper,
+		app.UnUniFiNFTKeeper,
 		app.NftfactoryKeeper,
 	)
 
