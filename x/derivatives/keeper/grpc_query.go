@@ -187,7 +187,8 @@ func (k Keeper) AddressPositions(c context.Context, req *types.QueryAddressPosit
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	positions := k.GetAddressPositionsVal(ctx, address)
+	// Get all positions of NFTs owned by the address
+	positions := k.GetAddressNFTPositions(ctx, address)
 
 	queriedPositions, err := k.MakeQueriedPositions(ctx, positions)
 	if err != nil {
@@ -304,7 +305,8 @@ func (k Keeper) PerpetualFuturesPositionSize(c context.Context, req *types.Query
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	positions := types.Positions(k.GetAddressPositionsVal(ctx, address))
+	// Get all positions of NFTs owned by the address
+	positions := types.Positions(k.GetAddressNFTPositions(ctx, address))
 	getPriceFunc := func(ctx sdk.Context) func(denom string) (sdk.Dec, error) {
 		return func(denom string) (sdk.Dec, error) {
 			return k.GetCurrentPrice(ctx, denom)
