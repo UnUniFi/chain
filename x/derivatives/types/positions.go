@@ -344,6 +344,9 @@ func (m PerpetualFuturesPosition) RemainingMarginInMetrics(baseMetricsRate, quot
 func (m PerpetualFuturesPosition) LeviedAmountInMetrics(baseMetricsRate, quoteMetricsRate MetricsRateType) sdk.Dec {
 	// Levy Fee (in USD units) = Levy Fee (in base units) * Current base/USD rate
 	// = Levy Fee (in quote units) * Current quote/USD rate
+	if m.LeviedAmount.IsNil() {
+		return sdk.ZeroDec()
+	}
 	leviedAmountInDec := sdk.NewDecFromInt(m.LeviedAmount.Amount)
 	if m.LeviedAmount.Denom == m.Market.BaseDenom {
 		return leviedAmountInDec.Mul(baseMetricsRate.Amount.Amount)

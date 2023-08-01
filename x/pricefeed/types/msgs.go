@@ -24,14 +24,12 @@ func NewMsgPostPrice(
 	assetCode string,
 	price sdk.Dec,
 	expiry time.Time,
-	deposit sdk.Coin,
 ) MsgPostPrice {
 	return MsgPostPrice{
 		From:     from,
 		MarketId: assetCode,
 		Price:    price,
 		Expiry:   expiry,
-		Deposit:  deposit,
 	}
 }
 

@@ -7,17 +7,7 @@ The subjects put the required information in somewhare (current idea is memo fie
 
 ## Contents
 
-[Concepts](https://github.com/UnUniFi/chain/blob/design/spec/x/ecosystem-incentive/spec/01_concepts.md)   
-[State](https://github.com/UnUniFi/chain/blob/design/spec/x/ecosystem-incentive/spec/02_state.md)
-[Messages and Queries](https://github.com/UnUniFi/chain/blob/design/spec/x/ecosystem-incentive/spec/03_messages.md)   
-[Hooks](https://github.com/UnUniFi/chain/blob/design/spec/x/ecosystem-incentive/spec/04_hooks.md)   
-[Memo Structure](https://github.com/UnUniFi/chain/blob/design/spec/x/ecosystem-incentive/spec/05_memo_structure.md)   
-[Events](https://github.com/UnUniFi/chain/blob/design/spec/x/ecosystem-incentive/spec/06_events.md)   
-
-### For developers in the core team
-
-[ADR of this module](https://github.com/UnUniFi/chain/blob/design/spec/doc/architecture/adr-ecosystem-incentive.md)   
-There's info about the requirement to achieve the purpose of this module.   
+TODO: contents
 
 # Concepts
 
@@ -189,6 +179,74 @@ message IncentiveUnitIdsByAddr {
 }
 ```
 
+# Hooks
+
+**NOTE: This is early draft.**
+
+All rewards accumulation are executed when the according hooks function is called.   
+
+The example hooks functions interfaces in x/nftbackedloan module:
+
+```go
+type nftbackedloanHooks interface {
+	AfterNftListed(ctx sdk.Context, nftIdentifier NftIdentifier, txMemo string)
+	AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier NftIdentifier, fee sdk.Coin)
+	AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier NftIdentifier)
+}
+```
+
+## AfterNftListed
+
+This hook function is called for the resistration for the `ecosystem-incentive` with the `txMemo` and `nftIdentifiler`.   
+To pass the `txMemo` from the memo data of `MsgListNft` requires a method to get memo data in the process of `MsgListNft` in `x/nftbackedloan` module.
+
+### Location to be inserted
+
+- `ListNft(ctx sdk.Context, msg *types.MsgListNft)` from x/nftbackedloan in nft_listing.go
+
+## AfterNftPaymentWithCommission
+
+This hook function is called for the accumulation of the reward for the subjects which are connected with the `nftIdentifiler` in the argument.
+The calculation of the actual reward amount is executed in methods which this hook function calls in this module.
+
+### Location to be inserted
+
+- `ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, denom string, amount sdk.Int)`  from x/nftbackedloan in nft_listing.go
+
+## AfterNftUnlistedWithoutPayment
+
+This hook function is called when a nft is unlisted for some reason like liquidation.   
+The purpose is to remove the unlisted nft information from `nftbackedloanFrontendIncentiveIdTable` KVStore to keep the data consystent.
+
+### Location to be inserted
+
+- `CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing)` from x/nftbackedloan in nft_listing.go
+- Case which bid's length for the listing is 0 in `SetLiquidation(ctx sdk.Context, msg *types.MsgEndNftListing)` from x/nftbackedloan in nft_listing.go
+
+# Data structure for the memo field
+
+We use tx memo field data to identify what incentive will be distributed to what `incentive-unit` by putting the correct formatted json data into that.
+
+The v1's formal data archtecture is:
+
+```json
+{
+  "version": "v1",
+  "incentive_unit_id": "incentive_unit-1"
+}
+```
+
+NOTE: There's a lot of chances to be changed this structure with the change of the version. Please note it when to use.
+
+## Frontends
+
+We use memo field data to know which frontend a lisetd nft used in the case of frontend-incentive model.   
+So we have to use the organized data structure of memo field in a listing tx (MsgListNft) to distingush it as a legitimate entry or not.
+
+Even if you put the wrong formatted data in the memo of tx contains MsgListNft, the MsgListNft itself will still succeed. The registration of the information which nft-id relates to what `incentive-unit-id` will just fail.
+
+
+
 # Messages and Queries
 
 **NOTE: This is early draft.**
@@ -355,71 +413,7 @@ message QueryIncentiveUnitIdsByAddrResponse {
 }
 ```
 
-# Hooks
-
-**NOTE: This is early draft.**
-
-All rewards accumulation are executed when the according hooks function is called.   
-
-The example hooks functions interfaces in x/nftbackedloan module:
-
-```go
-type nftbackedloanHooks interface {
-	AfterNftListed(ctx sdk.Context, nftIdentifier NftIdentifier, txMemo string)
-	AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier NftIdentifier, fee sdk.Coin)
-	AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier NftIdentifier)
-}
-```
-
-## AfterNftListed
-
-This hook function is called for the resistration for the `ecosystem-incentive` with the `txMemo` and `nftIdentifiler`.   
-To pass the `txMemo` from the memo data of `MsgListNft` requires a method to get memo data in the process of `MsgListNft` in `x/nftbackedloan` module.
-
-### Location to be inserted
-
-- `ListNft(ctx sdk.Context, msg *types.MsgListNft)` from x/nftbackedloan in nft_listing.go
-
-## AfterNftPaymentWithCommission
-
-This hook function is called for the accumulation of the reward for the subjects which are connected with the `nftIdentifiler` in the argument.
-The calculation of the actual reward amount is executed in methods which this hook function calls in this module.
-
-### Location to be inserted
-
-- `ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, denom string, amount sdk.Int)`  from x/nftbackedloan in nft_listing.go
-
-## AfterNftUnlistedWituoutPayment
-
-This hook function is called when a nft is unlisted for some reason like liquidation.   
-The purpose is to remove the unlisted nft information from `nftbackedloanFrontendIncentiveIdTable` KVStore to keep the data consystent.
-
-### Location to be inserted
-
-- `CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing)` from x/nftbackedloan in nft_listing.go
-- Case which bid's length for the listing is 0 in `EndNftListing(ctx sdk.Context, msg *types.MsgEndNftListing)` from x/nftbackedloan in nft_listing.go
-
-# Data structure for the memo field
-
-We use tx memo field data to identify what incentive will be distributed to what `incentive-unit` by putting the correct formatted json data into that.
-
-The v1's formal data archtecture is:
-
-```json
-{
-  "version": "v1",
-  "incentive_unit_id": "incentive_unit-1"
-}
-```
-
-NOTE: There's a lot of chances to be changed this structure with the change of the version. Please note it when to use.
-
-## Frontends
-
-We use memo field data to know which frontend a lisetd nft used in the case of frontend-incentive model.   
-So we have to use the organized data structure of memo field in a listing tx (MsgListNft) to distingush it as a legitimate entry or not.
-
-Even if you put the wrong formatted data in the memo of tx contains MsgListNft, the MsgListNft itself will still succeed. The registration of the information which nft-id relates to what `incentive-unit-id` will just fail.
+# Events
 
 ```protobuf
 message EventRegister {

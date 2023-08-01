@@ -1,5 +1,7 @@
 package types
 
+import sdk "github.com/cosmos/cosmos-sdk/types"
+
 const (
 	// ModuleName defines the module name
 	ModuleName = "pricefeed"
@@ -17,28 +19,43 @@ const (
 	MemStoreKey = "mem_capability"
 )
 
-func KeyPrefix(p string) []byte {
-	return []byte(p)
-}
+var (
+	// CurrentPricePrefix prefix for the current price of an asset
+	CurrentPricePrefix = []byte{0x00}
 
-const (
-	ParamsKey       = "Params-value-"
-	MarketKey       = "Market-value-"
-	MarketCountKey  = "Market-count-"
-	OracleKey       = "Oracle-value-"
-	PriceKey        = "Price-value-"
-	PriceCountKey   = "Price-count-"
-	RawPriceKey     = "RawPrice-value-"
-	CurrentPriceKey = "CurrentPrice-value-"
-	RawPriceFeedKey = "RawPriceFeed-value-"
+	// RawPriceFeedPrefix prefix for the raw pricefeed of an asset
+	RawPriceFeedPrefix = []byte{0x01}
 )
 
-// CurrentPriceKeySuffix returns the prefix for the current price
-func CurrentPriceKeySuffix(marketID string) []byte {
-	return append(KeyPrefix(CurrentPriceKey), []byte(marketID)...)
+// CurrentPriceKey returns the prefix for the current price
+func CurrentPriceKey(marketID string) []byte {
+	return append(CurrentPricePrefix, []byte(marketID)...)
 }
 
-// RawPriceKeySuffix returns the prefix for the raw price
-func RawPriceKeySuffix(marketID string) []byte {
-	return append(KeyPrefix(RawPriceFeedKey), []byte(marketID)...)
+// RawPriceIteratorKey returns the prefix for the raw price for a single market
+func RawPriceIteratorKey(marketID string) []byte {
+	return append(
+		RawPriceFeedPrefix,
+		lengthPrefixWithByte([]byte(marketID))...,
+	)
+}
+
+// RawPriceKey returns the prefix for the raw price
+func RawPriceKey(marketID string, oracleAddr sdk.AccAddress) []byte {
+	return append(
+		RawPriceIteratorKey(marketID),
+		lengthPrefixWithByte(oracleAddr)...,
+	)
+}
+
+// lengthPrefixWithByte returns the input bytes prefixes with one byte containing its length.
+// It panics if the input is greater than 255 in length.
+func lengthPrefixWithByte(bz []byte) []byte {
+	length := len(bz)
+
+	if length > 255 {
+		panic("cannot length prefix more than 255 bytes with single byte")
+	}
+
+	return append([]byte{byte(length)}, bz...)
 }

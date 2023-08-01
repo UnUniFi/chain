@@ -47,6 +47,7 @@ func TestRandomizedGenState(t *testing.T) {
 	assert.Equal(t, derivativesGenesis.Params.PoolParams.BorrowingFeeRatePerHour, sdk.NewDecWithPrec(1, 6))
 	assert.Equal(t, derivativesGenesis.Params.PoolParams.ReportLiquidationRewardRate, sdk.NewDecWithPrec(3, 1))
 	assert.Equal(t, derivativesGenesis.Params.PoolParams.ReportLevyPeriodRewardRate, sdk.NewDecWithPrec(3, 1))
+	assert.Equal(t, derivativesGenesis.Params.PoolParams.LevyPeriodRequiredSeconds, uint64(28800))
 	assert.Equal(t, derivativesGenesis.Params.PerpetualFutures.CommissionRate, sdk.NewDecWithPrec(1, 3))
 	assert.Equal(t, derivativesGenesis.Params.PerpetualFutures.MarginMaintenanceRate, sdk.NewDecWithPrec(5, 1))
 	assert.Equal(t, derivativesGenesis.Params.PerpetualFutures.ImaginaryFundingRateProportionalCoefficient, sdk.NewDecWithPrec(5, 4))

@@ -2,9 +2,16 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	pftypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
+
+// AccountKeeper expected interface for the account keeper (noalias)
+type AccountKeeper interface {
+	GetModuleAddress(moduleName string) sdk.AccAddress
+	GetModuleAccount(ctx sdk.Context, moduleName string) authtypes.ModuleAccountI
+}
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
 type BankKeeper interface {

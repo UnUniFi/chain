@@ -137,6 +137,9 @@ message PoolParams {
     (gogoproto.moretags) = "yaml:\"accepted_assets_conf\"",
     (gogoproto.nullable) = false
   ];
+  uint64 levy_period_required_seconds = 8 [
+    (gogoproto.moretags) = "yaml:\"levy_period_required_seconds\""
+  ];
 }
 
 message PoolMarketCap {

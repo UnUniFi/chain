@@ -1,6 +1,9 @@
 package keeper
 
 import (
+	"fmt"
+
+	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/nftbackedloan/types"
@@ -47,4 +50,25 @@ func checkListNft(k Keeper, ctx sdk.Context, sender sdk.AccAddress, nftId types.
 	}
 
 	return nil
+}
+
+func GetMemo(txBytes []byte, txCfg client.TxConfig) string {
+	/// NOTE: this way requires txConfig by importing it into keeper struct
+	txData, err := txCfg.TxDecoder()(txBytes)
+	if err != nil {
+		fmt.Printf("err: %v\n", err)
+
+		txData, err = txCfg.TxJSONDecoder()(txBytes)
+		if err != nil {
+			fmt.Printf("err: %v\n", err)
+		}
+	}
+
+	txBldr, err := txCfg.WrapTxBuilder(txData)
+	if err != nil {
+		return ""
+	}
+	memo := txBldr.GetTx().GetMemo()
+
+	return memo
 }

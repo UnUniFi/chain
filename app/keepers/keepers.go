@@ -16,6 +16,7 @@ import (
 	builderkeeper "github.com/skip-mev/pob/x/builder/keeper"
 
 	derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
+	epochskeeper "github.com/UnUniFi/chain/x/epochs/keeper"
 	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
 	yieldaggregatorKeeper "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
 )
@@ -47,6 +48,7 @@ type AppKeepers struct {
 	BuildKeeper builderkeeper.Keeper
 
 	// ununifi original keepers
+	EpochsKeeper          *epochskeeper.Keeper
 	YieldaggregatorKeeper *yieldaggregatorKeeper.Keeper
 	PricefeedKeeper       *pricefeedkeeper.Keeper
 	DerivativesKeeper     *derivativeskeeper.Keeper
