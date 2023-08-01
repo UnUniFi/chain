@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
 
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
@@ -128,7 +129,7 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
-	proposalhandler "github.com/skip-mev/pob/abci"
+	pobabci "github.com/skip-mev/pob/abci"
 	"github.com/skip-mev/pob/mempool"
 	"github.com/skip-mev/pob/x/builder"
 	builderkeeper "github.com/skip-mev/pob/x/builder/keeper"
@@ -275,7 +276,6 @@ var (
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		buildertypes.ModuleName:        nil,
 		authtypes.FeeCollectorName:     nil,
 		distrtypes.ModuleName:          nil,
 		minttypes.ModuleName:           {authtypes.Minter},
@@ -287,6 +287,7 @@ var (
 		ibcfeetypes.ModuleName:         nil,
 		icatypes.ModuleName:            nil,
 		wasm.ModuleName:                {authtypes.Burner},
+		buildertypes.ModuleName:        nil,
 
 		// original modules
 		nftbackedloantypes.ModuleName: nil,
@@ -398,7 +399,7 @@ type App struct {
 	// BuilderKeeper is the keeper that handles processing auction transactions
 	BuilderKeeper builderkeeper.Keeper
 	// Custom checkTx handler
-	checkTxHandler proposalhandler.CheckTx
+	checkTxHandler pobabci.CheckTx
 
 	// the module manager
 	mm *module.Manager
@@ -440,12 +441,12 @@ func NewApp(
 	bApp.SetTxEncoder(txConfig.TxEncoder())
 
 	// for original AuctionFactory
+	// maxTx can be changed (0 is unlimited)
 	config := mempool.NewDefaultAuctionFactory(txConfig.TxDecoder())
 	mempool := mempool.NewAuctionMempool(txConfig.TxDecoder(), txConfig.TxEncoder(), 0, config)
 	bApp.SetMempool(mempool)
 
 	keys := sdk.NewKVStoreKeys(
-		buildertypes.StoreKey,
 		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey, crisistypes.StoreKey,
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, consensusparamtypes.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
@@ -455,6 +456,7 @@ func NewApp(
 		ibcexported.StoreKey, ibctransfertypes.StoreKey, ibcfeetypes.StoreKey,
 		wasm.StoreKey, icahosttypes.StoreKey,
 		icacontrollertypes.StoreKey,
+		buildertypes.StoreKey,
 
 		// original modules
 		nftbackedloantypes.StoreKey,
@@ -1171,7 +1173,9 @@ func NewApp(
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
-	app.setAnteHandler(encodingConfig.TxConfig, wasmConfig, keys[wasm.StoreKey])
+	antHandler := app.CreateAnteHandler(encodingConfig.TxConfig, wasmConfig, keys[wasm.StoreKey], mempool)
+	app.SetAnteHandler(antHandler)
+	app.SetupProposalHandler(encodingConfig.TxConfig, mempool, antHandler)
 
 	app.setupUpgradeHandlers()
 	app.setupUpgradeStoreLoaders()
@@ -1230,7 +1234,7 @@ func NewApp(
 	return app
 }
 
-func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.WasmConfig, txCounterStoreKey storetypes.StoreKey) {
+func (app *App) CreateAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.WasmConfig, txCounterStoreKey storetypes.StoreKey, mempool *mempool.AuctionMempool) sdk.AnteHandler {
 	anteHandler, err := NewAnteHandler(
 		HandlerOptions{
 			HandlerOptions: ante.HandlerOptions{
@@ -1243,12 +1247,58 @@ func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.Wa
 			IBCKeeper:         app.IBCKeeper,
 			WasmConfig:        &wasmConfig,
 			TXCounterStoreKey: txCounterStoreKey,
+
+			TxEncoder:     txConfig.TxEncoder(),
+			BuilderKeeper: app.BuilderKeeper,
+			Mempool:       mempool,
 		},
 	)
 	if err != nil {
 		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
 	}
-	app.SetAnteHandler(anteHandler)
+	return anteHandler
+}
+
+// setProposalHandler sets the gov proposal handler for skip-pob
+func (app *App) SetupProposalHandler(txConfig client.TxConfig, mempool *mempool.AuctionMempool, anteHandler sdk.AnteHandler) {
+	proposalHandlers := pobabci.NewProposalHandler(
+		mempool,
+		app.Logger(),
+		anteHandler,
+		txConfig.TxEncoder(),
+		txConfig.TxDecoder(),
+	)
+	app.SetPrepareProposal(proposalHandlers.PrepareProposalHandler())
+	app.SetProcessProposal(proposalHandlers.ProcessProposalHandler())
+	// Set the custom CheckTx handler on BaseApp.
+	checkTxHandler := pobabci.NewCheckTxHandler(
+		app.BaseApp,
+		txConfig.TxDecoder(),
+		mempool,
+		anteHandler,
+		app.ChainID(),
+	)
+	app.SetCheckTx(checkTxHandler.CheckTx())
+}
+
+// ChainID gets chainID from private fields of BaseApp
+// Should be removed once SDK 0.50.x will be adopted
+func (app *App) ChainID() string {
+	field := reflect.ValueOf(app.BaseApp).Elem().FieldByName("chainID")
+	return field.String()
+}
+
+// CheckTx will check the transaction with the provided checkTxHandler. We override the default
+// handler so that we can verify bid transactions before they are inserted into the mempool.
+// With the POB CheckTx, we can verify the bid transaction and all of the bundled transactions
+// before inserting the bid transaction into the mempool.
+func (app *App) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
+	return app.checkTxHandler(req)
+}
+
+// SetCheckTx sets the checkTxHandler for the app.
+func (app *App) SetCheckTx(handler pobabci.CheckTx) {
+	app.checkTxHandler = handler
 }
 
 func (app *App) setPostHandler() {
@@ -1465,6 +1515,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(wasm.ModuleName)
+	paramsKeeper.Subspace(buildertypes.ModuleName)
 
 	// original modules
 	paramsKeeper.Subspace(nftbackedloantypes.ModuleName)
