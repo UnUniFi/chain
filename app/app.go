@@ -442,8 +442,8 @@ func NewApp(
 
 	// for original AuctionFactory
 	// maxTx can be changed (0 is unlimited)
-	config := mempool.NewDefaultAuctionFactory(txConfig.TxDecoder())
-	mempool := mempool.NewAuctionMempool(txConfig.TxDecoder(), txConfig.TxEncoder(), 0, config)
+	factory := mempool.NewDefaultAuctionFactory(txConfig.TxDecoder())
+	mempool := mempool.NewAuctionMempool(txConfig.TxDecoder(), txConfig.TxEncoder(), 0, factory)
 	bApp.SetMempool(mempool)
 
 	keys := sdk.NewKVStoreKeys(
@@ -946,7 +946,7 @@ func NewApp(
 	// we prefer to be more strict in what arguments the modules expect.
 	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
 
-	app.setupAppkeeper()
+	app.SetupAppkeeper()
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
@@ -1173,12 +1173,12 @@ func NewApp(
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
-	antHandler := app.CreateAnteHandler(encodingConfig.TxConfig, wasmConfig, keys[wasm.StoreKey], mempool)
-	app.SetAnteHandler(antHandler)
-	app.SetupProposalHandler(encodingConfig.TxConfig, mempool, antHandler)
+	anteHandler := app.CreateAnteHandler(encodingConfig.TxConfig, wasmConfig, keys[wasm.StoreKey], mempool)
+	app.SetAnteHandler(anteHandler)
+	app.SetupProposalHandler(encodingConfig.TxConfig, mempool, anteHandler)
 
-	app.setupUpgradeHandlers()
-	app.setupUpgradeStoreLoaders()
+	app.SetupUpgradeHandlers()
+	app.SetupUpgradeStoreLoaders()
 
 	// must be before Loading version
 	// requires the snapshot store to be created and registered as a BaseAppOption
@@ -1259,7 +1259,7 @@ func (app *App) CreateAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes
 	return anteHandler
 }
 
-// setProposalHandler sets the gov proposal handler for skip-pob
+// SetupProposalHandler sets the gov proposal handler for skip-pob
 func (app *App) SetupProposalHandler(txConfig client.TxConfig, mempool *mempool.AuctionMempool, anteHandler sdk.AnteHandler) {
 	proposalHandlers := pobabci.NewProposalHandler(
 		mempool,
@@ -1535,7 +1535,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	return paramsKeeper
 }
 
-func (app *App) setupUpgradeStoreLoaders() {
+func (app *App) SetupUpgradeStoreLoaders() {
 	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
 	if err != nil {
 		panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
@@ -1553,7 +1553,7 @@ func (app *App) setupUpgradeStoreLoaders() {
 
 }
 
-func (app *App) setupUpgradeHandlers() {
+func (app *App) SetupUpgradeHandlers() {
 	for _, upgrade := range Upgrades {
 		app.UpgradeKeeper.SetUpgradeHandler(
 			upgrade.UpgradeName,
@@ -1567,7 +1567,7 @@ func (app *App) setupUpgradeHandlers() {
 	}
 }
 
-func (app *App) setupAppkeeper() {
+func (app *App) SetupAppkeeper() {
 	app.AppKeepers.AccountKeeper = &app.AccountKeeper
 	app.AppKeepers.BankKeeper = &app.BankKeeper
 	app.AppKeepers.ConsensusParamsKeeper = &app.ConsensusParamsKeeper
