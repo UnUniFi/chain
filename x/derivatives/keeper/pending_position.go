@@ -6,16 +6,16 @@ import (
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
-func (k Keeper) SetPendingPaymentPosition(ctx sdk.Context, position types.Position, amount sdk.Coin) {
+func (k Keeper) SetPendingPaymentPosition(ctx sdk.Context, positionId string, amount sdk.Coin) {
 	pendingPaymentPosition := types.PendingPaymentPosition{
-		Id:               position.Id,
+		Id:               positionId,
 		RefundableAmount: amount,
 		CreatedAt:        ctx.BlockTime(),
 		CreatedHeight:    uint64(ctx.BlockHeight()),
 	}
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(&pendingPaymentPosition)
-	store.Set(types.PendingPaymentPositionWithIdKeyPrefix(position.Id), bz)
+	store.Set(types.PendingPaymentPositionWithIdKeyPrefix(positionId), bz)
 }
 
 func (k Keeper) DeletePendingPaymentPosition(ctx sdk.Context, Id string) {

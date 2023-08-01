@@ -39,7 +39,7 @@ func (k Keeper) RemoveMargin(ctx sdk.Context, withdrawer sdk.AccAddress, positio
 	// }
 
 	// check withdrawer has owner nft
-	owner := k.GetNFTOwner(ctx, positionId)
+	owner := k.GetPositionNFTOwner(ctx, positionId)
 	if owner.String() != withdrawer.String() {
 		return types.ErrUnauthorized
 	}
