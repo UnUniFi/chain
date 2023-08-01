@@ -35,14 +35,26 @@ func (k Keeper) SetLiquidation(ctx sdk.Context, msg *types.MsgEndNftListing) err
 
 	bids := k.GetBidsByNft(ctx, listing.NftId.IdBytes())
 	if len(bids) == 0 {
-		sender, err := sdk.AccAddressFromBech32(msg.Sender)
+		// sender, err := sdk.AccAddressFromBech32(msg.Sender)
+		// if err != nil {
+		// 	return err
+		// }
+		// err = k.nftKeeper.Transfer(ctx, listing.NftId.ClassId, listing.NftId.NftId, sender)
+		// if err != nil {
+		// 	return err
+		// }
+
+		// enable NFT transfer
+		data, found := k.nftKeeper.GetNftData(ctx, msg.NftId.ClassId, msg.NftId.NftId)
+		if !found {
+			return types.ErrNftDoesNotExists
+		}
+		data.SendDisabled = false
+		err := k.nftKeeper.SetNftData(ctx, msg.NftId.ClassId, msg.NftId.NftId, data)
 		if err != nil {
 			return err
 		}
-		err = k.nftKeeper.Transfer(ctx, listing.NftId.ClassId, listing.NftId.NftId, sender)
-		if err != nil {
-			return err
-		}
+
 		k.DeleteNftListings(ctx, listing)
 
 		// Call AfterNftUnlistedWithoutPayment to delete NFT ID from the ecosystem-incentive KVStore
@@ -197,7 +209,18 @@ func (k Keeper) LiquidationProcessNoWinner(ctx sdk.Context, bids types.NftBids, 
 	}
 
 	// transfer nft to listing owner
-	err = k.nftKeeper.Transfer(ctx, listing.NftId.ClassId, listing.NftId.NftId, listingOwner)
+	// err = k.nftKeeper.Transfer(ctx, listing.NftId.ClassId, listing.NftId.NftId, listingOwner)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// enable NFT transfer
+	data, found := k.nftKeeper.GetNftData(ctx, listing.NftId.ClassId, listing.NftId.NftId)
+	if !found {
+		return types.ErrNftDoesNotExists
+	}
+	data.SendDisabled = false
+	err = k.nftKeeper.SetNftData(ctx, listing.NftId.ClassId, listing.NftId.NftId, data)
 	if err != nil {
 		return err
 	}

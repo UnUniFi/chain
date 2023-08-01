@@ -213,15 +213,27 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 		CollectedAmountNegative: false,
 		MinimumBiddingPeriod:    msg.MinimumBiddingPeriod,
 	}
-	k.SaveNftListing(ctx, listing)
 
 	// Send ownership to market module
-	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
-	err := k.nftKeeper.Transfer(ctx, msg.NftId.ClassId, msg.NftId.NftId, moduleAddr)
+	// moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
+	// err := k.nftKeeper.Transfer(ctx, msg.NftId.ClassId, msg.NftId.NftId, moduleAddr)
+	// if err != nil {
+	// 	k.DeleteNftListing(ctx, listing)
+	// 	return err
+	// }
+
+	// disable NFT transfer
+	data, found := k.nftKeeper.GetNftData(ctx, msg.NftId.ClassId, msg.NftId.NftId)
+	if !found {
+		return types.ErrNftDoesNotExists
+	}
+	data.SendDisabled = true
+	err := k.nftKeeper.SetNftData(ctx, msg.NftId.ClassId, msg.NftId.NftId, data)
 	if err != nil {
-		k.DeleteNftListing(ctx, listing)
 		return err
 	}
+
+	k.SaveNftListing(ctx, listing)
 
 	// get the memo data from Tx contains MsgListNft
 	k.AfterNftListed(ctx, msg.NftId, GetMemo(ctx.TxBytes(), k.txCfg))
@@ -272,13 +284,24 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 		}
 	}
 
-	sender, err := sdk.AccAddressFromBech32(msg.Sender)
-	if err != nil {
-		return err
-	}
+	// sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	// if err != nil {
+	// 	return err
+	// }
 
 	// Send ownership to original owner
-	err = k.nftKeeper.Transfer(ctx, msg.NftId.ClassId, msg.NftId.NftId, sender)
+	// err = k.nftKeeper.Transfer(ctx, msg.NftId.ClassId, msg.NftId.NftId, sender)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// enable NFT transfer
+	data, found := k.nftKeeper.GetNftData(ctx, msg.NftId.ClassId, msg.NftId.NftId)
+	if !found {
+		return types.ErrNftDoesNotExists
+	}
+	data.SendDisabled = false
+	err = k.nftKeeper.SetNftData(ctx, msg.NftId.ClassId, msg.NftId.NftId, data)
 	if err != nil {
 		return err
 	}
@@ -375,6 +398,18 @@ func (k Keeper) DeliverSuccessfulBids(ctx sdk.Context) {
 		k.DeleteNftListings(ctx, listing)
 
 		cacheCtx, write := ctx.CacheContext()
+
+		data, found := k.nftKeeper.GetNftData(ctx, listing.NftId.ClassId, listing.NftId.NftId)
+		if !found {
+			fmt.Println("nft data not found")
+			continue
+		}
+		data.SendDisabled = false
+		err = k.nftKeeper.SetNftData(ctx, listing.NftId.ClassId, listing.NftId.NftId, data)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
 		err = k.nftKeeper.Transfer(cacheCtx, listing.NftId.ClassId, listing.NftId.NftId, bidder)
 		if err != nil {
 			fmt.Println(err)
