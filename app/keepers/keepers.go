@@ -1,7 +1,6 @@
 package keepers
 
 import (
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
@@ -12,6 +11,9 @@ import (
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
+
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	builderkeeper "github.com/skip-mev/pob/x/builder/keeper"
 
 	derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
 	epochskeeper "github.com/UnUniFi/chain/x/epochs/keeper"
@@ -42,7 +44,8 @@ type AppKeepers struct {
 	StakingKeeper *stakingkeeper.Keeper
 	DistrKeeper   *distrkeeper.Keeper
 
-	WasmKeeper *wasmkeeper.Keeper
+	WasmKeeper  *wasmkeeper.Keeper
+	BuildKeeper builderkeeper.Keeper
 
 	// ununifi original keepers
 	EpochsKeeper          *epochskeeper.Keeper

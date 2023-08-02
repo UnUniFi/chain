@@ -24,12 +24,13 @@ require (
 	github.com/prometheus/client_golang v1.15.0
 	github.com/pseudomuto/protoc-gen-doc v1.5.1
 	github.com/regen-network/cosmos-proto v0.3.1
+	github.com/skip-mev/pob v1.0.3
 	github.com/spf13/cast v1.5.1
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.15.0
 	github.com/stretchr/testify v1.8.3
-	google.golang.org/genproto v0.0.0-20230306155012-7f2fa6fef1f4
+	google.golang.org/genproto v0.0.0-20230320184635-7606e756e683
 	google.golang.org/grpc v1.55.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
 	google.golang.org/protobuf v1.30.0

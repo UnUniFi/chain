@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
 
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
@@ -130,6 +131,12 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
+	pobabci "github.com/skip-mev/pob/abci"
+	"github.com/skip-mev/pob/mempool"
+	"github.com/skip-mev/pob/x/builder"
+	builderkeeper "github.com/skip-mev/pob/x/builder/keeper"
+	buildertypes "github.com/skip-mev/pob/x/builder/types"
+
 	ununifinftkeeper "github.com/UnUniFi/chain/x/nft/keeper"
 	ununifinftmodule "github.com/UnUniFi/chain/x/nft/module"
 
@@ -251,6 +258,7 @@ var (
 		transfer.AppModuleBasic{},
 		ica.AppModuleBasic{},
 		ibcfee.AppModuleBasic{},
+		builder.AppModuleBasic{},
 
 		// original modules
 		pricefeed.AppModuleBasic{},
@@ -281,6 +289,7 @@ var (
 		ibcfeetypes.ModuleName:         nil,
 		icatypes.ModuleName:            nil,
 		wasm.ModuleName:                {authtypes.Burner},
+		buildertypes.ModuleName:        nil,
 
 		// original modules
 		nftbackedloantypes.ModuleName: nil,
@@ -389,6 +398,11 @@ type App struct {
 
 	EcosystemincentiveKeeper ecosystemincentivekeeper.Keeper
 
+	// BuilderKeeper is the keeper that handles processing auction transactions
+	BuilderKeeper builderkeeper.Keeper
+	// Custom checkTx handler
+	checkTxHandler pobabci.CheckTx
+
 	// the module manager
 	mm *module.Manager
 
@@ -428,6 +442,13 @@ func NewApp(
 	bApp.SetInterfaceRegistry(interfaceRegistry)
 	bApp.SetTxEncoder(txConfig.TxEncoder())
 
+	// for original AuctionFactory
+	// maxTx can be changed (0 is unlimited)
+	maxTx := 0
+	factory := mempool.NewDefaultAuctionFactory(txConfig.TxDecoder())
+	mempool := mempool.NewAuctionMempool(txConfig.TxDecoder(), txConfig.TxEncoder(), maxTx, factory)
+	bApp.SetMempool(mempool)
+
 	keys := sdk.NewKVStoreKeys(
 		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey, crisistypes.StoreKey,
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
@@ -438,6 +459,7 @@ func NewApp(
 		ibcexported.StoreKey, ibctransfertypes.StoreKey, ibcfeetypes.StoreKey,
 		wasm.StoreKey, icahosttypes.StoreKey,
 		icacontrollertypes.StoreKey,
+		buildertypes.StoreKey,
 
 		// original modules
 		derivativestypes.StoreKey,
@@ -717,6 +739,17 @@ func NewApp(
 		wasmOpts...,
 	)
 
+	// Instantiate the builder keeper, store keys, and module manager
+	app.BuilderKeeper = builderkeeper.NewKeeper(
+		appCodec,
+		keys[buildertypes.StoreKey],
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.DistrKeeper,
+		app.StakingKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
 	app.PricefeedKeeper = pricefeedkeeper.NewKeeper(
 		appCodec,
 		keys[pricefeedtypes.StoreKey],
@@ -927,13 +960,14 @@ func NewApp(
 	// we prefer to be more strict in what arguments the modules expect.
 	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
 
-	app.setupAppkeeper()
+	app.SetupAppkeeper()
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 
 	// tbbbt
 	app.mm = module.NewManager(
+		builder.NewAppModule(appCodec, app.BuilderKeeper),
 		genutil.NewAppModule(
 			app.AccountKeeper,
 			app.StakingKeeper,
@@ -986,6 +1020,7 @@ func NewApp(
 	// CanWithdrawInvariant invariant.
 	// NOTE: staking module is required if HistoricalEntries param > 0
 	app.mm.SetOrderBeginBlockers(
+		buildertypes.ModuleName,
 		upgradetypes.ModuleName,
 		capabilitytypes.ModuleName,
 		minttypes.ModuleName,
@@ -1071,6 +1106,7 @@ func NewApp(
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
 		wasm.ModuleName,
+		buildertypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -1081,6 +1117,7 @@ func NewApp(
 	// NOTE: wasm module should be at the end as it can call other module functionality direct or via message dispatching during
 	// genesis phase. For example bank transfer, auth account check, staking, ...
 	app.mm.SetOrderInitGenesis(
+		buildertypes.ModuleName,
 		capabilitytypes.ModuleName,
 		authtypes.ModuleName,
 		banktypes.ModuleName,
@@ -1152,10 +1189,13 @@ func NewApp(
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
-	app.setAnteHandler(encodingConfig.TxConfig, wasmConfig, keys[wasm.StoreKey])
+	anteHandler := app.CreateAnteHandler(encodingConfig.TxConfig, wasmConfig, keys[wasm.StoreKey], mempool)
+	app.SetAnteHandler(anteHandler)
+	app.SetupProposalHandler(encodingConfig.TxConfig, mempool, anteHandler)
+	app.SetupChackTx(encodingConfig.TxConfig, mempool, anteHandler)
 
-	app.setupUpgradeHandlers()
-	app.setupUpgradeStoreLoaders()
+	app.SetupUpgradeHandlers()
+	app.SetupUpgradeStoreLoaders()
 
 	// must be before Loading version
 	// requires the snapshot store to be created and registered as a BaseAppOption
@@ -1211,7 +1251,7 @@ func NewApp(
 	return app
 }
 
-func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.WasmConfig, txCounterStoreKey storetypes.StoreKey) {
+func (app *App) CreateAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.WasmConfig, txCounterStoreKey storetypes.StoreKey, mempool *mempool.AuctionMempool) sdk.AnteHandler {
 	anteHandler, err := NewAnteHandler(
 		HandlerOptions{
 			HandlerOptions: ante.HandlerOptions{
@@ -1224,12 +1264,62 @@ func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.Wa
 			IBCKeeper:         app.IBCKeeper,
 			WasmConfig:        &wasmConfig,
 			TXCounterStoreKey: txCounterStoreKey,
+
+			TxEncoder:     txConfig.TxEncoder(),
+			BuilderKeeper: app.BuilderKeeper,
+			Mempool:       mempool,
 		},
 	)
 	if err != nil {
 		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
 	}
-	app.SetAnteHandler(anteHandler)
+	return anteHandler
+}
+
+func (app *App) SetupProposalHandler(txConfig client.TxConfig, mempool *mempool.AuctionMempool, anteHandler sdk.AnteHandler) {
+	// Set the custom gov proposal handler on BaseApp.
+	// These methods perform custom logic when validator nodes are instructed to create proposals
+	proposalHandlers := pobabci.NewProposalHandler(
+		mempool,
+		app.Logger(),
+		anteHandler,
+		txConfig.TxEncoder(),
+		txConfig.TxDecoder(),
+	)
+	app.SetPrepareProposal(proposalHandlers.PrepareProposalHandler())
+	app.SetProcessProposal(proposalHandlers.ProcessProposalHandler())
+}
+
+func (app *App) SetupChackTx(txConfig client.TxConfig, mempool *mempool.AuctionMempool, anteHandler sdk.AnteHandler) {
+	// Set the custom CheckTx handler on BaseApp.
+	checkTxHandler := pobabci.NewCheckTxHandler(
+		app.BaseApp,
+		txConfig.TxDecoder(),
+		mempool,
+		anteHandler,
+		app.ChainID(),
+	)
+	app.SetCheckTx(checkTxHandler.CheckTx())
+}
+
+// ChainID gets chainID from private fields of BaseApp
+// Should be removed once SDK 0.50.x will be adopted
+func (app *App) ChainID() string {
+	field := reflect.ValueOf(app.BaseApp).Elem().FieldByName("chainID")
+	return field.String()
+}
+
+// CheckTx will check the transaction with the provided checkTxHandler. We override the default
+// handler so that we can verify bid transactions before they are inserted into the mempool.
+// With the POB CheckTx, we can verify the bid transaction and all of the bundled transactions
+// before inserting the bid transaction into the mempool.
+func (app *App) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
+	return app.checkTxHandler(req)
+}
+
+// SetCheckTx sets the checkTxHandler for the app.
+func (app *App) SetCheckTx(handler pobabci.CheckTx) {
+	app.checkTxHandler = handler
 }
 
 func (app *App) setPostHandler() {
@@ -1446,6 +1536,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(wasm.ModuleName)
+	paramsKeeper.Subspace(buildertypes.ModuleName)
 
 	// original modules
 	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
@@ -1465,7 +1556,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	return paramsKeeper
 }
 
-func (app *App) setupUpgradeStoreLoaders() {
+func (app *App) SetupUpgradeStoreLoaders() {
 	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
 	if err != nil {
 		panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
@@ -1483,7 +1574,7 @@ func (app *App) setupUpgradeStoreLoaders() {
 
 }
 
-func (app *App) setupUpgradeHandlers() {
+func (app *App) SetupUpgradeHandlers() {
 	for _, upgrade := range Upgrades {
 		app.UpgradeKeeper.SetUpgradeHandler(
 			upgrade.UpgradeName,
@@ -1497,7 +1588,7 @@ func (app *App) setupUpgradeHandlers() {
 	}
 }
 
-func (app *App) setupAppkeeper() {
+func (app *App) SetupAppkeeper() {
 	app.AppKeepers.AccountKeeper = &app.AccountKeeper
 	app.AppKeepers.BankKeeper = &app.BankKeeper
 	app.AppKeepers.ConsensusParamsKeeper = &app.ConsensusParamsKeeper
