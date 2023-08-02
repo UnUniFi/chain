@@ -954,6 +954,9 @@ paths:
                               type: string
                             target_weight:
                               type: string
+                      levy_period_required_seconds:
+                        type: string
+                        format: uint64
                   perpetual_futures:
                     type: object
                     properties:
@@ -7799,6 +7802,9 @@ definitions:
                   type: string
                 target_weight:
                   type: string
+          levy_period_required_seconds:
+            type: string
+            format: uint64
       perpetual_futures:
         type: object
         properties:
@@ -7943,6 +7949,9 @@ definitions:
               type: string
             target_weight:
               type: string
+      levy_period_required_seconds:
+        type: string
+        format: uint64
   ununifi.derivatives.Position:
     type: object
     properties:
@@ -9105,6 +9114,9 @@ definitions:
                       type: string
                     target_weight:
                       type: string
+              levy_period_required_seconds:
+                type: string
+                format: uint64
           perpetual_futures:
             type: object
             properties:
