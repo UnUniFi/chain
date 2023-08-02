@@ -444,8 +444,9 @@ func NewApp(
 
 	// for original AuctionFactory
 	// maxTx can be changed (0 is unlimited)
+	maxTx := 0
 	factory := mempool.NewDefaultAuctionFactory(txConfig.TxDecoder())
-	mempool := mempool.NewAuctionMempool(txConfig.TxDecoder(), txConfig.TxEncoder(), 0, factory)
+	mempool := mempool.NewAuctionMempool(txConfig.TxDecoder(), txConfig.TxEncoder(), maxTx, factory)
 	bApp.SetMempool(mempool)
 
 	keys := sdk.NewKVStoreKeys(
@@ -1191,6 +1192,7 @@ func NewApp(
 	anteHandler := app.CreateAnteHandler(encodingConfig.TxConfig, wasmConfig, keys[wasm.StoreKey], mempool)
 	app.SetAnteHandler(anteHandler)
 	app.SetupProposalHandler(encodingConfig.TxConfig, mempool, anteHandler)
+	app.SetupChackTx(encodingConfig.TxConfig, mempool, anteHandler)
 
 	app.SetupUpgradeHandlers()
 	app.SetupUpgradeStoreLoaders()
@@ -1274,8 +1276,9 @@ func (app *App) CreateAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes
 	return anteHandler
 }
 
-// SetupProposalHandler sets the gov proposal handler for skip-pob
 func (app *App) SetupProposalHandler(txConfig client.TxConfig, mempool *mempool.AuctionMempool, anteHandler sdk.AnteHandler) {
+	// Set the custom gov proposal handler on BaseApp.
+	// These methods perform custom logic when validator nodes are instructed to create proposals
 	proposalHandlers := pobabci.NewProposalHandler(
 		mempool,
 		app.Logger(),
@@ -1285,6 +1288,9 @@ func (app *App) SetupProposalHandler(txConfig client.TxConfig, mempool *mempool.
 	)
 	app.SetPrepareProposal(proposalHandlers.PrepareProposalHandler())
 	app.SetProcessProposal(proposalHandlers.ProcessProposalHandler())
+}
+
+func (app *App) SetupChackTx(txConfig client.TxConfig, mempool *mempool.AuctionMempool, anteHandler sdk.AnteHandler) {
 	// Set the custom CheckTx handler on BaseApp.
 	checkTxHandler := pobabci.NewCheckTxHandler(
 		app.BaseApp,
