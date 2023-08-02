@@ -34,16 +34,27 @@ func (k Keeper) GetPendingPaymentPosition(ctx sdk.Context, Id string) *types.Pen
 	return &pendingPaymentPosition
 }
 
-func (k Keeper) ClosePendingPaymentPosition(ctx sdk.Context, pendingPosition types.PendingPaymentPosition, address string) error {
-	addr, err := sdk.AccAddressFromBech32(address)
+func (k Keeper) ClosePendingPaymentPosition(ctx sdk.Context, pendingPosition types.PendingPaymentPosition, address sdk.AccAddress) error {
+	owner := k.GetPositionNFTOwner(ctx, pendingPosition.Id)
+	if owner.String() != address.String() {
+		return types.ErrUnauthorized
+	}
+	sendDisabled, err := k.GetPositionNFTSendDisabled(ctx, pendingPosition.Id)
 	if err != nil {
 		return err
 	}
+	if sendDisabled {
+		return types.ErrPositionNFTSendDisabled
+	}
 	if pendingPosition.RefundableAmount.IsPositive() {
-		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.PendingPaymentManager, addr, sdk.NewCoins(pendingPosition.RefundableAmount))
+		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.PendingPaymentManager, address, sdk.NewCoins(pendingPosition.RefundableAmount))
 		if err != nil {
 			return err
 		}
+	}
+	err = k.ClosePositionNFT(ctx, pendingPosition.Id)
+	if err != nil {
+		return err
 	}
 	k.DeletePendingPaymentPosition(ctx, pendingPosition.Id)
 	return nil

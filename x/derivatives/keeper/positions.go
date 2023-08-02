@@ -198,20 +198,7 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 	if err != nil {
 		return err
 	}
-
 	positionId := msg.PositionId
-	position := k.GetPositionWithId(ctx, positionId)
-
-	if position == nil {
-		return types.ErrPositionDoesNotExist
-	}
-
-	// todo:  add pending position close
-
-	// if msg.Sender != position.Address {
-	// 	return errors.New("not owner")
-	// }
-
 	// check withdrawer has owner nft
 	owner := k.GetPositionNFTOwner(ctx, positionId)
 	if owner.String() != msg.Sender {
@@ -223,6 +210,21 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 	}
 	if sendDisabled {
 		return types.ErrPositionNFTSendDisabled
+	}
+
+	pendingPosition := k.GetPendingPaymentPosition(ctx, positionId)
+	if pendingPosition != nil {
+		err = k.ClosePendingPaymentPosition(ctx, *pendingPosition, sender)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
+	position := k.GetPositionWithId(ctx, positionId)
+
+	if position == nil {
+		return types.ErrPositionDoesNotExist
 	}
 
 	positionInstance, err := types.UnpackPositionInstance(position.PositionInstance)
@@ -247,7 +249,7 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 	k.DeletePosition(ctx, sender, positionId)
 
 	// delete position nft
-	err = k.ClosePositionNFT(ctx, *position)
+	err = k.ClosePositionNFT(ctx, position.Id)
 	if err != nil {
 		return err
 	}
