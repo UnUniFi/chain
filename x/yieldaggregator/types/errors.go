@@ -20,4 +20,5 @@ var (
 	ErrInvalidStrategyWeightSum   = sdkerrors.Register(ModuleName, 10, "invalid strategy weight sum")
 	ErrInvalidStrategyInvolved    = sdkerrors.Register(ModuleName, 11, "invalid strategy id involved")
 	ErrInvalidWithdrawReserveRate = sdkerrors.Register(ModuleName, 12, "invalid withdraw reserve rate")
+	ErrInvalidAmount              = sdkerrors.Register(ModuleName, 13, "invalid amount")
 )
