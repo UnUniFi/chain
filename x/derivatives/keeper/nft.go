@@ -91,7 +91,7 @@ func (k Keeper) MintFuturePositionNFT(ctx sdk.Context, position types.Position) 
 		Sender:    moduleAddr.String(),
 		ClassId:   types.PerpFuturePositionNFTClassId,
 		NftId:     position.Id,
-		Recipient: position.Address,
+		Recipient: position.OpenerAddress,
 	}
 	err := k.nftfactoryKeeper.MintNFT(ctx, &msgMintNFT)
 	if err != nil {

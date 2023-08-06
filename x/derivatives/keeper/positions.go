@@ -130,7 +130,7 @@ func (k Keeper) GetAddressPositionWithId(ctx sdk.Context, address sdk.AccAddress
 }
 
 func (k Keeper) SetPosition(ctx sdk.Context, position types.Position) error {
-	addr, err := sdk.AccAddressFromBech32(position.Address)
+	addr, err := sdk.AccAddressFromBech32(position.OpenerAddress)
 	if err != nil {
 		return err
 	}
@@ -229,7 +229,7 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 	switch positionInstance := positionInstance.(type) {
 	case *types.PerpetualFuturesPositionInstance:
 		perpetualFuturesPosition := types.NewPerpetualFuturesPosition(*position, *positionInstance)
-		err = k.ClosePerpetualFuturesPosition(ctx, perpetualFuturesPosition)
+		err = k.ClosePerpetualFuturesPosition(ctx, perpetualFuturesPosition, owner.String())
 	case *types.PerpetualOptionsPositionInstance:
 		err = k.ClosePerpetualOptionsPosition(ctx, *position, *positionInstance)
 	default:

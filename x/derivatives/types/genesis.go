@@ -26,7 +26,7 @@ func (gs GenesisState) Validate() error {
 		if _, ok := positionIdMap[elem.Id]; ok {
 			return fmt.Errorf("duplicated id for position")
 		}
-		if _, err := sdk.AccAddressFromBech32(elem.Address); err != nil {
+		if _, err := sdk.AccAddressFromBech32(elem.OpenerAddress); err != nil {
 			return fmt.Errorf("invalid address")
 		}
 		positionIdMap[elem.Id] = true

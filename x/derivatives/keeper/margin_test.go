@@ -77,7 +77,7 @@ func (suite *KeeperTestSuite) TestAddMargin() {
 		position := types.Position{
 			Id:               tc.positionId,
 			Market:           market,
-			Address:          owner.String(),
+			OpenerAddress:    owner.String(),
 			OpenedBaseRate:   openedBaseRate,
 			OpenedQuoteRate:  openedQuoteRate,
 			RemainingMargin:  tc.margin,
@@ -224,7 +224,7 @@ func (suite *KeeperTestSuite) TestRemoveMargin() {
 		position := types.Position{
 			Id:               tc.positionId,
 			Market:           market,
-			Address:          owner.String(),
+			OpenerAddress:    owner.String(),
 			OpenedBaseRate:   openedBaseRate,
 			OpenedQuoteRate:  openedQuoteRate,
 			RemainingMargin:  tc.margin,
