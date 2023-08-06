@@ -210,10 +210,16 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 		return fmt.Errorf("unknown position type")
 	}
 
-	// delete position nft
-	err = k.CloseFuturePositionNFT(ctx, position.Id)
+	pending, err := k.GetFuturePositionNFTSendDisabled(ctx, position.Id)
 	if err != nil {
 		return err
+	}
+	if !pending {
+		// delete position nft
+		err = k.CloseFuturePositionNFT(ctx, position.Id)
+		if err != nil {
+			return err
+		}
 	}
 
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionClosed{
@@ -236,12 +242,7 @@ func (k Keeper) HandleReturnAmount(ctx sdk.Context, pnlAmount sdk.Int, position 
 	}
 
 	var addr sdk.AccAddress
-	if pending {
-		addr = k.GetPendingPaymentManagerAddress()
-		if addr == nil {
-			return sdk.ZeroInt(), types.ErrNoPendingPaymentManager
-		}
-	} else {
+	if !pending {
 		addr = k.GetFuturePositionNFTOwner(ctx, position.Id)
 		if addr == nil {
 			return sdk.ZeroInt(), types.ErrNotPositionNFTOwner
@@ -265,9 +266,16 @@ func (k Keeper) HandleReturnAmount(ctx sdk.Context, pnlAmount sdk.Int, position 
 		} else {
 			returningCoin := sdk.NewCoin(position.RemainingMargin.Denom, returningAmount)
 			// Send margin-loss from MarginManager
-			if err := k.SendBackMargin(ctx, addr, sdk.NewCoins(returningCoin)); err != nil {
-				return sdk.ZeroInt(), err
+			if pending {
+				if err := k.SendPendingMargin(ctx, sdk.NewCoins(returningCoin)); err != nil {
+					return sdk.ZeroInt(), err
+				}
+			} else {
+				if err := k.SendBackMargin(ctx, addr, sdk.NewCoins(returningCoin)); err != nil {
+					return sdk.ZeroInt(), err
+				}
 			}
+
 			// Send loss to the pool
 			if err := k.SendCoinFromMarginManagerToPool(ctx, sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, loss))); err != nil {
 				return sdk.ZeroInt(), err

@@ -20,7 +20,3 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 func (k Keeper) GetModuleAddress() sdk.AccAddress {
 	return k.accountKeeper.GetModuleAddress(types.ModuleName)
 }
-
-func (k Keeper) GetPendingPaymentManagerAddress() sdk.AccAddress {
-	return k.accountKeeper.GetModuleAddress(types.PendingPaymentManager)
-}
