@@ -11,13 +11,15 @@ import (
 
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
+	nftfactorytypes "github.com/UnUniFi/chain/x/nftfactory/types"
 	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
+
+	"github.com/cosmos/cosmos-sdk/baseapp"
 
 	simapp "github.com/UnUniFi/chain/app"
 	"github.com/UnUniFi/chain/x/derivatives/keeper"
 	"github.com/UnUniFi/chain/x/derivatives/types"
-	"github.com/cosmos/cosmos-sdk/baseapp"
 )
 
 var (
@@ -101,6 +103,8 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.keeper = app.DerivativesKeeper
 	suite.pricefeedKeeper = app.PricefeedKeeper
 
+	nftfactoryParams := nftfactorytypes.DefaultParams()
+	app.NftfactoryKeeper.SetParamSet(suite.ctx, nftfactoryParams)
 }
 
 func TestKeeperSuite(t *testing.T) {
