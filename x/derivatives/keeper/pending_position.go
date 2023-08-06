@@ -35,11 +35,23 @@ func (k Keeper) GetPendingPaymentPosition(ctx sdk.Context, Id string) *types.Pen
 }
 
 func (k Keeper) ClosePendingPaymentPosition(ctx sdk.Context, pendingPosition types.PendingPaymentPosition, address sdk.AccAddress) error {
-	owner := k.GetPositionNFTOwner(ctx, pendingPosition.Id)
+	err := k.ClosePendingPaymentFuturePosition(ctx, pendingPosition, address)
+	if err == nil {
+		return nil
+	}
+	err = k.ClosePendingPaymentOptionPosition(ctx, pendingPosition, address)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (k Keeper) ClosePendingPaymentFuturePosition(ctx sdk.Context, pendingPosition types.PendingPaymentPosition, address sdk.AccAddress) error {
+	owner := k.GetFuturePositionNFTOwner(ctx, pendingPosition.Id)
 	if owner.String() != address.String() {
 		return types.ErrUnauthorized
 	}
-	sendDisabled, err := k.GetPositionNFTSendDisabled(ctx, pendingPosition.Id)
+	sendDisabled, err := k.GetFuturePositionNFTSendDisabled(ctx, pendingPosition.Id)
 	if err != nil {
 		return err
 	}
@@ -52,10 +64,15 @@ func (k Keeper) ClosePendingPaymentPosition(ctx sdk.Context, pendingPosition typ
 			return err
 		}
 	}
-	err = k.ClosePositionNFT(ctx, pendingPosition.Id)
+	err = k.CloseFuturePositionNFT(ctx, pendingPosition.Id)
 	if err != nil {
 		return err
 	}
 	k.DeletePendingPaymentPosition(ctx, pendingPosition.Id)
 	return nil
+}
+
+func (k Keeper) ClosePendingPaymentOptionPosition(ctx sdk.Context, pendingPosition types.PendingPaymentPosition, address sdk.AccAddress) error {
+	// todo: impl
+	return types.ErrNotImplemented
 }
