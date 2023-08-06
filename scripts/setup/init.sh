@@ -142,6 +142,15 @@ jq '.app_state.nft.classes = [
     "symbol": "",
     "uri": "",
     "uri_hash": ""
+  },
+    {
+    "data": null,
+    "description": "",
+    "id": "derivatives/perpetual_futures/positions",
+    "name": "derivatives/perpetual_futures/positions",
+    "symbol": "",
+    "uri": "",
+    "uri_hash": ""
   }
 ]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 
