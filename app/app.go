@@ -441,12 +441,12 @@ func NewApp(
 		icacontrollertypes.StoreKey,
 
 		// original modules
-		derivativestypes.StoreKey,
-		pricefeedtypes.StoreKey,
-
 		nftbackedloantypes.StoreKey,
 		nftfactorytypes.StoreKey,
 		ecosystemincentivetypes.StoreKey,
+
+		derivativestypes.StoreKey,
+		pricefeedtypes.StoreKey,
 
 		yieldaggregatortypes.StoreKey,
 		stakeibctypes.StoreKey,
@@ -718,26 +718,6 @@ func NewApp(
 		wasmOpts...,
 	)
 
-	app.PricefeedKeeper = pricefeedkeeper.NewKeeper(
-		appCodec,
-		keys[pricefeedtypes.StoreKey],
-		keys[pricefeedtypes.MemStoreKey],
-		app.GetSubspace(pricefeedtypes.ModuleName),
-		app.BankKeeper,
-	)
-
-	app.DerivativesKeeper = derivativeskeeper.NewKeeper(
-		appCodec,
-		keys[derivativestypes.StoreKey],
-		keys[derivativestypes.MemStoreKey],
-		app.GetSubspace(derivativestypes.ModuleName),
-		app.AccountKeeper,
-		app.BankKeeper,
-		app.PricefeedKeeper,
-		app.UnUniFiNFTKeeper,
-		app.NftfactoryKeeper,
-	)
-
 	app.NftfactoryKeeper = nftfactorykeeper.NewKeeper(
 		appCodec,
 		keys[nftfactorytypes.StoreKey],
@@ -771,6 +751,26 @@ func NewApp(
 
 	// create Keeper objects which have Hooks
 	app.NftbackedloanKeeper = *nftbackedloanKeeper.SetHooks(nftbackedloantypes.NewMultiNftbackedloanHooks(app.EcosystemincentiveKeeper.Hooks()))
+
+	app.PricefeedKeeper = pricefeedkeeper.NewKeeper(
+		appCodec,
+		keys[pricefeedtypes.StoreKey],
+		keys[pricefeedtypes.MemStoreKey],
+		app.GetSubspace(pricefeedtypes.ModuleName),
+		app.BankKeeper,
+	)
+
+	app.DerivativesKeeper = derivativeskeeper.NewKeeper(
+		appCodec,
+		keys[derivativestypes.StoreKey],
+		keys[derivativestypes.MemStoreKey],
+		app.GetSubspace(derivativestypes.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.PricefeedKeeper,
+		app.UnUniFiNFTKeeper,
+		app.NftfactoryKeeper,
+	)
 
 	scopedIcacallbacksKeeper := app.CapabilityKeeper.ScopeToModule(icacallbackstypes.ModuleName)
 	app.ScopedIcacallbacksKeeper = scopedIcacallbacksKeeper
@@ -969,12 +969,12 @@ func NewApp(
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
 
 		// original modules
-		pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
-		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
-
 		nftfactory.NewAppModule(appCodec, app.NftfactoryKeeper, app.UnUniFiNFTKeeper),
 		nftbackedloan.NewAppModule(appCodec, app.NftbackedloanKeeper, app.AccountKeeper, app.BankKeeper),
 		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
+
+		pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
+		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
 
 		yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
 		stakeibc.NewAppModule(appCodec, app.StakeibcKeeper, app.AccountKeeper, app.BankKeeper),
@@ -1009,12 +1009,12 @@ func NewApp(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		// original modules
-		pricefeedtypes.ModuleName,
-		derivativestypes.ModuleName,
-
 		nftfactorytypes.ModuleName,
 		nftbackedloantypes.ModuleName,
 		ecosystemincentivetypes.ModuleName,
+
+		pricefeedtypes.ModuleName,
+		derivativestypes.ModuleName,
 
 		stakeibctypes.ModuleName,
 		epochstypes.ModuleName,
@@ -1053,12 +1053,12 @@ func NewApp(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		// original modules
-		pricefeedtypes.ModuleName,
-		derivativestypes.ModuleName,
-
 		nftfactorytypes.ModuleName,
 		nftbackedloantypes.ModuleName,
 		ecosystemincentivetypes.ModuleName,
+
+		pricefeedtypes.ModuleName,
+		derivativestypes.ModuleName,
 
 		stakeibctypes.ModuleName,
 		epochstypes.ModuleName,
@@ -1105,12 +1105,12 @@ func NewApp(
 		consensusparamtypes.ModuleName,
 
 		// original modules
-		pricefeedtypes.ModuleName,
-		derivativestypes.ModuleName,
-
 		nftfactorytypes.ModuleName,
 		nftbackedloantypes.ModuleName,
 		ecosystemincentivetypes.ModuleName,
+
+		pricefeedtypes.ModuleName,
+		derivativestypes.ModuleName,
 
 		stakeibctypes.ModuleName,
 		epochstypes.ModuleName,
@@ -1451,12 +1451,12 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(wasm.ModuleName)
 
 	// original modules
-	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
-	paramsKeeper.Subspace(derivativestypes.ModuleName)
-
 	paramsKeeper.Subspace(nftfactorytypes.ModuleName)
 	paramsKeeper.Subspace(nftbackedloantypes.ModuleName)
 	paramsKeeper.Subspace(ecosystemincentivetypes.ModuleName)
+
+	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
+	paramsKeeper.Subspace(derivativestypes.ModuleName)
 
 	paramsKeeper.Subspace(stakeibctypes.ModuleName)
 	paramsKeeper.Subspace(epochstypes.ModuleName)
