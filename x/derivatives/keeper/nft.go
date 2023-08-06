@@ -70,6 +70,9 @@ func (k Keeper) GetAddressNFTFuturePositions(ctx sdk.Context, address sdk.AccAdd
 	positions := []types.Position{}
 	for _, nft := range nfts {
 		position := k.GetPositionWithId(ctx, nft.Id)
+		if position == nil {
+			continue
+		}
 		positions = append(positions, *position)
 	}
 	return positions
@@ -80,6 +83,9 @@ func (k Keeper) GetAddressNFTOptionPositions(ctx sdk.Context, address sdk.AccAdd
 	positions := []types.Position{}
 	for _, nft := range nfts {
 		position := k.GetPositionWithId(ctx, nft.Id)
+		if position == nil {
+			continue
+		}
 		positions = append(positions, *position)
 	}
 	return positions
