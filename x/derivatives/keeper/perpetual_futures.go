@@ -60,7 +60,7 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 	position := types.Position{
 		Id:                   positionId,
 		Market:               market,
-		Address:              sender,
+		OpenerAddress:        sender,
 		OpenedAt:             ctx.BlockTime(),
 		OpenedHeight:         uint64(ctx.BlockHeight()),
 		OpenedBaseRate:       openedBaseRate,
@@ -165,7 +165,7 @@ func (k Keeper) SubReserveTokensForPosition(ctx sdk.Context, marketType types.Ma
 	return nil
 }
 
-func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.PerpetualFuturesPosition) error {
+func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.PerpetualFuturesPosition, sender string) error {
 	baseUsdPrice, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
 	if err != nil {
 		return err
@@ -217,7 +217,7 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 	}
 
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionClosed{
-		Sender:          position.Address,
+		Sender:          sender,
 		PositionId:      position.Id,
 		PositionSize:    position.PositionInstance.SizeInDenomExponent(types.OneMillionInt).String(),
 		PnlAmount:       pnlAmount.String(),
@@ -320,16 +320,16 @@ func (k Keeper) LiquidateFuturesPosition(ctx sdk.Context, rewardRecipient string
 		}
 	}
 
-	if err := k.ClosePerpetualFuturesPosition(ctx, position); err != nil {
+	if err := k.ClosePerpetualFuturesPosition(ctx, position, rewardRecipient); err != nil {
 		return err
 	}
 
 	// Delete Position
-	positionAddress, err := sdk.AccAddressFromBech32(position.Address)
+	openerAddress, err := sdk.AccAddressFromBech32(position.OpenerAddress)
 	if err != nil {
 		return err
 	}
-	k.DeletePosition(ctx, positionAddress, position.Id)
+	k.DeletePosition(ctx, openerAddress, position.Id)
 
 	// Send Reward
 	rewardAmount := sdk.NewDecFromInt(commissionFee).Mul(rewardRate).RoundInt()
