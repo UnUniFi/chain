@@ -66,7 +66,7 @@ service Query {
     option (google.api.http).get = "/ununifi/derivatives/{address}/positions";
   }
 
-  rpc PendingPaymentPositions(QueryPendingPaymentPositionsRequest) returns (QueryPendingPaymentPositionsResponse) {
+  rpc AllPendingPaymentPositions(QueryAllPendingPaymentPositionsRequest) returns (QueryAllPendingPaymentPositionsResponse) {
     option (google.api.http).get = "/ununifi/derivatives/pending-payment-positions";
   }
 
@@ -275,10 +275,10 @@ message QueryAddressPositionsResponse {
   ];
 }
 
-message QueryPendingPaymentPositionsRequest {
+message QueryAllPendingPaymentPositionsRequest {
 }
 
-message QueryPendingPaymentPositionsResponse {
+message QueryAllPendingPaymentPositionsResponse {
   repeated PendingPaymentPosition pending_payment_positions = 1 [
     (gogoproto.moretags)  = "yaml:\"pending_payment_positions\""
   ];
