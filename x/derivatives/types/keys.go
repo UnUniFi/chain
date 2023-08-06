@@ -28,8 +28,11 @@ const (
 	// MarginManager defines the margin manager for derivatives module
 	MarginManager = "margin_manager"
 
-	// position nft class id
-	PositionNFTClassId = "derivatives/perpetual_futures/positions"
+	// perpetual future position nft class id
+	PerpFuturePositionNFTClassId = "derivatives/perpetual_futures/positions"
+
+	// perpetual option position nft class id
+	PerpOptionPositionNFTClassId = "derivatives/perpetual_options/positions"
 
 	// PendingPaymentManager defines the pending payment manager for derivatives module
 	PendingPaymentManager = "pending_payment_manager"

@@ -178,12 +178,6 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 		return err
 	}
 
-	// mint position nft
-	err = k.MintPositionNFT(ctx, *position)
-	if err != nil {
-		return err
-	}
-
 	err = k.SetPosition(ctx, *position)
 	if err != nil {
 		return err
@@ -247,12 +241,6 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 	}
 
 	k.DeletePosition(ctx, sender, positionId)
-
-	// delete position nft
-	err = k.ClosePositionNFT(ctx, position.Id)
-	if err != nil {
-		return err
-	}
 
 	return nil
 }

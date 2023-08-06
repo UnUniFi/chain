@@ -118,6 +118,12 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 		return nil, err
 	}
 
+	// mint position nft
+	err = k.MintFuturePositionNFT(ctx, position)
+	if err != nil {
+		return nil, err
+	}
+
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionOpened{
 		Sender:     sender,
 		PositionId: positionId,
@@ -204,6 +210,12 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 		return fmt.Errorf("unknown position type")
 	}
 
+	// delete position nft
+	err = k.CloseFuturePositionNFT(ctx, position.Id)
+	if err != nil {
+		return err
+	}
+
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionClosed{
 		Sender:          position.Address,
 		PositionId:      position.Id,
@@ -218,7 +230,7 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 // If the profit exists, the profit always comes from the pool.
 // If the loss exists, the loss always goes to the pool from the users' margin.
 func (k Keeper) HandleReturnAmount(ctx sdk.Context, pnlAmount sdk.Int, position types.PerpetualFuturesPosition) (returningAmount sdk.Int, err error) {
-	pending, err := k.GetPositionNFTSendDisabled(ctx, position.Id)
+	pending, err := k.GetFuturePositionNFTSendDisabled(ctx, position.Id)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
@@ -230,7 +242,7 @@ func (k Keeper) HandleReturnAmount(ctx sdk.Context, pnlAmount sdk.Int, position 
 			return sdk.ZeroInt(), types.ErrNoPendingPaymentManager
 		}
 	} else {
-		addr = k.GetPositionNFTOwner(ctx, position.Id)
+		addr = k.GetFuturePositionNFTOwner(ctx, position.Id)
 		if addr == nil {
 			return sdk.ZeroInt(), types.ErrNotPositionNFTOwner
 		}
