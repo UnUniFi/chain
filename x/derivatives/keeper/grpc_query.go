@@ -295,6 +295,34 @@ func (k Keeper) Position(c context.Context, req *types.QueryPositionRequest) (*t
 	}, nil
 }
 
+func (k Keeper) AllPendingPaymentPositions(c context.Context, req *types.QueryAllPendingPaymentPositionsRequest) (*types.QueryAllPendingPaymentPositionsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	// Get all pending payment positions
+	pendingPaymentPositions := k.GetAllPendingPaymentPositions(ctx)
+
+	return &types.QueryAllPendingPaymentPositionsResponse{
+		PendingPaymentPositions: pendingPaymentPositions,
+	}, nil
+}
+
+func (k Keeper) PendingPaymentPosition(c context.Context, req *types.QueryPendingPaymentPositionRequest) (*types.QueryPendingPaymentPositionResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	// Get all pending payment position by position id
+	pendingPaymentPosition := k.GetPendingPaymentPosition(ctx, req.PositionId)
+
+	return &types.QueryPendingPaymentPositionResponse{
+		PendingPaymentPosition: pendingPaymentPosition,
+	}, nil
+}
+
 func (k Keeper) PerpetualFuturesPositionSize(c context.Context, req *types.QueryPerpetualFuturesPositionSizeRequest) (*types.QueryPerpetualFuturesPositionSizeResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")

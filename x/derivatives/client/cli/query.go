@@ -272,6 +272,52 @@ func CmdQueryPosition() *cobra.Command {
 	return cmd
 }
 
+func CmdQueryAllPendingPaymentPositions() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "pending-payment-positions",
+		Short: "shows all pending payment positions",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.AllPendingPaymentPositions(context.Background(), &types.QueryAllPendingPaymentPositionsRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdQueryPendingPaymentPosition() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "pending-payment-position [position-id]",
+		Short: "shows pending payment position of the specified position id",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.PendingPaymentPosition(context.Background(), &types.QueryPendingPaymentPositionRequest{PositionId: args[0]})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
 func CmdQueryPerpetualFuturesPositionSize() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "perpetual-futures-position-size [position-type] [address]",

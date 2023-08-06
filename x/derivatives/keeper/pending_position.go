@@ -34,6 +34,25 @@ func (k Keeper) GetPendingPaymentPosition(ctx sdk.Context, Id string) *types.Pen
 	return &pendingPaymentPosition
 }
 
+func (k Keeper) GetAllPendingPaymentPositions(ctx sdk.Context) []*types.PendingPaymentPosition {
+	store := ctx.KVStore(k.storeKey)
+
+	pendingPaymentPositions := []*types.PendingPaymentPosition{}
+	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixPendingPaymentPosition))
+	defer it.Close()
+
+	for ; it.Valid(); it.Next() {
+		pendingPaymentPosition := types.PendingPaymentPosition{}
+		err := k.cdc.Unmarshal(it.Value(), &pendingPaymentPosition)
+		if err != nil {
+			continue
+		}
+
+		pendingPaymentPositions = append(pendingPaymentPositions, &pendingPaymentPosition)
+	}
+	return pendingPaymentPositions
+}
+
 func (k Keeper) ClosePendingPaymentPosition(ctx sdk.Context, pendingPosition types.PendingPaymentPosition, address sdk.AccAddress) error {
 	err := k.ClosePendingPaymentFuturePosition(ctx, pendingPosition, address)
 	if err == nil {
