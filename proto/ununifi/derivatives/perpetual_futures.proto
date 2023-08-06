@@ -32,7 +32,7 @@ message PerpetualFuturesParams {
 message PerpetualFuturesPosition {
   string                    id        = 1 [(gogoproto.moretags) = "yaml:\"id\""];
   Market                    market    = 2 [(gogoproto.moretags) = "yaml:\"market\"", (gogoproto.nullable) = false];
-  string                    address   = 3 [(gogoproto.moretags) = "yaml:\"address\""];
+  string                    opener_address   = 3 [(gogoproto.moretags) = "yaml:\"opener_address\""];
   google.protobuf.Timestamp opened_at = 4
       [(gogoproto.moretags) = "yaml:\"opened_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
   uint64 opened_height    = 5 [(gogoproto.moretags) = "yaml:\"opened_height\""];

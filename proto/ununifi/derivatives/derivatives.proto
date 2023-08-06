@@ -23,8 +23,8 @@ message Position {
     (gogoproto.moretags) = "yaml:\"market\"",
     (gogoproto.nullable) = false
   ];
-  string address = 3 [
-    (gogoproto.moretags) = "yaml:\"address\""
+  string opener_address = 3 [
+    (gogoproto.moretags) = "yaml:\"opener_address\""
   ];
   google.protobuf.Timestamp opened_at = 4 [
     (gogoproto.moretags) = "yaml:\"opened_at\"",
