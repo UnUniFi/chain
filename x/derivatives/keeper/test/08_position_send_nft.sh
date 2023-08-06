@@ -37,24 +37,16 @@ sleep $sleep
 echo "------------position nft owner------------"
 ununifid q derivatives positions $user3_address
 
-echo "------------price change------------"
-ununifid tx pricefeed postprice ubtc:usd 0.020508410211260500 1200 \
---from=pricefeed --keyring-backend test --chain-id test --yes
-
 sleep $sleep
-
-echo "------------report liquidation------------"
-ununifid tx derivatives report-liquidation 1 $user1_address \
---from user1 --keyring-backend test --chain-id test --yes
-
-sleep $sleep
-
-echo "------------liquidated position nft owner------------"
-ununifid q derivatives positions $user3_address
 
 echo "------------close position------------"
 ununifid tx derivatives close-position 1 \
 --from user3 --keyring-backend test --chain-id test --yes
+
+sleep $sleep
+
+echo "------------closed position nft owner------------"
+ununifid q derivatives positions $user3_address
 
 echo "------------withdraw from pool------------"
 ununifid tx derivatives withdraw-from-pool $user1_udlp_balance ubtc \
