@@ -66,11 +66,19 @@ service Query {
     option (google.api.http).get = "/ununifi/derivatives/{address}/positions";
   }
 
+  rpc PendingPaymentPositions(QueryPendingPaymentPositionsRequest) returns (QueryPendingPaymentPositionsResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/pending-payment-positions";
+  }
+
+  rpc PendingPaymentPosition(QueryPendingPaymentPositionRequest) returns (QueryPendingPaymentPositionResponse) {
+    option (google.api.http).get = "/ununifi/derivatives/pending-payment-positions/{position_id}";
+  }
+
   rpc DLPTokenRates(QueryDLPTokenRateRequest) returns (QueryDLPTokenRateResponse) {
     option (google.api.http).get = "/ununifi/derivatives/pools/dlp";
   }
 
-   rpc EstimateDLPTokenAmount(QueryEstimateDLPTokenAmountRequest) returns (QueryEstimateDLPTokenAmountResponse) {
+  rpc EstimateDLPTokenAmount(QueryEstimateDLPTokenAmountRequest) returns (QueryEstimateDLPTokenAmountResponse) {
     option (google.api.http).get = "/ununifi/derivatives/estimate-dlp-token-amount/{mint_denom}/{amount}";
   }
 
@@ -264,6 +272,26 @@ message QueryAddressPositionsResponse {
   repeated QueriedPosition positions = 1 [
     (gogoproto.moretags)  = "yaml:\"positions\"",
     (gogoproto.nullable) = false
+  ];
+}
+
+message QueryPendingPaymentPositionsRequest {
+}
+
+message QueryPendingPaymentPositionsResponse {
+  repeated PendingPaymentPosition pending_payment_positions = 1 [
+    (gogoproto.moretags)  = "yaml:\"pending_payment_positions\""
+  ];
+}
+
+message QueryPendingPaymentPositionRequest {
+  string position_id = 1;
+}
+
+message QueryPendingPaymentPositionResponse {
+  PendingPaymentPosition pending_payment_position = 1 [
+    (gogoproto.moretags)  = "yaml:\"pending_payment_position\"",
+    (gogoproto.nullable) = true
   ];
 }
 
