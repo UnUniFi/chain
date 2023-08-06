@@ -27,7 +27,6 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	}
 
 	cmd.AddCommand(CmdQueryParams())
-	cmd.AddCommand(CmdQueryLiquidityProviderTokenRealAPY(), CmdQueryLiquidityProviderTokenNominalAPY(), CmdQueryAddressPositions())
 	cmd.AddCommand(CmdQueryPool())
 	cmd.AddCommand(CmdQueryLiquidityProviderTokenRealAPY())
 	cmd.AddCommand(CmdQueryLiquidityProviderTokenNominalAPY())
@@ -43,6 +42,8 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	cmd.AddCommand(CmdQueryEstimateRedeemTokenAmount())
 	cmd.AddCommand(CmdQueryAvailableAssetInPoolByDenom())
 	cmd.AddCommand(CmdQueryAvailableAssetsInPool())
+	cmd.AddCommand(CmdQueryAllPendingPaymentPositions())
+	cmd.AddCommand(CmdQueryPendingPaymentPosition())
 
 	return cmd
 }
