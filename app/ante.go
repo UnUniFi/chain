@@ -14,6 +14,9 @@ import (
 
 	builderante "github.com/skip-mev/pob/x/builder/ante"
 	builderkeeper "github.com/skip-mev/pob/x/builder/keeper"
+
+	ecosystemincentiveante "github.com/UnUniFi/chain/x/ecosystemincentive/ante"
+	ecosystemincentivekeeper "github.com/UnUniFi/chain/x/ecosystemincentive/keeper"
 )
 
 // HandlerOptions extend the SDK's AnteHandler options by requiring the IBC
@@ -28,6 +31,8 @@ type HandlerOptions struct {
 	BuilderKeeper builderkeeper.Keeper
 	TxEncoder     sdk.TxEncoder
 	Mempool       builderante.Mempool
+
+	EcosystemincentiveKeeper ecosystemincentivekeeper.Keeper
 }
 
 func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
@@ -62,6 +67,7 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		ante.NewSigGasConsumeDecorator(options.AccountKeeper, options.SigGasConsumer),
 		ante.NewSigVerificationDecorator(options.AccountKeeper, options.SignModeHandler),
 		ante.NewIncrementSequenceDecorator(options.AccountKeeper),
+		ecosystemincentiveante.NewFrontendIncentiveDecorator(options.EcosystemincentiveKeeper),
 		ibcante.NewRedundantRelayDecorator(options.IBCKeeper),
 		builderante.NewBuilderDecorator(options.BuilderKeeper, options.TxEncoder, options.Mempool),
 	}
