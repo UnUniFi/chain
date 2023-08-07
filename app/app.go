@@ -42,7 +42,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	ibctesting "github.com/cosmos/ibc-go/v7/testing"
 
@@ -59,11 +58,6 @@ import (
 
 	"github.com/UnUniFi/chain/app/keepers"
 	"github.com/UnUniFi/chain/app/upgrades"
-	v1_beta3 "github.com/UnUniFi/chain/app/upgrades/v1-beta.3"
-	v2_1 "github.com/UnUniFi/chain/app/upgrades/v2.1"
-	v2_2 "github.com/UnUniFi/chain/app/upgrades/v2.2"
-	v3 "github.com/UnUniFi/chain/app/upgrades/v3"
-	v3_1 "github.com/UnUniFi/chain/app/upgrades/v3.1"
 )
 
 const Name = "ununifi"
@@ -106,7 +100,7 @@ var (
 		stakeibctypes.ModuleName: true,
 	}
 
-	Upgrades = []upgrades.Upgrade{v1_beta3.Upgrade, v2_1.Upgrade, v2_2.Upgrade, v3.Upgrade, v3_1.Upgrade}
+	Upgrades = []upgrades.Upgrade{}
 )
 
 var (
@@ -197,8 +191,10 @@ func NewApp(
 		legacyAmino,
 		maccPerms,
 		moduleAccountAddresses,
-		app.BlockedModuleAccountAddrs(moduleAccountAddresses),
+		app.BlockedAddrs(),
 		appOpts,
+		wasmOpts,
+		enabledProposals,
 		AccountAddressPrefix,
 	)
 
@@ -481,14 +477,6 @@ func (app *App) AppCodec() codec.Codec {
 // InterfaceRegistry returns Gaia's InterfaceRegistry
 func (app *App) InterfaceRegistry() types.InterfaceRegistry {
 	return app.interfaceRegistry
-}
-
-// GetSubspace returns a param subspace for a given module name.
-//
-// NOTE: This is solely to be used for testing purposes.
-func (app *App) GetSubspace(moduleName string) paramstypes.Subspace {
-	subspace, _ := app.AppKeepers.ParamsKeeper.GetSubspace(moduleName)
-	return subspace
 }
 
 // SimulationManager implements the SimulationApp interface

@@ -237,7 +237,7 @@ func NewAppKeeper(
 		appCodec,
 		appKeepers.keys[banktypes.StoreKey],
 		appKeepers.AccountKeeper,
-		appKeepers.BlockedAddrs(),
+		blockedAddress,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	appKeepers.StakingKeeper = *stakingkeeper.NewKeeper(

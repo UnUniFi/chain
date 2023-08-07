@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
@@ -12,6 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/capability"
+	capabilitykeeper "github.com/cosmos/cosmos-sdk/x/capability/keeper"
 	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
 	"github.com/cosmos/cosmos-sdk/x/consensus"
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
@@ -49,10 +51,12 @@ import (
 	ibcfee "github.com/cosmos/ibc-go/v7/modules/apps/29-fee"
 	ibcfeetypes "github.com/cosmos/ibc-go/v7/modules/apps/29-fee/types"
 	transfer "github.com/cosmos/ibc-go/v7/modules/apps/transfer"
+	ibctransferkeeper "github.com/cosmos/ibc-go/v7/modules/apps/transfer/keeper"
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 	ibc "github.com/cosmos/ibc-go/v7/modules/core"
 	ibcclientclient "github.com/cosmos/ibc-go/v7/modules/core/02-client/client"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
+	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
@@ -189,52 +193,52 @@ func appModules(
 	appCodec := encodingConfig.Codec
 
 	return []module.AppModule{
-		builder.NewAppModule(appCodec, app.BuilderKeeper),
+		builder.NewAppModule(appCodec, app.AppKeepers.BuilderKeeper),
 		genutil.NewAppModule(
-			app.AccountKeeper,
-			app.StakingKeeper,
+			app.AppKeepers.AccountKeeper,
+			app.AppKeepers.StakingKeeper,
 			app.BaseApp.DeliverTx,
 			encodingConfig.TxConfig,
 		),
-		auth.NewAppModule(appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts, app.GetSubspace(authtypes.ModuleName)),
-		vesting.NewAppModule(app.AccountKeeper, app.BankKeeper),
-		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper, app.GetSubspace(banktypes.ModuleName)),
-		capability.NewAppModule(appCodec, *app.CapabilityKeeper, false),
-		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
-		gov.NewAppModule(appCodec, &app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
-		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, app.GetSubspace(minttypes.ModuleName)),
-		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(slashingtypes.ModuleName)),
-		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
-		staking.NewAppModule(appCodec, &app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
-		upgrade.NewAppModule(&app.UpgradeKeeper),
-		evidence.NewAppModule(app.EvidenceKeeper),
-		params.NewAppModule(app.ParamsKeeper),
-		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		groupmodule.NewAppModule(appCodec, app.GroupKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		ununifinftmodule.NewAppModule(nftmodule.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry), app.UnUniFiNFTKeeper),
-		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
+		auth.NewAppModule(appCodec, app.AppKeepers.AccountKeeper, authsims.RandomGenesisAccounts, app.AppKeepers.GetSubspace(authtypes.ModuleName)),
+		vesting.NewAppModule(app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper),
+		bank.NewAppModule(appCodec, app.AppKeepers.BankKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.GetSubspace(banktypes.ModuleName)),
+		capability.NewAppModule(appCodec, *app.AppKeepers.CapabilityKeeper, false),
+		feegrantmodule.NewAppModule(appCodec, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper, app.AppKeepers.FeeGrantKeeper, app.interfaceRegistry),
+		gov.NewAppModule(appCodec, &app.AppKeepers.GovKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper, app.AppKeepers.GetSubspace(govtypes.ModuleName)),
+		mint.NewAppModule(appCodec, app.AppKeepers.MintKeeper, app.AppKeepers.AccountKeeper, nil, app.AppKeepers.GetSubspace(minttypes.ModuleName)),
+		slashing.NewAppModule(appCodec, app.AppKeepers.SlashingKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper, app.AppKeepers.StakingKeeper, app.AppKeepers.GetSubspace(slashingtypes.ModuleName)),
+		distr.NewAppModule(appCodec, app.AppKeepers.DistrKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper, app.AppKeepers.StakingKeeper, app.AppKeepers.GetSubspace(distrtypes.ModuleName)),
+		staking.NewAppModule(appCodec, &app.AppKeepers.StakingKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper, app.AppKeepers.GetSubspace(stakingtypes.ModuleName)),
+		upgrade.NewAppModule(&app.AppKeepers.UpgradeKeeper),
+		evidence.NewAppModule(app.AppKeepers.EvidenceKeeper),
+		params.NewAppModule(app.AppKeepers.ParamsKeeper),
+		authzmodule.NewAppModule(appCodec, app.AppKeepers.AuthzKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper, app.interfaceRegistry),
+		groupmodule.NewAppModule(appCodec, app.AppKeepers.GroupKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper, app.interfaceRegistry),
+		ununifinftmodule.NewAppModule(nftmodule.NewAppModule(appCodec, app.AppKeepers.NFTKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper, app.interfaceRegistry), app.AppKeepers.UnUniFiNFTKeeper),
+		consensus.NewAppModule(appCodec, app.AppKeepers.ConsensusParamsKeeper),
 
-		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
-		ibc.NewAppModule(app.IBCKeeper),
-		transfer.NewAppModule(app.TransferKeeper),
-		ibcfee.NewAppModule(app.IBCFeeKeeper),
-		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
-		crisis.NewAppModule(&app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
+		wasm.NewAppModule(appCodec, &app.AppKeepers.WasmKeeper, app.AppKeepers.StakingKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper, app.MsgServiceRouter(), app.AppKeepers.GetSubspace(wasmtypes.ModuleName)),
+		ibc.NewAppModule(app.AppKeepers.IBCKeeper),
+		transfer.NewAppModule(app.AppKeepers.TransferKeeper),
+		ibcfee.NewAppModule(app.AppKeepers.IBCFeeKeeper),
+		ica.NewAppModule(&app.AppKeepers.ICAControllerKeeper, &app.AppKeepers.ICAHostKeeper),
+		crisis.NewAppModule(&app.AppKeepers.CrisisKeeper, skipGenesisInvariants, app.AppKeepers.GetSubspace(crisistypes.ModuleName)),
 
 		// original modules
-		nftfactory.NewAppModule(appCodec, app.NftfactoryKeeper, app.UnUniFiNFTKeeper),
-		nftbackedloan.NewAppModule(appCodec, app.NftbackedloanKeeper, app.AccountKeeper, app.BankKeeper),
-		ecosystemincentive.NewAppModule(appCodec, app.EcosystemincentiveKeeper, app.BankKeeper),
+		nftfactory.NewAppModule(appCodec, app.AppKeepers.NftfactoryKeeper, app.AppKeepers.UnUniFiNFTKeeper),
+		nftbackedloan.NewAppModule(appCodec, app.AppKeepers.NftbackedloanKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper),
+		ecosystemincentive.NewAppModule(appCodec, app.AppKeepers.EcosystemincentiveKeeper, app.AppKeepers.BankKeeper),
 
-		pricefeed.NewAppModule(appCodec, app.PricefeedKeeper, app.AccountKeeper),
-		derivatives.NewAppModule(appCodec, app.DerivativesKeeper, app.BankKeeper),
+		pricefeed.NewAppModule(appCodec, app.AppKeepers.PricefeedKeeper, app.AppKeepers.AccountKeeper),
+		derivatives.NewAppModule(appCodec, app.AppKeepers.DerivativesKeeper, app.AppKeepers.BankKeeper),
 
-		yieldaggregator.NewAppModule(appCodec, app.YieldaggregatorKeeper, app.AccountKeeper, app.BankKeeper),
-		stakeibc.NewAppModule(appCodec, app.StakeibcKeeper, app.AccountKeeper, app.BankKeeper),
-		epochs.NewAppModule(appCodec, app.EpochsKeeper),
-		interchainquery.NewAppModule(appCodec, app.InterchainqueryKeeper),
-		records.NewAppModule(appCodec, app.RecordsKeeper, app.AccountKeeper, app.BankKeeper),
-		icacallbacks.NewAppModule(appCodec, app.IcacallbacksKeeper, app.AccountKeeper, app.BankKeeper),
+		yieldaggregator.NewAppModule(appCodec, app.AppKeepers.YieldaggregatorKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper),
+		stakeibc.NewAppModule(appCodec, app.AppKeepers.StakeibcKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper),
+		epochs.NewAppModule(appCodec, app.AppKeepers.EpochsKeeper),
+		interchainquery.NewAppModule(appCodec, app.AppKeepers.InterchainqueryKeeper),
+		records.NewAppModule(appCodec, app.AppKeepers.RecordsKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper),
+		icacallbacks.NewAppModule(appCodec, app.AppKeepers.IcacallbacksKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper),
 	}
 }
 
