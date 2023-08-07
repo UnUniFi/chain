@@ -12,7 +12,7 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	"github.com/UnUniFi/chain/deprecated/x/yieldaggregatorv1/types"
-	stakeibckeeper "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/stakeibc/keeper"
+	stakeibckeeper "github.com/UnUniFi/chain/x/yieldaggregator/submodules/stakeibc/keeper"
 )
 
 type Keeper struct {

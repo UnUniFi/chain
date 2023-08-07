@@ -8,10 +8,10 @@ import (
 	"github.com/UnUniFi/chain/app/upgrades"
 
 	epochstypes "github.com/UnUniFi/chain/x/epochs/types"
-	icacallbackstypes "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/icacallbacks/types"
-	interchainquerytypes "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/interchainquery/types"
-	recordstypes "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/records/types"
-	stakeibctypes "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/stakeibc/types"
+	icacallbackstypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/icacallbacks/types"
+	interchainquerytypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/interchainquery/types"
+	recordstypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/records/types"
+	stakeibctypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/stakeibc/types"
 	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
 )
 
