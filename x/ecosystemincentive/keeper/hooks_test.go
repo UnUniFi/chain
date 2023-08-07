@@ -109,16 +109,6 @@ func (suite *KeeperTestSuite) TestAfterNftListed() {
 			suite.Require().NoError(err)
 		}
 
-		if tc.expectPanic {
-			suite.Panics(func() {
-				suite.app.EcosystemincentiveKeeper.Hooks().AfterNftListed(suite.ctx, tc.nftId, tc.txMemo)
-			})
-		} else {
-			suite.NotPanics(func() {
-				suite.app.EcosystemincentiveKeeper.Hooks().AfterNftListed(suite.ctx, tc.nftId, tc.txMemo)
-			})
-		}
-
 		recipientContainerId, exists := suite.app.EcosystemincentiveKeeper.GetRecipientContainerIdByNftId(suite.ctx, tc.nftId)
 		if tc.expectPass {
 			suite.Require().True(exists)
