@@ -44,7 +44,7 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 
 	encodingConfig := app.MakeEncodingConfig()
 	initClientCtx := client.Context{}.
-		WithCodec(encodingConfig.Marshaler).
+		WithCodec(encodingConfig.Codec).
 		WithInterfaceRegistry(encodingConfig.InterfaceRegistry).
 		WithTxConfig(encodingConfig.TxConfig).
 		WithLegacyAmino(encodingConfig.Amino).
@@ -159,7 +159,7 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig) {
 		keys.Commands(app.DefaultNodeHome),
 	)
 	// add rosetta
-	rootCmd.AddCommand(rosettaCmd.RosettaCommand(encodingConfig.InterfaceRegistry, encodingConfig.Marshaler))
+	rootCmd.AddCommand(rosettaCmd.RosettaCommand(encodingConfig.InterfaceRegistry, encodingConfig.Codec))
 }
 
 func addModuleInitFlags(startCmd *cobra.Command) {
@@ -242,9 +242,9 @@ func newApp(
 
 	return app.NewApp(
 		logger, db, traceStore, true,
-		app.GetEnabledProposals(),
 		appOpts,
 		wasmOpts,
+		app.GetEnabledProposals(),
 		baseappOptions...,
 	)
 }
@@ -281,9 +281,9 @@ func appExport(
 		db,
 		traceStore,
 		height == -1,
-		app.GetEnabledProposals(),
 		appOpts,
 		emptyWasmOpts,
+		app.GetEnabledProposals(),
 	)
 
 	if height != -1 {

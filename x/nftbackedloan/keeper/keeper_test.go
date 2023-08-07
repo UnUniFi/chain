@@ -64,7 +64,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.queryClient = types.NewQueryClient(queryHelper)
 
 	encodingConfig := appparams.MakeEncodingConfig()
-	appCodec := encodingConfig.Marshaler
+	appCodec := encodingConfig.Codec
 
 	txCfg := encodingConfig.TxConfig
 	accountKeeper := authkeeper.NewAccountKeeper(
