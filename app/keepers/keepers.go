@@ -456,7 +456,6 @@ func NewAppKeeper(
 
 	nftbackedloanKeeper := nftbackedloankeeper.NewKeeper(
 		appCodec,
-		nil, // TODO
 		appKeepers.keys[nftbackedloantypes.StoreKey],
 		appKeepers.keys[nftbackedloantypes.MemStoreKey],
 		appKeepers.GetSubspace(nftbackedloantypes.ModuleName),

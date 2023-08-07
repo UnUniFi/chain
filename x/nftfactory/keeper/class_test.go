@@ -8,7 +8,6 @@ import (
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 	"github.com/stretchr/testify/require"
 
-	ununifitypes "github.com/UnUniFi/chain/deprecated/types"
 	"github.com/UnUniFi/chain/x/nftfactory/keeper"
 	"github.com/UnUniFi/chain/x/nftfactory/types"
 )
@@ -468,7 +467,7 @@ func (suite *KeeperTestSuite) TestGetOwningClassIdList() {
 		// valid case
 		if tc.validOwner {
 			suite.Require().True(valid)
-			suite.Require().Equal(res.Owner, ununifitypes.StringAccAddress(tc.ownerAddress))
+			suite.Require().Equal(res.Owner, tc.ownerAddress)
 			suite.Require().Equal(res.ClassId[0], classId)
 		}
 	}

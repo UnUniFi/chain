@@ -236,7 +236,7 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 	k.SaveNftListing(ctx, listing)
 
 	// get the memo data from Tx contains MsgListNft
-	k.AfterNftListed(ctx, msg.NftId, GetMemo(ctx.TxBytes(), k.txCfg))
+	// k.AfterNftListed(ctx, msg.NftId, GetMemo(ctx.TxBytes(), k.txCfg))
 
 	// Emit event for nft listing
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventListingNft{
