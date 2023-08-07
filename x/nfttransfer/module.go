@@ -6,7 +6,7 @@ package nfttransfer
 // 	"github.com/bianjieai/nft-transfer"
 // 	"github.com/bianjieai/nft-transfer/types"
 
-// 	newkeeper "github.com/UnUniFi/chain/x/nft-transfer/keeper"
+// 	newkeeper "github.com/UnUniFi/chain/x/nfttransfer/keeper"
 // )
 
 // // AppModule represents the AppModule for this module
