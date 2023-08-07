@@ -77,7 +77,7 @@ func (suite *KeeperTestSuite) TestAddMargin() {
 		position := types.Position{
 			Id:               tc.positionId,
 			Market:           market,
-			Address:          owner.String(),
+			OpenerAddress:    owner.String(),
 			OpenedBaseRate:   openedBaseRate,
 			OpenedQuoteRate:  openedQuoteRate,
 			RemainingMargin:  tc.margin,
@@ -200,6 +200,19 @@ func (suite *KeeperTestSuite) TestRemoveMargin() {
 			removeMargin: sdk.NewCoin("uatom", sdk.NewInt(100000)),
 			expPass:      false,
 		},
+		{
+			name:       "fail in not nft owner",
+			positionId: "7",
+			margin:     sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
+			instance: types.PerpetualFuturesPositionInstance{
+				PositionType: types.PositionType_LONG,
+				Size_:        sdk.NewDec(1),
+				Leverage:     1,
+			},
+			basedRate:    sdk.MustNewDecFromStr("0.00002"),
+			removeMargin: sdk.NewCoin("uusdc", sdk.NewInt(1000000)),
+			expPass:      false,
+		},
 	}
 
 	market := types.Market{BaseDenom: "uatom", QuoteDenom: "uusdc"}
@@ -211,13 +224,16 @@ func (suite *KeeperTestSuite) TestRemoveMargin() {
 		position := types.Position{
 			Id:               tc.positionId,
 			Market:           market,
-			Address:          owner.String(),
+			OpenerAddress:    owner.String(),
 			OpenedBaseRate:   openedBaseRate,
 			OpenedQuoteRate:  openedQuoteRate,
 			RemainingMargin:  tc.margin,
 			PositionInstance: *any,
 		}
-		suite.keeper.SetPosition(suite.ctx, position)
+		_ = suite.keeper.SetPosition(suite.ctx, position)
+		if tc.positionId != "7" {
+			_ = suite.keeper.MintFuturePositionNFT(suite.ctx, position)
+		}
 
 		_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.NewCoins(tc.removeMargin))
 		_ = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.MarginManager, sdk.NewCoins(tc.removeMargin))

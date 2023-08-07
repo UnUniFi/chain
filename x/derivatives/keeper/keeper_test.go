@@ -11,13 +11,15 @@ import (
 
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
+	nftfactorytypes "github.com/UnUniFi/chain/x/nftfactory/types"
 	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
+
+	"github.com/cosmos/cosmos-sdk/baseapp"
 
 	simapp "github.com/UnUniFi/chain/app"
 	"github.com/UnUniFi/chain/x/derivatives/keeper"
 	"github.com/UnUniFi/chain/x/derivatives/types"
-	"github.com/cosmos/cosmos-sdk/baseapp"
 )
 
 var (
@@ -101,6 +103,20 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.keeper = app.DerivativesKeeper
 	suite.pricefeedKeeper = app.PricefeedKeeper
 
+	nftfactoryParams := nftfactorytypes.DefaultParams()
+	app.NftfactoryKeeper.SetParamSet(suite.ctx, nftfactoryParams)
+
+	derivativesAddr := app.DerivativesKeeper.GetModuleAddress()
+	_ = app.NftfactoryKeeper.CreateClass(suite.ctx, "derivatives/perpetual_futures/positions", &nftfactorytypes.MsgCreateClass{
+		Sender:            derivativesAddr.String(),
+		Name:              "derivatives/perpetual_futures/positions",
+		BaseTokenUri:      "ipfs://testcid/",
+		TokenSupplyCap:    100000,
+		MintingPermission: 0,
+		Symbol:            "",
+		Description:       "",
+		ClassUri:          "",
+	})
 }
 
 func TestKeeperSuite(t *testing.T) {

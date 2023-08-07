@@ -3,8 +3,6 @@ package keeper
 import (
 	"testing"
 
-	"github.com/UnUniFi/chain/x/derivatives/keeper"
-	"github.com/UnUniFi/chain/x/derivatives/types"
 	tmdb "github.com/cometbft/cometbft-db"
 	"github.com/cometbft/cometbft/libs/log"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
@@ -15,6 +13,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/stretchr/testify/require"
+
+	"github.com/UnUniFi/chain/x/derivatives/keeper"
+	"github.com/UnUniFi/chain/x/derivatives/types"
 )
 
 func DerivativesKeeper(t testing.TB) (keeper.Keeper, sdk.Context) {
@@ -39,6 +40,8 @@ func DerivativesKeeper(t testing.TB) (keeper.Keeper, sdk.Context) {
 		storeKey,
 		memStoreKey,
 		paramsSubspace,
+		nil,
+		nil,
 		nil,
 		nil,
 		nil,
