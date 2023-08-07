@@ -269,7 +269,7 @@ func NewApp(
 	anteHandler := app.CreateAnteHandler(encodingConfig.TxConfig, wasmConfig, keys[wasm.StoreKey], mempool)
 	app.SetAnteHandler(anteHandler)
 	app.SetupProposalHandler(encodingConfig.TxConfig, mempool, anteHandler)
-	app.SetupChackTx(encodingConfig.TxConfig, mempool, anteHandler)
+	app.SetupCheckTx(encodingConfig.TxConfig, mempool, anteHandler)
 
 	app.SetupUpgradeHandlers()
 	app.SetupUpgradeStoreLoaders()
@@ -360,7 +360,7 @@ func (app *App) SetupProposalHandler(txConfig client.TxConfig, mempool *mempool.
 	app.SetProcessProposal(proposalHandlers.ProcessProposalHandler())
 }
 
-func (app *App) SetupChackTx(txConfig client.TxConfig, mempool *mempool.AuctionMempool, anteHandler sdk.AnteHandler) {
+func (app *App) SetupCheckTx(txConfig client.TxConfig, mempool *mempool.AuctionMempool, anteHandler sdk.AnteHandler) {
 	// Set the custom CheckTx handler on BaseApp.
 	checkTxHandler := pobabci.NewCheckTxHandler(
 		app.BaseApp,
