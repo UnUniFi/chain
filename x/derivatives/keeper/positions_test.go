@@ -47,8 +47,8 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 
 	positions := []types.Position{
 		{
-			Id:      "0",
-			Address: owner.String(),
+			Id:            "0",
+			OpenerAddress: owner.String(),
 			Market: types.Market{
 				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
@@ -63,8 +63,8 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 			LeviedAmount:     sdk.NewCoin("uusdc", sdk.NewInt(100)),
 		},
 		{
-			Id:      "1",
-			Address: owner.String(),
+			Id:            "1",
+			OpenerAddress: owner.String(),
 			Market: types.Market{
 				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
@@ -133,8 +133,8 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 
 	positions := []types.Position{
 		{
-			Id:      "0",
-			Address: owner.String(),
+			Id:            "0",
+			OpenerAddress: owner.String(),
 			Market: types.Market{
 				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
@@ -144,8 +144,8 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 			PositionInstance: *position0Inst,
 		},
 		{
-			Id:      "1",
-			Address: owner2.String(),
+			Id:            "1",
+			OpenerAddress: owner2.String(),
 			Market: types.Market{
 				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
@@ -166,7 +166,7 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 
 	// check per id
 	for _, position := range positions {
-		address, err := sdk.AccAddressFromBech32(position.Address)
+		address, err := sdk.AccAddressFromBech32(position.OpenerAddress)
 		suite.Require().NoError(err)
 		p := suite.keeper.GetAddressPositionWithId(suite.ctx, address, position.Id)
 		suite.Require().NotNil(p)

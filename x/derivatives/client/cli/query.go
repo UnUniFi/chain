@@ -27,7 +27,6 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	}
 
 	cmd.AddCommand(CmdQueryParams())
-	cmd.AddCommand(CmdQueryLiquidityProviderTokenRealAPY(), CmdQueryLiquidityProviderTokenNominalAPY(), CmdQueryAddressPositions())
 	cmd.AddCommand(CmdQueryPool())
 	cmd.AddCommand(CmdQueryLiquidityProviderTokenRealAPY())
 	cmd.AddCommand(CmdQueryLiquidityProviderTokenNominalAPY())
@@ -43,6 +42,8 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	cmd.AddCommand(CmdQueryEstimateRedeemTokenAmount())
 	cmd.AddCommand(CmdQueryAvailableAssetInPoolByDenom())
 	cmd.AddCommand(CmdQueryAvailableAssetsInPool())
+	cmd.AddCommand(CmdQueryAllPendingPaymentPositions())
+	cmd.AddCommand(CmdQueryPendingPaymentPosition())
 
 	return cmd
 }
@@ -259,6 +260,52 @@ func CmdQueryPosition() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.Position(context.Background(), &types.QueryPositionRequest{PositionId: args[0]})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdQueryAllPendingPaymentPositions() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "pending-payment-positions",
+		Short: "shows all pending payment positions",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.AllPendingPaymentPositions(context.Background(), &types.QueryAllPendingPaymentPositionsRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdQueryPendingPaymentPosition() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "pending-payment-position [position-id]",
+		Short: "shows pending payment position of the specified position id",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.PendingPaymentPosition(context.Background(), &types.QueryPendingPaymentPositionRequest{PositionId: args[0]})
 			if err != nil {
 				return err
 			}

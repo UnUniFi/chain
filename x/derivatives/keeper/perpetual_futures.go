@@ -60,7 +60,7 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 	position := types.Position{
 		Id:                   positionId,
 		Market:               market,
-		Address:              sender,
+		OpenerAddress:        sender,
 		OpenedAt:             ctx.BlockTime(),
 		OpenedHeight:         uint64(ctx.BlockHeight()),
 		OpenedBaseRate:       openedBaseRate,
@@ -118,6 +118,12 @@ func (k Keeper) OpenPerpetualFuturesPosition(ctx sdk.Context, positionId string,
 		return nil, err
 	}
 
+	// mint position nft
+	err = k.MintFuturePositionNFT(ctx, position)
+	if err != nil {
+		return nil, err
+	}
+
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionOpened{
 		Sender:     sender,
 		PositionId: positionId,
@@ -159,7 +165,7 @@ func (k Keeper) SubReserveTokensForPosition(ctx sdk.Context, marketType types.Ma
 	return nil
 }
 
-func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.PerpetualFuturesPosition) error {
+func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.PerpetualFuturesPosition, sender string) error {
 	baseUsdPrice, err := k.GetCurrentPrice(ctx, position.Market.BaseDenom)
 	if err != nil {
 		return err
@@ -204,8 +210,20 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 		return fmt.Errorf("unknown position type")
 	}
 
+	pending, err := k.GetFuturePositionNFTSendDisabled(ctx, position.Id)
+	if err != nil {
+		return err
+	}
+	if !pending {
+		// delete position nft
+		err = k.CloseFuturePositionNFT(ctx, position.Id)
+		if err != nil {
+			return err
+		}
+	}
+
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventPerpetualFuturesPositionClosed{
-		Sender:          position.Address,
+		Sender:          sender,
 		PositionId:      position.Id,
 		PositionSize:    position.PositionInstance.SizeInDenomExponent(types.OneMillionInt).String(),
 		PnlAmount:       pnlAmount.String(),
@@ -218,9 +236,17 @@ func (k Keeper) ClosePerpetualFuturesPosition(ctx sdk.Context, position types.Pe
 // If the profit exists, the profit always comes from the pool.
 // If the loss exists, the loss always goes to the pool from the users' margin.
 func (k Keeper) HandleReturnAmount(ctx sdk.Context, pnlAmount sdk.Int, position types.PerpetualFuturesPosition) (returningAmount sdk.Int, err error) {
-	addr, err := sdk.AccAddressFromBech32(position.Address)
+	pending, err := k.GetFuturePositionNFTSendDisabled(ctx, position.Id)
 	if err != nil {
 		return sdk.ZeroInt(), err
+	}
+
+	var addr sdk.AccAddress
+	if !pending {
+		addr = k.GetFuturePositionNFTOwner(ctx, position.Id)
+		if addr == nil {
+			return sdk.ZeroInt(), types.ErrNotPositionNFTOwner
+		}
 	}
 
 	if pnlAmount.IsNegative() {
@@ -240,9 +266,16 @@ func (k Keeper) HandleReturnAmount(ctx sdk.Context, pnlAmount sdk.Int, position 
 		} else {
 			returningCoin := sdk.NewCoin(position.RemainingMargin.Denom, returningAmount)
 			// Send margin-loss from MarginManager
-			if err := k.SendBackMargin(ctx, addr, sdk.NewCoins(returningCoin)); err != nil {
-				return sdk.ZeroInt(), err
+			if pending {
+				if err := k.SendPendingMargin(ctx, sdk.NewCoins(returningCoin)); err != nil {
+					return sdk.ZeroInt(), err
+				}
+			} else {
+				if err := k.SendBackMargin(ctx, addr, sdk.NewCoins(returningCoin)); err != nil {
+					return sdk.ZeroInt(), err
+				}
 			}
+
 			// Send loss to the pool
 			if err := k.SendCoinFromMarginManagerToPool(ctx, sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, loss))); err != nil {
 				return sdk.ZeroInt(), err
@@ -256,6 +289,15 @@ func (k Keeper) HandleReturnAmount(ctx sdk.Context, pnlAmount sdk.Int, position 
 		}
 		if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.NewCoins(sdk.NewCoin(position.RemainingMargin.Denom, pnlAmount))); err != nil {
 			return sdk.ZeroInt(), err
+		}
+	}
+
+	// create pending payment position
+	if pending {
+		if returningAmount.IsNegative() {
+			k.SetPendingPaymentPosition(ctx, position.Id, sdk.NewCoin(position.RemainingMargin.Denom, sdk.NewInt(0)))
+		} else {
+			k.SetPendingPaymentPosition(ctx, position.Id, sdk.NewCoin(position.RemainingMargin.Denom, returningAmount))
 		}
 	}
 
@@ -286,16 +328,16 @@ func (k Keeper) LiquidateFuturesPosition(ctx sdk.Context, rewardRecipient string
 		}
 	}
 
-	if err := k.ClosePerpetualFuturesPosition(ctx, position); err != nil {
+	if err := k.ClosePerpetualFuturesPosition(ctx, position, rewardRecipient); err != nil {
 		return err
 	}
 
 	// Delete Position
-	positionAddress, err := sdk.AccAddressFromBech32(position.Address)
+	openerAddress, err := sdk.AccAddressFromBech32(position.OpenerAddress)
 	if err != nil {
 		return err
 	}
-	k.DeletePosition(ctx, positionAddress, position.Id)
+	k.DeletePosition(ctx, openerAddress, position.Id)
 
 	// Send Reward
 	rewardAmount := sdk.NewDecFromInt(commissionFee).Mul(rewardRate).RoundInt()

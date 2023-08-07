@@ -130,7 +130,7 @@ func (k Keeper) GetAddressPositionWithId(ctx sdk.Context, address sdk.AccAddress
 }
 
 func (k Keeper) SetPosition(ctx sdk.Context, position types.Position) error {
-	addr, err := sdk.AccAddressFromBech32(position.Address)
+	addr, err := sdk.AccAddressFromBech32(position.OpenerAddress)
 	if err != nil {
 		return err
 	}
@@ -192,16 +192,33 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 	if err != nil {
 		return err
 	}
-
 	positionId := msg.PositionId
-	position := k.GetAddressPositionWithId(ctx, sender, positionId)
-
-	if position == nil {
-		return errors.New("position not found")
+	// check withdrawer has owner nft
+	owner := k.GetPositionNFTOwner(ctx, positionId)
+	if owner.String() != msg.Sender {
+		return types.ErrNotPositionNFTOwner
+	}
+	sendDisabled, err := k.GetPositionNFTSendDisabled(ctx, positionId)
+	if err != nil {
+		return err
+	}
+	if sendDisabled {
+		return types.ErrPositionNFTSendDisabled
 	}
 
-	if msg.Sender != position.Address {
-		return errors.New("not owner")
+	pendingPosition := k.GetPendingPaymentPosition(ctx, positionId)
+	if pendingPosition != nil {
+		err = k.ClosePendingPaymentPosition(ctx, *pendingPosition, sender)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
+	position := k.GetPositionWithId(ctx, positionId)
+
+	if position == nil {
+		return types.ErrPositionDoesNotExist
 	}
 
 	positionInstance, err := types.UnpackPositionInstance(position.PositionInstance)
@@ -212,7 +229,7 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 	switch positionInstance := positionInstance.(type) {
 	case *types.PerpetualFuturesPositionInstance:
 		perpetualFuturesPosition := types.NewPerpetualFuturesPosition(*position, *positionInstance)
-		err = k.ClosePerpetualFuturesPosition(ctx, perpetualFuturesPosition)
+		err = k.ClosePerpetualFuturesPosition(ctx, perpetualFuturesPosition, owner.String())
 	case *types.PerpetualOptionsPositionInstance:
 		err = k.ClosePerpetualOptionsPosition(ctx, *position, *positionInstance)
 	default:

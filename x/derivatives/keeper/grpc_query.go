@@ -187,7 +187,8 @@ func (k Keeper) AddressPositions(c context.Context, req *types.QueryAddressPosit
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	positions := k.GetAddressPositionsVal(ctx, address)
+	// Get all positions of NFTs owned by the address
+	positions := k.GetAddressNFTPositions(ctx, address)
 
 	queriedPositions, err := k.MakeQueriedPositions(ctx, positions)
 	if err != nil {
@@ -294,6 +295,34 @@ func (k Keeper) Position(c context.Context, req *types.QueryPositionRequest) (*t
 	}, nil
 }
 
+func (k Keeper) AllPendingPaymentPositions(c context.Context, req *types.QueryAllPendingPaymentPositionsRequest) (*types.QueryAllPendingPaymentPositionsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	// Get all pending payment positions
+	pendingPaymentPositions := k.GetAllPendingPaymentPositions(ctx)
+
+	return &types.QueryAllPendingPaymentPositionsResponse{
+		PendingPaymentPositions: pendingPaymentPositions,
+	}, nil
+}
+
+func (k Keeper) PendingPaymentPosition(c context.Context, req *types.QueryPendingPaymentPositionRequest) (*types.QueryPendingPaymentPositionResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	// Get all pending payment position by position id
+	pendingPaymentPosition := k.GetPendingPaymentPosition(ctx, req.PositionId)
+
+	return &types.QueryPendingPaymentPositionResponse{
+		PendingPaymentPosition: pendingPaymentPosition,
+	}, nil
+}
+
 func (k Keeper) PerpetualFuturesPositionSize(c context.Context, req *types.QueryPerpetualFuturesPositionSizeRequest) (*types.QueryPerpetualFuturesPositionSizeResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -304,7 +333,8 @@ func (k Keeper) PerpetualFuturesPositionSize(c context.Context, req *types.Query
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	positions := types.Positions(k.GetAddressPositionsVal(ctx, address))
+	// Get all positions of NFTs owned by the address
+	positions := types.Positions(k.GetAddressNFTPositions(ctx, address))
 	getPriceFunc := func(ctx sdk.Context) func(denom string) (sdk.Dec, error) {
 		return func(denom string) (sdk.Dec, error) {
 			return k.GetCurrentPrice(ctx, denom)

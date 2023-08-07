@@ -23,8 +23,8 @@ message Position {
     (gogoproto.moretags) = "yaml:\"market\"",
     (gogoproto.nullable) = false
   ];
-  string address = 3 [
-    (gogoproto.moretags) = "yaml:\"address\""
+  string opener_address = 3 [
+    (gogoproto.moretags) = "yaml:\"opener_address\""
   ];
   google.protobuf.Timestamp opened_at = 4 [
     (gogoproto.moretags) = "yaml:\"opened_at\"",
@@ -63,6 +63,24 @@ message Position {
   google.protobuf.Any position_instance = 12 [
     (gogoproto.moretags) = "yaml:\"position_instance\"",
     (gogoproto.nullable) = false
+  ];
+}
+
+message PendingPaymentPosition {
+  string id = 1 [
+    (gogoproto.moretags) = "yaml:\"id\""
+  ];
+  cosmos.base.v1beta1.Coin refundable_amount = 2 [
+    (gogoproto.moretags) = "yaml:\"refundable_amount\"",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Timestamp created_at = 3 [
+    (gogoproto.moretags) = "yaml:\"created_at\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  uint64 created_height = 4 [
+    (gogoproto.moretags) = "yaml:\"created_height\""
   ];
 }
 

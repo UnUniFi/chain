@@ -109,7 +109,7 @@ func NewPerpetualFuturesPosition(position Position, ins PerpetualFuturesPosition
 	return PerpetualFuturesPosition{
 		Id:                   position.Id,
 		Market:               position.Market,
-		Address:              position.Address,
+		OpenerAddress:        position.OpenerAddress,
 		OpenedAt:             position.OpenedAt,
 		OpenedBaseRate:       position.OpenedBaseRate,
 		OpenedQuoteRate:      position.OpenedQuoteRate,
@@ -132,7 +132,7 @@ func NewPerpetualFuturesPositionFromPosition(position Position) (PerpetualFuture
 		return PerpetualFuturesPosition{
 			Id:                   position.Id,
 			Market:               position.Market,
-			Address:              position.Address,
+			OpenerAddress:        position.OpenerAddress,
 			OpenedAt:             position.OpenedAt,
 			OpenedBaseRate:       position.OpenedBaseRate,
 			OpenedQuoteRate:      position.OpenedQuoteRate,

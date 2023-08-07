@@ -29,4 +29,8 @@ var (
 	ErrUnauthorized                     = sdkerrors.Register(ModuleName, 19, "unauthorized")
 	ErrTooMuchMarginToWithdraw          = sdkerrors.Register(ModuleName, 20, "too much margin to withdraw")
 	ErrInsufficientAvailablePoolBalance = sdkerrors.Register(ModuleName, 21, "insufficient available pool balance")
+	ErrPositionNFTNotFound              = sdkerrors.Register(ModuleName, 22, "position NFT not found")
+	ErrNotPositionNFTOwner              = sdkerrors.Register(ModuleName, 23, "not position NFT owner")
+	ErrPositionNFTSendDisabled          = sdkerrors.Register(ModuleName, 24, "position NFT send disabled")
+	ErrNoPendingPaymentManager          = sdkerrors.Register(ModuleName, 25, "no pending payment manager")
 )

@@ -269,7 +269,7 @@ func (suite *KeeperTestSuite) TestClosePerpetualFuturesPosition() {
 
 	for _, testPosition := range positions {
 		position := suite.keeper.GetPositionWithId(suite.ctx, testPosition.positionId)
-		err := suite.keeper.ClosePerpetualFuturesPosition(suite.ctx, types.NewPerpetualFuturesPosition(*position, testPosition.instance))
+		err := suite.keeper.ClosePerpetualFuturesPosition(suite.ctx, types.NewPerpetualFuturesPosition(*position, testPosition.instance), owner.String())
 		suite.Require().NoError(err)
 
 		// Check if the position was added
