@@ -126,15 +126,15 @@ func TestCalcCompoundInterest(t *testing.T) {
 	}
 }
 
-func TestRepay(t *testing.T) {
+func TestRepayInfo(t *testing.T) {
 	now := time.Now()
 	nextYear := time.Now().Add(time.Hour * 24 * 365)
 	testCases := []struct {
-		name        string
-		bid         types.NftBid
-		repayAmount sdk.Coin
-		payTime     time.Time
-		expResult   types.RepayInfo
+		name          string
+		bid           types.NftBid
+		repayAmount   sdk.Coin
+		repaymentTime time.Time
+		expResult     types.RepayInfo
 	}{
 		{
 			"Repay partial",
@@ -191,7 +191,7 @@ func TestRepay(t *testing.T) {
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
-			result := tc.bid.Repay(tc.repayAmount, tc.payTime)
+			result := tc.bid.RepayInfo(tc.repayAmount, tc.repaymentTime)
 			require.Equal(t, tc.expResult, result)
 		})
 	}

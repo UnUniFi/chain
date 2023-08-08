@@ -18,15 +18,15 @@ func Contains(a []string, x string) bool {
 	return false
 }
 
-func validateListNftMsg(k Keeper, ctx sdk.Context, msg *types.MsgListNft) error {
+func ValidateListNftMsg(k Keeper, ctx sdk.Context, msg *types.MsgListNft) error {
 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return err
 	}
-	return checkListNft(k, ctx, sender, msg.NftId, msg.BidDenom, msg.MinimumDepositRate)
+	return CheckListNft(k, ctx, sender, msg.NftId, msg.BidDenom, msg.MinimumDepositRate)
 }
 
-func checkListNft(k Keeper, ctx sdk.Context, sender sdk.AccAddress, nftId types.NftIdentifier, bidToken string, minimumDepositRate sdk.Dec) error {
+func CheckListNft(k Keeper, ctx sdk.Context, sender sdk.AccAddress, nftId types.NftIdentifier, bidToken string, minimumDepositRate sdk.Dec) error {
 	// check listing already exists
 	_, err := k.GetNftListingByIdBytes(ctx, nftId.IdBytes())
 	if err == nil {
