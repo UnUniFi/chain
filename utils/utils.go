@@ -12,7 +12,7 @@ import (
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	recordstypes "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/records/types"
+	recordstypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/records/types"
 )
 
 func FilterDepositRecords(arr []recordstypes.DepositRecord, condition func(recordstypes.DepositRecord) bool) (ret []recordstypes.DepositRecord) {

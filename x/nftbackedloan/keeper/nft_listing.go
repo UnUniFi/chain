@@ -117,26 +117,6 @@ func (k Keeper) DeleteNftListing(ctx sdk.Context, listing types.NftListing) {
 	}
 }
 
-// func (k Keeper) GetActiveNftListingsEndingAt(ctx sdk.Context, endTime time.Time) []types.NftListing {
-// 	store := ctx.KVStore(k.storeKey)
-// 	timeKey := getTimeKey(types.KeyPrefixEndTimeNftListing, endTime)
-// 	it := store.Iterator([]byte(types.KeyPrefixEndTimeNftListing), storetypes.InclusiveEndBytes(timeKey))
-// 	defer it.Close()
-
-// 	listings := []types.NftListing{}
-// 	for ; it.Valid(); it.Next() {
-// 		nftIdBytes := it.Value()
-// 		listing, err := k.GetNftListingByIdBytes(ctx, nftIdBytes)
-// 		if err != nil {
-// 			fmt.Println("failed to get listing by id bytes: %w", err)
-// 			continue
-// 		}
-
-// 		listings = append(listings, listing)
-// 	}
-// 	return listings
-// }
-
 func (k Keeper) GetFullPaymentNftListingsEndingAt(ctx sdk.Context, endTime time.Time) []types.NftListing {
 	store := ctx.KVStore(k.storeKey)
 	timeKey := getTimeKey(types.KeyPrefixFullPaymentPeriodListing, endTime)
@@ -194,7 +174,7 @@ func (k Keeper) GetAllNftListings(ctx sdk.Context) []types.NftListing {
 }
 
 func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
-	errorMsg := validateListNftMsg(k, ctx, msg)
+	errorMsg := ValidateListNftMsg(k, ctx, msg)
 	if errorMsg != nil {
 		return errorMsg
 	}
@@ -214,14 +194,6 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 		MinimumBiddingPeriod:    msg.MinimumBiddingPeriod,
 	}
 
-	// Send ownership to market module
-	// moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
-	// err := k.nftKeeper.Transfer(ctx, msg.NftId.ClassId, msg.NftId.NftId, moduleAddr)
-	// if err != nil {
-	// 	k.DeleteNftListing(ctx, listing)
-	// 	return err
-	// }
-
 	// disable NFT transfer
 	data, found := k.nftKeeper.GetNftData(ctx, msg.NftId.ClassId, msg.NftId.NftId)
 	if !found {
@@ -236,7 +208,7 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 	k.SaveNftListing(ctx, listing)
 
 	// get the memo data from Tx contains MsgListNft
-	k.AfterNftListed(ctx, msg.NftId, GetMemo(ctx.TxBytes(), k.txCfg))
+	// k.AfterNftListed(ctx, msg.NftId, GetMemo(ctx.TxBytes(), k.txCfg))
 
 	// Emit event for nft listing
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventListingNft{
@@ -279,21 +251,10 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 
 	bids := k.GetBidsByNft(ctx, msg.NftId.IdBytes())
 	for _, bid := range bids {
-		if bid.IsBorrowing() {
+		if bid.IsBorrowed() {
 			return types.ErrCannotCancelBorrowedListing
 		}
 	}
-
-	// sender, err := sdk.AccAddressFromBech32(msg.Sender)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// Send ownership to original owner
-	// err = k.nftKeeper.Transfer(ctx, msg.NftId.ClassId, msg.NftId.NftId, sender)
-	// if err != nil {
-	// 	return err
-	// }
 
 	// enable NFT transfer
 	data, found := k.nftKeeper.GetNftData(ctx, msg.NftId.ClassId, msg.NftId.NftId)
@@ -332,13 +293,13 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 	for _, listing := range listings {
 		bids := types.NftBids(k.GetBidsByNft(ctx, listing.NftId.IdBytes()))
 		if listing.State == types.ListingState_SELLING_DECISION {
-			err := k.SellingDecisionProcess(ctx, bids, listing, params)
+			err := k.RunSellingDecisionProcess(ctx, bids, listing, params)
 			if err != nil {
 				fmt.Println("failed to selling decision process: %w", err)
 				continue
 			}
 		} else if listing.State == types.ListingState_LIQUIDATION {
-			err := k.LiquidationProcess(ctx, bids, listing, params)
+			err := k.RunLiquidationProcess(ctx, bids, listing, params)
 			if err != nil {
 				fmt.Println("failed to liquidation process: %w", err)
 				continue
@@ -369,7 +330,6 @@ func (k Keeper) DeliverSuccessfulBids(ctx sdk.Context) {
 			continue
 		}
 
-		// borrowedAmount := k.GetDebtByNft(ctx, listing.IdBytes())
 		listerProfit := sdk.ZeroInt()
 		repayAmount := bid.Borrow.Amount.Add(bid.CompoundInterest(listing.LiquidatedAt))
 		bidderPaidAmount := bid.Price

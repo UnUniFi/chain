@@ -97,3 +97,10 @@ message Liquidations {
   Liquidation          liquidation      = 1 [(gogoproto.nullable) = true];
   repeated Liquidation next_liquidation = 2 [(gogoproto.nullable) = false];
 }
+
+message RepayInfo {
+  cosmos.base.v1beta1.Coin  repaid_amount            = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin  repaid_interest_amount  = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin  remaining_amount         = 3 [(gogoproto.nullable) = false];
+  google.protobuf.Timestamp last_repaid_at           = 4[(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+}

@@ -147,8 +147,8 @@ func (k Keeper) ManualRepay(ctx sdk.Context, nft types.NftIdentifier, repays []t
 			continue
 		}
 
-		repaidResult := bid.RepaidResult(repay.Amount, ctx.BlockTime())
-		bid.Borrow.Amount = repaidResult.RemainingBorrowAmount
+		repaidResult := bid.RepayInfo(repay.Amount, ctx.BlockTime())
+		bid.Borrow.Amount = repaidResult.RemainingAmount
 		bid.Borrow.LastRepaidAt = repaidResult.LastRepaidAt
 		repaidAmount = repaidAmount.Add(repaidResult.RepaidAmount)
 
@@ -208,10 +208,10 @@ func (k Keeper) AutoRepay(ctx sdk.Context, nft types.NftIdentifier, bids types.N
 			continue
 		}
 
-		repaidResult := bid.FullRepaidResult(ctx.BlockTime())
-		bid.Borrow.Amount = repaidResult.RemainingBorrowAmount
-		bid.Borrow.LastRepaidAt = repaidResult.LastRepaidAt
-		repaidAmount = repaidAmount.Add(repaidResult.RepaidAmount)
+		repaidInfo := bid.RepayInfoInFull(ctx.BlockTime())
+		bid.Borrow.Amount = repaidInfo.RemainingAmount
+		bid.Borrow.LastRepaidAt = repaidInfo.LastRepaidAt
+		repaidAmount = repaidAmount.Add(repaidInfo.RepaidAmount)
 
 		err = k.SetBid(ctx, bid)
 		if err != nil {
@@ -219,7 +219,7 @@ func (k Keeper) AutoRepay(ctx sdk.Context, nft types.NftIdentifier, bids types.N
 		}
 
 		// send interest to bidder
-		err = k.SendInterestToBidder(ctx, bid, repaidResult.RepaidInterestAmount)
+		err = k.SendInterestToBidder(ctx, bid, repaidInfo.RepaidInterestAmount)
 		if err != nil {
 			return err
 		}

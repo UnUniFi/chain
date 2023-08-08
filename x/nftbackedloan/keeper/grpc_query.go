@@ -185,18 +185,6 @@ func (k Keeper) GetListedClass(ctx sdk.Context, classId string, limit int) (*typ
 	}, nil
 }
 
-// func (k Keeper) Loans(c context.Context, req *types.QueryLoansRequest) (*types.QueryLoansResponse, error) {
-// 	if req == nil {
-// 		return nil, status.Error(codes.InvalidArgument, "invalid request")
-// 	}
-
-// 	// ctx := sdk.UnwrapSDKContext(c)
-// 	return &types.QueryLoansResponse{
-// 		// todo impl
-// 		Loans: []types.Loan{},
-// 	}, nil
-// }
-
 func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.QueryLoanResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -277,50 +265,6 @@ func (k Keeper) Rewards(c context.Context, req *types.QueryRewardsRequest) (*typ
 	_ = ctx
 	return &types.QueryRewardsResponse{}, nil
 }
-
-// func (k Keeper) PaymentStatus(c context.Context, req *types.QueryPaymentStatusRequest) (*types.QueryPaymentStatusResponse, error) {
-// 	if req == nil {
-// 		return nil, status.Error(codes.InvalidArgument, "invalid request")
-// 	}
-
-// 	ctx := sdk.UnwrapSDKContext(c)
-// 	nft := types.NftIdentifier{
-// 		ClassId: req.ClassId,
-// 		NftId:   req.NftId,
-// 	}
-// 	listing, err := k.GetNftListingByIdBytes(ctx, nft.IdBytes())
-// 	if err != nil {
-// 		return &types.QueryPaymentStatusResponse{}, err
-// 	}
-// 	bids := k.GetBidsByNft(ctx, nft.IdBytes())
-// 	if len(bids) == 0 {
-// 		return nil, status.Error(codes.InvalidArgument, "not existing bidder")
-// 	}
-
-// 	var bidderBid types.NftBid
-// 	for _, v := range bids {
-// 		if v.Id.Bidder == req.Bidder {
-// 			bidderBid = v
-// 		}
-// 	}
-// 	if (bidderBid.Equal(types.NftBid{})) {
-// 		return nil, status.Error(codes.InvalidArgument, "does not match bidder")
-// 	}
-
-// 	allPaid := listing.State >= types.ListingState_LIQUIDATION && bidderBid.Price.Amount.Equal(bidderBid.Deposit.Amount)
-// 	return &types.QueryPaymentStatusResponse{
-// 		PaymentStatus: types.PaymentStatus{
-// 			NftId:            listing.NftId,
-// 			State:            listing.State,
-// 			Bidder:           bidderBid.Id.Bidder,
-// 			Amount:           bidderBid.Price,
-// 			AutomaticPayment: bidderBid.AutomaticPayment,
-// 			PaidAmount:       bidderBid.Deposit.Amount,
-// 			CreatedAt:        bidderBid.CreatedAt,
-// 			AllPaid:          allPaid,
-// 		},
-// 	}, nil
-// }
 
 func (k Keeper) Liquidation(c context.Context, req *types.QueryLiquidationRequest) (*types.QueryLiquidationResponse, error) {
 	if req == nil {

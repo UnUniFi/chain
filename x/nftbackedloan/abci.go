@@ -10,7 +10,7 @@ import (
 func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 
 	// process liquidation of expired bids
-	k.ProcessLiquidateExpiredBids(ctx)
+	k.LiquidateExpiredBids(ctx)
 
 	// handle full payment period endings
 	k.HandleFullPaymentsPeriodEndings(ctx)

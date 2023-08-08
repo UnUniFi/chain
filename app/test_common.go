@@ -76,10 +76,11 @@ func NewTestApp() TestApp {
 		db,
 		nil,
 		true,
-		wasm.EnableAllProposals,
 		appOptions,
 		emptyWasmOpts,
+		wasm.EnableAllProposals,
 	)
+
 	return TestApp{App: *tApp}
 }
 
@@ -88,13 +89,13 @@ func (tApp TestApp) GetAccountKeeper() authkeeper.AccountKeeper { return tApp.Ac
 func (tApp TestApp) GetBankKeeper() bankkeeper.Keeper           { return tApp.BankKeeper }
 
 // func (tApp TestApp) GetSupplyKeeper() supply.Keeper             { return tApp.SupplyKeeper }
-func (tApp TestApp) GetStakingKeeper() *stakingkeeper.Keeper  { return tApp.StakingKeeper }
+func (tApp TestApp) GetStakingKeeper() stakingkeeper.Keeper   { return tApp.StakingKeeper }
 func (tApp TestApp) GetSlashingKeeper() slashingkeeper.Keeper { return tApp.SlashingKeeper }
 func (tApp TestApp) GetMintKeeper() mintkeeper.Keeper         { return tApp.MintKeeper }
 func (tApp TestApp) GetDistrKeeper() distrkeeper.Keeper       { return tApp.DistrKeeper }
 func (tApp TestApp) GetGovKeeper() govkeeper.Keeper           { return tApp.GovKeeper }
-func (tApp TestApp) GetCrisisKeeper() *crisiskeeper.Keeper    { return tApp.CrisisKeeper }
-func (tApp TestApp) GetUpgradeKeeper() *upgradekeeper.Keeper  { return tApp.UpgradeKeeper }
+func (tApp TestApp) GetCrisisKeeper() crisiskeeper.Keeper     { return tApp.CrisisKeeper }
+func (tApp TestApp) GetUpgradeKeeper() upgradekeeper.Keeper   { return tApp.UpgradeKeeper }
 func (tApp TestApp) GetParamsKeeper() paramskeeper.Keeper     { return tApp.ParamsKeeper }
 
 // func (tApp TestApp) GetVVKeeper() validatorvesting.Keeper       { return tApp.vvKeeper }

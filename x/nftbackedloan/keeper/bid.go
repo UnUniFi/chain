@@ -377,46 +377,7 @@ func (k Keeper) PayRemainder(ctx sdk.Context, msg *types.MsgPayRemainder) error 
 	return nil
 }
 
-// func CheckBidParams(listing types.NftListing, bid, deposit sdk.Coin, bids []types.NftBid) error {
-// 	c := listing.MinimumDepositRate
-// 	p := sdk.NewDecFromInt(bid.Amount)
-// 	cp := c.Mul(p)
-// 	depositDec := sdk.NewDecFromInt(deposit.Amount)
-// 	if cp.GT(depositDec) {
-// 		return types.ErrNotEnoughDeposit
-// 	}
-// 	q := bid
-// 	s := deposit
-// 	for _, bid := range bids {
-// 		q = q.Add(bid.Price)
-// 		s = s.Add(bid.Deposit)
-// 	}
-
-// 	bidLen := 1
-// 	if len(bids) > 0 {
-// 		// sum new bid and old bids
-// 		bidLen = len(bids) + 1
-// 	}
-// 	q.Amount = q.Amount.Quo(sdk.NewInt(int64(bidLen)))
-// 	if q.IsLTE(s) {
-// 		fmt.Println("q", q.String())
-// 		fmt.Println("s", s.String())
-// 		return types.ErrBidParamInvalid
-// 	}
-// 	q_s := q.Sub(s)
-// 	q_s_dec := sdk.NewDecFromInt(q_s.Amount)
-// 	// todo implement min{bid, q-s}
-
-// 	if depositDec.GT(q_s_dec) {
-// 		fmt.Println("depositDec", depositDec.String())
-// 		fmt.Println("q_s_dec", q_s_dec.String())
-// 		// deposit amount bigger
-// 		return types.ErrBidParamInvalid
-// 	}
-// 	return nil
-// }
-
-func (k Keeper) GetActiveNftBiddingsExpired(ctx sdk.Context, endTime time.Time) []types.NftBid {
+func (k Keeper) GetExpiredBids(ctx sdk.Context, endTime time.Time) []types.NftBid {
 	store := ctx.KVStore(k.storeKey)
 	timeKey := getTimeKey(types.KeyPrefixEndTimeNftBid, endTime)
 	it := store.Iterator([]byte(types.KeyPrefixEndTimeNftBid), storetypes.InclusiveEndBytes(timeKey))
@@ -425,8 +386,6 @@ func (k Keeper) GetActiveNftBiddingsExpired(ctx sdk.Context, endTime time.Time) 
 	bids := []types.NftBid{}
 	for ; it.Valid(); it.Next() {
 		bidId := types.NftBidBytesToBidId(it.Value())
-		fmt.Println("GetActiveNftBiddingsExpired")
-		fmt.Println(bidId)
 		bidder, _ := sdk.AccAddressFromBech32(bidId.Bidder)
 		bid, err := k.GetBid(ctx, bidId.NftId.IdBytes(), bidder)
 		if err != nil {
@@ -446,7 +405,7 @@ func (k Keeper) DeleteBidsWithoutBorrowing(ctx sdk.Context, bids []types.NftBid)
 			continue
 		}
 		if listing.IsBidding() {
-			if !bid.IsBorrowing() {
+			if !bid.IsBorrowed() {
 				err := k.SafeCloseBid(ctx, bid)
 				if err != nil {
 					fmt.Println(err)

@@ -155,7 +155,7 @@ func (suite *KeeperTestSuite) TestSellingDecision() {
 			suite.Require().NoError(err)
 		}
 
-		err = suite.app.NftbackedloanKeeper.SellingDecision(suite.ctx, &types.MsgSellingDecision{
+		err = suite.app.NftbackedloanKeeper.SetSellingDecision(suite.ctx, &types.MsgSellingDecision{
 			Sender: tc.executor.String(),
 			NftId:  nftIdentifier,
 		})
