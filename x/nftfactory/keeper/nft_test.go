@@ -31,14 +31,14 @@ func (suite *KeeperTestSuite) TestMintNFT() {
 		NftId:     testNFTId,
 		Recipient: recipient.String(),
 	}
-	err := suite.nftmintKeeper.MintNFT(suite.ctx, &testMsgMintNFT)
+	err := suite.keeper.MintNFT(suite.ctx, &testMsgMintNFT)
 	suite.Require().NoError(err)
 	// check owner
 	owner := suite.nftKeeper.GetOwner(suite.ctx, classId, testNFTId)
 	expectedOwner := recipient
 	suite.Require().Equal(expectedOwner, owner)
 	// check minter
-	minter, exists := suite.nftmintKeeper.GetNFTMinter(suite.ctx, classId, testNFTId)
+	minter, exists := suite.keeper.GetNFTMinter(suite.ctx, classId, testNFTId)
 	suite.Require().True(exists)
 	expectedMinter := sender
 	suite.Require().Equal(expectedMinter, minter)
@@ -54,7 +54,7 @@ func (suite *KeeperTestSuite) TestMintNFT() {
 		NftId:     invalidNFTIdUri,
 		Recipient: recipient.String(),
 	}
-	err = suite.nftmintKeeper.MintNFT(suite.ctx, &testMsgMintNFTInvalidNftIdUri)
+	err = suite.keeper.MintNFT(suite.ctx, &testMsgMintNFTInvalidNftIdUri)
 	suite.Require().Error(err)
 	exists = suite.nftKeeper.HasNFT(suite.ctx, classId, invalidNFTIdUri)
 	suite.Require().False(exists)
@@ -67,7 +67,7 @@ func (suite *KeeperTestSuite) TestMintNFT() {
 		NftId:     invalidNFTId,
 		Recipient: recipient.String(),
 	}
-	err = suite.nftmintKeeper.MintNFT(suite.ctx, &testMsgMintNFTInvalidNftId)
+	err = suite.keeper.MintNFT(suite.ctx, &testMsgMintNFTInvalidNftId)
 	suite.Require().Error(err)
 	exists = suite.nftKeeper.HasNFT(suite.ctx, classId, invalidNFTId)
 	suite.Require().False(exists)
@@ -82,7 +82,7 @@ func (suite *KeeperTestSuite) TestMintNFT() {
 		NftId:     testNFTId2,
 		Recipient: recipient.String(),
 	}
-	err = suite.nftmintKeeper.MintNFT(suite.ctx, &testMsgMintNFTInvalidMinter)
+	err = suite.keeper.MintNFT(suite.ctx, &testMsgMintNFTInvalidMinter)
 	suite.Require().Error(err)
 	exists = suite.nftKeeper.HasNFT(suite.ctx, classId, testNFTId2)
 	suite.Require().False(exists)
@@ -96,7 +96,7 @@ func (suite *KeeperTestSuite) TestMintNFT() {
 		TokenSupplyCap:    1,
 		MintingPermission: 0,
 	}
-	_ = suite.nftmintKeeper.CreateClass(suite.ctx, classId, &testMsgCreateClass)
+	_ = suite.keeper.CreateClass(suite.ctx, classId, &testMsgCreateClass)
 	_ = suite.nftKeeper.Mint(suite.ctx, nfttypes.NFT{ClassId: classId, Id: testNFTId}, sender)
 	testMsgMintNFTOverCap := types.MsgMintNFT{
 		Sender:    sender.String(),
@@ -104,7 +104,7 @@ func (suite *KeeperTestSuite) TestMintNFT() {
 		NftId:     testNFTId2,
 		Recipient: sender.String(),
 	}
-	err = suite.nftmintKeeper.MintNFT(suite.ctx, &testMsgMintNFTOverCap)
+	err = suite.keeper.MintNFT(suite.ctx, &testMsgMintNFTOverCap)
 	suite.Require().Error(err)
 	exists = suite.nftKeeper.HasNFT(suite.ctx, classId, testNFTId2)
 	suite.Require().False(exists)
@@ -129,7 +129,7 @@ func (suite *KeeperTestSuite) TestBurnNFT() {
 		ClassId: classId,
 		NftId:   testNFTId,
 	}
-	err := suite.nftmintKeeper.BurnNFT(suite.ctx, &testMsgBurnNFT)
+	err := suite.keeper.BurnNFT(suite.ctx, &testMsgBurnNFT)
 	suite.Require().NoError(err)
 	// check if burned successfully
 	exists := suite.nftKeeper.HasNFT(suite.ctx, classId, testNFTId)
@@ -143,7 +143,7 @@ func (suite *KeeperTestSuite) TestBurnNFT() {
 		ClassId: classId,
 		NftId:   testNFTId,
 	}
-	err = suite.nftmintKeeper.BurnNFT(suite.ctx, &testMsgBurnNFTInvalidSender)
+	err = suite.keeper.BurnNFT(suite.ctx, &testMsgBurnNFTInvalidSender)
 	suite.Require().Error(err)
 	// check if not burned as intended
 	exists = suite.nftKeeper.HasNFT(suite.ctx, classId, testNFTId)
@@ -159,7 +159,7 @@ func (suite *KeeperTestSuite) TestUpdateNFTUri() {
 	_ = suite.MintNFT(suite.ctx, classId, testNFTId, sender)
 
 	updatingBaseTokenUri := "ipfs://test-latest/"
-	err := suite.nftmintKeeper.UpdateNFTUri(suite.ctx, classId, updatingBaseTokenUri)
+	err := suite.keeper.UpdateNFTUri(suite.ctx, classId, updatingBaseTokenUri)
 	suite.Require().NoError(err)
 	nft, _ := suite.nftKeeper.GetNFT(suite.ctx, classId, testNFTId)
 	expectedNFTUri := updatingBaseTokenUri + testNFTId
@@ -170,7 +170,7 @@ func (suite *KeeperTestSuite) TestUpdateNFTUri() {
 	for i := 0; i < types.DefaultMaxUriLen; i++ {
 		invalidBaseTokenUri += "a"
 	}
-	err = suite.nftmintKeeper.UpdateNFTUri(suite.ctx, classId, invalidBaseTokenUri)
+	err = suite.keeper.UpdateNFTUri(suite.ctx, classId, invalidBaseTokenUri)
 	suite.Require().Error(err)
 	// check if nft uri doesn't change after updating
 	nft, _ = suite.nftKeeper.GetNFT(suite.ctx, classId, testNFTId)
@@ -188,6 +188,6 @@ func (suite *KeeperTestSuite) MintNFT(ctx sdk.Context, classID, nftID string, se
 		NftId:     nftID,
 		Recipient: sender.String(),
 	}
-	err := suite.nftmintKeeper.MintNFT(suite.ctx, &testMsgMintNFT)
+	err := suite.keeper.MintNFT(suite.ctx, &testMsgMintNFT)
 	return err
 }

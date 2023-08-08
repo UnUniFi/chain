@@ -17,7 +17,7 @@ func (suite *KeeperTestSuite) TestQueryClassAttributes() {
 	req := types.QueryClassAttributesRequest{
 		ClassId: classId,
 	}
-	res, err := suite.nftmintKeeper.ClassAttributes(suite.ctx, &req)
+	res, err := suite.keeper.ClassAttributes(suite.ctx, &req)
 	suite.Require().NoError(err)
 	suite.Require().Equal(classId, res.ClassAttributes.ClassId)
 	suite.Require().Equal(testBaseTokenUri, res.ClassAttributes.BaseTokenUri)
@@ -25,7 +25,7 @@ func (suite *KeeperTestSuite) TestQueryClassAttributes() {
 	invalidReq := types.QueryClassAttributesRequest{
 		ClassId: "invalidClassId",
 	}
-	_, err = suite.nftmintKeeper.ClassAttributes(suite.ctx, &invalidReq)
+	_, err = suite.keeper.ClassAttributes(suite.ctx, &invalidReq)
 	suite.Require().Error(err)
 }
 
@@ -40,7 +40,7 @@ func (suite *KeeperTestSuite) TestQueryNftMinter() {
 		ClassId: classId,
 		NftId:   testNFTId,
 	}
-	res, err := suite.nftmintKeeper.NFTMinter(suite.ctx, &req)
+	res, err := suite.keeper.NFTMinter(suite.ctx, &req)
 	suite.Require().NoError(err)
 	suite.Require().Equal(sender.String(), res.Minter)
 }
@@ -55,7 +55,7 @@ func (suite *KeeperTestSuite) TestQueryClassIdsByOwner() {
 	req := types.QueryClassIdsByOwnerRequest{
 		Owner: sender.String(),
 	}
-	res, err := suite.nftmintKeeper.ClassIdsByOwner(suite.ctx, &req)
+	res, err := suite.keeper.ClassIdsByOwner(suite.ctx, &req)
 	suite.Require().NoError(err)
 	var classIds []string
 	classIds = append(classIds, classId)
@@ -76,7 +76,7 @@ func (suite *KeeperTestSuite) TestQueryIdsByName() {
 	req := types.QueryClassIdsByNameRequest{
 		ClassName: testName,
 	}
-	res, err := suite.nftmintKeeper.ClassIdsByName(suite.ctx, &req)
+	res, err := suite.keeper.ClassIdsByName(suite.ctx, &req)
 	suite.Require().NoError(err)
 	var classIds []string
 	classIds = append(classIds, classId)
