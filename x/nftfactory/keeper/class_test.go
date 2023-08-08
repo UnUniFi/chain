@@ -32,10 +32,10 @@ func (suite *KeeperTestSuite) TestNftMintClassBasics() {
 		ClassId: classId,
 	}
 	// check setting ClassAttributes function
-	err := suite.nftmintKeeper.SetClassAttributes(suite.ctx, classAttributes)
+	err := suite.keeper.SetClassAttributes(suite.ctx, classAttributes)
 	suite.Require().NoError(err)
 	// check getting ClassAttributes function
-	gotClassAttributes, exists := suite.nftmintKeeper.GetClassAttributes(suite.ctx, classAttributes.ClassId)
+	gotClassAttributes, exists := suite.keeper.GetClassAttributes(suite.ctx, classAttributes.ClassId)
 	suite.Require().True(exists)
 	suite.Require().Equal(classAttributes, gotClassAttributes)
 
@@ -47,10 +47,10 @@ func (suite *KeeperTestSuite) TestNftMintClassBasics() {
 		ClassId: classIdList,
 	}
 	// check setting OwningClassIdList function
-	err = suite.nftmintKeeper.SetOwningClassIdList(suite.ctx, owningClassIdList)
+	err = suite.keeper.SetOwningClassIdList(suite.ctx, owningClassIdList)
 	suite.Require().NoError(err)
 	// check getting OwningClassIdList function
-	gotOwningClassIdList, exists := suite.nftmintKeeper.GetOwningClassIdList(suite.ctx, owner)
+	gotOwningClassIdList, exists := suite.keeper.GetOwningClassIdList(suite.ctx, owner)
 	suite.Require().True(exists)
 	suite.Require().Equal(owningClassIdList, gotOwningClassIdList)
 
@@ -61,10 +61,10 @@ func (suite *KeeperTestSuite) TestNftMintClassBasics() {
 		ClassId:   classIdList,
 	}
 	// check setting ClassNameIdList function
-	err = suite.nftmintKeeper.SetClassNameIdList(suite.ctx, classNameIdList)
+	err = suite.keeper.SetClassNameIdList(suite.ctx, classNameIdList)
 	suite.Require().NoError(err)
 	// check getting ClassNameIdList function
-	gotClassNameIdList, exists := suite.nftmintKeeper.GetClassNameIdList(suite.ctx, testClassName)
+	gotClassNameIdList, exists := suite.keeper.GetClassNameIdList(suite.ctx, testClassName)
 	suite.Require().True(exists)
 	suite.Require().Equal(classNameIdList, gotClassNameIdList)
 }
@@ -103,7 +103,7 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 	suite.Require().Equal(class, expectedClass)
 
 	// check if ClassAttributes is set
-	classAttributes, exists := suite.nftmintKeeper.GetClassAttributes(suite.ctx, classId)
+	classAttributes, exists := suite.keeper.GetClassAttributes(suite.ctx, classId)
 	suite.Require().True(exists)
 	expectedClassAttributes := types.ClassAttributes{
 		ClassId:           classId,
@@ -115,7 +115,7 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 	suite.Require().Equal(classAttributes, expectedClassAttributes)
 
 	// check if OwningClassIdList is set
-	owningClassIdList, exists := suite.nftmintKeeper.GetOwningClassIdList(suite.ctx, sender)
+	owningClassIdList, exists := suite.keeper.GetOwningClassIdList(suite.ctx, sender)
 	suite.Require().True(exists)
 	var classIdList []string
 	classIdList = append(classIdList, classId)
@@ -126,7 +126,7 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 	suite.Require().Equal(owningClassIdList, expectedOwningClassIdList)
 
 	// check if ClassNameIdList is set
-	classNameIdList, exists := suite.nftmintKeeper.GetClassNameIdList(suite.ctx, testName)
+	classNameIdList, exists := suite.keeper.GetClassNameIdList(suite.ctx, testName)
 	suite.Require().True(exists)
 	expectedClassNameIdList := types.ClassNameIdList{
 		ClassName: testName,
@@ -145,17 +145,17 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 		TokenSupplyCap:    testTokenSupplyCap,
 		MintingPermission: testMintingPermission,
 	}
-	err = suite.nftmintKeeper.CreateClass(suite.ctx, classIdInInvalidCase, &testMsgCreateClassInvalidName)
+	err = suite.keeper.CreateClass(suite.ctx, classIdInInvalidCase, &testMsgCreateClassInvalidName)
 	suite.Require().Error(err)
 
 	// check if data objects aren't set
 	exists = suite.nftKeeper.HasClass(suite.ctx, classIdInInvalidCase)
 	suite.Require().False(exists)
-	_, exists = suite.nftmintKeeper.GetClassAttributes(suite.ctx, classIdInInvalidCase)
+	_, exists = suite.keeper.GetClassAttributes(suite.ctx, classIdInInvalidCase)
 	suite.Require().False(exists)
-	_, exists = suite.nftmintKeeper.GetOwningClassIdList(suite.ctx, senderInInvalidCase)
+	_, exists = suite.keeper.GetOwningClassIdList(suite.ctx, senderInInvalidCase)
 	suite.Require().False(exists)
-	_, exists = suite.nftmintKeeper.GetClassNameIdList(suite.ctx, testMsgCreateClassInvalidName.Name)
+	_, exists = suite.keeper.GetClassNameIdList(suite.ctx, testMsgCreateClassInvalidName.Name)
 	suite.Require().False(exists)
 
 	// in case which contains the invalid uri
@@ -166,7 +166,7 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 		TokenSupplyCap:    testTokenSupplyCap,
 		MintingPermission: testMintingPermission,
 	}
-	err = suite.nftmintKeeper.CreateClass(suite.ctx, classIdInInvalidCase, &testMsgCreateClassInvalidUri)
+	err = suite.keeper.CreateClass(suite.ctx, classIdInInvalidCase, &testMsgCreateClassInvalidUri)
 	suite.Require().Error(err)
 
 	// in case which contains the invalid token supply cap
@@ -177,7 +177,7 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 		TokenSupplyCap:    10000000, // bigger than the token supply cap
 		MintingPermission: 0,
 	}
-	err = suite.nftmintKeeper.CreateClass(suite.ctx, classIdInInvalidCase, &testMsgCreateClassInvalidTokenSupplyCap)
+	err = suite.keeper.CreateClass(suite.ctx, classIdInInvalidCase, &testMsgCreateClassInvalidTokenSupplyCap)
 	suite.Require().Error(err)
 
 	// in case which contains the invalid minting permission
@@ -188,7 +188,7 @@ func (suite *KeeperTestSuite) TestCreateClass() {
 		TokenSupplyCap:    10000,
 		MintingPermission: 10, // not allowed minting permission option
 	}
-	err = suite.nftmintKeeper.CreateClass(suite.ctx, classIdInInvalidCase, &testMsgCreateClassInvalidMintingPermission)
+	err = suite.keeper.CreateClass(suite.ctx, classIdInInvalidCase, &testMsgCreateClassInvalidMintingPermission)
 	suite.Require().Error(err)
 }
 
@@ -206,12 +206,12 @@ func (suite *KeeperTestSuite) TestSendClassOwnership() {
 		ClassId:   classId,
 		Recipient: recipient.String(),
 	}
-	err := suite.nftmintKeeper.SendClassOwnership(suite.ctx, &testMsgSendClassOwnership)
+	err := suite.keeper.SendClassOwnership(suite.ctx, &testMsgSendClassOwnership)
 	suite.Require().NoError(err)
 	// check if recipient address becomes new owner of class
-	classAttributes, exists := suite.nftmintKeeper.GetClassAttributes(suite.ctx, classId)
+	classAttributes, exists := suite.keeper.GetClassAttributes(suite.ctx, classId)
 	suite.Require().True(exists)
-	expectedOwner := recipient
+	expectedOwner := recipient.String()
 	suite.Require().Equal(expectedOwner, classAttributes.Owner)
 
 	// invalid sender of MsgSendClassOwnership
@@ -222,7 +222,7 @@ func (suite *KeeperTestSuite) TestSendClassOwnership() {
 		ClassId:   classId,
 		Recipient: recipient.String(),
 	}
-	err = suite.nftmintKeeper.SendClassOwnership(suite.ctx, &testMsgSendClassOwnershipInvalidSender)
+	err = suite.keeper.SendClassOwnership(suite.ctx, &testMsgSendClassOwnershipInvalidSender)
 	suite.Require().Error(err)
 
 	// invalid class id specification
@@ -232,7 +232,7 @@ func (suite *KeeperTestSuite) TestSendClassOwnership() {
 		ClassId:   invalidClassId, // non-existant class
 		Recipient: recipient.String(),
 	}
-	err = suite.nftmintKeeper.SendClassOwnership(suite.ctx, &testMsgCreateClassInvalidClassId)
+	err = suite.keeper.SendClassOwnership(suite.ctx, &testMsgCreateClassInvalidClassId)
 	suite.Require().Error(err)
 }
 
@@ -249,9 +249,9 @@ func (suite *KeeperTestSuite) TestUpdateTokenSupplyCap() {
 		ClassId:        classId,
 		TokenSupplyCap: updatingTokenSupplyCap,
 	}
-	err := suite.nftmintKeeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCap)
+	err := suite.keeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCap)
 	suite.Require().NoError(err)
-	classAttributes, exists := suite.nftmintKeeper.GetClassAttributes(suite.ctx, classId)
+	classAttributes, exists := suite.keeper.GetClassAttributes(suite.ctx, classId)
 	suite.Require().True(exists)
 	expectedTokenSupplyCap := updatingTokenSupplyCap
 	suite.Require().Equal(expectedTokenSupplyCap, classAttributes.TokenSupplyCap)
@@ -264,7 +264,7 @@ func (suite *KeeperTestSuite) TestUpdateTokenSupplyCap() {
 		ClassId:        classId,
 		TokenSupplyCap: 100,
 	}
-	err = suite.nftmintKeeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCapInvalidSender)
+	err = suite.keeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCapInvalidSender)
 	suite.Require().Error(err)
 
 	// invalid token supply cap specification
@@ -273,7 +273,7 @@ func (suite *KeeperTestSuite) TestUpdateTokenSupplyCap() {
 		ClassId:        classId,
 		TokenSupplyCap: 1000000, // bigger than the maximum token supply cap on UnUniFi
 	}
-	err = suite.nftmintKeeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCapInvalidCap)
+	err = suite.keeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCapInvalidCap)
 	suite.Require().Error(err)
 
 	// invalid case which current token supply is bigger than the updating supply cap
@@ -284,7 +284,7 @@ func (suite *KeeperTestSuite) TestUpdateTokenSupplyCap() {
 		ClassId:        classId,
 		TokenSupplyCap: 1, // smaller than the current token supply 2 of the specified class
 	}
-	err = suite.nftmintKeeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCapSmaller)
+	err = suite.keeper.UpdateTokenSupplyCap(suite.ctx, &testMsgUpdateTokenSupplyCapSmaller)
 	suite.Require().Error(err)
 }
 
@@ -351,12 +351,12 @@ func (suite *KeeperTestSuite) TestUpdateBaseTokenUri() {
 	}
 
 	for _, tc := range tests {
-		err := suite.nftmintKeeper.UpdateBaseTokenUri(suite.ctx, &tc.msg)
+		err := suite.keeper.UpdateBaseTokenUri(suite.ctx, &tc.msg)
 
 		// invalid cases
 		if !tc.validSender || !tc.validBaseTokenUir {
 			suite.Require().Error(err)
-			gotClassAttributes, _ := suite.nftmintKeeper.GetClassAttributes(suite.ctx, classId)
+			gotClassAttributes, _ := suite.keeper.GetClassAttributes(suite.ctx, classId)
 			suite.Require().Equal(testBaseTokenUri, gotClassAttributes.BaseTokenUri)
 			nft, _ := suite.nftKeeper.GetNFT(suite.ctx, classId, testNftID)
 			expectedNFTUri := testBaseTokenUri + testNFTId
@@ -366,7 +366,7 @@ func (suite *KeeperTestSuite) TestUpdateBaseTokenUri() {
 		// valid case
 		if tc.validSender && tc.validBaseTokenUir {
 			suite.Require().NoError(err)
-			gotClassAttributes, _ := suite.nftmintKeeper.GetClassAttributes(suite.ctx, classId)
+			gotClassAttributes, _ := suite.keeper.GetClassAttributes(suite.ctx, classId)
 			suite.Require().Equal(tc.msg.BaseTokenUri, gotClassAttributes.BaseTokenUri)
 			nft, _ := suite.nftKeeper.GetNFT(suite.ctx, classId, testNftID)
 			expectedNFTUri := tc.msg.BaseTokenUri + testNftID
@@ -385,7 +385,7 @@ func (suite *KeeperTestSuite) CreateClass(ctx sdk.Context, classID string, sende
 		MintingPermission: testMintingPermission,
 	}
 
-	err := suite.nftmintKeeper.CreateClass(ctx, classID, &testMsgCreateClass)
+	err := suite.keeper.CreateClass(ctx, classID, &testMsgCreateClass)
 	return err
 }
 
@@ -413,7 +413,7 @@ func (suite *KeeperTestSuite) TestGetClassAttributes() {
 		},
 	}
 	for _, tc := range tests {
-		res, valid := suite.nftmintKeeper.GetClassAttributes(suite.ctx, tc.classId)
+		res, valid := suite.keeper.GetClassAttributes(suite.ctx, tc.classId)
 
 		// invalid cases
 		if !tc.validClass {
@@ -456,7 +456,7 @@ func (suite *KeeperTestSuite) TestGetOwningClassIdList() {
 		},
 	}
 	for _, tc := range tests {
-		res, valid := suite.nftmintKeeper.GetOwningClassIdList(suite.ctx, tc.ownerAddress)
+		res, valid := suite.keeper.GetOwningClassIdList(suite.ctx, tc.ownerAddress)
 
 		// invalid cases
 		if !tc.validOwner {
@@ -467,7 +467,7 @@ func (suite *KeeperTestSuite) TestGetOwningClassIdList() {
 		// valid case
 		if tc.validOwner {
 			suite.Require().True(valid)
-			suite.Require().Equal(res.Owner, tc.ownerAddress)
+			suite.Require().Equal(res.Owner, tc.ownerAddress.String())
 			suite.Require().Equal(res.ClassId[0], classId)
 		}
 	}
@@ -497,7 +497,7 @@ func (suite *KeeperTestSuite) TestGetClassNameIdList() {
 		},
 	}
 	for _, tc := range tests {
-		res, valid := suite.nftmintKeeper.GetClassNameIdList(suite.ctx, tc.className)
+		res, valid := suite.keeper.GetClassNameIdList(suite.ctx, tc.className)
 
 		// invalid cases
 		if !tc.validClass {
