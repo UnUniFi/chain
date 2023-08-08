@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"json"
+	"encoding/json"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
