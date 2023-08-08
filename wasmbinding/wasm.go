@@ -6,8 +6,8 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
-	interchainquerykeeper "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/interchainquery/keeper"
-	recordskeeper "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/records/keeper"
+	interchainquerykeeper "github.com/UnUniFi/chain/x/yieldaggregator/submodules/interchainquery/keeper"
+	recordskeeper "github.com/UnUniFi/chain/x/yieldaggregator/submodules/records/keeper"
 )
 
 func RegisterCustomPlugins(

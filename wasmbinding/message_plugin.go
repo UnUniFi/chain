@@ -13,9 +13,9 @@ import (
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 
 	"github.com/UnUniFi/chain/wasmbinding/bindings"
-	icqkeeper "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/interchainquery/keeper"
-	interchainquerytypes "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/interchainquery/types"
-	recordskeeper "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/records/keeper"
+	icqkeeper "github.com/UnUniFi/chain/x/yieldaggregator/submodules/interchainquery/keeper"
+	interchainquerytypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/interchainquery/types"
+	recordskeeper "github.com/UnUniFi/chain/x/yieldaggregator/submodules/records/keeper"
 )
 
 // CustomMessageDecorator returns decorator for custom CosmWasm bindings messages
