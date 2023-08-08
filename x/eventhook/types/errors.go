@@ -8,5 +8,5 @@ import (
 
 // x/eventhook module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrHookNotFound = sdkerrors.Register(ModuleName, 1, "hook not found")
 )

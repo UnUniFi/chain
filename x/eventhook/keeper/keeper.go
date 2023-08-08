@@ -7,38 +7,34 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	"github.com/UnUniFi/chain/x/eventhook/types"
+
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 )
 
 type (
 	Keeper struct {
-		cdc        codec.BinaryCodec
-		storeKey   storetypes.StoreKey
-		memKey     storetypes.StoreKey
-		paramstore paramtypes.Subspace
+		cdc      codec.BinaryCodec
+		storeKey storetypes.StoreKey
+
+		wasmKeeper wasmtypes.ContractOpsKeeper
+		authority  string
 	}
 )
 
 func NewKeeper(
 	cdc codec.BinaryCodec,
-	storeKey,
-	memKey storetypes.StoreKey,
-	ps paramtypes.Subspace,
-
+	storeKey storetypes.StoreKey,
+	wasmKeeper wasmtypes.ContractOpsKeeper,
+	authority string,
 ) *Keeper {
-	// set KeyTable if it has not already been set
-	if !ps.HasKeyTable() {
-		ps = ps.WithKeyTable(types.ParamKeyTable())
-	}
 
 	return &Keeper{
-
 		cdc:        cdc,
 		storeKey:   storeKey,
-		memKey:     memKey,
-		paramstore: ps,
+		wasmKeeper: wasmKeeper,
+		authority:  authority,
 	}
 }
 
