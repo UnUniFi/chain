@@ -7,12 +7,6 @@ import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/ecosystemincentive/types";
 
-message EventRegister {
-  string                   recipient_container_id = 1 [(gogoproto.moretags) = "yaml:\"recipient_container_id\""];
-  repeated WeightedAddress weighted_addresses     = 2
-      [(gogoproto.moretags) = "yaml:\"weighted_addresses\"", (gogoproto.nullable) = false];
-}
-
 message EventWithdrawAllRewards {
   string   sender                                         = 1 [(gogoproto.moretags) = "yaml:\"sender\""];
   repeated cosmos.base.v1beta1.Coin all_withdrawn_rewards = 2 [
@@ -35,12 +29,6 @@ message EventFailedParsingTxMemoData {
   string class_id = 1 [(gogoproto.moretags) = "yaml:\"class_id\""];
   string nft_id   = 2 [(gogoproto.moretags) = "yaml:\"nft_id\""];
   string memo     = 3 [(gogoproto.moretags) = "yaml:\"memo\""];
-}
-
-message EventRecordedRecipientContainerId {
-  string recipient_container_id = 1 [(gogoproto.moretags) = "yaml:\"recipient_container_id\""];
-  string class_id               = 2 [(gogoproto.moretags) = "yaml:\"class_id\""];
-  string nft_id                 = 3 [(gogoproto.moretags) = "yaml:\"nft_id\""];
 }
 
 message EventDeletedNftIdRecordedForFrontendReward {
@@ -67,12 +55,6 @@ message EventUpdatedReward {
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin",
     (gogoproto.nullable)     = false
   ];
-}
-
-message EventVersionUnmatched {
-  string unmatched_version = 1 [(gogoproto.moretags) = "yaml:\"unmatched_version\""];
-  string class_id          = 2 [(gogoproto.moretags) = "yaml:\"class_id\""];
-  string nft_id            = 3 [(gogoproto.moretags) = "yaml:\"nft_id\""];
 }
 
 message EventDistributionForStakers {

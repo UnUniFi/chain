@@ -8,26 +8,9 @@ option go_package = "github.com/UnUniFi/chain/x/ecosystemincentive/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc Register(MsgRegister) returns (MsgRegisterResponse);
   rpc WithdrawAllRewards(MsgWithdrawAllRewards) returns (MsgWithdrawAllRewardsResponse);
   rpc WithdrawReward(MsgWithdrawReward) returns (MsgWithdrawRewardResponse);
 }
-
-message MsgRegister {
-  string sender = 1 [
-    (gogoproto.moretags) = "yaml:\"sender\""
-  ];
-  string recipient_container_id = 2 [ (gogoproto.moretags) = "yaml:\"recipient_container_id\"" ];
-  repeated string addresses = 3 [
-    (gogoproto.moretags) = "yaml:\"subject_addrs\""
-  ];
-  repeated string weights = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.moretags) = "yaml:\"weights\"",
-    (gogoproto.nullable) = false
-  ];
-}
-message MsgRegisterResponse {}
 
 message MsgWithdrawAllRewards {
   string sender = 1 [

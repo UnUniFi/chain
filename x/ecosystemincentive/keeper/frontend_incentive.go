@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"json"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	types "github.com/UnUniFi/chain/x/ecosystemincentive/types"
@@ -12,7 +14,17 @@ func (k Keeper) MemoTxHandler(ctx sdk.Context, msgs []sdk.Msg, memo string) {
 		return
 	}
 
-	memoInputs, err := types.ParseMemo([]byte(memo))
+	d := make(map[string]interface{})
+	err := json.Unmarshal([]byte(memo), &d)
+	if err != nil || d["frontend"] == nil {
+		return
+	}
+
+	metadata := types.FrontendMetadata{}
+	err = json.Unmarshal([]byte(memo), &metadata)
+	if err != nil {
+		return
+	}
 
 	if err != nil {
 		// _ = ctx.EventManager().EmitTypedEvent(&types.EventFailedParsingTxMemoData{
@@ -26,27 +38,27 @@ func (k Keeper) MemoTxHandler(ctx sdk.Context, msgs []sdk.Msg, memo string) {
 	for _, msg := range msgs {
 		switch msg := msg.(type) {
 		case *nftbackedloantypes.MsgListNft:
-			k.HandleMemoTxWithMsgListNft(ctx, msg, memoInputs)
+			k.HandleMemoTxWithMsgListNft(ctx, msg, metadata)
 		}
 	}
 }
 
-func (k Keeper) HandleMemoTxWithMsgListNft(ctx sdk.Context, msg *nftbackedloantypes.MsgListNft, memo *types.TxMemoData) {
+func (k Keeper) HandleMemoTxWithMsgListNft(ctx sdk.Context, msg *nftbackedloantypes.MsgListNft, metadata types.FrontendMetadata) {
 	// guide the execution based on the version in the memo inputs
 	// switch by values of AvailableVersions which is defined in ../types/memo.go
 	//var AvailableVersions = []string{
 	//	"v1",
 	//	}
-	switch memo.Version {
-	// types.AvailableVersions[0] = "v1"
+	switch metadata.Version {
+	// types.AvailableVersions[0] = 1
 	case types.AvailableVersions[0]:
 		// Store the incentive-unit-id in NftIdForFrontend KVStore with nft-id as key
-		k.RecordRecipientContainerIdWithNftId(ctx, msg.NftId, memo.RecipientContainerId)
+		k.RecordRecipientWithNftId(ctx, msg.NftId, metadata.Recipient)
 
 	// If the value doesn't match any cases, emit event and don't do anything
 	default:
 		_ = ctx.EventManager().EmitTypedEvent(&types.EventVersionUnmatched{
-			UnmatchedVersion: memo.Version,
+			UnmatchedVersion: metadata.Version,
 			ClassId:          msg.NftId.ClassId,
 			NftId:            msg.NftId.NftId,
 		})
