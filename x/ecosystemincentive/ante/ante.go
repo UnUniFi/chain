@@ -25,9 +25,7 @@ func (decorator FrontendIncentiveDecorator) AnteHandle(ctx sdk.Context, tx sdk.T
 	msgs := memoTx.GetMsgs()
 	memo := memoTx.GetMemo()
 
-	// TODO
-	println("memo: ", memo)
-	println("msgs: ", msgs)
+	decorator.keeper.MemoTxHandler(ctx, msgs, memo)
 
 	return next(ctx, tx, simulate)
 }
