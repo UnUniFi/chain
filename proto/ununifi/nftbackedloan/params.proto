@@ -20,5 +20,9 @@ message Params {
   uint64          bid_cancel_required_seconds         = 4;
   uint64          nft_listing_full_payment_period     = 5;
   uint64          nft_listing_nft_delivery_period     = 6;
-  uint64          nft_listing_commission_fee          = 7;
+  string          nft_listing_commission_rate         = 7 [
+    (gogoproto.moretags) = "yaml:\"nft_listing_commission_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
