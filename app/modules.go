@@ -62,6 +62,9 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
+	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7"
+	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/types"
+
 	"github.com/skip-mev/pob/x/builder"
 	buildertypes "github.com/skip-mev/pob/x/builder/types"
 
@@ -111,6 +114,7 @@ var maccPerms = map[string][]string{
 	icatypes.ModuleName:            nil,
 	wasm.ModuleName:                {authtypes.Burner},
 	buildertypes.ModuleName:        nil,
+	ibchookstypes.ModuleName:       nil,
 
 	// original modules
 	nftbackedloantypes.ModuleName: nil,
@@ -167,6 +171,7 @@ var ModuleBasics = module.NewBasicManager(
 	transfer.AppModuleBasic{},
 	ica.AppModuleBasic{},
 	ibcfee.AppModuleBasic{},
+	ibchooks.AppModuleBasic{},
 	builder.AppModuleBasic{},
 
 	// original modules
@@ -222,6 +227,7 @@ func appModules(
 		ibc.NewAppModule(app.AppKeepers.IBCKeeper),
 		transfer.NewAppModule(app.AppKeepers.TransferKeeper),
 		ibcfee.NewAppModule(app.AppKeepers.IBCFeeKeeper),
+		ibchooks.NewAppModule(app.AppKeepers.AccountKeeper),
 		ica.NewAppModule(&app.AppKeepers.ICAControllerKeeper, &app.AppKeepers.ICAHostKeeper),
 		crisis.NewAppModule(&app.AppKeepers.CrisisKeeper, skipGenesisInvariants, app.AppKeepers.GetSubspace(crisistypes.ModuleName)),
 
@@ -309,6 +315,7 @@ func orderBeginBlockers() []string {
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		ibchookstypes.ModuleName,
 		wasm.ModuleName,
 	}
 }
@@ -363,6 +370,7 @@ func orderEndBlockers() []string {
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		ibchookstypes.ModuleName,
 		wasm.ModuleName,
 		buildertypes.ModuleName,
 	}
@@ -420,6 +428,7 @@ func orderInitGenesis() []string {
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		ibchookstypes.ModuleName,
 		// wasm after ibc transfer
 		wasm.ModuleName,
 	}
