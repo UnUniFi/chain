@@ -17,8 +17,10 @@ import (
 
 	derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
 	epochskeeper "github.com/UnUniFi/chain/x/epochs/keeper"
+	nftbackedloankeeper "github.com/UnUniFi/chain/x/nftbackedloan/keeper"
+	nftfactorykeeper "github.com/UnUniFi/chain/x/nftfactory/keeper"
 	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
-	yieldaggregatorKeeper "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
+	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
 )
 
 type AppKeepers struct {
@@ -49,7 +51,9 @@ type AppKeepers struct {
 
 	// ununifi original keepers
 	EpochsKeeper          *epochskeeper.Keeper
-	YieldaggregatorKeeper *yieldaggregatorKeeper.Keeper
+	YieldaggregatorKeeper *yieldaggregatorkeeper.Keeper
+	NftbackedloanKeeper   *nftbackedloankeeper.Keeper
+	NftfactoryKeeper      *nftfactorykeeper.Keeper
 	PricefeedKeeper       *pricefeedkeeper.Keeper
 	DerivativesKeeper     *derivativeskeeper.Keeper
 }
