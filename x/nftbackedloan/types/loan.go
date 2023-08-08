@@ -73,7 +73,7 @@ func LiquidationBid(bidsSortedByDeposit []NftBid, listing NftListing, time time.
 				continue
 			}
 			// if liquidation is available, the bid is win or collect
-			if bid.IsPaidPrice() {
+			if bid.IsPaidSalePrice() {
 				winnerBid = bid
 			} else {
 				forfeitedDeposit = forfeitedDeposit.Add(bid.Deposit)
@@ -108,7 +108,7 @@ func ForfeitedBidsAndRefundBids(bidsSortedByDeposit []NftBid, winnerBid NftBid) 
 			refundBids = append(refundBids, bid)
 			continue
 		}
-		if bid.IsPaidPrice() {
+		if bid.IsPaidSalePrice() {
 			refundBids = append(refundBids, bid)
 		} else {
 			forfeitedBids = append(forfeitedBids, bid)
@@ -176,7 +176,7 @@ func ExistRepayAmountAtLiquidation(bids []NftBid, listing NftListing, liquidatio
 	}
 	existRepayAmount := types.NewCoin(listing.BidDenom, sdk.NewInt(0))
 	for _, nftBid := range bids {
-		if nftBid.IsPaidPrice() {
+		if nftBid.IsPaidSalePrice() {
 			existInterest := nftBid.CalcCompoundInterest(nftBid.Borrow.Amount, nftBid.Borrow.LastRepaidAt, liquidationTime)
 			existRepayAmount = existRepayAmount.Add(nftBid.Borrow.Amount).Add(existInterest)
 		}

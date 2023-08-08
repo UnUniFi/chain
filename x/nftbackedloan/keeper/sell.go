@@ -40,7 +40,7 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 
 	// check no borrowing bid
 	for _, bid := range bids {
-		if bid.IsBorrowing() {
+		if bid.IsBorrowed() {
 			return types.ErrCannotSellingBorrowedListing
 		}
 	}
@@ -92,7 +92,7 @@ func (k Keeper) SellingDecisionProcess(ctx sdk.Context, bids types.NftBids, list
 		return err
 	}
 	// if winner bidder did not pay remainder, nft is listed again after deleting winner bidder
-	if !highestBid.IsPaidPrice() {
+	if !highestBid.IsPaidSalePrice() {
 		borrowedAmount := highestBid.Borrow.Amount
 		forfeitedDeposit, err := k.SafeCloseBidCollectDeposit(ctx, highestBid)
 		if err != nil {

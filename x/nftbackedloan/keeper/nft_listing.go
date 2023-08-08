@@ -279,7 +279,7 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 
 	bids := k.GetBidsByNft(ctx, msg.NftId.IdBytes())
 	for _, bid := range bids {
-		if bid.IsBorrowing() {
+		if bid.IsBorrowed() {
 			return types.ErrCannotCancelBorrowedListing
 		}
 	}

@@ -37,7 +37,7 @@ func (m NftBid) GetIdToByte() []byte {
 	return NftBidBytes(m.Id.NftId.ClassId, m.Id.NftId.NftId, m.Id.Bidder)
 }
 
-func (m NftBid) IsBorrowing() bool {
+func (m NftBid) IsBorrowed() bool {
 	return m.Borrow.Amount.IsPositive()
 }
 
@@ -68,64 +68,57 @@ func (m NftBid) CalcCompoundInterest(lendCoin sdk.Coin, startTime time.Time, end
 	return sdk.NewCoin(lendCoin.Denom, result.RoundInt())
 }
 
-type RepayResult struct {
-	RepaidAmount          sdk.Coin
-	RepaidInterestAmount  sdk.Coin
-	RemainingBorrowAmount sdk.Coin
-	LastRepaidAt          time.Time
-}
-
-func (m NftBid) RepaidResult(repayAmount sdk.Coin, payTime time.Time) RepayResult {
+func (m NftBid) Repay(repayAmount sdk.Coin, payTime time.Time) RepayInfo {
 	interest := m.CalcCompoundInterest(m.Borrow.Amount, m.Borrow.LastRepaidAt, payTime)
 	total := m.Borrow.Amount.Add(interest)
 
 	if repayAmount.IsGTE(total) {
 		remainingAmount := sdk.NewCoin(m.Borrow.Amount.Denom, sdk.ZeroInt())
-		return RepayResult{
-			RepaidAmount:          total,
-			RepaidInterestAmount:  interest,
-			RemainingBorrowAmount: remainingAmount,
-			LastRepaidAt:          payTime,
+		return RepayInfo{
+			RepaidAmount:         total,
+			RepaidInterestAmount: interest,
+			RemainingAmount:      remainingAmount,
+			LastRepaidAt:         payTime,
 		}
 	} else {
 		remainingAmount := total.Sub(repayAmount)
-		return RepayResult{
-			RepaidAmount:          repayAmount,
-			RepaidInterestAmount:  interest,
-			RemainingBorrowAmount: remainingAmount,
-			LastRepaidAt:          payTime,
+		return RepayInfo{
+			RepaidAmount:         repayAmount,
+			RepaidInterestAmount: interest,
+			RemainingAmount:      remainingAmount,
+			LastRepaidAt:         payTime,
 		}
 	}
 }
 
-func (m NftBid) FullRepaidResult(payTime time.Time) RepayResult {
+func (m NftBid) RepayInFull(payTime time.Time) RepayInfo {
 	interest := m.CalcCompoundInterest(m.Borrow.Amount, m.Borrow.LastRepaidAt, payTime)
 	total := m.Borrow.Amount.Add(interest)
 
 	remainingAmount := sdk.NewCoin(m.Borrow.Amount.Denom, sdk.ZeroInt())
-	return RepayResult{
-		RepaidAmount:          total,
-		RepaidInterestAmount:  interest,
-		RemainingBorrowAmount: remainingAmount,
-		LastRepaidAt:          payTime,
+	return RepayInfo{
+		RepaidAmount:         total,
+		RepaidInterestAmount: interest,
+		RemainingAmount:      remainingAmount,
+		LastRepaidAt:         payTime,
 	}
 }
 
-func (m NftBid) FullPaidAmount() sdk.Coin {
+func (m NftBid) BidderPaidAmount() sdk.Coin {
 	return m.PaidAmount.Add(m.Deposit)
 }
 
-func (m NftBid) IsPaidPrice() bool {
-	fullPaidAmount := m.FullPaidAmount()
+func (m NftBid) IsPaidSalePrice() bool {
+	fullPaidAmount := m.BidderPaidAmount()
 	return fullPaidAmount.Equal(m.Price)
 }
 
 func (m NftBid) CanCancel() bool {
-	return !m.IsBorrowing()
+	return !m.IsBorrowed()
 }
 
 func (m NftBid) CanReBid() bool {
-	return !m.IsBorrowing()
+	return !m.IsBorrowed()
 }
 
 func (m NftBid) IsNil() bool {
@@ -215,7 +208,7 @@ func (m NftBids) RemoveBids(excludeBids NftBids) NftBids {
 	return newArr
 }
 
-func (m NftBids) TotalBorrowAmount() sdk.Coin {
+func (m NftBids) TotalBorrowedAmount() sdk.Coin {
 	if len(m) == 0 {
 		return sdk.Coin{}
 	}

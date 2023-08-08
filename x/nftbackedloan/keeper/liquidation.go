@@ -107,13 +107,13 @@ func (k Keeper) SetLiquidation(ctx sdk.Context, msg *types.MsgEndNftListing) err
 func (k Keeper) ProcessLiquidateExpiredBids(ctx sdk.Context) {
 	fmt.Println("---Block time---")
 	fmt.Println(ctx.BlockTime())
-	bids := k.GetActiveNftBiddingsExpired(ctx, ctx.BlockTime())
+	bids := k.GetExpiredBids(ctx, ctx.BlockTime())
 	fmt.Println("---expired bids---")
 	fmt.Println(bids)
 	k.DeleteBidsWithoutBorrowing(ctx, bids)
 	checkListingsWithBorrowedBids := map[types.NftListing][]types.NftBid{}
 	for _, bid := range bids {
-		if !bid.IsBorrowing() {
+		if !bid.IsBorrowed() {
 			continue
 		}
 
@@ -194,7 +194,7 @@ func (k Keeper) LiquidationProcessNoWinner(ctx sdk.Context, bids types.NftBids, 
 	}
 	listing = listing.AddCollectedAmount(forfeitedDeposit)
 
-	borrowAmount := bids.TotalBorrowAmount()
+	borrowAmount := bids.TotalBorrowedAmount()
 	// pay fee
 	if listing.IsNegativeCollectedAmount() {
 		return types.ErrNegativeCollectedAmount
@@ -244,7 +244,7 @@ func (k Keeper) LiquidationProcessWithWinner(ctx sdk.Context, forfeitedBids, ref
 	// refund bids
 	if len(refundBids) > 0 {
 		refundInterestAmount := refundBids.TotalCompoundInterest(listing.LiquidatedAt)
-		refundBorrowedAmount := refundBids.TotalBorrowAmount()
+		refundBorrowedAmount := refundBids.TotalBorrowedAmount()
 		totalSubAmount = totalSubAmount.Add(refundInterestAmount).Add(refundBorrowedAmount)
 	}
 
