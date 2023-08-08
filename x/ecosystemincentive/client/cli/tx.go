@@ -26,60 +26,9 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(
-		CmdRegister(),
 		CmdWithdrawAllRewards(),
 		CmdWithdrawReward(),
 	)
-	return cmd
-}
-
-func CmdRegister() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "register [file-path] [flags]",
-		Args:  cobra.ExactArgs(0),
-		Short: "register incentive-unit to get ecosystem-incentive reward",
-		Long:  "Example command: $ %s tx %s register --register-file [json-file-path]",
-		Example: `Example of a json file to pass:
-{
-	"incentive-unit-id": "incentive-unit-1",
-	"subject-addrs": [
-		"ununifi17gs6kgph4657epky2ctl9sf66ucyua939nexgl",
-		"ununifi1w9s3wpkh0kfk0t40m4lwjsx6h2v6gktsvfrgux"
-	],
-	"weights": [
-		"0.50",
-		"0.50"
-	]
-}
-`,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			incentiveId, subjectAddrs, weights, err := BuildRegisterInputs(cmd.Flags())
-			if err != nil {
-				return err
-			}
-
-			msg := types.NewMsgRegister(
-				clientCtx.GetFromAddress().String(),
-				incentiveId,
-				subjectAddrs,
-				weights,
-			)
-
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
-		},
-	}
-
-	cmd.Flags().AddFlagSet(FlagSetRegister())
-	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }
 

@@ -116,7 +116,7 @@ func (suite *KeeperTestSuite) TestHooksPanicRecovery() {
 		expectedCounterValues []int
 		lenEvents             int
 	}{
-		{[]dummyNftmarketHook{noPanicHook}, []int{3}, 3},
+		{[]dummyNftmarketHook{noPanicHook}, []int{2}, 2},
 		{[]dummyNftmarketHook{panicHook}, []int{0}, 0},
 	}
 
@@ -134,16 +134,12 @@ func (suite *KeeperTestSuite) TestHooksPanicRecovery() {
 
 		if tc.lenEvents == 0 {
 			suite.Panics(func() {
-				hooks.AfterNftListed(suite.ctx, nftId, "test")
-
 				hooks.AfterNftPaymentWithCommission(suite.ctx, nftId, sdk.Coin{Denom: "uguu", Amount: sdk.OneInt()})
 
 				hooks.AfterNftUnlistedWithoutPayment(suite.ctx, nftId)
 			})
 		} else {
 			suite.NotPanics(func() {
-				hooks.AfterNftListed(suite.ctx, nftId, "test")
-
 				hooks.AfterNftPaymentWithCommission(suite.ctx, nftId, sdk.Coin{Denom: "uguu", Amount: sdk.OneInt()})
 
 				hooks.AfterNftUnlistedWithoutPayment(suite.ctx, nftId)

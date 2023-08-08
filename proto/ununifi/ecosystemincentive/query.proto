@@ -17,26 +17,12 @@ service Query {
     option (google.api.http).get = "/ununifi/ecosystemincentive/params";
   }
 
-  rpc RecipientContainer(QueryRecipientContainerRequest) returns (QueryRecipientContainerResponse) {
-    option (google.api.http).get = "/ununifi/ecosystemincentive/recipient-containers/{id}";
-  }
-
   rpc AllRewards(QueryAllRewardsRequest) returns (QueryAllRewardsResponse) {
     option (google.api.http).get = "/ununifi/ecosystemincentive/rewards/{address}";
   }
 
   rpc Reward(QueryRewardRequest) returns (QueryRewardResponse) {
     option (google.api.http).get = "/ununifi/ecosystemincentive/rewards/{address}/{denom}";
-  }
-
-  rpc RecordedRecipientContainerId(QueryRecordedRecipientContainerIdRequest)
-      returns (QueryRecordedRecipientContainerIdResponse) {
-    option (google.api.http).get = "/ununifi/ecosystemincentive/recorded-recipient-containers/{class_id}/{nft_id}";
-  }
-
-  rpc BelongingRecipientContainerIdsByAddr(QueryBelongingRecipientContainerIdsByAddrRequest)
-      returns (QueryBelongingRecipientContainerIdsByAddrResponse) {
-    option (google.api.http).get = "/ununifi/ecosystemincentive/belonging-recipient-containers/{address}";
   }
 }
 
@@ -47,20 +33,12 @@ message QueryParamsResponse {
   Params params = 1 [(gogoproto.moretags) = "yaml:\"params\"", (gogoproto.nullable) = false];
 }
 
-message QueryRecipientContainerRequest {
-  string id = 1 [(gogoproto.moretags) = "yaml:\"id\""];
-}
-
-message QueryRecipientContainerResponse {
-  RecipientContainer recipient_container = 1 [(gogoproto.moretags) = "yaml:\"recipient_container\""];
-}
-
 message QueryAllRewardsRequest {
   string address = 1 [(gogoproto.moretags) = "yaml:\"address\""];
 }
 
 message QueryAllRewardsResponse {
-  RewardStore rewards = 1 [(gogoproto.moretags) = "yaml:\"rewards\"", (gogoproto.nullable) = false];
+  RewardRecord reward_record = 1 [(gogoproto.moretags) = "yaml:\"reward_record\"", (gogoproto.nullable) = false];
 }
 
 message QueryRewardRequest {
@@ -74,21 +52,4 @@ message QueryRewardResponse {
     (gogoproto.moretags)     = "yaml:\"reward\"",
     (gogoproto.nullable)     = false
   ];
-}
-
-message QueryRecordedRecipientContainerIdRequest {
-  string class_id = 1 [(gogoproto.moretags) = "yaml:\"class_id\""];
-  string nft_id   = 2 [(gogoproto.moretags) = "yaml:\"nft_id\""];
-}
-
-message QueryRecordedRecipientContainerIdResponse {
-  string recipient_container_id = 1 [(gogoproto.moretags) = "yaml:\"recipient_container_id\""];
-}
-
-message QueryBelongingRecipientContainerIdsByAddrRequest {
-  string address = 1 [(gogoproto.moretags) = "yaml:\"address\""];
-}
-
-message QueryBelongingRecipientContainerIdsByAddrResponse {
-  repeated string recipient_container_ids = 2 [(gogoproto.moretags) = "yaml:\"recipient_container_ids\""];
 }
