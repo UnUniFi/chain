@@ -59,7 +59,9 @@ func (k msgServer) CreateVault(goCtx context.Context, msg *types.MsgCreateVault)
 		WithdrawReserveRate:    msg.WithdrawReserveRate,
 		StrategyWeights:        msg.StrategyWeights,
 	}
-	k.Keeper.AppendVault(ctx, vault)
+	id := k.Keeper.AppendVault(ctx, vault)
 
-	return &types.MsgCreateVaultResponse{}, nil
+	return &types.MsgCreateVaultResponse{
+		Id: id,
+	}, nil
 }

@@ -75,7 +75,9 @@ message MsgCreateVault {
   cosmos.base.v1beta1.Coin deposit          = 7 [(gogoproto.nullable) = false];
 }
 
-message MsgCreateVaultResponse {}
+message MsgCreateVaultResponse {
+  uint64 id = 1;
+}
 
 message MsgDeleteVault {
   option (cosmos.msg.v1.signer) = "sender";

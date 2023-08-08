@@ -580,6 +580,7 @@ func NewAppKeeper(
 		appKeepers.WasmKeeper,
 		appKeepers.StakeibcKeeper,
 		appKeepers.RecordsKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	epochsKeeper := epochskeeper.NewKeeper(appCodec, appKeepers.keys[epochstypes.StoreKey])
