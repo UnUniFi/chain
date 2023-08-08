@@ -10,7 +10,7 @@ import (
 	"github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
-func TestIsBorrowing(t *testing.T) {
+func TestIsBorrowed(t *testing.T) {
 	testCases := []struct {
 		name      string
 		bid       types.NftBid
@@ -54,7 +54,7 @@ func TestIsBorrowing(t *testing.T) {
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
-			result := tc.bid.IsBorrowing()
+			result := tc.bid.IsBorrowed()
 			require.Equal(t, tc.expResult, result)
 		})
 	}
@@ -126,15 +126,15 @@ func TestCalcCompoundInterest(t *testing.T) {
 	}
 }
 
-func TestRepaidResult(t *testing.T) {
+func TestRepayInfo(t *testing.T) {
 	now := time.Now()
 	nextYear := time.Now().Add(time.Hour * 24 * 365)
 	testCases := []struct {
-		name        string
-		bid         types.NftBid
-		repayAmount sdk.Coin
-		payTime     time.Time
-		expResult   types.RepayResult
+		name          string
+		bid           types.NftBid
+		repayAmount   sdk.Coin
+		repaymentTime time.Time
+		expResult     types.RepayInfo
 	}{
 		{
 			"Repay partial",
@@ -154,12 +154,12 @@ func TestRepaidResult(t *testing.T) {
 			},
 			sdk.NewCoin("uguu", sdk.NewInt(200000)),
 			nextYear,
-			types.RepayResult{
+			types.RepayInfo{
 				RepaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(200000)),
 				RepaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(105171)),
 				// 1105171 - 200000 = 905171
-				RemainingBorrowAmount: sdk.NewCoin("uguu", sdk.NewInt(905171)),
-				LastRepaidAt:          nextYear,
+				RemainingAmount: sdk.NewCoin("uguu", sdk.NewInt(905171)),
+				LastRepaidAt:    nextYear,
 			},
 		},
 		{
@@ -180,24 +180,24 @@ func TestRepaidResult(t *testing.T) {
 			},
 			sdk.NewCoin("uguu", sdk.NewInt(1200000)),
 			nextYear,
-			types.RepayResult{
-				RepaidAmount:          sdk.NewCoin("uguu", sdk.NewInt(1105171)),
-				RepaidInterestAmount:  sdk.NewCoin("uguu", sdk.NewInt(105171)),
-				RemainingBorrowAmount: sdk.NewCoin("uguu", sdk.NewInt(0)),
-				LastRepaidAt:          nextYear,
+			types.RepayInfo{
+				RepaidAmount:         sdk.NewCoin("uguu", sdk.NewInt(1105171)),
+				RepaidInterestAmount: sdk.NewCoin("uguu", sdk.NewInt(105171)),
+				RemainingAmount:      sdk.NewCoin("uguu", sdk.NewInt(0)),
+				LastRepaidAt:         nextYear,
 			},
 		},
 	}
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
-			result := tc.bid.RepaidResult(tc.repayAmount, tc.payTime)
+			result := tc.bid.RepayInfo(tc.repayAmount, tc.repaymentTime)
 			require.Equal(t, tc.expResult, result)
 		})
 	}
 }
 
-func TestIsPaidPrice(t *testing.T) {
+func TestIsPaidSalePrice(t *testing.T) {
 	testCases := []struct {
 		name      string
 		bid       types.NftBid
@@ -239,13 +239,13 @@ func TestIsPaidPrice(t *testing.T) {
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
-			result := tc.bid.IsPaidPrice()
+			result := tc.bid.IsPaidSalePrice()
 			require.Equal(t, tc.expResult, result)
 		})
 	}
 }
 
-func TestTotalBorrowAmount(t *testing.T) {
+func TestTotalBorrowedAmount(t *testing.T) {
 	testCases := []struct {
 		name      string
 		bids      types.NftBids
@@ -271,7 +271,7 @@ func TestTotalBorrowAmount(t *testing.T) {
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
-			result := tc.bids.TotalBorrowAmount()
+			result := tc.bids.TotalBorrowedAmount()
 			require.Equal(t, tc.expResult, result)
 		})
 	}

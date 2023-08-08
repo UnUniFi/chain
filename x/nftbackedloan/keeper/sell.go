@@ -9,7 +9,7 @@ import (
 	"github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
-func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) error {
+func (k Keeper) SetSellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) error {
 	// check listing already exists
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
@@ -40,7 +40,7 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 
 	// check no borrowing bid
 	for _, bid := range bids {
-		if bid.IsBorrowing() {
+		if bid.IsBorrowed() {
 			return types.ErrCannotSellingBorrowedListing
 		}
 	}
@@ -86,13 +86,13 @@ func (k Keeper) SellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) 
 	return nil
 }
 
-func (k Keeper) SellingDecisionProcess(ctx sdk.Context, bids types.NftBids, listing types.NftListing, params types.Params) error {
+func (k Keeper) RunSellingDecisionProcess(ctx sdk.Context, bids types.NftBids, listing types.NftListing, params types.Params) error {
 	highestBid, err := bids.GetHighestBid()
 	if err != nil {
 		return err
 	}
 	// if winner bidder did not pay remainder, nft is listed again after deleting winner bidder
-	if !highestBid.IsPaidPrice() {
+	if !highestBid.IsPaidSalePrice() {
 		borrowedAmount := highestBid.Borrow.Amount
 		forfeitedDeposit, err := k.SafeCloseBidCollectDeposit(ctx, highestBid)
 		if err != nil {
