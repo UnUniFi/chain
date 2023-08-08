@@ -72,6 +72,9 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 
+	ibchookskeeper "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/keeper"
+	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/types"
+
 	builderkeeper "github.com/skip-mev/pob/x/builder/keeper"
 	buildertypes "github.com/skip-mev/pob/x/builder/types"
 
@@ -139,6 +142,8 @@ type AppKeepers struct {
 	ICAHostKeeper       icahostkeeper.Keeper
 	TransferKeeper      ibctransferkeeper.Keeper
 	WasmKeeper          wasm.Keeper
+	// IBC hooks
+	IBCHooksKeeper ibchookskeeper.Keeper
 
 	NftbackedloanKeeper nftbackedloankeeper.Keeper
 	NftfactoryKeeper    nftfactorykeeper.Keeper
@@ -364,6 +369,11 @@ func NewAppKeeper(
 		appKeepers.IBCKeeper.ChannelKeeper, // may be replaced with IBC middleware
 		appKeepers.IBCKeeper.ChannelKeeper,
 		&appKeepers.IBCKeeper.PortKeeper, appKeepers.AccountKeeper, appKeepers.BankKeeper,
+	)
+
+	appKeepers.keys[ibchookstypes.StoreKey] = storetypes.NewKVStoreKey(ibchookstypes.StoreKey)
+	appKeepers.IBCHooksKeeper = ibchookskeeper.NewKeeper(
+		appKeepers.keys[ibchookstypes.StoreKey],
 	)
 
 	// Create Transfer Keepers
