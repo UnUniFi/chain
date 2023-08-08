@@ -116,7 +116,7 @@ func (suite *KeeperTestSuite) TestHooksPanicRecovery() {
 		expectedCounterValues []int
 		lenEvents             int
 	}{
-		{[]dummyNftmarketHook{noPanicHook}, []int{3}, 3},
+		{[]dummyNftmarketHook{noPanicHook}, []int{2}, 2},
 		{[]dummyNftmarketHook{panicHook}, []int{0}, 0},
 	}
 
