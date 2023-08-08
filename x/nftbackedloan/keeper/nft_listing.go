@@ -422,10 +422,10 @@ func (k Keeper) DeliverSuccessfulBids(ctx sdk.Context) {
 
 func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, amount sdk.Coin, nftId types.NftIdentifier) error {
 	params := k.GetParamSet(ctx)
-	commissionFee := params.NftListingCommissionFee
+	commissionRate := params.NftListingCommissionRate
 	cacheCtx, write := ctx.CacheContext()
 	// pay commission fees for nft listing
-	fee := amount.Amount.Mul(sdk.NewInt(int64(commissionFee))).Quo(sdk.NewInt(100))
+	fee := sdk.NewDecFromInt(amount.Amount).Mul(commissionRate).RoundInt()
 	if fee.IsPositive() {
 		feeCoins := sdk.Coins{sdk.NewCoin(amount.Denom, fee)}
 		err := k.bankKeeper.SendCoinsFromModuleToModule(cacheCtx, types.ModuleName, ecoincentivetypes.ModuleName, feeCoins)
