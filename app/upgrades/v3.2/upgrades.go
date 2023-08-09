@@ -18,11 +18,6 @@ func CreateUpgradeHandler(mm *module.Manager,
 	return func(ctx sdk.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		ctx.Logger().Info(fmt.Sprintf("update start:%s", UpgradeName))
 
-		vm, err := mm.RunMigrations(ctx, configurator, vm)
-		if err != nil {
-			return vm, err
-		}
-
 		backedloanParam := keepers.NftbackedloanKeeper.GetParamSet(ctx)
 		backedloanParam.BidTokens = []string{"uguu"}
 		backedloanParam.NftListingCancelRequiredSeconds = 20
@@ -42,6 +37,6 @@ func CreateUpgradeHandler(mm *module.Manager,
 		factoryParam.MaxDescriptionLen = 1024
 		keepers.NftfactoryKeeper.SetParamSet(ctx, factoryParam)
 
-		return vm, nil
+		return mm.RunMigrations(ctx, configurator, vm)
 	}
 }
