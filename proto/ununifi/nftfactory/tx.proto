@@ -2,51 +2,42 @@ syntax = "proto3";
 package ununifi.nftfactory;
 
 import "gogoproto/gogo.proto";
+import "ununifi/nft/nft.proto";
 import "ununifi/nftfactory/nftfactory.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/nftfactory/types";
 
 service Msg {
   rpc CreateClass(MsgCreateClass) returns (MsgCreateClassResponse);
-  rpc SendClassOwnership(MsgSendClassOwnership) returns (MsgSendClassOwnershipResponse);
-  rpc UpdateBaseTokenUri(MsgUpdateBaseTokenUri) returns (MsgUpdateBaseTokenUriResponse);
-  rpc UpdateTokenSupplyCap(MsgUpdateTokenSupplyCap) returns (MsgUpdateTokenSupplyCapResponse);
+  rpc UpdateClass(MsgUpdateClass) returns (MsgUpdateClassResponse);
   rpc MintNFT(MsgMintNFT) returns (MsgMintNFTResponse);
   rpc BurnNFT(MsgBurnNFT) returns (MsgBurnNFTResponse);
+  rpc ChangeAdmin(MsgChangeAdmin) returns (MsgChangeAdminResponse);
 }
 
 message MsgCreateClass {
-  string            sender             = 1;
-  string            name               = 2;
-  string            base_token_uri     = 3;
-  uint64            token_supply_cap   = 4;
-  MintingPermission minting_permission = 5;
-  string            symbol             = 7;
-  string            description        = 8;
-  string            class_uri          = 9;
+  string                sender      = 1;
+  string                id          = 2;
+  string                name        = 3;
+  string                symbol      = 4;
+  string                description = 5;
+  string                uri         = 6;
+  string                uri_hash    = 7;
+  ununifi.nft.ClassData data        = 8;
 }
 message MsgCreateClassResponse {}
 
-message MsgSendClassOwnership {
-  string sender    = 1;
-  string class_id  = 2;
-  string recipient = 3;
+message MsgUpdateClass {
+  string                sender      = 1;
+  string                class_id    = 2;
+  string                name        = 3;
+  string                symbol      = 4;
+  string                description = 5;
+  string                uri         = 6;
+  string                uri_hash    = 7;
+  ununifi.nft.ClassData data        = 8;
 }
-message MsgSendClassOwnershipResponse {}
-
-message MsgUpdateBaseTokenUri {
-  string sender         = 1;
-  string class_id       = 2;
-  string base_token_uri = 3;
-}
-message MsgUpdateBaseTokenUriResponse {}
-
-message MsgUpdateTokenSupplyCap {
-  string sender           = 1;
-  string class_id         = 2;
-  uint64 token_supply_cap = 3;
-}
-message MsgUpdateTokenSupplyCapResponse {}
+message MsgUpdateClassResponse {}
 
 message MsgMintNFT {
   string sender    = 1;
@@ -62,3 +53,13 @@ message MsgBurnNFT {
   string nft_id   = 3;
 }
 message MsgBurnNFTResponse {}
+
+// MsgChangeAdmin is the sdk.Msg type for allowing an admin account to reassign
+// adminship of a class to a new account
+message MsgChangeAdmin {
+  string sender = 1 [ (gogoproto.moretags) = "yaml:\"sender\"" ];
+  string class_id = 2 [ (gogoproto.moretags) = "yaml:\"class_id\"" ];
+  string new_admin = 3 [ (gogoproto.moretags) = "yaml:\"new_admin\"" ];
+}
+
+message MsgChangeAdminResponse {}

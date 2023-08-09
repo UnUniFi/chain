@@ -2,40 +2,28 @@ syntax = "proto3";
 package ununifi.nftfactory;
 
 import "gogoproto/gogo.proto";
-import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/nftfactory/types";
 
-enum MintingPermission {
-  OnlyOwner = 0;
-  Anyone = 1;
-  // WhiteList = 2;
-}
+// ClassAuthorityMetadata specifies metadata for addresses that have specific
+// capabilities over a nft factory class. Right now there is only one Admin
+// permission, but is planned to be extended to the future.
+message ClassAuthorityMetadata {
+  option (gogoproto.equal) = true;
 
-message ClassAttributes {
-  string class_id = 1;
-  string owner = 2;
-  string base_token_uri = 3;
-  MintingPermission minting_permission = 4;
-  uint64 token_supply_cap = 5;
-}
-
-message OwningClassIdList {
-  string owner = 1;
-  repeated string class_id = 2;
-}
-
-message ClassNameIdList {
-  string class_name = 1;
-  repeated string class_id = 2;
+  // Can be empty for no admin, or a valid osmosis address
+  string Admin = 1 [ (gogoproto.moretags) = "yaml:\"admin\"" ];
 }
 
 message Params {
-  uint64 MaxNFTSupplyCap = 1;
-  uint64 MinClassNameLen = 2;
-  uint64 MaxClassNameLen = 3;
-  uint64 MinUriLen = 4;
-  uint64 MaxUriLen	= 5;
-  uint64 MaxSymbolLen	= 6;
-  uint64 MaxDescriptionLen = 7;
+  // ClassCreationFee is the fee required to create a new denom using the nftfactory module
+  repeated cosmos.base.v1beta1.Coin class_creation_fee = 1 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.moretags) = "yaml:\"denom_creation_fee\"",
+    (gogoproto.nullable) = false
+  ];
+
+  // FeeCollectorAddress is the address where fees collected from denom creation are sent to
+  string fee_collector_address = 2;
 }

@@ -108,14 +108,13 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 	derivativesAddr := app.DerivativesKeeper.GetModuleAddress()
 	_ = app.NftfactoryKeeper.CreateClass(suite.ctx, "derivatives/perpetual_futures/positions", &nftfactorytypes.MsgCreateClass{
-		Sender:            derivativesAddr.String(),
-		Name:              "derivatives/perpetual_futures/positions",
-		BaseTokenUri:      "ipfs://testcid/",
-		TokenSupplyCap:    100000,
-		MintingPermission: 0,
-		Symbol:            "",
-		Description:       "",
-		ClassUri:          "",
+		Sender:      derivativesAddr.String(),
+		Name:        "derivatives/perpetual_futures/positions",
+		Symbol:      "",
+		Description: "",
+		Uri:         "",
+		UriHash:     "",
+		Data:        nil,
 	})
 }
 

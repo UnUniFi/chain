@@ -13,10 +13,9 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCreateClass{},
-		&MsgMintNFT{},
+		&MsgUpdateClass{},
 		&MsgSendClassOwnership{},
-		&MsgUpdateBaseTokenUri{},
-		&MsgUpdateTokenSupplyCap{},
+		&MsgMintNFT{},
 		&MsgBurnNFT{},
 	)
 

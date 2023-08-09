@@ -5,9 +5,10 @@ package types
 
 import (
 	fmt "fmt"
+	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
+	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
-	_ "google.golang.org/protobuf/types/known/timestamppb"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -24,51 +25,26 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type MintingPermission int32
-
-const (
-	MintingPermission_OnlyOwner MintingPermission = 0
-	MintingPermission_Anyone    MintingPermission = 1
-)
-
-var MintingPermission_name = map[int32]string{
-	0: "OnlyOwner",
-	1: "Anyone",
+// ClassAuthorityMetadata specifies metadata for addresses that have specific
+// capabilities over a nft factory class. Right now there is only one Admin
+// permission, but is planned to be extended to the future.
+type ClassAuthorityMetadata struct {
+	// Can be empty for no admin, or a valid osmosis address
+	Admin string `protobuf:"bytes,1,opt,name=Admin,proto3" json:"Admin,omitempty" yaml:"admin"`
 }
 
-var MintingPermission_value = map[string]int32{
-	"OnlyOwner": 0,
-	"Anyone":    1,
-}
-
-func (x MintingPermission) String() string {
-	return proto.EnumName(MintingPermission_name, int32(x))
-}
-
-func (MintingPermission) EnumDescriptor() ([]byte, []int) {
+func (m *ClassAuthorityMetadata) Reset()         { *m = ClassAuthorityMetadata{} }
+func (m *ClassAuthorityMetadata) String() string { return proto.CompactTextString(m) }
+func (*ClassAuthorityMetadata) ProtoMessage()    {}
+func (*ClassAuthorityMetadata) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19bd2cd86ea9a985, []int{0}
 }
-
-type ClassAttributes struct {
-	ClassId           string            `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	Owner             string            `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
-	BaseTokenUri      string            `protobuf:"bytes,3,opt,name=base_token_uri,json=baseTokenUri,proto3" json:"base_token_uri,omitempty"`
-	MintingPermission MintingPermission `protobuf:"varint,4,opt,name=minting_permission,json=mintingPermission,proto3,enum=ununifi.nftfactory.MintingPermission" json:"minting_permission,omitempty"`
-	TokenSupplyCap    uint64            `protobuf:"varint,5,opt,name=token_supply_cap,json=tokenSupplyCap,proto3" json:"token_supply_cap,omitempty"`
-}
-
-func (m *ClassAttributes) Reset()         { *m = ClassAttributes{} }
-func (m *ClassAttributes) String() string { return proto.CompactTextString(m) }
-func (*ClassAttributes) ProtoMessage()    {}
-func (*ClassAttributes) Descriptor() ([]byte, []int) {
-	return fileDescriptor_19bd2cd86ea9a985, []int{0}
-}
-func (m *ClassAttributes) XXX_Unmarshal(b []byte) error {
+func (m *ClassAuthorityMetadata) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *ClassAttributes) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ClassAuthorityMetadata) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_ClassAttributes.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ClassAuthorityMetadata.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -78,172 +54,37 @@ func (m *ClassAttributes) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-func (m *ClassAttributes) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ClassAttributes.Merge(m, src)
+func (m *ClassAuthorityMetadata) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ClassAuthorityMetadata.Merge(m, src)
 }
-func (m *ClassAttributes) XXX_Size() int {
+func (m *ClassAuthorityMetadata) XXX_Size() int {
 	return m.Size()
 }
-func (m *ClassAttributes) XXX_DiscardUnknown() {
-	xxx_messageInfo_ClassAttributes.DiscardUnknown(m)
+func (m *ClassAuthorityMetadata) XXX_DiscardUnknown() {
+	xxx_messageInfo_ClassAuthorityMetadata.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ClassAttributes proto.InternalMessageInfo
+var xxx_messageInfo_ClassAuthorityMetadata proto.InternalMessageInfo
 
-func (m *ClassAttributes) GetClassId() string {
+func (m *ClassAuthorityMetadata) GetAdmin() string {
 	if m != nil {
-		return m.ClassId
+		return m.Admin
 	}
 	return ""
-}
-
-func (m *ClassAttributes) GetOwner() string {
-	if m != nil {
-		return m.Owner
-	}
-	return ""
-}
-
-func (m *ClassAttributes) GetBaseTokenUri() string {
-	if m != nil {
-		return m.BaseTokenUri
-	}
-	return ""
-}
-
-func (m *ClassAttributes) GetMintingPermission() MintingPermission {
-	if m != nil {
-		return m.MintingPermission
-	}
-	return MintingPermission_OnlyOwner
-}
-
-func (m *ClassAttributes) GetTokenSupplyCap() uint64 {
-	if m != nil {
-		return m.TokenSupplyCap
-	}
-	return 0
-}
-
-type OwningClassIdList struct {
-	Owner   string   `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
-	ClassId []string `protobuf:"bytes,2,rep,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-}
-
-func (m *OwningClassIdList) Reset()         { *m = OwningClassIdList{} }
-func (m *OwningClassIdList) String() string { return proto.CompactTextString(m) }
-func (*OwningClassIdList) ProtoMessage()    {}
-func (*OwningClassIdList) Descriptor() ([]byte, []int) {
-	return fileDescriptor_19bd2cd86ea9a985, []int{1}
-}
-func (m *OwningClassIdList) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *OwningClassIdList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_OwningClassIdList.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *OwningClassIdList) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_OwningClassIdList.Merge(m, src)
-}
-func (m *OwningClassIdList) XXX_Size() int {
-	return m.Size()
-}
-func (m *OwningClassIdList) XXX_DiscardUnknown() {
-	xxx_messageInfo_OwningClassIdList.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_OwningClassIdList proto.InternalMessageInfo
-
-func (m *OwningClassIdList) GetOwner() string {
-	if m != nil {
-		return m.Owner
-	}
-	return ""
-}
-
-func (m *OwningClassIdList) GetClassId() []string {
-	if m != nil {
-		return m.ClassId
-	}
-	return nil
-}
-
-type ClassNameIdList struct {
-	ClassName string   `protobuf:"bytes,1,opt,name=class_name,json=className,proto3" json:"class_name,omitempty"`
-	ClassId   []string `protobuf:"bytes,2,rep,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-}
-
-func (m *ClassNameIdList) Reset()         { *m = ClassNameIdList{} }
-func (m *ClassNameIdList) String() string { return proto.CompactTextString(m) }
-func (*ClassNameIdList) ProtoMessage()    {}
-func (*ClassNameIdList) Descriptor() ([]byte, []int) {
-	return fileDescriptor_19bd2cd86ea9a985, []int{2}
-}
-func (m *ClassNameIdList) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *ClassNameIdList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ClassNameIdList.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *ClassNameIdList) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ClassNameIdList.Merge(m, src)
-}
-func (m *ClassNameIdList) XXX_Size() int {
-	return m.Size()
-}
-func (m *ClassNameIdList) XXX_DiscardUnknown() {
-	xxx_messageInfo_ClassNameIdList.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ClassNameIdList proto.InternalMessageInfo
-
-func (m *ClassNameIdList) GetClassName() string {
-	if m != nil {
-		return m.ClassName
-	}
-	return ""
-}
-
-func (m *ClassNameIdList) GetClassId() []string {
-	if m != nil {
-		return m.ClassId
-	}
-	return nil
 }
 
 type Params struct {
-	MaxNFTSupplyCap   uint64 `protobuf:"varint,1,opt,name=MaxNFTSupplyCap,proto3" json:"MaxNFTSupplyCap,omitempty"`
-	MinClassNameLen   uint64 `protobuf:"varint,2,opt,name=MinClassNameLen,proto3" json:"MinClassNameLen,omitempty"`
-	MaxClassNameLen   uint64 `protobuf:"varint,3,opt,name=MaxClassNameLen,proto3" json:"MaxClassNameLen,omitempty"`
-	MinUriLen         uint64 `protobuf:"varint,4,opt,name=MinUriLen,proto3" json:"MinUriLen,omitempty"`
-	MaxUriLen         uint64 `protobuf:"varint,5,opt,name=MaxUriLen,proto3" json:"MaxUriLen,omitempty"`
-	MaxSymbolLen      uint64 `protobuf:"varint,6,opt,name=MaxSymbolLen,proto3" json:"MaxSymbolLen,omitempty"`
-	MaxDescriptionLen uint64 `protobuf:"varint,7,opt,name=MaxDescriptionLen,proto3" json:"MaxDescriptionLen,omitempty"`
+	// ClassCreationFee is the fee required to create a new denom using the nftfactory module
+	ClassCreationFee github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,1,rep,name=class_creation_fee,json=classCreationFee,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"class_creation_fee" yaml:"denom_creation_fee"`
+	// FeeCollectorAddress is the address where fees collected from denom creation are sent to
+	FeeCollectorAddress string `protobuf:"bytes,2,opt,name=fee_collector_address,json=feeCollectorAddress,proto3" json:"fee_collector_address,omitempty"`
 }
 
 func (m *Params) Reset()         { *m = Params{} }
 func (m *Params) String() string { return proto.CompactTextString(m) }
 func (*Params) ProtoMessage()    {}
 func (*Params) Descriptor() ([]byte, []int) {
-	return fileDescriptor_19bd2cd86ea9a985, []int{3}
+	return fileDescriptor_19bd2cd86ea9a985, []int{1}
 }
 func (m *Params) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -272,60 +113,22 @@ func (m *Params) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Params proto.InternalMessageInfo
 
-func (m *Params) GetMaxNFTSupplyCap() uint64 {
+func (m *Params) GetClassCreationFee() github_com_cosmos_cosmos_sdk_types.Coins {
 	if m != nil {
-		return m.MaxNFTSupplyCap
+		return m.ClassCreationFee
 	}
-	return 0
+	return nil
 }
 
-func (m *Params) GetMinClassNameLen() uint64 {
+func (m *Params) GetFeeCollectorAddress() string {
 	if m != nil {
-		return m.MinClassNameLen
+		return m.FeeCollectorAddress
 	}
-	return 0
-}
-
-func (m *Params) GetMaxClassNameLen() uint64 {
-	if m != nil {
-		return m.MaxClassNameLen
-	}
-	return 0
-}
-
-func (m *Params) GetMinUriLen() uint64 {
-	if m != nil {
-		return m.MinUriLen
-	}
-	return 0
-}
-
-func (m *Params) GetMaxUriLen() uint64 {
-	if m != nil {
-		return m.MaxUriLen
-	}
-	return 0
-}
-
-func (m *Params) GetMaxSymbolLen() uint64 {
-	if m != nil {
-		return m.MaxSymbolLen
-	}
-	return 0
-}
-
-func (m *Params) GetMaxDescriptionLen() uint64 {
-	if m != nil {
-		return m.MaxDescriptionLen
-	}
-	return 0
+	return ""
 }
 
 func init() {
-	proto.RegisterEnum("ununifi.nftfactory.MintingPermission", MintingPermission_name, MintingPermission_value)
-	proto.RegisterType((*ClassAttributes)(nil), "ununifi.nftfactory.ClassAttributes")
-	proto.RegisterType((*OwningClassIdList)(nil), "ununifi.nftfactory.OwningClassIdList")
-	proto.RegisterType((*ClassNameIdList)(nil), "ununifi.nftfactory.ClassNameIdList")
+	proto.RegisterType((*ClassAuthorityMetadata)(nil), "ununifi.nftfactory.ClassAuthorityMetadata")
 	proto.RegisterType((*Params)(nil), "ununifi.nftfactory.Params")
 }
 
@@ -334,135 +137,57 @@ func init() {
 }
 
 var fileDescriptor_19bd2cd86ea9a985 = []byte{
-	// 504 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x93, 0xcf, 0x6e, 0xd3, 0x40,
-	0x10, 0x87, 0xe3, 0xfc, 0x2b, 0x59, 0x95, 0x34, 0x59, 0xf5, 0x10, 0x2a, 0x30, 0x51, 0x00, 0x29,
-	0x02, 0x64, 0x4b, 0xf0, 0x04, 0x25, 0xa5, 0x12, 0xa2, 0x69, 0xaa, 0x34, 0xb9, 0x70, 0x89, 0xd6,
-	0xee, 0xc6, 0x1d, 0x11, 0xcf, 0x5a, 0xde, 0xb5, 0x1a, 0xbf, 0x05, 0x07, 0x1e, 0x8a, 0x63, 0x8f,
-	0x1c, 0x51, 0x72, 0xe1, 0x31, 0xd0, 0xae, 0xdd, 0xc4, 0x69, 0x24, 0x6e, 0xde, 0xef, 0xf7, 0x69,
-	0xbc, 0x33, 0xa3, 0x25, 0xaf, 0x12, 0x4c, 0x10, 0xe6, 0xe0, 0xe2, 0x5c, 0xcd, 0x99, 0xaf, 0x44,
-	0x9c, 0x16, 0x3e, 0x9d, 0x28, 0x16, 0x4a, 0x50, 0x9a, 0x4b, 0xce, 0x36, 0x39, 0x39, 0x0e, 0x44,
-	0x20, 0x4c, 0xec, 0xea, 0xaf, 0xcc, 0x3c, 0x79, 0x19, 0x08, 0x11, 0x2c, 0xb8, 0x6b, 0x4e, 0x5e,
-	0x32, 0x77, 0x15, 0x84, 0x5c, 0x2a, 0x16, 0x46, 0x99, 0xd0, 0xfb, 0x6b, 0x91, 0xa3, 0xc1, 0x82,
-	0x49, 0x79, 0xaa, 0x54, 0x0c, 0x5e, 0xa2, 0xb8, 0xa4, 0xcf, 0xc8, 0x13, 0x5f, 0xa3, 0x19, 0xdc,
-	0x74, 0xac, 0xae, 0xd5, 0x6f, 0x8c, 0x0f, 0xcc, 0xf9, 0xcb, 0x0d, 0x3d, 0x26, 0x35, 0x71, 0x87,
-	0x3c, 0xee, 0x94, 0x0d, 0xcf, 0x0e, 0xf4, 0x35, 0x69, 0x7a, 0x4c, 0xf2, 0x99, 0x12, 0xdf, 0x39,
-	0xce, 0x92, 0x18, 0x3a, 0x15, 0x13, 0x1f, 0x6a, 0x3a, 0xd1, 0x70, 0x1a, 0x03, 0x9d, 0x10, 0x1a,
-	0x02, 0x2a, 0xc0, 0x60, 0x16, 0xf1, 0x38, 0x04, 0x29, 0x41, 0x60, 0xa7, 0xda, 0xb5, 0xfa, 0xcd,
-	0x0f, 0x6f, 0x9c, 0xfd, 0x96, 0x9c, 0x61, 0x66, 0x5f, 0x6d, 0xe4, 0x71, 0x3b, 0x7c, 0x8c, 0x68,
-	0x9f, 0xb4, 0xb2, 0xdf, 0xca, 0x24, 0x8a, 0x16, 0xe9, 0xcc, 0x67, 0x51, 0xa7, 0xd6, 0xb5, 0xfa,
-	0xd5, 0x71, 0xd3, 0xf0, 0x6b, 0x83, 0x07, 0x2c, 0xea, 0x9d, 0x91, 0xf6, 0xe8, 0x0e, 0x01, 0x83,
-	0x41, 0xd6, 0xcc, 0x05, 0x48, 0xb5, 0x6d, 0xc8, 0x2a, 0x36, 0x54, 0x9c, 0x40, 0xb9, 0x5b, 0x29,
-	0x4c, 0xa0, 0xf7, 0x35, 0x9f, 0xd7, 0x25, 0x0b, 0x79, 0x5e, 0xe3, 0x05, 0x21, 0x99, 0x8d, 0x2c,
-	0xe4, 0x79, 0xa1, 0x86, 0xff, 0x20, 0xfd, 0xaf, 0xd8, 0xcf, 0x32, 0xa9, 0x5f, 0xb1, 0x98, 0x85,
-	0x92, 0xf6, 0xc9, 0xd1, 0x90, 0x2d, 0x2f, 0xcf, 0x27, 0x9b, 0x0b, 0x9b, 0x4a, 0xd5, 0xf1, 0x63,
-	0x6c, 0x4c, 0xc0, 0xcd, 0x25, 0x2e, 0x38, 0x9a, 0x6d, 0x68, 0x73, 0x17, 0xe7, 0x35, 0x77, 0xcc,
-	0xca, 0xa6, 0xe6, 0x8e, 0xf9, 0x9c, 0x34, 0x86, 0xa0, 0xb7, 0xa4, 0x9d, 0xaa, 0x71, 0xb6, 0xc0,
-	0xa4, 0x6c, 0x99, 0xa7, 0xb5, 0x3c, 0x7d, 0x00, 0xb4, 0x47, 0x0e, 0x87, 0x6c, 0x79, 0x9d, 0x86,
-	0x9e, 0x58, 0x68, 0xa1, 0x6e, 0x84, 0x1d, 0x46, 0xdf, 0x93, 0xf6, 0x90, 0x2d, 0xcf, 0xb8, 0xf4,
-	0x63, 0x88, 0x14, 0x08, 0xd4, 0xe2, 0x81, 0x11, 0xf7, 0x83, 0xb7, 0x0e, 0x69, 0xef, 0xed, 0x9e,
-	0x3e, 0x25, 0x8d, 0x11, 0x2e, 0xd2, 0x91, 0x5e, 0x50, 0xab, 0x44, 0x09, 0xa9, 0x9f, 0x62, 0x2a,
-	0x90, 0xb7, 0xac, 0x4f, 0x9f, 0x7f, 0xad, 0x6c, 0xeb, 0x7e, 0x65, 0x5b, 0x7f, 0x56, 0xb6, 0xf5,
-	0x63, 0x6d, 0x97, 0xee, 0xd7, 0x76, 0xe9, 0xf7, 0xda, 0x2e, 0x7d, 0x7b, 0x17, 0x80, 0xba, 0x4d,
-	0x3c, 0xc7, 0x17, 0xa1, 0x3b, 0xc5, 0x29, 0xc2, 0x39, 0xb8, 0xfe, 0x2d, 0x03, 0x74, 0x97, 0xc5,
-	0x17, 0xa6, 0xd2, 0x88, 0x4b, 0xaf, 0x6e, 0x9e, 0xc4, 0xc7, 0x7f, 0x01, 0x00, 0x00, 0xff, 0xff,
-	0x60, 0x5f, 0x00, 0x47, 0x84, 0x03, 0x00, 0x00,
+	// 368 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x54, 0x91, 0xbb, 0x6a, 0xf3, 0x30,
+	0x14, 0xc7, 0xad, 0xef, 0x12, 0xf8, 0xfc, 0x75, 0x08, 0xee, 0x85, 0x24, 0x83, 0x1d, 0x5c, 0x28,
+	0x81, 0x52, 0x8b, 0xa4, 0x5b, 0xb6, 0xc4, 0x34, 0x5b, 0xa0, 0x04, 0xb2, 0x74, 0x31, 0xb2, 0x7c,
+	0x9c, 0x88, 0xda, 0x52, 0xb0, 0xe4, 0x52, 0xbf, 0x45, 0xa7, 0xce, 0x9d, 0xfb, 0x24, 0x19, 0xb3,
+	0x14, 0x3a, 0xa5, 0x25, 0x59, 0x3a, 0xe7, 0x09, 0x8a, 0x2f, 0xa5, 0xe9, 0xe4, 0x83, 0x7f, 0x47,
+	0x7f, 0xfd, 0xce, 0x91, 0x7e, 0x9a, 0xf2, 0x94, 0xb3, 0x90, 0x61, 0x1e, 0xaa, 0x90, 0x50, 0x25,
+	0x92, 0x6c, 0xaf, 0x74, 0x16, 0x89, 0x50, 0xc2, 0x30, 0xaa, 0x26, 0xe7, 0x9b, 0xb4, 0x8e, 0x66,
+	0x62, 0x26, 0x0a, 0x8c, 0xf3, 0xaa, 0xec, 0x6c, 0x99, 0x54, 0xc8, 0x58, 0x48, 0xec, 0x13, 0x09,
+	0xf8, 0xae, 0xeb, 0x83, 0x22, 0x5d, 0x4c, 0x05, 0xe3, 0x25, 0xb7, 0x47, 0xfa, 0x89, 0x1b, 0x11,
+	0x29, 0x07, 0xa9, 0x9a, 0x8b, 0x84, 0xa9, 0x6c, 0x0c, 0x8a, 0x04, 0x44, 0x11, 0xe3, 0x4c, 0xff,
+	0x3b, 0x08, 0x62, 0xc6, 0x1b, 0xa8, 0x8d, 0x3a, 0xff, 0x86, 0xf5, 0xdd, 0xda, 0x3a, 0xc8, 0x48,
+	0x1c, 0xf5, 0x6d, 0x92, 0xff, 0xb6, 0x27, 0x25, 0xee, 0xff, 0xf9, 0x78, 0xb2, 0x90, 0xfd, 0x82,
+	0xf4, 0xda, 0x35, 0x49, 0x48, 0x2c, 0x8d, 0x47, 0xa4, 0x1b, 0x34, 0xcf, 0xf4, 0x68, 0x02, 0x44,
+	0x31, 0xc1, 0xbd, 0x10, 0xa0, 0x81, 0xda, 0xbf, 0x3b, 0xff, 0x7b, 0x4d, 0xa7, 0x14, 0x72, 0x72,
+	0x21, 0xa7, 0x12, 0x72, 0x5c, 0xc1, 0xf8, 0x70, 0xbc, 0x5c, 0x5b, 0xda, 0x6e, 0x6d, 0x35, 0xcb,
+	0x5b, 0x02, 0xe0, 0x22, 0xfe, 0x11, 0x61, 0x3f, 0xbf, 0x59, 0x9d, 0x19, 0x53, 0xf3, 0xd4, 0x77,
+	0xa8, 0x88, 0x71, 0x35, 0x5a, 0xf9, 0xb9, 0x90, 0xc1, 0x2d, 0x56, 0xd9, 0x02, 0x64, 0x91, 0x26,
+	0x27, 0xf5, 0xc2, 0xc1, 0xad, 0xce, 0x8f, 0x00, 0x8c, 0x9e, 0x7e, 0x1c, 0x02, 0x78, 0x54, 0x44,
+	0x11, 0xe4, 0x3b, 0xf3, 0x48, 0x10, 0x24, 0x20, 0x65, 0xe3, 0x57, 0x3e, 0xe1, 0xe4, 0x30, 0x04,
+	0x70, 0xbf, 0xd8, 0xa0, 0x44, 0xc3, 0xab, 0xe5, 0xc6, 0x44, 0xab, 0x8d, 0x89, 0xde, 0x37, 0x26,
+	0x7a, 0xd8, 0x9a, 0xda, 0x6a, 0x6b, 0x6a, 0xaf, 0x5b, 0x53, 0xbb, 0x39, 0xdf, 0x33, 0x99, 0xf2,
+	0x29, 0x67, 0x23, 0x86, 0xe9, 0x9c, 0x30, 0x8e, 0xef, 0xf7, 0xdf, 0xae, 0x50, 0xf2, 0x6b, 0xc5,
+	0xb6, 0x2f, 0x3f, 0x03, 0x00, 0x00, 0xff, 0xff, 0x03, 0x84, 0xc4, 0x47, 0xde, 0x01, 0x00, 0x00,
 }
 
-func (m *ClassAttributes) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
+func (this *ClassAuthorityMetadata) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
 	}
-	return dAtA[:n], nil
-}
 
-func (m *ClassAttributes) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ClassAttributes) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.TokenSupplyCap != 0 {
-		i = encodeVarintNftfactory(dAtA, i, uint64(m.TokenSupplyCap))
-		i--
-		dAtA[i] = 0x28
-	}
-	if m.MintingPermission != 0 {
-		i = encodeVarintNftfactory(dAtA, i, uint64(m.MintingPermission))
-		i--
-		dAtA[i] = 0x20
-	}
-	if len(m.BaseTokenUri) > 0 {
-		i -= len(m.BaseTokenUri)
-		copy(dAtA[i:], m.BaseTokenUri)
-		i = encodeVarintNftfactory(dAtA, i, uint64(len(m.BaseTokenUri)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Owner) > 0 {
-		i -= len(m.Owner)
-		copy(dAtA[i:], m.Owner)
-		i = encodeVarintNftfactory(dAtA, i, uint64(len(m.Owner)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.ClassId) > 0 {
-		i -= len(m.ClassId)
-		copy(dAtA[i:], m.ClassId)
-		i = encodeVarintNftfactory(dAtA, i, uint64(len(m.ClassId)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *OwningClassIdList) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *OwningClassIdList) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *OwningClassIdList) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.ClassId) > 0 {
-		for iNdEx := len(m.ClassId) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.ClassId[iNdEx])
-			copy(dAtA[i:], m.ClassId[iNdEx])
-			i = encodeVarintNftfactory(dAtA, i, uint64(len(m.ClassId[iNdEx])))
-			i--
-			dAtA[i] = 0x12
+	that1, ok := that.(*ClassAuthorityMetadata)
+	if !ok {
+		that2, ok := that.(ClassAuthorityMetadata)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
 		}
 	}
-	if len(m.Owner) > 0 {
-		i -= len(m.Owner)
-		copy(dAtA[i:], m.Owner)
-		i = encodeVarintNftfactory(dAtA, i, uint64(len(m.Owner)))
-		i--
-		dAtA[i] = 0xa
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
 	}
-	return len(dAtA) - i, nil
+	if this.Admin != that1.Admin {
+		return false
+	}
+	return true
 }
-
-func (m *ClassNameIdList) Marshal() (dAtA []byte, err error) {
+func (m *ClassAuthorityMetadata) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -472,29 +197,20 @@ func (m *ClassNameIdList) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *ClassNameIdList) MarshalTo(dAtA []byte) (int, error) {
+func (m *ClassAuthorityMetadata) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ClassNameIdList) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ClassAuthorityMetadata) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.ClassId) > 0 {
-		for iNdEx := len(m.ClassId) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.ClassId[iNdEx])
-			copy(dAtA[i:], m.ClassId[iNdEx])
-			i = encodeVarintNftfactory(dAtA, i, uint64(len(m.ClassId[iNdEx])))
-			i--
-			dAtA[i] = 0x12
-		}
-	}
-	if len(m.ClassName) > 0 {
-		i -= len(m.ClassName)
-		copy(dAtA[i:], m.ClassName)
-		i = encodeVarintNftfactory(dAtA, i, uint64(len(m.ClassName)))
+	if len(m.Admin) > 0 {
+		i -= len(m.Admin)
+		copy(dAtA[i:], m.Admin)
+		i = encodeVarintNftfactory(dAtA, i, uint64(len(m.Admin)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -521,40 +237,26 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.MaxDescriptionLen != 0 {
-		i = encodeVarintNftfactory(dAtA, i, uint64(m.MaxDescriptionLen))
+	if len(m.FeeCollectorAddress) > 0 {
+		i -= len(m.FeeCollectorAddress)
+		copy(dAtA[i:], m.FeeCollectorAddress)
+		i = encodeVarintNftfactory(dAtA, i, uint64(len(m.FeeCollectorAddress)))
 		i--
-		dAtA[i] = 0x38
+		dAtA[i] = 0x12
 	}
-	if m.MaxSymbolLen != 0 {
-		i = encodeVarintNftfactory(dAtA, i, uint64(m.MaxSymbolLen))
-		i--
-		dAtA[i] = 0x30
-	}
-	if m.MaxUriLen != 0 {
-		i = encodeVarintNftfactory(dAtA, i, uint64(m.MaxUriLen))
-		i--
-		dAtA[i] = 0x28
-	}
-	if m.MinUriLen != 0 {
-		i = encodeVarintNftfactory(dAtA, i, uint64(m.MinUriLen))
-		i--
-		dAtA[i] = 0x20
-	}
-	if m.MaxClassNameLen != 0 {
-		i = encodeVarintNftfactory(dAtA, i, uint64(m.MaxClassNameLen))
-		i--
-		dAtA[i] = 0x18
-	}
-	if m.MinClassNameLen != 0 {
-		i = encodeVarintNftfactory(dAtA, i, uint64(m.MinClassNameLen))
-		i--
-		dAtA[i] = 0x10
-	}
-	if m.MaxNFTSupplyCap != 0 {
-		i = encodeVarintNftfactory(dAtA, i, uint64(m.MaxNFTSupplyCap))
-		i--
-		dAtA[i] = 0x8
+	if len(m.ClassCreationFee) > 0 {
+		for iNdEx := len(m.ClassCreationFee) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.ClassCreationFee[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintNftfactory(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
 	}
 	return len(dAtA) - i, nil
 }
@@ -570,67 +272,15 @@ func encodeVarintNftfactory(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *ClassAttributes) Size() (n int) {
+func (m *ClassAuthorityMetadata) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.ClassId)
+	l = len(m.Admin)
 	if l > 0 {
 		n += 1 + l + sovNftfactory(uint64(l))
-	}
-	l = len(m.Owner)
-	if l > 0 {
-		n += 1 + l + sovNftfactory(uint64(l))
-	}
-	l = len(m.BaseTokenUri)
-	if l > 0 {
-		n += 1 + l + sovNftfactory(uint64(l))
-	}
-	if m.MintingPermission != 0 {
-		n += 1 + sovNftfactory(uint64(m.MintingPermission))
-	}
-	if m.TokenSupplyCap != 0 {
-		n += 1 + sovNftfactory(uint64(m.TokenSupplyCap))
-	}
-	return n
-}
-
-func (m *OwningClassIdList) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Owner)
-	if l > 0 {
-		n += 1 + l + sovNftfactory(uint64(l))
-	}
-	if len(m.ClassId) > 0 {
-		for _, s := range m.ClassId {
-			l = len(s)
-			n += 1 + l + sovNftfactory(uint64(l))
-		}
-	}
-	return n
-}
-
-func (m *ClassNameIdList) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.ClassName)
-	if l > 0 {
-		n += 1 + l + sovNftfactory(uint64(l))
-	}
-	if len(m.ClassId) > 0 {
-		for _, s := range m.ClassId {
-			l = len(s)
-			n += 1 + l + sovNftfactory(uint64(l))
-		}
 	}
 	return n
 }
@@ -641,26 +291,15 @@ func (m *Params) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.MaxNFTSupplyCap != 0 {
-		n += 1 + sovNftfactory(uint64(m.MaxNFTSupplyCap))
+	if len(m.ClassCreationFee) > 0 {
+		for _, e := range m.ClassCreationFee {
+			l = e.Size()
+			n += 1 + l + sovNftfactory(uint64(l))
+		}
 	}
-	if m.MinClassNameLen != 0 {
-		n += 1 + sovNftfactory(uint64(m.MinClassNameLen))
-	}
-	if m.MaxClassNameLen != 0 {
-		n += 1 + sovNftfactory(uint64(m.MaxClassNameLen))
-	}
-	if m.MinUriLen != 0 {
-		n += 1 + sovNftfactory(uint64(m.MinUriLen))
-	}
-	if m.MaxUriLen != 0 {
-		n += 1 + sovNftfactory(uint64(m.MaxUriLen))
-	}
-	if m.MaxSymbolLen != 0 {
-		n += 1 + sovNftfactory(uint64(m.MaxSymbolLen))
-	}
-	if m.MaxDescriptionLen != 0 {
-		n += 1 + sovNftfactory(uint64(m.MaxDescriptionLen))
+	l = len(m.FeeCollectorAddress)
+	if l > 0 {
+		n += 1 + l + sovNftfactory(uint64(l))
 	}
 	return n
 }
@@ -671,7 +310,7 @@ func sovNftfactory(x uint64) (n int) {
 func sozNftfactory(x uint64) (n int) {
 	return sovNftfactory(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *ClassAttributes) Unmarshal(dAtA []byte) error {
+func (m *ClassAuthorityMetadata) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -694,15 +333,15 @@ func (m *ClassAttributes) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: ClassAttributes: wiretype end group for non-group")
+			return fmt.Errorf("proto: ClassAuthorityMetadata: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ClassAttributes: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: ClassAuthorityMetadata: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Admin", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -730,337 +369,7 @@ func (m *ClassAttributes) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ClassId = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftfactory
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthNftfactory
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthNftfactory
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Owner = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field BaseTokenUri", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftfactory
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthNftfactory
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthNftfactory
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.BaseTokenUri = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MintingPermission", wireType)
-			}
-			m.MintingPermission = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftfactory
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.MintingPermission |= MintingPermission(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 5:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field TokenSupplyCap", wireType)
-			}
-			m.TokenSupplyCap = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftfactory
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.TokenSupplyCap |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipNftfactory(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthNftfactory
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *OwningClassIdList) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowNftfactory
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: OwningClassIdList: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: OwningClassIdList: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftfactory
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthNftfactory
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthNftfactory
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Owner = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftfactory
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthNftfactory
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthNftfactory
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ClassId = append(m.ClassId, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipNftfactory(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthNftfactory
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ClassNameIdList) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowNftfactory
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ClassNameIdList: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ClassNameIdList: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClassName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftfactory
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthNftfactory
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthNftfactory
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ClassName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftfactory
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthNftfactory
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthNftfactory
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ClassId = append(m.ClassId, string(dAtA[iNdEx:postIndex]))
+			m.Admin = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1113,10 +422,10 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MaxNFTSupplyCap", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClassCreationFee", wireType)
 			}
-			m.MaxNFTSupplyCap = 0
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowNftfactory
@@ -1126,16 +435,31 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.MaxNFTSupplyCap |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			if msglen < 0 {
+				return ErrInvalidLengthNftfactory
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthNftfactory
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ClassCreationFee = append(m.ClassCreationFee, types.Coin{})
+			if err := m.ClassCreationFee[len(m.ClassCreationFee)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MinClassNameLen", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FeeCollectorAddress", wireType)
 			}
-			m.MinClassNameLen = 0
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowNftfactory
@@ -1145,106 +469,24 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.MinClassNameLen |= uint64(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MaxClassNameLen", wireType)
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthNftfactory
 			}
-			m.MaxClassNameLen = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftfactory
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.MaxClassNameLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthNftfactory
 			}
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MinUriLen", wireType)
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
 			}
-			m.MinUriLen = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftfactory
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.MinUriLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 5:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MaxUriLen", wireType)
-			}
-			m.MaxUriLen = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftfactory
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.MaxUriLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 6:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MaxSymbolLen", wireType)
-			}
-			m.MaxSymbolLen = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftfactory
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.MaxSymbolLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 7:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MaxDescriptionLen", wireType)
-			}
-			m.MaxDescriptionLen = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNftfactory
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.MaxDescriptionLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
+			m.FeeCollectorAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipNftfactory(dAtA[iNdEx:])

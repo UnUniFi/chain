@@ -15,28 +15,12 @@ func NewClass(classID, name, symbol, description, classUri string) nfttypes.Clas
 	}
 }
 
-func NewClassAttributes(
+func NewClassOwnership(
 	classID string,
 	owner sdk.AccAddress,
-	baseTokenUri string,
-	mintingpermission MintingPermission,
-	tokenSupplyCap uint64,
-) ClassAttributes {
-	return ClassAttributes{
-		ClassId:           classID,
-		Owner:             owner.String(),
-		BaseTokenUri:      baseTokenUri,
-		MintingPermission: mintingpermission,
-		TokenSupplyCap:    tokenSupplyCap,
+) ClassOwnership {
+	return ClassOwnership{
+		ClassId: classID,
+		Owner:   owner.String(),
 	}
-}
-
-func NewOwningClassIdList(owner sdk.AccAddress) OwningClassIdList {
-	var classIDList []string
-	return OwningClassIdList{Owner: owner.String(), ClassId: classIDList}
-}
-
-func NewClassNameIdList(className string) ClassNameIdList {
-	var classIDList []string
-	return ClassNameIdList{ClassName: className, ClassId: classIDList}
 }

@@ -19,7 +19,7 @@ func (gs GenesisState) Validate() error {
 		return err
 	}
 
-	for _, classAttributes := range gs.ClassAttributesList {
+	for _, classAttributes := range gs.ClassOwnerships {
 		if err := ValidateClassAttributes(classAttributes, gs.Params); err != nil {
 			return err
 		}

@@ -13,8 +13,8 @@ import (
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, nftKeeper types.NftKeeper, gs types.GenesisState) {
 	k.SetParamSet(ctx, gs.Params)
 
-	for _, classAttributes := range gs.ClassAttributesList {
-		if err := InitClassRelatingData(ctx, k, nftKeeper, classAttributes); err != nil {
+	for _, classOwnership := range gs.ClassOwnerships {
+		if err := InitClassRelatingData(ctx, k, nftKeeper, classOwnership); err != nil {
 			panic(err)
 		}
 	}
@@ -30,7 +30,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 	}
 }
 
-func InitClassRelatingData(ctx sdk.Context, k keeper.Keeper, nftKeeper types.NftKeeper, classAttributes types.ClassAttributes) error {
+func InitClassRelatingData(ctx sdk.Context, k keeper.Keeper, nftKeeper types.NftKeeper, classAttributes types.ClassOwnership) error {
 	class, exists := nftKeeper.GetClass(ctx, classAttributes.ClassId)
 	if !exists {
 		return sdkerrors.Wrap(nfttypes.ErrClassNotExists, classAttributes.ClassId)

@@ -2,10 +2,13 @@ package keeper
 
 import (
 	"context"
+	"encoding/json"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/nft"
+
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
 var _ nft.MsgServer = Keeper{}
@@ -28,20 +31,43 @@ func (k Keeper) Send(goCtx context.Context, msg *nft.MsgSend) (*nft.MsgSendRespo
 		return nil, err
 	}
 
+	// Check NftData
 	nftData, found := k.GetNftData(ctx, msg.ClassId, msg.Id)
 	if !found {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unknown NFT %s", msg.Id)
+		return nil, nft.ErrNFTNotExists
 	}
 
 	if nftData.SendDisabled {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Sending NFT %s of class %s is disabled", msg.Id, msg.ClassId)
 	}
 
+	// Check ClassData
+	class, found := k.GetClassData(ctx, msg.ClassId)
+	if !found {
+		return nil, nft.ErrClassNotExists
+	}
+	if class.SendPrehookContract != "" {
+		contractAddr, err := sdk.AccAddressFromBech32(class.SendPrehookContract)
+		if err != nil {
+			return nil, err
+		}
+		address := authtypes.NewModuleAddress(nft.ModuleName)
+		wasmMsg, err := json.Marshal(struct{}{})
+		if err != nil {
+			return nil, err
+		}
+
+		_, err = k.wasmKeeper.Execute(ctx, contractAddr, address, []byte(wasmMsg), sdk.Coins{})
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	if err := k.Transfer(ctx, msg.ClassId, msg.Id, receiver); err != nil {
 		return nil, err
 	}
 
-	ctx.EventManager().EmitTypedEvent(&nft.EventSend{
+	_ = ctx.EventManager().EmitTypedEvent(&nft.EventSend{
 		ClassId:  msg.ClassId,
 		Id:       msg.Id,
 		Sender:   msg.Sender,
