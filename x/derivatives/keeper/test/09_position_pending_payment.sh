@@ -35,6 +35,9 @@ ununifid tx nftbackedloan list derivatives/perpetual_futures/positions 1 \
 
 sleep $sleep
 
+echo "------------check nft send disabled------------"
+ununifid q nft nft derivatives/perpetual_futures/positions 1
+
 echo "------------price change------------"
 ununifid tx pricefeed postprice ubtc:usd 0.020508410211260500 1200 \
 --from=pricefeed --keyring-backend test --chain-id test --yes
@@ -73,6 +76,9 @@ ununifid tx nftbackedloan cancel-listing derivatives/perpetual_futures/positions
 
 sleep $sleep
 
+echo "------------check nft send enabled------------"
+ununifid q nft nft derivatives/perpetual_futures/positions 1
+
 echo "------------close position------------"
 ununifid tx derivatives close-position 1 \
 --from user2 --keyring-backend test --chain-id test --yes
@@ -88,3 +94,6 @@ else
   echo "error: trader ubtc balance is incorrect"
   echo "before closed: $user2_ubtc_balance after closed: $user2_closed_ubtc_balance"
 fi
+
+echo "------------check nft not exist------------"
+ununifid q nft nft derivatives/perpetual_futures/positions 1
