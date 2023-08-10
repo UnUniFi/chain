@@ -7,11 +7,11 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/nft"
 	"github.com/stretchr/testify/suite"
 
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	nftfactorytypes "github.com/UnUniFi/chain/x/nftfactory/types"
 	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
 	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 
@@ -103,19 +103,12 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.keeper = app.DerivativesKeeper
 	suite.pricefeedKeeper = app.PricefeedKeeper
 
-	nftfactoryParams := nftfactorytypes.DefaultParams()
-	app.NftfactoryKeeper.SetParamSet(suite.ctx, nftfactoryParams)
-
-	derivativesAddr := app.DerivativesKeeper.GetModuleAddress()
-	_ = app.NftfactoryKeeper.CreateClass(suite.ctx, "derivatives/perpetual_futures/positions", &nftfactorytypes.MsgCreateClass{
-		Sender:            derivativesAddr.String(),
-		Name:              "derivatives/perpetual_futures/positions",
-		BaseTokenUri:      "ipfs://testcid/",
-		TokenSupplyCap:    100000,
-		MintingPermission: 0,
-		Symbol:            "",
-		Description:       "",
-		ClassUri:          "",
+	_ = app.NFTKeeper.SaveClass(suite.ctx, nft.Class{
+		Id:          "derivatives/perpetual_futures/positions",
+		Name:        "UnUniFi Derivatives Perpetual Futures Positions",
+		Symbol:      "",
+		Description: "",
+		Uri:         "",
 	})
 }
 

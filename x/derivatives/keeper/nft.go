@@ -2,7 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	nft "github.com/cosmos/cosmos-sdk/x/nft"
+	"github.com/cosmos/cosmos-sdk/x/nft"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
