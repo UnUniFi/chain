@@ -14,9 +14,9 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCreateClass{},
 		&MsgUpdateClass{},
-		&MsgSendClassOwnership{},
 		&MsgMintNFT{},
 		&MsgBurnNFT{},
+		&MsgChangeAdmin{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

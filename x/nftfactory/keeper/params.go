@@ -6,14 +6,13 @@ import (
 	"github.com/UnUniFi/chain/x/nftfactory/types"
 )
 
-// GetParamSet returns token params from the global param store
-func (k Keeper) GetParamSet(ctx sdk.Context) types.Params {
-	var p types.Params
-	k.paramSpace.GetParamSet(ctx, &p)
-	return p
+// GetParams returns the total set params.
+func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
+	k.paramSpace.GetParamSet(ctx, &params)
+	return params
 }
 
-// SetParamSet sets token params to the global param store
-func (k Keeper) SetParamSet(ctx sdk.Context, params types.Params) {
+// SetParams sets the total set of params.
+func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	k.paramSpace.SetParamSet(ctx, &params)
 }
