@@ -2,8 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	nftfactorytypes "github.com/UnUniFi/chain/x/nftfactory/types"
+	nft "github.com/cosmos/cosmos-sdk/x/nft"
 
 	"github.com/UnUniFi/chain/x/derivatives/types"
 )
@@ -92,14 +91,13 @@ func (k Keeper) GetAddressNFTOptionPositions(ctx sdk.Context, address sdk.AccAdd
 }
 
 func (k Keeper) MintFuturePositionNFT(ctx sdk.Context, position types.Position) error {
-	moduleAddr := k.GetModuleAddress()
-	msgMintNFT := nftfactorytypes.MsgMintNFT{
-		Sender:    moduleAddr.String(),
-		ClassId:   types.PerpFuturePositionNFTClassId,
-		NftId:     position.Id,
-		Recipient: position.OpenerAddress,
-	}
-	err := k.nftfactoryKeeper.MintNFT(ctx, &msgMintNFT)
+	receiver, err := sdk.AccAddressFromBech32(position.OpenerAddress)
+	err = k.nftKeeper.Mint(ctx, nft.NFT{
+		ClassId: types.PerpFuturePositionNFTClassId,
+		Id:      position.Id,
+		Uri:     "",
+	},
+		receiver)
 	if err != nil {
 		return err
 	}
@@ -120,13 +118,7 @@ func (k Keeper) CloseFuturePositionNFT(ctx sdk.Context, positionId string) error
 }
 
 func (k Keeper) BurnFuturePositionNFT(ctx sdk.Context, positionId string) error {
-	moduleAddr := k.GetModuleAddress()
-	msgBurnNFT := nftfactorytypes.MsgBurnNFT{
-		Sender:  moduleAddr.String(),
-		ClassId: types.PerpFuturePositionNFTClassId,
-		NftId:   positionId,
-	}
-	err := k.nftfactoryKeeper.BurnNFT(ctx, &msgBurnNFT)
+	err := k.nftKeeper.Burn(ctx, types.PerpFuturePositionNFTClassId, positionId)
 	if err != nil {
 		return err
 	}
