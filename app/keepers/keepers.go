@@ -495,7 +495,6 @@ func NewAppKeeper(
 		appKeepers.BankKeeper,
 		appKeepers.PricefeedKeeper,
 		appKeepers.UnUniFiNFTKeeper,
-		appKeepers.NftfactoryKeeper,
 	)
 
 	scopedIcacallbacksKeeper := appKeepers.CapabilityKeeper.ScopeToModule(icacallbackstypes.ModuleName)
