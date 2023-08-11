@@ -26,7 +26,7 @@ func (k Keeper) RewardDistributionOfnftbackedloan(ctx sdk.Context, nftId nftback
 		// emit event to inform the nftId is not associated with recipientContainerId and return
 		_ = ctx.EventManager().EmitTypedEvent(&types.EventNotRecordedNftId{
 			ClassId: nftId.ClassId,
-			NftId:   nftId.NftId,
+			TokenId: nftId.TokenId,
 		})
 
 		// Distribute the reward to the community pool if there's no recipientContainerId associated with the nftId

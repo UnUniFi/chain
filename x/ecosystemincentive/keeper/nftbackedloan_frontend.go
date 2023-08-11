@@ -53,7 +53,7 @@ func (k Keeper) DeleteFrontendRecord(ctx sdk.Context, nftId nftbackedloantypes.N
 	err := ctx.EventManager().EmitTypedEvent(&types.EventDeletedNftIdRecordedForFrontendReward{
 		RecipientContainerId: recipient,
 		ClassId:              nftId.ClassId,
-		NftId:                nftId.NftId,
+		TokenId:              nftId.TokenId,
 	})
 
 	return err

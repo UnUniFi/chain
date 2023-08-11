@@ -27,7 +27,7 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 			testCase: "failure case since incentive unit id was not recorded with nft id",
 			nftId: nftbackedloantypes.NftId{
 				ClassId: "class1",
-				NftId:   "nft1",
+				TokenId: "nft1",
 			},
 			reward:               sdk.Coin{"uguu", sdk.NewInt(100)},
 			recipientContainerId: "recipientContainerId1",
@@ -42,7 +42,7 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 			testCase: "failure case since there's no fee to distribute",
 			nftId: nftbackedloantypes.NftId{
 				ClassId: "class2",
-				NftId:   "nft2",
+				TokenId: "nft2",
 			},
 			reward:               sdk.Coin{"uguu", sdk.NewInt(0)},
 			recipientContainerId: "recipientContainerId1",
@@ -57,7 +57,7 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 			testCase: "ordinal case",
 			nftId: nftbackedloantypes.NftId{
 				ClassId: "class3",
-				NftId:   "nft3",
+				TokenId: "nft3",
 			},
 			reward:               sdk.Coin{"uguu", sdk.NewInt(100)},
 			recipientContainerId: "recipientContainerId3",
@@ -74,7 +74,7 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 			testCase: "ordinal case",
 			nftId: nftbackedloantypes.NftId{
 				ClassId: "class4",
-				NftId:   "nft4",
+				TokenId: "nft4",
 			},
 			reward:               sdk.Coin{"uguu", sdk.NewInt(100)},
 			recipientContainerId: "recipientContainerId4",
@@ -140,7 +140,7 @@ func (suite *KeeperTestSuite) TestAfterNftUnlistedWithoutPayment() {
 			testCase: "ordinal case",
 			nftId: nftbackedloantypes.NftId{
 				ClassId: "class1",
-				NftId:   "nft1",
+				TokenId: "nft1",
 			},
 			recipientContainerId: "recipientContainerId1",
 			subjectAddrs: []string{
@@ -153,7 +153,7 @@ func (suite *KeeperTestSuite) TestAfterNftUnlistedWithoutPayment() {
 			testCase: "not recorded case",
 			nftId: nftbackedloantypes.NftId{
 				ClassId: "class2",
-				NftId:   "nft2",
+				TokenId: "nft2",
 			},
 			recipientContainerId: "recipientContainerId2",
 			subjectAddrs: []string{
