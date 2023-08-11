@@ -187,11 +187,11 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 		Owner:                   owner.String(),
 		State:                   types.ListingState_LISTING,
 		BidDenom:                msg.BidDenom,
-		MinimumDepositRate:      msg.MinimumDepositRate,
+		MinDepositRate:          msg.MinDepositRate,
 		StartedAt:               ctx.BlockTime(),
 		CollectedAmount:         sdk.NewCoin(msg.BidDenom, sdk.ZeroInt()),
 		CollectedAmountNegative: false,
-		MinimumBidPeriod:        msg.MinimumBiddingPeriod,
+		MinBidPeriod:            msg.MinBidPeriod,
 	}
 
 	// disable NFT transfer

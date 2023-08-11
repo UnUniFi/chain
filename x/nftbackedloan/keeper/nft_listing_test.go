@@ -136,18 +136,18 @@ func (suite *KeeperTestSuite) TestListNft() {
 		if tc.listBefore {
 			// use keeper directly to be executed with hooks structs
 			err := keeper.ListNft(suite.ctx, &types.MsgListNft{
-				Sender:             tc.lister.String(),
-				NftId:              types.NftId{ClassId: tc.classId, TokenId: tc.nftId},
-				BidDenom:           tc.BidDenom,
-				MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
+				Sender:         tc.lister.String(),
+				NftId:          types.NftId{ClassId: tc.classId, TokenId: tc.nftId},
+				BidDenom:       tc.BidDenom,
+				MinDepositRate: sdk.MustNewDecFromStr("0.1"),
 			})
 			suite.Require().NoError(err)
 		}
 		err := keeper.ListNft(suite.ctx, &types.MsgListNft{
-			Sender:             tc.lister.String(),
-			NftId:              types.NftId{ClassId: tc.classId, TokenId: tc.nftId},
-			BidDenom:           tc.BidDenom,
-			MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
+			Sender:         tc.lister.String(),
+			NftId:          types.NftId{ClassId: tc.classId, TokenId: tc.nftId},
+			BidDenom:       tc.BidDenom,
+			MinDepositRate: sdk.MustNewDecFromStr("0.1"),
 		})
 
 		if tc.expectPass {
@@ -275,10 +275,10 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 		nftIdentifier := types.NftId{ClassId: tc.classId, TokenId: tc.nftId}
 		if tc.listBefore {
 			err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
-				Sender:             tc.nftOwner.String(),
-				NftId:              nftIdentifier,
-				BidDenom:           "uguu",
-				MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
+				Sender:         tc.nftOwner.String(),
+				NftId:          nftIdentifier,
+				BidDenom:       "uguu",
+				MinDepositRate: sdk.MustNewDecFromStr("0.1"),
 			})
 			suite.Require().NoError(err)
 		}
@@ -375,10 +375,10 @@ func (suite *KeeperTestSuite) TestDeliverSuccessfulBids() {
 
 	nftIdentifier := types.NftId{ClassId: classId, TokenId: nftId}
 	err = suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
-		Sender:             nftOwner.String(),
-		NftId:              nftIdentifier,
-		BidDenom:           "uguu",
-		MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
+		Sender:         nftOwner.String(),
+		NftId:          nftIdentifier,
+		BidDenom:       "uguu",
+		MinDepositRate: sdk.MustNewDecFromStr("0.1"),
 	})
 	suite.Require().NoError(err)
 

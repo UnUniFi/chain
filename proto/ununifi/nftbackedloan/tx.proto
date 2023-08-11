@@ -25,12 +25,12 @@ message MsgListNft {
   string sender    = 1;
   NftId  nft_id    = 2 [(gogoproto.nullable) = false];
   string bid_denom = 3;
-  string minimum_deposit_rate = 4 [
+  string min_deposit_rate = 4 [
     (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable)   = false
   ];
-  google.protobuf.Duration minimum_bidding_period = 5 [(gogoproto.stdduration) = true, (gogoproto.nullable) = false];
+  google.protobuf.Duration min_bid_period = 5 [(gogoproto.stdduration) = true, (gogoproto.nullable) = false];
 }
 message MsgListNftResponse {}
 

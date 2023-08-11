@@ -16,12 +16,12 @@ func (suite *KeeperTestSuite) TestManualBorrow() {
 	bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 	listing := types.Listing{
-		NftId:              types.NftId{ClassId: "class1", TokenId: "nft1"},
-		Owner:              owner.String(),
-		State:              types.ListingState_LISTING,
-		BidDenom:           "uguu",
-		MinimumDepositRate: sdk.NewDecWithPrec(1, 1),
-		StartedAt:          time.Now(),
+		NftId:          types.NftId{ClassId: "class1", TokenId: "nft1"},
+		Owner:          owner.String(),
+		State:          types.ListingState_LISTING,
+		BidDenom:       "uguu",
+		MinDepositRate: sdk.NewDecWithPrec(1, 1),
+		StartedAt:      time.Now(),
 	}
 	msgBid := types.MsgPlaceBid{
 		Sender:           bidder.String(),
@@ -139,10 +139,10 @@ func (suite *KeeperTestSuite) TestManualBorrow() {
 		}, owner)
 
 		err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
-			Sender:             listing.Owner,
-			NftId:              listing.NftId,
-			BidDenom:           listing.BidDenom,
-			MinimumDepositRate: listing.MinimumDepositRate,
+			Sender:         listing.Owner,
+			NftId:          listing.NftId,
+			BidDenom:       listing.BidDenom,
+			MinDepositRate: listing.MinDepositRate,
 		})
 		suite.Require().NoError(err)
 
@@ -170,12 +170,12 @@ func (suite *KeeperTestSuite) TestManualRepay() {
 	bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 	listing := types.Listing{
-		NftId:              types.NftId{ClassId: "class1", TokenId: "nft1"},
-		Owner:              owner.String(),
-		State:              types.ListingState_LISTING,
-		BidDenom:           "uguu",
-		MinimumDepositRate: sdk.NewDecWithPrec(1, 1),
-		StartedAt:          time.Now(),
+		NftId:          types.NftId{ClassId: "class1", TokenId: "nft1"},
+		Owner:          owner.String(),
+		State:          types.ListingState_LISTING,
+		BidDenom:       "uguu",
+		MinDepositRate: sdk.NewDecWithPrec(1, 1),
+		StartedAt:      time.Now(),
 	}
 	msgBid := types.MsgPlaceBid{
 		Sender:           bidder.String(),
@@ -303,10 +303,10 @@ func (suite *KeeperTestSuite) TestManualRepay() {
 		}, owner)
 
 		err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
-			Sender:             listing.Owner,
-			NftId:              listing.NftId,
-			BidDenom:           listing.BidDenom,
-			MinimumDepositRate: listing.MinimumDepositRate,
+			Sender:         listing.Owner,
+			NftId:          listing.NftId,
+			BidDenom:       listing.BidDenom,
+			MinDepositRate: listing.MinDepositRate,
 		})
 		suite.Require().NoError(err)
 
