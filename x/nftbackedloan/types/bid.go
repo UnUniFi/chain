@@ -38,16 +38,16 @@ func (m Bid) GetIdToByte() []byte {
 }
 
 func (m Bid) IsBorrowed() bool {
-	return m.Borrow.Amount.IsPositive()
+	return m.Loan.Amount.IsPositive()
 }
 
 func (m Bid) LiquidationAmount(time time.Time) sdk.Coin {
-	interestAmount := m.CalcCompoundInterest(m.Borrow.Amount, m.Borrow.LastRepaidAt, time)
-	return m.Borrow.Amount.Add(interestAmount)
+	interestAmount := m.CalcCompoundInterest(m.Loan.Amount, m.Loan.LastRepaidAt, time)
+	return m.Loan.Amount.Add(interestAmount)
 }
 
 func (m Bid) CompoundInterest(end time.Time) sdk.Coin {
-	return m.CalcCompoundInterest(m.Borrow.Amount, m.Borrow.LastRepaidAt, end)
+	return m.CalcCompoundInterest(m.Loan.Amount, m.Loan.LastRepaidAt, end)
 }
 
 func (m Bid) CalcCompoundInterest(lendCoin sdk.Coin, startTime time.Time, endTime time.Time) sdk.Coin {
@@ -69,11 +69,11 @@ func (m Bid) CalcCompoundInterest(lendCoin sdk.Coin, startTime time.Time, endTim
 }
 
 func (m Bid) RepayInfo(repayAmount sdk.Coin, repaymentTime time.Time) RepayInfo {
-	interest := m.CalcCompoundInterest(m.Borrow.Amount, m.Borrow.LastRepaidAt, repaymentTime)
-	total := m.Borrow.Amount.Add(interest)
+	interest := m.CalcCompoundInterest(m.Loan.Amount, m.Loan.LastRepaidAt, repaymentTime)
+	total := m.Loan.Amount.Add(interest)
 
 	if repayAmount.IsGTE(total) {
-		remainingAmount := sdk.NewCoin(m.Borrow.Amount.Denom, sdk.ZeroInt())
+		remainingAmount := sdk.NewCoin(m.Loan.Amount.Denom, sdk.ZeroInt())
 		return RepayInfo{
 			RepaidAmount:         total,
 			RepaidInterestAmount: interest,
@@ -92,11 +92,11 @@ func (m Bid) RepayInfo(repayAmount sdk.Coin, repaymentTime time.Time) RepayInfo 
 }
 
 func (m Bid) RepayInfoInFull(repaymentTime time.Time) RepayInfo {
-	m.RepayInfo(m.Borrow.Amount, repaymentTime)
-	interest := m.CalcCompoundInterest(m.Borrow.Amount, m.Borrow.LastRepaidAt, repaymentTime)
-	total := m.Borrow.Amount.Add(interest)
+	m.RepayInfo(m.Loan.Amount, repaymentTime)
+	interest := m.CalcCompoundInterest(m.Loan.Amount, m.Loan.LastRepaidAt, repaymentTime)
+	total := m.Loan.Amount.Add(interest)
 
-	remainingAmount := sdk.NewCoin(m.Borrow.Amount.Denom, sdk.ZeroInt())
+	remainingAmount := sdk.NewCoin(m.Loan.Amount.Denom, sdk.ZeroInt())
 	return RepayInfo{
 		RepaidAmount:         total,
 		RepaidInterestAmount: interest,
@@ -213,9 +213,9 @@ func (m NftBids) TotalBorrowedAmount() sdk.Coin {
 	if len(m) == 0 {
 		return sdk.Coin{}
 	}
-	coin := sdk.NewCoin(m[0].Borrow.Amount.Denom, sdk.ZeroInt())
+	coin := sdk.NewCoin(m[0].Loan.Amount.Denom, sdk.ZeroInt())
 	for _, bid := range m {
-		coin = coin.Add(bid.Borrow.Amount)
+		coin = coin.Add(bid.Loan.Amount)
 	}
 	return coin
 }
@@ -224,9 +224,9 @@ func (m NftBids) TotalCompoundInterest(end time.Time) sdk.Coin {
 	if len(m) == 0 {
 		return sdk.Coin{}
 	}
-	coin := sdk.NewCoin(m[0].Borrow.Amount.Denom, sdk.ZeroInt())
+	coin := sdk.NewCoin(m[0].Loan.Amount.Denom, sdk.ZeroInt())
 	for _, bid := range m {
-		coin = coin.Add(bid.CalcCompoundInterest(bid.Borrow.Amount, bid.Borrow.LastRepaidAt, end))
+		coin = coin.Add(bid.CalcCompoundInterest(bid.Loan.Amount, bid.Loan.LastRepaidAt, end))
 	}
 	return coin
 }

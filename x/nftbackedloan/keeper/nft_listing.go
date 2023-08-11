@@ -191,7 +191,7 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 		StartedAt:               ctx.BlockTime(),
 		CollectedAmount:         sdk.NewCoin(msg.BidDenom, sdk.ZeroInt()),
 		CollectedAmountNegative: false,
-		MinimumBiddingPeriod:    msg.MinimumBiddingPeriod,
+		MinimumBidPeriod:        msg.MinimumBiddingPeriod,
 	}
 
 	// disable NFT transfer
@@ -331,7 +331,7 @@ func (k Keeper) DeliverSuccessfulBids(ctx sdk.Context) {
 		}
 
 		listerProfit := sdk.ZeroInt()
-		repayAmount := bid.Borrow.Amount.Add(bid.CompoundInterest(listing.LiquidatedAt))
+		repayAmount := bid.Loan.Amount.Add(bid.CompoundInterest(listing.LiquidatedAt))
 		bidderPaidAmount := bid.Price
 		listerProfit = listerProfit.Add(bidderPaidAmount.Amount).Sub(repayAmount.Amount)
 		if listing.CollectedAmountNegative {

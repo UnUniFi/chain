@@ -153,8 +153,8 @@ func ExistRepayAmount(bids []Bid, listing Listing) (sdk.Coin, error) {
 	}
 	existRepayAmount := types.NewCoin(listing.BidDenom, sdk.NewInt(0))
 	for _, nftBid := range bids {
-		existInterest := nftBid.CalcCompoundInterest(nftBid.Borrow.Amount, nftBid.Borrow.LastRepaidAt, nftBid.Expiry)
-		existRepayAmount = existRepayAmount.Add(nftBid.Borrow.Amount).Add(existInterest)
+		existInterest := nftBid.CalcCompoundInterest(nftBid.Loan.Amount, nftBid.Loan.LastRepaidAt, nftBid.Expiry)
+		existRepayAmount = existRepayAmount.Add(nftBid.Loan.Amount).Add(existInterest)
 	}
 	return existRepayAmount, nil
 }
@@ -165,8 +165,8 @@ func ExistRepayAmountAtTime(bids []Bid, listing Listing, time time.Time) (sdk.Co
 	}
 	existRepayAmount := types.NewCoin(listing.BidDenom, sdk.NewInt(0))
 	for _, nftBid := range bids {
-		existInterest := nftBid.CalcCompoundInterest(nftBid.Borrow.Amount, nftBid.Borrow.LastRepaidAt, time)
-		existRepayAmount = existRepayAmount.Add(nftBid.Borrow.Amount).Add(existInterest)
+		existInterest := nftBid.CalcCompoundInterest(nftBid.Loan.Amount, nftBid.Loan.LastRepaidAt, time)
+		existRepayAmount = existRepayAmount.Add(nftBid.Loan.Amount).Add(existInterest)
 	}
 	return existRepayAmount, nil
 }
@@ -178,10 +178,10 @@ func ExistRepayAmountAtLiquidation(bids []Bid, listing Listing, liquidationTime 
 	existRepayAmount := types.NewCoin(listing.BidDenom, sdk.NewInt(0))
 	for _, nftBid := range bids {
 		if nftBid.IsPaidSalePrice() {
-			existInterest := nftBid.CalcCompoundInterest(nftBid.Borrow.Amount, nftBid.Borrow.LastRepaidAt, liquidationTime)
-			existRepayAmount = existRepayAmount.Add(nftBid.Borrow.Amount).Add(existInterest)
+			existInterest := nftBid.CalcCompoundInterest(nftBid.Loan.Amount, nftBid.Loan.LastRepaidAt, liquidationTime)
+			existRepayAmount = existRepayAmount.Add(nftBid.Loan.Amount).Add(existInterest)
 		}
-		existRepayAmount = existRepayAmount.Add(nftBid.Borrow.Amount)
+		existRepayAmount = existRepayAmount.Add(nftBid.Loan.Amount)
 	}
 	return existRepayAmount, nil
 }
