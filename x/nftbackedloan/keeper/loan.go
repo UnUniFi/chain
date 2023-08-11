@@ -18,7 +18,7 @@ func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
 	// if re-borrow, repay all borrowed bids
 	borrowedBid := types.NftBids{}
 	for _, bid := range bids {
-		if bid.Borrow.Amount.IsPositive() {
+		if bid.Loan.Amount.IsPositive() {
 			borrowedBid = append(borrowedBid, bid)
 		}
 	}
@@ -62,12 +62,12 @@ func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftId, borrows []types.B
 		}
 		deposit := bid.Deposit
 		if borrow.Amount.IsGTE(deposit) {
-			bid.Borrow.Amount = deposit
-			bid.Borrow.LastRepaidAt = ctx.BlockTime()
+			bid.Loan.Amount = deposit
+			bid.Loan.LastRepaidAt = ctx.BlockTime()
 			borrowedAmount = borrowedAmount.Add(deposit)
 		} else {
-			bid.Borrow.Amount = borrow.Amount
-			bid.Borrow.LastRepaidAt = ctx.BlockTime()
+			bid.Loan.Amount = borrow.Amount
+			bid.Loan.LastRepaidAt = ctx.BlockTime()
 			borrowedAmount = borrowedAmount.Add(borrow.Amount)
 		}
 		err = k.SetBid(ctx, bid)
@@ -143,13 +143,13 @@ func (k Keeper) ManualRepay(ctx sdk.Context, nft types.NftId, repays []types.Bor
 			return err
 		}
 
-		if bid.Borrow.Amount.IsZero() {
+		if bid.Loan.Amount.IsZero() {
 			continue
 		}
 
 		repaidResult := bid.RepayInfo(repay.Amount, ctx.BlockTime())
-		bid.Borrow.Amount = repaidResult.RemainingAmount
-		bid.Borrow.LastRepaidAt = repaidResult.LastRepaidAt
+		bid.Loan.Amount = repaidResult.RemainingAmount
+		bid.Loan.LastRepaidAt = repaidResult.LastRepaidAt
 		repaidAmount = repaidAmount.Add(repaidResult.RepaidAmount)
 
 		err = k.SetBid(ctx, bid)
@@ -204,13 +204,13 @@ func (k Keeper) AutoRepay(ctx sdk.Context, nft types.NftId, bids types.NftBids, 
 
 	repaidAmount := sdk.NewCoin(listing.BidDenom, sdk.ZeroInt())
 	for _, bid := range bids {
-		if bid.Borrow.Amount.IsZero() {
+		if bid.Loan.Amount.IsZero() {
 			continue
 		}
 
 		repaidInfo := bid.RepayInfoInFull(ctx.BlockTime())
-		bid.Borrow.Amount = repaidInfo.RemainingAmount
-		bid.Borrow.LastRepaidAt = repaidInfo.LastRepaidAt
+		bid.Loan.Amount = repaidInfo.RemainingAmount
+		bid.Loan.LastRepaidAt = repaidInfo.LastRepaidAt
 		repaidAmount = repaidAmount.Add(repaidInfo.RepaidAmount)
 
 		err = k.SetBid(ctx, bid)

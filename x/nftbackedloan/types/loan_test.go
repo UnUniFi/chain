@@ -121,7 +121,7 @@ func TestLiquidationBid(t *testing.T) {
 					Deposit:      sdk.NewInt64Coin("uatom", 30),
 					PaidAmount:   sdk.NewInt64Coin("uatom", 70),
 					InterestRate: sdk.NewDecWithPrec(1, 1),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 20),
 						LastRepaidAt: now,
 					},
@@ -153,7 +153,7 @@ func TestLiquidationBid(t *testing.T) {
 					Deposit:      sdk.NewInt64Coin("uatom", 30),
 					PaidAmount:   sdk.NewInt64Coin("uatom", 0),
 					InterestRate: sdk.NewDecWithPrec(1, 1),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 20),
 						LastRepaidAt: now,
 					},
@@ -177,7 +177,7 @@ func TestLiquidationBid(t *testing.T) {
 					Deposit:      sdk.NewInt64Coin("uatom", 30),
 					PaidAmount:   sdk.NewInt64Coin("uatom", 70),
 					InterestRate: sdk.NewDecWithPrec(1, 1),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 20),
 						LastRepaidAt: now,
 					},
@@ -194,7 +194,7 @@ func TestLiquidationBid(t *testing.T) {
 					Deposit:      sdk.NewInt64Coin("uatom", 50),
 					PaidAmount:   sdk.NewInt64Coin("uatom", 150),
 					InterestRate: sdk.NewDecWithPrec(1, 1),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 30),
 						LastRepaidAt: now,
 					},
@@ -226,7 +226,7 @@ func TestLiquidationBid(t *testing.T) {
 					Deposit:      sdk.NewInt64Coin("uatom", 30),
 					PaidAmount:   sdk.NewInt64Coin("uatom", 70),
 					InterestRate: sdk.NewDecWithPrec(1, 1),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 20),
 						LastRepaidAt: now,
 					},
@@ -243,7 +243,7 @@ func TestLiquidationBid(t *testing.T) {
 					Deposit:      sdk.NewInt64Coin("uatom", 50),
 					PaidAmount:   sdk.NewInt64Coin("uatom", 0),
 					InterestRate: sdk.NewDecWithPrec(1, 1),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 30),
 						LastRepaidAt: now,
 					},
@@ -275,7 +275,7 @@ func TestLiquidationBid(t *testing.T) {
 					Deposit:      sdk.NewInt64Coin("uatom", 40),
 					PaidAmount:   sdk.NewInt64Coin("uatom", 60),
 					InterestRate: sdk.NewDecWithPrec(1, 1),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 15),
 						LastRepaidAt: now,
 					},
@@ -292,7 +292,7 @@ func TestLiquidationBid(t *testing.T) {
 					Deposit:      sdk.NewInt64Coin("uatom", 20),
 					PaidAmount:   sdk.NewInt64Coin("uatom", 0),
 					InterestRate: sdk.NewDecWithPrec(1, 1),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 20),
 						LastRepaidAt: now,
 					},
@@ -324,7 +324,7 @@ func TestLiquidationBid(t *testing.T) {
 					Deposit:      sdk.NewInt64Coin("uatom", 30),
 					PaidAmount:   sdk.NewInt64Coin("uatom", 0),
 					InterestRate: sdk.NewDecWithPrec(1, 1),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 20),
 						LastRepaidAt: now,
 					},
@@ -341,7 +341,7 @@ func TestLiquidationBid(t *testing.T) {
 					Deposit:      sdk.NewInt64Coin("uatom", 50),
 					PaidAmount:   sdk.NewInt64Coin("uatom", 0),
 					InterestRate: sdk.NewDecWithPrec(1, 1),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 40),
 						LastRepaidAt: now,
 					},
@@ -365,7 +365,7 @@ func TestLiquidationBid(t *testing.T) {
 					Deposit:      sdk.NewInt64Coin("uatom", 100),
 					PaidAmount:   sdk.NewInt64Coin("uatom", 0),
 					InterestRate: sdk.NewDecWithPrec(1, 1),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 100),
 						LastRepaidAt: now,
 					},
@@ -382,7 +382,7 @@ func TestLiquidationBid(t *testing.T) {
 					Deposit:      sdk.NewInt64Coin("uatom", 50),
 					PaidAmount:   sdk.NewInt64Coin("uatom", 0),
 					InterestRate: sdk.NewDecWithPrec(1, 1),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 50),
 						LastRepaidAt: now,
 					},
@@ -406,7 +406,7 @@ func TestLiquidationBid(t *testing.T) {
 					Deposit:      sdk.NewInt64Coin("uatom", 60),
 					PaidAmount:   sdk.NewInt64Coin("uatom", 40),
 					InterestRate: sdk.NewDecWithPrec(1, 1),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 60),
 						LastRepaidAt: now,
 					},
@@ -423,7 +423,7 @@ func TestLiquidationBid(t *testing.T) {
 					Deposit:      sdk.NewInt64Coin("uatom", 40),
 					PaidAmount:   sdk.NewInt64Coin("uatom", 50),
 					InterestRate: sdk.NewDecWithPrec(1, 1),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 40),
 						LastRepaidAt: now,
 					},
@@ -685,7 +685,7 @@ func TestExistRepayAmount(t *testing.T) {
 					InterestRate: sdk.NewDecWithPrec(1, 1),
 					// Additional 1 minute for time error correction
 					Expiry: nextMonth,
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 20000000),
 						LastRepaidAt: now,
 					},
@@ -710,7 +710,7 @@ func TestExistRepayAmount(t *testing.T) {
 					InterestRate: sdk.NewDecWithPrec(1, 1),
 					// Additional 1 minute for time error correction
 					Expiry: nextMonth,
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 20000000),
 						LastRepaidAt: now,
 					},
@@ -728,7 +728,7 @@ func TestExistRepayAmount(t *testing.T) {
 					InterestRate: sdk.NewDecWithPrec(1, 1),
 					// Additional 1 minute for time error correction
 					Expiry: nextMonth,
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 40000000),
 						LastRepaidAt: now,
 					},
@@ -943,7 +943,7 @@ func TestIsAbleToCancelBid(t *testing.T) {
 					Deposit:      sdk.NewInt64Coin("uatom", 30000000),
 					InterestRate: sdk.NewDecWithPrec(5, 2), // 5%
 					Expiry:       now.Add(time.Hour * 72),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 0),
 						LastRepaidAt: now,
 					},
@@ -960,7 +960,7 @@ func TestIsAbleToCancelBid(t *testing.T) {
 					Deposit:      sdk.NewInt64Coin("uatom", 80000000),
 					InterestRate: sdk.NewDecWithPrec(1, 1), // 10%
 					Expiry:       now.Add(time.Hour * 24),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 0),
 						LastRepaidAt: now,
 					},
@@ -990,7 +990,7 @@ func TestIsAbleToCancelBid(t *testing.T) {
 					Deposit:      sdk.NewInt64Coin("uatom", 30000000),
 					InterestRate: sdk.NewDecWithPrec(5, 2), // 5%
 					Expiry:       now.Add(time.Hour * 72),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewInt64Coin("uatom", 0),
 						LastRepaidAt: now,
 					},
@@ -1007,7 +1007,7 @@ func TestIsAbleToCancelBid(t *testing.T) {
 					Deposit:      sdk.NewInt64Coin("uatom", 80000000),
 					InterestRate: sdk.NewDecWithPrec(1, 1), // 10%
 					Expiry:       now.Add(time.Hour * 24),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						// borrow 100% of deposit
 						Amount:       sdk.NewInt64Coin("uatom", 80000000),
 						LastRepaidAt: now,
@@ -1053,7 +1053,7 @@ func TestIsAbleToReBid(t *testing.T) {
 			Deposit:      sdk.NewInt64Coin("uatom", 30000000),
 			InterestRate: sdk.NewDecWithPrec(5, 2), // 5%
 			Expiry:       now.Add(time.Hour * 72),
-			Borrow: types.Borrowing{
+			Loan: types.Loan{
 				Amount:       sdk.NewInt64Coin("uatom", 0),
 				LastRepaidAt: now,
 			},
@@ -1070,7 +1070,7 @@ func TestIsAbleToReBid(t *testing.T) {
 			Deposit:      sdk.NewInt64Coin("uatom", 70000000),
 			InterestRate: sdk.NewDecWithPrec(1, 1), // 10%
 			Expiry:       now.Add(time.Hour * 24),
-			Borrow: types.Borrowing{
+			Loan: types.Loan{
 				Amount:       sdk.NewInt64Coin("uatom", 70000000),
 				LastRepaidAt: now,
 			},
@@ -1087,7 +1087,7 @@ func TestIsAbleToReBid(t *testing.T) {
 			Deposit:      sdk.NewInt64Coin("uatom", 80000000),
 			InterestRate: sdk.NewDecWithPrec(1, 1), // 10%
 			Expiry:       now.Add(time.Hour * 24),
-			Borrow: types.Borrowing{
+			Loan: types.Loan{
 				// borrow 100% of deposit
 				Amount:       sdk.NewInt64Coin("uatom", 80000000),
 				LastRepaidAt: now,
@@ -1122,7 +1122,7 @@ func TestIsAbleToReBid(t *testing.T) {
 				Deposit:      sdk.NewInt64Coin("uatom", 50000000),
 				InterestRate: sdk.NewDecWithPrec(5, 2), // 5%
 				Expiry:       now.Add(time.Hour * 72),
-				Borrow: types.Borrowing{
+				Loan: types.Loan{
 					Amount:       sdk.NewInt64Coin("uatom", 0),
 					LastRepaidAt: now,
 				},
@@ -1150,7 +1150,7 @@ func TestIsAbleToReBid(t *testing.T) {
 				Deposit:      sdk.NewInt64Coin("uatom", 50),
 				InterestRate: sdk.NewDecWithPrec(5, 3), // 0.5%
 				Expiry:       now.Add(time.Hour * 72),
-				Borrow: types.Borrowing{
+				Loan: types.Loan{
 					Amount:       sdk.NewInt64Coin("uatom", 0),
 					LastRepaidAt: now,
 				},

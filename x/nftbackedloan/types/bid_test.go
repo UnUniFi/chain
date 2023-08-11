@@ -26,7 +26,7 @@ func TestIsBorrowed(t *testing.T) {
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
-				Borrow: types.Borrowing{
+				Loan: types.Loan{
 					Amount:       sdk.NewCoin("uguu", sdk.NewInt(100)),
 					LastRepaidAt: time.Now(),
 				},
@@ -43,7 +43,7 @@ func TestIsBorrowed(t *testing.T) {
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
-				Borrow: types.Borrowing{
+				Loan: types.Loan{
 					Amount:       sdk.NewCoin("uguu", sdk.NewInt(0)),
 					LastRepaidAt: time.Now(),
 				},
@@ -83,7 +83,7 @@ func TestCalcCompoundInterest(t *testing.T) {
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
 				InterestRate: sdk.NewDecWithPrec(1, 1),
-				Borrow: types.Borrowing{
+				Loan: types.Loan{
 					Amount:       sdk.NewCoin("uguu", sdk.NewInt(10000000)),
 					LastRepaidAt: now,
 				},
@@ -105,7 +105,7 @@ func TestCalcCompoundInterest(t *testing.T) {
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
 				InterestRate: sdk.NewDecWithPrec(1, 1),
-				Borrow: types.Borrowing{
+				Loan: types.Loan{
 					Amount:       sdk.NewCoin("uguu", sdk.NewInt(10000000)),
 					LastRepaidAt: now,
 				},
@@ -147,7 +147,7 @@ func TestRepayInfo(t *testing.T) {
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
 				InterestRate: sdk.NewDecWithPrec(1, 1),
-				Borrow: types.Borrowing{
+				Loan: types.Loan{
 					Amount:       sdk.NewCoin("uguu", sdk.NewInt(1000000)),
 					LastRepaidAt: now,
 				},
@@ -173,7 +173,7 @@ func TestRepayInfo(t *testing.T) {
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
 				InterestRate: sdk.NewDecWithPrec(1, 1),
-				Borrow: types.Borrowing{
+				Loan: types.Loan{
 					Amount:       sdk.NewCoin("uguu", sdk.NewInt(1000000)),
 					LastRepaidAt: now,
 				},
@@ -255,12 +255,12 @@ func TestTotalBorrowedAmount(t *testing.T) {
 			"Total borrow amount",
 			types.NftBids{
 				types.Bid{
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount: sdk.NewCoin("uguu", sdk.NewInt(1000000)),
 					},
 				},
 				types.Bid{
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount: sdk.NewCoin("uguu", sdk.NewInt(2000000)),
 					},
 				},
@@ -290,14 +290,14 @@ func TestTotalCompoundInterest(t *testing.T) {
 			types.NftBids{
 				types.Bid{
 					InterestRate: sdk.NewDecWithPrec(1, 1),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewCoin("uguu", sdk.NewInt(1000000)),
 						LastRepaidAt: now,
 					},
 				},
 				types.Bid{
 					InterestRate: sdk.NewDecWithPrec(2, 1),
-					Borrow: types.Borrowing{
+					Loan: types.Loan{
 						Amount:       sdk.NewCoin("uguu", sdk.NewInt(1000000)),
 						LastRepaidAt: now,
 					},

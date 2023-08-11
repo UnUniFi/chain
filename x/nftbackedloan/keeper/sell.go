@@ -93,7 +93,7 @@ func (k Keeper) RunSellingDecisionProcess(ctx sdk.Context, bids types.NftBids, l
 	}
 	// if winner bidder did not pay remainder, nft is listed again after deleting winner bidder
 	if !highestBid.IsPaidSalePrice() {
-		borrowedAmount := highestBid.Borrow.Amount
+		borrowedAmount := highestBid.Loan.Amount
 		forfeitedDeposit, err := k.SafeCloseBidCollectDeposit(ctx, highestBid)
 		if err != nil {
 			return err

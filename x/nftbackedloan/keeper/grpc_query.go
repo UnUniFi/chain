@@ -221,7 +221,7 @@ func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.Que
 
 	for _, v := range bids {
 		deposits = deposits.Add(v.Deposit)
-		borrows = borrows.Add(v.Borrow.Amount)
+		borrows = borrows.Add(v.Loan.Amount)
 	}
 
 	return &types.QueryLoanResponse{
@@ -283,7 +283,7 @@ func (k Keeper) Liquidation(c context.Context, req *types.QueryLiquidationReques
 	afterAnHour := ctx.BlockTime().Add(time.Hour)
 
 	for _, bid := range bids {
-		if bid.Borrow.Amount.Amount.Equal(sdk.ZeroInt()) {
+		if bid.Loan.Amount.Amount.Equal(sdk.ZeroInt()) {
 			continue
 		}
 

@@ -134,7 +134,7 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 	}
 
 	// todo add test case
-	minimumBiddingPeriodHour := time.Now().Add(listing.MinimumBiddingPeriod)
+	minimumBiddingPeriodHour := time.Now().Add(listing.MinimumBidPeriod)
 	if msg.Expiry.Before(minimumBiddingPeriodHour) {
 		return types.ErrSmallExpiryPeriod
 	}
@@ -154,7 +154,7 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 		InterestRate:     msg.InterestRate,
 		AutomaticPayment: msg.AutomaticPayment,
 		CreatedAt:        ctx.BlockTime(),
-		Borrow:           types.Borrowing{Amount: sdk.NewCoin(listing.BidDenom, sdk.ZeroInt()), LastRepaidAt: ctx.BlockTime()},
+		Loan:             types.Loan{Amount: sdk.NewCoin(listing.BidDenom, sdk.ZeroInt()), LastRepaidAt: ctx.BlockTime()},
 	}
 
 	if !oldBid.IsNil() {
