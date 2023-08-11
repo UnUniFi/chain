@@ -16,12 +16,12 @@ func (suite *KeeperTestSuite) TestPlaceBid() {
 	bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 	listing := types.Listing{
-		NftId:              types.NftId{ClassId: "class1", TokenId: "nft1"},
-		Owner:              owner.String(),
-		State:              types.ListingState_LISTING,
-		BidDenom:           "uguu",
-		MinimumDepositRate: sdk.NewDecWithPrec(1, 1),
-		StartedAt:          time.Now(),
+		NftId:          types.NftId{ClassId: "class1", TokenId: "nft1"},
+		Owner:          owner.String(),
+		State:          types.ListingState_LISTING,
+		BidDenom:       "uguu",
+		MinDepositRate: sdk.NewDecWithPrec(1, 1),
+		StartedAt:      time.Now(),
 	}
 
 	tests := []struct {
@@ -93,10 +93,10 @@ func (suite *KeeperTestSuite) TestPlaceBid() {
 		}, owner)
 
 		err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
-			Sender:             listing.Owner,
-			NftId:              listing.NftId,
-			BidDenom:           listing.BidDenom,
-			MinimumDepositRate: listing.MinimumDepositRate,
+			Sender:         listing.Owner,
+			NftId:          listing.NftId,
+			BidDenom:       listing.BidDenom,
+			MinDepositRate: listing.MinDepositRate,
 		})
 		suite.Require().NoError(err)
 
@@ -120,12 +120,12 @@ func (suite *KeeperTestSuite) TestSafeCloseBid() {
 	bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 	listing := types.Listing{
-		NftId:              types.NftId{ClassId: "class1", TokenId: "nft1"},
-		Owner:              owner.String(),
-		State:              types.ListingState_LISTING,
-		BidDenom:           "uguu",
-		MinimumDepositRate: sdk.NewDecWithPrec(1, 1),
-		StartedAt:          time.Now(),
+		NftId:          types.NftId{ClassId: "class1", TokenId: "nft1"},
+		Owner:          owner.String(),
+		State:          types.ListingState_LISTING,
+		BidDenom:       "uguu",
+		MinDepositRate: sdk.NewDecWithPrec(1, 1),
+		StartedAt:      time.Now(),
 	}
 
 	tests := []struct {
@@ -171,10 +171,10 @@ func (suite *KeeperTestSuite) TestSafeCloseBid() {
 		}, owner)
 
 		err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
-			Sender:             listing.Owner,
-			NftId:              listing.NftId,
-			BidDenom:           listing.BidDenom,
-			MinimumDepositRate: listing.MinimumDepositRate,
+			Sender:         listing.Owner,
+			NftId:          listing.NftId,
+			BidDenom:       listing.BidDenom,
+			MinDepositRate: listing.MinDepositRate,
 		})
 		suite.Require().NoError(err)
 
@@ -202,12 +202,12 @@ func (suite *KeeperTestSuite) TestPayRemainder() {
 	bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 	listing := types.Listing{
-		NftId:              types.NftId{ClassId: "class1", TokenId: "nft1"},
-		Owner:              owner.String(),
-		State:              types.ListingState_LISTING,
-		BidDenom:           "uguu",
-		MinimumDepositRate: sdk.NewDecWithPrec(1, 1),
-		StartedAt:          time.Now(),
+		NftId:          types.NftId{ClassId: "class1", TokenId: "nft1"},
+		Owner:          owner.String(),
+		State:          types.ListingState_LISTING,
+		BidDenom:       "uguu",
+		MinDepositRate: sdk.NewDecWithPrec(1, 1),
+		StartedAt:      time.Now(),
 	}
 
 	tests := []struct {
@@ -255,10 +255,10 @@ func (suite *KeeperTestSuite) TestPayRemainder() {
 		}, owner)
 
 		err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
-			Sender:             listing.Owner,
-			NftId:              listing.NftId,
-			BidDenom:           listing.BidDenom,
-			MinimumDepositRate: listing.MinimumDepositRate,
+			Sender:         listing.Owner,
+			NftId:          listing.NftId,
+			BidDenom:       listing.BidDenom,
+			MinDepositRate: listing.MinDepositRate,
 		})
 		suite.Require().NoError(err)
 

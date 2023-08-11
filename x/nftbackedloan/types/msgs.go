@@ -11,13 +11,13 @@ var _ sdk.Msg = &MsgListNft{}
 
 // todo: Implementation fields
 // BidToken, MinBid, BidHook, ListingType
-func NewMsgListNft(sender string, nftId NftId, bidDenom string, minimumDepositRate sdk.Dec, minBiddingPeriod time.Duration) MsgListNft {
+func NewMsgListNft(sender string, nftId NftId, bidDenom string, minDepositRate sdk.Dec, minBidPeriod time.Duration) MsgListNft {
 	return MsgListNft{
-		Sender:               sender,
-		NftId:                nftId,
-		BidDenom:             bidDenom,
-		MinimumDepositRate:   minimumDepositRate,
-		MinimumBiddingPeriod: minBiddingPeriod,
+		Sender:         sender,
+		NftId:          nftId,
+		BidDenom:       bidDenom,
+		MinDepositRate: minDepositRate,
+		MinBidPeriod:   minBidPeriod,
 	}
 }
 

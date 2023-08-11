@@ -128,13 +128,13 @@ func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 	}
 
 	// check over min_deposit_rate
-	minDeposit := listing.MinimumDepositRate.Mul(sdk.NewDecFromInt(msg.Price.Amount)).TruncateInt()
+	minDeposit := listing.MinDepositRate.Mul(sdk.NewDecFromInt(msg.Price.Amount)).TruncateInt()
 	if msg.Deposit.Amount.LT(minDeposit) {
 		return types.ErrInvalidDepositAmount
 	}
 
 	// todo add test case
-	minimumBiddingPeriodHour := time.Now().Add(listing.MinimumBidPeriod)
+	minimumBiddingPeriodHour := time.Now().Add(listing.MinBidPeriod)
 	if msg.Expiry.Before(minimumBiddingPeriodHour) {
 		return types.ErrSmallExpiryPeriod
 	}
