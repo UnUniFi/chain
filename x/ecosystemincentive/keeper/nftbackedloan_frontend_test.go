@@ -59,7 +59,7 @@ func (suite *KeeperTestSuite) TestRecordIncentiveUnitIdWithNftId() {
 	for _, test := range tests {
 		nftId := nftbackedloantypes.NftId{
 			ClassId: test.classId,
-			NftId:   test.nftId,
+			TokenId: test.nftId,
 		}
 
 		if test.registerBefore {
@@ -111,7 +111,7 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 			fee:                  sdk.Coin{},
 			nftId: nftbackedloantypes.NftId{
 				ClassId: "class2",
-				NftId:   "nft2",
+				TokenId: "nft2",
 			},
 			expect:          false,
 			record:          false,
@@ -129,7 +129,7 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 			},
 			nftId: nftbackedloantypes.NftId{
 				ClassId: "class1",
-				NftId:   "nft1",
+				TokenId: "nft1",
 			},
 			expect:          true,
 			record:          true,
@@ -150,7 +150,7 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 			fee: sdk.Coin{Denom: "uguu", Amount: math.NewInt(1000)},
 			nftId: nftbackedloantypes.NftId{
 				ClassId: "class2",
-				NftId:   "nft2",
+				TokenId: "nft2",
 			},
 			expect:          true,
 			record:          true,
@@ -168,7 +168,7 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 			},
 			nftId: nftbackedloantypes.NftId{
 				ClassId: "class3",
-				NftId:   "nft3",
+				TokenId: "nft3",
 			},
 			rewardAmount:    math.NewInt(500),
 			expect:          true,
