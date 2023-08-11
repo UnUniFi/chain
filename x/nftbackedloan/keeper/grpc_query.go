@@ -64,10 +64,10 @@ func (k Keeper) ListedNfts(c context.Context, req *types.QueryListedNftsRequest)
 
 }
 
-func (k Keeper) GetNftListingDetails(ctx sdk.Context, listings []types.NftListing) ([]types.NftListingDetail, error) {
+func (k Keeper) GetNftListingDetails(ctx sdk.Context, listings []types.Listing) ([]types.NftListingDetail, error) {
 	res := []types.NftListingDetail{}
 	for _, v := range listings {
-		nftInfo, found := k.nftKeeper.GetNFT(ctx, v.NftId.ClassId, v.NftId.NftId)
+		nftInfo, found := k.nftKeeper.GetNFT(ctx, v.NftId.ClassId, v.NftId.TokenId)
 		if !found {
 			return []types.NftListingDetail{}, types.ErrNftDoesNotExists
 		}
@@ -189,9 +189,9 @@ func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.Que
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
-	nftId := types.NftIdentifier{
+	nftId := types.NftId{
 		ClassId: req.ClassId,
-		NftId:   req.NftId,
+		TokenId: req.NftId,
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 	listing, err := k.GetNftListingByIdBytes(ctx, nftId.IdBytes())

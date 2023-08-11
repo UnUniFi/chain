@@ -18,7 +18,7 @@ func (k Keeper) SetLiquidation(ctx sdk.Context, msg *types.MsgEndNftListing) err
 	}
 
 	// Check nft exists
-	_, found := k.nftKeeper.GetNFT(ctx, msg.NftId.ClassId, msg.NftId.NftId)
+	_, found := k.nftKeeper.GetNFT(ctx, msg.NftId.ClassId, msg.NftId.TokenId)
 	if !found {
 		return types.ErrNftDoesNotExists
 	}
@@ -37,12 +37,12 @@ func (k Keeper) SetLiquidation(ctx sdk.Context, msg *types.MsgEndNftListing) err
 	if len(bids) == 0 {
 
 		// enable NFT transfer
-		data, found := k.nftKeeper.GetNftData(ctx, msg.NftId.ClassId, msg.NftId.NftId)
+		data, found := k.nftKeeper.GetNftData(ctx, msg.NftId.ClassId, msg.NftId.TokenId)
 		if !found {
 			return types.ErrNftDoesNotExists
 		}
 		data.SendDisabled = false
-		err := k.nftKeeper.SetNftData(ctx, msg.NftId.ClassId, msg.NftId.NftId, data)
+		err := k.nftKeeper.SetNftData(ctx, msg.NftId.ClassId, msg.NftId.TokenId, data)
 		if err != nil {
 			return err
 		}
@@ -87,10 +87,10 @@ func (k Keeper) SetLiquidation(ctx sdk.Context, msg *types.MsgEndNftListing) err
 	}
 
 	// Emit event for nft listing end
-	_ = ctx.EventManager().EmitTypedEvent(&types.EventEndListingNft{
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventEndListing{
 		Owner:   msg.Sender,
 		ClassId: msg.NftId.ClassId,
-		NftId:   msg.NftId.NftId,
+		TokenId: msg.NftId.TokenId,
 	})
 
 	return nil
@@ -103,7 +103,7 @@ func (k Keeper) LiquidateExpiredBids(ctx sdk.Context) {
 	fmt.Println("---expired bids---")
 	fmt.Println(bids)
 	k.DeleteBidsWithoutBorrowing(ctx, bids)
-	checkListingsWithBorrowedBids := map[types.NftListing][]types.NftBid{}
+	checkListingsWithBorrowedBids := map[types.Listing][]types.Bid{}
 	for _, bid := range bids {
 		if !bid.IsBorrowed() {
 			continue
@@ -139,7 +139,7 @@ func (k Keeper) LiquidateExpiredBids(ctx sdk.Context) {
 	}
 }
 
-func (k Keeper) RunLiquidationProcess(ctx sdk.Context, bids types.NftBids, listing types.NftListing, params types.Params) error {
+func (k Keeper) RunLiquidationProcess(ctx sdk.Context, bids types.NftBids, listing types.Listing, params types.Params) error {
 	// loop to find winner bid (collect deposits + bid amount > repay amount)
 	bidsSortedByDeposit := bids.SortHigherDeposit()
 	winnerBid, forfeitedBids, refundBids, err := types.LiquidationBid(bidsSortedByDeposit, listing, listing.LiquidatedAt)
@@ -173,7 +173,7 @@ func (k Keeper) RunLiquidationProcess(ctx sdk.Context, bids types.NftBids, listi
 }
 
 // todo add test
-func (k Keeper) LiquidateWithoutWinner(ctx sdk.Context, bids types.NftBids, listing types.NftListing) error {
+func (k Keeper) LiquidateWithoutWinner(ctx sdk.Context, bids types.NftBids, listing types.Listing) error {
 	listingOwner, err := sdk.AccAddressFromBech32(listing.Owner)
 	if err != nil {
 		return err
@@ -201,12 +201,12 @@ func (k Keeper) LiquidateWithoutWinner(ctx sdk.Context, bids types.NftBids, list
 	}
 
 	// enable NFT transfer
-	data, found := k.nftKeeper.GetNftData(ctx, listing.NftId.ClassId, listing.NftId.NftId)
+	data, found := k.nftKeeper.GetNftData(ctx, listing.NftId.ClassId, listing.NftId.TokenId)
 	if !found {
 		return types.ErrNftDoesNotExists
 	}
 	data.SendDisabled = false
-	err = k.nftKeeper.SetNftData(ctx, listing.NftId.ClassId, listing.NftId.NftId, data)
+	err = k.nftKeeper.SetNftData(ctx, listing.NftId.ClassId, listing.NftId.TokenId, data)
 	if err != nil {
 		return err
 	}
@@ -214,7 +214,7 @@ func (k Keeper) LiquidateWithoutWinner(ctx sdk.Context, bids types.NftBids, list
 }
 
 // todo add test
-func (k Keeper) LiquidateWithWinner(ctx sdk.Context, forfeitedBids, refundBids types.NftBids, listing types.NftListing) error {
+func (k Keeper) LiquidateWithWinner(ctx sdk.Context, forfeitedBids, refundBids types.NftBids, listing types.Listing) error {
 	forfeitedDeposit, err := k.ForfeitDepositsFromBids(ctx, forfeitedBids, listing)
 	if err != nil {
 		fmt.Println("failed to collect deposit from bids: %w", err)
@@ -257,7 +257,7 @@ func (k Keeper) RefundBids(ctx sdk.Context, refundBids types.NftBids, time time.
 }
 
 // todo add test
-func (k Keeper) ForfeitDepositsFromBids(ctx sdk.Context, bids types.NftBids, listing types.NftListing) (sdk.Coin, error) {
+func (k Keeper) ForfeitDepositsFromBids(ctx sdk.Context, bids types.NftBids, listing types.Listing) (sdk.Coin, error) {
 	result := sdk.NewCoin(listing.BidDenom, sdk.ZeroInt())
 	for _, bid := range bids {
 		// not pay bidder amount, collected deposit

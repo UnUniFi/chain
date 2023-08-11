@@ -11,9 +11,8 @@ import "cosmos_proto/cosmos.proto";
 option go_package = "github.com/UnUniFi/chain/x/nftbackedloan/types";
 
 service Msg {
-  rpc MintNft(MsgMintNft) returns (MsgMintNftResponse);
   rpc ListNft(MsgListNft) returns (MsgListNftResponse);
-  rpc CancelNftListing(MsgCancelNftListing) returns (MsgCancelNftListingResponse);
+  rpc CancelListing(MsgCancelListing) returns (MsgCancelListingResponse);
   rpc PlaceBid(MsgPlaceBid) returns (MsgPlaceBidResponse);
   rpc CancelBid(MsgCancelBid) returns (MsgCancelBidResponse);
   rpc SellingDecision(MsgSellingDecision) returns (MsgSellingDecisionResponse);
@@ -22,20 +21,10 @@ service Msg {
   rpc Repay(MsgRepay) returns (MsgRepayResponse);
 }
 
-message MsgMintNft {
-  string sender       = 1;
-  string class_id     = 2;
-  string nft_id       = 3;
-  string nft_uri      = 4;
-  string nft_uri_hash = 5;
-}
-message MsgMintNftResponse {}
-
 message MsgListNft {
-  string        sender    = 1;
-  NftIdentifier nft_id    = 2 [(gogoproto.nullable) = false];
-  string        bid_denom = 3;
-  // 1% = 0.01
+  string sender    = 1;
+  NftId  nft_id    = 2 [(gogoproto.nullable) = false];
+  string bid_denom = 3;
   string minimum_deposit_rate = 4 [
     (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
@@ -45,15 +34,15 @@ message MsgListNft {
 }
 message MsgListNftResponse {}
 
-message MsgCancelNftListing {
-  string        sender = 1;
-  NftIdentifier nft_id = 2 [(gogoproto.nullable) = false];
+message MsgCancelListing {
+  string sender = 1;
+  NftId  nft_id = 2 [(gogoproto.nullable) = false];
 }
-message MsgCancelNftListingResponse {}
+message MsgCancelListingResponse {}
 
 message MsgPlaceBid {
   string                    sender        = 1;
-  NftIdentifier             nft_id        = 2 [(gogoproto.nullable) = false];
+  NftId                     nft_id        = 2 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin  price         = 3 [(gogoproto.nullable) = false];
   google.protobuf.Timestamp expiry        = 4 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
   string                    interest_rate = 5 [
@@ -67,26 +56,26 @@ message MsgPlaceBid {
 message MsgPlaceBidResponse {}
 
 message MsgCancelBid {
-  string        sender = 1;
-  NftIdentifier nft_id = 2 [(gogoproto.nullable) = false];
+  string sender = 1;
+  NftId  nft_id = 2 [(gogoproto.nullable) = false];
 }
 message MsgCancelBidResponse {}
 
 message MsgEndNftListing {
-  string        sender = 1;
-  NftIdentifier nft_id = 2 [(gogoproto.nullable) = false];
+  string sender = 1;
+  NftId  nft_id = 2 [(gogoproto.nullable) = false];
 }
 message MsgEndNftListingResponse {}
 
 message MsgSellingDecision {
-  string        sender = 1;
-  NftIdentifier nft_id = 2 [(gogoproto.nullable) = false];
+  string sender = 1;
+  NftId  nft_id = 2 [(gogoproto.nullable) = false];
 }
 message MsgSellingDecisionResponse {}
 
 message MsgPayRemainder {
-  string        sender = 1;
-  NftIdentifier nft_id = 2 [(gogoproto.nullable) = false];
+  string sender = 1;
+  NftId  nft_id = 2 [(gogoproto.nullable) = false];
 }
 message MsgPayRemainderResponse {}
 
@@ -97,14 +86,14 @@ message BorrowBid {
 
 message MsgBorrow {
   string             sender      = 1;
-  NftIdentifier      nft_id      = 2 [(gogoproto.nullable) = false];
+  NftId              nft_id      = 2 [(gogoproto.nullable) = false];
   repeated BorrowBid borrow_bids = 3 [(gogoproto.nullable) = false];
 }
 message MsgBorrowResponse {}
 
 message MsgRepay {
   string             sender     = 1;
-  NftIdentifier      nft_id     = 2 [(gogoproto.nullable) = false];
+  NftId              nft_id     = 2 [(gogoproto.nullable) = false];
   repeated BorrowBid repay_bids = 3 [(gogoproto.nullable) = false];
 }
 message MsgRepayResponse {}

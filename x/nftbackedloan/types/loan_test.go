@@ -11,24 +11,24 @@ import (
 )
 
 func TestMinSettlementAmount(t *testing.T) {
-	listing := types.NftListing{
+	listing := types.Listing{
 		BidDenom: "uatom",
 	}
 	testCases := []struct {
 		name      string
-		bids      []types.NftBid
+		bids      []types.Bid
 		expResult sdk.Coin
 		expError  bool
 	}{
 		{
 			name:      "empty bid error",
-			bids:      []types.NftBid{},
+			bids:      []types.Bid{},
 			expResult: sdk.Coin{},
 			expError:  true,
 		},
 		{
 			name: "one bid",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Price:   sdk.NewInt64Coin("uatom", 100),
 					Deposit: sdk.NewInt64Coin("uatom", 30),
@@ -39,7 +39,7 @@ func TestMinSettlementAmount(t *testing.T) {
 		},
 		{
 			name: "two bids, totalDeposit < price",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Price:   sdk.NewInt64Coin("uatom", 100),
 					Deposit: sdk.NewInt64Coin("uatom", 30),
@@ -54,7 +54,7 @@ func TestMinSettlementAmount(t *testing.T) {
 		},
 		{
 			name: "three bids & price < totalDeposit",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Price:   sdk.NewInt64Coin("uatom", 100),
 					Deposit: sdk.NewInt64Coin("uatom", 30),
@@ -91,29 +91,29 @@ func TestMinSettlementAmount(t *testing.T) {
 func TestLiquidationBid(t *testing.T) {
 	now := time.Now()
 	nextYear := now.Add(time.Hour * 24 * 365)
-	listing := types.NftListing{
+	listing := types.Listing{
 		BidDenom: "uatom",
 	}
 	testCases := []struct {
 		name      string
-		bids      []types.NftBid
-		expResult types.NftBid
+		bids      []types.Bid
+		expResult types.Bid
 		expError  bool
 	}{
 		{
 			name:      "empty bid",
-			bids:      []types.NftBid{},
-			expResult: types.NftBid{},
+			bids:      []types.Bid{},
+			expResult: types.Bid{},
 			expError:  true,
 		},
 		{
 			name: "one bid, paid",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
@@ -127,11 +127,11 @@ func TestLiquidationBid(t *testing.T) {
 					},
 				},
 			},
-			expResult: types.NftBid{
+			expResult: types.Bid{
 				Id: types.BidId{
-					NftId: &types.NftIdentifier{
+					NftId: &types.NftId{
 						ClassId: "a10",
-						NftId:   "a10",
+						TokenId: "a10",
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
@@ -140,12 +140,12 @@ func TestLiquidationBid(t *testing.T) {
 		},
 		{
 			name: "one bid, no paid",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
@@ -159,17 +159,17 @@ func TestLiquidationBid(t *testing.T) {
 					},
 				},
 			},
-			expResult: types.NftBid{},
+			expResult: types.Bid{},
 			expError:  false,
 		},
 		{
 			name: "two bids, 2 paid",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
@@ -184,9 +184,9 @@ func TestLiquidationBid(t *testing.T) {
 				},
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
@@ -200,11 +200,11 @@ func TestLiquidationBid(t *testing.T) {
 					},
 				},
 			},
-			expResult: types.NftBid{
+			expResult: types.Bid{
 				Id: types.BidId{
-					NftId: &types.NftIdentifier{
+					NftId: &types.NftId{
 						ClassId: "a10",
-						NftId:   "a10",
+						TokenId: "a10",
 					},
 					Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 				},
@@ -213,12 +213,12 @@ func TestLiquidationBid(t *testing.T) {
 		},
 		{
 			name: "two bids, unpaid top bid",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
@@ -233,9 +233,9 @@ func TestLiquidationBid(t *testing.T) {
 				},
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
@@ -249,11 +249,11 @@ func TestLiquidationBid(t *testing.T) {
 					},
 				},
 			},
-			expResult: types.NftBid{
+			expResult: types.Bid{
 				Id: types.BidId{
-					NftId: &types.NftIdentifier{
+					NftId: &types.NftId{
 						ClassId: "a10",
-						NftId:   "a10",
+						TokenId: "a10",
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
@@ -262,12 +262,12 @@ func TestLiquidationBid(t *testing.T) {
 		},
 		{
 			name: "two bids, 2 paid (check deposit)",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
@@ -282,9 +282,9 @@ func TestLiquidationBid(t *testing.T) {
 				},
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
@@ -298,11 +298,11 @@ func TestLiquidationBid(t *testing.T) {
 					},
 				},
 			},
-			expResult: types.NftBid{
+			expResult: types.Bid{
 				Id: types.BidId{
-					NftId: &types.NftIdentifier{
+					NftId: &types.NftId{
 						ClassId: "a10",
-						NftId:   "a10",
+						TokenId: "a10",
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
@@ -311,12 +311,12 @@ func TestLiquidationBid(t *testing.T) {
 		},
 		{
 			name: "no paid pass liquidation",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
@@ -331,9 +331,9 @@ func TestLiquidationBid(t *testing.T) {
 				},
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
@@ -347,17 +347,17 @@ func TestLiquidationBid(t *testing.T) {
 					},
 				},
 			},
-			expResult: types.NftBid{},
+			expResult: types.Bid{},
 			expError:  false,
 		},
 		{
 			name: "cannot liquidate error",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
@@ -372,9 +372,9 @@ func TestLiquidationBid(t *testing.T) {
 				},
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
@@ -388,17 +388,17 @@ func TestLiquidationBid(t *testing.T) {
 					},
 				},
 			},
-			expResult: types.NftBid{},
+			expResult: types.Bid{},
 			expError:  true,
 		},
 		{
 			name: "(not occur) no winner bid error",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
@@ -413,9 +413,9 @@ func TestLiquidationBid(t *testing.T) {
 				},
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
@@ -429,7 +429,7 @@ func TestLiquidationBid(t *testing.T) {
 					},
 				},
 			},
-			expResult: types.NftBid{},
+			expResult: types.Bid{},
 			expError:  true,
 		},
 	}
@@ -453,18 +453,18 @@ func TestLiquidationBid(t *testing.T) {
 func TestForForfeitedBidsAndRefundBids(t *testing.T) {
 	testCases := []struct {
 		name      string
-		bids      []types.NftBid
-		winnerBid types.NftBid
+		bids      []types.Bid
+		winnerBid types.Bid
 		expResult []int
 	}{
 		{
 			name: "two bids, paid",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
@@ -474,9 +474,9 @@ func TestForForfeitedBidsAndRefundBids(t *testing.T) {
 				},
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
@@ -485,11 +485,11 @@ func TestForForfeitedBidsAndRefundBids(t *testing.T) {
 					PaidAmount: sdk.NewInt64Coin("uatom", 150),
 				},
 			},
-			winnerBid: types.NftBid{
+			winnerBid: types.Bid{
 				Id: types.BidId{
-					NftId: &types.NftIdentifier{
+					NftId: &types.NftId{
 						ClassId: "a10",
-						NftId:   "a10",
+						TokenId: "a10",
 					},
 					Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 				},
@@ -498,12 +498,12 @@ func TestForForfeitedBidsAndRefundBids(t *testing.T) {
 		},
 		{
 			name: "two bids, unpaid top bid",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
@@ -513,9 +513,9 @@ func TestForForfeitedBidsAndRefundBids(t *testing.T) {
 				},
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
@@ -524,11 +524,11 @@ func TestForForfeitedBidsAndRefundBids(t *testing.T) {
 					PaidAmount: sdk.NewInt64Coin("uatom", 0),
 				},
 			},
-			winnerBid: types.NftBid{
+			winnerBid: types.Bid{
 				Id: types.BidId{
-					NftId: &types.NftIdentifier{
+					NftId: &types.NftId{
 						ClassId: "a10",
-						NftId:   "a10",
+						TokenId: "a10",
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
@@ -551,29 +551,29 @@ func TestForForfeitedBidsAndRefundBids(t *testing.T) {
 func TestExpectedRepayAmount(t *testing.T) {
 	now := time.Now()
 	nextMonth := now.Add(time.Hour * 24 * 30)
-	listing := types.NftListing{
+	listing := types.Listing{
 		BidDenom: "uatom",
 	}
 	testCases := []struct {
 		name       string
-		bids       []types.NftBid
+		bids       []types.Bid
 		borrowBids []types.BorrowBid
 		expResult  sdk.Coin
 	}{
 		{
 			name:       "empty bid",
-			bids:       []types.NftBid{},
+			bids:       []types.Bid{},
 			borrowBids: []types.BorrowBid{},
 			expResult:  sdk.Coin{},
 		},
 		{
 			name: "one bid",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
@@ -594,12 +594,12 @@ func TestExpectedRepayAmount(t *testing.T) {
 		},
 		{
 			name: "2 bid & over borrow",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
@@ -610,9 +610,9 @@ func TestExpectedRepayAmount(t *testing.T) {
 				},
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
@@ -656,27 +656,27 @@ func TestExpectedRepayAmount(t *testing.T) {
 func TestExistRepayAmount(t *testing.T) {
 	now := time.Now()
 	nextMonth := now.Add(time.Hour * 24 * 30)
-	listing := types.NftListing{
+	listing := types.Listing{
 		BidDenom: "uatom",
 	}
 	testCases := []struct {
 		name      string
-		bids      []types.NftBid
+		bids      []types.Bid
 		expResult sdk.Coin
 	}{
 		{
 			name:      "empty bid",
-			bids:      []types.NftBid{},
+			bids:      []types.Bid{},
 			expResult: sdk.Coin{},
 		},
 		{
 			name: "one bid",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
@@ -696,12 +696,12 @@ func TestExistRepayAmount(t *testing.T) {
 		},
 		{
 			name: "2 bid",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
@@ -717,9 +717,9 @@ func TestExistRepayAmount(t *testing.T) {
 				},
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
@@ -756,27 +756,27 @@ func TestExistRepayAmount(t *testing.T) {
 
 func TestMaxBorrowAmount(t *testing.T) {
 	now := time.Now()
-	listing := types.NftListing{
+	listing := types.Listing{
 		BidDenom: "uatom",
 	}
 	testCases := []struct {
 		name      string
-		bids      []types.NftBid
+		bids      []types.Bid
 		expResult sdk.Coin
 	}{
 		{
 			name:      "empty bid",
-			bids:      []types.NftBid{},
+			bids:      []types.Bid{},
 			expResult: sdk.Coin{},
 		},
 		{
 			name: "one bid",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
@@ -791,12 +791,12 @@ func TestMaxBorrowAmount(t *testing.T) {
 		},
 		{
 			name: "2 bid",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
@@ -807,9 +807,9 @@ func TestMaxBorrowAmount(t *testing.T) {
 				},
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
@@ -841,15 +841,15 @@ func TestMaxBorrowAmount(t *testing.T) {
 
 func TestIsAbleToBorrow(t *testing.T) {
 	now := time.Now()
-	listing := types.NftListing{
+	listing := types.Listing{
 		BidDenom: "uatom",
 	}
-	bids := []types.NftBid{
+	bids := []types.Bid{
 		{
 			Id: types.BidId{
-				NftId: &types.NftIdentifier{
+				NftId: &types.NftId{
 					ClassId: "a10",
-					NftId:   "a10",
+					TokenId: "a10",
 				},
 				Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 			},
@@ -860,9 +860,9 @@ func TestIsAbleToBorrow(t *testing.T) {
 		},
 		{
 			Id: types.BidId{
-				NftId: &types.NftIdentifier{
+				NftId: &types.NftId{
 					ClassId: "a10",
-					NftId:   "a10",
+					TokenId: "a10",
 				},
 				Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 			},
@@ -919,23 +919,23 @@ func TestIsAbleToBorrow(t *testing.T) {
 
 func TestIsAbleToCancelBid(t *testing.T) {
 	now := time.Now()
-	listing := types.NftListing{
+	listing := types.Listing{
 		BidDenom: "uatom",
 	}
 	testCases := []struct {
 		name      string
-		bids      []types.NftBid
+		bids      []types.Bid
 		cancelBid types.BidId
 		expResult bool
 	}{
 		{
 			name: "able to cancel",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
@@ -950,9 +950,9 @@ func TestIsAbleToCancelBid(t *testing.T) {
 				},
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
@@ -967,9 +967,9 @@ func TestIsAbleToCancelBid(t *testing.T) {
 				},
 			},
 			cancelBid: types.BidId{
-				NftId: &types.NftIdentifier{
+				NftId: &types.NftId{
 					ClassId: "a10",
-					NftId:   "a10",
+					TokenId: "a10",
 				},
 				Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 			},
@@ -977,12 +977,12 @@ func TestIsAbleToCancelBid(t *testing.T) {
 		},
 		{
 			name: "unable to cancel",
-			bids: []types.NftBid{
+			bids: []types.Bid{
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 					},
@@ -997,9 +997,9 @@ func TestIsAbleToCancelBid(t *testing.T) {
 				},
 				{
 					Id: types.BidId{
-						NftId: &types.NftIdentifier{
+						NftId: &types.NftId{
 							ClassId: "a10",
-							NftId:   "a10",
+							TokenId: "a10",
 						},
 						Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 					},
@@ -1015,9 +1015,9 @@ func TestIsAbleToCancelBid(t *testing.T) {
 				},
 			},
 			cancelBid: types.BidId{
-				NftId: &types.NftIdentifier{
+				NftId: &types.NftId{
 					ClassId: "a10",
-					NftId:   "a10",
+					TokenId: "a10",
 				},
 				Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 			},
@@ -1037,15 +1037,15 @@ func TestIsAbleToCancelBid(t *testing.T) {
 
 func TestIsAbleToReBid(t *testing.T) {
 	now := time.Now()
-	listing := types.NftListing{
+	listing := types.Listing{
 		BidDenom: "uatom",
 	}
-	bids := []types.NftBid{
+	bids := []types.Bid{
 		{
 			Id: types.BidId{
-				NftId: &types.NftIdentifier{
+				NftId: &types.NftId{
 					ClassId: "a10",
-					NftId:   "a10",
+					TokenId: "a10",
 				},
 				Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 			},
@@ -1060,9 +1060,9 @@ func TestIsAbleToReBid(t *testing.T) {
 		},
 		{
 			Id: types.BidId{
-				NftId: &types.NftIdentifier{
+				NftId: &types.NftId{
 					ClassId: "a10",
-					NftId:   "a10",
+					TokenId: "a10",
 				},
 				Bidder: "ununifi1v0h8j7x7kfys29kj4uwdudcc9y0nx6twwxahla",
 			},
@@ -1077,9 +1077,9 @@ func TestIsAbleToReBid(t *testing.T) {
 		},
 		{
 			Id: types.BidId{
-				NftId: &types.NftIdentifier{
+				NftId: &types.NftId{
 					ClassId: "a10",
-					NftId:   "a10",
+					TokenId: "a10",
 				},
 				Bidder: "ununifi1y3t7sp0nfe2nfda7r9gf628g6ym6e7d44evfv6",
 			},
@@ -1098,23 +1098,23 @@ func TestIsAbleToReBid(t *testing.T) {
 	testCases := []struct {
 		name      string
 		oldBidId  types.BidId
-		newBid    types.NftBid
+		newBid    types.Bid
 		expResult bool
 	}{
 		{
 			name: "able to re-bid",
 			oldBidId: types.BidId{
-				NftId: &types.NftIdentifier{
+				NftId: &types.NftId{
 					ClassId: "a10",
-					NftId:   "a10",
+					TokenId: "a10",
 				},
 				Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 			},
-			newBid: types.NftBid{
+			newBid: types.Bid{
 				Id: types.BidId{
-					NftId: &types.NftIdentifier{
+					NftId: &types.NftId{
 						ClassId: "a10",
-						NftId:   "a10",
+						TokenId: "a10",
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
@@ -1132,17 +1132,17 @@ func TestIsAbleToReBid(t *testing.T) {
 		{
 			name: "unable to re-bid",
 			oldBidId: types.BidId{
-				NftId: &types.NftIdentifier{
+				NftId: &types.NftId{
 					ClassId: "a10",
-					NftId:   "a10",
+					TokenId: "a10",
 				},
 				Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 			},
-			newBid: types.NftBid{
+			newBid: types.Bid{
 				Id: types.BidId{
-					NftId: &types.NftIdentifier{
+					NftId: &types.NftId{
 						ClassId: "a10",
-						NftId:   "a10",
+						TokenId: "a10",
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},

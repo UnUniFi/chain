@@ -115,7 +115,7 @@ func (suite *KeeperTestSuite) TestSellingDecision() {
 		}, tc.nftOwner)
 		suite.Require().NoError(err)
 
-		nftIdentifier := types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId}
+		nftIdentifier := types.NftId{ClassId: tc.classId, TokenId: tc.nftId}
 		if tc.listBefore {
 			err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
 				Sender:             tc.nftOwner.String(),

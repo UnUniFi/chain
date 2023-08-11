@@ -9,7 +9,7 @@ import (
 	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
-func (k Keeper) RewardDistributionOfnftbackedloan(ctx sdk.Context, nftId nftbackedloantypes.NftIdentifier, fee sdk.Coin) error {
+func (k Keeper) RewardDistributionOfnftbackedloan(ctx sdk.Context, nftId nftbackedloantypes.NftId, fee sdk.Coin) error {
 	totalReward := sdk.ZeroInt()
 	rewardForCommunityPool := sdk.ZeroInt()
 	// First, get recipientContainerId by nftId from RecipientContainerIdByNftId KVStore

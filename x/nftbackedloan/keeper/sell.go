@@ -17,7 +17,7 @@ func (k Keeper) SetSellingDecision(ctx sdk.Context, msg *types.MsgSellingDecisio
 	}
 
 	// Check nft exists
-	_, found := k.nftKeeper.GetNFT(ctx, msg.NftId.ClassId, msg.NftId.NftId)
+	_, found := k.nftKeeper.GetNFT(ctx, msg.NftId.ClassId, msg.NftId.TokenId)
 	if !found {
 		return types.ErrNftDoesNotExists
 	}
@@ -80,13 +80,13 @@ func (k Keeper) SetSellingDecision(ctx sdk.Context, msg *types.MsgSellingDecisio
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventSellingDecision{
 		Owner:   msg.Sender,
 		ClassId: msg.NftId.ClassId,
-		NftId:   msg.NftId.NftId,
+		TokenId: msg.NftId.TokenId,
 	})
 
 	return nil
 }
 
-func (k Keeper) RunSellingDecisionProcess(ctx sdk.Context, bids types.NftBids, listing types.NftListing, params types.Params) error {
+func (k Keeper) RunSellingDecisionProcess(ctx sdk.Context, bids types.NftBids, listing types.Listing, params types.Params) error {
 	highestBid, err := bids.GetHighestBid()
 	if err != nil {
 		return err

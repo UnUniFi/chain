@@ -15,8 +15,8 @@ func (suite *KeeperTestSuite) TestManualBorrow() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
-	listing := types.NftListing{
-		NftId:              types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
+	listing := types.Listing{
+		NftId:              types.NftId{ClassId: "class1", TokenId: "nft1"},
 		Owner:              owner.String(),
 		State:              types.ListingState_LISTING,
 		BidDenom:           "uguu",
@@ -25,7 +25,7 @@ func (suite *KeeperTestSuite) TestManualBorrow() {
 	}
 	msgBid := types.MsgPlaceBid{
 		Sender:           bidder.String(),
-		NftId:            types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
+		NftId:            types.NftId{ClassId: "class1", TokenId: "nft1"},
 		Price:            sdk.NewInt64Coin("uguu", 10000000),
 		Expiry:           time.Now().Add(time.Hour * 24),
 		InterestRate:     sdk.NewDecWithPrec(1, 1),
@@ -44,7 +44,7 @@ func (suite *KeeperTestSuite) TestManualBorrow() {
 			msgBorrow: types.MsgBorrow{
 				Sender: owner.String(),
 				// invalid nft id
-				NftId: types.NftIdentifier{ClassId: "class99", NftId: "nft99"},
+				NftId: types.NftId{ClassId: "class99", TokenId: "nft99"},
 				BorrowBids: []types.BorrowBid{
 					{
 						Bidder: bidder.String(),
@@ -59,7 +59,7 @@ func (suite *KeeperTestSuite) TestManualBorrow() {
 			msgBorrow: types.MsgBorrow{
 				// invalid sender
 				Sender: bidder.String(),
-				NftId:  types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
+				NftId:  types.NftId{ClassId: "class1", TokenId: "nft1"},
 				BorrowBids: []types.BorrowBid{
 					{
 						Bidder: bidder.String(),
@@ -74,7 +74,7 @@ func (suite *KeeperTestSuite) TestManualBorrow() {
 			testCase: "fail with invalid denom",
 			msgBorrow: types.MsgBorrow{
 				Sender: owner.String(),
-				NftId:  types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
+				NftId:  types.NftId{ClassId: "class1", TokenId: "nft1"},
 				BorrowBids: []types.BorrowBid{
 					{
 						Bidder: bidder.String(),
@@ -90,7 +90,7 @@ func (suite *KeeperTestSuite) TestManualBorrow() {
 			testCase: "pass with partial borrow",
 			msgBorrow: types.MsgBorrow{
 				Sender: owner.String(),
-				NftId:  types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
+				NftId:  types.NftId{ClassId: "class1", TokenId: "nft1"},
 				BorrowBids: []types.BorrowBid{
 					{
 						Bidder: bidder.String(),
@@ -105,7 +105,7 @@ func (suite *KeeperTestSuite) TestManualBorrow() {
 			testCase: "pass with over borrow",
 			msgBorrow: types.MsgBorrow{
 				Sender: owner.String(),
-				NftId:  types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
+				NftId:  types.NftId{ClassId: "class1", TokenId: "nft1"},
 				BorrowBids: []types.BorrowBid{
 					{
 						Bidder: bidder.String(),
@@ -133,9 +133,9 @@ func (suite *KeeperTestSuite) TestManualBorrow() {
 		})
 		_ = suite.app.UnUniFiNFTKeeper.Mint(suite.ctx, nfttypes.NFT{
 			ClassId: listing.NftId.ClassId,
-			Id:      listing.NftId.NftId,
-			Uri:     listing.NftId.NftId,
-			UriHash: listing.NftId.NftId,
+			Id:      listing.NftId.TokenId,
+			Uri:     listing.NftId.TokenId,
+			UriHash: listing.NftId.TokenId,
 		}, owner)
 
 		err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
@@ -169,8 +169,8 @@ func (suite *KeeperTestSuite) TestManualRepay() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
-	listing := types.NftListing{
-		NftId:              types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
+	listing := types.Listing{
+		NftId:              types.NftId{ClassId: "class1", TokenId: "nft1"},
 		Owner:              owner.String(),
 		State:              types.ListingState_LISTING,
 		BidDenom:           "uguu",
@@ -179,7 +179,7 @@ func (suite *KeeperTestSuite) TestManualRepay() {
 	}
 	msgBid := types.MsgPlaceBid{
 		Sender:           bidder.String(),
-		NftId:            types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
+		NftId:            types.NftId{ClassId: "class1", TokenId: "nft1"},
 		Price:            sdk.NewInt64Coin("uguu", 10000000),
 		Expiry:           time.Now().Add(time.Hour * 24),
 		InterestRate:     sdk.NewDecWithPrec(1, 1),
@@ -188,7 +188,7 @@ func (suite *KeeperTestSuite) TestManualRepay() {
 	}
 	msgBorrow := types.MsgBorrow{
 		Sender: owner.String(),
-		NftId:  types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
+		NftId:  types.NftId{ClassId: "class1", TokenId: "nft1"},
 		BorrowBids: []types.BorrowBid{
 			{
 				Bidder: bidder.String(),
@@ -208,7 +208,7 @@ func (suite *KeeperTestSuite) TestManualRepay() {
 			msgRepay: types.MsgRepay{
 				Sender: owner.String(),
 				// invalid nft id
-				NftId: types.NftIdentifier{ClassId: "class99", NftId: "nft99"},
+				NftId: types.NftId{ClassId: "class99", TokenId: "nft99"},
 				RepayBids: []types.BorrowBid{
 					{
 						Bidder: bidder.String(),
@@ -223,7 +223,7 @@ func (suite *KeeperTestSuite) TestManualRepay() {
 			msgRepay: types.MsgRepay{
 				// invalid sender
 				Sender: bidder.String(),
-				NftId:  types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
+				NftId:  types.NftId{ClassId: "class1", TokenId: "nft1"},
 				RepayBids: []types.BorrowBid{
 					{
 						Bidder: bidder.String(),
@@ -238,7 +238,7 @@ func (suite *KeeperTestSuite) TestManualRepay() {
 			testCase: "fail with invalid denom",
 			msgRepay: types.MsgRepay{
 				Sender: owner.String(),
-				NftId:  types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
+				NftId:  types.NftId{ClassId: "class1", TokenId: "nft1"},
 				RepayBids: []types.BorrowBid{
 					{
 						Bidder: bidder.String(),
@@ -254,7 +254,7 @@ func (suite *KeeperTestSuite) TestManualRepay() {
 			testCase: "pass with partial repay",
 			msgRepay: types.MsgRepay{
 				Sender: owner.String(),
-				NftId:  types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
+				NftId:  types.NftId{ClassId: "class1", TokenId: "nft1"},
 				RepayBids: []types.BorrowBid{
 					{
 						Bidder: bidder.String(),
@@ -269,7 +269,7 @@ func (suite *KeeperTestSuite) TestManualRepay() {
 			testCase: "pass with over repay",
 			msgRepay: types.MsgRepay{
 				Sender: owner.String(),
-				NftId:  types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
+				NftId:  types.NftId{ClassId: "class1", TokenId: "nft1"},
 				RepayBids: []types.BorrowBid{
 					{
 						Bidder: bidder.String(),
@@ -297,9 +297,9 @@ func (suite *KeeperTestSuite) TestManualRepay() {
 		})
 		_ = suite.app.UnUniFiNFTKeeper.Mint(suite.ctx, nfttypes.NFT{
 			ClassId: listing.NftId.ClassId,
-			Id:      listing.NftId.NftId,
-			Uri:     listing.NftId.NftId,
-			UriHash: listing.NftId.NftId,
+			Id:      listing.NftId.TokenId,
+			Uri:     listing.NftId.TokenId,
+			UriHash: listing.NftId.TokenId,
 		}, owner)
 
 		err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
@@ -339,14 +339,14 @@ func (suite *KeeperTestSuite) TestSendInterestToBidder() {
 	initAmount := sdk.NewInt64Coin("uguu", 1000000)
 	tests := []struct {
 		testCase     string
-		bid          types.NftBid
+		bid          types.Bid
 		interest     sdk.Coin
 		expectPass   bool
 		expectAmount sdk.Coin
 	}{
 		{
 			testCase: "pass with valid interest",
-			bid: types.NftBid{
+			bid: types.Bid{
 				Id: types.BidId{
 					Bidder: bidder.String(),
 				},
@@ -357,7 +357,7 @@ func (suite *KeeperTestSuite) TestSendInterestToBidder() {
 		},
 		{
 			testCase: "fail with 0 interest",
-			bid: types.NftBid{
+			bid: types.Bid{
 				Id: types.BidId{
 					Bidder: bidder.String(),
 				},
@@ -368,7 +368,7 @@ func (suite *KeeperTestSuite) TestSendInterestToBidder() {
 		},
 		{
 			testCase: "fail with nil interest",
-			bid: types.NftBid{
+			bid: types.Bid{
 				Id: types.BidId{
 					Bidder: bidder.String(),
 				},

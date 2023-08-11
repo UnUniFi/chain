@@ -7,7 +7,7 @@ import (
 	types "github.com/cosmos/cosmos-sdk/types"
 )
 
-func MinSettlementAmount(bids []NftBid, listing NftListing) (types.Coin, error) {
+func MinSettlementAmount(bids []Bid, listing Listing) (types.Coin, error) {
 	if len(bids) == 0 {
 		return types.Coin{}, ErrBidDoesNotExists
 	}
@@ -15,7 +15,7 @@ func MinSettlementAmount(bids []NftBid, listing NftListing) (types.Coin, error) 
 	return FindMinSettlementAmount(bidsSortedByPrice, listing)
 }
 
-func FindMinSettlementAmount(bidsSortedByPrice []NftBid, listing NftListing) (types.Coin, error) {
+func FindMinSettlementAmount(bidsSortedByPrice []Bid, listing Listing) (types.Coin, error) {
 	if len(bidsSortedByPrice) == 0 {
 		return types.Coin{}, ErrBidDoesNotExists
 	}
@@ -37,26 +37,27 @@ func FindMinSettlementAmount(bidsSortedByPrice []NftBid, listing NftListing) (ty
 	return minimumSettlementAmount, nil
 }
 
-func LiquidationBid(bidsSortedByDeposit []NftBid, listing NftListing, time time.Time) (NftBid, []NftBid, []NftBid, error) {
-	// arg: bids sorted by higher deposit & liquidation time
-	// return: win bid, deposit collect bids, refund bids, error
+// arg: bids sorted by higher deposit & liquidation time
+// return: win bid, deposit collect bids, refund bids, error
+func LiquidationBid(bidsSortedByDeposit []Bid, listing Listing, time time.Time) (Bid, []Bid, []Bid, error) {
+
 	if len(bidsSortedByDeposit) == 0 {
-		return NftBid{}, nil, nil, ErrBidDoesNotExists
+		return Bid{}, nil, nil, ErrBidDoesNotExists
 	}
 	settlementAmount, _ := ExistRepayAmountAtLiquidation(bidsSortedByDeposit, listing, time)
 	forfeitedDeposit := types.NewCoin(listing.BidDenom, sdk.NewInt(0))
-	var winnerBid NftBid
+	var winnerBid Bid
 	notInspectedBidsSortedByDeposit := NftBids(bidsSortedByDeposit)
-	forfeitedBids := []NftBid{}
-	refundBids := []NftBid{}
+	forfeitedBids := []Bid{}
+	refundBids := []Bid{}
 
 	// prevention of infinite loops
 	highestBid, err := notInspectedBidsSortedByDeposit.GetHighestBid()
 	if err != nil {
-		return NftBid{}, nil, nil, err
+		return Bid{}, nil, nil, err
 	}
 	if highestBid.Price.IsLT(settlementAmount) {
-		return NftBid{}, nil, nil, ErrCannotLiquidation
+		return Bid{}, nil, nil, ErrCannotLiquidation
 	}
 
 	// loop until all bids are handled
@@ -87,18 +88,18 @@ func LiquidationBid(bidsSortedByDeposit []NftBid, listing NftListing, time time.
 	if winnerBid.IsNil() {
 		// No error, if liquidation is available
 		if settlementAmount.IsLTE(forfeitedDeposit) {
-			return NftBid{}, forfeitedBids, nil, nil
+			return Bid{}, forfeitedBids, nil, nil
 		}
 		// With Error, if liquidation is not available
-		return NftBid{}, forfeitedBids, refundBids, ErrCannotLiquidation
+		return Bid{}, forfeitedBids, refundBids, ErrCannotLiquidation
 	}
 	return winnerBid, forfeitedBids, refundBids, nil
 }
 
-func ForfeitedBidsAndRefundBids(bidsSortedByDeposit []NftBid, winnerBid NftBid) ([]NftBid, []NftBid) {
+func ForfeitedBidsAndRefundBids(bidsSortedByDeposit []Bid, winnerBid Bid) ([]Bid, []Bid) {
 	isDecidedWinningBid := false
-	forfeitedBids := []NftBid{}
-	refundBids := []NftBid{}
+	forfeitedBids := []Bid{}
+	refundBids := []Bid{}
 	for _, bid := range bidsSortedByDeposit {
 		if bid.Id.Bidder == winnerBid.Id.Bidder {
 			isDecidedWinningBid = true
@@ -117,7 +118,7 @@ func ForfeitedBidsAndRefundBids(bidsSortedByDeposit []NftBid, winnerBid NftBid) 
 	return forfeitedBids, refundBids
 }
 
-func ExpectedRepayAmount(bids []NftBid, borrowBids []BorrowBid, listing NftListing, time time.Time) (sdk.Coin, error) {
+func ExpectedRepayAmount(bids []Bid, borrowBids []BorrowBid, listing Listing, time time.Time) (sdk.Coin, error) {
 	if len(bids) == 0 {
 		return types.Coin{}, ErrBidDoesNotExists
 	}
@@ -146,7 +147,7 @@ func ExpectedRepayAmount(bids []NftBid, borrowBids []BorrowBid, listing NftListi
 	return expectedRepayAmount, nil
 }
 
-func ExistRepayAmount(bids []NftBid, listing NftListing) (sdk.Coin, error) {
+func ExistRepayAmount(bids []Bid, listing Listing) (sdk.Coin, error) {
 	if len(bids) == 0 {
 		return types.Coin{}, ErrBidDoesNotExists
 	}
@@ -158,7 +159,7 @@ func ExistRepayAmount(bids []NftBid, listing NftListing) (sdk.Coin, error) {
 	return existRepayAmount, nil
 }
 
-func ExistRepayAmountAtTime(bids []NftBid, listing NftListing, time time.Time) (sdk.Coin, error) {
+func ExistRepayAmountAtTime(bids []Bid, listing Listing, time time.Time) (sdk.Coin, error) {
 	if len(bids) == 0 {
 		return types.Coin{}, ErrBidDoesNotExists
 	}
@@ -170,7 +171,7 @@ func ExistRepayAmountAtTime(bids []NftBid, listing NftListing, time time.Time) (
 	return existRepayAmount, nil
 }
 
-func ExistRepayAmountAtLiquidation(bids []NftBid, listing NftListing, liquidationTime time.Time) (sdk.Coin, error) {
+func ExistRepayAmountAtLiquidation(bids []Bid, listing Listing, liquidationTime time.Time) (sdk.Coin, error) {
 	if len(bids) == 0 {
 		return types.Coin{}, ErrBidDoesNotExists
 	}
@@ -185,7 +186,7 @@ func ExistRepayAmountAtLiquidation(bids []NftBid, listing NftListing, liquidatio
 	return existRepayAmount, nil
 }
 
-func MaxBorrowAmount(bids []NftBid, listing NftListing, time time.Time) (types.Coin, error) {
+func MaxBorrowAmount(bids []Bid, listing Listing, time time.Time) (types.Coin, error) {
 	if len(bids) == 0 {
 		return types.Coin{}, ErrBidDoesNotExists
 	}
@@ -211,7 +212,7 @@ func MaxBorrowAmount(bids []NftBid, listing NftListing, time time.Time) (types.C
 	return borrowAmount, nil
 }
 
-func IsAbleToBorrow(bids []NftBid, borrowBids []BorrowBid, listing NftListing, time time.Time) bool {
+func IsAbleToBorrow(bids []Bid, borrowBids []BorrowBid, listing Listing, time time.Time) bool {
 	minimumSettlementAmount, err := MinSettlementAmount(bids, listing)
 	if err != nil {
 		return false
@@ -223,9 +224,9 @@ func IsAbleToBorrow(bids []NftBid, borrowBids []BorrowBid, listing NftListing, t
 	return expectedRepayAmount.IsLTE(minimumSettlementAmount)
 }
 
-func IsAbleToCancelBid(cancellingBidId BidId, bids []NftBid, listing NftListing) bool {
+func IsAbleToCancelBid(cancellingBidId BidId, bids []Bid, listing Listing) bool {
 	// check if not borrowed before this func
-	var afterCanceledBids []NftBid
+	var afterCanceledBids []Bid
 	for _, bid := range bids {
 		if bid.Id.Bidder != cancellingBidId.Bidder {
 			afterCanceledBids = append(afterCanceledBids, bid)
@@ -242,13 +243,13 @@ func IsAbleToCancelBid(cancellingBidId BidId, bids []NftBid, listing NftListing)
 	return existRepayAmount.IsLTE(minimumSettlementAmount)
 }
 
-func IsAbleToReBid(bids []NftBid, oldBidId BidId, newBid NftBid, listing NftListing) bool {
+func IsAbleToReBid(bids []Bid, oldBidId BidId, newBid Bid, listing Listing) bool {
 	// check if not borrowed before this func
 	if oldBidId.Bidder != newBid.Id.Bidder {
 		return false
 	}
 
-	var afterUpdatedBids []NftBid
+	var afterUpdatedBids []Bid
 	for _, bid := range bids {
 		if bid.Id.Bidder != oldBidId.Bidder {
 			afterUpdatedBids = append(afterUpdatedBids, bid)

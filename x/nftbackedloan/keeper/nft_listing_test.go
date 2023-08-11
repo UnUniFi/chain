@@ -137,7 +137,7 @@ func (suite *KeeperTestSuite) TestListNft() {
 			// use keeper directly to be executed with hooks structs
 			err := keeper.ListNft(suite.ctx, &types.MsgListNft{
 				Sender:             tc.lister.String(),
-				NftId:              types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId},
+				NftId:              types.NftId{ClassId: tc.classId, TokenId: tc.nftId},
 				BidDenom:           tc.BidDenom,
 				MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 			})
@@ -145,7 +145,7 @@ func (suite *KeeperTestSuite) TestListNft() {
 		}
 		err := keeper.ListNft(suite.ctx, &types.MsgListNft{
 			Sender:             tc.lister.String(),
-			NftId:              types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId},
+			NftId:              types.NftId{ClassId: tc.classId, TokenId: tc.nftId},
 			BidDenom:           tc.BidDenom,
 			MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
 		})
@@ -154,7 +154,7 @@ func (suite *KeeperTestSuite) TestListNft() {
 			suite.Require().NoError(err)
 
 			// get listing
-			listing, err := keeper.GetNftListingByIdBytes(suite.ctx, (types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId}).IdBytes())
+			listing, err := keeper.GetNftListingByIdBytes(suite.ctx, (types.NftId{ClassId: tc.classId, TokenId: tc.nftId}).IdBytes())
 			suite.Require().NoError(err)
 
 			// check ownership is transferred
@@ -272,7 +272,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 		}, tc.nftOwner)
 		suite.Require().NoError(err)
 
-		nftIdentifier := types.NftIdentifier{ClassId: tc.classId, NftId: tc.nftId}
+		nftIdentifier := types.NftId{ClassId: tc.classId, TokenId: tc.nftId}
 		if tc.listBefore {
 			err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
 				Sender:             tc.nftOwner.String(),
@@ -308,7 +308,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 
 		oldCancellerBalance := suite.app.BankKeeper.GetBalance(suite.ctx, tc.canceller, "uguu")
 		suite.ctx = suite.ctx.WithBlockTime(suite.ctx.BlockTime().Add(tc.cancelAfter))
-		err = keeper.CancelNftListing(suite.ctx, &types.MsgCancelNftListing{
+		err = keeper.CancelNftListing(suite.ctx, &types.MsgCancelListing{
 			Sender: tc.canceller.String(),
 			NftId:  nftIdentifier,
 		})
@@ -373,7 +373,7 @@ func (suite *KeeperTestSuite) TestDeliverSuccessfulBids() {
 	}, nftOwner)
 	suite.Require().NoError(err)
 
-	nftIdentifier := types.NftIdentifier{ClassId: classId, NftId: nftId}
+	nftIdentifier := types.NftId{ClassId: classId, TokenId: nftId}
 	err = suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
 		Sender:             nftOwner.String(),
 		NftId:              nftIdentifier,

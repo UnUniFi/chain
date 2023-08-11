@@ -13,16 +13,16 @@ import (
 func TestIsBorrowed(t *testing.T) {
 	testCases := []struct {
 		name      string
-		bid       types.NftBid
+		bid       types.Bid
 		expResult bool
 	}{
 		{
 			"Exist Borrowing",
-			types.NftBid{
+			types.Bid{
 				Id: types.BidId{
-					NftId: &types.NftIdentifier{
+					NftId: &types.NftId{
 						ClassId: "a10",
-						NftId:   "a10",
+						TokenId: "a10",
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
@@ -35,11 +35,11 @@ func TestIsBorrowed(t *testing.T) {
 		},
 		{
 			"No borrowing",
-			types.NftBid{
+			types.Bid{
 				Id: types.BidId{
-					NftId: &types.NftIdentifier{
+					NftId: &types.NftId{
 						ClassId: "a10",
-						NftId:   "a10",
+						TokenId: "a10",
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
@@ -66,7 +66,7 @@ func TestCalcCompoundInterest(t *testing.T) {
 	nextYear := time.Now().Add(time.Hour * 24 * 365)
 	testCases := []struct {
 		name      string
-		bid       types.NftBid
+		bid       types.Bid
 		lendCoin  sdk.Coin
 		startTime time.Time
 		endTime   time.Time
@@ -74,11 +74,11 @@ func TestCalcCompoundInterest(t *testing.T) {
 	}{
 		{
 			"Interest test 1 month",
-			types.NftBid{
+			types.Bid{
 				Id: types.BidId{
-					NftId: &types.NftIdentifier{
+					NftId: &types.NftId{
 						ClassId: "a10",
-						NftId:   "a10",
+						TokenId: "a10",
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
@@ -96,11 +96,11 @@ func TestCalcCompoundInterest(t *testing.T) {
 		},
 		{
 			"Interest test 1 year",
-			types.NftBid{
+			types.Bid{
 				Id: types.BidId{
-					NftId: &types.NftIdentifier{
+					NftId: &types.NftId{
 						ClassId: "a10",
-						NftId:   "a10",
+						TokenId: "a10",
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
@@ -131,18 +131,18 @@ func TestRepayInfo(t *testing.T) {
 	nextYear := time.Now().Add(time.Hour * 24 * 365)
 	testCases := []struct {
 		name          string
-		bid           types.NftBid
+		bid           types.Bid
 		repayAmount   sdk.Coin
 		repaymentTime time.Time
 		expResult     types.RepayInfo
 	}{
 		{
 			"Repay partial",
-			types.NftBid{
+			types.Bid{
 				Id: types.BidId{
-					NftId: &types.NftIdentifier{
+					NftId: &types.NftId{
 						ClassId: "a10",
-						NftId:   "a10",
+						TokenId: "a10",
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
@@ -164,11 +164,11 @@ func TestRepayInfo(t *testing.T) {
 		},
 		{
 			"Repay over amount",
-			types.NftBid{
+			types.Bid{
 				Id: types.BidId{
-					NftId: &types.NftIdentifier{
+					NftId: &types.NftId{
 						ClassId: "a10",
-						NftId:   "a10",
+						TokenId: "a10",
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
@@ -200,16 +200,16 @@ func TestRepayInfo(t *testing.T) {
 func TestIsPaidSalePrice(t *testing.T) {
 	testCases := []struct {
 		name      string
-		bid       types.NftBid
+		bid       types.Bid
 		expResult bool
 	}{
 		{
 			"Paid",
-			types.NftBid{
+			types.Bid{
 				Id: types.BidId{
-					NftId: &types.NftIdentifier{
+					NftId: &types.NftId{
 						ClassId: "a10",
-						NftId:   "a10",
+						TokenId: "a10",
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
@@ -221,11 +221,11 @@ func TestIsPaidSalePrice(t *testing.T) {
 		},
 		{
 			"Not paid",
-			types.NftBid{
+			types.Bid{
 				Id: types.BidId{
-					NftId: &types.NftIdentifier{
+					NftId: &types.NftId{
 						ClassId: "a10",
-						NftId:   "a10",
+						TokenId: "a10",
 					},
 					Bidder: "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
 				},
@@ -254,12 +254,12 @@ func TestTotalBorrowedAmount(t *testing.T) {
 		{
 			"Total borrow amount",
 			types.NftBids{
-				types.NftBid{
+				types.Bid{
 					Borrow: types.Borrowing{
 						Amount: sdk.NewCoin("uguu", sdk.NewInt(1000000)),
 					},
 				},
-				types.NftBid{
+				types.Bid{
 					Borrow: types.Borrowing{
 						Amount: sdk.NewCoin("uguu", sdk.NewInt(2000000)),
 					},
@@ -288,14 +288,14 @@ func TestTotalCompoundInterest(t *testing.T) {
 		{
 			"Total borrow amount",
 			types.NftBids{
-				types.NftBid{
+				types.Bid{
 					InterestRate: sdk.NewDecWithPrec(1, 1),
 					Borrow: types.Borrowing{
 						Amount:       sdk.NewCoin("uguu", sdk.NewInt(1000000)),
 						LastRepaidAt: now,
 					},
 				},
-				types.NftBid{
+				types.Bid{
 					InterestRate: sdk.NewDecWithPrec(2, 1),
 					Borrow: types.Borrowing{
 						Amount:       sdk.NewCoin("uguu", sdk.NewInt(1000000)),

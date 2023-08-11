@@ -13,21 +13,21 @@ import (
 	"github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
-func (k Keeper) GetNftListingByIdBytes(ctx sdk.Context, nftIdBytes []byte) (types.NftListing, error) {
+func (k Keeper) GetNftListingByIdBytes(ctx sdk.Context, nftIdBytes []byte) (types.Listing, error) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.NftListingKey(nftIdBytes))
 	if bz == nil {
-		return types.NftListing{}, types.ErrNftListingDoesNotExist
+		return types.Listing{}, types.ErrNftListingDoesNotExist
 	}
-	listing := types.NftListing{}
+	listing := types.Listing{}
 	k.cdc.MustUnmarshal(bz, &listing)
 	return listing, nil
 }
 
-func (k Keeper) GetListingsByOwner(ctx sdk.Context, owner sdk.AccAddress) []types.NftListing {
+func (k Keeper) GetListingsByOwner(ctx sdk.Context, owner sdk.AccAddress) []types.Listing {
 	store := ctx.KVStore(k.storeKey)
 
-	listings := []types.NftListing{}
+	listings := []types.Listing{}
 	it := sdk.KVStorePrefixIterator(store, types.NftAddressNftListingPrefixKey(owner))
 	defer it.Close()
 
@@ -63,12 +63,12 @@ func getTimeKey(prefix string, timestamp time.Time) []byte {
 }
 
 // call this method when you want to call SetNftListing
-func (k Keeper) SaveNftListing(ctx sdk.Context, listing types.NftListing) {
+func (k Keeper) SaveNftListing(ctx sdk.Context, listing types.Listing) {
 	k.SetNftListing(ctx, listing)
 	k.UpdateListedClass(ctx, listing)
 }
 
-func (k Keeper) SetNftListing(ctx sdk.Context, listing types.NftListing) {
+func (k Keeper) SetNftListing(ctx sdk.Context, listing types.Listing) {
 	if oldListing, err := k.GetNftListingByIdBytes(ctx, listing.IdBytes()); err == nil {
 		k.DeleteNftListings(ctx, oldListing)
 	}
@@ -93,12 +93,12 @@ func (k Keeper) SetNftListing(ctx sdk.Context, listing types.NftListing) {
 }
 
 // call this method when you want to call DeleteNftListing
-func (k Keeper) DeleteNftListings(ctx sdk.Context, listing types.NftListing) {
+func (k Keeper) DeleteNftListings(ctx sdk.Context, listing types.Listing) {
 	k.DeleteNftListing(ctx, listing)
 	k.UpdateListedClass(ctx, listing)
 }
 
-func (k Keeper) DeleteNftListing(ctx sdk.Context, listing types.NftListing) {
+func (k Keeper) DeleteNftListing(ctx sdk.Context, listing types.Listing) {
 	nftIdBytes := listing.IdBytes()
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.NftListingKey(nftIdBytes))
@@ -117,13 +117,13 @@ func (k Keeper) DeleteNftListing(ctx sdk.Context, listing types.NftListing) {
 	}
 }
 
-func (k Keeper) GetFullPaymentNftListingsEndingAt(ctx sdk.Context, endTime time.Time) []types.NftListing {
+func (k Keeper) GetFullPaymentNftListingsEndingAt(ctx sdk.Context, endTime time.Time) []types.Listing {
 	store := ctx.KVStore(k.storeKey)
 	timeKey := getTimeKey(types.KeyPrefixFullPaymentPeriodListing, endTime)
 	it := store.Iterator([]byte(types.KeyPrefixFullPaymentPeriodListing), storetypes.InclusiveEndBytes(timeKey))
 	defer it.Close()
 
-	listings := []types.NftListing{}
+	listings := []types.Listing{}
 	for ; it.Valid(); it.Next() {
 		nftIdBytes := it.Value()
 		listing, err := k.GetNftListingByIdBytes(ctx, nftIdBytes)
@@ -137,13 +137,13 @@ func (k Keeper) GetFullPaymentNftListingsEndingAt(ctx sdk.Context, endTime time.
 	return listings
 }
 
-func (k Keeper) GetSuccessfulBidNftListingsEndingAt(ctx sdk.Context, endTime time.Time) []types.NftListing {
+func (k Keeper) GetSuccessfulBidNftListingsEndingAt(ctx sdk.Context, endTime time.Time) []types.Listing {
 	store := ctx.KVStore(k.storeKey)
 	timeKey := getTimeKey(types.KeyPrefixSuccessfulBidListing, endTime)
 	it := store.Iterator([]byte(types.KeyPrefixSuccessfulBidListing), storetypes.InclusiveEndBytes(timeKey))
 	defer it.Close()
 
-	listings := []types.NftListing{}
+	listings := []types.Listing{}
 	for ; it.Valid(); it.Next() {
 		nftIdBytes := it.Value()
 		listing, err := k.GetNftListingByIdBytes(ctx, nftIdBytes)
@@ -157,14 +157,14 @@ func (k Keeper) GetSuccessfulBidNftListingsEndingAt(ctx sdk.Context, endTime tim
 	return listings
 }
 
-func (k Keeper) GetAllNftListings(ctx sdk.Context) []types.NftListing {
+func (k Keeper) GetAllNftListings(ctx sdk.Context) []types.Listing {
 	store := ctx.KVStore(k.storeKey)
 	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixNftListing))
 	defer it.Close()
 
-	allListings := []types.NftListing{}
+	allListings := []types.Listing{}
 	for ; it.Valid(); it.Next() {
-		var listing types.NftListing
+		var listing types.Listing
 		k.cdc.MustUnmarshal(it.Value(), &listing)
 
 		allListings = append(allListings, listing)
@@ -181,8 +181,8 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 
 	// create listing
 	// todo: make test
-	owner := k.nftKeeper.GetOwner(ctx, msg.NftId.ClassId, msg.NftId.NftId)
-	listing := types.NftListing{
+	owner := k.nftKeeper.GetOwner(ctx, msg.NftId.ClassId, msg.NftId.TokenId)
+	listing := types.Listing{
 		NftId:                   msg.NftId,
 		Owner:                   owner.String(),
 		State:                   types.ListingState_LISTING,
@@ -195,12 +195,12 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 	}
 
 	// disable NFT transfer
-	data, found := k.nftKeeper.GetNftData(ctx, msg.NftId.ClassId, msg.NftId.NftId)
+	data, found := k.nftKeeper.GetNftData(ctx, msg.NftId.ClassId, msg.NftId.TokenId)
 	if !found {
 		return types.ErrNftDoesNotExists
 	}
 	data.SendDisabled = true
-	err := k.nftKeeper.SetNftData(ctx, msg.NftId.ClassId, msg.NftId.NftId, data)
+	err := k.nftKeeper.SetNftData(ctx, msg.NftId.ClassId, msg.NftId.TokenId, data)
 	if err != nil {
 		return err
 	}
@@ -211,16 +211,16 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 	// k.AfterNftListed(ctx, msg.NftId, GetMemo(ctx.TxBytes(), k.txCfg))
 
 	// Emit event for nft listing
-	_ = ctx.EventManager().EmitTypedEvent(&types.EventListingNft{
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventListNft{
 		Owner:   msg.Sender,
 		ClassId: msg.NftId.ClassId,
-		NftId:   msg.NftId.NftId,
+		TokenId: msg.NftId.TokenId,
 	})
 
 	return nil
 }
 
-func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing) error {
+func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelListing) error {
 	// check listing already exists
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
@@ -228,7 +228,7 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 	}
 
 	// // Check nft exists
-	_, found := k.nftKeeper.GetNFT(ctx, msg.NftId.ClassId, msg.NftId.NftId)
+	_, found := k.nftKeeper.GetNFT(ctx, msg.NftId.ClassId, msg.NftId.TokenId)
 	if !found {
 		return types.ErrNftDoesNotExists
 	}
@@ -257,12 +257,12 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 	}
 
 	// enable NFT transfer
-	data, found := k.nftKeeper.GetNftData(ctx, msg.NftId.ClassId, msg.NftId.NftId)
+	data, found := k.nftKeeper.GetNftData(ctx, msg.NftId.ClassId, msg.NftId.TokenId)
 	if !found {
 		return types.ErrNftDoesNotExists
 	}
 	data.SendDisabled = false
-	err = k.nftKeeper.SetNftData(ctx, msg.NftId.ClassId, msg.NftId.NftId, data)
+	err = k.nftKeeper.SetNftData(ctx, msg.NftId.ClassId, msg.NftId.TokenId, data)
 	if err != nil {
 		return err
 	}
@@ -275,10 +275,10 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelNftListing
 	k.AfterNftUnlistedWithoutPayment(ctx, listing.NftId)
 
 	// Emit event for nft listing cancel
-	_ = ctx.EventManager().EmitTypedEvent(&types.EventCancelListingNft{
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventCancelListing{
 		Owner:   msg.Sender,
 		ClassId: msg.NftId.ClassId,
-		NftId:   msg.NftId.NftId,
+		TokenId: msg.NftId.TokenId,
 	})
 
 	return nil
@@ -359,18 +359,18 @@ func (k Keeper) DeliverSuccessfulBids(ctx sdk.Context) {
 
 		cacheCtx, write := ctx.CacheContext()
 
-		data, found := k.nftKeeper.GetNftData(ctx, listing.NftId.ClassId, listing.NftId.NftId)
+		data, found := k.nftKeeper.GetNftData(ctx, listing.NftId.ClassId, listing.NftId.TokenId)
 		if !found {
 			fmt.Println("nft data not found")
 			continue
 		}
 		data.SendDisabled = false
-		err = k.nftKeeper.SetNftData(ctx, listing.NftId.ClassId, listing.NftId.NftId, data)
+		err = k.nftKeeper.SetNftData(ctx, listing.NftId.ClassId, listing.NftId.TokenId, data)
 		if err != nil {
 			fmt.Println(err)
 			continue
 		}
-		err = k.nftKeeper.Transfer(cacheCtx, listing.NftId.ClassId, listing.NftId.NftId, bidder)
+		err = k.nftKeeper.Transfer(cacheCtx, listing.NftId.ClassId, listing.NftId.TokenId, bidder)
 		if err != nil {
 			fmt.Println(err)
 			continue
@@ -380,7 +380,7 @@ func (k Keeper) DeliverSuccessfulBids(ctx sdk.Context) {
 	}
 }
 
-func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, amount sdk.Coin, nftId types.NftIdentifier) error {
+func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, amount sdk.Coin, nftId types.NftId) error {
 	params := k.GetParamSet(ctx)
 	commissionFee := params.NftListingCommissionFee
 	cacheCtx, write := ctx.CacheContext()

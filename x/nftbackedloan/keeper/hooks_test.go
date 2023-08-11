@@ -12,14 +12,14 @@ var statusAfterNftUnlistedWithoutPayment bool
 
 type dummyNftmarketHook struct{}
 
-func (hook *dummyNftmarketHook) AfterNftListed(ctx sdk.Context, nftId types.NftIdentifier, txMemo string) {
+func (hook *dummyNftmarketHook) AfterNftListed(ctx sdk.Context, nftId types.NftId, txMemo string) {
 	statusAfterNftListed = true
 }
 
-func (hook *dummyNftmarketHook) AfterNftPaymentWithCommission(ctx sdk.Context, nftId types.NftIdentifier, fee sdk.Coin) {
+func (hook *dummyNftmarketHook) AfterNftPaymentWithCommission(ctx sdk.Context, nftId types.NftId, fee sdk.Coin) {
 	statusAfterNftPaymentWithCommission = true
 }
 
-func (hook *dummyNftmarketHook) AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftId types.NftIdentifier) {
+func (hook *dummyNftmarketHook) AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftId types.NftId) {
 	statusAfterNftUnlistedWithoutPayment = true
 }

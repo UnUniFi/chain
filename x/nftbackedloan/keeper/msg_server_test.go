@@ -17,9 +17,9 @@ package keeper_test
 // Bid by end time
 
 // TODO: test for
-// func (m NftListing) CanRefinancing(allBids, expiredBids []NftBid, now time.Time) bool {
-// func (m NftListing) CalcAmount(bids []NftBid) sdk.Int {
-// func (m NftListing) CalcAmountF(bids []NftBid, conditionF func(bid NftBid) bool) sdk.Int {
+// func (m Listing) CanRefinancing(allBids, expiredBids []Bid, now time.Time) bool {
+// func (m Listing) CalcAmount(bids []Bid) sdk.Int {
+// func (m Listing) CalcAmountF(bids []Bid, conditionF func(bid NftBid) bool) sdk.Int {
 
 // TODO: update for panic handling
 // TODO: more comment on the code

@@ -12,7 +12,7 @@ import (
 func (suite *KeeperTestSuite) TestRewardDistributionOfnftbackedloan() {
 	testCases := []struct {
 		testCase   string
-		nftId      nftbackedloantypes.NftIdentifier
+		nftId      nftbackedloantypes.NftId
 		reward     sdk.Coin
 		validDenom bool
 		success    bool
@@ -23,14 +23,14 @@ func (suite *KeeperTestSuite) TestRewardDistributionOfnftbackedloan() {
 	}{
 		{
 			testCase:   "success case",
-			nftId:      nftbackedloantypes.NftIdentifier{ClassId: "test1", NftId: "test1"},
+			nftId:      nftbackedloantypes.NftId{ClassId: "test1", NftId: "test1"},
 			reward:     sdk.NewCoin("uguu", sdk.NewInt(100)),
 			validDenom: true,
 			success:    true,
 		},
 		{
 			testCase:   "too small amount of reward to not distribute reward",
-			nftId:      nftbackedloantypes.NftIdentifier{ClassId: "test2", NftId: "test2"},
+			nftId:      nftbackedloantypes.NftId{ClassId: "test2", NftId: "test2"},
 			reward:     sdk.NewCoin("uguu", sdk.NewInt(1)),
 			validDenom: true,
 			success:    true,
