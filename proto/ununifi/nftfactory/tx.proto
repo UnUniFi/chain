@@ -17,7 +17,7 @@ service Msg {
 
 message MsgCreateClass {
   string                sender      = 1;
-  string                id          = 2;
+  string                subclass    = 2;
   string                name        = 3;
   string                symbol      = 4;
   string                description = 5;
