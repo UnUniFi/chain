@@ -60,7 +60,7 @@ func (k Keeper) HandleMemoTxWithMsgListNft(ctx sdk.Context, msg *nftbackedloanty
 		_ = ctx.EventManager().EmitTypedEvent(&types.EventVersionUnmatched{
 			UnmatchedVersion: metadata.Version,
 			ClassId:          msg.NftId.ClassId,
-			NftId:            msg.NftId.NftId,
+			NftId:            msg.NftId.TokenId,
 		})
 	}
 }

@@ -9,7 +9,7 @@ import (
 	osmomath "github.com/UnUniFi/chain/osmomath"
 )
 
-func (m NftBid) Equal(b NftBid) bool {
+func (m Bid) Equal(b Bid) bool {
 	if m.IsNil() || b.IsNil() {
 		if m.IsNil() && b.IsNil() {
 			return true
@@ -17,9 +17,9 @@ func (m NftBid) Equal(b NftBid) bool {
 			return false
 		}
 	}
-	return m.Id.Bidder == b.Id.Bidder && m.Id.NftId.ClassId == b.Id.NftId.ClassId && m.Id.NftId.NftId == b.Id.NftId.NftId && m.Price.Equal(b.Price)
+	return m.Id.Bidder == b.Id.Bidder && m.Id.NftId.ClassId == b.Id.NftId.ClassId && m.Id.NftId.TokenId == b.Id.NftId.TokenId && m.Price.Equal(b.Price)
 }
-func (m NftBid) IsLT(b NftBid) bool {
+func (m Bid) IsLT(b Bid) bool {
 	if b.Price.IsLTE(m.Price) {
 		return false
 	}
@@ -33,24 +33,24 @@ func (m NftBid) IsLT(b NftBid) bool {
 	return true
 }
 
-func (m NftBid) GetIdToByte() []byte {
-	return NftBidBytes(m.Id.NftId.ClassId, m.Id.NftId.NftId, m.Id.Bidder)
+func (m Bid) GetIdToByte() []byte {
+	return NftBidBytes(m.Id.NftId.ClassId, m.Id.NftId.TokenId, m.Id.Bidder)
 }
 
-func (m NftBid) IsBorrowed() bool {
-	return m.Borrow.Amount.IsPositive()
+func (m Bid) IsBorrowed() bool {
+	return m.Loan.Amount.IsPositive()
 }
 
-func (m NftBid) LiquidationAmount(time time.Time) sdk.Coin {
-	interestAmount := m.CalcCompoundInterest(m.Borrow.Amount, m.Borrow.LastRepaidAt, time)
-	return m.Borrow.Amount.Add(interestAmount)
+func (m Bid) LiquidationAmount(time time.Time) sdk.Coin {
+	interestAmount := m.CalcCompoundInterest(m.Loan.Amount, m.Loan.LastRepaidAt, time)
+	return m.Loan.Amount.Add(interestAmount)
 }
 
-func (m NftBid) CompoundInterest(end time.Time) sdk.Coin {
-	return m.CalcCompoundInterest(m.Borrow.Amount, m.Borrow.LastRepaidAt, end)
+func (m Bid) CompoundInterest(end time.Time) sdk.Coin {
+	return m.CalcCompoundInterest(m.Loan.Amount, m.Loan.LastRepaidAt, end)
 }
 
-func (m NftBid) CalcCompoundInterest(lendCoin sdk.Coin, startTime time.Time, endTime time.Time) sdk.Coin {
+func (m Bid) CalcCompoundInterest(lendCoin sdk.Coin, startTime time.Time, endTime time.Time) sdk.Coin {
 	lendingDuration := endTime.Sub(startTime)
 	if lendingDuration <= 0 {
 		return sdk.NewCoin(lendCoin.Denom, sdk.ZeroInt())
@@ -68,12 +68,12 @@ func (m NftBid) CalcCompoundInterest(lendCoin sdk.Coin, startTime time.Time, end
 	return sdk.NewCoin(lendCoin.Denom, result.RoundInt())
 }
 
-func (m NftBid) RepayInfo(repayAmount sdk.Coin, repaymentTime time.Time) RepayInfo {
-	interest := m.CalcCompoundInterest(m.Borrow.Amount, m.Borrow.LastRepaidAt, repaymentTime)
-	total := m.Borrow.Amount.Add(interest)
+func (m Bid) RepayInfo(repayAmount sdk.Coin, repaymentTime time.Time) RepayInfo {
+	interest := m.CalcCompoundInterest(m.Loan.Amount, m.Loan.LastRepaidAt, repaymentTime)
+	total := m.Loan.Amount.Add(interest)
 
 	if repayAmount.IsGTE(total) {
-		remainingAmount := sdk.NewCoin(m.Borrow.Amount.Denom, sdk.ZeroInt())
+		remainingAmount := sdk.NewCoin(m.Loan.Amount.Denom, sdk.ZeroInt())
 		return RepayInfo{
 			RepaidAmount:         total,
 			RepaidInterestAmount: interest,
@@ -91,12 +91,12 @@ func (m NftBid) RepayInfo(repayAmount sdk.Coin, repaymentTime time.Time) RepayIn
 	}
 }
 
-func (m NftBid) RepayInfoInFull(repaymentTime time.Time) RepayInfo {
-	m.RepayInfo(m.Borrow.Amount, repaymentTime)
-	interest := m.CalcCompoundInterest(m.Borrow.Amount, m.Borrow.LastRepaidAt, repaymentTime)
-	total := m.Borrow.Amount.Add(interest)
+func (m Bid) RepayInfoInFull(repaymentTime time.Time) RepayInfo {
+	m.RepayInfo(m.Loan.Amount, repaymentTime)
+	interest := m.CalcCompoundInterest(m.Loan.Amount, m.Loan.LastRepaidAt, repaymentTime)
+	total := m.Loan.Amount.Add(interest)
 
-	remainingAmount := sdk.NewCoin(m.Borrow.Amount.Denom, sdk.ZeroInt())
+	remainingAmount := sdk.NewCoin(m.Loan.Amount.Denom, sdk.ZeroInt())
 	return RepayInfo{
 		RepaidAmount:         total,
 		RepaidInterestAmount: interest,
@@ -105,28 +105,28 @@ func (m NftBid) RepayInfoInFull(repaymentTime time.Time) RepayInfo {
 	}
 }
 
-func (m NftBid) BidderPaidAmount() sdk.Coin {
+func (m Bid) BidderPaidAmount() sdk.Coin {
 	return m.PaidAmount.Add(m.Deposit)
 }
 
-func (m NftBid) IsPaidSalePrice() bool {
+func (m Bid) IsPaidSalePrice() bool {
 	fullPaidAmount := m.BidderPaidAmount()
 	return fullPaidAmount.Equal(m.Price)
 }
 
-func (m NftBid) CanCancel() bool {
+func (m Bid) CanCancel() bool {
 	return !m.IsBorrowed()
 }
 
-func (m NftBid) CanReBid() bool {
+func (m Bid) CanReBid() bool {
 	return !m.IsBorrowed()
 }
 
-func (m NftBid) IsNil() bool {
+func (m Bid) IsNil() bool {
 	return m.Id.Bidder == ""
 }
 
-type NftBids []NftBid
+type NftBids []Bid
 
 func (m NftBids) SortLowerInterestRate() NftBids {
 	dest := append(NftBids{}, m...)
@@ -168,9 +168,9 @@ func (m NftBids) SortHigherPrice() NftBids {
 	return dest
 }
 
-func (m NftBids) GetHighestBid() (NftBid, error) {
+func (m NftBids) GetHighestBid() (Bid, error) {
 	if len(m) == 0 {
-		return NftBid{}, ErrBidDoesNotExists
+		return Bid{}, ErrBidDoesNotExists
 	}
 	highestBid := m[0]
 	for _, bid := range m {
@@ -182,16 +182,16 @@ func (m NftBids) GetHighestBid() (NftBid, error) {
 	return highestBid, nil
 }
 
-func (m NftBids) GetBidByBidder(bidder string) NftBid {
+func (m NftBids) GetBidByBidder(bidder string) Bid {
 	for _, bid := range m {
 		if bid.Id.Bidder == bidder {
 			return bid
 		}
 	}
-	return NftBid{}
+	return Bid{}
 }
 
-func (m NftBids) RemoveBid(targetBid NftBid) NftBids {
+func (m NftBids) RemoveBid(targetBid Bid) NftBids {
 	return m.RemoveBids(NftBids{targetBid})
 }
 
@@ -213,9 +213,9 @@ func (m NftBids) TotalBorrowedAmount() sdk.Coin {
 	if len(m) == 0 {
 		return sdk.Coin{}
 	}
-	coin := sdk.NewCoin(m[0].Borrow.Amount.Denom, sdk.ZeroInt())
+	coin := sdk.NewCoin(m[0].Loan.Amount.Denom, sdk.ZeroInt())
 	for _, bid := range m {
-		coin = coin.Add(bid.Borrow.Amount)
+		coin = coin.Add(bid.Loan.Amount)
 	}
 	return coin
 }
@@ -224,9 +224,9 @@ func (m NftBids) TotalCompoundInterest(end time.Time) sdk.Coin {
 	if len(m) == 0 {
 		return sdk.Coin{}
 	}
-	coin := sdk.NewCoin(m[0].Borrow.Amount.Denom, sdk.ZeroInt())
+	coin := sdk.NewCoin(m[0].Loan.Amount.Denom, sdk.ZeroInt())
 	for _, bid := range m {
-		coin = coin.Add(bid.CalcCompoundInterest(bid.Borrow.Amount, bid.Borrow.LastRepaidAt, end))
+		coin = coin.Add(bid.CalcCompoundInterest(bid.Loan.Amount, bid.Loan.LastRepaidAt, end))
 	}
 	return coin
 }
