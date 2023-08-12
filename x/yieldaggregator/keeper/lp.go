@@ -204,7 +204,7 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 	withdrawFee := sdk.NewDecFromInt(principal.Amount).Mul(withdrawFeeRate).RoundInt()
 	withdrawAmount := principal.Amount.Sub(withdrawFee)
 
-	withdrawModuleCommissionFee := sdk.NewDecFromInt(withdrawAmount).Mul(params.WithdrawCommissionRate).RoundInt()
+	withdrawModuleCommissionFee := sdk.NewDecFromInt(withdrawAmount).Mul(params.CommissionRate).RoundInt()
 	withdrawVaultCommissionFee := sdk.NewDecFromInt(withdrawAmount).Mul(vault.WithdrawCommissionRate).RoundInt()
 	withdrawAmountWithoutCommission := withdrawAmount.Sub(withdrawModuleCommissionFee).Sub(withdrawVaultCommissionFee)
 

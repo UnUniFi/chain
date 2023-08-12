@@ -18,10 +18,10 @@ func NewParams(
 	feeCollectorAddress string,
 ) Params {
 	return Params{
-		WithdrawCommissionRate: withrawCommissionRate,
-		VaultCreationFee:       vaultCreationFee,
-		VaultCreationDeposit:   vaultCreationDeposit,
-		FeeCollectorAddress:    feeCollectorAddress,
+		CommissionRate:       withrawCommissionRate,
+		VaultCreationFee:     vaultCreationFee,
+		VaultCreationDeposit: vaultCreationDeposit,
+		FeeCollectorAddress:  feeCollectorAddress,
 	}
 }
 
@@ -37,7 +37,7 @@ func DefaultParams() Params {
 
 // Validate validates the set of params
 func (p Params) Validate() error {
-	if err := validateCommissionRate(p.WithdrawCommissionRate); err != nil {
+	if err := validateCommissionRate(p.CommissionRate); err != nil {
 		return err
 	}
 	if err := validateVaultCreationFee(p.VaultCreationFee); err != nil {
