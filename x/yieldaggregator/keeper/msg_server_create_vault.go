@@ -33,6 +33,7 @@ func (k msgServer) CreateVault(goCtx context.Context, msg *types.MsgCreateVault)
 	}
 
 	// transfer fee
+	// TODO: change the recipient to the fee collector address in params
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.NewCoins(msg.Fee))
 	if err != nil {
 		return nil, err
