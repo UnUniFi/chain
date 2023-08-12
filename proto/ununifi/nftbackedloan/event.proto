@@ -9,71 +9,65 @@ import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/nftbackedloan/types";
 
-message EventListingNft {
+message EventListNft {
   string owner    = 1;
   string class_id = 2;
-  string nft_id   = 3;
+  string token_id   = 3;
 }
 
-message EventCancelListingNft {
+message EventCancelListing {
   string owner    = 1;
   string class_id = 2;
-  string nft_id   = 3;
-}
-
-message EventExpandListingPeriod {
-  string owner    = 1;
-  string class_id = 2;
-  string nft_id   = 3;
+  string token_id   = 3;
 }
 
 message EventSellingDecision {
   string owner    = 1;
   string class_id = 2;
-  string nft_id   = 3;
+  string token_id   = 3;
 }
 
-message EventEndListingNft {
+message EventEndListing {
   string owner    = 1;
   string class_id = 2;
-  string nft_id   = 3;
+  string token_id   = 3;
 }
 
 message EventPlaceBid {
   string bidder   = 1;
   string class_id = 2;
-  string nft_id   = 3;
+  string token_id   = 3;
   string amount   = 4;
 }
 
 message EventCancelBid {
   string bidder   = 1;
   string class_id = 2;
-  string nft_id   = 3;
+  string token_id   = 3;
 }
 
 message EventPayRemainder {
   string bidder   = 1;
   string class_id = 2;
-  string nft_id   = 3;
+  string token_id   = 3;
 }
 
 message EventBorrow {
   string borrower = 1;
   string class_id = 2;
-  string nft_id   = 3;
+  string token_id   = 3;
   string amount   = 4;
 }
 
 message EventRepay {
   string borrower = 1;
   string class_id = 2;
-  string nft_id   = 3;
+  string token_id   = 3;
   string amount   = 4;
 }
 
 message EventLiquidate {
   string liquidator = 1;
   string class_id   = 2;
-  string nft_id     = 3;
+  string token_id     = 3;
 }

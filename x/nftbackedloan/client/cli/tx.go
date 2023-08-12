@@ -28,7 +28,6 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(
-		CmdMintNft(),
 		CmdCreateList(),
 		CmdCancelNftListing(),
 		CmdSellingDecision(),
@@ -43,40 +42,11 @@ func GetTxCmd() *cobra.Command {
 	return cmd
 }
 
-func CmdMintNft() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "mint [class-id] [nft-id] [uri] [uri-hash]",
-		Short: "Mint an nft",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`Mint an nft.
-Example:
-$ %s tx %s mint a10 a10 uri 888838  --from myKeyName --chain-id ununifi-x
-`, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(4),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			msg := types.NewMsgMintNft(clientCtx.GetFromAddress().String(), args[0], args[1], args[2], args[3])
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-
-	return cmd
-}
-
 // todo: Implementation fields
 // BidToken, MinBid, BidHook, ListingType
 func CmdCreateList() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list [class-id] [nft-id]",
+		Use:   "list [class-id] [token-id]",
 		Short: "Creates a new listing",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Create a new listing, depositing nft.
@@ -91,10 +61,10 @@ $ %s tx %s list ununifi-1 a1 --bid-token uguu --min-deposit-rate 0.1 --min-biddi
 			}
 
 			classId := args[0]
-			nftId := args[1]
-			nftIde := types.NftIdentifier{
+			tokenId := args[1]
+			nftIde := types.NftId{
 				ClassId: classId,
-				NftId:   nftId,
+				TokenId: tokenId,
 			}
 
 			minDepositRate, err := cmd.Flags().GetString(FlagMinimumDepositRate)
@@ -171,9 +141,9 @@ $ %s tx %s place-bid ununifi-1 a1 100uguu 20uguu 0.05 240 --from myKeyName --cha
 
 			classId := args[classIdArg]
 			nftId := args[nftIdArg]
-			nftIde := types.NftIdentifier{
+			nftIde := types.NftId{
 				ClassId: classId,
-				NftId:   nftId,
+				TokenId: nftId,
 			}
 			bidCoin, err := sdk.ParseCoinNormalized(args[bidArgs])
 			if err != nil {
@@ -237,7 +207,7 @@ $ %s tx %s place-bid ununifi-1 a1 100uguu 20uguu 0.05 240 --from myKeyName --cha
 
 // 			classId := args[0]
 // 			nftId := args[1]
-// 			nftIde := types.NftIdentifier{
+// 			nftIde := types.NftId{
 // 				ClassId: classId,
 // 				NftId:   nftId,
 // 			}
@@ -273,9 +243,9 @@ $ %s tx %s selling-decision 1 1 --from myKeyName --chain-id ununifi-x
 
 			classId := args[0]
 			nftId := args[1]
-			nftIde := types.NftIdentifier{
+			nftIde := types.NftId{
 				ClassId: classId,
-				NftId:   nftId,
+				TokenId: nftId,
 			}
 
 			msg := types.NewMsgSellingDecision(clientCtx.GetFromAddress().String(), nftIde)
@@ -309,9 +279,9 @@ $ %s tx %s borrow 1 1 100uguu --from myKeyName --chain-id ununifi-x
 
 			classId := args[0]
 			nftId := args[1]
-			nftIde := types.NftIdentifier{
+			nftIde := types.NftId{
 				ClassId: classId,
-				NftId:   nftId,
+				TokenId: nftId,
 			}
 
 			bidder := args[2]
@@ -352,9 +322,9 @@ $ %s tx %s repay 1 1 100uguu --from myKeyName --chain-id ununifi-x
 
 			classId := args[0]
 			nftId := args[1]
-			nftIde := types.NftIdentifier{
+			nftIde := types.NftId{
 				ClassId: classId,
-				NftId:   nftId,
+				TokenId: nftId,
 			}
 
 			bidder := args[2]
@@ -395,9 +365,9 @@ $ %s tx %s cancel_listing 1 1 --from myKeyName --chain-id ununifi-x
 
 			classId := args[0]
 			nftId := args[1]
-			nftIde := types.NftIdentifier{
+			nftIde := types.NftId{
 				ClassId: classId,
-				NftId:   nftId,
+				TokenId: nftId,
 			}
 
 			msg := types.NewMsgCancelNftListing(clientCtx.GetFromAddress().String(), nftIde)
@@ -431,9 +401,9 @@ $ %s tx %s cancel-bid 1 1 --from myKeyName --chain-id ununifi-x
 
 			classId := args[0]
 			nftId := args[1]
-			nftIde := types.NftIdentifier{
+			nftIde := types.NftId{
 				ClassId: classId,
-				NftId:   nftId,
+				TokenId: nftId,
 			}
 
 			msg := types.NewMsgCancelBid(clientCtx.GetFromAddress().String(), nftIde)
@@ -468,9 +438,9 @@ $ %s tx %s pay-remainder 1 1 --from myKeyName --chain-id ununifi-x
 
 			classId := args[0]
 			nftId := args[1]
-			nftIde := types.NftIdentifier{
+			nftIde := types.NftId{
 				ClassId: classId,
-				NftId:   nftId,
+				TokenId: nftId,
 			}
 
 			msg := types.NewMsgPayRemainder(clientCtx.GetFromAddress().String(), nftIde)

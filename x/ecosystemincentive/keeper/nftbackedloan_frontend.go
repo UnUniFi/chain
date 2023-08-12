@@ -17,7 +17,7 @@ import (
 // RecordRecipientWithNftId is for recording recipient with nftId
 // to know of the receriver of the incentive reward for the frontend creator
 // of nftbackedloan in AfterNftPaymentWithCommission method.
-func (k Keeper) RecordRecipientWithNftId(ctx sdk.Context, nftId nftbackedloantypes.NftIdentifier, recipient string) error {
+func (k Keeper) RecordRecipientWithNftId(ctx sdk.Context, nftId nftbackedloantypes.NftId, recipient string) error {
 	if _, exists := k.GetRecipientByNftId(ctx, nftId); exists {
 		return sdkerrors.Wrap(types.ErrRecordedNftId, nftId.String())
 	}
@@ -38,7 +38,7 @@ func (k Keeper) RecordRecipientWithNftId(ctx sdk.Context, nftId nftbackedloantyp
 }
 
 // DeleteFrontendRecord is called in case to clean the record related for frontend incentive
-func (k Keeper) DeleteFrontendRecord(ctx sdk.Context, nftId nftbackedloantypes.NftIdentifier) error {
+func (k Keeper) DeleteFrontendRecord(ctx sdk.Context, nftId nftbackedloantypes.NftId) error {
 	// If the passed NftId doesn't exist in the KVStore, emit the error message
 	//  but not panic and just return
 	recipient, exists := k.GetRecipientByNftId(ctx, nftId)
@@ -53,13 +53,13 @@ func (k Keeper) DeleteFrontendRecord(ctx sdk.Context, nftId nftbackedloantypes.N
 	err := ctx.EventManager().EmitTypedEvent(&types.EventDeletedNftIdRecordedForFrontendReward{
 		RecipientContainerId: recipient,
 		ClassId:              nftId.ClassId,
-		NftId:                nftId.NftId,
+		TokenId:              nftId.TokenId,
 	})
 
 	return err
 }
 
-func (k Keeper) SetRecipientByNftId(ctx sdk.Context, nftIdByte nftbackedloantypes.NftIdentifier, recipient string) error {
+func (k Keeper) SetRecipientByNftId(ctx sdk.Context, nftIdByte nftbackedloantypes.NftId, recipient string) error {
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientContainerIdByNftId))
 	prefixStore.Set(nftIdByte.IdBytes(), []byte(recipient))
@@ -67,7 +67,7 @@ func (k Keeper) SetRecipientByNftId(ctx sdk.Context, nftIdByte nftbackedloantype
 	return nil
 }
 
-func (k Keeper) GetRecipientByNftId(ctx sdk.Context, nftId nftbackedloantypes.NftIdentifier) (string, bool) {
+func (k Keeper) GetRecipientByNftId(ctx sdk.Context, nftId nftbackedloantypes.NftId) (string, bool) {
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientContainerIdByNftId))
 
@@ -80,7 +80,7 @@ func (k Keeper) GetRecipientByNftId(ctx sdk.Context, nftId nftbackedloantypes.Nf
 }
 
 // DeleteRecipientByNftId deletes nftId and recipient from RecipientByNftId KVStore to clean the record.
-func (k Keeper) DeleteRecipientByNftId(ctx sdk.Context, nftId nftbackedloantypes.NftIdentifier) {
+func (k Keeper) DeleteRecipientByNftId(ctx sdk.Context, nftId nftbackedloantypes.NftId) {
 	// Delete incentive unit id by nft id
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientContainerIdByNftId))

@@ -27,24 +27,24 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type EventListingNft struct {
+type EventListNft struct {
 	Owner   string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
 	ClassId string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	NftId   string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	TokenId string `protobuf:"bytes,3,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
 }
 
-func (m *EventListingNft) Reset()         { *m = EventListingNft{} }
-func (m *EventListingNft) String() string { return proto.CompactTextString(m) }
-func (*EventListingNft) ProtoMessage()    {}
-func (*EventListingNft) Descriptor() ([]byte, []int) {
+func (m *EventListNft) Reset()         { *m = EventListNft{} }
+func (m *EventListNft) String() string { return proto.CompactTextString(m) }
+func (*EventListNft) ProtoMessage()    {}
+func (*EventListNft) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b6a94a215b488842, []int{0}
 }
-func (m *EventListingNft) XXX_Unmarshal(b []byte) error {
+func (m *EventListNft) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *EventListingNft) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *EventListNft) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_EventListingNft.Marshal(b, m, deterministic)
+		return xxx_messageInfo_EventListNft.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -54,57 +54,57 @@ func (m *EventListingNft) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-func (m *EventListingNft) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventListingNft.Merge(m, src)
+func (m *EventListNft) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventListNft.Merge(m, src)
 }
-func (m *EventListingNft) XXX_Size() int {
+func (m *EventListNft) XXX_Size() int {
 	return m.Size()
 }
-func (m *EventListingNft) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventListingNft.DiscardUnknown(m)
+func (m *EventListNft) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventListNft.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_EventListingNft proto.InternalMessageInfo
+var xxx_messageInfo_EventListNft proto.InternalMessageInfo
 
-func (m *EventListingNft) GetOwner() string {
+func (m *EventListNft) GetOwner() string {
 	if m != nil {
 		return m.Owner
 	}
 	return ""
 }
 
-func (m *EventListingNft) GetClassId() string {
+func (m *EventListNft) GetClassId() string {
 	if m != nil {
 		return m.ClassId
 	}
 	return ""
 }
 
-func (m *EventListingNft) GetNftId() string {
+func (m *EventListNft) GetTokenId() string {
 	if m != nil {
-		return m.NftId
+		return m.TokenId
 	}
 	return ""
 }
 
-type EventCancelListingNft struct {
+type EventCancelListing struct {
 	Owner   string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
 	ClassId string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	NftId   string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	TokenId string `protobuf:"bytes,3,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
 }
 
-func (m *EventCancelListingNft) Reset()         { *m = EventCancelListingNft{} }
-func (m *EventCancelListingNft) String() string { return proto.CompactTextString(m) }
-func (*EventCancelListingNft) ProtoMessage()    {}
-func (*EventCancelListingNft) Descriptor() ([]byte, []int) {
+func (m *EventCancelListing) Reset()         { *m = EventCancelListing{} }
+func (m *EventCancelListing) String() string { return proto.CompactTextString(m) }
+func (*EventCancelListing) ProtoMessage()    {}
+func (*EventCancelListing) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b6a94a215b488842, []int{1}
 }
-func (m *EventCancelListingNft) XXX_Unmarshal(b []byte) error {
+func (m *EventCancelListing) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *EventCancelListingNft) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *EventCancelListing) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_EventCancelListingNft.Marshal(b, m, deterministic)
+		return xxx_messageInfo_EventCancelListing.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -114,95 +114,35 @@ func (m *EventCancelListingNft) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *EventCancelListingNft) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventCancelListingNft.Merge(m, src)
+func (m *EventCancelListing) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventCancelListing.Merge(m, src)
 }
-func (m *EventCancelListingNft) XXX_Size() int {
+func (m *EventCancelListing) XXX_Size() int {
 	return m.Size()
 }
-func (m *EventCancelListingNft) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventCancelListingNft.DiscardUnknown(m)
+func (m *EventCancelListing) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventCancelListing.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_EventCancelListingNft proto.InternalMessageInfo
+var xxx_messageInfo_EventCancelListing proto.InternalMessageInfo
 
-func (m *EventCancelListingNft) GetOwner() string {
+func (m *EventCancelListing) GetOwner() string {
 	if m != nil {
 		return m.Owner
 	}
 	return ""
 }
 
-func (m *EventCancelListingNft) GetClassId() string {
+func (m *EventCancelListing) GetClassId() string {
 	if m != nil {
 		return m.ClassId
 	}
 	return ""
 }
 
-func (m *EventCancelListingNft) GetNftId() string {
+func (m *EventCancelListing) GetTokenId() string {
 	if m != nil {
-		return m.NftId
-	}
-	return ""
-}
-
-type EventExpandListingPeriod struct {
-	Owner   string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
-	ClassId string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	NftId   string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
-}
-
-func (m *EventExpandListingPeriod) Reset()         { *m = EventExpandListingPeriod{} }
-func (m *EventExpandListingPeriod) String() string { return proto.CompactTextString(m) }
-func (*EventExpandListingPeriod) ProtoMessage()    {}
-func (*EventExpandListingPeriod) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b6a94a215b488842, []int{2}
-}
-func (m *EventExpandListingPeriod) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *EventExpandListingPeriod) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_EventExpandListingPeriod.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *EventExpandListingPeriod) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventExpandListingPeriod.Merge(m, src)
-}
-func (m *EventExpandListingPeriod) XXX_Size() int {
-	return m.Size()
-}
-func (m *EventExpandListingPeriod) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventExpandListingPeriod.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_EventExpandListingPeriod proto.InternalMessageInfo
-
-func (m *EventExpandListingPeriod) GetOwner() string {
-	if m != nil {
-		return m.Owner
-	}
-	return ""
-}
-
-func (m *EventExpandListingPeriod) GetClassId() string {
-	if m != nil {
-		return m.ClassId
-	}
-	return ""
-}
-
-func (m *EventExpandListingPeriod) GetNftId() string {
-	if m != nil {
-		return m.NftId
+		return m.TokenId
 	}
 	return ""
 }
@@ -210,14 +150,14 @@ func (m *EventExpandListingPeriod) GetNftId() string {
 type EventSellingDecision struct {
 	Owner   string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
 	ClassId string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	NftId   string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	TokenId string `protobuf:"bytes,3,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
 }
 
 func (m *EventSellingDecision) Reset()         { *m = EventSellingDecision{} }
 func (m *EventSellingDecision) String() string { return proto.CompactTextString(m) }
 func (*EventSellingDecision) ProtoMessage()    {}
 func (*EventSellingDecision) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b6a94a215b488842, []int{3}
+	return fileDescriptor_b6a94a215b488842, []int{2}
 }
 func (m *EventSellingDecision) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -260,31 +200,31 @@ func (m *EventSellingDecision) GetClassId() string {
 	return ""
 }
 
-func (m *EventSellingDecision) GetNftId() string {
+func (m *EventSellingDecision) GetTokenId() string {
 	if m != nil {
-		return m.NftId
+		return m.TokenId
 	}
 	return ""
 }
 
-type EventEndListingNft struct {
+type EventEndListing struct {
 	Owner   string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
 	ClassId string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	NftId   string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	TokenId string `protobuf:"bytes,3,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
 }
 
-func (m *EventEndListingNft) Reset()         { *m = EventEndListingNft{} }
-func (m *EventEndListingNft) String() string { return proto.CompactTextString(m) }
-func (*EventEndListingNft) ProtoMessage()    {}
-func (*EventEndListingNft) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b6a94a215b488842, []int{4}
+func (m *EventEndListing) Reset()         { *m = EventEndListing{} }
+func (m *EventEndListing) String() string { return proto.CompactTextString(m) }
+func (*EventEndListing) ProtoMessage()    {}
+func (*EventEndListing) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b6a94a215b488842, []int{3}
 }
-func (m *EventEndListingNft) XXX_Unmarshal(b []byte) error {
+func (m *EventEndListing) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *EventEndListingNft) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *EventEndListing) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_EventEndListingNft.Marshal(b, m, deterministic)
+		return xxx_messageInfo_EventEndListing.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -294,35 +234,35 @@ func (m *EventEndListingNft) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-func (m *EventEndListingNft) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventEndListingNft.Merge(m, src)
+func (m *EventEndListing) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventEndListing.Merge(m, src)
 }
-func (m *EventEndListingNft) XXX_Size() int {
+func (m *EventEndListing) XXX_Size() int {
 	return m.Size()
 }
-func (m *EventEndListingNft) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventEndListingNft.DiscardUnknown(m)
+func (m *EventEndListing) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventEndListing.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_EventEndListingNft proto.InternalMessageInfo
+var xxx_messageInfo_EventEndListing proto.InternalMessageInfo
 
-func (m *EventEndListingNft) GetOwner() string {
+func (m *EventEndListing) GetOwner() string {
 	if m != nil {
 		return m.Owner
 	}
 	return ""
 }
 
-func (m *EventEndListingNft) GetClassId() string {
+func (m *EventEndListing) GetClassId() string {
 	if m != nil {
 		return m.ClassId
 	}
 	return ""
 }
 
-func (m *EventEndListingNft) GetNftId() string {
+func (m *EventEndListing) GetTokenId() string {
 	if m != nil {
-		return m.NftId
+		return m.TokenId
 	}
 	return ""
 }
@@ -330,7 +270,7 @@ func (m *EventEndListingNft) GetNftId() string {
 type EventPlaceBid struct {
 	Bidder  string `protobuf:"bytes,1,opt,name=bidder,proto3" json:"bidder,omitempty"`
 	ClassId string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	NftId   string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	TokenId string `protobuf:"bytes,3,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
 	Amount  string `protobuf:"bytes,4,opt,name=amount,proto3" json:"amount,omitempty"`
 }
 
@@ -338,7 +278,7 @@ func (m *EventPlaceBid) Reset()         { *m = EventPlaceBid{} }
 func (m *EventPlaceBid) String() string { return proto.CompactTextString(m) }
 func (*EventPlaceBid) ProtoMessage()    {}
 func (*EventPlaceBid) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b6a94a215b488842, []int{5}
+	return fileDescriptor_b6a94a215b488842, []int{4}
 }
 func (m *EventPlaceBid) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -381,9 +321,9 @@ func (m *EventPlaceBid) GetClassId() string {
 	return ""
 }
 
-func (m *EventPlaceBid) GetNftId() string {
+func (m *EventPlaceBid) GetTokenId() string {
 	if m != nil {
-		return m.NftId
+		return m.TokenId
 	}
 	return ""
 }
@@ -398,14 +338,14 @@ func (m *EventPlaceBid) GetAmount() string {
 type EventCancelBid struct {
 	Bidder  string `protobuf:"bytes,1,opt,name=bidder,proto3" json:"bidder,omitempty"`
 	ClassId string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	NftId   string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	TokenId string `protobuf:"bytes,3,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
 }
 
 func (m *EventCancelBid) Reset()         { *m = EventCancelBid{} }
 func (m *EventCancelBid) String() string { return proto.CompactTextString(m) }
 func (*EventCancelBid) ProtoMessage()    {}
 func (*EventCancelBid) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b6a94a215b488842, []int{6}
+	return fileDescriptor_b6a94a215b488842, []int{5}
 }
 func (m *EventCancelBid) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -448,9 +388,9 @@ func (m *EventCancelBid) GetClassId() string {
 	return ""
 }
 
-func (m *EventCancelBid) GetNftId() string {
+func (m *EventCancelBid) GetTokenId() string {
 	if m != nil {
-		return m.NftId
+		return m.TokenId
 	}
 	return ""
 }
@@ -458,14 +398,14 @@ func (m *EventCancelBid) GetNftId() string {
 type EventPayRemainder struct {
 	Bidder  string `protobuf:"bytes,1,opt,name=bidder,proto3" json:"bidder,omitempty"`
 	ClassId string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	NftId   string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	TokenId string `protobuf:"bytes,3,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
 }
 
 func (m *EventPayRemainder) Reset()         { *m = EventPayRemainder{} }
 func (m *EventPayRemainder) String() string { return proto.CompactTextString(m) }
 func (*EventPayRemainder) ProtoMessage()    {}
 func (*EventPayRemainder) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b6a94a215b488842, []int{7}
+	return fileDescriptor_b6a94a215b488842, []int{6}
 }
 func (m *EventPayRemainder) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -508,9 +448,9 @@ func (m *EventPayRemainder) GetClassId() string {
 	return ""
 }
 
-func (m *EventPayRemainder) GetNftId() string {
+func (m *EventPayRemainder) GetTokenId() string {
 	if m != nil {
-		return m.NftId
+		return m.TokenId
 	}
 	return ""
 }
@@ -518,7 +458,7 @@ func (m *EventPayRemainder) GetNftId() string {
 type EventBorrow struct {
 	Borrower string `protobuf:"bytes,1,opt,name=borrower,proto3" json:"borrower,omitempty"`
 	ClassId  string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	NftId    string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	TokenId  string `protobuf:"bytes,3,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
 	Amount   string `protobuf:"bytes,4,opt,name=amount,proto3" json:"amount,omitempty"`
 }
 
@@ -526,7 +466,7 @@ func (m *EventBorrow) Reset()         { *m = EventBorrow{} }
 func (m *EventBorrow) String() string { return proto.CompactTextString(m) }
 func (*EventBorrow) ProtoMessage()    {}
 func (*EventBorrow) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b6a94a215b488842, []int{8}
+	return fileDescriptor_b6a94a215b488842, []int{7}
 }
 func (m *EventBorrow) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -569,9 +509,9 @@ func (m *EventBorrow) GetClassId() string {
 	return ""
 }
 
-func (m *EventBorrow) GetNftId() string {
+func (m *EventBorrow) GetTokenId() string {
 	if m != nil {
-		return m.NftId
+		return m.TokenId
 	}
 	return ""
 }
@@ -586,7 +526,7 @@ func (m *EventBorrow) GetAmount() string {
 type EventRepay struct {
 	Borrower string `protobuf:"bytes,1,opt,name=borrower,proto3" json:"borrower,omitempty"`
 	ClassId  string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	NftId    string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	TokenId  string `protobuf:"bytes,3,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
 	Amount   string `protobuf:"bytes,4,opt,name=amount,proto3" json:"amount,omitempty"`
 }
 
@@ -594,7 +534,7 @@ func (m *EventRepay) Reset()         { *m = EventRepay{} }
 func (m *EventRepay) String() string { return proto.CompactTextString(m) }
 func (*EventRepay) ProtoMessage()    {}
 func (*EventRepay) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b6a94a215b488842, []int{9}
+	return fileDescriptor_b6a94a215b488842, []int{8}
 }
 func (m *EventRepay) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -637,9 +577,9 @@ func (m *EventRepay) GetClassId() string {
 	return ""
 }
 
-func (m *EventRepay) GetNftId() string {
+func (m *EventRepay) GetTokenId() string {
 	if m != nil {
-		return m.NftId
+		return m.TokenId
 	}
 	return ""
 }
@@ -654,14 +594,14 @@ func (m *EventRepay) GetAmount() string {
 type EventLiquidate struct {
 	Liquidator string `protobuf:"bytes,1,opt,name=liquidator,proto3" json:"liquidator,omitempty"`
 	ClassId    string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	NftId      string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	TokenId    string `protobuf:"bytes,3,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
 }
 
 func (m *EventLiquidate) Reset()         { *m = EventLiquidate{} }
 func (m *EventLiquidate) String() string { return proto.CompactTextString(m) }
 func (*EventLiquidate) ProtoMessage()    {}
 func (*EventLiquidate) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b6a94a215b488842, []int{10}
+	return fileDescriptor_b6a94a215b488842, []int{9}
 }
 func (m *EventLiquidate) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -704,19 +644,18 @@ func (m *EventLiquidate) GetClassId() string {
 	return ""
 }
 
-func (m *EventLiquidate) GetNftId() string {
+func (m *EventLiquidate) GetTokenId() string {
 	if m != nil {
-		return m.NftId
+		return m.TokenId
 	}
 	return ""
 }
 
 func init() {
-	proto.RegisterType((*EventListingNft)(nil), "ununifi.nftbackedloan.EventListingNft")
-	proto.RegisterType((*EventCancelListingNft)(nil), "ununifi.nftbackedloan.EventCancelListingNft")
-	proto.RegisterType((*EventExpandListingPeriod)(nil), "ununifi.nftbackedloan.EventExpandListingPeriod")
+	proto.RegisterType((*EventListNft)(nil), "ununifi.nftbackedloan.EventListNft")
+	proto.RegisterType((*EventCancelListing)(nil), "ununifi.nftbackedloan.EventCancelListing")
 	proto.RegisterType((*EventSellingDecision)(nil), "ununifi.nftbackedloan.EventSellingDecision")
-	proto.RegisterType((*EventEndListingNft)(nil), "ununifi.nftbackedloan.EventEndListingNft")
+	proto.RegisterType((*EventEndListing)(nil), "ununifi.nftbackedloan.EventEndListing")
 	proto.RegisterType((*EventPlaceBid)(nil), "ununifi.nftbackedloan.EventPlaceBid")
 	proto.RegisterType((*EventCancelBid)(nil), "ununifi.nftbackedloan.EventCancelBid")
 	proto.RegisterType((*EventPayRemainder)(nil), "ununifi.nftbackedloan.EventPayRemainder")
@@ -728,39 +667,38 @@ func init() {
 func init() { proto.RegisterFile("ununifi/nftbackedloan/event.proto", fileDescriptor_b6a94a215b488842) }
 
 var fileDescriptor_b6a94a215b488842 = []byte{
-	// 457 bytes of a gzipped FileDescriptorProto
+	// 439 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x94, 0xcd, 0x6e, 0xd3, 0x40,
-	0x14, 0x85, 0x13, 0x7e, 0x42, 0xb9, 0x08, 0x10, 0x56, 0x82, 0xd2, 0x2c, 0x0c, 0x64, 0xc5, 0x2a,
-	0xa3, 0x8a, 0x37, 0x08, 0x14, 0x51, 0xa9, 0x42, 0x55, 0x50, 0x17, 0x54, 0x40, 0x34, 0xe3, 0x19,
-	0xbb, 0x57, 0xd8, 0xf7, 0xa6, 0x9e, 0x71, 0xdb, 0xbc, 0x05, 0x8f, 0xc5, 0xb2, 0x4b, 0x96, 0x28,
-	0x79, 0x11, 0xe4, 0x19, 0x27, 0x2a, 0xdd, 0x55, 0x32, 0xec, 0xe6, 0xf8, 0x1c, 0x9f, 0x6f, 0xee,
-	0x8c, 0x34, 0xf0, 0xaa, 0xa2, 0x8a, 0x30, 0x45, 0x41, 0xa9, 0x53, 0x32, 0xf9, 0x6e, 0x74, 0xce,
-	0x92, 0x84, 0x39, 0x37, 0xe4, 0x26, 0x8b, 0x92, 0x1d, 0x47, 0x83, 0x26, 0x32, 0xf9, 0x2b, 0x32,
-	0xea, 0x67, 0x9c, 0xb1, 0x4f, 0x88, 0x7a, 0x15, 0xc2, 0xa3, 0x17, 0x19, 0x73, 0x96, 0x1b, 0xe1,
-	0x95, 0xaa, 0x52, 0xe1, 0xb0, 0x30, 0xd6, 0xc9, 0x62, 0xd1, 0x04, 0xe2, 0x9b, 0x01, 0x5d, 0x95,
-	0xd2, 0x21, 0xd3, 0xc6, 0x4f, 0xd8, 0x16, 0x6c, 0x85, 0x92, 0xd6, 0x88, 0xf3, 0x3d, 0x65, 0x9c,
-	0xdc, 0x13, 0x09, 0xe3, 0xc6, 0xdf, 0x0d, 0xfe, 0x3c, 0x90, 0x83, 0x08, 0xd6, 0xf8, 0x33, 0x3c,
-	0xdd, 0xaf, 0xf7, 0x7d, 0x88, 0xd6, 0x21, 0x65, 0x1f, 0x53, 0x17, 0xf5, 0xe1, 0x3e, 0x5f, 0x90,
-	0x29, 0x87, 0xdd, 0x97, 0xdd, 0xd7, 0x0f, 0x67, 0x41, 0x44, 0xbb, 0xb0, 0x93, 0xe4, 0xd2, 0xda,
-	0x39, 0xea, 0xe1, 0x1d, 0x6f, 0x3c, 0xf0, 0xfa, 0x40, 0x47, 0x03, 0xe8, 0x51, 0xea, 0x6a, 0xe3,
-	0x6e, 0xf8, 0x83, 0x52, 0x77, 0xa0, 0xc7, 0x73, 0x18, 0xf8, 0xea, 0xb7, 0x92, 0x12, 0x93, 0xff,
-	0x03, 0x80, 0x82, 0xa1, 0x07, 0xec, 0x5f, 0x2e, 0x24, 0xe9, 0x06, 0x70, 0x64, 0x4a, 0x64, 0xdd,
-	0x1a, 0xe3, 0x1b, 0xf4, 0x3d, 0xe3, 0x93, 0xc9, 0x73, 0xa4, 0xec, 0x9d, 0x49, 0xd0, 0x22, 0x53,
-	0x6b, 0xfd, 0x5f, 0x20, 0x0a, 0x33, 0x6c, 0x07, 0x68, 0xf3, 0x84, 0xce, 0xe0, 0xb1, 0x6f, 0x3f,
-	0xca, 0x65, 0x62, 0xa6, 0xa8, 0xa3, 0xe7, 0xd0, 0x53, 0xa8, 0xf5, 0xb6, 0xb9, 0x51, 0xb7, 0xaf,
-	0xae, 0x9b, 0x64, 0xc1, 0x15, 0xb9, 0xe1, 0xbd, 0xd0, 0x14, 0xd4, 0xf8, 0x04, 0x9e, 0x5c, 0xbb,
-	0xf5, 0x56, 0x99, 0xe3, 0xaf, 0xf0, 0x2c, 0x8c, 0x23, 0x97, 0x33, 0x53, 0x48, 0xa4, 0xba, 0xa6,
-	0xbd, 0x7a, 0x0b, 0x8f, 0x7c, 0xfd, 0x94, 0xcb, 0x92, 0x2f, 0xa2, 0x11, 0xec, 0x28, 0xbf, 0xda,
-	0x56, 0x6f, 0x75, 0x8b, 0xe7, 0x55, 0x02, 0x78, 0xe8, 0xcc, 0x2c, 0xe4, 0xf2, 0x3f, 0x31, 0x55,
-	0x73, 0x47, 0x87, 0x78, 0x56, 0xa1, 0x96, 0xce, 0x44, 0x31, 0x40, 0xde, 0x08, 0xde, 0x90, 0xaf,
-	0x7d, 0xb9, 0x3d, 0x7b, 0xfa, 0xe1, 0xe7, 0x2a, 0xee, 0x5e, 0xad, 0xe2, 0xee, 0xef, 0x55, 0xdc,
-	0xfd, 0xb1, 0x8e, 0x3b, 0x57, 0xeb, 0xb8, 0xf3, 0x6b, 0x1d, 0x77, 0x4e, 0x26, 0x19, 0xba, 0xd3,
-	0x4a, 0x4d, 0x12, 0x2e, 0xc4, 0x31, 0x1d, 0x13, 0xbe, 0x47, 0x91, 0x9c, 0x4a, 0x24, 0x71, 0x79,
-	0xe3, 0x45, 0x75, 0xcb, 0x85, 0xb1, 0xaa, 0xe7, 0x5f, 0xaa, 0x37, 0x7f, 0x02, 0x00, 0x00, 0xff,
-	0xff, 0x9e, 0xb8, 0xe0, 0x39, 0x77, 0x05, 0x00, 0x00,
+	0x14, 0x85, 0x63, 0x7e, 0x4a, 0x19, 0xfe, 0x84, 0x15, 0x50, 0x9a, 0x85, 0x81, 0xac, 0x58, 0x65,
+	0x54, 0xf1, 0x06, 0x81, 0x22, 0x2a, 0x55, 0x08, 0x05, 0x75, 0x53, 0x09, 0xca, 0x78, 0xe6, 0xda,
+	0xbd, 0xaa, 0x7d, 0x6f, 0xf0, 0x8c, 0x13, 0xf2, 0x16, 0x3c, 0x16, 0xcb, 0x2e, 0x59, 0xa2, 0xe4,
+	0x45, 0x90, 0x67, 0x9c, 0xa8, 0x74, 0x59, 0x99, 0xee, 0xe6, 0xf8, 0x1c, 0x9d, 0xcf, 0x33, 0x57,
+	0xba, 0xe2, 0x55, 0x4d, 0x35, 0x61, 0x86, 0x92, 0x32, 0x97, 0x2a, 0x7d, 0x0e, 0xa6, 0x60, 0x45,
+	0x12, 0xe6, 0x40, 0x6e, 0x3c, 0xab, 0xd8, 0x71, 0xfc, 0xac, 0x8d, 0x8c, 0xff, 0x89, 0x0c, 0xfb,
+	0x39, 0xe7, 0xec, 0x13, 0xb2, 0x39, 0x85, 0xf0, 0xf0, 0x45, 0xce, 0x9c, 0x17, 0x20, 0xbd, 0x4a,
+	0xeb, 0x4c, 0x3a, 0x2c, 0xc1, 0x3a, 0x55, 0xce, 0xda, 0x40, 0x72, 0x35, 0x60, 0xea, 0x4a, 0x39,
+	0x64, 0xda, 0xf8, 0x9a, 0x6d, 0xc9, 0x56, 0xa6, 0xca, 0x82, 0x9c, 0xef, 0xa7, 0xe0, 0xd4, 0xbe,
+	0xd4, 0x8c, 0x1b, 0x7f, 0x2f, 0xf8, 0xa7, 0x81, 0x1c, 0x44, 0xb0, 0x46, 0x27, 0xe2, 0xe1, 0x41,
+	0xf3, 0xdf, 0x47, 0x68, 0xdd, 0xc7, 0xcc, 0xc5, 0x7d, 0x71, 0x97, 0x17, 0x04, 0xd5, 0x20, 0x7a,
+	0x19, 0xbd, 0xbe, 0x3f, 0x0d, 0x22, 0xde, 0x13, 0xbb, 0xba, 0x50, 0xd6, 0x9e, 0xa2, 0x19, 0xdc,
+	0xf2, 0xc6, 0x3d, 0xaf, 0x0f, 0x4d, 0x63, 0x39, 0x3e, 0x07, 0x6a, 0xac, 0xdb, 0xc1, 0xf2, 0xfa,
+	0xd0, 0x8c, 0xbe, 0x89, 0xd8, 0x77, 0xbf, 0x55, 0xa4, 0xa1, 0x68, 0x08, 0x48, 0x79, 0xa7, 0x84,
+	0x54, 0xf4, 0x3d, 0xe1, 0x33, 0x14, 0x05, 0x52, 0xfe, 0x0e, 0x34, 0x5a, 0x64, 0xea, 0x94, 0xf1,
+	0x45, 0x3c, 0xf1, 0x8c, 0x03, 0x32, 0xff, 0xe3, 0x0a, 0xb5, 0x78, 0xe4, 0xeb, 0x3f, 0x15, 0x4a,
+	0xc3, 0x04, 0x4d, 0xfc, 0x5c, 0xec, 0xa4, 0x68, 0xcc, 0xb6, 0xbd, 0x55, 0xd7, 0xab, 0x6f, 0xda,
+	0x54, 0xc9, 0x35, 0xb9, 0xc1, 0x9d, 0xd0, 0x16, 0xd4, 0xe8, 0xab, 0x78, 0x7c, 0x69, 0x36, 0x9d,
+	0x73, 0x47, 0x4a, 0x3c, 0x0d, 0xd7, 0x52, 0xcb, 0x29, 0x94, 0x0a, 0xa9, 0xa9, 0xea, 0x16, 0xb1,
+	0x10, 0x0f, 0x3c, 0x62, 0xc2, 0x55, 0xc5, 0x8b, 0x78, 0x28, 0x76, 0x53, 0x7f, 0xda, 0xd6, 0x6f,
+	0x75, 0xc7, 0x6f, 0x37, 0x17, 0xc2, 0x83, 0xa7, 0x30, 0x53, 0xcb, 0x1b, 0xe4, 0x66, 0xed, 0xcc,
+	0x8e, 0xf0, 0x7b, 0x8d, 0x46, 0x39, 0x88, 0x13, 0x21, 0x8a, 0x56, 0xf0, 0x86, 0x7e, 0xe9, 0xcb,
+	0xf5, 0xf8, 0x93, 0x0f, 0xbf, 0x56, 0x49, 0x74, 0xb1, 0x4a, 0xa2, 0x3f, 0xab, 0x24, 0xfa, 0xb9,
+	0x4e, 0x7a, 0x17, 0xeb, 0xa4, 0xf7, 0x7b, 0x9d, 0xf4, 0x4e, 0xc6, 0x39, 0xba, 0xb3, 0x3a, 0x1d,
+	0x6b, 0x2e, 0xe5, 0x31, 0x1d, 0x13, 0xbe, 0x47, 0xa9, 0xcf, 0x14, 0x92, 0xfc, 0x71, 0x65, 0x19,
+	0xba, 0xe5, 0x0c, 0x6c, 0xba, 0xe3, 0x97, 0xcc, 0x9b, 0xbf, 0x01, 0x00, 0x00, 0xff, 0xff, 0xf5,
+	0xb5, 0xa4, 0x25, 0x32, 0x05, 0x00, 0x00,
 }
 
-func (m *EventListingNft) Marshal() (dAtA []byte, err error) {
+func (m *EventListNft) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -770,20 +708,20 @@ func (m *EventListingNft) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *EventListingNft) MarshalTo(dAtA []byte) (int, error) {
+func (m *EventListNft) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *EventListingNft) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *EventListNft) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.NftId) > 0 {
-		i -= len(m.NftId)
-		copy(dAtA[i:], m.NftId)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.NftId)))
+	if len(m.TokenId) > 0 {
+		i -= len(m.TokenId)
+		copy(dAtA[i:], m.TokenId)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.TokenId)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -804,7 +742,7 @@ func (m *EventListingNft) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *EventCancelListingNft) Marshal() (dAtA []byte, err error) {
+func (m *EventCancelListing) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -814,64 +752,20 @@ func (m *EventCancelListingNft) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *EventCancelListingNft) MarshalTo(dAtA []byte) (int, error) {
+func (m *EventCancelListing) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *EventCancelListingNft) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *EventCancelListing) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.NftId) > 0 {
-		i -= len(m.NftId)
-		copy(dAtA[i:], m.NftId)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.NftId)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.ClassId) > 0 {
-		i -= len(m.ClassId)
-		copy(dAtA[i:], m.ClassId)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.ClassId)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Owner) > 0 {
-		i -= len(m.Owner)
-		copy(dAtA[i:], m.Owner)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.Owner)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *EventExpandListingPeriod) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *EventExpandListingPeriod) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *EventExpandListingPeriod) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.NftId) > 0 {
-		i -= len(m.NftId)
-		copy(dAtA[i:], m.NftId)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.NftId)))
+	if len(m.TokenId) > 0 {
+		i -= len(m.TokenId)
+		copy(dAtA[i:], m.TokenId)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.TokenId)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -912,10 +806,10 @@ func (m *EventSellingDecision) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.NftId) > 0 {
-		i -= len(m.NftId)
-		copy(dAtA[i:], m.NftId)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.NftId)))
+	if len(m.TokenId) > 0 {
+		i -= len(m.TokenId)
+		copy(dAtA[i:], m.TokenId)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.TokenId)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -936,7 +830,7 @@ func (m *EventSellingDecision) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *EventEndListingNft) Marshal() (dAtA []byte, err error) {
+func (m *EventEndListing) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -946,20 +840,20 @@ func (m *EventEndListingNft) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *EventEndListingNft) MarshalTo(dAtA []byte) (int, error) {
+func (m *EventEndListing) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *EventEndListingNft) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *EventEndListing) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.NftId) > 0 {
-		i -= len(m.NftId)
-		copy(dAtA[i:], m.NftId)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.NftId)))
+	if len(m.TokenId) > 0 {
+		i -= len(m.TokenId)
+		copy(dAtA[i:], m.TokenId)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.TokenId)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -1007,10 +901,10 @@ func (m *EventPlaceBid) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x22
 	}
-	if len(m.NftId) > 0 {
-		i -= len(m.NftId)
-		copy(dAtA[i:], m.NftId)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.NftId)))
+	if len(m.TokenId) > 0 {
+		i -= len(m.TokenId)
+		copy(dAtA[i:], m.TokenId)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.TokenId)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -1051,10 +945,10 @@ func (m *EventCancelBid) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.NftId) > 0 {
-		i -= len(m.NftId)
-		copy(dAtA[i:], m.NftId)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.NftId)))
+	if len(m.TokenId) > 0 {
+		i -= len(m.TokenId)
+		copy(dAtA[i:], m.TokenId)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.TokenId)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -1095,10 +989,10 @@ func (m *EventPayRemainder) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.NftId) > 0 {
-		i -= len(m.NftId)
-		copy(dAtA[i:], m.NftId)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.NftId)))
+	if len(m.TokenId) > 0 {
+		i -= len(m.TokenId)
+		copy(dAtA[i:], m.TokenId)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.TokenId)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -1146,10 +1040,10 @@ func (m *EventBorrow) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x22
 	}
-	if len(m.NftId) > 0 {
-		i -= len(m.NftId)
-		copy(dAtA[i:], m.NftId)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.NftId)))
+	if len(m.TokenId) > 0 {
+		i -= len(m.TokenId)
+		copy(dAtA[i:], m.TokenId)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.TokenId)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -1197,10 +1091,10 @@ func (m *EventRepay) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x22
 	}
-	if len(m.NftId) > 0 {
-		i -= len(m.NftId)
-		copy(dAtA[i:], m.NftId)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.NftId)))
+	if len(m.TokenId) > 0 {
+		i -= len(m.TokenId)
+		copy(dAtA[i:], m.TokenId)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.TokenId)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -1241,10 +1135,10 @@ func (m *EventLiquidate) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.NftId) > 0 {
-		i -= len(m.NftId)
-		copy(dAtA[i:], m.NftId)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.NftId)))
+	if len(m.TokenId) > 0 {
+		i -= len(m.TokenId)
+		copy(dAtA[i:], m.TokenId)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.TokenId)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -1276,7 +1170,7 @@ func encodeVarintEvent(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *EventListingNft) Size() (n int) {
+func (m *EventListNft) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1290,14 +1184,14 @@ func (m *EventListingNft) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
-	l = len(m.NftId)
+	l = len(m.TokenId)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
 	return n
 }
 
-func (m *EventCancelListingNft) Size() (n int) {
+func (m *EventCancelListing) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1311,28 +1205,7 @@ func (m *EventCancelListingNft) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
-	l = len(m.NftId)
-	if l > 0 {
-		n += 1 + l + sovEvent(uint64(l))
-	}
-	return n
-}
-
-func (m *EventExpandListingPeriod) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Owner)
-	if l > 0 {
-		n += 1 + l + sovEvent(uint64(l))
-	}
-	l = len(m.ClassId)
-	if l > 0 {
-		n += 1 + l + sovEvent(uint64(l))
-	}
-	l = len(m.NftId)
+	l = len(m.TokenId)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
@@ -1353,14 +1226,14 @@ func (m *EventSellingDecision) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
-	l = len(m.NftId)
+	l = len(m.TokenId)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
 	return n
 }
 
-func (m *EventEndListingNft) Size() (n int) {
+func (m *EventEndListing) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1374,7 +1247,7 @@ func (m *EventEndListingNft) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
-	l = len(m.NftId)
+	l = len(m.TokenId)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
@@ -1395,7 +1268,7 @@ func (m *EventPlaceBid) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
-	l = len(m.NftId)
+	l = len(m.TokenId)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
@@ -1420,7 +1293,7 @@ func (m *EventCancelBid) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
-	l = len(m.NftId)
+	l = len(m.TokenId)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
@@ -1441,7 +1314,7 @@ func (m *EventPayRemainder) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
-	l = len(m.NftId)
+	l = len(m.TokenId)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
@@ -1462,7 +1335,7 @@ func (m *EventBorrow) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
-	l = len(m.NftId)
+	l = len(m.TokenId)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
@@ -1487,7 +1360,7 @@ func (m *EventRepay) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
-	l = len(m.NftId)
+	l = len(m.TokenId)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
@@ -1512,7 +1385,7 @@ func (m *EventLiquidate) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
-	l = len(m.NftId)
+	l = len(m.TokenId)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
@@ -1525,7 +1398,7 @@ func sovEvent(x uint64) (n int) {
 func sozEvent(x uint64) (n int) {
 	return sovEvent(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *EventListingNft) Unmarshal(dAtA []byte) error {
+func (m *EventListNft) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1548,10 +1421,10 @@ func (m *EventListingNft) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: EventListingNft: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventListNft: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventListingNft: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventListNft: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1620,7 +1493,7 @@ func (m *EventListingNft) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TokenId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1648,7 +1521,7 @@ func (m *EventListingNft) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.NftId = string(dAtA[iNdEx:postIndex])
+			m.TokenId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1671,7 +1544,7 @@ func (m *EventListingNft) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *EventCancelListingNft) Unmarshal(dAtA []byte) error {
+func (m *EventCancelListing) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1694,10 +1567,10 @@ func (m *EventCancelListingNft) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: EventCancelListingNft: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventCancelListing: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventCancelListingNft: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventCancelListing: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1766,7 +1639,7 @@ func (m *EventCancelListingNft) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TokenId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1794,153 +1667,7 @@ func (m *EventCancelListingNft) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.NftId = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipEvent(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthEvent
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *EventExpandListingPeriod) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowEvent
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: EventExpandListingPeriod: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventExpandListingPeriod: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvent
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthEvent
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthEvent
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Owner = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvent
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthEvent
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthEvent
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ClassId = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvent
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthEvent
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthEvent
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.NftId = string(dAtA[iNdEx:postIndex])
+			m.TokenId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2058,7 +1785,7 @@ func (m *EventSellingDecision) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TokenId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2086,7 +1813,7 @@ func (m *EventSellingDecision) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.NftId = string(dAtA[iNdEx:postIndex])
+			m.TokenId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2109,7 +1836,7 @@ func (m *EventSellingDecision) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *EventEndListingNft) Unmarshal(dAtA []byte) error {
+func (m *EventEndListing) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2132,10 +1859,10 @@ func (m *EventEndListingNft) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: EventEndListingNft: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventEndListing: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventEndListingNft: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventEndListing: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2204,7 +1931,7 @@ func (m *EventEndListingNft) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TokenId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2232,7 +1959,7 @@ func (m *EventEndListingNft) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.NftId = string(dAtA[iNdEx:postIndex])
+			m.TokenId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2350,7 +2077,7 @@ func (m *EventPlaceBid) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TokenId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2378,7 +2105,7 @@ func (m *EventPlaceBid) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.NftId = string(dAtA[iNdEx:postIndex])
+			m.TokenId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
@@ -2528,7 +2255,7 @@ func (m *EventCancelBid) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TokenId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2556,7 +2283,7 @@ func (m *EventCancelBid) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.NftId = string(dAtA[iNdEx:postIndex])
+			m.TokenId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2674,7 +2401,7 @@ func (m *EventPayRemainder) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TokenId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2702,7 +2429,7 @@ func (m *EventPayRemainder) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.NftId = string(dAtA[iNdEx:postIndex])
+			m.TokenId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2820,7 +2547,7 @@ func (m *EventBorrow) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TokenId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2848,7 +2575,7 @@ func (m *EventBorrow) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.NftId = string(dAtA[iNdEx:postIndex])
+			m.TokenId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
@@ -2998,7 +2725,7 @@ func (m *EventRepay) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TokenId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3026,7 +2753,7 @@ func (m *EventRepay) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.NftId = string(dAtA[iNdEx:postIndex])
+			m.TokenId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
@@ -3176,7 +2903,7 @@ func (m *EventLiquidate) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TokenId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3204,7 +2931,7 @@ func (m *EventLiquidate) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.NftId = string(dAtA[iNdEx:postIndex])
+			m.TokenId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

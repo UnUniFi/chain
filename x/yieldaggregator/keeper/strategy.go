@@ -206,31 +206,3 @@ func (k Keeper) GetUnbondingAmountFromStrategy(ctx sdk.Context, vault types.Vaul
 		return sdk.NewCoin(strategy.Denom, amount), err
 	}
 }
-
-func (k Keeper) GetAPRFromStrategy(ctx sdk.Context, strategy types.Strategy) (*sdk.Dec, error) {
-	switch strategy.ContractAddress {
-	case "x/ibc-staking":
-		{
-
-			return nil, nil
-		}
-	}
-	// call `apr` function of the strategy contract
-	panic("not implemented")
-
-	return nil, nil
-}
-
-func (k Keeper) GetInterestFeeRate(ctx sdk.Context, strategy types.Strategy) (*sdk.Dec, error) {
-	switch strategy.ContractAddress {
-	case "x/ibc-staking":
-		{
-
-			return nil, nil
-		}
-	}
-	// call `interest_fee_rate` function of the strategy contract
-	panic("not implemented")
-
-	return nil, nil
-}

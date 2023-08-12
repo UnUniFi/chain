@@ -8,13 +8,13 @@ import (
 
 var _ types.NftbackedloanHooks = Keeper{}
 
-func (k Keeper) AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier types.NftIdentifier, fee sdk.Coin) {
+func (k Keeper) AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier types.NftId, fee sdk.Coin) {
 	if k.hooks != nil {
 		k.hooks.AfterNftPaymentWithCommission(ctx, nftIdentifier, fee)
 	}
 }
 
-func (k Keeper) AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier types.NftIdentifier) {
+func (k Keeper) AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier types.NftId) {
 	if k.hooks != nil {
 		k.hooks.AfterNftUnlistedWithoutPayment(ctx, nftIdentifier)
 	}

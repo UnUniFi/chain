@@ -125,9 +125,9 @@ func NftBidBytesToBidId(NftBidBytes []byte) BidId {
 	}
 
 	return BidId{
-		NftId: &NftIdentifier{
+		NftId: &NftId{
 			ClassId: stringList[0],
-			NftId:   stringList[1],
+			TokenId: stringList[1],
 		},
 		Bidder: stringList[2],
 	}

@@ -15,13 +15,13 @@ func (suite *KeeperTestSuite) TestPlaceBid() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
-	listing := types.NftListing{
-		NftId:              types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
-		Owner:              owner.String(),
-		State:              types.ListingState_LISTING,
-		BidDenom:           "uguu",
-		MinimumDepositRate: sdk.NewDecWithPrec(1, 1),
-		StartedAt:          time.Now(),
+	listing := types.Listing{
+		NftId:          types.NftId{ClassId: "class1", TokenId: "nft1"},
+		Owner:          owner.String(),
+		State:          types.ListingState_LISTING,
+		BidDenom:       "uguu",
+		MinDepositRate: sdk.NewDecWithPrec(1, 1),
+		StartedAt:      time.Now(),
 	}
 
 	tests := []struct {
@@ -34,7 +34,7 @@ func (suite *KeeperTestSuite) TestPlaceBid() {
 			testCase: "No listing",
 			msgBid: types.MsgPlaceBid{
 				Sender:           bidder.String(),
-				NftId:            types.NftIdentifier{ClassId: "class999", NftId: "nft99"},
+				NftId:            types.NftId{ClassId: "class999", TokenId: "nft99"},
 				Price:            sdk.NewInt64Coin("uatom", 10000000),
 				Expiry:           time.Now().Add(time.Hour * 24),
 				InterestRate:     sdk.NewDecWithPrec(1, 1),
@@ -48,7 +48,7 @@ func (suite *KeeperTestSuite) TestPlaceBid() {
 			testCase: "Bid denom is not the same as listing denom",
 			msgBid: types.MsgPlaceBid{
 				Sender:           bidder.String(),
-				NftId:            types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
+				NftId:            types.NftId{ClassId: "class1", TokenId: "nft1"},
 				Price:            sdk.NewInt64Coin("uatom", 10000000),
 				Expiry:           time.Now().Add(time.Hour * 24),
 				InterestRate:     sdk.NewDecWithPrec(1, 1),
@@ -62,7 +62,7 @@ func (suite *KeeperTestSuite) TestPlaceBid() {
 			testCase: "pass first bid",
 			msgBid: types.MsgPlaceBid{
 				Sender:           bidder.String(),
-				NftId:            types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
+				NftId:            types.NftId{ClassId: "class1", TokenId: "nft1"},
 				Price:            sdk.NewInt64Coin("uguu", 10000000),
 				Expiry:           time.Now().Add(time.Hour * 24),
 				InterestRate:     sdk.NewDecWithPrec(1, 1),
@@ -83,24 +83,20 @@ func (suite *KeeperTestSuite) TestPlaceBid() {
 		suite.ctx = suite.ctx.WithBlockTime(now)
 
 		_ = suite.app.UnUniFiNFTKeeper.SaveClass(suite.ctx, nfttypes.Class{
-			Id:          listing.NftId.ClassId,
-			Name:        listing.NftId.ClassId,
-			Symbol:      listing.NftId.ClassId,
-			Description: listing.NftId.ClassId,
-			Uri:         listing.NftId.ClassId,
+			Id:     listing.NftId.ClassId,
+			Name:   listing.NftId.ClassId,
+			Symbol: listing.NftId.ClassId,
 		})
 		_ = suite.app.UnUniFiNFTKeeper.Mint(suite.ctx, nfttypes.NFT{
 			ClassId: listing.NftId.ClassId,
-			Id:      listing.NftId.NftId,
-			Uri:     listing.NftId.NftId,
-			UriHash: listing.NftId.NftId,
+			Id:      listing.NftId.TokenId,
 		}, owner)
 
 		err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
-			Sender:             listing.Owner,
-			NftId:              listing.NftId,
-			BidDenom:           listing.BidDenom,
-			MinimumDepositRate: listing.MinimumDepositRate,
+			Sender:         listing.Owner,
+			NftId:          listing.NftId,
+			BidDenom:       listing.BidDenom,
+			MinDepositRate: listing.MinDepositRate,
 		})
 		suite.Require().NoError(err)
 
@@ -123,13 +119,13 @@ func (suite *KeeperTestSuite) TestSafeCloseBid() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
-	listing := types.NftListing{
-		NftId:              types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
-		Owner:              owner.String(),
-		State:              types.ListingState_LISTING,
-		BidDenom:           "uguu",
-		MinimumDepositRate: sdk.NewDecWithPrec(1, 1),
-		StartedAt:          time.Now(),
+	listing := types.Listing{
+		NftId:          types.NftId{ClassId: "class1", TokenId: "nft1"},
+		Owner:          owner.String(),
+		State:          types.ListingState_LISTING,
+		BidDenom:       "uguu",
+		MinDepositRate: sdk.NewDecWithPrec(1, 1),
+		StartedAt:      time.Now(),
 	}
 
 	tests := []struct {
@@ -142,7 +138,7 @@ func (suite *KeeperTestSuite) TestSafeCloseBid() {
 			testCase: "pass first bid",
 			msgBid: types.MsgPlaceBid{
 				Sender:           bidder.String(),
-				NftId:            types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
+				NftId:            types.NftId{ClassId: "class1", TokenId: "nft1"},
 				Price:            sdk.NewInt64Coin("uguu", 10000000),
 				Expiry:           time.Now().Add(time.Hour * 24),
 				InterestRate:     sdk.NewDecWithPrec(1, 1),
@@ -169,16 +165,16 @@ func (suite *KeeperTestSuite) TestSafeCloseBid() {
 		})
 		_ = suite.app.UnUniFiNFTKeeper.Mint(suite.ctx, nfttypes.NFT{
 			ClassId: listing.NftId.ClassId,
-			Id:      listing.NftId.NftId,
-			Uri:     listing.NftId.NftId,
-			UriHash: listing.NftId.NftId,
+			Id:      listing.NftId.TokenId,
+			Uri:     listing.NftId.TokenId,
+			UriHash: listing.NftId.TokenId,
 		}, owner)
 
 		err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
-			Sender:             listing.Owner,
-			NftId:              listing.NftId,
-			BidDenom:           listing.BidDenom,
-			MinimumDepositRate: listing.MinimumDepositRate,
+			Sender:         listing.Owner,
+			NftId:          listing.NftId,
+			BidDenom:       listing.BidDenom,
+			MinDepositRate: listing.MinDepositRate,
 		})
 		suite.Require().NoError(err)
 
@@ -205,13 +201,13 @@ func (suite *KeeperTestSuite) TestPayRemainder() {
 	owner := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	bidder := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
-	listing := types.NftListing{
-		NftId:              types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
-		Owner:              owner.String(),
-		State:              types.ListingState_LISTING,
-		BidDenom:           "uguu",
-		MinimumDepositRate: sdk.NewDecWithPrec(1, 1),
-		StartedAt:          time.Now(),
+	listing := types.Listing{
+		NftId:          types.NftId{ClassId: "class1", TokenId: "nft1"},
+		Owner:          owner.String(),
+		State:          types.ListingState_LISTING,
+		BidDenom:       "uguu",
+		MinDepositRate: sdk.NewDecWithPrec(1, 1),
+		StartedAt:      time.Now(),
 	}
 
 	tests := []struct {
@@ -225,7 +221,7 @@ func (suite *KeeperTestSuite) TestPayRemainder() {
 			testCase: "pass first bid",
 			msgBid: types.MsgPlaceBid{
 				Sender:           bidder.String(),
-				NftId:            types.NftIdentifier{ClassId: "class1", NftId: "nft1"},
+				NftId:            types.NftId{ClassId: "class1", TokenId: "nft1"},
 				Price:            sdk.NewInt64Coin("uguu", 10000000),
 				Expiry:           time.Now().Add(time.Hour * 24),
 				InterestRate:     sdk.NewDecWithPrec(1, 1),
@@ -253,16 +249,16 @@ func (suite *KeeperTestSuite) TestPayRemainder() {
 		})
 		_ = suite.app.UnUniFiNFTKeeper.Mint(suite.ctx, nfttypes.NFT{
 			ClassId: listing.NftId.ClassId,
-			Id:      listing.NftId.NftId,
-			Uri:     listing.NftId.NftId,
-			UriHash: listing.NftId.NftId,
+			Id:      listing.NftId.TokenId,
+			Uri:     listing.NftId.TokenId,
+			UriHash: listing.NftId.TokenId,
 		}, owner)
 
 		err := suite.app.NftbackedloanKeeper.ListNft(suite.ctx, &types.MsgListNft{
-			Sender:             listing.Owner,
-			NftId:              listing.NftId,
-			BidDenom:           listing.BidDenom,
-			MinimumDepositRate: listing.MinimumDepositRate,
+			Sender:         listing.Owner,
+			NftId:          listing.NftId,
+			BidDenom:       listing.BidDenom,
+			MinDepositRate: listing.MinDepositRate,
 		})
 		suite.Require().NoError(err)
 

@@ -9,7 +9,7 @@ import (
 	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
-func (k Keeper) RewardDistributionOfnftbackedloan(ctx sdk.Context, nftId nftbackedloantypes.NftIdentifier, fee sdk.Coin) error {
+func (k Keeper) RewardDistributionOfnftbackedloan(ctx sdk.Context, nftId nftbackedloantypes.NftId, fee sdk.Coin) error {
 	totalReward := sdk.ZeroInt()
 	rewardForCommunityPool := sdk.ZeroInt()
 	// First, get recipientContainerId by nftId from RecipientContainerIdByNftId KVStore
@@ -26,7 +26,7 @@ func (k Keeper) RewardDistributionOfnftbackedloan(ctx sdk.Context, nftId nftback
 		// emit event to inform the nftId is not associated with recipientContainerId and return
 		_ = ctx.EventManager().EmitTypedEvent(&types.EventNotRecordedNftId{
 			ClassId: nftId.ClassId,
-			NftId:   nftId.NftId,
+			TokenId: nftId.TokenId,
 		})
 
 		// Distribute the reward to the community pool if there's no recipientContainerId associated with the nftId

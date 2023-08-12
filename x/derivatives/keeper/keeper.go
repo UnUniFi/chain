@@ -14,15 +14,14 @@ import (
 
 type (
 	Keeper struct {
-		cdc              codec.BinaryCodec
-		storeKey         storetypes.StoreKey
-		memKey           storetypes.StoreKey
-		paramstore       paramtypes.Subspace
-		accountKeeper    types.AccountKeeper
-		bankKeeper       types.BankKeeper
-		pricefeedKeeper  types.PricefeedKeeper
-		nftKeeper        types.NftKeeper
-		nftfactoryKeeper types.NftfactoryKeeper
+		cdc             codec.BinaryCodec
+		storeKey        storetypes.StoreKey
+		memKey          storetypes.StoreKey
+		paramstore      paramtypes.Subspace
+		accountKeeper   types.AccountKeeper
+		bankKeeper      types.BankKeeper
+		pricefeedKeeper types.PricefeedKeeper
+		nftKeeper       types.NftKeeper
 	}
 )
 
@@ -35,7 +34,6 @@ func NewKeeper(
 	bankKeeper types.BankKeeper,
 	pricefeedKeeper types.PricefeedKeeper,
 	nftKeeper types.NftKeeper,
-	nftfactoryKeeper types.NftfactoryKeeper,
 ) Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -43,15 +41,14 @@ func NewKeeper(
 	}
 
 	return Keeper{
-		cdc:              cdc,
-		storeKey:         storeKey,
-		memKey:           memKey,
-		paramstore:       ps,
-		accountKeeper:    accountKeeper,
-		bankKeeper:       bankKeeper,
-		pricefeedKeeper:  pricefeedKeeper,
-		nftKeeper:        nftKeeper,
-		nftfactoryKeeper: nftfactoryKeeper,
+		cdc:             cdc,
+		storeKey:        storeKey,
+		memKey:          memKey,
+		paramstore:      ps,
+		accountKeeper:   accountKeeper,
+		bankKeeper:      bankKeeper,
+		pricefeedKeeper: pricefeedKeeper,
+		nftKeeper:       nftKeeper,
 	}
 }
 
