@@ -40,21 +40,21 @@ func TestKeeperSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))
 }
 
-func dummyAfterNftListedEvent(nftId types.NftIdentifier) sdk.Event {
+func dummyAfterNftListedEvent(nftId types.NftId) sdk.Event {
 	return sdk.NewEvent(
 		"afterNftListed",
 		sdk.NewAttribute("nftId", nftId.String()),
 	)
 }
 
-func dummyAfterNftPaymentWithCommissionEvent(nftId types.NftIdentifier) sdk.Event {
+func dummyAfterNftPaymentWithCommissionEvent(nftId types.NftId) sdk.Event {
 	return sdk.NewEvent(
 		"afterNftPaymentWithCommission",
 		sdk.NewAttribute("nftId", nftId.String()),
 	)
 }
 
-func dummyAfterNftUnlistedWithoutPaymentEvent(nftId types.NftIdentifier) sdk.Event {
+func dummyAfterNftUnlistedWithoutPaymentEvent(nftId types.NftId) sdk.Event {
 	return sdk.NewEvent(
 		"afterNftUnlistedWithoutPayment",
 		sdk.NewAttribute("nftId", nftId.String()),
@@ -69,7 +69,7 @@ type dummyNftmarketHook struct {
 	shouldPanic    bool
 }
 
-func (hook *dummyNftmarketHook) AfterNftListed(ctx sdk.Context, nftId types.NftIdentifier, txMemo string) {
+func (hook *dummyNftmarketHook) AfterNftListed(ctx sdk.Context, nftId types.NftId, txMemo string) {
 	if hook.shouldPanic {
 		panic("dummyNftmarketHook AfterNftListed is panicking")
 	}
@@ -78,7 +78,7 @@ func (hook *dummyNftmarketHook) AfterNftListed(ctx sdk.Context, nftId types.NftI
 	ctx.EventManager().EmitEvent(dummyAfterNftListedEvent(nftId))
 }
 
-func (hook *dummyNftmarketHook) AfterNftPaymentWithCommission(ctx sdk.Context, nftId types.NftIdentifier, fee sdk.Coin) {
+func (hook *dummyNftmarketHook) AfterNftPaymentWithCommission(ctx sdk.Context, nftId types.NftId, fee sdk.Coin) {
 	if hook.shouldPanic {
 		panic("dummyNftmarketHook AfterNftPaymentWithCommission is panicking")
 	}
@@ -87,7 +87,7 @@ func (hook *dummyNftmarketHook) AfterNftPaymentWithCommission(ctx sdk.Context, n
 	ctx.EventManager().EmitEvent(dummyAfterNftPaymentWithCommissionEvent(nftId))
 }
 
-func (hook *dummyNftmarketHook) AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftId types.NftIdentifier) {
+func (hook *dummyNftmarketHook) AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftId types.NftId) {
 	if hook.shouldPanic {
 		panic("dummyNftmarketHook AfterNftUnlistedWithoutPayment is panicking")
 	}
@@ -106,9 +106,9 @@ var _ types.NftbackedloanHooks = &dummyNftmarketHook{}
 func (suite *KeeperTestSuite) TestHooksPanicRecovery() {
 	panicHook := dummyNftmarketHook{shouldPanic: true}
 	noPanicHook := dummyNftmarketHook{shouldPanic: false}
-	nftId := types.NftIdentifier{
+	nftId := types.NftId{
 		ClassId: "dummyhook",
-		NftId:   "dummyhook",
+		TokenId: "dummyhook",
 	}
 
 	tests := []struct {

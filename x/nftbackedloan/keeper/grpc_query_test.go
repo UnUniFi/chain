@@ -61,12 +61,12 @@ func (s *KeeperTestSuite) TestListedNfts() {
 			"",
 			[]types.NftListingDetail{
 				{
-					Listing: types.NftListing{
-						NftId:              types.NftIdentifier{ClassId: "class2", NftId: "nft2"},
+					Listing: types.Listing{
+						NftId:              types.NftId{ClassId: "class2", TokenId: "nft2"},
 						Owner:              s.addrs[0].String(),
 						State:              1,
 						BidDenom:           "uguu",
-						MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
+						MinDepositRate:     sdk.MustNewDecFromStr("0.1"),
 						StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						LiquidatedAt:       time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						FullPaymentEndAt:   time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -84,11 +84,11 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					},
 				},
 				{
-					Listing: types.NftListing{
-						NftId: types.NftIdentifier{ClassId: "class5", NftId: "nft5"},
+					Listing: types.Listing{
+						NftId: types.NftId{ClassId: "class5", TokenId: "nft5"},
 						Owner: s.addrs[0].String(),
 						State: 1, BidDenom: "uguu",
-						MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
+						MinDepositRate:     sdk.MustNewDecFromStr("0.1"),
 						StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						LiquidatedAt:       time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						FullPaymentEndAt:   time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -106,11 +106,11 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					},
 				},
 				{
-					Listing: types.NftListing{
-						NftId: types.NftIdentifier{ClassId: "class6", NftId: "nft6"},
+					Listing: types.Listing{
+						NftId: types.NftId{ClassId: "class6", TokenId: "nft6"},
 						Owner: s.addrs[0].String(),
 						State: 1, BidDenom: "uguu",
-						MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
+						MinDepositRate:     sdk.MustNewDecFromStr("0.1"),
 						StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						LiquidatedAt:       time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						FullPaymentEndAt:   time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -142,11 +142,11 @@ func (s *KeeperTestSuite) TestListedNfts() {
 			"",
 			[]types.NftListingDetail{
 				{
-					Listing: types.NftListing{
-						NftId: types.NftIdentifier{ClassId: "class7", NftId: "nft7"},
+					Listing: types.Listing{
+						NftId: types.NftId{ClassId: "class7", TokenId: "nft7"},
 						Owner: s.addrs[1].String(),
 						State: 1, BidDenom: "uguu",
-						MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
+						MinDepositRate:     sdk.MustNewDecFromStr("0.1"),
 						StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						LiquidatedAt:       time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						FullPaymentEndAt:   time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -176,12 +176,12 @@ func (s *KeeperTestSuite) TestListedNfts() {
 			"",
 			[]types.NftListingDetail{
 				{
-					Listing: types.NftListing{
-						NftId:              types.NftIdentifier{ClassId: "class2", NftId: "nft2"},
+					Listing: types.Listing{
+						NftId:              types.NftId{ClassId: "class2", TokenId: "nft2"},
 						Owner:              s.addrs[0].String(),
 						State:              1,
 						BidDenom:           "uguu",
-						MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
+						MinDepositRate:     sdk.MustNewDecFromStr("0.1"),
 						StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						LiquidatedAt:       time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						FullPaymentEndAt:   time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -199,11 +199,11 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					},
 				},
 				{
-					Listing: types.NftListing{
-						NftId: types.NftIdentifier{ClassId: "class5", NftId: "nft5"},
+					Listing: types.Listing{
+						NftId: types.NftId{ClassId: "class5", TokenId: "nft5"},
 						Owner: s.addrs[0].String(),
 						State: 1, BidDenom: "uguu",
-						MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
+						MinDepositRate:     sdk.MustNewDecFromStr("0.1"),
 						StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						LiquidatedAt:       time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						FullPaymentEndAt:   time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -221,11 +221,11 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					},
 				},
 				{
-					Listing: types.NftListing{
-						NftId: types.NftIdentifier{ClassId: "class6", NftId: "nft6"},
+					Listing: types.Listing{
+						NftId: types.NftId{ClassId: "class6", TokenId: "nft6"},
 						Owner: s.addrs[0].String(),
 						State: 1, BidDenom: "uguu",
-						MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
+						MinDepositRate:     sdk.MustNewDecFromStr("0.1"),
 						StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						LiquidatedAt:       time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						FullPaymentEndAt:   time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -243,11 +243,11 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					},
 				},
 				{
-					Listing: types.NftListing{
-						NftId: types.NftIdentifier{ClassId: "class7", NftId: "nft7"},
+					Listing: types.Listing{
+						NftId: types.NftId{ClassId: "class7", TokenId: "nft7"},
 						Owner: s.addrs[1].String(),
 						State: 1, BidDenom: "uguu",
-						MinimumDepositRate: sdk.MustNewDecFromStr("0.1"),
+						MinDepositRate:     sdk.MustNewDecFromStr("0.1"),
 						StartedAt:          time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						LiquidatedAt:       time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 						FullPaymentEndAt:   time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),

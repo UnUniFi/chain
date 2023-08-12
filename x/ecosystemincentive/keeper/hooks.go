@@ -17,7 +17,7 @@ func (k Keeper) Hooks() Hooks { return Hooks{k} }
 
 // ------------------- nftbackedloan Module Hooks -------------------
 
-func (h Hooks) AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier nftbackedloantypes.NftIdentifier, fee sdk.Coin) {
+func (h Hooks) AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier nftbackedloantypes.NftId, fee sdk.Coin) {
 	// if there's no fee, return
 	if !fee.IsZero() {
 		// call RewardDistributionOfnftbackedloan method to update reward information
@@ -32,7 +32,7 @@ func (h Hooks) AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier nftb
 }
 
 // AfterNftUnlistedWithoutPayment is called every time nft is unlisted without payment
-func (h Hooks) AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier nftbackedloantypes.NftIdentifier) {
+func (h Hooks) AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier nftbackedloantypes.NftId) {
 	// delete the recorded nft-id with incetive-unit-id
 	h.k.DeleteFrontendRecord(ctx, nftIdentifier)
 }

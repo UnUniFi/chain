@@ -34,12 +34,12 @@ message EventWithdrawReward {
 message EventDeletedNftIdRecordedForFrontendReward {
   string recipient_container_id = 1 [(gogoproto.moretags) = "yaml:\"recipient_container_id\""];
   string class_id               = 2 [(gogoproto.moretags) = "yaml:\"class_id\""];
-  string nft_id                 = 3 [(gogoproto.moretags) = "yaml:\"nft_id\""];
+  string token_id                 = 3 [(gogoproto.moretags) = "yaml:\"nft_id\""];
 }
 
 message EventNotRecordedNftId {
   string class_id = 1 [(gogoproto.moretags) = "yaml:\"class_id\""];
-  string nft_id   = 2 [(gogoproto.moretags) = "yaml:\"nft_id\""];
+  string token_id   = 2 [(gogoproto.moretags) = "yaml:\"nft_id\""];
 }
 
 message EventUpdatedReward {

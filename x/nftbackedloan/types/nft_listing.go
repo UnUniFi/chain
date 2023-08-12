@@ -2,59 +2,59 @@ package types
 
 import sdk "github.com/cosmos/cosmos-sdk/types"
 
-func (m NftListing) IdBytes() []byte {
+func (m Listing) IdBytes() []byte {
 	return m.NftId.IdBytes()
 }
 
-func (m NftListing) ClassIdBytes() []byte {
+func (m Listing) ClassIdBytes() []byte {
 	return m.NftId.ClassIdBytes()
 }
 
-func (m NftListing) IsActive() bool {
+func (m Listing) IsActive() bool {
 	return m.State == ListingState_LISTING || m.State == ListingState_BIDDING
 }
 
-func (m NftListing) IsFullPayment() bool {
+func (m Listing) IsFullPayment() bool {
 	return m.State == ListingState_SELLING_DECISION || m.State == ListingState_LIQUIDATION
 }
 
-func (m NftListing) IsSuccessfulBid() bool {
+func (m Listing) IsSuccessfulBid() bool {
 	return m.State == ListingState_SUCCESSFUL_BID
 }
 
-func (ni NftIdentifier) IdBytes() []byte {
-	return NftBytes(ni.ClassId, ni.NftId)
+func (ni NftId) IdBytes() []byte {
+	return NftBytes(ni.ClassId, ni.TokenId)
 }
 
-func (ni NftIdentifier) ClassIdBytes() []byte {
+func (ni NftId) ClassIdBytes() []byte {
 	return []byte(ni.ClassId)
 }
 
-func (b NftBid) IdBytes() []byte {
+func (b Bid) IdBytes() []byte {
 	return b.Id.NftId.IdBytes()
 }
 
-func (m NftListing) IsBidding() bool {
+func (m Listing) IsBidding() bool {
 	return m.State == ListingState_BIDDING
 }
 
-func (m NftListing) IsEnded() bool {
+func (m Listing) IsEnded() bool {
 	return m.State == ListingState_SELLING_DECISION || m.State == ListingState_LIQUIDATION || m.State == ListingState_SUCCESSFUL_BID
 }
 
-func (m NftListing) CanCancelBid() bool {
+func (m Listing) CanCancelBid() bool {
 	return m.CanBid()
 }
 
-func (m NftListing) CanBid() bool {
+func (m Listing) CanBid() bool {
 	return m.State == ListingState_LISTING || m.State == ListingState_BIDDING
 }
 
-func (m NftListing) IsNegativeCollectedAmount() bool {
+func (m Listing) IsNegativeCollectedAmount() bool {
 	return m.CollectedAmountNegative
 }
 
-func (m NftListing) AddCollectedAmount(amount sdk.Coin) NftListing {
+func (m Listing) AddCollectedAmount(amount sdk.Coin) Listing {
 	if m.CollectedAmountNegative {
 		if m.CollectedAmount.IsLTE(amount) {
 			m.CollectedAmount = amount.Sub(m.CollectedAmount)
@@ -68,7 +68,7 @@ func (m NftListing) AddCollectedAmount(amount sdk.Coin) NftListing {
 	return m
 }
 
-func (m NftListing) SubCollectedAmount(amount sdk.Coin) NftListing {
+func (m Listing) SubCollectedAmount(amount sdk.Coin) Listing {
 	if m.CollectedAmountNegative {
 		m.CollectedAmount = m.CollectedAmount.Add(amount)
 	} else {
