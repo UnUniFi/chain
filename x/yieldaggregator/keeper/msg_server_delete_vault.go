@@ -4,11 +4,16 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
 )
 
 func (k msgServer) DeleteVault(goCtx context.Context, msg *types.MsgDeleteVault) (*types.MsgDeleteVaultResponse, error) {
+	if k.authority != msg.Sender {
+		return nil, sdkerrors.ErrUnauthorized
+	}
+
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
@@ -20,13 +25,11 @@ func (k msgServer) DeleteVault(goCtx context.Context, msg *types.MsgDeleteVault)
 		return nil, types.ErrInvalidVaultId
 	}
 
-	// TODO: reenable positive fund check - just disabled to remove invalid vaults on testnet
-	// // ensure no funds available on the vault
-	// totalVaultAmount := k.VaultAmountTotal(ctx, vault)
-	// if totalVaultAmount.IsPositive() {
-	// 	return nil, types.ErrVaultHasPositiveBalance
-	// }
-	// TODO: add owner check
+	// TODO: force all strategies to unstake for each holders
+
+	if vault.Owner != msg.Sender {
+		return nil, sdkerrors.ErrUnauthorized
+	}
 
 	// transfer deposit
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, sdk.NewCoins(vault.OwnerDeposit))

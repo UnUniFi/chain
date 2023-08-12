@@ -4,9 +4,9 @@
 package types
 
 import (
+	cosmossdk_io_math "cosmossdk.io/math"
 	fmt "fmt"
 	_ "github.com/cosmos/cosmos-proto"
-	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
@@ -26,17 +26,71 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// Params defines the parameters for the module.
-type Params struct {
-	CommissionRate       github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,1,opt,name=commission_rate,json=commissionRate,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"commission_rate"`
-	VaultCreationFee     types.Coin                             `protobuf:"bytes,2,opt,name=vault_creation_fee,json=vaultCreationFee,proto3" json:"vault_creation_fee"`
-	VaultCreationDeposit types.Coin                             `protobuf:"bytes,3,opt,name=vault_creation_deposit,json=vaultCreationDeposit,proto3" json:"vault_creation_deposit"`
+type LegacyParams struct {
+	CommissionRate       cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=commission_rate,json=commissionRate,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"commission_rate"`
+	VaultCreationFee     types.Coin                  `protobuf:"bytes,2,opt,name=vault_creation_fee,json=vaultCreationFee,proto3" json:"vault_creation_fee"`
+	VaultCreationDeposit types.Coin                  `protobuf:"bytes,3,opt,name=vault_creation_deposit,json=vaultCreationDeposit,proto3" json:"vault_creation_deposit"`
 }
 
-func (m *Params) Reset()      { *m = Params{} }
-func (*Params) ProtoMessage() {}
-func (*Params) Descriptor() ([]byte, []int) {
+func (m *LegacyParams) Reset()         { *m = LegacyParams{} }
+func (m *LegacyParams) String() string { return proto.CompactTextString(m) }
+func (*LegacyParams) ProtoMessage()    {}
+func (*LegacyParams) Descriptor() ([]byte, []int) {
 	return fileDescriptor_598607d39e276737, []int{0}
+}
+func (m *LegacyParams) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *LegacyParams) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_LegacyParams.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *LegacyParams) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LegacyParams.Merge(m, src)
+}
+func (m *LegacyParams) XXX_Size() int {
+	return m.Size()
+}
+func (m *LegacyParams) XXX_DiscardUnknown() {
+	xxx_messageInfo_LegacyParams.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LegacyParams proto.InternalMessageInfo
+
+func (m *LegacyParams) GetVaultCreationFee() types.Coin {
+	if m != nil {
+		return m.VaultCreationFee
+	}
+	return types.Coin{}
+}
+
+func (m *LegacyParams) GetVaultCreationDeposit() types.Coin {
+	if m != nil {
+		return m.VaultCreationDeposit
+	}
+	return types.Coin{}
+}
+
+type Params struct {
+	WithdrawCommissionRate cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=withdraw_commission_rate,json=withdrawCommissionRate,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"withdraw_commission_rate"`
+	VaultCreationFee       types.Coin                  `protobuf:"bytes,2,opt,name=vault_creation_fee,json=vaultCreationFee,proto3" json:"vault_creation_fee"`
+	VaultCreationDeposit   types.Coin                  `protobuf:"bytes,3,opt,name=vault_creation_deposit,json=vaultCreationDeposit,proto3" json:"vault_creation_deposit"`
+	FeeCollectorAddress    string                      `protobuf:"bytes,4,opt,name=fee_collector_address,json=feeCollectorAddress,proto3" json:"fee_collector_address,omitempty"`
+}
+
+func (m *Params) Reset()         { *m = Params{} }
+func (m *Params) String() string { return proto.CompactTextString(m) }
+func (*Params) ProtoMessage()    {}
+func (*Params) Descriptor() ([]byte, []int) {
+	return fileDescriptor_598607d39e276737, []int{1}
 }
 func (m *Params) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -79,7 +133,15 @@ func (m *Params) GetVaultCreationDeposit() types.Coin {
 	return types.Coin{}
 }
 
+func (m *Params) GetFeeCollectorAddress() string {
+	if m != nil {
+		return m.FeeCollectorAddress
+	}
+	return ""
+}
+
 func init() {
+	proto.RegisterType((*LegacyParams)(nil), "ununifi.yieldaggregator.LegacyParams")
 	proto.RegisterType((*Params)(nil), "ununifi.yieldaggregator.Params")
 }
 
@@ -88,32 +150,36 @@ func init() {
 }
 
 var fileDescriptor_598607d39e276737 = []byte{
-	// 346 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x51, 0xcf, 0x4a, 0x3a, 0x41,
-	0x1c, 0xdf, 0xf5, 0x27, 0xc2, 0x6f, 0x83, 0x8a, 0x45, 0x4a, 0x3d, 0x8c, 0x12, 0x11, 0x5e, 0x9c,
-	0xc9, 0xba, 0x45, 0x27, 0x15, 0x0f, 0x41, 0x10, 0x82, 0x97, 0x2e, 0x32, 0x3b, 0x7e, 0x5d, 0x87,
-	0xdc, 0x99, 0x65, 0x67, 0x56, 0xf2, 0x2d, 0x3a, 0x06, 0x5d, 0x7a, 0x88, 0x1e, 0xc2, 0xa3, 0x74,
-	0x8a, 0x0e, 0x12, 0xee, 0x8b, 0xc4, 0xee, 0x0e, 0x54, 0x76, 0xe9, 0xb4, 0xfb, 0xe5, 0xf3, 0x97,
-	0xcf, 0x38, 0xc7, 0xb1, 0x88, 0x05, 0x9f, 0x70, 0xb2, 0xe0, 0x30, 0x1b, 0x53, 0xdf, 0x8f, 0xc0,
-	0xa7, 0x5a, 0x46, 0x24, 0xa4, 0x11, 0x0d, 0x14, 0x0e, 0x23, 0xa9, 0xa5, 0x7b, 0x68, 0x58, 0x78,
-	0x8b, 0x55, 0x2b, 0xfb, 0xd2, 0x97, 0x19, 0x87, 0xa4, 0x7f, 0x39, 0xbd, 0x56, 0x65, 0x52, 0x05,
-	0x52, 0x8d, 0x72, 0x20, 0x3f, 0x0c, 0x84, 0xf2, 0x8b, 0x78, 0x54, 0x01, 0x99, 0xb7, 0x3d, 0xd0,
-	0xb4, 0x4d, 0x98, 0xe4, 0x22, 0xc7, 0x8f, 0x9e, 0x0a, 0x4e, 0xe9, 0x26, 0x8b, 0x76, 0xc1, 0xd9,
-	0x63, 0x32, 0x08, 0xb8, 0x52, 0x5c, 0x8a, 0x51, 0x44, 0x35, 0x54, 0xec, 0x86, 0xdd, 0xfc, 0xdf,
-	0xb9, 0x5c, 0xae, 0xeb, 0xd6, 0xfb, 0xba, 0x7e, 0xe2, 0x73, 0x3d, 0x8d, 0x3d, 0xcc, 0x64, 0x60,
-	0x42, 0xcc, 0xa7, 0xa5, 0xc6, 0x77, 0x44, 0x2f, 0x42, 0x50, 0xb8, 0x07, 0xec, 0xf5, 0xa5, 0xe5,
-	0x98, 0x0e, 0x3d, 0x60, 0x83, 0xdd, 0x2f, 0xd3, 0x01, 0xd5, 0xe0, 0x5e, 0x3b, 0xee, 0x9c, 0xc6,
-	0x33, 0x3d, 0x62, 0x11, 0x50, 0x9d, 0x46, 0x4d, 0x00, 0x2a, 0x85, 0x86, 0xdd, 0xdc, 0x39, 0xab,
-	0x62, 0x23, 0x4c, 0xeb, 0x62, 0x53, 0x17, 0x77, 0x25, 0x17, 0x9d, 0x62, 0x5a, 0x62, 0xb0, 0x9f,
-	0x49, 0xbb, 0x46, 0xd9, 0x07, 0x70, 0x87, 0xce, 0xc1, 0x96, 0xdd, 0x18, 0x42, 0xa9, 0xb8, 0xae,
-	0xfc, 0xfb, 0x9b, 0x65, 0xf9, 0x87, 0x65, 0x2f, 0x17, 0x5f, 0x14, 0x1f, 0x9f, 0xeb, 0x56, 0xe7,
-	0x6a, 0xb9, 0x41, 0xf6, 0x6a, 0x83, 0xec, 0x8f, 0x0d, 0xb2, 0x1f, 0x12, 0x64, 0xad, 0x12, 0x64,
-	0xbd, 0x25, 0xc8, 0xba, 0x3d, 0xfd, 0xb6, 0xc5, 0x50, 0x0c, 0x05, 0xef, 0x73, 0xc2, 0xa6, 0x94,
-	0x0b, 0x72, 0xff, 0xeb, 0x69, 0xb3, 0x65, 0xbc, 0x52, 0x36, 0xf8, 0xf9, 0x67, 0x00, 0x00, 0x00,
-	0xff, 0xff, 0x52, 0xb8, 0xd1, 0x3f, 0x02, 0x02, 0x00, 0x00,
+	// 407 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x93, 0xc1, 0x6a, 0xd5, 0x40,
+	0x14, 0x86, 0x93, 0x6b, 0x29, 0x38, 0x8a, 0x4a, 0xac, 0x35, 0xad, 0x90, 0x96, 0xe2, 0xa2, 0x1b,
+	0x67, 0xbc, 0xf5, 0x09, 0xbc, 0xb9, 0x74, 0x21, 0x0a, 0x12, 0xb8, 0x9b, 0x6e, 0xc2, 0x64, 0x72,
+	0x92, 0x0c, 0x4d, 0xe6, 0x84, 0x99, 0x49, 0xeb, 0x7d, 0x8b, 0x3e, 0x8c, 0x0f, 0xd1, 0x9d, 0xc5,
+	0x95, 0xb8, 0x28, 0x72, 0xef, 0x8b, 0x48, 0x32, 0x29, 0xe2, 0x75, 0xe3, 0xc2, 0x8d, 0xbb, 0x1c,
+	0xfe, 0xff, 0xff, 0xce, 0xe1, 0x27, 0x43, 0x5e, 0x76, 0xaa, 0x53, 0xb2, 0x90, 0x6c, 0x29, 0xa1,
+	0xce, 0x79, 0x59, 0x6a, 0x28, 0xb9, 0x45, 0xcd, 0x5a, 0xae, 0x79, 0x63, 0x68, 0xab, 0xd1, 0x62,
+	0xf0, 0x7c, 0x74, 0xd1, 0x0d, 0xd7, 0xfe, 0x4e, 0x89, 0x25, 0x0e, 0x1e, 0xd6, 0x7f, 0x39, 0xfb,
+	0xfe, 0x9e, 0x40, 0xd3, 0xa0, 0x49, 0x9d, 0xe0, 0x86, 0x51, 0x8a, 0xdc, 0xc4, 0x32, 0x6e, 0x80,
+	0x5d, 0x4c, 0x33, 0xb0, 0x7c, 0xca, 0x04, 0x4a, 0xe5, 0xf4, 0xa3, 0xab, 0x09, 0x79, 0xf8, 0x1e,
+	0x4a, 0x2e, 0x96, 0x1f, 0x87, 0x03, 0x82, 0x33, 0xf2, 0x58, 0x60, 0xd3, 0x48, 0x63, 0x24, 0xaa,
+	0x54, 0x73, 0x0b, 0xa1, 0x7f, 0xe8, 0x1f, 0xdf, 0x9f, 0x4d, 0xaf, 0x6f, 0x0f, 0xbc, 0xef, 0xb7,
+	0x07, 0x2f, 0x1c, 0xd1, 0xe4, 0xe7, 0x54, 0x22, 0x6b, 0xb8, 0xad, 0xa8, 0x03, 0xcc, 0x41, 0x7c,
+	0xfd, 0xfc, 0x8a, 0x8c, 0xeb, 0xe7, 0x20, 0x92, 0x47, 0xbf, 0x48, 0x09, 0xb7, 0x10, 0x7c, 0x20,
+	0xc1, 0x05, 0xef, 0x6a, 0x9b, 0x0a, 0x0d, 0xdc, 0xf6, 0xfc, 0x02, 0x20, 0x9c, 0x1c, 0xfa, 0xc7,
+	0x0f, 0x4e, 0xf6, 0xe8, 0x18, 0xec, 0x2f, 0xa5, 0xe3, 0xa5, 0x34, 0x46, 0xa9, 0x66, 0x5b, 0xfd,
+	0xe6, 0xe4, 0xc9, 0x10, 0x8d, 0xc7, 0xe4, 0x29, 0x40, 0xb0, 0x20, 0xbb, 0x1b, 0xb8, 0x1c, 0x5a,
+	0x34, 0xd2, 0x86, 0xf7, 0xfe, 0x0e, 0xb9, 0xf3, 0x1b, 0x72, 0xee, 0xc2, 0x47, 0x5f, 0x26, 0x64,
+	0x7b, 0x2c, 0xe3, 0x9c, 0x84, 0x97, 0xd2, 0x56, 0xb9, 0xe6, 0x97, 0xe9, 0x3f, 0x6b, 0x65, 0xf7,
+	0x0e, 0x19, 0xff, 0x87, 0xed, 0x04, 0x27, 0xe4, 0x59, 0x01, 0x90, 0x0a, 0xac, 0x6b, 0x10, 0x16,
+	0x75, 0xca, 0xf3, 0x5c, 0x83, 0x31, 0xe1, 0x56, 0xdf, 0x47, 0xf2, 0xb4, 0x00, 0x88, 0xef, 0xb4,
+	0xb7, 0x4e, 0x9a, 0xbd, 0xbb, 0x5e, 0x45, 0xfe, 0xcd, 0x2a, 0xf2, 0x7f, 0xac, 0x22, 0xff, 0x6a,
+	0x1d, 0x79, 0x37, 0xeb, 0xc8, 0xfb, 0xb6, 0x8e, 0xbc, 0xb3, 0xd7, 0xa5, 0xb4, 0x55, 0x97, 0x51,
+	0x81, 0x0d, 0x5b, 0xa8, 0x85, 0x92, 0xa7, 0x92, 0x89, 0x8a, 0x4b, 0xc5, 0x3e, 0xfd, 0xf1, 0x42,
+	0xec, 0xb2, 0x05, 0x93, 0x6d, 0x0f, 0xff, 0xed, 0x9b, 0x9f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xdd,
+	0x65, 0xf7, 0x38, 0x49, 0x03, 0x00, 0x00,
 }
 
-func (m *Params) Marshal() (dAtA []byte, err error) {
+func (m *LegacyParams) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -123,12 +189,12 @@ func (m *Params) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Params) MarshalTo(dAtA []byte) (int, error) {
+func (m *LegacyParams) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *LegacyParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -166,6 +232,66 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *Params) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Params) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.FeeCollectorAddress) > 0 {
+		i -= len(m.FeeCollectorAddress)
+		copy(dAtA[i:], m.FeeCollectorAddress)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.FeeCollectorAddress)))
+		i--
+		dAtA[i] = 0x22
+	}
+	{
+		size, err := m.VaultCreationDeposit.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	{
+		size, err := m.VaultCreationFee.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	{
+		size := m.WithdrawCommissionRate.Size()
+		i -= size
+		if _, err := m.WithdrawCommissionRate.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintParams(dAtA []byte, offset int, v uint64) int {
 	offset -= sovParams(v)
 	base := offset
@@ -177,7 +303,7 @@ func encodeVarintParams(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *Params) Size() (n int) {
+func (m *LegacyParams) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -192,13 +318,32 @@ func (m *Params) Size() (n int) {
 	return n
 }
 
+func (m *Params) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.WithdrawCommissionRate.Size()
+	n += 1 + l + sovParams(uint64(l))
+	l = m.VaultCreationFee.Size()
+	n += 1 + l + sovParams(uint64(l))
+	l = m.VaultCreationDeposit.Size()
+	n += 1 + l + sovParams(uint64(l))
+	l = len(m.FeeCollectorAddress)
+	if l > 0 {
+		n += 1 + l + sovParams(uint64(l))
+	}
+	return n
+}
+
 func sovParams(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozParams(x uint64) (n int) {
 	return sovParams(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *Params) Unmarshal(dAtA []byte) error {
+func (m *LegacyParams) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -221,10 +366,10 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Params: wiretype end group for non-group")
+			return fmt.Errorf("proto: LegacyParams: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Params: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: LegacyParams: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -326,6 +471,188 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if err := m.VaultCreationDeposit.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipParams(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthParams
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Params) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowParams
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Params: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Params: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field WithdrawCommissionRate", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.WithdrawCommissionRate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VaultCreationFee", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.VaultCreationFee.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VaultCreationDeposit", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.VaultCreationDeposit.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FeeCollectorAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.FeeCollectorAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

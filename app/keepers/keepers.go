@@ -79,7 +79,6 @@ import (
 
 	epochskeeper "github.com/UnUniFi/chain/x/epochs/keeper"
 	epochstypes "github.com/UnUniFi/chain/x/epochs/types"
-	"github.com/UnUniFi/chain/x/yieldaggregator"
 	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
 	icacallbackskeeper "github.com/UnUniFi/chain/x/yieldaggregator/submodules/icacallbacks/keeper"
 	icacallbackstypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/icacallbacks/types"
@@ -573,7 +572,6 @@ func NewAppKeeper(
 	appKeepers.YieldaggregatorKeeper = yieldaggregatorkeeper.NewKeeper(
 		appCodec,
 		appKeepers.keys[yieldaggregatortypes.StoreKey],
-		appKeepers.GetSubspace(yieldaggregatortypes.ModuleName),
 		appKeepers.BankKeeper,
 		wasmkeeper.NewDefaultPermissionKeeper(appKeepers.WasmKeeper),
 		appKeepers.WasmKeeper,
@@ -599,8 +597,7 @@ func NewAppKeeper(
 		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(appKeepers.ParamsKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(&appKeepers.UpgradeKeeper)).
-		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(appKeepers.IBCKeeper.ClientKeeper)).
-		AddRoute(yieldaggregatortypes.RouterKey, yieldaggregator.NewYieldAggregatorProposalHandler(appKeepers.YieldaggregatorKeeper))
+		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(appKeepers.IBCKeeper.ClientKeeper))
 
 	// The gov proposal types can be individually enabled
 	if len(enabledProposals) != 0 {
@@ -698,7 +695,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(interchainquerytypes.ModuleName)
 	paramsKeeper.Subspace(recordstypes.ModuleName)
 	paramsKeeper.Subspace(icacallbackstypes.ModuleName)
-	paramsKeeper.Subspace(yieldaggregatortypes.ModuleName)
 
 	return paramsKeeper
 }

@@ -10,20 +10,23 @@ import (
 // InitGenesis initializes the module's state from a provided genesis state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
 	// this line is used by starport scaffolding # genesis/module/init
-	k.SetParams(ctx, genState.Params)
-	// TODO: change to use appendStrategy for ID management
-	for _, Strategies := range genState.Strategies {
-		k.SetStrategy(ctx, Strategies.Denom, Strategies)
+	k.SetParams(ctx, &genState.Params)
+
+	for _, strategy := range genState.Strategies {
+		k.AppendStrategy(ctx, strategy.Denom, strategy)
 	}
 	for _, vault := range genState.Vaults {
-		k.SetVault(ctx, vault)
+		k.AppendVault(ctx, vault)
 	}
 }
 
 // ExportGenesis returns the module's exported genesis
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis := types.DefaultGenesis()
-	genesis.Params = k.GetParams(ctx)
+	params, _ := k.GetParams(ctx)
+	if params != nil {
+		genesis.Params = *params
+	}
 	genesis.Strategies = k.GetAllStrategy(ctx, "")
 	genesis.Vaults = k.GetAllVault(ctx)
 
