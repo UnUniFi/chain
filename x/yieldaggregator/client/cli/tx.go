@@ -61,20 +61,21 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(
-		CmdTxCreateVault(),
-		CmdTxDeleteVault(),
 		CmdTxDepositToVault(),
 		CmdTxWithdrawFromVault(),
+		CmdTxCreateVault(),
 		CmdTxTransferVaultOwnership(),
-		NewSubmitProposalAddStrategyTxCmd(),
+		CmdTxUpdateParams(),
+		CmdTxDeleteVault(),
+		CmdTxRegisterStrategy(),
 	)
 
 	return cmd
 }
 
-// NewSubmitProposalAddStrategyTxCmd returns a CLI command handler for creating
+// CmdTxRegisterStrategy returns a CLI command handler for creating
 // a proposal to add new strategy
-func NewSubmitProposalAddStrategyTxCmd() *cobra.Command {
+func CmdTxRegisterStrategy() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal-add-strategy",
 		Args:  cobra.ExactArgs(0),

@@ -6,4 +6,4 @@ import (
 	"github.com/UnUniFi/chain/x/yieldaggregator/client/cli"
 )
 
-var ProposalAddStrategyHandler = govclient.NewProposalHandler(cli.NewSubmitProposalAddStrategyTxCmd)
+var ProposalAddStrategyHandler = govclient.NewProposalHandler(cli.CmdTxRegisterStrategy)
