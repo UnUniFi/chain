@@ -4,6 +4,9 @@ import (
 	fmt "fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 var (
@@ -100,4 +103,27 @@ func validateFeeCollectorAddress(i interface{}) error {
 	}
 
 	return nil
+}
+
+// Deprecated: Just for migration purpose
+var (
+	KeyCommissionRate       = []byte("CommissionRate")
+	KeyVaultCreationFee     = []byte("VaultCreationFee")
+	KeyVaultCreationDeposit = []byte("VaultCreationDeposit")
+)
+
+var _ paramtypes.ParamSet = (*Params)(nil)
+
+// ParamKeyTable the param key table for launch module
+func ParamKeyTable() paramtypes.KeyTable {
+	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
+}
+
+// ParamSetPairs get the params.ParamSet
+func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
+	return paramtypes.ParamSetPairs{
+		paramstypes.NewParamSetPair(KeyCommissionRate, &p.CommissionRate, validateCommissionRate),
+		paramstypes.NewParamSetPair(KeyVaultCreationFee, &p.VaultCreationFee, validateVaultCreationFee),
+		paramstypes.NewParamSetPair(KeyVaultCreationDeposit, &p.VaultCreationDeposit, validateVaultCreationDeposit),
+	}
 }
