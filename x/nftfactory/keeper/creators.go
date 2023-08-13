@@ -4,9 +4,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) addDenomFromCreator(ctx sdk.Context, creator, denom string) {
+func (k Keeper) addDenomFromCreator(ctx sdk.Context, creator, classId string) {
 	store := k.GetCreatorPrefixStore(ctx, creator)
-	store.Set([]byte(denom), []byte(denom))
+	store.Set([]byte(classId), []byte(classId))
 }
 
 func (k Keeper) getDenomsFromCreator(ctx sdk.Context, creator string) []string {
@@ -15,11 +15,11 @@ func (k Keeper) getDenomsFromCreator(ctx sdk.Context, creator string) []string {
 	iterator := store.Iterator(nil, nil)
 	defer iterator.Close()
 
-	denoms := []string{}
+	classIds := []string{}
 	for ; iterator.Valid(); iterator.Next() {
-		denoms = append(denoms, string(iterator.Key()))
+		classIds = append(classIds, string(iterator.Key()))
 	}
-	return denoms
+	return classIds
 }
 
 func (k Keeper) GetAllDenomsIterator(ctx sdk.Context) sdk.Iterator {

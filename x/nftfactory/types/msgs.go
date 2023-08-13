@@ -16,9 +16,21 @@ var (
 
 func NewMsgCreateClass(
 	sender string,
+	subclass string,
+	name string,
+	symbol string,
+	description string,
+	uri string,
+	uriHash string,
 ) *MsgCreateClass {
 	return &MsgCreateClass{
-		Sender: sender,
+		Sender:      sender,
+		Subclass:    subclass,
+		Name:        name,
+		Symbol:      symbol,
+		Description: description,
+		Uri:         uri,
+		UriHash:     uriHash,
 	}
 }
 
@@ -39,9 +51,21 @@ func (msg MsgCreateClass) GetSigners() []sdk.AccAddress {
 
 func NewMsgUpdateClass(
 	sender string,
+	classId string,
+	name string,
+	symbol string,
+	description string,
+	uri string,
+	uriHash string,
 ) *MsgUpdateClass {
 	return &MsgUpdateClass{
-		Sender: sender,
+		Sender:      sender,
+		ClassId:     classId,
+		Name:        name,
+		Symbol:      symbol,
+		Description: description,
+		Uri:         uri,
+		UriHash:     uriHash,
 	}
 }
 
@@ -62,13 +86,13 @@ func (msg MsgUpdateClass) GetSigners() []sdk.AccAddress {
 
 func NewMsgMintNFT(
 	sender string,
-	classID, nftID string,
+	classID, tokenID string,
 	recipient string,
 ) *MsgMintNFT {
 	return &MsgMintNFT{
 		Sender:    sender,
 		ClassId:   classID,
-		NftId:     nftID,
+		TokenId:   tokenID,
 		Recipient: recipient,
 	}
 }
@@ -83,8 +107,8 @@ func (msg MsgMintNFT) ValidateBasic() error {
 		return sdkerrors.Wrapf(nfttypes.ErrEmptyClassID, "Invalid class id (%s)", msg.ClassId)
 	}
 
-	if err := ValidateNFTID(msg.NftId); err != nil {
-		return sdkerrors.Wrapf(nfttypes.ErrEmptyNFTID, "Invalid nft id (%s)", msg.NftId)
+	if err := ValidateNFTID(msg.TokenId); err != nil {
+		return sdkerrors.Wrapf(nfttypes.ErrEmptyNFTID, "Invalid nft id (%s)", msg.TokenId)
 	}
 
 	return nil
@@ -98,12 +122,12 @@ func (msg MsgMintNFT) GetSigners() []sdk.AccAddress {
 
 func NewMsgBurnNFT(
 	burner string,
-	classID, nftID string,
+	classId, tokenId string,
 ) *MsgBurnNFT {
 	return &MsgBurnNFT{
 		Sender:  burner,
-		ClassId: classID,
-		NftId:   nftID,
+		ClassId: classId,
+		TokenId: tokenId,
 	}
 }
 
@@ -117,8 +141,8 @@ func (msg MsgBurnNFT) ValidateBasic() error {
 		return sdkerrors.Wrapf(nfttypes.ErrEmptyClassID, "Invalid class id (%s)", msg.ClassId)
 	}
 
-	if err := ValidateNFTID(msg.NftId); err != nil {
-		return sdkerrors.Wrapf(nfttypes.ErrEmptyNFTID, "Invalid nft id (%s)", msg.NftId)
+	if err := ValidateNFTID(msg.TokenId); err != nil {
+		return sdkerrors.Wrapf(nfttypes.ErrEmptyNFTID, "Invalid nft id (%s)", msg.TokenId)
 	}
 
 	return nil
@@ -132,9 +156,13 @@ func (msg MsgBurnNFT) GetSigners() []sdk.AccAddress {
 
 func NewMsgChangeAdmin(
 	sender string,
+	classId string,
+	newAdmin string,
 ) *MsgChangeAdmin {
 	return &MsgChangeAdmin{
-		Sender: sender,
+		Sender:   sender,
+		ClassId:  classId,
+		NewAdmin: newAdmin,
 	}
 }
 

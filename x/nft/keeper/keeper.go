@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/nft"
 	"github.com/cosmos/cosmos-sdk/x/nft/keeper"
 
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	// wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/UnUniFi/chain/x/nft/types"
 )
 
@@ -16,16 +16,16 @@ type Keeper struct {
 	keeper.Keeper
 	cdc codec.BinaryCodec
 
-	wasmKeeper wasmtypes.ContractOpsKeeper
-	authority  string
+	// wasmKeeper wasmtypes.ContractOpsKeeper
+	authority string
 }
 
-func NewKeeper(k keeper.Keeper, cdc codec.BinaryCodec, wasmKeeper wasmtypes.ContractOpsKeeper, authority string) Keeper {
+func NewKeeper(k keeper.Keeper, cdc codec.BinaryCodec /*wasmKeeper wasmtypes.ContractOpsKeeper,*/, authority string) Keeper {
 	return Keeper{
-		Keeper:     k,
-		cdc:        cdc,
-		wasmKeeper: wasmKeeper,
-		authority:  authority,
+		Keeper: k,
+		cdc:    cdc,
+		// wasmKeeper: wasmKeeper,
+		authority: authority,
 	}
 }
 

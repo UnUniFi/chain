@@ -42,7 +42,7 @@ message MsgUpdateClassResponse {}
 message MsgMintNFT {
   string sender    = 1;
   string class_id  = 2;
-  string nft_id    = 3;
+  string token_id    = 3;
   string recipient = 4;
 }
 message MsgMintNFTResponse {}
@@ -50,7 +50,7 @@ message MsgMintNFTResponse {}
 message MsgBurnNFT {
   string sender   = 1;
   string class_id = 2;
-  string nft_id   = 3;
+  string token_id   = 3;
 }
 message MsgBurnNFTResponse {}
 

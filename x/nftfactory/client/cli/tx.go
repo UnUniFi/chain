@@ -2,7 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -29,11 +28,10 @@ func GetTxCmd() *cobra.Command {
 
 	cmd.AddCommand(
 		CmdCreateClass(),
+		CmdUpdateClass(),
 		CmdMintNFT(),
 		CmdBurnNFT(),
-		CmdSendClassOwnership(),
-		CmdUpdateTokenSupplyCap(),
-		CmdUpdateBaseTokenUri(),
+		CmdChangeAdmin(),
 	)
 
 	return cmd
@@ -41,15 +39,17 @@ func GetTxCmd() *cobra.Command {
 
 func CmdCreateClass() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-class [class-name] [base-token-uri]] [token-supply-cap] [minting-permission] --from [sender]",
-		Args:  cobra.ExactArgs(4),
+		Use:   "create-class [subclass] --from [sender]",
+		Args:  cobra.ExactArgs(1),
 		Short: "create class for minting NFTs",
 		Long: strings.TrimSpace(fmt.Sprintf(
-			"Example:$ %s tx %s create-class <class-name> <base-token-uri> <token-supply-cap> <minting-permission: 0=OnlyOwner, 1=Anyone>"+
+			"Example:$ %s tx %s create-class <subclass>"+
 				"--from <sender> "+
-				"--symbol <class-symbol> "+
-				"--description <class-description> "+
-				"--class-uri <class-uri> "+
+				"--name <name> "+
+				"--symbol <symbol> "+
+				"--description <description> "+
+				"--class-uri <uri> "+
+				"--class-uri-hash <uri-hash> "+
 				"--chain-id=<chain-id> "+
 				"--fees=<fee>", version.AppName, types.ModuleName),
 		),
@@ -59,11 +59,9 @@ func CmdCreateClass() *cobra.Command {
 				return err
 			}
 
-			tokenSupplyCap, err := strconv.ParseUint(args[2], 10, 64)
-			if err != nil {
-				return err
-			}
-			mintingPermission, err := strconv.ParseInt(args[3], 10, 32)
+			subClass := args[0]
+
+			className, err := cmd.Flags().GetString(FlagName)
 			if err != nil {
 				return err
 			}
@@ -75,20 +73,23 @@ func CmdCreateClass() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			classUri, err := cmd.Flags().GetString(FlagClassUri)
+			classUri, err := cmd.Flags().GetString(FlagUri)
+			if err != nil {
+				return err
+			}
+			classUriHash, err := cmd.Flags().GetString(FlagUriHash)
 			if err != nil {
 				return err
 			}
 
 			msg := types.NewMsgCreateClass(
 				clientCtx.GetFromAddress().String(),
-				args[0],
-				args[1],
-				tokenSupplyCap,
-				types.MintingPermission(mintingPermission),
+				subClass,
+				className,
 				classSymbol,
 				classDescription,
 				classUri,
+				classUriHash,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -102,15 +103,79 @@ func CmdCreateClass() *cobra.Command {
 	return cmd
 }
 
+func CmdUpdateClass() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-class [class-id] --from [sender]",
+		Args:  cobra.ExactArgs(1),
+		Short: "update class",
+		Long: strings.TrimSpace(fmt.Sprintf(
+			"Example:$ %s tx %s create-class <class-id> <name>"+
+				"--from <sender> "+
+				"--name <name> "+
+				"--symbol <symbol> "+
+				"--description <description> "+
+				"--class-uri <uri> "+
+				"--class-uri-hash <uri-hash> "+
+				"--chain-id=<chain-id> "+
+				"--fees=<fee>", version.AppName, types.ModuleName),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			classId := args[0]
+
+			className, err := cmd.Flags().GetString(FlagName)
+			if err != nil {
+				return err
+			}
+			classSymbol, err := cmd.Flags().GetString(FlagSymbol)
+			if err != nil {
+				return err
+			}
+			classDescription, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return err
+			}
+			classUri, err := cmd.Flags().GetString(FlagUri)
+			if err != nil {
+				return err
+			}
+			classUriHash, err := cmd.Flags().GetString(FlagUriHash)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgUpdateClass(
+				clientCtx.GetFromAddress().String(),
+				classId,
+				className,
+				classSymbol,
+				classDescription,
+				classUri,
+				classUriHash,
+			)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().AddFlagSet(FsUpdateClass)
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
 func CmdMintNFT() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint-nft [class-id] [nft-id] [receiver] --from [sender]",
+		Use:   "mint-nft [class-id] [token-id] [receiver] --from [sender]",
 		Args:  cobra.ExactArgs(3),
 		Short: "mint NFT under specific class by class-id",
 		Long: strings.TrimSpace(fmt.Sprintf(
-			"Note: nft-id must start with [a-zA-Z] character."+
-				"nft-id will be that nft-uri combined with base token uri of the class-id, like <base-token-uri><nft-id>"+
-				"$ %s tx %s mint-nft <class-id> <nft-id> <receiver>"+
+			"$ %s tx %s mint-nft <class-id> <token-id> <receiver>"+
 				"--from <sender> "+
 				"--chain-id=<chain-id> "+
 				"--fees=<fee>", version.AppName, types.ModuleName),
@@ -123,6 +188,8 @@ func CmdMintNFT() *cobra.Command {
 
 			sender := clientCtx.GetFromAddress()
 
+			classId := args[0]
+			tokenId := args[1]
 			recipient := args[2]
 			recipientAddr, err := sdk.AccAddressFromBech32(recipient)
 			if err != nil {
@@ -131,8 +198,8 @@ func CmdMintNFT() *cobra.Command {
 
 			msg := types.NewMsgMintNFT(
 				sender.String(),
-				args[0],
-				args[1],
+				classId,
+				tokenId,
 				recipientAddr.String(),
 			)
 
@@ -150,7 +217,7 @@ func CmdMintNFT() *cobra.Command {
 
 func CmdBurnNFT() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn-nft [class-id] [nft-id] --from [sender]",
+		Use:   "burn-nft [class-id] [token-id] --from [sender]",
 		Args:  cobra.ExactArgs(2),
 		Short: "burn specified NFT",
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -161,10 +228,13 @@ func CmdBurnNFT() *cobra.Command {
 
 			sender := clientCtx.GetFromAddress()
 
+			classId := args[0]
+			tokenId := args[1]
+
 			msg := types.NewMsgBurnNFT(
 				sender.String(),
-				args[0],
-				args[1],
+				classId,
+				tokenId,
 			)
 
 			if err := msg.ValidateBasic(); err != nil {
@@ -179,11 +249,11 @@ func CmdBurnNFT() *cobra.Command {
 	return cmd
 }
 
-func CmdSendClassOwnership() *cobra.Command {
+func CmdChangeAdmin() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "send-class [class-id] [recipient] --from [sender]",
+		Use:   "change-admin [class-id] [new-admin-address] --from [sender]",
 		Args:  cobra.ExactArgs(2),
-		Short: "send the ownership of class",
+		Short: "Changes the admin address for a factory-created class. Must have admin authority to do so.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -191,83 +261,13 @@ func CmdSendClassOwnership() *cobra.Command {
 			}
 
 			sender := clientCtx.GetFromAddress()
-			recipient := args[1]
-			recipientAddr, err := sdk.AccAddressFromBech32(recipient)
-			if err != nil {
-				return err
-			}
+			classId := args[0]
+			newAdmin := args[1]
 
-			msg := types.NewMsgSendClassOwnership(
+			msg := types.NewMsgChangeAdmin(
 				sender.String(),
-				args[0],
-				recipientAddr.String(),
-			)
-
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-	return cmd
-}
-
-func CmdUpdateTokenSupplyCap() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "update-token-supply-cap [class-id] [token-supply-cap] --from [sender]",
-		Args:  cobra.ExactArgs(2),
-		Short: "update the token supply cap of class specified by class id",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			sender := clientCtx.GetFromAddress()
-
-			tokenSupplyCap, err := strconv.ParseUint(args[1], 10, 64)
-			if err != nil {
-				return err
-			}
-
-			msg := types.NewMsgUpdateTokenSupplyCap(
-				sender.String(),
-				args[0],
-				tokenSupplyCap,
-			)
-
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-	return cmd
-}
-
-func CmdUpdateBaseTokenUri() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "update-base-token-uri [class-id] [base-token-uri] --from [sender]",
-		Args:  cobra.ExactArgs(2),
-		Short: "update the base token uri of class specified by class id and automatically change the belonging nft uris",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			sender := clientCtx.GetFromAddress()
-
-			msg := types.NewMsgUpdateBaseTokenUri(
-				sender.String(),
-				args[0],
-				args[1],
+				classId,
+				newAdmin,
 			)
 
 			if err := msg.ValidateBasic(); err != nil {
