@@ -21,7 +21,7 @@ func (k Keeper) Params(ctx context.Context, _ *types.QueryParamsRequest) (*types
 func (k Keeper) ClassAuthorityMetadata(ctx context.Context, req *types.QueryClassAuthorityMetadataRequest) (*types.QueryClassAuthorityMetadataResponse, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
-	class_id := fmt.Sprintf("nftfactory/%s/%s", req.GetCreator(), req.GetSubclass())
+	class_id := fmt.Sprintf("factory/%s/%s", req.GetCreator(), req.GetSubclass())
 
 	authorityMetadata, err := k.GetAuthorityMetadata(sdkCtx, class_id)
 	if err != nil {
