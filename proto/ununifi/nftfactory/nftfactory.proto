@@ -12,7 +12,7 @@ option go_package = "github.com/UnUniFi/chain/x/nftfactory/types";
 message ClassAuthorityMetadata {
   option (gogoproto.equal) = true;
 
-  // Can be empty for no admin, or a valid osmosis address
+  // Can be empty for no admin, or a valid address
   string Admin = 1 [ (gogoproto.moretags) = "yaml:\"admin\"" ];
 }
 

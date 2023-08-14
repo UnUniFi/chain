@@ -5,36 +5,33 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	// sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/cosmos/cosmos-sdk/x/nft"
-
 	"github.com/UnUniFi/chain/x/nftfactory/types"
 )
 
-// CreateClass creates new class id with `nftfactory/{creatorAddr}/{subdenom}` name.
+// CreateClass creates new class id with `factory/{creatorAddr}/{subclass}` name.
 // Charges creatorAddr fee for creation
-func (k Keeper) CreateClass(ctx sdk.Context, creatorAddr, subdenom string) (newTokenDenom string, err error) {
+func (k Keeper) CreateClass(ctx sdk.Context, creatorAddr, subclass string) (newClassId string, err error) {
 	err = k.chargeFeeForDenomCreation(ctx, creatorAddr)
 	if err != nil {
 		return "", errorsmod.Wrapf(types.ErrUnableToCharge, "class fee collection error: %v", err)
 	}
 
-	denom, err := k.validateCreateDenom(ctx, creatorAddr, subdenom)
+	classId, err := k.validateCreateDenom(ctx, creatorAddr, subclass)
 	if err != nil {
 		return "", errorsmod.Wrapf(types.ErrInvalidClassId, "class id validation error: %v", err)
 	}
 
-	err = k.createClassAfterValidation(ctx, creatorAddr, denom)
+	err = k.createClassAfterValidation(ctx, creatorAddr, classId)
 	if err != nil {
 		return "", errorsmod.Wrap(err, "create class after validation error")
 	}
 
-	return denom, nil
+	return classId, nil
 }
 
 // Runs CreateClass logic after the charge and all denom validation has been handled.
 // Made into a second function for genesis initialization.
 func (k Keeper) createClassAfterValidation(ctx sdk.Context, creatorAddr, classId string) (err error) {
-	k.nftKeeper.SaveClass(ctx, nft.Class{})
 
 	authorityMetadata := types.ClassAuthorityMetadata{
 		Admin: creatorAddr,

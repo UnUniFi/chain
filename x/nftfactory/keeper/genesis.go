@@ -12,7 +12,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {
 	k.SetParams(ctx, genState.Params)
 
 	for _, genClass := range genState.GetClasses() {
-		creator, _, err := types.DeconstructDenom(genClass.GetClassId())
+		creator, _, err := types.DeconstructClassId(genClass.GetClassId())
 		if err != nil {
 			panic(err)
 		}

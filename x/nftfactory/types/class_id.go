@@ -3,16 +3,13 @@ package types
 import (
 	"strings"
 
+	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 const (
-	ModuleDenomPrefix = "nftfactory"
-	// See the TokenFactory readme for a derivation of these.
-	// TL;DR, MaxSubdenomLength + MaxHrpLength = 60 comes from SDK max denom length = 128
-	// and the structure of tokenfactory denoms.
-	MaxSubdenomLength = 44
+	ModuleDenomPrefix = "factory"
+	MaxSubdenomLength = 512
 	MaxHrpLength      = 16
 	// MaxCreatorLength = 59 + MaxHrpLength
 	MaxCreatorLength = 59 + MaxHrpLength
@@ -35,28 +32,28 @@ func GetClassId(creator, subclass string) (string, error) {
 	return denom, sdk.ValidateDenom(denom)
 }
 
-// DeconstructDenom takes a token denom string and verifies that it is a valid
+// DeconstructClassId takes a token denom string and verifies that it is a valid
 // denom of the tokenfactory module, and is of the form `factory/{creator}/{subdenom}`
 // If valid, it returns the creator address and subdenom
-func DeconstructDenom(class_id string) (creator, subclass string, err error) {
-	err = sdk.ValidateDenom(class_id)
+func DeconstructClassId(classId string) (creator, subclass string, err error) {
+	err = sdk.ValidateDenom(classId)
 	if err != nil {
 		return "", "", err
 	}
 
-	strParts := strings.Split(class_id, "/")
+	strParts := strings.Split(classId, "/")
 	if len(strParts) < 3 {
-		return "", "", sdkerrors.Wrapf(ErrInvalidClassId, "not enough parts of class id %s", class_id)
+		return "", "", errorsmod.Wrapf(ErrInvalidClassId, "not enough parts of class id %s", classId)
 	}
 
 	if strParts[0] != ModuleDenomPrefix {
-		return "", "", sdkerrors.Wrapf(ErrInvalidClassId, "class id prefix is incorrect. Is: %s.  Should be: %s", strParts[0], ModuleDenomPrefix)
+		return "", "", errorsmod.Wrapf(ErrInvalidClassId, "class id prefix is incorrect. Is: %s.  Should be: %s", strParts[0], ModuleDenomPrefix)
 	}
 
 	creator = strParts[1]
 	_, err = sdk.AccAddressFromBech32(creator)
 	if err != nil {
-		return "", "", sdkerrors.Wrapf(ErrInvalidClassId, "Invalid creator address (%s)", err)
+		return "", "", errorsmod.Wrapf(ErrInvalidClassId, "Invalid creator address (%s)", err)
 	}
 
 	// Handle the case where a denom has a slash in its subdenom. For example,

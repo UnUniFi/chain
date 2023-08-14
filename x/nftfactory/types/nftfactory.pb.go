@@ -29,7 +29,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 // capabilities over a nft factory class. Right now there is only one Admin
 // permission, but is planned to be extended to the future.
 type ClassAuthorityMetadata struct {
-	// Can be empty for no admin, or a valid osmosis address
+	// Can be empty for no admin, or a valid address
 	Admin string `protobuf:"bytes,1,opt,name=Admin,proto3" json:"Admin,omitempty" yaml:"admin"`
 }
 

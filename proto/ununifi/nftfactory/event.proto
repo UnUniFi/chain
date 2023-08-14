@@ -7,30 +7,30 @@ import "ununifi/nftfactory/nftfactory.proto";
 option go_package = "github.com/UnUniFi/chain/x/nftfactory/types";
 
 message EventCreateClass {
-  string owner    = 1;
+  string sender   = 1;
   string class_id = 2;
 }
 
 message EventUpdateClass {
-  string owner    = 1;
+  string sender   = 1;
   string class_id = 2;
 }
 
 message EventMintNFT {
-  string owner     = 1;
+  string sender    = 1;
   string class_id  = 2;
-  string nft_id    = 3;
+  string token_id  = 3;
   string recipient = 4;
 }
 
 message EventBurnNFT {
-  string owner    = 1;
+  string sender   = 1;
   string class_id = 2;
-  string nft_id   = 3;
+  string token_id = 3;
 }
 
 message EventChangeAdmin {
-  string admin = 1;
-  string class_id     = 3;
-  string new_admin   = 2;
+  string admin     = 1;
+  string class_id  = 3;
+  string new_admin = 2;
 }

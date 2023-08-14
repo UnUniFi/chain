@@ -29,7 +29,7 @@ func (gs GenesisState) Validate() error {
 		}
 		seenDenoms[class.GetClassId()] = true
 
-		_, _, err := DeconstructDenom(class.GetClassId())
+		_, _, err := DeconstructClassId(class.GetClassId())
 		if err != nil {
 			return err
 		}

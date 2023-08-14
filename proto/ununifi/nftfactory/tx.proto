@@ -2,7 +2,6 @@ syntax = "proto3";
 package ununifi.nftfactory;
 
 import "gogoproto/gogo.proto";
-import "ununifi/nft/nft.proto";
 import "ununifi/nftfactory/nftfactory.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/nftfactory/types";
@@ -16,35 +15,38 @@ service Msg {
 }
 
 message MsgCreateClass {
-  string                sender      = 1;
-  string                subclass    = 2;
-  string                name        = 3;
-  string                symbol      = 4;
-  string                description = 5;
-  string                uri         = 6;
-  string                uri_hash    = 7;
-  ununifi.nft.ClassData data        = 8;
+  string sender      = 1;
+  string subclass    = 2;
+  string name        = 3;
+  string symbol      = 4;
+  string description = 5;
+  string uri         = 6;
+  string uri_hash    = 7;
 }
+
 message MsgCreateClassResponse {}
 
 message MsgUpdateClass {
-  string                sender      = 1;
-  string                class_id    = 2;
-  string                name        = 3;
-  string                symbol      = 4;
-  string                description = 5;
-  string                uri         = 6;
-  string                uri_hash    = 7;
-  ununifi.nft.ClassData data        = 8;
+  string sender      = 1;
+  string class_id    = 2;
+  string name        = 3;
+  string symbol      = 4;
+  string description = 5;
+  string uri         = 6;
+  string uri_hash    = 7;
 }
+
 message MsgUpdateClassResponse {}
 
 message MsgMintNFT {
   string sender    = 1;
   string class_id  = 2;
-  string token_id    = 3;
-  string recipient = 4;
+  string token_id  = 3;
+  string uri       = 4;
+  string uri_hash  = 5;
+  string recipient = 6;
 }
+
 message MsgMintNFTResponse {}
 
 message MsgBurnNFT {
@@ -52,6 +54,7 @@ message MsgBurnNFT {
   string class_id = 2;
   string token_id   = 3;
 }
+
 message MsgBurnNFTResponse {}
 
 // MsgChangeAdmin is the sdk.Msg type for allowing an admin account to reassign

@@ -24,7 +24,7 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type EventCreateClass struct {
-	Owner   string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
+	Sender  string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 	ClassId string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 }
 
@@ -61,9 +61,9 @@ func (m *EventCreateClass) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_EventCreateClass proto.InternalMessageInfo
 
-func (m *EventCreateClass) GetOwner() string {
+func (m *EventCreateClass) GetSender() string {
 	if m != nil {
-		return m.Owner
+		return m.Sender
 	}
 	return ""
 }
@@ -76,7 +76,7 @@ func (m *EventCreateClass) GetClassId() string {
 }
 
 type EventUpdateClass struct {
-	Owner   string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
+	Sender  string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 	ClassId string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 }
 
@@ -113,9 +113,9 @@ func (m *EventUpdateClass) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_EventUpdateClass proto.InternalMessageInfo
 
-func (m *EventUpdateClass) GetOwner() string {
+func (m *EventUpdateClass) GetSender() string {
 	if m != nil {
-		return m.Owner
+		return m.Sender
 	}
 	return ""
 }
@@ -128,9 +128,9 @@ func (m *EventUpdateClass) GetClassId() string {
 }
 
 type EventMintNFT struct {
-	Owner     string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
+	Sender    string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 	ClassId   string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	NftId     string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	TokenId   string `protobuf:"bytes,3,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
 	Recipient string `protobuf:"bytes,4,opt,name=recipient,proto3" json:"recipient,omitempty"`
 }
 
@@ -167,9 +167,9 @@ func (m *EventMintNFT) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_EventMintNFT proto.InternalMessageInfo
 
-func (m *EventMintNFT) GetOwner() string {
+func (m *EventMintNFT) GetSender() string {
 	if m != nil {
-		return m.Owner
+		return m.Sender
 	}
 	return ""
 }
@@ -181,9 +181,9 @@ func (m *EventMintNFT) GetClassId() string {
 	return ""
 }
 
-func (m *EventMintNFT) GetNftId() string {
+func (m *EventMintNFT) GetTokenId() string {
 	if m != nil {
-		return m.NftId
+		return m.TokenId
 	}
 	return ""
 }
@@ -196,9 +196,9 @@ func (m *EventMintNFT) GetRecipient() string {
 }
 
 type EventBurnNFT struct {
-	Owner   string `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
+	Sender  string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 	ClassId string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	NftId   string `protobuf:"bytes,3,opt,name=nft_id,json=nftId,proto3" json:"nft_id,omitempty"`
+	TokenId string `protobuf:"bytes,3,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
 }
 
 func (m *EventBurnNFT) Reset()         { *m = EventBurnNFT{} }
@@ -234,9 +234,9 @@ func (m *EventBurnNFT) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_EventBurnNFT proto.InternalMessageInfo
 
-func (m *EventBurnNFT) GetOwner() string {
+func (m *EventBurnNFT) GetSender() string {
 	if m != nil {
-		return m.Owner
+		return m.Sender
 	}
 	return ""
 }
@@ -248,9 +248,9 @@ func (m *EventBurnNFT) GetClassId() string {
 	return ""
 }
 
-func (m *EventBurnNFT) GetNftId() string {
+func (m *EventBurnNFT) GetTokenId() string {
 	if m != nil {
-		return m.NftId
+		return m.TokenId
 	}
 	return ""
 }
@@ -326,27 +326,27 @@ func init() {
 func init() { proto.RegisterFile("ununifi/nftfactory/event.proto", fileDescriptor_8d5133c6cc79979f) }
 
 var fileDescriptor_8d5133c6cc79979f = []byte{
-	// 317 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x92, 0xc1, 0x4e, 0x32, 0x31,
-	0x10, 0xc7, 0xd9, 0x8f, 0x4f, 0x84, 0xc6, 0x83, 0x69, 0x30, 0x41, 0x34, 0x8d, 0xc1, 0x8b, 0x89,
-	0x09, 0x3d, 0xf8, 0x04, 0x42, 0x20, 0xe1, 0xa0, 0x07, 0x23, 0x1e, 0xbc, 0x60, 0xd9, 0xed, 0x2e,
-	0x4d, 0x64, 0xba, 0x29, 0xb3, 0x22, 0x6f, 0xe1, 0x63, 0x79, 0xe4, 0xe8, 0xd1, 0xb0, 0x2f, 0x62,
-	0xda, 0x82, 0x2b, 0x89, 0x17, 0x8d, 0xb7, 0x99, 0xfe, 0x66, 0x7e, 0xff, 0xa4, 0x19, 0xc2, 0x32,
-	0xc8, 0x40, 0xc5, 0x8a, 0x43, 0x8c, 0xb1, 0x08, 0x51, 0x9b, 0x05, 0x97, 0x4f, 0x12, 0xb0, 0x9d,
-	0x1a, 0x8d, 0x9a, 0xd2, 0x35, 0x6f, 0x17, 0xbc, 0x59, 0x4f, 0x74, 0xa2, 0x1d, 0xe6, 0xb6, 0xf2,
-	0x93, 0xcd, 0xd3, 0x6f, 0x4c, 0x45, 0xe9, 0x87, 0x5a, 0x5d, 0xb2, 0xdf, 0xb3, 0xf6, 0xae, 0x91,
-	0x02, 0x65, 0xf7, 0x51, 0xcc, 0x66, 0xb4, 0x4e, 0x76, 0xf4, 0x1c, 0xa4, 0x69, 0x04, 0x27, 0xc1,
-	0x59, 0xed, 0xc6, 0x37, 0xf4, 0x90, 0x54, 0x43, 0x8b, 0x47, 0x2a, 0x6a, 0xfc, 0x73, 0x60, 0xd7,
-	0xf5, 0x83, 0xe8, 0x53, 0x32, 0x4c, 0xa3, 0xdf, 0x4b, 0x90, 0xec, 0x39, 0xc9, 0x95, 0x02, 0xbc,
-	0xee, 0xdf, 0xfe, 0x58, 0x40, 0x0f, 0x48, 0x05, 0x62, 0xb4, 0xa0, 0xec, 0x37, 0x20, 0xc6, 0x41,
-	0x44, 0x8f, 0x49, 0xcd, 0xc8, 0x50, 0xa5, 0x4a, 0x02, 0x36, 0xfe, 0x3b, 0x52, 0x3c, 0xb4, 0xee,
-	0xd6, 0xa9, 0x9d, 0xcc, 0xc0, 0x1f, 0xa6, 0xb6, 0x1e, 0x36, 0xff, 0x3a, 0x11, 0x90, 0xc8, 0xcb,
-	0x68, 0xaa, 0xc0, 0xba, 0x85, 0x2d, 0x36, 0x6e, 0xd7, 0x6c, 0xb9, 0xcb, 0xdb, 0xee, 0x23, 0x52,
-	0x03, 0x39, 0x1f, 0xf9, 0x25, 0x9f, 0x5b, 0x05, 0x39, 0x77, 0xb6, 0x4e, 0xef, 0x75, 0xc5, 0x82,
-	0xe5, 0x8a, 0x05, 0xef, 0x2b, 0x16, 0xbc, 0xe4, 0xac, 0xb4, 0xcc, 0x59, 0xe9, 0x2d, 0x67, 0xa5,
-	0xfb, 0xf3, 0x44, 0xe1, 0x24, 0x1b, 0xb7, 0x43, 0x3d, 0xe5, 0x43, 0x18, 0x82, 0xea, 0x2b, 0x1e,
-	0x4e, 0x84, 0x02, 0xfe, 0xfc, 0xf5, 0x16, 0x70, 0x91, 0xca, 0xd9, 0xb8, 0xe2, 0xee, 0xe0, 0xe2,
-	0x23, 0x00, 0x00, 0xff, 0xff, 0x41, 0x06, 0xe6, 0xc0, 0x78, 0x02, 0x00, 0x00,
+	// 318 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x92, 0x41, 0x4b, 0x02, 0x41,
+	0x14, 0xc7, 0xdd, 0x2c, 0xd3, 0xa1, 0x43, 0x2c, 0x12, 0x66, 0x31, 0x84, 0x5d, 0x82, 0xc0, 0x39,
+	0xf4, 0x09, 0x52, 0x14, 0x3c, 0xd4, 0x21, 0xf2, 0x12, 0x81, 0x8d, 0x3b, 0xcf, 0x75, 0x28, 0xdf,
+	0x2c, 0xb3, 0xb3, 0x99, 0x7d, 0x8a, 0x3e, 0x56, 0x47, 0x8f, 0x1d, 0x43, 0xbf, 0x48, 0xcc, 0xcc,
+	0x96, 0x09, 0x9d, 0xaa, 0xdb, 0xfb, 0xef, 0xef, 0xed, 0xef, 0x0f, 0xc3, 0x23, 0x34, 0xc3, 0x0c,
+	0xe5, 0x48, 0x32, 0x1c, 0x99, 0x11, 0x8f, 0x8c, 0xd2, 0x33, 0x06, 0x8f, 0x80, 0xa6, 0x99, 0x68,
+	0x65, 0x54, 0x18, 0xe6, 0xbc, 0xb9, 0xe2, 0xf5, 0x6a, 0xac, 0x62, 0xe5, 0x30, 0xb3, 0x93, 0xdf,
+	0xac, 0x1f, 0xff, 0x60, 0x5a, 0x8d, 0x7e, 0xa9, 0xd1, 0x21, 0xbb, 0x1d, 0x6b, 0x6f, 0x6b, 0xe0,
+	0x06, 0xda, 0x0f, 0x3c, 0x4d, 0xc3, 0x3d, 0x52, 0x4a, 0x01, 0x05, 0xe8, 0x5a, 0x70, 0x14, 0x9c,
+	0x54, 0xae, 0xf2, 0x14, 0xee, 0x93, 0x72, 0x64, 0x17, 0x06, 0x52, 0xd4, 0x36, 0x1c, 0xd9, 0x76,
+	0xb9, 0x27, 0xbe, 0x34, 0xfd, 0x44, 0xfc, 0x45, 0xf3, 0x4c, 0x76, 0x9c, 0xe6, 0x42, 0xa2, 0xb9,
+	0xec, 0x5e, 0xff, 0x42, 0x61, 0x91, 0x51, 0xf7, 0x80, 0x16, 0x15, 0x3d, 0x72, 0xb9, 0x27, 0xc2,
+	0x43, 0x52, 0xd1, 0x10, 0xc9, 0x44, 0x02, 0x9a, 0xda, 0xa6, 0x63, 0xab, 0x0f, 0x8d, 0xdb, 0xbc,
+	0xbb, 0x95, 0x69, 0xfc, 0xf7, 0xee, 0xc6, 0xdd, 0xe7, 0x3b, 0x8f, 0x39, 0xc6, 0x70, 0x2e, 0x26,
+	0x12, 0xc3, 0x2a, 0xd9, 0xe2, 0x76, 0xc8, 0x0b, 0x7c, 0x58, 0xf3, 0x17, 0xd7, 0xfd, 0x07, 0xa4,
+	0x82, 0x30, 0x1d, 0xf8, 0x9f, 0x7c, 0x77, 0x19, 0x61, 0xea, 0x6c, 0xad, 0xce, 0xeb, 0x82, 0x06,
+	0xf3, 0x05, 0x0d, 0xde, 0x17, 0x34, 0x78, 0x59, 0xd2, 0xc2, 0x7c, 0x49, 0x0b, 0x6f, 0x4b, 0x5a,
+	0xb8, 0x39, 0x8d, 0xa5, 0x19, 0x67, 0xc3, 0x66, 0xa4, 0x26, 0xac, 0x8f, 0x7d, 0x94, 0x5d, 0xc9,
+	0xa2, 0x31, 0x97, 0xc8, 0x9e, 0xbe, 0xdf, 0x86, 0x99, 0x25, 0x90, 0x0e, 0x4b, 0xee, 0x2e, 0xce,
+	0x3e, 0x02, 0x00, 0x00, 0xff, 0xff, 0x20, 0xfc, 0x30, 0x5c, 0x88, 0x02, 0x00, 0x00,
 }
 
 func (m *EventCreateClass) Marshal() (dAtA []byte, err error) {
@@ -376,10 +376,10 @@ func (m *EventCreateClass) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Owner) > 0 {
-		i -= len(m.Owner)
-		copy(dAtA[i:], m.Owner)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.Owner)))
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.Sender)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -413,10 +413,10 @@ func (m *EventUpdateClass) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Owner) > 0 {
-		i -= len(m.Owner)
-		copy(dAtA[i:], m.Owner)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.Owner)))
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.Sender)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -450,10 +450,10 @@ func (m *EventMintNFT) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x22
 	}
-	if len(m.NftId) > 0 {
-		i -= len(m.NftId)
-		copy(dAtA[i:], m.NftId)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.NftId)))
+	if len(m.TokenId) > 0 {
+		i -= len(m.TokenId)
+		copy(dAtA[i:], m.TokenId)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.TokenId)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -464,10 +464,10 @@ func (m *EventMintNFT) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Owner) > 0 {
-		i -= len(m.Owner)
-		copy(dAtA[i:], m.Owner)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.Owner)))
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.Sender)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -494,10 +494,10 @@ func (m *EventBurnNFT) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.NftId) > 0 {
-		i -= len(m.NftId)
-		copy(dAtA[i:], m.NftId)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.NftId)))
+	if len(m.TokenId) > 0 {
+		i -= len(m.TokenId)
+		copy(dAtA[i:], m.TokenId)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.TokenId)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -508,10 +508,10 @@ func (m *EventBurnNFT) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Owner) > 0 {
-		i -= len(m.Owner)
-		copy(dAtA[i:], m.Owner)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.Owner)))
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.Sender)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -579,7 +579,7 @@ func (m *EventCreateClass) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Owner)
+	l = len(m.Sender)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
@@ -596,7 +596,7 @@ func (m *EventUpdateClass) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Owner)
+	l = len(m.Sender)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
@@ -613,7 +613,7 @@ func (m *EventMintNFT) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Owner)
+	l = len(m.Sender)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
@@ -621,7 +621,7 @@ func (m *EventMintNFT) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
-	l = len(m.NftId)
+	l = len(m.TokenId)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
@@ -638,7 +638,7 @@ func (m *EventBurnNFT) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Owner)
+	l = len(m.Sender)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
@@ -646,7 +646,7 @@ func (m *EventBurnNFT) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
-	l = len(m.NftId)
+	l = len(m.TokenId)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
@@ -711,7 +711,7 @@ func (m *EventCreateClass) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -739,7 +739,7 @@ func (m *EventCreateClass) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Owner = string(dAtA[iNdEx:postIndex])
+			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -825,7 +825,7 @@ func (m *EventUpdateClass) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -853,7 +853,7 @@ func (m *EventUpdateClass) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Owner = string(dAtA[iNdEx:postIndex])
+			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -939,7 +939,7 @@ func (m *EventMintNFT) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -967,7 +967,7 @@ func (m *EventMintNFT) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Owner = string(dAtA[iNdEx:postIndex])
+			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -1003,7 +1003,7 @@ func (m *EventMintNFT) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TokenId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1031,7 +1031,7 @@ func (m *EventMintNFT) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.NftId = string(dAtA[iNdEx:postIndex])
+			m.TokenId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
@@ -1117,7 +1117,7 @@ func (m *EventBurnNFT) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1145,7 +1145,7 @@ func (m *EventBurnNFT) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Owner = string(dAtA[iNdEx:postIndex])
+			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -1181,7 +1181,7 @@ func (m *EventBurnNFT) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NftId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TokenId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1209,7 +1209,7 @@ func (m *EventBurnNFT) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.NftId = string(dAtA[iNdEx:postIndex])
+			m.TokenId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
