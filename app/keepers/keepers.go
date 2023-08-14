@@ -349,7 +349,7 @@ func NewAppKeeper(
 	appKeepers.UnUniFiNFTKeeper = ununifinftkeeper.NewKeeper(
 		appKeepers.NFTKeeper,
 		appCodec,
-		authtypes.NewModuleAddress(nftfactorytypes.ModuleName).String(),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	// Create evidence Keeper for to register the IBC light client misbehaviour evidence route
