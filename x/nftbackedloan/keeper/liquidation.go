@@ -62,7 +62,7 @@ func (k Keeper) SetLiquidation(ctx sdk.Context, msg *types.MsgEndNftListing) err
 		}
 		listing.State = types.ListingState_LIQUIDATION
 		listing.LiquidatedAt = ctx.BlockTime()
-		listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
+		listing.FullPaymentEndAt = ctx.BlockTime().Add(params.FullPaymentPeriod * time.Second)
 		k.SaveNftListing(ctx, listing)
 
 		// automatic payment after listing ends
@@ -167,7 +167,7 @@ func (k Keeper) RunLiquidationProcess(ctx sdk.Context, bids types.NftBids, listi
 			return err
 		}
 		// schedule NFT & token send after X days
-		listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
+		listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * params.NftDeliveryPeriod)
 		listing.State = types.ListingState_SUCCESSFUL_BID
 		k.SaveNftListing(ctx, listing)
 	}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	math "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
@@ -238,16 +239,6 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelListing) e
 		return types.ErrNotNftListingOwner
 	}
 
-	// The listing of items can only be cancelled after N seconds have elapsed from the time it was placed on the marketplace
-	params, err := k.GetParams(ctx)
-	if err != nil {
-		return err
-	}
-
-	if listing.StartedAt.Add(time.Duration(params.NftListingCancelRequiredSeconds) * time.Second).After(ctx.BlockTime()) {
-		return types.ErrCancelAfterSomeTime
-	}
-
 	// check bidding status
 	if !listing.IsActive() {
 		return types.ErrStatusCannotCancelListing
@@ -392,10 +383,12 @@ func (k Keeper) DeliverSuccessfulBids(ctx sdk.Context) {
 
 func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, amount sdk.Coin, nftId types.NftId) error {
 	params, _ := k.GetParams(ctx)
-	commissionFee := params.NftListingCommissionFee
+	commissionRate := params.CommissionRate
 	cacheCtx, write := ctx.CacheContext()
 	// pay commission fees for nft listing
-	fee := amount.Amount.Mul(sdk.NewInt(int64(commissionFee))).Quo(sdk.NewInt(100))
+	amountDec := math.LegacyNewDecFromInt(amount.Amount)
+	fee := amountDec.Mul(commissionRate).RoundInt()
+
 	if fee.IsPositive() {
 		feeCoins := sdk.Coins{sdk.NewCoin(amount.Denom, fee)}
 		err := k.bankKeeper.SendCoinsFromModuleToModule(cacheCtx, types.ModuleName, ecoincentivetypes.ModuleName, feeCoins)
@@ -406,9 +399,9 @@ func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sd
 		}
 	}
 
-	listerProfit := amount.Amount.Sub(fee)
-	if listerProfit.IsPositive() {
-		err := k.bankKeeper.SendCoinsFromModuleToAccount(cacheCtx, types.ModuleName, listingOwner, sdk.Coins{sdk.NewCoin(amount.Denom, listerProfit)})
+	feeSubtracted := amount.Amount.Sub(fee)
+	if feeSubtracted.IsPositive() {
+		err := k.bankKeeper.SendCoinsFromModuleToAccount(cacheCtx, types.ModuleName, listingOwner, sdk.Coins{sdk.NewCoin(amount.Denom, feeSubtracted)})
 		if err != nil {
 			return err
 		} else {

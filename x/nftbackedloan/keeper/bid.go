@@ -208,16 +208,8 @@ func (k Keeper) ReBid(ctx sdk.Context, listing types.Listing, oldBid, newBid typ
 	if !types.IsAbleToReBid(bids, oldBid.Id, newBid, listing) {
 		return types.ErrCannotReBidForLiquidation
 	}
-	// bids can only be updated X days after bidding
-	params, err := k.GetParams(ctx)
-	if err != nil {
-		return err
-	}
-	if oldBid.CreatedAt.Add(time.Duration(params.BidCancelRequiredSeconds) * time.Second).After(ctx.BlockTime()) {
-		return types.ErrRebidAfterSomeTime
-	}
 
-	err = k.SafeCloseBid(ctx, oldBid)
+	err := k.SafeCloseBid(ctx, oldBid)
 	if err != nil {
 		return err
 	}
@@ -307,15 +299,6 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 	// check borrow
 	if !bid.CanCancel() {
 		return types.ErrCannotChangeBidBorrowed
-	}
-
-	// bids can only be cancelled X days after bidding
-	params, err := k.GetParams(ctx)
-	if err != nil {
-		return err
-	}
-	if bid.CreatedAt.Add(time.Duration(params.BidCancelRequiredSeconds) * time.Second).After(ctx.BlockTime()) {
-		return types.ErrCancelAfterSomeTime
 	}
 
 	bids := k.GetBidsByNft(ctx, msg.NftId.IdBytes())
