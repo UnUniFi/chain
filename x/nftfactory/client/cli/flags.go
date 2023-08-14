@@ -18,13 +18,13 @@ var (
 )
 
 func init() {
-	FsCreateClass.String(FlagSymbol, "", "Class name")
+	FsCreateClass.String(FlagName, "", "Class name")
 	FsCreateClass.String(FlagSymbol, "", "Class symbol")
 	FsCreateClass.String(FlagDescription, "", "Description for denom")
 	FsCreateClass.String(FlagUri, "", "Content URI for class")
 	FsCreateClass.String(FlagUriHash, "", "Hash of content URI for class")
 
-	FsUpdateClass.String(FlagSymbol, "", "Class name")
+	FsUpdateClass.String(FlagName, "", "Class name")
 	FsUpdateClass.String(FlagSymbol, "", "Class symbol")
 	FsUpdateClass.String(FlagDescription, "", "Description for denom")
 	FsUpdateClass.String(FlagUri, "", "Content URI for class")
