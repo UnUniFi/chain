@@ -19,6 +19,11 @@ func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
 
+var (
+	// Module parameters
+	KeyParams = []byte{0x00}
+)
+
 const (
 	VaultKey         = "Vault/value/"
 	VaultCountKey    = "Vault/count/"
