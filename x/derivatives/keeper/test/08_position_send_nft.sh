@@ -25,6 +25,9 @@ ununifid tx derivatives open-position perpetual-futures 10000000ubtc ubtc uusdc 
 
 sleep $sleep
 
+echo "------------check nft------------"
+ununifid q nft nft derivatives/perpetual_futures/positions 1
+
 echo "------------position opened user------------"
 ununifid q derivatives positions $user2_address
 
@@ -85,3 +88,6 @@ else
   echo "error: nft owner ubtc balance is incorrect"
   echo "initial: $init_ubtc_balance actual: $user3_ubtc_balance"
 fi
+
+echo "------------check nft not exist------------"
+ununifid q nft nft derivatives/perpetual_futures/positions 1

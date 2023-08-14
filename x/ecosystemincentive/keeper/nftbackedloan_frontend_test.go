@@ -57,9 +57,9 @@ func (suite *KeeperTestSuite) TestRecordIncentiveUnitIdWithNftId() {
 		},
 	}
 	for _, test := range tests {
-		nftId := nftbackedloantypes.NftIdentifier{
+		nftId := nftbackedloantypes.NftId{
 			ClassId: test.classId,
-			NftId:   test.nftId,
+			TokenId: test.nftId,
 		}
 
 		if test.registerBefore {
@@ -96,7 +96,7 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 		subjectAddrs         []string
 		weights              []sdk.Dec
 		fee                  sdk.Coin
-		nftId                nftbackedloantypes.NftIdentifier
+		nftId                nftbackedloantypes.NftId
 		rewardAmount         math.Int
 		expect               bool
 		record               bool
@@ -109,9 +109,9 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 			subjectAddrs:         []string{sender.String()},
 			weights:              []sdk.Dec{sdk.OneDec()},
 			fee:                  sdk.Coin{},
-			nftId: nftbackedloantypes.NftIdentifier{
+			nftId: nftbackedloantypes.NftId{
 				ClassId: "class2",
-				NftId:   "nft2",
+				TokenId: "nft2",
 			},
 			expect:          false,
 			record:          false,
@@ -127,9 +127,9 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 				Denom:  "uguu",
 				Amount: sdk.NewInt(1000),
 			},
-			nftId: nftbackedloantypes.NftIdentifier{
+			nftId: nftbackedloantypes.NftId{
 				ClassId: "class1",
-				NftId:   "nft1",
+				TokenId: "nft1",
 			},
 			expect:          true,
 			record:          true,
@@ -148,9 +148,9 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 				sdk.MustNewDecFromStr("0.5"),
 			},
 			fee: sdk.Coin{Denom: "uguu", Amount: math.NewInt(1000)},
-			nftId: nftbackedloantypes.NftIdentifier{
+			nftId: nftbackedloantypes.NftId{
 				ClassId: "class2",
-				NftId:   "nft2",
+				TokenId: "nft2",
 			},
 			expect:          true,
 			record:          true,
@@ -166,9 +166,9 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 				Denom:  "uguu",
 				Amount: sdk.NewInt(1000),
 			},
-			nftId: nftbackedloantypes.NftIdentifier{
+			nftId: nftbackedloantypes.NftId{
 				ClassId: "class3",
-				NftId:   "nft3",
+				TokenId: "nft3",
 			},
 			rewardAmount:    math.NewInt(500),
 			expect:          true,
@@ -224,7 +224,7 @@ func (suite *KeeperTestSuite) TestAccumulateRewardForFrontend() {
 // RecordIncentiveUnitIdWithNftIdTest is a mehtod to have the exact same logic
 // for being used in test cases to return error as return value
 // since the normal RecordIncentiveUnitIdWithNftId doesn't return any value by intention
-func (suite *KeeperTestSuite) RecordIncentiveUnitIdWithNftIdTest(ctx sdk.Context, nftId nftbackedloantypes.NftIdentifier, recipientContainerId string) error {
+func (suite *KeeperTestSuite) RecordIncentiveUnitIdWithNftIdTest(ctx sdk.Context, nftId nftbackedloantypes.NftId, recipientContainerId string) error {
 	// panic if the nftId is already recorded in the store.
 	if _, exists := suite.app.EcosystemincentiveKeeper.GetRecipientContainerIdByNftId(ctx, nftId); exists {
 		return types.ErrRecordedNftId
@@ -243,7 +243,7 @@ func (suite *KeeperTestSuite) RecordIncentiveUnitIdWithNftIdTest(ctx sdk.Context
 }
 
 // Just mock method to use in only test
-func (suite *KeeperTestSuite) AccumulateRewardForFrontendTest(ctx sdk.Context, nftId nftbackedloantypes.NftIdentifier, fee sdk.Coin) error {
+func (suite *KeeperTestSuite) AccumulateRewardForFrontendTest(ctx sdk.Context, nftId nftbackedloantypes.NftId, fee sdk.Coin) error {
 	// get recipientContainerId by nftId from IncentiveUnitIdByNftId KVStore
 	recipientContainerId, exists := suite.app.EcosystemincentiveKeeper.GetRecipientContainerIdByNftId(ctx, nftId)
 	if !exists {

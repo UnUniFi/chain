@@ -7,7 +7,6 @@ import (
 	nfttypes "github.com/cosmos/cosmos-sdk/x/nft"
 
 	ununifinfttypes "github.com/UnUniFi/chain/x/nft/types"
-	nftfactorytypes "github.com/UnUniFi/chain/x/nftfactory/types"
 	pftypes "github.com/UnUniFi/chain/x/pricefeed/types"
 )
 
@@ -63,9 +62,4 @@ type NftKeeper interface {
 	GetTotalSupply(ctx sdk.Context, classID string) uint64
 	GetNftData(ctx sdk.Context, classId string, id string) (ununifinfttypes.NftData, bool)
 	SetNftData(ctx sdk.Context, classId string, id string, data ununifinfttypes.NftData) error
-}
-
-type NftfactoryKeeper interface {
-	MintNFT(ctx sdk.Context, msg *nftfactorytypes.MsgMintNFT) error
-	BurnNFT(ctx sdk.Context, msg *nftfactorytypes.MsgBurnNFT) error
 }

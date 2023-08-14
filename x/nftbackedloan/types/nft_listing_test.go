@@ -12,14 +12,14 @@ import (
 func TestAddCollectedAmount(t *testing.T) {
 	testCases := []struct {
 		name        string
-		listing     types.NftListing
+		listing     types.Listing
 		amount      sdk.Coin
 		expCoin     sdk.Coin
 		expNegative bool
 	}{
 		{
 			"Add 0 to positive",
-			types.NftListing{
+			types.Listing{
 				CollectedAmount:         sdk.NewCoin("uguu", sdk.NewInt(100)),
 				CollectedAmountNegative: false,
 			},
@@ -29,7 +29,7 @@ func TestAddCollectedAmount(t *testing.T) {
 		},
 		{
 			"Add 0 to negative",
-			types.NftListing{
+			types.Listing{
 				CollectedAmount:         sdk.NewCoin("uguu", sdk.NewInt(60)),
 				CollectedAmountNegative: true,
 			},
@@ -39,7 +39,7 @@ func TestAddCollectedAmount(t *testing.T) {
 		},
 		{
 			"Add to positive",
-			types.NftListing{
+			types.Listing{
 				CollectedAmount:         sdk.NewCoin("uguu", sdk.NewInt(100)),
 				CollectedAmountNegative: false,
 			},
@@ -49,7 +49,7 @@ func TestAddCollectedAmount(t *testing.T) {
 		},
 		{
 			"Add to negative (add < negative)",
-			types.NftListing{
+			types.Listing{
 				CollectedAmount:         sdk.NewCoin("uguu", sdk.NewInt(100)),
 				CollectedAmountNegative: true,
 			},
@@ -59,7 +59,7 @@ func TestAddCollectedAmount(t *testing.T) {
 		},
 		{
 			"Add to negative (add > negative)",
-			types.NftListing{
+			types.Listing{
 				CollectedAmount:         sdk.NewCoin("uguu", sdk.NewInt(100)),
 				CollectedAmountNegative: true,
 			},
@@ -82,14 +82,14 @@ func TestAddCollectedAmount(t *testing.T) {
 func TestSubCollectedAmount(t *testing.T) {
 	testCases := []struct {
 		name        string
-		listing     types.NftListing
+		listing     types.Listing
 		amount      sdk.Coin
 		expCoin     sdk.Coin
 		expNegative bool
 	}{
 		{
 			"Sub 0 from positive",
-			types.NftListing{
+			types.Listing{
 				CollectedAmount:         sdk.NewCoin("uguu", sdk.NewInt(100)),
 				CollectedAmountNegative: false,
 			},
@@ -99,7 +99,7 @@ func TestSubCollectedAmount(t *testing.T) {
 		},
 		{
 			"Sub 0 from negative",
-			types.NftListing{
+			types.Listing{
 				CollectedAmount:         sdk.NewCoin("uguu", sdk.NewInt(60)),
 				CollectedAmountNegative: true,
 			},
@@ -109,7 +109,7 @@ func TestSubCollectedAmount(t *testing.T) {
 		},
 		{
 			"Sub from negative",
-			types.NftListing{
+			types.Listing{
 				CollectedAmount:         sdk.NewCoin("uguu", sdk.NewInt(100)),
 				CollectedAmountNegative: true,
 			},
@@ -119,7 +119,7 @@ func TestSubCollectedAmount(t *testing.T) {
 		},
 		{
 			"sub from positive (sub < positive)",
-			types.NftListing{
+			types.Listing{
 				CollectedAmount:         sdk.NewCoin("uguu", sdk.NewInt(100)),
 				CollectedAmountNegative: false,
 			},
@@ -129,7 +129,7 @@ func TestSubCollectedAmount(t *testing.T) {
 		},
 		{
 			"sub from positive (sub > positive)",
-			types.NftListing{
+			types.Listing{
 				CollectedAmount:         sdk.NewCoin("uguu", sdk.NewInt(100)),
 				CollectedAmountNegative: false,
 			},

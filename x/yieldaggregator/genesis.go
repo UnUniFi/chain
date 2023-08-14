@@ -11,6 +11,7 @@ import (
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
+	// TODO: change to use appendStrategy for ID management
 	for _, Strategies := range genState.Strategies {
 		k.SetStrategy(ctx, Strategies.Denom, Strategies)
 	}

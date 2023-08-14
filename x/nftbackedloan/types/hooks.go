@@ -10,22 +10,15 @@ func NewMultiNftbackedloanHooks(hooks ...NftbackedloanHooks) MultiNftbackedloanH
 	return hooks
 }
 
-// AfterNftListed runs after a nft is listed
-func (h MultiNftbackedloanHooks) AfterNftListed(ctx sdk.Context, nftIdentifier NftIdentifier, txMemo string) {
-	for i := range h {
-		h[i].AfterNftListed(ctx, nftIdentifier, txMemo)
-	}
-}
-
 // AfterNftPaymentWithCommission runs after a nft is sold and paid properly
-func (h MultiNftbackedloanHooks) AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier NftIdentifier, fee sdk.Coin) {
+func (h MultiNftbackedloanHooks) AfterNftPaymentWithCommission(ctx sdk.Context, nftIdentifier NftId, fee sdk.Coin) {
 	for i := range h {
 		h[i].AfterNftPaymentWithCommission(ctx, nftIdentifier, fee)
 	}
 }
 
 // AfterNftUnlistedWithoutPayment runs after a nft is unlisted without any payment
-func (h MultiNftbackedloanHooks) AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier NftIdentifier) {
+func (h MultiNftbackedloanHooks) AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftIdentifier NftId) {
 	for i := range h {
 		h[i].AfterNftUnlistedWithoutPayment(ctx, nftIdentifier)
 	}

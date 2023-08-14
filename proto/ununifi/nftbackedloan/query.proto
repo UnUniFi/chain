@@ -66,7 +66,7 @@ message QueryNftListingRequest {
   string nft_id   = 2;
 }
 message QueryNftListingResponse {
-  NftListing listing = 1 [(gogoproto.nullable) = false];
+  Listing listing = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryListedNftsRequest {
@@ -84,7 +84,7 @@ message QueryListedClassRequest {
 }
 
 message NftListingDetail {
-  NftListing listing  = 1 [(gogoproto.nullable) = false];
+  Listing listing  = 1 [(gogoproto.nullable) = false];
   NftInfo    nft_info = 2 [(gogoproto.nullable) = false];
 }
 message QueryListedNftsResponse {
@@ -116,7 +116,7 @@ message QueryLoanRequest {
 }
 
 message QueryLoanResponse {
-  NftIdentifier            nft_id           = 1 [(gogoproto.nullable) = false];
+  NftId                    nft_id           = 1 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin borrowing_amount = 2 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin borrowing_limit  = 3 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin total_deposit    = 4 [(gogoproto.nullable) = false];
@@ -127,7 +127,7 @@ message QueryNftBidsRequest {
   string nft_id   = 2;
 }
 message QueryNftBidsResponse {
-  repeated NftBid bids = 1 [(gogoproto.nullable) = false];
+  repeated Bid bids = 1 [(gogoproto.nullable) = false];
 }
 
 // message QueryPaymentStatusRequest {
@@ -149,7 +149,7 @@ message QueryBidderBidsRequest {
   ];
 }
 message QueryBidderBidsResponse {
-  repeated NftBid bids = 1 [(gogoproto.nullable) = false];
+  repeated Bid bids = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryRewardsRequest {

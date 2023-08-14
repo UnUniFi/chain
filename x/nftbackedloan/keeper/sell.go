@@ -17,7 +17,7 @@ func (k Keeper) SetSellingDecision(ctx sdk.Context, msg *types.MsgSellingDecisio
 	}
 
 	// Check nft exists
-	_, found := k.nftKeeper.GetNFT(ctx, msg.NftId.ClassId, msg.NftId.NftId)
+	_, found := k.nftKeeper.GetNFT(ctx, msg.NftId.ClassId, msg.NftId.TokenId)
 	if !found {
 		return types.ErrNftDoesNotExists
 	}
@@ -80,20 +80,20 @@ func (k Keeper) SetSellingDecision(ctx sdk.Context, msg *types.MsgSellingDecisio
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventSellingDecision{
 		Owner:   msg.Sender,
 		ClassId: msg.NftId.ClassId,
-		NftId:   msg.NftId.NftId,
+		TokenId: msg.NftId.TokenId,
 	})
 
 	return nil
 }
 
-func (k Keeper) RunSellingDecisionProcess(ctx sdk.Context, bids types.NftBids, listing types.NftListing, params types.Params) error {
+func (k Keeper) RunSellingDecisionProcess(ctx sdk.Context, bids types.NftBids, listing types.Listing, params types.Params) error {
 	highestBid, err := bids.GetHighestBid()
 	if err != nil {
 		return err
 	}
 	// if winner bidder did not pay remainder, nft is listed again after deleting winner bidder
 	if !highestBid.IsPaidSalePrice() {
-		borrowedAmount := highestBid.Borrow.Amount
+		borrowedAmount := highestBid.Loan.Amount
 		forfeitedDeposit, err := k.SafeCloseBidCollectDeposit(ctx, highestBid)
 		if err != nil {
 			return err

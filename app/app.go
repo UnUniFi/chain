@@ -342,6 +342,8 @@ func (app *App) CreateAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes
 			TxEncoder:     txConfig.TxEncoder(),
 			BuilderKeeper: app.AppKeepers.BuilderKeeper,
 			Mempool:       mempool,
+
+			EcosystemincentiveKeeper: app.AppKeepers.EcosystemincentiveKeeper,
 		},
 	)
 	if err != nil {

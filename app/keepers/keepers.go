@@ -343,7 +343,11 @@ func NewAppKeeper(
 		appKeepers.BankKeeper,
 	)
 
-	appKeepers.UnUniFiNFTKeeper = ununifinftkeeper.NewKeeper(appKeepers.NFTKeeper, appCodec)
+	appKeepers.UnUniFiNFTKeeper = ununifinftkeeper.NewKeeper(
+		appKeepers.NFTKeeper,
+		appCodec,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
 
 	// Create evidence Keeper for to register the IBC light client misbehaviour evidence route
 	evidenceKeeper := evidencekeeper.NewKeeper(
@@ -448,6 +452,7 @@ func NewAppKeeper(
 		appKeepers.keys[nftfactorytypes.MemStoreKey],
 		appKeepers.GetSubspace(nftfactorytypes.ModuleName),
 		appKeepers.AccountKeeper,
+		appKeepers.BankKeeper,
 		appKeepers.UnUniFiNFTKeeper,
 	)
 
@@ -492,7 +497,6 @@ func NewAppKeeper(
 	// 	appKeepers.BankKeeper,
 	// 	appKeepers.PricefeedKeeper,
 	// 	appKeepers.UnUniFiNFTKeeper,
-	// 	appKeepers.NftfactoryKeeper,
 	// )
 
 	scopedIcacallbacksKeeper := appKeepers.CapabilityKeeper.ScopeToModule(icacallbackstypes.ModuleName)
