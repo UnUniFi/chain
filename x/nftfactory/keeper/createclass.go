@@ -62,13 +62,15 @@ func (k Keeper) validateCreateDenom(ctx sdk.Context, creatorAddr, subclass strin
 
 func (k Keeper) chargeFeeForDenomCreation(ctx sdk.Context, creatorAddr string) (err error) {
 	// Send creation fee to community pool
-	creationFee := k.GetParams(ctx).ClassCreationFee
+	params, err := k.GetParams(ctx)
+	if err != nil {
+		return err
+	}
+	creationFee := params.ClassCreationFee
 	accAddr, err := sdk.AccAddressFromBech32(creatorAddr)
 	if err != nil {
 		return errorsmod.Wrapf(types.ErrUnableToCharge, "wrong creator address: %v", err)
 	}
-
-	params := k.GetParams(ctx)
 
 	if len(creationFee) > 0 {
 		feeCollectorAddr, err := sdk.AccAddressFromBech32(params.FeeCollectorAddress)

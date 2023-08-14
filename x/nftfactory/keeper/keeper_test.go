@@ -52,7 +52,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.accountKeeper = app.AccountKeeper
 	params := types.DefaultParams()
 	params.FeeCollectorAddress = suite.addrs[0].String()
-	app.NftfactoryKeeper.SetParams(suite.ctx, params)
+	app.NftfactoryKeeper.SetParams(suite.ctx, &params)
 }
 
 func TestKeeperSuite(t *testing.T) {

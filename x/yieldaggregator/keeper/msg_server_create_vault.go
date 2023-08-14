@@ -11,9 +11,16 @@ import (
 func (k msgServer) CreateVault(goCtx context.Context, msg *types.MsgCreateVault) (*types.MsgCreateVaultResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	params := k.Keeper.GetParams(ctx)
+	params, err := k.Keeper.GetParams(ctx)
+	if err != nil {
+		return nil, err
+	}
 
 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
+	feeCollector, err := sdk.AccAddressFromBech32(params.FeeCollectorAddress)
 	if err != nil {
 		return nil, err
 	}
@@ -33,8 +40,7 @@ func (k msgServer) CreateVault(goCtx context.Context, msg *types.MsgCreateVault)
 	}
 
 	// transfer fee
-	// TODO: change the recipient to the fee collector address in params
-	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.NewCoins(msg.Fee))
+	err = k.bankKeeper.SendCoins(ctx, sender, feeCollector, sdk.NewCoins(msg.Fee))
 	if err != nil {
 		return nil, err
 	}

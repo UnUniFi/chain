@@ -17,6 +17,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgMintNFT{},
 		&MsgBurnNFT{},
 		&MsgChangeAdmin{},
+		&MsgUpdateParams{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

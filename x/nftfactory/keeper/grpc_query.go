@@ -13,9 +13,12 @@ var _ types.QueryServer = Keeper{}
 
 func (k Keeper) Params(ctx context.Context, _ *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	params := k.GetParams(sdkCtx)
+	params, err := k.GetParams(sdkCtx)
+	if err != nil {
+		return nil, err
+	}
 
-	return &types.QueryParamsResponse{Params: params}, nil
+	return &types.QueryParamsResponse{Params: *params}, nil
 }
 
 func (k Keeper) ClassAuthorityMetadata(ctx context.Context, req *types.QueryClassAuthorityMetadataRequest) (*types.QueryClassAuthorityMetadataResponse, error) {

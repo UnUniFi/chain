@@ -22,9 +22,12 @@ const (
 )
 
 // KeySeparator is used to combine parts of the keys in the store
-const KeySeparator = "|"
+const KeySeparator = "/"
 
 var (
+	// Module parameters
+	KeyParams = []byte{0x00}
+
 	ClassAuthorityMetadataKey = "authoritymetadata"
 	ClassIdsPrefixKey         = "class_ids"
 	CreatorPrefixKey          = "creator"
