@@ -15,13 +15,13 @@ var (
 
 // NewParams creates a new Params instance
 func NewParams(
-	withrawCommissionRate sdk.Dec,
+	withdrawCommissionRate sdk.Dec,
 	vaultCreationFee sdk.Coin,
 	vaultCreationDeposit sdk.Coin,
 	feeCollectorAddress string,
 ) Params {
 	return Params{
-		CommissionRate:       withrawCommissionRate,
+		CommissionRate:       withdrawCommissionRate,
 		VaultCreationFee:     vaultCreationFee,
 		VaultCreationDeposit: vaultCreationDeposit,
 		FeeCollectorAddress:  feeCollectorAddress,
