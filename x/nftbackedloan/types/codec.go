@@ -16,10 +16,10 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgCancelListing{},
 		&MsgPlaceBid{},
 		&MsgCancelBid{},
-		// &MsgEndNftListing{},
 		&MsgPayRemainder{},
 		&MsgBorrow{},
 		&MsgRepay{},
+		&MsgUpdateParams{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

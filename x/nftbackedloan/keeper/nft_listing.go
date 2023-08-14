@@ -9,8 +9,6 @@ import (
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 
-	ecoincentivetypes "github.com/UnUniFi/chain/x/ecosystemincentive/types"
-
 	"github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
@@ -382,7 +380,10 @@ func (k Keeper) DeliverSuccessfulBids(ctx sdk.Context) {
 }
 
 func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, amount sdk.Coin, nftId types.NftId) error {
-	params, _ := k.GetParams(ctx)
+	params, err := k.GetParams(ctx)
+	if err != nil {
+		return err
+	}
 	commissionRate := params.CommissionRate
 	cacheCtx, write := ctx.CacheContext()
 	// pay commission fees for nft listing
@@ -390,8 +391,12 @@ func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sd
 	fee := amountDec.Mul(commissionRate).RoundInt()
 
 	if fee.IsPositive() {
+		addr, err := sdk.AccAddressFromBech32(params.FeeCollectorAddress)
+		if err != nil {
+			return err
+		}
 		feeCoins := sdk.Coins{sdk.NewCoin(amount.Denom, fee)}
-		err := k.bankKeeper.SendCoinsFromModuleToModule(cacheCtx, types.ModuleName, ecoincentivetypes.ModuleName, feeCoins)
+		err = k.bankKeeper.SendCoinsFromModuleToAccount(cacheCtx, types.ModuleName, addr, feeCoins)
 		if err != nil {
 			return err
 		} else {
