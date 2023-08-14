@@ -19,6 +19,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 
 	simapp "github.com/UnUniFi/chain/app"
+	"github.com/UnUniFi/chain/x/nftfactory/types"
 )
 
 type KeeperTestSuite struct {
@@ -49,6 +50,9 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.keeper = app.NftfactoryKeeper
 	suite.nftKeeper = app.UnUniFiNFTKeeper
 	suite.accountKeeper = app.AccountKeeper
+	params := types.DefaultParams()
+	params.FeeCollectorAddress = suite.addrs[0].String()
+	app.NftfactoryKeeper.SetParams(suite.ctx, params)
 }
 
 func TestKeeperSuite(t *testing.T) {

@@ -13,7 +13,7 @@ var (
 	DefaultFeeDenom                  = "uguu"
 	DefaultFeeAmount           int64 = 1_000_000
 	KeyFeeCollectorAddress           = []byte("FeeCollectorAddress")
-	DefaultFeeCollectorAddress       = "ununifi1a8jcsmla6heu99ldtazc27dna4qcd4jygsthx6"
+	DefaultFeeCollectorAddress       = ""
 )
 
 // ParamTable for tokenfactory module.
