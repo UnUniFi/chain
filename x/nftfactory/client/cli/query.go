@@ -1,8 +1,8 @@
 package cli
 
 import (
-	"context"
 	"fmt"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -13,8 +13,8 @@ import (
 )
 
 // GetQueryCmd returns the cli query commands for this module
-func GetQueryCmd(queryRoute string) *cobra.Command {
-
+func GetQueryCmd() *cobra.Command {
+	// Group tokenfactory queries under a subcommand
 	cmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      fmt.Sprintf("Querying commands for the %s module", types.ModuleName),
@@ -24,139 +24,102 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	}
 
 	cmd.AddCommand(
-		CmdQueryParams(),
-		CmdQueryClassAttributes(),
-		CmdQueryClassIdsByOwner(),
-		CmdQueryClassIdsByName(),
-		CmdQueryNFTMinter(),
+		GetParams(),
+		GetCmdClassAuthorityMetadata(),
+		GetCmdDenomsFromCreator(),
 	)
 
 	return cmd
 }
 
-func CmdQueryParams() *cobra.Command {
+// GetParams returns the params for the module
+func GetParams() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "params",
-		Short: "shows params",
+		Use:   "params [flags]",
+		Short: "Get the params for the x/nftfactory module",
 		Args:  cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, _ []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			queryClient := types.NewQueryClient(clientCtx)
-
-			params := &types.QueryParamsRequest{}
-
-			res, err := queryClient.Params(context.Background(), params)
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
-			return clientCtx.PrintProto(&res.Params)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.Params(cmd.Context(), &types.QueryParamsRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
 		},
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
+
 	return cmd
 }
 
-func CmdQueryClassAttributes() *cobra.Command {
+// GetCmdClassAuthorityMetadata returns the authority metadata for a queried denom
+func GetCmdClassAuthorityMetadata() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "class-attributes [class-id]",
+		Use:   "class-authority-metadata [class-id] [flags]",
+		Short: "Get the authority metadata for a specific class id",
 		Args:  cobra.ExactArgs(1),
-		Short: "Query the class attributes by class-id",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			queryClient := types.NewQueryClient(clientCtx)
-
-			res, err := queryClient.ClassAttributes(
-				context.Background(),
-				&types.QueryClassAttributesRequest{ClassId: args[0]},
-			)
+			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			denom := strings.Split(args[0], "/")
+
+			if len(denom) != 3 {
+				return fmt.Errorf("invalid denom format, expected format: factory/[creator]/[subdenom]")
+			}
+
+			res, err := queryClient.ClassAuthorityMetadata(cmd.Context(), &types.QueryClassAuthorityMetadataRequest{
+				Creator:  denom[1],
+				Subclass: denom[2],
+			})
+			if err != nil {
+				return err
+			}
+
 			return clientCtx.PrintProto(res)
 		},
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
+
 	return cmd
 }
 
-func CmdQueryClassIdsByOwner() *cobra.Command {
+// GetCmdDenomsFromCreator a command to get a list of all tokens created by a specific creator address
+func GetCmdDenomsFromCreator() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "class-ids-by-owner [owner-address]",
+		Use:   "classes-from-creator [creator address] [flags]",
+		Short: "Returns a list of all tokens created by a specific creator address",
 		Args:  cobra.ExactArgs(1),
-		Short: "Query classIDs owned by the owner address",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			queryClient := types.NewQueryClient(clientCtx)
-
-			res, err := queryClient.ClassIdsByOwner(
-				context.Background(),
-				&types.QueryClassIdsByOwnerRequest{Owner: args[0]},
-			)
+			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.ClassesFromCreator(cmd.Context(), &types.QueryClassesFromCreatorRequest{
+				Creator: args[0],
+			})
+			if err != nil {
+				return err
+			}
+
 			return clientCtx.PrintProto(res)
 		},
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
-	return cmd
-}
 
-func CmdQueryClassIdsByName() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "class-ids-by-name [class-name]",
-		Args:  cobra.ExactArgs(1),
-		Short: "Query classIDs which have the class name",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			queryClient := types.NewQueryClient(clientCtx)
-
-			res, err := queryClient.ClassIdsByName(
-				context.Background(),
-				&types.QueryClassIdsByNameRequest{ClassName: args[0]},
-			)
-			if err != nil {
-				return err
-			}
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-	return cmd
-}
-
-func CmdQueryNFTMinter() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "nft-minter [class-id] [nft-id]",
-		Args:  cobra.ExactArgs(2),
-		Short: "Query nft minter with class and nft id",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			queryClient := types.NewQueryClient(clientCtx)
-
-			res, err := queryClient.NFTMinter(
-				context.Background(),
-				&types.QueryNFTMinterRequest{
-					ClassId: args[0],
-					NftId:   args[1],
-				},
-			)
-			if err != nil {
-				return err
-			}
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
 	return cmd
 }

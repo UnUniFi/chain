@@ -3,171 +3,83 @@ package types
 import (
 	fmt "fmt"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
-const (
-	DefaultMaxNFTSupplyCap   = 100000
-	DefaultMinClassNameLen   = 3
-	DefaultMaxClassNameLen   = 128
-	DefaultMinUriLen         = 8
-	DefaultMaxUriLen         = 512
-	DefaultMaxSymbolLen      = 16
-	DefaultMaxDescriptionLen = 1024
+// Parameter store keys.
+var (
+	KeyDenomCreationFee              = []byte("ClassCreationFee")
+	DefaultFeeDenom                  = "uguu"
+	DefaultFeeAmount           int64 = 1_000_000
+	KeyFeeCollectorAddress           = []byte("FeeCollectorAddress")
+	DefaultFeeCollectorAddress       = ""
 )
 
-// NewParams returns a new params object
-func NewParams(
-	maxNFTMintSupplyCap,
-	minClassNameLen, maxClassNameLen,
-	minUriLen, maxUriLen,
-	maxSymbolLen,
-	maxDescriptionLen uint64,
-) Params {
-	return Params{
-		MaxNFTSupplyCap:   maxNFTMintSupplyCap,
-		MinClassNameLen:   minClassNameLen,
-		MaxClassNameLen:   maxClassNameLen,
-		MinUriLen:         minUriLen,
-		MaxUriLen:         maxClassNameLen,
-		MaxSymbolLen:      maxSymbolLen,
-		MaxDescriptionLen: maxDescriptionLen,
-	}
-}
-
-// DefaultParams returns default params for nftmint module
-func DefaultParams() Params {
-	return Params{
-		MaxNFTSupplyCap:   DefaultMaxNFTSupplyCap,
-		MinClassNameLen:   DefaultMinClassNameLen,
-		MaxClassNameLen:   DefaultMaxClassNameLen,
-		MinUriLen:         DefaultMinUriLen,
-		MaxUriLen:         DefaultMaxUriLen,
-		MaxSymbolLen:      DefaultMaxSymbolLen,
-		MaxDescriptionLen: DefaultMaxDescriptionLen,
-	}
-}
-
-// ParamKeyTable Key declaration for parameters
+// ParamTable for tokenfactory module.
 func ParamKeyTable() paramstypes.KeyTable {
 	return paramstypes.NewKeyTable().RegisterParamSet(&Params{})
 }
 
-// Parameter keys
-var (
-	KeyMaxNFTSupplyCap   = []byte("MaxNFTSupplyCap")
-	KeyMinClassNameLen   = []byte("MinClassNameLen")
-	KeyMaxClassNameLen   = []byte("MaxClassNameLen")
-	KeyMinUriLen         = []byte("MinUriLen")
-	KeyMaxUriLen         = []byte("MaxUriLen")
-	KeyMaxSymbolLen      = []byte("MaxSymbolLen")
-	KeyMaxDescriptionLen = []byte("MaxDescriptionLen")
-)
+func NewParams(denomCreationFee sdk.Coins, feeCollectorAddress string) Params {
+	return Params{
+		ClassCreationFee:    denomCreationFee,
+		FeeCollectorAddress: feeCollectorAddress,
+	}
+}
 
-// ParamSetPairs implements the ParamSet interface and returns all the key/value pairs
+// default tokenfactory module parameters.
+func DefaultParams() Params {
+	return Params{
+		ClassCreationFee:    sdk.NewCoins(sdk.NewInt64Coin(DefaultFeeDenom, DefaultFeeAmount)),
+		FeeCollectorAddress: DefaultFeeCollectorAddress,
+	}
+}
+
+// validate params.
+func (p Params) Validate() error {
+	if err := validateDenomCreationFee(p.ClassCreationFee); err != nil {
+		return err
+	}
+
+	return validateFeeCollectorAddress(p.FeeCollectorAddress)
+}
+
+// Implements params.ParamSet.
 func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
 	return paramstypes.ParamSetPairs{
-		paramstypes.NewParamSetPair(KeyMaxNFTSupplyCap, &p.MaxNFTSupplyCap, validateMaxNFTSupplyCap),
-		paramstypes.NewParamSetPair(KeyMinClassNameLen, &p.MinClassNameLen, validateMinClassNameLen),
-		paramstypes.NewParamSetPair(KeyMaxClassNameLen, &p.MaxClassNameLen, validateMaxClassNameLen),
-		paramstypes.NewParamSetPair(KeyMinUriLen, &p.MinUriLen, validateMinUriLen),
-		paramstypes.NewParamSetPair(KeyMaxUriLen, &p.MaxUriLen, validateMaxUriLen),
-		paramstypes.NewParamSetPair(KeyMaxSymbolLen, &p.MaxSymbolLen, validateMaxSymbolLen),
-		paramstypes.NewParamSetPair(KeyMaxDescriptionLen, &p.MaxDescriptionLen, validateMaxDescriptionLen),
+		paramstypes.NewParamSetPair(KeyDenomCreationFee, &p.ClassCreationFee, validateDenomCreationFee),
+		paramstypes.NewParamSetPair(KeyFeeCollectorAddress, &p.FeeCollectorAddress, validateFeeCollectorAddress),
 	}
 }
 
-// Validate checks that the parameters have valid values.
-func (p Params) Validate() error {
-	if err := validateMaxNFTSupplyCap(p.MaxNFTSupplyCap); err != nil {
-		return err
+func validateDenomCreationFee(i interface{}) error {
+	v, ok := i.(sdk.Coins)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	if err := validateMinClassNameLen(p.MinClassNameLen); err != nil {
-		return err
-	}
-
-	if err := validateMaxClassNameLen(p.MaxClassNameLen); err != nil {
-		return err
-	}
-
-	if err := validateMinUriLen(p.MinUriLen); err != nil {
-		return err
-	}
-
-	if err := validateMaxUriLen(p.MaxUriLen); err != nil {
-		return err
-	}
-
-	if err := validateMaxSymbolLen(p.MaxSymbolLen); err != nil {
-		return err
-	}
-
-	if err := validateMaxDescriptionLen(p.MaxDescriptionLen); err != nil {
-		return err
+	if err := v.Validate(); err != nil {
+		return fmt.Errorf("invalid denom creation fee: %+v, %w", i, err)
 	}
 
 	return nil
 }
 
-func validateMaxNFTSupplyCap(i interface{}) error {
-	_, ok := i.(uint64)
+func validateFeeCollectorAddress(i interface{}) error {
+	v, ok := i.(string)
 	if !ok {
-		return fmt.Errorf("invalid parameter types: %T", i)
+		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
-	return nil
-}
-
-func validateMinClassNameLen(i interface{}) error {
-	_, ok := i.(uint64)
-	if !ok {
-		return fmt.Errorf("invalid parameter types: %T", i)
+	// Fee collector address might be explicitly empty in test environments
+	if len(v) == 0 {
+		return nil
 	}
 
-	return nil
-}
-
-func validateMaxClassNameLen(i interface{}) error {
-	_, ok := i.(uint64)
-	if !ok {
-		return fmt.Errorf("invalid parameter types: %T", i)
-	}
-
-	return nil
-}
-
-func validateMinUriLen(i interface{}) error {
-	_, ok := i.(uint64)
-	if !ok {
-		return fmt.Errorf("invalid parameter types: %T", i)
-	}
-
-	return nil
-}
-
-func validateMaxUriLen(i interface{}) error {
-	_, ok := i.(uint64)
-	if !ok {
-		return fmt.Errorf("invalid parameter types: %T", i)
-	}
-
-	return nil
-}
-
-func validateMaxSymbolLen(i interface{}) error {
-	_, ok := i.(uint64)
-	if !ok {
-		return fmt.Errorf("invalid parameter types: %T", i)
-	}
-
-	return nil
-}
-
-func validateMaxDescriptionLen(i interface{}) error {
-	_, ok := i.(uint64)
-	if !ok {
-		return fmt.Errorf("invalid parameter types: %T", i)
+	_, err := sdk.AccAddressFromBech32(v)
+	if err != nil {
+		return fmt.Errorf("invalid fee collector address: %w", err)
 	}
 
 	return nil
