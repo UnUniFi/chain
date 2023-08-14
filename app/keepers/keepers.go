@@ -458,10 +458,10 @@ func NewAppKeeper(
 		appCodec,
 		appKeepers.keys[nftbackedloantypes.StoreKey],
 		appKeepers.keys[nftbackedloantypes.MemStoreKey],
-		appKeepers.GetSubspace(nftbackedloantypes.ModuleName),
 		appKeepers.AccountKeeper,
 		appKeepers.BankKeeper,
 		appKeepers.UnUniFiNFTKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	appKeepers.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(

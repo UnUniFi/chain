@@ -178,7 +178,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 	keeper := suite.keeper
 	nftKeeper := suite.nftKeeper
 
-	params := suite.app.NftbackedloanKeeper.GetParamSet(suite.ctx)
+	params, _ := suite.app.NftbackedloanKeeper.GetParams(suite.ctx)
 
 	tests := []struct {
 		testCase           string

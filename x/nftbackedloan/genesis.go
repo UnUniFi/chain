@@ -9,24 +9,27 @@ import (
 
 // InitGenesis initializes the store state from a genesis state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKeeper, gs types.GenesisState) {
-	k.SetParamSet(ctx, gs.Params)
+	err := k.SetParams(ctx, &gs.Params)
+	if err != nil {
+		panic(err)
+	}
 	for _, listing := range gs.Listings {
 		k.SaveNftListing(ctx, listing)
 	}
 	for _, bid := range gs.Bids {
 		k.SetBid(ctx, bid)
 	}
-	// for _, loan := range gs.Loans {
-	// 	k.SetDebt(ctx, loan)
-	// }
 }
 
 // ExportGenesis export genesis state for nftbackedloan module
-func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
-	return types.GenesisState{
-		Params:   k.GetParamSet(ctx),
-		Listings: k.GetAllNftListings(ctx),
-		Bids:     k.GetAllBids(ctx),
-		// Loans:    k.GetAllDebts(ctx),
+func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
+	genesis := types.DefaultGenesis()
+	params, _ := k.GetParams(ctx)
+	if params != nil {
+		genesis.Params = *params
 	}
+	genesis.Listings = k.GetAllNftListings(ctx)
+	genesis.Bids = k.GetAllBids(ctx)
+
+	return genesis
 }

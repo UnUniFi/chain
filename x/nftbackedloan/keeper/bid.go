@@ -209,12 +209,15 @@ func (k Keeper) ReBid(ctx sdk.Context, listing types.Listing, oldBid, newBid typ
 		return types.ErrCannotReBidForLiquidation
 	}
 	// bids can only be updated X days after bidding
-	params := k.GetParamSet(ctx)
+	params, err := k.GetParams(ctx)
+	if err != nil {
+		return err
+	}
 	if oldBid.CreatedAt.Add(time.Duration(params.BidCancelRequiredSeconds) * time.Second).After(ctx.BlockTime()) {
 		return types.ErrRebidAfterSomeTime
 	}
 
-	err := k.SafeCloseBid(ctx, oldBid)
+	err = k.SafeCloseBid(ctx, oldBid)
 	if err != nil {
 		return err
 	}
@@ -307,7 +310,10 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 	}
 
 	// bids can only be cancelled X days after bidding
-	params := k.GetParamSet(ctx)
+	params, err := k.GetParams(ctx)
+	if err != nil {
+		return err
+	}
 	if bid.CreatedAt.Add(time.Duration(params.BidCancelRequiredSeconds) * time.Second).After(ctx.BlockTime()) {
 		return types.ErrCancelAfterSomeTime
 	}

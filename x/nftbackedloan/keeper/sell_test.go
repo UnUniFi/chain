@@ -15,7 +15,7 @@ func (suite *KeeperTestSuite) TestSellingDecision() {
 	acc1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	acc2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
-	params := suite.app.NftbackedloanKeeper.GetParamSet(suite.ctx)
+	params, _ := suite.app.NftbackedloanKeeper.GetParams(suite.ctx)
 
 	tests := []struct {
 		testCase      string

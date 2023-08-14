@@ -239,7 +239,11 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelListing) e
 	}
 
 	// The listing of items can only be cancelled after N seconds have elapsed from the time it was placed on the marketplace
-	params := k.GetParamSet(ctx)
+	params, err := k.GetParams(ctx)
+	if err != nil {
+		return err
+	}
+
 	if listing.StartedAt.Add(time.Duration(params.NftListingCancelRequiredSeconds) * time.Second).After(ctx.BlockTime()) {
 		return types.ErrCancelAfterSomeTime
 	}
@@ -285,7 +289,10 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelListing) e
 }
 
 func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
-	params := k.GetParamSet(ctx)
+	params, err := k.GetParams(ctx)
+	if err != nil {
+		return
+	}
 	// get listings at the end of the payment period
 	listings := k.GetFullPaymentNftListingsEndingAt(ctx, ctx.BlockTime())
 
@@ -293,13 +300,13 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 	for _, listing := range listings {
 		bids := types.NftBids(k.GetBidsByNft(ctx, listing.NftId.IdBytes()))
 		if listing.State == types.ListingState_SELLING_DECISION {
-			err := k.RunSellingDecisionProcess(ctx, bids, listing, params)
+			err := k.RunSellingDecisionProcess(ctx, bids, listing, *params)
 			if err != nil {
 				fmt.Println("failed to selling decision process: %w", err)
 				continue
 			}
 		} else if listing.State == types.ListingState_LIQUIDATION {
-			err := k.RunLiquidationProcess(ctx, bids, listing, params)
+			err := k.RunLiquidationProcess(ctx, bids, listing, *params)
 			if err != nil {
 				fmt.Println("failed to liquidation process: %w", err)
 				continue
@@ -309,7 +316,10 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 }
 
 func (k Keeper) DeliverSuccessfulBids(ctx sdk.Context) {
-	params := k.GetParamSet(ctx)
+	params, err := k.GetParams(ctx)
+	if err != nil {
+		return
+	}
 	// get listings ended earlier
 	listings := k.GetSuccessfulBidNftListingsEndingAt(ctx, ctx.BlockTime())
 
@@ -381,7 +391,7 @@ func (k Keeper) DeliverSuccessfulBids(ctx sdk.Context) {
 }
 
 func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sdk.AccAddress, amount sdk.Coin, nftId types.NftId) error {
-	params := k.GetParamSet(ctx)
+	params, _ := k.GetParams(ctx)
 	commissionFee := params.NftListingCommissionFee
 	cacheCtx, write := ctx.CacheContext()
 	// pay commission fees for nft listing

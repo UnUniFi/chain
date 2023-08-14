@@ -14,7 +14,7 @@ func (k Keeper) SetLiquidation(ctx sdk.Context, msg *types.MsgEndNftListing) err
 	// check listing already exists
 	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
-		return types.ErrNftListingDoesNotExist
+		return err
 	}
 
 	// Check nft exists
@@ -56,7 +56,10 @@ func (k Keeper) SetLiquidation(ctx sdk.Context, msg *types.MsgEndNftListing) err
 		}
 
 	} else {
-		params := k.GetParamSet(ctx)
+		params, err := k.GetParams(ctx)
+		if err != nil {
+			return err
+		}
 		listing.State = types.ListingState_LIQUIDATION
 		listing.LiquidatedAt = ctx.BlockTime()
 		listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)

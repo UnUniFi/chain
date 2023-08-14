@@ -45,7 +45,10 @@ func (k Keeper) SetSellingDecision(ctx sdk.Context, msg *types.MsgSellingDecisio
 		}
 	}
 
-	params := k.GetParamSet(ctx)
+	params, err := k.GetParams(ctx)
+	if err != nil {
+		return err
+	}
 	listing.State = types.ListingState_SELLING_DECISION
 	listing.LiquidatedAt = ctx.BlockTime()
 	listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
