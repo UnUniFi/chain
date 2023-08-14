@@ -19,6 +19,9 @@ func CreateUpgradeHandler(mm *module.Manager,
 	return func(ctx sdk.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		ctx.Logger().Info(fmt.Sprintf("update start:%s", UpgradeName))
 
+		iyaOldParams := yieldaggregatortypes.Params{}
+		keepers.GetSubspace(yieldaggregatortypes.ModuleName).GetParamSet(ctx, &iyaOldParams)
+
 		vm, err := mm.RunMigrations(ctx, configurator, vm)
 		if err != nil {
 			return vm, err
@@ -32,9 +35,11 @@ func CreateUpgradeHandler(mm *module.Manager,
 		factoryParam.FeeCollectorAddress = ""
 		_ = keepers.NftfactoryKeeper.SetParams(ctx, factoryParam)
 
-		iyaParam := yieldaggregatortypes.Params{}
-		keepers.GetSubspace(yieldaggregatortypes.ModuleName).GetParamSet(ctx, &iyaParam)
-		_ = keepers.YieldaggregatorKeeper.SetParams(ctx, &iyaParam)
+		// iyaParam, err := keepers.YieldaggregatorKeeper.GetParams(ctx)
+		// if err != nil {
+		// 	return vm, err
+		// }
+		_ = keepers.YieldaggregatorKeeper.SetParams(ctx, &iyaOldParams)
 
 		return vm, nil
 	}
