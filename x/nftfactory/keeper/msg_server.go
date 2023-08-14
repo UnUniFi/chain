@@ -43,7 +43,7 @@ func (k msgServer) CreateClass(c context.Context, msg *types.MsgCreateClass) (*t
 		return nil, err
 	}
 
-	ctx.EventManager().EmitTypedEvent(&types.EventCreateClass{
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventCreateClass{
 		Sender:  msg.Sender,
 		ClassId: classId,
 	})
@@ -63,7 +63,7 @@ func (k msgServer) UpdateClass(c context.Context, msg *types.MsgUpdateClass) (*t
 		return nil, types.ErrUnauthorized
 	}
 
-	k.keeper.nftKeeper.SaveClass(ctx, nft.Class{
+	err = k.keeper.nftKeeper.UpdateClass(ctx, nft.Class{
 		Id:          msg.ClassId,
 		Name:        msg.Name,
 		Symbol:      msg.Symbol,
@@ -71,8 +71,11 @@ func (k msgServer) UpdateClass(c context.Context, msg *types.MsgUpdateClass) (*t
 		Uri:         msg.Uri,
 		UriHash:     msg.UriHash,
 	})
+	if err != nil {
+		return nil, err
+	}
 
-	ctx.EventManager().EmitTypedEvent(&types.EventUpdateClass{
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventUpdateClass{
 		Sender:  msg.Sender,
 		ClassId: msg.ClassId,
 	})
@@ -108,7 +111,7 @@ func (k msgServer) MintNFT(c context.Context, msg *types.MsgMintNFT) (*types.Msg
 		return nil, err
 	}
 
-	ctx.EventManager().EmitTypedEvent(&types.EventMintNFT{
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventMintNFT{
 		Sender:    msg.Sender,
 		ClassId:   msg.ClassId,
 		TokenId:   msg.TokenId,
@@ -134,7 +137,7 @@ func (k msgServer) BurnNFT(c context.Context, msg *types.MsgBurnNFT) (*types.Msg
 		return nil, err
 	}
 
-	ctx.EventManager().EmitTypedEvent(&types.EventBurnNFT{
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventBurnNFT{
 		Sender:  msg.Sender,
 		ClassId: msg.ClassId,
 		TokenId: msg.TokenId,
@@ -159,7 +162,7 @@ func (k msgServer) ChangeAdmin(c context.Context, msg *types.MsgChangeAdmin) (*t
 		return nil, err
 	}
 
-	ctx.EventManager().EmitTypedEvent(&types.EventChangeAdmin{
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventChangeAdmin{
 		Admin:    msg.Sender,
 		ClassId:  msg.ClassId,
 		NewAdmin: msg.NewAdmin,

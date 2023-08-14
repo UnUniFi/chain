@@ -26,6 +26,7 @@ type BankKeeper interface {
 
 type NftKeeper interface {
 	SaveClass(ctx sdk.Context, class nfttypes.Class) error
+	UpdateClass(ctx sdk.Context, class nfttypes.Class) error
 
 	Mint(ctx sdk.Context, token nfttypes.NFT, receiver sdk.AccAddress) error
 	Burn(ctx sdk.Context, classID string, nftID string) error
