@@ -82,8 +82,9 @@ func (suite *KeeperTestSuite) SetupTest() {
 		app.BlockedAddrs(),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
-	nftKeeper := nftkeeper.NewKeeper(sdknftkeeper.NewKeeper(app.GetKey(nft.StoreKey), appCodec, accountKeeper, bankKeeper), appCodec)
-	keeper := keeper.NewKeeper(appCodec, app.GetKey(types.StoreKey), app.GetKey(types.MemStoreKey), accountKeeper, bankKeeper, nftKeeper, authtypes.NewModuleAddress("gov").String())
+
+	nftKeeper := nftkeeper.NewKeeper(sdknftkeeper.NewKeeper(app.GetKey(nft.StoreKey), appCodec, accountKeeper, bankKeeper), appCodec, authtypes.NewModuleAddress(govtypes.ModuleName).String())
+	keeper := keeper.NewKeeper(appCodec, app.GetKey(types.StoreKey), app.GetKey(types.MemStoreKey), accountKeeper, bankKeeper, nftKeeper, authtypes.NewModuleAddress(govtypes.ModuleName).String())
 	hooks := dummyNftmarketHook{}
 	keeper.SetHooks(&hooks)
 	suite.nftKeeper = nftKeeper

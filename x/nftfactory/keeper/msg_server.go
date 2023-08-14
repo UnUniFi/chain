@@ -2,11 +2,12 @@ package keeper
 
 import (
 	"context"
-	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/nftfactory/types"
+
+	"github.com/cosmos/cosmos-sdk/x/nft"
 )
 
 type msgServer struct {
@@ -24,90 +25,97 @@ var _ types.MsgServer = msgServer{}
 func (k msgServer) CreateClass(c context.Context, msg *types.MsgCreateClass) (*types.MsgCreateClassResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	classId, err := k.keeper.CreateClass(ctx, msg.Sender, msg.Subclass)
 	if err != nil {
 		return nil, err
 	}
 
-	seq, err := k.keeper.accountKeeper.GetSequence(ctx, sender)
+	class := nft.Class{
+		Id:          classId,
+		Name:        msg.Name,
+		Symbol:      msg.Symbol,
+		Description: msg.Description,
+		Uri:         msg.Uri,
+		UriHash:     msg.UriHash,
+	}
+	err = k.keeper.nftKeeper.SaveClass(ctx, class)
 	if err != nil {
 		return nil, err
 	}
 
-	classID := CreateClassId(seq, sender)
-	err = k.keeper.CreateClass(ctx, classID, msg)
-	if err != nil {
-		return nil, err
-	}
-
-	ctx.EventManager().EmitTypedEvent(&types.EventCreateClass{
-		Owner:             msg.Sender,
-		ClassId:           classID,
-		BaseTokenUri:      msg.BaseTokenUri,
-		TokenSupplyCap:    strconv.FormatUint(msg.TokenSupplyCap, 10),
-		MintingPermission: msg.MintingPermission,
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventCreateClass{
+		Sender:  msg.Sender,
+		ClassId: classId,
 	})
 
 	return &types.MsgCreateClassResponse{}, nil
 }
 
-func (k msgServer) SendClassOwnership(c context.Context, msg *types.MsgSendClassOwnership) (*types.MsgSendClassOwnershipResponse, error) {
+func (k msgServer) UpdateClass(c context.Context, msg *types.MsgUpdateClass) (*types.MsgUpdateClassResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := k.keeper.SendClassOwnership(ctx, msg); err != nil {
+	authorityMetadata, err := k.keeper.GetAuthorityMetadata(ctx, msg.ClassId)
+	if err != nil {
 		return nil, err
 	}
 
-	ctx.EventManager().EmitTypedEvent(&types.EventSendClassOwnership{
-		Sender:   msg.Sender,
-		ClassId:  msg.ClassId,
-		Receiver: msg.Recipient,
+	if msg.Sender != authorityMetadata.GetAdmin() {
+		return nil, types.ErrUnauthorized
+	}
+
+	err = k.keeper.nftKeeper.UpdateClass(ctx, nft.Class{
+		Id:          msg.ClassId,
+		Name:        msg.Name,
+		Symbol:      msg.Symbol,
+		Description: msg.Description,
+		Uri:         msg.Uri,
+		UriHash:     msg.UriHash,
 	})
-	return &types.MsgSendClassOwnershipResponse{}, nil
-}
-
-func (k msgServer) UpdateBaseTokenUri(c context.Context, msg *types.MsgUpdateBaseTokenUri) (*types.MsgUpdateBaseTokenUriResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := k.keeper.UpdateBaseTokenUri(ctx, msg); err != nil {
+	if err != nil {
 		return nil, err
 	}
 
-	ctx.EventManager().EmitTypedEvent(&types.EventUpdateBaseTokenUri{
-		Owner:        msg.Sender,
-		ClassId:      msg.ClassId,
-		BaseTokenUri: msg.BaseTokenUri,
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventUpdateClass{
+		Sender:  msg.Sender,
+		ClassId: msg.ClassId,
 	})
-	return &types.MsgUpdateBaseTokenUriResponse{}, nil
-}
 
-func (k msgServer) UpdateTokenSupplyCap(c context.Context, msg *types.MsgUpdateTokenSupplyCap) (*types.MsgUpdateTokenSupplyCapResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-
-	if err := k.keeper.UpdateTokenSupplyCap(ctx, msg); err != nil {
-		return nil, err
-	}
-
-	ctx.EventManager().EmitTypedEvent(&types.EventUpdateTokenSupplyCap{
-		Owner:          msg.Sender,
-		ClassId:        msg.ClassId,
-		TokenSupplyCap: strconv.FormatUint(msg.TokenSupplyCap, 10),
-	})
-	return &types.MsgUpdateTokenSupplyCapResponse{}, nil
+	return &types.MsgUpdateClassResponse{}, nil
 }
 
 func (k msgServer) MintNFT(c context.Context, msg *types.MsgMintNFT) (*types.MsgMintNFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := k.keeper.MintNFT(ctx, msg); err != nil {
+	_, classExists := k.keeper.nftKeeper.GetClass(ctx, msg.ClassId)
+	if !classExists {
+		return nil, types.ErrClassDoesNotExist.Wrapf("class id: %s", msg.ClassId)
+	}
+
+	authorityMetadata, err := k.keeper.GetAuthorityMetadata(ctx, msg.ClassId)
+	if err != nil {
 		return nil, err
 	}
 
-	ctx.EventManager().EmitTypedEvent(&types.EventMintNFT{
+	if msg.Sender != authorityMetadata.GetAdmin() {
+		return nil, types.ErrUnauthorized
+	}
+
+	err = k.keeper.mintTo(ctx, nft.NFT{
 		ClassId: msg.ClassId,
-		NftId:   msg.NftId,
-		Owner:   msg.Recipient,
-		Minter:  msg.Sender,
+		Id:      msg.TokenId,
+		Uri:     msg.Uri,
+		UriHash: msg.UriHash,
+	}, msg.Sender)
+
+	if err != nil {
+		return nil, err
+	}
+
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventMintNFT{
+		Sender:    msg.Sender,
+		ClassId:   msg.ClassId,
+		TokenId:   msg.TokenId,
+		Recipient: msg.Recipient,
 	})
 	return &types.MsgMintNFTResponse{}, nil
 }
@@ -115,14 +123,49 @@ func (k msgServer) MintNFT(c context.Context, msg *types.MsgMintNFT) (*types.Msg
 func (k msgServer) BurnNFT(c context.Context, msg *types.MsgBurnNFT) (*types.MsgBurnNFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := k.keeper.BurnNFT(ctx, msg); err != nil {
+	authorityMetadata, err := k.keeper.GetAuthorityMetadata(ctx, msg.ClassId)
+	if err != nil {
 		return nil, err
 	}
 
-	ctx.EventManager().EmitTypedEvent(&types.EventBurnNFT{
-		Burner:  msg.Sender,
+	if msg.Sender != authorityMetadata.GetAdmin() {
+		return nil, types.ErrUnauthorized
+	}
+
+	err = k.keeper.burnFrom(ctx, msg.ClassId, msg.TokenId)
+	if err != nil {
+		return nil, err
+	}
+
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventBurnNFT{
+		Sender:  msg.Sender,
 		ClassId: msg.ClassId,
-		NftId:   msg.NftId,
+		TokenId: msg.TokenId,
 	})
 	return &types.MsgBurnNFTResponse{}, nil
+}
+
+func (k msgServer) ChangeAdmin(c context.Context, msg *types.MsgChangeAdmin) (*types.MsgChangeAdminResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	authorityMetadata, err := k.keeper.GetAuthorityMetadata(ctx, msg.ClassId)
+	if err != nil {
+		return nil, err
+	}
+
+	if msg.Sender != authorityMetadata.GetAdmin() {
+		return nil, types.ErrUnauthorized
+	}
+
+	err = k.keeper.setAdmin(ctx, msg.ClassId, msg.NewAdmin)
+	if err != nil {
+		return nil, err
+	}
+
+	_ = ctx.EventManager().EmitTypedEvent(&types.EventChangeAdmin{
+		Admin:    msg.Sender,
+		ClassId:  msg.ClassId,
+		NewAdmin: msg.NewAdmin,
+	})
+	return &types.MsgChangeAdminResponse{}, nil
 }

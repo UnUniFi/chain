@@ -11,50 +11,41 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/ununifi/nftfactory/params";
   }
-  rpc ClassAttributes(QueryClassAttributesRequest) returns (QueryClassAttributesResponse) {
-    option (google.api.http).get = "/ununifi/nftfactory/class_owner/{class_id}";
+  rpc ClassAuthorityMetadata(QueryClassAuthorityMetadataRequest)
+      returns (QueryClassAuthorityMetadataResponse) {
+    option (google.api.http).get =
+        "/ununifi/nftfactory/class/factory/{creator}/{subclass}/authority-metadata";
   }
-  rpc NFTMinter(QueryNFTMinterRequest) returns (QueryNFTMinterResponse) {
-    option (google.api.http).get = "/ununifi/nftfactory/nft_minter/{class_id}/{nft_id}";
-  }
-  rpc ClassIdsByName(QueryClassIdsByNameRequest) returns (QueryClassIdsByNameResponse) {
-    option (google.api.http).get = "/ununifi/nftfactory/class_ids_by_name/{class_name}";
-  }
-  rpc ClassIdsByOwner(QueryClassIdsByOwnerRequest) returns (QueryClassIdsByOwnerResponse) {
-    option (google.api.http).get = "/ununifi/nftfactory/class_ids_by_owner/{owner}";
+  rpc ClassesFromCreator(QueryClassesFromCreatorRequest)
+      returns (QueryClassesFromCreatorResponse) {
+    option (google.api.http).get =
+        "/ununifi/nftfactory/classes-from-creator/{creator}";
   }
 }
 
+// QueryParamsRequest is the request type for the Query/Params RPC method.
 message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  Params params = 1 [(gogoproto.nullable) = false];
+  // params defines the parameters of the module.
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryClassAttributesRequest {
-  string class_id = 1;
+message QueryClassAuthorityMetadataRequest {
+  string creator = 1 [ (gogoproto.moretags) = "yaml:\"creator\"" ];
+  string subclass = 2 [ (gogoproto.moretags) = "yaml:\"subclass\"" ];
 }
-message QueryClassAttributesResponse {
-  ClassAttributes class_attributes = 1;
-}
-
-message QueryNFTMinterRequest {
-  string class_id = 1;
-  string nft_id   = 2;
-}
-message QueryNFTMinterResponse {
-  string minter = 1;
+message QueryClassAuthorityMetadataResponse {
+  ClassAuthorityMetadata authority_metadata = 1 [
+    (gogoproto.moretags) = "yaml:\"authority_metadata\"",
+    (gogoproto.nullable) = false
+  ];
 }
 
-message QueryClassIdsByNameRequest {
-  string class_name = 1;
+message QueryClassesFromCreatorRequest {
+  string creator = 1 [ (gogoproto.moretags) = "yaml:\"creator\"" ];
 }
-message QueryClassIdsByNameResponse {
-  ClassNameIdList class_name_id_list = 1;
-}
-
-message QueryClassIdsByOwnerRequest {
-  string owner = 1;
-}
-message QueryClassIdsByOwnerResponse {
-  OwningClassIdList owning_class_id_list = 1;
+message QueryClassesFromCreatorResponse {
+  repeated string classes = 1 [ (gogoproto.moretags) = "yaml:\"classes\"" ];
 }

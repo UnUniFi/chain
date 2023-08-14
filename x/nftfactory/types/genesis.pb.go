@@ -25,8 +25,8 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // GenesisState defines the nftfactory module's genesis state.
 type GenesisState struct {
-	Params              Params            `protobuf:"bytes,1,opt,name=params,proto3" json:"params" yaml:"params"`
-	ClassAttributesList []ClassAttributes `protobuf:"bytes,2,rep,name=class_attributes_list,json=classAttributesList,proto3" json:"class_attributes_list" yaml:"class_attributes_list"`
+	Params  Params         `protobuf:"bytes,1,opt,name=params,proto3" json:"params" yaml:"params"`
+	Classes []GenesisClass `protobuf:"bytes,2,rep,name=classes,proto3" json:"classes" yaml:"class_ownerships"`
 }
 
 func (m *GenesisState) Reset()         { *m = GenesisState{} }
@@ -69,41 +69,126 @@ func (m *GenesisState) GetParams() Params {
 	return Params{}
 }
 
-func (m *GenesisState) GetClassAttributesList() []ClassAttributes {
+func (m *GenesisState) GetClasses() []GenesisClass {
 	if m != nil {
-		return m.ClassAttributesList
+		return m.Classes
 	}
 	return nil
 }
 
+type GenesisClass struct {
+	ClassId           string                 `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty" yaml:"class_id"`
+	AuthorityMetadata ClassAuthorityMetadata `protobuf:"bytes,2,opt,name=authority_metadata,json=authorityMetadata,proto3" json:"authority_metadata" yaml:"authority_metadata"`
+}
+
+func (m *GenesisClass) Reset()         { *m = GenesisClass{} }
+func (m *GenesisClass) String() string { return proto.CompactTextString(m) }
+func (*GenesisClass) ProtoMessage()    {}
+func (*GenesisClass) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d707804010bac885, []int{1}
+}
+func (m *GenesisClass) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GenesisClass) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GenesisClass.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GenesisClass) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GenesisClass.Merge(m, src)
+}
+func (m *GenesisClass) XXX_Size() int {
+	return m.Size()
+}
+func (m *GenesisClass) XXX_DiscardUnknown() {
+	xxx_messageInfo_GenesisClass.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GenesisClass proto.InternalMessageInfo
+
+func (m *GenesisClass) GetClassId() string {
+	if m != nil {
+		return m.ClassId
+	}
+	return ""
+}
+
+func (m *GenesisClass) GetAuthorityMetadata() ClassAuthorityMetadata {
+	if m != nil {
+		return m.AuthorityMetadata
+	}
+	return ClassAuthorityMetadata{}
+}
+
 func init() {
 	proto.RegisterType((*GenesisState)(nil), "ununifi.nftfactory.GenesisState")
+	proto.RegisterType((*GenesisClass)(nil), "ununifi.nftfactory.GenesisClass")
 }
 
 func init() { proto.RegisterFile("ununifi/nftfactory/genesis.proto", fileDescriptor_d707804010bac885) }
 
 var fileDescriptor_d707804010bac885 = []byte{
-	// 276 bytes of a gzipped FileDescriptorProto
+	// 358 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x28, 0xcd, 0x2b, 0xcd,
 	0xcb, 0x4c, 0xcb, 0xd4, 0xcf, 0x4b, 0x2b, 0x49, 0x4b, 0x4c, 0x2e, 0xc9, 0x2f, 0xaa, 0xd4, 0x4f,
 	0x4f, 0xcd, 0x4b, 0x2d, 0xce, 0x2c, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x82, 0xaa,
 	0xd0, 0x43, 0xa8, 0x90, 0x12, 0x49, 0xcf, 0x4f, 0xcf, 0x07, 0x4b, 0xeb, 0x83, 0x58, 0x10, 0x95,
-	0x52, 0xca, 0x58, 0xcc, 0x42, 0x30, 0x21, 0x8a, 0x94, 0x6e, 0x30, 0x72, 0xf1, 0xb8, 0x43, 0x2c,
+	0x52, 0xca, 0x58, 0xcc, 0x42, 0x30, 0x21, 0x8a, 0x94, 0xb6, 0x31, 0x72, 0xf1, 0xb8, 0x43, 0x2c,
 	0x08, 0x2e, 0x49, 0x2c, 0x49, 0x15, 0xf2, 0xe4, 0x62, 0x2b, 0x48, 0x2c, 0x4a, 0xcc, 0x2d, 0x96,
 	0x60, 0x54, 0x60, 0xd4, 0xe0, 0x36, 0x92, 0xd2, 0xc3, 0xb4, 0x50, 0x2f, 0x00, 0xac, 0xc2, 0x49,
 	0xf4, 0xc4, 0x3d, 0x79, 0x86, 0x4f, 0xf7, 0xe4, 0x79, 0x2b, 0x13, 0x73, 0x73, 0xac, 0x94, 0x20,
-	0xfa, 0x94, 0x82, 0xa0, 0x06, 0x08, 0xd5, 0x72, 0x89, 0x26, 0xe7, 0x24, 0x16, 0x17, 0xc7, 0x27,
-	0x96, 0x94, 0x14, 0x65, 0x26, 0x95, 0x96, 0xa4, 0x16, 0xc7, 0xe7, 0x64, 0x16, 0x97, 0x48, 0x30,
-	0x29, 0x30, 0x6b, 0x70, 0x1b, 0x29, 0x63, 0x33, 0xd9, 0x19, 0xa4, 0xc1, 0x11, 0xae, 0xde, 0x49,
-	0x05, 0x6a, 0x85, 0x0c, 0xc4, 0x0a, 0xac, 0xe6, 0x29, 0x05, 0x09, 0x27, 0xa3, 0x6a, 0xf3, 0xc9,
-	0x2c, 0x2e, 0x71, 0x72, 0x3d, 0xf1, 0x48, 0x8e, 0xf1, 0xc2, 0x23, 0x39, 0xc6, 0x07, 0x8f, 0xe4,
-	0x18, 0x27, 0x3c, 0x96, 0x63, 0xb8, 0xf0, 0x58, 0x8e, 0xe1, 0xc6, 0x63, 0x39, 0x86, 0x28, 0xed,
-	0xf4, 0xcc, 0x92, 0x8c, 0xd2, 0x24, 0xbd, 0xe4, 0xfc, 0x5c, 0xfd, 0xd0, 0xbc, 0xd0, 0xbc, 0x4c,
-	0xb7, 0x4c, 0xfd, 0xe4, 0x8c, 0xc4, 0xcc, 0x3c, 0xfd, 0x0a, 0xe4, 0xc0, 0x2a, 0xa9, 0x2c, 0x48,
-	0x2d, 0x4e, 0x62, 0x03, 0x07, 0x94, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff, 0xe7, 0x5e, 0x79, 0x36,
-	0x9b, 0x01, 0x00, 0x00,
+	0xfa, 0x94, 0x82, 0xa0, 0x06, 0x08, 0x45, 0x73, 0xb1, 0x27, 0xe7, 0x24, 0x16, 0x17, 0xa7, 0x16,
+	0x4b, 0x30, 0x29, 0x30, 0x6b, 0x70, 0x1b, 0x29, 0x60, 0x33, 0x0b, 0x6a, 0xbb, 0x33, 0x48, 0xa5,
+	0x93, 0x3c, 0xd4, 0x44, 0x71, 0x88, 0x89, 0x60, 0xed, 0xf1, 0xf9, 0xe5, 0x79, 0xa9, 0x45, 0xc5,
+	0x19, 0x99, 0x05, 0xc5, 0x4a, 0x41, 0x30, 0x13, 0x95, 0x0e, 0x21, 0x1c, 0x0e, 0xd6, 0x2a, 0xa4,
+	0xc7, 0xc5, 0x01, 0x51, 0x9e, 0x99, 0x02, 0x76, 0x3a, 0xa7, 0x93, 0xf0, 0xa7, 0x7b, 0xf2, 0xfc,
+	0xc8, 0x06, 0x65, 0xa6, 0xc0, 0x0c, 0xf0, 0x4c, 0x11, 0xaa, 0xe1, 0x12, 0x4a, 0x2c, 0x2d, 0xc9,
+	0xc8, 0x2f, 0xca, 0x2c, 0xa9, 0x8c, 0xcf, 0x4d, 0x2d, 0x49, 0x4c, 0x49, 0x2c, 0x49, 0x94, 0x60,
+	0x02, 0x7b, 0x5a, 0x0b, 0x9b, 0x43, 0xc1, 0xd6, 0x38, 0xc2, 0xb4, 0xf8, 0x42, 0x75, 0x38, 0x29,
+	0x42, 0x9d, 0x2c, 0x09, 0xb1, 0x09, 0xd3, 0x4c, 0xa5, 0x20, 0xc1, 0x44, 0x74, 0x5d, 0x56, 0x2c,
+	0x2f, 0x16, 0xc8, 0x33, 0x3a, 0xb9, 0x9e, 0x78, 0x24, 0xc7, 0x78, 0xe1, 0x91, 0x1c, 0xe3, 0x83,
+	0x47, 0x72, 0x8c, 0x13, 0x1e, 0xcb, 0x31, 0x5c, 0x78, 0x2c, 0xc7, 0x70, 0xe3, 0xb1, 0x1c, 0x43,
+	0x94, 0x76, 0x7a, 0x66, 0x49, 0x46, 0x69, 0x92, 0x5e, 0x72, 0x7e, 0xae, 0x7e, 0x68, 0x5e, 0x68,
+	0x5e, 0xa6, 0x5b, 0xa6, 0x7e, 0x72, 0x46, 0x62, 0x66, 0x9e, 0x7e, 0x05, 0x72, 0x7c, 0x96, 0x54,
+	0x16, 0xa4, 0x16, 0x27, 0xb1, 0x81, 0xe3, 0xd2, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0x7c, 0x40,
+	0xc5, 0x8b, 0x3e, 0x02, 0x00, 0x00,
 }
 
+func (this *GenesisClass) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*GenesisClass)
+	if !ok {
+		that2, ok := that.(GenesisClass)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.ClassId != that1.ClassId {
+		return false
+	}
+	if !this.AuthorityMetadata.Equal(&that1.AuthorityMetadata) {
+		return false
+	}
+	return true
+}
 func (m *GenesisState) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -124,10 +209,10 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.ClassAttributesList) > 0 {
-		for iNdEx := len(m.ClassAttributesList) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.Classes) > 0 {
+		for iNdEx := len(m.Classes) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.ClassAttributesList[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.Classes[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -151,6 +236,46 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *GenesisClass) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GenesisClass) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GenesisClass) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.AuthorityMetadata.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintGenesis(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	if len(m.ClassId) > 0 {
+		i -= len(m.ClassId)
+		copy(dAtA[i:], m.ClassId)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.ClassId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintGenesis(dAtA []byte, offset int, v uint64) int {
 	offset -= sovGenesis(v)
 	base := offset
@@ -170,12 +295,27 @@ func (m *GenesisState) Size() (n int) {
 	_ = l
 	l = m.Params.Size()
 	n += 1 + l + sovGenesis(uint64(l))
-	if len(m.ClassAttributesList) > 0 {
-		for _, e := range m.ClassAttributesList {
+	if len(m.Classes) > 0 {
+		for _, e := range m.Classes {
 			l = e.Size()
 			n += 1 + l + sovGenesis(uint64(l))
 		}
 	}
+	return n
+}
+
+func (m *GenesisClass) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ClassId)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	l = m.AuthorityMetadata.Size()
+	n += 1 + l + sovGenesis(uint64(l))
 	return n
 }
 
@@ -249,7 +389,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClassAttributesList", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Classes", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -276,8 +416,123 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ClassAttributesList = append(m.ClassAttributesList, ClassAttributes{})
-			if err := m.ClassAttributesList[len(m.ClassAttributesList)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.Classes = append(m.Classes, GenesisClass{})
+			if err := m.Classes[len(m.Classes)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGenesis(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GenesisClass) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGenesis
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GenesisClass: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GenesisClass: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ClassId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AuthorityMetadata", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.AuthorityMetadata.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
