@@ -4,22 +4,13 @@ import (
 	fmt "fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
-// Parameter store keys.
-var (
-	KeyDenomCreationFee              = []byte("ClassCreationFee")
+const (
 	DefaultFeeDenom                  = "uguu"
 	DefaultFeeAmount           int64 = 1_000_000
-	KeyFeeCollectorAddress           = []byte("FeeCollectorAddress")
 	DefaultFeeCollectorAddress       = ""
 )
-
-// ParamTable for tokenfactory module.
-func ParamKeyTable() paramstypes.KeyTable {
-	return paramstypes.NewKeyTable().RegisterParamSet(&Params{})
-}
 
 func NewParams(denomCreationFee sdk.Coins, feeCollectorAddress string) Params {
 	return Params{
@@ -43,14 +34,6 @@ func (p Params) Validate() error {
 	}
 
 	return validateFeeCollectorAddress(p.FeeCollectorAddress)
-}
-
-// Implements params.ParamSet.
-func (p *Params) ParamSetPairs() paramstypes.ParamSetPairs {
-	return paramstypes.ParamSetPairs{
-		paramstypes.NewParamSetPair(KeyDenomCreationFee, &p.ClassCreationFee, validateDenomCreationFee),
-		paramstypes.NewParamSetPair(KeyFeeCollectorAddress, &p.FeeCollectorAddress, validateFeeCollectorAddress),
-	}
 }
 
 func validateDenomCreationFee(i interface{}) error {

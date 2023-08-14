@@ -9,7 +9,7 @@ import (
 // InitGenesis initializes the tokenfactory module's state from a provided genesis
 // state.
 func (k Keeper) InitGenesis(ctx sdk.Context, genState types.GenesisState) {
-	k.SetParams(ctx, genState.Params)
+	k.SetParams(ctx, &genState.Params)
 
 	for _, genClass := range genState.GetClasses() {
 		creator, _, err := types.DeconstructClassId(genClass.GetClassId())
@@ -46,8 +46,10 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *types.GenesisState {
 		})
 	}
 
+	params, _ := k.GetParams(ctx)
+
 	return &types.GenesisState{
 		Classes: genClasses,
-		Params:  k.GetParams(ctx),
+		Params:  *params,
 	}
 }
