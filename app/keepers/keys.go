@@ -37,8 +37,6 @@ import (
 	stakeibctypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/stakeibc/types"
 	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
 
-	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
-
 	nftfactorytypes "github.com/UnUniFi/chain/x/nftfactory/types"
 )
 
@@ -58,7 +56,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		buildertypes.StoreKey,
 
 		// original modules
-		nftbackedloantypes.StoreKey,
+		// nftbackedloantypes.StoreKey,
 		nftfactorytypes.StoreKey,
 		// ecosystemincentivetypes.StoreKey,
 

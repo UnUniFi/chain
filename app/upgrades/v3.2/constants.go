@@ -6,7 +6,6 @@ import (
 	buildertypes "github.com/skip-mev/pob/x/builder/types"
 
 	"github.com/UnUniFi/chain/app/upgrades"
-	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 	nftfactorytypes "github.com/UnUniFi/chain/x/nftfactory/types"
 )
 
@@ -16,7 +15,7 @@ var Upgrade = upgrades.Upgrade{
 	UpgradeName:          UpgradeName,
 	CreateUpgradeHandler: CreateUpgradeHandler,
 	StoreUpgrades: store.StoreUpgrades{
-		Added:   []string{nftbackedloantypes.ModuleName, nftfactorytypes.ModuleName, buildertypes.ModuleName},
+		Added:   []string{nftfactorytypes.ModuleName, buildertypes.ModuleName},
 		Deleted: []string{},
 	},
 }

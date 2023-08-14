@@ -94,7 +94,6 @@ import (
 	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
 
 	nftbackedloankeeper "github.com/UnUniFi/chain/x/nftbackedloan/keeper"
-	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 
 	derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
 	nftfactorykeeper "github.com/UnUniFi/chain/x/nftfactory/keeper"
@@ -456,15 +455,15 @@ func NewAppKeeper(
 		appKeepers.UnUniFiNFTKeeper,
 	)
 
-	nftbackedloanKeeper := nftbackedloankeeper.NewKeeper(
-		appCodec,
-		appKeepers.keys[nftbackedloantypes.StoreKey],
-		appKeepers.keys[nftbackedloantypes.MemStoreKey],
-		appKeepers.GetSubspace(nftbackedloantypes.ModuleName),
-		appKeepers.AccountKeeper,
-		appKeepers.BankKeeper,
-		appKeepers.UnUniFiNFTKeeper,
-	)
+	// nftbackedloanKeeper := nftbackedloankeeper.NewKeeper(
+	// 	appCodec,
+	// 	appKeepers.keys[nftbackedloantypes.StoreKey],
+	// 	appKeepers.keys[nftbackedloantypes.MemStoreKey],
+	// 	appKeepers.GetSubspace(nftbackedloantypes.ModuleName),
+	// 	appKeepers.AccountKeeper,
+	// 	appKeepers.BankKeeper,
+	// 	appKeepers.UnUniFiNFTKeeper,
+	// )
 
 	// appKeepers.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
 	// 	appCodec,
@@ -478,7 +477,7 @@ func NewAppKeeper(
 	// )
 
 	// create Keeper objects which have Hooks
-	appKeepers.NftbackedloanKeeper = *nftbackedloanKeeper.SetHooks(nftbackedloantypes.NewMultiNftbackedloanHooks(appKeepers.EcosystemincentiveKeeper.Hooks()))
+	// appKeepers.NftbackedloanKeeper = *nftbackedloanKeeper.SetHooks(nftbackedloantypes.NewMultiNftbackedloanHooks(appKeepers.EcosystemincentiveKeeper.Hooks()))
 
 	// appKeepers.PricefeedKeeper = pricefeedkeeper.NewKeeper(
 	// 	appCodec,
@@ -689,7 +688,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 
 	// original modules
 	paramsKeeper.Subspace(nftfactorytypes.ModuleName)
-	paramsKeeper.Subspace(nftbackedloantypes.ModuleName)
+	// paramsKeeper.Subspace(nftbackedloantypes.ModuleName)
 	// paramsKeeper.Subspace(ecosystemincentivetypes.ModuleName)
 
 	// paramsKeeper.Subspace(pricefeedtypes.ModuleName)
