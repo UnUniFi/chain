@@ -27,15 +27,10 @@ func CreateUpgradeHandler(mm *module.Manager,
 		backedloanParam.NftListingCommissionRate = sdk.MustNewDecFromStr("0.05") // 5%
 		keepers.NftbackedloanKeeper.SetParamSet(ctx, backedloanParam)
 
-		factoryParam := keepers.NftfactoryKeeper.GetParamSet(ctx)
-		factoryParam.MaxNFTSupplyCap = 100000
-		factoryParam.MinClassNameLen = 3
-		factoryParam.MaxClassNameLen = 128
-		factoryParam.MinUriLen = 8
-		factoryParam.MaxUriLen = 512
-		factoryParam.MaxDescriptionLen = 16
-		factoryParam.MaxDescriptionLen = 1024
-		keepers.NftfactoryKeeper.SetParamSet(ctx, factoryParam)
+		factoryParam := keepers.NftfactoryKeeper.GetParams(ctx)
+		factoryParam.ClassCreationFee = sdk.Coins{}
+		factoryParam.FeeCollectorAddress = ""
+		keepers.NftfactoryKeeper.SetParams(ctx, factoryParam)
 
 		return mm.RunMigrations(ctx, configurator, vm)
 	}
