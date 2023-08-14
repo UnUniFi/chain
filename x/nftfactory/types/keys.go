@@ -6,10 +6,10 @@ import (
 
 const (
 	// ModuleName defines the module name
-	ModuleName = "nftfactory"
+	ModuleName = "nonfungibletokenfactory"
 
 	// StoreKey defines the primary module store key
-	StoreKey = "_" + ModuleName
+	StoreKey = ModuleName
 
 	// RouterKey is the message route for nftfactory
 	RouterKey = ModuleName
