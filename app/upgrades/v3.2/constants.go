@@ -15,7 +15,7 @@ var Upgrade = upgrades.Upgrade{
 	UpgradeName:          UpgradeName,
 	CreateUpgradeHandler: CreateUpgradeHandler,
 	StoreUpgrades: store.StoreUpgrades{
-		Added:   []string{nftfactorytypes.ModuleName, buildertypes.ModuleName},
+		Added:   []string{nftfactorytypes.StoreKey, buildertypes.StoreKey},
 		Deleted: []string{},
 	},
 }
