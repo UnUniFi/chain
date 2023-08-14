@@ -692,7 +692,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 
 	// original modules
 	paramsKeeper.Subspace(nftfactorytypes.ModuleName)
-	paramsKeeper.Subspace(nftbackedloantypes.ModuleName)
 	paramsKeeper.Subspace(ecosystemincentivetypes.ModuleName)
 
 	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
