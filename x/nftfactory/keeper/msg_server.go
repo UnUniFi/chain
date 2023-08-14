@@ -4,6 +4,7 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/UnUniFi/chain/x/nftfactory/types"
 
@@ -168,4 +169,19 @@ func (k msgServer) ChangeAdmin(c context.Context, msg *types.MsgChangeAdmin) (*t
 		NewAdmin: msg.NewAdmin,
 	})
 	return &types.MsgChangeAdminResponse{}, nil
+}
+
+func (k msgServer) UpdateParams(c context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if msg.Sender != k.keeper.authority {
+		return nil, sdkerrors.ErrUnauthorized
+	}
+
+	err := k.keeper.SetParams(ctx, &msg.Params)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgUpdateParamsResponse{}, nil
 }
