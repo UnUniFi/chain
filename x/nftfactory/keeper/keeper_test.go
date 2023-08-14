@@ -32,10 +32,8 @@ type KeeperTestSuite struct {
 	ctx   sdk.Context
 	addrs []sdk.AccAddress
 	// queryClient nft.QueryClient
-	// nftKeeper     nftkeeper.Keeper
 	nftKeeper     *testutil.MockNftKeeper
-	nftmintKeeper keeper.Keeper
-	// accountKeeper *nfttestutil.MockAccountKeeper
+	keeper        keeper.Keeper
 	accountKeeper *testutil.MockAccountKeeper
 
 	encCfg moduletestutil.TestEncodingConfig
@@ -122,7 +120,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	app := simapp.Setup(s.T(), ([]wasm.Option{})...)
 	// encodingConfig := appparams.MakeEncodingConfig()
 	// appCodec := s.encCfg.Marshaler
-	nftmintKeeper := keeper.NewKeeper(
+	keeper := keeper.NewKeeper(
 		s.encCfg.Codec,
 		storeKey,
 		memKey,
@@ -132,7 +130,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	)
 
 	s.nftKeeper = nftKeeper
-	s.nftmintKeeper = nftmintKeeper
+	s.keeper = keeper
 	s.accountKeeper = accountKeeper
 	// s.queryClient = nft.NewQueryClient(queryHelper)
 	s.ctx = ctx
