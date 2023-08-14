@@ -7,6 +7,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
+	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+
 	"github.com/UnUniFi/chain/app/keepers"
 	"github.com/UnUniFi/chain/app/upgrades"
 	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
@@ -19,8 +21,9 @@ func CreateUpgradeHandler(mm *module.Manager,
 	return func(ctx sdk.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		ctx.Logger().Info(fmt.Sprintf("update start:%s", UpgradeName))
 
-		iyaOldParams := yieldaggregatortypes.Params{}
-		keepers.GetSubspace(yieldaggregatortypes.ModuleName).GetParamSet(ctx, &iyaOldParams)
+		iyaParams := yieldaggregatortypes.Params{}
+		paramtypes.NewKeyTable().RegisterParamSet(&yieldaggregatortypes.Params{})
+		keepers.GetSubspace(yieldaggregatortypes.ModuleName).WithKeyTable(yieldaggregatortypes.ParamKeyTable()).GetParamSet(ctx, &iyaParams)
 
 		vm, err := mm.RunMigrations(ctx, configurator, vm)
 		if err != nil {
@@ -39,7 +42,7 @@ func CreateUpgradeHandler(mm *module.Manager,
 		// if err != nil {
 		// 	return vm, err
 		// }
-		_ = keepers.YieldaggregatorKeeper.SetParams(ctx, &iyaOldParams)
+		_ = keepers.YieldaggregatorKeeper.SetParams(ctx, &iyaParams)
 
 		return vm, nil
 	}
