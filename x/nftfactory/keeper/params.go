@@ -12,7 +12,7 @@ func (k Keeper) GetParams(ctx sdk.Context) (*types.Params, error) {
 
 	bz := store.Get(types.KeyParams)
 	if bz == nil {
-		return nil, sdkerrors.ErrNotFound.Wrap("x/abstractaccount module params")
+		return nil, sdkerrors.ErrNotFound.Wrap("x/nftfactory module params")
 	}
 
 	var params types.Params
