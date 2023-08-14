@@ -48,8 +48,8 @@ func CmdCreateClass() *cobra.Command {
 				"--name <name> "+
 				"--symbol <symbol> "+
 				"--description <description> "+
-				"--class-uri <uri> "+
-				"--class-uri-hash <uri-hash> "+
+				"--uri <uri> "+
+				"--uri-hash <uri-hash> "+
 				"--chain-id=<chain-id> "+
 				"--fees=<fee>", version.AppName, types.ModuleName),
 		),
@@ -109,13 +109,13 @@ func CmdUpdateClass() *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		Short: "update class",
 		Long: strings.TrimSpace(fmt.Sprintf(
-			"Example:$ %s tx %s create-class <class-id> <name>"+
+			"Example:$ %s tx %s update-class <class-id> <name>"+
 				"--from <sender> "+
 				"--name <name> "+
 				"--symbol <symbol> "+
 				"--description <description> "+
-				"--class-uri <uri> "+
-				"--class-uri-hash <uri-hash> "+
+				"--uri <uri> "+
+				"--uri-hash <uri-hash> "+
 				"--chain-id=<chain-id> "+
 				"--fees=<fee>", version.AppName, types.ModuleName),
 		),
