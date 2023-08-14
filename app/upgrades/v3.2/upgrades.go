@@ -9,6 +9,7 @@ import (
 
 	"github.com/UnUniFi/chain/app/keepers"
 	"github.com/UnUniFi/chain/app/upgrades"
+	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
 )
 
 func CreateUpgradeHandler(mm *module.Manager,
@@ -31,11 +32,9 @@ func CreateUpgradeHandler(mm *module.Manager,
 		factoryParam.FeeCollectorAddress = ""
 		_ = keepers.NftfactoryKeeper.SetParams(ctx, factoryParam)
 
-		iyaParam, err := keepers.YieldaggregatorKeeper.GetParams(ctx)
-		if err != nil {
-			return vm, err
-		}
-		_ = keepers.YieldaggregatorKeeper.SetParams(ctx, iyaParam)
+		iyaParam := yieldaggregatortypes.Params{}
+		keepers.GetSubspace(yieldaggregatortypes.ModuleName).GetParamSet(ctx, &iyaParam)
+		_ = keepers.YieldaggregatorKeeper.SetParams(ctx, &iyaParam)
 
 		return vm, nil
 	}
