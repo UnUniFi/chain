@@ -94,3 +94,11 @@ func (k msgServer) Repay(c context.Context, msg *types.MsgRepay) (*types.MsgRepa
 	}
 	return &types.MsgRepayResponse{}, nil
 }
+
+func (k msgServer) UpdateParams(c context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	
+
+	return &types.MsgUpdateParamsResponse{}, nil
+}
