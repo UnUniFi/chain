@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -12,27 +14,27 @@ import (
 func (k Keeper) RewardDistributionOfNftbackedloan(ctx sdk.Context, nftId nftbackedloantypes.NftId, fee sdk.Coin) error {
 	totalReward := sdk.ZeroInt()
 	rewardForCommunityPool := sdk.ZeroInt()
-	// First, get recipientContainerId by nftId from RecipientContainerIdByNftId KVStore
-	// If the recipientContainerId doesn't exist, return nil and distribute the reward for the frontend
+	// First, get recipient by nftId from RecipientContainerIdByNftId KVStore
+	// If the recipient doesn't exist, return nil and distribute the reward for the frontend
 	// to the treasury.
 	nftbackedloanFrontendRewardRate := k.GetNftbackedloanFrontendRewardRate(ctx)
 	if nftbackedloanFrontendRewardRate == sdk.ZeroDec() {
 		return sdkerrors.Wrap(types.ErrRewardRateIsZero, "nftbackedloan frontend")
 	}
-	rewardForRecipientContainer := nftbackedloanFrontendRewardRate.MulInt(fee.Amount).TruncateInt()
-	totalReward = totalReward.Add(rewardForRecipientContainer)
-	recipientContainerId, exists := k.GetRecipientByNftId(ctx, nftId)
+	rewardForRecipient := nftbackedloanFrontendRewardRate.MulInt(fee.Amount).TruncateInt()
+	totalReward = totalReward.Add(rewardForRecipient)
+	recipient, exists := k.GetRecipientByNftId(ctx, nftId)
 	if !exists {
-		// emit event to inform the nftId is not associated with recipientContainerId and return
+		// emit event to inform the nftId is not associated with recipient and return
 		_ = ctx.EventManager().EmitTypedEvent(&types.EventNotRecordedNftId{
 			ClassId: nftId.ClassId,
 			TokenId: nftId.TokenId,
 		})
 
-		// Distribute the reward to the community pool if there's no recipientContainerId associated with the nftId
-		rewardForCommunityPool = rewardForCommunityPool.Add(rewardForRecipientContainer)
+		// Distribute the reward to the community pool if there's no recipient associated with the nftId
+		rewardForCommunityPool = rewardForCommunityPool.Add(rewardForRecipient)
 	} else {
-		rewardForRecipientContainer = sdk.ZeroInt()
+		rewardForRecipient = sdk.ZeroInt()
 	}
 
 	stakersRewardRate := k.GetStakersRewardRate(ctx)
@@ -57,8 +59,8 @@ func (k Keeper) RewardDistributionOfNftbackedloan(ctx sdk.Context, nftId nftback
 	}
 
 	// Distribute the reward to the recipients if the reward exists
-	if !rewardForRecipientContainer.IsZero() {
-		if err := k.AccumulateRewardForFrontend(ctx, recipientContainerId, sdk.NewCoin(fee.Denom, rewardForRecipientContainer)); err != nil {
+	if !rewardForRecipient.IsZero() {
+		if err := k.AccumulateRewardForFrontend(ctx, recipient, sdk.NewCoin(fee.Denom, rewardForRecipient)); err != nil {
 			return err
 		}
 	}

@@ -51,9 +51,9 @@ func (k Keeper) DeleteFrontendRecord(ctx sdk.Context, nftId nftbackedloantypes.N
 
 	// emit event for telling the nftId is deleted from the KVStore
 	err := ctx.EventManager().EmitTypedEvent(&types.EventDeletedNftIdRecordedForFrontendReward{
-		RecipientContainerId: recipient,
-		ClassId:              nftId.ClassId,
-		TokenId:              nftId.TokenId,
+		Recipient: recipient,
+		ClassId:   nftId.ClassId,
+		TokenId:   nftId.TokenId,
 	})
 
 	return err
@@ -105,11 +105,11 @@ func (k Keeper) AccumulateRewardForFrontend(ctx sdk.Context, recipient string, r
 		panic(err)
 	}
 
-	// emit event to inform that the recipientContainer defined by recipientContainerId
+	// emit event to inform the recipient
 	// received new reward
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventUpdatedReward{
-		RecipientContainerId: recipient,
-		EarnedReward:         reward,
+		Recipient:    recipient,
+		EarnedReward: reward,
 	})
 	return nil
 }

@@ -7,13 +7,13 @@ import (
 	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
-func (suite *KeeperTestSuite) RecordRecipientWithNftIdTest(ctx sdk.Context, nftId nftbackedloantypes.NftId, recipientContainerId string) error {
+func (suite *KeeperTestSuite) RecordRecipientWithNftIdTest(ctx sdk.Context, nftId nftbackedloantypes.NftId, recipient string) error {
 	// panic if the nftId is already recorded in the store.
 	if _, exists := suite.app.EcosystemincentiveKeeper.GetRecipientByNftId(ctx, nftId); exists {
 		return types.ErrRecordedNftId
 	}
 
-	if err := suite.app.EcosystemincentiveKeeper.SetRecipientByNftId(ctx, nftId, recipientContainerId); err != nil {
+	if err := suite.app.EcosystemincentiveKeeper.SetRecipientByNftId(ctx, nftId, recipient); err != nil {
 		return err
 	}
 
