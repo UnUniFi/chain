@@ -26,7 +26,7 @@ func DefaultParams() Params {
 		BidCancelRequiredSeconds:        20,
 		NftListingFullPaymentPeriod:     30,
 		NftListingNftDeliveryPeriod:     30,
-		NftListingCommissionFee:         5,
+		NftListingCommissionRate:        sdk.MustNewDecFromStr("0.05"),
 	}
 }
 
@@ -43,7 +43,7 @@ var (
 	KeyBidCancelRequiredSeconds        = []byte("BidCancelRequiredSeconds")
 	KeyNftListingFullPaymentPeriod     = []byte("NftListingFullPaymentPeriod")
 	KeyNftListingNftDeliveryPeriod     = []byte("NftListingNftDeliveryPeriod")
-	KeyNftListingCommissionFee         = []byte("NftListingCommissionFee")
+	KeyNftListingCommissionRate        = []byte("NftListingCommissionRate")
 )
 
 // ParamSetPairs implements the ParamSet interface and returns all the key/value pairs
@@ -55,7 +55,7 @@ func (p *Params) ParamSetPairs() paramstype.ParamSetPairs {
 		paramstype.NewParamSetPair(KeyBidCancelRequiredSeconds, &p.BidCancelRequiredSeconds, validateBidCancelRequiredSeconds),
 		paramstype.NewParamSetPair(KeyNftListingFullPaymentPeriod, &p.NftListingFullPaymentPeriod, validateNftListingFullPaymentPeriod),
 		paramstype.NewParamSetPair(KeyNftListingNftDeliveryPeriod, &p.NftListingNftDeliveryPeriod, validateNftListingNftDeliveryPeriod),
-		paramstype.NewParamSetPair(KeyNftListingCommissionFee, &p.NftListingCommissionFee, validateNftListingCommissionFee),
+		paramstype.NewParamSetPair(KeyNftListingCommissionRate, &p.NftListingCommissionRate, validateNftListingCommissionRate),
 	}
 }
 
@@ -86,7 +86,7 @@ func (p Params) Validate() error {
 		return err
 	}
 
-	if err := validateNftListingCommissionFee(p.NftListingCommissionFee); err != nil {
+	if err := validateNftListingCommissionRate(p.NftListingCommissionRate); err != nil {
 		return err
 	}
 
@@ -147,10 +147,14 @@ func validateNftListingNftDeliveryPeriod(i interface{}) error {
 	return nil
 }
 
-func validateNftListingCommissionFee(i interface{}) error {
-	_, ok := i.(uint64)
+func validateNftListingCommissionRate(i interface{}) error {
+	rate, ok := i.(sdk.Dec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	if rate.IsNil() || rate.IsNegative() || rate.GT(sdk.OneDec()) {
+		return fmt.Errorf("invalid rate: %s", rate.String())
 	}
 
 	return nil
