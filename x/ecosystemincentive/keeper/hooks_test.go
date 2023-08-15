@@ -29,7 +29,7 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 				ClassId: "class1",
 				TokenId: "nft1",
 			},
-			reward:               sdk.Coin{"uguu", sdk.NewInt(100)},
+			reward:               sdk.NewCoin("uguu", sdk.NewInt(100)),
 			recipientContainerId: "recipientContainerId1",
 			subjectAddrs: []string{
 				suite.addrs[0].String(),
@@ -44,7 +44,7 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 				ClassId: "class2",
 				TokenId: "nft2",
 			},
-			reward:               sdk.Coin{"uguu", sdk.NewInt(0)},
+			reward:               sdk.NewCoin("uguu", sdk.NewInt(0)),
 			recipientContainerId: "recipientContainerId1",
 			subjectAddrs: []string{
 				suite.addrs[0].String(),
@@ -59,7 +59,7 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 				ClassId: "class3",
 				TokenId: "nft3",
 			},
-			reward:               sdk.Coin{"uguu", sdk.NewInt(100)},
+			reward:               sdk.NewCoin("uguu", sdk.NewInt(100)),
 			recipientContainerId: "recipientContainerId3",
 			subjectAddrs: []string{
 				suite.addrs[0].String(),
@@ -76,7 +76,7 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 				ClassId: "class4",
 				TokenId: "nft4",
 			},
-			reward:               sdk.Coin{"uguu", sdk.NewInt(100)},
+			reward:               sdk.NewCoin("uguu", sdk.NewInt(100)),
 			recipientContainerId: "recipientContainerId4",
 			subjectAddrs: []string{
 				suite.addrs[0].String(),
@@ -116,71 +116,9 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 			suite.Require().Equal(tc.expRewardForStakers, feeCollectorAccBalance)
 		} else {
 			for _, subject := range tc.subjectAddrs {
-				_, exists := suite.app.EcosystemincentiveKeeper.GetRewardStore(suite.ctx, sdk.AccAddress(subject))
+				_, exists := suite.app.EcosystemincentiveKeeper.GetRewardRecord(suite.ctx, sdk.AccAddress(subject))
 				suite.Require().False(exists)
 			}
 		}
-
-		_, exists := suite.app.EcosystemincentiveKeeper.GetRecipientContainerIdByNftId(suite.ctx, tc.nftId)
-		suite.Require().False(exists)
-	}
-}
-
-func (suite *KeeperTestSuite) TestAfterNftUnlistedWithoutPayment() {
-	tests := []struct {
-		testCase             string
-		nftId                nftbackedloantypes.NftId
-		recipientContainerId string
-		subjectAddrs         []string
-		weights              []sdk.Dec
-		registerBefore       bool
-		expectPass           bool
-	}{
-		{
-			testCase: "ordinal case",
-			nftId: nftbackedloantypes.NftId{
-				ClassId: "class1",
-				TokenId: "nft1",
-			},
-			recipientContainerId: "recipientContainerId1",
-			subjectAddrs: []string{
-				suite.addrs[0].String(),
-			},
-			weights:        []sdk.Dec{sdk.MustNewDecFromStr("1")},
-			registerBefore: true,
-		},
-		{
-			testCase: "not recorded case",
-			nftId: nftbackedloantypes.NftId{
-				ClassId: "class2",
-				TokenId: "nft2",
-			},
-			recipientContainerId: "recipientContainerId2",
-			subjectAddrs: []string{
-				suite.addrs[0].String(),
-			},
-			weights:        []sdk.Dec{sdk.MustNewDecFromStr("1")},
-			registerBefore: true,
-		},
-	}
-
-	for _, tc := range tests {
-		_, err := suite.app.EcosystemincentiveKeeper.Register(suite.ctx, &types.MsgRegister{
-			Sender:               tc.subjectAddrs[0],
-			RecipientContainerId: tc.recipientContainerId,
-			Addresses:            tc.subjectAddrs,
-			Weights:              tc.weights,
-		})
-		suite.Require().NoError(err)
-		if tc.registerBefore {
-			suite.app.EcosystemincentiveKeeper.RecordRecipientContainerIdWithNftId(suite.ctx, tc.nftId, tc.recipientContainerId)
-		}
-
-		suite.NotPanics(func() {
-			suite.app.EcosystemincentiveKeeper.Hooks().AfterNftUnlistedWithoutPayment(suite.ctx, tc.nftId)
-		})
-
-		_, exists := suite.app.EcosystemincentiveKeeper.GetRecipientContainerIdByNftId(suite.ctx, tc.nftId)
-		suite.Require().False(exists)
 	}
 }
