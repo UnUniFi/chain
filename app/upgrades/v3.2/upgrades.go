@@ -38,7 +38,10 @@ func CreateUpgradeHandler(mm *module.Manager,
 		factoryParam.FeeCollectorAddress = ""
 		_ = keepers.NftfactoryKeeper.SetParams(ctx, factoryParam)
 
-		iyaParams.FeeCollectorAddress = keepers.AccountKeeper.GetModuleAccount(ctx, yieldaggregatortypes.ModuleName).String()
+		// iyaParam, err := keepers.YieldaggregatorKeeper.GetParams(ctx)
+		// if err != nil {
+		// 	return vm, err
+		// }		_ = keepers.YieldaggregatorKeeper.SetParams(ctx, &iyaParams)
 		_ = keepers.YieldaggregatorKeeper.SetParams(ctx, &iyaParams)
 
 		return vm, nil
