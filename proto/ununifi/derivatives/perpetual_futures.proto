@@ -32,7 +32,7 @@ message PerpetualFuturesParams {
 message PerpetualFuturesPosition {
   string                    id        = 1 [(gogoproto.moretags) = "yaml:\"id\""];
   Market                    market    = 2 [(gogoproto.moretags) = "yaml:\"market\"", (gogoproto.nullable) = false];
-  string                    address   = 3 [(gogoproto.moretags) = "yaml:\"address\""];
+  string                    opener_address   = 3 [(gogoproto.moretags) = "yaml:\"opener_address\""];
   google.protobuf.Timestamp opened_at = 4
       [(gogoproto.moretags) = "yaml:\"opened_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
   uint64 opened_height    = 5 [(gogoproto.moretags) = "yaml:\"opened_height\""];
@@ -46,12 +46,26 @@ message PerpetualFuturesPosition {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable)   = false
   ];
-  cosmos.base.v1beta1.Coin remaining_margin = 8
-      [(gogoproto.moretags) = "yaml:\"remaining_margin\"", (gogoproto.nullable) = false];
-  google.protobuf.Timestamp last_levied_at = 9
-      [(gogoproto.moretags) = "yaml:\"last_levied_at\"", (gogoproto.nullable) = false, (gogoproto.stdtime) = true];
-  PerpetualFuturesPositionInstance position_instance = 10
-      [(gogoproto.moretags) = "yaml:\"position_instance\"", (gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin remaining_margin = 8 [
+    (gogoproto.moretags) = "yaml:\"remaining_margin\"",
+    (gogoproto.nullable) = false
+  ];
+  cosmos.base.v1beta1.Coin levied_amount = 9 [
+    (gogoproto.moretags) = "yaml:\"levied_amount\"",
+    (gogoproto.nullable) = false
+  ];
+  bool levied_amount_negative = 10 [
+    (gogoproto.moretags) = "yaml:\"levied_amount_negative\""
+  ];
+  google.protobuf.Timestamp last_levied_at = 11 [
+    (gogoproto.moretags) = "yaml:\"last_levied_at\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  PerpetualFuturesPositionInstance position_instance = 12 [
+    (gogoproto.moretags) = "yaml:\"position_instance\"",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message PerpetualFuturesPositionInstance {
@@ -82,8 +96,8 @@ message EventPerpetualFuturesPositionOpened {
 message EventPerpetualFuturesPositionClosed {
   string sender           = 1;
   string position_id      = 2;
-  string fee_amount       = 3;
-  string trade_amount     = 4;
+  string position_size       = 3;
+  string pnl_amount     = 4;
   string returning_amount = 5;
 }
 
@@ -92,6 +106,7 @@ message EventPerpetualFuturesPositionLiquidated {
   string position_id      = 2;
   string remaining_margin = 3;
   string reward_amount    = 4;
+  string levied_amount      = 5;
 }
 
 message EventPerpetualFuturesPositionLevied {
@@ -99,6 +114,7 @@ message EventPerpetualFuturesPositionLevied {
   string position_id      = 2;
   string remaining_margin = 3;
   string reward_amount    = 4;
+  string levied_amount      = 5;
 }
 
 message EventLossToLP {

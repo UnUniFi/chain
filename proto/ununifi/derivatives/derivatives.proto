@@ -23,8 +23,8 @@ message Position {
     (gogoproto.moretags) = "yaml:\"market\"",
     (gogoproto.nullable) = false
   ];
-  string address = 3 [
-    (gogoproto.moretags) = "yaml:\"address\""
+  string opener_address = 3 [
+    (gogoproto.moretags) = "yaml:\"opener_address\""
   ];
   google.protobuf.Timestamp opened_at = 4 [
     (gogoproto.moretags) = "yaml:\"opened_at\"",
@@ -48,14 +48,39 @@ message Position {
     (gogoproto.moretags) = "yaml:\"remaining_margin\"",
     (gogoproto.nullable) = false
   ];
-  google.protobuf.Timestamp last_levied_at = 9 [
+  cosmos.base.v1beta1.Coin levied_amount = 9 [
+    (gogoproto.moretags) = "yaml:\"levied_amount\"",
+    (gogoproto.nullable) = false
+  ];
+  bool levied_amount_negative = 10 [
+    (gogoproto.moretags) = "yaml:\"levied_amount_negative\""
+  ];
+  google.protobuf.Timestamp last_levied_at = 11 [
     (gogoproto.moretags) = "yaml:\"last_levied_at\"",
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
-  google.protobuf.Any position_instance = 10 [
+  google.protobuf.Any position_instance = 12 [
     (gogoproto.moretags) = "yaml:\"position_instance\"",
     (gogoproto.nullable) = false
+  ];
+}
+
+message PendingPaymentPosition {
+  string id = 1 [
+    (gogoproto.moretags) = "yaml:\"id\""
+  ];
+  cosmos.base.v1beta1.Coin refundable_amount = 2 [
+    (gogoproto.moretags) = "yaml:\"refundable_amount\"",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Timestamp created_at = 3 [
+    (gogoproto.moretags) = "yaml:\"created_at\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+  uint64 created_height = 4 [
+    (gogoproto.moretags) = "yaml:\"created_height\""
   ];
 }
 
@@ -130,6 +155,9 @@ message PoolParams {
     (gogoproto.moretags) = "yaml:\"accepted_assets_conf\"",
     (gogoproto.nullable) = false
   ];
+  uint64 levy_period_required_seconds = 8 [
+    (gogoproto.moretags) = "yaml:\"levy_period_required_seconds\""
+  ];
 }
 
 message PoolMarketCap {
@@ -177,12 +205,6 @@ message Market {
   ];
 }
 
-message EventPriceIsNotFeeded {
-  string asset = 1 [
-    (gogoproto.moretags) = "yaml:\"asset\""
-  ];
-}
-
 enum MarketType {
   UNKNOWN = 0;
   FUTURES = 1;
@@ -196,5 +218,50 @@ message Reserve {
   cosmos.base.v1beta1.Coin amount = 2 [
     (gogoproto.moretags)  = "yaml:\"amount\"",
     (gogoproto.nullable) = false
+  ];
+}
+
+message EventPriceIsNotFed {
+  string asset = 1 [
+    (gogoproto.moretags) = "yaml:\"asset\""
+  ];
+}
+
+message EventPerpetualFuturesLevyFee {
+  cosmos.base.v1beta1.Coin fee = 1 [
+    (gogoproto.moretags) = "yaml:\"fee\"",
+    (gogoproto.nullable) = false
+  ];
+  string position_id = 2 [
+    (gogoproto.moretags) = "yaml:\"position_id\""
+  ];
+}
+
+message EventPerpetualFuturesImaginaryFundingFee {
+  cosmos.base.v1beta1.Coin fee = 1 [
+    (gogoproto.moretags) = "yaml:\"fee\"",
+    (gogoproto.nullable) = false
+  ];
+  bool fee_negative = 3 [
+    (gogoproto.moretags) = "yaml:\"fee_negative\""
+  ];
+  string position_id = 2 [
+    (gogoproto.moretags) = "yaml:\"position_id\""
+  ];
+}
+
+message EventPerpetualFuturesLiquidationFee {
+  cosmos.base.v1beta1.Coin fee = 1 [
+    (gogoproto.moretags) = "yaml:\"fee\"",
+    (gogoproto.nullable) = false
+  ];
+  string position_id = 2 [
+    (gogoproto.moretags) = "yaml:\"position_id\""
+  ];
+}
+
+message EventLiquidationNeeded {
+  string position_id = 1 [
+    (gogoproto.moretags) = "yaml:\"position_id\""
   ];
 }

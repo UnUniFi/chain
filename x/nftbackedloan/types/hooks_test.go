@@ -22,7 +22,7 @@ type KeeperTestSuite struct {
 	addrs []sdk.AccAddress
 }
 
-func (suite *KeeperTestSuite) SetupTest(hooks types.NftmarketHooks) {
+func (suite *KeeperTestSuite) SetupTest(hooks types.NftbackedloanHooks) {
 	isCheckTx := false
 
 	app := simapp.Setup(suite.T(), ([]wasm.Option{})...)
@@ -32,7 +32,7 @@ func (suite *KeeperTestSuite) SetupTest(hooks types.NftmarketHooks) {
 	suite.app = app
 
 	if hooks != nil {
-		suite.app.NftmarketKeeper.SetHooks(hooks)
+		suite.app.NftbackedloanKeeper.SetHooks(hooks)
 	}
 }
 
@@ -40,36 +40,36 @@ func TestKeeperSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))
 }
 
-func dummyAfterNftListedEvent(nftId types.NftIdentifier) sdk.Event {
+func dummyAfterNftListedEvent(nftId types.NftId) sdk.Event {
 	return sdk.NewEvent(
 		"afterNftListed",
 		sdk.NewAttribute("nftId", nftId.String()),
 	)
 }
 
-func dummyAfterNftPaymentWithCommissionEvent(nftId types.NftIdentifier) sdk.Event {
+func dummyAfterNftPaymentWithCommissionEvent(nftId types.NftId) sdk.Event {
 	return sdk.NewEvent(
 		"afterNftPaymentWithCommission",
 		sdk.NewAttribute("nftId", nftId.String()),
 	)
 }
 
-func dummyAfterNftUnlistedWithoutPaymentEvent(nftId types.NftIdentifier) sdk.Event {
+func dummyAfterNftUnlistedWithoutPaymentEvent(nftId types.NftId) sdk.Event {
 	return sdk.NewEvent(
 		"afterNftUnlistedWithoutPayment",
 		sdk.NewAttribute("nftId", nftId.String()),
 	)
 }
 
-// dummyNftmarketHook is a struct satisfying the nftmarket hook interface,
-// that maintains a counter for how many times its been succesfully called,
+// dummyNftmarketHook is a struct satisfying the nftbackedloan hook interface,
+// that maintains a counter for how many times its been successfully called,
 // and a boolean for whether it should panic during its execution.
 type dummyNftmarketHook struct {
 	successCounter int
 	shouldPanic    bool
 }
 
-func (hook *dummyNftmarketHook) AfterNftListed(ctx sdk.Context, nftId types.NftIdentifier, txMemo string) {
+func (hook *dummyNftmarketHook) AfterNftListed(ctx sdk.Context, nftId types.NftId, txMemo string) {
 	if hook.shouldPanic {
 		panic("dummyNftmarketHook AfterNftListed is panicking")
 	}
@@ -78,7 +78,7 @@ func (hook *dummyNftmarketHook) AfterNftListed(ctx sdk.Context, nftId types.NftI
 	ctx.EventManager().EmitEvent(dummyAfterNftListedEvent(nftId))
 }
 
-func (hook *dummyNftmarketHook) AfterNftPaymentWithCommission(ctx sdk.Context, nftId types.NftIdentifier, fee sdk.Coin) {
+func (hook *dummyNftmarketHook) AfterNftPaymentWithCommission(ctx sdk.Context, nftId types.NftId, fee sdk.Coin) {
 	if hook.shouldPanic {
 		panic("dummyNftmarketHook AfterNftPaymentWithCommission is panicking")
 	}
@@ -87,7 +87,7 @@ func (hook *dummyNftmarketHook) AfterNftPaymentWithCommission(ctx sdk.Context, n
 	ctx.EventManager().EmitEvent(dummyAfterNftPaymentWithCommissionEvent(nftId))
 }
 
-func (hook *dummyNftmarketHook) AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftId types.NftIdentifier) {
+func (hook *dummyNftmarketHook) AfterNftUnlistedWithoutPayment(ctx sdk.Context, nftId types.NftId) {
 	if hook.shouldPanic {
 		panic("dummyNftmarketHook AfterNftUnlistedWithoutPayment is panicking")
 	}
@@ -101,14 +101,14 @@ func (hook *dummyNftmarketHook) Clone() *dummyNftmarketHook {
 	return &newHook
 }
 
-var _ types.NftmarketHooks = &dummyNftmarketHook{}
+var _ types.NftbackedloanHooks = &dummyNftmarketHook{}
 
 func (suite *KeeperTestSuite) TestHooksPanicRecovery() {
 	panicHook := dummyNftmarketHook{shouldPanic: true}
 	noPanicHook := dummyNftmarketHook{shouldPanic: false}
-	nftId := types.NftIdentifier{
+	nftId := types.NftId{
 		ClassId: "dummyhook",
-		NftId:   "dummyhook",
+		TokenId: "dummyhook",
 	}
 
 	tests := []struct {
@@ -116,34 +116,30 @@ func (suite *KeeperTestSuite) TestHooksPanicRecovery() {
 		expectedCounterValues []int
 		lenEvents             int
 	}{
-		{[]dummyNftmarketHook{noPanicHook}, []int{3}, 3},
+		{[]dummyNftmarketHook{noPanicHook}, []int{2}, 2},
 		{[]dummyNftmarketHook{panicHook}, []int{0}, 0},
 	}
 
 	for tcIndex, tc := range tests {
 		suite.SetupTest(nil)
-		hookRefs := []types.NftmarketHooks{}
+		hookRefs := []types.NftbackedloanHooks{}
 
 		for _, hook := range tc.hooks {
 			hookRefs = append(hookRefs, hook.Clone())
 		}
 
-		// insert dummy hook struct as part of NftmarketHooks
-		hooks := types.NewMultiNftmarketHooks(hookRefs...)
-		// suite.app.NftmarketKeeper.SetHooks(hooks)
+		// insert dummy hook struct as part of NftbackedloanHooks
+		hooks := types.NewMultiNftbackedloanHooks(hookRefs...)
+		// suite.app.NftbackedloanKeeper.SetHooks(hooks)
 
 		if tc.lenEvents == 0 {
 			suite.Panics(func() {
-				hooks.AfterNftListed(suite.ctx, nftId, "test")
-
 				hooks.AfterNftPaymentWithCommission(suite.ctx, nftId, sdk.Coin{Denom: "uguu", Amount: sdk.OneInt()})
 
 				hooks.AfterNftUnlistedWithoutPayment(suite.ctx, nftId)
 			})
 		} else {
 			suite.NotPanics(func() {
-				hooks.AfterNftListed(suite.ctx, nftId, "test")
-
 				hooks.AfterNftPaymentWithCommission(suite.ctx, nftId, sdk.Coin{Denom: "uguu", Amount: sdk.OneInt()})
 
 				hooks.AfterNftUnlistedWithoutPayment(suite.ctx, nftId)

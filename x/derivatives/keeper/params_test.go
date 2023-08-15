@@ -21,6 +21,7 @@ func (suite *KeeperTestSuite) TestParamsGetSet() {
 				TargetWeight: sdk.OneDec(),
 			},
 		},
+		LevyPeriodRequiredSeconds: 28800,
 	}
 
 	params.PerpetualFutures = types.PerpetualFuturesParams{

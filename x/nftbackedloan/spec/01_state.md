@@ -9,16 +9,13 @@ order: 1
 `NftListing` is created when a nft is listed for sell by owner.
 
 ```protobuf
-enum ListingType {
-  DIRECT_ASSET_BORROW = 0;
-  SYNTHETIC_ASSET_CREATION = 1;
-}
 enum ListingState {
-  SELLING = 0;
-  BIDDING = 1;
-  LIQUIDATION = 2;
-  END_LISTING = 3;
-  SUCCESSFUL_BID = 4;
+  UNKNOWN          = 0;
+  LISTING          = 1;
+  BIDDING          = 2;
+  SELLING_DECISION = 3;
+  LIQUIDATION      = 4;
+  SUCCESSFUL_BID   = 5;
 }
 
 message NftIdentifier {
@@ -47,10 +44,10 @@ message NftListing {
 message NftBid {
   NftIdentifier nft_id = 1 [ (gogoproto.nullable) = false ];
   string bidder = 2;
-  cosmos.base.v1beta1.Coin bid_amount = 3 [ (gogoproto.nullable) = false ];
-  cosmos.base.v1beta1.Coin deposit_amount = 4 [ (gogoproto.nullable) = false ];
-  google.protobuf.Timestamp bidding_period = 5 [ (gogoproto.nullable) = false ];
-  uint64 deposit_lending_rate = 6 [ (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin price = 3 [ (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin deposit = 4 [ (gogoproto.nullable) = false ];
+  google.protobuf.Timestamp expiry = 5 [ (gogoproto.nullable) = false ];
+  uint64 interest_rate = 6 [ (gogoproto.nullable) = false ];
   bool automatic_payment = 7;
 }
 ```

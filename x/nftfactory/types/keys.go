@@ -1,18 +1,15 @@
 package types
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"strings"
 )
 
 const (
 	// ModuleName defines the module name
 	ModuleName = "nftfactory"
 
-	// ChainName defines the chain name to put StoreKey for avoiding the KVStore collision to sdk's nft module KVStore key
-	ChainName = "ununifi"
-
 	// StoreKey defines the primary module store key
-	StoreKey = ChainName + ModuleName
+	StoreKey = "_" + ModuleName
 
 	// RouterKey is the message route for nftfactory
 	RouterKey = ModuleName
@@ -24,26 +21,32 @@ const (
 	MemStoreKey = "mem_nftfactory"
 )
 
+// KeySeparator is used to combine parts of the keys in the store
+const KeySeparator = "/"
+
 var (
-	// KeyPrefixClassAttributes defines prefix key for ClassAttributes
-	KeyPrefixClassAttributes = []byte{0x01}
+	// Module parameters
+	KeyParams = []byte{0x00}
 
-	// KeyPrefixNFTAttributes defines prefix key for NFTAttributes
-	KeyPrefixNFTMinter = []byte{0x02}
-
-	// KeyPrefixOwningClassList defines prefix key for OwningClassList
-	KeyPrefixOwningClassIdList = []byte{0x03}
-
-	// KeyPrefixClassNameIdList defines prefix key for ClassNameIdList
-	KeyPrefixClassNameIdList = []byte{0x04}
+	ClassAuthorityMetadataKey = "authoritymetadata"
+	ClassIdsPrefixKey         = "class_ids"
+	CreatorPrefixKey          = "creator"
+	AdminPrefixKey            = "admin"
 )
 
-func NFTMinterKey(classID, nftID string) []byte {
-	nftIdentifier := classID + nftID
-	return []byte(nftIdentifier)
+// GetDenomPrefixStore returns the store prefix where all the data associated with a specific denom
+// is stored
+func GetDenomPrefixStore(classId string) []byte {
+	return []byte(strings.Join([]string{ClassIdsPrefixKey, classId, ""}, KeySeparator))
 }
 
-func OwningClassIdListKey(owner sdk.AccAddress) []byte {
-	ownerAddr, _ := sdk.AccAddressFromBech32(owner.String())
-	return ownerAddr.Bytes()
+// GetCreatorsPrefix returns the store prefix where the list of the denoms created by a specific
+// creator are stored
+func GetCreatorPrefix(creator string) []byte {
+	return []byte(strings.Join([]string{CreatorPrefixKey, creator, ""}, KeySeparator))
+}
+
+// GetCreatorsPrefix returns the store prefix where a list of all creator addresses are stored
+func GetCreatorsPrefix() []byte {
+	return []byte(strings.Join([]string{CreatorPrefixKey, ""}, KeySeparator))
 }

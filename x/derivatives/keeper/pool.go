@@ -92,7 +92,6 @@ func (k Keeper) GetPoolQuoteTicker(ctx sdk.Context) string {
 
 func (k Keeper) GetPoolMarketCap(ctx sdk.Context) (types.PoolMarketCap, error) {
 	assets := k.GetPoolAcceptedAssetsConf(ctx)
-
 	assetInfoList := []types.PoolMarketCap_AssetInfo{}
 	mc := sdk.NewDec(0)
 
@@ -123,7 +122,7 @@ func (k Keeper) GetPoolMarketCap(ctx sdk.Context) (types.PoolMarketCap, error) {
 	}, nil
 }
 
-// IsPriceReady returns true if all assets have price feeded.
+// IsPriceReady returns true if all assets have price fed.
 // This is used to decide to run setPoolMarketCapSnapshot to avoid unnecessary snapshot.
 func (k Keeper) IsPriceReady(ctx sdk.Context) bool {
 	assets := k.GetPoolAcceptedAssetsConf(ctx)
@@ -131,7 +130,7 @@ func (k Keeper) IsPriceReady(ctx sdk.Context) bool {
 	for _, asset := range assets {
 		_, err := k.GetAssetPrice(ctx, asset.Denom)
 		if err != nil {
-			_ = ctx.EventManager().EmitTypedEvent(&types.EventPriceIsNotFeeded{
+			_ = ctx.EventManager().EmitTypedEvent(&types.EventPriceIsNotFed{
 				Asset: asset.String(),
 			})
 
@@ -143,7 +142,7 @@ func (k Keeper) IsPriceReady(ctx sdk.Context) bool {
 }
 
 func (k Keeper) SetReservedCoin(ctx sdk.Context, reserve types.Reserve) error {
-	bz, err := reserve.Amount.Marshal()
+	bz, err := reserve.Amount.Amount.Marshal()
 	if err != nil {
 		return err
 	}
@@ -158,17 +157,17 @@ func (k Keeper) GetReservedCoin(ctx sdk.Context, marketType types.MarketType, de
 	store := ctx.KVStore(k.storeKey)
 
 	bz := store.Get(types.ReservedCoinKeyPrefix(marketType, denom))
-	var reserve types.Reserve
+	reserveAmount := sdk.Int{}
 
-	if err := k.cdc.Unmarshal(bz, &reserve); err != nil {
+	if err := reserveAmount.Unmarshal(bz); err != nil {
 		return types.Reserve{}, err
 	}
 
-	if reserve.Amount.Amount.IsNil() {
-		reserve.Amount.Amount = sdk.ZeroInt()
+	if reserveAmount.IsNil() {
+		reserveAmount = sdk.ZeroInt()
 	}
 
-	return reserve, nil
+	return types.NewReserve(marketType, sdk.NewCoin(denom, reserveAmount)), nil
 }
 
 func (k Keeper) AvailableAssetInPoolWithMarketType(ctx sdk.Context, marketType types.MarketType, denom string) (sdk.Coin, error) {
@@ -176,10 +175,6 @@ func (k Keeper) AvailableAssetInPoolWithMarketType(ctx sdk.Context, marketType t
 	reserve, err := k.GetReservedCoin(ctx, marketType, denom)
 
 	if err != nil {
-		return sdk.Coin{}, err
-	}
-
-	if reserve.Amount.IsZero() {
 		reserve.Amount = sdk.NewCoin(denom, sdk.ZeroInt())
 	}
 
@@ -188,16 +183,19 @@ func (k Keeper) AvailableAssetInPoolWithMarketType(ctx sdk.Context, marketType t
 }
 
 func (k Keeper) AvailableAssetInPool(ctx sdk.Context, denom string) (sdk.Coin, error) {
-	availableInFutures, err := k.AvailableAssetInPoolWithMarketType(ctx, types.MarketType_FUTURES, denom)
-	availableInOptions, err := k.AvailableAssetInPoolWithMarketType(ctx, types.MarketType_OPTIONS, denom)
-
+	// Pool Balance - Reserved Balance (Future + Options)
+	assetBalance := k.GetAssetBalanceInPoolByDenom(ctx, denom)
+	reserveFuture, err := k.GetReservedCoin(ctx, types.MarketType_FUTURES, denom)
+	if err != nil {
+		return sdk.Coin{}, err
+	}
+	reserveOptions, err := k.GetReservedCoin(ctx, types.MarketType_OPTIONS, denom)
 	if err != nil {
 		return sdk.Coin{}, err
 	}
 
-	availableInTotal := availableInFutures.Add(availableInOptions)
-
-	return availableInTotal, nil
+	available := assetBalance.Sub(reserveFuture.Amount).Sub(reserveOptions.Amount)
+	return available, nil
 }
 
 // AvailableAssetInPool returns the available amount of the all asset in the pool.

@@ -7,8 +7,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgDeleteVault = "delete-vault"
-
 var _ sdk.Msg = &MsgCreateVault{}
 
 func NewMsgDeleteVault(sender string, vaultId uint64) *MsgDeleteVault {
@@ -24,18 +22,6 @@ func (msg MsgDeleteVault) ValidateBasic() error {
 	}
 
 	return nil
-}
-
-func (msg *MsgDeleteVault) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgDeleteVault) Type() string {
-	return TypeMsgDeleteVault
-}
-
-func (msg MsgDeleteVault) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 func (msg MsgDeleteVault) GetSigners() []sdk.AccAddress {

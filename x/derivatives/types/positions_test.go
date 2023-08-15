@@ -35,7 +35,9 @@ func TestPosition_IsValid(t *testing.T) {
 				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
 				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
 				// not market base or quote asset
-				RemainingMargin: sdk.NewCoin("ubtc", sdk.NewInt(1)),
+				RemainingMargin:      sdk.NewCoin("ubtc", sdk.NewInt(1)),
+				LeviedAmount:         sdk.NewInt64Coin("ubtc", 0),
+				LeviedAmountNegative: true,
 			},
 			instance: types.PerpetualFuturesPositionInstance{
 				PositionType: types.PositionType_LONG,
@@ -52,9 +54,11 @@ func TestPosition_IsValid(t *testing.T) {
 					BaseDenom:  "uatom",
 					QuoteDenom: "uusdc",
 				},
-				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
-				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
-				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(100000)),
+				OpenedBaseRate:       sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate:      sdk.MustNewDecFromStr("0.000001"),
+				RemainingMargin:      sdk.NewCoin("uatom", sdk.NewInt(100000)),
+				LeviedAmount:         sdk.NewInt64Coin("uatom", 0),
+				LeviedAmountNegative: true,
 			},
 			instance: types.PerpetualFuturesPositionInstance{
 				PositionType: types.PositionType_LONG,
@@ -71,9 +75,11 @@ func TestPosition_IsValid(t *testing.T) {
 					BaseDenom:  "uatom",
 					QuoteDenom: "uusdc",
 				},
-				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
-				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
-				RemainingMargin: sdk.NewCoin("uusdc", sdk.NewInt(1000)),
+				OpenedBaseRate:       sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate:      sdk.MustNewDecFromStr("0.000001"),
+				RemainingMargin:      sdk.NewCoin("uusdc", sdk.NewInt(1000)),
+				LeviedAmount:         sdk.NewInt64Coin("uusdc", 0),
+				LeviedAmountNegative: true,
 			},
 			instance: types.PerpetualFuturesPositionInstance{
 				PositionType: types.PositionType_LONG,
@@ -90,9 +96,11 @@ func TestPosition_IsValid(t *testing.T) {
 					BaseDenom:  "uatom",
 					QuoteDenom: "uusdc",
 				},
-				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
-				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
-				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(0)),
+				OpenedBaseRate:       sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate:      sdk.MustNewDecFromStr("0.000001"),
+				RemainingMargin:      sdk.NewCoin("uatom", sdk.NewInt(0)),
+				LeviedAmount:         sdk.NewInt64Coin("uatom", 0),
+				LeviedAmountNegative: true,
 			},
 			instance: types.PerpetualFuturesPositionInstance{
 				PositionType: types.PositionType_LONG,
@@ -109,9 +117,11 @@ func TestPosition_IsValid(t *testing.T) {
 					BaseDenom:  "uatom",
 					QuoteDenom: "uusdc",
 				},
-				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
-				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
-				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+				OpenedBaseRate:       sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate:      sdk.MustNewDecFromStr("0.000001"),
+				RemainingMargin:      sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+				LeviedAmount:         sdk.NewInt64Coin("uatom", 0),
+				LeviedAmountNegative: true,
 			},
 			instance: types.PerpetualFuturesPositionInstance{
 				PositionType: types.PositionType_LONG,
@@ -128,9 +138,11 @@ func TestPosition_IsValid(t *testing.T) {
 					BaseDenom:  "uatom",
 					QuoteDenom: "uusdc",
 				},
-				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
-				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
-				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+				OpenedBaseRate:       sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate:      sdk.MustNewDecFromStr("0.000001"),
+				RemainingMargin:      sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+				LeviedAmount:         sdk.NewInt64Coin("uatom", 0),
+				LeviedAmountNegative: true,
 			},
 			instance: types.PerpetualFuturesPositionInstance{
 				PositionType: types.PositionType_LONG,
@@ -147,9 +159,11 @@ func TestPosition_IsValid(t *testing.T) {
 					BaseDenom:  "uatom",
 					QuoteDenom: "uusdc",
 				},
-				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
-				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
-				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+				OpenedBaseRate:       sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate:      sdk.MustNewDecFromStr("0.000001"),
+				RemainingMargin:      sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+				LeviedAmount:         sdk.NewInt64Coin("uatom", 0),
+				LeviedAmountNegative: true,
 			},
 			instance: types.PerpetualFuturesPositionInstance{
 				PositionType: types.PositionType_LONG,
@@ -166,9 +180,11 @@ func TestPosition_IsValid(t *testing.T) {
 					BaseDenom:  "uatom",
 					QuoteDenom: "uusdc",
 				},
-				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
-				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
-				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+				OpenedBaseRate:       sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate:      sdk.MustNewDecFromStr("0.000001"),
+				RemainingMargin:      sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+				LeviedAmount:         sdk.NewInt64Coin("uatom", 0),
+				LeviedAmountNegative: true,
 			},
 			instance: types.PerpetualFuturesPositionInstance{
 				PositionType: types.PositionType_LONG,
@@ -190,6 +206,7 @@ func TestPosition_IsValid(t *testing.T) {
 		tc.position.PositionInstance = *any
 
 		t.Run(tc.name, func(t *testing.T) {
+			fmt.Println("tcPosition", tc.position)
 			err := tc.position.IsValid(params, tc.availableAsset)
 			if tc.exp {
 				if err != nil {
@@ -204,8 +221,7 @@ func TestPosition_IsValid(t *testing.T) {
 	}
 }
 
-// TODO: impl TestRemaingMarginInMetrics
-func TestRemaingMarginInMetrics(t *testing.T) {
+func TestRemainingMarginInMetrics(t *testing.T) {
 	testCases := []struct {
 		name                  string
 		position              types.Position
@@ -351,9 +367,11 @@ func TestEffectiveMarginInMetrics(t *testing.T) {
 					BaseDenom:  "uatom",
 					QuoteDenom: "uusdc",
 				},
-				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
-				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
-				RemainingMargin: sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+				OpenedBaseRate:       sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate:      sdk.MustNewDecFromStr("0.000001"),
+				RemainingMargin:      sdk.NewCoin("uatom", sdk.NewInt(1000000)),
+				LeviedAmount:         sdk.NewInt64Coin("uatom", 0),
+				LeviedAmountNegative: true,
 			},
 			instance: types.PerpetualFuturesPositionInstance{
 				PositionType: types.PositionType_LONG,
@@ -373,9 +391,11 @@ func TestEffectiveMarginInMetrics(t *testing.T) {
 					BaseDenom:  "uatom",
 					QuoteDenom: "uusdc",
 				},
-				OpenedBaseRate:  sdk.MustNewDecFromStr("0.00001"),
-				OpenedQuoteRate: sdk.MustNewDecFromStr("0.000001"),
-				RemainingMargin: sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
+				OpenedBaseRate:       sdk.MustNewDecFromStr("0.00001"),
+				OpenedQuoteRate:      sdk.MustNewDecFromStr("0.000001"),
+				RemainingMargin:      sdk.NewCoin("uusdc", sdk.NewInt(10000000)),
+				LeviedAmount:         sdk.NewInt64Coin("uatom", 0),
+				LeviedAmountNegative: true,
 			},
 			instance: types.PerpetualFuturesPositionInstance{
 				PositionType: types.PositionType_SHORT,

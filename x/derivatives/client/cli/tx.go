@@ -46,6 +46,7 @@ func GetTxCmd() *cobra.Command {
 		CmdClosePosition(),
 		CmdReportLiquidation(),
 		CmdReportLevyPeriod(),
+		CmdAddMargin(),
 	)
 
 	return cmd
@@ -74,10 +75,7 @@ $ %s tx %s deposit-to-pool --from myKeyName --chain-id ununifi-x
 				return err
 			}
 
-			msg := types.MsgDepositToPool{
-				Sender: sender.String(),
-				Amount: amount,
-			}
+			msg := types.NewMsgDepositToPool(sender.String(), amount)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -285,7 +283,7 @@ func CmdReportLiquidation() *cobra.Command {
 Example:
 $ %s tx %s report-liquidation --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(1),
+		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -293,16 +291,11 @@ $ %s tx %s report-liquidation --from myKeyName --chain-id ununifi-x
 			}
 
 			sender := clientCtx.GetFromAddress()
-			recipient, err := sdk.AccAddressFromBech32(args[1])
-			if err != nil {
-				return err
-			}
-
-			msg := types.MsgReportLiquidation{
-				Sender:          sender.String(),
-				PositionId:      args[0],
-				RewardRecipient: recipient.String(),
-			}
+			msg := types.NewMsgReportLiquidation(
+				sender.String(),
+				args[0],
+				args[1],
+			)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -324,7 +317,7 @@ func CmdReportLevyPeriod() *cobra.Command {
 Example:
 $ %s tx %s report-levy-period --from myKeyName --chain-id ununifi-x
 `, version.AppName, types.ModuleName)),
-		Args: cobra.ExactArgs(1),
+		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -332,16 +325,46 @@ $ %s tx %s report-levy-period --from myKeyName --chain-id ununifi-x
 			}
 
 			sender := clientCtx.GetFromAddress()
-			recipient, err := sdk.AccAddressFromBech32(args[1])
+			msg := types.NewMsgReportLevyPeriod(
+				sender.String(),
+				args[0],
+				args[1],
+			)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdAddMargin() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "add-margin [position-id] [amount]",
+		Short: fmt.Sprintf("%s add margin into a position", types.ModuleName),
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`add margin.
+Example:
+$ %s tx %s add-margin [position-id] [amount] --from myKeyName --chain-id ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.MsgReportLevyPeriod{
-				Sender:          sender.String(),
-				PositionId:      args[0],
-				RewardRecipient: recipient.String(),
+			sender := clientCtx.GetFromAddress()
+			potisionId := args[0]
+			amount, err := sdk.ParseCoinNormalized(args[1])
+			if err != nil {
+				return err
 			}
+
+			msg := types.NewMsgAddMargin(sender.String(), potisionId, amount)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err

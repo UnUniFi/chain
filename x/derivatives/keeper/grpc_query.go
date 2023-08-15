@@ -6,6 +6,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -25,8 +26,8 @@ func (k Keeper) LiquidityProviderTokenRealAPY(c context.Context, req *types.Quer
 	ctx := sdk.UnwrapSDKContext(c)
 
 	rate := k.GetLPNominalYieldRate(ctx, req.BeforeHeight, req.AfterHeight)
-	annualized := k.AnnualizeYieldRate(ctx, rate, req.BeforeHeight, req.AfterHeight)
 
+	annualized := k.AnnualizeYieldRate(ctx, rate, req.BeforeHeight, req.AfterHeight)
 	return &types.QueryLiquidityProviderTokenRealAPYResponse{Apy: &annualized}, nil
 }
 
@@ -38,7 +39,6 @@ func (k Keeper) LiquidityProviderTokenNominalAPY(c context.Context, req *types.Q
 
 	rate := k.GetLPNominalYieldRate(ctx, req.BeforeHeight, req.AfterHeight)
 	annualized := k.AnnualizeYieldRate(ctx, rate, req.BeforeHeight, req.AfterHeight)
-
 	return &types.QueryLiquidityProviderTokenNominalAPYResponse{Apy: &annualized}, nil
 }
 
@@ -48,28 +48,29 @@ func (k Keeper) PerpetualFutures(c context.Context, req *types.QueryPerpetualFut
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	positions := types.Positions(k.GetAllPositions(ctx))
-	getPriceFunc := func(ctx sdk.Context) func(denom string) (sdk.Dec, error) {
-		return func(denom string) (sdk.Dec, error) {
-			return k.GetCurrentPrice(ctx, denom)
+
+	markets := k.GetParams(ctx).PerpetualFutures.Markets
+	longPositions := sdk.ZeroDec()
+	shortPositions := sdk.ZeroDec()
+	for _, market := range markets {
+		totalLongPositionSize := k.GetPerpetualFuturesPositionSizeInMetrics(ctx, *market, types.PositionType_LONG)
+
+		if totalLongPositionSize.IsZero() {
+			return nil, fmt.Errorf("long position size is zero")
 		}
+		totalShortPositionSize := k.GetPerpetualFuturesPositionSizeInMetrics(ctx, *market, types.PositionType_SHORT)
+		if totalShortPositionSize.IsZero() {
+			return nil, fmt.Errorf("short position size is zero")
+		}
+		longPositions.AddMut(totalLongPositionSize)
+		shortPositions.AddMut(totalShortPositionSize)
 	}
 
-	quoteTicker := k.GetPoolQuoteTicker(ctx)
-	longUUsd, _ := positions.EvaluateLongPositions(quoteTicker, getPriceFunc(ctx))
-	shortUUsd, _ := positions.EvaluateShortPositions(quoteTicker, getPriceFunc(ctx))
-	// TODO: implement the handler logic
-	ctx.BlockHeight()
-	metricsQuoteTicker := "USD"
-	volume24Hours := sdk.NewDec(0)
-	fees24Hours := sdk.NewDec(0)
-
+	metricsQuoteTicker := k.GetParams(ctx).PoolParams.QuoteTicker
 	return &types.QueryPerpetualFuturesResponse{
 		MetricsQuoteTicker: metricsQuoteTicker,
-		Volume_24Hours:     &volume24Hours,
-		Fees_24Hours:       &fees24Hours,
-		LongPositions:      sdk.NewCoin("uusd", longUUsd.TruncateInt()),
-		ShortPositions:     sdk.NewCoin("uusd", shortUUsd.TruncateInt()),
+		LongPositions:      longPositions,
+		ShortPositions:     shortPositions,
 	}, nil
 }
 
@@ -79,22 +80,27 @@ func (k Keeper) PerpetualFuturesMarket(c context.Context, req *types.QueryPerpet
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	// TODO: implement the handler logic
-	ctx.BlockHeight()
+
 	price := sdk.NewDec(0)
-	metricsQuoteTicker := ""
-	volume24Hours := sdk.NewDec(0)
-	fees24Hours := sdk.NewDec(0)
-	longPositions := sdk.NewDec(0)
-	shortPositions := sdk.NewDec(0)
+	metricsQuoteTicker := k.GetParams(ctx).PoolParams.QuoteTicker
+	market := types.Market{
+		BaseDenom:  req.BaseDenom,
+		QuoteDenom: req.QuoteDenom,
+	}
+	totalLongPositionSize := k.GetPerpetualFuturesPositionSizeInMetrics(ctx, market, types.PositionType_LONG)
+	if totalLongPositionSize.IsZero() {
+		return nil, fmt.Errorf("long position size is zero")
+	}
+	totalShortPositionSize := k.GetPerpetualFuturesPositionSizeInMetrics(ctx, market, types.PositionType_SHORT)
+	if totalShortPositionSize.IsZero() {
+		return nil, fmt.Errorf("short position size is zero")
+	}
 
 	return &types.QueryPerpetualFuturesMarketResponse{
 		Price:              &price,
 		MetricsQuoteTicker: metricsQuoteTicker,
-		Volume_24Hours:     &volume24Hours,
-		Fees_24Hours:       &fees24Hours,
-		LongPositions:      &longPositions,
-		ShortPositions:     &shortPositions,
+		LongPositions:      &totalLongPositionSize,
+		ShortPositions:     &totalShortPositionSize,
 	}, nil
 }
 
@@ -128,20 +134,16 @@ func (k Keeper) Pool(c context.Context, req *types.QueryPoolRequest) (*types.Que
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	// TODO: implement the handler logic
-	metricsQuoteTicker := ""
+
+	metricsQuoteTicker := k.GetPoolQuoteTicker(ctx)
 	poolMarketCap, err := k.GetPoolMarketCap(ctx)
 	if err != nil {
 		return nil, err
 	}
-	volume24Hours := sdk.NewDec(0)
-	fees24Hours := sdk.NewDec(0)
 
 	return &types.QueryPoolResponse{
 		MetricsQuoteTicker: metricsQuoteTicker,
 		PoolMarketCap:      &poolMarketCap,
-		Volume_24Hours:     &volume24Hours,
-		Fees_24Hours:       &fees24Hours,
 	}, nil
 }
 
@@ -185,7 +187,8 @@ func (k Keeper) AddressPositions(c context.Context, req *types.QueryAddressPosit
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	positions := k.GetAddressPositionsVal(ctx, address)
+	// Get all positions of NFTs owned by the address
+	positions := k.GetAddressNFTPositions(ctx, address)
 
 	queriedPositions, err := k.MakeQueriedPositions(ctx, positions)
 	if err != nil {
@@ -231,6 +234,11 @@ func (k Keeper) MakeQueriedPositions(ctx sdk.Context, positions types.Positions)
 		baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, currentBaseUsdRate)
 		quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, currentQuoteUsdRate)
 		profit := perpetualFuturesPosition.ProfitAndLossInMetrics(baseMetricsRate, quoteMetricsRate)
+		if perpetualFuturesPosition.LeviedAmountNegative {
+			profit = profit.Sub(perpetualFuturesPosition.LeviedAmountInMetrics(baseMetricsRate, quoteMetricsRate))
+		} else {
+			profit = profit.Add(perpetualFuturesPosition.LeviedAmountInMetrics(baseMetricsRate, quoteMetricsRate))
+		}
 		// fixme do not use sdk.Coin directly
 		positiveOrNegativeProfitCoin := sdk.Coin{
 			Denom:  "uusd",
@@ -287,6 +295,34 @@ func (k Keeper) Position(c context.Context, req *types.QueryPositionRequest) (*t
 	}, nil
 }
 
+func (k Keeper) AllPendingPaymentPositions(c context.Context, req *types.QueryAllPendingPaymentPositionsRequest) (*types.QueryAllPendingPaymentPositionsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	// Get all pending payment positions
+	pendingPaymentPositions := k.GetAllPendingPaymentPositions(ctx)
+
+	return &types.QueryAllPendingPaymentPositionsResponse{
+		PendingPaymentPositions: pendingPaymentPositions,
+	}, nil
+}
+
+func (k Keeper) PendingPaymentPosition(c context.Context, req *types.QueryPendingPaymentPositionRequest) (*types.QueryPendingPaymentPositionResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	// Get all pending payment position by position id
+	pendingPaymentPosition := k.GetPendingPaymentPosition(ctx, req.PositionId)
+
+	return &types.QueryPendingPaymentPositionResponse{
+		PendingPaymentPosition: pendingPaymentPosition,
+	}, nil
+}
+
 func (k Keeper) PerpetualFuturesPositionSize(c context.Context, req *types.QueryPerpetualFuturesPositionSizeRequest) (*types.QueryPerpetualFuturesPositionSizeResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -297,7 +333,8 @@ func (k Keeper) PerpetualFuturesPositionSize(c context.Context, req *types.Query
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-	positions := types.Positions(k.GetAddressPositionsVal(ctx, address))
+	// Get all positions of NFTs owned by the address
+	positions := types.Positions(k.GetAddressNFTPositions(ctx, address))
 	getPriceFunc := func(ctx sdk.Context) func(denom string) (sdk.Dec, error) {
 		return func(denom string) (sdk.Dec, error) {
 			return k.GetCurrentPrice(ctx, denom)
@@ -338,6 +375,7 @@ func (k Keeper) DLPTokenRates(c context.Context, req *types.QueryDLPTokenRateReq
 			// todo error handing
 			continue
 		}
+		// TODO: Is microzation necessary?
 		// TODO: don't use NormalToMicroInt like this since it is hard to be consistent
 		rates = append(rates, sdk.NewCoin(asset.Denom, types.NormalToMicroInt(ldpDenomRate)))
 	}

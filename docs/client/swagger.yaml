@@ -954,6 +954,9 @@ paths:
                               type: string
                             target_weight:
                               type: string
+                      levy_period_required_seconds:
+                        type: string
+                        format: uint64
                   perpetual_futures:
                     type: object
                     properties:
@@ -1191,6 +1194,469 @@ paths:
                         }
       tags:
         - Query
+  /ununifi/derivatives/pending-payment-positions:
+    get:
+      operationId: AllPendingPaymentPositions
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              pending_payment_positions:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    refundable_amount:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                    created_at:
+                      type: string
+                      format: date-time
+                    created_height:
+                      type: string
+                      format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                    value:
+                      type: string
+                      format: byte
+                      description: >-
+                        Must be a valid serialized protocol buffer of the above
+                        specified type.
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                    Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                    Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := anypb.New(foo)
+                         if err != nil {
+                           ...
+                         }
+                         ...
+                         foo := &pb.Foo{}
+                         if err := any.UnmarshalTo(foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      tags:
+        - Query
+  /ununifi/derivatives/pending-payment-positions/{position_id}:
+    get:
+      operationId: PendingPaymentPosition
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              pending_payment_position:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  refundable_amount:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
+
+
+                      NOTE: The amount field is an Int which implements the
+                      custom method
+
+                      signatures required by gogoproto.
+                  created_at:
+                    type: string
+                    format: date-time
+                  created_height:
+                    type: string
+                    format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                    value:
+                      type: string
+                      format: byte
+                      description: >-
+                        Must be a valid serialized protocol buffer of the above
+                        specified type.
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                    Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                    Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := anypb.New(foo)
+                         if err != nil {
+                           ...
+                         }
+                         ...
+                         foo := &pb.Foo{}
+                         if err := any.UnmarshalTo(foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      parameters:
+        - name: position_id
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /ununifi/derivatives/perpetual-futures:
     get:
       operationId: PerpetualFutures
@@ -1202,40 +1668,10 @@ paths:
             properties:
               metrics_quote_ticker:
                 type: string
-              volume_24hours:
-                type: string
-              fees_24hours:
-                type: string
               long_positions:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+                type: string
               short_positions:
-                type: object
-                properties:
-                  denom:
-                    type: string
-                  amount:
-                    type: string
-                description: >-
-                  Coin defines a token with a denomination and an amount.
-
-
-                  NOTE: The amount field is an Int which implements the custom
-                  method
-
-                  signatures required by gogoproto.
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -1441,10 +1877,6 @@ paths:
               price:
                 type: string
               metrics_quote_ticker:
-                type: string
-              volume_24hours:
-                type: string
-              fees_24hours:
                 type: string
               long_positions:
                 type: string
@@ -2095,10 +2527,6 @@ paths:
                           type: string
                         reserved:
                           type: string
-              volume_24hours:
-                type: string
-              fees_24hours:
-                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -2977,7 +3405,7 @@ paths:
                           type: string
                         quote_denom:
                           type: string
-                    address:
+                    opener_address:
                       type: string
                     opened_at:
                       type: string
@@ -3004,6 +3432,23 @@ paths:
                         custom method
 
                         signatures required by gogoproto.
+                    levied_amount:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                    levied_amount_negative:
+                      type: boolean
                     last_levied_at:
                       type: string
                       format: date-time
@@ -3704,7 +4149,7 @@ paths:
                         type: string
                       quote_denom:
                         type: string
-                  address:
+                  opener_address:
                     type: string
                   opened_at:
                     type: string
@@ -3731,6 +4176,23 @@ paths:
                       custom method
 
                       signatures required by gogoproto.
+                  levied_amount:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
+
+
+                      NOTE: The amount field is an Int which implements the
+                      custom method
+
+                      signatures required by gogoproto.
+                  levied_amount_negative:
+                    type: boolean
                   last_levied_at:
                     type: string
                     format: date-time
@@ -4167,7 +4629,7 @@ paths:
                               type: string
                             quote_denom:
                               type: string
-                        address:
+                        opener_address:
                           type: string
                         opened_at:
                           type: string
@@ -4195,6 +4657,24 @@ paths:
                             the custom method
 
                             signatures required by gogoproto.
+                        levied_amount:
+                          type: object
+                          properties:
+                            denom:
+                              type: string
+                            amount:
+                              type: string
+                          description: >-
+                            Coin defines a token with a denomination and an
+                            amount.
+
+
+                            NOTE: The amount field is an Int which implements
+                            the custom method
+
+                            signatures required by gogoproto.
+                        levied_amount_negative:
+                          type: boolean
                         last_levied_at:
                           type: string
                           format: date-time
@@ -4684,11 +5164,18 @@ paths:
                                   - UNKNOWN
                                   - STAKERS
                                   - FRONTEND_DEVELOPERS
+                                  - COMMUNITY_POOL
                                 default: UNKNOWN
                                 description: >-
-                                  NFTMARKET_FRONTEND type reward will be
+                                  STAKERS type reward will be distributed for
+                                  the stakers of GUU token.
+
+                                  FRONTEND_DEVELOPERS type reward will be
                                   disributed for the creators of frontend of
                                   UnUniFi's services.
+
+                                  COMMUNITY_POOL type reward will be distributed
+                                  for the community pool.
                               rate:
                                 type: string
                             title: >-
@@ -4703,7 +5190,7 @@ paths:
 
                         to maintain the correctness of the fee rate in a module
 
-                        e.g. if nftmarket module have "Frontend" and
+                        e.g. if nftbackedloan module have "Frontend" and
                         "Collection" incentive, 
 
                         the combined those rates for the incentive cannot be
@@ -4945,7 +5432,7 @@ paths:
           type: string
       tags:
         - Query
-  /ununifi/nftbackedloan/bidder_bids/{bidder}:
+  /ununifi/nftbackedloan/bidder-bids/{bidder}:
     get:
       operationId: BidderBids
       responses:
@@ -4959,16 +5446,19 @@ paths:
                 items:
                   type: object
                   properties:
-                    nft_id:
+                    id:
                       type: object
                       properties:
-                        class_id:
-                          type: string
                         nft_id:
+                          type: object
+                          properties:
+                            class_id:
+                              type: string
+                            nft_id:
+                              type: string
+                        bidder:
                           type: string
-                    bidder:
-                      type: string
-                    bid_amount:
+                    price:
                       type: object
                       properties:
                         denom:
@@ -4983,7 +5473,7 @@ paths:
                         custom method
 
                         signatures required by gogoproto.
-                    deposit_amount:
+                    deposit:
                       type: object
                       properties:
                         denom:
@@ -5013,85 +5503,39 @@ paths:
                         custom method
 
                         signatures required by gogoproto.
-                    bidding_period:
+                    expiry:
                       type: string
                       format: date-time
-                    deposit_lending_rate:
+                    interest_rate:
                       type: string
                     automatic_payment:
                       type: boolean
-                    bid_time:
+                    created_at:
                       type: string
                       format: date-time
-                    interest_amount:
+                    borrow:
+                      title: borrow info
                       type: object
                       properties:
-                        denom:
-                          type: string
                         amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                    borrowings:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          amount:
-                            type: object
-                            properties:
-                              denom:
-                                type: string
-                              amount:
-                                type: string
-                            description: >-
-                              Coin defines a token with a denomination and an
-                              amount.
-
-
-                              NOTE: The amount field is an Int which implements
-                              the custom method
-
-                              signatures required by gogoproto.
-                          paid_interest_amount:
-                            type: object
-                            properties:
-                              denom:
-                                type: string
-                              amount:
-                                type: string
-                            description: >-
-                              Coin defines a token with a denomination and an
-                              amount.
-
-
-                              NOTE: The amount field is an Int which implements
-                              the custom method
-
-                              signatures required by gogoproto.
-                          start_at:
-                            type: string
-                            format: date-time
-                      title: lister borrowing bidder info
-                    id:
-                      title: todo remove nft_id,bidder then use it
-                      type: object
-                      properties:
-                        nft_id:
                           type: object
                           properties:
-                            class_id:
+                            denom:
                               type: string
-                            nft_id:
+                            amount:
                               type: string
-                        bidder:
+                          description: >-
+                            Coin defines a token with a denomination and an
+                            amount.
+
+
+                            NOTE: The amount field is an Int which implements
+                            the custom method
+
+                            signatures required by gogoproto.
+                        last_repaid_at:
                           type: string
+                          format: date-time
         default:
           description: An unexpected error response.
           schema:
@@ -5119,38 +5563,6 @@ paths:
           in: path
           required: true
           type: string
-      tags:
-        - Query
-  /ununifi/nftbackedloan/cdps_list:
-    get:
-      operationId: CDPsList
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
       tags:
         - Query
   /ununifi/nftbackedloan/liquidation/{class_id}/{nft_id}:
@@ -5244,7 +5656,7 @@ paths:
           type: string
       tags:
         - Query
-  /ununifi/nftbackedloan/listed_class/{class_id}/{nft_limit}:
+  /ununifi/nftbackedloan/listed-class/{class_id}/{nft_limit}:
     get:
       operationId: ListedClass
       responses:
@@ -5313,7 +5725,7 @@ paths:
           format: int32
       tags:
         - Query
-  /ununifi/nftbackedloan/listed_classes:
+  /ununifi/nftbackedloan/listed-classes:
     get:
       operationId: ListedClasses
       responses:
@@ -5383,7 +5795,7 @@ paths:
           format: int32
       tags:
         - Query
-  /ununifi/nftbackedloan/listed_nfts:
+  /ununifi/nftbackedloan/listed-nfts:
     get:
       operationId: ListedNfts
       responses:
@@ -5409,32 +5821,24 @@ paths:
                               type: string
                         owner:
                           type: string
-                        listing_type:
-                          type: string
-                          enum:
-                            - DIRECT_ASSET_BORROW
-                            - SYNTHETIC_ASSET_CREATION
-                            - LATE_SHIPPING
-                          default: DIRECT_ASSET_BORROW
                         state:
                           type: string
                           enum:
+                            - UNKNOWN
                             - LISTING
                             - BIDDING
                             - SELLING_DECISION
-                            - END_LISTING
+                            - LIQUIDATION
                             - SUCCESSFUL_BID
-                          default: LISTING
-                        bid_token:
+                          default: UNKNOWN
+                        bid_denom:
                           type: string
                         minimum_deposit_rate:
                           type: string
-                        automatic_refinancing:
-                          type: boolean
                         started_at:
                           type: string
                           format: date-time
-                        end_at:
+                        liquidated_at:
                           type: string
                           format: date-time
                         full_payment_end_at:
@@ -5443,9 +5847,6 @@ paths:
                         successful_bid_end_at:
                           type: string
                           format: date-time
-                        auto_relisted_count:
-                          type: string
-                          format: uint64
                         collected_amount:
                           type: object
                           properties:
@@ -5462,6 +5863,8 @@ paths:
                             the custom method
 
                             signatures required by gogoproto.
+                        collected_amount_negative:
+                          type: boolean
                         minimum_bidding_period:
                           type: string
                     nft_info:
@@ -5502,66 +5905,6 @@ paths:
           type: string
       tags:
         - Query
-  /ununifi/nftbackedloan/loans:
-    get:
-      operationId: Loans
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              loans:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    nft_id:
-                      type: object
-                      properties:
-                        class_id:
-                          type: string
-                        nft_id:
-                          type: string
-                    loan:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      tags:
-        - Query
   /ununifi/nftbackedloan/loans/{class_id}/{nft_id}:
     get:
       operationId: Loan
@@ -5571,33 +5914,58 @@ paths:
           schema:
             type: object
             properties:
-              loan:
+              nft_id:
                 type: object
                 properties:
+                  class_id:
+                    type: string
                   nft_id:
-                    type: object
-                    properties:
-                      class_id:
-                        type: string
-                      nft_id:
-                        type: string
-                  loan:
-                    type: object
-                    properties:
-                      denom:
-                        type: string
-                      amount:
-                        type: string
-                    description: >-
-                      Coin defines a token with a denomination and an amount.
+                    type: string
+              borrowing_amount:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
 
 
-                      NOTE: The amount field is an Int which implements the
-                      custom method
+                  NOTE: The amount field is an Int which implements the custom
+                  method
 
-                      signatures required by gogoproto.
+                  signatures required by gogoproto.
               borrowing_limit:
-                type: string
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              total_deposit:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
         default:
           description: An unexpected error response.
           schema:
@@ -5631,7 +5999,7 @@ paths:
           type: string
       tags:
         - Query
-  /ununifi/nftbackedloan/nft_bids/{class_id}/{nft_id}:
+  /ununifi/nftbackedloan/nft-bids/{class_id}/{nft_id}:
     get:
       operationId: NftBids
       responses:
@@ -5645,16 +6013,19 @@ paths:
                 items:
                   type: object
                   properties:
-                    nft_id:
+                    id:
                       type: object
                       properties:
-                        class_id:
-                          type: string
                         nft_id:
+                          type: object
+                          properties:
+                            class_id:
+                              type: string
+                            nft_id:
+                              type: string
+                        bidder:
                           type: string
-                    bidder:
-                      type: string
-                    bid_amount:
+                    price:
                       type: object
                       properties:
                         denom:
@@ -5669,7 +6040,7 @@ paths:
                         custom method
 
                         signatures required by gogoproto.
-                    deposit_amount:
+                    deposit:
                       type: object
                       properties:
                         denom:
@@ -5699,85 +6070,39 @@ paths:
                         custom method
 
                         signatures required by gogoproto.
-                    bidding_period:
+                    expiry:
                       type: string
                       format: date-time
-                    deposit_lending_rate:
+                    interest_rate:
                       type: string
                     automatic_payment:
                       type: boolean
-                    bid_time:
+                    created_at:
                       type: string
                       format: date-time
-                    interest_amount:
+                    borrow:
+                      title: borrow info
                       type: object
                       properties:
-                        denom:
-                          type: string
                         amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                    borrowings:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          amount:
-                            type: object
-                            properties:
-                              denom:
-                                type: string
-                              amount:
-                                type: string
-                            description: >-
-                              Coin defines a token with a denomination and an
-                              amount.
-
-
-                              NOTE: The amount field is an Int which implements
-                              the custom method
-
-                              signatures required by gogoproto.
-                          paid_interest_amount:
-                            type: object
-                            properties:
-                              denom:
-                                type: string
-                              amount:
-                                type: string
-                            description: >-
-                              Coin defines a token with a denomination and an
-                              amount.
-
-
-                              NOTE: The amount field is an Int which implements
-                              the custom method
-
-                              signatures required by gogoproto.
-                          start_at:
-                            type: string
-                            format: date-time
-                      title: lister borrowing bidder info
-                    id:
-                      title: todo remove nft_id,bidder then use it
-                      type: object
-                      properties:
-                        nft_id:
                           type: object
                           properties:
-                            class_id:
+                            denom:
                               type: string
-                            nft_id:
+                            amount:
                               type: string
-                        bidder:
+                          description: >-
+                            Coin defines a token with a denomination and an
+                            amount.
+
+
+                            NOTE: The amount field is an Int which implements
+                            the custom method
+
+                            signatures required by gogoproto.
+                        last_repaid_at:
                           type: string
+                          format: date-time
         default:
           description: An unexpected error response.
           schema:
@@ -5811,7 +6136,7 @@ paths:
           type: string
       tags:
         - Query
-  /ununifi/nftbackedloan/nft_listing/{class_id}/{nft_id}:
+  /ununifi/nftbackedloan/nft-listing/{class_id}/{nft_id}:
     get:
       operationId: NftListing
       responses:
@@ -5832,32 +6157,24 @@ paths:
                         type: string
                   owner:
                     type: string
-                  listing_type:
-                    type: string
-                    enum:
-                      - DIRECT_ASSET_BORROW
-                      - SYNTHETIC_ASSET_CREATION
-                      - LATE_SHIPPING
-                    default: DIRECT_ASSET_BORROW
                   state:
                     type: string
                     enum:
+                      - UNKNOWN
                       - LISTING
                       - BIDDING
                       - SELLING_DECISION
-                      - END_LISTING
+                      - LIQUIDATION
                       - SUCCESSFUL_BID
-                    default: LISTING
-                  bid_token:
+                    default: UNKNOWN
+                  bid_denom:
                     type: string
                   minimum_deposit_rate:
                     type: string
-                  automatic_refinancing:
-                    type: boolean
                   started_at:
                     type: string
                     format: date-time
-                  end_at:
+                  liquidated_at:
                     type: string
                     format: date-time
                   full_payment_end_at:
@@ -5866,9 +6183,6 @@ paths:
                   successful_bid_end_at:
                     type: string
                     format: date-time
-                  auto_relisted_count:
-                    type: string
-                    format: uint64
                   collected_amount:
                     type: object
                     properties:
@@ -5884,6 +6198,8 @@ paths:
                       custom method
 
                       signatures required by gogoproto.
+                  collected_amount_negative:
+                    type: boolean
                   minimum_bidding_period:
                     type: string
         default:
@@ -5933,35 +6249,14 @@ paths:
                 properties:
                   min_staking_for_listing:
                     type: string
-                  default_bid_active_rank:
-                    type: string
-                    format: uint64
                   bid_tokens:
                     type: array
                     items:
                       type: string
-                  auto_relisting_count_if_no_bid:
-                    type: string
-                    format: uint64
-                  nft_listing_delay_seconds:
-                    type: string
-                    format: uint64
-                  nft_listing_period_initial:
-                    type: string
-                    format: uint64
                   nft_listing_cancel_required_seconds:
                     type: string
                     format: uint64
-                  nft_listing_cancel_fee_percentage:
-                    type: string
-                    format: uint64
-                  nft_listing_gap_time:
-                    type: string
-                    format: uint64
                   bid_cancel_required_seconds:
-                    type: string
-                    format: uint64
-                  bid_token_disburse_seconds_after_cancel:
                     type: string
                     format: uint64
                   nft_listing_full_payment_period:
@@ -5970,32 +6265,9 @@ paths:
                   nft_listing_nft_delivery_period:
                     type: string
                     format: uint64
-                  nft_creator_share_percentage:
-                    type: string
-                    format: uint64
-                  market_administrator:
-                    type: string
                   nft_listing_commission_fee:
                     type: string
                     format: uint64
-                  nft_listing_extend_seconds:
-                    type: string
-                    format: uint64
-                  nft_listing_period_extend_fee_per_hour:
-                    type: object
-                    properties:
-                      denom:
-                        type: string
-                      amount:
-                        type: string
-                    description: >-
-                      Coin defines a token with a denomination and an amount.
-
-
-                      NOTE: The amount field is an Int which implements the
-                      custom method
-
-                      signatures required by gogoproto.
         default:
           description: An unexpected error response.
           schema:
@@ -6018,97 +6290,6 @@ paths:
                     value:
                       type: string
                       format: byte
-      tags:
-        - Query
-  /ununifi/nftbackedloan/payment_status/{class_id}/{nft_id}/{bidder}:
-    get:
-      operationId: PaymentStatus
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              paymentStatus:
-                type: object
-                properties:
-                  nft_id:
-                    type: object
-                    properties:
-                      class_id:
-                        type: string
-                      nft_id:
-                        type: string
-                  bidder:
-                    type: string
-                  amount:
-                    type: object
-                    properties:
-                      denom:
-                        type: string
-                      amount:
-                        type: string
-                    description: >-
-                      Coin defines a token with a denomination and an amount.
-
-
-                      NOTE: The amount field is an Int which implements the
-                      custom method
-
-                      signatures required by gogoproto.
-                  automatic_payment:
-                    type: boolean
-                  paid_amount:
-                    type: string
-                  bid_time:
-                    type: string
-                    format: date-time
-                  state:
-                    type: string
-                    enum:
-                      - LISTING
-                      - BIDDING
-                      - SELLING_DECISION
-                      - END_LISTING
-                      - SUCCESSFUL_BID
-                    default: LISTING
-                  all_paid:
-                    type: boolean
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: class_id
-          in: path
-          required: true
-          type: string
-        - name: nft_id
-          in: path
-          required: true
-          type: string
-        - name: bidder
-          in: path
-          required: true
-          type: string
       tags:
         - Query
   /ununifi/nftbackedloan/rewards/{address}:
@@ -8084,6 +8265,9 @@ definitions:
                   type: string
                 target_weight:
                   type: string
+          levy_period_required_seconds:
+            type: string
+            format: uint64
       perpetual_futures:
         type: object
         properties:
@@ -8125,6 +8309,29 @@ definitions:
                   type: string
                 quote_denom:
                   type: string
+  ununifi.derivatives.PendingPaymentPosition:
+    type: object
+    properties:
+      id:
+        type: string
+      refundable_amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      created_at:
+        type: string
+        format: date-time
+      created_height:
+        type: string
+        format: uint64
   ununifi.derivatives.PerpetualFuturesParams:
     type: object
     properties:
@@ -8228,6 +8435,9 @@ definitions:
               type: string
             target_weight:
               type: string
+      levy_period_required_seconds:
+        type: string
+        format: uint64
   ununifi.derivatives.Position:
     type: object
     properties:
@@ -8240,7 +8450,7 @@ definitions:
             type: string
           quote_denom:
             type: string
-      address:
+      opener_address:
         type: string
       opened_at:
         type: string
@@ -8264,6 +8474,20 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
+      levied_amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      levied_amount_negative:
+        type: boolean
       last_levied_at:
         type: string
         format: date-time
@@ -8450,7 +8674,7 @@ definitions:
                 type: string
               quote_denom:
                 type: string
-          address:
+          opener_address:
             type: string
           opened_at:
             type: string
@@ -8477,6 +8701,23 @@ definitions:
               method
 
               signatures required by gogoproto.
+          levied_amount:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          levied_amount_negative:
+            type: boolean
           last_levied_at:
             type: string
             format: date-time
@@ -8695,7 +8936,7 @@ definitions:
                       type: string
                     quote_denom:
                       type: string
-                address:
+                opener_address:
                   type: string
                 opened_at:
                   type: string
@@ -8722,6 +8963,23 @@ definitions:
                     method
 
                     signatures required by gogoproto.
+                levied_amount:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+                levied_amount_negative:
+                  type: boolean
                 last_levied_at:
                   type: string
                   format: date-time
@@ -8936,6 +9194,37 @@ definitions:
                 signatures required by gogoproto.
             margin_maintenance_rate:
               type: string
+  ununifi.derivatives.QueryAllPendingPaymentPositionsResponse:
+    type: object
+    properties:
+      pending_payment_positions:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+            refundable_amount:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+            created_at:
+              type: string
+              format: date-time
+            created_height:
+              type: string
+              format: uint64
   ununifi.derivatives.QueryAllPositionsResponse:
     type: object
     properties:
@@ -8953,7 +9242,7 @@ definitions:
                   type: string
                 quote_denom:
                   type: string
-            address:
+            opener_address:
               type: string
             opened_at:
               type: string
@@ -8980,6 +9269,23 @@ definitions:
                 method
 
                 signatures required by gogoproto.
+            levied_amount:
+              type: object
+              properties:
+                denom:
+                  type: string
+                amount:
+                  type: string
+              description: >-
+                Coin defines a token with a denomination and an amount.
+
+
+                NOTE: The amount field is an Int which implements the custom
+                method
+
+                signatures required by gogoproto.
+            levied_amount_negative:
+              type: boolean
             last_levied_at:
               type: string
               format: date-time
@@ -9325,6 +9631,9 @@ definitions:
                       type: string
                     target_weight:
                       type: string
+              levy_period_required_seconds:
+                type: string
+                format: uint64
           perpetual_futures:
             type: object
             properties:
@@ -9367,16 +9676,41 @@ definitions:
                     quote_denom:
                       type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  ununifi.derivatives.QueryPendingPaymentPositionResponse:
+    type: object
+    properties:
+      pending_payment_position:
+        type: object
+        properties:
+          id:
+            type: string
+          refundable_amount:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          created_at:
+            type: string
+            format: date-time
+          created_height:
+            type: string
+            format: uint64
   ununifi.derivatives.QueryPerpetualFuturesMarketResponse:
     type: object
     properties:
       price:
         type: string
       metrics_quote_ticker:
-        type: string
-      volume_24hours:
-        type: string
-      fees_24hours:
         type: string
       long_positions:
         type: string
@@ -9402,34 +9736,10 @@ definitions:
     properties:
       metrics_quote_ticker:
         type: string
-      volume_24hours:
-        type: string
-      fees_24hours:
-        type: string
       long_positions:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
+        type: string
       short_positions:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
+        type: string
   ununifi.derivatives.QueryPerpetualOptionsMarketResponse:
     type: object
   ununifi.derivatives.QueryPerpetualOptionsResponse:
@@ -9459,10 +9769,6 @@ definitions:
                   type: string
                 reserved:
                   type: string
-      volume_24hours:
-        type: string
-      fees_24hours:
-        type: string
   ununifi.derivatives.QueryPositionResponse:
     type: object
     properties:
@@ -9478,7 +9784,7 @@ definitions:
                 type: string
               quote_denom:
                 type: string
-          address:
+          opener_address:
             type: string
           opened_at:
             type: string
@@ -9505,6 +9811,23 @@ definitions:
               method
 
               signatures required by gogoproto.
+          levied_amount:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          levied_amount_negative:
+            type: boolean
           last_levied_at:
             type: string
             format: date-time
@@ -9722,10 +10045,17 @@ definitions:
                       - UNKNOWN
                       - STAKERS
                       - FRONTEND_DEVELOPERS
+                      - COMMUNITY_POOL
                     default: UNKNOWN
                     description: >-
-                      NFTMARKET_FRONTEND type reward will be disributed for the
+                      STAKERS type reward will be distributed for the stakers of
+                      GUU token.
+
+                      FRONTEND_DEVELOPERS type reward will be disributed for the
                       creators of frontend of UnUniFi's services.
+
+                      COMMUNITY_POOL type reward will be distributed for the
+                      community pool.
                   rate:
                     type: string
                 title: >-
@@ -9738,7 +10068,7 @@ definitions:
 
             to maintain the correctness of the fee rate in a module
 
-            e.g. if nftmarket module have "Frontend" and "Collection"
+            e.g. if nftbackedloan module have "Frontend" and "Collection"
             incentive, 
 
             the combined those rates for the incentive cannot be exceed 1
@@ -9800,10 +10130,17 @@ definitions:
                           - UNKNOWN
                           - STAKERS
                           - FRONTEND_DEVELOPERS
+                          - COMMUNITY_POOL
                         default: UNKNOWN
                         description: >-
-                          NFTMARKET_FRONTEND type reward will be disributed for
+                          STAKERS type reward will be distributed for the
+                          stakers of GUU token.
+
+                          FRONTEND_DEVELOPERS type reward will be disributed for
                           the creators of frontend of UnUniFi's services.
+
+                          COMMUNITY_POOL type reward will be distributed for the
+                          community pool.
                       rate:
                         type: string
                     title: >-
@@ -9818,7 +10155,7 @@ definitions:
 
                 to maintain the correctness of the fee rate in a module
 
-                e.g. if nftmarket module have "Frontend" and "Collection"
+                e.g. if nftbackedloan module have "Frontend" and "Collection"
                 incentive, 
 
                 the combined those rates for the incentive cannot be exceed 1
@@ -9889,10 +10226,17 @@ definitions:
                 - UNKNOWN
                 - STAKERS
                 - FRONTEND_DEVELOPERS
+                - COMMUNITY_POOL
               default: UNKNOWN
               description: >-
-                NFTMARKET_FRONTEND type reward will be disributed for the
+                STAKERS type reward will be distributed for the stakers of GUU
+                token.
+
+                FRONTEND_DEVELOPERS type reward will be disributed for the
                 creators of frontend of UnUniFi's services.
+
+                COMMUNITY_POOL type reward will be distributed for the community
+                pool.
             rate:
               type: string
           title: >-
@@ -9903,7 +10247,7 @@ definitions:
     title: |-
       RewardParams defines which module have which rewards type and rate 
       to maintain the correctness of the fee rate in a module
-      e.g. if nftmarket module have "Frontend" and "Collection" incentive, 
+      e.g. if nftbackedloan module have "Frontend" and "Collection" incentive, 
       the combined those rates for the incentive cannot be exceed 1
   ununifi.ecosystemincentive.RewardRate:
     type: object
@@ -9914,10 +10258,15 @@ definitions:
           - UNKNOWN
           - STAKERS
           - FRONTEND_DEVELOPERS
+          - COMMUNITY_POOL
         default: UNKNOWN
         description: >-
-          NFTMARKET_FRONTEND type reward will be disributed for the creators of
+          STAKERS type reward will be distributed for the stakers of GUU token.
+
+          FRONTEND_DEVELOPERS type reward will be disributed for the creators of
           frontend of UnUniFi's services.
+
+          COMMUNITY_POOL type reward will be distributed for the community pool.
       rate:
         type: string
     title: |-
@@ -9948,10 +10297,15 @@ definitions:
       - UNKNOWN
       - STAKERS
       - FRONTEND_DEVELOPERS
+      - COMMUNITY_POOL
     default: UNKNOWN
     description: >-
-      NFTMARKET_FRONTEND type reward will be disributed for the creators of
+      STAKERS type reward will be distributed for the stakers of GUU token.
+
+      FRONTEND_DEVELOPERS type reward will be disributed for the creators of
       frontend of UnUniFi's services.
+
+      COMMUNITY_POOL type reward will be distributed for the community pool.
   ununifi.ecosystemincentive.WeightedAddress:
     type: object
     properties:
@@ -9971,6 +10325,24 @@ definitions:
             type: string
       bidder:
         type: string
+  ununifi.nftbackedloan.Borrowing:
+    type: object
+    properties:
+      amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      last_repaid_at:
+        type: string
+        format: date-time
   ununifi.nftbackedloan.Liquidation:
     type: object
     properties:
@@ -10039,54 +10411,29 @@ definitions:
   ununifi.nftbackedloan.ListingState:
     type: string
     enum:
+      - UNKNOWN
       - LISTING
       - BIDDING
       - SELLING_DECISION
-      - END_LISTING
+      - LIQUIDATION
       - SUCCESSFUL_BID
-    default: LISTING
-  ununifi.nftbackedloan.ListingType:
-    type: string
-    enum:
-      - DIRECT_ASSET_BORROW
-      - SYNTHETIC_ASSET_CREATION
-      - LATE_SHIPPING
-    default: DIRECT_ASSET_BORROW
-  ununifi.nftbackedloan.Loan:
-    type: object
-    properties:
-      nft_id:
-        type: object
-        properties:
-          class_id:
-            type: string
-          nft_id:
-            type: string
-      loan:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
+    default: UNKNOWN
   ununifi.nftbackedloan.NftBid:
     type: object
     properties:
-      nft_id:
+      id:
         type: object
         properties:
-          class_id:
-            type: string
           nft_id:
+            type: object
+            properties:
+              class_id:
+                type: string
+              nft_id:
+                type: string
+          bidder:
             type: string
-      bidder:
-        type: string
-      bid_amount:
+      price:
         type: object
         properties:
           denom:
@@ -10098,7 +10445,7 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-      deposit_amount:
+      deposit:
         type: object
         properties:
           denom:
@@ -10122,80 +10469,38 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
-      bidding_period:
+      expiry:
         type: string
         format: date-time
-      deposit_lending_rate:
+      interest_rate:
         type: string
       automatic_payment:
         type: boolean
-      bid_time:
+      created_at:
         type: string
         format: date-time
-      interest_amount:
+      borrow:
+        title: borrow info
         type: object
         properties:
-          denom:
-            type: string
           amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
-      borrowings:
-        type: array
-        items:
-          type: object
-          properties:
-            amount:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
-            paid_interest_amount:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
-            start_at:
-              type: string
-              format: date-time
-        title: lister borrowing bidder info
-      id:
-        title: todo remove nft_id,bidder then use it
-        type: object
-        properties:
-          nft_id:
             type: object
             properties:
-              class_id:
+              denom:
                 type: string
-              nft_id:
+              amount:
                 type: string
-          bidder:
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          last_repaid_at:
             type: string
+            format: date-time
   ununifi.nftbackedloan.NftIdentifier:
     type: object
     properties:
@@ -10224,32 +10529,24 @@ definitions:
             type: string
       owner:
         type: string
-      listing_type:
-        type: string
-        enum:
-          - DIRECT_ASSET_BORROW
-          - SYNTHETIC_ASSET_CREATION
-          - LATE_SHIPPING
-        default: DIRECT_ASSET_BORROW
       state:
         type: string
         enum:
+          - UNKNOWN
           - LISTING
           - BIDDING
           - SELLING_DECISION
-          - END_LISTING
+          - LIQUIDATION
           - SUCCESSFUL_BID
-        default: LISTING
-      bid_token:
+        default: UNKNOWN
+      bid_denom:
         type: string
       minimum_deposit_rate:
         type: string
-      automatic_refinancing:
-        type: boolean
       started_at:
         type: string
         format: date-time
-      end_at:
+      liquidated_at:
         type: string
         format: date-time
       full_payment_end_at:
@@ -10258,9 +10555,6 @@ definitions:
       successful_bid_end_at:
         type: string
         format: date-time
-      auto_relisted_count:
-        type: string
-        format: uint64
       collected_amount:
         type: object
         properties:
@@ -10273,6 +10567,8 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
+      collected_amount_negative:
+        type: boolean
       minimum_bidding_period:
         type: string
   ununifi.nftbackedloan.NftListingDetail:
@@ -10290,32 +10586,24 @@ definitions:
                 type: string
           owner:
             type: string
-          listing_type:
-            type: string
-            enum:
-              - DIRECT_ASSET_BORROW
-              - SYNTHETIC_ASSET_CREATION
-              - LATE_SHIPPING
-            default: DIRECT_ASSET_BORROW
           state:
             type: string
             enum:
+              - UNKNOWN
               - LISTING
               - BIDDING
               - SELLING_DECISION
-              - END_LISTING
+              - LIQUIDATION
               - SUCCESSFUL_BID
-            default: LISTING
-          bid_token:
+            default: UNKNOWN
+          bid_denom:
             type: string
           minimum_deposit_rate:
             type: string
-          automatic_refinancing:
-            type: boolean
           started_at:
             type: string
             format: date-time
-          end_at:
+          liquidated_at:
             type: string
             format: date-time
           full_payment_end_at:
@@ -10324,9 +10612,6 @@ definitions:
           successful_bid_end_at:
             type: string
             format: date-time
-          auto_relisted_count:
-            type: string
-            format: uint64
           collected_amount:
             type: object
             properties:
@@ -10342,6 +10627,8 @@ definitions:
               method
 
               signatures required by gogoproto.
+          collected_amount_negative:
+            type: boolean
           minimum_bidding_period:
             type: string
       nft_info:
@@ -10358,35 +10645,14 @@ definitions:
     properties:
       min_staking_for_listing:
         type: string
-      default_bid_active_rank:
-        type: string
-        format: uint64
       bid_tokens:
         type: array
         items:
           type: string
-      auto_relisting_count_if_no_bid:
-        type: string
-        format: uint64
-      nft_listing_delay_seconds:
-        type: string
-        format: uint64
-      nft_listing_period_initial:
-        type: string
-        format: uint64
       nft_listing_cancel_required_seconds:
         type: string
         format: uint64
-      nft_listing_cancel_fee_percentage:
-        type: string
-        format: uint64
-      nft_listing_gap_time:
-        type: string
-        format: uint64
       bid_cancel_required_seconds:
-        type: string
-        format: uint64
-      bid_token_disburse_seconds_after_cancel:
         type: string
         format: uint64
       nft_listing_full_payment_period:
@@ -10395,71 +10661,9 @@ definitions:
       nft_listing_nft_delivery_period:
         type: string
         format: uint64
-      nft_creator_share_percentage:
-        type: string
-        format: uint64
-      market_administrator:
-        type: string
       nft_listing_commission_fee:
         type: string
         format: uint64
-      nft_listing_extend_seconds:
-        type: string
-        format: uint64
-      nft_listing_period_extend_fee_per_hour:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
-  ununifi.nftbackedloan.PaymentStatus:
-    type: object
-    properties:
-      nft_id:
-        type: object
-        properties:
-          class_id:
-            type: string
-          nft_id:
-            type: string
-      bidder:
-        type: string
-      amount:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
-      automatic_payment:
-        type: boolean
-      paid_amount:
-        type: string
-      bid_time:
-        type: string
-        format: date-time
-      state:
-        type: string
-        enum:
-          - LISTING
-          - BIDDING
-          - SELLING_DECISION
-          - END_LISTING
-          - SUCCESSFUL_BID
-        default: LISTING
-      all_paid:
-        type: boolean
   ununifi.nftbackedloan.QueryBidderBidsResponse:
     type: object
     properties:
@@ -10468,16 +10672,19 @@ definitions:
         items:
           type: object
           properties:
-            nft_id:
+            id:
               type: object
               properties:
-                class_id:
-                  type: string
                 nft_id:
+                  type: object
+                  properties:
+                    class_id:
+                      type: string
+                    nft_id:
+                      type: string
+                bidder:
                   type: string
-            bidder:
-              type: string
-            bid_amount:
+            price:
               type: object
               properties:
                 denom:
@@ -10492,7 +10699,7 @@ definitions:
                 method
 
                 signatures required by gogoproto.
-            deposit_amount:
+            deposit:
               type: object
               properties:
                 denom:
@@ -10522,85 +10729,38 @@ definitions:
                 method
 
                 signatures required by gogoproto.
-            bidding_period:
+            expiry:
               type: string
               format: date-time
-            deposit_lending_rate:
+            interest_rate:
               type: string
             automatic_payment:
               type: boolean
-            bid_time:
+            created_at:
               type: string
               format: date-time
-            interest_amount:
+            borrow:
+              title: borrow info
               type: object
               properties:
-                denom:
-                  type: string
                 amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
-            borrowings:
-              type: array
-              items:
-                type: object
-                properties:
-                  amount:
-                    type: object
-                    properties:
-                      denom:
-                        type: string
-                      amount:
-                        type: string
-                    description: >-
-                      Coin defines a token with a denomination and an amount.
-
-
-                      NOTE: The amount field is an Int which implements the
-                      custom method
-
-                      signatures required by gogoproto.
-                  paid_interest_amount:
-                    type: object
-                    properties:
-                      denom:
-                        type: string
-                      amount:
-                        type: string
-                    description: >-
-                      Coin defines a token with a denomination and an amount.
-
-
-                      NOTE: The amount field is an Int which implements the
-                      custom method
-
-                      signatures required by gogoproto.
-                  start_at:
-                    type: string
-                    format: date-time
-              title: lister borrowing bidder info
-            id:
-              title: todo remove nft_id,bidder then use it
-              type: object
-              properties:
-                nft_id:
                   type: object
                   properties:
-                    class_id:
+                    denom:
                       type: string
-                    nft_id:
+                    amount:
                       type: string
-                bidder:
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+                last_repaid_at:
                   type: string
-  ununifi.nftbackedloan.QueryCDPsListResponse:
-    type: object
+                  format: date-time
   ununifi.nftbackedloan.QueryLiquidationResponse:
     type: object
     properties:
@@ -10734,32 +10894,24 @@ definitions:
                       type: string
                 owner:
                   type: string
-                listing_type:
-                  type: string
-                  enum:
-                    - DIRECT_ASSET_BORROW
-                    - SYNTHETIC_ASSET_CREATION
-                    - LATE_SHIPPING
-                  default: DIRECT_ASSET_BORROW
                 state:
                   type: string
                   enum:
+                    - UNKNOWN
                     - LISTING
                     - BIDDING
                     - SELLING_DECISION
-                    - END_LISTING
+                    - LIQUIDATION
                     - SUCCESSFUL_BID
-                  default: LISTING
-                bid_token:
+                  default: UNKNOWN
+                bid_denom:
                   type: string
                 minimum_deposit_rate:
                   type: string
-                automatic_refinancing:
-                  type: boolean
                 started_at:
                   type: string
                   format: date-time
-                end_at:
+                liquidated_at:
                   type: string
                   format: date-time
                 full_payment_end_at:
@@ -10768,9 +10920,6 @@ definitions:
                 successful_bid_end_at:
                   type: string
                   format: date-time
-                auto_relisted_count:
-                  type: string
-                  format: uint64
                 collected_amount:
                   type: object
                   properties:
@@ -10786,6 +10935,8 @@ definitions:
                     method
 
                     signatures required by gogoproto.
+                collected_amount_negative:
+                  type: boolean
                 minimum_bidding_period:
                   type: string
             nft_info:
@@ -10800,63 +10951,49 @@ definitions:
   ununifi.nftbackedloan.QueryLoanResponse:
     type: object
     properties:
-      loan:
+      nft_id:
         type: object
         properties:
+          class_id:
+            type: string
           nft_id:
-            type: object
-            properties:
-              class_id:
-                type: string
-              nft_id:
-                type: string
-          loan:
-            type: object
-            properties:
-              denom:
-                type: string
-              amount:
-                type: string
-            description: >-
-              Coin defines a token with a denomination and an amount.
+            type: string
+      borrowing_amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
 
-
-              NOTE: The amount field is an Int which implements the custom
-              method
-
-              signatures required by gogoproto.
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
       borrowing_limit:
-        type: string
-  ununifi.nftbackedloan.QueryLoansResponse:
-    type: object
-    properties:
-      loans:
-        type: array
-        items:
-          type: object
-          properties:
-            nft_id:
-              type: object
-              properties:
-                class_id:
-                  type: string
-                nft_id:
-                  type: string
-            loan:
-              type: object
-              properties:
-                denom:
-                  type: string
-                amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
 
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      total_deposit:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
 
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
   ununifi.nftbackedloan.QueryNftBidsResponse:
     type: object
     properties:
@@ -10865,16 +11002,19 @@ definitions:
         items:
           type: object
           properties:
-            nft_id:
+            id:
               type: object
               properties:
-                class_id:
-                  type: string
                 nft_id:
+                  type: object
+                  properties:
+                    class_id:
+                      type: string
+                    nft_id:
+                      type: string
+                bidder:
                   type: string
-            bidder:
-              type: string
-            bid_amount:
+            price:
               type: object
               properties:
                 denom:
@@ -10889,7 +11029,7 @@ definitions:
                 method
 
                 signatures required by gogoproto.
-            deposit_amount:
+            deposit:
               type: object
               properties:
                 denom:
@@ -10919,83 +11059,38 @@ definitions:
                 method
 
                 signatures required by gogoproto.
-            bidding_period:
+            expiry:
               type: string
               format: date-time
-            deposit_lending_rate:
+            interest_rate:
               type: string
             automatic_payment:
               type: boolean
-            bid_time:
+            created_at:
               type: string
               format: date-time
-            interest_amount:
+            borrow:
+              title: borrow info
               type: object
               properties:
-                denom:
-                  type: string
                 amount:
-                  type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
-
-
-                NOTE: The amount field is an Int which implements the custom
-                method
-
-                signatures required by gogoproto.
-            borrowings:
-              type: array
-              items:
-                type: object
-                properties:
-                  amount:
-                    type: object
-                    properties:
-                      denom:
-                        type: string
-                      amount:
-                        type: string
-                    description: >-
-                      Coin defines a token with a denomination and an amount.
-
-
-                      NOTE: The amount field is an Int which implements the
-                      custom method
-
-                      signatures required by gogoproto.
-                  paid_interest_amount:
-                    type: object
-                    properties:
-                      denom:
-                        type: string
-                      amount:
-                        type: string
-                    description: >-
-                      Coin defines a token with a denomination and an amount.
-
-
-                      NOTE: The amount field is an Int which implements the
-                      custom method
-
-                      signatures required by gogoproto.
-                  start_at:
-                    type: string
-                    format: date-time
-              title: lister borrowing bidder info
-            id:
-              title: todo remove nft_id,bidder then use it
-              type: object
-              properties:
-                nft_id:
                   type: object
                   properties:
-                    class_id:
+                    denom:
                       type: string
-                    nft_id:
+                    amount:
                       type: string
-                bidder:
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+                last_repaid_at:
                   type: string
+                  format: date-time
   ununifi.nftbackedloan.QueryNftListingResponse:
     type: object
     properties:
@@ -11011,32 +11106,24 @@ definitions:
                 type: string
           owner:
             type: string
-          listing_type:
-            type: string
-            enum:
-              - DIRECT_ASSET_BORROW
-              - SYNTHETIC_ASSET_CREATION
-              - LATE_SHIPPING
-            default: DIRECT_ASSET_BORROW
           state:
             type: string
             enum:
+              - UNKNOWN
               - LISTING
               - BIDDING
               - SELLING_DECISION
-              - END_LISTING
+              - LIQUIDATION
               - SUCCESSFUL_BID
-            default: LISTING
-          bid_token:
+            default: UNKNOWN
+          bid_denom:
             type: string
           minimum_deposit_rate:
             type: string
-          automatic_refinancing:
-            type: boolean
           started_at:
             type: string
             format: date-time
-          end_at:
+          liquidated_at:
             type: string
             format: date-time
           full_payment_end_at:
@@ -11045,9 +11132,6 @@ definitions:
           successful_bid_end_at:
             type: string
             format: date-time
-          auto_relisted_count:
-            type: string
-            format: uint64
           collected_amount:
             type: object
             properties:
@@ -11063,6 +11147,8 @@ definitions:
               method
 
               signatures required by gogoproto.
+          collected_amount_negative:
+            type: boolean
           minimum_bidding_period:
             type: string
   ununifi.nftbackedloan.QueryParamsResponse:
@@ -11073,35 +11159,14 @@ definitions:
         properties:
           min_staking_for_listing:
             type: string
-          default_bid_active_rank:
-            type: string
-            format: uint64
           bid_tokens:
             type: array
             items:
               type: string
-          auto_relisting_count_if_no_bid:
-            type: string
-            format: uint64
-          nft_listing_delay_seconds:
-            type: string
-            format: uint64
-          nft_listing_period_initial:
-            type: string
-            format: uint64
           nft_listing_cancel_required_seconds:
             type: string
             format: uint64
-          nft_listing_cancel_fee_percentage:
-            type: string
-            format: uint64
-          nft_listing_gap_time:
-            type: string
-            format: uint64
           bid_cancel_required_seconds:
-            type: string
-            format: uint64
-          bid_token_disburse_seconds_after_cancel:
             type: string
             format: uint64
           nft_listing_full_payment_period:
@@ -11110,80 +11175,9 @@ definitions:
           nft_listing_nft_delivery_period:
             type: string
             format: uint64
-          nft_creator_share_percentage:
-            type: string
-            format: uint64
-          market_administrator:
-            type: string
           nft_listing_commission_fee:
             type: string
             format: uint64
-          nft_listing_extend_seconds:
-            type: string
-            format: uint64
-          nft_listing_period_extend_fee_per_hour:
-            type: object
-            properties:
-              denom:
-                type: string
-              amount:
-                type: string
-            description: >-
-              Coin defines a token with a denomination and an amount.
-
-
-              NOTE: The amount field is an Int which implements the custom
-              method
-
-              signatures required by gogoproto.
-  ununifi.nftbackedloan.QueryPaymentStatusResponse:
-    type: object
-    properties:
-      paymentStatus:
-        type: object
-        properties:
-          nft_id:
-            type: object
-            properties:
-              class_id:
-                type: string
-              nft_id:
-                type: string
-          bidder:
-            type: string
-          amount:
-            type: object
-            properties:
-              denom:
-                type: string
-              amount:
-                type: string
-            description: >-
-              Coin defines a token with a denomination and an amount.
-
-
-              NOTE: The amount field is an Int which implements the custom
-              method
-
-              signatures required by gogoproto.
-          automatic_payment:
-            type: boolean
-          paid_amount:
-            type: string
-          bid_time:
-            type: string
-            format: date-time
-          state:
-            type: string
-            enum:
-              - LISTING
-              - BIDDING
-              - SELLING_DECISION
-              - END_LISTING
-              - SUCCESSFUL_BID
-            default: LISTING
-          all_paid:
-            type: boolean
   ununifi.nftbackedloan.QueryRewardsResponse:
     type: object
     properties:
@@ -11201,36 +11195,6 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
-  ununifi.nftbackedloan.borrowing:
-    type: object
-    properties:
-      amount:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
-      paid_interest_amount:
-        type: object
-        properties:
-          denom:
-            type: string
-          amount:
-            type: string
-        description: |-
-          Coin defines a token with a denomination and an amount.
-
-          NOTE: The amount field is an Int which implements the custom method
-          signatures required by gogoproto.
-      start_at:
-        type: string
-        format: date-time
   ununifi.nftfactory.ClassAttributes:
     type: object
     properties:

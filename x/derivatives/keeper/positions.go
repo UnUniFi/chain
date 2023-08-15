@@ -130,7 +130,7 @@ func (k Keeper) GetAddressPositionWithId(ctx sdk.Context, address sdk.AccAddress
 }
 
 func (k Keeper) SetPosition(ctx sdk.Context, position types.Position) error {
-	addr, err := sdk.AccAddressFromBech32(position.Address)
+	addr, err := sdk.AccAddressFromBech32(position.OpenerAddress)
 	if err != nil {
 		return err
 	}
@@ -164,11 +164,6 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 		return err
 	}
 
-	sender, err := sdk.AccAddressFromBech32(msg.Sender)
-	if err != nil {
-		return err
-	}
-
 	var position *types.Position
 	switch positionInstance := positionInstance.(type) {
 	case *types.PerpetualFuturesPositionInstance:
@@ -183,12 +178,11 @@ func (k Keeper) OpenPosition(ctx sdk.Context, msg *types.MsgOpenPosition) error 
 		return err
 	}
 
-	k.SetPosition(ctx, *position)
-	k.IncreaseLastPositionId(ctx)
-
-	if err := k.SendMarginToMarginManager(ctx, sender, sdk.NewCoins(msg.Margin)); err != nil {
+	err = k.SetPosition(ctx, *position)
+	if err != nil {
 		return err
 	}
+	k.IncreaseLastPositionId(ctx)
 
 	return nil
 }
@@ -198,16 +192,33 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 	if err != nil {
 		return err
 	}
-
 	positionId := msg.PositionId
-	position := k.GetAddressPositionWithId(ctx, sender, positionId)
-
-	if position == nil {
-		return errors.New("position not found")
+	// check withdrawer has owner nft
+	owner := k.GetPositionNFTOwner(ctx, positionId)
+	if owner.String() != msg.Sender {
+		return types.ErrNotPositionNFTOwner
+	}
+	sendDisabled, err := k.GetPositionNFTSendDisabled(ctx, positionId)
+	if err != nil {
+		return err
+	}
+	if sendDisabled {
+		return types.ErrPositionNFTSendDisabled
 	}
 
-	if msg.Sender != position.Address {
-		return errors.New("not owner")
+	pendingPosition := k.GetPendingPaymentPosition(ctx, positionId)
+	if pendingPosition != nil {
+		err = k.ClosePendingPaymentPosition(ctx, *pendingPosition, sender)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
+	position := k.GetPositionWithId(ctx, positionId)
+
+	if position == nil {
+		return types.ErrPositionDoesNotExist
 	}
 
 	positionInstance, err := types.UnpackPositionInstance(position.PositionInstance)
@@ -218,11 +229,9 @@ func (k Keeper) ClosePosition(ctx sdk.Context, msg *types.MsgClosePosition) erro
 	switch positionInstance := positionInstance.(type) {
 	case *types.PerpetualFuturesPositionInstance:
 		perpetualFuturesPosition := types.NewPerpetualFuturesPosition(*position, *positionInstance)
-		err = k.ClosePerpetualFuturesPosition(ctx, perpetualFuturesPosition)
-		break
+		err = k.ClosePerpetualFuturesPosition(ctx, perpetualFuturesPosition, owner.String())
 	case *types.PerpetualOptionsPositionInstance:
 		err = k.ClosePerpetualOptionsPosition(ctx, *position, *positionInstance)
-		break
 	default:
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "position instance: %s", positionInstance)
 	}
@@ -248,10 +257,24 @@ func (k Keeper) ReportLiquidation(ctx sdk.Context, msg *types.MsgReportLiquidati
 		return err
 	}
 
+	params := k.GetParams(ctx)
+
+	currentBaseUsdRate, currentQuoteUsdRate, err := k.GetPairUsdPriceFromMarket(ctx, position.Market)
+	if err != nil {
+		return err
+	}
+	quoteTicker := k.GetPoolQuoteTicker(ctx)
+	baseMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.BaseDenom, currentBaseUsdRate)
+	quoteMetricsRate := types.NewMetricsRateType(quoteTicker, position.Market.QuoteDenom, currentQuoteUsdRate)
+
 	switch positionInstance := positionInstance.(type) {
 	case *types.PerpetualFuturesPositionInstance:
 		perpetualFuturesPosition := types.NewPerpetualFuturesPosition(*position, *positionInstance)
-		err = k.ReportLiquidationNeededPerpetualFuturesPosition(ctx, msg.RewardRecipient, perpetualFuturesPosition)
+		if position.NeedLiquidation(params.PerpetualFutures.MarginMaintenanceRate, baseMetricsRate, quoteMetricsRate) {
+			err = k.LiquidateFuturesPosition(ctx, msg.RewardRecipient, perpetualFuturesPosition, params.PerpetualFutures.CommissionRate, params.PoolParams.ReportLiquidationRewardRate)
+		} else {
+			return types.ErrLiquidationNotNeeded
+		}
 		break
 	case *types.PerpetualOptionsPositionInstance:
 		err = k.ReportLiquidationNeededPerpetualOptionsPosition(ctx, msg.RewardRecipient, *position, *positionInstance)
@@ -274,8 +297,9 @@ func (k Keeper) ReportLevyPeriod(ctx sdk.Context, msg *types.MsgReportLevyPeriod
 		return errors.New("position not found")
 	}
 
-	if ctx.BlockTime().Sub(position.LastLeviedAt) < time.Duration(8)*time.Hour {
-		return errors.New("It hasn't passed 8 hours since last levy")
+	params := k.GetParams(ctx)
+	if position.LastLeviedAt.Add(time.Duration(params.PoolParams.LevyPeriodRequiredSeconds) * time.Second).After(ctx.BlockTime()) {
+		return errors.New("levy period is allowed after the time set by params")
 	}
 
 	positionInstance, err := types.UnpackPositionInstance(position.PositionInstance)

@@ -18,8 +18,10 @@ type (
 		storeKey        storetypes.StoreKey
 		memKey          storetypes.StoreKey
 		paramstore      paramtypes.Subspace
+		accountKeeper   types.AccountKeeper
 		bankKeeper      types.BankKeeper
 		pricefeedKeeper types.PricefeedKeeper
+		nftKeeper       types.NftKeeper
 	}
 )
 
@@ -28,8 +30,10 @@ func NewKeeper(
 	storeKey,
 	memKey storetypes.StoreKey,
 	ps paramtypes.Subspace,
+	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	pricefeedKeeper types.PricefeedKeeper,
+	nftKeeper types.NftKeeper,
 ) Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -41,8 +45,10 @@ func NewKeeper(
 		storeKey:        storeKey,
 		memKey:          memKey,
 		paramstore:      ps,
+		accountKeeper:   accountKeeper,
 		bankKeeper:      bankKeeper,
 		pricefeedKeeper: pricefeedKeeper,
+		nftKeeper:       nftKeeper,
 	}
 }
 

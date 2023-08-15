@@ -11,9 +11,9 @@ import (
 
 	"github.com/UnUniFi/chain/testutil/nullify"
 	epochtypes "github.com/UnUniFi/chain/x/epochs/types"
-	recordstypes "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/records/types"
-	stakeibctypes "github.com/UnUniFi/chain/x/yieldaggregator/ibcstaking/stakeibc/types"
 	"github.com/UnUniFi/chain/x/yieldaggregator/keeper"
+	recordstypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/records/types"
+	stakeibctypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/stakeibc/types"
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
 )
 

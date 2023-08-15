@@ -81,13 +81,13 @@ jq '.app_state.derivatives.params.pool_params.base_lpt_redeem_fee = "0.001"' $NO
 jq '.app_state.derivatives.params.pool_params.report_liquidation_reward_rate = "0.3"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.pool_params.report_levy_period_reward_rate = "0.3"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.pool_params.accepted_assets_conf = [{"denom":"ubtc", "target_weight": "0.6"}, {"denom":"uusdc", "target_weight":"0.4"}]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
-jq '.app_state.derivatives.params.perpetual_futures.commission_rate = "0.001"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.derivatives.params.pool_params.levy_period_required_seconds = "28800"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.perpetual_futures.margin_maintenance_rate = "0.5"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.perpetual_futures.imaginary_funding_rate_proportional_coefficient = "0.0005"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.derivatives.params.perpetual_futures.markets = [{"base_denom": "ubtc", "quote_denom": "uusdc" }]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.bank.denom_metadata = [
-  {"base" : "ubtc" , "symbol": "ubtc"},
-  {"base" : "uusdc", "symbol": "uusdc"}
+  {"base" : "ubtc" , "symbol": "BTC"},
+  {"base" : "uusdc", "symbol": "USDC"}
   ]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.pricefeed.posted_prices = [
   {"expiry": "2024-02-20T12:02:01Z","market_id": "ubtc:usd","oracle_address": "ununifi1h7ulktk5p2gt7tnxwhqzlq0yegq47hum0fahcr","price": "0.024508410211260500"},
@@ -101,22 +101,32 @@ jq '.app_state.pricefeed.posted_prices = [
 # ununifid start --home=$NODE_HOME
 
 # for nftmint
-jq '.app_state.nftmint.class_attributes_list = [
-  {
-    "base_token_uri": "ipfs://testcid/",
-    "class_id": "ununifi-1AFC3C85B52311F13161F724B284EF900458E3B3",
-    "minting_permission": "Anyone",
-    "owner": "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
-    "token_supply_cap": "100000"
-  },
-  {
-    "base_token_uri": "ipfs://testcid/",
-    "class_id": "ununifi-D4AC8DBC54261BB1B6ACBBF721A60D131A048F83",
-    "minting_permission": "OnlyOwner",
-    "owner": "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
-    "token_supply_cap": "100000"
-  }
-]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.nftfactory.params.class_creation_fee = []' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.nftfactory.params.fee_collector_address = ""' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+
+# jq '.app_state.nftfactory.class_attributes_list = [
+#   {
+#     "base_token_uri": "ipfs://testcid/",
+#     "class_id": "ununifi-1AFC3C85B52311F13161F724B284EF900458E3B3",
+#     "minting_permission": "Anyone",
+#     "owner": "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
+#     "token_supply_cap": "100000"
+#   },
+#   {
+#     "base_token_uri": "ipfs://testcid/",
+#     "class_id": "ununifi-D4AC8DBC54261BB1B6ACBBF721A60D131A048F83",
+#     "minting_permission": "OnlyOwner",
+#     "owner": "ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w",
+#     "token_supply_cap": "100000"
+#   },
+#   {
+#     "base_token_uri": "ipfs://testcid/",
+#     "class_id": "derivatives/perpetual_futures/positions",
+#     "minting_permission": "OnlyOwner",
+#     "owner": "ununifi1j0ugkvzyjdlyhkeje27fexlwurv6xezdmpxm68",
+#     "token_supply_cap": "100000"
+#   }
+# ]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.nft.classes = [
   {
     "data": null,
@@ -135,6 +145,15 @@ jq '.app_state.nft.classes = [
     "symbol": "",
     "uri": "",
     "uri_hash": ""
+  },
+    {
+    "data": null,
+    "description": "",
+    "id": "derivatives/perpetual_futures/positions",
+    "name": "derivatives/perpetual_futures/positions",
+    "symbol": "",
+    "uri": "",
+    "uri_hash": ""
   }
 ]' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 
@@ -143,7 +162,7 @@ jq '.app_state.stakeibc.params.deposit_interval = "1"' $NODE_HOME/config/genesis
 jq '.app_state.stakeibc.params.delegate_interval = "1"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.stakeibc.params.rewards_interval = "1"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.stakeibc.params.redemption_rate_interval = "1"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
-jq '.app_state.stakeibc.params.stride_commission = "10"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.stakeibc.params.ununifi_commission = "1"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.stakeibc.params.reinvest_interval = "1"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.stakeibc.params.validator_rebalancing_threshold = "100"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 jq '.app_state.stakeibc.params.ica_timeout_nanos = "600000000000"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;

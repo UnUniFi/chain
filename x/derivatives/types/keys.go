@@ -27,6 +27,15 @@ const (
 
 	// MarginManager defines the margin manager for derivatives module
 	MarginManager = "margin_manager"
+
+	// perpetual future position nft class id
+	PerpFuturePositionNFTClassId = "derivatives/perpetual_futures/positions"
+
+	// perpetual option position nft class id
+	PerpOptionPositionNFTClassId = "derivatives/perpetual_options/positions"
+
+	// PendingPaymentManager defines the pending payment manager for derivatives module
+	PendingPaymentManager = "pending_payment_manager"
 )
 
 const (
@@ -35,6 +44,7 @@ const (
 	KeyPrefixDerivativesSubpoolAssets = "subpool_assets"
 	KeyPrefixPosition                 = "position"
 	KeyPrefixUserPosition             = "user_position"
+	KeyPrefixPendingPaymentPosition   = "pending_payment_position"
 	KeyPrefixPerpetualFutures         = "perpetual_futures"
 	KeyPrefixPerpetualOptions         = "perpetual_options"
 	KeyPrefixGrossPositionAmount      = "gross_position_amount"
@@ -87,6 +97,10 @@ func GetBlockTimestampFromBytes(bz []byte) int64 {
 
 func PositionWithIdKeyPrefix(posId string) []byte {
 	return append([]byte(KeyPrefixPosition), GetPositionIdByteFromString(posId)...)
+}
+
+func PendingPaymentPositionWithIdKeyPrefix(posId string) []byte {
+	return append([]byte(KeyPrefixPendingPaymentPosition), GetPositionIdByteFromString(posId)...)
 }
 
 func AddressPositionKeyPrefix(sender sdk.AccAddress) []byte {

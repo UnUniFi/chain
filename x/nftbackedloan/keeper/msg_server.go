@@ -22,16 +22,6 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 
 var _ types.MsgServer = msgServer{}
 
-func (k msgServer) MintNft(c context.Context, msg *types.MsgMintNft) (*types.MsgMintNftResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-
-	err := k.keeper.MintNft(ctx, msg)
-	if err != nil {
-		return nil, err
-	}
-	return &types.MsgMintNftResponse{}, nil
-}
-
 func (k msgServer) ListNft(c context.Context, msg *types.MsgListNft) (*types.MsgListNftResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
@@ -42,13 +32,13 @@ func (k msgServer) ListNft(c context.Context, msg *types.MsgListNft) (*types.Msg
 	return &types.MsgListNftResponse{}, nil
 }
 
-func (k msgServer) CancelNftListing(c context.Context, msg *types.MsgCancelNftListing) (*types.MsgCancelNftListingResponse, error) {
+func (k msgServer) CancelListing(c context.Context, msg *types.MsgCancelListing) (*types.MsgCancelListingResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	err := k.keeper.CancelNftListing(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
-	return &types.MsgCancelNftListingResponse{}, nil
+	return &types.MsgCancelListingResponse{}, nil
 }
 
 func (k msgServer) PlaceBid(c context.Context, msg *types.MsgPlaceBid) (*types.MsgPlaceBidResponse, error) {
@@ -71,29 +61,20 @@ func (k msgServer) CancelBid(c context.Context, msg *types.MsgCancelBid) (*types
 
 func (k msgServer) SellingDecision(c context.Context, msg *types.MsgSellingDecision) (*types.MsgSellingDecisionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	err := k.keeper.SellingDecision(ctx, msg)
+	err := k.keeper.SetSellingDecision(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
 	return &types.MsgSellingDecisionResponse{}, nil
 }
 
-func (k msgServer) EndNftListing(c context.Context, msg *types.MsgEndNftListing) (*types.MsgEndNftListingResponse, error) {
+func (k msgServer) PayRemainder(c context.Context, msg *types.MsgPayRemainder) (*types.MsgPayRemainderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	err := k.keeper.EndNftListing(ctx, msg)
+	err := k.keeper.PayRemainder(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
-	return &types.MsgEndNftListingResponse{}, nil
-}
-
-func (k msgServer) PayFullBid(c context.Context, msg *types.MsgPayFullBid) (*types.MsgPayFullBidResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-	err := k.keeper.PayFullBid(ctx, msg)
-	if err != nil {
-		return nil, err
-	}
-	return &types.MsgPayFullBidResponse{}, nil
+	return &types.MsgPayRemainderResponse{}, nil
 }
 
 func (k msgServer) Borrow(c context.Context, msg *types.MsgBorrow) (*types.MsgBorrowResponse, error) {

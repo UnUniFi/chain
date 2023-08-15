@@ -22,24 +22,6 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 
 var _ types.MsgServer = msgServer{}
 
-func (k msgServer) Register(c context.Context, msg *types.MsgRegister) (*types.MsgRegisterResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-
-	subjectInfoList, err := k.keeper.Register(ctx, msg)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := ctx.EventManager().EmitTypedEvent(&types.EventRegister{
-		RecipientContainerId: msg.RecipientContainerId,
-		WeightedAddresses:    *subjectInfoList,
-	}); err != nil {
-		return nil, err
-	}
-
-	return &types.MsgRegisterResponse{}, nil
-}
-
 func (k msgServer) WithdrawAllRewards(c context.Context, msg *types.MsgWithdrawAllRewards) (*types.MsgWithdrawAllRewardsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 

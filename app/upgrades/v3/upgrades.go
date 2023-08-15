@@ -23,7 +23,10 @@ func CreateUpgradeHandler(mm *module.Manager,
 			return vm, err
 		}
 
-		iyaParam := keepers.YieldaggregatorKeeper.GetParams(ctx)
+		iyaParam, err := keepers.YieldaggregatorKeeper.GetParams(ctx)
+		if err != nil {
+			return vm, err
+		}
 		iyaParam.CommissionRate = sdk.NewDecWithPrec(1, 3)
 		iyaParam.VaultCreationFee = sdk.NewCoin("uguu", sdk.NewInt(10000000))
 		iyaParam.VaultCreationDeposit = sdk.NewCoin("uguu", sdk.NewInt(1000000))

@@ -27,11 +27,10 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdQueryParams(),
 		CmdQueryNftListing(),
 		CmdQueryListedNfts(),
-		CmdQueryLoans(),
+		// CmdQueryLoans(),
 		CmdQueryLoan(),
 		CmdQueryNftBids(),
 		CmdQueryBidderBids(),
-		CmdQueryCDPsList(),
 		CmdQueryRewards(),
 		CmdQueryListedClass(),
 		CmdQueryLiquidation(),
@@ -135,31 +134,31 @@ func CmdQueryListedNfts() *cobra.Command {
 	return cmd
 }
 
-func CmdQueryLoans() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "loans",
-		Short: "shows loans",
-		Args:  cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
+// func CmdQueryLoans() *cobra.Command {
+// 	cmd := &cobra.Command{
+// 		Use:   "loans",
+// 		Short: "shows loans",
+// 		Args:  cobra.ExactArgs(0),
+// 		RunE: func(cmd *cobra.Command, args []string) error {
+// 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			queryClient := types.NewQueryClient(clientCtx)
+// 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryLoansRequest{}
+// 			params := &types.QueryLoansRequest{}
 
-			res, err := queryClient.Loans(context.Background(), params)
-			if err != nil {
-				return err
-			}
+// 			res, err := queryClient.Loans(context.Background(), params)
+// 			if err != nil {
+// 				return err
+// 			}
 
-			return clientCtx.PrintProto(res)
-		},
-	}
+// 			return clientCtx.PrintProto(res)
+// 		},
+// 	}
 
-	flags.AddQueryFlagsToCmd(cmd)
+// 	flags.AddQueryFlagsToCmd(cmd)
 
-	return cmd
-}
+// 	return cmd
+// }
 
 func CmdQueryLoan() *cobra.Command {
 	cmd := &cobra.Command{
@@ -234,32 +233,6 @@ func CmdQueryBidderBids() *cobra.Command {
 			}
 
 			res, err := queryClient.BidderBids(context.Background(), params)
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-
-	return cmd
-}
-
-func CmdQueryCDPsList() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "cdp-list",
-		Short: "shows cdps",
-		Args:  cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			queryClient := types.NewQueryClient(clientCtx)
-
-			params := &types.QueryCDPsListRequest{}
-
-			res, err := queryClient.CDPsList(context.Background(), params)
 			if err != nil {
 				return err
 			}

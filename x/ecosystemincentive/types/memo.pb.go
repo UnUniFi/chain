@@ -23,23 +23,23 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type TxMemoData struct {
-	Version              string `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty" yaml:"version"`
-	RecipientContainerId string `protobuf:"bytes,2,opt,name=recipient_container_id,json=recipientContainerId,proto3" json:"recipient_container_id,omitempty" yaml:"recipient_container_id"`
+type FrontendMetadata struct {
+	Version   uint32 `protobuf:"varint,1,opt,name=version,proto3" json:"version,omitempty" yaml:"version"`
+	Recipient string `protobuf:"bytes,2,opt,name=recipient,proto3" json:"recipient,omitempty" yaml:"recipient"`
 }
 
-func (m *TxMemoData) Reset()         { *m = TxMemoData{} }
-func (m *TxMemoData) String() string { return proto.CompactTextString(m) }
-func (*TxMemoData) ProtoMessage()    {}
-func (*TxMemoData) Descriptor() ([]byte, []int) {
+func (m *FrontendMetadata) Reset()         { *m = FrontendMetadata{} }
+func (m *FrontendMetadata) String() string { return proto.CompactTextString(m) }
+func (*FrontendMetadata) ProtoMessage()    {}
+func (*FrontendMetadata) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6a43f0dcca886bed, []int{0}
 }
-func (m *TxMemoData) XXX_Unmarshal(b []byte) error {
+func (m *FrontendMetadata) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *TxMemoData) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *FrontendMetadata) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_TxMemoData.Marshal(b, m, deterministic)
+		return xxx_messageInfo_FrontendMetadata.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -49,34 +49,34 @@ func (m *TxMemoData) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *TxMemoData) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TxMemoData.Merge(m, src)
+func (m *FrontendMetadata) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FrontendMetadata.Merge(m, src)
 }
-func (m *TxMemoData) XXX_Size() int {
+func (m *FrontendMetadata) XXX_Size() int {
 	return m.Size()
 }
-func (m *TxMemoData) XXX_DiscardUnknown() {
-	xxx_messageInfo_TxMemoData.DiscardUnknown(m)
+func (m *FrontendMetadata) XXX_DiscardUnknown() {
+	xxx_messageInfo_FrontendMetadata.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_TxMemoData proto.InternalMessageInfo
+var xxx_messageInfo_FrontendMetadata proto.InternalMessageInfo
 
-func (m *TxMemoData) GetVersion() string {
+func (m *FrontendMetadata) GetVersion() uint32 {
 	if m != nil {
 		return m.Version
 	}
-	return ""
+	return 0
 }
 
-func (m *TxMemoData) GetRecipientContainerId() string {
+func (m *FrontendMetadata) GetRecipient() string {
 	if m != nil {
-		return m.RecipientContainerId
+		return m.Recipient
 	}
 	return ""
 }
 
 func init() {
-	proto.RegisterType((*TxMemoData)(nil), "ununifi.ecosystemincentive.TxMemoData")
+	proto.RegisterType((*FrontendMetadata)(nil), "ununifi.ecosystemincentive.FrontendMetadata")
 }
 
 func init() {
@@ -84,26 +84,25 @@ func init() {
 }
 
 var fileDescriptor_6a43f0dcca886bed = []byte{
-	// 251 bytes of a gzipped FileDescriptorProto
+	// 239 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x2d, 0xcd, 0x2b, 0xcd,
 	0xcb, 0x4c, 0xcb, 0xd4, 0x4f, 0x4d, 0xce, 0x2f, 0xae, 0x2c, 0x2e, 0x49, 0xcd, 0xcd, 0xcc, 0x4b,
 	0x4e, 0xcd, 0x2b, 0xc9, 0x2c, 0x4b, 0xd5, 0xcf, 0x4d, 0xcd, 0xcd, 0xd7, 0x2b, 0x28, 0xca, 0x2f,
 	0xc9, 0x17, 0x92, 0x82, 0x2a, 0xd3, 0xc3, 0x54, 0x26, 0x25, 0x92, 0x9e, 0x9f, 0x9e, 0x0f, 0x56,
-	0xa6, 0x0f, 0x62, 0x41, 0x74, 0x28, 0x4d, 0x66, 0xe4, 0xe2, 0x0a, 0xa9, 0xf0, 0x4d, 0xcd, 0xcd,
-	0x77, 0x49, 0x2c, 0x49, 0x14, 0xd2, 0xe1, 0x62, 0x2f, 0x4b, 0x2d, 0x2a, 0xce, 0xcc, 0xcf, 0x93,
-	0x60, 0x54, 0x60, 0xd4, 0xe0, 0x74, 0x12, 0xfa, 0x74, 0x4f, 0x9e, 0xaf, 0x32, 0x31, 0x37, 0xc7,
-	0x4a, 0x09, 0x2a, 0xa1, 0x14, 0x04, 0x53, 0x22, 0x14, 0xce, 0x25, 0x56, 0x94, 0x9a, 0x9c, 0x59,
-	0x90, 0x99, 0x9a, 0x57, 0x12, 0x9f, 0x9c, 0x9f, 0x57, 0x92, 0x98, 0x99, 0x97, 0x5a, 0x14, 0x9f,
-	0x99, 0x22, 0xc1, 0x04, 0xd6, 0xac, 0xf8, 0xe9, 0x9e, 0xbc, 0x2c, 0x44, 0x33, 0x76, 0x75, 0x4a,
-	0x41, 0x22, 0x70, 0x09, 0x67, 0x98, 0xb8, 0x67, 0x8a, 0x93, 0xef, 0x89, 0x47, 0x72, 0x8c, 0x17,
-	0x1e, 0xc9, 0x31, 0x3e, 0x78, 0x24, 0xc7, 0x38, 0xe1, 0xb1, 0x1c, 0xc3, 0x85, 0xc7, 0x72, 0x0c,
-	0x37, 0x1e, 0xcb, 0x31, 0x44, 0x19, 0xa7, 0x67, 0x96, 0x64, 0x94, 0x26, 0xe9, 0x25, 0xe7, 0xe7,
-	0xea, 0x87, 0xe6, 0x85, 0xe6, 0x65, 0xba, 0x65, 0xea, 0x27, 0x67, 0x24, 0x66, 0xe6, 0xe9, 0x57,
-	0x60, 0x0b, 0x9b, 0x92, 0xca, 0x82, 0xd4, 0xe2, 0x24, 0x36, 0xb0, 0x5f, 0x8d, 0x01, 0x01, 0x00,
-	0x00, 0xff, 0xff, 0xf6, 0x3b, 0x8d, 0x4a, 0x46, 0x01, 0x00, 0x00,
+	0xa6, 0x0f, 0x62, 0x41, 0x74, 0x28, 0x95, 0x70, 0x09, 0xb8, 0x15, 0xe5, 0xe7, 0x95, 0xa4, 0xe6,
+	0xa5, 0xf8, 0xa6, 0x96, 0x24, 0xa6, 0x24, 0x96, 0x24, 0x0a, 0xe9, 0x70, 0xb1, 0x97, 0xa5, 0x16,
+	0x15, 0x67, 0xe6, 0xe7, 0x49, 0x30, 0x2a, 0x30, 0x6a, 0xf0, 0x3a, 0x09, 0x7d, 0xba, 0x27, 0xcf,
+	0x57, 0x99, 0x98, 0x9b, 0x63, 0xa5, 0x04, 0x95, 0x50, 0x0a, 0x82, 0x29, 0x11, 0x32, 0xe2, 0xe2,
+	0x2c, 0x4a, 0x4d, 0xce, 0x2c, 0xc8, 0x4c, 0xcd, 0x2b, 0x91, 0x60, 0x52, 0x60, 0xd4, 0xe0, 0x74,
+	0x12, 0xf9, 0x74, 0x4f, 0x5e, 0x00, 0xa2, 0x1e, 0x2e, 0xa5, 0x14, 0x84, 0x50, 0xe6, 0xe4, 0x7b,
+	0xe2, 0x91, 0x1c, 0xe3, 0x85, 0x47, 0x72, 0x8c, 0x0f, 0x1e, 0xc9, 0x31, 0x4e, 0x78, 0x2c, 0xc7,
+	0x70, 0xe1, 0xb1, 0x1c, 0xc3, 0x8d, 0xc7, 0x72, 0x0c, 0x51, 0xc6, 0xe9, 0x99, 0x25, 0x19, 0xa5,
+	0x49, 0x7a, 0xc9, 0xf9, 0xb9, 0xfa, 0xa1, 0x79, 0xa1, 0x79, 0x99, 0x6e, 0x99, 0xfa, 0xc9, 0x19,
+	0x89, 0x99, 0x79, 0xfa, 0x15, 0xd8, 0xfc, 0x5e, 0x52, 0x59, 0x90, 0x5a, 0x9c, 0xc4, 0x06, 0xf6,
+	0x8b, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff, 0x88, 0xdf, 0xdc, 0x19, 0x26, 0x01, 0x00, 0x00,
 }
 
-func (m *TxMemoData) Marshal() (dAtA []byte, err error) {
+func (m *FrontendMetadata) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -113,29 +112,27 @@ func (m *TxMemoData) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *TxMemoData) MarshalTo(dAtA []byte) (int, error) {
+func (m *FrontendMetadata) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *TxMemoData) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *FrontendMetadata) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.RecipientContainerId) > 0 {
-		i -= len(m.RecipientContainerId)
-		copy(dAtA[i:], m.RecipientContainerId)
-		i = encodeVarintMemo(dAtA, i, uint64(len(m.RecipientContainerId)))
+	if len(m.Recipient) > 0 {
+		i -= len(m.Recipient)
+		copy(dAtA[i:], m.Recipient)
+		i = encodeVarintMemo(dAtA, i, uint64(len(m.Recipient)))
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Version) > 0 {
-		i -= len(m.Version)
-		copy(dAtA[i:], m.Version)
-		i = encodeVarintMemo(dAtA, i, uint64(len(m.Version)))
+	if m.Version != 0 {
+		i = encodeVarintMemo(dAtA, i, uint64(m.Version))
 		i--
-		dAtA[i] = 0xa
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -151,17 +148,16 @@ func encodeVarintMemo(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *TxMemoData) Size() (n int) {
+func (m *FrontendMetadata) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Version)
-	if l > 0 {
-		n += 1 + l + sovMemo(uint64(l))
+	if m.Version != 0 {
+		n += 1 + sovMemo(uint64(m.Version))
 	}
-	l = len(m.RecipientContainerId)
+	l = len(m.Recipient)
 	if l > 0 {
 		n += 1 + l + sovMemo(uint64(l))
 	}
@@ -174,7 +170,7 @@ func sovMemo(x uint64) (n int) {
 func sozMemo(x uint64) (n int) {
 	return sovMemo(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *TxMemoData) Unmarshal(dAtA []byte) error {
+func (m *FrontendMetadata) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -197,17 +193,17 @@ func (m *TxMemoData) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: TxMemoData: wiretype end group for non-group")
+			return fmt.Errorf("proto: FrontendMetadata: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: TxMemoData: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: FrontendMetadata: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 2 {
+			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Version", wireType)
 			}
-			var stringLen uint64
+			m.Version = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowMemo
@@ -217,27 +213,14 @@ func (m *TxMemoData) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				m.Version |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthMemo
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthMemo
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Version = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RecipientContainerId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Recipient", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -265,7 +248,7 @@ func (m *TxMemoData) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.RecipientContainerId = string(dAtA[iNdEx:postIndex])
+			m.Recipient = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

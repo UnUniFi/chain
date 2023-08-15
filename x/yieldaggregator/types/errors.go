@@ -1,23 +1,23 @@
 package types
 
-// DONTCOVER
-
 import (
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"cosmossdk.io/errors"
 )
 
 // x/yieldaggregator module sentinel errors
 var (
-	ErrInvalidFeeDenom            = sdkerrors.Register(ModuleName, 1, "invalid fee denom")
-	ErrInsufficientFee            = sdkerrors.Register(ModuleName, 2, "insufficient fee")
-	ErrInvalidDepositDenom        = sdkerrors.Register(ModuleName, 3, "invalid deposit denom")
-	ErrInsufficientDeposit        = sdkerrors.Register(ModuleName, 4, "insufficient deposit")
-	ErrInvalidVaultId             = sdkerrors.Register(ModuleName, 5, "invalid vault id")
-	ErrNotVaultOwner              = sdkerrors.Register(ModuleName, 6, "not a vault owner")
-	ErrVaultHasPositiveBalance    = sdkerrors.Register(ModuleName, 7, "vault has positive balance")
-	ErrInvalidCommissionRate      = sdkerrors.Register(ModuleName, 8, "invalid commission rate")
-	ErrDuplicatedStrategy         = sdkerrors.Register(ModuleName, 9, "duplicated strategy")
-	ErrInvalidStrategyWeightSum   = sdkerrors.Register(ModuleName, 10, "invalid strategy weight sum")
-	ErrInvalidStrategyInvolved    = sdkerrors.Register(ModuleName, 11, "invalid strategy id involved")
-	ErrInvalidWithdrawReserveRate = sdkerrors.Register(ModuleName, 12, "invalid withdraw reserve rate")
+	ErrParsingParams              = errors.Register(ModuleName, 1, "failed to marshal or unmarshal module params")
+	ErrInvalidFeeDenom            = errors.Register(ModuleName, 2, "invalid fee denom")
+	ErrInsufficientFee            = errors.Register(ModuleName, 3, "insufficient fee")
+	ErrInvalidDepositDenom        = errors.Register(ModuleName, 4, "invalid deposit denom")
+	ErrInsufficientDeposit        = errors.Register(ModuleName, 5, "insufficient deposit")
+	ErrInvalidVaultId             = errors.Register(ModuleName, 6, "invalid vault id")
+	ErrNotVaultOwner              = errors.Register(ModuleName, 7, "not a vault owner")
+	ErrVaultHasPositiveBalance    = errors.Register(ModuleName, 8, "vault has positive balance")
+	ErrInvalidCommissionRate      = errors.Register(ModuleName, 9, "invalid commission rate")
+	ErrDuplicatedStrategy         = errors.Register(ModuleName, 10, "duplicated strategy")
+	ErrInvalidStrategyWeightSum   = errors.Register(ModuleName, 11, "invalid strategy weight sum")
+	ErrInvalidStrategyInvolved    = errors.Register(ModuleName, 12, "invalid strategy id involved")
+	ErrInvalidWithdrawReserveRate = errors.Register(ModuleName, 13, "invalid withdraw reserve rate")
+	ErrInvalidAmount              = errors.Register(ModuleName, 14, "invalid amount")
 )

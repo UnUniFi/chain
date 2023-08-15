@@ -24,7 +24,8 @@ func DefaultPoolParams() PoolParams {
 		BorrowingFeeRatePerHour:     sdk.MustNewDecFromStr("0.000001"),
 		ReportLiquidationRewardRate: sdk.MustNewDecFromStr("0.3"),
 		ReportLevyPeriodRewardRate:  sdk.MustNewDecFromStr("0.3"),
-		AcceptedAssetsConf:          []PoolAssetConf{},
+		AcceptedAssetsConf:          []PoolAssetConf(nil),
+		LevyPeriodRequiredSeconds:   28800,
 	}
 }
 
@@ -33,7 +34,7 @@ func DefaultPerpetualFuturesParams() PerpetualFuturesParams {
 		CommissionRate:        sdk.MustNewDecFromStr("0.001"),
 		MarginMaintenanceRate: sdk.MustNewDecFromStr("0.5"),
 		ImaginaryFundingRateProportionalCoefficient: sdk.MustNewDecFromStr("0.0005"),
-		Markets:     []*Market{},
+		Markets:     []*Market(nil),
 		MaxLeverage: 30,
 	}
 }
@@ -44,7 +45,7 @@ func DefaultPerpetualOptionsParams() PerpetualOptionsParams {
 		StrikeCommissionRate:                        sdk.MustNewDecFromStr("0.001"),
 		MarginMaintenanceRate:                       sdk.ZeroDec(),
 		ImaginaryFundingRateProportionalCoefficient: sdk.ZeroDec(),
-		Markets: []*Market{},
+		Markets: []*Market(nil),
 	}
 }
 
@@ -120,6 +121,10 @@ func validatePoolParams(i interface{}) error {
 		return fmt.Errorf("invalid liquidation needed report reward rate: %s", pool.ReportLevyPeriodRewardRate)
 	}
 
+	if pool.LevyPeriodRequiredSeconds <= 0 {
+		return fmt.Errorf("invalid levy period required seconds: %d", pool.LevyPeriodRequiredSeconds)
+	}
+
 	return nil
 }
 
@@ -151,6 +156,5 @@ func validatePerpetualOptions(i interface{}) error {
 	if !ok {
 		return fmt.Errorf("invalid paramter type: %T", i)
 	}
-
 	return nil
 }

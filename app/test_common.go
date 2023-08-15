@@ -8,7 +8,6 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/CosmWasm/wasmd/x/wasm"
 	dbm "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/crypto"
@@ -33,10 +32,11 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
 	// "github.com/cosmos/cosmos-sdk/x/supply"
+	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	// authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
 	// "github.com/cosmos/cosmos-sdk/x/supply"
-	// "github.com/CosmWasm/wasmd/x/wasm"
+	"github.com/CosmWasm/wasmd/x/wasm"
 )
 
 var emptyWasmOpts []wasm.Option = nil
@@ -76,10 +76,11 @@ func NewTestApp() TestApp {
 		db,
 		nil,
 		true,
-		wasm.EnableAllProposals,
 		appOptions,
 		emptyWasmOpts,
+		wasm.EnableAllProposals,
 	)
+
 	return TestApp{App: *tApp}
 }
 
@@ -88,17 +89,17 @@ func (tApp TestApp) GetAccountKeeper() authkeeper.AccountKeeper { return tApp.Ac
 func (tApp TestApp) GetBankKeeper() bankkeeper.Keeper           { return tApp.BankKeeper }
 
 // func (tApp TestApp) GetSupplyKeeper() supply.Keeper             { return tApp.SupplyKeeper }
-func (tApp TestApp) GetStakingKeeper() *stakingkeeper.Keeper  { return tApp.StakingKeeper }
+func (tApp TestApp) GetStakingKeeper() stakingkeeper.Keeper   { return tApp.StakingKeeper }
 func (tApp TestApp) GetSlashingKeeper() slashingkeeper.Keeper { return tApp.SlashingKeeper }
 func (tApp TestApp) GetMintKeeper() mintkeeper.Keeper         { return tApp.MintKeeper }
 func (tApp TestApp) GetDistrKeeper() distrkeeper.Keeper       { return tApp.DistrKeeper }
 func (tApp TestApp) GetGovKeeper() govkeeper.Keeper           { return tApp.GovKeeper }
-func (tApp TestApp) GetCrisisKeeper() *crisiskeeper.Keeper    { return tApp.CrisisKeeper }
-func (tApp TestApp) GetUpgradeKeeper() *upgradekeeper.Keeper  { return tApp.UpgradeKeeper }
+func (tApp TestApp) GetCrisisKeeper() crisiskeeper.Keeper     { return tApp.CrisisKeeper }
+func (tApp TestApp) GetUpgradeKeeper() upgradekeeper.Keeper   { return tApp.UpgradeKeeper }
 func (tApp TestApp) GetParamsKeeper() paramskeeper.Keeper     { return tApp.ParamsKeeper }
 
 // func (tApp TestApp) GetVVKeeper() validatorvesting.Keeper       { return tApp.vvKeeper }
-// func (tApp TestApp) GetPriceFeedKeeper() pricefeedkeeper.Keeper { return tApp.PricefeedKeeper }
+func (tApp TestApp) GetPriceFeedKeeper() pricefeedkeeper.Keeper { return tApp.PricefeedKeeper }
 
 // func (tApp TestApp) GetHarvestKeeper() harvest.Keeper           { return tApp.harvestKeeper }
 // func (tApp TestApp) GetCommitteeKeeper() committee.Keeper       { return tApp.committeeKeeper }

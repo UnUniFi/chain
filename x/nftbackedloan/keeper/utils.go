@@ -1,6 +1,9 @@
 package keeper
 
 import (
+	"fmt"
+
+	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/UnUniFi/chain/x/nftbackedloan/types"
@@ -15,15 +18,15 @@ func Contains(a []string, x string) bool {
 	return false
 }
 
-func validateListNftMsg(k Keeper, ctx sdk.Context, msg *types.MsgListNft) error {
+func ValidateListNftMsg(k Keeper, ctx sdk.Context, msg *types.MsgListNft) error {
 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return err
 	}
-	return checkListNft(k, ctx, sender, msg.NftId, msg.BidToken, msg.MinimumDepositRate)
+	return CheckListNft(k, ctx, sender, msg.NftId, msg.BidDenom, msg.MinDepositRate)
 }
 
-func checkListNft(k Keeper, ctx sdk.Context, sender sdk.AccAddress, nftId types.NftIdentifier, bidToken string, minimumDepositRate sdk.Dec) error {
+func CheckListNft(k Keeper, ctx sdk.Context, sender sdk.AccAddress, nftId types.NftId, bidToken string, minimumDepositRate sdk.Dec) error {
 	// check listing already exists
 	_, err := k.GetNftListingByIdBytes(ctx, nftId.IdBytes())
 	if err == nil {
@@ -31,13 +34,13 @@ func checkListNft(k Keeper, ctx sdk.Context, sender sdk.AccAddress, nftId types.
 	}
 
 	// Check nft exists
-	_, found := k.nftKeeper.GetNFT(ctx, nftId.ClassId, nftId.NftId)
+	_, found := k.nftKeeper.GetNFT(ctx, nftId.ClassId, nftId.TokenId)
 	if !found {
 		return types.ErrNftDoesNotExists
 	}
 
 	// check ownership of nft
-	owner := k.nftKeeper.GetOwner(ctx, nftId.ClassId, nftId.NftId)
+	owner := k.nftKeeper.GetOwner(ctx, nftId.ClassId, nftId.TokenId)
 	if owner.String() != sender.String() {
 		return types.ErrNotNftOwner
 	}
@@ -46,9 +49,26 @@ func checkListNft(k Keeper, ctx sdk.Context, sender sdk.AccAddress, nftId types.
 		return types.ErrNotSupportedBidToken
 	}
 
-	if minimumDepositRate.GTE(sdk.MustNewDecFromStr("0.5")) {
-		return types.ErrMinimumDepositRateTooHigh
+	return nil
+}
+
+func GetMemo(txBytes []byte, txCfg client.TxConfig) string {
+	/// NOTE: this way requires txConfig by importing it into keeper struct
+	txData, err := txCfg.TxDecoder()(txBytes)
+	if err != nil {
+		fmt.Printf("err: %v\n", err)
+
+		txData, err = txCfg.TxJSONDecoder()(txBytes)
+		if err != nil {
+			fmt.Printf("err: %v\n", err)
+		}
 	}
 
-	return nil
+	txBldr, err := txCfg.WrapTxBuilder(txData)
+	if err != nil {
+		return ""
+	}
+	memo := txBldr.GetTx().GetMemo()
+
+	return memo
 }

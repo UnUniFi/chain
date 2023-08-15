@@ -44,6 +44,21 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochInfo epochstypes.EpochInf
 			}
 		}
 	}
+
+	strategies := k.GetAllStrategy(ctx, "")
+	for _, strategy := range strategies {
+		contractAddr, err := sdk.AccAddressFromBech32(strategy.ContractAddress)
+		if err != nil {
+			continue
+		}
+		if epochIdentifier == epochstypes.BASE_EPOCH {
+			wasmMsg := `{"execute_epoch":{}}`
+			_, err := k.wasmKeeper.Execute(ctx, contractAddr, contractAddr, []byte(wasmMsg), sdk.Coins{})
+			if err != nil {
+				continue
+			}
+		}
+	}
 }
 
 func (k Keeper) AfterEpochEnd(ctx sdk.Context, epochInfo epochstypes.EpochInfo) {

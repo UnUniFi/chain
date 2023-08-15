@@ -47,8 +47,8 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 
 	positions := []types.Position{
 		{
-			Id:      "0",
-			Address: owner.Bytes(),
+			Id:            "0",
+			OpenerAddress: owner.String(),
 			Market: types.Market{
 				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
@@ -60,10 +60,11 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 			PositionInstance: *position0Inst,
 			RemainingMargin:  sdk.NewCoin("uusdc", sdk.NewInt(1000)),
 			LastLeviedAt:     time.Now().UTC(),
+			LeviedAmount:     sdk.NewCoin("uusdc", sdk.NewInt(100)),
 		},
 		{
-			Id:      "1",
-			Address: owner.Bytes(),
+			Id:            "1",
+			OpenerAddress: owner.String(),
 			Market: types.Market{
 				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
@@ -75,6 +76,7 @@ func (suite *KeeperTestSuite) TestGetAllPositions() {
 			PositionInstance: *position1Inst,
 			RemainingMargin:  sdk.NewCoin("uatom", sdk.NewInt(1000)),
 			LastLeviedAt:     time.Now().UTC(),
+			LeviedAmount:     sdk.NewCoin("uatom", sdk.NewInt(100)),
 		},
 	}
 
@@ -131,8 +133,8 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 
 	positions := []types.Position{
 		{
-			Id:      "0",
-			Address: owner.Bytes(),
+			Id:            "0",
+			OpenerAddress: owner.String(),
 			Market: types.Market{
 				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
@@ -142,8 +144,8 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 			PositionInstance: *position0Inst,
 		},
 		{
-			Id:      "1",
-			Address: owner2.Bytes(),
+			Id:            "1",
+			OpenerAddress: owner2.String(),
 			Market: types.Market{
 				BaseDenom:  "uatom",
 				QuoteDenom: "uusdc",
@@ -164,7 +166,9 @@ func (suite *KeeperTestSuite) TestDeletePosition() {
 
 	// check per id
 	for _, position := range positions {
-		p := suite.keeper.GetAddressPositionWithId(suite.ctx, position.Address.AccAddress(), position.Id)
+		address, err := sdk.AccAddressFromBech32(position.OpenerAddress)
+		suite.Require().NoError(err)
+		p := suite.keeper.GetAddressPositionWithId(suite.ctx, address, position.Id)
 		suite.Require().NotNil(p)
 		suite.Require().Equal(p.Id, position.Id)
 		suite.Require().Equal(p.Market, position.Market)

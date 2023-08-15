@@ -22,7 +22,11 @@ func (k Keeper) EstimateRedeemAmount(c context.Context, req *types.QueryEstimate
 	if !found {
 		return nil, types.ErrInvalidVaultId
 	}
-	redeemAmount := k.EstimateRedeemAmountInternal(ctx, vault.Denom, vault.Id, req.BurnAmount)
+	burnAmount, ok := sdk.NewIntFromString(req.BurnAmount)
+	if !ok {
+		return nil, types.ErrInvalidAmount
+	}
+	redeemAmount := k.EstimateRedeemAmountInternal(ctx, vault.Denom, vault.Id, burnAmount)
 
 	return &types.QueryEstimateRedeemAmountResponse{
 		RedeemAmount: redeemAmount,

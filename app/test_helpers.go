@@ -63,7 +63,7 @@ func setup(t testing.TB, chainID string, withGenesis bool, invCheckPeriod uint, 
 	appOptions := make(simtestutil.AppOptionsMap, 0)
 	appOptions[flags.FlagHome] = nodeHome // ensure unique folder
 	appOptions[server.FlagInvCheckPeriod] = invCheckPeriod
-	app := NewApp(log.NewNopLogger(), db, nil, true, wasmtypes.EnableAllProposals, appOptions, opts, bam.SetChainID(chainID), bam.SetSnapshot(snapshotStore, snapshottypes.SnapshotOptions{KeepRecent: 2}))
+	app := NewApp(log.NewNopLogger(), db, nil, true, appOptions, opts, wasmtypes.EnableAllProposals, bam.SetChainID(chainID), bam.SetSnapshot(snapshotStore, snapshottypes.SnapshotOptions{KeepRecent: 2}))
 	if withGenesis {
 		return app, NewDefaultGenesisState(app.AppCodec())
 	}
@@ -89,7 +89,7 @@ func NewAppWithCustomOptions(t *testing.T, isCheckTx bool, options SetupOptions)
 		Coins:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(100000000000000))),
 	}
 
-	app := NewApp(options.Logger, options.DB, nil, true, wasmtypes.EnableAllProposals, options.AppOpts, options.WasmOpts)
+	app := NewApp(options.Logger, options.DB, nil, true, options.AppOpts, options.WasmOpts, wasmtypes.EnableAllProposals)
 	genesisState := NewDefaultGenesisState(app.appCodec)
 	genesisState, err = GenesisStateWithValSet(app.AppCodec(), genesisState, valSet, []authtypes.GenesisAccount{acc}, balance)
 	require.NoError(t, err)
@@ -133,7 +133,6 @@ func Setup(t *testing.T, opts ...wasm.Option) *App {
 	}
 	chainID := "testing"
 	app := SetupWithGenesisValSet(t, valSet, []authtypes.GenesisAccount{acc}, chainID, opts, balance)
-
 	return app
 }
 

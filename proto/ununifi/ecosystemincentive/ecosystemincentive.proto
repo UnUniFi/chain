@@ -6,28 +6,7 @@ import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/UnUniFi/chain/x/ecosystemincentive/types";
 
-message RecipientContainer {
-  string id = 1 [
-    (gogoproto.moretags) = "yaml:\"id\""
-  ];
-  repeated WeightedAddress weighted_addresses = 2 [
-    (gogoproto.moretags) = "yaml:\"weighted_addresses\"",
-    (gogoproto.nullable) = false
-  ];
-}
-
-message WeightedAddress {
-  string address = 1 [
-    (gogoproto.moretags) = "yaml:\"address\""
-  ];
-  string weight = 2 [
-    (gogoproto.moretags) = "yaml:\"weight\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
-}
-
-message RewardStore {
+message RewardRecord {
   string address = 1 [
     (gogoproto.moretags) = "yaml:\"address\""
   ];
@@ -36,11 +15,4 @@ message RewardStore {
     (gogoproto.moretags) = "yaml:\"rewards\"",
     (gogoproto.nullable) = false
   ];
-}
-
-message BelongingRecipientContainers {
-  string address = 1 [
-    (gogoproto.moretags) = "yaml:\"address\""
-  ];
-  repeated string recipient_container_ids = 2 [ (gogoproto.moretags) = "yaml:\"recipient_container_ids\"" ];
 }

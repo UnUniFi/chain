@@ -16,7 +16,10 @@ import (
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/cosmos/cosmos-sdk/x/nft"
-	nftkeeper "github.com/cosmos/cosmos-sdk/x/nft/keeper"
+
+	sdknftkeeper "github.com/cosmos/cosmos-sdk/x/nft/keeper"
+
+	nftkeeper "github.com/UnUniFi/chain/x/nft/keeper"
 
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
@@ -57,13 +60,12 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.addrs = simapp.AddTestAddrsIncremental(app, suite.ctx, 3, sdk.NewInt(30000000))
 	suite.app = app
 	queryHelper := baseapp.NewQueryServerTestHelper(suite.ctx, app.InterfaceRegistry())
-	types.RegisterQueryServer(queryHelper, app.NftmarketKeeper)
+	types.RegisterQueryServer(queryHelper, app.NftbackedloanKeeper)
 	suite.queryClient = types.NewQueryClient(queryHelper)
 
 	encodingConfig := appparams.MakeEncodingConfig()
-	appCodec := encodingConfig.Marshaler
+	appCodec := encodingConfig.Codec
 
-	txCfg := encodingConfig.TxConfig
 	accountKeeper := authkeeper.NewAccountKeeper(
 		appCodec,
 		app.GetKey(authtypes.StoreKey),
@@ -80,8 +82,8 @@ func (suite *KeeperTestSuite) SetupTest() {
 		app.BlockedAddrs(),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
-	nftKeeper := nftkeeper.NewKeeper(app.GetKey(nft.StoreKey), appCodec, accountKeeper, bankKeeper)
-	keeper := keeper.NewKeeper(appCodec, txCfg, app.GetKey(types.StoreKey), app.GetKey(types.MemStoreKey), suite.app.GetSubspace(types.ModuleName), accountKeeper, bankKeeper, nftKeeper)
+	nftKeeper := nftkeeper.NewKeeper(sdknftkeeper.NewKeeper(app.GetKey(nft.StoreKey), appCodec, accountKeeper, bankKeeper), appCodec, authtypes.NewModuleAddress(govtypes.ModuleName).String())
+	keeper := keeper.NewKeeper(appCodec, app.GetKey(types.StoreKey), app.GetKey(types.MemStoreKey), suite.app.GetSubspace(types.ModuleName), accountKeeper, bankKeeper, nftKeeper)
 	hooks := dummyNftmarketHook{}
 	keeper.SetHooks(&hooks)
 	suite.nftKeeper = nftKeeper

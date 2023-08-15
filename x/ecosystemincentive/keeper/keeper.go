@@ -20,6 +20,7 @@ type (
 		paramstore paramtypes.Subspace
 		authKeeper types.AccountKeeper
 		bankKeeper types.BankKeeper
+		ckKeeper   types.CommunityPoolKeeper
 
 		feeDistributionNameForStakers string // name of the FeeCollector ModuleAccount
 	}
@@ -31,6 +32,7 @@ func NewKeeper(
 	ps paramtypes.Subspace,
 	authKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
+	ckKeeper types.CommunityPoolKeeper,
 	feeDistributionNameForStakers string,
 ) Keeper {
 	// set KeyTable if it has not already been set
@@ -44,6 +46,7 @@ func NewKeeper(
 		paramstore:                    ps,
 		authKeeper:                    authKeeper,
 		bankKeeper:                    bankKeeper,
+		ckKeeper:                      ckKeeper,
 		feeDistributionNameForStakers: feeDistributionNameForStakers,
 	}
 }
