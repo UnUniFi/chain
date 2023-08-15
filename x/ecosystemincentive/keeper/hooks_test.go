@@ -93,7 +93,7 @@ func (suite *KeeperTestSuite) TestAfterNftPaymentWithCommission() {
 		suite.SetupTest()
 
 		if tc.recordedBefore {
-			suite.app.EcosystemincentiveKeeper.RecordRecipientWithNftId(suite.ctx, tc.nftId, tc.recipientContainerId)
+			_ = suite.app.EcosystemincentiveKeeper.RecordRecipientWithNftId(suite.ctx, tc.nftId, tc.recipientContainerId)
 		}
 
 		_ = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, sdk.Coins{tc.reward})
