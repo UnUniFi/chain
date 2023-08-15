@@ -41,7 +41,7 @@ func CreateUpgradeHandler(mm *module.Manager,
 		// iyaParam, err := keepers.YieldaggregatorKeeper.GetParams(ctx)
 		// if err != nil {
 		// 	return vm, err
-		// }		_ = keepers.YieldaggregatorKeeper.SetParams(ctx, &iyaParams)
+		// }
 		_ = keepers.YieldaggregatorKeeper.SetParams(ctx, &iyaParams)
 
 		return vm, nil
