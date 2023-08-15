@@ -2,17 +2,36 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/UnUniFi/chain/x/nftfactory/types"
 )
 
-// GetParams returns the total set params.
-func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
-	k.paramSpace.GetParamSet(ctx, &params)
-	return params
+func (k Keeper) GetParams(ctx sdk.Context) (*types.Params, error) {
+	store := ctx.KVStore(k.storeKey)
+
+	bz := store.Get(types.KeyParams)
+	if bz == nil {
+		return nil, sdkerrors.ErrNotFound.Wrap("x/nftfactory module params")
+	}
+
+	var params types.Params
+	if err := k.cdc.Unmarshal(bz, &params); err != nil {
+		return nil, types.ErrParsingParams.Wrap(err.Error())
+	}
+
+	return &params, nil
 }
 
-// SetParams sets the total set of params.
-func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
-	k.paramSpace.SetParamSet(ctx, &params)
+func (k Keeper) SetParams(ctx sdk.Context, params *types.Params) error {
+	store := ctx.KVStore(k.storeKey)
+
+	bz, err := k.cdc.Marshal(params)
+	if err != nil {
+		return types.ErrParsingParams.Wrap(err.Error())
+	}
+
+	store.Set(types.KeyParams, bz)
+
+	return nil
 }

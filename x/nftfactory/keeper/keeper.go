@@ -22,24 +22,25 @@ type Keeper struct {
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
 	nftKeeper     types.NftKeeper
+	authority     string
 }
 
-func NewKeeper(cdc codec.Codec, storeKey, memKey storetypes.StoreKey,
-	paramSpace paramstypes.Subspace, accountKeeper types.AccountKeeper,
+func NewKeeper(cdc codec.Codec, storeKey,
+	memKey storetypes.StoreKey,
+	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
-	nftKeeper types.NftKeeper) Keeper {
-	if !paramSpace.HasKeyTable() {
-		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
-	}
+	nftKeeper types.NftKeeper,
+	authority string,
+) Keeper {
 
 	return Keeper{
 		cdc:           cdc,
 		storeKey:      storeKey,
 		memKey:        memKey,
-		paramSpace:    paramSpace,
 		accountKeeper: accountKeeper,
 		bankKeeper:    bankKeeper,
 		nftKeeper:     nftKeeper,
+		authority:     authority,
 	}
 }
 

@@ -101,7 +101,8 @@ jq '.app_state.pricefeed.posted_prices = [
 # ununifid start --home=$NODE_HOME
 
 # for nftmint
-jq '.app_state.nftfactory.params.fee_collector_address = "ununifi1a8jcsmla6heu99ldtazc27dna4qcd4jygsthx6"' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.nftfactory.params.class_creation_fee = []' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
+jq '.app_state.nftfactory.params.fee_collector_address = ""' $NODE_HOME/config/genesis.json > temp.json ; mv temp.json $NODE_HOME/config/genesis.json;
 
 # jq '.app_state.nftfactory.class_attributes_list = [
 #   {

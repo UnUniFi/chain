@@ -63,5 +63,9 @@ func validateNftDeliveryPeriod(i interface{}) error {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
+	if rate.IsNil() || rate.IsNegative() || rate.GT(sdk.OneDec()) {
+		return fmt.Errorf("invalid rate: %s", rate.String())
+	}
+
 	return nil
 }

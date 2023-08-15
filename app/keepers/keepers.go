@@ -72,6 +72,9 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 
+	ibchookskeeper "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/keeper"
+	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/types"
+
 	builderkeeper "github.com/skip-mev/pob/x/builder/keeper"
 	buildertypes "github.com/skip-mev/pob/x/builder/types"
 
@@ -79,7 +82,6 @@ import (
 
 	epochskeeper "github.com/UnUniFi/chain/x/epochs/keeper"
 	epochstypes "github.com/UnUniFi/chain/x/epochs/types"
-	"github.com/UnUniFi/chain/x/yieldaggregator"
 	yieldaggregatorkeeper "github.com/UnUniFi/chain/x/yieldaggregator/keeper"
 	icacallbackskeeper "github.com/UnUniFi/chain/x/yieldaggregator/submodules/icacallbacks/keeper"
 	icacallbackstypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/icacallbacks/types"
@@ -94,17 +96,13 @@ import (
 	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
 
 	nftbackedloankeeper "github.com/UnUniFi/chain/x/nftbackedloan/keeper"
-	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 
 	derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
-	derivativestypes "github.com/UnUniFi/chain/x/derivatives/types"
 	nftfactorykeeper "github.com/UnUniFi/chain/x/nftfactory/keeper"
 	nftfactorytypes "github.com/UnUniFi/chain/x/nftfactory/types"
 	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
-	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 
 	ecosystemincentivekeeper "github.com/UnUniFi/chain/x/ecosystemincentive/keeper"
-	ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystemincentive/types"
 )
 
 type AppKeepers struct {
@@ -139,6 +137,8 @@ type AppKeepers struct {
 	ICAHostKeeper       icahostkeeper.Keeper
 	TransferKeeper      ibctransferkeeper.Keeper
 	WasmKeeper          wasm.Keeper
+	// IBC hooks
+	IBCHooksKeeper ibchookskeeper.Keeper
 
 	NftbackedloanKeeper nftbackedloankeeper.Keeper
 	NftfactoryKeeper    nftfactorykeeper.Keeper
@@ -370,6 +370,11 @@ func NewAppKeeper(
 		&appKeepers.IBCKeeper.PortKeeper, appKeepers.AccountKeeper, appKeepers.BankKeeper,
 	)
 
+	appKeepers.keys[ibchookstypes.StoreKey] = storetypes.NewKVStoreKey(ibchookstypes.StoreKey)
+	appKeepers.IBCHooksKeeper = ibchookskeeper.NewKeeper(
+		appKeepers.keys[ibchookstypes.StoreKey],
+	)
+
 	// Create Transfer Keepers
 	appKeepers.TransferKeeper = ibctransferkeeper.NewKeeper(
 		appCodec,
@@ -453,54 +458,54 @@ func NewAppKeeper(
 		appCodec,
 		appKeepers.keys[nftfactorytypes.StoreKey],
 		appKeepers.keys[nftfactorytypes.MemStoreKey],
-		appKeepers.GetSubspace(nftfactorytypes.ModuleName),
-		appKeepers.AccountKeeper,
-		appKeepers.BankKeeper,
-		appKeepers.UnUniFiNFTKeeper,
-	)
-
-	nftbackedloanKeeper := nftbackedloankeeper.NewKeeper(
-		appCodec,
-		appKeepers.keys[nftbackedloantypes.StoreKey],
-		appKeepers.keys[nftbackedloantypes.MemStoreKey],
 		appKeepers.AccountKeeper,
 		appKeepers.BankKeeper,
 		appKeepers.UnUniFiNFTKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	appKeepers.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
-		appCodec,
-		appKeepers.keys[ecosystemincentivetypes.StoreKey],
-		appKeepers.GetSubspace(ecosystemincentivetypes.ModuleName),
-		appKeepers.AccountKeeper,
-		appKeepers.BankKeeper,
-		appKeepers.DistrKeeper,
-		// same as the feeCollectorName in the distribution module
-		authtypes.FeeCollectorName,
-	)
+	// nftbackedloanKeeper := nftbackedloankeeper.NewKeeper(
+	// 	appCodec,
+	// 	appKeepers.keys[nftbackedloantypes.StoreKey],
+	// 	appKeepers.keys[nftbackedloantypes.MemStoreKey],
+	// 	appKeepers.GetSubspace(nftbackedloantypes.ModuleName),
+	// 	appKeepers.AccountKeeper,
+	// 	appKeepers.BankKeeper,
+	// 	appKeepers.UnUniFiNFTKeeper,
+	// )
+
+	// appKeepers.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
+	// 	appCodec,
+	// 	appKeepers.keys[ecosystemincentivetypes.StoreKey],
+	// 	appKeepers.GetSubspace(ecosystemincentivetypes.ModuleName),
+	// 	appKeepers.AccountKeeper,
+	// 	appKeepers.BankKeeper,
+	// 	appKeepers.DistrKeeper,
+	// 	// same as the feeCollectorName in the distribution module
+	// 	authtypes.FeeCollectorName,
+	// )
 
 	// create Keeper objects which have Hooks
-	appKeepers.NftbackedloanKeeper = *nftbackedloanKeeper.SetHooks(nftbackedloantypes.NewMultiNftbackedloanHooks(appKeepers.EcosystemincentiveKeeper.Hooks()))
+	// appKeepers.NftbackedloanKeeper = *nftbackedloanKeeper.SetHooks(nftbackedloantypes.NewMultiNftbackedloanHooks(appKeepers.EcosystemincentiveKeeper.Hooks()))
 
-	appKeepers.PricefeedKeeper = pricefeedkeeper.NewKeeper(
-		appCodec,
-		appKeepers.keys[pricefeedtypes.StoreKey],
-		appKeepers.keys[pricefeedtypes.MemStoreKey],
-		appKeepers.GetSubspace(pricefeedtypes.ModuleName),
-		appKeepers.BankKeeper,
-	)
+	// appKeepers.PricefeedKeeper = pricefeedkeeper.NewKeeper(
+	// 	appCodec,
+	// 	appKeepers.keys[pricefeedtypes.StoreKey],
+	// 	appKeepers.keys[pricefeedtypes.MemStoreKey],
+	// 	appKeepers.GetSubspace(pricefeedtypes.ModuleName),
+	// 	appKeepers.BankKeeper,
+	// )
 
-	appKeepers.DerivativesKeeper = derivativeskeeper.NewKeeper(
-		appCodec,
-		appKeepers.keys[derivativestypes.StoreKey],
-		appKeepers.keys[derivativestypes.MemStoreKey],
-		appKeepers.GetSubspace(derivativestypes.ModuleName),
-		appKeepers.AccountKeeper,
-		appKeepers.BankKeeper,
-		appKeepers.PricefeedKeeper,
-		appKeepers.UnUniFiNFTKeeper,
-	)
+	// appKeepers.DerivativesKeeper = derivativeskeeper.NewKeeper(
+	// 	appCodec,
+	// 	appKeepers.keys[derivativestypes.StoreKey],
+	// 	appKeepers.keys[derivativestypes.MemStoreKey],
+	// 	appKeepers.GetSubspace(derivativestypes.ModuleName),
+	// 	appKeepers.AccountKeeper,
+	// 	appKeepers.BankKeeper,
+	// 	appKeepers.PricefeedKeeper,
+	// 	appKeepers.UnUniFiNFTKeeper,
+	// )
 
 	scopedIcacallbacksKeeper := appKeepers.CapabilityKeeper.ScopeToModule(icacallbackstypes.ModuleName)
 	appKeepers.ScopedIcacallbacksKeeper = scopedIcacallbacksKeeper
@@ -578,7 +583,6 @@ func NewAppKeeper(
 	appKeepers.YieldaggregatorKeeper = yieldaggregatorkeeper.NewKeeper(
 		appCodec,
 		appKeepers.keys[yieldaggregatortypes.StoreKey],
-		appKeepers.GetSubspace(yieldaggregatortypes.ModuleName),
 		appKeepers.BankKeeper,
 		wasmkeeper.NewDefaultPermissionKeeper(appKeepers.WasmKeeper),
 		appKeepers.WasmKeeper,
@@ -604,8 +608,7 @@ func NewAppKeeper(
 		AddRoute(govtypes.RouterKey, govv1beta1.ProposalHandler).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(appKeepers.ParamsKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(&appKeepers.UpgradeKeeper)).
-		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(appKeepers.IBCKeeper.ClientKeeper)).
-		AddRoute(yieldaggregatortypes.RouterKey, yieldaggregator.NewYieldAggregatorProposalHandler(appKeepers.YieldaggregatorKeeper))
+		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(appKeepers.IBCKeeper.ClientKeeper))
 
 	// The gov proposal types can be individually enabled
 	if len(enabledProposals) != 0 {
@@ -692,16 +695,20 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 
 	// original modules
 	paramsKeeper.Subspace(nftfactorytypes.ModuleName)
-	paramsKeeper.Subspace(ecosystemincentivetypes.ModuleName)
 
-	paramsKeeper.Subspace(pricefeedtypes.ModuleName)
-	paramsKeeper.Subspace(derivativestypes.ModuleName)
+	// paramsKeeper.Subspace(nftbackedloantypes.ModuleName)
+	// paramsKeeper.Subspace(ecosystemincentivetypes.ModuleName)
+
+	// paramsKeeper.Subspace(pricefeedtypes.ModuleName)
+	// paramsKeeper.Subspace(derivativestypes.ModuleName)
 
 	paramsKeeper.Subspace(stakeibctypes.ModuleName)
 	paramsKeeper.Subspace(epochstypes.ModuleName)
 	paramsKeeper.Subspace(interchainquerytypes.ModuleName)
 	paramsKeeper.Subspace(recordstypes.ModuleName)
 	paramsKeeper.Subspace(icacallbackstypes.ModuleName)
+
+	// Deprecated: Just for migration
 	paramsKeeper.Subspace(yieldaggregatortypes.ModuleName)
 
 	return paramsKeeper

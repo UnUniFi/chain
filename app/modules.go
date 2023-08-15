@@ -62,6 +62,9 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
+	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7"
+	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/types"
+
 	"github.com/skip-mev/pob/x/builder"
 	buildertypes "github.com/skip-mev/pob/x/builder/types"
 
@@ -88,7 +91,6 @@ import (
 	nftfactory "github.com/UnUniFi/chain/x/nftfactory"
 	nftfactorytypes "github.com/UnUniFi/chain/x/nftfactory/types"
 	"github.com/UnUniFi/chain/x/pricefeed"
-	pricefeedtypes "github.com/UnUniFi/chain/x/pricefeed/types"
 
 	ecosystemincentive "github.com/UnUniFi/chain/x/ecosystemincentive"
 	ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystemincentive/types"
@@ -111,6 +113,7 @@ var maccPerms = map[string][]string{
 	icatypes.ModuleName:            nil,
 	wasm.ModuleName:                {authtypes.Burner},
 	buildertypes.ModuleName:        nil,
+	ibchookstypes.ModuleName:       nil,
 
 	// original modules
 	nftbackedloantypes.ModuleName: nil,
@@ -167,6 +170,7 @@ var ModuleBasics = module.NewBasicManager(
 	transfer.AppModuleBasic{},
 	ica.AppModuleBasic{},
 	ibcfee.AppModuleBasic{},
+	ibchooks.AppModuleBasic{},
 	builder.AppModuleBasic{},
 
 	// original modules
@@ -222,16 +226,17 @@ func appModules(
 		ibc.NewAppModule(app.AppKeepers.IBCKeeper),
 		transfer.NewAppModule(app.AppKeepers.TransferKeeper),
 		ibcfee.NewAppModule(app.AppKeepers.IBCFeeKeeper),
+		ibchooks.NewAppModule(app.AppKeepers.AccountKeeper),
 		ica.NewAppModule(&app.AppKeepers.ICAControllerKeeper, &app.AppKeepers.ICAHostKeeper),
 		crisis.NewAppModule(&app.AppKeepers.CrisisKeeper, skipGenesisInvariants, app.AppKeepers.GetSubspace(crisistypes.ModuleName)),
 
 		// original modules
 		nftfactory.NewAppModule(appCodec, app.AppKeepers.NftfactoryKeeper, app.AppKeepers.UnUniFiNFTKeeper),
-		nftbackedloan.NewAppModule(appCodec, app.AppKeepers.NftbackedloanKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper),
-		ecosystemincentive.NewAppModule(appCodec, app.AppKeepers.EcosystemincentiveKeeper, app.AppKeepers.BankKeeper),
+		// nftbackedloan.NewAppModule(appCodec, app.AppKeepers.NftbackedloanKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper),
+		// ecosystemincentive.NewAppModule(appCodec, app.AppKeepers.EcosystemincentiveKeeper, app.AppKeepers.BankKeeper),
 
-		pricefeed.NewAppModule(appCodec, app.AppKeepers.PricefeedKeeper, app.AppKeepers.AccountKeeper),
-		derivatives.NewAppModule(appCodec, app.AppKeepers.DerivativesKeeper, app.AppKeepers.BankKeeper),
+		// pricefeed.NewAppModule(appCodec, app.AppKeepers.PricefeedKeeper, app.AppKeepers.AccountKeeper),
+		// derivatives.NewAppModule(appCodec, app.AppKeepers.DerivativesKeeper, app.AppKeepers.BankKeeper),
 
 		yieldaggregator.NewAppModule(appCodec, app.AppKeepers.YieldaggregatorKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper),
 		stakeibc.NewAppModule(appCodec, app.AppKeepers.StakeibcKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper),
@@ -290,11 +295,11 @@ func orderBeginBlockers() []string {
 		consensusparamtypes.ModuleName,
 		// original modules
 		nftfactorytypes.ModuleName,
-		nftbackedloantypes.ModuleName,
-		ecosystemincentivetypes.ModuleName,
+		// nftbackedloantypes.ModuleName,
+		// ecosystemincentivetypes.ModuleName,
 
-		pricefeedtypes.ModuleName,
-		derivativestypes.ModuleName,
+		// pricefeedtypes.ModuleName,
+		// derivativestypes.ModuleName,
 
 		stakeibctypes.ModuleName,
 		epochstypes.ModuleName,
@@ -309,6 +314,7 @@ func orderBeginBlockers() []string {
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		ibchookstypes.ModuleName,
 		wasm.ModuleName,
 	}
 }
@@ -344,11 +350,11 @@ func orderEndBlockers() []string {
 		consensusparamtypes.ModuleName,
 		// original modules
 		nftfactorytypes.ModuleName,
-		nftbackedloantypes.ModuleName,
-		ecosystemincentivetypes.ModuleName,
+		// nftbackedloantypes.ModuleName,
+		// ecosystemincentivetypes.ModuleName,
 
-		pricefeedtypes.ModuleName,
-		derivativestypes.ModuleName,
+		// pricefeedtypes.ModuleName,
+		// derivativestypes.ModuleName,
 
 		stakeibctypes.ModuleName,
 		epochstypes.ModuleName,
@@ -363,6 +369,7 @@ func orderEndBlockers() []string {
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		ibchookstypes.ModuleName,
 		wasm.ModuleName,
 		buildertypes.ModuleName,
 	}
@@ -401,11 +408,11 @@ func orderInitGenesis() []string {
 
 		// original modules
 		nftfactorytypes.ModuleName,
-		nftbackedloantypes.ModuleName,
-		ecosystemincentivetypes.ModuleName,
+		// nftbackedloantypes.ModuleName,
+		// ecosystemincentivetypes.ModuleName,
 
-		pricefeedtypes.ModuleName,
-		derivativestypes.ModuleName,
+		// pricefeedtypes.ModuleName,
+		// derivativestypes.ModuleName,
 
 		stakeibctypes.ModuleName,
 		epochstypes.ModuleName,
@@ -420,6 +427,7 @@ func orderInitGenesis() []string {
 		ibcexported.ModuleName,
 		icatypes.ModuleName,
 		ibcfeetypes.ModuleName,
+		ibchookstypes.ModuleName,
 		// wasm after ibc transfer
 		wasm.ModuleName,
 	}
