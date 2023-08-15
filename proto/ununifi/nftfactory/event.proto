@@ -1,0 +1,36 @@
+syntax = "proto3";
+package ununifi.nftfactory;
+
+import "gogoproto/gogo.proto";
+import "ununifi/nftfactory/nftfactory.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/nftfactory/types";
+
+message EventCreateClass {
+  string sender   = 1;
+  string class_id = 2;
+}
+
+message EventUpdateClass {
+  string sender   = 1;
+  string class_id = 2;
+}
+
+message EventMintNFT {
+  string sender    = 1;
+  string class_id  = 2;
+  string token_id  = 3;
+  string recipient = 4;
+}
+
+message EventBurnNFT {
+  string sender   = 1;
+  string class_id = 2;
+  string token_id = 3;
+}
+
+message EventChangeAdmin {
+  string admin     = 1;
+  string class_id  = 3;
+  string new_admin = 2;
+}

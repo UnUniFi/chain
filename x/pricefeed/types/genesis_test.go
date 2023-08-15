@@ -4,20 +4,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/UnUniFi/chain/types"
 	"github.com/stretchr/testify/require"
 
-	tmtypes "github.com/tendermint/tendermint/types"
-
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func TestGenesisStateValidate(t *testing.T) {
 	now := time.Now()
-	mockPrivKey := tmtypes.NewMockPV()
-	pubkey, err := mockPrivKey.GetPubKey()
-	require.NoError(t, err)
-	addr := sdk.AccAddress(pubkey.Address())
+	mockPrivKey := ed25519.GenPrivKey()
+	pubkey := mockPrivKey.PubKey()
+	addr := sdk.AccAddress(pubkey.Address()).String()
 
 	testCases := []struct {
 		msg          string
@@ -33,7 +30,7 @@ func TestGenesisStateValidate(t *testing.T) {
 			msg: "valid genesis",
 			genesisState: NewGenesisState(
 				NewParams(Markets{
-					{"market", "xrp", "bnb", types.StringAccAddresses([]sdk.AccAddress{addr}), true},
+					{"market", "xrp", "bnb", []string{addr}, true},
 				}),
 				[]PostedPrice{NewPostedPrice("xrp", addr, sdk.OneDec(), now)},
 			),
@@ -43,7 +40,7 @@ func TestGenesisStateValidate(t *testing.T) {
 			msg: "invalid param",
 			genesisState: NewGenesisState(
 				NewParams(Markets{
-					{"", "xrp", "bnb", types.StringAccAddresses([]sdk.AccAddress{addr}), true},
+					{"", "xrp", "bnb", []string{addr}, true},
 				}),
 				[]PostedPrice{NewPostedPrice("xrp", addr, sdk.OneDec(), now)},
 			),
@@ -53,8 +50,8 @@ func TestGenesisStateValidate(t *testing.T) {
 			msg: "dup market param",
 			genesisState: NewGenesisState(
 				NewParams(Markets{
-					{"market", "xrp", "bnb", types.StringAccAddresses([]sdk.AccAddress{addr}), true},
-					{"market", "xrp", "bnb", types.StringAccAddresses([]sdk.AccAddress{addr}), true},
+					{"market", "xrp", "bnb", []string{addr}, true},
+					{"market", "xrp", "bnb", []string{addr}, true},
 				}),
 				[]PostedPrice{NewPostedPrice("xrp", addr, sdk.OneDec(), now)},
 			),
@@ -64,7 +61,7 @@ func TestGenesisStateValidate(t *testing.T) {
 			msg: "invalid posted price",
 			genesisState: NewGenesisState(
 				NewParams(Markets{}),
-				[]PostedPrice{NewPostedPrice("xrp", nil, sdk.OneDec(), now)},
+				[]PostedPrice{NewPostedPrice("xrp", "", sdk.OneDec(), now)},
 			),
 			expPass: false,
 		},

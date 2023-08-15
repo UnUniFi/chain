@@ -1,0 +1,378 @@
+package cli
+
+import (
+	"fmt"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/spf13/cobra"
+
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/client/tx"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/version"
+
+	codecType "github.com/cosmos/cosmos-sdk/codec/types"
+
+	"github.com/UnUniFi/chain/x/derivatives/types"
+)
+
+var (
+	DefaultRelativePacketTimeoutTimestamp = uint64((time.Duration(10) * time.Minute).Nanoseconds())
+)
+
+const (
+	flagPacketTimeoutTimestamp = "packet-timeout-timestamp"
+	listSeparator              = ","
+)
+
+// GetTxCmd returns the transaction commands for this module
+func GetTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:                        types.ModuleName,
+		Short:                      fmt.Sprintf("%s transactions subcommands", types.ModuleName),
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
+	}
+
+	// this line is used by starport scaffolding # 1
+	cmd.AddCommand(
+		CmdMintLiquidityProviderToken(),
+		CmdBurnLiquidityProviderToken(),
+		CmdOpenPosition(),
+		CmdClosePosition(),
+		CmdReportLiquidation(),
+		CmdReportLevyPeriod(),
+		CmdAddMargin(),
+	)
+
+	return cmd
+}
+
+func CmdMintLiquidityProviderToken() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "deposit-to-pool [amount]",
+		Short: "deposit to pool",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`deposit to pool.
+Example:
+$ %s tx %s deposit-to-pool --from myKeyName --chain-id ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			sender := clientCtx.GetFromAddress()
+
+			amount, err := sdk.ParseCoinNormalized(args[0])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgDepositToPool(sender.String(), amount)
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdBurnLiquidityProviderToken() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "withdraw-from-pool [amount] [redeem-denom]",
+		Short: "withdraw from pool",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`withdraw from pool.
+Example:
+$ %s tx %s withdraw-from-pool 1 ubtc --from myKeyName --chain-id ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			sender := clientCtx.GetFromAddress()
+			amount, ok := sdk.NewIntFromString(args[0])
+			if !ok {
+				return fmt.Errorf("invalid amount")
+			}
+			denom := args[1]
+
+			msg := types.NewMsgWithdrawFromPool(sender.String(), amount, denom)
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdOpenPosition() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:                        "open-position",
+		Short:                      fmt.Sprintf("%s open position subcommands", types.ModuleName),
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
+	}
+
+	// this line is used by starport scaffolding # 1
+	cmd.AddCommand(
+		CmdOpenPerpetualFuturesPosition(),
+		// CmdOpenPerpetualOptionsPosition(),
+	)
+
+	return cmd
+}
+
+func CmdOpenPerpetualFuturesPosition() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "perpetual-futures [margin] [base-denom] [quote-denom] [long/short] [position-size] [leverage]",
+		Short: "open perpetual futures position",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`open perpetual futures position.
+Example:
+$ %s tx %s open-position perpetual-futures --from myKeyName --chain-id ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(6),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			sender := clientCtx.GetFromAddress()
+			margin, err := sdk.ParseCoinNormalized(args[0])
+			baseDenom := args[1]
+			quoteDenom := args[2]
+			if err != nil {
+				return err
+			}
+
+			// todo: use args (or flags) to create position instance
+			var positionType types.PositionType
+			switch args[3] {
+			case "long":
+				positionType = types.PositionType_LONG
+			case "short":
+				positionType = types.PositionType_SHORT
+			default:
+				return fmt.Errorf("invalid position type")
+			}
+
+			positionSize, err := sdk.NewDecFromStr(args[4])
+			if err != nil {
+				return err
+			}
+			// str to uint32 for levarage from args[5]
+			leverage, err := strconv.ParseUint(args[5], 10, 32)
+			if err != nil {
+				return err
+			}
+
+			positionInstVal := types.PerpetualFuturesPositionInstance{
+				PositionType: positionType,
+				Size_:        positionSize,
+				Leverage:     uint32(leverage),
+			}
+
+			// positionInstBz, err := positionInstVal.Marshal()
+			// if err != nil {
+			// 	return err
+			// }
+			// positionInstI, err :=
+			piAny, err := codecType.NewAnyWithValue(&positionInstVal)
+			if err != nil {
+				return err
+			}
+
+			// positionInstance := codecType.Any{
+			// 	TypeUrl: "/ununifi.derivatives.PerpetualFuturesPositionInstance",
+			// 	Value:   positionInstBz,
+			// }
+
+			market := types.Market{
+				BaseDenom:  baseDenom,
+				QuoteDenom: quoteDenom,
+			}
+			msg := types.NewMsgOpenPosition(sender.String(), margin, market, *piAny)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+// func CmdOpenPerpetualOptionsPosition() *cobra.Command {
+// 	cmd := &cobra.Command{
+// 		Use:   "perpetual-options [margin] [base-denom] [quote-denom]",
+// 		Short: "open perpetual options position",
+// 		Long: strings.TrimSpace(
+// 			fmt.Sprintf(`open perpetual options position.
+// Example:
+// $ %s tx %s open-position perpetual-options --from myKeyName --chain-id ununifi-x
+// `, version.AppName, types.ModuleName)),
+// 		Args: cobra.ExactArgs(3),
+// 		RunE: func(cmd *cobra.Command, args []string) error {
+// 			return fmt.Errorf("not implemented")
+// 		},
+// 	}
+
+// 	flags.AddTxFlagsToCmd(cmd)
+// 	return cmd
+// }
+
+func CmdClosePosition() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "close-position [position-id]",
+		Short: fmt.Sprintf("%s close position subcommands", types.ModuleName),
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`close position.
+Example:
+$ %s tx %s close-position --from myKeyName --chain-id ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			sender := clientCtx.GetFromAddress()
+			potisionId := args[0]
+
+			msg := types.NewMsgClosePosition(sender.String(), potisionId)
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdReportLiquidation() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "report-liquidation [position-id] [reward-recipient]",
+		Short: "report liquidation needed position",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`report liquidation needed position.
+Example:
+$ %s tx %s report-liquidation --from myKeyName --chain-id ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			sender := clientCtx.GetFromAddress()
+			msg := types.NewMsgReportLiquidation(
+				sender.String(),
+				args[0],
+				args[1],
+			)
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdReportLevyPeriod() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "report-levy-period [position-id] [reward-recipient]",
+		Short: "report levy needed position",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`report levy needed position.
+Example:
+$ %s tx %s report-levy-period --from myKeyName --chain-id ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			sender := clientCtx.GetFromAddress()
+			msg := types.NewMsgReportLevyPeriod(
+				sender.String(),
+				args[0],
+				args[1],
+			)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func CmdAddMargin() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "add-margin [position-id] [amount]",
+		Short: fmt.Sprintf("%s add margin into a position", types.ModuleName),
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`add margin.
+Example:
+$ %s tx %s add-margin [position-id] [amount] --from myKeyName --chain-id ununifi-x
+`, version.AppName, types.ModuleName)),
+		Args: cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			sender := clientCtx.GetFromAddress()
+			potisionId := args[0]
+			amount, err := sdk.ParseCoinNormalized(args[1])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgAddMargin(sender.String(), potisionId, amount)
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}

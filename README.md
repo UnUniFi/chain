@@ -12,21 +12,24 @@ sudo apt update -y; sudo apt upgrade -y
 sudo apt install -y jq git build-essential
 ```
 
-Install Go. Use the 17.x series version.
+Install Go. Use the 19.x series version.
 
 ```bash
-$ wget https://go.dev/dl/go1.17.linux-amd64.tar.gz
-$ rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.17.linux-amd64.tar.gz
+$ wget https://go.dev/dl/go1.19.2.linux-amd64.tar.gz
+$ sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.19.2.linux-amd64.tar.gz
+$ vim ~/.bashrc
+export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
+$ source ~/.bashrc
 $ go version
-go version go1.17 linux/amd64
+go version go1.19.2 linux/amd64
 ```
 
 Clone the UnUniFi blockchain repository, check out the given branch, and build it with `make install` to build binaries.
 
 ```bash
-git clone https://github.com/UnUniFi/chain chain_repo  
+git clone https://github.com/UnUniFi/chain chain_repo
 cd chain_repo
-git checkout v1.0.0
+git checkout v2.2.0
 git pull
 make install
 ```
@@ -138,7 +141,7 @@ After=network-online.target
 Environment="DAEMON_NAME=ununifid"
 Environment="DAEMON_HOME=/home/<your-user>/.ununifi"
 Environment="DAEMON_RESTART_AFTER_UPGRADE=true"
-Environment="DAEMON_ALLOW_DOWNLOAD_BINARIES=false"
+Environment="DAEMON_ALLOW_DOWNLOAD_BINARIES=true"
 Environment="DAEMON_LOG_BUFFER_SIZE=512"
 Environment="UNSAFE_SKIP_BACKUP=true"
 User=<your-user>
@@ -196,9 +199,6 @@ May 16 17:57:26 cosmovisor[232029]: 5:57PM INF Starting pprof server laddr=local
 ```
 
 ## License
-
-Forked from [Kava](github.com/Kava-Labs/kava).
-Thanks Kava Team.
 
 Copyright © UnUniFi development team. All rights reserved.
 

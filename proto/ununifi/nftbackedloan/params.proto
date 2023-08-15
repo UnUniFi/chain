@@ -1,0 +1,28 @@
+syntax = "proto3";
+package ununifi.nftbackedloan;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/nftbackedloan/types";
+
+message Params {
+  string min_staking_for_listing = 1 [
+    (gogoproto.moretags)   = "yaml:\"min_staking_for_listing\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable)   = false
+  ];
+  repeated string bid_tokens                          = 2;
+  uint64          nft_listing_cancel_required_seconds = 3;
+  uint64          bid_cancel_required_seconds         = 4;
+  uint64          nft_listing_full_payment_period     = 5;
+  uint64          nft_listing_nft_delivery_period     = 6;
+  string          nft_listing_commission_rate         = 7 [
+    (gogoproto.moretags) = "yaml:\"nft_listing_commission_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}

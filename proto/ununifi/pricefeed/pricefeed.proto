@@ -1,0 +1,52 @@
+syntax = "proto3";
+package ununifi.pricefeed;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/pricefeed/types";
+
+message Market {
+  string market_id = 1 [(gogoproto.moretags) = "yaml:\"market_id\""];
+  string base_asset = 2 [(gogoproto.moretags) = "yaml:\"base_asset\""];
+  string quote_asset = 3 [(gogoproto.moretags) = "yaml:\"quote_asset\""];
+  repeated string oracles = 4 [
+    (gogoproto.moretags) = "yaml:\"oracles\""
+  ];
+  bool active = 5 [(gogoproto.moretags) = "yaml:\"active\""];
+}
+
+message CurrentPrice {
+  string market_id = 1 [(gogoproto.moretags) = "yaml:\"market_id\""];
+  string price = 2 [
+    (gogoproto.moretags) = "yaml:\"price\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message PostedPrice {
+  string market_id = 1 [(gogoproto.moretags) = "yaml:\"market_id\""];
+  string oracle_address = 2 [
+    (gogoproto.moretags) = "yaml:\"oracle_address\""
+  ];
+  string price = 3 [
+    (gogoproto.moretags) = "yaml:\"price\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Timestamp expiry = 4 [
+    (gogoproto.moretags) = "yaml:\"expiry\"",
+    (gogoproto.nullable) = false,
+    (gogoproto.stdtime) = true
+  ];
+}
+
+message Params {
+  cosmos.base.v1beta1.Coin deposit_for_posting = 1 [(gogoproto.nullable) = false];
+  repeated Market markets = 2 [
+    (gogoproto.moretags) = "yaml:\"markets\"",
+    (gogoproto.nullable) = false
+  ];
+}

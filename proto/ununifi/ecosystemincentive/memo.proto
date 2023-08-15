@@ -1,0 +1,15 @@
+syntax = "proto3";
+package ununifi.ecosystemincentive;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/ecosystemincentive/types";
+
+message FrontendMetadata {
+  uint32 version = 1 [
+    (gogoproto.moretags) = "yaml:\"version\""
+  ];
+  string recipient = 2 [
+    (gogoproto.moretags) = "yaml:\"recipient\""
+  ];
+}

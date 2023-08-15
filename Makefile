@@ -15,7 +15,7 @@ endif
 PACKAGES_SIMTEST=$(shell go list ./... | grep '/simulation')
 LEDGER_ENABLED ?= true
 SDK_PACK := $(shell go list -m github.com/cosmos/cosmos-sdk | sed  's/ /\@/g')
-TM_VERSION := $(shell go list -m github.com/tendermint/tendermint | sed 's:.* ::') # grab everything after the space in "github.com/tendermint/tendermint v0.34.7"
+TM_VERSION := $(shell go list -m github.com/cometbft/cometbft | sed 's:.* ::') # grab everything after the space in "github.com/cometbft/cometbft v0.34.7"
 DOCKER := $(shell which docker)
 BUILDDIR ?= $(CURDIR)/build
 TEST_DOCKER_REPO=jackzampolin/ununifitest
@@ -66,7 +66,7 @@ ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=ununifi \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
 		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)" \
-			-X github.com/tendermint/tendermint/version.TMCoreSemVer=$(TM_VERSION)
+			-X github.com/cometbft/cometbft/version.TMCoreSemVer=$(TM_VERSION)
 
 ifeq (cleveldb,$(findstring cleveldb,$(JPYX_BUILD_OPTIONS)))
   ldflags += -X github.com/cosmos/cosmos-sdk/types.DBBackend=cleveldb
@@ -74,6 +74,11 @@ endif
 ifeq (,$(findstring nostrip,$(JPYX_BUILD_OPTIONS)))
   ldflags += -w -s
 endif
+
+ifeq ($(LINK_STATICALLY),true)
+	ldflags += -linkmode=external -extldflags "-Wl,-z,muldefs -static"
+endif
+
 ldflags += $(LDFLAGS)
 ldflags := $(strip $(ldflags))
 
@@ -145,17 +150,90 @@ distclean: clean
 ###                                 Tests                                   ###
 ###############################################################################
 
-test: test-unit
-test-unit:
+test: test-unit-all
+
+test-unit-all:
 	@VERSION=$(VERSION) go test  ./... 
+
+NAMES = nftmarket auction cdp nftmint
+
+test-unit: $(addprefix test-unit-, $(NAMES))
+
+test-unit-%:
+	@go test ./x/${@:test-unit-%=%}/...
+
+mocks: $(MOCKS_DIR)
+	docker run -v "$(CURDIR):/app"  -u `stat -c "%u:%g" $(CURDIR)` -w /app ekofr/gomock:go-1.17 /bin/sh scripts/utils/mockgen.sh
+
+.PHONY: mocks
 
 ###############################################################################
 ###                                Protobuf                                 ###
 ###############################################################################
 
+# Ensure following files are up-to-date based cosmos-sdk version
+# https://github.com/cosmos/cosmos-sdk/blob/main/buf.work.yaml
+# https://github.com/cosmos/cosmos-sdk/blob/main/scripts/protocgen.sh
+# https://github.com/cosmos/cosmos-sdk/tree/main/proto/buf.*
+
+protoVer=0.11.6
+protoImageName=ghcr.io/cosmos/proto-builder:$(protoVer)
+protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
+
+proto-all: proto-format proto-lint proto-gen
+
 proto-gen:
 	@echo "Generating Protobuf files"
-	# need buf and proto plugin
-	# cd docs/devtools/Makefile
-	# make buf-tools
-	./proto/gen.sh
+	@$(protoImage) sh ./scripts/protocgen.sh
+
+proto-swagger-gen:
+	@echo "Generating Protobuf Swagger"
+	@$(protoImage) sh ./scripts/protoc-swagger-gen.sh
+
+proto-format:
+	@$(protoImage) find ./ -name "*.proto" -exec clang-format -i {} \;
+
+proto-lint:
+	@$(protoImage) buf lint --error-format=json
+
+proto-check-breaking:
+	@$(protoImage) buf breaking --against $(HTTPS_GIT)#branch=main
+
+CMT_URL              = https://raw.githubusercontent.com/cometbft/cometbft/v0.37.0/proto/tendermint
+
+CMT_CRYPTO_TYPES     = proto/tendermint/crypto
+CMT_ABCI_TYPES       = proto/tendermint/abci
+CMT_TYPES            = proto/tendermint/types
+CMT_VERSION          = proto/tendermint/version
+CMT_LIBS             = proto/tendermint/libs/bits
+CMT_P2P              = proto/tendermint/p2p
+
+proto-update-deps:
+	@echo "Updating Protobuf dependencies"
+
+	@mkdir -p $(CMT_ABCI_TYPES)
+	@curl -sSL $(CMT_URL)/abci/types.proto > $(CMT_ABCI_TYPES)/types.proto
+
+	@mkdir -p $(CMT_VERSION)
+	@curl -sSL $(CMT_URL)/version/types.proto > $(CMT_VERSION)/types.proto
+
+	@mkdir -p $(CMT_TYPES)
+	@curl -sSL $(CMT_URL)/types/types.proto > $(CMT_TYPES)/types.proto
+	@curl -sSL $(CMT_URL)/types/evidence.proto > $(CMT_TYPES)/evidence.proto
+	@curl -sSL $(CMT_URL)/types/params.proto > $(CMT_TYPES)/params.proto
+	@curl -sSL $(CMT_URL)/types/validator.proto > $(CMT_TYPES)/validator.proto
+	@curl -sSL $(CMT_URL)/types/block.proto > $(CMT_TYPES)/block.proto
+
+	@mkdir -p $(CMT_CRYPTO_TYPES)
+	@curl -sSL $(CMT_URL)/crypto/proof.proto > $(CMT_CRYPTO_TYPES)/proof.proto
+	@curl -sSL $(CMT_URL)/crypto/keys.proto > $(CMT_CRYPTO_TYPES)/keys.proto
+
+	@mkdir -p $(CMT_LIBS)
+	@curl -sSL $(CMT_URL)/libs/bits/types.proto > $(CMT_LIBS)/types.proto
+
+	@mkdir -p $(CMT_P2P)
+	@curl -sSL $(CMT_URL)/p2p/types.proto > $(CMT_P2P)/types.proto
+
+	$(DOCKER) run --rm -v $(CURDIR)/proto:/workspace --workdir /workspace $(protoImageName) buf mod update
+
+.PHONY: proto-all proto-gen proto-swagger-gen proto-format proto-lint proto-check-breaking proto-update-deps

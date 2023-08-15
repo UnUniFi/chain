@@ -1,0 +1,16 @@
+syntax = "proto3";
+package ununifi.nft;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "google/protobuf/any.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/nft/types";
+
+message ClassData {
+  string send_prehook_contract = 1;
+}
+
+message NftData {
+  bool send_disabled = 1;
+}

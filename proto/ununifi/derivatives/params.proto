@@ -1,0 +1,17 @@
+syntax = "proto3";
+package ununifi.derivatives;
+
+import "gogoproto/gogo.proto";
+import "ununifi/derivatives/derivatives.proto";
+import "ununifi/derivatives/perpetual_futures.proto";
+import "ununifi/derivatives/perpetual_options.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/derivatives/types";
+
+message Params {
+  PoolParams             pool_params = 1 [(gogoproto.moretags) = "yaml:\"pool_params\"", (gogoproto.nullable) = false];
+  PerpetualFuturesParams perpetual_futures = 2
+      [(gogoproto.moretags) = "yaml:\"perpetual_futures\"", (gogoproto.nullable) = false];
+  PerpetualOptionsParams perpetual_options = 3
+      [(gogoproto.moretags) = "yaml:\"perpetual_options\"", (gogoproto.nullable) = false];
+}

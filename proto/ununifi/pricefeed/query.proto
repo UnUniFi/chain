@@ -1,0 +1,86 @@
+syntax = "proto3";
+package ununifi.pricefeed;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+// this line is used by starport scaffolding # 1
+import "ununifi/pricefeed/pricefeed.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/pricefeed/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/ununifi/pricefeed/params";
+  }
+  // this line is used by starport scaffolding # 2
+  rpc MarketAll(QueryAllMarketRequest) returns (QueryAllMarketResponse) {
+    option (google.api.http).get = "/ununifi/pricefeed/markets";
+  }
+  rpc OracleAll(QueryAllOracleRequest) returns (QueryAllOracleResponse) {
+    option (google.api.http).get = "/ununifi/pricefeed/markets/{market_id}/oracles";
+  }
+  rpc Price(QueryGetPriceRequest) returns (QueryGetPriceResponse) {
+    option (google.api.http).get = "/ununifi/pricefeed/markets/{market_id}/price";
+  }
+  rpc PriceAll(QueryAllPriceRequest) returns (QueryAllPriceResponse) {
+    option (google.api.http).get = "/ununifi/pricefeed/prices";
+  }
+  rpc RawPriceAll(QueryAllRawPriceRequest) returns (QueryAllRawPriceResponse) {
+    option (google.api.http).get = "/ununifi/pricefeed/markets/{market_id}/raw_prices";
+  }
+}
+
+message QueryParamsRequest {}
+
+message QueryParamsResponse {
+  Params params = 1;
+}
+
+// this line is used by starport scaffolding # 3
+message QueryAllMarketRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllMarketResponse {
+  repeated Market                        markets    = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryAllOracleRequest {
+  string                                market_id  = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryAllOracleResponse {
+  repeated string                        oracles    = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetPriceRequest {
+  string market_id = 1;
+}
+
+message QueryGetPriceResponse {
+  CurrentPrice price = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllPriceRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllPriceResponse {
+  repeated CurrentPrice                  prices     = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryAllRawPriceRequest {
+  string                                market_id  = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryAllRawPriceResponse {
+  repeated PostedPrice                   prices     = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}

@@ -1,0 +1,24 @@
+syntax = "proto3";
+package ununifi.nftfactory;
+
+import "gogoproto/gogo.proto";
+import "ununifi/nftfactory/nftfactory.proto";
+
+option go_package = "github.com/UnUniFi/chain/x/nftfactory/types";
+
+// GenesisState defines the nftfactory module's genesis state.
+message GenesisState {
+  Params                params = 1 [(gogoproto.moretags) = "yaml:\"params\"", (gogoproto.nullable) = false];
+  repeated GenesisClass classes = 2
+      [(gogoproto.moretags) = "yaml:\"class_ownerships\"", (gogoproto.nullable) = false];
+}
+
+message GenesisClass {
+  option (gogoproto.equal) = true;
+
+  string class_id = 1 [ (gogoproto.moretags) = "yaml:\"class_id\"" ];
+  ClassAuthorityMetadata authority_metadata = 2 [
+    (gogoproto.moretags) = "yaml:\"authority_metadata\"",
+    (gogoproto.nullable) = false
+  ];
+}

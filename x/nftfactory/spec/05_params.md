@@ -1,0 +1,17 @@
+# Network Params
+
+`Params` describes global parameters that are maintained by governance.
+
+```protobuf
+message Params {
+  // ClassCreationFee is the fee required to create a new denom using the nftfactory module
+  repeated cosmos.base.v1beta1.Coin class_creation_fee = 1 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.moretags) = "yaml:\"denom_creation_fee\"",
+    (gogoproto.nullable) = false
+  ];
+
+  // FeeCollectorAddress is the address where fees collected from denom creation are sent to
+  string fee_collector_address = 2;
+}
+```
