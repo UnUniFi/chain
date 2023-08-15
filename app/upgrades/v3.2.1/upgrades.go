@@ -9,6 +9,8 @@ import (
 
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+
 	"github.com/UnUniFi/chain/app/keepers"
 	"github.com/UnUniFi/chain/app/upgrades"
 	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
@@ -38,7 +40,7 @@ func CreateUpgradeHandler(mm *module.Manager,
 		factoryParam.FeeCollectorAddress = ""
 		_ = keepers.NftfactoryKeeper.SetParams(ctx, factoryParam)
 
-		iyaParams.FeeCollectorAddress = keepers.AccountKeeper.GetModuleAccount(ctx, yieldaggregatortypes.ModuleName).String()
+		iyaParams.FeeCollectorAddress = keepers.AccountKeeper.GetModuleAccount(ctx, authtypes.FeeCollectorName).String()
 		_ = keepers.YieldaggregatorKeeper.SetParams(ctx, &iyaParams)
 
 		return vm, nil
