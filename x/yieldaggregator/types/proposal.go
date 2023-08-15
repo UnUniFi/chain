@@ -1,4 +1,3 @@
-// Deprecated: Just for backward compatibility
 package types
 
 import (
@@ -17,6 +16,7 @@ func init() {
 // Assert ProposalAddStrategy implements govtypes.Content at compile-time
 var _ govtypes.Content = &ProposalAddStrategy{}
 
+// Deprecated: Just for backward compatibility
 func NewProposalAddStrategy(title, description string, denom, contractAddr, name, gitUrl string) *ProposalAddStrategy {
 	return &ProposalAddStrategy{
 		Title:           title,
