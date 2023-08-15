@@ -96,6 +96,7 @@ import (
 	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
 
 	nftbackedloankeeper "github.com/UnUniFi/chain/x/nftbackedloan/keeper"
+	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 
 	derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
 	nftfactorykeeper "github.com/UnUniFi/chain/x/nftfactory/keeper"
@@ -103,6 +104,7 @@ import (
 	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
 
 	ecosystemincentivekeeper "github.com/UnUniFi/chain/x/ecosystemincentive/keeper"
+	ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystemincentive/types"
 )
 
 type AppKeepers struct {
@@ -464,29 +466,29 @@ func NewAppKeeper(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	// nftbackedloanKeeper := nftbackedloankeeper.NewKeeper(
-	// 	appCodec,
-	// 	appKeepers.keys[nftbackedloantypes.StoreKey],
-	// 	appKeepers.keys[nftbackedloantypes.MemStoreKey],
-	// 	appKeepers.GetSubspace(nftbackedloantypes.ModuleName),
-	// 	appKeepers.AccountKeeper,
-	// 	appKeepers.BankKeeper,
-	// 	appKeepers.UnUniFiNFTKeeper,
-	// )
+	nftbackedloanKeeper := nftbackedloankeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[nftbackedloantypes.StoreKey],
+		appKeepers.keys[nftbackedloantypes.MemStoreKey],
+		appKeepers.GetSubspace(nftbackedloantypes.ModuleName),
+		appKeepers.AccountKeeper,
+		appKeepers.BankKeeper,
+		appKeepers.UnUniFiNFTKeeper,
+	)
 
-	// appKeepers.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
-	// 	appCodec,
-	// 	appKeepers.keys[ecosystemincentivetypes.StoreKey],
-	// 	appKeepers.GetSubspace(ecosystemincentivetypes.ModuleName),
-	// 	appKeepers.AccountKeeper,
-	// 	appKeepers.BankKeeper,
-	// 	appKeepers.DistrKeeper,
-	// 	// same as the feeCollectorName in the distribution module
-	// 	authtypes.FeeCollectorName,
-	// )
+	appKeepers.EcosystemincentiveKeeper = ecosystemincentivekeeper.NewKeeper(
+		appCodec,
+		appKeepers.keys[ecosystemincentivetypes.StoreKey],
+		appKeepers.GetSubspace(ecosystemincentivetypes.ModuleName),
+		appKeepers.AccountKeeper,
+		appKeepers.BankKeeper,
+		appKeepers.DistrKeeper,
+		// same as the feeCollectorName in the distribution module
+		authtypes.FeeCollectorName,
+	)
 
 	// create Keeper objects which have Hooks
-	// appKeepers.NftbackedloanKeeper = *nftbackedloanKeeper.SetHooks(nftbackedloantypes.NewMultiNftbackedloanHooks(appKeepers.EcosystemincentiveKeeper.Hooks()))
+	appKeepers.NftbackedloanKeeper = *nftbackedloanKeeper.SetHooks(nftbackedloantypes.NewMultiNftbackedloanHooks(appKeepers.EcosystemincentiveKeeper.Hooks()))
 
 	// appKeepers.PricefeedKeeper = pricefeedkeeper.NewKeeper(
 	// 	appCodec,
@@ -695,8 +697,8 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 
 	// original modules
 	paramsKeeper.Subspace(nftfactorytypes.ModuleName)
-	// paramsKeeper.Subspace(nftbackedloantypes.ModuleName)
-	// paramsKeeper.Subspace(ecosystemincentivetypes.ModuleName)
+	paramsKeeper.Subspace(nftbackedloantypes.ModuleName)
+	paramsKeeper.Subspace(ecosystemincentivetypes.ModuleName)
 
 	// paramsKeeper.Subspace(pricefeedtypes.ModuleName)
 	// paramsKeeper.Subspace(derivativestypes.ModuleName)

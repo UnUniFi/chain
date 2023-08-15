@@ -232,8 +232,8 @@ func appModules(
 
 		// original modules
 		nftfactory.NewAppModule(appCodec, app.AppKeepers.NftfactoryKeeper, app.AppKeepers.UnUniFiNFTKeeper),
-		// nftbackedloan.NewAppModule(appCodec, app.AppKeepers.NftbackedloanKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper),
-		// ecosystemincentive.NewAppModule(appCodec, app.AppKeepers.EcosystemincentiveKeeper, app.AppKeepers.BankKeeper),
+		nftbackedloan.NewAppModule(appCodec, app.AppKeepers.NftbackedloanKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper),
+		ecosystemincentive.NewAppModule(appCodec, app.AppKeepers.EcosystemincentiveKeeper, app.AppKeepers.BankKeeper),
 
 		// pricefeed.NewAppModule(appCodec, app.AppKeepers.PricefeedKeeper, app.AppKeepers.AccountKeeper),
 		// derivatives.NewAppModule(appCodec, app.AppKeepers.DerivativesKeeper, app.AppKeepers.BankKeeper),
@@ -295,8 +295,8 @@ func orderBeginBlockers() []string {
 		consensusparamtypes.ModuleName,
 		// original modules
 		nftfactorytypes.ModuleName,
-		// nftbackedloantypes.ModuleName,
-		// ecosystemincentivetypes.ModuleName,
+		nftbackedloantypes.ModuleName,
+		ecosystemincentivetypes.ModuleName,
 
 		// pricefeedtypes.ModuleName,
 		// derivativestypes.ModuleName,
@@ -350,8 +350,8 @@ func orderEndBlockers() []string {
 		consensusparamtypes.ModuleName,
 		// original modules
 		nftfactorytypes.ModuleName,
-		// nftbackedloantypes.ModuleName,
-		// ecosystemincentivetypes.ModuleName,
+		nftbackedloantypes.ModuleName,
+		ecosystemincentivetypes.ModuleName,
 
 		// pricefeedtypes.ModuleName,
 		// derivativestypes.ModuleName,
@@ -408,8 +408,8 @@ func orderInitGenesis() []string {
 
 		// original modules
 		nftfactorytypes.ModuleName,
-		// nftbackedloantypes.ModuleName,
-		// ecosystemincentivetypes.ModuleName,
+		nftbackedloantypes.ModuleName,
+		ecosystemincentivetypes.ModuleName,
 
 		// pricefeedtypes.ModuleName,
 		// derivativestypes.ModuleName,
