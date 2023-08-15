@@ -32,9 +32,9 @@ message EventWithdrawReward {
 // }
 
 message EventDeletedNftIdRecordedForFrontendReward {
-  string recipient_container_id = 1 [(gogoproto.moretags) = "yaml:\"recipient_container_id\""];
-  string class_id               = 2 [(gogoproto.moretags) = "yaml:\"class_id\""];
-  string token_id                 = 3 [(gogoproto.moretags) = "yaml:\"nft_id\""];
+  string recipient = 1 [(gogoproto.moretags) = "yaml:\"recipient\""];
+  string class_id  = 2 [(gogoproto.moretags) = "yaml:\"class_id\""];
+  string token_id  = 3 [(gogoproto.moretags) = "yaml:\"nft_id\""];
 }
 
 message EventNotRecordedNftId {
@@ -43,8 +43,8 @@ message EventNotRecordedNftId {
 }
 
 message EventUpdatedReward {
-  string                   recipient_container_id = 1 [(gogoproto.moretags) = "yaml:\"recipient_container_id\""];
-  cosmos.base.v1beta1.Coin earned_reward          = 2 [
+  string                   recipient     = 1 [(gogoproto.moretags) = "yaml:\"recipient\""];
+  cosmos.base.v1beta1.Coin earned_reward = 2 [
     (gogoproto.moretags)     = "yaml:\"earned_reward\"",
     (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin",
     (gogoproto.nullable)     = false
