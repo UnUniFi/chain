@@ -54,34 +54,43 @@ func (k Keeper) Strategy(c context.Context, req *types.QueryGetStrategyRequest) 
 		return nil, sdkerrors.ErrKeyNotFound
 	}
 
-	wasmQuery := `{"fee":{}}`
-	result, err := k.wasmReader.QuerySmart(ctx, sdk.MustAccAddressFromBech32(strategy.ContractAddress), []byte(wasmQuery))
-	if err != nil {
-		return nil, err
-	}
+	strategyAddr, err := sdk.AccAddressFromBech32(strategy.ContractAddress)
+	if err == nil {
+		wasmQuery := `{"fee":{}}`
+		result, err := k.wasmReader.QuerySmart(ctx, strategyAddr, []byte(wasmQuery))
+		if err != nil {
+			return nil, err
+		}
 
-	jsonMap := make(map[string]string)
-	err = json.Unmarshal(result, &jsonMap)
-	if err != nil {
-		return nil, err
-	}
-	depositFeeRate, err := math.LegacyNewDecFromStr(jsonMap["deposit_fee_rate"])
-	if err != nil {
-		return nil, err
-	}
-	withdrawFeeRate, err := math.LegacyNewDecFromStr(jsonMap["withdraw_fee_rate"])
-	if err != nil {
-		return nil, err
-	}
-	performanceFeeRate, err := math.LegacyNewDecFromStr(jsonMap["interest_fee_rate"])
-	if err != nil {
-		return nil, err
-	}
+		jsonMap := make(map[string]string)
+		err = json.Unmarshal(result, &jsonMap)
+		if err != nil {
+			return nil, err
+		}
+		depositFeeRate, err := math.LegacyNewDecFromStr(jsonMap["deposit_fee_rate"])
+		if err != nil {
+			return nil, err
+		}
+		withdrawFeeRate, err := math.LegacyNewDecFromStr(jsonMap["withdraw_fee_rate"])
+		if err != nil {
+			return nil, err
+		}
+		performanceFeeRate, err := math.LegacyNewDecFromStr(jsonMap["interest_fee_rate"])
+		if err != nil {
+			return nil, err
+		}
 
+		return &types.QueryGetStrategyResponse{
+			Strategy:           strategy,
+			DepositFeeRate:     depositFeeRate,
+			WithdrawFeeRate:    withdrawFeeRate,
+			PerformanceFeeRate: performanceFeeRate,
+		}, nil
+	}
 	return &types.QueryGetStrategyResponse{
 		Strategy:           strategy,
-		DepositFeeRate:     depositFeeRate,
-		WithdrawFeeRate:    withdrawFeeRate,
-		PerformanceFeeRate: performanceFeeRate,
+		DepositFeeRate:     math.LegacyZeroDec(),
+		WithdrawFeeRate:    math.LegacyZeroDec(),
+		PerformanceFeeRate: math.LegacyZeroDec(),
 	}, nil
 }
