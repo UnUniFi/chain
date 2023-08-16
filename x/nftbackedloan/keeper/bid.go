@@ -263,7 +263,6 @@ func (k Keeper) SafeCloseBidCollectDeposit(ctx sdk.Context, bid types.Bid) (sdk.
 	return CollectedAmount, nil
 }
 
-// todo make unit test
 func (k Keeper) SafeCloseBidWithAllInterest(ctx sdk.Context, bid types.Bid, time time.Time) error {
 	bidder, err := sdk.AccAddressFromBech32(bid.Id.Bidder)
 	if err != nil {
