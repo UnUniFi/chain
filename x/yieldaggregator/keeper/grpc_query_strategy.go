@@ -2,7 +2,9 @@ package keeper
 
 import (
 	"context"
+	"encoding/json"
 
+	math "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -52,5 +54,34 @@ func (k Keeper) Strategy(c context.Context, req *types.QueryGetStrategyRequest) 
 		return nil, sdkerrors.ErrKeyNotFound
 	}
 
-	return &types.QueryGetStrategyResponse{Strategy: strategy}, nil
+	wasmQuery := `{"fee":{}}`
+	result, err := k.wasmReader.QuerySmart(ctx, sdk.MustAccAddressFromBech32(strategy.ContractAddress), []byte(wasmQuery))
+	if err != nil {
+		return nil, err
+	}
+
+	jsonMap := make(map[string]string)
+	err = json.Unmarshal(result, &jsonMap)
+	if err != nil {
+		return nil, err
+	}
+	depositFeeRate, err := math.LegacyNewDecFromStr(jsonMap["deposit_fee_rate"])
+	if err != nil {
+		return nil, err
+	}
+	withdrawFeeRate, err := math.LegacyNewDecFromStr(jsonMap["withdraw_fee_rate"])
+	if err != nil {
+		return nil, err
+	}
+	performanceFeeRate, err := math.LegacyNewDecFromStr(jsonMap["interest_fee_rate"])
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryGetStrategyResponse{
+		Strategy:           strategy,
+		DepositFeeRate:     depositFeeRate,
+		WithdrawFeeRate:    withdrawFeeRate,
+		PerformanceFeeRate: performanceFeeRate,
+	}, nil
 }
