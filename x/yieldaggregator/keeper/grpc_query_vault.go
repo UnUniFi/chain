@@ -2,12 +2,14 @@ package keeper
 
 import (
 	"context"
+	"strconv"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -39,7 +41,17 @@ func (k Keeper) VaultAll(c context.Context, req *types.QueryAllVaultRequest) (*t
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &types.QueryAllVaultResponse{Vaults: vaults, Pagination: pageRes}, nil
+	var vaultContainers []types.VaultContainer
+	for _, vault := range vaults {
+		vaultContainers = append(vaultContainers, types.VaultContainer{
+			Vault:                vault,
+			TotalBondedAmount:    k.VaultAmountInStrategies(ctx, vault),
+			TotalUnbondingAmount: k.VaultUnbondingAmountInStrategies(ctx, vault),
+			WithdrawReserve:      k.VaultWithdrawalAmount(ctx, vault),
+		})
+	}
+
+	return &types.QueryAllVaultResponse{Vaults: vaultContainers, Pagination: pageRes}, nil
 }
 
 func (k Keeper) Vault(c context.Context, req *types.QueryGetVaultRequest) (*types.QueryGetVaultResponse, error) {
@@ -62,14 +74,58 @@ func (k Keeper) Vault(c context.Context, req *types.QueryGetVaultRequest) (*type
 		strategies = append(strategies, strategy)
 	}
 
-	vaultModName := types.GetVaultModuleAccountName(req.Id)
-	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+	// vaultModName := types.GetVaultModuleAccountName(req.Id)
+	// vaultModAddr := authtypes.NewModuleAddress(vaultModName)
 	return &types.QueryGetVaultResponse{
-		Vault:                  vault,
-		Strategies:             strategies,
-		VaultAddress:           vaultModAddr.String(),
-		TotalBondedAmount:      k.VaultAmountInStrategies(ctx, vault),
-		TotalUnbondingAmount:   k.VaultUnbondingAmountInStrategies(ctx, vault),
-		TotalWithdrawalBalance: k.VaultWithdrawalAmount(ctx, vault),
+		Vault:                vault,
+		Strategies:           strategies,
+		TotalBondedAmount:    k.VaultAmountInStrategies(ctx, vault),
+		TotalUnbondingAmount: k.VaultUnbondingAmountInStrategies(ctx, vault),
+		WithdrawReserve:      k.VaultWithdrawalAmount(ctx, vault),
 	}, nil
+}
+
+func (k Keeper) VaultAllByShareHolder(c context.Context, req *types.QueryAllVaultByShareHolderRequest) (*types.QueryAllVaultByShareHolderResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+
+	addr, err := sdk.AccAddressFromBech32(req.ShareHolder)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	balances := k.bankKeeper.GetAllBalances(ctx, addr)
+
+	var vaultContainers []types.VaultContainer
+	for _, coin := range balances {
+		denomParts := strings.Split(coin.Denom, "/")
+
+		if len(denomParts) != 3 {
+			continue
+		}
+		// TODO: want to types.Module name. state breaking
+		if denomParts[0] != "yield-aggregator" || denomParts[1] != "vaults" {
+			continue
+		}
+		vaultId, err := strconv.Atoi(denomParts[2])
+		if err != nil {
+			continue
+		}
+		vault, found := k.GetVault(ctx, uint64(vaultId))
+		if !found {
+			continue
+		}
+
+		vaultContainers = append(vaultContainers, types.VaultContainer{
+			Vault:                vault,
+			TotalBondedAmount:    k.VaultAmountInStrategies(ctx, vault),
+			TotalUnbondingAmount: k.VaultUnbondingAmountInStrategies(ctx, vault),
+			WithdrawReserve:      k.VaultWithdrawalAmount(ctx, vault),
+		})
+	}
+
+	return &types.QueryAllVaultByShareHolderResponse{Vaults: vaultContainers}, nil
 }

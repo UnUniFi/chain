@@ -23,6 +23,10 @@ service Query {
     option (google.api.http).get = "/ununifi/yieldaggregator/vaults";
   }
 
+  rpc VaultAllByShareHolder(QueryAllVaultByShareHolderRequest) returns (QueryAllVaultByShareHolderResponse) {
+    option (google.api.http).get = "/ununifi/yieldaggregator/vaults/share-holders/{share_holder}";
+  }
+
   rpc Vault(QueryGetVaultRequest) returns (QueryGetVaultResponse) {
     option (google.api.http).get = "/ununifi/yieldaggregator/vaults/{id}";
   }
@@ -59,9 +63,36 @@ message QueryAllVaultRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
+message VaultContainer {
+  Vault vault = 1 [(gogoproto.nullable) = false];
+  string            total_bonded_amount = 2 [
+    (cosmos_proto.scalar)  = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable)   = false
+  ];
+  string total_unbonding_amount = 3 [
+    (cosmos_proto.scalar)  = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable)   = false
+  ];
+  string withdraw_reserve = 4 [
+    (cosmos_proto.scalar)  = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable)   = false
+  ];
+}
+
 message QueryAllVaultResponse {
-  repeated Vault                         vaults     = 1 [(gogoproto.nullable) = false];
+  repeated VaultContainer                vaults     = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryAllVaultByShareHolderRequest {
+  string share_holder = 1;
+}
+
+message QueryAllVaultByShareHolderResponse {
+  repeated VaultContainer                vaults     = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryGetVaultRequest {
@@ -70,23 +101,22 @@ message QueryGetVaultRequest {
 
 message QueryGetVaultResponse {
   Vault             vault               = 1 [(gogoproto.nullable) = false];
-  repeated Strategy strategies          = 2 [(gogoproto.nullable) = false];
-  string            vault_address       = 3;
-  string            total_bonded_amount = 4 [
+  string            total_bonded_amount = 2 [
     (cosmos_proto.scalar)  = "cosmos.Int",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable)   = false
   ];
-  string total_unbonding_amount = 5 [
+  string total_unbonding_amount = 3 [
     (cosmos_proto.scalar)  = "cosmos.Int",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable)   = false
   ];
-  string total_withdrawal_balance = 6 [
+  string withdraw_reserve = 4 [
     (cosmos_proto.scalar)  = "cosmos.Int",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable)   = false
   ];
+  repeated Strategy strategies          = 5 [(gogoproto.nullable) = false];
 }
 
 message QueryAllStrategyRequest {
@@ -106,6 +136,21 @@ message QueryGetStrategyRequest {
 
 message QueryGetStrategyResponse {
   Strategy strategy = 1 [(gogoproto.nullable) = false];
+  string deposit_fee_rate = 2 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+  string withdraw_fee_rate = 3 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+  string performance_fee_rate = 4 [
+    (cosmos_proto.scalar)  = "cosmos.Dec",
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
 }
 
 message QueryEstimateMintAmountRequest {
@@ -123,5 +168,7 @@ message QueryEstimateRedeemAmountRequest {
 }
 
 message QueryEstimateRedeemAmountResponse {
-  cosmos.base.v1beta1.Coin redeem_amount = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin share_amount = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin fee = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin redeem_amount = 3 [(gogoproto.nullable) = false];
 }
