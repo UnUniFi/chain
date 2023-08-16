@@ -17,4 +17,4 @@ jobs:
         run: go build -v ./...
 
       - name: Test
-        run: go test -v `go list ./... | grep -v -E 'x/nftbackedloan/|x/derivatives/|x/pricefeed/|x/ecosystemincentive/'`
+        run: go test -v `go list ./... | grep -v -E 'x/derivatives/|x/pricefeed/'`
