@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -25,12 +26,12 @@ func (suite *KeeperTestSuite) TestStrategyQuerySingle() {
 		{
 			desc:     "First",
 			request:  &types.QueryGetStrategyRequest{Denom: vaultDenom, Id: msgs[0].Id},
-			response: &types.QueryGetStrategyResponse{Strategy: msgs[0]},
+			response: &types.QueryGetStrategyResponse{Strategy: msgs[0], DepositFeeRate: math.LegacyZeroDec(), WithdrawFeeRate: math.LegacyZeroDec(), PerformanceFeeRate: math.LegacyZeroDec()},
 		},
 		{
 			desc:     "Second",
 			request:  &types.QueryGetStrategyRequest{Denom: vaultDenom, Id: msgs[1].Id},
-			response: &types.QueryGetStrategyResponse{Strategy: msgs[1]},
+			response: &types.QueryGetStrategyResponse{Strategy: msgs[1], DepositFeeRate: math.LegacyZeroDec(), WithdrawFeeRate: math.LegacyZeroDec(), PerformanceFeeRate: math.LegacyZeroDec()},
 		},
 		{
 			desc:    "KeyNotFound",

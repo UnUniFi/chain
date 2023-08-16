@@ -74,8 +74,6 @@ func (k Keeper) Vault(c context.Context, req *types.QueryGetVaultRequest) (*type
 		strategies = append(strategies, strategy)
 	}
 
-	// vaultModName := types.GetVaultModuleAccountName(req.Id)
-	// vaultModAddr := authtypes.NewModuleAddress(vaultModName)
 	return &types.QueryGetVaultResponse{
 		Vault:                vault,
 		Strategies:           strategies,

@@ -79,9 +79,13 @@ func (suite *KeeperTestSuite) TestVaultQueryPaginated() {
 			resp, err := keeper.VaultAll(wctx, request(nil, uint64(i), uint64(step), false))
 			suite.Require().NoError(err)
 			suite.Require().LessOrEqual(len(resp.Vaults), step)
+			vaults := []types.Vault{}
+			for _, vault := range resp.Vaults {
+				vaults = append(vaults, vault.Vault)
+			}
 			suite.Require().Subset(
 				nullify.Fill(msgs),
-				nullify.Fill(resp.Vaults),
+				nullify.Fill(vaults),
 			)
 		}
 	})
@@ -92,9 +96,13 @@ func (suite *KeeperTestSuite) TestVaultQueryPaginated() {
 			resp, err := keeper.VaultAll(wctx, request(next, 0, uint64(step), false))
 			suite.Require().NoError(err)
 			suite.Require().LessOrEqual(len(resp.Vaults), step)
+			vaults := []types.Vault{}
+			for _, vault := range resp.Vaults {
+				vaults = append(vaults, vault.Vault)
+			}
 			suite.Require().Subset(
 				nullify.Fill(msgs),
-				nullify.Fill(resp.Vaults),
+				nullify.Fill(vaults),
 			)
 			next = resp.Pagination.NextKey
 		}
