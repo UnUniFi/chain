@@ -21,8 +21,8 @@ func (k Keeper) RewardDistributionOfNftbackedloan(ctx sdk.Context, nftId nftback
 	}
 	rewardForRecipient := nftbackedloanFrontendRewardRate.MulInt(fee.Amount).TruncateInt()
 	totalReward = totalReward.Add(rewardForRecipient)
-	recipient, exists := k.GetRecipientByNftId(ctx, nftId)
-	if !exists {
+	recipient, exist := k.GetRecipientByNftId(ctx, nftId)
+	if !exist {
 		// emit event to inform the nftId is not associated with recipient and return
 		_ = ctx.EventManager().EmitTypedEvent(&types.EventNotRecordedNftId{
 			ClassId: nftId.ClassId,
@@ -31,7 +31,6 @@ func (k Keeper) RewardDistributionOfNftbackedloan(ctx sdk.Context, nftId nftback
 
 		// Distribute the reward to the community pool if there's no recipient associated with the nftId
 		rewardForCommunityPool = rewardForCommunityPool.Add(rewardForRecipient)
-	} else {
 		rewardForRecipient = sdk.ZeroInt()
 	}
 
