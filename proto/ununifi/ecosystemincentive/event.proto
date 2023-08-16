@@ -31,6 +31,12 @@ message EventWithdrawReward {
 //   string memo     = 3 [(gogoproto.moretags) = "yaml:\"memo\""];
 // }
 
+message EventRecordedRecipientWithNftId {
+  string recipient = 1 [(gogoproto.moretags) = "yaml:\"recipient\""];
+  string class_id  = 2 [(gogoproto.moretags) = "yaml:\"class_id\""];
+  string token_id  = 3 [(gogoproto.moretags) = "yaml:\"nft_id\""];
+}
+
 message EventDeletedNftIdRecordedForFrontendReward {
   string recipient = 1 [(gogoproto.moretags) = "yaml:\"recipient\""];
   string class_id  = 2 [(gogoproto.moretags) = "yaml:\"class_id\""];
