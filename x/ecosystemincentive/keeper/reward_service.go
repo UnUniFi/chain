@@ -12,7 +12,7 @@ import (
 func (k Keeper) RewardDistributionOfNftbackedloan(ctx sdk.Context, nftId nftbackedloantypes.NftId, fee sdk.Coin) error {
 	totalReward := sdk.ZeroInt()
 	rewardForCommunityPool := sdk.ZeroInt()
-	// First, get recipient by nftId from RecipientContainerIdByNftId KVStore
+	// First, get recipient by nftId from RecipientByNftId KVStore
 	// If the recipient doesn't exist, return nil and distribute the reward for the frontend
 	// to the treasury.
 	nftbackedloanFrontendRewardRate := k.GetNftbackedloanFrontendRewardRate(ctx)
