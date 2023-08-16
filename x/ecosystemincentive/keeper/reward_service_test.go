@@ -9,7 +9,7 @@ import (
 	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
-func (suite *KeeperTestSuite) TestRewardDistributionOfnftbackedloan() {
+func (suite *KeeperTestSuite) TestRewardDistributionOfNftbackedloan() {
 	testCases := []struct {
 		testCase   string
 		nftId      nftbackedloantypes.NftId
