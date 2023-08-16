@@ -25,7 +25,7 @@ func (suite *KeeperTestSuite) AccumulateRewardForFrontendTest(ctx sdk.Context, n
 	// get recipient by nftId
 	recipient, exists := suite.app.EcosystemincentiveKeeper.GetRecipientByNftId(ctx, nftId)
 	if !exists {
-		return types.ErrRegisteredIncentiveId
+		return types.ErrNotRegisteredRecipient
 	}
 
 	nftbackedloanFrontendRewardRate := suite.app.EcosystemincentiveKeeper.GetNftbackedloanFrontendRewardRate(ctx)

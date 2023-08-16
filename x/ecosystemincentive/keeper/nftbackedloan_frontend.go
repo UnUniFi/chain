@@ -43,7 +43,7 @@ func (k Keeper) DeleteFrontendRecord(ctx sdk.Context, nftId nftbackedloantypes.N
 	//  but not panic and just return
 	recipient, exists := k.GetRecipientByNftId(ctx, nftId)
 	if !exists {
-		return fmt.Errorf(sdkerrors.Wrap(types.ErrRecipientContainerIdByNftIdDoesntExist, nftId.String()).Error())
+		return fmt.Errorf(sdkerrors.Wrap(types.ErrRecipientByNftIdNotExist, nftId.String()).Error())
 
 	}
 
