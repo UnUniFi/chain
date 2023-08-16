@@ -64,8 +64,8 @@ message QueryAllVaultRequest {
 }
 
 message VaultContainer {
-  Vault vault = 1 [(gogoproto.nullable) = false];
-  string            total_bonded_amount = 2 [
+  Vault  vault               = 1 [(gogoproto.nullable) = false];
+  string total_bonded_amount = 2 [
     (cosmos_proto.scalar)  = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable)   = false
@@ -92,7 +92,7 @@ message QueryAllVaultByShareHolderRequest {
 }
 
 message QueryAllVaultByShareHolderResponse {
-  repeated VaultContainer                vaults     = 1 [(gogoproto.nullable) = false];
+  repeated VaultContainer vaults = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryGetVaultRequest {
@@ -100,8 +100,8 @@ message QueryGetVaultRequest {
 }
 
 message QueryGetVaultResponse {
-  Vault             vault               = 1 [(gogoproto.nullable) = false];
-  string            total_bonded_amount = 2 [
+  Vault  vault               = 1 [(gogoproto.nullable) = false];
+  string total_bonded_amount = 2 [
     (cosmos_proto.scalar)  = "cosmos.Int",
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable)   = false
@@ -116,7 +116,7 @@ message QueryGetVaultResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable)   = false
   ];
-  repeated Strategy strategies          = 5 [(gogoproto.nullable) = false];
+  repeated Strategy strategies = 5 [(gogoproto.nullable) = false];
 }
 
 message QueryAllStrategyRequest {
@@ -125,7 +125,7 @@ message QueryAllStrategyRequest {
 }
 
 message QueryAllStrategyResponse {
-  repeated Strategy                      strategies = 1 [(gogoproto.nullable) = false];
+  repeated StrategyContainer             strategies = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -134,9 +134,9 @@ message QueryGetStrategyRequest {
   uint64 id    = 2;
 }
 
-message QueryGetStrategyResponse {
-  Strategy strategy = 1 [(gogoproto.nullable) = false];
-  string deposit_fee_rate = 2 [
+message StrategyContainer {
+  Strategy strategy         = 1 [(gogoproto.nullable) = false];
+  string   deposit_fee_rate = 2 [
     (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
@@ -151,6 +151,10 @@ message QueryGetStrategyResponse {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
+}
+
+message QueryGetStrategyResponse {
+  StrategyContainer strategy = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryEstimateMintAmountRequest {
@@ -168,7 +172,7 @@ message QueryEstimateRedeemAmountRequest {
 }
 
 message QueryEstimateRedeemAmountResponse {
-  cosmos.base.v1beta1.Coin share_amount = 1 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin fee = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin share_amount  = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin fee           = 2 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin redeem_amount = 3 [(gogoproto.nullable) = false];
 }

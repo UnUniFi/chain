@@ -76,3 +76,31 @@ func CmdShowVault() *cobra.Command {
 
 	return cmd
 }
+
+func CmdVaultAllByShareHolder() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "list-vault-by-share-holder [holder]",
+		Short: "List vaults by share holder",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QueryAllVaultByShareHolderRequest{
+				ShareHolder: args[0],
+			}
+
+			res, err := queryClient.VaultAllByShareHolder(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}

@@ -24,14 +24,22 @@ func (suite *KeeperTestSuite) TestStrategyQuerySingle() {
 		err      error
 	}{
 		{
-			desc:     "First",
-			request:  &types.QueryGetStrategyRequest{Denom: vaultDenom, Id: msgs[0].Id},
-			response: &types.QueryGetStrategyResponse{Strategy: msgs[0], DepositFeeRate: math.LegacyZeroDec(), WithdrawFeeRate: math.LegacyZeroDec(), PerformanceFeeRate: math.LegacyZeroDec()},
+			desc:    "First",
+			request: &types.QueryGetStrategyRequest{Denom: vaultDenom, Id: msgs[0].Id},
+			response: &types.QueryGetStrategyResponse{
+				Strategy: types.StrategyContainer{
+					Strategy: msgs[0], DepositFeeRate: math.LegacyZeroDec(), WithdrawFeeRate: math.LegacyZeroDec(), PerformanceFeeRate: math.LegacyZeroDec(),
+				},
+			},
 		},
 		{
-			desc:     "Second",
-			request:  &types.QueryGetStrategyRequest{Denom: vaultDenom, Id: msgs[1].Id},
-			response: &types.QueryGetStrategyResponse{Strategy: msgs[1], DepositFeeRate: math.LegacyZeroDec(), WithdrawFeeRate: math.LegacyZeroDec(), PerformanceFeeRate: math.LegacyZeroDec()},
+			desc:    "Second",
+			request: &types.QueryGetStrategyRequest{Denom: vaultDenom, Id: msgs[1].Id},
+			response: &types.QueryGetStrategyResponse{
+				Strategy: types.StrategyContainer{
+					Strategy: msgs[1], DepositFeeRate: math.LegacyZeroDec(), WithdrawFeeRate: math.LegacyZeroDec(), PerformanceFeeRate: math.LegacyZeroDec(),
+				},
+			},
 		},
 		{
 			desc:    "KeyNotFound",
