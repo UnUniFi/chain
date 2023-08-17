@@ -53,14 +53,14 @@ func (k Keeper) HandleMemoTxWithMsgListNft(ctx sdk.Context, msg *nftbackedloanty
 	// types.AvailableVersions[0] = 1
 	case types.AvailableVersions[0]:
 		// Store the incentive-unit-id in NftIdForFrontend KVStore with nft-id as key
-		k.RecordRecipientWithNftId(ctx, msg.NftId, metadata.Recipient)
+		_ = k.RecordRecipientWithNftId(ctx, msg.NftId, metadata.Recipient)
 
 	// If the value doesn't match any cases, emit event and don't do anything
 	default:
 		_ = ctx.EventManager().EmitTypedEvent(&types.EventVersionUnmatched{
 			UnmatchedVersion: metadata.Version,
 			ClassId:          msg.NftId.ClassId,
-			NftId:            msg.NftId.TokenId,
+			TokenId:          msg.NftId.TokenId,
 		})
 	}
 }
