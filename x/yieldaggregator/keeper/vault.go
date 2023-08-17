@@ -79,6 +79,35 @@ func (k Keeper) RemoveVault(ctx sdk.Context, id uint64) {
 	store.Delete(GetVaultIDBytes(id))
 }
 
+func (k Keeper) MigrateAllLegacyVaults(ctx sdk.Context) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.VaultKey))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	legacyVaults := []types.LegacyVault{}
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.LegacyVault
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		legacyVaults = append(legacyVaults, val)
+	}
+
+	for _, legacyVault := range legacyVaults {
+		vault := types.Vault{
+			Id:                     legacyVault.Id,
+			Denom:                  legacyVault.Denom,
+			Name:                   "",
+			Description:            "",
+			Owner:                  legacyVault.Owner,
+			OwnerDeposit:           legacyVault.OwnerDeposit,
+			WithdrawCommissionRate: legacyVault.WithdrawCommissionRate,
+			WithdrawReserveRate:    legacyVault.WithdrawReserveRate,
+			StrategyWeights:        legacyVault.StrategyWeights,
+		}
+		k.SetVault(ctx, vault)
+	}
+}
+
 // GetAllVault returns all vault
 func (k Keeper) GetAllVault(ctx sdk.Context) (list []types.Vault) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.VaultKey))

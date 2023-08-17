@@ -104,8 +104,7 @@ func (k Keeper) VaultAllByShareHolder(c context.Context, req *types.QueryAllVaul
 		if len(denomParts) != 3 {
 			continue
 		}
-		// TODO: want to types.Module name. state breaking
-		if denomParts[0] != "yield-aggregator" || denomParts[1] != "vaults" {
+		if denomParts[0] != types.ModuleName || denomParts[1] != "vaults" {
 			continue
 		}
 		vaultId, err := strconv.Atoi(denomParts[2])

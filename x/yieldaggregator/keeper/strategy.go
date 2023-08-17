@@ -82,6 +82,32 @@ func (k Keeper) RemoveStrategy(ctx sdk.Context, vaultDenom string, id uint64) {
 	store.Delete(GetStrategyIDBytes(id))
 }
 
+func (k Keeper) MigrateAllLegacyStrategies(ctx sdk.Context) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixStrategy(""))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	legacyStrategies := []types.LegacyStrategy{}
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.LegacyStrategy
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		legacyStrategies = append(legacyStrategies, val)
+	}
+
+	for _, legacyStrategy := range legacyStrategies {
+		strategy := types.Strategy{
+			Denom:           legacyStrategy.Denom,
+			Id:              legacyStrategy.Id,
+			ContractAddress: legacyStrategy.ContractAddress,
+			Name:            legacyStrategy.Name,
+			Description:     "",
+			GitUrl:          legacyStrategy.GitUrl,
+		}
+		k.SetStrategy(ctx, strategy.Denom, strategy)
+	}
+}
+
 // GetAllStrategy returns all Strategy
 func (k Keeper) GetAllStrategy(ctx sdk.Context, vaultDenom string) (list []types.Strategy) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixStrategy(vaultDenom))
