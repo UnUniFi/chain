@@ -63,19 +63,21 @@ message MsgCreateVault {
 
   string sender          = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string denom           = 2;
-  string commission_rate = 3 [
+  string name            = 3;
+  string description     = 4;
+  string commission_rate = 5 [
     (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
-  string withdraw_reserve_rate = 4 [
+  string withdraw_reserve_rate = 6 [
     (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
-  repeated StrategyWeight  strategy_weights = 5 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin fee              = 6 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin deposit          = 7 [(gogoproto.nullable) = false];
+  repeated StrategyWeight  strategy_weights = 7 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin fee              = 8 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin deposit          = 9 [(gogoproto.nullable) = false];
 }
 
 message MsgCreateVaultResponse {
@@ -117,7 +119,8 @@ message MsgRegisterStrategy {
   string denom            = 2;
   string contract_address = 3;
   string name             = 4;
-  string git_url          = 5;
+  string description      = 5;
+  string git_url          = 6;
 }
 
 message MsgRegisterStrategyResponse {}
