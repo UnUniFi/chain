@@ -35,7 +35,8 @@ func (k Keeper) AllRewards(c context.Context, req *types.QueryAllRewardsRequest)
 
 	record, exists := k.GetRewardRecord(ctx, accAddr)
 	if !exists {
-		return nil, types.ErrAddressNotHaveReward
+		record.Address = accAddr.String()
+		return &types.QueryAllRewardsResponse{RewardRecord: record}, nil
 	}
 
 	return &types.QueryAllRewardsResponse{RewardRecord: record}, nil
@@ -54,12 +55,12 @@ func (k Keeper) Reward(c context.Context, req *types.QueryRewardRequest) (*types
 
 	allRewards, exists := k.GetRewardRecord(ctx, accAddr)
 	if !exists {
-		return &types.QueryRewardResponse{Reward: sdk.Coin{}}, types.ErrAddressNotHaveReward
+		return &types.QueryRewardResponse{Reward: sdk.Coin{}}, nil
 	}
 
 	exists, reward := allRewards.Rewards.Find(req.Denom)
 	if !exists {
-		return &types.QueryRewardResponse{Reward: sdk.Coin{}}, types.ErrDenomRewardNotExists
+		return &types.QueryRewardResponse{Reward: sdk.Coin{}}, nil
 	}
 
 	return &types.QueryRewardResponse{Reward: reward}, nil
