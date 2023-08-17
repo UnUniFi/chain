@@ -77,7 +77,7 @@ func CmdQueryNftListing() *cobra.Command {
 
 			params := &types.QueryNftListingRequest{
 				ClassId: args[0],
-				NftId:   args[1],
+				TokenId: args[1],
 			}
 
 			res, err := queryClient.NftListing(context.Background(), params)
@@ -172,7 +172,7 @@ func CmdQueryLoan() *cobra.Command {
 
 			params := &types.QueryLoanRequest{
 				ClassId: args[0],
-				NftId:   args[1],
+				TokenId: args[1],
 			}
 
 			res, err := queryClient.Loan(context.Background(), params)
@@ -201,7 +201,7 @@ func CmdQueryNftBids() *cobra.Command {
 
 			params := &types.QueryNftBidsRequest{
 				ClassId: args[0],
-				NftId:   args[1],
+				TokenId: args[1],
 			}
 
 			res, err := queryClient.NftBids(context.Background(), params)
@@ -317,7 +317,7 @@ func CmdQueryLiquidation() *cobra.Command {
 
 			params := &types.QueryLiquidationRequest{
 				ClassId: args[0],
-				NftId:   args[1],
+				TokenId: args[1],
 			}
 
 			res, err := queryClient.Liquidation(context.Background(), params)

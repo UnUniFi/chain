@@ -73,15 +73,15 @@ func request_Query_NftListing_0(ctx context.Context, marshaler runtime.Marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "class_id", err)
 	}
 
-	val, ok = pathParams["nft_id"]
+	val, ok = pathParams["token_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nft_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "token_id")
 	}
 
-	protoReq.NftId, err = runtime.String(val)
+	protoReq.TokenId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nft_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "token_id", err)
 	}
 
 	msg, err := client.NftListing(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -111,15 +111,15 @@ func local_request_Query_NftListing_0(ctx context.Context, marshaler runtime.Mar
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "class_id", err)
 	}
 
-	val, ok = pathParams["nft_id"]
+	val, ok = pathParams["token_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nft_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "token_id")
 	}
 
-	protoReq.NftId, err = runtime.String(val)
+	protoReq.TokenId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nft_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "token_id", err)
 	}
 
 	msg, err := server.NftListing(ctx, &protoReq)
@@ -297,15 +297,15 @@ func request_Query_Loan_0(ctx context.Context, marshaler runtime.Marshaler, clie
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "class_id", err)
 	}
 
-	val, ok = pathParams["nft_id"]
+	val, ok = pathParams["token_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nft_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "token_id")
 	}
 
-	protoReq.NftId, err = runtime.String(val)
+	protoReq.TokenId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nft_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "token_id", err)
 	}
 
 	msg, err := client.Loan(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -335,15 +335,15 @@ func local_request_Query_Loan_0(ctx context.Context, marshaler runtime.Marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "class_id", err)
 	}
 
-	val, ok = pathParams["nft_id"]
+	val, ok = pathParams["token_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nft_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "token_id")
 	}
 
-	protoReq.NftId, err = runtime.String(val)
+	protoReq.TokenId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nft_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "token_id", err)
 	}
 
 	msg, err := server.Loan(ctx, &protoReq)
@@ -373,15 +373,15 @@ func request_Query_NftBids_0(ctx context.Context, marshaler runtime.Marshaler, c
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "class_id", err)
 	}
 
-	val, ok = pathParams["nft_id"]
+	val, ok = pathParams["token_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nft_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "token_id")
 	}
 
-	protoReq.NftId, err = runtime.String(val)
+	protoReq.TokenId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nft_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "token_id", err)
 	}
 
 	msg, err := client.NftBids(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -411,15 +411,15 @@ func local_request_Query_NftBids_0(ctx context.Context, marshaler runtime.Marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "class_id", err)
 	}
 
-	val, ok = pathParams["nft_id"]
+	val, ok = pathParams["token_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nft_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "token_id")
 	}
 
-	protoReq.NftId, err = runtime.String(val)
+	protoReq.TokenId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nft_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "token_id", err)
 	}
 
 	msg, err := server.NftBids(ctx, &protoReq)
@@ -557,15 +557,15 @@ func request_Query_Liquidation_0(ctx context.Context, marshaler runtime.Marshale
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "class_id", err)
 	}
 
-	val, ok = pathParams["nft_id"]
+	val, ok = pathParams["token_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nft_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "token_id")
 	}
 
-	protoReq.NftId, err = runtime.String(val)
+	protoReq.TokenId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nft_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "token_id", err)
 	}
 
 	msg, err := client.Liquidation(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -595,15 +595,15 @@ func local_request_Query_Liquidation_0(ctx context.Context, marshaler runtime.Ma
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "class_id", err)
 	}
 
-	val, ok = pathParams["nft_id"]
+	val, ok = pathParams["token_id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nft_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "token_id")
 	}
 
-	protoReq.NftId, err = runtime.String(val)
+	protoReq.TokenId, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nft_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "token_id", err)
 	}
 
 	msg, err := server.Liquidation(ctx, &protoReq)
@@ -1094,7 +1094,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 var (
 	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"ununifi", "nftbackedloan", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_NftListing_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"ununifi", "nftbackedloan", "nft-listing", "class_id", "nft_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_NftListing_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"ununifi", "nftbackedloan", "nft-listing", "class_id", "token_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_ListedNfts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"ununifi", "nftbackedloan", "listed-nfts"}, "", runtime.AssumeColonVerbOpt(false)))
 
@@ -1102,15 +1102,15 @@ var (
 
 	pattern_Query_ListedClass_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"ununifi", "nftbackedloan", "listed-class", "class_id", "nft_limit"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Loan_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"ununifi", "nftbackedloan", "loans", "class_id", "nft_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Loan_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"ununifi", "nftbackedloan", "loans", "class_id", "token_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_NftBids_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"ununifi", "nftbackedloan", "nft-bids", "class_id", "nft_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_NftBids_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"ununifi", "nftbackedloan", "nft-bids", "class_id", "token_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_BidderBids_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"ununifi", "nftbackedloan", "bidder-bids", "bidder"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_Rewards_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"ununifi", "nftbackedloan", "rewards", "address"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Liquidation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"ununifi", "nftbackedloan", "liquidation", "class_id", "nft_id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Liquidation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"ununifi", "nftbackedloan", "liquidation", "class_id", "token_id"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (
