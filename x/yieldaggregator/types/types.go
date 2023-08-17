@@ -2,6 +2,7 @@ package types
 
 import "fmt"
 
+// TODO: want to %s with types.Module name. state breaking
 func GetLPTokenDenom(vaultId uint64) string {
 	return fmt.Sprintf("yield-aggregator/vaults/%d", vaultId)
 }
