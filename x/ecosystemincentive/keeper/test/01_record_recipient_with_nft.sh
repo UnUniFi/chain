@@ -2,18 +2,25 @@
 
 # block speed
 sleep=5
-class_id=ununifi-1AFC3C85B52311F13161F724B284EF900458E3B3
+class_id=test
 token_id=a01
 user1_address=ununifi155u042u8wk3al32h3vzxu989jj76k4zcu44v6w
 
-# mint nft
+echo "------------create class------------"
+ununifid tx nftfactory create-class $class_id \
+--from user1 --keyring-backend test --chain-id test --yes
+
+class_id=$(ununifid q nftfactory classes-from-creator $user1_address -o json | jq .classes[0] | tr -d '"')
+
+sleep $sleep
+
 echo "------------mint nft------------"
 ununifid tx nftfactory mint-nft \
 $class_id $token_id $user1_address \
 --from user1 --keyring-backend test --chain-id test --yes
 
 sleep $sleep
-# list nft
+
 echo "------------list nft------------"
 ununifid tx nftbackedloan list \
 $class_id $token_id \
