@@ -24,6 +24,10 @@ service Query {
   rpc Reward(QueryRewardRequest) returns (QueryRewardResponse) {
     option (google.api.http).get = "/ununifi/ecosystemincentive/rewards/{address}/{denom}";
   }
+
+  rpc RecipientAddressWithNftId(QueryRecipientAddressWithNftIdRequest) returns (QueryRecipientAddressWithNftIdResponse) {
+    option (google.api.http).get = "/ununifi/ecosystemincentive/recipients/{class_id}/{token_id}";
+  }
 }
 
 message QueryParamsRequest {}
