@@ -14,17 +14,17 @@ func (k Keeper) MemoTxHandler(ctx sdk.Context, msgs []sdk.Msg, memo string) {
 		return
 	}
 
-	d := make(map[string]interface{})
+	d := make(map[string]json.RawMessage)
 	err := json.Unmarshal([]byte(memo), &d)
 	if err != nil || d["frontend"] == nil {
 		return
 	}
-	txMemo := types.FrontendTxMemo{}
-	err = json.Unmarshal([]byte(memo), &txMemo)
+	// txMemo := types.FrontendTxMemo{}
+	metadata := types.FrontendMetadata{}
+	err = json.Unmarshal(d["frontend"], &metadata)
 	if err != nil {
 		return
 	}
-	metadata := txMemo.Frontend
 
 	if err != nil {
 		// _ = ctx.EventManager().EmitTypedEvent(&types.EventFailedParsingTxMemoData{
@@ -43,7 +43,7 @@ func (k Keeper) MemoTxHandler(ctx sdk.Context, msgs []sdk.Msg, memo string) {
 	}
 }
 
-func (k Keeper) HandleMemoTxWithMsgListNft(ctx sdk.Context, msg *nftbackedloantypes.MsgListNft, metadata *types.FrontendMetadata) {
+func (k Keeper) HandleMemoTxWithMsgListNft(ctx sdk.Context, msg *nftbackedloantypes.MsgListNft, metadata types.FrontendMetadata) {
 	// guide the execution based on the version in the memo inputs
 	// switch by values of AvailableVersions which is defined in ../types/memo.go
 	//var AvailableVersions = []string{
