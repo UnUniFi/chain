@@ -27,38 +27,54 @@ func CreateUpgradeHandler(mm *module.Manager,
 		// migrate strategies
 		keepers.YieldaggregatorKeeper.MigrateAllLegacyStrategies(ctx)
 		// migrate denoms
-		balances := keepers.BankKeeper.GetAccountsBalances(ctx)
-		for _, balance := range balances {
-			for _, coin := range balance.Coins {
-				denomParts := strings.Split(coin.Denom, "/")
+		shouldMigrateDenoms := false
+		keepers.BankKeeper.IterateTotalSupply(ctx, func(coin sdk.Coin) bool {
+			denomParts := strings.Split(coin.Denom, "/")
+			if len(denomParts) != 3 {
+				return false
+			}
+			if denomParts[0] == "yield-aggregator" {
+				shouldMigrateDenoms = true
+				return true
+			}
+			return false
+		})
 
-				if len(denomParts) != 3 {
-					continue
-				}
-				if denomParts[0] != "yield-aggregator" {
-					continue
-				}
-				err := keepers.BankKeeper.SendCoinsFromAccountToModule(ctx, balance.GetAddress(), yieldaggregatortypes.ModuleName, sdk.NewCoins(coin))
-				if err != nil {
-					return vm, err
-				}
-				err = keepers.BankKeeper.BurnCoins(ctx, yieldaggregatortypes.ModuleName, sdk.NewCoins(coin))
-				if err != nil {
-					return vm, err
-				}
+		if shouldMigrateDenoms {
+			balances := keepers.BankKeeper.GetAccountsBalances(ctx)
+			for _, balance := range balances {
+				for _, coin := range balance.Coins {
+					denomParts := strings.Split(coin.Denom, "/")
 
-				denomParts[0] = yieldaggregatortypes.ModuleName
-				migratedCoin := sdk.NewCoin(strings.Join(denomParts, "/"), coin.Amount)
-				err = keepers.BankKeeper.MintCoins(ctx, minttypes.ModuleName, sdk.Coins{migratedCoin})
-				if err != nil {
-					return vm, err
-				}
-				err = keepers.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, balance.GetAddress(), sdk.Coins{migratedCoin})
-				if err != nil {
-					return vm, err
+					if len(denomParts) != 3 {
+						continue
+					}
+					if denomParts[0] != "yield-aggregator" {
+						continue
+					}
+					err := keepers.BankKeeper.SendCoinsFromAccountToModule(ctx, balance.GetAddress(), yieldaggregatortypes.ModuleName, sdk.NewCoins(coin))
+					if err != nil {
+						return vm, err
+					}
+					err = keepers.BankKeeper.BurnCoins(ctx, yieldaggregatortypes.ModuleName, sdk.NewCoins(coin))
+					if err != nil {
+						return vm, err
+					}
+
+					denomParts[0] = yieldaggregatortypes.ModuleName
+					migratedCoin := sdk.NewCoin(strings.Join(denomParts, "/"), coin.Amount)
+					err = keepers.BankKeeper.MintCoins(ctx, minttypes.ModuleName, sdk.Coins{migratedCoin})
+					if err != nil {
+						return vm, err
+					}
+					err = keepers.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, balance.GetAddress(), sdk.Coins{migratedCoin})
+					if err != nil {
+						return vm, err
+					}
 				}
 			}
 		}
+
 		return mm.RunMigrations(ctx, configurator, vm)
 	}
 }
