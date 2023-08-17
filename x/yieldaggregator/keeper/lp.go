@@ -140,6 +140,9 @@ func (k Keeper) DepositAndMintLPToken(ctx sdk.Context, address sdk.AccAddress, v
 			continue
 		}
 		strategyAmount := sdk.NewDecFromInt(amountToInvest).Mul(strategyWeight.Weight).RoundInt()
+		if !strategyAmount.IsPositive() {
+			continue
+		}
 		err = k.StakeToStrategy(ctx, vault, strategy, strategyAmount)
 		if err != nil {
 			return err
