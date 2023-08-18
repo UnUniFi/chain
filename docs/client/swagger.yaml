@@ -5177,6 +5177,50 @@ paths:
                       format: byte
       tags:
         - Query
+  /ununifi/ecosystemincentive/recipients/{class_id}/{token_id}:
+    get:
+      operationId: RecipientAddressWithNftId
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              address:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_id
+          in: path
+          required: true
+          type: string
+        - name: token_id
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /ununifi/ecosystemincentive/rewards/{address}:
     get:
       operationId: AllRewards
@@ -5427,7 +5471,7 @@ paths:
           type: string
       tags:
         - Query
-  /ununifi/nftbackedloan/liquidation/{class_id}/{nft_id}:
+  /ununifi/nftbackedloan/liquidation/{class_id}/{token_id}:
     get:
       operationId: Liquidation
       responses:
@@ -5512,7 +5556,7 @@ paths:
           in: path
           required: true
           type: string
-        - name: nft_id
+        - name: token_id
           in: path
           required: true
           type: string
@@ -5767,7 +5811,7 @@ paths:
           type: string
       tags:
         - Query
-  /ununifi/nftbackedloan/loans/{class_id}/{nft_id}:
+  /ununifi/nftbackedloan/loans/{class_id}/{token_id}:
     get:
       operationId: Loan
       responses:
@@ -5855,13 +5899,13 @@ paths:
           in: path
           required: true
           type: string
-        - name: nft_id
+        - name: token_id
           in: path
           required: true
           type: string
       tags:
         - Query
-  /ununifi/nftbackedloan/nft-bids/{class_id}/{nft_id}:
+  /ununifi/nftbackedloan/nft-bids/{class_id}/{token_id}:
     get:
       operationId: NftBids
       responses:
@@ -5992,13 +6036,13 @@ paths:
           in: path
           required: true
           type: string
-        - name: nft_id
+        - name: token_id
           in: path
           required: true
           type: string
       tags:
         - Query
-  /ununifi/nftbackedloan/nft-listing/{class_id}/{nft_id}:
+  /ununifi/nftbackedloan/nft-listing/{class_id}/{token_id}:
     get:
       operationId: NftListing
       responses:
@@ -6091,7 +6135,7 @@ paths:
           in: path
           required: true
           type: string
-        - name: nft_id
+        - name: token_id
           in: path
           required: true
           type: string
@@ -10100,6 +10144,11 @@ definitions:
                 incentive, 
 
                 the combined those rates for the incentive cannot be exceed 1
+  ununifi.ecosystemincentive.QueryRecipientAddressWithNftIdResponse:
+    type: object
+    properties:
+      address:
+        type: string
   ununifi.ecosystemincentive.QueryRewardResponse:
     type: object
     properties:
