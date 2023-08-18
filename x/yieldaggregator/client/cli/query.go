@@ -30,6 +30,9 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		CmdListStrategy(),
 		CmdShowStrategy(),
 		CmdShowVault(),
+		CmdVaultAllByShareHolder(),
+		CmdVaultEstimatedMintAmount(),
+		CmdVaultEstimatedRedeemAmount(),
 	)
 
 	return cmd

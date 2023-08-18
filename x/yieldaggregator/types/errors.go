@@ -20,4 +20,6 @@ var (
 	ErrInvalidStrategyInvolved    = errors.Register(ModuleName, 12, "invalid strategy id involved")
 	ErrInvalidWithdrawReserveRate = errors.Register(ModuleName, 13, "invalid withdraw reserve rate")
 	ErrInvalidAmount              = errors.Register(ModuleName, 14, "invalid amount")
+	ErrStrategyNotFound           = errors.Register(ModuleName, 15, "strategy not found")
+	ErrVaultNotFound              = errors.Register(ModuleName, 16, "vault not found")
 )

@@ -2,7 +2,9 @@ package keeper
 
 import (
 	"context"
+	"encoding/json"
 
+	math "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -18,7 +20,7 @@ func (k Keeper) StrategyAll(c context.Context, req *types.QueryAllStrategyReques
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var strategies []types.Strategy
+	var strategies []types.StrategyContainer
 	ctx := sdk.UnwrapSDKContext(c)
 
 	store := ctx.KVStore(k.storeKey)
@@ -30,7 +32,12 @@ func (k Keeper) StrategyAll(c context.Context, req *types.QueryAllStrategyReques
 			return err
 		}
 
-		strategies = append(strategies, strategy)
+		strategyContainer, err := k.GetStrategyContainer(ctx, strategy)
+		if err != nil {
+			return err
+		}
+
+		strategies = append(strategies, strategyContainer)
 		return nil
 	})
 
@@ -39,6 +46,49 @@ func (k Keeper) StrategyAll(c context.Context, req *types.QueryAllStrategyReques
 	}
 
 	return &types.QueryAllStrategyResponse{Strategies: strategies, Pagination: pageRes}, nil
+}
+
+func (k Keeper) GetStrategyContainer(ctx sdk.Context, strategy types.Strategy) (types.StrategyContainer, error) {
+	strategyAddr, err := sdk.AccAddressFromBech32(strategy.ContractAddress)
+	if err != nil {
+		return types.StrategyContainer{
+			Strategy:           strategy,
+			DepositFeeRate:     math.LegacyZeroDec(),
+			WithdrawFeeRate:    math.LegacyZeroDec(),
+			PerformanceFeeRate: math.LegacyZeroDec(),
+		}, nil
+	}
+
+	wasmQuery := `{"fee":{}}`
+	result, err := k.wasmReader.QuerySmart(ctx, strategyAddr, []byte(wasmQuery))
+	if err != nil {
+		return types.StrategyContainer{}, err
+	}
+
+	jsonMap := make(map[string]string)
+	err = json.Unmarshal(result, &jsonMap)
+	if err != nil {
+		return types.StrategyContainer{}, err
+	}
+	depositFeeRate, err := math.LegacyNewDecFromStr(jsonMap["deposit_fee_rate"])
+	if err != nil {
+		return types.StrategyContainer{}, err
+	}
+	withdrawFeeRate, err := math.LegacyNewDecFromStr(jsonMap["withdraw_fee_rate"])
+	if err != nil {
+		return types.StrategyContainer{}, err
+	}
+	performanceFeeRate, err := math.LegacyNewDecFromStr(jsonMap["interest_fee_rate"])
+	if err != nil {
+		return types.StrategyContainer{}, err
+	}
+
+	return types.StrategyContainer{
+		Strategy:           strategy,
+		DepositFeeRate:     depositFeeRate,
+		WithdrawFeeRate:    withdrawFeeRate,
+		PerformanceFeeRate: performanceFeeRate,
+	}, nil
 }
 
 func (k Keeper) Strategy(c context.Context, req *types.QueryGetStrategyRequest) (*types.QueryGetStrategyResponse, error) {
@@ -52,5 +102,12 @@ func (k Keeper) Strategy(c context.Context, req *types.QueryGetStrategyRequest) 
 		return nil, sdkerrors.ErrKeyNotFound
 	}
 
-	return &types.QueryGetStrategyResponse{Strategy: strategy}, nil
+	strategyContainer, err := k.GetStrategyContainer(ctx, strategy)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryGetStrategyResponse{
+		Strategy: strategyContainer,
+	}, nil
 }

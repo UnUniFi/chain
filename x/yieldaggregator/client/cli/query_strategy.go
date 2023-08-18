@@ -49,13 +49,13 @@ func CmdShowStrategy() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "show-strategy [vault-denom] [id]",
 		Short: "shows a strategy",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			id, err := strconv.ParseUint(args[0], 10, 64)
+			id, err := strconv.ParseUint(args[1], 10, 64)
 			if err != nil {
 				return err
 			}
