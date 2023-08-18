@@ -3,7 +3,7 @@ package types
 import "fmt"
 
 func GetLPTokenDenom(vaultId uint64) string {
-	return fmt.Sprintf("yield-aggregator/vaults/%d", vaultId)
+	return fmt.Sprintf("%s/vaults/%d", ModuleName, vaultId)
 }
 
 func GetVaultModuleAccountName(vaultId uint64) string {

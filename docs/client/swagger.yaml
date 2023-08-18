@@ -7059,16 +7059,27 @@ paths:
                 items:
                   type: object
                   properties:
-                    denom:
+                    strategy:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        id:
+                          type: string
+                          format: uint64
+                        contract_address:
+                          type: string
+                        name:
+                          type: string
+                        description:
+                          type: string
+                        git_url:
+                          type: string
+                    deposit_fee_rate:
                       type: string
-                    id:
+                    withdraw_fee_rate:
                       type: string
-                      format: uint64
-                    contract_address:
-                      type: string
-                    name:
-                      type: string
-                    git_url:
+                    performance_fee_rate:
                       type: string
               pagination:
                 type: object
@@ -7184,16 +7195,27 @@ paths:
               strategy:
                 type: object
                 properties:
-                  denom:
+                  strategy:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      id:
+                        type: string
+                        format: uint64
+                      contract_address:
+                        type: string
+                      name:
+                        type: string
+                      description:
+                        type: string
+                      git_url:
+                        type: string
+                  deposit_fee_rate:
                     type: string
-                  id:
+                  withdraw_fee_rate:
                     type: string
-                    format: uint64
-                  contract_address:
-                    type: string
-                  name:
-                    type: string
-                  git_url:
+                  performance_fee_rate:
                     type: string
         default:
           description: An unexpected error response.
@@ -7244,42 +7266,58 @@ paths:
                 items:
                   type: object
                   properties:
-                    id:
-                      type: string
-                      format: uint64
-                    denom:
-                      type: string
-                    owner:
-                      type: string
-                    owner_deposit:
+                    vault:
                       type: object
                       properties:
+                        id:
+                          type: string
+                          format: uint64
                         denom:
                           type: string
-                        amount:
+                        name:
                           type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
+                        description:
+                          type: string
+                        owner:
+                          type: string
+                        owner_deposit:
+                          type: object
+                          properties:
+                            denom:
+                              type: string
+                            amount:
+                              type: string
+                          description: >-
+                            Coin defines a token with a denomination and an
+                            amount.
 
 
-                        NOTE: The amount field is an Int which implements the
-                        custom method
+                            NOTE: The amount field is an Int which implements
+                            the custom method
 
-                        signatures required by gogoproto.
-                    withdraw_commission_rate:
+                            signatures required by gogoproto.
+                        withdraw_commission_rate:
+                          type: string
+                        withdraw_reserve_rate:
+                          type: string
+                        strategy_weights:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              strategy_id:
+                                type: string
+                                format: uint64
+                              weight:
+                                type: string
+                        fee_collector_address:
+                          type: string
+                    total_bonded_amount:
                       type: string
-                    withdraw_reserve_rate:
+                    total_unbonding_amount:
                       type: string
-                    strategy_weights:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          strategy_id:
-                            type: string
-                            format: uint64
-                          weight:
-                            type: string
+                    withdraw_reserve:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -7378,6 +7416,101 @@ paths:
           type: boolean
       tags:
         - Query
+  /ununifi/yieldaggregator/vaults/share-holders/{share_holder}:
+    get:
+      operationId: VaultAllByShareHolder
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              vaults:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    vault:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uint64
+                        denom:
+                          type: string
+                        name:
+                          type: string
+                        description:
+                          type: string
+                        owner:
+                          type: string
+                        owner_deposit:
+                          type: object
+                          properties:
+                            denom:
+                              type: string
+                            amount:
+                              type: string
+                          description: >-
+                            Coin defines a token with a denomination and an
+                            amount.
+
+
+                            NOTE: The amount field is an Int which implements
+                            the custom method
+
+                            signatures required by gogoproto.
+                        withdraw_commission_rate:
+                          type: string
+                        withdraw_reserve_rate:
+                          type: string
+                        strategy_weights:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              strategy_id:
+                                type: string
+                                format: uint64
+                              weight:
+                                type: string
+                        fee_collector_address:
+                          type: string
+                    total_bonded_amount:
+                      type: string
+                    total_unbonding_amount:
+                      type: string
+                    withdraw_reserve:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: share_holder
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /ununifi/yieldaggregator/vaults/{id}:
     get:
       operationId: Vault
@@ -7394,6 +7527,10 @@ paths:
                     type: string
                     format: uint64
                   denom:
+                    type: string
+                  name:
+                    type: string
+                  description:
                     type: string
                   owner:
                     type: string
@@ -7426,6 +7563,14 @@ paths:
                           format: uint64
                         weight:
                           type: string
+                  fee_collector_address:
+                    type: string
+              total_bonded_amount:
+                type: string
+              total_unbonding_amount:
+                type: string
+              withdraw_reserve:
+                type: string
               strategies:
                 type: array
                 items:
@@ -7440,16 +7585,10 @@ paths:
                       type: string
                     name:
                       type: string
+                    description:
+                      type: string
                     git_url:
                       type: string
-              vault_address:
-                type: string
-              total_bonded_amount:
-                type: string
-              total_unbonding_amount:
-                type: string
-              total_withdrawal_balance:
-                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -7547,6 +7686,36 @@ paths:
           schema:
             type: object
             properties:
+              share_amount:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
+              fee:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  amount:
+                    type: string
+                description: >-
+                  Coin defines a token with a denomination and an amount.
+
+
+                  NOTE: The amount field is an Int which implements the custom
+                  method
+
+                  signatures required by gogoproto.
               redeem_amount:
                 type: object
                 properties:
@@ -11327,16 +11496,27 @@ definitions:
         items:
           type: object
           properties:
-            denom:
+            strategy:
+              type: object
+              properties:
+                denom:
+                  type: string
+                id:
+                  type: string
+                  format: uint64
+                contract_address:
+                  type: string
+                name:
+                  type: string
+                description:
+                  type: string
+                git_url:
+                  type: string
+            deposit_fee_rate:
               type: string
-            id:
+            withdraw_fee_rate:
               type: string
-              format: uint64
-            contract_address:
-              type: string
-            name:
-              type: string
-            git_url:
+            performance_fee_rate:
               type: string
       pagination:
         type: object
@@ -11363,6 +11543,65 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  ununifi.yieldaggregator.QueryAllVaultByShareHolderResponse:
+    type: object
+    properties:
+      vaults:
+        type: array
+        items:
+          type: object
+          properties:
+            vault:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uint64
+                denom:
+                  type: string
+                name:
+                  type: string
+                description:
+                  type: string
+                owner:
+                  type: string
+                owner_deposit:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
+
+
+                    NOTE: The amount field is an Int which implements the custom
+                    method
+
+                    signatures required by gogoproto.
+                withdraw_commission_rate:
+                  type: string
+                withdraw_reserve_rate:
+                  type: string
+                strategy_weights:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      strategy_id:
+                        type: string
+                        format: uint64
+                      weight:
+                        type: string
+                fee_collector_address:
+                  type: string
+            total_bonded_amount:
+              type: string
+            total_unbonding_amount:
+              type: string
+            withdraw_reserve:
+              type: string
   ununifi.yieldaggregator.QueryAllVaultResponse:
     type: object
     properties:
@@ -11371,42 +11610,57 @@ definitions:
         items:
           type: object
           properties:
-            id:
-              type: string
-              format: uint64
-            denom:
-              type: string
-            owner:
-              type: string
-            owner_deposit:
+            vault:
               type: object
               properties:
+                id:
+                  type: string
+                  format: uint64
                 denom:
                   type: string
-                amount:
+                name:
                   type: string
-              description: >-
-                Coin defines a token with a denomination and an amount.
+                description:
+                  type: string
+                owner:
+                  type: string
+                owner_deposit:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                  description: >-
+                    Coin defines a token with a denomination and an amount.
 
 
-                NOTE: The amount field is an Int which implements the custom
-                method
+                    NOTE: The amount field is an Int which implements the custom
+                    method
 
-                signatures required by gogoproto.
-            withdraw_commission_rate:
+                    signatures required by gogoproto.
+                withdraw_commission_rate:
+                  type: string
+                withdraw_reserve_rate:
+                  type: string
+                strategy_weights:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      strategy_id:
+                        type: string
+                        format: uint64
+                      weight:
+                        type: string
+                fee_collector_address:
+                  type: string
+            total_bonded_amount:
               type: string
-            withdraw_reserve_rate:
+            total_unbonding_amount:
               type: string
-            strategy_weights:
-              type: array
-              items:
-                type: object
-                properties:
-                  strategy_id:
-                    type: string
-                    format: uint64
-                  weight:
-                    type: string
+            withdraw_reserve:
+              type: string
       pagination:
         type: object
         properties:
@@ -11450,6 +11704,30 @@ definitions:
   ununifi.yieldaggregator.QueryEstimateRedeemAmountResponse:
     type: object
     properties:
+      share_amount:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
+      fee:
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+        description: |-
+          Coin defines a token with a denomination and an amount.
+
+          NOTE: The amount field is an Int which implements the custom method
+          signatures required by gogoproto.
       redeem_amount:
         type: object
         properties:
@@ -11468,16 +11746,27 @@ definitions:
       strategy:
         type: object
         properties:
-          denom:
+          strategy:
+            type: object
+            properties:
+              denom:
+                type: string
+              id:
+                type: string
+                format: uint64
+              contract_address:
+                type: string
+              name:
+                type: string
+              description:
+                type: string
+              git_url:
+                type: string
+          deposit_fee_rate:
             type: string
-          id:
+          withdraw_fee_rate:
             type: string
-            format: uint64
-          contract_address:
-            type: string
-          name:
-            type: string
-          git_url:
+          performance_fee_rate:
             type: string
   ununifi.yieldaggregator.QueryGetVaultResponse:
     type: object
@@ -11489,6 +11778,10 @@ definitions:
             type: string
             format: uint64
           denom:
+            type: string
+          name:
+            type: string
+          description:
             type: string
           owner:
             type: string
@@ -11521,6 +11814,14 @@ definitions:
                   format: uint64
                 weight:
                   type: string
+          fee_collector_address:
+            type: string
+      total_bonded_amount:
+        type: string
+      total_unbonding_amount:
+        type: string
+      withdraw_reserve:
+        type: string
       strategies:
         type: array
         items:
@@ -11535,16 +11836,10 @@ definitions:
               type: string
             name:
               type: string
+            description:
+              type: string
             git_url:
               type: string
-      vault_address:
-        type: string
-      total_bonded_amount:
-        type: string
-      total_unbonding_amount:
-        type: string
-      total_withdrawal_balance:
-        type: string
   ununifi.yieldaggregator.QueryParamsResponse:
     type: object
     properties:
@@ -11603,7 +11898,34 @@ definitions:
         type: string
       name:
         type: string
+      description:
+        type: string
       git_url:
+        type: string
+  ununifi.yieldaggregator.StrategyContainer:
+    type: object
+    properties:
+      strategy:
+        type: object
+        properties:
+          denom:
+            type: string
+          id:
+            type: string
+            format: uint64
+          contract_address:
+            type: string
+          name:
+            type: string
+          description:
+            type: string
+          git_url:
+            type: string
+      deposit_fee_rate:
+        type: string
+      withdraw_fee_rate:
+        type: string
+      performance_fee_rate:
         type: string
   ununifi.yieldaggregator.StrategyWeight:
     type: object
@@ -11620,6 +11942,10 @@ definitions:
         type: string
         format: uint64
       denom:
+        type: string
+      name:
+        type: string
+      description:
         type: string
       owner:
         type: string
@@ -11649,3 +11975,59 @@ definitions:
               format: uint64
             weight:
               type: string
+      fee_collector_address:
+        type: string
+  ununifi.yieldaggregator.VaultContainer:
+    type: object
+    properties:
+      vault:
+        type: object
+        properties:
+          id:
+            type: string
+            format: uint64
+          denom:
+            type: string
+          name:
+            type: string
+          description:
+            type: string
+          owner:
+            type: string
+          owner_deposit:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+            description: >-
+              Coin defines a token with a denomination and an amount.
+
+
+              NOTE: The amount field is an Int which implements the custom
+              method
+
+              signatures required by gogoproto.
+          withdraw_commission_rate:
+            type: string
+          withdraw_reserve_rate:
+            type: string
+          strategy_weights:
+            type: array
+            items:
+              type: object
+              properties:
+                strategy_id:
+                  type: string
+                  format: uint64
+                weight:
+                  type: string
+          fee_collector_address:
+            type: string
+      total_bonded_amount:
+        type: string
+      total_unbonding_amount:
+        type: string
+      withdraw_reserve:
+        type: string

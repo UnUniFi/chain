@@ -60,6 +60,8 @@ func (k msgServer) CreateVault(goCtx context.Context, msg *types.MsgCreateVault)
 
 	vault := types.Vault{
 		Denom:                  msg.Denom,
+		Name:                   msg.Name,
+		Description:            msg.Description,
 		Owner:                  msg.Sender,
 		OwnerDeposit:           msg.Deposit,
 		WithdrawCommissionRate: msg.CommissionRate,

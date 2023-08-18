@@ -20,6 +20,7 @@ func (k msgServer) RegisterStrategy(goCtx context.Context, msg *types.MsgRegiste
 		Denom:           msg.Denom,
 		ContractAddress: msg.ContractAddress,
 		Name:            msg.Name,
+		Description:     msg.Description,
 		GitUrl:          msg.GitUrl,
 	})
 
