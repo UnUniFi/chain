@@ -20,7 +20,6 @@ func (k msgServer) UpdateVault(goCtx context.Context, msg *types.MsgUpdateVault)
 		return nil, types.ErrVaultNotFound
 	}
 
-	vault.Denom = msg.Denom
 	vault.Name = msg.Name
 	vault.Description = msg.Description
 	vault.FeeCollectorAddress = msg.FeeCollectorAddress

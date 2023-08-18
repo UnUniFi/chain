@@ -95,10 +95,9 @@ message MsgUpdateVault {
 
   string sender                = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   uint64 id                    = 2;
-  string denom                 = 3;
-  string name                  = 4;
-  string description           = 5;
-  string fee_collector_address = 6;
+  string name                  = 3;
+  string description           = 4;
+  string fee_collector_address = 5;
 }
 
 message MsgUpdateVaultResponse {}

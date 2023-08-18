@@ -7,11 +7,10 @@ import (
 
 var _ sdk.Msg = &MsgUpdateVault{}
 
-func NewMsgUpdateVault(sender string, id uint64, denom, name, description, feeCollector string) *MsgUpdateVault {
+func NewMsgUpdateVault(sender string, id uint64, name, description, feeCollector string) *MsgUpdateVault {
 	return &MsgUpdateVault{
 		Sender:              sender,
 		Id:                  id,
-		Denom:               denom,
 		Name:                name,
 		Description:         description,
 		FeeCollectorAddress: feeCollector,
@@ -25,10 +24,6 @@ func (msg MsgUpdateVault) ValidateBasic() error {
 
 	if _, err := sdk.AccAddressFromBech32(msg.FeeCollectorAddress); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid fee collector address: %s", err)
-	}
-
-	if msg.Denom == "" {
-		return sdkerrors.ErrInvalidRequest.Wrapf("empty denom")
 	}
 
 	if msg.Name == "" {
