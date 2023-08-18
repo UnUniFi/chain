@@ -30,7 +30,7 @@ import (
 
 	buildertypes "github.com/skip-mev/pob/x/builder/types"
 
-	ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystemincentive/types"
+	// ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystemincentive/types"
 	epochstypes "github.com/UnUniFi/chain/x/epochs/types"
 	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 	icacallbackstypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/icacallbacks/types"
@@ -60,7 +60,7 @@ func (appKeepers *AppKeepers) GenerateKeys() {
 		// original modules
 		nftbackedloantypes.StoreKey,
 		nftfactorytypes.StoreKey,
-		ecosystemincentivetypes.StoreKey,
+		// ecosystemincentivetypes.StoreKey,
 
 		// derivativestypes.StoreKey,
 		// pricefeedtypes.StoreKey,
