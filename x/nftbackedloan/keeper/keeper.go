@@ -8,7 +8,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	"github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
@@ -17,29 +16,30 @@ type Keeper struct {
 	cdc           codec.Codec
 	storeKey      storetypes.StoreKey
 	memKey        storetypes.StoreKey
-	paramSpace    paramtypes.Subspace
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
 	nftKeeper     types.NftKeeper
+	authority     string
 	hooks         types.NftbackedloanHooks
 }
 
-func NewKeeper(cdc codec.Codec, storeKey,
-	memKey storetypes.StoreKey, paramSpace paramtypes.Subspace,
-	accountKeeper types.AccountKeeper, bankKeeper types.BankKeeper,
-	nftKeeper types.NftKeeper) Keeper {
-	if !paramSpace.HasKeyTable() {
-		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
-	}
+func NewKeeper(
+	cdc codec.Codec, storeKey,
+	memKey storetypes.StoreKey,
+	accountKeeper types.AccountKeeper,
+	bankKeeper types.BankKeeper,
+	nftKeeper types.NftKeeper,
+	authority string,
+) Keeper {
 
 	return Keeper{
 		cdc:           cdc,
 		storeKey:      storeKey,
 		memKey:        memKey,
-		paramSpace:    paramSpace,
 		accountKeeper: accountKeeper,
 		bankKeeper:    bankKeeper,
 		nftKeeper:     nftKeeper,
+		authority:     authority,
 		hooks:         nil,
 	}
 }

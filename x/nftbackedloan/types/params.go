@@ -2,14 +2,9 @@ package types
 
 import (
 	"fmt"
+	"time"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramstype "github.com/cosmos/cosmos-sdk/x/params/types"
-)
-
-// Parameter keys and default values
-var (
-	DefaultBidToken = "uguu"
+	math "cosmossdk.io/math"
 )
 
 // NewParams returns a new params object
@@ -20,81 +15,32 @@ func NewParams() Params {
 // DefaultParams returns default params for incentive module
 func DefaultParams() Params {
 	return Params{
-		MinStakingForListing:            sdk.ZeroInt(),
-		BidTokens:                       []string{DefaultBidToken},
-		NftListingCancelRequiredSeconds: 20,
-		BidCancelRequiredSeconds:        20,
-		NftListingFullPaymentPeriod:     30,
-		NftListingNftDeliveryPeriod:     30,
-		NftListingCommissionRate:        sdk.MustNewDecFromStr("0.05"),
-	}
-}
-
-// ParamKeyTable Key declaration for parameters
-func ParamKeyTable() paramstype.KeyTable {
-	return paramstype.NewKeyTable().RegisterParamSet(&Params{})
-}
-
-// Parameter keys
-var (
-	KeyMinStakingForListing            = []byte("MinStakingForListing")
-	KeyBidTokens                       = []byte("BidTokens")
-	KeyNftListingCancelRequiredSeconds = []byte("NftListingCancelRequiredSeconds")
-	KeyBidCancelRequiredSeconds        = []byte("BidCancelRequiredSeconds")
-	KeyNftListingFullPaymentPeriod     = []byte("NftListingFullPaymentPeriod")
-	KeyNftListingNftDeliveryPeriod     = []byte("NftListingNftDeliveryPeriod")
-	KeyNftListingCommissionRate        = []byte("NftListingCommissionRate")
-)
-
-// ParamSetPairs implements the ParamSet interface and returns all the key/value pairs
-func (p *Params) ParamSetPairs() paramstype.ParamSetPairs {
-	return paramstype.ParamSetPairs{
-		paramstype.NewParamSetPair(KeyMinStakingForListing, &p.MinStakingForListing, validateMinStakingForListing),
-		paramstype.NewParamSetPair(KeyBidTokens, &p.BidTokens, validateBidTokens),
-		paramstype.NewParamSetPair(KeyNftListingCancelRequiredSeconds, &p.NftListingCancelRequiredSeconds, validateNftListingCancelRequiredSeconds),
-		paramstype.NewParamSetPair(KeyBidCancelRequiredSeconds, &p.BidCancelRequiredSeconds, validateBidCancelRequiredSeconds),
-		paramstype.NewParamSetPair(KeyNftListingFullPaymentPeriod, &p.NftListingFullPaymentPeriod, validateNftListingFullPaymentPeriod),
-		paramstype.NewParamSetPair(KeyNftListingNftDeliveryPeriod, &p.NftListingNftDeliveryPeriod, validateNftListingNftDeliveryPeriod),
-		paramstype.NewParamSetPair(KeyNftListingCommissionRate, &p.NftListingCommissionRate, validateNftListingCommissionRate),
+		CommissionRate:    math.LegacyMustNewDecFromStr("0.02"),
+		FullPaymentPeriod: 30,
+		NftDeliveryPeriod: 30,
 	}
 }
 
 // Validate checks that the parameters have valid values.
 func (p Params) Validate() error {
 
-	if err := validateMinStakingForListing(p.MinStakingForListing); err != nil {
+	if err := validateCommissionRate(p.CommissionRate); err != nil {
 		return err
 	}
 
-	if err := validateBidTokens(p.BidTokens); err != nil {
+	if err := validateFullPaymentPeriod(p.FullPaymentPeriod); err != nil {
 		return err
 	}
 
-	if err := validateNftListingCancelRequiredSeconds(p.BidCancelRequiredSeconds); err != nil {
-		return err
-	}
-
-	if err := validateBidCancelRequiredSeconds(p.BidCancelRequiredSeconds); err != nil {
-		return err
-	}
-
-	if err := validateNftListingFullPaymentPeriod(p.NftListingFullPaymentPeriod); err != nil {
-		return err
-	}
-
-	if err := validateNftListingNftDeliveryPeriod(p.NftListingNftDeliveryPeriod); err != nil {
-		return err
-	}
-
-	if err := validateNftListingCommissionRate(p.NftListingCommissionRate); err != nil {
+	if err := validateNftDeliveryPeriod(p.NftDeliveryPeriod); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func validateMinStakingForListing(i interface{}) error {
-	_, ok := i.(sdk.Int)
+func validateCommissionRate(i interface{}) error {
+	_, ok := i.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -102,8 +48,8 @@ func validateMinStakingForListing(i interface{}) error {
 	return nil
 }
 
-func validateBidTokens(i interface{}) error {
-	_, ok := i.([]string)
+func validateFullPaymentPeriod(i interface{}) error {
+	_, ok := i.(time.Duration)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -111,44 +57,8 @@ func validateBidTokens(i interface{}) error {
 	return nil
 }
 
-func validateNftListingCancelRequiredSeconds(i interface{}) error {
-	_, ok := i.(uint64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateBidCancelRequiredSeconds(i interface{}) error {
-	_, ok := i.(uint64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateNftListingFullPaymentPeriod(i interface{}) error {
-	_, ok := i.(uint64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateNftListingNftDeliveryPeriod(i interface{}) error {
-	_, ok := i.(uint64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	return nil
-}
-
-func validateNftListingCommissionRate(i interface{}) error {
-	rate, ok := i.(sdk.Dec)
+func validateNftDeliveryPeriod(i interface{}) error {
+	_, ok := i.(time.Duration)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

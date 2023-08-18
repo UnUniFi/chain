@@ -26,6 +26,11 @@ const (
 	MemStoreKey = "mem_capability"
 )
 
+var (
+	// Module parameters
+	KeyParams = []byte{0x00}
+)
+
 const (
 	// nft listing info by nft_id
 	KeyPrefixNftListing = "nft_listing"

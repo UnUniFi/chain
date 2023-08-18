@@ -15,7 +15,7 @@ func (suite *KeeperTestSuite) TestSellingDecision() {
 	acc1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	acc2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
-	params := suite.app.NftbackedloanKeeper.GetParamSet(suite.ctx)
+	params, _ := suite.app.NftbackedloanKeeper.GetParams(suite.ctx)
 
 	tests := []struct {
 		testCase      string
@@ -178,7 +178,7 @@ func (suite *KeeperTestSuite) TestSellingDecision() {
 			listing, err := suite.app.NftbackedloanKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
 			suite.Require().NoError(err)
 			suite.Require().Equal(listing.State, types.ListingState_SELLING_DECISION)
-			suite.Require().Equal(suite.ctx.BlockTime().Add(time.Second*time.Duration(params.NftListingFullPaymentPeriod)), listing.FullPaymentEndAt)
+			suite.Require().Equal(suite.ctx.BlockTime().Add(time.Second*params.FullPaymentPeriod), listing.FullPaymentEndAt)
 		} else {
 			suite.Require().Error(err)
 		}

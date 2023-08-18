@@ -178,8 +178,6 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 	keeper := suite.keeper
 	nftKeeper := suite.nftKeeper
 
-	params := suite.app.NftbackedloanKeeper.GetParamSet(suite.ctx)
-
 	tests := []struct {
 		testCase           string
 		classId            string
@@ -198,7 +196,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 			nftId:              "nft1",
 			nftOwner:           acc1,
 			canceller:          acc1,
-			cancelAfter:        time.Second * time.Duration(params.NftListingCancelRequiredSeconds+1),
+			cancelAfter:        time.Second * time.Duration(20+1),
 			numBids:            0,
 			listBefore:         false,
 			expectPass:         false,
@@ -210,7 +208,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 			nftId:              "nft2",
 			nftOwner:           acc1,
 			canceller:          acc2,
-			cancelAfter:        time.Second * time.Duration(params.NftListingCancelRequiredSeconds+1),
+			cancelAfter:        time.Second * time.Duration(20+1),
 			numBids:            0,
 			listBefore:         true,
 			expectPass:         false,
@@ -234,7 +232,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 			nftId:              "nft5",
 			nftOwner:           acc1,
 			canceller:          acc1,
-			cancelAfter:        time.Second * time.Duration(params.NftListingCancelRequiredSeconds+1),
+			cancelAfter:        time.Second * time.Duration(20+1),
 			numBids:            0,
 			listBefore:         true,
 			expectPass:         true,
@@ -246,7 +244,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 			nftId:              "nft6",
 			nftOwner:           acc1,
 			canceller:          acc1,
-			cancelAfter:        time.Second * time.Duration(params.NftListingCancelRequiredSeconds+1),
+			cancelAfter:        time.Second * time.Duration(20+1),
 			numBids:            0,
 			listBefore:         true,
 			expectPass:         true,
