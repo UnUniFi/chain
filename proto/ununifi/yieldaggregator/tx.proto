@@ -22,6 +22,8 @@ service Msg {
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
   rpc RegisterStrategy(MsgRegisterStrategy) returns (MsgRegisterStrategyResponse);
   rpc DeleteVault(MsgDeleteVault) returns (MsgDeleteVaultResponse);
+  rpc UpdateVault(MsgUpdateVault) returns (MsgUpdateVaultResponse);
+  rpc UpdateStrategy(MsgUpdateStrategy) returns (MsgUpdateStrategyResponse);
 }
 
 // this line is used by starport scaffolding # proto/tx/message
@@ -75,14 +77,31 @@ message MsgCreateVault {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
-  repeated StrategyWeight  strategy_weights = 7 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin fee              = 8 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin deposit          = 9 [(gogoproto.nullable) = false];
+  repeated StrategyWeight  strategy_weights      = 7 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin fee                   = 8 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin deposit               = 9 [(gogoproto.nullable) = false];
+  string                   fee_collector_address = 10;
 }
 
 message MsgCreateVaultResponse {
   uint64 id = 1;
 }
+
+message MsgUpdateVault {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string sender                = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 id                    = 2;
+  string denom                 = 3;
+  string name                  = 4;
+  string description           = 5;
+  string fee_collector_address = 6;
+}
+
+message MsgUpdateVaultResponse {}
 
 message MsgTransferVaultOwnership {
   option (cosmos.msg.v1.signer) = "sender";
@@ -124,6 +143,22 @@ message MsgRegisterStrategy {
 }
 
 message MsgRegisterStrategyResponse {}
+
+message MsgUpdateStrategy {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string sender      = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string denom       = 2;
+  uint64 id          = 3;
+  string name        = 4;
+  string description = 5;
+  string git_url     = 6;
+}
+
+message MsgUpdateStrategyResponse {}
 
 message MsgDeleteVault {
   option (cosmos.msg.v1.signer) = "sender";

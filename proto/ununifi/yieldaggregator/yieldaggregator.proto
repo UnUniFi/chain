@@ -33,7 +33,8 @@ message Vault {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
-  repeated StrategyWeight strategy_weights = 9 [(gogoproto.nullable) = false];
+  repeated StrategyWeight strategy_weights      = 9 [(gogoproto.nullable) = false];
+  string                  fee_collector_address = 10;
 }
 
 message Strategy {

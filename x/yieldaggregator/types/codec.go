@@ -23,6 +23,8 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgUpdateParams{},
 		&MsgRegisterStrategy{},
 		&MsgDeleteVault{},
+		&MsgUpdateStrategy{},
+		&MsgUpdateVault{},
 	)
 
 	// Deprecated: Just for backward compatibility of query proposals

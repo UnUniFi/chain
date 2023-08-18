@@ -103,6 +103,7 @@ func (k Keeper) MigrateAllLegacyVaults(ctx sdk.Context) {
 			WithdrawCommissionRate: legacyVault.WithdrawCommissionRate,
 			WithdrawReserveRate:    legacyVault.WithdrawReserveRate,
 			StrategyWeights:        legacyVault.StrategyWeights,
+			FeeCollectorAddress:    legacyVault.Owner,
 		}
 		k.SetVault(ctx, vault)
 	}

@@ -17,12 +17,12 @@ import (
 
 func CmdTxCreateVault() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-vault [denom] [commission-rate] [withdraw-reserve-rate] [fee] [deposit] [strategyWeights]",
+		Use:   "create-vault [denom] [commission-rate] [withdraw-reserve-rate] [fee] [deposit] [strategy-weights] [fee-collector]",
 		Short: "create a new vault",
 		Long: `create a new vault
 			ununifid tx yieldaggregator create-vault uguu 0.001 1000uguu 1000000uguu 1:0.1,2:0.9
 		`,
-		Args: cobra.ExactArgs(6),
+		Args: cobra.ExactArgs(7),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -78,6 +78,7 @@ func CmdTxCreateVault() *cobra.Command {
 				strategyWeights,
 				fee,
 				deposit,
+				args[6],
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
