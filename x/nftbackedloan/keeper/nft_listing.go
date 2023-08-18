@@ -272,7 +272,7 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelListing) e
 
 	// Call AfterNftUnlistedWithoutPayment to delete NFT ID from the ecosystem-incentive KVStore
 	// since it's unlisted.
-	k.AfterNftUnlistedWithoutPayment(ctx, listing.NftId)
+	// k.AfterNftUnlistedWithoutPayment(ctx, listing.NftId)
 
 	// Emit event for nft listing cancel
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventCancelListing{
@@ -408,6 +408,6 @@ func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sd
 
 	// Call AfterNftPaymentWithCommission hook method to inform the payment is successfully
 	// executed.
-	k.AfterNftPaymentWithCommission(ctx, nftId, sdk.NewCoin(amount.Denom, fee))
+	// k.AfterNftPaymentWithCommission(ctx, nftId, sdk.NewCoin(amount.Denom, fee))
 	return nil
 }

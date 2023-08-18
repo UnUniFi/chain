@@ -29,7 +29,7 @@ func (k Keeper) NftListing(c context.Context, req *types.QueryNftListingRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	listing, err := k.GetNftListingByIdBytes(ctx, types.NftBytes(req.ClassId, req.NftId))
+	listing, err := k.GetNftListingByIdBytes(ctx, types.NftBytes(req.ClassId, req.TokenId))
 	if err != nil {
 		return nil, err
 	}
@@ -158,7 +158,7 @@ func (k Keeper) GetListedClass(ctx sdk.Context, classId string, limit int) (*typ
 
 	var nfts []types.NftInfo
 	var pnfts []*types.NftInfo
-	for i, v := range class.NftIds {
+	for i, v := range class.TokenIds {
 		if limit <= i {
 			break
 		}
@@ -180,7 +180,7 @@ func (k Keeper) GetListedClass(ctx sdk.Context, classId string, limit int) (*typ
 		Symbol:      classInfo.Symbol,
 		Uri:         classInfo.Uri,
 		Urihash:     classInfo.UriHash,
-		NftCount:    uint64(len(class.NftIds)),
+		NftCount:    uint64(len(class.TokenIds)),
 		Nfts:        pnfts,
 	}, nil
 }
@@ -191,7 +191,7 @@ func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.Que
 	}
 	nftId := types.NftId{
 		ClassId: req.ClassId,
-		TokenId: req.NftId,
+		TokenId: req.TokenId,
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 	listing, err := k.GetNftListingByIdBytes(ctx, nftId.IdBytes())
@@ -238,7 +238,7 @@ func (k Keeper) NftBids(c context.Context, req *types.QueryNftBidsRequest) (*typ
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	bids := k.GetBidsByNft(ctx, types.NftBytes(req.ClassId, req.NftId))
+	bids := k.GetBidsByNft(ctx, types.NftBytes(req.ClassId, req.TokenId))
 	return &types.QueryNftBidsResponse{
 		Bids: bids,
 	}, nil
@@ -271,7 +271,7 @@ func (k Keeper) Liquidation(c context.Context, req *types.QueryLiquidationReques
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(c)
-	listing, err := k.GetNftListingByIdBytes(ctx, types.NftBytes(req.ClassId, req.NftId))
+	listing, err := k.GetNftListingByIdBytes(ctx, types.NftBytes(req.ClassId, req.TokenId))
 	if err != nil {
 		return nil, err
 	}

@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/UnUniFi/chain/x/ecosystemincentive/types"
+	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
 var _ types.QueryServer = Keeper{}
@@ -35,7 +36,8 @@ func (k Keeper) AllRewards(c context.Context, req *types.QueryAllRewardsRequest)
 
 	record, exists := k.GetRewardRecord(ctx, accAddr)
 	if !exists {
-		return nil, types.ErrAddressNotHaveReward
+		record.Address = accAddr.String()
+		return &types.QueryAllRewardsResponse{RewardRecord: record}, nil
 	}
 
 	return &types.QueryAllRewardsResponse{RewardRecord: record}, nil
@@ -54,13 +56,27 @@ func (k Keeper) Reward(c context.Context, req *types.QueryRewardRequest) (*types
 
 	allRewards, exists := k.GetRewardRecord(ctx, accAddr)
 	if !exists {
-		return &types.QueryRewardResponse{Reward: sdk.Coin{}}, types.ErrAddressNotHaveReward
+		return &types.QueryRewardResponse{Reward: sdk.NewInt64Coin(req.Denom, 0)}, nil
 	}
 
 	exists, reward := allRewards.Rewards.Find(req.Denom)
 	if !exists {
-		return &types.QueryRewardResponse{Reward: sdk.Coin{}}, types.ErrDenomRewardNotExists
+		return &types.QueryRewardResponse{Reward: sdk.NewInt64Coin(req.Denom, 0)}, nil
 	}
 
 	return &types.QueryRewardResponse{Reward: reward}, nil
+}
+
+func (k Keeper) RecipientAddressWithNftId(c context.Context, req *types.QueryRecipientAddressWithNftIdRequest) (*types.QueryRecipientAddressWithNftIdResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid argument")
+	}
+	ctx := sdk.UnwrapSDKContext(c)
+
+	recipient, exists := k.GetRecipientByNftId(ctx, nftbackedloantypes.NftId{ClassId: req.ClassId, TokenId: req.TokenId})
+	if !exists {
+		return &types.QueryRecipientAddressWithNftIdResponse{Address: ""}, nil
+	}
+
+	return &types.QueryRecipientAddressWithNftIdResponse{Address: recipient}, nil
 }

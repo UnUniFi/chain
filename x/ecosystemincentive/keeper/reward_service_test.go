@@ -9,7 +9,7 @@ import (
 	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
-func (suite *KeeperTestSuite) TestRewardDistributionOfnftbackedloan() {
+func (suite *KeeperTestSuite) TestRewardDistributionOfNftbackedloan() {
 	testCases := []struct {
 		testCase   string
 		nftId      nftbackedloantypes.NftId
@@ -42,7 +42,7 @@ func (suite *KeeperTestSuite) TestRewardDistributionOfnftbackedloan() {
 		_ = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.ModuleName, sdk.Coins{tc.reward})
 
 		if tc.success {
-			err := suite.app.EcosystemincentiveKeeper.RewardDistributionOfnftbackedloan(suite.ctx, tc.nftId, tc.reward)
+			err := suite.app.EcosystemincentiveKeeper.RewardDistributionOfNftbackedloan(suite.ctx, tc.nftId, tc.reward)
 			suite.Require().NoError(err)
 
 			// TODO: check the reward distribution by seeing the balance of the approriate accounts
@@ -50,7 +50,7 @@ func (suite *KeeperTestSuite) TestRewardDistributionOfnftbackedloan() {
 			// reward := suite.app.BankKeeper.GetBalance(suite.ctx, suite.app.EcosystemincentiveKeeper.GetnftbackedloanAddress(suite.ctx), tc.reward.Denom)
 			// suite.Require().Equal(tc.reward, reward)
 		} else {
-			err := suite.app.EcosystemincentiveKeeper.RewardDistributionOfnftbackedloan(suite.ctx, tc.nftId, tc.reward)
+			err := suite.app.EcosystemincentiveKeeper.RewardDistributionOfNftbackedloan(suite.ctx, tc.nftId, tc.reward)
 			suite.Require().Error(err)
 		}
 	}

@@ -18,17 +18,12 @@ const (
 )
 
 var (
-	// KeyPrefixRecipientContainer defines prefix key for RecipientContainer
-	KeyPrefixRecipientContainer = []byte{0x01}
+	// KeyPrefixRecipient defines prefix key for Incentive-Recipient
+	KeyPrefixRecipient = []byte{0x01}
 
 	// KeyPrefixReward defines prefix key for Reward
 	KeyPrefixRewardStore = []byte{0x02}
 
-	// KeyPrefixRecipientContainerIdByNftId defines prefix key for nft_id with incentive_id
-	KeyPrefixRecipientContainerIdByNftId = []byte{0x03}
-
-	// KeyPrefixRecipientContainerIdByAddr defines prefix key for recipientContainerIdsByAddr with address
-	KeyPrefixRecipientContainerIdsByAddr = []byte{0x04}
-
-	RecipientContainerIdPattern = `^[a-z][a-z0-9_]*$`
+	// KeyPrefixRecipientByNftId defines prefix key for nft_id with recipient
+	KeyPrefixRecipientByNftId = []byte{0x03}
 )
