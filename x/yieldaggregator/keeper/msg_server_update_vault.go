@@ -24,6 +24,7 @@ func (k msgServer) UpdateVault(goCtx context.Context, msg *types.MsgUpdateVault)
 	vault.Name = msg.Name
 	vault.Description = msg.Description
 	vault.FeeCollectorAddress = msg.FeeCollectorAddress
+	k.SetVault(ctx, vault)
 
 	return &types.MsgUpdateVaultResponse{}, nil
 }

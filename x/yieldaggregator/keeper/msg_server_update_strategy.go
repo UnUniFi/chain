@@ -23,6 +23,7 @@ func (k msgServer) UpdateStrategy(goCtx context.Context, msg *types.MsgUpdateStr
 	strategy.Name = msg.Name
 	strategy.Description = msg.Description
 	strategy.GitUrl = msg.GitUrl
+	k.SetStrategy(ctx, msg.Denom, strategy)
 
 	return &types.MsgUpdateStrategyResponse{}, nil
 }
