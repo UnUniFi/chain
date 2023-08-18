@@ -104,3 +104,71 @@ func CmdVaultAllByShareHolder() *cobra.Command {
 
 	return cmd
 }
+
+func CmdVaultEstimatedMintAmount() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "estimate-mint-amount [id] [deposit-amount]",
+		Short: "Estimate mint amount",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			id, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+
+			params := &types.QueryEstimateMintAmountRequest{
+				Id:            uint64(id),
+				DepositAmount: args[1],
+			}
+
+			res, err := queryClient.EstimateMintAmount(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdVaultEstimatedRedeemAmount() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "estimate-redeem-amount [id] [burn-amount]",
+		Short: "Estimate redeem amount",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			id, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+
+			params := &types.QueryEstimateRedeemAmountRequest{
+				Id:         uint64(id),
+				BurnAmount: args[1],
+			}
+
+			res, err := queryClient.EstimateRedeemAmount(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}

@@ -40,19 +40,19 @@ func (k Keeper) SetStrategyCount(ctx sdk.Context, vaultDenom string, count uint6
 func (k Keeper) AppendStrategy(
 	ctx sdk.Context,
 	vaultDenom string,
-	Strategy types.Strategy,
+	strategy types.Strategy,
 ) uint64 {
-	// Create the Strategy
+	// Create the strategy
 	count := k.GetStrategyCount(ctx, vaultDenom)
 
 	// Set the ID of the appended value
-	Strategy.Id = count
+	strategy.Id = count
 
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixStrategy(vaultDenom))
-	appendedValue := k.cdc.MustMarshal(&Strategy)
-	store.Set(GetStrategyIDBytes(Strategy.Id), appendedValue)
+	bz := k.cdc.MustMarshal(&strategy)
+	store.Set(GetStrategyIDBytes(strategy.Id), bz)
 
-	// Update Strategy count
+	// Update strategy count
 	k.SetStrategyCount(ctx, vaultDenom, count+1)
 
 	return count
@@ -80,6 +80,32 @@ func (k Keeper) GetStrategy(ctx sdk.Context, vaultDenom string, id uint64) (val 
 func (k Keeper) RemoveStrategy(ctx sdk.Context, vaultDenom string, id uint64) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixStrategy(vaultDenom))
 	store.Delete(GetStrategyIDBytes(id))
+}
+
+func (k Keeper) MigrateAllLegacyStrategies(ctx sdk.Context) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixStrategy(""))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	legacyStrategies := []types.LegacyStrategy{}
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.LegacyStrategy
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		legacyStrategies = append(legacyStrategies, val)
+	}
+
+	for _, legacyStrategy := range legacyStrategies {
+		strategy := types.Strategy{
+			Denom:           legacyStrategy.Denom,
+			Id:              legacyStrategy.Id,
+			ContractAddress: legacyStrategy.ContractAddress,
+			Name:            legacyStrategy.Name,
+			Description:     "",
+			GitUrl:          legacyStrategy.GitUrl,
+		}
+		k.SetStrategy(ctx, strategy.Denom, strategy)
+	}
 }
 
 // GetAllStrategy returns all Strategy

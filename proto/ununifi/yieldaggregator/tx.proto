@@ -22,6 +22,8 @@ service Msg {
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
   rpc RegisterStrategy(MsgRegisterStrategy) returns (MsgRegisterStrategyResponse);
   rpc DeleteVault(MsgDeleteVault) returns (MsgDeleteVaultResponse);
+  rpc UpdateVault(MsgUpdateVault) returns (MsgUpdateVaultResponse);
+  rpc UpdateStrategy(MsgUpdateStrategy) returns (MsgUpdateStrategyResponse);
 }
 
 // this line is used by starport scaffolding # proto/tx/message
@@ -63,24 +65,42 @@ message MsgCreateVault {
 
   string sender          = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   string denom           = 2;
-  string commission_rate = 3 [
+  string name            = 3;
+  string description     = 4;
+  string commission_rate = 5 [
     (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
-  string withdraw_reserve_rate = 4 [
+  string withdraw_reserve_rate = 6 [
     (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
-  repeated StrategyWeight  strategy_weights = 5 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin fee              = 6 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin deposit          = 7 [(gogoproto.nullable) = false];
+  repeated StrategyWeight  strategy_weights      = 7 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin fee                   = 8 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin deposit               = 9 [(gogoproto.nullable) = false];
+  string                   fee_collector_address = 10;
 }
 
 message MsgCreateVaultResponse {
   uint64 id = 1;
 }
+
+message MsgUpdateVault {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string sender                = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 id                    = 2;
+  string name                  = 3;
+  string description           = 4;
+  string fee_collector_address = 5;
+}
+
+message MsgUpdateVaultResponse {}
 
 message MsgTransferVaultOwnership {
   option (cosmos.msg.v1.signer) = "sender";
@@ -117,10 +137,27 @@ message MsgRegisterStrategy {
   string denom            = 2;
   string contract_address = 3;
   string name             = 4;
-  string git_url          = 5;
+  string description      = 5;
+  string git_url          = 6;
 }
 
 message MsgRegisterStrategyResponse {}
+
+message MsgUpdateStrategy {
+  option (cosmos.msg.v1.signer) = "sender";
+
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string sender      = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string denom       = 2;
+  uint64 id          = 3;
+  string name        = 4;
+  string description = 5;
+  string git_url     = 6;
+}
+
+message MsgUpdateStrategyResponse {}
 
 message MsgDeleteVault {
   option (cosmos.msg.v1.signer) = "sender";
