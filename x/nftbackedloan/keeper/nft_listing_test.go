@@ -154,7 +154,7 @@ func (suite *KeeperTestSuite) TestListNft() {
 			suite.Require().NoError(err)
 
 			// get listing
-			listing, err := keeper.GetNftListingByIdBytes(suite.ctx, (types.NftId{ClassId: tc.classId, TokenId: tc.nftId}).IdBytes())
+			listing, err := keeper.GetListedNftByIdBytes(suite.ctx, (types.NftId{ClassId: tc.classId, TokenId: tc.nftId}).IdBytes())
 			suite.Require().NoError(err)
 
 			// check ownership is transferred
@@ -331,7 +331,7 @@ func (suite *KeeperTestSuite) TestCancelNftListing() {
 			suite.Require().Equal(owner, tc.nftOwner)
 
 			// check nft listing is deleted
-			_, err := keeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+			_, err := keeper.GetListedNftByIdBytes(suite.ctx, nftIdentifier.IdBytes())
 			suite.Require().Error(err)
 		} else {
 			suite.Require().Error(err)
@@ -406,12 +406,12 @@ func (suite *KeeperTestSuite) TestDeliverSuccessfulBids() {
 	})
 	suite.Require().NoError(err)
 
-	listing, err := keeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+	listing, err := keeper.GetListedNftByIdBytes(suite.ctx, nftIdentifier.IdBytes())
 	suite.Require().NoError(err)
 	listing.SuccessfulBidEndAt = now
 	listing.LiquidatedAt = now
 	listing.State = types.ListingState_SUCCESSFUL_BID
-	keeper.SetNftListing(suite.ctx, listing)
+	keeper.SetListedNft(suite.ctx, listing)
 
 	suite.ctx = suite.ctx.WithBlockTime(now.Add(time.Second))
 	oldNftOwnerBalance := suite.app.BankKeeper.GetBalance(suite.ctx, nftOwner, "uguu")
@@ -432,7 +432,7 @@ func (suite *KeeperTestSuite) TestDeliverSuccessfulBids() {
 	suite.Require().Len(bids, 0)
 
 	// check nft listing deleted
-	_, err = keeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+	_, err = keeper.GetListedNftByIdBytes(suite.ctx, nftIdentifier.IdBytes())
 	suite.Require().Error(err)
 
 	// check if AfterNftPaymentWithCommission is called

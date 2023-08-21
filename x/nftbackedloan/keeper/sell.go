@@ -11,9 +11,9 @@ import (
 
 func (k Keeper) SetSellingDecision(ctx sdk.Context, msg *types.MsgSellingDecision) error {
 	// check listing already exists
-	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
+	listing, err := k.GetListedNftByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
-		return types.ErrNftListingDoesNotExist
+		return types.ErrListedNftDoesNotExist
 	}
 
 	// Check nft exists
@@ -49,7 +49,7 @@ func (k Keeper) SetSellingDecision(ctx sdk.Context, msg *types.MsgSellingDecisio
 	listing.State = types.ListingState_SELLING_DECISION
 	listing.LiquidatedAt = ctx.BlockTime()
 	listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
-	k.SaveNftListing(ctx, listing)
+	k.SaveListedNft(ctx, listing)
 
 	// automatic payment if enabled
 	if len(bids) > 0 {
@@ -119,6 +119,6 @@ func (k Keeper) RunSellingDecisionProcess(ctx sdk.Context, bids types.NftBids, l
 		listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
 		listing.State = types.ListingState_SUCCESSFUL_BID
 	}
-	k.SaveNftListing(ctx, listing)
+	k.SaveListedNft(ctx, listing)
 	return nil
 }

@@ -28,7 +28,7 @@ func ValidateListNftMsg(k Keeper, ctx sdk.Context, msg *types.MsgListNft) error 
 
 func CheckListNft(k Keeper, ctx sdk.Context, sender sdk.AccAddress, nftId types.NftId, bidToken string, minimumDepositRate sdk.Dec) error {
 	// check listing already exists
-	_, err := k.GetNftListingByIdBytes(ctx, nftId.IdBytes())
+	_, err := k.GetListedNftByIdBytes(ctx, nftId.IdBytes())
 	if err == nil {
 		return types.ErrNftListingAlreadyExists
 	}

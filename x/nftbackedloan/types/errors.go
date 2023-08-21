@@ -6,7 +6,7 @@ import (
 
 var (
 	ErrNftListingAlreadyExists       = sdkerrors.Register(ModuleName, 1, "nft listing already exist")
-	ErrNftListingDoesNotExist        = sdkerrors.Register(ModuleName, 2, "nft listing does not exist")
+	ErrListedNftDoesNotExist         = sdkerrors.Register(ModuleName, 2, "nft listing does not exist")
 	ErrBidDoesNotExists              = sdkerrors.Register(ModuleName, 3, "nft bid does not exist")
 	ErrNotSupportedBidToken          = sdkerrors.Register(ModuleName, 4, "not supported bid token")
 	ErrNftDoesNotExists              = sdkerrors.Register(ModuleName, 5, "specified nft does not exist")
