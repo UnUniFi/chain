@@ -25,55 +25,35 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 
 	cmd.AddCommand(
 		CmdQueryParams(),
-		CmdQueryAllRewards(),
-		CmdQueryReward(),
+		CmdQueryRewards(),
 		CmdQueryRecipientAddressWithNftId(),
 	)
 	return cmd
 }
 
-func CmdQueryAllRewards() *cobra.Command {
+func CmdQueryRewards() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "all-rewards [address]",
-		Short: "shows all rewards that defined address have",
-		Args:  cobra.ExactArgs(1),
+		Use:   "rewards [address] [denom]",
+		Short: "shows ecosystem reward by address & denom",
+		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			req := &types.QueryAllRewardsRequest{
+			var denom string
+			if len(args) > 1 {
+				denom = args[1]
+			} else {
+				denom = ""
+			}
+
+			req := &types.QueryEcosystemRewardsRequest{
 				Address: args[0],
+				Denom:   denom,
 			}
 
-			res, err := queryClient.AllRewards(context.Background(), req)
-			if err != nil {
-				return err
-			}
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-	return cmd
-}
-
-func CmdQueryReward() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "reward [address] [denom]",
-		Short: "shows reward by address & denom",
-		Args:  cobra.ExactArgs(2),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			queryClient := types.NewQueryClient(clientCtx)
-
-			req := &types.QueryRewardRequest{
-				Address: args[0],
-				Denom:   args[1],
-			}
-
-			res, err := queryClient.Reward(context.Background(), req)
+			res, err := queryClient.EcosystemRewards(context.Background(), req)
 			if err != nil {
 				return err
 			}

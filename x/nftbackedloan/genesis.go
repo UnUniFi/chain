@@ -11,7 +11,7 @@ import (
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKeeper, gs types.GenesisState) {
 	k.SetParamSet(ctx, gs.Params)
 	for _, listing := range gs.Listings {
-		k.SaveNftListing(ctx, listing)
+		k.SaveListedNft(ctx, listing)
 	}
 	for _, bid := range gs.Bids {
 		k.SetBid(ctx, bid)
@@ -25,7 +25,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, accountKeeper types.AccountKe
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 	return types.GenesisState{
 		Params:   k.GetParamSet(ctx),
-		Listings: k.GetAllNftListings(ctx),
+		Listings: k.GetAllListedNfts(ctx),
 		Bids:     k.GetAllBids(ctx),
 		// Loans:    k.GetAllDebts(ctx),
 	}

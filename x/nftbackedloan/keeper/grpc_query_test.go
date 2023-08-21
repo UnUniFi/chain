@@ -19,12 +19,12 @@ func TestGRPCQuery(t *testing.T) {
 
 func (s *KeeperTestSuite) TestListedNfts() {
 	var req *types.QueryListedNftsRequest
-	type postTest func(index int, msg string, require *require.Assertions, res *types.QueryListedNftsResponse, expListingNft []types.NftListingDetail)
+	type postTest func(index int, msg string, require *require.Assertions, res *types.QueryListedNftsResponse, expListingNft []types.ListedNftDetail)
 	testCases := []struct {
 		msg        string
 		malleate   func(index int, require *require.Assertions)
 		expError   string
-		listingNft []types.NftListingDetail
+		listingNft []types.ListedNftDetail
 		postTest   postTest
 	}{
 		{
@@ -33,8 +33,8 @@ func (s *KeeperTestSuite) TestListedNfts() {
 				req = &types.QueryListedNftsRequest{}
 			},
 			"",
-			[]types.NftListingDetail(nil),
-			func(index int, msg string, require *require.Assertions, res *types.QueryListedNftsResponse, expListingNft []types.NftListingDetail) {
+			[]types.ListedNftDetail(nil),
+			func(index int, msg string, require *require.Assertions, res *types.QueryListedNftsResponse, expListingNft []types.ListedNftDetail) {
 				require.Equal(res.Listings, expListingNft, "the error occurred on:%d", index)
 			},
 		},
@@ -46,8 +46,8 @@ func (s *KeeperTestSuite) TestListedNfts() {
 				}
 			},
 			"invalid request. address wrong",
-			[]types.NftListingDetail{},
-			func(index int, msg string, require *require.Assertions, res *types.QueryListedNftsResponse, expListingNft []types.NftListingDetail) {
+			[]types.ListedNftDetail{},
+			func(index int, msg string, require *require.Assertions, res *types.QueryListedNftsResponse, expListingNft []types.ListedNftDetail) {
 			},
 		},
 		{
@@ -59,7 +59,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 				}
 			},
 			"",
-			[]types.NftListingDetail{
+			[]types.ListedNftDetail{
 				{
 					Listing: types.Listing{
 						NftId:              types.NftId{ClassId: "class2", TokenId: "nft2"},
@@ -128,7 +128,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					},
 				},
 			},
-			func(index int, msg string, require *require.Assertions, res *types.QueryListedNftsResponse, expListingNft []types.NftListingDetail) {
+			func(index int, msg string, require *require.Assertions, res *types.QueryListedNftsResponse, expListingNft []types.ListedNftDetail) {
 				require.Equal(expListingNft, res.Listings, "the error occurred on:%d", msg, res.Listings[index].Listing.NftId)
 			},
 		},
@@ -140,7 +140,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 				}
 			},
 			"",
-			[]types.NftListingDetail{
+			[]types.ListedNftDetail{
 				{
 					Listing: types.Listing{
 						NftId: types.NftId{ClassId: "class7", TokenId: "nft7"},
@@ -164,7 +164,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					},
 				},
 			},
-			func(index int, msg string, require *require.Assertions, res *types.QueryListedNftsResponse, expListingNft []types.NftListingDetail) {
+			func(index int, msg string, require *require.Assertions, res *types.QueryListedNftsResponse, expListingNft []types.ListedNftDetail) {
 				require.Equal(res.Listings, expListingNft, "the error occurred on:%d", msg)
 			},
 		},
@@ -174,7 +174,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 				req = &types.QueryListedNftsRequest{}
 			},
 			"",
-			[]types.NftListingDetail{
+			[]types.ListedNftDetail{
 				{
 					Listing: types.Listing{
 						NftId:              types.NftId{ClassId: "class2", TokenId: "nft2"},
@@ -265,7 +265,7 @@ func (s *KeeperTestSuite) TestListedNfts() {
 					},
 				},
 			},
-			func(index int, msg string, require *require.Assertions, res *types.QueryListedNftsResponse, expListingNft []types.NftListingDetail) {
+			func(index int, msg string, require *require.Assertions, res *types.QueryListedNftsResponse, expListingNft []types.ListedNftDetail) {
 				require.Equal(res.Listings, expListingNft, "the error occurred on:%d", msg)
 			},
 		},
@@ -277,8 +277,8 @@ func (s *KeeperTestSuite) TestListedNfts() {
 				}
 			},
 			"",
-			[]types.NftListingDetail(nil),
-			func(index int, msg string, require *require.Assertions, res *types.QueryListedNftsResponse, expListingNft []types.NftListingDetail) {
+			[]types.ListedNftDetail(nil),
+			func(index int, msg string, require *require.Assertions, res *types.QueryListedNftsResponse, expListingNft []types.ListedNftDetail) {
 				require.Equal(res.Listings, expListingNft, "the error occurred on:%d", msg, index)
 			},
 		},

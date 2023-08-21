@@ -25,7 +25,7 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 
 	cmd.AddCommand(
 		CmdQueryParams(),
-		CmdQueryNftListing(),
+		CmdQueryListedNft(),
 		CmdQueryListedNfts(),
 		// CmdQueryLoans(),
 		CmdQueryLoan(),
@@ -65,7 +65,7 @@ func CmdQueryParams() *cobra.Command {
 	return cmd
 }
 
-func CmdQueryNftListing() *cobra.Command {
+func CmdQueryListedNft() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "nft-listing [class-id] [nft-id]",
 		Short: "shows nft listing",
@@ -75,12 +75,12 @@ func CmdQueryNftListing() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryNftListingRequest{
+			params := &types.QueryListedNftRequest{
 				ClassId: args[0],
 				TokenId: args[1],
 			}
 
-			res, err := queryClient.NftListing(context.Background(), params)
+			res, err := queryClient.ListedNft(context.Background(), params)
 			if err != nil {
 				return err
 			}

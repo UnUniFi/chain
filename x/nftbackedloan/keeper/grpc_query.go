@@ -23,18 +23,18 @@ func (k Keeper) Params(c context.Context, req *types.QueryParamsRequest) (*types
 	}, nil
 }
 
-func (k Keeper) NftListing(c context.Context, req *types.QueryNftListingRequest) (*types.QueryNftListingResponse, error) {
+func (k Keeper) ListedNft(c context.Context, req *types.QueryListedNftRequest) (*types.QueryListedNftResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	listing, err := k.GetNftListingByIdBytes(ctx, types.NftBytes(req.ClassId, req.TokenId))
+	listing, err := k.GetListedNftByIdBytes(ctx, types.NftBytes(req.ClassId, req.TokenId))
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.QueryNftListingResponse{
+	return &types.QueryListedNftResponse{
 		Listing: listing,
 	}, nil
 }
@@ -52,8 +52,8 @@ func (k Keeper) ListedNfts(c context.Context, req *types.QueryListedNftsRequest)
 		}
 		return k.ListedNftsByOwner(c, acc)
 	} else {
-		listings := k.GetAllNftListings(ctx)
-		res, err := k.GetNftListingDetails(ctx, listings)
+		listings := k.GetAllListedNfts(ctx)
+		res, err := k.GetListedNftDetails(ctx, listings)
 		if err != nil {
 			panic(err)
 		}
@@ -64,14 +64,14 @@ func (k Keeper) ListedNfts(c context.Context, req *types.QueryListedNftsRequest)
 
 }
 
-func (k Keeper) GetNftListingDetails(ctx sdk.Context, listings []types.Listing) ([]types.NftListingDetail, error) {
-	res := []types.NftListingDetail{}
+func (k Keeper) GetListedNftDetails(ctx sdk.Context, listings []types.Listing) ([]types.ListedNftDetail, error) {
+	res := []types.ListedNftDetail{}
 	for _, v := range listings {
 		nftInfo, found := k.nftKeeper.GetNFT(ctx, v.NftId.ClassId, v.NftId.TokenId)
 		if !found {
-			return []types.NftListingDetail{}, types.ErrNftDoesNotExists
+			return []types.ListedNftDetail{}, types.ErrNftDoesNotExists
 		}
-		detail := types.NftListingDetail{
+		detail := types.ListedNftDetail{
 			Listing: v,
 			NftInfo: types.NftInfo{
 				Id:      nftInfo.GetId(),
@@ -87,7 +87,7 @@ func (k Keeper) GetNftListingDetails(ctx sdk.Context, listings []types.Listing) 
 func (k Keeper) ListedNftsByOwner(c context.Context, address sdk.AccAddress) (*types.QueryListedNftsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	listings := k.GetListingsByOwner(ctx, address)
-	res, err := k.GetNftListingDetails(ctx, listings)
+	res, err := k.GetListedNftDetails(ctx, listings)
 	if err != nil {
 		panic(err)
 	}
@@ -194,7 +194,7 @@ func (k Keeper) Loan(c context.Context, req *types.QueryLoanRequest) (*types.Que
 		TokenId: req.TokenId,
 	}
 	ctx := sdk.UnwrapSDKContext(c)
-	listing, err := k.GetNftListingByIdBytes(ctx, nftId.IdBytes())
+	listing, err := k.GetListedNftByIdBytes(ctx, nftId.IdBytes())
 	if err != nil {
 		return &types.QueryLoanResponse{}, err
 	}
@@ -271,7 +271,7 @@ func (k Keeper) Liquidation(c context.Context, req *types.QueryLiquidationReques
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(c)
-	listing, err := k.GetNftListingByIdBytes(ctx, types.NftBytes(req.ClassId, req.TokenId))
+	listing, err := k.GetListedNftByIdBytes(ctx, types.NftBytes(req.ClassId, req.TokenId))
 	if err != nil {
 		return nil, err
 	}

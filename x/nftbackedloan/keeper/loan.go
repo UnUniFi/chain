@@ -7,7 +7,7 @@ import (
 )
 
 func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
-	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
+	listing, err := k.GetListedNftByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
 		return err
 	}
@@ -39,7 +39,7 @@ func (k Keeper) Borrow(ctx sdk.Context, msg *types.MsgBorrow) error {
 }
 
 func (k Keeper) ManualBorrow(ctx sdk.Context, nft types.NftId, borrows []types.BorrowBid, borrower string) error {
-	listing, err := k.GetNftListingByIdBytes(ctx, nft.IdBytes())
+	listing, err := k.GetListedNftByIdBytes(ctx, nft.IdBytes())
 	if err != nil {
 		return err
 	}
@@ -106,7 +106,7 @@ func (k Keeper) Repay(ctx sdk.Context, msg *types.MsgRepay) error {
 }
 
 func (k Keeper) ManualRepay(ctx sdk.Context, nft types.NftId, repays []types.BorrowBid, borrower string) error {
-	listing, err := k.GetNftListingByIdBytes(ctx, nft.IdBytes())
+	listing, err := k.GetListedNftByIdBytes(ctx, nft.IdBytes())
 	if err != nil {
 		return err
 	}
@@ -180,7 +180,7 @@ func (k Keeper) ManualRepay(ctx sdk.Context, nft types.NftId, repays []types.Bor
 }
 
 func (k Keeper) AutoRepay(ctx sdk.Context, nft types.NftId, bids types.NftBids, borrower, receiver string) error {
-	listing, err := k.GetNftListingByIdBytes(ctx, nft.IdBytes())
+	listing, err := k.GetListedNftByIdBytes(ctx, nft.IdBytes())
 	if err != nil {
 		return err
 	}

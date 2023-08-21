@@ -6,6 +6,7 @@ package types
 import (
 	context "context"
 	fmt "fmt"
+	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/cosmos-sdk/types/query"
 	_ "github.com/cosmos/gogoproto/gogoproto"
@@ -112,111 +113,23 @@ func (m *QueryParamsResponse) GetParams() Params {
 	return Params{}
 }
 
-type QueryAllRewardsRequest struct {
-	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty" yaml:"address"`
-}
-
-func (m *QueryAllRewardsRequest) Reset()         { *m = QueryAllRewardsRequest{} }
-func (m *QueryAllRewardsRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryAllRewardsRequest) ProtoMessage()    {}
-func (*QueryAllRewardsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bcc47a5d1657c31d, []int{2}
-}
-func (m *QueryAllRewardsRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryAllRewardsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryAllRewardsRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryAllRewardsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAllRewardsRequest.Merge(m, src)
-}
-func (m *QueryAllRewardsRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryAllRewardsRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAllRewardsRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryAllRewardsRequest proto.InternalMessageInfo
-
-func (m *QueryAllRewardsRequest) GetAddress() string {
-	if m != nil {
-		return m.Address
-	}
-	return ""
-}
-
-type QueryAllRewardsResponse struct {
-	RewardRecord RewardRecord `protobuf:"bytes,1,opt,name=reward_record,json=rewardRecord,proto3" json:"reward_record" yaml:"reward_record"`
-}
-
-func (m *QueryAllRewardsResponse) Reset()         { *m = QueryAllRewardsResponse{} }
-func (m *QueryAllRewardsResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryAllRewardsResponse) ProtoMessage()    {}
-func (*QueryAllRewardsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bcc47a5d1657c31d, []int{3}
-}
-func (m *QueryAllRewardsResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryAllRewardsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryAllRewardsResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryAllRewardsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAllRewardsResponse.Merge(m, src)
-}
-func (m *QueryAllRewardsResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryAllRewardsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAllRewardsResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryAllRewardsResponse proto.InternalMessageInfo
-
-func (m *QueryAllRewardsResponse) GetRewardRecord() RewardRecord {
-	if m != nil {
-		return m.RewardRecord
-	}
-	return RewardRecord{}
-}
-
-type QueryRewardRequest struct {
+type QueryEcosystemRewardsRequest struct {
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty" yaml:"address"`
 	Denom   string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty" yaml:"denom"`
 }
 
-func (m *QueryRewardRequest) Reset()         { *m = QueryRewardRequest{} }
-func (m *QueryRewardRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryRewardRequest) ProtoMessage()    {}
-func (*QueryRewardRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bcc47a5d1657c31d, []int{4}
+func (m *QueryEcosystemRewardsRequest) Reset()         { *m = QueryEcosystemRewardsRequest{} }
+func (m *QueryEcosystemRewardsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryEcosystemRewardsRequest) ProtoMessage()    {}
+func (*QueryEcosystemRewardsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bcc47a5d1657c31d, []int{2}
 }
-func (m *QueryRewardRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryEcosystemRewardsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryRewardRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryEcosystemRewardsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryRewardRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryEcosystemRewardsRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -226,48 +139,48 @@ func (m *QueryRewardRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-func (m *QueryRewardRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryRewardRequest.Merge(m, src)
+func (m *QueryEcosystemRewardsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEcosystemRewardsRequest.Merge(m, src)
 }
-func (m *QueryRewardRequest) XXX_Size() int {
+func (m *QueryEcosystemRewardsRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryRewardRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryRewardRequest.DiscardUnknown(m)
+func (m *QueryEcosystemRewardsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEcosystemRewardsRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryRewardRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryEcosystemRewardsRequest proto.InternalMessageInfo
 
-func (m *QueryRewardRequest) GetAddress() string {
+func (m *QueryEcosystemRewardsRequest) GetAddress() string {
 	if m != nil {
 		return m.Address
 	}
 	return ""
 }
 
-func (m *QueryRewardRequest) GetDenom() string {
+func (m *QueryEcosystemRewardsRequest) GetDenom() string {
 	if m != nil {
 		return m.Denom
 	}
 	return ""
 }
 
-type QueryRewardResponse struct {
-	Reward types.Coin `protobuf:"bytes,1,opt,name=reward,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coin" json:"reward" yaml:"reward"`
+type QueryEcosystemRewardsResponse struct {
+	Rewards github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,1,rep,name=rewards,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"rewards" yaml:"rewards"`
 }
 
-func (m *QueryRewardResponse) Reset()         { *m = QueryRewardResponse{} }
-func (m *QueryRewardResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryRewardResponse) ProtoMessage()    {}
-func (*QueryRewardResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bcc47a5d1657c31d, []int{5}
+func (m *QueryEcosystemRewardsResponse) Reset()         { *m = QueryEcosystemRewardsResponse{} }
+func (m *QueryEcosystemRewardsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryEcosystemRewardsResponse) ProtoMessage()    {}
+func (*QueryEcosystemRewardsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bcc47a5d1657c31d, []int{3}
 }
-func (m *QueryRewardResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryEcosystemRewardsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryRewardResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryEcosystemRewardsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryRewardResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryEcosystemRewardsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -277,23 +190,23 @@ func (m *QueryRewardResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *QueryRewardResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryRewardResponse.Merge(m, src)
+func (m *QueryEcosystemRewardsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEcosystemRewardsResponse.Merge(m, src)
 }
-func (m *QueryRewardResponse) XXX_Size() int {
+func (m *QueryEcosystemRewardsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryRewardResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryRewardResponse.DiscardUnknown(m)
+func (m *QueryEcosystemRewardsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEcosystemRewardsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryRewardResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryEcosystemRewardsResponse proto.InternalMessageInfo
 
-func (m *QueryRewardResponse) GetReward() types.Coin {
+func (m *QueryEcosystemRewardsResponse) GetRewards() github_com_cosmos_cosmos_sdk_types.Coins {
 	if m != nil {
-		return m.Reward
+		return m.Rewards
 	}
-	return types.Coin{}
+	return nil
 }
 
 type QueryRecipientAddressWithNftIdRequest struct {
@@ -305,7 +218,7 @@ func (m *QueryRecipientAddressWithNftIdRequest) Reset()         { *m = QueryReci
 func (m *QueryRecipientAddressWithNftIdRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryRecipientAddressWithNftIdRequest) ProtoMessage()    {}
 func (*QueryRecipientAddressWithNftIdRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bcc47a5d1657c31d, []int{6}
+	return fileDescriptor_bcc47a5d1657c31d, []int{4}
 }
 func (m *QueryRecipientAddressWithNftIdRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -358,7 +271,7 @@ func (m *QueryRecipientAddressWithNftIdResponse) Reset() {
 func (m *QueryRecipientAddressWithNftIdResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryRecipientAddressWithNftIdResponse) ProtoMessage()    {}
 func (*QueryRecipientAddressWithNftIdResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_bcc47a5d1657c31d, []int{7}
+	return fileDescriptor_bcc47a5d1657c31d, []int{5}
 }
 func (m *QueryRecipientAddressWithNftIdResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -397,10 +310,8 @@ func (m *QueryRecipientAddressWithNftIdResponse) GetAddress() string {
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "ununifi.ecosystemincentive.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "ununifi.ecosystemincentive.QueryParamsResponse")
-	proto.RegisterType((*QueryAllRewardsRequest)(nil), "ununifi.ecosystemincentive.QueryAllRewardsRequest")
-	proto.RegisterType((*QueryAllRewardsResponse)(nil), "ununifi.ecosystemincentive.QueryAllRewardsResponse")
-	proto.RegisterType((*QueryRewardRequest)(nil), "ununifi.ecosystemincentive.QueryRewardRequest")
-	proto.RegisterType((*QueryRewardResponse)(nil), "ununifi.ecosystemincentive.QueryRewardResponse")
+	proto.RegisterType((*QueryEcosystemRewardsRequest)(nil), "ununifi.ecosystemincentive.QueryEcosystemRewardsRequest")
+	proto.RegisterType((*QueryEcosystemRewardsResponse)(nil), "ununifi.ecosystemincentive.QueryEcosystemRewardsResponse")
 	proto.RegisterType((*QueryRecipientAddressWithNftIdRequest)(nil), "ununifi.ecosystemincentive.QueryRecipientAddressWithNftIdRequest")
 	proto.RegisterType((*QueryRecipientAddressWithNftIdResponse)(nil), "ununifi.ecosystemincentive.QueryRecipientAddressWithNftIdResponse")
 }
@@ -410,52 +321,47 @@ func init() {
 }
 
 var fileDescriptor_bcc47a5d1657c31d = []byte{
-	// 715 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x55, 0x41, 0x6b, 0x13, 0x4d,
-	0x18, 0xce, 0x16, 0x9a, 0x7e, 0xdf, 0x7c, 0xed, 0xa7, 0x4c, 0xab, 0xb6, 0xa1, 0x6c, 0x64, 0xd0,
-	0xb6, 0x14, 0xbb, 0x43, 0x1b, 0x8a, 0x20, 0x2a, 0x36, 0x4a, 0xa1, 0x07, 0xc5, 0x2e, 0x54, 0xc1,
-	0x4b, 0x99, 0xec, 0x4e, 0x93, 0xb1, 0xc9, 0xcc, 0x76, 0x67, 0x52, 0x0d, 0x21, 0x17, 0x0f, 0x0a,
-	0x9e, 0x04, 0xf1, 0x3f, 0x88, 0xf8, 0x43, 0x7a, 0x2c, 0x78, 0xf1, 0x14, 0xa5, 0xed, 0xc1, 0x73,
-	0x7e, 0x81, 0x64, 0x66, 0x56, 0x1b, 0x63, 0xb7, 0xa9, 0x9e, 0xb2, 0xcc, 0xfb, 0xbc, 0xcf, 0xf3,
-	0xbc, 0xef, 0xbc, 0xef, 0x04, 0xcc, 0xd4, 0x79, 0x9d, 0xb3, 0x2d, 0x86, 0x69, 0x20, 0x64, 0x43,
-	0x2a, 0x5a, 0x63, 0x3c, 0xa0, 0x5c, 0xb1, 0x5d, 0x8a, 0x77, 0xea, 0x34, 0x6e, 0x78, 0x51, 0x2c,
-	0x94, 0x80, 0x39, 0x8b, 0xf3, 0xfa, 0x71, 0xb9, 0x89, 0xb2, 0x28, 0x0b, 0x0d, 0xc3, 0xdd, 0x2f,
-	0x93, 0x91, 0x9b, 0x2e, 0x0b, 0x51, 0xae, 0x52, 0x4c, 0x22, 0x86, 0x09, 0xe7, 0x42, 0x11, 0xc5,
-	0x04, 0x97, 0x36, 0x3a, 0x1f, 0x08, 0x59, 0x13, 0x12, 0x97, 0x88, 0xb4, 0x42, 0x78, 0x77, 0xb1,
-	0x44, 0x15, 0x59, 0xc4, 0x11, 0x29, 0x33, 0xae, 0xc1, 0x16, 0x3b, 0x9b, 0xe2, 0x31, 0x22, 0x31,
-	0xa9, 0x25, 0xa4, 0x85, 0x14, 0x60, 0xff, 0x91, 0x4d, 0x72, 0x8f, 0x3b, 0x49, 0x3c, 0x04, 0x82,
-	0x59, 0x75, 0x34, 0x01, 0xe0, 0x7a, 0xd7, 0xdf, 0x43, 0xad, 0xe4, 0xd3, 0x9d, 0x3a, 0x95, 0x0a,
-	0x55, 0xc0, 0x78, 0xcf, 0xa9, 0x8c, 0x04, 0x97, 0x14, 0xae, 0x83, 0xac, 0x71, 0x34, 0xe9, 0x5c,
-	0x76, 0xe6, 0xfe, 0x5b, 0x42, 0xde, 0xc9, 0x7d, 0xf3, 0x4c, 0x6e, 0xf1, 0xc2, 0x5e, 0x3b, 0x9f,
-	0xe9, 0xb4, 0xf3, 0x63, 0x0d, 0x52, 0xab, 0xde, 0x40, 0x26, 0x1f, 0xf9, 0x96, 0x08, 0xad, 0x82,
-	0x8b, 0x5a, 0x69, 0xa5, 0x5a, 0xf5, 0xe9, 0x33, 0x12, 0x87, 0x89, 0x07, 0x78, 0x0d, 0x8c, 0x90,
-	0x30, 0x8c, 0xa9, 0x34, 0x6a, 0xff, 0x16, 0x61, 0xa7, 0x9d, 0xff, 0xdf, 0xb0, 0xd8, 0x00, 0xf2,
-	0x13, 0x08, 0x7a, 0xe9, 0x80, 0x4b, 0x7d, 0x44, 0xd6, 0xf6, 0x36, 0x18, 0x8b, 0xf5, 0xd1, 0x66,
-	0x4c, 0x03, 0x11, 0x87, 0xd6, 0xfd, 0x5c, 0x9a, 0x7b, 0xc3, 0xe1, 0x6b, 0x7c, 0x71, 0xda, 0xd6,
-	0x30, 0x61, 0xd4, 0x7b, 0xc8, 0x90, 0x3f, 0x1a, 0x1f, 0xc3, 0xa2, 0xa7, 0xb6, 0xa1, 0x09, 0xc1,
-	0x1f, 0x14, 0x03, 0x67, 0xc0, 0x70, 0x48, 0xb9, 0xa8, 0x4d, 0x0e, 0x69, 0xec, 0xf9, 0x4e, 0x3b,
-	0x3f, 0x6a, 0xb0, 0xfa, 0x18, 0xf9, 0x26, 0x8c, 0x5e, 0x3b, 0xf6, 0x9e, 0x12, 0x31, 0x5b, 0xb0,
-	0x04, 0x59, 0xe3, 0xc9, 0x56, 0x3a, 0xe5, 0x99, 0x29, 0xf0, 0xba, 0x53, 0xe0, 0xd9, 0x29, 0xf0,
-	0xee, 0x0a, 0xc6, 0x8b, 0x77, 0x7a, 0xaf, 0xc7, 0xa4, 0xa1, 0x0f, 0x5f, 0xf2, 0xb3, 0x65, 0xa6,
-	0x2a, 0xf5, 0x92, 0x17, 0x88, 0x1a, 0xb6, 0x33, 0x64, 0x7e, 0x16, 0x64, 0xb8, 0x8d, 0x55, 0x23,
-	0xa2, 0x52, 0x33, 0xf8, 0x56, 0x0a, 0xbd, 0x72, 0xc0, 0x55, 0x6b, 0x26, 0x60, 0x11, 0xa3, 0x5c,
-	0xad, 0x98, 0x72, 0x1e, 0x33, 0x55, 0x79, 0xb0, 0xa5, 0xd6, 0x7e, 0x34, 0xc3, 0x03, 0xff, 0x04,
-	0x55, 0x22, 0xe5, 0x26, 0x0b, 0x6d, 0x37, 0xc6, 0x3b, 0xed, 0xfc, 0x39, 0xe3, 0x20, 0x89, 0x20,
-	0x7f, 0x44, 0x7f, 0xae, 0x85, 0x5d, 0xbc, 0x12, 0xdb, 0x94, 0x77, 0xf1, 0x43, 0xbf, 0xe2, 0x93,
-	0x08, 0xf2, 0x47, 0xf4, 0xe7, 0x5a, 0x88, 0x1e, 0x81, 0x99, 0xd3, 0x8c, 0xd8, 0x46, 0x9d, 0xe9,
-	0x5a, 0x96, 0x8e, 0x86, 0xc1, 0xb0, 0x26, 0x86, 0xef, 0x1c, 0x90, 0x35, 0xf3, 0x0d, 0xbd, 0xb4,
-	0x29, 0xea, 0x5f, 0xad, 0x1c, 0x1e, 0x18, 0x6f, 0x3c, 0xa2, 0xf9, 0x17, 0x9f, 0x8e, 0xde, 0x0e,
-	0x5d, 0x81, 0x08, 0x9f, 0xfa, 0x50, 0xc0, 0x8f, 0x0e, 0x00, 0x3f, 0x17, 0x00, 0x2e, 0x9d, 0xaa,
-	0xd5, 0xb7, 0x76, 0xb9, 0xc2, 0x99, 0x72, 0xac, 0xc7, 0x65, 0xed, 0x11, 0xc3, 0x85, 0x34, 0x8f,
-	0x66, 0x4e, 0x24, 0x6e, 0xda, 0x7e, 0xb6, 0xe0, 0x7b, 0x07, 0x64, 0x0d, 0xd5, 0x00, 0x6d, 0xec,
-	0x59, 0xa8, 0x01, 0xda, 0xd8, 0xbb, 0x13, 0xe8, 0x96, 0xb6, 0x78, 0x1d, 0x2e, 0x9f, 0xc9, 0x22,
-	0x6e, 0xea, 0x4d, 0x6b, 0xc1, 0x6f, 0x0e, 0x98, 0x3a, 0x71, 0x9e, 0xe0, 0xca, 0x00, 0x6e, 0xd2,
-	0x97, 0x22, 0x57, 0xfc, 0x1b, 0x0a, 0x5b, 0xe3, 0x3d, 0x5d, 0xe3, 0x6d, 0x78, 0x33, 0xbd, 0x46,
-	0x4b, 0x23, 0x71, 0x33, 0x59, 0xb6, 0x16, 0x6e, 0x26, 0x7b, 0xd4, 0x2a, 0xde, 0xdf, 0x3b, 0x70,
-	0x9d, 0xfd, 0x03, 0xd7, 0xf9, 0x7a, 0xe0, 0x3a, 0x6f, 0x0e, 0xdd, 0xcc, 0xfe, 0xa1, 0x9b, 0xf9,
-	0x7c, 0xe8, 0x66, 0x9e, 0x14, 0x8e, 0xbd, 0x09, 0x1b, 0x7c, 0x83, 0xb3, 0x55, 0x86, 0x83, 0x0a,
-	0x61, 0x1c, 0x3f, 0xff, 0x9d, 0x92, 0x7e, 0x24, 0x4a, 0x59, 0xfd, 0x47, 0x53, 0xf8, 0x1e, 0x00,
-	0x00, 0xff, 0xff, 0xef, 0x59, 0xe8, 0xd4, 0x8c, 0x07, 0x00, 0x00,
+	// 631 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x54, 0x4f, 0x6b, 0x14, 0x3f,
+	0x18, 0xde, 0xe9, 0xef, 0xd7, 0xae, 0xa6, 0xfe, 0x29, 0x69, 0x85, 0x76, 0xa9, 0xb3, 0x25, 0xe8,
+	0xba, 0x14, 0x9b, 0xd0, 0x16, 0x41, 0xbd, 0x75, 0x44, 0xa1, 0x07, 0xc5, 0x0e, 0x54, 0xc1, 0x8b,
+	0x64, 0x67, 0xd2, 0xd9, 0xd0, 0x4e, 0x32, 0x9d, 0x64, 0x5b, 0x17, 0xf1, 0xe2, 0xc5, 0xab, 0x20,
+	0x82, 0x9f, 0xc1, 0xbb, 0x57, 0xcf, 0x3d, 0x16, 0xbd, 0x78, 0x5a, 0xa5, 0xf5, 0x13, 0xec, 0x27,
+	0x90, 0x4d, 0x32, 0x50, 0xbb, 0xee, 0xae, 0x7f, 0x4e, 0x13, 0xde, 0xf7, 0x79, 0x9f, 0xf7, 0x79,
+	0x9f, 0xbc, 0x19, 0x50, 0x6b, 0x89, 0x96, 0xe0, 0x5b, 0x9c, 0xb0, 0x48, 0xaa, 0xb6, 0xd2, 0x2c,
+	0xe5, 0x22, 0x62, 0x42, 0xf3, 0x3d, 0x46, 0x76, 0x5b, 0x2c, 0x6f, 0xe3, 0x2c, 0x97, 0x5a, 0xc2,
+	0x8a, 0xc3, 0xe1, 0x7e, 0x5c, 0x65, 0x26, 0x91, 0x89, 0x34, 0x30, 0xd2, 0x3b, 0xd9, 0x8a, 0xca,
+	0x7c, 0x22, 0x65, 0xb2, 0xc3, 0x08, 0xcd, 0x38, 0xa1, 0x42, 0x48, 0x4d, 0x35, 0x97, 0x42, 0xb9,
+	0xec, 0x62, 0x24, 0x55, 0x2a, 0x15, 0x69, 0x50, 0xe5, 0x1a, 0x91, 0xbd, 0xe5, 0x06, 0xd3, 0x74,
+	0x99, 0x64, 0x34, 0xe1, 0xc2, 0x80, 0x1d, 0xf6, 0xda, 0x10, 0x8d, 0x19, 0xcd, 0x69, 0x5a, 0x90,
+	0xae, 0x0e, 0x01, 0xf6, 0x87, 0x5c, 0x91, 0x7f, 0x52, 0x49, 0xa1, 0x21, 0x92, 0xdc, 0x75, 0x47,
+	0x33, 0x00, 0x6e, 0xf4, 0xf4, 0x3d, 0x34, 0x9d, 0x42, 0xb6, 0xdb, 0x62, 0x4a, 0xa3, 0x26, 0x98,
+	0xfe, 0x29, 0xaa, 0x32, 0x29, 0x14, 0x83, 0x1b, 0x60, 0xc2, 0x2a, 0x9a, 0xf5, 0x16, 0xbc, 0xfa,
+	0xe4, 0x0a, 0xc2, 0x83, 0x7d, 0xc3, 0xb6, 0x36, 0xb8, 0x74, 0xd0, 0xa9, 0x96, 0xba, 0x9d, 0xea,
+	0xf9, 0x36, 0x4d, 0x77, 0x6e, 0x23, 0x5b, 0x8f, 0x42, 0x47, 0x84, 0x34, 0x98, 0x37, 0x9d, 0xee,
+	0x16, 0x04, 0x21, 0xdb, 0xa7, 0x79, 0x5c, 0x28, 0x81, 0xd7, 0x41, 0x99, 0xc6, 0x71, 0xce, 0x94,
+	0xed, 0x79, 0x36, 0x80, 0xdd, 0x4e, 0xf5, 0x82, 0xe5, 0x72, 0x09, 0x14, 0x16, 0x10, 0x58, 0x03,
+	0xe3, 0x31, 0x13, 0x32, 0x9d, 0x1d, 0x33, 0xd8, 0xa9, 0x6e, 0xa7, 0x7a, 0xce, 0x62, 0x4d, 0x18,
+	0x85, 0x36, 0x8d, 0xde, 0x79, 0xe0, 0xf2, 0x80, 0xb6, 0x6e, 0xd4, 0x7d, 0x50, 0xce, 0x6d, 0x68,
+	0xd6, 0x5b, 0xf8, 0xaf, 0x3e, 0xb9, 0x32, 0x87, 0xad, 0x93, 0xb8, 0xe7, 0x24, 0x76, 0x4e, 0xe2,
+	0x3b, 0x92, 0x8b, 0x20, 0x70, 0x23, 0x3a, 0x59, 0xae, 0x0e, 0xbd, 0xff, 0x5a, 0xad, 0x27, 0x5c,
+	0x37, 0x5b, 0x0d, 0x1c, 0xc9, 0x94, 0xb8, 0x8b, 0xb0, 0x9f, 0x25, 0x15, 0x6f, 0x13, 0xdd, 0xce,
+	0x98, 0x32, 0x14, 0x2a, 0x2c, 0xba, 0xa1, 0x57, 0x1e, 0xb8, 0x6a, 0xa4, 0x85, 0x2c, 0xe2, 0x19,
+	0x67, 0x42, 0xaf, 0xd9, 0xe1, 0x1e, 0x73, 0xdd, 0x7c, 0xb0, 0xa5, 0xd7, 0xe3, 0xc2, 0x1a, 0x0c,
+	0xce, 0x44, 0x3b, 0x54, 0xa9, 0xa7, 0x3c, 0x76, 0xde, 0x4c, 0x77, 0x3b, 0xd5, 0x8b, 0x56, 0x44,
+	0x91, 0x41, 0x61, 0xd9, 0x1c, 0xd7, 0xe3, 0x1e, 0x5e, 0xcb, 0x6d, 0x26, 0x7a, 0xf8, 0xb1, 0xd3,
+	0xf8, 0x22, 0x83, 0xc2, 0xb2, 0x39, 0xae, 0xc7, 0xe8, 0x11, 0xa8, 0x8d, 0x12, 0xe2, 0xcc, 0xfa,
+	0xa3, 0x4b, 0x5a, 0xf9, 0xf0, 0x3f, 0x18, 0x37, 0xc4, 0xf0, 0xad, 0x07, 0x26, 0xec, 0x9a, 0x40,
+	0x3c, 0x6c, 0x95, 0xfa, 0x37, 0xb4, 0x42, 0x7e, 0x1b, 0x6f, 0x35, 0xa2, 0xc5, 0x97, 0x9f, 0xbf,
+	0xbf, 0x19, 0xbb, 0x02, 0x11, 0x19, 0xf9, 0xde, 0xe0, 0x47, 0x0f, 0x4c, 0x9d, 0xde, 0x0c, 0x78,
+	0x73, 0x64, 0xc7, 0x01, 0x3b, 0x5c, 0xb9, 0xf5, 0x17, 0x95, 0x4e, 0xf5, 0x0d, 0xa3, 0x9a, 0xc0,
+	0xa5, 0x61, 0xaa, 0xdd, 0xea, 0x90, 0xe7, 0xce, 0xe1, 0x17, 0xf0, 0x93, 0x07, 0xe6, 0x06, 0x5e,
+	0x1b, 0x5c, 0x1b, 0xa9, 0x67, 0xd4, 0xee, 0x55, 0x82, 0x7f, 0xa1, 0x70, 0xb3, 0x61, 0x33, 0x5b,
+	0x1d, 0xd6, 0x86, 0xcf, 0xe6, 0x68, 0x54, 0x70, 0xff, 0xe0, 0xc8, 0xf7, 0x0e, 0x8f, 0x7c, 0xef,
+	0xdb, 0x91, 0xef, 0xbd, 0x3e, 0xf6, 0x4b, 0x87, 0xc7, 0x7e, 0xe9, 0xcb, 0xb1, 0x5f, 0x7a, 0xb2,
+	0x7a, 0xe2, 0x99, 0x6d, 0x8a, 0x4d, 0xc1, 0xef, 0x71, 0x12, 0x35, 0x29, 0x17, 0xe4, 0xd9, 0xaf,
+	0x38, 0xcd, 0xbb, 0x6b, 0x4c, 0x98, 0x1f, 0xe0, 0xea, 0x8f, 0x00, 0x00, 0x00, 0xff, 0xff, 0xb9,
+	0x1c, 0xc8, 0x42, 0x24, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -472,8 +378,7 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	AllRewards(ctx context.Context, in *QueryAllRewardsRequest, opts ...grpc.CallOption) (*QueryAllRewardsResponse, error)
-	Reward(ctx context.Context, in *QueryRewardRequest, opts ...grpc.CallOption) (*QueryRewardResponse, error)
+	EcosystemRewards(ctx context.Context, in *QueryEcosystemRewardsRequest, opts ...grpc.CallOption) (*QueryEcosystemRewardsResponse, error)
 	RecipientAddressWithNftId(ctx context.Context, in *QueryRecipientAddressWithNftIdRequest, opts ...grpc.CallOption) (*QueryRecipientAddressWithNftIdResponse, error)
 }
 
@@ -494,18 +399,9 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) AllRewards(ctx context.Context, in *QueryAllRewardsRequest, opts ...grpc.CallOption) (*QueryAllRewardsResponse, error) {
-	out := new(QueryAllRewardsResponse)
-	err := c.cc.Invoke(ctx, "/ununifi.ecosystemincentive.Query/AllRewards", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) Reward(ctx context.Context, in *QueryRewardRequest, opts ...grpc.CallOption) (*QueryRewardResponse, error) {
-	out := new(QueryRewardResponse)
-	err := c.cc.Invoke(ctx, "/ununifi.ecosystemincentive.Query/Reward", in, out, opts...)
+func (c *queryClient) EcosystemRewards(ctx context.Context, in *QueryEcosystemRewardsRequest, opts ...grpc.CallOption) (*QueryEcosystemRewardsResponse, error) {
+	out := new(QueryEcosystemRewardsResponse)
+	err := c.cc.Invoke(ctx, "/ununifi.ecosystemincentive.Query/EcosystemRewards", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -525,8 +421,7 @@ func (c *queryClient) RecipientAddressWithNftId(ctx context.Context, in *QueryRe
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	AllRewards(context.Context, *QueryAllRewardsRequest) (*QueryAllRewardsResponse, error)
-	Reward(context.Context, *QueryRewardRequest) (*QueryRewardResponse, error)
+	EcosystemRewards(context.Context, *QueryEcosystemRewardsRequest) (*QueryEcosystemRewardsResponse, error)
 	RecipientAddressWithNftId(context.Context, *QueryRecipientAddressWithNftIdRequest) (*QueryRecipientAddressWithNftIdResponse, error)
 }
 
@@ -537,11 +432,8 @@ type UnimplementedQueryServer struct {
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (*UnimplementedQueryServer) AllRewards(ctx context.Context, req *QueryAllRewardsRequest) (*QueryAllRewardsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AllRewards not implemented")
-}
-func (*UnimplementedQueryServer) Reward(ctx context.Context, req *QueryRewardRequest) (*QueryRewardResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Reward not implemented")
+func (*UnimplementedQueryServer) EcosystemRewards(ctx context.Context, req *QueryEcosystemRewardsRequest) (*QueryEcosystemRewardsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EcosystemRewards not implemented")
 }
 func (*UnimplementedQueryServer) RecipientAddressWithNftId(ctx context.Context, req *QueryRecipientAddressWithNftIdRequest) (*QueryRecipientAddressWithNftIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RecipientAddressWithNftId not implemented")
@@ -569,38 +461,20 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_AllRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryAllRewardsRequest)
+func _Query_EcosystemRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryEcosystemRewardsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).AllRewards(ctx, in)
+		return srv.(QueryServer).EcosystemRewards(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ununifi.ecosystemincentive.Query/AllRewards",
+		FullMethod: "/ununifi.ecosystemincentive.Query/EcosystemRewards",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).AllRewards(ctx, req.(*QueryAllRewardsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_Reward_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryRewardRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Reward(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/ununifi.ecosystemincentive.Query/Reward",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Reward(ctx, req.(*QueryRewardRequest))
+		return srv.(QueryServer).EcosystemRewards(ctx, req.(*QueryEcosystemRewardsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -632,12 +506,8 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "AllRewards",
-			Handler:    _Query_AllRewards_Handler,
-		},
-		{
-			MethodName: "Reward",
-			Handler:    _Query_Reward_Handler,
+			MethodName: "EcosystemRewards",
+			Handler:    _Query_EcosystemRewards_Handler,
 		},
 		{
 			MethodName: "RecipientAddressWithNftId",
@@ -704,7 +574,7 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryAllRewardsRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryEcosystemRewardsRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -714,75 +584,12 @@ func (m *QueryAllRewardsRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryAllRewardsRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryEcosystemRewardsRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryAllRewardsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Address) > 0 {
-		i -= len(m.Address)
-		copy(dAtA[i:], m.Address)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryAllRewardsResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryAllRewardsResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryAllRewardsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	{
-		size, err := m.RewardRecord.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintQuery(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0xa
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryRewardRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryRewardRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryRewardRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryEcosystemRewardsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -804,7 +611,7 @@ func (m *QueryRewardRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryRewardResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryEcosystemRewardsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -814,26 +621,30 @@ func (m *QueryRewardResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryRewardResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryEcosystemRewardsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryRewardResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryEcosystemRewardsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	{
-		size, err := m.Reward.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
+	if len(m.Rewards) > 0 {
+		for iNdEx := len(m.Rewards) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Rewards[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
 		}
-		i -= size
-		i = encodeVarintQuery(dAtA, i, uint64(size))
 	}
-	i--
-	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -935,31 +746,7 @@ func (m *QueryParamsResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryAllRewardsRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Address)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	return n
-}
-
-func (m *QueryAllRewardsResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = m.RewardRecord.Size()
-	n += 1 + l + sovQuery(uint64(l))
-	return n
-}
-
-func (m *QueryRewardRequest) Size() (n int) {
+func (m *QueryEcosystemRewardsRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -976,14 +763,18 @@ func (m *QueryRewardRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryRewardResponse) Size() (n int) {
+func (m *QueryEcosystemRewardsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = m.Reward.Size()
-	n += 1 + l + sovQuery(uint64(l))
+	if len(m.Rewards) > 0 {
+		for _, e := range m.Rewards {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
 	return n
 }
 
@@ -1156,7 +947,7 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryAllRewardsRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryEcosystemRewardsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1179,175 +970,10 @@ func (m *QueryAllRewardsRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAllRewardsRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryEcosystemRewardsRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAllRewardsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Address = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryAllRewardsResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAllRewardsResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAllRewardsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RewardRecord", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.RewardRecord.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryRewardRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryRewardRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryRewardRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryEcosystemRewardsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1435,7 +1061,7 @@ func (m *QueryRewardRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryRewardResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryEcosystemRewardsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1458,15 +1084,15 @@ func (m *QueryRewardResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryRewardResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryEcosystemRewardsResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryRewardResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryEcosystemRewardsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Reward", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Rewards", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1493,7 +1119,8 @@ func (m *QueryRewardResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Reward.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.Rewards = append(m.Rewards, types.Coin{})
+			if err := m.Rewards[len(m.Rewards)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

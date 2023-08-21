@@ -8,7 +8,7 @@ import (
 
 func (k Keeper) UpdateListedClass(ctx sdk.Context, listing types.Listing) {
 	// if listing doesn't exist, delete it from listed calss
-	if _, err := k.GetNftListingByIdBytes(ctx, listing.IdBytes()); err != nil {
+	if _, err := k.GetListedNftByIdBytes(ctx, listing.IdBytes()); err != nil {
 		k.DeleteListingFromListedClass(ctx, listing)
 		return
 	}
@@ -79,7 +79,7 @@ func (k Keeper) GetListedClassByClassIdBytes(ctx sdk.Context, classIdByte []byte
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(classIdByte)
 	if bz == nil {
-		return types.ListedClass{}, types.ErrNftListingDoesNotExist
+		return types.ListedClass{}, types.ErrListedNftDoesNotExist
 	}
 	class := types.ListedClass{}
 	k.cdc.MustUnmarshal(bz, &class)
