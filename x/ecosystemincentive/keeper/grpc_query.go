@@ -22,8 +22,7 @@ func (k Keeper) Params(c context.Context, req *types.QueryParamsRequest) (*types
 	return &types.QueryParamsResponse{Params: k.GetParams(ctx)}, nil
 }
 
-// AllRewards returns the RewardStore defined by subject address
-func (k Keeper) AllRewards(c context.Context, req *types.QueryAllRewardsRequest) (*types.QueryAllRewardsResponse, error) {
+func (k Keeper) EcosystemRewards(c context.Context, req *types.QueryEcosystemRewardsRequest) (*types.QueryEcosystemRewardsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid argument")
 	}
@@ -31,40 +30,24 @@ func (k Keeper) AllRewards(c context.Context, req *types.QueryAllRewardsRequest)
 
 	accAddr, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
-		return nil, err
+		return &types.QueryEcosystemRewardsResponse{Rewards: sdk.Coins{}}, err
 	}
 
-	record, exists := k.GetRewardRecord(ctx, accAddr)
-	if !exists {
-		record.Address = accAddr.String()
-		return &types.QueryAllRewardsResponse{RewardRecord: record}, nil
+	allRewards, exist := k.GetRewardRecord(ctx, accAddr)
+	if !exist {
+		return &types.QueryEcosystemRewardsResponse{Rewards: allRewards.Rewards}, nil
 	}
 
-	return &types.QueryAllRewardsResponse{RewardRecord: record}, nil
-}
-
-func (k Keeper) Reward(c context.Context, req *types.QueryRewardRequest) (*types.QueryRewardResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid argument")
-	}
-	ctx := sdk.UnwrapSDKContext(c)
-
-	accAddr, err := sdk.AccAddressFromBech32(req.Address)
-	if err != nil {
-		return &types.QueryRewardResponse{Reward: sdk.Coin{}}, err
+	if req.Denom == "" {
+		return &types.QueryEcosystemRewardsResponse{Rewards: allRewards.Rewards}, nil
 	}
 
-	allRewards, exists := k.GetRewardRecord(ctx, accAddr)
-	if !exists {
-		return &types.QueryRewardResponse{Reward: sdk.NewInt64Coin(req.Denom, 0)}, nil
+	exist, reward := allRewards.Rewards.Find(req.Denom)
+	if !exist {
+		return &types.QueryEcosystemRewardsResponse{Rewards: sdk.Coins{sdk.NewInt64Coin(req.Denom, 0)}}, nil
 	}
 
-	exists, reward := allRewards.Rewards.Find(req.Denom)
-	if !exists {
-		return &types.QueryRewardResponse{Reward: sdk.NewInt64Coin(req.Denom, 0)}, nil
-	}
-
-	return &types.QueryRewardResponse{Reward: reward}, nil
+	return &types.QueryEcosystemRewardsResponse{Rewards: sdk.Coins{reward}}, nil
 }
 
 func (k Keeper) RecipientAddressWithNftId(c context.Context, req *types.QueryRecipientAddressWithNftIdRequest) (*types.QueryRecipientAddressWithNftIdResponse, error) {
