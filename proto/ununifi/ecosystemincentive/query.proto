@@ -17,16 +17,12 @@ service Query {
     option (google.api.http).get = "/ununifi/ecosystemincentive/params";
   }
 
-  rpc AllRewards(QueryAllRewardsRequest) returns (QueryAllRewardsResponse) {
+  rpc EcosystemRewards(QueryEcosystemRewardsRequest) returns (QueryEcosystemRewardsResponse) {
     option (google.api.http).get = "/ununifi/ecosystemincentive/rewards/{address}";
   }
 
-  rpc Reward(QueryRewardRequest) returns (QueryRewardResponse) {
-    option (google.api.http).get = "/ununifi/ecosystemincentive/rewards/{address}/{denom}";
-  }
-
   rpc RecipientAddressWithNftId(QueryRecipientAddressWithNftIdRequest) returns (QueryRecipientAddressWithNftIdResponse) {
-    option (google.api.http).get = "/ununifi/ecosystemincentive/recipients/{class_id}/{token_id}";
+    option (google.api.http).get = "/ununifi/ecosystemincentive/recipients";
   }
 }
 
@@ -37,24 +33,16 @@ message QueryParamsResponse {
   Params params = 1 [(gogoproto.moretags) = "yaml:\"params\"", (gogoproto.nullable) = false];
 }
 
-message QueryAllRewardsRequest {
-  string address = 1 [(gogoproto.moretags) = "yaml:\"address\""];
-}
-
-message QueryAllRewardsResponse {
-  RewardRecord reward_record = 1 [(gogoproto.moretags) = "yaml:\"reward_record\"", (gogoproto.nullable) = false];
-}
-
-message QueryRewardRequest {
+message QueryEcosystemRewardsRequest {
   string address = 1 [(gogoproto.moretags) = "yaml:\"address\""];
   string denom   = 2 [(gogoproto.moretags) = "yaml:\"denom\""];
 }
 
-message QueryRewardResponse {
-  cosmos.base.v1beta1.Coin reward = 1 [
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coin",
-    (gogoproto.moretags)     = "yaml:\"reward\"",
-    (gogoproto.nullable)     = false
+message QueryEcosystemRewardsResponse {
+  repeated cosmos.base.v1beta1.Coin rewards = 1 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.moretags) = "yaml:\"rewards\"",
+    (gogoproto.nullable) = false
   ];
 }
 
