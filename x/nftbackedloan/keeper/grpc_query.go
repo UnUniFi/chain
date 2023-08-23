@@ -45,23 +45,21 @@ func (k Keeper) ListedNfts(c context.Context, req *types.QueryListedNftsRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if req.Owner != "" {
-		acc, err := sdk.AccAddressFromBech32(req.Owner)
-		if err != nil {
-			return nil, status.Error(codes.InvalidArgument, "invalid request. address wrong")
-		}
-		return k.ListedNftsByOwner(c, acc)
-	} else {
+
+	if req.Owner == "" {
 		listings := k.GetAllListedNfts(ctx)
 		res, err := k.GetListedNftDetails(ctx, listings)
 		if err != nil {
-			panic(err)
+			return nil, status.Error(codes.InvalidArgument, "invalid request. no nft details")
 		}
-		return &types.QueryListedNftsResponse{
-			Listings: res,
-		}, nil
+		return &types.QueryListedNftsResponse{Listings: res}, nil
 	}
 
+	acc, err := sdk.AccAddressFromBech32(req.Owner)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request. address wrong")
+	}
+	return k.ListedNftsByOwner(c, acc)
 }
 
 func (k Keeper) GetListedNftDetails(ctx sdk.Context, listings []types.Listing) ([]types.ListedNftDetail, error) {
@@ -237,11 +235,18 @@ func (k Keeper) NftBids(c context.Context, req *types.QueryNftBidsRequest) (*typ
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
+	if req.ClassId == "" && req.TokenId == "" {
+		bids := k.GetAllBids(sdk.UnwrapSDKContext(c))
+		return &types.QueryNftBidsResponse{Bids: bids}, nil
+	}
+
+	if req.ClassId == "" || req.TokenId == "" {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
 	ctx := sdk.UnwrapSDKContext(c)
 	bids := k.GetBidsByNft(ctx, types.NftBytes(req.ClassId, req.TokenId))
-	return &types.QueryNftBidsResponse{
-		Bids: bids,
-	}, nil
+	return &types.QueryNftBidsResponse{Bids: bids}, nil
 }
 
 func (k Keeper) BidderBids(c context.Context, req *types.QueryBidderBidsRequest) (*types.QueryBidderBidsResponse, error) {

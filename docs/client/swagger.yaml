@@ -5280,7 +5280,144 @@ paths:
           type: string
       tags:
         - Query
-  /ununifi/nftbackedloan/bidder-bids/{bidder}:
+  /ununifi/nftbackedloan/bids:
+    get:
+      operationId: NftBids
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              bids:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: object
+                      properties:
+                        nft_id:
+                          type: object
+                          properties:
+                            class_id:
+                              type: string
+                            token_id:
+                              type: string
+                        bidder:
+                          type: string
+                    price:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                    deposit:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                    paid_amount:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        amount:
+                          type: string
+                      description: >-
+                        Coin defines a token with a denomination and an amount.
+
+
+                        NOTE: The amount field is an Int which implements the
+                        custom method
+
+                        signatures required by gogoproto.
+                    expiry:
+                      type: string
+                      format: date-time
+                    interest_rate:
+                      type: string
+                    automatic_payment:
+                      type: boolean
+                    created_at:
+                      type: string
+                      format: date-time
+                    loan:
+                      title: borrow info
+                      type: object
+                      properties:
+                        amount:
+                          type: object
+                          properties:
+                            denom:
+                              type: string
+                            amount:
+                              type: string
+                          description: >-
+                            Coin defines a token with a denomination and an
+                            amount.
+
+
+                            NOTE: The amount field is an Int which implements
+                            the custom method
+
+                            signatures required by gogoproto.
+                        last_repaid_at:
+                          type: string
+                          format: date-time
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_id
+          in: query
+          required: false
+          type: string
+        - name: token_id
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /ununifi/nftbackedloan/bids/{bidder}:
     get:
       operationId: BidderBids
       responses:
@@ -5504,75 +5641,6 @@ paths:
           type: string
       tags:
         - Query
-  /ununifi/nftbackedloan/listed-class:
-    get:
-      operationId: ListedClass
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              class_id:
-                type: string
-              name:
-                type: string
-              description:
-                type: string
-              symbol:
-                type: string
-              uri:
-                type: string
-              urihash:
-                type: string
-              nfts:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    uri:
-                      type: string
-                    uri_hash:
-                      type: string
-              nft_count:
-                type: string
-                format: uint64
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: class_id
-          in: query
-          required: false
-          type: string
-        - name: nft_limit
-          in: query
-          required: false
-          type: integer
-          format: int32
-      tags:
-        - Query
   /ununifi/nftbackedloan/listed-classes:
     get:
       operationId: ListedClasses
@@ -5647,72 +5715,41 @@ paths:
           format: int32
       tags:
         - Query
-  /ununifi/nftbackedloan/listed-nft:
+  /ununifi/nftbackedloan/listed-classes/class:
     get:
-      operationId: ListedNft
+      operationId: ListedClass
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              listing:
-                type: object
-                properties:
-                  nft_id:
-                    type: object
-                    properties:
-                      class_id:
-                        type: string
-                      token_id:
-                        type: string
-                  owner:
-                    type: string
-                  state:
-                    type: string
-                    enum:
-                      - UNKNOWN
-                      - LISTING
-                      - BIDDING
-                      - SELLING_DECISION
-                      - LIQUIDATION
-                      - SUCCESSFUL_BID
-                    default: UNKNOWN
-                  bid_denom:
-                    type: string
-                  min_deposit_rate:
-                    type: string
-                  min_bid_period:
-                    type: string
-                  started_at:
-                    type: string
-                    format: date-time
-                  liquidated_at:
-                    type: string
-                    format: date-time
-                  full_payment_end_at:
-                    type: string
-                    format: date-time
-                  successful_bid_end_at:
-                    type: string
-                    format: date-time
-                  collected_amount:
-                    type: object
-                    properties:
-                      denom:
-                        type: string
-                      amount:
-                        type: string
-                    description: >-
-                      Coin defines a token with a denomination and an amount.
-
-
-                      NOTE: The amount field is an Int which implements the
-                      custom method
-
-                      signatures required by gogoproto.
-                  collected_amount_negative:
-                    type: boolean
+              class_id:
+                type: string
+              name:
+                type: string
+              description:
+                type: string
+              symbol:
+                type: string
+              uri:
+                type: string
+              urihash:
+                type: string
+              nfts:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    uri:
+                      type: string
+                    uri_hash:
+                      type: string
+              nft_count:
+                type: string
+                format: uint64
         default:
           description: An unexpected error response.
           schema:
@@ -5740,10 +5777,11 @@ paths:
           in: query
           required: false
           type: string
-        - name: token_id
+        - name: nft_limit
           in: query
           required: false
-          type: string
+          type: integer
+          format: int32
       tags:
         - Query
   /ununifi/nftbackedloan/listed-nfts:
@@ -5856,6 +5894,105 @@ paths:
           type: string
       tags:
         - Query
+  /ununifi/nftbackedloan/listed-nfts/nft:
+    get:
+      operationId: ListedNft
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              listing:
+                type: object
+                properties:
+                  nft_id:
+                    type: object
+                    properties:
+                      class_id:
+                        type: string
+                      token_id:
+                        type: string
+                  owner:
+                    type: string
+                  state:
+                    type: string
+                    enum:
+                      - UNKNOWN
+                      - LISTING
+                      - BIDDING
+                      - SELLING_DECISION
+                      - LIQUIDATION
+                      - SUCCESSFUL_BID
+                    default: UNKNOWN
+                  bid_denom:
+                    type: string
+                  min_deposit_rate:
+                    type: string
+                  min_bid_period:
+                    type: string
+                  started_at:
+                    type: string
+                    format: date-time
+                  liquidated_at:
+                    type: string
+                    format: date-time
+                  full_payment_end_at:
+                    type: string
+                    format: date-time
+                  successful_bid_end_at:
+                    type: string
+                    format: date-time
+                  collected_amount:
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                    description: >-
+                      Coin defines a token with a denomination and an amount.
+
+
+                      NOTE: The amount field is an Int which implements the
+                      custom method
+
+                      signatures required by gogoproto.
+                  collected_amount_negative:
+                    type: boolean
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_id
+          in: query
+          required: false
+          type: string
+        - name: token_id
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
   /ununifi/nftbackedloan/loans:
     get:
       operationId: Loan
@@ -5917,143 +6054,6 @@ paths:
                   method
 
                   signatures required by gogoproto.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: class_id
-          in: query
-          required: false
-          type: string
-        - name: token_id
-          in: query
-          required: false
-          type: string
-      tags:
-        - Query
-  /ununifi/nftbackedloan/nft-bids:
-    get:
-      operationId: NftBids
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              bids:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: object
-                      properties:
-                        nft_id:
-                          type: object
-                          properties:
-                            class_id:
-                              type: string
-                            token_id:
-                              type: string
-                        bidder:
-                          type: string
-                    price:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                    deposit:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                    paid_amount:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        amount:
-                          type: string
-                      description: >-
-                        Coin defines a token with a denomination and an amount.
-
-
-                        NOTE: The amount field is an Int which implements the
-                        custom method
-
-                        signatures required by gogoproto.
-                    expiry:
-                      type: string
-                      format: date-time
-                    interest_rate:
-                      type: string
-                    automatic_payment:
-                      type: boolean
-                    created_at:
-                      type: string
-                      format: date-time
-                    loan:
-                      title: borrow info
-                      type: object
-                      properties:
-                        amount:
-                          type: object
-                          properties:
-                            denom:
-                              type: string
-                            amount:
-                              type: string
-                          description: >-
-                            Coin defines a token with a denomination and an
-                            amount.
-
-
-                            NOTE: The amount field is an Int which implements
-                            the custom method
-
-                            signatures required by gogoproto.
-                        last_repaid_at:
-                          type: string
-                          format: date-time
         default:
           description: An unexpected error response.
           schema:

@@ -17,36 +17,28 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/ununifi/nftbackedloan/params";
   }
-  rpc ListedNft(QueryListedNftRequest) returns (QueryListedNftResponse) {
-    option (google.api.http).get = "/ununifi/nftbackedloan/listed-nft";
-  }
   rpc ListedNfts(QueryListedNftsRequest) returns (QueryListedNftsResponse) {
     option (google.api.http).get = "/ununifi/nftbackedloan/listed-nfts";
+  }
+  rpc ListedNft(QueryListedNftRequest) returns (QueryListedNftResponse) {
+    option (google.api.http).get = "/ununifi/nftbackedloan/listed-nfts/nft";
   }
   rpc ListedClasses(QueryListedClassesRequest) returns (QueryListedClassesResponse) {
     option (google.api.http).get = "/ununifi/nftbackedloan/listed-classes";
   }
   rpc ListedClass(QueryListedClassRequest) returns (QueryListedClassResponse) {
-    option (google.api.http).get = "/ununifi/nftbackedloan/listed-class";
+    option (google.api.http).get = "/ununifi/nftbackedloan/listed-classes/class";
   }
-
-  // rpc Loans(QueryLoansRequest) returns (QueryLoansResponse) {
-  //   option (google.api.http).get = "/ununifi/nftbackedloan/loans";
-  // }
 
   rpc Loan(QueryLoanRequest) returns (QueryLoanResponse) {
     option (google.api.http).get = "/ununifi/nftbackedloan/loans";
   }
   rpc NftBids(QueryNftBidsRequest) returns (QueryNftBidsResponse) {
-    option (google.api.http).get = "/ununifi/nftbackedloan/nft-bids";
+    option (google.api.http).get = "/ununifi/nftbackedloan/bids";
   }
   rpc BidderBids(QueryBidderBidsRequest) returns (QueryBidderBidsResponse) {
-    option (google.api.http).get = "/ununifi/nftbackedloan/bidder-bids/{bidder}";
+    option (google.api.http).get = "/ununifi/nftbackedloan/bids/{bidder}";
   }
-
-  // rpc PaymentStatus(QueryPaymentStatusRequest) returns (QueryPaymentStatusResponse) {
-  //   option (google.api.http).get = "/ununifi/nftbackedloan/payment-status/{class_id}/{token_id}/{bidder}";
-  // }
 
   rpc Rewards(QueryRewardsRequest) returns (QueryRewardsResponse) {
     option (google.api.http).get = "/ununifi/nftbackedloan/rewards/{address}";
@@ -130,18 +122,6 @@ message QueryNftBidsRequest {
 message QueryNftBidsResponse {
   repeated Bid bids = 1 [(gogoproto.nullable) = false];
 }
-
-// message QueryPaymentStatusRequest {
-//   string class_id = 1;
-//   string token_id   = 2;
-//   string bidder   = 3 [
-//     (gogoproto.moretags)  = "yaml:\"bidder\"",
-//     (cosmos_proto.scalar) = "github.com/UnUniFi/chain/types.StringAccAddress"
-//   ];
-// }
-// message QueryPaymentStatusResponse {
-//   PaymentStatus paymentStatus = 1 [(gogoproto.nullable) = false];
-// }
 
 message QueryBidderBidsRequest {
   string bidder = 1 [
