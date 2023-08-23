@@ -5704,10 +5704,6 @@ paths:
                       type: string
                       format: byte
       parameters:
-        - name: class_id
-          in: query
-          required: false
-          type: string
         - name: nft_limit
           in: query
           required: false
