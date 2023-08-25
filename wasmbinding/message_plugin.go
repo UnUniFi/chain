@@ -12,7 +12,12 @@ import (
 
 	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 
+	"github.com/cosmos/cosmos-sdk/x/nft"
+
 	"github.com/UnUniFi/chain/wasmbinding/bindings"
+	nftkeeper "github.com/UnUniFi/chain/x/nft/keeper"
+	nftbackedloankeeper "github.com/UnUniFi/chain/x/nftbackedloan/keeper"
+	nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 	icqkeeper "github.com/UnUniFi/chain/x/yieldaggregator/submodules/interchainquery/keeper"
 	interchainquerytypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/interchainquery/types"
 	recordskeeper "github.com/UnUniFi/chain/x/yieldaggregator/submodules/records/keeper"
@@ -31,10 +36,12 @@ func CustomMessageDecorator(bank *bankkeeper.BaseKeeper, icqKeeper *icqkeeper.Ke
 }
 
 type CustomMessenger struct {
-	wrapped       wasmkeeper.Messenger
-	bank          *bankkeeper.BaseKeeper
-	icqKeeper     *icqkeeper.Keeper
-	recordsKeeper *recordskeeper.Keeper
+	wrapped             wasmkeeper.Messenger
+	bank                *bankkeeper.BaseKeeper
+	icqKeeper           *icqkeeper.Keeper
+	recordsKeeper       *recordskeeper.Keeper
+	nftKeeper           *nftkeeper.Keeper
+	nftbackedloanKeeper *nftbackedloankeeper.Keeper
 }
 
 var _ wasmkeeper.Messenger = (*CustomMessenger)(nil)
@@ -51,6 +58,9 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 		}
 		if contractMsg.IBCTransfer != nil {
 			return m.ibcTransfer(ctx, contractAddr, contractMsg.IBCTransfer)
+		}
+		if contractMsg.DeputyListNft != nil {
+			return m.deputyListNft(ctx, contractAddr, contractMsg.DeputyListNft)
 		}
 	}
 	return m.wrapped.DispatchMsg(ctx, contractAddr, contractIBCPortID, msg)
@@ -120,5 +130,71 @@ func PerformIBCTransfer(f *recordskeeper.Keeper, ctx sdk.Context, contractAddr s
 	if err != nil {
 		return sdkerrors.Wrap(err, "sending ibc transfer")
 	}
+	return nil
+}
+
+func (m *CustomMessenger) deputyListNft(ctx sdk.Context, contractAddr sdk.AccAddress, deputyListNft *bindings.DeputyListNft) ([]sdk.Event, [][]byte, error) {
+	err := PerformDeputyListNft(m.nftKeeper, m.nftbackedloanKeeper, ctx, contractAddr, deputyListNft)
+	if err != nil {
+		return nil, nil, sdkerrors.Wrap(err, "perform deputy list nft submission")
+	}
+	return nil, nil, nil
+}
+
+func PerformDeputyListNft(n *nftkeeper.Keeper, b *nftbackedloankeeper.Keeper, ctx sdk.Context, contractAddr sdk.AccAddress, deputyListNft *bindings.DeputyListNft) error {
+	if deputyListNft == nil {
+		return wasmvmtypes.InvalidRequest{Err: "deputy list nft empty"}
+	}
+
+	nftClass, exist := n.GetClass(ctx, deputyListNft.ClassId)
+	// create class if not exist
+	if !exist {
+		nftClass := nft.Class{
+			Id:          deputyListNft.ClassId,
+			Name:        "Outpost NFT Backed Loan " + deputyListNft.ClassId,
+			Symbol:      deputyListNft.ClassId,
+			Description: "NFTs as collateral for Outpost NFT Backed Loans created by " + deputyListNft.ClassId,
+			Uri:         "",
+			UriHash:     "",
+		}
+		err := n.SaveClass(ctx, nftClass)
+		if err != nil {
+			return err
+		}
+	}
+
+	nft := nft.NFT{
+		ClassId: nftClass.Id,
+		Id:      deputyListNft.TokenId,
+		Uri:     "",
+		UriHash: "",
+	}
+
+	// mint nft to lister
+	err := n.Mint(ctx, nft, sdk.AccAddress(deputyListNft.Lister))
+	if err != nil {
+		return err
+	}
+
+	// list nft
+	minBidPeriod, err := time.ParseDuration(deputyListNft.MinBidPeriod)
+	if err != nil {
+		return err
+	}
+
+	err = b.ListNft(ctx, &nftbackedloantypes.MsgListNft{
+		Sender: deputyListNft.Lister,
+		NftId: nftbackedloantypes.NftId{
+			ClassId: nft.ClassId,
+			TokenId: nft.Id,
+		},
+		BidDenom:       deputyListNft.BidDenom,
+		MinDepositRate: sdk.MustNewDecFromStr(deputyListNft.MinDepositRate),
+		MinBidPeriod:   minBidPeriod,
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
