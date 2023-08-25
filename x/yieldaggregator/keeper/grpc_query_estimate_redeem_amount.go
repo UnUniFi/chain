@@ -57,8 +57,9 @@ func (k Keeper) EstimateRedeemAmount(c context.Context, req *types.QueryEstimate
 	fee := withdrawFee.Add(withdrawModuleCommissionFee).Add(withdrawVaultCommissionFee)
 
 	return &types.QueryEstimateRedeemAmountResponse{
-		ShareAmount:  principal,
+		ShareAmount:  sdk.NewCoin(types.GetLPTokenDenom(vault.Id), burnAmount),
 		Fee:          sdk.NewCoin(principal.Denom, fee),
 		RedeemAmount: sdk.NewCoin(principal.Denom, withdrawAmountWithoutCommission),
+		TotalAmount:  principal,
 	}, nil
 }
