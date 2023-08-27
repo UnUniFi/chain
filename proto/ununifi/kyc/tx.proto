@@ -1,0 +1,85 @@
+syntax = "proto3";
+package ununifi.kyc;
+
+import "ununifi/kyc/provider.proto";
+import "ununifi/kyc/verification.proto";
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "ununifi/x/kyc/types";
+
+// Msg defines the Msg service.
+service Msg {
+    rpc CreateProvider(MsgCreateProvider) returns (MsgCreateProviderResponse);
+  rpc UpdateProvider(MsgUpdateProvider) returns (MsgUpdateProviderResponse);
+  rpc DeleteProvider(MsgDeleteProvider) returns (MsgDeleteProviderResponse);
+  rpc CreateVerification(MsgCreateVerification) returns (MsgCreateVerificationResponse);
+  rpc UpdateVerification(MsgUpdateVerification) returns (MsgUpdateVerificationResponse);
+  rpc DeleteVerification(MsgDeleteVerification) returns (MsgDeleteVerificationResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgCreateProvider {
+  string sender = 1;
+  string name = 2;
+  // identity defines an optional identity signature (ex. UPort or Keybase).
+  string identity = 3;
+  // website defines an optional website link.
+  string website = 4;
+  // security_contact defines an optional email for security contact.
+  string security_contact = 5;
+  // details define other optional details.
+  string details = 6;
+}
+
+message MsgCreateProviderResponse {
+  uint64 id = 1;
+}
+
+message MsgUpdateProvider {
+  string sender = 1;
+  uint64 id = 2;
+  string address = 3;
+  string name = 4;
+  // identity defines an optional identity signature (ex. UPort or Keybase).
+  string identity = 5;
+  // website defines an optional website link.
+  string website = 6;
+  // security_contact defines an optional email for security contact.
+  string security_contact = 7;
+  // details define other optional details.
+  string details = 8;
+}
+
+message MsgUpdateProviderResponse {}
+
+message MsgDeleteProvider {
+  string sender = 1;
+  uint64 id = 2;
+}
+
+message MsgDeleteProviderResponse {}
+
+message MsgCreateVerification {
+  string sender = 1;
+  uint64 provider_id = 2;
+  string customer = 3;
+
+}
+message MsgCreateVerificationResponse {}
+
+message MsgUpdateVerification {
+  string sender = 1;
+  uint64 provider_id = 2;
+  string customer = 3;
+
+}
+message MsgUpdateVerificationResponse {}
+
+message MsgDeleteVerification {
+  string sender = 1;
+  uint64 provider_id = 2;
+  string customer = 3;
+}
+message MsgDeleteVerificationResponse {}
+
+// this line is used by starport scaffolding # proto/tx/message

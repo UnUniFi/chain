@@ -1,0 +1,18 @@
+syntax = "proto3";
+package ununifi.kyc;
+
+option go_package = "ununifi/x/kyc/types";
+
+message Provider {
+  uint64 id = 1;
+  string address = 2;
+  string name = 3;
+  // identity defines an optional identity signature (ex. UPort or Keybase).
+  string identity = 4;
+  // website defines an optional website link.
+  string website = 5;
+  // security_contact defines an optional email for security contact.
+  string security_contact = 6;
+  // details define other optional details.
+  string details = 7;
+}

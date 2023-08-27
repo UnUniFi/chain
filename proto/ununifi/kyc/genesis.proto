@@ -1,0 +1,19 @@
+syntax = "proto3";
+package ununifi.kyc;
+
+import "gogoproto/gogo.proto";
+import "ununifi/kyc/params.proto";
+import "ununifi/kyc/provider.proto";
+import "ununifi/kyc/verification.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "ununifi/x/kyc/types";
+
+// GenesisState defines the kyc module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  repeated Provider providerList = 2 [(gogoproto.nullable) = false];
+  uint64 providerCount = 3;
+  repeated Verification verificationList = 4 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+}

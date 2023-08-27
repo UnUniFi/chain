@@ -1,0 +1,87 @@
+syntax = "proto3";
+package ununifi.kyc;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "ununifi/kyc/params.proto";
+import "ununifi/kyc/provider.proto";
+import "ununifi/kyc/verification.proto";
+// this line is used by starport scaffolding # 1
+
+option go_package = "ununifi/x/kyc/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/ununifi/kyc/params";
+  }
+  // Queries a Provider by id.
+	rpc Provider(QueryGetProviderRequest) returns (QueryGetProviderResponse) {
+		option (google.api.http).get = "/ununifi/kyc/provider/{id}";
+	}
+
+	// Queries a list of Provider items.
+	rpc ProviderAll(QueryAllProviderRequest) returns (QueryAllProviderResponse) {
+		option (google.api.http).get = "/ununifi/kyc/provider";
+	}
+
+// Queries a Verification by index.
+	rpc Verification(QueryGetVerificationRequest) returns (QueryGetVerificationResponse) {
+		option (google.api.http).get = "/ununifi/kyc/verification/{index}";
+	}
+
+	// Queries a list of Verification items.
+	rpc VerificationAll(QueryAllVerificationRequest) returns (QueryAllVerificationResponse) {
+		option (google.api.http).get = "/ununifi/kyc/verification";
+	}
+
+// this line is used by starport scaffolding # 2
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetProviderRequest {
+	uint64 id = 1;
+}
+
+message QueryGetProviderResponse {
+	Provider Provider = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllProviderRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllProviderResponse {
+	repeated Provider Provider = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetVerificationRequest {
+	  string index = 1;
+
+}
+
+message QueryGetVerificationResponse {
+	Verification verification = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllVerificationRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllVerificationResponse {
+	repeated Verification verification = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// this line is used by starport scaffolding # 3
