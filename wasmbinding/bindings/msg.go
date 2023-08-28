@@ -22,6 +22,6 @@ type DeputyListNft struct {
 	ClassId        string `json:"class_id"`
 	TokenId        string `json:"token_id"`
 	BidDenom       string `json:"bid_denom"`
-	MinDepositRate string `json:"min_deposit_rate"` // TODO: type
-	MinBidPeriod   string `json:"min_bid_period"`   // TODO: type
+	MinDepositRate string `json:"min_deposit_rate"` // e.g. "0.000144262291094554178391070900057480"
+	MinBidPeriod   string `json:"min_bid_period"`   // e.g. "86400s"
 }
