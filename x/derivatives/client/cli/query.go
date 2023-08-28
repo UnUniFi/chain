@@ -40,7 +40,6 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	cmd.AddCommand(CmdQueryDLPTokenRate())
 	cmd.AddCommand(CmdQueryEstimateDLPTokenAmount())
 	cmd.AddCommand(CmdQueryEstimateRedeemTokenAmount())
-	cmd.AddCommand(CmdQueryAvailableAssetInPoolByDenom())
 	cmd.AddCommand(CmdQueryAvailableAssetsInPool())
 	cmd.AddCommand(CmdQueryAllPendingPaymentPositions())
 	cmd.AddCommand(CmdQueryPendingPaymentPosition())
@@ -440,46 +439,26 @@ func CmdQueryEstimateRedeemTokenAmount() *cobra.Command {
 	return cmd
 }
 
-func CmdQueryAvailableAssetInPoolByDenom() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "available-asset [denom]",
-		Short: "shows the available amount of the asset",
-		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			queryClient := types.NewQueryClient(clientCtx)
-
-			res, err := queryClient.AvailableAssetInPoolByDenom(
-				context.Background(),
-				&types.QueryAvailableAssetInPoolByDenomRequest{
-					Denom: args[0],
-				},
-			)
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(res)
-		},
-	}
-	flags.AddQueryFlagsToCmd(cmd)
-	return cmd
-}
-
 func CmdQueryAvailableAssetsInPool() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "available-assets",
-		Short: "shows the available amount of all assets in the pool",
-		Args:  cobra.ExactArgs(1),
+		Use:   "available-assets [denom]",
+		Short: "shows the available amount of assets in the pool",
+		Args:  cobra.MinimumNArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
+
+			var denom string
+			if len(args) > 1 {
+				denom = args[1]
+			} else {
+				denom = ""
+			}
 
 			res, err := queryClient.AvailableAssetsInPool(
 				context.Background(),
-				&types.QueryAvailableAssetsInPoolRequest{},
+				&types.QueryAvailableAssetsInPoolRequest{Denom: denom},
 			)
 			if err != nil {
 				return err

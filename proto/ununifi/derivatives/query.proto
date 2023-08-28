@@ -38,7 +38,7 @@ service Query {
   }
 
   rpc PerpetualFuturesMarket(QueryPerpetualFuturesMarketRequest) returns (QueryPerpetualFuturesMarketResponse) {
-    option (google.api.http).get = "/ununifi/derivatives/perpetual-futures/{base_denom}/{quote_denom}";
+    option (google.api.http).get = "/ununifi/derivatives/perpetual-futures/market";
   }
 
   rpc PerpetualOptions(QueryPerpetualOptionsRequest) returns (QueryPerpetualOptionsResponse) {
@@ -46,7 +46,7 @@ service Query {
   }
 
   rpc PerpetualOptionsMarket(QueryPerpetualOptionsMarketRequest) returns (QueryPerpetualOptionsMarketResponse) {
-    option (google.api.http).get = "/ununifi/derivatives/perpetual-options/{base_denom}/{quote_denom}";
+    option (google.api.http).get = "/ununifi/derivatives/perpetual-options/market";
   }
 
   rpc AllPositions(QueryAllPositionsRequest) returns (QueryAllPositionsResponse) {
@@ -79,17 +79,12 @@ service Query {
   }
 
   rpc EstimateDLPTokenAmount(QueryEstimateDLPTokenAmountRequest) returns (QueryEstimateDLPTokenAmountResponse) {
-    option (google.api.http).get = "/ununifi/derivatives/estimate-dlp-token-amount/{mint_denom}/{amount}";
+    option (google.api.http).get = "/ununifi/derivatives/estimate-dlp-token-amount";
   }
 
   rpc EstimateRedeemTokenAmount(QueryEstimateRedeemTokenAmountRequest)
       returns (QueryEstimateRedeemTokenAmountResponse) {
-    option (google.api.http).get = "/ununifi/derivatives/estimate-redeem-amount/{redeem_denom}/{lpt_amount}";
-  }
-
-  rpc AvailableAssetInPoolByDenom(QueryAvailableAssetInPoolByDenomRequest)
-      returns (QueryAvailableAssetInPoolByDenomResponse) {
-    option (google.api.http).get = "/ununifi/derivatives/pools/available-asset/{denom}";
+    option (google.api.http).get = "/ununifi/derivatives/estimate-redeem-amount";
   }
 
   rpc AvailableAssetsInPool(QueryAvailableAssetsInPoolRequest) returns (QueryAvailableAssetsInPoolResponse) {
@@ -346,20 +341,10 @@ message QueryEstimateRedeemTokenAmountResponse {
   ];
 }
 
-message QueryAvailableAssetInPoolByDenomRequest {
+message QueryAvailableAssetsInPoolRequest {
   string denom = 1 [
     (gogoproto.moretags)  = "yaml:\"denom\""
   ];
-}
-
-message QueryAvailableAssetInPoolByDenomResponse {
-  cosmos.base.v1beta1.Coin available_asset = 1 [
-    (gogoproto.moretags)  = "yaml:\"available_asset\"",
-    (gogoproto.nullable) = false
-  ];
-}
-
-message QueryAvailableAssetsInPoolRequest {
 }
 
 message QueryAvailableAssetsInPoolResponse {

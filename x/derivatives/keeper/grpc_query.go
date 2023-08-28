@@ -461,22 +461,6 @@ func (k Keeper) Params(c context.Context, req *types.QueryParamsRequest) (*types
 	return &types.QueryParamsResponse{Params: k.GetParams(ctx)}, nil
 }
 
-func (k Keeper) AvailableAssetInPoolByDenom(c context.Context, req *types.QueryAvailableAssetInPoolByDenomRequest) (*types.QueryAvailableAssetInPoolByDenomResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	availableAsset, err := k.AvailableAssetInPool(ctx, req.Denom)
-	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	return &types.QueryAvailableAssetInPoolByDenomResponse{
-		AvailableAsset: availableAsset,
-	}, nil
-}
-
 func (k Keeper) AvailableAssetsInPool(c context.Context, req *types.QueryAvailableAssetsInPoolRequest) (*types.QueryAvailableAssetsInPoolResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -488,7 +472,14 @@ func (k Keeper) AvailableAssetsInPool(c context.Context, req *types.QueryAvailab
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	return &types.QueryAvailableAssetsInPoolResponse{
-		AvailableAssets: availableAssets,
-	}, nil
+	if req.Denom == "" {
+		return &types.QueryAvailableAssetsInPoolResponse{AvailableAssets: availableAssets}, nil
+	}
+
+	exist, asset := availableAssets.Find(req.Denom)
+	if !exist {
+		return &types.QueryAvailableAssetsInPoolResponse{AvailableAssets: sdk.Coins{sdk.NewInt64Coin(req.Denom, 0)}}, nil
+	}
+
+	return &types.QueryAvailableAssetsInPoolResponse{AvailableAssets: sdk.Coins{asset}}, nil
 }
