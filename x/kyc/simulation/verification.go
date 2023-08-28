@@ -55,52 +55,6 @@ func SimulateMsgCreateVerification(
 	}
 }
 
-func SimulateMsgUpdateVerification(
-	ak types.AccountKeeper,
-	bk types.BankKeeper,
-	k keeper.Keeper,
-) simtypes.Operation {
-	return func(r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
-	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
-		var (
-			simAccount      = simtypes.Account{}
-			verification    = types.Verification{}
-			msg             = &types.MsgUpdateVerification{}
-			allVerification = k.GetAllVerification(ctx)
-			found           = false
-		)
-		for _, obj := range allVerification {
-			simAccount, found = FindAccount(accs, obj.Address)
-			if found {
-				verification = obj
-				break
-			}
-		}
-		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, "", "verification creator not found"), nil, nil
-		}
-		msg.Sender = simAccount.Address.String()
-
-		msg.Customer = verification.Address
-
-		txCtx := simulation.OperationInput{
-			R:               r,
-			App:             app,
-			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
-			Cdc:             nil,
-			Msg:             msg,
-			MsgType:         "",
-			Context:         ctx,
-			SimAccount:      simAccount,
-			ModuleName:      types.ModuleName,
-			CoinsSpentInMsg: sdk.NewCoins(),
-			AccountKeeper:   ak,
-			Bankkeeper:      bk,
-		}
-		return simulation.GenAndDeliverTxWithRandFees(txCtx)
-	}
-}
-
 func SimulateMsgDeleteVerification(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
@@ -111,7 +65,7 @@ func SimulateMsgDeleteVerification(
 		var (
 			simAccount      = simtypes.Account{}
 			verification    = types.Verification{}
-			msg             = &types.MsgUpdateVerification{}
+			msg             = &types.MsgDeleteVerification{}
 			allVerification = k.GetAllVerification(ctx)
 			found           = false
 		)

@@ -31,14 +31,14 @@ func TestVerificationQuerySingle(t *testing.T) {
 		{
 			desc: "First",
 			request: &types.QueryGetVerificationRequest{
-				Index: msgs[0].Index,
+				Index: msgs[0].Address,
 			},
 			response: &types.QueryGetVerificationResponse{Verification: msgs[0]},
 		},
 		{
 			desc: "Second",
 			request: &types.QueryGetVerificationRequest{
-				Index: msgs[1].Index,
+				Index: msgs[1].Address,
 			},
 			response: &types.QueryGetVerificationResponse{Verification: msgs[1]},
 		},

@@ -41,38 +41,6 @@ func CmdCreateVerification() *cobra.Command {
 	return cmd
 }
 
-func CmdUpdateVerification() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "update-verification [index]",
-		Short: "Update a verification",
-		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			// Get indexes
-			indexIndex := args[0]
-
-			// Get value arguments
-
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			msg := types.NewMsgUpdateVerification(
-				clientCtx.GetFromAddress().String(),
-				indexIndex,
-			)
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-
-	return cmd
-}
-
 func CmdDeleteVerification() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete-verification [index]",

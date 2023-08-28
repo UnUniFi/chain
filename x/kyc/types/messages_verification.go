@@ -39,40 +39,6 @@ func (msg *MsgCreateVerification) ValidateBasic() error {
 	return nil
 }
 
-var _ sdk.Msg = &MsgUpdateVerification{}
-
-func NewMsgUpdateVerification(
-	sender string,
-	customer string,
-
-) *MsgUpdateVerification {
-	return &MsgUpdateVerification{
-		Sender:   sender,
-		Customer: customer,
-	}
-}
-
-func (msg *MsgUpdateVerification) GetSigners() []sdk.AccAddress {
-	sender, err := sdk.AccAddressFromBech32(msg.Sender)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{sender}
-}
-
-func (msg *MsgUpdateVerification) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
-func (msg *MsgUpdateVerification) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Sender)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
-	}
-	return nil
-}
-
 var _ sdk.Msg = &MsgDeleteVerification{}
 
 func NewMsgDeleteVerification(

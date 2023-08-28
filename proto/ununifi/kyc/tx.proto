@@ -1,6 +1,7 @@
 syntax = "proto3";
 package ununifi.kyc;
 
+import "ununifi/kyc/params.proto";
 import "ununifi/kyc/provider.proto";
 import "ununifi/kyc/verification.proto";
 // this line is used by starport scaffolding # proto/tx/import
@@ -11,9 +12,7 @@ option go_package = "github.com/UnUniFi/chain/x/kyc/types";
 service Msg {
     rpc CreateProvider(MsgCreateProvider) returns (MsgCreateProviderResponse);
   rpc UpdateProvider(MsgUpdateProvider) returns (MsgUpdateProviderResponse);
-  rpc DeleteProvider(MsgDeleteProvider) returns (MsgDeleteProviderResponse);
   rpc CreateVerification(MsgCreateVerification) returns (MsgCreateVerificationResponse);
-  rpc UpdateVerification(MsgUpdateVerification) returns (MsgUpdateVerificationResponse);
   rpc DeleteVerification(MsgDeleteVerification) returns (MsgDeleteVerificationResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
@@ -52,13 +51,6 @@ message MsgUpdateProvider {
 
 message MsgUpdateProviderResponse {}
 
-message MsgDeleteProvider {
-  string sender = 1;
-  uint64 id = 2;
-}
-
-message MsgDeleteProviderResponse {}
-
 message MsgCreateVerification {
   string sender = 1;
   uint64 provider_id = 2;
@@ -67,19 +59,17 @@ message MsgCreateVerification {
 }
 message MsgCreateVerificationResponse {}
 
-message MsgUpdateVerification {
-  string sender = 1;
-  uint64 provider_id = 2;
-  string customer = 3;
-
-}
-message MsgUpdateVerificationResponse {}
-
 message MsgDeleteVerification {
   string sender = 1;
   uint64 provider_id = 2;
   string customer = 3;
 }
 message MsgDeleteVerificationResponse {}
+
+message MsgUpdateParams {
+  string sender = 1;
+  Params params = 2;
+}
+message MsgUpdateParamsResponse {}
 
 // this line is used by starport scaffolding # proto/tx/message

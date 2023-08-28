@@ -64,32 +64,3 @@ func CmdUpdateProvider() *cobra.Command {
 
 	return cmd
 }
-
-func CmdDeleteProvider() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "delete-provider [id]",
-		Short: "Delete a provider by id",
-		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			id, err := strconv.ParseUint(args[0], 10, 64)
-			if err != nil {
-				return err
-			}
-
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			msg := types.NewMsgDeleteProvider(clientCtx.GetFromAddress().String(), id)
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-
-	return cmd
-}

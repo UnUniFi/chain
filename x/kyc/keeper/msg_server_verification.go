@@ -21,6 +21,8 @@ func (k msgServer) CreateVerification(goCtx context.Context, msg *types.MsgCreat
 	verification.Address = msg.Customer
 	verification.ProviderIds = append(verification.ProviderIds, msg.ProviderId)
 
+	// TODO: check provider Id
+
 	k.SetVerification(
 		ctx,
 		verification,
@@ -28,38 +30,11 @@ func (k msgServer) CreateVerification(goCtx context.Context, msg *types.MsgCreat
 	return &types.MsgCreateVerificationResponse{}, nil
 }
 
-func (k msgServer) UpdateVerification(goCtx context.Context, msg *types.MsgUpdateVerification) (*types.MsgUpdateVerificationResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	// Check if the value exists
-	_, isFound := k.GetVerification(
-		ctx,
-		msg.Customer,
-	)
-	if !isFound {
-		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
-	}
-
-	// Checks if the the msg creator is the same as the current owner
-	panic("TODO: implement check")
-	// if msg.Creator != valFound.Creator {
-	// 	return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
-	// }
-
-	var verification = types.Verification{
-		Address: msg.Customer,
-	}
-
-	k.SetVerification(ctx, verification)
-
-	return &types.MsgUpdateVerificationResponse{}, nil
-}
-
 func (k msgServer) DeleteVerification(goCtx context.Context, msg *types.MsgDeleteVerification) (*types.MsgDeleteVerificationResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value exists
-	_, isFound := k.GetVerification(
+	verification, isFound := k.GetVerification(
 		ctx,
 		msg.Customer,
 	)
@@ -67,16 +42,28 @@ func (k msgServer) DeleteVerification(goCtx context.Context, msg *types.MsgDelet
 		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
-	// Checks if the the msg creator is the same as the current owner
-	panic("TODO: implement check")
-	// if msg.Creator != valFound.Creator {
-	// 	return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
-	// }
+	verification.Address = msg.Customer
+	verification.ProviderIds = []uint64{}
 
-	k.RemoveVerification(
-		ctx,
-		msg.Customer,
-	)
+	// TODO: check provider Id
+
+	for _, providerId := range verification.ProviderIds {
+		if providerId != msg.ProviderId {
+			verification.ProviderIds = append(verification.ProviderIds, providerId)
+		}
+	}
+
+	if len(verification.ProviderIds) == 0 {
+		k.RemoveVerification(
+			ctx,
+			msg.Customer,
+		)
+	} else {
+		k.SetVerification(
+			ctx,
+			verification,
+		)
+	}
 
 	return &types.MsgDeleteVerificationResponse{}, nil
 }
