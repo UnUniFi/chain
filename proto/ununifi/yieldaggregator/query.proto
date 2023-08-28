@@ -175,4 +175,5 @@ message QueryEstimateRedeemAmountResponse {
   cosmos.base.v1beta1.Coin share_amount  = 1 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin fee           = 2 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin redeem_amount = 3 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin total_amount  = 4 [(gogoproto.nullable) = false];
 }
