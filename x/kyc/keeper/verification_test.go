@@ -6,10 +6,11 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-	keepertest "testchain/testutil/keeper"
-	"testchain/testutil/nullify"
-	"testchain/x/kyc/keeper"
-	"testchain/x/kyc/types"
+
+	keepertest "github.com/UnUniFi/chain/testutil/keeper"
+	"github.com/UnUniFi/chain/testutil/nullify"
+	"github.com/UnUniFi/chain/x/kyc/keeper"
+	"github.com/UnUniFi/chain/x/kyc/types"
 )
 
 // Prevent strconv unused error
@@ -18,7 +19,7 @@ var _ = strconv.IntSize
 func createNVerification(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Verification {
 	items := make([]types.Verification, n)
 	for i := range items {
-		items[i].Index = strconv.Itoa(i)
+		items[i].Address = strconv.Itoa(i)
 
 		keeper.SetVerification(ctx, items[i])
 	}
@@ -30,7 +31,7 @@ func TestVerificationGet(t *testing.T) {
 	items := createNVerification(keeper, ctx, 10)
 	for _, item := range items {
 		rst, found := keeper.GetVerification(ctx,
-			item.Index,
+			item.Address,
 		)
 		require.True(t, found)
 		require.Equal(t,
@@ -44,10 +45,10 @@ func TestVerificationRemove(t *testing.T) {
 	items := createNVerification(keeper, ctx, 10)
 	for _, item := range items {
 		keeper.RemoveVerification(ctx,
-			item.Index,
+			item.Address,
 		)
 		_, found := keeper.GetVerification(ctx,
-			item.Index,
+			item.Address,
 		)
 		require.False(t, found)
 	}

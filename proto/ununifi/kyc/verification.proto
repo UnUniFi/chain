@@ -1,7 +1,7 @@
 syntax = "proto3";
 package ununifi.kyc;
 
-option go_package = "ununifi/x/kyc/types";
+option go_package = "github.com/UnUniFi/chain/x/kyc/types";
 
 message Verification {
   string address = 1; 

@@ -9,7 +9,7 @@ import "ununifi/kyc/provider.proto";
 import "ununifi/kyc/verification.proto";
 // this line is used by starport scaffolding # 1
 
-option go_package = "ununifi/x/kyc/types";
+option go_package = "github.com/UnUniFi/chain/x/kyc/types";
 
 // Query defines the gRPC querier service.
 service Query {

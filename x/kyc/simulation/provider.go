@@ -8,8 +8,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"testchain/x/kyc/keeper"
-	"testchain/x/kyc/types"
+
+	"github.com/UnUniFi/chain/x/kyc/keeper"
+	"github.com/UnUniFi/chain/x/kyc/types"
 )
 
 func SimulateMsgCreateProvider(
@@ -22,7 +23,7 @@ func SimulateMsgCreateProvider(
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
 		msg := &types.MsgCreateProvider{
-			Creator: simAccount.Address.String(),
+			Sender: simAccount.Address.String(),
 		}
 
 		txCtx := simulation.OperationInput{
@@ -31,7 +32,7 @@ func SimulateMsgCreateProvider(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
+			MsgType:         "",
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -58,16 +59,16 @@ func SimulateMsgUpdateProvider(
 			found       = false
 		)
 		for _, obj := range allProvider {
-			simAccount, found = FindAccount(accs, obj.Creator)
+			simAccount, found = FindAccount(accs, obj.Address)
 			if found {
 				provider = obj
 				break
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "provider creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, "", "provider creator not found"), nil, nil
 		}
-		msg.Creator = simAccount.Address.String()
+		msg.Sender = simAccount.Address.String()
 		msg.Id = provider.Id
 
 		txCtx := simulation.OperationInput{
@@ -76,7 +77,7 @@ func SimulateMsgUpdateProvider(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
+			MsgType:         "",
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -103,16 +104,16 @@ func SimulateMsgDeleteProvider(
 			found       = false
 		)
 		for _, obj := range allProvider {
-			simAccount, found = FindAccount(accs, obj.Creator)
+			simAccount, found = FindAccount(accs, obj.Address)
 			if found {
 				provider = obj
 				break
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "provider creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, "", "provider sender not found"), nil, nil
 		}
-		msg.Creator = simAccount.Address.String()
+		msg.Sender = simAccount.Address.String()
 		msg.Id = provider.Id
 
 		txCtx := simulation.OperationInput{
@@ -121,7 +122,7 @@ func SimulateMsgDeleteProvider(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
+			MsgType:         "",
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,

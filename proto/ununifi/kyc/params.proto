@@ -3,7 +3,7 @@ package ununifi.kyc;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "ununifi/x/kyc/types";
+option go_package = "github.com/UnUniFi/chain/x/kyc/types";
 
 // Params defines the parameters for the module.
 message Params {

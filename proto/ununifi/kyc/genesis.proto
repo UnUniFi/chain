@@ -7,7 +7,7 @@ import "ununifi/kyc/provider.proto";
 import "ununifi/kyc/verification.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
-option go_package = "ununifi/x/kyc/types";
+option go_package = "github.com/UnUniFi/chain/x/kyc/types";
 
 // GenesisState defines the kyc module's genesis state.
 message GenesisState {

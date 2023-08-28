@@ -10,9 +10,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	keepertest "testchain/testutil/keeper"
-	"testchain/testutil/nullify"
-	"testchain/x/kyc/types"
+	keepertest "github.com/UnUniFi/chain/testutil/keeper"
+	"github.com/UnUniFi/chain/testutil/nullify"
+	"github.com/UnUniFi/chain/x/kyc/types"
 )
 
 func TestProviderQuerySingle(t *testing.T) {

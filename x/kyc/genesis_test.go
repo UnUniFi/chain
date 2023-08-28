@@ -4,10 +4,11 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	keepertest "testchain/testutil/keeper"
-	"testchain/testutil/nullify"
-	"testchain/x/kyc"
-	"testchain/x/kyc/types"
+
+	keepertest "github.com/UnUniFi/chain/testutil/keeper"
+	"github.com/UnUniFi/chain/testutil/nullify"
+	"github.com/UnUniFi/chain/x/kyc"
+	"github.com/UnUniFi/chain/x/kyc/types"
 )
 
 func TestGenesis(t *testing.T) {
@@ -25,10 +26,10 @@ func TestGenesis(t *testing.T) {
 		ProviderCount: 2,
 		VerificationList: []types.Verification{
 			{
-				Index: "0",
+				Address: "0",
 			},
 			{
-				Index: "1",
+				Address: "1",
 			},
 		},
 		// this line is used by starport scaffolding # genesis/test/state

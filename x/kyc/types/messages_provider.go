@@ -5,34 +5,20 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const (
-	TypeMsgCreateProvider = "create_provider"
-	TypeMsgUpdateProvider = "update_provider"
-	TypeMsgDeleteProvider = "delete_provider"
-)
-
 var _ sdk.Msg = &MsgCreateProvider{}
 
-func NewMsgCreateProvider(creator string) *MsgCreateProvider {
+func NewMsgCreateProvider(sender string) *MsgCreateProvider {
 	return &MsgCreateProvider{
-		Creator: creator,
+		Sender: sender,
 	}
-}
-
-func (msg *MsgCreateProvider) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgCreateProvider) Type() string {
-	return TypeMsgCreateProvider
 }
 
 func (msg *MsgCreateProvider) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{creator}
+	return []sdk.AccAddress{sender}
 }
 
 func (msg *MsgCreateProvider) GetSignBytes() []byte {
@@ -41,36 +27,28 @@ func (msg *MsgCreateProvider) GetSignBytes() []byte {
 }
 
 func (msg *MsgCreateProvider) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 	return nil
 }
 
 var _ sdk.Msg = &MsgUpdateProvider{}
 
-func NewMsgUpdateProvider(creator string, id uint64) *MsgUpdateProvider {
+func NewMsgUpdateProvider(sender string, id uint64) *MsgUpdateProvider {
 	return &MsgUpdateProvider{
-		Id:      id,
-		Creator: creator,
+		Id:     id,
+		Sender: sender,
 	}
-}
-
-func (msg *MsgUpdateProvider) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgUpdateProvider) Type() string {
-	return TypeMsgUpdateProvider
 }
 
 func (msg *MsgUpdateProvider) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{creator}
+	return []sdk.AccAddress{sender}
 }
 
 func (msg *MsgUpdateProvider) GetSignBytes() []byte {
@@ -79,35 +57,28 @@ func (msg *MsgUpdateProvider) GetSignBytes() []byte {
 }
 
 func (msg *MsgUpdateProvider) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 	return nil
 }
 
 var _ sdk.Msg = &MsgDeleteProvider{}
 
-func NewMsgDeleteProvider(creator string, id uint64) *MsgDeleteProvider {
+func NewMsgDeleteProvider(sender string, id uint64) *MsgDeleteProvider {
 	return &MsgDeleteProvider{
-		Id:      id,
-		Creator: creator,
+		Id:     id,
+		Sender: sender,
 	}
-}
-func (msg *MsgDeleteProvider) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgDeleteProvider) Type() string {
-	return TypeMsgDeleteProvider
 }
 
 func (msg *MsgDeleteProvider) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{creator}
+	return []sdk.AccAddress{sender}
 }
 
 func (msg *MsgDeleteProvider) GetSignBytes() []byte {
@@ -116,9 +87,9 @@ func (msg *MsgDeleteProvider) GetSignBytes() []byte {
 }
 
 func (msg *MsgDeleteProvider) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 	return nil
 }

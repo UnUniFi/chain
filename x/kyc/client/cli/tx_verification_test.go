@@ -12,8 +12,8 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 
-	"testchain/testutil/network"
-	"testchain/x/kyc/client/cli"
+	"github.com/UnUniFi/chain/testutil/network"
+	"github.com/UnUniFi/chain/x/kyc/client/cli"
 )
 
 // Prevent strconv unused error

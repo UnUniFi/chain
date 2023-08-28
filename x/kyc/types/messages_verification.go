@@ -5,35 +5,21 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const (
-	TypeMsgCreateVerification = "create_verification"
-	TypeMsgUpdateVerification = "update_verification"
-	TypeMsgDeleteVerification = "delete_verification"
-)
-
 var _ sdk.Msg = &MsgCreateVerification{}
 
 func NewMsgCreateVerification(
-	creator string,
-	index string,
+	sender string,
+	customer string,
 
 ) *MsgCreateVerification {
 	return &MsgCreateVerification{
-		Creator: creator,
-		Index:   index,
+		Sender:   sender,
+		Customer: customer,
 	}
 }
 
-func (msg *MsgCreateVerification) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgCreateVerification) Type() string {
-	return TypeMsgCreateVerification
-}
-
 func (msg *MsgCreateVerification) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		panic(err)
 	}
@@ -46,7 +32,7 @@ func (msg *MsgCreateVerification) GetSignBytes() []byte {
 }
 
 func (msg *MsgCreateVerification) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
@@ -56,30 +42,22 @@ func (msg *MsgCreateVerification) ValidateBasic() error {
 var _ sdk.Msg = &MsgUpdateVerification{}
 
 func NewMsgUpdateVerification(
-	creator string,
-	index string,
+	sender string,
+	customer string,
 
 ) *MsgUpdateVerification {
 	return &MsgUpdateVerification{
-		Creator: creator,
-		Index:   index,
+		Sender:   sender,
+		Customer: customer,
 	}
-}
-
-func (msg *MsgUpdateVerification) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgUpdateVerification) Type() string {
-	return TypeMsgUpdateVerification
 }
 
 func (msg *MsgUpdateVerification) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{creator}
+	return []sdk.AccAddress{sender}
 }
 
 func (msg *MsgUpdateVerification) GetSignBytes() []byte {
@@ -88,9 +66,9 @@ func (msg *MsgUpdateVerification) GetSignBytes() []byte {
 }
 
 func (msg *MsgUpdateVerification) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 	return nil
 }
@@ -98,29 +76,22 @@ func (msg *MsgUpdateVerification) ValidateBasic() error {
 var _ sdk.Msg = &MsgDeleteVerification{}
 
 func NewMsgDeleteVerification(
-	creator string,
-	index string,
+	sender string,
+	customer string,
 
 ) *MsgDeleteVerification {
 	return &MsgDeleteVerification{
-		Creator: creator,
-		Index:   index,
+		Sender:   sender,
+		Customer: customer,
 	}
-}
-func (msg *MsgDeleteVerification) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgDeleteVerification) Type() string {
-	return TypeMsgDeleteVerification
 }
 
 func (msg *MsgDeleteVerification) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{creator}
+	return []sdk.AccAddress{sender}
 }
 
 func (msg *MsgDeleteVerification) GetSignBytes() []byte {
@@ -129,9 +100,9 @@ func (msg *MsgDeleteVerification) GetSignBytes() []byte {
 }
 
 func (msg *MsgDeleteVerification) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid sender address (%s)", err)
 	}
 	return nil
 }

@@ -5,7 +5,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
-	"testchain/x/kyc/types"
+
+	"github.com/UnUniFi/chain/x/kyc/types"
 )
 
 func CmdCreateVerification() *cobra.Command {

@@ -9,8 +9,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"testchain/x/kyc/keeper"
-	"testchain/x/kyc/types"
+
+	"github.com/UnUniFi/chain/x/kyc/keeper"
+	"github.com/UnUniFi/chain/x/kyc/types"
 )
 
 // Prevent strconv unused error
@@ -27,13 +28,13 @@ func SimulateMsgCreateVerification(
 
 		i := r.Int()
 		msg := &types.MsgCreateVerification{
-			Creator: simAccount.Address.String(),
-			Index:   strconv.Itoa(i),
+			Sender:   simAccount.Address.String(),
+			Customer: strconv.Itoa(i),
 		}
 
-		_, found := k.GetVerification(ctx, msg.Index)
+		_, found := k.GetVerification(ctx, msg.Customer)
 		if found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "Verification already exist"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, "", "Verification already exist"), nil, nil
 		}
 
 		txCtx := simulation.OperationInput{
@@ -42,7 +43,7 @@ func SimulateMsgCreateVerification(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
+			MsgType:         "",
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -69,18 +70,18 @@ func SimulateMsgUpdateVerification(
 			found           = false
 		)
 		for _, obj := range allVerification {
-			simAccount, found = FindAccount(accs, obj.Creator)
+			simAccount, found = FindAccount(accs, obj.Address)
 			if found {
 				verification = obj
 				break
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "verification creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, "", "verification creator not found"), nil, nil
 		}
-		msg.Creator = simAccount.Address.String()
+		msg.Sender = simAccount.Address.String()
 
-		msg.Index = verification.Index
+		msg.Customer = verification.Address
 
 		txCtx := simulation.OperationInput{
 			R:               r,
@@ -88,7 +89,7 @@ func SimulateMsgUpdateVerification(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
+			MsgType:         "",
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,
@@ -115,18 +116,18 @@ func SimulateMsgDeleteVerification(
 			found           = false
 		)
 		for _, obj := range allVerification {
-			simAccount, found = FindAccount(accs, obj.Creator)
+			simAccount, found = FindAccount(accs, obj.Address)
 			if found {
 				verification = obj
 				break
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "verification creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, "", "verification creator not found"), nil, nil
 		}
-		msg.Creator = simAccount.Address.String()
+		msg.Sender = simAccount.Address.String()
 
-		msg.Index = verification.Index
+		msg.Customer = verification.Address
 
 		txCtx := simulation.OperationInput{
 			R:               r,
@@ -134,7 +135,7 @@ func SimulateMsgDeleteVerification(
 			TxGen:           simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:             nil,
 			Msg:             msg,
-			MsgType:         msg.Type(),
+			MsgType:         "",
 			Context:         ctx,
 			SimAccount:      simAccount,
 			ModuleName:      types.ModuleName,

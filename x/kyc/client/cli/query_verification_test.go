@@ -5,17 +5,17 @@ import (
 	"strconv"
 	"testing"
 
+	tmcli "github.com/cometbft/cometbft/libs/cli"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/stretchr/testify/require"
-	tmcli "github.com/tendermint/tendermint/libs/cli"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"testchain/testutil/network"
-	"testchain/testutil/nullify"
-	"testchain/x/kyc/client/cli"
-	"testchain/x/kyc/types"
+	"github.com/UnUniFi/chain/testutil/network"
+	"github.com/UnUniFi/chain/testutil/nullify"
+	"github.com/UnUniFi/chain/x/kyc/client/cli"
+	"github.com/UnUniFi/chain/x/kyc/types"
 )
 
 // Prevent strconv unused error

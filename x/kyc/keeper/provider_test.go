@@ -5,10 +5,11 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-	keepertest "testchain/testutil/keeper"
-	"testchain/testutil/nullify"
-	"testchain/x/kyc/keeper"
-	"testchain/x/kyc/types"
+
+	keepertest "github.com/UnUniFi/chain/testutil/keeper"
+	"github.com/UnUniFi/chain/testutil/nullify"
+	"github.com/UnUniFi/chain/x/kyc/keeper"
+	"github.com/UnUniFi/chain/x/kyc/types"
 )
 
 func createNProvider(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Provider {

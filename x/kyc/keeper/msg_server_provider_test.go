@@ -6,7 +6,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 
-	"testchain/x/kyc/types"
+	"github.com/UnUniFi/chain/x/kyc/types"
 )
 
 func TestProviderMsgServerCreate(t *testing.T) {

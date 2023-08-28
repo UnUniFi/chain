@@ -4,7 +4,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"testchain/x/kyc/types"
+
+	"github.com/UnUniFi/chain/x/kyc/types"
 )
 
 func TestGenesisState_Validate(t *testing.T) {
@@ -33,10 +34,10 @@ func TestGenesisState_Validate(t *testing.T) {
 				ProviderCount: 2,
 				VerificationList: []types.Verification{
 					{
-						Index: "0",
+						Address: "0",
 					},
 					{
-						Index: "1",
+						Address: "1",
 					},
 				},
 				// this line is used by starport scaffolding # types/genesis/validField
@@ -74,10 +75,10 @@ func TestGenesisState_Validate(t *testing.T) {
 			genState: &types.GenesisState{
 				VerificationList: []types.Verification{
 					{
-						Index: "0",
+						Address: "0",
 					},
 					{
-						Index: "0",
+						Address: "0",
 					},
 				},
 			},

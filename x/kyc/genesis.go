@@ -2,8 +2,9 @@ package kyc
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"testchain/x/kyc/keeper"
-	"testchain/x/kyc/types"
+
+	"github.com/UnUniFi/chain/x/kyc/keeper"
+	"github.com/UnUniFi/chain/x/kyc/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

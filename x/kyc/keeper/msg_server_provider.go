@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	errorsmod "cosmossdk.io/errors"
 	"github.com/UnUniFi/chain/x/kyc/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -13,7 +14,12 @@ func (k msgServer) CreateProvider(goCtx context.Context, msg *types.MsgCreatePro
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	var provider = types.Provider{
-		Creator: msg.Creator,
+		Address:         msg.Sender,
+		Name:            msg.Name,
+		Identity:        msg.Identity,
+		Website:         msg.Website,
+		SecurityContact: msg.SecurityContact,
+		Details:         msg.Details,
 	}
 
 	id := k.AppendProvider(
@@ -29,21 +35,23 @@ func (k msgServer) CreateProvider(goCtx context.Context, msg *types.MsgCreatePro
 func (k msgServer) UpdateProvider(goCtx context.Context, msg *types.MsgUpdateProvider) (*types.MsgUpdateProviderResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	var provider = types.Provider{
-		Creator: msg.Creator,
-		Id:      msg.Id,
-	}
-
 	// Checks that the element exists
-	val, found := k.GetProvider(ctx, msg.Id)
+	provider, found := k.GetProvider(ctx, msg.Id)
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.Id))
+		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.Id))
 	}
 
 	// Checks if the msg creator is the same as the current owner
-	if msg.Creator != val.Creator {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+	if msg.Sender != provider.Address {
+		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
+
+	provider.Address = msg.Address
+	provider.Name = msg.Name
+	provider.Identity = msg.Identity
+	provider.Website = msg.Website
+	provider.SecurityContact = msg.SecurityContact
+	provider.Details = msg.Details
 
 	k.SetProvider(ctx, provider)
 
@@ -54,15 +62,15 @@ func (k msgServer) DeleteProvider(goCtx context.Context, msg *types.MsgDeletePro
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Checks that the element exists
-	val, found := k.GetProvider(ctx, msg.Id)
+	_, found := k.GetProvider(ctx, msg.Id)
 	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.Id))
+		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.Id))
 	}
 
 	// Checks if the msg creator is the same as the current owner
-	if msg.Creator != val.Creator {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
-	}
+	// if msg.Creator != val.Creator {
+	// 	return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+	// }
 
 	k.RemoveProvider(ctx, msg.Id)
 

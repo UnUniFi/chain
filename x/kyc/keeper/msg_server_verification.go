@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	errorsmod "cosmossdk.io/errors"
 	"github.com/UnUniFi/chain/x/kyc/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -12,18 +13,13 @@ func (k msgServer) CreateVerification(goCtx context.Context, msg *types.MsgCreat
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value already exists
-	_, isFound := k.GetVerification(
+	verification, _ := k.GetVerification(
 		ctx,
-		msg.Index,
+		msg.Customer,
 	)
-	if isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
-	}
 
-	var verification = types.Verification{
-		Creator: msg.Creator,
-		Index:   msg.Index,
-	}
+	verification.Address = msg.Customer
+	verification.ProviderIds = append(verification.ProviderIds, msg.ProviderId)
 
 	k.SetVerification(
 		ctx,
@@ -36,22 +32,22 @@ func (k msgServer) UpdateVerification(goCtx context.Context, msg *types.MsgUpdat
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value exists
-	valFound, isFound := k.GetVerification(
+	_, isFound := k.GetVerification(
 		ctx,
-		msg.Index,
+		msg.Customer,
 	)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
+		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
 	// Checks if the the msg creator is the same as the current owner
-	if msg.Creator != valFound.Creator {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
-	}
+	panic("TODO: implement check")
+	// if msg.Creator != valFound.Creator {
+	// 	return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+	// }
 
 	var verification = types.Verification{
-		Creator: msg.Creator,
-		Index:   msg.Index,
+		Address: msg.Customer,
 	}
 
 	k.SetVerification(ctx, verification)
@@ -63,22 +59,23 @@ func (k msgServer) DeleteVerification(goCtx context.Context, msg *types.MsgDelet
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value exists
-	valFound, isFound := k.GetVerification(
+	_, isFound := k.GetVerification(
 		ctx,
-		msg.Index,
+		msg.Customer,
 	)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
+		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
 	// Checks if the the msg creator is the same as the current owner
-	if msg.Creator != valFound.Creator {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
-	}
+	panic("TODO: implement check")
+	// if msg.Creator != valFound.Creator {
+	// 	return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+	// }
 
 	k.RemoveVerification(
 		ctx,
-		msg.Index,
+		msg.Customer,
 	)
 
 	return &types.MsgDeleteVerificationResponse{}, nil

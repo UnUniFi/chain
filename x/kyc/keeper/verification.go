@@ -11,7 +11,7 @@ func (k Keeper) SetVerification(ctx sdk.Context, verification types.Verification
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.VerificationKeyPrefix))
 	b := k.cdc.MustMarshal(&verification)
 	store.Set(types.VerificationKey(
-		verification.Index,
+		verification.Address,
 	), b)
 }
 
