@@ -36,7 +36,7 @@ func (gs GenesisState) Validate() error {
 	verificationIndexMap := make(map[string]struct{})
 
 	for _, elem := range gs.VerificationList {
-		index := string(VerificationKey(elem.Address))
+		index := string(VerificationKey(elem.Address, elem.ProviderId))
 		if _, ok := verificationIndexMap[index]; ok {
 			return fmt.Errorf("duplicated index for verification")
 		}

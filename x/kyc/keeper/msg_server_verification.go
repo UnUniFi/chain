@@ -13,19 +13,24 @@ func (k msgServer) CreateVerification(goCtx context.Context, msg *types.MsgCreat
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value already exists
-	verification, _ := k.GetVerification(
+	_, found := k.GetVerification(
 		ctx,
 		msg.Customer,
+		msg.ProviderId,
 	)
 
-	verification.Address = msg.Customer
-	verification.ProviderIds = append(verification.ProviderIds, msg.ProviderId)
+	if found {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
+	}
 
 	// TODO: check provider Id
 
 	k.SetVerification(
 		ctx,
-		verification,
+		types.Verification{
+			Address:    msg.Customer,
+			ProviderId: msg.ProviderId,
+		},
 	)
 	return &types.MsgCreateVerificationResponse{}, nil
 }
@@ -34,36 +39,22 @@ func (k msgServer) DeleteVerification(goCtx context.Context, msg *types.MsgDelet
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value exists
-	verification, isFound := k.GetVerification(
+	_, isFound := k.GetVerification(
 		ctx,
 		msg.Customer,
+		msg.ProviderId,
 	)
 	if !isFound {
 		return nil, errorsmod.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
-	verification.Address = msg.Customer
-	verification.ProviderIds = []uint64{}
-
 	// TODO: check provider Id
 
-	for _, providerId := range verification.ProviderIds {
-		if providerId != msg.ProviderId {
-			verification.ProviderIds = append(verification.ProviderIds, providerId)
-		}
-	}
-
-	if len(verification.ProviderIds) == 0 {
-		k.RemoveVerification(
-			ctx,
-			msg.Customer,
-		)
-	} else {
-		k.SetVerification(
-			ctx,
-			verification,
-		)
-	}
+	k.RemoveVerification(
+		ctx,
+		msg.Customer,
+		msg.ProviderId,
+	)
 
 	return &types.MsgDeleteVerificationResponse{}, nil
 }

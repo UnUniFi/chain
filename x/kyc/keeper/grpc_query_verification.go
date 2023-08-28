@@ -20,7 +20,7 @@ func (k Keeper) VerificationAll(c context.Context, req *types.QueryAllVerificati
 	ctx := sdk.UnwrapSDKContext(c)
 
 	store := ctx.KVStore(k.storeKey)
-	verificationStore := prefix.NewStore(store, types.KeyPrefix(types.VerificationKeyPrefix))
+	verificationStore := prefix.NewStore(store, types.KeyPrefix(types.VerificationKeyPrefix+req.Customer))
 
 	pageRes, err := query.Paginate(verificationStore, req.Pagination, func(key []byte, value []byte) error {
 		var verification types.Verification
@@ -47,7 +47,8 @@ func (k Keeper) Verification(c context.Context, req *types.QueryGetVerificationR
 
 	val, found := k.GetVerification(
 		ctx,
-		req.Index,
+		req.Customer,
+		req.ProviderId,
 	)
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")

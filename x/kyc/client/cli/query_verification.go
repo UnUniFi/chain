@@ -2,6 +2,7 @@ package cli
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -45,7 +46,7 @@ func CmdListVerification() *cobra.Command {
 
 func CmdShowVerification() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-verification [index]",
+		Use:   "show-verification [address] [provider-id]",
 		Short: "shows a verification",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -53,10 +54,15 @@ func CmdShowVerification() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			argIndex := args[0]
+			address := args[0]
+			providerId, err := strconv.Atoi(args[1])
+			if err != nil {
+				return err
+			}
 
 			params := &types.QueryGetVerificationRequest{
-				Index: argIndex,
+				Customer:   address,
+				ProviderId: uint64(providerId),
 			}
 
 			res, err := queryClient.Verification(context.Background(), params)

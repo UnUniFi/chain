@@ -12,19 +12,21 @@ func (k Keeper) SetVerification(ctx sdk.Context, verification types.Verification
 	b := k.cdc.MustMarshal(&verification)
 	store.Set(types.VerificationKey(
 		verification.Address,
+		verification.ProviderId,
 	), b)
 }
 
 // GetVerification returns a verification from its index
 func (k Keeper) GetVerification(
 	ctx sdk.Context,
-	index string,
-
+	customer string,
+	providerId uint64,
 ) (val types.Verification, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.VerificationKeyPrefix))
 
 	b := store.Get(types.VerificationKey(
-		index,
+		customer,
+		providerId,
 	))
 	if b == nil {
 		return val, false
@@ -37,12 +39,13 @@ func (k Keeper) GetVerification(
 // RemoveVerification removes a verification from the store
 func (k Keeper) RemoveVerification(
 	ctx sdk.Context,
-	index string,
-
+	customer string,
+	providerId uint64,
 ) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.VerificationKeyPrefix))
 	store.Delete(types.VerificationKey(
-		index,
+		customer,
+		providerId,
 	))
 }
 

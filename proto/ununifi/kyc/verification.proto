@@ -5,5 +5,5 @@ option go_package = "github.com/UnUniFi/chain/x/kyc/types";
 
 message Verification {
   string address = 1; 
-  repeated uint64 provider_ids = 2;
+  uint64 provider_id = 2;
 }

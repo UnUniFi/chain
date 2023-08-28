@@ -29,12 +29,12 @@ service Query {
 
 // Queries a Verification by index.
 	rpc Verification(QueryGetVerificationRequest) returns (QueryGetVerificationResponse) {
-		option (google.api.http).get = "/ununifi/kyc/verification/{index}";
+		option (google.api.http).get = "/ununifi/kyc/verification/{customer}/{provider_id}";
 	}
 
 	// Queries a list of Verification items.
 	rpc VerificationAll(QueryAllVerificationRequest) returns (QueryAllVerificationResponse) {
-		option (google.api.http).get = "/ununifi/kyc/verification";
+		option (google.api.http).get = "/ununifi/kyc/verification/{customer}";
 	}
 
 // this line is used by starport scaffolding # 2
@@ -67,7 +67,8 @@ message QueryAllProviderResponse {
 }
 
 message QueryGetVerificationRequest {
-	  string index = 1;
+	string customer = 1;
+  uint64 provider_id = 2;
 
 }
 
@@ -76,7 +77,8 @@ message QueryGetVerificationResponse {
 }
 
 message QueryAllVerificationRequest {
-	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  string customer = 1;
+	cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 message QueryAllVerificationResponse {
