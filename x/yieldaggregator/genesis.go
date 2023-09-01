@@ -12,12 +12,24 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, &genState.Params)
 
+	strategyCountMap := make(map[string]uint64)
+	vaultCount := uint64(0)
+
 	for _, strategy := range genState.Strategies {
-		k.AppendStrategy(ctx, strategy.Denom, strategy)
+		k.SetStrategy(ctx, strategy.Denom, strategy)
+
+		if strategy.Id+1 > strategyCountMap[strategy.Denom] {
+			strategyCountMap[strategy.Denom] = strategy.Id + 1
+		}
 	}
 	for _, vault := range genState.Vaults {
-		k.AppendVault(ctx, vault)
+		k.SetVault(ctx, vault)
+
+		if vault.Id+1 > vaultCount {
+			vaultCount = vault.Id + 1
+		}
 	}
+
 }
 
 // ExportGenesis returns the module's exported genesis
