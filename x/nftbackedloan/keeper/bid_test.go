@@ -41,7 +41,7 @@ func (suite *KeeperTestSuite) TestPlaceBid() {
 				AutomaticPayment: true,
 				Deposit:          sdk.NewInt64Coin("uatom", 1000000),
 			},
-			expectError: types.ErrNftListingDoesNotExist,
+			expectError: types.ErrListedNftDoesNotExist,
 			expectPass:  false,
 		},
 		{

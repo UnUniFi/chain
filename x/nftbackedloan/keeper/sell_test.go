@@ -175,7 +175,7 @@ func (suite *KeeperTestSuite) TestSellingDecision() {
 			}
 
 			// check full payment end time update
-			listing, err := suite.app.NftbackedloanKeeper.GetNftListingByIdBytes(suite.ctx, nftIdentifier.IdBytes())
+			listing, err := suite.app.NftbackedloanKeeper.GetListedNftByIdBytes(suite.ctx, nftIdentifier.IdBytes())
 			suite.Require().NoError(err)
 			suite.Require().Equal(listing.State, types.ListingState_SELLING_DECISION)
 			suite.Require().Equal(suite.ctx.BlockTime().Add(time.Second*time.Duration(params.NftListingFullPaymentPeriod)), listing.FullPaymentEndAt)

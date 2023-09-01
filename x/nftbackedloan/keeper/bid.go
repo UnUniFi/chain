@@ -104,7 +104,7 @@ func (k Keeper) DeleteBid(ctx sdk.Context, bid types.Bid) error {
 
 func (k Keeper) PlaceBid(ctx sdk.Context, msg *types.MsgPlaceBid) error {
 	// Verify listing is in BIDDING state
-	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
+	listing, err := k.GetListedNftByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
 		return err
 	}
@@ -179,7 +179,7 @@ func (k Keeper) ManualBid(ctx sdk.Context, listing types.Listing, newBid types.B
 	if listing.State == types.ListingState_LISTING {
 		listing.State = types.ListingState_BIDDING
 	}
-	k.SaveNftListing(ctx, listing)
+	k.SaveListedNft(ctx, listing)
 
 	return nil
 }
@@ -263,7 +263,6 @@ func (k Keeper) SafeCloseBidCollectDeposit(ctx sdk.Context, bid types.Bid) (sdk.
 	return CollectedAmount, nil
 }
 
-// todo make unit test
 func (k Keeper) SafeCloseBidWithAllInterest(ctx sdk.Context, bid types.Bid, time time.Time) error {
 	bidder, err := sdk.AccAddressFromBech32(bid.Id.Bidder)
 	if err != nil {
@@ -280,7 +279,7 @@ func (k Keeper) SafeCloseBidWithAllInterest(ctx sdk.Context, bid types.Bid, time
 }
 
 func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
-	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
+	listing, err := k.GetListedNftByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
 		return err
 	}
@@ -337,7 +336,7 @@ func (k Keeper) CancelBid(ctx sdk.Context, msg *types.MsgCancelBid) error {
 }
 
 func (k Keeper) PayRemainder(ctx sdk.Context, msg *types.MsgPayRemainder) error {
-	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
+	listing, err := k.GetListedNftByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
 		return err
 	}
@@ -399,7 +398,7 @@ func (k Keeper) GetExpiredBids(ctx sdk.Context, endTime time.Time) []types.Bid {
 
 func (k Keeper) DeleteBidsWithoutBorrowing(ctx sdk.Context, bids []types.Bid) {
 	for _, bid := range bids {
-		listing, err := k.GetNftListingByIdBytes(ctx, bid.Id.NftId.IdBytes())
+		listing, err := k.GetListedNftByIdBytes(ctx, bid.Id.NftId.IdBytes())
 		if err != nil {
 			fmt.Println(err)
 			continue

@@ -96,6 +96,7 @@ import (
 	yieldaggregatortypes "github.com/UnUniFi/chain/x/yieldaggregator/types"
 
 	nftbackedloankeeper "github.com/UnUniFi/chain/x/nftbackedloan/keeper"
+	// nftbackedloantypes "github.com/UnUniFi/chain/x/nftbackedloan/types"
 
 	derivativeskeeper "github.com/UnUniFi/chain/x/derivatives/keeper"
 	nftfactorykeeper "github.com/UnUniFi/chain/x/nftfactory/keeper"
@@ -103,6 +104,7 @@ import (
 	pricefeedkeeper "github.com/UnUniFi/chain/x/pricefeed/keeper"
 
 	ecosystemincentivekeeper "github.com/UnUniFi/chain/x/ecosystemincentive/keeper"
+	// ecosystemincentivetypes "github.com/UnUniFi/chain/x/ecosystemincentive/types"
 )
 
 type AppKeepers struct {
@@ -486,6 +488,7 @@ func NewAppKeeper(
 	// )
 
 	// create Keeper objects which have Hooks
+	// appKeepers.NftbackedloanKeeper = nftbackedloanKeeper
 	// appKeepers.NftbackedloanKeeper = *nftbackedloanKeeper.SetHooks(nftbackedloantypes.NewMultiNftbackedloanHooks(appKeepers.EcosystemincentiveKeeper.Hooks()))
 
 	// appKeepers.PricefeedKeeper = pricefeedkeeper.NewKeeper(

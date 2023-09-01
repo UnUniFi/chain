@@ -12,9 +12,9 @@ import (
 // Status update to Liquidation
 func (k Keeper) SetLiquidation(ctx sdk.Context, msg *types.MsgEndNftListing) error {
 	// check listing already exists
-	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
+	listing, err := k.GetListedNftByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
-		return types.ErrNftListingDoesNotExist
+		return types.ErrListedNftDoesNotExist
 	}
 
 	// Check nft exists
@@ -47,20 +47,20 @@ func (k Keeper) SetLiquidation(ctx sdk.Context, msg *types.MsgEndNftListing) err
 			return err
 		}
 
-		k.DeleteNftListings(ctx, listing)
+		k.DeleteListedNfts(ctx, listing)
 
 		// Call AfterNftUnlistedWithoutPayment to delete NFT ID from the ecosystem-incentive KVStore
 		// since it's unlisted.
-		if _, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes()); err != nil {
-			k.AfterNftUnlistedWithoutPayment(ctx, listing.NftId)
-		}
+		// if _, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes()); err != nil {
+		// 	k.AfterNftUnlistedWithoutPayment(ctx, listing.NftId)
+		// }
 
 	} else {
 		params := k.GetParamSet(ctx)
 		listing.State = types.ListingState_LIQUIDATION
 		listing.LiquidatedAt = ctx.BlockTime()
 		listing.FullPaymentEndAt = ctx.BlockTime().Add(time.Duration(params.NftListingFullPaymentPeriod) * time.Second)
-		k.SaveNftListing(ctx, listing)
+		k.SaveListedNft(ctx, listing)
 
 		// automatic payment after listing ends
 		for _, bid := range bids {
@@ -109,7 +109,7 @@ func (k Keeper) LiquidateExpiredBids(ctx sdk.Context) {
 			continue
 		}
 
-		listing, err := k.GetNftListingByIdBytes(ctx, bid.Id.NftId.IdBytes())
+		listing, err := k.GetListedNftByIdBytes(ctx, bid.Id.NftId.IdBytes())
 		if err != nil {
 			fmt.Println("failed to get listing by id bytes: %w", err)
 			continue
@@ -155,7 +155,7 @@ func (k Keeper) RunLiquidationProcess(ctx sdk.Context, bids types.NftBids, listi
 			fmt.Println("failed to liquidation process with no winner: %w", err)
 			return err
 		}
-		k.DeleteNftListings(ctx, listing)
+		k.DeleteListedNfts(ctx, listing)
 	} else {
 		// forfeitedBids, refundBids := types.ForfeitedBidsAndRefundBids(bidsSortedByDeposit, winnerBid)
 		err := k.LiquidateWithWinner(cacheCtx, forfeitedBids, refundBids, listing)
@@ -166,7 +166,7 @@ func (k Keeper) RunLiquidationProcess(ctx sdk.Context, bids types.NftBids, listi
 		// schedule NFT & token send after X days
 		listing.SuccessfulBidEndAt = ctx.BlockTime().Add(time.Second * time.Duration(params.NftListingNftDeliveryPeriod))
 		listing.State = types.ListingState_SUCCESSFUL_BID
-		k.SaveNftListing(ctx, listing)
+		k.SaveListedNft(ctx, listing)
 	}
 	write()
 	return nil

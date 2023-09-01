@@ -13,11 +13,11 @@ import (
 	"github.com/UnUniFi/chain/x/nftbackedloan/types"
 )
 
-func (k Keeper) GetNftListingByIdBytes(ctx sdk.Context, nftIdBytes []byte) (types.Listing, error) {
+func (k Keeper) GetListedNftByIdBytes(ctx sdk.Context, nftIdBytes []byte) (types.Listing, error) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.NftListingKey(nftIdBytes))
 	if bz == nil {
-		return types.Listing{}, types.ErrNftListingDoesNotExist
+		return types.Listing{}, types.ErrListedNftDoesNotExist
 	}
 	listing := types.Listing{}
 	k.cdc.MustUnmarshal(bz, &listing)
@@ -33,7 +33,7 @@ func (k Keeper) GetListingsByOwner(ctx sdk.Context, owner sdk.AccAddress) []type
 
 	for ; it.Valid(); it.Next() {
 		nftIdBytes := it.Value()
-		listing, err := k.GetNftListingByIdBytes(ctx, nftIdBytes)
+		listing, err := k.GetListedNftByIdBytes(ctx, nftIdBytes)
 		if err != nil {
 			fmt.Println("failed to get listing by id bytes: %w", err)
 			continue
@@ -63,14 +63,14 @@ func getTimeKey(prefix string, timestamp time.Time) []byte {
 }
 
 // call this method when you want to call SetNftListing
-func (k Keeper) SaveNftListing(ctx sdk.Context, listing types.Listing) {
-	k.SetNftListing(ctx, listing)
+func (k Keeper) SaveListedNft(ctx sdk.Context, listing types.Listing) {
+	k.SetListedNft(ctx, listing)
 	k.UpdateListedClass(ctx, listing)
 }
 
-func (k Keeper) SetNftListing(ctx sdk.Context, listing types.Listing) {
-	if oldListing, err := k.GetNftListingByIdBytes(ctx, listing.IdBytes()); err == nil {
-		k.DeleteNftListings(ctx, oldListing)
+func (k Keeper) SetListedNft(ctx sdk.Context, listing types.Listing) {
+	if oldListing, err := k.GetListedNftByIdBytes(ctx, listing.IdBytes()); err == nil {
+		k.DeleteListedNfts(ctx, oldListing)
 	}
 
 	nftIdBytes := listing.IdBytes()
@@ -93,12 +93,12 @@ func (k Keeper) SetNftListing(ctx sdk.Context, listing types.Listing) {
 }
 
 // call this method when you want to call DeleteNftListing
-func (k Keeper) DeleteNftListings(ctx sdk.Context, listing types.Listing) {
-	k.DeleteNftListing(ctx, listing)
+func (k Keeper) DeleteListedNfts(ctx sdk.Context, listing types.Listing) {
+	k.DeleteListedNft(ctx, listing)
 	k.UpdateListedClass(ctx, listing)
 }
 
-func (k Keeper) DeleteNftListing(ctx sdk.Context, listing types.Listing) {
+func (k Keeper) DeleteListedNft(ctx sdk.Context, listing types.Listing) {
 	nftIdBytes := listing.IdBytes()
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.NftListingKey(nftIdBytes))
@@ -117,7 +117,7 @@ func (k Keeper) DeleteNftListing(ctx sdk.Context, listing types.Listing) {
 	}
 }
 
-func (k Keeper) GetFullPaymentNftListingsEndingAt(ctx sdk.Context, endTime time.Time) []types.Listing {
+func (k Keeper) GetFullPaymentListedNftsEndingAt(ctx sdk.Context, endTime time.Time) []types.Listing {
 	store := ctx.KVStore(k.storeKey)
 	timeKey := getTimeKey(types.KeyPrefixFullPaymentPeriodListing, endTime)
 	it := store.Iterator([]byte(types.KeyPrefixFullPaymentPeriodListing), storetypes.InclusiveEndBytes(timeKey))
@@ -126,7 +126,7 @@ func (k Keeper) GetFullPaymentNftListingsEndingAt(ctx sdk.Context, endTime time.
 	listings := []types.Listing{}
 	for ; it.Valid(); it.Next() {
 		nftIdBytes := it.Value()
-		listing, err := k.GetNftListingByIdBytes(ctx, nftIdBytes)
+		listing, err := k.GetListedNftByIdBytes(ctx, nftIdBytes)
 		if err != nil {
 			fmt.Println("failed to get listing by id bytes: %w", err)
 			continue
@@ -137,7 +137,7 @@ func (k Keeper) GetFullPaymentNftListingsEndingAt(ctx sdk.Context, endTime time.
 	return listings
 }
 
-func (k Keeper) GetSuccessfulBidNftListingsEndingAt(ctx sdk.Context, endTime time.Time) []types.Listing {
+func (k Keeper) GetSuccessfulBidListedNftsEndingAt(ctx sdk.Context, endTime time.Time) []types.Listing {
 	store := ctx.KVStore(k.storeKey)
 	timeKey := getTimeKey(types.KeyPrefixSuccessfulBidListing, endTime)
 	it := store.Iterator([]byte(types.KeyPrefixSuccessfulBidListing), storetypes.InclusiveEndBytes(timeKey))
@@ -146,7 +146,7 @@ func (k Keeper) GetSuccessfulBidNftListingsEndingAt(ctx sdk.Context, endTime tim
 	listings := []types.Listing{}
 	for ; it.Valid(); it.Next() {
 		nftIdBytes := it.Value()
-		listing, err := k.GetNftListingByIdBytes(ctx, nftIdBytes)
+		listing, err := k.GetListedNftByIdBytes(ctx, nftIdBytes)
 		if err != nil {
 			fmt.Println("failed to get listing by id bytes: %w", err)
 			continue
@@ -157,7 +157,7 @@ func (k Keeper) GetSuccessfulBidNftListingsEndingAt(ctx sdk.Context, endTime tim
 	return listings
 }
 
-func (k Keeper) GetAllNftListings(ctx sdk.Context) []types.Listing {
+func (k Keeper) GetAllListedNfts(ctx sdk.Context) []types.Listing {
 	store := ctx.KVStore(k.storeKey)
 	it := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixNftListing))
 	defer it.Close()
@@ -205,7 +205,7 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 		return err
 	}
 
-	k.SaveNftListing(ctx, listing)
+	k.SaveListedNft(ctx, listing)
 
 	// get the memo data from Tx contains MsgListNft
 	// k.AfterNftListed(ctx, msg.NftId, GetMemo(ctx.TxBytes(), k.txCfg))
@@ -222,9 +222,9 @@ func (k Keeper) ListNft(ctx sdk.Context, msg *types.MsgListNft) error {
 
 func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelListing) error {
 	// check listing already exists
-	listing, err := k.GetNftListingByIdBytes(ctx, msg.NftId.IdBytes())
+	listing, err := k.GetListedNftByIdBytes(ctx, msg.NftId.IdBytes())
 	if err != nil {
-		return types.ErrNftListingDoesNotExist
+		return types.ErrListedNftDoesNotExist
 	}
 
 	// // Check nft exists
@@ -268,11 +268,11 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelListing) e
 	}
 
 	// delete listing
-	k.DeleteNftListings(ctx, listing)
+	k.DeleteListedNfts(ctx, listing)
 
 	// Call AfterNftUnlistedWithoutPayment to delete NFT ID from the ecosystem-incentive KVStore
 	// since it's unlisted.
-	k.AfterNftUnlistedWithoutPayment(ctx, listing.NftId)
+	// k.AfterNftUnlistedWithoutPayment(ctx, listing.NftId)
 
 	// Emit event for nft listing cancel
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventCancelListing{
@@ -287,7 +287,7 @@ func (k Keeper) CancelNftListing(ctx sdk.Context, msg *types.MsgCancelListing) e
 func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 	params := k.GetParamSet(ctx)
 	// get listings at the end of the payment period
-	listings := k.GetFullPaymentNftListingsEndingAt(ctx, ctx.BlockTime())
+	listings := k.GetFullPaymentListedNftsEndingAt(ctx, ctx.BlockTime())
 
 	// handle not fully paid bids
 	for _, listing := range listings {
@@ -311,7 +311,7 @@ func (k Keeper) HandleFullPaymentsPeriodEndings(ctx sdk.Context) {
 func (k Keeper) DeliverSuccessfulBids(ctx sdk.Context) {
 	params := k.GetParamSet(ctx)
 	// get listings ended earlier
-	listings := k.GetSuccessfulBidNftListingsEndingAt(ctx, ctx.BlockTime())
+	listings := k.GetSuccessfulBidListedNftsEndingAt(ctx, ctx.BlockTime())
 
 	_, _ = params, listings
 	for _, listing := range listings {
@@ -355,7 +355,7 @@ func (k Keeper) DeliverSuccessfulBids(ctx sdk.Context) {
 			fmt.Println(err)
 			continue
 		}
-		k.DeleteNftListings(ctx, listing)
+		k.DeleteListedNfts(ctx, listing)
 
 		cacheCtx, write := ctx.CacheContext()
 
@@ -408,6 +408,6 @@ func (k Keeper) ProcessPaymentWithCommissionFee(ctx sdk.Context, listingOwner sd
 
 	// Call AfterNftPaymentWithCommission hook method to inform the payment is successfully
 	// executed.
-	k.AfterNftPaymentWithCommission(ctx, nftId, sdk.NewCoin(amount.Denom, fee))
+	// k.AfterNftPaymentWithCommission(ctx, nftId, sdk.NewCoin(amount.Denom, fee))
 	return nil
 }

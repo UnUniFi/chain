@@ -15,7 +15,7 @@ import (
 )
 
 // RecordRecipientWithNftId is for recording recipient with nftId
-// to know of the receriver of the incentive reward for the frontend creator
+// to know of the recipient of the incentive reward for the frontend creator
 // of nftbackedloan in AfterNftPaymentWithCommission method.
 func (k Keeper) RecordRecipientWithNftId(ctx sdk.Context, nftId nftbackedloantypes.NftId, recipient string) error {
 	if _, exists := k.GetRecipientByNftId(ctx, nftId); exists {
@@ -28,11 +28,11 @@ func (k Keeper) RecordRecipientWithNftId(ctx sdk.Context, nftId nftbackedloantyp
 	}
 
 	// emit event to tell it succeeded.
-	// err = ctx.EventManager().EmitTypedEvent(&types.EventRecordedRecipientContainerId{
-	// 	RecipientContainerId: recipientContainerId,
-	// 	ClassId:              nftId.ClassId,
-	// 	NftId:                nftId.NftId,
-	// })
+	err = ctx.EventManager().EmitTypedEvent(&types.EventRecordedRecipientWithNftId{
+		Recipient: recipient,
+		ClassId:   nftId.ClassId,
+		TokenId:   nftId.TokenId,
+	})
 
 	return err
 }
@@ -43,7 +43,7 @@ func (k Keeper) DeleteFrontendRecord(ctx sdk.Context, nftId nftbackedloantypes.N
 	//  but not panic and just return
 	recipient, exists := k.GetRecipientByNftId(ctx, nftId)
 	if !exists {
-		return fmt.Errorf(sdkerrors.Wrap(types.ErrRecipientContainerIdByNftIdDoesntExist, nftId.String()).Error())
+		return fmt.Errorf(sdkerrors.Wrap(types.ErrRecipientByNftIdNotExist, nftId.String()).Error())
 
 	}
 
@@ -51,9 +51,9 @@ func (k Keeper) DeleteFrontendRecord(ctx sdk.Context, nftId nftbackedloantypes.N
 
 	// emit event for telling the nftId is deleted from the KVStore
 	err := ctx.EventManager().EmitTypedEvent(&types.EventDeletedNftIdRecordedForFrontendReward{
-		RecipientContainerId: recipient,
-		ClassId:              nftId.ClassId,
-		TokenId:              nftId.TokenId,
+		Recipient: recipient,
+		ClassId:   nftId.ClassId,
+		TokenId:   nftId.TokenId,
 	})
 
 	return err
@@ -61,7 +61,7 @@ func (k Keeper) DeleteFrontendRecord(ctx sdk.Context, nftId nftbackedloantypes.N
 
 func (k Keeper) SetRecipientByNftId(ctx sdk.Context, nftIdByte nftbackedloantypes.NftId, recipient string) error {
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientContainerIdByNftId))
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientByNftId))
 	prefixStore.Set(nftIdByte.IdBytes(), []byte(recipient))
 
 	return nil
@@ -69,7 +69,7 @@ func (k Keeper) SetRecipientByNftId(ctx sdk.Context, nftIdByte nftbackedloantype
 
 func (k Keeper) GetRecipientByNftId(ctx sdk.Context, nftId nftbackedloantypes.NftId) (string, bool) {
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientContainerIdByNftId))
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientByNftId))
 
 	bz := prefixStore.Get(nftId.IdBytes())
 	if bz == nil {
@@ -83,7 +83,7 @@ func (k Keeper) GetRecipientByNftId(ctx sdk.Context, nftId nftbackedloantypes.Nf
 func (k Keeper) DeleteRecipientByNftId(ctx sdk.Context, nftId nftbackedloantypes.NftId) {
 	// Delete incentive unit id by nft id
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientContainerIdByNftId))
+	prefixStore := prefix.NewStore(store, []byte(types.KeyPrefixRecipientByNftId))
 
 	prefixStore.Delete(nftId.IdBytes())
 }
@@ -105,11 +105,11 @@ func (k Keeper) AccumulateRewardForFrontend(ctx sdk.Context, recipient string, r
 		panic(err)
 	}
 
-	// emit event to inform that the recipientContainer defined by recipientContainerId
+	// emit event to inform the recipient
 	// received new reward
 	_ = ctx.EventManager().EmitTypedEvent(&types.EventUpdatedReward{
-		RecipientContainerId: recipient,
-		EarnedReward:         reward,
+		Recipient:    recipient,
+		EarnedReward: reward,
 	})
 	return nil
 }
