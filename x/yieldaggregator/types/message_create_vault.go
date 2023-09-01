@@ -10,10 +10,12 @@ import (
 
 var _ sdk.Msg = &MsgCreateVault{}
 
-func NewMsgCreateVault(sender string, denom string, commissionRate sdk.Dec, withdrawReserveRate sdk.Dec, strategyWeights []StrategyWeight, fee types.Coin, deposit types.Coin, feeCollectorAddress string) *MsgCreateVault {
+func NewMsgCreateVault(sender string, denom string, name, description string, commissionRate sdk.Dec, withdrawReserveRate sdk.Dec, strategyWeights []StrategyWeight, fee types.Coin, deposit types.Coin, feeCollectorAddress string) *MsgCreateVault {
 	return &MsgCreateVault{
 		Sender:              sender,
 		Denom:               denom,
+		Name:                name,
+		Description:         description,
 		CommissionRate:      commissionRate,
 		StrategyWeights:     strategyWeights,
 		Fee:                 fee,
@@ -30,6 +32,14 @@ func (msg MsgCreateVault) ValidateBasic() error {
 
 	if _, err := sdk.AccAddressFromBech32(msg.FeeCollectorAddress); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid fee collector address: %s", err)
+	}
+
+	if msg.Name == "" {
+		return ErrInvalidVaultName
+	}
+
+	if msg.Description == "" {
+		return ErrInvalidVaultDescription
 	}
 
 	if err := sdk.ValidateDenom(msg.Denom); err != nil {

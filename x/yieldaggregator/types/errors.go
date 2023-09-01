@@ -22,4 +22,6 @@ var (
 	ErrInvalidAmount              = errors.Register(ModuleName, 14, "invalid amount")
 	ErrStrategyNotFound           = errors.Register(ModuleName, 15, "strategy not found")
 	ErrVaultNotFound              = errors.Register(ModuleName, 16, "vault not found")
+	ErrInvalidVaultName           = errors.Register(ModuleName, 17, "invalid vault name")
+	ErrInvalidVaultDescription    = errors.Register(ModuleName, 18, "invalid vault description")
 )
