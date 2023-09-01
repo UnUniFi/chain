@@ -295,7 +295,7 @@ func orderBeginBlockers() []string {
 		consensusparamtypes.ModuleName,
 		// original modules
 		nftfactorytypes.ModuleName,
-		nftbackedloantypes.ModuleName,
+		// nftbackedloantypes.ModuleName,
 		// ecosystemincentivetypes.ModuleName,
 
 		// pricefeedtypes.ModuleName,
