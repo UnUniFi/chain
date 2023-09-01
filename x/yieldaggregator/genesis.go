@@ -29,7 +29,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 			vaultCount = vault.Id + 1
 		}
 	}
-
+	for denom, count := range strategyCountMap {
+		k.SetStrategyCount(ctx, denom, count)
+	}
+	k.SetVaultCount(ctx, vaultCount)
 }
 
 // ExportGenesis returns the module's exported genesis
