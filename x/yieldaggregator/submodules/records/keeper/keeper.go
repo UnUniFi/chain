@@ -20,6 +20,7 @@ import (
 
 	icacallbackskeeper "github.com/UnUniFi/chain/x/yieldaggregator/submodules/icacallbacks/keeper"
 
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 
 	icqtypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/interchainquery/types"
@@ -39,6 +40,7 @@ type (
 		IBCKeeper          ibckeeper.Keeper
 		ICACallbacksKeeper icacallbackskeeper.Keeper
 		wasmKeeper         icqtypes.WasmKeeper
+		wasmReader         wasmkeeper.Keeper
 	}
 )
 
@@ -53,6 +55,7 @@ func NewKeeper(
 	ibcKeeper ibckeeper.Keeper,
 	ICACallbacksKeeper icacallbackskeeper.Keeper,
 	WasmKeeper icqtypes.WasmKeeper,
+	wasmReader wasmkeeper.Keeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -70,6 +73,7 @@ func NewKeeper(
 		IBCKeeper:          ibcKeeper,
 		ICACallbacksKeeper: ICACallbacksKeeper,
 		wasmKeeper:         WasmKeeper,
+		wasmReader:         wasmReader,
 	}
 }
 

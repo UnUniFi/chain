@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/url"
 	"sort"
+	"strconv"
 	"strings"
 
 	errorsmod "cosmossdk.io/errors"
@@ -106,6 +107,19 @@ func (k Keeper) VerifyKeyProof(ctx sdk.Context, msg *types.MsgSubmitQueryRespons
 	return nil
 }
 
+func (k Keeper) GetStrategyVersion(ctx sdk.Context, strategyAddr sdk.AccAddress) uint8 {
+	wasmQuery := fmt.Sprintf(`{"version":{}}`)
+	resp, err := k.wasmReader.QuerySmart(ctx, strategyAddr, []byte(wasmQuery))
+	if err != nil {
+		return 0
+	}
+	version, err := strconv.Atoi(string(resp))
+	if err != nil {
+		return 0
+	}
+	return uint8(version)
+}
+
 // call the query's associated callback function
 func (k Keeper) InvokeCallback(ctx sdk.Context, msg *types.MsgSubmitQueryResponse, q types.Query) error {
 	// get all the stored queries and sort them for determinism
@@ -120,24 +134,44 @@ func (k Keeper) InvokeCallback(ctx sdk.Context, msg *types.MsgSubmitQueryRespons
 	if err == nil {
 		k.Logger(ctx).Info(fmt.Sprintf("ICQ debug: Q: %+v, result: %+v", q, msg.Result))
 
-		x := types.MessageKVQueryResult{}
-		x.KVQueryResult.ConnectionId = q.ConnectionId
-		x.KVQueryResult.ChainId = q.ChainId
-		x.KVQueryResult.QueryPrefix = q.QueryType
-		x.KVQueryResult.QueryKey = q.Request
-		x.KVQueryResult.Data = msg.Result
-		if x.KVQueryResult.Data == nil {
-			x.KVQueryResult.Data = []byte{}
+		version := k.GetStrategyVersion(ctx, contractAddress)
+		var callbackBytes []byte
+		switch version {
+		case 0:
+			x := types.MessageKVQueryResult{}
+			x.KVQueryResult.ConnectionId = q.ConnectionId
+			x.KVQueryResult.ChainId = q.ChainId
+			x.KVQueryResult.QueryPrefix = q.QueryType
+			x.KVQueryResult.QueryKey = q.Request
+			x.KVQueryResult.Data = msg.Result
+			if x.KVQueryResult.Data == nil {
+				x.KVQueryResult.Data = []byte{}
+			}
+
+			callbackBytes, err = json.Marshal(x)
+			if err != nil {
+				return fmt.Errorf("failed to marshal MessageKVQueryResult: %v", err)
+			}
+		default: // case 1+
+			x := types.MessageKvIcqCallback{}
+			x.KvIcqCallback.ConnectionId = q.ConnectionId
+			x.KvIcqCallback.ChainId = q.ChainId
+			x.KvIcqCallback.QueryPrefix = q.QueryType
+			x.KvIcqCallback.QueryKey = q.Request
+			x.KvIcqCallback.Data = msg.Result
+			if x.KvIcqCallback.Data == nil {
+				x.KvIcqCallback.Data = []byte{}
+			}
+
+			callbackBytes, err = json.Marshal(x)
+			if err != nil {
+				return fmt.Errorf("failed to marshal MessageKvIcqCallback: %v", err)
+			}
 		}
 
-		m, err := json.Marshal(x)
+		_, err = k.wasmKeeper.Sudo(ctx, contractAddress, callbackBytes)
 		if err != nil {
-			return fmt.Errorf("failed to marshal MessageKVQueryResult: %v", err)
-		}
-
-		_, err = k.wasmKeeper.Sudo(ctx, contractAddress, m)
-		if err != nil {
-			k.Logger(ctx).Info("SudoTxQueryResult: failed to Sudo", string(m), "error", err, "contract_address", contractAddress)
+			k.Logger(ctx).Info("SudoTxQueryResult: failed to Sudo", string(callbackBytes), "error", err, "contract_address", contractAddress)
 			return fmt.Errorf("failed to Sudo: %v", err)
 		}
 		return nil

@@ -2,7 +2,9 @@ package keeper
 
 import (
 	"encoding/binary"
+	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -11,6 +13,20 @@ import (
 
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
 )
+
+func (k Keeper) GetStrategyVersion(ctx sdk.Context, strategy types.Strategy) uint8 {
+	wasmQuery := fmt.Sprintf(`{"version":{}}`)
+	contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
+	resp, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
+	if err != nil {
+		return 0
+	}
+	version, err := strconv.Atoi(string(resp))
+	if err != nil {
+		return 0
+	}
+	return uint8(version)
+}
 
 // GetStrategyCount get the total number of Strategy
 func (k Keeper) GetStrategyCount(ctx sdk.Context, vaultDenom string) uint64 {
@@ -141,6 +157,7 @@ func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy typ
 	vaultModName := types.GetVaultModuleAccountName(vault.Id)
 	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
 	stakeCoin := sdk.NewCoin(vault.Denom, amount)
+
 	switch strategy.ContractAddress {
 	case "x/ibc-staking":
 		return k.stakeibcKeeper.LiquidStake(
@@ -149,6 +166,8 @@ func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy typ
 			stakeCoin,
 		)
 	default:
+		version := k.GetStrategyVersion(ctx, strategy)
+		_ = version
 		wasmMsg := `{"stake":{}}`
 		contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
 		_, err := k.wasmKeeper.Execute(ctx, contractAddr, vaultModAddr, []byte(wasmMsg), sdk.Coins{stakeCoin})
@@ -176,11 +195,25 @@ func (k Keeper) UnstakeFromStrategy(ctx sdk.Context, vault types.Vault, strategy
 			return nil
 		}
 	default:
-		wasmMsg := fmt.Sprintf(`{"unstake":{"amount":"%s"}}`, amount.String())
+		version := k.GetStrategyVersion(ctx, strategy)
+		wasmMsg := ""
+		switch version {
+		case 0:
+			wasmMsg = fmt.Sprintf(`{"unstake":{"amount":"%s"}}`, amount.String())
+		default: // case 1+
+			wasmMsg = fmt.Sprintf(`{"unstake":{"share_amount":"%s", "recipient": "%s"}}`, amount.String(), vaultModAddr.String())
+		}
 		contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
 		_, err := k.wasmKeeper.Execute(ctx, contractAddr, vaultModAddr, []byte(wasmMsg), sdk.Coins{})
 		return err
 	}
+}
+
+type AmountsResp struct {
+	TotalDeposited string `json:"total_deposited"`
+	BondingStandby string `json:"bonding_standby"`
+	Bonded         string `json:"bonded"`
+	Unbonding      string `json:"unbonding"`
 }
 
 func (k Keeper) GetAmountFromStrategy(ctx sdk.Context, vault types.Vault, strategy types.Strategy) (sdk.Coin, error) {
@@ -191,18 +224,41 @@ func (k Keeper) GetAmountFromStrategy(ctx sdk.Context, vault types.Vault, strate
 		updatedAmount := k.stakeibcKeeper.GetUpdatedBalance(ctx, vaultModAddr, vault.Denom)
 		return sdk.NewCoin(vault.Denom, updatedAmount), nil
 	default:
-		wasmQuery := fmt.Sprintf(`{"bonded":{"addr": "%s"}}`, vaultModAddr.String())
-		contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
-		resp, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
-		if err != nil {
-			return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), err
+		version := k.GetStrategyVersion(ctx, strategy)
+		switch version {
+		case 0:
+			wasmQuery := fmt.Sprintf(`{"bonded":{"addr": "%s"}}`, vaultModAddr.String())
+			contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
+			resp, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
+			if err != nil {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), err
+			}
+			amountStr := strings.ReplaceAll(string(resp), "\"", "")
+			amount, ok := sdk.NewIntFromString(amountStr)
+			if !ok {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), nil
+			}
+			return sdk.NewCoin(strategy.Denom, amount), err
+		default: // case 1+
+			wasmQuery := fmt.Sprintf(`{"amounts":{"addr": "%s"}}`, vaultModAddr.String())
+			contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
+			resp, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
+			if err != nil {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), err
+			}
+
+			parsedAmounts := AmountsResp{}
+			err = json.Unmarshal(resp, &parsedAmounts)
+			if err != nil {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), err
+			}
+
+			amount, ok := sdk.NewIntFromString(parsedAmounts.Bonded)
+			if !ok {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), nil
+			}
+			return sdk.NewCoin(strategy.Denom, amount), err
 		}
-		amountStr := strings.ReplaceAll(string(resp), "\"", "")
-		amount, ok := sdk.NewIntFromString(amountStr)
-		if !ok {
-			return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), nil
-		}
-		return sdk.NewCoin(strategy.Denom, amount), err
 	}
 }
 
@@ -218,17 +274,40 @@ func (k Keeper) GetUnbondingAmountFromStrategy(ctx sdk.Context, vault types.Vaul
 		unbondingAmount := k.recordsKeeper.GetUserRedemptionRecordBySenderAndHostZone(ctx, vaultModAddr, zone.ChainId)
 		return sdk.NewCoin(vault.Denom, unbondingAmount), nil
 	default:
-		wasmQuery := fmt.Sprintf(`{"unbonding":{"addr": "%s"}}`, vaultModAddr.String())
-		contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
-		resp, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
-		if err != nil {
-			return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), err
+		version := k.GetStrategyVersion(ctx, strategy)
+		switch version {
+		case 0:
+			wasmQuery := fmt.Sprintf(`{"unbonding":{"addr": "%s"}}`, vaultModAddr.String())
+			contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
+			resp, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
+			if err != nil {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), err
+			}
+			amountStr := strings.ReplaceAll(string(resp), "\"", "")
+			amount, ok := sdk.NewIntFromString(amountStr)
+			if !ok {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), nil
+			}
+			return sdk.NewCoin(strategy.Denom, amount), err
+		default: // case 1+
+			wasmQuery := fmt.Sprintf(`{"amounts":{"addr": "%s"}}`, vaultModAddr.String())
+			contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
+			resp, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
+			if err != nil {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), err
+			}
+
+			parsedAmounts := AmountsResp{}
+			err = json.Unmarshal(resp, &parsedAmounts)
+			if err != nil {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), err
+			}
+
+			amount, ok := sdk.NewIntFromString(parsedAmounts.Unbonding)
+			if !ok {
+				return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), nil
+			}
+			return sdk.NewCoin(strategy.Denom, amount), err
 		}
-		amountStr := strings.ReplaceAll(string(resp), "\"", "")
-		amount, ok := sdk.NewIntFromString(amountStr)
-		if !ok {
-			return sdk.NewCoin(strategy.Denom, sdk.ZeroInt()), nil
-		}
-		return sdk.NewCoin(strategy.Denom, amount), err
 	}
 }

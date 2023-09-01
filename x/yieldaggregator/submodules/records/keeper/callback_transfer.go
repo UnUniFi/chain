@@ -3,6 +3,7 @@ package keeper
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -68,6 +69,19 @@ func TransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Packet, ack
 	return nil
 }
 
+func (k Keeper) GetStrategyVersion(ctx sdk.Context, strategyAddr sdk.AccAddress) uint8 {
+	wasmQuery := fmt.Sprintf(`{"version":{}}`)
+	resp, err := k.wasmReader.QuerySmart(ctx, strategyAddr, []byte(wasmQuery))
+	if err != nil {
+		return 0
+	}
+	version, err := strconv.Atoi(string(resp))
+	if err != nil {
+		return 0
+	}
+	return uint8(version)
+}
+
 func ContractTransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Packet, ack *channeltypes.Acknowledgement, args []byte) error {
 	k.Logger(ctx).Info("TransferCallback executing", "packet", packet)
 	if ack.GetError() != "" {
@@ -92,8 +106,10 @@ func ContractTransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Pac
 		return sdkerrors.Wrapf(types.ErrUnmarshalFailure, "cannot retrieve contract address: %s", err.Error())
 	}
 
-	x := types.MessageTransferCallback{}
+	version := k.GetStrategyVersion(ctx, contractAddress)
+	_ = version
 
+	x := types.MessageTransferCallback{}
 	x.TransferCallback.Denom = data.Denom
 	x.TransferCallback.Amount = data.Amount
 	x.TransferCallback.Sender = data.Sender
@@ -101,14 +117,14 @@ func ContractTransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Pac
 	x.TransferCallback.Memo = data.Memo
 	x.TransferCallback.Success = true
 
-	m, err := json.Marshal(x)
+	callbackBytes, err := json.Marshal(x)
 	if err != nil {
 		return fmt.Errorf("failed to marshal MessageTransferCallback: %v", err)
 	}
 
-	_, err = k.wasmKeeper.Sudo(ctx, contractAddress, m)
+	_, err = k.wasmKeeper.Sudo(ctx, contractAddress, callbackBytes)
 	if err != nil {
-		k.Logger(ctx).Info("SudoTxQueryResult: failed to Sudo", string(m), "error", err, "contract_address", contractAddress)
+		k.Logger(ctx).Info("SudoTxQueryResult: failed to Sudo", string(callbackBytes), "error", err, "contract_address", contractAddress)
 		return fmt.Errorf("failed to Sudo: %v", err)
 	}
 	return nil

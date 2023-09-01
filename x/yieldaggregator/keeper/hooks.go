@@ -51,8 +51,16 @@ func (k Keeper) BeforeEpochStart(ctx sdk.Context, epochInfo epochstypes.EpochInf
 		if err != nil {
 			continue
 		}
+
 		if epochIdentifier == epochstypes.BASE_EPOCH {
-			wasmMsg := `{"execute_epoch":{}}`
+			version := k.GetStrategyVersion(ctx, strategy)
+			wasmMsg := ""
+			switch version {
+			case 0:
+				wasmMsg = `{"execute_epoch":{}}`
+			default: // case 1+
+				wasmMsg = `{"epoch":{}}`
+			}
 			_, err := k.wasmKeeper.Execute(ctx, contractAddr, contractAddr, []byte(wasmMsg), sdk.Coins{})
 			if err != nil {
 				continue

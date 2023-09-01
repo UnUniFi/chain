@@ -527,6 +527,7 @@ func NewAppKeeper(
 		appKeepers.keys[interchainquerytypes.StoreKey],
 		appKeepers.IBCKeeper,
 		&appKeepers.WasmKeeper,
+		appKeepers.WasmKeeper,
 	)
 
 	scopedRecordsKeeper := appKeepers.CapabilityKeeper.ScopeToModule(recordstypes.ModuleName)
@@ -542,6 +543,7 @@ func NewAppKeeper(
 		*appKeepers.IBCKeeper,
 		appKeepers.IcacallbacksKeeper,
 		&appKeepers.WasmKeeper,
+		appKeepers.WasmKeeper,
 	)
 
 	scopedStakeibcKeeper := appKeepers.CapabilityKeeper.ScopeToModule(stakeibctypes.ModuleName)

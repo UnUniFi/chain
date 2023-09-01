@@ -11,6 +11,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
 
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 
 	"github.com/UnUniFi/chain/x/yieldaggregator/submodules/interchainquery/types"
@@ -23,16 +24,24 @@ type Keeper struct {
 	callbacks  map[string]types.QueryCallbacks
 	IBCKeeper  *ibckeeper.Keeper
 	wasmKeeper types.WasmKeeper
+	wasmReader wasmkeeper.Keeper
 }
 
 // NewKeeper returns a new instance of zones Keeper
-func NewKeeper(cdc codec.Codec, storeKey storetypes.StoreKey, ibckeeper *ibckeeper.Keeper, wasmKeeper types.WasmKeeper) Keeper {
+func NewKeeper(
+	cdc codec.Codec,
+	storeKey storetypes.StoreKey,
+	ibckeeper *ibckeeper.Keeper,
+	wasmKeeper types.WasmKeeper,
+	wasmReader wasmkeeper.Keeper,
+) Keeper {
 	return Keeper{
 		cdc:        cdc,
 		storeKey:   storeKey,
 		callbacks:  make(map[string]types.QueryCallbacks),
 		IBCKeeper:  ibckeeper,
 		wasmKeeper: wasmKeeper,
+		wasmReader: wasmReader,
 	}
 }
 

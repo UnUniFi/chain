@@ -17,6 +17,8 @@ service Msg {
   // this line is used by starport scaffolding # proto/tx/rpc
   rpc DepositToVault(MsgDepositToVault) returns (MsgDepositToVaultResponse);
   rpc WithdrawFromVault(MsgWithdrawFromVault) returns (MsgWithdrawFromVaultResponse);
+  rpc WithdrawFromVaultWithUnbondingTime(MsgWithdrawFromVaultWithUnbondingTime)
+      returns (MsgWithdrawFromVaultWithUnbondingTimeResponse);
   rpc CreateVault(MsgCreateVault) returns (MsgCreateVaultResponse);
   rpc TransferVaultOwnership(MsgTransferVaultOwnership) returns (MsgTransferVaultOwnershipResponse);
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
@@ -56,6 +58,17 @@ message MsgWithdrawFromVault {
 }
 
 message MsgWithdrawFromVaultResponse {}
+
+message MsgWithdrawFromVaultWithUnbondingTime {
+  string sender          = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  uint64 vault_id        = 2;
+  string lp_token_amount = 3 [
+    (cosmos_proto.scalar)  = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable)   = false
+  ];
+}
+message MsgWithdrawFromVaultWithUnbondingTimeResponse {}
 
 message MsgCreateVault {
   option (cosmos.msg.v1.signer) = "sender";

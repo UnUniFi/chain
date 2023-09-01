@@ -49,8 +49,14 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 		if contractMsg.SubmitICQRequest != nil {
 			return m.submitICQRequest(ctx, contractAddr, contractMsg.SubmitICQRequest)
 		}
+		if contractMsg.RequestKvIcq != nil {
+			return m.submitICQRequest(ctx, contractAddr, contractMsg.RequestKvIcq)
+		}
 		if contractMsg.IBCTransfer != nil {
 			return m.ibcTransfer(ctx, contractAddr, contractMsg.IBCTransfer)
+		}
+		if contractMsg.DeputyDepositToVault != nil {
+			// TODO:
 		}
 	}
 	return m.wrapped.DispatchMsg(ctx, contractAddr, contractIBCPortID, msg)
