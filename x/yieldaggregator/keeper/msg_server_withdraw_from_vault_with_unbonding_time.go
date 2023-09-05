@@ -15,12 +15,10 @@ func (k msgServer) WithdrawFromVaultWithUnbondingTime(ctx context.Context, msg *
 		return nil, err
 	}
 
-	err = k.Keeper.BurnLPTokenAndRedeem(sdkCtx, sender, msg.VaultId, msg.LpTokenAmount)
+	err = k.Keeper.BurnLPTokenAndBeginUnbonding(sdkCtx, sender, msg.VaultId, msg.LpTokenAmount)
 	if err != nil {
 		return nil, err
 	}
-
-	// TODO: if bonded amount < withdraw with unbonding time - execute, otherwise fail
 
 	return &types.MsgWithdrawFromVaultWithUnbondingTimeResponse{}, nil
 }

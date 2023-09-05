@@ -176,9 +176,12 @@ func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy typ
 }
 
 // unstake worth of withdrawal amount from the strategy
-func (k Keeper) UnstakeFromStrategy(ctx sdk.Context, vault types.Vault, strategy types.Strategy, amount sdk.Int) error {
+func (k Keeper) UnstakeFromStrategy(ctx sdk.Context, vault types.Vault, strategy types.Strategy, amount sdk.Int, recipient string) error {
 	vaultModName := types.GetVaultModuleAccountName(vault.Id)
 	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+	if recipient == "" {
+		recipient = vaultModAddr.String()
+	}
 	switch strategy.ContractAddress {
 	case "x/ibc-staking":
 		{
@@ -186,7 +189,7 @@ func (k Keeper) UnstakeFromStrategy(ctx sdk.Context, vault types.Vault, strategy
 				ctx,
 				vaultModAddr,
 				sdk.NewCoin(vault.Denom, amount),
-				vaultModAddr.String(),
+				recipient,
 			)
 			if err != nil {
 				return err
@@ -201,7 +204,7 @@ func (k Keeper) UnstakeFromStrategy(ctx sdk.Context, vault types.Vault, strategy
 		case 0:
 			wasmMsg = fmt.Sprintf(`{"unstake":{"amount":"%s"}}`, amount.String())
 		default: // case 1+
-			wasmMsg = fmt.Sprintf(`{"unstake":{"share_amount":"%s", "recipient": "%s"}}`, amount.String(), vaultModAddr.String())
+			wasmMsg = fmt.Sprintf(`{"unstake":{"share_amount":"%s", "recipient": "%s"}}`, amount.String(), recipient)
 		}
 		contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
 		_, err := k.wasmKeeper.Execute(ctx, contractAddr, vaultModAddr, []byte(wasmMsg), sdk.Coins{})

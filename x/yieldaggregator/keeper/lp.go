@@ -179,7 +179,7 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 		return err
 	}
 
-	// Unstake funds from Strategy
+	// Unstake funds from the vault
 	amountToUnbond := principal.Amount
 
 	// implement fees on withdrawal
@@ -236,6 +236,44 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 	err = k.bankKeeper.SendCoins(ctx, vaultModAddr, address, sdk.NewCoins(sdk.NewCoin(principal.Denom, withdrawAmountWithoutCommission)))
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (k Keeper) BurnLPTokenAndBeginUnbonding(ctx sdk.Context, address sdk.AccAddress, vaultId uint64, lpAmount sdkmath.Int) error {
+	vault, found := k.GetVault(ctx, vaultId)
+	if !found {
+		return types.ErrInvalidVaultId
+	}
+
+	principal := k.EstimateRedeemAmountInternal(ctx, vault.Denom, vaultId, lpAmount)
+
+	// burn lp tokens after calculating withdrawal amount
+	lpDenom := types.GetLPTokenDenom(vaultId)
+	lp := sdk.NewCoin(lpDenom, lpAmount)
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.NewCoins(lp))
+	if err != nil {
+		return err
+	}
+	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(lp))
+	if err != nil {
+		return err
+	}
+
+	// Unstake funds from Strategy
+	amountToUnbond := principal.Amount
+	for _, strategyWeight := range vault.StrategyWeights {
+		strategy, found := k.GetStrategy(ctx, vault.Denom, strategyWeight.StrategyId)
+		if !found {
+			continue
+		}
+		strategyAmount := sdk.NewDecFromInt(amountToUnbond).Mul(strategyWeight.Weight).RoundInt()
+
+		err = k.UnstakeFromStrategy(ctx, vault, strategy, strategyAmount, address.String())
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

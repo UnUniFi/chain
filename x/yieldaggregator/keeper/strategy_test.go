@@ -239,7 +239,7 @@ func (suite *KeeperTestSuite) TestUnstakeFromStrategy() {
 	suite.Require().NoError(err)
 
 	// unstake from strategy - calls redeem stake
-	err = suite.app.YieldaggregatorKeeper.UnstakeFromStrategy(suite.ctx, vault, strategy, sdk.NewInt(1000_000))
+	err = suite.app.YieldaggregatorKeeper.UnstakeFromStrategy(suite.ctx, vault, strategy, sdk.NewInt(1000_000), "")
 	suite.Require().NoError(err)
 
 	// check the changes
@@ -309,7 +309,7 @@ func (suite *KeeperTestSuite) TestGetAmountAndUnbondingAmountFromStrategy() {
 	suite.Require().Equal(amount.String(), "0"+atomIbcDenom)
 
 	// unstake from strategy - calls redeem stake
-	err = suite.app.YieldaggregatorKeeper.UnstakeFromStrategy(suite.ctx, vault, strategy, sdk.NewInt(1000_000))
+	err = suite.app.YieldaggregatorKeeper.UnstakeFromStrategy(suite.ctx, vault, strategy, sdk.NewInt(1000_000), "")
 	suite.Require().NoError(err)
 
 	// check amounts after unstake

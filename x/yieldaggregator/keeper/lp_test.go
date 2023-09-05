@@ -64,7 +64,7 @@ func (suite *KeeperTestSuite) TestVaultAmountUnbondingAmountInStrategies() {
 	suite.Require().Equal(amount.String(), "0")
 
 	// unstake from strategy - calls redeem stake
-	err = suite.app.YieldaggregatorKeeper.UnstakeFromStrategy(suite.ctx, vault, strategy, sdk.NewInt(1000_000))
+	err = suite.app.YieldaggregatorKeeper.UnstakeFromStrategy(suite.ctx, vault, strategy, sdk.NewInt(1000_000), "")
 	suite.Require().NoError(err)
 
 	// check amounts after unstake
@@ -161,7 +161,7 @@ func (suite *KeeperTestSuite) TestVaultAmountTotal() {
 	suite.Require().Equal(amount.String(), "10000000")
 
 	// unstake from strategy - calls redeem stake
-	err = suite.app.YieldaggregatorKeeper.UnstakeFromStrategy(suite.ctx, vault, strategy, sdk.NewInt(1000_000))
+	err = suite.app.YieldaggregatorKeeper.UnstakeFromStrategy(suite.ctx, vault, strategy, sdk.NewInt(1000_000), "")
 	suite.Require().NoError(err)
 
 	// check amounts after unstake
