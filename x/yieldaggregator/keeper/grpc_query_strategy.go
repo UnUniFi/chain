@@ -62,33 +62,68 @@ func (k Keeper) GetStrategyContainer(ctx sdk.Context, strategy types.Strategy) (
 	wasmQuery := `{"fee":{}}`
 	result, err := k.wasmReader.QuerySmart(ctx, strategyAddr, []byte(wasmQuery))
 	if err != nil {
-		return types.StrategyContainer{}, err
+		return types.StrategyContainer{
+			Strategy:           strategy,
+			DepositFeeRate:     math.LegacyZeroDec(),
+			WithdrawFeeRate:    math.LegacyZeroDec(),
+			PerformanceFeeRate: math.LegacyZeroDec(),
+		}, nil
 	}
 
 	jsonMap := make(map[string]string)
 	err = json.Unmarshal(result, &jsonMap)
 	if err != nil {
-		return types.StrategyContainer{}, err
-	}
-	depositFeeRate, err := math.LegacyNewDecFromStr(jsonMap["deposit_fee_rate"])
-	if err != nil {
-		return types.StrategyContainer{}, err
-	}
-	withdrawFeeRate, err := math.LegacyNewDecFromStr(jsonMap["withdraw_fee_rate"])
-	if err != nil {
-		return types.StrategyContainer{}, err
-	}
-	performanceFeeRate, err := math.LegacyNewDecFromStr(jsonMap["interest_fee_rate"])
-	if err != nil {
-		return types.StrategyContainer{}, err
+		return types.StrategyContainer{
+			Strategy:           strategy,
+			DepositFeeRate:     math.LegacyZeroDec(),
+			WithdrawFeeRate:    math.LegacyZeroDec(),
+			PerformanceFeeRate: math.LegacyZeroDec(),
+		}, nil
 	}
 
-	return types.StrategyContainer{
-		Strategy:           strategy,
-		DepositFeeRate:     depositFeeRate,
-		WithdrawFeeRate:    withdrawFeeRate,
-		PerformanceFeeRate: performanceFeeRate,
-	}, nil
+	version := k.GetStrategyVersion(ctx, strategy)
+
+	switch version {
+	case 0:
+		depositFeeRate, err := math.LegacyNewDecFromStr(jsonMap["deposit_fee_rate"])
+		if err != nil {
+			depositFeeRate = math.LegacyZeroDec()
+		}
+		withdrawFeeRate, err := math.LegacyNewDecFromStr(jsonMap["withdraw_fee_rate"])
+		if err != nil {
+			withdrawFeeRate = math.LegacyZeroDec()
+		}
+		performanceFeeRate, err := math.LegacyNewDecFromStr(jsonMap["interest_fee_rate"])
+		if err != nil {
+			performanceFeeRate = math.LegacyZeroDec()
+		}
+		return types.StrategyContainer{
+			Strategy:           strategy,
+			DepositFeeRate:     depositFeeRate,
+			WithdrawFeeRate:    withdrawFeeRate,
+			PerformanceFeeRate: performanceFeeRate,
+		}, nil
+	default: // case 1+
+		depositFeeRate, err := math.LegacyNewDecFromStr(jsonMap["deposit_fee_rate"])
+		if err != nil {
+			depositFeeRate = math.LegacyZeroDec()
+		}
+		withdrawFeeRate, err := math.LegacyNewDecFromStr(jsonMap["withdraw_fee_rate"])
+		if err != nil {
+			withdrawFeeRate = math.LegacyZeroDec()
+		}
+		performanceFeeRate, err := math.LegacyNewDecFromStr(jsonMap["performance_fee_rate"])
+		if err != nil {
+			performanceFeeRate = math.LegacyZeroDec()
+		}
+
+		return types.StrategyContainer{
+			Strategy:           strategy,
+			DepositFeeRate:     depositFeeRate,
+			WithdrawFeeRate:    withdrawFeeRate,
+			PerformanceFeeRate: performanceFeeRate,
+		}, nil
+	}
 }
 
 func (k Keeper) Strategy(c context.Context, req *types.QueryGetStrategyRequest) (*types.QueryGetStrategyResponse, error) {

@@ -3,7 +3,6 @@ package keeper
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -71,15 +70,18 @@ func TransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Packet, ack
 
 func (k Keeper) GetStrategyVersion(ctx sdk.Context, strategyAddr sdk.AccAddress) uint8 {
 	wasmQuery := fmt.Sprintf(`{"version":{}}`)
-	resp, err := k.wasmReader.QuerySmart(ctx, strategyAddr, []byte(wasmQuery))
+	result, err := k.wasmReader.QuerySmart(ctx, strategyAddr, []byte(wasmQuery))
 	if err != nil {
 		return 0
 	}
-	version, err := strconv.Atoi(string(resp))
+
+	jsonMap := make(map[string]uint8)
+	err = json.Unmarshal(result, &jsonMap)
 	if err != nil {
 		return 0
 	}
-	return uint8(version)
+
+	return jsonMap["version"]
 }
 
 func ContractTransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Packet, ack *channeltypes.Acknowledgement, args []byte) error {

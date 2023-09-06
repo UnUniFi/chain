@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/url"
 	"sort"
-	"strconv"
 	"strings"
 
 	errorsmod "cosmossdk.io/errors"
@@ -109,15 +108,18 @@ func (k Keeper) VerifyKeyProof(ctx sdk.Context, msg *types.MsgSubmitQueryRespons
 
 func (k Keeper) GetStrategyVersion(ctx sdk.Context, strategyAddr sdk.AccAddress) uint8 {
 	wasmQuery := fmt.Sprintf(`{"version":{}}`)
-	resp, err := k.wasmReader.QuerySmart(ctx, strategyAddr, []byte(wasmQuery))
+	result, err := k.wasmReader.QuerySmart(ctx, strategyAddr, []byte(wasmQuery))
 	if err != nil {
 		return 0
 	}
-	version, err := strconv.Atoi(string(resp))
+
+	jsonMap := make(map[string]uint8)
+	err = json.Unmarshal(result, &jsonMap)
 	if err != nil {
 		return 0
 	}
-	return uint8(version)
+
+	return jsonMap["version"]
 }
 
 // call the query's associated callback function

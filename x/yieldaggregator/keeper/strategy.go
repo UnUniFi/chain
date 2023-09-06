@@ -4,7 +4,6 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -17,15 +16,18 @@ import (
 func (k Keeper) GetStrategyVersion(ctx sdk.Context, strategy types.Strategy) uint8 {
 	wasmQuery := fmt.Sprintf(`{"version":{}}`)
 	contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
-	resp, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
+	result, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
 	if err != nil {
 		return 0
 	}
-	version, err := strconv.Atoi(string(resp))
+
+	jsonMap := make(map[string]uint8)
+	err = json.Unmarshal(result, &jsonMap)
 	if err != nil {
 		return 0
 	}
-	return uint8(version)
+
+	return jsonMap["version"]
 }
 
 // GetStrategyCount get the total number of Strategy
