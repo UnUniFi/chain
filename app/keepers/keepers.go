@@ -422,7 +422,13 @@ func NewAppKeeper(
 	// if we want to allow any custom callbacks
 	availableCapabilities := "iterator,staking,stargate,cosmwasm_1_1,cosmwasm_1_2"
 
-	wasmOpts = append(wasmbinding.RegisterCustomPlugins(&appKeepers.BankKeeper, &appKeepers.InterchainqueryKeeper, &appKeepers.RecordsKeeper), wasmOpts...)
+	wasmOpts = append(
+		wasmbinding.RegisterCustomPlugins(
+			&appKeepers.BankKeeper,
+			&appKeepers.InterchainqueryKeeper,
+			&appKeepers.RecordsKeeper,
+			&appKeepers.YieldaggregatorKeeper),
+		wasmOpts...)
 
 	appKeepers.WasmKeeper = wasm.NewKeeper(
 		appCodec,
