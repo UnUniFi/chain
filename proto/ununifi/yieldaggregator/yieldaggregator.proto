@@ -18,7 +18,7 @@ message StrategyWeight {
 
 message Vault {
   uint64                   id                       = 1;
-  string                   denom                    = 2;
+  string                   symbol                   = 2;  // deposit token symbol
   string                   name                     = 3;
   string                   description              = 4;
   string                   owner                    = 5 [(cosmos_proto.scalar) = "cosmos.AddressString"];
@@ -44,6 +44,11 @@ message Strategy {
   string name             = 4;
   string description      = 5;
   string git_url          = 6;
+}
+
+message Mapping {
+  string key   = 1;
+  string value = 2;
 }
 
 // Deprecated: Just for v3.2.2 upgrade handler

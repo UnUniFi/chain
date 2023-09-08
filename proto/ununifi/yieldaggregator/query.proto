@@ -46,6 +46,14 @@ service Query {
   rpc EstimateRedeemAmount(QueryEstimateRedeemAmountRequest) returns (QueryEstimateRedeemAmountResponse) {
     option (google.api.http).get = "/ununifi/yieldaggregator/vaults/{id}/estimate-redeem-amount";
   }
+
+  rpc DenomSymbolMap(QueryDenomSymbolMapRequest) returns (QueryDenomSymbolMapResponse) {
+    option (google.api.http).get = "/ununifi/yieldaggregator/denom-symbol-map";
+  }
+
+  rpc SymbolSwapContractMap(QuerySymbolSwapContractMapRequest) returns (QuerySymbolSwapContractMapResponse) {
+    option (google.api.http).get = "/ununifi/yieldaggregator/symbol-swap-contract-map";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -176,4 +184,15 @@ message QueryEstimateRedeemAmountResponse {
   cosmos.base.v1beta1.Coin fee           = 2 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin redeem_amount = 3 [(gogoproto.nullable) = false];
   cosmos.base.v1beta1.Coin total_amount  = 4 [(gogoproto.nullable) = false];
+}
+
+message QueryDenomSymbolMapRequest {}
+
+message QueryDenomSymbolMapResponse {
+  repeated Mapping mappings = 1 [(gogoproto.nullable) = false];
+}
+
+message QuerySymbolSwapContractMapRequest {}
+message QuerySymbolSwapContractMapResponse {
+  repeated Mapping mappings = 1 [(gogoproto.nullable) = false];
 }
