@@ -72,6 +72,7 @@ import (
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 
+	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7"
 	ibchookskeeper "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/keeper"
 	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/types"
 
@@ -376,13 +377,18 @@ func NewAppKeeper(
 	appKeepers.IBCHooksKeeper = ibchookskeeper.NewKeeper(
 		appKeepers.keys[ibchookstypes.StoreKey],
 	)
+	ics20WasmHooks := ibchooks.NewWasmHooks(&appKeepers.IBCHooksKeeper, nil, accountAddressPrefix) // The contract keeper needs to be set later
+	hooksICS4Wrapper := ibchooks.NewICS4Middleware(
+		appKeepers.IBCKeeper.ChannelKeeper,
+		ics20WasmHooks,
+	)
 
 	// Create Transfer Keepers
 	appKeepers.TransferKeeper = ibctransferkeeper.NewKeeper(
 		appCodec,
 		appKeepers.keys[ibctransfertypes.StoreKey],
 		appKeepers.GetSubspace(ibctransfertypes.ModuleName),
-		appKeepers.IBCFeeKeeper,
+		hooksICS4Wrapper,
 		appKeepers.IBCKeeper.ChannelKeeper,
 		&appKeepers.IBCKeeper.PortKeeper,
 		appKeepers.AccountKeeper,
