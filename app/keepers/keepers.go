@@ -88,7 +88,7 @@ import (
 	icacallbackstypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/icacallbacks/types"
 	interchainquerykeeper "github.com/UnUniFi/chain/x/yieldaggregator/submodules/interchainquery/keeper"
 	interchainquerytypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/interchainquery/types"
-	records "github.com/UnUniFi/chain/x/yieldaggregator/submodules/records"
+	"github.com/UnUniFi/chain/x/yieldaggregator/submodules/records"
 	recordskeeper "github.com/UnUniFi/chain/x/yieldaggregator/submodules/records/keeper"
 	recordstypes "github.com/UnUniFi/chain/x/yieldaggregator/submodules/records/types"
 	stakeibc "github.com/UnUniFi/chain/x/yieldaggregator/submodules/stakeibc"
@@ -635,6 +635,8 @@ func NewAppKeeper(
 	transferStack = transfer.NewIBCModule(appKeepers.TransferKeeper)
 	transferStack = records.NewIBCModule(appKeepers.RecordsKeeper, transferStack)
 	transferStack = ibcfee.NewIBCMiddleware(transferStack, appKeepers.IBCFeeKeeper)
+	// Hooks Middleware
+	transferStack = ibchooks.NewIBCMiddleware(transferStack, &hooksICS4Wrapper)
 
 	// RecvPacket, message that originates from core IBC and goes down to app, the flow is:
 	// channel.RecvPacket -> fee.OnRecvPacket -> icaHost.OnRecvPacket
