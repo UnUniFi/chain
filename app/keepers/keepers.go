@@ -643,6 +643,7 @@ func NewAppKeeper(
 	transferStack = transfer.NewIBCModule(appKeepers.TransferKeeper)
 	transferStack = records.NewIBCModule(appKeepers.RecordsKeeper, transferStack)
 	transferStack = ibcfee.NewIBCMiddleware(transferStack, appKeepers.IBCFeeKeeper)
+	// Add Hooks Middleware
 	appKeepers.HooksTransferIBCModule = ibchooks.NewIBCMiddleware(transferStack, &appKeepers.HooksICS4Wrapper)
 	transferStack = appKeepers.HooksTransferIBCModule
 
