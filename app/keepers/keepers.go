@@ -458,9 +458,6 @@ func NewAppKeeper(
 		appKeepers.IBCKeeper.ChannelKeeper,
 		appKeepers.Ics20WasmHooks,
 	)
-	// Hooks Middleware
-	transferIBCModule := transfer.NewIBCModule(appKeepers.TransferKeeper)
-	appKeepers.HooksTransferIBCModule = ibchooks.NewIBCMiddleware(&transferIBCModule, &appKeepers.HooksICS4Wrapper)
 
 	// Instantiate the builder keeper, store keys, and module manager
 	appKeepers.BuilderKeeper = builderkeeper.NewKeeper(
@@ -646,6 +643,8 @@ func NewAppKeeper(
 	transferStack = transfer.NewIBCModule(appKeepers.TransferKeeper)
 	transferStack = records.NewIBCModule(appKeepers.RecordsKeeper, transferStack)
 	transferStack = ibcfee.NewIBCMiddleware(transferStack, appKeepers.IBCFeeKeeper)
+	appKeepers.HooksTransferIBCModule = ibchooks.NewIBCMiddleware(transferStack, &appKeepers.HooksICS4Wrapper)
+	transferStack = appKeepers.HooksTransferIBCModule
 
 	// RecvPacket, message that originates from core IBC and goes down to app, the flow is:
 	// channel.RecvPacket -> fee.OnRecvPacket -> icaHost.OnRecvPacket
