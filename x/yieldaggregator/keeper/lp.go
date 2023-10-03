@@ -64,7 +64,7 @@ func (k Keeper) VaultAmountTotal(ctx sdk.Context, vault types.Vault) sdk.Int {
 
 // lpAmount = lpSupply * (principalAmountToMint / principalAmountInVault)
 // If principalAmountInVault is zero, lpAmount = principalAmountToMint
-func (k Keeper) EstimateMintAmountInternal(ctx sdk.Context, vaultDenom string, vaultId uint64, principalAmount sdkmath.Int) sdk.Coin {
+func (k Keeper) EstimateMintAmountInternal(ctx sdk.Context, vaultDenom string, vaultId uint64, principalCoin sdk.Coin) sdk.Coin {
 	lpDenom := types.GetLPTokenDenom(vaultId)
 	vault, found := k.GetVault(ctx, vaultId)
 	if !found {
@@ -74,10 +74,10 @@ func (k Keeper) EstimateMintAmountInternal(ctx sdk.Context, vaultDenom string, v
 	totalVaultAmount := k.VaultAmountTotal(ctx, vault)
 	lpSupply := k.bankKeeper.GetSupply(ctx, lpDenom).Amount
 	if totalVaultAmount.IsZero() || lpSupply.IsZero() {
-		return sdk.NewCoin(lpDenom, principalAmount)
+		return sdk.NewCoin(lpDenom, principalCoin.Amount)
 	}
 
-	lpAmount := lpSupply.Mul(principalAmount).Quo(totalVaultAmount)
+	lpAmount := lpSupply.Mul(principalCoin.Amount).Quo(totalVaultAmount)
 
 	return sdk.NewCoin(lpDenom, lpAmount)
 }
@@ -101,30 +101,32 @@ func (k Keeper) EstimateRedeemAmountInternal(ctx sdk.Context, vaultDenom string,
 	return sdk.NewCoin(vaultDenom, principalAmount)
 }
 
-func (k Keeper) DepositAndMintLPToken(ctx sdk.Context, address sdk.AccAddress, vaultId uint64, principalAmount sdk.Int) error {
+func (k Keeper) DepositAndMintLPToken(ctx sdk.Context, address sdk.AccAddress, vaultId uint64, principalCoin sdk.Coin) error {
 	vault, found := k.GetVault(ctx, vaultId)
 	if !found {
 		return types.ErrInvalidVaultId
 	}
+	if vault.Denom != principalCoin.Denom {
+		return types.ErrInvalidDepositDenom
+	}
 
-	// calculate lp token amount
-	lp := k.EstimateMintAmountInternal(ctx, vault.Denom, vaultId, principalAmount)
+	// calculate lpCoin token amount
+	lpCoin := k.EstimateMintAmountInternal(ctx, vault.Denom, vaultId, principalCoin)
 
 	// transfer coins after lp amount calculation
 	vaultModName := types.GetVaultModuleAccountName(vaultId)
 	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
-	principal := sdk.NewCoin(vault.Denom, principalAmount)
-	err := k.bankKeeper.SendCoins(ctx, address, vaultModAddr, sdk.NewCoins(principal))
+	err := k.bankKeeper.SendCoins(ctx, address, vaultModAddr, sdk.NewCoins(principalCoin))
 	if err != nil {
 		return err
 	}
 
-	// mint and trasnfer lp token
-	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(lp))
+	// mint and transfer lp token
+	err = k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(lpCoin))
 	if err != nil {
 		return err
 	}
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, address, sdk.NewCoins(lp))
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, address, sdk.NewCoins(lpCoin))
 	if err != nil {
 		return err
 	}

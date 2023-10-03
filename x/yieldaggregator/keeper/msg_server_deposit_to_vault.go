@@ -15,7 +15,7 @@ func (k msgServer) DepositToVault(ctx context.Context, msg *types.MsgDepositToVa
 		return nil, err
 	}
 
-	err = k.Keeper.DepositAndMintLPToken(sdkCtx, sender, msg.VaultId, msg.Amount.Amount)
+	err = k.Keeper.DepositAndMintLPToken(sdkCtx, sender, msg.VaultId, msg.Amount)
 	if err != nil {
 		return nil, err
 	}
