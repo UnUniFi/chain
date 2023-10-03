@@ -10,15 +10,13 @@ import (
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
 )
 
-func (k Keeper) DenomSymbolMap(c context.Context, req *types.QueryDenomSymbolMapRequest) (*types.QueryDenomSymbolMapResponse, error) {
+func (k Keeper) DenomInfos(c context.Context, req *types.QueryDenomInfosRequest) (*types.QueryDenomInfosResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 
-	return &types.QueryDenomSymbolMapResponse{
-		Mappings: k.GetAllDenomSymbolMap(ctx),
+	return &types.QueryDenomInfosResponse{
+		Info: k.GetAllDenomInfo(ctx),
 	}, nil
 }
-
-// rpc RegisterDenomSymbolMap(MsgRegisterDenomSymbolMap) returns (MsgRegisterDenomSymbolMapResponse);

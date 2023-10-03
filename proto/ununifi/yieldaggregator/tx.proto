@@ -26,8 +26,8 @@ service Msg {
   rpc DeleteVault(MsgDeleteVault) returns (MsgDeleteVaultResponse);
   rpc UpdateVault(MsgUpdateVault) returns (MsgUpdateVaultResponse);
   rpc UpdateStrategy(MsgUpdateStrategy) returns (MsgUpdateStrategyResponse);
-  rpc RegisterDenomSymbolMap(MsgRegisterDenomSymbolMap) returns (MsgRegisterDenomSymbolMapResponse);
-  rpc RegisterSymbolSwapContractMap(MsgSymbolSwapContractMap) returns (MsgSymbolSwapContractMapResponse);
+  rpc RegisterDenomInfos(MsgRegisterDenomInfos) returns (MsgRegisterDenomInfosResponse);
+  rpc RegisterSymbolInfos(MsgSymbolInfos) returns (MsgSymbolInfosResponse);
 }
 
 // this line is used by starport scaffolding # proto/tx/message
@@ -186,14 +186,14 @@ message MsgDeleteVault {
 
 message MsgDeleteVaultResponse {}
 
-message MsgRegisterDenomSymbolMap {
-  string           sender   = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  repeated Mapping mappings = 2 [(gogoproto.nullable) = false];
+message MsgRegisterDenomInfos {
+  string             sender = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  repeated DenomInfo info   = 2 [(gogoproto.nullable) = false];
 }
-message MsgRegisterDenomSymbolMapResponse {}
+message MsgRegisterDenomInfosResponse {}
 
-message MsgSymbolSwapContractMap {
-  string           sender   = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  repeated Mapping mappings = 2 [(gogoproto.nullable) = false];
+message MsgSymbolInfos {
+  string              sender = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  repeated SymbolInfo info   = 2 [(gogoproto.nullable) = false];
 }
-message MsgSymbolSwapContractMapResponse {}
+message MsgSymbolInfosResponse {}

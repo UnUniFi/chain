@@ -47,12 +47,12 @@ service Query {
     option (google.api.http).get = "/ununifi/yieldaggregator/vaults/{id}/estimate-redeem-amount";
   }
 
-  rpc DenomSymbolMap(QueryDenomSymbolMapRequest) returns (QueryDenomSymbolMapResponse) {
-    option (google.api.http).get = "/ununifi/yieldaggregator/denom-symbol-map";
+  rpc DenomInfos(QueryDenomInfosRequest) returns (QueryDenomInfosResponse) {
+    option (google.api.http).get = "/ununifi/yieldaggregator/denom-infos";
   }
 
-  rpc SymbolSwapContractMap(QuerySymbolSwapContractMapRequest) returns (QuerySymbolSwapContractMapResponse) {
-    option (google.api.http).get = "/ununifi/yieldaggregator/symbol-swap-contract-map";
+  rpc SymbolInfos(QuerySymbolInfosRequest) returns (QuerySymbolInfosResponse) {
+    option (google.api.http).get = "/ununifi/yieldaggregator/symbol-infos";
   }
 }
 
@@ -186,13 +186,13 @@ message QueryEstimateRedeemAmountResponse {
   cosmos.base.v1beta1.Coin total_amount  = 4 [(gogoproto.nullable) = false];
 }
 
-message QueryDenomSymbolMapRequest {}
+message QueryDenomInfosRequest {}
 
-message QueryDenomSymbolMapResponse {
-  repeated Mapping mappings = 1 [(gogoproto.nullable) = false];
+message QueryDenomInfosResponse {
+  repeated DenomInfo info = 1 [(gogoproto.nullable) = false];
 }
 
-message QuerySymbolSwapContractMapRequest {}
-message QuerySymbolSwapContractMapResponse {
-  repeated Mapping mappings = 1 [(gogoproto.nullable) = false];
+message QuerySymbolInfosRequest {}
+message QuerySymbolInfosResponse {
+  repeated SymbolInfo info = 1 [(gogoproto.nullable) = false];
 }

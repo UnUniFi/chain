@@ -10,13 +10,13 @@ import (
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
 )
 
-func (k Keeper) SymbolSwapContractMap(c context.Context, req *types.QuerySymbolSwapContractMapRequest) (*types.QuerySymbolSwapContractMapResponse, error) {
+func (k Keeper) SymbolInfo(c context.Context, req *types.QuerySymbolInfosRequest) (*types.QuerySymbolInfosResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 
-	return &types.QuerySymbolSwapContractMapResponse{
-		Mappings: k.GetAllSymbolSwapContractMap(ctx),
+	return &types.QuerySymbolInfosResponse{
+		Info: k.GetAllSymbolInfo(ctx),
 	}, nil
 }

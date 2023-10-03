@@ -9,15 +9,15 @@ import (
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
 )
 
-func (k msgServer) RegisterSymbolSwapContractMap(ctx context.Context, msg *types.MsgSymbolSwapContractMap) (*types.MsgSymbolSwapContractMapResponse, error) {
+func (k msgServer) RegisterDenomInfos(ctx context.Context, msg *types.MsgRegisterDenomInfos) (*types.MsgRegisterDenomInfosResponse, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	if k.authority != msg.Sender {
 		return nil, sdkerrors.ErrUnauthorized
 	}
 
-	for _, dsm := range msg.Mappings {
-		k.SetSymbolSwapContractMap(sdkCtx, dsm.Key, dsm.Value)
+	for _, dsm := range msg.Info {
+		k.SetDenomInfo(sdkCtx, dsm)
 	}
 
-	return &types.MsgSymbolSwapContractMapResponse{}, nil
+	return &types.MsgRegisterDenomInfosResponse{}, nil
 }

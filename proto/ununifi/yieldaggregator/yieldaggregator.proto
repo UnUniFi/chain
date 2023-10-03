@@ -46,9 +46,20 @@ message Strategy {
   string git_url          = 6;
 }
 
-message Mapping {
-  string key   = 1;
-  string value = 2;
+message TransferChannel {
+  string chain_id   = 1;
+  string channel_id = 2;
+}
+message SymbolInfo {
+  string                   symbol          = 1;
+  string                   native_chain_id = 2;
+  repeated TransferChannel channels        = 3;  // channels to send to target chain for the symbol
+}
+
+message DenomInfo {
+  string                   denom    = 1;
+  string                   symbol   = 2;
+  repeated TransferChannel channels = 3;  // channels to transfer back to native chain from the denom
 }
 
 // Deprecated: Just for v3.2.2 upgrade handler
