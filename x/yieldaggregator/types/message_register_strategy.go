@@ -27,6 +27,9 @@ func (msg MsgRegisterStrategy) ValidateBasic() error {
 	if msg.Name == "" {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "empty strategy name")
 	}
+	if msg.Description == "" {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "empty strategy description")
+	}
 	if msg.ContractAddress == "" {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "empty strategy contract address")
 	}

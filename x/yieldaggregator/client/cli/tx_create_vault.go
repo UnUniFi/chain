@@ -17,12 +17,12 @@ import (
 
 func CmdTxCreateVault() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-vault [denom] [commission-rate] [withdraw-reserve-rate] [fee] [deposit] [strategy-weights] [fee-collector]",
+		Use:   "create-vault [denom] [name] [description] [commission-rate] [withdraw-reserve-rate] [fee] [deposit] [strategy-weights] [fee-collector]",
 		Short: "create a new vault",
 		Long: `create a new vault
 			ununifid tx yieldaggregator create-vault uguu 0.001 1000uguu 1000000uguu 1:0.1,2:0.9
 		`,
-		Args: cobra.ExactArgs(7),
+		Args: cobra.ExactArgs(9),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -30,24 +30,26 @@ func CmdTxCreateVault() *cobra.Command {
 			}
 
 			denom := args[0]
-			commissionRate, err := sdk.NewDecFromStr(args[1])
+			name := args[1]
+			description := args[2]
+			commissionRate, err := sdk.NewDecFromStr(args[3])
 			if err != nil {
 				return err
 			}
-			withdrawReserveRate, err := sdk.NewDecFromStr(args[2])
+			withdrawReserveRate, err := sdk.NewDecFromStr(args[4])
 			if err != nil {
 				return err
 			}
-			fee, err := sdk.ParseCoinNormalized(args[3])
+			fee, err := sdk.ParseCoinNormalized(args[5])
 			if err != nil {
 				return err
 			}
-			deposit, err := sdk.ParseCoinNormalized(args[4])
+			deposit, err := sdk.ParseCoinNormalized(args[6])
 			if err != nil {
 				return err
 			}
 
-			strategyWeightStrs := strings.Split(args[5], ",")
+			strategyWeightStrs := strings.Split(args[7], ",")
 
 			strategyWeights := make([]types.StrategyWeight, 0)
 			for _, strategyWeightStr := range strategyWeightStrs {
@@ -73,12 +75,14 @@ func CmdTxCreateVault() *cobra.Command {
 			msg := types.NewMsgCreateVault(
 				clientCtx.GetFromAddress().String(),
 				denom,
+				name,
+				description,
 				commissionRate,
 				withdrawReserveRate,
 				strategyWeights,
 				fee,
 				deposit,
-				args[6],
+				args[8],
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
