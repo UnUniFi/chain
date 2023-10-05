@@ -3,6 +3,7 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	ibctypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -30,4 +31,5 @@ type BankKeeper interface {
 
 type RecordsKeeper interface {
 	GetUserRedemptionRecordBySenderAndHostZone(ctx sdk.Context, sender sdk.AccAddress, zoneId string) sdk.Int
+	YATransfer(ctx sdk.Context, msg *ibctypes.MsgTransfer) error
 }

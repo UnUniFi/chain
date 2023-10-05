@@ -9,6 +9,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
+	ibctypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
+	clienttypes "github.com/cosmos/ibc-go/v7/modules/core/02-client/types"
+	"github.com/iancoleman/orderedmap"
 
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
 )
@@ -28,6 +32,29 @@ func (k Keeper) GetStrategyVersion(ctx sdk.Context, strategy types.Strategy) uin
 	}
 
 	return jsonMap["version"]
+}
+
+type DenomInfo struct {
+	Denom            string `json:"denom"`
+	TargetChainId    string `json:"target_chain_id"`
+	TargetChainDenom string `json:"target_chain_denom"`
+	TargetChainAddr  string `json:"target_chain_addr"`
+}
+
+func (k Keeper) GetStrategyDepositInfo(ctx sdk.Context, strategy types.Strategy) (info DenomInfo) {
+	wasmQuery := fmt.Sprintf(`{"deposit_denom":{}}`)
+	contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
+	result, err := k.wasmReader.QuerySmart(ctx, contractAddr, []byte(wasmQuery))
+	if err != nil {
+		return
+	}
+
+	err = json.Unmarshal(result, &info)
+	if err != nil {
+		return DenomInfo{}
+	}
+
+	return
 }
 
 // GetStrategyCount get the total number of Strategy
@@ -154,6 +181,65 @@ func GetStrategyIDFromBytes(bz []byte) uint64 {
 	return binary.BigEndian.Uint64(bz)
 }
 
+func CalculateTransferRoute(currChannels, tarChannels []types.TransferChannel) []types.TransferChannel {
+	diffStartIndex := int(0)
+	for index, currChan := range currChannels {
+		if len(tarChannels) <= index {
+			diffStartIndex = index
+		}
+		tarChan := tarChannels[index]
+		if currChan.ChainId != tarChan.ChainId {
+			diffStartIndex = index
+			break
+		}
+	}
+
+	route := []types.TransferChannel{}
+	for index := len(currChannels) - 1; index >= diffStartIndex; index-- {
+		route = append(route, currChannels[index])
+		// TODO: Back route
+	}
+	for index := diffStartIndex; index < len(tarChannels); index++ {
+		route = append(route, tarChannels[index])
+		// TODO: Forward route
+	}
+	return route
+}
+
+func (k Keeper) ComposePacketForwardMetadata(ctx sdk.Context, channels []types.TransferChannel, finalReceiver string) (string, *PacketMetadata) {
+	if len(channels) == 0 {
+		return "", nil
+	}
+
+	if len(channels) == 1 {
+		return finalReceiver, nil
+	}
+
+	receiver, nextForward := k.ComposePacketForwardMetadata(ctx, channels[1:], finalReceiver)
+	nextForwardBz, err := json.Marshal(nextForward)
+	if err != nil {
+		return "", nil
+	}
+	intermediaryReceivers := make(map[string]string)
+	retries := uint8(2)
+	params, err := k.GetParams(ctx)
+	if err != nil {
+		return "", nil
+	}
+	ibcTransferTimeoutNanos := params.IbcTransferTimeoutNanos
+	timeoutTimestamp := uint64(ctx.BlockTime().UnixNano()) + ibcTransferTimeoutNanos
+	return intermediaryReceivers[channels[0].ChainId], &PacketMetadata{
+		Forward: &ForwardMetadata{
+			Receiver: receiver,
+			Port:     ibctransfertypes.PortID,
+			Channel:  channels[0].ChannelId,
+			Timeout:  timeoutTimestamp,
+			Retries:  &retries,
+			Next:     NewJSONObject(false, nextForwardBz, orderedmap.OrderedMap{}),
+		},
+	}
+}
+
 // stake into strategy
 func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy types.Strategy, amount sdk.Int) error {
 	vaultModName := types.GetVaultModuleAccountName(vault.Id)
@@ -170,9 +256,38 @@ func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy typ
 	default:
 		version := k.GetStrategyVersion(ctx, strategy)
 		_ = version
-		wasmMsg := `{"stake":{}}`
-		contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
-		_, err := k.wasmKeeper.Execute(ctx, contractAddr, vaultModAddr, []byte(wasmMsg), sdk.Coins{stakeCoin})
+		info := k.GetStrategyDepositInfo(ctx, strategy)
+		if info.Denom == stakeCoin.Denom {
+			wasmMsg := `{"stake":{}}`
+			contractAddr := sdk.MustAccAddressFromBech32(strategy.ContractAddress)
+			_, err := k.wasmKeeper.Execute(ctx, contractAddr, vaultModAddr, []byte(wasmMsg), sdk.Coins{stakeCoin})
+			return err
+		}
+
+		params, err := k.GetParams(ctx)
+		if err != nil {
+			return err
+		}
+		ibcTransferTimeoutNanos := params.IbcTransferTimeoutNanos
+		timeoutTimestamp := uint64(ctx.BlockTime().UnixNano()) + ibcTransferTimeoutNanos
+		transferRoute := CalculateTransferRoute(_, _)
+		initialReceiver, metadata := k.ComposePacketForwardMetadata(ctx, transferRoute, info.TargetChainAddr)
+
+		m := &PacketMetadata{}
+		memo, err := json.Marshal(m)
+
+		msg := ibctypes.NewMsgTransfer(
+			ibctransfertypes.PortID,
+			transferRoute[0].ChannelId,
+			stakeCoin,
+			vaultModAddr.String(),
+			initialReceiver,
+			clienttypes.Height{},
+			timeoutTimestamp,
+			string(memo),
+		)
+		err = k.recordsKeeper.YATransfer(ctx, msg)
+		// TODO: handle YATransfer callback handler for packet forwarding response
 		return err
 	}
 }

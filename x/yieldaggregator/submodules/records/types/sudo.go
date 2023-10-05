@@ -11,3 +11,14 @@ type MessageTransferCallback struct {
 		Success  bool   `json:"success"`
 	} `json:"transfer_callback"`
 }
+
+// MessageDepositCallback is passed to a contract's sudo() entrypoint for deposit to host chain callback.
+type MessageDepositCallback struct {
+	DepositCallback struct {
+		Denom    string `json:"denom"`
+		Amount   string `json:"amount"`
+		Sender   string `json:"sender"`
+		Receiver string `json:"receiver"`
+		Success  bool   `json:"success"`
+	} `json:"deposit_callback"`
+}

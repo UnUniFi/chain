@@ -131,3 +131,50 @@ func ContractTransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Pac
 	}
 	return nil
 }
+
+func YATransferCallback(k Keeper, ctx sdk.Context, packet channeltypes.Packet, ack *channeltypes.Acknowledgement, args []byte) error {
+	k.Logger(ctx).Info("YATransferCallback executing", "packet", packet)
+	if ack.GetError() != "" {
+		k.Logger(ctx).Error(fmt.Sprintf("YATransferCallback does not handle errors %s", ack.GetError()))
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "YATransferCallback does not handle errors: %s", ack.GetError())
+	}
+	if ack == nil {
+		// timeout
+		k.Logger(ctx).Error(fmt.Sprintf("YATransferCallback timeout, ack is nil, packet %v", packet))
+		return nil
+	}
+
+	var data ibctransfertypes.FungibleTokenPacketData
+	if err := ibctransfertypes.ModuleCdc.UnmarshalJSON(packet.GetData(), &data); err != nil {
+		k.Logger(ctx).Error(fmt.Sprintf("Error unmarshalling packet  %v", err.Error()))
+		return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "cannot unmarshal ICS-20 transfer packet data: %s", err.Error())
+	}
+	k.Logger(ctx).Info(fmt.Sprintf("YATransferCallback unmarshalled FungibleTokenPacketData %v", data))
+
+	contractAddress, err := sdk.AccAddressFromBech32(data.Sender)
+	if err != nil {
+		return sdkerrors.Wrapf(types.ErrUnmarshalFailure, "cannot retrieve contract address: %s", err.Error())
+	}
+
+	version := k.GetStrategyVersion(ctx, contractAddress)
+	_ = version
+
+	x := types.MessageDepositCallback{}
+	x.DepositCallback.Denom = data.Denom
+	x.DepositCallback.Amount = data.Amount
+	x.DepositCallback.Sender = data.Sender
+	x.DepositCallback.Receiver = data.Receiver
+	x.DepositCallback.Success = true
+
+	callbackBytes, err := json.Marshal(x)
+	if err != nil {
+		return fmt.Errorf("failed to marshal MessageDepositCallback: %v", err)
+	}
+
+	_, err = k.wasmKeeper.Sudo(ctx, contractAddress, callbackBytes)
+	if err != nil {
+		k.Logger(ctx).Info("SudoTxQueryResult: failed to Sudo", string(callbackBytes), "error", err, "contract_address", contractAddress)
+		return fmt.Errorf("failed to Sudo: %v", err)
+	}
+	return nil
+}
