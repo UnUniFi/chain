@@ -53,13 +53,15 @@ message TransferChannel {
 message SymbolInfo {
   string                   symbol          = 1;
   string                   native_chain_id = 2;
-  repeated TransferChannel channels        = 3;  // channels to send to target chain for the symbol
+  repeated TransferChannel channels        = 3
+      [(gogoproto.nullable) = false];  // channels to send to target chain for the symbol
 }
 
 message DenomInfo {
   string                   denom    = 1;
   string                   symbol   = 2;
-  repeated TransferChannel channels = 3;  // channels to transfer back to native chain from the denom
+  repeated TransferChannel channels = 3
+      [(gogoproto.nullable) = false];  // channels to transfer back to native chain from the denom
 }
 
 // Deprecated: Just for v3.2.2 upgrade handler

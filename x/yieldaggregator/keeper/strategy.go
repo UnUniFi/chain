@@ -206,6 +206,12 @@ func CalculateTransferRoute(currChannels, tarChannels []types.TransferChannel) [
 	return route
 }
 
+// TODO: move this to params
+func (k Keeper) GetIntermediaryReceiver(chainId string) string {
+	intermediaryReceivers := make(map[string]string)
+	return intermediaryReceivers[chainId]
+}
+
 func (k Keeper) ComposePacketForwardMetadata(ctx sdk.Context, channels []types.TransferChannel, finalReceiver string) (string, *PacketMetadata) {
 	if len(channels) == 0 {
 		return "", nil
@@ -220,20 +226,18 @@ func (k Keeper) ComposePacketForwardMetadata(ctx sdk.Context, channels []types.T
 	if err != nil {
 		return "", nil
 	}
-	intermediaryReceivers := make(map[string]string)
 	retries := uint8(2)
 	params, err := k.GetParams(ctx)
 	if err != nil {
 		return "", nil
 	}
 	ibcTransferTimeoutNanos := params.IbcTransferTimeoutNanos
-	timeoutTimestamp := uint64(ctx.BlockTime().UnixNano()) + ibcTransferTimeoutNanos
-	return intermediaryReceivers[channels[0].ChainId], &PacketMetadata{
+	return k.GetIntermediaryReceiver(channels[0].ChainId), &PacketMetadata{
 		Forward: &ForwardMetadata{
 			Receiver: receiver,
 			Port:     ibctransfertypes.PortID,
 			Channel:  channels[0].ChannelId,
-			Timeout:  timeoutTimestamp,
+			Timeout:  Duration(ibcTransferTimeoutNanos),
 			Retries:  &retries,
 			Next:     NewJSONObject(false, nextForwardBz, orderedmap.OrderedMap{}),
 		},
@@ -270,11 +274,17 @@ func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy typ
 		}
 		ibcTransferTimeoutNanos := params.IbcTransferTimeoutNanos
 		timeoutTimestamp := uint64(ctx.BlockTime().UnixNano()) + ibcTransferTimeoutNanos
-		transferRoute := CalculateTransferRoute(_, _)
+		denomInfo := k.GetDenomInfo(ctx, info.Denom)
+		symbolInfo := k.GetSymbolInfo(ctx, vault.Symbol)
+		tarChannel := types.TransferChannel{}
+		for _, channel := range symbolInfo.Channels {
+			if channel.ChainId == info.TargetChainId {
+				tarChannel = channel
+			}
+		}
+		transferRoute := CalculateTransferRoute(denomInfo.Channels, []types.TransferChannel{tarChannel})
 		initialReceiver, metadata := k.ComposePacketForwardMetadata(ctx, transferRoute, info.TargetChainAddr)
-
-		m := &PacketMetadata{}
-		memo, err := json.Marshal(m)
+		memo, err := json.Marshal(metadata)
 
 		msg := ibctypes.NewMsgTransfer(
 			ibctransfertypes.PortID,
