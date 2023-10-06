@@ -28,6 +28,7 @@ service Msg {
   rpc UpdateStrategy(MsgUpdateStrategy) returns (MsgUpdateStrategyResponse);
   rpc RegisterDenomInfos(MsgRegisterDenomInfos) returns (MsgRegisterDenomInfosResponse);
   rpc RegisterSymbolInfos(MsgSymbolInfos) returns (MsgSymbolInfosResponse);
+  rpc SetIntermediaryAccountInfo(MsgSetIntermediaryAccountInfo) returns (MsgSetIntermediaryAccountInfoResponse);
 }
 
 // this line is used by starport scaffolding # proto/tx/message
@@ -197,3 +198,8 @@ message MsgSymbolInfos {
   repeated SymbolInfo info   = 2 [(gogoproto.nullable) = false];
 }
 message MsgSymbolInfosResponse {}
+
+message MsgSetIntermediaryAccountInfo {
+  repeated ChainAddress addrs = 1 [(gogoproto.nullable) = false];
+}
+message MsgSetIntermediaryAccountInfoResponse {}

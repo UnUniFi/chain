@@ -64,6 +64,14 @@ message DenomInfo {
       [(gogoproto.nullable) = false];  // channels to transfer back to native chain from the denom
 }
 
+message ChainAddress {
+  string chain_id = 1;
+  string address  = 2;
+}
+message IntermediaryAccountInfo {
+  repeated ChainAddress addrs = 1 [(gogoproto.nullable) = false];
+}
+
 // Deprecated: Just for v3.2.2 upgrade handler
 message LegacyVault {
   uint64                   id                       = 1;

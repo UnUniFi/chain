@@ -54,6 +54,10 @@ service Query {
   rpc SymbolInfos(QuerySymbolInfosRequest) returns (QuerySymbolInfosResponse) {
     option (google.api.http).get = "/ununifi/yieldaggregator/symbol-infos";
   }
+
+  rpc IntermediaryAccountInfo(QueryIntermediaryAccountInfoRequest) returns (QueryIntermediaryAccountInfoResponse) {
+    option (google.api.http).get = "/ununifi/yieldaggregator/intermediary-account-info";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -195,4 +199,9 @@ message QueryDenomInfosResponse {
 message QuerySymbolInfosRequest {}
 message QuerySymbolInfosResponse {
   repeated SymbolInfo info = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryIntermediaryAccountInfoRequest {}
+message QueryIntermediaryAccountInfoResponse {
+  repeated ChainAddress addrs = 1 [(gogoproto.nullable) = false];
 }
