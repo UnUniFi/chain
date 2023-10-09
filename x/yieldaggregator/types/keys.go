@@ -31,6 +31,7 @@ const (
 	StrategyCountKey = "Strategy/count/"
 	DenomInfoKey     = "Denom/info/"
 	SymbolInfoKey    = "Symbol/info/"
+	ChainReceiverKey = "ChainReceiver/info/"
 )
 
 func KeyPrefixStrategy(vaultDenom string) []byte {

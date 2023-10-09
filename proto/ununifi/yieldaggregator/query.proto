@@ -184,10 +184,22 @@ message QueryEstimateRedeemAmountRequest {
 }
 
 message QueryEstimateRedeemAmountResponse {
-  cosmos.base.v1beta1.Coin share_amount  = 1 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin fee           = 2 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin redeem_amount = 3 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin total_amount  = 4 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin share_amount = 1 [(gogoproto.nullable) = false];
+  string                   fee          = 2 [
+    (cosmos_proto.scalar)  = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable)   = false
+  ];
+  string redeem_amount = 3 [
+    (cosmos_proto.scalar)  = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable)   = false
+  ];
+  string total_amount = 4 [
+    (cosmos_proto.scalar)  = "cosmos.Int",
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable)   = false
+  ];
 }
 
 message QueryDenomInfosRequest {}

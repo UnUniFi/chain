@@ -27,13 +27,13 @@ func (suite *KeeperTestSuite) TestVaultAmountUnbondingAmountInStrategies() {
 
 	vault := types.Vault{
 		Id:                     1,
-		Denom:                  atomIbcDenom,
+		Symbol:                 "ATOM",
 		Owner:                  addr1.String(),
 		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
 		WithdrawCommissionRate: sdk.ZeroDec(),
 		WithdrawReserveRate:    sdk.ZeroDec(),
 		StrategyWeights: []types.StrategyWeight{
-			{StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
 		},
 	}
 
@@ -84,13 +84,13 @@ func (suite *KeeperTestSuite) TestVaultWithdrawalAmount() {
 
 	vault := types.Vault{
 		Id:                     1,
-		Denom:                  atomIbcDenom,
+		Symbol:                 "ATOM",
 		Owner:                  addr1.String(),
 		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
 		WithdrawCommissionRate: sdk.ZeroDec(),
 		WithdrawReserveRate:    sdk.ZeroDec(),
 		StrategyWeights: []types.StrategyWeight{
-			{StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
 		},
 	}
 
@@ -127,13 +127,13 @@ func (suite *KeeperTestSuite) TestVaultAmountTotal() {
 
 	vault := types.Vault{
 		Id:                     1,
-		Denom:                  atomIbcDenom,
+		Symbol:                 "ATOM",
 		Owner:                  addr1.String(),
 		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
 		WithdrawCommissionRate: sdk.ZeroDec(),
 		WithdrawReserveRate:    sdk.ZeroDec(),
 		StrategyWeights: []types.StrategyWeight{
-			{StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
 		},
 	}
 
@@ -188,13 +188,13 @@ func (suite *KeeperTestSuite) TestEstimateMintRedeemAmountInternal() {
 
 	vault := types.Vault{
 		Id:                     1,
-		Denom:                  atomIbcDenom,
+		Symbol:                 "ATOM",
 		Owner:                  addr1.String(),
 		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
 		WithdrawCommissionRate: sdk.NewDecWithPrec(1, 1), // 10%
 		WithdrawReserveRate:    sdk.NewDecWithPrec(1, 1), // 10%
 		StrategyWeights: []types.StrategyWeight{
-			{StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
 		},
 	}
 	suite.app.YieldaggregatorKeeper.SetVault(suite.ctx, vault)
@@ -210,10 +210,10 @@ func (suite *KeeperTestSuite) TestEstimateMintRedeemAmountInternal() {
 	err = suite.app.YieldaggregatorKeeper.DepositAndMintLPToken(suite.ctx, addr1, 1, sdk.NewInt(100000))
 	suite.Require().NoError(err)
 
-	estMintAmount := suite.app.YieldaggregatorKeeper.EstimateMintAmountInternal(suite.ctx, vault.Denom, vault.Id, sdk.NewInt(100000))
+	estMintAmount := suite.app.YieldaggregatorKeeper.EstimateMintAmountInternal(suite.ctx, vault.Id, sdk.NewInt(100000))
 	suite.Require().Equal(estMintAmount.String(), "100000"+lpDenom)
 
-	estBurnAmount := suite.app.YieldaggregatorKeeper.EstimateRedeemAmountInternal(suite.ctx, vault.Denom, vault.Id, sdk.NewInt(100000))
+	estBurnAmount := suite.app.YieldaggregatorKeeper.EstimateRedeemAmountInternal(suite.ctx, vault.Id, sdk.NewInt(100000))
 	suite.Require().Equal(estBurnAmount.String(), "100000"+atomIbcDenom)
 }
 
@@ -243,13 +243,13 @@ func (suite *KeeperTestSuite) TestMintBurnLPToken() {
 
 	vault := types.Vault{
 		Id:                     1,
-		Denom:                  atomIbcDenom,
+		Symbol:                 "ATOM",
 		Owner:                  addr1.String(),
 		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
 		WithdrawCommissionRate: sdk.NewDecWithPrec(1, 1), // 10%
 		WithdrawReserveRate:    sdk.NewDecWithPrec(1, 1), // 10%
 		StrategyWeights: []types.StrategyWeight{
-			{StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
 		},
 	}
 	suite.app.YieldaggregatorKeeper.SetVault(suite.ctx, vault)

@@ -92,10 +92,15 @@ func (k Keeper) MigrateAllLegacyVaults(ctx sdk.Context) {
 		legacyVaults = append(legacyVaults, val)
 	}
 
+	denomInfo := k.GetAllDenomInfo(ctx)
+	denomSymbolMap := make(map[string]string)
+	for _, di := range denomInfo {
+		denomSymbolMap[di.Denom] = di.Symbol
+	}
 	for _, legacyVault := range legacyVaults {
 		vault := types.Vault{
 			Id:                     legacyVault.Id,
-			Denom:                  legacyVault.Denom,
+			Symbol:                 denomSymbolMap[legacyVault.Denom],
 			Name:                   "",
 			Description:            "",
 			Owner:                  legacyVault.Owner,

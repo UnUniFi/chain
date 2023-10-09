@@ -15,7 +15,7 @@ func (k Keeper) VaultAmountInStrategies(ctx sdk.Context, vault types.Vault) sdkm
 
 	// calculate amount in strategies
 	for _, strategyWeight := range vault.StrategyWeights {
-		strategy, found := k.GetStrategy(ctx, vault.Denom, strategyWeight.StrategyId)
+		strategy, found := k.GetStrategy(ctx, strategyWeight.Denom, strategyWeight.StrategyId)
 		if !found {
 			continue
 		}
@@ -33,7 +33,7 @@ func (k Keeper) VaultUnbondingAmountInStrategies(ctx sdk.Context, vault types.Va
 
 	// calculate amount in strategies
 	for _, strategyWeight := range vault.StrategyWeights {
-		strategy, found := k.GetStrategy(ctx, vault.Denom, strategyWeight.StrategyId)
+		strategy, found := k.GetStrategy(ctx, strategyWeight.Denom, strategyWeight.StrategyId)
 		if !found {
 			continue
 		}
@@ -64,7 +64,7 @@ func (k Keeper) VaultAmountTotal(ctx sdk.Context, vault types.Vault) sdk.Int {
 
 // lpAmount = lpSupply * (principalAmountToMint / principalAmountInVault)
 // If principalAmountInVault is zero, lpAmount = principalAmountToMint
-func (k Keeper) EstimateMintAmountInternal(ctx sdk.Context, vaultDenom string, vaultId uint64, principalAmount sdkmath.Int) sdk.Coin {
+func (k Keeper) EstimateMintAmountInternal(ctx sdk.Context, vaultId uint64, principalAmount sdkmath.Int) sdk.Coin {
 	lpDenom := types.GetLPTokenDenom(vaultId)
 	vault, found := k.GetVault(ctx, vaultId)
 	if !found {
@@ -84,21 +84,21 @@ func (k Keeper) EstimateMintAmountInternal(ctx sdk.Context, vaultDenom string, v
 
 // calculate principalAmount
 // principalAmount = principalAmountInVault * (lpAmountToBurn / lpSupply)
-func (k Keeper) EstimateRedeemAmountInternal(ctx sdk.Context, vaultDenom string, vaultId uint64, lpAmount sdkmath.Int) sdk.Coin {
+func (k Keeper) EstimateRedeemAmountInternal(ctx sdk.Context, vaultId uint64, lpAmount sdkmath.Int) sdk.Int {
 	vault, found := k.GetVault(ctx, vaultId)
 	if !found {
-		return sdk.NewCoin(vaultDenom, sdk.ZeroInt())
+		return sdk.ZeroInt()
 	}
 	principalInVault := k.VaultAmountTotal(ctx, vault)
 	lpDenom := types.GetLPTokenDenom(vaultId)
 	lpSupply := k.bankKeeper.GetSupply(ctx, lpDenom).Amount
 
 	if lpSupply.IsZero() {
-		return sdk.NewCoin(vaultDenom, sdk.ZeroInt())
+		return sdk.ZeroInt()
 	}
 	principalAmount := principalInVault.Mul(lpAmount).Quo(lpSupply)
 
-	return sdk.NewCoin(vaultDenom, principalAmount)
+	return principalAmount
 }
 
 func (k Keeper) DepositAndMintLPToken(ctx sdk.Context, address sdk.AccAddress, vaultId uint64, principalAmount sdk.Int) error {
@@ -108,7 +108,7 @@ func (k Keeper) DepositAndMintLPToken(ctx sdk.Context, address sdk.AccAddress, v
 	}
 
 	// calculate lp token amount
-	lp := k.EstimateMintAmountInternal(ctx, vault.Denom, vaultId, principalAmount)
+	lp := k.EstimateMintAmountInternal(ctx, vaultId, principalAmount)
 
 	// transfer coins after lp amount calculation
 	vaultModName := types.GetVaultModuleAccountName(vaultId)
@@ -135,7 +135,7 @@ func (k Keeper) DepositAndMintLPToken(ctx sdk.Context, address sdk.AccAddress, v
 	newStrategyAmount := sdk.NewDecFromInt(totalAmount).Mul(sdk.OneDec().Sub(vault.WithdrawReserveRate)).RoundInt()
 	amountToInvest := newStrategyAmount.Sub(stratAmount)
 	for _, strategyWeight := range vault.StrategyWeights {
-		strategy, found := k.GetStrategy(ctx, vault.Denom, strategyWeight.StrategyId)
+		strategy, found := k.GetStrategy(ctx, strategyWeight.Denom, strategyWeight.StrategyId)
 		if !found {
 			continue
 		}
@@ -163,7 +163,7 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 		return err
 	}
 
-	principal := k.EstimateRedeemAmountInternal(ctx, vault.Denom, vaultId, lpAmount)
+	principal := k.EstimateRedeemAmountInternal(ctx, vaultId, lpAmount)
 
 	// burn lp tokens after calculating withdrawal amount
 	vaultModName := types.GetVaultModuleAccountName(vaultId)
@@ -180,7 +180,7 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 	}
 
 	// Unstake funds from the vault
-	amountToUnbond := principal.Amount
+	amountToUnbond := principal
 
 	// implement fees on withdrawal
 	amountInVault := k.VaultWithdrawalAmount(ctx, vault)
@@ -204,8 +204,8 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 	// withdraw_fee = withdraw_fee_rate * amount_to_withdraw
 	// If reserve_maintenance_rate is close to 1, withdraw_fee_rate will be close to 0 and vice versa
 
-	withdrawFee := sdk.NewDecFromInt(principal.Amount).Mul(withdrawFeeRate).RoundInt()
-	withdrawAmount := principal.Amount.Sub(withdrawFee)
+	withdrawFee := sdk.NewDecFromInt(amountToUnbond).Mul(withdrawFeeRate).RoundInt()
+	withdrawAmount := amountToUnbond.Sub(withdrawFee)
 
 	withdrawModuleCommissionFee := sdk.NewDecFromInt(withdrawAmount).Mul(params.CommissionRate).RoundInt()
 	withdrawVaultCommissionFee := sdk.NewDecFromInt(withdrawAmount).Mul(vault.WithdrawCommissionRate).RoundInt()
@@ -247,7 +247,7 @@ func (k Keeper) BurnLPTokenAndBeginUnbonding(ctx sdk.Context, address sdk.AccAdd
 		return types.ErrInvalidVaultId
 	}
 
-	principal := k.EstimateRedeemAmountInternal(ctx, vault.Denom, vaultId, lpAmount)
+	principal := k.EstimateRedeemAmountInternal(ctx, vaultId, lpAmount)
 
 	// burn lp tokens after calculating withdrawal amount
 	lpDenom := types.GetLPTokenDenom(vaultId)
@@ -262,9 +262,9 @@ func (k Keeper) BurnLPTokenAndBeginUnbonding(ctx sdk.Context, address sdk.AccAdd
 	}
 
 	// Unstake funds from Strategy
-	amountToUnbond := principal.Amount
+	amountToUnbond := principal
 	for _, strategyWeight := range vault.StrategyWeights {
-		strategy, found := k.GetStrategy(ctx, vault.Denom, strategyWeight.StrategyId)
+		strategy, found := k.GetStrategy(ctx, strategyWeight.Denom, strategyWeight.StrategyId)
 		if !found {
 			continue
 		}

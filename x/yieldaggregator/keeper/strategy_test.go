@@ -159,13 +159,13 @@ func (suite *KeeperTestSuite) TestStakeToStrategy() {
 
 	vault := types.Vault{
 		Id:                     1,
-		Denom:                  atomIbcDenom,
+		Symbol:                 "ATOM",
 		Owner:                  addr1.String(),
 		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
 		WithdrawCommissionRate: sdk.ZeroDec(),
 		WithdrawReserveRate:    sdk.ZeroDec(),
 		StrategyWeights: []types.StrategyWeight{
-			{StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
 		},
 	}
 
@@ -215,13 +215,13 @@ func (suite *KeeperTestSuite) TestUnstakeFromStrategy() {
 
 	vault := types.Vault{
 		Id:                     1,
-		Denom:                  atomIbcDenom,
+		Symbol:                 "ATOM",
 		Owner:                  addr1.String(),
 		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
 		WithdrawCommissionRate: sdk.ZeroDec(),
 		WithdrawReserveRate:    sdk.ZeroDec(),
 		StrategyWeights: []types.StrategyWeight{
-			{StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
 		},
 	}
 
@@ -269,13 +269,13 @@ func (suite *KeeperTestSuite) TestGetAmountAndUnbondingAmountFromStrategy() {
 
 	vault := types.Vault{
 		Id:                     1,
-		Denom:                  atomIbcDenom,
+		Symbol:                 "ATOM",
 		Owner:                  addr1.String(),
 		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
 		WithdrawCommissionRate: sdk.ZeroDec(),
 		WithdrawReserveRate:    sdk.ZeroDec(),
 		StrategyWeights: []types.StrategyWeight{
-			{StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
 		},
 	}
 

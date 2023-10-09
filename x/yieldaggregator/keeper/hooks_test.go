@@ -36,13 +36,13 @@ func (suite *KeeperTestSuite) TestBeforeEpochStart() {
 
 	vault := types.Vault{
 		Id:                     1,
-		Denom:                  atomIbcDenom,
+		Symbol:                 "ATOM",
 		Owner:                  addr1.String(),
 		OwnerDeposit:           sdk.NewInt64Coin("uguu", 100),
 		WithdrawCommissionRate: sdk.NewDecWithPrec(1, 1), // 10%
 		WithdrawReserveRate:    sdk.NewDecWithPrec(1, 1), // 10%
 		StrategyWeights: []types.StrategyWeight{
-			{StrategyId: 1, Weight: sdk.OneDec()},
+			{Denom: atomIbcDenom, StrategyId: 1, Weight: sdk.OneDec()},
 		},
 	}
 	suite.app.YieldaggregatorKeeper.SetVault(suite.ctx, vault)

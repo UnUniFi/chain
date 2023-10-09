@@ -10,13 +10,11 @@ import (
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
 )
 
-func (k Keeper) SymbolInfos(c context.Context, req *types.QuerySymbolInfosRequest) (*types.QuerySymbolInfosResponse, error) {
+func (k Keeper) IntermediaryAccountInfo(c context.Context, req *types.QueryIntermediaryAccountInfoRequest) (*types.QueryIntermediaryAccountInfoResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(c)
-
-	return &types.QuerySymbolInfosResponse{
-		Info: k.GetAllSymbolInfo(ctx),
-	}, nil
+	info := k.GetIntermediaryAccountInfo(ctx)
+	return &types.QueryIntermediaryAccountInfoResponse{Addrs: info.Addrs}, nil
 }

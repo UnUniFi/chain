@@ -67,7 +67,7 @@ func (k Keeper) Vault(c context.Context, req *types.QueryGetVaultRequest) (*type
 
 	strategies := []types.Strategy{}
 	for _, strategyWeight := range vault.StrategyWeights {
-		strategy, found := k.GetStrategy(ctx, vault.Denom, strategyWeight.StrategyId)
+		strategy, found := k.GetStrategy(ctx, strategyWeight.Denom, strategyWeight.StrategyId)
 		if !found {
 			continue
 		}

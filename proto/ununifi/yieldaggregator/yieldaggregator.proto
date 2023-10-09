@@ -8,8 +8,9 @@ import "cosmos/base/v1beta1/coin.proto";
 option go_package = "github.com/UnUniFi/chain/x/yieldaggregator/types";
 
 message StrategyWeight {
-  uint64 strategy_id = 1;
-  string weight      = 2 [
+  string denom       = 1;
+  uint64 strategy_id = 2;
+  string weight      = 3 [
     (cosmos_proto.scalar)  = "cosmos.Dec",
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false

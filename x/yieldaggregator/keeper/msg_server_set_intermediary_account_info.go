@@ -9,15 +9,12 @@ import (
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
 )
 
-func (k msgServer) RegisterSymbolInfos(ctx context.Context, msg *types.MsgSymbolInfos) (*types.MsgSymbolInfosResponse, error) {
+func (k msgServer) SetIntermediaryAccountInfo(ctx context.Context, msg *types.MsgSetIntermediaryAccountInfo) (*types.MsgSetIntermediaryAccountInfoResponse, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	if k.authority != msg.Sender {
 		return nil, sdkerrors.ErrUnauthorized
 	}
 
-	for _, dsm := range msg.Info {
-		k.SetSymbolInfo(sdkCtx, dsm)
-	}
-
-	return &types.MsgSymbolInfosResponse{}, nil
+	k.Keeper.SetIntermediaryAccountInfo(sdkCtx, msg.Addrs)
+	return &types.MsgSetIntermediaryAccountInfoResponse{}, nil
 }

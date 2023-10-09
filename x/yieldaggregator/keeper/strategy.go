@@ -248,7 +248,7 @@ func (k Keeper) ComposePacketForwardMetadata(ctx sdk.Context, channels []types.T
 func (k Keeper) StakeToStrategy(ctx sdk.Context, vault types.Vault, strategy types.Strategy, amount sdk.Int) error {
 	vaultModName := types.GetVaultModuleAccountName(vault.Id)
 	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
-	stakeCoin := sdk.NewCoin(vault.Denom, amount)
+	stakeCoin := sdk.NewCoin(strategy.Denom, amount)
 
 	switch strategy.ContractAddress {
 	case "x/ibc-staking":
@@ -315,7 +315,7 @@ func (k Keeper) UnstakeFromStrategy(ctx sdk.Context, vault types.Vault, strategy
 			err := k.stakeibcKeeper.RedeemStake(
 				ctx,
 				vaultModAddr,
-				sdk.NewCoin(vault.Denom, amount),
+				sdk.NewCoin(strategy.Denom, amount),
 				recipient,
 			)
 			if err != nil {
@@ -351,8 +351,8 @@ func (k Keeper) GetAmountFromStrategy(ctx sdk.Context, vault types.Vault, strate
 	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
 	switch strategy.ContractAddress {
 	case "x/ibc-staking":
-		updatedAmount := k.stakeibcKeeper.GetUpdatedBalance(ctx, vaultModAddr, vault.Denom)
-		return sdk.NewCoin(vault.Denom, updatedAmount), nil
+		updatedAmount := k.stakeibcKeeper.GetUpdatedBalance(ctx, vaultModAddr, strategy.Denom)
+		return sdk.NewCoin(strategy.Denom, updatedAmount), nil
 	default:
 		version := k.GetStrategyVersion(ctx, strategy)
 		switch version {
@@ -397,12 +397,12 @@ func (k Keeper) GetUnbondingAmountFromStrategy(ctx sdk.Context, vault types.Vaul
 	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
 	switch strategy.ContractAddress {
 	case "x/ibc-staking":
-		zone, err := k.stakeibcKeeper.GetHostZoneFromIBCDenom(ctx, vault.Denom)
+		zone, err := k.stakeibcKeeper.GetHostZoneFromIBCDenom(ctx, strategy.Denom)
 		if err != nil {
 			return sdk.Coin{}, err
 		}
 		unbondingAmount := k.recordsKeeper.GetUserRedemptionRecordBySenderAndHostZone(ctx, vaultModAddr, zone.ChainId)
-		return sdk.NewCoin(vault.Denom, unbondingAmount), nil
+		return sdk.NewCoin(strategy.Denom, unbondingAmount), nil
 	default:
 		version := k.GetStrategyVersion(ctx, strategy)
 		switch version {
