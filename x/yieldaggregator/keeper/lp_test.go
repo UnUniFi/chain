@@ -186,6 +186,10 @@ func (suite *KeeperTestSuite) TestEstimateMintRedeemAmountInternal() {
 	}
 	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy.Denom, strategy)
 
+	suite.app.YieldaggregatorKeeper.SetDenomInfo(suite.ctx, types.DenomInfo{
+		Denom:  atomIbcDenom,
+		Symbol: "ATOM",
+	})
 	vault := types.Vault{
 		Id:                     1,
 		Symbol:                 "ATOM",
@@ -214,7 +218,7 @@ func (suite *KeeperTestSuite) TestEstimateMintRedeemAmountInternal() {
 	suite.Require().Equal(estMintAmount.String(), "100000"+lpDenom)
 
 	estBurnAmount := suite.app.YieldaggregatorKeeper.EstimateRedeemAmountInternal(suite.ctx, vault.Id, sdk.NewInt(100000))
-	suite.Require().Equal(estBurnAmount.String(), "100000"+atomIbcDenom)
+	suite.Require().Equal(estBurnAmount.String(), "100000")
 }
 
 func (suite *KeeperTestSuite) TestMintBurnLPToken() {
@@ -242,6 +246,10 @@ func (suite *KeeperTestSuite) TestMintBurnLPToken() {
 	}
 	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy.Denom, strategy)
 
+	suite.app.YieldaggregatorKeeper.SetDenomInfo(suite.ctx, types.DenomInfo{
+		Denom:  atomIbcDenom,
+		Symbol: "ATOM",
+	})
 	vault := types.Vault{
 		Id:                     1,
 		Symbol:                 "ATOM",

@@ -9,7 +9,7 @@ import (
 	"github.com/UnUniFi/chain/x/yieldaggregator/types"
 )
 
-func (k msgServer) RegisterSymbolInfos(ctx context.Context, msg *types.MsgSymbolInfos) (*types.MsgSymbolInfosResponse, error) {
+func (k msgServer) RegisterSymbolInfos(ctx context.Context, msg *types.MsgRegisterSymbolInfos) (*types.MsgRegisterSymbolInfosResponse, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	if k.authority != msg.Sender {
 		return nil, sdkerrors.ErrUnauthorized
@@ -19,5 +19,5 @@ func (k msgServer) RegisterSymbolInfos(ctx context.Context, msg *types.MsgSymbol
 		k.SetSymbolInfo(sdkCtx, dsm)
 	}
 
-	return &types.MsgSymbolInfosResponse{}, nil
+	return &types.MsgRegisterSymbolInfosResponse{}, nil
 }

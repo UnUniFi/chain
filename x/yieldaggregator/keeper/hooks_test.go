@@ -35,6 +35,10 @@ func (suite *KeeperTestSuite) TestBeforeEpochStart() {
 	}
 	suite.app.YieldaggregatorKeeper.SetStrategy(suite.ctx, strategy.Denom, strategy)
 
+	suite.app.YieldaggregatorKeeper.SetDenomInfo(suite.ctx, types.DenomInfo{
+		Denom:  atomIbcDenom,
+		Symbol: "ATOM",
+	})
 	vault := types.Vault{
 		Id:                     1,
 		Symbol:                 "ATOM",
