@@ -46,11 +46,20 @@ func (k Keeper) VaultUnbondingAmountInStrategies(ctx sdk.Context, vault types.Va
 	return unbondingAmount
 }
 
-func (k Keeper) VaultWithdrawalAmount(ctx sdk.Context, vault types.Vault) sdk.Int {
+func (k Keeper) VaultBalances(ctx sdk.Context, vault types.Vault) sdk.Coins {
 	vaultModName := types.GetVaultModuleAccountName(vault.Id)
 	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
-	balance := k.bankKeeper.GetBalance(ctx, vaultModAddr, vault.Denom)
-	return balance.Amount
+	return k.bankKeeper.GetAllBalances(ctx, vaultModAddr)
+}
+
+func (k Keeper) VaultWithdrawalAmount(ctx sdk.Context, vault types.Vault) sdk.Int {
+	denoms := vault.StrategyDenoms()
+	amount := sdk.ZeroInt()
+	vaultBalances := k.VaultBalances(ctx, vault)
+	for _, denom := range denoms {
+		amount = amount.Add(vaultBalances.AmountOf(denom))
+	}
+	return amount
 }
 
 func (k Keeper) VaultAmountTotal(ctx sdk.Context, vault types.Vault) sdk.Int {
@@ -101,19 +110,47 @@ func (k Keeper) EstimateRedeemAmountInternal(ctx sdk.Context, vaultId uint64, lp
 	return principalAmount
 }
 
-func (k Keeper) DepositAndMintLPToken(ctx sdk.Context, address sdk.AccAddress, vaultId uint64, principalAmount sdk.Int) error {
+func (k Keeper) SendCoinsFromVault(ctx sdk.Context, vault types.Vault, address sdk.AccAddress, amount sdk.Int) error {
+	vaultDenoms := vault.StrategyDenoms()
+	vaultBalances := k.VaultBalances(ctx, vault)
+	coins := sdk.Coins{}
+	remainingAmount := amount
+	for _, denom := range vaultDenoms {
+		denomAmount := vaultBalances.AmountOf(denom)
+		if denomAmount.IsZero() {
+			continue
+		}
+		if remainingAmount.GT(denomAmount) {
+			coins = coins.Add(sdk.NewCoin(denom, denomAmount))
+			remainingAmount = remainingAmount.Sub(denomAmount)
+		} else {
+			coins = coins.Add(sdk.NewCoin(denom, remainingAmount))
+			break
+		}
+	}
+
+	vaultModName := types.GetVaultModuleAccountName(vault.Id)
+	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
+	return k.bankKeeper.SendCoins(ctx, vaultModAddr, address, coins)
+}
+
+func (k Keeper) DepositAndMintLPToken(ctx sdk.Context, address sdk.AccAddress, vaultId uint64, principal sdk.Coin) error {
 	vault, found := k.GetVault(ctx, vaultId)
 	if !found {
 		return types.ErrInvalidVaultId
 	}
 
+	denomInfo := k.GetDenomInfo(ctx, principal.Denom)
+	if denomInfo.Symbol != vault.Symbol {
+		return types.ErrDenomDoesNotMatchVaultSymbol
+	}
+
 	// calculate lp token amount
-	lp := k.EstimateMintAmountInternal(ctx, vaultId, principalAmount)
+	lp := k.EstimateMintAmountInternal(ctx, vaultId, principal.Amount)
 
 	// transfer coins after lp amount calculation
 	vaultModName := types.GetVaultModuleAccountName(vaultId)
 	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
-	principal := sdk.NewCoin(vault.Denom, principalAmount)
 	err := k.bankKeeper.SendCoins(ctx, address, vaultModAddr, sdk.NewCoins(principal))
 	if err != nil {
 		return err
@@ -166,8 +203,6 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 	principal := k.EstimateRedeemAmountInternal(ctx, vaultId, lpAmount)
 
 	// burn lp tokens after calculating withdrawal amount
-	vaultModName := types.GetVaultModuleAccountName(vaultId)
-	vaultModAddr := authtypes.NewModuleAddress(vaultModName)
 	lpDenom := types.GetLPTokenDenom(vaultId)
 	lp := sdk.NewCoin(lpDenom, lpAmount)
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.NewCoins(lp))
@@ -216,7 +251,7 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 		if err != nil {
 			return err
 		}
-		err = k.bankKeeper.SendCoins(ctx, vaultModAddr, feeCollector, sdk.NewCoins(sdk.NewCoin(principal.Denom, withdrawModuleCommissionFee)))
+		err = k.SendCoinsFromVault(ctx, vault, feeCollector, withdrawModuleCommissionFee)
 		if err != nil {
 			return err
 		}
@@ -227,13 +262,13 @@ func (k Keeper) BurnLPTokenAndRedeem(ctx sdk.Context, address sdk.AccAddress, va
 		if err != nil {
 			return err
 		}
-		err = k.bankKeeper.SendCoins(ctx, vaultModAddr, vaultOwner, sdk.NewCoins(sdk.NewCoin(principal.Denom, withdrawVaultCommissionFee)))
+		err = k.SendCoinsFromVault(ctx, vault, vaultOwner, withdrawVaultCommissionFee)
 		if err != nil {
 			return err
 		}
 	}
 
-	err = k.bankKeeper.SendCoins(ctx, vaultModAddr, address, sdk.NewCoins(sdk.NewCoin(principal.Denom, withdrawAmountWithoutCommission)))
+	err = k.SendCoinsFromVault(ctx, vault, address, withdrawAmountWithoutCommission)
 	if err != nil {
 		return err
 	}

@@ -164,7 +164,7 @@ func PerformDeputyDepositToVault(bk *bankkeeper.BaseKeeper, iyaKeeper *yieldaggr
 		ctx,
 		depositor,
 		deputyDepositToVault.VaultId,
-		amount.Amount,
+		amount,
 	)
 	if err != nil {
 		return sdkerrors.Wrap(err, "depositing to vault")

@@ -11,19 +11,20 @@ import (
 )
 
 func (suite *KeeperTestSuite) TestBeforeEpochStart() {
+	atomHostDenom := "uatom"
+	prefixedDenom := transfertypes.GetPrefixedDenom("transfer", "channel-0", atomHostDenom)
+	atomIbcDenom := transfertypes.ParseDenomTrace(prefixedDenom).IBCDenom()
+	lpDenom := types.GetLPTokenDenom(1)
+
 	// try execution with invalid vault id
 	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-	err := suite.app.YieldaggregatorKeeper.DepositAndMintLPToken(suite.ctx, addr1, 1, sdk.NewInt(100000))
+	err := suite.app.YieldaggregatorKeeper.DepositAndMintLPToken(suite.ctx, addr1, 1, sdk.NewInt64Coin(atomIbcDenom, 100000))
 	suite.Require().Error(err)
 
 	// try execution with invalid vault id
 	err = suite.app.YieldaggregatorKeeper.BurnLPTokenAndRedeem(suite.ctx, addr1, 1, sdk.NewInt(100000))
 	suite.Require().Error(err)
 
-	atomHostDenom := "uatom"
-	prefixedDenom := transfertypes.GetPrefixedDenom("transfer", "channel-0", atomHostDenom)
-	atomIbcDenom := transfertypes.ParseDenomTrace(prefixedDenom).IBCDenom()
-	lpDenom := types.GetLPTokenDenom(1)
 	_ = suite.SetupZoneAndEpoch(atomHostDenom, atomIbcDenom)
 
 	strategy := types.Strategy{
@@ -55,7 +56,7 @@ func (suite *KeeperTestSuite) TestBeforeEpochStart() {
 	suite.Require().NoError(err)
 
 	// try execution after setup
-	err = suite.app.YieldaggregatorKeeper.DepositAndMintLPToken(suite.ctx, addr1, 1, sdk.NewInt(100000))
+	err = suite.app.YieldaggregatorKeeper.DepositAndMintLPToken(suite.ctx, addr1, 1, sdk.NewInt64Coin(atomIbcDenom, 100000))
 	suite.Require().NoError(err)
 
 	// burn execution

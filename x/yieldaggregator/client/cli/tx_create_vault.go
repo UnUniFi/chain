@@ -17,7 +17,7 @@ import (
 
 func CmdTxCreateVault() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-vault [denom] [commission-rate] [withdraw-reserve-rate] [fee] [deposit] [strategy-weights] [fee-collector]",
+		Use:   "create-vault [symbol] [commission-rate] [withdraw-reserve-rate] [fee] [deposit] [strategy-weights] [fee-collector]",
 		Short: "create a new vault",
 		Long: `create a new vault
 			ununifid tx yieldaggregator create-vault uguu 0.001 1000uguu 1000000uguu 1:0.1,2:0.9
@@ -29,7 +29,7 @@ func CmdTxCreateVault() *cobra.Command {
 				return err
 			}
 
-			denom := args[0]
+			symbol := args[0]
 			commissionRate, err := sdk.NewDecFromStr(args[1])
 			if err != nil {
 				return err
@@ -72,7 +72,7 @@ func CmdTxCreateVault() *cobra.Command {
 
 			msg := types.NewMsgCreateVault(
 				clientCtx.GetFromAddress().String(),
-				denom,
+				symbol,
 				commissionRate,
 				withdrawReserveRate,
 				strategyWeights,
