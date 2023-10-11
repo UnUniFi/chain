@@ -26,6 +26,7 @@ func GetTxCmd() *cobra.Command {
 		CmdTxCreateVault(),
 		CmdTxTransferVaultOwnership(),
 		CmdTxDeleteVault(),
+		CmdTxUpdateVault(),
 	)
 
 	return cmd
