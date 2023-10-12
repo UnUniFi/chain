@@ -52,18 +52,6 @@ service Query {
   rpc DepositRecordAll(QueryAllDepositRecordRequest) returns (QueryAllDepositRecordResponse) {
     option (google.api.http).get = "/ununifi/records/deposit_record";
   }
-
-  // Queries the existing LSMTokenDeposits for one specific deposit
-  rpc LSMDeposit(QueryLSMDepositRequest) returns (QueryLSMDepositResponse) {
-    option (google.api.http).get = "/ununifi/stakeibc/lsm_deposit/{chain_id}/{denom}";
-  }
-
-  // Queries the existing LSMTokenDeposits for all which match filters
-  //   intended use:
-  //   ...stakeibc/lsm_deposits?chain_id=X&validator_address=Y&status=Z
-  rpc LSMDeposits(QueryLSMDepositsRequest) returns (QueryLSMDepositsResponse) {
-    option (google.api.http).get = "/ununifi/stakeibc/lsm_deposits";
-  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -138,23 +126,4 @@ message QueryAllEpochUnbondingRecordRequest {
 message QueryAllEpochUnbondingRecordResponse {
   repeated EpochUnbondingRecord          epoch_unbonding_record = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination             = 2;
-}
-
-message QueryLSMDepositRequest {
-  string chain_id = 1;
-  string denom    = 2;
-}
-
-message QueryLSMDepositResponse {
-  LSMTokenDeposit deposit = 1 [(gogoproto.nullable) = false];
-}
-
-message QueryLSMDepositsRequest {
-  string chain_id          = 1;
-  string validator_address = 2;
-  string status            = 3;
-}
-
-message QueryLSMDepositsResponse {
-  repeated LSMTokenDeposit deposits = 1 [(gogoproto.nullable) = false];
 }

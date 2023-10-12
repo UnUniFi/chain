@@ -29,9 +29,9 @@ type DepositRecord_Status int32
 
 const (
 	// in transfer queue to be sent to the delegation ICA
-	DepositRecord_TRANSFER_QUEUE_QUEUE DepositRecord_Status = 0
+	DepositRecord_TRANSFER_QUEUE DepositRecord_Status = 0
 	// transfer in progress (IBC packet sent, ack not received)
-	DepositRecord_TRANSFER_QUEUE_QUEUE_IN_PROGRESS DepositRecord_Status = 2
+	DepositRecord_TRANSFER_IN_PROGRESS DepositRecord_Status = 2
 	// in staking queue on delegation ICA
 	DepositRecord_DELEGATION_QUEUE DepositRecord_Status = 1
 	// staking in progress (ICA packet sent, ack not received)
@@ -323,7 +323,7 @@ func (m *DepositRecord) GetStatus() DepositRecord_Status {
 	if m != nil {
 		return m.Status
 	}
-	return DepositRecord_TRANSFER_QUEUE_QUEUE
+	return DepositRecord_TRANSFER_QUEUE
 }
 
 func (m *DepositRecord) GetDepositEpochNumber() uint64 {

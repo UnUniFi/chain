@@ -145,8 +145,8 @@ func (k msgServer) RegisterHostZone(goCtx context.Context, msg *types.MsgRegiste
 		return nil, sdkerrors.Wrapf(recordstypes.ErrEpochUnbondingRecordNotFound, errMsg)
 	}
 	hostZoneUnbonding := &recordstypes.HostZoneUnbonding{
-		NativeTokenAmount: 0,
-		StTokenAmount:     0,
+		NativeTokenAmount: sdk.ZeroInt(),
+		StTokenAmount:     sdk.ZeroInt(),
 		Denom:             zone.HostDenom,
 		HostZoneId:        zone.ChainId,
 		Status:            recordstypes.HostZoneUnbonding_UNBONDING_QUEUE,
@@ -166,10 +166,10 @@ func (k msgServer) RegisterHostZone(goCtx context.Context, msg *types.MsgRegiste
 	}
 	depositRecord := recordstypes.DepositRecord{
 		Id:                 0,
-		Amount:             0,
+		Amount:             sdk.ZeroInt(),
 		Denom:              zone.HostDenom,
 		HostZoneId:         zone.ChainId,
-		Status:             recordstypes.DepositRecord_TRANSFER_QUEUE_QUEUE,
+		Status:             recordstypes.DepositRecord_TRANSFER_QUEUE,
 		DepositEpochNumber: strideEpochTracker.EpochNumber,
 	}
 	k.RecordsKeeper.AppendDepositRecord(ctx, depositRecord)
